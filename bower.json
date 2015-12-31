@@ -1,0 +1,25 @@
+{
+  "name": "dodoc",
+  "description": "Dodoc is a documentation tool for children",
+  "main": "",
+  "authors": [
+    "sarah garcin <sarah@g-u-i.me>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/sarahgarcin/dodoc",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "foundation": "~5.5.3"
+  }
+}

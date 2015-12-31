@@ -1,5 +1,6 @@
-#node modules#
+# Folder modules#
 node_modules
+bower_components
 
 # Compiled source #
 # ###################
