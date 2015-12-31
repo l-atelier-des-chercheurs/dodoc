@@ -17,11 +17,58 @@ module.exports = function(app, io){
 	// VARIABLES
 	var sessions_p = "sessions/";
 	var session_list = [];
-	currentDate = Date.now();
 
 	io.on("connection", function(socket){
 
+		// I N D E X    P A G E 
+		socket.on("newFolder", onNewFolder);
+
 
 	});
+
+
+// ------------- F U N C T I O N S -------------------
+
+	// I N D E X     P A G E 
+
+	// Créer un nouveau dossier 
+	function onNewFolder(folder) {
+		var folderName = folder.name;
+		var formatFolderName = folderName.replace(/ /g,"_");
+		var folderPath = 'sessions/'+formatFolderName;
+		var currentDate = Date.now();
+
+		// Vérifie si le dossier existe déjà
+		fs.access(folderPath, fs.F_OK, function(err) {
+			// S'il n'existe pas -> créer le dossier et le json
+	    if (err) {
+	    	console.log("dossier crée");
+	      fs.ensureDirSync(folderPath);
+	      writeJsonFile(formatFolderName);
+	    } 
+	    // S'il existe afficher un message d'erreur
+	    else {
+	      console.log(err);
+	      io.sockets.emit("folderAlreadyExist", {name: folderName, timestamp: currentDate });
+	    }
+		});
+
+		function writeJsonFile(fichier){
+	  	var jsonFile = 'sessions/' + fichier + '/' +fichier+'.json';
+	  	console.log(jsonFile);
+			var objectJson = {"name":folderName, "timestamp":currentDate};
+			var jsonString = JSON.stringify(objectJson);
+			fs.appendFile(jsonFile, jsonString, function(err) {
+	      if(err) {
+	          console.log(err);
+	      } 
+	      else {
+	        console.log("Le dossier été crée!");
+	        io.sockets.emit("folderCreated", {name: folderName, timestamp: currentDate });
+	      }
+	    });
+	  }
+	}
+
 
 }

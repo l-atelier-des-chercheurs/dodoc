@@ -1,3 +1,9 @@
+var socket = io.connect();
+
+/* sockets */
+socket.on('connect', onSocketConnect);
+socket.on('error', onSocketError);
+
 jQuery(document).ready(function($) {
 
 	init();
@@ -16,5 +22,25 @@ function createFolder($this){
 	var closeAddProjectFunction = function() {
 	};
 
-	fillPopOver( newContentToAdd, $this, 300, 200, closeAddProjectFunction);
+	fillPopOver(newContentToAdd, $this, 300, 200, closeAddProjectFunction); //ouverture du pop up
+	submitFolder($(".submit-new-folder"), 'newFolder'); //Envoie les données au serveur
 }
+
+// Envoie les données du dossier au serveur
+function submitFolder($button, send){
+	$button.on('click', function(){
+		var newFolderName = $('input.new-folder').val();
+
+		socket.emit(send, {name: newFolderName});
+	})
+}
+
+/* sockets */
+function onSocketConnect() {
+	sessionId = socket.io.engine.id;
+	console.log('Connected ' + sessionId);
+};
+
+function onSocketError(reason) {
+	console.log('Unable to connect to server', reason);
+};
