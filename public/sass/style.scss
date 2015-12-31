@@ -1,4 +1,227 @@
 // I M P O R T
 @import "variables.scss";
-@import "../../bower_components/foundation/scss/foundation/functions";
-@import "../../bower_components/foundation/scss/settings";
+
+// T Y P O
+@font-face {
+    font-family: 'fira';
+    src: url('../fonts/Fira-Sans/firasans-bold-webfont.eot');
+    src: url('../fonts/Fira-Sans/firasans-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Fira-Sans/firasans-bold-webfont.woff2') format('woff2'),
+         url('../fonts/Fira-Sans/firasans-bold-webfont.woff') format('woff'),
+         url('../fonts/Fira-Sans/firasans-bold-webfont.ttf') format('truetype'),
+         url('../fonts/Fira-Sans/firasans-bold-webfont.svg#fira_sansbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'fira';
+    src: url('../fonts/Fira-Sans/firasans-bolditalic-webfont.eot');
+    src: url('../fonts/Fira-Sans/firasans-bolditalic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Fira-Sans/firasans-bolditalic-webfont.woff2') format('woff2'),
+         url('../fonts/Fira-Sans/firasans-bolditalic-webfont.woff') format('woff'),
+         url('../fonts/Fira-Sans/firasans-bolditalic-webfont.ttf') format('truetype'),
+         url('../fonts/Fira-Sans/firasans-bolditalic-webfont.svg#fira_sansbold_italic') format('svg');
+    font-weight: bold;
+    font-style: italic;
+
+}
+
+@font-face {
+    font-family: 'fira';
+    src: url('../fonts/Fira-Sans/firasans-italic-webfont.eot');
+    src: url('../fonts/Fira-Sans/firasans-italic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Fira-Sans/firasans-italic-webfont.woff2') format('woff2'),
+         url('../fonts/Fira-Sans/firasans-italic-webfont.woff') format('woff'),
+         url('../fonts/Fira-Sans/firasans-italic-webfont.ttf') format('truetype'),
+         url('../fonts/Fira-Sans/firasans-italic-webfont.svg#fira_sansitalic') format('svg');
+    font-weight: normal;
+    font-style: italic;
+}
+
+
+@font-face {
+    font-family: 'fira';
+    src: url('../fonts/Fira-Sans/firasans-light-webfont.eot');
+    src: url('../fonts/Fira-Sans/firasans-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Fira-Sans/firasans-light-webfont.woff2') format('woff2'),
+         url('../fonts/Fira-Sans/firasans-light-webfont.woff') format('woff'),
+         url('../fonts/Fira-Sans/firasans-light-webfont.ttf') format('truetype'),
+         url('../fonts/Fira-Sans/firasans-light-webfont.svg#fira_sanslight') format('svg');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'fira';
+    src: url('../fonts/Fira-Sans/firasans-regular-webfont.eot');
+    src: url('../fonts/Fira-Sans/firasans-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Fira-Sans/firasans-regular-webfont.woff2') format('woff2'),
+         url('../fonts/Fira-Sans/firasans-regular-webfont.woff') format('woff'),
+         url('../fonts/Fira-Sans/firasans-regular-webfont.ttf') format('truetype'),
+         url('../fonts/Fira-Sans/firasans-regular-webfont.svg#fira_sansregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'fira';
+    src: url('../fonts/Fira-Sans/firasans-lightitalic-webfont.eot');
+    src: url('../fonts/Fira-Sans/firasans-lightitalic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Fira-Sans/firasans-lightitalic-webfont.woff2') format('woff2'),
+         url('../fonts/Fira-Sans/firasans-lightitalic-webfont.woff') format('woff'),
+         url('../fonts/Fira-Sans/firasans-lightitalic-webfont.ttf') format('truetype'),
+         url('../fonts/Fira-Sans/firasans-lightitalic-webfont.svg#fira_sanslight_italic') format('svg');
+    font-weight: 100;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'fira';
+    src: url('../fonts/Fira-Sans/firasans-medium-webfont.eot');
+    src: url('../fonts/Fira-Sans/firasans-medium-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Fira-Sans/firasans-medium-webfont.woff2') format('woff2'),
+         url('../fonts/Fira-Sans/firasans-medium-webfont.woff') format('woff'),
+         url('../fonts/Fira-Sans/firasans-medium-webfont.ttf') format('truetype'),
+         url('../fonts/Fira-Sans/firasans-medium-webfont.svg#fira_sansmedium') format('svg');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'fira';
+    src: url('../fonts/Fira-Sans/firasans-mediumitalic-webfont.eot');
+    src: url('../fonts/Fira-Sans/firasans-mediumitalic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Fira-Sans/firasans-mediumitalic-webfont.woff2') format('woff2'),
+         url('../fonts/Fira-Sans/firasans-mediumitalic-webfont.woff') format('woff'),
+         url('../fonts/Fira-Sans/firasans-mediumitalic-webfont.ttf') format('truetype'),
+         url('../fonts/Fira-Sans/firasans-mediumitalic-webfont.svg#fira_sansmedium_italic') format('svg');
+    font-weight: 500;
+    font-style: italic;
+}
+
+html {
+	margin:0;
+}
+
+body,html {
+	height:100%;
+}
+
+li{list-style: none;}
+
+
+body {
+  margin: 0;
+  color: #000;
+  background-color: #EFEFEF;
+  font-family: 'fira', sans-serif;
+  font-size: 1em;
+
+	&:after {
+		position: fixed;
+		content: '';
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 1100;
+		background: rgba( 0, 0, 0, 0.8);
+		visibility: hidden;
+		opacity: 0;
+
+		
+
+		-webkit-transition: opacity .3s 0s, visibility 0s .3s;
+		-moz-transition: opacity .3s 0s, visibility 0s .3s;
+		transition: opacity .3s;
+	}
+
+	&.is-overlaid:after {
+		visibility: visible;
+		opacity: 1;
+		cursor: pointer;
+		-webkit-transition: opacity .3s 0s, visibility 0s 0s;
+		-moz-transition: opacity .3s 0s, visibility 0s 0s;
+		transition: opacity .3s 0s, visibility 0s 0s;
+	}
+}
+
+a{
+	color: #000;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #000;
+	text-decoration: none;
+}
+
+img, video, audio, svg {
+	min-width: 100%;
+	width:100%;	
+	display: block;
+}
+
+button{
+	outline: none;
+	border:none;
+	background: none;
+}
+
+.btn.icon {
+  width: 32px;
+  height: 32px;
+  padding:0;
+  border-radius: 50%;
+	transition: all .2s ease-out;
+	cursor: pointer;
+
+	&:hover, &:hover{
+		border-radius: 20%;
+	}
+
+	svg {
+		width: 100%;
+		height:100%;
+		vertical-align: middle;
+	}
+
+	&.tooltip {
+	    width: 110px;
+	    font-size: 14px;
+		.tooltip-inner {
+
+		}
+
+	}
+}
+
+// I N D E X 
+body.index{
+  header{
+    width: 100%;
+    padding:30px;
+    .logo{
+        width: 33%;
+        margin:auto;
+    }
+  }
+  #container{
+    width:100%;
+    padding:50px 0px;
+    .add-folder-wrapper{
+      cursor: pointer;
+      .add-folder-btn, span{
+        display: inline-block;
+        vertical-align: top;
+      }
+      span{
+        margin-left: 15px;
+        font-size: $buttonFont;
+        line-height: $buttonFont/120*100;
+        max-width: 50%;
+      }
+    }
+  }
+}

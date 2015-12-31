@@ -20,17 +20,17 @@ gulp.task('sass', function() {
 
 // Concatenate & Minify CSS
 gulp.task('css', function() {
-  return gulp.src('public/css/*.css')
+  return gulp.src('pubic/css/*.css')
     .pipe(concat('all.css'))
     .pipe(gulp.dest('public/css'))
     .pipe(minifyCss({compatibility: 'ie9'}))
     .pipe(rename('all.min.css'))
-    .pipe(gulp.dest('public/css'));
+    .pipe(gulp.dest('public/production'));
 });
 
 // Watch Files For Changes
 gulp.task('watch', function() {
-  gulp.watch('public/sass/*.scss', ['sass','css']);
+  gulp.watch('public/sass/*.scss', ['sass', 'css']);
 });
 
 // Default Task
