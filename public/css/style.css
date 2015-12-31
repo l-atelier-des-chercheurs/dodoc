@@ -54,6 +54,34 @@
   font-weight: 500;
   font-style: italic; }
 
+@font-face {
+  font-family: 'share';
+  src: url("../fonts/share/Share-Regular-webfont.eot");
+  src: url("../fonts/share/Share-Regular-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/share/Share-Regular-webfont.woff") format("woff"), url("../fonts/share/Share-Regular-webfont.ttf") format("truetype"), url("../fonts/share/Share-Regular-webfont.svg#share-regularregular") format("svg");
+  font-weight: normal;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'share';
+  src: url("../fonts/share/Share-Bold-webfont.eot");
+  src: url("../fonts/share/Share-Bold-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/share/Share-Bold-webfont.woff") format("woff"), url("../fonts/share/Share-Bold-webfont.ttf") format("truetype"), url("../fonts/share/Share-Bold-webfont.svg#sharebold") format("svg");
+  font-weight: bold;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'share';
+  src: url("../fonts/share/Share-Italic-webfont.eot");
+  src: url("../fonts/share/Share-Italic-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/share/Share-Italic-webfont.woff") format("woff"), url("../fonts/share/Share-Italic-webfont.ttf") format("truetype"), url("../fonts/share/Share-Italic-webfont.svg#shareitalic") format("svg");
+  font-weight: normal;
+  font-style: italic; }
+
+@font-face {
+  font-family: 'share';
+  src: url("../fonts/share/Share-BoldItalic-webfont.eot");
+  src: url("../fonts/share/Share-BoldItalic-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/share/Share-BoldItalic-webfont.woff") format("woff"), url("../fonts/share/Share-BoldItalic-webfont.ttf") format("truetype"), url("../fonts/share/Share-BoldItalic-webfont.svg#sharebold_italic") format("svg");
+  font-weight: bold;
+  font-style: italic; }
+
 html {
   margin: 0; }
 
@@ -146,3 +174,110 @@ body.index #container {
       font-size: 1.2em;
       line-height: 1em;
       max-width: 50%; }
+
+/****************
+   POPOVER !
+****************/
+.popover {
+  display: block;
+  position: fixed;
+  background-color: #efefef;
+  max-width: 900px;
+  border-radius: 4px;
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: left, top, width;
+  z-index: 1200;
+  visibility: hidden; }
+  .popover.is-visible {
+    visibility: visible; }
+    .popover.is-visible:before {
+      height: 36px;
+      width: 36px; }
+  .popover:before {
+    content: "";
+    position: absolute;
+    right: -18px;
+    top: -18px;
+    height: 0;
+    width: 0;
+    background-image: url("/images/clear.svg");
+    background-size: cover;
+    pointer-events: none;
+    cursor: pointer;
+    transition: width 0.6s 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55), height 0.6s 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+  .popover .spinner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px; }
+  .popover.is-loading .spinner {
+    opacity: 1; }
+  .popover .popoverContainer {
+    padding: 20px;
+    height: 100%;
+    overflow-y: scroll; }
+  .popover .popoverContainer > * {
+    display: block !important; }
+  .popover .popoverTitle {
+    margin: 0;
+    margin-bottom: .1em;
+    padding: 0;
+    padding-bottom: .4em;
+    border-bottom: 1px solid #eee;
+    font-family: "share", sans-serif;
+    font-weight: bold;
+    font-size: 1.5em; }
+  .popover input[type="text"] {
+    border: none; }
+  .popover input[type="submit"] {
+    border: none;
+    float: right;
+    background-color: #48C2B5;
+    padding: 0.5em 1em;
+    font-family: "share", sans-serif;
+    margin-top: .5em; }
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  opacity: 0;
+  position: relative;
+  margin: 100px auto;
+  transition: opacity .4s ease-out; }
+
+.double-bounce1, .double-bounce2 {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #48C2B5;
+  opacity: 0.6;
+  position: absolute;
+  top: 0;
+  left: 0;
+  -webkit-animation: bounce 2.0s infinite ease-in-out;
+  animation: bounce 2.0s infinite ease-in-out; }
+
+.double-bounce2 {
+  background-color: #0038bb;
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s; }
+
+@-webkit-keyframes bounce {
+  0%, 100% {
+    -webkit-transform: scale(0); }
+  50% {
+    -webkit-transform: scale(1); } }
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scale(0);
+    -webkit-transform: scale(0); }
+  50% {
+    transform: scale(1);
+    -webkit-transform: scale(1); } }
