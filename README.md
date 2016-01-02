@@ -42,6 +42,8 @@ Once you are in the right directory
 (the terminal says for example ```MacBook-Pro-de-Pauline-3:dodoc-fes Pauline$``` )   
 Enter the command:    
 ```npm install```  
+Then enter:
+```cd public && bower install```
 
 ###Install ffmpeg
 Official page [https://www.ffmpeg.org/](https://www.ffmpeg.org/)
