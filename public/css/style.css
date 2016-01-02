@@ -91,6 +91,9 @@ body, html {
 li {
   list-style: none; }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: "fira", sans-serif; }
+
 body {
   margin: 0;
   color: #000;
@@ -137,6 +140,12 @@ button {
   border: none;
   background: none; }
 
+.row {
+  max-width: 90%; }
+
+.columns + .columns:last-child {
+  float: left; }
+
 .btn.icon {
   width: 32px;
   height: 32px;
@@ -174,6 +183,35 @@ body.index #container {
       font-size: 1.2em;
       line-height: 1em;
       max-width: 50%; }
+  body.index #container .dossier-list .dossier {
+    margin-bottom: 50px; }
+    body.index #container .dossier-list .dossier .edit-icon {
+      position: absolute;
+      top: -16px;
+      right: 0px; }
+    body.index #container .dossier-list .dossier .content {
+      background-color: #FFF;
+      height: 200px;
+      padding: 7px 20px; }
+      body.index #container .dossier-list .dossier .content h2 {
+        font-weight: bold;
+        font-size: 1.5em; }
+    body.index #container .dossier-list .dossier .meta-data {
+      padding: 7px 20px;
+      font-family: "share", monospace;
+      font-style: italic; }
+      body.index #container .dossier-list .dossier .meta-data .nb-projets .numero-projet {
+        font-weight: bold; }
+      body.index #container .dossier-list .dossier .meta-data .statut {
+        text-align: right; }
+        body.index #container .dossier-list .dossier .meta-data .statut .statut-type {
+          font-weight: bold; }
+      body.index #container .dossier-list .dossier .meta-data .created .create-date {
+        font-weight: bold; }
+      body.index #container .dossier-list .dossier .meta-data .modified {
+        text-align: right; }
+        body.index #container .dossier-list .dossier .meta-data .modified .modify-date {
+          font-weight: bold; }
 
 /****************
    POPOVER !

@@ -26,7 +26,7 @@ function init(){
 
 //Ouverture du pop up et création d'un nouveau dossier
 function createFolder($this){
-	var newContentToAdd = "<h3 class='popoverTitle'>Nouveau dossier</h3><form onsubmit='return false;' class='add-folder-form'><input type='text' class='new-folder' placeholder='Nom'></input><input type='submit' class='submit-new-folder'></input></form>";
+	var newContentToAdd = "<h3 class='popoverTitle'>Nouveau dossier</h3><form onsubmit='return false;' class='add-folder-form'><input type='text' class='new-folder' placeholder='Nom'></input><input type='submit' class='submit-new-folder' value='Valider'></input></form>";
 
 	fillPopOver(newContentToAdd, $this, 300, 200, closeAddProjectFunction); //ouverture du pop up
 	submitFolder($(".submit-new-folder"), 'newFolder'); //Envoie les données au serveur
