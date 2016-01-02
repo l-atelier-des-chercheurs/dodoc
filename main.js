@@ -21,6 +21,7 @@ module.exports = function(app, io){
 	io.on("connection", function(socket){
 
 		// I N D E X    P A G E 
+		listFolder();
 		socket.on("newFolder", onNewFolder);
 
 
@@ -48,7 +49,7 @@ module.exports = function(app, io){
 	    } 
 	    // S'il existe afficher un message d'erreur
 	    else {
-	      console.log(err);
+	      console.log("le dossier existe déjà !");
 	      io.sockets.emit("folderAlreadyExist", {name: folderName, timestamp: currentDate });
 	    }
 		});
@@ -56,7 +57,7 @@ module.exports = function(app, io){
 		function writeJsonFile(fichier){
 	  	var jsonFile = 'sessions/' + fichier + '/' +fichier+'.json';
 	  	console.log(jsonFile);
-			var objectJson = {"name":folderName, "timestamp":currentDate};
+			var objectJson = {"name":folderName, "created":currentDate, "modified":null, statut:'en cours', nb_projets:0};
 			var jsonString = JSON.stringify(objectJson);
 			fs.appendFile(jsonFile, jsonString, function(err) {
 	      if(err) {
@@ -64,11 +65,39 @@ module.exports = function(app, io){
 	      } 
 	      else {
 	        console.log("Le dossier été crée!");
-	        io.sockets.emit("folderCreated", {name: folderName, timestamp: currentDate });
+	        io.sockets.emit("folderCreated", {name: folderName, created: currentDate, modified:null, statut:"en cours", nb_projets:0 });
 	      }
 	    });
 	  }
 	}
 
+	// Liste les dossiers déjà existant
+	function listFolder(){
+		var dir = "sessions/";
+		fs.readdir(dir, function (err, files) {
+			if(dir == ".DS_Store"){
+		   	fs.unlink(dir);
+		  }
+			if (err) {
+	      console.log('Error: ', err);
+	      return;
+	    }
+		  files.forEach( function (file) {
+		  	if(file == ".DS_Store"){
+		    	fs.unlink(dir+file);
+		    }
+		    if(! /^\..*/.test(file)){
+			  	var jsonFile = dir + file + '/' +file+'.json';
+					var data = fs.readFileSync(jsonFile,"UTF-8");
+					var jsonObj = JSON.parse(data);
+			  	io.sockets.emit('listFolder', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, nb_projets:jsonObj.nb_projets});
+		  	}
+		  });
+		});
 
+	}
+
+	// F I N     I N D E X    P A G E
+
+	// - - - 
 }
