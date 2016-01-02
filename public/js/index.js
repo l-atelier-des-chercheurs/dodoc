@@ -22,6 +22,12 @@ function init(){
 	$('.add-folder-wrapper').on('click',function(){
 		createFolder($(this));
 	});
+
+	//Au clic sur l'icone éditer
+	$('body').on('click', '.edit-icon', function(){
+		console.log('click');
+		modifyFolder($(this));
+	});
 }
 
 //Ouverture du pop up et création d'un nouveau dossier
@@ -63,7 +69,6 @@ function onFolderAlreadyExist(data){
 
 // Liste les dossiers
 function onListFolder(data){
-	console.log(data);
 	var folderName = data.name;
 	var createdDate = transformDatetoString(data.created);
 	if(data.modified!= null){var modifiedDate = transformDatetoString(data.modified);}
@@ -74,7 +79,7 @@ function onListFolder(data){
 	displayFolder(folderName, createdDate, modifiedDate, statut, nb_projets);
 }
 
-// Fonction qui crée les dossiers HTML
+// Fonction qui affichent les dossiers HTML
 function displayFolder(name, created, modified, statut, projets){
 	var contentHTML = '<div class="content"><h2>'+name+'</h2><ul class="projet-list row"></ul></div>';
 	var nbProjetHTML = '<div class="nb-projets small-6 columns"><span class="numero-projet">'+projets+'</span><span> projet</span></div>';
@@ -90,6 +95,11 @@ function displayFolder(name, created, modified, statut, projets){
 	var editIcon = '<div class="edit-icon btn icon"><img src="/images/pen.svg" alt="edit icon"></div>';
 	var folderHTML = '<li class="dossier small-4 columns">'+editIcon+contentHTML+metaDataHTML+'</li>';
 	$("#container .dossier-list").append(folderHTML);
+}
+
+function modifyFolder($this){
+	var newContentToAdd = "<h3 class='popoverTitle'>Modifier le dossier</h3><form onsubmit='return false;' class='modify-folder-form'><input type='text' class='modifyFolder-folder' value='Nom'></input><input type='submit' class='submit-modify-folder' value='Valider'></input></form>";
+	fillPopOver(newContentToAdd, $this, 300, 200, closeAddProjectFunction); //ouverture du pop up
 }
 
 
