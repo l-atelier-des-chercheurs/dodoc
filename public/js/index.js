@@ -93,13 +93,38 @@ function displayFolder(name, created, modified, statut, projets){
 	}
 	var metaDataHTML = '<div class="meta-data row">'+nbProjetHTML+statutHTML+createdHTML+modifiedHTML+'</div>';
 	var editIcon = '<div class="edit-icon btn icon"><img src="/images/pen.svg" alt="edit icon"></div>';
-	var folderHTML = '<li class="dossier small-4 columns">'+editIcon+contentHTML+metaDataHTML+'</li>';
+	var folderHTML = '<li class="dossier small-4 columns" data-statut="'+statut+'">'+editIcon+contentHTML+metaDataHTML+'</li>';
 	$("#container .dossier-list").append(folderHTML);
 }
 
 function modifyFolder($this){
-	var newContentToAdd = "<h3 class='popoverTitle'>Modifier le dossier</h3><form onsubmit='return false;' class='modify-folder-form'><input type='text' class='modifyFolder-folder' value='Nom'></input><input type='submit' class='submit-modify-folder' value='Valider'></input></form>";
-	fillPopOver(newContentToAdd, $this, 300, 200, closeAddProjectFunction); //ouverture du pop up
+	var folderName = $this.parent().find('h2').text();
+	var statut = $this.parent().attr("data-statut");
+	var inputNameHtml = "<input type='text' class='modify-folder' value='"+folderName+"'></input>";
+	if(statut == 'en cours'){
+		var statutHtml = "<select class='modify-statut 'name='statut'><option value='"+statut+"' selected>"+statut+"</option><option value='terminé'>terminé</option></select>";
+	}
+	else{
+		var statutHtml = "<select class='modify-statut 'name='statut'><option value='"+statut+"' selected>"+statut+"</option><option value='en cours'>en cours</option></select>";
+	}
+	var submitBtnHtml = "<input type='submit' class='submit-modify-folder' value='Valider'></input>";
+	var deleteHtml = "<div class='delete-folder-button'><img src='/images/clear.svg' class='delete-btn btn icon'><span>Supprimer ce dossier</span></div>"
+	var newContentToAdd = "<h3 class='popoverTitle'>Modifier le dossier</h3><form onsubmit='return false;' class='modify-folder-form'>"+inputNameHtml+statutHtml+submitBtnHtml+deleteHtml+"</form>";
+	fillPopOver(newContentToAdd, $this, 300, 300, closeAddProjectFunction); //ouverture du pop up
+
+	submitModifyFolder($(".submit-modify-folder"), 'modifyFolder', folderName, statut);
+}
+
+// Envoie les données du dossier au serveur
+function submitModifyFolder($button, send, oldName, oldStatut){
+	$button.on('click', function(){
+		var newFolderName = $('input.modify-folder').val();
+		var newStatut = $('select.modify-statut').val();
+		var oldFolderName = oldName;
+		var oldFolderStatut = oldStatut;
+		console.log(oldFolderStatut);
+		socket.emit(send, {name: newFolderName, statut:newStatut, oldname: oldFolderName, oldStatut:oldFolderStatut});
+	})
 }
 
 

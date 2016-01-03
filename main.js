@@ -23,6 +23,7 @@ module.exports = function(app, io){
 		// I N D E X    P A G E 
 		listFolder();
 		socket.on("newFolder", onNewFolder);
+		socket.on("modifyFolder", onModifyFolder);
 
 
 	});
@@ -94,7 +95,39 @@ module.exports = function(app, io){
 		  	}
 		  });
 		});
+	}
 
+	// Modifier un dossier
+	function onModifyFolder(folder){
+		console.log(folder);
+		var oldFolder = folder.oldname;
+		var oldFormatFolderName = oldFolder.replace(/ /g,"_");
+		var oldFolderPath = 'sessions/'+oldFormatFolderName;
+		
+		var newFolder = folder.name;
+		var newFormatFolderName = newFolder.replace(/ /g,"_");
+		var newFolderPath = 'sessions/'+newFormatFolderName;
+		console.log(newFolderPath);
+
+		var newStatut = folder.statut;
+		
+		var currentDate = Date.now();
+
+		// Vérifie si le dossier existe déjà
+		fs.access(newFolderPath, fs.F_OK, function(err) {
+			// S'il n'existe pas -> change le nom du dossier et change le json
+	    if (err) {
+	    	console.log("dossier modifié");
+	      fs.renameSync(oldFolderPath, newFolderPath); // renomme le dossier
+	      fs.renameSync(newFolderPath + '/' + oldFormatFolderName + '.json', newFolderPath + '/' + newFormatFolderName + '.json'); //renomme le json
+	      //writeJsonFile(formatFolderName);
+	    } 
+	    // S'il existe afficher un message d'erreur
+	    else {
+	      console.log("le dossier existe déjà !");
+	      io.sockets.emit("folderAlreadyExist", {name: newFolder, timestamp: currentDate });
+	    }
+		});
 	}
 
 	// F I N     I N D E X    P A G E
