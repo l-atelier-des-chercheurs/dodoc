@@ -3,12 +3,15 @@ var socket = io.connect();
 var closeAddProjectFunction = function() {
 };
 
+var $thisEl;
+
 /* sockets */
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
 socket.on('folderCreated', onFolderCreated); // Quand un dossier est crée !
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 socket.on('listFolder', onListFolder); // List tous les dossiers
+socket.on('folderModified', onFolderModified);
 
 
 jQuery(document).ready(function($) {
@@ -113,6 +116,7 @@ function modifyFolder($this){
 	fillPopOver(newContentToAdd, $this, 300, 300, closeAddProjectFunction); //ouverture du pop up
 
 	submitModifyFolder($(".submit-modify-folder"), 'modifyFolder', folderName, statut);
+	$thisEl = $this.parent();
 }
 
 // Envoie les données du dossier au serveur
@@ -122,9 +126,21 @@ function submitModifyFolder($button, send, oldName, oldStatut){
 		var newStatut = $('select.modify-statut').val();
 		var oldFolderName = oldName;
 		var oldFolderStatut = oldStatut;
-		console.log(oldFolderStatut);
 		socket.emit(send, {name: newFolderName, statut:newStatut, oldname: oldFolderName, oldStatut:oldFolderStatut});
 	})
+}
+
+function onFolderModified(data){
+	var name = data.name;
+	var statut = data.statut;
+	var modified = data.modified;
+	var parent = $thisEl;
+	closePopover(closeAddProjectFunction); // Close pop up
+	
+	$thisEl.find('h2').html(name);
+	$thisEl.find('.statut-type').html(" "+statut);
+	$thisEl.find('.modify-date').html(modified);
+
 }
 
 

@@ -36,7 +36,7 @@ module.exports = function(app, io){
 	// Créer un nouveau dossier 
 	function onNewFolder(folder) {
 		var folderName = folder.name;
-		var formatFolderName = folderName.replace(/ /g,"_");
+		var formatFolderName = convertToSlug(folderName);
 		var folderPath = 'sessions/'+formatFolderName;
 		var currentDate = Date.now();
 
@@ -101,11 +101,11 @@ module.exports = function(app, io){
 	function onModifyFolder(folder){
 		console.log(folder);
 		var oldFolder = folder.oldname;
-		var oldFormatFolderName = oldFolder.replace(/ /g,"_");
+		var oldFormatFolderName = convertToSlug(oldFolder);
 		var oldFolderPath = 'sessions/'+oldFormatFolderName;
 		
 		var newFolder = folder.name;
-		var newFormatFolderName = newFolder.replace(/ /g,"_");
+		var newFormatFolderName = convertToSlug(newFolder);
 		var newFolderPath = 'sessions/'+newFormatFolderName;
 		console.log(newFolderPath);
 
@@ -117,10 +117,10 @@ module.exports = function(app, io){
 		fs.access(newFolderPath, fs.F_OK, function(err) {
 			// S'il n'existe pas -> change le nom du dossier et change le json
 	    if (err) {
-	    	console.log("dossier modifié");
 	      fs.renameSync(oldFolderPath, newFolderPath); // renomme le dossier
 	      fs.renameSync(newFolderPath + '/' + oldFormatFolderName + '.json', newFolderPath + '/' + newFormatFolderName + '.json'); //renomme le json
 	      //writeJsonFile(formatFolderName);
+	      changeJsonFile(newFolderPath + '/' + newFormatFolderName + '.json');
 	    } 
 	    // S'il existe afficher un message d'erreur
 	    else {
@@ -128,9 +128,31 @@ module.exports = function(app, io){
 	      io.sockets.emit("folderAlreadyExist", {name: newFolder, timestamp: currentDate });
 	    }
 		});
+
+		function changeJsonFile(file){
+			var jsonContent = fs.readFileSync(file,"UTF-8");
+			var jsonObj = JSON.parse(jsonContent);
+			jsonObj.name = folder.name;
+			jsonObj.modified = currentDate;
+			jsonObj.statut = newStatut;
+			var jsonString = JSON.stringify(jsonObj);
+			fs.writeFileSync(file, jsonString);
+			console.log("Dossier modifié");
+			io.sockets.emit("folderModified", {name: folder.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:0});
+		}
+
 	}
 
 	// F I N     I N D E X    P A G E
 
 	// - - - 
+
+	// H E L P E R S 
+	function convertToSlug(Text){
+    return Text
+    .toLowerCase()
+    .replace(/ /g,'-')
+    .replace(/[^\w-]+/g,'')
+    ;
+	}
 }
