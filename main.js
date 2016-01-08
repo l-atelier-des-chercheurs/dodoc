@@ -24,6 +24,7 @@ module.exports = function(app, io){
 		listFolder();
 		socket.on("newFolder", onNewFolder);
 		socket.on("modifyFolder", onModifyFolder);
+		socket.on("removeFolder", onRemoveFolder);
 
 
 	});
@@ -143,6 +144,14 @@ module.exports = function(app, io){
 
 	}
 
+	// Supprimer un dossier
+	function onRemoveFolder(folder){
+		console.log(folder);
+		var folderName = convertToSlug(folder.name);
+		var folderPath = 'sessions/'+folderName;
+		rmDir(folderPath);
+	}
+
 	// F I N     I N D E X    P A G E
 
 	// - - - 
@@ -155,4 +164,22 @@ module.exports = function(app, io){
     .replace(/[^\w-]+/g,'')
     ;
 	}
+
+	// Remove all files and directory
+	rmDir = function(dirPath, removeSelf) {
+      if (removeSelf === undefined)
+        removeSelf = true;
+      try { var files = fs.readdirSync(dirPath); }
+      catch(e) { return; }
+      if (files.length > 0)
+        for (var i = 0; i < files.length; i++) {
+          var filePath = dirPath + '/' + files[i];
+          if (fs.statSync(filePath).isFile())
+            fs.unlinkSync(filePath);
+          else
+            rmDir(filePath);
+        }
+      if (removeSelf)
+        fs.rmdirSync(dirPath);
+    };
 }

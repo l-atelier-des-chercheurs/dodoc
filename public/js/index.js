@@ -31,8 +31,13 @@ function init(){
 	$('body').on('click', '.edit-icon', function(){
 		modifyFolder($(this));
 	});
+	//remove modal modify folder when it closing
 	$(document).on('close.fndtn.reveal', '#modal-modify-folder[data-reveal]', function () {
   	$("#modal-modify-folder").empty();
+	});
+	//Bouton supprimer le dossier
+	$('body').on('click', '.delete-folder-button', function(){
+		removeFolder($(this));
 	});
 }
 
@@ -99,7 +104,12 @@ function displayFolder(name, created, modified, statut, projets){
 		var modifiedHTML= '<div class="modified small-6 columns"></div>';
 	}
 	var metaDataHTML = '<div class="meta-data row">'+nbProjetHTML+statutHTML+createdHTML+modifiedHTML+'</div>';
-	var editIcon = '<a href="#" class="edit-icon btn icon" data-reveal-id="modal-modify-folder"><img src="/images/pen.svg" alt="edit icon"></a>';
+	if(statut == "terminé"){
+		var editIcon='' ;
+	}
+	else{
+		var editIcon = '<a href="#" class="edit-icon btn icon" data-reveal-id="modal-modify-folder"><img src="/images/pen.svg" alt="edit icon"></a>';
+	}
 	var folderHTML = '<li class="dossier small-4 columns" data-statut="'+statut+'">'+editIcon+contentHTML+metaDataHTML+'</li>';
 	$("#container .dossier-list").prepend(folderHTML);
 }
@@ -147,18 +157,42 @@ function submitModifyFolder($button, send, oldName, oldStatut){
 	})
 }
 
+// Quand le dossier est modifié
 function onFolderModified(data){
 	var name = data.name;
 	var statut = data.statut;
 	var modified = transformDatetoString(data.modified);
 	var parent = $thisEl;
-	closePopover(closeAddProjectFunction); // Close pop up
+	$('#modal-modify-folder').foundation('reveal', 'close');
+
+	if(statut == "terminé"){
+		$thisEl.find('.edit-icon').remove();
+	}
 	
 	$thisEl.find('h2').html(name);
 	$thisEl.find('.statut-type').html(" "+statut);
 	$thisEl.find('.modify-date').html(modified);
 }
 
+// Supprimer le dossier
+function removeFolder($this){
+	var folderName = $this.parent().find('input.modify-folder').val();
+	$('#modal-delete-alert').foundation('reveal', 'open');
+	$('#modal-delete-alert button.oui').on('click', function(){
+		console.log('oui');
+		socket.emit('removeFolder', {name: folderName});
+		$('#modal-delete-alert').foundation('reveal', 'close');
+	});
+	$('#modal-delete-alert button.annuler').on('click', function(){
+		console.log('annuler');
+		$('#modal-delete-alert').foundation('reveal', 'close');
+		$(document).on('close.fndtn.reveal', '#modal-delete-alert[data-reveal]', function () {
+	  	$('#modal-modify-folder').foundation('reveal', 'open');
+		});
+	});
+
+	//socket.emit('removeFolder', {name: folderName});
+}
 
 /* HELPERS */
 function transformDatetoString(date){
