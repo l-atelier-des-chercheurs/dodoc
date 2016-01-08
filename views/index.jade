@@ -9,10 +9,25 @@ html
 
     #container.row
       .add-folder-wrapper.small-4.columns
-        div.add-folder-btn.btn.icon
-          include templates/images/add.svg
-        span Ajouter un nouveau dossier
+        a(href="#" data-reveal-id="modal-add-folder")
+          div.add-folder-btn.btn.icon
+            include templates/images/add.svg
+          span Ajouter un nouveau dossier
       ul.dossier-list
+      //- MODAL WINDOWS
+      //- ADD FOLDER MODAL
+      div(id="modal-add-folder" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+        h2#modalTitle.popoverTitle Nouveau dossier
+        form(onsubmit='return false;' class='add-folder-form lead')
+          input(type='text' class='new-folder' placeholder='Nom')
+          input(type='submit' class='submit-new-folder' value='Valider')
+        a(class="close-reveal-modal" aria-label="Close") &#215;
+      //- MODIFY FOLDER
+      div(id="modal-modify-folder" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+      //- ALERT CHANGE STATUT (IF STATUT FINISH)
+      div(id="modal-statut-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+        p Attention! Le statut terminé ne vous permettra plus d'éditer votre dossier.
+        a(class="close-reveal-modal" aria-label="Close") &#215;
 
     //- scripts
     include templates/footer.jade

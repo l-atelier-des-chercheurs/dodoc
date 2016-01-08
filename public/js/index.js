@@ -16,11 +16,12 @@ socket.on('folderModified', onFolderModified);
 
 jQuery(document).ready(function($) {
 
-
+	$(document).foundation();
 	init();
 });
 
 function init(){
+
 	//Au click sur "Ajouter un nouveau dossier"
 	$('.add-folder-wrapper').on('click',function(){
 		createFolder($(this));
@@ -28,16 +29,18 @@ function init(){
 
 	//Au clic sur l'icone éditer
 	$('body').on('click', '.edit-icon', function(){
-		console.log('click');
 		modifyFolder($(this));
+	});
+	$(document).on('close.fndtn.reveal', '#modal-modify-folder[data-reveal]', function () {
+  	$("#modal-modify-folder").empty();
 	});
 }
 
 //Ouverture du pop up et création d'un nouveau dossier
 function createFolder($this){
-	var newContentToAdd = "<h3 class='popoverTitle'>Nouveau dossier</h3><form onsubmit='return false;' class='add-folder-form'><input type='text' class='new-folder' placeholder='Nom'></input><input type='submit' class='submit-new-folder' value='Valider'></input></form>";
+	//var newContentToAdd = "<h3 class='popoverTitle'>Nouveau dossier</h3><form onsubmit='return false;' class='add-folder-form'><input type='text' class='new-folder' placeholder='Nom'></input><input type='submit' class='submit-new-folder' value='Valider'></input></form>";
 
-	fillPopOver(newContentToAdd, $this, 300, 200, closeAddProjectFunction); //ouverture du pop up
+	//fillPopOver(newContentToAdd, $this, 300, 200, closeAddProjectFunction); //ouverture du pop up
 	submitFolder($(".submit-new-folder"), 'newFolder'); //Envoie les données au serveur
 }
 
@@ -59,7 +62,8 @@ function onFolderCreated(data){
 	var statut = data.statut;
 	var nb_projets = data.nb_projets;
 
-	closePopover(closeAddProjectFunction); // Close pop up
+	$('#modal-add-folder').foundation('reveal', 'close');
+	//closePopover(closeAddProjectFunction); // Close pop up
 
 	displayFolder(folderName, createdDate, modifiedDate, statut, nb_projets);
 }
@@ -95,9 +99,9 @@ function displayFolder(name, created, modified, statut, projets){
 		var modifiedHTML= '<div class="modified small-6 columns"></div>';
 	}
 	var metaDataHTML = '<div class="meta-data row">'+nbProjetHTML+statutHTML+createdHTML+modifiedHTML+'</div>';
-	var editIcon = '<div class="edit-icon btn icon"><img src="/images/pen.svg" alt="edit icon"></div>';
+	var editIcon = '<a href="#" class="edit-icon btn icon" data-reveal-id="modal-modify-folder"><img src="/images/pen.svg" alt="edit icon"></a>';
 	var folderHTML = '<li class="dossier small-4 columns" data-statut="'+statut+'">'+editIcon+contentHTML+metaDataHTML+'</li>';
-	$("#container .dossier-list").append(folderHTML);
+	$("#container .dossier-list").prepend(folderHTML);
 }
 
 function modifyFolder($this){
@@ -108,12 +112,25 @@ function modifyFolder($this){
 		var statutHtml = "<select class='modify-statut 'name='statut'><option value='"+statut+"' selected>"+statut+"</option><option value='terminé'>terminé</option></select>";
 	}
 	else{
-		var statutHtml = "<select class='modify-statut 'name='statut'><option value='"+statut+"' selected>"+statut+"</option><option value='en cours'>en cours</option></select>";
+		var statutHtml = "<select class='modify-statut' name='statut'><option value='"+statut+"' selected>"+statut+"</option><option value='en cours'>en cours</option></select>";
 	}
 	var submitBtnHtml = "<input type='submit' class='submit-modify-folder' value='Valider'></input>";
-	var deleteHtml = "<div class='delete-folder-button'><img src='/images/clear.svg' class='delete-btn btn icon'><span>Supprimer ce dossier</span></div>"
-	var newContentToAdd = "<h3 class='popoverTitle'>Modifier le dossier</h3><form onsubmit='return false;' class='modify-folder-form'>"+inputNameHtml+statutHtml+submitBtnHtml+deleteHtml+"</form>";
-	fillPopOver(newContentToAdd, $this, 300, 300, closeAddProjectFunction); //ouverture du pop up
+	var deleteHtml = "<div class='delete-folder-button'><img src='/images/clear.svg' class='delete-btn btn icon'><span>Supprimer ce dossier</span></div>";
+	// var modalDiv = '<div id="modal-modify-folder" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">';
+	var newContentToAdd = "<h3 id='modalTitle' class='popoverTitle'>Modifier le dossier</h3><form onsubmit='return false;' class='modify-folder-form'>"+inputNameHtml+statutHtml+submitBtnHtml+deleteHtml+"</form><a class='close-reveal-modal' aria-label='Close') &#215;</a></div>";
+	$("#container.row #modal-modify-folder").append(newContentToAdd);
+	//fillPopOver(newContentToAdd, $this, 300, 300, closeAddProjectFunction); //ouverture du pop up
+
+	$('.modify-statut').bind('change', function(){
+		if($(this).val() == "terminé"){
+			$('#modal-statut-alert').foundation('reveal', 'open');
+			$(document).on('closed.fndtn.reveal', '#modal-statut-alert[data-reveal]', function () {
+				console.log('test');
+    		$("#modal-modify-folder").foundation('reveal', 'open');
+			});
+			//fillPopOver("attention", $(this), 300, 300, closeAddProjectFunction); //ouverture du pop up
+		}
+	});
 
 	submitModifyFolder($(".submit-modify-folder"), 'modifyFolder', folderName, statut);
 	$thisEl = $this.parent();
@@ -133,14 +150,13 @@ function submitModifyFolder($button, send, oldName, oldStatut){
 function onFolderModified(data){
 	var name = data.name;
 	var statut = data.statut;
-	var modified = data.modified;
+	var modified = transformDatetoString(data.modified);
 	var parent = $thisEl;
 	closePopover(closeAddProjectFunction); // Close pop up
 	
 	$thisEl.find('h2').html(name);
 	$thisEl.find('.statut-type').html(" "+statut);
 	$thisEl.find('.modify-date').html(modified);
-
 }
 
 
