@@ -23,7 +23,7 @@ If you have Linux you know how to use the terminal
 To download the repository, click on the "Download zip" button on the dodoc Github page  
 
 To clone the repository open the terminal and type this command  
-```git clone https://github.com/sarahgarcin/dodoc-fes.git```
+```git clone https://github.com/sarahgarcin/dodoc.git```
 
 ###Install nodejs on your computer
 
