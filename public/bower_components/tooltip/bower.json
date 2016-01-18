@@ -1,0 +1,13 @@
+{
+    "name": "tooltip",
+    "version": "2.2.0",
+    "main": "index.js",
+    "ignore": [
+        "**/*",
+        "!index.js",
+        "!index.css",
+        "!lib/**/*"
+    ],
+    "dependencies": {
+    }
+}
