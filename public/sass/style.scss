@@ -141,6 +141,11 @@ body.index{
           background-color:#FFF;
           height: 200px;
           padding: 7px 20px;
+          overflow:hidden;
+          .projet-list{
+            overflow-y:scroll;
+            height: 150px;
+          }
           h2{
             font-weight: bold;
             font-size: $h2Size;

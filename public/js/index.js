@@ -10,7 +10,8 @@ socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
 socket.on('folderCreated', onFolderCreated); // Quand un dossier est crée !
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
-socket.on('listFolder', onListFolder); // List tous les dossiers
+socket.on('listFolder', onListFolder); // Liste tous les dossiers
+socket.on('listChildren', onListChildren); // Liste tous les enfants des dossiers
 socket.on('folderModified', onFolderModified);
 socket.on('folderRemoved', onFolderRemoved);
 
@@ -89,6 +90,21 @@ function onListFolder(data){
 	displayFolder(folderName, createdDate, modifiedDate, statut, nb_projets);
 }
 
+function onListChildren(data){
+	//console.log(data);
+	var parentName = data.parentName;
+	var childrenName = data.childrenName;
+	var image = data.childrenImage;
+	var $parent = $("li.dossier[data-name="+parentName+"]");
+	if(image != 'none'){
+		var liToAdd = "<li class='small-4 columns'><img src='/"+parentName+"/"+convertToSlug(childrenName)+"/"+convertToSlug(childrenName)+"-thumb.jpg' alt='"+childrenName+"'><h3>"+childrenName+"</h3></li>";
+	}
+	else{
+		var liToAdd = "<li class='small-4 columns'><h3>"+childrenName+"</h3></li>";
+	}
+	$parent.find(".projet-list").append(liToAdd);
+}
+
 // Fonction qui affichent les dossiers HTML
 function displayFolder(name, created, modified, statut, projets){
 	var formatName = convertToSlug(name);
@@ -109,7 +125,7 @@ function displayFolder(name, created, modified, statut, projets){
 	else{
 		var editIcon = '<a href="#" class="edit-icon btn icon" data-reveal-id="modal-modify-folder"><img src="/images/pen.svg" alt="edit icon"></a>';
 	}
-	var folderHTML = '<li class="dossier small-4 columns" data-statut="'+statut+'">'+editIcon+contentHTML+metaDataHTML+'</li>';
+	var folderHTML = '<li class="dossier small-4 columns" data-statut="'+statut+'" data-name="'+formatName+'">'+editIcon+contentHTML+metaDataHTML+'</li>';
 	$("#container .dossier-list").prepend(folderHTML);
 }
 

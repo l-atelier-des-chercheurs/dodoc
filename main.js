@@ -81,11 +81,27 @@ module.exports = function(app, io){
 			    	fs.unlink(dir+file);
 			    }
 			    if(! /^\..*/.test(file)){
+			    	// Folder data
 				  	var jsonFile = dir + file + '/' +file+'.json';
 						var data = fs.readFileSync(jsonFile,"UTF-8");
 						var jsonObj = JSON.parse(data);
-				  	io.sockets.emit('listFolder', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, nb_projets:jsonObj.nb_projets});
+						io.sockets.emit('listFolder', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, nb_projets:jsonObj.nb_projets});
+						// read all projects into folders
+						var projectDir = dir + file;
+						fs.readdirSync(projectDir).filter(function(project) {
+							if(fs.statSync(path.join(projectDir, project)).isDirectory()){
+								console.log(project);
+								if(! /^\..*/.test(project)){
+									var jsonFileProj = projectDir +'/'+ project + '/' +project+'.json';
+									var dataProj = fs.readFileSync(jsonFileProj,"UTF-8");
+									var jsonObjProj = JSON.parse(dataProj);
+									io.sockets.emit('listChildren', {parentName:convertToSlug(jsonObj.name), childrenName:jsonObjProj.name, childrenImage:jsonObjProj.fileName});
+						  		
+						  	}
+							}
+				  	});
 			  	}
+
 			  });
 			});
 		}
