@@ -53,7 +53,7 @@ module.exports = function(app, io){
 		      fs.ensureDirSync(folderPath);//write new folder in sessions
 		      
 		      var jsonFile = 'sessions/' + formatFolderName + '/' +formatFolderName+'.json';
-		      var objectJson = {"name":folderName, "created":currentDate, "modified":null, statut:'en cours', nb_projets:0};
+		      var objectJson = {"name":folderName, "created":currentDate, "modified":null, "statut":'en cours', "nb_projets":0};
 		      var objectToSend = {name: folderName, created: currentDate, modified:null, statut:"en cours", nb_projets:0 };
 		      writeJsonFile(jsonFile, objectJson, objectToSend, "folderCreated"); //write json File
 		    } 
@@ -112,7 +112,6 @@ module.exports = function(app, io){
 		    if (err) {
 		      fs.renameSync(oldFolderPath, newFolderPath); // renomme le dossier
 		      fs.renameSync(newFolderPath + '/' + oldFormatFolderName + '.json', newFolderPath + '/' + newFormatFolderName + '.json'); //renomme le json
-		      //writeJsonFile(formatFolderName);
 		      changeJsonFile(newFolderPath + '/' + newFormatFolderName + '.json');
 		    } 
 		    // S'il existe afficher un message d'erreur
@@ -164,7 +163,7 @@ module.exports = function(app, io){
 						var jsonFile = dir + file + '/' +file+'.json';
 						var data = fs.readFileSync(jsonFile,"UTF-8");
 						var jsonObj = JSON.parse(data);
-				    io.sockets.emit('listProject', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, image:jsonObj.fileName});
+				    io.sockets.emit('listProject', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, image:jsonObj.fileName});
 			  	}
 				}
 	  	});
@@ -172,7 +171,7 @@ module.exports = function(app, io){
 		function onNewProject(project) {
 			var projectName = project.name;
 			var formatProjectName = convertToSlug(projectName);
-			var projectPath = 'sessions/'+project.session+"/"+projectName;
+			var projectPath = 'sessions/'+project.session+"/"+formatProjectName;
 			var currentDate = Date.now();
 
 			// Vérifie si le projet existe déjà
@@ -184,13 +183,13 @@ module.exports = function(app, io){
 		      var jsonFile = projectPath + '/' + formatProjectName +'.json';
 		      if(project.file){
 		      	addImage(formatProjectName, projectPath, project.file);
-		      	var objectJson = {"session":project.session, "name":projectName, "fileName":project.imageName, "created":currentDate, "modified":null,"files": {"images":[], "videos":[], "stopmotion":[], "audio":[], "texte":[]}};
-		      	var objectToSend = {session: project.session, name: projectName, format: formatProjectName, imageName:project.imageName, created: currentDate, modified:null};
+		      	var objectJson = {"session":project.session, "name":projectName, "fileName":project.imageName, "created":currentDate, "modified":null,"statut":'en cours', "files": {"images":[], "videos":[], "stopmotion":[], "audio":[], "texte":[]}};
+		      	var objectToSend = {session: project.session, name: projectName, format: formatProjectName, imageName:project.imageName, created: currentDate, modified:null, statut:"en cours"};
 		      	writeJsonFile(jsonFile, objectJson, objectToSend, "projectCreated"); //write json File
 		      }
 		      else{
-		      	var objectJson= {"session":project.session, "name":projectName, "fileName":"none", "created":currentDate, "modified":null, "files": {"images":[], "videos":[], "stopmotion":[], "audio":[], "texte":[]}};
-		      	var objectToSend = {session: project.session, name: projectName, format: formatProjectName, imageName:"none", created: currentDate, modified:null};
+		      	var objectJson= {"session":project.session, "name":projectName, "fileName":"none", "created":currentDate, "modified":null,"statut":'en cours', "files": {"images":[], "videos":[], "stopmotion":[], "audio":[], "texte":[]}};
+		      	var objectToSend = {session: project.session, name: projectName, format: formatProjectName, imageName:"none", created: currentDate, modified:null, statut:"en cours"};
 		      	writeJsonFile(jsonFile, objectJson, objectToSend, "projectCreated"); //write json File
 		      }
 		    } 

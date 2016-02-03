@@ -56,12 +56,14 @@ function onProjectCreated(data){
 	console.log(data);
 	var folderName = data.name;
 	var createdDate = transformDatetoString(data.created);
+	var statut = data.statut;
+	var image = data.image;
 	if(data.modified!= null){var modifiedDate = transformDatetoString(data.modified);}
 	else{var modifiedDate = data.modified;}
 	$('input.new-project').val('');
 	$('#modal-add-project').foundation('reveal', 'close');
 
-	displayFolder(folderName, createdDate, modifiedDate);
+	displayFolder(folderName, createdDate, modifiedDate, image, statut);
 }
 
 // Affiche la liste des projets
@@ -69,21 +71,24 @@ function onListProject(data){
 	var folderName = data.name;
 	var createdDate = transformDatetoString(data.created);
 	var image = data.image;
+	var statut = data.statut;
 	if(data.modified!= null){var modifiedDate = transformDatetoString(data.modified);}
 	else{var modifiedDate = data.modified;}
 
-	displayFolder(folderName, createdDate, modifiedDate, image);
+	displayFolder(folderName, createdDate, modifiedDate, image, statut);
 }
 
 // Fonction qui affichent les projets HTML
-function displayFolder(name, created, modified, image){
+function displayFolder(name, created, modified, image, statut){
+	console.log(statut);
 	var formatName = convertToSlug(name);
 	var contentHTML = '<a href="" title="'+name+'"><div class="content small-12 columns"><h2>'+name+'</h2></div></a>';
+	var statutHTML= '<div class="statut small-6 columns"><span>statut</span><span class="statut-type"> '+statut+'</span></div>';
 	if(image == "none"){
 		var imageHTML = "";
 	}
 	else{
-		var imageHTML =  '<div class="image-wrapper small-6 columns"><img src="/'+currentSession+'/'+formatName+'/'+formatName+'-thumb.jpg" alt="'+name+'"></div>'
+		var imageHTML = '<div class="image-wrapper small-6 columns"><img src="/'+currentSession+'/'+formatName+'/'+formatName+'-thumb.jpg" alt="'+name+'"></div>'
 	}
 	var createdHTML= '<div class="created small-6 columns"><span>crée le </span><span class="create-date">'+created+'</span></div>';
 	if(modified!= null){
@@ -92,9 +97,14 @@ function displayFolder(name, created, modified, image){
 	else{
 		var modifiedHTML= '<div class="modified small-6 columns"></div>';
 	}
-	var editIcon = '<a href="#" class="edit-icon btn icon" data-reveal-id="modal-modify-project"><img src="/images/pen.svg" alt="edit icon"></a>';
-	var metaDataHTML = '<div class="meta-data row">'+createdHTML+modifiedHTML+'</div>';
-	var folderHTML = '<li class="project small-12 columns">'+editIcon+'<div class="left-content small-6 columns">'+contentHTML+ metaDataHTML+'</div>'+imageHTML+'</li>';
+	if(statut == "terminé"){
+		var editIcon='' ;
+	}
+	else{
+		var editIcon = '<a href="#" class="edit-icon btn icon" data-reveal-id="modal-modify-project"><img src="/images/pen.svg" alt="edit icon"></a>';
+	}
+	var metaDataHTML = '<div class="meta-data row">'+statutHTML+createdHTML+modifiedHTML+'</div>';
+	var folderHTML = '<li class="project small-12 columns" data-statut="'+statut+'">'+editIcon+'<div class="left-content small-6 columns">'+contentHTML+ metaDataHTML+'</div>'+imageHTML+'</li>';
 	$("#container .project-list").prepend(folderHTML);
 }
 
