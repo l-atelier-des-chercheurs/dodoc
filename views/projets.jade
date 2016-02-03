@@ -5,11 +5,29 @@ html
   body.index
     header
       .logo
-        a(href="/" title="Dodox")
+        a(href="/" title="Dodoc")
           include templates/images/dodoc-logo.svg
+      .back.btn.icon
+        a(href="/" title="Dodoc")
+          include templates/images/back.svg
       .folder #{folder}
 
     #container.row
+      .add-project-wrapper.small-4.columns
+        a(href="#" data-reveal-id="modal-add-project")
+          div.add-project-btn.btn.icon
+            include templates/images/add.svg
+      ul.project-list
+
+      //- MODAL WINDOWS
+      //- ADD PROJECT MODAL
+      div(id="modal-add-project" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+        h2#modalTitle.popoverTitle Nouveau projet
+        form(onsubmit='return false;' class='add-project-form lead')
+          input(type='text' class='new-project' placeholder='Nom')
+          input(type='file' id='imageproject' accept='image/*' placeholder='Associer une image')
+          input(type='submit' class='submit-new-project' value='Valider')
+        a(class="close-reveal-modal" aria-label="Close") &#215;
 
 
     //- scripts

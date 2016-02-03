@@ -9,7 +9,7 @@ module.exports = function(app,io,m){
   * routing event
   */
   app.get("/", getIndex);
-  app.get("/:folder", getFolder);
+  app.get("/:session", getFolder);
 
   // app.get("/select/:session", getSelect);
   // app.get("/select/:session/:projet", getProjet);
@@ -27,13 +27,14 @@ module.exports = function(app,io,m){
   };
   
   function getFolder(req, res) {
-    var folder = req.param('folder');
-    var folderPath = 'folder/'+folder;
+    var session = req.param('session');
+    var folderPath = 'sessions/'+session;
 
     //fs.ensureDirSync(folderPath);
     res.render("projets", {
       title : "Projets",
-      folder : convertToSlug(folder)
+      session: session,
+      folder : convertToSlug(session)
     });
   };
 
@@ -99,7 +100,6 @@ module.exports = function(app,io,m){
     function convertToSlug(Text){
     var noHyphen = Text.replace(/-/g," ")
     return noHyphen
-    //.replace(/-/g," ")
     .charAt(0).toUpperCase()+ noHyphen.slice(1)
     ;
   }

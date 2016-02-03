@@ -1,7 +1,5 @@
 /* VARIABLES */
 var socket = io.connect();
-var closeAddProjectFunction = function() {
-};
 
 var $thisEl;
 var thisFolderName;
@@ -24,9 +22,6 @@ jQuery(document).ready(function($) {
 });
 
 function init(){
-
-	//Au click "Ajouter un nouveau dossier" -> pop-up
-	$('body').on('click', '.add-folder-wrapper', function(){});
 
 	// Submit Folder
 	// Create new folder
@@ -58,7 +53,6 @@ function submitFolder($button, send){
 	$button.on('click', function(){
 		var newFolderName = $('input.new-folder').val();
 		socket.emit(send, {name: newFolderName});
-		$('input.new-folder').val('');
 	})
 }
 
@@ -70,7 +64,7 @@ function onFolderCreated(data){
 	else{var modifiedDate = data.modified;}
 	var statut = data.statut;
 	var nb_projets = data.nb_projets;
-
+	$('input.new-folder').val('');
 	$('#modal-add-folder').foundation('reveal', 'close');
 	//closePopover(closeAddProjectFunction); // Close pop up
 

@@ -26,6 +26,9 @@ module.exports = function(app, io){
 		socket.on("modifyFolder", onModifyFolder);
 		socket.on("removeFolder", onRemoveFolder);
 
+		// P R O J E T S     P A G E
+		socket.on("newProject", onNewProject);
+
 
 	});
 
@@ -34,32 +37,161 @@ module.exports = function(app, io){
 
 	// I N D E X     P A G E 
 
-	// Créer un nouveau dossier 
-	function onNewFolder(folder) {
-		var folderName = folder.name;
-		var formatFolderName = convertToSlug(folderName);
-		var folderPath = 'sessions/'+formatFolderName;
-		var currentDate = Date.now();
+		// Créer un nouveau dossier 
+		function onNewFolder(folder) {
+			var folderName = folder.name;
+			var formatFolderName = convertToSlug(folderName);
+			var folderPath = 'sessions/'+formatFolderName;
+			var currentDate = Date.now();
 
-		// Vérifie si le dossier existe déjà
-		fs.access(folderPath, fs.F_OK, function(err) {
-			// S'il n'existe pas -> créer le dossier et le json
-	    if (err) {
-	    	console.log("dossier crée");
-	      fs.ensureDirSync(folderPath);
-	      writeJsonFile(formatFolderName);
-	    } 
-	    // S'il existe afficher un message d'erreur
-	    else {
-	      console.log("le dossier existe déjà !");
-	      io.sockets.emit("folderAlreadyExist", {name: folderName, timestamp: currentDate });
-	    }
-		});
+			// Vérifie si le dossier existe déjà
+			fs.access(folderPath, fs.F_OK, function(err) {
+				// S'il n'existe pas -> créer le dossier et le json
+		    if (err) {
+		    	console.log("dossier crée");
+		      fs.ensureDirSync(folderPath);//write new folder in sessions
+		      
+		      var jsonFile = 'sessions/' + formatFolderName + '/' +formatFolderName+'.json';
+		      var objectJson = {"name":folderName, "created":currentDate, "modified":null, statut:'en cours', nb_projets:0};
+		      var objectToSend = {name: folderName, created: currentDate, modified:null, statut:"en cours", nb_projets:0 };
+		      writeJsonFile(jsonFile, objectJson, objectToSend, "folderCreated"); //write json File
+		    } 
+		    // S'il existe afficher un message d'erreur
+		    else {
+		      console.log("le dossier existe déjà !");
+		      io.sockets.emit("folderAlreadyExist", {name: folderName, timestamp: currentDate });
+		    }
+			});
+		}
 
-		function writeJsonFile(fichier){
-	  	var jsonFile = 'sessions/' + fichier + '/' +fichier+'.json';
-	  	console.log(jsonFile);
-			var objectJson = {"name":folderName, "created":currentDate, "modified":null, statut:'en cours', nb_projets:0};
+		// Liste les dossiers déjà existant
+		function listFolder(){
+			var dir = "sessions/";
+			fs.readdir(dir, function (err, files) {
+				if(dir == ".DS_Store"){
+			   	fs.unlink(dir);
+			  }
+				if (err) {
+		      console.log('Error: ', err);
+		      return;
+		    }
+			  files.forEach( function (file) {
+			  	if(file == ".DS_Store"){
+			    	fs.unlink(dir+file);
+			    }
+			    if(! /^\..*/.test(file)){
+				  	var jsonFile = dir + file + '/' +file+'.json';
+						var data = fs.readFileSync(jsonFile,"UTF-8");
+						var jsonObj = JSON.parse(data);
+				  	io.sockets.emit('listFolder', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, nb_projets:jsonObj.nb_projets});
+			  	}
+			  });
+			});
+		}
+
+		// Modifier un dossier
+		function onModifyFolder(folder){
+			console.log(folder);
+			var oldFolder = folder.oldname;
+			var oldFormatFolderName = convertToSlug(oldFolder);
+			var oldFolderPath = 'sessions/'+oldFormatFolderName;
+			
+			var newFolder = folder.name;
+			var newFormatFolderName = convertToSlug(newFolder);
+			var newFolderPath = 'sessions/'+newFormatFolderName;
+			console.log(newFolderPath);
+
+			var newStatut = folder.statut;
+			
+			var currentDate = Date.now();
+
+			// Vérifie si le dossier existe déjà
+			fs.access(newFolderPath, fs.F_OK, function(err) {
+				// S'il n'existe pas -> change le nom du dossier et change le json
+		    if (err) {
+		      fs.renameSync(oldFolderPath, newFolderPath); // renomme le dossier
+		      fs.renameSync(newFolderPath + '/' + oldFormatFolderName + '.json', newFolderPath + '/' + newFormatFolderName + '.json'); //renomme le json
+		      //writeJsonFile(formatFolderName);
+		      changeJsonFile(newFolderPath + '/' + newFormatFolderName + '.json');
+		    } 
+		    // S'il existe afficher un message d'erreur
+		    else {
+		    	if(oldFormatFolderName != newFormatFolderName){
+		    		console.log("le dossier existe déjà !");
+		      	io.sockets.emit("folderAlreadyExist", {name: newFolder, timestamp: currentDate });
+		    	}
+		    	else{
+		    		fs.renameSync(oldFolderPath, newFolderPath); // renomme le dossier
+		      	fs.renameSync(newFolderPath + '/' + oldFormatFolderName + '.json', newFolderPath + '/' + newFormatFolderName + '.json'); //renomme le json
+		      	changeJsonFile(newFolderPath + '/' + newFormatFolderName + '.json');
+		    	}
+		    }
+			});
+
+			function changeJsonFile(file){
+				var jsonContent = fs.readFileSync(file,"UTF-8");
+				var jsonObj = JSON.parse(jsonContent);
+				jsonObj.name = folder.name;
+				jsonObj.modified = currentDate;
+				jsonObj.statut = newStatut;
+				var jsonString = JSON.stringify(jsonObj);
+				fs.writeFileSync(file, jsonString);
+				console.log("Dossier modifié");
+				io.sockets.emit("folderModified", {name: folder.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:0});
+			}
+
+		}
+
+		// Supprimer un dossier
+		function onRemoveFolder(folder){
+			var folderName = convertToSlug(folder.name);
+			var folderPath = 'sessions/'+folderName;
+			rmDir(folderPath);
+			io.sockets.emit('folderRemoved');
+		}
+
+	// F I N     I N D E X    P A G E
+
+	// P R O J E T S     P A G E
+		function onNewProject(project) {
+			var projectName = project.name;
+			var formatProjectName = convertToSlug(projectName);
+			var projectPath = 'sessions/'+project.session+"/"+projectName;
+			var currentDate = Date.now();
+
+			// Vérifie si le projet existe déjà
+			fs.access(projectPath, fs.F_OK, function(err) {
+				// S'il n'existe pas -> créer le dossier et le json
+		    if (err) {
+		    	console.log("projet crée");
+		      fs.ensureDirSync(projectPath);
+		      var jsonFile = projectPath + '/' + formatProjectName +'.json';
+		      if(project.file){
+		      	addImage(formatProjectName, projectPath, project.file);
+		      	var objectJson = {"session":project.session, "name":projectName, "fileName":project.imageName, "files": {"images":[], "videos":[], "stopmotion":[], "audio":[], "texte":[]}};
+		      	var objectToSend = {session: project.session, name: projectName, format: formatProjectName, imageName:project.imageName};
+		      	writeJsonFile(jsonFile, objectJson, objectToSend, "projectCreated"); //write json File
+		      }
+		      else{
+		      	var objectJson= {"session":project.session, "name":projectName, "fileName":"none", "files": {"images":[], "videos":[], "stopmotion":[], "audio":[], "texte":[]}};
+		      	var objectToSend = {session: project.session, name: projectName, format: formatProjectName, imageName:"none"};
+		      	writeJsonFile(jsonFile, objectJson, objectToSend, "projectCreated"); //write json File
+		      }
+		    } 
+		    // S'il existe afficher un message d'erreur
+		    else {
+		      console.log("le dossier existe déjà !");
+		      io.sockets.emit("folderAlreadyExist", {name: projectName, timestamp: currentDate });
+		    }
+			});
+		}
+
+	// F I N     P R O J E T S     P A G E
+
+	// - - - 
+
+	// C O M M O N      F U N C T I O N
+		function writeJsonFile(jsonFile, objectJson, objectToSend, send){
 			var jsonString = JSON.stringify(objectJson);
 			fs.appendFile(jsonFile, jsonString, function(err) {
 	      if(err) {
@@ -67,103 +199,37 @@ module.exports = function(app, io){
 	      } 
 	      else {
 	        console.log("Le dossier été crée!");
-	        io.sockets.emit("folderCreated", {name: folderName, created: currentDate, modified:null, statut:"en cours", nb_projets:0 });
+	      	io.sockets.emit(send, objectToSend);
 	      }
 	    });
 	  }
-	}
-
-	// Liste les dossiers déjà existant
-	function listFolder(){
-		var dir = "sessions/";
-		fs.readdir(dir, function (err, files) {
-			if(dir == ".DS_Store"){
-		   	fs.unlink(dir);
-		  }
-			if (err) {
-	      console.log('Error: ', err);
-	      return;
-	    }
-		  files.forEach( function (file) {
-		  	if(file == ".DS_Store"){
-		    	fs.unlink(dir+file);
-		    }
-		    if(! /^\..*/.test(file)){
-			  	var jsonFile = dir + file + '/' +file+'.json';
-					var data = fs.readFileSync(jsonFile,"UTF-8");
-					var jsonObj = JSON.parse(data);
-			  	io.sockets.emit('listFolder', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, nb_projets:jsonObj.nb_projets});
-		  	}
-		  });
-		});
-	}
-
-	// Modifier un dossier
-	function onModifyFolder(folder){
-		console.log(folder);
-		var oldFolder = folder.oldname;
-		var oldFormatFolderName = convertToSlug(oldFolder);
-		var oldFolderPath = 'sessions/'+oldFormatFolderName;
-		
-		var newFolder = folder.name;
-		var newFormatFolderName = convertToSlug(newFolder);
-		var newFolderPath = 'sessions/'+newFormatFolderName;
-		console.log(newFolderPath);
-
-		var newStatut = folder.statut;
-		
-		var currentDate = Date.now();
-
-		// Vérifie si le dossier existe déjà
-		fs.access(newFolderPath, fs.F_OK, function(err) {
-			// S'il n'existe pas -> change le nom du dossier et change le json
-	    if (err) {
-	      fs.renameSync(oldFolderPath, newFolderPath); // renomme le dossier
-	      fs.renameSync(newFolderPath + '/' + oldFormatFolderName + '.json', newFolderPath + '/' + newFormatFolderName + '.json'); //renomme le json
-	      //writeJsonFile(formatFolderName);
-	      changeJsonFile(newFolderPath + '/' + newFormatFolderName + '.json');
-	    } 
-	    // S'il existe afficher un message d'erreur
-	    else {
-	    	if(oldFormatFolderName != newFormatFolderName){
-	    		console.log("le dossier existe déjà !");
-	      	io.sockets.emit("folderAlreadyExist", {name: newFolder, timestamp: currentDate });
-	    	}
-	    	else{
-	    		fs.renameSync(oldFolderPath, newFolderPath); // renomme le dossier
-	      	fs.renameSync(newFolderPath + '/' + oldFormatFolderName + '.json', newFolderPath + '/' + newFormatFolderName + '.json'); //renomme le json
-	      	changeJsonFile(newFolderPath + '/' + newFormatFolderName + '.json');
-	    	}
-	    }
-		});
-
-		function changeJsonFile(file){
-			var jsonContent = fs.readFileSync(file,"UTF-8");
-			var jsonObj = JSON.parse(jsonContent);
-			jsonObj.name = folder.name;
-			jsonObj.modified = currentDate;
-			jsonObj.statut = newStatut;
-			var jsonString = JSON.stringify(jsonObj);
-			fs.writeFileSync(file, jsonString);
-			console.log("Dossier modifié");
-			io.sockets.emit("folderModified", {name: folder.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:0});
+		function addImage(parentName, parentPath, file){
+	    var thumbName = parentName + "-thumb";
+			var filePath = parentPath + "/" + thumbName + ".jpg";
+			var imageBuffer = decodeBase64Image(file);
+			fs.writeFile(filePath, imageBuffer.data, function (err) {
+	    	console.info("write new file to " + filePath);
+			});
 		}
-
-	}
-
-	// Supprimer un dossier
-	function onRemoveFolder(folder){
-		var folderName = convertToSlug(folder.name);
-		var folderPath = 'sessions/'+folderName;
-		rmDir(folderPath);
-		io.sockets.emit('folderRemoved');
-	}
-
-	// F I N     I N D E X    P A G E
-
-	// - - - 
+	// F I N     C O M M O N      F U N C T I O N
 
 	// H E L P E R S 
+
+	//Décode les images en base64
+	function decodeBase64Image(dataString) {
+		var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
+		response = {};
+
+		if (matches.length !== 3) {
+			return new Error('Invalid input string');
+		}
+
+		response.type = matches[1];
+		response.data = new Buffer(matches[2], 'base64');
+
+		return response;
+	}
+
 	function convertToSlug(Text){
     return Text
     .toLowerCase()
@@ -189,4 +255,4 @@ module.exports = function(app, io){
       if (removeSelf)
         fs.rmdirSync(dirPath);
     };
-}
+	}
