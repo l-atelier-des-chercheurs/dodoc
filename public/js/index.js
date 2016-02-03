@@ -22,10 +22,14 @@ jQuery(document).ready(function($) {
 
 function init(){
 
-	//Au click sur "Ajouter un nouveau dossier"
-	$('.add-folder-wrapper').on('click',function(){
-		createFolder($(this));
+	//Au click "Ajouter un nouveau dossier" -> pop-up
+	$('body').on('click', '.add-folder-wrapper', function(){
+
 	});
+
+	// Submit Folder
+	// Create new folder
+	submitFolder($(".submit-new-folder"), 'newFolder'); //Envoie les données au serveur
 
 	//Au clic sur l'icone éditer
 	$('body').on('click', '.edit-icon', function(){
@@ -41,20 +45,13 @@ function init(){
 	});
 }
 
-//Ouverture du pop up et création d'un nouveau dossier
-function createFolder($this){
-	//var newContentToAdd = "<h3 class='popoverTitle'>Nouveau dossier</h3><form onsubmit='return false;' class='add-folder-form'><input type='text' class='new-folder' placeholder='Nom'></input><input type='submit' class='submit-new-folder' value='Valider'></input></form>";
-
-	//fillPopOver(newContentToAdd, $this, 300, 200, closeAddProjectFunction); //ouverture du pop up
-	submitFolder($(".submit-new-folder"), 'newFolder'); //Envoie les données au serveur
-}
-
 // Envoie les données du dossier au serveur
 function submitFolder($button, send){
 	$button.on('click', function(){
 		var newFolderName = $('input.new-folder').val();
-
+		console.log('send submit');
 		socket.emit(send, {name: newFolderName});
+		$('input.new-folder').val('');
 	})
 }
 
