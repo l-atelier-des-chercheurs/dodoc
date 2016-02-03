@@ -9,6 +9,7 @@ var thisProjectName;
 var thisProject;
 var imageData = null;
 var imageName;
+var $thisEl;
 
 /* sockets */
 socket.on('connect', onSocketConnect);
@@ -16,6 +17,7 @@ socket.on('error', onSocketError);
 socket.on('listProject', onListProject); // Liste tous les projets
 socket.on('projectCreated', onProjectCreated); // Quand un dossier est crée !
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
+socket.on('projectModified', onProjectModified); //Quand on reçoit les modification du projet
 
 jQuery(document).ready(function($) {
 
@@ -27,6 +29,18 @@ function init(){
 	// Create new project
 	uploadImage($("#imageproject"));
 	submitProject($(".submit-new-project"), 'newProject'); //Envoie les données au serveur
+
+	// Modifier les projets
+	//Au click sur l'icone éditer
+	$('body').on('click', '.edit-icon', function(){
+		console.log("edition mode");
+		thisProject = $(this).parent();
+		modifyProject($(this));
+	});
+	//remove modal modify folder when it's closing
+	$(document).on('close.fndtn.reveal', '#modal-modify-project[data-reveal]', function () {
+  	$("#modal-modify-project").empty();
+	});
 }
 
 // Envoie les données du dossier au serveur
@@ -106,6 +120,79 @@ function displayFolder(name, created, modified, image, statut){
 	var metaDataHTML = '<div class="meta-data row">'+statutHTML+createdHTML+modifiedHTML+'</div>';
 	var folderHTML = '<li class="project small-12 columns" data-statut="'+statut+'">'+editIcon+'<div class="left-content small-6 columns">'+contentHTML+ metaDataHTML+'</div>'+imageHTML+'</li>';
 	$("#container .project-list").prepend(folderHTML);
+}
+
+function modifyProject($this){
+	$("#container.row #modal-modify-project").empty();
+	thisProjectName = $this.parent().find('h2').text();
+	var statut = $this.parent().attr("data-statut");
+	var inputNameHtml = "<input type='text' class='modify-project' value='"+thisProjectName+"'></input>";
+	if(statut == 'en cours'){
+		var statutHtml = "<select class='modify-statut 'name='statut'><option value='"+statut+"' selected>"+statut+"</option><option value='terminé'>terminé</option></select>";
+	}
+	else{
+		var statutHtml = "<select class='modify-statut' name='statut'><option value='"+statut+"' selected>"+statut+"</option><option value='en cours'>en cours</option></select>";
+	}
+	var inputFile = "<input type='file' id='imageproject' accept='image/*' placeholder='Associer une image'></input>";
+	var submitBtnHtml = "<input type='submit' class='submit-modify-project' value='Valider'></input>";
+	var deleteHtml = "<div class='delete-project-button'><img src='/images/clear.svg' class='delete-btn btn icon'><span>Supprimer ce dossier</span></div>";
+	var closebtn = '<a class="close-reveal-modal" aria-label="Close">&#215</a>'
+	var newContentToAdd = "<h3 id='modalTitle' class='popoverTitle'>Modifier le dossier</h3><form onsubmit='return false;' class='modify-folder-form'>"+inputNameHtml+statutHtml+inputFile+submitBtnHtml+deleteHtml+"</form><a class='close-reveal-modal' aria-label='Close') &#215;</a></div>";
+	$("#container.row #modal-modify-project").append(newContentToAdd);
+	modifyStatut();
+	submitModifyFolder($(".submit-modify-project"), 'modifyProject', thisProjectName, statut);
+
+	$thisEl = $this.parent();
+}
+
+function modifyStatut(){
+	$('#modal-modify-project .modify-statut').bind('change', function(){
+		if($(this).val() == "terminé"){
+			$('#modal-statut-alert').foundation('reveal', 'open');
+			$('#modal-statut-alert button.oui').on('click', function(){
+				console.log('oui ');
+				$('#modal-statut-alert').foundation('reveal', 'close');
+				$("#modal-modify-project").foundation('reveal', 'open');
+			});
+			$('#modal-statut-alert button.annuler').on('click', function(){
+				console.log('non');
+				$('#modal-modify-project .modify-statut').val('en cours');
+				$('#modal-statut-alert').foundation('reveal', 'close');
+				$("#modal-modify-project").foundation('reveal', 'open');
+			});
+			$(document).on('closed.fndtn.reveal', '#modal-statut-alert[data-reveal]', function () {
+	  		$("#modal-modify-project").foundation('reveal', 'open');
+			});
+		}
+	});
+}
+
+// Envoie les données du projet au serveur
+function submitModifyFolder($button, send, oldName, oldStatut){
+	$button.on('click', function(){
+		var newProjectName = $('input.modify-project').val();
+		var newStatut = $('select.modify-statut').val();
+		var oldProjectName = oldName;
+		var oldProjectStatut = oldStatut;
+		socket.emit(send, {name: newProjectName, session:currentSession, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
+	})
+}
+
+// On reçoit les mofication du projet
+function onProjectModified(data){
+	var name = data.name;
+	var statut = data.statut;
+	var modified = transformDatetoString(data.modified);
+	var parent = $thisEl;
+	$('#modal-modify-project').foundation('reveal', 'close');
+
+	if(statut == "terminé"){
+		$thisEl.find('.edit-icon').remove();
+	}
+	
+	$thisEl.find('h2').html(name);
+	$thisEl.find('.statut-type').html(" "+statut);
+	$thisEl.find('.modify-date').html(modified);
 }
 
 

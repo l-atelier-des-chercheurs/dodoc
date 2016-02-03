@@ -29,6 +29,7 @@ module.exports = function(app, io){
 		// P R O J E T S     P A G E
 		socket.on("listProject", listProject);
 		socket.on("newProject", onNewProject);
+		socket.on("modifyProject", onModifyProject);
 
 
 	});
@@ -153,7 +154,7 @@ module.exports = function(app, io){
 				var jsonString = JSON.stringify(jsonObj);
 				fs.writeFileSync(file, jsonString);
 				console.log("Dossier modifié");
-				io.sockets.emit("folderModified", {name: folder.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:0});
+				io.sockets.emit("folderModified", {name: folder.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:jsonObj.nb_projets});
 			}
 
 		}
@@ -227,6 +228,59 @@ module.exports = function(app, io){
 				fs.writeFileSync(file, jsonString);
 				// io.sockets.emit("folderModified", {name: folder.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:0});
 			}
+		}
+
+		// Modifier un projet
+		function onModifyProject(project){
+			console.log(project);
+			var session = project.session;
+
+			var oldProject = project.oldname;
+			var oldFormatProjectName = convertToSlug(oldProject);
+			var oldProjectPath = 'sessions/'+ session + '/' + oldFormatProjectName;
+			
+			var newProject = project.name;
+			var newFormatProjectName = convertToSlug(newProject);
+			var newProjectPath = 'sessions/'+ session + '/' + newFormatProjectName;
+			console.log(newProjectPath);
+
+			var newStatut = project.statut;
+			var currentDate = Date.now();
+
+			// Vérifie si le dossier existe déjà
+			fs.access(newProjectPath, fs.F_OK, function(err) {
+				// S'il n'existe pas -> change le nom du dossier et change le json
+		    if (err) {
+		      fs.renameSync(oldProjectPath, newProjectPath); // renomme le dossier
+		      fs.renameSync(newProjectPath + '/' + oldFormatProjectName + '.json', newProjectPath + '/' + newFormatProjectName + '.json'); //renomme le json
+		      changeJsonFile(newProjectPath + '/' + newFormatProjectName + '.json');
+		    } 
+		    // S'il existe afficher un message d'erreur
+		    else {
+		    	if(oldFormatProjectName != newFormatProjectName){
+		    		console.log("le dossier existe déjà !");
+		      	io.sockets.emit("folderAlreadyExist", {name: newProject, timestamp: currentDate });
+		    	}
+		    	else{
+		    		fs.renameSync(oldProjectPath, newProjectPath); // renomme le dossier
+		      	fs.renameSync(newProjectPath + '/' + oldFormatProjectName + '.json', newProjectPath + '/' + newFormatProjectName + '.json'); //renomme le json
+		      	changeJsonFile(newProjectPath + '/' + newFormatProjectName + '.json');
+		    	}
+		    }
+			});
+
+			function changeJsonFile(file){
+				var jsonContent = fs.readFileSync(file,"UTF-8");
+				var jsonObj = JSON.parse(jsonContent);
+				jsonObj.name = project.name;
+				jsonObj.modified = currentDate;
+				jsonObj.statut = newStatut;
+				var jsonString = JSON.stringify(jsonObj);
+				fs.writeFileSync(file, jsonString);
+				console.log("Projet modifié");
+				io.sockets.emit("projectModified", {name: project.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:jsonObj.nb_projets});
+			}
+
 		}
 
 	// F I N     P R O J E T S     P A G E
