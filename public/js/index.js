@@ -35,11 +35,17 @@ function init(){
 	// Remove Folder
 	removeFolder();
 
+	//MODIFIER LES DOSSIERS
 	//Au clic sur l'icone éditer
 	$('body').on('click', '.edit-icon', function(){
 		thisFolder = $(this).parent();
 		modifyFolder($(this));
 	});
+	
+	//Changer le statut du dossier
+	// $('body').bind('change','#modal-modify-folder .modify-statut', function(){
+	// 	modifyStatut($(this));
+	// });
 	//remove modal modify folder when it closing
 	$(document).on('close.fndtn.reveal', '#modal-modify-folder[data-reveal]', function () {
   	$("#modal-modify-folder").empty();
@@ -129,24 +135,35 @@ function modifyFolder($this){
 	}
 	var submitBtnHtml = "<input type='submit' class='submit-modify-folder' value='Valider'></input>";
 	var deleteHtml = "<div class='delete-folder-button'><img src='/images/clear.svg' class='delete-btn btn icon'><span>Supprimer ce dossier</span></div>";
-	// var modalDiv = '<div id="modal-modify-folder" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">';
+	var closebtn = '<a class="close-reveal-modal" aria-label="Close">&#215</a>'
 	var newContentToAdd = "<h3 id='modalTitle' class='popoverTitle'>Modifier le dossier</h3><form onsubmit='return false;' class='modify-folder-form'>"+inputNameHtml+statutHtml+submitBtnHtml+deleteHtml+"</form><a class='close-reveal-modal' aria-label='Close') &#215;</a></div>";
 	$("#container.row #modal-modify-folder").append(newContentToAdd);
 	//fillPopOver(newContentToAdd, $this, 300, 300, closeAddProjectFunction); //ouverture du pop up
-
-	$('.modify-statut').bind('change', function(){
-		if($(this).val() == "terminé"){
-			$('#modal-statut-alert').foundation('reveal', 'open');
-			$(document).on('closed.fndtn.reveal', '#modal-statut-alert[data-reveal]', function () {
-				console.log('test');
-    		$("#modal-modify-folder").foundation('reveal', 'open');
-			});
-			//fillPopOver("attention", $(this), 300, 300, closeAddProjectFunction); //ouverture du pop up
-		}
-	});
-
+	modifyStatut();
 	submitModifyFolder($(".submit-modify-folder"), 'modifyFolder', thisFolderName, statut);
 	$thisEl = $this.parent();
+}
+
+function modifyStatut(){
+	$('#modal-modify-folder .modify-statut').bind('change', function(){
+		if($(this).val() == "terminé"){
+			$('#modal-statut-alert').foundation('reveal', 'open');
+			$('#modal-statut-alert button.oui').on('click', function(){
+				console.log('oui ');
+				$('#modal-statut-alert').foundation('reveal', 'close');
+				$("#modal-modify-folder").foundation('reveal', 'open');
+			});
+			$('#modal-statut-alert button.annuler').on('click', function(){
+				console.log('non');
+				$('#modal-modify-folder .modify-statut').val('en cours');
+				$('#modal-statut-alert').foundation('reveal', 'close');
+				$("#modal-modify-folder").foundation('reveal', 'open');
+			});
+			$(document).on('closed.fndtn.reveal', '#modal-statut-alert[data-reveal]', function () {
+	  		$("#modal-modify-folder").foundation('reveal', 'open');
+			});
+		}
+	});
 }
 
 // Envoie les données du dossier au serveur

@@ -125,8 +125,15 @@ module.exports = function(app, io){
 	    } 
 	    // S'il existe afficher un message d'erreur
 	    else {
-	      console.log("le dossier existe déjà !");
-	      io.sockets.emit("folderAlreadyExist", {name: newFolder, timestamp: currentDate });
+	    	if(oldFormatFolderName != newFormatFolderName){
+	    		console.log("le dossier existe déjà !");
+	      	io.sockets.emit("folderAlreadyExist", {name: newFolder, timestamp: currentDate });
+	    	}
+	    	else{
+	    		fs.renameSync(oldFolderPath, newFolderPath); // renomme le dossier
+	      	fs.renameSync(newFolderPath + '/' + oldFormatFolderName + '.json', newFolderPath + '/' + newFormatFolderName + '.json'); //renomme le json
+	      	changeJsonFile(newFolderPath + '/' + newFormatFolderName + '.json');
+	    	}
 	    }
 		});
 
