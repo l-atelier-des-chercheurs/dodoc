@@ -9,6 +9,7 @@ module.exports = function(app,io,m){
   * routing event
   */
   app.get("/", getIndex);
+  app.get("/:folder", getFolder);
 
   // app.get("/select/:session", getSelect);
   // app.get("/select/:session/:projet", getProjet);
@@ -25,18 +26,17 @@ module.exports = function(app,io,m){
     res.render("index", {title : "Do.Doc"});
   };
   
-  // function getSelect(req, res) {
-  //   var session = req.param('session');
-  //   var sessionPath = 'sessions/'+session;
+  function getFolder(req, res) {
+    var folder = req.param('folder');
+    var folderPath = 'folder/'+folder;
 
-  //   fs.ensureDirSync(sessionPath);
+    //fs.ensureDirSync(folderPath);
+    res.render("projets", {
+      title : "Projets",
+      folder : convertToSlug(folder)
+    });
+  };
 
-  //   res.render("session", {
-  //     title : "Projets",
-  //     session : session,
-  //     sessionFormat : session.replace(/_/g," "),
-  //   });
-  // };
   // function getProjet(req, res) {
   //   var session = req.param('session');
   //   var projet = req.param('projet');
@@ -95,5 +95,12 @@ module.exports = function(app,io,m){
   //   });
   // };
 
-
+  //helpers
+    function convertToSlug(Text){
+    var noHyphen = Text.replace(/-/g," ")
+    return noHyphen
+    //.replace(/-/g," ")
+    .charAt(0).toUpperCase()+ noHyphen.slice(1)
+    ;
+  }
 };

@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    include templates/head.jade
+  body.index
+    header
+      .logo
+        a(href="/" title="Dodox")
+          include templates/images/dodoc-logo.svg
+      .folder #{folder}
+
+    #container.row
+
+
+    //- scripts
+    include templates/footer.jade
+    script(src='/js/projets.js')

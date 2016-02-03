@@ -42,10 +42,6 @@ function init(){
 		modifyFolder($(this));
 	});
 	
-	//Changer le statut du dossier
-	// $('body').bind('change','#modal-modify-folder .modify-statut', function(){
-	// 	modifyStatut($(this));
-	// });
 	//remove modal modify folder when it closing
 	$(document).on('close.fndtn.reveal', '#modal-modify-folder[data-reveal]', function () {
   	$("#modal-modify-folder").empty();
@@ -101,7 +97,8 @@ function onListFolder(data){
 
 // Fonction qui affichent les dossiers HTML
 function displayFolder(name, created, modified, statut, projets){
-	var contentHTML = '<div class="content"><h2>'+name+'</h2><ul class="projet-list row"></ul></div>';
+	var formatName = convertToSlug(name);
+	var contentHTML = '<a href="/'+formatName+'" title="'+name+'"><div class="content"><h2>'+name+'</h2><ul class="projet-list row"></ul></div></a>';
 	var nbProjetHTML = '<div class="nb-projets small-6 columns"><span class="numero-projet">'+projets+'</span><span> projet</span></div>';
 	var statutHTML= '<div class="statut small-6 columns"><span>statut</span><span class="statut-type"> '+statut+'</span></div>';
 	var createdHTML= '<div class="created small-6 columns"><span>crée le </span><span class="create-date">'+created+'</span></div>';
@@ -226,6 +223,14 @@ function transformDatetoString(date){
 	if(day<10){day = "0"+day;}
 	var formatDate = day + "/" + month + "/" + year;
 	return formatDate;
+}
+
+function convertToSlug(Text){
+  return Text
+  .toLowerCase()
+  .replace(/ /g,'-')
+  .replace(/[^\w-]+/g,'')
+  ;
 }
 
 /* sockets */
