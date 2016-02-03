@@ -33,7 +33,6 @@ function init(){
 	// Modifier les projets
 	//Au click sur l'icone éditer
 	$('body').on('click', '.edit-icon', function(){
-		console.log("edition mode");
 		thisProject = $(this).parent();
 		modifyProject($(this));
 	});
@@ -67,7 +66,6 @@ function submitProject($button, send){
 
 // Affiche le projet dès qu'il est crée
 function onProjectCreated(data){
-	console.log(data);
 	var folderName = data.name;
 	var createdDate = transformDatetoString(data.created);
 	var statut = data.statut;

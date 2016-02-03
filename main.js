@@ -254,6 +254,13 @@ module.exports = function(app, io){
 		      fs.renameSync(oldProjectPath, newProjectPath); // renomme le dossier
 		      fs.renameSync(newProjectPath + '/' + oldFormatProjectName + '.json', newProjectPath + '/' + newFormatProjectName + '.json'); //renomme le json
 		      changeJsonFile(newProjectPath + '/' + newFormatProjectName + '.json');
+	      	//change le nom du thumbnail du projet
+	      	fs.stat(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg', function(err, stat) {
+				    if(err == null) {
+				      console.log('le projet contient une image');
+      				fs.renameSync(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg', newProjectPath + '/' + newFormatProjectName + '-thumb.jpg'); //renomme l'image
+				    } 
+					});
 		    } 
 		    // S'il existe afficher un message d'erreur
 		    else {
