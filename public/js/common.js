@@ -18,8 +18,9 @@ function convertToSlug(Text){
 }
 
 function uploadImage($button){
-	$button.bind('change', function(e){
+	$('body').bind('change', $button, function(e){
   	imageData = e.originalEvent.target.files;
+  	console.log(imageData);
   	//change the label of the button in the name of the image
   	imageName = this.files[0].name;
 	  var dflt = $(this).attr("placeholder");

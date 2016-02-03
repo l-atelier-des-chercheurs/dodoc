@@ -27,7 +27,7 @@ jQuery(document).ready(function($) {
 
 function init(){
 	// Create new project
-	uploadImage($("#imageproject"));
+	uploadImage("#imageproject");
 	submitProject($(".submit-new-project"), 'newProject'); //Envoie les données au serveur
 
 	// Modifier les projets
@@ -36,6 +36,9 @@ function init(){
 		thisProject = $(this).parent();
 		modifyProject($(this));
 	});
+	// $('body').bind('change', '#imageproject-mod', function(){
+	// 	console.log('image-change');
+	// });
 	//remove modal modify folder when it's closing
 	$(document).on('close.fndtn.reveal', '#modal-modify-project[data-reveal]', function () {
   	$("#modal-modify-project").empty();
@@ -172,6 +175,22 @@ function submitModifyFolder($button, send, oldName, oldStatut){
 		var newStatut = $('select.modify-statut').val();
 		var oldProjectName = oldName;
 		var oldProjectStatut = oldStatut;
+
+		// Images changed
+		// if(imageData != null){
+		// 	console.log('Une image a été ajoutée');
+		// 	var f = imageData[0];
+		// 	var reader = new FileReader();
+		// 	reader.onload = function(evt){
+		// 		//socket.emit(send, {session: currentSession, name: newProjectName, file:evt.target.result, imageName:imageName});
+		// 	};
+		// 	reader.readAsDataURL(f);
+		// }
+		// else{
+		// 	console.log("Pas d'image chargé");
+		// 	//socket.emit(send, {session: currentSession, name: newProjectName});
+		// }
+
 		socket.emit(send, {name: newProjectName, session:currentSession, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
 	})
 }
