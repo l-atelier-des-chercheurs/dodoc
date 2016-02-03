@@ -90,7 +90,7 @@ module.exports = function(app, io){
 						var projectDir = dir + file;
 						fs.readdirSync(projectDir).filter(function(project) {
 							if(fs.statSync(path.join(projectDir, project)).isDirectory()){
-								console.log(project);
+								// console.log(project);
 								if(! /^\..*/.test(project)){
 									var jsonFileProj = projectDir +'/'+ project + '/' +project+'.json';
 									var dataProj = fs.readFileSync(jsonFileProj,"UTF-8");
@@ -184,6 +184,7 @@ module.exports = function(app, io){
 				}
 	  	});
 		}
+		
 		function onNewProject(project) {
 			var projectName = project.name;
 			var formatProjectName = convertToSlug(projectName);
@@ -215,6 +216,17 @@ module.exports = function(app, io){
 		      io.sockets.emit("folderAlreadyExist", {name: projectName, timestamp: currentDate });
 		    }
 			});
+
+			//Change le nombre de projets dans le dossier parent
+			changeJsonFile('sessions/'+project.session+'/'+project.session+'.json');
+			function changeJsonFile(file){
+				var jsonContent = fs.readFileSync(file,"UTF-8");
+				var jsonObj = JSON.parse(jsonContent);
+				jsonObj.nb_projets = jsonObj.nb_projets + 1;
+				var jsonString = JSON.stringify(jsonObj);
+				fs.writeFileSync(file, jsonString);
+				// io.sockets.emit("folderModified", {name: folder.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:0});
+			}
 		}
 
 	// F I N     P R O J E T S     P A G E
