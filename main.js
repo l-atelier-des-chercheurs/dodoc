@@ -27,6 +27,7 @@ module.exports = function(app, io){
 		socket.on("removeFolder", onRemoveFolder);
 
 		// P R O J E T S     P A G E
+		socket.on("listProject", listProject);
 		socket.on("newProject", onNewProject);
 
 
@@ -153,6 +154,21 @@ module.exports = function(app, io){
 	// F I N     I N D E X    P A G E
 
 	// P R O J E T S     P A G E
+		// Liste les projets existants
+		function listProject(session){
+			var dir = "sessions/"+session.session+"/";
+			fs.readdirSync(dir).filter(function(file) {
+				if(fs.statSync(path.join(dir, file)).isDirectory()){
+					console.log(file);
+					if(! /^\..*/.test(file)){
+						var jsonFile = dir + file + '/' +file+'.json';
+						var data = fs.readFileSync(jsonFile,"UTF-8");
+						var jsonObj = JSON.parse(data);
+				    io.sockets.emit('listProject', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, image:jsonObj.fileName});
+			  	}
+				}
+	  	});
+		}
 		function onNewProject(project) {
 			var projectName = project.name;
 			var formatProjectName = convertToSlug(projectName);
@@ -168,13 +184,13 @@ module.exports = function(app, io){
 		      var jsonFile = projectPath + '/' + formatProjectName +'.json';
 		      if(project.file){
 		      	addImage(formatProjectName, projectPath, project.file);
-		      	var objectJson = {"session":project.session, "name":projectName, "fileName":project.imageName, "files": {"images":[], "videos":[], "stopmotion":[], "audio":[], "texte":[]}};
-		      	var objectToSend = {session: project.session, name: projectName, format: formatProjectName, imageName:project.imageName};
+		      	var objectJson = {"session":project.session, "name":projectName, "fileName":project.imageName, "created":currentDate, "modified":null,"files": {"images":[], "videos":[], "stopmotion":[], "audio":[], "texte":[]}};
+		      	var objectToSend = {session: project.session, name: projectName, format: formatProjectName, imageName:project.imageName, created: currentDate, modified:null};
 		      	writeJsonFile(jsonFile, objectJson, objectToSend, "projectCreated"); //write json File
 		      }
 		      else{
-		      	var objectJson= {"session":project.session, "name":projectName, "fileName":"none", "files": {"images":[], "videos":[], "stopmotion":[], "audio":[], "texte":[]}};
-		      	var objectToSend = {session: project.session, name: projectName, format: formatProjectName, imageName:"none"};
+		      	var objectJson= {"session":project.session, "name":projectName, "fileName":"none", "created":currentDate, "modified":null, "files": {"images":[], "videos":[], "stopmotion":[], "audio":[], "texte":[]}};
+		      	var objectToSend = {session: project.session, name: projectName, format: formatProjectName, imageName:"none", created: currentDate, modified:null};
 		      	writeJsonFile(jsonFile, objectJson, objectToSend, "projectCreated"); //write json File
 		      }
 		    } 
@@ -215,44 +231,44 @@ module.exports = function(app, io){
 
 	// H E L P E R S 
 
-	//Décode les images en base64
-	function decodeBase64Image(dataString) {
-		var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
-		response = {};
+		//Décode les images en base64
+		function decodeBase64Image(dataString) {
+			var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
+			response = {};
 
-		if (matches.length !== 3) {
-			return new Error('Invalid input string');
+			if (matches.length !== 3) {
+				return new Error('Invalid input string');
+			}
+
+			response.type = matches[1];
+			response.data = new Buffer(matches[2], 'base64');
+
+			return response;
 		}
 
-		response.type = matches[1];
-		response.data = new Buffer(matches[2], 'base64');
+		function convertToSlug(Text){
+	    return Text
+	    .toLowerCase()
+	    .replace(/ /g,'-')
+	    .replace(/[^\w-]+/g,'')
+	    ;
+		}
 
-		return response;
-	}
-
-	function convertToSlug(Text){
-    return Text
-    .toLowerCase()
-    .replace(/ /g,'-')
-    .replace(/[^\w-]+/g,'')
-    ;
-	}
-
-	// Remove all files and directory
-	rmDir = function(dirPath, removeSelf) {
-      if (removeSelf === undefined)
-        removeSelf = true;
-      try { var files = fs.readdirSync(dirPath); }
-      catch(e) { return; }
-      if (files.length > 0)
-        for (var i = 0; i < files.length; i++) {
-          var filePath = dirPath + '/' + files[i];
-          if (fs.statSync(filePath).isFile())
-            fs.unlinkSync(filePath);
-          else
-            rmDir(filePath);
-        }
-      if (removeSelf)
-        fs.rmdirSync(dirPath);
-    };
-	}
+		// Remove all files and directory
+		rmDir = function(dirPath, removeSelf) {
+	      if (removeSelf === undefined)
+	        removeSelf = true;
+	      try { var files = fs.readdirSync(dirPath); }
+	      catch(e) { return; }
+	      if (files.length > 0)
+	        for (var i = 0; i < files.length; i++) {
+	          var filePath = dirPath + '/' + files[i];
+	          if (fs.statSync(filePath).isFile())
+	            fs.unlinkSync(filePath);
+	          else
+	            rmDir(filePath);
+	        }
+	      if (removeSelf)
+	        fs.rmdirSync(dirPath);
+	    };
+		}

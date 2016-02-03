@@ -213,6 +213,48 @@ body.index #container {
         body.index #container .dossier-list .dossier .meta-data .modified .modify-date {
           font-weight: bold; }
 
+body.projets header {
+  width: 100%;
+  padding: 30px; }
+  body.projets header .logo {
+    width: 33%;
+    margin: auto; }
+
+body.projets #container {
+  width: 100%;
+  padding: 50px 0px; }
+  body.projets #container .project-list .project {
+    margin-bottom: 50px;
+    height: 150px; }
+    body.projets #container .project-list .project .edit-icon {
+      position: absolute;
+      top: -16px;
+      right: 16px;
+      z-index: 5; }
+    body.projets #container .project-list .project .left-content {
+      background-color: #FFF;
+      height: 150px; }
+      body.projets #container .project-list .project .left-content .content {
+        padding: 7px 20px; }
+        body.projets #container .project-list .project .left-content .content h2 {
+          font-weight: bold;
+          font-size: 1.5em; }
+      body.projets #container .project-list .project .left-content .meta-data {
+        padding: 7px 20px;
+        font-family: "share", monospace;
+        font-style: italic; }
+        body.projets #container .project-list .project .left-content .meta-data .created .create-date {
+          font-weight: bold; }
+        body.projets #container .project-list .project .left-content .meta-data .modified {
+          text-align: right; }
+          body.projets #container .project-list .project .left-content .meta-data .modified .modify-date {
+            font-weight: bold; }
+    body.projets #container .project-list .project .image-wrapper {
+      height: 150px;
+      overflow: hidden; }
+      body.projets #container .project-list .project .image-wrapper img {
+        margin: -100px 0 0 0; }
+
 /****************
    POPOVER !
 ****************/

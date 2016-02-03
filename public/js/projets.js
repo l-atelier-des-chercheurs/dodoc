@@ -13,6 +13,9 @@ var imageName;
 /* sockets */
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
+socket.on('listProject', onListProject); // Liste tous les projets
+socket.on('projectCreated', onProjectCreated); // Quand un dossier est crée !
+socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 
 jQuery(document).ready(function($) {
 
@@ -48,19 +51,58 @@ function submitProject($button, send){
 	})
 }
 
-// Helpers
-function uploadImage($button){
-	$button.bind('change', function(e){
-  	imageData = e.originalEvent.target.files;
-  	//change the label of the button in the name of the image
-  	imageName = this.files[0].name;
-	  var dflt = $(this).attr("placeholder");
-	  if($(this).val()!=""){
-	    $(this).next().text(imageName);
-	  } else {
-	    $(this).next().text(dflt);
-	  }
-	});
+// Affiche le projet dès qu'il est crée
+function onProjectCreated(data){
+	console.log(data);
+	var folderName = data.name;
+	var createdDate = transformDatetoString(data.created);
+	if(data.modified!= null){var modifiedDate = transformDatetoString(data.modified);}
+	else{var modifiedDate = data.modified;}
+	$('input.new-project').val('');
+	$('#modal-add-project').foundation('reveal', 'close');
+
+	displayFolder(folderName, createdDate, modifiedDate);
+}
+
+// Affiche la liste des projets
+function onListProject(data){
+	var folderName = data.name;
+	var createdDate = transformDatetoString(data.created);
+	var image = data.image;
+	if(data.modified!= null){var modifiedDate = transformDatetoString(data.modified);}
+	else{var modifiedDate = data.modified;}
+
+	displayFolder(folderName, createdDate, modifiedDate, image);
+}
+
+// Fonction qui affichent les projets HTML
+function displayFolder(name, created, modified, image){
+	var formatName = convertToSlug(name);
+	var contentHTML = '<a href="" title="'+name+'"><div class="content small-12 columns"><h2>'+name+'</h2></div></a>';
+	if(image == "none"){
+		var imageHTML = "";
+	}
+	else{
+		var imageHTML =  '<div class="image-wrapper small-6 columns"><img src="/'+currentSession+'/'+formatName+'/'+formatName+'-thumb.jpg" alt="'+name+'"></div>'
+	}
+	var createdHTML= '<div class="created small-6 columns"><span>crée le </span><span class="create-date">'+created+'</span></div>';
+	if(modified!= null){
+		var modifiedHTML= '<div class="modified small-6 columns"><span>modifié le </span><span class="modify-date">'+modified+'</span></div>';
+	}
+	else{
+		var modifiedHTML= '<div class="modified small-6 columns"></div>';
+	}
+	var editIcon = '<a href="#" class="edit-icon btn icon" data-reveal-id="modal-modify-project"><img src="/images/pen.svg" alt="edit icon"></a>';
+	var metaDataHTML = '<div class="meta-data row">'+createdHTML+modifiedHTML+'</div>';
+	var folderHTML = '<li class="project small-12 columns">'+editIcon+'<div class="left-content small-6 columns">'+contentHTML+ metaDataHTML+'</div>'+imageHTML+'</li>';
+	$("#container .project-list").prepend(folderHTML);
+}
+
+
+// Si un fichier existe déjà, affiche un message d'alerte
+function onFolderAlreadyExist(data){
+	alert("Le nom de dossier " +data.name+ " existe déjà. Veuillez trouvez un autre nom.");
+	$('.new-project').focus();
 }
 
 
@@ -68,6 +110,7 @@ function uploadImage($button){
 function onSocketConnect() {
 	sessionId = socket.io.engine.id;
 	console.log('Connected ' + sessionId);
+	socket.emit('listProject', {session: currentSession});
 };
 
 function onSocketError(reason) {

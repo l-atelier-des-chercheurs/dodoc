@@ -207,26 +207,6 @@ function onFolderRemoved(){
 	thisFolder.remove();
 }
 
-/* HELPERS */
-function transformDatetoString(date){
-	var date = new Date(date);
-	var day = date.getDate();
-	var month = date.getMonth() + 1;
-	var year = date.getFullYear();
-	if(month<10){month = "0"+month;}
-	if(day<10){day = "0"+day;}
-	var formatDate = day + "/" + month + "/" + year;
-	return formatDate;
-}
-
-function convertToSlug(Text){
-  return Text
-  .toLowerCase()
-  .replace(/ /g,'-')
-  .replace(/[^\w-]+/g,'')
-  ;
-}
-
 /* sockets */
 function onSocketConnect() {
 	sessionId = socket.io.engine.id;
