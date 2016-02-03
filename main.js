@@ -146,10 +146,10 @@ module.exports = function(app, io){
 
 	// Supprimer un dossier
 	function onRemoveFolder(folder){
-		console.log(folder);
 		var folderName = convertToSlug(folder.name);
 		var folderPath = 'sessions/'+folderName;
 		rmDir(folderPath);
+		io.sockets.emit('folderRemoved');
 	}
 
 	// F I N     I N D E X    P A G E

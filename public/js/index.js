@@ -4,6 +4,8 @@ var closeAddProjectFunction = function() {
 };
 
 var $thisEl;
+var thisFolderName;
+var thisFolder;
 
 /* sockets */
 socket.on('connect', onSocketConnect);
@@ -12,6 +14,7 @@ socket.on('folderCreated', onFolderCreated); // Quand un dossier est crée !
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 socket.on('listFolder', onListFolder); // List tous les dossiers
 socket.on('folderModified', onFolderModified);
+socket.on('folderRemoved', onFolderRemoved);
 
 
 jQuery(document).ready(function($) {
@@ -23,25 +26,28 @@ jQuery(document).ready(function($) {
 function init(){
 
 	//Au click "Ajouter un nouveau dossier" -> pop-up
-	$('body').on('click', '.add-folder-wrapper', function(){
-
-	});
+	$('body').on('click', '.add-folder-wrapper', function(){});
 
 	// Submit Folder
 	// Create new folder
 	submitFolder($(".submit-new-folder"), 'newFolder'); //Envoie les données au serveur
 
+	// Remove Folder
+	removeFolder();
+
 	//Au clic sur l'icone éditer
 	$('body').on('click', '.edit-icon', function(){
+		thisFolder = $(this).parent();
 		modifyFolder($(this));
 	});
 	//remove modal modify folder when it closing
 	$(document).on('close.fndtn.reveal', '#modal-modify-folder[data-reveal]', function () {
   	$("#modal-modify-folder").empty();
 	});
-	//Bouton supprimer le dossier
+	
+	//Au click sur le bouton supprimer le dossier
 	$('body').on('click', '.delete-folder-button', function(){
-		removeFolder($(this));
+		$('#modal-delete-alert').foundation('reveal', 'open');
 	});
 }
 
@@ -49,7 +55,6 @@ function init(){
 function submitFolder($button, send){
 	$button.on('click', function(){
 		var newFolderName = $('input.new-folder').val();
-		console.log('send submit');
 		socket.emit(send, {name: newFolderName});
 		$('input.new-folder').val('');
 	})
@@ -112,9 +117,10 @@ function displayFolder(name, created, modified, statut, projets){
 }
 
 function modifyFolder($this){
-	var folderName = $this.parent().find('h2').text();
+	$("#container.row #modal-modify-folder").empty();
+	thisFolderName = $this.parent().find('h2').text();
 	var statut = $this.parent().attr("data-statut");
-	var inputNameHtml = "<input type='text' class='modify-folder' value='"+folderName+"'></input>";
+	var inputNameHtml = "<input type='text' class='modify-folder' value='"+thisFolderName+"'></input>";
 	if(statut == 'en cours'){
 		var statutHtml = "<select class='modify-statut 'name='statut'><option value='"+statut+"' selected>"+statut+"</option><option value='terminé'>terminé</option></select>";
 	}
@@ -139,7 +145,7 @@ function modifyFolder($this){
 		}
 	});
 
-	submitModifyFolder($(".submit-modify-folder"), 'modifyFolder', folderName, statut);
+	submitModifyFolder($(".submit-modify-folder"), 'modifyFolder', thisFolderName, statut);
 	$thisEl = $this.parent();
 }
 
@@ -171,13 +177,12 @@ function onFolderModified(data){
 	$thisEl.find('.modify-date').html(modified);
 }
 
-// Supprimer le dossier
-function removeFolder($this){
-	var folderName = $this.parent().find('input.modify-folder').val();
-	$('#modal-delete-alert').foundation('reveal', 'open');
+//Suppression du dossier
+function removeFolder(){
 	$('#modal-delete-alert button.oui').on('click', function(){
-		console.log('oui');
-		socket.emit('removeFolder', {name: folderName});
+		console.log('oui ' + thisFolderName);
+		console.log(thisFolder);
+		socket.emit('removeFolder', {name: thisFolderName});
 		$('#modal-delete-alert').foundation('reveal', 'close');
 	});
 	$('#modal-delete-alert button.annuler').on('click', function(){
@@ -187,8 +192,11 @@ function removeFolder($this){
 	  	$('#modal-modify-folder').foundation('reveal', 'open');
 		});
 	});
+}
 
-	//socket.emit('removeFolder', {name: folderName});
+//Remove the folder from list
+function onFolderRemoved(){
+	thisFolder.remove();
 }
 
 /* HELPERS */
