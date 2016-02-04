@@ -18,6 +18,7 @@ socket.on('listProject', onListProject); // Liste tous les projets
 socket.on('projectCreated', onProjectCreated); // Quand un dossier est crée !
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 socket.on('projectModified', onProjectModified); //Quand on reçoit les modification du projet
+socket.on('folderRemoved', onFolderRemoved); // Quand le dossier a été supprimé sur le serveur
 
 jQuery(document).ready(function($) {
 
@@ -36,13 +37,19 @@ function init(){
 		thisProject = $(this).parent();
 		modifyProject($(this));
 	});
-	// $('body').bind('change', '#imageproject-mod', function(){
-	// 	console.log('image-change');
-	// });
+
 	//remove modal modify folder when it's closing
 	$(document).on('close.fndtn.reveal', '#modal-modify-project[data-reveal]', function () {
   	$("#modal-modify-project").empty();
 	});
+
+	//Au click sur le bouton supprimer le dossier
+	$('body').on('click', '.delete-project-button', function(){
+		$('#modal-delete-alert').foundation('reveal', 'open');
+	});
+
+	// Remove Folder
+	removeFolder();
 }
 
 // Envoie les données du dossier au serveur
@@ -212,11 +219,32 @@ function onProjectModified(data){
 	$thisEl.find('.modify-date').html(modified);
 }
 
+//Suppression du dossier
+function removeFolder(){
+	$('#modal-delete-alert button.oui').on('click', function(){
+		console.log('oui ' + thisProjectName);
+		console.log(thisProject);
+		socket.emit('removeFolder', {name: thisProjectName});
+		$('#modal-delete-alert').foundation('reveal', 'close');
+	});
+	$('#modal-delete-alert button.annuler').on('click', function(){
+		console.log('annuler');
+		$('#modal-delete-alert').foundation('reveal', 'close');
+		$(document).on('close.fndtn.reveal', '#modal-delete-alert[data-reveal]', function () {
+	  	$('#modal-modify-folder').foundation('reveal', 'open');
+		});
+	});
+}
 
 // Si un fichier existe déjà, affiche un message d'alerte
 function onFolderAlreadyExist(data){
 	alert("Le nom de dossier " +data.name+ " existe déjà. Veuillez trouvez un autre nom.");
 	$('.new-project').focus();
+}
+
+//Remove the folder from list
+function onFolderRemoved(){
+	thisProject.remove();
 }
 
 
