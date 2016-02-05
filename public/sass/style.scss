@@ -33,7 +33,7 @@ body {
 		visibility: hidden;
 		opacity: 0;
 
-		
+
 
 		-webkit-transition: opacity .3s 0s, visibility 0s .3s;
 		-moz-transition: opacity .3s 0s, visibility 0s .3s;
@@ -62,7 +62,7 @@ a:hover {
 
 img, video, audio, svg {
 	min-width: 100%;
-	width:100%;	
+	width:100%;
 	display: block;
 }
 
@@ -103,7 +103,7 @@ button{
 	}
 }
 
-// I N D E X 
+// I N D E X
 body.index{
   header{
     width: 100%;
@@ -131,7 +131,7 @@ body.index{
     }
     .dossier-list{
       .dossier{
-        margin-bottom: 50px; 
+        margin-bottom: 50px;
         .edit-icon{
           position:absolute;
           top:-16px;
@@ -181,7 +181,7 @@ body.projets{
     padding:50px 0px;
     .project-list{
       .project{
-        margin-bottom: 50px; 
+        margin-bottom: 50px;
         height: $projectHeight;
         .edit-icon{
           position:absolute;
@@ -220,7 +220,7 @@ body.projets{
   }
 }
 
-// F I N    I N D E X 
+// F I N    I N D E X
 
 /****************
    POPOVER !
@@ -295,7 +295,7 @@ body.projets{
 
   .popoverTitle {
     margin: 0;
-    margin-bottom: .1em;    
+    margin-bottom: .1em;
     padding: 0;
     padding-bottom: .4em;
     border-bottom: 1px solid #eee;
