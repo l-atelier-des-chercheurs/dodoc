@@ -108,7 +108,7 @@ function onListChildren(data){
 // Fonction qui affichent les dossiers HTML
 function displayFolder(name, created, modified, statut, projets){
 	var formatName = convertToSlug(name);
-	var contentHTML = '<a href="/'+formatName+'" title="'+name+'"><div class="content"><h2>'+name+'</h2><ul class="projet-list row"></ul></div></a>';
+	var contentHTML = '<a href="/'+formatName+'" title="'+name+'" class="folder-link"><div class="content"><h2>'+name+'</h2><ul class="projet-list row"></ul></div></a>';
 	var nbProjetHTML = '<div class="nb-projets small-6 columns"><span class="numero-projet">'+projets+'</span><span> projet</span></div>';
 	var statutHTML= '<div class="statut small-6 columns"><span>statut</span><span class="statut-type"> '+statut+'</span></div>';
 	var createdHTML= '<div class="created small-6 columns"><span>crée le </span><span class="create-date">'+created+'</span></div>';
@@ -199,6 +199,7 @@ function onFolderModified(data){
 	$thisEl.find('h2').html(name);
 	$thisEl.find('.statut-type').html(" "+statut);
 	$thisEl.find('.modify-date').html(modified);
+	$thisEl.find('.folder-link').attr('href', '/'+convertToSlug(name));
 }
 
 //Suppression du dossier
