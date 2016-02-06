@@ -8,7 +8,6 @@ var currentSession = app.session;
 var thisProjectName;
 var thisProject;
 var imageData = null;
-var imageName;
 var $thisEl;
 
 /* sockets */
@@ -84,7 +83,6 @@ function onProjectCreated(data){
 	else{var modifiedDate = data.modified;}
 	$('input.new-project').val('');
 	$('#modal-add-project').foundation('reveal', 'close');
-	console.log(image);
 	displayFolder(folderName, createdDate, modifiedDate, image, statut);
 }
 
@@ -96,7 +94,6 @@ function onListProject(data){
 	var statut = data.statut;
 	if(data.modified!= null){var modifiedDate = transformDatetoString(data.modified);}
 	else{var modifiedDate = data.modified;}
-
 	displayFolder(folderName, createdDate, modifiedDate, image, statut);
 }
 
@@ -107,7 +104,7 @@ function displayFolder(name, created, modified, image, statut){
 	var statutHTML= '<div class="statut small-6 columns"><span>statut</span><span class="statut-type"> '+statut+'</span></div>';
 	console.log(image);
 	if(image == false){
-		var imageHTML = "";
+		var imageHTML = '<div class="image-wrapper small-6 columns"><img src="" alt=""></div>';
 	}
 	else{
 		var imageHTML = '<div class="image-wrapper small-6 columns"><img src="/'+currentSession+'/'+formatName+'/'+formatName+'-thumb.jpg" alt="'+name+'"></div>'
@@ -188,7 +185,7 @@ function submitModifyFolder($button, send, oldName, oldStatut){
 			var f = imageData[0];
 			var reader = new FileReader();
 			reader.onload = function(evt){
-				socket.emit(send, {name: newProjectName, session:currentSession, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut, file:evt.target.result, imageName:imageName});
+				socket.emit(send, {name: newProjectName, session:currentSession, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut, file:evt.target.result});
 			};
 			reader.readAsDataURL(f);
 		}

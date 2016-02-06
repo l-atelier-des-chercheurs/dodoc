@@ -242,7 +242,6 @@ module.exports = function(app, io){
 			var newProject = project.name;
 			var newFormatProjectName = convertToSlug(newProject);
 			var newProjectPath = 'sessions/'+ session + '/' + newFormatProjectName;
-			console.log(newProjectPath);
 
 			var newStatut = project.statut;
 			var currentDate = Date.now();
@@ -258,10 +257,22 @@ module.exports = function(app, io){
 		      changeJsonFile(newProjectPath + '/' + newFormatProjectName + '.json');
 					if(project.file){
 						console.log('oui image');
-						fs.unlink(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg'); //supprime l'ancienne l'image
-		      	addImage(newFormatProjectName, newProjectPath, project.file);
-		      	ifImage = true;
-		      	changeJsonFile(newProjectPath + '/' + newFormatProjectName + '.json');
+						fs.stat(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg', function(err, stat) {
+					    if(err == null) {
+					      console.log('Supprime the olf image');
+					      //supprime l'ancienne l'image
+	      				fs.unlink(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg', function(){
+	      					addImage(newFormatProjectName, newProjectPath, project.file);
+					      	ifImage = true;
+					      	changeJsonFile(newProjectPath + '/' + newFormatProjectName + '.json');
+	      				}); 
+					    } 
+					    else{
+					    	addImage(newFormatProjectName, newProjectPath, project.file);
+				      	ifImage = true;
+				      	changeJsonFile(newProjectPath + '/' + newFormatProjectName + '.json');
+					    }
+						});
 		      }
 		      else{
 		      	//change le nom du thumbnail du projet
@@ -305,6 +316,7 @@ module.exports = function(app, io){
 				jsonObj.name = project.name;
 				jsonObj.modified = currentDate;
 				jsonObj.statut = newStatut;
+				jsonObj.fileName = ifImage;
 				var jsonString = JSON.stringify(jsonObj);
 				fs.writeFileSync(file, jsonString);
 				console.log("Projet modifié");
