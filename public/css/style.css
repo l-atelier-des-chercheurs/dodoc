@@ -146,10 +146,43 @@ button {
 .columns + .columns:last-child {
   float: left; }
 
+/******************
+  Mixins
+  ********************/
+.button-wrapper {
+  display: block;
+  position: relative;
+  width: 235px;
+  height: 60px;
+  background-color: #ccc;
+  border-radius: 30px;
+  padding: 8px;
+  padding-right: 16px;
+  transition: border-radius .4s;
+  font-size: 1em;
+  line-height: 1.41; }
+  .button-wrapper_add {
+    background-color: #EF474B;
+    color: white; }
+    .button-wrapper_add:hover {
+      color: white;
+      border-radius: 0px; }
+  .button-wrapper .btn {
+    float: left; }
+  .button-wrapper > span {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 60px;
+    -webkit-transform: translate(0, -50%);
+    -ms-transform: translate(0, -50%);
+    -o-transform: translate(0, -50%);
+    transform: translate(0, -50%); }
+
 .btn.icon {
   padding: 6px;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   cursor: pointer;
   transition: all .2s ease-out; }
@@ -173,16 +206,6 @@ body.index header {
 body.index #container {
   padding: 50px 0px;
   width: 100%; }
-  body.index #container .add-folder-wrapper {
-    cursor: pointer; }
-    body.index #container .add-folder-wrapper .add-folder-btn, body.index #container .add-folder-wrapper span {
-      display: inline-block;
-      vertical-align: top; }
-    body.index #container .add-folder-wrapper span {
-      margin-left: 15px;
-      max-width: 50%;
-      font-size: 1.2em;
-      line-height: 1em; }
   body.index #container .dossier-list {
     margin: 0; }
 
@@ -243,47 +266,77 @@ body.index #container {
   background-color: #48C2B5;
   color: white; }
 
+.dossier[data-statut="en cours"] .statut-type {
+  color: #48C2B5; }
+
 body.projets header {
   padding: 30px;
   width: 100%; }
   body.projets header .logo {
     margin: auto;
     width: 33%; }
+  body.projets header .back.btn {
+    position: fixed;
+    left: 8px;
+    top: 8px; }
 
 body.projets #container {
   padding: 50px 0px;
   width: 100%; }
-  body.projets #container .project-list .project {
-    margin-bottom: 50px;
-    height: 150px; }
-    body.projets #container .project-list .project .edit-icon {
-      position: absolute;
-      top: -16px;
-      right: 16px;
-      z-index: 5; }
-    body.projets #container .project-list .project .left-content {
-      height: 150px;
-      background-color: #FFF; }
-      body.projets #container .project-list .project .left-content .content {
-        padding: 7px 20px; }
-        body.projets #container .project-list .project .left-content .content h2 {
-          font-weight: bold;
-          font-size: 1.5em; }
-      body.projets #container .project-list .project .left-content .meta-data {
-        padding: 7px 20px;
-        font-style: italic;
-        font-family: "share", monospace; }
-        body.projets #container .project-list .project .left-content .meta-data .created .create-date {
-          font-weight: bold; }
-        body.projets #container .project-list .project .left-content .meta-data .modified {
-          text-align: right; }
-          body.projets #container .project-list .project .left-content .meta-data .modified .modify-date {
-            font-weight: bold; }
-    body.projets #container .project-list .project .image-wrapper {
-      overflow: hidden;
+  body.projets #container .folder-wrapper .folder {
+    font-size: 3rem;
+    line-height: 1.2;
+    font-weight: normal;
+    font-weight: 300;
+    margin-top: 0;
+    margin-bottom: 32px; }
+  body.projets #container .add-project-wrapper {
+    margin-bottom: 50px; }
+  body.projets #container .project-list {
+    margin-left: 0; }
+    body.projets #container .project-list .project {
+      margin-bottom: 50px;
       height: 150px; }
-      body.projets #container .project-list .project .image-wrapper img {
-        margin: -100px 0 0 0; }
+      body.projets #container .project-list .project .project-inside {
+        border-bottom: 2px solid #eeeeee;
+        background-color: #fff;
+        -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
+        body.projets #container .project-list .project .project-inside:before, body.projets #container .project-list .project .project-inside:after {
+          content: " ";
+          display: table; }
+        body.projets #container .project-list .project .project-inside:after {
+          clear: both; }
+      body.projets #container .project-list .project .edit-icon {
+        position: absolute;
+        top: -16px;
+        right: 16px;
+        z-index: 5; }
+      body.projets #container .project-list .project .left-content {
+        height: 150px;
+        background-color: #FFF;
+        padding: 0; }
+        body.projets #container .project-list .project .left-content .content {
+          padding: 7px 20px; }
+          body.projets #container .project-list .project .left-content .content h2 {
+            font-weight: bold;
+            font-size: 1.5em; }
+        body.projets #container .project-list .project .left-content .meta-data {
+          padding: 7px 20px;
+          font-style: italic;
+          font-family: "share", monospace; }
+          body.projets #container .project-list .project .left-content .meta-data .created .create-date {
+            font-weight: bold; }
+          body.projets #container .project-list .project .left-content .meta-data .modified {
+            text-align: right; }
+            body.projets #container .project-list .project .left-content .meta-data .modified .modify-date {
+              font-weight: bold; }
+      body.projets #container .project-list .project .image-wrapper {
+        overflow: hidden;
+        height: 150px;
+        padding: 0; }
+        body.projets #container .project-list .project .image-wrapper img {
+          object-fit: cover; }
 
 /****************
    POPOVER !

@@ -75,10 +75,81 @@ button{
 .row{max-width:90%;}
 .columns+.columns:last-child{float:left;}
 
+
+/******************
+  Mixins
+  ********************/
+@mixin style--dossierBorders {
+  border-bottom: 2px solid #eeeeee;
+  background-color: #fff;
+  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+@mixin clearfix {
+  &:before, &:after { content: " "; display: table; }
+  &:after { clear: both; }
+}
+
+
+
+
+/////////////////// les buttons
+
+
+.button-wrapper {
+  display: block;
+  position: relative;
+  width:  235px;
+  height: 60px;
+  background-color: #ccc;
+
+  border-radius: 30px;
+  padding: 8px;
+  padding-right: 16px;
+
+  transition: border-radius .4s;
+
+  font-size: $buttonFont;
+  line-height: 1.41;
+
+
+  &_add {
+    background-color: $rouge;
+    color: white;
+
+    &:hover {
+      color: white;
+      border-radius: 0px;
+    }
+  }
+
+  .btn {
+    float:left;
+  }
+
+  > span {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 60px;
+    -webkit-transform: translate(0,-50%);
+    -ms-transform: translate(0,-50%);
+    -o-transform: translate(0,-50%);
+    transform: translate(0,-50%);
+
+  }
+
+}
+
+
+
+
+
 .btn.icon {
   padding: 6px;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
 	cursor: pointer;
 	transition: all .2s ease-out;
@@ -103,6 +174,11 @@ button{
 	}
 }
 
+
+
+
+
+
 // I N D E X
 body.index{
   header{
@@ -116,19 +192,7 @@ body.index{
   #container{
     padding:50px 0px;
     width:100%;
-    .add-folder-wrapper{
-      cursor: pointer;
-      .add-folder-btn, span{
-        display: inline-block;
-        vertical-align: top;
-      }
-      span{
-        margin-left: 15px;
-        max-width: 50%;
-        font-size: $buttonFont;
-        line-height: $buttonFont/120*100;
-      }
-    }
+
     .dossier-list{
 
       margin: 0;
@@ -142,10 +206,7 @@ body.index{
     clear: left;
   }
   .dossier-inside {
-    border-bottom: 2px solid #eeeeee;
-    background-color: #fff;
-    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    @include style--dossierBorders;
   }
 
   .edit-icon{
@@ -227,6 +288,10 @@ body.index{
       background-color: $bleuvert;
       color: white;
     }
+
+    .statut-type {
+      color: $bleuvert;
+    }
   }
 }
 
@@ -240,15 +305,46 @@ body.projets{
         margin:auto;
         width: 33%;
     }
+    .back.btn {
+      position: fixed;
+      left: 8px;
+      top: 8px;
+    }
   }
   #container{
     $projectHeight : 150px;
     padding:50px 0px;
     width:100%;
+
+
+    .folder-wrapper {
+      .folder {
+        font-size: 3rem;
+        line-height: 1.2;
+        font-weight: normal;
+        font-weight: 300;
+        margin-top: 0;
+        margin-bottom: 32px;
+
+      }
+    }
+
+
+    .add-project-wrapper {
+      margin-bottom:  50px;
+    }
     .project-list{
+
+      margin-left: 0;
       .project{
         margin-bottom: 50px;
         height: $projectHeight;
+
+        .project-inside {
+          @include clearfix;
+          @include style--dossierBorders;
+        }
+
         .edit-icon{
           position:absolute;
           top:-16px;
@@ -258,6 +354,7 @@ body.projets{
         .left-content{
           height: $projectHeight;
           background-color:#FFF;
+          padding: 0;
           .content{
             padding: 7px 20px;
             h2{
@@ -277,8 +374,9 @@ body.projets{
         .image-wrapper{
           overflow: hidden;
           height: $projectHeight;
+          padding: 0;
           img {
-            margin: -100px 0 0 0;
+            object-fit: cover;
           }
         }
       }

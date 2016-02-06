@@ -100,7 +100,7 @@ function onListProject(data){
 	displayFolder(folderName, createdDate, modifiedDate, image, statut);
 }
 
-// Fonction qui affichent les projets HTML
+// Fonction qui affiche les projets HTML
 function displayFolder(name, created, modified, image, statut){
 	console.log(statut);
 	var formatName = convertToSlug(name);
@@ -126,7 +126,7 @@ function displayFolder(name, created, modified, image, statut){
 		var editIcon = '<a href="#" class="edit-icon btn icon" data-reveal-id="modal-modify-project"><img src="/images/pen.svg" alt="edit icon"></a>';
 	}
 	var metaDataHTML = '<div class="meta-data row">'+statutHTML+createdHTML+modifiedHTML+'</div>';
-	var folderHTML = '<li class="project small-12 columns" data-statut="'+statut+'">'+editIcon+'<div class="left-content small-6 columns">'+contentHTML+ metaDataHTML+'</div>'+imageHTML+'</li>';
+	var folderHTML = '<li class="project small-12 columns" data-statut="'+statut+'">'+editIcon+'<div class="project-inside row"><div class="left-content small-6 columns">'+contentHTML+ metaDataHTML+'</div>'+imageHTML+'</div></li>';
 	$("#container .project-list").prepend(folderHTML);
 }
 
@@ -146,7 +146,7 @@ function modifyProject($this){
 	var submitBtnHtml = "<input type='submit' class='submit-modify-project' value='Valider'></input>";
 	var deleteHtml = "<div class='delete-project-button'><img src='/images/clear.svg' class='delete-btn btn icon'><span>Supprimer ce dossier</span></div>";
 	var closebtn = '<a class="close-reveal-modal" aria-label="Close">&#215</a>'
-	var newContentToAdd = "<h3 id='modalTitle' class='popoverTitle'>Modifier le dossier</h3><form onsubmit='return false;' class='modify-folder-form'>"+inputNameHtml+statutHtml+inputFile+submitBtnHtml+deleteHtml+"</form><a class='close-reveal-modal' aria-label='Close') &#215;</a></div>";
+	var newContentToAdd = "<h3 id='modalTitle' class='popoverTitle'>Modifier le projet</h3><form onsubmit='return false;' class='modify-folder-form'>"+inputNameHtml+statutHtml+inputFile+submitBtnHtml+deleteHtml+"</form><a class='close-reveal-modal' aria-label='Close') &#215;</a></div>";
 	$("#container.row #modal-modify-project").append(newContentToAdd);
 	modifyStatut();
 	submitModifyFolder($(".submit-modify-project"), 'modifyProject', thisProjectName, statut);

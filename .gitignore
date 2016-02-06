@@ -43,5 +43,5 @@ node_modules
 
 # dodoc customs #
 ######################
-sessions/*
+sessions/**
 public/css
