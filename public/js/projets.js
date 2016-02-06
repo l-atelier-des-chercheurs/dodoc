@@ -123,7 +123,7 @@ function displayFolder(name, created, modified, image, statut){
 	}
 	var metaDataHTML = '<div class="meta-data row">'+statutHTML+createdHTML+modifiedHTML+'</div>';
 
-	var buttonToRecord = '<div class="button-to-record btn icon"><a href="/'+currentSession+'/capture" title="Dodoc page de capture"><img src="/images/record.svg" alt="Page de Capture"></a></div>'
+	var buttonToRecord = '<div class="button-to-record btn icon right"><a href="/'+currentSession+'/'+formatName+'/capture" title="Dodoc page de capture"><img src="/images/record.svg" alt="Page de Capture"></a></div>'
 	var buttonToPages = '<div class="button-to-pages">'+buttonToRecord+'</div>'
 
 	var folderHTML = '<li class="project small-12 columns" data-statut="'+statut+'">'+editIcon+'<div class="project-inside row"><div class="left-content small-6 columns">'+contentHTML+ buttonToPages+metaDataHTML+'</div>'+imageHTML+'</div></li>';

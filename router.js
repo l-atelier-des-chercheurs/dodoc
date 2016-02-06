@@ -10,6 +10,7 @@ module.exports = function(app,io,m){
   */
   app.get("/", getIndex);
   app.get("/:session", getFolder);
+  app.get("/:session/:projet/capture", getCapture);
 
   // app.get("/select/:session", getSelect);
   // app.get("/select/:session/:projet", getProjet);
@@ -53,17 +54,15 @@ module.exports = function(app,io,m){
   //   });
   // };
 
-  // function getCapture(req, res) {
-  //   var session = req.param('session');
-  //   var projet = req.param('projet');
-  //   res.render("capture", {
-  //     title : "Prise de vue",
-  //     session : session,
-  //     sessionFormat : session.replace(/_/g," "),
-  //     projet : projet,
-  //     projetFormat : projet.replace(/_/g," "),
-  //   });
-  // };
+    function getCapture(req, res) {
+      var session = req.param('session');
+      var projet = req.param('projet');
+      res.render("capture", {
+        title : "Prise de vue",
+        session : session,
+        projet : projet,
+      });
+    };
 
   // function getFlux(req, res) {
   //   var session = req.param('session');
