@@ -37,12 +37,12 @@ function init(){
 		thisFolder = $(this).parent();
 		modifyFolder($(this));
 	});
-	
+
 	//remove modal modify folder when it closing
 	$(document).on('close.fndtn.reveal', '#modal-modify-folder[data-reveal]', function () {
   	$("#modal-modify-folder").empty();
 	});
-	
+
 	//Au click sur le bouton supprimer le dossier
 	$('body').on('click', '.delete-folder-button', function(){
 		$('#modal-delete-alert').foundation('reveal', 'open');
@@ -105,11 +105,15 @@ function onListChildren(data){
 	$parent.find(".projet-list").append(liToAdd);
 }
 
-// Fonction qui affichent les dossiers HTML
+// Fonction qui affiche les dossiers HTML
 function displayFolder(name, created, modified, statut, projets){
 	var formatName = convertToSlug(name);
-	var contentHTML = '<a href="/'+formatName+'" title="'+name+'" class="folder-link"><div class="content"><h2>'+name+'</h2><ul class="projet-list row"></ul></div></a>';
-	var nbProjetHTML = '<div class="nb-projets small-6 columns"><span class="numero-projet">'+projets+'</span><span> projet</span></div>';
+	var contentHTML = '<div class="content"><a href="/'+formatName+'" title="'+name+'" class="folder-link"><h2>'+name+'</h2></a><ul class="projet-list row"></ul></div>';
+
+	// si un projet, singulier
+	var projetName = projets > 1 ? 'projets' : 'projet';
+
+	var nbProjetHTML = '<div class="nb-projets small-6 columns"><span class="numero-projet">'+projets+'</span><span> '+projetName+'</span></div>';
 	var statutHTML= '<div class="statut small-6 columns"><span>statut</span><span class="statut-type"> '+statut+'</span></div>';
 	var createdHTML= '<div class="created small-6 columns"><span>crée le </span><span class="create-date">'+created+'</span></div>';
 	if(modified!= null){
@@ -125,15 +129,17 @@ function displayFolder(name, created, modified, statut, projets){
 	else{
 		var editIcon = '<a href="#" class="edit-icon btn icon" data-reveal-id="modal-modify-folder"><img src="/images/pen.svg" alt="edit icon"></a>';
 	}
-	var folderHTML = '<li class="dossier small-4 columns" data-statut="'+statut+'" data-name="'+formatName+'">'+editIcon+contentHTML+metaDataHTML+'</li>';
+	var folderHTML = '<li class="dossier small-4 columns" data-statut="'+statut+'" data-name="'+formatName+'"><div class="dossier-inside">'+editIcon+contentHTML+metaDataHTML+'</div></li>';
 	$("#container .dossier-list").prepend(folderHTML);
 }
 
 function modifyFolder($this){
 	$("#container.row #modal-modify-folder").empty();
 	thisFolderName = $this.parent().find('h2').text();
-	var statut = $this.parent().attr("data-statut");
+	var statut = $this.parents(".dossier").attr("data-statut");
 	var inputNameHtml = "<input type='text' class='modify-folder' value='"+thisFolderName+"'></input>";
+
+	debugger;
 	if(statut == 'en cours'){
 		var statutHtml = "<select class='modify-statut 'name='statut'><option value='"+statut+"' selected>"+statut+"</option><option value='terminé'>terminé</option></select>";
 	}
@@ -195,7 +201,7 @@ function onFolderModified(data){
 	if(statut == "terminé"){
 		$thisEl.find('.edit-icon').remove();
 	}
-	
+
 	$thisEl.find('h2').html(name);
 	$thisEl.find('.statut-type').html(" "+statut);
 	$thisEl.find('.modify-date').html(modified);

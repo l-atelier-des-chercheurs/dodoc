@@ -96,20 +96,20 @@ h1, h2, h3, h4, h5, h6 {
 
 body {
   margin: 0;
-  color: #000;
   background-color: #EFEFEF;
-  font-family: 'fira', sans-serif;
-  font-size: 1em; }
+  color: #000;
+  font-size: 1em;
+  font-family: 'fira', sans-serif; }
   body:after {
     position: fixed;
-    content: '';
     top: 0;
     left: 0;
+    z-index: 1100;
+    visibility: hidden;
     width: 100%;
     height: 100%;
-    z-index: 1100;
     background: rgba(0, 0, 0, 0.8);
-    visibility: hidden;
+    content: '';
     opacity: 0;
     -webkit-transition: opacity .3s 0s, visibility 0s .3s;
     -moz-transition: opacity .3s 0s, visibility 0s .3s;
@@ -131,9 +131,9 @@ a:hover {
   text-decoration: none; }
 
 img, video, audio, svg {
+  display: block;
   min-width: 100%;
-  width: 100%;
-  display: block; }
+  width: 100%; }
 
 button {
   outline: none;
@@ -147,12 +147,12 @@ button {
   float: left; }
 
 .btn.icon {
-  width: 32px;
-  height: 32px;
-  padding: 0;
+  padding: 6px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  transition: all .2s ease-out;
-  cursor: pointer; }
+  cursor: pointer;
+  transition: all .2s ease-out; }
   .btn.icon:hover, .btn.icon:hover {
     border-radius: 20%; }
   .btn.icon svg {
@@ -164,15 +164,15 @@ button {
     font-size: 14px; }
 
 body.index header {
-  width: 100%;
-  padding: 30px; }
+  padding: 30px;
+  width: 100%; }
   body.index header .logo {
-    width: 33%;
-    margin: auto; }
+    margin: auto;
+    width: 33%; }
 
 body.index #container {
-  width: 100%;
-  padding: 50px 0px; }
+  padding: 50px 0px;
+  width: 100%; }
   body.index #container .add-folder-wrapper {
     cursor: pointer; }
     body.index #container .add-folder-wrapper .add-folder-btn, body.index #container .add-folder-wrapper span {
@@ -180,53 +180,79 @@ body.index #container {
       vertical-align: top; }
     body.index #container .add-folder-wrapper span {
       margin-left: 15px;
+      max-width: 50%;
       font-size: 1.2em;
-      line-height: 1em;
-      max-width: 50%; }
-  body.index #container .dossier-list .dossier {
-    margin-bottom: 50px; }
-    body.index #container .dossier-list .dossier .edit-icon {
-      position: absolute;
-      top: -16px;
-      right: 0px; }
-    body.index #container .dossier-list .dossier .content {
-      background-color: #FFF;
-      height: 200px;
+      line-height: 1em; }
+  body.index #container .dossier-list {
+    margin: 0; }
+
+.dossier {
+  margin-bottom: 32px; }
+  .dossier:nth-child(3n+3) {
+    clear: left; }
+  .dossier .dossier-inside {
+    border-bottom: 2px solid #eeeeee;
+    background-color: #fff;
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
+  .dossier .edit-icon {
+    position: absolute;
+    top: -16px;
+    right: 0px; }
+  .dossier .content {
+    overflow: hidden;
+    height: 250px; }
+    .dossier .content h2 {
+      display: block;
+      margin: 0;
+      padding: 16px;
+      font-weight: bold;
+      font-size: 1.5em; }
+    .dossier .content .projet-list {
+      overflow-y: scroll;
       padding: 7px 20px;
-      overflow: hidden; }
-      body.index #container .dossier-list .dossier .content .projet-list {
-        overflow-y: scroll;
-        height: 150px; }
-      body.index #container .dossier-list .dossier .content h2 {
-        font-weight: bold;
-        font-size: 1.5em; }
-    body.index #container .dossier-list .dossier .meta-data {
-      padding: 7px 20px;
-      font-family: "share", monospace;
-      font-style: italic; }
-      body.index #container .dossier-list .dossier .meta-data .nb-projets .numero-projet {
+      height: 200px; }
+  .dossier .meta-data {
+    margin: 0;
+    padding-top: 4px;
+    padding-bottom: 8px;
+    background-color: #f5f5f5;
+    color: #8d8d8d;
+    font-style: italic;
+    font-family: "share", monospace; }
+    .dossier .meta-data > * {
+      padding-top: 4px; }
+    .dossier .meta-data .nb-projets .numero-projet {
+      font-weight: bold; }
+    .dossier .meta-data .statut {
+      text-align: right; }
+      .dossier .meta-data .statut .statut-type {
         font-weight: bold; }
-      body.index #container .dossier-list .dossier .meta-data .statut {
-        text-align: right; }
-        body.index #container .dossier-list .dossier .meta-data .statut .statut-type {
-          font-weight: bold; }
-      body.index #container .dossier-list .dossier .meta-data .created .create-date {
+    .dossier .meta-data .created .create-date {
+      font-weight: bold; }
+    .dossier .meta-data .modified {
+      text-align: right; }
+      .dossier .meta-data .modified .modify-date {
         font-weight: bold; }
-      body.index #container .dossier-list .dossier .meta-data .modified {
-        text-align: right; }
-        body.index #container .dossier-list .dossier .meta-data .modified .modify-date {
-          font-weight: bold; }
+
+.dossier .content a:hover h2 {
+  background-color: #383838;
+  color: white; }
+
+.dossier[data-statut="en cours"] .content a:hover h2 {
+  background-color: #48C2B5;
+  color: white; }
 
 body.projets header {
-  width: 100%;
-  padding: 30px; }
+  padding: 30px;
+  width: 100%; }
   body.projets header .logo {
-    width: 33%;
-    margin: auto; }
+    margin: auto;
+    width: 33%; }
 
 body.projets #container {
-  width: 100%;
-  padding: 50px 0px; }
+  padding: 50px 0px;
+  width: 100%; }
   body.projets #container .project-list .project {
     margin-bottom: 50px;
     height: 150px; }
@@ -236,8 +262,8 @@ body.projets #container {
       right: 16px;
       z-index: 5; }
     body.projets #container .project-list .project .left-content {
-      background-color: #FFF;
-      height: 150px; }
+      height: 150px;
+      background-color: #FFF; }
       body.projets #container .project-list .project .left-content .content {
         padding: 7px 20px; }
         body.projets #container .project-list .project .left-content .content h2 {
@@ -245,8 +271,8 @@ body.projets #container {
           font-size: 1.5em; }
       body.projets #container .project-list .project .left-content .meta-data {
         padding: 7px 20px;
-        font-family: "share", monospace;
-        font-style: italic; }
+        font-style: italic;
+        font-family: "share", monospace; }
         body.projets #container .project-list .project .left-content .meta-data .created .create-date {
           font-weight: bold; }
         body.projets #container .project-list .project .left-content .meta-data .modified {
@@ -254,8 +280,8 @@ body.projets #container {
           body.projets #container .project-list .project .left-content .meta-data .modified .modify-date {
             font-weight: bold; }
     body.projets #container .project-list .project .image-wrapper {
-      height: 150px;
-      overflow: hidden; }
+      overflow: hidden;
+      height: 150px; }
       body.projets #container .project-list .project .image-wrapper img {
         margin: -100px 0 0 0; }
 
@@ -263,11 +289,13 @@ body.projets #container {
    POPOVER !
 ****************/
 .popover {
-  display: block;
   position: fixed;
-  background-color: #efefef;
+  z-index: 1200;
+  display: block;
+  visibility: hidden;
   max-width: 900px;
   border-radius: 4px;
+  background-color: #efefef;
   -webkit-transform: translateZ(0);
   -moz-transform: translateZ(0);
   -ms-transform: translateZ(0);
@@ -275,26 +303,24 @@ body.projets #container {
   transform: translateZ(0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  will-change: left, top, width;
-  z-index: 1200;
-  visibility: hidden; }
+  will-change: left, top, width; }
   .popover.is-visible {
     visibility: visible; }
     .popover.is-visible:before {
-      height: 36px;
-      width: 36px; }
+      width: 36px;
+      height: 36px; }
   .popover:before {
-    content: "";
     position: absolute;
-    right: -18px;
     top: -18px;
-    height: 0;
+    right: -18px;
     width: 0;
+    height: 0;
     background-image: url("/images/clear.svg");
     background-size: cover;
-    pointer-events: none;
+    content: "";
     cursor: pointer;
-    transition: width 0.6s 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55), height 0.6s 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    transition: width 0.6s 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55), height 0.6s 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    pointer-events: none; }
   .popover .spinner {
     position: absolute;
     top: 0;
@@ -303,9 +329,9 @@ body.projets #container {
   .popover.is-loading .spinner {
     opacity: 1; }
   .popover .popoverContainer {
+    overflow-y: scroll;
     padding: 20px;
-    height: 100%;
-    overflow-y: scroll; }
+    height: 100%; }
   .popover .popoverContainer > * {
     display: block !important; }
   .popover .popoverTitle {
@@ -314,36 +340,36 @@ body.projets #container {
     padding: 0;
     padding-bottom: .4em;
     border-bottom: 1px solid #eee;
-    font-family: "share", sans-serif;
     font-weight: bold;
-    font-size: 1.5em; }
+    font-size: 1.5em;
+    font-family: "share", sans-serif; }
   .popover input[type="text"] {
     border: none; }
   .popover input[type="submit"] {
-    border: none;
     float: right;
-    background-color: #48C2B5;
+    margin-top: .5em;
     padding: 0.5em 1em;
-    font-family: "share", sans-serif;
-    margin-top: .5em; }
+    border: none;
+    background-color: #48C2B5;
+    font-family: "share", sans-serif; }
 
 .spinner {
+  position: relative;
+  margin: 100px auto;
   width: 20px;
   height: 20px;
   opacity: 0;
-  position: relative;
-  margin: 100px auto;
   transition: opacity .4s ease-out; }
 
 .double-bounce1, .double-bounce2 {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border-radius: 50%;
   background-color: #48C2B5;
   opacity: 0.6;
-  position: absolute;
-  top: 0;
-  left: 0;
   -webkit-animation: bounce 2.0s infinite ease-in-out;
   animation: bounce 2.0s infinite ease-in-out; }
 
@@ -360,8 +386,8 @@ body.projets #container {
 
 @keyframes bounce {
   0%, 100% {
-    transform: scale(0);
-    -webkit-transform: scale(0); }
+    -webkit-transform: scale(0);
+    transform: scale(0); }
   50% {
-    transform: scale(1);
-    -webkit-transform: scale(1); } }
+    -webkit-transform: scale(1);
+    transform: scale(1); } }

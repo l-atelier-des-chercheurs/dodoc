@@ -132,7 +132,8 @@ function displayFolder(name, created, modified, image, statut){
 
 function modifyProject($this){
 	$("#container.row #modal-modify-project").empty();
-	thisProjectName = $this.parent().find('h2').text();
+	thisProjectName = $this.parents(".project").find('h2').text();
+	debugger;
 	var statut = $this.parent().attr("data-statut");
 	var inputNameHtml = "<input type='text' class='modify-project' value='"+thisProjectName+"'></input>";
 	if(statut == 'en cours'){
@@ -213,7 +214,7 @@ function onProjectModified(data){
 	if(statut == "terminé"){
 		$thisEl.find('.edit-icon').remove();
 	}
-	
+
 	$thisEl.find('h2').html(name);
 	$thisEl.find('.statut-type').html(" "+statut);
 	$thisEl.find('.modify-date').html(modified);
