@@ -4,19 +4,24 @@ html
     include templates/head.jade
   body.projets
     header
-      .logo
-        a(href="/" title="Dodoc")
-          include templates/images/dodoc-logo.svg
+
       .back.btn.icon
         a(href="/" title="Dodoc")
           include templates/images/back.svg
-      .folder #{folder}
+      .logo
+        a(href="/" title="Dodoc")
+          include templates/images/dodoc-logo.svg
 
     #container.row
+
+      .folder-wrapper.small-12.columns
+        h1.folder #{folder}
+
       .add-project-wrapper.small-4.columns
-        a(href="#" data-reveal-id="modal-add-project")
+        a(href="#" data-reveal-id="modal-add-project").button-wrapper.button-wrapper_add
           div.add-project-btn.btn.icon
             include templates/images/add.svg
+          span Créer un projet
       ul.project-list
 
       //- MODAL WINDOWS
@@ -38,7 +43,7 @@ html
         a(class="close-reveal-modal" aria-label="Close") &#215;
       //- ALERT SUPPRIMER UN DOSSIER
       div(id="modal-delete-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-        p Êtes-vous sûr de vouloir supprimer le dossier ? 
+        p Êtes-vous sûr de vouloir supprimer le dossier ?
         button.oui Oui
         button.annuler Annuler
         a(class="close-reveal-modal" aria-label="Close") &#215;
