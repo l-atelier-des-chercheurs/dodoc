@@ -1,0 +1,95 @@
+doctype html
+html
+  head
+    include templates/head.jade
+  body.capture
+    header
+      .back.btn.icon
+        a(href="/" title="Dodoc")
+          include templates/images/back.svg
+      .logo
+        a(href="/" title="Dodoc")
+          include templates/images/dodoc-logo.svg
+
+    div#container.row
+
+      div.media-choice
+        div.btn-choice
+          button#photo= "Image"
+          button#video-btn= "Vidéo"
+          button#stopmotion= "Stop motion"
+          button#audio= "Son"
+
+      //- div.left
+      div.captureLeft
+        div.video-view
+          video(id="video" autoplay)
+
+          canvas(id="canvas-audio" width="480" height="256")
+
+        div.capture
+          div.photo-capture
+            button#capture-btn(data-toggle="tooltip" data-placement="left" title= "Enregistrer une photo")
+              include templates/images/record.svg
+          div.video-capture
+            div.video-save
+              button(id='record-btn' data-toggle="tooltip" data-placement="left" title="Démarrer l\'enregistrement d\'une vidéo")
+                include templates/images/record.svg
+              button(id='stop-btn' disabled)
+                include templates/images/record.svg
+            span#elasped-time
+          div.stopmotion-capture
+            button#start-sm
+              include templates/images/record.svg
+            button#capture-sm
+              include templates/images/record.svg
+          div.audio-capture
+            button(id='start-recording')
+              include templates/images/record.svg
+            button(id='stop-recording' disabled)
+              include templates/images/stop.svg
+        div.choice
+          div.choices.image-choice 
+            .caption= "mode image"
+          div.choices.video-choice 
+            .caption= "mode vidéo"
+          div.choices.stopmotion-choice 
+            .caption= "mode stop motion"
+          div.choices.audio-choice 
+            .caption= "mode audio"
+
+
+      div.captureRight
+
+        div.flash
+        div.title.form-meta
+          div.clear
+            button#clear
+              include templates/images/clear.svg
+        div.screenshot
+          canvas#canvas.canvas-view
+          canvas(id="canvas-equalizer" width=480 height=256)
+          video(id="camera-preview" autoplay controls loop)
+          button#stop-sm
+            include templates/images/enregistre.svg
+        
+        div.son
+          audio(id="son" src="/star-wars-theme.mp3" controls)
+
+      div.clone
+
+
+    //- scripts
+    include templates/footer.jade
+
+    //- some packages for getting and attaching user media
+    script(src="/js/lib/getusermedia.bundle.js")
+    script(src="/js/lib/attachmediastream.bundle.js")
+    //- a package for playing back the recording 
+    script(src="/js/lib/fauxplay.bundle.js")
+    script(src="/js/lib/video-recorder.bundle.js")
+    script(src="/js/lib/RecordRTC.js")
+    //- A real time javascript webm encoder based on a canvas hack
+    script(src="/js/lib/whammy.min.js")
+    script(src='/js/capture.js')
+
