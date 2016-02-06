@@ -16,24 +16,24 @@ h1,h2,h3,h4,h5,h6{font-family:"fira", sans-serif;}
 
 body {
   margin: 0;
-  color: #000;
   background-color: #EFEFEF;
-  font-family: 'fira', sans-serif;
+  color: #000;
   font-size: 1em;
+  font-family: 'fira', sans-serif;
 
 	&:after {
 		position: fixed;
-		content: '';
 		top: 0;
 		left: 0;
+		z-index: 1100;
+		visibility: hidden;
 		width: 100%;
 		height: 100%;
-		z-index: 1100;
 		background: rgba( 0, 0, 0, 0.8);
-		visibility: hidden;
+		content: '';
 		opacity: 0;
 
-		
+
 
 		-webkit-transition: opacity .3s 0s, visibility 0s .3s;
 		-moz-transition: opacity .3s 0s, visibility 0s .3s;
@@ -61,9 +61,9 @@ a:hover {
 }
 
 img, video, audio, svg {
-	min-width: 100%;
-	width:100%;	
 	display: block;
+	min-width: 100%;
+	width:100%;
 }
 
 button{
@@ -75,13 +75,84 @@ button{
 .row{max-width:90%;}
 .columns+.columns:last-child{float:left;}
 
+
+/******************
+  Mixins
+  ********************/
+@mixin style--dossierBorders {
+  border-bottom: 2px solid #eeeeee;
+  background-color: #fff;
+  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+@mixin clearfix {
+  &:before, &:after { content: " "; display: table; }
+  &:after { clear: both; }
+}
+
+
+
+
+/////////////////// les buttons
+
+
+.button-wrapper {
+  display: block;
+  position: relative;
+  width:  235px;
+  height: 60px;
+  background-color: #ccc;
+
+  border-radius: 30px;
+  padding: 8px;
+  padding-right: 16px;
+
+  transition: border-radius .4s;
+
+  font-size: $buttonFont;
+  line-height: 1.41;
+
+
+  &_add {
+    background-color: $rouge;
+    color: white;
+
+    &:hover {
+      color: white;
+      border-radius: 0px;
+    }
+  }
+
+  .btn {
+    float:left;
+  }
+
+  > span {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 60px;
+    -webkit-transform: translate(0,-50%);
+    -ms-transform: translate(0,-50%);
+    -o-transform: translate(0,-50%);
+    transform: translate(0,-50%);
+
+  }
+
+}
+
+
+
+
+
 .btn.icon {
-  width: 32px;
-  height: 32px;
-  padding:0;
+  padding: 6px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-	transition: all .2s ease-out;
 	cursor: pointer;
+	transition: all .2s ease-out;
 
 	&:hover, &:hover{
 		border-radius: 20%;
@@ -103,86 +174,177 @@ button{
 	}
 }
 
-// I N D E X 
+
+
+
+
+
+// I N D E X
 body.index{
   header{
-    width: 100%;
     padding:30px;
+    width: 100%;
     .logo{
-        width: 33%;
         margin:auto;
+        width: 33%;
     }
   }
   #container{
-    width:100%;
     padding:50px 0px;
-    .add-folder-wrapper{
-      cursor: pointer;
-      .add-folder-btn, span{
-        display: inline-block;
-        vertical-align: top;
-      }
-      span{
-        margin-left: 15px;
-        font-size: $buttonFont;
-        line-height: $buttonFont/120*100;
-        max-width: 50%;
+    width:100%;
+
+    .dossier-list{
+
+      margin: 0;
+    }
+  }
+}
+
+.dossier {
+  margin-bottom: $margin * 2;
+  &:nth-child(3n+3) {
+    clear: left;
+  }
+  .dossier-inside {
+    @include style--dossierBorders;
+  }
+
+  .edit-icon{
+    position:absolute;
+    top:-16px;
+    right: 0px;
+  }
+
+  .content{
+    overflow:hidden;
+
+    height: 250px;
+    h2{
+      display: block;
+      margin: 0;
+      padding: 16px;
+      font-weight: bold;
+      font-size: $h2Size;
+
+    }
+    .projet-list{
+      overflow-y:scroll;
+      padding: 7px 20px;
+      height: 200px;
+    }
+
+  }
+  .meta-data{
+
+    margin: 0;
+    padding-top: 4px;
+    padding-bottom: 8px;
+
+    background-color: #f5f5f5;
+        color: #8d8d8d;
+    font-style:italic;
+
+    font-family: "share", monospace;
+
+    >* {
+      padding-top: 4px;
+    }
+    .nb-projets{
+      .numero-projet{
+        font-weight:bold;
+     }
+    }
+    .statut{
+      text-align: right;
+      .statut-type{
+        font-weight:bold;
       }
     }
-    .dossier-list{
-      .dossier{
-        margin-bottom: 50px; 
-        .edit-icon{
-          position:absolute;
-          top:-16px;
-          right: 0px;
-        }
-        .content{
-          background-color:#FFF;
-          height: 200px;
-          padding: 7px 20px;
-          overflow:hidden;
-          .projet-list{
-            overflow-y:scroll;
-            height: 150px;
-          }
-          h2{
-            font-weight: bold;
-            font-size: $h2Size;
-          }
-        }
-        .meta-data{
-          padding: 7px 20px;
-          font-family: "share", monospace;
-          font-style:italic;
-          .nb-projets{.numero-projet{font-weight:bold;}}
-          .statut{text-align: right; .statut-type{font-weight:bold;}}
-          .created{.create-date{font-weight:bold;}}
-          .modified{text-align: right; .modify-date{font-weight:bold;}}
-
-        }
+    .created{
+      .create-date{
+        font-weight:bold;
+      }
+    }
+    .modified{
+      text-align: right;
+      .modify-date{
+        font-weight:bold;
       }
     }
   }
 }
 
+
+
+.dossier {
+
+  .content a:hover h2 {
+      background-color: #383838;
+      color: white;
+  }
+
+  &[data-statut="en cours"] {
+    .content a:hover h2 {
+      background-color: $bleuvert;
+      color: white;
+    }
+
+    .statut-type {
+      color: $bleuvert;
+    }
+  }
+}
+
+
+
 body.projets{
   header{
-    width: 100%;
     padding:30px;
+    width: 100%;
     .logo{
-        width: 33%;
         margin:auto;
+        width: 33%;
+    }
+    .back.btn {
+      position: fixed;
+      left: 8px;
+      top: 8px;
     }
   }
   #container{
     $projectHeight : 150px;
-    width:100%;
     padding:50px 0px;
+    width:100%;
+
+
+    .folder-wrapper {
+      .folder {
+        font-size: 3rem;
+        line-height: 1.2;
+        font-weight: normal;
+        font-weight: 300;
+        margin-top: 0;
+        margin-bottom: 32px;
+
+      }
+    }
+
+
+    .add-project-wrapper {
+      margin-bottom:  50px;
+    }
     .project-list{
+
+      margin-left: 0;
       .project{
-        margin-bottom: 50px; 
+        margin-bottom: 50px;
         height: $projectHeight;
+
+        .project-inside {
+          @include clearfix;
+          @include style--dossierBorders;
+        }
+
         .edit-icon{
           position:absolute;
           top:-16px;
@@ -190,8 +352,9 @@ body.projets{
           z-index:5;
         }
         .left-content{
-          background-color:#FFF;
           height: $projectHeight;
+          background-color:#FFF;
+          padding: 0;
           .content{
             padding: 7px 20px;
             h2{
@@ -201,18 +364,19 @@ body.projets{
           }
           .meta-data{
             padding: 7px 20px;
-            font-family: "share", monospace;
             font-style:italic;
+            font-family: "share", monospace;
             .created{.create-date{font-weight:bold;}}
             .modified{text-align: right; .modify-date{font-weight:bold;}}
 
           }
         }
         .image-wrapper{
-          height: $projectHeight;
           overflow: hidden;
+          height: $projectHeight;
+          padding: 0;
           img {
-            margin: -100px 0 0 0;
+            object-fit: cover;
           }
         }
       }
@@ -220,19 +384,22 @@ body.projets{
   }
 }
 
-// F I N    I N D E X 
+// F I N    I N D E X
 
 /****************
    POPOVER !
 ****************/
 
 .popover {
-  display: block;
   position: fixed;
+  z-index: 1200;
+  display: block;
 
-  background-color: #efefef;
+  visibility: hidden;
   max-width: 900px;
   border-radius: 4px;
+
+  background-color: #efefef;
 
   -webkit-transform: translateZ(0);
   -moz-transform: translateZ(0);
@@ -242,30 +409,27 @@ body.projets{
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   will-change: left, top, width;
-  z-index: 1200;
-
-  visibility: hidden;
 
   &.is-visible {
     visibility: visible;
     &:before {
-      height: 36px;
       width: 36px;
+      height: 36px;
 
     }
   }
   &:before {
-    content: "";
     position: absolute;
-    right: -18px;
     top: -18px;
-    height: 0;
+    right: -18px;
     width: 0;
+    height: 0;
     background-image: url("/images/clear.svg");
     background-size: cover;
-    pointer-events: none;
+    content: "";
     cursor: pointer;
     transition: width .6s .2s cubic-bezier(0.680, -0.550, 0.265, 1.550), height .6s .2s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+    pointer-events: none;
   }
 
   .spinner {
@@ -283,9 +447,9 @@ body.projets{
   }
 
   .popoverContainer {
+    overflow-y: scroll;
     padding:20px;
     height: 100%;
-    overflow-y: scroll;
   }
 
   // rendre tous les contenus de popoverContainer block
@@ -295,14 +459,14 @@ body.projets{
 
   .popoverTitle {
     margin: 0;
-    margin-bottom: .1em;    
+    margin-bottom: .1em;
     padding: 0;
     padding-bottom: .4em;
     border-bottom: 1px solid #eee;
-
-    font-family:"share", sans-serif;
     font-weight: bold;
     font-size: $titlePopUpFont;
+
+    font-family:"share", sans-serif;
 
   }
 
@@ -311,35 +475,35 @@ body.projets{
   }
 
   input[type="submit"]{
-    border:none;
     float: right;
-    background-color: $bleuvert;
-    padding: 0.5em 1em;
-    font-family: "share", sans-serif;
     margin-top: .5em;
+    padding: 0.5em 1em;
+    border:none;
+    background-color: $bleuvert;
+    font-family: "share", sans-serif;
   }
 }
 
 .spinner {
-  width: 20px;
-  height: 20px;
-  opacity: 0;
 
   position: relative;
   margin: 100px auto;
+  width: 20px;
+  height: 20px;
+  opacity: 0;
 
   transition: opacity .4s ease-out;
 }
 
 .double-bounce1, .double-bounce2 {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border-radius: 50%;
   background-color: $bleuvert;
   opacity: 0.6;
-  position: absolute;
-  top: 0;
-  left: 0;
 
   -webkit-animation: bounce 2.0s infinite ease-in-out;
   animation: bounce 2.0s infinite ease-in-out;
@@ -352,17 +516,17 @@ body.projets{
 }
 
 @-webkit-keyframes bounce {
-  0%, 100% { -webkit-transform: scale(0.0) }
-  50% { -webkit-transform: scale(1.0) }
+  0%, 100% { -webkit-transform: scale(0.0); }
+  50% { -webkit-transform: scale(1.0); }
 }
 
 @keyframes bounce {
   0%, 100% {
-    transform: scale(0.0);
     -webkit-transform: scale(0.0);
+    transform: scale(0.0);
   } 50% {
-    transform: scale(1.0);
     -webkit-transform: scale(1.0);
+    transform: scale(1.0);
   }
 }
 
