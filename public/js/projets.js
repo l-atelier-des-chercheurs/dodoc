@@ -61,7 +61,7 @@ function submitProject($button, send){
 			var f = imageData[0];
 			var reader = new FileReader();
 			reader.onload = function(evt){
-				socket.emit(send, {session: currentSession, name: newProjectName, file:evt.target.result, imageName:imageName});
+				socket.emit(send, {session: currentSession, name: newProjectName, file:evt.target.result, image:true});
 			};
 			reader.readAsDataURL(f);
 		}
@@ -84,7 +84,7 @@ function onProjectCreated(data){
 	else{var modifiedDate = data.modified;}
 	$('input.new-project').val('');
 	$('#modal-add-project').foundation('reveal', 'close');
-
+	console.log(image);
 	displayFolder(folderName, createdDate, modifiedDate, image, statut);
 }
 
@@ -102,11 +102,11 @@ function onListProject(data){
 
 // Fonction qui affichent les projets HTML
 function displayFolder(name, created, modified, image, statut){
-	console.log(statut);
 	var formatName = convertToSlug(name);
 	var contentHTML = '<a href="" title="'+name+'"><div class="content small-12 columns"><h2>'+name+'</h2></div></a>';
 	var statutHTML= '<div class="statut small-6 columns"><span>statut</span><span class="statut-type"> '+statut+'</span></div>';
-	if(image == "none"){
+	console.log(image);
+	if(image == false){
 		var imageHTML = "";
 	}
 	else{
@@ -182,23 +182,22 @@ function submitModifyFolder($button, send, oldName, oldStatut){
 		var newStatut = $('select.modify-statut').val();
 		var oldProjectName = oldName;
 		var oldProjectStatut = oldStatut;
+		//Images changed
+		if(imageData != null){
+			console.log('Une image a été ajoutée');
+			var f = imageData[0];
+			var reader = new FileReader();
+			reader.onload = function(evt){
+				socket.emit(send, {name: newProjectName, session:currentSession, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut, file:evt.target.result, imageName:imageName});
+			};
+			reader.readAsDataURL(f);
+		}
+		else{
+			console.log("Pas d'image chargé");
+			socket.emit(send, {name: newProjectName, session:currentSession, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
+		}
 
-		// Images changed
-		// if(imageData != null){
-		// 	console.log('Une image a été ajoutée');
-		// 	var f = imageData[0];
-		// 	var reader = new FileReader();
-		// 	reader.onload = function(evt){
-		// 		//socket.emit(send, {session: currentSession, name: newProjectName, file:evt.target.result, imageName:imageName});
-		// 	};
-		// 	reader.readAsDataURL(f);
-		// }
-		// else{
-		// 	console.log("Pas d'image chargé");
-		// 	//socket.emit(send, {session: currentSession, name: newProjectName});
-		// }
-
-		socket.emit(send, {name: newProjectName, session:currentSession, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
+		// socket.emit(send, {name: newProjectName, session:currentSession, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
 	})
 }
 
@@ -217,6 +216,9 @@ function onProjectModified(data){
 	$thisEl.find('h2').html(name);
 	$thisEl.find('.statut-type').html(" "+statut);
 	$thisEl.find('.modify-date').html(modified);
+	if(data.image == true){
+		$thisEl.find('.image-wrapper img').attr('src', '/'+currentSession+'/'+convertToSlug(name)+'/'+convertToSlug(name)+'-thumb.jpg?modified='+data.modified);
+	}
 }
 
 //Suppression du dossier

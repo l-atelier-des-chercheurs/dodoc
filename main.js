@@ -175,7 +175,7 @@ module.exports = function(app, io){
 			var dir = "sessions/"+session.session+"/";
 			fs.readdirSync(dir).filter(function(file) {
 				if(fs.statSync(path.join(dir, file)).isDirectory()){
-					console.log(file);
+					//console.log(file);
 					if(! /^\..*/.test(file)){
 						var jsonFile = dir + file + '/' +file+'.json';
 						var data = fs.readFileSync(jsonFile,"UTF-8");
@@ -201,13 +201,13 @@ module.exports = function(app, io){
 		      var jsonFile = projectPath + '/' + formatProjectName +'.json';
 		      if(project.file){
 		      	addImage(formatProjectName, projectPath, project.file);
-		      	var objectJson = {"session":project.session, "name":projectName, "fileName":project.imageName, "created":currentDate, "modified":null,"statut":'en cours', "files": {"images":[], "videos":[], "stopmotion":[], "audio":[], "texte":[]}};
-		      	var objectToSend = {session: project.session, name: projectName, format: formatProjectName, imageName:project.imageName, created: currentDate, modified:null, statut:"en cours"};
+		      	var objectJson = {"session":project.session, "name":projectName, "fileName":project.image, "created":currentDate, "modified":null,"statut":'en cours', "files": {"images":[], "videos":[], "stopmotion":[], "audio":[], "texte":[]}};
+		      	var objectToSend = {session: project.session, name: projectName, format: formatProjectName, image:true, created: currentDate, modified:null, statut:"en cours"};
 		      	writeJsonFile(jsonFile, objectJson, objectToSend, "projectCreated"); //write json File
 		      }
 		      else{
-		      	var objectJson= {"session":project.session, "name":projectName, "fileName":"none", "created":currentDate, "modified":null,"statut":'en cours', "files": {"images":[], "videos":[], "stopmotion":[], "audio":[], "texte":[]}};
-		      	var objectToSend = {session: project.session, name: projectName, format: formatProjectName, imageName:"none", created: currentDate, modified:null, statut:"en cours"};
+		      	var objectJson= {"session":project.session, "name":projectName, "fileName":false, "created":currentDate, "modified":null,"statut":'en cours', "files": {"images":[], "videos":[], "stopmotion":[], "audio":[], "texte":[]}};
+		      	var objectToSend = {session: project.session, name: projectName, format: formatProjectName, image:false, created: currentDate, modified:null, statut:"en cours"};
 		      	writeJsonFile(jsonFile, objectJson, objectToSend, "projectCreated"); //write json File
 		      }
 		    } 
@@ -232,7 +232,7 @@ module.exports = function(app, io){
 
 		// Modifier un projet
 		function onModifyProject(project){
-			console.log(project);
+			//console.log(project);
 			var session = project.session;
 
 			var oldProject = project.oldname;
@@ -246,21 +246,32 @@ module.exports = function(app, io){
 
 			var newStatut = project.statut;
 			var currentDate = Date.now();
+			var ifImage;
 
 			// Vérifie si le dossier existe déjà
 			fs.access(newProjectPath, fs.F_OK, function(err) {
 				// S'il n'existe pas -> change le nom du dossier et change le json
 		    if (err) {
+		    	console.log('oui');
 		      fs.renameSync(oldProjectPath, newProjectPath); // renomme le dossier
 		      fs.renameSync(newProjectPath + '/' + oldFormatProjectName + '.json', newProjectPath + '/' + newFormatProjectName + '.json'); //renomme le json
 		      changeJsonFile(newProjectPath + '/' + newFormatProjectName + '.json');
-	      	//change le nom du thumbnail du projet
-	      	fs.stat(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg', function(err, stat) {
-				    if(err == null) {
-				      console.log('le projet contient une image');
-      				fs.renameSync(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg', newProjectPath + '/' + newFormatProjectName + '-thumb.jpg'); //renomme l'image
-				    } 
-					});
+					if(project.file){
+						console.log('oui image');
+						fs.unlink(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg'); //supprime l'ancienne l'image
+		      	addImage(newFormatProjectName, newProjectPath, project.file);
+		      	ifImage = true;
+		      	changeJsonFile(newProjectPath + '/' + newFormatProjectName + '.json');
+		      }
+		      else{
+		      	//change le nom du thumbnail du projet
+		      	fs.stat(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg', function(err, stat) {
+					    if(err == null) {
+					      console.log('le projet contient une image');
+	      				fs.renameSync(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg', newProjectPath + '/' + newFormatProjectName + '-thumb.jpg'); //renomme l'image
+					    } 
+						});
+		      }
 		    } 
 		    // S'il existe afficher un message d'erreur
 		    else {
@@ -272,6 +283,18 @@ module.exports = function(app, io){
 		    		fs.renameSync(oldProjectPath, newProjectPath); // renomme le dossier
 		      	fs.renameSync(newProjectPath + '/' + oldFormatProjectName + '.json', newProjectPath + '/' + newFormatProjectName + '.json'); //renomme le json
 		      	changeJsonFile(newProjectPath + '/' + newFormatProjectName + '.json');
+		      	if(project.file){
+							console.log('oui image');
+							fs.stat(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg', function(err, stat) {
+						    if(err == null) {
+						      console.log('le projet contient une image');
+		      				fs.unlink(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg'); //supprime l'ancienne l'image
+						    } 
+							});
+			      	addImage(newFormatProjectName, newProjectPath, project.file);
+			      	ifImage = true;
+			      	changeJsonFile(newProjectPath + '/' + newFormatProjectName + '.json');
+			      }
 		    	}
 		    }
 			});
@@ -285,7 +308,7 @@ module.exports = function(app, io){
 				var jsonString = JSON.stringify(jsonObj);
 				fs.writeFileSync(file, jsonString);
 				console.log("Projet modifié");
-				io.sockets.emit("projectModified", {name: project.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:jsonObj.nb_projets});
+				io.sockets.emit("projectModified", {name: project.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:jsonObj.nb_projets, image: ifImage});
 			}
 
 		}
