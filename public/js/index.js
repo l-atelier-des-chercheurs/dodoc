@@ -129,7 +129,7 @@ function displayFolder(name, created, modified, statut, projets){
 	else{
 		var editIcon = '<a href="#" class="edit-icon btn icon" data-reveal-id="modal-modify-folder"><img src="/images/pen.svg" alt="edit icon"></a>';
 	}
-	var folderHTML = '<li class="dossier small-4 columns" data-statut="'+statut+'" data-name="'+formatName+'"><div class="dossier-inside">'+editIcon+contentHTML+metaDataHTML+'</div></li>';
+	var folderHTML = '<li class="dossier small-6 medium-4 large-4 columns" data-statut="'+statut+'" data-name="'+formatName+'"><div class="dossier-inside">'+editIcon+contentHTML+metaDataHTML+'</div></li>';
 	$("#container .dossier-list").prepend(folderHTML);
 }
 
