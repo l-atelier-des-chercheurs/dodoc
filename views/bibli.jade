@@ -1,0 +1,19 @@
+doctype html
+html
+  head
+    include templates/head.jade
+  body.capture
+    header
+      .back.btn.icon
+        a(href="/#{session}" title="Dodoc")
+          include templates/images/back.svg
+      .logo
+        a(href="/" title="Dodoc")
+          include templates/images/dodoc-logo.svg
+
+    div#container.row
+
+    //- //footer
+    include templates/footer.jade
+
+    script(src='/js/bibli.js')
