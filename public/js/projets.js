@@ -100,7 +100,7 @@ function onListProject(data){
 // Fonction qui affiche les projets HTML
 function displayFolder(name, created, modified, image, statut){
 	var formatName = convertToSlug(name);
-	var contentHTML = '<a href="" title="'+name+'"><div class="content small-12 columns"><h2>'+name+'</h2></div></a>';
+	var contentHTML = '<div class="content small-12 columns"><h2>'+name+'</h2></div>';
 	var statutHTML= '<div class="statut small-6 columns"><span>statut</span><span class="statut-type"> '+statut+'</span></div>';
 	if(image == false){
 		var imageHTML = '<div class="image-wrapper small-6 columns"><img src="" alt=""></div>';
@@ -227,7 +227,7 @@ function removeFolder(){
 	$('#modal-delete-alert button.oui').on('click', function(){
 		console.log('oui ' + thisProjectName);
 		console.log(thisProject);
-		socket.emit('removeFolder', {name: thisProjectName});
+		socket.emit('removeProject', {name: thisProjectName, session: currentSession});
 		$('#modal-delete-alert').foundation('reveal', 'close');
 	});
 	$('#modal-delete-alert button.annuler').on('click', function(){

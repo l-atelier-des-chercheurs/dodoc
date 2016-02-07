@@ -30,6 +30,7 @@ module.exports = function(app, io){
 		socket.on("listProject", listProject);
 		socket.on("newProject", onNewProject);
 		socket.on("modifyProject", onModifyProject);
+		socket.on("removeProject", onRemoveProject);
 
 
 	});
@@ -255,11 +256,12 @@ module.exports = function(app, io){
 		      fs.renameSync(oldProjectPath, newProjectPath); // renomme le dossier
 		      fs.renameSync(newProjectPath + '/' + oldFormatProjectName + '.json', newProjectPath + '/' + newFormatProjectName + '.json'); //renomme le json
 		      changeJsonFile(newProjectPath + '/' + newFormatProjectName + '.json');
+		      // si une image est changée
 					if(project.file){
 						console.log('oui image');
 						fs.stat(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg', function(err, stat) {
 					    if(err == null) {
-					      console.log('Supprime the olf image');
+					      console.log('Supprime the old image');
 					      //supprime l'ancienne l'image
 	      				fs.unlink(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg', function(){
 	      					addImage(newFormatProjectName, newProjectPath, project.file);
@@ -299,7 +301,7 @@ module.exports = function(app, io){
 							fs.stat(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg', function(err, stat) {
 						    if(err == null) {
 						      console.log('le projet contient une image');
-		      				fs.unlink(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg'); //supprime l'ancienne l'image
+		      				//fs.unlink(newProjectPath + '/' + oldFormatProjectName + '-thumb.jpg'); //supprime l'ancienne l'image
 						    } 
 							});
 			      	addImage(newFormatProjectName, newProjectPath, project.file);
@@ -323,6 +325,16 @@ module.exports = function(app, io){
 				io.sockets.emit("projectModified", {name: project.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:jsonObj.nb_projets, image: ifImage});
 			}
 
+		}
+
+		// Supprimer un dossier
+		function onRemoveProject(project){
+			console.log(project);
+			var session = project.session;
+			var projectName = convertToSlug(project.name);
+			var projectPath = 'sessions/'+session + '/' + projectName;
+			rmDir(projectPath);
+			io.sockets.emit('folderRemoved');
 		}
 
 	// F I N     P R O J E T S     P A G E
