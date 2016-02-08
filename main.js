@@ -34,6 +34,7 @@ module.exports = function(app, io){
 
 		// C A P T U R E     P A G E
 		socket.on("imageCapture", onNewImage);
+		socket.on("listMedias", listMedias);
 
 
 	});
@@ -383,6 +384,27 @@ module.exports = function(app, io){
     io.sockets.emit("displayNewImage", {file: currentDate + ".jpg", extension:"jpg", session:session, projet:project, title: currentDate});
 	}
 	// F I N     C A P T U R E    P A G E 
+
+	// B I B L I    P A G E 
+	function listMedias(media){
+		console.log(media.project);
+		//read json file to send data
+		var jsonFile = 'sessions/' + media.session + '/' + media.project +'/'+media.project+'.json';
+		var data = fs.readFileSync(jsonFile,"UTF-8");
+		var jsonObj = JSON.parse(data);
+
+		var dir = "sessions/" + media.session + '/' + media.project +'/';
+		console.log(dir);
+		fs.readdir(dir, function(err, files) {
+			var media = [];
+			if (err) {console.log(err)};
+			files.forEach(function(f) {
+				media.push(f);
+			});
+			io.sockets.emit('listMedias', media, jsonObj);
+		});
+	}
+	// F I N    B I B L I    P A G E 
 
 	// - - - 
 
