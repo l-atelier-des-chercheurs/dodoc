@@ -257,13 +257,11 @@ function takePictures(){
   });
   console.log("Yeah you take a picture");
   submitData(data, 'imageCapture')
-  //animateWindows(data, "imageCapture");
 }
 
 function submitData(data, send){
-	animateWindows(function(){
-		socket.emit(send, {data: data, session: currentSession, project:currentProject}); 
-	});
+	animateWindows();
+	socket.emit(send, {data: data, session: currentSession, project:currentProject}); 
 }
 
 //animation des fenêtres à la capture
@@ -278,7 +276,7 @@ function animateWindows(){
 //fenêtre de preview retourne au center
 function backAnimation(){
   if($(".captureRight").hasClass('active')){
-    $('.captureLeft').velocity({'left':'50%'}, 'slow');
+    $('.captureLeft').velocity({'left':'27%'}, 'slow');
     $('.captureRight').removeClass('active').velocity({'left':'30%'}, 500,function(){
       $(this).fadeOut('slow');
     });
@@ -290,7 +288,6 @@ function backAnimation(){
 function onSocketConnect() {
 	sessionId = socket.io.engine.id;
 	console.log('Connected ' + sessionId);
-	socket.emit('listProject', {session: currentSession});
 };
 
 function onSocketError(reason) {

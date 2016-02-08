@@ -32,6 +32,9 @@ module.exports = function(app, io){
 		socket.on("modifyProject", onModifyProject);
 		socket.on("removeProject", onRemoveProject);
 
+		// C A P T U R E     P A G E
+		socket.on("imageCapture", onNewImage);
+
 
 	});
 
@@ -184,7 +187,7 @@ module.exports = function(app, io){
 							var jsonFile = dir + file + '/' +file+'.json';
 							var data = fs.readFileSync(jsonFile,"UTF-8");
 							var jsonObj = JSON.parse(data);
-							console.log(sessionName);
+							//console.log(sessionName);
 					    io.sockets.emit('listProject', {name:jsonObj.name, sessionName: sessionName, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, image:jsonObj.fileName});
 				  	}
 					}
@@ -343,6 +346,43 @@ module.exports = function(app, io){
 		}
 
 	// F I N     P R O J E T S     P A G E
+
+
+	// C A P T U R E      P A G E 
+	//ajoute les images au projet
+	function onNewImage(image) {
+		var dataImage = image.data;
+		var session = image.session;
+		var project = image.project; 
+		
+		var imageBuffer = decodeBase64Image(dataImage);
+		var currentDate = Date.now();
+		var filePath = 'sessions/' + session + '/' +project+"/"+ currentDate + '.jpg';
+		console.log(filePath);
+		fs.writeFile(filePath , imageBuffer.data, function(err) { 
+			if(err){
+				console.log(err);
+			}
+			else{
+				console.log("Image Ajoutée au projet");
+			}
+		});
+		
+		var jsonFile = 'sessions/' + session + '/'+ project+"/" +project+'.json';
+		var data = fs.readFileSync(jsonFile,"UTF-8");
+		var jsonObj = JSON.parse(data);
+		var jsonAdd = { "name" : currentDate};
+		jsonObj["files"]["images"].push(jsonAdd);
+		fs.writeFile(jsonFile, JSON.stringify(jsonObj), function(err) {
+      if(err) {
+          console.log(err);
+      } else {
+          console.log("The file was saved!");
+      }
+    });
+    io.sockets.emit("displayNewImage", {file: currentDate + ".jpg", extension:"jpg", session:session, projet:project, title: currentDate});
+	}
+	// F I N     C A P T U R E    P A G E 
 
 	// - - - 
 
