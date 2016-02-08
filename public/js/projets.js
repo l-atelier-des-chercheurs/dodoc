@@ -4,6 +4,7 @@ var socket = io.connect();
 var sessionId;
 //get current session
 var currentSession = app.session;
+var sessionName ;
 
 var thisProjectName;
 var thisProject;
@@ -92,8 +93,10 @@ function onListProject(data){
 	var createdDate = transformDatetoString(data.created);
 	var image = data.image;
 	var statut = data.statut;
+	sessionName = data.sessionName;
 	if(data.modified!= null){var modifiedDate = transformDatetoString(data.modified);}
 	else{var modifiedDate = data.modified;}
+	$('.folder-wrapper').html('<h1 class="folder">'+data.sessionName+'</h1>')
 	displayFolder(folderName, createdDate, modifiedDate, image, statut);
 }
 

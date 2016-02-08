@@ -110,7 +110,6 @@ module.exports = function(app, io){
 
 		// Modifier un dossier
 		function onModifyFolder(folder){
-			console.log(folder);
 			var oldFolder = folder.oldname;
 			var oldFormatFolderName = convertToSlug(oldFolder);
 			var oldFolderPath = 'sessions/'+oldFormatFolderName;
@@ -174,17 +173,23 @@ module.exports = function(app, io){
 		// Liste les projets existants
 		function listProject(session){
 			var dir = "sessions/"+session.session+"/";
-			fs.readdirSync(dir).filter(function(file) {
-				if(fs.statSync(path.join(dir, file)).isDirectory()){
-					//console.log(file);
-					if(! /^\..*/.test(file)){
-						var jsonFile = dir + file + '/' +file+'.json';
-						var data = fs.readFileSync(jsonFile,"UTF-8");
-						var jsonObj = JSON.parse(data);
-				    io.sockets.emit('listProject', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, image:jsonObj.fileName});
-			  	}
-				}
-	  	});
+			var sessionName;
+			fs.readFile(dir + session.session+'.json', 'utf8', function (err, data) {
+			  if (err) throw err;
+			  var JsonObjParent = JSON.parse(data);
+			  sessionName = JsonObjParent.name;
+				fs.readdirSync(dir).filter(function(file) {
+					if(fs.statSync(path.join(dir, file)).isDirectory()){
+						if(! /^\..*/.test(file)){
+							var jsonFile = dir + file + '/' +file+'.json';
+							var data = fs.readFileSync(jsonFile,"UTF-8");
+							var jsonObj = JSON.parse(data);
+							console.log(sessionName);
+					    io.sockets.emit('listProject', {name:jsonObj.name, sessionName: sessionName, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, image:jsonObj.fileName});
+				  	}
+					}
+		  	});
+			});
 		}
 		
 		function onNewProject(project) {
