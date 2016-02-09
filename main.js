@@ -511,20 +511,24 @@ module.exports = function(app, io){
 		// Delete File
 		function deleteFile(req){
 			var fileToDelete = 'sessions/' + req.session +'/'+req.project+'/'+req.file;
-			console.log('delete file');
+			var extension = req.file.split('.').pop();
+  		var identifiant =  req.file.replace("." + extension, "");			
+  		var thumbToDelete = 'sessions/' + req.session +'/'+req.project+'/'+identifiant + '-thumb.png';
+			console.log('delete file', thumbToDelete);
 			fs.unlink(fileToDelete);
-			// fs.readdir(dir,function(err,files){
-		 //    if(err) console.log(err);
-		 //    console.log(files);
-		 //    //fs.unlink(dir + '/' + files[files.length - 2]);
-		 //    //listMedias(req);
-			// });
+			fs.access(thumbToDelete, fs.F_OK, function(err) {
+		    if (!err) {
+		    	console.log('thumb deleted');
+		      fs.unlink(thumbToDelete);
+		    } else {
+		        // It isn't accessible
+		    }
+			});
 		}
 	// F I N     C A P T U R E    P A G E 
 
 	// B I B L I    P A G E 
 	function listMedias(media){
-		//console.log(media.project);
 		//read json file to send data
 		var jsonFile = 'sessions/' + media.session + '/' + media.project +'/'+media.project+'.json';
 		var data = fs.readFileSync(jsonFile,"UTF-8");
