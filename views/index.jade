@@ -10,11 +10,12 @@ html
           a(href="/" title="Dodoc")
             include templates/images/dodoc-logo.svg
 
-    #container.row
-      .add-folder-wrapper.small-6.medium-4.columns
         a(href="#" data-reveal-id="modal-add-folder").button-wrapper.button-wrapper_add
-          span Ajouter un nouveau dossier
+          .btn.icon
+            include templates/images/add.svg
+          span Créer un dossier
 
+    #container.row
       ul.dossier-list
       //- MODAL WINDOWS
       //- ADD FOLDER MODAL
