@@ -13,7 +13,12 @@ var sass = require('gulp-sass');
 // Compile Our Sass
 gulp.task('sass', function() {
   return gulp.src('public/sass/*.scss')
-    .pipe(plumber())
+    .pipe(plumber({
+        errorHandler: function (err) {
+            console.log(err);
+            this.emit('end');
+        }
+    }))
     .pipe(sass())
     .pipe(gulp.dest('public/css'));
 });

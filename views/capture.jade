@@ -3,19 +3,52 @@ html
   head
     include templates/head.jade
   body.capture
-    header
-      .logo
-        a(href="/" title="Dodoc")
-          include templates/images/dodoc-logo.svg
-      .folder.top-bar-header
-        a(href="/#{session}" title="Dodoc") Le nom du dossier
-      .back.btn.icon
-        a(href="/#{session}" title="Dodoc")
-          include templates/images/back.svg
-      .project.top-bar-header Le nom du projet
-      .record-btn.btn.icon
-        a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque")
-          include templates/images/bibli.svg
+
+    .navbar-container
+      header.navbar
+        .logo
+          a(href="/" title="Dodoc")
+            include templates/images/dodoc-logo.svg
+        .item.item_dossier
+          a(href="/#{session}" title="Dodoc")
+            | #{session}
+        .item.item_projet
+          a(href="/#{projet}" title="Dodoc")
+            | #{projet}
+        .item.item_projet
+          a(href="/#{session}/#{projet}/capture" title="Dodoc page de capture")
+            include templates/images/record.svg
+        a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_add
+          div.add-folder-btn.btn.icon
+            include templates/images/bibli.svg
+          span Bibliothèque
+
+      header.navbar
+        .logo
+          a(href="/" title="Dodoc")
+            include templates/images/dodoc-logo.svg
+
+        .item
+          a(href="/#{session}" title="Dodoc").button-wrapper.button-wrapper_dossier
+            .btn.icon
+              include templates/images/dossier.svg
+            span #{session}
+
+        .item
+          a(href="/#{projet}" title="Dodoc").button-wrapper.button-wrapper_projet
+            span #{projet}
+
+        .item
+          a(href="/#{session}/#{projet}/capture" title="Dodoc page de capture").button-wrapper.button-wrapper_capture
+            .btn.icon
+              include templates/images/record.svg
+            span Capture
+
+        a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_bibli
+          .btn.icon
+            include templates/images/bibli.svg
+          span Bibliothèque
+
 
     div#container.row
       div.container-inner.small-6
@@ -58,14 +91,14 @@ html
                     include templates/images/stop.svg
 
               div.display-choice.small-12
-                div.choices.image-choice 
-                  .caption Mode image 
-                div.choices.video-choice 
-                  .caption Mode vidéo 
-                div.choices.stopmotion-choice 
-                  .caption Mode stop motion 
-                div.choices.audio-choice 
-                  .caption Mode audio 
+                div.choices.image-choice
+                  .caption Mode image
+                div.choices.video-choice
+                  .caption Mode vidéo
+                div.choices.stopmotion-choice
+                  .caption Mode stop motion
+                div.choices.audio-choice
+                  .caption Mode audio
 
           div.captureRight.small-5.columns
             div.flash.small-12
@@ -78,7 +111,7 @@ html
               video(id="camera-preview" autoplay controls loop)
               button#stop-sm-btn.btn.icon
                 include templates/images/enregistre.svg
-            
+
             div.son
               audio(id="son" src="/star-wars-theme.mp3" controls)
 
@@ -91,7 +124,7 @@ html
     //- some packages for getting and attaching user media
     //- script(src="/js/lib/getusermedia.bundle.js")
     //- script(src="/js/lib/attachmediastream.bundle.js")
-    //- //- a package for playing back the recording 
+    //- //- a package for playing back the recording
     //- script(src="/js/lib/fauxplay.bundle.js")
     //- script(src="/js/lib/video-recorder.bundle.js")
     script(src="/bower_components/recordrtc/RecordRTC.min.js")

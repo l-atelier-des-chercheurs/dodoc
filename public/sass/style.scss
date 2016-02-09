@@ -1,5 +1,6 @@
 // I M P O R T
 @import "variables.scss";
+@import "navbar.scss";
 
 html {
 	margin:0;
@@ -113,6 +114,9 @@ button{
   font-size: $buttonFont;
   line-height: 1.41;
 
+  &:hover {
+    border-radius: 0px;
+  }
 
   &_add {
     background-color: $rouge;
@@ -120,19 +124,32 @@ button{
 
     &:hover {
       color: white;
-      border-radius: 0px;
     }
   }
+  &_capture {
+    background-color: #FFB520;
+    color: white;
+  }
+  &_bibli {
+    background-color: #293275;
+    color: white;
+  }
+
 
   .btn {
     float:left;
   }
 
+  .btn.icon + span {
+    left: 60px;
+  }
+
+
   > span {
     display: block;
     position: absolute;
     top: 50%;
-    left: 60px;
+    left: 20px;
     -webkit-transform: translate(0,-50%);
     -ms-transform: translate(0,-50%);
     -o-transform: translate(0,-50%);
@@ -181,14 +198,7 @@ button{
 
 // I N D E X
 body.index{
-  header{
-    padding:30px;
-    width: 100%;
-    .logo{
-        margin:auto;
-        width: 33%;
-    }
-  }
+
   #container{
     padding:50px 0px;
     width:100%;
@@ -298,21 +308,9 @@ body.index{
 // F I N    I N D E X
 
 
-// P R O J E T S 
+// P R O J E T S
 body.projets{
-  header{
-    padding:30px;
-    width: 100%;
-    .logo{
-        margin:auto;
-        width: 33%;
-    }
-    .back.btn {
-      position: fixed;
-      left: 8px;
-      top: 8px;
-    }
-  }
+
   #container{
     $projectHeight : 150px;
     padding:50px 0px;
@@ -386,9 +384,9 @@ body.projets{
   }
 }
 
-// F I N     P R O J E T S 
+// F I N     P R O J E T S
 
-// C A P T U R E 
+// C A P T U R E
 body.capture{
 
   .container-inner{
@@ -458,7 +456,7 @@ body.capture{
           margin: auto;
         }
       }
-      
+
       .video-capture{
         .video-save{
           #stop-record-btn{
@@ -513,7 +511,7 @@ body.capture{
       display: none;
     }
   }
-  
+
   .captureRight {
     background-color: #FFF;
     position: absolute;
@@ -537,7 +535,7 @@ body.capture{
         background-color: $canim;
       }
       body[data-mode="audio"] {
-        background-color: $csons;     
+        background-color: $csons;
       }
     }
     .screenshot {
@@ -568,7 +566,7 @@ body.capture{
     }
 
     #camera-preview {
-      display: none; 
+      display: none;
       width: 100%;
     }
     #stop-sm{
@@ -581,7 +579,7 @@ body.capture{
 }
 
 
-// F I N     C A P T U R E 
+// F I N     C A P T U R E
 
 
 /****************

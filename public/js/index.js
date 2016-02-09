@@ -22,6 +22,15 @@ jQuery(document).ready(function($) {
 	init();
 });
 
+function openCloseMenu( scrollY) {
+  if( scrollY < 20) {
+    $(".navbar-container").addClass("is--opened");
+  } else {
+    $(".navbar-container").removeClass("is--opened");
+  }
+}
+
+
 function init(){
 
 	// Submit Folder
@@ -30,6 +39,16 @@ function init(){
 
 	// Remove Folder
 	removeFolder();
+
+  // ANIMER LA NAVBAR
+
+  scrollY = window.pageYOffset;
+  openCloseMenu( scrollY);
+
+	$(window).on('scroll', function () {
+    var scrollY = window.pageYOffset;
+    openCloseMenu( scrollY);
+  });
 
 	//MODIFIER LES DOSSIERS
 	//Au clic sur l'icone éditer
