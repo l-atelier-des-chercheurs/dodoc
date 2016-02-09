@@ -24,11 +24,6 @@ html
       .folder-wrapper.small-12.columns
         h1.folder #{folder}
 
-      .add-project-wrapper.small-4.columns
-        a(href="#" data-reveal-id="modal-add-project").button-wrapper.button-wrapper_add
-          div.add-project-btn.btn.icon
-            include templates/images/add.svg
-          span Créer un projet
       ul.project-list
 
       //- MODAL WINDOWS
@@ -54,6 +49,16 @@ html
         button.oui Oui
         button.annuler Annuler
         a(class="close-reveal-modal" aria-label="Close") &#215;
+
+    .js--templates
+      a(href="" title="Dodoc page de capture").button-wrapper.button-wrapper_capture.button-wrapper_without-bg
+        .btn.icon
+          include templates/images/record.svg
+        span Capture
+      a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_bibli.button-wrapper_without-bg
+        .btn.icon
+          include templates/images/bibli.svg
+        span Bibliothèque
 
 
     //- scripts

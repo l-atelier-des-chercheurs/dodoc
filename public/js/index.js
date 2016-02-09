@@ -116,10 +116,10 @@ function onListChildren(data){
 	var image = data.childrenImage;
 	var $parent = $("li.dossier[data-name="+parentName+"]");
 	if(image != 'none'){
-		var liToAdd = "<li class='small-4 columns'><img src='/"+parentName+"/"+convertToSlug(childrenName)+"/"+convertToSlug(childrenName)+"-thumb.jpg' alt='"+childrenName+"'><h3>"+childrenName+"</h3></li>";
+		var liToAdd = "<li class=''><h3>"+childrenName+"</h3><div class='vignette-visuel'><img src='/"+parentName+"/"+convertToSlug(childrenName)+"/"+convertToSlug(childrenName)+"-thumb.jpg' alt='"+childrenName+"'></div></li>";
 	}
 	else{
-		var liToAdd = "<li class='small-4 columns'><h3>"+childrenName+"</h3></li>";
+		var liToAdd = "<li class=''><h3>"+childrenName+"</h3></li>";
 	}
 	$parent.find(".projet-list").append(liToAdd);
 }
@@ -127,7 +127,7 @@ function onListChildren(data){
 // Fonction qui affiche les dossiers HTML
 function displayFolder(name, created, modified, statut, projets){
 	var formatName = convertToSlug(name);
-	var contentHTML = '<div class="content"><a href="/'+formatName+'" title="'+name+'" class="folder-link"><h2>'+name+'</h2></a><ul class="projet-list row"></ul></div>';
+	var contentHTML = '<div class="content"><a href="/'+formatName+'" title="'+name+'" class="folder-link"><h2>'+name+'</h2></a><ul class="projet-list"></ul></div>';
 
 	// si un projet, singulier
 	var projetName = projets > 1 ? 'projets' : 'projet';
@@ -170,7 +170,6 @@ function modifyFolder($this){
 	var closebtn = '<a class="close-reveal-modal" aria-label="Close">&#215</a>'
 	var newContentToAdd = "<h3 id='modalTitle' class='popoverTitle'>Modifier le dossier</h3><form onsubmit='return false;' class='modify-folder-form'>"+inputNameHtml+statutHtml+submitBtnHtml+deleteHtml+"</form><a class='close-reveal-modal' aria-label='Close') &#215;</a></div>";
 	$("#container.row #modal-modify-folder").append(newContentToAdd);
-	//fillPopOver(newContentToAdd, $this, 300, 300, closeAddProjectFunction); //ouverture du pop up
 	modifyStatut();
 	submitModifyFolder($(".submit-modify-folder"), 'modifyFolder', thisFolderName, statut);
 	$thisEl = $this.parent();

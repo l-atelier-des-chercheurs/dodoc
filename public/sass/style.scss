@@ -102,7 +102,7 @@ button{
   display: block;
   position: relative;
   width:  235px;
-  height: 60px;
+  height: 40px;
   background-color: #ccc;
 
   border-radius: 30px;
@@ -112,19 +112,35 @@ button{
   transition: border-radius .4s;
 
   font-size: $buttonFont;
-  line-height: 1.41;
+  line-height: 1.1;
 
-  &:hover {
+  &:hover, &:focus {
     border-radius: 0px;
+    color: white;
   }
+
+  &.button-wrapper_without-bg {
+    background-color: transparent;
+    &.button-wrapper_add {
+      color: $rouge;
+      &:hover {
+        color: inherit;
+      }
+    }
+
+    &.button-wrapper_capture {
+      color: #FFB520;
+    }
+    &.button-wrapper_bibli {
+      color: #293275;
+    }
+
+  }
+
 
   &_add {
     background-color: $rouge;
     color: white;
-
-    &:hover {
-      color: white;
-    }
   }
   &_capture {
     background-color: #FFB520;
@@ -140,6 +156,10 @@ button{
     float:left;
   }
 
+  .btn.icon {
+    margin-top:   -10px;
+  }
+
   .btn.icon + span {
     left: 60px;
   }
@@ -148,7 +168,7 @@ button{
   > span {
     display: block;
     position: absolute;
-    top: 50%;
+    top: 47%;
     left: 20px;
     -webkit-transform: translate(0,-50%);
     -ms-transform: translate(0,-50%);
@@ -212,9 +232,11 @@ body.index{
 
 .dossier {
   margin-bottom: $margin * 2;
+/*
   &:nth-child(3n+3) {
     clear: left;
   }
+*/
   .dossier-inside {
     @include style--dossierBorders;
   }
@@ -223,6 +245,7 @@ body.index{
     position:absolute;
     top:-16px;
     right: 0px;
+    z-index: 150;
   }
 
   .content{
@@ -236,11 +259,61 @@ body.index{
       font-weight: bold;
       font-size: $h2Size;
 
+      position: relative;
+      z-index: 2;
+
+      -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
     }
     .projet-list{
       overflow-y:scroll;
-      padding: 7px 20px;
-      height: 200px;
+
+      margin: 0;
+      padding: 15px;
+      height: 100%;
+      margin-bottom: 70px;
+
+
+      background-color: #F4F4F4;
+
+
+      li {
+
+        margin-bottom:  5px;
+        background-color: #fff;
+
+        border: 1px solid #ddd;
+
+        -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+
+        h3 {
+
+          display: block;
+          padding:5px;
+          padding-top:  4px;
+          padding-left:   8px;
+
+          font-weight: bold;
+          font-size: 1em;
+        }
+
+        .vignette-visuel {
+
+          overflow: hidden;
+          padding-bottom: 10%;
+          height: 0;
+          width: 100%;
+          background-color: #eee;
+
+          img {
+            margin-top:   -33%;
+          }
+        }
+
+      }
     }
 
   }
@@ -265,7 +338,6 @@ body.index{
      }
     }
     .statut{
-      text-align: right;
       .statut-type{
         font-weight:bold;
       }
@@ -276,7 +348,6 @@ body.index{
       }
     }
     .modified{
-      text-align: right;
       .modify-date{
         font-weight:bold;
       }
@@ -340,15 +411,22 @@ body.projets{
         margin-bottom: 50px;
         height: $projectHeight;
 
+        &[data-statut="en cours"] {
+          .statut-type {
+            color: $bleuvert;
+          }
+        }
+
         .project-inside {
           @include clearfix;
           @include style--dossierBorders;
+          border-bottom: 0;
         }
 
         .edit-icon{
           position:absolute;
           top:-16px;
-          right: 16px;
+          right: 0;
           z-index:5;
         }
         .left-content{
@@ -367,7 +445,7 @@ body.projets{
             font-style:italic;
             font-family: "share", monospace;
             .created{.create-date{font-weight:bold;}}
-            .modified{text-align: right; .modify-date{font-weight:bold;}}
+            .modified{text-align: left; .modify-date{font-weight:bold;}}
 
           }
         }
@@ -579,151 +657,7 @@ body.capture{
 }
 
 
-// F I N     C A P T U R E
 
-
-/****************
-   POPOVER !
-****************/
-
-.popover {
-  position: fixed;
-  z-index: 1200;
-  display: block;
-
-  visibility: hidden;
-  max-width: 900px;
-  border-radius: 4px;
-
-  background-color: #efefef;
-
-  -webkit-transform: translateZ(0);
-  -moz-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  -o-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  will-change: left, top, width;
-
-  &.is-visible {
-    visibility: visible;
-    &:before {
-      width: 36px;
-      height: 36px;
-
-    }
-  }
-  &:before {
-    position: absolute;
-    top: -18px;
-    right: -18px;
-    width: 0;
-    height: 0;
-    background-image: url("/images/clear.svg");
-    background-size: cover;
-    content: "";
-    cursor: pointer;
-    transition: width .6s .2s cubic-bezier(0.680, -0.550, 0.265, 1.550), height .6s .2s cubic-bezier(0.680, -0.550, 0.265, 1.550);
-    pointer-events: none;
-  }
-
-  .spinner {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 10px;
-
-  }
-
-  &.is-loading {
-    .spinner {
-      opacity: 1;
-    }
-  }
-
-  .popoverContainer {
-    overflow-y: scroll;
-    padding:20px;
-    height: 100%;
-  }
-
-  // rendre tous les contenus de popoverContainer block
-  .popoverContainer > * {
-    display: block !important;
-  }
-
-  .popoverTitle {
-    margin: 0;
-    margin-bottom: .1em;
-    padding: 0;
-    padding-bottom: .4em;
-    border-bottom: 1px solid #eee;
-    font-weight: bold;
-    font-size: $titlePopUpFont;
-
-    font-family:"share", sans-serif;
-
-  }
-
-  input[type="text"]{
-    border:none;
-  }
-
-  input[type="submit"]{
-    float: right;
-    margin-top: .5em;
-    padding: 0.5em 1em;
-    border:none;
-    background-color: $bleuvert;
-    font-family: "share", sans-serif;
-  }
+.js--templates {
+  display: none;
 }
-
-.spinner {
-
-  position: relative;
-  margin: 100px auto;
-  width: 20px;
-  height: 20px;
-  opacity: 0;
-
-  transition: opacity .4s ease-out;
-}
-
-.double-bounce1, .double-bounce2 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background-color: $bleuvert;
-  opacity: 0.6;
-
-  -webkit-animation: bounce 2.0s infinite ease-in-out;
-  animation: bounce 2.0s infinite ease-in-out;
-}
-
-.double-bounce2 {
-  background-color: $bleumarine;
-  -webkit-animation-delay: -1.0s;
-  animation-delay: -1.0s;
-}
-
-@-webkit-keyframes bounce {
-  0%, 100% { -webkit-transform: scale(0.0); }
-  50% { -webkit-transform: scale(1.0); }
-}
-
-@keyframes bounce {
-  0%, 100% {
-    -webkit-transform: scale(0.0);
-    transform: scale(0.0);
-  } 50% {
-    -webkit-transform: scale(1.0);
-    transform: scale(1.0);
-  }
-}
-
-// END POPOVER

@@ -104,19 +104,19 @@ function onListProject(data){
 function displayFolder(name, created, modified, image, statut){
 	var formatName = convertToSlug(name);
 	var contentHTML = '<div class="content small-12 columns"><h2>'+name+'</h2></div>';
-	var statutHTML= '<div class="statut small-6 columns"><span>statut</span><span class="statut-type"> '+statut+'</span></div>';
+	var statutHTML= '<div class="statut"><span>statut</span><span class="statut-type"> '+statut+'</span></div>';
 	if(image == false){
 		var imageHTML = '<div class="image-wrapper small-6 columns"><img src="" alt=""></div>';
 	}
 	else{
 		var imageHTML = '<div class="image-wrapper small-6 columns"><img src="/'+currentSession+'/'+formatName+'/'+formatName+'-thumb.jpg" alt="'+name+'"></div>'
 	}
-	var createdHTML= '<div class="created small-6 columns"><span>crée le </span><span class="create-date">'+created+'</span></div>';
+	var createdHTML= '<div class="created"><span>crée le </span><span class="create-date">'+created+'</span></div>';
 	if(modified!= null){
-		var modifiedHTML= '<div class="modified small-6 columns"><span>modifié le </span><span class="modify-date">'+modified+'</span></div>';
+		var modifiedHTML= '<div class="modified"><span>modifié le </span><span class="modify-date">'+modified+'</span></div>';
 	}
 	else{
-		var modifiedHTML= '<div class="modified small-6 columns"></div>';
+		var modifiedHTML= '<div class="modified"></div>';
 	}
 	if(statut == "terminé"){
 		var editIcon='' ;
@@ -124,13 +124,18 @@ function displayFolder(name, created, modified, image, statut){
 	else{
 		var editIcon = '<a href="#" class="edit-icon btn icon" data-reveal-id="modal-modify-project"><img src="/images/pen.svg" alt="edit icon"></a>';
 	}
-	var metaDataHTML = '<div class="meta-data row">'+statutHTML+createdHTML+modifiedHTML+'</div>';
+	var metaDataHTML = '<div class="meta-data small-6 columns">'+statutHTML+createdHTML+modifiedHTML+'</div>';
 
-	var buttonToRecord = '<div class="button-to-record btn icon right"><a href="/'+currentSession+'/'+formatName+'/capture" title="Dodoc page de capture"><img src="/images/record.svg" alt="Page de Capture"></a></div>'
-	var buttonToPubli = '<div class="button-to-publi btn icon right"><a href="/'+currentSession+'/'+formatName+'/bibliotheque" title="Dodoc page de bibliotheque"><img src="/images/bibli.svg" alt="Page de Bibliotheque"></a></div>'
-	var buttonToPages = '<div class="button-to-pages">'+buttonToRecord+buttonToPubli+'</div>'
+	var buttonToRecord = $(".js--templates .button-wrapper_capture").clone(false);
+	buttonToRecord.attr( 'href', '/'+currentSession+'/'+formatName+'/capture');
 
-	var folderHTML = '<li class="project small-12 columns" data-statut="'+statut+'">'+editIcon+'<div class="project-inside row"><div class="left-content small-6 columns">'+contentHTML+ buttonToPages+metaDataHTML+'</div>'+imageHTML+'</div></li>';
+  var buttonToPubli = $(".js--templates .button-wrapper_bibli").clone(false);
+	buttonToPubli.attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque');
+
+
+	var buttonToPages = '<div class="button-to-pages  small-6 columns">'+buttonToRecord.prop('outerHTML')+buttonToPubli.prop('outerHTML')+'</div>'
+
+	var folderHTML = '<li class="project small-12 columns" data-statut="'+statut+'">'+editIcon+'<div class="project-inside"><div class="left-content small-6 columns">'+contentHTML+metaDataHTML+buttonToPages+'</div>'+imageHTML+'</div></li>';
 	$("#container .project-list").prepend(folderHTML);
 }
 
@@ -219,7 +224,7 @@ function onProjectModified(data){
 	}
 
 	$thisEl.find('h2').html(name);
-	$thisEl.find('.statut-type').html(" "+statut);
+	$thisEl.find('.statut-type').attr("data-statut", statut).html(" "+statut);
 	$thisEl.find('.modify-date').html(modified);
 	if(data.image == true){
 		$thisEl.find('.image-wrapper img').attr('src', '/'+currentSession+'/'+convertToSlug(name)+'/'+convertToSlug(name)+'-thumb.jpg?modified='+data.modified);
