@@ -1,0 +1,37 @@
+doctype html
+html
+  head
+    include templates/head.jade
+  body.bibli
+    header
+      .logo
+        a(href="/" title="Dodoc")
+          include templates/images/dodoc-logo.svg
+      .folder.top-bar-header
+        a(href="/#{session}" title="Dodoc") Le nom du dossier
+      .back.btn.icon
+        a(href="/#{session}" title="Dodoc")
+          include templates/images/back.svg
+      .project.top-bar-header Le nom du projet
+      .record-btn.btn.icon
+        a(href="/#{session}/#{projet}/capture" title="Dodoc page de capture")
+          include templates/images/record.svg
+
+    div#container.row
+      div.bibli-buffer.small-6.medium-6.large-6.columns
+        div.medias.small-11.medium-11.large-11.columns
+          ul.medias-list
+        div.btn-medias.small-1.medium-1.large-1.columns
+          ul
+            li.--js-btn-medias-text.btn.icon
+              include templates/images/text.svg
+            li.--js-btn-medias-add.btn.icon
+              include templates/images/add.svg
+            li.--js-btn-medias-publications.btn.icon
+              include templates/images/publi.svg
+      div.montage.small-6.medium-6.large-6.columns
+
+    //- //footer
+    include templates/footer.jade
+
+    script(src='/js/bibli.js')

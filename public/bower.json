@@ -24,5 +24,8 @@
     "velocity": "~1.2.3",
     "jquery-ui": "~1.11.4",
     "tooltip": "*"
+  },
+  "dependencies": {
+    "recordrtc": "^5.2.7"
   }
 }

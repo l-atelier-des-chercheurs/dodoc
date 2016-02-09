@@ -1,0 +1,12 @@
+<svg version="1.1" id="Layer_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="64px" height="64px"
+	 viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
+
+	<g i:extraneous="self">
+		<circle fill="#48C2B5" cx="31.767" cy="31.93" r="30.749"/>
+		
+			<rect x="13.023" y="34.766" transform="matrix(0.7071 0.7071 -0.7071 0.7071 33.9671 -5.3256)" fill="#09227C" width="20.778" height="7.145"/>
+		
+			<rect x="20.509" y="29.482" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -12.135 36.8154)" fill="#09227C" width="35.723" height="7.146"/>
+	</g>
+</svg>

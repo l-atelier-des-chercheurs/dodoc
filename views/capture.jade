@@ -1,0 +1,101 @@
+doctype html
+html
+  head
+    include templates/head.jade
+  body.capture
+    header
+      .logo
+        a(href="/" title="Dodoc")
+          include templates/images/dodoc-logo.svg
+      .folder.top-bar-header
+        a(href="/#{session}" title="Dodoc") Le nom du dossier
+      .back.btn.icon
+        a(href="/#{session}" title="Dodoc")
+          include templates/images/back.svg
+      .project.top-bar-header Le nom du projet
+      .record-btn.btn.icon
+        a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque")
+          include templates/images/bibli.svg
+
+    div#container.row
+      div.container-inner.small-6
+        div.media-choice.row
+          div.btn-choice.small-12
+            div.row
+              button#photo.small-3.columns Image
+              button#video-btn.small-3.columns Vidéo
+              button#stopmotion.small-3.columns Stop motion
+              button#audio.small-3.columns Son
+
+        div.content-wrapper.row
+          div.captureLeft.small-5.columns
+            div.video-view.small-12
+              //- display camera
+              video(id="video" autoplay)
+              //- display audio vizualizer
+              canvas(id="canvas-audio" width="480" height="256")
+
+              div.btn-capture-wrapper.small-12
+                div.photo-capture
+                  button#capture-btn.btn.icon
+                    include templates/images/record.svg
+                div.video-capture
+                  div.video-save
+                    button#start-record-btn.btn.icon
+                      include templates/images/record.svg
+                    button(id='stop-record-btn' class="btn icon" disabled)
+                      include templates/images/stop.svg
+                  span#elasped-time
+                div.stopmotion-capture
+                  button#start-sm-btn.btn.icon
+                    include templates/images/record.svg
+                  button#capture-sm-btn.btn.icon
+                    include templates/images/record.svg
+                div.audio-capture
+                  button#start-recording-btn.btn.icon
+                    include templates/images/record.svg
+                  button(id='stop-recording-btn' class='btn icon' disabled)
+                    include templates/images/stop.svg
+
+              div.display-choice.small-12
+                div.choices.image-choice 
+                  .caption Mode image 
+                div.choices.video-choice 
+                  .caption Mode vidéo 
+                div.choices.stopmotion-choice 
+                  .caption Mode stop motion 
+                div.choices.audio-choice 
+                  .caption Mode audio 
+
+          div.captureRight.small-5.columns
+            div.flash.small-12
+            div.clear
+              button#clear.btn.icon
+                include templates/images/clear.svg
+            div.screenshot.small-12
+              canvas#canvas.canvas-view
+              canvas(id="canvas-equalizer" width=480 height=256)
+              video(id="camera-preview" autoplay controls loop)
+              button#stop-sm-btn.btn.icon
+                include templates/images/enregistre.svg
+            
+            div.son
+              audio(id="son" src="/star-wars-theme.mp3" controls)
+
+          div.clone
+
+
+    //- scripts
+    include templates/footer.jade
+
+    //- some packages for getting and attaching user media
+    //- script(src="/js/lib/getusermedia.bundle.js")
+    //- script(src="/js/lib/attachmediastream.bundle.js")
+    //- //- a package for playing back the recording 
+    //- script(src="/js/lib/fauxplay.bundle.js")
+    //- script(src="/js/lib/video-recorder.bundle.js")
+    script(src="/bower_components/recordrtc/RecordRTC.min.js")
+    //- //- A real time javascript webm encoder based on a canvas hack
+    //- script(src="/js/lib/whammy.min.js")
+    script(src='/js/capture.js')
+

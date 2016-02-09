@@ -338,6 +338,133 @@ body.projets #container {
         body.projets #container .project-list .project .image-wrapper img {
           object-fit: cover; }
 
+body.capture .container-inner {
+  margin: auto; }
+
+body.capture .clone {
+  position: absolute;
+  left: 52%;
+  top: 0px; }
+
+body.capture .media-choice .btn-choice {
+  text-align: center; }
+  body.capture .media-choice .btn-choice button {
+    color: #333;
+    background-color: #fff;
+    border: none;
+    margin: 0;
+    outline: none;
+    font-size: 1em;
+    padding: 5px 15px;
+    margin: 5px; }
+    body.capture .media-choice .btn-choice button.active, body.capture .media-choice .btn-choice button:hover {
+      color: #fff;
+      background-color: #48C2B5;
+      outline: none; }
+      body.capture .media-choice .btn-choice button.active#photo, body.capture .media-choice .btn-choice button:hover#photo {
+        background-color: #ffb520; }
+      body.capture .media-choice .btn-choice button.active#video-btn, body.capture .media-choice .btn-choice button:hover#video-btn {
+        background-color: #fe414d; }
+      body.capture .media-choice .btn-choice button.active#stopmotion, body.capture .media-choice .btn-choice button:hover#stopmotion {
+        background-color: #48c2b5; }
+      body.capture .media-choice .btn-choice button.active#audio, body.capture .media-choice .btn-choice button:hover#audio {
+        background-color: #09227c; }
+
+body.capture .captureLeft {
+  margin: auto;
+  padding: 10px;
+  position: absolute;
+  background-color: #FFF;
+  z-index: 2; }
+  body.capture .captureLeft .btn-capture-wrapper {
+    z-index: 1000;
+    background: #FFF;
+    height: 60px; }
+    body.capture .captureLeft .btn-capture-wrapper > div {
+      position: absolute; }
+      body.capture .captureLeft .btn-capture-wrapper > div button {
+        outline: none !important;
+        border: none !important;
+        background: none !important;
+        margin: auto; }
+    body.capture .captureLeft .btn-capture-wrapper .video-capture .video-save #stop-record-btn {
+      display: none; }
+    body.capture .captureLeft .btn-capture-wrapper .stopmotion-capture button {
+      display: inline-block; }
+    body.capture .captureLeft .btn-capture-wrapper .stopmotion-capture #capture-sm-btn {
+      display: none; }
+    body.capture .captureLeft .btn-capture-wrapper .audio-capture #stop-recording-btn {
+      display: none; }
+  body.capture .captureLeft .display-choice {
+    position: absolute;
+    height: 82%;
+    top: 0;
+    left: 0; }
+    body.capture .captureLeft .display-choice .choices {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      display: none; }
+      body.capture .captureLeft .display-choice .choices.image-choice {
+        background-color: #ffb520; }
+      body.capture .captureLeft .display-choice .choices.video-choice {
+        background-color: #fe414d; }
+      body.capture .captureLeft .display-choice .choices.stopmotion-choice {
+        background-color: #48c2b5; }
+      body.capture .captureLeft .display-choice .choices.audio-choice {
+        background-color: #09227c; }
+  body.capture .captureLeft #canvas-audio {
+    display: none; }
+
+body.capture .captureRight {
+  background-color: #FFF;
+  position: absolute;
+  z-index: 1;
+  display: none;
+  overflow: hidden; }
+  body.capture .captureRight .flash {
+    height: 100%;
+    background-color: #FFF;
+    display: none;
+    position: absolute; }
+    body[data-mode="photo"] body.capture .captureRight .flash {
+      background-color: #ffb520; }
+    body.capture .captureRight .flash body[data-mode="video"] {
+      background-color: #fe414d; }
+    body.capture .captureRight .flash body[data-mode="stopmotion"] {
+      background-color: #48c2b5; }
+    body.capture .captureRight .flash body[data-mode="audio"] {
+      background-color: #09227c; }
+  body.capture .captureRight .screenshot {
+    margin: 30px auto 0px auto; }
+    body.capture .captureRight .screenshot .meta-stopmotion {
+      margin-top: 10px; }
+      body.capture .captureRight .screenshot .meta-stopmotion .count-image {
+        display: inline-block;
+        vertical-align: top; }
+      body.capture .captureRight .screenshot .meta-stopmotion .delete-image {
+        width: 30px;
+        display: inline-block;
+        vertical-align: top;
+        margin-right: 10px;
+        cursor: pointer; }
+    body.capture .captureRight .screenshot #canvas-equalizer {
+      background-color: orange; }
+  body.capture .captureRight .son {
+    display: none;
+    padding-left: 27px;
+    margin-top: 60px;
+    margin-bottom: 40px; }
+  body.capture .captureRight #camera-preview {
+    display: none;
+    width: 100%; }
+  body.capture .captureRight #stop-sm {
+    display: none;
+    float: right;
+    width: 48px; }
+
 /****************
    POPOVER !
 ****************/

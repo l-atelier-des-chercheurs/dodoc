@@ -4,6 +4,7 @@ var socket = io.connect();
 var sessionId;
 //get current session
 var currentSession = app.session;
+var sessionName ;
 
 var thisProjectName;
 var thisProject;
@@ -92,15 +93,17 @@ function onListProject(data){
 	var createdDate = transformDatetoString(data.created);
 	var image = data.image;
 	var statut = data.statut;
+	sessionName = data.sessionName;
 	if(data.modified!= null){var modifiedDate = transformDatetoString(data.modified);}
 	else{var modifiedDate = data.modified;}
+	$('.folder-wrapper').html('<h1 class="folder">'+data.sessionName+'</h1>')
 	displayFolder(folderName, createdDate, modifiedDate, image, statut);
 }
 
 // Fonction qui affiche les projets HTML
 function displayFolder(name, created, modified, image, statut){
 	var formatName = convertToSlug(name);
-	var contentHTML = '<a href="" title="'+name+'"><div class="content small-12 columns"><h2>'+name+'</h2></div></a>';
+	var contentHTML = '<div class="content small-12 columns"><h2>'+name+'</h2></div>';
 	var statutHTML= '<div class="statut small-6 columns"><span>statut</span><span class="statut-type"> '+statut+'</span></div>';
 	if(image == false){
 		var imageHTML = '<div class="image-wrapper small-6 columns"><img src="" alt=""></div>';
@@ -124,7 +127,8 @@ function displayFolder(name, created, modified, image, statut){
 	var metaDataHTML = '<div class="meta-data row">'+statutHTML+createdHTML+modifiedHTML+'</div>';
 
 	var buttonToRecord = '<div class="button-to-record btn icon right"><a href="/'+currentSession+'/'+formatName+'/capture" title="Dodoc page de capture"><img src="/images/record.svg" alt="Page de Capture"></a></div>'
-	var buttonToPages = '<div class="button-to-pages">'+buttonToRecord+'</div>'
+	var buttonToPubli = '<div class="button-to-publi btn icon right"><a href="/'+currentSession+'/'+formatName+'/bibliotheque" title="Dodoc page de bibliotheque"><img src="/images/bibli.svg" alt="Page de Bibliotheque"></a></div>'
+	var buttonToPages = '<div class="button-to-pages">'+buttonToRecord+buttonToPubli+'</div>'
 
 	var folderHTML = '<li class="project small-12 columns" data-statut="'+statut+'">'+editIcon+'<div class="project-inside row"><div class="left-content small-6 columns">'+contentHTML+ buttonToPages+metaDataHTML+'</div>'+imageHTML+'</div></li>';
 	$("#container .project-list").prepend(folderHTML);
@@ -227,7 +231,7 @@ function removeFolder(){
 	$('#modal-delete-alert button.oui').on('click', function(){
 		console.log('oui ' + thisProjectName);
 		console.log(thisProject);
-		socket.emit('removeFolder', {name: thisProjectName});
+		socket.emit('removeProject', {name: thisProjectName, session: currentSession});
 		$('#modal-delete-alert').foundation('reveal', 'close');
 	});
 	$('#modal-delete-alert button.annuler').on('click', function(){

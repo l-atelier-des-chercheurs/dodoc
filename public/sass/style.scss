@@ -295,8 +295,10 @@ body.index{
   }
 }
 
+// F I N    I N D E X
 
 
+// P R O J E T S 
 body.projets{
   header{
     padding:30px;
@@ -384,7 +386,203 @@ body.projets{
   }
 }
 
-// F I N    I N D E X
+// F I N     P R O J E T S 
+
+// C A P T U R E 
+body.capture{
+
+  .container-inner{
+    margin:auto;
+  }
+
+  .clone{
+    position: absolute;
+    left:52%;
+    top:0px;
+  }
+
+  .media-choice {
+    .btn-choice{
+      text-align: center;
+      button {
+        color:#333;
+        background-color: #fff;
+        border:none;
+        margin: 0;
+        outline: none;
+        font-size: 1em;
+        padding: 5px 15px;
+        margin:5px;
+
+        &.active, &:hover {
+          color:#fff;
+          background-color: $bleuvert;
+          outline: none;
+
+          &#photo {
+            background-color: $cimages;
+          }
+          &#video-btn {
+            background-color: $cvideos;
+          }
+          &#stopmotion {
+            background-color: $canim;
+          }
+          &#audio {
+            background-color: $csons;
+          }
+        }
+      }
+    }
+  }
+
+  .captureLeft {
+    margin: auto;
+    padding: 10px;
+    position: absolute;
+    background-color: #FFF;
+    z-index:2;
+
+    .btn-capture-wrapper{
+      z-index: 1000;
+      background:#FFF;
+      height:60px;
+
+      &>div{
+        position:absolute;
+        //display:none;
+        button{
+          outline: none !important;
+          border:none !important;
+          background: none !important;
+          margin: auto;
+        }
+      }
+      
+      .video-capture{
+        .video-save{
+          #stop-record-btn{
+            display: none;
+          }
+        }
+      }
+      .stopmotion-capture{
+        button {
+          display: inline-block;
+        }
+        #capture-sm-btn{
+          display:none;
+        }
+      }
+      .audio-capture{
+        #stop-recording-btn{
+          display: none;
+        }
+      }
+    }
+
+    .display-choice{
+      position: absolute;
+      height:82%;
+      top: 0;
+      left: 0;
+
+      .choices {
+        position: absolute;
+        height:100%;
+        width:100%;
+        top: 0;
+        left: 0;
+        display:none;
+        &.image-choice {
+          background-color: $cimages;
+        }
+        &.video-choice {
+          background-color: $cvideos;
+        }
+        &.stopmotion-choice {
+          background-color: $canim;
+        }
+        &.audio-choice {
+          background-color: $csons;
+        }
+      }
+
+    }
+    #canvas-audio{
+      display: none;
+    }
+  }
+  
+  .captureRight {
+    background-color: #FFF;
+    position: absolute;
+    z-index: 1;
+    display: none;
+    overflow: hidden;
+    .flash{
+      height:100%;
+      background-color: #FFF;
+      display: none;
+      position: absolute;
+
+
+      body[data-mode="photo"] & {
+        background-color: $cimages;
+      }
+      body[data-mode="video"] {
+        background-color: $cvideos;
+      }
+      body[data-mode="stopmotion"] {
+        background-color: $canim;
+      }
+      body[data-mode="audio"] {
+        background-color: $csons;     
+      }
+    }
+    .screenshot {
+      margin:30px auto 0px auto;
+      .meta-stopmotion{
+        margin-top: 10px;
+        .count-image{
+          display: inline-block;
+          vertical-align: top;
+        }
+        .delete-image{
+          width: 30px;
+          display: inline-block;
+          vertical-align: top;
+          margin-right: 10px;
+          cursor: pointer;
+        }
+      }
+      #canvas-equalizer{
+        background-color: orange;
+      }
+    }
+    .son {
+      display: none;
+      padding-left:27px;
+      margin-top: 60px;
+      margin-bottom: 40px;
+    }
+
+    #camera-preview {
+      display: none; 
+      width: 100%;
+    }
+    #stop-sm{
+      display: none;
+      float: right;
+      width: 48px;
+    }
+  }
+
+}
+
+
+// F I N     C A P T U R E 
+
 
 /****************
    POPOVER !
