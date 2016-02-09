@@ -42,6 +42,7 @@ var sarahCouleur = "gray";
 /* sockets */
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
+socket.on('mediaCreated', onMediaCreated);
 
 
 jQuery(document).ready(function($) {
@@ -162,6 +163,17 @@ function init(){
     //   console.log('annuler');
     //   $('#modal-change-alert').foundation('reveal', 'close');
     // });
+  });
+
+  // delete file
+  $(".clear").off();
+  $(".clear").on("click", function(e){
+    console.log('File was delete');
+    var fileToDelete = $('.screenshot').attr('data-file');
+    socket.emit("deleteFile", {session:currentSession, project:currentProject, file:fileToDelete});
+    backAnimation();
+    //deleteFeedback();
+    e.stopPropagation;
   });
 
 }
@@ -882,6 +894,9 @@ function createEqualizer(event){
 
 }
 
+function onMediaCreated(file){
+  $('.screenshot').attr('data-file', file.file);
+}
 
 function submitData(data, send){
 	animateWindows();

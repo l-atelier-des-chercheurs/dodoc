@@ -42,6 +42,7 @@ module.exports = function(app, io){
 		socket.on("stopmotionCapture", createStopMotion);
 		// Audio
 		socket.on("audioCapture", onNewAudioCapture);
+		socket.on("deleteFile", deleteFile);
 
 		
 		// B I B L I        P A G E 
@@ -377,6 +378,7 @@ module.exports = function(app, io){
 				}
 				else{
 					console.log("Image Ajoutée au projet");
+					io.sockets.emit('mediaCreated', {file:currentDate + '.jpg'});
 				}
 			});
 			
@@ -399,7 +401,7 @@ module.exports = function(app, io){
 
 		  writeToDisk(data.data.video.dataURL, fileName + '.webm', session, project);
 		  io.sockets.emit('showVideo', {file: fileName + '.webm', session:session, project:project});
-		    
+			io.sockets.emit('mediaCreated', {file:fileName + '.webm'});	    
 		  //Write data to json
 	    var jsonFile = 'sessions/' + session + '/' +project + '/'+project+'.json';
 			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
@@ -467,6 +469,7 @@ module.exports = function(app, io){
 			  })
 			  // save to file
 			  .save(videoPath);
+			  io.sockets.emit('mediaCreated', {file:fileName + '.mp4'});
 
 			var jsonFile = 'sessions/' + req.session + '/'+req.project+"/"+req.project+'.json';
 			var data = fs.readFileSync(jsonFile,"UTF-8");
@@ -493,6 +496,7 @@ module.exports = function(app, io){
 		    fileBuffer = new Buffer(dataURL, 'base64');
 		    fs.writeFileSync(filePath, fileBuffer);
 		    io.sockets.emit('AudioFile', fileWithExt, req.session, req.project);
+		    io.sockets.emit('mediaCreated', {file:fileWithExt});
 
 				//add data to json file
 				var jsonFile = 'sessions/' + req.session + '/'+ req.project+'/'+req.project+'.json';
@@ -502,6 +506,19 @@ module.exports = function(app, io){
 				jsonObj["files"]["audio"].push(jsonAdd);
 				var objectToSend = {file: fileName + ".wav", extension:"wav", name:req.session, projet:req.project,title: fileName};
 				writeIntoJsonFile(jsonFile, jsonObj, objectToSend, 'displayNewAudio')
+		}
+
+		// Delete File
+		function deleteFile(req){
+			var fileToDelete = 'sessions/' + req.session +'/'+req.project+'/'+req.file;
+			console.log('delete file');
+			fs.unlink(fileToDelete);
+			// fs.readdir(dir,function(err,files){
+		 //    if(err) console.log(err);
+		 //    console.log(files);
+		 //    //fs.unlink(dir + '/' + files[files.length - 2]);
+		 //    //listMedias(req);
+			// });
 		}
 	// F I N     C A P T U R E    P A G E 
 

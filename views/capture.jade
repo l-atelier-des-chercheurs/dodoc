@@ -72,7 +72,7 @@ html
             div.clear
               button#clear.btn.icon
                 include templates/images/clear.svg
-            div.screenshot.small-12
+            div(class="screenshot small-12" data-file="none")
               canvas#canvas.canvas-view
               canvas(id="canvas-equalizer" width=480 height=256)
               video(id="camera-preview" autoplay controls loop)
