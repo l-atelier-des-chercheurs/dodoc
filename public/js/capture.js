@@ -14,9 +14,9 @@ var streaming = false,
     canvas       = document.querySelector('#canvas'),
     photo        = document.querySelector('#photo'),
     startbutton  = document.querySelector('#capture-btn'),
-    startsm  = document.querySelector('#start-sm'),
-    capturesm  = document.querySelector('#capture-sm'),
-    stopsm  = document.querySelector('#stop-sm'),
+    startsm  = document.querySelector('#start-sm-btn'),
+    capturesm  = document.querySelector('#capture-sm-btn'),
+    stopsm  = document.querySelector('#stop-sm-btn'),
     width = 480,
     height = 0;
 var mediaStream = null;
@@ -56,12 +56,6 @@ function init(){
 
   $("#canvas-equalizer").hide();
 
-  // setTimeout(function(){
-  //   $(".choice .image-choice").fadeIn(1000, function(){
-  //     $(this).fadeOut(1000);
-  //   });
-  // }, 1000);
-
 	//on media changing
 	changeMedia();
 	displayVideoStream();
@@ -72,6 +66,10 @@ function init(){
   $("#video-btn").on('click', function(){
     recordingVideo('click');
   });
+  $("#start-sm-btn").on('click', startStopMotion);
+  $("#capture-sm-btn").on('click', onStopMotionDirectory);
+  $("#stop-sm-btn").on('click', stopStopMotion);
+
 	// Keypressed (makey-makey) event
   $("body").keypress(function(e){
 	  var code = e.keyCode || e.which;
@@ -87,7 +85,47 @@ function init(){
         recordingVideo();
       }
     }
-	 });
+    if($("#stopmotion").hasClass('active')){
+      //redémarre le stop motion quand un autre média est choisi au milieu du stop motion
+      isEventExecutedSM = false;
+      if(code == 115 || code == 122){
+        console.log(isEventExecutedSM);
+        if(isEventExecutedSM == false){
+          isEventExecutedSM = true;
+          $("#stop-sm-btn").hide();
+          $("#start-sm-btn").show();
+          $("#capture-sm-btn").hide();
+          $('.screenshot .meta-stopmotion').remove();
+        }
+      }
+      if(code == 113) { //When Space is pressed
+        countPress ++;
+        if(countPress == 1){
+          console.log("start a stopmotion");
+          startStopMotion();
+        }
+        else{
+          console.log("start taking pictures");
+          onStopMotionDirectory();
+        }
+      }
+    }
+	});
+
+  //redémarre le stop motion quand un autre média est choisi au milieu du stop motion
+  var isEventExecutedSM = false;
+  $("#stopmotion").click(function(){
+    isEventExecutedSM = false;
+    $(".btn-choice button").click(function(){
+      if(isEventExecutedSM == false){
+        isEventExecutedSM = true;
+        $("#stop-sm-btn").hide();
+        $("#start-sm-btn").show();
+        $("#capture-sm-btn").hide();
+        $('.screenshot .meta-stopmotion').remove();
+      }
+    });
+  });
 
 }
 
@@ -276,6 +314,7 @@ function takePictures(){
   submitData(data, 'imageCapture')
 }
 
+// Function qui enregistre de la vidéo
 function recordingVideo(click){
   console.log('test');
   var startVideoRecording = document.getElementById('start-record-btn');
@@ -437,6 +476,87 @@ function recordingVideo(click){
     cameraPreview.controls = true;
   });
 }
+
+// STOP MOTION
+// Start Stop Motion
+function startStopMotion(){
+  countImage = 0;
+  console.log('start stop-motion');
+  $("#start-sm-btn").hide(); $("#capture-sm-btn").show(); $("#stop-sm-btn").hide();
+  $('.screenshot .canvas-view').hide(); $('#camera-preview').hide();
+
+  var iconeSM = '<div class="icone-stopmotion"><img src="/images/stopmotion.svg"></div>';
+  var text = '<h4>Vous venez de créer un nouveau stop motion.</br>Cliquez que le <b>bouton d\'enregistrement</b> pour commencer à prendre des photos</h4>'
+  var htmlToAdd = '<div class="instructions-stopmotion">'+iconeSM+text+'</div>';
+  $('.screenshot').append(htmlToAdd);
+  submitData(false, 'newStopMotion');
+  $(".screenshot").append("<div class='meta-stopmotion'><div class='delete-image'><img src='/images/clear.svg'></div><p class='count-image'></p></div>");
+  $(".screenshot .meta-stopmotion").hide();
+}
+
+// Quand le dossier du stop motion est crée
+function onStopMotionDirectory(){
+  var dir = "sessions/" + currentSession + "/"+ currentProject+"/01-stopmotion";
+  $("#stop-sm-btn").show();
+  $('.screenshot .canvas-view').show();
+  $('.screenshot .instructions-stopmotion').remove(); 
+  $(".screenshot .meta-stopmotion").show();   
+  takepictureMotion(dir);
+}
+
+// fonction qui prend des photos pour le stop motion et qui les envoie au serveur
+function takepictureMotion(dir) {
+  countImage ++;
+  canvas.width = width;
+  canvas.height = height;
+  canvas.getContext('2d').drawImage(video, 0, 0, width, height);
+  var data = canvas.toDataURL('image/png');
+  photo.setAttribute('src', data);
+  $(".meta-stopmotion .delete-image").off();
+  $(".meta-stopmotion .delete-image").on('click', function(){
+    removeImageMotion(data, dir);
+  });
+  socket.emit('imageMotion', {data: data, dir: dir, count: countImage});
+  $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
+}
+
+function removeImageMotion(data, dir){
+  if(countImage > 1){
+    console.log("delete Image");
+    socket.emit("deleteImageMotion", {data: data, name: app.session, dir: dir, count: countImage});
+    countImage = countImage - 1;
+    var context = canvas.getContext('2d');
+    var imageObj = new Image();
+    imageObj.onload = function() {
+      context.drawImage(imageObj, 0, 0);
+    };
+    imageObj.src = "/" + currentSession +"/"+ currentProject+"/01-stopmotion/" + countImage + ".png";
+    $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
+  }
+  else{
+    startStopMotion();
+  }
+}
+
+function stopStopMotion(){
+  var dir = "sessions/" + currentSession + "/"+ currentProject+"/01-stopmotion";
+  $("#stop-sm-btn").hide();
+  $("#start-sm-btn").show();
+  $("#capture-sm-btn").hide();
+  countImage = 0;
+  countPress = 0;
+  $('.screenshot .meta-stopmotion').remove();
+  //saveFeedback("/images/icone-dodoc_anim.png");
+
+  socket.emit('stopmotionCapture', {session: currentSession, project: currentProject, dir: dir});
+  socket.on('newStopMotionCreated', function(req){
+    $('.screenshot .canvas-view').hide();
+    $('#camera-preview').attr('src', '/' + currentSession + '/'+'/'+currentProject+'/'+req.fileName+'')
+    $('#camera-preview').show();
+  });
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+}
+
 
 function submitData(data, send){
 	animateWindows();
