@@ -3,18 +3,26 @@ html
   head
     include templates/head.jade
   body.projets
-    header
 
-      .back.btn.icon
-        a(href="/" title="Dodoc")
-          include templates/images/back.svg
-      .logo
-        a(href="/" title="Dodoc")
-          include templates/images/dodoc-logo.svg
+    .navbar-container
+      header.navbar
+        .logo
+          a(href="/" title="Dodoc")
+            include templates/images/dodoc-logo.svg
+        .item
+          a(href="/#{session}" title="Dodoc").button-wrapper.button-wrapper_dossier
+            .btn.icon
+              include templates/images/dossier.svg
+            span #{session}
+        a(href="#" data-reveal-id="modal-add-project").button-wrapper.button-wrapper_add
+          .btn.icon
+            include templates/images/add.svg
+          span Nouveau projet
 
     #container.row
 
       .folder-wrapper.small-12.columns
+        h1.folder #{folder}
 
       .add-project-wrapper.small-4.columns
         a(href="#" data-reveal-id="modal-add-project").button-wrapper.button-wrapper_add

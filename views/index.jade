@@ -3,15 +3,16 @@ html
   head
     include templates/head.jade
   body.index
-    header
-      .logo
-        include templates/images/dodoc-logo.svg
+
+    .navbar-container.is--opened
+      header.navbar
+        .logo
+          a(href="/" title="Dodoc")
+            include templates/images/dodoc-logo.svg
 
     #container.row
       .add-folder-wrapper.small-6.medium-4.columns
         a(href="#" data-reveal-id="modal-add-folder").button-wrapper.button-wrapper_add
-          div.add-folder-btn.btn.icon
-            include templates/images/add.svg
           span Ajouter un nouveau dossier
 
       ul.dossier-list
