@@ -97,7 +97,7 @@ module.exports = function(app, io){
 						io.sockets.emit('listFolder', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, nb_projets:jsonObj.nb_projets});
 						// read all projects into folders
 						var projectDir = dir + file;
-						fs.readdirSync(projectDir).filter(function(project) {
+						fs.readdirSync(projectDir).filter(function(project){
 							if(fs.statSync(path.join(projectDir, project)).isDirectory()){
 								// console.log(project);
 								if(! /^\..*/.test(project)){
@@ -377,18 +377,11 @@ module.exports = function(app, io){
 			var jsonObj = JSON.parse(data);
 			var jsonAdd = { "name" : currentDate};
 			jsonObj["files"]["images"].push(jsonAdd);
-			fs.writeFile(jsonFile, JSON.stringify(jsonObj), function(err) {
-	      if(err) {
-	          console.log(err);
-	      } else {
-	          console.log("The file was saved!");
-	      }
-	    });
-	    io.sockets.emit("displayNewImage", {file: currentDate + ".jpg", extension:"jpg", session:session, projet:project, title: currentDate});
+			var objectToSend = {file: currentDate + ".jpg", extension:"jpg", session:session, projet:project, title: currentDate};
+			writeIntoJsonFile(jsonFile, jsonObj, objectToSend, 'displayNewImage');
 		}
 
 		function onNewVideo(data){
-			//console.log(data.data);
 			var currentDate = Date.now();
 		  var fileName = currentDate;
 		  var session = data.session;
@@ -399,46 +392,40 @@ module.exports = function(app, io){
 		  writeToDisk(data.data.video.dataURL, fileName + '.webm', session, project);
 		  io.sockets.emit('showVideo', {file: fileName + '.webm', session:session, project:project});
 		    
-		    //Write data to json
-		  //   var jsonFile = 'sessions/' + data.name + '/' +data.projet + '/'+data.projet +'.json';
-				// var jsonData = fs.readFileSync(jsonFile,"UTF-8");
-				// var jsonObj = JSON.parse(jsonData);
-				// var jsonAdd = { "name" : fileName};
-				// jsonObj["files"]["videos"].push(jsonAdd);
-				// fs.writeFile(jsonFile, JSON.stringify(jsonObj), function(err) {
-		  //     if(err) {
-		  //         console.log(err);
-		  //     } else {
-		  //         console.log("The file was saved!");
-		  //     }
-		  //   });
-		 	// 	var proc = ffmpeg(projetDirectory + "/" + fileName + ".webm")
-			 //  // set the size of your thumbnails
-			 //  //.size('150x100')
-			 //  // setup event handlers
-			 //  .on('end', function(files) {
-			 //    console.log('screenshots were saved as ' + files);
-			 //  })
-			 //  .on('error', function(err) {
-			 //    console.log('an error happened: ' + err.message);
-			 //  })
-			 //  // take 2 screenshots at predefined timemarks
-			 //  .takeScreenshots({ count: 1, timemarks: [ '00:00:01'], filename: fileName + "-thumb.png"}, projetDirectory);
+		  //Write data to json
+	    var jsonFile = 'sessions/' + session + '/' +project + '/'+project+'.json';
+			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
+			var jsonObj = JSON.parse(jsonData);
+			var jsonAdd = { "name" : fileName};
+			jsonObj["files"]["videos"].push(jsonAdd);
+			var objectToSend = {file: fileName + ".webm", extension:"webm", session:session, project:project, title: fileName};
+			writeIntoJsonFile(jsonFile, jsonObj, objectToSend, 'displayNewVideo');
+	 		
+	 		//Create thumbnails
+	 		var proc = ffmpeg(projectDirectory + "/" + fileName + ".webm")
+		  // setup event handlers
+		  .on('end', function(files) {
+		    console.log('screenshots were saved');
+		  })
+		  .on('error', function(err) {
+		    console.log('an error happened: ' + err.message);
+		  })
+		  // take 2 screenshots at predefined timemarks
+		  .takeScreenshots({ count: 1, timemarks: [ '00:00:01'], filename: fileName + "-thumb.png"}, projectDirectory);
 			  
-			 //  io.sockets.emit("displayNewVideo", {file: fileName + ".webm", extension:"webm", name:data.name, projet:data.projet, title: fileName});
 		}
 	// F I N     C A P T U R E    P A G E 
 
 	// B I B L I    P A G E 
 	function listMedias(media){
-		console.log(media.project);
+		//console.log(media.project);
 		//read json file to send data
 		var jsonFile = 'sessions/' + media.session + '/' + media.project +'/'+media.project+'.json';
 		var data = fs.readFileSync(jsonFile,"UTF-8");
 		var jsonObj = JSON.parse(data);
 
 		var dir = "sessions/" + media.session + '/' + media.project +'/';
-		console.log(dir);
+		//console.log(dir);
 		fs.readdir(dir, function(err, files) {
 			var media = [];
 			if (err) {console.log(err)};
@@ -469,6 +456,18 @@ module.exports = function(app, io){
 	    dataURL = dataURL.split(',').pop();
 	    fileBuffer = new Buffer(dataURL, 'base64');
 	    fs.writeFileSync(filePath, fileBuffer);
+		}
+
+		function writeIntoJsonFile(jsonFile, objectJson, objectToSend, send){
+			var jsonString = JSON.stringify(objectJson);
+			fs.writeFile(jsonFile, jsonString, function(err) {
+	      if(err) {
+	          console.log(err);
+	      } else {
+	          console.log("The file was saved!");
+	          io.sockets.emit(send, objectToSend);
+	      }
+	    });
 		}
 
 		function writeJsonFile(jsonFile, objectJson, objectToSend, send){

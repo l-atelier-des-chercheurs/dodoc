@@ -70,22 +70,23 @@ function init(){
 	//Mouse events
 	$(".photo-capture #capture-btn").on('click', takePictures);
   $("#video-btn").on('click', function(){
-    recordVideo('click');
+    recordingVideo('click');
   });
 	// Keypressed (makey-makey) event
   $("body").keypress(function(e){
 	  var code = e.keyCode || e.which;
 	  if($("#photo").hasClass('active')){
-	    if(code == 113) { //When Space is pressed
-	      takepicture();
+	    if(code == 113) { //When Q is pressed
+	      takePictures();
 	      console.log("taking a picture");
 	    }
 	  }
-    // if($("#video-btn").hasClass('active')){
-    //   if(code == 113) {
-    //     recordVideo();
-    //   }
-    // }
+    if($("#video-btn").hasClass('active')){
+      if(code == 113) {//When Q is pressed
+        countPress ++;
+        recordingVideo();
+      }
+    }
 	 });
 
 }
@@ -275,22 +276,15 @@ function takePictures(){
   submitData(data, 'imageCapture')
 }
 
-function recordVideo(click){
-  //Variables
-  // you can set it equal to "false" to record only audio
-  // var recordVideoSeparately = !!navigator.webkitGetUserMedia;
-  // if (!!navigator.webkitGetUserMedia && !recordVideoSeparately) {
-  //     var cameraPreview = document.getElementById('camera-preview');
-  //     cameraPreview.parentNode.innerHTML = '<audio id="camera-preview" controls style="border: 1px solid rgb(15, 158, 238); width: 94%;"></audio> ';
-  // }
-
+function recordingVideo(click){
+  console.log('test');
   var startVideoRecording = document.getElementById('start-record-btn');
   var stopVideoRecording = document.getElementById('stop-record-btn');
   var cameraPreview = document.getElementById('camera-preview');
 
   //click events
   if(click == "click"){
-    $("#start-record-btn").on('click', function(){
+    $("#start-record-btn").off().on('click', function(){
       console.log("you are using the mouse for recording");
       startVideo();
       $(".btn-choice").click(function(e){
@@ -299,35 +293,34 @@ function recordVideo(click){
       });
     });
 
-    $("#stop-record-btn").on('click', function(){
+    $("#stop-record-btn").off().on('click', function(){
       stopVideo();
     });
   }
 
+  //Keyboard events (makey mkaey)
+  if(countPress == 1){
+    startVideo();
+    console.log("recording video");
+    $("body").unbind("keypress.key115");
+    $("body").bind("keypress.key115", function(e){
+      var code = e.keyCode || e.which;
+      if(code == 115 || code == 122){
+        isEventExecutedVideo = false;
+        stopVideoOnChange(e, isEventExecutedVideo);
+      }
+    });
+  }
 
-  //Powermate events
-  // if(countPress == 1){
-  //   startVideo();
-  //   console.log("recording video");
-  //   $("body").unbind("keypress.key115");
-  //   $("body").bind("keypress.key115", function(e){
-  //     var code = e.keyCode || e.which;
-  //     if(code == 115 || code == 122){
-  //       isEventExecutedVideo = false;
-  //       stopVideoOnChange(e, isEventExecutedVideo);
-  //     }
-  //   });
-  // }
-
-  // if(countPress > 1){
-  //   stopVideo();
-  //   countPress = 0;
-  //   console.log("stop recording video");
-  // }
+  if(countPress > 1){
+    stopVideo();
+    countPress = 0;
+    console.log("stop recording video");
+  }
 
   function startVideo(){
     console.log('starting-video');
-    // backAnimation();
+    backAnimation();
     $('#camera-preview').hide();
     $('.screenshot .canvas-view').hide();
     recordingFeedback();
