@@ -40,6 +40,8 @@ module.exports = function(app, io){
 		socket.on("imageMotion", onNewImageMotion);
 		socket.on("deleteImageMotion", deleteImageMotion);
 		socket.on("stopmotionCapture", createStopMotion);
+		// Audio
+		socket.on("audioCapture", onNewAudioCapture);
 
 		
 		// B I B L I        P A G E 
@@ -473,6 +475,33 @@ module.exports = function(app, io){
 			jsonObj["files"]["stopmotion"].push(jsonAdd);
 			var objectToSend = {file: fileName + ".mp4", extension:"mp4", name:req.session, projet:req.project, title: fileName};
 			writeIntoJsonFile(jsonFile, jsonObj, objectToSend, 'displayNewStopMotion');
+		}
+
+		// Audio
+		function onNewAudioCapture(req){
+			//write audio to disk
+			var currentDate = Date.now();
+			var fileName = currentDate;
+	  	var fileWithExt = fileName + '.wav';
+	  	var fileExtension = fileWithExt.split('.').pop(),
+	      fileRootNameWithBase = './sessions/' + req.session +'/'+ req.project +'/'+fileWithExt,
+	      filePath = fileRootNameWithBase,
+	      fileID = 2,
+	      fileBuffer;
+
+		    dataURL = req.data.audio.dataURL.split(',').pop();
+		    fileBuffer = new Buffer(dataURL, 'base64');
+		    fs.writeFileSync(filePath, fileBuffer);
+		    io.sockets.emit('AudioFile', fileWithExt, req.session, req.project);
+
+				//add data to json file
+				var jsonFile = 'sessions/' + req.session + '/'+ req.project+'/'+req.project+'.json';
+				var data = fs.readFileSync(jsonFile,"UTF-8");
+				var jsonObj = JSON.parse(data);
+				var jsonAdd = { "name" : currentDate};
+				jsonObj["files"]["audio"].push(jsonAdd);
+				var objectToSend = {file: fileName + ".wav", extension:"wav", name:req.session, projet:req.project,title: fileName};
+				writeIntoJsonFile(jsonFile, jsonObj, objectToSend, 'displayNewAudio')
 		}
 	// F I N     C A P T U R E    P A G E 
 

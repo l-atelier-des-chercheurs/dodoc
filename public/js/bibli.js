@@ -15,6 +15,7 @@ socket.on('error', onSocketError);
 socket.on('displayNewImage', displayNewImage);
 socket.on('displayNewVideo', displayNewVideo);
 socket.on('displayNewStopMotion', displayNewStopMotion);
+socket.on('displayNewAudio', displayNewAudio);
 socket.on('listMedias', onListMedias);
 
 jQuery(document).ready(function($) {
@@ -39,6 +40,10 @@ function displayNewStopMotion(video){
 	displayStopMotion(currentSession, currentProject, video.title, video.file);
 }
 
+function displayNewAudio(audio){
+	displayAudio(currentSession, currentProject, audio.title, audio.file);
+}
+
 
 function onListMedias(array, json){
 	$(".mediaContainer li").remove();
@@ -55,9 +60,9 @@ function onListMedias(array, json){
 		if(extension == "mp4"){
 			displayVideo(currentSession, currentProject, identifiant, array[i]);
 		}
-		// if(extension == "wav"){
-		// 	$('.mediaContainer').append("<li class='media sons-bibli' id='"+ identifiant+"' data-type='son'><div class='mediaContent'><audio src='https://"+domainUrl + "/"+app.session +"/"+ app.projet+ "/" + array[i] + "' preload='none' controls></div></li>");
-		// }
+		if(extension == "wav"){
+			displayAudio(currentSession, currentProject, identifiant, array[i]);
+		}
 	}
 
 	$(".media").on("mouseenter", function(){
@@ -89,6 +94,14 @@ function displayStopMotion(session, project, id, file){
 	var video = '<video preload="none" controls poster="'+thumbPath+'"><source src="'+videoPath+'"></video>';
 	var divMedia = '<div class="mediaContent">'+video+'</div>';
 	var htmlToAdd = '<li class="media stopmotion-bibli" id="'+id+'" data-type="stopmotion">'+divMedia+'</li>';
+	$('.medias ul.medias-list').prepend(htmlToAdd);
+}
+
+function displayAudio(session, project, id, file){
+	var audioPath = '/'+session +'/'+ project+ '/' + file;
+	var audio = '<audio preload="none" controls><source src="'+audioPath+'"></audio>';
+	var divMedia = '<div class="mediaContent">'+audio+'</div>';
+	var htmlToAdd = '<li class="media sons-bibli" id="'+id+'" data-type="son">'+divMedia+'</li>';
 	$('.medias ul.medias-list').prepend(htmlToAdd);
 }
 
