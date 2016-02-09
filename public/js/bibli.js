@@ -38,15 +38,15 @@ function onListMedias(array, json){
 		if(extension == "jpg"){
 			displayImage(currentSession, currentProject, identifiant, array[i]);
 		}
-		if(extension == "webm"){
-			$('.mediaContainer').append("<li class='media videos-bibli' id='"+ identifiant+"' data-type='video'><div class='mediaContent'><video preload='none' controls poster='https://"+domainUrl + "/"+app.session + "/"+ app.projet+ "/"+identifiant +"-thumb.png'><source src='https://"+domainUrl + "/"+app.session +"/"+ app.projet+ "/" + array[i] + "'></video></div></li>");
-		}
-		if(extension == "mp4"){
-			$('.mediaContainer').append("<li class='media stopmotion-bibli' id='"+ identifiant+"' data-type='stopmotion'><div class='mediaContent'><video preload='none' controls poster='https://"+domainUrl + "/"+app.session +"/"+ app.projet+ "/"+identifiant +"-thumb.png'><source src='https://"+domainUrl + "/"+app.session +"/"+ app.projet+ "/" + array[i] + "'></video></div></li>");
-		}
-		if(extension == "wav"){
-			$('.mediaContainer').append("<li class='media sons-bibli' id='"+ identifiant+"' data-type='son'><div class='mediaContent'><audio src='https://"+domainUrl + "/"+app.session +"/"+ app.projet+ "/" + array[i] + "' preload='none' controls></div></li>");
-		}
+		// if(extension == "webm"){
+		// 	$('.mediaContainer').append("<li class='media videos-bibli' id='"+ identifiant+"' data-type='video'><div class='mediaContent'><video preload='none' controls poster='https://"+domainUrl + "/"+app.session + "/"+ app.projet+ "/"+identifiant +"-thumb.png'><source src='https://"+domainUrl + "/"+app.session +"/"+ app.projet+ "/" + array[i] + "'></video></div></li>");
+		// }
+		// if(extension == "mp4"){
+		// 	$('.mediaContainer').append("<li class='media stopmotion-bibli' id='"+ identifiant+"' data-type='stopmotion'><div class='mediaContent'><video preload='none' controls poster='https://"+domainUrl + "/"+app.session +"/"+ app.projet+ "/"+identifiant +"-thumb.png'><source src='https://"+domainUrl + "/"+app.session +"/"+ app.projet+ "/" + array[i] + "'></video></div></li>");
+		// }
+		// if(extension == "wav"){
+		// 	$('.mediaContainer').append("<li class='media sons-bibli' id='"+ identifiant+"' data-type='son'><div class='mediaContent'><audio src='https://"+domainUrl + "/"+app.session +"/"+ app.projet+ "/" + array[i] + "' preload='none' controls></div></li>");
+		// }
 	}
 
 	$(".media").on("mouseenter", function(){

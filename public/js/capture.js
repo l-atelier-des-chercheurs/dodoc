@@ -19,6 +19,16 @@ var streaming = false,
     stopsm  = document.querySelector('#stop-sm'),
     width = 480,
     height = 0;
+var mediaStream = null;
+
+//Event variables for recording
+var isEventExecutedVideo = false;
+var isEventExecutedVideoBtn = false;
+var isEventExecutedAudio = false;
+var isEventExecutedEqualizer = false;
+
+// compteur de click
+var countPress = 0;
 
 
 /* sockets */
@@ -54,12 +64,14 @@ function init(){
 
 	//on media changing
 	changeMedia();
-
 	displayVideoStream();
 
 	//recording medias events
 	//Mouse events
 	$(".photo-capture #capture-btn").on('click', takePictures);
+  $("#video-btn").on('click', function(){
+    recordVideo('click');
+  });
 	// Keypressed (makey-makey) event
   $("body").keypress(function(e){
 	  var code = e.keyCode || e.which;
@@ -69,6 +81,11 @@ function init(){
 	      console.log("taking a picture");
 	    }
 	  }
+    // if($("#video-btn").hasClass('active')){
+    //   if(code == 113) {
+    //     recordVideo();
+    //   }
+    // }
 	 });
 
 }
@@ -208,7 +225,6 @@ function audioDisplay(){
 }
 
 function displayVideoStream(){
-
   // Initialise getUserMedia
     navigator.getMedia = ( navigator.getUserMedia ||
                            navigator.webkitGetUserMedia ||
@@ -259,6 +275,176 @@ function takePictures(){
   submitData(data, 'imageCapture')
 }
 
+function recordVideo(click){
+  //Variables
+  // you can set it equal to "false" to record only audio
+  // var recordVideoSeparately = !!navigator.webkitGetUserMedia;
+  // if (!!navigator.webkitGetUserMedia && !recordVideoSeparately) {
+  //     var cameraPreview = document.getElementById('camera-preview');
+  //     cameraPreview.parentNode.innerHTML = '<audio id="camera-preview" controls style="border: 1px solid rgb(15, 158, 238); width: 94%;"></audio> ';
+  // }
+
+  var startVideoRecording = document.getElementById('start-record-btn');
+  var stopVideoRecording = document.getElementById('stop-record-btn');
+  var cameraPreview = document.getElementById('camera-preview');
+
+  //click events
+  if(click == "click"){
+    $("#start-record-btn").on('click', function(){
+      console.log("you are using the mouse for recording");
+      startVideo();
+      $(".btn-choice").click(function(e){
+        isEventExecutedVideo = false;
+        stopVideoOnChange(e, isEventExecutedVideo);
+      });
+    });
+
+    $("#stop-record-btn").on('click', function(){
+      stopVideo();
+    });
+  }
+
+
+  //Powermate events
+  // if(countPress == 1){
+  //   startVideo();
+  //   console.log("recording video");
+  //   $("body").unbind("keypress.key115");
+  //   $("body").bind("keypress.key115", function(e){
+  //     var code = e.keyCode || e.which;
+  //     if(code == 115 || code == 122){
+  //       isEventExecutedVideo = false;
+  //       stopVideoOnChange(e, isEventExecutedVideo);
+  //     }
+  //   });
+  // }
+
+  // if(countPress > 1){
+  //   stopVideo();
+  //   countPress = 0;
+  //   console.log("stop recording video");
+  // }
+
+  function startVideo(){
+    console.log('starting-video');
+    // backAnimation();
+    $('#camera-preview').hide();
+    $('.screenshot .canvas-view').hide();
+    recordingFeedback();
+  
+    // Initialise getUserMedia
+    navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+    navigator.getMedia(
+      {
+        video: true,
+        audio: false
+      },
+      function (stream) {
+        // get user media pour le son
+        mediaStream = stream;
+        recordVideo = RecordRTC(stream, {
+          type: 'video',
+          video: { width: 480, height: 360 },
+          canvas: { width: 480, height: 360 },
+        });
+        recordVideo.startRecording();
+        cameraPreview.src = window.URL.createObjectURL(stream);
+        cameraPreview.play();
+        cameraPreview.muted = true;
+        cameraPreview.controls = true;
+      },
+      function(error) {
+        alert(JSON.stringify(error));
+      }
+    );
+
+    startVideoRecording.disabled = true;
+    stopVideoRecording.disabled = false;
+    startVideoRecording.style.display = "none";
+    stopVideoRecording.style.display = "block";
+  }
+
+  function stopVideoOnChange(e) {
+    if(isEventExecutedVideo == false){
+      isEventExecutedVideo = true;
+      console.log('your video was not saved');
+      recordVideo.stopRecording();
+      e.preventDefault();
+      startVideoRecording.style.display = "block";
+      stopVideoRecording.style.display = "none";
+      startVideoRecording.disabled = false;
+      stopVideoRecording.disabled = true;
+      $(".recording-feedback").remove();
+      countPress = 0;
+    }
+  }
+
+  function recordingFeedback(){
+    var htmlToAppend = "<div class='recording-feedback'><div class='record-feedback'></div><div class='time-feedback'>[REC] <time>00:00:00</time></div></div>";
+    $(".video-view").append(htmlToAppend);
+    var counter_text = $(".time-feedback time")[0];
+    var seconds = 0, minutes = 0, hours = 0,
+    t;
+    timer();
+
+    function add() {
+      seconds++;
+      if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes >= 60) {
+          minutes = 0;
+          hours++;
+        }
+      }
+      counter_text.textContent = (hours ? (hours > 9 ? hours : "0" + hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
+
+      timer();
+    }
+
+    function timer() {
+      t = setTimeout(add, 1000);
+    }
+  }
+
+  function stopVideo(){
+    startVideoRecording.disabled = false;
+    stopVideoRecording.disabled = true;
+    startVideoRecording.style.display = "block";
+    stopVideoRecording.style.display = "none";
+    cameraPreview.style.display = "block";
+    $(".recording-feedback").remove();
+    // stop video recorder
+    recordVideo.stopRecording(function() {
+      // get video data-URL
+      recordVideo.getDataURL(function(videoDataURL) {
+        var files = {
+          video: {
+            type: recordVideo.getBlob().type || 'video/webm',
+            dataURL: videoDataURL
+          }
+        };
+        console.log(files);
+        submitData(files,'videoRecorded')
+        if (mediaStream) mediaStream.stop();
+      });
+      cameraPreview.src = '';
+      cameraPreview.poster = 'https://localhost:8080/loading.gif';
+      //saveFeedback("/images/icone-dodoc_video.png");
+    });
+  }
+
+  // Display video when it's saved
+  socket.on('showVideo', function(data) {
+    var href = '/static/'+data.session+'/'+data.project+'/'+data.file;
+    console.log('got file ' + href);
+    cameraPreview.src = href;
+    cameraPreview.play();
+    cameraPreview.muted = false;
+    cameraPreview.controls = true;
+  });
+}
+
 function submitData(data, send){
 	animateWindows();
 	socket.emit(send, {data: data, session: currentSession, project:currentProject}); 
@@ -282,7 +468,6 @@ function backAnimation(){
     });
   }
 }
-
 
 /* sockets */
 function onSocketConnect() {

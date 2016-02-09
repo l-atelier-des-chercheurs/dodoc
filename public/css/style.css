@@ -381,8 +381,7 @@ body.capture .captureLeft {
     background: #FFF;
     height: 60px; }
     body.capture .captureLeft .btn-capture-wrapper > div {
-      position: absolute;
-      display: none; }
+      position: absolute; }
       body.capture .captureLeft .btn-capture-wrapper > div button {
         outline: none !important;
         border: none !important;

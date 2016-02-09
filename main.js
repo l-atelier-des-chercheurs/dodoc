@@ -34,6 +34,9 @@ module.exports = function(app, io){
 
 		// C A P T U R E     P A G E
 		socket.on("imageCapture", onNewImage);
+		socket.on("videoRecorded", onNewVideo);
+		
+		// B I B L I        P A G E 
 		socket.on("listMedias", listMedias);
 
 
@@ -350,39 +353,80 @@ module.exports = function(app, io){
 
 
 	// C A P T U R E      P A G E 
-	//ajoute les images au projet
-	function onNewImage(image) {
-		var dataImage = image.data;
-		var session = image.session;
-		var project = image.project; 
-		
-		var imageBuffer = decodeBase64Image(dataImage);
-		var currentDate = Date.now();
-		var filePath = 'sessions/' + session + '/' +project+"/"+ currentDate + '.jpg';
-		console.log(filePath);
-		fs.writeFile(filePath , imageBuffer.data, function(err) { 
-			if(err){
-				console.log(err);
-			}
-			else{
-				console.log("Image Ajoutée au projet");
-			}
-		});
-		
-		var jsonFile = 'sessions/' + session + '/'+ project+"/" +project+'.json';
-		var data = fs.readFileSync(jsonFile,"UTF-8");
-		var jsonObj = JSON.parse(data);
-		var jsonAdd = { "name" : currentDate};
-		jsonObj["files"]["images"].push(jsonAdd);
-		fs.writeFile(jsonFile, JSON.stringify(jsonObj), function(err) {
-      if(err) {
-          console.log(err);
-      } else {
-          console.log("The file was saved!");
-      }
-    });
-    io.sockets.emit("displayNewImage", {file: currentDate + ".jpg", extension:"jpg", session:session, projet:project, title: currentDate});
-	}
+		//ajoute les images au projet
+		function onNewImage(image) {
+			var dataImage = image.data;
+			var session = image.session;
+			var project = image.project; 
+			
+			var imageBuffer = decodeBase64Image(dataImage);
+			var currentDate = Date.now();
+			var filePath = 'sessions/' + session + '/' +project+"/"+ currentDate + '.jpg';
+			console.log(filePath);
+			fs.writeFile(filePath , imageBuffer.data, function(err) { 
+				if(err){
+					console.log(err);
+				}
+				else{
+					console.log("Image Ajoutée au projet");
+				}
+			});
+			
+			var jsonFile = 'sessions/' + session + '/'+ project+"/" +project+'.json';
+			var data = fs.readFileSync(jsonFile,"UTF-8");
+			var jsonObj = JSON.parse(data);
+			var jsonAdd = { "name" : currentDate};
+			jsonObj["files"]["images"].push(jsonAdd);
+			fs.writeFile(jsonFile, JSON.stringify(jsonObj), function(err) {
+	      if(err) {
+	          console.log(err);
+	      } else {
+	          console.log("The file was saved!");
+	      }
+	    });
+	    io.sockets.emit("displayNewImage", {file: currentDate + ".jpg", extension:"jpg", session:session, projet:project, title: currentDate});
+		}
+
+		function onNewVideo(data){
+			//console.log(data.data);
+			var currentDate = Date.now();
+		  var fileName = currentDate;
+		  var session = data.session;
+		  var project = data.project
+		  
+		  var projectDirectory = 'sessions/' + session + '/'+ project;
+
+		  writeToDisk(data.data.video.dataURL, fileName + '.webm', session, project);
+		  io.sockets.emit('showVideo', {file: fileName + '.webm', session:session, project:project});
+		    
+		    //Write data to json
+		  //   var jsonFile = 'sessions/' + data.name + '/' +data.projet + '/'+data.projet +'.json';
+				// var jsonData = fs.readFileSync(jsonFile,"UTF-8");
+				// var jsonObj = JSON.parse(jsonData);
+				// var jsonAdd = { "name" : fileName};
+				// jsonObj["files"]["videos"].push(jsonAdd);
+				// fs.writeFile(jsonFile, JSON.stringify(jsonObj), function(err) {
+		  //     if(err) {
+		  //         console.log(err);
+		  //     } else {
+		  //         console.log("The file was saved!");
+		  //     }
+		  //   });
+		 	// 	var proc = ffmpeg(projetDirectory + "/" + fileName + ".webm")
+			 //  // set the size of your thumbnails
+			 //  //.size('150x100')
+			 //  // setup event handlers
+			 //  .on('end', function(files) {
+			 //    console.log('screenshots were saved as ' + files);
+			 //  })
+			 //  .on('error', function(err) {
+			 //    console.log('an error happened: ' + err.message);
+			 //  })
+			 //  // take 2 screenshots at predefined timemarks
+			 //  .takeScreenshots({ count: 1, timemarks: [ '00:00:01'], filename: fileName + "-thumb.png"}, projetDirectory);
+			  
+			 //  io.sockets.emit("displayNewVideo", {file: fileName + ".webm", extension:"webm", name:data.name, projet:data.projet, title: fileName});
+		}
 	// F I N     C A P T U R E    P A G E 
 
 	// B I B L I    P A G E 
@@ -409,6 +453,24 @@ module.exports = function(app, io){
 	// - - - 
 
 	// C O M M O N      F U N C T I O N
+		function writeToDisk(dataURL, fileName, session, projet) {
+	    var fileExtension = fileName.split('.').pop(),
+	        fileRootNameWithBase = './sessions/' + session + '/' + projet + '/' + fileName,
+	        filePath = fileRootNameWithBase,
+	        fileID = 2,
+	        fileBuffer;
+
+	    // @todo return the new filename to client
+	    while (fs.existsSync(filePath)) {
+	        filePath = fileRootNameWithBase + '(' + fileID + ').' + fileExtension;
+	        fileID += 1;
+	    }
+
+	    dataURL = dataURL.split(',').pop();
+	    fileBuffer = new Buffer(dataURL, 'base64');
+	    fs.writeFileSync(filePath, fileBuffer);
+		}
+
 		function writeJsonFile(jsonFile, objectJson, objectToSend, send){
 			var jsonString = JSON.stringify(objectJson);
 			fs.appendFile(jsonFile, jsonString, function(err) {
