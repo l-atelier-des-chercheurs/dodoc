@@ -443,7 +443,8 @@ module.exports = function(app, io){
 
 		//Transforme les images en vidéos.
 		function createStopMotion(req){
-			var fileName = Date.now();
+			var currentDate = Date.now();
+			var fileName = currentDate;
 			
 			//SAVE VIDEO
 			var videoPath = 'sessions/' + req.session + '/' +req.project+'/'+ fileName + '.mp4';
@@ -465,21 +466,13 @@ module.exports = function(app, io){
 			  // save to file
 			  .save(videoPath);
 
-			// var jsonFile = 'sessions/' + req.session + '/'+req.project+"/"+req.project+'.json';
-			// var data = fs.readFileSync(jsonFile,"UTF-8");
-			// var jsonObj = JSON.parse(data);
-			// var jsonAdd = { "name" : currentDate};
-			// jsonObj["files"]["stopmotion"].push(jsonAdd);
-			// fs.writeFile(jsonFile, JSON.stringify(jsonObj), function(err) {
-	  //     if(err) {
-	  //         console.log(err);
-	  //     } else {
-	  //         console.log("The file was saved!");
-	  					// io.sockets.emit("displayNewStopMotion", {file: fileName + ".mp4", extension:"mp4", name:req.session, projet:req.project, title: fileName});
-	  //     }
-	  //   });
-
-	    
+			var jsonFile = 'sessions/' + req.session + '/'+req.project+"/"+req.project+'.json';
+			var data = fs.readFileSync(jsonFile,"UTF-8");
+			var jsonObj = JSON.parse(data);
+			var jsonAdd = { "name" : currentDate};
+			jsonObj["files"]["stopmotion"].push(jsonAdd);
+			var objectToSend = {file: fileName + ".mp4", extension:"mp4", name:req.session, projet:req.project, title: fileName};
+			writeIntoJsonFile(jsonFile, jsonObj, objectToSend, 'displayNewStopMotion');
 		}
 	// F I N     C A P T U R E    P A G E 
 
