@@ -16,7 +16,7 @@
       .navbar {
         height:   340px;
         background-color: transparent;
-        padding: 64px;
+        padding: 80px;
         box-shadow: none;
 
         .logo {
@@ -25,6 +25,10 @@
           &::after {
             opacity: 0;
           }
+        }
+
+        .item {
+
         }
 
 

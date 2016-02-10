@@ -85,37 +85,50 @@ function onListMedias(array, json){
 }
 
 function displayImage(session, project, id, file){
-	var imagePath = "/" +session +"/"+ project+ "/"+ file; 
-	var divMedia = '<div class="mediaContent"><img src="'+imagePath+'" preload="none"></div>';
-	var htmlToAdd = '<li class="media images-bibli" id="'+id+'" data-type="image">'+divMedia+'</li>';
-	$('.medias ul.medias-list').prepend(htmlToAdd);
+	var imagePath = "/" +session +"/"+ project+ "/"+ file;
+	var mediaItem = $(".js--templates .media_image").clone(false);
+	mediaItem.attr( 'id', id);
+	mediaItem.find( 'img').attr('src', imagePath);
+
+	$('.medias ul.medias-list').prepend(mediaItem);
 }
 
 function displayVideo(session, project, id, file){
 	var thumbPath = '/'+session + '/'+ project+ '/'+id +'-thumb.png';
 	var videoPath = '/'+session +'/'+ project+ '/' + file;
-	var video = '<video preload="none" controls poster="'+thumbPath+'"><source src="'+videoPath+'"></video>';
-	var divMedia = '<div class="mediaContent">'+video+'</div>';
-	var htmlToAdd = '<li class="media videos-bibli" id="'+id+'" data-type="video">'+divMedia+'</li>';
-	$('.medias ul.medias-list').prepend(htmlToAdd);
+
+	var mediaItem = $(".js--templates .media_video").clone(false);
+	mediaItem
+	  .attr( 'id', id)
+    .find( 'video').attr( 'poster', thumbPath)
+    .find( 'source').attr( 'src', videoPath);
+
+	$('.medias ul.medias-list').prepend(mediaItem);
 }
 
 function displayStopMotion(session, project, id, file){
-	console.log('display stop mo');
+
 	var thumbPath = '/'+session + '/'+ project+ '/'+id +'-thumb.png';
 	var videoPath = '/'+session +'/'+ project+ '/' + file;
-	var video = '<video preload="none" controls poster="'+thumbPath+'"><source src="'+videoPath+'"></video>';
-	var divMedia = '<div class="mediaContent">'+video+'</div>';
-	var htmlToAdd = '<li class="media stopmotion-bibli" id="'+id+'" data-type="stopmotion">'+divMedia+'</li>';
-	$('.medias ul.medias-list').prepend(htmlToAdd);
+
+	var mediaItem = $(".js--templates .media_stopmotion").clone(false);
+	mediaItem
+	  .attr( 'id', id)
+    .find( 'video').attr( 'poster', thumbPath)
+    .find( 'source').attr( 'src', videoPath);
+
+	$('.medias ul.medias-list').prepend(mediaItem);
 }
 
 function displayAudio(session, project, id, file){
 	var audioPath = '/'+session +'/'+ project+ '/' + file;
-	var audio = '<audio preload="none" controls><source src="'+audioPath+'"></audio>';
-	var divMedia = '<div class="mediaContent">'+audio+'</div>';
-	var htmlToAdd = '<li class="media sons-bibli" id="'+id+'" data-type="son">'+divMedia+'</li>';
-	$('.medias ul.medias-list').prepend(htmlToAdd);
+
+	var mediaItem = $(".js--templates .media_audio").clone(false);
+	mediaItem
+	  .attr( 'id', id)
+    .find( 'source').attr( 'src', audioPath);
+
+	$('.medias ul.medias-list').prepend(mediaItem);
 }
 
 function dragAndDrop(){

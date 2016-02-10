@@ -132,7 +132,6 @@ function displayFolder(name, created, modified, image, statut){
   var buttonToPubli = $(".js--templates .button-wrapper_bibli").clone(false);
 	buttonToPubli.attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque');
 
-
 	var buttonToPages = '<div class="button-to-pages  small-6 columns">'+buttonToRecord.prop('outerHTML')+buttonToPubli.prop('outerHTML')+'</div>'
 
 	var folderHTML = '<li class="project small-12 columns" data-statut="'+statut+'">'+editIcon+'<div class="project-inside"><div class="left-content small-6 columns">'+contentHTML+metaDataHTML+buttonToPages+'</div>'+imageHTML+'</div></li>';

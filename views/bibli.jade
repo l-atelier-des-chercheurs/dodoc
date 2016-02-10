@@ -32,10 +32,13 @@ html
             include templates/images/record.svg
           span Capture
 
-    div#container.row.small-12
+    div
       div.bibli-buffer.small-6.medium-6.large-6.columns
-        div.medias.small-11.medium-11.large-11.columns
+
+        div.medias
           ul.medias-list#left
+
+
         div.btn-medias.small-1.medium-1.large-1.columns
           ul
             li.--js-btn-medias-text.btn.icon
@@ -44,6 +47,7 @@ html
               include templates/images/add.svg
             li.--js-btn-medias-publications.btn.icon
               include templates/images/publi.svg
+
       div.montage.small-6.medium-6.large-6.columns
         div.montage-title
           input(type="text" placeholder="Titre")
@@ -54,6 +58,23 @@ html
             include templates/images/pen.svg
         div.inner-montage#right.small-12
           div.montage-element
+
+    .js--templates
+      li.media.media_image(data-type="image").small-6.medium-4.large-3.columns
+        .mediaContent
+          img
+      li.media.media_video(data-type="video").small-6.medium-4.large-3.columns
+        .mediaContent
+          video(preload="none" controls)
+            source()
+      li.media.media_stopmotion(data-type="stopmotion").small-6.medium-4.large-3.columns
+        .mediaContent
+          video(preload="none" controls)
+            source()
+      li.media.media_audio(data-type="audio").small-6.medium-4.large-3.columns
+        .mediaContent
+          audio(preload="none" controls)
+            source()
 
     //- //footer
     include templates/footer.jade

@@ -94,7 +94,7 @@
     body.index .navbar-container.is--opened .navbar {
       height: 340px;
       background-color: transparent;
-      padding: 64px;
+      padding: 80px;
       box-shadow: none; }
       body.index .navbar-container.is--opened .navbar .logo {
         width: 100%; }
@@ -247,6 +247,9 @@ a {
 a:hover {
   color: #000;
   text-decoration: none; }
+
+ul {
+  margin: 0; }
 
 img, video, audio, svg {
   display: block;
