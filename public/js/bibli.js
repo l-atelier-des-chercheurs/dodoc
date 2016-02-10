@@ -53,14 +53,16 @@ function init(){
 		socket.emit('createPubli', {name: publiName, session:currentSession, project: currentProject});
 	});
 
+/*
 	$('body').on('click', '.publi-folder .content', function(){
 		var namePubli = $(this).parent('.publi-folder').attr('data-publi');
 		$('.montage-edit').attr('data-publi', namePubli);
 		console.log(namePubli);
 		socket.emit('displayThisMontage', {name:namePubli, session:currentSession, project: currentProject});
 	});
+*/
 
-	$('body').on('click', '.edit-publi-btn', function(){
+	$('body').on('click', '.js--edit_view', function(){
 		var namePubli = $(this).parent('.publi-folder').attr('data-publi');
 		console.log(namePubli);
 		$('.montage-edit').attr('data-publi', namePubli);
@@ -92,6 +94,7 @@ function displayNewAudio(audio){
 
 
 function onListMedias(array, json){
+
 	$(".mediaContainer li").remove();
 	var matchID = $(".mediaContainer .media").attr("id");
 	for (var i = 0; i < array.length; i++) {
@@ -175,8 +178,12 @@ function dragAndDrop(){
       return target === right;
 	  }
 	})
-	.on('dragend', function(el){
-		onMontageChanged();
+	.on('drop', function(el, target, source, sibling){
+  	// si le drop a bien réussi
+    if( target !== null) {
+      $(el).removeClass("gu-transit");
+  		onMontageChanged();
+    }
 	});
 }
 
@@ -188,18 +195,20 @@ function onMontageChanged(){
 
 function onPubliCreated(data){
 	var publiItem = $(".js--templates .publi-folder").clone(false);
+	var publiLink = convertToSlug(data.name);
 	publiItem
-		.attr('data-publi', convertToSlug(data.name))
+		.attr('data-publi', publiLink)
 		.find('h2').html(data.name);
 
-	$('#modal-add-publi').foundation('reveal', 'close');
-	$('.montage-list ul').prepend(publiItem);
-
-	var viewButton = $('.edit-view-btn a');
-	var publiLink= $('.publi-folder').attr('data-publi');
 	var publiPath = '/'+currentSession+'/'+currentProject+'/publication/'+ publiLink;
-	viewButton	
+	var viewButton = publiItem.find('.js--publi_view');
+
+	viewButton
 		.attr('href', publiPath);
+
+	$('.montage-list ul').prepend(publiItem);
+	$('#modal-add-publi').foundation('reveal', 'close');
+
 }
 
 function onDisplayMontage(data){
@@ -213,7 +222,7 @@ function onDisplayMontage(data){
 	else{
 		$('.montage-edit[data-publi="'+publiName+'"]').find('.inner-montage').html('');
 	}
-	
+
 }
 
 function onTitleModified(data){
@@ -233,6 +242,7 @@ function onSocketConnect() {
 	sessionId = socket.io.engine.id;
 	console.log('Connected ' + sessionId);
 	socket.emit('listMedias', {session: currentSession, project: currentProject});
+
 	socket.emit('listPubli', {session: currentSession, project: currentProject});
 };
 

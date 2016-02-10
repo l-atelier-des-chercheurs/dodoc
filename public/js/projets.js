@@ -96,52 +96,50 @@ function onListProject(data){
 	sessionName = data.sessionName;
 	if(data.modified!= null){var modifiedDate = transformDatetoString(data.modified);}
 	else{var modifiedDate = data.modified;}
-	$('.folder-wrapper').html('<h1 class="folder">'+data.sessionName+'</h1>')
+	$('.folder-wrapper').html('<h1 class="folder">'+data.sessionName+'</h1>');
+
+	debugger;
 	displayFolder(folderName, createdDate, modifiedDate, image, statut);
 }
 
 // Fonction qui affiche les projets HTML
 function displayFolder(name, created, modified, image, statut){
-	var formatName = convertToSlug(name);
-	var contentHTML = '<div class="content small-12 columns"><h2>'+name+'</h2></div>';
-	var statutHTML= '<div class="statut"><span>statut</span><span class="statut-type"> '+statut+'</span></div>';
-	if(image == false){
-		var imageHTML = '<div class="image-wrapper small-6 columns"><img src="" alt=""></div>';
-	}
-	else{
-		var imageHTML = '<div class="image-wrapper small-6 columns"><img src="/'+currentSession+'/'+formatName+'/'+formatName+'-thumb.jpg" alt="'+name+'"></div>'
-	}
-	var createdHTML= '<div class="created"><span>crée le </span><span class="create-date">'+created+'</span></div>';
-	if(modified!= null){
-		var modifiedHTML= '<div class="modified"><span>modifié le </span><span class="modify-date">'+modified+'</span></div>';
-	}
-	else{
-		var modifiedHTML= '<div class="modified"></div>';
-	}
-	if(statut == "terminé"){
-		var editIcon='' ;
-	}
-	else{
-		var editIcon = '<a href="#" class="edit-icon btn icon" data-reveal-id="modal-modify-project"><img src="/images/pen.svg" alt="edit icon"></a>';
-	}
-	var metaDataHTML = '<div class="meta-data small-6 columns">'+statutHTML+createdHTML+modifiedHTML+'</div>';
 
+  // slug
+	var formatName = convertToSlug(name);
+
+  // boutons
 	var buttonToRecord = $(".js--templates .button-wrapper_capture").clone(false);
 	buttonToRecord.attr( 'href', '/'+currentSession+'/'+formatName+'/capture');
 
-  var buttonToPubli = $(".js--templates .button-wrapper_bibli").clone(false);
-	buttonToPubli.attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque');
+  var buttonToBibli = $(".js--templates .button-wrapper_bibli").clone(false);
+	buttonToBibli.attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque');
 
-	var buttonToPages = '<div class="button-to-pages  small-6 columns">'+buttonToRecord.prop('outerHTML')+buttonToPubli.prop('outerHTML')+'</div>'
+  var buttonToPubli = $(".js--templates .button-wrapper_publi").clone(false);
+	buttonToPubli.attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque#publi');
 
-	var folderHTML = '<li class="project small-12 columns" data-statut="'+statut+'">'+editIcon+'<div class="project-inside"><div class="left-content small-6 columns">'+contentHTML+metaDataHTML+buttonToPages+'</div>'+imageHTML+'</div></li>';
-	$("#container .project-list").prepend(folderHTML);
+  // customisation du projet
+	var newProject = $(".js--templates > .project").clone(false);
+	newProject
+	  .attr( 'data-statut', statut)
+	  .find( '.statut-type').text( statut).end()
+	  .find( '.image-wrapper img').attr('src', image === true ? '/'+currentSession+'/'+formatName+'/'+formatName+'-thumb.jpg' : '').attr('alt', name).end()
+	  .find( '.create-date').text( created).end()
+	  .find( '.modify-date').text( modified !== null ? modified : '').end()
+	  .find( '.button-to-pages').html( buttonToRecord.prop('outerHTML')+buttonToBibli.prop('outerHTML')+buttonToPubli.prop('outerHTML')).end()
+	  .find( 'h2').text( name);
+
+  if( modified === null)
+    newProject.find('.modified').remove();
+
+	$("#container .project-list").prepend(newProject);
+
 }
 
 function modifyProject($this){
 	$("#container.row #modal-modify-project").empty();
 	thisProjectName = $this.parents(".project").find('h2').text();
-	debugger;
+
 	var statut = $this.parent().attr("data-statut");
 	var inputNameHtml = "<input type='text' class='modify-project' value='"+thisProjectName+"'></input>";
 	if(statut == 'en cours'){

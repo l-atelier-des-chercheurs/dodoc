@@ -51,14 +51,48 @@ html
         a(class="close-reveal-modal" aria-label="Close") &#215;
 
     .js--templates
-      a(href="" title="Dodoc page de capture").button-wrapper.button-wrapper_capture.button-wrapper_without-bg
+      a(href="" title="Dodoc page de capture").button-wrapper.button-wrapper_capture.button-wrapper_without-bg.button-wrapper_collapsed
         .btn.icon
           include templates/images/record.svg
         span Capture
-      a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_bibli.button-wrapper_without-bg
+      a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_bibli.button-wrapper_without-bg.button-wrapper_collapsed
         .btn.icon
           include templates/images/bibli.svg
         span Bibliothèque
+      a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_publi.button-wrapper_without-bg.button-wrapper_collapsed
+        .btn.icon
+          include templates/images/publi.svg
+        span Publications
+
+      .project.small-12.columns(data-statut)
+        a.edit-icon.btn.icon(href="#" data-reveal-id="modal-modify-project")
+          img(src="/images/pen.svg" alt="edit icon")
+        .project-inside
+          .left-content.small-8.medium-6.columns
+            .content.small-6.columns
+              h2
+              .meta-data
+                .statut
+                  span statut
+                  span.statut-type
+                .created
+                  span créé le
+                  span.create-date
+                .modified
+                  span modifié le
+                  span.modify-date
+            .button-to-pages.small-6.columns
+              a(href="/#{session}/#{projet}/capture" title="Dodoc page de capture").button-wrapper.button-wrapper_capture.button-wrapper_collapsed
+                .btn.icon
+                  include templates/images/record.svg
+                span Capture
+              a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_bibli
+                .btn.icon
+                  include templates/images/bibli.svg
+                span Bibliothèque
+          .image-wrapper.small-4.medium-6.columns
+            img
+
 
 
     //- scripts
