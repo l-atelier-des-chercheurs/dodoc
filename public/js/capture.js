@@ -14,9 +14,9 @@ var streaming = false,
     canvas       = document.querySelector('#canvas'),
     photo        = document.querySelector('#photo'),
     startbutton  = document.querySelector('#capture-btn'),
-    startsm  = document.querySelector('#start-sm'),
-    capturesm  = document.querySelector('#capture-sm'),
-    stopsm  = document.querySelector('#stop-sm'),
+    startsm  = document.querySelector('#start-sm-btn'),
+    capturesm  = document.querySelector('#capture-sm-btn'),
+    stopsm  = document.querySelector('#stop-sm-btn'),
     width = 480,
     height = 0;
 var mediaStream = null;
@@ -27,13 +27,22 @@ var isEventExecutedVideoBtn = false;
 var isEventExecutedAudio = false;
 var isEventExecutedEqualizer = false;
 
-// compteur de click
+//compteur d'image pour le stop motion
+var countImage = 0;
+//compteur de clicks pour le stopmotion
 var countPress = 0;
+//compteur de click général
+var countClick = 0;
+//compteur pour l'equalizer
+var countEqualizer = 0;
+
+var sarahCouleur = "gray";
 
 
 /* sockets */
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
+socket.on('mediaCreated', onMediaCreated);
 
 
 jQuery(document).ready(function($) {
@@ -56,12 +65,6 @@ function init(){
 
   $("#canvas-equalizer").hide();
 
-  // setTimeout(function(){
-  //   $(".choice .image-choice").fadeIn(1000, function(){
-  //     $(this).fadeOut(1000);
-  //   });
-  // }, 1000);
-
 	//on media changing
 	changeMedia();
 	displayVideoStream();
@@ -72,6 +75,16 @@ function init(){
   $("#video-btn").on('click', function(){
     recordingVideo('click');
   });
+  $("#start-sm-btn").on('click', startStopMotion);
+  $("#capture-sm-btn").on('click', onStopMotionDirectory);
+  $("#stop-sm-btn").on('click', stopStopMotion);
+  
+  $("#audio").on('click', function(e){
+    audioCapture("click");
+  });
+  //initiate Equalizer at the beginning
+  createEqualizer();
+
 	// Keypressed (makey-makey) event
   $("body").keypress(function(e){
 	  var code = e.keyCode || e.which;
@@ -87,7 +100,81 @@ function init(){
         recordingVideo();
       }
     }
-	 });
+    if($("#stopmotion").hasClass('active')){
+      //redémarre le stop motion quand un autre média est choisi au milieu du stop motion
+      isEventExecutedSM = false;
+      if(code == 115 || code == 122){
+        console.log(isEventExecutedSM);
+        if(isEventExecutedSM == false){
+          isEventExecutedSM = true;
+          $("#stop-sm-btn").hide();
+          $("#start-sm-btn").show();
+          $("#capture-sm-btn").hide();
+          $('.screenshot .meta-stopmotion').remove();
+        }
+      }
+      if(code == 113) { //When Space is pressed
+        countPress ++;
+        if(countPress == 1){
+          console.log("start a stopmotion");
+          startStopMotion();
+        }
+        else{
+          console.log("start taking pictures");
+          onStopMotionDirectory();
+        }
+      }
+    }
+
+    if($("#audio").hasClass('active')){
+      if(code == 113) {
+        countPress ++;
+        countEqualizer ++;
+        audioCapture(code);
+      }
+    }
+	});
+
+  //redémarre le stop motion quand un autre média est choisi au milieu du stop motion
+  var isEventExecutedSM = false;
+  $("#stopmotion").click(function(){
+    isEventExecutedSM = false;
+    $(".btn-choice button").click(function(){
+      // $('#modal-change-alert').foundation('reveal', 'open');
+      if(isEventExecutedSM == false){
+        isEventExecutedSM = true;
+        $("#stop-sm-btn").hide();
+        $("#start-sm-btn").show();
+        $("#capture-sm-btn").hide();
+        $('.screenshot .meta-stopmotion').remove();
+      }
+    });
+    // $('#modal-change-alert button.oui').on('click', function(){
+    //   if(isEventExecutedSM == false){
+    //     isEventExecutedSM = true;
+    //     $("#stop-sm-btn").hide();
+    //     $("#start-sm-btn").show();
+    //     $("#capture-sm-btn").hide();
+    //     $('.screenshot .meta-stopmotion').remove();
+    //   }
+    //   $('#modal-change-alert').foundation('reveal', 'close');
+    // });
+    // $('#modal-change-alert button.annuler').on('click', function(){
+    //   console.log('annuler');
+    //   $('#modal-change-alert').foundation('reveal', 'close');
+    // });
+  });
+
+  // delete file
+  $(".clear").off();
+  $(".clear").on("click", function(e){
+    console.log('File was delete');
+    var fileToDelete = $('.screenshot').attr('data-file');
+    socket.emit("deleteFile", {session:currentSession, project:currentProject, file:fileToDelete});
+    backAnimation();
+    //deleteFeedback();
+    e.stopPropagation;
+  });
 
 }
 
@@ -114,7 +201,13 @@ function changeMedia(){
   });
   
   //Animation back when changing media
-  $(".btn-choice").on('click', backAnimation);
+  if(!$("#stopmotion").hasClass('active')){
+    console.log('stop motion');
+    $(".btn-choice").on('click', backAnimation);
+  }
+  else{
+    $(".btn-choice").off('click');
+  }
   
   $("body").keypress(function(e){
     var code = e.keyCode || e.which;
@@ -276,6 +369,7 @@ function takePictures(){
   submitData(data, 'imageCapture')
 }
 
+// Function qui enregistre de la vidéo
 function recordingVideo(click){
   console.log('test');
   var startVideoRecording = document.getElementById('start-record-btn');
@@ -436,6 +530,372 @@ function recordingVideo(click){
     cameraPreview.muted = false;
     cameraPreview.controls = true;
   });
+}
+
+// STOP MOTION
+// Start Stop Motion
+function startStopMotion(){
+  countImage = 0;
+  console.log('start stop-motion');
+  $("#start-sm-btn").hide(); $("#capture-sm-btn").show(); $("#stop-sm-btn").hide();
+  $('.screenshot .canvas-view').hide(); $('#camera-preview').hide();
+
+  var iconeSM = '<div class="icone-stopmotion"><img src="/images/stopmotion.svg"></div>';
+  var text = '<h4>Vous venez de créer un nouveau stop motion.</br>Cliquez que le <b>bouton d\'enregistrement</b> pour commencer à prendre des photos</h4>'
+  var htmlToAdd = '<div class="instructions-stopmotion">'+iconeSM+text+'</div>';
+  $('.screenshot').append(htmlToAdd);
+  submitData(false, 'newStopMotion');
+  $(".screenshot").append("<div class='meta-stopmotion'><div class='delete-image'><img src='/images/clear.svg'></div><p class='count-image'></p></div>");
+  $(".screenshot .meta-stopmotion").hide();
+}
+
+// Quand le dossier du stop motion est crée
+function onStopMotionDirectory(){
+  var dir = "sessions/" + currentSession + "/"+ currentProject+"/01-stopmotion";
+  $("#stop-sm-btn").show();
+  $('.screenshot .canvas-view').show();
+  $('.screenshot .instructions-stopmotion').remove(); 
+  $(".screenshot .meta-stopmotion").show();   
+  takepictureMotion(dir);
+}
+
+// fonction qui prend des photos pour le stop motion et qui les envoie au serveur
+function takepictureMotion(dir) {
+  countImage ++;
+  canvas.width = width;
+  canvas.height = height;
+  canvas.getContext('2d').drawImage(video, 0, 0, width, height);
+  var data = canvas.toDataURL('image/png');
+  photo.setAttribute('src', data);
+  $(".meta-stopmotion .delete-image").off();
+  $(".meta-stopmotion .delete-image").on('click', function(){
+    removeImageMotion(data, dir);
+  });
+  socket.emit('imageMotion', {data: data, dir: dir, count: countImage});
+  $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
+}
+
+function removeImageMotion(data, dir){
+  if(countImage > 1){
+    console.log("delete Image");
+    socket.emit("deleteImageMotion", {data: data, name: app.session, dir: dir, count: countImage});
+    countImage = countImage - 1;
+    var context = canvas.getContext('2d');
+    var imageObj = new Image();
+    imageObj.onload = function() {
+      context.drawImage(imageObj, 0, 0);
+    };
+    imageObj.src = "/" + currentSession +"/"+ currentProject+"/01-stopmotion/" + countImage + ".png";
+    $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
+  }
+  else{
+    startStopMotion();
+  }
+}
+
+function stopStopMotion(){
+  var dir = "sessions/" + currentSession + "/"+ currentProject+"/01-stopmotion";
+  $("#stop-sm-btn").hide();
+  $("#start-sm-btn").show();
+  $("#capture-sm-btn").hide();
+  countImage = 0;
+  countPress = 0;
+  $('.screenshot .meta-stopmotion').remove();
+  //saveFeedback("/images/icone-dodoc_anim.png");
+
+  socket.emit('stopmotionCapture', {session: currentSession, project: currentProject, dir: dir});
+  socket.on('newStopMotionCreated', function(req){
+    $('.screenshot .canvas-view').hide();
+    $('#camera-preview').attr('src', '/' + currentSession + '/'+'/'+currentProject+'/'+req.fileName+'')
+    $('#camera-preview').show();
+  });
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+}
+
+//Capture le flux audio
+function audioCapture(code){
+  //Variables     
+  var mediaStream = null;
+
+  var startRecordingBtn = document.getElementById('start-recording-btn');
+  var stopRecordingBtn = document.getElementById('stop-recording-btn');
+  var cameraPreview = document.getElementById('son');
+
+  //click events
+  if(code == "click"){
+    $("#start-recording-btn").off();
+    $("#start-recording-btn").on('click', function(){
+      console.log("you are using the mouse for recording audio");
+      startRecordAudio();
+      isEventExecutedVideo = false;
+      $(".btn-choice").click(function(e){
+        isEventExecutedVideo = false;
+        stopAudioOnChange(e, isEventExecutedVideo);
+      });
+    });
+
+    $("#stop-recording-btn").off();
+    $("#stop-recording-btn").on('click', function(){
+      stopRecordAudio();
+      console.log("stop recording audio");
+    });
+  }
+
+  //keyboard events
+  if(countPress == 1){
+    startRecordAudio();
+    console.log("recording audio");
+    isEventExecutedAudio = false;
+    $("body").unbind("keypress.key115");
+    $("body").bind("keypress.key115", function(e){
+      var code = e.keyCode || e.which;
+      if(code == 115 || code == 122){
+        isEventExecutedVideo = false;
+        stopAudioOnChange(e, isEventExecutedVideo);
+      }
+    });
+  }
+
+  if(countPress > 1){
+    stopRecordAudio();
+    console.log("stop recording audio");
+    countPress = 0;
+  }
+
+  socket.on('AudioFile', function(fileName, sessionName, projetName) {
+    var href = '/static/' + sessionName + '/' + projetName + '/' + fileName;
+    console.log('got file ' + href);
+    cameraPreview.src = href;
+    cameraPreview.play();
+    cameraPreview.muted = false;
+    cameraPreview.controls = true;
+  });
+
+  function stopAudioOnChange(e){
+    if(isEventExecutedVideo == false){
+      isEventExecutedVideo = true;
+      console.log("Audio File was not saved");
+      recordAudio.stopRecording();
+      startRecordingBtn.style.display = "block";
+      stopRecordingBtn.style.display = "none";
+      startRecordingBtn.disabled = false;
+      stopRecordingBtn.disabled = true;
+      countPress = 0;
+      sarahCouleur = "gray";
+    }
+  }
+  
+  function startRecordAudio(){
+    backAnimation();
+    
+    // Initialise getUserMedia
+    navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+    navigator.getMedia(
+      {
+        video: false,
+        audio: true
+      },
+      function (stream) {
+        // get user media pour le son
+        mediaStream = stream;
+        recordAudio = RecordRTC(stream, {
+          type: 'audio'
+        });
+        recordAudio.startRecording();
+        cameraPreview.src = window.URL.createObjectURL(stream);
+        cameraPreview.play();
+        cameraPreview.muted = false;
+        cameraPreview.controls = true;
+      },
+      function(error) {
+        alert(JSON.stringify(error));
+      }
+    );
+    startRecordingBtn.disabled = true;
+    stopRecordingBtn.disabled = false;
+    startRecordingBtn.style.display = "none";
+    stopRecordingBtn.style.display = "block";
+
+    sarahCouleur = "red";
+  }
+
+  function stopRecordAudio(){
+    startRecordingBtn.disabled = false;
+    stopRecordingBtn.disabled = true;
+    startRecordingBtn.style.display = "block";
+    stopRecordingBtn.style.display = "none";
+    cameraPreview.style.display = "block";
+    sarahCouleur = "gray";
+
+    //display equalizer image
+    var canvas = document.querySelector('#canvas-equalizer');
+    var canvasAudio = document.querySelector('#canvas-audio');
+    var context = canvas.getContext('2d');
+    var widthAudio = canvas.width; 
+    var heightAudio = canvas.height;
+    context.clearRect(0, 0, widthAudio, heightAudio);
+    context.drawImage(canvasAudio, 0, 0, widthAudio, heightAudio);
+    var data = canvas.toDataURL('image/png');
+    photo.setAttribute('src', data);
+    $('#canvas-equalizer').show();
+
+    // stop audio recorder
+    recordAudio.stopRecording(function(url) {
+      // get audio data-URL
+      recordAudio.getDataURL(function(audioDataURL) {
+        var files = {
+            audio: {
+              type: recordAudio.getBlob().type || 'audio/wav',
+              dataURL: audioDataURL
+            }
+        };
+        //socket.emit('audio', {files: files, id: sessionId, name: app.session});
+        console.log("Audio is recording url " + url);
+        submitData(files, "audioCapture");
+        //saveFeedback("/images/icone-dodoc_son.png");
+        if (mediaStream) mediaStream.stop();
+      });
+    });
+  }
+}
+
+// CREATE A SOUND EQUALIZER
+function createEqualizer(event){
+  window.requestAnimFrame = (function(){
+    return  window.requestAnimationFrame       ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            function(callback, element){
+              window.setTimeout(callback, 1000 / 60);
+            };
+  })();
+
+  window.AudioContext = (function(){
+      return  window.AudioContext || window.mozAudioContext;
+  })();
+
+  // Global Variables for Audio
+  var audioContext;
+  var analyserNode;
+  //var javascriptNode;
+  var sampleSize = 1024;  // number of samples to collect before analyzing
+                          // decreasing this gives a faster sonogram, increasing it slows it down
+  var amplitudeArray;     // array to hold frequency data
+  var audioStream;
+
+  // Global Variables for Drawing
+  var column = 0;
+  var canvasWidth  = 620;
+  var canvasHeight = 256;
+  var ctx;
+
+  ctx = $("#canvas-audio").get()[0].getContext("2d");
+
+  try {
+      audioContext = new AudioContext();
+  } catch(e) {
+      console.log('Web Audio API is not supported in this browser');
+  }
+  
+  startEqualizer();
+
+  function startEqualizer(){
+    // e.preventDefault();
+    clearCanvas();     
+    // Initialise getUserMedia
+    navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia); 
+    navigator.getMedia(
+      {
+        video: false,
+        audio: true
+      },
+      setupAudioNodes,
+      function(err) {
+        alert(JSON.stringify(error));
+      }
+    );
+  }
+
+  function stopEqualizer(e){
+    e.preventDefault();
+    javascriptNode.onaudioprocess = null;
+    if(audioStream) audioStream.stop();
+    if(sourceNode)  sourceNode.disconnect();
+  }
+
+  function setupAudioNodes(stream) {
+    // create the media stream from the audio input source (microphone)
+    sourceNode = audioContext.createMediaStreamSource(stream);
+    audioStream = stream;
+
+    analyserNode   = audioContext.createAnalyser();
+    javascriptNode = audioContext.createScriptProcessor(sampleSize, 1, 1);
+
+    // Create the array for the data values
+    amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
+
+    // setup the event handler that is triggered every time enough samples have been collected
+    // trigger the audio analysis and draw one column in the display based on the results
+    javascriptNode.onaudioprocess = function () {
+
+        amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
+        analyserNode.getByteTimeDomainData(amplitudeArray);
+
+        // draw one column of the display
+        requestAnimFrame(drawTimeDomain);
+    }
+
+    // Now connect the nodes together
+    // Do not connect source node to destination - to avoid feedback
+    sourceNode.connect(analyserNode);
+    analyserNode.connect(javascriptNode);
+    javascriptNode.connect(audioContext.destination);
+  }
+
+  function onError(e) {
+      console.log(e);
+  }
+
+  function drawTimeDomain() {
+      var minValue = 9999999;
+      var maxValue = 0;
+      for (var i = 0; i < amplitudeArray.length; i++) {
+          var value = amplitudeArray[i] / 256;
+          if(value > maxValue) {
+              maxValue = value;
+          } else if(value < minValue) {
+              minValue = value;
+          }
+      }
+
+      var y_lo = canvasHeight - (canvasHeight * minValue) - 1;
+      var y_hi = canvasHeight - (canvasHeight * maxValue) - 1;
+
+      ctx.fillStyle = sarahCouleur;
+      ctx.fillRect(column,y_lo, 1, y_hi - y_lo);
+
+      // loop around the canvas when we reach the end
+      column += 1;
+      if(column >= canvasWidth) {
+          column = 0;
+          clearCanvas();
+      }
+  }
+
+  function clearCanvas() {
+      column = 0;
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctx.strokeStyle = 'blue';
+      var y = (canvasHeight / 2) + 0.5;
+      ctx.moveTo(0, y);
+      ctx.lineTo(canvasWidth-1, y);
+      ctx.stroke();
+  }
+
+}
+
+function onMediaCreated(file){
+  $('.screenshot').attr('data-file', file.file);
 }
 
 function submitData(data, send){

@@ -35,6 +35,15 @@ module.exports = function(app, io){
 		// C A P T U R E     P A G E
 		socket.on("imageCapture", onNewImage);
 		socket.on("videoRecorded", onNewVideo);
+		//STOP MOTION
+		socket.on("newStopMotion", onNewStopMotion);
+		socket.on("imageMotion", onNewImageMotion);
+		socket.on("deleteImageMotion", deleteImageMotion);
+		socket.on("stopmotionCapture", createStopMotion);
+		// Audio
+		socket.on("audioCapture", onNewAudioCapture);
+		socket.on("deleteFile", deleteFile);
+
 		
 		// B I B L I        P A G E 
 		socket.on("listMedias", listMedias);
@@ -369,6 +378,7 @@ module.exports = function(app, io){
 				}
 				else{
 					console.log("Image Ajoutée au projet");
+					io.sockets.emit('mediaCreated', {file:currentDate + '.jpg'});
 				}
 			});
 			
@@ -391,7 +401,7 @@ module.exports = function(app, io){
 
 		  writeToDisk(data.data.video.dataURL, fileName + '.webm', session, project);
 		  io.sockets.emit('showVideo', {file: fileName + '.webm', session:session, project:project});
-		    
+			io.sockets.emit('mediaCreated', {file:fileName + '.webm'});	    
 		  //Write data to json
 	    var jsonFile = 'sessions/' + session + '/' +project + '/'+project+'.json';
 			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
@@ -402,23 +412,123 @@ module.exports = function(app, io){
 			writeIntoJsonFile(jsonFile, jsonObj, objectToSend, 'displayNewVideo');
 	 		
 	 		//Create thumbnails
-	 		var proc = ffmpeg(projectDirectory + "/" + fileName + ".webm")
-		  // setup event handlers
-		  .on('end', function(files) {
-		    console.log('screenshots were saved');
-		  })
-		  .on('error', function(err) {
-		    console.log('an error happened: ' + err.message);
-		  })
-		  // take 2 screenshots at predefined timemarks
-		  .takeScreenshots({ count: 1, timemarks: [ '00:00:01'], filename: fileName + "-thumb.png"}, projectDirectory);
-			  
+	 		createThumnails(projectDirectory + "/" + fileName + ".webm", fileName, projectDirectory)
+		}
+
+		// Crée un nouveau dossier pour le stop motion
+		function onNewStopMotion(data) {
+			var StopMotionDirectory = 'sessions/' + data.session +'/'+ data.project+'/01-stopmotion';
+			if(StopMotionDirectory){
+				fs.removeSync(StopMotionDirectory);
+			}
+			fs.ensureDirSync(StopMotionDirectory);
+			// io.sockets.emit('newStopMotionDirectory', StopMotionDirectory);
+		}
+
+		// Ajoute des images au dossier du stop motion
+		function onNewImageMotion(req) {
+			var imageBuffer = decodeBase64Image(req.data);
+			filename = req.dir + '/' + req.count + '.png';
+			fs.writeFile(filename , imageBuffer.data, function(err) { 
+				if(err){
+					console.log(err);
+				}
+			});
+		}
+
+		// Supprime une image du Stop Motion
+		function deleteImageMotion(req){
+			filename = req.dir + '/' + req.count + '.png';
+			fs.unlinkSync(filename, function (err) {
+		  if (err) console.log(err);
+		  	console.log('successfully deleted ' + filename);
+			});
+		}
+
+		//Transforme les images en vidéos.
+		function createStopMotion(req){
+			var currentDate = Date.now();
+			var fileName = currentDate;
+			
+			//SAVE VIDEO
+			var videoPath = 'sessions/' + req.session + '/' +req.project+'/'+ fileName + '.mp4';
+			var projetDir = 'sessions/' + req.session+"/"+req.project;
+			//make sure you set the correct path to your video file
+			var proc = new ffmpeg({ source: req.dir + '/%d.png'})
+			  // using 12 fps
+			  .withFpsInput(5)
+			  .fps(5)
+			  // setup event handlers
+			  .on('end', function() {
+			    console.log('file has been converted succesfully');
+			    io.sockets.emit("newStopMotionCreated", {fileName:fileName + '.mp4', name:req.session, projet:req.project, dir:req.dir });
+			  	createThumnails(videoPath, fileName, projetDir)
+			  })
+			  .on('error', function(err) {
+			    console.log('an error happened: ' + err.message);
+			  })
+			  // save to file
+			  .save(videoPath);
+			  io.sockets.emit('mediaCreated', {file:fileName + '.mp4'});
+
+			var jsonFile = 'sessions/' + req.session + '/'+req.project+"/"+req.project+'.json';
+			var data = fs.readFileSync(jsonFile,"UTF-8");
+			var jsonObj = JSON.parse(data);
+			var jsonAdd = { "name" : currentDate};
+			jsonObj["files"]["stopmotion"].push(jsonAdd);
+			var objectToSend = {file: fileName + ".mp4", extension:"mp4", name:req.session, projet:req.project, title: fileName};
+			writeIntoJsonFile(jsonFile, jsonObj, objectToSend, 'displayNewStopMotion');
+		}
+
+		// Audio
+		function onNewAudioCapture(req){
+			//write audio to disk
+			var currentDate = Date.now();
+			var fileName = currentDate;
+	  	var fileWithExt = fileName + '.wav';
+	  	var fileExtension = fileWithExt.split('.').pop(),
+	      fileRootNameWithBase = './sessions/' + req.session +'/'+ req.project +'/'+fileWithExt,
+	      filePath = fileRootNameWithBase,
+	      fileID = 2,
+	      fileBuffer;
+
+		    dataURL = req.data.audio.dataURL.split(',').pop();
+		    fileBuffer = new Buffer(dataURL, 'base64');
+		    fs.writeFileSync(filePath, fileBuffer);
+		    io.sockets.emit('AudioFile', fileWithExt, req.session, req.project);
+		    io.sockets.emit('mediaCreated', {file:fileWithExt});
+
+				//add data to json file
+				var jsonFile = 'sessions/' + req.session + '/'+ req.project+'/'+req.project+'.json';
+				var data = fs.readFileSync(jsonFile,"UTF-8");
+				var jsonObj = JSON.parse(data);
+				var jsonAdd = { "name" : currentDate};
+				jsonObj["files"]["audio"].push(jsonAdd);
+				var objectToSend = {file: fileName + ".wav", extension:"wav", name:req.session, projet:req.project,title: fileName};
+				writeIntoJsonFile(jsonFile, jsonObj, objectToSend, 'displayNewAudio')
+		}
+
+		// Delete File
+		function deleteFile(req){
+			var fileToDelete = 'sessions/' + req.session +'/'+req.project+'/'+req.file;
+			var extension = req.file.split('.').pop();
+  		var identifiant =  req.file.replace("." + extension, "");			
+  		var thumbToDelete = 'sessions/' + req.session +'/'+req.project+'/'+identifiant + '-thumb.png';
+			console.log('delete file', thumbToDelete);
+			fs.unlink(fileToDelete);
+			fs.access(thumbToDelete, fs.F_OK, function(err) {
+		    if (!err) {
+		    	console.log('thumb deleted');
+		      fs.unlink(thumbToDelete);
+		    } else {
+		        // It isn't accessible
+		    }
+			});
 		}
 	// F I N     C A P T U R E    P A G E 
 
 	// B I B L I    P A G E 
 	function listMedias(media){
-		//console.log(media.project);
 		//read json file to send data
 		var jsonFile = 'sessions/' + media.session + '/' + media.project +'/'+media.project+'.json';
 		var data = fs.readFileSync(jsonFile,"UTF-8");
@@ -489,6 +599,19 @@ module.exports = function(app, io){
 			fs.writeFile(filePath, imageBuffer.data, function (err) {
 	    	console.info("write new file to " + filePath);
 			});
+		}
+
+		function createThumnails(path, fileName, dir){
+			var proc = ffmpeg(path)
+			// setup event handlers
+			.on('end', function(files) {
+				console.log('screenshots were saved as ' + fileName + "-thumb.png");
+			})
+			.on('error', function(err) {
+				console.log('an error happened: ' + err.message);
+			})
+			// take 2 screenshots at predefined timemarks
+			.takeScreenshots({ count: 1, timemarks: [ '00:00:01'], filename: fileName + "-thumb.png"}, dir);
 		}
 	// F I N     C O M M O N      F U N C T I O N
 
