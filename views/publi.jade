@@ -1,0 +1,38 @@
+doctype html
+html
+  head
+    link(rel='stylesheet', href='/bower_components/dragula.js/dist/dragula.min.css')
+    include templates/head.jade
+  body.publi
+
+    .navbar-container
+      header.navbar
+        .logo
+          a(href="/" title="Dodoc")
+            include templates/images/dodoc-logo.svg
+
+        .item
+          a(href="/#{session}" title="Dodoc").button-wrapper.button-wrapper_dossier
+            .btn.icon
+              include templates/images/dossier.svg
+            span #{session}
+
+        .item
+          a(href="/#{projet}" title="Dodoc").button-wrapper.button-wrapper_projet
+            span #{projet}
+
+        .item
+          a(href="/#{session}/#{projet}/publication/{#publi}" title="Dodoc publication").button-wrapper.button-wrapper_publi
+            .btn.icon
+              include templates/images/bibli.svg
+            span Publication
+
+        a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_bibli
+          .btn.icon
+            include templates/images/bibli.svg
+          span Bibliothèque
+
+    //- //footer
+    include templates/footer.jade
+
+    script(src='/js/publi.js')

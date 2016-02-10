@@ -53,8 +53,15 @@ function init(){
 		socket.emit('createPubli', {name: publiName, session:currentSession, project: currentProject});
 	});
 
-	$('body').on('click', '.publi-folder a', function(){
+	$('body').on('click', '.publi-folder a h2', function(){
 		var namePubli = $(this).parent('.publi-folder').attr('data-publi');
+		$('.montage-edit').attr('data-publi', namePubli);
+		socket.emit('displayThisMontage', {name:namePubli, session:currentSession, project: currentProject});
+	});
+
+	$('body').on('click', '.edit-publi-btn', function(){
+		var namePubli = $(this).parent('.publi-folder').attr('data-publi');
+		console.log(namePubli);
 		$('.montage-edit').attr('data-publi', namePubli);
 		socket.emit('displayThisMontage', {name:namePubli, session:currentSession, project: currentProject});
 	});
@@ -190,11 +197,16 @@ function onPubliCreated(data){
 
 	$('#modal-add-publi').foundation('reveal', 'close');
 	$('.montage-list ul').prepend(publiItem);
+
+	var viewButton = $('.edit-view-btn a');
+	var publiLink= $('.publi-folder').attr('data-publi');
+	var publiPath = '/'+currentSession+'/'+currentProject+'/publication/'+ publiLink;
+	viewButton	
+		.attr('href', publiPath);
 }
 
 function onDisplayMontage(data){
 	var publiName = convertToSlug(data.name);
-	console.log($('.montage-edit[data-publi="'+publiName+'"]'));
 	$('.montage-edit[data-publi="'+publiName+'"]')
 		.show()
 		.find('h2').html(data.name);
