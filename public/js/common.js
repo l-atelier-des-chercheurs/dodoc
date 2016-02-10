@@ -10,11 +10,33 @@ function transformDatetoString(date){
 }
 
 function convertToSlug(Text){
-  return Text
-  .toLowerCase()
-  .replace(/ /g,'-')
-  .replace(/[^\w-]+/g,'')
-  ;
+  // return Text
+  // .toLowerCase()
+  // .replace(/ /g,'-')
+  // .replace(/[^\w-]+/g,'')
+  // ;
+  // converti le texte en minuscule
+	var s = Text.toLowerCase();
+	// remplace les a accentué
+	s = s.replace(/[àâäáã]/g, 'a');
+	// remplace les e accentué
+	s = s.replace(/[èêëé]/g, 'e');
+	// remplace les i accentué
+	s = s.replace(/[ìîïí]/g, 'i');
+	// remplace les u accentué
+	s = s.replace(/[ùûüú]/g, 'u');
+	// remplace les o accentué
+	s = s.replace(/[òôöó]/g, 'o');
+	// remplace le c cédille
+	s = s.replace(/[ç]/g, 'c');
+	// remplace le ene tilde espagnol
+	s = s.replace(/[ñ]/g, 'n');
+	// remplace tous les caractères qui ne sont pas alphanumérique en tiret
+	s = s.replace(/\W/g, '-');
+	// remplace les double tirets en tiret unique
+	s = s.replace(/\-+/g, '-');
+	// renvoi le texte modifié
+	return s;
 }
 
 function uploadImage($button){

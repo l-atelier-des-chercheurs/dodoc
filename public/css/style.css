@@ -616,5 +616,13 @@ body.capture .captureRight {
     float: right;
     width: 48px; }
 
+.bibli #container {
+  height: 100%; }
+
+.montage {
+  height: 2000px; }
+  .montage .inner-montage {
+    height: 100%; }
+
 .js--templates {
   display: none; }

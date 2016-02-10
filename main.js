@@ -47,6 +47,7 @@ module.exports = function(app, io){
 		
 		// B I B L I        P A G E 
 		socket.on("listMedias", listMedias);
+		socket.on("saveMontage", saveMontage);
 
 
 	});
@@ -191,7 +192,7 @@ module.exports = function(app, io){
 			var dir = "sessions/"+session.session+"/";
 			var sessionName;
 			fs.readFile(dir + session.session+'.json', 'utf8', function (err, data) {
-			  if (err) throw err;
+			  if (err) console.log(err);
 			  var JsonObjParent = JSON.parse(data);
 			  sessionName = JsonObjParent.name;
 				fs.readdirSync(dir).filter(function(file) {
@@ -544,6 +545,48 @@ module.exports = function(app, io){
 			});
 			io.sockets.emit('listMedias', media, jsonObj);
 		});
+	}
+
+	function saveMontage(req){
+		console.log(req.oldTitle, req.newTitle);
+		var dir = 'sessions/'+ req.session + "/" + req.projet;
+		var montageDir = dir + '/montage';
+		var title;
+		//var html = montageDir + '/' + convertToSlug(req.newTitle) + '.html';
+		if(req.oldTitle != undefined){
+
+		}
+		else{
+
+		}
+		if(req.newTitle == ''){
+			title = 'sanstitre';
+		};
+		// Vérifier si un dossier montage existe
+		// fs.access(montageDir, fs.F_OK, function(err) {
+		// 	// S'il existe écrire le fichier dans le dossier
+	 //    if (!err) {
+	 //        fs.writeFile(html, req.html, function(err) {
+		// 	      if(err) {
+		// 	          console.log(err);
+		// 	      } else {
+		// 	          console.log("Montage HTML was saved");
+		// 	      }
+		// 		  });
+	 //    } 
+	 //    //S'il n'existe pas le créer
+	 //    else {
+	 //      fs.ensureDirSync(montageDir, function(err){
+	 //      	fs.writeFile(html, req.html, function(err) {
+		// 	      if(err) {
+		// 	          console.log(err);
+		// 	      } else {
+		// 	          console.log("Montage HTML was saved");
+		// 	      }
+		// 		  });
+	 //      });//write new montage foder 
+	 //    }
+		// });
 	}
 	// F I N    B I B L I    P A G E 
 
