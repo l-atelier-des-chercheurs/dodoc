@@ -47,16 +47,29 @@ html
               include templates/images/publi.svg
 
       div.montage.small-6.medium-6.large-6.columns
+        div.montage-list
+          a(href="" data-reveal-id="modal-add-publi").button-wrapper.button-wrapper_add
+            .btn.icon
+              include templates/images/add.svg
+            span Créer une nouvelle publication
+          ul
+        div.montage-edit.js--templates
+          div.montage-title
+            input(type="text" placeholder="Titre")
+            h2.montage-title-text
+            div.publi-btn.btn.icon
+              include templates/images/enregistre.svg
+            div.edit-btn.btn.icon
+              include templates/images/pen.svg
+          div.inner-montage#right.small-12
+            div.montage-element
 
-        div.montage-title
-          input(type="text" placeholder="Titre")
-          h2.montage-title-text
-          div.publi-btn.btn.icon
-            include templates/images/enregistre.svg
-          div.edit-btn.btn.icon
-            include templates/images/pen.svg
-        div.inner-montage#right.small-12
-          div.montage-element
+    div(id="modal-add-publi" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+      h2#modalTitle.popoverTitle Nouvelle publication
+      form(onsubmit='return false;' class='add-publi-form lead')
+        input(type='text' class='new-publi' placeholder='Nom')
+        input(type='submit' class='submit-new-publi' value='Valider')
+      a(class="close-reveal-modal" aria-label="Close") &#215;
 
     .js--templates
       li.media.media_image(data-type="image")

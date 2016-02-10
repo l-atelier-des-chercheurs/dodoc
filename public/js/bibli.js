@@ -39,6 +39,12 @@ function init(){
 		$('.montage-title h2').hide();
 	});
 
+	$('.submit-new-publi').on('click', function(){
+		var publiName = $('.new-publi').val();
+		console.log(publiName);
+		socket.emit('createPubli', {name: publiName, session:currentSession, project: currentProject});
+	});
+
 }
 
 function displayNewImage(image){
