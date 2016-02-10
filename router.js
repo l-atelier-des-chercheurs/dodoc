@@ -12,12 +12,8 @@ module.exports = function(app,io,m){
   app.get("/:session", getFolder);
   app.get("/:session/:projet/capture", getCapture);
   app.get("/:session/:projet/bibliotheque", getBibli);
+  app.get("/:session/:projet/publication/:publi", getPubli);
 
-  // app.get("/select/:session", getSelect);
-  // app.get("/select/:session/:projet", getProjet);
-  // app.get("/select/:session/:projet/capture", getCapture);
-  // app.get("/select/:session/:projet/flux", getFlux);
-  // app.get("/select/:session/:projet/publi", getPubli);
 
   /**
   * routing functions
@@ -40,21 +36,6 @@ module.exports = function(app,io,m){
     });
   };
 
-  // function getProjet(req, res) {
-  //   var session = req.param('session');
-  //   var projet = req.param('projet');
-  //   var sessionPath = 'sessions/'+session + '/' + projet;
-
-  //   fs.ensureDirSync(sessionPath);
-  //   res.render("select", {
-  //     title : "Bibliotheque de media",
-  //     session : session,
-  //     sessionFormat : session.replace(/_/g," "),
-  //     projet : projet,
-  //     projetFormat : projet.replace(/_/g," "),
-  //   });
-  // };
-
   function getCapture(req, res) {
     var session = req.param('session');
     var projet = req.param('projet');
@@ -72,6 +53,18 @@ module.exports = function(app,io,m){
       title : "Bibliotheque de médias",
       session : session,
       projet : projet,
+    });
+  };
+
+  function getPubli(req, res) {
+    var session = req.param('session');
+    var projet = req.param('projet');
+    var publi = req.param('publi');
+    res.render("publi", {
+      title : "Publication",
+      session : session,
+      projet : projet,
+      publi: publi
     });
   };
 

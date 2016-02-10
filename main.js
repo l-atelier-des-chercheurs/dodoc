@@ -619,6 +619,7 @@ module.exports = function(app, io){
 
 	function displayMontage(data){
 		var file = "sessions/"+data.session+"/"+data.project+'/montage/'+data.name+'.json';
+		console.log(file);
 		fs.readFile(file, 'utf8', function (err, data) {
 		  if (err) console.log(err);
 		  var jsonObj = JSON.parse(data);
