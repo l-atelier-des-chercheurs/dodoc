@@ -47,6 +47,7 @@ module.exports = function(app, io){
 		
 		// B I B L I        P A G E 
 		socket.on("listMedias", listMedias);
+		socket.on("listPubli", listPubli);
 		socket.on("createPubli", newPublication);
 		socket.on("saveMontage", saveMontage);
 
@@ -548,6 +549,32 @@ module.exports = function(app, io){
 		});
 	}
 
+	function listPubli(data){
+		var dir = "sessions/"+data.session+"/"+data.project+'/montage';
+		// Vérifie si le dossier existe déjà
+		fs.access(dir, fs.F_OK, function(err) {
+	    if (err) { }
+	    // S'il existe 
+	    else {
+		    fs.readdir(dir, function(err, files) {
+				  if (err) console.log(err);
+			    files.forEach(function(file) {
+			    	console.log('Files: ' + file);
+			    	if(file == ".DS_Store"){
+		    			fs.unlink(dir+'/'+file);
+		    		}
+		    		if(! /^\..*/.test(file)){
+			  			var jsonFile = dir +'/' +file;
+							var data = fs.readFileSync(jsonFile,"UTF-8");
+							var jsonObj = JSON.parse(data);
+							io.sockets.emit('listPublications', {name:jsonObj.name, created:jsonObj.created});
+			    	}
+			    });
+				});
+	    }
+		});
+	}
+
 	function newPublication(publi){
 		var folderName = publi.name;
 		var formatFolderName = convertToSlug(folderName);
@@ -559,8 +586,8 @@ module.exports = function(app, io){
 		fs.access(montagePath, fs.F_OK, function(err) {
 			// S'il n'existe pas -> créer le dossier et le json
 	    if (err) {
-	    	console.log("dossier montage crée");
 	      fs.ensureDirSync(montagePath,function(){
+	      	console.log("dossier montage crée");
 					createPubliJson();
 	      });
 

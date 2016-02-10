@@ -17,6 +17,9 @@ socket.on('displayNewVideo', displayNewVideo);
 socket.on('displayNewStopMotion', displayNewStopMotion);
 socket.on('displayNewAudio', displayNewAudio);
 socket.on('listMedias', onListMedias);
+socket.on('listPublications', onPubliCreated);
+socket.on('publiCreated', onPubliCreated);
+socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 
 jQuery(document).ready(function($) {
 
@@ -26,22 +29,21 @@ jQuery(document).ready(function($) {
 
 function init(){
 	dragAndDrop();
-	$('.montage-title .publi-btn').on('click', function(){
-		var oldTitle = $('.montage-title h2').html();
-		var newTitle = $('.montage-title input').val();
-		$('.montage-title input').hide();
-		$('.montage-title h2').show().html(newTitle);
-		onMontageChanged(oldTitle, newTitle);
-	});
+	// $('.montage-title .publi-btn').on('click', function(){
+	// 	var oldTitle = $('.montage-title h2').html();
+	// 	var newTitle = $('.montage-title input').val();
+	// 	$('.montage-title input').hide();
+	// 	$('.montage-title h2').show().html(newTitle);
+	// 	onMontageChanged(oldTitle, newTitle);
+	// });
 
-	$('.montage-title .edit-btn').on('click', function(){
-		$('.montage-title input').show().val($('.montage-title h2').html());
-		$('.montage-title h2').hide();
-	});
+	// $('.montage-title .edit-btn').on('click', function(){
+	// 	$('.montage-title input').show().val($('.montage-title h2').html());
+	// 	$('.montage-title h2').hide();
+	// });
 
 	$('.submit-new-publi').on('click', function(){
 		var publiName = $('.new-publi').val();
-		console.log(publiName);
 		socket.emit('createPubli', {name: publiName, session:currentSession, project: currentProject});
 	});
 
@@ -154,11 +156,26 @@ function dragAndDrop(){
 	});
 }
 
-function onMontageChanged(oldTitle, newTitle){
-	var montageContent = $(".inner-montage").html();
-	var newTitle = $('.montage-title h2').html();
-	console.log(oldTitle, newTitle);
-	socket.emit("saveMontage", {html:montageContent, session:currentSession, projet:currentProject, oldTitle:oldTitle, newTitle: newTitle});
+// function onMontageChanged(oldTitle, newTitle){
+// 	var montageContent = $(".inner-montage").html();
+// 	var newTitle = $('.montage-title h2').html();
+// 	console.log(oldTitle, newTitle);
+// 	socket.emit("saveMontage", {html:montageContent, session:currentSession, projet:currentProject, oldTitle:oldTitle, newTitle: newTitle});
+// }
+
+function onPubliCreated(data){
+	var publiItem = $(".js--templates .publi-folder").clone(false);
+	publiItem
+		.find('h2').html(data.name);
+
+	$('#modal-add-publi').foundation('reveal', 'close');
+	$('.montage-list ul').prepend(publiItem);
+}
+
+// Si un fichier existe déjà, affiche un message d'alerte
+function onFolderAlreadyExist(data){
+	alert("La publication " +data.name+ " existe déjà. Veuillez trouvez un autre nom.");
+	$('.new-publi').focus();
 }
 
 /* sockets */
@@ -166,6 +183,7 @@ function onSocketConnect() {
 	sessionId = socket.io.engine.id;
 	console.log('Connected ' + sessionId);
 	socket.emit('listMedias', {session: currentSession, project: currentProject});
+	socket.emit('listPubli', {session: currentSession, project: currentProject});
 };
 
 function onSocketError(reason) {

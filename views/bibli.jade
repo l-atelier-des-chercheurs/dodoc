@@ -60,7 +60,7 @@ html
               include templates/images/enregistre.svg
             div.edit-btn.btn.icon
               include templates/images/pen.svg
-          div.inner-montage#right.small-12
+          div.inner-montage.small-12
             div.montage-element
 
     div(id="modal-add-publi" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
@@ -86,6 +86,10 @@ html
         .mediaContent
           audio(preload="none" controls)
             source()
+      li.publi-folder
+        a(href="")
+          .content
+            h2
 
     //- //footer
     include templates/footer.jade
