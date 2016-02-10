@@ -4,20 +4,15 @@
 @import "../bower_components/foundation/scss/normalize";
 @import "../bower_components/foundation/scss/foundation";
 
-/*
-@mixin grid-row() {
-  background-color: red;
-}
-*/
-
-.plop {
-  @include grid-row();
+@mixin headline($size, $color: red) {
+  color: $color;
+  font-size: $size;
 }
 
 
-@import "variables.scss";
-@import "navbar.scss";
-@import 'bibli';
+@import "_variables.scss";
+@import "_navbar.scss";
+@import '_bibli';
 
 html {
 	margin:0;
