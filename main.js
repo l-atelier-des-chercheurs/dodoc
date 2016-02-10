@@ -168,7 +168,7 @@ module.exports = function(app, io){
 				jsonObj.name = folder.name;
 				jsonObj.modified = currentDate;
 				jsonObj.statut = newStatut;
-				var jsonString = JSON.stringify(jsonObj);
+				var jsonString = JSON.stringify(jsonObj, null, 4);
 				fs.writeFileSync(file, jsonString);
 				console.log("Dossier modifié");
 				io.sockets.emit("folderModified", {name: folder.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:jsonObj.nb_projets});
@@ -247,7 +247,7 @@ module.exports = function(app, io){
 				var jsonContent = fs.readFileSync(file,"UTF-8");
 				var jsonObj = JSON.parse(jsonContent);
 				jsonObj.nb_projets = jsonObj.nb_projets + 1;
-				var jsonString = JSON.stringify(jsonObj);
+				var jsonString = JSON.stringify(jsonObj, null, 4);
 				fs.writeFileSync(file, jsonString);
 				// io.sockets.emit("folderModified", {name: folder.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:0});
 			}
@@ -341,7 +341,7 @@ module.exports = function(app, io){
 				jsonObj.modified = currentDate;
 				jsonObj.statut = newStatut;
 				jsonObj.fileName = ifImage;
-				var jsonString = JSON.stringify(jsonObj);
+				var jsonString = JSON.stringify(jsonObj, null, 4);
 				fs.writeFileSync(file, jsonString);
 				console.log("Projet modifié");
 				io.sockets.emit("projectModified", {name: project.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:jsonObj.nb_projets, image: ifImage});
@@ -548,45 +548,63 @@ module.exports = function(app, io){
 	}
 
 	function saveMontage(req){
-		console.log(req.oldTitle, req.newTitle);
 		var dir = 'sessions/'+ req.session + "/" + req.projet;
 		var montageDir = dir + '/montage';
-		var title;
-		//var html = montageDir + '/' + convertToSlug(req.newTitle) + '.html';
-		if(req.oldTitle != undefined){
-
+		var title = req.newTitle;
+		var oldtitle = req.oldTitle;
+		var currentDate = Date.now();
+		var htmlFile = montageDir + '/' + convertToSlug(title) + '.html';
+		var htmlOldFile= montageDir + '/' + '' + '.html';
+		if(title == ''){
+			title = 'sanstitre';
+			htmlFile = montageDir + '/' + convertToSlug(title) + '.html';
+		};
+		if(oldtitle == '' || oldtitle == undefined){
+			console.log('oldtitle do not exist');
+			htmlOldFile = montageDir + '/' + 'sanstitre' + '.html';
 		}
 		else{
-
+			console.log('oldtitle exist', oldtitle);
+			htmlOldFile = montageDir + '/' + convertToSlug(oldtitle) + '.html';
 		}
-		if(req.newTitle == ''){
-			title = 'sanstitre';
-		};
-		// Vérifier si un dossier montage existe
-		// fs.access(montageDir, fs.F_OK, function(err) {
-		// 	// S'il existe écrire le fichier dans le dossier
-	 //    if (!err) {
-	 //        fs.writeFile(html, req.html, function(err) {
-		// 	      if(err) {
-		// 	          console.log(err);
-		// 	      } else {
-		// 	          console.log("Montage HTML was saved");
-		// 	      }
-		// 		  });
-	 //    } 
-	 //    //S'il n'existe pas le créer
-	 //    else {
-	 //      fs.ensureDirSync(montageDir, function(err){
-	 //      	fs.writeFile(html, req.html, function(err) {
-		// 	      if(err) {
-		// 	          console.log(err);
-		// 	      } else {
-		// 	          console.log("Montage HTML was saved");
-		// 	      }
-		// 		  });
-	 //      });//write new montage foder 
-	 //    }
-		// });
+		//Vérifier si un dossier montage existe
+		fs.access(montageDir, fs.F_OK, function(err) {
+			// S'il existe écrire le fichier dans le dossier
+	    if (!err) {
+	    	// Vérifie si le fichier HTML existe
+	    	fs.access(htmlOldFile, fs.F_OK, function(err) {
+	    		//Si le fichier existe, renommer le fichier
+	    		if (!err) {
+	    			console.log(htmlOldFile);
+	    			fs.rename(htmlOldFile, htmlFile, function(err) {
+						  if ( err ) console.log('ERROR: ' + err);
+						});
+	    		}
+	    		// Sinon écrire le fichier
+	    		else{
+		        fs.writeFile(htmlFile, req.html, function(err) {
+				      if(err) {
+				          console.log(err);
+				      } else {
+				          console.log("Montage HTML was saved");
+				      }
+					  });
+					}
+				});
+	    } 
+	    //S'il n'existe pas le créer
+	    else {
+	      fs.ensureDirSync(montageDir, function(err){
+	      	fs.writeFile(htmlFile, req.html, function(err) {
+			      if(err) {
+			          console.log(err);
+			      } else {
+			          console.log("Montage HTML was saved");
+			      }
+				  });
+	      });//write new montage foder 
+	    }
+		});
 	}
 	// F I N    B I B L I    P A G E 
 
@@ -612,7 +630,7 @@ module.exports = function(app, io){
 		}
 
 		function writeIntoJsonFile(jsonFile, objectJson, objectToSend, send){
-			var jsonString = JSON.stringify(objectJson);
+			var jsonString = JSON.stringify(objectJson, null, 4);
 			fs.writeFile(jsonFile, jsonString, function(err) {
 	      if(err) {
 	          console.log(err);
@@ -624,7 +642,7 @@ module.exports = function(app, io){
 		}
 
 		function writeJsonFile(jsonFile, objectJson, objectToSend, send){
-			var jsonString = JSON.stringify(objectJson);
+			var jsonString = JSON.stringify(objectJson, null, 4);
 			fs.appendFile(jsonFile, jsonString, function(err) {
 	      if(err) {
 	          console.log(err);
@@ -676,11 +694,28 @@ module.exports = function(app, io){
 		}
 
 		function convertToSlug(Text){
-	    return Text
-	    .toLowerCase()
-	    .replace(/ /g,'-')
-	    .replace(/[^\w-]+/g,'')
-	    ;
+		  // converti le texte en minuscule
+			var s = Text.toLowerCase();
+			// remplace les a accentué
+			s = s.replace(/[àâäáã]/g, 'a');
+			// remplace les e accentué
+			s = s.replace(/[èêëé]/g, 'e');
+			// remplace les i accentué
+			s = s.replace(/[ìîïí]/g, 'i');
+			// remplace les u accentué
+			s = s.replace(/[ùûüú]/g, 'u');
+			// remplace les o accentué
+			s = s.replace(/[òôöó]/g, 'o');
+			// remplace le c cédille
+			s = s.replace(/[ç]/g, 'c');
+			// remplace le ene tilde espagnol
+			s = s.replace(/[ñ]/g, 'n');
+			// remplace tous les caractères qui ne sont pas alphanumérique en tiret
+			s = s.replace(/\W/g, '-');
+			// remplace les double tirets en tiret unique
+			s = s.replace(/\-+/g, '-');
+			// renvoi le texte modifié
+			return s;
 		}
 
 		// Remove all files and directory
