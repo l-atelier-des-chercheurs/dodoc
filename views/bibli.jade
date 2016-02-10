@@ -17,9 +17,8 @@ html
             span #{session}
 
         .item
-          a(href="/#{projet}" title="Dodoc").button-wrapper.button-wrapper_projet
+          a(href="/#{session}/#{projet}" title="Dodoc").button-wrapper.button-wrapper_projet
             span #{projet}
-
         .item
           a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_bibli
             .btn.icon

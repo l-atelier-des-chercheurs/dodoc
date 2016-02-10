@@ -6928,8 +6928,6 @@ th.hide-for-touch {
           background-color: #ffb520; }
         .navbar-container .navbar .item .button-wrapper_capture:hover {
           color: #FFB520; }
-        .navbar-container .navbar .item .button-wrapper_projet {
-          pointer-events: none; }
     .navbar-container .navbar > .button-wrapper {
       float: right;
       margin: 15px;
@@ -7093,7 +7091,7 @@ img, video, audio, svg {
 button {
   outline: none;
   border: none;
-  background: none; }
+  background: #eee; }
 
 .legende {
   font-style: italic;
@@ -7353,6 +7351,8 @@ body.projets #container {
         body.projets #container .project-list .project .left-content .content .meta-data {
           font-style: italic;
           font-family: "share", monospace; }
+          body.projets #container .project-list .project .left-content .content .meta-data span:nth-of-type(1) {
+            margin-right: 5px; }
           body.projets #container .project-list .project .left-content .content .meta-data .created .create-date {
             font-weight: bold; }
           body.projets #container .project-list .project .left-content .content .meta-data .modified {

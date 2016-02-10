@@ -86,7 +86,7 @@ img, video, audio, svg {
 button{
 	outline: none;
 	border:none;
-	background: none;
+	background: #eee;
 }
 
 .legende {
@@ -405,7 +405,7 @@ body.index{
 
     font-family: "share", monospace;
 
-    >* {
+    > * {
       padding-top: 4px;
     }
     .nb-projets{
@@ -530,8 +530,21 @@ body.projets{
             .meta-data{
               font-style:italic;
               font-family: "share", monospace;
-              .created{.create-date{font-weight:bold;}}
-              .modified{text-align: left; .modify-date{font-weight:bold;}}
+
+              span:nth-of-type(1) {
+                margin-right: 5px;
+              }
+              .created{
+                .create-date{
+                  font-weight:bold;
+                }
+              }
+              .modified{
+                text-align: left;
+                .modify-date{
+                  font-weight:bold;
+                }
+              }
             }
           }
           .button-to-pages {
