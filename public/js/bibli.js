@@ -204,9 +204,9 @@ function onDisplayMontage(data){
 }
 
 function onTitleModified(data){
-	console.log($('.publi-folder[data-publi="'+data.old+'"]'));
-	$('.publi-folder[data-publi="'+data.old+'"]').find('h2').html(data.name);
-	$('.publi-folder[data-publi="'+data.old+'"]').attr('data-publi', data.name);
+	console.log($('.publi-folder[data-publi="'+convertToSlug(data.old)+'"]').find('h2'));
+	$('.publi-folder[data-publi="'+convertToSlug(data.old)+'"]').find('h2').html(data.name);
+	$('.publi-folder[data-publi="'+convertToSlug(data.old)+'"]').attr('data-publi', convertToSlug(data.name));
 }
 
 // Si un fichier existe déjà, affiche un message d'alerte
