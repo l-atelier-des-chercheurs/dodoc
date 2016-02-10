@@ -44,7 +44,6 @@ module.exports = function(app, io){
 		socket.on("audioCapture", onNewAudioCapture);
 		socket.on("deleteFile", deleteFile);
 
-		
 		// B I B L I        P A G E 
 		socket.on("listMedias", listMedias);
 		socket.on("listPubli", listPubli);
@@ -52,6 +51,9 @@ module.exports = function(app, io){
 		socket.on("displayThisMontage", displayMontage);
 		socket.on("saveMontage", saveMontage);
 		socket.on("titleChanged", onTitleChanged);
+
+		// P U B L I      P A G E 
+		socket.on("displayPubli", displayPubli);
 
 
 	});
@@ -533,155 +535,166 @@ module.exports = function(app, io){
 	// F I N     C A P T U R E    P A G E 
 
 	// B I B L I    P A G E 
-	function listMedias(media){
-		//read json file to send data
-		var jsonFile = 'sessions/' + media.session + '/' + media.project +'/'+media.project+'.json';
-		var data = fs.readFileSync(jsonFile,"UTF-8");
-		var jsonObj = JSON.parse(data);
+		function listMedias(media){
+			//read json file to send data
+			var jsonFile = 'sessions/' + media.session + '/' + media.project +'/'+media.project+'.json';
+			var data = fs.readFileSync(jsonFile,"UTF-8");
+			var jsonObj = JSON.parse(data);
 
-		var dir = "sessions/" + media.session + '/' + media.project +'/';
-		//console.log(dir);
-		fs.readdir(dir, function(err, files) {
-			var media = [];
-			if (err) {console.log(err)};
-			files.forEach(function(f) {
-				media.push(f);
-			});
-			io.sockets.emit('listMedias', media, jsonObj);
-		});
-	}
-
-	function listPubli(data){
-		var dir = "sessions/"+data.session+"/"+data.project+'/montage';
-		// Vérifie si le dossier existe déjà
-		fs.access(dir, fs.F_OK, function(err) {
-	    if (err) { }
-	    // S'il existe 
-	    else {
-		    fs.readdir(dir, function(err, files) {
-				  if (err) console.log(err);
-			    files.forEach(function(file) {
-			    	//console.log('Files: ' + file);
-			    	if(file == ".DS_Store"){
-		    			fs.unlink(dir+'/'+file);
-		    		}
-		    		if(! /^\..*/.test(file)){
-			  			var jsonFile = dir +'/' +file;
-							var data = fs.readFileSync(jsonFile,"UTF-8");
-							var jsonObj = JSON.parse(data);
-							io.sockets.emit('listPublications', {name:jsonObj.name, created:jsonObj.created});
-			    	}
-			    });
+			var dir = "sessions/" + media.session + '/' + media.project +'/';
+			//console.log(dir);
+			fs.readdir(dir, function(err, files) {
+				var media = [];
+				if (err) {console.log(err)};
+				files.forEach(function(f) {
+					media.push(f);
 				});
-	    }
-		});
-	}
-
-	function newPublication(publi){
-		var folderName = publi.name;
-		var formatFolderName = convertToSlug(folderName);
-		var montagePath = 'sessions/'+publi.session+'/'+publi.project+'/montage';
-		var publiPath = 'sessions/'+publi.session+'/'+publi.project+'/montage/' + formatFolderName + '.json';
-		var currentDate = Date.now();
-
-		// Vérifie si le dossier existe déjà
-		fs.access(montagePath, fs.F_OK, function(err) {
-			// S'il n'existe pas -> créer le dossier et le json
-	    if (err) {
-	      fs.ensureDirSync(montagePath,function(){
-	      	console.log("dossier montage crée");
-					createPubliJson();
-	      });
-
-	    } 
-	    // S'il existe 
-	    else {
-	      console.log("le dossier existe déjà !");
-	      createPubliJson();
-	    }
-		});
-
-		function createPubliJson(){
-			fs.access(publiPath, fs.F_OK, function(err) {
-				// Si le nom de la publication n'existe pas déjà
-				if(err){
-					var objectJson = {"name":folderName, "created":currentDate, "html":"none"};
-	      	var objectToSend = {name: folderName, created: currentDate};
-	      	writeJsonFile(publiPath, objectJson, objectToSend, "publiCreated"); //write json File
-				}
-				// S'il existe envoyer une erreur
-				else{
-					io.sockets.emit("folderAlreadyExist", {name: folderName, timestamp: currentDate });
-				}
+				io.sockets.emit('listMedias', media, jsonObj);
 			});
 		}
-	}
 
-	function displayMontage(data){
-		var file = "sessions/"+data.session+"/"+data.project+'/montage/'+data.name+'.json';
-		console.log(file);
-		fs.readFile(file, 'utf8', function (err, data) {
-		  if (err) console.log(err);
-		  var jsonObj = JSON.parse(data);
-		  io.sockets.emit('displayMontage', {name:jsonObj.name, html:jsonObj.html});
-		});
-	}
-
-	function saveMontage(req){
-		var dir = 'sessions/'+ req.session + "/" + req.projet;
-		var montageDir = dir + '/montage';
-		var htmlFile = montageDir + '/' + convertToSlug(req.title) + '.json';
-		changeJsonFile(htmlFile);
-
-		function changeJsonFile(file){
-			var jsonContent = fs.readFileSync(file,"UTF-8");
-			var jsonObj = JSON.parse(jsonContent);
-			jsonObj.html = req.html;
-			var jsonString = JSON.stringify(jsonObj, null, 4);
-			fs.writeFileSync(file, jsonString);
-			console.log("HTML enregistré");
+		function listPubli(data){
+			var dir = "sessions/"+data.session+"/"+data.project+'/montage';
+			// Vérifie si le dossier existe déjà
+			fs.access(dir, fs.F_OK, function(err) {
+		    if (err) { }
+		    // S'il existe 
+		    else {
+			    fs.readdir(dir, function(err, files) {
+					  if (err) console.log(err);
+				    files.forEach(function(file) {
+				    	//console.log('Files: ' + file);
+				    	if(file == ".DS_Store"){
+			    			fs.unlink(dir+'/'+file);
+			    		}
+			    		if(! /^\..*/.test(file)){
+				  			var jsonFile = dir +'/' +file;
+								var data = fs.readFileSync(jsonFile,"UTF-8");
+								var jsonObj = JSON.parse(data);
+								io.sockets.emit('listPublications', {name:jsonObj.name, created:jsonObj.created});
+				    	}
+				    });
+					});
+		    }
+			});
 		}
-	}
 
-	function onTitleChanged(data){
-		var oldName = data.oldTitle;
-		var oldFilePath = 'sessions/'+data.session+'/'+data.project+'/montage/'+convertToSlug(oldName)+'.json';
-		
-		var newName = data.newTitle;
-		var newFilePath = 'sessions/'+data.session+'/'+data.project+'/montage/'+convertToSlug(newName)+'.json';
+		function newPublication(publi){
+			var folderName = publi.name;
+			var formatFolderName = convertToSlug(folderName);
+			var montagePath = 'sessions/'+publi.session+'/'+publi.project+'/montage';
+			var publiPath = 'sessions/'+publi.session+'/'+publi.project+'/montage/' + formatFolderName + '.json';
+			var currentDate = Date.now();
 
-		// Vérifie si le dossier existe déjà
-		fs.access(newFilePath, fs.F_OK, function(err) {
-			// S'il n'existe pas -> change le nom du json
-	    if (err) {
-	      fs.renameSync(oldFilePath, newFilePath); // renomme le fichier
-	      changeJsonFile(newFilePath);
-	    } 
-	    // S'il existe afficher un message d'erreur
-	    else {
-	    	if(convertToSlug(oldName) != convertToSlug(newName)){
-	    		console.log("le dossier existe déjà !");
-	      	io.sockets.emit("folderAlreadyExist", {name: newName, timestamp: currentDate });
-	    	}
-	    	else{
-	    		fs.renameSync(oldFilePath, newFilePath); // renomme le dossier
-	      	changeJsonFile(newFilePath);
-	    	}
-	    }
-		});
+			// Vérifie si le dossier existe déjà
+			fs.access(montagePath, fs.F_OK, function(err) {
+				// S'il n'existe pas -> créer le dossier et le json
+		    if (err) {
+		      fs.ensureDirSync(montagePath,function(){
+		      	console.log("dossier montage crée");
+						createPubliJson();
+		      });
 
-		function changeJsonFile(file){
-			var jsonContent = fs.readFileSync(file,"UTF-8");
-			var jsonObj = JSON.parse(jsonContent);
-			jsonObj.name = newName;
-			var jsonString = JSON.stringify(jsonObj, null, 4);
-			fs.writeFileSync(file, jsonString);
-			console.log("Titre Publication modifié");
-			io.sockets.emit("titleModified", {name: newName, old:oldName});
+		    } 
+		    // S'il existe 
+		    else {
+		      console.log("le dossier existe déjà !");
+		      createPubliJson();
+		    }
+			});
+
+			function createPubliJson(){
+				fs.access(publiPath, fs.F_OK, function(err) {
+					// Si le nom de la publication n'existe pas déjà
+					if(err){
+						var objectJson = {"name":folderName, "created":currentDate, "html":"none"};
+		      	var objectToSend = {name: folderName, created: currentDate};
+		      	writeJsonFile(publiPath, objectJson, objectToSend, "publiCreated"); //write json File
+					}
+					// S'il existe envoyer une erreur
+					else{
+						io.sockets.emit("folderAlreadyExist", {name: folderName, timestamp: currentDate });
+					}
+				});
+			}
 		}
-	}
+
+		function displayMontage(data){
+			var file = "sessions/"+data.session+"/"+data.project+'/montage/'+data.name+'.json';
+			console.log(file);
+			fs.readFile(file, 'utf8', function (err, data) {
+			  if (err) console.log(err);
+			  var jsonObj = JSON.parse(data);
+			  io.sockets.emit('displayMontage', {name:jsonObj.name, html:jsonObj.html});
+			});
+		}
+
+		function saveMontage(req){
+			var dir = 'sessions/'+ req.session + "/" + req.projet;
+			var montageDir = dir + '/montage';
+			var htmlFile = montageDir + '/' + convertToSlug(req.title) + '.json';
+			changeJsonFile(htmlFile);
+
+			function changeJsonFile(file){
+				var jsonContent = fs.readFileSync(file,"UTF-8");
+				var jsonObj = JSON.parse(jsonContent);
+				jsonObj.html = req.html;
+				var jsonString = JSON.stringify(jsonObj, null, 4);
+				fs.writeFileSync(file, jsonString);
+				console.log("HTML enregistré");
+			}
+		}
+
+		function onTitleChanged(data){
+			var oldName = data.oldTitle;
+			var oldFilePath = 'sessions/'+data.session+'/'+data.project+'/montage/'+convertToSlug(oldName)+'.json';
+			
+			var newName = data.newTitle;
+			var newFilePath = 'sessions/'+data.session+'/'+data.project+'/montage/'+convertToSlug(newName)+'.json';
+
+			// Vérifie si le dossier existe déjà
+			fs.access(newFilePath, fs.F_OK, function(err) {
+				// S'il n'existe pas -> change le nom du json
+		    if (err) {
+		      fs.renameSync(oldFilePath, newFilePath); // renomme le fichier
+		      changeJsonFile(newFilePath);
+		    } 
+		    // S'il existe afficher un message d'erreur
+		    else {
+		    	if(convertToSlug(oldName) != convertToSlug(newName)){
+		    		console.log("le dossier existe déjà !");
+		      	io.sockets.emit("folderAlreadyExist", {name: newName, timestamp: currentDate });
+		    	}
+		    	else{
+		    		fs.renameSync(oldFilePath, newFilePath); // renomme le dossier
+		      	changeJsonFile(newFilePath);
+		    	}
+		    }
+			});
+
+			function changeJsonFile(file){
+				var jsonContent = fs.readFileSync(file,"UTF-8");
+				var jsonObj = JSON.parse(jsonContent);
+				jsonObj.name = newName;
+				var jsonString = JSON.stringify(jsonObj, null, 4);
+				fs.writeFileSync(file, jsonString);
+				console.log("Titre Publication modifié");
+				io.sockets.emit("titleModified", {name: newName, old:oldName});
+			}
+		}
 
 	// F I N    B I B L I    P A G E 
+
+	// P U B L I     P A G E 
+		function displayPubli(data){
+			var file = "sessions/"+data.session+"/"+data.project+'/montage/'+data.publi+'.json';
+			fs.readFile(file, 'utf8', function (err, data) {
+			  if (err) console.log(err);
+			  var jsonObj = JSON.parse(data);
+			  io.sockets.emit('sendPubliData', {name:jsonObj.name, html:jsonObj.html});
+			});
+		}
+	// F I N     P U B L I     P A G E 
 
 	// - - - 
 
