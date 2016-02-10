@@ -144,7 +144,7 @@ function displayFolder(name, created, modified, image, statut){
 function modifyProject($this){
 	$("#container.row #modal-modify-project").empty();
 	thisProjectName = $this.parents(".project").find('h2').text();
-	debugger;
+
 	var statut = $this.parent().attr("data-statut");
 	var inputNameHtml = "<input type='text' class='modify-project' value='"+thisProjectName+"'></input>";
 	if(statut == 'en cours'){

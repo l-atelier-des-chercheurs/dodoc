@@ -7074,6 +7074,12 @@ button {
   .button-wrapper_bibli {
     background-color: #293275;
     color: white; }
+  .button-wrapper_collapsed {
+    transition: width 1s;
+    overflow: hidden;
+    float: left; }
+    .button-wrapper_collapsed:not(:hover) {
+      width: 50px; }
   .button-wrapper .btn {
     float: left; }
   .button-wrapper .btn.icon {
@@ -7251,9 +7257,7 @@ body.projets #container {
         right: 0;
         z-index: 5; }
       body.projets #container .project-list .project .left-content {
-        background-color: #FFF;
-        height: 100%;
-        padding: 0; }
+        background-color: #FFF; }
         body.projets #container .project-list .project .left-content .content {
           padding: 7px 20px; }
           body.projets #container .project-list .project .left-content .content h2 {
@@ -7269,9 +7273,7 @@ body.projets #container {
               body.projets #container .project-list .project .left-content .content .meta-data .modified .modify-date {
                 font-weight: bold; }
         body.projets #container .project-list .project .left-content .button-to-pages {
-          padding: 7px 20px;
-          top: 50%;
-          transform: translateY(-50%); }
+          padding: 7px 20px; }
       body.projets #container .project-list .project .image-wrapper {
         overflow: hidden;
         padding: 0;

@@ -171,6 +171,16 @@ button{
   }
 
 
+  &_collapsed {
+    transition: width 1s;
+    overflow: hidden;
+    float:left;
+
+    &:not(:hover) {
+     width:  50px;
+    }
+  }
+
   .btn {
     float:left;
   }
@@ -475,8 +485,6 @@ body.projets{
         }
         .left-content{
           background-color:#FFF;
-          height: 100%;
-          padding: 0;
           .content{
             padding: 7px 20px;
             h2{
@@ -492,8 +500,6 @@ body.projets{
           }
           .button-to-pages {
             padding: 7px 20px;
-            top: 50%;
-            transform: translateY(-50%);
           }
         }
         .image-wrapper{
