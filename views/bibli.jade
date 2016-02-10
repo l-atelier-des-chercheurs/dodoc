@@ -52,7 +52,9 @@ html
               include templates/images/add.svg
             span Créer une nouvelle publication
           ul
-        div.montage-edit.js--templates
+        div.montage-edit
+          div.publi-close.btn.icon
+            include templates/images/clear.svg
           div.montage-title
             input(type="text" placeholder="Titre")
             h2.montage-title-text
@@ -60,7 +62,7 @@ html
               include templates/images/enregistre.svg
             div.edit-btn.btn.icon
               include templates/images/pen.svg
-          div.inner-montage#right.small-12
+          div.inner-montage.small-12
             div.montage-element
 
     div(id="modal-add-publi" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
@@ -86,6 +88,10 @@ html
         .mediaContent
           audio(preload="none" controls)
             source()
+      li.publi-folder(data-publi="")
+        a(href="#")
+          .content
+            h2
 
     //- //footer
     include templates/footer.jade

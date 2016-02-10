@@ -47,8 +47,11 @@ module.exports = function(app, io){
 		
 		// B I B L I        P A G E 
 		socket.on("listMedias", listMedias);
+		socket.on("listPubli", listPubli);
 		socket.on("createPubli", newPublication);
+		socket.on("displayThisMontage", displayMontage);
 		socket.on("saveMontage", saveMontage);
+		socket.on("titleChanged", onTitleChanged);
 
 
 	});
@@ -548,6 +551,32 @@ module.exports = function(app, io){
 		});
 	}
 
+	function listPubli(data){
+		var dir = "sessions/"+data.session+"/"+data.project+'/montage';
+		// Vérifie si le dossier existe déjà
+		fs.access(dir, fs.F_OK, function(err) {
+	    if (err) { }
+	    // S'il existe 
+	    else {
+		    fs.readdir(dir, function(err, files) {
+				  if (err) console.log(err);
+			    files.forEach(function(file) {
+			    	//console.log('Files: ' + file);
+			    	if(file == ".DS_Store"){
+		    			fs.unlink(dir+'/'+file);
+		    		}
+		    		if(! /^\..*/.test(file)){
+			  			var jsonFile = dir +'/' +file;
+							var data = fs.readFileSync(jsonFile,"UTF-8");
+							var jsonObj = JSON.parse(data);
+							io.sockets.emit('listPublications', {name:jsonObj.name, created:jsonObj.created});
+			    	}
+			    });
+				});
+	    }
+		});
+	}
+
 	function newPublication(publi){
 		var folderName = publi.name;
 		var formatFolderName = convertToSlug(folderName);
@@ -559,8 +588,8 @@ module.exports = function(app, io){
 		fs.access(montagePath, fs.F_OK, function(err) {
 			// S'il n'existe pas -> créer le dossier et le json
 	    if (err) {
-	    	console.log("dossier montage crée");
 	      fs.ensureDirSync(montagePath,function(){
+	      	console.log("dossier montage crée");
 					createPubliJson();
 	      });
 
@@ -588,64 +617,67 @@ module.exports = function(app, io){
 		}
 	}
 
+	function displayMontage(data){
+		var file = "sessions/"+data.session+"/"+data.project+'/montage/'+data.name+'.json';
+		fs.readFile(file, 'utf8', function (err, data) {
+		  if (err) console.log(err);
+		  var jsonObj = JSON.parse(data);
+		  io.sockets.emit('displayMontage', {name:jsonObj.name, html:jsonObj.html});
+		});
+	}
+
 	function saveMontage(req){
 		var dir = 'sessions/'+ req.session + "/" + req.projet;
 		var montageDir = dir + '/montage';
-		var title = req.newTitle;
-		var oldtitle = req.oldTitle;
-		var currentDate = Date.now();
-		var htmlFile = montageDir + '/' + convertToSlug(title) + '.html';
-		var htmlOldFile= montageDir + '/' + '' + '.html';
-		if(title == ''){
-			title = 'sanstitre';
-			htmlFile = montageDir + '/' + convertToSlug(title) + '.html';
-		};
-		if(oldtitle == '' || oldtitle == undefined){
-			console.log('oldtitle do not exist');
-			htmlOldFile = montageDir + '/' + 'sanstitre' + '.html';
+		var htmlFile = montageDir + '/' + convertToSlug(req.title) + '.json';
+		changeJsonFile(htmlFile);
+
+		function changeJsonFile(file){
+			var jsonContent = fs.readFileSync(file,"UTF-8");
+			var jsonObj = JSON.parse(jsonContent);
+			jsonObj.html = req.html;
+			var jsonString = JSON.stringify(jsonObj, null, 4);
+			fs.writeFileSync(file, jsonString);
+			console.log("HTML enregistré");
 		}
-		else{
-			console.log('oldtitle exist', oldtitle);
-			htmlOldFile = montageDir + '/' + convertToSlug(oldtitle) + '.html';
-		}
-		//Vérifier si un dossier montage existe
-		fs.access(montageDir, fs.F_OK, function(err) {
-			// S'il existe écrire le fichier dans le dossier
-	    if (!err) {
-	    	// Vérifie si le fichier HTML existe
-	    	fs.access(htmlOldFile, fs.F_OK, function(err) {
-	    		//Si le fichier existe, renommer le fichier
-	    		if (!err) {
-	    			console.log(htmlOldFile);
-	    			fs.rename(htmlOldFile, htmlFile, function(err) {
-						  if ( err ) console.log('ERROR: ' + err);
-						});
-	    		}
-	    		// Sinon écrire le fichier
-	    		else{
-		        fs.writeFile(htmlFile, req.html, function(err) {
-				      if(err) {
-				          console.log(err);
-				      } else {
-				          console.log("Montage HTML was saved");
-				      }
-					  });
-					}
-				});
+	}
+
+	function onTitleChanged(data){
+		var oldName = data.oldTitle;
+		var oldFilePath = 'sessions/'+data.session+'/'+data.project+'/montage/'+convertToSlug(oldName)+'.json';
+		
+		var newName = data.newTitle;
+		var newFilePath = 'sessions/'+data.session+'/'+data.project+'/montage/'+convertToSlug(newName)+'.json';
+
+		// Vérifie si le dossier existe déjà
+		fs.access(newFilePath, fs.F_OK, function(err) {
+			// S'il n'existe pas -> change le nom du json
+	    if (err) {
+	      fs.renameSync(oldFilePath, newFilePath); // renomme le fichier
+	      changeJsonFile(newFilePath);
 	    } 
-	    //S'il n'existe pas le créer
+	    // S'il existe afficher un message d'erreur
 	    else {
-	      fs.ensureDirSync(montageDir, function(err){
-	      	fs.writeFile(htmlFile, req.html, function(err) {
-			      if(err) {
-			          console.log(err);
-			      } else {
-			          console.log("Montage HTML was saved");
-			      }
-				  });
-	      });//write new montage foder 
+	    	if(convertToSlug(oldName) != convertToSlug(newName)){
+	    		console.log("le dossier existe déjà !");
+	      	io.sockets.emit("folderAlreadyExist", {name: newName, timestamp: currentDate });
+	    	}
+	    	else{
+	    		fs.renameSync(oldFilePath, newFilePath); // renomme le dossier
+	      	changeJsonFile(newFilePath);
+	    	}
 	    }
 		});
+
+		function changeJsonFile(file){
+			var jsonContent = fs.readFileSync(file,"UTF-8");
+			var jsonObj = JSON.parse(jsonContent);
+			jsonObj.name = newName;
+			var jsonString = JSON.stringify(jsonObj, null, 4);
+			fs.writeFileSync(file, jsonString);
+			console.log("Titre Publication modifié");
+			io.sockets.emit("titleModified", {name: newName, old:oldName});
+		}
 	}
 
 	// F I N    B I B L I    P A G E 
