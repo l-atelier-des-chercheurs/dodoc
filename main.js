@@ -373,6 +373,7 @@ module.exports = function(app, io){
 	// P R O J E T      P A G E
 		function displayProject(data){
 			var dir = "sessions/"+data.session+"/"+data.project;
+			var dirPubli = "sessions/"+data.session+"/"+data.project+'/montage';
 			var file = dir+"/"+data.project+'.json';
 			var jsonObj;
 			fs.readFile(file, 'utf8', function (err, data) {
@@ -385,9 +386,23 @@ module.exports = function(app, io){
 						media.push(f);
 					});
 					var lastMedia = media.slice(Math.max(media.length - 10, 1));
-					console.log(jsonObj, lastMedia);
-
-					io.sockets.emit('sendProjectData',{json:jsonObj , lastmedia:lastMedia });
+					fs.readdir(dirPubli, function(err, files) {
+						var publiNames = [];
+					  if (err) console.log(err);
+				    files.forEach(function(file) {
+				    	//console.log('Files: ' + file);
+				    	if(file == ".DS_Store"){
+			    			fs.unlink(dirPubli+'/'+file);
+			    		}
+			    		if(! /^\..*/.test(file)){
+				  			var jsonFilePubli = dirPubli +'/' +file;
+								var dataPubli = fs.readFileSync(jsonFilePubli,"UTF-8");
+								var jsonObjPubli = JSON.parse(dataPubli);
+								publiNames.push(jsonObjPubli.name)
+				    	}
+				    });
+				    io.sockets.emit('sendProjectData',{json:jsonObj , lastmedia:lastMedia, publiNames: publiNames });
+					});
 				});			
 			});
 		}

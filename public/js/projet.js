@@ -29,6 +29,7 @@ function sendProjectData(data){
 	var created = transformDatetoString(data.json.created);
 	var modified = transformDatetoString(data.json.created);
 	var array = data.lastmedia;
+	var arrayPubli = data.publiNames;
 
 	$('h1.project').html(name);
 	$('.statut').html('<span>statut</span><span class="statut-type"> '+statut+'</span>');
@@ -52,6 +53,20 @@ function sendProjectData(data){
 		if(extension == "wav"){
 			displayAudio(currentSession, currentProject, identifiant, array[i]);
 		}
+	}
+
+	for (var i = 0; i < arrayPubli.length; i++) {
+		console.log(arrayPubli[i]);
+		var publiItem = $(".js--templates .publi-folder").clone(false);
+		publiItem
+			.find('h2').html(arrayPubli[i]);
+
+		var viewButton = $('.edit-view-btn a');
+		var publiPath = '/'+currentSession+'/'+currentProject+'/publication/'+ convertToSlug(arrayPubli[i]);
+		viewButton	
+			.attr('href', publiPath);
+
+		$('.list-publi ul').prepend(publiItem);
 	}
 }
 
