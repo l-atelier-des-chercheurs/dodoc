@@ -166,7 +166,8 @@ function dragAndDrop(){
 function onPubliCreated(data){
 	var publiItem = $(".js--templates .publi-folder").clone(false);
 	publiItem
-		.find('h2').html(data.name);
+		.find('h2').html(data.name)
+		.attr('data-publi', convertToSlug(data.name));
 
 	$('#modal-add-publi').foundation('reveal', 'close');
 	$('.montage-list ul').prepend(publiItem);
