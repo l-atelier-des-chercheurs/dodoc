@@ -20,6 +20,7 @@ socket.on('listMedias', onListMedias);
 socket.on('listPublications', onPubliCreated);
 socket.on('publiCreated', onPubliCreated);
 socket.on('displayMontage', onDisplayMontage);
+socket.on('titleModified', onTitleModified);
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 
 jQuery(document).ready(function($) {
@@ -36,8 +37,8 @@ function init(){
 		$('.montage-title input').hide();
 		$('.montage-title h2').show().html(newTitle);
 		$(this).hide();
-		$('.montage-title .edit-btn').show()
-		//onMontageChanged(oldTitle, newTitle);
+		$('.montage-title .edit-btn').show();
+		socket.emit('titleChanged', {oldTitle: oldTitle, newTitle: newTitle, session: currentSession, project: currentProject});
 	});
 
 	$('.montage-title .edit-btn').on('click', function(){
@@ -200,6 +201,11 @@ function onDisplayMontage(data){
 		$('.montage-edit[data-publi="'+publiName+'"]').find('.inner-montage').html('');
 	}
 	
+}
+
+function onTitleModified(data){
+	$('.montage-list li[data-publi="'+data.oldName+'"]').find('h2').html(data.newName);
+	$('.montage-list li[data-publi="'+data.oldName+'"]').attr('data-publi', data.newName);
 }
 
 // Si un fichier existe déjà, affiche un message d'alerte

@@ -51,6 +51,7 @@ module.exports = function(app, io){
 		socket.on("createPubli", newPublication);
 		socket.on("displayThisMontage", displayMontage);
 		socket.on("saveMontage", saveMontage);
+		socket.on("titleChanged", onTitleChanged);
 
 
 	});
@@ -638,7 +639,44 @@ module.exports = function(app, io){
 			var jsonString = JSON.stringify(jsonObj, null, 4);
 			fs.writeFileSync(file, jsonString);
 			console.log("HTML enregistré");
-			// io.sockets.emit("folderModified", {name: folder.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:jsonObj.nb_projets});
+		}
+	}
+
+	function onTitleChanged(data){
+		var oldName = data.oldTitle;
+		var oldFilePath = 'sessions/'+data.session+'/'+data.project+'/montage/'+convertToSlug(oldName)+'.json';
+		
+		var newName = data.newTitle;
+		var newFilePath = 'sessions/'+data.session+'/'+data.project+'/montage/'+convertToSlug(newName)+'.json';
+
+		// Vérifie si le dossier existe déjà
+		fs.access(newFilePath, fs.F_OK, function(err) {
+			// S'il n'existe pas -> change le nom du json
+	    if (err) {
+	      fs.renameSync(oldFilePath, newFilePath); // renomme le fichier
+	      changeJsonFile(newFilePath);
+	    } 
+	    // S'il existe afficher un message d'erreur
+	    else {
+	    	if(convertToSlug(oldName) != convertToSlug(newName)){
+	    		console.log("le dossier existe déjà !");
+	      	io.sockets.emit("folderAlreadyExist", {name: newName, timestamp: currentDate });
+	    	}
+	    	else{
+	    		fs.renameSync(oldFilePath, newFilePath); // renomme le dossier
+	      	changeJsonFile(newFilePath);
+	    	}
+	    }
+		});
+
+		function changeJsonFile(file){
+			var jsonContent = fs.readFileSync(file,"UTF-8");
+			var jsonObj = JSON.parse(jsonContent);
+			jsonObj.name = newName;
+			var jsonString = JSON.stringify(jsonObj, null, 4);
+			fs.writeFileSync(file, jsonString);
+			console.log("Titre Publication modifié");
+			io.sockets.emit("titleModified", {name: newName, old:oldName});
 		}
 	}
 
