@@ -47,6 +47,7 @@ module.exports = function(app, io){
 		
 		// B I B L I        P A G E 
 		socket.on("listMedias", listMedias);
+		socket.on("createPubli", newPublication);
 		socket.on("saveMontage", saveMontage);
 
 
@@ -547,6 +548,46 @@ module.exports = function(app, io){
 		});
 	}
 
+	function newPublication(publi){
+		var folderName = publi.name;
+		var formatFolderName = convertToSlug(folderName);
+		var montagePath = 'sessions/'+publi.session+'/'+publi.project+'/montage';
+		var publiPath = 'sessions/'+publi.session+'/'+publi.project+'/montage/' + formatFolderName + '.json';
+		var currentDate = Date.now();
+
+		// Vérifie si le dossier existe déjà
+		fs.access(montagePath, fs.F_OK, function(err) {
+			// S'il n'existe pas -> créer le dossier et le json
+	    if (err) {
+	    	console.log("dossier montage crée");
+	      fs.ensureDirSync(montagePath,function(){
+					createPubliJson();
+	      });
+
+	    } 
+	    // S'il existe 
+	    else {
+	      console.log("le dossier existe déjà !");
+	      createPubliJson();
+	    }
+		});
+
+		function createPubliJson(){
+			fs.access(publiPath, fs.F_OK, function(err) {
+				// Si le nom de la publication n'existe pas déjà
+				if(err){
+					var objectJson = {"name":folderName, "created":currentDate, "html":"none"};
+	      	var objectToSend = {name: folderName, created: currentDate};
+	      	writeJsonFile(publiPath, objectJson, objectToSend, "publiCreated"); //write json File
+				}
+				// S'il existe envoyer une erreur
+				else{
+					io.sockets.emit("folderAlreadyExist", {name: folderName, timestamp: currentDate });
+				}
+			});
+		}
+	}
+
 	function saveMontage(req){
 		var dir = 'sessions/'+ req.session + "/" + req.projet;
 		var montageDir = dir + '/montage';
@@ -606,6 +647,7 @@ module.exports = function(app, io){
 	    }
 		});
 	}
+
 	// F I N    B I B L I    P A G E 
 
 	// - - - 
