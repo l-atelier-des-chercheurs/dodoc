@@ -190,7 +190,6 @@ button{
 
     transition: border-radius .4s, width .8s, background-color .6s;
 
-
     &:not(:hover) {
      width:  50px;
      background-color: transparent;
@@ -481,7 +480,7 @@ body.projets{
       margin-bottom:  50px;
     }
     .project-list{
-
+      @include clearfix();
       margin-left: 0;
       .project{
         margin-bottom: 50px;

@@ -5,23 +5,6 @@ html
   body.capture
 
     .navbar-container
-      header.navbar
-        .logo
-          a(href="/" title="Dodoc")
-            include templates/images/dodoc-logo.svg
-        .item.item_dossier
-          a(href="/#{session}" title="Dodoc")
-            | #{session}
-        .item.item_projet
-          a(href="/#{projet}" title="Dodoc")
-            | #{projet}
-        .item.item_projet
-          a(href="/#{session}/#{projet}/capture" title="Dodoc page de capture")
-            include templates/images/record.svg
-        a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_add
-          div.add-folder-btn.btn.icon
-            include templates/images/bibli.svg
-          span Bibliothèque
 
       header.navbar
         .logo
@@ -33,11 +16,9 @@ html
             .btn.icon
               include templates/images/dossier.svg
             span #{session}
-
         .item
-          a(href="/#{projet}" title="Dodoc").button-wrapper.button-wrapper_projet
+          a(href="/#{session}/#{projet}" title="Dodoc").button-wrapper.button-wrapper_projet
             span #{projet}
-
         .item
           a(href="/#{session}/#{projet}/capture" title="Dodoc page de capture").button-wrapper.button-wrapper_capture
             .btn.icon
