@@ -25,6 +25,19 @@ jQuery(document).ready(function($) {
 });
 
 function init(){
+	dragAndDrop();
+	$('.montage-title .publi-btn').on('click', function(){
+		var oldTitle = $('.montage-title h2').html();
+		var newTitle = $('.montage-title input').val();
+		$('.montage-title input').hide();
+		$('.montage-title h2').show().html(newTitle);
+		onMontageChanged(oldTitle, newTitle);
+	});
+
+	$('.montage-title .edit-btn').on('click', function(){
+		$('.montage-title input').show().val($('.montage-title h2').html());
+		$('.montage-title h2').hide();
+	});
 
 }
 
@@ -103,6 +116,28 @@ function displayAudio(session, project, id, file){
 	var divMedia = '<div class="mediaContent">'+audio+'</div>';
 	var htmlToAdd = '<li class="media sons-bibli" id="'+id+'" data-type="son">'+divMedia+'</li>';
 	$('.medias ul.medias-list').prepend(htmlToAdd);
+}
+
+function dragAndDrop(){
+	dragula([document.querySelector('#left'), document.querySelector('#right')], {
+	  copy: function (el, source) {
+	    return source === left
+	  },
+	  accepts: function (el, target) {
+	    return target !== left
+	  }
+	})
+	.on('dragend', function(el){
+		console.log(el);
+		onMontageChanged();
+	});
+}
+
+function onMontageChanged(oldTitle, newTitle){
+	var montageContent = $("#right.inner-montage").html();
+	var newTitle = $('.montage-title h2').html();
+	console.log(oldTitle, newTitle);
+	socket.emit("saveMontage", {html:montageContent, session:currentSession, projet:currentProject, oldTitle:oldTitle, newTitle: newTitle});
 }
 
 /* sockets */

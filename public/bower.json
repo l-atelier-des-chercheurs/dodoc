@@ -26,6 +26,7 @@
     "tooltip": "*"
   },
   "dependencies": {
-    "recordrtc": "^5.2.7"
+    "recordrtc": "^5.2.7",
+    "dragula.js": "dragula#^3.6.6"
   }
 }
