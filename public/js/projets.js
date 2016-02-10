@@ -105,10 +105,10 @@ function displayFolder(name, created, modified, image, statut){
 	var formatName = convertToSlug(name);
 	var statutHTML= '<div class="statut"><span>statut</span><span class="statut-type"> '+statut+'</span></div>';
 	if(image == false){
-		var imageHTML = '<div class="image-wrapper small-6 columns"><img src="" alt=""></div>';
+		var imageHTML = '<div class="image-wrapper small-4 medium-6 columns"><img src="" alt=""></div>';
 	}
 	else{
-		var imageHTML = '<div class="image-wrapper small-6 columns"><img src="/'+currentSession+'/'+formatName+'/'+formatName+'-thumb.jpg" alt="'+name+'"></div>'
+		var imageHTML = '<div class="image-wrapper small-4 medium-6 columns"><img src="/'+currentSession+'/'+formatName+'/'+formatName+'-thumb.jpg" alt="'+name+'"></div>'
 	}
 	var createdHTML= '<div class="created"><span>crée le </span><span class="create-date">'+created+'</span></div>';
 	if(modified!= null){
@@ -137,7 +137,7 @@ function displayFolder(name, created, modified, image, statut){
 
 	var buttonToPages = '<div class="button-to-pages  small-6 columns">'+buttonToRecord.prop('outerHTML')+buttonToBibli.prop('outerHTML')+buttonToPubli.prop('outerHTML')+'</div>'
 
-	var folderHTML = '<li class="project small-12 columns" data-statut="'+statut+'">'+editIcon+'<div class="project-inside"><div class="left-content small-6 columns">'+contentHTML+buttonToPages+'</div>'+imageHTML+'</div></li>';
+	var folderHTML = '<li class="project small-12 columns" data-statut="'+statut+'">'+editIcon+'<div class="project-inside"><div class="left-content small-8 medium-6 columns">'+contentHTML+buttonToPages+'</div>'+imageHTML+'</div></li>';
 	$("#container .project-list").prepend(folderHTML);
 }
 

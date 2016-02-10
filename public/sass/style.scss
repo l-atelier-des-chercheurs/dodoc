@@ -175,6 +175,7 @@ button{
     transition: width 1s;
     overflow: hidden;
     float:left;
+    width:  150px;
 
     &:not(:hover) {
      width:  50px;
@@ -302,7 +303,6 @@ body.index{
       padding: 18px;
       height: 100%;
       margin-bottom: 70px;
-
 
       background-color: #F4F4F4;
 
@@ -472,6 +472,9 @@ body.projets{
           @include style--dossierBorders;
           border-bottom: 0;
 
+          margin-left: 0.9375rem;
+          margin-right: 0.9375rem;
+
           position: absolute;
           top: 0; bottom: 0;  left: 0;  right: 0;
 
@@ -485,11 +488,16 @@ body.projets{
         }
         .left-content{
           background-color:#FFF;
+          overflow-y: scroll;
+          height: 100%;
+          padding: 0;
+          padding-top:  5px;
+
           .content{
-            padding: 7px 20px;
             h2{
               font-weight: bold;
               font-size: $h2Size;
+              margin-bottom:  25px;
             }
             .meta-data{
               font-style:italic;
@@ -499,17 +507,14 @@ body.projets{
             }
           }
           .button-to-pages {
-            padding: 7px 20px;
+            text-align: right;
           }
         }
         .image-wrapper{
           overflow: hidden;
           padding: 0;
 
-          height: 0;
-          padding-bottom: 15%;
-
-
+          height: 100%;
 
           img {
             transform: translateY(-50%);
