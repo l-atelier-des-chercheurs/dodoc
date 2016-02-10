@@ -32,6 +32,9 @@ module.exports = function(app, io){
 		socket.on("modifyProject", onModifyProject);
 		socket.on("removeProject", onRemoveProject);
 
+		// P R O J E T      P A G E
+		socket.on("displayProject", displayProject);
+
 		// C A P T U R E     P A G E
 		socket.on("imageCapture", onNewImage);
 		socket.on("videoRecorded", onNewVideo);
@@ -367,6 +370,28 @@ module.exports = function(app, io){
 
 	// F I N     P R O J E T S     P A G E
 
+	// P R O J E T      P A G E
+		function displayProject(data){
+			var dir = "sessions/"+data.session+"/"+data.project;
+			var file = dir+"/"+data.project+'.json';
+			var jsonObj;
+			fs.readFile(file, 'utf8', function (err, data) {
+			  if (err) console.log(err);
+			  jsonObj = JSON.parse(data);
+			  fs.readdir(dir, function(err, files) {
+					var media = [];
+					if (err) {console.log(err)};
+					files.forEach(function(f) {
+						media.push(f);
+					});
+					var lastMedia = media.slice(Math.max(media.length - 10, 1));
+					console.log(jsonObj, lastMedia);
+
+					io.sockets.emit('sendProjectData',{json:jsonObj , lastmedia:lastMedia });
+				});			
+			});
+		}
+	// F I N     P R O J E T      P A G E
 
 	// C A P T U R E      P A G E 
 		//ajoute les images au projet

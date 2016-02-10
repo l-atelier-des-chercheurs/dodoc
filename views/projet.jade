@@ -1,0 +1,65 @@
+doctype html
+html
+  head
+    link(rel='stylesheet', href='/bower_components/dragula.js/dist/dragula.min.css')
+    include templates/head.jade
+  body.publi
+
+    .navbar-container
+      header.navbar
+        .logo
+          a(href="/" title="Dodoc")
+            include templates/images/dodoc-logo.svg
+
+        .item
+          a(href="/#{session}" title="Dodoc").button-wrapper.button-wrapper_dossier
+            .btn.icon
+              include templates/images/dossier.svg
+            span #{session}
+
+        .item
+          a(href="/#{session}/#{projet}" title="Dodoc").button-wrapper.button-wrapper_projet
+            span #{projet}
+
+    #container.row
+      .project-wrapper.small-12.columns
+        a(href="/#{session}/#{projet}/capture" title="Dodoc page de capture").button-wrapper.button-wrapper_capture
+          .btn.icon
+            include templates/images/record.svg
+          span Capture
+        a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_bibli
+          .btn.icon
+            include templates/images/bibli.svg
+          span Bibliothèque
+        h1.project
+        div.meta-data
+          div.statut
+          div.created
+          div.modified
+
+        div.last-medias
+          ul
+        div.list-publi
+          ul
+
+    .js--templates
+      li.media.media_image(data-type="image")
+        .mediaContent
+          img
+      li.media.media_video(data-type="video")
+        .mediaContent
+          video(preload="none" controls)
+            source()
+      li.media.media_stopmotion(data-type="stopmotion")
+        .mediaContent
+          video(preload="none" controls)
+            source()
+      li.media.media_audio(data-type="audio")
+        .mediaContent
+          audio(preload="none" controls)
+            source()
+
+    //- //footer
+    include templates/footer.jade
+
+    script(src='/js/projet.js')
