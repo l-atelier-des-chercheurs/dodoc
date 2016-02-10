@@ -132,12 +132,14 @@ function displayAudio(session, project, id, file){
 }
 
 function dragAndDrop(){
-	dragula([document.querySelector('#left'), document.querySelector('#right')], {
+  var left = document.querySelector('.medias-list');
+  var right = document.querySelector('.inner-montage');
+	dragula([left, right], {
 	  copy: function (el, source) {
-	    return source === left
+	    return source === left;
 	  },
 	  accepts: function (el, target) {
-	    return target !== left
+      return target === right;
 	  }
 	})
 	.on('dragend', function(el){
@@ -147,7 +149,7 @@ function dragAndDrop(){
 }
 
 function onMontageChanged(oldTitle, newTitle){
-	var montageContent = $("#right.inner-montage").html();
+	var montageContent = $(".inner-montage").html();
 	var newTitle = $('.montage-title h2').html();
 	console.log(oldTitle, newTitle);
 	socket.emit("saveMontage", {html:montageContent, session:currentSession, projet:currentProject, oldTitle:oldTitle, newTitle: newTitle});

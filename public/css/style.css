@@ -6742,21 +6742,6 @@ th.hide-for-touch {
   th.show-for-print {
     display: table-cell !important; } }
 
-/*
-@mixin grid-row() {
-  background-color: red;
-}
-*/
-.plop {
-  margin: 0 auto;
-  max-width: 62.5rem;
-  width: 100%; }
-  .plop:before, .plop:after {
-    content: " ";
-    display: table; }
-  .plop:after {
-    clear: both; }
-
 @font-face {
   font-family: 'fira';
   src: url("../fonts/Fira-Sans/firasans-bold-webfont.eot");
@@ -6959,22 +6944,39 @@ th.hide-for-touch {
       margin: 15px;
       position: relative; }
 
-.bibli #container {
-  height: 100%; }
+.bibli {
+  height: calc( 100vh - 70px);
+  overflow-y: scroll;
+  /* has to be scroll, not auto */
+  -webkit-overflow-scrolling: touch; }
 
 .montage {
-  height: 2000px; }
+  height: calc( 100vh - 70px);
+  overflow-y: scroll;
+  /* has to be scroll, not auto */
+  -webkit-overflow-scrolling: touch;
+  border-left: 5px solid white; }
   .montage .inner-montage {
     height: 100%; }
 
-/*
-
-.plop2 {
-  @include grid-row();
-}
-*/
-.medias-list .media {
-  background-color: green; }
+.medias-list {
+  margin: 0 auto;
+  max-width: 62.5rem;
+  width: 100%;
+  padding-top: 0.9375rem;
+  padding-bottom: 0.9375rem; }
+  .medias-list:before, .medias-list:after {
+    content: " ";
+    display: table; }
+  .medias-list:after {
+    clear: both; }
+  .medias-list .media {
+    padding-left: 0.9375rem;
+    padding-right: 0.9375rem;
+    width: 33.33333%;
+    float: left;
+    padding-top: 0.9375rem;
+    padding-bottom: 0.9375rem; }
 
 html {
   margin: 0; }
