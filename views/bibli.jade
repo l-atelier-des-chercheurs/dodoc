@@ -53,6 +53,8 @@ html
             span Créer une nouvelle publication
           ul
         div.montage-edit
+          div.publi-close.btn.icon
+            include templates/images/clear.svg
           div.montage-title
             input(type="text" placeholder="Titre")
             h2.montage-title-text
@@ -87,7 +89,7 @@ html
           audio(preload="none" controls)
             source()
       li.publi-folder(data-publi="")
-        a(href="")
+        a(href="#")
           .content
             h2
 

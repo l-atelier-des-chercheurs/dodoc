@@ -49,6 +49,7 @@ module.exports = function(app, io){
 		socket.on("listMedias", listMedias);
 		socket.on("listPubli", listPubli);
 		socket.on("createPubli", newPublication);
+		socket.on("displayThisMontage", displayMontage);
 		socket.on("saveMontage", saveMontage);
 
 
@@ -559,7 +560,7 @@ module.exports = function(app, io){
 		    fs.readdir(dir, function(err, files) {
 				  if (err) console.log(err);
 			    files.forEach(function(file) {
-			    	console.log('Files: ' + file);
+			    	//console.log('Files: ' + file);
 			    	if(file == ".DS_Store"){
 		    			fs.unlink(dir+'/'+file);
 		    		}
@@ -615,64 +616,30 @@ module.exports = function(app, io){
 		}
 	}
 
+	function displayMontage(data){
+		var file = "sessions/"+data.session+"/"+data.project+'/montage/'+data.name+'.json';
+		fs.readFile(file, 'utf8', function (err, data) {
+		  if (err) console.log(err);
+		  var jsonObj = JSON.parse(data);
+		  io.sockets.emit('displayMontage', {name:jsonObj.name, html:jsonObj.html});
+		});
+	}
+
 	function saveMontage(req){
 		var dir = 'sessions/'+ req.session + "/" + req.projet;
 		var montageDir = dir + '/montage';
-		var title = req.newTitle;
-		var oldtitle = req.oldTitle;
-		var currentDate = Date.now();
-		var htmlFile = montageDir + '/' + convertToSlug(title) + '.html';
-		var htmlOldFile= montageDir + '/' + '' + '.html';
-		if(title == ''){
-			title = 'sanstitre';
-			htmlFile = montageDir + '/' + convertToSlug(title) + '.html';
-		};
-		if(oldtitle == '' || oldtitle == undefined){
-			console.log('oldtitle do not exist');
-			htmlOldFile = montageDir + '/' + 'sanstitre' + '.html';
+		var htmlFile = montageDir + '/' + convertToSlug(req.title) + '.json';
+		changeJsonFile(htmlFile);
+
+		function changeJsonFile(file){
+			var jsonContent = fs.readFileSync(file,"UTF-8");
+			var jsonObj = JSON.parse(jsonContent);
+			jsonObj.html = req.html;
+			var jsonString = JSON.stringify(jsonObj, null, 4);
+			fs.writeFileSync(file, jsonString);
+			console.log("HTML enregistré");
+			// io.sockets.emit("folderModified", {name: folder.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:jsonObj.nb_projets});
 		}
-		else{
-			console.log('oldtitle exist', oldtitle);
-			htmlOldFile = montageDir + '/' + convertToSlug(oldtitle) + '.html';
-		}
-		//Vérifier si un dossier montage existe
-		fs.access(montageDir, fs.F_OK, function(err) {
-			// S'il existe écrire le fichier dans le dossier
-	    if (!err) {
-	    	// Vérifie si le fichier HTML existe
-	    	fs.access(htmlOldFile, fs.F_OK, function(err) {
-	    		//Si le fichier existe, renommer le fichier
-	    		if (!err) {
-	    			console.log(htmlOldFile);
-	    			fs.rename(htmlOldFile, htmlFile, function(err) {
-						  if ( err ) console.log('ERROR: ' + err);
-						});
-	    		}
-	    		// Sinon écrire le fichier
-	    		else{
-		        fs.writeFile(htmlFile, req.html, function(err) {
-				      if(err) {
-				          console.log(err);
-				      } else {
-				          console.log("Montage HTML was saved");
-				      }
-					  });
-					}
-				});
-	    } 
-	    //S'il n'existe pas le créer
-	    else {
-	      fs.ensureDirSync(montageDir, function(err){
-	      	fs.writeFile(htmlFile, req.html, function(err) {
-			      if(err) {
-			          console.log(err);
-			      } else {
-			          console.log("Montage HTML was saved");
-			      }
-				  });
-	      });//write new montage foder 
-	    }
-		});
 	}
 
 	// F I N    B I B L I    P A G E 

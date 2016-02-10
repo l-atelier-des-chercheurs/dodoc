@@ -14,11 +14,20 @@
   -webkit-overflow-scrolling: touch;
 
   border-left: 5px solid white;
-
+  .montage-edit{
+    background:$gristresclair;
+    position:absolute;
+    width:100%;
+    top:0;
+    left:0;
+    display:none;
+    .montage-title{
+      input{display:none;}
+    }
+  }
   .inner-montage{
     height:100%;
     min-height:200px;
-    background:red;
   }
 }
 

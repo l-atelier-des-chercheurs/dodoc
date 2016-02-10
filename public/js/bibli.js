@@ -19,6 +19,7 @@ socket.on('displayNewAudio', displayNewAudio);
 socket.on('listMedias', onListMedias);
 socket.on('listPublications', onPubliCreated);
 socket.on('publiCreated', onPubliCreated);
+socket.on('displayMontage', onDisplayMontage);
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 
 jQuery(document).ready(function($) {
@@ -29,22 +30,37 @@ jQuery(document).ready(function($) {
 
 function init(){
 	dragAndDrop();
-	// $('.montage-title .publi-btn').on('click', function(){
-	// 	var oldTitle = $('.montage-title h2').html();
-	// 	var newTitle = $('.montage-title input').val();
-	// 	$('.montage-title input').hide();
-	// 	$('.montage-title h2').show().html(newTitle);
-	// 	onMontageChanged(oldTitle, newTitle);
-	// });
+	$('.montage-title .publi-btn').on('click', function(){
+		var oldTitle = $('.montage-title h2').html();
+		var newTitle = $('.montage-title input').val();
+		$('.montage-title input').hide();
+		$('.montage-title h2').show().html(newTitle);
+		$(this).hide();
+		$('.montage-title .edit-btn').show()
+		//onMontageChanged(oldTitle, newTitle);
+	});
 
-	// $('.montage-title .edit-btn').on('click', function(){
-	// 	$('.montage-title input').show().val($('.montage-title h2').html());
-	// 	$('.montage-title h2').hide();
-	// });
+	$('.montage-title .edit-btn').on('click', function(){
+		$('.montage-title input').show().val($('.montage-title h2').html());
+		$('.montage-title h2').hide();
+		$(this).hide();
+		$('.montage-title .publi-btn').show()
+	});
 
 	$('.submit-new-publi').on('click', function(){
 		var publiName = $('.new-publi').val();
 		socket.emit('createPubli', {name: publiName, session:currentSession, project: currentProject});
+	});
+
+	$('body').on('click', '.publi-folder a', function(){
+		var namePubli = $(this).parent('.publi-folder').attr('data-publi');
+		$('.montage-edit').attr('data-publi', namePubli);
+		socket.emit('displayThisMontage', {name:namePubli, session:currentSession, project: currentProject});
+	});
+
+	$('body').on('click', '.publi-close', function(){
+		$('.montage-inner').empty();
+		$('.montage-edit').hide();
 	});
 
 }
@@ -151,26 +167,39 @@ function dragAndDrop(){
 	  }
 	})
 	.on('dragend', function(el){
-		console.log(el);
 		onMontageChanged();
 	});
 }
 
-// function onMontageChanged(oldTitle, newTitle){
-// 	var montageContent = $(".inner-montage").html();
-// 	var newTitle = $('.montage-title h2').html();
-// 	console.log(oldTitle, newTitle);
-// 	socket.emit("saveMontage", {html:montageContent, session:currentSession, projet:currentProject, oldTitle:oldTitle, newTitle: newTitle});
-// }
+function onMontageChanged(){
+	var montageContent = $(".inner-montage").html();
+	var title = $('.montage-title h2').html();
+	socket.emit("saveMontage", {html:montageContent, title: title, session:currentSession, projet:currentProject});
+}
 
 function onPubliCreated(data){
 	var publiItem = $(".js--templates .publi-folder").clone(false);
 	publiItem
-		.find('h2').html(data.name)
-		.attr('data-publi', convertToSlug(data.name));
+		.attr('data-publi', convertToSlug(data.name))
+		.find('h2').html(data.name);
 
 	$('#modal-add-publi').foundation('reveal', 'close');
 	$('.montage-list ul').prepend(publiItem);
+}
+
+function onDisplayMontage(data){
+	var publiName = convertToSlug(data.name);
+	console.log($('.montage-edit[data-publi="'+publiName+'"]'));
+	$('.montage-edit[data-publi="'+publiName+'"]')
+		.show()
+		.find('h2').html(data.name);
+	if(data.html != 'none'){
+		$('.montage-edit[data-publi="'+publiName+'"]').find('.inner-montage').html(data.html);
+	}
+	else{
+		$('.montage-edit[data-publi="'+publiName+'"]').find('.inner-montage').html('');
+	}
+	
 }
 
 // Si un fichier existe déjà, affiche un message d'alerte
