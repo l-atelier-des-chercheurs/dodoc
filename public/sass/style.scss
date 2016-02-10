@@ -1,6 +1,23 @@
+
+
 // I M P O R T
+@import "../bower_components/foundation/scss/normalize";
+@import "../bower_components/foundation/scss/foundation";
+
+/*
+@mixin grid-row() {
+  background-color: red;
+}
+*/
+
+.plop {
+  @include grid-row();
+}
+
+
 @import "variables.scss";
 @import "navbar.scss";
+@import 'bibli';
 
 html {
 	margin:0;
@@ -59,6 +76,10 @@ a{
 a:hover {
 	color: #000;
 	text-decoration: none;
+}
+
+ul {
+  margin: 0;
 }
 
 img, video, audio, svg {
@@ -655,19 +676,6 @@ body.capture{
   }
 
 }
-
-.bibli{
-  #container{
-    height:100%;
-  }
-}
-.montage{
-  height:2000px;
-  .inner-montage{
-    height:100%;
-  }
-}
-
 
 
 .js--templates {
