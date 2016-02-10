@@ -552,7 +552,6 @@ module.exports = function(app, io){
 	}
 
 	function listPubli(data){
-    console.log("plop");
 		var dir = "sessions/"+data.session+"/"+data.project+'/montage';
 		// Vérifie si le dossier existe déjà
 		fs.access(dir, fs.F_OK, function(err) {

@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 /**
  * 1. Set default font family to sans-serif.
@@ -6934,7 +6935,10 @@ th.hide-for-touch {
       margin: 15px;
       position: relative; }
 
-.bibli {
+body.bibli {
+  overflow: hidden; }
+
+.bibli-buffer {
   height: calc( 100vh - 70px);
   overflow-y: scroll;
   /* has to be scroll, not auto */
@@ -6944,8 +6948,16 @@ th.hide-for-touch {
   height: calc( 100vh - 70px);
   overflow-y: scroll;
   /* has to be scroll, not auto */
-  -webkit-overflow-scrolling: touch;
-  border-left: 5px solid white; }
+  -webkit-overflow-scrolling: touch; }
+  .montage::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: calc( 50% - 5px);
+    bottom: 0;
+    width: 10px;
+    background: linear-gradient(to left, #ccc, transparent 50%, transparent);
+    background-size: 5px 100%; }
   .montage .montage-edit {
     background: #e5e5e5;
     position: absolute;
@@ -6956,8 +6968,29 @@ th.hide-for-touch {
     .montage .montage-edit .montage-title input {
       display: none; }
   .montage .inner-montage {
+    margin: 0 auto;
+    max-width: 62.5rem;
+    width: 100%;
     height: 100%;
-    min-height: 200px; }
+    min-height: 200px;
+    padding: 15px;
+    border-top: 2px solid #eee; }
+    .montage .inner-montage:before, .montage .inner-montage:after {
+      content: " ";
+      display: table; }
+    .montage .inner-montage:after {
+      clear: both; }
+    .montage .inner-montage:empty {
+      background-color: #fff; }
+      .montage .inner-montage:empty::before {
+        content: "Glissez içi vos médias pour composer un récit.";
+        position: relative; }
+    .montage .inner-montage .media {
+      padding-left: 0.9375rem;
+      padding-right: 0.9375rem;
+      width: 100%;
+      float: left;
+      margin-bottom: 15px; }
 
 .medias-list {
   margin: 0 auto;
@@ -6977,6 +7010,29 @@ th.hide-for-touch {
     float: left;
     padding-top: 0.9375rem;
     padding-bottom: 0.9375rem; }
+
+.montage-list {
+  margin-top: 15px; }
+  .montage-list > .button-wrapper {
+    margin-bottom: 15px; }
+  .montage-list .publi-folder {
+    position: relative;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #fff;
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    text-align: right; }
+    .montage-list .publi-folder:before, .montage-list .publi-folder:after {
+      content: " ";
+      display: table; }
+    .montage-list .publi-folder:after {
+      clear: both; }
+    .montage-list .publi-folder .content {
+      float: left; }
+    .montage-list .publi-folder .button-wrapper {
+      display: inline-block;
+      float: none; }
 
 html {
   margin: 0; }
@@ -7038,6 +7094,13 @@ button {
   outline: none;
   border: none;
   background: none; }
+
+.legende {
+  font-style: italic;
+  font-size: 1rem;
+  color: #8d8d8d;
+  text-transform: lowercase;
+  margin-bottom: 15px; }
 
 .row {
   max-width: 90%; }

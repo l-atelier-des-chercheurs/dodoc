@@ -89,8 +89,19 @@ button{
 	background: none;
 }
 
+.legende {
+  font-style: italic;
+  font-size: 1rem;
+  color: #8d8d8d;
+  text-transform: lowercase;
+
+  margin-bottom:  15px;
+}
+
 .row{max-width:90%;}
 .columns+.columns:last-child{float:left;}
+
+
 
 
 /******************

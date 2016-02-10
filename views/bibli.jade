@@ -4,7 +4,6 @@ html
     link(rel='stylesheet', href='/bower_components/dragula.js/dist/dragula.min.css')
     include templates/head.jade
   body.bibli
-
     .navbar-container
       header.navbar
         .logo
@@ -32,38 +31,41 @@ html
             include templates/images/record.svg
           span Capture
 
-    div
-      div.bibli-buffer.small-6.medium-6.large-6.columns
-        ul.medias-list
+    .bibli-buffer.small-6.medium-6.large-6.columns
+      ul.medias-list
 
-        div.btn-medias.small-1.medium-1.large-1.columns
-          ul
-            li.--js-btn-medias-text.btn.icon
-              include templates/images/text.svg
-            li.--js-btn-medias-add.btn.icon
-              include templates/images/add.svg
-            li.--js-btn-medias-publications.btn.icon
-              include templates/images/publi.svg
+      .btn-medias.small-1.medium-1.large-1.columns
+        ul
+          li.--js-btn-medias-text.btn.icon
+            include templates/images/text.svg
+          li.--js-btn-medias-add.btn.icon
+            include templates/images/add.svg
+          li.--js-btn-medias-publications.btn.icon
+            include templates/images/publi.svg
 
-      div.montage.small-6.medium-6.large-6.columns
-        div.montage-list
-          a(href="" data-reveal-id="modal-add-publi").button-wrapper.button-wrapper_add
-            .btn.icon
-              include templates/images/add.svg
-            span Créer une nouvelle publication
-          ul
-        div.montage-edit
-          div.publi-close.btn.icon
-            include templates/images/clear.svg
-          div.montage-title
-            input(type="text" placeholder="Titre")
-            h2.montage-title-text
-            div.publi-btn.btn.icon
-              include templates/images/enregistre.svg
-            div.edit-btn.btn.icon
-              include templates/images/pen.svg
-          div.inner-montage.small-12
-            div.montage-element
+    .montage.small-6.medium-6.large-6.columns
+      .montage-list
+
+        h1.legende Liste des publications
+        a(href="" data-reveal-id="modal-add-publi").button-wrapper.button-wrapper_add
+          .btn.icon
+            include templates/images/add.svg
+          span Créer une nouvelle publication
+        ul
+
+      .montage-edit
+        .publi-close.btn.icon
+          include templates/images/clear.svg
+        .montage-title
+          input(type="text" placeholder="Titre")
+          h2.montage-title-text
+          div.publi-btn.btn.icon
+            include templates/images/enregistre.svg
+          div.edit-btn.btn.icon
+            include templates/images/pen.svg
+
+        .inner-montage.small-12
+          .montage-element
 
     div(id="modal-add-publi" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
       h2#modalTitle.popoverTitle Nouvelle publication
@@ -89,14 +91,17 @@ html
           audio(preload="none" controls)
             source()
       li.publi-folder(data-publi="")
-        a(href="#")
-          .content
-            h2
-        div.edit-publi-btn.btn.icon
-          include templates/images/pen.svg
-        div.edit-view-btn.btn.icon
-          a(href="#")
+        .content
+          h2
+        a(href="#").button-wrapper.button-wrapper_publi.button-wrapper_without-bg.button-wrapper_collapsed.js--edit_view
+          .btn.icon
+            include templates/images/pen.svg
+          span Éditer
+
+        a(href="#").button-wrapper.button-wrapper_publi.button-wrapper_without-bg.button-wrapper_collapsed.js--publi_view
+          .btn.icon
             include templates/images/view.svg
+          span Afficher
 
 
     //- //footer

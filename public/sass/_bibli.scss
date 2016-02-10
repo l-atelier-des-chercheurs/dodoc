@@ -1,19 +1,37 @@
-.bibli{
+body.bibli {
+  overflow: hidden;
+}
 
+.bibli-buffer {
   height: calc( 100vh - 70px);
   overflow-y: scroll; /* has to be scroll, not auto */
   -webkit-overflow-scrolling: touch;
 
-  #container{
-
-  }
 }
 .montage{
   height: calc( 100vh - 70px);
   overflow-y: scroll; /* has to be scroll, not auto */
   -webkit-overflow-scrolling: touch;
 
-  border-left: 5px solid white;
+  &::before {
+    content: "";
+    position: fixed;
+
+    top:0;
+    left: calc( 50% - 5px);
+    bottom: 0;
+
+    width:  10px;
+
+    background: linear-gradient(
+      to left,
+      #ccc,
+      transparent 50%,
+      transparent
+    );
+    background-size: 5px 100%;
+  }
+
   .montage-edit{
     background:$gristresclair;
     position:absolute;
@@ -26,8 +44,30 @@
     }
   }
   .inner-montage{
+
+    @include grid-row();
+
     height:100%;
     min-height:200px;
+
+    padding: 15px;
+
+    border-top:   2px solid #eee;
+
+    &:empty {
+      background-color: #fff;
+      &::before {
+        content: "Glissez içi vos médias pour composer un récit.";
+        position: relative;
+      }
+    }
+
+    .media {
+      @include grid-column(12);
+      margin-bottom: 15px;
+
+    }
+
   }
 }
 
@@ -46,14 +86,35 @@
 
 
 
-.btn-medias {
+.montage-list {
 
+  margin-top:   15px;
 
+  > .button-wrapper {
+    margin-bottom:  15px;
+  }
 
-}
+  .publi-folder {
 
-.montage {
+    position: relative;
+    padding: 15px;
+    margin-bottom:  15px;
 
+    background-color: #fff;
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
+    text-align: right;
 
+    @include clearfix();
+
+    .content {
+      float:left;
+    }
+
+    .button-wrapper {
+      display: inline-block;
+      float: none;
+    }
+  }
 }
