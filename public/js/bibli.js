@@ -204,8 +204,9 @@ function onDisplayMontage(data){
 }
 
 function onTitleModified(data){
-	$('.montage-list li[data-publi="'+data.oldName+'"]').find('h2').html(data.newName);
-	$('.montage-list li[data-publi="'+data.oldName+'"]').attr('data-publi', data.newName);
+	console.log($('.publi-folder[data-publi="'+data.old+'"]'));
+	$('.publi-folder[data-publi="'+data.old+'"]').find('h2').html(data.name);
+	$('.publi-folder[data-publi="'+data.old+'"]').attr('data-publi', data.name);
 }
 
 // Si un fichier existe déjà, affiche un message d'alerte
