@@ -90,7 +90,7 @@ function displayImage(session, project, id, file){
 	mediaItem.attr( 'id', id);
 	mediaItem.find( 'img').attr('src', imagePath);
 
-	$('.medias ul.medias-list').prepend(mediaItem);
+	$('.medias-list').prepend(mediaItem);
 }
 
 function displayVideo(session, project, id, file){
