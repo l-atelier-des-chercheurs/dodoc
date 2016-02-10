@@ -176,6 +176,8 @@ function init(){
     e.stopPropagation;
   });
 
+  fullscreen();
+
 }
 
 function changeMedia(){
@@ -357,6 +359,7 @@ function displayVideoStream(){
 
 // Fonction qui prend les photos
 function takePictures(){
+  console.log('test');
   canvas.width = width;
   canvas.height = height;
   canvas.getContext('2d').drawImage(video, 0, 0, width, height);
@@ -920,6 +923,20 @@ function backAnimation(){
       $(this).fadeOut('slow');
     });
   }
+}
+
+function fullscreen(){
+  var target = $('.captureLeft')[0]; // Get DOM element from jQuery collection
+  $('.full-screen').on('click', function(){
+    if (screenfull.enabled) {
+      screenfull.request(target);
+      $('.captureLeft').addClass('is--fulscreen');
+    }
+  });
+  $('.no-full-screen').on('click', function(){
+    screenfull.exit();
+    $('.captureLeft').removeClass('is--fulscreen');
+  });
 }
 
 /* sockets */

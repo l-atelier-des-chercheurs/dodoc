@@ -100,6 +100,12 @@ html
                 div.choices.audio-choice
                   .caption Mode audio
 
+            div.full-screen-wrapper
+              div.full-screen
+                include templates/images/fullscreen.svg
+              div.no-full-screen
+                include templates/images/nofullscreen.svg
+
           div.captureRight.small-5.columns
             div.flash.small-12
             div.clear
@@ -128,14 +134,7 @@ html
     //- scripts
     include templates/footer.jade
 
-    //- some packages for getting and attaching user media
-    //- script(src="/js/lib/getusermedia.bundle.js")
-    //- script(src="/js/lib/attachmediastream.bundle.js")
-    //- //- a package for playing back the recording
-    //- script(src="/js/lib/fauxplay.bundle.js")
-    //- script(src="/js/lib/video-recorder.bundle.js")
     script(src="/bower_components/recordrtc/RecordRTC.min.js")
-    //- //- A real time javascript webm encoder based on a canvas hack
-    //- script(src="/js/lib/whammy.min.js")
+    script(src="/js/libs/screenfull.min.js")
     script(src='/js/capture.js')
 

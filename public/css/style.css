@@ -7432,7 +7432,8 @@ body.capture .captureLeft {
     position: absolute;
     height: 82%;
     top: 0;
-    left: 0; }
+    left: 0;
+    pointer-events: none; }
     body.capture .captureLeft .display-choice .choices {
       position: absolute;
       height: 100%;

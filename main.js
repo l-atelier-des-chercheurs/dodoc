@@ -704,7 +704,7 @@ module.exports = function(app, io){
 		    else {
 		    	if(convertToSlug(oldName) != convertToSlug(newName)){
 		    		console.log("le dossier existe déjà !");
-		      	io.sockets.emit("folderAlreadyExist", {name: newName, timestamp: currentDate });
+		      	io.sockets.emit("folderAlreadyExist", {name: newName });
 		    	}
 		    	else{
 		    		fs.renameSync(oldFilePath, newFilePath); // renomme le dossier
