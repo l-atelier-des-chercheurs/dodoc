@@ -6871,24 +6871,6 @@ th.hide-for-touch {
           transition: opacity .4s; }
         .navbar-container .navbar .logo svg:hover circle, .navbar-container .navbar .logo svg:hover rect, .navbar-container .navbar .logo svg:hover polyline {
           opacity: 1; }
-      .navbar-container .navbar .logo::after {
-        content: ' ';
-        position: absolute;
-        left: -20px;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        -webkit-transition: all .1s;
-        transition: all .1s;
-        z-index: -1;
-        -webkit-transform: skewX(-20deg) skewY(0);
-        -ms-transform: skewX(-20deg) skewY(0);
-        -o-transform: skewX(-20deg) skewY(0);
-        transform: skewX(-20deg) skewY(0);
-        background-color: transparent;
-        transition: background-color .4s; }
-      .navbar-container .navbar .logo:hover::after {
-        background: #333; }
     .navbar-container .navbar .item {
       float: left;
       height: 100%;
@@ -6901,16 +6883,20 @@ th.hide-for-touch {
         background-color: transparent;
         color: white;
         padding: 20px;
+        padding-left: 15px;
         transition: color .2s; }
         .navbar-container .navbar .item .button-wrapper .btn.icon + span {
-          left: 75px; }
+          left: 65px; }
+        .navbar-container .navbar .item .button-wrapper + .button-wrapper::after {
+          left: -10px;
+          right: 0; }
         .navbar-container .navbar .item .button-wrapper::after {
           content: ' ';
           position: absolute;
-          left: 0;
-          right: 0;
-          top: 0;
-          bottom: 0;
+          left: 10px;
+          right: -5px;
+          top: 15px;
+          bottom: 15px;
           -webkit-transition: all .1s;
           transition: all .1s;
           z-index: -1;
@@ -6918,7 +6904,8 @@ th.hide-for-touch {
           -ms-transform: skewX(-20deg) skewY(0);
           -o-transform: skewX(-20deg) skewY(0);
           transform: skewX(-20deg) skewY(0);
-          background-color: #333;
+          border-radius: 4px;
+          background-color: #40beb3;
           transition: background-color .2s; }
         .navbar-container .navbar .item .button-wrapper:hover {
           color: #333; }
@@ -6928,7 +6915,7 @@ th.hide-for-touch {
           padding: 12px;
           margin-top: -8px; }
         .navbar-container .navbar .item .button-wrapper_dossier::after {
-          background-color: #F2682C; }
+          background-color: #f2682c; }
         .navbar-container .navbar .item .button-wrapper_dossier:hover {
           color: #F2682C; }
         .navbar-container .navbar .item .button-wrapper_bibli::after {
@@ -6936,11 +6923,14 @@ th.hide-for-touch {
         .navbar-container .navbar .item .button-wrapper_bibli:hover {
           color: #293275; }
         .navbar-container .navbar .item .button-wrapper_capture::after {
-          background-color: #FFB520; }
+          background-color: #FFB520;
+          background-color: #ffb520; }
         .navbar-container .navbar .item .button-wrapper_capture:hover {
           color: #FFB520; }
-    .navbar-container .navbar .button-wrapper {
-      float: left;
+        .navbar-container .navbar .item .button-wrapper_projet {
+          pointer-events: none; }
+    .navbar-container .navbar > .button-wrapper {
+      float: right;
       margin: 15px;
       position: relative; }
 
