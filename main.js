@@ -202,19 +202,22 @@ module.exports = function(app, io){
 			var sessionName;
 			fs.readFile(dir + session.session+'.json', 'utf8', function (err, data) {
 			  if (err) console.log(err);
-			  var JsonObjParent = JSON.parse(data);
-			  sessionName = JsonObjParent.name;
-				fs.readdirSync(dir).filter(function(file) {
-					if(fs.statSync(path.join(dir, file)).isDirectory()){
-						if(! /^\..*/.test(file)){
-							var jsonFile = dir + file + '/' +file+'.json';
-							var data = fs.readFileSync(jsonFile,"UTF-8");
-							var jsonObj = JSON.parse(data);
-							//console.log(sessionName);
-					    io.sockets.emit('listProject', {name:jsonObj.name, sessionName: sessionName, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, image:jsonObj.fileName});
-				  	}
-					}
-		  	});
+        console.log( 'type of data ' + typeof(data) + ' data ' + data);
+        if( data !== undefined) {
+  			  var JsonObjParent = JSON.parse(data);
+  			  sessionName = JsonObjParent.name;
+  				fs.readdirSync(dir).filter(function(file) {
+  					if(fs.statSync(path.join(dir, file)).isDirectory()){
+  						if(! /^\..*/.test(file)){
+  							var jsonFile = dir + file + '/' +file+'.json';
+  							var data = fs.readFileSync(jsonFile,"UTF-8");
+  							var jsonObj = JSON.parse(data);
+  							//console.log(sessionName);
+  					    io.sockets.emit('listProject', {name:jsonObj.name, sessionName: sessionName, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, image:jsonObj.fileName});
+  				  	}
+  					}
+  		  	});
+  		  }
 			});
 		}
 

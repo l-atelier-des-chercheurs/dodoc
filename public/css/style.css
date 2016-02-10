@@ -6909,7 +6909,7 @@ th.hide-for-touch {
           background-color: #40beb3;
           transition: background-color .2s; }
         .navbar-container .navbar .item .button-wrapper:hover {
-          color: #333; }
+          color: #40BEB3; }
           .navbar-container .navbar .item .button-wrapper:hover::after {
             background-color: transparent; }
         .navbar-container .navbar .item .button-wrapper_dossier .btn.icon {
@@ -7314,6 +7314,11 @@ body.projets #container {
     margin-bottom: 50px; }
   body.projets #container .project-list {
     margin-left: 0; }
+    body.projets #container .project-list:before, body.projets #container .project-list:after {
+      content: " ";
+      display: table; }
+    body.projets #container .project-list:after {
+      clear: both; }
     body.projets #container .project-list .project {
       margin-bottom: 50px;
       height: 0;
