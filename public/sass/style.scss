@@ -578,6 +578,7 @@ body.capture{
       height:82%;
       top: 0;
       left: 0;
+      pointer-events:none;
 
       .choices {
         position: absolute;
