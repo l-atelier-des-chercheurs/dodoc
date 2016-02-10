@@ -123,8 +123,6 @@ function displayFolder(name, created, modified, image, statut){
 	else{
 		var editIcon = '<a href="#" class="edit-icon btn icon" data-reveal-id="modal-modify-project"><img src="/images/pen.svg" alt="edit icon"></a>';
 	}
-	var metaDataHTML = '<div class="meta-data">'+statutHTML+createdHTML+modifiedHTML+'</div>';
-	var contentHTML = '<div class="content small-6 columns"><h2>'+name+'</h2>'+metaDataHTML+'</div>';
 
 	var buttonToRecord = $(".js--templates .button-wrapper_capture").clone(false);
 	buttonToRecord.attr( 'href', '/'+currentSession+'/'+formatName+'/capture');
@@ -136,6 +134,9 @@ function displayFolder(name, created, modified, image, statut){
 	buttonToPubli.attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque#publi');
 
 	var buttonToPages = '<div class="button-to-pages  small-6 columns">'+buttonToRecord.prop('outerHTML')+buttonToBibli.prop('outerHTML')+buttonToPubli.prop('outerHTML')+'</div>'
+
+	var metaDataHTML = '<div class="meta-data">'+statutHTML+createdHTML+modifiedHTML+'</div>';
+	var contentHTML = '<div class="content small-6 columns"><h2>'+name+'</h2>'+metaDataHTML+'</div>';
 
 	var folderHTML = '<li class="project small-12 columns" data-statut="'+statut+'">'+editIcon+'<div class="project-inside"><div class="left-content small-8 medium-6 columns">'+contentHTML+buttonToPages+'</div>'+imageHTML+'</div></li>';
 	$("#container .project-list").prepend(folderHTML);

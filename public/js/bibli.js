@@ -84,6 +84,7 @@ function displayNewAudio(audio){
 
 
 function onListMedias(array, json){
+
 	$(".mediaContainer li").remove();
 	var matchID = $(".mediaContainer .media").attr("id");
 	for (var i = 0; i < array.length; i++) {
@@ -167,8 +168,11 @@ function dragAndDrop(){
       return target === right;
 	  }
 	})
-	.on('dragend', function(el){
-		onMontageChanged();
+	.on('drop', function(el, target, source, sibling){
+  	// si le drop a bien réussi
+    if( target !== null) {
+  		onMontageChanged();
+    }
 	});
 }
 
@@ -200,7 +204,7 @@ function onDisplayMontage(data){
 	else{
 		$('.montage-edit[data-publi="'+publiName+'"]').find('.inner-montage').html('');
 	}
-	
+
 }
 
 function onTitleModified(data){
@@ -220,6 +224,7 @@ function onSocketConnect() {
 	sessionId = socket.io.engine.id;
 	console.log('Connected ' + sessionId);
 	socket.emit('listMedias', {session: currentSession, project: currentProject});
+
 	socket.emit('listPubli', {session: currentSession, project: currentProject});
 };
 

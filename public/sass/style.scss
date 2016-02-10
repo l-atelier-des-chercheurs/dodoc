@@ -131,7 +131,7 @@ button{
   line-height: 1.1;
 
   &:hover, &:focus {
-    border-radius: 0px;
+    border-radius: 4px;
     color: white;
   }
 
@@ -172,15 +172,32 @@ button{
 
 
   &_collapsed {
-    transition: width 1s;
     overflow: hidden;
     float:left;
-    width:  150px;
+    padding-left: 0;
+    width:  180px;
+
+    transition: border-radius .4s, width .8s, background-color .6s;
+
 
     &:not(:hover) {
      width:  50px;
+     background-color: transparent;
+    }
+
+    &.button-wrapper_without-bg {
+      width:  150px;
+
+      &:not(:hover) {
+       width:  50px;
+      }
+
+      .btn.icon + span {
+        left: 50px;
+      }
     }
   }
+
 
   .btn {
     float:left;
@@ -507,6 +524,7 @@ body.projets{
             }
           }
           .button-to-pages {
+            padding: 0;
             text-align: right;
           }
         }

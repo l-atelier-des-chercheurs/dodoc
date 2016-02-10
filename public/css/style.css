@@ -7061,7 +7061,7 @@ button {
   font-size: 1em;
   line-height: 1.1; }
   .button-wrapper:hover, .button-wrapper:focus {
-    border-radius: 0px;
+    border-radius: 4px;
     color: white; }
   .button-wrapper.button-wrapper_without-bg {
     background-color: transparent; }
@@ -7085,12 +7085,20 @@ button {
     background-color: #293275;
     color: white; }
   .button-wrapper_collapsed {
-    transition: width 1s;
     overflow: hidden;
     float: left;
-    width: 150px; }
+    padding-left: 0;
+    width: 180px;
+    transition: border-radius .4s, width .8s, background-color .6s; }
     .button-wrapper_collapsed:not(:hover) {
-      width: 50px; }
+      width: 50px;
+      background-color: transparent; }
+    .button-wrapper_collapsed.button-wrapper_without-bg {
+      width: 150px; }
+      .button-wrapper_collapsed.button-wrapper_without-bg:not(:hover) {
+        width: 50px; }
+      .button-wrapper_collapsed.button-wrapper_without-bg .btn.icon + span {
+        left: 50px; }
   .button-wrapper .btn {
     float: left; }
   .button-wrapper .btn.icon {
@@ -7289,6 +7297,7 @@ body.projets #container {
             body.projets #container .project-list .project .left-content .content .meta-data .modified .modify-date {
               font-weight: bold; }
         body.projets #container .project-list .project .left-content .button-to-pages {
+          padding: 0;
           text-align: right; }
       body.projets #container .project-list .project .image-wrapper {
         overflow: hidden;
