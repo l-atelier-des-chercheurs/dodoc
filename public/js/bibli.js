@@ -54,9 +54,10 @@ function init(){
 	});
 
 /*
-	$('body').on('click', '.publi-folder a h2', function(){
+	$('body').on('click', '.publi-folder .content', function(){
 		var namePubli = $(this).parent('.publi-folder').attr('data-publi');
 		$('.montage-edit').attr('data-publi', namePubli);
+		console.log(namePubli);
 		socket.emit('displayThisMontage', {name:namePubli, session:currentSession, project: currentProject});
 	});
 */

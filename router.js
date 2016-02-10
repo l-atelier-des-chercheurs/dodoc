@@ -10,6 +10,7 @@ module.exports = function(app,io,m){
   */
   app.get("/", getIndex);
   app.get("/:session", getFolder);
+  app.get("/:session/:projet", getProject);
   app.get("/:session/:projet/capture", getCapture);
   app.get("/:session/:projet/bibliotheque", getBibli);
   app.get("/:session/:projet/publication/:publi", getPubli);
@@ -33,6 +34,16 @@ module.exports = function(app,io,m){
       title : "Projets",
       session: session,
       folder : convertToSlug(session)
+    });
+  };
+
+  function getProject(req, res) {
+    var session = req.param('session');
+    var projet = req.param('projet');
+    res.render("projet", {
+      title : "Projet",
+      session: session,
+      projet : projet
     });
   };
 
