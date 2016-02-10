@@ -1,0 +1,48 @@
+.bibli{
+
+  height: calc( 100vh - 70px);
+  overflow-y: scroll; /* has to be scroll, not auto */
+  -webkit-overflow-scrolling: touch;
+
+  #container{
+
+  }
+}
+.montage{
+  height: calc( 100vh - 70px);
+  overflow-y: scroll; /* has to be scroll, not auto */
+  -webkit-overflow-scrolling: touch;
+
+  border-left: 5px solid white;
+
+  .inner-montage{
+    height:100%;
+  }
+}
+
+.medias-list {
+  @include grid-row();
+  padding-top:  0.9375rem;
+  padding-bottom:  0.9375rem;
+
+  .media {
+    @include grid-column(4);
+    padding-top:  0.9375rem;
+    padding-bottom:  0.9375rem;
+  }
+
+}
+
+
+
+.btn-medias {
+
+
+
+}
+
+.montage {
+
+
+
+}
