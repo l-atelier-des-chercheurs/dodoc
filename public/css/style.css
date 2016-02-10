@@ -7063,6 +7063,8 @@ button {
       color: #FFB520; }
     .button-wrapper.button-wrapper_without-bg.button-wrapper_bibli {
       color: #293275; }
+    .button-wrapper.button-wrapper_without-bg.button-wrapper_publi {
+      color: #EF4651; }
   .button-wrapper_add {
     background-color: #EF474B;
     color: white; }
@@ -7144,31 +7146,44 @@ body.index #container {
     .dossier .content .projet-list {
       overflow-y: scroll;
       margin: 0;
-      padding: 15px;
+      padding: 18px;
       height: 100%;
       margin-bottom: 70px;
       background-color: #F4F4F4; }
       .dossier .content .projet-list li {
-        margin-bottom: 5px;
+        margin-bottom: 10px;
         background-color: #fff;
-        border: 1px solid #ddd;
+        position: relative;
+        overflow: hidden;
+        height: 0;
+        padding-bottom: 15%;
         -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
         .dossier .content .projet-list li h3 {
           display: block;
           padding: 5px;
-          padding-top: 4px;
+          padding-top: 8px;
           padding-left: 8px;
+          width: 50%;
+          float: left;
           font-weight: bold;
-          font-size: 1em; }
+          font-size: 1em;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden; }
         .dossier .content .projet-list li .vignette-visuel {
           overflow: hidden;
-          padding-bottom: 10%;
+          background-color: #eee;
+          position: relative;
           height: 0;
-          width: 100%;
-          background-color: #eee; }
+          padding-bottom: 15%;
+          width: 50%;
+          float: left; }
           .dossier .content .projet-list li .vignette-visuel img {
-            margin-top: -33%; }
+            transform: translateY(-50%);
+            top: 50%;
+            width: 100%;
+            position: absolute; }
   .dossier .meta-data {
     margin: 0;
     padding-top: 4px;
@@ -7215,7 +7230,8 @@ body.projets #container {
     margin-left: 0; }
     body.projets #container .project-list .project {
       margin-bottom: 50px;
-      height: 150px; }
+      height: 0;
+      padding-bottom: 15%; }
       body.projets #container .project-list .project[data-statut="en cours"] .statut-type {
         color: #48C2B5; }
       body.projets #container .project-list .project .project-inside {
@@ -7223,42 +7239,48 @@ body.projets #container {
         background-color: #fff;
         -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-        border-bottom: 0; }
-        body.projets #container .project-list .project .project-inside:before, body.projets #container .project-list .project .project-inside:after {
-          content: " ";
-          display: table; }
-        body.projets #container .project-list .project .project-inside:after {
-          clear: both; }
+        border-bottom: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0; }
       body.projets #container .project-list .project .edit-icon {
         position: absolute;
         top: -16px;
         right: 0;
         z-index: 5; }
       body.projets #container .project-list .project .left-content {
-        height: 150px;
         background-color: #FFF;
+        height: 100%;
         padding: 0; }
         body.projets #container .project-list .project .left-content .content {
           padding: 7px 20px; }
           body.projets #container .project-list .project .left-content .content h2 {
             font-weight: bold;
             font-size: 1.5em; }
-        body.projets #container .project-list .project .left-content .meta-data {
-          padding: 7px 20px;
-          font-style: italic;
-          font-family: "share", monospace; }
-          body.projets #container .project-list .project .left-content .meta-data .created .create-date {
-            font-weight: bold; }
-          body.projets #container .project-list .project .left-content .meta-data .modified {
-            text-align: left; }
-            body.projets #container .project-list .project .left-content .meta-data .modified .modify-date {
+          body.projets #container .project-list .project .left-content .content .meta-data {
+            font-style: italic;
+            font-family: "share", monospace; }
+            body.projets #container .project-list .project .left-content .content .meta-data .created .create-date {
               font-weight: bold; }
+            body.projets #container .project-list .project .left-content .content .meta-data .modified {
+              text-align: left; }
+              body.projets #container .project-list .project .left-content .content .meta-data .modified .modify-date {
+                font-weight: bold; }
+        body.projets #container .project-list .project .left-content .button-to-pages {
+          padding: 7px 20px;
+          top: 50%;
+          transform: translateY(-50%); }
       body.projets #container .project-list .project .image-wrapper {
         overflow: hidden;
-        height: 150px;
-        padding: 0; }
+        padding: 0;
+        height: 0;
+        padding-bottom: 15%; }
         body.projets #container .project-list .project .image-wrapper img {
-          object-fit: cover; }
+          transform: translateY(-50%);
+          top: 50%;
+          position: absolute; }
 
 body.capture .container-inner {
   margin: auto; }

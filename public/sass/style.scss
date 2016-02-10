@@ -150,6 +150,9 @@ button{
     &.button-wrapper_bibli {
       color: #293275;
     }
+    &.button-wrapper_publi {
+      color: #EF4651;
+    }
 
   }
 
@@ -286,7 +289,7 @@ body.index{
       overflow-y:scroll;
 
       margin: 0;
-      padding: 15px;
+      padding: 18px;
       height: 100%;
       margin-bottom: 70px;
 
@@ -296,10 +299,14 @@ body.index{
 
       li {
 
-        margin-bottom:  5px;
+        margin-bottom:  10px;
         background-color: #fff;
 
-        border: 1px solid #ddd;
+        position: relative;
+        overflow: hidden;
+
+        height: 0;
+        padding-bottom: 15%;
 
         -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
@@ -309,23 +316,38 @@ body.index{
 
           display: block;
           padding:5px;
-          padding-top:  4px;
+          padding-top:  8px;
           padding-left:   8px;
+
+          width: 50%;
+          float: left;
 
           font-weight: bold;
           font-size: 1em;
+
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
         }
 
         .vignette-visuel {
 
           overflow: hidden;
-          padding-bottom: 10%;
-          height: 0;
-          width: 100%;
           background-color: #eee;
 
+          position: relative;
+
+          height: 0;
+          padding-bottom: 15%;
+
+          width: 50%;
+          float: left;
+
           img {
-            margin-top:   -33%;
+            transform: translateY(-50%);
+            top: 50%;
+            width: 100%;
+            position: absolute;
           }
         }
 
@@ -425,7 +447,9 @@ body.projets{
       margin-left: 0;
       .project{
         margin-bottom: 50px;
-        height: $projectHeight;
+
+        height: 0;
+        padding-bottom: 15%;
 
         &[data-statut="en cours"] {
           .statut-type {
@@ -434,9 +458,13 @@ body.projets{
         }
 
         .project-inside {
-          @include clearfix;
+
           @include style--dossierBorders;
           border-bottom: 0;
+
+          position: absolute;
+          top: 0; bottom: 0;  left: 0;  right: 0;
+
         }
 
         .edit-icon{
@@ -446,8 +474,8 @@ body.projets{
           z-index:5;
         }
         .left-content{
-          height: $projectHeight;
           background-color:#FFF;
+          height: 100%;
           padding: 0;
           .content{
             padding: 7px 20px;
@@ -455,22 +483,32 @@ body.projets{
               font-weight: bold;
               font-size: $h2Size;
             }
+            .meta-data{
+              font-style:italic;
+              font-family: "share", monospace;
+              .created{.create-date{font-weight:bold;}}
+              .modified{text-align: left; .modify-date{font-weight:bold;}}
+            }
           }
-          .meta-data{
+          .button-to-pages {
             padding: 7px 20px;
-            font-style:italic;
-            font-family: "share", monospace;
-            .created{.create-date{font-weight:bold;}}
-            .modified{text-align: left; .modify-date{font-weight:bold;}}
-
+            top: 50%;
+            transform: translateY(-50%);
           }
         }
         .image-wrapper{
           overflow: hidden;
-          height: $projectHeight;
           padding: 0;
+
+          height: 0;
+          padding-bottom: 15%;
+
+
+
           img {
-            object-fit: cover;
+            transform: translateY(-50%);
+            top: 50%;
+            position: absolute;
           }
         }
       }

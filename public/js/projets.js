@@ -103,7 +103,6 @@ function onListProject(data){
 // Fonction qui affiche les projets HTML
 function displayFolder(name, created, modified, image, statut){
 	var formatName = convertToSlug(name);
-	var contentHTML = '<div class="content small-12 columns"><h2>'+name+'</h2></div>';
 	var statutHTML= '<div class="statut"><span>statut</span><span class="statut-type"> '+statut+'</span></div>';
 	if(image == false){
 		var imageHTML = '<div class="image-wrapper small-6 columns"><img src="" alt=""></div>';
@@ -124,17 +123,21 @@ function displayFolder(name, created, modified, image, statut){
 	else{
 		var editIcon = '<a href="#" class="edit-icon btn icon" data-reveal-id="modal-modify-project"><img src="/images/pen.svg" alt="edit icon"></a>';
 	}
-	var metaDataHTML = '<div class="meta-data small-6 columns">'+statutHTML+createdHTML+modifiedHTML+'</div>';
+	var metaDataHTML = '<div class="meta-data">'+statutHTML+createdHTML+modifiedHTML+'</div>';
+	var contentHTML = '<div class="content small-6 columns"><h2>'+name+'</h2>'+metaDataHTML+'</div>';
 
 	var buttonToRecord = $(".js--templates .button-wrapper_capture").clone(false);
 	buttonToRecord.attr( 'href', '/'+currentSession+'/'+formatName+'/capture');
 
-  var buttonToPubli = $(".js--templates .button-wrapper_bibli").clone(false);
-	buttonToPubli.attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque');
+  var buttonToBibli = $(".js--templates .button-wrapper_bibli").clone(false);
+	buttonToBibli.attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque');
 
-	var buttonToPages = '<div class="button-to-pages  small-6 columns">'+buttonToRecord.prop('outerHTML')+buttonToPubli.prop('outerHTML')+'</div>'
+  var buttonToPubli = $(".js--templates .button-wrapper_publi").clone(false);
+	buttonToPubli.attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque#publi');
 
-	var folderHTML = '<li class="project small-12 columns" data-statut="'+statut+'">'+editIcon+'<div class="project-inside"><div class="left-content small-6 columns">'+contentHTML+metaDataHTML+buttonToPages+'</div>'+imageHTML+'</div></li>';
+	var buttonToPages = '<div class="button-to-pages  small-6 columns">'+buttonToRecord.prop('outerHTML')+buttonToBibli.prop('outerHTML')+buttonToPubli.prop('outerHTML')+'</div>'
+
+	var folderHTML = '<li class="project small-12 columns" data-statut="'+statut+'">'+editIcon+'<div class="project-inside"><div class="left-content small-6 columns">'+contentHTML+buttonToPages+'</div>'+imageHTML+'</div></li>';
 	$("#container .project-list").prepend(folderHTML);
 }
 
