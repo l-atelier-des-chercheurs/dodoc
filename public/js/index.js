@@ -63,7 +63,8 @@ function init(){
 	});
 
 	//Au click sur le bouton supprimer le dossier
-	$('body').on('click', '.delete-folder-button', function(){
+	$('body').on('click', '.js--deleteFolder', function(){
+  	$('#modal-delete-alert').attr('data-foldertodelete', $(this).parents('#modal-modify-folder').attr('data-nom'));
 		$('#modal-delete-alert').foundation('reveal', 'open');
 	});
 }
@@ -148,38 +149,27 @@ function displayFolder(name, created, modified, statut, projets){
 	else{
 		var editIcon = '<a href="#" class="edit-icon btn icon" data-reveal-id="modal-modify-folder"><img src="/images/pen.svg" alt="edit icon"></a>';
 	}
-	var folderHTML = '<li class="dossier small-6 medium-4 large-4 columns" data-statut="'+statut+'" data-name="'+formatName+'"><div class="dossier-inside">'+editIcon+contentHTML+metaDataHTML+'</div></li>';
+	var folderHTML = '<li class="dossier small-6 medium-4 large-4 columns" data-statut="'+statut+'" data-name="'+formatName+'" data-nom="' + name + '"><div class="dossier-inside">'+editIcon+contentHTML+metaDataHTML+'</div></li>';
 	$("#container .dossier-list").prepend(folderHTML);
 }
 
 function modifyFolder($this){
 // 	$("#container.row #modal-modify-folder").empty();
 
-
-	var thisFolderName = $this.parent().find('h2').text();
+	var thisFolderName = $this.parents('.dossier').attr('data-nom');
 	var statut = $this.parents(".dossier").attr("data-statut");
-  var otherStatut = statut === 'en cours' ? 'terminé' : 'en cours';
-
-  debugger;
 
   $('#modal-modify-folder')
+    .attr('data-nom', thisFolderName)
   	.find('.modify-folder')
   	  .attr('value', thisFolderName)
     .end()
   	.find('.modify-statut')
-  	  .find('option')
-  	    .eq(0)
-  	      .attr('value', statut)
-  	      .text( statut)
-  	    .end()
-  	    .eq(1)
-  	      .attr('value', otherStatut)
-  	      .text( otherStatut)
-  	    .end()
+  	  .find('option [value=' + statut + ']')
+  	    .attr('checked', '')
   	  .end()
     .end()
   ;
-
 
 // 	$("#container.row #modal-modify-folder").append(newContentToAdd);
 	modifyStatut();
@@ -241,9 +231,9 @@ function onFolderModified(data){
 //Suppression du dossier
 function removeFolder(){
 	$('#modal-delete-alert button.oui').on('click', function(){
-		console.log('oui ' + thisFolderName);
-		console.log(thisFolder);
-		socket.emit('removeFolder', {name: thisFolderName});
+  	var folderToDelete = $(this).parents( '#modal-delete-alert').attr('data-foldertodelete');
+		console.log('oui ' + folderToDelete);
+		socket.emit('removeFolder', {name: folderToDelete});
 		$('#modal-delete-alert').foundation('reveal', 'close');
 	});
 	$('#modal-delete-alert button.annuler').on('click', function(){

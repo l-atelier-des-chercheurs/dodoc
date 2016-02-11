@@ -4,7 +4,7 @@
   border-radius: 6px;
   -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  padding: 10px 16px;
+  padding: 10px 16px 16px 16px;
 
   max-width: 32.5rem;
 
@@ -14,6 +14,175 @@
     margin: 0;
     margin-top: 3px;
 
+    width:  80%;
+
     margin-bottom:  $margin;
   }
+
+  > p {
+    width:  80%;
+  }
+
+  .submit-modify-folder {
+    float:left;
+  }
+
+  .button-wrapper_deleteFolder  {
+    float:right;
+  }
+
+  button {
+    margin-bottom: 0;
+  }
+
+
+  input[type="submit"], button {
+    display: block;
+    border: none;
+    background-color: $bleuvert;
+    padding: 6px 22px;
+    border-radius: 20px;
+    color: white;
+  }
+
+  &#modal-statut-alert, &#modal-delete-alert {
+    button {
+      display: inline-block;
+      padding: 9px 22px;
+      margin-right: 16px;
+      border-radius: 2px;
+
+      &.annuler {
+        background-color: $rouge;
+      }
+    }
+  }
+
+
+
+// file picker
+  .inputfile {
+      width: 0.1px;
+      height: 0.1px;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      z-index: -1;
+  }
+  .inputfile + label {
+      max-width: 80%;
+      font-size: 1.25rem;
+      /* 20px */
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+      display: inline-block;
+      overflow: hidden;
+      padding: 0.625rem 1.25rem;
+
+      margin-bottom:  10px;
+      /* 10px 20px */
+  }
+
+  .no-js .inputfile + label {
+      display: none;
+  }
+
+  .inputfile:focus + label,
+  .inputfile.has-focus + label {
+      outline: 1px dotted #000;
+      outline: -webkit-focus-ring-color auto 5px;
+  }
+
+  .inputfile + label * {
+      /* pointer-events: none; */
+      /* in case of FastClick lib use */
+  }
+
+  .inputfile + label svg {
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
+      fill: currentColor;
+      margin-top: -0.25em;
+      /* 4px */
+      margin-right: 0.25em;
+      /* 4px */
+  }
+
+  /* style 6 */
+
+  .inputfile-6 + label {
+      color: #d3394c;
+  }
+
+  .inputfile-6 + label {
+      background-color: #f1e5e6;
+      border-radius: 6px;
+      padding: 0;
+  }
+
+  .inputfile-6:focus + label,
+  .inputfile-6.has-focus + label,
+  .inputfile-6 + label:hover {
+      border-color: #722040;
+  }
+
+  .inputfile-6 + label span,
+  .inputfile-6 + label strong {
+      padding: 0.625rem 1.25rem;
+      /* 10px 20px */
+  }
+
+  .inputfile-6 + label span {
+      width: 200px;
+      min-height: 2em;
+      display: inline-block;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      vertical-align: top;
+  }
+
+  .inputfile-6 + label strong {
+      height: 100%;
+      color: white;
+      background-color: $rouge;
+      display: inline-block;
+      font-weight: normal;
+      font-size:  .8em;
+  }
+
+  .inputfile-6:focus + label strong,
+  .inputfile-6.has-focus + label strong,
+  .inputfile-6 + label:hover strong {
+      background-color: #722040;
+  }
+
+  @media screen and (max-width: 50em) {
+  	.inputfile-6 + label strong {
+  		display: block;
+  	}
+  }
+
+}
+
+input[type="text"], select {
+  border: none;
+  border-bottom: 2px solid #ccc;
+  box-shadow: none;
+  padding-left: .3em;
+  font-size: 1.3em;
+  height: 2.3em;
+  background-color: #eee;
+
+  &:focus {
+    border-color: $cimages;
+  }
+}
+
+select {
+  border-bottom: 2px solid #ccc;
+
+
 }

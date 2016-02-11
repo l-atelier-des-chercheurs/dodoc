@@ -6941,14 +6941,125 @@ th.hide-for-touch {
   border-radius: 6px;
   -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  padding: 10px 16px;
-  max-width: 32.5rem; }
+  padding: 10px 16px 16px 16px;
+  max-width: 32.5rem;
+  /* style 6 */ }
   .reveal-modal .popoverTitle {
     font-weight: bold;
     font-size: 1.5em;
     margin: 0;
     margin-top: 3px;
+    width: 80%;
     margin-bottom: 16px; }
+  .reveal-modal > p {
+    width: 80%; }
+  .reveal-modal .submit-modify-folder {
+    float: left; }
+  .reveal-modal .button-wrapper_deleteFolder {
+    float: right; }
+  .reveal-modal button {
+    margin-bottom: 0; }
+  .reveal-modal input[type="submit"], .reveal-modal button {
+    display: block;
+    border: none;
+    background-color: #48C2B5;
+    padding: 6px 22px;
+    border-radius: 20px;
+    color: white; }
+  .reveal-modal#modal-statut-alert button, .reveal-modal#modal-delete-alert button {
+    display: inline-block;
+    padding: 9px 22px;
+    margin-right: 16px;
+    border-radius: 2px; }
+    .reveal-modal#modal-statut-alert button.annuler, .reveal-modal#modal-delete-alert button.annuler {
+      background-color: #EF474B; }
+  .reveal-modal .inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1; }
+  .reveal-modal .inputfile + label {
+    max-width: 80%;
+    font-size: 1.25rem;
+    /* 20px */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 0.625rem 1.25rem;
+    margin-bottom: 10px;
+    /* 10px 20px */ }
+  .reveal-modal .no-js .inputfile + label {
+    display: none; }
+  .reveal-modal .inputfile:focus + label,
+  .reveal-modal .inputfile.has-focus + label {
+    outline: 1px dotted #000;
+    outline: -webkit-focus-ring-color auto 5px; }
+  .reveal-modal .inputfile + label * {
+    /* pointer-events: none; */
+    /* in case of FastClick lib use */ }
+  .reveal-modal .inputfile + label svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    fill: currentColor;
+    margin-top: -0.25em;
+    /* 4px */
+    margin-right: 0.25em;
+    /* 4px */ }
+  .reveal-modal .inputfile-6 + label {
+    color: #d3394c; }
+  .reveal-modal .inputfile-6 + label {
+    background-color: #f1e5e6;
+    border-radius: 6px;
+    padding: 0; }
+  .reveal-modal .inputfile-6:focus + label,
+  .reveal-modal .inputfile-6.has-focus + label,
+  .reveal-modal .inputfile-6 + label:hover {
+    border-color: #722040; }
+  .reveal-modal .inputfile-6 + label span,
+  .reveal-modal .inputfile-6 + label strong {
+    padding: 0.625rem 1.25rem;
+    /* 10px 20px */ }
+  .reveal-modal .inputfile-6 + label span {
+    width: 200px;
+    min-height: 2em;
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: top; }
+  .reveal-modal .inputfile-6 + label strong {
+    height: 100%;
+    color: white;
+    background-color: #EF474B;
+    display: inline-block;
+    font-weight: normal;
+    font-size: .8em; }
+  .reveal-modal .inputfile-6:focus + label strong,
+  .reveal-modal .inputfile-6.has-focus + label strong,
+  .reveal-modal .inputfile-6 + label:hover strong {
+    background-color: #722040; }
+  @media screen and (max-width: 50em) {
+    .reveal-modal .inputfile-6 + label strong {
+      display: block; } }
+
+input[type="text"], select {
+  border: none;
+  border-bottom: 2px solid #ccc;
+  box-shadow: none;
+  padding-left: .3em;
+  font-size: 1.3em;
+  height: 2.3em;
+  background-color: #eee; }
+  input[type="text"]:focus, select:focus {
+    border-color: #ffb520; }
+
+select {
+  border-bottom: 2px solid #ccc; }
 
 html {
   margin: 0; }
@@ -7060,7 +7171,7 @@ button {
   .button-wrapper_add, .button-wrapper_edit, .button-wrapper_publi, .button-wrapper_editProjet, .button-wrapper_addMedia {
     background-color: #EF474B;
     color: white; }
-  .button-wrapper_capture, .button-wrapper_view {
+  .button-wrapper_capture, .button-wrapper_view, .button-wrapper_deleteFolder {
     background-color: #FFB520;
     color: white; }
   .button-wrapper_bibli {
@@ -7454,6 +7565,8 @@ body.projets #container {
       color: #FFB520; }
     .project-list .project[data-statut="en cours"] .statut-type {
       color: #FFB520; }
+    .project-list .project[data-statut="terminé"] .button-wrapper_editProjet {
+      opacity: 0; }
     .project-list .project .project-inside {
       border-bottom: 2px solid #eeeeee;
       background-color: #fff;

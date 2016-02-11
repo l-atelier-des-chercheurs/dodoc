@@ -63,7 +63,11 @@ body.projets{
         color: $orange;
       }
     }
-
+    &[data-statut="terminé"] {
+      .button-wrapper_editProjet {
+        opacity: 0;
+      }
+    }
     .project-inside {
 
       @include style--dossierBorders;
