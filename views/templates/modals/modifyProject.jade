@@ -1,0 +1,14 @@
+//- MODIFY PROJECT
+div(id="modal-modify-project" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+//- ALERT CHANGE STATUT (IF STATUT FINISH)
+div(id="modal-statut-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+  p Attention! Le statut terminé ne vous permettra plus d'éditer votre dossier.
+  button.oui Ok
+  button.annuler Annuler
+  a(class="close-reveal-modal" aria-label="Close") &#215;
+//- ALERT SUPPRIMER UN DOSSIER
+div(id="modal-delete-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+  p Êtes-vous sûr de vouloir supprimer le dossier ?
+  button.oui Oui
+  button.annuler Annuler
+  a(class="close-reveal-modal" aria-label="Close") &#215;
