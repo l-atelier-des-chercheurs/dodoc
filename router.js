@@ -27,43 +27,57 @@ module.exports = function(app,io,m){
   
   function getFolder(req, res) {
     var session = req.param('session');
-    var folderPath = 'sessions/'+session;
-
-    //fs.ensureDirSync(folderPath);
+    var json = readJsonFile('sessions/'+ session + '/' + session + '.json');
     res.render("projets", {
       title : "Projets",
       session: session,
-      folder : convertToSlug(session)
+      folder: json.name,
+      statut : json.statut
     });
   };
 
   function getProject(req, res) {
     var session = req.param('session');
     var projet = req.param('projet');
+    var jsonDossier= readJsonFile('sessions/'+ session + '/' + session + '.json');
+    var jsonProjet = readJsonFile('sessions/'+ session + '/' + projet + '/' + projet + '.json');
     res.render("projet", {
       title : "Projet",
       session: session,
-      projet : projet
+      folder: jsonDossier.name,
+      statut : jsonDossier.statut,
+      projet : projet,
+      projectName: jsonProjet.name
     });
   };
 
   function getCapture(req, res) {
     var session = req.param('session');
     var projet = req.param('projet');
+    var jsonDossier= readJsonFile('sessions/'+ session + '/' + session + '.json');
+    var jsonProjet = readJsonFile('sessions/'+ session + '/' + projet + '/' + projet + '.json');
     res.render("capture", {
       title : "Prise de vue",
-      session : session,
+      session: session,
+      folder: jsonDossier.name,
+      statut : jsonDossier.statut,
       projet : projet,
+      projectName: jsonProjet.name
     });
   };
 
   function getBibli(req, res) {
     var session = req.param('session');
     var projet = req.param('projet');
+    var jsonDossier= readJsonFile('sessions/'+ session + '/' + session + '.json');
+    var jsonProjet = readJsonFile('sessions/'+ session + '/' + projet + '/' + projet + '.json');
     res.render("bibli", {
       title : "Bibliotheque de médias",
-      session : session,
+      session: session,
+      folder: jsonDossier.name,
+      statut : jsonDossier.statut,
       projet : projet,
+      projectName: jsonProjet.name
     });
   };
 
@@ -71,50 +85,23 @@ module.exports = function(app,io,m){
     var session = req.param('session');
     var projet = req.param('projet');
     var publi = req.param('publi');
+    var jsonDossier= readJsonFile('sessions/'+ session + '/' + session + '.json');
+    var jsonProjet = readJsonFile('sessions/'+ session + '/' + projet + '/' + projet + '.json');
+    var jsonPubli = readJsonFile('sessions/'+ session + '/' + projet + '/montage/'+publi+'.json');
     res.render("publi", {
       title : "Publication",
       session : session,
+      folder: jsonDossier.name,
       projet : projet,
-      publi: publi
+      projectName: jsonProjet.name,
+      publi: publi,
+      publiName: jsonPubli.name
     });
   };
 
-  // function getFlux(req, res) {
-  //   var session = req.param('session');
-  //   var projet = req.param('projet');
-  //   var sessionPath = 'sessions/'+session;
-
-  //   fs.ensureDirSync(sessionPath);
-
-  //   res.render("flux", {
-  //     title : "Dodoc Flux",
-  //     session : session,
-  //     sessionFormat : session.replace(/_/g," "),
-  //     projet : projet,
-  //     projetFormat : projet.replace(/_/g," "),
-  //   });
-  // };
-
-
-  // function getPubli(req, res) {
-  //   var session = req.param('session');
-  //   var projet = req.param('projet');
-  //   var sessionPath = 'sessions/'+session;
-
-  //   res.render("publication", {
-  //     title : "Publication",
-  //     session : session,
-  //     sessionFormat : session.replace(/_/g," "),
-  //     projet : projet,
-  //     projetFormat : projet.replace(/_/g," "),
-  //   });
-  // };
-
-  //helpers
-    function convertToSlug(Text){
-    var noHyphen = Text.replace(/-/g," ")
-    return noHyphen
-    .charAt(0).toUpperCase()+ noHyphen.slice(1)
-    ;
+  function readJsonFile(file){
+    var jsonObj = JSON.parse(fs.readFileSync(file, 'utf8'));
+    return jsonObj;
   }
+
 };

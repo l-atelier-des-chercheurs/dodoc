@@ -73,9 +73,7 @@ function sendProjectData(data){
 		}
 	}
 
-
-  debugger;
-	projectClone.find( '.last-medias').append( allMedias);
+	projectClone.find('.last-medias').append(allMedias);
 
 	for (var i = 0; i < arrayPubli.length; i++) {
 		console.log(arrayPubli[i]);
