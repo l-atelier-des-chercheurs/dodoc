@@ -1,3 +1,5 @@
+$pourcentageBuffer: 66%;
+
 body.bibli {
   overflow: hidden;
 }
@@ -20,19 +22,18 @@ body.bibli {
     padding: 5px;
 
     background-color: #333;
-      border-radius: 4px 0 0 4px;
+    border-radius: 4px 0 0 4px;
 
     transition: all .7s ease-out;
 
     body[data-publicationpane="open"] & {
-      right: 50%;
+      right: 100 - $pourcentageBuffer;
       background-color: #EF474B;
     }
 
     &:hover {
       width:  170px;
     }
-
 
     .button-wrapper {
       display: inline-block;
@@ -50,7 +51,7 @@ body.bibli {
   position: fixed;
   top: 70px;
   bottom: 0;
-  left: 50%;
+  left: $pourcentageBuffer;
   right: 0;
 
   background:   #EFEFEF;
@@ -70,7 +71,7 @@ body.bibli {
   }
 
   .open-montage-bar {
-    position: absolute;
+    position: fixed;
 
     padding: 0; margin: 0;
 
@@ -82,13 +83,7 @@ body.bibli {
     z-index:  1000;
 
     background-color: #EF474B;
-    background: linear-gradient(
-      to left,
-      transparent 0%,
-      #EF474B
-    );
     background-size: 5px 100%;
-
   }
 
 
@@ -101,7 +96,6 @@ body.bibli {
     display:none;
     padding-left: 1.875rem;
     padding-right: 1.875rem;
-
 
     .montage-title{
 
@@ -174,9 +168,7 @@ body.bibli {
     .media {
       @include grid-column(12);
       margin-bottom: 15px;
-
     }
-
   }
 }
 
@@ -192,10 +184,10 @@ body.bibli {
   padding-top:  0.9375rem;
   padding-bottom:  0.9375rem;
 
-  transition: width .9s;
+  transition: width .8s;
 
   body[data-publicationpane="open"] & {
-    width:  50%;
+    width: $pourcentageBuffer;
   }
 
   .media {
@@ -206,10 +198,10 @@ body.bibli {
     padding-top: 0.9375rem;
     padding-bottom: 0.9375rem;
 
-    transition: width .7s;
+    transition: width .8s;
 
     body[data-publicationpane="open"] & {
-      width: 33.33333%;
+      width: 25%;
     }
 
   }
