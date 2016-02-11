@@ -7481,6 +7481,25 @@ body.projets #container {
         transform: translateY(-50%);
         top: 50%;
         position: absolute; }
+    .project-list .project .last-medias {
+      margin: 0 auto;
+      max-width: 62.5rem;
+      width: 100%; }
+      .project-list .project .last-medias:before, .project-list .project .last-medias:after {
+        content: " ";
+        display: table; }
+      .project-list .project .last-medias:after {
+        clear: both; }
+      .project-list .project .last-medias:before, .project-list .project .last-medias:after {
+        content: " ";
+        display: table; }
+      .project-list .project .last-medias:after {
+        clear: both; }
+      .project-list .project .last-medias .media {
+        padding-left: 0.9375rem;
+        padding-right: 0.9375rem;
+        width: 25%;
+        float: left; }
 
 body.projet .project-list {
   margin-top: 75px; }
