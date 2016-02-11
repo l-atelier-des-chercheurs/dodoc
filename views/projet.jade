@@ -19,6 +19,10 @@ html
 
       ul.project-list
 
+      //- MODAL WINDOWS
+      include templates/modals/addProject
+      include templates/modals/modifyProject
+
     .js--templates
       li.media.media_image(data-type="image")
         .mediaContent
@@ -66,9 +70,11 @@ html
                 +button('publications', '', 'isCollapsed')
           .image-wrapper.small-4.medium-6.columns
             img
-        ul.last-medias
-        ul.list-publi
 
+        ul.last-medias
+          h3.legende Médias
+        ul.list-publi
+          h3.legende Publications
 
 
     //- //footer

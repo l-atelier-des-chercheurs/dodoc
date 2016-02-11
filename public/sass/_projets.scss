@@ -137,12 +137,23 @@ body.projets{
     }
 
 
+    .legende {
+      padding-left:   0.9375rem;
+    }
+
     .last-medias {
       @include grid-row;
       @include clearfix();
 
+      @include style--dossierBorders;
+
+      padding: 17% 0.9375rem 25px;
+
       .media {
         @include grid-column(3);
+        padding-top: 0.9375rem;
+        padding-bottom: 0.9375rem;
+
 
       }
 
@@ -151,7 +162,18 @@ body.projets{
 
     .list-publi {
 
+      @include grid-row;
+      @include clearfix();
 
+      @include style--dossierBorders;
+
+      padding: 15px 0.9375rem 25px;
+      margin-top: 3px;
+
+      .publi-folder {
+        @include grid-column(12);
+
+      }
 
     }
   }
