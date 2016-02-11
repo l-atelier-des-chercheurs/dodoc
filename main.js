@@ -389,25 +389,32 @@ module.exports = function(app, io){
 						media.push(f);
 					});
 					var lastMedia = media.slice(Math.max(media.length - 10, 1));
-					fs.readdir(dirPubli, function(err, files) {
-						var publiNames = [];
-					  if (err) console.log(err);
-			    	//console.log('Files: ' + typeof files);
-			    	if( typeof files == "undefined")
-			    	  return;
-				    files.forEach(function(file) {
-				    	console.log('Files: ' + file);
-				    	if(file == ".DS_Store"){
-			    			fs.unlink(dirPubli+'/'+file);
-			    		}
-			    		if(! /^\..*/.test(file)){
-				  			var jsonFilePubli = dirPubli +'/' +file;
-								var dataPubli = fs.readFileSync(jsonFilePubli,"UTF-8");
-								var jsonObjPubli = JSON.parse(dataPubli);
-								publiNames.push(jsonObjPubli.name)
-				    	}
-				    });
-				    io.sockets.emit('sendProjectData',{json:jsonObj , lastmedia:lastMedia, publiNames: publiNames, image:jsonObj.fileName});
+					fs.access(dirPubli, fs.F_OK, function(err) {
+				    if (!err) {
+						  fs.readdir(dirPubli, function(err, files) {
+								var publiNames = [];
+							  if (err) console.log(err);
+					    	//console.log('Files: ' + typeof files);
+					    	if( typeof files == "undefined")
+					    	  return;
+						    files.forEach(function(file) {
+						    	console.log('Files: ' + file);
+						    	if(file == ".DS_Store"){
+					    			fs.unlink(dirPubli+'/'+file);
+					    		}
+					    		if(! /^\..*/.test(file)){
+						  			var jsonFilePubli = dirPubli +'/' +file;
+										var dataPubli = fs.readFileSync(jsonFilePubli,"UTF-8");
+										var jsonObjPubli = JSON.parse(dataPubli);
+										publiNames.push(jsonObjPubli.name)
+						    	}
+						    });
+						    io.sockets.emit('sendProjectData',{json:jsonObj , lastmedia:lastMedia, publiNames: publiNames, image:jsonObj.fileName});
+							});
+				    } 
+			    	else{
+							io.sockets.emit('sendProjectData',{json:jsonObj , lastmedia:lastMedia, publiNames: '', image:jsonObj.fileName});
+						}
 					});
 				});
 			});
