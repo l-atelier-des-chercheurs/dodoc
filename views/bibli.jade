@@ -47,7 +47,7 @@ html
 
       .montage-edit
         .publi-close.btn.icon
-          include templates/images/clear.svg
+          include templates/images/back.svg
         .montage-title
           input(type="text" placeholder="Titre")
           h2.title
@@ -103,6 +103,8 @@ html
           h2.title
         +button('edit_publication', '', 'isCollapsed')
         +button('view_publication', '', 'isCollapsed')
+      .js--delete-media-montage.btn.icon
+        include templates/images/clear.svg
 
     //- //footer
     include templates/footer.jade

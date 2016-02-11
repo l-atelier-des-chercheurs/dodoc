@@ -85,6 +85,15 @@ function init(){
   	e.preventDefault();
   	$('body').attr( "data-publicationpane", $('body').attr('data-publicationPane') === 'open' ? '' : 'open');
   });
+
+  $('body').on('click', '.js--delete-media-montage', function(){
+  	var $elementToDel = $(this).parent("li.media");
+  	$elementToDel .fadeOut('slow',function(){
+  		$elementToDel.remove();
+  		onMontageChanged();
+  	});
+  	
+  });
 }
 
 function displayNewImage(image){
@@ -150,7 +159,7 @@ function displayVideo(session, project, id, file){
     .find( 'video').attr( 'poster', thumbPath)
     .find( 'source').attr( 'src', videoPath);
 
-	$('.medias ul.medias-list').prepend(mediaItem);
+	$('ul.medias-list').prepend(mediaItem);
 }
 
 function displayStopMotion(session, project, id, file){
@@ -164,7 +173,7 @@ function displayStopMotion(session, project, id, file){
     .find( 'video').attr( 'poster', thumbPath)
     .find( 'source').attr( 'src', videoPath);
 
-	$('.medias ul.medias-list').prepend(mediaItem);
+	$('ul.medias-list').prepend(mediaItem);
 }
 
 function displayAudio(session, project, id, file){
@@ -175,7 +184,7 @@ function displayAudio(session, project, id, file){
 	  .attr( 'id', id)
     .find( 'source').attr( 'src', audioPath);
 
-	$('.medias ul.medias-list').prepend(mediaItem);
+	$('ul.medias-list').prepend(mediaItem);
 }
 
 function dragAndDrop(){
@@ -193,6 +202,8 @@ function dragAndDrop(){
   	// si le drop a bien réussi
     if( target !== null) {
       $(el).removeClass("gu-transit");
+      var deleteMedia = $(".js--templates .js--delete-media-montage").clone(false);
+      $(el).append(deleteMedia);
   		onMontageChanged();
     }
 	});
