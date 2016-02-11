@@ -1,0 +1,59 @@
+mixin button(typeOfButton, navOrButton, style)
+  if( navOrButton === 'isNav')
+    | <div class='item'>
+
+  - var defaultClasses = 'button-wrapper '
+
+  if( style === 'isCollapsed')
+    - defaultClasses = defaultClasses + 'button-wrapper_collapsed '
+    - console.log( defaultClasses)
+
+
+  if( typeOfButton === 'dossier')
+    a(href="/#{session}" title="Dodoc" class='button-wrapper_dossier #{defaultClasses}')
+      .btn.icon
+        include images/dossier.svg
+      span #{folder}
+
+  if( typeOfButton === 'projet')
+    a(href="/#{session}/#{projet}" title="Dodoc" class='button-wrapper_projet #{defaultClasses}')
+      span #{projet}
+
+  if( typeOfButton === 'nouveauProjet')
+    a(href="#" data-reveal-id="modal-add-project" class='button-wrapper_add #{defaultClasses}')
+      .btn.icon
+        include images/add.svg
+      span Nouveau projet
+
+  if( typeOfButton === 'capture')
+    a(href="/#{session}/#{projet}/capture" title="Dodoc page de capture" class='button-wrapper_capture #{defaultClasses}')
+      .btn.icon
+        include images/record.svg
+      span Capture
+
+  if( typeOfButton === 'bibli')
+    a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque" class='button-wrapper_bibli #{defaultClasses}')
+      .btn.icon
+        include images/bibli.svg
+      span Bibliothèque
+
+  if( typeOfButton === 'publications')
+    a(href="/#{session}/#{projet}/bibliotheque#publi" title="Dodoc publi" class='button-wrapper_publi #{defaultClasses}')
+      .btn.icon
+        include images/publi.svg
+      span Publications
+
+  if( typeOfButton === 'view_publication')
+    a(href="/#{session}/#{projet}/bibliotheque/" title="Dodoc publi" class='button-wrapper_view js--publi_view #{defaultClasses}')
+      .btn.icon
+        include images/view.svg
+      span Afficher
+
+  if( typeOfButton === 'edit_publication')
+    a(href="/#{session}/#{projet}/bibliotheque#publi" title="Dodoc publi" class='button-wrapper_edit js--edit_view #{defaultClasses}')
+      .btn.icon
+        include images/pen.svg
+      span Afficher
+
+  if( navOrButton === 'isNav')
+    | </div>

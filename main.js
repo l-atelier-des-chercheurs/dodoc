@@ -10,6 +10,7 @@ var fs = require('fs-extra'),
 	vsprintf = require("sprintf-js").vsprintf;
 
 
+
 module.exports = function(app, io){
 
 	console.log("main module initialized");
@@ -202,7 +203,6 @@ module.exports = function(app, io){
 			var sessionName;
 			fs.readFile(dir + session.session+'.json', 'utf8', function (err, data) {
 			  if (err) console.log(err);
-        console.log( 'type of data ' + typeof(data) + ' data ' + data);
         if( data !== undefined) {
   			  var JsonObjParent = JSON.parse(data);
   			  sessionName = JsonObjParent.name;

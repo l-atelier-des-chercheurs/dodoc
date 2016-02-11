@@ -6896,8 +6896,8 @@ th.hide-for-touch {
           position: absolute;
           left: 5px;
           right: 0px;
-          top: 15px;
-          bottom: 15px;
+          top: 13px;
+          bottom: 17px;
           -webkit-transition: all .1s;
           transition: all .1s;
           z-index: -1;
@@ -6946,15 +6946,19 @@ body.bibli {
   height: calc( 100vh - 70px);
   overflow-y: scroll;
   /* has to be scroll, not auto */
-  -webkit-overflow-scrolling: touch; }
-  .montage::before {
-    content: "";
-    position: fixed;
+  -webkit-overflow-scrolling: touch;
+  padding-left: 1.875rem; }
+  .montage.is--opened {
+    transform: translate(100%, 0); }
+  .montage .open-montage-bar {
+    position: absolute;
+    padding: 0;
+    margin: 0;
     top: 0;
-    left: calc( 50% - 5px);
+    left: 0;
     bottom: 0;
-    width: 10px;
-    background: linear-gradient(to left, #ccc, transparent 50%, transparent);
+    width: 15px;
+    background: linear-gradient(to left, #aaa, transparent 50%, transparent);
     background-size: 5px 100%; }
   .montage .montage-edit {
     background: #e5e5e5;
@@ -7028,6 +7032,10 @@ body.bibli {
       clear: both; }
     .montage-list .publi-folder .content {
       float: left; }
+      .montage-list .publi-folder .content h2 {
+        font-weight: bold;
+        font-size: 1.5em;
+        margin: 0; }
     .montage-list .publi-folder .button-wrapper {
       display: inline-block;
       float: none; }
@@ -7136,10 +7144,10 @@ button {
       color: #293275; }
     .button-wrapper.button-wrapper_without-bg.button-wrapper_publi {
       color: #EF4651; }
-  .button-wrapper_add {
+  .button-wrapper_add, .button-wrapper_edit, .button-wrapper_publi {
     background-color: #EF474B;
     color: white; }
-  .button-wrapper_capture {
+  .button-wrapper_capture, .button-wrapper_view {
     background-color: #FFB520;
     color: white; }
   .button-wrapper_bibli {
@@ -7149,23 +7157,17 @@ button {
     overflow: hidden;
     float: left;
     padding-left: 0;
-    width: 180px;
+    width: 160px;
     transition: border-radius .4s, width .8s, background-color .6s; }
     .button-wrapper_collapsed:not(:hover) {
-      width: 50px;
+      width: 40px;
       background-color: transparent; }
-    .button-wrapper_collapsed.button-wrapper_without-bg {
-      width: 150px; }
-      .button-wrapper_collapsed.button-wrapper_without-bg:not(:hover) {
-        width: 50px; }
-      .button-wrapper_collapsed.button-wrapper_without-bg .btn.icon + span {
-        left: 50px; }
   .button-wrapper .btn {
     float: left; }
   .button-wrapper .btn.icon {
     margin-top: -10px; }
   .button-wrapper .btn.icon + span {
-    left: 60px; }
+    left: 50px; }
   .button-wrapper > span {
     display: block;
     position: absolute;
@@ -7303,13 +7305,20 @@ body.index #container {
 body.projets #container {
   padding: 50px 0px;
   width: 100%; }
-  body.projets #container .folder-wrapper .folder {
-    font-size: 3rem;
-    line-height: 1.2;
-    font-weight: normal;
-    font-weight: 300;
-    margin-top: 0;
-    margin-bottom: 32px; }
+  body.projets #container .folder-wrapper {
+    margin-bottom: 30px; }
+    body.projets #container .folder-wrapper:before, body.projets #container .folder-wrapper:after {
+      content: " ";
+      display: table; }
+    body.projets #container .folder-wrapper:after {
+      clear: both; }
+    body.projets #container .folder-wrapper .folder {
+      font-size: 3rem;
+      line-height: 1.2;
+      font-weight: normal;
+      font-weight: 300;
+      margin-top: 0;
+      margin-bottom: 32px; }
   body.projets #container .add-project-wrapper {
     margin-bottom: 50px; }
   body.projets #container .project-list {

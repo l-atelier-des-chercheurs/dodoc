@@ -1,29 +1,25 @@
+include templates/buttons.jade
+
 doctype html
 html
   head
     include templates/head.jade
   body.projets
 
+
     .navbar-container
       header.navbar
         .logo
           a(href="/" title="Dodoc")
             include templates/images/dodoc-logo.svg
-        .item
-          a(href="/#{session}" title="Dodoc").button-wrapper.button-wrapper_dossier
-            .btn.icon
-              include templates/images/dossier.svg
-            span #{session}
+
+        +button( 'dossier', 'isNav')
 
     #container.row
 
       .folder-wrapper.small-12.columns
         h1.folder #{folder}
-        a(href="#" data-reveal-id="modal-add-project").button-wrapper.button-wrapper_add
-          .btn.icon
-            include templates/images/add.svg
-          span Nouveau projet
-
+        +button('nouveauProjet')
 
       ul.project-list
 
@@ -52,26 +48,14 @@ html
         a(class="close-reveal-modal" aria-label="Close") &#215;
 
     .js--templates
-      a(href="" title="Dodoc page de capture").button-wrapper.button-wrapper_capture.button-wrapper_without-bg.button-wrapper_collapsed
-        .btn.icon
-          include templates/images/record.svg
-        span Capture
-      a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_bibli.button-wrapper_without-bg.button-wrapper_collapsed
-        .btn.icon
-          include templates/images/bibli.svg
-        span Bibliothèque
-      a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_publi.button-wrapper_without-bg.button-wrapper_collapsed
-        .btn.icon
-          include templates/images/publi.svg
-        span Publications
-
       .project.small-12.columns(data-statut)
         a.edit-icon.btn.icon(href="#" data-reveal-id="modal-modify-project")
           img(src="/images/pen.svg" alt="edit icon")
         .project-inside
           .left-content.small-8.medium-6.columns
             .content.small-6.columns
-              h2
+              a(href="" title="Dodoc")
+                h2
               .meta-data
                 .statut
                   span statut
@@ -83,14 +67,9 @@ html
                   span modifié le
                   span.modify-date
             .button-to-pages.small-6.columns
-              a(href="/#{session}/#{projet}/capture" title="Dodoc page de capture").button-wrapper.button-wrapper_capture.button-wrapper_collapsed
-                .btn.icon
-                  include templates/images/record.svg
-                span Capture
-              a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_bibli
-                .btn.icon
-                  include templates/images/bibli.svg
-                span Bibliothèque
+              +button('capture', '', 'isCollapsed')
+              +button('bibli', '', 'isCollapsed')
+              +button('publications', '', 'isCollapsed')
           .image-wrapper.small-4.medium-6.columns
             img
 
