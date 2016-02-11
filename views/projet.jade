@@ -19,6 +19,10 @@ html
 
       ul.project-list
 
+      //- MODAL WINDOWS
+      include templates/modals/addProject
+      include templates/modals/modifyProject
+
     .js--templates
       li.media.media_image(data-type="image")
         .mediaContent
@@ -66,9 +70,17 @@ html
                 +button('publications', '', 'isCollapsed')
           .image-wrapper.small-4.medium-6.columns
             img
-        ul.last-medias
-        ul.list-publi
 
+        ul.last-medias
+          h3.legende Médias
+
+        .montage-list
+          h1.legende Liste des publications
+          a(href="" data-reveal-id="modal-add-publi").button-wrapper.button-wrapper_add
+            .btn.icon
+              include templates/images/add.svg
+            span Créer une nouvelle publication
+          ul.list-publi
 
 
     //- //footer
