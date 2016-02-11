@@ -27,7 +27,7 @@ function sendProjectData(data){
 	var image = data.json.image;
 	var created = transformDatetoString(data.json.created);
 	var modified = transformDatetoString(data.json.created);
-	var array = data.lastmedia;
+	var lastMedias = data.lastmedia;
 	var arrayPubli = data.publiNames;
 
 	var formatName = convertToSlug(name);
@@ -52,22 +52,24 @@ function sendProjectData(data){
 		.find( '.js--publi_view', publiPath).attr('href', publiPath).end()
 	;
 
-	var allMedias = $([]);
+	var allMedias = $();
 
-	for (var i = 0; i < array.length; i++) {
-  	var extension = array[i].split('.').pop();
-  	var identifiant =  array[i].replace("." + extension, "");
+	for (var i = 0; i < lastMedias.length; i++) {
+  	var extension = lastMedias[i].split('.').pop();
+  	var identifiant =  lastMedias[i].replace("." + extension, "");
+    var fileName = lastMedias[i];
+
 		if(extension == "jpg"){
-			allMedias.append( displayImage(currentSession, currentProject, identifiant, array[i]));
+			allMedias = allMedias.add( displayImage(currentSession, currentProject, identifiant, fileName));
 		}
 		if(extension == "webm"){
-			allMedias.append( displayVideo(currentSession, currentProject, identifiant, array[i]));
+			allMedias = allMedias.add( displayVideo(currentSession, currentProject, identifiant, fileName));
 		}
 		if(extension == "mp4"){
-			allMedias.append( displayVideo(currentSession, currentProject, identifiant, array[i]));
+			allMedias = allMedias.add( displayVideo(currentSession, currentProject, identifiant, fileName));
 		}
 		if(extension == "wav"){
-			allMedias.append( displayAudio(currentSession, currentProject, identifiant, array[i]));
+			allMedias = allMedias.add( displayAudio(currentSession, currentProject, identifiant, fileName));
 		}
 	}
 

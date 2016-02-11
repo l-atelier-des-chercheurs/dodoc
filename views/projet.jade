@@ -37,17 +37,19 @@ html
             source()
       li.publi-folder
         .content
-          h2
+          h2.title
         +button('edit_publication')
         +button('view_publication')
 
 
       .project.small-12.columns(data-statut)
+        +button('editProjet', '', 'isCollapsed')
         .project-inside
           .left-content.small-8.medium-6.columns
-            .content.small-6.columns
-              h1.title #{session}
-              .meta-data
+            .content
+              a(href="" title="Dodoc").project-link
+                h2.title
+              .meta-data.small-6.columns
                 .statut
                   span statut
                   span.statut-type
@@ -57,11 +59,11 @@ html
                 .modified
                   span modifié le
                   span.modify-date
-            .button-to-pages.small-6.columns
-              +button('capture')
-              +button('bibli')
-              +button('publications')
-
+              .button-to-pages.small-6.columns
+                h3.legende accès rapide
+                +button('capture', '', 'isCollapsed')
+                +button('bibli', '', 'isCollapsed')
+                +button('publications', '', 'isCollapsed')
           .image-wrapper.small-4.medium-6.columns
             img
 

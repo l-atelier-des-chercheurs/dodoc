@@ -79,7 +79,9 @@ html
             source()
       li.publi-folder(data-publi="")
         .content
-          h2
+          h2.title
+        +button('edit_publication', '', 'isCollapsed')
+        +button('view_publication', '', 'isCollapsed')
 
     //- //footer
     include templates/footer.jade

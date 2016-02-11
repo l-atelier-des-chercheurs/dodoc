@@ -41,6 +41,9 @@ body.projets{
     height: 0;
     padding-bottom: 15%;
 
+    img[src=""]{
+      display: none;
+    }
 
     .statut-type {
       color: $bleuvert;

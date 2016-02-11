@@ -7287,7 +7287,8 @@ body.bibli {
     margin-bottom: 15px; }
   .montage-list .publi-folder {
     position: relative;
-    padding: 15px;
+    padding: 9px 15px 2px;
+    padding-bottom: 2px;
     margin-bottom: 15px;
     background-color: #fff;
     -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
@@ -7300,10 +7301,11 @@ body.bibli {
       clear: both; }
     .montage-list .publi-folder .content {
       float: left; }
-      .montage-list .publi-folder .content h2 {
+      .montage-list .publi-folder .content .title {
         font-weight: bold;
         font-size: 1.5em;
-        margin: 0; }
+        margin: 0;
+        margin-top: 3px; }
     .montage-list .publi-folder .button-wrapper {
       display: inline-block;
       float: none; }
@@ -7339,6 +7341,8 @@ body.projets #container {
     margin-bottom: 50px;
     height: 0;
     padding-bottom: 15%; }
+    .project-list .project img[src=""] {
+      display: none; }
     .project-list .project .statut-type {
       color: #48C2B5; }
     .project-list .project[data-statut="en cours"] .title.title:hover {

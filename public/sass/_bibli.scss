@@ -106,7 +106,9 @@ body.bibli {
   .publi-folder {
 
     position: relative;
-    padding: 15px;
+    padding: 9px 15px 2px;
+    padding-bottom: 2px;
+
     margin-bottom:  15px;
 
     background-color: #fff;
@@ -120,10 +122,11 @@ body.bibli {
     .content {
       float:left;
 
-      h2 {
+      .title {
         font-weight: bold;
         font-size: 1.5em;
         margin: 0;
+        margin-top:  3px;
       }
     }
 
