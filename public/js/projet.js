@@ -87,7 +87,7 @@ function sendProjectData(data){
 			.find( '.js--publi_view', publiPath).attr('href', publiPath).end()
 		;
 
-		$('.list-publi ul').prepend(publiItem);
+		$('ul.list-publi').prepend(publiItem);
 	}
 
 	projectClone.appendTo('.project-list');
