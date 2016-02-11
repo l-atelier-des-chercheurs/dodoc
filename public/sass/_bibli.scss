@@ -7,16 +7,66 @@ body.bibli {
   overflow-y: scroll; /* has to be scroll, not auto */
   -webkit-overflow-scrolling: touch;
 
+  text-align: right;
+
+
+  .btn-medias {
+    position: fixed;
+    top: 90px;
+    width: 50px;
+    z-index: 500;
+    right: 0;
+
+    padding: 5px;
+
+    background-color: #333;
+      border-radius: 4px 0 0 4px;
+
+    transition: all .7s ease-out;
+
+    body[data-publicationpane="open"] & {
+      right: 50%;
+      background-color: #EF474B;
+    }
+
+    &:hover {
+      width:  170px;
+    }
+
+
+    .button-wrapper {
+      display: inline-block;
+      margin-top:   0;
+      margin-bottom: 0;
+      float: none;
+
+
+    }
+  }
+
 }
 .montage{
+
+  position: fixed;
+  top: 70px;
+  bottom: 0;
+  left: 50%;
+  right: 0;
+
+  background:   #EFEFEF;
+
   height: calc( 100vh - 70px);
   overflow-y: scroll; /* has to be scroll, not auto */
   -webkit-overflow-scrolling: touch;
 
   padding-left: 0.9375rem * 2;
 
-  &.is--opened {
-    transform: translate( 100%, 0);
+  transform: translate( 100%, 0);
+
+  transition: transform .7s ease-out;
+
+  body[data-publicationpane="open"] & {
+    transform: translate( 0, 0);
   }
 
   .open-montage-bar {
@@ -28,13 +78,14 @@ body.bibli {
     left: 0;
     bottom: 0;
 
-    width:  15px;
+    width:  5px;
+    z-index:  1000;
 
+    background-color: #EF474B;
     background: linear-gradient(
       to left,
-      #aaa,
-      transparent 50%,
-      transparent
+      transparent 0%,
+      #EF474B
     );
     background-size: 5px 100%;
 
@@ -48,8 +99,56 @@ body.bibli {
     top:0;
     left:0;
     display:none;
+    padding-left: 1.875rem;
+    padding-right: 1.875rem;
+
+
     .montage-title{
-      input{display:none;}
+
+      @include clearfix();
+
+      text-align: right;
+
+      position: relative;
+      padding: 9px 15px;
+      margin-bottom: 0;
+      background-color: #fff;
+
+      -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+      .title {
+        float: left;
+
+        font-weight: bold;
+        font-size: 1.5em;
+        margin: 0;
+        margin-top: 3px;
+
+      }
+
+      .button-wrapper {
+        display: inline-block;
+        float: none;
+
+        &.button-wrapper_accept {
+          display: none;
+          width:  142px;
+          margin-top: 2px;
+        }
+      }
+
+      input{
+        display:none;
+        width: calc( 100% - 160px);
+        float: left;
+        margin: 0;
+        margin: 0;
+        font-size: 1.4em;
+        height: 2.8rem;
+      }
+
+
     }
   }
   .inner-montage{
@@ -61,7 +160,8 @@ body.bibli {
 
     padding: 15px;
 
-    border-top:   2px solid #eee;
+    background-color: $gristresclair;
+    transition: background-color .4s;
 
     &:empty {
       background-color: #fff;
@@ -81,14 +181,37 @@ body.bibli {
 }
 
 .medias-list {
-  @include grid-row();
+
+  @include clearfix();
+
+  width: 100%;
+
+  padding-left:  0.9375rem;
+  padding-right:  0.9375rem;
+
   padding-top:  0.9375rem;
   padding-bottom:  0.9375rem;
 
+  transition: width .9s;
+
+  body[data-publicationpane="open"] & {
+    width:  50%;
+  }
+
   .media {
-    @include grid-column(4);
-    padding-top:  0.9375rem;
-    padding-bottom:  0.9375rem;
+    padding-left: 0.9375rem;
+    padding-right: 0.9375rem;
+    width: 16.66667%;
+    float: left;
+    padding-top: 0.9375rem;
+    padding-bottom: 0.9375rem;
+
+    transition: width .7s;
+
+    body[data-publicationpane="open"] & {
+      width: 33.33333%;
+    }
+
   }
 
 }

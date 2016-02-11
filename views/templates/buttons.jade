@@ -12,7 +12,6 @@ mixin button(typeOfButton, navOrButton, style)
   if( style === 'isCollapsed')
     - defaultClasses = defaultClasses + 'button-wrapper_collapsed '
 
-
   if( typeOfButton === 'dossier')
     a(href="/#{session}" title="Dodoc" class='button-wrapper_dossier #{defaultClasses}')
       .btn.icon
@@ -54,7 +53,7 @@ mixin button(typeOfButton, navOrButton, style)
       span Bibliothèque
 
   if( typeOfButton === 'publications')
-    a(href="/#{session}/#{projet}/bibliotheque#publi" title="Dodoc publi" class='button-wrapper_publi #{defaultClasses}')
+    a(href="/#{session}/#{projet}/bibliotheque#publi" title="Dodoc publi" class='button-wrapper_publi js--publications #{defaultClasses}')
       .btn.icon
         include images/publi.svg
       span Publications
@@ -70,6 +69,38 @@ mixin button(typeOfButton, navOrButton, style)
       .btn.icon
         include images/pen.svg
       span Afficher
+
+  if( typeOfButton === 'validerTitre')
+    a(href="#" title="Dodoc publi" class='button-wrapper_accept js--validerTitre #{defaultClasses}')
+      .btn.icon
+        include images/enregistre.svg
+      span Valider
+
+  if( typeOfButton === 'editerTitre')
+    a(href="#" title="Dodoc publi" class='button-wrapper_edit js--editerTitre #{defaultClasses}')
+      .btn.icon
+        include images/pen.svg
+      span Éditer le titre
+
+  if( typeOfButton === 'ajoutText')
+    a(href="#" title="Dodoc texte" class='button-wrapper_addText js--ajoutText #{defaultClasses}')
+      .btn.icon
+        include images/text.svg
+      span Créer un bloc de texte
+
+  if( typeOfButton === 'ajoutMedia')
+    a(href="#" title="Dodoc media" class='button-wrapper_addMedia js--ajoutMedia #{defaultClasses}')
+      .btn.icon
+        include images/add.svg
+      span Ajouter un média
+
+  if( typeOfButton === 'editerTitre')
+    a(href="#" title="Dodoc publi" class='button-wrapper_edit js--editerTitre #{defaultClasses}')
+      .btn.icon
+        include images/pen.svg
+      span Éditer le titre
+
+
 
   if( navOrButton === 'isNav')
     | </div>

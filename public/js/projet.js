@@ -32,7 +32,6 @@ function sendProjectData(data){
 
 	var formatName = convertToSlug(name);
 
-
 	var projectClone = $(".js--templates > .project").clone(false);
 	projectClone
 		.find( '.title').html( name).end()
@@ -72,13 +71,9 @@ function sendProjectData(data){
 			allMedias = allMedias.add( displayAudio(currentSession, currentProject, identifiant, fileName));
 		}
 	}
-
-
-  debugger;
 	projectClone.find( '.last-medias').append( allMedias);
 
 	for (var i = 0; i < arrayPubli.length; i++) {
-		console.log(arrayPubli[i]);
 		var publiPath = '/'+currentSession+'/'+currentProject+'/publication/'+ convertToSlug(arrayPubli[i]);
 		var publiPath = '/'+currentSession+'/'+currentProject+'/bibliotheque?mode=publi&publi='+ convertToSlug(arrayPubli[i]);
 
@@ -88,8 +83,7 @@ function sendProjectData(data){
 			.find( '.js--edit_view', publiPath).attr('href', publiPath).end()
 			.find( '.js--publi_view', publiPath).attr('href', publiPath).end()
 		;
-
-		$('.list-publi ul').prepend(publiItem);
+		projectClone.prepend(publiItem);
 	}
 
 	projectClone.appendTo('.project-list');

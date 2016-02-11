@@ -31,21 +31,27 @@ jQuery(document).ready(function($) {
 
 function init(){
 	dragAndDrop();
-	$('.montage-title .publi-btn').on('click', function(){
-		var oldTitle = $('.montage-title h2').html();
+
+	$validerBouton = $('.montage-title .js--validerTitre');
+	$editerBouton = $('.montage-title .js--editerTitre');
+
+	$validerBouton.on('click', function(){
+
+		var oldTitle = $('.montage-title .title').html();
 		var newTitle = $('.montage-title input').val();
 		$('.montage-title input').hide();
-		$('.montage-title h2').show().html(newTitle);
+		$('.montage-title .title').show().html(newTitle);
 		$(this).hide();
-		$('.montage-title .edit-btn').show();
+		$editerBouton.css("display", "inline-block");
+
 		socket.emit('titleChanged', {oldTitle: oldTitle, newTitle: newTitle, session: currentSession, project: currentProject});
 	});
 
-	$('.montage-title .edit-btn').on('click', function(){
-		$('.montage-title input').show().val($('.montage-title h2').html());
-		$('.montage-title h2').hide();
+	$('.montage-title .js--editerTitre').on( 'click', function() {
+		$('.montage-title input').show().val($('.montage-title .title').html());
+		$('.montage-title .title').hide();
 		$(this).hide();
-		$('.montage-title .publi-btn').show()
+		$validerBouton.css("display", "inline-block");
 	});
 
 	$('.submit-new-publi').on('click', function(){
@@ -74,6 +80,10 @@ function init(){
 		$('.montage-edit').hide();
 	});
 
+
+	$(".js--publications").on( 'click', function() {
+  	$('body').attr( "data-publicationpane", $('body').attr('data-publicationPane') === 'open' ? '' : 'open');
+  });
 }
 
 function displayNewImage(image){
@@ -215,7 +225,7 @@ function onDisplayMontage(data){
 	var publiName = convertToSlug(data.name);
 	$('.montage-edit[data-publi="'+publiName+'"]')
 		.show()
-		.find('h2').html(data.name);
+		.find('.title').html(data.name);
 	if(data.html != 'none'){
 		$('.montage-edit[data-publi="'+publiName+'"]').find('.inner-montage').html(data.html);
 	}

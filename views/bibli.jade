@@ -5,7 +5,11 @@ html
   head
     link(rel='stylesheet', href='/bower_components/dragula.js/dist/dragula.min.css')
     include templates/head.jade
-  body.bibli
+
+  body.bibli(data-publicationPane="open")
+
+    | #{url}
+
     .navbar-container
       header.navbar
         +logo()
@@ -15,19 +19,18 @@ html
         +button('publications', '', 'isCollapsed')
         +button('capture', '', 'isCollapsed')
 
-    .bibli-buffer.small-6.medium-6.large-6.columns
+    .bibli-buffer
       ul.medias-list
 
-      .btn-medias.small-1.medium-1.large-1.columns
+      .btn-medias
         ul
-          li.--js-btn-medias-text.btn.icon
-            include templates/images/text.svg
-          li.--js-btn-medias-add.btn.icon
-            include templates/images/add.svg
-          li.--js-btn-medias-publications.btn.icon
-            include templates/images/publi.svg
+          +button( 'ajoutText', '', 'isCollapsed')
+          br
+          +button( 'ajoutMedia', '', 'isCollapsed')
+          br
+          +button( 'publications', '', 'isCollapsed')
 
-    .montage.small-6.medium-6.large-6.columns
+    .montage
 
       button.open-montage-bar.js--toggleMontage
 
@@ -45,11 +48,11 @@ html
           include templates/images/clear.svg
         .montage-title
           input(type="text" placeholder="Titre")
-          h2.montage-title-text
-          div.publi-btn.btn.icon
-            include templates/images/enregistre.svg
-          div.edit-btn.btn.icon
-            include templates/images/pen.svg
+          h2.title
+
+          +button('validerTitre', '', '')
+          +button('editerTitre', '', 'isCollapsed')
+
 
         .inner-montage.small-12
           .montage-element
