@@ -82,6 +82,10 @@ html
         input(type='submit' class='js--submit-new-text' value='Valider')
       a(class="close-reveal-modal" aria-label="Close") &#215;
 
+    div(id="modal-media-view" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+      .big-mediaContent
+      a(class="close-reveal-modal" aria-label="Close") &#215;
+
     .js--templates
       li.media.media_image(data-type="image")
         .mediaContent
@@ -109,6 +113,19 @@ html
         +button('view_publication', '', 'isCollapsed')
       .js--delete-media-montage.btn.icon
         include templates/images/clear.svg
+      //- Pop up media
+      div.media-big_image(data-type="image")
+        .mediaContent
+          img
+      div.media-big_video(data-type="video")
+        .mediaContent
+          video(preload="none" controls)
+            source()
+      div.media-big_audio(data-type="audio")
+        .mediaContent
+          audio(preload="none" controls)
+            source()
+
 
     //- //footer
     include templates/footer.jade

@@ -31,6 +31,7 @@ jQuery(document).ready(function($) {
 
 function init(){
 	dragAndDrop();
+	bigMedia();
 
 	$validerBouton = $('.montage-title .js--validerTitre');
 	$editerBouton = $('.montage-title .js--editerTitre');
@@ -210,6 +211,52 @@ function displayText(session, project, id, title, content){
 	$('.medias-list').prepend(mediaItem);
 }
 
+function bigMedia(){
+	// Au click sur un media
+  $('body').on('click', '.medias-list .media', function(){
+  	var typeMedia = $(this).attr("data-type");
+  	$('#modal-media-view').foundation('reveal', 'open');
+  	console.log(typeMedia);
+  	switch(typeMedia){
+  		case 'image':
+	  		var imagePath = $(this).find("img").attr("src");
+	  		var id = $(this).find("img").attr("id");
+				var mediaItem = $(".js--templates .media-big_image").clone(false);
+				mediaItem.attr( 'id', id);
+				mediaItem.find( 'img').attr('src', imagePath);
+				$('#modal-media-view .big-mediaContent').html(mediaItem);
+				break;
+			case 'video':
+			case 'stopmotion':
+	  		var id = $(this).find("img").attr("id");
+	  		var thumbPath = $(this).find("video").attr("poster");
+				var videoPath = $(this).find("source").attr("src");
+
+				var mediaItem = $(".js--templates .media-big_video").clone(false);
+
+				mediaItem
+				  .attr( 'id', id)
+			    .find( 'video').attr( 'poster', thumbPath)
+			    .find( 'source').attr( 'src', videoPath);
+
+				$('#modal-media-view .big-mediaContent').html(mediaItem);
+				break;
+			case 'audio':
+				var id = $(this).find("img").attr("id");
+				var audioPath = $(this).find("source").attr("src");
+
+				var mediaItem = $(".js--templates .media-big_audio").clone(false);
+				mediaItem
+				  .attr( 'id', id)
+			    .find( 'source').attr( 'src', audioPath);
+
+				$('#modal-media-view .big-mediaContent').html(mediaItem);
+				break;
+
+  	}
+  });
+}
+
 
 function dragAndDrop(){
   var left = document.querySelector('.medias-list');
@@ -277,6 +324,7 @@ function onTitleModified(data){
 	$('.publi-folder[data-publi="'+convertToSlug(data.old)+'"]').find('h2').html(data.name);
 	$('.publi-folder[data-publi="'+convertToSlug(data.old)+'"]').attr('data-publi', convertToSlug(data.name));
 }
+
 
 // Si un fichier existe déjà, affiche un message d'alerte
 function onFolderAlreadyExist(data){
