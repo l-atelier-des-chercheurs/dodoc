@@ -12,6 +12,7 @@
 
 @import "_variables.scss";
 @import "_navbar.scss";
+@import "_popover.scss";
 
 html {
 	margin:0;
@@ -196,7 +197,7 @@ button{
     overflow: hidden;
     float:left;
     padding-left: 0;
-    width:  150px;
+    width:  160px;
 
     // deux boutons collapsed à la suite = marge au milieu
     & + & {

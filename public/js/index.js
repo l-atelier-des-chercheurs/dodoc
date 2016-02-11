@@ -59,7 +59,7 @@ function init(){
 
 	//remove modal modify folder when it closing
 	$(document).on('close.fndtn.reveal', '#modal-modify-folder[data-reveal]', function () {
-  	$("#modal-modify-folder").empty();
+//   	$("#modal-modify-folder").empty();
 	});
 
 	//Au click sur le bouton supprimer le dossier
@@ -153,23 +153,35 @@ function displayFolder(name, created, modified, statut, projets){
 }
 
 function modifyFolder($this){
-	$("#container.row #modal-modify-folder").empty();
-	thisFolderName = $this.parent().find('h2').text();
-	var statut = $this.parents(".dossier").attr("data-statut");
-	var inputNameHtml = "<input type='text' class='modify-folder' value='"+thisFolderName+"'></input>";
+// 	$("#container.row #modal-modify-folder").empty();
 
-	debugger;
-	if(statut == 'en cours'){
-		var statutHtml = "<select class='modify-statut 'name='statut'><option value='"+statut+"' selected>"+statut+"</option><option value='terminé'>terminé</option></select>";
-	}
-	else{
-		var statutHtml = "<select class='modify-statut' name='statut'><option value='"+statut+"' selected>"+statut+"</option><option value='en cours'>en cours</option></select>";
-	}
-	var submitBtnHtml = "<input type='submit' class='submit-modify-folder' value='Valider'></input>";
-	var deleteHtml = "<div class='delete-folder-button'><img src='/images/clear.svg' class='delete-btn btn icon'><span>Supprimer ce dossier</span></div>";
-	var closebtn = '<a class="close-reveal-modal" aria-label="Close">&#215</a>'
-	var newContentToAdd = "<h3 id='modalTitle' class='popoverTitle'>Modifier le dossier</h3><form onsubmit='return false;' class='modify-folder-form'>"+inputNameHtml+statutHtml+submitBtnHtml+deleteHtml+"</form><a class='close-reveal-modal' aria-label='Close') &#215;</a></div>";
-	$("#container.row #modal-modify-folder").append(newContentToAdd);
+
+	var thisFolderName = $this.parent().find('h2').text();
+	var statut = $this.parents(".dossier").attr("data-statut");
+  var otherStatut = statut === 'en cours' ? 'terminé' : 'en cours';
+
+  debugger;
+
+  $('#modal-modify-folder')
+  	.find('.modify-folder')
+  	  .attr('value', thisFolderName)
+    .end()
+  	.find('.modify-statut')
+  	  .find('option')
+  	    .eq(0)
+  	      .attr('value', statut)
+  	      .text( statut)
+  	    .end()
+  	    .eq(1)
+  	      .attr('value', otherStatut)
+  	      .text( otherStatut)
+  	    .end()
+  	  .end()
+    .end()
+  ;
+
+
+// 	$("#container.row #modal-modify-folder").append(newContentToAdd);
 	modifyStatut();
 	submitModifyFolder($(".submit-modify-folder"), 'modifyFolder', thisFolderName, statut);
 	$thisEl = $this.parent();

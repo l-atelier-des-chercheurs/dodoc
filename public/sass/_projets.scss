@@ -35,11 +35,18 @@ body.projets{
 .project-list{
   @include clearfix();
   margin-left: 0;
+  @include grid-row;
+
+  max-width: 68rem;
+
   .project{
-    margin-bottom: 50px;
 
     height: 0;
     padding-bottom: 15%;
+
+    & + .project {
+      margin-top:  35px;
+    }
 
     img[src=""]{
       display: none;
@@ -147,7 +154,7 @@ body.projets{
       @include clearfix();
 
       @include style--dossierBorders;
-
+      margin-top: 3px;
       padding: 17% 0.9375rem 25px;
 
       .media {
@@ -169,7 +176,7 @@ body.projets{
       @include style--dossierBorders;
 
       padding: 15px 0.9375rem 25px;
-      margin-top: 3px;
+      margin-top: 0px;
       margin-bottom:  75px;
 
       .publi-folder {

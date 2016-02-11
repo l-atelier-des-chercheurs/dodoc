@@ -6935,6 +6935,21 @@ th.hide-for-touch {
       .navbar-container .navbar > .button-wrapper:nth-of-type(1) {
         margin-right: 15px; }
 
+.reveal-modal {
+  border: 1px solid #cccccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  padding: 10px 16px;
+  max-width: 32.5rem; }
+  .reveal-modal .popoverTitle {
+    font-weight: bold;
+    font-size: 1.5em;
+    margin: 0;
+    margin-top: 3px;
+    margin-bottom: 16px; }
+
 html {
   margin: 0; }
 
@@ -7058,7 +7073,7 @@ button {
     overflow: hidden;
     float: left;
     padding-left: 0;
-    width: 150px;
+    width: 160px;
     transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out; }
     .button-wrapper_collapsed + .button-wrapper_collapsed {
       margin-left: 0; }
@@ -7411,16 +7426,26 @@ body.projets #container {
     margin-bottom: 50px; }
 
 .project-list {
-  margin-left: 0; }
+  margin-left: 0;
+  margin: 0 auto;
+  max-width: 62.5rem;
+  width: 100%;
+  max-width: 68rem; }
+  .project-list:before, .project-list:after {
+    content: " ";
+    display: table; }
+  .project-list:after {
+    clear: both; }
   .project-list:before, .project-list:after {
     content: " ";
     display: table; }
   .project-list:after {
     clear: both; }
   .project-list .project {
-    margin-bottom: 50px;
     height: 0;
     padding-bottom: 15%; }
+    .project-list .project + .project {
+      margin-top: 35px; }
     .project-list .project img[src=""] {
       display: none; }
     .project-list .project .statut-type {
@@ -7496,6 +7521,7 @@ body.projets #container {
       background-color: #fff;
       -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      margin-top: 3px;
       padding: 17% 0.9375rem 25px; }
       .project-list .project .last-medias:before, .project-list .project .last-medias:after {
         content: " ";
@@ -7523,7 +7549,7 @@ body.projets #container {
       -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
       padding: 15px 0.9375rem 25px;
-      margin-top: 3px;
+      margin-top: 0px;
       margin-bottom: 75px; }
       .project-list .project .montage-list:before, .project-list .project .montage-list:after {
         content: " ";
