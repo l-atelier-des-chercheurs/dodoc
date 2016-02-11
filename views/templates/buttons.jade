@@ -89,7 +89,7 @@ mixin button(typeOfButton, navOrButton, style)
       span Créer un bloc de texte
 
   if( typeOfButton === 'ajoutMedia')
-    a(href="#" title="Dodoc media" class='button-wrapper_addMedia js--ajoutMedia #{defaultClasses}')
+    a(href="#" data-reveal-id="modal-add-local" title="Dodoc media" class='button-wrapper_addMedia js--ajoutMedia #{defaultClasses}')
       .btn.icon
         include images/add.svg
       span Ajouter un média

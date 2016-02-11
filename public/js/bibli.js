@@ -7,6 +7,7 @@ var currentSession = app.session;
 var sessionName ;
 //get current project
 var currentProject = app.projet;
+var imageData = null;
 
 
 /* sockets */
@@ -32,6 +33,7 @@ jQuery(document).ready(function($) {
 function init(){
 	dragAndDrop();
 	bigMedia();
+	uploadImage("#inputmedia");
 
 	$validerBouton = $('.montage-title .js--validerTitre');
 	$editerBouton = $('.montage-title .js--editerTitre');
@@ -94,10 +96,29 @@ function init(){
   	console.log('addText');
   	socket.emit('addText', {session: currentSession, project: currentProject, title: textTitle, text:text});
   });
+
+  //Ajouter un fichier local dans la bibliothèque
+  $('.js--submit-new-local').on('click', function(){
+  	console.log('submit new local');
+  	if(imageData != null){
+			console.log('Une image a été ajoutée');
+			var f = imageData[0];
+			var reader = new FileReader();
+			reader.onload = function(evt){
+				socket.emit('newImageLocal', {session: currentSession, project: currentProject, data:evt.target.result});
+			};
+			reader.readAsDataURL(f);
+		}
+		else{
+			console.log("Pas d'image chargé");
+			$('#modal-add-local').foundation('reveal', 'close');
+		}
+  });
 }
 
 function displayNewImage(image){
 	displayImage(currentSession, currentProject, image.title, image.file);
+	$('#modal-add-local').foundation('reveal', 'close');
 }
 
 function displayNewVideo(video){
@@ -256,7 +277,6 @@ function bigMedia(){
   	}
   });
 }
-
 
 function dragAndDrop(){
   var left = document.querySelector('.medias-list');

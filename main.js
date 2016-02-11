@@ -56,6 +56,7 @@ module.exports = function(app, io){
 		socket.on("saveMontage", saveMontage);
 		socket.on("titleChanged", onTitleChanged);
 		socket.on("addText", onNewText);
+		socket.on("newImageLocal", onNewImage);
 
 		// P U B L I      P A G E
 		socket.on("displayPubli", displayPubli);
@@ -753,6 +754,10 @@ module.exports = function(app, io){
 	      }
 	    });
 	    io.sockets.emit("displayNewText", {id:currentDate, textTitle: text.title, textContent: text.text});
+		}
+
+		function onNewImageLocal(image){
+
 		}
 
 	// F I N    B I B L I    P A G E
