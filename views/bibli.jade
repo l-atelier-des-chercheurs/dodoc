@@ -10,6 +10,7 @@ html
           a(href="/" title="Dodoc")
             include templates/images/dodoc-logo.svg
 
+
         .item
           a(href="/#{session}" title="Dodoc").button-wrapper.button-wrapper_dossier
             .btn.icon
@@ -42,6 +43,10 @@ html
             include templates/images/publi.svg
 
     .montage.small-6.medium-6.large-6.columns
+
+      button.open-montage-bar.js--toggleMontage
+
+
       .montage-list
 
         h1.legende Liste des publications
@@ -91,15 +96,6 @@ html
       li.publi-folder(data-publi="")
         .content
           h2
-        a(href="#").button-wrapper.button-wrapper_publi.button-wrapper_without-bg.button-wrapper_collapsed.js--edit_view
-          .btn.icon
-            include templates/images/pen.svg
-          span Éditer
-
-        a(href="#").button-wrapper.button-wrapper_publi.button-wrapper_without-bg.button-wrapper_collapsed.js--publi_view
-          .btn.icon
-            include templates/images/view.svg
-          span Afficher
 
 
     //- //footer

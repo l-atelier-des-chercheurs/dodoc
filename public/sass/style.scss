@@ -168,11 +168,11 @@ button{
   }
 
 
-  &_add {
+  &_add, &_edit, &_publi {
     background-color: $rouge;
     color: white;
   }
-  &_capture {
+  &_capture, &_view {
     background-color: #FFB520;
     color: white;
   }
@@ -186,25 +186,16 @@ button{
     overflow: hidden;
     float:left;
     padding-left: 0;
-    width:  180px;
+    width:  160px;
 
     transition: border-radius .4s, width .8s, background-color .6s;
 
     &:not(:hover) {
-     width:  50px;
+     width:  40px;
      background-color: transparent;
     }
 
     &.button-wrapper_without-bg {
-      width:  150px;
-
-      &:not(:hover) {
-       width:  50px;
-      }
-
-      .btn.icon + span {
-        left: 50px;
-      }
     }
   }
 
@@ -218,7 +209,7 @@ button{
   }
 
   .btn.icon + span {
-    left: 60px;
+    left: 50px;
   }
 
 
@@ -464,6 +455,8 @@ body.projets{
 
 
     .folder-wrapper {
+      @include clearfix();
+      margin-bottom:  30px;
       .folder {
         font-size: 3rem;
         line-height: 1.2;

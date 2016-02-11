@@ -76,6 +76,7 @@ function submitProject($button, send){
 
 // Affiche le projet dès qu'il est crée
 function onProjectCreated(data){
+
 	var folderName = data.name;
 	var createdDate = transformDatetoString(data.created);
 	var statut = data.statut;
@@ -89,6 +90,7 @@ function onProjectCreated(data){
 
 // Affiche la liste des projets
 function onListProject(data){
+
 	var folderName = data.name;
 	var createdDate = transformDatetoString(data.created);
 	var image = data.image;
@@ -96,9 +98,10 @@ function onListProject(data){
 	sessionName = data.sessionName;
 	if(data.modified!= null){var modifiedDate = transformDatetoString(data.modified);}
 	else{var modifiedDate = data.modified;}
-	$('.folder-wrapper').html('<h1 class="folder">'+data.sessionName+'</h1>');
 
-	debugger;
+// je comprend pas pourquoi tu fais ça ? autant le prendre directement au chargement de la page en jade non ?
+//	$('.folder-wrapper').html('<h1 class="folder">'+data.sessionName+'</h1>');
+
 	displayFolder(folderName, createdDate, modifiedDate, image, statut);
 }
 
@@ -108,26 +111,20 @@ function displayFolder(name, created, modified, image, statut){
   // slug
 	var formatName = convertToSlug(name);
 
-  // boutons
-	var buttonToRecord = $(".js--templates .button-wrapper_capture").clone(false);
-	buttonToRecord.attr( 'href', '/'+currentSession+'/'+formatName+'/capture');
-
-  var buttonToBibli = $(".js--templates .button-wrapper_bibli").clone(false);
-	buttonToBibli.attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque');
-
-  var buttonToPubli = $(".js--templates .button-wrapper_publi").clone(false);
-	buttonToPubli.attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque#publi');
+	var newProject = $(".js--templates > .project").clone(false);
 
   // customisation du projet
-	var newProject = $(".js--templates > .project").clone(false);
 	newProject
 	  .attr( 'data-statut', statut)
 	  .find( '.statut-type').text( statut).end()
 	  .find( '.image-wrapper img').attr('src', image === true ? '/'+currentSession+'/'+formatName+'/'+formatName+'-thumb.jpg' : '').attr('alt', name).end()
 	  .find( '.create-date').text( created).end()
 	  .find( '.modify-date').text( modified !== null ? modified : '').end()
-	  .find( '.button-to-pages').html( buttonToRecord.prop('outerHTML')+buttonToBibli.prop('outerHTML')+buttonToPubli.prop('outerHTML')).end()
-	  .find( 'h2').text( name);
+	  .find( 'h2').text( name).end()
+	  .find( '.button-wrapper_capture').attr( 'href', '/'+currentSession+'/'+formatName+'/capture').end()
+	  .find( '.button-wrapper_bibli').attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque').end()
+	  .find( '.button-wrapper_publi').attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque#publi').end()
+  ;
 
   if( modified === null)
     newProject.find('.modified').remove();

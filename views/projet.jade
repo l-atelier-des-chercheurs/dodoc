@@ -1,3 +1,5 @@
+include templates/buttons.jade
+
 doctype html
 html
   head
@@ -9,30 +11,35 @@ html
         .logo
           a(href="/" title="Dodoc")
             include templates/images/dodoc-logo.svg
-        .item
-          a(href="/#{session}" title="Dodoc").button-wrapper.button-wrapper_dossier
-            .btn.icon
-              include templates/images/dossier.svg
-            span #{session}
-        .item
-          a(href="/#{session}/#{projet}" title="Dodoc").button-wrapper.button-wrapper_projet
-            span #{projet}
+        +button( 'dossier', 'isNav')
+        +button( 'projet', 'isNav')
 
     #container.row
-      .project-wrapper.small-12.columns
-        a(href="/#{session}/#{projet}/capture" title="Dodoc page de capture").button-wrapper.button-wrapper_capture
-          .btn.icon
-            include templates/images/record.svg
-          span Capture
-        a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_bibli
-          .btn.icon
-            include templates/images/bibli.svg
-          span Bibliothèque
-        h1.project
-        div.meta-data
-          div.statut
-          div.created
-          div.modified
+
+      ul.project-list
+        .project-inside
+          .left-content.small-8.medium-6.columns
+            .content.small-6.columns
+              h1 #{session}
+              .meta-data
+                .statut
+                  span statut
+                  span.statut-type
+                .created
+                  span créé le
+                  span.create-date
+                .modified
+                  span modifié le
+                  span.modify-date
+            .button-to-pages.small-6.columns
+              +button('capture')
+              +button('bibli')
+              +button('publi')
+
+          .image-wrapper.small-4.medium-6.columns
+            img
+
+
 
         div.last-medias
           ul
@@ -58,9 +65,8 @@ html
       li.publi-folder
         .content
           h2
-        div.edit-view-btn.btn.icon
-          a(href="#")
-            include templates/images/view.svg
+        +button('edit_publication')
+        +button('view_publication')
 
     //- //footer
     include templates/footer.jade

@@ -57,14 +57,16 @@ function sendProjectData(data){
 
 	for (var i = 0; i < arrayPubli.length; i++) {
 		console.log(arrayPubli[i]);
+		var publiPath = '/'+currentSession+'/'+currentProject+'/publication/'+ convertToSlug(arrayPubli[i]);
+		var publiPath = '/'+currentSession+'/'+currentProject+'/bibliotheque?mode=publi&publi='+ convertToSlug(arrayPubli[i]);
+
+    debugger;
 		var publiItem = $(".js--templates .publi-folder").clone(false);
 		publiItem
-			.find('h2').html(arrayPubli[i]);
-
-		var viewButton = $('.edit-view-btn a');
-		var publiPath = '/'+currentSession+'/'+currentProject+'/publication/'+ convertToSlug(arrayPubli[i]);
-		viewButton	
-			.attr('href', publiPath);
+			.find( 'h2').html(arrayPubli[i]).end()
+			.find( '.js--edit_view', publiPath).attr('href', publiPath).end()
+			.find( '.js--publi_view', publiPath).attr('href', publiPath).end()
+		;
 
 		$('.list-publi ul').prepend(publiItem);
 	}
