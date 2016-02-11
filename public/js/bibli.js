@@ -16,6 +16,7 @@ socket.on('displayNewImage', displayNewImage);
 socket.on('displayNewVideo', displayNewVideo);
 socket.on('displayNewStopMotion', displayNewStopMotion);
 socket.on('displayNewAudio', displayNewAudio);
+socket.on('displayNewText', displayNewText);
 socket.on('listMedias', onListMedias);
 socket.on('listPublications', onPubliCreated);
 socket.on('publiCreated', onPubliCreated);
@@ -58,15 +59,6 @@ function init(){
 		socket.emit('createPubli', {name: publiName, session:currentSession, project: currentProject});
 	});
 
-/*
-	$('body').on('click', '.publi-folder .content', function(){
-		var namePubli = $(this).parent('.publi-folder').attr('data-publi');
-		$('.montage-edit').attr('data-publi', namePubli);
-		console.log(namePubli);
-		socket.emit('displayThisMontage', {name:namePubli, session:currentSession, project: currentProject});
-	});
-*/
-
 	$('body').on('click', '.js--edit_view', function(e){
   	e.preventDefault();
 		var namePubli = $(this).parent('.publi-folder').attr('data-publi');
@@ -92,7 +84,14 @@ function init(){
   		$elementToDel.remove();
   		onMontageChanged();
   	});
-  	
+  });
+
+  // Ajouter du texte dans la bibliotheque
+  $('.js--submit-new-text').on('click',function(){
+  	var textTitle = $(this).parent('form').find('.new-text').val();
+  	var text = $(this).parent('form').find('textarea').val();
+  	console.log('addText');
+  	socket.emit('addText', {session: currentSession, project: currentProject, title: textTitle, text:text});
   });
 }
 
@@ -110,6 +109,11 @@ function displayNewStopMotion(video){
 
 function displayNewAudio(audio){
 	displayAudio(currentSession, currentProject, audio.title, audio.file);
+}
+
+function displayNewText(text){
+	$('#modal-add-text').foundation('reveal', 'close');
+	displayText(currentSession, currentProject, text.id, text.textTitle, text.textContent);
 }
 
 
@@ -133,6 +137,14 @@ function onListMedias(array, json){
 			displayAudio(currentSession, currentProject, identifiant, array[i]);
 		}
 	}
+
+	//display text
+	for (var i=0;i<json.files.texte.length;i++) {
+		var textId = json.files.texte[i].id;
+		var textTitle = json.files.texte[i].titre;
+		var textContent = json.files.texte[i].contenu;
+		displayText(currentSession, currentProject, textId, textTitle, textContent);
+  }
 
 	$(".media").on("mouseenter", function(){
 		$(this).css("cursor", 'pointer');
@@ -186,6 +198,18 @@ function displayAudio(session, project, id, file){
 
 	$('ul.medias-list').prepend(mediaItem);
 }
+
+function displayText(session, project, id, title, content){
+	var mediaItem = $(".js--templates .media_text").clone(false);
+	mediaItem.attr( 'id', id);
+	mediaItem
+		.find( 'p').html(content)
+		.end()
+		.find('h2').html(title);
+
+	$('.medias-list').prepend(mediaItem);
+}
+
 
 function dragAndDrop(){
   var left = document.querySelector('.medias-list');

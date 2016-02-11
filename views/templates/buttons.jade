@@ -83,7 +83,7 @@ mixin button(typeOfButton, navOrButton, style)
       span Éditer le titre
 
   if( typeOfButton === 'ajoutText')
-    a(href="#" title="Dodoc texte" class='button-wrapper_addText js--ajoutText #{defaultClasses}')
+    a(href="#" data-reveal-id="modal-add-text" title="Dodoc texte" class='button-wrapper_addText js--ajoutText #{defaultClasses}')
       .btn.icon
         include images/text.svg
       span Créer un bloc de texte

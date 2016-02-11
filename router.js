@@ -91,7 +91,6 @@ module.exports = function(app,io,m){
     var projet = req.param('projet');
     var jsonDossier= readJsonFile('sessions/'+ session + '/' + session + '.json');
     var jsonProjet = readJsonFile('sessions/'+ session + '/' + projet + '/' + projet + '.json');
-    console.log(req.path);
     res.render("bibli", {
       title : "Bibliotheque de médias",
       session: session,

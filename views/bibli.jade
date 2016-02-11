@@ -77,9 +77,9 @@ html
     div(id="modal-add-text" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
       h2#modalTitle.popoverTitle Ajouter du texte
       form(onsubmit='return false;' class='add-publi-form lead')
-        input(type='text' class='new-text' placeholder='Nom')
+        input(type='text' class='new-text' placeholder='Titre')
         textarea(placeholder="Ajouter du texte ici")
-        input(type='submit' class='submit-new-text' value='Valider')
+        input(type='submit' class='js--submit-new-text' value='Valider')
       a(class="close-reveal-modal" aria-label="Close") &#215;
 
     .js--templates
@@ -98,6 +98,10 @@ html
         .mediaContent
           audio(preload="none" controls)
             source()
+      li.media.media_text(data-type="text")
+        .mediaContent
+          h2.media-title
+          p.text
       li.publi-folder(data-publi="")
         .content
           h2.title
