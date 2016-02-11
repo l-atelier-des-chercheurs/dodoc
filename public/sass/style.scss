@@ -142,6 +142,12 @@ button{
   font-size: $buttonFont;
   line-height: 1.1;
 
+  // deux boutons à la suite = marge au milieu
+  & + & {
+    margin-left: 8px;
+  }
+
+
   &:hover, &:focus {
     border-radius: 4px;
     color: white;
@@ -192,6 +198,11 @@ button{
     padding-left: 0;
     width:  150px;
 
+    // deux boutons collapsed à la suite = marge au milieu
+    & + & {
+      margin-left: 0;
+    }
+
 
     transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out;
 
@@ -216,6 +227,8 @@ button{
 
   .btn.icon + span {
     left: 50px;
+    width:  185px;
+
   }
 
 
