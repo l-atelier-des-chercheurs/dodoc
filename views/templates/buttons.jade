@@ -18,6 +18,20 @@ mixin button(typeOfButton, navOrButton, style)
         include images/dossier.svg
       span #{folder}
 
+  if( typeOfButton === 'acceptEdit')
+    a(href="#" title="Dodoc" class='button-wrapper_deleteFolder js--acceptEdit #{defaultClasses}')
+      .btn.icon
+        include images/clear.svg
+      span Supprimer
+
+
+  if( typeOfButton === 'deleteFolder')
+    a(href="#" title="Dodoc" class='button-wrapper_deleteFolder js--deleteFolder #{defaultClasses}')
+      .btn.icon
+        include images/clear.svg
+      span Supprimer
+
+
   if( typeOfButton === 'projet')
     a(href="/#{session}/#{projet}" title="Dodoc" class='button-wrapper_projet #{defaultClasses}')
       span #{projectName}
