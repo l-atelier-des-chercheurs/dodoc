@@ -14,54 +14,75 @@ socket.on('sendProjectData', sendProjectData);
 
 
 jQuery(document).ready(function($) {
-
 	init();
 });
 
 function init(){
-
 
 }
 
 function sendProjectData(data){
 	var name = data.json.name;
 	var statut = data.json.statut;
+	var image = data.json.image;
 	var created = transformDatetoString(data.json.created);
 	var modified = transformDatetoString(data.json.created);
-	var array = data.lastmedia;
+	var lastMedias = data.lastmedia;
 	var arrayPubli = data.publiNames;
 
-	$('h1.project').html(name);
-	$('.statut').html('<span>statut</span><span class="statut-type"> '+statut+'</span>');
-	$('.created').html('<span>crée le </span><span class="create-date">'+created+'</span>');
-	if(modified != null){
-		$('.modified').html('<span>modifié le </span><span class="modify-date">'+modified+'</span>');
-	}
+	var formatName = convertToSlug(name);
 
-	for (var i = 0; i < array.length; i++) {
-  	var extension = array[i].split('.').pop();
-  	var identifiant =  array[i].replace("." + extension, "");
+
+	var projectClone = $(".js--templates > .project").clone(false);
+	projectClone
+		.find( '.title').html( name).end()
+	  .attr( 'data-statut', statut)
+	  .find( '.statut-type').text( statut).end()
+
+
+	  .find( '.image-wrapper img').attr('src', image === true ? '/'+currentSession+'/'+formatName+'/'+formatName+'-thumb.jpg' : '').attr('alt', name).end()
+	  .find( '.create-date').text( created).end()
+	  .find( '.modify-date').text( modified !== null ? modified : '').end()
+	  .find( '.title').text( name).end()
+	  .find( '.project-link').attr( 'href', '/'+currentSession+'/'+formatName).end()
+	  .find( '.button-wrapper_capture').attr( 'href', '/'+currentSession+'/'+formatName+'/capture').end()
+	  .find( '.button-wrapper_bibli').attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque').end()
+	  .find( '.button-wrapper_publi').attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque#publi').end()
+
+		.find( '.js--publi_view', publiPath).attr('href', publiPath).end()
+	;
+
+	var allMedias = $();
+
+	for (var i = 0; i < lastMedias.length; i++) {
+  	var extension = lastMedias[i].split('.').pop();
+  	var identifiant =  lastMedias[i].replace("." + extension, "");
+    var fileName = lastMedias[i];
+
 		if(extension == "jpg"){
-			displayImage(currentSession, currentProject, identifiant, array[i]);
+			allMedias = allMedias.add( displayImage(currentSession, currentProject, identifiant, fileName));
 		}
 		if(extension == "webm"){
-			displayVideo(currentSession, currentProject, identifiant, array[i]);
+			allMedias = allMedias.add( displayVideo(currentSession, currentProject, identifiant, fileName));
 		}
 		if(extension == "mp4"){
-			displayVideo(currentSession, currentProject, identifiant, array[i]);
+			allMedias = allMedias.add( displayVideo(currentSession, currentProject, identifiant, fileName));
 		}
 		if(extension == "wav"){
-			displayAudio(currentSession, currentProject, identifiant, array[i]);
+			allMedias = allMedias.add( displayAudio(currentSession, currentProject, identifiant, fileName));
 		}
 	}
+
+
+  debugger;
+	projectClone.find( '.last-medias').append( allMedias);
 
 	for (var i = 0; i < arrayPubli.length; i++) {
 		console.log(arrayPubli[i]);
 		var publiPath = '/'+currentSession+'/'+currentProject+'/publication/'+ convertToSlug(arrayPubli[i]);
 		var publiPath = '/'+currentSession+'/'+currentProject+'/bibliotheque?mode=publi&publi='+ convertToSlug(arrayPubli[i]);
 
-    debugger;
-		var publiItem = $(".js--templates .publi-folder").clone(false);
+		var publiItem = $(".js--templates > .publi-folder").clone(false);
 		publiItem
 			.find( 'h2').html(arrayPubli[i]).end()
 			.find( '.js--edit_view', publiPath).attr('href', publiPath).end()
@@ -70,6 +91,9 @@ function sendProjectData(data){
 
 		$('.list-publi ul').prepend(publiItem);
 	}
+
+	projectClone.appendTo('.project-list');
+
 }
 
 function displayImage(session, project, id, file){
@@ -78,7 +102,7 @@ function displayImage(session, project, id, file){
 	mediaItem.attr( 'id', id);
 	mediaItem.find( 'img').attr('src', imagePath);
 
-	$('.last-medias ul').prepend(mediaItem);
+	return mediaItem;
 }
 
 function displayVideo(session, project, id, file){
@@ -91,7 +115,7 @@ function displayVideo(session, project, id, file){
     .find( 'video').attr( 'poster', thumbPath)
     .find( 'source').attr( 'src', videoPath);
 
-	$('.last-medias ul').prepend(mediaItem);
+	return mediaItem;
 }
 
 function displayStopMotion(session, project, id, file){
@@ -105,7 +129,7 @@ function displayStopMotion(session, project, id, file){
     .find( 'video').attr( 'poster', thumbPath)
     .find( 'source').attr( 'src', videoPath);
 
-	$('.last-medias ul').prepend(mediaItem);
+	return mediaItem;
 }
 
 function displayAudio(session, project, id, file){
@@ -116,7 +140,7 @@ function displayAudio(session, project, id, file){
 	  .attr( 'id', id)
     .find( 'source').attr( 'src', audioPath);
 
-	$('.last-medias ul').prepend(mediaItem);
+	return mediaItem;
 }
 
 /* sockets */

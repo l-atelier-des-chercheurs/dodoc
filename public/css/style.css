@@ -6930,115 +6930,10 @@ th.hide-for-touch {
           color: #FFB520; }
     .navbar-container .navbar > .button-wrapper {
       float: right;
-      margin: 15px;
+      margin: 15px 5px;
       position: relative; }
-
-body.bibli {
-  overflow: hidden; }
-
-.bibli-buffer {
-  height: calc( 100vh - 70px);
-  overflow-y: scroll;
-  /* has to be scroll, not auto */
-  -webkit-overflow-scrolling: touch; }
-
-.montage {
-  height: calc( 100vh - 70px);
-  overflow-y: scroll;
-  /* has to be scroll, not auto */
-  -webkit-overflow-scrolling: touch;
-  padding-left: 1.875rem; }
-  .montage.is--opened {
-    transform: translate(100%, 0); }
-  .montage .open-montage-bar {
-    position: absolute;
-    padding: 0;
-    margin: 0;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 15px;
-    background: linear-gradient(to left, #aaa, transparent 50%, transparent);
-    background-size: 5px 100%; }
-  .montage .montage-edit {
-    background: #e5e5e5;
-    position: absolute;
-    width: 100%;
-    top: 0;
-    left: 0;
-    display: none; }
-    .montage .montage-edit .montage-title input {
-      display: none; }
-  .montage .inner-montage {
-    margin: 0 auto;
-    max-width: 62.5rem;
-    width: 100%;
-    height: 100%;
-    min-height: 200px;
-    padding: 15px;
-    border-top: 2px solid #eee; }
-    .montage .inner-montage:before, .montage .inner-montage:after {
-      content: " ";
-      display: table; }
-    .montage .inner-montage:after {
-      clear: both; }
-    .montage .inner-montage:empty {
-      background-color: #fff; }
-      .montage .inner-montage:empty::before {
-        content: "Glissez içi vos médias pour composer un récit.";
-        position: relative; }
-    .montage .inner-montage .media {
-      padding-left: 0.9375rem;
-      padding-right: 0.9375rem;
-      width: 100%;
-      float: left;
-      margin-bottom: 15px; }
-
-.medias-list {
-  margin: 0 auto;
-  max-width: 62.5rem;
-  width: 100%;
-  padding-top: 0.9375rem;
-  padding-bottom: 0.9375rem; }
-  .medias-list:before, .medias-list:after {
-    content: " ";
-    display: table; }
-  .medias-list:after {
-    clear: both; }
-  .medias-list .media {
-    padding-left: 0.9375rem;
-    padding-right: 0.9375rem;
-    width: 33.33333%;
-    float: left;
-    padding-top: 0.9375rem;
-    padding-bottom: 0.9375rem; }
-
-.montage-list {
-  margin-top: 15px; }
-  .montage-list > .button-wrapper {
-    margin-bottom: 15px; }
-  .montage-list .publi-folder {
-    position: relative;
-    padding: 15px;
-    margin-bottom: 15px;
-    background-color: #fff;
-    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    text-align: right; }
-    .montage-list .publi-folder:before, .montage-list .publi-folder:after {
-      content: " ";
-      display: table; }
-    .montage-list .publi-folder:after {
-      clear: both; }
-    .montage-list .publi-folder .content {
-      float: left; }
-      .montage-list .publi-folder .content h2 {
-        font-weight: bold;
-        font-size: 1.5em;
-        margin: 0; }
-    .montage-list .publi-folder .button-wrapper {
-      display: inline-block;
-      float: none; }
+      .navbar-container .navbar > .button-wrapper:nth-of-type(1) {
+        margin-right: 15px; }
 
 html {
   margin: 0; }
@@ -7144,7 +7039,7 @@ button {
       color: #293275; }
     .button-wrapper.button-wrapper_without-bg.button-wrapper_publi {
       color: #EF4651; }
-  .button-wrapper_add, .button-wrapper_edit, .button-wrapper_publi {
+  .button-wrapper_add, .button-wrapper_edit, .button-wrapper_publi, .button-wrapper_editProjet {
     background-color: #EF474B;
     color: white; }
   .button-wrapper_capture, .button-wrapper_view {
@@ -7158,9 +7053,10 @@ button {
     float: left;
     padding-left: 0;
     width: 160px;
-    transition: border-radius .4s, width .8s, background-color .6s; }
+    transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out; }
     .button-wrapper_collapsed:not(:hover) {
       width: 40px;
+      color: transparent;
       background-color: transparent; }
   .button-wrapper .btn {
     float: left; }
@@ -7292,15 +7188,127 @@ body.index #container {
       font-weight: bold; }
 
 .dossier .content a:hover h2 {
-  background-color: #383838;
-  color: white; }
-
-.dossier[data-statut="en cours"] .content a:hover h2 {
   background-color: #48C2B5;
   color: white; }
 
-.dossier[data-statut="en cours"] .statut-type {
+.dossier .statut-type {
   color: #48C2B5; }
+
+.dossier[data-statut="en cours"] .content a:hover h2 {
+  background-color: #FFB520;
+  color: white; }
+
+.dossier[data-statut="en cours"] .statut-type {
+  color: #FFB520; }
+
+body.bibli {
+  overflow: hidden; }
+
+.bibli-buffer {
+  height: calc( 100vh - 70px);
+  overflow-y: scroll;
+  /* has to be scroll, not auto */
+  -webkit-overflow-scrolling: touch; }
+
+.montage {
+  height: calc( 100vh - 70px);
+  overflow-y: scroll;
+  /* has to be scroll, not auto */
+  -webkit-overflow-scrolling: touch;
+  padding-left: 1.875rem; }
+  .montage.is--opened {
+    transform: translate(100%, 0); }
+  .montage .open-montage-bar {
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 15px;
+    background: linear-gradient(to left, #aaa, transparent 50%, transparent);
+    background-size: 5px 100%; }
+  .montage .montage-edit {
+    background: #e5e5e5;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: none; }
+    .montage .montage-edit .montage-title input {
+      display: none; }
+  .montage .inner-montage {
+    margin: 0 auto;
+    max-width: 62.5rem;
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    padding: 15px;
+    border-top: 2px solid #eee; }
+    .montage .inner-montage:before, .montage .inner-montage:after {
+      content: " ";
+      display: table; }
+    .montage .inner-montage:after {
+      clear: both; }
+    .montage .inner-montage:empty {
+      background-color: #fff; }
+      .montage .inner-montage:empty::before {
+        content: "Glissez içi vos médias pour composer un récit.";
+        position: relative; }
+    .montage .inner-montage .media {
+      padding-left: 0.9375rem;
+      padding-right: 0.9375rem;
+      width: 100%;
+      float: left;
+      margin-bottom: 15px; }
+
+.medias-list {
+  margin: 0 auto;
+  max-width: 62.5rem;
+  width: 100%;
+  padding-top: 0.9375rem;
+  padding-bottom: 0.9375rem; }
+  .medias-list:before, .medias-list:after {
+    content: " ";
+    display: table; }
+  .medias-list:after {
+    clear: both; }
+  .medias-list .media {
+    padding-left: 0.9375rem;
+    padding-right: 0.9375rem;
+    width: 33.33333%;
+    float: left;
+    padding-top: 0.9375rem;
+    padding-bottom: 0.9375rem; }
+
+.montage-list {
+  margin-top: 15px; }
+  .montage-list > .button-wrapper {
+    margin-bottom: 15px; }
+  .montage-list .publi-folder {
+    position: relative;
+    padding: 9px 15px 2px;
+    padding-bottom: 2px;
+    margin-bottom: 15px;
+    background-color: #fff;
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    text-align: right; }
+    .montage-list .publi-folder:before, .montage-list .publi-folder:after {
+      content: " ";
+      display: table; }
+    .montage-list .publi-folder:after {
+      clear: both; }
+    .montage-list .publi-folder .content {
+      float: left; }
+      .montage-list .publi-folder .content .title {
+        font-weight: bold;
+        font-size: 1.5em;
+        margin: 0;
+        margin-top: 3px; }
+    .montage-list .publi-folder .button-wrapper {
+      display: inline-block;
+      float: none; }
 
 body.projets #container {
   padding: 50px 0px;
@@ -7321,69 +7329,85 @@ body.projets #container {
       margin-bottom: 32px; }
   body.projets #container .add-project-wrapper {
     margin-bottom: 50px; }
-  body.projets #container .project-list {
-    margin-left: 0; }
-    body.projets #container .project-list:before, body.projets #container .project-list:after {
-      content: " ";
-      display: table; }
-    body.projets #container .project-list:after {
-      clear: both; }
-    body.projets #container .project-list .project {
-      margin-bottom: 50px;
-      height: 0;
-      padding-bottom: 15%; }
-      body.projets #container .project-list .project[data-statut="en cours"] .statut-type {
-        color: #48C2B5; }
-      body.projets #container .project-list .project .project-inside {
-        border-bottom: 2px solid #eeeeee;
-        background-color: #fff;
-        -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-        border-bottom: 0;
-        margin-left: 0.9375rem;
-        margin-right: 0.9375rem;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0; }
-      body.projets #container .project-list .project .edit-icon {
-        position: absolute;
-        top: -16px;
-        right: 0;
-        z-index: 5; }
-      body.projets #container .project-list .project .left-content {
-        background-color: #FFF;
-        overflow-y: scroll;
-        height: 100%;
-        padding: 0;
-        padding-top: 5px; }
-        body.projets #container .project-list .project .left-content .content h2 {
-          font-weight: bold;
-          font-size: 1.5em;
-          margin-bottom: 25px; }
-        body.projets #container .project-list .project .left-content .content .meta-data {
-          font-style: italic;
-          font-family: "share", monospace; }
-          body.projets #container .project-list .project .left-content .content .meta-data span:nth-of-type(1) {
-            margin-right: 5px; }
-          body.projets #container .project-list .project .left-content .content .meta-data .created .create-date {
+
+.project-list {
+  margin-left: 0; }
+  .project-list:before, .project-list:after {
+    content: " ";
+    display: table; }
+  .project-list:after {
+    clear: both; }
+  .project-list .project {
+    margin-bottom: 50px;
+    height: 0;
+    padding-bottom: 15%; }
+    .project-list .project img[src=""] {
+      display: none; }
+    .project-list .project .statut-type {
+      color: #48C2B5; }
+    .project-list .project[data-statut="en cours"] .title.title:hover {
+      color: #FFB520; }
+    .project-list .project[data-statut="en cours"] .statut-type {
+      color: #FFB520; }
+    .project-list .project .project-inside {
+      border-bottom: 2px solid #eeeeee;
+      background-color: #fff;
+      -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      border-bottom: 0;
+      margin-left: 0.9375rem;
+      margin-right: 0.9375rem;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0; }
+    .project-list .project .button-wrapper_editProjet {
+      position: absolute;
+      top: -16px;
+      right: 0;
+      z-index: 5; }
+    .project-list .project .left-content {
+      background-color: #FFF;
+      overflow-y: scroll;
+      height: 100%;
+      padding: 0;
+      padding-top: 5px; }
+      .project-list .project .left-content .title {
+        display: block;
+        font-weight: bold;
+        font-size: 1.5em;
+        padding: 16px;
+        margin: 0; }
+        .project-list .project .left-content .title:hover {
+          color: #48C2B5; }
+      .project-list .project .left-content .meta-data {
+        font-style: italic;
+        font-family: "share", monospace; }
+        .project-list .project .left-content .meta-data span:nth-of-type(1) {
+          margin-right: 5px; }
+        .project-list .project .left-content .meta-data .created .create-date {
+          font-weight: bold; }
+        .project-list .project .left-content .meta-data .modified {
+          text-align: left; }
+          .project-list .project .left-content .meta-data .modified .modify-date {
             font-weight: bold; }
-          body.projets #container .project-list .project .left-content .content .meta-data .modified {
-            text-align: left; }
-            body.projets #container .project-list .project .left-content .content .meta-data .modified .modify-date {
-              font-weight: bold; }
-        body.projets #container .project-list .project .left-content .button-to-pages {
-          padding: 0;
-          text-align: right; }
-      body.projets #container .project-list .project .image-wrapper {
-        overflow: hidden;
-        padding: 0;
-        height: 100%; }
-        body.projets #container .project-list .project .image-wrapper img {
-          transform: translateY(-50%);
-          top: 50%;
-          position: absolute; }
+      .project-list .project .left-content .button-to-pages {
+        padding: 0; }
+        .project-list .project .left-content .button-to-pages .legende {
+          margin-bottom: 5px;
+          margin-top: 0; }
+    .project-list .project .image-wrapper {
+      overflow: hidden;
+      padding: 0;
+      height: 100%; }
+      .project-list .project .image-wrapper img {
+        transform: translateY(-50%);
+        top: 50%;
+        position: absolute; }
+
+body.projet .project-list {
+  margin-top: 75px; }
 
 body.capture .container-inner {
   margin: auto; }

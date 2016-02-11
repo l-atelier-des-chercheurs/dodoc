@@ -1,3 +1,8 @@
+mixin logo()
+  .logo
+    a(href="/" title="Dodoc")
+      include images/dodoc-logo.svg
+
 mixin button(typeOfButton, navOrButton, style)
   if( navOrButton === 'isNav')
     | <div class='item'>
@@ -6,7 +11,6 @@ mixin button(typeOfButton, navOrButton, style)
 
   if( style === 'isCollapsed')
     - defaultClasses = defaultClasses + 'button-wrapper_collapsed '
-    - console.log( defaultClasses)
 
 
   if( typeOfButton === 'dossier')
@@ -19,11 +23,23 @@ mixin button(typeOfButton, navOrButton, style)
     a(href="/#{session}/#{projet}" title="Dodoc" class='button-wrapper_projet #{defaultClasses}')
       span #{projet}
 
+  if( typeOfButton === 'nouveauDossier')
+    a(href="#" data-reveal-id="modal-add-folder" class='button-wrapper_add #{defaultClasses}')
+      .btn.icon
+        include images/add.svg
+      span Créer un dossier
+
   if( typeOfButton === 'nouveauProjet')
     a(href="#" data-reveal-id="modal-add-project" class='button-wrapper_add #{defaultClasses}')
       .btn.icon
         include images/add.svg
       span Nouveau projet
+
+  if( typeOfButton === 'editProjet')
+    a(href="#" data-reveal-id="modal-modify-project" class='button-wrapper_editProjet js--edit-project-icon #{defaultClasses}')
+      .btn.icon
+        include images/pen.svg
+      span Éditer ce projet
 
   if( typeOfButton === 'capture')
     a(href="/#{session}/#{projet}/capture" title="Dodoc page de capture" class='button-wrapper_capture #{defaultClasses}')

@@ -9,10 +9,7 @@ html
 
     .navbar-container
       header.navbar
-        .logo
-          a(href="/" title="Dodoc")
-            include templates/images/dodoc-logo.svg
-
+        +logo()
         +button( 'dossier', 'isNav')
 
     #container.row
@@ -49,14 +46,13 @@ html
 
     .js--templates
       .project.small-12.columns(data-statut)
-        a.edit-icon.btn.icon(href="#" data-reveal-id="modal-modify-project")
-          img(src="/images/pen.svg" alt="edit icon")
+        +button('editProjet', '', 'isCollapsed')
         .project-inside
           .left-content.small-8.medium-6.columns
-            .content.small-6.columns
-              a(href="" title="Dodoc")
-                h2
-              .meta-data
+            .content
+              a(href="" title="Dodoc").project-link
+                h2.title
+              .meta-data.small-6.columns
                 .statut
                   span statut
                   span.statut-type
@@ -66,10 +62,11 @@ html
                 .modified
                   span modifié le
                   span.modify-date
-            .button-to-pages.small-6.columns
-              +button('capture', '', 'isCollapsed')
-              +button('bibli', '', 'isCollapsed')
-              +button('publications', '', 'isCollapsed')
+              .button-to-pages.small-6.columns
+                h3.legende accès rapide
+                +button('capture', '', 'isCollapsed')
+                +button('bibli', '', 'isCollapsed')
+                +button('publications', '', 'isCollapsed')
           .image-wrapper.small-4.medium-6.columns
             img
 

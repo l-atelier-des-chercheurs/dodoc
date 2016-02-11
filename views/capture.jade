@@ -1,3 +1,5 @@
+include templates/buttons.jade
+
 doctype html
 html
   head
@@ -7,28 +9,12 @@ html
     .navbar-container
 
       header.navbar
-        .logo
-          a(href="/" title="Dodoc")
-            include templates/images/dodoc-logo.svg
-
-        .item
-          a(href="/#{session}" title="Dodoc").button-wrapper.button-wrapper_dossier
-            .btn.icon
-              include templates/images/dossier.svg
-            span #{session}
-        .item
-          a(href="/#{session}/#{projet}" title="Dodoc").button-wrapper.button-wrapper_projet
-            span #{projet}
-        .item
-          a(href="/#{session}/#{projet}/capture" title="Dodoc page de capture").button-wrapper.button-wrapper_capture
-            .btn.icon
-              include templates/images/record.svg
-            span Capture
-
-        a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_bibli.button-wrapper_collapsed
-          .btn.icon
-            include templates/images/bibli.svg
-          span Bibliothèque
+        +logo()
+        +button( 'dossier', 'isNav')
+        +button( 'projet', 'isNav')
+        +button( 'capture', 'isNav')
+        +button('bibli', '', 'isCollapsed')
+        +button('publications', '', 'isCollapsed')
 
 
     div#container.row

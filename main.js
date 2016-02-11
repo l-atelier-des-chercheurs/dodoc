@@ -405,7 +405,7 @@ module.exports = function(app, io){
 								publiNames.push(jsonObjPubli.name)
 				    	}
 				    });
-				    io.sockets.emit('sendProjectData',{json:jsonObj , lastmedia:lastMedia, publiNames: publiNames });
+				    io.sockets.emit('sendProjectData',{json:jsonObj , lastmedia:lastMedia, publiNames: publiNames, image:jsonObj.fileName});
 					});
 				});
 			});
