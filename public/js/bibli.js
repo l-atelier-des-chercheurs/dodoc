@@ -159,7 +159,7 @@ function displayVideo(session, project, id, file){
     .find( 'video').attr( 'poster', thumbPath)
     .find( 'source').attr( 'src', videoPath);
 
-	$('.medias ul.medias-list').prepend(mediaItem);
+	$('ul.medias-list').prepend(mediaItem);
 }
 
 function displayStopMotion(session, project, id, file){
@@ -173,7 +173,7 @@ function displayStopMotion(session, project, id, file){
     .find( 'video').attr( 'poster', thumbPath)
     .find( 'source').attr( 'src', videoPath);
 
-	$('.medias ul.medias-list').prepend(mediaItem);
+	$('ul.medias-list').prepend(mediaItem);
 }
 
 function displayAudio(session, project, id, file){
@@ -184,7 +184,7 @@ function displayAudio(session, project, id, file){
 	  .attr( 'id', id)
     .find( 'source').attr( 'src', audioPath);
 
-	$('.medias ul.medias-list').prepend(mediaItem);
+	$('ul.medias-list').prepend(mediaItem);
 }
 
 function dragAndDrop(){
