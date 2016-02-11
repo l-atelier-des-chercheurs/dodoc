@@ -392,9 +392,11 @@ module.exports = function(app, io){
 					fs.readdir(dirPubli, function(err, files) {
 						var publiNames = [];
 					  if (err) console.log(err);
-			    	console.log('Files: ' + files);
+			    	//console.log('Files: ' + typeof files);
+			    	if( typeof files == "undefined")
+			    	  return;
 				    files.forEach(function(file) {
-				    	//console.log('Files: ' + file);
+				    	console.log('Files: ' + file);
 				    	if(file == ".DS_Store"){
 			    			fs.unlink(dirPubli+'/'+file);
 			    		}

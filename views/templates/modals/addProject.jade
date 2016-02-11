@@ -1,0 +1,7 @@
+div(id="modal-add-project" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+  h2#modalTitle.popoverTitle Nouveau projet
+  form(onsubmit='return false;' class='add-project-form lead')
+    input(type='text' class='new-project' placeholder='Nom')
+    input(type='file' id='imageproject' accept='image/*' placeholder='Associer une image')
+    input(type='submit' class='submit-new-project' value='Valider')
+  a(class="close-reveal-modal" aria-label="Close") &#215;

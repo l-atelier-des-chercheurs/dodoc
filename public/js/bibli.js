@@ -24,28 +24,33 @@ socket.on('titleModified', onTitleModified);
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 
 jQuery(document).ready(function($) {
-
 	$(document).foundation();
 	init();
 });
 
 function init(){
 	dragAndDrop();
-	$('.montage-title .publi-btn').on('click', function(){
-		var oldTitle = $('.montage-title h2').html();
+
+	$validerBouton = $('.montage-title .js--validerTitre');
+	$editerBouton = $('.montage-title .js--editerTitre');
+
+	$validerBouton.on('click', function(){
+
+		var oldTitle = $('.montage-title .title').html();
 		var newTitle = $('.montage-title input').val();
 		$('.montage-title input').hide();
-		$('.montage-title h2').show().html(newTitle);
+		$('.montage-title .title').show().html(newTitle);
 		$(this).hide();
-		$('.montage-title .edit-btn').show();
+		$editerBouton.css("display", "inline-block");
+
 		socket.emit('titleChanged', {oldTitle: oldTitle, newTitle: newTitle, session: currentSession, project: currentProject});
 	});
 
-	$('.montage-title .edit-btn').on('click', function(){
-		$('.montage-title input').show().val($('.montage-title h2').html());
-		$('.montage-title h2').hide();
+	$('.montage-title .js--editerTitre').on( 'click', function() {
+		$('.montage-title input').show().val($('.montage-title .title').html());
+		$('.montage-title .title').hide();
 		$(this).hide();
-		$('.montage-title .publi-btn').show()
+		$validerBouton.css("display", "inline-block");
 	});
 
 	$('.submit-new-publi').on('click', function(){
@@ -62,7 +67,8 @@ function init(){
 	});
 */
 
-	$('body').on('click', '.js--edit_view', function(){
+	$('body').on('click', '.js--edit_view', function(e){
+  	e.preventDefault();
 		var namePubli = $(this).parent('.publi-folder').attr('data-publi');
 		console.log(namePubli);
 		$('.montage-edit').attr('data-publi', namePubli);
@@ -74,6 +80,11 @@ function init(){
 		$('.montage-edit').hide();
 	});
 
+
+	$(".js--publications").on( 'click', function(e) {
+  	e.preventDefault();
+  	$('body').attr( "data-publicationpane", $('body').attr('data-publicationPane') === 'open' ? '' : 'open');
+  });
 }
 
 function displayNewImage(image){
@@ -194,17 +205,18 @@ function onMontageChanged(){
 }
 
 function onPubliCreated(data){
+
 	var publiItem = $(".js--templates .publi-folder").clone(false);
+
 	var publiLink = convertToSlug(data.name);
+	var publiPath = '/'+currentSession+'/'+currentProject+'/publication/'+ publiLink;
+
 	publiItem
 		.attr('data-publi', publiLink)
-		.find('h2').html(data.name);
-
-	var publiPath = '/'+currentSession+'/'+currentProject+'/publication/'+ publiLink;
-	var viewButton = publiItem.find('.js--publi_view');
-
-	viewButton
-		.attr('href', publiPath);
+		.find('h2').html(data.name).end()
+		.find('.js--publi_view').attr('href', publiPath).end()
+		.find('.js--edit_view').attr('href', '').end()
+  ;
 
 	$('.montage-list ul').prepend(publiItem);
 	$('#modal-add-publi').foundation('reveal', 'close');
@@ -215,7 +227,7 @@ function onDisplayMontage(data){
 	var publiName = convertToSlug(data.name);
 	$('.montage-edit[data-publi="'+publiName+'"]')
 		.show()
-		.find('h2').html(data.name);
+		.find('.title').html(data.name);
 	if(data.html != 'none'){
 		$('.montage-edit[data-publi="'+publiName+'"]').find('.inner-montage').html(data.html);
 	}

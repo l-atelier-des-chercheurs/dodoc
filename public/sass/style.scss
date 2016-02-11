@@ -131,6 +131,8 @@ button{
   height: 40px;
   background-color: #ccc;
 
+  text-align: left;
+
   border-radius: 30px;
   padding: 8px;
   padding-right: 16px;
@@ -167,7 +169,7 @@ button{
   }
 
 
-  &_add, &_edit, &_publi, &_editProjet {
+  &_add, &_edit, &_publi, &_editProjet, &_addMedia {
     background-color: $rouge;
     color: white;
   }
@@ -179,19 +181,22 @@ button{
     background-color: #293275;
     color: white;
   }
-
+  &_accept, &_addText {
+    background-color: $bleuvert;
+    color: white;
+  }
 
   &_collapsed {
     overflow: hidden;
     float:left;
     padding-left: 0;
-    width:  160px;
+    width:  150px;
 
 
     transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out;
 
     &:not(:hover) {
-      width:  40px;
+      width:  44px;
       color: transparent;
       background-color: transparent;
     }

@@ -135,6 +135,25 @@ body.projets{
         position: absolute;
       }
     }
+
+
+    .last-medias {
+      @include grid-row;
+      @include clearfix();
+
+      .media {
+        @include grid-column(3);
+
+      }
+
+
+    }
+
+    .list-publi {
+
+
+
+    }
   }
 }
 

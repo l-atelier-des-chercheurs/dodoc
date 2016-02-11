@@ -123,7 +123,7 @@ function displayFolder(name, created, modified, image, statut){
 	  .find( '.project-link').attr( 'href', '/'+currentSession+'/'+formatName).end()
 	  .find( '.button-wrapper_capture').attr( 'href', '/'+currentSession+'/'+formatName+'/capture').end()
 	  .find( '.button-wrapper_bibli').attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque').end()
-	  .find( '.button-wrapper_publi').attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque#publi').end()
+	  .find( '.button-wrapper_publi').attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque/panneau-de-publications').end()
   ;
 
   if( modified === null)
