@@ -69,17 +69,21 @@ html
     div(id="modal-add-local" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
       h2#modalTitle.popoverTitle Importer un fichier depuis l'ordinateur
       form(onsubmit='return false;' class='add-publi-form lead')
-        input(type='text' class='new-publi' placeholder='Nom')
-        input(type="file" name="image")
-        input(type='submit' class='submit-new-publi' value='Valider')
+        //- input(type='text' class='new-publi' placeholder='Nom')
+        input(type='file' id='inputmedia' accept='image/*' placeholder='Associer une image')
+        input(type='submit' class='js--submit-new-local' value='Valider')
       a(class="close-reveal-modal" aria-label="Close") &#215;
 
     div(id="modal-add-text" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
       h2#modalTitle.popoverTitle Ajouter du texte
       form(onsubmit='return false;' class='add-publi-form lead')
-        input(type='text' class='new-text' placeholder='Nom')
+        input(type='text' class='new-text' placeholder='Titre')
         textarea(placeholder="Ajouter du texte ici")
-        input(type='submit' class='submit-new-text' value='Valider')
+        input(type='submit' class='js--submit-new-text' value='Valider')
+      a(class="close-reveal-modal" aria-label="Close") &#215;
+
+    div(id="modal-media-view" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+      .big-mediaContent
       a(class="close-reveal-modal" aria-label="Close") &#215;
 
     .js--templates
@@ -98,6 +102,10 @@ html
         .mediaContent
           audio(preload="none" controls)
             source()
+      li.media.media_text(data-type="text")
+        .mediaContent
+          h2.media-title
+          p.text
       li.publi-folder(data-publi="")
         .content
           h2.title
@@ -105,6 +113,19 @@ html
         +button('view_publication', '', 'isCollapsed')
       .js--delete-media-montage.btn.icon
         include templates/images/clear.svg
+      //- Pop up media
+      div.media-big_image(data-type="image")
+        .mediaContent
+          img
+      div.media-big_video(data-type="video")
+        .mediaContent
+          video(preload="none" controls)
+            source()
+      div.media-big_audio(data-type="audio")
+        .mediaContent
+          audio(preload="none" controls)
+            source()
+
 
     //- //footer
     include templates/footer.jade

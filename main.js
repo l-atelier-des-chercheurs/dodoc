@@ -55,6 +55,8 @@ module.exports = function(app, io){
 		socket.on("displayThisMontage", displayMontage);
 		socket.on("saveMontage", saveMontage);
 		socket.on("titleChanged", onTitleChanged);
+		socket.on("addText", onNewText);
+		socket.on("newImageLocal", onNewImage);
 
 		// P U B L I      P A G E
 		socket.on("displayPubli", displayPubli);
@@ -595,7 +597,6 @@ module.exports = function(app, io){
 			var jsonObj = JSON.parse(data);
 
 			var dir = "sessions/" + media.session + '/' + media.project +'/';
-			//console.log(dir);
 			fs.readdir(dir, function(err, files) {
 				var media = [];
 				if (err) {console.log(err)};
@@ -604,6 +605,7 @@ module.exports = function(app, io){
 				});
 				io.sockets.emit('listMedias', media, jsonObj);
 			});
+
 		}
 
 		function listPubli(data){
@@ -734,6 +736,28 @@ module.exports = function(app, io){
 				console.log("Titre Publication modifié");
 				io.sockets.emit("titleModified", {name: newName, old:oldName});
 			}
+		}
+
+		function onNewText(text){
+			console.log(text);
+			var currentDate = Date.now();
+			var jsonFile = 'sessions/' + text.session + '/'+ text.project+"/" +text.project+'.json';
+			var data = fs.readFileSync(jsonFile,"UTF-8");
+			var jsonObj = JSON.parse(data);
+			var jsonAdd = { "id" : currentDate, "titre":text.title, "contenu":text.text};
+			jsonObj["files"]["texte"].push(jsonAdd);
+			fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
+	      if(err) {
+	          console.log(err);
+	      } else {
+	          console.log("The file was saved!");
+	      }
+	    });
+	    io.sockets.emit("displayNewText", {id:currentDate, textTitle: text.title, textContent: text.text});
+		}
+
+		function onNewImageLocal(image){
+
 		}
 
 	// F I N    B I B L I    P A G E

@@ -7,6 +7,7 @@ var currentSession = app.session;
 var sessionName ;
 //get current project
 var currentProject = app.projet;
+var imageData = null;
 
 
 /* sockets */
@@ -16,6 +17,7 @@ socket.on('displayNewImage', displayNewImage);
 socket.on('displayNewVideo', displayNewVideo);
 socket.on('displayNewStopMotion', displayNewStopMotion);
 socket.on('displayNewAudio', displayNewAudio);
+socket.on('displayNewText', displayNewText);
 socket.on('listMedias', onListMedias);
 socket.on('listPublications', onPubliCreated);
 socket.on('publiCreated', onPubliCreated);
@@ -30,6 +32,8 @@ jQuery(document).ready(function($) {
 
 function init(){
 	dragAndDrop();
+	bigMedia();
+	uploadImage("#inputmedia");
 
 	$validerBouton = $('.montage-title .js--validerTitre');
 	$editerBouton = $('.montage-title .js--editerTitre');
@@ -58,15 +62,6 @@ function init(){
 		socket.emit('createPubli', {name: publiName, session:currentSession, project: currentProject});
 	});
 
-/*
-	$('body').on('click', '.publi-folder .content', function(){
-		var namePubli = $(this).parent('.publi-folder').attr('data-publi');
-		$('.montage-edit').attr('data-publi', namePubli);
-		console.log(namePubli);
-		socket.emit('displayThisMontage', {name:namePubli, session:currentSession, project: currentProject});
-	});
-*/
-
 	$('body').on('click', '.js--edit_view', function(e){
   	e.preventDefault();
 		var namePubli = $(this).parent('.publi-folder').attr('data-publi');
@@ -92,12 +87,38 @@ function init(){
   		$elementToDel.remove();
   		onMontageChanged();
   	});
-  	
+  });
+
+  // Ajouter du texte dans la bibliotheque
+  $('.js--submit-new-text').on('click',function(){
+  	var textTitle = $(this).parent('form').find('.new-text').val();
+  	var text = $(this).parent('form').find('textarea').val();
+  	console.log('addText');
+  	socket.emit('addText', {session: currentSession, project: currentProject, title: textTitle, text:text});
+  });
+
+  //Ajouter un fichier local dans la bibliothèque
+  $('.js--submit-new-local').on('click', function(){
+  	console.log('submit new local');
+  	if(imageData != null){
+			console.log('Une image a été ajoutée');
+			var f = imageData[0];
+			var reader = new FileReader();
+			reader.onload = function(evt){
+				socket.emit('newImageLocal', {session: currentSession, project: currentProject, data:evt.target.result});
+			};
+			reader.readAsDataURL(f);
+		}
+		else{
+			console.log("Pas d'image chargé");
+			$('#modal-add-local').foundation('reveal', 'close');
+		}
   });
 }
 
 function displayNewImage(image){
 	displayImage(currentSession, currentProject, image.title, image.file);
+	$('#modal-add-local').foundation('reveal', 'close');
 }
 
 function displayNewVideo(video){
@@ -110,6 +131,11 @@ function displayNewStopMotion(video){
 
 function displayNewAudio(audio){
 	displayAudio(currentSession, currentProject, audio.title, audio.file);
+}
+
+function displayNewText(text){
+	$('#modal-add-text').foundation('reveal', 'close');
+	displayText(currentSession, currentProject, text.id, text.textTitle, text.textContent);
 }
 
 
@@ -133,6 +159,14 @@ function onListMedias(array, json){
 			displayAudio(currentSession, currentProject, identifiant, array[i]);
 		}
 	}
+
+	//display text
+	for (var i=0;i<json.files.texte.length;i++) {
+		var textId = json.files.texte[i].id;
+		var textTitle = json.files.texte[i].titre;
+		var textContent = json.files.texte[i].contenu;
+		displayText(currentSession, currentProject, textId, textTitle, textContent);
+  }
 
 	$(".media").on("mouseenter", function(){
 		$(this).css("cursor", 'pointer');
@@ -185,6 +219,63 @@ function displayAudio(session, project, id, file){
     .find( 'source').attr( 'src', audioPath);
 
 	$('ul.medias-list').prepend(mediaItem);
+}
+
+function displayText(session, project, id, title, content){
+	var mediaItem = $(".js--templates .media_text").clone(false);
+	mediaItem.attr( 'id', id);
+	mediaItem
+		.find( 'p').html(content)
+		.end()
+		.find('h2').html(title);
+
+	$('.medias-list').prepend(mediaItem);
+}
+
+function bigMedia(){
+	// Au click sur un media
+  $('body').on('click', '.medias-list .media', function(){
+  	var typeMedia = $(this).attr("data-type");
+  	$('#modal-media-view').foundation('reveal', 'open');
+  	console.log(typeMedia);
+  	switch(typeMedia){
+  		case 'image':
+	  		var imagePath = $(this).find("img").attr("src");
+	  		var id = $(this).find("img").attr("id");
+				var mediaItem = $(".js--templates .media-big_image").clone(false);
+				mediaItem.attr( 'id', id);
+				mediaItem.find( 'img').attr('src', imagePath);
+				$('#modal-media-view .big-mediaContent').html(mediaItem);
+				break;
+			case 'video':
+			case 'stopmotion':
+	  		var id = $(this).find("img").attr("id");
+	  		var thumbPath = $(this).find("video").attr("poster");
+				var videoPath = $(this).find("source").attr("src");
+
+				var mediaItem = $(".js--templates .media-big_video").clone(false);
+
+				mediaItem
+				  .attr( 'id', id)
+			    .find( 'video').attr( 'poster', thumbPath)
+			    .find( 'source').attr( 'src', videoPath);
+
+				$('#modal-media-view .big-mediaContent').html(mediaItem);
+				break;
+			case 'audio':
+				var id = $(this).find("img").attr("id");
+				var audioPath = $(this).find("source").attr("src");
+
+				var mediaItem = $(".js--templates .media-big_audio").clone(false);
+				mediaItem
+				  .attr( 'id', id)
+			    .find( 'source').attr( 'src', audioPath);
+
+				$('#modal-media-view .big-mediaContent').html(mediaItem);
+				break;
+
+  	}
+  });
 }
 
 function dragAndDrop(){
@@ -253,6 +344,7 @@ function onTitleModified(data){
 	$('.publi-folder[data-publi="'+convertToSlug(data.old)+'"]').find('h2').html(data.name);
 	$('.publi-folder[data-publi="'+convertToSlug(data.old)+'"]').attr('data-publi', convertToSlug(data.name));
 }
+
 
 // Si un fichier existe déjà, affiche un message d'alerte
 function onFolderAlreadyExist(data){
