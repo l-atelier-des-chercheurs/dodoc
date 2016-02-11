@@ -92,7 +92,9 @@ function sendProjectData(data){
 			.find( '.js--edit_view', publiPath).attr('href', editPath).end()
 			.find( '.js--publi_view', publiPath).attr('href', publiPath).end()
 		;
+
 		$allPublis = $allPublis.add(publiItem);
+
 	}
 
   projectClone.find( '.list-publi').append( $allPublis);
