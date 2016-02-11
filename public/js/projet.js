@@ -31,7 +31,7 @@ function init(){
 function sendProjectData(data){
 	var name = data.json.name;
 	var statut = data.json.statut;
-	var image = data.json.image;
+	var image = data.image;
 	var created = transformDatetoString(data.json.created);
 	var modified = transformDatetoString(data.json.created);
 	var lastMedias = data.lastmedia;
@@ -43,10 +43,9 @@ function sendProjectData(data){
 	projectClone
 		.find( '.title').html( name).end()
 	  .attr( 'data-statut', statut)
+	  .find( '.title').unwrap().end()
 	  .find( '.statut-type').text( statut).end()
-
-
-	  .find( '.image-wrapper img').attr('src', image === true ? '/'+currentSession+'/'+formatName+'/'+formatName+'-thumb.jpg' : '').attr('alt', name).end()
+	  .find( '.image-wrapper img').attr('src', image === true ? './'+formatName+'-thumb.jpg' : '').attr('alt', name).end()
 	  .find( '.create-date').text( created).end()
 	  .find( '.modify-date').text( modified !== null ? modified : '').end()
 	  .find( '.title').text( name).end()
@@ -85,12 +84,12 @@ function sendProjectData(data){
 
 	for (var i = 0; i < arrayPubli.length; i++) {
 		var publiPath = '/'+currentSession+'/'+currentProject+'/publication/'+ convertToSlug(arrayPubli[i]);
-		var publiPath = '/'+currentSession+'/'+currentProject+'/bibliotheque?mode=publi&publi='+ convertToSlug(arrayPubli[i]);
+		var editPath = '/'+currentSession+'/'+currentProject+'/bibliotheque/panneau-de-publications#'+ convertToSlug(arrayPubli[i]);
 
 		var publiItem = $(".js--templates > .publi-folder").clone(false);
 		publiItem
 			.find( 'h2').html(arrayPubli[i]).end()
-			.find( '.js--edit_view', publiPath).attr('href', publiPath).end()
+			.find( '.js--edit_view', publiPath).attr('href', editPath).end()
 			.find( '.js--publi_view', publiPath).attr('href', publiPath).end()
 		;
 		$allPublis = $allPublis.add(publiItem);
