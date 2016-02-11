@@ -53,19 +53,19 @@ mixin button(typeOfButton, navOrButton, style)
       span Bibliothèque
 
   if( typeOfButton === 'publications')
-    a(href="/#{session}/#{projet}/bibliotheque#publi" title="Dodoc publi" class='button-wrapper_publi js--publications #{defaultClasses}')
+    a(href="/#{session}/#{projet}/bibliotheque/panneau-de-publications" title="Dodoc publi" class='button-wrapper_publi js--publications #{defaultClasses}')
       .btn.icon
         include images/publi.svg
       span Publications
 
   if( typeOfButton === 'view_publication')
-    a(href="/#{session}/#{projet}/bibliotheque/" title="Dodoc publi" class='button-wrapper_view js--publi_view #{defaultClasses}')
+    a(href="/#{session}/#{projet}/publication" title="Dodoc publi" class='button-wrapper_view js--publi_view #{defaultClasses}')
       .btn.icon
         include images/view.svg
       span Afficher
 
   if( typeOfButton === 'edit_publication')
-    a(href="/#{session}/#{projet}/bibliotheque#publi" title="Dodoc publi" class='button-wrapper_edit js--edit_view #{defaultClasses}')
+    a(href="/#{session}/#{projet}/publication" title="Dodoc publi" class='button-wrapper_edit js--edit_view #{defaultClasses}')
       .btn.icon
         include images/pen.svg
       span Afficher
