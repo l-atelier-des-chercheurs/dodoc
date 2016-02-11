@@ -32,7 +32,8 @@ module.exports = function(app,io,m){
       title : "Projets",
       session: session,
       folder: json.name,
-      statut : json.statut
+      statut : json.statut,
+      url: req.path
     });
   };
 
@@ -47,7 +48,8 @@ module.exports = function(app,io,m){
       folder: jsonDossier.name,
       statut : jsonDossier.statut,
       projet : projet,
-      projectName: jsonProjet.name
+      projectName: jsonProjet.name,
+      url: req.path
     });
   };
 
@@ -62,7 +64,8 @@ module.exports = function(app,io,m){
       folder: jsonDossier.name,
       statut : jsonDossier.statut,
       projet : projet,
-      projectName: jsonProjet.name
+      projectName: jsonProjet.name,
+      url: req.path
     });
   };
 
@@ -77,7 +80,8 @@ module.exports = function(app,io,m){
       folder: jsonDossier.name,
       statut : jsonDossier.statut,
       projet : projet,
-      projectName: jsonProjet.name
+      projectName: jsonProjet.name,
+      url: req.path,
     });
   };
 
@@ -95,7 +99,8 @@ module.exports = function(app,io,m){
       projet : projet,
       projectName: jsonProjet.name,
       publi: publi,
-      publiName: jsonPubli.name
+      publiName: jsonPubli.name,
+      url: req.path
     });
   };
 

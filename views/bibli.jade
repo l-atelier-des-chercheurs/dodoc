@@ -61,6 +61,13 @@ html
         input(type='submit' class='submit-new-publi' value='Valider')
       a(class="close-reveal-modal" aria-label="Close") &#215;
 
+    div(id="modal-add-local" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+      h2#modalTitle.popoverTitle Importer un fichier depuis l'ordinateur
+      form(action="/#{session}/#{projet}/bibliotheque" method="POST" enctype="multipart/form-data")
+        |Select an image to upload:
+        input(type="file" name="image")
+        input(type="submit" value="Importer une image")
+
     .js--templates
       li.media.media_image(data-type="image")
         .mediaContent
