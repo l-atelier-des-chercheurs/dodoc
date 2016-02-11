@@ -33,8 +33,8 @@ function init(){
 
 	// Modifier les projets
 	//Au click sur l'icone éditer
-	$('body').on('click', '.edit-icon', function(){
-		thisProject = $(this).parent();
+	$('body').on('click', '.js--edit-project-icon', function(){
+		thisProject = $(this).parents(".project");
 		modifyProject($(this));
 	});
 
@@ -110,7 +110,6 @@ function displayFolder(name, created, modified, image, statut){
 
   // slug
 	var formatName = convertToSlug(name);
-
 	var newProject = $(".js--templates > .project").clone(false);
 
   // customisation du projet
@@ -120,7 +119,8 @@ function displayFolder(name, created, modified, image, statut){
 	  .find( '.image-wrapper img').attr('src', image === true ? '/'+currentSession+'/'+formatName+'/'+formatName+'-thumb.jpg' : '').attr('alt', name).end()
 	  .find( '.create-date').text( created).end()
 	  .find( '.modify-date').text( modified !== null ? modified : '').end()
-	  .find( 'h2').text( name).end()
+	  .find( '.title').text( name).end()
+	  .find( '.project-link').attr( 'href', '/'+currentSession+'/'+formatName).end()
 	  .find( '.button-wrapper_capture').attr( 'href', '/'+currentSession+'/'+formatName+'/capture').end()
 	  .find( '.button-wrapper_bibli').attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque').end()
 	  .find( '.button-wrapper_publi').attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque#publi').end()
@@ -214,10 +214,10 @@ function onProjectModified(data){
 	$('#modal-modify-project').foundation('reveal', 'close');
 
 	if(statut == "terminé"){
-		$thisEl.find('.edit-icon').remove();
+		$thisEl.find('.js--edit-project-icon').remove();
 	}
 
-	$thisEl.find('h2').html(name);
+	$thisEl.find('h2').text(name);
 	$thisEl.find('.statut-type').attr("data-statut", statut).html(" "+statut);
 	$thisEl.find('.modify-date').html(modified);
 	if(data.image == true){

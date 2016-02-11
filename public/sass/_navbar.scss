@@ -185,8 +185,14 @@
 
     > .button-wrapper {
       float:right;
-      margin: 15px;
+      margin: 15px 5px;
       position: relative;
+
+      // buttons that are not wrapped in items are in float:right in the navbar. So the first of type is actually on the right
+      &:nth-of-type(1) {
+        margin-right: 15px;
+      }
+
 
     }
   }

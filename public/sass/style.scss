@@ -12,7 +12,6 @@
 
 @import "_variables.scss";
 @import "_navbar.scss";
-@import '_bibli';
 
 html {
 	margin:0;
@@ -168,7 +167,7 @@ button{
   }
 
 
-  &_add, &_edit, &_publi {
+  &_add, &_edit, &_publi, &_editProjet {
     background-color: $rouge;
     color: white;
   }
@@ -188,11 +187,13 @@ button{
     padding-left: 0;
     width:  160px;
 
-    transition: border-radius .4s, width .8s, background-color .6s;
+
+    transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out;
 
     &:not(:hover) {
-     width:  40px;
-     background-color: transparent;
+      width:  40px;
+      color: transparent;
+      background-color: transparent;
     }
 
     &.button-wrapper_without-bg {
@@ -426,142 +427,30 @@ body.index{
 .dossier {
 
   .content a:hover h2 {
-      background-color: #383838;
-      color: white;
+    background-color: $bleuvert;
+    color: white;
   }
+  .statut-type {
+    color: $bleuvert;
+  }
+
 
   &[data-statut="en cours"] {
     .content a:hover h2 {
-      background-color: $bleuvert;
+      background-color: $orange;
       color: white;
     }
 
     .statut-type {
-      color: $bleuvert;
+      color: $orange;
     }
   }
 }
 
-// F I N    I N D E X
+@import '_bibli';
 
+@import '_projets';
 
-// P R O J E T S
-body.projets{
-
-  #container{
-    $projectHeight : 150px;
-    padding:50px 0px;
-    width:100%;
-
-
-    .folder-wrapper {
-      @include clearfix();
-      margin-bottom:  30px;
-      .folder {
-        font-size: 3rem;
-        line-height: 1.2;
-        font-weight: normal;
-        font-weight: 300;
-        margin-top: 0;
-        margin-bottom: 32px;
-
-      }
-    }
-
-
-    .add-project-wrapper {
-      margin-bottom:  50px;
-    }
-    .project-list{
-      @include clearfix();
-      margin-left: 0;
-      .project{
-        margin-bottom: 50px;
-
-        height: 0;
-        padding-bottom: 15%;
-
-        &[data-statut="en cours"] {
-          .statut-type {
-            color: $bleuvert;
-          }
-        }
-
-        .project-inside {
-
-          @include style--dossierBorders;
-          border-bottom: 0;
-
-          margin-left: 0.9375rem;
-          margin-right: 0.9375rem;
-
-          position: absolute;
-          top: 0; bottom: 0;  left: 0;  right: 0;
-
-        }
-
-        .edit-icon{
-          position:absolute;
-          top:-16px;
-          right: 0;
-          z-index:5;
-        }
-        .left-content{
-          background-color:#FFF;
-          overflow-y: scroll;
-          height: 100%;
-          padding: 0;
-          padding-top:  5px;
-
-          .content{
-            h2{
-              font-weight: bold;
-              font-size: $h2Size;
-              margin-bottom:  25px;
-            }
-            .meta-data{
-              font-style:italic;
-              font-family: "share", monospace;
-
-              span:nth-of-type(1) {
-                margin-right: 5px;
-              }
-              .created{
-                .create-date{
-                  font-weight:bold;
-                }
-              }
-              .modified{
-                text-align: left;
-                .modify-date{
-                  font-weight:bold;
-                }
-              }
-            }
-          }
-          .button-to-pages {
-            padding: 0;
-            text-align: right;
-          }
-        }
-        .image-wrapper{
-          overflow: hidden;
-          padding: 0;
-
-          height: 100%;
-
-          img {
-            transform: translateY(-50%);
-            top: 50%;
-            position: absolute;
-          }
-        }
-      }
-    }
-  }
-}
-
-// F I N     P R O J E T S
 
 // C A P T U R E
 body.capture{

@@ -1,3 +1,5 @@
+include templates/buttons.jade
+
 doctype html
 html
   head
@@ -6,29 +8,12 @@ html
   body.bibli
     .navbar-container
       header.navbar
-        .logo
-          a(href="/" title="Dodoc")
-            include templates/images/dodoc-logo.svg
-
-
-        .item
-          a(href="/#{session}" title="Dodoc").button-wrapper.button-wrapper_dossier
-            .btn.icon
-              include templates/images/dossier.svg
-            span #{session}
-        .item
-          a(href="/#{session}/#{projet}" title="Dodoc").button-wrapper.button-wrapper_projet
-            span #{projet}
-        .item
-          a(href="/#{session}/#{projet}/bibliotheque" title="Dodoc bibliotheque").button-wrapper.button-wrapper_bibli
-            .btn.icon
-              include templates/images/bibli.svg
-            span Bibliothèque
-
-        a(href="/#{session}/#{projet}/capture" title="Dodoc page de capture").button-wrapper.button-wrapper_capture.button-wrapper_collapsed
-          .btn.icon
-            include templates/images/record.svg
-          span Capture
+        +logo()
+        +button( 'dossier', 'isNav')
+        +button( 'projet', 'isNav')
+        +button( 'bibli', 'isNav')
+        +button('publications', '', 'isCollapsed')
+        +button('capture', '', 'isCollapsed')
 
     .bibli-buffer.small-6.medium-6.large-6.columns
       ul.medias-list
@@ -48,7 +33,6 @@ html
 
 
       .montage-list
-
         h1.legende Liste des publications
         a(href="" data-reveal-id="modal-add-publi").button-wrapper.button-wrapper_add
           .btn.icon
@@ -96,7 +80,6 @@ html
       li.publi-folder(data-publi="")
         .content
           h2
-
 
     //- //footer
     include templates/footer.jade
