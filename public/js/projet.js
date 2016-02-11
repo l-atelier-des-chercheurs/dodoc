@@ -82,6 +82,7 @@ function sendProjectData(data){
 	projectClone.find( '.last-medias').append( $allMedias);
 
 	var $allPublis = $();
+
 	for (var i = 0; i < arrayPubli.length; i++) {
 		var publiPath = '/'+currentSession+'/'+currentProject+'/publication/'+ convertToSlug(arrayPubli[i]);
 		var publiPath = '/'+currentSession+'/'+currentProject+'/bibliotheque?mode=publi&publi='+ convertToSlug(arrayPubli[i]);

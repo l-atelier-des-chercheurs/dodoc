@@ -13,6 +13,7 @@ module.exports = function(app,io,m){
   app.get("/:session/:projet", getProject);
   app.get("/:session/:projet/capture", getCapture);
   app.get("/:session/:projet/bibliotheque", getBibli);
+  app.get("/:session/:projet/bibliotheque/panneau-de-publications", getBibliPubli);
   app.get("/:session/:projet/publication/:publi", getPubli);
 
 
@@ -74,6 +75,23 @@ module.exports = function(app,io,m){
     var projet = req.param('projet');
     var jsonDossier= readJsonFile('sessions/'+ session + '/' + session + '.json');
     var jsonProjet = readJsonFile('sessions/'+ session + '/' + projet + '/' + projet + '.json');
+    res.render("bibli", {
+      title : "Bibliotheque de médias",
+      session: session,
+      folder: jsonDossier.name,
+      statut : jsonDossier.statut,
+      projet : projet,
+      projectName: jsonProjet.name,
+      url: req.path,
+    });
+  };
+
+  function getBibliPubli(req, res) {
+    var session = req.param('session');
+    var projet = req.param('projet');
+    var jsonDossier= readJsonFile('sessions/'+ session + '/' + session + '.json');
+    var jsonProjet = readJsonFile('sessions/'+ session + '/' + projet + '/' + projet + '.json');
+    console.log(req.path);
     res.render("bibli", {
       title : "Bibliotheque de médias",
       session: session,
