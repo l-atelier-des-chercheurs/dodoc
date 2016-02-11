@@ -141,7 +141,6 @@ body.projets{
       @include grid-row;
       @include clearfix();
 
-
       .media {
         @include grid-column(3);
 

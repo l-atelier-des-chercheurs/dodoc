@@ -78,7 +78,7 @@ function init(){
   $("#start-sm-btn").on('click', startStopMotion);
   $("#capture-sm-btn").on('click', onStopMotionDirectory);
   $("#stop-sm-btn").on('click', stopStopMotion);
-  
+
   $("#audio").on('click', function(e){
     audioCapture("click");
   });
@@ -181,15 +181,15 @@ function init(){
 }
 
 function changeMedia(){
-  $(".btn-choice #photo").on("click", function(){ 
-    photoDisplay();       
+  $(".btn-choice #photo").on("click", function(){
+    photoDisplay();
     $(".btn-choice button").removeClass('active');
-    $(this).addClass("active"); 
+    $(this).addClass("active");
   });
   $(".btn-choice #video-btn").on("click", function(){
     videoDisplay();
     $(".btn-choice button").removeClass('active');
-    $(this).addClass("active"); 
+    $(this).addClass("active");
   });
   $(".btn-choice #stopmotion").on("click", function(){
     stopMotionDisplay();
@@ -201,7 +201,7 @@ function changeMedia(){
     $(".btn-choice button").removeClass('active');
     $(this).addClass("active");
   });
-  
+
   //Animation back when changing media
   if(!$("#stopmotion").hasClass('active')){
     console.log('stop motion');
@@ -210,7 +210,7 @@ function changeMedia(){
   else{
     $(".btn-choice").off('click');
   }
-  
+
   $("body").keypress(function(e){
     var code = e.keyCode || e.which;
     var $activeButton = $(".btn-choice").find('.active');
@@ -294,7 +294,7 @@ function stopMotionDisplay(){
   $('.stopmotion-capture').css('display','block');
   $('.audio-capture').css('display','none');
   $(".son").css("display", "none");
-  $('#video').show();    
+  $('#video').show();
   $(".stopmotion-choice").fadeIn('slow', function(){
     $(this).fadeOut('slow');
   });
@@ -421,7 +421,7 @@ function recordingVideo(click){
     $('#camera-preview').hide();
     $('.screenshot .canvas-view').hide();
     recordingFeedback();
-  
+
     // Initialise getUserMedia
     navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
     navigator.getMedia(
@@ -557,8 +557,8 @@ function onStopMotionDirectory(){
   var dir = "sessions/" + currentSession + "/"+ currentProject+"/01-stopmotion";
   $("#stop-sm-btn").show();
   $('.screenshot .canvas-view').show();
-  $('.screenshot .instructions-stopmotion').remove(); 
-  $(".screenshot .meta-stopmotion").show();   
+  $('.screenshot .instructions-stopmotion').remove();
+  $(".screenshot .meta-stopmotion").show();
   takepictureMotion(dir);
 }
 
@@ -617,7 +617,7 @@ function stopStopMotion(){
 
 //Capture le flux audio
 function audioCapture(code){
-  //Variables     
+  //Variables
   var mediaStream = null;
 
   var startRecordingBtn = document.getElementById('start-recording-btn');
@@ -687,10 +687,10 @@ function audioCapture(code){
       sarahCouleur = "gray";
     }
   }
-  
+
   function startRecordAudio(){
     backAnimation();
-    
+
     // Initialise getUserMedia
     navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
     navigator.getMedia(
@@ -734,7 +734,7 @@ function audioCapture(code){
     var canvas = document.querySelector('#canvas-equalizer');
     var canvasAudio = document.querySelector('#canvas-audio');
     var context = canvas.getContext('2d');
-    var widthAudio = canvas.width; 
+    var widthAudio = canvas.width;
     var heightAudio = canvas.height;
     context.clearRect(0, 0, widthAudio, heightAudio);
     context.drawImage(canvasAudio, 0, 0, widthAudio, heightAudio);
@@ -799,14 +799,14 @@ function createEqualizer(event){
   } catch(e) {
       console.log('Web Audio API is not supported in this browser');
   }
-  
+
   startEqualizer();
 
   function startEqualizer(){
     // e.preventDefault();
-    clearCanvas();     
+    clearCanvas();
     // Initialise getUserMedia
-    navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia); 
+    navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
     navigator.getMedia(
       {
         video: false,
@@ -903,7 +903,7 @@ function onMediaCreated(file){
 
 function submitData(data, send){
 	animateWindows();
-	socket.emit(send, {data: data, session: currentSession, project:currentProject}); 
+	socket.emit(send, {data: data, session: currentSession, project:currentProject});
 }
 
 //animation des fenêtres à la capture

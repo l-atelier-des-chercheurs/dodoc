@@ -6,12 +6,11 @@ html
     link(rel='stylesheet', href='/bower_components/dragula.js/dist/dragula.min.css')
     include templates/head.jade
 
-  body.bibli(data-publicationPane= url)
-
-  = 'url ? ' + url
-  - if( url.indexOf('#publi'))
-      | PLOP
-
+- if( url.indexOf( 'panneau-de-publications') > 0) {
+  body.bibli(data-publicationPane="open")
+- } else {
+  body.bibli(data-publicationPane)
+- }
 
     .navbar-container
       header.navbar

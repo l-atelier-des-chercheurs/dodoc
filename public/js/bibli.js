@@ -24,7 +24,6 @@ socket.on('titleModified', onTitleModified);
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 
 jQuery(document).ready(function($) {
-
 	$(document).foundation();
 	init();
 });
@@ -68,7 +67,8 @@ function init(){
 	});
 */
 
-	$('body').on('click', '.js--edit_view', function(){
+	$('body').on('click', '.js--edit_view', function(e){
+  	e.preventDefault();
 		var namePubli = $(this).parent('.publi-folder').attr('data-publi');
 		console.log(namePubli);
 		$('.montage-edit').attr('data-publi', namePubli);
@@ -81,7 +81,8 @@ function init(){
 	});
 
 
-	$(".js--publications").on( 'click', function() {
+	$(".js--publications").on( 'click', function(e) {
+  	e.preventDefault();
   	$('body').attr( "data-publicationpane", $('body').attr('data-publicationPane') === 'open' ? '' : 'open');
   });
 }
@@ -204,17 +205,18 @@ function onMontageChanged(){
 }
 
 function onPubliCreated(data){
+
 	var publiItem = $(".js--templates .publi-folder").clone(false);
+
 	var publiLink = convertToSlug(data.name);
+	var publiPath = '/'+currentSession+'/'+currentProject+'/publication/'+ publiLink;
+
 	publiItem
 		.attr('data-publi', publiLink)
-		.find('h2').html(data.name);
-
-	var publiPath = '/'+currentSession+'/'+currentProject+'/publication/'+ publiLink;
-	var viewButton = publiItem.find('.js--publi_view');
-
-	viewButton
-		.attr('href', publiPath);
+		.find('h2').html(data.name).end()
+		.find('.js--publi_view').attr('href', publiPath).end()
+		.find('.js--edit_view').attr('href', '').end()
+  ;
 
 	$('.montage-list ul').prepend(publiItem);
 	$('#modal-add-publi').foundation('reveal', 'close');

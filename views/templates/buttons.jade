@@ -68,7 +68,7 @@ mixin button(typeOfButton, navOrButton, style)
     a(href="/#{session}/#{projet}/publication" title="Dodoc publi" class='button-wrapper_edit js--edit_view #{defaultClasses}')
       .btn.icon
         include images/pen.svg
-      span Afficher
+      span Éditer
 
   if( typeOfButton === 'validerTitre')
     a(href="#" title="Dodoc publi" class='button-wrapper_accept js--validerTitre #{defaultClasses}')
@@ -93,12 +93,6 @@ mixin button(typeOfButton, navOrButton, style)
       .btn.icon
         include images/add.svg
       span Ajouter un média
-
-  if( typeOfButton === 'editerTitre')
-    a(href="#" title="Dodoc publi" class='button-wrapper_edit js--editerTitre #{defaultClasses}')
-      .btn.icon
-        include images/pen.svg
-      span Éditer le titre
 
 
 
