@@ -21,9 +21,11 @@ html
       .btn-medias.small-1.medium-1.large-1.columns
         ul
           li.--js-btn-medias-text.btn.icon
-            include templates/images/text.svg
+            a(href="" data-reveal-id="modal-add-text")
+              include templates/images/text.svg
           li.--js-btn-medias-add.btn.icon
-            include templates/images/add.svg
+            a(href="" data-reveal-id="modal-add-local")
+              include templates/images/add.svg
           li.--js-btn-medias-publications.btn.icon
             include templates/images/publi.svg
 
@@ -63,10 +65,20 @@ html
 
     div(id="modal-add-local" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
       h2#modalTitle.popoverTitle Importer un fichier depuis l'ordinateur
-      form(action="/#{session}/#{projet}/bibliotheque" method="POST" enctype="multipart/form-data")
-        |Select an image to upload:
+      form(onsubmit='return false;' class='add-publi-form lead')
+        input(type='text' class='new-publi' placeholder='Nom')
         input(type="file" name="image")
-        input(type="submit" value="Importer une image")
+        input(type='submit' class='submit-new-publi' value='Valider')
+      a(class="close-reveal-modal" aria-label="Close") &#215;
+
+    div(id="modal-add-text" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+      h2#modalTitle.popoverTitle Ajouter du texte
+      form(onsubmit='return false;' class='add-publi-form lead')
+        input(type='text' class='new-text' placeholder='Nom')
+        textarea(placeholder="Ajouter du texte ici")
+        input(type='submit' class='submit-new-text' value='Valider')
+      a(class="close-reveal-modal" aria-label="Close") &#215;
+
 
     .js--templates
       li.media.media_image(data-type="image")
