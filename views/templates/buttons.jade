@@ -20,7 +20,7 @@ mixin button(typeOfButton, navOrButton, style)
 
   if( typeOfButton === 'projet')
     a(href="/#{session}/#{projet}" title="Dodoc" class='button-wrapper_projet #{defaultClasses}')
-      span #{projet}
+      span #{projectName}
 
   if( typeOfButton === 'nouveauDossier')
     a(href="#" data-reveal-id="modal-add-folder" class='button-wrapper_add #{defaultClasses}')
