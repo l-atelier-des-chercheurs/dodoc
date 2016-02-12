@@ -70,7 +70,7 @@ function init(){
 		socket.emit('displayThisMontage', {name:namePubli, session:currentSession, project: currentProject});
 	});
 
-	$('body').on('click', '.publi-close', function(){
+	$('body').on('click', '.js--backButton', function(){
 		$('.montage-inner').empty();
 		$('.montage-edit').hide();
 	});
@@ -83,7 +83,7 @@ function init(){
 
   $('body').on('click', '.js--delete-media-montage', function(){
   	var $elementToDel = $(this).parent("li.media");
-  	$elementToDel .fadeOut('slow',function(){
+  	$elementToDel .slideUp( 600,function(){
   		$elementToDel.remove();
   		onMontageChanged();
   	});
@@ -134,15 +134,21 @@ function displayNewAudio(audio){
 }
 
 function displayNewText(text){
+
+  debugger;
 	$('input.new-text').val('');
 	$('#modal-add-text textarea').val('');
 	$('#modal-add-text').foundation('reveal', 'close');
 	var mediaItem = $(".js--templates .media_text").clone(false);
 	mediaItem.attr( 'id', text.id);
 	mediaItem
-		.find( 'p').html(text.textContent)
+		.find( 'p')
+		  .html(text.textContent)
 		.end()
-		.find('h3').html(text.textTitle);
+		.find('h3')
+		  .html(text.textTitle)
+		end()
+  ;
 
 	//$(".medias-list li:first-child").after(mediaItem);
 	//$(mediaItem).insertAfter(".medias-list li:first-child");
@@ -325,6 +331,7 @@ function dragAndDrop(){
 	.on('drop', function(el, target, source, sibling){
   	// si le drop a bien réussi
     if( target !== null) {
+      debugger;
       $(el).removeClass("gu-transit");
       var deleteMedia = $(".js--templates .js--delete-media-montage").clone(false);
       $(el).append(deleteMedia);

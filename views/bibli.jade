@@ -18,7 +18,6 @@ html
         +button( 'dossier', 'isNav')
         +button( 'projet', 'isNav')
         +button( 'bibli', 'isNav')
-        +button('publications', '', 'isCollapsed')
         +button('capture', '', 'isCollapsed')
 
     .bibli-buffer
@@ -46,10 +45,10 @@ html
         ul
 
       .montage-edit
-        .publi-close.btn.icon
-          include templates/images/back.svg
-        .publi-view.btn.icon
+        .montage-btn
+          +button('backButton', '', 'isCollapsed')
           +button('view_publication', '', 'isCollapsed')
+
         .montage-title
           input(type="text" placeholder="Titre")
           h2.title

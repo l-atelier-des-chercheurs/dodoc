@@ -13,6 +13,7 @@
 @import "_variables.scss";
 @import "_navbar.scss";
 @import "_popover.scss";
+@import "_publi.scss";
 
 html {
 	margin:0;
@@ -176,11 +177,11 @@ button{
   }
 
 
-  &_add, &_edit, &_publi, &_editProjet, &_addMedia {
+  &_add, &_edit, &_publi, &_editProjet, &_addMedia, &_backButton {
     background-color: $rouge;
     color: white;
   }
-  &_capture, &_view, &_deleteFolder {
+  &_capture, &_view, &_deleteFolder, &_deleteMedia {
     background-color: #FFB520;
     color: white;
   }
