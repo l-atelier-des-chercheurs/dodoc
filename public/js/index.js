@@ -253,6 +253,7 @@ function removeFolder(){
 //Remove the folder from list
 function onFolderRemoved(){
 	thisFolder.remove();
+	location.reload();
 }
 
 /* sockets */
