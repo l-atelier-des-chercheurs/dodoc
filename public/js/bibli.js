@@ -142,7 +142,7 @@ function displayNewText(text){
 	mediaItem
 		.find( 'p').html(text.textContent)
 		.end()
-		.find('h2').html(text.textTitle);
+		.find('h3').html(text.textTitle);
 
 	//$(".medias-list li:first-child").after(mediaItem);
 	$(mediaItem).insertAfter(".medias-list li:first-child");

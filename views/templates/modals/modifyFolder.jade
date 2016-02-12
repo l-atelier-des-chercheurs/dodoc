@@ -6,9 +6,9 @@ div(id="modal-modify-folder" class="reveal-modal" data-reveal aria-labelledby="m
   form(onsubmit="return false;" class="modify-folder-form")
     input(type="text" class="modify-folder" value)
     select.modify-statut(name="statut")
-      option(value='en-cours')
+      option(value='en cours')
         | en cours
-      option(value='termine')
+      option(value='terminé')
         | terminé
     input(type="submit" class="submit-modify-folder" value="Valider")
     +button('deleteFolder', '', 'isCollapsed')

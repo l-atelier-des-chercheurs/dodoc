@@ -59,6 +59,16 @@
   }
 
 
+  textarea {
+    border: none;
+    border-bottom: 2px solid #ccc;
+    box-shadow: none;
+    padding-left: .6em;
+    font-size: 1em;
+    min-height: 3.3em;
+    background-color: #eee;
+  }
+
 
 // file picker
   .inputfile {
@@ -171,7 +181,7 @@ input[type="text"], select {
   border: none;
   border-bottom: 2px solid #ccc;
   box-shadow: none;
-  padding-left: .3em;
+  padding-left: .6em;
   font-size: 1.3em;
   height: 2.3em;
   background-color: #eee;
