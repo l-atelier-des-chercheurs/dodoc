@@ -73,7 +73,7 @@ mixin button(typeOfButton, navOrButton, style)
       span Publications
 
   if( typeOfButton === 'view_publication')
-    a(href="/#{session}/#{projet}/publication" title="Dodoc publi" class='button-wrapper_view js--publi_view #{defaultClasses}')
+    a(href="/#{session}/#{projet}/publication" title="Dodoc publi" class='button-wrapper_view js--publi_view #{defaultClasses}' target="_blank")
       .btn.icon
         include images/view.svg
       span Afficher

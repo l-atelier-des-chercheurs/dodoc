@@ -106,7 +106,6 @@ function onListFolder(data){
 	else{var modifiedDate = data.modified;}
 	var statut = data.statut;
 	var nb_projets = data.nb_projets;
-
 	displayFolder(folderName, createdDate, modifiedDate, statut, nb_projets);
 }
 

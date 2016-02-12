@@ -16,7 +16,7 @@
     "gm": "*",
     "i18n": "^0.5.0",
     "jade": "*",
-    "markdown": "*",
+    "markdown": "^0.5.0",
     "phantom": "*",
     "recordrtc-socketio": "*",
     "serve-favicon": "^2.3.0",
