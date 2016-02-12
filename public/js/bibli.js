@@ -172,7 +172,7 @@ function onListMedias(array, json){
 			displayVideo(currentSession, currentProject, identifiant, array[i].file);
 		}
 		if(extension == ".mp4"){
-			displayVideo(currentSession, currentProject, identifiant, array[i].file);
+			displayStopMotion(currentSession, currentProject, identifiant, array[i].file);
 		}
 		if(extension == ".wav"){
 			displayAudio(currentSession, currentProject, identifiant, array[i].file);
@@ -221,6 +221,7 @@ function displayVideo(session, project, id, file){
 
 function displayStopMotion(session, project, id, file){
 
+	console.log('display stop motion');
 	var thumbPath = '/'+session + '/'+ project+ '/'+id +'-thumb.png';
 	var videoPath = '/'+session +'/'+ project+ '/' + file;
 
