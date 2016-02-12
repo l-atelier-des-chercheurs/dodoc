@@ -217,17 +217,20 @@ function onFolderModified(data){
 	var name = data.name;
 	var statut = data.statut;
 	var modified = transformDatetoString(data.modified);
-	var parent = $thisEl;
+	var created = $thisEl.find('.create-date').html();;
+	var nbProj = $thisEl.find('.numero-projet').html();
 	$('#modal-modify-folder').foundation('reveal', 'close');
 
 	if(statut == "terminé"){
 		$thisEl.find('.edit-icon').remove();
 	}
-
-	$thisEl.find('h2').html(name);
-	$thisEl.find('.statut-type').html(" "+statut);
-	$thisEl.find('.modify-date').html(modified);
-	$thisEl.find('.folder-link').attr('href', '/'+convertToSlug(name));
+	location.reload();
+	// $thisEl.remove();
+	// displayFolder(name, created, modified, statut, nbProj)
+	// $thisEl.find('h2').html(name);
+	// $thisEl.find('.statut-type').html(" "+statut);
+	// $thisEl.find('.modify-date').html(modified);
+	// $thisEl.find('.folder-link').attr('href', '/'+convertToSlug(name));
 }
 
 //Suppression du dossier
@@ -250,6 +253,7 @@ function removeFolder(){
 //Remove the folder from list
 function onFolderRemoved(){
 	thisFolder.remove();
+	location.reload();
 }
 
 /* sockets */
