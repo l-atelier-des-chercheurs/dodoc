@@ -195,7 +195,7 @@ function onListMedias(array, json){
 }
 
 function displayImage(session, project, id, file){
-	var imagePath = "/" +session +"/"+ project+ "/"+ file;
+	var imagePath = "../"+ file;
 	var mediaItem = $(".js--templates .media_image").clone(false);
 	mediaItem.attr( 'id', id);
 	mediaItem.find( 'img').attr('src', imagePath);
@@ -206,8 +206,8 @@ function displayImage(session, project, id, file){
 }
 
 function displayVideo(session, project, id, file){
-	var thumbPath = '/'+session + '/'+ project+ '/'+id +'-thumb.png';
-	var videoPath = '/'+session +'/'+ project+ '/' + file;
+	var thumbPath = '../'+id +'-thumb.png';
+	var videoPath = '../' + file;
 
 	var mediaItem = $(".js--templates .media_video").clone(false);
 	mediaItem
@@ -222,8 +222,8 @@ function displayVideo(session, project, id, file){
 function displayStopMotion(session, project, id, file){
 
 	console.log('display stop motion');
-	var thumbPath = '/'+session + '/'+ project+ '/'+id +'-thumb.png';
-	var videoPath = '/'+session +'/'+ project+ '/' + file;
+	var thumbPath = '../'+id +'-thumb.png';
+	var videoPath = '../' + file;
 
 	var mediaItem = $(".js--templates .media_stopmotion").clone(false);
 	mediaItem
@@ -236,7 +236,7 @@ function displayStopMotion(session, project, id, file){
 }
 
 function displayAudio(session, project, id, file){
-	var audioPath = '/'+session +'/'+ project+ '/' + file;
+	var audioPath = '../' + file;
 
 	var mediaItem = $(".js--templates .media_audio").clone(false);
 	mediaItem
@@ -363,7 +363,6 @@ function onDisplayMontage(data){
 	else{
 		$('.montage-edit[data-publi="'+publiName+'"]').find('.inner-montage').html('');
 	}
-
 }
 
 function onTitleModified(data){

@@ -7,6 +7,11 @@ var currentSession = app.session;
 //get current project
 var currentProject = app.projet;
 
+var thisProjectName;
+var thisProject;
+var imageData = null;
+var $thisEl;
+
 /* sockets */
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
@@ -14,18 +19,16 @@ socket.on('sendProjectData', sendProjectData);
 
 
 jQuery(document).ready(function($) {
+	$(document).foundation();
 	init();
-
-
-	$('body').on('click', '.js--edit-project-icon', function(){
-		thisProject = $(this).parents(".project");
-		modifyProject($(this));
-	});
 
 });
 
 function init(){
-
+	$('body').on('click', '.js--edit-project-icon', function(){
+		thisProject = $(this).parents(".project");
+		modifyProject($(this));
+	});
 }
 
 function sendProjectData(data){
@@ -51,7 +54,7 @@ function sendProjectData(data){
 	  .find( '.title').text( name).end()
 	  .find( '.project-link').attr( 'href', '/'+currentSession+'/'+formatName).end()
 	  .find( '.button-wrapper_capture').attr( 'href', '/'+currentSession+'/'+formatName+'/capture').end()
-	  .find( '.button-wrapper_bibli').attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque').end()
+	  .find( '.button-wrapper_bibli').attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque/medias').end()
 	  .find( '.button-wrapper_publi').attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque/panneau-de-publications').end()
 
 		.find( '.js--publi_view', publiPath).attr('href', publiPath).end()
@@ -152,7 +155,7 @@ function displayAudio(session, project, id, file){
 
 function modifyProject($this){
 	$("#container.row #modal-modify-project").empty();
-	thisProjectName = $this.parents(".project").find('h2').text();
+	thisProjectName = $this.parents('.project').find('.project-inside').find('h2').text();
 
 	var statut = $this.parent().attr("data-statut");
 	var inputNameHtml = "<input type='text' class='modify-project' value='"+thisProjectName+"'></input>";

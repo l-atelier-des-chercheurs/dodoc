@@ -12,7 +12,7 @@ module.exports = function(app,io,m){
   app.get("/:session", getFolder);
   app.get("/:session/:projet", getProject);
   app.get("/:session/:projet/capture", getCapture);
-  app.get("/:session/:projet/bibliotheque", getBibli);
+  app.get("/:session/:projet/bibliotheque/medias", getBibli);
   app.get("/:session/:projet/bibliotheque/panneau-de-publications", getBibliPubli);
   app.get("/:session/:projet/publication/:publi", getPubli);
 
