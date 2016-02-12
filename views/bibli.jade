@@ -48,6 +48,8 @@ html
       .montage-edit
         .publi-close.btn.icon
           include templates/images/back.svg
+        .publi-view.btn.icon
+          +button('view_publication', '', 'isCollapsed')
         .montage-title
           input(type="text" placeholder="Titre")
           h2.title

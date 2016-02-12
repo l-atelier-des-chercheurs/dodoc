@@ -350,9 +350,12 @@ function onPubliCreated(data){
 
 function onDisplayMontage(data){
 	var publiName = convertToSlug(data.name);
+	var publiPath = '/'+currentSession+'/'+currentProject+'/publication/'+publiName;
 	$('.montage-edit[data-publi="'+publiName+'"]')
 		.show()
-		.find('.title').html(data.name);
+		.find('.title').html(data.name)
+		.end()
+		.find('.js--publi_view').attr('href', publiPath);
 	if(data.html != 'none'){
 		$('.montage-edit[data-publi="'+publiName+'"]').find('.inner-montage').html(data.html);
 	}
