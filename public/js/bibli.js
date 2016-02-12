@@ -294,6 +294,18 @@ function bigMedia(){
 
 				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;
+			case 'text':
+				console.log($(this));
+				var mediaItem = $(".js--templates .media-big_text").clone(false);
+				var title = $(this).find('h2').html();
+				var texte = $(this).find('p').html();
+				mediaItem
+					.find('.media-title').html(title)
+					.end()
+					.find('.text').html(texte)
+
+				$('#modal-media-view .big-mediaContent').html(mediaItem);
+				break;
 
   	}
   });
