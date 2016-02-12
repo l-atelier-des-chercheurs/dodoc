@@ -145,8 +145,8 @@ function displayNewText(text){
 		.find('h2').html(text.textTitle);
 
 	//$(".medias-list li:first-child").after(mediaItem);
-	$(mediaItem).insertAfter(".medias-list li:first-child");
-	//$('.medias-list').prepend(mediaItem);
+	//$(mediaItem).insertAfter(".medias-list li:first-child");
+	$('.medias-list').prepend(mediaItem);
 }
 
 
@@ -166,7 +166,9 @@ function onListMedias(array, json){
   	var extension = array[i].extension;
   	var identifiant =  array[i].id;
 		if(extension == ".jpg"){
-			displayImage(currentSession, currentProject, identifiant, array[i].file);
+			if(array[i].file != currentProject+'-thumb.jpg'){
+				displayImage(currentSession, currentProject, identifiant, array[i].file);
+			}
 		}
 		if(extension == ".webm"){
 			displayVideo(currentSession, currentProject, identifiant, array[i].file);

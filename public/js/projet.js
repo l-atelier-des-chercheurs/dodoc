@@ -16,6 +16,9 @@ var $thisEl;
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
 socket.on('sendProjectData', sendProjectData);
+socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
+socket.on('projectModified', onProjectModified); //Quand on reçoit les modification du projet
+socket.on('folderRemoved', onFolderRemoved); // Quand le dossier a été supprimé sur le serveur
 
 
 jQuery(document).ready(function($) {
@@ -227,6 +230,7 @@ function submitModifyFolder($button, send, oldName, oldStatut){
 
 // On reçoit les mofication du projet
 function onProjectModified(data){
+	console.log(data);
 	var name = data.name;
 	var statut = data.statut;
 	var modified = transformDatetoString(data.modified);
@@ -275,6 +279,17 @@ function removeFolder(){
 	  	$('#modal-modify-folder').foundation('reveal', 'open');
 		});
 	});
+}
+
+// Si un fichier existe déjà, affiche un message d'alerte
+function onFolderAlreadyExist(data){
+	alert("Le nom de dossier " +data.name+ " existe déjà. Veuillez trouvez un autre nom.");
+	$('.new-project').focus();
+}
+
+//Remove the folder from list
+function onFolderRemoved(){
+	thisProject.remove();
 }
 
 
