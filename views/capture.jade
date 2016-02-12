@@ -18,24 +18,24 @@ html
 
 
     div#container.row
-      div.container-inner.small-6
-        div.media-choice.row
-          div.btn-choice.small-12
-            div.row
-              button#photo.small-3.columns Image
-              button#video-btn.small-3.columns Vidéo
-              button#stopmotion.small-3.columns Stop motion
-              button#audio.small-3.columns Son
+      div.container-inner
+        div.media-choice
+          div.btn-choice
+            div
+              button#photo image
+              button#video-btn vidéo
+              button#stopmotion stop motion
+              button#audio audio
 
-        div.content-wrapper.row
-          div.captureLeft.small-5.columns
-            div.video-view.small-12
+        div.content-wrapper
+          div.captureLeft
+            div.video-view
               //- display camera
               video(id="video" autoplay)
               //- display audio vizualizer
               canvas(id="canvas-audio" width="480" height="256")
 
-              div.btn-capture-wrapper.small-12
+              div.btn-capture-wrapper
                 div.photo-capture
                   button#capture-btn.btn.icon
                     include templates/images/record.svg
@@ -59,25 +59,22 @@ html
 
               div.display-choice.small-12
                 div.choices.image-choice
-                  .caption Mode image
+                  .caption image
                 div.choices.video-choice
-                  .caption Mode vidéo
+                  .caption vidéo
                 div.choices.stopmotion-choice
-                  .caption Mode stop motion
+                  .caption stop motion
                 div.choices.audio-choice
-                  .caption Mode audio
+                  .caption audio
 
             div.full-screen-wrapper
-              div.full-screen
-                include templates/images/fullscreen.svg
-              div.no-full-screen
-                include templates/images/nofullscreen.svg
+              +button( 'fullscreen', '', 'isCollapsed')
+              +button( 'nofullscreen', '', 'isCollapsed')
 
           div.captureRight.small-5.columns
             div.flash.small-12
-            div.clear
-              button#clear.btn.icon
-                include templates/images/clear.svg
+            +button( 'masquer', '', 'isCollapsed')
+
             div(class="screenshot small-12" data-file="none")
               canvas#canvas.canvas-view
               canvas(id="canvas-equalizer" width=480 height=256)

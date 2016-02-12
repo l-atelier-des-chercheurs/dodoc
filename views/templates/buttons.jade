@@ -120,6 +120,17 @@ mixin button(typeOfButton, navOrButton, style)
         include images/back.svg
       span Retours
 
+  if( typeOfButton === 'fullscreen')
+    a(href="#" title="Dodoc media" class='button-wrapper_gofullscreen js--goFullscreen #{defaultClasses}')
+      .btn.icon
+        include images/fullscreen.svg
+      span Plein écran
+
+  if( typeOfButton === 'nofullscreen')
+    a(href="#" title="Dodoc media" class='button-wrapper_leavefullscreen js--leaveFullscreen #{defaultClasses}')
+      .btn.icon
+        include images/nofullscreen.svg
+      span Quitter le plein écran
 
 
   if( navOrButton === 'isNav')
