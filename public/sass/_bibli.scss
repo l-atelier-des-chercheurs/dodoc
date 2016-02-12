@@ -96,6 +96,7 @@ body.bibli {
     display:none;
     padding-left: 1.875rem;
     padding-right: 1.875rem;
+    min-height: 100vh;
 
     .montage-title{
 
@@ -154,7 +155,8 @@ body.bibli {
 
     padding: 15px;
 
-    background-color: $gristresclair;
+    background-color: #fff;
+
     transition: background-color .4s;
 
     &:empty {
@@ -168,6 +170,19 @@ body.bibli {
     .media {
       @include grid-column(12);
       margin-bottom: 15px;
+
+      padding-bottom: 0.9375rem;
+      padding-top: 0.9375rem;
+    cursor: move;
+
+      position: relative;
+
+      .button-wrapper {
+        position: absolute;
+        top:0;
+        right: 0;
+      }
+
     }
   }
 }
@@ -191,18 +206,26 @@ body.bibli {
   }
 
   .media {
+
+
     padding-left: 0.9375rem;
     padding-right: 0.9375rem;
+
     width: 16.66667%;
     float: left;
     padding-top: 0.9375rem;
     padding-bottom: 0.9375rem;
+
+    cursor: move;
 
     transition: width .8s;
 
     body[data-publicationpane="open"] & {
       width: 25%;
     }
+
+
+
 
   }
 

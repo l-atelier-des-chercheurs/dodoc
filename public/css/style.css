@@ -7401,7 +7401,8 @@ body.bibli {
     left: 0;
     display: none;
     padding-left: 1.875rem;
-    padding-right: 1.875rem; }
+    padding-right: 1.875rem;
+    min-height: 100vh; }
     .montage .montage-edit .montage-title {
       text-align: right;
       position: relative;
@@ -7443,7 +7444,7 @@ body.bibli {
     height: 100%;
     min-height: 200px;
     padding: 15px;
-    background-color: #e5e5e5;
+    background-color: #fff;
     transition: background-color .4s; }
     .montage .inner-montage:before, .montage .inner-montage:after {
       content: " ";
@@ -7460,7 +7461,15 @@ body.bibli {
       padding-right: 0.9375rem;
       width: 100%;
       float: left;
-      margin-bottom: 15px; }
+      margin-bottom: 15px;
+      padding-bottom: 0.9375rem;
+      padding-top: 0.9375rem;
+      cursor: move;
+      position: relative; }
+      .montage .inner-montage .media .button-wrapper {
+        position: absolute;
+        top: 0;
+        right: 0; }
 
 .medias-list {
   width: 100%;
@@ -7483,6 +7492,7 @@ body.bibli {
     float: left;
     padding-top: 0.9375rem;
     padding-bottom: 0.9375rem;
+    cursor: move;
     transition: width .8s; }
     body[data-publicationpane="open"] .medias-list .media {
       width: 25%; }

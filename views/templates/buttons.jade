@@ -100,13 +100,19 @@ mixin button(typeOfButton, navOrButton, style)
     a(href="#" data-reveal-id="modal-add-text" title="Dodoc texte" class='button-wrapper_addText js--ajoutText #{defaultClasses}')
       .btn.icon
         include images/text.svg
-      span Créer un bloc de texte
+      span Créer du texte
 
   if( typeOfButton === 'ajoutMedia')
     a(href="#" data-reveal-id="modal-add-local" title="Dodoc media" class='button-wrapper_addMedia js--ajoutMedia #{defaultClasses}')
       .btn.icon
         include images/add.svg
-      span Ajouter un média
+      span Ajouter média
+
+  if( typeOfButton === 'deleteMedia')
+    a(href="#" data-reveal-id="modal-add-local" title="Dodoc media" class='button-wrapper_addMedia js--delete-media-montage #{defaultClasses}')
+      .btn.icon
+        include images/clear.svg
+      span Supprimer
 
 
 

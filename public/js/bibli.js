@@ -188,10 +188,6 @@ function onListMedias(array, json){
 			.find( '.mediaContent').html(data.content);
 	});
 
-	$(".media").on("mouseenter", function(){
-		$(this).css("cursor", 'pointer');
-	});
-
 }
 
 function displayImage(session, project, id, file){
