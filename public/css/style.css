@@ -7833,6 +7833,8 @@ body.capture .content-wrapper:after {
       padding: 9px 22px;
       margin-right: 16px;
       border-radius: 2px; }
+      .media-choice .btn-choice button:last-of-type {
+        margin-right: 0; }
       .media-choice .btn-choice button.active, .media-choice .btn-choice button:hover {
         color: #fff;
         background-color: #48C2B5;

@@ -934,7 +934,7 @@ function animateWindows(){
 //fenêtre de preview retourne au center
 function backAnimation(){
   if($(".captureRight").hasClass('active')){
-    $('.captureLeft').velocity({'left':'27%'}, 'slow');
+    $('.captureLeft').velocity({'left':'30%'}, 'slow');
     $('.captureRight').removeClass('active').velocity({'left':'30%'}, 500,function(){
       $(this).fadeOut('slow');
     });
