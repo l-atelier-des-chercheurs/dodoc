@@ -6973,6 +6973,14 @@ th.hide-for-touch {
     border-radius: 2px; }
     .reveal-modal#modal-statut-alert button.annuler, .reveal-modal#modal-delete-alert button.annuler {
       background-color: #EF474B; }
+  .reveal-modal textarea {
+    border: none;
+    border-bottom: 2px solid #ccc;
+    box-shadow: none;
+    padding-left: .6em;
+    font-size: 1em;
+    min-height: 3.3em;
+    background-color: #eee; }
   .reveal-modal .inputfile {
     width: 0.1px;
     height: 0.1px;
@@ -7051,7 +7059,7 @@ input[type="text"], select {
   border: none;
   border-bottom: 2px solid #ccc;
   box-shadow: none;
-  padding-left: .3em;
+  padding-left: .6em;
   font-size: 1.3em;
   height: 2.3em;
   background-color: #eee; }
@@ -7344,7 +7352,7 @@ body.bibli {
   overflow-y: scroll;
   /* has to be scroll, not auto */
   -webkit-overflow-scrolling: touch;
-  text-align: right; }
+  text-align: left; }
   .bibli-buffer .btn-medias {
     position: fixed;
     top: 90px;
@@ -7403,6 +7411,10 @@ body.bibli {
     padding-left: 1.875rem;
     padding-right: 1.875rem;
     min-height: 100vh; }
+    .montage .montage-edit .publi-close {
+      float: left; }
+    .montage .montage-edit .publi-view {
+      float: right; }
     .montage .montage-edit .montage-title {
       text-align: right;
       position: relative;
@@ -7486,16 +7498,32 @@ body.bibli {
   body[data-publicationpane="open"] .medias-list {
     width: 66%; }
   .medias-list .media {
-    padding-left: 0.9375rem;
-    padding-right: 0.9375rem;
     width: 16.66667%;
     float: left;
+    min-height: 10vw;
+    max-height: 25vw;
+    /*
     padding-top: 0.9375rem;
     padding-bottom: 0.9375rem;
+    padding-left: 0.9375rem;
+    padding-right: 0.9375rem;
+*/
+    padding: 0;
+    border: .4687rem solid #eee;
+    background: #e5e5e5;
     cursor: move;
-    transition: width .8s; }
+    overflow: auto;
+    transition: width 1.1s ease; }
+    body:not([data-publicationpane="open"]) .medias-list .media:nth-child(6n+1) {
+      clear: left; }
     body[data-publicationpane="open"] .medias-list .media {
       width: 25%; }
+      body[data-publicationpane="open"] .medias-list .media:nth-child(4n+1) {
+        clear: left; }
+    .medias-list .media.media_text {
+      padding: .9375rem; }
+    .medias-list .media > h3 {
+      margin-top: 0; }
 
 .montage-list {
   margin-top: 15px; }

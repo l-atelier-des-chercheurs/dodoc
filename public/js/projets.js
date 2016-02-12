@@ -134,6 +134,7 @@ function displayFolder(name, created, modified, image, statut){
 }
 
 function modifyProject($this){
+
 	$("#container.row #modal-modify-project").empty();
 	thisProjectName = $this.parents(".project").find('h2').text();
 
@@ -167,7 +168,6 @@ function modifyProject($this){
 
 	input.addEventListener( 'change', function( e )
 	{
-  	debugger;
 		var fileName = '';
 		if( this.files && this.files.length > 1 )
 			fileName = ( this.getAttribute( 'data-multiple-caption' ) || '' ).replace( '{count}', this.files.length );

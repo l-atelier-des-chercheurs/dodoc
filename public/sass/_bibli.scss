@@ -9,7 +9,7 @@ body.bibli {
   overflow-y: scroll; /* has to be scroll, not auto */
   -webkit-overflow-scrolling: touch;
 
-  text-align: right;
+  text-align: left;
 
 
   .btn-medias {
@@ -97,6 +97,13 @@ body.bibli {
     padding-left: 1.875rem;
     padding-right: 1.875rem;
     min-height: 100vh;
+
+    .publi-close {
+      float: left;
+    }
+    .publi-view {
+      float: right;
+    }
 
     .montage-title{
 
@@ -208,24 +215,46 @@ body.bibli {
   .media {
 
 
-    padding-left: 0.9375rem;
-    padding-right: 0.9375rem;
-
     width: 16.66667%;
     float: left;
+    min-height: 10vw;
+    max-height: 25vw;
+
+/*
     padding-top: 0.9375rem;
     padding-bottom: 0.9375rem;
+    padding-left: 0.9375rem;
+    padding-right: 0.9375rem;
+*/
+
+    padding: 0;
+    border: .4687rem solid #eee;
+    background:   $gristresclair;
 
     cursor: move;
+    overflow: auto;
 
-    transition: width .8s;
+    transition: width 1.1s ease;
+
+    body:not([data-publicationpane="open"]) &:nth-child(6n+1) {
+      clear: left;
+    }
 
     body[data-publicationpane="open"] & {
       width: 25%;
+
+      &:nth-child(4n+1) {
+        clear: left;
+      }
     }
 
+    &.media_text {
+      padding: .9375rem;
+    }
 
-
+    > h3 {
+      margin-top: 0;
+    }
 
   }
 
