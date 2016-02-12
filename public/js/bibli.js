@@ -142,7 +142,9 @@ function displayNewText(text){
 		.end()
 		.find('h2').html(text.textTitle);
 
-	$('.medias-list').prepend(mediaItem);
+	//$(".medias-list li:first-child").after(mediaItem);
+	$(mediaItem).insertAfter(".medias-list li:first-child");
+	//$('.medias-list').prepend(mediaItem);
 }
 
 
@@ -180,7 +182,6 @@ function onListMedias(array, json){
 	}
 	//display text
 	socket.on('txtRead', function(data){
-		console.log(data);
 		$("#"+data.obj.id)
 			.find( '.mediaContent').html(data.content);
 	});
@@ -197,6 +198,8 @@ function displayImage(session, project, id, file){
 	mediaItem.attr( 'id', id);
 	mediaItem.find( 'img').attr('src', imagePath);
 
+	//$(".medias-list li:first-child").after(mediaItem);
+	//$(mediaItem).insertAfter(".medias-list li:first-child");
 	$('.medias-list').prepend(mediaItem);
 }
 
@@ -210,6 +213,7 @@ function displayVideo(session, project, id, file){
     .find( 'video').attr( 'poster', thumbPath)
     .find( 'source').attr( 'src', videoPath);
 
+  //$(".medias-list li:first-child").after(mediaItem);
 	$('ul.medias-list').prepend(mediaItem);
 }
 
@@ -224,6 +228,7 @@ function displayStopMotion(session, project, id, file){
     .find( 'video').attr( 'poster', thumbPath)
     .find( 'source').attr( 'src', videoPath);
 
+  //$(".medias-list li:first-child").after(mediaItem);
 	$('ul.medias-list').prepend(mediaItem);
 }
 
@@ -235,6 +240,7 @@ function displayAudio(session, project, id, file){
 	  .attr( 'id', id)
     .find( 'source').attr( 'src', audioPath);
 
+ // $(".medias-list li:first-child").after(mediaItem);
 	$('ul.medias-list').prepend(mediaItem);
 }
 
@@ -242,6 +248,7 @@ function displayText(session, project, id, title, content){
 	var mediaItem = $(".js--templates .media_text").clone(false);
 	mediaItem.attr( 'id', id);
 
+	//$(".medias-list li:first-child").after(mediaItem);
 	$('.medias-list').prepend(mediaItem);
 }
 
