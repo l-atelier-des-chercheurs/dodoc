@@ -145,8 +145,8 @@ function displayNewText(text){
 		.find('h3').html(text.textTitle);
 
 	//$(".medias-list li:first-child").after(mediaItem);
-	$(mediaItem).insertAfter(".medias-list li:first-child");
-	//$('.medias-list').prepend(mediaItem);
+	//$(mediaItem).insertAfter(".medias-list li:first-child");
+	$('.medias-list').prepend(mediaItem);
 }
 
 
@@ -166,7 +166,9 @@ function onListMedias(array, json){
   	var extension = array[i].extension;
   	var identifiant =  array[i].id;
 		if(extension == ".jpg"){
-			displayImage(currentSession, currentProject, identifiant, array[i].file);
+			if(array[i].file != currentProject+'-thumb.jpg'){
+				displayImage(currentSession, currentProject, identifiant, array[i].file);
+			}
 		}
 		if(extension == ".webm"){
 			displayVideo(currentSession, currentProject, identifiant, array[i].file);
@@ -191,7 +193,7 @@ function onListMedias(array, json){
 }
 
 function displayImage(session, project, id, file){
-	var imagePath = "/" +session +"/"+ project+ "/"+ file;
+	var imagePath = "../"+ file;
 	var mediaItem = $(".js--templates .media_image").clone(false);
 	mediaItem.attr( 'id', id);
 	mediaItem.find( 'img').attr('src', imagePath);
@@ -202,8 +204,8 @@ function displayImage(session, project, id, file){
 }
 
 function displayVideo(session, project, id, file){
-	var thumbPath = '/'+session + '/'+ project+ '/'+id +'-thumb.png';
-	var videoPath = '/'+session +'/'+ project+ '/' + file;
+	var thumbPath = '../'+id +'-thumb.png';
+	var videoPath = '../' + file;
 
 	var mediaItem = $(".js--templates .media_video").clone(false);
 	mediaItem
@@ -218,8 +220,8 @@ function displayVideo(session, project, id, file){
 function displayStopMotion(session, project, id, file){
 
 	console.log('display stop motion');
-	var thumbPath = '/'+session + '/'+ project+ '/'+id +'-thumb.png';
-	var videoPath = '/'+session +'/'+ project+ '/' + file;
+	var thumbPath = '../'+id +'-thumb.png';
+	var videoPath = '../' + file;
 
 	var mediaItem = $(".js--templates .media_stopmotion").clone(false);
 	mediaItem
@@ -232,7 +234,7 @@ function displayStopMotion(session, project, id, file){
 }
 
 function displayAudio(session, project, id, file){
-	var audioPath = '/'+session +'/'+ project+ '/' + file;
+	var audioPath = '../' + file;
 
 	var mediaItem = $(".js--templates .media_audio").clone(false);
 	mediaItem
@@ -289,6 +291,18 @@ function bigMedia(){
 				mediaItem
 				  .attr( 'id', id)
 			    .find( 'source').attr( 'src', audioPath);
+
+				$('#modal-media-view .big-mediaContent').html(mediaItem);
+				break;
+			case 'text':
+				console.log($(this));
+				var mediaItem = $(".js--templates .media-big_text").clone(false);
+				var title = $(this).find('h2').html();
+				var texte = $(this).find('p').html();
+				mediaItem
+					.find('.media-title').html(title)
+					.end()
+					.find('.text').html(texte)
 
 				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;
@@ -359,7 +373,6 @@ function onDisplayMontage(data){
 	else{
 		$('.montage-edit[data-publi="'+publiName+'"]').find('.inner-montage').html('');
 	}
-
 }
 
 function onTitleModified(data){
