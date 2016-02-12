@@ -134,6 +134,8 @@ function displayNewAudio(audio){
 }
 
 function displayNewText(text){
+	$('input.new-text').val('');
+	$('#modal-add-text textarea').val('');
 	$('#modal-add-text').foundation('reveal', 'close');
 	var mediaItem = $(".js--templates .media_text").clone(false);
 	mediaItem.attr( 'id', text.id);
@@ -341,6 +343,7 @@ function onPubliCreated(data){
   ;
 
 	$('.montage-list ul').prepend(publiItem);
+	$('input.new-publi').val('');
 	$('#modal-add-publi').foundation('reveal', 'close');
 
 }

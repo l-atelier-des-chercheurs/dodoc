@@ -118,6 +118,7 @@ module.exports = function(app, io){
 				  	var jsonFile = dir + file + '/' +file+'.json';
 						var data = fs.readFileSync(jsonFile,"UTF-8");
 						var jsonObj = JSON.parse(data);
+						// res.json({name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, nb_projets:jsonObj.nb_projets});
 						io.sockets.emit('listFolder', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, nb_projets:jsonObj.nb_projets});
 						// read all projects into folders
 						var projectDir = dir + file;
@@ -762,7 +763,7 @@ module.exports = function(app, io){
 			var jsonObj = JSON.parse(data);
 			var jsonAdd = { "id" : currentDate, "titre":text.title};
 			jsonObj["files"]["texte"].push(jsonAdd);
-	    fs.writeFile(txtFile, '##'+text.title+"\r\n"+text.text, function(err){
+	    fs.writeFile(txtFile, '## '+text.title+"\r\n"+text.text, function(err){
 	    	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
 		      if(err) {
 		          console.log(err);

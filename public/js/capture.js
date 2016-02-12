@@ -322,13 +322,15 @@ function audioDisplay(){
 
 function displayVideoStream(){
   // Initialise getUserMedia
-    navigator.getMedia = ( navigator.getUserMedia ||
+    navigator.getUserMedia = ( navigator.getUserMedia ||
                            navigator.webkitGetUserMedia ||
                            navigator.mozGetUserMedia ||
                            navigator.msGetUserMedia);
-    navigator.getMedia(
+
+
+    navigator.getUserMedia(
       {
-        video: true,
+        video: true ,
         audio: false
       },
       function (stream) {
