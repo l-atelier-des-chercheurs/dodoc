@@ -168,10 +168,6 @@ function onListMedias(array, json){
 		displayText(currentSession, currentProject, textId, textTitle, textContent);
   }
 
-	$(".media").on("mouseenter", function(){
-		$(this).css("cursor", 'pointer');
-	});
-
 }
 
 function displayImage(session, project, id, file){
