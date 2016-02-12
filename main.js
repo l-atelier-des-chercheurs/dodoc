@@ -416,7 +416,7 @@ module.exports = function(app, io){
 						    });
 						    io.sockets.emit('sendProjectData',{json:jsonObj , lastmedia:lastMedia, publiNames: publiNames, image:jsonObj.fileName});
 							});
-				    } 
+				    }
 			    	else{
 							io.sockets.emit('sendProjectData',{json:jsonObj , lastmedia:lastMedia, publiNames: '', image:jsonObj.fileName});
 						}
@@ -620,8 +620,10 @@ module.exports = function(app, io){
 		function readTxt(txt){
 			var dir = "sessions/" + txt.session + '/' + txt.project +'/';
 			fs.readFile(dir + txt.file.file, 'utf8', function(err, data) {
-			  if (err) throw err;
-			  io.sockets.emit('txtRead', {obj:txt.file, content: markdown.toHTML(data)});
+			  if (err)
+			    console.log( err);
+			  else
+  			  io.sockets.emit('txtRead', {obj:txt.file, content: markdown.toHTML(data)});
 			});
 		}
 
@@ -763,7 +765,7 @@ module.exports = function(app, io){
 			var jsonObj = JSON.parse(data);
 			var jsonAdd = { "id" : currentDate, "titre":text.title};
 			jsonObj["files"]["texte"].push(jsonAdd);
-	    fs.writeFile(txtFile, '## '+text.title+"\r\n"+text.text, function(err){
+	    fs.writeFile(txtFile, '### '+text.title+"\r\n"+text.text, function(err){
 	    	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
 		      if(err) {
 		          console.log(err);
@@ -773,7 +775,7 @@ module.exports = function(app, io){
 		      }
 	    	});
 	    });
-	    
+
 		}
 
 		function onNewImageLocal(image){

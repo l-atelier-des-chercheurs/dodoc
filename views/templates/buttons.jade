@@ -19,7 +19,7 @@ mixin button(typeOfButton, navOrButton, style)
       span #{folder}
 
   if( typeOfButton === 'acceptEdit')
-    a(href="#" title="Dodoc" class='button-wrapper_deleteFolder js--acceptEdit #{defaultClasses}')
+    a(href="#" title="Dodoc" class='button-wrapper_acceptEdit js--acceptEdit #{defaultClasses}')
       .btn.icon
         include images/clear.svg
       span Supprimer
@@ -109,10 +109,16 @@ mixin button(typeOfButton, navOrButton, style)
       span Ajouter média
 
   if( typeOfButton === 'deleteMedia')
-    a(href="#" data-reveal-id="modal-add-local" title="Dodoc media" class='button-wrapper_addMedia js--delete-media-montage #{defaultClasses}')
+    a(href="#" title="Dodoc media" class='button-wrapper_deleteMedia js--delete-media-montage #{defaultClasses}')
       .btn.icon
         include images/clear.svg
       span Supprimer
+
+  if( typeOfButton === 'backButton')
+    a(href="#" title="Dodoc media" class='button-wrapper_backButton js--backButton #{defaultClasses}')
+      .btn.icon
+        include images/back.svg
+      span Retours
 
 
 

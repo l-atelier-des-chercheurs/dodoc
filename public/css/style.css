@@ -7069,6 +7069,53 @@ input[type="text"], select {
 select {
   border-bottom: 2px solid #ccc; }
 
+.publi-container {
+  margin-left: 0;
+  margin: 0 auto;
+  max-width: 62.5rem;
+  width: 100%;
+  max-width: 35rem;
+  position: relative;
+  margin-top: 55px;
+  margin-bottom: 15px;
+  background-color: #fff;
+  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 0; }
+  .publi-container:before, .publi-container:after {
+    content: " ";
+    display: table; }
+  .publi-container:after {
+    clear: both; }
+  .publi-container:before, .publi-container:after {
+    content: " ";
+    display: table; }
+  .publi-container:after {
+    clear: both; }
+  .publi-container > .legende {
+    position: absolute;
+    bottom: 100%;
+    margin-bottom: 5px; }
+  .publi-container .publi-title {
+    font-weight: bold;
+    font-size: 1.5em;
+    padding: 9px 15px;
+    margin: 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
+  .publi-container .publi-content {
+    padding: 10px 16px; }
+    .publi-container .publi-content .mediaContent h2 {
+      font-size: 1.4em; }
+    .publi-container .publi-content .media {
+      padding: 0 0;
+      margin-bottom: 22px; }
+      .publi-container .publi-content .media img {
+        width: auto;
+        min-width: 0;
+        max-height: 70vh; }
+    .publi-container .publi-content .js--delete-media-montage {
+      display: none; }
+
 html {
   margin: 0; }
 
@@ -7176,10 +7223,10 @@ button {
       color: #293275; }
     .button-wrapper.button-wrapper_without-bg.button-wrapper_publi {
       color: #EF4651; }
-  .button-wrapper_add, .button-wrapper_edit, .button-wrapper_publi, .button-wrapper_editProjet, .button-wrapper_addMedia {
+  .button-wrapper_add, .button-wrapper_edit, .button-wrapper_publi, .button-wrapper_editProjet, .button-wrapper_addMedia, .button-wrapper_backButton {
     background-color: #EF474B;
     color: white; }
-  .button-wrapper_capture, .button-wrapper_view, .button-wrapper_deleteFolder {
+  .button-wrapper_capture, .button-wrapper_view, .button-wrapper_deleteFolder, .button-wrapper_deleteMedia {
     background-color: #FFB520;
     color: white; }
   .button-wrapper_bibli {
@@ -7355,7 +7402,7 @@ body.bibli {
   text-align: left; }
   .bibli-buffer .btn-medias {
     position: fixed;
-    top: 90px;
+    top: 120px;
     width: 50px;
     z-index: 500;
     right: 0;
@@ -7381,17 +7428,20 @@ body.bibli {
   left: 66%;
   right: 0;
   background: #EFEFEF;
+  border-left: 4px solid #EF474B;
   height: calc( 100vh - 70px);
   overflow-y: scroll;
   /* has to be scroll, not auto */
   -webkit-overflow-scrolling: touch;
   padding-left: 1.875rem;
   transform: translate(100%, 0);
-  transition: transform .7s ease-out; }
+  transition: transform .7s ease-out;
+  -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1); }
   body[data-publicationpane="open"] .montage {
     transform: translate(0, 0); }
   .montage .open-montage-bar {
-    position: fixed;
+    position: absolute;
     padding: 0;
     margin: 0;
     top: 0;
@@ -7400,7 +7450,8 @@ body.bibli {
     width: 5px;
     z-index: 1000;
     background-color: #EF474B;
-    background-size: 5px 100%; }
+    background-size: 5px 100%;
+    display: none; }
   .montage .montage-edit {
     background: #e5e5e5;
     position: absolute;
@@ -7408,13 +7459,18 @@ body.bibli {
     top: 0;
     left: 0;
     display: none;
-    padding-left: 1.875rem;
-    padding-right: 1.875rem;
     min-height: 100vh; }
-    .montage .montage-edit .publi-close {
-      float: left; }
-    .montage .montage-edit .publi-view {
-      float: right; }
+    .montage .montage-edit .montage-btn {
+      padding: 15px; }
+      .montage .montage-edit .montage-btn:before, .montage .montage-edit .montage-btn:after {
+        content: " ";
+        display: table; }
+      .montage .montage-edit .montage-btn:after {
+        clear: both; }
+      .montage .montage-edit .montage-btn .button-wrapper_backButton {
+        float: left; }
+      .montage .montage-edit .montage-btn .button-wrapper_view {
+        float: right; }
     .montage .montage-edit .montage-title {
       text-align: right;
       position: relative;
@@ -7455,7 +7511,10 @@ body.bibli {
     width: 100%;
     height: 100%;
     min-height: 200px;
-    padding: 15px;
+    padding-left: 1.875rem;
+    padding-right: 1.875rem;
+    margin-bottom: 1.875rem;
+    border-bottom: 2px solid #eee;
     background-color: #fff;
     transition: background-color .4s; }
     .montage .inner-montage:before, .montage .inner-montage:after {
@@ -7464,7 +7523,8 @@ body.bibli {
     .montage .inner-montage:after {
       clear: both; }
     .montage .inner-montage:empty {
-      background-color: #fff; }
+      background-color: #fff;
+      padding: 15px; }
       .montage .inner-montage:empty::before {
         content: "Glissez içi vos médias pour composer un récit.";
         position: relative; }
@@ -7473,15 +7533,34 @@ body.bibli {
       padding-right: 0.9375rem;
       width: 100%;
       float: left;
-      margin-bottom: 15px;
-      padding-bottom: 0.9375rem;
-      padding-top: 0.9375rem;
+      padding-bottom: 0.4687rem;
+      padding-top: 0.4687rem;
       cursor: move;
-      position: relative; }
+      position: relative;
+      transition: all .4s; }
+      .montage .inner-montage .media .mediaContent {
+        overflow: hidden; }
       .montage .inner-montage .media .button-wrapper {
         position: absolute;
         top: 0;
         right: 0; }
+      .montage .inner-montage .media .button-wrapper_deleteMedia {
+        opacity: 0;
+        transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out, opacity .4s ease-out; }
+      .montage .inner-montage .media:hover .button-wrapper_deleteMedia {
+        opacity: 1; }
+      .montage .inner-montage .media .media-title:empty() {
+        display: none; }
+    .montage .inner-montage .media.gu-transit {
+      height: 90px;
+      width: 100%;
+      width: auto;
+      display: block; }
+    .montage .inner-montage .media.gu-transit .mediaContent {
+      background-color: #cecece;
+      height: 100%; }
+    .montage .inner-montage .media.gu-transit .mediaContent > * {
+      opacity: 0; }
 
 .medias-list {
   width: 100%;
@@ -7501,7 +7580,7 @@ body.bibli {
     width: 16.66667%;
     float: left;
     min-height: 10vw;
-    max-height: 25vw;
+    max-height: 20vw;
     /*
     padding-top: 0.9375rem;
     padding-bottom: 0.9375rem;
@@ -7579,7 +7658,7 @@ body.projets #container {
   margin: 0 auto;
   max-width: 62.5rem;
   width: 100%;
-  max-width: 68rem; }
+  max-width: 65rem; }
   .project-list:before, .project-list:after {
     content: " ";
     display: table; }
