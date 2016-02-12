@@ -236,9 +236,10 @@ function onProjectModified(data){
 	var name = data.name;
 	var statut = data.statut;
 	var modified = transformDatetoString(data.modified);
+	var created = $thisEl.find('.create-date').html();
 
   // c'est pas top la variable globale. Par exemple, si on va éditer un autre projet alors que ce paquet n'est pas arrivé, $thisEl ne sera plus le bon
- 	var parent = $thisEl;
+ 	//var parent = $thisEl;
 
 	// il faudrait envoyer un ID du post avec la requête, puis matcher le projet qui correspond à la réception. Un ID qui ne peut pas changer. On a ça dans le JSON ?
 /*
@@ -254,16 +255,8 @@ function onProjectModified(data){
 		$thisEl.find('.js--edit-project-icon').remove();
 	}
 
-	$thisEl
-	  .find('h2').text(name).end()
-	  .find('.statut-type').attr("data-statut", statut).html(" "+statut).end()
-	  .find('.modify-date').html(modified).end();
-
-	if(data.image == true){
-		$thisEl.find('.image-wrapper img').attr('src', '/'+currentSession+'/'+convertToSlug(name)+'/'+convertToSlug(name)+'-thumb.jpg?modified='+data.modified);
-	} else {
-		$thisEl.find('.image-wrapper img').attr('src', '');
-	}
+	$thisEl.remove();
+	displayFolder(name, created, modified, data.image, statut)
 }
 
 //Suppression du dossier

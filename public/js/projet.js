@@ -240,7 +240,6 @@ function submitModifyFolder($button, send, oldName, oldStatut){
 
 // On reçoit les mofication du projet
 function onProjectModified(data){
-	console.log(data);
 	var name = data.name;
 	var statut = data.statut;
 	var modified = transformDatetoString(data.modified);
