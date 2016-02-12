@@ -166,6 +166,8 @@ function init(){
   });
 
   // delete file
+  // cette partie fonctionne pas ! Je désactive, pas de suppression à l'ajout et pi c'est tout :)
+/*
   $(".clear").off();
   $(".clear").on("click", function(e){
     console.log('File was delete');
@@ -175,6 +177,7 @@ function init(){
     //deleteFeedback();
     e.stopPropagation;
   });
+*/
 
   fullscreen();
 
@@ -185,21 +188,25 @@ function changeMedia(){
     photoDisplay();
     $(".btn-choice button").removeClass('active');
     $(this).addClass("active");
+    $('body').attr('data-mode', 'photo');
   });
   $(".btn-choice #video-btn").on("click", function(){
     videoDisplay();
     $(".btn-choice button").removeClass('active');
     $(this).addClass("active");
+    $('body').attr('data-mode', 'video');
   });
   $(".btn-choice #stopmotion").on("click", function(){
     stopMotionDisplay();
     $(".btn-choice button").removeClass('active');
     $(this).addClass("active");
+    $('body').attr('data-mode', 'stopmotion');
   });
   $(".btn-choice #audio").on("click", function(){
     audioDisplay();
     $(".btn-choice button").removeClass('active');
     $(this).addClass("active");
+    $('body').attr('data-mode', 'audio');
   });
 
   //Animation back when changing media
@@ -267,8 +274,8 @@ function photoDisplay(){
   $('#video').show();
   $('#canvas-audio').hide();$("#canvas-equalizer").hide();
   $('.instructions-stopmotion').hide(); $(".meta-stopmotion").hide();
-  $(".image-choice").fadeIn('slow', function(){
-    $(this).fadeOut('slow');
+  $(".image-choice").fadeIn( 100, function(){
+    $(this).delay(600).fadeOut('slow');
   });
   $("body").attr("data-mode", "photo");
 }
@@ -281,8 +288,8 @@ function videoDisplay(){
   $('#video').show();
   $('#canvas-audio').hide();$("#canvas-equalizer").hide();
   $('.instructions-stopmotion').hide(); $(".meta-stopmotion").hide();
-  $(".video-choice").fadeIn('slow', function(){
-    $(this).fadeOut('slow');
+  $(".video-choice").fadeIn( 100, function(){
+    $(this).delay(600).fadeOut('slow');
   });
   $("body").attr("data-mode", "video");
 }
@@ -295,8 +302,8 @@ function stopMotionDisplay(){
   $('.audio-capture').css('display','none');
   $(".son").css("display", "none");
   $('#video').show();
-  $(".stopmotion-choice").fadeIn('slow', function(){
-    $(this).fadeOut('slow');
+  $(".stopmotion-choice").fadeIn( 100, function(){
+    $(this).delay(600).fadeOut('slow');
   });
   $('#canvas-audio').hide(); $("#canvas-equalizer").hide();
   var canvas = document.querySelector('#canvas');
@@ -314,8 +321,8 @@ function audioDisplay(){
   $('#video').hide();
   $('.instructions-stopmotion').hide(); $(".meta-stopmotion").hide();
   $('#canvas-audio').show();$("#canvas-equalizer").show();
-  $(".audio-choice").fadeIn('slow', function(){
-    $(this).fadeOut('slow');
+  $(".audio-choice").fadeIn( 100, function(){
+    $(this).delay(600).fadeOut('slow');
   });
   $("body").attr("data-mode", "audio");
 }
@@ -371,6 +378,13 @@ function takePictures(){
     $(this).fadeOut(500);
   });
   console.log("Yeah you take a picture");
+
+  // passer le body en "data-justcaptured=yes" pendant un temps
+  $('body').attr('data-justcaptured', 'yes');
+  setTimeout( function() {
+    $('body').attr('data-justcaptured', '');
+  }, 200);
+
   submitData(data, 'imageCapture')
 }
 
@@ -929,16 +943,23 @@ function backAnimation(){
 
 function fullscreen(){
   var target = $('.captureLeft')[0]; // Get DOM element from jQuery collection
-  $('.full-screen').on('click', function(){
+  $('.js--goFullscreen').on('click', function(){
     if (screenfull.enabled) {
       screenfull.request(target);
-      $('.captureLeft').addClass('is--fulscreen');
     }
   });
-  $('.no-full-screen').on('click', function(){
+  $('.js--leaveFullscreen').on('click', function(){
     screenfull.exit();
-    $('.captureLeft').removeClass('is--fulscreen');
   });
+
+  if (screenfull.enabled) {
+      document.addEventListener(screenfull.raw.fullscreenchange, function () {
+          if( screenfull.isFullscreen)
+            $('body').addClass('is--fullscreen');
+          else
+            $('body').removeClass('is--fullscreen');
+      });
+  }
 }
 
 /* sockets */

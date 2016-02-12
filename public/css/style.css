@@ -7175,7 +7175,8 @@ img, video, audio, svg {
 button {
   outline: none;
   border: none;
-  background: #eee; }
+  background: #eee;
+  font-family: inherit; }
 
 .legende {
   font-style: italic;
@@ -7229,24 +7230,27 @@ button {
   .button-wrapper_capture, .button-wrapper_view, .button-wrapper_deleteFolder, .button-wrapper_deleteMedia {
     background-color: #FFB520;
     color: white; }
-  .button-wrapper_bibli {
+  .button-wrapper_bibli, .button-wrapper_gofullscreen, .button-wrapper_leavefullscreen {
     background-color: #293275;
     color: white; }
   .button-wrapper_accept, .button-wrapper_addText {
     background-color: #48C2B5;
     color: white; }
-  .button-wrapper_collapsed {
+  .button-wrapper.button-wrapper_collapsed {
     overflow: hidden;
     float: left;
     padding-left: 0;
     width: 160px;
     transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out; }
-    .button-wrapper_collapsed + .button-wrapper_collapsed {
+    .button-wrapper.button-wrapper_collapsed + .button-wrapper.button-wrapper_collapsed {
       margin-left: 0; }
-    .button-wrapper_collapsed:not(:hover) {
+    .button-wrapper.button-wrapper_collapsed:not(:hover) {
       width: 44px;
       color: transparent;
       background-color: transparent; }
+    .button-wrapper.button-wrapper_collapsed .btn.icon + span {
+      left: 50px;
+      width: 110px; }
   .button-wrapper .btn {
     float: left; }
   .button-wrapper .btn.icon {
@@ -7808,122 +7812,177 @@ body.capture .clone {
   left: 52%;
   top: 0px; }
 
-body.capture .media-choice .btn-choice {
-  text-align: center; }
-  body.capture .media-choice .btn-choice button {
-    color: #333;
-    background-color: #fff;
-    border: none;
-    margin: 0;
-    outline: none;
-    font-size: 1em;
-    padding: 5px 15px;
-    margin: 5px; }
-    body.capture .media-choice .btn-choice button.active, body.capture .media-choice .btn-choice button:hover {
-      color: #fff;
-      background-color: #48C2B5;
-      outline: none; }
-      body.capture .media-choice .btn-choice button.active#photo, body.capture .media-choice .btn-choice button:hover#photo {
-        background-color: #ffb520; }
-      body.capture .media-choice .btn-choice button.active#video-btn, body.capture .media-choice .btn-choice button:hover#video-btn {
-        background-color: #fe414d; }
-      body.capture .media-choice .btn-choice button.active#stopmotion, body.capture .media-choice .btn-choice button:hover#stopmotion {
-        background-color: #48c2b5; }
-      body.capture .media-choice .btn-choice button.active#audio, body.capture .media-choice .btn-choice button:hover#audio {
-        background-color: #09227c; }
+body.capture .content-wrapper:before, body.capture .content-wrapper:after {
+  content: " ";
+  display: table; }
 
-body.capture .captureLeft {
+body.capture .content-wrapper:after {
+  clear: both; }
+
+.media-choice {
+  margin-top: 25px;
+  margin-bottom: 25px; }
+  .media-choice .btn-choice {
+    text-align: center; }
+    .media-choice .btn-choice button {
+      color: #333;
+      background-color: #fff;
+      margin: 0;
+      outline: none;
+      font-size: 1em;
+      padding: 9px 22px;
+      margin-right: 16px;
+      border-radius: 2px; }
+      .media-choice .btn-choice button.active, .media-choice .btn-choice button:hover {
+        color: #fff;
+        background-color: #48C2B5;
+        outline: none; }
+        .media-choice .btn-choice button.active#photo, .media-choice .btn-choice button:hover#photo {
+          background-color: #ffb520; }
+        .media-choice .btn-choice button.active#video-btn, .media-choice .btn-choice button:hover#video-btn {
+          background-color: #fe414d; }
+        .media-choice .btn-choice button.active#stopmotion, .media-choice .btn-choice button:hover#stopmotion {
+          background-color: #48c2b5; }
+        .media-choice .btn-choice button.active#audio, .media-choice .btn-choice button:hover#audio {
+          background-color: #09227c; }
+
+.captureLeft {
   margin: auto;
   padding: 10px;
   position: absolute;
   background-color: #FFF;
-  z-index: 2; }
-  body.capture .captureLeft .btn-capture-wrapper {
+  z-index: 2;
+  width: 40%;
+  left: 30%; }
+  body.is--fullscreen .captureLeft {
+    background-color: white;
+    width: 100%;
+    left: 0 !important;
+    top: 0;
+    height: 100%;
+    margin-top: 5vh; }
+    body.is--fullscreen .captureLeft video {
+      height: 80vh; }
+  .captureLeft .btn-capture-wrapper {
     z-index: 1000;
     background: #FFF;
-    height: 60px; }
-    body.capture .captureLeft .btn-capture-wrapper > div {
-      position: absolute; }
-      body.capture .captureLeft .btn-capture-wrapper > div button {
-        outline: none !important;
-        border: none !important;
-        background: none !important;
-        margin: auto; }
-    body.capture .captureLeft .btn-capture-wrapper .video-capture .video-save #stop-record-btn {
+    height: 60px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    text-align: center; }
+    .captureLeft .btn-capture-wrapper > div button {
+      outline: none !important;
+      border: none !important;
+      background: none !important;
+      margin: auto;
+      width: 64px;
+      height: 64px; }
+    .captureLeft .btn-capture-wrapper #capture-btn {
+      transform-origin: center center;
+      transition: transform .6s ease-out; }
+      body[data-justcaptured="yes"] .captureLeft .btn-capture-wrapper #capture-btn {
+        transform: scale(1.4);
+        transition: transform .2s ease-out; }
+    .captureLeft .btn-capture-wrapper .video-capture .video-save #stop-record-btn {
       display: none; }
-    body.capture .captureLeft .btn-capture-wrapper .stopmotion-capture button {
+    .captureLeft .btn-capture-wrapper .stopmotion-capture button {
       display: inline-block; }
-    body.capture .captureLeft .btn-capture-wrapper .stopmotion-capture #capture-sm-btn {
+    .captureLeft .btn-capture-wrapper .stopmotion-capture #capture-sm-btn {
       display: none; }
-    body.capture .captureLeft .btn-capture-wrapper .audio-capture #stop-recording-btn {
+    .captureLeft .btn-capture-wrapper .audio-capture #stop-recording-btn {
       display: none; }
-  body.capture .captureLeft .display-choice {
+  .captureLeft .display-choice {
     position: absolute;
-    height: 82%;
+    height: 100%;
     top: 0;
     left: 0;
     pointer-events: none; }
-    body.capture .captureLeft .display-choice .choices {
+    .captureLeft .display-choice .choices {
       position: absolute;
       height: 100%;
       width: 100%;
       top: 0;
       left: 0;
       display: none; }
-      body.capture .captureLeft .display-choice .choices.image-choice {
+      .captureLeft .display-choice .choices.image-choice {
         background-color: #ffb520; }
-      body.capture .captureLeft .display-choice .choices.video-choice {
+      .captureLeft .display-choice .choices.video-choice {
         background-color: #fe414d; }
-      body.capture .captureLeft .display-choice .choices.stopmotion-choice {
+      .captureLeft .display-choice .choices.stopmotion-choice {
         background-color: #48c2b5; }
-      body.capture .captureLeft .display-choice .choices.audio-choice {
+      .captureLeft .display-choice .choices.audio-choice {
         background-color: #09227c; }
-  body.capture .captureLeft #canvas-audio {
+      .captureLeft .display-choice .choices .caption {
+        font-size: 3em;
+        text-align: center;
+        padding: 30px;
+        color: white;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        transform: translate(-50%, -58%);
+        position: absolute;
+        word-wrap: break-word; }
+  .captureLeft #canvas-audio {
+    display: none; }
+  .captureLeft .full-screen-wrapper {
+    position: absolute;
+    top: 0;
+    right: 0; }
+  body.is--fullscreen .captureLeft .button-wrapper_gofullscreen {
+    display: none; }
+  body:not([class*=is--fullscreen]) .captureLeft .button-wrapper_leavefullscreen {
     display: none; }
 
-body.capture .captureRight {
+.captureRight {
   background-color: #FFF;
   position: absolute;
   z-index: 1;
   display: none;
-  overflow: hidden; }
-  body.capture .captureRight .flash {
+  overflow: hidden;
+  padding: 10px;
+  width: 40%; }
+  body:not([data-mode="stopmotion"]) .captureRight #stop-sm-btn {
+    display: none; }
+  .captureRight .flash {
     height: 100%;
     background-color: #FFF;
     display: none;
     position: absolute; }
-    body[data-mode="photo"] body.capture .captureRight .flash {
+    body[data-mode="photo"] .captureRight .flash {
       background-color: #ffb520; }
-    body.capture .captureRight .flash body[data-mode="video"] {
+    .captureRight .flash body[data-mode="video"] {
       background-color: #fe414d; }
-    body.capture .captureRight .flash body[data-mode="stopmotion"] {
+    .captureRight .flash body[data-mode="stopmotion"] {
       background-color: #48c2b5; }
-    body.capture .captureRight .flash body[data-mode="audio"] {
+    .captureRight .flash body[data-mode="audio"] {
       background-color: #09227c; }
-  body.capture .captureRight .screenshot {
-    margin: 30px auto 0px auto; }
-    body.capture .captureRight .screenshot .meta-stopmotion {
+  .captureRight .screenshot {
+    margin: 0px auto 0px auto; }
+    .captureRight .screenshot .meta-stopmotion {
       margin-top: 10px; }
-      body.capture .captureRight .screenshot .meta-stopmotion .count-image {
+      .captureRight .screenshot .meta-stopmotion .count-image {
         display: inline-block;
         vertical-align: top; }
-      body.capture .captureRight .screenshot .meta-stopmotion .delete-image {
+      .captureRight .screenshot .meta-stopmotion .delete-image {
         width: 30px;
         display: inline-block;
         vertical-align: top;
         margin-right: 10px;
         cursor: pointer; }
-    body.capture .captureRight .screenshot #canvas-equalizer {
+    .captureRight .screenshot #canvas-equalizer {
       background-color: orange; }
-  body.capture .captureRight .son {
+    .captureRight .screenshot .canvas-view {
+      width: 100%; }
+  .captureRight .son {
     display: none;
     padding-left: 27px;
     margin-top: 60px;
     margin-bottom: 40px; }
-  body.capture .captureRight #camera-preview {
+  .captureRight #camera-preview {
     display: none;
     width: 100%; }
-  body.capture .captureRight #stop-sm {
+  .captureRight #stop-sm {
     display: none;
     float: right;
     width: 48px; }
