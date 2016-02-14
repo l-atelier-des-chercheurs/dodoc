@@ -204,7 +204,24 @@ body.capture{
     }
   }
 
-
+  .recording-feedback{
+    position:absolute;
+    z-index: 100;
+    top:20px;
+    left: 30px;
+    .record-feedback{
+      width:15px;
+      height:15px;
+      background-color: red;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .time-feedback {
+      display: inline-block;
+      vertical-align: top;
+      margin-left: 10px;
+    }
+  }
 }
 
 .captureRight {
@@ -221,6 +238,10 @@ body.capture{
     body:not([data-mode="stopmotion"]) & {
       display: none;
     }
+    border: none !important;
+    outline: none !important;
+    background:none !important;
+    float: right;
   }
   .flash{
     height:100%;
@@ -257,6 +278,15 @@ body.capture{
         margin-right: 10px;
         cursor: pointer;
       }
+    }
+    .instructions-stopmotion{
+      width:80%;
+      margin:auto;
+      .icone-stopmotion{
+        width:100%;
+        margin-bottom: 10px;
+      }
+      h4{font-size:1em;}
     }
     #canvas-equalizer{
       background-color: orange;

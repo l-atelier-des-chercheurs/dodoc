@@ -7605,6 +7605,11 @@ body.bibli {
         clear: left; }
     .medias-list .media.media_text {
       padding: .9375rem; }
+      .medias-list .media.media_text h3 {
+        font-size: 1.2em;
+        font-weight: normal; }
+      .medias-list .media.media_text p {
+        font-size: 0.8em; }
     .medias-list .media > h3 {
       margin-top: 0; }
 
@@ -7935,6 +7940,21 @@ body.capture .content-wrapper:after {
     display: none; }
   body:not([class*=is--fullscreen]) .captureLeft .button-wrapper_leavefullscreen {
     display: none; }
+  .captureLeft .recording-feedback {
+    position: absolute;
+    z-index: 100;
+    top: 20px;
+    left: 30px; }
+    .captureLeft .recording-feedback .record-feedback {
+      width: 15px;
+      height: 15px;
+      background-color: red;
+      border-radius: 50%;
+      display: inline-block; }
+    .captureLeft .recording-feedback .time-feedback {
+      display: inline-block;
+      vertical-align: top;
+      margin-left: 10px; }
 
 .captureRight {
   background-color: #FFF;
@@ -7944,8 +7964,13 @@ body.capture .content-wrapper:after {
   overflow: hidden;
   padding: 10px;
   width: 40%; }
-  body:not([data-mode="stopmotion"]) .captureRight #stop-sm-btn {
-    display: none; }
+  .captureRight #stop-sm-btn {
+    border: none !important;
+    outline: none !important;
+    background: none !important;
+    float: right; }
+    body:not([data-mode="stopmotion"]) .captureRight #stop-sm-btn {
+      display: none; }
   .captureRight .flash {
     height: 100%;
     background-color: #FFF;
@@ -7972,6 +7997,14 @@ body.capture .content-wrapper:after {
         vertical-align: top;
         margin-right: 10px;
         cursor: pointer; }
+    .captureRight .screenshot .instructions-stopmotion {
+      width: 80%;
+      margin: auto; }
+      .captureRight .screenshot .instructions-stopmotion .icone-stopmotion {
+        width: 100%;
+        margin-bottom: 10px; }
+      .captureRight .screenshot .instructions-stopmotion h4 {
+        font-size: 1em; }
     .captureRight .screenshot #canvas-equalizer {
       background-color: orange; }
     .captureRight .screenshot .canvas-view {
