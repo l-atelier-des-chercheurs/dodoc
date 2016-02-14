@@ -385,7 +385,8 @@ function takePictures(){
     $('body').attr('data-justcaptured', '');
   }, 200);
 
-  submitData(data, 'imageCapture')
+  submitData(data, 'imageCapture');
+  saveFeedback("/images/icone-dodoc_image.png");
 }
 
 // Function qui enregistre de la vidéo
@@ -536,7 +537,7 @@ function recordingVideo(click){
       });
       cameraPreview.src = '';
       cameraPreview.poster = 'https://localhost:8080/loading.gif';
-      //saveFeedback("/images/icone-dodoc_video.png");
+      saveFeedback("/images/icone-dodoc_video.png");
     });
   }
 
@@ -620,7 +621,7 @@ function stopStopMotion(){
   countImage = 0;
   countPress = 0;
   $('.screenshot .meta-stopmotion').remove();
-  //saveFeedback("/images/icone-dodoc_anim.png");
+  saveFeedback("/images/icone-dodoc_anim.png");
 
   socket.emit('stopmotionCapture', {session: currentSession, project: currentProject, dir: dir});
   socket.on('newStopMotionCreated', function(req){
@@ -771,7 +772,7 @@ function audioCapture(code){
         //socket.emit('audio', {files: files, id: sessionId, name: app.session});
         console.log("Audio is recording url " + url);
         submitData(files, "audioCapture");
-        //saveFeedback("/images/icone-dodoc_son.png");
+        saveFeedback("/images/icone-dodoc_son.png");
         if (mediaStream) mediaStream.stop();
       });
     });
@@ -939,6 +940,22 @@ function backAnimation(){
       $(this).fadeOut('slow');
     });
   }
+}
+
+function saveFeedback(icone){
+  
+  var $iconeFeedback = $("<div class='icone-feedback'><img src='"+icone+"'></div>");
+  $("body").append( $iconeFeedback );
+  setTimeout(function(){
+    $iconeFeedback.fadeIn('slow').velocity({"top":"25px", "left":$(window).width() - 50, "width":"20px"},1000, "ease", function(){
+      $(this).fadeOut('slow', function(){
+        $(this).remove();
+        $(".count-add-media.plus-media").fadeIn('slow', function(){
+          $(this).fadeOut('slow');
+        });
+      });
+    });
+  }, 500);
 }
 
 function fullscreen(){

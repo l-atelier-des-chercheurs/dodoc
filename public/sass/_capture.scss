@@ -224,6 +224,17 @@ body.capture{
   }
 }
 
+.icone-feedback{
+  position: absolute;
+  width: 50px;
+  top:20%;
+  left:90%;
+  z-index: 1001;
+  display: none;
+
+  pointer-events: none;
+}
+
 .captureRight {
   background-color: #FFF;
   position: absolute;
