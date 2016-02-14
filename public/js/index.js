@@ -116,10 +116,10 @@ function onListChildren(data){
 	var image = data.childrenImage;
 	var $parent = $("li.dossier[data-name="+parentName+"]");
 	if(image != 'none'){
-		var liToAdd = "<li class=''><h3>"+childrenName+"</h3><div class='vignette-visuel'><img src='/"+parentName+"/"+convertToSlug(childrenName)+"/"+convertToSlug(childrenName)+"-thumb.jpg' alt='"+childrenName+"'></div></li>";
+		var liToAdd = "<li class=''><a href='/"+parentName+'/'+convertToSlug(childrenName)+"'><h3>"+childrenName+"</h3><div class='vignette-visuel'><img src='/"+parentName+"/"+convertToSlug(childrenName)+"/"+convertToSlug(childrenName)+"-thumb.jpg' alt='"+childrenName+"'></div></a></li>";
 	}
 	else{
-		var liToAdd = "<li class=''><h3>"+childrenName+"</h3></li>";
+		var liToAdd = "<li class=''><a href='/"+parentName+'/'+convertToSlug(childrenName)+"'><h3>"+childrenName+"</h3></a></li>";
 	}
 	$parent.find(".projet-list").append(liToAdd);
 }
