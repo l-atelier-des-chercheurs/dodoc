@@ -134,8 +134,7 @@ function displayNewAudio(audio){
 }
 
 function displayNewText(text){
-
-  debugger;
+	console.log(text);
 	$('input.new-text').val('');
 	$('#modal-add-text textarea').val('');
 	$('#modal-add-text').foundation('reveal', 'close');
@@ -147,7 +146,6 @@ function displayNewText(text){
 		.end()
 		.find('h3')
 		  .html(text.textTitle)
-		end()
   ;
 
 	//$(".medias-list li:first-child").after(mediaItem);
@@ -331,7 +329,6 @@ function dragAndDrop(){
 	.on('drop', function(el, target, source, sibling){
   	// si le drop a bien réussi
     if( target !== null) {
-      debugger;
       $(el).removeClass("gu-transit");
       var deleteMedia = $(".js--templates .js--delete-media-montage").clone(false);
       $(el).append(deleteMedia);

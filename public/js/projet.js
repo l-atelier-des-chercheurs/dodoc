@@ -250,7 +250,6 @@ function onProjectModified(data){
 	// il faudrait envoyer un ID du post avec la requête, puis matcher le projet qui correspond à la réception. Un ID qui ne peut pas changer. On a ça dans le JSON ?
 /*
 	$(".project .title").filter( function() {
-  	debugger;
     return $(this).text() === name;
   });
 */
