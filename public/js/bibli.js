@@ -200,7 +200,9 @@ function displayImage(session, project, id, file){
 	var imagePath = "../"+ file;
 	var mediaItem = $(".js--templates .media_image").clone(false);
 	mediaItem.attr( 'id', id);
-	mediaItem.find( 'img').attr('src', imagePath);
+	mediaItem.find( '.mediaContent img').attr('src', imagePath)
+	.end()
+	.find('.icone-media img').attr('src', '/images/icone-dodoc_image.png');
 
 	//$(".medias-list li:first-child").after(mediaItem);
 	//$(mediaItem).insertAfter(".medias-list li:first-child");
@@ -216,6 +218,7 @@ function displayVideo(session, project, id, file){
 	  .attr( 'id', id)
     .find( 'video').attr( 'poster', thumbPath)
     .find( 'source').attr( 'src', videoPath);
+  mediaItem.find('.icone-media img').attr('src', '/images/icone-dodoc_video.png');
 
   //$(".medias-list li:first-child").after(mediaItem);
 	$('ul.medias-list').prepend(mediaItem);
@@ -232,6 +235,7 @@ function displayStopMotion(session, project, id, file){
 	  .attr( 'id', id)
     .find( 'video').attr( 'poster', thumbPath)
     .find( 'source').attr( 'src', videoPath);
+  mediaItem.find('.icone-media img').attr('src', '/images/icone-dodoc_anim.png');
 
   //$(".medias-list li:first-child").after(mediaItem);
 	$('ul.medias-list').prepend(mediaItem);
@@ -244,6 +248,7 @@ function displayAudio(session, project, id, file){
 	mediaItem
 	  .attr( 'id', id)
     .find( 'source').attr( 'src', audioPath);
+  mediaItem.find('.icone-media img').attr('src', '/images/icone-dodoc_son.png');
 
  // $(".medias-list li:first-child").after(mediaItem);
 	$('ul.medias-list').prepend(mediaItem);

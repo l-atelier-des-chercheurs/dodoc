@@ -7583,8 +7583,7 @@ body.bibli {
   .medias-list .media {
     width: 16.66667%;
     float: left;
-    min-height: 10vw;
-    max-height: 20vw;
+    position: relative;
     /*
     padding-top: 0.9375rem;
     padding-bottom: 0.9375rem;
@@ -7595,7 +7594,6 @@ body.bibli {
     border: .4687rem solid #eee;
     background: #e5e5e5;
     cursor: move;
-    overflow: auto;
     transition: width 1.1s ease; }
     body:not([data-publicationpane="open"]) .medias-list .media:nth-child(6n+1) {
       clear: left; }
@@ -7612,6 +7610,16 @@ body.bibli {
         font-size: 0.8em; }
     .medias-list .media > h3 {
       margin-top: 0; }
+    .medias-list .media .mediaContent {
+      overflow: scroll;
+      min-height: 10vw;
+      max-height: 20vw; }
+    .medias-list .media .icone-media {
+      width: 20px;
+      position: absolute;
+      right: -10px;
+      top: -10px;
+      z-index: 100; }
 
 .montage-list {
   margin-top: 15px; }
