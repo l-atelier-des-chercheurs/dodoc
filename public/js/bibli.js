@@ -83,7 +83,7 @@ function init(){
 
   $('body').on('click', '.js--delete-media-montage', function(){
   	var $elementToDel = $(this).parent("li.media");
-  	$elementToDel .slideUp( 600,function(){
+  	$elementToDel.slideUp( 600,function(){
   		$elementToDel.remove();
   		onMontageChanged();
   	});
@@ -199,10 +199,13 @@ function onListMedias(array, json){
 function displayImage(session, project, id, file){
 	var imagePath = "../"+ file;
 	var mediaItem = $(".js--templates .media_image").clone(false);
-	mediaItem.attr( 'id', id);
-	mediaItem.find( '.mediaContent img').attr('src', imagePath)
-	.end()
-	.find('.icone-media img').attr('src', '/images/icone-dodoc_image.png');
+	mediaItem
+    .attr( 'id', id)
+    .attr( 'data-mediatype', 'image')
+	  .find( '.mediaContent img')
+	    .attr('src', imagePath)
+    .end()
+  ;
 
 	//$(".medias-list li:first-child").after(mediaItem);
 	//$(mediaItem).insertAfter(".medias-list li:first-child");
@@ -216,9 +219,14 @@ function displayVideo(session, project, id, file){
 	var mediaItem = $(".js--templates .media_video").clone(false);
 	mediaItem
 	  .attr( 'id', id)
-    .find( 'video').attr( 'poster', thumbPath)
-    .find( 'source').attr( 'src', videoPath);
-  mediaItem.find('.icone-media img').attr('src', '/images/icone-dodoc_video.png');
+    .attr( 'data-mediatype', 'video')
+    .find( 'video')
+      .attr( 'poster', thumbPath)
+    .end()
+    .find( 'source')
+      .attr( 'src', videoPath)
+    .end()
+  ;
 
   //$(".medias-list li:first-child").after(mediaItem);
 	$('ul.medias-list').prepend(mediaItem);
@@ -233,9 +241,14 @@ function displayStopMotion(session, project, id, file){
 	var mediaItem = $(".js--templates .media_stopmotion").clone(false);
 	mediaItem
 	  .attr( 'id', id)
-    .find( 'video').attr( 'poster', thumbPath)
-    .find( 'source').attr( 'src', videoPath);
-  mediaItem.find('.icone-media img').attr('src', '/images/icone-dodoc_anim.png');
+    .attr( 'data-mediatype', 'stopmotion')
+    .find( 'video')
+      .attr( 'poster', thumbPath)
+    .end()
+    .find( 'source')
+      .attr( 'src', videoPath)
+    .end()
+  ;
 
   //$(".medias-list li:first-child").after(mediaItem);
 	$('ul.medias-list').prepend(mediaItem);
@@ -247,8 +260,11 @@ function displayAudio(session, project, id, file){
 	var mediaItem = $(".js--templates .media_audio").clone(false);
 	mediaItem
 	  .attr( 'id', id)
-    .find( 'source').attr( 'src', audioPath);
-  mediaItem.find('.icone-media img').attr('src', '/images/icone-dodoc_son.png');
+    .attr( 'data-mediatype', 'audio')
+    .find( 'source')
+      .attr( 'src', audioPath)
+    .end()
+  ;
 
  // $(".medias-list li:first-child").after(mediaItem);
 	$('ul.medias-list').prepend(mediaItem);
@@ -334,6 +350,7 @@ function dragAndDrop(){
 	.on('drop', function(el, target, source, sibling){
   	// si le drop a bien réussi
     if( target !== null) {
+      debugger;
       $(el).removeClass("gu-transit");
       var deleteMedia = $(".js--templates .js--delete-media-montage").clone(false);
       $(el).append(deleteMedia);
