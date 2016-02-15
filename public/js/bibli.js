@@ -350,7 +350,6 @@ function dragAndDrop(){
 	.on('drop', function(el, target, source, sibling){
   	// si le drop a bien réussi
     if( target !== null) {
-      debugger;
       $(el).removeClass("gu-transit");
       var deleteMedia = $(".js--templates .js--delete-media-montage").clone(false);
       $(el).append(deleteMedia);
