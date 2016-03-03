@@ -64,7 +64,7 @@ function init(){
 
 	$('body').on('click', '.js--edit_view', function(e){
   	e.preventDefault();
-		var namePubli = $(this).parent('.publi-folder').attr('data-publi');
+		var namePubli = $(this).closest('.publi-folder').attr('data-publi');
 		console.log(namePubli);
 		$('.montage-edit').attr('data-publi', namePubli);
 		socket.emit('displayThisMontage', {name:namePubli, session:currentSession, project: currentProject});
@@ -114,6 +114,19 @@ function init(){
 			$('#modal-add-local').foundation('reveal', 'close');
 		}
   });
+
+  // si en arrivant sur la page, il y a un hash dans l'url
+  // alors ouvrir la publication qui a ce nom directement
+  debugger;
+  var urlHash = window.location.hash;
+  if( urlHash.length > 0){
+    setTimeout(function() {
+      $('.montage-list [data-publi=' + urlHash.substring(1) + ']').find('.js--edit_view').trigger( 'click');
+    }, 250);
+
+
+  }
+
 }
 
 function displayNewImage(image){
@@ -375,7 +388,6 @@ function onPubliCreated(data){
 		.attr('data-publi', publiLink)
 		.find('h2').html(data.name).end()
 		.find('.js--publi_view').attr('href', publiPath).end()
-		.find('.js--edit_view').attr('href', '').end()
   ;
 
 	$('.montage-list ul').prepend(publiItem);
