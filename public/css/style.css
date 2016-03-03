@@ -7658,7 +7658,10 @@ body.bibli {
         font-weight: bold;
         font-size: 1.5em;
         margin: 0;
-        margin-top: 3px; }
+        margin-top: 3px;
+        cursor: pointer; }
+        .montage-list .publi-folder .content .title:hover {
+          color: #EF474B; }
     .montage-list .publi-folder .button-wrapper {
       display: inline-block;
       float: none; }

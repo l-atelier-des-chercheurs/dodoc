@@ -101,11 +101,12 @@ html
         .mediaContent
           h3.media-title
           p.text
+
       li.publi-folder(data-publi="")
         .content
-          h2.title
-        +button('edit_publication', '', 'isCollapsed')
+          h2.title.js--edit_view
         +button('view_publication', '', 'isCollapsed')
+
       +button('deleteMedia', '', 'isCollapsed')
       //- Pop up media
       div.media-big_image(data-type="image")
