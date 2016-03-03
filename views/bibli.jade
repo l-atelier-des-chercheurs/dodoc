@@ -26,9 +26,7 @@ html
       .btn-medias
         ul
           +button( 'ajoutText', '', 'isCollapsed')
-          br
           +button( 'ajoutMedia', '', 'isCollapsed')
-          br
           +button( 'publications', '', 'isCollapsed')
 
     .montage
@@ -52,9 +50,9 @@ html
         .montage-title
           input(type="text" placeholder="Titre")
           h2.title
-
-          +button('validerTitre', '', '')
-          +button('editerTitre', '', 'isCollapsed')
+          .publi-btn
+            +button('validerTitre', '', '')
+            +button('editerTitre', '', 'isCollapsed')
 
 
         .inner-montage.small-12
@@ -105,7 +103,8 @@ html
       li.publi-folder(data-publi="")
         .content
           h2.title.js--edit_view
-        +button('view_publication', '', 'isCollapsed')
+        .publi-btn
+          +button('view_publication', '', 'isCollapsed')
 
       +button('deleteMedia', '', 'isCollapsed')
       //- Pop up media
@@ -130,6 +129,7 @@ html
     include templates/footer.jade
 
     script(src="/bower_components/dragula.js/dist/dragula.min.js")
+    script(src='/js/dom_autoscroller.js')
     script(src='/js/bibli.js')
 
 

@@ -41,8 +41,9 @@ html
       li.publi-folder
         .content
           h2.title
-        +button('edit_publication', '', 'isCollapsed')
-        +button('view_publication', '', 'isCollapsed')
+        .publi-btn
+          +button('edit_publication', '', 'isCollapsed')
+          +button('view_publication', '', 'isCollapsed')
 
 
       .project.small-12.columns(data-statut)

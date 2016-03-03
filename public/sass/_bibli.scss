@@ -19,8 +19,6 @@ body.bibli {
     z-index: 500;
     right: 0;
 
-    padding: 5px;
-
     background-color: #333;
     border-radius: 4px 0 0 4px;
 
@@ -33,15 +31,41 @@ body.bibli {
 
     &:hover {
       width:  170px;
+
+      .button-wrapper_collapsed {
+        width:  155px;
+        color: inherit;
+        background-color: inherit;
+      }
+
+      .button-wrapper {
+        &_add, &_edit, &_publi, &_editProjet, &_addMedia, &_backButton, &_editFolder {
+          background-color: $rouge;
+          color: white;
+        }
+        &_capture, &_view, &_deleteFolder, &_deleteMedia {
+          background-color: #FFB520;
+          color: white;
+        }
+        &_bibli, &_gofullscreen , &_leavefullscreen {
+          background-color: #293275;
+          color: white;
+        }
+        &_accept, &_addText {
+          background-color: $bleuvert;
+          color: white;
+        }
+
+      }
     }
 
     .button-wrapper {
-      display: inline-block;
+      display: block;
       margin-top:   0;
       margin-bottom: 0;
       float: none;
 
-
+      margin: 5px !important;
     }
   }
 
@@ -62,6 +86,7 @@ body.bibli {
   -webkit-overflow-scrolling: touch;
 
   padding-left: 0.9375rem * 2;
+  padding-right: 0.9375rem * 2;
 
   transform: translate( 100%, 0);
 
@@ -119,7 +144,6 @@ body.bibli {
 
       @include clearfix();
 
-      text-align: right;
 
       position: relative;
       padding: 9px 15px;
@@ -135,18 +159,26 @@ body.bibli {
         font-weight: bold;
         font-size: 1.5em;
         margin: 0;
-        margin-top: 3px;
+        margin-top: 6px;
 
       }
 
-      .button-wrapper {
-        display: inline-block;
-        float: none;
+      .publi-btn {
 
-        &.button-wrapper_accept {
-          display: none;
-          width:  142px;
-          margin-top: 2px;
+        float: right;
+        .button-wrapper {
+          display: inline-block;
+          float: none;
+
+          &.button-wrapper_accept {
+            display: none;
+            width:  142px;
+            margin-top: 2px;
+
+            span {
+              width: 95px;
+            }
+          }
         }
       }
 
@@ -172,13 +204,19 @@ body.bibli {
 
     padding-left: 1.875rem;
     padding-right: 1.875rem;
-    margin-bottom: 1.875rem;
+    padding-bottom: 1.875rem * 2;
+    margin-bottom: 1.875rem * 2;
 
     border-bottom:  2px solid #eee;
 
     background-color: #fff;
 
-    transition: background-color .4s;
+    transition: background-color .4s, transform .6s ease-out;
+
+    body.gu-unselectable & {
+      // une bonne idéé à retravailler
+//       transform: scale( .8);
+    }
 
     &:empty {
       background-color: #fff;
@@ -228,13 +266,13 @@ body.bibli {
     }
 
     .media.gu-transit {
-        height: 90px;
+        height: 120px;
         width:  100%;
         width: auto;
         display: block;
     }
     .media.gu-transit .mediaContent {
-        background-color: $grisclair;
+        background-color: #AAAAAA;
         height: 100%;
     }
     .media.gu-transit .mediaContent > * {
@@ -256,14 +294,27 @@ body.bibli {
   padding-top:  0.9375rem;
   padding-bottom:  0.9375rem;
 
-  transition: width .8s;
+  transition: width .8s, opacity .8s;
 
   body[data-publicationpane="open"] & {
     width: $pourcentageBuffer;
   }
 
-  .media {
+  body.gu-unselectable & {
+    opacity: .6;
+  }
 
+
+  &:empty::after {
+    content: "Ce projet ne contient pas encore de médias. \A  \A Rendez-vous sur l'écran de capture pour en ajouter ou importez les avec la barre de droite.";
+    max-width: 36rem;
+    margin: 32vh auto;
+    color: #aaa;
+    text-align:center;
+    white-space: pre;
+  }
+
+  .media {
 
     width: 16.66667%;
     float: left;
@@ -359,16 +410,13 @@ body.bibli {
   .publi-folder {
 
     position: relative;
-    padding: 9px 15px 2px;
-    padding-bottom: 2px;
+    padding: 7px 15px 9px;
 
     margin-bottom:  15px;
 
     background-color: #fff;
     -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-
-    text-align: right;
 
     @include clearfix();
 
@@ -379,7 +427,8 @@ body.bibli {
         font-weight: bold;
         font-size: 1.5em;
         margin: 0;
-        margin-top:  3px;
+        margin-top:  6px;
+        margin-bottom:  6px;
 
         cursor: pointer;
 
@@ -389,9 +438,13 @@ body.bibli {
       }
     }
 
-    .button-wrapper {
+    .publi-btn {
       display: inline-block;
       float: none;
+
+      position: absolute;
+      right: 9px;
+      top: 11px;
     }
   }
 }

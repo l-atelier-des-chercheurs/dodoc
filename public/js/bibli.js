@@ -31,7 +31,10 @@ jQuery(document).ready(function($) {
 });
 
 function init(){
-	dragAndDrop();
+
+  // le drag and drop avec dragula se fait maintenant dans le fichier dom_autoscroller.js
+  // en attendant de faire mieux
+
 	bigMedia();
 	uploadImage("#inputmedia");
 
@@ -117,7 +120,6 @@ function init(){
 
   // si en arrivant sur la page, il y a un hash dans l'url
   // alors ouvrir la publication qui a ce nom directement
-  debugger;
   var urlHash = window.location.hash;
   if( urlHash.length > 0){
     setTimeout(function() {
@@ -347,28 +349,6 @@ function bigMedia(){
 
   	}
   });
-}
-
-function dragAndDrop(){
-  var left = document.querySelector('.medias-list');
-  var right = document.querySelector('.inner-montage');
-	dragula([left, right], {
-	  copy: function (el, source) {
-	    return source === left;
-	  },
-	  accepts: function (el, target) {
-      return target === right;
-	  }
-	})
-	.on('drop', function(el, target, source, sibling){
-  	// si le drop a bien réussi
-    if( target !== null) {
-      $(el).removeClass("gu-transit");
-      var deleteMedia = $(".js--templates .js--delete-media-montage").clone(false);
-      $(el).append(deleteMedia);
-  		onMontageChanged();
-    }
-	});
 }
 
 function onMontageChanged(){

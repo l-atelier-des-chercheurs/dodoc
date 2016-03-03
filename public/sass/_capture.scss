@@ -63,36 +63,47 @@ body.capture{
 
 .captureLeft {
   margin: auto;
-  padding: 10px;
   position: absolute;
   background-color: #FFF;
   z-index:2;
+  margin-bottom:  25px;
 
   width: 40%;
   left:30%;
 
   body.is--fullscreen & {
-    background-color: white;
     width: 100%;
     left: 0 !important;
     top: 0;
     height: 100%;
+    padding: 2vh;
+  }
 
-    margin-top: 5vh;
+  .video-view {
+    position: relative;
+    padding-bottom:  100px;
+    height: 100%;
 
-    video {
-      height: 80vh;
+    body.is--fullscreen & {
+      padding-bottom:   0;
     }
+  }
+
+
+
+  video {
+    height: auto;
+    max-height: 100%;
   }
 
   .btn-capture-wrapper{
     z-index: 1000;
-    background:#FFF;
-    height:60px;
 
-    margin-top:   25px;
-    margin-bottom:   25px;
     text-align: center;
+
+    position: absolute;
+    bottom: 16px;
+    width: 100%;
 
     &>div{
       button{
