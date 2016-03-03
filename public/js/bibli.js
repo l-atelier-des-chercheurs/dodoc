@@ -31,7 +31,10 @@ jQuery(document).ready(function($) {
 });
 
 function init(){
-	dragAndDrop();
+
+  // le drag and drop avec dragula se fait maintenant dans le fichier dom_autoscroller.js
+  // en attendant de faire mieux
+
 	bigMedia();
 	uploadImage("#inputmedia");
 

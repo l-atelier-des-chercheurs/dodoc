@@ -1518,7 +1518,3 @@ var dragula = require('dragula'),
 },{"dom-autoscroller":7,"dragula":9}]},{},[13]);
 
 
-
-function dragAndDrop(){
-
-}
