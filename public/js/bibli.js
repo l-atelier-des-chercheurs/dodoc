@@ -348,28 +348,6 @@ function bigMedia(){
   });
 }
 
-function dragAndDrop(){
-  var left = document.querySelector('.medias-list');
-  var right = document.querySelector('.inner-montage');
-	dragula([left, right], {
-	  copy: function (el, source) {
-	    return source === left;
-	  },
-	  accepts: function (el, target) {
-      return target === right;
-	  }
-	})
-	.on('drop', function(el, target, source, sibling){
-  	// si le drop a bien réussi
-    if( target !== null) {
-      $(el).removeClass("gu-transit");
-      var deleteMedia = $(".js--templates .js--delete-media-montage").clone(false);
-      $(el).append(deleteMedia);
-  		onMontageChanged();
-    }
-	});
-}
-
 function onMontageChanged(){
 	var montageContent = $(".inner-montage").html();
 	var title = $('.montage-title h2').html();

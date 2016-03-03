@@ -7285,6 +7285,9 @@ button {
     width: 110px;
     font-size: 14px; }
 
+#modal-add-text textarea {
+  min-height: 250px; }
+
 body.index #container {
   padding: 50px 0px;
   width: 100%; }
@@ -7492,7 +7495,6 @@ body.bibli {
       .montage .montage-edit .montage-btn .button-wrapper_view {
         float: right; }
     .montage .montage-edit .montage-title {
-      text-align: right;
       position: relative;
       padding: 9px 15px;
       margin-bottom: 0;
@@ -7509,16 +7511,18 @@ body.bibli {
         font-weight: bold;
         font-size: 1.5em;
         margin: 0;
-        margin-top: 3px; }
-      .montage .montage-edit .montage-title .button-wrapper {
-        display: inline-block;
-        float: none; }
-        .montage .montage-edit .montage-title .button-wrapper.button-wrapper_accept {
-          display: none;
-          width: 142px;
-          margin-top: 2px; }
-          .montage .montage-edit .montage-title .button-wrapper.button-wrapper_accept span {
-            width: 95px; }
+        margin-top: 6px; }
+      .montage .montage-edit .montage-title .publi-btn {
+        float: right; }
+        .montage .montage-edit .montage-title .publi-btn .button-wrapper {
+          display: inline-block;
+          float: none; }
+          .montage .montage-edit .montage-title .publi-btn .button-wrapper.button-wrapper_accept {
+            display: none;
+            width: 142px;
+            margin-top: 2px; }
+            .montage .montage-edit .montage-title .publi-btn .button-wrapper.button-wrapper_accept span {
+              width: 95px; }
       .montage .montage-edit .montage-title input {
         display: none;
         width: calc( 100% - 160px);
@@ -7535,10 +7539,11 @@ body.bibli {
     min-height: 200px;
     padding-left: 1.875rem;
     padding-right: 1.875rem;
-    margin-bottom: 1.875rem;
+    padding-bottom: 3.75rem;
+    margin-bottom: 3.75rem;
     border-bottom: 2px solid #eee;
     background-color: #fff;
-    transition: background-color .4s; }
+    transition: background-color .4s, transform .6s ease-out; }
     .montage .inner-montage:before, .montage .inner-montage:after {
       content: " ";
       display: table; }
@@ -7574,12 +7579,12 @@ body.bibli {
       .montage .inner-montage .media .media-title:empty() {
         display: none; }
     .montage .inner-montage .media.gu-transit {
-      height: 90px;
+      height: 120px;
       width: 100%;
       width: auto;
       display: block; }
     .montage .inner-montage .media.gu-transit .mediaContent {
-      background-color: #cecece;
+      background-color: #AAAAAA;
       height: 100%; }
     .montage .inner-montage .media.gu-transit .mediaContent > * {
       opacity: 0; }
@@ -7590,7 +7595,7 @@ body.bibli {
   padding-right: 0.9375rem;
   padding-top: 0.9375rem;
   padding-bottom: 0.9375rem;
-  transition: width .8s; }
+  transition: width .8s, opacity .8s; }
   .medias-list:before, .medias-list:after {
     content: " ";
     display: table; }
@@ -7598,6 +7603,8 @@ body.bibli {
     clear: both; }
   body[data-publicationpane="open"] .medias-list {
     width: 66%; }
+  body.gu-unselectable .medias-list {
+    opacity: .6; }
   .medias-list:empty::after {
     content: "Ce projet ne contient pas encore de médias. \A  \A Rendez-vous sur l'écran de capture pour en ajouter ou importez les avec la barre de droite.";
     max-width: 36rem;
@@ -7663,12 +7670,11 @@ body.bibli {
     margin-bottom: 15px; }
   .montage-list .publi-folder {
     position: relative;
-    padding: 9px 15px 11px;
+    padding: 7px 15px 9px;
     margin-bottom: 15px;
     background-color: #fff;
     -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    text-align: right; }
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
     .montage-list .publi-folder:before, .montage-list .publi-folder:after {
       content: " ";
       display: table; }
@@ -7680,15 +7686,17 @@ body.bibli {
         font-weight: bold;
         font-size: 1.5em;
         margin: 0;
-        margin-top: 3px;
+        margin-top: 6px;
+        margin-bottom: 6px;
         cursor: pointer; }
         .montage-list .publi-folder .content .title:hover {
           color: #EF474B; }
-    .montage-list .publi-folder .button-wrapper {
+    .montage-list .publi-folder .publi-btn {
       display: inline-block;
       float: none;
       position: absolute;
-      right: 7px; }
+      right: 9px;
+      top: 11px; }
 
 body.projets #container {
   padding: 50px 0px;

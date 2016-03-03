@@ -144,7 +144,6 @@ body.bibli {
 
       @include clearfix();
 
-      text-align: right;
 
       position: relative;
       padding: 9px 15px;
@@ -160,21 +159,25 @@ body.bibli {
         font-weight: bold;
         font-size: 1.5em;
         margin: 0;
-        margin-top: 3px;
+        margin-top: 6px;
 
       }
 
-      .button-wrapper {
-        display: inline-block;
-        float: none;
+      .publi-btn {
 
-        &.button-wrapper_accept {
-          display: none;
-          width:  142px;
-          margin-top: 2px;
+        float: right;
+        .button-wrapper {
+          display: inline-block;
+          float: none;
 
-          span {
-            width: 95px;
+          &.button-wrapper_accept {
+            display: none;
+            width:  142px;
+            margin-top: 2px;
+
+            span {
+              width: 95px;
+            }
           }
         }
       }
@@ -201,13 +204,19 @@ body.bibli {
 
     padding-left: 1.875rem;
     padding-right: 1.875rem;
-    margin-bottom: 1.875rem;
+    padding-bottom: 1.875rem * 2;
+    margin-bottom: 1.875rem * 2;
 
     border-bottom:  2px solid #eee;
 
     background-color: #fff;
 
-    transition: background-color .4s;
+    transition: background-color .4s, transform .6s ease-out;
+
+    body.gu-unselectable & {
+      // une bonne idéé à retravailler
+//       transform: scale( .8);
+    }
 
     &:empty {
       background-color: #fff;
@@ -257,13 +266,13 @@ body.bibli {
     }
 
     .media.gu-transit {
-        height: 90px;
+        height: 120px;
         width:  100%;
         width: auto;
         display: block;
     }
     .media.gu-transit .mediaContent {
-        background-color: $grisclair;
+        background-color: #AAAAAA;
         height: 100%;
     }
     .media.gu-transit .mediaContent > * {
@@ -285,10 +294,14 @@ body.bibli {
   padding-top:  0.9375rem;
   padding-bottom:  0.9375rem;
 
-  transition: width .8s;
+  transition: width .8s, opacity .8s;
 
   body[data-publicationpane="open"] & {
     width: $pourcentageBuffer;
+  }
+
+  body.gu-unselectable & {
+    opacity: .6;
   }
 
 
@@ -397,15 +410,13 @@ body.bibli {
   .publi-folder {
 
     position: relative;
-    padding: 9px 15px 11px;
+    padding: 7px 15px 9px;
 
     margin-bottom:  15px;
 
     background-color: #fff;
     -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-
-    text-align: right;
 
     @include clearfix();
 
@@ -416,7 +427,8 @@ body.bibli {
         font-weight: bold;
         font-size: 1.5em;
         margin: 0;
-        margin-top:  3px;
+        margin-top:  6px;
+        margin-bottom:  6px;
 
         cursor: pointer;
 
@@ -426,12 +438,13 @@ body.bibli {
       }
     }
 
-    .button-wrapper {
+    .publi-btn {
       display: inline-block;
       float: none;
 
       position: absolute;
-      right: 7px;
+      right: 9px;
+      top: 11px;
     }
   }
 }
