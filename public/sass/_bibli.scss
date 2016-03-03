@@ -262,8 +262,17 @@ body.bibli {
     width: $pourcentageBuffer;
   }
 
-  .media {
 
+  &:empty::after {
+    content: "Ce projet ne contient pas encore de médias. \A  \A Rendez-vous sur l'écran de capture pour en ajouter ou importez les avec la barre de droite.";
+    max-width: 36rem;
+    margin: 32vh auto;
+    color: #aaa;
+    text-align:center;
+    white-space: pre;
+  }
+
+  .media {
 
     width: 16.66667%;
     float: left;
