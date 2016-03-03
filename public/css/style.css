@@ -7224,7 +7224,7 @@ button {
       color: #293275; }
     .button-wrapper.button-wrapper_without-bg.button-wrapper_publi {
       color: #EF4651; }
-  .button-wrapper_add, .button-wrapper_edit, .button-wrapper_publi, .button-wrapper_editProjet, .button-wrapper_addMedia, .button-wrapper_backButton {
+  .button-wrapper_add, .button-wrapper_edit, .button-wrapper_publi, .button-wrapper_editProjet, .button-wrapper_addMedia, .button-wrapper_backButton, .button-wrapper_editFolder {
     background-color: #EF474B;
     color: white; }
   .button-wrapper_capture, .button-wrapper_view, .button-wrapper_deleteFolder, .button-wrapper_deleteMedia {
@@ -7303,7 +7303,7 @@ body.index #container {
     background-color: #fff;
     -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
-  .dossier .edit-icon {
+  .dossier .button-wrapper_editFolder {
     position: absolute;
     top: -16px;
     right: 0px;
@@ -7372,7 +7372,9 @@ body.index #container {
     font-family: "share", monospace; }
     .dossier .meta-data > * {
       padding-top: 4px; }
-    .dossier .meta-data .nb-projets .numero-projet {
+    .dossier .meta-data span:nth-of-type(1) {
+      margin-right: 5px; }
+    .dossier .meta-data .nb-projets .nb-projets-count {
       font-weight: bold; }
     .dossier .meta-data .statut .statut-type {
       font-weight: bold; }

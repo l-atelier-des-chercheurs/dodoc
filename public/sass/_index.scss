@@ -23,7 +23,7 @@ body.index{
     @include style--dossierBorders;
   }
 
-  .edit-icon{
+  .button-wrapper_editFolder{
     position:absolute;
     top:-16px;
     right: 0px;
@@ -132,8 +132,12 @@ body.index{
     > * {
       padding-top: 4px;
     }
+    span:nth-of-type(1) {
+      margin-right: 5px;
+    }
+
     .nb-projets{
-      .numero-projet{
+      .nb-projets-count{
         font-weight:bold;
      }
     }

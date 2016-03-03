@@ -53,7 +53,7 @@ function init(){
 
 	//MODIFIER LES DOSSIERS
 	//Au clic sur l'icone éditer
-	$('body').on('click', '.edit-icon', function(){
+	$('body').on('click', '.js--edit-project-icon', function(){
 		thisFolder = $(this).parent();
 		modifyFolder($(this));
 	});
@@ -110,54 +110,60 @@ function onListFolder(data){
 	displayFolder(folderName, createdDate, modifiedDate, statut, nb_projets);
 }
 
-function sortFolder(){
-	arrayFolder.sort(function(a, b){
-		return b.modified - a.modified;
-	})
-	console.log(arrayFolder);
-}
-
 function onListChildren(data){
 	var parentName = data.parentName;
 	var childrenName = data.childrenName;
 	var image = data.childrenImage;
-	console.log(image);
 	var $parent = $("li.dossier[data-name="+parentName+"]");
-	if(image == true){
-		var liToAdd = "<li class=''><a href='/"+parentName+'/'+convertToSlug(childrenName)+"'><h3>"+childrenName+"</h3><div class='vignette-visuel'><img src='/"+parentName+"/"+convertToSlug(childrenName)+"/"+convertToSlug(childrenName)+"-thumb.jpg' alt='"+childrenName+"'></div></a></li>";
+	var newSnippetProjet = $(".js--templates > .projetSnippet").clone(false);
+
+	if(image === 'none'){
+  	newSnippetProjet.find( '.vignette-visuel img').remove();
 	}
-	else{
-		var liToAdd = "<li class=''><a href='/"+parentName+'/'+convertToSlug(childrenName)+"'><h3>"+childrenName+"</h3></a></li>";
-	}
-	$parent.find(".projet-list").append(liToAdd);
+
+  // customisation du projet
+	newSnippetProjet
+    .find( '.project-link').attr('href', '/' + parentName + '/' + convertToSlug(childrenName)).end()
+    .find( 'h3').text( childrenName).end()
+    .find( '.vignette-visuel img').attr( 'src', "/"+parentName+"/"+convertToSlug(childrenName)+"/"+convertToSlug(childrenName)+"-thumb.jpg").attr( 'alt', childrenName);
+  ;
+	$parent.find(".projet-list").append(newSnippetProjet);
 }
 
 // Fonction qui affiche les dossiers HTML
 function displayFolder(name, created, modified, statut, projets){
 	var formatName = convertToSlug(name);
-	var contentHTML = '<div class="content"><a href="/'+formatName+'" title="'+name+'" class="folder-link"><h2>'+name+'</h2></a><ul class="projet-list"></ul></div>';
-
-	// si un projet, singulier
 	var projetName = projets > 1 ? 'projets' : 'projet';
 
-	var nbProjetHTML = '<div class="nb-projets small-6 columns"><span class="numero-projet">'+projets+'</span><span> '+projetName+'</span></div>';
-	var statutHTML= '<div class="statut small-6 columns"><span>statut</span><span class="statut-type"> '+statut+'</span></div>';
-	var createdHTML= '<div class="created small-6 columns"><span>crée le </span><span class="create-date">'+created+'</span></div>';
-	if(modified!= null){
-		var modifiedHTML= '<div class="modified small-6 columns"><span>modifié le </span><span class="modify-date">'+modified+'</span></div>';
-	}
-	else{
-		var modifiedHTML= '<div class="modified small-6 columns"></div>';
-	}
-	var metaDataHTML = '<div class="meta-data row">'+nbProjetHTML+statutHTML+createdHTML+modifiedHTML+'</div>';
-	if(statut == "terminé"){
-		var editIcon='' ;
-	}
-	else{
-		var editIcon = '<a href="#" class="edit-icon btn icon" data-reveal-id="modal-modify-folder"><img src="/images/pen.svg" alt="edit icon"></a>';
-	}
-	var folderHTML = '<li class="dossier small-6 medium-4 large-4 columns" data-statut="'+statut+'" data-name="'+formatName+'" data-nom="' + name + '"><div class="dossier-inside">'+editIcon+contentHTML+metaDataHTML+'</div></li>';
-	$("#container .dossier-list").prepend(folderHTML);
+	var newFolder = $(".js--templates > .dossier").clone(false);
+
+  // customisation du projet
+	newFolder
+	  .attr( 'data-nom', name)
+	  .attr( 'data-name', formatName)
+	  .attr( 'data-statut', statut)
+	  .find( '.statut-type').text( statut).end()
+	  .find( '.folder-link')
+	    .attr('href', '/' + formatName)
+	    .attr('title', name)
+	  .end()
+
+	  .find( '.title').text( name).end()
+	  .find( '.create-date').text( created).end()
+	  .find( '.modify-date').text( modified !== null ? modified : '').end()
+	  .find( '.nb-projets')
+	    .find( '.nb-projets-intitule').text( projetName).end()
+	    .find( '.nb-projets-count').text( projets).end()
+    .end()
+  ;
+
+  if( modified === null)
+    newFolder.find('.modified').remove();
+
+  if( statut == "terminé")
+    newFolder.find( '.js--edit-project-icon').remove();
+
+	$("#container .dossier-list").prepend(newFolder);
 }
 
 function modifyFolder($this){
