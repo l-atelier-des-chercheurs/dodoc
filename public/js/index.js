@@ -5,6 +5,7 @@ var $thisEl;
 var thisFolderName;
 var thisFolder;
 
+
 /* sockets */
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
@@ -59,7 +60,7 @@ function init(){
 
 	//remove modal modify folder when it closing
 	$(document).on('close.fndtn.reveal', '#modal-modify-folder[data-reveal]', function () {
-//   	$("#modal-modify-folder").empty();
+	//   	$("#modal-modify-folder").empty();
 	});
 
 	//Au click sur le bouton supprimer le dossier
@@ -110,12 +111,10 @@ function onListFolder(data){
 }
 
 function onListChildren(data){
-	//console.log(data);
 	var parentName = data.parentName;
 	var childrenName = data.childrenName;
 	var image = data.childrenImage;
 	var $parent = $("li.dossier[data-name="+parentName+"]");
-
 	var newSnippetProjet = $(".js--templates > .projetSnippet").clone(false);
 
 	if(image === 'none'){
@@ -128,8 +127,6 @@ function onListChildren(data){
     .find( 'h3').text( childrenName).end()
     .find( '.vignette-visuel img').attr( 'src', "/"+parentName+"/"+convertToSlug(childrenName)+"/"+convertToSlug(childrenName)+"-thumb.jpg").attr( 'alt', childrenName);
   ;
-
-  debugger;
 	$parent.find(".projet-list").append(newSnippetProjet);
 }
 

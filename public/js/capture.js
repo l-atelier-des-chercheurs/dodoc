@@ -167,17 +167,17 @@ function init(){
 
   // delete file
   // cette partie fonctionne pas ! Je désactive, pas de suppression à l'ajout et pi c'est tout :)
-/*
-  $(".clear").off();
-  $(".clear").on("click", function(e){
-    console.log('File was delete');
-    var fileToDelete = $('.screenshot').attr('data-file');
-    socket.emit("deleteFile", {session:currentSession, project:currentProject, file:fileToDelete});
-    backAnimation();
-    //deleteFeedback();
-    e.stopPropagation;
-  });
-*/
+
+  // $(".clear").off();
+  // $(".clear").on("click", function(e){
+  //   console.log('File was delete');
+  //   var fileToDelete = $('.screenshot').attr('data-file');
+  //   socket.emit("deleteFile", {session:currentSession, project:currentProject, file:fileToDelete});
+  //   backAnimation();
+  //   //deleteFeedback();
+  //   e.stopPropagation;
+  // });
+
 
   fullscreen();
 
@@ -333,8 +333,6 @@ function displayVideoStream(){
                            navigator.webkitGetUserMedia ||
                            navigator.mozGetUserMedia ||
                            navigator.msGetUserMedia);
-
-
     navigator.getUserMedia(
       {
         video: true ,

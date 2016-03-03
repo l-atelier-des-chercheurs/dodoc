@@ -101,6 +101,8 @@ module.exports = function(app, io){
 		// Liste les dossiers déjà existant
 		function listFolder(){
 			var dir = "sessions/";
+			// var arrayFolder =[];
+			// var arrayChildren =[];
 			fs.readdir(dir, function (err, files) {
 				if(dir == ".DS_Store"){
 			   	fs.unlink(dir);
@@ -118,7 +120,7 @@ module.exports = function(app, io){
 				  	var jsonFile = dir + file + '/' +file+'.json';
 						var data = fs.readFileSync(jsonFile,"UTF-8");
 						var jsonObj = JSON.parse(data);
-						// res.json({name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, nb_projets:jsonObj.nb_projets});
+						//arrayFolder.push(jsonObj);
 						io.sockets.emit('listFolder', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, nb_projets:jsonObj.nb_projets});
 						// read all projects into folders
 						var projectDir = dir + file;
@@ -129,6 +131,7 @@ module.exports = function(app, io){
 									var jsonFileProj = projectDir +'/'+ project + '/' +project+'.json';
 									var dataProj = fs.readFileSync(jsonFileProj,"UTF-8");
 									var jsonObjProj = JSON.parse(dataProj);
+									//arrayChildren.push(jsonObjProj);
 									io.sockets.emit('listChildren', {parentName:convertToSlug(jsonObj.name), childrenName:jsonObjProj.name, childrenImage:jsonObjProj.fileName});
 
 						  	}
@@ -137,6 +140,16 @@ module.exports = function(app, io){
 			  	}
 
 			  });
+		  // 	arrayFolder.sort(function(a, b){
+				// 	return  a.modified-b.modified;
+				// })
+				// arrayFolder.forEach(function(jsonObj) {
+				//   io.sockets.emit('listFolder', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, nb_projets:jsonObj.nb_projets});
+				// 	arrayChildren.forEach(function(jsonObjProj) {
+				// 		io.sockets.emit('listChildren', {parentName:convertToSlug(jsonObj.name), childrenName:jsonObjProj.name, childrenImage:jsonObjProj.fileName});
+				// 	});
+				// });
+
 			});
 		}
 
