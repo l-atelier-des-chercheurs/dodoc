@@ -5,6 +5,7 @@ var $thisEl;
 var thisFolderName;
 var thisFolder;
 
+
 /* sockets */
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
@@ -59,7 +60,7 @@ function init(){
 
 	//remove modal modify folder when it closing
 	$(document).on('close.fndtn.reveal', '#modal-modify-folder[data-reveal]', function () {
-//   	$("#modal-modify-folder").empty();
+	//   	$("#modal-modify-folder").empty();
 	});
 
 	//Au click sur le bouton supprimer le dossier
@@ -109,13 +110,20 @@ function onListFolder(data){
 	displayFolder(folderName, createdDate, modifiedDate, statut, nb_projets);
 }
 
+function sortFolder(){
+	arrayFolder.sort(function(a, b){
+		return b.modified - a.modified;
+	})
+	console.log(arrayFolder);
+}
+
 function onListChildren(data){
-	//console.log(data);
 	var parentName = data.parentName;
 	var childrenName = data.childrenName;
 	var image = data.childrenImage;
+	console.log(image);
 	var $parent = $("li.dossier[data-name="+parentName+"]");
-	if(image != 'none'){
+	if(image == true){
 		var liToAdd = "<li class=''><a href='/"+parentName+'/'+convertToSlug(childrenName)+"'><h3>"+childrenName+"</h3><div class='vignette-visuel'><img src='/"+parentName+"/"+convertToSlug(childrenName)+"/"+convertToSlug(childrenName)+"-thumb.jpg' alt='"+childrenName+"'></div></a></li>";
 	}
 	else{
