@@ -130,7 +130,7 @@ button{
 .button-wrapper {
   display: block;
   position: relative;
-  width:  235px;
+  width:  245px;
   height: 40px;
   background-color: #ccc;
 
@@ -199,7 +199,7 @@ button{
     overflow: hidden;
     float:left;
     padding-left: 0;
-    width:  160px;
+    width:  155px;
 
     // deux boutons collapsed à la suite = marge au milieu
     & + & {
@@ -216,8 +216,8 @@ button{
     }
 
     .btn.icon + span {
-      left: 50px;
-      width:  110px;
+      left: 44px;
+      width:  105px;
     }
 
     &.button-wrapper_without-bg {
@@ -234,7 +234,7 @@ button{
   }
 
   .btn.icon + span {
-    left: 50px;
+    left: 44px;
     width:  185px;
 
   }
@@ -259,9 +259,9 @@ button{
 
 
 .btn.icon {
-  padding: 6px;
-  width: 44px;
-  height: 44px;
+  padding: 4px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
 	cursor: pointer;
 	transition: all .2s ease-out;

@@ -14,11 +14,11 @@ body.index{
 
 .dossier {
   margin-bottom: $margin * 2;
-/*
-  &:nth-child(3n+3) {
+
+  &:nth-child(3n+1) {
     clear: left;
   }
-*/
+
   .dossier-inside {
     @include style--dossierBorders;
   }

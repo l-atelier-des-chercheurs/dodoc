@@ -117,7 +117,6 @@ function init(){
 
   // si en arrivant sur la page, il y a un hash dans l'url
   // alors ouvrir la publication qui a ce nom directement
-  debugger;
   var urlHash = window.location.hash;
   if( urlHash.length > 0){
     setTimeout(function() {

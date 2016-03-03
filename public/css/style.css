@@ -7197,7 +7197,7 @@ button {
 .button-wrapper {
   display: block;
   position: relative;
-  width: 235px;
+  width: 245px;
   height: 40px;
   background-color: #ccc;
   text-align: left;
@@ -7205,7 +7205,7 @@ button {
   padding: 8px;
   padding-right: 16px;
   transition: border-radius .4s;
-  font-size: 1em;
+  font-size: 1rem;
   line-height: 1.1; }
   .button-wrapper + .button-wrapper {
     margin-left: 8px; }
@@ -7240,7 +7240,7 @@ button {
     overflow: hidden;
     float: left;
     padding-left: 0;
-    width: 160px;
+    width: 155px;
     transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out; }
     .button-wrapper.button-wrapper_collapsed + .button-wrapper.button-wrapper_collapsed {
       margin-left: 0; }
@@ -7249,14 +7249,14 @@ button {
       color: transparent;
       background-color: transparent; }
     .button-wrapper.button-wrapper_collapsed .btn.icon + span {
-      left: 50px;
-      width: 110px; }
+      left: 44px;
+      width: 105px; }
   .button-wrapper .btn {
     float: left; }
   .button-wrapper .btn.icon {
     margin-top: -10px; }
   .button-wrapper .btn.icon + span {
-    left: 50px;
+    left: 44px;
     width: 185px; }
   .button-wrapper > span {
     display: block;
@@ -7269,9 +7269,9 @@ button {
     transform: translate(0, -50%); }
 
 .btn.icon {
-  padding: 6px;
-  width: 44px;
-  height: 44px;
+  padding: 4px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   cursor: pointer;
   transition: all .2s ease-out; }
@@ -7292,12 +7292,9 @@ body.index #container {
     margin: 0; }
 
 .dossier {
-  margin-bottom: 32px;
-  /*
-  &:nth-child(3n+3) {
-    clear: left;
-  }
-*/ }
+  margin-bottom: 32px; }
+  .dossier:nth-child(3n+1) {
+    clear: left; }
   .dossier .dossier-inside {
     border-bottom: 2px solid #eeeeee;
     background-color: #fff;
@@ -7412,7 +7409,6 @@ body.bibli {
     width: 50px;
     z-index: 500;
     right: 0;
-    padding: 5px;
     background-color: #333;
     border-radius: 4px 0 0 4px;
     transition: all .7s ease-out; }
@@ -7421,11 +7417,28 @@ body.bibli {
       background-color: #EF474B; }
     .bibli-buffer .btn-medias:hover {
       width: 170px; }
+      .bibli-buffer .btn-medias:hover .button-wrapper_collapsed {
+        width: 155px;
+        color: inherit;
+        background-color: inherit; }
+      .bibli-buffer .btn-medias:hover .button-wrapper_add, .bibli-buffer .btn-medias:hover .button-wrapper_edit, .bibli-buffer .btn-medias:hover .button-wrapper_publi, .bibli-buffer .btn-medias:hover .button-wrapper_editProjet, .bibli-buffer .btn-medias:hover .button-wrapper_addMedia, .bibli-buffer .btn-medias:hover .button-wrapper_backButton, .bibli-buffer .btn-medias:hover .button-wrapper_editFolder {
+        background-color: #EF474B;
+        color: white; }
+      .bibli-buffer .btn-medias:hover .button-wrapper_capture, .bibli-buffer .btn-medias:hover .button-wrapper_view, .bibli-buffer .btn-medias:hover .button-wrapper_deleteFolder, .bibli-buffer .btn-medias:hover .button-wrapper_deleteMedia {
+        background-color: #FFB520;
+        color: white; }
+      .bibli-buffer .btn-medias:hover .button-wrapper_bibli, .bibli-buffer .btn-medias:hover .button-wrapper_gofullscreen, .bibli-buffer .btn-medias:hover .button-wrapper_leavefullscreen {
+        background-color: #293275;
+        color: white; }
+      .bibli-buffer .btn-medias:hover .button-wrapper_accept, .bibli-buffer .btn-medias:hover .button-wrapper_addText {
+        background-color: #48C2B5;
+        color: white; }
     .bibli-buffer .btn-medias .button-wrapper {
-      display: inline-block;
+      display: block;
       margin-top: 0;
       margin-bottom: 0;
-      float: none; }
+      float: none;
+      margin: 5px !important; }
 
 .montage {
   position: fixed;
@@ -7440,6 +7453,7 @@ body.bibli {
   /* has to be scroll, not auto */
   -webkit-overflow-scrolling: touch;
   padding-left: 1.875rem;
+  padding-right: 1.875rem;
   transform: translate(100%, 0);
   transition: transform .7s ease-out;
   -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
@@ -7503,6 +7517,8 @@ body.bibli {
           display: none;
           width: 142px;
           margin-top: 2px; }
+          .montage .montage-edit .montage-title .button-wrapper.button-wrapper_accept span {
+            width: 95px; }
       .montage .montage-edit .montage-title input {
         display: none;
         width: calc( 100% - 160px);
@@ -7647,8 +7663,7 @@ body.bibli {
     margin-bottom: 15px; }
   .montage-list .publi-folder {
     position: relative;
-    padding: 9px 15px 2px;
-    padding-bottom: 2px;
+    padding: 9px 15px 11px;
     margin-bottom: 15px;
     background-color: #fff;
     -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
@@ -7671,7 +7686,9 @@ body.bibli {
           color: #EF474B; }
     .montage-list .publi-folder .button-wrapper {
       display: inline-block;
-      float: none; }
+      float: none;
+      position: absolute;
+      right: 7px; }
 
 body.projets #container {
   padding: 50px 0px;
@@ -7886,28 +7903,33 @@ body.capture .content-wrapper:after {
 
 .captureLeft {
   margin: auto;
-  padding: 10px;
   position: absolute;
   background-color: #FFF;
   z-index: 2;
+  margin-bottom: 25px;
   width: 40%;
   left: 30%; }
   body.is--fullscreen .captureLeft {
-    background-color: white;
     width: 100%;
     left: 0 !important;
     top: 0;
     height: 100%;
-    margin-top: 5vh; }
-    body.is--fullscreen .captureLeft video {
-      height: 80vh; }
+    padding: 2vh; }
+  .captureLeft .video-view {
+    position: relative;
+    padding-bottom: 100px;
+    height: 100%; }
+    body.is--fullscreen .captureLeft .video-view {
+      padding-bottom: 0; }
+  .captureLeft video {
+    height: auto;
+    max-height: 100%; }
   .captureLeft .btn-capture-wrapper {
     z-index: 1000;
-    background: #FFF;
-    height: 60px;
-    margin-top: 25px;
-    margin-bottom: 25px;
-    text-align: center; }
+    text-align: center;
+    position: absolute;
+    bottom: 16px;
+    width: 100%; }
     .captureLeft .btn-capture-wrapper > div button {
       outline: none !important;
       border: none !important;
