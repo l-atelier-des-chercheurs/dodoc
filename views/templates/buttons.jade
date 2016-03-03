@@ -48,10 +48,16 @@ mixin button(typeOfButton, navOrButton, style)
         include images/add.svg
       span Nouveau projet
 
+  if( typeOfButton === 'editFolder')
+    a(href="#" data-reveal-id="modal-modify-folder" class='button-wrapper_editFolder js--edit-project-icon #{defaultClasses}')
+      .btn.icon
+        include images/cog.svg
+      span Éditer ce dossier
+
   if( typeOfButton === 'editProjet')
     a(href="#" data-reveal-id="modal-modify-project" class='button-wrapper_editProjet js--edit-project-icon #{defaultClasses}')
       .btn.icon
-        include images/pen.svg
+        include images/cog.svg
       span Éditer ce projet
 
   if( typeOfButton === 'capture')
@@ -93,7 +99,7 @@ mixin button(typeOfButton, navOrButton, style)
   if( typeOfButton === 'editerTitre')
     a(href="#" title="Dodoc publi" class='button-wrapper_edit js--editerTitre #{defaultClasses}')
       .btn.icon
-        include images/pen.svg
+        include images/cog.svg
       span Éditer le titre
 
   if( typeOfButton === 'ajoutText')
