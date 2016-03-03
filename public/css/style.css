@@ -7566,7 +7566,8 @@ body.bibli {
       position: relative;
       transition: all .4s; }
       .montage .inner-montage .media .mediaContent {
-        overflow: hidden; }
+        overflow: hidden;
+        opacity: 1; }
       .montage .inner-montage .media .button-wrapper {
         position: absolute;
         top: 0;
@@ -7582,12 +7583,32 @@ body.bibli {
       height: 120px;
       width: 100%;
       width: auto;
-      display: block; }
+      display: block;
+      opacity: 1;
+      animation-name: insertBloc;
+      animation-iteration-count: 1;
+      animation-timing-function: ease-in;
+      animation-duration: 0.3s; }
     .montage .inner-montage .media.gu-transit .mediaContent {
-      background-color: #AAAAAA;
-      height: 100%; }
-    .montage .inner-montage .media.gu-transit .mediaContent > * {
-      opacity: 0; }
+      height: 100%;
+      opacity: 1;
+      background-color: #FFB520; }
+      .montage .inner-montage .media.gu-transit .mediaContent > * {
+        opacity: 0; }
+
+@keyframes insertBloc {
+  0% {
+    height: 0;
+    opacity: 0; }
+  100% {
+    height: 120px;
+    opacity: .8; } }
+
+@keyframes insertMedia {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
 
 .medias-list {
   width: 100%;
