@@ -80,22 +80,34 @@ html
       a(class="close-reveal-modal" aria-label="Close") &#215;
 
     .js--templates
-      li.media.media_image(data-type="image" data-ratio)
+      li.media.media_image(data-type="image" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           img
-      li.media.media_video(data-type="video" data-ratio)
+        .mediaData
+          h5
+          p
+      li.media.media_video(data-type="video" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           video(preload="none" controls)
             source()
-      li.media.media_stopmotion(data-type="stopmotion" data-ratio)
+        .mediaData
+          h5
+          p
+      li.media.media_stopmotion(data-type="stopmotion" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           video(preload="none" controls)
             source()
-      li.media.media_audio(data-type="audio" data-ratio)
+        .mediaData
+          h5
+          p
+      li.media.media_audio(data-type="audio" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           audio(preload="none" controls)
             source()
-      li.media.media_text(data-type="text" data-ratio)
+        .mediaData
+          h5
+          p
+      li.media.media_text(data-type="text" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           h3.media-title
           p.text
@@ -108,17 +120,49 @@ html
 
       +button('deleteMedia', '', 'isCollapsed')
       //- Pop up media
-      div.media-big_image(data-type="image")
+      div.media-big_image.media-big(data-type="image")
         .mediaContent
           img
-      div.media-big_video(data-type="video")
+          form(onsubmit='return false;' class='add-media-data lead')
+            input(type='text' class='add-media-title' placeholder='Titre de l\'image')
+            input(type='text' class='add-media-legend' placeholder="Légende de l\'image")
+            input(type='submit' class='js--submit-add-media-data' value='Valider')
+          +button('deleteMedia', '', 'isCollapsed')
+          a(href="#" title="Dodoc media" class='button-wrapper_highlightMedia js--highlightMedia #{defaultClasses}')
+            span Highlight
+      div.media-big_video.media-big(data-type="video")
         .mediaContent
           video(preload="none" controls)
             source()
-      div.media-big_audio(data-type="audio")
+          form(onsubmit='return false;' class='add-media-data lead')
+            input(type='text' class='add-media-title' placeholder='Titre de l\'image')
+            input(type='text' class='add-media-legend' placeholder="Légende de l\'image")
+            input(type='submit' class='js--submit-add-media-data' value='Valider')
+          +button('deleteMedia', '', 'isCollapsed')
+          a(href="#" title="Dodoc media" class='button-wrapper_highlightMedia js--highlightMedia #{defaultClasses}')
+            span Highlight
+      div.media-big_stopmotion.media-big(data-type="stopmotion")
+        .mediaContent
+          video(preload="none" controls)
+            source()
+          form(onsubmit='return false;' class='add-media-data lead')
+            input(type='text' class='add-media-title' placeholder='Titre de l\'image')
+            input(type='text' class='add-media-legend' placeholder="Légende de l\'image")
+            input(type='submit' class='js--submit-add-media-data' value='Valider')
+          +button('deleteMedia', '', 'isCollapsed')
+          a(href="#" title="Dodoc media" class='button-wrapper_highlightMedia js--highlightMedia #{defaultClasses}')
+            span Highlight
+      div.media-big_audio.media-big(data-type="audio")
         .mediaContent
           audio(preload="none" controls)
             source()
+          form(onsubmit='return false;' class='add-media-data lead')
+            input(type='text' class='add-media-title' placeholder='Titre de l\'image')
+            input(type='text' class='add-media-legend' placeholder="Légende de l\'image")
+            input(type='submit' class='js--submit-add-media-data' value='Valider')
+          +button('deleteMedia', '', 'isCollapsed')
+          a(href="#" title="Dodoc media" class='button-wrapper_highlightMedia js--highlightMedia #{defaultClasses}')
+            span Highlight
       div.media-big_text(data-type="text" data-id)
         .mediaContent
           form(onsubmit='return false;' class='modify-text-view lead')

@@ -24,6 +24,7 @@ socket.on('listPublications', onPubliCreated);
 socket.on('publiCreated', onPubliCreated);
 socket.on('displayMontage', onDisplayMontage);
 socket.on('titleModified', onTitleModified);
+socket.on('displayMediaData', onMediaData);
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 
 jQuery(document).ready(function($) {
@@ -138,6 +139,16 @@ function init(){
   	socket.emit('modifyText', {session: currentSession, project: currentProject, title: textTitle, text:text, id:id});
   });
 
+  //Envoie les titres et légendes au serveur
+  $('body').on('click', '.js--submit-add-media-data', function(){
+  	var mediaTitle = $(this).parent('form').find('.add-media-title').val();
+  	var mediaLegende = $(this).parent('form').find('.add-media-legend').val();
+  	var id = $(this).parents('.media-big').attr('id');
+  	var type = $(this).parents('.media-big').attr('data-type');
+  	console.log(type);
+  	socket.emit('addMediaData', {session: currentSession, project: currentProject, title: mediaTitle, legend:mediaLegende, id:id, type:type});
+  });
+
 }
 
 function displayNewImage(image){
@@ -192,7 +203,6 @@ function displayModifiedText(text){
 function onListMedias(array, json){
 	$(".mediaContainer li").remove();
 	var matchID = $(".mediaContainer .media").attr("id");
-
 	array.sort(function(a, b){
     var keyA = new Date(a.id),
         keyB = new Date(b.id);
@@ -223,6 +233,49 @@ function onListMedias(array, json){
 			displayText(currentSession, currentProject, identifiant);
 		}
 	}
+
+	//afficher les titre et légendes des images  
+	for (var i = 0; i < json['files']['images'].length; i++){
+	  var title = json['files']['images'][i]['title'];
+	  var legende = json['files']['images'][i]['legende'];
+	  $('#'+json['files']['images'][i].name)
+	  	.attr('data-title', title)
+	  	.attr('data-legende', legende)
+	  	.find('.mediaData h5').html(title)
+			.end()
+			.find('.mediaData p').html(legende);
+	}
+	for (var i = 0; i < json['files']['videos'].length; i++){
+	  var title = json['files']['videos'][i]['title'];
+	  var legende = json['files']['videos'][i]['legende'];
+	  $('#'+json['files']['videos'][i].name)
+	  	.attr('data-title', title)
+	  	.attr('data-legende', legende)
+	  	.find('.mediaData h5').html(title)
+			.end()
+			.find('.mediaData p').html(legende);
+	}
+	for (var i = 0; i < json['files']['stopmotion'].length; i++){
+	  var title = json['files']['stopmotion'][i]['title'];
+	  var legende = json['files']['stopmotion'][i]['legende'];
+	  $('#'+json['files']['stopmotion'][i].name)
+	  	.attr('data-title', title)
+	  	.attr('data-legende', legende)
+	  	.find('.mediaData h5').html(title)
+			.end()
+			.find('.mediaData p').html(legende);
+	}
+	for (var i = 0; i < json['files']['audio'].length; i++){
+	  var title = json['files']['audio'][i]['title'];
+	  var legende = json['files']['audio'][i]['legende'];
+	  $('#'+json['files']['audio'][i].name)
+	  	.attr('data-title', title)
+	  	.attr('data-legende', legende)
+	  	.find('.mediaData h5').html(title)
+			.end()
+			.find('.mediaData p').html(legende);
+	}
+
 	//display text
 	socket.on('txtRead', function(data){
 		$("#"+data.obj.id)
@@ -320,15 +373,22 @@ function bigMedia(){
   	switch(typeMedia){
   		case 'image':
 	  		var imagePath = $(this).find("img").attr("src");
-	  		var id = $(this).find("img").attr("id");
+	  		var id = $(this).attr("id");
+	  		var mediaTitle = $(this).attr("data-title");
+	  		var mediaLegende = $(this).attr("data-legende");
 				var mediaItem = $(".js--templates .media-big_image").clone(false);
 				mediaItem.attr( 'id', id);
-				mediaItem.find( 'img').attr('src', imagePath);
+				mediaItem
+					.find( 'img').attr('src', imagePath)
+					.end()
+					.find('.add-media-title').val(mediaTitle)
+					.end()
+					.find('.add-media-legend').val(mediaLegende)
+					;
 				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;
 			case 'video':
-			case 'stopmotion':
-	  		var id = $(this).find("img").attr("id");
+				var id = $(this).attr("id");
 	  		var thumbPath = $(this).find("video").attr("poster");
 				var videoPath = $(this).find("source").attr("src");
 
@@ -337,18 +397,47 @@ function bigMedia(){
 				mediaItem
 				  .attr( 'id', id)
 			    .find( 'video').attr( 'poster', thumbPath)
-			    .find( 'source').attr( 'src', videoPath);
+			    .find( 'source').attr( 'src', videoPath)
+			    .end()
+					.find('.add-media-title').val(mediaTitle)
+					.end()
+					.find('.add-media-legend').val(mediaLegende)
+					;
+
+				$('#modal-media-view .big-mediaContent').html(mediaItem);
+				break;
+			case 'stopmotion':
+	  		var id = $(this).attr("id");
+	  		var thumbPath = $(this).find("video").attr("poster");
+				var videoPath = $(this).find("source").attr("src");
+
+				var mediaItem = $(".js--templates .media-big_stopmotion").clone(false);
+
+				mediaItem
+				  .attr( 'id', id)
+			    .find( 'video').attr( 'poster', thumbPath)
+			    .find( 'source').attr( 'src', videoPath)
+			    .end()
+					.find('.add-media-title').val(mediaTitle)
+					.end()
+					.find('.add-media-legend').val(mediaLegende)
+					;
 
 				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;
 			case 'audio':
-				var id = $(this).find("img").attr("id");
+				var id = $(this).attr("id");
 				var audioPath = $(this).find("source").attr("src");
 
 				var mediaItem = $(".js--templates .media-big_audio").clone(false);
 				mediaItem
 				  .attr( 'id', id)
-			    .find( 'source').attr( 'src', audioPath);
+			    .find( 'source').attr( 'src', audioPath)
+			    .end()
+					.find('.add-media-title').val(mediaTitle)
+					.end()
+					.find('.add-media-legend').val(mediaLegende)
+					;
 
 				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;
@@ -363,13 +452,28 @@ function bigMedia(){
 					.end()
 					.find('.view-text-modify').val(texte)
 					.end()
-					.attr('data-id', id);
+					.attr('data-id', id)
+					.end()
+					.find('.add-media-title').val(mediaTitle)
+					.end()
+					.find('.add-media-legend').val(mediaLegende)
+					;
 
 				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;
 
   	}
   });
+}
+
+function onMediaData(data){
+	$('#modal-media-view').foundation('reveal', 'close');
+	$("#"+data.id)
+		.attr('data-title', data.title)
+		.attr('data-legende', data.legend)
+		.find('.mediaData h5').html(data.title)
+		.end()
+		.find('.mediaData p').html(data.legend);
 }
 
 function onMontageChanged(){

@@ -60,6 +60,7 @@ module.exports = function(app, io){
 		socket.on("addText", onNewText);
 		socket.on("modifyText", onModifiedText);
 		socket.on("newImageLocal", onNewImage);
+		socket.on("addMediaData", onMediaLegende);
 
 		// P U B L I      P A G E
 		socket.on("displayPubli", displayPubli);
@@ -806,6 +807,83 @@ module.exports = function(app, io){
 
 		function onNewImageLocal(image){
 
+		}
+
+		function onMediaLegende(data){
+			var jsonFile = 'sessions/' + data.session + '/'+ data.project+"/" +data.project+'.json';
+			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
+			var jsonObj = JSON.parse(jsonData);
+			var id = data.id;
+			console.log(data);
+
+			if(data.type == 'image'){
+				for (var i = 0; i < jsonObj['files']['images'].length; i++){
+				  // look for the entry with a matching `name` value
+				  if (jsonObj['files']['images'][i].name == id){
+				  	jsonObj['files']['images'][i]['title'] = data.title;
+				  	jsonObj['files']['images'][i]['legende'] = data.legend;
+				  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
+				      if(err) {
+				          console.log(err);
+				      } else {
+				          console.log("The file was saved!");
+				          io.sockets.emit("displayMediaData", {id:id, title: data.title, legend: data.legend});
+				      }
+			    	});
+				  }
+				}
+			}
+			if(data.type == 'video'){
+				for (var i = 0; i < jsonObj['files']['videos'].length; i++){
+				  // look for the entry with a matching `name` value
+				  if (jsonObj['files']['videos'][i].name == id){
+				  	jsonObj['files']['videos'][i]['title'] = data.title;
+				  	jsonObj['files']['videos'][i]['legende'] = data.legend;
+				  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
+				      if(err) {
+				          console.log(err);
+				      } else {
+				          console.log("The file was saved!");
+				          io.sockets.emit("displayMediaData", {id:id, title: data.title, legend: data.legend});
+				      }
+			    	});
+				  }
+				}
+			}
+			if(data.type == 'stopmotion'){
+				for (var i = 0; i < jsonObj['files']['stopmotion'].length; i++){
+				  // look for the entry with a matching `name` value
+				  if (jsonObj['files']['stopmotion'][i].name == id){
+				  	jsonObj['files']['stopmotion'][i]['title'] = data.title;
+				  	jsonObj['files']['stopmotion'][i]['legende'] = data.legend;
+				  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
+				      if(err) {
+				          console.log(err);
+				      } else {
+				          console.log("The file was saved!");
+				          io.sockets.emit("displayMediaData", {id:id, title: data.title, legend: data.legend});
+				      }
+			    	});
+				  }
+				}
+			}
+			if(data.type == 'audio'){
+				for (var i = 0; i < jsonObj['files']['audio'].length; i++){
+				  // look for the entry with a matching `name` value
+				  if (jsonObj['files']['audio'][i].name == id){
+				  	jsonObj['files']['audio'][i]['title'] = data.title;
+				  	jsonObj['files']['audio'][i]['legende'] = data.legend;
+				  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
+				      if(err) {
+				          console.log(err);
+				      } else {
+				          console.log("The file was saved!");
+				          io.sockets.emit("displayMediaData", {id:id, title: data.title, legend: data.legend});
+				      }
+			    	});
+				  }
+				}
+			}
 		}
 
 	// F I N    B I B L I    P A G E
