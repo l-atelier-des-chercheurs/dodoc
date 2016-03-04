@@ -368,14 +368,14 @@ function bigMedia(){
 	// Au click sur un media
   $('body').on('click', '.medias-list .media', function(){
   	var typeMedia = $(this).attr("data-type");
+  	var mediaTitle = $(this).attr("data-title");
+	  var mediaLegende = $(this).attr("data-legende");
   	$('#modal-media-view').foundation('reveal', 'open');
   	console.log(typeMedia);
   	switch(typeMedia){
   		case 'image':
 	  		var imagePath = $(this).find("img").attr("src");
 	  		var id = $(this).attr("id");
-	  		var mediaTitle = $(this).attr("data-title");
-	  		var mediaLegende = $(this).attr("data-legende");
 				var mediaItem = $(".js--templates .media-big_image").clone(false);
 				mediaItem.attr( 'id', id);
 				mediaItem
@@ -393,15 +393,15 @@ function bigMedia(){
 				var videoPath = $(this).find("source").attr("src");
 
 				var mediaItem = $(".js--templates .media-big_video").clone(false);
-
+				console.log(mediaTitle);
 				mediaItem
 				  .attr( 'id', id)
-			    .find( 'video').attr( 'poster', thumbPath)
-			    .find( 'source').attr( 'src', videoPath)
-			    .end()
-					.find('.add-media-title').val(mediaTitle)
+				  .find('.add-media-title').val(mediaTitle)
 					.end()
 					.find('.add-media-legend').val(mediaLegende)
+					.end()
+			    .find( 'video').attr( 'poster', thumbPath)
+			    .find( 'source').attr( 'src', videoPath)
 					;
 
 				$('#modal-media-view .big-mediaContent').html(mediaItem);
@@ -415,12 +415,13 @@ function bigMedia(){
 
 				mediaItem
 				  .attr( 'id', id)
+				  .find('.add-media-title').val(mediaTitle)
+					.end()
+					.find('.add-media-legend').val(mediaLegende)
+					.end()
 			    .find( 'video').attr( 'poster', thumbPath)
 			    .find( 'source').attr( 'src', videoPath)
 			    .end()
-					.find('.add-media-title').val(mediaTitle)
-					.end()
-					.find('.add-media-legend').val(mediaLegende)
 					;
 
 				$('#modal-media-view .big-mediaContent').html(mediaItem);

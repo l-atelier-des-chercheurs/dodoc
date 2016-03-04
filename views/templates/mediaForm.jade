@@ -1,0 +1,7 @@
+form(onsubmit='return false;' class='add-media-data lead')
+    input(type='text' class='add-media-title' placeholder='Titre de l\'image')
+    input(type='text' class='add-media-legend' placeholder="Légende de l\'image")
+    input(type='submit' class='js--submit-add-media-data' value='Valider')
+  +button('deleteMedia', '', 'isCollapsed')
+  a(href="#" title="Dodoc media" class='button-wrapper_highlightMedia js--highlightMedia #{defaultClasses}')
+    span Highlight
