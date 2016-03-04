@@ -18,6 +18,7 @@ socket.on('displayNewVideo', displayNewVideo);
 socket.on('displayNewStopMotion', displayNewStopMotion);
 socket.on('displayNewAudio', displayNewAudio);
 socket.on('displayNewText', displayNewText);
+socket.on('displayModifiedText', displayModifiedText);
 socket.on('listMedias', onListMedias);
 socket.on('listPublications', onPubliCreated);
 socket.on('publiCreated', onPubliCreated);
@@ -129,6 +130,14 @@ function init(){
 
   }
 
+  //Submit new text modified
+  $('body').on('click', '.js--submit-view-text-modify', function(){
+  	var textTitle = $(this).parent('form').find('.view-text-title-modify').val();
+  	var text = $(this).parent('form').find('textarea').val();
+  	var id = $(this).parents('.media-big_text').attr('data-id');
+  	socket.emit('modifyText', {session: currentSession, project: currentProject, title: textTitle, text:text, id:id});
+  });
+
 }
 
 function displayNewImage(image){
@@ -149,7 +158,6 @@ function displayNewAudio(audio){
 }
 
 function displayNewText(text){
-	console.log(text);
 	$('input.new-text').val('');
 	$('#modal-add-text textarea').val('');
 	$('#modal-add-text').foundation('reveal', 'close');
@@ -166,6 +174,18 @@ function displayNewText(text){
 	//$(".medias-list li:first-child").after(mediaItem);
 	//$(mediaItem).insertAfter(".medias-list li:first-child");
 	$('.medias-list').prepend(mediaItem);
+}
+
+function displayModifiedText(text){
+	$('#modal-media-view').foundation('reveal', 'close');
+	var mediaItem = $("#"+text.id);
+		mediaItem
+		.find( 'p')
+		  .html(text.textContent)
+		.end()
+		.find('h3')
+		  .html(text.textTitle)
+  ;
 }
 
 
@@ -222,8 +242,6 @@ function displayImage(session, project, id, file){
     .end()
   ;
 
-	//$(".medias-list li:first-child").after(mediaItem);
-	//$(mediaItem).insertAfter(".medias-list li:first-child");
 	$('.medias-list').prepend(mediaItem);
 }
 
@@ -335,14 +353,17 @@ function bigMedia(){
 				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;
 			case 'text':
-				console.log($(this));
+				//console.log($(this).find('h3').html());
 				var mediaItem = $(".js--templates .media-big_text").clone(false);
-				var title = $(this).find('h2').html();
+				var title = $(this).find('h3').html();
 				var texte = $(this).find('p').html();
+				var id = $(this).attr('id');
 				mediaItem
-					.find('.media-title').html(title)
+					.find('.view-text-title-modify').val(title)
 					.end()
-					.find('.text').html(texte)
+					.find('.view-text-modify').val(texte)
+					.end()
+					.attr('data-id', id);
 
 				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;

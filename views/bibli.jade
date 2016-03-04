@@ -80,22 +80,22 @@ html
       a(class="close-reveal-modal" aria-label="Close") &#215;
 
     .js--templates
-      li.media.media_image(data-type="image")
+      li.media.media_image(data-type="image" data-ratio)
         .mediaContent
           img
-      li.media.media_video(data-type="video")
+      li.media.media_video(data-type="video" data-ratio)
         .mediaContent
           video(preload="none" controls)
             source()
-      li.media.media_stopmotion(data-type="stopmotion")
+      li.media.media_stopmotion(data-type="stopmotion" data-ratio)
         .mediaContent
           video(preload="none" controls)
             source()
-      li.media.media_audio(data-type="audio")
+      li.media.media_audio(data-type="audio" data-ratio)
         .mediaContent
           audio(preload="none" controls)
             source()
-      li.media.media_text(data-type="text")
+      li.media.media_text(data-type="text" data-ratio)
         .mediaContent
           h3.media-title
           p.text
@@ -119,10 +119,12 @@ html
         .mediaContent
           audio(preload="none" controls)
             source()
-      div.media-big_text(data-type="text")
+      div.media-big_text(data-type="text" data-id)
         .mediaContent
-          h2.media-title
-          p.text
+          form(onsubmit='return false;' class='modify-text-view lead')
+            input(type='text' class='view-text-title-modify')
+            textarea.view-text-modify
+            input(type='submit' class='js--submit-view-text-modify' value='Valider')
 
 
     //- //footer

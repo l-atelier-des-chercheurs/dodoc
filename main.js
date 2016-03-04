@@ -58,6 +58,7 @@ module.exports = function(app, io){
 		socket.on("saveMontage", saveMontage);
 		socket.on("titleChanged", onTitleChanged);
 		socket.on("addText", onNewText);
+		socket.on("modifyText", onModifiedText);
 		socket.on("newImageLocal", onNewImage);
 
 		// P U B L I      P A G E
@@ -789,6 +790,18 @@ module.exports = function(app, io){
 	    	});
 	    });
 
+		}
+
+		function onModifiedText(text){
+			var txtFile = 'sessions/' + text.session + '/'+ text.project+"/" +text.id+'.txt';
+			fs.writeFile(txtFile, '### '+text.title+"\r\n"+text.text, function(err){
+				if(err) {
+	        console.log(err);
+	      } else {
+	        console.log("The file was saved!");
+	        io.sockets.emit("displayModifiedText", {id:text.id, textTitle: text.title, textContent: text.text});
+	      }
+	    });
 		}
 
 		function onNewImageLocal(image){
