@@ -254,8 +254,11 @@ function onProjectModified(data){
 		$thisEl.find('.js--edit-project-icon').remove();
 	}
 
-	$thisEl.remove();
-	displayFolder(name, created, modified, data.image, statut)
+	// C'est pas propre mais ça marche en attendant de refaire correctement les pages 
+	location.reload();
+
+	//$thisEl.remove();
+	//displayFolder(name, created, modified, data.image, statut)
 }
 
 //Suppression du dossier
