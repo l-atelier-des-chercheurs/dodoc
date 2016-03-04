@@ -138,6 +138,12 @@ mixin button(typeOfButton, navOrButton, style)
         include images/nofullscreen.svg
       span Quitter le plein écran
 
+  if( typeOfButton === 'deleteMediaCapture')
+    a(href="#" title="Dodoc media" class='button-wrapper_deleteMediaCapture js--delete-media-capture #{defaultClasses}')
+      .btn.icon
+        include images/clear.svg
+      span Supprimer
+
 
   if( navOrButton === 'isNav')
     | </div>

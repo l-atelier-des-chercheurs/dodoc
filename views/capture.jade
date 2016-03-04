@@ -73,7 +73,7 @@ html
 
           div.captureRight.small-5.columns
             div.flash.small-12
-            +button( 'masquer', '', 'isCollapsed')
+            +button( 'deleteMediaCapture', '', 'isCollapsed')
 
             div(class="screenshot small-12" data-file="none")
               canvas#canvas.canvas-view
@@ -87,7 +87,7 @@ html
 
           div.clone
 
-       //- ALERT SUPPRIMER UN DOSSIER
+       //- ALERT CHANGER DE MEDIA
       div(id="modal-change-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
         p Êtes-vous sûr de vouloir changer de média (en changeant de média vous perdrez votre stop motion)
         button.oui Oui
