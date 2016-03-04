@@ -61,6 +61,7 @@ module.exports = function(app, io){
 		socket.on("modifyText", onModifiedText);
 		socket.on("newImageLocal", onNewImage);
 		socket.on("addMediaData", onMediaLegende);
+		socket.on("highlightMedia", onHighLightMedia);
 
 		// P U B L I      P A G E
 		socket.on("displayPubli", displayPubli);
@@ -814,7 +815,6 @@ module.exports = function(app, io){
 			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
 			var jsonObj = JSON.parse(jsonData);
 			var id = data.id;
-			console.log(data);
 
 			if(data.type == 'image'){
 				for (var i = 0; i < jsonObj['files']['images'].length; i++){
@@ -883,6 +883,43 @@ module.exports = function(app, io){
 			    	});
 				  }
 				}
+			}
+		}
+
+		function onHighLightMedia(data){
+			var jsonFile = 'sessions/' + data.session + '/'+ data.project+"/" +data.project+'.json';
+			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
+			var jsonObj = JSON.parse(jsonData);
+			var id = data.id;
+
+			var type;
+			if(data.type == 'image'){
+				type = 'images';
+			}
+			if(data.type == 'video'){
+				type = 'videos';
+			}
+			if(data.type == 'audio'){
+				type = 'audio';
+			}
+			if(data.type == 'stopmotion'){
+				type = 'stopmotion';
+			}
+
+
+			for (var i = 0; i < jsonObj['files'][type].length; i++){
+			  if (jsonObj['files']['images'][i].name == id){
+			  	jsonObj['files']['images'][i]['hightlight'] = true;
+			  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
+			      if(err) {
+			          console.log(err);
+			      } else {
+			          console.log("The file was saved!");
+			          io.sockets.emit("addHightlight", {id:id, hightlight:true});
+			      }
+		    	});
+			  }
+				
 			}
 		}
 

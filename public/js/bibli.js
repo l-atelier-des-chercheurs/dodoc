@@ -25,6 +25,7 @@ socket.on('publiCreated', onPubliCreated);
 socket.on('displayMontage', onDisplayMontage);
 socket.on('titleModified', onTitleModified);
 socket.on('displayMediaData', onMediaData);
+socket.on('addHightlight', onHightlight);
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 
 jQuery(document).ready(function($) {
@@ -145,8 +146,14 @@ function init(){
   	var mediaLegende = $(this).parent('form').find('.add-media-legend').val();
   	var id = $(this).parents('.media-big').attr('id');
   	var type = $(this).parents('.media-big').attr('data-type');
-  	console.log(type);
   	socket.emit('addMediaData', {session: currentSession, project: currentProject, title: mediaTitle, legend:mediaLegende, id:id, type:type});
+  });
+
+  $('body').on('click', '.js--highlightMedia', function(){
+		var id = $(this).parents('.media-big').attr('id');
+		var type = $(this).parents('.media-big').attr('data-type');
+		console.log(id);
+		socket.emit('highlightMedia', {session: currentSession, project: currentProject, id:id, type:type});
   });
 
 }
@@ -244,6 +251,10 @@ function onListMedias(array, json){
 	  	.find('.mediaData h5').html(title)
 			.end()
 			.find('.mediaData p').html(legende);
+		if(json['files']['images'][i].hightlight == true){
+			$('#'+json['files']['images'][i].name).addClass('is--highlight');
+		}
+		
 	}
 	for (var i = 0; i < json['files']['videos'].length; i++){
 	  var title = json['files']['videos'][i]['title'];
@@ -254,6 +265,9 @@ function onListMedias(array, json){
 	  	.find('.mediaData h5').html(title)
 			.end()
 			.find('.mediaData p').html(legende);
+		if(json['files']['videos'][i].hightlight == true){
+			$('#'+json['files']['images'][i].name).addClass('is--highlight');
+		}
 	}
 	for (var i = 0; i < json['files']['stopmotion'].length; i++){
 	  var title = json['files']['stopmotion'][i]['title'];
@@ -264,6 +278,10 @@ function onListMedias(array, json){
 	  	.find('.mediaData h5').html(title)
 			.end()
 			.find('.mediaData p').html(legende);
+
+		if(json['files']['videos'][i].hightlight == true){
+			$('#'+json['files']['images'][i].name).addClass('is--highlight');
+		}
 	}
 	for (var i = 0; i < json['files']['audio'].length; i++){
 	  var title = json['files']['audio'][i]['title'];
@@ -274,6 +292,10 @@ function onListMedias(array, json){
 	  	.find('.mediaData h5').html(title)
 			.end()
 			.find('.mediaData p').html(legende);
+
+		if(json['files']['videos'][i].hightlight == true){
+			$('#'+json['files']['images'][i].name).addClass('is--highlight');
+		}
 	}
 
 	//display text
@@ -475,6 +497,18 @@ function onMediaData(data){
 		.find('.mediaData h5').html(data.title)
 		.end()
 		.find('.mediaData p').html(data.legend);
+}
+
+function onHightlight(data){
+	$('#modal-media-view').foundation('reveal', 'close');
+	if(data.hightlight == true){
+		$("#"+data.id)
+			.addClass('is--highlight');
+	}
+	else{
+		$("#"+data.id)
+			.removeClass('is--highlight');
+	}
 }
 
 function onMontageChanged(){
