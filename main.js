@@ -28,7 +28,6 @@ module.exports = function(app, io){
 		socket.on("removeFolder", onRemoveFolder);
 
 		// P R O J E T S     P A G E
-		//socket.on("listProject", listProject);
 		socket.on("listProject", function (data){
 			listProject(data, socket);
 		});

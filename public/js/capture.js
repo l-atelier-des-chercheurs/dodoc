@@ -324,29 +324,89 @@ function audioDisplay(){
 }
 
 function displayVideoStream(){
-  // Initialise getUserMedia
-    navigator.getUserMedia = ( navigator.getUserMedia ||
-                           navigator.webkitGetUserMedia ||
-                           navigator.mozGetUserMedia ||
-                           navigator.msGetUserMedia);
-    navigator.getUserMedia(
-      {
-        video: true ,
-        audio: false
-      },
-      function (stream) {
-        if (navigator.mozGetUserMedia) {
-          video.mozSrcObject = stream;
-        } else {
-          var vendorURL = window.URL || window.webkitURL;
-          video.src = vendorURL.createObjectURL(stream);
+// Initialise getUserMedia
+  navigator.getUserMedia = ( navigator.getUserMedia ||
+                         navigator.webkitGetUserMedia ||
+                         navigator.mozGetUserMedia ||
+                         navigator.msGetUserMedia);
+
+
+  if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+    console.log("enumerateDevices() not supported.");
+    return;
+  }
+
+  // List cameras and microphones.
+  var mediaDevices = [];
+  navigator.mediaDevices.enumerateDevices()
+    .then(function(devices) {
+      devices.forEach(function(device) {
+        // console.log(device.kind + ": " + device.label +
+        //   " id = " + device.deviceId);
+        if(device.kind === 'videoinput') {
+          console.log(device.label);
+          mediaDevices.push(device);
         }
-        video.play();
-      },
-      function(err) {
-        alert(JSON.stringify(error));
+      });
+    })
+    .then(function(){
+      var deviceChoiceId;
+      if(mediaDevices.length < 2){
+        console.log('test');
+        deviceChoiceId = mediaDevices[0].deviceId;
+        //$('.container-inner').prepend("<h2>"+mediaDevices[0].label+"</h2>");
       }
-    );
+      else{
+        deviceChoiceId = mediaDevices[1].deviceId;
+        //$('.container-inner').prepend("<h2>"+mediaDevices[1].label+"</h2>");
+      }
+
+      navigator.getUserMedia(
+        {
+          //video: {deviceId: deviceChoiceId ? {exact: deviceChoiceId} : undefined},
+          video: {
+            optional: [{sourceId: deviceChoiceId}]
+          },
+          audio: false
+        },
+        function (stream) {
+          if (navigator.mozGetUserMedia) {
+            video.mozSrcObject = stream;
+          } else {
+            var vendorURL = window.URL || window.webkitURL;
+            video.src = vendorURL.createObjectURL(stream);
+          }
+          video.play();
+        },
+        function(err) {
+          alert(JSON.stringify(error));
+        }
+      );
+    })
+    .catch(function(err) {
+      console.log(err.name + ": " + error.message);
+    });
+
+    
+
+    // navigator.getUserMedia(
+    //   {
+    //     video: true ,
+    //     audio: false
+    //   },
+    //   function (stream) {
+    //     if (navigator.mozGetUserMedia) {
+    //       video.mozSrcObject = stream;
+    //     } else {
+    //       var vendorURL = window.URL || window.webkitURL;
+    //       video.src = vendorURL.createObjectURL(stream);
+    //     }
+    //     video.play();
+    //   },
+    //   function(err) {
+    //     alert(JSON.stringify(error));
+    //   }
+    // );
 
     video.addEventListener('canplay', function(ev){
       if (!streaming) {
