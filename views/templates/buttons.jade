@@ -144,6 +144,11 @@ mixin button(typeOfButton, navOrButton, style)
         include images/clear.svg
       span Supprimer
 
+  if( typeOfButton === 'flag')
+    a(href="#" title="Dodoc media" class='button-wrapper_flagMedia js--flagMedia')
+      .btn.icon
+        include images/flag.svg
+
 
   if( navOrButton === 'isNav')
     | </div>

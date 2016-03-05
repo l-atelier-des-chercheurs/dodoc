@@ -86,6 +86,7 @@ html
         .mediaData
           h5
           p
+        +button( 'flag', '', 'isCollapsed')
       li.media.media_video(data-type="video" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           video(preload="none" controls)
@@ -93,6 +94,7 @@ html
         .mediaData
           h5
           p
+        +button( 'flag', '', '')
       li.media.media_stopmotion(data-type="stopmotion" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           video(preload="none" controls)
@@ -100,6 +102,7 @@ html
         .mediaData
           h5
           p
+        +button( 'flag', '', '')
       li.media.media_audio(data-type="audio" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           audio(preload="none" controls)
@@ -107,11 +110,12 @@ html
         .mediaData
           h5
           p
+        +button( 'flag', '', '')
       li.media.media_text(data-type="text" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           h3.media-title
           p.text
-
+        +button( 'flag', '', '')
       li.publi-folder(data-publi="")
         .content
           h2.title.js--edit_view

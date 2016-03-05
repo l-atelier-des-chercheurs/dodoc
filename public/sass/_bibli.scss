@@ -349,12 +349,12 @@ body.bibli {
     float: left;
     position:relative;
 
-/*
-    padding-top: 0.9375rem;
-    padding-bottom: 0.9375rem;
-    padding-left: 0.9375rem;
-    padding-right: 0.9375rem;
-*/
+    /*
+        padding-top: 0.9375rem;
+        padding-bottom: 0.9375rem;
+        padding-left: 0.9375rem;
+        padding-right: 0.9375rem;
+    */
 
     padding: 0;
     border: .4687rem solid #eee;
@@ -429,6 +429,15 @@ body.bibli {
       .mediaContent{
         border: 5px solid $bleuvert;
       }
+    }
+
+    //Flag button
+    .js--flagMedia{
+      position: absolute;
+      right: -20px;
+      top: -20px;
+      z-index:  101;
+      display:none;
     }
 
   }

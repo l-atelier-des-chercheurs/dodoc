@@ -149,6 +149,7 @@ function init(){
   	socket.emit('addMediaData', {session: currentSession, project: currentProject, title: mediaTitle, legend:mediaLegende, id:id, type:type});
   });
 
+  // Ajoute ou enlève un hightlight quand on clique sur "Highlight" dans la fenêtre modal
   $('body').on('click', '.js--highlightMedia', function(){
 		var id = $(this).parents('.media-big').attr('id');
 		var type = $(this).parents('.media-big').attr('data-type');
@@ -162,6 +163,31 @@ function init(){
 			socket.emit('highlightMedia', {session: currentSession, project: currentProject, id:id, type:type});
 		}
 		
+  });
+
+ // Ajoute ou enlève un hightlight quand on clique sur le drapeau dans les médias
+  $('body').on('click', '.js--flagMedia', function(e){
+  	e.stopPropagation();
+		var id = $(this).parents('li').attr('id');
+		var type = $(this).parents('li').attr('data-type');
+		//console.log(type);
+		if($(this).parents('li').hasClass('is--highlight')){
+			console.log('remove hightlight');
+			socket.emit('removeHighlight', {session: currentSession, project: currentProject, id:id, type:type});
+		}
+		else{
+			console.log('add hightlight');
+			socket.emit('highlightMedia', {session: currentSession, project: currentProject, id:id, type:type});
+		}
+		
+  });
+
+  $('body').on('mouseenter', 'li.media',function() {
+  	$(this).find('.js--flagMedia').show();
+  });
+
+   $('body').on('mouseleave', 'li.media',function() {
+  	$(this).find('.js--flagMedia').hide();
   });
 
 }
