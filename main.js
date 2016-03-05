@@ -112,8 +112,6 @@ module.exports = function(app, io){
 		// Liste les dossiers déjà existant
 		function listFolder(socket){
 			var dir = "sessions/";
-			// var arrayFolder =[];
-			// var arrayChildren =[];
 			fs.readdir(dir, function (err, files) {
 				if(dir == ".DS_Store"){
 			   	fs.unlink(dir);
@@ -122,7 +120,10 @@ module.exports = function(app, io){
 		      console.log('Error: ', err);
 		      return;
 		    }
-			  files.forEach( function (file) {
+			  files.sort(function(a, b) {
+	        return fs.statSync(dir + a).mtime.getTime() - fs.statSync(dir + b).mtime.getTime();
+	      })
+			  .forEach( function (file) {
 			  	if(file == ".DS_Store"){
 			    	fs.unlink(dir+file);
 			    }
@@ -131,36 +132,43 @@ module.exports = function(app, io){
 				  	var jsonFile = dir + file + '/' +file+'.json';
 						var data = fs.readFileSync(jsonFile,"UTF-8");
 						var jsonObj = JSON.parse(data);
-						//arrayFolder.push(jsonObj);
 						socket.emit('listFolder', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, nb_projets:jsonObj.nb_projets});
 						// read all projects into folders
-						var projectDir = dir + file;
-						fs.readdirSync(projectDir).filter(function(project){
-							if(fs.statSync(path.join(projectDir, project)).isDirectory()){
-								// console.log(project);
-								if(! /^\..*/.test(project)){
-									var jsonFileProj = projectDir +'/'+ project + '/' +project+'.json';
-									var dataProj = fs.readFileSync(jsonFileProj,"UTF-8");
-									var jsonObjProj = JSON.parse(dataProj);
-									//arrayChildren.push(jsonObjProj);
-									socket.emit('listChildren', {parentName:convertToSlug(jsonObj.name), childrenName:jsonObjProj.name, childrenImage:jsonObjProj.fileName});
+						var projectDir = dir + file +'/';
+						fs.readdir(projectDir, function (err, projects) {
+					  	if (err) {
+					      console.log('Error: ', err);
+					      return;
+					    }
+						  projects.sort(function(c, d) {
+				        return fs.statSync(projectDir + c).mtime.getTime() - fs.statSync(projectDir + d).mtime.getTime();
+				      })
+						  .forEach( function (project) {
+						  	if(fs.statSync(path.join(projectDir, project)).isDirectory()){
+									if(! /^\..*/.test(project)){
+										var jsonFileProj = projectDir +'/'+ project + '/' +project+'.json';
+										var dataProj = fs.readFileSync(jsonFileProj,"UTF-8");
+										var jsonObjProj = JSON.parse(dataProj);
+										socket.emit('listChildren', {parentName:convertToSlug(jsonObj.name), childrenName:jsonObjProj.name, childrenImage:jsonObjProj.fileName});
 
-						  	}
-							}
-				  	});
+							  	}
+								}
+						  });
+					  });
+						// fs.readdirSync(projectDir).filter(function(project){
+						// 	if(fs.statSync(path.join(projectDir, project)).isDirectory()){
+						// 		if(! /^\..*/.test(project)){
+						// 			var jsonFileProj = projectDir +'/'+ project + '/' +project+'.json';
+						// 			var dataProj = fs.readFileSync(jsonFileProj,"UTF-8");
+						// 			var jsonObjProj = JSON.parse(dataProj);
+						// 			socket.emit('listChildren', {parentName:convertToSlug(jsonObj.name), childrenName:jsonObjProj.name, childrenImage:jsonObjProj.fileName});
+
+						//   	}
+						// 	}
+				  // 	});
 			  	}
 
 			  });
-		  // 	arrayFolder.sort(function(a, b){
-				// 	return  a.modified-b.modified;
-				// })
-				// arrayFolder.forEach(function(jsonObj) {
-				//   io.sockets.emit('listFolder', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, nb_projets:jsonObj.nb_projets});
-				// 	arrayChildren.forEach(function(jsonObjProj) {
-				// 		io.sockets.emit('listChildren', {parentName:convertToSlug(jsonObj.name), childrenName:jsonObjProj.name, childrenImage:jsonObjProj.fileName});
-				// 	});
-				// });
-
 			});
 		}
 
@@ -231,24 +239,43 @@ module.exports = function(app, io){
 			//console.log(socket);
 			var dir = "sessions/"+session.session+"/";
 			var sessionName;
-			fs.readFile(dir + session.session+'.json', 'utf8', function (err, data) {
-			  if (err) console.log(err);
-        if( data !== undefined) {
-  			  var JsonObjParent = JSON.parse(data);
-  			  sessionName = JsonObjParent.name;
-  				fs.readdirSync(dir).filter(function(file) {
-  					if(fs.statSync(path.join(dir, file)).isDirectory()){
-  						if(! /^\..*/.test(file)){
-  							var jsonFile = dir + file + '/' +file+'.json';
-  							var data = fs.readFileSync(jsonFile,"UTF-8");
-  							var jsonObj = JSON.parse(data);
-  							//console.log(sessionName);
-  					    socket.emit('listProject', {name:jsonObj.name, sessionName: sessionName, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, image:jsonObj.fileName});
-  				  	}
-  					}
-  		  	});
-  		  }
-			});
+			fs.readdir(dir, function (err, files) {
+		  	if (err) {
+		      console.log('Error: ', err);
+		      return;
+		    }
+			  files.sort(function(a, b) {
+	        return fs.statSync(dir + a).mtime.getTime() - fs.statSync(dir + b).mtime.getTime();
+	      })
+			  .forEach( function (file) {
+			  	console.log(file);
+			  	if(fs.statSync(path.join(dir, file)).isDirectory()){
+						if(! /^\..*/.test(file)){
+							var jsonFile = dir + file + '/' +file+'.json';
+							var data = fs.readFileSync(jsonFile,"UTF-8");
+							var jsonObj = JSON.parse(data);
+					    socket.emit('listProject', {name:jsonObj.name, sessionName: sessionName, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, image:jsonObj.fileName});
+				  	}
+					}
+			  });
+		  });
+			// fs.readFile(dir + session.session+'.json', 'utf8', function (err, data) {
+			//   if (err) console.log(err); return;
+   //      if( data !== undefined) {
+  	// 		  var JsonObjParent = JSON.parse(data);
+  	// 		  sessionName = JsonObjParent.name;
+  				// fs.readdirSync(dir).filter(function(file) {
+  				// 	if(fs.statSync(path.join(dir, file)).isDirectory()){
+  				// 		if(! /^\..*/.test(file)){
+  				// 			var jsonFile = dir + file + '/' +file+'.json';
+  				// 			var data = fs.readFileSync(jsonFile,"UTF-8");
+  				// 			var jsonObj = JSON.parse(data);
+  				// 	    socket.emit('listProject', {name:jsonObj.name, sessionName: sessionName, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, image:jsonObj.fileName});
+  				//   	}
+  				// 	}
+  		  // 	});
+  	// 	  }
+			// });
 		}
 
 		function onNewProject(project) {
@@ -628,7 +655,10 @@ module.exports = function(app, io){
 			fs.readdir(dir, function(err, files) {
 				var media = [];
 				if (err) {console.log(err)};
-				files.forEach(function(f) {
+				files.sort(function(a, b) {
+	        return fs.statSync(dir + a).mtime.getTime() - fs.statSync(dir + b).mtime.getTime();
+	      })
+				.forEach(function(f) {
 					var extension = path.extname(f);
 					var fileName = path.basename(f,extension);
 					var obj = {

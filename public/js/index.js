@@ -127,7 +127,7 @@ function onListChildren(data){
     .find( 'h3').text( childrenName).end()
     .find( '.vignette-visuel img').attr( 'src', "/"+parentName+"/"+convertToSlug(childrenName)+"/"+convertToSlug(childrenName)+"-thumb.jpg").attr( 'alt', childrenName);
   ;
-	$parent.find(".projet-list").append(newSnippetProjet);
+	$parent.find(".projet-list").prepend(newSnippetProjet);
 }
 
 // Fonction qui affiche les dossiers HTML
