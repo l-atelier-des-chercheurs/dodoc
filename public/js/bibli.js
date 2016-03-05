@@ -192,9 +192,11 @@ function init(){
   	$(this).find('.js--flagMedia').hide();
   });
 
+
+
   // Supprime un fichier de la bibli de médias
   $('body').on('click', '.js--delete-media-bibli', function(){
-  	console.log("delete Media");
+  	$('#modal-delete-alert-media').foundation('reveal', 'open');
   	var id = $(this).parents('.media-big').attr('id');
   	var type = $(this).parents('.media-big').attr('data-type');
   	var fileToDelete ;
@@ -213,10 +215,32 @@ function init(){
   	if(type == 'text'){
 			fileToDelete = id + '.txt';
   	}
-  	console.log(fileToDelete);
-    socket.emit("deleteFileBibli", {session:currentSession, project:currentProject, file:fileToDelete, id:id, type:type});
+  	console.log(id);
+  	$('#modal-delete-alert-media')
+  		.attr('data-id', id)
+  		.attr('data-type', type)
+  		.attr('data-filetodelete', fileToDelete);
   });
 
+  //Au clic sur OUI -> remove media au clic sur non annule
+  removeMedia();
+
+}
+
+function removeMedia(){
+	$('#modal-delete-alert-media button.oui').on('click', function(){
+		var fileToDelete = $(this).parents('#modal-delete-alert-media ').attr('data-filetodelete');
+  	var id = $(this).parents('#modal-delete-alert-media ').attr('data-id');
+  	var type = $(this).parents('#modal-delete-alert-media ').attr('data-type');
+		console.log(fileToDelete);
+		socket.emit("deleteFileBibli", {session:currentSession, project:currentProject, file:fileToDelete, id:id, type:type});
+		$('#modal-delete-alert-media').foundation('reveal', 'close');
+	});
+	$('#modal-delete-alert-media button.annuler').on('click', function(){
+		console.log('annuler');
+		$('#modal-delete-alert-media').foundation('reveal', 'close');
+		$("#modal-media-view").foundation('reveal', 'open');
+	});
 }
 
 function displayNewImage(image){
