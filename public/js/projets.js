@@ -90,7 +90,7 @@ function onProjectCreated(data){
 
 // Affiche la liste des projets
 function onListProject(data){
-
+	console.log("SOCKET RECEIVE");
 	var folderName = data.name;
 	var createdDate = transformDatetoString(data.created);
 	var image = data.image;
@@ -254,8 +254,11 @@ function onProjectModified(data){
 		$thisEl.find('.js--edit-project-icon').remove();
 	}
 
-	$thisEl.remove();
-	displayFolder(name, created, modified, data.image, statut)
+	// C'est pas propre mais ça marche en attendant de refaire correctement les pages 
+	location.reload();
+
+	//$thisEl.remove();
+	//displayFolder(name, created, modified, data.image, statut)
 }
 
 //Suppression du dossier

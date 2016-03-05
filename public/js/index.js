@@ -117,7 +117,7 @@ function onListChildren(data){
 	var $parent = $("li.dossier[data-name="+parentName+"]");
 	var newSnippetProjet = $(".js--templates > .projetSnippet").clone(false);
 
-	if(image === 'none'){
+	if(image != true){
   	newSnippetProjet.find( '.vignette-visuel img').remove();
 	}
 
@@ -127,7 +127,7 @@ function onListChildren(data){
     .find( 'h3').text( childrenName).end()
     .find( '.vignette-visuel img').attr( 'src', "/"+parentName+"/"+convertToSlug(childrenName)+"/"+convertToSlug(childrenName)+"-thumb.jpg").attr( 'alt', childrenName);
   ;
-	$parent.find(".projet-list").append(newSnippetProjet);
+	$parent.find(".projet-list").prepend(newSnippetProjet);
 }
 
 // Fonction qui affiche les dossiers HTML
@@ -258,9 +258,10 @@ function removeFolder(){
 	$('#modal-delete-alert button.annuler').on('click', function(){
 		console.log('annuler');
 		$('#modal-delete-alert').foundation('reveal', 'close');
-		$(document).on('close.fndtn.reveal', '#modal-delete-alert[data-reveal]', function () {
-	  	$('#modal-modify-folder').foundation('reveal', 'open');
-		});
+		$("#modal-modify-folder").foundation('reveal', 'open');
+	});
+	$(document).on('closed.fndtn.reveal', '#modal-delete-alert[data-reveal]', function () {
+		$("#modal-modify-folder").foundation('reveal', 'open');
 	});
 }
 

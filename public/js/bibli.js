@@ -18,11 +18,15 @@ socket.on('displayNewVideo', displayNewVideo);
 socket.on('displayNewStopMotion', displayNewStopMotion);
 socket.on('displayNewAudio', displayNewAudio);
 socket.on('displayNewText', displayNewText);
+socket.on('displayModifiedText', displayModifiedText);
 socket.on('listMedias', onListMedias);
 socket.on('listPublications', onPubliCreated);
 socket.on('publiCreated', onPubliCreated);
 socket.on('displayMontage', onDisplayMontage);
 socket.on('titleModified', onTitleModified);
+socket.on('displayMediaData', onMediaData);
+socket.on('addHightlight', onHightlight);
+socket.on('bibliFileDeleted', onFileDeleted)
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 
 jQuery(document).ready(function($) {
@@ -129,6 +133,114 @@ function init(){
 
   }
 
+  //Submit new text modified
+  $('body').on('click', '.js--submit-view-text-modify', function(){
+  	var textTitle = $(this).parent('form').find('.view-text-title-modify').val();
+  	var text = $(this).parent('form').find('textarea').val();
+  	var id = $(this).parents('.media-big_text').attr('data-id');
+  	socket.emit('modifyText', {session: currentSession, project: currentProject, title: textTitle, text:text, id:id});
+  });
+
+  //Envoie les titres et légendes au serveur
+  $('body').on('click', '.js--submit-add-media-data', function(){
+  	var mediaTitle = $(this).parent('form').find('.add-media-title').val();
+  	var mediaLegende = $(this).parent('form').find('.add-media-legend').val();
+  	var id = $(this).parents('.media-big').attr('id');
+  	var type = $(this).parents('.media-big').attr('data-type');
+  	socket.emit('addMediaData', {session: currentSession, project: currentProject, title: mediaTitle, legend:mediaLegende, id:id, type:type});
+  });
+
+  // Ajoute ou enlève un hightlight quand on clique sur "Highlight" dans la fenêtre modal
+  $('body').on('click', '.js--highlightMedia', function(){
+		var id = $(this).parents('.media-big').attr('id');
+		var type = $(this).parents('.media-big').attr('data-type');
+		//console.log(type);
+		if($(this).parents('.media-big').hasClass('is--highlight')){
+			console.log('remove hightlight');
+			socket.emit('removeHighlight', {session: currentSession, project: currentProject, id:id, type:type});
+		}
+		else{
+			console.log('add hightlight');
+			socket.emit('highlightMedia', {session: currentSession, project: currentProject, id:id, type:type});
+		}
+		
+  });
+
+ // Ajoute ou enlève un hightlight quand on clique sur le drapeau dans les médias
+  $('body').on('click', '.js--flagMedia', function(e){
+  	e.stopPropagation();
+		var id = $(this).parents('li').attr('id');
+		var type = $(this).parents('li').attr('data-type');
+		//console.log(type);
+		if($(this).parents('li').hasClass('is--highlight')){
+			console.log('remove hightlight');
+			socket.emit('removeHighlight', {session: currentSession, project: currentProject, id:id, type:type});
+		}
+		else{
+			console.log('add hightlight');
+			socket.emit('highlightMedia', {session: currentSession, project: currentProject, id:id, type:type});
+		}
+		
+  });
+
+  // Affiche les drapeaux au survol
+  $('body').on('mouseenter', 'li.media',function() {
+  	$(this).find('.js--flagMedia').show();
+  });
+
+   $('body').on('mouseleave', 'li.media',function() {
+  	$(this).find('.js--flagMedia').hide();
+  });
+
+
+
+  // Supprime un fichier de la bibli de médias
+  $('body').on('click', '.js--delete-media-bibli', function(){
+  	$('#modal-delete-alert-media').foundation('reveal', 'open');
+  	var id = $(this).parents('.media-big').attr('id');
+  	var type = $(this).parents('.media-big').attr('data-type');
+  	var fileToDelete ;
+  	if(type == 'image'){
+			fileToDelete = id + '.jpg';
+  	}
+  	if(type == 'video'){
+			fileToDelete = id + '.webm';
+  	}
+  	if(type == 'stopmotion'){
+			fileToDelete = id + '.mp4';
+  	}
+  	if(type == 'audio'){
+			fileToDelete = id + '.wav';
+  	}
+  	if(type == 'text'){
+			fileToDelete = id + '.txt';
+  	}
+  	console.log(id);
+  	$('#modal-delete-alert-media')
+  		.attr('data-id', id)
+  		.attr('data-type', type)
+  		.attr('data-filetodelete', fileToDelete);
+  });
+
+  //Au clic sur OUI -> remove media au clic sur non annule
+  removeMedia();
+
+}
+
+function removeMedia(){
+	$('#modal-delete-alert-media button.oui').on('click', function(){
+		var fileToDelete = $(this).parents('#modal-delete-alert-media ').attr('data-filetodelete');
+  	var id = $(this).parents('#modal-delete-alert-media ').attr('data-id');
+  	var type = $(this).parents('#modal-delete-alert-media ').attr('data-type');
+		console.log(fileToDelete);
+		socket.emit("deleteFileBibli", {session:currentSession, project:currentProject, file:fileToDelete, id:id, type:type});
+		$('#modal-delete-alert-media').foundation('reveal', 'close');
+	});
+	$('#modal-delete-alert-media button.annuler').on('click', function(){
+		console.log('annuler');
+		$('#modal-delete-alert-media').foundation('reveal', 'close');
+		$("#modal-media-view").foundation('reveal', 'open');
+	});
 }
 
 function displayNewImage(image){
@@ -149,7 +261,6 @@ function displayNewAudio(audio){
 }
 
 function displayNewText(text){
-	console.log(text);
 	$('input.new-text').val('');
 	$('#modal-add-text textarea').val('');
 	$('#modal-add-text').foundation('reveal', 'close');
@@ -168,11 +279,22 @@ function displayNewText(text){
 	$('.medias-list').prepend(mediaItem);
 }
 
+function displayModifiedText(text){
+	$('#modal-media-view').foundation('reveal', 'close');
+	var mediaItem = $("#"+text.id);
+		mediaItem
+		.find( 'p')
+		  .html(text.textContent)
+		.end()
+		.find('h3')
+		  .html(text.textTitle)
+  ;
+}
+
 
 function onListMedias(array, json){
 	$(".mediaContainer li").remove();
 	var matchID = $(".mediaContainer .media").attr("id");
-
 	array.sort(function(a, b){
     var keyA = new Date(a.id),
         keyB = new Date(b.id);
@@ -203,6 +325,79 @@ function onListMedias(array, json){
 			displayText(currentSession, currentProject, identifiant);
 		}
 	}
+
+	//afficher les titre et légendes des images  
+	for (var i = 0; i < json['files']['images'].length; i++){
+	  var title = json['files']['images'][i]['title'];
+	  var legende = json['files']['images'][i]['legende'];
+	  $('#'+json['files']['images'][i].name)
+	  	.attr('data-title', title)
+	  	.attr('data-legende', legende)
+	  	.find('.mediaData h5').html(title)
+			.end()
+			.find('.mediaData p').html(legende);
+		if(json['files']['images'][i].hightlight == true){
+			$('#'+json['files']['images'][i].name).addClass('is--highlight');
+		}
+		
+	}
+	for (var i = 0; i < json['files']['videos'].length; i++){
+	  var title = json['files']['videos'][i]['title'];
+	  var legende = json['files']['videos'][i]['legende'];
+	  $('#'+json['files']['videos'][i].name)
+	  	.attr('data-title', title)
+	  	.attr('data-legende', legende)
+	  	.find('.mediaData h5').html(title)
+			.end()
+			.find('.mediaData p').html(legende);
+		if(json['files']['videos'][i].hightlight == true){
+			$('#'+json['files']['videos'][i].name).addClass('is--highlight');
+		}
+	}
+	for (var i = 0; i < json['files']['stopmotion'].length; i++){
+	  var title = json['files']['stopmotion'][i]['title'];
+	  var legende = json['files']['stopmotion'][i]['legende'];
+	  $('#'+json['files']['stopmotion'][i].name)
+	  	.attr('data-title', title)
+	  	.attr('data-legende', legende)
+	  	.find('.mediaData h5').html(title)
+			.end()
+			.find('.mediaData p').html(legende);
+
+		if(json['files']['stopmotion'][i].hightlight == true){
+			$('#'+json['files']['stopmotion'][i].name).addClass('is--highlight');
+		}
+	}
+	for (var i = 0; i < json['files']['audio'].length; i++){
+	  var title = json['files']['audio'][i]['title'];
+	  var legende = json['files']['audio'][i]['legende'];
+	  $('#'+json['files']['audio'][i].name)
+	  	.attr('data-title', title)
+	  	.attr('data-legende', legende)
+	  	.find('.mediaData h5').html(title)
+			.end()
+			.find('.mediaData p').html(legende);
+
+		if(json['files']['audio'][i].hightlight == true){
+			$('#'+json['files']['audio'][i].name).addClass('is--highlight');
+		}
+	}
+
+	for (var i = 0; i < json['files']['texte'].length; i++){
+	  var title = json['files']['texte'][i]['title'];
+	  var legende = json['files']['texte'][i]['legende'];
+	  $('#'+json['files']['texte'][i].id)
+	  	.attr('data-title', title)
+	  	.attr('data-legende', legende)
+	  	.find('.mediaData h5').html(title)
+			.end()
+			.find('.mediaData p').html(legende);
+
+		if(json['files']['texte'][i].hightlight == true){
+			$('#'+json['files']['texte'][i].id).addClass('is--highlight');
+		}
+	}
+
 	//display text
 	socket.on('txtRead', function(data){
 		$("#"+data.obj.id)
@@ -222,8 +417,6 @@ function displayImage(session, project, id, file){
     .end()
   ;
 
-	//$(".medias-list li:first-child").after(mediaItem);
-	//$(mediaItem).insertAfter(".medias-list li:first-child");
 	$('.medias-list').prepend(mediaItem);
 }
 
@@ -297,58 +490,144 @@ function bigMedia(){
 	// Au click sur un media
   $('body').on('click', '.medias-list .media', function(){
   	var typeMedia = $(this).attr("data-type");
+  	var mediaTitle = $(this).attr("data-title");
+	  var mediaLegende = $(this).attr("data-legende");
   	$('#modal-media-view').foundation('reveal', 'open');
-  	console.log(typeMedia);
+  	//console.log(typeMedia);
   	switch(typeMedia){
   		case 'image':
 	  		var imagePath = $(this).find("img").attr("src");
-	  		var id = $(this).find("img").attr("id");
+	  		var id = $(this).attr("id");
 				var mediaItem = $(".js--templates .media-big_image").clone(false);
+				if($(this).hasClass('is--highlight')){
+					mediaItem.addClass('is--highlight');
+				}
 				mediaItem.attr( 'id', id);
-				mediaItem.find( 'img').attr('src', imagePath);
+				mediaItem
+					.find( 'img').attr('src', imagePath)
+					.end()
+					.find('.add-media-title').val(mediaTitle)
+					.end()
+					.find('.add-media-legend').val(mediaLegende)
+					;
 				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;
 			case 'video':
-			case 'stopmotion':
-	  		var id = $(this).find("img").attr("id");
+				var id = $(this).attr("id");
 	  		var thumbPath = $(this).find("video").attr("poster");
 				var videoPath = $(this).find("source").attr("src");
 
 				var mediaItem = $(".js--templates .media-big_video").clone(false);
-
+				if($(this).hasClass('is--highlight')){
+					mediaItem.addClass('is--highlight');
+				}
 				mediaItem
 				  .attr( 'id', id)
+				  .find('.add-media-title').val(mediaTitle)
+					.end()
+					.find('.add-media-legend').val(mediaLegende)
+					.end()
 			    .find( 'video').attr( 'poster', thumbPath)
-			    .find( 'source').attr( 'src', videoPath);
+			    .find( 'source').attr( 'src', videoPath)
+					;
+
+				$('#modal-media-view .big-mediaContent').html(mediaItem);
+				break;
+			case 'stopmotion':
+	  		var id = $(this).attr("id");
+	  		var thumbPath = $(this).find("video").attr("poster");
+				var videoPath = $(this).find("source").attr("src");
+
+				var mediaItem = $(".js--templates .media-big_stopmotion").clone(false);
+
+				if($(this).hasClass('is--highlight')){
+					mediaItem.addClass('is--highlight');
+				}
+				mediaItem
+				  .attr( 'id', id)
+				  .find('.add-media-title').val(mediaTitle)
+					.end()
+					.find('.add-media-legend').val(mediaLegende)
+					.end()
+			    .find( 'video').attr( 'poster', thumbPath)
+			    .find( 'source').attr( 'src', videoPath)
+			    .end()
+					;
 
 				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;
 			case 'audio':
-				var id = $(this).find("img").attr("id");
+				var id = $(this).attr("id");
 				var audioPath = $(this).find("source").attr("src");
 
 				var mediaItem = $(".js--templates .media-big_audio").clone(false);
+				if($(this).hasClass('is--highlight')){
+					mediaItem.addClass('is--highlight');
+				}
 				mediaItem
 				  .attr( 'id', id)
-			    .find( 'source').attr( 'src', audioPath);
+			    .find( 'source').attr( 'src', audioPath)
+			    .end()
+					.find('.add-media-title').val(mediaTitle)
+					.end()
+					.find('.add-media-legend').val(mediaLegende)
+					;
 
 				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;
 			case 'text':
-				console.log($(this));
+				//console.log($(this).find('h3').html());
 				var mediaItem = $(".js--templates .media-big_text").clone(false);
-				var title = $(this).find('h2').html();
+				var title = $(this).find('h3').html();
 				var texte = $(this).find('p').html();
+				var id = $(this).attr('id');
+				if($(this).hasClass('is--highlight')){
+					mediaItem.addClass('is--highlight');
+				}
 				mediaItem
-					.find('.media-title').html(title)
+					.find('.view-text-title-modify').val(title)
 					.end()
-					.find('.text').html(texte)
+					.find('.view-text-modify').val(texte)
+					.end()
+					.attr('id', id)
+					.end()
+					.find('.add-media-title').val(mediaTitle)
+					.end()
+					.find('.add-media-legend').val(mediaLegende)
+					;
 
 				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;
 
   	}
   });
+}
+
+function onMediaData(data){
+	$('#modal-media-view').foundation('reveal', 'close');
+	$("#"+data.id)
+		.attr('data-title', data.title)
+		.attr('data-legende', data.legend)
+		.find('.mediaData h5').html(data.title)
+		.end()
+		.find('.mediaData p').html(data.legend);
+}
+
+function onHightlight(data){
+	$('#modal-media-view').foundation('reveal', 'close');
+	if(data.hightlight == true){
+		$("#"+data.id)
+			.addClass('is--highlight');
+	}
+	else{
+		$("#"+data.id)
+			.removeClass('is--highlight');
+	}
+}
+
+function onFileDeleted(data){
+	$('#modal-media-view').foundation('reveal', 'close');
+	$("#"+data.id).remove();
 }
 
 function onMontageChanged(){

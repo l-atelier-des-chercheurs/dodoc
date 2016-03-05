@@ -70,7 +70,7 @@
   }
 
 
-// file picker
+  // file picker
   .inputfile {
       width: 0.1px;
       height: 0.1px;
@@ -173,6 +173,45 @@
   	.inputfile-6 + label strong {
   		display: block;
   	}
+  }
+
+  &#modal-media-view{
+    max-width: 80%;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    .row{
+      max-width:100%;
+    }
+    .button-wrapper_highlightMedia{
+      border: 1px solid $bleuvert;
+      color:$bleuvert;
+      padding: 6px 22px;
+      border-radius: 20px;
+      &:hover{
+        background-color:$bleuvert;
+        color: #FFF;
+        border:none;
+      }
+    }
+    .is--highlight{
+      .button-wrapper_highlightMedia{
+        background-color:$bleuvert;
+        color: #FFF;
+        border:none;
+        &:hover{
+          border: 1px solid $bleuvert;
+          color:$bleuvert;
+          background-color:#FFF;
+        }
+      }
+    }
+    .button-wrapper_deleteMedia{
+      margin: 20px 0px 25px 0px;
+      float: none;
+      span{
+        margin-left:10px;
+      }
+    }
   }
 
 }

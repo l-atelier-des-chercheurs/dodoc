@@ -79,27 +79,51 @@ html
       .big-mediaContent
       a(class="close-reveal-modal" aria-label="Close") &#215;
 
+
+    //- ALERT SUPPRIMER UN Media
+    div(id="modal-delete-alert-media" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+      p Êtes-vous sûr de vouloir supprimer ce média ?
+      button.oui Oui
+      button.annuler Annuler
+      a(class="close-reveal-modal" aria-label="Close") &#215;
+
     .js--templates
-      li.media.media_image(data-type="image")
+      li.media.media_image(data-type="image" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           img
-      li.media.media_video(data-type="video")
+        .mediaData
+          h5
+          p
+        +button( 'flag', '', 'isCollapsed')
+      li.media.media_video(data-type="video" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           video(preload="none" controls)
             source()
-      li.media.media_stopmotion(data-type="stopmotion")
+        .mediaData
+          h5
+          p
+        +button( 'flag', '', '')
+      li.media.media_stopmotion(data-type="stopmotion" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           video(preload="none" controls)
             source()
-      li.media.media_audio(data-type="audio")
+        .mediaData
+          h5
+          p
+        +button( 'flag', '', '')
+      li.media.media_audio(data-type="audio" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           audio(preload="none" controls)
             source()
-      li.media.media_text(data-type="text")
+        .mediaData
+          h5
+          p
+        +button( 'flag', '', '')
+      li.media.media_text(data-type="text" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           h3.media-title
           p.text
-
+        +button( 'flag', '', '')
       li.publi-folder(data-publi="")
         .content
           h2.title.js--edit_view
@@ -108,21 +132,38 @@ html
 
       +button('deleteMedia', '', 'isCollapsed')
       //- Pop up media
-      div.media-big_image(data-type="image")
-        .mediaContent
+      div.media-big_image.media-big.row(data-type="image")
+        .mediaContent.small-8.columns
           img
-      div.media-big_video(data-type="video")
-        .mediaContent
+        .mediaDataForm.small-4.columns
+          include templates/mediaForm.jade
+      div.media-big_video.media-big(data-type="video")
+        .mediaContent.small-8.columns
           video(preload="none" controls)
             source()
-      div.media-big_audio(data-type="audio")
-        .mediaContent
+        .mediaDataForm.small-4.columns
+          include templates/mediaForm.jade
+      div.media-big_stopmotion.media-big(data-type="stopmotion")
+        .mediaContent.small-8.columns
+          video(preload="none" controls)
+            source()
+        .mediaDataForm.small-4.columns
+          include templates/mediaForm.jade
+      div.media-big_audio.media-big(data-type="audio")
+        .mediaContent.small-8.columns
           audio(preload="none" controls)
             source()
-      div.media-big_text(data-type="text")
+        .mediaDataForm.small-4.columns
+          include templates/mediaForm.jade
+      div.media-big_text.media-big(data-type="text" data-id)
         .mediaContent
-          h2.media-title
-          p.text
+          form(onsubmit='return false;' class='modify-text-view lead')
+            input(type='text' class='view-text-title-modify')
+            textarea.view-text-modify
+            input(type='submit' class='js--submit-view-text-modify' value='Valider')
+          a(href="#" title="Dodoc media" class='button-wrapper_highlightMedia js--highlightMedia #{defaultClasses}')
+            span Highlight
+          +button('deleteMediaBibli', '', '')
 
 
     //- //footer

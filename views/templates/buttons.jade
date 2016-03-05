@@ -138,6 +138,23 @@ mixin button(typeOfButton, navOrButton, style)
         include images/nofullscreen.svg
       span Quitter le plein écran
 
+  if( typeOfButton === 'deleteMediaCapture')
+    a(href="#" title="Dodoc media" class='button-wrapper_deleteMediaCapture js--delete-media-capture #{defaultClasses}')
+      .btn.icon
+        include images/clear.svg
+      span Supprimer
+
+  if( typeOfButton === 'flag')
+    a(href="#" title="Dodoc media" class='button-wrapper_flagMedia js--flagMedia')
+      .btn.icon
+        include images/flag.svg
+
+  if( typeOfButton === 'deleteMediaBibli')
+    a(href="#" title="Dodoc media" class='button-wrapper_deleteMedia js--delete-media-bibli #{defaultClasses}')
+      .btn.icon
+        include images/clear.svg
+      span Supprimer
+
 
   if( navOrButton === 'isNav')
     | </div>
