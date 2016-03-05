@@ -120,31 +120,37 @@ html
 
       +button('deleteMedia', '', 'isCollapsed')
       //- Pop up media
-      div.media-big_image.media-big(data-type="image")
-        .mediaContent
+      div.media-big_image.media-big.row(data-type="image")
+        .mediaContent.small-8.columns
           img
+        .mediaDataForm.small-4.columns
           include templates/mediaForm.jade
       div.media-big_video.media-big(data-type="video")
-        .mediaContent
+        .mediaContent.small-8.columns
           video(preload="none" controls)
             source()
+        .mediaDataForm.small-4.columns
           include templates/mediaForm.jade
       div.media-big_stopmotion.media-big(data-type="stopmotion")
-        .mediaContent
+        .mediaContent.small-8.columns
           video(preload="none" controls)
             source()
+        .mediaDataForm.small-4.columns
           include templates/mediaForm.jade
       div.media-big_audio.media-big(data-type="audio")
-        .mediaContent
+        .mediaContent.small-8.columns
           audio(preload="none" controls)
             source()
+        .mediaDataForm.small-4.columns
           include templates/mediaForm.jade
-      div.media-big_text(data-type="text" data-id)
+      div.media-big_text.media-big(data-type="text" data-id)
         .mediaContent
           form(onsubmit='return false;' class='modify-text-view lead')
             input(type='text' class='view-text-title-modify')
             textarea.view-text-modify
             input(type='submit' class='js--submit-view-text-modify' value='Valider')
+            a(href="#" title="Dodoc media" class='button-wrapper_highlightMedia js--highlightMedia #{defaultClasses}')
+              span Highlight
 
 
     //- //footer

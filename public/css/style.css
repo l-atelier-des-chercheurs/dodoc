@@ -7054,6 +7054,34 @@ th.hide-for-touch {
   @media screen and (max-width: 50em) {
     .reveal-modal .inputfile-6 + label strong {
       display: block; } }
+  .reveal-modal#modal-media-view {
+    max-width: 80%;
+    padding-top: 30px;
+    padding-bottom: 30px; }
+    .reveal-modal#modal-media-view .row {
+      max-width: 100%; }
+    .reveal-modal#modal-media-view .button-wrapper_highlightMedia {
+      border: 1px solid #48C2B5;
+      color: #48C2B5;
+      padding: 6px 22px;
+      border-radius: 20px; }
+      .reveal-modal#modal-media-view .button-wrapper_highlightMedia:hover {
+        background-color: #48C2B5;
+        color: #FFF;
+        border: none; }
+    .reveal-modal#modal-media-view .is--highlight .button-wrapper_highlightMedia {
+      background-color: #48C2B5;
+      color: #FFF;
+      border: none; }
+      .reveal-modal#modal-media-view .is--highlight .button-wrapper_highlightMedia:hover {
+        border: 1px solid #48C2B5;
+        color: #48C2B5;
+        background-color: #FFF; }
+    .reveal-modal#modal-media-view .button-wrapper_deleteMedia {
+      margin: 20px 0px 25px 0px;
+      float: none; }
+      .reveal-modal#modal-media-view .button-wrapper_deleteMedia span {
+        margin-left: 10px; }
 
 input[type="text"], select {
   border: none;
@@ -7684,6 +7712,8 @@ body.bibli {
       background-image: url("/images/icone-dodoc_anim.png"); }
     .medias-list .media[data-mediatype="audio"]::before {
       background-image: url("/images/icone-dodoc_son.png"); }
+    .medias-list .media.is--highlight .mediaContent {
+      border: 5px solid #48C2B5; }
 
 .montage-list {
   margin-top: 15px; }

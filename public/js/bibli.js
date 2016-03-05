@@ -152,8 +152,16 @@ function init(){
   $('body').on('click', '.js--highlightMedia', function(){
 		var id = $(this).parents('.media-big').attr('id');
 		var type = $(this).parents('.media-big').attr('data-type');
-		console.log(id);
-		socket.emit('highlightMedia', {session: currentSession, project: currentProject, id:id, type:type});
+		//console.log(type);
+		if($(this).parents('.media-big').hasClass('is--highlight')){
+			console.log('remove hightlight');
+			socket.emit('removeHighlight', {session: currentSession, project: currentProject, id:id, type:type});
+		}
+		else{
+			console.log('add hightlight');
+			socket.emit('highlightMedia', {session: currentSession, project: currentProject, id:id, type:type});
+		}
+		
   });
 
 }
@@ -266,7 +274,7 @@ function onListMedias(array, json){
 			.end()
 			.find('.mediaData p').html(legende);
 		if(json['files']['videos'][i].hightlight == true){
-			$('#'+json['files']['images'][i].name).addClass('is--highlight');
+			$('#'+json['files']['videos'][i].name).addClass('is--highlight');
 		}
 	}
 	for (var i = 0; i < json['files']['stopmotion'].length; i++){
@@ -279,8 +287,8 @@ function onListMedias(array, json){
 			.end()
 			.find('.mediaData p').html(legende);
 
-		if(json['files']['videos'][i].hightlight == true){
-			$('#'+json['files']['images'][i].name).addClass('is--highlight');
+		if(json['files']['stopmotion'][i].hightlight == true){
+			$('#'+json['files']['stopmotion'][i].name).addClass('is--highlight');
 		}
 	}
 	for (var i = 0; i < json['files']['audio'].length; i++){
@@ -293,8 +301,23 @@ function onListMedias(array, json){
 			.end()
 			.find('.mediaData p').html(legende);
 
-		if(json['files']['videos'][i].hightlight == true){
-			$('#'+json['files']['images'][i].name).addClass('is--highlight');
+		if(json['files']['audio'][i].hightlight == true){
+			$('#'+json['files']['audio'][i].name).addClass('is--highlight');
+		}
+	}
+
+	for (var i = 0; i < json['files']['texte'].length; i++){
+	  var title = json['files']['texte'][i]['title'];
+	  var legende = json['files']['texte'][i]['legende'];
+	  $('#'+json['files']['texte'][i].id)
+	  	.attr('data-title', title)
+	  	.attr('data-legende', legende)
+	  	.find('.mediaData h5').html(title)
+			.end()
+			.find('.mediaData p').html(legende);
+
+		if(json['files']['texte'][i].hightlight == true){
+			$('#'+json['files']['texte'][i].id).addClass('is--highlight');
 		}
 	}
 
@@ -393,12 +416,15 @@ function bigMedia(){
   	var mediaTitle = $(this).attr("data-title");
 	  var mediaLegende = $(this).attr("data-legende");
   	$('#modal-media-view').foundation('reveal', 'open');
-  	console.log(typeMedia);
+  	//console.log(typeMedia);
   	switch(typeMedia){
   		case 'image':
 	  		var imagePath = $(this).find("img").attr("src");
 	  		var id = $(this).attr("id");
 				var mediaItem = $(".js--templates .media-big_image").clone(false);
+				if($(this).hasClass('is--highlight')){
+					mediaItem.addClass('is--highlight');
+				}
 				mediaItem.attr( 'id', id);
 				mediaItem
 					.find( 'img').attr('src', imagePath)
@@ -415,7 +441,9 @@ function bigMedia(){
 				var videoPath = $(this).find("source").attr("src");
 
 				var mediaItem = $(".js--templates .media-big_video").clone(false);
-				console.log(mediaTitle);
+				if($(this).hasClass('is--highlight')){
+					mediaItem.addClass('is--highlight');
+				}
 				mediaItem
 				  .attr( 'id', id)
 				  .find('.add-media-title').val(mediaTitle)
@@ -435,6 +463,9 @@ function bigMedia(){
 
 				var mediaItem = $(".js--templates .media-big_stopmotion").clone(false);
 
+				if($(this).hasClass('is--highlight')){
+					mediaItem.addClass('is--highlight');
+				}
 				mediaItem
 				  .attr( 'id', id)
 				  .find('.add-media-title').val(mediaTitle)
@@ -453,6 +484,9 @@ function bigMedia(){
 				var audioPath = $(this).find("source").attr("src");
 
 				var mediaItem = $(".js--templates .media-big_audio").clone(false);
+				if($(this).hasClass('is--highlight')){
+					mediaItem.addClass('is--highlight');
+				}
 				mediaItem
 				  .attr( 'id', id)
 			    .find( 'source').attr( 'src', audioPath)
@@ -470,12 +504,15 @@ function bigMedia(){
 				var title = $(this).find('h3').html();
 				var texte = $(this).find('p').html();
 				var id = $(this).attr('id');
+				if($(this).hasClass('is--highlight')){
+					mediaItem.addClass('is--highlight');
+				}
 				mediaItem
 					.find('.view-text-title-modify').val(title)
 					.end()
 					.find('.view-text-modify').val(texte)
 					.end()
-					.attr('data-id', id)
+					.attr('id', id)
 					.end()
 					.find('.add-media-title').val(mediaTitle)
 					.end()

@@ -425,6 +425,12 @@ body.bibli {
       background-image: url("/images/icone-dodoc_son.png");
     }
 
+    &.is--highlight{
+      .mediaContent{
+        border: 5px solid $bleuvert;
+      }
+    }
+
   }
 
 }

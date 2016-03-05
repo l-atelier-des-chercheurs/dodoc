@@ -70,6 +70,7 @@ module.exports = function(app, io){
 		socket.on("newImageLocal", onNewImage);
 		socket.on("addMediaData", onMediaLegende);
 		socket.on("highlightMedia", onHighLightMedia);
+		socket.on("removeHighlight", onRemoveHighlight);
 
 		// P U B L I      P A G E
 		socket.on("displayPubli", displayPubli);
@@ -944,22 +945,90 @@ module.exports = function(app, io){
 			if(data.type == 'stopmotion'){
 				type = 'stopmotion';
 			}
-
-
-			for (var i = 0; i < jsonObj['files'][type].length; i++){
-			  if (jsonObj['files']['images'][i].name == id){
-			  	jsonObj['files']['images'][i]['hightlight'] = true;
-			  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
-			      if(err) {
-			          console.log(err);
-			      } else {
-			          console.log("The file was saved!");
-			          io.sockets.emit("addHightlight", {id:id, hightlight:true});
-			      }
-		    	});
-			  }
-				
+			
+			if(data.type == 'text'){
+				for (var i = 0; i < jsonObj['files']['texte'].length; i++){
+				  if (jsonObj['files']['texte'][i].id == id){
+				  	jsonObj['files']['texte'][i]['hightlight'] = true;
+				  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
+				      if(err) {
+				          console.log(err);
+				      } else {
+				        console.log("The file was saved!");
+				        io.sockets.emit("addHightlight", {id:id, hightlight:true});
+				      }
+			    	});
+				  }
+				}
 			}
+			else{
+				for (var i = 0; i < jsonObj['files'][type].length; i++){
+				  if (jsonObj['files'][type][i].name == id){
+				  	jsonObj['files'][type][i]['hightlight'] = true;
+				  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
+				      if(err) {
+				          console.log(err);
+				      } else {
+				        console.log("The file was saved!");
+				        io.sockets.emit("addHightlight", {id:id, hightlight:true});
+				      }
+			    	});
+				  }
+				}
+			}
+		}
+
+		function onRemoveHighlight(data){
+			var jsonFile = 'sessions/' + data.session + '/'+ data.project+"/" +data.project+'.json';
+			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
+			var jsonObj = JSON.parse(jsonData);
+			var id = data.id;
+
+			var type;
+			if(data.type == 'image'){
+				type = 'images';
+			}
+			if(data.type == 'video'){
+				type = 'videos';
+			}
+			if(data.type == 'audio'){
+				type = 'audio';
+			}
+			if(data.type == 'stopmotion'){
+				type = 'stopmotion';
+			}
+
+			if(data.type == 'text'){
+				for (var i = 0; i < jsonObj['files']['texte'].length; i++){
+				  if (jsonObj['files']['texte'][i].id == id){
+				  	jsonObj['files']['texte'][i]['hightlight'] = false;
+				  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
+				      if(err) {
+				          console.log(err);
+				      } else {
+				        console.log("The file was saved!");
+				        io.sockets.emit("addHightlight", {id:id, hightlight:false});
+				      }
+			    	});
+				  }
+				}
+			}
+			else{
+				for (var i = 0; i < jsonObj['files'][type].length; i++){
+				  if (jsonObj['files'][type][i].name == id){
+				  	jsonObj['files'][type][i]['hightlight'] = false;
+				  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
+				      if(err) {
+				        console.log(err);
+				      } else {
+				        console.log("The file was saved!");
+				        io.sockets.emit("addHightlight", {id:id, hightlight:false});
+				      }
+			    	});
+				  }
+				}
+			}
+
 		}
 
 	// F I N    B I B L I    P A G E
