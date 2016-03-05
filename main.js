@@ -21,21 +21,26 @@ module.exports = function(app, io){
 	var session_list = [];
 
 	io.on("connection", function(socket){
-
 		// I N D E X    P A G E
-		listFolder();
+		listFolder(socket);
 		socket.on("newFolder", onNewFolder);
 		socket.on("modifyFolder", onModifyFolder);
 		socket.on("removeFolder", onRemoveFolder);
 
 		// P R O J E T S     P A G E
-		socket.on("listProject", listProject);
+		//socket.on("listProject", listProject);
+		socket.on("listProject", function (data){
+			listProject(data, socket);
+		});
 		socket.on("newProject", onNewProject);
 		socket.on("modifyProject", onModifyProject);
 		socket.on("removeProject", onRemoveProject);
 
 		// P R O J E T      P A G E
-		socket.on("displayProject", displayProject);
+		socket.on("displayProject", function(data){
+			displayProject(data, socket);
+
+		});
 
 		// C A P T U R E     P A G E
 		socket.on("imageCapture", onNewImage);
@@ -50,9 +55,13 @@ module.exports = function(app, io){
 		socket.on("deleteFile", deleteFile);
 
 		// B I B L I        P A G E
-		socket.on("listMedias", listMedias);
+		socket.on("listMedias", function(data){
+			listMedias(data, socket);
+		});
 		socket.on("readTxt", readTxt);
-		socket.on("listPubli", listPubli);
+		socket.on("listPubli", function(data){
+			listPubli(data, socket);
+		});
 		socket.on("createPubli", newPublication);
 		socket.on("displayThisMontage", displayMontage);
 		socket.on("saveMontage", saveMontage);
@@ -102,7 +111,7 @@ module.exports = function(app, io){
 		}
 
 		// Liste les dossiers déjà existant
-		function listFolder(){
+		function listFolder(socket){
 			var dir = "sessions/";
 			// var arrayFolder =[];
 			// var arrayChildren =[];
@@ -124,7 +133,7 @@ module.exports = function(app, io){
 						var data = fs.readFileSync(jsonFile,"UTF-8");
 						var jsonObj = JSON.parse(data);
 						//arrayFolder.push(jsonObj);
-						io.sockets.emit('listFolder', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, nb_projets:jsonObj.nb_projets});
+						socket.emit('listFolder', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, nb_projets:jsonObj.nb_projets});
 						// read all projects into folders
 						var projectDir = dir + file;
 						fs.readdirSync(projectDir).filter(function(project){
@@ -135,7 +144,7 @@ module.exports = function(app, io){
 									var dataProj = fs.readFileSync(jsonFileProj,"UTF-8");
 									var jsonObjProj = JSON.parse(dataProj);
 									//arrayChildren.push(jsonObjProj);
-									io.sockets.emit('listChildren', {parentName:convertToSlug(jsonObj.name), childrenName:jsonObjProj.name, childrenImage:jsonObjProj.fileName});
+									socket.emit('listChildren', {parentName:convertToSlug(jsonObj.name), childrenName:jsonObjProj.name, childrenImage:jsonObjProj.fileName});
 
 						  	}
 							}
@@ -219,7 +228,8 @@ module.exports = function(app, io){
 
 	// P R O J E T S     P A G E
 		// Liste les projets existants
-		function listProject(session){
+		function listProject(session, socket){
+			//console.log(socket);
 			var dir = "sessions/"+session.session+"/";
 			var sessionName;
 			fs.readFile(dir + session.session+'.json', 'utf8', function (err, data) {
@@ -234,7 +244,7 @@ module.exports = function(app, io){
   							var data = fs.readFileSync(jsonFile,"UTF-8");
   							var jsonObj = JSON.parse(data);
   							//console.log(sessionName);
-  					    io.sockets.emit('listProject', {name:jsonObj.name, sessionName: sessionName, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, image:jsonObj.fileName});
+  					    socket.emit('listProject', {name:jsonObj.name, sessionName: sessionName, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, image:jsonObj.fileName});
   				  	}
   					}
   		  	});
@@ -395,7 +405,7 @@ module.exports = function(app, io){
 	// F I N     P R O J E T S     P A G E
 
 	// P R O J E T      P A G E
-		function displayProject(data){
+		function displayProject(data, socket){
 			var dir = "sessions/"+data.session+"/"+data.project;
 			var dirPubli = "sessions/"+data.session+"/"+data.project+'/montage';
 			var file = dir+"/"+data.project+'.json';
@@ -430,11 +440,11 @@ module.exports = function(app, io){
 										publiNames.push(jsonObjPubli.name)
 						    	}
 						    });
-						    io.sockets.emit('sendProjectData',{json:jsonObj , lastmedia:lastMedia, publiNames: publiNames, image:jsonObj.fileName});
+						    socket.emit('sendProjectData',{json:jsonObj , lastmedia:lastMedia, publiNames: publiNames, image:jsonObj.fileName});
 							});
 				    }
 			    	else{
-							io.sockets.emit('sendProjectData',{json:jsonObj , lastmedia:lastMedia, publiNames: '', image:jsonObj.fileName});
+							socket.emit('sendProjectData',{json:jsonObj , lastmedia:lastMedia, publiNames: '', image:jsonObj.fileName});
 						}
 					});
 				});
@@ -609,7 +619,7 @@ module.exports = function(app, io){
 	// F I N     C A P T U R E    P A G E
 
 	// B I B L I    P A G E
-		function listMedias(media){
+		function listMedias(media, socket){
 			//read json file to send data
 			var jsonFile = 'sessions/' + media.session + '/' + media.project +'/'+media.project+'.json';
 			var data = fs.readFileSync(jsonFile,"UTF-8");
@@ -629,7 +639,7 @@ module.exports = function(app, io){
 						};
 					media.push(obj)
 				});
-				io.sockets.emit('listMedias', media, jsonObj);
+				socket.emit('listMedias', media, jsonObj);
 			});
 		}
 
@@ -643,7 +653,7 @@ module.exports = function(app, io){
 			});
 		}
 
-		function listPubli(data){
+		function listPubli(data, socket){
 			var dir = "sessions/"+data.session+"/"+data.project+'/montage';
 			// Vérifie si le dossier existe déjà
 			fs.access(dir, fs.F_OK, function(err) {
@@ -661,7 +671,7 @@ module.exports = function(app, io){
 				  			var jsonFile = dir +'/' +file;
 								var data = fs.readFileSync(jsonFile,"UTF-8");
 								var jsonObj = JSON.parse(data);
-								io.sockets.emit('listPublications', {name:jsonObj.name, created:jsonObj.created});
+								socket.emit('listPublications', {name:jsonObj.name, created:jsonObj.created});
 				    	}
 				    });
 					});
