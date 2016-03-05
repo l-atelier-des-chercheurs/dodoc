@@ -26,6 +26,7 @@ socket.on('displayMontage', onDisplayMontage);
 socket.on('titleModified', onTitleModified);
 socket.on('displayMediaData', onMediaData);
 socket.on('addHightlight', onHightlight);
+socket.on('bibliFileDeleted', onFileDeleted)
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 
 jQuery(document).ready(function($) {
@@ -182,12 +183,38 @@ function init(){
 		
   });
 
+  // Affiche les drapeaux au survol
   $('body').on('mouseenter', 'li.media',function() {
   	$(this).find('.js--flagMedia').show();
   });
 
    $('body').on('mouseleave', 'li.media',function() {
   	$(this).find('.js--flagMedia').hide();
+  });
+
+  // Supprime un fichier de la bibli de médias
+  $('body').on('click', '.js--delete-media-bibli', function(){
+  	console.log("delete Media");
+  	var id = $(this).parents('.media-big').attr('id');
+  	var type = $(this).parents('.media-big').attr('data-type');
+  	var fileToDelete ;
+  	if(type == 'image'){
+			fileToDelete = id + '.jpg';
+  	}
+  	if(type == 'video'){
+			fileToDelete = id + '.webm';
+  	}
+  	if(type == 'stopmotion'){
+			fileToDelete = id + '.mp4';
+  	}
+  	if(type == 'audio'){
+			fileToDelete = id + '.wav';
+  	}
+  	if(type == 'text'){
+			fileToDelete = id + '.txt';
+  	}
+  	console.log(fileToDelete);
+    socket.emit("deleteFileBibli", {session:currentSession, project:currentProject, file:fileToDelete, id:id, type:type});
   });
 
 }
@@ -572,6 +599,11 @@ function onHightlight(data){
 		$("#"+data.id)
 			.removeClass('is--highlight');
 	}
+}
+
+function onFileDeleted(data){
+	$('#modal-media-view').foundation('reveal', 'close');
+	$("#"+data.id).remove();
 }
 
 function onMontageChanged(){

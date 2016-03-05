@@ -71,6 +71,7 @@ module.exports = function(app, io){
 		socket.on("addMediaData", onMediaLegende);
 		socket.on("highlightMedia", onHighLightMedia);
 		socket.on("removeHighlight", onRemoveHighlight);
+		socket.on("deleteFileBibli", onDeleteFileBibli);
 
 		// P U B L I      P A G E
 		socket.on("displayPubli", displayPubli);
@@ -627,13 +628,18 @@ module.exports = function(app, io){
 		}
 
 		// Delete File
-		function deleteFile(req){
+		function onDeleteFileBibli(req){
 			var fileToDelete = 'sessions/' + req.session +'/'+req.project+'/'+req.file;
 			var extension = req.file.split('.').pop();
-  		var identifiant =  req.file.replace("." + extension, "");
+  		var identifiant =  req.id;
   		var thumbToDelete = 'sessions/' + req.session +'/'+req.project+'/'+identifiant + '-thumb.png';
-			console.log('delete file', thumbToDelete);
-			fs.unlink(fileToDelete);
+			console.log('delete file', fileToDelete);
+			fs.unlink(fileToDelete, function(err){
+				if(err) return console.log(err);
+				else{
+					io.sockets.emit("bibliFileDeleted", {id:req.id, type:req.type, })
+				}
+			});
 			fs.access(thumbToDelete, fs.F_OK, function(err) {
 		    if (!err) {
 		    	console.log('thumb deleted');
@@ -1029,6 +1035,24 @@ module.exports = function(app, io){
 				}
 			}
 
+		}
+
+		// Delete File
+		function deleteFile(req){
+			var fileToDelete = 'sessions/' + req.session +'/'+req.project+'/'+req.file;
+			var extension = req.file.split('.').pop();
+  		var identifiant =  req.file.replace("." + extension, "");
+  		var thumbToDelete = 'sessions/' + req.session +'/'+req.project+'/'+identifiant + '-thumb.png';
+			console.log('delete file', thumbToDelete);
+			fs.unlink(fileToDelete);
+			fs.access(thumbToDelete, fs.F_OK, function(err) {
+		    if (!err) {
+		    	console.log('thumb deleted');
+		      fs.unlink(thumbToDelete);
+		    } else {
+		        // It isn't accessible
+		    }
+			});
 		}
 
 	// F I N    B I B L I    P A G E
