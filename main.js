@@ -69,7 +69,7 @@ module.exports = function(app, io){
 		socket.on("modifyText", onModifiedText);
 		socket.on("newImageLocal", onNewImage);
 		socket.on("addMediaData", onMediaLegende);
-		socket.on("highlightMedia", onHighLightMedia);
+		socket.on("highlightMedia", onHighLighMedia);
 		socket.on("removeHighlight", onRemoveHighlight);
 		socket.on("deleteFileBibli", onDeleteFileBibli);
 
@@ -933,11 +933,13 @@ module.exports = function(app, io){
 			}
 		}
 
-		function onHighLightMedia(data){
+		function onHighLighMedia(data){
 			var jsonFile = 'sessions/' + data.session + '/'+ data.project+"/" +data.project+'.json';
 			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
 			var jsonObj = JSON.parse(jsonData);
 			var id = data.id;
+
+
 
 			var type;
 			if(data.type == 'image'){
@@ -956,13 +958,13 @@ module.exports = function(app, io){
 			if(data.type == 'text'){
 				for (var i = 0; i < jsonObj['files']['texte'].length; i++){
 				  if (jsonObj['files']['texte'][i].id == id){
-				  	jsonObj['files']['texte'][i]['hightlight'] = true;
+				  	jsonObj['files']['texte'][i]['highlight'] = true;
 				  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
 				      if(err) {
 				          console.log(err);
 				      } else {
 				        console.log("The file was saved!");
-				        io.sockets.emit("addHightlight", {id:id, hightlight:true});
+				        io.sockets.emit("addHighlight", {id:id, highlight:true});
 				      }
 			    	});
 				  }
@@ -971,13 +973,13 @@ module.exports = function(app, io){
 			else{
 				for (var i = 0; i < jsonObj['files'][type].length; i++){
 				  if (jsonObj['files'][type][i].name == id){
-				  	jsonObj['files'][type][i]['hightlight'] = true;
+				  	jsonObj['files'][type][i]['highlight'] = true;
 				  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
 				      if(err) {
 				          console.log(err);
 				      } else {
 				        console.log("The file was saved!");
-				        io.sockets.emit("addHightlight", {id:id, hightlight:true});
+				        io.sockets.emit("addHighlight", {id:id, highlight:true});
 				      }
 			    	});
 				  }
@@ -1008,13 +1010,13 @@ module.exports = function(app, io){
 			if(data.type == 'text'){
 				for (var i = 0; i < jsonObj['files']['texte'].length; i++){
 				  if (jsonObj['files']['texte'][i].id == id){
-				  	jsonObj['files']['texte'][i]['hightlight'] = false;
+				  	jsonObj['files']['texte'][i]['highlight'] = false;
 				  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
 				      if(err) {
 				          console.log(err);
 				      } else {
 				        console.log("The file was saved!");
-				        io.sockets.emit("addHightlight", {id:id, hightlight:false});
+				        io.sockets.emit("addHighlight", {id:id, highlight:false});
 				      }
 			    	});
 				  }
@@ -1023,13 +1025,13 @@ module.exports = function(app, io){
 			else{
 				for (var i = 0; i < jsonObj['files'][type].length; i++){
 				  if (jsonObj['files'][type][i].name == id){
-				  	jsonObj['files'][type][i]['hightlight'] = false;
+				  	jsonObj['files'][type][i]['highlight'] = false;
 				  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
 				      if(err) {
 				        console.log(err);
 				      } else {
 				        console.log("The file was saved!");
-				        io.sockets.emit("addHightlight", {id:id, hightlight:false});
+				        io.sockets.emit("addHighlight", {id:id, highlight:false});
 				      }
 			    	});
 				  }

@@ -25,7 +25,7 @@ socket.on('publiCreated', onPubliCreated);
 socket.on('displayMontage', onDisplayMontage);
 socket.on('titleModified', onTitleModified);
 socket.on('displayMediaData', onMediaData);
-socket.on('addHightlight', onHightlight);
+socket.on('addHighlight', onHighlight);
 socket.on('bibliFileDeleted', onFileDeleted)
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 
@@ -151,34 +151,34 @@ function init(){
   	socket.emit('addMediaData', {session: currentSession, project: currentProject, title: mediaTitle, legend:mediaLegende, id:id, type:type});
   });
 
-  // Ajoute ou enlève un hightlight quand on clique sur "Highlight" dans la fenêtre modal
+  // Ajoute ou enlève un highlight quand on clique sur "Highlight" dans la fenêtre modal
   $('body').on('click', '.js--highlightMedia', function(){
 		var id = $(this).parents('.media-big').attr('id');
 		var type = $(this).parents('.media-big').attr('data-type');
 		//console.log(type);
 		if($(this).parents('.media-big').hasClass('is--highlight')){
-			console.log('remove hightlight');
+			console.log('remove highlight');
 			socket.emit('removeHighlight', {session: currentSession, project: currentProject, id:id, type:type});
 		}
 		else{
-			console.log('add hightlight');
+			console.log('add highlight');
 			socket.emit('highlightMedia', {session: currentSession, project: currentProject, id:id, type:type});
 		}
 
   });
 
- // Ajoute ou enlève un hightlight quand on clique sur le drapeau dans les médias
+ // Ajoute ou enlève un highlight quand on clique sur le drapeau dans les médias
   $('body').on('click', '.js--flagMedia', function(e){
   	e.stopPropagation();
 		var id = $(this).parents('li').attr('id');
 		var type = $(this).parents('li').attr('data-type');
 		//console.log(type);
 		if($(this).parents('li').hasClass('is--highlight')){
-			console.log('remove hightlight');
+			console.log('remove highlight');
 			socket.emit('removeHighlight', {session: currentSession, project: currentProject, id:id, type:type});
 		}
 		else{
-			console.log('add hightlight');
+			console.log('add highlight - flag');
 			socket.emit('highlightMedia', {session: currentSession, project: currentProject, id:id, type:type});
 		}
 
@@ -358,7 +358,7 @@ function onListMedias(array, json){
   	  ;
     }
 
-		if(json['files']['images'][i].hightlight == true){
+		if(json['files']['images'][i].highlight == true){
 			$('#'+json['files']['images'][i].name).addClass('is--highlight');
 		}
 
@@ -380,7 +380,7 @@ function onListMedias(array, json){
   	  ;
     }
 
-		if(json['files']['videos'][i].hightlight == true){
+		if(json['files']['videos'][i].highlight == true){
 			$('#'+json['files']['videos'][i].name).addClass('is--highlight');
 		}
 	}
@@ -401,7 +401,7 @@ function onListMedias(array, json){
   	  ;
     }
 
-		if(json['files']['stopmotion'][i].hightlight == true){
+		if(json['files']['stopmotion'][i].highlight == true){
 			$('#'+json['files']['stopmotion'][i].name).addClass('is--highlight');
 		}
 	}
@@ -422,7 +422,7 @@ function onListMedias(array, json){
   	  ;
     }
 
-		if(json['files']['audio'][i].hightlight == true){
+		if(json['files']['audio'][i].highlight == true){
 			$('#'+json['files']['audio'][i].name).addClass('is--highlight');
 		}
 	}
@@ -444,7 +444,7 @@ function onListMedias(array, json){
   	  ;
     }
 
-		if(json['files']['texte'][i].hightlight == true){
+		if(json['files']['texte'][i].highlight == true){
 			$('#'+json['files']['texte'][i].id).addClass('is--highlight');
 		}
 	}
@@ -667,9 +667,9 @@ function onMediaData(data){
 		.find('.mediaData--legende').html(data.legend);
 }
 
-function onHightlight(data){
+function onHighlight(data){
 	$('#modal-media-view').foundation('reveal', 'close');
-	if(data.hightlight == true){
+	if(data.highlight == true){
 		$("#"+data.id)
 			.addClass('is--highlight');
 	}
