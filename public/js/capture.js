@@ -112,18 +112,7 @@ function init(){
     }
     if($("#stopmotion").hasClass('active')){
       //redémarre le stop motion quand un autre média est choisi au milieu du stop motion
-      isEventExecutedSM = false;
-      if(code == 115 || code == 122){
-        console.log(isEventExecutedSM);
-        if(isEventExecutedSM == false){
-          isEventExecutedSM = true;
-          $("#stop-sm-btn").hide();
-          $("#start-sm-btn").show();
-          $("#capture-sm-btn").hide();
-          $('.screenshot .meta-stopmotion').remove();
-        }
-      }
-      if(code == 113) { //When Space is pressed
+      if(code == 113) { //When Q is pressed
         countPress ++;
         if(countPress == 1){
           console.log("start a stopmotion");
@@ -146,20 +135,20 @@ function init(){
 	});
 
   //redémarre le stop motion quand un autre média est choisi au milieu du stop motion
-  var isEventExecutedSM = false;
-  $("#stopmotion").click(function(){
-    isEventExecutedSM = false;
-    $(".btn-choice button").click(function(){
-      // $('#modal-change-alert').foundation('reveal', 'open');
-      if(isEventExecutedSM == false){
-        isEventExecutedSM = true;
-        $("#stop-sm-btn").hide();
-        $("#start-sm-btn").show();
-        $("#capture-sm-btn").hide();
-        $('.screenshot .meta-stopmotion').remove();
-      }
-    });
-  });
+  // var isEventExecutedSM = false;
+  // $("#stopmotion").click(function(){
+  //   isEventExecutedSM = false;
+  //   $(".btn-choice button").click(function(){
+  //     // $('#modal-change-alert').foundation('reveal', 'open');
+  //     if(isEventExecutedSM == false){
+  //       isEventExecutedSM = true;
+  //       $("#stop-sm-btn").hide();
+  //       $("#start-sm-btn").show();
+  //       $("#capture-sm-btn").hide();
+  //       $('.screenshot .meta-stopmotion').remove();
+  //     }
+  //   });
+  // });
 
   // delete file
   $("a.js--delete-media-capture").on("click", function(e){
@@ -186,9 +175,13 @@ function init(){
 
   $('#modal-change-alert .supprimer-stop-motion').on('click', function(){
     var thisId = $(this).attr('data-choice');
+    countPress = 0;
+    $("#stop-sm-btn").hide();
+    $("#start-sm-btn").show();
+    $("#capture-sm-btn").hide();
+    $('.screenshot .meta-stopmotion').remove();
     $('#modal-change-alert').foundation('reveal', 'close');
     $(".btn-choice button").removeClass('active');
-    
     $('#'+thisId).addClass('active');
     $('body').removeClass('takingstopmotion');
 
@@ -245,9 +238,18 @@ function changeMediaClick($this){
 function changeMediaBoitier(e){
   var code = e.keyCode || e.which;
   var $activeButton = $(".btn-choice").find('.active');
-
+  var thisId;
 
   if($('body').hasClass('takingstopmotion') && (code == 115 || code == 122)){
+    if(code == 115){
+      var $nextButton = $activeButton.next();
+      thisId = $nextButton.attr('id');
+    }
+
+    if(code == 122){
+      var $prevButton = $activeButton.prev();
+      thisId = $prevButton.attr('id');
+    }
     $('#modal-change-alert').foundation('reveal', 'open');
     $('#modal-change-alert .supprimer-stop-motion').attr('data-choice', thisId);
   }
