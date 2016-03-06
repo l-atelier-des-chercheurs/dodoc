@@ -669,18 +669,23 @@ function onMediaData(data){
 
 function onHighlight(data){
 	//$('#modal-media-view').foundation('reveal', 'close');
-	$('.js--highlightMedia').css({
-		"background-color": "#48C2B5",
-		"color": "#FFF",
-		"border": "none"
-	});
 	if(data.highlight == true){
 		$("#"+data.id)
 			.addClass('is--highlight');
+		$('.js--highlightMedia').css({
+			"background-color": "#48C2B5",
+			"color": "#FFF",
+			"border": "none"
+		});
 	}
 	else{
 		$("#"+data.id)
 			.removeClass('is--highlight');
+		$('.js--highlightMedia').css({
+			"background-color": "#FFF",
+			"color": "#48C2B5",
+			"border": "1px solid #48C2B5"
+		});
 	}
 }
 
