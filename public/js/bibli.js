@@ -90,7 +90,7 @@ function init(){
 
   $('body').on('click', '.js--delete-media-montage', function(){
   	var $elementToDel = $(this).parent("li.media");
-  	$elementToDel.slideUp( 600,function(){
+  	$elementToDel.fadeOut( 600,function(){
   		$elementToDel.remove();
   		onMontageChanged();
   	});
@@ -163,7 +163,7 @@ function init(){
 			console.log('add hightlight');
 			socket.emit('highlightMedia', {session: currentSession, project: currentProject, id:id, type:type});
 		}
-		
+
   });
 
  // Ajoute ou enlève un hightlight quand on clique sur le drapeau dans les médias
@@ -180,9 +180,10 @@ function init(){
 			console.log('add hightlight');
 			socket.emit('highlightMedia', {session: currentSession, project: currentProject, id:id, type:type});
 		}
-		
+
   });
 
+/*
   // Affiche les drapeaux au survol
   $('body').on('mouseenter', 'li.media',function() {
   	$(this).find('.js--flagMedia').show();
@@ -191,6 +192,7 @@ function init(){
    $('body').on('mouseleave', 'li.media',function() {
   	$(this).find('.js--flagMedia').hide();
   });
+*/
 
 
 
@@ -303,6 +305,16 @@ function onListMedias(array, json){
     if(keyA > keyB) return 1;
     return 0;
 	});
+
+/*
+      Penser à nettoyer tout ça :
+      1- ne placer dans la page qu'une fois que le media est bien formé
+      2- ne pas répéter le code si possible (créer des fonctions autant que faire se peut
+
+      (voir par exemple la fonction sendProjectData dans projet.js)
+*/
+
+
 	for (var i = 0; i < array.length; i++) {
   	var extension = array[i].extension;
   	var identifiant =  array[i].id;
@@ -326,20 +338,29 @@ function onListMedias(array, json){
 		}
 	}
 
-	//afficher les titre et légendes des images  
+
+	//afficher les titre et légendes des images
 	for (var i = 0; i < json['files']['images'].length; i++){
 	  var title = json['files']['images'][i]['title'];
 	  var legende = json['files']['images'][i]['legende'];
 	  $('#'+json['files']['images'][i].name)
 	  	.attr('data-title', title)
 	  	.attr('data-legende', legende)
-	  	.find('.mediaData h5').html(title)
+	  	.find('.mediaData .mediaData--titre').html(title)
 			.end()
-			.find('.mediaData p').html(legende);
+			.find('.mediaData .mediaData--legende').html(legende);
+
+    if( title === undefined && legende === undefined) {
+  	  $('#'+json['files']['images'][i].name)
+  	    .find('.mediaData')
+  	      .remove()
+  	  ;
+    }
+
 		if(json['files']['images'][i].hightlight == true){
 			$('#'+json['files']['images'][i].name).addClass('is--highlight');
 		}
-		
+
 	}
 	for (var i = 0; i < json['files']['videos'].length; i++){
 	  var title = json['files']['videos'][i]['title'];
@@ -347,9 +368,17 @@ function onListMedias(array, json){
 	  $('#'+json['files']['videos'][i].name)
 	  	.attr('data-title', title)
 	  	.attr('data-legende', legende)
-	  	.find('.mediaData h5').html(title)
+	  	.find('.mediaData .mediaData--titre').html(title)
 			.end()
-			.find('.mediaData p').html(legende);
+			.find('.mediaData .mediaData--legende').html(legende);
+
+    if( title === undefined && legende === undefined) {
+  	  $('#'+json['files']['videos'][i].name)
+  	    .find('.mediaData')
+  	      .remove()
+  	  ;
+    }
+
 		if(json['files']['videos'][i].hightlight == true){
 			$('#'+json['files']['videos'][i].name).addClass('is--highlight');
 		}
@@ -360,9 +389,16 @@ function onListMedias(array, json){
 	  $('#'+json['files']['stopmotion'][i].name)
 	  	.attr('data-title', title)
 	  	.attr('data-legende', legende)
-	  	.find('.mediaData h5').html(title)
+	  	.find('.mediaData .mediaData--titre').html(title)
 			.end()
-			.find('.mediaData p').html(legende);
+			.find('.mediaData .mediaData--legende').html(legende);
+
+    if( title === undefined && legende === undefined) {
+  	  $('#'+json['files']['stopmotion'][i].name)
+  	    .find('.mediaData')
+  	      .remove()
+  	  ;
+    }
 
 		if(json['files']['stopmotion'][i].hightlight == true){
 			$('#'+json['files']['stopmotion'][i].name).addClass('is--highlight');
@@ -374,9 +410,16 @@ function onListMedias(array, json){
 	  $('#'+json['files']['audio'][i].name)
 	  	.attr('data-title', title)
 	  	.attr('data-legende', legende)
-	  	.find('.mediaData h5').html(title)
+	  	.find('.mediaData .mediaData--titre').html(title)
 			.end()
-			.find('.mediaData p').html(legende);
+			.find('.mediaData .mediaData--legende').html(legende);
+
+    if( title === undefined && legende === undefined) {
+  	  $('#'+json['files']['audio'][i].id)
+  	    .find('.mediaData')
+  	      .remove()
+  	  ;
+    }
 
 		if(json['files']['audio'][i].hightlight == true){
 			$('#'+json['files']['audio'][i].name).addClass('is--highlight');
@@ -389,14 +432,23 @@ function onListMedias(array, json){
 	  $('#'+json['files']['texte'][i].id)
 	  	.attr('data-title', title)
 	  	.attr('data-legende', legende)
-	  	.find('.mediaData h5').html(title)
+	  	.find('.mediaData .mediaData--titre').html(title)
 			.end()
-			.find('.mediaData p').html(legende);
+			.find('.mediaData .mediaData--legende').html(legende);
+
+    if( title === undefined && legende === undefined) {
+  	  $('#'+json['files']['texte'][i].id)
+  	    .find('.mediaData')
+  	      .remove()
+  	  ;
+    }
 
 		if(json['files']['texte'][i].hightlight == true){
 			$('#'+json['files']['texte'][i].id).addClass('is--highlight');
 		}
 	}
+
+
 
 	//display text
 	socket.on('txtRead', function(data){
@@ -608,9 +660,9 @@ function onMediaData(data){
 	$("#"+data.id)
 		.attr('data-title', data.title)
 		.attr('data-legende', data.legend)
-		.find('.mediaData h5').html(data.title)
+		.find('.mediaData--titre').html(data.title)
 		.end()
-		.find('.mediaData p').html(data.legend);
+		.find('.mediaData--legende').html(data.legend);
 }
 
 function onHightlight(data){

@@ -230,6 +230,10 @@ input[type="text"], select {
   }
 }
 
+::-webkit-input-placeholder {
+  color: #bbb;
+}
+
 select {
   border-bottom: 2px solid #ccc;
 

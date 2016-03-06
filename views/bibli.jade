@@ -33,7 +33,6 @@ html
 
       button.open-montage-bar.js--toggleMontage
 
-
       .montage-list
         h1.legende Liste des publications
         a(href="" data-reveal-id="modal-add-publi").button-wrapper.button-wrapper_add
@@ -91,33 +90,33 @@ html
       li.media.media_image(data-type="image" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           img
-        .mediaData
-          h5
-          p
+          .mediaData
+            h5.mediaData--titre
+            p.mediaData--legende
         +button( 'flag', '', 'isCollapsed')
       li.media.media_video(data-type="video" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           video(preload="none" controls)
             source()
-        .mediaData
-          h5
-          p
+          .mediaData
+            h5.mediaData--titre
+            p.mediaData--legende
         +button( 'flag', '', '')
       li.media.media_stopmotion(data-type="stopmotion" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           video(preload="none" controls)
             source()
-        .mediaData
-          h5
-          p
+          .mediaData
+            h5.mediaData--titre
+            p.mediaData--legende
         +button( 'flag', '', '')
       li.media.media_audio(data-type="audio" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent
           audio(preload="none" controls)
             source()
-        .mediaData
-          h5
-          p
+          .mediaData
+            h5.mediaData--titre
+            p.mediaData--legende
         +button( 'flag', '', '')
       li.media.media_text(data-type="text" data-ratio data-title data-legende data-hightlight=false)
         .mediaContent

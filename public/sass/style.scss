@@ -47,8 +47,6 @@ body {
 		content: '';
 		opacity: 0;
 
-
-
 		-webkit-transition: opacity .3s 0s, visibility 0s .3s;
 		-moz-transition: opacity .3s 0s, visibility 0s .3s;
 		transition: opacity .3s;
@@ -293,6 +291,11 @@ button{
   }
 }
 
+.big-mediaContent {
+  textarea {
+    min-height: 150px;
+  }
+}
 
 
 @import '_index';
