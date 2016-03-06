@@ -339,7 +339,7 @@ function onListMedias(array, json){
 		}
 	}
 
-	
+
 	//afficher les titre et légendes des images
 	for (var i = 0; i < json['files']['images'].length; i++){
 	  var title = json['files']['images'][i]['title'];
@@ -668,7 +668,12 @@ function onMediaData(data){
 }
 
 function onHighlight(data){
-	$('#modal-media-view').foundation('reveal', 'close');
+	//$('#modal-media-view').foundation('reveal', 'close');
+	$('.js--highlightMedia').css({
+		"background-color": "#48C2B5",
+		"color": "#FFF",
+		"border": "none"
+	});
 	if(data.highlight == true){
 		$("#"+data.id)
 			.addClass('is--highlight');

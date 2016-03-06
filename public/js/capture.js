@@ -629,6 +629,7 @@ function startStopMotion(){
   countImage = 0;
   console.log('start stop-motion');
   $("#start-sm-btn").hide(); $("#capture-sm-btn").show(); $("#stop-sm-btn").hide();
+  $('.js--delete-media-capture').hide();
   $('.screenshot .canvas-view').hide(); $('#camera-preview').hide();
 
   var iconeSM = '<div class="icone-stopmotion"><img src="/images/stopmotion.svg"></div>';
@@ -700,6 +701,7 @@ function stopStopMotion(){
     $('#camera-preview').attr('src', '/' + currentSession + '/'+'/'+currentProject+'/'+req.fileName+'')
     $('#camera-preview').show();
     $("#start-sm-btn").show();
+    $('.js--delete-media-capture').show();
   });
   canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
   $('body').removeClass('takingstopmotion');
