@@ -45,6 +45,15 @@ Enter the command:
 Then enter:
 ```cd public && bower install```
 
+On Windows XP, if you get the following error : 
+```Error: Failed to replace env in config: ${APPDATA}```
+you have to first set the right path to a writable folder for node. Go to C:\Program Files\nodejs\node_modules\npm and open npmrc.
+Replace the line 
+```prefix=${APPDATA}\npm```
+with
+```prefix=C:\Program Files\nodejs\node_modules\npm```
+
+
 ###Install ffmpeg
 Official page [https://www.ffmpeg.org/](https://www.ffmpeg.org/)
 
