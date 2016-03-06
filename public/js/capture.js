@@ -187,11 +187,6 @@ function init(){
 
   fullscreen();
 
-  // Au changement de media -> fenêtre d'alerte -> quand cliques sur ok
-  $('#modal-change-alert button.ok').on('click', function(){
-    $('#modal-change-alert').foundation('reveal', 'close');
-  });
-
 }
 
 function changeMediaClick($this){
@@ -229,7 +224,7 @@ function changeMediaBoitier(e){
   var $activeButton = $(".btn-choice").find('.active');
 
 
-  if($('body').hasClass('takingstopmotion') && code == 115 || code == 122){
+  if($('body').hasClass('takingstopmotion') && (code == 115 || code == 122)){
     $('#modal-change-alert').foundation('reveal', 'open');
   }
   
@@ -592,6 +587,7 @@ function recordingVideo(click){
   }
 
   function stopVideo(){
+    $('.video-capture').hide();
     startVideoRecording.disabled = false;
     stopVideoRecording.disabled = true;
     startVideoRecording.style.display = "block";
@@ -626,6 +622,7 @@ function recordingVideo(click){
     cameraPreview.play();
     cameraPreview.muted = false;
     cameraPreview.controls = true;
+    $('.video-capture').fadeIn(1000);
   });
 }
 
