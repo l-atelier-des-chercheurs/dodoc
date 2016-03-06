@@ -666,6 +666,7 @@ module.exports = function(app, io){
 	        return fs.statSync(dir + a).mtime.getTime() - fs.statSync(dir + b).mtime.getTime();
 	      })
 				.forEach(function(f) {
+					console.log(f);
 					var extension = path.extname(f);
 					var fileName = path.basename(f,extension);
 					var obj = {

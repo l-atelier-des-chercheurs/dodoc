@@ -57,6 +57,7 @@ function init(){
   $(".choices").hide();
   $(".image-choice").show();
   $("body").attr("data-mode", "photo");
+  $(".photo-capture ").hide();
   photoDisplay();
 
   setTimeout(function(){
@@ -65,8 +66,17 @@ function init(){
 
   $("#canvas-equalizer").hide();
 
-	//on media changing
-	changeMedia();
+	//Quand on change de media
+    // au click
+    $('.btn-choice button').on('click', function(){
+      changeMediaClick($(this));
+    });
+    // au boîtier avec les boutons
+    $("body").keypress(function(e){
+      changeMediaBoitier(e);
+    });
+
+
 	displayVideoStream();
 
 	//recording medias events
@@ -177,92 +187,102 @@ function init(){
 
   fullscreen();
 
+  // Au changement de media -> fenêtre d'alerte -> quand cliques sur ok
+  $('#modal-change-alert button.ok').on('click', function(){
+    $('#modal-change-alert').foundation('reveal', 'close');
+  });
+
 }
 
-function changeMedia(){
-  $(".btn-choice #photo").on("click", function(){
-    photoDisplay();
-    $(".btn-choice button").removeClass('active');
-    $(this).addClass("active");
-    $('body').attr('data-mode', 'photo');
-  });
-  $(".btn-choice #video-btn").on("click", function(){
-    videoDisplay();
-    $(".btn-choice button").removeClass('active');
-    $(this).addClass("active");
-    $('body').attr('data-mode', 'video');
-  });
-  $(".btn-choice #stopmotion").on("click", function(){
-    stopMotionDisplay();
-    $(".btn-choice button").removeClass('active');
-    $(this).addClass("active");
-    $('body').attr('data-mode', 'stopmotion');
-  });
-  $(".btn-choice #audio").on("click", function(){
-    audioDisplay();
-    $(".btn-choice button").removeClass('active');
-    $(this).addClass("active");
-    $('body').attr('data-mode', 'audio');
-  });
+function changeMediaClick($this){
+  var thisId = $this.attr('id');
 
-  //Animation back when changing media
-  if(!$("#stopmotion").hasClass('active')){
-    console.log('stop motion');
-    $(".btn-choice").on('click', backAnimation);
+  if($('body').hasClass('takingstopmotion')){
+    $('#modal-change-alert').foundation('reveal', 'open');
   }
+
   else{
-    $(".btn-choice").off('click');
+    $(".btn-choice button").removeClass('active');
+    $this.addClass('active');
+    $('body').removeClass('takingstopmotion');
+
+    switch(thisId){
+      case 'photo':
+        photoDisplay();
+        break;
+      case 'video-btn':
+        videoDisplay();
+        break;
+      case 'stopmotion':
+        stopMotionDisplay();
+        break;
+      case 'audio':
+        audioDisplay();
+        break;
+    }
+    backAnimation();
   }
-
-  $("body").keypress(function(e){
-    var code = e.keyCode || e.which;
-    var $activeButton = $(".btn-choice").find('.active');
-      if(code == 115) { // Z keypress
-        var $nextButton = $activeButton.next();
-        $activeButton.removeClass('active');
-        if ($nextButton.length){
-          $nextButton.addClass('active');
-        }
-        else{
-          $nextButton = $(".btn-choice button").first().addClass('active');
-        }
-      }
-      if(code == 122) { // S keypress
-        var $prevButton = $activeButton.prev();
-        $activeButton.removeClass('active');
-        if ($prevButton.length){
-          $prevButton.addClass('active');
-        }
-        else{
-          $prevButton = $(".btn-choice button").last().addClass('active');
-          $activeButton.removeClass('active');
-        }
-      }
-      if(code == 115 || code == 122){
-        if($('.screenshot .count-image')){
-          $('.screenshot .count-image').remove();
-        }
-        backAnimation();
-
-        if($("#photo").hasClass('active')){
-          photoDisplay();
-        }
-        if($("#video-btn").hasClass('active')){
-          videoDisplay();
-        }
-        if($("#stopmotion").hasClass('active')){
-          stopMotionDisplay();
-        }
-        if($("#audio").hasClass('active')){
-          audioDisplay();
-        }
-      }
-  });
 }
+
+function changeMediaBoitier(e){
+  var code = e.keyCode || e.which;
+  var $activeButton = $(".btn-choice").find('.active');
+
+
+  if($('body').hasClass('takingstopmotion') && code == 115 || code == 122){
+    $('#modal-change-alert').foundation('reveal', 'open');
+  }
+  
+  else{
+    if(code == 115) { // Z keypress
+      var $nextButton = $activeButton.next();
+      $activeButton.removeClass('active');
+      if ($nextButton.length){
+        $nextButton.addClass('active');
+      }
+      else{
+        $nextButton = $(".btn-choice button").first().addClass('active');
+      }
+    }
+    if(code == 122) { // S keypress
+      var $prevButton = $activeButton.prev();
+      $activeButton.removeClass('active');
+      if ($prevButton.length){
+        $prevButton.addClass('active');
+      }
+      else{
+        $prevButton = $(".btn-choice button").last().addClass('active');
+        $activeButton.removeClass('active');
+      }
+    }
+    if(code == 115 || code == 122){
+      if($('.screenshot .count-image')){
+        $('.screenshot .count-image').remove();
+      }
+      backAnimation();
+
+      if($("#photo").hasClass('active')){
+        photoDisplay();
+      }
+      if($("#video-btn").hasClass('active')){
+        videoDisplay();
+      }
+      if($("#stopmotion").hasClass('active')){
+        stopMotionDisplay();
+      }
+      if($("#audio").hasClass('active')){
+        audioDisplay();
+      }
+    }
+  }
+}
+
 function photoDisplay(){
   $('.screenshot .canvas-view').show();
   $('.screenshot video').hide();
-  $('.photo-capture').show();
+  setTimeout(function(){
+    $('.photo-capture').fadeIn(1000);
+  },1000);
   $('.video-capture').hide();
   $('.stopmotion-capture').hide();
   $('.audio-capture').hide();
@@ -277,7 +297,9 @@ function photoDisplay(){
 }
 function videoDisplay(){
   $('.photo-capture').css('display', 'none');
-  $('.video-capture').css('display','block');
+  setTimeout(function(){
+    $('.video-capture').fadeIn(1000);
+  },1000);
   $('.stopmotion-capture').css('display','none');
   $('.audio-capture').css('display','none');
   $(".son").css("display", "none");
@@ -294,7 +316,9 @@ function stopMotionDisplay(){
   $('.screenshot #camera-preview').hide();
   $('.photo-capture').css('display', 'none');
   $('.video-capture').css('display','none');
-  $('.stopmotion-capture').css('display','block');
+  setTimeout(function(){
+    $('.stopmotion-capture').fadeIn(1000);
+  }, 1000);
   $('.audio-capture').css('display','none');
   $(".son").css("display", "none");
   $('#video').show();
@@ -311,7 +335,9 @@ function audioDisplay(){
   $('.photo-capture').css('display', 'none');
   $('.video-capture').css('display','none');
   $('.stopmotion-capture').css('display','none');
-  $('.audio-capture').css('display','block');
+  setTimeout(function(){
+    $('.audio-capture').fadeIn(1000);
+  }, 1000);
   $('.screenshot #canvas').css('display', 'none');
   $('.captureRight .son').css('display', 'block');
   $('#video').hide();
@@ -324,7 +350,7 @@ function audioDisplay(){
 }
 
 function displayVideoStream(){
-// Initialise getUserMedia
+  // Initialise getUserMedia
   navigator.getUserMedia = ( navigator.getUserMedia ||
                          navigator.webkitGetUserMedia ||
                          navigator.mozGetUserMedia ||
@@ -352,7 +378,6 @@ function displayVideoStream(){
     .then(function(){
       var deviceChoiceId;
       if(mediaDevices.length < 2){
-        console.log('test');
         deviceChoiceId = mediaDevices[0].deviceId;
         //$('.container-inner').prepend("<h2>"+mediaDevices[0].label+"</h2>");
       }
@@ -422,7 +447,6 @@ function displayVideoStream(){
 
 // Fonction qui prend les photos
 function takePictures(){
-  console.log('test');
   canvas.width = width;
   canvas.height = height;
   canvas.getContext('2d').drawImage(video, 0, 0, width, height);
@@ -445,7 +469,6 @@ function takePictures(){
 
 // Function qui enregistre de la vidéo
 function recordingVideo(click){
-  console.log('test');
   var startVideoRecording = document.getElementById('start-record-btn');
   var stopVideoRecording = document.getElementById('stop-record-btn');
   var cameraPreview = document.getElementById('camera-preview');
@@ -647,6 +670,7 @@ function takepictureMotion(dir) {
   });
   socket.emit('imageMotion', {data: data, dir: dir, count: countImage});
   $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
+  $('body').addClass('takingstopmotion');
 }
 
 function removeImageMotion(data, dir){
@@ -684,6 +708,7 @@ function stopStopMotion(){
     $('#camera-preview').show();
   });
   canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  $('body').removeClass('takingstopmotion');
 }
 
 //Capture le flux audio

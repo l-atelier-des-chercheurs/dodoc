@@ -298,14 +298,14 @@ function displayModifiedText(text){
 function onListMedias(array, json){
 	$(".mediaContainer li").remove();
 	var matchID = $(".mediaContainer .media").attr("id");
-	array.sort(function(a, b){
-    var keyA = new Date(a.id),
-        keyB = new Date(b.id);
-    // Compare the 2 dates
-    if(keyA < keyB) return -1;
-    if(keyA > keyB) return 1;
-    return 0;
-	});
+	// array.sort(function(a, b){
+ //    var keyA = new Date(a.id),
+ //        keyB = new Date(b.id);
+ //    // Compare the 2 dates
+ //    if(keyA < keyB) return -1;
+ //    if(keyA > keyB) return 1;
+ //    return 0;
+	// });
 
 /*
       Penser à nettoyer tout ça :
@@ -339,7 +339,7 @@ function onListMedias(array, json){
 		}
 	}
 
-
+	
 	//afficher les titre et légendes des images
 	for (var i = 0; i < json['files']['images'].length; i++){
 	  var title = json['files']['images'][i]['title'];
