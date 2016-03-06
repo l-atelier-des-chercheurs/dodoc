@@ -249,6 +249,7 @@ function changeMediaBoitier(e){
 
   if($('body').hasClass('takingstopmotion') && (code == 115 || code == 122)){
     $('#modal-change-alert').foundation('reveal', 'open');
+    $('#modal-change-alert .supprimer-stop-motion').attr('data-choice', thisId);
   }
   
   else{
@@ -298,6 +299,7 @@ function changeMediaBoitier(e){
 function photoDisplay(){
   $('.screenshot .canvas-view').show();
   $('.screenshot video').hide();
+  $('.js--delete-media-capture').show();
   // setTimeout(function(){
   $('.photo-capture').fadeIn(2000);
   // },1000);
@@ -315,6 +317,7 @@ function photoDisplay(){
 }
 function videoDisplay(){
   $('.photo-capture').css('display', 'none');
+  $('.js--delete-media-capture').show();
   //setTimeout(function(){
     $('.video-capture').fadeIn(2000);
   //},1000);
@@ -350,6 +353,7 @@ function stopMotionDisplay(){
 }
 function audioDisplay(){
   $('.screenshot #camera-preview').hide();
+  $('.js--delete-media-capture').show();
   $('.photo-capture').css('display', 'none');
   $('.video-capture').css('display','none');
   $('.stopmotion-capture').css('display','none');
