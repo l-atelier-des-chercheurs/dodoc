@@ -842,6 +842,7 @@ module.exports = function(app, io){
 
 		function onModifiedText(text){
 			var txtFile = 'sessions/' + text.session + '/'+ text.project+"/" +text.id+'.txt';
+			console.log(text);
 			fs.writeFile(txtFile, '### '+text.title+"\r\n"+text.text, function(err){
 				if(err) {
 	        console.log(err);

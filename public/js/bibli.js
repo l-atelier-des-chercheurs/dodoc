@@ -136,8 +136,9 @@ function init(){
   //Submit new text modified
   $('body').on('click', '.js--submit-view-text-modify', function(){
   	var textTitle = $(this).parent('form').find('.view-text-title-modify').val();
-  	var text = $(this).parent('form').find('textarea').val();
+  	var text = $(this).parent('form').find('.view-text-modify').val();
   	var id = $(this).parents('.media-big_text').attr('data-id');
+
   	socket.emit('modifyText', {session: currentSession, project: currentProject, title: textTitle, text:text, id:id});
   });
 
@@ -642,10 +643,11 @@ function bigMedia(){
 					.find('.view-text-modify').val(texte)
 					.end()
 					.attr('id', id)
+					.attr('data-id', id)
 					.end()
-					.find('.add-media-title').val(mediaTitle)
+					.find('.view-text-title-modify').val(mediaTitle)
 					.end()
-					.find('.add-media-legend').val(mediaLegende)
+					.find('.view-text-modify').val(mediaLegende)
 					;
 
 				$('#modal-media-view .big-mediaContent').html(mediaItem);
