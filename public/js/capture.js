@@ -159,20 +159,6 @@ function init(){
         $('.screenshot .meta-stopmotion').remove();
       }
     });
-    // $('#modal-change-alert button.oui').on('click', function(){
-    //   if(isEventExecutedSM == false){
-    //     isEventExecutedSM = true;
-    //     $("#stop-sm-btn").hide();
-    //     $("#start-sm-btn").show();
-    //     $("#capture-sm-btn").hide();
-    //     $('.screenshot .meta-stopmotion').remove();
-    //   }
-    //   $('#modal-change-alert').foundation('reveal', 'close');
-    // });
-    // $('#modal-change-alert button.annuler').on('click', function(){
-    //   console.log('annuler');
-    //   $('#modal-change-alert').foundation('reveal', 'close');
-    // });
   });
 
   // delete file
@@ -286,9 +272,9 @@ function changeMediaBoitier(e){
 function photoDisplay(){
   $('.screenshot .canvas-view').show();
   $('.screenshot video').hide();
-  setTimeout(function(){
-    $('.photo-capture').fadeIn(1000);
-  },1000);
+  // setTimeout(function(){
+  $('.photo-capture').fadeIn(2000);
+  // },1000);
   $('.video-capture').hide();
   $('.stopmotion-capture').hide();
   $('.audio-capture').hide();
@@ -303,9 +289,9 @@ function photoDisplay(){
 }
 function videoDisplay(){
   $('.photo-capture').css('display', 'none');
-  setTimeout(function(){
-    $('.video-capture').fadeIn(1000);
-  },1000);
+  //setTimeout(function(){
+    $('.video-capture').fadeIn(2000);
+  //},1000);
   $('.stopmotion-capture').css('display','none');
   $('.audio-capture').css('display','none');
   $(".son").css("display", "none");
@@ -322,9 +308,9 @@ function stopMotionDisplay(){
   $('.screenshot #camera-preview').hide();
   $('.photo-capture').css('display', 'none');
   $('.video-capture').css('display','none');
-  setTimeout(function(){
-    $('.stopmotion-capture').fadeIn(1000);
-  }, 1000);
+  //setTimeout(function(){
+    $('.stopmotion-capture').fadeIn(2000);
+  //}, 1000);
   $('.audio-capture').css('display','none');
   $(".son").css("display", "none");
   $('#video').show();
@@ -341,9 +327,9 @@ function audioDisplay(){
   $('.photo-capture').css('display', 'none');
   $('.video-capture').css('display','none');
   $('.stopmotion-capture').css('display','none');
-  setTimeout(function(){
-    $('.audio-capture').fadeIn(1000);
-  }, 1000);
+  //setTimeout(function(){
+    $('.audio-capture').fadeIn(2000);
+  //}, 1000);
   $('.screenshot #canvas').css('display', 'none');
   $('.captureRight .son').css('display', 'block');
   $('#video').hide();
@@ -702,7 +688,6 @@ function removeImageMotion(data, dir){
 function stopStopMotion(){
   var dir = "sessions/" + currentSession + "/"+ currentProject+"/01-stopmotion";
   $("#stop-sm-btn").hide();
-  $("#start-sm-btn").show();
   $("#capture-sm-btn").hide();
   countImage = 0;
   countPress = 0;
@@ -714,6 +699,7 @@ function stopStopMotion(){
     $('.screenshot .canvas-view').hide();
     $('#camera-preview').attr('src', '/' + currentSession + '/'+'/'+currentProject+'/'+req.fileName+'')
     $('#camera-preview').show();
+    $("#start-sm-btn").show();
   });
   canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
   $('body').removeClass('takingstopmotion');
