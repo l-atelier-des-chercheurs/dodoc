@@ -173,6 +173,7 @@ function init(){
 
   fullscreen();
 
+  // Events sur la fenêtre modal d'alerte de changement de mode stop motion
   $('#modal-change-alert button.ok').on('click', function(){
     $("#stop-sm-btn").show();
     $("#start-sm-btn").hide(); $("#capture-sm-btn").show();
@@ -182,6 +183,31 @@ function init(){
     $(".screenshot .meta-stopmotion").show();
     $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
   });
+
+  $('#modal-change-alert .supprimer-stop-motion').on('click', function(){
+    var thisId = $(this).attr('data-choice');
+    $('#modal-change-alert').foundation('reveal', 'close');
+    $(".btn-choice button").removeClass('active');
+    
+    $('#'+thisId).addClass('active');
+    $('body').removeClass('takingstopmotion');
+
+    switch(thisId){
+      case 'photo':
+        photoDisplay();
+        break;
+      case 'video-btn':
+        videoDisplay();
+        break;
+      case 'stopmotion':
+        stopMotionDisplay();
+        break;
+      case 'audio':
+        audioDisplay();
+        break;
+    }
+    backAnimation();
+  });
 }
 
 function changeMediaClick($this){
@@ -189,7 +215,7 @@ function changeMediaClick($this){
 
   if($('body').hasClass('takingstopmotion')){
     $('#modal-change-alert').foundation('reveal', 'open');
-    console.log('you CANT change mode');
+    $('#modal-change-alert .supprimer-stop-motion').attr('data-choice', thisId);
   }
 
   else{
