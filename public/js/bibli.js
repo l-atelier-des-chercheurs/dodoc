@@ -351,12 +351,12 @@ function onListMedias(array, json){
 			.end()
 			.find('.mediaData .mediaData--legende').html(legende);
 
-    if( title === undefined && legende === undefined) {
-  	  $('#'+json['files']['images'][i].name)
-  	    .find('.mediaData')
-  	      .remove()
-  	  ;
-    }
+    // if( title === undefined && legende === undefined) {
+  	 //  $('#'+json['files']['images'][i].name)
+  	 //    .find('.mediaData')
+  	 //      .remove()
+  	 //  ;
+    // }
 
 		if(json['files']['images'][i].highlight == true){
 			$('#'+json['files']['images'][i].name).addClass('is--highlight');
@@ -373,12 +373,12 @@ function onListMedias(array, json){
 			.end()
 			.find('.mediaData .mediaData--legende').html(legende);
 
-    if( title === undefined && legende === undefined) {
-  	  $('#'+json['files']['videos'][i].name)
-  	    .find('.mediaData')
-  	      .remove()
-  	  ;
-    }
+    // if( title === undefined && legende === undefined) {
+  	 //  $('#'+json['files']['videos'][i].name)
+  	 //    .find('.mediaData')
+  	 //      .remove()
+  	 //  ;
+    // }
 
 		if(json['files']['videos'][i].highlight == true){
 			$('#'+json['files']['videos'][i].name).addClass('is--highlight');
@@ -394,12 +394,12 @@ function onListMedias(array, json){
 			.end()
 			.find('.mediaData .mediaData--legende').html(legende);
 
-    if( title === undefined && legende === undefined) {
-  	  $('#'+json['files']['stopmotion'][i].name)
-  	    .find('.mediaData')
-  	      .remove()
-  	  ;
-    }
+    // if( title === undefined && legende === undefined) {
+  	 //  $('#'+json['files']['stopmotion'][i].name)
+  	 //    .find('.mediaData')
+  	 //      .remove()
+  	 //  ;
+    // }
 
 		if(json['files']['stopmotion'][i].highlight == true){
 			$('#'+json['files']['stopmotion'][i].name).addClass('is--highlight');
@@ -415,12 +415,12 @@ function onListMedias(array, json){
 			.end()
 			.find('.mediaData .mediaData--legende').html(legende);
 
-    if( title === undefined && legende === undefined) {
-  	  $('#'+json['files']['audio'][i].id)
-  	    .find('.mediaData')
-  	      .remove()
-  	  ;
-    }
+    // if( title === undefined && legende === undefined) {
+  	 //  $('#'+json['files']['audio'][i].id)
+  	 //    .find('.mediaData')
+  	 //      .remove()
+  	 //  ;
+    // }
 
 		if(json['files']['audio'][i].highlight == true){
 			$('#'+json['files']['audio'][i].name).addClass('is--highlight');
@@ -437,12 +437,12 @@ function onListMedias(array, json){
 			.end()
 			.find('.mediaData .mediaData--legende').html(legende);
 
-    if( title === undefined && legende === undefined) {
-  	  $('#'+json['files']['texte'][i].id)
-  	    .find('.mediaData')
-  	      .remove()
-  	  ;
-    }
+    // if( title === undefined && legende === undefined) {
+  	 //  $('#'+json['files']['texte'][i].id)
+  	 //    .find('.mediaData')
+  	 //      .remove()
+  	 //  ;
+    // }
 
 		if(json['files']['texte'][i].highlight == true){
 			$('#'+json['files']['texte'][i].id).addClass('is--highlight');
