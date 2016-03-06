@@ -187,6 +187,15 @@ function init(){
 
   fullscreen();
 
+  $('#modal-change-alert button.ok').on('click', function(){
+    $("#stop-sm-btn").show();
+    $("#start-sm-btn").hide(); $("#capture-sm-btn").show();
+    $('.screenshot .canvas-view').show();
+    $(".screenshot .meta-stopmotion").remove();
+    $(".screenshot").append("<div class='meta-stopmotion'><div class='delete-image'><img src='/images/clear.svg'></div><p class='count-image'></p></div>");
+    $(".screenshot .meta-stopmotion").show();
+    $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
+  });
 }
 
 function changeMediaClick($this){
@@ -194,9 +203,11 @@ function changeMediaClick($this){
 
   if($('body').hasClass('takingstopmotion')){
     $('#modal-change-alert').foundation('reveal', 'open');
+    console.log('you CANT change mode');
   }
 
   else{
+     console.log('you can change mode');
     $(".btn-choice button").removeClass('active');
     $this.addClass('active');
     $('body').removeClass('takingstopmotion');
