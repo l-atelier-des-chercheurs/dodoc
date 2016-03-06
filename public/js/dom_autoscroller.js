@@ -1496,11 +1496,11 @@ var dragula = require('dragula'),
 	})
 	.on('drop', function(el, target, source, sibling){
   	// si le drop a bien réussi
-  	debugger;
     if( target !== null) {
       $(el).removeClass("gu-transit");
       var deleteMedia = $(".js--templates .js--delete-media-montage").clone(false);
       $(el).append(deleteMedia);
+      $(el).find(".button-wrapper_flagMedia").remove();
   		onMontageChanged();
     }
 	});
