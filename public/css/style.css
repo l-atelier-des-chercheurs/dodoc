@@ -6936,9 +6936,8 @@ th.hide-for-touch {
         margin-right: 15px; }
 
 .reveal-modal {
-  border: 1px solid #cccccc;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 6px;
+  border-radius: 2px;
   -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   padding: 10px 16px 16px 16px;
@@ -7057,7 +7056,9 @@ th.hide-for-touch {
   .reveal-modal#modal-media-view {
     max-width: 80%;
     padding-top: 30px;
-    padding-bottom: 30px; }
+    padding-bottom: 30px;
+    bottom: 60px;
+    overflow-y: auto; }
     .reveal-modal#modal-media-view .row {
       max-width: 100%; }
     .reveal-modal#modal-media-view .button-wrapper_highlightMedia {
