@@ -1,12 +1,12 @@
 .reveal-modal {
-  border: 1px solid #cccccc;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 6px;
+  border-radius: 2px;
   -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   padding: 10px 16px 16px 16px;
 
   max-width: 32.5rem;
+
 
   .popoverTitle {
     font-weight: bold;
@@ -179,6 +179,10 @@
     max-width: 80%;
     padding-top: 30px;
     padding-bottom: 30px;
+
+    bottom: 60px;
+    overflow-y: auto;
+
     .row{
       max-width:100%;
     }
