@@ -11,7 +11,7 @@ Dodoc is both a web documentation platform and a physical device.
 
 ### Using the terminal
 #### Windows
-Follow this tutorial: http://wikistrea.fr/Comment_oufevrir_la_console_de_commande_Windows_en_mode_administrateur_%3F
+Follow this tutorial: http://wikistrea.fr/Comment_ouvrir_la_console_de_commande_Windows_en_mode_administrateur_%3F
 #### Mac OSX
 Go to Applications->Utilitaries->Terminal
 #### Linux
@@ -49,7 +49,7 @@ On Windows XP, if you get the following error :
 ```Error: Failed to replace env in config: ${APPDATA}```
 you have to first set the right path to a writable folder for node. Go to C:\Program Files\nodejs\node_modules\npm and open npmrc.
 Replace the line 
-```prefix=${APPDATA}\npm```
+'prefix=${APPDATA}\npm'
 with
 ```prefix=C:\Program Files\nodejs\node_modules\npm```
 
