@@ -105,22 +105,22 @@ function init(){
   });
 
   //Ajouter un fichier local dans la bibliothèque
-  $('.js--submit-new-local').on('click', function(){
-  	console.log('submit new local');
-  	if(imageData != null){
-			console.log('Une image a été ajoutée');
-			var f = imageData[0];
-			var reader = new FileReader();
-			reader.onload = function(evt){
-				socket.emit('newImageLocal', {session: currentSession, project: currentProject, data:evt.target.result});
-			};
-			reader.readAsDataURL(f);
-		}
-		else{
-			console.log("Pas d'image chargé");
-			$('#modal-add-local').foundation('reveal', 'close');
-		}
-  });
+  // $('.js--submit-new-local').on('click', function(){
+  // 	console.log('submit new local');
+  // 	if(imageData != null){
+		// 	console.log('Une image a été ajoutée');
+		// 	var f = imageData[0];
+		// 	var reader = new FileReader();
+		// 	reader.onload = function(evt){
+		// 		socket.emit('newImageLocal', {session: currentSession, project: currentProject, data:evt.target.result});
+		// 	};
+		// 	reader.readAsDataURL(f);
+		// }
+		// else{
+		// 	console.log("Pas d'image chargé");
+		// 	$('#modal-add-local').foundation('reveal', 'close');
+		// }
+  // });
 
   // si en arrivant sur la page, il y a un hash dans l'url
   // alors ouvrir la publication qui a ce nom directement
@@ -319,18 +319,19 @@ function onListMedias(array, json){
 	for (var i = 0; i < array.length; i++) {
   	var extension = array[i].extension;
   	var identifiant =  array[i].id;
-		if(extension == ".jpg"){
+  	console.log(extension);
+		if(extension == ".jpg" || extension == ".gif" || extension == ".png"){
 			if(array[i].file != currentProject+'-thumb.jpg'){
 				displayImage(currentSession, currentProject, identifiant, array[i].file);
 			}
 		}
-		if(extension == ".webm"){
+		if(extension == ".webm" || extension == ".ogg" || extension == ".mov"){
 			displayVideo(currentSession, currentProject, identifiant, array[i].file);
 		}
 		if(extension == ".mp4"){
 			displayStopMotion(currentSession, currentProject, identifiant, array[i].file);
 		}
-		if(extension == ".wav"){
+		if(extension == ".wav" || extension == ".mp3" || extension == ".amr" || extension == ".m4a"){
 			displayAudio(currentSession, currentProject, identifiant, array[i].file);
 		}
 		if(extension == ".txt"){
