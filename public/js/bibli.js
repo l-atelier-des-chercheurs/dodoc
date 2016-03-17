@@ -482,7 +482,7 @@ function displayImage(session, project, id, file, extension){
 	var imagePath = "../"+ file;
 	var mediaItem = $(".js--templates .media_image").clone(false);
 	console.log(file, id  + extension);
-	if(file != id + extension){
+	//if(file != id + extension){
 		console.log(file);
 		mediaItem
 	    .attr( 'id', id)
@@ -492,7 +492,7 @@ function displayImage(session, project, id, file, extension){
 	    .end()
 	  ;
 	  $('.medias-list').prepend(mediaItem);
-	}
+	//}
 }
 
 function displayVideo(session, project, id, file){
