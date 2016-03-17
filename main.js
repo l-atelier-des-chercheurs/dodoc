@@ -250,7 +250,7 @@ module.exports = function(app, io){
 	        return fs.statSync(dir + a).mtime.getTime() - fs.statSync(dir + b).mtime.getTime();
 	      })
 			  .forEach( function (file) {
-			  	console.log(file);
+			  	//console.log(file);
 			  	if(fs.statSync(path.join(dir, file)).isDirectory()){
 						if(! /^\..*/.test(file)){
 							var jsonFile = dir + file + '/' +file+'.json';
@@ -666,7 +666,7 @@ module.exports = function(app, io){
 	        return fs.statSync(dir + a).mtime.getTime() - fs.statSync(dir + b).mtime.getTime();
 	      })
 				.forEach(function(f) {
-					console.log(f);
+					//console.log(f);
 					var extension = path.extname(f);
 					var fileName = path.basename(f,extension);
 					var obj = {

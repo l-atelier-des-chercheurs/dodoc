@@ -4,6 +4,8 @@ var fs = require('fs-extra');
 var i18n = require('i18n');
 var path = require("path");
 var fs = require('fs-extra');
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
 
 
 module.exports = function(app,io,m){
@@ -18,6 +20,8 @@ module.exports = function(app,io,m){
   app.get("/:session/:projet/bibliotheque/medias", getBibli);
   app.get("/:session/:projet/bibliotheque/panneau-de-publications", getBibliPubli);
   app.get("/:session/:projet/publication/:publi", getPubli);
+
+  app.post("/:session/:projet/bibliotheque/medias/file-upload", multipartMiddleware, postFile);
 
 
   /**
@@ -128,5 +132,20 @@ module.exports = function(app,io,m){
     var jsonObj = JSON.parse(fs.readFileSync(file, 'utf8'));
     return jsonObj;
   }
+
+  function postFile(req, res) {
+    //console.log(path.extname(req.files.file.name));
+    var date = Date.now();
+    var ext = path.extname(req.files.file.name);
+    var session = req.param('session');
+    var projet = req.param('projet');
+    fs.readFile(req.files.file.path, function (err, data) {
+      var newPath = 'sessions/'+ session + '/' + projet + '/' + date + ext;
+      console.log(newPath);
+      fs.writeFile(newPath, data, function (err) {
+        res.redirect("back");
+      });
+    });
+  };
 
 };
