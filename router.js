@@ -136,12 +136,11 @@ module.exports = function(app,io,m){
     var dir =  'sessions/'+ session + '/' + projet;
     fs.readFile(req.files.file.path, function (err, data) {
       var newPath = 'sessions/'+ session + '/' + projet + '/' + date + ext;
-      console.log(newPath);
+      if(ext == ".webm" || ext == ".ogg" || ext == ".mov" || ext == ".mp4"){
+        createThumnails(newPath, date, dir)
+      }
       fs.writeFile(newPath, data, function (err) {
         res.redirect("back");
-        if(ext == ".webm" || ext == ".ogg" || ext == ".mov" || ext == ".mp4"){
-          createThumnails(newPath, date, dir)
-        }
         io.sockets.emit("newMediaUpload", {path: newPath, fileName: date+ext, ext:ext, id: date});
       });
     });
