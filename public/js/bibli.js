@@ -34,7 +34,7 @@ socket.on('newMediaUpload', function(data){
 	var fileName = data.fileName;
 	var identifiant = data.id;
 	if(extension == ".jpg" || extension == ".gif" || extension == ".png"){
-		displayImage(currentSession, currentProject, identifiant, fileName);
+		displayImage(currentSession, currentProject, identifiant, fileName, extension);
 	}
 	if(extension == ".webm" || extension == ".ogg" || extension == ".mov"){
 		displayVideo(currentSession, currentProject, identifiant, fileName);
@@ -340,7 +340,7 @@ function onListMedias(array, json){
   	//console.log(extension);
 		if(extension == ".jpg" || extension == ".gif" || extension == ".png"){
 			if(array[i].file != currentProject+'-thumb.jpg'){
-				displayImage(currentSession, currentProject, identifiant, array[i].file);
+				displayImage(currentSession, currentProject, identifiant, array[i].file, extension);
 			}
 		}
 		if(extension == ".webm" || extension == ".ogg" || extension == ".mov"){
@@ -478,18 +478,21 @@ function onListMedias(array, json){
 
 }
 
-function displayImage(session, project, id, file){
+function displayImage(session, project, id, file, extension){
 	var imagePath = "../"+ file;
 	var mediaItem = $(".js--templates .media_image").clone(false);
-	mediaItem
-    .attr( 'id', id)
-    .attr( 'data-mediatype', 'image')
-	  .find( '.mediaContent img')
-	    .attr('src', imagePath)
-    .end()
-  ;
-
-	$('.medias-list').prepend(mediaItem);
+	console.log(file, id  + extension);
+	if(file != id + extension){
+		console.log(file);
+		mediaItem
+	    .attr( 'id', id)
+	    .attr( 'data-mediatype', 'image')
+		  .find( '.mediaContent img')
+		    .attr('src', imagePath)
+	    .end()
+	  ;
+	  $('.medias-list').prepend(mediaItem);
+	}
 }
 
 function displayVideo(session, project, id, file){
