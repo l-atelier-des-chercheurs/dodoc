@@ -144,6 +144,7 @@ module.exports = function(app,io,m){
       console.log(newPath);
       fs.writeFile(newPath, data, function (err) {
         res.redirect("back");
+        io.sockets.emit("newMediaUpload", {path: newPath, fileName: date+ext, ext:ext, id: date});
       });
     });
   };
