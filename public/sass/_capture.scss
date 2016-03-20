@@ -102,8 +102,14 @@ body.capture{
     text-align: center;
 
     position: absolute;
-    bottom: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    height: 100px;
+
+    bottom: 0;
     width: 100%;
+
+    overflow: hidden;
 
     &>div{
       button{
@@ -120,13 +126,56 @@ body.capture{
       }
     }
 
-    #capture-btn {
+    .btn.icon {
+
         transform-origin: center center;
-        transition: transform .6s ease-out;
-        body[data-justcaptured="yes"] & {
-          transform: scale( 1.4);
-          transition: transform .2s ease-out;
+        transition: transform .4s ease-out;
+
+        &:hover {
+          transform: scale( 1.1);
+          transition: transform .1s ease-out;
         }
+
+        svg {
+          overflow: visible;
+
+          #FOND {
+
+            transform-origin: center;
+            transform: scale(1);
+            transition: transform .6s ease-out, fill .4s;
+          }
+
+          body:not(.is--fullscreen)[data-justcaptured="yes"] &
+          {
+            #FOND {
+              transform: scale(15);
+              fill: #FF4246;
+              transition: transform .2s ease-out, fill .3s;
+
+            }
+          }
+          body:not(.is--fullscreen)[data-justcaptured="yes"][data-mode="stopmotion"] &
+          {
+            #FOND {
+              fill: $canim;
+            }
+          }
+
+          body:not(.is--fullscreen)[data-videorecording="yes"] &
+          {
+            #FOND {
+              transform: scale(15);
+              fill: #FF4246;
+              transition: transform .2s ease-out, fill .3s;
+            }
+            #CENTRE {
+              fill: $orange;
+            }
+          }
+        }
+
+
     }
 
     .video-capture{
@@ -237,19 +286,23 @@ body.capture{
   .recording-feedback{
     position:absolute;
     z-index: 100;
-    top:20px;
-    left: 30px;
+    top: 10px;
+    left: 10px;
     .record-feedback{
       width:15px;
       height:15px;
-      background-color: red;
+      background-color: $rouge;
       border-radius: 50%;
       display: inline-block;
+      vertical-align: middle;
     }
     .time-feedback {
       display: inline-block;
-      vertical-align: top;
+      vertical-align: middle;
+      margin-bottom: 2px;
       margin-left: 10px;
+      color: #fff;
+      text-shadow: 0px 0px 2px #999;
     }
   }
 }
@@ -289,18 +342,20 @@ body.capture{
     background-color: #FFF;
     display: none;
     position: absolute;
+    top: 0; left: 0;
+    z-index:  150;
 
 
     body[data-mode="photo"] & {
       background-color: $cimages;
     }
-    body[data-mode="video"] {
+    body[data-mode="video"] & {
       background-color: $cvideos;
     }
-    body[data-mode="stopmotion"] {
+    body[data-mode="stopmotion"] & {
       background-color: $canim;
     }
-    body[data-mode="audio"] {
+    body[data-mode="audio"] & {
       background-color: $csons;
     }
   }

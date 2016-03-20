@@ -175,17 +175,16 @@ button{
 
   }
 
-
   &_add, &_edit, &_publi, &_editProjet, &_addMedia, &_backButton, &_editFolder {
     background-color: $rouge;
     color: white;
   }
-  &_capture, &_view, &_deleteFolder, &_deleteMedia {
-    background-color: #FFB520;
+  &_capture, &_view, &_deleteFolder, &_deleteMedia, &_deleteMediaCapture {
+    background-color: $orange;
     color: white;
   }
   &_bibli, &_gofullscreen , &_leavefullscreen {
-    background-color: #293275;
+    background-color: $bleumarine;
     color: white;
   }
   &_accept, &_addText {

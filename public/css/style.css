@@ -7259,7 +7259,7 @@ button {
   .button-wrapper_add, .button-wrapper_edit, .button-wrapper_publi, .button-wrapper_editProjet, .button-wrapper_addMedia, .button-wrapper_backButton, .button-wrapper_editFolder {
     background-color: #EF474B;
     color: white; }
-  .button-wrapper_capture, .button-wrapper_view, .button-wrapper_deleteFolder, .button-wrapper_deleteMedia {
+  .button-wrapper_capture, .button-wrapper_view, .button-wrapper_deleteFolder, .button-wrapper_deleteMedia, .button-wrapper_deleteMediaCapture {
     background-color: #FFB520;
     color: white; }
   .button-wrapper_bibli, .button-wrapper_gofullscreen, .button-wrapper_leavefullscreen {
@@ -8034,8 +8034,12 @@ body.capture .content-wrapper:after {
     z-index: 1000;
     text-align: center;
     position: absolute;
-    bottom: 16px;
-    width: 100%; }
+    padding-top: 16px;
+    padding-bottom: 16px;
+    height: 100px;
+    bottom: 0;
+    width: 100%;
+    overflow: hidden; }
     .captureLeft .btn-capture-wrapper > div button {
       outline: none !important;
       border: none !important;
@@ -8043,12 +8047,30 @@ body.capture .content-wrapper:after {
       margin: auto;
       width: 64px;
       height: 64px; }
-    .captureLeft .btn-capture-wrapper #capture-btn {
+    .captureLeft .btn-capture-wrapper .btn.icon {
       transform-origin: center center;
-      transition: transform .6s ease-out; }
-      body[data-justcaptured="yes"] .captureLeft .btn-capture-wrapper #capture-btn {
-        transform: scale(1.4);
-        transition: transform .2s ease-out; }
+      transition: transform .4s ease-out; }
+      .captureLeft .btn-capture-wrapper .btn.icon:hover {
+        transform: scale(1.1);
+        transition: transform .1s ease-out; }
+      .captureLeft .btn-capture-wrapper .btn.icon svg {
+        overflow: visible; }
+        .captureLeft .btn-capture-wrapper .btn.icon svg #FOND {
+          transform-origin: center;
+          transform: scale(1);
+          transition: transform .6s ease-out, fill .4s; }
+        body:not(.is--fullscreen)[data-justcaptured="yes"] .captureLeft .btn-capture-wrapper .btn.icon svg #FOND {
+          transform: scale(15);
+          fill: #FF4246;
+          transition: transform .2s ease-out, fill .3s; }
+        body:not(.is--fullscreen)[data-justcaptured="yes"][data-mode="stopmotion"] .captureLeft .btn-capture-wrapper .btn.icon svg #FOND {
+          fill: #48c2b5; }
+        body:not(.is--fullscreen)[data-videorecording="yes"] .captureLeft .btn-capture-wrapper .btn.icon svg #FOND {
+          transform: scale(15);
+          fill: #FF4246;
+          transition: transform .2s ease-out, fill .3s; }
+        body:not(.is--fullscreen)[data-videorecording="yes"] .captureLeft .btn-capture-wrapper .btn.icon svg #CENTRE {
+          fill: #FFB520; }
     .captureLeft .btn-capture-wrapper .video-capture .video-save #stop-record-btn {
       display: none; }
     .captureLeft .btn-capture-wrapper .stopmotion-capture button {
@@ -8110,18 +8132,22 @@ body.capture .content-wrapper:after {
   .captureLeft .recording-feedback {
     position: absolute;
     z-index: 100;
-    top: 20px;
-    left: 30px; }
+    top: 10px;
+    left: 10px; }
     .captureLeft .recording-feedback .record-feedback {
       width: 15px;
       height: 15px;
-      background-color: red;
+      background-color: #EF474B;
       border-radius: 50%;
-      display: inline-block; }
+      display: inline-block;
+      vertical-align: middle; }
     .captureLeft .recording-feedback .time-feedback {
       display: inline-block;
-      vertical-align: top;
-      margin-left: 10px; }
+      vertical-align: middle;
+      margin-bottom: 2px;
+      margin-left: 10px;
+      color: #fff;
+      text-shadow: 0px 0px 2px #999; }
 
 .icone-feedback {
   position: absolute;
@@ -8151,14 +8177,17 @@ body.capture .content-wrapper:after {
     height: 100%;
     background-color: #FFF;
     display: none;
-    position: absolute; }
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 150; }
     body[data-mode="photo"] .captureRight .flash {
       background-color: #ffb520; }
-    .captureRight .flash body[data-mode="video"] {
+    body[data-mode="video"] .captureRight .flash {
       background-color: #fe414d; }
-    .captureRight .flash body[data-mode="stopmotion"] {
+    body[data-mode="stopmotion"] .captureRight .flash {
       background-color: #48c2b5; }
-    .captureRight .flash body[data-mode="audio"] {
+    body[data-mode="audio"] .captureRight .flash {
       background-color: #09227c; }
   .captureRight .screenshot {
     margin: 0px auto 0px auto; }
