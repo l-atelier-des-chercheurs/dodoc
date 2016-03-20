@@ -7277,7 +7277,7 @@ button {
     .button-wrapper.button-wrapper_collapsed + .button-wrapper.button-wrapper_collapsed {
       margin-left: 0; }
     .button-wrapper.button-wrapper_collapsed:not(:hover) {
-      width: 44px;
+      width: 40px;
       color: transparent;
       background-color: transparent; }
     .button-wrapper.button-wrapper_collapsed .btn.icon + span {
@@ -7306,8 +7306,8 @@ button {
   height: 42px;
   border-radius: 50%;
   cursor: pointer;
-  transition: all .2s ease-out; }
-  .btn.icon:hover, .btn.icon:hover {
+  transition: all .4s ease-out; }
+  .btn.icon:hover {
     border-radius: 20%; }
   .btn.icon svg {
     width: 100%;
@@ -8095,8 +8095,16 @@ body.capture .content-wrapper:after {
     position: absolute;
     top: 0;
     right: 0; }
-  body.is--fullscreen .captureLeft .button-wrapper_gofullscreen {
-    display: none; }
+  .captureLeft .button-wrapper_gofullscreen .btn.icon, .captureLeft .button-wrapper_leavefullscreen .btn.icon {
+    border: 4px solid #EFEFEF;
+    padding: 0; }
+  .captureLeft .button-wrapper_gofullscreen:hover .btn.icon, .captureLeft .button-wrapper_leavefullscreen:hover .btn.icon {
+    border: 0px solid transparent !important; }
+  .captureLeft .button-wrapper_gofullscreen {
+    margin-right: -20px;
+    margin-top: -20px; }
+    body.is--fullscreen .captureLeft .button-wrapper_gofullscreen {
+      display: none; }
   body:not([class*=is--fullscreen]) .captureLeft .button-wrapper_leavefullscreen {
     display: none; }
   .captureLeft .recording-feedback {

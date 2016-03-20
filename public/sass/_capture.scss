@@ -203,7 +203,26 @@ body.capture{
     right: 0;
   }
 
+  .button-wrapper_gofullscreen, .button-wrapper_leavefullscreen {
+
+    .btn.icon {
+      border: 4px solid #EFEFEF;
+      padding: 0;
+
+    }
+    &:hover {
+      .btn.icon {
+        border: 0px solid transparent !important;
+      }
+    }
+
+  }
+
   .button-wrapper_gofullscreen {
+
+    margin-right: -20px;
+    margin-top: -20px;
+
     body.is--fullscreen & {
       display: none;
     }
