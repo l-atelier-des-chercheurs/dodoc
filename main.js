@@ -69,7 +69,7 @@ module.exports = function(app, io){
 		socket.on("modifyText", onModifiedText);
 		socket.on("newImageLocal", onNewImage);
 		socket.on("addMediaData", onMediaLegende);
-		socket.on("highlightMedia", onHighLightMedia);
+		socket.on("highlightMedia", onHighLighMedia);
 		socket.on("removeHighlight", onRemoveHighlight);
 		socket.on("deleteFileBibli", onDeleteFileBibli);
 
@@ -250,7 +250,7 @@ module.exports = function(app, io){
 	        return fs.statSync(dir + a).mtime.getTime() - fs.statSync(dir + b).mtime.getTime();
 	      })
 			  .forEach( function (file) {
-			  	console.log(file);
+			  	//console.log(file);
 			  	if(fs.statSync(path.join(dir, file)).isDirectory()){
 						if(! /^\..*/.test(file)){
 							var jsonFile = dir + file + '/' +file+'.json';
@@ -666,6 +666,7 @@ module.exports = function(app, io){
 	        return fs.statSync(dir + a).mtime.getTime() - fs.statSync(dir + b).mtime.getTime();
 	      })
 				.forEach(function(f) {
+					//console.log(f);
 					var extension = path.extname(f);
 					var fileName = path.basename(f,extension);
 					var obj = {
@@ -842,6 +843,7 @@ module.exports = function(app, io){
 
 		function onModifiedText(text){
 			var txtFile = 'sessions/' + text.session + '/'+ text.project+"/" +text.id+'.txt';
+			console.log(text);
 			fs.writeFile(txtFile, '### '+text.title+"\r\n"+text.text, function(err){
 				if(err) {
 	        console.log(err);
@@ -932,11 +934,13 @@ module.exports = function(app, io){
 			}
 		}
 
-		function onHighLightMedia(data){
+		function onHighLighMedia(data){
 			var jsonFile = 'sessions/' + data.session + '/'+ data.project+"/" +data.project+'.json';
 			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
 			var jsonObj = JSON.parse(jsonData);
 			var id = data.id;
+
+
 
 			var type;
 			if(data.type == 'image'){
@@ -955,13 +959,13 @@ module.exports = function(app, io){
 			if(data.type == 'text'){
 				for (var i = 0; i < jsonObj['files']['texte'].length; i++){
 				  if (jsonObj['files']['texte'][i].id == id){
-				  	jsonObj['files']['texte'][i]['hightlight'] = true;
+				  	jsonObj['files']['texte'][i]['highlight'] = true;
 				  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
 				      if(err) {
 				          console.log(err);
 				      } else {
 				        console.log("The file was saved!");
-				        io.sockets.emit("addHightlight", {id:id, hightlight:true});
+				        io.sockets.emit("addHighlight", {id:id, highlight:true});
 				      }
 			    	});
 				  }
@@ -970,13 +974,13 @@ module.exports = function(app, io){
 			else{
 				for (var i = 0; i < jsonObj['files'][type].length; i++){
 				  if (jsonObj['files'][type][i].name == id){
-				  	jsonObj['files'][type][i]['hightlight'] = true;
+				  	jsonObj['files'][type][i]['highlight'] = true;
 				  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
 				      if(err) {
 				          console.log(err);
 				      } else {
 				        console.log("The file was saved!");
-				        io.sockets.emit("addHightlight", {id:id, hightlight:true});
+				        io.sockets.emit("addHighlight", {id:id, highlight:true});
 				      }
 			    	});
 				  }
@@ -1007,13 +1011,13 @@ module.exports = function(app, io){
 			if(data.type == 'text'){
 				for (var i = 0; i < jsonObj['files']['texte'].length; i++){
 				  if (jsonObj['files']['texte'][i].id == id){
-				  	jsonObj['files']['texte'][i]['hightlight'] = false;
+				  	jsonObj['files']['texte'][i]['highlight'] = false;
 				  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
 				      if(err) {
 				          console.log(err);
 				      } else {
 				        console.log("The file was saved!");
-				        io.sockets.emit("addHightlight", {id:id, hightlight:false});
+				        io.sockets.emit("addHighlight", {id:id, highlight:false});
 				      }
 			    	});
 				  }
@@ -1022,13 +1026,13 @@ module.exports = function(app, io){
 			else{
 				for (var i = 0; i < jsonObj['files'][type].length; i++){
 				  if (jsonObj['files'][type][i].name == id){
-				  	jsonObj['files'][type][i]['hightlight'] = false;
+				  	jsonObj['files'][type][i]['highlight'] = false;
 				  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
 				      if(err) {
 				        console.log(err);
 				      } else {
 				        console.log("The file was saved!");
-				        io.sockets.emit("addHightlight", {id:id, hightlight:false});
+				        io.sockets.emit("addHighlight", {id:id, highlight:false});
 				      }
 			    	});
 				  }

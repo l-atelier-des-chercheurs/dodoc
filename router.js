@@ -1,9 +1,11 @@
 var _ = require("underscore");
 var url = require('url')
 var fs = require('fs-extra');
-var i18n = require('i18n');
 var path = require("path");
 var fs = require('fs-extra');
+var ffmpeg = require('fluent-ffmpeg');
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
 
 
 module.exports = function(app,io,m){
@@ -18,6 +20,8 @@ module.exports = function(app,io,m){
   app.get("/:session/:projet/bibliotheque/medias", getBibli);
   app.get("/:session/:projet/bibliotheque/panneau-de-publications", getBibliPubli);
   app.get("/:session/:projet/publication/:publi", getPubli);
+
+  app.post("/:session/:projet/bibliotheque/medias/file-upload", multipartMiddleware, postFile);
 
 
   /**
@@ -124,9 +128,41 @@ module.exports = function(app,io,m){
     });
   };
 
+  function postFile(req, res) {
+    var date = Date.now();
+    var ext = path.extname(req.files.file.name);
+    var session = req.param('session');
+    var projet = req.param('projet');
+    var dir =  'sessions/'+ session + '/' + projet;
+    fs.readFile(req.files.file.path, function (err, data) {
+      var newPath = 'sessions/'+ session + '/' + projet + '/' + date + ext;
+      if(ext == ".webm" || ext == ".ogg" || ext == ".mov" || ext == ".mp4"){
+        createThumnails(newPath, date, dir)
+      }
+      fs.writeFile(newPath, data, function (err) {
+        res.redirect("back");
+        io.sockets.emit("newMediaUpload", {path: newPath, fileName: date+ext, ext:ext, id: date});
+      });
+    });
+  };
+
+
   function readJsonFile(file){
     var jsonObj = JSON.parse(fs.readFileSync(file, 'utf8'));
     return jsonObj;
+  }
+
+  function createThumnails(path, fileName, dir){
+    var proc = ffmpeg(path)
+    // setup event handlers
+    .on('end', function(files) {
+      console.log('screenshots were saved as ' + fileName + "-thumb.png");
+    })
+    .on('error', function(err) {
+      console.log('an error happened: ' + err.message);
+    })
+    // take 2 screenshots at predefined timemarks
+    .takeScreenshots({ count: 1, timemarks: [ '00:00:01'], filename: fileName + "-thumb.png"}, dir);
   }
 
 };

@@ -57,6 +57,7 @@ function init(){
   $(".choices").hide();
   $(".image-choice").show();
   $("body").attr("data-mode", "photo");
+  $(".photo-capture ").hide();
   photoDisplay();
 
   setTimeout(function(){
@@ -65,8 +66,17 @@ function init(){
 
   $("#canvas-equalizer").hide();
 
-	//on media changing
-	changeMedia();
+	//Quand on change de media
+    // au click
+    $('.btn-choice button').on('click', function(){
+      changeMediaClick($(this));
+    });
+    // au boîtier avec les boutons
+    $("body").keypress(function(e){
+      changeMediaBoitier(e);
+    });
+
+
 	displayVideoStream();
 
 	//recording medias events
@@ -102,18 +112,7 @@ function init(){
     }
     if($("#stopmotion").hasClass('active')){
       //redémarre le stop motion quand un autre média est choisi au milieu du stop motion
-      isEventExecutedSM = false;
-      if(code == 115 || code == 122){
-        console.log(isEventExecutedSM);
-        if(isEventExecutedSM == false){
-          isEventExecutedSM = true;
-          $("#stop-sm-btn").hide();
-          $("#start-sm-btn").show();
-          $("#capture-sm-btn").hide();
-          $('.screenshot .meta-stopmotion').remove();
-        }
-      }
-      if(code == 113) { //When Space is pressed
+      if(code == 113) { //When Q is pressed
         countPress ++;
         if(countPress == 1){
           console.log("start a stopmotion");
@@ -136,34 +135,20 @@ function init(){
 	});
 
   //redémarre le stop motion quand un autre média est choisi au milieu du stop motion
-  var isEventExecutedSM = false;
-  $("#stopmotion").click(function(){
-    isEventExecutedSM = false;
-    $(".btn-choice button").click(function(){
-      // $('#modal-change-alert').foundation('reveal', 'open');
-      if(isEventExecutedSM == false){
-        isEventExecutedSM = true;
-        $("#stop-sm-btn").hide();
-        $("#start-sm-btn").show();
-        $("#capture-sm-btn").hide();
-        $('.screenshot .meta-stopmotion').remove();
-      }
-    });
-    // $('#modal-change-alert button.oui').on('click', function(){
-    //   if(isEventExecutedSM == false){
-    //     isEventExecutedSM = true;
-    //     $("#stop-sm-btn").hide();
-    //     $("#start-sm-btn").show();
-    //     $("#capture-sm-btn").hide();
-    //     $('.screenshot .meta-stopmotion').remove();
-    //   }
-    //   $('#modal-change-alert').foundation('reveal', 'close');
-    // });
-    // $('#modal-change-alert button.annuler').on('click', function(){
-    //   console.log('annuler');
-    //   $('#modal-change-alert').foundation('reveal', 'close');
-    // });
-  });
+  // var isEventExecutedSM = false;
+  // $("#stopmotion").click(function(){
+  //   isEventExecutedSM = false;
+  //   $(".btn-choice button").click(function(){
+  //     // $('#modal-change-alert').foundation('reveal', 'open');
+  //     if(isEventExecutedSM == false){
+  //       isEventExecutedSM = true;
+  //       $("#stop-sm-btn").hide();
+  //       $("#start-sm-btn").show();
+  //       $("#capture-sm-btn").hide();
+  //       $('.screenshot .meta-stopmotion').remove();
+  //     }
+  //   });
+  // });
 
   // delete file
   $("a.js--delete-media-capture").on("click", function(e){
@@ -177,92 +162,149 @@ function init(){
 
   fullscreen();
 
+  // Events sur la fenêtre modal d'alerte de changement de mode stop motion
+  $('#modal-change-alert button.ok').on('click', function(){
+    $("#stop-sm-btn").show();
+    $("#start-sm-btn").hide(); $("#capture-sm-btn").show();
+    $('.screenshot .canvas-view').show();
+    $(".screenshot .meta-stopmotion").remove();
+    $(".screenshot").append("<div class='meta-stopmotion'><div class='delete-image'><img src='/images/clear.svg'></div><p class='count-image'></p></div>");
+    $(".screenshot .meta-stopmotion").show();
+    $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
+  });
+
+  $('#modal-change-alert .supprimer-stop-motion').on('click', function(){
+    var thisId = $(this).attr('data-choice');
+    countPress = 0;
+    $("#stop-sm-btn").hide();
+    $("#start-sm-btn").show();
+    $("#capture-sm-btn").hide();
+    $('.screenshot .meta-stopmotion').remove();
+    $('#modal-change-alert').foundation('reveal', 'close');
+    $(".btn-choice button").removeClass('active');
+    $('#'+thisId).addClass('active');
+    $('body').removeClass('takingstopmotion');
+
+    switch(thisId){
+      case 'photo':
+        photoDisplay();
+        break;
+      case 'video-btn':
+        videoDisplay();
+        break;
+      case 'stopmotion':
+        stopMotionDisplay();
+        break;
+      case 'audio':
+        audioDisplay();
+        break;
+    }
+    backAnimation();
+  });
 }
 
-function changeMedia(){
-  $(".btn-choice #photo").on("click", function(){
-    photoDisplay();
-    $(".btn-choice button").removeClass('active');
-    $(this).addClass("active");
-    $('body').attr('data-mode', 'photo');
-  });
-  $(".btn-choice #video-btn").on("click", function(){
-    videoDisplay();
-    $(".btn-choice button").removeClass('active');
-    $(this).addClass("active");
-    $('body').attr('data-mode', 'video');
-  });
-  $(".btn-choice #stopmotion").on("click", function(){
-    stopMotionDisplay();
-    $(".btn-choice button").removeClass('active');
-    $(this).addClass("active");
-    $('body').attr('data-mode', 'stopmotion');
-  });
-  $(".btn-choice #audio").on("click", function(){
-    audioDisplay();
-    $(".btn-choice button").removeClass('active');
-    $(this).addClass("active");
-    $('body').attr('data-mode', 'audio');
-  });
+function changeMediaClick($this){
+  var thisId = $this.attr('id');
 
-  //Animation back when changing media
-  if(!$("#stopmotion").hasClass('active')){
-    console.log('stop motion');
-    $(".btn-choice").on('click', backAnimation);
+  if($('body').hasClass('takingstopmotion')){
+    $('#modal-change-alert').foundation('reveal', 'open');
+    $('#modal-change-alert .supprimer-stop-motion').attr('data-choice', thisId);
   }
+
   else{
-    $(".btn-choice").off('click');
+     console.log('you can change mode');
+    $(".btn-choice button").removeClass('active');
+    $this.addClass('active');
+    $('body').removeClass('takingstopmotion');
+
+    switch(thisId){
+      case 'photo':
+        photoDisplay();
+        break;
+      case 'video-btn':
+        videoDisplay();
+        break;
+      case 'stopmotion':
+        stopMotionDisplay();
+        break;
+      case 'audio':
+        audioDisplay();
+        break;
+    }
+    backAnimation();
   }
-
-  $("body").keypress(function(e){
-    var code = e.keyCode || e.which;
-    var $activeButton = $(".btn-choice").find('.active');
-      if(code == 115) { // Z keypress
-        var $nextButton = $activeButton.next();
-        $activeButton.removeClass('active');
-        if ($nextButton.length){
-          $nextButton.addClass('active');
-        }
-        else{
-          $nextButton = $(".btn-choice button").first().addClass('active');
-        }
-      }
-      if(code == 122) { // S keypress
-        var $prevButton = $activeButton.prev();
-        $activeButton.removeClass('active');
-        if ($prevButton.length){
-          $prevButton.addClass('active');
-        }
-        else{
-          $prevButton = $(".btn-choice button").last().addClass('active');
-          $activeButton.removeClass('active');
-        }
-      }
-      if(code == 115 || code == 122){
-        if($('.screenshot .count-image')){
-          $('.screenshot .count-image').remove();
-        }
-        backAnimation();
-
-        if($("#photo").hasClass('active')){
-          photoDisplay();
-        }
-        if($("#video-btn").hasClass('active')){
-          videoDisplay();
-        }
-        if($("#stopmotion").hasClass('active')){
-          stopMotionDisplay();
-        }
-        if($("#audio").hasClass('active')){
-          audioDisplay();
-        }
-      }
-  });
 }
+
+function changeMediaBoitier(e){
+  var code = e.keyCode || e.which;
+  var $activeButton = $(".btn-choice").find('.active');
+  var thisId;
+
+  if($('body').hasClass('takingstopmotion') && (code == 115 || code == 122)){
+    if(code == 115){
+      var $nextButton = $activeButton.next();
+      thisId = $nextButton.attr('id');
+    }
+
+    if(code == 122){
+      var $prevButton = $activeButton.prev();
+      thisId = $prevButton.attr('id');
+    }
+    $('#modal-change-alert').foundation('reveal', 'open');
+    $('#modal-change-alert .supprimer-stop-motion').attr('data-choice', thisId);
+  }
+  
+  else{
+    if(code == 115) { // Z keypress
+      var $nextButton = $activeButton.next();
+      $activeButton.removeClass('active');
+      if ($nextButton.length){
+        $nextButton.addClass('active');
+      }
+      else{
+        $nextButton = $(".btn-choice button").first().addClass('active');
+      }
+    }
+    if(code == 122) { // S keypress
+      var $prevButton = $activeButton.prev();
+      $activeButton.removeClass('active');
+      if ($prevButton.length){
+        $prevButton.addClass('active');
+      }
+      else{
+        $prevButton = $(".btn-choice button").last().addClass('active');
+        $activeButton.removeClass('active');
+      }
+    }
+    if(code == 115 || code == 122){
+      if($('.screenshot .count-image')){
+        $('.screenshot .count-image').remove();
+      }
+      backAnimation();
+
+      if($("#photo").hasClass('active')){
+        photoDisplay();
+      }
+      if($("#video-btn").hasClass('active')){
+        videoDisplay();
+      }
+      if($("#stopmotion").hasClass('active')){
+        stopMotionDisplay();
+      }
+      if($("#audio").hasClass('active')){
+        audioDisplay();
+      }
+    }
+  }
+}
+
 function photoDisplay(){
   $('.screenshot .canvas-view').show();
   $('.screenshot video').hide();
-  $('.photo-capture').show();
+  $('.js--delete-media-capture').show();
+  // setTimeout(function(){
+  $('.photo-capture').fadeIn(2000);
+  // },1000);
   $('.video-capture').hide();
   $('.stopmotion-capture').hide();
   $('.audio-capture').hide();
@@ -277,7 +319,10 @@ function photoDisplay(){
 }
 function videoDisplay(){
   $('.photo-capture').css('display', 'none');
-  $('.video-capture').css('display','block');
+  $('.js--delete-media-capture').show();
+  //setTimeout(function(){
+    $('.video-capture').fadeIn(2000);
+  //},1000);
   $('.stopmotion-capture').css('display','none');
   $('.audio-capture').css('display','none');
   $(".son").css("display", "none");
@@ -294,7 +339,9 @@ function stopMotionDisplay(){
   $('.screenshot #camera-preview').hide();
   $('.photo-capture').css('display', 'none');
   $('.video-capture').css('display','none');
-  $('.stopmotion-capture').css('display','block');
+  //setTimeout(function(){
+    $('.stopmotion-capture').fadeIn(2000);
+  //}, 1000);
   $('.audio-capture').css('display','none');
   $(".son").css("display", "none");
   $('#video').show();
@@ -308,10 +355,13 @@ function stopMotionDisplay(){
 }
 function audioDisplay(){
   $('.screenshot #camera-preview').hide();
+  $('.js--delete-media-capture').show();
   $('.photo-capture').css('display', 'none');
   $('.video-capture').css('display','none');
   $('.stopmotion-capture').css('display','none');
-  $('.audio-capture').css('display','block');
+  //setTimeout(function(){
+    $('.audio-capture').fadeIn(2000);
+  //}, 1000);
   $('.screenshot #canvas').css('display', 'none');
   $('.captureRight .son').css('display', 'block');
   $('#video').hide();
@@ -324,7 +374,7 @@ function audioDisplay(){
 }
 
 function displayVideoStream(){
-// Initialise getUserMedia
+  // Initialise getUserMedia
   navigator.getUserMedia = ( navigator.getUserMedia ||
                          navigator.webkitGetUserMedia ||
                          navigator.mozGetUserMedia ||
@@ -352,7 +402,6 @@ function displayVideoStream(){
     .then(function(){
       var deviceChoiceId;
       if(mediaDevices.length < 2){
-        console.log('test');
         deviceChoiceId = mediaDevices[0].deviceId;
         //$('.container-inner').prepend("<h2>"+mediaDevices[0].label+"</h2>");
       }
@@ -422,7 +471,6 @@ function displayVideoStream(){
 
 // Fonction qui prend les photos
 function takePictures(){
-  console.log('test');
   canvas.width = width;
   canvas.height = height;
   canvas.getContext('2d').drawImage(video, 0, 0, width, height);
@@ -445,7 +493,6 @@ function takePictures(){
 
 // Function qui enregistre de la vidéo
 function recordingVideo(click){
-  console.log('test');
   var startVideoRecording = document.getElementById('start-record-btn');
   var stopVideoRecording = document.getElementById('stop-record-btn');
   var cameraPreview = document.getElementById('camera-preview');
@@ -569,6 +616,7 @@ function recordingVideo(click){
   }
 
   function stopVideo(){
+    $('.video-capture').hide();
     startVideoRecording.disabled = false;
     stopVideoRecording.disabled = true;
     startVideoRecording.style.display = "block";
@@ -603,6 +651,7 @@ function recordingVideo(click){
     cameraPreview.play();
     cameraPreview.muted = false;
     cameraPreview.controls = true;
+    $('.video-capture').fadeIn(1000);
   });
 }
 
@@ -612,6 +661,7 @@ function startStopMotion(){
   countImage = 0;
   console.log('start stop-motion');
   $("#start-sm-btn").hide(); $("#capture-sm-btn").show(); $("#stop-sm-btn").hide();
+  $('.js--delete-media-capture').hide();
   $('.screenshot .canvas-view').hide(); $('#camera-preview').hide();
 
   var iconeSM = '<div class="icone-stopmotion"><img src="/images/stopmotion.svg"></div>';
@@ -647,6 +697,7 @@ function takepictureMotion(dir) {
   });
   socket.emit('imageMotion', {data: data, dir: dir, count: countImage});
   $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
+  $('body').addClass('takingstopmotion');
 }
 
 function removeImageMotion(data, dir){
@@ -670,7 +721,6 @@ function removeImageMotion(data, dir){
 function stopStopMotion(){
   var dir = "sessions/" + currentSession + "/"+ currentProject+"/01-stopmotion";
   $("#stop-sm-btn").hide();
-  $("#start-sm-btn").show();
   $("#capture-sm-btn").hide();
   countImage = 0;
   countPress = 0;
@@ -682,8 +732,11 @@ function stopStopMotion(){
     $('.screenshot .canvas-view').hide();
     $('#camera-preview').attr('src', '/' + currentSession + '/'+'/'+currentProject+'/'+req.fileName+'')
     $('#camera-preview').show();
+    $("#start-sm-btn").show();
+    $('.js--delete-media-capture').show();
   });
   canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  $('body').removeClass('takingstopmotion');
 }
 
 //Capture le flux audio

@@ -25,9 +25,27 @@ socket.on('publiCreated', onPubliCreated);
 socket.on('displayMontage', onDisplayMontage);
 socket.on('titleModified', onTitleModified);
 socket.on('displayMediaData', onMediaData);
-socket.on('addHightlight', onHightlight);
+socket.on('addHighlight', onHighlight);
 socket.on('bibliFileDeleted', onFileDeleted)
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
+
+socket.on('newMediaUpload', function(data){
+	var extension = data.ext;
+	var fileName = data.fileName;
+	var identifiant = data.id;
+	if(extension == ".jpg" || extension == ".gif" || extension == ".png"){
+		displayImage(currentSession, currentProject, identifiant, fileName, extension);
+	}
+	if(extension == ".webm" || extension == ".ogg" || extension == ".mov"){
+		displayVideo(currentSession, currentProject, identifiant, fileName);
+	}
+	if(extension == ".mp4"){
+		displayStopMotion(currentSession, currentProject, identifiant, fileName);
+	}
+	if(extension == ".wav" || extension == ".mp3" || extension == ".amr" || extension == ".m4a"){
+		displayAudio(currentSession, currentProject, identifiant, fileName);
+	}
+});
 
 jQuery(document).ready(function($) {
 	$(document).foundation();
@@ -105,22 +123,22 @@ function init(){
   });
 
   //Ajouter un fichier local dans la bibliothèque
-  $('.js--submit-new-local').on('click', function(){
-  	console.log('submit new local');
-  	if(imageData != null){
-			console.log('Une image a été ajoutée');
-			var f = imageData[0];
-			var reader = new FileReader();
-			reader.onload = function(evt){
-				socket.emit('newImageLocal', {session: currentSession, project: currentProject, data:evt.target.result});
-			};
-			reader.readAsDataURL(f);
-		}
-		else{
-			console.log("Pas d'image chargé");
-			$('#modal-add-local').foundation('reveal', 'close');
-		}
-  });
+  // $('.js--submit-new-local').on('click', function(){
+  // 	console.log('submit new local');
+  // 	if(imageData != null){
+		// 	console.log('Une image a été ajoutée');
+		// 	var f = imageData[0];
+		// 	var reader = new FileReader();
+		// 	reader.onload = function(evt){
+		// 		socket.emit('newImageLocal', {session: currentSession, project: currentProject, data:evt.target.result});
+		// 	};
+		// 	reader.readAsDataURL(f);
+		// }
+		// else{
+		// 	console.log("Pas d'image chargé");
+		// 	$('#modal-add-local').foundation('reveal', 'close');
+		// }
+  // });
 
   // si en arrivant sur la page, il y a un hash dans l'url
   // alors ouvrir la publication qui a ce nom directement
@@ -136,8 +154,9 @@ function init(){
   //Submit new text modified
   $('body').on('click', '.js--submit-view-text-modify', function(){
   	var textTitle = $(this).parent('form').find('.view-text-title-modify').val();
-  	var text = $(this).parent('form').find('textarea').val();
+  	var text = $(this).parent('form').find('.view-text-modify').val();
   	var id = $(this).parents('.media-big_text').attr('data-id');
+
   	socket.emit('modifyText', {session: currentSession, project: currentProject, title: textTitle, text:text, id:id});
   });
 
@@ -150,34 +169,34 @@ function init(){
   	socket.emit('addMediaData', {session: currentSession, project: currentProject, title: mediaTitle, legend:mediaLegende, id:id, type:type});
   });
 
-  // Ajoute ou enlève un hightlight quand on clique sur "Highlight" dans la fenêtre modal
+  // Ajoute ou enlève un highlight quand on clique sur "Highlight" dans la fenêtre modal
   $('body').on('click', '.js--highlightMedia', function(){
 		var id = $(this).parents('.media-big').attr('id');
 		var type = $(this).parents('.media-big').attr('data-type');
 		//console.log(type);
 		if($(this).parents('.media-big').hasClass('is--highlight')){
-			console.log('remove hightlight');
+			console.log('remove highlight');
 			socket.emit('removeHighlight', {session: currentSession, project: currentProject, id:id, type:type});
 		}
 		else{
-			console.log('add hightlight');
+			console.log('add highlight');
 			socket.emit('highlightMedia', {session: currentSession, project: currentProject, id:id, type:type});
 		}
 
   });
 
- // Ajoute ou enlève un hightlight quand on clique sur le drapeau dans les médias
+ // Ajoute ou enlève un highlight quand on clique sur le drapeau dans les médias
   $('body').on('click', '.js--flagMedia', function(e){
   	e.stopPropagation();
 		var id = $(this).parents('li').attr('id');
 		var type = $(this).parents('li').attr('data-type');
 		//console.log(type);
 		if($(this).parents('li').hasClass('is--highlight')){
-			console.log('remove hightlight');
+			console.log('remove highlight');
 			socket.emit('removeHighlight', {session: currentSession, project: currentProject, id:id, type:type});
 		}
 		else{
-			console.log('add hightlight');
+			console.log('add highlight - flag');
 			socket.emit('highlightMedia', {session: currentSession, project: currentProject, id:id, type:type});
 		}
 
@@ -297,14 +316,14 @@ function displayModifiedText(text){
 function onListMedias(array, json){
 	$(".mediaContainer li").remove();
 	var matchID = $(".mediaContainer .media").attr("id");
-	array.sort(function(a, b){
-    var keyA = new Date(a.id),
-        keyB = new Date(b.id);
-    // Compare the 2 dates
-    if(keyA < keyB) return -1;
-    if(keyA > keyB) return 1;
-    return 0;
-	});
+	// array.sort(function(a, b){
+ //    var keyA = new Date(a.id),
+ //        keyB = new Date(b.id);
+ //    // Compare the 2 dates
+ //    if(keyA < keyB) return -1;
+ //    if(keyA > keyB) return 1;
+ //    return 0;
+	// });
 
 /*
       Penser à nettoyer tout ça :
@@ -318,18 +337,19 @@ function onListMedias(array, json){
 	for (var i = 0; i < array.length; i++) {
   	var extension = array[i].extension;
   	var identifiant =  array[i].id;
-		if(extension == ".jpg"){
+  	//console.log(extension);
+		if(extension == ".jpg" || extension == ".gif" || extension == ".png"){
 			if(array[i].file != currentProject+'-thumb.jpg'){
-				displayImage(currentSession, currentProject, identifiant, array[i].file);
+				displayImage(currentSession, currentProject, identifiant, array[i].file, extension);
 			}
 		}
-		if(extension == ".webm"){
+		if(extension == ".webm" || extension == ".ogg" || extension == ".mov"){
 			displayVideo(currentSession, currentProject, identifiant, array[i].file);
 		}
 		if(extension == ".mp4"){
 			displayStopMotion(currentSession, currentProject, identifiant, array[i].file);
 		}
-		if(extension == ".wav"){
+		if(extension == ".wav" || extension == ".mp3" || extension == ".amr" || extension == ".m4a"){
 			displayAudio(currentSession, currentProject, identifiant, array[i].file);
 		}
 		if(extension == ".txt"){
@@ -350,14 +370,14 @@ function onListMedias(array, json){
 			.end()
 			.find('.mediaData .mediaData--legende').html(legende);
 
-    if( title === undefined && legende === undefined) {
-  	  $('#'+json['files']['images'][i].name)
-  	    .find('.mediaData')
-  	      .remove()
-  	  ;
-    }
+    // if( title === undefined && legende === undefined) {
+  	 //  $('#'+json['files']['images'][i].name)
+  	 //    .find('.mediaData')
+  	 //      .remove()
+  	 //  ;
+    // }
 
-		if(json['files']['images'][i].hightlight == true){
+		if(json['files']['images'][i].highlight == true){
 			$('#'+json['files']['images'][i].name).addClass('is--highlight');
 		}
 
@@ -372,14 +392,14 @@ function onListMedias(array, json){
 			.end()
 			.find('.mediaData .mediaData--legende').html(legende);
 
-    if( title === undefined && legende === undefined) {
-  	  $('#'+json['files']['videos'][i].name)
-  	    .find('.mediaData')
-  	      .remove()
-  	  ;
-    }
+    // if( title === undefined && legende === undefined) {
+  	 //  $('#'+json['files']['videos'][i].name)
+  	 //    .find('.mediaData')
+  	 //      .remove()
+  	 //  ;
+    // }
 
-		if(json['files']['videos'][i].hightlight == true){
+		if(json['files']['videos'][i].highlight == true){
 			$('#'+json['files']['videos'][i].name).addClass('is--highlight');
 		}
 	}
@@ -393,14 +413,14 @@ function onListMedias(array, json){
 			.end()
 			.find('.mediaData .mediaData--legende').html(legende);
 
-    if( title === undefined && legende === undefined) {
-  	  $('#'+json['files']['stopmotion'][i].name)
-  	    .find('.mediaData')
-  	      .remove()
-  	  ;
-    }
+    // if( title === undefined && legende === undefined) {
+  	 //  $('#'+json['files']['stopmotion'][i].name)
+  	 //    .find('.mediaData')
+  	 //      .remove()
+  	 //  ;
+    // }
 
-		if(json['files']['stopmotion'][i].hightlight == true){
+		if(json['files']['stopmotion'][i].highlight == true){
 			$('#'+json['files']['stopmotion'][i].name).addClass('is--highlight');
 		}
 	}
@@ -414,14 +434,14 @@ function onListMedias(array, json){
 			.end()
 			.find('.mediaData .mediaData--legende').html(legende);
 
-    if( title === undefined && legende === undefined) {
-  	  $('#'+json['files']['audio'][i].id)
-  	    .find('.mediaData')
-  	      .remove()
-  	  ;
-    }
+    // if( title === undefined && legende === undefined) {
+  	 //  $('#'+json['files']['audio'][i].id)
+  	 //    .find('.mediaData')
+  	 //      .remove()
+  	 //  ;
+    // }
 
-		if(json['files']['audio'][i].hightlight == true){
+		if(json['files']['audio'][i].highlight == true){
 			$('#'+json['files']['audio'][i].name).addClass('is--highlight');
 		}
 	}
@@ -436,14 +456,14 @@ function onListMedias(array, json){
 			.end()
 			.find('.mediaData .mediaData--legende').html(legende);
 
-    if( title === undefined && legende === undefined) {
-  	  $('#'+json['files']['texte'][i].id)
-  	    .find('.mediaData')
-  	      .remove()
-  	  ;
-    }
+    // if( title === undefined && legende === undefined) {
+  	 //  $('#'+json['files']['texte'][i].id)
+  	 //    .find('.mediaData')
+  	 //      .remove()
+  	 //  ;
+    // }
 
-		if(json['files']['texte'][i].hightlight == true){
+		if(json['files']['texte'][i].highlight == true){
 			$('#'+json['files']['texte'][i].id).addClass('is--highlight');
 		}
 	}
@@ -458,18 +478,21 @@ function onListMedias(array, json){
 
 }
 
-function displayImage(session, project, id, file){
+function displayImage(session, project, id, file, extension){
 	var imagePath = "../"+ file;
 	var mediaItem = $(".js--templates .media_image").clone(false);
-	mediaItem
-    .attr( 'id', id)
-    .attr( 'data-mediatype', 'image')
-	  .find( '.mediaContent img')
-	    .attr('src', imagePath)
-    .end()
-  ;
-
-	$('.medias-list').prepend(mediaItem);
+	console.log(file, id  + extension);
+	//if(file != id + extension){
+		console.log(file);
+		mediaItem
+	    .attr( 'id', id)
+	    .attr( 'data-mediatype', 'image')
+		  .find( '.mediaContent img')
+		    .attr('src', imagePath)
+	    .end()
+	  ;
+	  $('.medias-list').prepend(mediaItem);
+	//}
 }
 
 function displayVideo(session, project, id, file){
@@ -642,10 +665,11 @@ function bigMedia(){
 					.find('.view-text-modify').val(texte)
 					.end()
 					.attr('id', id)
+					.attr('data-id', id)
 					.end()
-					.find('.add-media-title').val(mediaTitle)
+					.find('.view-text-title-modify').val(mediaTitle)
 					.end()
-					.find('.add-media-legend').val(mediaLegende)
+					.find('.view-text-modify').val(mediaLegende)
 					;
 
 				$('#modal-media-view .big-mediaContent').html(mediaItem);
@@ -665,15 +689,25 @@ function onMediaData(data){
 		.find('.mediaData--legende').html(data.legend);
 }
 
-function onHightlight(data){
-	$('#modal-media-view').foundation('reveal', 'close');
-	if(data.hightlight == true){
+function onHighlight(data){
+	//$('#modal-media-view').foundation('reveal', 'close');
+	if(data.highlight == true){
 		$("#"+data.id)
 			.addClass('is--highlight');
+		$('.js--highlightMedia').css({
+			"background-color": "#48C2B5",
+			"color": "#FFF",
+			"border": "none"
+		});
 	}
 	else{
 		$("#"+data.id)
 			.removeClass('is--highlight');
+		$('.js--highlightMedia').css({
+			"background-color": "#FFF",
+			"color": "#48C2B5",
+			"border": "1px solid #48C2B5"
+		});
 	}
 }
 
