@@ -253,7 +253,7 @@ function changeMediaBoitier(e){
     $('#modal-change-alert').foundation('reveal', 'open');
     $('#modal-change-alert .supprimer-stop-motion').attr('data-choice', thisId);
   }
-  
+
   else{
     if(code == 115) { // Z keypress
       var $nextButton = $activeButton.next();
@@ -436,7 +436,7 @@ function displayVideoStream(){
       console.log(err.name + ": " + error.message);
     });
 
-    
+
 
     // navigator.getUserMedia(
     //   {
@@ -485,7 +485,7 @@ function takePictures(){
   $('body').attr('data-justcaptured', 'yes');
   setTimeout( function() {
     $('body').attr('data-justcaptured', '');
-  }, 200);
+  }, 600);
 
   submitData(data, 'imageCapture');
   saveFeedback("/images/icone-dodoc_image.png");
@@ -540,6 +540,8 @@ function recordingVideo(click){
     $('.screenshot .canvas-view').hide();
     recordingFeedback();
 
+    $('body').attr('data-videorecording', 'yes');
+
     // Initialise getUserMedia
     navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
     navigator.getMedia(
@@ -584,6 +586,7 @@ function recordingVideo(click){
       stopVideoRecording.disabled = true;
       $(".recording-feedback").remove();
       countPress = 0;
+      $('body').attr('data-videorecording', '');
     }
   }
 
@@ -622,6 +625,7 @@ function recordingVideo(click){
     startVideoRecording.style.display = "block";
     stopVideoRecording.style.display = "none";
     cameraPreview.style.display = "block";
+    $('body').attr('data-videorecording', '');
     $(".recording-feedback").remove();
     // stop video recorder
     recordVideo.stopRecording(function() {
@@ -698,6 +702,16 @@ function takepictureMotion(dir) {
   socket.emit('imageMotion', {data: data, dir: dir, count: countImage});
   $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
   $('body').addClass('takingstopmotion');
+
+  $(".captureRight .flash").fadeIn(0, function(){
+    $(this).fadeOut(500);
+  });
+
+  $('body').attr('data-justcaptured', 'yes');
+  setTimeout( function() {
+    $('body').attr('data-justcaptured', '');
+  }, 600);
+
 }
 
 function removeImageMotion(data, dir){
@@ -1050,7 +1064,7 @@ function backAnimation(){
 }
 
 function saveFeedback(icone){
-  
+
   var $iconeFeedback = $("<div class='icone-feedback'><img src='"+icone+"'></div>");
   $("body").append( $iconeFeedback );
   setTimeout(function(){

@@ -223,6 +223,7 @@ body.bibli {
       padding:15px;
       &::before {
         content: "Glissez ici vos médias pour composer un récit.";
+        color: #aaa;
         position: relative;
       }
     }
@@ -375,10 +376,9 @@ body.bibli {
     border: .4687rem solid #eee;
     background:   $gristresclair;
 
+    cursor: pointer;
+
     margin-bottom:   .9374rem;
-
-
-    //overflow: auto;
 
     transition: width 1.1s ease;
 
@@ -392,6 +392,13 @@ body.bibli {
 
       &:nth-child(4n+1) {
         clear: left;
+      }
+    }
+
+    // si aucune légende et aucun titre
+    &[data-title=''][data-legende=''] {
+      .mediaData {
+        padding: 0;
       }
     }
 
@@ -458,7 +465,7 @@ body.bibli {
 
     &.is--highlight {
       &::after {
-        border: .4687rem solid transparentize( $bleuvert, .4);
+        border: .4687rem solid transparentize( $bleuvert, 0);
       }
 
       .button-wrapper_flagMedia {
@@ -490,7 +497,7 @@ body.bibli {
       }
       .button-wrapper_flagMedia {
         transform: scale(1);
-        opacity: .4;
+        opacity: .8;
 
         &:hover {
           opacity: 1;
@@ -499,15 +506,19 @@ body.bibli {
     }
 
     .mediaData {
-      padding: .4687rem;
 
       .mediaData--titre {
+        margin: 0;
+        padding: .4687rem;
+        border-bottom:  1px solid $grisclair;
         &:empty {
           display: none;
         }
-
       }
       .mediaData--legende {
+        margin: 0;
+        padding: .4687rem;
+        border-bottom:  1px solid $grisclair;
         &:empty {
           display: none;
         }

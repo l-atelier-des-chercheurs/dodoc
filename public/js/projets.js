@@ -139,7 +139,7 @@ function modifyProject($this){
 	thisProjectName = $this.parents(".project").find('h2').text();
 
 	var statut = $this.parent().attr("data-statut");
-	var inputNameHtml = "<input type='text' class='modify-project' value='"+thisProjectName+"'></input>";
+	var inputNameHtml = "<input type='text' autofocus class='modify-project' value='"+thisProjectName+"'></input>";
 	if(statut == 'en cours'){
 		var statutHtml = "<select class='modify-statut 'name='statut'><option value='"+statut+"' selected>"+statut+"</option><option value='terminé'>terminé</option></select>";
 	}
@@ -254,7 +254,7 @@ function onProjectModified(data){
 		$thisEl.find('.js--edit-project-icon').remove();
 	}
 
-	// C'est pas propre mais ça marche en attendant de refaire correctement les pages 
+	// C'est pas propre mais ça marche en attendant de refaire correctement les pages
 	location.reload();
 
 	//$thisEl.remove();

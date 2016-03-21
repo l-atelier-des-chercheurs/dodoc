@@ -73,7 +73,6 @@ html
 
           div.captureRight.small-5.columns
             div.flash.small-12
-            +button( 'deleteMediaCapture', '', 'isCollapsed')
 
             div(class="screenshot small-12" data-file="none")
               canvas#canvas.canvas-view
@@ -85,14 +84,16 @@ html
             div.son
               audio(id="son" src="" controls)
 
+            +button( 'deleteMediaCapture', '', 'isCollapsed')
+
           div.clone
 
        //- ALERT CHANGER DE MEDIA
       div(id="modal-change-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-        p Attention, vous devez valider votre stop-motion pour l'enregistrer. 
-        a(class="close-reveal-modal" aria-label="Close") 
+        p Attention, vous devez valider votre stop-motion pour l'enregistrer.
+        a(class="close-reveal-modal" aria-label="Close")
           button.ok Continuer le stop motion
-        button.supprimer-stop-motion Supprimer le stop motion 
+        button.supprimer-stop-motion Supprimer le stop motion
         a(class="close-reveal-modal" aria-label="Close") &#215;
 
 

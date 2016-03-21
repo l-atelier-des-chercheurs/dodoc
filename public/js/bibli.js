@@ -364,18 +364,23 @@ function onListMedias(array, json){
 	  var title = json['files']['images'][i]['title'];
 	  var legende = json['files']['images'][i]['legende'];
 	  $('#'+json['files']['images'][i].name)
+	    .attr('data-i', i)
 	  	.attr('data-title', title)
 	  	.attr('data-legende', legende)
 	  	.find('.mediaData .mediaData--titre').html(title)
 			.end()
 			.find('.mediaData .mediaData--legende').html(legende);
 
-    // if( title === undefined && legende === undefined) {
-  	 //  $('#'+json['files']['images'][i].name)
-  	 //    .find('.mediaData')
-  	 //      .remove()
-  	 //  ;
-    // }
+
+
+/*
+    if( title === undefined && legende === undefined) {
+  	  $('#'+json['files']['images'][i].name)
+  	    .find('.mediaData')
+  	      .remove()
+  	  ;
+    }
+*/
 
 		if(json['files']['images'][i].highlight == true){
 			$('#'+json['files']['images'][i].name).addClass('is--highlight');

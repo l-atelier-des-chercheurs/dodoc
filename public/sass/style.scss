@@ -175,17 +175,16 @@ button{
 
   }
 
-
   &_add, &_edit, &_publi, &_editProjet, &_addMedia, &_backButton, &_editFolder {
     background-color: $rouge;
     color: white;
   }
-  &_capture, &_view, &_deleteFolder, &_deleteMedia {
-    background-color: #FFB520;
+  &_capture, &_view, &_deleteFolder, &_deleteMedia, &_deleteMediaCapture {
+    background-color: $orange;
     color: white;
   }
   &_bibli, &_gofullscreen , &_leavefullscreen {
-    background-color: #293275;
+    background-color: $bleumarine;
     color: white;
   }
   &_accept, &_addText {
@@ -208,7 +207,7 @@ button{
     transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out;
 
     &:not(:hover) {
-      width:  44px;
+      width:  40px;
       color: transparent;
       background-color: transparent;
     }
@@ -262,9 +261,9 @@ button{
   height: 42px;
   border-radius: 50%;
 	cursor: pointer;
-	transition: all .2s ease-out;
+	transition: all .4s ease-out;
 
-	&:hover, &:hover{
+	&:hover {
 		border-radius: 20%;
 	}
 
