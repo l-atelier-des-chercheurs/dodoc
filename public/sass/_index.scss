@@ -32,8 +32,8 @@ body.index{
 
   .content{
     overflow:hidden;
+    height: auto;
 
-    height: 250px;
     h2{
       display: block;
       margin: 0;
@@ -53,10 +53,10 @@ body.index{
 
       margin: 0;
       padding: 18px;
-      height: 100%;
-      margin-bottom: 70px;
+      padding-bottom: 70px;
+      height: 235px;
 
-      background-color: #F4F4F4;
+      background-color: #f9f9f9;
 
 
       li {
@@ -123,7 +123,7 @@ body.index{
     padding-top: 4px;
     padding-bottom: 8px;
 
-    background-color: #f5f5f5;
+    background-color: #eee;
         color: #8d8d8d;
     font-style:italic;
 

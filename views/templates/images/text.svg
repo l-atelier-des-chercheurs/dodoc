@@ -4,7 +4,7 @@
 <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="45px" height="45px" viewBox="0 0 45 45" enable-background="new 0 0 45 45" xml:space="preserve">
 <g>
-	<path opacity="0.8" fill="#40BEB3" d="M22.502,45c12.424,0,22.497-10.075,22.497-22.501C44.999,10.072,34.926,0,22.502,0
+	<path fill="#40BEB3" d="M22.502,45c12.424,0,22.497-10.075,22.497-22.501C44.999,10.072,34.926,0,22.502,0
 		C10.075,0,0.001,10.072,0.001,22.499C0.001,34.925,10.075,45,22.502,45z"/>
 	<rect x="20.626" y="13.952" fill="#293275" width="17.992" height="4.011"/>
 	<rect x="20.626" y="21.305" fill="#293275" width="17.992" height="4.011"/>

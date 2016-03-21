@@ -58,6 +58,7 @@ function init(){
 		modifyFolder($(this));
 	});
 
+
 	//remove modal modify folder when it closing
 	$(document).on('close.fndtn.reveal', '#modal-modify-folder[data-reveal]', function () {
 	//   	$("#modal-modify-folder").empty();
