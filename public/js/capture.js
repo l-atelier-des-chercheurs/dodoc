@@ -1049,15 +1049,15 @@ function animateWindows(){
 	if(!$('.captureRight').hasClass('active')){
 		$(".captureRight").css('display', 'block').addClass('active');
     $('.captureLeft').velocity({'left':'5%'}, 'slow');
-    $('.captureRight').velocity({'left':'52%'}, 'slow');
+    $('.captureRight').velocity({'left':'57%'}, 'slow');
 	}
 }
 
 //fenêtre de preview retourne au center
 function backAnimation(){
   if($(".captureRight").hasClass('active')){
-    $('.captureLeft').velocity({'left':'30%'}, 'slow');
-    $('.captureRight').removeClass('active').velocity({'left':'30%'}, 500,function(){
+    $('.captureLeft').velocity({'left':'25%'}, 'slow');
+    $('.captureRight').removeClass('active').velocity({'left':'25%'}, 500,function(){
       $(this).fadeOut('slow');
     });
   }

@@ -7990,32 +7990,51 @@ body.capture .content-wrapper:after {
 
 .media-choice {
   margin-top: 25px;
-  margin-bottom: 25px; }
+  margin-bottom: 35px; }
   .media-choice .btn-choice {
     text-align: center; }
     .media-choice .btn-choice button {
       color: #333;
-      background-color: #fff;
       margin: 0;
       outline: none;
-      font-size: 1em;
+      font-size: 1.2em;
+      letter-spacing: .03em;
       padding: 9px 22px;
       margin-right: 16px;
-      border-radius: 2px; }
+      border-radius: 4px; }
       .media-choice .btn-choice button:last-of-type {
         margin-right: 0; }
+      .media-choice .btn-choice button:not(.active):not(:hover) {
+        background-color: #fff; }
       .media-choice .btn-choice button.active, .media-choice .btn-choice button:hover {
         color: #fff;
-        background-color: #48C2B5;
         outline: none; }
-        .media-choice .btn-choice button.active#photo, .media-choice .btn-choice button:hover#photo {
-          background-color: #ffb520; }
-        .media-choice .btn-choice button.active#video-btn, .media-choice .btn-choice button:hover#video-btn {
-          background-color: #fe414d; }
-        .media-choice .btn-choice button.active#stopmotion, .media-choice .btn-choice button:hover#stopmotion {
-          background-color: #48c2b5; }
-        .media-choice .btn-choice button.active#audio, .media-choice .btn-choice button:hover#audio {
-          background-color: #09227c; }
+      .media-choice .btn-choice button[data-mediatype]::before {
+        content: "";
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        width: 28px;
+        height: 28px;
+        margin-right: 14px;
+        z-index: 100;
+        background-size: cover; }
+      .media-choice .btn-choice button[data-mediatype="image"] {
+        background-color: #ffb520; }
+        .media-choice .btn-choice button[data-mediatype="image"]::before {
+          background-image: url("/images/icone-dodoc_image.png"); }
+      .media-choice .btn-choice button[data-mediatype="video"] {
+        background-color: #fe414d; }
+        .media-choice .btn-choice button[data-mediatype="video"]::before {
+          background-image: url("/images/icone-dodoc_video.png"); }
+      .media-choice .btn-choice button[data-mediatype="stopmotion"] {
+        background-color: #48c2b5; }
+        .media-choice .btn-choice button[data-mediatype="stopmotion"]::before {
+          background-image: url("/images/icone-dodoc_anim.png"); }
+      .media-choice .btn-choice button[data-mediatype="audio"] {
+        background-color: #09227c; }
+        .media-choice .btn-choice button[data-mediatype="audio"]::before {
+          background-image: url("/images/icone-dodoc_son.png"); }
 
 .captureLeft {
   margin: auto;
@@ -8023,8 +8042,8 @@ body.capture .content-wrapper:after {
   background-color: #FFF;
   z-index: 2;
   margin-bottom: 25px;
-  width: 40%;
-  left: 30%; }
+  width: 50%;
+  left: 25%; }
   body.is--fullscreen .captureLeft {
     width: 100%;
     left: 0 !important;
@@ -8175,6 +8194,7 @@ body.capture .content-wrapper:after {
   display: none;
   overflow: hidden;
   padding: 10px;
+  left: 25%;
   width: 40%; }
   .captureRight #stop-sm-btn {
     border: none !important;

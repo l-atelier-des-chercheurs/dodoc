@@ -22,10 +22,10 @@ html
         div.media-choice
           div.btn-choice
             div
-              button#photo image
-              button#video-btn vidéo
-              button#stopmotion stop motion
-              button#audio audio
+              button#photo(data-mediatype="image") image
+              button#video-btn(data-mediatype="video") vidéo
+              button#stopmotion(data-mediatype="stopmotion") stop motion
+              button#audio(data-mediatype="audio") audio
 
         div.content-wrapper
           div.captureLeft
