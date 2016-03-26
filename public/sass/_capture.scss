@@ -22,7 +22,9 @@ body.capture{
   margin-bottom:   $margin;
 
   .btn-choice{
+
     text-align: center;
+
     button {
 
       color:#333;
@@ -30,7 +32,7 @@ body.capture{
       outline: none;
       font-size: 1.1em;
 
-      padding: 9px $margin;
+      padding: 11px $margin;
       margin-right: $margin;
       border-radius: 4px;
 
@@ -104,6 +106,8 @@ body.capture{
   background-color: #FFF;
   z-index:2;
   margin-bottom:  25px;
+
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
   width: 50%;
   left:25%;
@@ -367,6 +371,8 @@ body.capture{
   z-index: 1;
   display: none;
   overflow: hidden;
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
   padding: 10px;
   left: 25%;

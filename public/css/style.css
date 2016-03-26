@@ -8027,7 +8027,7 @@ body.capture .content-wrapper:after {
       margin: 0;
       outline: none;
       font-size: 1.1em;
-      padding: 9px 16px;
+      padding: 11px 16px;
       margin-right: 16px;
       border-radius: 4px; }
       .media-choice .btn-choice button:last-of-type {
@@ -8070,6 +8070,7 @@ body.capture .content-wrapper:after {
   background-color: #FFF;
   z-index: 2;
   margin-bottom: 25px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   width: 50%;
   left: 25%; }
   body.is--fullscreen .captureLeft {
@@ -8224,6 +8225,7 @@ body.capture .content-wrapper:after {
   z-index: 1;
   display: none;
   overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 10px;
   left: 25%;
   width: 40%; }
