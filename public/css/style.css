@@ -6848,18 +6848,19 @@ th.hide-for-touch {
   .navbar-container .navbar {
     position: fixed;
     width: 100%;
-    height: 70px;
+    min-height: 70px;
+    padding: 10px;
+    height: auto;
     background-color: #fff;
     z-index: 1000;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     transition: height .6s ease-out, padding .45s ease-out, background-color .3s ease-out; }
     .navbar-container .navbar .logo {
       margin: auto;
-      height: 100%;
+      height: 50px;
       float: left;
       width: 195px;
       transition: width .6s ease-out;
-      padding: 10px;
       position: relative; }
       .navbar-container .navbar .logo svg {
         height: 100%;
@@ -6874,7 +6875,7 @@ th.hide-for-touch {
           opacity: 1; }
     .navbar-container .navbar .item {
       float: left;
-      height: 100%;
+      height: 50px;
       position: relative; }
       .navbar-container .navbar .item .button-wrapper {
         display: block;
@@ -6883,7 +6884,7 @@ th.hide-for-touch {
         border-radius: 0;
         background-color: transparent;
         color: white;
-        padding: 20px;
+        padding: 10px;
         padding-left: 15px;
         transition: color .2s; }
         .navbar-container .navbar .item .button-wrapper .btn.icon + span {
@@ -6896,8 +6897,8 @@ th.hide-for-touch {
           position: absolute;
           left: 5px;
           right: 0px;
-          top: 13px;
-          bottom: 17px;
+          top: 3px;
+          bottom: 7px;
           -webkit-transition: all .1s;
           transition: all .1s;
           z-index: -1;
@@ -6930,7 +6931,7 @@ th.hide-for-touch {
           color: #FFB520; }
     .navbar-container .navbar > .button-wrapper {
       float: right;
-      margin: 15px 5px;
+      margin: 5px 5px;
       position: relative; }
       .navbar-container .navbar > .button-wrapper:nth-of-type(1) {
         margin-right: 15px; }
@@ -7942,7 +7943,25 @@ body.projets #container {
         width: 25%;
         float: left;
         padding-top: 0.9375rem;
-        padding-bottom: 0.9375rem; }
+        padding-bottom: 0.9375rem;
+        position: relative; }
+        .project-list .project .last-medias .media::before {
+          content: "";
+          position: absolute;
+          width: 20px;
+          height: 20px;
+          right: 10px;
+          top: 10px;
+          z-index: 100;
+          background-size: cover; }
+        .project-list .project .last-medias .media[data-mediatype="image"]::before {
+          background-image: url("/images/icone-dodoc_image.png"); }
+        .project-list .project .last-medias .media[data-mediatype="video"]::before {
+          background-image: url("/images/icone-dodoc_video.png"); }
+        .project-list .project .last-medias .media[data-mediatype="stopmotion"]::before {
+          background-image: url("/images/icone-dodoc_anim.png"); }
+        .project-list .project .last-medias .media[data-mediatype="audio"]::before {
+          background-image: url("/images/icone-dodoc_son.png"); }
     .project-list .project .montage-list {
       margin: 0 auto;
       max-width: 62.5rem;
@@ -8008,32 +8027,6 @@ body.capture .content-wrapper:after {
       .media-choice .btn-choice button.active, .media-choice .btn-choice button:hover {
         color: #fff;
         outline: none; }
-      .media-choice .btn-choice button[data-mediatype]::before {
-        content: "";
-        position: relative;
-        display: inline-block;
-        vertical-align: middle;
-        width: 28px;
-        height: 28px;
-        margin-right: 14px;
-        z-index: 100;
-        background-size: cover; }
-      .media-choice .btn-choice button[data-mediatype="image"] {
-        background-color: #ffb520; }
-        .media-choice .btn-choice button[data-mediatype="image"]::before {
-          background-image: url("/images/icone-dodoc_image.png"); }
-      .media-choice .btn-choice button[data-mediatype="video"] {
-        background-color: #fe414d; }
-        .media-choice .btn-choice button[data-mediatype="video"]::before {
-          background-image: url("/images/icone-dodoc_video.png"); }
-      .media-choice .btn-choice button[data-mediatype="stopmotion"] {
-        background-color: #48c2b5; }
-        .media-choice .btn-choice button[data-mediatype="stopmotion"]::before {
-          background-image: url("/images/icone-dodoc_anim.png"); }
-      .media-choice .btn-choice button[data-mediatype="audio"] {
-        background-color: #09227c; }
-        .media-choice .btn-choice button[data-mediatype="audio"]::before {
-          background-image: url("/images/icone-dodoc_son.png"); }
 
 .captureLeft {
   margin: auto;
