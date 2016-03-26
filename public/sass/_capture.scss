@@ -18,45 +18,82 @@ body.capture{
 
 .media-choice {
 
-  margin-top:   25px;
-  margin-bottom:   25px;
+  margin-top:   $margin;
+  margin-bottom:   $margin;
 
   .btn-choice{
     text-align: center;
     button {
 
       color:#333;
-      background-color: #fff;
       margin: 0;
       outline: none;
-      font-size: 1em;
+      font-size: 1.1em;
 
-      padding: 9px 22px;
-      margin-right: 16px;
-      border-radius: 2px;
+      padding: 9px $margin;
+      margin-right: $margin;
+      border-radius: 4px;
+
+
 
       &:last-of-type {
         margin-right: 0;
       }
 
-      &.active, &:hover {
-        color:#fff;
-        background-color: $bleuvert;
-        outline: none;
+      &:not(.active):not(:hover) {
+        background-color: #fff;
+      }
 
-        &#photo {
-          background-color: $cimages;
-        }
-        &#video-btn {
-          background-color: $cvideos;
-        }
-        &#stopmotion {
-          background-color: $canim;
-        }
-        &#audio {
-          background-color: $csons;
+      &.active, &:hover {
+        color: #fff;
+        outline: none;
+      }
+
+      // vignette media
+      &[data-mediatype] {
+        // type de media (anciennement icone-media)
+        &::before {
+          content:"";
+          position: relative;
+
+          display: inline-block;
+          vertical-align: middle;
+
+          width: 28px;
+          height: 28px;
+          margin-right: 14px;
+          z-index:  100;
+
+          background-size: cover;
         }
       }
+
+      // page bibli, page capture, page projet
+      &[data-mediatype="image"] {
+        background-color: $cimages;
+        &::before {
+          background-image: url("/images/icone-dodoc_image.png");
+        }
+      }
+      &[data-mediatype="video"] {
+        background-color: $cvideos;
+        &::before {
+          background-image: url("/images/icone-dodoc_video.png");
+        }
+      }
+      &[data-mediatype="stopmotion"] {
+        background-color: $canim;
+        &::before {
+          background-image: url("/images/icone-dodoc_anim.png");
+        }
+      }
+      &[data-mediatype="audio"] {
+        background-color: $csons;
+        &::before {
+          background-image: url("/images/icone-dodoc_son.png");
+        }
+      }
+
     }
   }
 }
@@ -68,8 +105,8 @@ body.capture{
   z-index:2;
   margin-bottom:  25px;
 
-  width: 40%;
-  left:30%;
+  width: 50%;
+  left:25%;
 
   body.is--fullscreen & {
     width: 100%;
@@ -79,9 +116,11 @@ body.capture{
     padding: 2vh;
   }
 
+  $buttonBar: $margin + 64px;
+
   .video-view {
     position: relative;
-    padding-bottom:  100px;
+    padding-bottom:  $buttonBar;
     height: 100%;
 
     body.is--fullscreen & {
@@ -102,9 +141,9 @@ body.capture{
     text-align: center;
 
     position: absolute;
-    padding-top: 16px;
-    padding-bottom: 16px;
-    height: 100px;
+    padding-top: $margin / 2;
+    padding-bottom: $margin / 2;
+    height: $buttonBar;
 
     bottom: 0;
     width: 100%;
@@ -278,6 +317,10 @@ body.capture{
   }
 
   .button-wrapper_leavefullscreen {
+
+    margin-right: 20px;
+    margin-top: 20px;
+
     body:not([class*=is--fullscreen]) & {
       display: none;
     }
@@ -326,6 +369,7 @@ body.capture{
   overflow: hidden;
 
   padding: 10px;
+  left: 25%;
   width: 40%;
 
   #stop-sm-btn {

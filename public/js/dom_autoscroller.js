@@ -1492,7 +1492,10 @@ var dragula = require('dragula'),
 	  },
 	  accepts: function (el, target) {
       return target === right;
-	  }
+	  },
+    invalid: function (el, handle) {
+      return $("body").attr("data-publicationpane") !== "open";
+    }
 	})
 	.on('drop', function(el, target, source, sibling){
   	// si le drop a bien réussi

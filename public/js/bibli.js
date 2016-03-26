@@ -70,7 +70,7 @@ function init(){
 		$('.montage-title input').hide();
 		$('.montage-title .title').show().html(newTitle);
 		$(this).hide();
-		$editerBouton.css("display", "inline-block");
+		$editerBouton.css("display", "block");
 
 		socket.emit('titleChanged', {oldTitle: oldTitle, newTitle: newTitle, session: currentSession, project: currentProject});
 	});
@@ -79,7 +79,7 @@ function init(){
 		$('.montage-title input').show().val($('.montage-title .title').html());
 		$('.montage-title .title').hide();
 		$(this).hide();
-		$validerBouton.css("display", "inline-block");
+		$validerBouton.css("display", "block");
 	});
 
 	$('.submit-new-publi').on('click', function(){
