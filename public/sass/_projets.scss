@@ -168,6 +168,10 @@ body.projets{
 
         position: relative;
 
+        &:nth-child(5n+1) {
+          clear: left;
+        }
+
         // type de media (anciennement icone-media)
         &::before {
           content:"";

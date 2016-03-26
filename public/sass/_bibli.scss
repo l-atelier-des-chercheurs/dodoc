@@ -4,7 +4,14 @@ body.bibli {
   overflow: hidden;
 }
 
+
+.biblimontage-container {
+  position: relative;
+
+}
 .bibli-buffer {
+
+  position: relative;
   height: calc( 100vh - 70px);
   overflow-y: scroll; /* has to be scroll, not auto */
   -webkit-overflow-scrolling: touch;
@@ -14,7 +21,8 @@ body.bibli {
 
   .btn-medias {
     position: fixed;
-    top: 120px;
+
+    margin-top: 10vh;
     width: 50px;
     z-index: 500;
     right: 0;
@@ -72,8 +80,8 @@ body.bibli {
 }
 .montage{
 
-  position: fixed;
-  top: 70px;
+  position: absolute;
+  top: 0;
   bottom: 0;
   left: $pourcentageBuffer;
   right: 0;

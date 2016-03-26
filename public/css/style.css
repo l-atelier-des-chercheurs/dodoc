@@ -6829,7 +6829,7 @@ th.hide-for-touch {
 
 .navbar-container {
   width: 100%;
-  height: 70px;
+  min-height: 70px;
   font-size: 1.1rem;
   font-weight: 400; }
   body.index .navbar-container {
@@ -6837,16 +6837,16 @@ th.hide-for-touch {
     body.index .navbar-container .logo {
       pointer-events: none; }
     body.index .navbar-container.is--opened .navbar {
-      height: 340px;
       background-color: transparent;
       padding: 80px;
       box-shadow: none; }
       body.index .navbar-container.is--opened .navbar .logo {
-        width: 100%; }
+        width: 100%;
+        height: 22vh; }
         body.index .navbar-container.is--opened .navbar .logo::after {
           opacity: 0; }
   .navbar-container .navbar {
-    position: fixed;
+    position: relative;
     width: 100%;
     min-height: 70px;
     padding: 10px;
@@ -6855,12 +6855,16 @@ th.hide-for-touch {
     z-index: 1000;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     transition: height .6s ease-out, padding .45s ease-out, background-color .3s ease-out; }
+    .navbar-container .navbar:before, .navbar-container .navbar:after {
+      content: " ";
+      display: table; }
+    .navbar-container .navbar:after {
+      clear: both; }
     .navbar-container .navbar .logo {
       margin: auto;
       height: 50px;
       float: left;
-      width: 195px;
-      transition: width .6s ease-out;
+      transition: height .6s ease-out;
       position: relative; }
       .navbar-container .navbar .logo svg {
         height: 100%;
@@ -7436,7 +7440,11 @@ body.index #container {
 body.bibli {
   overflow: hidden; }
 
+.biblimontage-container {
+  position: relative; }
+
 .bibli-buffer {
+  position: relative;
   height: calc( 100vh - 70px);
   overflow-y: scroll;
   /* has to be scroll, not auto */
@@ -7444,7 +7452,7 @@ body.bibli {
   text-align: left; }
   .bibli-buffer .btn-medias {
     position: fixed;
-    top: 120px;
+    margin-top: 10vh;
     width: 50px;
     z-index: 500;
     right: 0;
@@ -7480,8 +7488,8 @@ body.bibli {
       margin: 5px !important; }
 
 .montage {
-  position: fixed;
-  top: 70px;
+  position: absolute;
+  top: 0;
   bottom: 0;
   left: 66%;
   right: 0;
@@ -7945,6 +7953,8 @@ body.projets #container {
         padding-top: 0.9375rem;
         padding-bottom: 0.9375rem;
         position: relative; }
+        .project-list .project .last-medias .media:nth-child(5n+1) {
+          clear: left; }
         .project-list .project .last-medias .media::before {
           content: "";
           position: absolute;
@@ -8017,7 +8027,7 @@ body.capture .content-wrapper:after {
       margin: 0;
       outline: none;
       font-size: 1.1em;
-      padding: 9px 16px;
+      padding: 11px 16px;
       margin-right: 16px;
       border-radius: 4px; }
       .media-choice .btn-choice button:last-of-type {
@@ -8027,6 +8037,32 @@ body.capture .content-wrapper:after {
       .media-choice .btn-choice button.active, .media-choice .btn-choice button:hover {
         color: #fff;
         outline: none; }
+      .media-choice .btn-choice button[data-mediatype]::before {
+        content: "";
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        width: 28px;
+        height: 28px;
+        margin-right: 14px;
+        z-index: 100;
+        background-size: cover; }
+      .media-choice .btn-choice button[data-mediatype="image"] {
+        background-color: #ffb520; }
+        .media-choice .btn-choice button[data-mediatype="image"]::before {
+          background-image: url("/images/icone-dodoc_image.png"); }
+      .media-choice .btn-choice button[data-mediatype="video"] {
+        background-color: #fe414d; }
+        .media-choice .btn-choice button[data-mediatype="video"]::before {
+          background-image: url("/images/icone-dodoc_video.png"); }
+      .media-choice .btn-choice button[data-mediatype="stopmotion"] {
+        background-color: #48c2b5; }
+        .media-choice .btn-choice button[data-mediatype="stopmotion"]::before {
+          background-image: url("/images/icone-dodoc_anim.png"); }
+      .media-choice .btn-choice button[data-mediatype="audio"] {
+        background-color: #09227c; }
+        .media-choice .btn-choice button[data-mediatype="audio"]::before {
+          background-image: url("/images/icone-dodoc_son.png"); }
 
 .captureLeft {
   margin: auto;
@@ -8034,6 +8070,7 @@ body.capture .content-wrapper:after {
   background-color: #FFF;
   z-index: 2;
   margin-bottom: 25px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   width: 50%;
   left: 25%; }
   body.is--fullscreen .captureLeft {
@@ -8188,6 +8225,7 @@ body.capture .content-wrapper:after {
   z-index: 1;
   display: none;
   overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 10px;
   left: 25%;
   width: 40%; }

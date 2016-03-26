@@ -859,11 +859,54 @@ module.exports = function(app, io){
 		}
 
 		function onMediaLegende(data){
+
+      console.log( "--- onMediaLegende");
+
 			var jsonFile = 'sessions/' + data.session + '/'+ data.project+"/" +data.project+'.json';
 			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
 			var jsonObj = JSON.parse(jsonData);
 			var id = data.id;
+			var type;
+			if(data.type == 'image'){
+				type = 'images';
+			}
+			if(data.type == 'video'){
+				type = 'videos';
+			}
+			if(data.type == 'audio'){
+				type = 'audio';
+			}
+			if(data.type == 'stopmotion'){
+				type = 'stopmotion';
+			}
 
+      console.log( "Start of loop to add or edit media title/caption.");
+			console.log( "ID of media = " + id + " and type of media is " + type);
+			console.log( "Number of entries to parse : " + jsonObj['files'][type].length);
+
+			for (var i = 0; i < jsonObj['files'][type].length; i++){
+  			console.log( "+ for loop to find " + id + ". current name is " + jsonObj['files'][type][i].name);
+			  if (jsonObj['files'][type][i].name == id){
+  			  console.log( "+++ found the name");
+			  	jsonObj['files'][type][i]['title'] = data.title;
+			  	jsonObj['files'][type][i]['legende'] = data.legend;
+			  	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
+			      if(err) {
+			          console.log(err);
+			          return false;
+			      } else {
+			          console.log("The caption was saved for id " + id + " with type " + type + " with title " + data.title + " and caption " + data.legend);
+			          io.sockets.emit("displayMediaData", {id:id, title: data.title, legend: data.legend});
+			          return true;
+			      }
+		    	});
+			  }
+		  }
+
+		  console.log( "Not found any json name to save to…");
+		  return false;
+
+/*
 			if(data.type == 'image'){
 				for (var i = 0; i < jsonObj['files']['images'].length; i++){
 				  // look for the entry with a matching `name` value
@@ -874,7 +917,7 @@ module.exports = function(app, io){
 				      if(err) {
 				          console.log(err);
 				      } else {
-				          console.log("The file was saved!");
+				          console.log("The caption was saved for id " + id + " with title " + data.title + " and caption " data.legend);
 				          io.sockets.emit("displayMediaData", {id:id, title: data.title, legend: data.legend});
 				      }
 			    	});
@@ -891,7 +934,7 @@ module.exports = function(app, io){
 				      if(err) {
 				          console.log(err);
 				      } else {
-				          console.log("The file was saved!");
+				          console.log("The caption was saved for id " + id + " with title " + data.title + " and caption " data.legend);
 				          io.sockets.emit("displayMediaData", {id:id, title: data.title, legend: data.legend});
 				      }
 			    	});
@@ -908,7 +951,7 @@ module.exports = function(app, io){
 				      if(err) {
 				          console.log(err);
 				      } else {
-				          console.log("The file was saved!");
+				          console.log("The caption was saved for id " + id + " with title " + data.title + " and caption " data.legend);
 				          io.sockets.emit("displayMediaData", {id:id, title: data.title, legend: data.legend});
 				      }
 			    	});
@@ -932,6 +975,7 @@ module.exports = function(app, io){
 				  }
 				}
 			}
+*/
 		}
 
 		function onHighLighMedia(data){
@@ -955,7 +999,7 @@ module.exports = function(app, io){
 			if(data.type == 'stopmotion'){
 				type = 'stopmotion';
 			}
-			
+
 			if(data.type == 'text'){
 				for (var i = 0; i < jsonObj['files']['texte'].length; i++){
 				  if (jsonObj['files']['texte'][i].id == id){

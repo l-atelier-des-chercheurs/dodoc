@@ -20,42 +20,37 @@ html
         +button( 'bibli', 'isNav')
         +button('capture', '', 'isCollapsed')
 
-    .bibli-buffer
-      ul.medias-list
+    .biblimontage-container
+      .bibli-buffer
+        .btn-medias
+          ul
+            +button( 'ajoutText', '', 'isCollapsed')
+            +button( 'ajoutMedia', '', 'isCollapsed')
+            +button( 'publications', '', 'isCollapsed')
 
-      .btn-medias
-        ul
-          +button( 'ajoutText', '', 'isCollapsed')
-          +button( 'ajoutMedia', '', 'isCollapsed')
-          +button( 'publications', '', 'isCollapsed')
+        ul.medias-list
 
-    .montage
-
-      button.open-montage-bar.js--toggleMontage
-
-      .montage-list
-        h1.legende Liste des publications
-        a(href="" data-reveal-id="modal-add-publi").button-wrapper.button-wrapper_add
-          .btn.icon
-            include templates/images/add.svg
-          span Créer une nouvelle publication
-        ul
-
-      .montage-edit
-        .montage-btn
-          +button('backButton', '', 'isCollapsed')
-          +button('view_publication', '', 'isCollapsed')
-
-        .montage-title
-          input(type="text" placeholder="Titre")
-          h2.title
-          .publi-btn
-            +button('validerTitre', '', '')
-            +button('editerTitre', '', 'isCollapsed')
-
-
-        .inner-montage.small-12
-          .montage-element
+      .montage
+        button.open-montage-bar.js--toggleMontage
+        .montage-list
+          h1.legende Liste des publications
+          a(href="" data-reveal-id="modal-add-publi").button-wrapper.button-wrapper_add
+            .btn.icon
+              include templates/images/add.svg
+            span Créer une nouvelle publication
+          ul
+        .montage-edit
+          .montage-btn
+            +button('backButton', '', 'isCollapsed')
+            +button('view_publication', '', 'isCollapsed')
+          .montage-title
+            input(type="text" placeholder="Titre")
+            h2.title
+            .publi-btn
+              +button('validerTitre', '', '')
+              +button('editerTitre', '', 'isCollapsed')
+          .inner-montage.small-12
+            .montage-element
 
     div(id="modal-add-publi" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
       h2#modalTitle.popoverTitle Nouvelle publication
