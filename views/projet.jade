@@ -23,18 +23,18 @@ html
       include templates/modals/modifyProject
 
     .js--templates
-      li.media.media_image(data-type="image")
+      li.media.media_image(data-mediatype="image")
         .mediaContent
           img
-      li.media.media_video(data-type="video")
+      li.media.media_video(data-mediatype="video")
         .mediaContent
           video(preload="none" controls)
             source()
-      li.media.media_stopmotion(data-type="stopmotion")
+      li.media.media_stopmotion(data-mediatype="stopmotion")
         .mediaContent
           video(preload="none" controls)
             source()
-      li.media.media_audio(data-type="audio")
+      li.media.media_audio(data-mediatype="audio")
         .mediaContent
           audio(preload="none" controls)
             source()

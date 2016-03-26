@@ -166,6 +166,35 @@ body.projets{
         padding-top: 0.9375rem;
         padding-bottom: 0.9375rem;
 
+        position: relative;
+
+        // type de media (anciennement icone-media)
+        &::before {
+          content:"";
+          position: absolute;
+
+          width: 20px;
+          height: 20px;
+          right: 10px;
+          top: 10px;
+          z-index:  100;
+
+          background-size: cover;
+        }
+
+        &[data-mediatype="image"]::before {
+          background-image: url("/images/icone-dodoc_image.png");
+        }
+        &[data-mediatype="video"]::before {
+          background-image: url("/images/icone-dodoc_video.png");
+        }
+        &[data-mediatype="stopmotion"]::before {
+          background-image: url("/images/icone-dodoc_anim.png");
+        }
+        &[data-mediatype="audio"]::before {
+          background-image: url("/images/icone-dodoc_son.png");
+        }
+
 
       }
 

@@ -7943,7 +7943,25 @@ body.projets #container {
         width: 25%;
         float: left;
         padding-top: 0.9375rem;
-        padding-bottom: 0.9375rem; }
+        padding-bottom: 0.9375rem;
+        position: relative; }
+        .project-list .project .last-medias .media::before {
+          content: "";
+          position: absolute;
+          width: 20px;
+          height: 20px;
+          right: 10px;
+          top: 10px;
+          z-index: 100;
+          background-size: cover; }
+        .project-list .project .last-medias .media[data-mediatype="image"]::before {
+          background-image: url("/images/icone-dodoc_image.png"); }
+        .project-list .project .last-medias .media[data-mediatype="video"]::before {
+          background-image: url("/images/icone-dodoc_video.png"); }
+        .project-list .project .last-medias .media[data-mediatype="stopmotion"]::before {
+          background-image: url("/images/icone-dodoc_anim.png"); }
+        .project-list .project .last-medias .media[data-mediatype="audio"]::before {
+          background-image: url("/images/icone-dodoc_son.png"); }
     .project-list .project .montage-list {
       margin: 0 auto;
       max-width: 62.5rem;
@@ -8009,32 +8027,6 @@ body.capture .content-wrapper:after {
       .media-choice .btn-choice button.active, .media-choice .btn-choice button:hover {
         color: #fff;
         outline: none; }
-      .media-choice .btn-choice button[data-mediatype]::before {
-        content: "";
-        position: relative;
-        display: inline-block;
-        vertical-align: middle;
-        width: 28px;
-        height: 28px;
-        margin-right: 14px;
-        z-index: 100;
-        background-size: cover; }
-      .media-choice .btn-choice button[data-mediatype="image"] {
-        background-color: #ffb520; }
-        .media-choice .btn-choice button[data-mediatype="image"]::before {
-          background-image: url("/images/icone-dodoc_image.png"); }
-      .media-choice .btn-choice button[data-mediatype="video"] {
-        background-color: #fe414d; }
-        .media-choice .btn-choice button[data-mediatype="video"]::before {
-          background-image: url("/images/icone-dodoc_video.png"); }
-      .media-choice .btn-choice button[data-mediatype="stopmotion"] {
-        background-color: #48c2b5; }
-        .media-choice .btn-choice button[data-mediatype="stopmotion"]::before {
-          background-image: url("/images/icone-dodoc_anim.png"); }
-      .media-choice .btn-choice button[data-mediatype="audio"] {
-        background-color: #09227c; }
-        .media-choice .btn-choice button[data-mediatype="audio"]::before {
-          background-image: url("/images/icone-dodoc_son.png"); }
 
 .captureLeft {
   margin: auto;
