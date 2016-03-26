@@ -41,7 +41,9 @@
 
     position: fixed;
     width:   100%;
-    height:   70px;
+    min-height: 70px;
+    padding:10px;
+    height:   auto;
     background-color: #fff;
     z-index:  1000;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
@@ -50,11 +52,10 @@
 
     .logo{
       margin:auto;
-      height: 100%;
+      height: 50px;
       float:left;
       width:  195px;
       transition: width .6s ease-out;
-      padding:10px;
 
       position: relative;
 
@@ -80,7 +81,7 @@
 
     .item {
       float:left;
-      height:   100%;
+      height: 50px;
       position: relative;
 
       .button-wrapper {
@@ -92,7 +93,7 @@
 
         color: white;
 
-        padding: 20px;
+        padding: 10px;
 
         padding-left: 15px;
         transition: color .2s;
@@ -115,8 +116,8 @@
           position: absolute;
           left: 5px;
           right: 0px;
-          top:      13px;
-          bottom:  17px;
+          top:      3px;
+          bottom:  7px;
           -webkit-transition: all .1s;
           transition: all .1s;
           z-index: -1;
@@ -185,7 +186,7 @@
 
     > .button-wrapper {
       float:right;
-      margin: 15px 5px;
+      margin: 5px 5px;
       position: relative;
 
       // buttons that are not wrapped in items are in float:right in the navbar. So the first of type is actually on the right
