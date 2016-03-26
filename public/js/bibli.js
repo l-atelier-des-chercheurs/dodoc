@@ -166,7 +166,7 @@ function init(){
   	var mediaLegende = $(this).parent('form').find('.add-media-legend').val();
   	var id = $(this).parents('.media-big').attr('id');
   	var type = $(this).parents('.media-big').attr('data-type');
-  	socket.emit('addMediaData', {session: currentSession, project: currentProject, title: mediaTitle, legend:mediaLegende, id:id, type:type});
+    socket.emit('addMediaData', {session: currentSession, project: currentProject, title: mediaTitle, legend:mediaLegende, id:id, type:type});
   });
 
   // Ajoute ou enlève un highlight quand on clique sur "Highlight" dans la fenêtre modal
