@@ -44,11 +44,11 @@ function init(){
   // ANIMER LA NAVBAR
 
   scrollY = window.pageYOffset;
-  openCloseMenu( scrollY);
+  // openCloseMenu( scrollY);
 
 	$(window).on('scroll', function () {
     var scrollY = window.pageYOffset;
-    openCloseMenu( scrollY);
+    // openCloseMenu( scrollY);
   });
 
 	//MODIFIER LES DOSSIERS
