@@ -18,8 +18,8 @@ body.capture{
 
 .media-choice {
 
-  margin-top:   25px;
-  margin-bottom:   35px;
+  margin-top:   $margin;
+  margin-bottom:   $margin;
 
   .btn-choice{
     text-align: center;
@@ -28,11 +28,10 @@ body.capture{
       color:#333;
       margin: 0;
       outline: none;
-      font-size: 1.2em;
-      letter-spacing: .03em;
+      font-size: 1.1em;
 
-      padding: 9px 22px;
-      margin-right: 16px;
+      padding: 9px $margin;
+      margin-right: $margin;
       border-radius: 4px;
 
 
@@ -117,9 +116,11 @@ body.capture{
     padding: 2vh;
   }
 
+  $buttonBar: $margin + 64px;
+
   .video-view {
     position: relative;
-    padding-bottom:  100px;
+    padding-bottom:  $buttonBar;
     height: 100%;
 
     body.is--fullscreen & {
@@ -140,9 +141,9 @@ body.capture{
     text-align: center;
 
     position: absolute;
-    padding-top: 16px;
-    padding-bottom: 16px;
-    height: 100px;
+    padding-top: $margin / 2;
+    padding-bottom: $margin / 2;
+    height: $buttonBar;
 
     bottom: 0;
     width: 100%;
@@ -316,6 +317,10 @@ body.capture{
   }
 
   .button-wrapper_leavefullscreen {
+
+    margin-right: 20px;
+    margin-top: 20px;
+
     body:not([class*=is--fullscreen]) & {
       display: none;
     }

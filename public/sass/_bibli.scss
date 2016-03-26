@@ -166,14 +166,16 @@ body.bibli {
       .publi-btn {
 
         float: right;
+        margin-top: 4px;
+
+
         .button-wrapper {
-          display: inline-block;
+          display: block;
           float: none;
 
           &.button-wrapper_accept {
             display: none;
             width:  142px;
-            margin-top: 2px;
 
             span {
               width: 95px;
@@ -568,7 +570,7 @@ body.bibli {
     }
 
     .publi-btn {
-      display: inline-block;
+      display: block;
       float: none;
 
       position: absolute;

@@ -7162,7 +7162,7 @@ h1, h2, h3, h4, h5, h6 {
 
 body {
   margin: 0;
-  background-color: #EFEFEF;
+  background-color: #efefef;
   color: #000;
   font-size: 1em;
   font-family: 'fira', sans-serif; }
@@ -7548,14 +7548,14 @@ body.bibli {
         margin: 0;
         margin-top: 6px; }
       .montage .montage-edit .montage-title .publi-btn {
-        float: right; }
+        float: right;
+        margin-top: 4px; }
         .montage .montage-edit .montage-title .publi-btn .button-wrapper {
-          display: inline-block;
+          display: block;
           float: none; }
           .montage .montage-edit .montage-title .publi-btn .button-wrapper.button-wrapper_accept {
             display: none;
-            width: 142px;
-            margin-top: 2px; }
+            width: 142px; }
             .montage .montage-edit .montage-title .publi-btn .button-wrapper.button-wrapper_accept span {
               width: 95px; }
       .montage .montage-edit .montage-title input {
@@ -7800,7 +7800,7 @@ body.bibli {
         .montage-list .publi-folder .content .title:hover {
           color: #EF474B; }
     .montage-list .publi-folder .publi-btn {
-      display: inline-block;
+      display: block;
       float: none;
       position: absolute;
       right: 9px;
@@ -7989,17 +7989,16 @@ body.capture .content-wrapper:after {
   clear: both; }
 
 .media-choice {
-  margin-top: 25px;
-  margin-bottom: 35px; }
+  margin-top: 16px;
+  margin-bottom: 16px; }
   .media-choice .btn-choice {
     text-align: center; }
     .media-choice .btn-choice button {
       color: #333;
       margin: 0;
       outline: none;
-      font-size: 1.2em;
-      letter-spacing: .03em;
-      padding: 9px 22px;
+      font-size: 1.1em;
+      padding: 9px 16px;
       margin-right: 16px;
       border-radius: 4px; }
       .media-choice .btn-choice button:last-of-type {
@@ -8052,7 +8051,7 @@ body.capture .content-wrapper:after {
     padding: 2vh; }
   .captureLeft .video-view {
     position: relative;
-    padding-bottom: 100px;
+    padding-bottom: 80px;
     height: 100%; }
     body.is--fullscreen .captureLeft .video-view {
       padding-bottom: 0; }
@@ -8063,9 +8062,9 @@ body.capture .content-wrapper:after {
     z-index: 1000;
     text-align: center;
     position: absolute;
-    padding-top: 16px;
-    padding-bottom: 16px;
-    height: 100px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    height: 80px;
     bottom: 0;
     width: 100%;
     overflow: hidden; }
@@ -8156,8 +8155,11 @@ body.capture .content-wrapper:after {
     margin-top: -20px; }
     body.is--fullscreen .captureLeft .button-wrapper_gofullscreen {
       display: none; }
-  body:not([class*=is--fullscreen]) .captureLeft .button-wrapper_leavefullscreen {
-    display: none; }
+  .captureLeft .button-wrapper_leavefullscreen {
+    margin-right: 20px;
+    margin-top: 20px; }
+    body:not([class*=is--fullscreen]) .captureLeft .button-wrapper_leavefullscreen {
+      display: none; }
   .captureLeft .recording-feedback {
     position: absolute;
     z-index: 100;
