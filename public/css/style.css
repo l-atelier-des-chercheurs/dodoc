@@ -7214,6 +7214,9 @@ button {
   border: none;
   background: #eee;
   font-family: inherit; }
+  button.button_coteacote {
+    display: inline-block;
+    margin-right: 8px; }
 
 .legende {
   font-style: italic;
