@@ -73,9 +73,9 @@ function init(){
 
 // Envoie les données du dossier au serveur
 function submitFolder($button, send){
-	$button.on('click', function(){
+	$button.on( 'click', function(){
 		var newFolderName = $('input.new-folder').val();
-		socket.emit(send, {name: newFolderName});
+		socket.emit( send, { name: newFolderName });
 	})
 }
 

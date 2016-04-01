@@ -3,14 +3,12 @@ var fs = require('fs-extra'),
 	path = require("path"),
 	gm = require('gm'),
 	markdown = require( "markdown" ).markdown,
+	moment = require( "moment" ),
 	exec = require('child_process').exec,
 	phantom = require('phantom'),
 	ffmpeg = require('fluent-ffmpeg'),
 	sprintf = require("sprintf-js").sprintf,
-	vsprintf = require("sprintf-js").vsprintf,
-	markdown = require( "markdown" ).markdown;
-
-
+	vsprintf = require("sprintf-js").vsprintf;
 
 module.exports = function(app, io){
 
@@ -85,27 +83,49 @@ module.exports = function(app, io){
 	// I N D E X     P A G E
 
 		// Créer un nouveau dossier
-		function onNewFolder(folder) {
+		function onNewFolder( folder) {
+
 			var folderName = folder.name;
-			var formatFolderName = convertToSlug(folderName);
-			var folderPath = 'sessions/'+formatFolderName;
-			var currentDate = Date.now();
+			var slugFolderName = convertToSlug(folderName);
+			var folderPath = getFolderPath( slugFolderName);
+			var currentDateString = getCurrentDate();
+
+      console.log( "date string :  " + currentDateString);
+      return;
 
 			// Vérifie si le dossier existe déjà
 			fs.access(folderPath, fs.F_OK, function(err) {
 				// S'il n'existe pas -> créer le dossier et le json
 		    if (err) {
-		    	console.log("dossier crée");
+
+		    	console.log("New folder created with name " + formatFolderName);
 		      fs.ensureDirSync(folderPath);//write new folder in sessions
 
-		      var jsonFile = 'sessions/' + formatFolderName + '/' +formatFolderName+'.json';
-		      var objectJson = {"name":folderName, "created":currentDate, "modified":null, "statut":'en cours', "nb_projets":0};
-		      var objectToSend = {name: folderName, created: currentDate, modified:null, statut:"en cours", nb_projets:0 };
-		      writeJsonFile(jsonFile, objectJson, objectToSend, "folderCreated"); //write json File
+		      var folderJSONFile = getJsonFileOfFolder( formatFolderName);
+
+		      var objectJson =
+		        {
+  		        "name":folderName,
+  		        "created":currentDate,
+  		        "modified":null,
+  		        "statut":'en cours',
+  		        "nb_projets":0
+  		      };
+
+		      var objectToSend =
+  		      {
+    		      name: folderName,
+    		      created: currentDate,
+    		      modified:null,
+    		      statut:"en cours",
+    		      nb_projets:0
+    		    };
+
+		      writeJsonFile( folderJSONFile, objectJson, objectJson, "folderCreated"); //write json File
 		    }
 		    // S'il existe afficher un message d'erreur
 		    else {
-		      console.log("le dossier existe déjà !");
+		      console.log("The following folder name already exists:" + formatFolderName);
 		      io.sockets.emit("folderAlreadyExist", {name: folderName, timestamp: currentDate });
 		    }
 			});
@@ -1119,6 +1139,18 @@ module.exports = function(app, io){
 	// - - -
 
 	// C O M M O N      F U N C T I O N
+
+    function getJsonFileOfFolder( formattedFolderName) {
+      return 'sessions/' + formatFolderName + '/dossier.json';
+    }
+    function getFolderPath( slugFolderName) {
+      return 'sessions/' + slugFolderName;
+    }
+    function getCurrentDate() {
+      return moment().format('YYYYMMDD_HH:mm:ss');
+    }
+
+
 		function writeToDisk(dataURL, fileName, session, projet) {
 	    var fileExtension = fileName.split('.').pop(),
 	        fileRootNameWithBase = './sessions/' + session + '/' + projet + '/' + fileName,
