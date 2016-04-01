@@ -87,6 +87,12 @@ button{
 	border:none;
 	background: #eee;
   font-family: inherit;
+
+  &.button_coteacote {
+    display: inline-block;
+    margin-right:   $margin/2;
+  }
+
 }
 
 .legende {
