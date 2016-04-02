@@ -23,7 +23,7 @@ module.exports = function(app, io){
   // previously /^\..*/
   // see http://regexr.com/3d4t8
 	var regexpMatchFolderNames = new RegExp(/^([^.]+)$/igm);
-
+  var regexpMatchProjectPreviewNames = new RegExp(/^(apercu|preview)/igm);
 
 
 	io.on("connection", function(socket){
@@ -95,7 +95,7 @@ module.exports = function(app, io){
 
 			var folderName = folder.name;
 			var slugFolderName = convertToSlug(folderName);
-			var folderPath = getFolderPath( slugFolderName);
+			var folderPath = getFullPath( slugFolderName);
 			var currentDateString = getCurrentDate();
 
 			// Vérifie si le dossier existe déjà
@@ -129,53 +129,47 @@ module.exports = function(app, io){
 		// Liste les dossiers déjà existant
 		function listFolder(socket){
 
-			fs.readdir( contentDir, function (err, files) {
+			fs.readdir( contentDir, function (err, folders) {
 
-				if (err) {
-		      console.log('Error: ', err);
-		      return;
-		    }
+        if (err) return console.log(err);
 
-// 		    console.log( "Number of folders in " + contentDir + " = " + files.length);
-
-			  files
-  			  .sort(function(a, b) {
-  	        return fs.statSync( contentDir + a).mtime.getTime() - fs.statSync( contentDir + b).mtime.getTime();
-  	      })
+// 		    console.log( "Number of folders in " + contentDir + " = " + folders.length);
+			  folders
   			  .forEach( function( folderName) {
 
 //             console.log( "- folderName = " + folderName);
   			    if( regexpMatchFolderNames.test( folderName)){
 //               console.log( "--- Has passed check : " + folderName);
 
-  			    	var folderJSON = getFolderJSON( folderName);
+  			    	var folderJSON = getFolderDataJSON( folderName);
   						socket.emit('listOneFolder', folderJSON);
 
-  						return;
+              var folderPath = getFullPath( folderName);
 
-  						// read all projects into folders
-  						var projectDir = dir + file +'/';
 
-  						fs.readdir(projectDir, function (err, projects) {
+              // list all projects
+  						fs.readdir( folderPath, function (err, projects) {
 
-  					  	if (err) {
-  					      console.log('Error: ', err);
-  					      return;
-  					    }
-  						  projects.sort(function(c, d) {
-  				        return fs.statSync(projectDir + c).mtime.getTime() - fs.statSync(projectDir + d).mtime.getTime();
-  				      })
-  						  .forEach( function (project) {
-  						  	if(fs.statSync(path.join(projectDir, project)).isDirectory()){
-  									if(! /^\..*/.test(project)){
-  										var jsonFileProj = projectDir +'/'+ project + '/' +project+'.json';
-  										var dataProj = fs.readFileSync(jsonFileProj,"UTF-8");
-  										var jsonObjProj = JSON.parse(dataProj);
-  										socket.emit('listChildren', {parentName:convertToSlug(jsonObj.name), childrenName:jsonObjProj.name, childrenImage:jsonObjProj.fileName});
+                if (err) return console.log(err);
 
-  							  	}
-  								}
-  						  });
+//         		    console.log( "Number of folders in " + folderPath + " = " + projects.length);
+        			  projects
+          			  .forEach( function( projectName) {
+
+//                     console.log( "- projectName = " + projectName);
+          			    if( regexpMatchFolderNames.test( projectName)){
+                      console.log( "--- Has passed check : " + projectName);
+                      var folderPath = folderName + "/" + projectName;
+
+                      var projectJSON = getProjectDataJSON( folderPath);
+                      projectJSON.folderName = folderJSON.name;
+                      projectJSON.projectPreviewName = getProjectPreview( folderPath);
+
+                      console.log( "projectJSON " + JSON.stringify( projectJSON));
+
+                      socket.emit( 'listProjects', projectJSON);
+                    }
+                  });
   					  });
   						// fs.readdirSync(projectDir).filter(function(project){
   						// 	if(fs.statSync(path.join(projectDir, project)).isDirectory()){
@@ -1140,17 +1134,17 @@ module.exports = function(app, io){
 
 	// C O M M O N      F U N C T I O N
 
-    function getJsonFileOfFolder( slugFolderName) {
-      return contentDir + slugFolderName + '/dossier.json';
+    function getFullPath( path) {
+      return contentDir + path;
     }
-    function getFolderPath( slugFolderName) {
-      return contentDir + slugFolderName;
+    function getJsonFileOfFolder( folderPath) {
+      return getFullPath( folderPath) + '/dossier.json';
     }
     function getCurrentDate() {
       return moment().format('YYYYMMDD_HH:mm:ss');
     }
 
-    function getFolderJSON( folderName) {
+    function getFolderDataJSON( folderName) {
 
     	var folderJSONFile = getJsonFileOfFolder( folderName);
 
@@ -1164,6 +1158,42 @@ module.exports = function(app, io){
 			  "statut" : folderJSONdata.statut,
 			  "nb_projets" : folderJSONdata.nb_projets
 			};
+    }
+
+    function getJsonFileOfProject( projectPath) {
+      return getFullPath( projectPath) + '/projet.json';
+    }
+
+    function getProjectDataJSON( projectPath) {
+
+      var projectJSONFile = getJsonFileOfProject( projectPath);
+
+			var projectData = fs.readFileSync( projectJSONFile,"UTF-8");
+			var projectJSONdata = JSON.parse(projectData);
+
+      return {
+			  "projectName" : projectJSONdata.name,
+			};
+    }
+
+    function getProjectPreview( projectPath) {
+
+      var projectFullPath = getFullPath( projectPath);
+      console.log( "1. Detecting preview");
+
+      // looking for an image whose name starts with apercu or preview in this folder
+      var filesInProjectFolder = fs.readdirSync( projectFullPath);
+      var previewName = false;
+
+      filesInProjectFolder.forEach( function( filename) {
+        if( regexpMatchProjectPreviewNames.test(filename)) {
+          previewName = filename;
+          console.log( "- 3. match preview called " + previewName);
+        }
+      });
+      console.log( "- 4. filename ? " + previewName);
+      return previewName;
+
     }
 
 

@@ -12,7 +12,7 @@ socket.on('error', onSocketError);
 socket.on('folderCreated', onFolderCreated); // Quand un dossier est crée
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 socket.on('listOneFolder', onListOneFolder); // Liste tous les dossiers
-socket.on('listChildren', onListChildren); // Liste tous les enfants des dossiers
+socket.on('listProjects', onListProjects); // Liste tous les enfants des dossiers
 socket.on('folderModified', onFolderModified);
 socket.on('folderRemoved', onFolderRemoved);
 
@@ -111,24 +111,34 @@ function onListOneFolder(data){
 	displayFolder(folderName, createdDate, modifiedDate, statut, nb_projets);
 }
 
-function onListChildren(data){
-	var parentName = data.parentName;
-	var childrenName = data.childrenName;
-	var image = data.childrenImage;
-	var $parent = $("li.dossier[data-name="+parentName+"]");
+function onListProjects(data){
+
+  debugger;
+
+	var folderName = data.folderName;
+	var projectName = data.projectName;
+	var projectPreviewName = data.projectPreviewName;
+
+	var folderNameSlug = convertToSlug( folderName);
+	var projectNameSlug = convertToSlug( projectName);
+	var projectPath = '/' + folderNameSlug + '/' + projectNameSlug;
+
+	var $folder = $("li.dossier[data-name=" + folderNameSlug + "]");
+
 	var newSnippetProjet = $(".js--templates > .projetSnippet").clone(false);
 
-	if(image != true){
+	if( projectPreviewName == undefined){
   	newSnippetProjet.find( '.vignette-visuel img').remove();
 	}
 
+
   // customisation du projet
 	newSnippetProjet
-    .find( '.project-link').attr('href', '/' + parentName + '/' + convertToSlug(childrenName)).end()
-    .find( 'h3').text( childrenName).end()
-    .find( '.vignette-visuel img').attr( 'src', "/"+parentName+"/"+convertToSlug(childrenName)+"/"+convertToSlug(childrenName)+"-thumb.jpg").attr( 'alt', childrenName);
+    .find( '.project-link').attr('href', projectPath).end()
+    .find( 'h3').text( projectName).end()
+    .find( '.vignette-visuel img').attr( 'src', projectPath + "/" + projectPreviewName).attr( 'alt', projectName);
   ;
-	$parent.find(".projet-list").prepend(newSnippetProjet);
+	$folder.find(".projet-list").prepend(newSnippetProjet);
 }
 
 // Fonction qui affiche les dossiers HTML
