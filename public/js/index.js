@@ -9,9 +9,9 @@ var thisFolder;
 /* sockets */
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
-socket.on('folderCreated', onFolderCreated); // Quand un dossier est crée !
+socket.on('folderCreated', onFolderCreated); // Quand un dossier est crée
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
-socket.on('listFolder', onListFolder); // Liste tous les dossiers
+socket.on('listOneFolder', onListOneFolder); // Liste tous les dossiers
 socket.on('listChildren', onListChildren); // Liste tous les enfants des dossiers
 socket.on('folderModified', onFolderModified);
 socket.on('folderRemoved', onFolderRemoved);
@@ -101,7 +101,7 @@ function onFolderAlreadyExist(data){
 }
 
 // Liste les dossiers
-function onListFolder(data){
+function onListOneFolder(data){
 	var folderName = data.name;
 	var createdDate = transformDatetoString(data.created);
 	if(data.modified!= null){var modifiedDate = transformDatetoString(data.modified);}

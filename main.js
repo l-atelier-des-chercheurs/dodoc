@@ -15,8 +15,16 @@ module.exports = function(app, io){
 	console.log("main module initialized");
 
 	// VARIABLES
-	var sessions_p = "sessions/";
+
+	// ou stocker les contenus
+	var contentDir = "sessions/";
 	var session_list = [];
+
+  // previously /^\..*/
+  // see http://regexr.com/3d4t8
+	var regexpMatchFolderNames = new RegExp(/^([^.]+)$/igm);
+
+
 
 	io.on("connection", function(socket){
 		// I N D E X    P A G E
@@ -82,7 +90,7 @@ module.exports = function(app, io){
 
 	// I N D E X     P A G E
 
-		// Créer un nouveau dossier
+		// Create a new folder
 		function onNewFolder( folder) {
 
 			var folderName = folder.name;
@@ -90,107 +98,99 @@ module.exports = function(app, io){
 			var folderPath = getFolderPath( slugFolderName);
 			var currentDateString = getCurrentDate();
 
-      console.log( "date string :  " + currentDateString);
-      return;
-
 			// Vérifie si le dossier existe déjà
 			fs.access(folderPath, fs.F_OK, function(err) {
 				// S'il n'existe pas -> créer le dossier et le json
 		    if (err) {
 
-		    	console.log("New folder created with name " + formatFolderName);
+		    	console.log("New folder created with name " + slugFolderName);
 		      fs.ensureDirSync(folderPath);//write new folder in sessions
 
-		      var folderJSONFile = getJsonFileOfFolder( formatFolderName);
+		      var folderJSONFile = getJsonFileOfFolder( slugFolderName);
 
 		      var objectJson =
-		        {
-  		        "name":folderName,
-  		        "created":currentDate,
-  		        "modified":null,
-  		        "statut":'en cours',
-  		        "nb_projets":0
-  		      };
-
-		      var objectToSend =
-  		      {
-    		      name: folderName,
-    		      created: currentDate,
-    		      modified:null,
-    		      statut:"en cours",
-    		      nb_projets:0
-    		    };
-
-		      writeJsonFile( folderJSONFile, objectJson, objectJson, "folderCreated"); //write json File
+	        {
+		        "name" : folderName,
+		        "created" : currentDateString,
+		        "modified" : null,
+		        "statut" : 'en cours',
+		        "nb_projets" : 0
+		      };
+		      writeJsonFile( folderJSONFile, objectJson, "folderCreated"); //write json File
 		    }
 		    // S'il existe afficher un message d'erreur
 		    else {
-		      console.log("The following folder name already exists:" + formatFolderName);
-		      io.sockets.emit("folderAlreadyExist", {name: folderName, timestamp: currentDate });
+		      console.log("The following folder name already exists:" + slugFolderName);
+		      io.sockets.emit("folderAlreadyExist", { "name": folderName, "timestamp": currentDateString });
 		    }
 			});
 		}
 
 		// Liste les dossiers déjà existant
 		function listFolder(socket){
-			var dir = "sessions/";
-			fs.readdir(dir, function (err, files) {
-				if(dir == ".DS_Store"){
-			   	fs.unlink(dir);
-			  }
+
+			fs.readdir( contentDir, function (err, files) {
+
 				if (err) {
 		      console.log('Error: ', err);
 		      return;
 		    }
-			  files.sort(function(a, b) {
-	        return fs.statSync(dir + a).mtime.getTime() - fs.statSync(dir + b).mtime.getTime();
-	      })
-			  .forEach( function (file) {
-			  	if(file == ".DS_Store"){
-			    	fs.unlink(dir+file);
-			    }
-			    if(! /^\..*/.test(file)){
-			    	// Folder data
-				  	var jsonFile = dir + file + '/' +file+'.json';
-						var data = fs.readFileSync(jsonFile,"UTF-8");
-						var jsonObj = JSON.parse(data);
-						socket.emit('listFolder', {name:jsonObj.name, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, nb_projets:jsonObj.nb_projets});
-						// read all projects into folders
-						var projectDir = dir + file +'/';
-						fs.readdir(projectDir, function (err, projects) {
-					  	if (err) {
-					      console.log('Error: ', err);
-					      return;
-					    }
-						  projects.sort(function(c, d) {
-				        return fs.statSync(projectDir + c).mtime.getTime() - fs.statSync(projectDir + d).mtime.getTime();
-				      })
-						  .forEach( function (project) {
-						  	if(fs.statSync(path.join(projectDir, project)).isDirectory()){
-									if(! /^\..*/.test(project)){
-										var jsonFileProj = projectDir +'/'+ project + '/' +project+'.json';
-										var dataProj = fs.readFileSync(jsonFileProj,"UTF-8");
-										var jsonObjProj = JSON.parse(dataProj);
-										socket.emit('listChildren', {parentName:convertToSlug(jsonObj.name), childrenName:jsonObjProj.name, childrenImage:jsonObjProj.fileName});
 
-							  	}
-								}
-						  });
-					  });
-						// fs.readdirSync(projectDir).filter(function(project){
-						// 	if(fs.statSync(path.join(projectDir, project)).isDirectory()){
-						// 		if(! /^\..*/.test(project)){
-						// 			var jsonFileProj = projectDir +'/'+ project + '/' +project+'.json';
-						// 			var dataProj = fs.readFileSync(jsonFileProj,"UTF-8");
-						// 			var jsonObjProj = JSON.parse(dataProj);
-						// 			socket.emit('listChildren', {parentName:convertToSlug(jsonObj.name), childrenName:jsonObjProj.name, childrenImage:jsonObjProj.fileName});
+// 		    console.log( "Number of folders in " + contentDir + " = " + files.length);
 
-						//   	}
-						// 	}
-				  // 	});
-			  	}
+			  files
+  			  .sort(function(a, b) {
+  	        return fs.statSync( contentDir + a).mtime.getTime() - fs.statSync( contentDir + b).mtime.getTime();
+  	      })
+  			  .forEach( function( folderName) {
 
-			  });
+//             console.log( "- folderName = " + folderName);
+  			    if( regexpMatchFolderNames.test( folderName)){
+//               console.log( "--- Has passed check : " + folderName);
+
+  			    	var folderJSON = getFolderJSON( folderName);
+  						socket.emit('listOneFolder', folderJSON);
+
+  						return;
+
+  						// read all projects into folders
+  						var projectDir = dir + file +'/';
+
+  						fs.readdir(projectDir, function (err, projects) {
+
+  					  	if (err) {
+  					      console.log('Error: ', err);
+  					      return;
+  					    }
+  						  projects.sort(function(c, d) {
+  				        return fs.statSync(projectDir + c).mtime.getTime() - fs.statSync(projectDir + d).mtime.getTime();
+  				      })
+  						  .forEach( function (project) {
+  						  	if(fs.statSync(path.join(projectDir, project)).isDirectory()){
+  									if(! /^\..*/.test(project)){
+  										var jsonFileProj = projectDir +'/'+ project + '/' +project+'.json';
+  										var dataProj = fs.readFileSync(jsonFileProj,"UTF-8");
+  										var jsonObjProj = JSON.parse(dataProj);
+  										socket.emit('listChildren', {parentName:convertToSlug(jsonObj.name), childrenName:jsonObjProj.name, childrenImage:jsonObjProj.fileName});
+
+  							  	}
+  								}
+  						  });
+  					  });
+  						// fs.readdirSync(projectDir).filter(function(project){
+  						// 	if(fs.statSync(path.join(projectDir, project)).isDirectory()){
+  						// 		if(! /^\..*/.test(project)){
+  						// 			var jsonFileProj = projectDir +'/'+ project + '/' +project+'.json';
+  						// 			var dataProj = fs.readFileSync(jsonFileProj,"UTF-8");
+  						// 			var jsonObjProj = JSON.parse(dataProj);
+  						// 			socket.emit('listChildren', {parentName:convertToSlug(jsonObj.name), childrenName:jsonObjProj.name, childrenImage:jsonObjProj.fileName});
+
+  						//   	}
+  						// 	}
+  				  // 	});
+  			  	}
+
+  			  });
 			});
 		}
 
@@ -198,11 +198,11 @@ module.exports = function(app, io){
 		function onModifyFolder(folder){
 			var oldFolder = folder.oldname;
 			var oldFormatFolderName = convertToSlug(oldFolder);
-			var oldFolderPath = 'sessions/'+oldFormatFolderName;
+			var oldFolderPath = contentDir +oldFormatFolderName;
 
 			var newFolder = folder.name;
 			var newFormatFolderName = convertToSlug(newFolder);
-			var newFolderPath = 'sessions/'+newFormatFolderName;
+			var newFolderPath = contentDir +newFormatFolderName;
 			console.log(newFolderPath);
 
 			var newStatut = folder.statut;
@@ -248,7 +248,7 @@ module.exports = function(app, io){
 		// Supprimer un dossier
 		function onRemoveFolder(folder){
 			var folderName = convertToSlug(folder.name);
-			var folderPath = 'sessions/'+folderName;
+			var folderPath = contentDir + folderName;
 			rmDir(folderPath);
 			io.sockets.emit('folderRemoved');
 		}
@@ -259,7 +259,7 @@ module.exports = function(app, io){
 		// Liste les projets existants
 		function listProject(session, socket){
 			//console.log(socket);
-			var dir = "sessions/"+session.session+"/";
+			var dir = +session.session+"/";
 			var sessionName;
 			fs.readdir(dir, function (err, files) {
 		  	if (err) {
@@ -303,7 +303,7 @@ module.exports = function(app, io){
 		function onNewProject(project) {
 			var projectName = project.name;
 			var formatProjectName = convertToSlug(projectName);
-			var projectPath = 'sessions/'+project.session+"/"+formatProjectName;
+			var projectPath = contentDir + project.session+"/"+formatProjectName;
 			var currentDate = Date.now();
 
 			// Vérifie si le projet existe déjà
@@ -333,7 +333,7 @@ module.exports = function(app, io){
 			});
 
 			//Change le nombre de projets dans le dossier parent
-			changeJsonFile('sessions/'+project.session+'/'+project.session+'.json');
+			changeJsonFile( contentDir +project.session+'/'+project.session+'.json');
 			function changeJsonFile(file){
 				var jsonContent = fs.readFileSync(file,"UTF-8");
 				var jsonObj = JSON.parse(jsonContent);
@@ -351,11 +351,11 @@ module.exports = function(app, io){
 
 			var oldProject = project.oldname;
 			var oldFormatProjectName = convertToSlug(oldProject);
-			var oldProjectPath = 'sessions/'+ session + '/' + oldFormatProjectName;
+			var oldProjectPath = contentDir + session + '/' + oldFormatProjectName;
 
 			var newProject = project.name;
 			var newFormatProjectName = convertToSlug(newProject);
-			var newProjectPath = 'sessions/'+ session + '/' + newFormatProjectName;
+			var newProjectPath = contentDir + session + '/' + newFormatProjectName;
 
 			var newStatut = project.statut;
 			var currentDate = Date.now();
@@ -445,7 +445,7 @@ module.exports = function(app, io){
 			console.log(project);
 			var session = project.session;
 			var projectName = convertToSlug(project.name);
-			var projectPath = 'sessions/'+session + '/' + projectName;
+			var projectPath = contentDir +session + '/' + projectName;
 			rmDir(projectPath);
 			io.sockets.emit('folderRemoved');
 		}
@@ -454,8 +454,8 @@ module.exports = function(app, io){
 
 	// P R O J E T      P A G E
 		function displayProject(data, socket){
-			var dir = "sessions/"+data.session+"/"+data.project;
-			var dirPubli = "sessions/"+data.session+"/"+data.project+'/montage';
+			var dir = contentDir + data.session+"/"+data.project;
+			var dirPubli = contentDir + data.session+"/"+data.project+'/montage';
 			var file = dir+"/"+data.project+'.json';
 			var jsonObj;
 			fs.readFile(file, 'utf8', function (err, data) {
@@ -509,7 +509,7 @@ module.exports = function(app, io){
 
 			var imageBuffer = decodeBase64Image(dataImage);
 			var currentDate = Date.now();
-			var filePath = 'sessions/' + session + '/' +project+"/"+ currentDate + '.jpg';
+			var filePath = contentDir + session + '/' +project+"/"+ currentDate + '.jpg';
 			console.log(filePath);
 			fs.writeFile(filePath , imageBuffer.data, function(err) {
 				if(err){
@@ -521,7 +521,7 @@ module.exports = function(app, io){
 				}
 			});
 
-			var jsonFile = 'sessions/' + session + '/'+ project+"/" +project+'.json';
+			var jsonFile = contentDir + session + '/'+ project+"/" +project+'.json';
 			var data = fs.readFileSync(jsonFile,"UTF-8");
 			var jsonObj = JSON.parse(data);
 			var jsonAdd = { "name" : currentDate};
@@ -536,13 +536,13 @@ module.exports = function(app, io){
 		  var session = data.session;
 		  var project = data.project
 
-		  var projectDirectory = 'sessions/' + session + '/'+ project;
+		  var projectDirectory = contentDir + session + '/'+ project;
 
 		  writeToDisk(data.data.video.dataURL, fileName + '.webm', session, project);
 		  io.sockets.emit('showVideo', {file: fileName + '.webm', session:session, project:project});
 			io.sockets.emit('mediaCreated', {file:fileName + '.webm'});
 		  //Write data to json
-	    var jsonFile = 'sessions/' + session + '/' +project + '/'+project+'.json';
+	    var jsonFile = contentDir + session + '/' +project + '/'+project+'.json';
 			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
 			var jsonObj = JSON.parse(jsonData);
 			var jsonAdd = { "name" : fileName};
@@ -556,7 +556,7 @@ module.exports = function(app, io){
 
 		// Crée un nouveau dossier pour le stop motion
 		function onNewStopMotion(data) {
-			var StopMotionDirectory = 'sessions/' + data.session +'/'+ data.project+'/01-stopmotion';
+			var StopMotionDirectory = contentDir + data.session +'/'+ data.project+'/01-stopmotion';
 			if(StopMotionDirectory){
 				fs.removeSync(StopMotionDirectory);
 			}
@@ -590,8 +590,8 @@ module.exports = function(app, io){
 			var fileName = currentDate;
 
 			//SAVE VIDEO
-			var videoPath = 'sessions/' + req.session + '/' +req.project+'/'+ fileName + '.mp4';
-			var projetDir = 'sessions/' + req.session+"/"+req.project;
+			var videoPath = contentDir + req.session + '/' +req.project+'/'+ fileName + '.mp4';
+			var projetDir = contentDir + req.session+"/"+req.project;
 			//make sure you set the correct path to your video file
 			var proc = new ffmpeg({ source: req.dir + '/%d.png'})
 			  // using 12 fps
@@ -610,7 +610,7 @@ module.exports = function(app, io){
 			  .save(videoPath);
 			  io.sockets.emit('mediaCreated', {file:fileName + '.mp4'});
 
-			var jsonFile = 'sessions/' + req.session + '/'+req.project+"/"+req.project+'.json';
+			var jsonFile = contentDir + req.session + '/'+req.project+"/"+req.project+'.json';
 			var data = fs.readFileSync(jsonFile,"UTF-8");
 			var jsonObj = JSON.parse(data);
 			var jsonAdd = { "name" : currentDate};
@@ -626,7 +626,7 @@ module.exports = function(app, io){
 			var fileName = currentDate;
 	  	var fileWithExt = fileName + '.wav';
 	  	var fileExtension = fileWithExt.split('.').pop(),
-	      fileRootNameWithBase = './sessions/' + req.session +'/'+ req.project +'/'+fileWithExt,
+	      fileRootNameWithBase = './' + contentDir + req.session +'/'+ req.project +'/'+fileWithExt,
 	      filePath = fileRootNameWithBase,
 	      fileID = 2,
 	      fileBuffer;
@@ -638,7 +638,7 @@ module.exports = function(app, io){
 		    io.sockets.emit('mediaCreated', {file:fileWithExt});
 
 				//add data to json file
-				var jsonFile = 'sessions/' + req.session + '/'+ req.project+'/'+req.project+'.json';
+				var jsonFile = contentDir + req.session + '/'+ req.project+'/'+req.project+'.json';
 				var data = fs.readFileSync(jsonFile,"UTF-8");
 				var jsonObj = JSON.parse(data);
 				var jsonAdd = { "name" : currentDate};
@@ -649,10 +649,10 @@ module.exports = function(app, io){
 
 		// Delete File
 		function onDeleteFileBibli(req){
-			var fileToDelete = 'sessions/' + req.session +'/'+req.project+'/'+req.file;
+			var fileToDelete = contentDir + req.session +'/'+req.project+'/'+req.file;
 			var extension = req.file.split('.').pop();
   		var identifiant =  req.id;
-  		var thumbToDelete = 'sessions/' + req.session +'/'+req.project+'/'+identifiant + '-thumb.png';
+  		var thumbToDelete = contentDir + req.session +'/'+req.project+'/'+identifiant + '-thumb.png';
 			console.log('delete file', fileToDelete);
 			fs.unlink(fileToDelete, function(err){
 				if(err) return console.log(err);
@@ -674,11 +674,11 @@ module.exports = function(app, io){
 	// B I B L I    P A G E
 		function listMedias(media, socket){
 			//read json file to send data
-			var jsonFile = 'sessions/' + media.session + '/' + media.project +'/'+media.project+'.json';
+			var jsonFile = contentDir + media.session + '/' + media.project +'/'+media.project+'.json';
 			var data = fs.readFileSync(jsonFile,"UTF-8");
 			var jsonObj = JSON.parse(data);
 
-			var dir = "sessions/" + media.session + '/' + media.project +'/';
+			var dir = contentDir + media.session + '/' + media.project +'/';
 			fs.readdir(dir, function(err, files) {
 				var media = [];
 				if (err) {console.log(err)};
@@ -701,7 +701,7 @@ module.exports = function(app, io){
 		}
 
 		function readTxt(txt){
-			var dir = "sessions/" + txt.session + '/' + txt.project +'/';
+			var dir = contentDir + txt.session + '/' + txt.project +'/';
 			fs.readFile(dir + txt.file.file, 'utf8', function(err, data) {
 			  if (err)
 			    console.log( err);
@@ -711,7 +711,7 @@ module.exports = function(app, io){
 		}
 
 		function listPubli(data, socket){
-			var dir = "sessions/"+data.session+"/"+data.project+'/montage';
+			var dir = contentDir + data.session+"/"+data.project+'/montage';
 			// Vérifie si le dossier existe déjà
 			fs.access(dir, fs.F_OK, function(err) {
 		    if (err) { }
@@ -739,8 +739,8 @@ module.exports = function(app, io){
 		function newPublication(publi){
 			var folderName = publi.name;
 			var formatFolderName = convertToSlug(folderName);
-			var montagePath = 'sessions/'+publi.session+'/'+publi.project+'/montage';
-			var publiPath = 'sessions/'+publi.session+'/'+publi.project+'/montage/' + formatFolderName + '.json';
+			var montagePath = contentDir + publi.session+'/'+publi.project+'/montage';
+			var publiPath = contentDir + publi.session+'/'+publi.project+'/montage/' + formatFolderName + '.json';
 			var currentDate = Date.now();
 
 			// Vérifie si le dossier existe déjà
@@ -777,7 +777,7 @@ module.exports = function(app, io){
 		}
 
 		function displayMontage(data){
-			var file = "sessions/"+data.session+"/"+data.project+'/montage/'+data.name+'.json';
+			var file = contentDir + data.session+"/"+data.project+'/montage/'+data.name+'.json';
 			console.log(file);
 			fs.readFile(file, 'utf8', function (err, data) {
 			  if (err) console.log(err);
@@ -787,7 +787,7 @@ module.exports = function(app, io){
 		}
 
 		function saveMontage(req){
-			var dir = 'sessions/'+ req.session + "/" + req.projet;
+			var dir = contentDir + req.session + "/" + req.projet;
 			var montageDir = dir + '/montage';
 			var htmlFile = montageDir + '/' + convertToSlug(req.title) + '.json';
 			changeJsonFile(htmlFile);
@@ -804,10 +804,10 @@ module.exports = function(app, io){
 
 		function onTitleChanged(data){
 			var oldName = data.oldTitle;
-			var oldFilePath = 'sessions/'+data.session+'/'+data.project+'/montage/'+convertToSlug(oldName)+'.json';
+			var oldFilePath = contentDir + data.session+'/'+data.project+'/montage/'+convertToSlug(oldName)+'.json';
 
 			var newName = data.newTitle;
-			var newFilePath = 'sessions/'+data.session+'/'+data.project+'/montage/'+convertToSlug(newName)+'.json';
+			var newFilePath = contentDir + data.session+'/'+data.project+'/montage/'+convertToSlug(newName)+'.json';
 
 			// Vérifie si le dossier existe déjà
 			fs.access(newFilePath, fs.F_OK, function(err) {
@@ -842,8 +842,8 @@ module.exports = function(app, io){
 
 		function onNewText(text){
 			var currentDate = Date.now();
-			var jsonFile = 'sessions/' + text.session + '/'+ text.project+"/" +text.project+'.json';
-			var txtFile = 'sessions/' + text.session + '/'+ text.project+"/" +currentDate+'.txt';
+			var jsonFile = contentDir + text.session + '/'+ text.project+"/" +text.project+'.json';
+			var txtFile = contentDir + text.session + '/'+ text.project+"/" +currentDate+'.txt';
 			var data = fs.readFileSync(jsonFile,"UTF-8");
 			var jsonObj = JSON.parse(data);
 			var jsonAdd = { "id" : currentDate, "titre":text.title};
@@ -862,7 +862,7 @@ module.exports = function(app, io){
 		}
 
 		function onModifiedText(text){
-			var txtFile = 'sessions/' + text.session + '/'+ text.project+"/" +text.id+'.txt';
+			var txtFile = contentDir + text.session + '/'+ text.project+"/" +text.id+'.txt';
 			console.log(text);
 			fs.writeFile(txtFile, '### '+text.title+"\r\n"+text.text, function(err){
 				if(err) {
@@ -882,7 +882,7 @@ module.exports = function(app, io){
 
       console.log( "--- onMediaLegende");
 
-			var jsonFile = 'sessions/' + data.session + '/'+ data.project+"/" +data.project+'.json';
+			var jsonFile = contentDir + data.session + '/'+ data.project+"/" +data.project+'.json';
 			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
 			var jsonObj = JSON.parse(jsonData);
 			var id = data.id;
@@ -999,7 +999,7 @@ module.exports = function(app, io){
 		}
 
 		function onHighLighMedia(data){
-			var jsonFile = 'sessions/' + data.session + '/'+ data.project+"/" +data.project+'.json';
+			var jsonFile = contentDir + data.session + '/'+ data.project+"/" +data.project+'.json';
 			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
 			var jsonObj = JSON.parse(jsonData);
 			var id = data.id;
@@ -1053,7 +1053,7 @@ module.exports = function(app, io){
 		}
 
 		function onRemoveHighlight(data){
-			var jsonFile = 'sessions/' + data.session + '/'+ data.project+"/" +data.project+'.json';
+			var jsonFile = contentDir + data.session + '/'+ data.project+"/" +data.project+'.json';
 			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
 			var jsonObj = JSON.parse(jsonData);
 			var id = data.id;
@@ -1107,10 +1107,10 @@ module.exports = function(app, io){
 
 		// Delete File
 		function deleteFile(req){
-			var fileToDelete = 'sessions/' + req.session +'/'+req.project+'/'+req.file;
+			var fileToDelete = contentDir + req.session +'/'+req.project+'/'+req.file;
 			var extension = req.file.split('.').pop();
   		var identifiant =  req.file.replace("." + extension, "");
-  		var thumbToDelete = 'sessions/' + req.session +'/'+req.project+'/'+identifiant + '-thumb.png';
+  		var thumbToDelete = contentDir + req.session +'/'+req.project+'/'+identifiant + '-thumb.png';
 			console.log('delete file', thumbToDelete);
 			fs.unlink(fileToDelete);
 			fs.access(thumbToDelete, fs.F_OK, function(err) {
@@ -1127,7 +1127,7 @@ module.exports = function(app, io){
 
 	// P U B L I     P A G E
 		function displayPubli(data){
-			var file = "sessions/"+data.session+"/"+data.project+'/montage/'+data.publi+'.json';
+			var file = contentDir + data.session+"/"+data.project+'/montage/'+data.publi+'.json';
 			fs.readFile(file, 'utf8', function (err, data) {
 			  if (err) console.log(err);
 			  var jsonObj = JSON.parse(data);
@@ -1140,20 +1140,36 @@ module.exports = function(app, io){
 
 	// C O M M O N      F U N C T I O N
 
-    function getJsonFileOfFolder( formattedFolderName) {
-      return 'sessions/' + formatFolderName + '/dossier.json';
+    function getJsonFileOfFolder( slugFolderName) {
+      return contentDir + slugFolderName + '/dossier.json';
     }
     function getFolderPath( slugFolderName) {
-      return 'sessions/' + slugFolderName;
+      return contentDir + slugFolderName;
     }
     function getCurrentDate() {
       return moment().format('YYYYMMDD_HH:mm:ss');
     }
 
+    function getFolderJSON( folderName) {
+
+    	var folderJSONFile = getJsonFileOfFolder( folderName);
+
+			var folderData = fs.readFileSync( folderJSONFile,"UTF-8");
+			var folderJSONdata = JSON.parse(folderData);
+
+      return {
+			  "name" : folderJSONdata.name,
+			  "created" : folderJSONdata.created,
+			  "modified" : folderJSONdata.modified,
+			  "statut" : folderJSONdata.statut,
+			  "nb_projets" : folderJSONdata.nb_projets
+			};
+    }
+
 
 		function writeToDisk(dataURL, fileName, session, projet) {
 	    var fileExtension = fileName.split('.').pop(),
-	        fileRootNameWithBase = './sessions/' + session + '/' + projet + '/' + fileName,
+	        fileRootNameWithBase = './' + contentDir + session + '/' + projet + '/' + fileName,
 	        filePath = fileRootNameWithBase,
 	        fileID = 2,
 	        fileBuffer;
@@ -1181,15 +1197,15 @@ module.exports = function(app, io){
 	    });
 		}
 
-		function writeJsonFile(jsonFile, objectJson, objectToSend, send){
+		function writeJsonFile(jsonFile, objectJson, send){
 			var jsonString = JSON.stringify(objectJson, null, 4);
 			fs.appendFile(jsonFile, jsonString, function(err) {
 	      if(err) {
 	          console.log(err);
 	      }
 	      else {
-	        console.log("Le dossier été crée!");
-	      	io.sockets.emit(send, objectToSend);
+	        console.log("Success for event : " + send);
+	      	io.sockets.emit(send, objectJson);
 	      }
 	    });
 	  }
