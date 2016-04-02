@@ -1,20 +1,10 @@
 function transformDatetoString(date){
-	var date = new Date(date);
-	var day = date.getDate();
-	var month = date.getMonth() + 1;
-	var year = date.getFullYear();
-	if(month<10){month = "0"+month;}
-	if(day<10){day = "0"+day;}
-	var formatDate = day + "/" + month + "/" + year;
+  var getMomentObject = moment( date, 'YYYYMMDD_HH:mm:ss');
+  var formatDate = getMomentObject.format('Do MMMM YYYY');
 	return formatDate;
 }
 
 function convertToSlug(Text){
-  // return Text
-  // .toLowerCase()
-  // .replace(/ /g,'-')
-  // .replace(/[^\w-]+/g,'')
-  // ;
   // converti le texte en minuscule
 	var s = Text.toLowerCase();
 	// remplace les a accentué

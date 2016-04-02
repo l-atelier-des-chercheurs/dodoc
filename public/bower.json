@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "recordrtc": "^5.2.7",
-    "dragula.js": "dragula#^3.6.6"
+    "dragula.js": "dragula#^3.6.6",
+    "moment": "^2.12.0"
   }
 }

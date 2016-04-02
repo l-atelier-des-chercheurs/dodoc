@@ -242,7 +242,7 @@ function onFolderModified(data){
 	var name = data.name;
 	var statut = data.statut;
 	var modified = transformDatetoString(data.modified);
-	var created = $thisEl.find('.create-date').html();;
+	var created = $thisEl.find('.create-date').html();
 	var nbProj = $thisEl.find('.numero-projet').html();
 	$('#modal-modify-folder').foundation('reveal', 'close');
 
