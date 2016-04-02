@@ -8,13 +8,31 @@ var fs = require('fs-extra'),
 	phantom = require('phantom'),
 	ffmpeg = require('fluent-ffmpeg'),
 	sprintf = require("sprintf-js").sprintf,
-	vsprintf = require("sprintf-js").vsprintf;
+	vsprintf = require("sprintf-js").vsprintf,
+	flags = require('flags')
+;
 
 module.exports = function(app, io){
 
 	console.log("main module initialized");
 
+
 	// VARIABLES
+	flags.defineBoolean('debug');
+	flags.parse();
+	var isDebugMode = flags.get('debug');
+	if( isDebugMode) {
+    console.log( 'Debug mode is Enabled');
+    console.log( '---');
+  }
+
+  var dev = {
+    log : function( term) {
+      if( isDebugMode)
+        console.log( term);
+    }
+  };
+
 
 	// ou stocker les contenus
 	var contentDir = "sessions/";
@@ -133,13 +151,13 @@ module.exports = function(app, io){
 
         if (err) return console.log(err);
 
-// 		    console.log( "Number of folders in " + contentDir + " = " + folders.length);
+// 		    dev.log( "Number of folders in " + contentDir + " = " + folders.length);
 			  folders
   			  .forEach( function( folderName) {
 
-//             console.log( "- folderName = " + folderName);
+//             dev.log( "- folderName = " + folderName);
   			    if( regexpMatchFolderNames.test( folderName)){
-//               console.log( "--- Has passed check : " + folderName);
+//               dev.log( "--- Has passed check : " + folderName);
 
   			    	var folderJSON = getFolderDataJSON( folderName);
   						socket.emit('listOneFolder', folderJSON);
@@ -152,24 +170,23 @@ module.exports = function(app, io){
 
                 if (err) return console.log(err);
 
-//         		    console.log( "Number of folders in " + folderPath + " = " + projects.length);
-        			  projects
-          			  .forEach( function( projectName) {
+//         		    dev.log( "Number of folders in " + folderPath + " = " + projects.length);
+        			  projects.forEach( function( projectName) {
 
-//                     console.log( "- projectName = " + projectName);
-          			    if( regexpMatchFolderNames.test( projectName)){
-                      console.log( "--- Has passed check : " + projectName);
-                      var folderPath = folderName + "/" + projectName;
+//                  dev.log( "- projectName = " + projectName);
+        			    if( regexpMatchFolderNames.test( projectName)){
+                    dev.log( "--- Has passed check : " + projectName);
+                    var folderPath = folderName + "/" + projectName;
 
-                      var projectJSON = getProjectDataJSON( folderPath);
-                      projectJSON.folderName = folderJSON.name;
-                      projectJSON.projectPreviewName = getProjectPreview( folderPath);
+                    var projectJSON = getProjectDataJSON( folderPath);
+                    projectJSON.folderName = folderJSON.name;
+                    projectJSON.projectPreviewName = getProjectPreview( folderPath);
 
-                      console.log( "projectJSON " + JSON.stringify( projectJSON));
+                    dev.log( "projectJSON " + JSON.stringify( projectJSON));
 
-                      socket.emit( 'listProjects', projectJSON);
-                    }
-                  });
+                    socket.emit( 'listProjects', projectJSON);
+                  }
+                });
   					  });
   						// fs.readdirSync(projectDir).filter(function(project){
   						// 	if(fs.statSync(path.join(projectDir, project)).isDirectory()){
@@ -1179,7 +1196,7 @@ module.exports = function(app, io){
     function getProjectPreview( projectPath) {
 
       var projectFullPath = getFullPath( projectPath);
-      console.log( "1. Detecting preview");
+      dev.log( "1. Detecting preview");
 
       // looking for an image whose name starts with apercu or preview in this folder
       var filesInProjectFolder = fs.readdirSync( projectFullPath);
@@ -1188,10 +1205,10 @@ module.exports = function(app, io){
       filesInProjectFolder.forEach( function( filename) {
         if( regexpMatchProjectPreviewNames.test(filename)) {
           previewName = filename;
-          console.log( "- 3. match preview called " + previewName);
+          dev.log( "- 3. match preview called " + previewName);
         }
       });
-      console.log( "- 4. filename ? " + previewName);
+      dev.log( "- 4. filename ? " + previewName);
       return previewName;
 
     }
