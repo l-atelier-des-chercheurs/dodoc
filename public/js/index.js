@@ -12,7 +12,7 @@ socket.on('error', onSocketError);
 socket.on('folderCreated', onFolderCreated); // Quand un dossier est crée
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 socket.on('listOneFolder', onListOneFolder); // Liste tous les dossiers
-socket.on('listProjects', onListProjects); // Liste tous les enfants des dossiers
+socket.on('listProjects', onListOneProject); // Liste tous les enfants des dossiers
 socket.on('folderModified', onFolderModified);
 socket.on('folderRemoved', onFolderRemoved);
 
@@ -91,7 +91,8 @@ function onFolderCreated(data){
 	$('#modal-add-folder').foundation('reveal', 'close');
 	//closePopover(closeAddProjectFunction); // Close pop up
 
-	displayFolder(folderName, createdDate, modifiedDate, statut, nb_projets);
+	var folderContent = makeFolderContent(folderName, createdDate, modifiedDate, statut, nb_projets);
+	return insertOrReplaceFolder( folderName, folderContent);
 }
 
 // Si un fichier existe déjà, affiche un message d'alerte
@@ -102,18 +103,34 @@ function onFolderAlreadyExist(data){
 
 // Liste les dossiers
 function onListOneFolder(data){
+
 	var folderName = data.name;
 	var createdDate = transformDatetoString(data.created);
-	if(data.modified!= null){var modifiedDate = transformDatetoString(data.modified);}
-	else{var modifiedDate = data.modified;}
+	var modifiedDate = transformDatetoString(data.modified);
 	var statut = data.statut;
 	var nb_projets = data.nb_projets;
-	displayFolder(folderName, createdDate, modifiedDate, statut, nb_projets);
+
+	var folderContent = makeFolderContent(folderName, createdDate, modifiedDate, statut, nb_projets);
+  return insertOrReplaceFolder( folderName, folderContent);
 }
 
-function onListProjects(data){
+function insertOrReplaceFolder( folderName, folderContent) {
+  // folder slug
 
-  debugger;
+  var folderNameSlug = convertToSlug( folderName);
+
+  var $existingFolder = $(".dossier-list .dossier").filter( "[data-foldernameslug=" + folderNameSlug + "]");
+  if( $existingFolder.length == 1) {
+    $existingFolder.replaceWith( folderContent);
+    return "updated";
+  }
+
+	$(".dossier-list").prepend(folderContent);
+  return "inserted";
+
+}
+
+function onListOneProject(data){
 
 	var folderName = data.folderName;
 	var projectName = data.projectName;
@@ -123,7 +140,7 @@ function onListProjects(data){
 	var projectNameSlug = convertToSlug( projectName);
 	var projectPath = '/' + folderNameSlug + '/' + projectNameSlug;
 
-	var $folder = $("li.dossier[data-name=" + folderNameSlug + "]");
+	var $folder = $(".dossier-list .dossier[data-folderNameSlug=" + folderNameSlug + "]");
 
 	var newSnippetProjet = $(".js--templates > .projetSnippet").clone(false);
 
@@ -131,18 +148,18 @@ function onListProjects(data){
   	newSnippetProjet.find( '.vignette-visuel img').remove();
 	}
 
-
   // customisation du projet
 	newSnippetProjet
     .find( '.project-link').attr('href', projectPath).end()
     .find( 'h3').text( projectName).end()
     .find( '.vignette-visuel img').attr( 'src', projectPath + "/" + projectPreviewName).attr( 'alt', projectName);
   ;
+
 	$folder.find(".projet-list").prepend(newSnippetProjet);
 }
 
 // Fonction qui affiche les dossiers HTML
-function displayFolder(name, created, modified, statut, projets){
+function makeFolderContent(name, created, modified, statut, projets){
 	var formatName = convertToSlug(name);
 	var projetName = projets > 1 ? 'projets' : 'projet';
 
@@ -151,7 +168,7 @@ function displayFolder(name, created, modified, statut, projets){
   // customisation du projet
 	newFolder
 	  .attr( 'data-nom', name)
-	  .attr( 'data-name', formatName)
+	  .attr( 'data-folderNameSlug', formatName)
 	  .attr( 'data-statut', statut)
 	  .find( '.statut-type').text( statut).end()
 	  .find( '.folder-link')
@@ -161,7 +178,7 @@ function displayFolder(name, created, modified, statut, projets){
 
 	  .find( '.title').text( name).end()
 	  .find( '.create-date').text( created).end()
-	  .find( '.modify-date').text( modified !== null ? modified : '').end()
+	  .find( '.modify-date').text( modified !== false ? modified : '').end()
 	  .find( '.nb-projets')
 	    .find( '.nb-projets-intitule').text( projetName).end()
 	    .find( '.nb-projets-count').text( projets).end()
@@ -174,7 +191,7 @@ function displayFolder(name, created, modified, statut, projets){
   if( statut == "terminé")
     newFolder.find( '.js--edit-project-icon').remove();
 
-	$("#container .dossier-list").prepend(newFolder);
+  return newFolder;
 }
 
 function modifyFolder($this){

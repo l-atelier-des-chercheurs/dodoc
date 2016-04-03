@@ -29,7 +29,11 @@ module.exports = function(app, io){
   var dev = {
     log : function( term) {
       if( isDebugMode)
-        console.log( term);
+        console.log( "- " + term);
+    },
+    logfunction : function( term) {
+      if( isDebugMode)
+        console.info( "~ " + term)
     }
   };
 
@@ -110,6 +114,7 @@ module.exports = function(app, io){
 
 		// Create a new folder
 		function onNewFolder( folder) {
+  		dev.logfunction( "onNewFolder");
 
 			var folderName = folder.name;
 			var slugFolderName = convertToSlug(folderName);
@@ -121,7 +126,7 @@ module.exports = function(app, io){
 				// S'il n'existe pas -> créer le dossier et le json
 		    if (err) {
 
-		    	console.log("New folder created with name " + slugFolderName);
+		    	console.log("new folder created with name " + slugFolderName);
 		      fs.ensureDirSync(folderPath);//write new folder in sessions
 
 		      var folderJSONFile = getJsonFileOfFolder( slugFolderName);
@@ -131,14 +136,14 @@ module.exports = function(app, io){
 		        "name" : folderName,
 		        "created" : currentDateString,
 		        "modified" : null,
-		        "statut" : 'en cours',
+		        "statut" : "en cours",
 		        "nb_projets" : 0
 		      };
 		      writeJsonFile( folderJSONFile, objectJson, "folderCreated"); //write json File
 		    }
 		    // S'il existe afficher un message d'erreur
 		    else {
-		      console.log("The following folder name already exists:" + slugFolderName);
+		      console.log("the following folder name already exists: " + slugFolderName);
 		      io.sockets.emit("folderAlreadyExist", { "name": folderName, "timestamp": currentDateString });
 		    }
 			});
@@ -147,17 +152,18 @@ module.exports = function(app, io){
 		// Liste les dossiers déjà existant
 		function listFolder(socket){
 
+  		dev.logfunction( "listFolder");
+
 			fs.readdir( contentDir, function (err, folders) {
 
         if (err) return console.log(err);
 
-// 		    dev.log( "Number of folders in " + contentDir + " = " + folders.length);
+		    dev.log( "Number of folders in " + contentDir + " = " + folders.length + ". Folders are " + folders);
 			  folders
   			  .forEach( function( folderName) {
 
-//             dev.log( "- folderName = " + folderName);
   			    if( regexpMatchFolderNames.test( folderName)){
-//               dev.log( "--- Has passed check : " + folderName);
+              dev.log( "- following folder has passed checks : " + folderName);
 
   			    	var folderJSON = getFolderDataJSON( folderName);
   						socket.emit('listOneFolder', folderJSON);
@@ -170,12 +176,10 @@ module.exports = function(app, io){
 
                 if (err) return console.log(err);
 
-//         		    dev.log( "Number of folders in " + folderPath + " = " + projects.length);
+        		    dev.log( "- number of folders in " + folderPath + " = " + projects.length + ". Projects are " + projects);
         			  projects.forEach( function( projectName) {
-
-//                  dev.log( "- projectName = " + projectName);
         			    if( regexpMatchFolderNames.test( projectName)){
-                    dev.log( "--- Has passed check : " + projectName);
+                    dev.log( "- - is folder : " + projectName);
                     var folderPath = folderName + "/" + projectName;
 
                     var projectJSON = getProjectDataJSON( folderPath);
@@ -183,22 +187,10 @@ module.exports = function(app, io){
                     projectJSON.projectPreviewName = getProjectPreview( folderPath);
 
                     dev.log( "projectJSON " + JSON.stringify( projectJSON));
-
-                    socket.emit( 'listProjects', projectJSON);
+                    socket.emit( 'listOneProject', projectJSON);
                   }
                 });
   					  });
-  						// fs.readdirSync(projectDir).filter(function(project){
-  						// 	if(fs.statSync(path.join(projectDir, project)).isDirectory()){
-  						// 		if(! /^\..*/.test(project)){
-  						// 			var jsonFileProj = projectDir +'/'+ project + '/' +project+'.json';
-  						// 			var dataProj = fs.readFileSync(jsonFileProj,"UTF-8");
-  						// 			var jsonObjProj = JSON.parse(dataProj);
-  						// 			socket.emit('listChildren', {parentName:convertToSlug(jsonObj.name), childrenName:jsonObjProj.name, childrenImage:jsonObjProj.fileName});
-
-  						//   	}
-  						// 	}
-  				  // 	});
   			  	}
 
   			  });
@@ -207,6 +199,8 @@ module.exports = function(app, io){
 
 		// Modifier un dossier
 		function onModifyFolder(folder){
+
+  		dev.logfunction( "onModifyFolder");
 			var oldFolder = folder.oldname;
 			var oldFormatFolderName = convertToSlug(oldFolder);
 			var oldFolderPath = contentDir +oldFormatFolderName;
@@ -243,6 +237,7 @@ module.exports = function(app, io){
 			});
 
 			function changeJsonFile(file){
+    		dev.logfunction( "changeJsonFile");
 				var jsonContent = fs.readFileSync(file,"UTF-8");
 				var jsonObj = JSON.parse(jsonContent);
 				jsonObj.name = folder.name;
@@ -258,6 +253,7 @@ module.exports = function(app, io){
 
 		// Supprimer un dossier
 		function onRemoveFolder(folder){
+  		dev.logfunction( "onRemoveFolder");
 			var folderName = convertToSlug(folder.name);
 			var folderPath = contentDir + folderName;
 			rmDir(folderPath);
@@ -269,6 +265,7 @@ module.exports = function(app, io){
 	// P R O J E T S     P A G E
 		// Liste les projets existants
 		function listProject(session, socket){
+  		dev.logfunction( "listProject");
 			//console.log(socket);
 			var dir = +session.session+"/";
 			var sessionName;
@@ -312,6 +309,7 @@ module.exports = function(app, io){
 		}
 
 		function onNewProject(project) {
+  		dev.logfunction( "onNewProject");
 			var projectName = project.name;
 			var formatProjectName = convertToSlug(projectName);
 			var projectPath = contentDir + project.session+"/"+formatProjectName;
@@ -357,6 +355,7 @@ module.exports = function(app, io){
 
 		// Modifier un projet
 		function onModifyProject(project){
+  		dev.logfunction( "onModifyProject");
 			//console.log(project);
 			var session = project.session;
 
@@ -453,6 +452,7 @@ module.exports = function(app, io){
 
 		// Supprimer un dossier
 		function onRemoveProject(project){
+  		dev.logfunction( "onRemoveProject");
 			console.log(project);
 			var session = project.session;
 			var projectName = convertToSlug(project.name);
@@ -465,6 +465,7 @@ module.exports = function(app, io){
 
 	// P R O J E T      P A G E
 		function displayProject(data, socket){
+  		dev.logfunction( "displayProject");
 			var dir = contentDir + data.session+"/"+data.project;
 			var dirPubli = contentDir + data.session+"/"+data.project+'/montage';
 			var file = dir+"/"+data.project+'.json';
@@ -514,6 +515,7 @@ module.exports = function(app, io){
 	// C A P T U R E      P A G E
 		//ajoute les images au projet
 		function onNewImage(image) {
+  		dev.logfunction( "onNewImage");
 			var dataImage = image.data;
 			var session = image.session;
 			var project = image.project;
@@ -542,6 +544,7 @@ module.exports = function(app, io){
 		}
 
 		function onNewVideo(data){
+  		dev.logfunction( "onNewVideo");
 			var currentDate = Date.now();
 		  var fileName = currentDate;
 		  var session = data.session;
@@ -567,6 +570,7 @@ module.exports = function(app, io){
 
 		// Crée un nouveau dossier pour le stop motion
 		function onNewStopMotion(data) {
+  		dev.logfunction( "onNewStopMotion");
 			var StopMotionDirectory = contentDir + data.session +'/'+ data.project+'/01-stopmotion';
 			if(StopMotionDirectory){
 				fs.removeSync(StopMotionDirectory);
@@ -577,6 +581,7 @@ module.exports = function(app, io){
 
 		// Ajoute des images au dossier du stop motion
 		function onNewImageMotion(req) {
+  		dev.logfunction( "onNewImageMotion");
 			var imageBuffer = decodeBase64Image(req.data);
 			filename = req.dir + '/' + req.count + '.png';
 			fs.writeFile(filename , imageBuffer.data, function(err) {
@@ -588,6 +593,7 @@ module.exports = function(app, io){
 
 		// Supprime une image du Stop Motion
 		function deleteImageMotion(req){
+  		dev.logfunction( "deleteImageMotion");
 			filename = req.dir + '/' + req.count + '.png';
 			fs.unlinkSync(filename, function (err) {
 		  if (err) console.log(err);
@@ -597,6 +603,7 @@ module.exports = function(app, io){
 
 		//Transforme les images en vidéos.
 		function createStopMotion(req){
+  		dev.logfunction( "createStopMotion");
 			var currentDate = Date.now();
 			var fileName = currentDate;
 
@@ -632,6 +639,7 @@ module.exports = function(app, io){
 
 		// Audio
 		function onNewAudioCapture(req){
+  		dev.logfunction( "onNewAudioCapture");
 			//write audio to disk
 			var currentDate = Date.now();
 			var fileName = currentDate;
@@ -660,6 +668,7 @@ module.exports = function(app, io){
 
 		// Delete File
 		function onDeleteFileBibli(req){
+  		dev.logfunction( "onDeleteFileBibli");
 			var fileToDelete = contentDir + req.session +'/'+req.project+'/'+req.file;
 			var extension = req.file.split('.').pop();
   		var identifiant =  req.id;
@@ -684,6 +693,7 @@ module.exports = function(app, io){
 
 	// B I B L I    P A G E
 		function listMedias(media, socket){
+  		dev.logfunction( "listMedias");
 			//read json file to send data
 			var jsonFile = contentDir + media.session + '/' + media.project +'/'+media.project+'.json';
 			var data = fs.readFileSync(jsonFile,"UTF-8");
@@ -712,6 +722,7 @@ module.exports = function(app, io){
 		}
 
 		function readTxt(txt){
+  		dev.logfunction( "readTxt");
 			var dir = contentDir + txt.session + '/' + txt.project +'/';
 			fs.readFile(dir + txt.file.file, 'utf8', function(err, data) {
 			  if (err)
@@ -722,6 +733,7 @@ module.exports = function(app, io){
 		}
 
 		function listPubli(data, socket){
+  		dev.logfunction( "listPubli");
 			var dir = contentDir + data.session+"/"+data.project+'/montage';
 			// Vérifie si le dossier existe déjà
 			fs.access(dir, fs.F_OK, function(err) {
@@ -748,6 +760,7 @@ module.exports = function(app, io){
 		}
 
 		function newPublication(publi){
+  		dev.logfunction( "newPublication");
 			var folderName = publi.name;
 			var formatFolderName = convertToSlug(folderName);
 			var montagePath = contentDir + publi.session+'/'+publi.project+'/montage';
@@ -788,6 +801,7 @@ module.exports = function(app, io){
 		}
 
 		function displayMontage(data){
+  		dev.logfunction( "displayMontage");
 			var file = contentDir + data.session+"/"+data.project+'/montage/'+data.name+'.json';
 			console.log(file);
 			fs.readFile(file, 'utf8', function (err, data) {
@@ -798,6 +812,7 @@ module.exports = function(app, io){
 		}
 
 		function saveMontage(req){
+  		dev.logfunction( "saveMontage");
 			var dir = contentDir + req.session + "/" + req.projet;
 			var montageDir = dir + '/montage';
 			var htmlFile = montageDir + '/' + convertToSlug(req.title) + '.json';
@@ -814,6 +829,7 @@ module.exports = function(app, io){
 		}
 
 		function onTitleChanged(data){
+  		dev.logfunction( "onTitleChanged");
 			var oldName = data.oldTitle;
 			var oldFilePath = contentDir + data.session+'/'+data.project+'/montage/'+convertToSlug(oldName)+'.json';
 
@@ -852,6 +868,7 @@ module.exports = function(app, io){
 		}
 
 		function onNewText(text){
+  		dev.logfunction( "onNewText");
 			var currentDate = Date.now();
 			var jsonFile = contentDir + text.session + '/'+ text.project+"/" +text.project+'.json';
 			var txtFile = contentDir + text.session + '/'+ text.project+"/" +currentDate+'.txt';
@@ -873,6 +890,7 @@ module.exports = function(app, io){
 		}
 
 		function onModifiedText(text){
+  		dev.logfunction( "onModifiedText");
 			var txtFile = contentDir + text.session + '/'+ text.project+"/" +text.id+'.txt';
 			console.log(text);
 			fs.writeFile(txtFile, '### '+text.title+"\r\n"+text.text, function(err){
@@ -890,9 +908,7 @@ module.exports = function(app, io){
 		}
 
 		function onMediaLegende(data){
-
-      console.log( "--- onMediaLegende");
-
+      dev.logfunction( "onMediaLegende");
 			var jsonFile = contentDir + data.session + '/'+ data.project+"/" +data.project+'.json';
 			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
 			var jsonObj = JSON.parse(jsonData);
@@ -911,9 +927,9 @@ module.exports = function(app, io){
 				type = 'stopmotion';
 			}
 
-      console.log( "Start of loop to add or edit media title/caption.");
-			console.log( "ID of media = " + id + " and type of media is " + type);
-			console.log( "Number of entries to parse : " + jsonObj['files'][type].length);
+      dev.log( "Start of loop to add or edit media title/caption.");
+			dev.log( "ID of media = " + id + " and type of media is " + type);
+			dev.log( "Number of entries to parse : " + jsonObj['files'][type].length);
 
 			for (var i = 0; i < jsonObj['files'][type].length; i++){
   			console.log( "+ for loop to find " + id + ". current name is " + jsonObj['files'][type][i].name);
@@ -1010,12 +1026,11 @@ module.exports = function(app, io){
 		}
 
 		function onHighLighMedia(data){
+      dev.logfunction( "onHighLighMedia");
 			var jsonFile = contentDir + data.session + '/'+ data.project+"/" +data.project+'.json';
 			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
 			var jsonObj = JSON.parse(jsonData);
 			var id = data.id;
-
-
 
 			var type;
 			if(data.type == 'image'){
@@ -1064,6 +1079,7 @@ module.exports = function(app, io){
 		}
 
 		function onRemoveHighlight(data){
+      dev.logfunction( "onRemoveHighlight");
 			var jsonFile = contentDir + data.session + '/'+ data.project+"/" +data.project+'.json';
 			var jsonData = fs.readFileSync(jsonFile,"UTF-8");
 			var jsonObj = JSON.parse(jsonData);
@@ -1118,6 +1134,7 @@ module.exports = function(app, io){
 
 		// Delete File
 		function deleteFile(req){
+      dev.logfunction( "deleteFile");
 			var fileToDelete = contentDir + req.session +'/'+req.project+'/'+req.file;
 			var extension = req.file.split('.').pop();
   		var identifiant =  req.file.replace("." + extension, "");
@@ -1138,6 +1155,7 @@ module.exports = function(app, io){
 
 	// P U B L I     P A G E
 		function displayPubli(data){
+      dev.logfunction( "displayPubli");
 			var file = contentDir + data.session+"/"+data.project+'/montage/'+data.publi+'.json';
 			fs.readFile(file, 'utf8', function (err, data) {
 			  if (err) console.log(err);
@@ -1196,19 +1214,20 @@ module.exports = function(app, io){
     function getProjectPreview( projectPath) {
 
       var projectFullPath = getFullPath( projectPath);
-      dev.log( "1. Detecting preview");
+      dev.log( "detecting preview");
 
       // looking for an image whose name starts with apercu or preview in this folder
       var filesInProjectFolder = fs.readdirSync( projectFullPath);
       var previewName = false;
 
+      dev.log( "- match apercu/preview in array : " + filesInProjectFolder);
       filesInProjectFolder.forEach( function( filename) {
         if( regexpMatchProjectPreviewNames.test(filename)) {
           previewName = filename;
-          dev.log( "- 3. match preview called " + previewName);
+          dev.log( "- - match preview called " + previewName);
         }
       });
-      dev.log( "- 4. filename ? " + previewName);
+      dev.log( "- final filename ? " + previewName);
       return previewName;
 
     }
