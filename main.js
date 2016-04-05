@@ -33,7 +33,7 @@ module.exports = function(app, io){
     },
     logfunction : function( term) {
       if( isDebugMode)
-        console.info( "~ " + term)
+        console.info( "~" + term)
     }
   };
 
@@ -44,13 +44,13 @@ module.exports = function(app, io){
 
   // previously /^\..*/
   // see http://regexr.com/3d4t8
-	var regexpMatchFolderNames = new RegExp(/^([^.]+)$/igm);
-  var regexpMatchProjectPreviewNames = new RegExp(/^(apercu|preview)/igm);
+	var regexpMatchFolderNames = new RegExp(/^([^.]+)$/);
+  var regexpMatchProjectPreviewNames = new RegExp(/^(apercu|preview)/);
 
 
 	io.on("connection", function(socket){
 		// I N D E X    P A G E
-		listFolder(socket);
+		listFolders(socket);
 		socket.on("newFolder", onNewFolder);
 		socket.on("modifyFolder", onModifyFolder);
 		socket.on("removeFolder", onRemoveFolder);
@@ -107,153 +107,111 @@ module.exports = function(app, io){
 
 	});
 
+	/***************************************************************************
 
-// ------------- F U N C T I O N S -------------------
+                                                E V E N T S
+
+                                  All those functions are triggered by events.
+                                  They send their content over to COMMON functions
+                                  and then use io.sockets.emit to send content
+                                  to the client. The content transits by json objects
+                                  These functions should be as concise as possible.
+
+
+	****************************************************************************/
 
 	// I N D E X     P A G E
 
 		// Create a new folder
-		function onNewFolder( folder) {
-  		dev.logfunction( "onNewFolder");
-
-			var folderName = folder.name;
-			var slugFolderName = convertToSlug(folderName);
-			var folderPath = getFullPath( slugFolderName);
-			var currentDateString = getCurrentDate();
-
-			// Vérifie si le dossier existe déjà
-			fs.access(folderPath, fs.F_OK, function(err) {
-				// S'il n'existe pas -> créer le dossier et le json
-		    if (err) {
-
-		    	console.log("new folder created with name " + slugFolderName);
-		      fs.ensureDirSync(folderPath);//write new folder in sessions
-
-		      var folderJSONFile = getJsonFileOfFolder( slugFolderName);
-
-		      var objectJson =
-	        {
-		        "name" : folderName,
-		        "created" : currentDateString,
-		        "modified" : null,
-		        "statut" : "en cours",
-		        "nb_projets" : 0
-		      };
-		      writeJsonFile( folderJSONFile, objectJson, "folderCreated"); //write json File
-		    }
-		    // S'il existe afficher un message d'erreur
-		    else {
-		      console.log("the following folder name already exists: " + slugFolderName);
-		      io.sockets.emit("folderAlreadyExist", { "name": folderName, "timestamp": currentDateString });
-		    }
-			});
+		function onNewFolder( folderData) {
+  		dev.logfunction( "EVENT - onNewFolder");
+      var eventAndContentJson = createNewFolder( folderData);
+      dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
+      io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
 		}
 
-		// Liste les dossiers déjà existant
-		function listFolder(socket){
-
-  		dev.logfunction( "listFolder");
+		// List all folders async (event = listOneFolder)
+		// then list all projects of one folder (event =
+		function listFolders(socket){
+  		dev.logfunction( "EVENT - listFolder");
 
 			fs.readdir( contentDir, function (err, folders) {
 
         if (err) return console.log(err);
-
 		    dev.log( "Number of folders in " + contentDir + " = " + folders.length + ". Folders are " + folders);
-			  folders
-  			  .forEach( function( folderName) {
 
-  			    if( regexpMatchFolderNames.test( folderName)){
-              dev.log( "- following folder has passed checks : " + folderName);
+			  folders.forEach( function( slugFolderName) {
+			    if( regexpMatchFolderNames.test( slugFolderName)){
+            var eventAndContentJson = listOneFolder( slugFolderName);
+            dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
+            io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
 
-  			    	var folderJSON = getFolderDataJSON( folderName);
-  						socket.emit('listOneFolder', folderJSON);
+            // parser les projets du folder
+            listAllProjectsOfOneFolder( slugFolderName);
 
-              var folderPath = getFullPath( folderName);
-
-
-              // list all projects
-  						fs.readdir( folderPath, function (err, projects) {
-
-                if (err) return console.log(err);
-
-        		    dev.log( "- number of folders in " + folderPath + " = " + projects.length + ". Projects are " + projects);
-        			  projects.forEach( function( projectName) {
-        			    if( regexpMatchFolderNames.test( projectName)){
-                    dev.log( "- - is folder : " + projectName);
-                    var folderPath = folderName + "/" + projectName;
-
-                    var projectJSON = getProjectDataJSON( folderPath);
-                    projectJSON.folderName = folderJSON.name;
-                    projectJSON.projectPreviewName = getProjectPreview( folderPath);
-
-                    dev.log( "projectJSON " + JSON.stringify( projectJSON));
-                    socket.emit( 'listOneProject', projectJSON);
-                  }
-                });
-  					  });
-  			  	}
-
-  			  });
+			  	}
+			  });
 			});
 		}
 
+		// Liste les dossiers déjà existant
+    function listAllProjectsOfOneFolder( slugFolderName) {
+
+  		dev.logfunction( "EVENT — listAllProjectsOfOneFolder");
+  		var folderPath = getFullPath( slugFolderName);
+
+      // list all projects
+			fs.readdir( folderPath, function (err, projects) {
+
+        if (err) return console.log(err);
+
+		    dev.log( "- number of files and folders in " + folderPath + " = " + projects.length + ". They are " + projects);
+		    var projectsProcessed = 0;
+		    var allProjectsJSON = [];
+			  projects.forEach( function( slugProjectName) {
+
+          dev.log("- - processing " + slugProjectName);
+          dev.log( "is folder ? " + regexpMatchFolderNames.test( slugProjectName));
+
+			    if( regexpMatchFolderNames.test( slugProjectName)){
+            dev.log( "- - is folder : " + slugProjectName);
+
+            var projectPath = getProjectPath( slugFolderName, slugProjectName);
+            var projectJSON = getProjectDataJSON( projectPath);
+            projectJSON.folderName = slugFolderName;
+            projectJSON.projectPreviewName = getProjectPreview( projectPath);
+            dev.log( "- - - projectJSON " + JSON.stringify( projectJSON));
+
+            allProjectsJSON.push( projectJSON);
+
+          }
+
+          projectsProcessed++;
+          if( projectsProcessed === projects.length && allProjectsJSON.length > 0) {
+            dev.log( "- - - - all Project JSON have been processed.");
+
+            var eventAndContentJson = eventAndContent( "listAllProjectsOfOneFolder", allProjectsJSON);
+            console.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
+            io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+
+          }
+
+        });
+		  });
+
+    }
+
+
+
 		// Modifier un dossier
-		function onModifyFolder(folder){
-
-  		dev.logfunction( "onModifyFolder");
-			var oldFolder = folder.oldname;
-			var oldFormatFolderName = convertToSlug(oldFolder);
-			var oldFolderPath = contentDir +oldFormatFolderName;
-
-			var newFolder = folder.name;
-			var newFormatFolderName = convertToSlug(newFolder);
-			var newFolderPath = contentDir +newFormatFolderName;
-			console.log(newFolderPath);
-
-			var newStatut = folder.statut;
-
-			var currentDate = Date.now();
-
-			// Vérifie si le dossier existe déjà
-			fs.access(newFolderPath, fs.F_OK, function(err) {
-				// S'il n'existe pas -> change le nom du dossier et change le json
-		    if (err) {
-		      fs.renameSync(oldFolderPath, newFolderPath); // renomme le dossier
-		      fs.renameSync(newFolderPath + '/' + oldFormatFolderName + '.json', newFolderPath + '/' + newFormatFolderName + '.json'); //renomme le json
-		      changeJsonFile(newFolderPath + '/' + newFormatFolderName + '.json');
-		    }
-		    // S'il existe afficher un message d'erreur
-		    else {
-		    	if(oldFormatFolderName != newFormatFolderName){
-		    		console.log("le dossier existe déjà !");
-		      	io.sockets.emit("folderAlreadyExist", {name: newFolder, timestamp: currentDate });
-		    	}
-		    	else{
-		    		fs.renameSync(oldFolderPath, newFolderPath); // renomme le dossier
-		      	fs.renameSync(newFolderPath + '/' + oldFormatFolderName + '.json', newFolderPath + '/' + newFormatFolderName + '.json'); //renomme le json
-		      	changeJsonFile(newFolderPath + '/' + newFormatFolderName + '.json');
-		    	}
-		    }
-			});
-
-			function changeJsonFile(file){
-    		dev.logfunction( "changeJsonFile");
-				var jsonContent = fs.readFileSync(file,"UTF-8");
-				var jsonObj = JSON.parse(jsonContent);
-				jsonObj.name = folder.name;
-				jsonObj.modified = currentDate;
-				jsonObj.statut = newStatut;
-				var jsonString = JSON.stringify(jsonObj, null, 4);
-				fs.writeFileSync(file, jsonString);
-				console.log("Dossier modifié");
-				io.sockets.emit("folderModified", {name: folder.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:jsonObj.nb_projets});
-			}
-
+		function onModifyFolder( udpdatedFolderData){
+  		dev.logfunction( "EVENT - onModifyFolder");
+      updateFolderDataJSON( udpdatedFolderData);
 		}
 
 		// Supprimer un dossier
 		function onRemoveFolder(folder){
-  		dev.logfunction( "onRemoveFolder");
+  		dev.logfunction( "EVENT - onRemoveFolder");
 			var folderName = convertToSlug(folder.name);
 			var folderPath = contentDir + folderName;
 			rmDir(folderPath);
@@ -1167,7 +1125,25 @@ module.exports = function(app, io){
 
 	// - - -
 
-	// C O M M O N      F U N C T I O N
+	/***************************************************************************
+                                    C O M M O N      F U N C T I O N
+
+                                  all functions for specific dodoc purpose
+                                  - list all folders and send them over
+                                  - list all projects and send them over
+                                  - find the folder of a project from its path
+                                  - update folder data
+                                  - etc.
+
+                                  Functions that should call a socket.emit should call
+                                  eventAndContent() as return functions, for example :
+
+                                    return eventAndContent( "folderCreated", objectJson);
+
+                                  See onNewFolder() and createNewFolder() for working examples.
+
+	****************************************************************************/
+
 
     function getFullPath( path) {
       return contentDir + path;
@@ -1179,9 +1155,59 @@ module.exports = function(app, io){
       return moment().format('YYYYMMDD_HH:mm:ss');
     }
 
-    function getFolderDataJSON( folderName) {
+    function eventAndContent( sendEvent, objectJson) {
 
-    	var folderJSONFile = getJsonFileOfFolder( folderName);
+      var eventContentJSON =
+      {
+        "socketevent" : sendEvent,
+        "content" : objectJson
+      };
+
+      return eventContentJSON;
+    }
+
+    function createNewFolder( folderData) {
+
+			var folderName = folderData.name;
+			var slugFolderName = convertToSlug(folderName);
+			var folderPath = getFullPath( slugFolderName);
+			var currentDateString = getCurrentDate();
+
+			// Vérifie si le dossier existe déjà
+			fs.access(folderPath, fs.F_OK, function(err) {
+				// S'il n'existe pas -> créer le dossier et le json
+		    if (err) {
+		    	console.log("New folder created with name " + slugFolderName);
+		      fs.ensureDirSync(folderPath);//write new folder in sessions
+		      var folderJSONFile = getJsonFileOfFolder( slugFolderName);
+		      var objectJson =
+  	        {
+  		        "name" : folderName,
+  		        "created" : currentDateString,
+  		        "modified" : null,
+  		        "statut" : "en cours",
+  		        "nb_projets" : 0
+  		      };
+
+          // retourner un JSON indiquant la réussite de l'appel
+		      var newFolderCreated = jsonWriteToFile( folderJSONFile, objectJson, "folderCreated"); //write json File
+
+          return eventAndContent( "folderCreated", objectJson);
+		    }
+		    // S'il existe afficher un message d'erreur
+		    else {
+		      console.log("the following folder name already exists: " + slugFolderName);
+
+		      var objectJson = { "name": folderName, "timestamp": currentDateString };
+          return eventAndContent( "folderAlreadyExist", objectJson);
+		    }
+			});
+
+    }
+
+    function getFolderDataJSON( slugFolderName) {
+
+    	var folderJSONFile = getJsonFileOfFolder( slugFolderName);
 
 			var folderData = fs.readFileSync( folderJSONFile,"UTF-8");
 			var folderJSONdata = JSON.parse(folderData);
@@ -1193,10 +1219,91 @@ module.exports = function(app, io){
 			  "statut" : folderJSONdata.statut,
 			  "nb_projets" : folderJSONdata.nb_projets
 			};
+
     }
+
+    // accepts a folderData with at least a .name value
+    function updateFolderDataJSON( folderData) {
+
+			var folderName = folderData.name;
+			var slugFolderName = convertToSlug( folderName);
+			var folderPath = getFullPath( slugFolderName);
+      var currentDateString = getCurrentDate();
+
+      if( folderData.newName !== undefined) {
+  			var newFolderName = folderData.newName;
+        var newSlugFolderName = convertToSlug( newFolderName);
+        var newFolderPath = getFullPath( newSlugFolderName);
+      }
+
+			var newStatut = folderData.statut;
+
+      // récupérer les infos sur le folder
+      var currentDataJSON = getFolderDataJSON( slugFolderName);
+
+      // éditer le JSON récupéré
+      if( newFolderName !== undefined)
+        currentDataJSON.name = newFolderName;
+      if( newStatut !== undefined)
+        currentDataJSON.statut = newStatut;
+
+      currentDataJSON.modified = currentDateString;
+
+      // envoyer les changements dans le JSON du folder
+      var folderJSONFile = getJsonFileOfFolder( slugFolderName);
+      writeJsonFile( folderJSONFile, currentDataJSON, "folderModified"); //write json File
+
+
+/*
+      // regarder si on a affaire à un renommage
+
+                		    	if(oldFormatFolderName != newFormatFolderName){
+                		    		console.log("le dossier existe déjà !");
+                		      	io.sockets.emit("folderAlreadyExist", {name: newFolder, timestamp: currentDate });
+                		    	}
+                		    	else{
+                		    		fs.renameSync(oldFolderPath, newFolderPath); // renomme le dossier
+                		      	fs.renameSync(newFolderPath + '/' + oldFormatFolderName + '.json', newFolderPath + '/' + newFormatFolderName + '.json'); //renomme le json
+                		      	changeJsonFile(newFolderPath + '/' + newFormatFolderName + '.json');
+                		    	}
+                		    }
+                			});
+
+                			function updateJSONFile(file){
+                    		dev.logfunction( "changeJsonFile");
+                				var jsonContent = fs.readFileSync(file,"UTF-8");
+                				var jsonObj = JSON.parse(jsonContent);
+                				jsonObj.name = folder.name;
+                				jsonObj.modified = currentDate;
+                				jsonObj.statut = newStatut;
+                				var jsonString = JSON.stringify(jsonObj, null, 4);
+                				fs.writeFileSync(file, jsonString);
+                				console.log("Dossier modifié");
+                				io.sockets.emit("folderModified", {name: folder.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:jsonObj.nb_projets});
+                			}
+
+
+      // renommer le dossier, si besoin
+
+      fs.renameSync( folderPath, newFolderPath); // renomme le dossier
+*/
+
+
+    }
+
+    function listOneFolder( slugFolderName) {
+  		dev.logfunction( "COMMON — listOneFolder");
+    	var folderJSON = getFolderDataJSON( slugFolderName);
+      return eventAndContent( "listOneFolder", folderJSON);
+    }
+
 
     function getJsonFileOfProject( projectPath) {
       return getFullPath( projectPath) + '/projet.json';
+    }
+
+    function getProjectPath( slugFolderName, slugProjectName) {
+      return slugFolderName + '/' + slugProjectName;
     }
 
     function getProjectDataJSON( projectPath) {
@@ -1263,18 +1370,48 @@ module.exports = function(app, io){
 	    });
 		}
 
+    // old write json function that sends sockets.emit (see jsonWriteToFile)
 		function writeJsonFile(jsonFile, objectJson, send){
-			var jsonString = JSON.stringify(objectJson, null, 4);
-			fs.appendFile(jsonFile, jsonString, function(err) {
-	      if(err) {
-	          console.log(err);
-	      }
-	      else {
-	        console.log("Success for event : " + send);
-	      	io.sockets.emit(send, objectJson);
-	      }
-	    });
+  		var jsonString = JSON.stringify(objectJson, null, 4);
+  		if( send === "folderCreated") {
+  			fs.appendFile(jsonFile, jsonString, function(err) {
+  	      if(err) {
+  	        console.log(err);
+  	      }
+  	      else {
+  	        console.log("Success for event : " + send);
+  	      	io.sockets.emit(send, objectJson);
+  	      }
+  	    });
+	    }
+	    else if( send === "folderModified") {
+        fs.writeFileSync(jsonFile, jsonString);
+        io.sockets.emit(send, objectJson);
+  	  }
 	  }
+
+
+    // new write json function that writes in json and returns true or false depending on success
+	  function jsonWriteToFile( jsonFile, objectJson, sendEvent) {
+  		var jsonString = JSON.stringify(objectJson, null, 4);
+  		if( sendEvent === "folderCreated") {
+  			fs.appendFile(jsonFile, jsonString, function(err) {
+  	      if(err) {
+  	        console.log(err);
+  	        return false;
+  	      }
+  	      else {
+  	        console.log("Success for event : " + send);
+  	        return true;
+  	      }
+  	    });
+	    }
+	    else if( sendEvent === "folderModified") {
+        fs.writeFileSync(jsonFile, jsonString);
+        io.sockets.emit(send, objectJson);
+  	  }
+    }
+
 		function addImage(parentName, parentPath, file){
 	    var thumbName = parentName + "-thumb";
 			var filePath = parentPath + "/" + thumbName + ".jpg";

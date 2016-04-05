@@ -12,7 +12,7 @@ socket.on('error', onSocketError);
 socket.on('folderCreated', onFolderCreated); // Quand un dossier est crée
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 socket.on('listOneFolder', onListOneFolder); // Liste tous les dossiers
-socket.on('listProjects', onListOneProject); // Liste tous les enfants des dossiers
+socket.on('listAllProjectsOfOneFolder', onListAllProjectsOfOneFolder); // Liste tous les enfants des dossiers
 socket.on('folderModified', onFolderModified);
 socket.on('folderRemoved', onFolderRemoved);
 
@@ -104,6 +104,8 @@ function onFolderAlreadyExist(data){
 // Liste les dossiers
 function onListOneFolder(data){
 
+  debugger;
+
 	var folderName = data.name;
 	var createdDate = transformDatetoString(data.created);
 	var modifiedDate = transformDatetoString(data.modified);
@@ -130,11 +132,16 @@ function insertOrReplaceFolder( folderName, folderContent) {
 
 }
 
-function onListOneProject(data){
+function onListAllProjectsOfOneFolder(data){
+  data.forEach( loadProject);
+  return;
+}
 
-	var folderName = data.folderName;
-	var projectName = data.projectName;
-	var projectPreviewName = data.projectPreviewName;
+function loadProject( thisProject) {
+
+	var folderName = thisProject.folderName;
+	var projectName = thisProject.projectName;
+	var projectPreviewName = thisProject.projectPreviewName;
 
 	var folderNameSlug = convertToSlug( folderName);
 	var projectNameSlug = convertToSlug( projectName);
@@ -156,6 +163,8 @@ function onListOneProject(data){
   ;
 
 	$folder.find(".projet-list").prepend(newSnippetProjet);
+
+	return;
 }
 
 // Fonction qui affiche les dossiers HTML
@@ -250,7 +259,12 @@ function submitModifyFolder($button, send, oldName, oldStatut){
 		var newStatut = $('select.modify-statut').val();
 		var oldFolderName = oldName;
 		var oldFolderStatut = oldStatut;
-		socket.emit(send, {name: newFolderName, statut:newStatut, oldname: oldFolderName, oldStatut:oldFolderStatut});
+		socket.emit(send,
+		  {
+  		  "name" : newFolderName,
+  		  "oldName" : oldFolderName,
+  		  "statut" : newStatut
+  		});
 	})
 }
 

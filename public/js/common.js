@@ -8,6 +8,10 @@ function transformDatetoString(date){
 }
 
 function convertToSlug(Text){
+
+  if( Text === undefined)
+    return false;
+
   // converti le texte en minuscule
 	var s = Text.toLowerCase();
 	// remplace les a accentué
