@@ -1167,6 +1167,7 @@ module.exports = function(app, io){
     }
 
     function createNewFolder( folderData) {
+  		dev.logfunction( "COMMON — createNewFolder");
 
 			var folderName = folderData.name;
 			var slugFolderName = convertToSlug(folderName);
@@ -1174,42 +1175,69 @@ module.exports = function(app, io){
 			var currentDateString = getCurrentDate();
 
 			// Vérifie si le dossier existe déjà
-			fs.access(folderPath, fs.F_OK, function(err) {
+      try{
+			  fs.accessSync( folderPath, fs.F_OK);
+		  } catch(err) {
+
 				// S'il n'existe pas -> créer le dossier et le json
-		    if (err) {
-		    	console.log("New folder created with name " + slugFolderName);
-		      fs.ensureDirSync(folderPath);//write new folder in sessions
-		      var folderJSONFile = getJsonFileOfFolder( slugFolderName);
-		      var objectJson =
-  	        {
-  		        "name" : folderName,
-  		        "created" : currentDateString,
-  		        "modified" : null,
-  		        "statut" : "en cours",
-  		        "nb_projets" : 0
-  		      };
+	    	console.log("New folder created with name " + slugFolderName);
+	      fs.ensureDirSync(folderPath);//write new folder in sessions
+	      var folderJSONFile = getJsonFileOfFolder( slugFolderName);
+	      var objectJson =
+	        {
+		        "name" : folderName,
+		        "created" : currentDateString,
+		        "modified" : null,
+		        "statut" : "en cours",
+		        "nb_projets" : 0
+		      };
 
-          // retourner un JSON indiquant la réussite de l'appel
-		      var newFolderCreated = jsonWriteToFile( folderJSONFile, objectJson, "folderCreated"); //write json File
+        // retourner un JSON indiquant la réussite de l'appel
+	      var newFolderCreated = jsonWriteToFile( folderJSONFile, objectJson, "folderCreated"); //write json File
 
-          return eventAndContent( "folderCreated", objectJson);
-		    }
-		    // S'il existe afficher un message d'erreur
-		    else {
-		      console.log("the following folder name already exists: " + slugFolderName);
+        return eventAndContent( "folderCreated", objectJson);
+  		}
 
-		      var objectJson = { "name": folderName, "timestamp": currentDateString };
-          return eventAndContent( "folderAlreadyExist", objectJson);
-		    }
-			});
+      // otherwise, the folder and associated json already exists --> return an error event
+      console.log("WARNING - the following folder name already exists: " + slugFolderName);
+
+      var objectJson = { "name": folderName, "timestamp": currentDateString };
+      return eventAndContent( "folderAlreadyExist", objectJson);
 
     }
 
     function getFolderDataJSON( slugFolderName) {
+  		dev.logfunction( "COMMON — getFolderDataJSON");
 
     	var folderJSONFile = getJsonFileOfFolder( slugFolderName);
+      try {
+  			fs.accessSync(folderJSONFile, fs.F_OK);
+		  } catch(err) {
+				// If folder.json doesn't exist, create it
+		    var folderJSON =
+		      {
+  		      "name": slugFolderName
+		      };
 
+    		var currentDateString = getCurrentDate();
+
+	      // if not, then the folder has probably been created by the filesystem. Let's make a placeholder JSON
+	    	console.log("WARNING : dossier.json for folder " + slugFolderName + " is missing and will be created.");
+	      var objectJson =
+	        {
+		        "name" : slugFolderName,
+		        "created" : currentDateString,
+		        "modified" : null,
+		        "statut" : "en cours",
+		        "nb_projets" : 0
+		      };
+	      var newFolderCreated = jsonWriteToFile( folderJSONFile, objectJson, "folderCreated"); //write json File
+	    	return objectJson;
+      }
+
+    	var folderJSONFile = getJsonFileOfFolder( slugFolderName);
 			var folderData = fs.readFileSync( folderJSONFile,"UTF-8");
+
 			var folderJSONdata = JSON.parse(folderData);
 
       return {
@@ -1219,11 +1247,11 @@ module.exports = function(app, io){
 			  "statut" : folderJSONdata.statut,
 			  "nb_projets" : folderJSONdata.nb_projets
 			};
-
     }
 
     // accepts a folderData with at least a .name value
     function updateFolderDataJSON( folderData) {
+  		dev.logfunction( "COMMON — updateFolderDataJSON");
 
 			var folderName = folderData.name;
 			var slugFolderName = convertToSlug( folderName);
@@ -1292,7 +1320,7 @@ module.exports = function(app, io){
     }
 
     function listOneFolder( slugFolderName) {
-  		dev.logfunction( "COMMON — listOneFolder");
+  		dev.logfunction( "COMMON — listOneFolder for folder slug-named " + slugFolderName);
     	var folderJSON = getFolderDataJSON( slugFolderName);
       return eventAndContent( "listOneFolder", folderJSON);
     }
@@ -1401,7 +1429,7 @@ module.exports = function(app, io){
   	        return false;
   	      }
   	      else {
-  	        console.log("Success for event : " + send);
+  	        console.log("Success for event : " + sendEvent);
   	        return true;
   	      }
   	    });

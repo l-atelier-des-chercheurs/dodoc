@@ -104,8 +104,6 @@ function onFolderAlreadyExist(data){
 // Liste les dossiers
 function onListOneFolder(data){
 
-  debugger;
-
 	var folderName = data.name;
 	var createdDate = transformDatetoString(data.created);
 	var modifiedDate = transformDatetoString(data.modified);
