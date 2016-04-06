@@ -1,6 +1,6 @@
 div(id="modal-add-local" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
   h2#modalTitle.popoverTitle Importer un fichier depuis l'ordinateur
-  form(action="/#{session}/#{projet}/bibliotheque/medias/file-upload" method="post", enctype="multipart/form-data" class='add-publi-form lead')
+  form(action="/#{folder}/#{project}/bibliotheque/medias/file-upload" method="post", enctype="multipart/form-data" class='add-publi-form lead')
     input(type='file' name="file" id='inputmedia' class="inputfile inputfile-6" placeholder='Importer un média')
     label(for="inputmedia")
       strong

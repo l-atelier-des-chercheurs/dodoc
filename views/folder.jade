@@ -14,7 +14,7 @@ html
     #container.row
 
       .folder-wrapper.small-12.columns
-        h1.folder #{folder}
+        h1.folder #{folderName}
         +button('nouveauProjet')
 
       ul.project-list
@@ -53,4 +53,4 @@ html
 
     //- scripts
     include templates/footer.jade
-    script(src='/js/projets.js')
+    script(src='/js/folder.js')

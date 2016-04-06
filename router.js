@@ -14,46 +14,74 @@ module.exports = function(app,io,m){
   /**
   * routing event
   */
-  app.get("/", getIndex);
-  app.get("/:session", getFolder);
-  app.get("/:session/:projet", getProject);
-  app.get("/:session/:projet/capture", getCapture);
-  app.get("/:session/:projet/bibliotheque/medias", getBibli);
-  app.get("/:session/:projet/bibliotheque/panneau-de-publications", getBibliPubli);
-  app.get("/:session/:projet/publication/:publi", getPubli);
+  app.get("/", getFolders);
+  app.get("/:folder", getFolder);
+  app.get("/:folder/:project", getProject);
+  app.get("/:folder/:project/capture", getCapture);
+  app.get("/:folder/:project/bibliotheque/medias", getBibli);
+  app.get("/:folder/:project/bibliotheque/panneau-de-publications", getBibliPubli);
+  app.get("/:folder/:project/publication/:publi", getPubli);
 
-  app.post("/:session/:projet/bibliotheque/medias/file-upload", multipartMiddleware, postFile);
+  app.post("/:folder/:project/bibliotheque/medias/file-upload", multipartMiddleware, postFile);
 
 
   /**
   * routing functions
   */
+  function getFullPath( path) {
+    return dodoc.contentDir + "/" + path;
+  }
+
+  function getJsonFileOfFolder( slugFolderName) {
+    return getFullPath( slugFolderName) + '/' + dodoc.folderJSONfilename;
+  }
+
+
+  function getProjectPath( slugFolderName, slugProjectName) {
+    return slugFolderName + '/' + slugProjectName;
+  }
+  function getJsonFileOfProject( projectPath) {
+    return getFullPath( projectPath) + '/' + dodoc.projectJSONfilename;
+  }
+
+
+
+
 
   // GET
-  function getIndex(req, res) {
-    res.render("index", {title : "Do.Doc"});
+  function getFolders(req, res) {
+    res.render("index", {
+      "pageTitle" : "Do.Doc",
+    });
   };
 
   function getFolder(req, res) {
-    var session = req.param('session');
-    var json = readJsonFile('sessions/'+ session + '/' + session + '.json');
-    res.render("projets", {
-      title : "Projets",
-      session: session,
-      folder: json.name,
-      statut : json.statut,
-      url: req.path
+    var slugFolderName = req.param('folder');
+    var jsonFileOfFolder = getJsonFileOfFolder( slugFolderName);
+    var folderData = readJsonFile( jsonFileOfFolder);
+
+    res.render("folder", {
+      "pageTitle" : dodoc.nameOfFolder + folderData.name,
+      "folder" : slugFolderName,
+      "folderName" : folderData.name,
+      "statut" : folderData.statut,
+      "url" : req.path
     });
   };
 
   function getProject(req, res) {
-    var session = req.param('session');
-    var projet = req.param('projet');
-    var jsonDossier= readJsonFile('sessions/'+ session + '/' + session + '.json');
-    var jsonProjet = readJsonFile('sessions/'+ session + '/' + projet + '/' + projet + '.json');
-    res.render("projet", {
+    var slugFolderName = req.param('folder');
+    var jsonFileOfFolder = getJsonFileOfFolder( slugFolderName);
+    var folderData = readJsonFile( jsonFileOfFolder);
+
+    var slugProjectName = req.param('project');
+    var projectPath = getProjectPath( slugFolderName, slugProjectName)
+    var jsonFileOfProject = getJsonFileOfProject( projectPath);
+    var projectData = readJsonFile( jsonFileOfProject);
+
+    res.render("project", {
       title : "Projet",
-      session: session,
+      folder: session,
       folder: jsonDossier.name,
       statut : jsonDossier.statut,
       projet : projet,
@@ -64,7 +92,7 @@ module.exports = function(app,io,m){
 
   function getCapture(req, res) {
     var session = req.param('session');
-    var projet = req.param('projet');
+    var projet = req.param('project');
     var jsonDossier= readJsonFile('sessions/'+ session + '/' + session + '.json');
     var jsonProjet = readJsonFile('sessions/'+ session + '/' + projet + '/' + projet + '.json');
     res.render("capture", {
@@ -80,7 +108,7 @@ module.exports = function(app,io,m){
 
   function getBibli(req, res) {
     var session = req.param('session');
-    var projet = req.param('projet');
+    var projet = req.param('project');
     var jsonDossier= readJsonFile('sessions/'+ session + '/' + session + '.json');
     var jsonProjet = readJsonFile('sessions/'+ session + '/' + projet + '/' + projet + '.json');
     res.render("bibli", {
@@ -96,7 +124,7 @@ module.exports = function(app,io,m){
 
   function getBibliPubli(req, res) {
     var session = req.param('session');
-    var projet = req.param('projet');
+    var projet = req.param('project');
     var jsonDossier= readJsonFile('sessions/'+ session + '/' + session + '.json');
     var jsonProjet = readJsonFile('sessions/'+ session + '/' + projet + '/' + projet + '.json');
     res.render("bibli", {
@@ -112,7 +140,7 @@ module.exports = function(app,io,m){
 
   function getPubli(req, res) {
     var session = req.param('session');
-    var projet = req.param('projet');
+    var projet = req.param('project');
     var publi = req.param('publi');
     var jsonDossier= readJsonFile('sessions/'+ session + '/' + session + '.json');
     var jsonProjet = readJsonFile('sessions/'+ session + '/' + projet + '/' + projet + '.json');
@@ -133,7 +161,7 @@ module.exports = function(app,io,m){
     var date = Date.now();
     var ext = path.extname(req.files.file.name);
     var session = req.param('session');
-    var projet = req.param('projet');
+    var projet = req.param('project');
     var dir =  'sessions/'+ session + '/' + projet;
     fs.readFile(req.files.file.path, function (err, data) {
       var newPath = 'sessions/'+ session + '/' + projet + '/' + date + ext;
@@ -148,9 +176,10 @@ module.exports = function(app,io,m){
   };
 
 
-  function readJsonFile(file){
-    var jsonObj = JSON.parse(fs.readFileSync(file, 'utf8'));
-    return jsonObj;
+  function readJsonFile( jsonFile){
+    var jsonFileContent = fs.readFileSync(jsonFile, 'utf8');
+    var jsonFileContentParsed = JSON.parse( jsonFileContent);
+    return jsonFileContentParsed;
   }
 
   function createThumnails(path, fileName, dir){
@@ -165,5 +194,9 @@ module.exports = function(app,io,m){
     // take 2 screenshots at predefined timemarks
     .takeScreenshots({ count: 1, timemarks: [ '00:00:01'], filename: fileName + "-thumb.png"}, dir);
   }
+
+
+
+
 
 };

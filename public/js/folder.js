@@ -14,7 +14,7 @@ var $thisEl;
 /* sockets */
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
-socket.on('listProject', onListProject); // Liste tous les projets
+socket.on('listAllProjectsOfOneFolder', onListAllProjectsOfOneFolder); // Liste tous les projets
 socket.on('projectCreated', onProjectCreated); // Quand un dossier est crée !
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 socket.on('projectModified', onProjectModified); //Quand on reçoit les modification du projet
@@ -89,8 +89,12 @@ function onProjectCreated(data){
 }
 
 // Affiche la liste des projets
-function onListProject(data){
-	console.log("SOCKET RECEIVE");
+function onListAllProjectsOfOneFolder(data){
+  data.forEach( loadProject);
+  return;
+}
+
+function listProject(data){
 	var folderName = data.name;
 	var createdDate = transformDatetoString(data.created);
 	var image = data.image;
@@ -99,12 +103,8 @@ function onListProject(data){
 	if(data.modified!= null){var modifiedDate = transformDatetoString(data.modified);}
 	else{var modifiedDate = data.modified;}
 
-// je comprend pas pourquoi tu fais ça ? autant le prendre directement au chargement de la page en jade non ?
-//	$('.folder-wrapper').html('<h1 class="folder">'+data.sessionName+'</h1>');
-
 	displayFolder(folderName, createdDate, modifiedDate, image, statut);
 }
-
 // Fonction qui affiche les projets HTML
 function displayFolder(name, created, modified, image, statut){
 
