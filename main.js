@@ -13,10 +13,6 @@ var fs = require('fs-extra'),
 ;
 var dodoc  = require('./dodoc');
 
-
-
-console.log( "PLOP " + dodoc.contentDir);
-
 module.exports = function(app, io){
 
   // VARIABLES
@@ -195,7 +191,6 @@ module.exports = function(app, io){
     }
 
 
-
 		// Modifier un dossier
 		function onModifyFolder( udpdatedFolderData){
   		dev.logfunction( "EVENT - onModifyFolder");
@@ -207,10 +202,10 @@ module.exports = function(app, io){
 		// Supprimer un dossier
 		function onRemoveFolder(folder){
   		dev.logfunction( "EVENT - onRemoveFolder");
-			var folderName = convertToSlug(folder.name);
-			var folderPath = dodoc.contentDir + folderName;
-			rmDir(folderPath);
-			io.sockets.emit('folderRemoved');
+			var slugFolderName = convertToSlug( folder.name);
+      var eventAndContentJson = removeFolderNamed( slugFolderName);
+      dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
+      io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
 		}
 
 	// F I N     I N D E X    P A G E
@@ -220,6 +215,10 @@ module.exports = function(app, io){
 		function listProject(session, socket){
   		dev.logfunction( "listProject");
 			//console.log(socket);
+
+
+
+
 			var dir = +session.session+"/";
 			var sessionName;
 			fs.readdir(dir, function (err, files) {
@@ -232,9 +231,10 @@ module.exports = function(app, io){
 	      })
 			  .forEach( function (file) {
 			  	//console.log(file);
-			  	if(fs.statSync(path.join(dir, file)).isDirectory()){
-						if(! /^\..*/.test(file)){
+			  	if(fs.statSync( path.join(dir, file)).isDirectory()){
+						if(!dodoc.regexpMatchFolderNames.test(file)){
 							var jsonFile = dir + file + '/' +file+'.json';
+
 							var data = fs.readFileSync(jsonFile,"UTF-8");
 							var jsonObj = JSON.parse(data);
 					    socket.emit('listProject', {name:jsonObj.name, sessionName: sessionName, created:jsonObj.created, modified:jsonObj.modified, statut:jsonObj.statut, image:jsonObj.fileName});
@@ -1199,6 +1199,18 @@ module.exports = function(app, io){
       return eventAndContent( "folderAlreadyExist", objectJson);
 
     }
+
+		function removeFolderNamed( slugFolderName) {
+  		dev.logfunction( "COMMON — removeFolderNamed");
+			var folderPath = getFullPath( slugFolderName);
+			rmDir(folderPath);
+      var folderJson =
+      {
+        "name" : slugFolderName
+      };
+      return eventAndContent( "folderRemoved", folderJson);
+		}
+
 
     function getFolderDataJSON( slugFolderName) {
   		dev.logfunction( "COMMON — getFolderDataJSON");
