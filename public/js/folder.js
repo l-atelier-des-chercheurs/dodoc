@@ -3,8 +3,8 @@ var socket = io.connect();
 
 var sessionId;
 //get current session
-var currentSession = app.session;
-var sessionName ;
+var currentFolder = app.folder;
+var sessionName;
 
 var thisProjectName;
 var thisProject;
@@ -24,6 +24,7 @@ jQuery(document).ready(function($) {
 
 	$(document).foundation();
 	init();
+
 });
 
 function init(){
@@ -61,13 +62,13 @@ function submitProject($button, send){
 			var f = imageData[0];
 			var reader = new FileReader();
 			reader.onload = function(evt){
-				socket.emit(send, {session: currentSession, name: newProjectName, file:evt.target.result, image:true});
+				socket.emit(send, {session: currentFolder, name: newProjectName, file:evt.target.result, image:true});
 			};
 			reader.readAsDataURL(f);
 		}
 		else{
 			console.log("Pas d'image chargé");
-			socket.emit(send, {session: currentSession, name: newProjectName});
+			socket.emit(send, {session: currentFolder, name: newProjectName});
 		}
 		$('input.new-project').val('');
 		$('#imageproject').val('');
@@ -94,6 +95,25 @@ function onListAllProjectsOfOneFolder(data){
   return;
 }
 
+function loadProject( projectData) {
+
+	var projectName = projectData.name;
+	var projectNameSlug = convertToSlug( projectName);
+
+	var projectPath = '/' + projectNameSlug;
+
+	var createdDate = projectData.created;
+	var modifiedDate = projectData.modified
+	var statut = projectData.statut;
+
+	var imageSrc = "./" + projectPath + "/" + projectData.projectPreviewName;
+
+	displayProject( projectName, projectPath, createdDate, modifiedDate, statut, imageSrc);
+
+	return;
+}
+
+/*
 function listProject(data){
 	var folderName = data.name;
 	var createdDate = transformDatetoString(data.created);
@@ -104,32 +124,35 @@ function listProject(data){
 	else{var modifiedDate = data.modified;}
 
 	displayFolder(folderName, createdDate, modifiedDate, image, statut);
-}
-// Fonction qui affiche les projets HTML
-function displayFolder(name, created, modified, image, statut){
 
-  // slug
-	var formatName = convertToSlug(name);
-	var newProject = $(".js--templates > .project").clone(false);
+}
+*/
+// Fonction qui affiche les projets HTML
+function 	displayProject( name, path, created, modified, statut, imageSrc) {
+
+	var $newProject = $(".js--templates > .project").clone(false);
 
   // customisation du projet
-	newProject
+	$newProject
 	  .attr( 'data-statut', statut)
 	  .find( '.statut-type').text( statut).end()
-	  .find( '.image-wrapper img').attr('src', image === true ? '/'+currentSession+'/'+formatName+'/'+formatName+'-thumb.jpg' : '').attr('alt', name).end()
+	  .find( '.image-wrapper img').attr('src', imageSrc).attr('alt', name).end()
 	  .find( '.create-date').text( created).end()
 	  .find( '.modify-date').text( modified !== null ? modified : '').end()
 	  .find( '.title').text( name).end()
-	  .find( '.project-link').attr( 'href', '/'+currentSession+'/'+formatName).end()
-	  .find( '.button-wrapper_capture').attr( 'href', '/'+currentSession+'/'+formatName+'/capture').end()
-	  .find( '.button-wrapper_bibli').attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque/medias').end()
-	  .find( '.button-wrapper_publi').attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque/panneau-de-publications').end()
+	  .find( '.project-link').attr( 'href', path).end()
+	  .find( '.button-wrapper_capture').attr( 'href', path + '/capture').end()
+	  .find( '.button-wrapper_bibli').attr( 'href',  path + '/bibliotheque/medias').end()
+	  .find( '.button-wrapper_publi').attr( 'href', path + '/bibliotheque/panneau-de-publications').end()
   ;
 
   if( modified === null)
-    newProject.find('.modified').remove();
+    $newProject.find('.modify-date').remove();
+	if( imageSrc === undefined)
+  	$newProject.find( '.image-wrapper img').remove();
 
-	$("#container .project-list").prepend(newProject);
+
+	$("#container .project-list").prepend( $newProject);
 
 }
 
@@ -218,16 +241,16 @@ function submitModifyFolder($button, send, oldName, oldStatut){
 			var f = imageData[0];
 			var reader = new FileReader();
 			reader.onload = function(evt){
-				socket.emit(send, {name: newProjectName, session:currentSession, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut, file:evt.target.result});
+				socket.emit(send, {name: newProjectName, session:currentFolder, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut, file:evt.target.result});
 			};
 			reader.readAsDataURL(f);
 		}
 		else{
 			console.log("Pas d'image chargé");
-			socket.emit(send, {name: newProjectName, session:currentSession, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
+			socket.emit(send, {name: newProjectName, session:currentFolder, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
 		}
 
-		// socket.emit(send, {name: newProjectName, session:currentSession, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
+		// socket.emit(send, {name: newProjectName, session:currentFolder, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
 	})
 }
 
@@ -266,7 +289,7 @@ function removeFolder(){
 	$('#modal-delete-alert button.oui').on('click', function(){
 		console.log('oui ' + thisProjectName);
 		console.log(thisProject);
-		socket.emit('removeProject', {name: thisProjectName, session: currentSession});
+		socket.emit('removeProject', {name: thisProjectName, session: currentFolder});
 		$('#modal-delete-alert').foundation('reveal', 'close');
 	});
 	$('#modal-delete-alert button.annuler').on('click', function(){
@@ -294,7 +317,7 @@ function onFolderRemoved(){
 function onSocketConnect() {
 	sessionId = socket.io.engine.id;
 	console.log('Connected ' + sessionId);
-	socket.emit('listProject', {session: currentSession});
+	socket.emit('listProjects', { "slugFolderName" : currentFolder});
 };
 
 function onSocketError(reason) {

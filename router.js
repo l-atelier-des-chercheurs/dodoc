@@ -14,7 +14,7 @@ module.exports = function(app,io,m){
   /**
   * routing event
   */
-  app.get("/", getFolders);
+  app.get("/", getIndex);
   app.get("/:folder", getFolder);
   app.get("/:folder/:project", getProject);
   app.get("/:folder/:project/capture", getCapture);
@@ -49,7 +49,7 @@ module.exports = function(app,io,m){
 
 
   // GET
-  function getFolders(req, res) {
+  function getIndex(req, res) {
     res.render("index", {
       "pageTitle" : "Do.Doc",
     });
@@ -61,7 +61,7 @@ module.exports = function(app,io,m){
     var folderData = readJsonFile( jsonFileOfFolder);
 
     res.render("folder", {
-      "pageTitle" : dodoc.nameOfFolder + folderData.name,
+      "pageTitle" : dodoc.nameOfFolder + " | " + folderData.name,
       "folder" : slugFolderName,
       "folderName" : folderData.name,
       "statut" : folderData.statut,
@@ -80,13 +80,13 @@ module.exports = function(app,io,m){
     var projectData = readJsonFile( jsonFileOfProject);
 
     res.render("project", {
-      title : "Projet",
-      folder: session,
-      folder: jsonDossier.name,
-      statut : jsonDossier.statut,
-      projet : projet,
-      projectName: jsonProjet.name,
-      url: req.path
+      "pageTitle" : dodoc.nameOfProject + " | " + projectData.name,
+      "folder" : slugFolderName,
+      "folderName" : folderData.name,
+      "statut" : folderData.statut,
+      "project" : slugProjectName,
+      "projectName" : projectData.name,
+      "url" : req.path
     });
   };
 

@@ -39,24 +39,19 @@ module.exports = function(app, io){
 
 	io.on("connection", function(socket){
 		// I N D E X    P A G E
-		listFolders( socket);
+		socket.on("listFolders", onListFolders);
 		socket.on("newFolder", onNewFolder);
 		socket.on("modifyFolder", onModifyFolder);
 		socket.on("removeFolder", onRemoveFolder);
 
-		// P R O J E T S     P A G E
-		socket.on("listProject", function (data){
-			listProject(data, socket);
-		});
+		// F O L D E R     P A G E
+		socket.on("listProjects", onListProjects);
 		socket.on("newProject", onNewProject);
 		socket.on("modifyProject", onModifyProject);
 		socket.on("removeProject", onRemoveProject);
 
 		// P R O J E T      P A G E
-		socket.on("displayProject", function(data){
-			displayProject(data, socket);
-
-		});
+		socket.on("displayProject", displayProject);
 
 		// C A P T U R E     P A G E
 		socket.on("imageCapture", onNewImage);
@@ -121,7 +116,7 @@ module.exports = function(app, io){
 
 		// List all folders async (event = listOneFolder)
 		// then list all projects of one folder (event =
-		function listFolders(socket){
+		function onListFolders(socket){
   		dev.logfunction( "EVENT - listFolder");
 
 			fs.readdir( dodoc.contentDir, function (err, folders) {
@@ -134,10 +129,8 @@ module.exports = function(app, io){
             var eventAndContentJson = listOneFolder( slugFolderName);
             dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
             io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
-
             // parser les projets du folder
             listAllProjectsOfOneFolder( slugFolderName);
-
 			  	}
 			  });
 			});
@@ -145,7 +138,6 @@ module.exports = function(app, io){
 
 		// Liste les dossiers déjà existant
     function listAllProjectsOfOneFolder( slugFolderName) {
-
   		dev.logfunction( "EVENT — listAllProjectsOfOneFolder");
   		var folderPath = getFullPath( slugFolderName);
 
@@ -165,12 +157,8 @@ module.exports = function(app, io){
 			    if( dodoc.regexpMatchFolderNames.test( slugProjectName)){
             dev.log( "- - is folder : " + slugProjectName);
 
-            var projectPath = getProjectPath( slugFolderName, slugProjectName);
-            var projectData = getProjectDataJSON( projectPath);
-            projectData.folderName = slugFolderName;
-            projectData.projectPreviewName = getProjectPreview( projectPath);
-            dev.log( "- - - projectJSON " + JSON.stringify( projectData));
-
+            var projectData = getProjectDataJSON( slugFolderName, slugProjectName);
+            dev.log( "- - - projectJSON : " + JSON.stringify( projectData));
             allProjectsData.push( projectData);
 
           }
@@ -210,13 +198,16 @@ module.exports = function(app, io){
 
 	// P R O J E T S     P A G E
 		// Liste les projets existants
+
+		function onListProjects( dataFolder, socket) {
+  		dev.logfunction( "listProjects");
+      listAllProjectsOfOneFolder( dataFolder.slugFolderName);
+		}
+
+
 		function listProject( folder, socket){
-  		dev.logfunction( "listProject");
+  		dev.logfunction( "listAllProjects");
 			//console.log(socket);
-
-
-
-
 			var dir = + folder.folder+"/";
 			var folderName;
 			fs.readdir(dir, function (err, files) {
@@ -1358,16 +1349,19 @@ module.exports = function(app, io){
       return slugFolderName + '/' + slugProjectName;
     }
 
-    function getProjectDataJSON( projectPath) {
+    function getProjectDataJSON( slugFolderName, slugProjectName) {
+
+      var projectPath = getProjectPath( slugFolderName, slugProjectName);
 
       var projectJSONFile = getJsonFileOfProject( projectPath);
 
 			var projectData = fs.readFileSync( projectJSONFile,"UTF-8");
 			var projectJSONdata = JSON.parse(projectData);
 
-      return {
-			  "projectName" : projectJSONdata.name,
-			};
+      projectJSONdata.folderName = slugFolderName;
+      projectJSONdata.projectPreviewName = getProjectPreview( projectPath);
+
+      return projectJSONdata;
     }
 
     function getProjectPreview( projectPath) {

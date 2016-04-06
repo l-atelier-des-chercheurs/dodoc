@@ -3,9 +3,9 @@ var socket = io.connect();
 
 var sessionId;
 //get current session
-var currentSession = app.session;
+var currentFolder = app.folder;
 //get current project
-var currentProject = app.projet;
+var currentProject = app.project;
 
 var thisProjectName;
 var thisProject;
@@ -65,10 +65,10 @@ function sendProjectData(data){
 	  .find( '.create-date').text( created).end()
 	  .find( '.modify-date').text( modified !== null ? modified : '').end()
 	  .find( '.title').text( name).end()
-	  .find( '.project-link').attr( 'href', '/'+currentSession+'/'+formatName).end()
-	  .find( '.button-wrapper_capture').attr( 'href', '/'+currentSession+'/'+formatName+'/capture').end()
-	  .find( '.button-wrapper_bibli').attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque/medias').end()
-	  .find( '.button-wrapper_publi').attr( 'href', '/'+currentSession+'/'+formatName+'/bibliotheque/panneau-de-publications').end()
+	  .find( '.project-link').attr( 'href', '/'+currentFolder+'/'+formatName).end()
+	  .find( '.button-wrapper_capture').attr( 'href', '/'+currentFolder+'/'+formatName+'/capture').end()
+	  .find( '.button-wrapper_bibli').attr( 'href', '/'+currentFolder+'/'+formatName+'/bibliotheque/medias').end()
+	  .find( '.button-wrapper_publi').attr( 'href', '/'+currentFolder+'/'+formatName+'/bibliotheque/panneau-de-publications').end()
 
 		.find( '.js--publi_view', publiPath).attr('href', publiPath).end()
 	;
@@ -81,16 +81,16 @@ function sendProjectData(data){
     var fileName = lastMedias[i];
 
 		if(extension == "jpg"){
-			$allMedias = $allMedias.add( displayImage(currentSession, currentProject, identifiant, fileName));
+			$allMedias = $allMedias.add( displayImage(currentFolder, currentProject, identifiant, fileName));
 		}
 		if(extension == "webm"){
-			$allMedias = $allMedias.add( displayVideo(currentSession, currentProject, identifiant, fileName));
+			$allMedias = $allMedias.add( displayVideo(currentFolder, currentProject, identifiant, fileName));
 		}
 		if(extension == "mp4"){
-			$allMedias = $allMedias.add( displayVideo(currentSession, currentProject, identifiant, fileName));
+			$allMedias = $allMedias.add( displayVideo(currentFolder, currentProject, identifiant, fileName));
 		}
 		if(extension == "wav"){
-			$allMedias = $allMedias.add( displayAudio(currentSession, currentProject, identifiant, fileName));
+			$allMedias = $allMedias.add( displayAudio(currentFolder, currentProject, identifiant, fileName));
 		}
 	}
 
@@ -99,8 +99,8 @@ function sendProjectData(data){
 	var $allPublis = $();
 
 	for (var i = 0; i < arrayPubli.length; i++) {
-		var publiPath = '/'+currentSession+'/'+currentProject+'/publication/'+ convertToSlug(arrayPubli[i]);
-		var editPath = '/'+currentSession+'/'+currentProject+'/bibliotheque/panneau-de-publications#'+ convertToSlug(arrayPubli[i]);
+		var publiPath = '/'+currentFolder+'/'+currentProject+'/publication/'+ convertToSlug(arrayPubli[i]);
+		var editPath = '/'+currentFolder+'/'+currentProject+'/bibliotheque/panneau-de-publications#'+ convertToSlug(arrayPubli[i]);
 
 		var publiItem = $(".js--templates > .publi-folder").clone(false);
 		publiItem
@@ -225,16 +225,16 @@ function submitModifyFolder($button, send, oldName, oldStatut){
 			var f = imageData[0];
 			var reader = new FileReader();
 			reader.onload = function(evt){
-				socket.emit(send, {name: newProjectName, session:currentSession, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut, file:evt.target.result});
+				socket.emit(send, {name: newProjectName, session:currentFolder, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut, file:evt.target.result});
 			};
 			reader.readAsDataURL(f);
 		}
 		else{
 			console.log("Pas d'image chargé");
-			socket.emit(send, {name: newProjectName, session:currentSession, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
+			socket.emit(send, {name: newProjectName, session:currentFolder, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
 		}
 
-		// socket.emit(send, {name: newProjectName, session:currentSession, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
+		// socket.emit(send, {name: newProjectName, session:currentFolder, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
 	})
 }
 
@@ -266,7 +266,7 @@ function onProjectModified(data){
 	  .find('.modify-date').html(modified).end();
 
 	if(data.image == true){
-		$thisEl.find('.image-wrapper img').attr('src', '/'+currentSession+'/'+convertToSlug(name)+'/'+convertToSlug(name)+'-thumb.jpg?modified='+data.modified);
+		$thisEl.find('.image-wrapper img').attr('src', '/'+currentFolder+'/'+convertToSlug(name)+'/'+convertToSlug(name)+'-thumb.jpg?modified='+data.modified);
 	} else {
 		$thisEl.find('.image-wrapper img').attr('src', '');
 	}
@@ -277,9 +277,9 @@ function removeFolder(){
 	$('#modal-delete-alert button.oui').on('click', function(){
 		console.log('oui ' + thisProjectName);
 		console.log(thisProject);
-		socket.emit('removeProject', {name: thisProjectName, session: currentSession});
+		socket.emit('removeProject', {name: thisProjectName, session: currentFolder});
 		$('#modal-delete-alert').foundation('reveal', 'close');
-		window.location.replace('/'+currentSession);
+		window.location.replace('/'+currentFolder);
 	});
 	$('#modal-delete-alert button.annuler').on('click', function(){
 		console.log('annuler');
@@ -306,7 +306,7 @@ function onFolderRemoved(){
 function onSocketConnect() {
 	sessionId = socket.io.engine.id;
 	console.log('Connected ' + sessionId);
-	socket.emit('displayProject', {session: currentSession, project: currentProject});
+	socket.emit('displayProject', {session: currentFolder, project: currentProject});
 };
 
 function onSocketError(reason) {

@@ -3,9 +3,9 @@ var socket = io.connect();
 
 var sessionId;
 //get current session
-var currentSession = app.session;
+var currentFolder = app.folder;
 //get current project
-var currentProject = app.projet;
+var currentProject = app.project;
 //get current publi
 var currentPubli = app.publi;
 
@@ -34,7 +34,7 @@ function sendPubliData(data){
 function onSocketConnect() {
 	sessionId = socket.io.engine.id;
 	console.log('Connected ' + sessionId);
-	socket.emit('displayPubli', {session: currentSession, project: currentProject, publi: currentPubli});
+	socket.emit('displayPubli', {session: currentFolder, project: currentProject, publi: currentPubli});
 };
 
 function onSocketError(reason) {

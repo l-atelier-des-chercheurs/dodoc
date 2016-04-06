@@ -3,10 +3,9 @@ var socket = io.connect();
 
 var sessionId;
 //get current session
-var currentSession = app.session;
-var sessionName ;
+var currentFolder = app.folder;
 //get current project
-var currentProject = app.projet;
+var currentProject = app.project;
 
 // Variables pour la prise de médias
 var streaming = false,
@@ -154,7 +153,7 @@ function init(){
   $("a.js--delete-media-capture").on("click", function(e){
     console.log('File was delete');
     var fileToDelete = $('.screenshot').attr('data-file');
-    socket.emit("deleteFile", {session:currentSession, project:currentProject, file:fileToDelete});
+    socket.emit("deleteFile", {session:currentFolder, project:currentProject, file:fileToDelete});
     backAnimation();
     e.stopPropagation;
   });
@@ -679,7 +678,7 @@ function startStopMotion(){
 
 // Quand le dossier du stop motion est crée
 function onStopMotionDirectory(){
-  var dir = "sessions/" + currentSession + "/"+ currentProject+"/01-stopmotion";
+  var dir = "sessions/" + currentFolder + "/"+ currentProject+"/01-stopmotion";
   $("#stop-sm-btn").show();
   $('.screenshot .canvas-view').show();
   $('.screenshot .instructions-stopmotion').remove();
@@ -717,14 +716,14 @@ function takepictureMotion(dir) {
 function removeImageMotion(data, dir){
   if(countImage > 1){
     console.log("delete Image");
-    socket.emit("deleteImageMotion", {data: data, name: app.session, dir: dir, count: countImage});
+    socket.emit("deleteImageMotion", {data: data, name: currentFolder, dir: dir, count: countImage});
     countImage = countImage - 1;
     var context = canvas.getContext('2d');
     var imageObj = new Image();
     imageObj.onload = function() {
       context.drawImage(imageObj, 0, 0);
     };
-    imageObj.src = "/" + currentSession +"/"+ currentProject+"/01-stopmotion/" + countImage + ".png";
+    imageObj.src = "/" + currentFolder +"/"+ currentProject+"/01-stopmotion/" + countImage + ".png";
     $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
   }
   else{
@@ -733,7 +732,7 @@ function removeImageMotion(data, dir){
 }
 
 function stopStopMotion(){
-  var dir = "sessions/" + currentSession + "/"+ currentProject+"/01-stopmotion";
+  var dir = "sessions/" + currentFolder + "/"+ currentProject+"/01-stopmotion";
   $("#stop-sm-btn").hide();
   $("#capture-sm-btn").hide();
   countImage = 0;
@@ -741,10 +740,10 @@ function stopStopMotion(){
   $('.screenshot .meta-stopmotion').remove();
   saveFeedback("/images/icone-dodoc_anim.png");
 
-  socket.emit('stopmotionCapture', {session: currentSession, project: currentProject, dir: dir});
+  socket.emit('stopmotionCapture', {session: currentFolder, project: currentProject, dir: dir});
   socket.on('newStopMotionCreated', function(req){
     $('.screenshot .canvas-view').hide();
-    $('#camera-preview').attr('src', '/' + currentSession + '/'+'/'+currentProject+'/'+req.fileName+'')
+    $('#camera-preview').attr('src', '/' + currentFolder + '/'+'/'+currentProject+'/'+req.fileName+'')
     $('#camera-preview').show();
     $("#start-sm-btn").show();
     $('.js--delete-media-capture').show();
@@ -890,7 +889,7 @@ function audioCapture(code){
               dataURL: audioDataURL
             }
         };
-        //socket.emit('audio', {files: files, id: sessionId, name: app.session});
+        //socket.emit('audio', {files: files, id: sessionId, name: currentFolder});
         console.log("Audio is recording url " + url);
         submitData(files, "audioCapture");
         saveFeedback("/images/icone-dodoc_son.png");
@@ -1041,7 +1040,7 @@ function onMediaCreated(file){
 
 function submitData(data, send){
 	animateWindows();
-	socket.emit(send, {data: data, session: currentSession, project:currentProject});
+	socket.emit(send, {data: data, session: currentFolder, project:currentProject});
 }
 
 //animation des fenêtres à la capture

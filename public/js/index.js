@@ -135,13 +135,12 @@ function onListAllProjectsOfOneFolder(data){
   return;
 }
 
-function loadProject( thisProject) {
+function loadProject( projectData) {
 
-	var folderName = thisProject.folderName;
-	var projectName = thisProject.projectName;
-	var projectPreviewName = thisProject.projectPreviewName;
+	var projectName = projectData.name;
+	var projectPreviewName = projectData.projectPreviewName;
+	var folderNameSlug = projectData.folderName;
 
-	var folderNameSlug = convertToSlug( folderName);
 	var projectNameSlug = convertToSlug( projectName);
 	var projectPath = '/' + folderNameSlug + '/' + projectNameSlug;
 
@@ -320,6 +319,7 @@ function onFolderRemoved(){
 function onSocketConnect() {
 	sessionId = socket.io.engine.id;
 	console.log('Connected ' + sessionId);
+	socket.emit('listFolders');
 };
 
 function onSocketError(reason) {
