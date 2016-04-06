@@ -16,9 +16,9 @@ socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
 socket.on('listAllProjectsOfOneFolder', onListAllProjectsOfOneFolder); // Liste tous les projets
 socket.on('projectCreated', onProjectCreated); // Quand un dossier est crée !
-socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
+socket.on('projectAlreadyExist', onProjectAlreadyExist); // Si le nom de dossier existe déjà.
 socket.on('projectModified', onProjectModified); //Quand on reçoit les modification du projet
-socket.on('folderRemoved', onFolderRemoved); // Quand le dossier a été supprimé sur le serveur
+socket.on('projectRemoved', onProjectRemoved); // Quand le dossier a été supprimé sur le serveur
 
 jQuery(document).ready(function($) {
 
@@ -50,7 +50,7 @@ function init(){
 	});
 
 	// Remove Folder
-	removeFolder();
+	removeProject();
 }
 
 // Envoie les données du dossier au serveur
@@ -106,25 +106,33 @@ function onListAllProjectsOfOneFolder(data){
 function loadProject( projectData) {
 
 	var projectName = projectData.name;
-	var projectNameSlug = convertToSlug( projectName);
-
-	var projectPath = './' + projectNameSlug;
+	var slugProjectName = projectData.slugProjectName;
 
 	var createdDate = transformDatetoString( projectData.created);
 	var modifiedDate = transformDatetoString( projectData.modified);
 	var statut = projectData.statut;
 
-	var imageSrc = "./" + projectPath + "/" + projectData.projectPreviewName;
+  var imageSrc;
+  if( projectData.projectPreviewName !== undefined && projectData.projectPreviewName !== false)
+  	imageSrc = projectData.projectPreviewName;
 
-	displayProject( projectName, projectPath, createdDate, modifiedDate, statut, imageSrc);
+	displayProject( projectName, slugProjectName, createdDate, modifiedDate, statut, imageSrc);
 
 	return;
 }
 
 
-function 	displayProject( name, path, created, modified, statut, imageSrc) {
+function 	displayProject( name, projectNameSlug, created, modified, statut, imageSrc) {
 
 	var $newProject = $(".js--templates > .project").clone(false);
+	var path = './' + projectNameSlug;
+
+  if( modified === null)
+    $newProject.find('.modify-date').remove();
+	if( imageSrc === undefined)
+  	$newProject.find( '.image-wrapper img').remove();
+
+  imageSrc = "./" + path + "/" + imageSrc;
 
   // customisation du projet
 	$newProject
@@ -132,18 +140,15 @@ function 	displayProject( name, path, created, modified, statut, imageSrc) {
 	  .find( '.statut-type').text( statut).end()
 	  .find( '.image-wrapper img').attr('src', imageSrc).attr('alt', name).end()
 	  .find( '.create-date').text( created).end()
-	  .find( '.modify-date').text( modified !== null ? modified : '').end()
+	  .find( '.modify-date').text( modified).end()
 	  .find( '.title').text( name).end()
 	  .find( '.project-link').attr( 'href', path).end()
 	  .find( '.button-wrapper_capture').attr( 'href', path + '/capture').end()
 	  .find( '.button-wrapper_bibli').attr( 'href',  path + '/bibliotheque/medias').end()
 	  .find( '.button-wrapper_publi').attr( 'href', path + '/bibliotheque/panneau-de-publications').end()
+	  .data( 'projectNameSlug', projectNameSlug)
   ;
 
-  if( modified === null)
-    $newProject.find('.modify-date').remove();
-	if( imageSrc === undefined)
-  	$newProject.find( '.image-wrapper img').remove();
 
 
 	$("#container .project-list").prepend( $newProject);
@@ -153,7 +158,8 @@ function 	displayProject( name, path, created, modified, statut, imageSrc) {
 function modifyProject($this){
 
 	$("#container.row #modal-modify-project").empty();
-	thisProjectName = $this.parents(".project").find('h2').text();
+	thisProjectName = $this.closest(".project").find('h2').text();
+	thisProjectNameSlug = $this.closest(".project").data("projectNameSlug");
 
 	var statut = $this.parent().attr("data-statut");
 	var inputNameHtml = "<input type='text' autofocus class='modify-project' value='"+thisProjectName+"'></input>";
@@ -174,28 +180,9 @@ function modifyProject($this){
 	var newContentToAdd = "<h3 id='modalTitle' class='popoverTitle'>Modifier le projet</h3><form onsubmit='return false;' class='modify-folder-form'>"+inputNameHtml+statutHtml+inputFile+submitBtnHtml+deleteHtml+"</form><a class='close-reveal-modal' aria-label='Close') &#215;</a></div>";
 	$("#container.row #modal-modify-project").append(newContentToAdd);
 	modifyStatut();
-	submitModifyProject($(".submit-modify-project"), 'modifyProject', thisProjectName, statut);
+	submitModifyProject($(".submit-modify-project"), 'modifyProject', thisProjectNameSlug, statut);
 
 
-  // fct du popup
-	var input = $("#modal-modify-project").find(".inputfile")[0];
-
-	var label	 = input.nextElementSibling,
-		labelVal = label.innerHTML;
-
-	input.addEventListener( 'change', function( e )
-	{
-		var fileName = '';
-		if( this.files && this.files.length > 1 )
-			fileName = ( this.getAttribute( 'data-multiple-caption' ) || '' ).replace( '{count}', this.files.length );
-		else
-			fileName = e.target.value.split( '\\' ).pop();
-
-		if( fileName )
-			label.querySelector( 'span' ).innerHTML = fileName;
-		else
-			label.innerHTML = labelVal;
-	});
 
 	$thisEl = $this.parent();
 }
@@ -223,33 +210,45 @@ function modifyStatut(){
 }
 
 // Envoie les données du projet au serveur
-function submitModifyProject($button, send, oldName, oldStatut){
+function submitModifyProject($button, send, projectNameSlug){
 	$button.on('click', function(){
 		var newProjectName = $('input.modify-project').val();
 		var newStatut = $('select.modify-statut').val();
-		var oldProjectName = oldName;
-		var oldProjectStatut = oldStatut;
+
 		//Images changed
 		if(imageData != null){
 			console.log('Une image a été ajoutée');
 			var f = imageData[0];
 			var reader = new FileReader();
 			reader.onload = function(evt){
-				socket.emit(send, {name: newProjectName, session:currentFolder, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut, file:evt.target.result});
+  			socket.emit(send,
+        {
+     				"name" : newProjectName,
+    				"slugFolderName" : currentFolder,
+            "slugProjectName" : projectNameSlug,
+    				"statut" : newStatut,
+  			});
 			};
 			reader.readAsDataURL(f);
 		}
 		else{
 			console.log("Pas d'image chargé");
-			socket.emit(send, {name: newProjectName, session:currentFolder, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
+			socket.emit(send,
+      {
+   				"name" : newProjectName,
+  				"slugFolderName" :currentFolder,
+  				"slugProjectName" : projectNameSlug,
+  				"statut" :newStatut,
+			});
 		}
 
-		// socket.emit(send, {name: newProjectName, session:currentFolder, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
+		//socket.emit(send, {name: newProjectName, session:currentFolder, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
 	})
 }
 
 // On reçoit les mofication du projet
 function onProjectModified(data){
+
 	var name = data.name;
 	var statut = data.statut;
 	var modified = transformDatetoString(data.modified);
@@ -265,6 +264,7 @@ function onProjectModified(data){
   });
 */
 
+
 	$('#modal-modify-project').foundation('reveal', 'close');
 
 	if(statut === "terminé"){
@@ -279,11 +279,17 @@ function onProjectModified(data){
 }
 
 //Suppression du dossier
-function removeFolder(){
+function removeProject(){
 	$('#modal-delete-alert button.oui').on('click', function(){
 		console.log('oui ' + thisProjectName);
 		console.log(thisProject);
-		socket.emit('removeProject', {name: thisProjectName, session: currentFolder});
+		var projectToRemove =
+		{
+  		"name" : thisProjectName,
+  		"folder" : currentFolder
+		}
+		socket.emit('removeProject', projectToRemove);
+
 		$('#modal-delete-alert').foundation('reveal', 'close');
 	});
 	$('#modal-delete-alert button.annuler').on('click', function(){
@@ -295,14 +301,14 @@ function removeFolder(){
 	});
 }
 
-// Si un fichier existe déjà, affiche un message d'alerte
-function onFolderAlreadyExist(data){
-	alert("Le nom de dossier " +data.name+ " existe déjà. Veuillez trouvez un autre nom.");
+// Si un projet existe déjà, affiche un message d'alerte
+function onProjectAlreadyExist(data){
+	alert("Le nom de projet " +data.name+ " existe déjà. Veuillez trouvez un autre nom.");
 	$('.new-project').focus();
 }
 
 //Remove the folder from list
-function onFolderRemoved(){
+function onProjectRemoved(){
 	thisProject.remove();
 }
 

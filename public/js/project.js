@@ -16,9 +16,9 @@ var $thisEl;
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
 socket.on('sendProjectData', sendProjectData);
-socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
+socket.on('projectAlreadyExist', onProjectAlreadyExist); // Si le nom de dossier existe déjà.
 socket.on('projectModified', onProjectModified); //Quand on reçoit les modification du projet
-socket.on('folderRemoved', onFolderRemoved); // Quand le dossier a été supprimé sur le serveur
+socket.on('projectRemoved', onFolderRemoved); // Quand le dossier a été supprimé sur le serveur
 
 
 jQuery(document).ready(function($) {
@@ -185,7 +185,7 @@ function modifyProject($this){
 	var newContentToAdd = "<h3 id='modalTitle' class='popoverTitle'>Modifier le projet</h3><form onsubmit='return false;' class='modify-folder-form'>"+inputNameHtml+statutHtml+inputFile+submitBtnHtml+deleteHtml+"</form><a class='close-reveal-modal' aria-label='Close') &#215;</a></div>";
 	$("#container.row #modal-modify-project").append(newContentToAdd);
 	modifyStatut();
-	submitModifyFolder($(".submit-modify-project"), 'modifyProject', thisProjectName, statut);
+	submitModifyProject($(".submit-modify-project"), 'modifyProject', thisProjectName, statut);
 
 	$thisEl = $this.parent();
 }
@@ -213,25 +213,40 @@ function modifyStatut(){
 }
 
 // Envoie les données du projet au serveur
-function submitModifyFolder($button, send, oldName, oldStatut){
+function submitModifyProject($button, send, oldName, oldStatut){
 	$button.on('click', function(){
 		var newProjectName = $('input.modify-project').val();
 		var newStatut = $('select.modify-statut').val();
 		var oldProjectName = oldName;
 		var oldProjectStatut = oldStatut;
+
 		//Images changed
 		if(imageData != null){
 			console.log('Une image a été ajoutée');
 			var f = imageData[0];
 			var reader = new FileReader();
 			reader.onload = function(evt){
-				socket.emit(send, {name: newProjectName, session:currentFolder, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut, file:evt.target.result});
+				socket.emit(send,
+				{
+  				"name" : newProjectName,
+  				"folder" :currentFolder,
+  				"statut" :newStatut,
+  				"oldname" : oldProjectName,
+  				"oldStatut" :oldProjectStatut,
+  		  });
 			};
 			reader.readAsDataURL(f);
 		}
 		else{
 			console.log("Pas d'image chargé");
-			socket.emit(send, {name: newProjectName, session:currentFolder, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
+			socket.emit(send,
+      {
+   				"name" : newProjectName,
+  				"folder" :currentFolder,
+  				"statut" :newStatut,
+  				"oldname" : oldProjectName,
+  				"oldStatut" :oldProjectStatut,
+			});
 		}
 
 		// socket.emit(send, {name: newProjectName, session:currentFolder, statut:newStatut, oldname: oldProjectName, oldStatut:oldProjectStatut});
@@ -246,13 +261,6 @@ function onProjectModified(data){
 
   // c'est pas top la variable globale. Par exemple, si on va éditer un autre projet alors que ce paquet n'est pas arrivé, $thisEl ne sera plus le bon
  	var parent = $thisEl;
-
-	// il faudrait envoyer un ID du post avec la requête, puis matcher le projet qui correspond à la réception. Un ID qui ne peut pas changer. On a ça dans le JSON ?
-/*
-	$(".project .title").filter( function() {
-    return $(this).text() === name;
-  });
-*/
 
 	$('#modal-modify-project').foundation('reveal', 'close');
 
@@ -291,8 +299,8 @@ function removeFolder(){
 }
 
 // Si un fichier existe déjà, affiche un message d'alerte
-function onFolderAlreadyExist(data){
-	alert("Le nom de dossier " +data.name+ " existe déjà. Veuillez trouvez un autre nom.");
+function onProjectAlreadyExist(data){
+	alert("Le nom de projet " + data.name + " existe déjà. Veuillez trouvez un autre nom.");
 	$('.new-project').focus();
 }
 
