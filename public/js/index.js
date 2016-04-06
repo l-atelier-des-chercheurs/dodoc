@@ -55,7 +55,7 @@ function init(){
 	//Au clic sur l'icone éditer
 	$('body').on('click', '.js--edit-project-icon', function(){
 		thisFolder = $(this).parent();
-		modifyFolder($(this));
+		modifyFolder( $(this));
 	});
 
 
@@ -259,8 +259,8 @@ function submitModifyFolder($button, send, oldName, oldStatut){
 		var oldFolderStatut = oldStatut;
 		socket.emit(send,
 		  {
-  		  "name" : newFolderName,
-  		  "oldName" : oldFolderName,
+  		  "name" : oldFolderName,
+  		  "newName" : newFolderName,
   		  "statut" : newStatut
   		});
 	})
@@ -268,6 +268,8 @@ function submitModifyFolder($button, send, oldName, oldStatut){
 
 // Quand le dossier est modifié
 function onFolderModified(data){
+
+/*
 	var name = data.name;
 	var statut = data.statut;
 	var modified = transformDatetoString(data.modified);
@@ -278,6 +280,9 @@ function onFolderModified(data){
 	if(statut == "terminé"){
 		$thisEl.find('.edit-icon').remove();
 	}
+*/
+
+  // MISSING - not ideal, should display a notice saying that the folder has been updated and replace it instead
 	location.reload();
 	// $thisEl.remove();
 	// displayFolder(name, created, modified, statut, nbProj)

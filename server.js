@@ -11,12 +11,13 @@ var credentials = {key: privateKey, cert: certificate};
 var httpsServer = https.createServer(credentials, app);
 var io      = require("socket.io").listen(httpsServer);
 
+var dodoc  = require('./dodoc');
 var main    = require('./main');
 var config  = require('./config');
 var router  = require('./router');
 
-
 var m = new main(app, io);
+
 
 /*
 * Server config

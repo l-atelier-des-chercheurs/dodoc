@@ -6,9 +6,10 @@ var fs = require('fs-extra');
 var ffmpeg = require('fluent-ffmpeg');
 var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
-
+var dodoc  = require('./dodoc');
 
 module.exports = function(app,io,m){
+
 
   /**
   * routing event
@@ -32,7 +33,7 @@ module.exports = function(app,io,m){
   function getIndex(req, res) {
     res.render("index", {title : "Do.Doc"});
   };
-  
+
   function getFolder(req, res) {
     var session = req.param('session');
     var json = readJsonFile('sessions/'+ session + '/' + session + '.json');
