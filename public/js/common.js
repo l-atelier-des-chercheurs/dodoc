@@ -1,9 +1,17 @@
-function transformDatetoString(date){
+function transformDatetoString( date){
   if( date == undefined)
     return false;
 
   var getMomentObject = moment( date, 'YYYYMMDD_HH:mm:ss');
   var formatDate = getMomentObject.format('Do MMMM YYYY');
+	return formatDate;
+}
+
+function transformDatetoTimestamp( date) {
+  if( date == undefined)
+    return false;
+  var getMomentObject = moment( date, 'YYYYMMDD_HH:mm:ss');
+  var formatDate = getMomentObject.format('X');
 	return formatDate;
 }
 

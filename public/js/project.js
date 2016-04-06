@@ -306,7 +306,7 @@ function onFolderRemoved(){
 function onSocketConnect() {
 	sessionId = socket.io.engine.id;
 	console.log('Connected ' + sessionId);
-	socket.emit('displayProject', {session: currentFolder, project: currentProject});
+	socket.emit('displayProject', { "slugFolderName" : currentFolder, "slugProjectName" : currentProject});
 };
 
 function onSocketError(reason) {

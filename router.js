@@ -36,7 +36,6 @@ module.exports = function(app,io,m){
     return getFullPath( slugFolderName) + '/' + dodoc.folderJSONfilename;
   }
 
-
   function getProjectPath( slugFolderName, slugProjectName) {
     return slugFolderName + '/' + slugProjectName;
   }
@@ -44,117 +43,105 @@ module.exports = function(app,io,m){
     return getFullPath( projectPath) + '/' + dodoc.projectJSONfilename;
   }
 
+  function getPubliPath( slugFolderName, slugProjectName, slugPubliName) {
+    return slugFolderName + '/' + slugProjectName + '/montage/' + slugPubliName;
+  }
+  function getJsonFileOfPubli( publiPath) {
+    return getFullPath( publiPath) + '/' + dodoc.publiJSONfilename;
+  }
 
 
+  function generatePageData( req, pageTitle) {
+
+    var pageDataJSON = [];
+
+    var slugFolderName = req.param('folder');
+
+    if( slugFolderName !== undefined) {
+      var jsonFileOfFolder = getJsonFileOfFolder( slugFolderName);
+      var folderData = readJsonFile( jsonFileOfFolder);
+
+      pageDataJSON.folder = slugFolderName;
+      pageDataJSON.folderName = folderData.name;
+      pageDataJSON.statut = folderData.statut;
+
+      var slugProjectName = req.param('project');
+      if( slugProjectName !== undefined) {
+        var projectPath = getProjectPath( slugFolderName, slugProjectName)
+        var jsonFileOfProject = getJsonFileOfProject( projectPath);
+        var projectData = readJsonFile( jsonFileOfProject);
+
+        pageDataJSON.project = slugProjectName;
+        pageDataJSON.projectName = projectData.name;
+
+        var slugPubliName = req.param('publi');
+        if( slugPubliName !== undefined) {
+          var publiPath = getPubliPath( slugFolderName, slugProjectName, slugPubliName);
+          var jsonFileOfPubli = getJsonFileOfPubli( publiPath);
+          var publiData = readJsonFile( jsonFileOfPubli);
+
+          pageDataJSON.publi = publiData.publi;
+          pageDataJSON.publiName = publiData.name;
+        }
+      }
+    }
+
+    if( publiData !== undefined)
+      pageTitle += " | " + publiData.name;
+    else if( projectData !== undefined)
+      pageTitle += " | " + projectData.name;
+    else if( folderData !== undefined)
+      pageTitle += " | " + folderData.name;
+
+    pageDataJSON.pageTitle = pageTitle;
+    pageDataJSON.url = req.path;
+
+    return pageDataJSON;
+
+  }
 
 
   // GET
   function getIndex(req, res) {
-    res.render("index", {
-      "pageTitle" : "Do.Doc",
-    });
+    var pageTitle = "Do.Doc";
+    var generatePageDataJSON = generatePageData(req, pageTitle);
+    res.render("index", generatePageDataJSON);
   };
 
   function getFolder(req, res) {
-    var slugFolderName = req.param('folder');
-    var jsonFileOfFolder = getJsonFileOfFolder( slugFolderName);
-    var folderData = readJsonFile( jsonFileOfFolder);
-
-    res.render("folder", {
-      "pageTitle" : dodoc.nameOfFolder + " | " + folderData.name,
-      "folder" : slugFolderName,
-      "folderName" : folderData.name,
-      "statut" : folderData.statut,
-      "url" : req.path
-    });
+    var pageTitle = dodoc.nameOfFolder;
+    var generatePageDataJSON = generatePageData(req, pageTitle);
+    res.render("folder", generatePageDataJSON);
   };
 
   function getProject(req, res) {
-    var slugFolderName = req.param('folder');
-    var jsonFileOfFolder = getJsonFileOfFolder( slugFolderName);
-    var folderData = readJsonFile( jsonFileOfFolder);
-
-    var slugProjectName = req.param('project');
-    var projectPath = getProjectPath( slugFolderName, slugProjectName)
-    var jsonFileOfProject = getJsonFileOfProject( projectPath);
-    var projectData = readJsonFile( jsonFileOfProject);
-
-    res.render("project", {
-      "pageTitle" : dodoc.nameOfProject + " | " + projectData.name,
-      "folder" : slugFolderName,
-      "folderName" : folderData.name,
-      "statut" : folderData.statut,
-      "project" : slugProjectName,
-      "projectName" : projectData.name,
-      "url" : req.path
-    });
+    var pageTitle = dodoc.nameOfProject;
+    var generatePageDataJSON = generatePageData(req, pageTitle);
+    res.render("project", generatePageDataJSON);
   };
 
   function getCapture(req, res) {
-    var session = req.param('session');
-    var projet = req.param('project');
-    var jsonDossier= readJsonFile('sessions/'+ session + '/' + session + '.json');
-    var jsonProjet = readJsonFile('sessions/'+ session + '/' + projet + '/' + projet + '.json');
-    res.render("capture", {
-      title : "Prise de vue",
-      session: session,
-      folder: jsonDossier.name,
-      statut : jsonDossier.statut,
-      projet : projet,
-      projectName: jsonProjet.name,
-      url: req.path
-    });
+    var pageTitle = dodoc.nameOfCapture;
+    var generatePageDataJSON = generatePageData(req, pageTitle);
+    res.render("project", generatePageDataJSON);
   };
 
   function getBibli(req, res) {
-    var session = req.param('session');
-    var projet = req.param('project');
-    var jsonDossier= readJsonFile('sessions/'+ session + '/' + session + '.json');
-    var jsonProjet = readJsonFile('sessions/'+ session + '/' + projet + '/' + projet + '.json');
-    res.render("bibli", {
-      title : "Bibliotheque de médias",
-      session: session,
-      folder: jsonDossier.name,
-      statut : jsonDossier.statut,
-      projet : projet,
-      projectName: jsonProjet.name,
-      url: req.path,
-    });
+    var pageTitle = dodoc.nameOfBibli;
+    var generatePageDataJSON = generatePageData(req, pageTitle);
+    res.render("project", generatePageDataJSON);
   };
 
   function getBibliPubli(req, res) {
-    var session = req.param('session');
-    var projet = req.param('project');
-    var jsonDossier= readJsonFile('sessions/'+ session + '/' + session + '.json');
-    var jsonProjet = readJsonFile('sessions/'+ session + '/' + projet + '/' + projet + '.json');
-    res.render("bibli", {
-      title : "Bibliotheque de médias",
-      session: session,
-      folder: jsonDossier.name,
-      statut : jsonDossier.statut,
-      projet : projet,
-      projectName: jsonProjet.name,
-      url: req.path,
-    });
+    var pageTitle = dodoc.nameOfBibli;
+    var generatePageDataJSON = generatePageData(req, pageTitle);
+    res.render("project", generatePageDataJSON);
   };
 
   function getPubli(req, res) {
-    var session = req.param('session');
-    var projet = req.param('project');
-    var publi = req.param('publi');
-    var jsonDossier= readJsonFile('sessions/'+ session + '/' + session + '.json');
-    var jsonProjet = readJsonFile('sessions/'+ session + '/' + projet + '/' + projet + '.json');
-    var jsonPubli = readJsonFile('sessions/'+ session + '/' + projet + '/montage/'+publi+'.json');
-    res.render("publi", {
-      title : "Publication",
-      session : session,
-      folder: jsonDossier.name,
-      projet : projet,
-      projectName: jsonProjet.name,
-      publi: publi,
-      publiName: jsonPubli.name,
-      url: req.path
-    });
+    var pageTitle = dodoc.nameOfPubli;
+    var generatePageDataJSON = generatePageData(req, pageTitle);
+    res.render("project", generatePageDataJSON);
   };
 
   function postFile(req, res) {

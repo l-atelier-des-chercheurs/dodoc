@@ -57,18 +57,26 @@ function init(){
 function submitProject($button, send){
 	$button.on('click', function(){
 		var newProjectName = $('input.new-project').val();
+
+		var jsonObj =
+		{
+		  "folder" : currentFolder,
+		  "name": newProjectName,
+		}
+
 		if(imageData != null){
+
 			console.log('Une image a été ajoutée');
 			var f = imageData[0];
 			var reader = new FileReader();
 			reader.onload = function(evt){
-				socket.emit(send, {session: currentFolder, name: newProjectName, file:evt.target.result, image:true});
+				socket.emit(send, jsonObj);
 			};
 			reader.readAsDataURL(f);
 		}
 		else{
 			console.log("Pas d'image chargé");
-			socket.emit(send, {session: currentFolder, name: newProjectName});
+			socket.emit(send, jsonObj);
 		}
 		$('input.new-project').val('');
 		$('#imageproject').val('');
@@ -86,7 +94,7 @@ function onProjectCreated(data){
 	else{var modifiedDate = data.modified;}
 	$('input.new-project').val('');
 	$('#modal-add-project').foundation('reveal', 'close');
-	displayFolder(folderName, createdDate, modifiedDate, image, statut);
+	displayProject(folderName, createdDate, modifiedDate, image, statut);
 }
 
 // Affiche la liste des projets
@@ -100,10 +108,10 @@ function loadProject( projectData) {
 	var projectName = projectData.name;
 	var projectNameSlug = convertToSlug( projectName);
 
-	var projectPath = '/' + projectNameSlug;
+	var projectPath = './' + projectNameSlug;
 
-	var createdDate = projectData.created;
-	var modifiedDate = projectData.modified
+	var createdDate = transformDatetoString( projectData.created);
+	var modifiedDate = transformDatetoString( projectData.modified);
 	var statut = projectData.statut;
 
 	var imageSrc = "./" + projectPath + "/" + projectData.projectPreviewName;
@@ -113,21 +121,7 @@ function loadProject( projectData) {
 	return;
 }
 
-/*
-function listProject(data){
-	var folderName = data.name;
-	var createdDate = transformDatetoString(data.created);
-	var image = data.image;
-	var statut = data.statut;
-	sessionName = data.sessionName;
-	if(data.modified!= null){var modifiedDate = transformDatetoString(data.modified);}
-	else{var modifiedDate = data.modified;}
 
-	displayFolder(folderName, createdDate, modifiedDate, image, statut);
-
-}
-*/
-// Fonction qui affiche les projets HTML
 function 	displayProject( name, path, created, modified, statut, imageSrc) {
 
 	var $newProject = $(".js--templates > .project").clone(false);
@@ -180,7 +174,7 @@ function modifyProject($this){
 	var newContentToAdd = "<h3 id='modalTitle' class='popoverTitle'>Modifier le projet</h3><form onsubmit='return false;' class='modify-folder-form'>"+inputNameHtml+statutHtml+inputFile+submitBtnHtml+deleteHtml+"</form><a class='close-reveal-modal' aria-label='Close') &#215;</a></div>";
 	$("#container.row #modal-modify-project").append(newContentToAdd);
 	modifyStatut();
-	submitModifyFolder($(".submit-modify-project"), 'modifyProject', thisProjectName, statut);
+	submitModifyProject($(".submit-modify-project"), 'modifyProject', thisProjectName, statut);
 
 
   // fct du popup
@@ -229,7 +223,7 @@ function modifyStatut(){
 }
 
 // Envoie les données du projet au serveur
-function submitModifyFolder($button, send, oldName, oldStatut){
+function submitModifyProject($button, send, oldName, oldStatut){
 	$button.on('click', function(){
 		var newProjectName = $('input.modify-project').val();
 		var newStatut = $('select.modify-statut').val();

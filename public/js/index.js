@@ -38,6 +38,23 @@ function init(){
 	// Create new folder
 	submitFolder($(".submit-new-folder"), 'newFolder'); //Envoie les données au serveur
 
+	$(".submit-modify-folder").on('click', function(){
+		var newFolderName = $('input.modify-folder').val();
+		var newStatut = $('select.modify-statut').val();
+		var oldFolderName = $('#modal-modify-folder').data( "folderName");
+		var oldFolderStatut = $('#modal-modify-folder').data( "folderStatut");
+		var folderNameSlug = $('#modal-modify-folder').data( "folderNameSlug");
+
+		debugger;
+		socket.emit( 'modifyFolder',
+		  {
+  		  "name" : oldFolderName,
+  		  "newName" : newFolderName,
+  		  "folderNameSlug" : folderNameSlug,
+  		  "statut" : newStatut
+  		});
+	});
+
 	// Remove Folder
 	removeFolder();
 
@@ -66,7 +83,7 @@ function init(){
 
 	//Au click sur le bouton supprimer le dossier
 	$('body').on('click', '.js--deleteFolder', function(){
-  	$('#modal-delete-alert').attr('data-foldertodelete', $(this).parents('#modal-modify-folder').attr('data-nom'));
+  	$('#modal-delete-alert').attr('data-foldertodelete', $('#modal-modify-folder').data('folderNameSlug'));
 		$('#modal-delete-alert').foundation('reveal', 'open');
 	});
 }
@@ -81,18 +98,13 @@ function submitFolder($button, send){
 
 // Affiche le fichier dès qu'il est crée
 function onFolderCreated(data){
-	var folderName = data.name;
-	var createdDate = transformDatetoString(data.created);
-	if(data.modified!= null){var modifiedDate = transformDatetoString(data.modified);}
-	else{var modifiedDate = data.modified;}
-	var statut = data.statut;
-	var nb_projets = data.nb_projets;
+
+	location.reload();
+/*
 	$('input.new-folder').val('');
 	$('#modal-add-folder').foundation('reveal', 'close');
-	//closePopover(closeAddProjectFunction); // Close pop up
-
-	var folderContent = makeFolderContent(folderName, createdDate, modifiedDate, statut, nb_projets);
-	return insertOrReplaceFolder( folderName, folderContent);
+	return onListOneFolder( data);
+*/
 }
 
 // Si un fichier existe déjà, affiche un message d'alerte
@@ -102,30 +114,41 @@ function onFolderAlreadyExist(data){
 }
 
 // Liste les dossiers
-function onListOneFolder(data){
-
-	var folderName = data.name;
-	var createdDate = transformDatetoString(data.created);
-	var modifiedDate = transformDatetoString(data.modified);
-	var statut = data.statut;
-	var nb_projets = data.nb_projets;
-
-	var folderContent = makeFolderContent(folderName, createdDate, modifiedDate, statut, nb_projets);
-  return insertOrReplaceFolder( folderName, folderContent);
+function onListOneFolder(projectData){
+	var $folderContent = makeFolderContent( projectData);
+  return insertOrReplaceFolder( projectData.folderNameSlug, $folderContent);
 }
 
-function insertOrReplaceFolder( folderName, folderContent) {
+function insertOrReplaceFolder( folderNameSlug, $folderContent) {
   // folder slug
-
-  var folderNameSlug = convertToSlug( folderName);
-
   var $existingFolder = $(".dossier-list .dossier").filter( "[data-foldernameslug=" + folderNameSlug + "]");
   if( $existingFolder.length == 1) {
-    $existingFolder.replaceWith( folderContent);
+    $existingFolder.replaceWith( $folderContent);
     return "updated";
   }
 
-	$(".dossier-list").prepend(folderContent);
+  // trouver où l'insérer en fonction de la date de modification
+  if( $(".dossier-list .dossier").length > 0) {
+    var folderTimestamp = parseInt( $folderContent.data("mtimestamp"));
+    if( folderTimestamp !== false) {
+
+      var $eles;
+      $(".dossier-list .dossier").each(function(index) {
+        if( folderTimestamp > parseInt( $(this).data("mtimestamp"))) {
+          $eles = $(this);
+          return false;
+        }
+      });
+
+      debugger;
+      if( $eles !== undefined)
+        $folderContent.insertBefore( $eles);
+      else
+        $(".dossier-list").append( $folderContent);
+    }
+  } else {
+    $(".dossier-list").append( $folderContent);
+  }
   return "inserted";
 
 }
@@ -165,29 +188,36 @@ function loadProject( projectData) {
 }
 
 // Fonction qui affiche les dossiers HTML
-function makeFolderContent(name, created, modified, statut, projets){
-	var formatName = convertToSlug(name);
-	var projetName = projets > 1 ? 'projets' : 'projet';
+function makeFolderContent( projectData){
 
+	var name = projectData.name;
+	var folderNameSlug = projectData.folderNameSlug;
+	var created = projectData.created;
+	var modified = projectData.modified;
+	var statut = projectData.statut;
+	var nb_projets = projectData.nb_projets;
+
+	var projetName = nb_projets > 1 ? 'projets' : 'projet';
 	var newFolder = $(".js--templates > .dossier").clone(false);
 
   // customisation du projet
 	newFolder
 	  .attr( 'data-nom', name)
-	  .attr( 'data-folderNameSlug', formatName)
+	  .attr( 'data-folderNameSlug', folderNameSlug)
+	  .attr( 'data-modifiedtimestamp', transformDatetoTimestamp( modified))
 	  .attr( 'data-statut', statut)
 	  .find( '.statut-type').text( statut).end()
 	  .find( '.folder-link')
-	    .attr('href', '/' + formatName)
+	    .attr('href', '/' + folderNameSlug)
 	    .attr('title', name)
 	  .end()
 
 	  .find( '.title').text( name).end()
-	  .find( '.create-date').text( created).end()
-	  .find( '.modify-date').text( modified !== false ? modified : '').end()
+	  .find( '.create-date').text( transformDatetoString( created)).end()
+	  .find( '.modify-date').text( modified !== false ? transformDatetoString( modified) : '').end()
 	  .find( '.nb-projets')
 	    .find( '.nb-projets-intitule').text( projetName).end()
-	    .find( '.nb-projets-count').text( projets).end()
+	    .find( '.nb-projets-count').text( nb_projets).end()
     .end()
   ;
 
@@ -197,34 +227,42 @@ function makeFolderContent(name, created, modified, statut, projets){
   if( statut == "terminé")
     newFolder.find( '.js--edit-project-icon').remove();
 
+  newFolder.data("mtimestamp", transformDatetoTimestamp( modified));
+
   return newFolder;
 }
 
 function modifyFolder($this){
 // 	$("#container.row #modal-modify-folder").empty();
 
-	var thisFolderName = $this.parents('.dossier').attr('data-nom');
-	var statut = $this.parents(".dossier").attr("data-statut");
+  var $thisFolder = $this.closest('.dossier');
+
+	var folderName = $thisFolder.attr('data-nom');
+  var folderNameSlug = $thisFolder.attr('data-foldernameslug');
+	var folderStatut = $thisFolder.attr("data-statut");
 
   $('#modal-modify-folder')
-    .attr('data-nom', thisFolderName)
   	.find('.modify-folder')
-  	  .attr('value', thisFolderName)
+  	  .attr('value', folderName)
     .end()
   	.find('.modify-statut')
   	  .find('option')
   	    .removeAttr('checked')
       .end()
-  	  .find('option[value="' + statut + '"]')
+  	  .find('option[value="' + folderStatut + '"]')
   	    .attr('checked', '')
   	  .end()
     .end()
+    .data(
+      {
+        "folderName" : folderName,
+        "folderNameSlug" : folderNameSlug,
+        "folderStatut" : folderStatut,
+      }
+    )
   ;
-
 // 	$("#container.row #modal-modify-folder").append(newContentToAdd);
 	modifyStatut();
-	submitModifyFolder($(".submit-modify-folder"), 'modifyFolder', thisFolderName, statut);
-	$thisEl = $this.parent();
 }
 
 function modifyStatut(){
@@ -249,21 +287,6 @@ function modifyStatut(){
 	});
 }
 
-// Envoie les données du dossier au serveur
-function submitModifyFolder($button, send, oldName, oldStatut){
-	$button.on('click', function(){
-		var newFolderName = $('input.modify-folder').val();
-		var newStatut = $('select.modify-statut').val();
-		var oldFolderName = oldName;
-		var oldFolderStatut = oldStatut;
-		socket.emit(send,
-		  {
-  		  "name" : oldFolderName,
-  		  "newName" : newFolderName,
-  		  "statut" : newStatut
-  		});
-	})
-}
 
 // Quand le dossier est modifié
 function onFolderModified(data){
