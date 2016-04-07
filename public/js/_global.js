@@ -1,5 +1,17 @@
+/* VARIABLES */
+var socket = io.connect();
 
-/* fonction accessible à l'extérieur :
+var sessionId;
+//get current session
+var currentFolder = app.folder;
+//get current project
+var currentProject = app.project;
+var imageData = null;
+
+
+
+
+/* fonction accessible depuis l'extérieur :
     - listMediasOfOneType
 
 
@@ -9,7 +21,6 @@ function listMediasOfOneType( mediasData) {
   var $allMedias = $();
   var lastMedias = mediasData;
   $.each( lastMedias, function( pathToTypeMediaFolder, mediaJsonNames) {
-    console.log( pathToTypeMediaFolder);
     console.log( mediaJsonNames);
 
     // récupérer toutes les infos des JSON
@@ -19,12 +30,12 @@ function listMediasOfOneType( mediasData) {
     $.each( getAllJsonNames, function( key, metaJsonName) {
 
       var thisMediaJsonValues = mediaJsonNames[metaJsonName];
-      var mediaFilenames = thisMediaJsonValues.files;
+      var mediaDatas = thisMediaJsonValues;
 
       // penser au cas de figure ou deux files sont trouvés (vidéo)
 
       // penser au cas de figure ou un texte est trouvé
-      var newMedia = listOneMedia( pathMediaFolder, metaJsonName, mediaFilenames);
+      var newMedia = listOneMedia( pathMediaFolder, metaJsonName, mediaDatas);
       $allMedias = $allMedias.add( newMedia);
     });
   });
@@ -32,9 +43,10 @@ function listMediasOfOneType( mediasData) {
   return $allMedias;
 }
 
-function listOneMedia( pathMediaFolder, metaJsonName, mediaFilenames) {
+function listOneMedia( pathMediaFolder, metaJsonName, mediaDatas) {
 
   var $currentMedia = '';
+  var mediaFilenames = mediaDatas.files;
 
   if( pathMediaFolder === dodoc.projectPhotosFoldername)
     $currentMedia = showImage( pathMediaFolder, metaJsonName, mediaFilenames);
@@ -51,17 +63,35 @@ function listOneMedia( pathMediaFolder, metaJsonName, mediaFilenames) {
   if( pathMediaFolder === dodoc.projectTextsFoldername)
     $currentMedia = showText( pathMediaFolder, metaJsonName, mediaFilenames);
 
+  $currentMedia
+    .attr( 'data-metaJsonName', metaJsonName)
+    .attr( 'data-mediatype', pathMediaFolder)
+  	.attr( 'data-title', mediaDatas.title)
+  	.attr( 'data-legende', mediaDatas.informations)
+    ;
+
+  if( mediaDatas.title === undefined && mediaDatas.informations === undefined) {
+    $currentMedia.find('.mediaData').remove();
+  }
+
+
+  if( mediaDatas.fav === "true") {
+    $currentMedia.addClass('is--highlight');
+  }
+
   return $currentMedia;
+}
+
+function makeFullMediaPath( pathToMediaFolderAndMedia) {
+  return '/' + currentFolder + '/' + currentProject + '/' + pathToMediaFolderAndMedia;
 }
 
 function showImage( pathMediaFolder, metaJsonName, mediaFilenames) {
 
-  var pathToFile = pathMediaFolder + '/' + mediaFilenames[0];
+  var pathToFile = makeFullMediaPath( pathMediaFolder + '/' + mediaFilenames[0]);
 
 	var mediaItem = $(".js--templates .media_image").clone(false);
 	mediaItem
-	  .attr( 'data-metaJsonName', metaJsonName)
-	  .attr( 'data-mediatype', pathMediaFolder)
     .find( 'img').attr('src', pathToFile)
     ;
 	return mediaItem;
@@ -69,6 +99,7 @@ function showImage( pathMediaFolder, metaJsonName, mediaFilenames) {
 
 function showAnimation( pathMediaFolder, metaJsonName, mediaFilenames) {
 
+  var thumbFilename;
   var videoFilename;
   $.each( mediaFilenames, function( key, mediaFilename) {
     if( mediaFilename.indexOf( "jpg") !== -1) {
@@ -78,13 +109,11 @@ function showAnimation( pathMediaFolder, metaJsonName, mediaFilenames) {
     }
   });
 
-  var pathToThumb = pathMediaFolder + '/' + thumbFilename;
-  var pathToVideoFile = pathMediaFolder + '/' + videoFilename;
+  var pathToThumb = makeFullMediaPath( pathMediaFolder + '/' + thumbFilename);
+  var pathToVideoFile = makeFullMediaPath( pathMediaFolder + '/' + videoFilename);
 
 	var mediaItem = $(".js--templates .media_stopmotion").clone(false);
 	mediaItem
-	  .attr( 'data-metaJsonName', metaJsonName)
-	  .attr( 'data-mediatype', pathMediaFolder)
     .find( 'video').attr( 'poster', pathToThumb).end()
     .find( 'source').attr( 'src', pathToVideoFile).end()
   ;
@@ -104,13 +133,11 @@ function showVideo( pathMediaFolder, metaJsonName, mediaFilenames) {
     }
   });
 
-  var pathToThumb = pathMediaFolder + '/' + thumbFilename;
-  var pathToVideoFile = pathMediaFolder + '/' + videoFilename;
+  var pathToThumb = makeFullMediaPath( pathMediaFolder + '/' + thumbFilename);
+  var pathToVideoFile = makeFullMediaPath( pathMediaFolder + '/' + videoFilename);
 
 	var mediaItem = $(".js--templates .media_video").clone(false);
 	mediaItem
-	  .attr( 'data-metaJsonName', metaJsonName)
-	  .attr( 'data-mediatype', pathMediaFolder)
     .find( 'video').attr( 'poster', pathToThumb).end()
     .find( 'source').attr( 'src', pathToVideoFile).end()
   ;
@@ -119,12 +146,10 @@ function showVideo( pathMediaFolder, metaJsonName, mediaFilenames) {
 }
 
 function showAudio( pathMediaFolder, metaJsonName, mediaFilenames) {
-  var pathToFile = pathMediaFolder + '/' + mediaFilenames[0];
+  var pathToFile = makeFullMediaPath( pathMediaFolder + '/' + mediaFilenames[0]);
 
 	var mediaItem = $(".js--templates .media_audio").clone(false);
 	mediaItem
-	  .attr( 'data-metaJsonName', metaJsonName)
-	  .attr( 'data-mediatype', pathMediaFolder)
     .find( 'source').attr( 'src', pathToFile)
     ;
 	return mediaItem;

@@ -1,11 +1,3 @@
-/* VARIABLES */
-var socket = io.connect();
-
-var sessionId;
-//get current session
-var currentFolder = app.folder;
-//get current project
-var currentProject = app.project;
 
 // Variables pour la prise de médias
 var streaming = false,

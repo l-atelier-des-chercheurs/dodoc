@@ -269,20 +269,24 @@ module.exports = function(app, io){
       var folderMediaMetaAndFileName = new Object();
 
       for (var i=0; i<foldersMediasMeta.length; i++) {
-        var mediaMeta = foldersMediasMeta[i];
-        var fileNameWithoutExtension = dodoc.regexpRemoveFileExtension.exec( mediaMeta)[1];
+        var mediaMetaFilename = foldersMediasMeta[i];
+        var fileNameWithoutExtension = dodoc.regexpRemoveFileExtension.exec( mediaMetaFilename)[1];
         dev.log( "- looking for medias filenames that start with " + fileNameWithoutExtension);
         for (var j=0; j< foldersMediasFiles.length; j++) {
           var mediaFilename = foldersMediasFiles[j];
           dev.log( "- comparing to " + mediaFilename);
           if ( mediaFilename.indexOf( fileNameWithoutExtension) !== -1) {
-            if( !folderMediaMetaAndFileName.hasOwnProperty( mediaMeta)) {
-              folderMediaMetaAndFileName[mediaMeta] = new Object();
+            if( !folderMediaMetaAndFileName.hasOwnProperty( mediaMetaFilename)) {
+              folderMediaMetaAndFileName[mediaMetaFilename] = new Object();
+              // read JSON file and add the content to the folder
+              var mediaJsonData = getMediaDataJSON( projectPath, mediasFolderPath, mediaMetaFilename);
+              folderMediaMetaAndFileName[mediaMetaFilename] = mediaJsonData
             }
-            if( !folderMediaMetaAndFileName[mediaMeta].hasOwnProperty( "files")) {
-              folderMediaMetaAndFileName[mediaMeta]["files"] = new Array();
+            if( !folderMediaMetaAndFileName[mediaMetaFilename].hasOwnProperty( "files")) {
+              folderMediaMetaAndFileName[mediaMetaFilename]["files"] = new Array();
             }
-            folderMediaMetaAndFileName[mediaMeta]["files"].push( mediaFilename);
+            folderMediaMetaAndFileName[mediaMetaFilename]["files"].push( mediaFilename);
+
           }
         }
       }
@@ -291,12 +295,14 @@ module.exports = function(app, io){
       mediaFolderContent[mediasFolderPath] = new Object();
       mediaFolderContent[mediasFolderPath] = folderMediaMetaAndFileName;
 
-      dev.log( "All medias of one folder have been gotten : " + mediaFolderContent);
+//       dev.log( "All medias of one folder have been gotten : " + mediaFolderContent);
       // pour chaque contenu, vérifier que chaque média contient un fichier JSON du même nom.
       var eventAndContentJson = eventAndContent( "listMediasOfOneType", mediaFolderContent);
       dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
       io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
     }
+
+
 
     function onListOneProjectPublis( projectData, socket) {
 
@@ -1181,15 +1187,20 @@ module.exports = function(app, io){
 			var currentDateString = getCurrentDate();
 
 			// Vérifie si le projet existe déjà
-      try{
+      try {
 			  fs.accessSync( projectPath, fs.F_OK);
 		  } catch(err) {
 
-				// S'il n'existe pas -> créer le dossier et le json
+				// S'il n'existe pas -> créer le dossier du projet et le json
 	    	console.log("New project created with name " + projectName + " and path " + projectPath);
-	      fs.ensureDirSync(projectPath);//write new folder in folders
+	      fs.ensureDirSync(projectPath);//new project
+
+	      var mediaFolders = getAllMediasFoldersPathAsArray( projectPath);
+	      mediaFolders.forEach( function( mediaFolder) {
+  	      fs.ensureDirSync( projectPath + '/' + mediaFolder);//write new folder in folders
+	      });
         var projectJSONFile = getJsonFileOfProject( projectPath);
-	      var objectJson =
+	      var newProjectData =
 	        {
 		        "name" : projectName,
 		        "created" : currentDateString,
@@ -1199,8 +1210,9 @@ module.exports = function(app, io){
 		      };
 
         // retourner un JSON indiquant la réussite de l'appel
-	      var newProjectCreated = jsonWriteToFile( projectJSONFile, objectJson, "create"); //write json File
-        return eventAndContent( "projectCreated", objectJson);
+	      var newProjectCreated = jsonWriteToFile( projectJSONFile, newProjectData, "create"); //write json File
+	      newProjectData.slugProjectName = slugProjectName;
+        return eventAndContent( "projectCreated", newProjectData);
   		}
 
       // otherwise, the folder and associated json already exists --> return an error event
@@ -1267,6 +1279,17 @@ module.exports = function(app, io){
       return eventAndContent( "listOneProject", projectData);
     }
 
+/************
+
+  MEDIA METHODS
+
+*************/
+
+    function getJsonFileOfMedia( projectPath, slugProjectName, mediaMetaFilename) {
+      return projectPath + '/' + slugProjectName + '/' + mediaMetaFilename;
+    }
+
+
     function listAllMedias( slugFolderName, slugProjectName) {
   		dev.logfunction( "COMMON — listAllMedias : slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName);
       // lister tous les contenus issues des dossiers commencant par 01, 02, 03, 04
@@ -1279,60 +1302,23 @@ module.exports = function(app, io){
       });
     }
 
+    function getMediaDataJSON( projectPath, mediasFolderPath, mediaMetaFilename) {
+  		dev.logfunction( "COMMON — getMediaDataJSON : projectPath = " + projectPath + " mediasFolderPath = " + mediasFolderPath + " mediaMetaFilename = " + mediaMetaFilename);
 
-    // MODÈLE (non utilisé)
-    function displayProject( data, socket) {
-			var dir = dodoc.contentDir + "/" + data.folder+"/"+data.project;
-			var dirPubli = dodoc.contentDir + "/" + data.folder+"/"+data.project+'/montage';
-			var file = dir+"/"+data.project+'.json';
-			var jsonObj;
-			fs.readFile(file, 'utf8', function (err, data) {
-			  if (err) console.log(err);
-			  jsonObj = JSON.parse(data);
-			  fs.readdir(dir, function(err, files) {
-					var media = [];
-					if (err) {console.log(err)};
-					files.forEach(function(f) {
-						media.push(f);
-					});
-					var lastMedia = media.slice(Math.max(media.length - 10, 1));
-					fs.access(dirPubli, fs.F_OK, function(err) {
-				    if (!err) {
-						  fs.readdir(dirPubli, function(err, files) {
-								var publiNames = [];
-							  if (err) console.log(err);
-					    	//console.log('Files: ' + typeof files);
-					    	if( typeof files == "undefined")
-					    	  return;
-						    files.forEach(function(file) {
-						    	console.log('Files: ' + file);
-						    	if(file == ".DS_Store"){
-					    			fs.unlink(dirPubli+'/'+file);
-					    		}
-					    		if(! /^\..*/.test(file)){
-						  			var jsonFilePubli = dirPubli +'/' +file;
-										var dataPubli = fs.readFileSync(jsonFilePubli,"UTF-8");
-										var jsonObjPubli = JSON.parse(dataPubli);
-										publiNames.push(jsonObjPubli.name)
-						    	}
-						    });
-						    socket.emit('sendProjectData',{json:jsonObj , lastmedia:lastMedia, publiNames: publiNames, image:jsonObj.fileName});
-							});
-				    }
-			    	else{
-							socket.emit('sendProjectData',{json:jsonObj , lastmedia:lastMedia, publiNames: '', image:jsonObj.fileName});
-						}
-					});
-				});
-			});
-		}
+      var mediaJSONFilepath = getJsonFileOfMedia( projectPath, mediasFolderPath, mediaMetaFilename);
+			var mediaData = fs.readFileSync( mediaJSONFilepath, "UTF-8");
+      dev.log( "mediaData : " + mediaData);
+			var mediaDataJson = JSON.parse( mediaData);
+      dev.log( "mediaDataJson : " + mediaDataJson );
+
+      return mediaDataJson;
+    }
+
+
 
 /************
 
 *************/
-
-
-/* --- */
 
 
 

@@ -1,11 +1,3 @@
-/* VARIABLES */
-var socket = io.connect();
-
-var sessionId;
-//get current session
-var currentFolder = app.folder;
-//get current project
-var currentProject = app.project;
 
 var thisProjectName;
 var thisProject;
@@ -291,7 +283,7 @@ function submitModifyProject($button, send, oldName, oldStatut){
       {
    				"name" : newProjectName,
   				"slugFolderName" : currentFolder,
-          "slugProjectName" : projectNameSlug,
+          "slugProjectName" : currentProject,
   				"statut" : newStatut,
 			});
 		}

@@ -161,6 +161,10 @@ body.projets{
       margin-top: 3px;
       padding: 17% 0.9375rem 25px;
 
+      body.projets & {
+        display: none;
+      }
+
       .media {
         @include grid-column(3);
         padding-top: 0.9375rem;

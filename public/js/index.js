@@ -1,10 +1,3 @@
-/* VARIABLES */
-var socket = io.connect();
-
-var $thisEl;
-var thisFolderName;
-var thisFolder;
-
 
 /* sockets */
 socket.on('connect', onSocketConnect);
@@ -164,7 +157,7 @@ function loadProject( projectData) {
 	var projectPreviewName = projectData.projectPreviewName;
 	var folderNameSlug = projectData.folderName;
 
-	var projectNameSlug = convertToSlug( projectName);
+	var projectNameSlug = projectData.slugProjectName;
 	var projectPath = '/' + folderNameSlug + '/' + projectNameSlug;
 
 	var $folder = $(".dossier-list .dossier[data-folderNameSlug=" + folderNameSlug + "]");

@@ -1,24 +1,16 @@
-/* VARIABLES */
-var socket = io.connect();
-
-var sessionId;
-//get current session
-var currentFolder = app.folder;
-//get current project
-var currentProject = app.project;
-var imageData = null;
-
 
 /* sockets */
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
+/*
 socket.on('displayNewImage', displayNewImage);
 socket.on('displayNewVideo', displayNewVideo);
 socket.on('displayNewStopMotion', displayNewStopMotion);
 socket.on('displayNewAudio', displayNewAudio);
 socket.on('displayNewText', displayNewText);
 socket.on('displayModifiedText', displayModifiedText);
-socket.on('listMediasOfOneType', onListMediasOfOneType); // dans common. Appel ensuite listOneMedia
+*/
+socket.on('listMediasOfOneType', onListMediasOfOneType);
 socket.on('listPublications', onPubliCreated);
 socket.on('publiCreated', onPubliCreated);
 socket.on('displayMontage', onDisplayMontage);
@@ -28,7 +20,10 @@ socket.on('addHighlight', onHighlight);
 socket.on('bibliFileDeleted', onFileDeleted)
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 
-socket.on('newMediaUpload', function(data){
+// socket.on('newMediaUpload', onNewMediaUpload);
+
+/*
+function onNewMediaUpload(data){
 	var extension = data.ext;
 	var fileName = data.fileName;
 	var identifiant = data.id;
@@ -45,6 +40,7 @@ socket.on('newMediaUpload', function(data){
 		displayAudio(currentFolder, currentProject, identifiant, fileName);
 	}
 });
+*/
 
 jQuery(document).ready(function($) {
 	$(document).foundation();
@@ -263,6 +259,7 @@ function removeMedia(){
 	});
 }
 
+/*
 function displayNewImage(image){
 	displayImage(currentFolder, currentProject, image.title, image.file);
 	$('#modal-add-local').foundation('reveal', 'close');
@@ -310,6 +307,7 @@ function displayModifiedText(text){
 		  .html(text.textTitle)
   ;
 }
+*/
 
 
 function onListMedias(array, json){
@@ -770,3 +768,14 @@ function onSocketError(reason) {
 	console.log('Unable to connect to server', reason);
 };
 
+
+
+
+
+
+
+
+function onListMediasOfOneType( mediasData) {
+  var $getAllMediasFormatted = listMediasOfOneType( mediasData);
+	$(".medias-list").append( $getAllMediasFormatted);
+}

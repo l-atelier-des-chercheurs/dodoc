@@ -1,10 +1,4 @@
-/* VARIABLES */
-var socket = io.connect();
 
-var sessionId;
-//get current session
-var currentFolder = app.folder;
-var sessionName;
 
 var thisProjectName;
 var thisProject;
@@ -84,17 +78,13 @@ function submitProject($button, send){
 }
 
 // Affiche le projet dès qu'il est crée
-function onProjectCreated(data){
+function onProjectCreated( projectData){
 
-	var folderName = data.name;
-	var createdDate = transformDatetoString(data.created);
-	var statut = data.statut;
-	var image = data.image;
-	if(data.modified!= null){var modifiedDate = transformDatetoString(data.modified);}
-	else{var modifiedDate = data.modified;}
 	$('input.new-project').val('');
 	$('#modal-add-project').foundation('reveal', 'close');
-	displayProject(folderName, createdDate, modifiedDate, image, statut);
+
+  loadProject( projectData);
+
 }
 
 // Affiche la liste des projets
@@ -107,6 +97,7 @@ function onListAllProjectsOfOneFolder(data){
 // COMMON WITH PROJECT.JS
 function loadProject( projectData) {
 
+  debugger;
 	var projectName = projectData.name;
 	var slugProjectName = projectData.slugProjectName;
 
