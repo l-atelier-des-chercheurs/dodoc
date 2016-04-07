@@ -145,7 +145,7 @@ function init(){
   $("a.js--delete-media-capture").on("click", function(e){
     console.log('File was delete');
     var fileToDelete = $('.screenshot').attr('data-file');
-    socket.emit("deleteFile", {session:currentFolder, project:currentProject, file:fileToDelete});
+    socket.emit("deleteFile", { "slugFolderName" : currentFolder, "slugProjectName" : currentProject, "file" : fileToDelete});
     backAnimation();
     e.stopPropagation;
   });
@@ -638,16 +638,6 @@ function recordingVideo(click){
     });
   }
 
-  // Display video when it's saved
-  socket.on('showVideo', function(data) {
-    var href = '/static/'+data.session+'/'+data.project+'/'+data.file;
-    console.log('got file ' + href);
-    cameraPreview.src = href;
-    cameraPreview.play();
-    cameraPreview.muted = false;
-    cameraPreview.controls = true;
-    $('.video-capture').fadeIn(1000);
-  });
 }
 
 // STOP MOTION
@@ -690,7 +680,7 @@ function takepictureMotion(dir) {
   $(".meta-stopmotion .delete-image").on('click', function(){
     removeImageMotion(data, dir);
   });
-  socket.emit('imageMotion', {data: data, dir: dir, count: countImage});
+  socket.emit('imageMotion', { data : data, dir: dir, count: countImage});
   $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
   $('body').addClass('takingstopmotion');
 
@@ -732,7 +722,7 @@ function stopStopMotion(){
   $('.screenshot .meta-stopmotion').remove();
   saveFeedback("/images/icone-dodoc_anim.png");
 
-  socket.emit('stopmotionCapture', {session: currentFolder, project: currentProject, dir: dir});
+  socket.emit('stopmotionCapture', { "slugFolderName" : currentFolder, "slugProjectName" : currentProject, dir: dir});
   socket.on('newStopMotionCreated', function(req){
     $('.screenshot .canvas-view').hide();
     $('#camera-preview').attr('src', '/' + currentFolder + '/'+'/'+currentProject+'/'+req.fileName+'')
@@ -1026,13 +1016,29 @@ function createEqualizer(event){
 
 }
 
-function onMediaCreated(file){
-  $('.screenshot').attr('data-file', file.file);
+function onMediaCreated( newMediaData){
+
+  $('.screenshot').attr('data-file', newMediaData.file);
+
+  var newMediaType = newMediaData.type;
+  var pathToMediaFile = '/' + newMediaData.pathToFile.substring(newMediaData.pathToFile.indexOf("/") + 1);
+
+  if( newMediaType === 'photo') {
+
+  }
+  else if( newMediaType === 'video') {
+    var cameraPreview = document.getElementById('camera-preview');
+    cameraPreview.src = pathToMediaFile;
+    cameraPreview.play();
+    cameraPreview.muted = false;
+    cameraPreview.controls = true;
+    $('.video-capture').fadeIn(1000);
+  }
 }
 
 function submitData(data, send){
 	animateWindows();
-	socket.emit(send, {data: data, session: currentFolder, project:currentProject});
+	socket.emit(send, {data: data, "slugFolderName" : currentFolder, "slugProjectName" :currentProject});
 }
 
 //animation des fenêtres à la capture

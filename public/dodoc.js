@@ -24,7 +24,7 @@ dodoc.nameOfCapture = "Prise de vue";
 dodoc.nameOfBibli = "Bibliotheque de médias";
 dodoc.nameOfPubli = "Publication";
 
-dodoc.jsonDateFormat = 'YYYYMMDD_HH:mm:ss';
+dodoc.jsonDateFormat = 'YYYYMMDD_HHmmss';
   // previously /^\..*/
   // see http://regexr.com/3d4t8
 dodoc.regexpMatchFolderNames = new RegExp(/^([^.]+)$/);
