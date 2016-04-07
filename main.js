@@ -1146,7 +1146,7 @@ module.exports = function(app, io){
     function getAudioPathOfProject() {
       return dodoc.projectAudiosFoldername;
     }
-    function getTextsPathOfProject() {
+    function getTextPathOfProject() {
       return dodoc.projectTextsFoldername;
     }
 
@@ -1156,8 +1156,11 @@ module.exports = function(app, io){
       mediasFolders.push( getAnimationPathOfProject());
       mediasFolders.push( getVideoPathOfProject());
       mediasFolders.push( getAudioPathOfProject());
-      mediasFolders.push( getTextsPathOfProject());
+      mediasFolders.push( getTextPathOfProject());
       return mediasFolders;
+    }
+    function getPubliPathOfProject() {
+      return dodoc.projectPublisFoldername;
     }
 
     function getProjectDataJSON( slugFolderName, slugProjectName) {
@@ -1199,6 +1202,8 @@ module.exports = function(app, io){
 	      mediaFolders.forEach( function( mediaFolder) {
   	      fs.ensureDirSync( projectPath + '/' + mediaFolder);//write new folder in folders
 	      });
+	      var publiFolder = getPubliPathOfProject();
+	      fs.ensureDirSync( projectPath + '/' + publiFolder);//write new folder in folders
         var projectJSONFile = getJsonFileOfProject( projectPath);
 	      var newProjectData =
 	        {

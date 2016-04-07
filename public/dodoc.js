@@ -11,6 +11,7 @@ dodoc.folderJSONfilename = "dossier.json";
 dodoc.projectJSONfilename = "projet.json";
 dodoc.publiJSONfilename = "publi.json";
 
+dodoc.projectPublisFoldername = "publications";
 dodoc.projectPhotosFoldername = "01-photos";
 dodoc.projectAnimationsFoldername = "02-animations";
 dodoc.projectVideosFoldername = "03-videos";
