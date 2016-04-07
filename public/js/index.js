@@ -114,9 +114,9 @@ function onFolderAlreadyExist(data){
 }
 
 // Liste les dossiers
-function onListOneFolder(projectData){
-	var $folderContent = makeFolderContent( projectData);
-  return insertOrReplaceFolder( projectData.folderNameSlug, $folderContent);
+function onListOneFolder( folderData){
+	var $folderContent = makeFolderContent( folderData);
+  return insertOrReplaceFolder( folderData.folderNameSlug, $folderContent);
 }
 
 function insertOrReplaceFolder( folderNameSlug, $folderContent) {

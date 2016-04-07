@@ -6,7 +6,9 @@ var fs = require('fs-extra');
 var ffmpeg = require('fluent-ffmpeg');
 var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
-var dodoc  = require('./dodoc');
+var dodoc  = require('./public/dodoc'),
+	moment = require( "moment" )
+;
 
 module.exports = function(app,io,m){
 
@@ -21,6 +23,7 @@ module.exports = function(app,io,m){
   app.get("/:folder/:project/bibliotheque/medias", getBibli);
   app.get("/:folder/:project/bibliotheque/panneau-de-publications", getBibliPubli);
   app.get("/:folder/:project/publication/:publi", getPubli);
+
 
   app.post("/:folder/:project/bibliotheque/medias/file-upload", multipartMiddleware, postFile);
 
@@ -48,6 +51,9 @@ module.exports = function(app,io,m){
   }
   function getJsonFileOfPubli( publiPath) {
     return getFullPath( publiPath) + '/' + dodoc.publiJSONfilename;
+  }
+  function getCurrentDate() {
+    return moment().format( dodoc.jsonDateFormat);
   }
 
 
@@ -123,32 +129,36 @@ module.exports = function(app,io,m){
   function getCapture(req, res) {
     var pageTitle = dodoc.nameOfCapture;
     var generatePageDataJSON = generatePageData(req, pageTitle);
-    res.render("project", generatePageDataJSON);
+    res.render("capture", generatePageDataJSON);
   };
 
   function getBibli(req, res) {
     var pageTitle = dodoc.nameOfBibli;
     var generatePageDataJSON = generatePageData(req, pageTitle);
-    res.render("project", generatePageDataJSON);
+    res.render("bibli", generatePageDataJSON);
   };
 
   function getBibliPubli(req, res) {
     var pageTitle = dodoc.nameOfBibli;
     var generatePageDataJSON = generatePageData(req, pageTitle);
-    res.render("project", generatePageDataJSON);
+    res.render("bibli", generatePageDataJSON);
   };
 
   function getPubli(req, res) {
     var pageTitle = dodoc.nameOfPubli;
     var generatePageDataJSON = generatePageData(req, pageTitle);
-    res.render("project", generatePageDataJSON);
+    res.render("publi", generatePageDataJSON);
   };
 
   function postFile(req, res) {
-    var date = Date.now();
+    var date = getCurrentDate();
     var ext = path.extname(req.files.file.name);
     var session = req.param('session');
     var projet = req.param('project');
+
+    var slugFolderName = req.param('folder');
+    var slugProjectName = req.param('project');
+
     var dir =  'sessions/'+ session + '/' + projet;
     fs.readFile(req.files.file.path, function (err, data) {
       var newPath = 'sessions/'+ session + '/' + projet + '/' + date + ext;
@@ -161,7 +171,6 @@ module.exports = function(app,io,m){
       });
     });
   };
-
 
   function readJsonFile( jsonFile){
     var jsonFileContent = fs.readFileSync(jsonFile, 'utf8');

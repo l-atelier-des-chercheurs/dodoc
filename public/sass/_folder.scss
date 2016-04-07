@@ -168,7 +168,7 @@ body.projets{
 
         position: relative;
 
-        &:nth-child(5n+1) {
+        &:nth-of-type(4n+1) {
           clear: left;
         }
 

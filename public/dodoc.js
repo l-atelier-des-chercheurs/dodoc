@@ -11,15 +11,28 @@ dodoc.folderJSONfilename = "dossier.json";
 dodoc.projectJSONfilename = "projet.json";
 dodoc.publiJSONfilename = "publi.json";
 
+dodoc.projectPhotosFoldername = "01-photos";
+dodoc.projectAnimationsFoldername = "02-animations";
+dodoc.projectVideosFoldername = "03-videos";
+dodoc.projectAudiosFoldername = "04-sons";
+dodoc.projectTextsFoldername = "05-textes";
+
 dodoc.nameOfFolder = "Dossier";
 dodoc.nameOfProject = "Projet";
 dodoc.nameOfCapture = "Prise de vue";
 dodoc.nameOfBibli = "Bibliotheque de médias";
 dodoc.nameOfPubli = "Publication";
 
+dodoc.jsonDateFormat = 'YYYYMMDD_HH:mm:ss';
   // previously /^\..*/
   // see http://regexr.com/3d4t8
 dodoc.regexpMatchFolderNames = new RegExp(/^([^.]+)$/);
 dodoc.regexpMatchProjectPreviewNames = new RegExp(/^(apercu|preview)/);
+dodoc.regexpGetFileExtension = new RegExp(/\.[^.]*$/);
+dodoc.regexpRemoveFileExtension = new RegExp(/(.+?)(\.[^.]*$|$)/);
 
-module.exports = dodoc;
+try {
+  module.exports = dodoc;
+} catch( err) {
+
+}

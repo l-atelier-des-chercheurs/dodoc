@@ -7956,7 +7956,7 @@ body.projets #container {
         padding-top: 0.9375rem;
         padding-bottom: 0.9375rem;
         position: relative; }
-        .project-list .project .last-medias .media:nth-child(5n+1) {
+        .project-list .project .last-medias .media:nth-of-type(4n+1) {
           clear: left; }
         .project-list .project .last-medias .media::before {
           content: "";

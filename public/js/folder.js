@@ -103,6 +103,8 @@ function onListAllProjectsOfOneFolder(data){
   return;
 }
 
+
+// COMMON WITH PROJECT.JS
 function loadProject( projectData) {
 
 	var projectName = projectData.name;
@@ -148,11 +150,7 @@ function 	displayProject( name, projectNameSlug, created, modified, statut, imag
 	  .find( '.button-wrapper_publi').attr( 'href', path + '/bibliotheque/panneau-de-publications').end()
 	  .data( 'projectNameSlug', projectNameSlug)
   ;
-
-
-
 	$("#container .project-list").prepend( $newProject);
-
 }
 
 function modifyProject($this){

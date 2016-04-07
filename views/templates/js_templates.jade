@@ -1,0 +1,137 @@
+li.media.media_image(data-type="image" data-ratio data-title data-legende data-highlight=false)
+  .mediaContent
+    img
+    .mediaData
+      h5.mediaData--titre
+      p.mediaData--legende
+  +button( 'flag', '', 'isCollapsed')
+li.media.media_video(data-type="video" data-ratio data-title data-legende data-highlight=false)
+  .mediaContent
+    video(preload="none" controls)
+      source()
+    .mediaData
+      h5.mediaData--titre
+      p.mediaData--legende
+  +button( 'flag', '', '')
+li.media.media_stopmotion(data-type="stopmotion" data-ratio data-title data-legende data-highlight=false)
+  .mediaContent
+    video(preload="none" controls)
+      source()
+    .mediaData
+      h5.mediaData--titre
+      p.mediaData--legende
+  +button( 'flag', '', '')
+li.media.media_audio(data-type="audio" data-ratio data-title data-legende data-highlight=false)
+  .mediaContent
+    audio(preload="none" controls)
+      source()
+    .mediaData
+      h5.mediaData--titre
+      p.mediaData--legende
+  +button( 'flag', '', '')
+li.media.media_text(data-type="text" data-ratio data-title data-legende data-highlight=false)
+  .mediaContent
+    h3.media-title
+    p.text
+  +button( 'flag', '', '')
+li.publi-folder(data-publi="")
+  .content
+    h2.title.js--edit_view
+  .publi-btn
+    +button('view_publication', '', 'isCollapsed')
+
++button('deleteMedia', '', 'isCollapsed')
+//- Pop up media
+div.media-big_image.media-big.row(data-type="image")
+  .mediaContent.small-8.columns
+    img
+  .mediaDataForm.small-4.columns
+    include mediaForm.jade
+div.media-big_video.media-big(data-type="video")
+  .mediaContent.small-8.columns
+    video(preload="none" controls)
+      source()
+  .mediaDataForm.small-4.columns
+    include mediaForm.jade
+div.media-big_stopmotion.media-big(data-type="stopmotion")
+  .mediaContent.small-8.columns
+    video(preload="none" controls)
+      source()
+  .mediaDataForm.small-4.columns
+    include mediaForm.jade
+div.media-big_audio.media-big(data-type="audio")
+  .mediaContent.small-8.columns
+    audio(preload="none" controls)
+      source()
+  .mediaDataForm.small-4.columns
+    include mediaForm.jade
+div.media-big_text.media-big(data-type="text" data-id)
+  .mediaContent
+    form(onsubmit='return false;' class='modify-text-view lead')
+      input(type='text' class='view-text-title-modify')
+      textarea.view-text-modify
+      input(type='submit' class='js--submit-view-text-modify' value='Valider')
+    a(href="#" title="Dodoc media" class='button-wrapper_highlightMedia js--highlightMedia #{defaultClasses}')
+      span Mettre en favoris
+    +button('deleteMediaBibli', '', '')
+
+
+.project.small-12.columns(data-statut)
+  +button('editProjet', '', 'isCollapsed')
+  .project-inside
+    .left-content.small-8.medium-6.columns
+      .content
+        a(href="" title="Dodoc").project-link
+          h2.title
+        .meta-data.small-6.columns
+          .statut
+            span statut
+            span.statut-type
+          .created
+            span créé le
+            span.create-date
+          .modified
+            span modifié le
+            span.modify-date
+        .button-to-pages.small-6.columns
+          h3.legende accès rapide
+          +button('capture', '', 'isCollapsed')
+          +button('bibli', '', 'isCollapsed')
+          +button('publications', '', 'isCollapsed')
+    .image-wrapper.small-4.medium-6.columns
+      img
+  ul.last-medias
+    h3.legende Derniers médias ajoutés
+
+  .montage-list
+    h1.legende Liste des publications
+    ul.list-publi
+
+
+li.dossier.small-6.medium-4.large-4.columns(data-statut data-name data-nom)
+  .dossier-inside
+    .content
+      +button('editFolder', '', 'isCollapsed')
+      a.folder-link(href title)
+        h2.title
+      .projet-list
+    .meta-data.row
+      .nb-projets.small-6.columns
+        span.nb-projets-intitule projets
+        span.nb-projets-count
+      .statut.small-6.columns
+        span statut
+        span.statut-type
+      .created.small-6.columns
+        span créé le
+        span.create-date
+      .modified.small-6.columns
+        span modifié le
+        span.modify-date
+
+    li.projetSnippet
+      a.project-link(href)
+        h3.title
+        .vignette-visuel
+          img(src)
+

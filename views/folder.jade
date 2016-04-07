@@ -24,31 +24,7 @@ html
       include templates/modals/modifyProject
 
     .js--templates
-      .project.small-12.columns(data-statut)
-        +button('editProjet', '', 'isCollapsed')
-        .project-inside
-          .left-content.small-8.medium-6.columns
-            .content
-              a(href="" title="Dodoc").project-link
-                h2.title
-              .meta-data.small-6.columns
-                .statut
-                  span statut
-                  span.statut-type
-                .created
-                  span créé le
-                  span.create-date
-                .modified
-                  span modifié le
-                  span.modify-date
-              .button-to-pages.small-6.columns
-                h3.legende accès rapide
-                +button('capture', '', 'isCollapsed')
-                +button('bibli', '', 'isCollapsed')
-                +button('publications', '', 'isCollapsed')
-          .image-wrapper.small-4.medium-6.columns
-            img
-
+      include templates/js_templates
 
 
     //- scripts

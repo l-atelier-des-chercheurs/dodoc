@@ -23,61 +23,7 @@ html
       include templates/modals/modifyProject
 
     .js--templates
-      li.media.media_image(data-mediatype="image")
-        .mediaContent
-          img
-      li.media.media_video(data-mediatype="video")
-        .mediaContent
-          video(preload="none" controls)
-            source()
-      li.media.media_stopmotion(data-mediatype="stopmotion")
-        .mediaContent
-          video(preload="none" controls)
-            source()
-      li.media.media_audio(data-mediatype="audio")
-        .mediaContent
-          audio(preload="none" controls)
-            source()
-      li.publi-folder
-        .content
-          h2.title
-        .publi-btn
-          +button('edit_publication', '', 'isCollapsed')
-          +button('view_publication', '', 'isCollapsed')
-
-
-      .project.small-12.columns(data-statut)
-        +button('editProjet', '', 'isCollapsed')
-        .project-inside
-          .left-content.small-8.medium-6.columns
-            .content
-              a(href="" title="Dodoc").project-link
-                h2.title
-              .meta-data.small-6.columns
-                .statut
-                  span statut
-                  span.statut-type
-                .created
-                  span créé le
-                  span.create-date
-                .modified
-                  span modifié le
-                  span.modify-date
-              .button-to-pages.small-6.columns
-                h3.legende accès rapide
-                +button('capture', '', 'isCollapsed')
-                +button('bibli', '', 'isCollapsed')
-                +button('publications', '', 'isCollapsed')
-          .image-wrapper.small-4.medium-6.columns
-            img
-
-        ul.last-medias
-          h3.legende Derniers médias ajoutés
-
-        .montage-list
-          h1.legende Liste des publications
-          ul.list-publi
-
+      include templates/js_templates
 
     //- //footer
     include templates/footer.jade

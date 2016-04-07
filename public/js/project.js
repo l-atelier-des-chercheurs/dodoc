@@ -15,7 +15,9 @@ var $thisEl;
 /* sockets */
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
-socket.on('sendProjectData', sendProjectData);
+socket.on('listOneProject', onListOneProject);
+socket.on('listMediasOfOneType', onListMediasOfOneType);
+socket.on('listProjectPubli', onListProjectPubli);
 socket.on('projectAlreadyExist', onProjectAlreadyExist); // Si le nom de dossier existe déjà.
 socket.on('projectModified', onProjectModified); //Quand on reçoit les modification du projet
 socket.on('projectRemoved', onFolderRemoved); // Quand le dossier a été supprimé sur le serveur
@@ -44,58 +46,104 @@ function init(){
 	removeFolder();
 }
 
-function sendProjectData(data){
-	var name = data.json.name;
-	var statut = data.json.statut;
-	var image = data.image;
-	var created = transformDatetoString(data.json.created);
-	var modified = transformDatetoString(data.json.created);
-	var lastMedias = data.lastmedia;
-	var arrayPubli = data.publiNames;
+function loadProject( projectData) {
 
-	var formatName = convertToSlug(name);
+	var projectName = projectData.name;
+	var slugProjectName = projectData.slugProjectName;
 
-	var projectClone = $(".js--templates > .project").clone(false);
-	projectClone
-		.find( '.title').html( name).end()
+	var createdDate = transformDatetoString( projectData.created);
+	var modifiedDate = transformDatetoString( projectData.modified);
+	var statut = projectData.statut;
+
+  var imageSrc;
+  if( projectData.projectPreviewName !== undefined && projectData.projectPreviewName !== false)
+  	imageSrc = projectData.projectPreviewName;
+
+	displayProject( projectName, slugProjectName, createdDate, modifiedDate, statut, imageSrc);
+
+	return;
+}
+
+
+function onListOneProject( projectData){
+  loadProject( projectData);
+  return;
+}
+
+
+// COMMON WITH PROJECT.JS
+function loadProject( projectData) {
+
+	var projectName = projectData.name;
+	var slugProjectName = projectData.slugProjectName;
+
+	var createdDate = transformDatetoString( projectData.created);
+	var modifiedDate = transformDatetoString( projectData.modified);
+	var statut = projectData.statut;
+
+  var imageSrc;
+  if( projectData.projectPreviewName !== undefined && projectData.projectPreviewName !== false)
+  	imageSrc = projectData.projectPreviewName;
+
+	displayProject( projectName, slugProjectName, createdDate, modifiedDate, statut, imageSrc);
+
+	return;
+}
+
+
+function 	displayProject( name, projectNameSlug, created, modified, statut, imageSrc) {
+
+	var $newProject = $(".js--templates > .project").clone(false);
+
+  if( modified === null)
+    $newProject.find('.modify-date').remove();
+	if( imageSrc === undefined)
+  	$newProject.find( '.image-wrapper img').remove();
+
+  imageSrc = "./" + imageSrc;
+
+  // customisation du projet
+	$newProject
 	  .attr( 'data-statut', statut)
-	  .find( '.title').unwrap().end()
 	  .find( '.statut-type').text( statut).end()
-	  .find( '.image-wrapper img').attr('src', image === true ? './'+formatName+'-thumb.jpg' : '').attr('alt', name).end()
+	  .find( '.image-wrapper img').attr('src', imageSrc).attr('alt', name).end()
 	  .find( '.create-date').text( created).end()
-	  .find( '.modify-date').text( modified !== null ? modified : '').end()
+	  .find( '.modify-date').text( modified).end()
 	  .find( '.title').text( name).end()
-	  .find( '.project-link').attr( 'href', '/'+currentFolder+'/'+formatName).end()
-	  .find( '.button-wrapper_capture').attr( 'href', '/'+currentFolder+'/'+formatName+'/capture').end()
-	  .find( '.button-wrapper_bibli').attr( 'href', '/'+currentFolder+'/'+formatName+'/bibliotheque/medias').end()
-	  .find( '.button-wrapper_publi').attr( 'href', '/'+currentFolder+'/'+formatName+'/bibliotheque/panneau-de-publications').end()
+	  .find( '.button-wrapper_capture').attr( 'href', './capture').end()
+	  .find( '.button-wrapper_bibli').attr( 'href',  './bibliotheque/medias').end()
+	  .find( '.button-wrapper_publi').attr( 'href', './bibliotheque/panneau-de-publications').end()
+	  .data( 'projectNameSlug', projectNameSlug)
+  ;
+	$("#container .project-list").prepend( $newProject);
+}
 
-		.find( '.js--publi_view', publiPath).attr('href', publiPath).end()
-	;
+function onListMediasOfOneType( mediasData) {
+  var $getAllMediasFormatted = listMediasOfOneType( mediasData)
+	$(".project .last-medias").append( $getAllMediasFormatted);
+}
 
-	var $allMedias = $();
+function remove() {
+	var extension = mediaData[i].split('.').pop();
+	var identifiant = mediaData[i].replace("." + extension, "");
+  var fileName = mediaData[i];
 
-	for (var i = 0; i < lastMedias.length; i++) {
-  	var extension = lastMedias[i].split('.').pop();
-  	var identifiant =  lastMedias[i].replace("." + extension, "");
-    var fileName = lastMedias[i];
-
-		if(extension == "jpg"){
-			$allMedias = $allMedias.add( displayImage(currentFolder, currentProject, identifiant, fileName));
-		}
-		if(extension == "webm"){
-			$allMedias = $allMedias.add( displayVideo(currentFolder, currentProject, identifiant, fileName));
-		}
-		if(extension == "mp4"){
-			$allMedias = $allMedias.add( displayVideo(currentFolder, currentProject, identifiant, fileName));
-		}
-		if(extension == "wav"){
-			$allMedias = $allMedias.add( displayAudio(currentFolder, currentProject, identifiant, fileName));
-		}
+	if(extension == "jpg"){
+		return displayImage(currentFolder, currentProject, identifiant, fileName);
 	}
+	if(extension == "webm"){
+		return displayVideo(currentFolder, currentProject, identifiant, fileName);
+	}
+	if(extension == "mp4"){
+		return displayVideo(currentFolder, currentProject, identifiant, fileName);
+	}
+	if(extension == "wav"){
+		return displayAudio(currentFolder, currentProject, identifiant, fileName);
+	}
+	return false;
+}
 
-	projectClone.find( '.last-medias').append( $allMedias);
-
+function onListProjectPubli( publisData) {
 	var $allPublis = $();
 
 	for (var i = 0; i < arrayPubli.length; i++) {
@@ -118,6 +166,7 @@ function sendProjectData(data){
 	projectClone.appendTo('.project-list');
 
 }
+
 
 function displayImage(session, project, id, file){
 	var imagePath = "/" +session +"/"+ project+ "/"+ file;
@@ -228,11 +277,10 @@ function submitModifyProject($button, send, oldName, oldStatut){
 			reader.onload = function(evt){
 				socket.emit(send,
 				{
-  				"name" : newProjectName,
-  				"folder" :currentFolder,
-  				"statut" :newStatut,
-  				"oldname" : oldProjectName,
-  				"oldStatut" :oldProjectStatut,
+   				"name" : newProjectName,
+  				"slugFolderName" : currentFolder,
+          "slugProjectName" : projectNameSlug,
+  				"statut" : newStatut,
   		  });
 			};
 			reader.readAsDataURL(f);
@@ -242,10 +290,9 @@ function submitModifyProject($button, send, oldName, oldStatut){
 			socket.emit(send,
       {
    				"name" : newProjectName,
-  				"folder" :currentFolder,
-  				"statut" :newStatut,
-  				"oldname" : oldProjectName,
-  				"oldStatut" :oldProjectStatut,
+  				"slugFolderName" : currentFolder,
+          "slugProjectName" : projectNameSlug,
+  				"statut" : newStatut,
 			});
 		}
 
@@ -314,7 +361,7 @@ function onFolderRemoved(){
 function onSocketConnect() {
 	sessionId = socket.io.engine.id;
 	console.log('Connected ' + sessionId);
-	socket.emit('displayProject', { "slugFolderName" : currentFolder, "slugProjectName" : currentProject});
+	socket.emit('listProject', { "slugFolderName" : currentFolder, "slugProjectName" : currentProject});
 };
 
 function onSocketError(reason) {

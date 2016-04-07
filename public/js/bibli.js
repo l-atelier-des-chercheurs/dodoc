@@ -18,7 +18,7 @@ socket.on('displayNewStopMotion', displayNewStopMotion);
 socket.on('displayNewAudio', displayNewAudio);
 socket.on('displayNewText', displayNewText);
 socket.on('displayModifiedText', displayModifiedText);
-socket.on('listMedias', onListMedias);
+socket.on('listMediasOfOneType', onListMediasOfOneType); // dans common. Appel ensuite listOneMedia
 socket.on('listPublications', onPubliCreated);
 socket.on('publiCreated', onPubliCreated);
 socket.on('displayMontage', onDisplayMontage);
@@ -315,22 +315,6 @@ function displayModifiedText(text){
 function onListMedias(array, json){
 	$(".mediaContainer li").remove();
 	var matchID = $(".mediaContainer .media").attr("id");
-	// array.sort(function(a, b){
- //    var keyA = new Date(a.id),
- //        keyB = new Date(b.id);
- //    // Compare the 2 dates
- //    if(keyA < keyB) return -1;
- //    if(keyA > keyB) return 1;
- //    return 0;
-	// });
-
-/*
-      Penser à nettoyer tout ça :
-      1- ne placer dans la page qu'une fois que le media est bien formé
-      2- ne pas répéter le code si possible (créer des fonctions autant que faire se peut
-
-      (voir par exemple la fonction sendProjectData dans projet.js)
-*/
 
 
 	for (var i = 0; i < array.length; i++) {
@@ -778,13 +762,11 @@ function onFolderAlreadyExist(data){
 function onSocketConnect() {
 	sessionId = socket.io.engine.id;
 	console.log('Connected ' + sessionId);
-	socket.emit('listMedias', {session: currentFolder, project: currentProject});
-
-	socket.emit('listPubli', {session: currentFolder, project: currentProject});
+	socket.emit('listMedias', { "slugFolderName" : currentFolder, "slugProjectName" : currentProject});
+	socket.emit('listPubli', { "slugFolderName" : currentFolder, "slugProjectName" : currentProject});
 };
 
 function onSocketError(reason) {
 	console.log('Unable to connect to server', reason);
 };
-
 

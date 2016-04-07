@@ -1,6 +1,6 @@
 var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
-var dodoc  = require('./dodoc');
+var dodoc  = require('./public/dodoc');
 
 module.exports = function(app,express){
   app.set("port", 8080); //Server's port number
