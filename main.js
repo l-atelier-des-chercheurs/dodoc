@@ -316,11 +316,16 @@ module.exports = function(app, io){
 
   	function onNewMedia( mediaData) {
   		dev.logfunction( "EVENT - onNewMedia : " + mediaData);
-      var eventAndContentJson = eventAndContent( "mediaCreated", mediaMetaData);
-      dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
-      io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+    	createNewMedia( mediaData).then(function(response) {
+/*         console.log("Success!", response); */
+        var mediaMetaData = response;
+        var eventAndContentJson = eventAndContent( "mediaCreated", mediaMetaData);
+        dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
+        io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+      }, function(error) {
+        console.error("Failed to createNewMedia! Error: ", error);
+      });
   	}
-
 
 
   	function onStartStopMotion( mediaData) {
@@ -385,142 +390,10 @@ module.exports = function(app, io){
 		}
 
 
-	  function createNewMedia( newMediaData) {
-
-			var slugFolderName = newMediaData.slugFolderName;
-			var slugProjectName = newMediaData.slugProjectName;
-			var newFileName = getCurrentDate();
-			var newMediaType = newMediaData.mediaType;
-
-			var mediaFolder = '';
-			var pathToFile = '';
-			var fileExtension;
-			var mediaMetaData = {};
-
-      switch (newMediaType) {
-        case 'photo':
-    			mediaFolder = getPhotoPathOfProject();
-    			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
-
-          newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
-          pathToFile = mediaPath + '/' + newFileName;
-
-          fileExtension = '.jpg';
-          var dataMedia = newMediaData.mediaData;
-          var imageBuffer = decodeBase64Image( dataMedia);
-
-          try {
-    			  fs.writeFile( pathToFile + fileExtension, imageBuffer.data, function() {});
-    			} catch(err){
-  					console.log( "Couldn't save a new photo at path " + pathToFile + ". Error : " + err);
-  					return false;
-          }
-
-					console.log("Image added at path " + pathToFile);
-          break;
-        case 'video':
-    			mediaFolder = getVideoPathOfProject();
-    			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
-
-          newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
-          pathToFile = mediaPath + '/' + newFileName;
-          fileExtension = '.webm';
-
-          var dataMedia = newMediaData.mediaData;
-          writeToDisk2( pathToFile, fileExtension, dataMedia);
-    	 		createThumnails( pathToFile + fileExtension, newFileName, mediaPath);
-
-          break;
-        case 'animation':
-          mediaFolder = getAnimationPathOfProject();
-
-          // get the path to the mediaFolder
-    			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
-
-          // get the path to the cache folder and the mp4 (it's the same without the extension)
-          // WARNING : animation doesn't use newFileName, it already has a filename to use (generated at the beginning of a stopmotion capture)
-          newFileName = newMediaData.stopMotionCacheFolder;
-          pathToFile = mediaPath + '/' + newFileName;
-          fileExtension = '.mp4';
-
-          // ask ffmpeg to make a video from the cache images
-          var proc = new ffmpeg({ "source" : pathToFile + '/%d.png'})
-            // using 12 fps
-            .withFpsInput(5)
-            .fps(5)
-            // setup event handlers
-            .on('end', function() {
-              console.log('file has been converted succesfully');
-          //     io.sockets.emit("newStopMotionCreated", {fileName:fileName + '.mp4', name:req.folder, projet:req.project, dir:req.dir });
-              createThumnails( pathToFile + fileExtension, newFileName, mediaPath);
-            })
-            .on('error', function(err) {
-              console.log('an error happened: ' + err.message);
-            })
-            // save to file
-            .save( pathToFile + fileExtension);
-
-
-/*
-          var currentDate = Date.now();
-          var fileName = currentDate;
-          //SAVE VIDEO
-          var videoPath = dodoc.contentDir + "/" + req.folder + '/' +req.project+'/'+ fileName + '.mp4';
-          var projetDir = dodoc.contentDir + "/" + req.folder+"/"+req.project;
-          //make sure you set the correct path to your video file
-          var proc = new ffmpeg({ source: req.dir + '/%d.png'})
-            // using 12 fps
-            .withFpsInput(5)
-            .fps(5)
-            // setup event handlers
-            .on('end', function() {
-              console.log('file has been converted succesfully');
-          //     io.sockets.emit("newStopMotionCreated", {fileName:fileName + '.mp4', name:req.folder, projet:req.project, dir:req.dir });
-            	createThumnails(videoPath, fileName, projetDir)
-            })
-            .on('error', function(err) {
-              console.log('an error happened: ' + err.message);
-            })
-            // save to file
-            .save(videoPath);
-            io.sockets.emit('mediaCreated', {file:fileName + '.mp4'});
-*/
-
-/*
-          var jsonFile = dodoc.contentDir + "/" + req.folder + '/'+req.project+"/"+req.project+'.json';
-          var data = fs.readFileSync(jsonFile,"UTF-8");
-          var jsonObj = JSON.parse(data);
-          var jsonAdd = { "name" : currentDate};
-          jsonObj["files"]["stopmotion"].push(jsonAdd);
-          var objectToSend = {file: fileName + ".mp4", extension:"mp4", name:req.folder, projet:req.project, title: fileName};
-          writeIntoJsonFile(jsonFile, jsonObj, objectToSend, 'displayNewStopMotion');
-*/
-
-
-          break;
-        case 'audio':
-          mediaFolder = getAudioPathOfProject();
-          break;
-      }
-
-      mediaMetaData['created'] = getCurrentDate();
-      mediaMetaData['modified'] = getCurrentDate();
-      mediaMetaData['title'] = '';
-      mediaMetaData['informations'] = '';
-      mediaMetaData['type'] = newMediaType;
-      mediaMetaData['pathToFile'] = pathToFile + fileExtension;
-
-      // generate a json file next to the file
-      var pathToJSONFile = pathToFile + '.json';
-  		var status = jsonWriteToFile( pathToJSONFile, mediaMetaData, "update");
-  		return mediaMetaData;
-
-	  }
-
-
 		// Audio
 		function onNewAudioCapture(req){
   		dev.logfunction( "onNewAudioCapture");
+
 			//write audio to disk
 			var currentDate = Date.now();
 			var fileName = currentDate;
@@ -1377,6 +1250,8 @@ module.exports = function(app, io){
 
 *************/
 
+    function getJsonFileOfMedia( projectPath, mediasFolderPath, mediaMetaFilename) {
+      return projectPath + '/' + mediasFolderPath + '/' + mediaMetaFilename;
     }
 
     function findFirstFilenameNotTaken( fileName, mediaPath) {
@@ -1421,9 +1296,125 @@ module.exports = function(app, io){
     }
 
 
+	  function createNewMedia( newMediaData) {
+
+      return new Promise(function(resolve, reject) {
+    		dev.logfunction( "COMMON - createNewMedia : " + newMediaData);
+
+  			var slugFolderName = newMediaData.slugFolderName;
+  			var slugProjectName = newMediaData.slugProjectName;
+  			var newFileName = getCurrentDate();
+  			var newMediaType = newMediaData.mediaType;
+
+  			var mediaFolder = '';
+  			var pathToFile = '';
+  			var fileExtension;
+
+        switch (newMediaType) {
+          case 'photo':
+      			mediaFolder = getPhotoPathOfProject();
+      			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
+
+            newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
+            pathToFile = mediaPath + '/' + newFileName;
+
+            fileExtension = '.jpg';
+            var dataMedia = newMediaData.mediaData;
+            var imageBuffer = decodeBase64Image( dataMedia);
+
+            console.log("promise before");
+
+            fs.writeFileSync( pathToFile + fileExtension, imageBuffer.data);
+
+  					console.log("Image added at path " + pathToFile);
+
+            mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension);
+        		resolve( mediaMetaData);
+
+            break;
+          case 'video':
+      			mediaFolder = getVideoPathOfProject();
+      			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
+
+            newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
+            pathToFile = mediaPath + '/' + newFileName;
+            fileExtension = '.webm';
+
+            var dataMedia = newMediaData.mediaData;
+            writeToDisk2( pathToFile, fileExtension, dataMedia);
+      	 		createThumnails( pathToFile + fileExtension, newFileName, mediaPath);
+
+            mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension);
+        		resolve( mediaMetaData);
+
+            break;
+          case 'animation':
+            mediaFolder = getAnimationPathOfProject();
+
+            // get the path to the mediaFolder
+      			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
+
+            // get the path to the cache folder and the mp4 (it's the same without the extension)
+            // WARNING : animation doesn't use newFileName, it already has a filename to use (generated at the beginning of a stopmotion capture)
+            newFileName = newMediaData.stopMotionCacheFolder;
+            pathToFile = mediaPath + '/' + newFileName;
+            fileExtension = '.mp4';
 
 
+            // ask ffmpeg to make a video from the cache images
+            var proc = new ffmpeg({ "source" : pathToFile + '/%d.png'})
+              // using 12 fps
+              .withFpsInput(2)
+              .fps(2)
+              // setup event handlers
+              .on('end', function() {
+                console.log('file has been converted succesfully');
 
+                createThumnails( pathToFile + fileExtension, newFileName, mediaPath);
+
+                mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension);
+            		resolve( mediaMetaData);
+
+              })
+              .on('error', function(err) {
+                console.log('an error happened: ' + err.message);
+            		reject( "couldn't create a stopmotion animation");
+              })
+              // save to file
+              .save( pathToFile + fileExtension);
+
+            break;
+          case 'audio':
+            mediaFolder = getAudioPathOfProject();
+
+
+            mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension);
+        		resolve( mediaMetaData);
+
+            break;
+        // end of switch
+        }
+
+      // end of promise
+      });
+	  }
+
+
+    function createMediaJSON( newMediaType, pathToFile, fileExtension) {
+      var mediaMetaData = {};
+      mediaMetaData['created'] = getCurrentDate();
+      mediaMetaData['modified'] = getCurrentDate();
+      mediaMetaData['title'] = '';
+      mediaMetaData['informations'] = '';
+      mediaMetaData['type'] = newMediaType;
+      mediaMetaData['pathToFile'] = pathToFile + fileExtension;
+
+      // generate a json file next to the file
+      var pathToJSONFile = pathToFile + '.json';
+  		var status = jsonWriteToFile( pathToJSONFile, mediaMetaData, "update");
+
+  		return mediaMetaData;
+    }
 
 /************
 
@@ -1503,16 +1494,14 @@ module.exports = function(app, io){
 	  function jsonWriteToFile( jsonFile, objectJson, sendEvent) {
   		var jsonString = JSON.stringify( objectJson, null, 4);
   		if( sendEvent === "create") {
-  			fs.appendFile( jsonFile, jsonString, function(err) {
-  	      if(err) {
-  	        console.log(err);
-  	        return false;
-  	      }
-  	      else {
-  	        console.log("Success for event : " + sendEvent);
-  	        return true;
-  	      }
-  	    });
+    		try {
+    			fs.appendFileSync( jsonFile, jsonString);
+	        console.log("Success for event : " + sendEvent);
+	        return true;
+    		} catch(err) {
+	        console.log(err);
+	        return false;
+	      }
 	    }
 	    else if( sendEvent === "update") {
         fs.writeFileSync(jsonFile, jsonString);
