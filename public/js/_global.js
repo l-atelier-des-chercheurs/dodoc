@@ -73,7 +73,6 @@ function listMediasOfOneType( mediasData) {
   var $allMedias = $();
   var lastMedias = mediasData;
   $.each( lastMedias, function( pathToTypeMediaFolder, mediaJsonNames) {
-    console.log( mediaJsonNames);
 
     // récupérer toutes les infos des JSON
     var getAllJsonNames = Object.getOwnPropertyNames( mediaJsonNames);

@@ -316,7 +316,6 @@ module.exports = function(app, io){
 
   	function onNewMedia( mediaData) {
   		dev.logfunction( "EVENT - onNewMedia : " + mediaData);
-    	var mediaMetaData = createNewMedia( mediaData);
       var eventAndContentJson = eventAndContent( "mediaCreated", mediaMetaData);
       dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
       io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
@@ -1378,8 +1377,6 @@ module.exports = function(app, io){
 
 *************/
 
-    function getJsonFileOfMedia( projectPath, slugProjectName, mediaMetaFilename) {
-      return projectPath + '/' + slugProjectName + '/' + mediaMetaFilename;
     }
 
     function findFirstFilenameNotTaken( fileName, mediaPath) {
@@ -1422,6 +1419,9 @@ module.exports = function(app, io){
 
       return mediaDataJson;
     }
+
+
+
 
 
 
