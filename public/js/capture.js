@@ -34,7 +34,8 @@ var sarahCouleur = "gray";
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
 socket.on('mediaCreated', onMediaCreated);
-
+socket.on('stopMotionDirectyCreated', onStopMotionDirectyCreated);
+socket.on('newStopMotionCreated', onStopMotionDirectyCreated);
 
 jQuery(document).ready(function($) {
 
@@ -77,7 +78,7 @@ function init(){
     recordingVideo('click');
   });
   $("#start-sm-btn").on('click', startStopMotion);
-  $("#capture-sm-btn").on('click', onStopMotionDirectory);
+  $("#capture-sm-btn").on('click', takeStopMotionPic);
   $("#stop-sm-btn").on('click', stopStopMotion);
 
   $("#audio").on('click', function(e){
@@ -111,7 +112,7 @@ function init(){
         }
         else{
           console.log("start taking pictures");
-          onStopMotionDirectory();
+          takeStopMotionPic();
         }
       }
     }
@@ -478,7 +479,13 @@ function takePictures(){
     $('body').attr('data-justcaptured', '');
   }, 600);
 
-  submitData(data, 'imageCapture');
+  var mediaData =
+  {
+    "mediaType" : "photo",
+    "mediaData" : data
+  }
+
+  createNewMedia( mediaData);
   saveFeedback("/images/icone-dodoc_image.png");
 }
 
@@ -622,14 +629,15 @@ function recordingVideo(click){
     recordVideo.stopRecording(function() {
       // get video data-URL
       recordVideo.getDataURL(function(videoDataURL) {
-        var files = {
-          video: {
-            type: recordVideo.getBlob().type || 'video/webm',
-            dataURL: videoDataURL
-          }
+
+//             type: recordVideo.getBlob().type || 'video/webm',
+        var mediaData =
+        {
+          "mediaType" : "video",
+          "mediaData" : videoDataURL
         };
-        console.log(files);
-        submitData(files,'videoRecorded')
+        createNewMedia( mediaData);
+
         if (mediaStream) mediaStream.stop();
       });
       cameraPreview.src = '';
@@ -645,20 +653,47 @@ function recordingVideo(click){
 function startStopMotion(){
   countImage = 0;
   console.log('start stop-motion');
-  $("#start-sm-btn").hide(); $("#capture-sm-btn").show(); $("#stop-sm-btn").hide();
+  $("#start-sm-btn").hide();
+  $("#capture-sm-btn").show();
+  $("#stop-sm-btn").hide();
   $('.js--delete-media-capture').hide();
-  $('.screenshot .canvas-view').hide(); $('#camera-preview').hide();
+  $('.screenshot .canvas-view').hide();
+  $('#camera-preview').hide();
 
   var iconeSM = '<div class="icone-stopmotion"><img src="/images/stopmotion.svg"></div>';
   var text = '<h4>Vous venez de créer un nouveau stop motion.</br>Cliquez que le <b>bouton d\'enregistrement</b> pour commencer à prendre des photos</h4>'
   var htmlToAdd = '<div class="instructions-stopmotion">'+iconeSM+text+'</div>';
   $('.screenshot').append(htmlToAdd);
-  submitData(false, 'newStopMotion');
+
+  animateWindows();
+
   $(".screenshot").append("<div class='meta-stopmotion'><div class='delete-image'><img src='/images/clear.svg'></div><p class='count-image'></p></div>");
   $(".screenshot .meta-stopmotion").hide();
+
+  var mediaData = {};
+  mediaData.slugFolderName = currentFolder;
+  mediaData.slugProjectName = currentProject;
+
+  socket.emit( 'startStopMotion', mediaData);
+}
+
+function onStopMotionDirectyCreated( newStopMotionData) {
+
+  var folderCacheName = newStopMotionData.folderCacheName;
+  var folderCachePath = newStopMotionData.folderCachePath;
+
+  $("#stop-sm-btn").show();
+  $('.screenshot .canvas-view').show();
+  $('.screenshot .instructions-stopmotion').remove();
+  $(".screenshot .meta-stopmotion").show();
+
+  $("body").data( "smCacheName", folderCacheName);
+  $("body").data( "smCachePath", folderCachePath);
+  $("body").data( "smImageCount", 0);
 }
 
 // Quand le dossier du stop motion est crée
+/*
 function onStopMotionDirectory(){
   var dir = "sessions/" + currentFolder + "/"+ currentProject+"/01-stopmotion";
   $("#stop-sm-btn").show();
@@ -667,23 +702,38 @@ function onStopMotionDirectory(){
   $(".screenshot .meta-stopmotion").show();
   takepictureMotion(dir);
 }
+*/
 
-// fonction qui prend des photos pour le stop motion et qui les envoie au serveur
-function takepictureMotion(dir) {
-  countImage ++;
+function takeStopMotionPic() {
+
+  var smCacheName = $("body").data( "smCacheName");
+  var smCachePath = $("body").data( "smCachePath");
+  var smImageCount = parseInt( $("body").data( "smImageCount")) + 1;
+
   canvas.width = width;
   canvas.height = height;
   canvas.getContext('2d').drawImage(video, 0, 0, width, height);
   var data = canvas.toDataURL('image/png');
   photo.setAttribute('src', data);
   $(".meta-stopmotion .delete-image").off();
+/*
   $(".meta-stopmotion .delete-image").on('click', function(){
-    removeImageMotion(data, dir);
+    removeImageMotion(data, folderCache);
   });
-  socket.emit('imageMotion', { data : data, dir: dir, count: countImage});
-  $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
-  $('body').addClass('takingstopmotion');
+*/
 
+  var smImage =
+  {
+    "imageContent" : data,
+    "folderCacheName" : smCacheName,
+    "folderCachePath" : smCachePath,
+    "imageCount" : smImageCount
+  };
+
+  socket.emit( 'addImageToStopMotion', smImage);
+
+  $(".screenshot .count-image").html("<span>Image n° " + smImageCount + "</span>");
+  $('body').addClass('takingstopmotion');
   $(".captureRight .flash").fadeIn(0, function(){
     $(this).fadeOut(500);
   });
@@ -693,8 +743,16 @@ function takepictureMotion(dir) {
     $('body').attr('data-justcaptured', '');
   }, 600);
 
+  $("body").data( "smImageCount", smImageCount);
+
 }
 
+function removeLastImageFromStopMotion() {
+
+// MISSING
+
+}
+/*
 function removeImageMotion(data, dir){
   if(countImage > 1){
     console.log("delete Image");
@@ -712,8 +770,39 @@ function removeImageMotion(data, dir){
     startStopMotion();
   }
 }
+*/
 
-function stopStopMotion(){
+function stopStopMotion( ) {
+
+  var smCacheName = $("body").data( "smCacheName");
+  var smCachePath = $("body").data( "smCachePath");
+  var smImageCount = parseInt( $("body").data( "smImageCount")) + 1;
+
+  $("#stop-sm-btn").hide();
+  $("#capture-sm-btn").hide();
+  countPress = 0;
+  $('.screenshot .meta-stopmotion').remove();
+  saveFeedback("/images/icone-dodoc_anim.png");
+
+  var mediaData =
+  {
+    "stopMotionCacheFolder" : smCacheName,
+    "mediaType" : "animation"
+  }
+
+  createNewMedia( mediaData);
+
+  $("#start-sm-btn").show();
+  $('.js--delete-media-capture').show();
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+
+  $('body').removeClass('takingstopmotion');
+
+
+}
+
+
+function stopStopMotionOLD(){
   var dir = "sessions/" + currentFolder + "/"+ currentProject+"/01-stopmotion";
   $("#stop-sm-btn").hide();
   $("#capture-sm-btn").hide();
@@ -873,7 +962,7 @@ function audioCapture(code){
         };
         //socket.emit('audio', {files: files, id: sessionId, name: currentFolder});
         console.log("Audio is recording url " + url);
-        submitData(files, "audioCapture");
+        createNewMedia(files, "audioCapture");
         saveFeedback("/images/icone-dodoc_son.png");
         if (mediaStream) mediaStream.stop();
       });
@@ -1021,25 +1110,30 @@ function onMediaCreated( newMediaData){
   $('.screenshot').attr('data-file', newMediaData.file);
 
   var newMediaType = newMediaData.type;
+  // remove /sessions from the filePath
   var pathToMediaFile = '/' + newMediaData.pathToFile.substring(newMediaData.pathToFile.indexOf("/") + 1);
+  var cameraPreview = document.getElementById('camera-preview');
 
   if( newMediaType === 'photo') {
 
   }
   else if( newMediaType === 'video') {
-    var cameraPreview = document.getElementById('camera-preview');
     cameraPreview.src = pathToMediaFile;
     cameraPreview.play();
     cameraPreview.muted = false;
     cameraPreview.controls = true;
     $('.video-capture').fadeIn(1000);
   }
+  else if( newMediaType === 'animation') {
+    $('.screenshot .canvas-view').hide();
+    cameraPreview.src = pathToMediaFile;
+    cameraPreview.play();
+    cameraPreview.muted = false;
+    cameraPreview.controls = true;
+    $('#camera-preview').show();
+  }
 }
 
-function submitData(data, send){
-	animateWindows();
-	socket.emit(send, {data: data, "slugFolderName" : currentFolder, "slugProjectName" :currentProject});
-}
 
 //animation des fenêtres à la capture
 function animateWindows(){
@@ -1107,4 +1201,15 @@ function onSocketError(reason) {
 	console.log('Unable to connect to server', reason);
 };
 
+
+
+
+function createNewMedia( mediaData){
+
+  mediaData.slugFolderName = currentFolder;
+  mediaData.slugProjectName = currentProject;
+
+	animateWindows();
+	socket.emit( 'newMedia', mediaData);
+}
 

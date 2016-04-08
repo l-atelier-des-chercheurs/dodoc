@@ -13,9 +13,61 @@ var imageData = null;
 
 /* fonction accessible depuis l'extérieur :
     - listMediasOfOneType
-
+    - loadProject
 
 */
+
+
+// COMMON WITH PROJECT.JS
+function loadProject( projectData) {
+
+	var projectName = projectData.name;
+	var slugProjectName = projectData.slugProjectName;
+
+	var createdDate = transformDatetoString( projectData.created);
+	var modifiedDate = transformDatetoString( projectData.modified);
+	var statut = projectData.statut;
+
+  var imageSrc;
+  if( projectData.projectPreviewName !== undefined && projectData.projectPreviewName !== false)
+  	imageSrc = projectData.projectPreviewName;
+
+	displayProject( projectName, slugProjectName, createdDate, modifiedDate, statut, imageSrc);
+
+	return;
+}
+
+
+function 	displayProject( name, projectNameSlug, created, modified, statut, imageSrc) {
+
+	var $newProject = $(".js--templates > .project").clone(false);
+	var path = '/' + currentFolder + '/' + projectNameSlug;
+
+  if( modified === null)
+    $newProject.find('.modify-date').remove();
+	if( imageSrc === undefined)
+  	$newProject.find( '.image-wrapper img').remove();
+
+  var imageSrc = path + "/" + imageSrc;
+
+  // customisation du projet
+	$newProject
+	  .attr( 'data-statut', statut)
+	  .find( '.statut-type').text( statut).end()
+	  .find( '.image-wrapper img').attr('src', imageSrc).attr('alt', name).end()
+	  .find( '.create-date').text( created).end()
+	  .find( '.modify-date').text( modified).end()
+	  .find( '.title').text( name).end()
+	  .find( '.project-link').attr( 'href', path).end()
+	  .find( '.button-wrapper_capture').attr( 'href', path + '/capture').end()
+	  .find( '.button-wrapper_bibli').attr( 'href',  path + '/bibliotheque/medias').end()
+	  .find( '.button-wrapper_publi').attr( 'href', path + '/bibliotheque/panneau-de-publications').end()
+	  .data( 'projectNameSlug', projectNameSlug)
+  ;
+	$("#container .project-list").prepend( $newProject);
+}
+
+
 
 function listMediasOfOneType( mediasData) {
   var $allMedias = $();
@@ -31,8 +83,6 @@ function listMediasOfOneType( mediasData) {
 
       var thisMediaJsonValues = mediaJsonNames[metaJsonName];
       var mediaDatas = thisMediaJsonValues;
-
-      // penser au cas de figure ou deux files sont trouvés (vidéo)
 
       // penser au cas de figure ou un texte est trouvé
       var newMedia = listOneMedia( pathMediaFolder, metaJsonName, mediaDatas);
@@ -126,7 +176,7 @@ function showVideo( pathMediaFolder, metaJsonName, mediaFilenames) {
   var videoFilename;
 
   $.each( mediaFilenames, function( key, mediaFilename) {
-    if( mediaFilename.indexOf( "jpg") !== -1) {
+    if( mediaFilename.indexOf( "jpg") !== -1 || mediaFilename.indexOf( "png") !== -1) {
       thumbFilename = mediaFilename;
     } else if ( mediaFilename.indexOf( "mp4") !== false ||  mediaFilename.indexOf( "webm") !== false) {
       videoFilename = mediaFilename;
@@ -154,3 +204,26 @@ function showAudio( pathMediaFolder, metaJsonName, mediaFilenames) {
     ;
 	return mediaItem;
 }
+
+
+// en cours : gestion des modals. Elles s'ouvrent avec un trigger sur $(document), qui passe les données à afficher dedans
+var modals = {
+
+  init : function() {
+
+
+		$(document).on("modal::editprojet", function(e) {
+  		modals.editProject();
+		});
+  },
+
+	editProject : function() {
+
+
+
+  },
+
+
+}
+
+

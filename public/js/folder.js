@@ -29,8 +29,9 @@ function init(){
 	// Modifier les projets
 	//Au click sur l'icone éditer
 	$('body').on('click', '.js--edit-project-icon', function(){
-		thisProject = $(this).parents(".project");
-		modifyProject($(this));
+		$thisProject = $(this).closest(".project");
+		modifyProject( $thisProject);
+//     modals.editProject( $thisProject);
 	});
 
 	//remove modal modify folder when it's closing
@@ -93,56 +94,6 @@ function onListAllProjectsOfOneFolder(data){
   return;
 }
 
-
-// COMMON WITH PROJECT.JS
-function loadProject( projectData) {
-
-  debugger;
-	var projectName = projectData.name;
-	var slugProjectName = projectData.slugProjectName;
-
-	var createdDate = transformDatetoString( projectData.created);
-	var modifiedDate = transformDatetoString( projectData.modified);
-	var statut = projectData.statut;
-
-  var imageSrc;
-  if( projectData.projectPreviewName !== undefined && projectData.projectPreviewName !== false)
-  	imageSrc = projectData.projectPreviewName;
-
-	displayProject( projectName, slugProjectName, createdDate, modifiedDate, statut, imageSrc);
-
-	return;
-}
-
-
-function 	displayProject( name, projectNameSlug, created, modified, statut, imageSrc) {
-
-	var $newProject = $(".js--templates > .project").clone(false);
-	var path = './' + projectNameSlug;
-
-  if( modified === null)
-    $newProject.find('.modify-date').remove();
-	if( imageSrc === undefined)
-  	$newProject.find( '.image-wrapper img').remove();
-
-  imageSrc = "./" + path + "/" + imageSrc;
-
-  // customisation du projet
-	$newProject
-	  .attr( 'data-statut', statut)
-	  .find( '.statut-type').text( statut).end()
-	  .find( '.image-wrapper img').attr('src', imageSrc).attr('alt', name).end()
-	  .find( '.create-date').text( created).end()
-	  .find( '.modify-date').text( modified).end()
-	  .find( '.title').text( name).end()
-	  .find( '.project-link').attr( 'href', path).end()
-	  .find( '.button-wrapper_capture').attr( 'href', path + '/capture').end()
-	  .find( '.button-wrapper_bibli').attr( 'href',  path + '/bibliotheque/medias').end()
-	  .find( '.button-wrapper_publi').attr( 'href', path + '/bibliotheque/panneau-de-publications').end()
-	  .data( 'projectNameSlug', projectNameSlug)
-  ;
-	$("#container .project-list").prepend( $newProject);
-}
 
 function modifyProject($this){
 
@@ -216,6 +167,7 @@ function submitModifyProject($button, send, projectNameSlug){
     				"slugFolderName" : currentFolder,
             "slugProjectName" : projectNameSlug,
     				"statut" : newStatut,
+    				"imageData" : evt.target.result
   			});
 			};
 			reader.readAsDataURL(f);

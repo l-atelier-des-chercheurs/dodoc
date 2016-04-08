@@ -54,13 +54,17 @@ module.exports = function(app, io){
 		socket.on("listProject", onListProject);
 
 		// C A P T U R E     P A G E
-		socket.on("imageCapture", onNewImage);
-		socket.on("videoRecorded", onNewVideo);
+/*
+		socket.on("newImage", onNewImage);
+		socket.on("newVideo", onNewVideo);
+*/
+    socket.on("newMedia", onNewMedia);
 		//STOP MOTION
-		socket.on("newStopMotion", onNewStopMotion);
-		socket.on("imageMotion", onNewImageMotion);
+		socket.on("startStopMotion", onStartStopMotion);
+		socket.on("addImageToStopMotion", onAddImageToStopMotion);
+// 		socket.on("finishStopMotion", onNewMedia); // the finishing event of a stopMotion calls newMedia
+
 		socket.on("deleteImageMotion", deleteImageMotion);
-		socket.on("stopmotionCapture", createStopMotion);
 		// Audio
 		socket.on("audioCapture", onNewAudioCapture);
 		socket.on("deleteFile", deleteFile);
@@ -77,7 +81,7 @@ module.exports = function(app, io){
 		socket.on("titleChanged", onTitleChanged);
 		socket.on("addText", onNewText);
 		socket.on("modifyText", onModifiedText);
-		socket.on("newImageLocal", onNewImage);
+// 		socket.on("newImageLocal", onNewImage);
 		socket.on("addMediaData", onMediaLegende);
 		socket.on("highlightMedia", onHighLighMedia);
 		socket.on("removeHighlight", onRemoveHighlight);
@@ -302,8 +306,6 @@ module.exports = function(app, io){
       io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
     }
 
-
-
     function onListOneProjectPublis( projectData, socket) {
 
     }
@@ -312,105 +314,54 @@ module.exports = function(app, io){
 
 	// C A P T U R E      P A G E
 
-  	function onNewImage( mediaData) {
-  		dev.logfunction( "EVENT - onNewImage");
-
-    	var mediaMetaData = onNewMedia( "photo", mediaData);
-
+  	function onNewMedia( mediaData) {
+  		dev.logfunction( "EVENT - onNewMedia : " + mediaData);
+    	var mediaMetaData = createNewMedia( mediaData);
       var eventAndContentJson = eventAndContent( "mediaCreated", mediaMetaData);
       dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
       io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
   	}
 
-  	function onNewVideo( mediaData) {
-  		dev.logfunction( "EVENT - onNewVideo");
-
-    	var mediaMetaData = onNewMedia( "video", mediaData);
-
-      var eventAndContentJson = eventAndContent( "mediaCreated", mediaMetaData);
-      dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
-      io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
-  	}
-
-	  function onNewMedia( newMediaType, newMediaData) {
-
-			var slugFolderName = newMediaData.slugFolderName;
-			var slugProjectName = newMediaData.slugProjectName;
-			var newFileName = getCurrentDate();
-
-			var mediaFolder = '';
-			var pathToFile = '';
-			var fileExtension;
-			var mediaMetaData = {};
-
-      switch (newMediaType) {
-        case 'photo':
-    			mediaFolder = getPhotoPathOfProject();
-
-    			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
-
-          newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
-          pathToFile = mediaPath + '/' + newFileName;
-
-          fileExtension = '.jpg';
-          var dataMedia = newMediaData.data;
-          var imageBuffer = decodeBase64Image( dataMedia);
-
-          try {
-    			  fs.writeFile( pathToFile + fileExtension, imageBuffer.data, function() {});
-    			} catch(err){
-  					console.log( "Couldn't save a new photo at path " + pathToFile + ". Error : " + err);
-  					return false;
-          }
-
-					console.log("Image added at path " + pathToFile);
-          break;
-        case 'video':
-
-    			mediaFolder = getVideoPathOfProject();
-    			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
-
-          newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
-          pathToFile = mediaPath + '/' + newFileName;
-
-          fileExtension = '.webm';
-          writeToDisk2( pathToFile, fileExtension, newMediaData.data.video.dataURL);
-    	 		createThumnails( pathToFile + fileExtension, newFileName, mediaPath);
-
-          break;
-        case 'animation':
-          mediaFolder = getAnimationPathOfProject();
-          break;
-        case 'audio':
-          mediaFolder = getAudioPathOfProject();
-          break;
-      }
-
-      mediaMetaData['created'] = getCurrentDate();
-      mediaMetaData['modified'] = getCurrentDate();
-      mediaMetaData['title'] = '';
-      mediaMetaData['informations'] = '';
-      mediaMetaData['type'] = newMediaType;
-      mediaMetaData['pathToFile'] = pathToFile + fileExtension;
-
-      // generate a json file next to the file
-      var pathToJSONFile = pathToFile + '.json';
-  		var status = jsonWriteToFile( pathToJSONFile, mediaMetaData, "update");
-  		return mediaMetaData;
-
-	  }
 
 
-		// Crée un nouveau dossier pour le stop motion
-		function onNewStopMotion(data) {
-  		dev.logfunction( "onNewStopMotion");
-			var StopMotionDirectory = dodoc.contentDir + "/" + data.folder +'/'+ data.project+'/01-stopmotion';
-			if(StopMotionDirectory){
-				fs.removeSync(StopMotionDirectory);
+  	function onStartStopMotion( mediaData) {
+  		dev.logfunction( "EVENT - onStartStopMotion");
+
+			var folderCacheName = getCurrentDate();
+
+			var slugFolderName = mediaData.slugFolderName;
+			var slugProjectName = mediaData.slugProjectName;
+			var mediaFolder = getAnimationPathOfProject();
+			var folderCachePath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder + '/' + folderCacheName;
+
+			fs.removeSync( folderCachePath);
+			fs.ensureDirSync( folderCachePath);
+
+			var newStopMotionData =
+			{
+  			"folderCacheName" : folderCacheName,
+  			"folderCachePath" : folderCachePath
 			}
-			fs.ensureDirSync(StopMotionDirectory);
-			// io.sockets.emit('newStopMotionDirectory', StopMotionDirectory);
-		}
+
+			io.sockets.emit('stopMotionDirectyCreated', newStopMotionData);
+  	}
+		function onAddImageToStopMotion( imageData) {
+
+  		dev.logfunction( "onAddImageToStopMotion");
+
+  		var imageContent = imageData.imageContent;
+  		var imageFolder = imageData.folderCacheName;
+  		var folderPath = imageData.folderCachePath;
+  		var imageCount = imageData.imageCount;
+
+			var imageBuffer = decodeBase64Image( imageContent);
+			imagePath = folderPath + '/' + imageCount + '.png';
+			fs.writeFile( imagePath, imageBuffer.data, function(err) {
+				if(err){
+					console.log(err);
+				}
+			});
+    }
 
 		// Ajoute des images au dossier du stop motion
 		function onNewImageMotion(req) {
@@ -434,41 +385,139 @@ module.exports = function(app, io){
 			});
 		}
 
-		//Transforme les images en vidéos.
-		function createStopMotion(req){
-  		dev.logfunction( "createStopMotion");
-			var currentDate = Date.now();
-			var fileName = currentDate;
 
-			//SAVE VIDEO
-			var videoPath = dodoc.contentDir + "/" + req.folder + '/' +req.project+'/'+ fileName + '.mp4';
-			var projetDir = dodoc.contentDir + "/" + req.folder+"/"+req.project;
-			//make sure you set the correct path to your video file
-			var proc = new ffmpeg({ source: req.dir + '/%d.png'})
-			  // using 12 fps
-			  .withFpsInput(5)
-			  .fps(5)
-			  // setup event handlers
-			  .on('end', function() {
-			    console.log('file has been converted succesfully');
-			    io.sockets.emit("newStopMotionCreated", {fileName:fileName + '.mp4', name:req.folder, projet:req.project, dir:req.dir });
-			  	createThumnails(videoPath, fileName, projetDir)
-			  })
-			  .on('error', function(err) {
-			    console.log('an error happened: ' + err.message);
-			  })
-			  // save to file
-			  .save(videoPath);
-			  io.sockets.emit('mediaCreated', {file:fileName + '.mp4'});
+	  function createNewMedia( newMediaData) {
 
-			var jsonFile = dodoc.contentDir + "/" + req.folder + '/'+req.project+"/"+req.project+'.json';
-			var data = fs.readFileSync(jsonFile,"UTF-8");
-			var jsonObj = JSON.parse(data);
-			var jsonAdd = { "name" : currentDate};
-			jsonObj["files"]["stopmotion"].push(jsonAdd);
-			var objectToSend = {file: fileName + ".mp4", extension:"mp4", name:req.folder, projet:req.project, title: fileName};
-			writeIntoJsonFile(jsonFile, jsonObj, objectToSend, 'displayNewStopMotion');
-		}
+			var slugFolderName = newMediaData.slugFolderName;
+			var slugProjectName = newMediaData.slugProjectName;
+			var newFileName = getCurrentDate();
+			var newMediaType = newMediaData.mediaType;
+
+			var mediaFolder = '';
+			var pathToFile = '';
+			var fileExtension;
+			var mediaMetaData = {};
+
+      switch (newMediaType) {
+        case 'photo':
+    			mediaFolder = getPhotoPathOfProject();
+    			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
+
+          newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
+          pathToFile = mediaPath + '/' + newFileName;
+
+          fileExtension = '.jpg';
+          var dataMedia = newMediaData.mediaData;
+          var imageBuffer = decodeBase64Image( dataMedia);
+
+          try {
+    			  fs.writeFile( pathToFile + fileExtension, imageBuffer.data, function() {});
+    			} catch(err){
+  					console.log( "Couldn't save a new photo at path " + pathToFile + ". Error : " + err);
+  					return false;
+          }
+
+					console.log("Image added at path " + pathToFile);
+          break;
+        case 'video':
+    			mediaFolder = getVideoPathOfProject();
+    			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
+
+          newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
+          pathToFile = mediaPath + '/' + newFileName;
+          fileExtension = '.webm';
+
+          var dataMedia = newMediaData.mediaData;
+          writeToDisk2( pathToFile, fileExtension, dataMedia);
+    	 		createThumnails( pathToFile + fileExtension, newFileName, mediaPath);
+
+          break;
+        case 'animation':
+          mediaFolder = getAnimationPathOfProject();
+
+          // get the path to the mediaFolder
+    			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
+
+          // get the path to the cache folder and the mp4 (it's the same without the extension)
+          // WARNING : animation doesn't use newFileName, it already has a filename to use (generated at the beginning of a stopmotion capture)
+          newFileName = newMediaData.stopMotionCacheFolder;
+          pathToFile = mediaPath + '/' + newFileName;
+          fileExtension = '.mp4';
+
+          // ask ffmpeg to make a video from the cache images
+          var proc = new ffmpeg({ "source" : pathToFile + '/%d.png'})
+            // using 12 fps
+            .withFpsInput(5)
+            .fps(5)
+            // setup event handlers
+            .on('end', function() {
+              console.log('file has been converted succesfully');
+          //     io.sockets.emit("newStopMotionCreated", {fileName:fileName + '.mp4', name:req.folder, projet:req.project, dir:req.dir });
+              createThumnails( pathToFile + fileExtension, newFileName, mediaPath);
+            })
+            .on('error', function(err) {
+              console.log('an error happened: ' + err.message);
+            })
+            // save to file
+            .save( pathToFile + fileExtension);
+
+
+/*
+          var currentDate = Date.now();
+          var fileName = currentDate;
+          //SAVE VIDEO
+          var videoPath = dodoc.contentDir + "/" + req.folder + '/' +req.project+'/'+ fileName + '.mp4';
+          var projetDir = dodoc.contentDir + "/" + req.folder+"/"+req.project;
+          //make sure you set the correct path to your video file
+          var proc = new ffmpeg({ source: req.dir + '/%d.png'})
+            // using 12 fps
+            .withFpsInput(5)
+            .fps(5)
+            // setup event handlers
+            .on('end', function() {
+              console.log('file has been converted succesfully');
+          //     io.sockets.emit("newStopMotionCreated", {fileName:fileName + '.mp4', name:req.folder, projet:req.project, dir:req.dir });
+            	createThumnails(videoPath, fileName, projetDir)
+            })
+            .on('error', function(err) {
+              console.log('an error happened: ' + err.message);
+            })
+            // save to file
+            .save(videoPath);
+            io.sockets.emit('mediaCreated', {file:fileName + '.mp4'});
+*/
+
+/*
+          var jsonFile = dodoc.contentDir + "/" + req.folder + '/'+req.project+"/"+req.project+'.json';
+          var data = fs.readFileSync(jsonFile,"UTF-8");
+          var jsonObj = JSON.parse(data);
+          var jsonAdd = { "name" : currentDate};
+          jsonObj["files"]["stopmotion"].push(jsonAdd);
+          var objectToSend = {file: fileName + ".mp4", extension:"mp4", name:req.folder, projet:req.project, title: fileName};
+          writeIntoJsonFile(jsonFile, jsonObj, objectToSend, 'displayNewStopMotion');
+*/
+
+
+          break;
+        case 'audio':
+          mediaFolder = getAudioPathOfProject();
+          break;
+      }
+
+      mediaMetaData['created'] = getCurrentDate();
+      mediaMetaData['modified'] = getCurrentDate();
+      mediaMetaData['title'] = '';
+      mediaMetaData['informations'] = '';
+      mediaMetaData['type'] = newMediaType;
+      mediaMetaData['pathToFile'] = pathToFile + fileExtension;
+
+      // generate a json file next to the file
+      var pathToJSONFile = pathToFile + '.json';
+  		var status = jsonWriteToFile( pathToJSONFile, mediaMetaData, "update");
+  		return mediaMetaData;
+
+	  }
+
 
 		// Audio
 		function onNewAudioCapture(req){
@@ -980,7 +1029,6 @@ module.exports = function(app, io){
       return folderPath + '/' + dodoc.folderJSONfilename;
     }
 
-
     function createNewFolder( folderData) {
   		dev.logfunction( "COMMON — createNewFolder");
 
@@ -1085,6 +1133,7 @@ module.exports = function(app, io){
 			var slugFolderName = folderData.folderNameSlug;
 			var folderPath = getFullPath( slugFolderName);
       var currentDateString = getCurrentDate();
+      var newStatut = folderData.statut;
 
       if( isNameChanged) {
   			var newFolderName = folderData.newName;
@@ -1300,6 +1349,10 @@ module.exports = function(app, io){
       // récupérer les infos sur le project
       var currentDataJSON = getProjectDataJSON( slugFolderName, slugProjectName);
 
+      if( projectData.imageData !== undefined) {
+        addImage( "apercu", projectPath, projectData.imageData);
+      }
+
       // éditer le JSON récupéré
       currentDataJSON.name = projectData.name;
       if( projectData.statut !== undefined)
@@ -1467,10 +1520,9 @@ module.exports = function(app, io){
   	  }
     }
 
-		function addImage(parentName, parentPath, file){
-	    var thumbName = parentName + "-thumb";
-			var filePath = parentPath + "/" + thumbName + ".jpg";
-			var imageBuffer = decodeBase64Image(file);
+		function addImage( imageNameSlug, parentPath, imageData){
+			var filePath = parentPath + "/" + imageNameSlug + ".jpg";
+			var imageBuffer = decodeBase64Image( imageData);
 			fs.writeFile(filePath, imageBuffer.data, function (err) {
 	    	console.info("write new file to " + filePath);
 			});

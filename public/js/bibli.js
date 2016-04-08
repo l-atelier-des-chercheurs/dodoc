@@ -770,11 +770,6 @@ function onSocketError(reason) {
 
 
 
-
-
-
-
-
 function onListMediasOfOneType( mediasData) {
   var $getAllMediasFormatted = listMediasOfOneType( mediasData);
 	$(".medias-list").append( $getAllMediasFormatted);

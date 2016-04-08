@@ -38,7 +38,6 @@ function init(){
 		var oldFolderStatut = $('#modal-modify-folder').data( "folderStatut");
 		var folderNameSlug = $('#modal-modify-folder').data( "folderNameSlug");
 
-		debugger;
 		socket.emit( 'modifyFolder',
 		  {
   		  "name" : oldFolderName,
@@ -133,7 +132,6 @@ function insertOrReplaceFolder( folderNameSlug, $folderContent) {
         }
       });
 
-      debugger;
       if( $eles !== undefined)
         $folderContent.insertBefore( $eles);
       else

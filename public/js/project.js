@@ -38,24 +38,6 @@ function init(){
 	removeFolder();
 }
 
-function loadProject( projectData) {
-
-	var projectName = projectData.name;
-	var slugProjectName = projectData.slugProjectName;
-
-	var createdDate = transformDatetoString( projectData.created);
-	var modifiedDate = transformDatetoString( projectData.modified);
-	var statut = projectData.statut;
-
-  var imageSrc;
-  if( projectData.projectPreviewName !== undefined && projectData.projectPreviewName !== false)
-  	imageSrc = projectData.projectPreviewName;
-
-	displayProject( projectName, slugProjectName, createdDate, modifiedDate, statut, imageSrc);
-
-	return;
-}
-
 
 function onListOneProject( projectData){
   loadProject( projectData);
@@ -64,51 +46,6 @@ function onListOneProject( projectData){
 
 
 // COMMON WITH PROJECT.JS
-function loadProject( projectData) {
-
-	var projectName = projectData.name;
-	var slugProjectName = projectData.slugProjectName;
-
-	var createdDate = transformDatetoString( projectData.created);
-	var modifiedDate = transformDatetoString( projectData.modified);
-	var statut = projectData.statut;
-
-  var imageSrc;
-  if( projectData.projectPreviewName !== undefined && projectData.projectPreviewName !== false)
-  	imageSrc = projectData.projectPreviewName;
-
-	displayProject( projectName, slugProjectName, createdDate, modifiedDate, statut, imageSrc);
-
-	return;
-}
-
-
-function 	displayProject( name, projectNameSlug, created, modified, statut, imageSrc) {
-
-	var $newProject = $(".js--templates > .project").clone(false);
-
-  if( modified === null)
-    $newProject.find('.modify-date').remove();
-	if( imageSrc === undefined)
-  	$newProject.find( '.image-wrapper img').remove();
-
-  imageSrc = "./" + imageSrc;
-
-  // customisation du projet
-	$newProject
-	  .attr( 'data-statut', statut)
-	  .find( '.statut-type').text( statut).end()
-	  .find( '.image-wrapper img').attr('src', imageSrc).attr('alt', name).end()
-	  .find( '.create-date').text( created).end()
-	  .find( '.modify-date').text( modified).end()
-	  .find( '.title').text( name).end()
-	  .find( '.button-wrapper_capture').attr( 'href', './capture').end()
-	  .find( '.button-wrapper_bibli').attr( 'href',  './bibliotheque/medias').end()
-	  .find( '.button-wrapper_publi').attr( 'href', './bibliotheque/panneau-de-publications').end()
-	  .data( 'projectNameSlug', projectNameSlug)
-  ;
-	$("#container .project-list").prepend( $newProject);
-}
 
 function onListMediasOfOneType( mediasData) {
   var $getAllMediasFormatted = listMediasOfOneType( mediasData)
@@ -224,9 +161,13 @@ function modifyProject($this){
 	var deleteHtml = '<a href="#" title="Dodoc" class="button-wrapper_deleteFolder js--deleteFolder button-wrapper button-wrapper_collapsed "><div class="btn icon"><svg xmlns:i="&amp;ns_ai;" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" id="Layer_1" x="0px" y="0px" width="64px" height="64px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve" inkscape:version="0.91 r13725" sodipodi:docname="clear.svg">    <circle cx="31.767" cy="31.93" r="30.749001" id="circle7" style="fill:#ffd42a"></circle><g id="g3377" transform="translate(-4.9758512,-0.31324879)"><g id="g3373"><rect id="rect3364" height="7.1459312" width="35.722656" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" y="45.207573" x="-14.679629" style="fill:#ff2a2a"></rect><rect x="30.919212" y="-6.7546654" transform="matrix(0.70710678,0.70710678,-0.70710678,0.70710678,0,0)" width="35.722656" height="7.1459312" id="rect11" style="fill:#ff2a2a"></rect></g></g>  </svg></div><span>Supprimer</span></a>';
 	var closebtn = '<a class="close-reveal-modal" aria-label="Close">&#215</a>'
 	var newContentToAdd = "<h3 id='modalTitle' class='popoverTitle'>Modifier le projet</h3><form onsubmit='return false;' class='modify-folder-form'>"+inputNameHtml+statutHtml+inputFile+submitBtnHtml+deleteHtml+"</form><a class='close-reveal-modal' aria-label='Close') &#215;</a></div>";
-	$("#container.row #modal-modify-project").append(newContentToAdd);
+
+
+
+	//$("#container.row #modal-modify-project").append(newContentToAdd);
+
 	modifyStatut();
-	submitModifyProject($(".submit-modify-project"), 'modifyProject', thisProjectName, statut);
+	submitModifyProject($(".submit-modify-project"), 'modifyProject', currentProject, statut);
 
 	$thisEl = $this.parent();
 }
@@ -254,11 +195,10 @@ function modifyStatut(){
 }
 
 // Envoie les données du projet au serveur
-function submitModifyProject($button, send, oldName, oldStatut){
+function submitModifyProject($button, send, currentProject, oldStatut){
 	$button.on('click', function(){
 		var newProjectName = $('input.modify-project').val();
 		var newStatut = $('select.modify-statut').val();
-		var oldProjectName = oldName;
 		var oldProjectStatut = oldStatut;
 
 		//Images changed
@@ -271,8 +211,9 @@ function submitModifyProject($button, send, oldName, oldStatut){
 				{
    				"name" : newProjectName,
   				"slugFolderName" : currentFolder,
-          "slugProjectName" : projectNameSlug,
+          "slugProjectName" : currentProject,
   				"statut" : newStatut,
+  				"imageData" : evt.target.result
   		  });
 			};
 			reader.readAsDataURL(f);
