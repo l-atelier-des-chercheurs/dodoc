@@ -1,7 +1,6 @@
 var dodoc = {};
 
-
-// custom settings for dodoc
+// custom settings for dodoc as globals accessible server-side and client-side
 // from http://stackoverflow.com/a/5870544
 
 // ou stocker les contenus

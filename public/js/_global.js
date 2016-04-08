@@ -117,6 +117,8 @@ function listOneMedia( pathMediaFolder, metaJsonName, mediaDatas) {
     .attr( 'data-mediatype', pathMediaFolder)
   	.attr( 'data-title', mediaDatas.title)
   	.attr( 'data-legende', mediaDatas.informations)
+  	.data( 'mtimestamp', transformDatetoTimestamp( mediaDatas.modified))
+  	.data( 'ctimestamp', transformDatetoTimestamp( mediaDatas.created))
     ;
 
   if( mediaDatas.title === undefined && mediaDatas.informations === undefined) {
@@ -151,7 +153,7 @@ function showAnimation( pathMediaFolder, metaJsonName, mediaFilenames) {
   var thumbFilename;
   var videoFilename;
   $.each( mediaFilenames, function( key, mediaFilename) {
-    if( mediaFilename.indexOf( "jpg") !== -1) {
+    if( mediaFilename.indexOf( "jpg") !== -1 || mediaFilename.indexOf( "png") !== -1) {
       thumbFilename = mediaFilename;
     } else if ( mediaFilename.indexOf( "mp4") !== false ||  mediaFilename.indexOf( "webm") !== false) {
       videoFilename = mediaFilename;

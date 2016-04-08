@@ -772,5 +772,47 @@ function onSocketError(reason) {
 
 function onListMediasOfOneType( mediasData) {
   var $getAllMediasFormatted = listMediasOfOneType( mediasData);
-	$(".medias-list").append( $getAllMediasFormatted);
+  $getAllMediasFormatted.each( function() {
+    insertOrReplaceMedia( $(this));
+  });
+}
+
+function insertOrReplaceMedia( $mediaItem) {
+  // folder slug
+
+  var $mediaContainer = $(".medias-list");
+  var $mediaItems = $mediaContainer.find(".media");
+
+  var mediajsonname = $mediaItem.data( 'metajsonname');
+
+  var $existingMedia = $mediaItems.filter( "[data-metajsonname='" + mediajsonname + "']");
+  if( $existingMedia.length == 1) {
+    $existingMedia.replaceWith( $mediaItem);
+    return "updated";
+  }
+
+  // trouver où l'insérer en fonction de la date de modification
+  if( $mediaItems.length > 0) {
+
+    var mediaMTime = parseInt( $mediaItem.data("ctimestamp"));
+    if( mediaMTime !== false) {
+      var $eles;
+
+      $mediaItems.each( function( index) {
+        if( mediaMTime > parseInt( $(this).data("ctimestamp"))) {
+          $eles = $(this);
+          return false;
+        }
+      });
+
+      if( $eles !== undefined)
+        $mediaItem.insertBefore( $eles);
+      else
+        $mediaContainer.append( $mediaItem);
+    }
+  } else {
+    $mediaContainer.append( $mediaItem);
+  }
+  return "inserted";
+
 }
