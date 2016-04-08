@@ -692,18 +692,6 @@ function onStopMotionDirectyCreated( newStopMotionData) {
   $("body").data( "smImageCount", 0);
 }
 
-// Quand le dossier du stop motion est crée
-/*
-function onStopMotionDirectory(){
-  var dir = "sessions/" + currentFolder + "/"+ currentProject+"/01-stopmotion";
-  $("#stop-sm-btn").show();
-  $('.screenshot .canvas-view').show();
-  $('.screenshot .instructions-stopmotion').remove();
-  $(".screenshot .meta-stopmotion").show();
-  takepictureMotion(dir);
-}
-*/
-
 function takeStopMotionPic() {
 
   var smCacheName = $("body").data( "smCacheName");
@@ -801,28 +789,6 @@ function stopStopMotion( ) {
 
 }
 
-
-function stopStopMotionOLD(){
-  var dir = "sessions/" + currentFolder + "/"+ currentProject+"/01-stopmotion";
-  $("#stop-sm-btn").hide();
-  $("#capture-sm-btn").hide();
-  countImage = 0;
-  countPress = 0;
-  $('.screenshot .meta-stopmotion').remove();
-  saveFeedback("/images/icone-dodoc_anim.png");
-
-  socket.emit('stopmotionCapture', { "slugFolderName" : currentFolder, "slugProjectName" : currentProject, dir: dir});
-  socket.on('newStopMotionCreated', function(req){
-    $('.screenshot .canvas-view').hide();
-    $('#camera-preview').attr('src', '/' + currentFolder + '/'+'/'+currentProject+'/'+req.fileName+'')
-    $('#camera-preview').show();
-    $("#start-sm-btn").show();
-    $('.js--delete-media-capture').show();
-  });
-  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-  $('body').removeClass('takingstopmotion');
-}
-
 //Capture le flux audio
 function audioCapture(code){
   //Variables
@@ -873,14 +839,6 @@ function audioCapture(code){
     countPress = 0;
   }
 
-  socket.on('AudioFile', function(fileName, sessionName, projetName) {
-    var href = '/static/' + sessionName + '/' + projetName + '/' + fileName;
-    console.log('got file ' + href);
-    cameraPreview.src = href;
-    cameraPreview.play();
-    cameraPreview.muted = false;
-    cameraPreview.controls = true;
-  });
 
   function stopAudioOnChange(e){
     if(isEventExecutedVideo == false){
@@ -903,14 +861,14 @@ function audioCapture(code){
     navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
     navigator.getMedia(
       {
-        video: false,
-        audio: true
+        "video" : false,
+        "audio" : true
       },
       function (stream) {
         // get user media pour le son
         mediaStream = stream;
         recordAudio = RecordRTC(stream, {
-          type: 'audio'
+          "type" : 'audio'
         });
         recordAudio.startRecording();
         cameraPreview.src = window.URL.createObjectURL(stream);
@@ -954,15 +912,23 @@ function audioCapture(code){
     recordAudio.stopRecording(function(url) {
       // get audio data-URL
       recordAudio.getDataURL(function(audioDataURL) {
+/*
         var files = {
             audio: {
               type: recordAudio.getBlob().type || 'audio/wav',
               dataURL: audioDataURL
             }
         };
+*/
+
+        var mediaData =
+        {
+          "mediaType" : "audio",
+          "mediaData" : audioDataURL
+        };
+
         //socket.emit('audio', {files: files, id: sessionId, name: currentFolder});
-        console.log("Audio is recording url " + url);
-        createNewMedia(files, "audioCapture");
+        createNewMedia( mediaData);
         saveFeedback("/images/icone-dodoc_son.png");
         if (mediaStream) mediaStream.stop();
       });
@@ -1116,6 +1082,8 @@ function onMediaCreated( newMediaData){
 
   if( newMediaType === 'photo') {
 
+
+
   }
   else if( newMediaType === 'video') {
     cameraPreview.src = pathToMediaFile;
@@ -1131,6 +1099,10 @@ function onMediaCreated( newMediaData){
     cameraPreview.muted = false;
     cameraPreview.controls = true;
     $('#camera-preview').show();
+  }
+  else if( newMediaType === 'audio') {
+
+
   }
 }
 

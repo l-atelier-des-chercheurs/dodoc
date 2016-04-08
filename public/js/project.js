@@ -49,7 +49,11 @@ function onListOneProject( projectData){
 
 function onListMediasOfOneType( mediasData) {
   var $getAllMediasFormatted = listMediasOfOneType( mediasData)
-	$(".project .last-medias").append( $getAllMediasFormatted);
+  var $mediaContainer = $(".project .last-medias");
+
+  $getAllMediasFormatted.each( function() {
+    insertOrReplaceMedia( $(this), $mediaContainer);
+  });
 }
 
 function remove() {

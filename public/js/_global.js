@@ -171,6 +171,7 @@ function showAnimation( pathMediaFolder, metaJsonName, mediaFilenames) {
 
 	return mediaItem;
 }
+
 function showVideo( pathMediaFolder, metaJsonName, mediaFilenames) {
 
   var thumbFilename;
@@ -204,6 +205,36 @@ function showAudio( pathMediaFolder, metaJsonName, mediaFilenames) {
     .find( 'source').attr( 'src', pathToFile)
     ;
 	return mediaItem;
+}
+
+function insertOrReplaceMedia( $mediaItem, $mediaContainer) {
+  var $mediaItems = $mediaContainer.find(".media");
+  var mediajsonname = $mediaItem.data( 'metajsonname');
+  var $existingMedia = $mediaItems.filter( "[data-metajsonname='" + mediajsonname + "']");
+  if( $existingMedia.length == 1) {
+    $existingMedia.replaceWith( $mediaItem);
+    return "updated";
+  }
+  // trouver où l'insérer en fonction de la date de modification
+  if( $mediaItems.length > 0) {
+    var mediaMTime = parseInt( $mediaItem.data("ctimestamp"));
+    if( mediaMTime !== false) {
+      var $eles;
+      $mediaItems.each( function( index) {
+        if( mediaMTime > parseInt( $(this).data("ctimestamp"))) {
+          $eles = $(this);
+          return false;
+        }
+      });
+      if( $eles !== undefined)
+        $mediaItem.insertBefore( $eles);
+      else
+        $mediaContainer.append( $mediaItem);
+    }
+  } else {
+    $mediaContainer.append( $mediaItem);
+  }
+  return "inserted";
 }
 
 
