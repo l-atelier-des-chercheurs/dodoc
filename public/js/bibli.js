@@ -16,9 +16,15 @@ socket.on('publiCreated', onPubliCreated);
 socket.on('displayMontage', onDisplayMontage);
 socket.on('titleModified', onTitleModified);
 socket.on('displayMediaData', onMediaData);
-socket.on('addHighlight', onHighlight);
-socket.on('bibliFileDeleted', onFileDeleted)
+
+socket.on('bibliFileDeleted', onFileDeleted);
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
+
+socket.on('mediaCreated', onMediaCreated);
+socket.on('mediaUpdated', onMediaUpdated);
+
+socket.on('listOneMedia', onListOneMedia);
+
 
 // socket.on('newMediaUpload', onNewMediaUpload);
 
@@ -114,7 +120,14 @@ function init(){
   	var textTitle = $(this).parent('form').find('.new-text').val();
   	var text = $(this).parent('form').find('textarea').val();
   	console.log('addText');
-  	socket.emit('addText', {session: currentFolder, project: currentProject, title: textTitle, text:text});
+
+    var mediaData =
+    {
+      "mediaType" : "text",
+      "title" : textTitle,
+      "text" : text,
+    }
+    createNewMedia( mediaData);
   });
 
   //Ajouter un fichier local dans la bibliothèque
@@ -166,34 +179,35 @@ function init(){
 
   // Ajoute ou enlève un highlight quand on clique sur "Highlight" dans la fenêtre modal
   $('body').on('click', '.js--highlightMedia', function(){
-		var id = $(this).parents('.media-big').attr('id');
-		var type = $(this).parents('.media-big').attr('data-type');
-		//console.log(type);
-		if($(this).parents('.media-big').hasClass('is--highlight')){
-			console.log('remove highlight');
-			socket.emit('removeHighlight', {session: currentFolder, project: currentProject, id:id, type:type});
-		}
-		else{
-			console.log('add highlight');
-			socket.emit('highlightMedia', {session: currentFolder, project: currentProject, id:id, type:type});
-		}
+
+		// find in the media-list the media-item
+		debugger;
+
+		var $bigmedia = $(this).closest(".media-big_image");
+
+		var mediajsonname = $bigmedia.attr( 'data-metaJsonName');
+		$(".medias-list .media").filter( "[data-metajsonname='" + mediajsonname + "']");
+
+		// trigger a click on its js--flagMedia
+		$(".medias-list .media").find(".js--flagMedia").trigger("click")
 
   });
 
  // Ajoute ou enlève un highlight quand on clique sur le drapeau dans les médias
   $('body').on('click', '.js--flagMedia', function(e){
   	e.stopPropagation();
-		var id = $(this).parents('li').attr('id');
-		var type = $(this).parents('li').attr('data-type');
-		//console.log(type);
-		if($(this).parents('li').hasClass('is--highlight')){
-			console.log('remove highlight');
-			socket.emit('removeHighlight', {session: currentFolder, project: currentProject, id:id, type:type});
-		}
-		else{
-			console.log('add highlight - flag');
-			socket.emit('highlightMedia', {session: currentFolder, project: currentProject, id:id, type:type});
-		}
+
+		var $thisMedia = $(this).closest(".media");
+		var specificMediaJsonName = $thisMedia.attr("data-metajsonname");
+		var mediaFolderPath = $thisMedia.attr("data-mediatype");
+
+    var editMediaData =
+    {
+      "specificMediaJsonName" : specificMediaJsonName,
+      "mediaFolderPath" : mediaFolderPath,
+      "switchFav" : true
+    };
+    editMedia( editMediaData);
 
   });
 
@@ -309,7 +323,7 @@ function displayModifiedText(text){
 }
 */
 
-
+/*
 function onListMedias(array, json){
 	$(".mediaContainer li").remove();
 	var matchID = $(".mediaContainer .media").attr("id");
@@ -354,14 +368,12 @@ function onListMedias(array, json){
 
 
 
-/*
     if( title === undefined && legende === undefined) {
   	  $('#'+json['files']['images'][i].name)
   	    .find('.mediaData')
   	      .remove()
   	  ;
     }
-*/
 
 		if(json['files']['images'][i].highlight == true){
 			$('#'+json['files']['images'][i].name).addClass('is--highlight');
@@ -463,89 +475,7 @@ function onListMedias(array, json){
 	});
 
 }
-
-function displayImage(session, project, id, file, extension){
-	var imagePath = "../"+ file;
-	var mediaItem = $(".js--templates .media_image").clone(false);
-	console.log(file, id  + extension);
-	//if(file != id + extension){
-		console.log(file);
-		mediaItem
-	    .attr( 'id', id)
-	    .attr( 'data-mediatype', 'image')
-		  .find( '.mediaContent img')
-		    .attr('src', imagePath)
-	    .end()
-	  ;
-	  $('.medias-list').prepend(mediaItem);
-	//}
-}
-
-function displayVideo(session, project, id, file){
-	var thumbPath = '../'+id +'-thumb.png';
-	var videoPath = '../' + file;
-
-	var mediaItem = $(".js--templates .media_video").clone(false);
-	mediaItem
-	  .attr( 'id', id)
-    .attr( 'data-mediatype', 'video')
-    .find( 'video')
-      .attr( 'poster', thumbPath)
-    .end()
-    .find( 'source')
-      .attr( 'src', videoPath)
-    .end()
-  ;
-
-  //$(".medias-list li:first-child").after(mediaItem);
-	$('ul.medias-list').prepend(mediaItem);
-}
-
-function displayStopMotion(session, project, id, file){
-
-	console.log('display stop motion');
-	var thumbPath = '../'+id +'-thumb.png';
-	var videoPath = '../' + file;
-
-	var mediaItem = $(".js--templates .media_stopmotion").clone(false);
-	mediaItem
-	  .attr( 'id', id)
-    .attr( 'data-mediatype', 'stopmotion')
-    .find( 'video')
-      .attr( 'poster', thumbPath)
-    .end()
-    .find( 'source')
-      .attr( 'src', videoPath)
-    .end()
-  ;
-
-  //$(".medias-list li:first-child").after(mediaItem);
-	$('ul.medias-list').prepend(mediaItem);
-}
-
-function displayAudio(session, project, id, file){
-	var audioPath = '../' + file;
-
-	var mediaItem = $(".js--templates .media_audio").clone(false);
-	mediaItem
-	  .attr( 'id', id)
-    .attr( 'data-mediatype', 'audio')
-    .find( 'source')
-      .attr( 'src', audioPath)
-    .end()
-  ;
-
- // $(".medias-list li:first-child").after(mediaItem);
-	$('ul.medias-list').prepend(mediaItem);
-}
-
-function displayText(session, project, id, title, content){
-	var mediaItem = $(".js--templates .media_text").clone(false);
-	mediaItem.attr( 'id', id);
-
-	//$(".medias-list li:first-child").after(mediaItem);
-	$('.medias-list').prepend(mediaItem);
-}
+*/
 
 function bigMedia(){
 	// Au click sur un media
@@ -553,18 +483,18 @@ function bigMedia(){
   	var typeMedia = $(this).attr("data-type");
   	var mediaTitle = $(this).attr("data-title");
 	  var mediaLegende = $(this).attr("data-legende");
+		var metaJsonName = $(this).attr("data-metajsonname");
   	$('#modal-media-view').foundation('reveal', 'open');
   	//console.log(typeMedia);
   	switch(typeMedia){
   		case 'image':
 	  		var imagePath = $(this).find("img").attr("src");
-	  		var id = $(this).attr("id");
 				var mediaItem = $(".js--templates .media-big_image").clone(false);
 				if($(this).hasClass('is--highlight')){
 					mediaItem.addClass('is--highlight');
 				}
-				mediaItem.attr( 'id', id);
 				mediaItem
+				  .attr( 'data-metaJsonName', metaJsonName)
 					.find( 'img').attr('src', imagePath)
 					.end()
 					.find('.add-media-title').val(mediaTitle)
@@ -583,7 +513,7 @@ function bigMedia(){
 					mediaItem.addClass('is--highlight');
 				}
 				mediaItem
-				  .attr( 'id', id)
+				  .attr( 'data-metaJsonName', metaJsonName)
 				  .find('.add-media-title').val(mediaTitle)
 					.end()
 					.find('.add-media-legend').val(mediaLegende)
@@ -605,7 +535,7 @@ function bigMedia(){
 					mediaItem.addClass('is--highlight');
 				}
 				mediaItem
-				  .attr( 'id', id)
+				  .attr( 'data-metaJsonName', metaJsonName)
 				  .find('.add-media-title').val(mediaTitle)
 					.end()
 					.find('.add-media-legend').val(mediaLegende)
@@ -626,7 +556,7 @@ function bigMedia(){
 					mediaItem.addClass('is--highlight');
 				}
 				mediaItem
-				  .attr( 'id', id)
+				  .attr( 'data-metaJsonName', metaJsonName)
 			    .find( 'source').attr( 'src', audioPath)
 			    .end()
 					.find('.add-media-title').val(mediaTitle)
@@ -646,12 +576,11 @@ function bigMedia(){
 					mediaItem.addClass('is--highlight');
 				}
 				mediaItem
+				  .attr( 'data-metaJsonName', metaJsonName)
 					.find('.view-text-title-modify').val(title)
 					.end()
 					.find('.view-text-modify').val(texte)
 					.end()
-					.attr('id', id)
-					.attr('data-id', id)
 					.end()
 					.find('.view-text-title-modify').val(mediaTitle)
 					.end()
@@ -674,6 +603,28 @@ function onMediaData(data){
 		.end()
 		.find('.mediaData--legende').html(data.legend);
 }
+
+/**********************************************************************
+              MEDIA CREATED OR UPDATED
+**********************************************************************/
+
+function onMediaCreated( mediaData) {
+
+
+
+}
+
+function onMediaUpdated( mediaData) {
+
+}
+
+
+/**********************************************************************
+              EDIT FAV FOR MEDIA
+**********************************************************************/
+
+
+
 
 function onHighlight(data){
 	//$('#modal-media-view').foundation('reveal', 'close');
@@ -785,3 +736,17 @@ function onListMediasOfOneType( mediasData) {
   });
 }
 
+function onListOneMedia( mediasData) {
+
+  var pathMediaFolder = Object.keys( mediasData[0])[0];
+  var metaJsonName = Object.keys( mediasData[0][Object.keys( mediasData[0])])[0];
+  var mediaDatas = mediasData[0][pathMediaFolder][metaJsonName];
+
+  $updatedMedia = listOneMedia( pathMediaFolder, metaJsonName, mediaDatas);
+
+  var $mediaContainer = $(".medias-list");
+  var $mediaItems = $mediaContainer.find(".media");
+
+  insertOrReplaceMedia( $updatedMedia, $mediaContainer);
+
+}

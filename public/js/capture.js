@@ -485,6 +485,7 @@ function takePictures(){
     "mediaData" : data
   }
 
+	animateWindows();
   createNewMedia( mediaData);
   saveFeedback("/images/icone-dodoc_image.png");
 }
@@ -636,6 +637,7 @@ function recordingVideo(click){
           "mediaType" : "video",
           "mediaData" : videoDataURL
         };
+        animateWindows();
         createNewMedia( mediaData);
 
         if (mediaStream) mediaStream.stop();
@@ -778,6 +780,7 @@ function stopStopMotion( ) {
     "mediaType" : "animation"
   }
 
+	animateWindows();
   createNewMedia( mediaData);
 
   $("#start-sm-btn").show();
@@ -928,6 +931,7 @@ function audioCapture(code){
         };
 
         //socket.emit('audio', {files: files, id: sessionId, name: currentFolder});
+        animateWindows();
         createNewMedia( mediaData);
         saveFeedback("/images/icone-dodoc_son.png");
         if (mediaStream) mediaStream.stop();
@@ -1083,7 +1087,6 @@ function onMediaCreated( newMediaData){
   if( newMediaType === 'photo') {
 
 
-
   }
   else if( newMediaType === 'video') {
     cameraPreview.src = pathToMediaFile;
@@ -1173,15 +1176,4 @@ function onSocketError(reason) {
 	console.log('Unable to connect to server', reason);
 };
 
-
-
-
-function createNewMedia( mediaData){
-
-  mediaData.slugFolderName = currentFolder;
-  mediaData.slugProjectName = currentProject;
-
-	animateWindows();
-	socket.emit( 'newMedia', mediaData);
-}
 

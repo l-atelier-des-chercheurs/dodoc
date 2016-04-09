@@ -68,22 +68,16 @@ function 	displayProject( name, projectNameSlug, created, modified, statut, imag
 }
 
 
-
 function listMediasOfOneType( mediasData) {
   var $allMedias = $();
   var lastMedias = mediasData;
-  $.each( lastMedias, function( pathToTypeMediaFolder, mediaJsonNames) {
+  $.each( lastMedias, function( index, mediaTypeContent) {
 
     // récupérer toutes les infos des JSON
-    var getAllJsonNames = Object.getOwnPropertyNames( mediaJsonNames);
-    var pathMediaFolder = pathToTypeMediaFolder;
+    var pathMediaFolder = Object.keys( mediaTypeContent)[0];
+    var getAllJsonNames = mediaTypeContent[pathMediaFolder];
 
-    $.each( getAllJsonNames, function( key, metaJsonName) {
-
-      var thisMediaJsonValues = mediaJsonNames[metaJsonName];
-      var mediaDatas = thisMediaJsonValues;
-
-      // penser au cas de figure ou un texte est trouvé
+    $.each( getAllJsonNames, function( metaJsonName, mediaDatas) {
       var newMedia = listOneMedia( pathMediaFolder, metaJsonName, mediaDatas);
       $allMedias = $allMedias.add( newMedia);
     });
@@ -110,13 +104,19 @@ function listOneMedia( pathMediaFolder, metaJsonName, mediaDatas) {
     $currentMedia = showAudio( pathMediaFolder, metaJsonName, mediaFilenames);
 
   if( pathMediaFolder === dodoc.projectTextsFoldername)
-    $currentMedia = showText( pathMediaFolder, metaJsonName, mediaFilenames);
+    $currentMedia = showText( pathMediaFolder, metaJsonName, mediaFilenames, mediaDatas);
+
+  var pathToMeta = makeFullMediaPath( pathMediaFolder + '/' + metaJsonName);
 
   $currentMedia
     .attr( 'data-metaJsonName', metaJsonName)
+    .attr( 'data-pathToMeta', pathToMeta)
     .attr( 'data-mediatype', pathMediaFolder)
-  	.attr( 'data-title', mediaDatas.title)
-  	.attr( 'data-legende', mediaDatas.informations)
+  	.attr( 'data-informations', mediaDatas.informations)
+  	.addClass( mediaDatas.fav ? 'is--highlight' : '')
+  	.find( '.mediaData--informations')
+  	  .html( mediaDatas.informations)
+    .end()
   	.data( 'mtimestamp', transformDatetoTimestamp( mediaDatas.modified))
   	.data( 'ctimestamp', transformDatetoTimestamp( mediaDatas.created))
     ;
@@ -124,7 +124,6 @@ function listOneMedia( pathMediaFolder, metaJsonName, mediaDatas) {
   if( mediaDatas.title === undefined && mediaDatas.informations === undefined) {
     $currentMedia.find('.mediaData').remove();
   }
-
 
   if( mediaDatas.fav === "true") {
     $currentMedia.addClass('is--highlight');
@@ -207,6 +206,21 @@ function showAudio( pathMediaFolder, metaJsonName, mediaFilenames) {
 	return mediaItem;
 }
 
+function showText( pathMediaFolder, metaJsonName, mediaFilenames, mediaDatas) {
+
+  var texteContent = mediaDatas.texte;
+
+	var mediaItem = $(".js--templates .media_text").clone(false);
+	mediaItem
+	  .find( '.mediaContent--contentOfText')
+	    .html( texteContent)
+    .end()
+    ;
+	return mediaItem;
+
+}
+
+
 function insertOrReplaceMedia( $mediaItem, $mediaContainer) {
   var $mediaItems = $mediaContainer.find(".media");
   var mediajsonname = $mediaItem.data( 'metajsonname');
@@ -235,6 +249,18 @@ function insertOrReplaceMedia( $mediaItem, $mediaContainer) {
     $mediaContainer.append( $mediaItem);
   }
   return "inserted";
+}
+
+
+function createNewMedia( mediaData){
+  mediaData.slugFolderName = currentFolder;
+  mediaData.slugProjectName = currentProject;
+	socket.emit( 'newMedia', mediaData);
+}
+function editMedia( mediaData){
+  mediaData.slugFolderName = currentFolder;
+  mediaData.slugProjectName = currentProject;
+	socket.emit( 'editMedia', mediaData);
 }
 
 

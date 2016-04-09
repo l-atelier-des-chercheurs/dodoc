@@ -2,38 +2,34 @@ li.media.media_image(data-type="image" data-ratio data-title data-legende data-h
   .mediaContent
     img
     .mediaData
-      h5.mediaData--titre
-      p.mediaData--legende
+      p.mediaData--informations
   +button( 'flag', '', 'isCollapsed')
 li.media.media_video(data-type="video" data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     video(preload="none" controls)
       source()
     .mediaData
-      h5.mediaData--titre
-      p.mediaData--legende
+      p.mediaData--informations
   +button( 'flag', '', '')
 li.media.media_stopmotion(data-type="stopmotion" data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     video(preload="none" controls)
       source()
     .mediaData
-      h5.mediaData--titre
-      p.mediaData--legende
+      p.mediaData--informations
   +button( 'flag', '', '')
 li.media.media_audio(data-type="audio" data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     audio(preload="none" controls)
       source()
     .mediaData
-      h5.mediaData--titre
-      p.mediaData--legende
+      p.mediaData--informations
   +button( 'flag', '', '')
 li.media.media_text(data-type="text" data-ratio data-title data-legende data-highlight=false)
   .mediaContent
-    h3.media-title
-    p.text
+    .mediaContent--texte
   +button( 'flag', '', '')
+
 li.publi-folder(data-publi="")
   .content
     h2.title.js--edit_view
