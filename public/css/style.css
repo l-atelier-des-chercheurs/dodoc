@@ -7745,10 +7745,10 @@ body.bibli {
     .medias-list .media::after {
       content: "";
       position: absolute;
+      left: 0;
       top: 0;
       right: 0;
       bottom: 0;
-      left: 0;
       border: 0 solid transparent;
       transition: all .35s; }
     .medias-list .media[data-mediatype="image"]::before {
@@ -7760,7 +7760,7 @@ body.bibli {
     .medias-list .media[data-mediatype="audio"]::before {
       background-image: url("/images/icone-dodoc_son.png"); }
     .medias-list .media.is--highlight::after {
-      border: 0.4687rem solid #48c2b5; }
+      border-bottom: 0.4687rem solid rgba(72, 194, 181, 0.6); }
     .medias-list .media .button-wrapper_flagMedia {
       position: absolute;
       right: -0px;
@@ -7778,17 +7778,11 @@ body.bibli {
       opacity: .8; }
       .medias-list .media:hover .button-wrapper_flagMedia:hover {
         opacity: 1; }
-    .medias-list .media .mediaData .mediaData--titre {
+    .medias-list .media .mediaData .mediaData--informations {
       margin: 0;
       padding: .4687rem;
       border-bottom: 1px solid #cecece; }
-      .medias-list .media .mediaData .mediaData--titre:empty {
-        display: none; }
-    .medias-list .media .mediaData .mediaData--legende {
-      margin: 0;
-      padding: .4687rem;
-      border-bottom: 1px solid #cecece; }
-      .medias-list .media .mediaData .mediaData--legende:empty {
+      .medias-list .media .mediaData .mediaData--informations:empty {
         display: none; }
 
 .montage-list {

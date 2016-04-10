@@ -155,8 +155,8 @@ function loadProject( projectData) {
 	var projectPreviewName = projectData.projectPreviewName;
 	var folderNameSlug = projectData.folderName;
 
-	var projectNameSlug = projectData.slugProjectName;
-	var projectPath = '/' + folderNameSlug + '/' + projectNameSlug;
+	var slugProjectName = projectData.slugProjectName;
+	var projectPath = '/' + folderNameSlug + '/' + slugProjectName;
 
 	var $folder = $(".dossier-list .dossier[data-folderNameSlug=" + folderNameSlug + "]");
 

@@ -84,22 +84,26 @@ function onProjectCreated( projectData){
 	$('input.new-project').val('');
 	$('#modal-add-project').foundation('reveal', 'close');
 
-  loadProject( projectData);
+  var $project = loadProject( projectData);
+  insertOrReplaceProject( $project, $(".mainContent .project-list"));
 
 }
 
 // Affiche la liste des projets
-function onListAllProjectsOfOneFolder(data){
-  data.forEach( loadProject);
-  return;
+function onListAllProjectsOfOneFolder( projectsData) {
+  $.each( projectsData, function( index, projectData) {
+
+    var $project = loadProject( projectData);
+    insertOrReplaceProject( $project, $(".mainContent .project-list"));
+  });
 }
 
 
 function modifyProject($this){
 
-	$("#container.row #modal-modify-project").empty();
+	$("#modal-modify-project").empty();
 	thisProjectName = $this.closest(".project").find('h2').text();
-	thisProjectNameSlug = $this.closest(".project").data("projectNameSlug");
+	thisProjectNameSlug = $this.closest(".project").data("slugProjectName");
 
 	var statut = $this.parent().attr("data-statut");
 	var inputNameHtml = "<input type='text' autofocus class='modify-project' value='"+thisProjectName+"'></input>";
@@ -118,11 +122,11 @@ function modifyProject($this){
 
 	var closebtn = '<a class="close-reveal-modal" aria-label="Close">&#215</a>'
 	var newContentToAdd = "<h3 id='modalTitle' class='popoverTitle'>Modifier le projet</h3><form onsubmit='return false;' class='modify-folder-form'>"+inputNameHtml+statutHtml+inputFile+submitBtnHtml+deleteHtml+"</form><a class='close-reveal-modal' aria-label='Close') &#215;</a></div>";
-	$("#container.row #modal-modify-project").append(newContentToAdd);
+	$("#modal-modify-project").append(newContentToAdd);
 	modifyStatut();
 	submitModifyProject($(".submit-modify-project"), 'modifyProject', thisProjectNameSlug, statut);
 
-
+	$('#modal-modify-project').foundation('reveal', 'close');
 
 	$thisEl = $this.parent();
 }
@@ -188,35 +192,21 @@ function submitModifyProject($button, send, projectNameSlug){
 }
 
 // On reçoit les mofication du projet
-function onProjectModified(data){
+function onProjectModified(projectData){
 
-	var name = data.name;
-	var statut = data.statut;
-	var modified = transformDatetoString(data.modified);
-	var created = $thisEl.find('.create-date').html();
-
-  // c'est pas top la variable globale. Par exemple, si on va éditer un autre projet alors que ce paquet n'est pas arrivé, $thisEl ne sera plus le bon
- 	//var parent = $thisEl;
-
-	// il faudrait envoyer un ID du post avec la requête, puis matcher le projet qui correspond à la réception. Un ID qui ne peut pas changer. On a ça dans le JSON ?
 /*
-	$(".project .title").filter( function() {
-    return $(this).text() === name;
-  });
+	var name = projectData.name;
+	var statut = projectData.statut;
+	var modified = transformDatetoString( projectData.modified);
 */
+// 	var created = $thisEl.find('.create-date').html();
 
 
-	$('#modal-modify-project').foundation('reveal', 'close');
-
-	if(statut === "terminé"){
-		$thisEl.find('.js--edit-project-icon').remove();
-	}
+  var $project = loadProject( projectData);
+  insertOrReplaceProject( $project, $(".mainContent .project-list"));
 
 	// C'est pas propre mais ça marche en attendant de refaire correctement les pages
-	location.reload();
 
-	//$thisEl.remove();
-	//displayFolder(name, created, modified, data.image, statut)
 }
 
 //Suppression du dossier

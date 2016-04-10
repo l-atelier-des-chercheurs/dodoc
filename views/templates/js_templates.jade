@@ -1,31 +1,31 @@
-li.media.media_image(data-type="image" data-ratio data-title data-legende data-highlight=false)
+li.media.media_image(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     img
     .mediaData
       p.mediaData--informations
   +button( 'flag', '', 'isCollapsed')
-li.media.media_video(data-type="video" data-ratio data-title data-legende data-highlight=false)
+li.media.media_video(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     video(preload="none" controls)
       source()
     .mediaData
       p.mediaData--informations
   +button( 'flag', '', '')
-li.media.media_stopmotion(data-type="stopmotion" data-ratio data-title data-legende data-highlight=false)
+li.media.media_stopmotion(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     video(preload="none" controls)
       source()
     .mediaData
       p.mediaData--informations
   +button( 'flag', '', '')
-li.media.media_audio(data-type="audio" data-ratio data-title data-legende data-highlight=false)
+li.media.media_audio(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     audio(preload="none" controls)
       source()
     .mediaData
       p.mediaData--informations
   +button( 'flag', '', '')
-li.media.media_text(data-type="text" data-ratio data-title data-legende data-highlight=false)
+li.media.media_text(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     .mediaContent--titleOfTextmedia
     .mediaContent--textOfTextmedia
@@ -68,8 +68,7 @@ div.media-big_text.media-big(data-type="text" data-id)
       input(type='text' class='view-text-title-modify')
       textarea.view-text-modify
       input(type='submit' class='js--submit-view-text-modify' value='Valider')
-    a(href="#" title="Dodoc media" class='button-wrapper_highlightMedia js--highlightMedia #{defaultClasses}')
-      span Mettre en favoris
+    +button('favButton', '', '')
     +button('deleteMediaBibli', '', '')
 
 

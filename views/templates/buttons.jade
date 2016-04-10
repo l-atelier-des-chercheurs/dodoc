@@ -145,15 +145,22 @@ mixin button(typeOfButton, navOrButton, style)
       span Supprimer
 
   if( typeOfButton === 'flag')
-    a(href="#" title="Dodoc media" class='button-wrapper_flagMedia js--flagMedia')
+    a(href="#" title="Favoris" class='button-wrapper_flagMedia js--flagMedia')
       .btn.icon
         include images/flag.svg
+
+  if( typeOfButton === 'favButton')
+    a(href="#" title="Favoris" class='button-wrapper_highlightMedia js--highlightMedia #{defaultClasses}')
+      .btn.icon
+        include images/flag.svg
+      span Mettre en favoris
 
   if( typeOfButton === 'deleteMediaBibli')
     a(href="#" title="Dodoc media" class='button-wrapper_deleteMedia js--delete-media-bibli #{defaultClasses}')
       .btn.icon
         include images/clear.svg
       span Supprimer
+
 
 
   if( navOrButton === 'isNav')

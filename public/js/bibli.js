@@ -174,24 +174,47 @@ function init(){
 
   //Envoie les titres et légendes au serveur
   $('body').on('click', '.js--submit-add-media-data', function(){
-  	var mediaTitle = $(this).parent('form').find('.add-media-title').val();
-  	var mediaLegende = $(this).parent('form').find('.add-media-legend').val();
-  	var id = $(this).parents('.media-big').attr('id');
-  	var type = $(this).parents('.media-big').attr('data-type');
-    socket.emit('addMediaData', {session: currentFolder, project: currentProject, title: mediaTitle, legend:mediaLegende, id:id, type:type});
+
+		var $bigmedia = $(this).closest( '.media-big');
+
+		var medianame = $bigmedia.attr( 'data-medianame');
+		var mediaFolderPath = $bigmedia.attr( 'data-mediatype');
+
+		var informations = $bigmedia.find( '.js--mediaInformations').val();
+
+    var editMediaData =
+    {
+      "mediaName" : medianame,
+      "mediaFolderPath" : mediaFolderPath,
+    };
+
+    if( informations !== undefined && informations.length > 0)
+      editMediaData.informations = informations;
+
+
+    debugger;
+
+    editMedia( editMediaData);
+
+		$("#modal-media-view").foundation('reveal', 'close');
+
   });
 
   // Ajoute ou enlève un highlight quand on clique sur "Highlight" dans la fenêtre modal
   $('body').on('click', '.js--highlightMedia', function(){
 
 		// find in the media-list the media-item
-		var $bigmedia = $(this).closest(".media-big_image");
+		var $bigmedia = $(this).closest(".media-big");
 
-		var mediajsonname = $bigmedia.attr( 'data-metaJsonName');
-		$(".medias-list .media").filter( "[data-metajsonname='" + mediajsonname + "']");
+		var medianame = $bigmedia.attr( 'data-medianame');
+		var $thisMedia = $(".medias-list .media").filter( "[data-medianame='" + medianame + "']");
 
 		// trigger a click on its js--flagMedia
-		$(".medias-list .media").find(".js--flagMedia").trigger("click")
+		$thisMedia.find(".js--flagMedia").trigger("click");
+
+    debugger;
+
+    $bigmedia.toggleClass( 'is--highlight');
 
   });
 
@@ -248,9 +271,7 @@ function init(){
 
 function onListMediasOfOneType( mediasData) {
   var $getAllMediasFormatted = listMediasOfOneType( mediasData);
-
-  var $mediaContainer = $(".medias-list");
-  var $mediaItems = $mediaContainer.find(".media");
+  var $mediaContainer = $(".mainContent .medias-list");
 
   $getAllMediasFormatted.each( function() {
     insertOrReplaceMedia( $(this), $mediaContainer);
@@ -259,12 +280,8 @@ function onListMediasOfOneType( mediasData) {
 
 function onListOneMedia( mediasData) {
   var $updatedMedia = listMediasOfOneType( mediasData);
-
-  var $mediaContainer = $(".medias-list");
-  var $mediaItems = $mediaContainer.find(".media");
-
+  var $mediaContainer = $(".mainContent .medias-list");
   insertOrReplaceMedia( $updatedMedia, $mediaContainer);
-
 }
 
 function removeMedia(){
@@ -283,324 +300,113 @@ function removeMedia(){
 	});
 }
 
-/*
-function displayNewImage(image){
-	displayImage(currentFolder, currentProject, image.title, image.file);
-	$('#modal-add-local').foundation('reveal', 'close');
-}
-
-function displayNewVideo(video){
-	displayVideo(currentFolder, currentProject, video.title, video.file);
-}
-
-function displayNewStopMotion(video){
-	displayStopMotion(currentFolder, currentProject, video.title, video.file);
-}
-
-function displayNewAudio(audio){
-	displayAudio(currentFolder, currentProject, audio.title, audio.file);
-}
-
-function displayNewText(text){
-	$('input.new-text').val('');
-	$('#modal-add-text textarea').val('');
-	$('#modal-add-text').foundation('reveal', 'close');
-	var mediaItem = $(".js--templates .media_text").clone(false);
-	mediaItem.attr( 'id', text.id);
-	mediaItem
-		.find( 'p')
-		  .html(text.textContent)
-		.end()
-		.find('h3')
-		  .html(text.textTitle)
-  ;
-
-	//$(".medias-list li:first-child").after(mediaItem);
-	//$(mediaItem).insertAfter(".medias-list li:first-child");
-	$('.medias-list').prepend(mediaItem);
-}
-
-function displayModifiedText(text){
-	$('#modal-media-view').foundation('reveal', 'close');
-	var mediaItem = $("#"+text.id);
-		mediaItem
-		.find( 'p')
-		  .html(text.textContent)
-		.end()
-		.find('h3')
-		  .html(text.textTitle)
-  ;
-}
-*/
-
-/*
-function onListMedias(array, json){
-	$(".mediaContainer li").remove();
-	var matchID = $(".mediaContainer .media").attr("id");
-
-
-	for (var i = 0; i < array.length; i++) {
-  	var extension = array[i].extension;
-  	var identifiant =  array[i].id;
-  	//console.log(extension);
-		if(extension == ".jpg" || extension == ".gif" || extension == ".png"){
-			if(array[i].file != currentProject+'-thumb.jpg'){
-				displayImage(currentFolder, currentProject, identifiant, array[i].file, extension);
-			}
-		}
-		if(extension == ".webm" || extension == ".ogg" || extension == ".mov"){
-			displayVideo(currentFolder, currentProject, identifiant, array[i].file);
-		}
-		if(extension == ".mp4"){
-			displayStopMotion(currentFolder, currentProject, identifiant, array[i].file);
-		}
-		if(extension == ".wav" || extension == ".mp3" || extension == ".amr" || extension == ".m4a"){
-			displayAudio(currentFolder, currentProject, identifiant, array[i].file);
-		}
-		if(extension == ".txt"){
-			socket.emit('readTxt', {session:currentFolder, project:currentProject, file:array[i]});
-			displayText(currentFolder, currentProject, identifiant);
-		}
-	}
-
-
-	//afficher les titre et légendes des images
-	for (var i = 0; i < json['files']['images'].length; i++){
-	  var title = json['files']['images'][i]['title'];
-	  var legende = json['files']['images'][i]['legende'];
-	  $('#'+json['files']['images'][i].name)
-	    .attr('data-i', i)
-	  	.attr('data-title', title)
-	  	.attr('data-legende', legende)
-	  	.find('.mediaData .mediaData--titre').html(title)
-			.end()
-			.find('.mediaData .mediaData--legende').html(legende);
-
-
-
-    if( title === undefined && legende === undefined) {
-  	  $('#'+json['files']['images'][i].name)
-  	    .find('.mediaData')
-  	      .remove()
-  	  ;
-    }
-
-		if(json['files']['images'][i].highlight == true){
-			$('#'+json['files']['images'][i].name).addClass('is--highlight');
-		}
-
-	}
-	for (var i = 0; i < json['files']['videos'].length; i++){
-	  var title = json['files']['videos'][i]['title'];
-	  var legende = json['files']['videos'][i]['legende'];
-	  $('#'+json['files']['videos'][i].name)
-	  	.attr('data-title', title)
-	  	.attr('data-legende', legende)
-	  	.find('.mediaData .mediaData--titre').html(title)
-			.end()
-			.find('.mediaData .mediaData--legende').html(legende);
-
-    // if( title === undefined && legende === undefined) {
-  	 //  $('#'+json['files']['videos'][i].name)
-  	 //    .find('.mediaData')
-  	 //      .remove()
-  	 //  ;
-    // }
-
-		if(json['files']['videos'][i].highlight == true){
-			$('#'+json['files']['videos'][i].name).addClass('is--highlight');
-		}
-	}
-	for (var i = 0; i < json['files']['stopmotion'].length; i++){
-	  var title = json['files']['stopmotion'][i]['title'];
-	  var legende = json['files']['stopmotion'][i]['legende'];
-	  $('#'+json['files']['stopmotion'][i].name)
-	  	.attr('data-title', title)
-	  	.attr('data-legende', legende)
-	  	.find('.mediaData .mediaData--titre').html(title)
-			.end()
-			.find('.mediaData .mediaData--legende').html(legende);
-
-    // if( title === undefined && legende === undefined) {
-  	 //  $('#'+json['files']['stopmotion'][i].name)
-  	 //    .find('.mediaData')
-  	 //      .remove()
-  	 //  ;
-    // }
-
-		if(json['files']['stopmotion'][i].highlight == true){
-			$('#'+json['files']['stopmotion'][i].name).addClass('is--highlight');
-		}
-	}
-	for (var i = 0; i < json['files']['audio'].length; i++){
-	  var title = json['files']['audio'][i]['title'];
-	  var legende = json['files']['audio'][i]['legende'];
-	  $('#'+json['files']['audio'][i].name)
-	  	.attr('data-title', title)
-	  	.attr('data-legende', legende)
-	  	.find('.mediaData .mediaData--titre').html(title)
-			.end()
-			.find('.mediaData .mediaData--legende').html(legende);
-
-    // if( title === undefined && legende === undefined) {
-  	 //  $('#'+json['files']['audio'][i].id)
-  	 //    .find('.mediaData')
-  	 //      .remove()
-  	 //  ;
-    // }
-
-		if(json['files']['audio'][i].highlight == true){
-			$('#'+json['files']['audio'][i].name).addClass('is--highlight');
-		}
-	}
-
-	for (var i = 0; i < json['files']['texte'].length; i++){
-	  var title = json['files']['texte'][i]['title'];
-	  var legende = json['files']['texte'][i]['legende'];
-	  $('#'+json['files']['texte'][i].id)
-	  	.attr('data-title', title)
-	  	.attr('data-legende', legende)
-	  	.find('.mediaData .mediaData--titre').html(title)
-			.end()
-			.find('.mediaData .mediaData--legende').html(legende);
-
-    // if( title === undefined && legende === undefined) {
-  	 //  $('#'+json['files']['texte'][i].id)
-  	 //    .find('.mediaData')
-  	 //      .remove()
-  	 //  ;
-    // }
-
-		if(json['files']['texte'][i].highlight == true){
-			$('#'+json['files']['texte'][i].id).addClass('is--highlight');
-		}
-	}
-
-
-
-	//display text
-	socket.on('txtRead', function(data){
-		$("#"+data.obj.id)
-			.find( '.mediaContent').html(data.content);
-	});
-
-}
-*/
-
 function bigMedia(){
 	// Au click sur un media
   $('body').on('click', '.medias-list .media', function(){
+
+    var $m = $(this);
+
+    var mdata = $m.data();
+
+    var mtype = mdata.type;
+    var minfos = mdata.informations;
+    var mname = mdata.medianame;
+/*
   	var typeMedia = $(this).attr("data-type");
   	var mediaTitle = $(this).attr("data-title");
 	  var mediaLegende = $(this).attr("data-legende");
-		var metaJsonName = $(this).attr("data-metajsonname");
+		var medianame = $(this).attr("data-medianame");
+*/
   	$('#modal-media-view').foundation('reveal', 'open');
-  	//console.log(typeMedia);
-  	switch(typeMedia){
-  		case 'image':
+
+  	switch( mtype){
+  		case dodoc.projectPhotosFoldername:
 	  		var imagePath = $(this).find("img").attr("src");
-				var mediaItem = $(".js--templates .media-big_image").clone(false);
-				if($(this).hasClass('is--highlight')){
-					mediaItem.addClass('is--highlight');
-				}
-				mediaItem
-				  .attr( 'data-metaJsonName', metaJsonName)
-					.find( 'img').attr('src', imagePath)
+				var $mediaItem = $(".js--templates .media-big_image").clone(false);
+
+				$mediaItem
+					.find( 'img')
+					  .attr('src', imagePath)
 					.end()
-					.find('.add-media-title').val(mediaTitle)
-					.end()
-					.find('.add-media-legend').val(mediaLegende)
 					;
-				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;
-			case 'video':
+			case dodoc.projectVideosFoldername:
 				var id = $(this).attr("id");
 	  		var thumbPath = $(this).find("video").attr("poster");
 				var videoPath = $(this).find("source").attr("src");
 
-				var mediaItem = $(".js--templates .media-big_video").clone(false);
-				if($(this).hasClass('is--highlight')){
-					mediaItem.addClass('is--highlight');
-				}
-				mediaItem
-				  .attr( 'data-metaJsonName', metaJsonName)
-				  .find('.add-media-title').val(mediaTitle)
-					.end()
-					.find('.add-media-legend').val(mediaLegende)
-					.end()
-			    .find( 'video').attr( 'poster', thumbPath)
-			    .find( 'source').attr( 'src', videoPath)
+				var $mediaItem = $(".js--templates .media-big_video").clone(false);
+
+				$mediaItem
+			    .find( 'video')
+			      .attr( 'poster', thumbPath)
+  			    .find( 'source')
+  			      .attr( 'src', videoPath)
 					;
 
-				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;
-			case 'stopmotion':
+			case dodoc.projectAnimationsFoldername:
 	  		var id = $(this).attr("id");
 	  		var thumbPath = $(this).find("video").attr("poster");
 				var videoPath = $(this).find("source").attr("src");
 
-				var mediaItem = $(".js--templates .media-big_stopmotion").clone(false);
+				var $mediaItem = $(".js--templates .media-big_stopmotion").clone(false);
 
-				if($(this).hasClass('is--highlight')){
-					mediaItem.addClass('is--highlight');
-				}
-				mediaItem
-				  .attr( 'data-metaJsonName', metaJsonName)
-				  .find('.add-media-title').val(mediaTitle)
-					.end()
-					.find('.add-media-legend').val(mediaLegende)
-					.end()
-			    .find( 'video').attr( 'poster', thumbPath)
-			    .find( 'source').attr( 'src', videoPath)
-			    .end()
+				$mediaItem
+			    .find( 'video')
+			      .attr( 'poster', thumbPath)
+  			    .find( 'source')
+  			      .attr( 'src', videoPath)
 					;
-
-				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;
-			case 'audio':
+			case dodoc.projectAudiosFoldername:
 				var id = $(this).attr("id");
 				var audioPath = $(this).find("source").attr("src");
 
-				var mediaItem = $(".js--templates .media-big_audio").clone(false);
-				if($(this).hasClass('is--highlight')){
-					mediaItem.addClass('is--highlight');
-				}
-				mediaItem
-				  .attr( 'data-metaJsonName', metaJsonName)
+				var $mediaItem = $(".js--templates .media-big_audio").clone(false);
+
+				$mediaItem
 			    .find( 'source').attr( 'src', audioPath)
 			    .end()
-					.find('.add-media-title').val(mediaTitle)
-					.end()
-					.find('.add-media-legend').val(mediaLegende)
 					;
-
-				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;
-			case 'text':
+			case dodoc.projectTextsFoldername:
 				//console.log($(this).find('h3').html());
-				var mediaItem = $(".js--templates .media-big_text").clone(false);
+				var $mediaItem = $(".js--templates .media-big_text").clone(false);
 				var title = $(this).find('h3').html();
 				var texte = $(this).find('p').html();
 				var id = $(this).attr('id');
-				if($(this).hasClass('is--highlight')){
-					mediaItem.addClass('is--highlight');
-				}
-				mediaItem
-				  .attr( 'data-metaJsonName', metaJsonName)
-					.find('.view-text-title-modify').val(title)
+
+				$mediaItem
+					.find('.view-text-title-modify')
+					  .val( mtitle)
 					.end()
-					.find('.view-text-modify').val(texte)
+					.find('.view-text-modify')
+					  .val(texte)
 					.end()
+					.find('.view-text-title-modify')
+					  .val(mediaTitle)
 					.end()
-					.find('.view-text-title-modify').val(mediaTitle)
-					.end()
-					.find('.view-text-modify').val(mediaLegende)
+					.find('.view-text-modify')
+					  .val(mediaLegende)
+          .end()
 					;
-
-				$('#modal-media-view .big-mediaContent').html(mediaItem);
 				break;
-
   	}
+
+		if($(this).hasClass('is--highlight')){
+			$mediaItem.addClass('is--highlight');
+		}
+
+  	$mediaItem
+  	  .attr( 'data-medianame', mname)
+  	  .attr( 'data-mediatype', mtype)
+  	  .find('.js--mediaInformations')
+  	    .val( minfos)
+      .end()
+
+		$('#modal-media-view .big-mediaContent').html( $mediaItem);
+
   });
 }
 

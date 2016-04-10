@@ -951,7 +951,7 @@ PROJECT METHODS
 		var projectData = fs.readFileSync( projectJSONFile, dodoc.textEncoding);
 		var projectJSONdata = JSON.parse(projectData);
 
-    projectJSONdata.folderName = slugFolderName;
+    projectJSONdata.slugFolderName = slugFolderName;
     projectJSONdata.slugProjectName = slugProjectName;
     projectJSONdata.projectPreviewName = getProjectPreview( projectPath);
 
@@ -997,6 +997,7 @@ PROJECT METHODS
       // retourner un JSON indiquant la réussite de l'appel
       var newProjectCreated = jsonWriteToFile( projectJSONFile, newProjectData, "create"); //write json File
       newProjectData.slugProjectName = slugProjectName;
+      newProjectData.slugFolderName = slugFolderName;
       return eventAndContent( "projectCreated", newProjectData);
 		}
 
@@ -1029,7 +1030,7 @@ PROJECT METHODS
 
   }
 
-  // accepts a folderData with at least a "foldername", a "folderNameSlug", a "projectname" and a "projectNameSlug"
+  // accepts a folderData with at least a "foldername", a "slugFolderName", a "projectname" and a "slugProjectName"
   function updateProjectDataJSON( projectData) {
 		dev.logfunction( "COMMON — updateProjectDataJSON : " + JSON.stringify( projectData, null, 4));
 
@@ -1411,6 +1412,11 @@ MEDIA METHODS
       // switch the fav state
       if( editMediaData.switchFav !== undefined)
         mediaJsonData.fav = !mediaJsonData.fav;
+
+      console.log( "editMediaData.informations ? " + editMediaData.informations);
+
+      if( editMediaData.informations !== undefined)
+        mediaJsonData.informations = editMediaData.informations;
 
   		var status = jsonWriteToFile( mediaJSONFilepath, mediaJsonData, "update");
       resolve( mediaJsonData);

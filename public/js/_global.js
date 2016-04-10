@@ -25,27 +25,23 @@ function loadProject( projectData) {
 
 	var projectName = projectData.name;
 	var slugProjectName = projectData.slugProjectName;
+	var slugFolderName = projectData.slugFolderName;
 
-	var createdDate = transformDatetoString( projectData.created);
-	var modifiedDate = transformDatetoString( projectData.modified);
+  var createdDate = projectData.created;
+  var modifiedDate = projectData.modified;
+
+	var createdDateUser = transformDatetoString( createdDate);
+	var modifiedDateUser = transformDatetoString( modifiedDate);
+
 	var statut = projectData.statut;
-
   var imageSrc;
   if( projectData.projectPreviewName !== undefined && projectData.projectPreviewName !== false)
   	imageSrc = projectData.projectPreviewName;
 
-	displayProject( projectName, slugProjectName, createdDate, modifiedDate, statut, imageSrc);
-
-	return;
-}
-
-
-function 	displayProject( name, projectNameSlug, created, modified, statut, imageSrc) {
-
 	var $newProject = $(".js--templates > .project").clone(false);
-	var path = '/' + currentFolder + '/' + projectNameSlug;
+	var path = '/' + slugFolderName + '/' + slugProjectName;
 
-  if( modified === null)
+  if( modifiedDate === null)
     $newProject.find('.modify-date').remove();
 	if( imageSrc === undefined)
   	$newProject.find( '.image-wrapper img').remove();
@@ -54,19 +50,22 @@ function 	displayProject( name, projectNameSlug, created, modified, statut, imag
 
   // customisation du projet
 	$newProject
+	  .attr( 'data-projectname', slugProjectName)
 	  .attr( 'data-statut', statut)
+	  .data( 'slugProjectName', slugProjectName)
+  	.data( 'mtimestamp', transformDatetoTimestamp( createdDate))
+  	.data( 'ctimestamp', transformDatetoTimestamp( modifiedDate))
 	  .find( '.statut-type').text( statut).end()
-	  .find( '.image-wrapper img').attr('src', imageSrc).attr('alt', name).end()
-	  .find( '.create-date').text( created).end()
-	  .find( '.modify-date').text( modified).end()
-	  .find( '.title').text( name).end()
+	  .find( '.image-wrapper img').attr('src', imageSrc).attr('alt', projectName).end()
+	  .find( '.create-date').text( createdDateUser).end()
+	  .find( '.modify-date').text( modifiedDateUser).end()
+	  .find( '.title').text( projectName).end()
 	  .find( '.project-link').attr( 'href', path).end()
 	  .find( '.button-wrapper_capture').attr( 'href', path + '/capture').end()
 	  .find( '.button-wrapper_bibli').attr( 'href',  path + '/bibliotheque/medias').end()
 	  .find( '.button-wrapper_publi').attr( 'href', path + '/bibliotheque/panneau-de-publications').end()
-	  .data( 'projectNameSlug', projectNameSlug)
   ;
-	$("#container .project-list").prepend( $newProject);
+	return $newProject;
 }
 
 
@@ -111,6 +110,7 @@ function makeOneMedia( pathMediaFolder, mediaName, mediaDatas) {
     .attr( 'data-mediaName', mediaName)
     .attr( 'data-pathToMeta', pathToMeta)
     .attr( 'data-mediatype', pathMediaFolder)
+    .attr( 'data-type', pathMediaFolder)
   	.attr( 'data-informations', mediaDatas.informations)
   	.addClass( mediaDatas.fav ? 'is--highlight' : '')
   	.find( '.mediaData--informations')
@@ -223,12 +223,45 @@ function showText( pathMediaFolder, mediaName, mediaFilenames, mediaDatas) {
 
 }
 
+function insertOrReplaceProject( $item, $container) {
+
+  var $items = $container.find(".project");
+  var itemName = $item.data( "projectname");
+  var $existingItem = $items.filter( "[data-projectname='" + itemName + "']");
+  if( $existingItem.length == 1) {
+    $existingItem.replaceWith( $item);
+    return "updated";
+  }
+
+  if( $items.length > 0) {
+    var mediaMTime = parseInt( $item.data("ctimestamp"));
+    debugger;
+    if( mediaMTime !== false) {
+      var $eles;
+      $items.each( function( index) {
+        if( mediaMTime > parseInt( $(this).data("ctimestamp"))) {
+          $eles = $(this);
+          return false;
+        }
+      });
+      if( $eles !== undefined)
+        $item.insertBefore( $eles);
+      else
+        $container.append( $item);
+    }
+  } else {
+    $container.append( $item);
+  }
+  return "inserted";
+}
 
 function insertOrReplaceMedia( $mediaItem, $mediaContainer) {
+
   var $mediaItems = $mediaContainer.find(".media");
   var mediaName = $mediaItem.data( "medianame");
   var $existingMedia = $mediaItems.filter( "[data-medianame='" + mediaName + "']");
-  if( $existingMedia.length == 1) {
+
+  if( $existingMedia.length >= 1) {
     $existingMedia.replaceWith( $mediaItem);
     return "updated";
   }

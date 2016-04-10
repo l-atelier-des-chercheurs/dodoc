@@ -40,41 +40,27 @@ function init(){
 
 
 function onListOneProject( projectData){
-  loadProject( projectData);
-  return;
-}
 
+  // only list projects that belong to this page (if another user loads another project page, for example)
+  if( projectData.slugFolderName !== currentFolder || projectData.slugProjectName !== currentProject)
+    return;
+
+
+  var $project = loadProject( projectData);
+  insertOrReplaceProject( $project, $("#container .project-list"));
+}
 
 // COMMON WITH PROJECT.JS
 
 function onListMediasOfOneType( mediasData) {
-  var $getAllMediasFormatted = listMediasOfOneType( mediasData)
-  var $mediaContainer = $(".project .last-medias");
 
+  var $getAllMediasFormatted = listMediasOfOneType( mediasData)
+  var $mediaContainer = $("#container .project .last-medias");
   $getAllMediasFormatted.each( function() {
     insertOrReplaceMedia( $(this), $mediaContainer);
   });
 }
 
-function remove() {
-	var extension = mediaData[i].split('.').pop();
-	var identifiant = mediaData[i].replace("." + extension, "");
-  var fileName = mediaData[i];
-
-	if(extension == "jpg"){
-		return displayImage(currentFolder, currentProject, identifiant, fileName);
-	}
-	if(extension == "webm"){
-		return displayVideo(currentFolder, currentProject, identifiant, fileName);
-	}
-	if(extension == "mp4"){
-		return displayVideo(currentFolder, currentProject, identifiant, fileName);
-	}
-	if(extension == "wav"){
-		return displayAudio(currentFolder, currentProject, identifiant, fileName);
-	}
-	return false;
-}
 
 function onListProjectPubli( publisData) {
 	var $allPublis = $();
@@ -100,53 +86,6 @@ function onListProjectPubli( publisData) {
 
 }
 
-
-function displayImage(session, project, id, file){
-	var imagePath = "/" +session +"/"+ project+ "/"+ file;
-	var mediaItem = $(".js--templates .media_image").clone(false);
-	mediaItem.attr( 'id', id);
-	mediaItem.find( 'img').attr('src', imagePath);
-
-	return mediaItem;
-}
-
-function displayVideo(session, project, id, file){
-	var thumbPath = '/'+session + '/'+ project+ '/'+id +'-thumb.png';
-	var videoPath = '/'+session +'/'+ project+ '/' + file;
-
-	var mediaItem = $(".js--templates .media_video").clone(false);
-	mediaItem
-	  .attr( 'id', id)
-    .find( 'video').attr( 'poster', thumbPath)
-    .find( 'source').attr( 'src', videoPath);
-
-	return mediaItem;
-}
-
-function displayStopMotion(session, project, id, file){
-
-	var thumbPath = '/'+session + '/'+ project+ '/'+id +'-thumb.png';
-	var videoPath = '/'+session +'/'+ project+ '/' + file;
-
-	var mediaItem = $(".js--templates .media_stopmotion").clone(false);
-	mediaItem
-	  .attr( 'id', id)
-    .find( 'video').attr( 'poster', thumbPath)
-    .find( 'source').attr( 'src', videoPath);
-
-	return mediaItem;
-}
-
-function displayAudio(session, project, id, file){
-	var audioPath = '/'+session +'/'+ project+ '/' + file;
-
-	var mediaItem = $(".js--templates .media_audio").clone(false);
-	mediaItem
-	  .attr( 'id', id)
-    .find( 'source').attr( 'src', audioPath);
-
-	return mediaItem;
-}
 
 function modifyProject($this){
 	$("#container.row #modal-modify-project").empty();
