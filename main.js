@@ -114,7 +114,7 @@ module.exports = function(app, io){
 	function onNewFolder( folderData) {
 		dev.logfunction( "EVENT - onNewFolder");
     var eventAndContentJson = createNewFolder( folderData);
-    dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
+    dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
     io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
 	}
 
@@ -319,7 +319,7 @@ module.exports = function(app, io){
 			"folderCachePath" : folderCachePath
 		}
 
-		io.sockets.emit('stopMotionDirectyCreated', newStopMotionData);
+		io.sockets.emit('stopMotionDirectoryCreated', newStopMotionData);
 	}
 	function onAddImageToStopMotion( imageData) {
 
@@ -705,13 +705,11 @@ module.exports = function(app, io){
     return moment().format( dodoc.jsonDateFormat);
   }
   function eventAndContent( sendEvent, objectJson) {
-
     var eventContentJSON =
     {
       "socketevent" : sendEvent,
       "content" : objectJson
     };
-
     return eventContentJSON;
   }
 
@@ -1153,7 +1151,6 @@ MEDIA METHODS
         var fileExtension = dodoc.regexpGetFileExtension.exec( filename);
              dev.log( "fileEXTENSION of " + filename + " is " + fileExtension);
         if( fileExtension == ".json") {
-  				dev.log( )
           if( !lookingForSpecificJson)
   				  foldersMediasMeta.push( filename);
   				else if( filename == mediaName + ".json") {
@@ -1175,10 +1172,10 @@ MEDIA METHODS
     for (var i=0; i<foldersMediasMeta.length; i++) {
       var mediaMetaFilename = foldersMediasMeta[i];
       var fileNameWithoutExtension = dodoc.regexpRemoveFileExtension.exec( mediaMetaFilename)[1];
-      dev.log( "- looking for medias filenames that start with " + fileNameWithoutExtension);
+//       dev.log( "- looking for medias filenames that start with " + fileNameWithoutExtension);
       for (var j=0; j< foldersMediasFiles.length; j++) {
         var mediaFilename = foldersMediasFiles[j];
-        dev.log( "- comparing to " + mediaFilename);
+//         dev.log( "- comparing to " + mediaFilename);
         if ( mediaFilename.indexOf( fileNameWithoutExtension) !== -1) {
           if( !folderMediaMetaAndFileName.hasOwnProperty( mediaMetaFilename)) {
             folderMediaMetaAndFileName[mediaMetaFilename] = new Object();
@@ -1250,9 +1247,10 @@ MEDIA METHODS
 			var pathToFile = '';
 			var fileExtension;
 
+    	var mediaFolder = getMediaFolderPathByType( newMediaType);
+
       switch (newMediaType) {
         case 'photo':
-    			mediaFolder = getPhotoPathOfProject();
     			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
           newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
           pathToFile = mediaPath + '/' + newFileName;
@@ -1267,12 +1265,11 @@ MEDIA METHODS
 
 					console.log("Image added at path " + pathToFile);
 
-          mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension);
+          mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension, newFileName);
       		resolve( mediaMetaData);
 
           break;
         case 'video':
-    			mediaFolder = getVideoPathOfProject();
     			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
 
           newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
@@ -1281,15 +1278,19 @@ MEDIA METHODS
 
           var dataMedia = newMediaData.mediaData;
           writeToDisk2( pathToFile, fileExtension, dataMedia);
-    	 		createThumnails( pathToFile + fileExtension, newFileName, mediaPath);
 
-          mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension);
-      		resolve( mediaMetaData);
+          mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension, newFileName);
+
+          createThumnails( pathToFile + fileExtension, newFileName, mediaPath)
+            .then(function( mediaFolderContent) {
+              resolve( mediaMetaData);
+            }, function(error) {
+              console.error("Failed to make a thumbnail one media! Error: ", error);
+              resolve( mediaMetaData);
+            });
 
           break;
         case 'animation':
-          mediaFolder = getAnimationPathOfProject();
-
           // get the path to the mediaFolder
     			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
 
@@ -1309,10 +1310,15 @@ MEDIA METHODS
             .on('end', function() {
               console.log('file has been converted succesfully');
 
-              createThumnails( pathToFile + fileExtension, newFileName, mediaPath);
+              mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension, newFileName);
 
-              mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension);
-          		resolve( mediaMetaData);
+              createThumnails( pathToFile + fileExtension, newFileName, mediaPath)
+                .then(function( mediaFolderContent) {
+                  resolve( mediaMetaData);
+                }, function(error) {
+                  console.error("Failed to make a thumbnail one media! Error: ", error);
+                  resolve( mediaMetaData);
+                });
 
             })
             .on('error', function(err) {
@@ -1324,8 +1330,6 @@ MEDIA METHODS
 
           break;
         case 'audio':
-          mediaFolder = getAudioPathOfProject();
-
     			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
           newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
           pathToFile = mediaPath + '/' + newFileName;
@@ -1336,12 +1340,11 @@ MEDIA METHODS
 
           fs.writeFileSync( pathToFile + fileExtension, imageBuffer);
 
-          mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension);
+          mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension, newFileName);
       		resolve( mediaMetaData);
 
           break;
         case 'text':
-          mediaFolder = getTextPathOfProject();
     			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
           newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
           pathToFile = mediaPath + '/' + newFileName;
@@ -1355,7 +1358,7 @@ MEDIA METHODS
 
           fs.writeFileSync( pathToFile + fileExtension, textContent);
 
-          mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension);
+          mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension, newFileName);
           mediaMetaData.contentOfText = textContent;
       		resolve( mediaMetaData);
 
@@ -1371,7 +1374,7 @@ MEDIA METHODS
   }
 
 
-  function createMediaJSON( newMediaType, pathToFile, fileExtension) {
+  function createMediaJSON( newMediaType, pathToFile, fileExtension, fileName) {
     var mediaMetaData = {};
     mediaMetaData['created'] = getCurrentDate();
     mediaMetaData['modified'] = getCurrentDate();
@@ -1385,7 +1388,7 @@ MEDIA METHODS
 
     // only add to the response JSON
     // no need for this in the JSON file since it is recreated on send
-    mediaMetaData['pathToFile'] = pathToFile + fileExtension;
+    mediaMetaData['mediaName'] = fileName;
 
 		return mediaMetaData;
   }
@@ -1518,17 +1521,21 @@ MEDIA METHODS
 		});
 	}
 
-	function createThumnails(path, fileName, dir){
-		var proc = ffmpeg(path)
-		// setup event handlers
-		.on('end', function(files) {
-			console.log('screenshots were saved');
-		})
-		.on('error', function(err) {
-			console.log('an error happened: ' + err.message);
-		})
-		// take 2 screenshots at predefined timemarks
-		.takeScreenshots({ count: 1, timemarks: [ '00:00:01'], "filename" : fileName + ".png"}, dir);
+	function createThumnails( videoPath, videoFilename, pathToMediaFolder){
+    return new Promise(function(resolve, reject) {
+  		var proc = ffmpeg( videoPath)
+  		// setup event handlers
+  		.on('end', function(files) {
+  			console.log('screenshot was saved');
+  			resolve();
+  		})
+  		.on('error', function(err) {
+  			console.log('an error happened: ' + err.message);
+  			reject();
+  		})
+  		// take 2 screenshots at predefined timemarks
+  		.takeScreenshots({ count: 1, timemarks: [ '00:00:01'], "filename" : videoFilename + ".png"}, pathToMediaFolder);
+    });
 	}
 // F I N     C O M M O N      F U N C T I O N
 

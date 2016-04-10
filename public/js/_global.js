@@ -18,6 +18,8 @@ var imageData = null;
 */
 
 
+
+
 // COMMON WITH PROJECT.JS
 function loadProject( projectData) {
 
@@ -292,3 +294,42 @@ var modals = {
 }
 
 
+
+
+function getPathToMedia( projectPath, mediasFolderPath, mediaName) {
+  return projectPath + '/' + mediasFolderPath + '/' + mediaName;
+}
+function getProjectPath( slugFolderName, slugProjectName) {
+  return slugFolderName + '/' + slugProjectName;
+}
+function getMediaFolderPathByType( mediaType) {
+  if( mediaType == 'photo')
+    return getPhotoPathOfProject();
+  if( mediaType == 'video')
+    return getVideoPathOfProject();
+  if( mediaType == 'animation')
+    return getAnimationPathOfProject();
+  if( mediaType == 'audio')
+    return getAudioPathOfProject();
+  if( mediaType == 'text')
+    return getTextPathOfProject();
+}
+function getPhotoPathOfProject() {
+  return dodoc.projectPhotosFoldername;
+}
+function getAnimationPathOfProject() {
+  return dodoc.projectAnimationsFoldername;
+}
+function getVideoPathOfProject() {
+  return dodoc.projectVideosFoldername;
+}
+function getAudioPathOfProject() {
+  return dodoc.projectAudiosFoldername;
+}
+function getTextPathOfProject() {
+  return dodoc.projectTextsFoldername;
+}
+
+function getPathToMediaFile( projectPath, mediasFolderPath, mediaName) {
+  return projectPath + '/' + mediasFolderPath + '/' + mediaName;
+}

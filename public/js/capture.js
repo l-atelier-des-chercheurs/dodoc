@@ -34,8 +34,7 @@ var sarahCouleur = "gray";
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
 socket.on('mediaCreated', onMediaCreated);
-socket.on('stopMotionDirectyCreated', onStopMotionDirectyCreated);
-socket.on('newStopMotionCreated', onStopMotionDirectyCreated);
+socket.on('stopMotionDirectoryCreated', onStopMotionDirectoryCreated);
 
 jQuery(document).ready(function($) {
 
@@ -679,7 +678,7 @@ function startStopMotion(){
   socket.emit( 'startStopMotion', mediaData);
 }
 
-function onStopMotionDirectyCreated( newStopMotionData) {
+function onStopMotionDirectoryCreated( newStopMotionData) {
 
   var folderCacheName = newStopMotionData.folderCacheName;
   var folderCachePath = newStopMotionData.folderCachePath;
@@ -1077,23 +1076,29 @@ function createEqualizer(event){
 
 function onMediaCreated( newMediaData){
 
-  debugger;
-
-  $('.screenshot').attr('data-file', newMediaData.file);
+/*   $('.screenshot').attr('data-file', newMediaData.file); */
 
   var newMediaType = newMediaData.type;
   // remove /sessions from the filePath
-  var pathToMediaFile = '/' + newMediaData.pathToFile.substring(newMediaData.pathToFile.indexOf("/") + 1);
-  var cameraPreview = document.getElementById('camera-preview');
 
+  var projectPath = getProjectPath( currentFolder, currentProject);
+  var mediasFolderPath = getMediaFolderPathByType( newMediaType);
+  var mediaName = newMediaData.mediaName;
+
+  var pathToMediaFile = '/' + getPathToMediaFile( projectPath, mediasFolderPath, mediaName);
+
+  var cameraPreview = document.getElementById('camera-preview');
 //   var pathToFile = makeFullMediaPath( pathMediaFolder + '/' + mediaFilenames[0]);
+
+
+  debugger;
 
   if( newMediaType === 'photo') {
 
 
   }
   else if( newMediaType === 'video') {
-    cameraPreview.src = pathToMediaFile;
+    cameraPreview.src = pathToMediaFile + '.webm';
     cameraPreview.play();
     cameraPreview.muted = false;
     cameraPreview.controls = true;
@@ -1101,7 +1106,7 @@ function onMediaCreated( newMediaData){
   }
   else if( newMediaType === 'animation') {
     $('.screenshot .canvas-view').hide();
-    cameraPreview.src = pathToMediaFile;
+    cameraPreview.src = pathToMediaFile + '.mp4';
     cameraPreview.play();
     cameraPreview.muted = false;
     cameraPreview.controls = true;

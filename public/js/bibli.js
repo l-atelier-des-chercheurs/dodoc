@@ -185,8 +185,6 @@ function init(){
   $('body').on('click', '.js--highlightMedia', function(){
 
 		// find in the media-list the media-item
-		debugger;
-
 		var $bigmedia = $(this).closest(".media-big_image");
 
 		var mediajsonname = $bigmedia.attr( 'data-metaJsonName');
@@ -244,6 +242,28 @@ function init(){
 
   //Au clic sur OUI -> remove media au clic sur non annule
   removeMedia();
+
+}
+
+
+function onListMediasOfOneType( mediasData) {
+  var $getAllMediasFormatted = listMediasOfOneType( mediasData);
+
+  var $mediaContainer = $(".medias-list");
+  var $mediaItems = $mediaContainer.find(".media");
+
+  $getAllMediasFormatted.each( function() {
+    insertOrReplaceMedia( $(this), $mediaContainer);
+  });
+}
+
+function onListOneMedia( mediasData) {
+  var $updatedMedia = listMediasOfOneType( mediasData);
+
+  var $mediaContainer = $(".medias-list");
+  var $mediaItems = $mediaContainer.find(".media");
+
+  insertOrReplaceMedia( $updatedMedia, $mediaContainer);
 
 }
 
@@ -601,7 +621,7 @@ function onMediaData(data){
 // returns when a text content has been added
 function onMediaCreated( mediaData) {
 
-  // check if it's a text
+  // check if it's a text. If it is, we just need to close the popup if its being edited
   if( mediaData.type == 'text') {
 
     // check if theres a popup thats open
@@ -627,36 +647,6 @@ function onMediaCreated( mediaData) {
 
 function onMediaUpdated( mediaData) {
   listOneMedia( mediaData);
-}
-
-
-/**********************************************************************
-              EDIT FAV FOR MEDIA
-**********************************************************************/
-
-
-
-
-function onHighlight(data){
-	//$('#modal-media-view').foundation('reveal', 'close');
-	if(data.highlight == true){
-		$("#"+data.id)
-			.addClass('is--highlight');
-		$('.js--highlightMedia').css({
-			"background-color": "#48C2B5",
-			"color": "#FFF",
-			"border": "none"
-		});
-	}
-	else{
-		$("#"+data.id)
-			.removeClass('is--highlight');
-		$('.js--highlightMedia').css({
-			"background-color": "#FFF",
-			"color": "#48C2B5",
-			"border": "1px solid #48C2B5"
-		});
-	}
 }
 
 function onFileDeleted(data){
@@ -735,24 +725,3 @@ function onSocketError(reason) {
 };
 
 
-
-function onListMediasOfOneType( mediasData) {
-  var $getAllMediasFormatted = listMediasOfOneType( mediasData);
-
-  var $mediaContainer = $(".medias-list");
-  var $mediaItems = $mediaContainer.find(".media");
-
-  $getAllMediasFormatted.each( function() {
-    insertOrReplaceMedia( $(this), $mediaContainer);
-  });
-}
-
-function onListOneMedia( mediasData) {
-  var $updatedMedia = listMediasOfOneType( mediasData);
-
-  var $mediaContainer = $(".medias-list");
-  var $mediaItems = $mediaContainer.find(".media");
-
-  insertOrReplaceMedia( $updatedMedia, $mediaContainer);
-
-}

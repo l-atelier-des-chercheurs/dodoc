@@ -55,6 +55,14 @@ module.exports = function(app,io,m){
   function getCurrentDate() {
     return moment().format( dodoc.jsonDateFormat);
   }
+  function eventAndContent( sendEvent, objectJson) {
+    var eventContentJSON =
+    {
+      "socketevent" : sendEvent,
+      "content" : objectJson
+    };
+    return eventContentJSON;
+  }
 
 
   function generatePageData( req, pageTitle) {
@@ -62,7 +70,6 @@ module.exports = function(app,io,m){
     var pageDataJSON = [];
 
     var slugFolderName = req.param('folder');
-
     if( slugFolderName !== undefined) {
       var jsonFileOfFolder = getJsonFileOfFolder( slugFolderName);
       var folderData = readJsonFile( jsonFileOfFolder);
@@ -99,11 +106,12 @@ module.exports = function(app,io,m){
     else if( folderData !== undefined)
       pageTitle += " | " + folderData.name;
 
-    pageDataJSON.pageTitle = pageTitle;
+    if( pageTitle !== undefined)
+      pageDataJSON.pageTitle = pageTitle;
+
     pageDataJSON.url = req.path;
 
     return pageDataJSON;
-
   }
 
 
@@ -151,26 +159,64 @@ module.exports = function(app,io,m){
   };
 
   function postFile(req, res) {
-    var date = getCurrentDate();
-    var ext = path.extname(req.files.file.name);
-    var session = req.param('session');
-    var projet = req.param('project');
 
-    var slugFolderName = req.param('folder');
-    var slugProjectName = req.param('project');
+    var fileExtension = path.extname( req.files.file.name);
+    var newFileName = getCurrentDate();
+    var generatePageDataJSON = generatePageData(req);
 
-    var dir =  'sessions/'+ session + '/' + projet;
-    fs.readFile(req.files.file.path, function (err, data) {
-      var newPath = 'sessions/'+ session + '/' + projet + '/' + date + ext;
-      if(ext == ".webm" || ext == ".ogg" || ext == ".mov" || ext == ".mp4"){
-        createThumnails(newPath, date, dir)
+    var slugFolderName = generatePageDataJSON.folder;
+    var slugProjectName = generatePageDataJSON.project;
+
+    console.log( "generatePageDataJSON = " + JSON.stringify( generatePageDataJSON, null, 4));
+//     var pathToFolder = pageDataJSON.folder
+
+    // should send to createNewMedia
+    // for now this will do
+    fs.readFile( req.files.file.path, function (err, data) {
+      var projectPath = getProjectPath( slugFolderName, slugProjectName);
+      var fullPath = getFullPath( projectPath);
+
+
+      var newMediaType = '';
+      if( fileExtension == ".webm" || fileExtension == ".ogg" || fileExtension == ".mov" || fileExtension == ".mp4") {
+        newMediaType = 'video';
       }
-      fs.writeFile(newPath, data, function (err) {
+      else if( fileExtension == ".jpg" || fileExtension == ".jpeg" || fileExtension == ".png" || fileExtension == ".tiff") {
+        newMediaType = 'photo';
+      }
+
+    	var mediaFolder = getMediaFolderPathByType( newMediaType);
+			var mediaPath = fullPath + '/' + mediaFolder;
+      var pathToFile = mediaPath + '/' + newFileName;
+
+      fs.writeFileSync( pathToFile + fileExtension, data);
+      mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension, newFileName);
+
+      if( newMediaType == 'video') {
+        createThumnails( pathToFile + fileExtension, newFileName, mediaPath)
+          .then(function( mediaFolderContent) {
+            console.error("Video thumbs have been made.");
+            sendMediaMetaData( mediaMetaData);
+            res.redirect("back");
+          }, function(error) {
+            console.error("Failed to make a thumbnail one media! Error: ", error);
+            sendMediaMetaData( mediaMetaData);
+            res.redirect("back");
+          });
+      } else {
+        sendMediaMetaData( mediaMetaData);
         res.redirect("back");
-        io.sockets.emit("newMediaUpload", {path: newPath, fileName: date+ext, ext:ext, id: date});
-      });
+      }
+
     });
   };
+
+  function sendMediaMetaData( mediaMetaData) {
+    var eventAndContentJson = eventAndContent( "mediaCreated", mediaMetaData);
+    console.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
+    // for other clients connected
+    io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+  }
 
   function readJsonFile( jsonFile){
     var jsonFileContent = fs.readFileSync(jsonFile, 'utf8');
@@ -178,21 +224,90 @@ module.exports = function(app,io,m){
     return jsonFileContentParsed;
   }
 
-  function createThumnails(path, fileName, dir){
-    var proc = ffmpeg(path)
-    // setup event handlers
-    .on('end', function(files) {
-      console.log('screenshots were saved as ' + fileName + "-thumb.png");
-    })
-    .on('error', function(err) {
-      console.log('an error happened: ' + err.message);
-    })
-    // take 2 screenshots at predefined timemarks
-    .takeScreenshots({ count: 1, timemarks: [ '00:00:01'], filename: fileName + "-thumb.png"}, dir);
+	function createThumnails( videoPath, videoFilename, pathToMediaFolder){
+    return new Promise(function(resolve, reject) {
+  		var proc = ffmpeg( videoPath)
+  		// setup event handlers
+  		.on('end', function(files) {
+  			console.log('screenshot was saved');
+  			resolve();
+  		})
+  		.on('error', function(err) {
+  			console.log('an error happened: ' + err.message);
+  			reject();
+  		})
+  		// take 2 screenshots at predefined timemarks
+  		.takeScreenshots({ count: 1, timemarks: [ '00:00:01'], "filename" : videoFilename + ".png"}, pathToMediaFolder);
+    });
+	}
+
+  function getMediaFolderPathByType( mediaType) {
+    if( mediaType == 'photo')
+      return getPhotoPathOfProject();
+    if( mediaType == 'video')
+      return getVideoPathOfProject();
+    if( mediaType == 'animation')
+      return getAnimationPathOfProject();
+    if( mediaType == 'audio')
+      return getAudioPathOfProject();
+    if( mediaType == 'text')
+      return getTextPathOfProject();
   }
 
+  function getPhotoPathOfProject() {
+    return dodoc.projectPhotosFoldername;
+  }
+  function getAnimationPathOfProject() {
+    return dodoc.projectAnimationsFoldername;
+  }
+  function getVideoPathOfProject() {
+    return dodoc.projectVideosFoldername;
+  }
+  function getAudioPathOfProject() {
+    return dodoc.projectAudiosFoldername;
+  }
+  function getTextPathOfProject() {
+    return dodoc.projectTextsFoldername;
+  }
 
+  // copie de celui de main.js
+  function createMediaJSON( newMediaType, pathToFile, fileExtension, fileName) {
+    var mediaMetaData = {};
+    mediaMetaData['created'] = getCurrentDate();
+    mediaMetaData['modified'] = getCurrentDate();
+    mediaMetaData['informations'] = '';
+    mediaMetaData['type'] = newMediaType;
+    mediaMetaData['fav'] = false;
 
+    // generate a json file next to the file
+    var pathToJSONFile = pathToFile + '.json';
+		var status = jsonWriteToFile( pathToJSONFile, mediaMetaData, "update");
 
+    // only add to the response JSON
+    // no need for this in the JSON file since it is recreated on send
+    mediaMetaData['mediaName'] = fileName;
+
+		return mediaMetaData;
+  }
+
+  // new write json function that writes in json and returns true or false depending on success
+  function jsonWriteToFile( jsonFile, objectJson, sendEvent) {
+		var jsonString = JSON.stringify( objectJson, null, 4);
+		if( sendEvent === "create") {
+  		try {
+  			fs.appendFileSync( jsonFile, jsonString);
+        console.log("Success for event : " + sendEvent);
+        return true;
+  		} catch(err) {
+        console.log(err);
+        return false;
+      }
+    }
+    else if( sendEvent === "update") {
+      console.log("Success for event : " + sendEvent);
+      fs.writeFileSync(jsonFile, jsonString);
+      return true;
+	  }
+  }
 
 };
