@@ -72,13 +72,10 @@ function listMediasOfOneType( mediasData) {
   var $allMedias = $();
   var lastMedias = mediasData;
   $.each( lastMedias, function( index, mediaTypeContent) {
-
-    // récupérer toutes les infos des JSON
-    var pathMediaFolder = Object.keys( mediaTypeContent)[0];
-    var getAllJsonNames = mediaTypeContent[pathMediaFolder];
-
-    $.each( getAllJsonNames, function( metaJsonName, mediaDatas) {
-      var newMedia = listOneMedia( pathMediaFolder, metaJsonName, mediaDatas);
+    $.each( mediaTypeContent, function( metaJsonName, mediaDatas) {
+      var pathMediaFolder = mediaDatas.pathMediaFolder;
+      var mediaName = dodoc.regexpRemoveFileExtension.exec( metaJsonName)[1];
+      var newMedia = makeOneMedia( pathMediaFolder, mediaName, mediaDatas);
       $allMedias = $allMedias.add( newMedia);
     });
   });
@@ -86,30 +83,30 @@ function listMediasOfOneType( mediasData) {
   return $allMedias;
 }
 
-function listOneMedia( pathMediaFolder, metaJsonName, mediaDatas) {
+function makeOneMedia( pathMediaFolder, mediaName, mediaDatas) {
 
   var $currentMedia = '';
   var mediaFilenames = mediaDatas.files;
 
   if( pathMediaFolder === dodoc.projectPhotosFoldername)
-    $currentMedia = showImage( pathMediaFolder, metaJsonName, mediaFilenames);
+    $currentMedia = showImage( pathMediaFolder, mediaName, mediaFilenames);
 
   if( pathMediaFolder === dodoc.projectAnimationsFoldername)
-    $currentMedia = showAnimation( pathMediaFolder, metaJsonName, mediaFilenames);
+    $currentMedia = showAnimation( pathMediaFolder, mediaName, mediaFilenames);
 
   if( pathMediaFolder === dodoc.projectVideosFoldername)
-    $currentMedia = showVideo( pathMediaFolder, metaJsonName, mediaFilenames);
+    $currentMedia = showVideo( pathMediaFolder, mediaName, mediaFilenames);
 
   if( pathMediaFolder === dodoc.projectAudiosFoldername)
-    $currentMedia = showAudio( pathMediaFolder, metaJsonName, mediaFilenames);
+    $currentMedia = showAudio( pathMediaFolder, mediaName, mediaFilenames);
 
   if( pathMediaFolder === dodoc.projectTextsFoldername)
-    $currentMedia = showText( pathMediaFolder, metaJsonName, mediaFilenames, mediaDatas);
+    $currentMedia = showText( pathMediaFolder, mediaName, mediaFilenames, mediaDatas);
 
-  var pathToMeta = makeFullMediaPath( pathMediaFolder + '/' + metaJsonName);
+  var pathToMeta = makeFullMediaPath( pathMediaFolder + '/' + mediaName);
 
   $currentMedia
-    .attr( 'data-metaJsonName', metaJsonName)
+    .attr( 'data-mediaName', mediaName)
     .attr( 'data-pathToMeta', pathToMeta)
     .attr( 'data-mediatype', pathMediaFolder)
   	.attr( 'data-informations', mediaDatas.informations)
@@ -136,7 +133,7 @@ function makeFullMediaPath( pathToMediaFolderAndMedia) {
   return '/' + currentFolder + '/' + currentProject + '/' + pathToMediaFolderAndMedia;
 }
 
-function showImage( pathMediaFolder, metaJsonName, mediaFilenames) {
+function showImage( pathMediaFolder, mediaName, mediaFilenames) {
 
   var pathToFile = makeFullMediaPath( pathMediaFolder + '/' + mediaFilenames[0]);
 
@@ -147,7 +144,7 @@ function showImage( pathMediaFolder, metaJsonName, mediaFilenames) {
 	return mediaItem;
 }
 
-function showAnimation( pathMediaFolder, metaJsonName, mediaFilenames) {
+function showAnimation( pathMediaFolder, mediaName, mediaFilenames) {
 
   var thumbFilename;
   var videoFilename;
@@ -171,7 +168,7 @@ function showAnimation( pathMediaFolder, metaJsonName, mediaFilenames) {
 	return mediaItem;
 }
 
-function showVideo( pathMediaFolder, metaJsonName, mediaFilenames) {
+function showVideo( pathMediaFolder, mediaName, mediaFilenames) {
 
   var thumbFilename;
   var videoFilename;
@@ -196,7 +193,7 @@ function showVideo( pathMediaFolder, metaJsonName, mediaFilenames) {
 	return mediaItem;
 }
 
-function showAudio( pathMediaFolder, metaJsonName, mediaFilenames) {
+function showAudio( pathMediaFolder, mediaName, mediaFilenames) {
   var pathToFile = makeFullMediaPath( pathMediaFolder + '/' + mediaFilenames[0]);
 
 	var mediaItem = $(".js--templates .media_audio").clone(false);
@@ -206,14 +203,18 @@ function showAudio( pathMediaFolder, metaJsonName, mediaFilenames) {
 	return mediaItem;
 }
 
-function showText( pathMediaFolder, metaJsonName, mediaFilenames, mediaDatas) {
+function showText( pathMediaFolder, mediaName, mediaFilenames, mediaDatas) {
 
-  var texteContent = mediaDatas.texte;
+  var mediaTitle = mediaDatas.titleOfTextmedia;
+  var mediaText = mediaDatas.textOfTextmedia;
 
 	var mediaItem = $(".js--templates .media_text").clone(false);
 	mediaItem
-	  .find( '.mediaContent--contentOfText')
-	    .html( texteContent)
+	  .find( '.mediaContent--titleOfTextmedia')
+	    .html( mediaTitle)
+    .end()
+	  .find( '.mediaContent--textOfTextmedia')
+	    .html( mediaText)
     .end()
     ;
 	return mediaItem;
@@ -223,8 +224,8 @@ function showText( pathMediaFolder, metaJsonName, mediaFilenames, mediaDatas) {
 
 function insertOrReplaceMedia( $mediaItem, $mediaContainer) {
   var $mediaItems = $mediaContainer.find(".media");
-  var mediajsonname = $mediaItem.data( 'metajsonname');
-  var $existingMedia = $mediaItems.filter( "[data-metajsonname='" + mediajsonname + "']");
+  var mediaName = $mediaItem.data( "medianame");
+  var $existingMedia = $mediaItems.filter( "[data-medianame='" + mediaName + "']");
   if( $existingMedia.length == 1) {
     $existingMedia.replaceWith( $mediaItem);
     return "updated";
@@ -260,8 +261,14 @@ function createNewMedia( mediaData){
 function editMedia( mediaData){
   mediaData.slugFolderName = currentFolder;
   mediaData.slugProjectName = currentProject;
-	socket.emit( 'editMedia', mediaData);
+	socket.emit( 'editMediaMeta', mediaData);
 }
+function listOneMedia( mediaData) {
+  mediaData.slugFolderName = currentFolder;
+  mediaData.slugProjectName = currentProject;
+	socket.emit( 'listOneMedia', mediaData);
+}
+
 
 
 // en cours : gestion des modals. Elles s'ouvrent avec un trigger sur $(document), qui passe les données à afficher dedans

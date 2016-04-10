@@ -117,17 +117,21 @@ function init(){
 
   // Ajouter du texte dans la bibliotheque
   $('.js--submit-new-text').on('click',function(){
-  	var textTitle = $(this).parent('form').find('.new-text').val();
-  	var text = $(this).parent('form').find('textarea').val();
+
+    var $modal = $(this).closest('#modal-add-text');
+  	var textTitle = $modal.find('.js--submit-new-text_title').val();
+  	var textContent = $modal.find('.js--submit-new-text_text').val();
+
   	console.log('addText');
 
     var mediaData =
     {
       "mediaType" : "text",
       "title" : textTitle,
-      "text" : text,
+      "text" : textContent,
     }
     createNewMedia( mediaData);
+
   });
 
   //Ajouter un fichier local dans la bibliothèque
@@ -198,31 +202,17 @@ function init(){
   	e.stopPropagation();
 
 		var $thisMedia = $(this).closest(".media");
-		var specificMediaJsonName = $thisMedia.attr("data-metajsonname");
+		var medianame = $thisMedia.attr("data-medianame");
 		var mediaFolderPath = $thisMedia.attr("data-mediatype");
 
     var editMediaData =
     {
-      "specificMediaJsonName" : specificMediaJsonName,
+      "mediaName" : medianame,
       "mediaFolderPath" : mediaFolderPath,
       "switchFav" : true
     };
     editMedia( editMediaData);
-
   });
-
-/*
-  // Affiche les drapeaux au survol
-  $('body').on('mouseenter', 'li.media',function() {
-  	$(this).find('.js--flagMedia').show();
-  });
-
-   $('body').on('mouseleave', 'li.media',function() {
-  	$(this).find('.js--flagMedia').hide();
-  });
-*/
-
-
 
   // Supprime un fichier de la bibli de médias
   $('body').on('click', '.js--delete-media-bibli', function(){
@@ -608,14 +598,35 @@ function onMediaData(data){
               MEDIA CREATED OR UPDATED
 **********************************************************************/
 
+// returns when a text content has been added
 function onMediaCreated( mediaData) {
 
+  // check if it's a text
+  if( mediaData.type == 'text') {
 
+    // check if theres a popup thats open
+    var $textModalThatsOpen = $("#modal-add-text.open");
 
+    if( $textModalThatsOpen.length > 0) {
+    	var textTitle = $textModalThatsOpen.find('.js--submit-new-text_title').val();
+    	var textContent = $textModalThatsOpen.find('.js--submit-new-text_text').val();
+
+      // does the mediaData correspond to the bigmedia ?
+      var simulateStoredInfos = textTitle + dodoc.textFieldSeparator + textContent;
+
+      if( mediaData.contentOfText === simulateStoredInfos)
+        // close that popup
+        $textModalThatsOpen.foundation('reveal', 'close');
+
+    //     var contentOfPopup =
+    }
+
+  }
+  listOneMedia( mediaData);
 }
 
 function onMediaUpdated( mediaData) {
-
+  listOneMedia( mediaData);
 }
 
 
@@ -737,12 +748,7 @@ function onListMediasOfOneType( mediasData) {
 }
 
 function onListOneMedia( mediasData) {
-
-  var pathMediaFolder = Object.keys( mediasData[0])[0];
-  var metaJsonName = Object.keys( mediasData[0][Object.keys( mediasData[0])])[0];
-  var mediaDatas = mediasData[0][pathMediaFolder][metaJsonName];
-
-  $updatedMedia = listOneMedia( pathMediaFolder, metaJsonName, mediaDatas);
+  var $updatedMedia = listMediasOfOneType( mediasData);
 
   var $mediaContainer = $(".medias-list");
   var $mediaItems = $mediaContainer.find(".media");

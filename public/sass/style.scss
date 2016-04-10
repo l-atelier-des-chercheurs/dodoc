@@ -23,6 +23,12 @@ body,html {
 	height:100%;
 }
 
+p {
+  font-size: 1em;
+  margin-bottom: .5em;
+  line-height:  1.4;
+}
+
 li{list-style: none;}
 
 h1,h2,h3,h4,h5,h6{font-family:"fira", sans-serif;}
@@ -97,7 +103,7 @@ button{
 
 .legende {
   font-style: italic;
-  font-size: 1rem;
+  font-size: 1em;
   color: #8d8d8d;
   text-transform: lowercase;
 

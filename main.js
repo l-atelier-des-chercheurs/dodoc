@@ -2,7 +2,7 @@ var fs = require('fs-extra'),
 	glob = require("glob"),
 	path = require("path"),
 	gm = require('gm'),
-	markdown = require( "markdown" ).markdown,
+  mm = require('marky-mark'),
 	moment = require( "moment" ),
 	exec = require('child_process').exec,
 	phantom = require('phantom'),
@@ -87,7 +87,7 @@ module.exports = function(app, io){
 // 		socket.on("newImageLocal", onNewImage);
 		socket.on("addMediaData", onMediaLegende);
 
-		socket.on("editMedia", onEditMedia);
+		socket.on("editMediaMeta", onEditMediaMeta);
 
 		socket.on("deleteFileBibli", onDeleteFileBibli);
 
@@ -257,24 +257,25 @@ module.exports = function(app, io){
       dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
       io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
     }, function(error) {
-      console.error("Failed to createNewMedia! Error: ", error);
+      console.error("Failed to list one media! Error: ", error);
     });
   }
 
 
   function onListOneMedia( projectData, socket) {
-
+		dev.logfunction( "EVENT - onListOneMedia with packet " + JSON.stringify( projectData, null, 4));
 		var slugFolderName = projectData.slugFolderName;
 		var slugProjectName = projectData.slugProjectName;
-		var mediaFolderPath = projectData.mediaFolderPath;
-		var specificMediaJsonName = projectData.specificMediaJsonName;
+		var mediaName = projectData.mediaName;
 
-    listOneMedia( slugFolderName, slugProjectName, mediaFolderPath, specificMediaJsonName).then(function( oneMediaData) {
+    var mediaFolderPath = getMediaFolderPathByType( projectData.type);
+
+    listOneMedia( slugFolderName, slugProjectName, mediaFolderPath, mediaName).then(function( oneMediaData) {
       var eventAndContentJson = eventAndContent( "listOneMedia", oneMediaData);
       dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
       io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
     }, function(error) {
-      console.error("Failed to createNewMedia! Error: ", error);
+      console.error("Failed to listOneMedia! Error: ", error);
     });
   }
 
@@ -402,17 +403,18 @@ module.exports = function(app, io){
 */
 
 
-	function onEditMedia( editMediaData, socket) {
-		dev.logfunction( "EVENT - onEditMedia");
-  	editMedia( editMediaData).then(function( mediaMetaData) {
-    	onListOneMedia( mediaMetaData, socket)
+	function onEditMediaMeta( editMediaData, socket) {
+		dev.logfunction( "EVENT - onEditMediaMeta");
+  	editMediaMeta( editMediaData).then(function( mediaMetaData) {
+
+      var eventAndContentJson = eventAndContent( "mediaUpdated", mediaMetaData);
+      dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
+      io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+
     }, function(error) {
       console.error("Failed to edit media! Error: ", error);
     });
 	}
-
-
-
 
 	function listPubli(data, socket){
 		dev.logfunction( "listPubli");
@@ -431,7 +433,7 @@ module.exports = function(app, io){
 		    		}
 		    		if(! /^\..*/.test(file)){
 			  			var jsonFile = dir +'/' +file;
-							var data = fs.readFileSync(jsonFile,"UTF-8");
+							var data = fs.readFileSync(jsonFile,dodoc.textEncoding);
 							var jsonObj = JSON.parse(data);
 							socket.emit('listPublications', {name:jsonObj.name, created:jsonObj.created});
 			    	}
@@ -501,7 +503,7 @@ module.exports = function(app, io){
 		changeJsonFile(htmlFile);
 
 		function changeJsonFile(file){
-			var jsonContent = fs.readFileSync(file,"UTF-8");
+			var jsonContent = fs.readFileSync(file,dodoc.textEncoding);
 			var jsonObj = JSON.parse(jsonContent);
 			jsonObj.html = req.html;
 			var jsonString = JSON.stringify(jsonObj, null, 4);
@@ -539,7 +541,7 @@ module.exports = function(app, io){
 		});
 
 		function changeJsonFile(file){
-			var jsonContent = fs.readFileSync(file,"UTF-8");
+			var jsonContent = fs.readFileSync(file,dodoc.textEncoding);
 			var jsonObj = JSON.parse(jsonContent);
 			jsonObj.name = newName;
 			var jsonString = JSON.stringify(jsonObj, null, 4);
@@ -555,7 +557,7 @@ module.exports = function(app, io){
 		var currentDate = Date.now();
 		var jsonFile = dodoc.contentDir + "/" + text.folder + '/'+ text.project+"/" +text.project+'.json';
 		var txtFile = dodoc.contentDir + "/" + text.folder + '/'+ text.project+"/" +currentDate+'.txt';
-		var data = fs.readFileSync(jsonFile,"UTF-8");
+		var data = fs.readFileSync(jsonFile,dodoc.textEncoding);
 		var jsonObj = JSON.parse(data);
 		var jsonAdd = { "id" : currentDate, "titre":text.title};
 		jsonObj["files"]["texte"].push(jsonAdd);
@@ -594,7 +596,7 @@ module.exports = function(app, io){
 	function onMediaLegende(data){
     dev.logfunction( "onMediaLegende");
 		var jsonFile = dodoc.contentDir + "/" + data.folder + '/'+ data.project+"/" +data.project+'.json';
-		var jsonData = fs.readFileSync(jsonFile,"UTF-8");
+		var jsonData = fs.readFileSync(jsonFile,dodoc.textEncoding);
 		var jsonObj = JSON.parse(jsonData);
 		var id = data.id;
 		var type;
@@ -813,7 +815,7 @@ FOLDER METHODS
     	return objectJson;
     }
 
-		var folderData = fs.readFileSync( folderJSONFile,"UTF-8");
+		var folderData = fs.readFileSync( folderJSONFile,dodoc.textEncoding);
 		var folderJSONdata = JSON.parse(folderData);
 		folderJSONdata.folderNameSlug = slugFolderName;
     return folderJSONdata;
@@ -875,7 +877,7 @@ FOLDER METHODS
 
               			function updateJSONFile(file){
                   		dev.logfunction( "changeJsonFile");
-              				var jsonContent = fs.readFileSync(file,"UTF-8");
+              				var jsonContent = fs.readFileSync(file,dodoc.textEncoding);
               				var jsonObj = JSON.parse(jsonContent);
               				jsonObj.name = folder.name;
               				jsonObj.modified = currentDate;
@@ -948,7 +950,7 @@ PROJECT METHODS
     var projectPath = getProjectPath( slugFolderName, slugProjectName);
     var projectJSONFile = getJsonFileOfProject( projectPath);
 
-		var projectData = fs.readFileSync( projectJSONFile,"UTF-8");
+		var projectData = fs.readFileSync( projectJSONFile, dodoc.textEncoding);
 		var projectJSONdata = JSON.parse(projectData);
 
     projectJSONdata.folderName = slugFolderName;
@@ -1074,8 +1076,21 @@ MEDIA METHODS
 
 *************/
 
-  function getJsonFileOfMedia( projectPath, mediasFolderPath, mediaMetaFilename) {
-    return projectPath + '/' + mediasFolderPath + '/' + mediaMetaFilename;
+  function getPathToMedia( projectPath, mediasFolderPath, mediaName) {
+    return projectPath + '/' + mediasFolderPath + '/' + mediaName;
+  }
+
+  function getMediaFolderPathByType( mediaType) {
+    if( mediaType == 'photo')
+      return getPhotoPathOfProject();
+    if( mediaType == 'video')
+      return getVideoPathOfProject();
+    if( mediaType == 'animation')
+      return getAnimationPathOfProject();
+    if( mediaType == 'audio')
+      return getAudioPathOfProject();
+    if( mediaType == 'text')
+      return getTextPathOfProject();
   }
 
   function findFirstFilenameNotTaken( fileName, mediaPath) {
@@ -1111,33 +1126,40 @@ MEDIA METHODS
     });
   }
 
-  function listOneMedia( slugFolderName, slugProjectName, singleMediaFolderPath, specificMediaJsonName) {
+  function listOneMedia( slugFolderName, slugProjectName, singleMediaFolderPath, mediaName) {
     return new Promise(function(resolve, reject) {
-  		dev.logfunction( "COMMON — listOneMedia : slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName + " specificMediaJsonName = " + specificMediaJsonName);
+  		dev.logfunction( "COMMON — listOneMedia : slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName + " singleMediaFolderPath = " + singleMediaFolderPath + " mediaName = " + mediaName);
       // lister tous les contenus issues des dossiers commencant par 01, 02, 03, 04
       var projectPath = getProjectPath( slugFolderName, slugProjectName);
       var mediaFolderContent = [];
-  	  mediaFolderContent.push( onListMediasOfOneType( projectPath, singleMediaFolderPath, specificMediaJsonName));
+  	  mediaFolderContent.push( onListMediasOfOneType( projectPath, singleMediaFolderPath, mediaName));
       resolve( mediaFolderContent);
     });
   }
 
-  function onListMediasOfOneType( projectPath, mediasFolderPath, specificMediaJsonName) {
+  function onListMediasOfOneType( projectPath, mediasFolderPath, mediaName) {
+		dev.logfunction( "COMMON — onListMediasOfOneType");
     var mediasPath = projectPath + '/' + mediasFolderPath;
-    var lookingForSpecificJson = specificMediaJsonName !== undefined ? true : false;
+    var lookingForSpecificJson = mediaName !== undefined ? true : false;
 
     var filesInMediaFolder = fs.readdirSync( mediasPath);
     var foldersMediasMeta = [];
     var foldersMediasFiles = [];
+
+    dev.log( "looking for files in " + mediasPath);
+
     filesInMediaFolder.forEach( function( filename) {
       if( !dodoc.regexpMatchFolderNames.test( filename) && filename !== ".DS_Store") {
         var fileExtension = dodoc.regexpGetFileExtension.exec( filename);
-//             dev.log( "fileEXTENSION of " + filename + " is " + fileExtension);
+             dev.log( "fileEXTENSION of " + filename + " is " + fileExtension);
         if( fileExtension == ".json") {
+  				dev.log( )
           if( !lookingForSpecificJson)
   				  foldersMediasMeta.push( filename);
-  				else if( filename == specificMediaJsonName)
+  				else if( filename == mediaName + ".json") {
   				  foldersMediasMeta.push( filename);
+  				  return;
+  				}
 			  }
 			  else {
 				  foldersMediasFiles.push( filename);
@@ -1148,6 +1170,7 @@ MEDIA METHODS
     // in foldersMediasMeta, there should always be at least another file with the same name.
     // Let's add them inside our json reference file
     var folderMediaMetaAndFileName = new Object();
+    console.log( "- foldersMediasMeta : " + JSON.stringify( foldersMediasMeta, null, 4));
 
     for (var i=0; i<foldersMediasMeta.length; i++) {
       var mediaMetaFilename = foldersMediasMeta[i];
@@ -1160,17 +1183,22 @@ MEDIA METHODS
           if( !folderMediaMetaAndFileName.hasOwnProperty( mediaMetaFilename)) {
             folderMediaMetaAndFileName[mediaMetaFilename] = new Object();
             // read JSON file and add the content to the folder
-            var mediaJsonData = getMediaDataJSON( projectPath, mediasFolderPath, mediaMetaFilename);
+            var mediaMetaData = getMediaDataJSON( projectPath, mediasFolderPath, fileNameWithoutExtension);
+            mediaMetaData['pathMediaFolder'] = mediasFolderPath;
 
             // if the file is a text, then also add the content of the TXT in the answer
-            if( dodoc.regexpGetFileExtension.exec( mediaFilename) == '.txt') {
-              var contentOfMediaText = fs.readFileSync( projectPath + '/' + mediasFolderPath + '/' + mediaFilename);
-              console.log( "markdown : " + markdown.toHTML( contentOfMediaText));
-              mediaJsonData.contentOfText = markdown.toHTML( contentOfMediaText);
-              console.log( "mediaJsonData.contentOfText " + mediaJsonData.contentOfText);
+            if( dodoc.regexpGetFileExtension.exec( mediaFilename) == '.md') {
+              var contentOfMediaText = fs.readFileSync( projectPath + '/' + mediasFolderPath + '/' + mediaFilename, dodoc.textEncoding);
+
+              var textContent = contentOfMediaText.split( dodoc.textFieldSeparator);
+
+              mediaMetaData.titleOfTextmedia = mm.parse( textContent[0]).content;
+              mediaMetaData.textOfTextmedia = mm.parse( textContent[1]).content;
+
+              console.log( "Text media title : \n" + mediaMetaData.titleOfTextmedia + "\n text : " + mediaMetaData.textOfTextmedia );
             }
 
-            folderMediaMetaAndFileName[mediaMetaFilename] = mediaJsonData;
+            folderMediaMetaAndFileName[mediaMetaFilename] = mediaMetaData;
           }
           if( !folderMediaMetaAndFileName[mediaMetaFilename].hasOwnProperty( "files")) {
             folderMediaMetaAndFileName[mediaMetaFilename]["files"] = new Array();
@@ -1181,24 +1209,30 @@ MEDIA METHODS
       }
     }
 
+/*
     var mediaFolderContent = new Object();
     mediaFolderContent[mediasFolderPath] = new Object();
     mediaFolderContent[mediasFolderPath] = folderMediaMetaAndFileName;
-
     return mediaFolderContent;
+*/
+
+    return folderMediaMetaAndFileName;
+
   }
 
 
-  function getMediaDataJSON( projectPath, mediaFolderPath, mediaMetaFilename) {
-		dev.logfunction( "COMMON — getMediaDataJSON : projectPath = " + projectPath + " mediaFolderPath = " + mediaFolderPath + " mediaMetaFilename = " + mediaMetaFilename);
+  function getMediaDataJSON( projectPath, mediaFolderPath, mediaName) {
+		dev.logfunction( "COMMON — getMediaDataJSON : projectPath = " + projectPath + " mediaFolderPath = " + mediaFolderPath + " mediaName = " + mediaName);
 
-    var mediaJSONFilepath = getJsonFileOfMedia( projectPath, mediaFolderPath, mediaMetaFilename);
-		var mediaData = fs.readFileSync( mediaJSONFilepath, "UTF-8");
+    var mediaJSONFilepath = getPathToMedia( projectPath, mediaFolderPath, mediaName) + '.json';
+		var mediaData = fs.readFileSync( mediaJSONFilepath, dodoc.textEncoding);
     dev.log( "mediaData : " + mediaData);
-		var mediaDataJson = JSON.parse( mediaData);
-    dev.log( "mediaDataJson : " + mediaDataJson );
+		var mediaMetaData = JSON.parse( mediaData);
+    dev.log( "mediaDataJson : " + mediaMetaData );
+    mediaMetaData.mediaName = mediaName;
+    mediaMetaData.mediaFolderPath = mediaFolderPath;
 
-    return mediaDataJson;
+    return mediaMetaData;
   }
 
 
@@ -1312,11 +1346,12 @@ MEDIA METHODS
           newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
           pathToFile = mediaPath + '/' + newFileName;
 
-          fileExtension = '.txt';
+          fileExtension = '.md';
           var dataTitle = newMediaData.title;
           var dataText = newMediaData.text;
 
-          var textContent = dataText;
+          var textContent = makeTextMedia( dataTitle, dataText);
+          console.log( "Creating a new text media at path " + pathToFile + fileExtension + " with content \n" + textContent);
 
           fs.writeFileSync( pathToFile + fileExtension, textContent);
 
@@ -1327,11 +1362,12 @@ MEDIA METHODS
           break;
       // end of switch
       }
-
-      reject( "failed creating a new media");
-
     // end of promise
     });
+  }
+
+  function makeTextMedia( dataTitle, dataText) {
+    return dataTitle + dodoc.textFieldSeparator + dataText;
   }
 
 
@@ -1341,39 +1377,40 @@ MEDIA METHODS
     mediaMetaData['modified'] = getCurrentDate();
     mediaMetaData['informations'] = '';
     mediaMetaData['type'] = newMediaType;
-    mediaMetaData['pathToFile'] = pathToFile + fileExtension;
     mediaMetaData['fav'] = false;
 
     // generate a json file next to the file
     var pathToJSONFile = pathToFile + '.json';
 		var status = jsonWriteToFile( pathToJSONFile, mediaMetaData, "update");
 
+    // only add to the response JSON
+    // no need for this in the JSON file since it is recreated on send
+    mediaMetaData['pathToFile'] = pathToFile + fileExtension;
+
 		return mediaMetaData;
   }
 
 
-  function editMedia( editMediaData) {
+  function editMediaMeta( editMediaData) {
     return new Promise(function(resolve, reject) {
-  		dev.logfunction( "COMMON - editMedia : " + editMediaData);
+  		dev.logfunction( "COMMON - editMedia : " + JSON.stringify(editMediaData, null, 4));
 
 			var slugFolderName = editMediaData.slugFolderName;
 			var slugProjectName = editMediaData.slugProjectName;
 			var mediaFolderPath = editMediaData.mediaFolderPath;
-			var mediaMetaFilename = editMediaData.specificMediaJsonName;
+			var mediaName = editMediaData.mediaName;
 
       // get the path to the media JSON and its content
       var projectPath = getProjectPath( slugFolderName, slugProjectName);
-      var mediaJsonData = getMediaDataJSON( projectPath, mediaFolderPath, mediaMetaFilename);
-      var mediaJSONFilepath = getJsonFileOfMedia( projectPath, mediaFolderPath, mediaMetaFilename);
-
+      var mediaJsonData = getMediaDataJSON( projectPath, mediaFolderPath, mediaName);
+      var mediaJSONFilepath = getPathToMedia( projectPath, mediaFolderPath, mediaName) + '.json';
 
       // switch the fav state
       if( editMediaData.switchFav !== undefined)
         mediaJsonData.fav = !mediaJsonData.fav;
 
   		var status = jsonWriteToFile( mediaJSONFilepath, mediaJsonData, "update");
-
-      resolve( editMediaData);
+      resolve( mediaJsonData);
 
     });
   }

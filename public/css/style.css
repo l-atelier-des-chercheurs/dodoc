@@ -7159,6 +7159,11 @@ html {
 body, html {
   height: 100%; }
 
+p {
+  font-size: 1em;
+  margin-bottom: .5em;
+  line-height: 1.4; }
+
 li {
   list-style: none; }
 
@@ -7220,7 +7225,7 @@ button {
 
 .legende {
   font-style: italic;
-  font-size: 1rem;
+  font-size: 1em;
   color: #8d8d8d;
   text-transform: lowercase;
   margin-bottom: 15px; }
@@ -7714,11 +7719,13 @@ body.bibli {
       padding: 0; }
     .medias-list .media.media_text .mediaContent {
       padding: .9375rem; }
-    .medias-list .media.media_text h3 {
-      font-size: 1.2em;
-      font-weight: normal; }
-    .medias-list .media.media_text p {
-      font-size: 0.8em; }
+      .medias-list .media.media_text .mediaContent .mediaContent--titleOfTextmedia {
+        font-size: 1.2em;
+        font-weight: normal; }
+      .medias-list .media.media_text .mediaContent .mediaContent--textOfTextmedia {
+        font-size: 1em; }
+      .medias-list .media.media_text .mediaContent p:first-child {
+        margin-top: 0; }
     .medias-list .media > h3 {
       margin-top: 0; }
     .medias-list .media .mediaContent {

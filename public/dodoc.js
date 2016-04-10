@@ -24,6 +24,9 @@ dodoc.nameOfBibli = "Bibliotheque de médias";
 dodoc.nameOfPubli = "Publication";
 
 dodoc.jsonDateFormat = 'YYYYMMDD_HHmmss';
+dodoc.textEncoding = 'UTF-8';
+
+dodoc.textFieldSeparator = '\n' + '\n' + '----' + '\n' + '\n';
   // previously /^\..*/
   // see http://regexr.com/3d4t8
 dodoc.regexpMatchFolderNames = new RegExp(/^([^.]+)$/);

@@ -1077,12 +1077,16 @@ function createEqualizer(event){
 
 function onMediaCreated( newMediaData){
 
+  debugger;
+
   $('.screenshot').attr('data-file', newMediaData.file);
 
   var newMediaType = newMediaData.type;
   // remove /sessions from the filePath
   var pathToMediaFile = '/' + newMediaData.pathToFile.substring(newMediaData.pathToFile.indexOf("/") + 1);
   var cameraPreview = document.getElementById('camera-preview');
+
+//   var pathToFile = makeFullMediaPath( pathMediaFolder + '/' + mediaFilenames[0]);
 
   if( newMediaType === 'photo') {
 

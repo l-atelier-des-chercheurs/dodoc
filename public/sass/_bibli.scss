@@ -416,15 +416,19 @@ body.bibli {
 
       .mediaContent {
         padding: .9375rem;
+        .mediaContent--titleOfTextmedia {
+          font-size: 1.2em;
+          font-weight: normal;
+
+        }
+        .mediaContent--textOfTextmedia {
+          font-size:1em;
+        }
+        p:first-child {
+          margin-top:   0;
+        }
       }
 
-      h3{
-        font-size: 1.2em;
-        font-weight: normal;
-      }
-      p{
-        font-size:0.8em;
-      }
     }
 
     > h3 {
