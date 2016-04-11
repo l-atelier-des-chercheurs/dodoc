@@ -11,7 +11,7 @@ var fs = require('fs-extra'),
 	vsprintf = require("sprintf-js").vsprintf,
 	flags = require('flags')
 ;
-var dodoc  = require('./public/dodoc');
+var dodoc  = require('./public/dodoc.json');
 
 module.exports = function(app, io){
 
@@ -129,7 +129,7 @@ module.exports = function(app, io){
 	    dev.log( "Number of folders in " + dodoc.contentDir + " = " + folders.length + ". Folders are " + folders);
 
 		  folders.forEach( function( slugFolderName) {
-		    if( dodoc.regexpMatchFolderNames.test( slugFolderName)){
+		    if( new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName)){
           var eventAndContentJson = listOneFolder( slugFolderName);
           dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
           io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
@@ -156,9 +156,9 @@ module.exports = function(app, io){
 		  projects.forEach( function( slugProjectName) {
 
         dev.log("- - processing " + slugProjectName);
-        dev.log( "is folder ? " + dodoc.regexpMatchFolderNames.test( slugProjectName));
+        dev.log( "is folder ? " + new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugProjectName));
 
-		    if( dodoc.regexpMatchFolderNames.test( slugProjectName)){
+		    if( new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugProjectName)){
           dev.log( "- - is folder : " + slugProjectName);
 
           var projectData = getProjectDataJSON( slugFolderName, slugProjectName);
@@ -1020,7 +1020,7 @@ PROJECT METHODS
 
     dev.log( "- match apercu/preview in array : " + filesInProjectFolder);
     filesInProjectFolder.forEach( function( filename) {
-      if( dodoc.regexpMatchProjectPreviewNames.test(filename)) {
+      if( new RegExp( dodoc.regexpMatchProjectPreviewNames, 'i').test(filename)) {
         previewName = filename;
         dev.log( "- - match preview called " + previewName);
       }
@@ -1148,8 +1148,8 @@ MEDIA METHODS
     dev.log( "looking for files in " + mediasPath);
 
     filesInMediaFolder.forEach( function( filename) {
-      if( !dodoc.regexpMatchFolderNames.test( filename) && filename !== ".DS_Store") {
-        var fileExtension = dodoc.regexpGetFileExtension.exec( filename);
+      if( !new Regexp( dodoc.regexpMatchFolderNames, 'i').test( filename) && filename !== ".DS_Store") {
+        var fileExtension = new RegExp( dodoc.regexpGetFileExtension, 'i').exec( filename);
              dev.log( "fileEXTENSION of " + filename + " is " + fileExtension);
         if( fileExtension == ".json") {
           if( !lookingForSpecificJson)
@@ -1172,7 +1172,7 @@ MEDIA METHODS
 
     for (var i=0; i<foldersMediasMeta.length; i++) {
       var mediaMetaFilename = foldersMediasMeta[i];
-      var fileNameWithoutExtension = dodoc.regexpRemoveFileExtension.exec( mediaMetaFilename)[1];
+      var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( mediaMetaFilename)[1];
 //       dev.log( "- looking for medias filenames that start with " + fileNameWithoutExtension);
       for (var j=0; j< foldersMediasFiles.length; j++) {
         var mediaFilename = foldersMediasFiles[j];
@@ -1185,7 +1185,7 @@ MEDIA METHODS
             mediaMetaData['pathMediaFolder'] = mediasFolderPath;
 
             // if the file is a text, then also add the content of the TXT in the answer
-            if( dodoc.regexpGetFileExtension.exec( mediaFilename) == '.md') {
+            if( new RegExp( dodoc.regexpGetFileExtension, 'i').exec( mediaFilename) == '.md') {
               var contentOfMediaText = fs.readFileSync( projectPath + '/' + mediasFolderPath + '/' + mediaFilename, dodoc.textEncoding);
 
               var textContent = contentOfMediaText.split( dodoc.textFieldSeparator);
