@@ -48,7 +48,7 @@ module.exports = function(app, io){
 		socket.on("listProjects", onListProjects);
 		socket.on("newProject", onNewProject);
 		socket.on("modifyProject", onModifyProject);
-		socket.on("removeProject", onRemoveProject);
+		socket.on("removeOneProject", onRemoveOneProject);
 
 		// P R O J E T      P A G E
 		socket.on("listProject", onListProject);
@@ -154,17 +154,11 @@ module.exports = function(app, io){
 	    var projectsProcessed = 0;
 	    var allProjectsData = [];
 		  projects.forEach( function( slugProjectName) {
-
-        dev.log("- - processing " + slugProjectName);
-        dev.log( "is folder ? " + new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugProjectName));
-
-		    if( new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugProjectName)){
+		    if( new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugProjectName) && slugProjectName.indexOf( dodoc.deletedProjectFolderPrefix)){
           dev.log( "- - is folder : " + slugProjectName);
-
           var projectData = getProjectDataJSON( slugFolderName, slugProjectName);
           dev.log( "- - - projectJSON : " + JSON.stringify( projectData));
           allProjectsData.push( projectData);
-
         }
 
         projectsProcessed++;
@@ -222,14 +216,29 @@ module.exports = function(app, io){
 	}
 
 	// Supprimer un dossier
-	function onRemoveProject(project){
-		dev.logfunction( "onRemoveProject");
-		console.log(project);
-		var folder = project.folder;
-		var projectName = convertToSlug(project.name);
-		var projectPath = dodoc.contentDir + "/" +folder + '/' + projectName;
-		rmDir(projectPath);
-		io.sockets.emit('folderRemoved');
+	function onRemoveOneProject( projectData){
+		dev.logfunction( "EVENT - onRemoveProject");
+		var slugFolderName = projectData.slugFolderName;
+		var slugProjectName = projectData.slugProjectName;
+    var eventAndContentJson = removeOneProject( slugFolderName, slugProjectName);
+    dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
+    io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+	}
+
+	function removeOneProject( slugFolderName, slugProjectName) {
+		dev.logfunction( "COMMON - onRemoveProject _ slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName);
+
+    var projectPath = getProjectPath( slugFolderName, slugProjectName);
+    var projectPathToDeleted = getProjectPath( slugFolderName, dodoc.deletedProjectFolderPrefix + slugProjectName);
+		fs.renameSync( projectPath, projectPathToDeleted);
+
+    var projectData =
+    {
+      "slugFolderName" : slugFolderName,
+      "slugProjectName" : slugProjectName,
+    }
+
+    return eventAndContent( "projectRemoved", projectData);
 	}
 
 // F I N     P R O J E T S     P A G E
@@ -242,16 +251,12 @@ module.exports = function(app, io){
     var eventAndContentJson = listOneProject( slugFolderName, slugProjectName);
     dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
     io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
-
-    onListOneProjectMedias( projectData, socket);
-    onListOneProjectPublis( projectData, socket);
   }
 
   function onListOneProjectMedias( projectData, socket) {
 		dev.logfunction( "listOneProjectMedias");
 		var slugFolderName = projectData.slugFolderName;
 		var slugProjectName = projectData.slugProjectName;
-
   	listAllMedias( slugFolderName, slugProjectName).then(function( mediaFolderContent) {
       var eventAndContentJson = eventAndContent( "listMediasOfOneType", mediaFolderContent);
       dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
@@ -550,29 +555,6 @@ module.exports = function(app, io){
 			io.sockets.emit("titleModified", {name: newName, old:oldName});
 		}
 	}
-
-/*
-	function onNewText(text){
-		dev.logfunction( "onNewText");
-		var currentDate = Date.now();
-		var jsonFile = dodoc.contentDir + "/" + text.folder + '/'+ text.project+"/" +text.project+'.json';
-		var txtFile = dodoc.contentDir + "/" + text.folder + '/'+ text.project+"/" +currentDate+'.txt';
-		var data = fs.readFileSync(jsonFile,dodoc.textEncoding);
-		var jsonObj = JSON.parse(data);
-		var jsonAdd = { "id" : currentDate, "titre":text.title};
-		jsonObj["files"]["texte"].push(jsonAdd);
-    fs.writeFile(txtFile, '### '+text.title+"\r\n"+text.text, function(err){
-    	fs.writeFile(jsonFile, JSON.stringify(jsonObj, null, 4), function(err) {
-	      if(err) {
-	          console.log(err);
-	      } else {
-	          console.log("The file was saved!");
-	          io.sockets.emit("displayNewText", {id:currentDate, textTitle: text.title, textContent: text.text});
-	      }
-    	});
-    });
-	}
-*/
 
 	function onModifiedText(text){
 		dev.logfunction( "onModifiedText");
@@ -911,6 +893,7 @@ PROJECT METHODS
   }
 
   function getJsonFileOfProject( projectPath) {
+    console.log( 'projectPath : ' + projectPath + ' dodoc.projectJSONfilename : ' + dodoc.projectJSONfilename);
     return projectPath + '/' + dodoc.projectJSONfilename;
   }
 
@@ -944,6 +927,8 @@ PROJECT METHODS
   }
 
   function getProjectDataJSON( slugFolderName, slugProjectName) {
+
+    console.log( "slugFolderName : " + slugFolderName + " slugProjectName : " + slugProjectName);
 
     var projectPath = getProjectPath( slugFolderName, slugProjectName);
     var projectJSONFile = getJsonFileOfProject( projectPath);
@@ -1192,6 +1177,8 @@ MEDIA METHODS
 
               mediaMetaData.titleOfTextmedia = mm.parse( textContent[0]).content;
               mediaMetaData.textOfTextmedia = mm.parse( textContent[1]).content;
+              mediaMetaData.titleOfTextmediaMd = mm.parse( textContent[0]).markdown;
+              mediaMetaData.textOfTextmediaMd = mm.parse( textContent[1]).markdown;
 
               console.log( "Text media title : \n" + mediaMetaData.titleOfTextmedia + "\n text : " + mediaMetaData.textOfTextmedia );
             }
@@ -1417,6 +1404,8 @@ MEDIA METHODS
 
       if( editMediaData.informations !== undefined)
         mediaJsonData.informations = editMediaData.informations;
+
+      mediaJsonData.modified = getCurrentDate();
 
   		var status = jsonWriteToFile( mediaJSONFilepath, mediaJsonData, "update");
       resolve( mediaJsonData);

@@ -7272,7 +7272,7 @@ button {
   .button-wrapper_add, .button-wrapper_edit, .button-wrapper_publi, .button-wrapper_editProjet, .button-wrapper_addMedia, .button-wrapper_backButton, .button-wrapper_editFolder {
     background-color: #EF474B;
     color: white; }
-  .button-wrapper_capture, .button-wrapper_view, .button-wrapper_deleteFolder, .button-wrapper_deleteMedia, .button-wrapper_deleteMediaCapture {
+  .button-wrapper_capture, .button-wrapper_view, .button-wrapper_deleteFolder, .button-wrapper_deleteMedia, .button-wrapper_deleteMediaCapture, .button-wrapper_deleteProject {
     background-color: #FFB520;
     color: white; }
   .button-wrapper_bibli, .button-wrapper_gofullscreen, .button-wrapper_leavefullscreen {
@@ -7332,6 +7332,12 @@ button {
 
 #modal-add-text textarea {
   min-height: 250px; }
+
+#modal-modify-project .submit-modify-project {
+  float: left; }
+
+#modal-modify-project .button-wrapper_deleteProject {
+  float: right; }
 
 .big-mediaContent textarea {
   min-height: 150px; }

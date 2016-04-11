@@ -22,16 +22,16 @@ jQuery(document).ready(function($) {
 });
 
 function init(){
-	// Create new project
-	uploadImage("#imageproject");
+
+
+
 	submitProject($(".submit-new-project"), 'newProject'); //Envoie les données au serveur
 
 	// Modifier les projets
 	//Au click sur l'icone éditer
 	$('body').on('click', '.js--edit-project-icon', function(){
 		$thisProject = $(this).closest(".project");
-		modifyProject( $thisProject);
-//     modals.editProject( $thisProject);
+		modals.editProjectPopup( $thisProject);
 	});
 
 	//remove modal modify folder when it's closing
@@ -193,20 +193,11 @@ function submitModifyProject($button, send, projectNameSlug){
 
 // On reçoit les mofication du projet
 function onProjectModified(projectData){
-
-/*
-	var name = projectData.name;
-	var statut = projectData.statut;
-	var modified = transformDatetoString( projectData.modified);
-*/
-// 	var created = $thisEl.find('.create-date').html();
-
-
+  // only list projects that belong to this page (if another user loads another project page, for example)
+  if( projectData.slugFolderName !== currentFolder)
+    return;
   var $project = loadProject( projectData);
   insertOrReplaceProject( $project, $(".mainContent .project-list"));
-
-	// C'est pas propre mais ça marche en attendant de refaire correctement les pages
-
 }
 
 //Suppression du dossier
@@ -239,8 +230,10 @@ function onProjectAlreadyExist(data){
 }
 
 //Remove the folder from list
-function onProjectRemoved(){
-	thisProject.remove();
+function onProjectRemoved( projectData){
+  if( projectData.slugFolderName !== currentFolder)
+    return;
+  removeThisProject( $(".mainContent .project-list"), projectData.slugFolderName, projectData.slugProjectName);
 }
 
 

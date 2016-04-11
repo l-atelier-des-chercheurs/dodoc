@@ -24,7 +24,6 @@ module.exports = function(app,io,m){
   app.get("/:folder/:project/bibliotheque/panneau-de-publications", getBibliPubli);
   app.get("/:folder/:project/publication/:publi", getPubli);
 
-
   app.post("/:folder/:project/bibliotheque/medias/file-upload", multipartMiddleware, postFile);
 
 

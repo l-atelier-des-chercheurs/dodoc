@@ -20,6 +20,7 @@ var dodoc = {
   "jsonDateFormat" : "YYYYMMDD_HHmmss",
   "textEncoding" : "UTF-8",
   "textFieldSeparator" : "\n\n----\n\n",
+  "deletedProjectFolderPrefix" : "x_",
 
   "_comment" : "// see http://regexr.com/3d4t8",
   "regexpMatchFolderNames" : "^([^.]+)$",

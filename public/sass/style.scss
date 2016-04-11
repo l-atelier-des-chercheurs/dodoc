@@ -191,7 +191,7 @@ button{
     background-color: $rouge;
     color: white;
   }
-  &_capture, &_view, &_deleteFolder, &_deleteMedia, &_deleteMediaCapture {
+  &_capture, &_view, &_deleteFolder, &_deleteMedia, &_deleteMediaCapture, &_deleteProject {
     background-color: $orange;
     color: white;
   }
@@ -301,6 +301,17 @@ button{
     min-height: 250px;
   }
 }
+#modal-modify-project {
+
+  .submit-modify-project {
+    float: left;
+  }
+
+  .button-wrapper_deleteProject {
+    float: right;
+  }
+}
+
 
 .big-mediaContent {
   textarea {

@@ -31,6 +31,12 @@ mixin button(typeOfButton, navOrButton, style)
         include images/clear.svg
       span Supprimer
 
+  if( typeOfButton === 'deleteProject')
+    a(href="#" title="Dodoc" class='button-wrapper_deleteProject js--deleteProject #{defaultClasses}')
+      .btn.icon
+        include images/clear.svg
+      span Supprimer le projet
+
 
   if( typeOfButton === 'projet')
     a(href="/#{folder}/#{project}" title="Dodoc" class='button-wrapper_projet #{defaultClasses}')

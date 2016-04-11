@@ -43,20 +43,3 @@ function convertToSlug(Text){
 	// renvoi le texte modifié
 	return s;
 }
-
-function uploadImage($button){
-
-	$('body').bind('change', $button, function(e){
-		imageData = e.originalEvent.target.files;
-
-  	// //change the label of the button in the name of the image
-  	// console.log(this.files);
-  	// imageName = this.files[0].name;
-	  // var dflt = $(this).attr("placeholder");
-	  // if($(this).val()!=""){
-	  //   $(this).next().text(imageName);
-	  // } else {
-	  //   $(this).next().text(dflt);
-	  // }
-	});
-}

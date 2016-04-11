@@ -1,6 +1,21 @@
 //- MODIFY PROJECT
 div(id="modal-modify-project" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
 
+div(class="modal-modify-project_content" style="display:none;")
+  h3#modalTitle.popoverTitle
+    | Modifier le projet
+  form(onsubmit='return false;' class='modify-folder-form')
+    input.modify-project-name(type='text' value='')
+    select.modify-project-statut(name='statut')
+      option(value='en cours')
+        | En cours
+      option(value='terminé')
+        | Terminé
+    input#imageProject(type='file' accept='image/*' placeholder='Associer une image')
+    input.submit-modify-project(type='submit' value='Valider')
+    +button('deleteProject', '', '')
+  a.close-reveal-modal(aria-label='Close')
+    | &#215
 
 
 //- ALERT CHANGE STATUT (IF STATUT FINISH)
@@ -10,7 +25,7 @@ div(id="modal-statut-alert" class="reveal-modal" data-reveal aria-labelledby="mo
   button.annuler(autofocus) Annuler
   a(class="close-reveal-modal" aria-label="Close") &#215;
 //- ALERT SUPPRIMER UN DOSSIER
-div(id="modal-delete-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+div(id="modal-deleteproject-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
   p Êtes-vous sûr de vouloir supprimer le projet ?
   button.oui Oui
   button.annuler(autofocus) Annuler

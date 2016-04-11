@@ -59,7 +59,6 @@ function init(){
   // en attendant de faire mieux
 
 	bigMedia();
-	uploadImage("#inputmedia");
 
 	$validerBouton = $('.montage-title .js--validerTitre');
 	$editerBouton = $('.montage-title .js--editerTitre');
@@ -134,24 +133,6 @@ function init(){
 
   });
 
-  //Ajouter un fichier local dans la bibliothèque
-  // $('.js--submit-new-local').on('click', function(){
-  // 	console.log('submit new local');
-  // 	if(imageData != null){
-		// 	console.log('Une image a été ajoutée');
-		// 	var f = imageData[0];
-		// 	var reader = new FileReader();
-		// 	reader.onload = function(evt){
-		// 		socket.emit('newImageLocal', {session: currentFolder, project: currentProject, data:evt.target.result});
-		// 	};
-		// 	reader.readAsDataURL(f);
-		// }
-		// else{
-		// 	console.log("Pas d'image chargé");
-		// 	$('#modal-add-local').foundation('reveal', 'close');
-		// }
-  // });
-
   // si en arrivant sur la page, il y a un hash dans l'url
   // alors ouvrir la publication qui a ce nom directement
   var urlHash = window.location.hash;
@@ -172,51 +153,6 @@ function init(){
   	socket.emit('modifyText', {session: currentFolder, project: currentProject, title: textTitle, text:text, id:id});
   });
 
-  //Envoie les titres et légendes au serveur
-  $('body').on('click', '.js--submit-add-media-data', function(){
-
-		var $bigmedia = $(this).closest( '.media-big');
-
-		var medianame = $bigmedia.attr( 'data-medianame');
-		var mediaFolderPath = $bigmedia.attr( 'data-mediatype');
-
-		var informations = $bigmedia.find( '.js--mediaInformations').val();
-
-    var editMediaData =
-    {
-      "mediaName" : medianame,
-      "mediaFolderPath" : mediaFolderPath,
-    };
-
-    if( informations !== undefined && informations.length > 0)
-      editMediaData.informations = informations;
-
-
-    debugger;
-
-    editMedia( editMediaData);
-
-		$("#modal-media-view").foundation('reveal', 'close');
-
-  });
-
-  // Ajoute ou enlève un highlight quand on clique sur "Highlight" dans la fenêtre modal
-  $('body').on('click', '.js--highlightMedia', function(){
-
-		// find in the media-list the media-item
-		var $bigmedia = $(this).closest(".media-big");
-
-		var medianame = $bigmedia.attr( 'data-medianame');
-		var $thisMedia = $(".medias-list .media").filter( "[data-medianame='" + medianame + "']");
-
-		// trigger a click on its js--flagMedia
-		$thisMedia.find(".js--flagMedia").trigger("click");
-
-    debugger;
-
-    $bigmedia.toggleClass( 'is--highlight');
-
-  });
 
  // Ajoute ou enlève un highlight quand on clique sur le drapeau dans les médias
   $('body').on('click', '.js--flagMedia', function(e){
@@ -237,7 +173,8 @@ function init(){
 
   // Supprime un fichier de la bibli de médias
   $('body').on('click', '.js--delete-media-bibli', function(){
-  	$('#modal-delete-alert-media').foundation('reveal', 'open');
+
+    $('#modal-delete-alert-media').foundation('reveal', 'open');
   	var id = $(this).parents('.media-big').attr('id');
   	var type = $(this).parents('.media-big').attr('data-type');
   	var fileToDelete ;
@@ -302,116 +239,15 @@ function removeMedia(){
 
 function bigMedia(){
 	// Au click sur un media
-  $('body').on('click', '.medias-list .media', function(){
 
-    var $m = $(this);
-
-    var mdata = $m.data();
-
-    var mtype = mdata.type;
-    var minfos = mdata.informations;
-    var mname = mdata.medianame;
-/*
-  	var typeMedia = $(this).attr("data-type");
-  	var mediaTitle = $(this).attr("data-title");
-	  var mediaLegende = $(this).attr("data-legende");
-		var medianame = $(this).attr("data-medianame");
-*/
-  	$('#modal-media-view').foundation('reveal', 'open');
-
-  	switch( mtype){
-  		case dodoc.projectPhotosFoldername:
-	  		var imagePath = $(this).find("img").attr("src");
-				var $mediaItem = $(".js--templates .media-big_image").clone(false);
-
-				$mediaItem
-					.find( 'img')
-					  .attr('src', imagePath)
-					.end()
-					;
-				break;
-			case dodoc.projectVideosFoldername:
-				var id = $(this).attr("id");
-	  		var thumbPath = $(this).find("video").attr("poster");
-				var videoPath = $(this).find("source").attr("src");
-
-				var $mediaItem = $(".js--templates .media-big_video").clone(false);
-
-				$mediaItem
-			    .find( 'video')
-			      .attr( 'poster', thumbPath)
-  			    .find( 'source')
-  			      .attr( 'src', videoPath)
-					;
-
-				break;
-			case dodoc.projectAnimationsFoldername:
-	  		var id = $(this).attr("id");
-	  		var thumbPath = $(this).find("video").attr("poster");
-				var videoPath = $(this).find("source").attr("src");
-
-				var $mediaItem = $(".js--templates .media-big_stopmotion").clone(false);
-
-				$mediaItem
-			    .find( 'video')
-			      .attr( 'poster', thumbPath)
-  			    .find( 'source')
-  			      .attr( 'src', videoPath)
-					;
-				break;
-			case dodoc.projectAudiosFoldername:
-				var id = $(this).attr("id");
-				var audioPath = $(this).find("source").attr("src");
-
-				var $mediaItem = $(".js--templates .media-big_audio").clone(false);
-
-				$mediaItem
-			    .find( 'source').attr( 'src', audioPath)
-			    .end()
-					;
-				break;
-			case dodoc.projectTextsFoldername:
-				//console.log($(this).find('h3').html());
-				var $mediaItem = $(".js--templates .media-big_text").clone(false);
-				var title = $(this).find('h3').html();
-				var texte = $(this).find('p').html();
-				var id = $(this).attr('id');
-
-				$mediaItem
-					.find('.view-text-title-modify')
-					  .val( mtitle)
-					.end()
-					.find('.view-text-modify')
-					  .val(texte)
-					.end()
-					.find('.view-text-title-modify')
-					  .val(mediaTitle)
-					.end()
-					.find('.view-text-modify')
-					  .val(mediaLegende)
-          .end()
-					;
-				break;
-  	}
-
-		if($(this).hasClass('is--highlight')){
-			$mediaItem.addClass('is--highlight');
-		}
-
-  	$mediaItem
-  	  .attr( 'data-medianame', mname)
-  	  .attr( 'data-mediatype', mtype)
-  	  .find('.js--mediaInformations')
-  	    .val( minfos)
-      .end()
-
-		$('#modal-media-view .big-mediaContent').html( $mediaItem);
-
+	$('body').on('click', '.medias-list .media', function(){
+		$m = $(this);
+		modals.bigMedia($m);
   });
+
 }
 
 function onMediaData(data){
-	$('#modal-media-view').foundation('reveal', 'close');
 	$("#"+data.id)
 		.attr('data-title', data.title)
 		.attr('data-legende', data.legend)

@@ -6,7 +6,6 @@ var sessionId;
 var currentFolder = app.folder;
 //get current project
 var currentProject = app.project;
-var imageData = null;
 
 
 
@@ -46,13 +45,14 @@ function loadProject( projectData) {
 	if( imageSrc === undefined)
   	$newProject.find( '.image-wrapper img').remove();
 
-  var imageSrc = path + "/" + imageSrc;
+  var imageSrc = path + "/" + imageSrc + '?' + modifiedDate;
 
   // customisation du projet
 	$newProject
 	  .attr( 'data-projectname', slugProjectName)
 	  .attr( 'data-statut', statut)
 	  .data( 'slugProjectName', slugProjectName)
+	  .data( 'projectName', projectName)
   	.data( 'mtimestamp', transformDatetoTimestamp( createdDate))
   	.data( 'ctimestamp', transformDatetoTimestamp( modifiedDate))
 	  .find( '.statut-type').text( statut).end()
@@ -75,7 +75,7 @@ function listMediasOfOneType( mediasData) {
   $.each( lastMedias, function( index, mediaTypeContent) {
     $.each( mediaTypeContent, function( metaJsonName, mediaDatas) {
       var pathMediaFolder = mediaDatas.pathMediaFolder;
-      var mediaName = dodoc.regexpRemoveFileExtension.exec( metaJsonName)[1];
+      var mediaName = new RegExp(dodoc.regexpRemoveFileExtension).exec( metaJsonName)[1];
       var newMedia = makeOneMedia( pathMediaFolder, mediaName, mediaDatas);
       $allMedias = $allMedias.add( newMedia);
     });
@@ -209,15 +209,19 @@ function showText( pathMediaFolder, mediaName, mediaFilenames, mediaDatas) {
 
   var mediaTitle = mediaDatas.titleOfTextmedia;
   var mediaText = mediaDatas.textOfTextmedia;
+  var titleOfTextmediaMd = mediaDatas.titleOfTextmediaMd;
+  var textOfTextmediaMd = mediaDatas.textOfTextmediaMd;
 
 	var mediaItem = $(".js--templates .media_text").clone(false);
 	mediaItem
 	  .find( '.mediaContent--titleOfTextmedia')
 	    .html( mediaTitle)
     .end()
+    .data( 'titleOfTextmediaMd', titleOfTextmediaMd)
 	  .find( '.mediaContent--textOfTextmedia')
 	    .html( mediaText)
     .end()
+    .data( 'textOfTextmediaMd', textOfTextmediaMd)
     ;
 	return mediaItem;
 
@@ -252,6 +256,12 @@ function insertOrReplaceProject( $item, $container) {
     $container.append( $item);
   }
   return "inserted";
+}
+
+function removeThisProject( $container, slugFolderName, slugProjectName) {
+  var $items = $container.find(".project");
+  debugger;
+
 }
 
 function insertOrReplaceMedia( $mediaItem, $mediaContainer) {
@@ -309,22 +319,292 @@ function listOneMedia( mediaData) {
 var modals = {
 
   init : function() {
-
-
-		$(document).on("modal::editprojet", function(e) {
-  		modals.editProject();
-		});
+    modals.statusChangeAlertInit();
+    modals.removeProjectInit();
   },
 
-	editProject : function() {
+  editProjectPopup : function($project) {
+    var $modal = $("#modal-modify-project");
+    $modal
+      .empty()
+      ;
 
+    var $modalContent = $(".modal-modify-project_content").clone(false);
+    $modal
+      .append( $modalContent.show())
+      ;
+
+    var pdata = $project.data();
+    $modal
+      .find(".modify-project-name")
+        .attr( "value", pdata.projectName)
+      .end()
+      .find(".modify-project-statut option")
+        .filter("[value='" + pdata.statut + "']")
+          .attr('selected', '')
+        .end()
+      .end()
+      ;
+
+    var imageData;
+    $modal.find('#imageProject').bind('change', function(e) {
+    	imageData = e.originalEvent.target.files;
+    });
+
+  	var $deleteModal = $('#modal-deleteproject-alert');
+  	$deleteModal.data('slugProjectName', pdata.slugProjectName)
+
+  	//Au click sur le bouton supprimer le dossier
+  	$modal.find('.js--deleteProject').on('click', function(){
+    	debugger;
+  		$deleteModal.foundation('reveal', 'open');
+  	});
+
+    $modal.find(".submit-modify-project").on('click', function(){
+    	var newProjectName = $modal.find('.modify-project-name').val();
+    	var newStatut = $modal.find('.modify-project-statut').val();
+    	//Images changed
+    	debugger;
+    	if( imageData !== undefined && imageData !== null){
+    		console.log('Une image a été ajoutée');
+    		var f = imageData[0];
+    		var reader = new FileReader();
+    		reader.onload = function(evt){
+    			socket.emit( 'modifyProject',
+    			{
+     				"name" : newProjectName,
+    				"slugFolderName" : currentFolder,
+            "slugProjectName" : pdata.slugProjectName,
+    				"statut" : newStatut,
+    				"imageData" : evt.target.result
+    		  });
+    		};
+    		reader.readAsDataURL(f);
+    	}
+    	else{
+    		console.log("Pas d'image chargé");
+    		socket.emit( 'modifyProject',
+        {
+     				"name" : newProjectName,
+    				"slugFolderName" : currentFolder,
+            "slugProjectName" : pdata.slugProjectName,
+    				"statut" : newStatut,
+    		});
+    	}
+      $modal.foundation('reveal', 'close');
+    });
+  },
+
+  bigMedia : function( $m) {
+
+    var $modal = $('#modal-media-view');
+    var mdata = $m.data();
+
+    var mtype = mdata.type;
+    var minfos = mdata.informations;
+    var mname = mdata.medianame;
+/*
+  	var typeMedia = $(this).attr("data-type");
+  	var mediaTitle = $(this).attr("data-title");
+	  var mediaLegende = $(this).attr("data-legende");
+		var medianame = $(this).attr("data-medianame");
+*/
+  	$modal.foundation('reveal', 'open');
+
+
+    debugger;
+
+  	switch( mtype){
+  		case dodoc.projectPhotosFoldername:
+	  		var imagePath = $m.find("img").attr("src");
+				var $mediaItem = $(".js--templates .media-big_image").clone(false);
+
+				$mediaItem
+					.find( 'img')
+					  .attr('src', imagePath)
+					.end()
+					;
+				break;
+			case dodoc.projectVideosFoldername:
+
+	  		var thumbPath = $m.find("video").attr("poster");
+				var videoPath = $m.find("source").attr("src");
+
+				var $mediaItem = $(".js--templates .media-big_video").clone(false);
+
+				$mediaItem
+			    .find( 'video')
+			      .attr( 'poster', thumbPath)
+  			    .find( 'source')
+  			      .attr( 'src', videoPath)
+					;
+
+				break;
+			case dodoc.projectAnimationsFoldername:
+
+	  		var thumbPath = $m.find("video").attr("poster");
+				var videoPath = $m.find("source").attr("src");
+
+				var $mediaItem = $(".js--templates .media-big_stopmotion").clone(false);
+
+				$mediaItem
+			    .find( 'video')
+			      .attr( 'poster', thumbPath)
+  			    .find( 'source')
+  			      .attr( 'src', videoPath)
+					;
+				break;
+			case dodoc.projectAudiosFoldername:
+
+				var audioPath = $m.find("source").attr("src");
+
+				var $mediaItem = $(".js--templates .media-big_audio").clone(false);
+
+				$mediaItem
+			    .find( 'source')
+			      .attr( 'src', audioPath)
+			    .end()
+					;
+				break;
+			case dodoc.projectTextsFoldername:
+				//console.log($(this).find('h3').html());
+				var $mediaItem = $(".js--templates .media-big_text").clone(false);
+/*
+				var title = $m.find('h3').html();
+				var texte = $m.find('p').html();
+*/
+				debugger;
+
+				$mediaItem
+					.find('.view-text-title-modify')
+					  .val( mdata.titleOfTextmediaMd)
+					.end()
+					.find('.view-text-modify')
+					  .val( mdata.textOfTextmediaMd)
+					.end()
+					;
+				break;
+  	}
+
+		if( $m.hasClass('is--highlight')){
+			$mediaItem.addClass('is--highlight');
+		}
+
+  	$mediaItem
+  	  .attr( 'data-medianame', mname)
+  	  .attr( 'data-mediatype', mtype)
+  	  .find('.js--mediaInformations')
+  	    .val( minfos)
+      .end()
+
+		$modal.find('.big-mediaContent').html( $mediaItem);
+
+    //Envoie les titres et légendes au serveur
+    $modal.find('.js--submit-add-media-data').on( 'click', function(){
+
+  		var informations = $modal.find( '.js--mediaInformations').val();
+      var editMediaData =
+      {
+        "mediaName" : mname,
+        "mediaFolderPath" : mtype,
+      };
+
+      if( informations !== undefined && informations.length > 0)
+        editMediaData.informations = informations;
+
+      editMedia( editMediaData);
+
+  		$modal.foundation('reveal', 'close');
+
+    });
+
+    // Ajoute ou enlève un highlight quand on clique sur "Highlight" dans la fenêtre modal
+    $modal.find('.js--highlightMedia').on( 'click', function(){
+  		// trigger a click on its js--flagMedia
+      var editMediaData =
+      {
+        "mediaName" : mname,
+        "mediaFolderPath" : mtype,
+        "switchFav" : true
+      };
+      editMedia( editMediaData);
+
+      $mediaItem.toggleClass( 'is--highlight');
+
+    });
 
 
   },
 
 
+  removeFolderInit : function() {
+    $removeProjectPopup = $('#modal-deletefolder-alert');
+  	$removeProjectPopup.find('rbutton.oui').on('click', function(){
+  		console.log('oui ' + thisProjectName);
+  		socket.emit('removeFolder', {name: thisProjectName, session: currentFolder});
+  		$('#modal-delete-alert').foundation('reveal', 'close');
+  		window.location.replace('/'+currentFolder);
+  	});
+  	$('#modal-delete-alert button.annuler').on('click', function(){
+  		console.log('annuler');
+  		$('#modal-delete-alert').foundation('reveal', 'close');
+  		$(document).on('close.fndtn.reveal', '#modal-delete-alert[data-reveal]', function () {
+  	  	$('#modal-modify-folder').foundation('reveal', 'open');
+  		});
+  	});
+
+  },
+
+  statusChangeAlertInit : function() {
+
+    // TODO
+
+    $statusPopup = $('#modal-deletefolder-alert');
+  	$('#modal-modify-project .modify-statut').bind('change', function(){
+  		if($(this).val() == "terminé"){
+  			$('#modal-statut-alert').foundation('reveal', 'open');
+  			$('#modal-statut-alert button.oui').on('click', function(){
+  				console.log('oui ');
+  				$('#modal-statut-alert').foundation('reveal', 'close');
+  				$("#modal-modify-project").foundation('reveal', 'open');
+  			});
+  			$('#modal-statut-alert button.annuler').on('click', function(){
+  				console.log('non');
+  				$('#modal-modify-project .modify-statut').val('en cours');
+  				$('#modal-statut-alert').foundation('reveal', 'close');
+  				$("#modal-modify-project").foundation('reveal', 'open');
+  			});
+  			$(document).on('closed.fndtn.reveal', '#modal-statut-alert[data-reveal]', function () {
+  	  		$("#modal-modify-project").foundation('reveal', 'open');
+  			});
+  		}
+  	});
+  },
+
+  removeProjectInit : function() {
+  	var $deleteModal = $('#modal-deleteproject-alert');
+  	$deleteModal.find('button.oui').on('click', function(){
+    	debugger;
+    	var slugProjectName = $deleteModal.data('slugProjectName');
+    	var slugFolderName = currentFolder;
+  		socket.emit('removeOneProject',
+  		{
+    		"slugFolderName" : slugFolderName,
+    		"slugProjectName" : slugProjectName
+      });
+  		$deleteModal.foundation('reveal', 'close');
+  	});
+  	$deleteModal.find('button.annuler').on('click', function(){
+  		console.log('annuler');
+  		$deleteModal.foundation('reveal', 'close');
+  		$(document).on('close.fndtn.reveal', '#modal-delete-alert[data-reveal]', function () {
+  	  	$('#modal-modify-project').foundation('reveal', 'open');
+  		});
+  	});
+  },
 }
 
+modals.init();
 
 
 
