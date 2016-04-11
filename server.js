@@ -11,7 +11,7 @@ var credentials = {key: privateKey, cert: certificate};
 var httpsServer = https.createServer(credentials, app);
 var io      = require("socket.io").listen(httpsServer);
 
-var dodoc  = require('./public/dodoc.json');
+var dodoc  = require('./public/dodoc.js');
 var main    = require('./main');
 var config  = require('./config');
 var router  = require('./router');

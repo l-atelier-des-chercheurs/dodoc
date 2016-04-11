@@ -11,7 +11,7 @@ var fs = require('fs-extra'),
 	vsprintf = require("sprintf-js").vsprintf,
 	flags = require('flags')
 ;
-var dodoc  = require('./public/dodoc.json');
+var dodoc  = require('./public/dodoc.js');
 
 module.exports = function(app, io){
 
@@ -1148,7 +1148,7 @@ MEDIA METHODS
     dev.log( "looking for files in " + mediasPath);
 
     filesInMediaFolder.forEach( function( filename) {
-      if( !new Regexp( dodoc.regexpMatchFolderNames, 'i').test( filename) && filename !== ".DS_Store") {
+      if( !new RegExp( dodoc.regexpMatchFolderNames, 'i').test( filename) && filename !== ".DS_Store") {
         var fileExtension = new RegExp( dodoc.regexpGetFileExtension, 'i').exec( filename);
              dev.log( "fileEXTENSION of " + filename + " is " + fileExtension);
         if( fileExtension == ".json") {

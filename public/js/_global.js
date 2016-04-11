@@ -235,7 +235,6 @@ function insertOrReplaceProject( $item, $container) {
 
   if( $items.length > 0) {
     var mediaMTime = parseInt( $item.data("ctimestamp"));
-    debugger;
     if( mediaMTime !== false) {
       var $eles;
       $items.each( function( index) {

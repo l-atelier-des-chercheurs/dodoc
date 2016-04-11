@@ -1,4 +1,4 @@
-{
+var dodoc = {
   "contentDir" : "sessions",
   "folderJSONfilename" : "dossier.json",
   "projectJSONfilename" : "projet.json",
@@ -28,3 +28,8 @@
   "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)"
 }
 
+try {
+  module.exports = dodoc;
+} catch( err) {
+
+}

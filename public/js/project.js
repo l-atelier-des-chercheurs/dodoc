@@ -88,7 +88,7 @@ function onListProjectPubli( publisData) {
 
 
 function modifyProject($this){
-	$("#container.row #modal-modify-project").empty();
+	$("#modal-modify-project").empty();
 	thisProjectName = $this.parents('.project').find('.project-inside').find('h2').text();
 
 	var statut = $this.parent().attr("data-statut");
