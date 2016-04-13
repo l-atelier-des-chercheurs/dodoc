@@ -24,8 +24,8 @@ var streaming = false,
     startsm  = document.querySelector('#start-sm-btn'),
     capturesm  = document.querySelector('#capture-sm-btn'),
     stopsm  = document.querySelector('#stop-sm-btn'),
-    width = 480,
-    height = 0;
+    width = dodoc.captureVideoWidth,
+    height = dodoc.captureVideoHeight;
 var mediaStream = null;
 
 //Event variables for recording
@@ -304,6 +304,7 @@ function changeMediaBoitier(e){
 
 function photoDisplay(){
   $(".preview_image").show();
+  $('.screenshot .canvas-view').hide();
   $('.screenshot video').hide();
   $('.js--delete-media-capture').show();
   // setTimeout(function(){
@@ -323,6 +324,7 @@ function photoDisplay(){
 }
 function videoDisplay(){
   $(".preview_image").hide();
+  $('.screenshot .canvas-view').show();
   $('.photo-capture').css('display', 'none');
   $('.js--delete-media-capture').show();
   //setTimeout(function(){
@@ -471,10 +473,6 @@ function displayVideoStream(){
         var containerWidth = $(".video-view").width();
         var videoHeight = containerWidth * videoRatio;
         $(video).css( "height", videoHeight);
-
-        var smContainerWidth = $(".screenshot").width();
-        var smHeight = smContainerWidth * videoRatio;
-        $(canvas).css( "height", videoHeight);
       }
     }, false);
 }
@@ -488,12 +486,6 @@ function takePictures(){
   var invisibleCtx = invisibleCanvas.getContext('2d');
 
   invisibleCtx.drawImage(video, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
-
-/*
-  canvas.width = width;
-  canvas.height = height;
-  canvas.getContext('2d').drawImage(video, 0, 0, width, height);
-*/
   var imageData = invisibleCanvas.toDataURL('image/png');
 
   $(".captureRight .flash").fadeIn(0, function(){
@@ -687,7 +679,6 @@ function startStopMotion(){
   $("#capture-sm-btn").show();
   $("#stop-sm-btn").hide();
   $('.js--delete-media-capture').hide();
-  $('.screenshot .canvas-view').hide();
   $('#camera-preview').hide();
 
   var iconeSM = '<div class="icone-stopmotion"><img src="/images/stopmotion.svg"></div>';
@@ -728,10 +719,20 @@ function takeStopMotionPic() {
   var smCachePath = $("body").data( "smCachePath");
   var smImageCount = parseInt( $("body").data( "smImageCount")) + 1;
 
-  canvas.width = width;
-  canvas.height = height;
-  canvas.getContext('2d').drawImage(video, 0, 0, width, height);
+  var invisibleCanvas = document.createElement('canvas');
+  invisibleCanvas.width = dodoc.captureVideoWidth;
+  invisibleCanvas.height = dodoc.captureVideoHeight;
+  var invisibleCtx = invisibleCanvas.getContext('2d');
+
+  invisibleCtx.drawImage(video, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
+  var imageData = invisibleCanvas.toDataURL('image/png');
+
+  var factor = video.getBoundingClientRect().width / $(".screenshot")[0].getBoundingClientRect().width;;
+  canvas.width = video.getBoundingClientRect().width / factor;
+  canvas.height = video.getBoundingClientRect().height / factor;
+  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
   var data = canvas.toDataURL('image/png');
+
   photo.setAttribute('src', data);
   $(".meta-stopmotion .delete-image").off();
 /*
@@ -742,7 +743,7 @@ function takeStopMotionPic() {
 
   var smImage =
   {
-    "imageContent" : data,
+    "imageContent" : imageData,
     "folderCacheName" : smCacheName,
     "folderCachePath" : smCachePath,
     "imageCount" : smImageCount
@@ -1123,6 +1124,7 @@ function onMediaCreated( newMediasData){
 
 
   if( newMediaType === 'photo') {
+    $(".preview_image").attr("src", pathToMediaFile + '.jpg');
   }
   else if( newMediaType === 'video') {
     cameraPreview.src = pathToMediaFile + '.webm';
@@ -1137,6 +1139,7 @@ function onMediaCreated( newMediasData){
     cameraPreview.muted = false;
     cameraPreview.controls = true;
     $('#camera-preview').show();
+    $('.screenshot .canvas-view').hide();
   }
   else if( newMediaType === 'audio') {
 
