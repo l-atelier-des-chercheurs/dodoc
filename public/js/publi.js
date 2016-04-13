@@ -1,13 +1,18 @@
 /* VARIABLES */
 var socket = io.connect();
 
-var sessionId;
-//get current session
-var currentFolder = app.folder;
-//get current project
-var currentProject = app.project;
-//get current publi
-var currentPubli = app.publi;
+
+/* sockets */
+function onSocketConnect() {
+	sessionId = socket.io.engine.id;
+	console.log('Connected ' + sessionId);
+	socket.emit('displayPubli', {session: currentFolder, project: currentProject, publi: currentPubli});
+};
+
+function onSocketError(reason) {
+	console.log('Unable to connect to server', reason);
+};
+
 
 /* sockets */
 socket.on('connect', onSocketConnect);
@@ -29,14 +34,3 @@ function sendPubliData(data){
 	$('.publi-title').html(data.name);
 	$('.publi-content').html(data.html);
 }
-
-/* sockets */
-function onSocketConnect() {
-	sessionId = socket.io.engine.id;
-	console.log('Connected ' + sessionId);
-	socket.emit('displayPubli', {session: currentFolder, project: currentProject, publi: currentPubli});
-};
-
-function onSocketError(reason) {
-	console.log('Unable to connect to server', reason);
-};

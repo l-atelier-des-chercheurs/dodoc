@@ -7,11 +7,11 @@ var ffmpeg = require('fluent-ffmpeg');
 var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
 var dodoc  = require('./public/dodoc.js'),
-	moment = require( "moment" )
+	moment = require( "moment" ),
+  merge = require('merge')
 ;
 
 module.exports = function(app,io,m){
-
 
   /**
   * routing event

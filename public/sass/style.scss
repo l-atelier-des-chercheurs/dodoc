@@ -199,7 +199,7 @@ button{
     background-color: $bleumarine;
     color: white;
   }
-  &_accept, &_addText {
+  &_accept, &_addText, &_highlightMedia {
     background-color: $bleuvert;
     color: white;
   }
@@ -304,7 +304,7 @@ button{
 #modal-modify-project {
 
   .submit-modify-project {
-    float: left;
+
   }
 
   .button-wrapper_deleteProject {
@@ -327,6 +327,148 @@ button{
 @import '_folder';
 
 @import '_capture';
+
+
+
+// MEDIA
+.media {
+
+  @include grid-column(3);
+  position: relative;
+  border: 0 solid #f9f9f9;
+  z-index: 1;
+
+  padding-top: .9375rem;
+  padding-bottom: .9375rem;
+
+  .mediaContent {
+    @include style--dossierBorders;
+    border: none;
+    overflow:auto;
+  }
+
+
+  &.media_text {
+    .mediaContent {
+      padding: .9375rem;
+      min-height: 10vw;
+      .mediaContent--titleOfTextmedia {
+        font-size: 1.2em;
+        font-weight: normal;
+
+      }
+      .mediaContent--textOfTextmedia {
+        font-size:1em;
+      }
+      p:first-child {
+        margin-top:   0;
+      }
+    }
+  }
+
+  .mediaData {
+    .mediaData--informations {
+      padding: .9375rem;
+      margin: 0;
+      &:empty {
+        display: none;
+      }
+    }
+  }
+
+
+
+  // type de media (anciennement icone-media)
+  &::before {
+    content:"";
+    position: absolute;
+
+    width: 20px;
+    height: 20px;
+    right: 5px;
+    top: 5px;
+    z-index:  100;
+
+    background-size: cover;
+  }
+
+  &[data-mediatype="01-photos"]::before {
+    background-image: url("/images/icone-dodoc_image.png");
+  }
+  &[data-mediatype="02-animations"]::before {
+    background-image: url("/images/icone-dodoc_anim.png");
+  }
+  &[data-mediatype="03-videos"]::before {
+    background-image: url("/images/icone-dodoc_video.png");
+  }
+  &[data-mediatype="04-sons"]::before {
+    background-image: url("/images/icone-dodoc_son.png");
+  }
+
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: .9375rem;
+    top: .9375rem;
+    right: .9375rem;
+    bottom: .9375rem;
+    z-index: -1;
+    border: 0 solid transparent;
+    transition: all .35s;
+
+  }
+
+  &.is--highlight {
+    &::after {
+      background-color: $bleuvert;
+      left: .4687rem;
+      top: .4687rem;
+      right: .4687rem;
+      bottom: .4687rem;
+
+    }
+
+    .mediaContent {
+      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.4)
+    }
+  }
+
+  //Flag button
+  .button-wrapper_flagMedia {
+    position: absolute;
+    right:    -0px;
+    bottom:  -0;
+    z-index:  101;
+
+    display: block;
+
+    background-color: $bleuvert;
+
+    transform-origin: right bottom;
+//     transform: scale(0);
+    opacity: 0;
+
+    border-radius: 50%;
+
+    transition: transform .2s ease-out, opacity .2s ease-out;
+  }
+  &:hover {
+    &.is--highlight .button-wrapper_flagMedia {
+
+    }
+    .button-wrapper_flagMedia {
+//       transform: scale(1);
+      opacity: .8;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+
+}
 
 
 

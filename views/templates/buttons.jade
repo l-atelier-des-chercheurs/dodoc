@@ -79,7 +79,7 @@ mixin button(typeOfButton, navOrButton, style)
       span Bibliothèque
 
   if( typeOfButton === 'publications')
-    a(href="/#{folder}/#{project}/bibliotheque/panneau-de-publications" title="Dodoc publi" class='button-wrapper_publi js--publications #{defaultClasses}')
+    a(href="/#{folder}/#{project}/bibliotheque/panneau-de-publications" title="Dodoc publi" class='button-wrapper_publi js--open_publicationspane #{defaultClasses}')
       .btn.icon
         include images/publi.svg
       span Publications

@@ -1,3 +1,18 @@
+/* VARIABLES */
+var socket = io.connect();
+
+
+/* sockets */
+function onSocketConnect() {
+	sessionId = socket.io.engine.id;
+	console.log('Connected ' + sessionId);
+	socket.emit('listFolders');
+};
+
+function onSocketError(reason) {
+	console.log('Unable to connect to server', reason);
+};
+
 
 /* sockets */
 socket.on('connect', onSocketConnect);
@@ -328,14 +343,3 @@ function onFolderRemoved(){
 	thisFolder.remove();
 	location.reload();
 }
-
-/* sockets */
-function onSocketConnect() {
-	sessionId = socket.io.engine.id;
-	console.log('Connected ' + sessionId);
-	socket.emit('listFolders');
-};
-
-function onSocketError(reason) {
-	console.log('Unable to connect to server', reason);
-};

@@ -1,6 +1,6 @@
 var express = require("express");
 var app     = express();
-var http    = require("http").createServer(app);
+var http    = require("http");
 var https = require('https');
 var fs = require('fs');
 var privateKey  = fs.readFileSync('file.pem', 'utf8');
@@ -33,6 +33,9 @@ router(app, io, m);
 /**
 * Start the http server at port and IP defined before
 */
-httpsServer.listen(app.get("port"), function() {
-  console.log("Server up and running. Go to https://localhost:" + app.get("port"));
-});
+
+httpsServer.listen(
+  app.get("port"), function() {
+    console.log("Server up and running. Go to https://localhost:" + app.get("port"));
+  }
+);

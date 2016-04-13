@@ -43,30 +43,30 @@ div.media-big_image.media-big.row(data-type="image")
   .mediaContent.small-8.columns
     img
   .mediaDataForm.small-4.columns
-    include mediaForm.jade
+    include modals/mediaForm.jade
 div.media-big_video.media-big(data-type="video")
   .mediaContent.small-8.columns
     video(preload="none" controls)
       source()
   .mediaDataForm.small-4.columns
-    include mediaForm.jade
+    include modals/mediaForm.jade
 div.media-big_stopmotion.media-big(data-type="stopmotion")
   .mediaContent.small-8.columns
     video(preload="none" controls)
       source()
   .mediaDataForm.small-4.columns
-    include mediaForm.jade
+    include modals/mediaForm.jade
 div.media-big_audio.media-big(data-type="audio")
   .mediaContent.small-8.columns
     audio(preload="none" controls)
       source()
   .mediaDataForm.small-4.columns
-    include mediaForm.jade
+    include modals/mediaForm.jade
 div.media-big_text.media-big(data-type="text" data-id)
   .mediaContent
-    form(onsubmit='return false;' class='modify-text-view lead')
-      input(type='text' class='view-text-title-modify')
-      textarea.view-text-modify
+    form(onsubmit='return false;' class='add-media-text lead')
+      input.js--submit-new-text_title(type='text' placeholder='Titre')
+      textarea.js--submit-new-text_text(placeholder="Ajouter du texte ici")
       input(type='submit' class='js--submit-view-text-modify' value='Valider')
     +button('favButton', '', '')
     +button('deleteMediaBibli', '', '')

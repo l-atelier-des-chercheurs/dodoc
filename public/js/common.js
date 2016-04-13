@@ -43,3 +43,4 @@ function convertToSlug(Text){
 	// renvoi le texte modifié
 	return s;
 }
+

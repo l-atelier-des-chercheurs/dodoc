@@ -7058,6 +7058,13 @@ th.hide-for-touch {
   @media screen and (max-width: 50em) {
     .reveal-modal .inputfile-6 + label strong {
       display: block; } }
+  .reveal-modal .inputfile-2 + label {
+    color: #d3394c;
+    border: 2px solid currentColor; }
+  .reveal-modal .inputfile-2:focus + label,
+  .reveal-modal .inputfile-2.has-focus + label,
+  .reveal-modal .inputfile-2 + label:hover {
+    color: #722040; }
   .reveal-modal#modal-media-view {
     max-width: 80%;
     padding-top: 30px;
@@ -7067,26 +7074,39 @@ th.hide-for-touch {
     .reveal-modal#modal-media-view .row {
       max-width: 100%; }
     .reveal-modal#modal-media-view .button-wrapper_highlightMedia {
-      border: 1px solid #48C2B5;
       color: #48C2B5;
+      background-color: transparent;
+      /*
+      border: 1px solid $bleuvert;
+      color:$bleuvert;
       padding: 6px 22px;
-      border-radius: 20px; }
-      .reveal-modal#modal-media-view .button-wrapper_highlightMedia:hover {
-        background-color: #48C2B5;
+      border-radius: 20px;
+      &:hover{
+        background-color:$bleuvert;
         color: #FFF;
-        border: none; }
-    .reveal-modal#modal-media-view .is--highlight .button-wrapper_highlightMedia {
-      background-color: #48C2B5;
-      color: #FFF;
-      border: none; }
-      .reveal-modal#modal-media-view .is--highlight .button-wrapper_highlightMedia:hover {
-        border: 1px solid #48C2B5;
-        color: #48C2B5;
-        background-color: #FFF; }
-    .reveal-modal#modal-media-view .button-wrapper_deleteMedia {
+        border:none;
+      }
+*/ }
+    .reveal-modal#modal-media-view .is--highlight {
+      /*
+      .button-wrapper_highlightMedia{
+        background-color:$bleuvert;
+        color: #FFF;
+        border:none;
+        &:hover{
+          border: 1px solid $bleuvert;
+          color:$bleuvert;
+          background-color:#FFF;
+        }
+      }
+*/ }
+      .reveal-modal#modal-media-view .is--highlight .button-wrapper_highlightMedia {
+        color: white;
+        background-color: #48C2B5; }
+    .reveal-modal#modal-media-view .button-wrapper {
       margin: 20px 0px 25px 0px;
       float: none; }
-      .reveal-modal#modal-media-view .button-wrapper_deleteMedia span {
+      .reveal-modal#modal-media-view .button-wrapper span {
         margin-left: 10px; }
 
 input[type="text"], select {
@@ -7278,7 +7298,7 @@ button {
   .button-wrapper_bibli, .button-wrapper_gofullscreen, .button-wrapper_leavefullscreen {
     background-color: #293275;
     color: white; }
-  .button-wrapper_accept, .button-wrapper_addText {
+  .button-wrapper_accept, .button-wrapper_addText, .button-wrapper_highlightMedia {
     background-color: #48C2B5;
     color: white; }
   .button-wrapper.button-wrapper_collapsed {
@@ -7332,9 +7352,6 @@ button {
 
 #modal-add-text textarea {
   min-height: 250px; }
-
-#modal-modify-project .submit-modify-project {
-  float: left; }
 
 #modal-modify-project .button-wrapper_deleteProject {
   float: right; }
@@ -7567,9 +7584,8 @@ body.bibli {
       .montage .montage-edit .montage-title .title {
         float: left;
         font-weight: bold;
-        font-size: 1.5em;
-        margin: 0;
-        margin-top: 6px; }
+        font-size: 1.6em;
+        margin: 0; }
       .montage .montage-edit .montage-title .publi-btn {
         float: right;
         margin-top: 4px; }
@@ -7619,14 +7635,9 @@ body.bibli {
       padding-right: 0.9375rem;
       width: 100%;
       float: left;
-      padding-bottom: 0.4687rem;
-      padding-top: 0.4687rem;
       position: relative;
       cursor: move;
       transition: all .4s; }
-      .montage .inner-montage .media .mediaContent {
-        overflow: hidden;
-        opacity: 1; }
       .montage .inner-montage .media .button-wrapper {
         position: absolute;
         top: 0;
@@ -7636,8 +7647,6 @@ body.bibli {
         transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out, opacity .4s ease-out; }
       .montage .inner-montage .media:hover .button-wrapper_deleteMedia {
         opacity: 1; }
-      .montage .inner-montage .media .media-title:empty() {
-        display: none; }
     .montage .inner-montage .media.gu-transit {
       height: 120px;
       width: 100%;
@@ -7646,7 +7655,7 @@ body.bibli {
       opacity: 1;
       animation-name: insertBloc;
       animation-iteration-count: 1;
-      animation-timing-function: ease-in;
+      animation-timing-function: ease-out;
       animation-duration: 0.3s; }
     .montage .inner-montage .media.gu-transit .mediaContent {
       height: 100%;
@@ -7699,97 +7708,22 @@ body.bibli {
     text-align: center;
     white-space: pre; }
   .medias-list .media {
+    padding-left: 0.9375rem;
+    padding-right: 0.9375rem;
     width: 16.66667%;
     float: left;
-    position: relative;
-    /*
-        padding-top: 0.9375rem;
-        padding-bottom: 0.9375rem;
-        padding-left: 0.9375rem;
-        padding-right: 0.9375rem;
-    */
-    padding: 0;
-    border: .4687rem solid #eee;
-    background: #e5e5e5;
     cursor: pointer;
-    margin-bottom: .9374rem;
     transition: width 1.1s ease; }
     body:not([data-publicationpane="open"]) .medias-list .media:nth-child(6n+1) {
       clear: left; }
     body[data-publicationpane="open"] .medias-list .media {
+      padding-left: 0.9375rem;
+      padding-right: 0.9375rem;
       width: 25%;
+      float: left;
       cursor: move; }
       body[data-publicationpane="open"] .medias-list .media:nth-child(4n+1) {
         clear: left; }
-    .medias-list .media[data-title=''][data-legende=''] .mediaData {
-      padding: 0; }
-    .medias-list .media.media_text .mediaContent {
-      padding: .9375rem; }
-      .medias-list .media.media_text .mediaContent .mediaContent--titleOfTextmedia {
-        font-size: 1.2em;
-        font-weight: normal; }
-      .medias-list .media.media_text .mediaContent .mediaContent--textOfTextmedia {
-        font-size: 1em; }
-      .medias-list .media.media_text .mediaContent p:first-child {
-        margin-top: 0; }
-    .medias-list .media > h3 {
-      margin-top: 0; }
-    .medias-list .media .mediaContent {
-      overflow: auto;
-      min-height: 10vw;
-      max-height: 20vw;
-      overflow: hidden; }
-    .medias-list .media::before {
-      content: "";
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      right: -10px;
-      top: -10px;
-      z-index: 100;
-      background-size: cover; }
-    .medias-list .media::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      border: 0 solid transparent;
-      transition: all .35s; }
-    .medias-list .media[data-mediatype="image"]::before {
-      background-image: url("/images/icone-dodoc_image.png"); }
-    .medias-list .media[data-mediatype="video"]::before {
-      background-image: url("/images/icone-dodoc_video.png"); }
-    .medias-list .media[data-mediatype="stopmotion"]::before {
-      background-image: url("/images/icone-dodoc_anim.png"); }
-    .medias-list .media[data-mediatype="audio"]::before {
-      background-image: url("/images/icone-dodoc_son.png"); }
-    .medias-list .media.is--highlight::after {
-      border-bottom: 0.4687rem solid rgba(72, 194, 181, 0.6); }
-    .medias-list .media .button-wrapper_flagMedia {
-      position: absolute;
-      right: -0px;
-      bottom: -0;
-      z-index: 101;
-      display: block;
-      background-color: #48C2B5;
-      transform-origin: right bottom;
-      transform: scale(0);
-      opacity: 0;
-      border-top-left-radius: 4px;
-      transition: transform .2s ease-out, opacity .4s ease-out; }
-    .medias-list .media:hover .button-wrapper_flagMedia {
-      transform: scale(1);
-      opacity: .8; }
-      .medias-list .media:hover .button-wrapper_flagMedia:hover {
-        opacity: 1; }
-    .medias-list .media .mediaData .mediaData--informations {
-      margin: 0;
-      padding: .4687rem;
-      border-bottom: 1px solid #cecece; }
-      .medias-list .media .mediaData .mediaData--informations:empty {
-        display: none; }
 
 .montage-list {
   margin-top: 15px; }
@@ -7943,6 +7877,7 @@ body.projets #container {
       background-color: #fff;
       -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      background-color: #f9f9f9;
       margin-top: 3px;
       padding: 17% 0.9375rem 25px; }
       .project-list .project .last-medias:before, .project-list .project .last-medias:after {
@@ -7957,33 +7892,10 @@ body.projets #container {
         clear: both; }
       body.projets .project-list .project .last-medias {
         display: none; }
-      .project-list .project .last-medias .media {
-        padding-left: 0.9375rem;
-        padding-right: 0.9375rem;
-        width: 25%;
-        float: left;
-        padding-top: 0.9375rem;
-        padding-bottom: 0.9375rem;
-        position: relative; }
-        .project-list .project .last-medias .media:nth-of-type(4n+1) {
-          clear: left; }
-        .project-list .project .last-medias .media::before {
-          content: "";
-          position: absolute;
-          width: 20px;
-          height: 20px;
-          right: 10px;
-          top: 10px;
-          z-index: 100;
-          background-size: cover; }
-        .project-list .project .last-medias .media[data-mediatype="image"]::before {
-          background-image: url("/images/icone-dodoc_image.png"); }
-        .project-list .project .last-medias .media[data-mediatype="video"]::before {
-          background-image: url("/images/icone-dodoc_video.png"); }
-        .project-list .project .last-medias .media[data-mediatype="stopmotion"]::before {
-          background-image: url("/images/icone-dodoc_anim.png"); }
-        .project-list .project .last-medias .media[data-mediatype="audio"]::before {
-          background-image: url("/images/icone-dodoc_son.png"); }
+      .project-list .project .last-medias .media:nth-of-type(4n+1) {
+        clear: left; }
+      .project-list .project .last-medias .button-wrapper_flagMedia {
+        display: none; }
     .project-list .project .montage-list {
       margin: 0 auto;
       max-width: 62.5rem;
@@ -8013,6 +7925,10 @@ body.projets #container {
 
 body.projet .project-list {
   margin-top: 75px; }
+
+body.projet .project-inside .project-link {
+  pointer-events: none;
+  cursor: default; }
 
 body.capture .container-inner {
   margin: auto; }
@@ -8084,6 +8000,7 @@ body.capture .content-wrapper:after {
   margin-bottom: 25px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   width: 50%;
+  min-width: 640px;
   left: 25%; }
   body.is--fullscreen .captureLeft {
     width: 100%;
@@ -8301,6 +8218,89 @@ body.capture .content-wrapper:after {
     display: none;
     float: right;
     width: 48px; }
+
+.media {
+  padding-left: 0.9375rem;
+  padding-right: 0.9375rem;
+  width: 25%;
+  float: left;
+  position: relative;
+  border: 0 solid #f9f9f9;
+  z-index: 1;
+  padding-top: .9375rem;
+  padding-bottom: .9375rem; }
+  .media .mediaContent {
+    border-bottom: 2px solid #eeeeee;
+    background-color: #fff;
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    border: none;
+    overflow: auto; }
+  .media.media_text .mediaContent {
+    padding: .9375rem;
+    min-height: 10vw; }
+    .media.media_text .mediaContent .mediaContent--titleOfTextmedia {
+      font-size: 1.2em;
+      font-weight: normal; }
+    .media.media_text .mediaContent .mediaContent--textOfTextmedia {
+      font-size: 1em; }
+    .media.media_text .mediaContent p:first-child {
+      margin-top: 0; }
+  .media .mediaData .mediaData--informations {
+    padding: .9375rem;
+    margin: 0; }
+    .media .mediaData .mediaData--informations:empty {
+      display: none; }
+  .media::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    right: 5px;
+    top: 5px;
+    z-index: 100;
+    background-size: cover; }
+  .media[data-mediatype="01-photos"]::before {
+    background-image: url("/images/icone-dodoc_image.png"); }
+  .media[data-mediatype="02-animations"]::before {
+    background-image: url("/images/icone-dodoc_anim.png"); }
+  .media[data-mediatype="03-videos"]::before {
+    background-image: url("/images/icone-dodoc_video.png"); }
+  .media[data-mediatype="04-sons"]::before {
+    background-image: url("/images/icone-dodoc_son.png"); }
+  .media::after {
+    content: "";
+    position: absolute;
+    left: .9375rem;
+    top: .9375rem;
+    right: .9375rem;
+    bottom: .9375rem;
+    z-index: -1;
+    border: 0 solid transparent;
+    transition: all .35s; }
+  .media.is--highlight::after {
+    background-color: #48C2B5;
+    left: .4687rem;
+    top: .4687rem;
+    right: .4687rem;
+    bottom: .4687rem; }
+  .media.is--highlight .mediaContent {
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.4); }
+  .media .button-wrapper_flagMedia {
+    position: absolute;
+    right: -0px;
+    bottom: -0;
+    z-index: 101;
+    display: block;
+    background-color: #48C2B5;
+    transform-origin: right bottom;
+    opacity: 0;
+    border-radius: 50%;
+    transition: transform .2s ease-out, opacity .2s ease-out; }
+  .media:hover .button-wrapper_flagMedia {
+    opacity: .8; }
+    .media:hover .button-wrapper_flagMedia:hover {
+      opacity: 1; }
 
 .js--templates {
   display: none; }

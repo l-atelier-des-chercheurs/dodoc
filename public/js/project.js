@@ -1,4 +1,19 @@
 
+/* VARIABLES */
+var socket = io.connect();
+
+/* sockets */
+function onSocketConnect() {
+	sessionId = socket.io.engine.id;
+	console.log('Connected ' + sessionId);
+	socket.emit('listProject', { "slugFolderName" : currentFolder, "slugProjectName" : currentProject});
+};
+
+function onSocketError(reason) {
+	console.log('Unable to connect to server', reason);
+};
+
+
 var thisProjectName;
 var thisProject;
 var imageData = null;
@@ -7,11 +22,18 @@ var $thisEl;
 /* sockets */
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
+
 socket.on('listOneProject', onListOneProject);
 socket.on('listMediasOfOneType', onListMediasOfOneType);
 socket.on('listProjectPubli', onListProjectPubli);
+
 socket.on('projectModified', onProjectModified); //Quand on reçoit les modification du projet
 socket.on('projectRemoved', onProjectRemoved);
+
+socket.on('mediaCreated', onMediaCreated);
+socket.on('mediaUpdated', onMediaUpdated);
+socket.on('mediaRemoved', onMediaRemoved);
+
 
 jQuery(document).ready(function($) {
 	$(document).foundation();
@@ -95,14 +117,33 @@ function onProjectRemoved( projectData){
 	window.location.replace('/'+currentFolder);
 }
 
+function onMediaRemoved( mediaData){
+  console.log( "onMediaRemoved");
+  if( mediaData.slugFolderName !== currentFolder || mediaData.slugProjectName !== currentProject)
+    return;
+  removeMedia( $('.last-medias .media'), mediaData);
+}
 
-/* sockets */
-function onSocketConnect() {
-	sessionId = socket.io.engine.id;
-	console.log('Connected ' + sessionId);
-	socket.emit('listProject', { "slugFolderName" : currentFolder, "slugProjectName" : currentProject});
-};
+// returns when a text content has been added
+function onMediaCreated( mediasData) {
+  console.log( "onMediaCreated");
 
-function onSocketError(reason) {
-	console.log('Unable to connect to server', reason);
-};
+
+  var mediaData = getFirstMediaFromObj( mediasData);
+
+  if( mediaData.slugFolderName !== currentFolder || mediaData.slugProjectName !== currentProject)
+    return;
+
+  var $updatedMedia = listMedia( mediaData);
+  debugger;
+  var $mediaContainer = $(".mainContent .last-medias");
+  insertOrReplaceMedia( $updatedMedia, $mediaContainer);
+
+}
+
+function onMediaUpdated( mediasData) {
+  console.log( "onMediaUpdated");
+  onMediaCreated( mediasData);
+}
+
+

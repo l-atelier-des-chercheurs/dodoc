@@ -102,6 +102,8 @@ body.projets{
         padding: 10px 16px;
         margin: 0;
 
+
+
         &:hover {
           color: $bleuvert;
         }
@@ -158,6 +160,7 @@ body.projets{
       @include clearfix();
 
       @include style--dossierBorders;
+      background-color: #f9f9f9;
       margin-top: 3px;
       padding: 17% 0.9375rem 25px;
 
@@ -166,46 +169,13 @@ body.projets{
       }
 
       .media {
-        @include grid-column(3);
-        padding-top: 0.9375rem;
-        padding-bottom: 0.9375rem;
-
-        position: relative;
-
         &:nth-of-type(4n+1) {
           clear: left;
         }
-
-        // type de media (anciennement icone-media)
-        &::before {
-          content:"";
-          position: absolute;
-
-          width: 20px;
-          height: 20px;
-          right: 10px;
-          top: 10px;
-          z-index:  100;
-
-          background-size: cover;
-        }
-
-        &[data-mediatype="image"]::before {
-          background-image: url("/images/icone-dodoc_image.png");
-        }
-        &[data-mediatype="video"]::before {
-          background-image: url("/images/icone-dodoc_video.png");
-        }
-        &[data-mediatype="stopmotion"]::before {
-          background-image: url("/images/icone-dodoc_anim.png");
-        }
-        &[data-mediatype="audio"]::before {
-          background-image: url("/images/icone-dodoc_son.png");
-        }
-
-
       }
-
+      .button-wrapper_flagMedia {
+        display: none;
+      }
 
     }
 
@@ -233,5 +203,13 @@ body.projet {
     margin-top:   75px;
   }
 
+  .project-inside {
 
+
+    .project-link {
+      pointer-events: none;
+      cursor: default;
+    }
+
+  }
 }

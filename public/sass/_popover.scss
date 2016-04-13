@@ -175,6 +175,18 @@
   	}
   }
 
+  .inputfile-2 + label {
+      color: #d3394c;
+      border: 2px solid currentColor;
+  }
+
+  .inputfile-2:focus + label,
+  .inputfile-2.has-focus + label,
+  .inputfile-2 + label:hover {
+      color: #722040;
+  }
+
+
   &#modal-media-view{
     max-width: 80%;
     padding-top: 30px;
@@ -187,6 +199,9 @@
       max-width:100%;
     }
     .button-wrapper_highlightMedia{
+      color:$bleuvert;
+      background-color: transparent;
+/*
       border: 1px solid $bleuvert;
       color:$bleuvert;
       padding: 6px 22px;
@@ -196,8 +211,17 @@
         color: #FFF;
         border:none;
       }
+*/
     }
     .is--highlight{
+      .button-wrapper_highlightMedia{
+
+        color: white;
+        background-color: $bleuvert;
+
+      }
+
+/*
       .button-wrapper_highlightMedia{
         background-color:$bleuvert;
         color: #FFF;
@@ -208,8 +232,9 @@
           background-color:#FFF;
         }
       }
+*/
     }
-    .button-wrapper_deleteMedia{
+    .button-wrapper {
       margin: 20px 0px 25px 0px;
       float: none;
       span{

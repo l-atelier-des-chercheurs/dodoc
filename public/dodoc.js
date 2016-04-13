@@ -26,7 +26,10 @@ var dodoc = {
   "regexpMatchFolderNames" : "^([^.]+)$",
   "regexpMatchProjectPreviewNames" : "^(apercu|preview)",
   "regexpGetFileExtension" : "\\.[^.]*$",
-  "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)"
+  "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)",
+
+  "captureVideoWidth" : 640,
+  "captureVideoHeight" : 480,
 }
 
 try {

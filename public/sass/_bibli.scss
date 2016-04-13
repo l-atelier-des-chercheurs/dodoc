@@ -165,9 +165,8 @@ body.bibli {
         float: left;
 
         font-weight: bold;
-        font-size: 1.5em;
+        font-size: 1.6em;
         margin: 0;
-        margin-top: 6px;
 
       }
 
@@ -241,20 +240,10 @@ body.bibli {
     .media {
       @include grid-column(12);
 
-      padding-bottom: 0.4687rem;
-      padding-top: 0.4687rem;
-
       position: relative;
       cursor: move;
 
       transition: all .4s;
-
-
-
-      .mediaContent {
-        overflow: hidden;
-        opacity: 1;
-      }
 
       .button-wrapper {
         position: absolute;
@@ -273,9 +262,6 @@ body.bibli {
         }
       }
 
-      .media-title:empty() {
-        display: none;
-      }
     }
 
 
@@ -290,7 +276,7 @@ body.bibli {
 
       animation-name: insertBloc;
       animation-iteration-count: 1;
-      animation-timing-function: ease-in;
+      animation-timing-function: ease-out;
       animation-duration: 0.3s;
     }
 
@@ -371,33 +357,18 @@ body.bibli {
 
   .media {
 
-    width: 16.66667%;
-    float: left;
-    position:relative;
-
-    /*
-        padding-top: 0.9375rem;
-        padding-bottom: 0.9375rem;
-        padding-left: 0.9375rem;
-        padding-right: 0.9375rem;
-    */
-
-    padding: 0;
-    border: .4687rem solid #eee;
-    background:   $gristresclair;
+    @include grid-column(2);
 
     cursor: pointer;
-
-    margin-bottom:   .9374rem;
-
     transition: width 1.1s ease;
+
 
     body:not([data-publicationpane="open"]) &:nth-child(6n+1) {
       clear: left;
     }
 
     body[data-publicationpane="open"] & {
-      width: 25%;
+      @include grid-column(3);
       cursor: move;
 
       &:nth-child(4n+1) {
@@ -405,132 +376,6 @@ body.bibli {
       }
     }
 
-    // si aucune légende et aucun titre
-    &[data-title=''][data-legende=''] {
-      .mediaData {
-        padding: 0;
-      }
-    }
-
-    &.media_text {
-
-      .mediaContent {
-        padding: .9375rem;
-        .mediaContent--titleOfTextmedia {
-          font-size: 1.2em;
-          font-weight: normal;
-
-        }
-        .mediaContent--textOfTextmedia {
-          font-size:1em;
-        }
-        p:first-child {
-          margin-top:   0;
-        }
-      }
-
-    }
-
-    > h3 {
-      margin-top: 0;
-    }
-
-    .mediaContent{
-      overflow:auto;
-      min-height: 10vw;
-      max-height: 20vw;
-      overflow: hidden;
-    }
-
-
-    // type de media (anciennement icone-media)
-    &::before {
-      content:"";
-      position: absolute;
-
-      width: 20px;
-      height: 20px;
-      right: -10px;
-      top: -10px;
-      z-index:  100;
-
-      background-size: cover;
-    }
-    &::after {
-      content: "";
-      position: absolute;
-      left:0; top: 0;
-      right: 0; bottom: 0;
-      border: 0 solid transparent;
-      transition: all .35s;
-    }
-
-    &[data-mediatype="image"]::before {
-      background-image: url("/images/icone-dodoc_image.png");
-    }
-    &[data-mediatype="video"]::before {
-      background-image: url("/images/icone-dodoc_video.png");
-    }
-    &[data-mediatype="stopmotion"]::before {
-      background-image: url("/images/icone-dodoc_anim.png");
-    }
-    &[data-mediatype="audio"]::before {
-      background-image: url("/images/icone-dodoc_son.png");
-    }
-
-    &.is--highlight {
-      &::after {
-        border-bottom: .4687rem solid transparentize( $bleuvert, .4);
-      }
-
-      .button-wrapper_flagMedia {
-      }
-    }
-
-    //Flag button
-    .button-wrapper_flagMedia {
-      position: absolute;
-      right:    -0px;
-      bottom:  -0;
-      z-index:  101;
-
-      display: block;
-
-      background-color: $bleuvert;
-
-      transform-origin: right bottom;
-      transform: scale(0);
-      opacity: 0;
-
-      border-top-left-radius: 4px;
-
-      transition: transform .2s ease-out, opacity .4s ease-out;
-    }
-    &:hover {
-      &.is--highlight .button-wrapper_flagMedia {
-
-      }
-      .button-wrapper_flagMedia {
-        transform: scale(1);
-        opacity: .8;
-
-        &:hover {
-          opacity: 1;
-        }
-      }
-    }
-
-    .mediaData {
-      .mediaData--informations {
-        margin: 0;
-        padding: .4687rem;
-        border-bottom:  1px solid $grisclair;
-        &:empty {
-          display: none;
-        }
-      }
-
-    }
   }
 
 }

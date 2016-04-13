@@ -1,13 +1,9 @@
-/* VARIABLES */
-var socket = io.connect();
 
 var sessionId;
 //get current session
 var currentFolder = app.folder;
 //get current project
 var currentProject = app.project;
-
-
 
 
 /* fonction accessible depuis l'extérieur :
@@ -70,47 +66,67 @@ function loadProject( projectData) {
 
 
 function listMediasOfOneType( mediasData) {
+  console.log( "listMediasOfOneType");
+
   var $allMedias = $();
   var lastMedias = mediasData;
+
   $.each( lastMedias, function( index, mediaTypeContent) {
     $.each( mediaTypeContent, function( metaJsonName, mediaDatas) {
-      var pathMediaFolder = mediaDatas.pathMediaFolder;
+      var mediaFolderPath = mediaDatas.mediaFolderPath;
       var mediaName = new RegExp(dodoc.regexpRemoveFileExtension).exec( metaJsonName)[1];
-      var newMedia = makeOneMedia( pathMediaFolder, mediaName, mediaDatas);
-      $allMedias = $allMedias.add( newMedia);
+      var newMedia = makeOneMedia( mediaFolderPath, mediaName, mediaDatas);
+      if( newMedia !== undefined)
+        $allMedias = $allMedias.add( newMedia);
     });
   });
 
   return $allMedias;
 }
 
-function makeOneMedia( pathMediaFolder, mediaName, mediaDatas) {
+
+function listMedia( mediaData) {
+
+  var mediaFolderPath = mediaData.mediaFolderPath;
+  var mediaName = mediaData.mediaName;
+  var newMedia = makeOneMedia( mediaFolderPath, mediaName, mediaData);
+  if( newMedia !== undefined)
+    return newMedia;
+  return false;
+}
+
+
+function makeOneMedia( mediaFolderPath, mediaName, mediaDatas) {
+  console.log( "makeOneMedia");
+
+  if( mediaDatas.slugFolderName !== currentFolder || mediaDatas.slugProjectName !== currentProject)
+    return;
 
   var $currentMedia = '';
   var mediaFilenames = mediaDatas.files;
 
-  if( pathMediaFolder === dodoc.projectPhotosFoldername)
-    $currentMedia = showImage( pathMediaFolder, mediaName, mediaFilenames);
+  if( mediaFolderPath === dodoc.projectPhotosFoldername)
+    $currentMedia = showImage( mediaFolderPath, mediaName, mediaFilenames);
 
-  if( pathMediaFolder === dodoc.projectAnimationsFoldername)
-    $currentMedia = showAnimation( pathMediaFolder, mediaName, mediaFilenames);
+  if( mediaFolderPath === dodoc.projectAnimationsFoldername)
+    $currentMedia = showAnimation( mediaFolderPath, mediaName, mediaFilenames);
 
-  if( pathMediaFolder === dodoc.projectVideosFoldername)
-    $currentMedia = showVideo( pathMediaFolder, mediaName, mediaFilenames);
+  if( mediaFolderPath === dodoc.projectVideosFoldername)
+    $currentMedia = showVideo( mediaFolderPath, mediaName, mediaFilenames);
 
-  if( pathMediaFolder === dodoc.projectAudiosFoldername)
-    $currentMedia = showAudio( pathMediaFolder, mediaName, mediaFilenames);
+  if( mediaFolderPath === dodoc.projectAudiosFoldername)
+    $currentMedia = showAudio( mediaFolderPath, mediaName, mediaFilenames);
 
-  if( pathMediaFolder === dodoc.projectTextsFoldername)
-    $currentMedia = showText( pathMediaFolder, mediaName, mediaFilenames, mediaDatas);
+  if( mediaFolderPath === dodoc.projectTextsFoldername)
+    $currentMedia = showText( mediaFolderPath, mediaName, mediaFilenames, mediaDatas);
 
-  var pathToMeta = makeFullMediaPath( pathMediaFolder + '/' + mediaName);
+  var pathToMeta = makeFullMediaPath( mediaFolderPath + '/' + mediaName);
 
   $currentMedia
     .attr( 'data-mediaName', mediaName)
     .attr( 'data-pathToMeta', pathToMeta)
-    .attr( 'data-mediatype', pathMediaFolder)
-    .attr( 'data-type', pathMediaFolder)
+    .attr( 'data-mediatype', mediaFolderPath)
+    .attr( 'data-type', mediaFolderPath)
   	.attr( 'data-informations', mediaDatas.informations)
   	.addClass( mediaDatas.fav ? 'is--highlight' : '')
   	.find( '.mediaData--informations')
@@ -135,9 +151,9 @@ function makeFullMediaPath( pathToMediaFolderAndMedia) {
   return '/' + currentFolder + '/' + currentProject + '/' + pathToMediaFolderAndMedia;
 }
 
-function showImage( pathMediaFolder, mediaName, mediaFilenames) {
+function showImage( mediaFolderPath, mediaName, mediaFilenames) {
 
-  var pathToFile = makeFullMediaPath( pathMediaFolder + '/' + mediaFilenames[0]);
+  var pathToFile = makeFullMediaPath( mediaFolderPath + '/' + mediaFilenames[0]);
 
 	var mediaItem = $(".js--templates .media_image").clone(false);
 	mediaItem
@@ -146,7 +162,7 @@ function showImage( pathMediaFolder, mediaName, mediaFilenames) {
 	return mediaItem;
 }
 
-function showAnimation( pathMediaFolder, mediaName, mediaFilenames) {
+function showAnimation( mediaFolderPath, mediaName, mediaFilenames) {
 
   var thumbFilename;
   var videoFilename;
@@ -158,8 +174,8 @@ function showAnimation( pathMediaFolder, mediaName, mediaFilenames) {
     }
   });
 
-  var pathToThumb = makeFullMediaPath( pathMediaFolder + '/' + thumbFilename);
-  var pathToVideoFile = makeFullMediaPath( pathMediaFolder + '/' + videoFilename);
+  var pathToThumb = makeFullMediaPath( mediaFolderPath + '/' + thumbFilename);
+  var pathToVideoFile = makeFullMediaPath( mediaFolderPath + '/' + videoFilename);
 
 	var mediaItem = $(".js--templates .media_stopmotion").clone(false);
 	mediaItem
@@ -170,7 +186,7 @@ function showAnimation( pathMediaFolder, mediaName, mediaFilenames) {
 	return mediaItem;
 }
 
-function showVideo( pathMediaFolder, mediaName, mediaFilenames) {
+function showVideo( mediaFolderPath, mediaName, mediaFilenames) {
 
   var thumbFilename;
   var videoFilename;
@@ -183,8 +199,8 @@ function showVideo( pathMediaFolder, mediaName, mediaFilenames) {
     }
   });
 
-  var pathToThumb = makeFullMediaPath( pathMediaFolder + '/' + thumbFilename);
-  var pathToVideoFile = makeFullMediaPath( pathMediaFolder + '/' + videoFilename);
+  var pathToThumb = makeFullMediaPath( mediaFolderPath + '/' + thumbFilename);
+  var pathToVideoFile = makeFullMediaPath( mediaFolderPath + '/' + videoFilename);
 
 	var mediaItem = $(".js--templates .media_video").clone(false);
 	mediaItem
@@ -195,8 +211,8 @@ function showVideo( pathMediaFolder, mediaName, mediaFilenames) {
 	return mediaItem;
 }
 
-function showAudio( pathMediaFolder, mediaName, mediaFilenames) {
-  var pathToFile = makeFullMediaPath( pathMediaFolder + '/' + mediaFilenames[0]);
+function showAudio( mediaFolderPath, mediaName, mediaFilenames) {
+  var pathToFile = makeFullMediaPath( mediaFolderPath + '/' + mediaFilenames[0]);
 
 	var mediaItem = $(".js--templates .media_audio").clone(false);
 	mediaItem
@@ -205,7 +221,7 @@ function showAudio( pathMediaFolder, mediaName, mediaFilenames) {
 	return mediaItem;
 }
 
-function showText( pathMediaFolder, mediaName, mediaFilenames, mediaDatas) {
+function showText( mediaFolderPath, mediaName, mediaFilenames, mediaDatas) {
 
   var mediaTitle = mediaDatas.titleOfTextmedia;
   var mediaText = mediaDatas.textOfTextmedia;
@@ -258,9 +274,32 @@ function insertOrReplaceProject( $item, $container) {
   return "inserted";
 }
 
+function removeMedia( $medias, mediaData) {
+
+  var $mediaToRemove = $medias
+    .filter("[data-mediatype='" + mediaData.mediaFolder + "']")
+    .filter("[data-medianame='" + mediaData.mediaName + "']")
+    ;
+
+  $mediaToRemove
+    .fadeOut( 400, function() {
+      $(this).remove();
+    })
+    ;
+
+}
+
 function removeThisProject( $container, slugFolderName, slugProjectName) {
   var $items = $container.find(".project");
-  debugger;
+  var $projectToRemove = $items
+    .filter("[data-projectname='" + slugProjectName + "']")
+    ;
+
+  $projectToRemove
+    .fadeOut( 400, function() {
+      $(this).remove();
+    })
+    ;
 
 }
 
@@ -346,28 +385,68 @@ var modals = {
       .end()
       ;
 
-    var imageData;
-    $modal.find('#imageProject').bind('change', function(e) {
-    	imageData = e.originalEvent.target.files;
-    });
-
   	var $deleteModal = $('#modal-deleteproject-alert');
   	$deleteModal.data('slugProjectName', pdata.slugProjectName)
 
   	//Au click sur le bouton supprimer le dossier
   	$modal.find('.js--deleteProject').on('click', function(){
-    	debugger;
   		$deleteModal.foundation('reveal', 'open');
+  	});
+
+  	var imageFilename;
+  	var $label = $modal.find('.inputfile').next().find('span');
+  	var labelVal = $label.text();
+
+  	$modal.find('.inputfile').on( 'change', function( e )
+  	{
+  		var fileName = '';
+			fileName = e.target.value.split( '\\' ).pop();
+
+			var fileData = e.originalEvent.target.files;
+
+  		if( fileName ) {
+  			$(this)
+  			  .data('fileName', fileName)
+  			  .data('fileData', fileData)
+  			  ;
+  			$label
+			    .html( fileName)
+          ;
+  		} else
+  			$(this)
+  			  .data('fileName', '')
+  			  .data('fileData', '')
+  			  ;
+  			$label.innerHTML = labelVal;
+  	});
+
+  	$modal.find('.modify-project-statut').bind('change', function(){
+    	$alertModal = $('#modal-statut-alert');
+    	$statutField = $(this);
+  		if( $statutField.val() === "terminé"){
+  			$alertModal.foundation('reveal', 'open');
+  			$alertModal.find('button.oui').on('click', function(){
+  				$alertModal.foundation('reveal', 'close');
+  				$modal.foundation('reveal', 'open');
+  			});
+  			$alertModal.find('button.annuler').on('click', function(){
+  				console.log('non');
+  				$statutField.val('en cours');
+  				$alertModal.foundation('reveal', 'close');
+  				$modal.foundation('reveal', 'open');
+  			});
+  		}
   	});
 
     $modal.find(".submit-modify-project").on('click', function(){
     	var newProjectName = $modal.find('.modify-project-name').val();
     	var newStatut = $modal.find('.modify-project-statut').val();
+    	var fileData = $modal.find(".inputfile").data( "fileData");
     	//Images changed
-    	debugger;
-    	if( imageData !== undefined && imageData !== null){
+
+    	if( fileData !== undefined && fileData !== null){
     		console.log('Une image a été ajoutée');
-    		var f = imageData[0];
+    		var f = fileData[0];
     		var reader = new FileReader();
     		reader.onload = function(evt){
     			socket.emit( 'modifyProject',
@@ -403,16 +482,7 @@ var modals = {
     var mtype = mdata.type;
     var minfos = mdata.informations;
     var mname = mdata.medianame;
-/*
-  	var typeMedia = $(this).attr("data-type");
-  	var mediaTitle = $(this).attr("data-title");
-	  var mediaLegende = $(this).attr("data-legende");
-		var medianame = $(this).attr("data-medianame");
-*/
   	$modal.foundation('reveal', 'open');
-
-
-    debugger;
 
   	switch( mtype){
   		case dodoc.projectPhotosFoldername:
@@ -457,7 +527,6 @@ var modals = {
 			case dodoc.projectAudiosFoldername:
 
 				var audioPath = $m.find("source").attr("src");
-
 				var $mediaItem = $(".js--templates .media-big_audio").clone(false);
 
 				$mediaItem
@@ -469,17 +538,12 @@ var modals = {
 			case dodoc.projectTextsFoldername:
 				//console.log($(this).find('h3').html());
 				var $mediaItem = $(".js--templates .media-big_text").clone(false);
-/*
-				var title = $m.find('h3').html();
-				var texte = $m.find('p').html();
-*/
-				debugger;
 
 				$mediaItem
-					.find('.view-text-title-modify')
+					.find('.js--submit-new-text_title')
 					  .val( mdata.titleOfTextmediaMd)
 					.end()
-					.find('.view-text-modify')
+					.find('.js--submit-new-text_text')
 					  .val( mdata.textOfTextmediaMd)
 					.end()
 					;
@@ -502,13 +566,13 @@ var modals = {
     //Envoie les titres et légendes au serveur
     $modal.find('.js--submit-add-media-data').on( 'click', function(){
 
-  		var informations = $modal.find( '.js--mediaInformations').val();
       var editMediaData =
       {
         "mediaName" : mname,
         "mediaFolderPath" : mtype,
       };
 
+  		var informations = $modal.find( '.js--mediaInformations').val();
       if( informations !== undefined && informations.length > 0)
         editMediaData.informations = informations;
 
@@ -533,7 +597,81 @@ var modals = {
 
     });
 
+    $modal.find('.js--submit-view-text-modify').on( 'click', function(){
 
+      var editMediaData =
+      {
+        "mediaName" : mname,
+        "mediaFolderPath" : mtype,
+      };
+
+    	var titleOfTextmediaMd = $modal.find('.js--submit-new-text_title').val();
+    	var textOfTextmediaMd =  $modal.find('.js--submit-new-text_text').val();
+
+      if( titleOfTextmediaMd !== undefined && titleOfTextmediaMd.length > 0)
+        editMediaData.titleOfTextmediaMd = titleOfTextmediaMd;
+
+      if( textOfTextmediaMd !== undefined && textOfTextmediaMd.length > 0)
+        editMediaData.textOfTextmediaMd = textOfTextmediaMd;
+
+      editMedia( editMediaData);
+
+      $modal.foundation('reveal', 'close');
+
+    });
+
+
+    $modal.find('.js--delete-media-bibli').on( 'click', function(){
+
+      $alertModal = $('#modal-delete-alert-media');
+
+    	$modal.foundation('reveal', 'close');
+    	$alertModal.foundation('reveal', 'open');
+
+      $alertModal.find('button.oui').on('click', function(){
+        var mediaToRemove =
+        {
+          "slugFolderName" : currentFolder,
+          "slugProjectName" : currentProject,
+          "mediaName" : mname,
+          "mediaFolderPath" : mtype,
+        }
+    		socket.emit( 'deleteMedia', mediaToRemove);
+    		$alertModal.foundation('reveal', 'close');
+    	});
+    	$alertModal.find('button.annuler').on('click', function(){
+    		$alertModal.foundation('reveal', 'close');
+    		$modal.foundation('reveal', 'open');
+    	});
+
+    });
+
+  },
+
+
+  createTextMedia : function() {
+
+    var $modal = $('#modal-add-text');
+    var $titlef = $modal.find('.js--submit-new-text_title');
+    var $textf = $modal.find('.js--submit-new-text_text');
+
+  	var textTitle = $titlef.val();
+  	var textContent = $textf.val();
+
+  	console.log('addText');
+
+    var mediaData =
+    {
+      "mediaType" : "text",
+      "mediaFolderPath" : dodoc.projectTextsFoldername,
+      "title" : textTitle,
+      "text" : textContent,
+    }
+    createNewMedia( mediaData);
+
+    $modal.foundation('reveal', 'close');
+    $titlef.val('');
+    $textf.val('');
   },
 
 
@@ -584,7 +722,6 @@ var modals = {
   removeProjectInit : function() {
   	var $deleteModal = $('#modal-deleteproject-alert');
   	$deleteModal.find('button.oui').on('click', function(){
-    	debugger;
     	var slugProjectName = $deleteModal.data('slugProjectName');
     	var slugFolderName = currentFolder;
   		socket.emit('removeOneProject',
@@ -644,4 +781,17 @@ function getTextPathOfProject() {
 
 function getPathToMediaFile( projectPath, mediasFolderPath, mediaName) {
   return projectPath + '/' + mediasFolderPath + '/' + mediaName;
+}
+
+
+function getFirstMediaFromObj( mediasData) {
+  var mediaByJson = mediasData[0];
+  var mediaData;
+  for(var key in mediaByJson) {
+      if(mediaByJson.hasOwnProperty(key)) {
+          mediaData = mediaByJson[key];
+          break;
+      }
+  }
+  return mediaData;
 }

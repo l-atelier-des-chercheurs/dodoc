@@ -1,15 +1,23 @@
+/* VARIABLES */
+var socket = io.connect();
+
+
+/* sockets */
+function onSocketConnect() {
+	sessionId = socket.io.engine.id;
+	console.log('Connected ' + sessionId);
+	socket.emit('listMedias', { "slugFolderName" : currentFolder, "slugProjectName" : currentProject});
+	socket.emit('listPubli', { "slugFolderName" : currentFolder, "slugProjectName" : currentProject});
+};
+
+function onSocketError(reason) {
+	console.log('Unable to connect to server', reason);
+};
 
 /* sockets */
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
-/*
-socket.on('displayNewImage', displayNewImage);
-socket.on('displayNewVideo', displayNewVideo);
-socket.on('displayNewStopMotion', displayNewStopMotion);
-socket.on('displayNewAudio', displayNewAudio);
-socket.on('displayNewText', displayNewText);
-socket.on('displayModifiedText', displayModifiedText);
-*/
+
 socket.on('listMediasOfOneType', onListMediasOfOneType);
 socket.on('listPublications', onPubliCreated);
 socket.on('publiCreated', onPubliCreated);
@@ -17,36 +25,13 @@ socket.on('displayMontage', onDisplayMontage);
 socket.on('titleModified', onTitleModified);
 socket.on('displayMediaData', onMediaData);
 
-socket.on('bibliFileDeleted', onFileDeleted);
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
 
 socket.on('mediaCreated', onMediaCreated);
 socket.on('mediaUpdated', onMediaUpdated);
+socket.on('mediaRemoved', onMediaRemoved);
 
 socket.on('listOneMedia', onListOneMedia);
-
-
-// socket.on('newMediaUpload', onNewMediaUpload);
-
-/*
-function onNewMediaUpload(data){
-	var extension = data.ext;
-	var fileName = data.fileName;
-	var identifiant = data.id;
-	if(extension == ".jpg" || extension == ".gif" || extension == ".png"){
-		displayImage(currentFolder, currentProject, identifiant, fileName, extension);
-	}
-	if(extension == ".webm" || extension == ".ogg" || extension == ".mov"){
-		displayVideo(currentFolder, currentProject, identifiant, fileName);
-	}
-	if(extension == ".mp4"){
-		displayStopMotion(currentFolder, currentProject, identifiant, fileName);
-	}
-	if(extension == ".wav" || extension == ".mp3" || extension == ".amr" || extension == ".m4a"){
-		displayAudio(currentFolder, currentProject, identifiant, fileName);
-	}
-});
-*/
 
 jQuery(document).ready(function($) {
 	$(document).foundation();
@@ -57,8 +42,6 @@ function init(){
 
   // le drag and drop avec dragula se fait maintenant dans le fichier dom_autoscroller.js
   // en attendant de faire mieux
-
-	bigMedia();
 
 	$validerBouton = $('.montage-title .js--validerTitre');
 	$editerBouton = $('.montage-title .js--editerTitre');
@@ -73,6 +56,7 @@ function init(){
 		$editerBouton.css("display", "block");
 
 		socket.emit('titleChanged', {oldTitle: oldTitle, newTitle: newTitle, session: currentFolder, project: currentProject});
+
 	});
 
 	$('.montage-title .js--editerTitre').on( 'click', function() {
@@ -100,12 +84,6 @@ function init(){
 		$('.montage-edit').hide();
 	});
 
-
-	$(".js--publications").on( 'click', function(e) {
-  	e.preventDefault();
-  	$('body').attr( "data-publicationpane", $('body').attr('data-publicationPane') === 'open' ? '' : 'open');
-  });
-
   $('body').on('click', '.js--delete-media-montage', function(){
   	var $elementToDel = $(this).parent("li.media");
   	$elementToDel.fadeOut( 600,function(){
@@ -114,23 +92,22 @@ function init(){
   	});
   });
 
-  // Ajouter du texte dans la bibliotheque
+
+
+	$(".js--open_publicationspane").on( 'click', function(e) {
+  	e.preventDefault();
+  	$('body').attr( "data-publicationpane", $('body').attr('data-publicationPane') === 'open' ? '' : 'open');
+  });
+
+	// Au click sur un media
+	$('body').on('click', '.medias-list .media', function(){
+		$m = $(this);
+		modals.bigMedia($m);
+  });
+
+  // Au click sur le bouton "submit" d'un popup de texte
   $('.js--submit-new-text').on('click',function(){
-
-    var $modal = $(this).closest('#modal-add-text');
-  	var textTitle = $modal.find('.js--submit-new-text_title').val();
-  	var textContent = $modal.find('.js--submit-new-text_text').val();
-
-  	console.log('addText');
-
-    var mediaData =
-    {
-      "mediaType" : "text",
-      "title" : textTitle,
-      "text" : textContent,
-    }
-    createNewMedia( mediaData);
-
+    modals.createTextMedia();
   });
 
   // si en arrivant sur la page, il y a un hash dans l'url
@@ -143,15 +120,6 @@ function init(){
 
 
   }
-
-  //Submit new text modified
-  $('body').on('click', '.js--submit-view-text-modify', function(){
-  	var textTitle = $(this).parent('form').find('.view-text-title-modify').val();
-  	var text = $(this).parent('form').find('.view-text-modify').val();
-  	var id = $(this).parents('.media-big_text').attr('data-id');
-
-  	socket.emit('modifyText', {session: currentFolder, project: currentProject, title: textTitle, text:text, id:id});
-  });
 
 
  // Ajoute ou enlève un highlight quand on clique sur le drapeau dans les médias
@@ -171,37 +139,6 @@ function init(){
     editMedia( editMediaData);
   });
 
-  // Supprime un fichier de la bibli de médias
-  $('body').on('click', '.js--delete-media-bibli', function(){
-
-    $('#modal-delete-alert-media').foundation('reveal', 'open');
-  	var id = $(this).parents('.media-big').attr('id');
-  	var type = $(this).parents('.media-big').attr('data-type');
-  	var fileToDelete ;
-  	if(type == 'image'){
-			fileToDelete = id + '.jpg';
-  	}
-  	if(type == 'video'){
-			fileToDelete = id + '.webm';
-  	}
-  	if(type == 'stopmotion'){
-			fileToDelete = id + '.mp4';
-  	}
-  	if(type == 'audio'){
-			fileToDelete = id + '.wav';
-  	}
-  	if(type == 'text'){
-			fileToDelete = id + '.txt';
-  	}
-  	console.log(id);
-  	$('#modal-delete-alert-media')
-  		.attr('data-id', id)
-  		.attr('data-type', type)
-  		.attr('data-filetodelete', fileToDelete);
-  });
-
-  //Au clic sur OUI -> remove media au clic sur non annule
-  removeMedia();
 
 }
 
@@ -216,35 +153,10 @@ function onListMediasOfOneType( mediasData) {
 }
 
 function onListOneMedia( mediasData) {
+  console.log( "onListOneMedia");
   var $updatedMedia = listMediasOfOneType( mediasData);
   var $mediaContainer = $(".mainContent .medias-list");
   insertOrReplaceMedia( $updatedMedia, $mediaContainer);
-}
-
-function removeMedia(){
-	$('#modal-delete-alert-media button.oui').on('click', function(){
-		var fileToDelete = $(this).parents('#modal-delete-alert-media ').attr('data-filetodelete');
-  	var id = $(this).parents('#modal-delete-alert-media ').attr('data-id');
-  	var type = $(this).parents('#modal-delete-alert-media ').attr('data-type');
-		console.log(fileToDelete);
-		socket.emit("deleteFileBibli", {session:currentFolder, project:currentProject, file:fileToDelete, id:id, type:type});
-		$('#modal-delete-alert-media').foundation('reveal', 'close');
-	});
-	$('#modal-delete-alert-media button.annuler').on('click', function(){
-		console.log('annuler');
-		$('#modal-delete-alert-media').foundation('reveal', 'close');
-		$("#modal-media-view").foundation('reveal', 'open');
-	});
-}
-
-function bigMedia(){
-	// Au click sur un media
-
-	$('body').on('click', '.medias-list .media', function(){
-		$m = $(this);
-		modals.bigMedia($m);
-  });
-
 }
 
 function onMediaData(data){
@@ -261,39 +173,31 @@ function onMediaData(data){
 **********************************************************************/
 
 // returns when a text content has been added
-function onMediaCreated( mediaData) {
+function onMediaCreated( mediasData) {
+  console.log( "onMediaCreated");
 
-  // check if it's a text. If it is, we just need to close the popup if its being edited
-  if( mediaData.type == 'text') {
+  var mediaData = getFirstMediaFromObj( mediasData);
 
-    // check if theres a popup thats open
-    var $textModalThatsOpen = $("#modal-add-text.open");
+  if( mediaData.slugFolderName !== currentFolder || mediaData.slugProjectName !== currentProject)
+    return;
 
-    if( $textModalThatsOpen.length > 0) {
-    	var textTitle = $textModalThatsOpen.find('.js--submit-new-text_title').val();
-    	var textContent = $textModalThatsOpen.find('.js--submit-new-text_text').val();
+  var $updatedMedia = listMedia( mediaData);
+  var $mediaContainer = $(".mainContent .medias-list");
+  insertOrReplaceMedia( $updatedMedia, $mediaContainer);
 
-      // does the mediaData correspond to the bigmedia ?
-      var simulateStoredInfos = textTitle + dodoc.textFieldSeparator + textContent;
-
-      if( mediaData.contentOfText === simulateStoredInfos)
-        // close that popup
-        $textModalThatsOpen.foundation('reveal', 'close');
-
-    //     var contentOfPopup =
-    }
-
-  }
-  listOneMedia( mediaData);
 }
 
-function onMediaUpdated( mediaData) {
-  listOneMedia( mediaData);
+function onMediaUpdated( mediasData) {
+  console.log( "onMediaUpdated");
+  onMediaCreated( mediasData);
 }
 
-function onFileDeleted(data){
-	$('#modal-media-view').foundation('reveal', 'close');
-	$("#"+data.id).remove();
+
+function onMediaRemoved( mediaData){
+  console.log( "onMediaRemoved");
+  if( mediaData.slugFolderName !== currentFolder || mediaData.slugProjectName !== currentProject)
+    return;
+  removeMedia( $('.medias-list .media'), mediaData);
 }
 
 /********************************************************************************************
@@ -353,17 +257,5 @@ function onFolderAlreadyExist(data){
 	alert("La publication " +data.name+ " existe déjà. Veuillez trouvez un autre nom.");
 	$('.new-publi').focus();
 }
-
-/* sockets */
-function onSocketConnect() {
-	sessionId = socket.io.engine.id;
-	console.log('Connected ' + sessionId);
-	socket.emit('listMedias', { "slugFolderName" : currentFolder, "slugProjectName" : currentProject});
-	socket.emit('listPubli', { "slugFolderName" : currentFolder, "slugProjectName" : currentProject});
-};
-
-function onSocketError(reason) {
-	console.log('Unable to connect to server', reason);
-};
 
 

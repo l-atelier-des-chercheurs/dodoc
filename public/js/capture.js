@@ -1,4 +1,20 @@
 
+/* VARIABLES */
+var socket = io.connect();
+
+
+
+/* sockets */
+function onSocketConnect() {
+	sessionId = socket.io.engine.id;
+	console.log('Connected ' + sessionId);
+};
+
+function onSocketError(reason) {
+	console.log('Unable to connect to server', reason);
+};
+
+
 // Variables pour la prise de médias
 var streaming = false,
     video        = document.querySelector('#video'),
@@ -142,14 +158,12 @@ function init(){
   // });
 
   // delete file
-  $("a.js--delete-media-capture").on("click", function(e){
-    console.log('File was delete');
+  $('body').on('click', '.js--delete-media-capture', function(){
     var fileToDelete = $('.screenshot').attr('data-file');
     socket.emit("deleteFile", { "slugFolderName" : currentFolder, "slugProjectName" : currentProject, "file" : fileToDelete});
     backAnimation();
     e.stopPropagation;
   });
-
 
   fullscreen();
 
@@ -157,7 +171,6 @@ function init(){
   $('#modal-change-alert button.ok').on('click', function(){
     $("#stop-sm-btn").show();
     $("#start-sm-btn").hide(); $("#capture-sm-btn").show();
-    $('.screenshot .canvas-view').show();
     $(".screenshot .meta-stopmotion").remove();
     $(".screenshot").append("<div class='meta-stopmotion'><div class='delete-image'><img src='/images/clear.svg'></div><p class='count-image'></p></div>");
     $(".screenshot .meta-stopmotion").show();
@@ -290,7 +303,7 @@ function changeMediaBoitier(e){
 }
 
 function photoDisplay(){
-  $('.screenshot .canvas-view').show();
+  $(".preview_image").show();
   $('.screenshot video').hide();
   $('.js--delete-media-capture').show();
   // setTimeout(function(){
@@ -309,6 +322,7 @@ function photoDisplay(){
   $("body").attr("data-mode", "photo");
 }
 function videoDisplay(){
+  $(".preview_image").hide();
   $('.photo-capture').css('display', 'none');
   $('.js--delete-media-capture').show();
   //setTimeout(function(){
@@ -327,6 +341,7 @@ function videoDisplay(){
 }
 function stopMotionDisplay(){
   $('.screenshot .canvas-view').show();
+  $('.preview_image').hide();
   $('.screenshot #camera-preview').hide();
   $('.photo-capture').css('display', 'none');
   $('.video-capture').css('display','none');
@@ -346,6 +361,7 @@ function stopMotionDisplay(){
 }
 function audioDisplay(){
   $('.screenshot #camera-preview').hide();
+  $('.preview_image').hide();
   $('.js--delete-media-capture').show();
   $('.photo-capture').css('display', 'none');
   $('.video-capture').css('display','none');
@@ -382,8 +398,7 @@ function displayVideoStream(){
   navigator.mediaDevices.enumerateDevices()
     .then(function(devices) {
       devices.forEach(function(device) {
-        // console.log(device.kind + ": " + device.label +
-        //   " id = " + device.deviceId);
+//         console.log(device.kind + ": " + device.label + " id = " + device.deviceId);
         if(device.kind === 'videoinput') {
           console.log(device.label);
           mediaDevices.push(device);
@@ -450,23 +465,37 @@ function displayVideoStream(){
 
     video.addEventListener('canplay', function(ev){
       if (!streaming) {
-        height = video.videoHeight / (video.videoWidth/width);
-        video.setAttribute('width', width);
-        video.setAttribute('height', height);
-        canvas.setAttribute('width', width);
-        canvas.setAttribute('height', height);
         streaming = true;
+        // respect the ratio set in dodoc.js
+        var videoRatio = dodoc.captureVideoHeight/dodoc.captureVideoWidth;
+        var containerWidth = $(".video-view").width();
+        var videoHeight = containerWidth * videoRatio;
+        $(video).css( "height", videoHeight);
+
+        var smContainerWidth = $(".screenshot").width();
+        var smHeight = smContainerWidth * videoRatio;
+        $(canvas).css( "height", videoHeight);
       }
     }, false);
 }
 
 // Fonction qui prend les photos
 function takePictures(){
+
+  var invisibleCanvas = document.createElement('canvas');
+  invisibleCanvas.width = dodoc.captureVideoWidth;
+  invisibleCanvas.height = dodoc.captureVideoHeight;
+  var invisibleCtx = invisibleCanvas.getContext('2d');
+
+  invisibleCtx.drawImage(video, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
+
+/*
   canvas.width = width;
   canvas.height = height;
   canvas.getContext('2d').drawImage(video, 0, 0, width, height);
-  var data = canvas.toDataURL('image/png');
-  photo.setAttribute('src', data);
+*/
+  var imageData = invisibleCanvas.toDataURL('image/png');
+
   $(".captureRight .flash").fadeIn(0, function(){
     $(this).fadeOut(500);
   });
@@ -481,9 +510,8 @@ function takePictures(){
   var mediaData =
   {
     "mediaType" : "photo",
-    "mediaData" : data
+    "mediaData" : imageData
   }
-
 	animateWindows();
   createNewMedia( mediaData);
   saveFeedback("/images/icone-dodoc_image.png");
@@ -536,6 +564,7 @@ function recordingVideo(click){
     backAnimation();
     $('#camera-preview').hide();
     $('.screenshot .canvas-view').hide();
+    $(canvas).hide();
     recordingFeedback();
 
     $('body').attr('data-videorecording', 'yes');
@@ -552,8 +581,8 @@ function recordingVideo(click){
         mediaStream = stream;
         recordVideo = RecordRTC(stream, {
           type: 'video',
-          video: { width: 480, height: 360 },
-          canvas: { width: 480, height: 360 },
+          video: { width: dodoc.captureVideoWidth, height: dodoc.captureVideoHeight },
+          canvas: { width: dodoc.captureVideoWidth, height: dodoc.captureVideoHeight },
         });
         recordVideo.startRecording();
         cameraPreview.src = window.URL.createObjectURL(stream);
@@ -1074,9 +1103,11 @@ function createEqualizer(event){
 
 }
 
-function onMediaCreated( newMediaData){
+function onMediaCreated( newMediasData){
 
 /*   $('.screenshot').attr('data-file', newMediaData.file); */
+
+  var newMediaData = getFirstMediaFromObj( newMediasData);
 
   var newMediaType = newMediaData.type;
   // remove /sessions from the filePath
@@ -1091,11 +1122,7 @@ function onMediaCreated( newMediaData){
 //   var pathToFile = makeFullMediaPath( pathMediaFolder + '/' + mediaFilenames[0]);
 
 
-  debugger;
-
   if( newMediaType === 'photo') {
-
-
   }
   else if( newMediaType === 'video') {
     cameraPreview.src = pathToMediaFile + '.webm';
@@ -1105,7 +1132,6 @@ function onMediaCreated( newMediaData){
     $('.video-capture').fadeIn(1000);
   }
   else if( newMediaType === 'animation') {
-    $('.screenshot .canvas-view').hide();
     cameraPreview.src = pathToMediaFile + '.mp4';
     cameraPreview.play();
     cameraPreview.muted = false;
@@ -1174,15 +1200,3 @@ function fullscreen(){
       });
   }
 }
-
-/* sockets */
-function onSocketConnect() {
-	sessionId = socket.io.engine.id;
-	console.log('Connected ' + sessionId);
-};
-
-function onSocketError(reason) {
-	console.log('Unable to connect to server', reason);
-};
-
-
