@@ -1,8 +1,12 @@
-var express = require("express");
+var express = require("express"),
+  http    = require('http'),
+  https = require('https'),
+  fs = require('fs'),
+  io = require('socket.io')
+;
+
 var app     = express();
-var http    = require("http");
-var https = require('https');
-var fs = require('fs');
+
 var privateKey  = fs.readFileSync('file.pem', 'utf8');
 var certificate = fs.readFileSync('file.crt', 'utf8');
 

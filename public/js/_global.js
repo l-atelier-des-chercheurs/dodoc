@@ -336,20 +336,31 @@ function insertOrReplaceMedia( $mediaItem, $mediaContainer) {
 }
 
 
-function createNewMedia( mediaData){
-  mediaData.slugFolderName = currentFolder;
-  mediaData.slugProjectName = currentProject;
-	socket.emit( 'newMedia', mediaData);
-}
-function editMedia( mediaData){
-  mediaData.slugFolderName = currentFolder;
-  mediaData.slugProjectName = currentProject;
-	socket.emit( 'editMediaMeta', mediaData);
-}
-function listOneMedia( mediaData) {
-  mediaData.slugFolderName = currentFolder;
-  mediaData.slugProjectName = currentProject;
-	socket.emit( 'listOneMedia', mediaData);
+var sendData = {
+
+  createNewMedia : function( mediaData) {
+    mediaData.slugFolderName = currentFolder;
+    mediaData.slugProjectName = currentProject;
+  	socket.emit( 'newMedia', mediaData);
+  },
+
+  editMedia : function( mediaData) {
+    mediaData.slugFolderName = currentFolder;
+    mediaData.slugProjectName = currentProject;
+  	socket.emit( 'editMediaMeta', mediaData);
+  },
+
+  listOneMedia : function( mediaData) {
+    mediaData.slugFolderName = currentFolder;
+    mediaData.slugProjectName = currentProject;
+  	socket.emit( 'listOneMedia', mediaData);
+  },
+
+  deleteMedia : function( mediaData) {
+    mediaData.slugFolderName = currentFolder;
+    mediaData.slugProjectName = currentProject;
+  	socket.emit( 'deleteMedia', mediaData);
+  },
 }
 
 
@@ -629,14 +640,13 @@ var modals = {
     	$alertModal.foundation('reveal', 'open');
 
       $alertModal.find('button.oui').on('click', function(){
-        var mediaToRemove =
+        var mediaToDelete =
         {
-          "slugFolderName" : currentFolder,
-          "slugProjectName" : currentProject,
           "mediaName" : mname,
           "mediaFolderPath" : mtype,
         }
-    		socket.emit( 'deleteMedia', mediaToRemove);
+        sendData.deleteMedia( mediaToDelete);
+
     		$alertModal.foundation('reveal', 'close');
     	});
     	$alertModal.find('button.annuler').on('click', function(){
@@ -667,7 +677,7 @@ var modals = {
       "title" : textTitle,
       "text" : textContent,
     }
-    createNewMedia( mediaData);
+    sendData.createNewMedia( mediaData);
 
     $modal.foundation('reveal', 'close');
     $titlef.val('');

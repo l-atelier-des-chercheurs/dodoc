@@ -1,4 +1,5 @@
 
+
 /* VARIABLES */
 var socket = io.connect();
 
@@ -159,10 +160,17 @@ function init(){
 
   // delete file
   $('body').on('click', '.js--delete-media-capture', function(){
-    var fileToDelete = $('.screenshot').attr('data-file');
-    socket.emit("deleteFile", { "slugFolderName" : currentFolder, "slugProjectName" : currentProject, "file" : fileToDelete});
+
+    var mediaToDelete =
+    {
+      "mediaName" : $(document).data('lastCapturedMediaName'),
+      "mediaFolderPath" : $(document).data('lastCapturedMediaFolderPath'),
+    }
+    sendData.deleteMedia( mediaToDelete);
+
     backAnimation();
     e.stopPropagation;
+
   });
 
   fullscreen();
@@ -303,6 +311,9 @@ function changeMediaBoitier(e){
 }
 
 function photoDisplay(){
+  $(document)
+    .data('currentMode', 'photo')
+
   $(".preview_image").show();
   $('.screenshot .canvas-view').hide();
   $('.screenshot video').hide();
@@ -323,6 +334,9 @@ function photoDisplay(){
   $("body").attr("data-mode", "photo");
 }
 function videoDisplay(){
+  $(document)
+    .data('currentMode', 'video')
+
   $(".preview_image").hide();
   $('.screenshot .canvas-view').show();
   $('.photo-capture').css('display', 'none');
@@ -342,6 +356,10 @@ function videoDisplay(){
   $("body").attr("data-mode", "video");
 }
 function stopMotionDisplay(){
+  $(document)
+    .data('currentMode', 'stopmotion')
+
+
   $('.screenshot .canvas-view').show();
   $('.preview_image').hide();
   $('.screenshot #camera-preview').hide();
@@ -362,6 +380,9 @@ function stopMotionDisplay(){
   $("body").attr("data-mode", "stopmotion");
 }
 function audioDisplay(){
+  $(document)
+    .data('currentMode', 'audio')
+
   $('.screenshot #camera-preview').hide();
   $('.preview_image').hide();
   $('.js--delete-media-capture').show();
@@ -382,749 +403,45 @@ function audioDisplay(){
   $("body").attr("data-mode", "audio");
 }
 
-function displayVideoStream(){
-  // Initialise getUserMedia
-  navigator.getUserMedia = ( navigator.getUserMedia ||
-                         navigator.webkitGetUserMedia ||
-                         navigator.mozGetUserMedia ||
-                         navigator.msGetUserMedia);
 
 
-  if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-    console.log("enumerateDevices() not supported.");
+
+function onMediaCreated( mediasData){
+
+  var mediaData = getFirstMediaFromObj( mediasData);
+
+  debugger;
+
+  // check if media created belongs to the same project
+  if( mediaData.slugFolderName !== currentFolder || mediaData.slugProjectName !== currentProject)
     return;
-  }
 
-  // List cameras and microphones.
-  var mediaDevices = [];
-  navigator.mediaDevices.enumerateDevices()
-    .then(function(devices) {
-      devices.forEach(function(device) {
-//         console.log(device.kind + ": " + device.label + " id = " + device.deviceId);
-        if(device.kind === 'videoinput') {
-          console.log(device.label);
-          mediaDevices.push(device);
-        }
-      });
-    })
-    .then(function(){
-      var deviceChoiceId;
-      if(mediaDevices.length < 2){
-        deviceChoiceId = mediaDevices[0].deviceId;
-        //$('.container-inner').prepend("<h2>"+mediaDevices[0].label+"</h2>");
-      }
-      else{
-        deviceChoiceId = mediaDevices[1].deviceId;
-        //$('.container-inner').prepend("<h2>"+mediaDevices[1].label+"</h2>");
-      }
+  // check if media created is of the same type as the current mode (otherwise this probably means that someone else is also capturing at the same time
+  var currentMode = $(document).data('currentMode');
+  if( mediaData.type !== currentMode)
+    return;
 
-      navigator.getUserMedia(
-        {
-          //video: {deviceId: deviceChoiceId ? {exact: deviceChoiceId} : undefined},
-          video: {
-            optional: [{sourceId: deviceChoiceId}]
-          },
-          audio: false
-        },
-        function (stream) {
-          if (navigator.mozGetUserMedia) {
-            video.mozSrcObject = stream;
-          } else {
-            var vendorURL = window.URL || window.webkitURL;
-            video.src = vendorURL.createObjectURL(stream);
-          }
-          video.play();
-        },
-        function(err) {
-          alert(JSON.stringify(error));
-        }
-      );
-    })
-    .catch(function(err) {
-      console.log(err.name + ": " + error.message);
-    });
+  // ideally, we should also check the user who created that media and check it against a client variable, however I like the idea that another user can also see what the other is doing
 
 
-
-    // navigator.getUserMedia(
-    //   {
-    //     video: true ,
-    //     audio: false
-    //   },
-    //   function (stream) {
-    //     if (navigator.mozGetUserMedia) {
-    //       video.mozSrcObject = stream;
-    //     } else {
-    //       var vendorURL = window.URL || window.webkitURL;
-    //       video.src = vendorURL.createObjectURL(stream);
-    //     }
-    //     video.play();
-    //   },
-    //   function(err) {
-    //     alert(JSON.stringify(error));
-    //   }
-    // );
-
-    video.addEventListener('canplay', function(ev){
-      if (!streaming) {
-        streaming = true;
-        // respect the ratio set in dodoc.js
-        var videoRatio = dodoc.captureVideoHeight/dodoc.captureVideoWidth;
-        var containerWidth = $(".video-view").width();
-        var videoHeight = containerWidth * videoRatio;
-        $(video).css( "height", videoHeight);
-      }
-    }, false);
-}
-
-// Fonction qui prend les photos
-function takePictures(){
-
-  var invisibleCanvas = document.createElement('canvas');
-  invisibleCanvas.width = dodoc.captureVideoWidth;
-  invisibleCanvas.height = dodoc.captureVideoHeight;
-  var invisibleCtx = invisibleCanvas.getContext('2d');
-
-  invisibleCtx.drawImage(video, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
-  var imageData = invisibleCanvas.toDataURL('image/png');
-
-  $(".captureRight .flash").fadeIn(0, function(){
-    $(this).fadeOut(500);
-  });
-  console.log("Yeah you take a picture");
-
-  // passer le body en "data-justcaptured=yes" pendant un temps
-  $('body').attr('data-justcaptured', 'yes');
-  setTimeout( function() {
-    $('body').attr('data-justcaptured', '');
-  }, 600);
-
-  var mediaData =
-  {
-    "mediaType" : "photo",
-    "mediaData" : imageData
-  }
-	animateWindows();
-  createNewMedia( mediaData);
-  saveFeedback("/images/icone-dodoc_image.png");
-}
-
-// Function qui enregistre de la vidéo
-function recordingVideo(click){
-  var startVideoRecording = document.getElementById('start-record-btn');
-  var stopVideoRecording = document.getElementById('stop-record-btn');
-  var cameraPreview = document.getElementById('camera-preview');
-
-  //click events
-  if(click == "click"){
-    $("#start-record-btn").off().on('click', function(){
-      console.log("you are using the mouse for recording");
-      startVideo();
-      $(".btn-choice").click(function(e){
-        isEventExecutedVideo = false;
-        stopVideoOnChange(e, isEventExecutedVideo);
-      });
-    });
-
-    $("#stop-record-btn").off().on('click', function(){
-      stopVideo();
-    });
-  }
-
-  //Keyboard events (makey mkaey)
-  if(countPress == 1){
-    startVideo();
-    console.log("recording video");
-    $("body").unbind("keypress.key115");
-    $("body").bind("keypress.key115", function(e){
-      var code = e.keyCode || e.which;
-      if(code == 115 || code == 122){
-        isEventExecutedVideo = false;
-        stopVideoOnChange(e, isEventExecutedVideo);
-      }
-    });
-  }
-
-  if(countPress > 1){
-    stopVideo();
-    countPress = 0;
-    console.log("stop recording video");
-  }
-
-  function startVideo(){
-    console.log('starting-video');
-    backAnimation();
-    $('#camera-preview').hide();
-    $('.screenshot .canvas-view').hide();
-    $(canvas).hide();
-    recordingFeedback();
-
-    $('body').attr('data-videorecording', 'yes');
-
-    // Initialise getUserMedia
-    navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
-    navigator.getMedia(
-      {
-        video: true,
-        audio: false
-      },
-      function (stream) {
-        // get user media pour le son
-        mediaStream = stream;
-        recordVideo = RecordRTC(stream, {
-          type: 'video',
-          video: { width: dodoc.captureVideoWidth, height: dodoc.captureVideoHeight },
-          canvas: { width: dodoc.captureVideoWidth, height: dodoc.captureVideoHeight },
-        });
-        recordVideo.startRecording();
-        cameraPreview.src = window.URL.createObjectURL(stream);
-        cameraPreview.play();
-        cameraPreview.muted = true;
-        cameraPreview.controls = true;
-      },
-      function(error) {
-        alert(JSON.stringify(error));
-      }
-    );
-
-    startVideoRecording.disabled = true;
-    stopVideoRecording.disabled = false;
-    startVideoRecording.style.display = "none";
-    stopVideoRecording.style.display = "block";
-  }
-
-  function stopVideoOnChange(e) {
-    if(isEventExecutedVideo == false){
-      isEventExecutedVideo = true;
-      console.log('your video was not saved');
-      recordVideo.stopRecording();
-      e.preventDefault();
-      startVideoRecording.style.display = "block";
-      stopVideoRecording.style.display = "none";
-      startVideoRecording.disabled = false;
-      stopVideoRecording.disabled = true;
-      $(".recording-feedback").remove();
-      countPress = 0;
-      $('body').attr('data-videorecording', '');
-    }
-  }
-
-  function recordingFeedback(){
-    var htmlToAppend = "<div class='recording-feedback'><div class='record-feedback'></div><div class='time-feedback'>[REC] <time>00:00:00</time></div></div>";
-    $(".video-view").append(htmlToAppend);
-    var counter_text = $(".time-feedback time")[0];
-    var seconds = 0, minutes = 0, hours = 0,
-    t;
-    timer();
-
-    function add() {
-      seconds++;
-      if (seconds >= 60) {
-        seconds = 0;
-        minutes++;
-        if (minutes >= 60) {
-          minutes = 0;
-          hours++;
-        }
-      }
-      counter_text.textContent = (hours ? (hours > 9 ? hours : "0" + hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
-
-      timer();
-    }
-
-    function timer() {
-      t = setTimeout(add, 1000);
-    }
-  }
-
-  function stopVideo(){
-    $('.video-capture').hide();
-    startVideoRecording.disabled = false;
-    stopVideoRecording.disabled = true;
-    startVideoRecording.style.display = "block";
-    stopVideoRecording.style.display = "none";
-    cameraPreview.style.display = "block";
-    $('body').attr('data-videorecording', '');
-    $(".recording-feedback").remove();
-    // stop video recorder
-    recordVideo.stopRecording(function() {
-      // get video data-URL
-      recordVideo.getDataURL(function(videoDataURL) {
-
-//             type: recordVideo.getBlob().type || 'video/webm',
-        var mediaData =
-        {
-          "mediaType" : "video",
-          "mediaData" : videoDataURL
-        };
-        animateWindows();
-        createNewMedia( mediaData);
-
-        if (mediaStream) mediaStream.stop();
-      });
-      cameraPreview.src = '';
-      cameraPreview.poster = 'https://localhost:8080/loading.gif';
-      saveFeedback("/images/icone-dodoc_video.png");
-    });
-  }
-
-}
-
-// STOP MOTION
-// Start Stop Motion
-function startStopMotion(){
-  countImage = 0;
-  console.log('start stop-motion');
-  $("#start-sm-btn").hide();
-  $("#capture-sm-btn").show();
-  $("#stop-sm-btn").hide();
-  $('.js--delete-media-capture').hide();
-  $('#camera-preview').hide();
-
-  var iconeSM = '<div class="icone-stopmotion"><img src="/images/stopmotion.svg"></div>';
-  var text = '<h4>Vous venez de créer un nouveau stop motion.</br>Cliquez que le <b>bouton d\'enregistrement</b> pour commencer à prendre des photos</h4>'
-  var htmlToAdd = '<div class="instructions-stopmotion">'+iconeSM+text+'</div>';
-  $('.screenshot').append(htmlToAdd);
-
-  animateWindows();
-
-  $(".screenshot").append("<div class='meta-stopmotion'><div class='delete-image'><img src='/images/clear.svg'></div><p class='count-image'></p></div>");
-  $(".screenshot .meta-stopmotion").hide();
-
-  var mediaData = {};
-  mediaData.slugFolderName = currentFolder;
-  mediaData.slugProjectName = currentProject;
-
-  socket.emit( 'startStopMotion', mediaData);
-}
-
-function onStopMotionDirectoryCreated( newStopMotionData) {
-
-  var folderCacheName = newStopMotionData.folderCacheName;
-  var folderCachePath = newStopMotionData.folderCachePath;
-
-  $("#stop-sm-btn").show();
-  $('.screenshot .canvas-view').show();
-  $('.screenshot .instructions-stopmotion').remove();
-  $(".screenshot .meta-stopmotion").show();
-
-  $("body").data( "smCacheName", folderCacheName);
-  $("body").data( "smCachePath", folderCachePath);
-  $("body").data( "smImageCount", 0);
-}
-
-function takeStopMotionPic() {
-
-  var smCacheName = $("body").data( "smCacheName");
-  var smCachePath = $("body").data( "smCachePath");
-  var smImageCount = parseInt( $("body").data( "smImageCount")) + 1;
-
-  var invisibleCanvas = document.createElement('canvas');
-  invisibleCanvas.width = dodoc.captureVideoWidth;
-  invisibleCanvas.height = dodoc.captureVideoHeight;
-  var invisibleCtx = invisibleCanvas.getContext('2d');
-
-  invisibleCtx.drawImage(video, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
-  var imageData = invisibleCanvas.toDataURL('image/png');
-
-  var factor = video.getBoundingClientRect().width / $(".screenshot")[0].getBoundingClientRect().width;;
-  canvas.width = video.getBoundingClientRect().width / factor;
-  canvas.height = video.getBoundingClientRect().height / factor;
-  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-  var data = canvas.toDataURL('image/png');
-
-  photo.setAttribute('src', data);
-  $(".meta-stopmotion .delete-image").off();
-/*
-  $(".meta-stopmotion .delete-image").on('click', function(){
-    removeImageMotion(data, folderCache);
-  });
-*/
-
-  var smImage =
-  {
-    "imageContent" : imageData,
-    "folderCacheName" : smCacheName,
-    "folderCachePath" : smCachePath,
-    "imageCount" : smImageCount
-  };
-
-  socket.emit( 'addImageToStopMotion', smImage);
-
-  $(".screenshot .count-image").html("<span>Image n° " + smImageCount + "</span>");
-  $('body').addClass('takingstopmotion');
-  $(".captureRight .flash").fadeIn(0, function(){
-    $(this).fadeOut(500);
-  });
-
-  $('body').attr('data-justcaptured', 'yes');
-  setTimeout( function() {
-    $('body').attr('data-justcaptured', '');
-  }, 600);
-
-  $("body").data( "smImageCount", smImageCount);
-
-}
-
-function removeLastImageFromStopMotion() {
-
-// MISSING
-
-}
-/*
-function removeImageMotion(data, dir){
-  if(countImage > 1){
-    console.log("delete Image");
-    socket.emit("deleteImageMotion", {data: data, name: currentFolder, dir: dir, count: countImage});
-    countImage = countImage - 1;
-    var context = canvas.getContext('2d');
-    var imageObj = new Image();
-    imageObj.onload = function() {
-      context.drawImage(imageObj, 0, 0);
-    };
-    imageObj.src = "/" + currentFolder +"/"+ currentProject+"/01-stopmotion/" + countImage + ".png";
-    $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
-  }
-  else{
-    startStopMotion();
-  }
-}
-*/
-
-function stopStopMotion( ) {
-
-  var smCacheName = $("body").data( "smCacheName");
-  var smCachePath = $("body").data( "smCachePath");
-  var smImageCount = parseInt( $("body").data( "smImageCount")) + 1;
-
-  $("#stop-sm-btn").hide();
-  $("#capture-sm-btn").hide();
-  countPress = 0;
-  $('.screenshot .meta-stopmotion').remove();
-  saveFeedback("/images/icone-dodoc_anim.png");
-
-  var mediaData =
-  {
-    "stopMotionCacheFolder" : smCacheName,
-    "mediaType" : "animation"
-  }
-
-	animateWindows();
-  createNewMedia( mediaData);
-
-  $("#start-sm-btn").show();
-  $('.js--delete-media-capture').show();
-  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-
-  $('body').removeClass('takingstopmotion');
-
-
-}
-
-//Capture le flux audio
-function audioCapture(code){
-  //Variables
-  var mediaStream = null;
-
-  var startRecordingBtn = document.getElementById('start-recording-btn');
-  var stopRecordingBtn = document.getElementById('stop-recording-btn');
-  var cameraPreview = document.getElementById('son');
-
-  //click events
-  if(code == "click"){
-    $("#start-recording-btn").off();
-    $("#start-recording-btn").on('click', function(){
-      console.log("you are using the mouse for recording audio");
-      startRecordAudio();
-      isEventExecutedVideo = false;
-      $(".btn-choice").click(function(e){
-        isEventExecutedVideo = false;
-        stopAudioOnChange(e, isEventExecutedVideo);
-      });
-    });
-
-    $("#stop-recording-btn").off();
-    $("#stop-recording-btn").on('click', function(){
-      stopRecordAudio();
-      console.log("stop recording audio");
-    });
-  }
-
-  //keyboard events
-  if(countPress == 1){
-    startRecordAudio();
-    console.log("recording audio");
-    isEventExecutedAudio = false;
-    $("body").unbind("keypress.key115");
-    $("body").bind("keypress.key115", function(e){
-      var code = e.keyCode || e.which;
-      if(code == 115 || code == 122){
-        isEventExecutedVideo = false;
-        stopAudioOnChange(e, isEventExecutedVideo);
-      }
-    });
-  }
-
-  if(countPress > 1){
-    stopRecordAudio();
-    console.log("stop recording audio");
-    countPress = 0;
-  }
-
-
-  function stopAudioOnChange(e){
-    if(isEventExecutedVideo == false){
-      isEventExecutedVideo = true;
-      console.log("Audio File was not saved");
-      recordAudio.stopRecording();
-      startRecordingBtn.style.display = "block";
-      stopRecordingBtn.style.display = "none";
-      startRecordingBtn.disabled = false;
-      stopRecordingBtn.disabled = true;
-      countPress = 0;
-      sarahCouleur = "gray";
-    }
-  }
-
-  function startRecordAudio(){
-    backAnimation();
-
-    // Initialise getUserMedia
-    navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
-    navigator.getMedia(
-      {
-        "video" : false,
-        "audio" : true
-      },
-      function (stream) {
-        // get user media pour le son
-        mediaStream = stream;
-        recordAudio = RecordRTC(stream, {
-          "type" : 'audio'
-        });
-        recordAudio.startRecording();
-        cameraPreview.src = window.URL.createObjectURL(stream);
-        cameraPreview.play();
-        cameraPreview.muted = false;
-        cameraPreview.controls = true;
-      },
-      function(error) {
-        alert(JSON.stringify(error));
-      }
-    );
-    startRecordingBtn.disabled = true;
-    stopRecordingBtn.disabled = false;
-    startRecordingBtn.style.display = "none";
-    stopRecordingBtn.style.display = "block";
-
-    sarahCouleur = "red";
-  }
-
-  function stopRecordAudio(){
-    startRecordingBtn.disabled = false;
-    stopRecordingBtn.disabled = true;
-    startRecordingBtn.style.display = "block";
-    stopRecordingBtn.style.display = "none";
-    cameraPreview.style.display = "block";
-    sarahCouleur = "gray";
-
-    //display equalizer image
-    var canvas = document.querySelector('#canvas-equalizer');
-    var canvasAudio = document.querySelector('#canvas-audio');
-    var context = canvas.getContext('2d');
-    var widthAudio = canvas.width;
-    var heightAudio = canvas.height;
-    context.clearRect(0, 0, widthAudio, heightAudio);
-    context.drawImage(canvasAudio, 0, 0, widthAudio, heightAudio);
-    var data = canvas.toDataURL('image/png');
-    photo.setAttribute('src', data);
-    $('#canvas-equalizer').show();
-
-    // stop audio recorder
-    recordAudio.stopRecording(function(url) {
-      // get audio data-URL
-      recordAudio.getDataURL(function(audioDataURL) {
-/*
-        var files = {
-            audio: {
-              type: recordAudio.getBlob().type || 'audio/wav',
-              dataURL: audioDataURL
-            }
-        };
-*/
-
-        var mediaData =
-        {
-          "mediaType" : "audio",
-          "mediaData" : audioDataURL
-        };
-
-        //socket.emit('audio', {files: files, id: sessionId, name: currentFolder});
-        animateWindows();
-        createNewMedia( mediaData);
-        saveFeedback("/images/icone-dodoc_son.png");
-        if (mediaStream) mediaStream.stop();
-      });
-    });
-  }
-}
-
-// CREATE A SOUND EQUALIZER
-function createEqualizer(event){
-  window.requestAnimFrame = (function(){
-    return  window.requestAnimationFrame       ||
-            window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame    ||
-            function(callback, element){
-              window.setTimeout(callback, 1000 / 60);
-            };
-  })();
-
-  window.AudioContext = (function(){
-      return  window.AudioContext || window.mozAudioContext;
-  })();
-
-  // Global Variables for Audio
-  var audioContext;
-  var analyserNode;
-  //var javascriptNode;
-  var sampleSize = 1024;  // number of samples to collect before analyzing
-                          // decreasing this gives a faster sonogram, increasing it slows it down
-  var amplitudeArray;     // array to hold frequency data
-  var audioStream;
-
-  // Global Variables for Drawing
-  var column = 0;
-  var canvasWidth  = 620;
-  var canvasHeight = 256;
-  var ctx;
-
-  ctx = $("#canvas-audio").get()[0].getContext("2d");
-
-  try {
-      audioContext = new AudioContext();
-  } catch(e) {
-      console.log('Web Audio API is not supported in this browser');
-  }
-
-  startEqualizer();
-
-  function startEqualizer(){
-    // e.preventDefault();
-    clearCanvas();
-    // Initialise getUserMedia
-    navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
-    navigator.getMedia(
-      {
-        video: false,
-        audio: true
-      },
-      setupAudioNodes,
-      function(err) {
-        alert(JSON.stringify(error));
-      }
-    );
-  }
-
-  function stopEqualizer(e){
-    e.preventDefault();
-    javascriptNode.onaudioprocess = null;
-    if(audioStream) audioStream.stop();
-    if(sourceNode)  sourceNode.disconnect();
-  }
-
-  function setupAudioNodes(stream) {
-    // create the media stream from the audio input source (microphone)
-    sourceNode = audioContext.createMediaStreamSource(stream);
-    audioStream = stream;
-
-    analyserNode   = audioContext.createAnalyser();
-    javascriptNode = audioContext.createScriptProcessor(sampleSize, 1, 1);
-
-    // Create the array for the data values
-    amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
-
-    // setup the event handler that is triggered every time enough samples have been collected
-    // trigger the audio analysis and draw one column in the display based on the results
-    javascriptNode.onaudioprocess = function () {
-
-        amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
-        analyserNode.getByteTimeDomainData(amplitudeArray);
-
-        // draw one column of the display
-        requestAnimFrame(drawTimeDomain);
-    }
-
-    // Now connect the nodes together
-    // Do not connect source node to destination - to avoid feedback
-    sourceNode.connect(analyserNode);
-    analyserNode.connect(javascriptNode);
-    javascriptNode.connect(audioContext.destination);
-  }
-
-  function onError(e) {
-      console.log(e);
-  }
-
-  function drawTimeDomain() {
-      var minValue = 9999999;
-      var maxValue = 0;
-      for (var i = 0; i < amplitudeArray.length; i++) {
-          var value = amplitudeArray[i] / 256;
-          if(value > maxValue) {
-              maxValue = value;
-          } else if(value < minValue) {
-              minValue = value;
-          }
-      }
-
-      var y_lo = canvasHeight - (canvasHeight * minValue) - 1;
-      var y_hi = canvasHeight - (canvasHeight * maxValue) - 1;
-
-      ctx.fillStyle = sarahCouleur;
-      ctx.fillRect(column,y_lo, 1, y_hi - y_lo);
-
-      // loop around the canvas when we reach the end
-      column += 1;
-      if(column >= canvasWidth) {
-          column = 0;
-          clearCanvas();
-      }
-  }
-
-  function clearCanvas() {
-      column = 0;
-      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-      ctx.strokeStyle = 'blue';
-      var y = (canvasHeight / 2) + 0.5;
-      ctx.moveTo(0, y);
-      ctx.lineTo(canvasWidth-1, y);
-      ctx.stroke();
-  }
-
-}
-
-function onMediaCreated( newMediasData){
-
-/*   $('.screenshot').attr('data-file', newMediaData.file); */
-
-  var newMediaData = getFirstMediaFromObj( newMediasData);
-
-  var newMediaType = newMediaData.type;
-  // remove /sessions from the filePath
+  var newMediaType = mediaData.type;
+  var mediaName = mediaData.mediaName;
 
   var projectPath = getProjectPath( currentFolder, currentProject);
   var mediasFolderPath = getMediaFolderPathByType( newMediaType);
-  var mediaName = newMediaData.mediaName;
 
   var pathToMediaFile = '/' + getPathToMediaFile( projectPath, mediasFolderPath, mediaName);
 
   var cameraPreview = document.getElementById('camera-preview');
-//   var pathToFile = makeFullMediaPath( pathMediaFolder + '/' + mediaFilenames[0]);
 
+  $(document)
+    .data('lastCapturedMediaName', mediaName)
+    .data('lastCapturedMediaFolderPath', mediasFolderPath)
+    ;
 
   if( newMediaType === 'photo') {
     $(".preview_image").attr("src", pathToMediaFile + '.jpg');
+    animateWindows();
   }
   else if( newMediaType === 'video') {
     cameraPreview.src = pathToMediaFile + '.webm';
@@ -1132,6 +449,7 @@ function onMediaCreated( newMediasData){
     cameraPreview.muted = false;
     cameraPreview.controls = true;
     $('.video-capture').fadeIn(1000);
+    animateWindows();
   }
   else if( newMediaType === 'animation') {
     cameraPreview.src = pathToMediaFile + '.mp4';
@@ -1140,9 +458,9 @@ function onMediaCreated( newMediasData){
     cameraPreview.controls = true;
     $('#camera-preview').show();
     $('.screenshot .canvas-view').hide();
+    animateWindows();
   }
   else if( newMediaType === 'audio') {
-
 
   }
 }

@@ -136,7 +136,7 @@ function init(){
       "mediaFolderPath" : mediaFolderPath,
       "switchFav" : true
     };
-    editMedia( editMediaData);
+    sendData.editMedia( editMediaData);
   });
 
 

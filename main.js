@@ -314,7 +314,6 @@ module.exports = function(app, io){
 	function onEditMediaMeta( editMediaData, socket) {
 		dev.logfunction( "EVENT - onEditMediaMeta");
   	editMediaMeta( editMediaData).then(function( mediaMetaData) {
-
     	listOneMedia( mediaMetaData.slugFolderName, mediaMetaData.slugProjectName, mediaMetaData.mediaFolderPath, mediaMetaData.mediaName).then(function( oneMediaData) {
         var eventAndContentJson = eventAndContent( "mediaUpdated", oneMediaData);
         dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
@@ -399,8 +398,7 @@ module.exports = function(app, io){
 		var mediaFolder = mediaData.mediaFolderPath;
 		var mediaName = mediaData.mediaName;
 
-
-  	removeOneMedia( slugFolderName, slugProjectName, mediaFolder, mediaName).then(function( mediaMetaData) {
+  	deleteOneMedia( slugFolderName, slugProjectName, mediaFolder, mediaName).then(function( mediaMetaData) {
       var eventAndContentJson = eventAndContent( "mediaRemoved", mediaMetaData);
       dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
       io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
@@ -409,7 +407,7 @@ module.exports = function(app, io){
     });
 	}
 
-	function removeOneMedia( slugFolderName, slugProjectName, mediaFolder, mediaName) {
+	function deleteOneMedia( slugFolderName, slugProjectName, mediaFolder, mediaName) {
     return new Promise(function(resolve, reject) {
   		var pathToMediaFolder = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
       // find in path

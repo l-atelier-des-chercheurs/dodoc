@@ -100,6 +100,8 @@ body.capture{
   }
 }
 
+  $buttonBar: $margin + 64px;
+
 .captureLeft {
   margin: auto;
   position: absolute;
@@ -110,6 +112,9 @@ body.capture{
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
   width: 50%;
+  height: 0;
+  padding-bottom: calc(37.5% + #{$buttonBar});
+
   left:25%;
 
   body.is--fullscreen & {
@@ -120,12 +125,12 @@ body.capture{
     padding: 2vh;
   }
 
-  $buttonBar: $margin + 64px;
 
   .video-view {
-    position: relative;
+    position: absolute;
     padding-bottom:  $buttonBar;
     height: 100%;
+    width: 100%;
 
     body.is--fullscreen & {
       padding-bottom:   0;
