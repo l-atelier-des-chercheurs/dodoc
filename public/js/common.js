@@ -7,6 +7,8 @@ function transformDatetoString( date){
 	return formatDate;
 }
 
+jQuery.fn.reverse = [].reverse;
+
 function transformDatetoTimestamp( date) {
   if( date == undefined)
     return false;

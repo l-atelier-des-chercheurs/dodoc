@@ -118,11 +118,10 @@ function makeOneMedia( mediaFolderPath, mediaName, mediaDatas) {
   if( mediaFolderPath === dodoc.projectTextsFoldername)
     $currentMedia = showText( mediaFolderPath, mediaName, mediaFilenames, mediaDatas);
 
-  var pathToMeta = makeFullPath( mediaFolderPath + '/' + mediaName);
-
+  var pathForPubli = mediaFolderPath + '/' + mediaName + '.json';
   $currentMedia
     .attr( 'data-mediaName', mediaName)
-    .attr( 'data-pathToMeta', pathToMeta)
+    .attr( 'data-pathForPubli', pathForPubli)
     .attr( 'data-mediatype', mediaFolderPath)
     .attr( 'data-type', mediaFolderPath)
   	.attr( 'data-informations', mediaDatas.informations)
@@ -358,15 +357,14 @@ function makeOnePubli( publiData) {
 	var $publiItem = $(".js--templates .publi-folder").clone(false);
   var publiPath = makeFullPath( dodoc.projectPublisFoldername + '/' + publiData.publiName);
 
-  debugger;
-
 	$publiItem
-		.data( 'publiName', publiData.name)
-		.data( 'publiSlug', publiData.publiName)
+		.data( 'publiname', publiData.name)
+		.attr( 'data-publislug', publiData.publiName)
   	.data( 'mtimestamp', transformDatetoTimestamp( publiData.modified))
   	.data( 'ctimestamp', transformDatetoTimestamp( publiData.created))
   	.data( 'ctimestamp', transformDatetoTimestamp( publiData.created))
   	.data( 'medias', publiData.medias)
+  	.data( 'linkToPubli', publiData.pathToPubli)
 		.find('h2')
 		  .html( publiData.name)
 		.end()
@@ -382,8 +380,8 @@ function makeOnePubli( publiData) {
 function insertOrReplacePubli( $publiItem, $publiContainer) {
 
   var $publiItems = $publiContainer.find(".publi-folder");
-  var publiName = $publiItem.data( "publiname");
-  var $existingPubli = $publiItems.filter( "[data-publiname='" + publiName + "']");
+  var publiName = $publiItem.data( "publislug");
+  var $existingPubli = $publiItems.filter( "[data-publislug='" + publiName + "']");
 
   if( $existingPubli.length >= 1) {
     $existingPubli.replaceWith( $publiItem);
@@ -438,10 +436,10 @@ var sendData = {
     publiData.slugProjectName = currentProject;
   	socket.emit( 'newPubli', publiData);
   },
-  loadPubli : function( publiData) {
+  editThisPubli : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
-  	socket.emit( 'loadPubli', publiData);
+  	socket.emit( 'editPubli', publiData);
   },
 
 }
@@ -788,7 +786,6 @@ var modals = {
   statusChangeAlertInit : function() {
 
     // TODO
-
     $statusPopup = $('#modal-deletefolder-alert');
   	$('#modal-modify-project .modify-statut').bind('change', function(){
   		if($(this).val() == "terminé"){

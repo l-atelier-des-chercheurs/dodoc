@@ -56,11 +56,8 @@ module.exports = function(app, io){
 		socket.on("listProject", onListProject);
 
 		// C A P T U R E     P A G E
-/*
-		socket.on("newImage", onNewImage);
-		socket.on("newVideo", onNewVideo);
-*/
     socket.on("newMedia", onNewMedia);
+
 		//STOP MOTION
 		socket.on("startStopMotion", onStartStopMotion);
 		socket.on("addImageToStopMotion", onAddImageToStopMotion);
@@ -70,17 +67,10 @@ module.exports = function(app, io){
 		socket.on("listMedias", onListOneProjectMedias);
 		socket.on("listOneMedia", onListOneMedia);
 
-// 		socket.on("readTxt", readTxt);
-
 		socket.on("listPublis", onListOneProjectPublis);
 		socket.on("newPubli", onNewPubli);
+		socket.on("editPubli", onEditPubli);
 
-		socket.on("displayThisMontage", displayMontage);
-		socket.on("saveMontage", saveMontage);
-		socket.on("titleChanged", onTitleChanged);
-// 		socket.on("addText", onNewText);
-		socket.on("modifyText", onModifiedText);
-// 		socket.on("newImageLocal", onNewImage);
 		socket.on("editMediaMeta", onEditMediaMeta);
 		socket.on("deleteMedia", onDeleteMedia);
 
@@ -463,88 +453,26 @@ module.exports = function(app, io){
     });
   }
 
+  function onEditPubli( publiData) {
+		dev.logfunction( "onEditPubli");
+    editThisPubli( publiData).then(function( publiMetaData) {
+  		var slugFolderName = publiMetaData.slugFolderName;
+  		var slugProjectName = publiMetaData.slugProjectName;
+  		var slugPubliName = publiMetaData.slugPubliName;
 
-	function displayMontage(data){
-		dev.logfunction( "displayMontage");
-		var file = dodoc.contentDir + "/" + data.folder+"/"+data.project+'/montage/'+data.name+'.json';
-		console.log(file);
-		fs.readFile(file, 'utf8', function (err, data) {
-		  if (err) console.log(err);
-		  var jsonObj = JSON.parse(data);
-		  io.sockets.emit('displayMontage', {name:jsonObj.name, html:jsonObj.html});
-		});
-	}
-
-	function saveMontage(req){
-		dev.logfunction( "saveMontage");
-		var dir = dodoc.contentDir + "/" + req.folder + "/" + req.projet;
-		var montageDir = dir + '/montage';
-		var htmlFile = montageDir + '/' + convertToSlug(req.title) + '.json';
-		changeJsonFile(htmlFile);
-
-		function changeJsonFile(file){
-			var jsonContent = fs.readFileSync(file,dodoc.textEncoding);
-			var jsonObj = JSON.parse(jsonContent);
-			jsonObj.html = req.html;
-			var jsonString = JSON.stringify(jsonObj, null, 4);
-			fs.writeFileSync(file, jsonString);
-			console.log("HTML enregistré");
-		}
-	}
-
-	function onTitleChanged(data){
-		dev.logfunction( "onTitleChanged");
-		var oldName = data.oldTitle;
-		var oldFilePath = dodoc.contentDir + "/" + data.folder+'/'+data.project+'/montage/'+convertToSlug(oldName)+'.json';
-
-		var newName = data.newTitle;
-		var newFilePath = dodoc.contentDir + "/" + data.folder+'/'+data.project+'/montage/'+convertToSlug(newName)+'.json';
-
-		// Vérifie si le dossier existe déjà
-		fs.access(newFilePath, fs.F_OK, function(err) {
-			// S'il n'existe pas -> change le nom du json
-	    if (err) {
-	      fs.renameSync(oldFilePath, newFilePath); // renomme le fichier
-	      changeJsonFile(newFilePath);
-	    }
-	    // S'il existe afficher un message d'erreur
-	    else {
-	    	if(convertToSlug(oldName) != convertToSlug(newName)){
-	    		console.log("le dossier existe déjà !");
-	      	io.sockets.emit("folderAlreadyExist", {name: newName });
-	    	}
-	    	else{
-	    		fs.renameSync(oldFilePath, newFilePath); // renomme le dossier
-	      	changeJsonFile(newFilePath);
-	    	}
-	    }
-		});
-
-		function changeJsonFile(file){
-			var jsonContent = fs.readFileSync(file,dodoc.textEncoding);
-			var jsonObj = JSON.parse(jsonContent);
-			jsonObj.name = newName;
-			var jsonString = JSON.stringify(jsonObj, null, 4);
-			fs.writeFileSync(file, jsonString);
-			console.log("Titre Publication modifié");
-			io.sockets.emit("titleModified", {name: newName, old:oldName});
-		}
-	}
-
-	function onModifiedText(text){
-		dev.logfunction( "onModifiedText");
-		var txtFile = dodoc.contentDir + "/" + text.folder + '/'+ text.project+"/" +text.id+'.txt';
-		console.log(text);
-// 		fs.writeFile(txtFile, '### '+text.title+"\r\n"+text.text, function(err){
-		fs.writeFile(txtFile, text.text, function(err){
-			if(err) {
-        console.log(err);
-      } else {
-        console.log("The file was saved!");
-        io.sockets.emit("displayModifiedText", {id:text.id, textTitle: text.title, textContent: text.text});
-      }
+    	listPublis( slugFolderName, slugProjectName, slugPubliName).then(function( publiProjectContent) {
+        var eventAndContentJson = eventAndContent( "publiUpdated", publiProjectContent);
+        dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
+        io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+      }, function(error) {
+        console.error("Failed to listPublis from create! Error: ", error);
+      });
+    }, function(error) {
+      console.error("Failed to create New Publi! Error: ", error);
     });
-	}
+
+  }
+
 
 // F I N    B I B L I    P A G E
 
@@ -1360,13 +1288,10 @@ PUBLIS METHODS
   }
 
   function getPubliDataJSON( slugFolderName, slugProjectName, pslug) {
-
     var pathToPubli = getPathToPubli( slugFolderName, slugProjectName, pslug);
-
     var publiJSONFilepath = pathToPubli + '.json';
 		var publiData = fs.readFileSync( publiJSONFilepath, dodoc.textEncoding);
 		var publiMetaData = JSON.parse( publiData);
-
     return publiMetaData;
   }
 
@@ -1420,9 +1345,7 @@ PUBLIS METHODS
 
       // lister toutes les publis issues du dossier publi
       var pathToPubliFolder = getPathToPubli( slugFolderName, slugProjectName);
-
       var lookingForSpecificJson = thisPubliName !== undefined ? true : false;
-
       var filesInPubliFolder = fs.readdirSync( pathToPubliFolder);
 
   //     dev.log( "- looking for files in " + publisPath);
@@ -1458,7 +1381,7 @@ PUBLIS METHODS
           publiMetaData.publiName = publiName;
           publiMetaData.slugFolderName = slugFolderName;
           publiMetaData.slugProjectName = slugProjectName;
-          publiMetaData.fullPathToPubli = getPathToPubli( slugFolderName, slugProjectName, publiName);
+          publiMetaData.pathToPubli = getPathToPubli( slugFolderName, slugProjectName, publiName);
 
           folderPubliMeta[publiName] = publiMetaData;
         }
@@ -1468,7 +1391,41 @@ PUBLIS METHODS
   }
 
 
+  function editThisPubli( updatedPubliData) {
+    return new Promise(function(resolve, reject) {
+  		dev.logfunction( "COMMON — editThisPubli : publiData = " + JSON.stringify( updatedPubliData, null, 4));
 
+      var slugFolderName = updatedPubliData.slugFolderName;
+      var slugProjectName = updatedPubliData.slugProjectName;
+      var slugPubliName = updatedPubliData.slugPubliName;
+      var pathToPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName);
+      var publiJSONFilepath = pathToPubli + '.json';
+
+
+      // get and parse publi json data
+      var publiMetaData = getPubliDataJSON( slugFolderName, slugProjectName, slugPubliName);
+
+      // update modified date
+      publiMetaData.modified = getCurrentDate();
+
+      // update title if updatedPubliData has newPubliName
+      if( updatedPubliData.newPubliName !== undefined)
+        publiMetaData.name = newPubliName;
+
+      // update medias if updatedPubliData has medias
+      if( updatedPubliData.medias !== undefined)
+        publiMetaData.medias = updatedPubliData.medias;
+
+  		var status = jsonWriteToFile( publiJSONFilepath, publiMetaData, "update");
+
+      publiMetaData.slugPubliName = slugPubliName;
+      publiMetaData.slugFolderName = slugFolderName;
+      publiMetaData.slugProjectName = slugProjectName;
+      publiMetaData.pathToPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName);
+
+      resolve( publiMetaData);
+    });
+  }
 
 
 
@@ -1512,38 +1469,6 @@ PUBLIS METHODS
     fileBuffer = new Buffer(dataURL, 'base64');
     fs.writeFileSync(filePath + fileExtension, fileBuffer);
 	}
-
-	function writeIntoJsonFile(jsonFile, objectJson, objectToSend, send){
-		var jsonString = JSON.stringify(objectJson, null, 4);
-		fs.writeFile(jsonFile, jsonString, function(err) {
-      if(err) {
-          console.log(err);
-      } else {
-          console.log("The file was saved!");
-          io.sockets.emit(send, objectToSend);
-      }
-    });
-	}
-
-  // old write json function that sends sockets.emit (see jsonWriteToFile)
-	function writeJsonFile(jsonFile, objectJson, send){
-		var jsonString = JSON.stringify(objectJson, null, 4);
-		if( send === "folderCreated") {
-			fs.appendFile(jsonFile, jsonString, function(err) {
-	      if(err) {
-	        console.log(err);
-	      }
-	      else {
-	        console.log("Success for event : " + send);
-	      	io.sockets.emit(send, objectJson);
-	      }
-	    });
-    }
-    else if( send === "folderModified") {
-      fs.writeFileSync(jsonFile, jsonString);
-      io.sockets.emit(send, objectJson);
-	  }
-  }
 
 
   // new write json function that writes in json and returns true or false depending on success

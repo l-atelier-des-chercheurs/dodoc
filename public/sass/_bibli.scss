@@ -125,6 +125,10 @@ body.bibli {
     display: none;
   }
 
+  .montage-edit-container {
+    display: none;
+  }
+
 
   .montage-edit {
     background:$gristresclair;
@@ -132,6 +136,7 @@ body.bibli {
     width:100%;
     top:0;
     left:0;
+    display: block;
     min-height: 100vh;
 
     .montage-btn {
@@ -243,14 +248,20 @@ body.bibli {
 
       transition: all .4s;
 
+
       .button-wrapper {
         position: absolute;
         top:0;
         right: 0;
       }
 
+      &::before {
+        display: none;
+      }
+
       .button-wrapper_deleteMedia {
         opacity:0;
+        display: block;
         transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out, opacity .4s ease-out;
       }
 

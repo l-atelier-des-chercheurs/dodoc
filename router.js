@@ -22,7 +22,7 @@ module.exports = function(app,io,m){
   app.get("/:folder/:project/capture", getCapture);
   app.get("/:folder/:project/bibliotheque/medias", getBibli);
   app.get("/:folder/:project/bibliotheque/panneau-de-publications", getBibliPubli);
-  app.get("/:folder/:project/:publi", getPubli);
+  app.get("/:folder/:project/publications/:publi", getPubli);
 
   app.post("/:folder/:project/bibliotheque/medias/file-upload", multipartMiddleware, postFile);
 

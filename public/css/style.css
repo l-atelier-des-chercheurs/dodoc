@@ -7550,13 +7550,15 @@ body.bibli {
     background-color: #EF474B;
     background-size: 5px 100%;
     display: none; }
+  .montage .montage-edit-container {
+    display: none; }
   .montage .montage-edit {
     background: #e5e5e5;
     position: absolute;
     width: 100%;
     top: 0;
     left: 0;
-    display: none;
+    display: block;
     min-height: 100vh; }
     .montage .montage-edit .montage-btn {
       padding: 15px; }
@@ -7642,8 +7644,11 @@ body.bibli {
         position: absolute;
         top: 0;
         right: 0; }
+      .montage .inner-montage .media::before {
+        display: none; }
       .montage .inner-montage .media .button-wrapper_deleteMedia {
         opacity: 0;
+        display: block;
         transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out, opacity .4s ease-out; }
       .montage .inner-montage .media:hover .button-wrapper_deleteMedia {
         opacity: 1; }
@@ -8288,6 +8293,8 @@ body.capture .content-wrapper:after {
     bottom: .4687rem; }
   .media.is--highlight .mediaContent {
     box-shadow: 0 1px 8px rgba(0, 0, 0, 0.4); }
+  .media .button-wrapper_deleteMedia {
+    display: none; }
   .media .button-wrapper_flagMedia {
     position: absolute;
     right: -0px;

@@ -4,6 +4,7 @@ li.media.media_image(data-ratio data-title data-legende data-highlight=false)
     .mediaData
       p.mediaData--informations
   +button( 'flag', '', 'isCollapsed')
+  +button('deleteMedia', '', 'isCollapsed')
 li.media.media_video(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     video(preload="none" controls)
@@ -11,6 +12,7 @@ li.media.media_video(data-ratio data-title data-legende data-highlight=false)
     .mediaData
       p.mediaData--informations
   +button( 'flag', '', '')
+  +button('deleteMedia', '', 'isCollapsed')
 li.media.media_stopmotion(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     video(preload="none" controls)
@@ -18,6 +20,7 @@ li.media.media_stopmotion(data-ratio data-title data-legende data-highlight=fals
     .mediaData
       p.mediaData--informations
   +button( 'flag', '', '')
+  +button('deleteMedia', '', 'isCollapsed')
 li.media.media_audio(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     audio(preload="none" controls)
@@ -25,11 +28,13 @@ li.media.media_audio(data-ratio data-title data-legende data-highlight=false)
     .mediaData
       p.mediaData--informations
   +button( 'flag', '', '')
+  +button('deleteMedia', '', 'isCollapsed')
 li.media.media_text(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     .mediaContent--titleOfTextmedia
     .mediaContent--textOfTextmedia
   +button( 'flag', '', '')
+  +button('deleteMedia', '', 'isCollapsed')
 
 li.publi-folder(data-publi="")
   .content
@@ -50,8 +55,6 @@ li.publi-folder(data-publi="")
   .inner-montage.small-12
     .montage-element
 
-
-+button('deleteMedia', '', 'isCollapsed')
 //- Pop up media
 div.media-big_image.media-big.row(data-type="image")
   .mediaContent.small-8.columns

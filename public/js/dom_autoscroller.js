@@ -1481,42 +1481,63 @@ if (si) {
 
 module.exports = tick;
 },{}],13:[function(require,module,exports){
-var dragula = require('dragula'),
+
+  var dragula = require('dragula'),
     autoScroll = require('dom-autoscroller');
 
-  var left = document.querySelector('.medias-list');
-  var right = document.querySelector('.inner-montage');
-	var drake = dragula([left, right], {
-	  copy: function (el, source) {
-	    return source === left;
-	  },
-	  accepts: function (el, target) {
-      return target === right;
-	  },
-    invalid: function (el, handle) {
-      return $("body").attr("data-publicationpane") !== "open";
-    }
-	})
-	.on('drop', function(el, target, source, sibling){
-  	// si le drop a bien réussi
-    if( target !== null) {
-      $(el).removeClass("gu-transit");
-      var deleteMedia = $(".js--templates .js--delete-media-montage").clone(false);
-      $(el).append(deleteMedia);
-      $(el).find(".button-wrapper_flagMedia").remove();
-  		onMontageChanged();
-    }
-	});
+  var drake;
 
-  var scroll = autoScroll([
-          document.querySelector('.montage')
-      ],{
-      direction: 'vertical',
-      margin: 60,
-      pixels: 50,
-      autoScroll: function(){
-          return this.down && drake.dragging;
+  $(document).on('restart_dragula', function(){
+
+    if( drake !== undefined)
+      drake.destroy();
+
+    var left = document.querySelector('.medias-list');
+    var right = document.querySelector('.inner-montage');
+
+  	drake = dragula([left, right], {
+  	  copy: function (el, source) {
+  	    return source === left;
+  	  },
+  	  accepts: function (el, target) {
+        return target === right;
+  	  },
+      invalid: function (el, handle) {
+        return $("body").attr("data-publicationpane") !== "open";
       }
+  	})
+  	.on('drop', function(el, target, source, sibling){
+    	// si le drop a bien réussi
+      if( target !== null) {
+
+/*
+        $el = $(el);
+        var deleteMediaButton = $(".js--templates .js--delete-media-montage").clone(false);
+
+        $el
+          .removeClass("gu-transit")
+          .append( deleteMediaButton)
+          .find(".button-wrapper_flagMedia")
+            .remove()
+          .end()
+          ;
+*/
+
+        $(document).trigger( 'drop_succeeded');
+
+      }
+  	});
+
+    var scroll = autoScroll([
+            document.querySelector('.montage')
+        ],{
+        direction: 'vertical',
+        margin: 60,
+        pixels: 50,
+        autoScroll: function(){
+            return this.down && drake.dragging;
+        }
+    });
   });
 
 },{"dom-autoscroller":7,"dragula":9}]},{},[13]);
