@@ -443,12 +443,8 @@ button{
 
     display: block;
 
-    background-color: $bleuvert;
-
     transform-origin: right bottom;
-//     transform: scale(0);
     opacity: 0;
-
     border-radius: 50%;
 
     transition: transform .2s ease-out, opacity .2s ease-out;

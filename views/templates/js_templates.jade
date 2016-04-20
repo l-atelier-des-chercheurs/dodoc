@@ -37,6 +37,20 @@ li.publi-folder(data-publi="")
   .publi-btn
     +button('view_publication', '', 'isCollapsed')
 
+.montage-edit
+  .montage-btn
+    +button('backButton', '', 'isCollapsed')
+    +button('view_publication', '', 'isCollapsed')
+  .montage-title
+    input(type="text" placeholder="Titre")
+    h2.title
+    .publi-btn
+      +button('validerTitre', '', '')
+      +button('editerTitre', '', 'isCollapsed')
+  .inner-montage.small-12
+    .montage-element
+
+
 +button('deleteMedia', '', 'isCollapsed')
 //- Pop up media
 div.media-big_image.media-big.row(data-type="image")

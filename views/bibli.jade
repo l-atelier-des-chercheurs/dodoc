@@ -39,35 +39,12 @@ html
               include templates/images/add.svg
             span Créer une nouvelle publication
           ul
-        .montage-edit
-          .montage-btn
-            +button('backButton', '', 'isCollapsed')
-            +button('view_publication', '', 'isCollapsed')
-          .montage-title
-            input(type="text" placeholder="Titre")
-            h2.title
-            .publi-btn
-              +button('validerTitre', '', '')
-              +button('editerTitre', '', 'isCollapsed')
-          .inner-montage.small-12
-            .montage-element
+        .montage-edit-container
 
-    div(id="modal-add-publi" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-      h2#modalTitle.popoverTitle Nouvelle publication
-      form(onsubmit='return false;' class='add-publi-form lead')
-        input(type='text' class='new-publi' placeholder='Nom')
-        input(type='submit' class='submit-new-publi' value='Valider')
-      a(class="close-reveal-modal" aria-label="Close") &#215;
-
+    include templates/modals/addPubli
     include templates/modals/importMedia
+    include templates/modals/addText
 
-    div(id="modal-add-text" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-      h2#modalTitle.popoverTitle Ajouter du texte
-      form(onsubmit='return false;' class='add-publi-form lead')
-        input.js--submit-new-text_title(type='text' placeholder='Titre')
-        textarea.js--submit-new-text_text(placeholder="Ajouter du texte ici")
-        input(type='submit' class='js--submit-new-text' value='Valider')
-      a(class="close-reveal-modal" aria-label="Close") &#215;
 
     div(id="modal-media-view" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
       .big-mediaContent

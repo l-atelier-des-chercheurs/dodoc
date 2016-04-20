@@ -7,7 +7,7 @@ function onSocketConnect() {
 	sessionId = socket.io.engine.id;
 	console.log('Connected ' + sessionId);
 	socket.emit('listMedias', { "slugFolderName" : currentFolder, "slugProjectName" : currentProject});
-	socket.emit('listPubli', { "slugFolderName" : currentFolder, "slugProjectName" : currentProject});
+	socket.emit('listPublis', { "slugFolderName" : currentFolder, "slugProjectName" : currentProject});
 };
 
 function onSocketError(reason) {
@@ -19,8 +19,11 @@ socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
 
 socket.on('listMediasOfOneType', onListMediasOfOneType);
-socket.on('listPublications', onPubliCreated);
+
+socket.on('listPublications', onListPublications);
 socket.on('publiCreated', onPubliCreated);
+
+
 socket.on('displayMontage', onDisplayMontage);
 socket.on('titleModified', onTitleModified);
 socket.on('displayMediaData', onMediaData);
@@ -43,68 +46,17 @@ function init(){
   // le drag and drop avec dragula se fait maintenant dans le fichier dom_autoscroller.js
   // en attendant de faire mieux
 
-	$validerBouton = $('.montage-title .js--validerTitre');
-	$editerBouton = $('.montage-title .js--editerTitre');
-
-	$validerBouton.on('click', function(){
-
-		var oldTitle = $('.montage-title .title').html();
-		var newTitle = $('.montage-title input').val();
-		$('.montage-title input').hide();
-		$('.montage-title .title').show().html(newTitle);
-		$(this).hide();
-		$editerBouton.css("display", "block");
-
-		socket.emit('titleChanged', {oldTitle: oldTitle, newTitle: newTitle, session: currentFolder, project: currentProject});
-
-	});
-
-	$('.montage-title .js--editerTitre').on( 'click', function() {
-		$('.montage-title input').show().val($('.montage-title .title').html());
-		$('.montage-title .title').hide();
-		$(this).hide();
-		$validerBouton.css("display", "block");
-	});
-
-	$('.submit-new-publi').on('click', function(){
-		var publiName = $('.new-publi').val();
-		socket.emit('createPubli', {name: publiName, session:currentFolder, project: currentProject});
-	});
-
-	$('body').on('click', '.js--edit_view', function(e){
-  	e.preventDefault();
-		var namePubli = $(this).closest('.publi-folder').attr('data-publi');
-		console.log(namePubli);
-		$('.montage-edit').attr('data-publi', namePubli);
-		socket.emit('displayThisMontage', {name:namePubli, session:currentFolder, project: currentProject});
-	});
-
-	$('body').on('click', '.js--backButton', function(){
-		$('.montage-inner').empty();
-		$('.montage-edit').hide();
-	});
-
-  $('body').on('click', '.js--delete-media-montage', function(){
-  	var $elementToDel = $(this).parent("li.media");
-  	$elementToDel.fadeOut( 600,function(){
-  		$elementToDel.remove();
-  		onMontageChanged();
-  	});
-  });
-
-
+  publi.init();
 
 	$(".js--open_publicationspane").on( 'click', function(e) {
   	e.preventDefault();
   	$('body').attr( "data-publicationpane", $('body').attr('data-publicationPane') === 'open' ? '' : 'open');
   });
-
 	// Au click sur un media
 	$('body').on('click', '.medias-list .media', function(){
 		$m = $(this);
 		modals.bigMedia($m);
   });
-
   // Au click sur le bouton "submit" d'un popup de texte
   $('.js--submit-new-text').on('click',function(){
     modals.createTextMedia();
@@ -117,19 +69,14 @@ function init(){
     setTimeout(function() {
       $('.montage-list [data-publi=' + urlHash.substring(1) + ']').find('.js--edit_view').trigger( 'click');
     }, 250);
-
-
   }
-
 
  // Ajoute ou enlève un highlight quand on clique sur le drapeau dans les médias
   $('body').on('click', '.js--flagMedia', function(e){
   	e.stopPropagation();
-
 		var $thisMedia = $(this).closest(".media");
 		var medianame = $thisMedia.attr("data-medianame");
 		var mediaFolderPath = $thisMedia.attr("data-mediatype");
-
     var editMediaData =
     {
       "mediaName" : medianame,
@@ -139,9 +86,7 @@ function init(){
     sendData.editMedia( editMediaData);
   });
 
-
 }
-
 
 function onListMediasOfOneType( mediasData) {
   var $getAllMediasFormatted = listMediasOfOneType( mediasData);
@@ -200,9 +145,120 @@ function onMediaRemoved( mediaData){
   removeMedia( $('.medias-list .media'), mediaData);
 }
 
-/********************************************************************************************
-                            publis
-********************************************************************************************/
+/**********************************************************************
+              PUBLIS
+**********************************************************************/
+
+function onListPublications( publisData) {
+  // get the data
+  var $getAllPublisFormatted = listPublis( publisData);
+  var $publiContainer = $(".mainContent .montage-list ul");
+  debugger;
+  $getAllPublisFormatted.each( function() {
+    insertOrReplacePubli( $(this), $publiContainer);
+  });
+}
+
+function onPubliCreated(publisData){
+  console.log( "onPubliCreated");
+  onListPublications( publisData);
+}
+
+
+var publi = {
+
+  init : function( mediaData) {
+
+  	$('body')
+  	  .on('click', '.js--submit-new-publi', function(e){
+    		var publiName = $('.new-publi').val();
+    		if( publiName.length > 0) {
+      		publi.createNew( publiName);
+          $("#modal-add-publi").foundation('reveal', 'close');
+        }
+    	})
+
+  	  .on('click', '.montage-title .js--editerTitre', function(e){
+    		$('.montage-title input').show().val($('.montage-title .title').html());
+    		$('.montage-title .title').hide();
+    		$(this).hide();
+    		$('.montage-title .js--validerTitre').css("display", "block");
+      })
+  	  .on('click', '.montage-title .js--validerTitre', function(e){
+    		var oldTitle = $('.montage-title .title').html();
+    		var newTitle = $('.montage-title input').val();
+    		$('.montage-title input').hide();
+    		$('.montage-title .title').show().html(newTitle);
+    		$(this).hide();
+    		$editerBouton.css("display", "block");
+    		// send new title with publi name
+      })
+
+    	.on('click', '.js--edit_view', function(e){
+      	e.preventDefault();
+    		var $thisPubli = $(this).closest('.publi-folder');
+        publi.openPubli( $thisPubli);
+    	})
+
+    	.on('click', '.js--backButton', function(){
+  		  $('.montage-inner').empty();
+        $('.montage-edit').hide();
+  	  })
+
+      .on('click', '.js--delete-media-montage', function(){
+      	var $elementToDel = $(this).parent("li.media");
+      	$elementToDel.fadeOut( 600,function(){
+      		$elementToDel.remove();
+      		onMontageChanged();
+      	});
+      })
+      ;
+
+
+  },
+
+  createNew : function( pname) {
+    var publiJson =
+    {
+      "name" : pname
+    }
+    sendData.createNewPubli( publiJson);
+  },
+
+  openPubli : function( $thisPubli) {
+
+    // cloner un .montage-edit
+    var $montageEdit = $(".js--templates .montage-edit").clone(false);
+
+    var pdata = $thisPubli.data();
+
+    debugger;
+
+    $montageEdit
+      .find(".title")
+        .html( pdata.publiName)
+      .end()
+      .find(".js--publi_view")
+        .attr('href', '')
+      .end()
+      ;
+
+    if(data.html != 'none')
+		  $('.montage-edit[data-publi="'+publiName+'"]').find('.inner-montage').html(data.html);
+
+    // le placer dans .montage-edit-container
+
+  },
+
+  savePubliContent : function( newPubliContent) {
+
+
+  },
+
+}
+
+
+
 
 function onMontageChanged(){
 	var montageContent = $(".inner-montage").html();
@@ -210,29 +266,10 @@ function onMontageChanged(){
 	socket.emit("saveMontage", {html:montageContent, title: title, session:currentFolder, projet:currentProject});
 }
 
-function onPubliCreated(data){
-
-	var publiItem = $(".js--templates .publi-folder").clone(false);
-
-	var publiLink = convertToSlug(data.name);
-	var publiPath = '/'+currentFolder+'/'+currentProject+'/publication/'+ publiLink;
-
-	publiItem
-		.attr('data-publi', publiLink)
-		.find('h2').html(data.name).end()
-		.find('.js--publi_view').attr('href', publiPath).end()
-  ;
-
-	$('.montage-list ul').prepend(publiItem);
-	$('input.new-publi').val('');
-	$('#modal-add-publi').foundation('reveal', 'close');
-
-}
-
 function onDisplayMontage(data){
 	var publiName = convertToSlug(data.name);
 	var publiPath = '/'+currentFolder+'/'+currentProject+'/publication/'+publiName;
-	$('.montage-edit[data-publi="'+publiName+'"]')
+	$('.montage-edit')
 		.show()
 		.find('.title').html(data.name)
 		.end()

@@ -8294,7 +8294,6 @@ body.capture .content-wrapper:after {
     bottom: -0;
     z-index: 101;
     display: block;
-    background-color: #48C2B5;
     transform-origin: right bottom;
     opacity: 0;
     border-radius: 50%;

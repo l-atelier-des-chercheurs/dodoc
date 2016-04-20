@@ -22,7 +22,7 @@ module.exports = function(app,io,m){
   app.get("/:folder/:project/capture", getCapture);
   app.get("/:folder/:project/bibliotheque/medias", getBibli);
   app.get("/:folder/:project/bibliotheque/panneau-de-publications", getBibliPubli);
-  app.get("/:folder/:project/publication/:publi", getPubli);
+  app.get("/:folder/:project/:publi", getPubli);
 
   app.post("/:folder/:project/bibliotheque/medias/file-upload", multipartMiddleware, postFile);
 
@@ -45,11 +45,16 @@ module.exports = function(app,io,m){
     return getFullPath( projectPath) + '/' + dodoc.projectJSONfilename;
   }
 
-  function getPubliPath( slugFolderName, slugProjectName, slugPubliName) {
-    return slugFolderName + '/' + slugProjectName + '/montage/' + slugPubliName;
+  function getPathToPubli( slugFolderName, slugProjectName, pslug) {
+    var projectPath = getProjectPath( slugFolderName, slugProjectName);
+    var pathToPubli = projectPath + '/' + getPubliPathOfProject();
+    if( pslug !== undefined)
+      pathToPubli = pathToPubli + '/' + pslug;
+    return pathToPubli;
   }
-  function getJsonFileOfPubli( publiPath) {
-    return getFullPath( publiPath) + '/' + dodoc.publiJSONfilename;
+
+  function makePathToPubliFull( publiPath) {
+    return getFullPath( publiPath);
   }
   function getCurrentDate() {
     return moment().format( dodoc.jsonDateFormat);
@@ -88,9 +93,9 @@ module.exports = function(app,io,m){
 
         var slugPubliName = req.param('publi');
         if( slugPubliName !== undefined) {
-          var publiPath = getPubliPath( slugFolderName, slugProjectName, slugPubliName);
-          var jsonFileOfPubli = getJsonFileOfPubli( publiPath);
-          var publiData = readJsonFile( jsonFileOfPubli);
+          var jsonFileOfPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName) + '.json';
+          var fullPathToJsonFileOfPubli = makePathToPubliFull( jsonFileOfPubli);
+          var publiData = readJsonFile( fullPathToJsonFileOfPubli);
 
           pageDataJSON.publi = publiData.publi;
           pageDataJSON.publiName = publiData.name;
@@ -268,7 +273,9 @@ module.exports = function(app,io,m){
   function getTextPathOfProject() {
     return dodoc.projectTextsFoldername;
   }
-
+  function getPubliPathOfProject() {
+    return dodoc.projectPublisFoldername;
+  }
   // copie de celui de main.js
   function createMediaJSON( newMediaType, pathToFile, fileExtension, fileName) {
     var mediaMetaData = {};

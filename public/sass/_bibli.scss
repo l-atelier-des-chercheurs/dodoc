@@ -126,15 +126,13 @@ body.bibli {
   }
 
 
-  .montage-edit{
+  .montage-edit {
     background:$gristresclair;
     position:absolute;
     width:100%;
     top:0;
     left:0;
-    display:none;
     min-height: 100vh;
-
 
     .montage-btn {
       @include clearfix();
