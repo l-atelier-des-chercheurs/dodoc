@@ -318,6 +318,7 @@ var publi = {
     var $montage = $('.montage-edit-container .montage-edit');
 
     var $publiMedias = $();
+
     $.each( listOfMediasToAdd, function( i, media) {
 
       // let's find the item with pathforpubli="01-photos/20160419_224310.json" in lib
