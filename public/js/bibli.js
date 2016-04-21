@@ -164,9 +164,11 @@ function onListPublications( publisData) {
   $getAllPublisFormatted.each( function() {
     $thisPubliItem = $(this);
     insertOrReplacePubli( $thisPubliItem, $publiLibrary);
-    // if the currently parsed publi is currently being edit
+    // if the currently parsed publi is currently being edited
     if( publiCurrentlyShown !== undefined && publiCurrentlyShown === $thisPubliItem.data('publislug')) {
-      // let's load its content again
+      // let's compare its content to the content gotten
+
+      // if different lets update
       var $publiMedias = publi.updateMontageContent( $thisPubliItem.data('medias'));
       var $innerMontage = $montage.find('.inner-montage');
       $innerMontage.html( $publiMedias);

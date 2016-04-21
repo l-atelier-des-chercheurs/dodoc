@@ -49,19 +49,19 @@ mixin button(typeOfButton, navOrButton, style)
       span Créer un dossier
 
   if( typeOfButton === 'nouveauProjet')
-    a(href="#" data-reveal-id="modal-add-project" class='button-wrapper_add #{defaultClasses}')
+    a(href="#" data-reveal-id="modal-add-project" class='button-wrapper_add js--add-project #{defaultClasses}')
       .btn.icon
         include images/add.svg
       span Nouveau projet
 
   if( typeOfButton === 'editFolder')
-    a(href="#" data-reveal-id="modal-modify-folder" class='button-wrapper_editFolder js--edit-project-icon #{defaultClasses}')
+    a(href="#" data-reveal-id="modal-modify-folder" class='button-wrapper_editFolder js--edit-folder #{defaultClasses}')
       .btn.icon
         include images/cog.svg
       span Éditer ce dossier
 
   if( typeOfButton === 'editProjet')
-    a(href="#" data-reveal-id="modal-modify-project" class='button-wrapper_editProjet js--edit-project-icon #{defaultClasses}')
+    a(href="#" data-reveal-id="modal-modify-project" class='button-wrapper_editProjet js--edit-project #{defaultClasses}')
       .btn.icon
         include images/cog.svg
       span Éditer ce projet

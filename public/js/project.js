@@ -25,7 +25,8 @@ socket.on('error', onSocketError);
 
 socket.on('listOneProject', onListOneProject);
 socket.on('listMediasOfOneType', onListMediasOfOneType);
-socket.on('listProjectPubli', onListProjectPubli);
+// socket.on('listProjectPubli', onListProjectPubli);
+socket.on('listPublications', onListPublications);
 
 socket.on('projectModified', onProjectModified); //Quand on reçoit les modification du projet
 socket.on('projectRemoved', onProjectRemoved);
@@ -37,25 +38,17 @@ socket.on('mediaRemoved', onMediaRemoved);
 
 jQuery(document).ready(function($) {
 	$(document).foundation();
-	init();
-
 });
-
-function init(){
-	$('body').on('click', '.js--edit-project-icon', function(){
-		$thisProject = $(this).closest(".project");
-		modals.editProjectPopup( $thisProject);
-	});
-}
-
 
 function onListOneProject( projectData){
   // only list projects that belong to this page (if another user loads another project page, for example)
   if( projectData.slugFolderName !== currentFolder || projectData.slugProjectName !== currentProject)
     return;
+
   var $project = loadProject( projectData);
   insertOrReplaceProject( $project, $(".mainContent .project-list"));
 	socket.emit( 'listMedias', projectData);
+	socket.emit( 'listPublis', projectData);
 }
 
 // COMMON WITH PROJECT.JS
@@ -66,6 +59,17 @@ function onListMediasOfOneType( mediasData) {
   var $mediaContainer = $("#container .project .last-medias");
   $getAllMediasFormatted.each( function() {
     insertOrReplaceMedia( $(this), $mediaContainer);
+  });
+}
+
+function onListPublications( publisData) {
+  // get the data
+  var $getAllPublisFormatted = listPublis( publisData);
+  var $publiLibrary = $(".mainContent .montage-list .list-publi");
+
+  $getAllPublisFormatted.each( function() {
+    $thisPubliItem = $(this);
+    insertOrReplacePubli( $thisPubliItem, $publiLibrary);
   });
 }
 
@@ -89,7 +93,6 @@ function onListProjectPubli( publisData) {
 	}
 
   projectClone.find( '.list-publi').append( $allPublis);
-
 	projectClone.appendTo('.project-list');
 
 }

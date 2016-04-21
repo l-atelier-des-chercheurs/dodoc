@@ -43,13 +43,13 @@ module.exports = function(app, io){
 		// I N D E X    P A G E
 		socket.on("listFolders", onListFolders);
 		socket.on("newFolder", onNewFolder);
-		socket.on("modifyFolder", onModifyFolder);
+		socket.on("editFolder", onEditFolder);
 		socket.on("removeFolder", onRemoveFolder);
 
 		// F O L D E R     P A G E
 		socket.on("listProjects", onListProjects);
 		socket.on("newProject", onNewProject);
-		socket.on("modifyProject", onModifyProject);
+		socket.on("editProject", onEditProject);
 		socket.on("removeOneProject", onRemoveOneProject);
 
 		// P R O J E T      P A G E
@@ -158,18 +158,17 @@ module.exports = function(app, io){
 
 
 	// Modifier un dossier
-	function onModifyFolder( updatedFolderData){
-		dev.logfunction( "EVENT - onModifyFolder with packet " + JSON.stringify( updatedFolderData, null, 4));
+	function onEditFolder( updatedFolderData){
+		dev.logfunction( "EVENT - onEditFolder with packet " + JSON.stringify( updatedFolderData, null, 4));
     var eventAndContentJson = updateFolderDataJSON( updatedFolderData);
     dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
     io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
 	}
 
 	// Supprimer un dossier
-	function onRemoveFolder(folder){
+	function onRemoveFolder( fdata){
 		dev.logfunction( "EVENT - onRemoveFolder");
-		var slugFolderName = convertToSlug( folder.name);
-    var eventAndContentJson = removeFolderNamed( slugFolderName);
+    var eventAndContentJson = removeFolderNamed( fdata.slugFolderName);
     dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
     io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
 	}
@@ -191,8 +190,8 @@ module.exports = function(app, io){
   }
 
 	// Modifier un projet
-	function onModifyProject( updatedProjectData) {
-		dev.logfunction( "EVENT - onModifyProject with packet " + JSON.stringify( updatedProjectData, null, 4));
+	function onEditProject( updatedProjectData) {
+		dev.logfunction( "EVENT - onEditProject with packet " + JSON.stringify( updatedProjectData, null, 4));
     var eventAndContentJson = updateProjectDataJSON( updatedProjectData);
     dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
     io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
@@ -369,7 +368,6 @@ module.exports = function(app, io){
 	// Delete File
 	function onDeleteMedia( mediaData) {
 		dev.logfunction( "onDeleteMedia");
-
 		var slugFolderName = mediaData.slugFolderName;
 		var slugProjectName = mediaData.slugProjectName;
 		var mediaFolder = mediaData.mediaFolderPath;
@@ -381,36 +379,6 @@ module.exports = function(app, io){
       io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
     }, function(error) {
       console.error("Failed to remove one media! Error: ", error);
-    });
-	}
-
-	function deleteOneMedia( slugFolderName, slugProjectName, mediaFolder, mediaName) {
-    return new Promise(function(resolve, reject) {
-  		var pathToMediaFolder = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
-      // find in path
-
-      try {
-        var filesInMediaFolder = fs.readdirSync( pathToMediaFolder);
-        filesInMediaFolder.forEach( function( filename) {
-          var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( filename)[1];
-          if( fileNameWithoutExtension === mediaName) {
-            var filePath = pathToMediaFolder + '/' + filename;
-            var deletedFilePath = pathToMediaFolder + '/' + dodoc.deletedProjectFolderPrefix + filename;
-            fs.renameSync( filePath, deletedFilePath);
-            console.log( "A file will be deleted (actually, renamed but hidden from dodoc) : \n - " + filePath + "\n - " + deletedFilePath);
-          }
-        });
-        var mediaMetaData =
-        {
-          "slugFolderName" : slugFolderName,
-          "slugProjectName" : slugProjectName,
-          "mediaFolder" : mediaFolder,
-          "mediaName" : mediaName,
-        }
-        resolve( mediaMetaData);
-      } catch( err) {
-        reject( err);
-      }
     });
 	}
 
@@ -579,13 +547,10 @@ FOLDER METHODS
   }
 
 	function removeFolderNamed( slugFolderName) {
-		dev.logfunction( "COMMON — removeFolderNamed");
+		dev.logfunction( "COMMON — removeFolderNamed : " + JSON.stringify(slugFolderName, null, 4));
 		var folderPath = getFullPath( slugFolderName);
 		rmDir(folderPath);
-    var folderJson =
-    {
-      "name" : slugFolderName
-    };
+    var folderJson = { "name" : slugFolderName };
     return eventAndContent( "folderRemoved", folderJson);
 	}
 
@@ -664,7 +629,6 @@ FOLDER METHODS
     if( isNameChanged && slugFolderName !== newSlugFolderName) {
 		  //console.log( "The folder named " + slugFolderName + " has been renamed to " + newSlugFolderName + ".");
     }
-
 /*
     // regarder si on a affaire à un renommage
 
@@ -698,7 +662,6 @@ FOLDER METHODS
 
     fs.renameSync( folderPath, newFolderPath); // renomme le dossier
 */
-
   }
 
   function listOneFolder( slugFolderName) {
@@ -771,45 +734,51 @@ PROJECT METHODS
   function createNewProject( projectData) {
 		dev.logfunction( "COMMON — createNewProject");
 
-		var projectName = projectData.name;
+		var projectName = projectData.projectName;
 		var slugProjectName = convertToSlug( projectName);
-		var slugFolderName = projectData.folder;
-
-    var projectPath = getProjectPath( slugFolderName, slugProjectName);
+		var slugFolderName = projectData.slugFolderName;
 
 		var currentDateString = getCurrentDate();
+		var pathToFolder = getFullPath( slugFolderName);
 
-		// Vérifie si le projet existe déjà
-    try {
-		  fs.accessSync( projectPath, fs.F_OK);
-	  } catch(err) {
+		// Vérifie si le projet existe déjà, change son slug si besoin
+		slugProjectName = findFirstFilenameNotTaken( slugProjectName, pathToFolder, '');
+    var projectPath = getProjectPath( slugFolderName, slugProjectName);
 
-			// S'il n'existe pas -> créer le dossier du projet et le json
-    	console.log("New project created with name " + projectName + " and path " + projectPath);
-      fs.ensureDirSync(projectPath);//new project
+  	console.log("New project created with name " + projectName + " and path " + projectPath);
+    fs.ensureDirSync(projectPath);//new project
 
-      var mediaFolders = getAllMediasFoldersPathAsArray();
-      mediaFolders.forEach( function( mediaFolder) {
-	      fs.ensureDirSync( projectPath + '/' + mediaFolder);//write new folder in folders
-      });
-      var publiFolder = getPubliPathOfProject();
-      fs.ensureDirSync( projectPath + '/' + publiFolder);//write new folder in folders
-      var projectJSONFile = getJsonFileOfProject( projectPath);
-      var newProjectData =
-        {
-	        "name" : projectName,
-	        "created" : currentDateString,
-	        "modified" : currentDateString,
-	        "statut" : "en cours",
-	        "informations" : 0
-	      };
+    if( projectData.imageData !== undefined) {
+      addImage( "apercu", projectPath, projectData.imageData);
+    }
 
-      // retourner un JSON indiquant la réussite de l'appel
-      var newProjectCreated = jsonWriteToFile( projectJSONFile, newProjectData, "create"); //write json File
-      newProjectData.slugProjectName = slugProjectName;
-      newProjectData.slugFolderName = slugFolderName;
-      return eventAndContent( "projectCreated", newProjectData);
-		}
+    var mediaFolders = getAllMediasFoldersPathAsArray();
+    mediaFolders.forEach( function( mediaFolder) {
+      fs.ensureDirSync( projectPath + '/' + mediaFolder);//write new folder in folders
+    });
+    var publiFolder = getPubliPathOfProject();
+    fs.ensureDirSync( projectPath + '/' + publiFolder);//write new folder in folders
+    var projectJSONFile = getJsonFileOfProject( projectPath);
+
+    var newProjectData =
+      {
+        "name" : projectName,
+        "created" : currentDateString,
+        "modified" : currentDateString,
+        "statut" : "en cours",
+        "informations" : 0
+      };
+    // retourner un JSON indiquant la réussite de l'appel
+    var status = jsonWriteToFile( projectJSONFile, newProjectData, "create"); //write json File
+
+    var currentDataJSON = getProjectDataJSON( slugFolderName, slugProjectName);
+    return eventAndContent( 'projectCreated', currentDataJSON);
+
+/*
+    // OLD CODE SENDING A MESSAGE SAYING A PROJECTS NAME ALREADY EXISTS.
+    // REPLACED WITH A GENERATED SLUG PROJECT NAME WITH NUMERAL SUFFIX (-1, -2) INSTEAD
+    // OF BLOCKING THE CREATION OF A PROJECT
+    // maybe we should check the raw name against other project's raw name and prevent the creation of two identical project name (not slugs)
 
     // otherwise, the folder and associated json already exists --> return an error event
     console.log("WARNING - the following project name already exists: " + slugProjectName);
@@ -821,6 +790,7 @@ PROJECT METHODS
       "timestamp": currentDateString
     };
     return eventAndContent( "projectAlreadyExist", newProjectData);
+*/
   }
 
   function getProjectPreview( projectPath) {
@@ -855,12 +825,12 @@ PROJECT METHODS
 
     var currentDateString = getCurrentDate();
 
-    // récupérer les infos sur le project
-    var currentDataJSON = getProjectDataJSON( slugFolderName, slugProjectName);
-
     if( projectData.imageData !== undefined) {
       addImage( "apercu", projectPath, projectData.imageData);
     }
+
+    // récupérer les infos sur le project
+    var currentDataJSON = getProjectDataJSON( slugFolderName, slugProjectName);
 
     // éditer le JSON récupéré
     currentDataJSON.name = projectData.name;
@@ -872,6 +842,8 @@ PROJECT METHODS
     // envoyer les changements dans le JSON du folder
     var projectJSONFile = getJsonFileOfProject( projectPath);
     var projectUpdatedStatus = jsonWriteToFile( projectJSONFile, currentDataJSON, "update"); //write json File
+
+    var currentDataJSON = getProjectDataJSON( slugFolderName, slugProjectName);
     return eventAndContent( "projectModified", currentDataJSON);
 
   }
@@ -904,10 +876,11 @@ MEDIA METHODS
       return getTextPathOfProject();
   }
 
-  function findFirstJSONFilenameNotTaken( fileName, path) {
-    var newFileName = fileName;
-    var fileext = '.json';
+  function findFirstFilenameNotTaken( fileName, path, fileext) {
+    fileext = typeof fileext !== 'undefined' ?  fileext : '.json';
+
     try {
+      var newFileName = fileName;
       var index = 0;
       var newPathToFile = path + '/' + newFileName;
       while( !fs.accessSync( newPathToFile + fileext, fs.F_OK)){
@@ -1020,7 +993,6 @@ MEDIA METHODS
 
   }
 
-
   function getMediaDataJSON( projectPath, mediaFolderPath, mediaName) {
 		dev.logfunction( "COMMON — getMediaDataJSON : projectPath = " + projectPath + " mediaFolderPath = " + mediaFolderPath + " mediaName = " + mediaName);
 
@@ -1050,7 +1022,7 @@ MEDIA METHODS
       switch (newMediaType) {
         case 'photo':
     			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
-          newFileName = findFirstJSONFilenameNotTaken( newFileName, mediaPath);
+          newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
           pathToFile = mediaPath + '/' + newFileName;
 
           fileExtension = '.jpg';
@@ -1074,7 +1046,7 @@ MEDIA METHODS
         case 'video':
     			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
 
-          newFileName = findFirstJSONFilenameNotTaken( newFileName, mediaPath);
+          newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
           pathToFile = mediaPath + '/' + newFileName;
           fileExtension = '.webm';
 
@@ -1139,7 +1111,7 @@ MEDIA METHODS
           break;
         case 'audio':
     			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
-          newFileName = findFirstJSONFilenameNotTaken( newFileName, mediaPath);
+          newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
           pathToFile = mediaPath + '/' + newFileName;
 
           fileExtension = '.wav';
@@ -1158,7 +1130,7 @@ MEDIA METHODS
           break;
         case 'text':
     			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
-          newFileName = findFirstJSONFilenameNotTaken( newFileName, mediaPath);
+          newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
           pathToFile = mediaPath + '/' + newFileName;
 
           fileExtension = '.md';
@@ -1253,6 +1225,36 @@ MEDIA METHODS
     });
   }
 
+	function deleteOneMedia( slugFolderName, slugProjectName, mediaFolder, mediaName) {
+    return new Promise(function(resolve, reject) {
+  		var pathToMediaFolder = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
+      // find in path
+
+      try {
+        var filesInMediaFolder = fs.readdirSync( pathToMediaFolder);
+        filesInMediaFolder.forEach( function( filename) {
+          var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( filename)[1];
+          if( fileNameWithoutExtension === mediaName) {
+            var filePath = pathToMediaFolder + '/' + filename;
+            var deletedFilePath = pathToMediaFolder + '/' + dodoc.deletedProjectFolderPrefix + filename;
+            fs.renameSync( filePath, deletedFilePath);
+            console.log( "A file will be deleted (actually, renamed but hidden from dodoc) : \n - " + filePath + "\n - " + deletedFilePath);
+          }
+        });
+        var mediaMetaData =
+        {
+          "slugFolderName" : slugFolderName,
+          "slugProjectName" : slugProjectName,
+          "mediaFolder" : mediaFolder,
+          "mediaName" : mediaName,
+        }
+        resolve( mediaMetaData);
+      } catch( err) {
+        reject( err);
+      }
+    });
+	}
+
   function updateTextMediaContent( pathToTextMedia, titleOfTextmediaMd, textOfTextmediaMd) {
     var contentOfText = makeTextMedia( titleOfTextmediaMd, textOfTextmediaMd);
     fs.writeFileSync( pathToTextMedia, contentOfText);
@@ -1309,7 +1311,7 @@ PUBLIS METHODS
   		var slugProjectName = publiData.slugProjectName;
 
       var pathToThisPubliFolder = getPathToPubli( slugFolderName, slugProjectName);
-      var newFileName = findFirstJSONFilenameNotTaken( pslug, pathToThisPubliFolder);
+      var newFileName = findFirstFilenameNotTaken( pslug, pathToThisPubliFolder);
 
       var pathToThisPubli = getPathToPubli( slugFolderName, slugProjectName, newFileName) + '.json';
 
@@ -1494,9 +1496,8 @@ PUBLIS METHODS
 	function addImage( imageNameSlug, parentPath, imageData){
 		var filePath = parentPath + "/" + imageNameSlug + ".jpg";
 		var imageBuffer = decodeBase64Image( imageData);
-		fs.writeFile(filePath, imageBuffer.data, function (err) {
-    	console.info("write new file to " + filePath);
-		});
+		fs.writeFileSync(filePath, imageBuffer.data);
+  	console.info("write new file to " + filePath);
 	}
 
 	function createThumbnails( videoPath, videoFilename, pathToMediaFolder){
@@ -1535,9 +1536,11 @@ PUBLIS METHODS
 		return response;
 	}
 
-	function convertToSlug(Text){
+	function convertToSlug( text){
+  	// trim le texte
+  	text = text.trim();
 	  // converti le texte en minuscule
-		var s = Text.toLowerCase();
+		var s = text.toLowerCase();
 		// remplace les a accentué
 		s = s.replace(/[àâäáã]/g, 'a');
 		// remplace les e accentué

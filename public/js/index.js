@@ -44,7 +44,10 @@ function init(){
 
 	// Submit Folder
 	// Create new folder
-	submitFolder($(".submit-new-folder"), 'newFolder'); //Envoie les données au serveur
+	$('body').on('click', '.js--submit-new-folder', function(){
+		var newFolderName = $('input.new-folder').val();
+		socket.emit( 'newFolder', { "name" : newFolderName });
+  });
 
 	$(".submit-modify-folder").on('click', function(){
 		var newFolderName = $('input.modify-folder').val();
@@ -53,7 +56,7 @@ function init(){
 		var oldFolderStatut = $('#modal-modify-folder').data( "folderStatut");
 		var folderNameSlug = $('#modal-modify-folder').data( "folderNameSlug");
 
-		socket.emit( 'modifyFolder',
+		socket.emit( 'editFolder',
 		  {
   		  "name" : oldFolderName,
   		  "newName" : newFolderName,
@@ -77,9 +80,9 @@ function init(){
 
 	//MODIFIER LES DOSSIERS
 	//Au clic sur l'icone éditer
-	$('body').on('click', '.js--edit-project-icon', function(){
+	$('body').on('click', '.js--edit-folder', function(){
 		thisFolder = $(this).parent();
-		modifyFolder( $(this));
+		editFolder( $(this));
 	});
 
 
@@ -93,14 +96,6 @@ function init(){
   	$('#modal-delete-alert').attr('data-foldertodelete', $('#modal-modify-folder').data('folderNameSlug'));
 		$('#modal-delete-alert').foundation('reveal', 'open');
 	});
-}
-
-// Envoie les données du dossier au serveur
-function submitFolder($button, send){
-	$button.on( 'click', function(){
-		var newFolderName = $('input.new-folder').val();
-		socket.emit( send, { name: newFolderName });
-	})
 }
 
 // Affiche le fichier dès qu'il est crée
@@ -164,32 +159,26 @@ function onListAllProjectsOfOneFolder(data){
   return;
 }
 
-function loadProject( projectData) {
+function loadProject( pdata) {
 
-	var projectName = projectData.name;
-	var projectPreviewName = projectData.projectPreviewName;
-	var folderNameSlug = projectData.folderName;
-
-	var slugProjectName = projectData.slugProjectName;
-	var projectPath = '/' + folderNameSlug + '/' + slugProjectName;
-
-	var $folder = $(".dossier-list .dossier[data-folderNameSlug=" + folderNameSlug + "]");
+	var projectPath = '/' + pdata.slugFolderName + '/' + pdata.slugProjectName;
+	var $folder = $(".dossier-list .dossier[data-folderNameSlug=" + pdata.slugFolderName + "]");
 
 	var newSnippetProjet = $(".js--templates > .projetSnippet").clone(false);
 
-	if( projectPreviewName == undefined){
+	if( pdata.projectPreviewName === false){
   	newSnippetProjet.find( '.vignette-visuel img').remove();
 	}
 
-  // customisation du projet
 	newSnippetProjet
     .find( '.project-link').attr('href', projectPath).end()
-    .find( 'h3').text( projectName).end()
-    .find( '.vignette-visuel img').attr( 'src', projectPath + "/" + projectPreviewName).attr( 'alt', projectName);
-  ;
+    .find( 'h3').text( pdata.name).end()
+    .find( '.vignette-visuel img')
+      .attr( 'src', projectPath + "/" + pdata.projectPreviewName)
+      .attr( 'alt', pdata.name)
+    ;
 
 	$folder.find(".projet-list").prepend(newSnippetProjet);
-
 	return;
 }
 
@@ -231,14 +220,14 @@ function makeFolderContent( projectData){
     newFolder.find('.modified').remove();
 
   if( statut == "terminé")
-    newFolder.find( '.js--edit-project-icon').remove();
+    newFolder.find( '.js--edit-folder').remove();
 
   newFolder.data("mtimestamp", transformDatetoTimestamp( modified));
 
   return newFolder;
 }
 
-function modifyFolder($this){
+function editFolder($this){
 // 	$("#container.row #modal-modify-folder").empty();
 
   var $thisFolder = $this.closest('.dossier');
@@ -246,6 +235,8 @@ function modifyFolder($this){
 	var folderName = $thisFolder.attr('data-nom');
   var folderNameSlug = $thisFolder.attr('data-foldernameslug');
 	var folderStatut = $thisFolder.attr("data-statut");
+
+	debugger;
 
   $('#modal-modify-folder')
   	.find('.modify-folder')
@@ -323,9 +314,9 @@ function onFolderModified(data){
 //Suppression du dossier
 function removeFolder(){
 	$('#modal-delete-alert button.oui').on('click', function(){
-  	var folderToDelete = $(this).parents( '#modal-delete-alert').attr('data-foldertodelete');
+  	var slugFolderName = $(this).parents( '#modal-delete-alert').attr('data-foldertodelete');
 		console.log('oui ' + folderToDelete);
-		socket.emit('removeFolder', {name: folderToDelete});
+		socket.emit('removeFolder', { "slugFolderName" : slugFolderName});
 		$('#modal-delete-alert').foundation('reveal', 'close');
 	});
 	$('#modal-delete-alert button.annuler').on('click', function(){

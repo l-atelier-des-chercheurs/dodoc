@@ -413,12 +413,20 @@ function insertOrReplacePubli( $publiItem, $publiContainer) {
 
 var sendData = {
 
+
+  createNewProject : function( pdata) {
+    pdata.slugFolderName = currentFolder;
+  	socket.emit( 'newProject', pdata);
+  },
+  editProject : function( pdata) {
+    pdata.slugFolderName = currentFolder;
+  	socket.emit( 'editProject', pdata);
+  },
   createNewMedia : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
   	socket.emit( 'newMedia', mediaData);
   },
-
   editMedia : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
@@ -452,44 +460,34 @@ var modals = {
   init : function() {
     modals.statusChangeAlertInit();
     modals.removeProjectInit();
+
+  	$('body').on('click', '.js--add-project', function(){
+  		modals.createProjectPopup();
+  	});
+
+  	$('body').on('click', '.js--edit-project', function(){
+  		$thisProject = $(this).closest(".project");
+  		modals.editProjectPopup( $thisProject);
+  	});
+
   },
 
-  editProjectPopup : function($project) {
-    var $modal = $("#modal-modify-project");
+  createProjectPopup : function() {
+    var $modal = $("#modal-add-project");
     $modal
       .empty()
       ;
-
-    var $modalContent = $(".modal-modify-project_content").clone(false);
+    var $modalContent = $(".modal-add-project_content").clone(false);
     $modal
       .append( $modalContent.show())
       ;
 
-    var pdata = $project.data();
-    $modal
-      .find(".modify-project-name")
-        .attr( "value", pdata.projectName)
-      .end()
-      .find(".modify-project-statut option")
-        .filter("[value='" + pdata.statut + "']")
-          .attr('selected', '')
-        .end()
-      .end()
-      ;
-
-  	var $deleteModal = $('#modal-deleteproject-alert');
-  	$deleteModal.data('slugProjectName', pdata.slugProjectName)
-
-  	//Au click sur le bouton supprimer le dossier
-  	$modal.find('.js--deleteProject').on('click', function(){
-  		$deleteModal.foundation('reveal', 'open');
-  	});
-
   	var imageFilename;
-  	var $label = $modal.find('.inputfile').next().find('span');
+  	var $filePicker = $modal.find('.js--modal_inputfile');
+  	var $label = $filePicker.next().find('span');
   	var labelVal = $label.text();
 
-  	$modal.find('.inputfile').on( 'change', function( e )
+  	$filePicker.on( 'change', function( e )
   	{
   		var fileName = '';
 			fileName = e.target.value.split( '\\' ).pop();
@@ -512,6 +510,98 @@ var modals = {
   			$label.innerHTML = labelVal;
   	});
 
+
+    $modal.find(".js--modal_submit").on('click', function(){
+      debugger;
+    	var newProjectName = $modal.find('.js--modal_name').val();
+    	var fileData = $modal.find(".js--modal_inputfile").data( "fileData");
+    	//Images changed
+
+    	if( fileData !== undefined && fileData !== null){
+    		console.log('Une image a été ajoutée');
+    		var f = fileData[0];
+    		var reader = new FileReader();
+    		reader.onload = function(evt){
+    			var newProjectData =
+    			{
+     				"projectName" : newProjectName,
+    				"imageData" : evt.target.result
+    		  }
+    		  sendData.createNewProject( newProjectData);
+    		};
+    		reader.readAsDataURL(f);
+    	}
+    	else{
+    		console.log("Pas d'image chargé");
+  			var newProjectData =
+        {
+     				"projectName" : newProjectName,
+    		}
+  		  sendData.createNewProject( newProjectData);
+    	}
+      $modal.foundation('reveal', 'close');
+    });
+  },
+
+  editProjectPopup : function($project) {
+    var $modal = $("#modal-modify-project");
+    $modal
+      .empty()
+      ;
+
+    var $modalContent = $(".modal-modify-project_content").clone(false);
+    $modal
+      .append( $modalContent.show())
+      ;
+
+    var pdata = $project.data();
+    $modal
+      .find(".js--modal_name")
+        .attr( "value", pdata.projectName)
+      .end()
+      .find(".modify-project-statut option")
+        .filter("[value='" + pdata.statut + "']")
+          .attr('selected', '')
+        .end()
+      .end()
+      ;
+
+  	var imageFilename;
+  	var $filePicker = $modal.find('.js--modal_inputfile');
+  	var $label = $filePicker.next().find('span');
+  	var labelVal = $label.text();
+
+  	$filePicker.on( 'change', function( e )
+  	{
+  		var fileName = '';
+			fileName = e.target.value.split( '\\' ).pop();
+
+			var fileData = e.originalEvent.target.files;
+
+  		if( fileName ) {
+  			$(this)
+  			  .data('fileName', fileName)
+  			  .data('fileData', fileData)
+  			  ;
+  			$label
+			    .html( fileName)
+          ;
+  		} else
+  			$(this)
+  			  .data('fileName', '')
+  			  .data('fileData', '')
+  			  ;
+  			$label.innerHTML = labelVal;
+  	});
+
+  	var $deleteModal = $('#modal-deleteproject-alert');
+  	$deleteModal.data('slugProjectName', pdata.slugProjectName)
+
+  	//Au click sur le bouton supprimer le dossier
+  	$modal.find('.js--deleteProject').on('click', function(){
+  		$deleteModal.foundation('reveal', 'open');
+  	});
+
   	$modal.find('.modify-project-statut').bind('change', function(){
     	$alertModal = $('#modal-statut-alert');
     	$statutField = $(this);
@@ -530,10 +620,10 @@ var modals = {
   		}
   	});
 
-    $modal.find(".submit-modify-project").on('click', function(){
-    	var newProjectName = $modal.find('.modify-project-name').val();
+    $modal.find(".js--modal_submit").on('click', function(){
+    	var newProjectName = $modal.find('.js--modal_name').val();
     	var newStatut = $modal.find('.modify-project-statut').val();
-    	var fileData = $modal.find(".inputfile").data( "fileData");
+    	var fileData = $modal.find(".js--modal_inputfile").data( "fileData");
     	//Images changed
 
     	if( fileData !== undefined && fileData !== null){
@@ -541,26 +631,26 @@ var modals = {
     		var f = fileData[0];
     		var reader = new FileReader();
     		reader.onload = function(evt){
-    			socket.emit( 'modifyProject',
+      		var projectData =
     			{
      				"name" : newProjectName,
-    				"slugFolderName" : currentFolder,
             "slugProjectName" : pdata.slugProjectName,
     				"statut" : newStatut,
     				"imageData" : evt.target.result
-    		  });
+    		  }
+    		  sendData.editProject( projectData);
     		};
     		reader.readAsDataURL(f);
     	}
     	else{
     		console.log("Pas d'image chargé");
-    		socket.emit( 'modifyProject',
+    		var projectData =
         {
      				"name" : newProjectName,
-    				"slugFolderName" : currentFolder,
             "slugProjectName" : pdata.slugProjectName,
     				"statut" : newStatut,
-    		});
+    		}
+  		  sendData.editProject( projectData);
     	}
       $modal.foundation('reveal', 'close');
     });
@@ -764,27 +854,7 @@ var modals = {
     $textf.val('');
   },
 
-
-  removeFolderInit : function() {
-    $removeProjectPopup = $('#modal-deletefolder-alert');
-  	$removeProjectPopup.find('rbutton.oui').on('click', function(){
-  		console.log('oui ' + thisProjectName);
-  		socket.emit('removeFolder', {name: thisProjectName, session: currentFolder});
-  		$('#modal-delete-alert').foundation('reveal', 'close');
-  		window.location.replace('/'+currentFolder);
-  	});
-  	$('#modal-delete-alert button.annuler').on('click', function(){
-  		console.log('annuler');
-  		$('#modal-delete-alert').foundation('reveal', 'close');
-  		$(document).on('close.fndtn.reveal', '#modal-delete-alert[data-reveal]', function () {
-  	  	$('#modal-modify-folder').foundation('reveal', 'open');
-  		});
-  	});
-
-  },
-
   statusChangeAlertInit : function() {
-
     // TODO
     $statusPopup = $('#modal-deletefolder-alert');
   	$('#modal-modify-project .modify-statut').bind('change', function(){

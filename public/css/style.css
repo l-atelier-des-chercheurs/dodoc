@@ -6957,7 +6957,7 @@ th.hide-for-touch {
     margin-bottom: 16px; }
   .reveal-modal > p {
     width: 80%; }
-  .reveal-modal .submit-modify-folder {
+  .reveal-modal .button_submit {
     float: left; }
   .reveal-modal .button-wrapper_deleteFolder {
     float: right; }
@@ -7909,6 +7909,7 @@ body.projets #container {
       background-color: #fff;
       -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      background-color: #f9f9f9;
       padding: 15px 0.9375rem 25px;
       margin-top: 0px;
       margin-bottom: 75px; }

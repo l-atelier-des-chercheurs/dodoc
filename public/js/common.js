@@ -1,3 +1,5 @@
+jQuery.fn.reverse = [].reverse;
+
 function transformDatetoString( date){
   if( date == undefined)
     return false;
@@ -6,8 +8,6 @@ function transformDatetoString( date){
   var formatDate = getMomentObject.format('Do MMMM YYYY');
 	return formatDate;
 }
-
-jQuery.fn.reverse = [].reverse;
 
 function transformDatetoTimestamp( date) {
   if( date == undefined)
