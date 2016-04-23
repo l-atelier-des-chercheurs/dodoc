@@ -78,7 +78,7 @@ module.exports = function(app,io,m){
       var jsonFileOfFolder = getJsonFileOfFolder( slugFolderName);
       var folderData = readJsonFile( jsonFileOfFolder);
 
-      pageDataJSON.folder = slugFolderName;
+      pageDataJSON.slugFolderName = slugFolderName;
       pageDataJSON.folderName = folderData.name;
       pageDataJSON.statut = folderData.statut;
 
@@ -88,7 +88,7 @@ module.exports = function(app,io,m){
         var jsonFileOfProject = getJsonFileOfProject( projectPath);
         var projectData = readJsonFile( jsonFileOfProject);
 
-        pageDataJSON.project = slugProjectName;
+        pageDataJSON.slugProjectName = slugProjectName;
         pageDataJSON.projectName = projectData.name;
 
         var slugPubliName = req.param('publi');
@@ -97,7 +97,7 @@ module.exports = function(app,io,m){
           var fullPathToJsonFileOfPubli = makePathToPubliFull( jsonFileOfPubli);
           var publiData = readJsonFile( fullPathToJsonFileOfPubli);
 
-          pageDataJSON.publi = publiData.publi;
+          pageDataJSON.slugPubliName = slugPubliName;
           pageDataJSON.publiName = publiData.name;
         }
       }

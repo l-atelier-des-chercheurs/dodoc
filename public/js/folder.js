@@ -5,6 +5,7 @@ var socket = io.connect();
 function onSocketConnect() {
 	sessionId = socket.io.engine.id;
 	console.log('Connected ' + sessionId);
+	debugger;
 	socket.emit('listProjects', { "slugFolderName" : currentFolder});
 };
 

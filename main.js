@@ -64,18 +64,17 @@ module.exports = function(app, io){
 		socket.on("deleteImageMotion", deleteImageMotion);
 
 		// B I B L I        P A G E
-		socket.on("listMedias", onListOneProjectMedias);
-		socket.on("listOneMedia", onListOneMedia);
+		socket.on( 'listOneProjectMedias', onListOneProjectMedias);
+		socket.on( 'listOneProjectPublis', onListOneProjectPublis);
 
-		socket.on("listPublis", onListOneProjectPublis);
-		socket.on("newPubli", onNewPubli);
-		socket.on("editPubli", onEditPubli);
+		socket.on( 'createPubli', onCreatePubli);
+		socket.on( 'editMetaPubli', onEditPubli);
+		socket.on( 'editMediasPubli', onEditMediasPubli);
 
 		socket.on("editMediaMeta", onEditMediaMeta);
 		socket.on("deleteMedia", onDeleteMedia);
 
-		// P U B L I      P A G E
-		socket.on("displayPubli", displayPubli);
+		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 	});
 
 	/***************************************************************************
@@ -240,7 +239,7 @@ module.exports = function(app, io){
 		var slugFolderName = projectData.slugFolderName;
 		var slugProjectName = projectData.slugProjectName;
   	listAllMedias( slugFolderName, slugProjectName).then(function( mediaFolderContent) {
-      var eventAndContentJson = eventAndContent( "listMediasOfOneType", mediaFolderContent);
+      var eventAndContentJson = eventAndContent( "listAllMedias", mediaFolderContent);
       dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
       io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
     }, function(error) {
@@ -391,9 +390,8 @@ module.exports = function(app, io){
 		dev.logfunction( "onListOneProjectPublis");
 		var slugFolderName = publiMetaData.slugFolderName;
 		var slugProjectName = publiMetaData.slugProjectName;
-		var publiName = publiMetaData.publiName;
-  	listPublis( slugFolderName, slugProjectName, publiName).then(function( publiProjectContent) {
-      var eventAndContentJson = eventAndContent( "listPublications", publiProjectContent);
+  	listPublis( slugFolderName, slugProjectName).then(function( publiProjectContent) {
+      var eventAndContentJson = eventAndContent( 'listOneProjectPublis', publiProjectContent);
       dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
       io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
     }, function(error) {
@@ -402,17 +400,17 @@ module.exports = function(app, io){
   }
 
 
-  function onNewPubli( publiData) {
-		dev.logfunction( "onNewPubli");
-  	createNewPubli( publiData).then(function( publiMetaData) {
-  		var slugFolderName = publiMetaData.slugFolderName;
-  		var slugProjectName = publiMetaData.slugProjectName;
-  		var publiName = publiMetaData.publiName;
+  function onCreatePubli( publiData) {
+		dev.logfunction( "onCreatePubli");
 
-    	listPublis( slugFolderName, slugProjectName, publiName).then(function( publiProjectContent) {
-        var eventAndContentJson = eventAndContent( "publiCreated", publiProjectContent);
+  	createPubli( publiData).then(function( publiMetaData) {
+
+    	listPublis( publiMetaData.slugFolderName, publiMetaData.slugProjectName, publiMetaData.slugPubliName).then(function( publiProjectContent) {
+
+        var eventAndContentJson = eventAndContent( 'publiCreated', publiProjectContent);
         dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
         io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+
       }, function(error) {
         console.error("Failed to listPublis from create! Error: ", error);
       });
@@ -423,36 +421,72 @@ module.exports = function(app, io){
 
   function onEditPubli( publiData) {
 		dev.logfunction( "onEditPubli");
-    editThisPubli( publiData).then(function( publiMetaData) {
+
+		editThisPubli( publiData).then(function( publiMetaData) {
   		var slugFolderName = publiMetaData.slugFolderName;
   		var slugProjectName = publiMetaData.slugProjectName;
   		var slugPubliName = publiMetaData.slugPubliName;
 
+  		// if medias haven't changed, lets just list publis
+  		console.log( "+ publiData.medias = " + publiData.medias);
+  		console.log( "+ publiData === undefined = " + publiData.medias === undefined);
+
     	listPublis( slugFolderName, slugProjectName, slugPubliName).then(function( publiProjectContent) {
-        var eventAndContentJson = eventAndContent( "publiUpdated", publiProjectContent);
+      	publiProjectContent.updateMedias = false;
+        var eventAndContentJson = eventAndContent( 'publiMetaUpdated', publiProjectContent);
         dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
         io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
       }, function(error) {
         console.error("Failed to listPublis from create! Error: ", error);
       });
+
     }, function(error) {
       console.error("Failed to create New Publi! Error: ", error);
     });
 
   }
 
+  function onEditMediasPubli( publiData) {
+		dev.logfunction( "onEditMediasPubli");
+
+		editThisPubli( publiData).then(function( publiMetaData) {
+  		var slugFolderName = publiMetaData.slugFolderName;
+  		var slugProjectName = publiMetaData.slugProjectName;
+  		var slugPubliName = publiMetaData.slugPubliName;
+
+    	listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
+      	publiMedias.updateMedias = true;
+      	var eventAndContentJson = eventAndContent( 'publiMediasAndMediasUpdated', publiMedias);
+        dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
+        io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+      }, function(error) {
+        console.error("Failed to list publi media! Error: ", error);
+      });
+
+    }, function(error) {
+      console.error("Failed to create New Publi! Error: ", error);
+    });
+
+  }
 
 // F I N    B I B L I    P A G E
 
 // P U B L I     P A G E
-	function displayPubli(data){
-    dev.logfunction( "displayPubli");
-		var file = dodoc.contentDir + "/" + data.folder+"/"+data.project+'/montage/'+data.publi+'.json';
-		fs.readFile(file, 'utf8', function (err, data) {
-		  if (err) console.log(err);
-		  var jsonObj = JSON.parse(data);
-		  io.sockets.emit('sendPubliData', {name:jsonObj.name, html:jsonObj.html});
-		});
+	function onListOnePubliMetaAndMedias( publiData) {
+
+    dev.logfunction( "onListOnePubliMetaAndMedias : " + JSON.stringify( publiData, null, 4));
+		var slugFolderName = publiData.slugFolderName;
+		var slugProjectName = publiData.slugProjectName;
+		var slugPubliName = publiData.slugPubliName;
+
+  	listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
+    	var eventAndContentJson = eventAndContent( 'listOnePubliMetaAndMedias', publiMedias);
+      dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
+      io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+    }, function(error) {
+      console.error("Failed to list one media! Error: ", error);
+    });
+
 	}
 // F I N     P U B L I     P A G E
 
@@ -904,7 +938,7 @@ MEDIA METHODS
       var mediasProcessed = 0;
       var mediaFolderContent = [];
   	  mediasFoldersPath.forEach( function( mediasFolderPath) {
-  		  mediaFolderContent.push( listMediasOfOneType( slugFolderName, slugProjectName, mediasFolderPath));
+  		  mediaFolderContent = merge( mediaFolderContent, listMediasOfOneType( slugFolderName, slugProjectName, mediasFolderPath));
       });
       resolve( mediaFolderContent);
     });
@@ -915,7 +949,7 @@ MEDIA METHODS
   		dev.logfunction( "COMMON — listOneMedia : slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName + " singleMediaFolderPath = " + singleMediaFolderPath + " mediaName = " + mediaName);
       // lister tous les contenus issues des dossiers commencant par 01, 02, 03, 04
       var mediaFolderContent = [];
-  	  mediaFolderContent.push( listMediasOfOneType( slugFolderName, slugProjectName, singleMediaFolderPath, mediaName));
+		  mediaFolderContent = merge( mediaFolderContent, listMediasOfOneType( slugFolderName, slugProjectName, singleMediaFolderPath, mediaName));
       resolve( mediaFolderContent);
     });
   }
@@ -958,16 +992,20 @@ MEDIA METHODS
     var folderMediaMetaAndFileName = new Object();
     console.log( "- foldersMediasMeta : " + JSON.stringify( foldersMediasMeta, null, 4));
 
-    for (var i=0; i<foldersMediasMeta.length; i++) {
-      var mediaMetaFilename = foldersMediasMeta[i];
+    for( var mediaMetaFilename of foldersMediasMeta) {
       var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( mediaMetaFilename)[1];
 //       dev.log( "- looking for medias filenames that start with " + fileNameWithoutExtension);
-      for (var j=0; j< foldersMediasFiles.length; j++) {
-        var mediaFilename = foldersMediasFiles[j];
+      for( var mediaFilename of foldersMediasFiles) {
 //         dev.log( "- comparing to " + mediaFilename);
+        // if this media filename corresponds to a json filename
         if ( mediaFilename.indexOf( fileNameWithoutExtension) !== -1) {
-          if( !folderMediaMetaAndFileName.hasOwnProperty( mediaMetaFilename)) {
-            folderMediaMetaAndFileName[mediaMetaFilename] = new Object();
+
+          var mediaObjKey = mediasFolderPath + '/' + mediaMetaFilename;
+
+          // if we don't have an obj with this key
+          if( !folderMediaMetaAndFileName.hasOwnProperty( mediaObjKey)) {
+            // let's make one
+            folderMediaMetaAndFileName[mediaObjKey] = new Object();
             // read JSON file and add the content to the folder
             var mediaMetaData = getMediaDataJSON( projectPath, mediasFolderPath, fileNameWithoutExtension);
             mediaMetaData.mediaFolderPath = mediasFolderPath;
@@ -979,12 +1017,17 @@ MEDIA METHODS
             if( new RegExp( dodoc.regexpGetFileExtension, 'i').exec( mediaFilename) == '.md') {
               mediaMetaData = merge( mediaMetaData, getTextMediaContentToJsonObj( projectPath + '/' + mediasFolderPath + '/' + mediaFilename));
             }
-            folderMediaMetaAndFileName[mediaMetaFilename] = mediaMetaData;
+
+            folderMediaMetaAndFileName[mediaObjKey] = mediaMetaData;
           }
-          if( !folderMediaMetaAndFileName[mediaMetaFilename].hasOwnProperty( "files")) {
-            folderMediaMetaAndFileName[mediaMetaFilename]["files"] = new Array();
+
+          // otherwise if we have already initialized that key, but we don't have a files property
+          if( !folderMediaMetaAndFileName[mediaObjKey].hasOwnProperty( "files")) {
+            folderMediaMetaAndFileName[mediaObjKey]["files"] = new Array();
           }
-          folderMediaMetaAndFileName[mediaMetaFilename]["files"].push( mediaFilename);
+
+          // then, let's add this file to the list of files for that json
+          folderMediaMetaAndFileName[mediaObjKey]["files"].push( mediaFilename);
 
         }
       }
@@ -992,6 +1035,8 @@ MEDIA METHODS
     return folderMediaMetaAndFileName;
 
   }
+
+
 
   function getMediaDataJSON( projectPath, mediaFolderPath, mediaName) {
 		dev.logfunction( "COMMON — getMediaDataJSON : projectPath = " + projectPath + " mediaFolderPath = " + mediaFolderPath + " mediaName = " + mediaName);
@@ -1298,22 +1343,22 @@ PUBLIS METHODS
   }
 
 
-  function createNewPubli( publiData) {
+  function createPubli( publiData) {
     return new Promise(function(resolve, reject) {
-  		dev.logfunction( "COMMON — createNewPubli : " + JSON.stringify(publiData, null, 4));
+  		dev.logfunction( "COMMON — createPubli : " + JSON.stringify(publiData, null, 4));
 
   		var currentDateString = getCurrentDate();
 
-  		var pname = publiData.name;
+  		var pname = publiData.publiName;
   		var pslug = convertToSlug( pname);
 
   		var slugFolderName = publiData.slugFolderName;
   		var slugProjectName = publiData.slugProjectName;
 
       var pathToThisPubliFolder = getPathToPubli( slugFolderName, slugProjectName);
-      var newFileName = findFirstFilenameNotTaken( pslug, pathToThisPubliFolder);
+      pslug = findFirstFilenameNotTaken( pslug, pathToThisPubliFolder);
 
-      var pathToThisPubli = getPathToPubli( slugFolderName, slugProjectName, newFileName) + '.json';
+      var pathToThisPubli = getPathToPubli( slugFolderName, slugProjectName, pslug) + '.json';
 
     	console.log("New publi created with name " + pname + " and path " + pathToThisPubli);
 
@@ -1331,7 +1376,7 @@ PUBLIS METHODS
 
       newPubliData.slugProjectName = slugProjectName;
       newPubliData.slugFolderName = slugFolderName;
-      newPubliData.publiName = newFileName;
+      newPubliData.slugPubliName = pslug;
 
       resolve( newPubliData);
     });
@@ -1380,7 +1425,7 @@ PUBLIS METHODS
           folderPubliMeta[publiName] = new Object();
           // read JSON file and add the content to the folder
           var publiMetaData = getPubliDataJSON( slugFolderName, slugProjectName, publiName);
-          publiMetaData.publiName = publiName;
+          publiMetaData.slugPubliName = publiName;
           publiMetaData.slugFolderName = slugFolderName;
           publiMetaData.slugProjectName = slugProjectName;
           publiMetaData.pathToPubli = getPathToPubli( slugFolderName, slugProjectName, publiName);
@@ -1393,41 +1438,84 @@ PUBLIS METHODS
   }
 
 
-  function editThisPubli( updatedPubliData) {
+  function editThisPubli( pdata) {
     return new Promise(function(resolve, reject) {
-  		dev.logfunction( "COMMON — editThisPubli : publiData = " + JSON.stringify( updatedPubliData, null, 4));
+  		dev.logfunction( "COMMON — editThisPubli : publiData = " + JSON.stringify( pdata, null, 4));
 
-      var slugFolderName = updatedPubliData.slugFolderName;
-      var slugProjectName = updatedPubliData.slugProjectName;
-      var slugPubliName = updatedPubliData.slugPubliName;
-      var pathToPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName);
+      var pathToPubli = getPathToPubli( pdata.slugFolderName, pdata.slugProjectName, pdata.slugPubliName);
       var publiJSONFilepath = pathToPubli + '.json';
 
-
       // get and parse publi json data
-      var publiMetaData = getPubliDataJSON( slugFolderName, slugProjectName, slugPubliName);
+      var publiMetaData = getPubliDataJSON( pdata.slugFolderName, pdata.slugProjectName, pdata.slugPubliName);
 
       // update modified date
       publiMetaData.modified = getCurrentDate();
 
-      // update title if updatedPubliData has newPubliName
-      if( updatedPubliData.newPubliName !== undefined)
+      // update title if pdata has newPubliName
+      if( pdata.newPubliName !== undefined)
         publiMetaData.name = newPubliName;
 
-      // update medias if updatedPubliData has medias
-      if( updatedPubliData.medias !== undefined)
-        publiMetaData.medias = updatedPubliData.medias;
+      // update medias if pdata has medias
+      if( pdata.medias !== undefined)
+        publiMetaData.medias = pdata.medias;
 
   		var status = jsonWriteToFile( publiJSONFilepath, publiMetaData, "update");
 
       publiMetaData.slugPubliName = slugPubliName;
       publiMetaData.slugFolderName = slugFolderName;
       publiMetaData.slugProjectName = slugProjectName;
-      publiMetaData.pathToPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName);
-
       resolve( publiMetaData);
     });
   }
+
+
+
+  function listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName) {
+    return new Promise(function(resolve, reject) {
+  		dev.logfunction( "COMMON — listMediaAndMetaFromOnePubli : slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName + " publiName = " + slugPubliName);
+
+      var publiContent = getPubliDataJSON( slugFolderName, slugProjectName, slugPubliName);
+    	listAllMedias( slugFolderName, slugProjectName).then(function( mediaFolderContent) {
+        filterMediasFromList( publiContent, mediaFolderContent).then(function( publiMedias) {
+        	publiContent.medias = publiMedias;
+        	publiContent.slugFolderName = slugFolderName;
+        	publiContent.slugProjectName = slugProjectName;
+        	publiContent.slugPubliName = slugPubliName;
+
+        	// make an array that looks like listPublis
+          var folderPubliMeta = {};
+          folderPubliMeta[slugPubliName] = publiContent;
+
+          resolve( folderPubliMeta);
+        }, function(error) {
+          console.error("Failed to filter medias for a publi! Error: ", error);
+          reject( 'fail');
+        });
+      }, function(error) {
+        console.error("Failed to list one media! Error: ", error);
+        reject( 'fail');
+      });
+    });
+  }
+
+  function filterMediasFromList( publiContent, mediaFolderContent) {
+    return new Promise(function(resolve, reject) {
+  		dev.logfunction( "COMMON — filterMediasFromList : publiContent = " + JSON.stringify(publiContent, null, 4) + " mediaFolderContent = " + JSON.stringify(mediaFolderContent, null, 4));
+
+      var publiMediasList = publiContent.medias;
+      var publiMedias = {};
+      // let's check for each item in publicontent its corresponding media in mediaFolderContent
+      for( var item of publiMediasList) {
+        dev.log('item : ' + item);
+        if( mediaFolderContent.hasOwnProperty( item) === true) {
+          // and copy it to an empty obj
+          publiMedias[item] = mediaFolderContent[item];
+        }
+      }
+      resolve( publiMedias);
+    });
+  }
+
 
 
 

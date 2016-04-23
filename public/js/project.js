@@ -24,9 +24,9 @@ socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
 
 socket.on('listOneProject', onListOneProject);
-socket.on('listMediasOfOneType', onListMediasOfOneType);
+socket.on('listAllMedias', onListAllMedias);
 // socket.on('listProjectPubli', onListProjectPubli);
-socket.on('listPublications', onListPublications);
+socket.on('listOneProjectPublis', onListOneProjectPublis);
 
 socket.on('projectModified', onProjectModified); //Quand on reçoit les modification du projet
 socket.on('projectRemoved', onProjectRemoved);
@@ -47,22 +47,22 @@ function onListOneProject( projectData){
 
   var $project = loadProject( projectData);
   insertOrReplaceProject( $project, $(".mainContent .project-list"));
-	socket.emit( 'listMedias', projectData);
-	socket.emit( 'listPublis', projectData);
+	socket.emit( 'listOneProjectMedias', projectData);
+	socket.emit( 'listOneProjectPublis', projectData);
 }
 
 // COMMON WITH PROJECT.JS
 
-function onListMediasOfOneType( mediasData) {
+function onListAllMedias( mediasData) {
 
-  var $getAllMediasFormatted = listMediasOfOneType( mediasData)
+  var $getAllMediasFormatted = listAllMedias( mediasData)
   var $mediaContainer = $("#container .project .last-medias");
   $getAllMediasFormatted.each( function() {
     insertOrReplaceMedia( $(this), $mediaContainer);
   });
 }
 
-function onListPublications( publisData) {
+function onListOneProjectPublis( publisData) {
   // get the data
   var $getAllPublisFormatted = listPublis( publisData);
   var $publiLibrary = $(".mainContent .montage-list .list-publi");
@@ -130,7 +130,6 @@ function onMediaRemoved( mediaData){
 // returns when a text content has been added
 function onMediaCreated( mediasData) {
   console.log( "onMediaCreated");
-
 
   var mediaData = getFirstMediaFromObj( mediasData);
 

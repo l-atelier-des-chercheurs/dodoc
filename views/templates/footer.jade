@@ -1,7 +1,9 @@
 script(src='/socket.io/socket.io.js')
-script var app = {}; app.folder = "#{folder}";
-script var projet = {}; app.project = "#{project}";
-script var publi = {}; app.publi = "#{publi}";
+script
+  | var app = {};
+  | app.currentFolder = "#{slugFolderName}";
+  | app.currentProject = "#{slugProjectName}";
+  | app.currentPubli = "#{slugPubliName}";
 script(src='/bower_components/jquery/dist/jquery.min.js')
 script(src='/bower_components/jquery-ui/jquery-ui.min.js')
 script(src='/bower_components/velocity/velocity.min.js')

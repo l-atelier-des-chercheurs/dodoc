@@ -6,7 +6,7 @@ var socket = io.connect();
 function onSocketConnect() {
 	sessionId = socket.io.engine.id;
 	console.log('Connected ' + sessionId);
-	socket.emit('displayPubli', {session: currentFolder, project: currentProject, publi: currentPubli});
+	socket.emit( 'listOnePubliMetaAndMedias', { "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
 };
 
 function onSocketError(reason) {
@@ -17,20 +17,45 @@ function onSocketError(reason) {
 /* sockets */
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
-socket.on('sendPubliData', sendPubliData);
+
+socket.on('listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
+socket.on('publiMediasAndMediasUpdated', onPubliMediasAndMediasUpdated);
 
 
 jQuery(document).ready(function($) {
-
-	init();
 });
 
-function init(){
 
+function onListOnePubliMetaAndMedias( publisData) {
+  console.log( "onListOnePubliMetaAndMedias");
 
+  $.each( publisData, function( slugPubliName, publiData) {
+    var $publiMedias = publi.makePubliMedias( publiData);
+    $('.publi-content').html( $publiMedias);
+  });
 }
 
-function sendPubliData(data){
-	$('.publi-title').html(data.name);
-	$('.publi-content').html(data.html);
+
+function onListOnePubliMetaAndMedias( psdata) {
+  console.log( "onListOnePubliMetaAndMedias");
+
+  // check if a publi content was requested (not ideal, we could use a session tag in the json to check but also not ideal).
+  var $publiContent = $('.publi-container');
+
+  // there will only be one but let's use similar code to
+  $.each( psdata, function( slugPubliName, pdata) {
+    listPubliContent( currentPubli, pdata, $publiContent);
+  });
 }
+
+function onPubliMediasAndMediasUpdated( psdata) {
+  console.log( "onPubliMediasAndMediasUpdated");
+
+  // check if a publi content was requested (not ideal, we could use a session tag in the json to check but also not ideal).
+  var $publiContent = $('.publi-container');
+
+  $.each( psdata, function( slugPubliName, pdata) {
+    listPubliContent( currentPubli, pdata, $publiContent);
+  });
+}
+

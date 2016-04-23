@@ -13,7 +13,7 @@ mixin button(typeOfButton, navOrButton, style)
     - defaultClasses = defaultClasses + 'button-wrapper_collapsed '
 
   if( typeOfButton === 'dossier')
-    a(href="/#{folder}" title="Dodoc" class='button-wrapper_dossier #{defaultClasses}')
+    a(href="/#{slugFolderName}" title="Dodoc" class='button-wrapper_dossier #{defaultClasses}')
       .btn.icon
         include images/dossier.svg
       span #{folderName}
@@ -23,7 +23,6 @@ mixin button(typeOfButton, navOrButton, style)
       .btn.icon
         include images/clear.svg
       span Supprimer
-
 
   if( typeOfButton === 'deleteFolder')
     a(href="#" title="Dodoc" class='button-wrapper_deleteFolder js--deleteFolder #{defaultClasses}')
@@ -37,9 +36,8 @@ mixin button(typeOfButton, navOrButton, style)
         include images/clear.svg
       span Supprimer le projet
 
-
   if( typeOfButton === 'projet')
-    a(href="/#{folder}/#{project}" title="Dodoc" class='button-wrapper_projet #{defaultClasses}')
+    a(href="/#{slugFolderName}/#{slugProjectName}" title="Dodoc" class='button-wrapper_projet #{defaultClasses}')
       span #{projectName}
 
   if( typeOfButton === 'nouveauDossier')
@@ -67,31 +65,31 @@ mixin button(typeOfButton, navOrButton, style)
       span Éditer ce projet
 
   if( typeOfButton === 'capture')
-    a(href="/#{folder}/#{project}/capture" title="Dodoc page de capture" class='button-wrapper_capture #{defaultClasses}')
+    a(href="/#{slugFolderName}/#{slugProjectName}/capture" title="Dodoc page de capture" class='button-wrapper_capture #{defaultClasses}')
       .btn.icon
         include images/record.svg
       span Capture
 
   if( typeOfButton === 'bibli')
-    a(href="/#{folder}/#{project}/bibliotheque/medias" title="Dodoc bibliotheque" class='button-wrapper_bibli #{defaultClasses}')
+    a(href="/#{slugFolderName}/#{slugProjectName}/bibliotheque/medias" title="Dodoc bibliotheque" class='button-wrapper_bibli #{defaultClasses}')
       .btn.icon
         include images/bibli.svg
       span Bibliothèque
 
   if( typeOfButton === 'publications')
-    a(href="/#{folder}/#{project}/bibliotheque/panneau-de-publications" title="Dodoc publi" class='button-wrapper_publi js--open_publicationspane #{defaultClasses}')
+    a(href="/#{slugFolderName}/#{slugProjectName}/bibliotheque/panneau-de-publications" title="Dodoc publi" class='button-wrapper_publi js--open_publicationspane #{defaultClasses}')
       .btn.icon
         include images/publi.svg
       span Publications
 
   if( typeOfButton === 'view_publication')
-    a(href="/#{folder}/#{project}/publication" title="Dodoc publi" class='button-wrapper_view js--publi_view #{defaultClasses}' target="_blank")
+    a(href="/#{slugFolderName}/#{slugProjectName}/publication" title="Dodoc publi" class='button-wrapper_view js--publi_view #{defaultClasses}' target="_blank")
       .btn.icon
         include images/view.svg
       span Afficher
 
   if( typeOfButton === 'edit_publication')
-    a(href="/#{folder}/#{project}/publication" title="Dodoc publi" class='button-wrapper_edit js--edit_view #{defaultClasses}')
+    a(href="/#{slugFolderName}/#{slugProjectName}/publication" title="Dodoc publi" class='button-wrapper_edit js--edit_view #{defaultClasses}')
       .btn.icon
         include images/pen.svg
       span Éditer

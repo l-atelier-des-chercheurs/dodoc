@@ -48,12 +48,11 @@ li.publi-folder(data-publi="")
     +button('view_publication', '', 'isCollapsed')
   .montage-title
     input(type="text" placeholder="Titre")
-    h2.title
+    h2.title(data-publi_title)
     .publi-btn
       +button('validerTitre', '', '')
       +button('editerTitre', '', 'isCollapsed')
-  .inner-montage.small-12
-    .montage-element
+  .inner-montage.small-12(data-publi_medias)
 
 //- Pop up media
 div.media-big_image.media-big.row(data-type="image")

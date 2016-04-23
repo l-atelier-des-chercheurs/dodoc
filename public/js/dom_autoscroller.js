@@ -1523,7 +1523,7 @@ module.exports = tick;
           ;
 */
 
-        $(document).trigger( 'drop_succeeded');
+        $(document).trigger( 'update_media_montage');
 
       }
   	});

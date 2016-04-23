@@ -7159,19 +7159,24 @@ select {
     padding: 9px 15px;
     margin: 0;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
-  .publi-container .publi-content {
+  .publi-container .publi_medias {
     padding: 10px 16px; }
-    .publi-container .publi-content .mediaContent h2 {
-      font-size: 1.4em; }
-    .publi-container .publi-content .media {
+    .publi-container .publi_medias .media {
       padding: 0 0;
+      width: 100%;
       margin-bottom: 22px; }
-      .publi-container .publi-content .media img {
+      .publi-container .publi_medias .media .mediaContent {
+        box-shadow: none; }
+      .publi-container .publi_medias .media img {
         width: auto;
         min-width: 0;
         max-height: 70vh; }
-    .publi-container .publi-content .js--delete-media-montage {
-      display: none; }
+      .publi-container .publi_medias .media::after {
+        display: none; }
+      .publi-container .publi_medias .media .button-wrapper_deleteMedia {
+        display: none; }
+      .publi-container .publi_medias .media .button-wrapper_flagMedia {
+        display: none; }
 
 html {
   margin: 0; }

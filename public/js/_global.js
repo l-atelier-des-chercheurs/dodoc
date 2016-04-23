@@ -1,19 +1,17 @@
 
 var sessionId;
-//get current session
-var currentFolder = app.folder;
-//get current project
-var currentProject = app.project;
-
+// context vars sent by Node via router.js to footer.jade namespaced with app
+var currentFolder = app.currentFolder;
+var currentProject = app.currentProject;
+var currentPubli = app.currentPubli;
 
 /* fonction accessible depuis l'extérieur :
-    - listMediasOfOneType
+    - listAllMedias
     - loadProject
 
 */
 
 
-// COMMON WITH PROJECT.JS
 function loadProject( projectData) {
 
 	var projectName = projectData.name;
@@ -63,94 +61,86 @@ function loadProject( projectData) {
 }
 
 
-function listMediasOfOneType( mediasData) {
-  console.log( "listMediasOfOneType");
+function listAllMedias( mediasData) {
+  console.log( 'listAllMedias');
 
   var $allMedias = $();
   var lastMedias = mediasData;
 
-  $.each( lastMedias, function( index, mediaTypeContent) {
-    $.each( mediaTypeContent, function( metaJsonName, mediaDatas) {
-      var mediaFolderPath = mediaDatas.mediaFolderPath;
-      var mediaName = new RegExp(dodoc.regexpRemoveFileExtension).exec( metaJsonName)[1];
-      var newMedia = makeOneMedia( mediaFolderPath, mediaName, mediaDatas);
-      if( newMedia !== undefined)
-        $allMedias = $allMedias.add( newMedia);
-    });
+  $.each( lastMedias, function( mediaKey, mediaDatas) {
+    var newMedia = makeOneMedia( mediaKey, mediaDatas);
+    if( newMedia !== undefined)
+      $allMedias = $allMedias.add( newMedia);
   });
 
   return $allMedias;
 }
 
-
 function listMedia( mediaData) {
-
-  var mediaFolderPath = mediaData.mediaFolderPath;
-  var mediaName = mediaData.mediaName;
-  var newMedia = makeOneMedia( mediaFolderPath, mediaName, mediaData);
+  var newMedia = makeOneMedia( mediaKey, mediaData);
   if( newMedia !== undefined)
     return newMedia;
   return false;
 }
 
 
-function makeOneMedia( mediaFolderPath, mediaName, mediaDatas) {
+function makeOneMedia( mediaKey, mdata) {
   console.log( "makeOneMedia");
 
-  if( mediaDatas.slugFolderName !== currentFolder || mediaDatas.slugProjectName !== currentProject)
+  if( mdata.slugFolderName !== currentFolder || mdata.slugProjectName !== currentProject)
     return;
 
   var $currentMedia = '';
-  var mediaFilenames = mediaDatas.files;
+  if( mdata.mediaFolderPath === dodoc.projectPhotosFoldername)
+    $currentMedia = showImage( mdata);
 
-  if( mediaFolderPath === dodoc.projectPhotosFoldername)
-    $currentMedia = showImage( mediaFolderPath, mediaName, mediaFilenames);
+  if( mdata.mediaFolderPath === dodoc.projectAnimationsFoldername)
+    $currentMedia = showAnimation( mdata);
 
-  if( mediaFolderPath === dodoc.projectAnimationsFoldername)
-    $currentMedia = showAnimation( mediaFolderPath, mediaName, mediaFilenames);
+  if( mdata.mediaFolderPath === dodoc.projectVideosFoldername)
+    $currentMedia = showVideo( mdata);
 
-  if( mediaFolderPath === dodoc.projectVideosFoldername)
-    $currentMedia = showVideo( mediaFolderPath, mediaName, mediaFilenames);
+  if( mdata.mediaFolderPath === dodoc.projectAudiosFoldername)
+    $currentMedia = showAudio( mdata);
 
-  if( mediaFolderPath === dodoc.projectAudiosFoldername)
-    $currentMedia = showAudio( mediaFolderPath, mediaName, mediaFilenames);
+  if( mdata.mediaFolderPath === dodoc.projectTextsFoldername)
+    $currentMedia = showText( mdata);
 
-  if( mediaFolderPath === dodoc.projectTextsFoldername)
-    $currentMedia = showText( mediaFolderPath, mediaName, mediaFilenames, mediaDatas);
-
-  var pathForPubli = mediaFolderPath + '/' + mediaName + '.json';
   $currentMedia
-    .attr( 'data-mediaName', mediaName)
-    .attr( 'data-pathForPubli', pathForPubli)
-    .attr( 'data-mediatype', mediaFolderPath)
-    .attr( 'data-type', mediaFolderPath)
-  	.attr( 'data-informations', mediaDatas.informations)
-  	.addClass( mediaDatas.fav ? 'is--highlight' : '')
+    .attr( 'data-mediaName', mdata.mediaName)
+    .attr( 'data-mediakey', mediaKey)
+    .attr( 'data-mediatype', mdata.mediaFolderPath)
+    .attr( 'data-type', mdata.mediaFolderPath)
+  	.attr( 'data-informations', mdata.informations)
+  	.addClass( mdata.fav ? 'is--highlight' : '')
   	.find( '.mediaData--informations')
-  	  .html( mediaDatas.informations)
+  	  .html( mdata.informations)
     .end()
-  	.data( 'mtimestamp', transformDatetoTimestamp( mediaDatas.modified))
-  	.data( 'ctimestamp', transformDatetoTimestamp( mediaDatas.created))
+  	.data( 'mtimestamp', transformDatetoTimestamp( mdata.modified))
+  	.data( 'ctimestamp', transformDatetoTimestamp( mdata.created))
     ;
 
-  if( mediaDatas.title === undefined && mediaDatas.informations === undefined) {
+  if( mdata.title === undefined && mdata.informations === undefined) {
     $currentMedia.find('.mediaData').remove();
   }
 
-  if( mediaDatas.fav === "true") {
+  if( mdata.fav === "true") {
     $currentMedia.addClass('is--highlight');
   }
 
   return $currentMedia;
 }
 
-function makeFullPath( path) {
+function makeFullPathForProject( path) {
   return '/' + currentFolder + '/' + currentProject + '/' + path;
 }
 
-function showImage( mediaFolderPath, mediaName, mediaFilenames) {
+function showImage( mediaDatas) {
 
-  var pathToFile = makeFullPath( mediaFolderPath + '/' + mediaFilenames[0]);
+  var mediaFolderPath = mediaDatas.mediaFolderPath;
+  var mediaFilenames = mediaDatas.files;
+
+  var pathToFile = makeFullPathForProject( mediaFolderPath + '/' + mediaFilenames[0]);
 
 	var mediaItem = $(".js--templates .media_image").clone(false);
 	mediaItem
@@ -159,10 +149,14 @@ function showImage( mediaFolderPath, mediaName, mediaFilenames) {
 	return mediaItem;
 }
 
-function showAnimation( mediaFolderPath, mediaName, mediaFilenames) {
+function showAnimation( mediaDatas) {
+
+  var mediaFolderPath = mediaDatas.mediaFolderPath;
+  var mediaFilenames = mediaDatas.files;
 
   var thumbFilename;
   var videoFilename;
+
   $.each( mediaFilenames, function( key, mediaFilename) {
     if( mediaFilename.indexOf( "jpg") !== -1 || mediaFilename.indexOf( "png") !== -1) {
       thumbFilename = mediaFilename;
@@ -171,8 +165,8 @@ function showAnimation( mediaFolderPath, mediaName, mediaFilenames) {
     }
   });
 
-  var pathToThumb = makeFullPath( mediaFolderPath + '/' + thumbFilename);
-  var pathToVideoFile = makeFullPath( mediaFolderPath + '/' + videoFilename);
+  var pathToThumb = makeFullPathForProject( mediaFolderPath + '/' + thumbFilename);
+  var pathToVideoFile = makeFullPathForProject( mediaFolderPath + '/' + videoFilename);
 
 	var mediaItem = $(".js--templates .media_stopmotion").clone(false);
 	mediaItem
@@ -183,7 +177,10 @@ function showAnimation( mediaFolderPath, mediaName, mediaFilenames) {
 	return mediaItem;
 }
 
-function showVideo( mediaFolderPath, mediaName, mediaFilenames) {
+function showVideo( mediaDatas) {
+
+  var mediaFolderPath = mediaDatas.mediaFolderPath;
+  var mediaFilenames = mediaDatas.files;
 
   var thumbFilename;
   var videoFilename;
@@ -196,8 +193,8 @@ function showVideo( mediaFolderPath, mediaName, mediaFilenames) {
     }
   });
 
-  var pathToThumb = makeFullPath( mediaFolderPath + '/' + thumbFilename);
-  var pathToVideoFile = makeFullPath( mediaFolderPath + '/' + videoFilename);
+  var pathToThumb = makeFullPathForProject( mediaFolderPath + '/' + thumbFilename);
+  var pathToVideoFile = makeFullPathForProject( mediaFolderPath + '/' + videoFilename);
 
 	var mediaItem = $(".js--templates .media_video").clone(false);
 	mediaItem
@@ -208,8 +205,11 @@ function showVideo( mediaFolderPath, mediaName, mediaFilenames) {
 	return mediaItem;
 }
 
-function showAudio( mediaFolderPath, mediaName, mediaFilenames) {
-  var pathToFile = makeFullPath( mediaFolderPath + '/' + mediaFilenames[0]);
+function showAudio( mediaDatas) {
+  var mediaFolderPath = mediaDatas.mediaFolderPath;
+  var mediaFilenames = mediaDatas.files;
+
+  var pathToFile = makeFullPathForProject( mediaFolderPath + '/' + mediaFilenames[0]);
 
 	var mediaItem = $(".js--templates .media_audio").clone(false);
 	mediaItem
@@ -218,7 +218,7 @@ function showAudio( mediaFolderPath, mediaName, mediaFilenames) {
 	return mediaItem;
 }
 
-function showText( mediaFolderPath, mediaName, mediaFilenames, mediaDatas) {
+function showText( mediaDatas) {
 
   var mediaTitle = mediaDatas.titleOfTextmedia;
   var mediaText = mediaDatas.textOfTextmedia;
@@ -274,8 +274,7 @@ function insertOrReplaceProject( $item, $container) {
 function removeMedia( $medias, mediaData) {
 
   var $mediaToRemove = $medias
-    .filter("[data-mediatype='" + mediaData.mediaFolder + "']")
-    .filter("[data-medianame='" + mediaData.mediaName + "']")
+    .filter("[data-mediakey='" + mediaData.mediaKey + "']")
     ;
 
   $mediaToRemove
@@ -344,6 +343,7 @@ function listPublis( publisData) {
     var newPubli = makeOnePubli( publiContent);
     if( newPubli !== undefined)
       $allPublis = $allPublis.add( newPubli);
+
   });
 
   return $allPublis;
@@ -355,16 +355,15 @@ function makeOnePubli( publiData) {
     return;
 
 	var $publiItem = $(".js--templates .publi-folder").clone(false);
-  var publiPath = makeFullPath( dodoc.projectPublisFoldername + '/' + publiData.publiName);
+  var publiPath = makeFullPathForProject( dodoc.projectPublisFoldername + '/' + publiData.slugPubliName);
 
 	$publiItem
-		.data( 'publiname', publiData.name)
-		.attr( 'data-publislug', publiData.publiName)
+		.data( 'publiName', publiData.name)
+		.data( 'slugPubliName', publiData.slugPubliName)
   	.data( 'mtimestamp', transformDatetoTimestamp( publiData.modified))
   	.data( 'ctimestamp', transformDatetoTimestamp( publiData.created))
-  	.data( 'ctimestamp', transformDatetoTimestamp( publiData.created))
   	.data( 'medias', publiData.medias)
-  	.data( 'linkToPubli', publiData.pathToPubli)
+  	.data( 'linkToPubli', publiPath)
 		.find('h2')
 		  .html( publiData.name)
 		.end()
@@ -380,8 +379,11 @@ function makeOnePubli( publiData) {
 function insertOrReplacePubli( $publiItem, $publiContainer) {
 
   var $publiItems = $publiContainer.find(".publi-folder");
-  var publiName = $publiItem.data( "publislug");
-  var $existingPubli = $publiItems.filter( "[data-publislug='" + publiName + "']");
+
+  var publiName = $publiItem.data( "slugPubliName");
+  var $existingPubli = $publiItems.filter(function() {
+    return $(this).data("slugPubliName") === publiName
+  });
 
   if( $existingPubli.length >= 1) {
     $existingPubli.replaceWith( $publiItem);
@@ -410,6 +412,185 @@ function insertOrReplacePubli( $publiItem, $publiContainer) {
 }
 
 
+var publi = {
+  init : function( mediaData) {
+  	$('body')
+  	  .on('click', '.js--submit-new-publi', function(e){
+    		var publiName = $('.new-publi').val();
+    		if( publiName.length > 0) {
+      		publi.createNew( publiName);
+          $("#modal-add-publi").foundation('reveal', 'close');
+        }
+    	})
+
+  	  .on('click', '.montage-title .js--editerTitre', function(e){
+    		$('.montage-title input').show().val($('.montage-title .title').html());
+    		$('.montage-title .title').hide();
+    		$(this).hide();
+    		$('.montage-title .js--validerTitre').css("display", "block");
+      })
+  	  .on('click', '.montage-title .js--validerTitre', function(e){
+    		var oldTitle = $('.montage-title .title').html();
+    		var newTitle = $('.montage-title input').val();
+    		$('.montage-title input').hide();
+    		$('.montage-title .title').show().html(newTitle);
+    		$(this).hide();
+    		$editerBouton.css("display", "block");
+    		// send new title with publi name
+      })
+
+    	.on('click', '.js--edit_view', function(e){
+      	e.preventDefault();
+    		var $thisPubli = $(this).closest('.publi-folder');
+        publi.openPubli( $thisPubli);
+    	})
+
+    	.on('click', '.js--backButton', function(){
+  		  $('.montage-edit-container')
+  		    .empty()
+  		    .hide()
+  		    ;
+  	  })
+
+      .on('click', '.js--delete-media-montage', function(){
+      	var $elementToDel = $(this).parent("li.media");
+
+      	// check if media is in the montage
+      	if( $elementToDel.closest('.montage-edit').length > 0) {
+        	$elementToDel.fadeOut( 600,function(){
+        		$elementToDel.remove();
+            $(document).trigger( 'update_media_montage');
+        	});
+        }
+      })
+      ;
+
+    // a drag and drop has succeeded, let's scan inner-montage to parse all medias
+    // and send it to the right json
+    $(document).on( 'update_media_montage', function() {
+
+      var $montage = $('.montage-edit-container .montage-edit');
+      var slugPubliName = $montage.data('publishown');
+      var $montageMedias = $montage.find('.media');
+
+      var listMediasPaths = [];
+      $montageMedias.each(function() {
+        $mma = $(this);
+        var mediakey = $mma.data('mediakey');
+        listMediasPaths.push( mediakey);
+      });
+
+      // listMediasPaths is a list of all the medias referenced by their json meta-file
+
+      var publiJson =
+      {
+        "slugPubliName" : slugPubliName
+      }
+      publiJson.medias = listMediasPaths;
+
+      // let's send it over to node so it is saved in the publication jsonfile
+      sendData.editPubliMedias( publiJson);
+    });
+
+  },
+
+  createNew : function( pname) {
+    var publiJson =
+    {
+      "publiName" : pname
+    }
+    sendData.createNewPubli( publiJson);
+  },
+
+  openPubli : function( $thisPubli) {
+
+    var $montageEditContainer = $('.montage-edit-container');
+
+    // cloner un .montage-edit
+    var $montageEdit = $(".js--templates .montage-edit").clone(false);
+    var pdata = $thisPubli.data();
+
+    $montageEdit
+      .attr("data-publirequested", pdata.slugPubliName)
+      .find(".title")
+        .html( pdata.publiName)
+      .end()
+      .find(".js--publi_view")
+        .attr('href', pdata.linkToPubli)
+      .end()
+      ;
+
+
+    var publiData =
+    {
+      "slugPubliName" : pdata.slugPubliName
+    };
+
+    // le placer dans .montage-edit-container
+    $montageEditContainer
+      .html( $montageEdit)
+      .show()
+      ;
+
+    // demander à récupérer les médias en full de la publi
+    sendData.listOnePubliMetaAndMedias( publiData);
+
+  },
+
+  updateMontageContent : function( listOfMediasToAdd) {
+
+    var $lib = $(".mainContent .medias-list");
+    var $montage = $('.montage-edit-container .montage-edit');
+
+    var $publiMedias = $();
+
+    $.each( listOfMediasToAdd, function( i, media) {
+
+      // let's find the item with mediakey="01-photos/20160419_224310.json" in lib
+      var $mediaFromLib = $lib
+        .find('.media')
+          .filter("[data-mediakey='" + media + "']")
+            .clone(true)
+        ;
+
+/*
+      // let's find the item with mediakey="01-photos/20160419_224310.json" in montage
+      var $mediaFromMontage = $montage
+        .find('.media')
+          .filter("[data-mediakey='" + media + "']")
+        ;
+*/
+
+      $publiMedias = $publiMedias.add( $mediaFromLib);
+    });
+
+    return $publiMedias;
+  },
+
+  makePubliMedias : function( listOfMediasToAdd) {
+    return listAllMedias( listOfMediasToAdd.medias)
+  }
+
+}
+
+function listPubliContent( whichPubli, pdata, $publiContent) {
+  // make sure that publi is requested
+  if( pdata.slugFolderName !== currentFolder || pdata.slugProjectName !== currentProject || pdata.slugPubliName !== whichPubli)
+    return;
+
+  var $publiMedias = publi.makePubliMedias( pdata);
+  $publiContent
+    .find("[data-publi_title]")
+      .html( pdata.publiName)
+    .end()
+    .find(".js--publi_view")
+      .attr('href', pdata.linkToPubli)
+    .end()
+    .find("[data-publi_medias]")
+      .html( $publiMedias)
+    .end()
+    ;
+}
 
 var sendData = {
 
@@ -442,12 +623,28 @@ var sendData = {
   createNewPubli : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
-  	socket.emit( 'newPubli', publiData);
+  	socket.emit( 'createPubli', publiData);
   },
   editThisPubli : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
   	socket.emit( 'editPubli', publiData);
+  },
+  editPubliMeta : function( publiData) {
+    publiData.slugFolderName = currentFolder;
+    publiData.slugProjectName = currentProject;
+  	socket.emit( 'editMetaPubli', publiData);
+  },
+
+  listOnePubliMetaAndMedias : function( publiData) {
+    publiData.slugFolderName = currentFolder;
+    publiData.slugProjectName = currentProject;
+  	socket.emit( 'listOnePubliMetaAndMedias', publiData);
+  },
+  editPubliMedias : function( publiData) {
+    publiData.slugFolderName = currentFolder;
+    publiData.slugProjectName = currentProject;
+  	socket.emit( 'editMediasPubli', publiData);
   },
 
 }
@@ -512,7 +709,6 @@ var modals = {
 
 
     $modal.find(".js--modal_submit").on('click', function(){
-      debugger;
     	var newProjectName = $modal.find('.js--modal_name').val();
     	var fileData = $modal.find(".js--modal_inputfile").data( "fileData");
     	//Images changed
@@ -944,13 +1140,5 @@ function getPathToMediaFile( projectPath, mediasFolderPath, mediaName) {
 
 
 function getFirstMediaFromObj( mediasData) {
-  var mediaByJson = mediasData[0];
-  var mediaData;
-  for(var key in mediaByJson) {
-      if(mediaByJson.hasOwnProperty(key)) {
-          mediaData = mediaByJson[key];
-          break;
-      }
-  }
-  return mediaData;
+  return mediasData[0];
 }
