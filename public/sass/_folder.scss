@@ -41,9 +41,6 @@ body.projets{
 
   .project{
 
-    height: 0;
-    padding-bottom: 15%;
-
     & + .project {
       margin-top:  35px;
     }
@@ -71,14 +68,10 @@ body.projets{
     .project-inside {
 
       @include style--dossierBorders;
-      border-bottom: 0;
 
-      margin-left: 0.9375rem;
-      margin-right: 0.9375rem;
-
-      position: absolute;
-      top: 0; bottom: 0;  left: 0;  right: 0;
-
+      .project-link {
+        display: block;
+      }
     }
 
     .button-wrapper_editProjet {
@@ -87,22 +80,15 @@ body.projets{
       right: 0;
       z-index:5;
     }
-    .left-content{
-      background-color:#FFF;
-      overflow-y: scroll;
-      height: 100%;
-      padding: 0;
-      padding-top:  0;
 
+    .project-content {
+      background-color:#FFF;
 
       .title {
         display: block;
         font-weight: bold;
         font-size: $h2Size;
-        padding: 10px 16px;
         margin: 0;
-
-
 
         &:hover {
           color: $bleuvert;
@@ -127,42 +113,30 @@ body.projets{
           }
         }
       }
-
       .button-to-pages {
-        padding: 0;
         .legende {
-          margin-bottom: 5px;
-          margin-top: 0;
         }
       }
     }
     .image-wrapper{
-      overflow: hidden;
-      padding: 0;
-
-      height: 100%;
       background-color: #f3f3f3;
+      -webkit-background-size: cover;
+      background-size: cover;
+      background-position: center center;
 
-      img {
-        transform: translateY(-50%);
-        top: 50%;
-        position: absolute;
+      &::after {
+        content: '';
+        display: block;
+        padding-bottom: 33%;
+        height: 0;
       }
     }
 
 
-    .legende {
-      padding-left:   0.9375rem;
-    }
-
     .last-medias {
-      @include grid-row;
       @include clearfix();
-
       @include style--dossierBorders;
       background-color: #f9f9f9;
-      margin-top: 3px;
-      padding: 17% 0.9375rem 25px;
 
       body.projets & {
         display: none;
@@ -172,27 +146,33 @@ body.projets{
         &:nth-of-type(4n+1) {
           clear: left;
         }
+
+        &:nth-of-type(n+5) {
+          display: none;
+        }
       }
       .button-wrapper_flagMedia {
         display: none;
       }
-
     }
 
     .montage-list {
 
-      @include grid-row;
       @include clearfix();
-
       @include style--dossierBorders;
 
       background-color: #f9f9f9;
-      padding: 15px 0.9375rem 25px;
-      margin-top: 0px;
       margin-bottom:  75px;
 
-      .publi-folder {
-        @include grid-column(12);
+      .list-publi {
+
+        .publi-folder {
+          margin: 10px 16px;
+        }
+      }
+
+      body.projets & {
+        display: none;
       }
 
     }

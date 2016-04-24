@@ -209,19 +209,17 @@ body.bibli {
   }
   .inner-montage{
 
-    @include grid-row();
-
     height:100%;
     min-height:200px;
 
-    padding-left: 1.875rem;
-    padding-right: 1.875rem;
+    padding: 0 $margin;
+    padding-top: 1.875rem;
     padding-bottom: 1.875rem * 2;
     margin-bottom: 1.875rem * 2;
 
     border-bottom:  2px solid #eee;
 
-    background-color: #fff;
+    background-color: #f9f9f9;
 
     transition: background-color .4s, transform .6s ease-out;
 
@@ -241,7 +239,8 @@ body.bibli {
     }
 
     .media {
-      @include grid-column(12);
+      width:100%;
+      float: none;
 
       position: relative;
       cursor: move;
@@ -258,6 +257,14 @@ body.bibli {
       &::before {
         display: none;
       }
+      &::after {
+        display: none;
+      }
+
+      .button-wrapper_flagMedia {
+        display: none;
+      }
+
 
       .button-wrapper_deleteMedia {
         opacity:0;
@@ -266,6 +273,10 @@ body.bibli {
       }
 
       &:hover {
+
+        .mediaContent {
+          outline:4px dashed #aaa;
+        }
         .button-wrapper_deleteMedia {
           opacity:1;
         }
@@ -293,7 +304,6 @@ body.bibli {
 
 
     .media.gu-transit .mediaContent {
-      height: 100%;
       opacity: 1;
       background-color: $orange;
 
@@ -394,7 +404,7 @@ body.bibli {
 
 
 .montage-list {
-  margin-top:   15px;
+
   > .button-wrapper {
     margin-bottom:  15px;
   }

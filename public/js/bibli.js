@@ -60,11 +60,18 @@ function init(){
 
   // si en arrivant sur la page, il y a un hash dans l'url
   // alors ouvrir la publication qui a ce nom directement
-  var urlHash = window.location.hash;
+  var urlHash = window.location.hash.substring(1);
   if( urlHash.length > 0){
     setTimeout(function() {
-      $('.montage-list [data-publi=' + urlHash.substring(1) + ']').find('.js--edit_view').trigger( 'click');
-    }, 250);
+      $('.montage-list')
+        .find('.publi-folder')
+          .filter(function() {
+            return $(this).data('slugPubliName') === urlHash;
+          })
+            .find('.js--edit_view')
+              .trigger( 'click')
+      ;
+    }, 550);
   }
 
  // Ajoute ou enlève un highlight quand on clique sur le drapeau dans les médias
@@ -108,6 +115,11 @@ function onMediaCreated( mediasData) {
 function onMediaUpdated( mediasData) {
   console.log( "onMediaUpdated");
   onListAllMedias( mediasData);
+
+  // if the publi pane is open, there's a chance we juste updated a media that's also in the publi !
+  // if publi pane is open, let's ask for a new publimedias list
+  askToUpdateCurrentPubli();
+
 }
 
 
@@ -153,25 +165,43 @@ function onPubliMediasUpdated( psdata) {
   updateMontagePubliMedias( psdata);
 }
 
+function askToUpdateCurrentPubli() {
+  var $publiContent = $('.montage-edit-container .montage-edit');
+  // if publi pane isn't visible with a pubi inside
+  if( $publiContent.length === 0) return;
+
+  var publiShown = $publiContent.data('publishown');
+  if( publiShown !== undefined && publiShown !== '') {
+    var publiData =
+    {
+      "slugPubliName" : publiShown
+    };
+    sendData.listOnePubliMetaAndMedias( publiData);
+  }
+
+}
+
 
 // list content of a publi
 function onListOnePubliMetaAndMedias( psdata) {
   console.log( "onListOnePubliMetaAndMedias");
 
-  // check if a publi content was requested (not ideal, we could use a session id in the json instead but it would also not be ideal).
   var $publiContent = $('.montage-edit-container .montage-edit');
+
+  // if publi pane isn't visible with a pubi inside
+  if( $publiContent.length === 0) return;
+
   var publiRequested = $publiContent.data('publirequested');
 
-  if( publiRequested === '')
-    return;
-
-  $publiContent.data('publishown', publiRequested);
-  $publiContent.data('publirequested', '');
+  // if this is the answer to a publi request (i.e. click on publi title has just been done)
+  // let's put publirequested in publishown and remove publirequested
+  if( publiRequested !== undefined && publiRequested !== '') {
+    $publiContent.data('publishown', publiRequested);
+    $publiContent.data('publirequested', '');
+  }
 
   updateMontagePubliMeta( psdata);
   updateMontagePubliMedias( psdata);
-
-  $(document).trigger('restart_dragula');
 
 }
 

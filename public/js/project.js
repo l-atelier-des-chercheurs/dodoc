@@ -74,29 +74,6 @@ function onListOneProjectPublis( publisData) {
 }
 
 
-function onListProjectPubli( publisData) {
-	var $allPublis = $();
-
-	for (var i = 0; i < arrayPubli.length; i++) {
-		var publiPath = '/'+currentFolder+'/'+currentProject+'/publication/'+ convertToSlug(arrayPubli[i]);
-		var editPath = '/'+currentFolder+'/'+currentProject+'/bibliotheque/panneau-de-publications#'+ convertToSlug(arrayPubli[i]);
-
-		var publiItem = $(".js--templates > .publi-folder").clone(false);
-		publiItem
-			.find( 'h2').html(arrayPubli[i]).end()
-			.find( '.js--edit_view', publiPath).attr('href', editPath).end()
-			.find( '.js--publi_view', publiPath).attr('href', publiPath).end()
-		;
-
-		$allPublis = $allPublis.add(publiItem);
-
-	}
-
-  projectClone.find( '.list-publi').append( $allPublis);
-	projectClone.appendTo('.project-list');
-
-}
-
 
 // Envoie les données du projet au serveur
 
@@ -105,13 +82,6 @@ function onProjectModified( projectData){
   onListOneProject( projectData);
 }
 
-//Suppression du dossier
-
-// Si un fichier existe déjà, affiche un message d'alerte
-function onProjectAlreadyExist(data){
-	alert("Le nom de projet " + data.name + " existe déjà. Veuillez trouvez un autre nom.");
-	$('.new-project').focus();
-}
 
 //Remove the project from list
 function onProjectRemoved( projectData){

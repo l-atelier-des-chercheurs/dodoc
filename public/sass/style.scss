@@ -107,7 +107,7 @@ button{
   color: #8d8d8d;
   text-transform: lowercase;
 
-  margin-bottom:  15px;
+  margin-bottom:  10px;
 }
 
 .row{max-width:90%;}
@@ -329,17 +329,35 @@ button{
 @import '_capture';
 
 
+.flex_structure {
+  display: flex;
+  flex-flow: row wrap;
+  align-content: flex-start;
+
+  > * {
+    flex: 1 100%;
+  }
+
+  > .flex_half {
+    flex:1 50%;
+  }
+}
+
+.insidePadding {
+  padding: 10px 16px;
+}
 
 // MEDIA
 .media {
 
-  @include grid-column(3);
   position: relative;
+
+  float: left;
+  width: 25%;
+  padding: $margin;
+
   border: 0 solid #f9f9f9;
   z-index: 1;
-
-  padding-top: .9375rem;
-  padding-bottom: .9375rem;
 
   .mediaContent {
     @include style--dossierBorders;
@@ -351,7 +369,7 @@ button{
   &.media_text {
     .mediaContent {
       padding: .9375rem;
-      min-height: 10vw;
+      min-height: 15px;
       .mediaContent--titleOfTextmedia {
         font-size: 1.2em;
         font-weight: normal;
@@ -423,7 +441,7 @@ button{
     &::after {
       background-color: $bleuvert;
       left: .4687rem;
-      top: .4687rem;
+      top: 90%;
       right: .4687rem;
       bottom: .4687rem;
 

@@ -34,8 +34,6 @@ function loadProject( projectData) {
 
   if( modifiedDate === null)
     $newProject.find('.modify-date').remove();
-	if( imageSrc === undefined)
-  	$newProject.find( '.image-wrapper img').remove();
 
   var imageSrc = path + "/" + imageSrc + '?' + modifiedDate;
 
@@ -48,7 +46,10 @@ function loadProject( projectData) {
   	.data( 'mtimestamp', transformDatetoTimestamp( createdDate))
   	.data( 'ctimestamp', transformDatetoTimestamp( modifiedDate))
 	  .find( '.statut-type').text( statut).end()
-	  .find( '.image-wrapper img').attr('src', imageSrc).attr('alt', projectName).end()
+	  .find( '.image-wrapper')
+	    .css('background-image', 'url(' + imageSrc + ')')
+	    .attr('alt', projectName)
+	   .end()
 	  .find( '.create-date').text( createdDateUser).end()
 	  .find( '.modify-date').text( modifiedDateUser).end()
 	  .find( '.title').text( projectName).end()
@@ -357,6 +358,7 @@ function makeOnePubli( publiData) {
 
 	var $publiItem = $(".js--templates .publi-folder").clone(false);
   var publiPath = makeFullPathForProject( dodoc.projectPublisFoldername + '/' + publiData.slugPubliName);
+  var editPubliPath = makeFullPathForProject( 'bibliotheque/panneau-de-publications#' + publiData.slugPubliName);
 
 	$publiItem
 		.data( 'publiName', publiData.name)
@@ -370,6 +372,9 @@ function makeOnePubli( publiData) {
 		.end()
 		.find('.js--publi_view')
 		  .attr('href', publiPath)
+		.end()
+		.find('.js--edit_view')
+		  .attr('href', editPubliPath)
 		.end()
     ;
 
@@ -547,14 +552,7 @@ var publi = {
 
     $montageEdit
       .attr("data-publirequested", pdata.slugPubliName)
-      .find(".title")
-        .html( pdata.publiName)
-      .end()
-      .find(".js--publi_view")
-        .attr('href', pdata.linkToPubli)
-      .end()
       ;
-
 
     var publiData =
     {
@@ -570,6 +568,7 @@ var publi = {
     // demander à récupérer les médias en full de la publi
     sendData.listOnePubliMetaAndMedias( publiData);
 
+    $(document).trigger('restart_dragula');
   },
 
   updateMontageContent : function( listOfMediasToAdd) {

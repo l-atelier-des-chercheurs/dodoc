@@ -38,7 +38,8 @@ li.media.media_text(data-ratio data-title data-legende data-highlight=false)
 
 li.publi-folder(data-publi="")
   .content
-    h2.title.js--edit_view
+    a.js--edit_view
+      h2.title
   .publi-btn
     +button('view_publication', '', 'isCollapsed')
 
@@ -48,7 +49,7 @@ li.publi-folder(data-publi="")
     +button('view_publication', '', 'isCollapsed')
   .montage-title
     input(type="text" placeholder="Titre")
-    h2.title(data-publi_title)
+    h2.title.insidePadding(data-publi_title)
     .publi-btn
       +button('validerTitre', '', '')
       +button('editerTitre', '', 'isCollapsed')
@@ -90,33 +91,33 @@ div.media-big_text.media-big(data-type="text" data-id)
 
 .project.small-12.columns(data-statut)
   +button('editProjet', '', 'isCollapsed')
-  .project-inside
-    .left-content.small-8.medium-6.columns
-      .content
-        a(href="" title="Dodoc").project-link
-          h2.title
-        .meta-data.small-6.columns
-          .statut
-            span statut
-            span.statut-type
-          .created
-            span créé le
-            span.create-date
-          .modified
-            span modifié le
-            span.modify-date
-        .button-to-pages.small-6.columns
-          h3.legende accès rapide
-          +button('capture', '', 'isCollapsed')
-          +button('bibli', '', 'isCollapsed')
-          +button('publications', '', 'isCollapsed')
-    .image-wrapper.small-4.medium-6.columns
+  .project-inside.flex_structure
+    .project-content.flex_half.flex_structure
+      a(href="" title="Dodoc").project-link
+        h2.title.insidePadding
+      .meta-data.flex_half.insidePadding
+        h3.legende Informations
+        .statut
+          span statut
+          span.statut-type
+        .created
+          span créé le
+          span.create-date
+        .modified
+          span modifié le
+          span.modify-date
+      .button-to-pages.flex_half.insidePadding
+        h3.legende accès rapide
+        +button('capture', '', 'isCollapsed')
+        +button('bibli', '', 'isCollapsed')
+        +button('publications', '', 'isCollapsed')
+    .image-wrapper.flex_half
       img
   ul.last-medias
-    h3.legende Derniers médias ajoutés
+    h3.legende.insidePadding Derniers médias ajoutés
 
   .montage-list
-    h1.legende Liste des publications
+    h1.legende.insidePadding Liste des publications
     ul.list-publi
 
 
