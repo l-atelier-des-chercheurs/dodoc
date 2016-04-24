@@ -1258,5 +1258,10 @@ function getPathToMediaFile( projectPath, mediasFolderPath, mediaName) {
 
 
 function getFirstMediaFromObj( mediasData) {
-  return mediasData[0];
+  var mediaData;
+  $.each( mediasData, function( mjson, mdata) {
+    mediaData = mdata;
+    return false;
+  });
+  return mediaData;
 }

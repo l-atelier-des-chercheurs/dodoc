@@ -84,7 +84,6 @@ function init(){
       changeMediaBoitier(e);
     });
 
-
 	displayVideoStream();
 
 	//recording medias events
@@ -101,7 +100,7 @@ function init(){
     audioCapture("click");
   });
   //initiate Equalizer at the beginning
-  createEqualizer();
+//   createEqualizer();
 
 	// Keypressed (makey-makey) event
   $("body").keypress(function(e){
@@ -357,7 +356,7 @@ function videoDisplay(){
 }
 function stopMotionDisplay(){
   $(document)
-    .data('currentMode', 'stopmotion')
+    .data('currentMode', 'animation')
 
 
   $('.screenshot .canvas-view').show();

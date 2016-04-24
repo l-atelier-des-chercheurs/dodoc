@@ -342,18 +342,6 @@ module.exports = function(app, io){
 		});
   }
 
-	// Ajoute des images au dossier du stop motion
-	function onNewImageMotion(req) {
-		dev.logfunction( "onNewImageMotion");
-		var imageBuffer = decodeBase64Image(req.data);
-		filename = req.dir + '/' + req.count + '.png';
-		fs.writeFile(filename , imageBuffer.data, function(err) {
-			if(err){
-				console.log(err);
-			}
-		});
-	}
-
 	// Supprime une image du Stop Motion
 	function deleteImageMotion(req){
 		dev.logfunction( "deleteImageMotion");
@@ -1089,6 +1077,7 @@ MEDIA METHODS
 
           var dataMedia = newMediaData.mediaData;
           writeVideoToDisk( pathToFile, fileExtension, dataMedia);
+
 
           mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension, newFileName);
           mediaMetaData.slugFolderName = slugFolderName;
