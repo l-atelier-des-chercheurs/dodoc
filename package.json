@@ -24,7 +24,6 @@
     "marky-mark": "^1.2.1",
     "merge": "^1.2.0",
     "moment": "^2.12.0",
-    "phantom": "*",
     "recordrtc-socketio": "*",
     "serve-favicon": "^2.3.0",
     "socket.io": "^1.3.5",
