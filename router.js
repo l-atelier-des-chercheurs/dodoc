@@ -4,8 +4,6 @@ var fs = require('fs-extra');
 var path = require("path");
 var fs = require('fs-extra');
 var ffmpeg = require('fluent-ffmpeg');
-var multipart = require('connect-multiparty');
-var multipartMiddleware = multipart();
 var dodoc  = require('./public/dodoc.js'),
 	moment = require( "moment" ),
   merge = require('merge')
@@ -23,8 +21,6 @@ module.exports = function(app,io,m){
   app.get("/:folder/:project/bibliotheque/medias", getBibli);
   app.get("/:folder/:project/bibliotheque/panneau-de-publications", getBibliPubli);
   app.get("/:folder/:project/publications/:publi", getPubli);
-
-  app.post("/:folder/:project/bibliotheque/medias/file-upload", multipartMiddleware, postFile);
 
 
   /**
@@ -162,88 +158,11 @@ module.exports = function(app,io,m){
     res.render("publi", generatePageDataJSON);
   };
 
-  function postFile(req, res) {
-
-    var fileExtension = path.extname( req.files.file.name);
-    var newFileName = getCurrentDate();
-    var generatePageDataJSON = generatePageData(req);
-
-    var slugFolderName = generatePageDataJSON.folder;
-    var slugProjectName = generatePageDataJSON.project;
-
-    console.log( "generatePageDataJSON = " + JSON.stringify( generatePageDataJSON, null, 4));
-//     var pathToFolder = pageDataJSON.folder
-
-    // should send to createNewMedia
-    // for now this will do
-    fs.readFile( req.files.file.path, function (err, data) {
-      var projectPath = getProjectPath( slugFolderName, slugProjectName);
-      var fullPath = getFullPath( projectPath);
-
-
-      var newMediaType = '';
-      if( fileExtension == ".webm" || fileExtension == ".ogg" || fileExtension == ".mov" || fileExtension == ".mp4") {
-        newMediaType = 'video';
-      }
-      else if( fileExtension == ".jpg" || fileExtension == ".jpeg" || fileExtension == ".png" || fileExtension == ".tiff") {
-        newMediaType = 'photo';
-      }
-
-    	var mediaFolder = getMediaFolderPathByType( newMediaType);
-			var mediaPath = fullPath + '/' + mediaFolder;
-      var pathToFile = mediaPath + '/' + newFileName;
-
-      fs.writeFileSync( pathToFile + fileExtension, data);
-      mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension, newFileName);
-
-      if( newMediaType == 'video') {
-        createThumnails( pathToFile + fileExtension, newFileName, mediaPath)
-          .then(function( mediaFolderContent) {
-            console.error("Video thumbs have been made.");
-            sendMediaMetaData( mediaMetaData);
-            res.redirect("back");
-          }, function(error) {
-            console.error("Failed to make a thumbnail one media! Error: ", error);
-            sendMediaMetaData( mediaMetaData);
-            res.redirect("back");
-          });
-      } else {
-        sendMediaMetaData( mediaMetaData);
-        res.redirect("back");
-      }
-
-    });
-  };
-
-  function sendMediaMetaData( mediaMetaData) {
-    var eventAndContentJson = eventAndContent( "mediaCreated", mediaMetaData);
-    console.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson), null, 4);
-    // for other clients connected
-    io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
-  }
-
   function readJsonFile( jsonFile){
     var jsonFileContent = fs.readFileSync(jsonFile, 'utf8');
     var jsonFileContentParsed = JSON.parse( jsonFileContent);
     return jsonFileContentParsed;
   }
-
-	function createThumnails( videoPath, videoFilename, pathToMediaFolder){
-    return new Promise(function(resolve, reject) {
-  		var proc = ffmpeg( videoPath)
-  		// setup event handlers
-  		.on('end', function(files) {
-  			console.log('screenshot was saved');
-  			resolve();
-  		})
-  		.on('error', function(err) {
-  			console.log('an error happened: ' + err.message);
-  			reject();
-  		})
-  		// take 2 screenshots at predefined timemarks
-  		.takeScreenshots({ count: 1, timemarks: [ '00:00:01'], "filename" : videoFilename + ".png"}, pathToMediaFolder);
-    });
-	}
 
   function getMediaFolderPathByType( mediaType) {
     if( mediaType == 'photo')
@@ -275,25 +194,6 @@ module.exports = function(app,io,m){
   }
   function getPubliPathOfProject() {
     return dodoc.projectPublisFoldername;
-  }
-  // copie de celui de main.js
-  function createMediaJSON( newMediaType, pathToFile, fileExtension, fileName) {
-    var mediaMetaData = {};
-    mediaMetaData['created'] = getCurrentDate();
-    mediaMetaData['modified'] = getCurrentDate();
-    mediaMetaData['informations'] = '';
-    mediaMetaData['type'] = newMediaType;
-    mediaMetaData['fav'] = false;
-
-    // generate a json file next to the file
-    var pathToJSONFile = pathToFile + '.json';
-		var status = jsonWriteToFile( pathToJSONFile, mediaMetaData, "update");
-
-    // only add to the response JSON
-    // no need for this in the JSON file since it is recreated on send
-    mediaMetaData['mediaName'] = fileName;
-
-		return mediaMetaData;
   }
 
   // new write json function that writes in json and returns true or false depending on success

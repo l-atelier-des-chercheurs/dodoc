@@ -68,7 +68,7 @@ module.exports = function(app, io){
 		socket.on( 'listOneProjectPublis', onListOneProjectPublis);
 
 		socket.on( 'createPubli', onCreatePubli);
-		socket.on( 'editMetaPubli', onEditPubli);
+		socket.on( 'editMetaPubli', onEditMetaPubli);
 		socket.on( 'editMediasPubli', onEditMediasPubli);
 
 		socket.on("editMediaMeta", onEditMediaMeta);
@@ -406,11 +406,9 @@ module.exports = function(app, io){
   	createPubli( publiData).then(function( publiMetaData) {
 
     	listPublis( publiMetaData.slugFolderName, publiMetaData.slugProjectName, publiMetaData.slugPubliName).then(function( publiProjectContent) {
-
         var eventAndContentJson = eventAndContent( 'publiCreated', publiProjectContent);
         dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
         io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
-
       }, function(error) {
         console.error("Failed to listPublis from create! Error: ", error);
       });
@@ -419,20 +417,15 @@ module.exports = function(app, io){
     });
   }
 
-  function onEditPubli( publiData) {
-		dev.logfunction( "onEditPubli");
+  function onEditMetaPubli( publiData) {
+		dev.logfunction( "onEditMetaPubli");
 
 		editThisPubli( publiData).then(function( publiMetaData) {
   		var slugFolderName = publiMetaData.slugFolderName;
   		var slugProjectName = publiMetaData.slugProjectName;
   		var slugPubliName = publiMetaData.slugPubliName;
 
-  		// if medias haven't changed, lets just list publis
-  		console.log( "+ publiData.medias = " + publiData.medias);
-  		console.log( "+ publiData === undefined = " + publiData.medias === undefined);
-
     	listPublis( slugFolderName, slugProjectName, slugPubliName).then(function( publiProjectContent) {
-      	publiProjectContent.updateMedias = false;
         var eventAndContentJson = eventAndContent( 'publiMetaUpdated', publiProjectContent);
         dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
         io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
@@ -455,8 +448,7 @@ module.exports = function(app, io){
   		var slugPubliName = publiMetaData.slugPubliName;
 
     	listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
-      	publiMedias.updateMedias = true;
-      	var eventAndContentJson = eventAndContent( 'publiMediasAndMediasUpdated', publiMedias);
+      	var eventAndContentJson = eventAndContent( 'publiMediasUpdated', publiMedias);
         dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
         io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
       }, function(error) {
@@ -464,7 +456,7 @@ module.exports = function(app, io){
       });
 
     }, function(error) {
-      console.error("Failed to create New Publi! Error: ", error);
+      console.error("Failed to edit this publi! Error: ", error);
     });
 
   }
@@ -969,11 +961,11 @@ MEDIA METHODS
 
     filesInMediaFolder.forEach( function( filename) {
       if( !new RegExp( dodoc.regexpMatchFolderNames, 'i').test( filename) && filename !== ".DS_Store") {
-        var fileExtension = new RegExp( dodoc.regexpGetFileExtension, 'i').exec( filename);
+        var fileExtension = new RegExp( dodoc.regexpGetFileExtension, 'i').exec( filename)[0];
 //         dev.log( "- - fileEXTENSION of " + filename + " is " + fileExtension);
 //         dev.log( "- - Is file a deleted file ? " + new RegExp( '^' + dodoc.deletedProjectFolderPrefix).test( filename));
         // match only json that are not deleted (prefixed with a custom prefix
-        if( fileExtension == ".json" && !new RegExp( '^' + dodoc.deletedProjectFolderPrefix).test( filename)) {
+        if( fileExtension === ".json" && !new RegExp( '^' + dodoc.deletedProjectFolderPrefix).test( filename)) {
           if( !lookingForSpecificJson)
   				  foldersMediasMeta.push( filename);
   				else if( filename == mediaName + ".json") {
@@ -1014,7 +1006,7 @@ MEDIA METHODS
             mediaMetaData.slugProjectName = slugProjectName;
 
             // if the file is a text, then also add the content of the TXT in the answer
-            if( new RegExp( dodoc.regexpGetFileExtension, 'i').exec( mediaFilename) == '.md') {
+            if( new RegExp( dodoc.regexpGetFileExtension, 'i').exec( mediaFilename)[0] === '.md') {
               mediaMetaData = merge( mediaMetaData, getTextMediaContentToJsonObj( projectPath + '/' + mediasFolderPath + '/' + mediaFilename));
             }
 
@@ -1096,7 +1088,7 @@ MEDIA METHODS
           fileExtension = '.webm';
 
           var dataMedia = newMediaData.mediaData;
-          writeToDisk2( pathToFile, fileExtension, dataMedia);
+          writeVideoToDisk( pathToFile, fileExtension, dataMedia);
 
           mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension, newFileName);
           mediaMetaData.slugFolderName = slugFolderName;
@@ -1453,7 +1445,7 @@ PUBLIS METHODS
 
       // update title if pdata has newPubliName
       if( pdata.newPubliName !== undefined)
-        publiMetaData.name = newPubliName;
+        publiMetaData.name = pdata.newPubliName;
 
       // update medias if pdata has medias
       if( pdata.medias !== undefined)
@@ -1461,9 +1453,9 @@ PUBLIS METHODS
 
   		var status = jsonWriteToFile( publiJSONFilepath, publiMetaData, "update");
 
-      publiMetaData.slugPubliName = slugPubliName;
-      publiMetaData.slugFolderName = slugFolderName;
-      publiMetaData.slugProjectName = slugProjectName;
+      publiMetaData.slugPubliName = pdata.slugPubliName;
+      publiMetaData.slugFolderName = pdata.slugFolderName;
+      publiMetaData.slugProjectName = pdata.slugProjectName;
       resolve( publiMetaData);
     });
   }
@@ -1524,26 +1516,7 @@ PUBLIS METHODS
 *************/
 
 
-
-	function writeToDisk(dataURL, fileName, folder, projet) {
-    var fileExtension = fileName.split('.').pop(),
-        fileRootNameWithBase = './' + dodoc.contentDir + "/" + folder + '/' + projet + '/' + fileName,
-        filePath = fileRootNameWithBase,
-        fileID = 2,
-        fileBuffer;
-
-    // @todo return the new filename to client
-    while (fs.existsSync(filePath)) {
-        filePath = fileRootNameWithBase + '(' + fileID + ').' + fileExtension;
-        fileID += 1;
-    }
-
-    dataURL = dataURL.split(',').pop();
-    fileBuffer = new Buffer(dataURL, 'base64');
-    fs.writeFileSync(filePath, fileBuffer);
-	}
-
-	function writeToDisk2( filePath, fileExtension, dataURL) {
+	function writeVideoToDisk( filePath, fileExtension, dataURL) {
     var fileRootNameWithBase = './' + filePath,
         filePath = fileRootNameWithBase,
         fileID = 2,

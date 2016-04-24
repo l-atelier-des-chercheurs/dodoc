@@ -69,6 +69,7 @@ function listAllMedias( mediasData) {
 
   $.each( lastMedias, function( mediaKey, mediaDatas) {
     var newMedia = makeOneMedia( mediaKey, mediaDatas);
+
     if( newMedia !== undefined)
       $allMedias = $allMedias.add( newMedia);
   });
@@ -424,19 +425,53 @@ var publi = {
     	})
 
   	  .on('click', '.montage-title .js--editerTitre', function(e){
-    		$('.montage-title input').show().val($('.montage-title .title').html());
-    		$('.montage-title .title').hide();
-    		$(this).hide();
-    		$('.montage-title .js--validerTitre').css("display", "block");
+    	  $montage = $(this).closest('.montage-edit');
+    	  $currentTitle = $montage.find('[data-publi_title]').html();
+
+    		$montage
+    		  .find('.montage-title input')
+    		    .val( $currentTitle)
+            .show()
+          .end()
+          .find('.montage-title .title')
+            .hide()
+          .end()
+          .find('.js--editerTitre')
+            .hide()
+          .end()
+          .find('.js--validerTitre')
+            .css('display', 'block')
+          .end()
+    		  ;
       })
   	  .on('click', '.montage-title .js--validerTitre', function(e){
-    		var oldTitle = $('.montage-title .title').html();
-    		var newTitle = $('.montage-title input').val();
-    		$('.montage-title input').hide();
-    		$('.montage-title .title').show().html(newTitle);
-    		$(this).hide();
-    		$editerBouton.css("display", "block");
-    		// send new title with publi name
+    	  $montage = $(this).closest('.montage-edit');
+    	  newTitle = $montage.find('.montage-title input').val();
+    	  currentlyShownPubli = $montage.data('publishown');
+
+    	  $montage
+    		  .find('.montage-title input')
+            .hide()
+          .end()
+          .find('.montage-title .title')
+            .css('display', 'block')
+          .end()
+          .find('.js--editerTitre')
+            .css('display', 'block')
+          .end()
+          .find('.js--validerTitre')
+            .hide()
+          .end()
+          ;
+
+        var publiData =
+        {
+          "slugPubliName" : currentlyShownPubli,
+          "newPubliName" : newTitle
+        };
+
+        sendData.editPubliMeta( publiData);
+
       })
 
     	.on('click', '.js--edit_view', function(e){
@@ -573,19 +608,31 @@ var publi = {
 
 }
 
-function listPubliContent( whichPubli, pdata, $publiContent) {
+// update montage content with new meta (title and link)
+function listMontagePubliMeta( whichPubli, pdata, $publiContent) {
+  // make sure that publi is requested
+  if( pdata.slugFolderName !== currentFolder || pdata.slugProjectName !== currentProject || pdata.slugPubliName !== whichPubli)
+    return;
+
+  $publiContent
+    .find("[data-publi_title]")
+      .html( pdata.name)
+    .end()
+    .find(".js--publi_view")
+      .attr('href', pdata.pathToPubli)
+    .end()
+    ;
+}
+
+// update montage content with new medias
+function listMontagePubliMedias( whichPubli, pdata, $publiContent) {
   // make sure that publi is requested
   if( pdata.slugFolderName !== currentFolder || pdata.slugProjectName !== currentProject || pdata.slugPubliName !== whichPubli)
     return;
 
   var $publiMedias = publi.makePubliMedias( pdata);
+
   $publiContent
-    .find("[data-publi_title]")
-      .html( pdata.publiName)
-    .end()
-    .find(".js--publi_view")
-      .attr('href', pdata.linkToPubli)
-    .end()
     .find("[data-publi_medias]")
       .html( $publiMedias)
     .end()
@@ -625,21 +672,15 @@ var sendData = {
     publiData.slugProjectName = currentProject;
   	socket.emit( 'createPubli', publiData);
   },
-  editThisPubli : function( publiData) {
+  listOnePubliMetaAndMedias : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
-  	socket.emit( 'editPubli', publiData);
+  	socket.emit( 'listOnePubliMetaAndMedias', publiData);
   },
   editPubliMeta : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
   	socket.emit( 'editMetaPubli', publiData);
-  },
-
-  listOnePubliMetaAndMedias : function( publiData) {
-    publiData.slugFolderName = currentFolder;
-    publiData.slugProjectName = currentProject;
-  	socket.emit( 'listOnePubliMetaAndMedias', publiData);
   },
   editPubliMedias : function( publiData) {
     publiData.slugFolderName = currentFolder;
@@ -679,7 +720,6 @@ var modals = {
       .append( $modalContent.show())
       ;
 
-  	var imageFilename;
   	var $filePicker = $modal.find('.js--modal_inputfile');
   	var $label = $filePicker.next().find('span');
   	var labelVal = $label.text();
@@ -710,7 +750,7 @@ var modals = {
 
     $modal.find(".js--modal_submit").on('click', function(){
     	var newProjectName = $modal.find('.js--modal_name').val();
-    	var fileData = $modal.find(".js--modal_inputfile").data( "fileData");
+    	var fileData = $filePicker.data( "fileData");
     	//Images changed
 
     	if( fileData !== undefined && fileData !== null){
@@ -762,7 +802,6 @@ var modals = {
       .end()
       ;
 
-  	var imageFilename;
   	var $filePicker = $modal.find('.js--modal_inputfile');
   	var $label = $filePicker.next().find('span');
   	var labelVal = $label.text();
@@ -819,7 +858,7 @@ var modals = {
     $modal.find(".js--modal_submit").on('click', function(){
     	var newProjectName = $modal.find('.js--modal_name').val();
     	var newStatut = $modal.find('.modify-project-statut').val();
-    	var fileData = $modal.find(".js--modal_inputfile").data( "fileData");
+    	var fileData = $filePicker.data( "fileData");
     	//Images changed
 
     	if( fileData !== undefined && fileData !== null){
@@ -1031,23 +1070,102 @@ var modals = {
     var $titlef = $modal.find('.js--submit-new-text_title');
     var $textf = $modal.find('.js--submit-new-text_text');
 
-  	var textTitle = $titlef.val();
-  	var textContent = $textf.val();
+    $('.js--submit-new-text').on('click',function(){
 
-  	console.log('addText');
+    	var textTitle = $titlef.val();
+    	var textContent = $textf.val();
 
-    var mediaData =
-    {
-      "mediaType" : "text",
-      "mediaFolderPath" : dodoc.projectTextsFoldername,
-      "title" : textTitle,
-      "text" : textContent,
-    }
-    sendData.createNewMedia( mediaData);
+      var mediaData =
+      {
+        "mediaType" : "text",
+        "mediaFolderPath" : dodoc.projectTextsFoldername,
+        "title" : textTitle,
+        "text" : textContent,
+      }
+      sendData.createNewMedia( mediaData);
 
-    $modal.foundation('reveal', 'close');
-    $titlef.val('');
-    $textf.val('');
+      $modal.foundation('reveal', 'close');
+      $titlef.val('');
+      $textf.val('');
+
+    });
+  },
+
+  importNewMedia : function() {
+
+    var $modal = $('#modal-add-local');
+
+  	var $filePicker = $modal.find('.js--modal_inputfile');
+  	var $label = $filePicker.next().find('span');
+  	var labelVal = $label.text();
+
+  	$filePicker.on( 'change', function( e )
+  	{
+  		var fileName = '';
+			fileName = e.target.value.split( '\\' ).pop();
+
+			var fileData = e.originalEvent.target.files;
+
+  		if( fileName ) {
+  			$(this)
+  			  .data('fileName', fileName)
+  			  .data('fileData', fileData)
+  			  ;
+  			$label
+			    .html( fileName)
+          ;
+  		} else {
+  			$(this)
+  			  .data('fileName', '')
+  			  .data('fileData', '')
+  			  ;
+  			$label.html( labelVal);
+  		}
+  	});
+
+    $modal.find('.js--modal_submit').on('click',function(){
+    	var fileName = $filePicker.data( 'fileName');
+    	var fileData = $filePicker.data( 'fileData');
+    	//Images changed
+
+    	if( fileData !== undefined && fileData !== null){
+    		console.log('An image has been imported');
+    		var f = fileData[0];
+    		var reader = new FileReader();
+    		reader.onload = function(evt){
+      		// check type of content
+      		console.log( fileName);
+      		debugger;
+
+          if( fileName.indexOf( "jpg") !== -1 || fileName.indexOf( "jpeg") !== -1) {
+      			var mediaData =
+      			{
+              "mediaType" : "photo",
+      				"mediaData" : evt.target.result
+      		  }
+      		} else if( fileName.indexOf( "mp4")) {
+      			var mediaData =
+      			{
+              "mediaType" : "video",
+      				"mediaData" : evt.target.result
+      		  }
+      		}
+
+      		if( mediaData !== undefined)
+      		  sendData.createNewMedia( mediaData);
+
+    		};
+    		reader.readAsDataURL(f);
+    	}
+
+      // then remove $filePicker data fileName and fileData, and label
+      $filePicker
+			  .data('fileName', '')
+			  .data('fileData', '')
+			  ;
+			$label.html( labelVal);
+      $modal.foundation('reveal', 'close');
+    });
   },
 
   statusChangeAlertInit : function() {

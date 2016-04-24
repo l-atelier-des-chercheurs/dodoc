@@ -30,7 +30,7 @@ socket.on('publiCreated', onPubliCreated);
 socket.on('publiMetaUpdated', onPubliMetaUpdated);
 
 socket.on('listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
-socket.on('publiMediasAndMediasUpdated', onPubliMediasAndMediasUpdated);
+socket.on('publiMediasUpdated', onPubliMediasUpdated);
 
 
 jQuery(document).ready(function($) {
@@ -54,9 +54,9 @@ function init(){
 		modals.bigMedia($m);
   });
   // Au click sur le bouton "submit" d'un popup de texte
-  $('.js--submit-new-text').on('click',function(){
-    modals.createTextMedia();
-  });
+  modals.createTextMedia();
+
+  modals.importNewMedia();
 
   // si en arrivant sur la page, il y a un hash dans l'url
   // alors ouvrir la publication qui a ce nom directement
@@ -126,7 +126,6 @@ function onListOneProjectPublis( publisData) {
   // get the data
   var $getAllPublisFormatted = listPublis( publisData);
   var $publiLibrary = $(".mainContent .montage-list ul");
-  var $montage = $('.montage-edit-container .montage-edit');
 
   // insert or replace publi in the list of publications
   $getAllPublisFormatted.each( function() {
@@ -140,45 +139,57 @@ function onPubliCreated(publisData){
   onListOneProjectPublis( publisData);
 }
 
-function onPubliMetaUpdated( publisData) {
+function onPubliMetaUpdated( psdata) {
   console.log( "onPubliMetaUpdated");
-  onListOneProjectPublis( publisData);
+  // re-list all publis
+  onListOneProjectPublis( psdata);
+  // update meta of montage
+  updateMontagePubliMeta( psdata);
+}
+function onPubliMediasUpdated( psdata) {
+  console.log( "onPubliMetaUpdated");
+  // update medias of montage if necessary
+  updateMontagePubliMedias( psdata);
 }
 
 
+// list content of a publi
 function onListOnePubliMetaAndMedias( psdata) {
   console.log( "onListOnePubliMetaAndMedias");
 
-  // check if a publi content was requested (not ideal, we could use a session tag in the json to check but also not ideal).
+  // check if a publi content was requested (not ideal, we could use a session id in the json instead but it would also not be ideal).
   var $publiContent = $('.montage-edit-container .montage-edit');
   var publiRequested = $publiContent.data('publirequested');
 
   if( publiRequested === '')
     return;
 
-  // there will only be one but let's use similar code to
-  $.each( psdata, function( slugPubliName, pdata) {
-    listPubliContent( publiRequested, pdata, $publiContent);
+  $publiContent.data('publishown', publiRequested);
+  $publiContent.data('publirequested', '');
 
-    $publiContent.data('publishown', publiRequested);
-    $publiContent.data('publirequested', '');
+  updateMontagePubliMeta( psdata);
+  updateMontagePubliMedias( psdata);
 
-    $(document).trigger('restart_dragula');
+  $(document).trigger('restart_dragula');
 
-  });
 }
 
-function onPubliMediasAndMediasUpdated( psdata) {
-  console.log( "onPubliMediasAndMediasUpdated");
-
-  debugger;
-
+function updateMontagePubliMeta( psdata) {
   // check if a publi content was requested (not ideal, we could use a session tag in the json to check but also not ideal).
   var $publiContent = $('.montage-edit-container .montage-edit');
   var publiShown = $publiContent.data('publishown');
 
   $.each( psdata, function( slugPubliName, pdata) {
-    listPubliContent( publiShown, pdata, $publiContent);
+    listMontagePubliMeta( publiShown, pdata, $publiContent);
+  });
+}
+function updateMontagePubliMedias( psdata) {
+  // check if a publi content was requested (not ideal, we could use a session tag in the json to check but also not ideal).
+  var $publiContent = $('.montage-edit-container .montage-edit');
+  var publiShown = $publiContent.data('publishown');
+
+  $.each( psdata, function( slugPubliName, pdata) {
+    listMontagePubliMedias( publiShown, pdata, $publiContent);
   });
 }
 
