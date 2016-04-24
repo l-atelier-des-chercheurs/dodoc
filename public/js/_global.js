@@ -785,6 +785,8 @@ var modals = {
       .empty()
       ;
 
+      debugger;
+
     var $modalContent = $(".modal-modify-project_content").clone(false);
     $modal
       .append( $modalContent.show())

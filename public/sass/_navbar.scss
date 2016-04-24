@@ -6,8 +6,6 @@
   font-weight: 400;
 
   body.index & {
-    height:   350px;
-
     .logo {
       pointer-events: none;
     }
@@ -15,7 +13,8 @@
     &.is--opened {
       .navbar {
         background-color: transparent;
-        padding: 80px;
+        padding: 60px;
+        padding-bottom:   20px;
         box-shadow: none;
 
         .logo {
@@ -39,7 +38,6 @@
 
   .navbar {
 
-    @include clearfix;
 
     position: relative;
     width:   100%;
@@ -51,6 +49,8 @@
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
     transition: height .6s ease-out, padding .45s ease-out, background-color .3s ease-out;
+
+    @include clearfix;
 
     .logo{
       margin:auto;

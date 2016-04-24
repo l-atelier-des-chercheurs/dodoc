@@ -27,9 +27,9 @@ socket.on('mediaUpdated', onMediaUpdated);
 socket.on('mediaRemoved', onMediaRemoved);
 
 socket.on('publiCreated', onPubliCreated);
-socket.on('publiMetaUpdated', onPubliMetaUpdated);
 
 socket.on('listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
+socket.on('publiMetaUpdated', onPubliMetaUpdated);
 socket.on('publiMediasUpdated', onPubliMediasUpdated);
 
 
@@ -113,6 +113,7 @@ function onMediaUpdated( mediasData) {
 
 function onMediaRemoved( mediaData){
   console.log( "onMediaRemoved");
+  debugger;
   if( mediaData.slugFolderName !== currentFolder || mediaData.slugProjectName !== currentProject)
     return;
   removeMedia( $('.medias-list .media'), mediaData);

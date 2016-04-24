@@ -19,43 +19,51 @@ socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
 
 socket.on('listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
-socket.on('publiMediasAndMediasUpdated', onPubliMediasAndMediasUpdated);
+socket.on('publiMetaUpdated', onPubliMetaUpdated);
+socket.on('publiMediasUpdated', onPubliMediasUpdated);
 
 
 jQuery(document).ready(function($) {
 });
 
 
-function onListOnePubliMetaAndMedias( publisData) {
-  console.log( "onListOnePubliMetaAndMedias");
-
-  $.each( publisData, function( slugPubliName, publiData) {
-    var $publiMedias = publi.makePubliMedias( publiData);
-    $('.publi-content').html( $publiMedias);
-  });
-}
-
-
 function onListOnePubliMetaAndMedias( psdata) {
   console.log( "onListOnePubliMetaAndMedias");
+  updateMontagePubliMeta( psdata);
+  updateMontagePubliMedias( psdata);
+}
+function onPubliMetaUpdated( psdata) {
+  console.log( "onPubliMetaUpdated");
+  // re-list all publis
+  onListOneProjectPublis( psdata);
+  // update meta of montage
+  updateMontagePubliMeta( psdata);
+}
+function onPubliMediasUpdated( psdata) {
+  console.log( "onPubliMetaUpdated");
+  // update medias of montage if necessary
+  updateMontagePubliMedias( psdata);
+}
 
+
+// ----------------------------------------------
+
+
+function updateMontagePubliMeta( psdata) {
   // check if a publi content was requested (not ideal, we could use a session tag in the json to check but also not ideal).
   var $publiContent = $('.publi-container');
 
-  // there will only be one but let's use similar code to
   $.each( psdata, function( slugPubliName, pdata) {
-    listPubliContent( currentPubli, pdata, $publiContent);
+    listMontagePubliMeta( currentPubli, pdata, $publiContent);
   });
 }
-
-function onPubliMediasAndMediasUpdated( psdata) {
-  console.log( "onPubliMediasAndMediasUpdated");
-
+function updateMontagePubliMedias( psdata) {
   // check if a publi content was requested (not ideal, we could use a session tag in the json to check but also not ideal).
   var $publiContent = $('.publi-container');
 
   $.each( psdata, function( slugPubliName, pdata) {
-    listPubliContent( currentPubli, pdata, $publiContent);
+    listMontagePubliMedias( currentPubli, pdata, $publiContent);
   });
 }
+
 

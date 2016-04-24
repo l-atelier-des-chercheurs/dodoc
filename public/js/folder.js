@@ -5,19 +5,12 @@ var socket = io.connect();
 function onSocketConnect() {
 	sessionId = socket.io.engine.id;
 	console.log('Connected ' + sessionId);
-	debugger;
-	socket.emit('listProjects', { "slugFolderName" : currentFolder});
+	socket.emit('listProjects', { "slugFolderName" : currentFolder });
 };
 
 function onSocketError(reason) {
 	console.log('Unable to connect to server', reason);
 };
-
-
-var thisProjectName;
-var thisProject;
-var imageData = null;
-var $thisEl;
 
 /* sockets */
 socket.on('connect', onSocketConnect);
@@ -40,6 +33,7 @@ function init(){
 
 	// Remove Folder
 	removeProject();
+
 }
 
 // Affiche le projet dès qu'il est crée
@@ -94,14 +88,6 @@ function removeProject(){
 		});
 	});
 }
-
-// Si un projet existe déjà, affiche un message d'alerte
-/*
-function onProjectAlreadyExist(data){
-	alert("Le nom de projet " +data.name+ " existe déjà. Veuillez trouvez un autre nom.");
-	$('.new-project').focus();
-}
-*/
 
 //Remove the folder from list
 function onProjectRemoved( projectData){

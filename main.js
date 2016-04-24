@@ -361,7 +361,7 @@ module.exports = function(app, io){
 		var mediaName = mediaData.mediaName;
 
   	deleteOneMedia( slugFolderName, slugProjectName, mediaFolder, mediaName).then(function( mediaMetaData) {
-      var eventAndContentJson = eventAndContent( "mediaRemoved", mediaMetaData);
+      var eventAndContentJson = eventAndContent( 'mediaRemoved', mediaMetaData);
       dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
       io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
     }, function(error) {
@@ -1273,6 +1273,7 @@ MEDIA METHODS
           "slugProjectName" : slugProjectName,
           "mediaFolder" : mediaFolder,
           "mediaName" : mediaName,
+          "mediaKey" : mediaFolder + '/' + mediaName + '.json'
         }
         resolve( mediaMetaData);
       } catch( err) {
