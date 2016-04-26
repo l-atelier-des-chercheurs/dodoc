@@ -174,12 +174,12 @@ body.index{
 
   &[data-statut="en cours"] {
     .content a:hover h2 {
-      background-color: $orange;
+      background-color: $c-images;
       color: white;
     }
 
     .statut-type {
-      color: $orange;
+      color: $c-images;
     }
   }
 }

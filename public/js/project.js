@@ -107,7 +107,6 @@ function onMediaCreated( mediasData) {
     return;
 
   var $updatedMedia = listMedia( mediaData);
-  debugger;
   var $mediaContainer = $(".mainContent .last-medias");
   insertOrReplaceMedia( $updatedMedia, $mediaContainer);
 

@@ -125,7 +125,6 @@ function onMediaUpdated( mediasData) {
 
 function onMediaRemoved( mediaData){
   console.log( "onMediaRemoved");
-  debugger;
   if( mediaData.slugFolderName !== currentFolder || mediaData.slugProjectName !== currentProject)
     return;
   removeMedia( $('.medias-list .media'), mediaData);

@@ -107,7 +107,9 @@ button{
   color: #8d8d8d;
   text-transform: lowercase;
 
-  margin-bottom:  10px;
+  margin-bottom:  0px;
+  padding-bottom: 0;
+
 }
 
 .row{max-width:90%;}
@@ -120,10 +122,8 @@ button{
   Mixins
   ********************/
 @mixin style--dossierBorders {
-  border-bottom: 2px solid #eeeeee;
+  border-bottom: 1px solid #DFDFDF;
   background-color: #fff;
-  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 @mixin clearfix {
@@ -176,13 +176,13 @@ button{
     }
 
     &.button-wrapper_capture {
-      color: #FFB520;
+      color: $c-images;
     }
     &.button-wrapper_bibli {
-      color: #293275;
+      color: $c-bibli;
     }
     &.button-wrapper_publi {
-      color: #EF4651;
+      color: $c-publi;
     }
 
   }
@@ -196,7 +196,7 @@ button{
     color: white;
   }
   &_bibli, &_gofullscreen , &_leavefullscreen {
-    background-color: $bleumarine;
+    background-color: $c-bibli;
     color: white;
   }
   &_accept, &_addText, &_highlightMedia {
@@ -344,7 +344,7 @@ button{
 }
 
 .insidePadding {
-  padding: 10px 16px;
+  padding: 0 16px;
 }
 
 // MEDIA

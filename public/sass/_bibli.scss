@@ -52,11 +52,11 @@ body.bibli {
           color: white;
         }
         &_capture, &_view, &_deleteFolder, &_deleteMedia {
-          background-color: #FFB520;
+          background-color: $c-images;
           color: white;
         }
         &_bibli, &_gofullscreen , &_leavefullscreen {
-          background-color: #293275;
+          background-color: $c-bibli;
           color: white;
         }
         &_accept, &_addText {
@@ -170,6 +170,7 @@ body.bibli {
         font-weight: bold;
         font-size: 1.6em;
         margin: 0;
+        @extend .insidePadding;
 
       }
 
@@ -305,7 +306,7 @@ body.bibli {
 
     .media.gu-transit .mediaContent {
       opacity: 1;
-      background-color: $orange;
+      background-color: $c-images;
 
       > * {
         opacity: 0;

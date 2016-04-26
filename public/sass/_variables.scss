@@ -9,27 +9,28 @@ $marginrem: .9375rem;
 // C O L O R S
 $bleumarine: #293275;
 $bleuvert: #48C2B5;
+
 $grisfonce: #535353;
 $grisclair: #cecece;
 $gristresclair: #e5e5e5;
+
 $orange: #FFB520;
+
 $rouge: #EF474B;
 
 
-$cimages: #ffb520;
-$cvideos: #fe414d;
-$csons: #09227c;
-$canim: #48c2b5;
+// new colors
 
+$c-images: $orange;
+$c-videos: #fe414d;
+$c-sons: #09227c;
+$c-anim: #48c2b5;
 
-// // SIZE
-// @cardW : 550px;
-// @cardH : 480px;
-
-// //POSITION
-// @cardT : 150px;
-// @cardL: 50%;
-
+$c-folder: #f2682c;
+$c-project: #40beb3;
+$c-publi: #EF4651;
+$c-capture: $orange;
+$c-bibli: #293275;
 
 
 // T Y P O

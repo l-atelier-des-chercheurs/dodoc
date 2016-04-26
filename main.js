@@ -61,6 +61,7 @@ module.exports = function(app, io){
 		//STOP MOTION
 		socket.on("startStopMotion", onStartStopMotion);
 		socket.on("addImageToStopMotion", onAddImageToStopMotion);
+		socket.on("deleteLastImageOfStopMotion", onDeleteLastImageOfStopMotion);
 		socket.on("deleteImageMotion", deleteImageMotion);
 
 		// B I B L I        P A G E
@@ -324,8 +325,8 @@ module.exports = function(app, io){
 
 		io.sockets.emit('stopMotionDirectoryCreated', newStopMotionData);
 	}
-	function onAddImageToStopMotion( imageData) {
 
+	function onAddImageToStopMotion( imageData) {
 		dev.logfunction( "onAddImageToStopMotion");
 
 		var imageContent = imageData.imageContent;
@@ -334,12 +335,31 @@ module.exports = function(app, io){
 		var imageCount = imageData.imageCount;
 
 		var imageBuffer = decodeBase64Image( imageContent);
-		imagePath = folderPath + '/' + imageCount + '.png';
+		var imagePath = folderPath + '/' + imageCount + '.png';
+
 		fs.writeFile( imagePath, imageBuffer.data, function(err) {
-			if(err){
-				console.log(err);
-			}
+      if (err) throw err;
+
 		});
+  }
+
+
+  function onDeleteLastImageOfStopMotion( imageData) {
+		dev.logfunction( "onDeleteLastImageOfStopMotion");
+
+		var imageFolder = imageData.folderCacheName;
+		var folderPath = imageData.folderCachePath;
+		var imageCount = imageData.imageCount;
+
+		var imagePath = folderPath + '/' + imageCount + '.png';
+    fs.exists( imagePath, function(exists) {
+      if(exists) {
+        console.log( '--> Will remove last stop-motion image.');
+        fs.unlink( imagePath);
+      } else {
+        console.log( gutil.colors.red('--> Couldn\'t find the last stop-motion image, so couldn\'t delete it.'));
+      }
+    });
   }
 
 	// Supprime une image du Stop Motion
@@ -636,46 +656,6 @@ FOLDER METHODS
     var folderJSONFile = getJsonFileOfFolder( folderPath);
     var folderUpdatedStatus = jsonWriteToFile( folderJSONFile, currentDataJSON, "update"); //write json File
     return eventAndContent( "folderModified", currentDataJSON);
-
-
-    // is the folder name changed ? we need to check whether the slug needs to change too
-    // for now, let's not change the folder name (because multi-user connection would mean one user would crash the other's media capture and navigation
-    if( isNameChanged && slugFolderName !== newSlugFolderName) {
-		  //console.log( "The folder named " + slugFolderName + " has been renamed to " + newSlugFolderName + ".");
-    }
-/*
-    // regarder si on a affaire à un renommage
-
-              		    	if(oldFormatFolderName != newFormatFolderName){
-              		    		console.log("le dossier existe déjà !");
-              		      	io.sockets.emit("folderAlreadyExist", {name: newFolder, timestamp: currentDate });
-              		    	}
-              		    	else{
-              		    		fs.renameSync(oldFolderPath, newFolderPath); // renomme le dossier
-              		      	fs.renameSync(newFolderPath + '/' + oldFormatFolderName + '.json', newFolderPath + '/' + newFormatFolderName + '.json'); //renomme le json
-              		      	changeJsonFile(newFolderPath + '/' + newFormatFolderName + '.json');
-              		    	}
-              		    }
-              			});
-
-              			function updateJSONFile(file){
-                  		dev.logfunction( "changeJsonFile");
-              				var jsonContent = fs.readFileSync(file,dodoc.textEncoding);
-              				var jsonObj = JSON.parse(jsonContent);
-              				jsonObj.name = folder.name;
-              				jsonObj.modified = currentDate;
-              				jsonObj.statut = newStatut;
-              				var jsonString = JSON.stringify(jsonObj, null, 4);
-              				fs.writeFileSync(file, jsonString);
-              				console.log("Dossier modifié");
-              				io.sockets.emit("folderModified", {name: folder.name, created: jsonObj.created, modified:currentDate, statut:newStatut, nb_projets:jsonObj.nb_projets});
-              			}
-
-
-    // renommer le dossier, si besoin
-
-    fs.renameSync( folderPath, newFolderPath); // renomme le dossier
-*/
   }
 
   function listOneFolder( slugFolderName) {
@@ -1031,7 +1011,7 @@ MEDIA METHODS
   function createNewMedia( newMediaData) {
 
     return new Promise(function(resolve, reject) {
-  		dev.logfunction( "COMMON - createNewMedia : " + newMediaData);
+  		dev.logfunction( "COMMON - createNewMedia");
 
 			var slugFolderName = newMediaData.slugFolderName;
 			var slugProjectName = newMediaData.slugProjectName;
@@ -1076,21 +1056,26 @@ MEDIA METHODS
           fileExtension = '.webm';
 
           var dataMedia = newMediaData.mediaData;
-          writeVideoToDisk( pathToFile, fileExtension, dataMedia);
 
+          writeVideoToDisk( pathToFile, fileExtension, dataMedia)
+          .then(function() {
+            console.error("Saved a video.");
+            mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension, newFileName);
+            mediaMetaData.slugFolderName = slugFolderName;
+            mediaMetaData.slugProjectName = slugProjectName;
+            mediaMetaData.mediaFolderPath = mediaFolder;
 
-          mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension, newFileName);
-          mediaMetaData.slugFolderName = slugFolderName;
-          mediaMetaData.slugProjectName = slugProjectName;
-          mediaMetaData.mediaFolderPath = mediaFolder;
-
-          createThumbnails( pathToFile + fileExtension, newFileName, mediaPath)
+            createThumbnails( pathToFile + fileExtension, newFileName, mediaPath)
             .then(function( mediaFolderContent) {
-              resolve( mediaMetaData);
-            }, function(error) {
-              console.error("Failed to make a thumbnail one media! Error: ", error);
-              resolve( mediaMetaData);
-            });
+                resolve( mediaMetaData);
+              }, function(error) {
+                console.error("Failed to make a thumbnail one media! Error: ", error);
+                resolve( mediaMetaData);
+              });
+          }, function(error) {
+            console.error("Failed to save video! Error: ", error);
+            resolve( mediaMetaData);
+          });
 
           break;
         case 'animation':
@@ -1401,18 +1386,18 @@ PUBLIS METHODS
       console.log( "- foldersPublisMeta : " + JSON.stringify( foldersPublisMeta, null, 4));
       for (var i=0; i<foldersPublisMeta.length; i++) {
         var publiFilename = foldersPublisMeta[i];
-        var publiName = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( publiFilename)[1];
+        var slugPubliName = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( publiFilename)[1];
 
-        if( !folderPubliMeta.hasOwnProperty( publiName)) {
-          folderPubliMeta[publiName] = new Object();
+        if( !folderPubliMeta.hasOwnProperty( slugPubliName)) {
+          folderPubliMeta[slugPubliName] = new Object();
           // read JSON file and add the content to the folder
-          var publiMetaData = getPubliDataJSON( slugFolderName, slugProjectName, publiName);
-          publiMetaData.slugPubliName = publiName;
+          var publiMetaData = getPubliDataJSON( slugFolderName, slugProjectName, slugPubliName);
+          publiMetaData.slugPubliName = slugPubliName;
           publiMetaData.slugFolderName = slugFolderName;
           publiMetaData.slugProjectName = slugProjectName;
-          publiMetaData.pathToPubli = getPathToPubli( slugFolderName, slugProjectName, publiName);
+          publiMetaData.pathToPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName);
 
-          folderPubliMeta[publiName] = publiMetaData;
+          folderPubliMeta[slugPubliName] = publiMetaData;
         }
       }
       resolve( folderPubliMeta);
@@ -1463,6 +1448,7 @@ PUBLIS METHODS
         	publiContent.slugFolderName = slugFolderName;
         	publiContent.slugProjectName = slugProjectName;
         	publiContent.slugPubliName = slugPubliName;
+        	publiContent.pathToPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName);
 
         	// make an array that looks like listPublis
           var folderPubliMeta = {};
@@ -1506,21 +1492,18 @@ PUBLIS METHODS
 *************/
 
 
-	function writeVideoToDisk( filePath, fileExtension, dataURL) {
-    var fileRootNameWithBase = './' + filePath,
-        filePath = fileRootNameWithBase,
-        fileID = 2,
-        fileBuffer;
+	function writeVideoToDisk( pathToFile, fileExtension, dataURL) {
+    return new Promise(function(resolve, reject) {
 
-    // @todo return the new filename to client
-    while (fs.existsSync(filePath)) {
-        filePath = fileRootNameWithBase + '(' + fileID + ').' + fileExtension;
-        fileID += 1;
-    }
+      dataURL = dataURL.split(',').pop();
+      dev.log( 'Will save the video at path : ' + pathToFile + fileExtension);
 
-    dataURL = dataURL.split(',').pop();
-    fileBuffer = new Buffer(dataURL, 'base64');
-    fs.writeFileSync(filePath + fileExtension, fileBuffer);
+      var fileBuffer = new Buffer(dataURL, 'base64');
+  		fs.writeFile( pathToFile + fileExtension, fileBuffer, function(err) {
+        if (err) reject( err);
+        resolve();
+  		});
+    });
 	}
 
 

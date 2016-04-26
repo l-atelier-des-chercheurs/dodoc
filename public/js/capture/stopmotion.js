@@ -62,12 +62,11 @@ function takeStopMotionPic() {
   var data = canvas.toDataURL('image/png');
 
   photo.setAttribute('src', data);
+
   $(".meta-stopmotion .delete-image").off();
-/*
   $(".meta-stopmotion .delete-image").on('click', function(){
-    removeImageMotion(data, folderCache);
+    removeLastImageFromStopMotion(data, folderCache);
   });
-*/
 
   var smImage =
   {
@@ -97,6 +96,10 @@ function takeStopMotionPic() {
 function removeLastImageFromStopMotion() {
 
 // MISSING
+  var smCacheName = $("body").data( "smCacheName");
+  var smCachePath = $("body").data( "smCachePath");
+  var smImageCount = parseInt( $("body").data( "smImageCount"));
+  socket.emit( 'deleteLastImageOfStopMotion', smImage);
 
 }
 /*

@@ -409,8 +409,6 @@ function onMediaCreated( mediasData){
 
   var mediaData = getFirstMediaFromObj( mediasData);
 
-  debugger;
-
   // check if media created belongs to the same project
   if( mediaData.slugFolderName !== currentFolder || mediaData.slugProjectName !== currentProject)
     return;

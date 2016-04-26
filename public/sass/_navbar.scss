@@ -129,14 +129,14 @@
           transform: skewX(-20deg) skewY(0);
 
            border-radius: 4px;
-          background-color: transparentize( #40BEB3, $transparentize);
+          background-color: transparentize( $c-project, $transparentize);
 
           transition: background-color .2s;
         }
 
 
         &:hover {
-          color: #40BEB3;
+          color: $c-project;
           &::after {
             background-color: transparent;
           }
@@ -148,11 +148,11 @@
             margin-top:   -8px;
           }
           &::after {
-            background-color: transparentize( #F2682C, $transparentize);
+            background-color: transparentize( $c-folder, $transparentize);
           }
 
           &:hover {
-            color: #F2682C;
+            color: $c-folder;
           }
 
 
@@ -161,21 +161,21 @@
 
         &_bibli {
           &::after {
-            background-color: transparentize( #293275, $transparentize);
+            background-color: transparentize( $c-bibli, $transparentize);
           }
           &:hover {
-            color: #293275;
+            color: $c-bibli;
           }
         }
 
         &_capture {
           &::after {
-            background-color: #FFB520;
-            background-color: transparentize( #FFB520, $transparentize);
+            background-color: $c-images;
+            background-color: transparentize( $c-images, $transparentize);
           }
 
           &:hover {
-            color: #FFB520;
+            color: $c-images;
           }
         }
 

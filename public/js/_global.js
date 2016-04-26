@@ -613,12 +613,14 @@ function listMontagePubliMeta( whichPubli, pdata, $publiContent) {
   if( pdata.slugFolderName !== currentFolder || pdata.slugProjectName !== currentProject || pdata.slugPubliName !== whichPubli)
     return;
 
+  var publiPath = makeFullPathForProject( dodoc.projectPublisFoldername + '/' + pdata.slugPubliName);
+
   $publiContent
     .find("[data-publi_title]")
       .html( pdata.name)
     .end()
     .find(".js--publi_view")
-      .attr('href', pdata.pathToPubli)
+      .attr('href', publiPath)
     .end()
     ;
 }
@@ -783,8 +785,6 @@ var modals = {
     $modal
       .empty()
       ;
-
-      debugger;
 
     var $modalContent = $(".modal-modify-project_content").clone(false);
     $modal
@@ -1136,7 +1136,6 @@ var modals = {
     		reader.onload = function(evt){
       		// check type of content
       		console.log( fileName);
-      		debugger;
 
           if( fileName.indexOf( "jpg") !== -1 || fileName.indexOf( "jpeg") !== -1) {
       			var mediaData =

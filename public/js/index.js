@@ -236,8 +236,6 @@ function editFolder($this){
   var folderNameSlug = $thisFolder.attr('data-foldernameslug');
 	var folderStatut = $thisFolder.attr("data-statut");
 
-	debugger;
-
   $('#modal-modify-folder')
   	.find('.modify-folder')
   	  .attr('value', folderName)

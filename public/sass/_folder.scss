@@ -54,10 +54,10 @@ body.projets{
     }
     &[data-statut="en cours"] {
       .title.title:hover {
-        color: $orange;
+        color: $c-images;
       }
       .statut-type {
-        color: $orange;
+        color: $c-images;
       }
     }
     &[data-statut="terminé"] {
@@ -71,6 +71,11 @@ body.projets{
 
       .project-link {
         display: block;
+        padding: 16px 0px 8px;
+
+        .title {
+          @extend .insidePadding;
+        }
       }
     }
 
@@ -97,6 +102,7 @@ body.projets{
       .meta-data{
         font-style:italic;
         font-family: "share", monospace;
+        @extend .insidePadding;
 
         span:nth-of-type(1) {
           margin-right: 5px;
@@ -114,6 +120,9 @@ body.projets{
         }
       }
       .button-to-pages {
+
+        @extend .insidePadding;
+
         .legende {
         }
       }
@@ -137,9 +146,14 @@ body.projets{
       @include clearfix();
       @include style--dossierBorders;
       background-color: #f9f9f9;
+      padding: $margin 0;
 
       body.projets & {
         display: none;
+      }
+
+      .legende {
+        padding: 0 $margin;
       }
 
       .media {
@@ -163,6 +177,11 @@ body.projets{
 
       background-color: #f9f9f9;
       margin-bottom:  75px;
+      padding: $margin 0;
+
+      .legende {
+        padding: 0 $margin;
+      }
 
       .list-publi {
 
