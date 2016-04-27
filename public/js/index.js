@@ -19,7 +19,7 @@ socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
 socket.on('folderCreated', onFolderCreated); // Quand un dossier est crée
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
-socket.on('listOneFolder', onListOneFolder); // Liste tous les dossiers
+socket.on('listAllFolders', onListFolders); // Liste tous les dossiers
 socket.on('listAllProjectsOfOneFolder', onListAllProjectsOfOneFolder); // Liste tous les enfants des dossiers
 socket.on('folderModified', onFolderModified);
 socket.on('folderRemoved', onFolderRemoved);
@@ -54,13 +54,13 @@ function init(){
 		var newStatut = $('select.modify-statut').val();
 		var oldFolderName = $('#modal-modify-folder').data( "folderName");
 		var oldFolderStatut = $('#modal-modify-folder').data( "folderStatut");
-		var folderNameSlug = $('#modal-modify-folder').data( "folderNameSlug");
+		var slugFolderName = $('#modal-modify-folder').data( "slugFolderName");
 
 		socket.emit( 'editFolder',
 		  {
   		  "name" : oldFolderName,
   		  "newName" : newFolderName,
-  		  "folderNameSlug" : folderNameSlug,
+  		  "slugFolderName" : slugFolderName,
   		  "statut" : newStatut
   		});
 	});
@@ -93,7 +93,7 @@ function init(){
 
 	//Au click sur le bouton supprimer le dossier
 	$('body').on('click', '.js--deleteFolder', function(){
-  	$('#modal-delete-alert').attr('data-foldertodelete', $('#modal-modify-folder').data('folderNameSlug'));
+  	$('#modal-delete-alert').attr('data-foldertodelete', $('#modal-modify-folder').data('slugFolderName'));
 		$('#modal-delete-alert').foundation('reveal', 'open');
 	});
 }
@@ -118,12 +118,20 @@ function onFolderAlreadyExist(data){
 // Liste les dossiers
 function onListOneFolder( folderData){
 	var $folderContent = makeFolderContent( folderData);
-  return insertOrReplaceFolder( folderData.folderNameSlug, $folderContent);
+  return insertOrReplaceFolder( folderData.slugFolderName, $folderContent);
 }
 
-function insertOrReplaceFolder( folderNameSlug, $folderContent) {
+function onListFolders( foldersData) {
+  debugger;
+  $.each( foldersData, function( index, fdata) {
+  	var $folderContent = makeFolderContent( fdata);
+    return insertOrReplaceFolder( fdata.slugFolderName, $folderContent);
+  });
+}
+
+function insertOrReplaceFolder( slugFolderName, $folderContent) {
   // folder slug
-  var $existingFolder = $(".dossier-list .dossier").filter( "[data-foldernameslug=" + folderNameSlug + "]");
+  var $existingFolder = $(".dossier-list .dossier").filter( "[data-slugFolderName=" + slugFolderName + "]");
   if( $existingFolder.length == 1) {
     $existingFolder.replaceWith( $folderContent);
     return "updated";
@@ -162,7 +170,7 @@ function onListAllProjectsOfOneFolder(data){
 function loadProject( pdata) {
 
 	var projectPath = '/' + pdata.slugFolderName + '/' + pdata.slugProjectName;
-	var $folder = $(".dossier-list .dossier[data-folderNameSlug=" + pdata.slugFolderName + "]");
+	var $folder = $(".dossier-list .dossier[data-slugFolderName=" + pdata.slugFolderName + "]");
 
 	var newSnippetProjet = $(".js--templates > .projetSnippet").clone(false);
 
@@ -186,7 +194,7 @@ function loadProject( pdata) {
 function makeFolderContent( projectData){
 
 	var name = projectData.name;
-	var folderNameSlug = projectData.folderNameSlug;
+	var slugFolderName = projectData.slugFolderName;
 	var created = projectData.created;
 	var modified = projectData.modified;
 	var statut = projectData.statut;
@@ -198,12 +206,12 @@ function makeFolderContent( projectData){
   // customisation du projet
 	newFolder
 	  .attr( 'data-nom', name)
-	  .attr( 'data-folderNameSlug', folderNameSlug)
+	  .attr( 'data-slugFolderName', slugFolderName)
 	  .attr( 'data-modifiedtimestamp', transformDatetoTimestamp( modified))
 	  .attr( 'data-statut', statut)
 	  .find( '.statut-type').text( statut).end()
 	  .find( '.folder-link')
-	    .attr('href', '/' + folderNameSlug)
+	    .attr('href', '/' + slugFolderName)
 	    .attr('title', name)
 	  .end()
 
@@ -233,7 +241,7 @@ function editFolder($this){
   var $thisFolder = $this.closest('.dossier');
 
 	var folderName = $thisFolder.attr('data-nom');
-  var folderNameSlug = $thisFolder.attr('data-foldernameslug');
+  var slugFolderName = $thisFolder.attr('data-slugFolderName');
 	var folderStatut = $thisFolder.attr("data-statut");
 
   $('#modal-modify-folder')
@@ -251,7 +259,7 @@ function editFolder($this){
     .data(
       {
         "folderName" : folderName,
-        "folderNameSlug" : folderNameSlug,
+        "slugFolderName" : slugFolderName,
         "folderStatut" : folderStatut,
       }
     )

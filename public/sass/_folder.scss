@@ -46,7 +46,9 @@ body.projets{
     color:white;
   }
 
-  .project{
+  .project {
+
+    position: relative;
 
     & + .project {
       margin-top:  35px;
@@ -74,7 +76,7 @@ body.projets{
     }
     .project-inside {
 
-      @include style--dossierBorders;
+      background-color: #fff;
 
       .project-link {
         display: block;
@@ -88,8 +90,8 @@ body.projets{
 
     .button-wrapper_editProjet {
       position:absolute;
-      top:-16px;
-      right: 0;
+      top:  -19px;
+      right: -19px;
       z-index:5;
     }
 
@@ -158,7 +160,9 @@ body.projets{
 
     .last-medias {
       @include clearfix();
-      @include style--dossierBorders;
+      background-color: #fff;
+
+      border-top:   1px solid $c-separator;
       background-color: #f9f9f9;
       padding: $margin 0;
 
@@ -187,8 +191,9 @@ body.projets{
     .montage-list {
 
       @include clearfix();
-      @include style--dossierBorders;
+      background-color: #fff;
 
+      border-top:   1px solid $c-separator;
       background-color: #f9f9f9;
       margin-bottom:  75px;
       padding: $margin 0;

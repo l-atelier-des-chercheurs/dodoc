@@ -25,17 +25,17 @@ function loadProject( projectData) {
 	var modifiedDateUser = transformDatetoString( modifiedDate);
 
 	var statut = projectData.statut;
-  var imageSrc;
-  if( projectData.projectPreviewName !== undefined && projectData.projectPreviewName !== false)
-  	imageSrc = projectData.projectPreviewName;
 
 	var $newProject = $(".js--templates > .project").clone(false);
 	var path = '/' + slugFolderName + '/' + slugProjectName;
 
+  var imageSrc = '';
+  if( projectData.projectPreviewName !== undefined && projectData.projectPreviewName !== false)
+  	imageSrc = path + "/" + projectData.projectPreviewName + '?' + modifiedDate;
+
   if( modifiedDate === null)
     $newProject.find('.modify-date').remove();
 
-  var imageSrc = path + "/" + imageSrc + '?' + modifiedDate;
 
   // customisation du projet
 	$newProject
@@ -49,7 +49,7 @@ function loadProject( projectData) {
 	  .find( '.image-wrapper')
 	    .css('background-image', 'url(' + imageSrc + ')')
 	    .attr('alt', projectName)
-	   .end()
+	  .end()
 	  .find( '.create-date').text( createdDateUser).end()
 	  .find( '.modify-date').text( modifiedDateUser).end()
 	  .find( '.title').text( projectName).end()
