@@ -89,14 +89,13 @@ div.media-big_text.media-big(data-type="text" data-id)
     +button('deleteMediaBibli', '', '')
 
 
-.project.small-12.columns(data-statut)
+.project(data-statut)
   +button('editProjet', '', 'isCollapsed')
   .project-inside.flex_structure
-    .project-content.flex_half.flex_structure
+    .project-content.flex_50.flex_structure
       a(href="" title="Dodoc").project-link
         h2.title
-      .meta-data.flex_half
-        h3.legende Informations
+      .meta-data.flex_40
         .statut
           span statut
           span.statut-type
@@ -106,12 +105,12 @@ div.media-big_text.media-big(data-type="text" data-id)
         .modified
           span modifié le
           span.modify-date
-      .button-to-pages.flex_half
+      .button-to-pages.flex_60
         h3.legende accès rapide
         +button('capture', '', 'isCollapsed')
         +button('bibli', '', 'isCollapsed')
         +button('publications', '', 'isCollapsed')
-    .image-wrapper.flex_half
+    .image-wrapper.flex_50
       img
   ul.last-medias
     h3.legende Derniers médias ajoutés

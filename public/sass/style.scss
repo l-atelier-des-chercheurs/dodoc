@@ -11,6 +11,7 @@
 
 
 @import "_variables.scss";
+@import "_fonts.scss";
 @import "_navbar.scss";
 @import "_popover.scss";
 @import "_publi.scss";
@@ -31,7 +32,30 @@ p {
 
 li{list-style: none;}
 
-h1,h2,h3,h4,h5,h6{font-family:"fira", sans-serif;}
+h1,h2,h3,h4,h5,h6{font-family: 'Fira Sans', sans-serif;}
+
+
+/******************
+  Mixins
+  ********************/
+@mixin style--dossierBorders {
+  background-color: #fff;
+}
+
+@mixin style--titrelegende {
+  font-family:  'share';
+  color: $grisclair;
+  font-size: 1em;
+  font-style: italic;
+  text-transform: lowercase;
+
+}
+
+@mixin clearfix {
+  &:before, &:after { content: " "; display: table; }
+  &:after { clear: both; }
+}
+
 
 
 body {
@@ -39,7 +63,7 @@ body {
   background-color: rgb(239, 239, 239);
   color: #000;
   font-size: 1em;
-  font-family: 'fira', sans-serif;
+  font-family: 'Fira Sans', sans-serif;
 
 	&:after {
 		position: fixed;
@@ -102,13 +126,7 @@ button{
 }
 
 .legende {
-  font-style: italic;
-  font-size: 1em;
-  color: #8d8d8d;
-  text-transform: lowercase;
-
-  margin-bottom:  0px;
-  padding-bottom: 0;
+  @include style--titrelegende;
 
 }
 
@@ -116,20 +134,6 @@ button{
 .columns+.columns:last-child{float:left;}
 
 
-
-
-/******************
-  Mixins
-  ********************/
-@mixin style--dossierBorders {
-  border-bottom: 1px solid #DFDFDF;
-  background-color: #fff;
-}
-
-@mixin clearfix {
-  &:before, &:after { content: " "; display: table; }
-  &:after { clear: both; }
-}
 
 
 
@@ -192,7 +196,7 @@ button{
     color: white;
   }
   &_capture, &_view, &_deleteFolder, &_deleteMedia, &_deleteMediaCapture, &_deleteProject {
-    background-color: $orange;
+    background-color: $c-images;
     color: white;
   }
   &_bibli, &_gofullscreen , &_leavefullscreen {
@@ -243,7 +247,7 @@ button{
   }
 
   .btn.icon + span {
-    left: 44px;
+    left: 54px;
     width:  185px;
 
   }
@@ -338,8 +342,14 @@ button{
     flex: 1 100%;
   }
 
-  > .flex_half {
-    flex:1 50%;
+  > .flex_40 {
+    flex: 1 40%;
+  }
+  > .flex_50 {
+    flex: 1 50%;
+  }
+  > .flex_60 {
+    flex: 1 60%;
   }
 }
 

@@ -1,6 +1,8 @@
 // P R O J E T S
 body.projets{
 
+  background-color: $c-dossier;
+
   #container{
     $projectHeight : 150px;
     padding:50px 0px;
@@ -11,17 +13,23 @@ body.projets{
       @include clearfix();
       margin-bottom:  30px;
 
-      .folder {
+      color: #fff;
+
+      .legende {
+        color: white;
+      }
+
+      .folder-title {
+
         font-size: 3rem;
         line-height: 1.2;
         font-weight: normal;
-        font-weight: 300;
+        font-weight: 600;
         margin-top: 0;
         margin-bottom: 32px;
-
       }
-    }
 
+    }
 
     .add-project-wrapper {
       margin-bottom:  50px;
@@ -33,11 +41,10 @@ body.projets{
 
 // PROJETS and PROJET
 .project-list{
-  @include clearfix();
-  margin-left: 0;
-  @include grid-row;
 
-  max-width: 65rem;
+  > .legende {
+    color:white;
+  }
 
   .project{
 
@@ -71,7 +78,7 @@ body.projets{
 
       .project-link {
         display: block;
-        padding: 16px 0px 8px;
+        padding: $margin/2 0px;
 
         .title {
           @extend .insidePadding;
@@ -87,7 +94,6 @@ body.projets{
     }
 
     .project-content {
-      background-color:#FFF;
 
       .title {
         display: block;
@@ -100,12 +106,11 @@ body.projets{
         }
       }
       .meta-data{
-        font-style:italic;
-        font-family: "share", monospace;
         @extend .insidePadding;
 
         span:nth-of-type(1) {
           margin-right: 5px;
+          @include style--titrelegende;
         }
         .created{
           .create-date{
@@ -138,6 +143,15 @@ body.projets{
         display: block;
         padding-bottom: 33%;
         height: 0;
+
+        background-image: linear-gradient(30deg, transparentize( #fff, .9), transparentize( #fff, 0.6));
+
+        opacity: 1;
+        transition: opacity .6s ease-out;
+      }
+
+      &:hover::after {
+        opacity: 0;
       }
     }
 
@@ -199,6 +213,9 @@ body.projets{
 }
 
 body.projet {
+
+  background-color: $c-projet;
+
   .project-list {
     margin-top:   75px;
   }

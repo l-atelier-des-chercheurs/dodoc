@@ -398,6 +398,7 @@ module.exports = function(app, io){
 		dev.logfunction( "onListOneProjectPublis");
 		var slugFolderName = publiMetaData.slugFolderName;
 		var slugProjectName = publiMetaData.slugProjectName;
+		dev.log( "PLOP PLOP " + io.sockets.connecter)
   	listPublis( slugFolderName, slugProjectName).then(function( publiProjectContent) {
       var eventAndContentJson = eventAndContent( 'listOneProjectPublis', publiProjectContent);
       dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));

@@ -5,6 +5,8 @@
  * 2. Prevent iOS and IE text size adjust after device orientation change,
  *    without disabling user zoom.
  */
+@import url(../fonts/Fira/fira.css);
+@import url(../fonts/Share/share.css);
 html {
   font-family: sans-serif;
   /* 1 */
@@ -6743,90 +6745,6 @@ th.hide-for-touch {
   th.show-for-print {
     display: table-cell !important; } }
 
-@font-face {
-  font-family: 'fira';
-  src: url("../fonts/Fira-Sans/firasans-bold-webfont.eot");
-  src: url("../fonts/Fira-Sans/firasans-bold-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/Fira-Sans/firasans-bold-webfont.woff2") format("woff2"), url("../fonts/Fira-Sans/firasans-bold-webfont.woff") format("woff"), url("../fonts/Fira-Sans/firasans-bold-webfont.ttf") format("truetype"), url("../fonts/Fira-Sans/firasans-bold-webfont.svg#fira_sansbold") format("svg");
-  font-weight: bold;
-  font-style: normal; }
-
-@font-face {
-  font-family: 'fira';
-  src: url("../fonts/Fira-Sans/firasans-bolditalic-webfont.eot");
-  src: url("../fonts/Fira-Sans/firasans-bolditalic-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/Fira-Sans/firasans-bolditalic-webfont.woff2") format("woff2"), url("../fonts/Fira-Sans/firasans-bolditalic-webfont.woff") format("woff"), url("../fonts/Fira-Sans/firasans-bolditalic-webfont.ttf") format("truetype"), url("../fonts/Fira-Sans/firasans-bolditalic-webfont.svg#fira_sansbold_italic") format("svg");
-  font-weight: bold;
-  font-style: italic; }
-
-@font-face {
-  font-family: 'fira';
-  src: url("../fonts/Fira-Sans/firasans-italic-webfont.eot");
-  src: url("../fonts/Fira-Sans/firasans-italic-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/Fira-Sans/firasans-italic-webfont.woff2") format("woff2"), url("../fonts/Fira-Sans/firasans-italic-webfont.woff") format("woff"), url("../fonts/Fira-Sans/firasans-italic-webfont.ttf") format("truetype"), url("../fonts/Fira-Sans/firasans-italic-webfont.svg#fira_sansitalic") format("svg");
-  font-weight: normal;
-  font-style: italic; }
-
-@font-face {
-  font-family: 'fira';
-  src: url("../fonts/Fira-Sans/firasans-light-webfont.eot");
-  src: url("../fonts/Fira-Sans/firasans-light-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/Fira-Sans/firasans-light-webfont.woff2") format("woff2"), url("../fonts/Fira-Sans/firasans-light-webfont.woff") format("woff"), url("../fonts/Fira-Sans/firasans-light-webfont.ttf") format("truetype"), url("../fonts/Fira-Sans/firasans-light-webfont.svg#fira_sanslight") format("svg");
-  font-weight: 100;
-  font-style: normal; }
-
-@font-face {
-  font-family: 'fira';
-  src: url("../fonts/Fira-Sans/firasans-regular-webfont.eot");
-  src: url("../fonts/Fira-Sans/firasans-regular-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/Fira-Sans/firasans-regular-webfont.woff2") format("woff2"), url("../fonts/Fira-Sans/firasans-regular-webfont.woff") format("woff"), url("../fonts/Fira-Sans/firasans-regular-webfont.ttf") format("truetype"), url("../fonts/Fira-Sans/firasans-regular-webfont.svg#fira_sansregular") format("svg");
-  font-weight: normal;
-  font-style: normal; }
-
-@font-face {
-  font-family: 'fira';
-  src: url("../fonts/Fira-Sans/firasans-lightitalic-webfont.eot");
-  src: url("../fonts/Fira-Sans/firasans-lightitalic-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/Fira-Sans/firasans-lightitalic-webfont.woff2") format("woff2"), url("../fonts/Fira-Sans/firasans-lightitalic-webfont.woff") format("woff"), url("../fonts/Fira-Sans/firasans-lightitalic-webfont.ttf") format("truetype"), url("../fonts/Fira-Sans/firasans-lightitalic-webfont.svg#fira_sanslight_italic") format("svg");
-  font-weight: 100;
-  font-style: italic; }
-
-@font-face {
-  font-family: 'fira';
-  src: url("../fonts/Fira-Sans/firasans-medium-webfont.eot");
-  src: url("../fonts/Fira-Sans/firasans-medium-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/Fira-Sans/firasans-medium-webfont.woff2") format("woff2"), url("../fonts/Fira-Sans/firasans-medium-webfont.woff") format("woff"), url("../fonts/Fira-Sans/firasans-medium-webfont.ttf") format("truetype"), url("../fonts/Fira-Sans/firasans-medium-webfont.svg#fira_sansmedium") format("svg");
-  font-weight: 500;
-  font-style: normal; }
-
-@font-face {
-  font-family: 'fira';
-  src: url("../fonts/Fira-Sans/firasans-mediumitalic-webfont.eot");
-  src: url("../fonts/Fira-Sans/firasans-mediumitalic-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/Fira-Sans/firasans-mediumitalic-webfont.woff2") format("woff2"), url("../fonts/Fira-Sans/firasans-mediumitalic-webfont.woff") format("woff"), url("../fonts/Fira-Sans/firasans-mediumitalic-webfont.ttf") format("truetype"), url("../fonts/Fira-Sans/firasans-mediumitalic-webfont.svg#fira_sansmedium_italic") format("svg");
-  font-weight: 500;
-  font-style: italic; }
-
-@font-face {
-  font-family: 'share';
-  src: url("../fonts/share/Share-Regular-webfont.eot");
-  src: url("../fonts/share/Share-Regular-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/share/Share-Regular-webfont.woff") format("woff"), url("../fonts/share/Share-Regular-webfont.ttf") format("truetype"), url("../fonts/share/Share-Regular-webfont.svg#share-regularregular") format("svg");
-  font-weight: normal;
-  font-style: normal; }
-
-@font-face {
-  font-family: 'share';
-  src: url("../fonts/share/Share-Bold-webfont.eot");
-  src: url("../fonts/share/Share-Bold-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/share/Share-Bold-webfont.woff") format("woff"), url("../fonts/share/Share-Bold-webfont.ttf") format("truetype"), url("../fonts/share/Share-Bold-webfont.svg#sharebold") format("svg");
-  font-weight: bold;
-  font-style: normal; }
-
-@font-face {
-  font-family: 'share';
-  src: url("../fonts/share/Share-Italic-webfont.eot");
-  src: url("../fonts/share/Share-Italic-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/share/Share-Italic-webfont.woff") format("woff"), url("../fonts/share/Share-Italic-webfont.ttf") format("truetype"), url("../fonts/share/Share-Italic-webfont.svg#shareitalic") format("svg");
-  font-weight: normal;
-  font-style: italic; }
-
-@font-face {
-  font-family: 'share';
-  src: url("../fonts/share/Share-BoldItalic-webfont.eot");
-  src: url("../fonts/share/Share-BoldItalic-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/share/Share-BoldItalic-webfont.woff") format("woff"), url("../fonts/share/Share-BoldItalic-webfont.ttf") format("truetype"), url("../fonts/share/Share-BoldItalic-webfont.svg#sharebold_italic") format("svg");
-  font-weight: bold;
-  font-style: italic; }
-
 .navbar-container {
   width: 100%;
   min-height: 70px;
@@ -6863,6 +6781,8 @@ th.hide-for-touch {
       margin: auto;
       height: 50px;
       float: left;
+      padding: 5px;
+      margin-right: 10px;
       transition: height .6s ease-out;
       position: relative; }
       .navbar-container .navbar .logo svg {
@@ -6920,9 +6840,9 @@ th.hide-for-touch {
           padding: 12px;
           margin-top: -8px; }
         .navbar-container .navbar .item .button-wrapper_dossier::after {
-          background-color: #f2682c; }
+          background-color: #f56a4b; }
         .navbar-container .navbar .item .button-wrapper_dossier:hover {
-          color: #f2682c; }
+          color: #F56A4B; }
         .navbar-container .navbar .item .button-wrapper_bibli::after {
           background-color: #293275; }
         .navbar-container .navbar .item .button-wrapper_bibli:hover {
@@ -7193,14 +7113,17 @@ li {
   list-style: none; }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "fira", sans-serif; }
+  font-family: 'Fira Sans', sans-serif; }
 
+/******************
+  Mixins
+  ********************/
 body {
   margin: 0;
   background-color: #efefef;
   color: #000;
   font-size: 1em;
-  font-family: 'fira', sans-serif; }
+  font-family: 'Fira Sans', sans-serif; }
   body:after {
     position: fixed;
     top: 0;
@@ -7249,12 +7172,11 @@ button {
     margin-right: 8px; }
 
 .legende {
-  font-style: italic;
+  font-family: 'share';
+  color: #B5B5B5;
   font-size: 1em;
-  color: #8d8d8d;
-  text-transform: lowercase;
-  margin-bottom: 0px;
-  padding-bottom: 0; }
+  font-style: italic;
+  text-transform: lowercase; }
 
 .row {
   max-width: 90%; }
@@ -7262,9 +7184,6 @@ button {
 .columns + .columns:last-child {
   float: left; }
 
-/******************
-  Mixins
-  ********************/
 .button-wrapper {
   display: block;
   position: relative;
@@ -7327,7 +7246,7 @@ button {
   .button-wrapper .btn.icon {
     margin-top: -10px; }
   .button-wrapper .btn.icon + span {
-    left: 44px;
+    left: 54px;
     width: 185px; }
   .button-wrapper > span {
     display: block;
@@ -7376,7 +7295,6 @@ body.index #container {
   .dossier:nth-child(3n+1) {
     clear: left; }
   .dossier .dossier-inside {
-    border-bottom: 1px solid #DFDFDF;
     background-color: #fff; }
   .dossier .button-wrapper_editFolder {
     position: absolute;
@@ -7391,7 +7309,7 @@ body.index #container {
       margin: 0;
       padding: 16px;
       font-weight: bold;
-      font-size: 1.5em;
+      font-size: 1.8em;
       position: relative;
       z-index: 2;
       -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
@@ -7443,11 +7361,15 @@ body.index #container {
     padding-bottom: 8px;
     background-color: #eee;
     color: #8d8d8d;
-    font-style: italic;
     font-family: "share", monospace; }
     .dossier .meta-data > * {
       padding-top: 4px; }
     .dossier .meta-data span:nth-of-type(1) {
+      font-family: 'share';
+      color: #B5B5B5;
+      font-size: 1em;
+      font-style: italic;
+      text-transform: lowercase;
       margin-right: 5px; }
     .dossier .meta-data .nb-projets .nb-projets-count {
       font-weight: bold; }
@@ -7763,139 +7685,148 @@ body.bibli {
     right: 9px;
     top: 11px; }
 
-body.projets #container {
-  padding: 50px 0px;
-  width: 100%; }
-  body.projets #container .folder-wrapper {
-    margin-bottom: 30px; }
-    body.projets #container .folder-wrapper:before, body.projets #container .folder-wrapper:after {
-      content: " ";
-      display: table; }
-    body.projets #container .folder-wrapper:after {
-      clear: both; }
-    body.projets #container .folder-wrapper .folder {
-      font-size: 3rem;
-      line-height: 1.2;
-      font-weight: normal;
-      font-weight: 300;
-      margin-top: 0;
-      margin-bottom: 32px; }
-  body.projets #container .add-project-wrapper {
-    margin-bottom: 50px; }
+body.projets {
+  background-color: #F56A4B; }
+  body.projets #container {
+    padding: 50px 0px;
+    width: 100%; }
+    body.projets #container .folder-wrapper {
+      margin-bottom: 30px;
+      color: #fff; }
+      body.projets #container .folder-wrapper:before, body.projets #container .folder-wrapper:after {
+        content: " ";
+        display: table; }
+      body.projets #container .folder-wrapper:after {
+        clear: both; }
+      body.projets #container .folder-wrapper .legende {
+        color: white; }
+      body.projets #container .folder-wrapper .folder-title {
+        font-size: 3rem;
+        line-height: 1.2;
+        font-weight: normal;
+        font-weight: 600;
+        margin-top: 0;
+        margin-bottom: 32px; }
+    body.projets #container .add-project-wrapper {
+      margin-bottom: 50px; }
 
-.project-list {
-  margin-left: 0;
-  margin: 0 auto;
-  max-width: 62.5rem;
-  width: 100%;
-  max-width: 65rem; }
-  .project-list:before, .project-list:after {
-    content: " ";
-    display: table; }
-  .project-list:after {
-    clear: both; }
-  .project-list:before, .project-list:after {
-    content: " ";
-    display: table; }
-  .project-list:after {
-    clear: both; }
-  .project-list .project + .project {
-    margin-top: 35px; }
-  .project-list .project img[src=""] {
-    display: none; }
-  .project-list .project .statut-type {
+.project-list > .legende {
+  color: white; }
+
+.project-list .project + .project {
+  margin-top: 35px; }
+
+.project-list .project img[src=""] {
+  display: none; }
+
+.project-list .project .statut-type {
+  color: #48C2B5; }
+
+.project-list .project[data-statut="en cours"] .title.title:hover {
+  color: #FFB520; }
+
+.project-list .project[data-statut="en cours"] .statut-type {
+  color: #FFB520; }
+
+.project-list .project[data-statut="terminé"] .button-wrapper_editProjet {
+  opacity: 0; }
+
+.project-list .project .project-inside {
+  background-color: #fff; }
+  .project-list .project .project-inside .project-link {
+    display: block;
+    padding: 8px 0px; }
+
+.project-list .project .button-wrapper_editProjet {
+  position: absolute;
+  top: -16px;
+  right: 0;
+  z-index: 5; }
+
+.project-list .project .project-content .title {
+  display: block;
+  font-weight: bold;
+  font-size: 1.8em;
+  margin: 0; }
+  .project-list .project .project-content .title:hover {
     color: #48C2B5; }
-  .project-list .project[data-statut="en cours"] .title.title:hover {
-    color: #FFB520; }
-  .project-list .project[data-statut="en cours"] .statut-type {
-    color: #FFB520; }
-  .project-list .project[data-statut="terminé"] .button-wrapper_editProjet {
+
+.project-list .project .project-content .meta-data span:nth-of-type(1) {
+  margin-right: 5px;
+  font-family: 'share';
+  color: #B5B5B5;
+  font-size: 1em;
+  font-style: italic;
+  text-transform: lowercase; }
+
+.project-list .project .project-content .meta-data .created .create-date {
+  font-weight: bold; }
+
+.project-list .project .project-content .meta-data .modified {
+  text-align: left; }
+  .project-list .project .project-content .meta-data .modified .modify-date {
+    font-weight: bold; }
+
+.project-list .project .image-wrapper {
+  background-color: #f3f3f3;
+  -webkit-background-size: cover;
+  background-size: cover;
+  background-position: center center; }
+  .project-list .project .image-wrapper::after {
+    content: '';
+    display: block;
+    padding-bottom: 33%;
+    height: 0;
+    background-image: linear-gradient(30deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.4));
+    opacity: 1;
+    transition: opacity .6s ease-out; }
+  .project-list .project .image-wrapper:hover::after {
     opacity: 0; }
-  .project-list .project .project-inside {
-    border-bottom: 1px solid #DFDFDF;
-    background-color: #fff; }
-    .project-list .project .project-inside .project-link {
-      display: block;
-      padding: 16px 0px 8px; }
-  .project-list .project .button-wrapper_editProjet {
-    position: absolute;
-    top: -16px;
-    right: 0;
-    z-index: 5; }
-  .project-list .project .project-content {
-    background-color: #FFF; }
-    .project-list .project .project-content .title {
-      display: block;
-      font-weight: bold;
-      font-size: 1.5em;
-      margin: 0; }
-      .project-list .project .project-content .title:hover {
-        color: #48C2B5; }
-    .project-list .project .project-content .meta-data {
-      font-style: italic;
-      font-family: "share", monospace; }
-      .project-list .project .project-content .meta-data span:nth-of-type(1) {
-        margin-right: 5px; }
-      .project-list .project .project-content .meta-data .created .create-date {
-        font-weight: bold; }
-      .project-list .project .project-content .meta-data .modified {
-        text-align: left; }
-        .project-list .project .project-content .meta-data .modified .modify-date {
-          font-weight: bold; }
-  .project-list .project .image-wrapper {
-    background-color: #f3f3f3;
-    -webkit-background-size: cover;
-    background-size: cover;
-    background-position: center center; }
-    .project-list .project .image-wrapper::after {
-      content: '';
-      display: block;
-      padding-bottom: 33%;
-      height: 0; }
-  .project-list .project .last-medias {
-    border-bottom: 1px solid #DFDFDF;
-    background-color: #fff;
-    background-color: #f9f9f9;
-    padding: 16px 0; }
-    .project-list .project .last-medias:before, .project-list .project .last-medias:after {
-      content: " ";
-      display: table; }
-    .project-list .project .last-medias:after {
-      clear: both; }
-    body.projets .project-list .project .last-medias {
-      display: none; }
-    .project-list .project .last-medias .legende {
-      padding: 0 16px; }
-    .project-list .project .last-medias .media:nth-of-type(4n+1) {
-      clear: left; }
-    .project-list .project .last-medias .media:nth-of-type(n+5) {
-      display: none; }
-    .project-list .project .last-medias .button-wrapper_flagMedia {
-      display: none; }
-  .project-list .project .montage-list {
-    border-bottom: 1px solid #DFDFDF;
-    background-color: #fff;
-    background-color: #f9f9f9;
-    margin-bottom: 75px;
-    padding: 16px 0; }
-    .project-list .project .montage-list:before, .project-list .project .montage-list:after {
-      content: " ";
-      display: table; }
-    .project-list .project .montage-list:after {
-      clear: both; }
-    .project-list .project .montage-list .legende {
-      padding: 0 16px; }
-    .project-list .project .montage-list .list-publi .publi-folder {
-      margin: 10px 16px; }
-    body.projets .project-list .project .montage-list {
-      display: none; }
 
-body.projet .project-list {
-  margin-top: 75px; }
+.project-list .project .last-medias {
+  background-color: #fff;
+  background-color: #f9f9f9;
+  padding: 16px 0; }
+  .project-list .project .last-medias:before, .project-list .project .last-medias:after {
+    content: " ";
+    display: table; }
+  .project-list .project .last-medias:after {
+    clear: both; }
+  body.projets .project-list .project .last-medias {
+    display: none; }
+  .project-list .project .last-medias .legende {
+    padding: 0 16px; }
+  .project-list .project .last-medias .media:nth-of-type(4n+1) {
+    clear: left; }
+  .project-list .project .last-medias .media:nth-of-type(n+5) {
+    display: none; }
+  .project-list .project .last-medias .button-wrapper_flagMedia {
+    display: none; }
 
-body.projet .project-inside .project-link {
-  pointer-events: none;
-  cursor: default; }
+.project-list .project .montage-list {
+  background-color: #fff;
+  background-color: #f9f9f9;
+  margin-bottom: 75px;
+  padding: 16px 0; }
+  .project-list .project .montage-list:before, .project-list .project .montage-list:after {
+    content: " ";
+    display: table; }
+  .project-list .project .montage-list:after {
+    clear: both; }
+  .project-list .project .montage-list .legende {
+    padding: 0 16px; }
+  .project-list .project .montage-list .list-publi .publi-folder {
+    margin: 10px 16px; }
+  body.projets .project-list .project .montage-list {
+    display: none; }
+
+body.projet {
+  background-color: #40beb3; }
+  body.projet .project-list {
+    margin-top: 75px; }
+  body.projet .project-inside .project-link {
+    pointer-events: none;
+    cursor: default; }
 
 body.capture .container-inner {
   margin: auto; }
@@ -8194,8 +8125,12 @@ body.capture .content-wrapper:after {
   align-content: flex-start; }
   .flex_structure > * {
     flex: 1 100%; }
-  .flex_structure > .flex_half {
+  .flex_structure > .flex_40 {
+    flex: 1 40%; }
+  .flex_structure > .flex_50 {
     flex: 1 50%; }
+  .flex_structure > .flex_60 {
+    flex: 1 60%; }
 
 .insidePadding, .montage .montage-edit .montage-title .title, .project-list .project .project-inside .project-link .title, .project-list .project .project-content .meta-data, .project-list .project .project-content .button-to-pages {
   padding: 0 16px; }
@@ -8208,7 +8143,6 @@ body.capture .content-wrapper:after {
   border: 0 solid #f9f9f9;
   z-index: 1; }
   .media .mediaContent {
-    border-bottom: 1px solid #DFDFDF;
     background-color: #fff;
     border: none;
     overflow: auto; }
