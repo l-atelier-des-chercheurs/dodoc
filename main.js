@@ -98,10 +98,11 @@ module.exports = function(app, io){
 		dev.logfunction( "EVENT - onNewFolder");
 		createNewFolder( folderData).then( function( newpdata) {
 
-      sendEventWithContent( 'projectCreated', newpdata);
+      sendEventWithContent( 'folderCreated', newpdata);
 
-    }, function(error) {
-      console.error("Failed to create a new folder! Error: ", error);
+    }, function(errorpdata) {
+      sendEventWithContent( 'folderAlreadyExist', errorpdata);
+      console.error("Failed to create a new folder! Error: ", errorpdata);
     });
 	}
 
@@ -124,8 +125,8 @@ module.exports = function(app, io){
 	// Modifier un dossier
 	function onEditFolder( updatedFolderData){
 		dev.logfunction( "EVENT - onEditFolder with packet " + JSON.stringify( updatedFolderData, null, 4));
-    updateFolderDataJSON().then(function( allFoldersData) {
-      sendEventWithContent( 'folderModified', allFoldersData, socket);
+    updateFolderDataJSON( updatedFolderData).then(function( currentDataJSON) {
+      sendEventWithContent( 'folderModified', currentDataJSON);
     }, function(error) {
       console.error("Failed to update a folder! Error: ", error);
     });
