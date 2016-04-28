@@ -16,7 +16,7 @@ function startStopMotion(){
 
   animateWindows();
 
-  $(".screenshot").append("<div class='meta-stopmotion'><div class='delete-image'><img src='/images/clear.svg'></div><p class='count-image'></p></div>");
+  $(".screenshot").append("<div class='meta-stopmotion'><div class='delete-image js--delete_image'><img src='/images/clear.svg'></div><p class='count-image'></p></div>");
   $(".screenshot .meta-stopmotion").hide();
 
   var mediaData = {};
@@ -55,19 +55,6 @@ function takeStopMotionPic() {
   invisibleCtx.drawImage(video, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
   var imageData = invisibleCanvas.toDataURL('image/png');
 
-  var factor = video.getBoundingClientRect().width / $(".screenshot")[0].getBoundingClientRect().width;;
-  canvas.width = video.getBoundingClientRect().width / factor;
-  canvas.height = video.getBoundingClientRect().height / factor;
-  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-  var data = canvas.toDataURL('image/png');
-
-  photo.setAttribute('src', data);
-
-  $(".meta-stopmotion .delete-image").off();
-  $(".meta-stopmotion .delete-image").on('click', function(){
-    removeLastImageFromStopMotion(data, folderCache);
-  });
-
   var smImage =
   {
     "imageContent" : imageData,
@@ -93,6 +80,20 @@ function takeStopMotionPic() {
 
 }
 
+function onNewStopmotionImage( smdata) {
+
+  var imagePath = smdata.imageFullPath;
+  imagePath = imagePath.substring( dodoc.contentDir.length);
+  $(".preview_stopmotion").show().attr("src", imagePath);
+
+/*
+  $(document)
+    .data('lastCapturedMediaName', mediaName)
+    .data('lastCapturedMediaFolderPath', mediasFolderPath)
+    ;
+*/
+}
+
 function removeLastImageFromStopMotion() {
 
 // MISSING
@@ -102,25 +103,8 @@ function removeLastImageFromStopMotion() {
   socket.emit( 'deleteLastImageOfStopMotion', smImage);
 
 }
-/*
-function removeImageMotion(data, dir){
-  if(countImage > 1){
-    console.log("delete Image");
-    socket.emit("deleteImageMotion", {data: data, name: currentFolder, dir: dir, count: countImage});
-    countImage = countImage - 1;
-    var context = canvas.getContext('2d');
-    var imageObj = new Image();
-    imageObj.onload = function() {
-      context.drawImage(imageObj, 0, 0);
-    };
-    imageObj.src = "/" + currentFolder +"/"+ currentProject+"/01-stopmotion/" + countImage + ".png";
-    $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
-  }
-  else{
-    startStopMotion();
-  }
-}
-*/
+
+
 
 function stopStopMotion( ) {
 
@@ -132,6 +116,7 @@ function stopStopMotion( ) {
   $("#capture-sm-btn").hide();
   countPress = 0;
   $('.screenshot .meta-stopmotion').remove();
+  $(".preview_stopmotion").attr('src', '').hide();
   saveFeedback("/images/icone-dodoc_anim.png");
 
   var mediaData =
@@ -145,7 +130,6 @@ function stopStopMotion( ) {
 
   $("#start-sm-btn").show();
   $('.js--delete-media-capture').show();
-  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 
   $('body').removeClass('takingstopmotion');
 

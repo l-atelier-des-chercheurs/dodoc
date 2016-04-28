@@ -95,6 +95,8 @@ body.projets{
 
     .project-content {
 
+      @include style--dossierBorders;
+
       .title {
         display: block;
         font-weight: bold;

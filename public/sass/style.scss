@@ -40,6 +40,7 @@ h1,h2,h3,h4,h5,h6{font-family: 'Fira Sans', sans-serif;}
   ********************/
 @mixin style--dossierBorders {
   background-color: #fff;
+  border: 1px solid $c-separator;
 }
 
 @mixin style--titrelegende {
@@ -371,8 +372,6 @@ button{
 
   .mediaContent {
     @include style--dossierBorders;
-    border: none;
-    overflow:auto;
   }
 
 

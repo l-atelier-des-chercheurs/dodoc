@@ -7295,7 +7295,8 @@ body.index #container {
   .dossier:nth-child(3n+1) {
     clear: left; }
   .dossier .dossier-inside {
-    background-color: #fff; }
+    background-color: #fff;
+    border: 1px solid #DFDFDF; }
   .dossier .button-wrapper_editFolder {
     position: absolute;
     top: -16px;
@@ -7735,26 +7736,29 @@ body.projets #container {
     top: -19px;
     right: -19px;
     z-index: 5; }
-  .project-list .project .project-content .title {
-    display: block;
-    font-weight: bold;
-    font-size: 1.8em;
-    margin: 0; }
-    .project-list .project .project-content .title:hover {
-      color: #48C2B5; }
-  .project-list .project .project-content .meta-data span:nth-of-type(1) {
-    margin-right: 5px;
-    font-family: 'share';
-    color: #B5B5B5;
-    font-size: 1em;
-    font-style: italic;
-    text-transform: lowercase; }
-  .project-list .project .project-content .meta-data .created .create-date {
-    font-weight: bold; }
-  .project-list .project .project-content .meta-data .modified {
-    text-align: left; }
-    .project-list .project .project-content .meta-data .modified .modify-date {
+  .project-list .project .project-content {
+    background-color: #fff;
+    border: 1px solid #DFDFDF; }
+    .project-list .project .project-content .title {
+      display: block;
+      font-weight: bold;
+      font-size: 1.8em;
+      margin: 0; }
+      .project-list .project .project-content .title:hover {
+        color: #48C2B5; }
+    .project-list .project .project-content .meta-data span:nth-of-type(1) {
+      margin-right: 5px;
+      font-family: 'share';
+      color: #B5B5B5;
+      font-size: 1em;
+      font-style: italic;
+      text-transform: lowercase; }
+    .project-list .project .project-content .meta-data .created .create-date {
       font-weight: bold; }
+    .project-list .project .project-content .meta-data .modified {
+      text-align: left; }
+      .project-list .project .project-content .meta-data .modified .modify-date {
+        font-weight: bold; }
   .project-list .project .image-wrapper {
     background-color: #f3f3f3;
     -webkit-background-size: cover;
@@ -8080,7 +8084,8 @@ body.capture .content-wrapper:after {
         display: inline-block;
         vertical-align: top;
         margin-right: 10px;
-        cursor: pointer; }
+        cursor: pointer;
+        display: none; }
     .captureRight .screenshot .instructions-stopmotion {
       width: 80%;
       margin: auto; }
@@ -8131,8 +8136,7 @@ body.capture .content-wrapper:after {
   z-index: 1; }
   .media .mediaContent {
     background-color: #fff;
-    border: none;
-    overflow: auto; }
+    border: 1px solid #DFDFDF; }
   .media.media_text .mediaContent {
     padding: .9375rem;
     min-height: 15px; }

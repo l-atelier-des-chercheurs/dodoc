@@ -428,6 +428,10 @@ body.capture{
         vertical-align: top;
         margin-right: 10px;
         cursor: pointer;
+
+        // le code est dégueu dans capture.js, faudrait le réécrire de manière à pouvoir effacer pas seulement la dernière mais plusieurs dernières images...
+        // je désactive en attendant
+        display: none;
       }
     }
     .instructions-stopmotion{

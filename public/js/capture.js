@@ -19,7 +19,7 @@ function onSocketError(reason) {
 // Variables pour la prise de médias
 var streaming = false,
     video        = document.querySelector('#video'),
-    canvas       = document.querySelector('#canvas'),
+//     canvas       = document.querySelector('#canvas'),
     photo        = document.querySelector('#photo'),
     startbutton  = document.querySelector('#capture-btn'),
     startsm  = document.querySelector('#start-sm-btn'),
@@ -52,6 +52,7 @@ socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
 socket.on('mediaCreated', onMediaCreated);
 socket.on('stopMotionDirectoryCreated', onStopMotionDirectoryCreated);
+socket.on('newStopmotionImage', onNewStopmotionImage);
 
 jQuery(document).ready(function($) {
 
@@ -172,6 +173,21 @@ function init(){
 
   });
 
+  // delete last stopmotion
+  $('body').on('click', '.js--delete_image', function(){
+
+    var mediaToDelete =
+    {
+      "mediaName" : $(document).data('lastCapturedMediaName'),
+      "mediaFolderPath" : $(document).data('lastCapturedMediaFolderPath'),
+    }
+    sendData.deleteMedia( mediaToDelete);
+
+    backAnimation();
+    e.stopPropagation;
+
+  });
+
   fullscreen();
 
   // Events sur la fenêtre modal d'alerte de changement de mode stop motion
@@ -179,7 +195,7 @@ function init(){
     $("#stop-sm-btn").show();
     $("#start-sm-btn").hide(); $("#capture-sm-btn").show();
     $(".screenshot .meta-stopmotion").remove();
-    $(".screenshot").append("<div class='meta-stopmotion'><div class='delete-image'><img src='/images/clear.svg'></div><p class='count-image'></p></div>");
+    $(".screenshot").append("<div class='meta-stopmotion'><div class='delete-image js--delete_image'><img src='/images/clear.svg'></div><p class='count-image'></p></div>");
     $(".screenshot .meta-stopmotion").show();
     $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
   });
@@ -374,8 +390,6 @@ function stopMotionDisplay(){
     $(this).delay(600).fadeOut('slow');
   });
   $('#canvas-audio').hide(); $("#canvas-equalizer").hide();
-  var canvas = document.querySelector('#canvas');
-  canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height)
   $("body").attr("data-mode", "stopmotion");
 }
 function audioDisplay(){
