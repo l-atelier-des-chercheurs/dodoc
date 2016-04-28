@@ -1,8 +1,6 @@
 // P R O J E T S
 body.projets{
 
-  background-color: $c-dossier;
-
   #container{
     $projectHeight : 150px;
     padding:50px 0px;
@@ -218,8 +216,6 @@ body.projets{
 }
 
 body.projet {
-
-  background-color: $c-projet;
 
   .project-list {
     margin-top:   75px;

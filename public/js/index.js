@@ -122,7 +122,6 @@ function onListOneFolder( folderData){
 }
 
 function onListFolders( foldersData) {
-  debugger;
   $.each( foldersData, function( index, fdata) {
   	var $folderContent = makeFolderContent( fdata);
     return insertOrReplaceFolder( fdata.slugFolderName, $folderContent);
@@ -320,9 +319,9 @@ function onFolderModified(data){
 //Suppression du dossier
 function removeFolder(){
 	$('#modal-delete-alert button.oui').on('click', function(){
-  	var slugFolderName = $(this).parents( '#modal-delete-alert').attr('data-foldertodelete');
-		console.log('oui ' + folderToDelete);
-		socket.emit('removeFolder', { "slugFolderName" : slugFolderName});
+  	var slugFolderNameOfFolderToDelete = $(this).parents( '#modal-delete-alert').attr('data-foldertodelete');
+		console.log('delete ' + slugFolderNameOfFolderToDelete);
+		socket.emit('removeFolder', { "slugFolderName" : slugFolderNameOfFolderToDelete});
 		$('#modal-delete-alert').foundation('reveal', 'close');
 	});
 	$('#modal-delete-alert button.annuler').on('click', function(){
@@ -330,13 +329,14 @@ function removeFolder(){
 		$('#modal-delete-alert').foundation('reveal', 'close');
 		$("#modal-modify-folder").foundation('reveal', 'open');
 	});
+/*
 	$(document).on('closed.fndtn.reveal', '#modal-delete-alert[data-reveal]', function () {
 		$("#modal-modify-folder").foundation('reveal', 'open');
 	});
+*/
 }
 
 //Remove the folder from list
-function onFolderRemoved(){
-	thisFolder.remove();
-	location.reload();
+function onFolderRemoved( removedFolderData){
+  removeThisFolder( $(".mainContent .dossier-list"), removedFolderData.slugFolderName);
 }

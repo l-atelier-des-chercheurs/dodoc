@@ -93,6 +93,6 @@ function removeProject(){
 function onProjectRemoved( projectData){
   if( projectData.slugFolderName !== currentFolder)
     return;
-  removeThisProject( $(".mainContent .project-list"), projectData.slugFolderName, projectData.slugProjectName);
+  removeThisProject( $(".mainContent .project-list"), projectData.slugProjectName);
 }
 

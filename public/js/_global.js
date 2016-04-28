@@ -287,18 +287,30 @@ function removeMedia( $medias, mediaData) {
 
 }
 
-function removeThisProject( $container, slugFolderName, slugProjectName) {
+function removeThisProject( $container, slugProjectName) {
   var $items = $container.find(".project");
-  var $projectToRemove = $items
+  var $itemToRemove = $items
     .filter("[data-projectname='" + slugProjectName + "']")
     ;
-
-  $projectToRemove
+  $itemToRemove
     .fadeOut( 400, function() {
       $(this).remove();
     })
     ;
+}
+function removeThisFolder( $container, slugFolderName) {
+  var $items = $container.find(".dossier");
 
+  debugger;
+
+  var $itemToRemove = $items
+    .filter("[data-slugfoldername='" + slugFolderName + "']")
+    ;
+  $itemToRemove
+    .fadeOut( 400, function() {
+      $(this).remove();
+    })
+    ;
 }
 
 function insertOrReplaceMedia( $mediaItem, $mediaContainer) {

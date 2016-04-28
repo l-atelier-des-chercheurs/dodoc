@@ -135,9 +135,11 @@ module.exports = function(app, io){
 	// Supprimer un dossier
 	function onRemoveFolder( fdata){
 		dev.logfunction( "EVENT - onRemoveFolder");
-    var eventAndContentJson = removeFolderNamed( fdata.slugFolderName);
-    dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
-    io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+    removeFolderNamed( fdata.slugFolderName).then(function( removedFolderData) {
+      sendEventWithContent( 'folderRemoved', removedFolderData);
+    }, function(error) {
+      console.error("Failed to remove a folder! Error: ", error);
+    });
 	}
 
 
@@ -187,7 +189,7 @@ module.exports = function(app, io){
 		dev.logfunction( "COMMON - onRemoveProject _ slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName);
 
     var projectPath = getProjectPath( slugFolderName, slugProjectName);
-    var projectPathToDeleted = getProjectPath( slugFolderName, dodoc.deletedProjectFolderPrefix + slugProjectName);
+    var projectPathToDeleted = getProjectPath( slugFolderName, dodoc.deletedPrefix + slugProjectName);
 		fs.renameSync( projectPath, projectPathToDeleted);
 
     var projectData =
@@ -593,8 +595,13 @@ FOLDER METHODS
   	    var foldersProcessed = 0;
   	    var allFoldersData = [];
   		  folders.forEach( function( slugFolderName) {
-        	var folderJSON = getFolderDataJSON( slugFolderName);
-          allFoldersData.push( folderJSON);
+
+  		    if( new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName)
+  		    && slugFolderName.indexOf( dodoc.deletedPrefix)){
+          	var folderJSON = getFolderDataJSON( slugFolderName);
+            allFoldersData.push( folderJSON);
+          }
+
           foldersProcessed++;
           if( foldersProcessed === folders.length && allFoldersData.length > 0) {
             dev.log( "- - - - all folders JSON have been processed.");
@@ -606,11 +613,17 @@ FOLDER METHODS
 	}
 
 	function removeFolderNamed( slugFolderName) {
-		dev.logfunction( "COMMON — removeFolderNamed : " + JSON.stringify(slugFolderName, null, 4));
-		var folderPath = getFullPath( slugFolderName);
-		rmDir(folderPath);
-    var folderJson = { "name" : slugFolderName };
-    return eventAndContent( "folderRemoved", folderJson);
+    return new Promise(function(resolve, reject) {
+  		dev.logfunction( "COMMON — removeFolderNamed : " + JSON.stringify(slugFolderName, null, 4));
+  		var folderPath = getFullPath( slugFolderName);
+  		var deletedFolderPath = getFullPath( dodoc.deletedPrefix + slugFolderName);
+
+      fs.rename( folderPath, deletedFolderPath, function(err) {
+        if (err) reject( err);
+        var removedFolderData = { "slugFolderName" : slugFolderName };
+        resolve( removedFolderData);
+      });
+    });
 	}
 
   function listAllProjectsOfOneFolder( slugFolderName) {
@@ -626,10 +639,9 @@ FOLDER METHODS
   	    var projectsProcessed = 0;
   	    var allProjectsData = [];
   		  projects.forEach( function( slugProjectName) {
-  		    if( new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugProjectName) && slugProjectName.indexOf( dodoc.deletedProjectFolderPrefix)){
-            dev.log( "- - is folder : " + slugProjectName);
+  		    if( new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugProjectName)
+  		    && slugProjectName.indexOf( dodoc.deletedPrefix)){
             var projectData = getProjectDataJSON( slugFolderName, slugProjectName);
-            dev.log( "- - - projectJSON : " + JSON.stringify( projectData));
             allProjectsData.push( projectData);
           }
 
@@ -973,9 +985,9 @@ MEDIA METHODS
       if( !new RegExp( dodoc.regexpMatchFolderNames, 'i').test( filename) && filename !== ".DS_Store") {
         var fileExtension = new RegExp( dodoc.regexpGetFileExtension, 'i').exec( filename)[0];
 //         dev.log( "- - fileEXTENSION of " + filename + " is " + fileExtension);
-//         dev.log( "- - Is file a deleted file ? " + new RegExp( '^' + dodoc.deletedProjectFolderPrefix).test( filename));
+//         dev.log( "- - Is file a deleted file ? " + new RegExp( '^' + dodoc.deletedPrefix).test( filename));
         // match only json that are not deleted (prefixed with a custom prefix
-        if( fileExtension === ".json" && !new RegExp( '^' + dodoc.deletedProjectFolderPrefix).test( filename)) {
+        if( fileExtension === ".json" && !new RegExp( '^' + dodoc.deletedPrefix).test( filename)) {
           if( !lookingForSpecificJson)
   				  foldersMediasMeta.push( filename);
   				else if( filename == mediaName + ".json") {
@@ -1289,7 +1301,7 @@ MEDIA METHODS
           var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( filename)[1];
           if( fileNameWithoutExtension === mediaName) {
             var filePath = pathToMediaFolder + '/' + filename;
-            var deletedFilePath = pathToMediaFolder + '/' + dodoc.deletedProjectFolderPrefix + filename;
+            var deletedFilePath = pathToMediaFolder + '/' + dodoc.deletedPrefix + filename;
             fs.renameSync( filePath, deletedFilePath);
             console.log( "A file will be deleted (actually, renamed but hidden from dodoc) : \n - " + filePath + "\n - " + deletedFilePath);
           }
@@ -1409,10 +1421,7 @@ PUBLIS METHODS
       filesInPubliFolder.forEach( function( filename) {
         if( !new RegExp( dodoc.regexpMatchFolderNames, 'i').test( filename) && filename !== ".DS_Store") {
           var fileExtension = new RegExp( dodoc.regexpGetFileExtension, 'i').exec( filename);
-  //         dev.log( "- - fileEXTENSION of " + filename + " is " + fileExtension);
-  //         dev.log( "- - Is file a deleted file ? " + new RegExp( '^' + dodoc.deletedProjectFolderPrefix).test( filename));
-          // match only json that are not deleted (prefixed with a custom prefix
-          if( fileExtension == ".json" && !new RegExp( '^' + dodoc.deletedProjectFolderPrefix).test( filename)) {
+          if( fileExtension == ".json" && !new RegExp( '^' + dodoc.deletedPrefix).test( filename)) {
             if( !lookingForSpecificJson)
     				  foldersPublisMeta.push( filename);
     				else if( filename == thisPubliName + ".json") {

@@ -7359,7 +7359,7 @@ body.index #container {
     margin: 0;
     padding-top: 4px;
     padding-bottom: 8px;
-    background-color: #eee;
+    background-color: #fff;
     color: #8d8d8d;
     font-family: "share", monospace; }
     .dossier .meta-data > * {
@@ -7685,30 +7685,28 @@ body.bibli {
     right: 9px;
     top: 11px; }
 
-body.projets {
-  background-color: #F56A4B; }
-  body.projets #container {
-    padding: 50px 0px;
-    width: 100%; }
-    body.projets #container .folder-wrapper {
-      margin-bottom: 30px;
-      color: #fff; }
-      body.projets #container .folder-wrapper:before, body.projets #container .folder-wrapper:after {
-        content: " ";
-        display: table; }
-      body.projets #container .folder-wrapper:after {
-        clear: both; }
-      body.projets #container .folder-wrapper .legende {
-        color: white; }
-      body.projets #container .folder-wrapper .folder-title {
-        font-size: 3rem;
-        line-height: 1.2;
-        font-weight: normal;
-        font-weight: 600;
-        margin-top: 0;
-        margin-bottom: 32px; }
-    body.projets #container .add-project-wrapper {
-      margin-bottom: 50px; }
+body.projets #container {
+  padding: 50px 0px;
+  width: 100%; }
+  body.projets #container .folder-wrapper {
+    margin-bottom: 30px;
+    color: #fff; }
+    body.projets #container .folder-wrapper:before, body.projets #container .folder-wrapper:after {
+      content: " ";
+      display: table; }
+    body.projets #container .folder-wrapper:after {
+      clear: both; }
+    body.projets #container .folder-wrapper .legende {
+      color: white; }
+    body.projets #container .folder-wrapper .folder-title {
+      font-size: 3rem;
+      line-height: 1.2;
+      font-weight: normal;
+      font-weight: 600;
+      margin-top: 0;
+      margin-bottom: 32px; }
+  body.projets #container .add-project-wrapper {
+    margin-bottom: 50px; }
 
 .project-list > .legende {
   color: white; }
@@ -7810,13 +7808,12 @@ body.projets {
     body.projets .project-list .project .montage-list {
       display: none; }
 
-body.projet {
-  background-color: #40beb3; }
-  body.projet .project-list {
-    margin-top: 75px; }
-  body.projet .project-inside .project-link {
-    pointer-events: none;
-    cursor: default; }
+body.projet .project-list {
+  margin-top: 75px; }
+
+body.projet .project-inside .project-link {
+  pointer-events: none;
+  cursor: default; }
 
 body.capture .container-inner {
   margin: auto; }
