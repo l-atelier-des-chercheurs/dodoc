@@ -11,12 +11,6 @@ body.projets{
       @include clearfix();
       margin-bottom:  30px;
 
-      color: #fff;
-
-      .legende {
-        color: white;
-      }
-
       .folder-title {
 
         font-size: 3rem;
@@ -39,10 +33,6 @@ body.projets{
 
 // PROJETS and PROJET
 .project-list{
-
-  > .legende {
-    color:white;
-  }
 
   .project {
 
@@ -96,6 +86,7 @@ body.projets{
     .project-content {
 
       @include style--dossierBorders;
+      border-right: none;
 
       .title {
         display: block;
@@ -135,7 +126,10 @@ body.projets{
       }
     }
     .image-wrapper{
-      background-color: #f3f3f3;
+
+      @include style--dossierBorders;
+      background-color: $c-separator;
+
       -webkit-background-size: cover;
       background-size: cover;
       background-position: center center;
@@ -162,7 +156,7 @@ body.projets{
       @include clearfix();
       background-color: #fff;
 
-      border-top:   1px solid $c-separator;
+      border-bottom:   1px solid $c-separator;
       background-color: #f9f9f9;
       padding: $margin 0;
 
@@ -193,7 +187,7 @@ body.projets{
       @include clearfix();
       background-color: #fff;
 
-      border-top:   1px solid $c-separator;
+      border-bottom:   1px solid $c-separator;
       background-color: #f9f9f9;
       margin-bottom:  75px;
       padding: $margin 0;

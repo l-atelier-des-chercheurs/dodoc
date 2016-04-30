@@ -301,8 +301,6 @@ function removeThisProject( $container, slugProjectName) {
 function removeThisFolder( $container, slugFolderName) {
   var $items = $container.find(".dossier");
 
-  debugger;
-
   var $itemToRemove = $items
     .filter("[data-slugfoldername='" + slugFolderName + "']")
     ;
@@ -525,6 +523,7 @@ var publi = {
       var slugPubliName = $montage.data('publishown');
       var $montageMedias = $montage.find('.media');
 
+      // listMediasPaths is a list of all the medias referenced by their json meta-file
       var listMediasPaths = [];
       $montageMedias.each(function() {
         $mma = $(this);
@@ -532,12 +531,14 @@ var publi = {
         listMediasPaths.push( mediakey);
       });
 
-      // listMediasPaths is a list of all the medias referenced by their json meta-file
-
-      var publiJson =
-      {
-        "slugPubliName" : slugPubliName
+      // check if there is two times the same
+      if( anyDuplicates( listMediasPaths)) {
+        alert( "Ce média existe déjà dans la publication ! Veuillez le supprimer.");
+        return false;
       }
+
+      var publiJson = new Object();
+      publiJson.slugPubliName = slugPubliName;
       publiJson.medias = listMediasPaths;
 
       // let's send it over to node so it is saved in the publication jsonfile
@@ -1148,14 +1149,15 @@ var modals = {
     		reader.onload = function(evt){
       		// check type of content
       		console.log( fileName);
+      		fileName = fileName.toLowerCase();
 
-          if( fileName.indexOf( "jpg") !== -1 || fileName.indexOf( "jpeg") !== -1) {
+          if( fileName.indexOf( ".jpg") !== -1 || fileName.indexOf( ".jpeg") !== -1 || fileName.indexOf( ".png") !== -1) {
       			var mediaData =
       			{
               "mediaType" : "photo",
       				"mediaData" : evt.target.result
       		  }
-      		} else if( fileName.indexOf( "mp4")) {
+      		} else if( fileName.indexOf( ".mp4") !== -1 ||  fileName.indexOf( ".webm")) {
       			var mediaData =
       			{
               "mediaType" : "video",

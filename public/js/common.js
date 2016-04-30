@@ -17,6 +17,18 @@ function transformDatetoTimestamp( date) {
 	return formatDate;
 }
 
+function anyDuplicates(a) {
+    var counts = [];
+    for(var i = 0; i <= a.length; i++) {
+        if(counts[a[i]] === undefined) {
+            counts[a[i]] = 1;
+        } else {
+            return true;
+        }
+    }
+    return false;
+}
+
 function convertToSlug(Text){
 
   if( Text === undefined)

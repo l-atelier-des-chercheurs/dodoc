@@ -92,7 +92,6 @@ function init(){
 }
 
 function onListAllMedias( mediasData) {
-
   var $getAllMediasFormatted = listAllMedias( mediasData);
   var $mediaContainer = $(".mainContent .medias-list");
 

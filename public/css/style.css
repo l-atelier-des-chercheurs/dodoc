@@ -7690,15 +7690,12 @@ body.projets #container {
   padding: 50px 0px;
   width: 100%; }
   body.projets #container .folder-wrapper {
-    margin-bottom: 30px;
-    color: #fff; }
+    margin-bottom: 30px; }
     body.projets #container .folder-wrapper:before, body.projets #container .folder-wrapper:after {
       content: " ";
       display: table; }
     body.projets #container .folder-wrapper:after {
       clear: both; }
-    body.projets #container .folder-wrapper .legende {
-      color: white; }
     body.projets #container .folder-wrapper .folder-title {
       font-size: 3rem;
       line-height: 1.2;
@@ -7708,9 +7705,6 @@ body.projets #container {
       margin-bottom: 32px; }
   body.projets #container .add-project-wrapper {
     margin-bottom: 50px; }
-
-.project-list > .legende {
-  color: white; }
 
 .project-list .project {
   position: relative; }
@@ -7738,7 +7732,8 @@ body.projets #container {
     z-index: 5; }
   .project-list .project .project-content {
     background-color: #fff;
-    border: 1px solid #DFDFDF; }
+    border: 1px solid #DFDFDF;
+    border-right: none; }
     .project-list .project .project-content .title {
       display: block;
       font-weight: bold;
@@ -7760,7 +7755,9 @@ body.projets #container {
       .project-list .project .project-content .meta-data .modified .modify-date {
         font-weight: bold; }
   .project-list .project .image-wrapper {
-    background-color: #f3f3f3;
+    background-color: #fff;
+    border: 1px solid #DFDFDF;
+    background-color: #DFDFDF;
     -webkit-background-size: cover;
     background-size: cover;
     background-position: center center; }
@@ -7776,7 +7773,7 @@ body.projets #container {
       opacity: 0; }
   .project-list .project .last-medias {
     background-color: #fff;
-    border-top: 1px solid #DFDFDF;
+    border-bottom: 1px solid #DFDFDF;
     background-color: #f9f9f9;
     padding: 16px 0; }
     .project-list .project .last-medias:before, .project-list .project .last-medias:after {
@@ -7796,7 +7793,7 @@ body.projets #container {
       display: none; }
   .project-list .project .montage-list {
     background-color: #fff;
-    border-top: 1px solid #DFDFDF;
+    border-bottom: 1px solid #DFDFDF;
     background-color: #f9f9f9;
     margin-bottom: 75px;
     padding: 16px 0; }
