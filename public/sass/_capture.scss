@@ -5,12 +5,6 @@ body.capture{
     margin:auto;
   }
 
-  .clone{
-    position: absolute;
-    left:52%;
-    top:0px;
-  }
-
   .content-wrapper {
     @include clearfix();
   }
@@ -42,11 +36,11 @@ body.capture{
         margin-right: 0;
       }
 
-      &:not(.active):not(:hover) {
+      &:not(.is--active):not(:hover) {
         background-color: #fff;
       }
 
-      &.active, &:hover {
+      &.is--active, &:hover {
         color: #fff;
         outline: none;
       }
@@ -71,7 +65,7 @@ body.capture{
       }
 
       // page bibli, page capture, page projet
-      &[data-mediatype="image"] {
+      &[data-mediatype="photo"] {
         background-color: $c-images;
         &::before {
           background-image: url("/images/icone-dodoc_image.png");
@@ -414,48 +408,58 @@ body.capture{
       background-color: $c-sons;
     }
   }
-  .screenshot {
-    margin:0px auto 0px auto;
-    .meta-stopmotion{
+
+  .mode-instructions {
+    width:  100%;
+    padding: 40px;
+    display: none;
+
+    .icone-stopmotion {
+      min-width: 0;
+      width: 70%;
+      margin: 0 auto 40px;
+    }
+    h4 {
+      font-size:1em;
+    }
+  }
+
+
+  .preview_stopmotion {
+
+    .preview_stopmotion--container:empty + .mode-instructions {
+      // only show instructions if container is empty
+      display: block;
+    }
+    .stopmotion_lastImagePreview {
+
+      padding: $margin;
+      background-color: #fff;
+
+
+      &:not(:first-of-type) {
+        position: absolute;
+        top: 0; left: 0;
+      }
+
+    }
+    .meta-stopmotion {
       margin-top: 10px;
+
       .count-image{
         display: inline-block;
         vertical-align: top;
       }
-      .delete-image{
-        width: 30px;
-        display: inline-block;
-        vertical-align: top;
-        margin-right: 10px;
-        cursor: pointer;
-
-        // le code est dégueu dans capture.js, faudrait le réécrire de manière à pouvoir effacer pas seulement la dernière mais plusieurs dernières images...
-        // je désactive en attendant
-        display: none;
-      }
     }
 
-    .preview_stopmotion {
-//      background-image:
-    }
 
-    .instructions-stopmotion{
-      width:80%;
-      margin:auto;
-      .icone-stopmotion{
-        width:100%;
-        margin-bottom: 10px;
-      }
-      h4{font-size:1em;}
-    }
-    #canvas-equalizer{
-      background-color: orange;
-    }
-
-    .canvas-view {
-      width: 100%;
-    }
   }
+
+
+  #canvas-equalizer{
+    background-color: orange;
+  }
+
   .son {
     display: none;
     padding-left:27px;
@@ -463,7 +467,7 @@ body.capture{
     margin-bottom: 40px;
   }
 
-  #camera-preview {
+  #video-stream {
     display: none;
     width: 100%;
   }

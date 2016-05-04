@@ -148,6 +148,12 @@ mixin button(typeOfButton, navOrButton, style)
         include images/clear.svg
       span Supprimer
 
+  if( typeOfButton === 'deleteLastMedia')
+    a(href="#" title="Dodoc media" class='button-wrapper_deleteLastMedia js--delete-sm-lastimage #{defaultClasses}')
+      .btn.icon
+        include images/clear.svg
+      span Supprimer cette image
+
   if( typeOfButton === 'flag')
     a(href="#" title="Favoris" class='button-wrapper_flagMedia js--flagMedia')
       .btn.icon

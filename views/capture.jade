@@ -22,10 +22,10 @@ html
         div.media-choice
           div.btn-choice
             div
-              button#photo(data-mediatype="image") image
-              button#video-btn(data-mediatype="video") vidéo
-              button#stopmotion(data-mediatype="stopmotion") stop motion
-              button#audio(data-mediatype="audio") audio
+              button#photo.js--modeSelector(data-mediatype="photo") image
+              button#video-btn.js--modeSelector(data-mediatype="video") vidéo
+              button#stopmotion.js--modeSelector(data-mediatype="stopmotion") stop motion
+              button#audio.js--modeSelector(data-mediatype="audio") audio
 
         div.content-wrapper
           div.captureLeft
@@ -74,20 +74,31 @@ html
           div.captureRight.small-5.columns
             div.flash.small-12
 
+
+
+
+            .preview_stopmotion
+              .preview_stopmotion--container
+              .mode-instructions
+                img.icone-stopmotion(src="/images/stopmotion.svg")
+                h4
+                  | Vous venez de créer un nouveau stop motion.</br>Cliquez que le <b>bouton d\'enregistrement</b> pour commencer à prendre des photos
+
+            .preview_audio
+              img
+              audio(controls)
+
+
+
             div(class="screenshot small-12" data-file="none")
               img.preview_image
-              img.preview_stopmotion
-              canvas(id="canvas-equalizer" width=480 height=256)
-              video(id="camera-preview" autoplay controls loop)
+
+              video(id="video-stream" autoplay controls loop)
               button#stop-sm-btn.btn.icon
                 include templates/images/enregistre.svg
 
-            div.son
-              audio(id="son" src="" controls)
 
             +button( 'deleteMediaCapture', '', '')
-
-          div.clone
 
        //- ALERT CHANGER DE MEDIA
       div(id="modal-change-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
@@ -96,6 +107,14 @@ html
           button.ok Continuer le stop motion
         button.supprimer-stop-motion Supprimer le stop motion
         a(class="close-reveal-modal" aria-label="Close") &#215;
+
+    .js--templates
+      .stopmotion_lastImagePreview
+        img
+        .meta-stopmotion
+          +button( 'deleteLastMedia', '', '')
+          .image_count
+
 
 
     //- scripts

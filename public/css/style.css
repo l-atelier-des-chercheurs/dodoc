@@ -7217,7 +7217,7 @@ button {
   .button-wrapper_add, .button-wrapper_edit, .button-wrapper_publi, .button-wrapper_editProjet, .button-wrapper_addMedia, .button-wrapper_backButton, .button-wrapper_editFolder {
     background-color: #EF474B;
     color: white; }
-  .button-wrapper_capture, .button-wrapper_view, .button-wrapper_deleteFolder, .button-wrapper_deleteMedia, .button-wrapper_deleteMediaCapture, .button-wrapper_deleteProject {
+  .button-wrapper_capture, .button-wrapper_view, .button-wrapper_deleteFolder, .button-wrapper_deleteMedia, .button-wrapper_deleteMediaCapture, .button-wrapper_deleteProject, .button-wrapper_deleteLastMedia {
     background-color: #FFB520;
     color: white; }
   .button-wrapper_bibli, .button-wrapper_gofullscreen, .button-wrapper_leavefullscreen {
@@ -7819,11 +7819,6 @@ body.projet .project-inside .project-link {
 body.capture .container-inner {
   margin: auto; }
 
-body.capture .clone {
-  position: absolute;
-  left: 52%;
-  top: 0px; }
-
 body.capture .content-wrapper:before, body.capture .content-wrapper:after {
   content: " ";
   display: table; }
@@ -7846,9 +7841,9 @@ body.capture .content-wrapper:after {
       border-radius: 4px; }
       .media-choice .btn-choice button:last-of-type {
         margin-right: 0; }
-      .media-choice .btn-choice button:not(.active):not(:hover) {
+      .media-choice .btn-choice button:not(.is--active):not(:hover) {
         background-color: #fff; }
-      .media-choice .btn-choice button.active, .media-choice .btn-choice button:hover {
+      .media-choice .btn-choice button.is--active, .media-choice .btn-choice button:hover {
         color: #fff;
         outline: none; }
       .media-choice .btn-choice button[data-mediatype]::before {
@@ -7861,9 +7856,9 @@ body.capture .content-wrapper:after {
         margin-right: 14px;
         z-index: 100;
         background-size: cover; }
-      .media-choice .btn-choice button[data-mediatype="image"] {
+      .media-choice .btn-choice button[data-mediatype="photo"] {
         background-color: #FFB520; }
-        .media-choice .btn-choice button[data-mediatype="image"]::before {
+        .media-choice .btn-choice button[data-mediatype="photo"]::before {
           background-image: url("/images/icone-dodoc_image.png"); }
       .media-choice .btn-choice button[data-mediatype="video"] {
         background-color: #fe414d; }
@@ -8069,38 +8064,38 @@ body.capture .content-wrapper:after {
       background-color: #48c2b5; }
     body[data-mode="audio"] .captureRight .flash {
       background-color: #09227c; }
-  .captureRight .screenshot {
-    margin: 0px auto 0px auto; }
-    .captureRight .screenshot .meta-stopmotion {
-      margin-top: 10px; }
-      .captureRight .screenshot .meta-stopmotion .count-image {
-        display: inline-block;
-        vertical-align: top; }
-      .captureRight .screenshot .meta-stopmotion .delete-image {
-        width: 30px;
-        display: inline-block;
-        vertical-align: top;
-        margin-right: 10px;
-        cursor: pointer;
-        display: none; }
-    .captureRight .screenshot .instructions-stopmotion {
-      width: 80%;
-      margin: auto; }
-      .captureRight .screenshot .instructions-stopmotion .icone-stopmotion {
-        width: 100%;
-        margin-bottom: 10px; }
-      .captureRight .screenshot .instructions-stopmotion h4 {
-        font-size: 1em; }
-    .captureRight .screenshot #canvas-equalizer {
-      background-color: orange; }
-    .captureRight .screenshot .canvas-view {
-      width: 100%; }
+  .captureRight .mode-instructions {
+    width: 100%;
+    padding: 40px;
+    display: none; }
+    .captureRight .mode-instructions .icone-stopmotion {
+      min-width: 0;
+      width: 70%;
+      margin: 0 auto 40px; }
+    .captureRight .mode-instructions h4 {
+      font-size: 1em; }
+  .captureRight .preview_stopmotion .preview_stopmotion--container:empty + .mode-instructions {
+    display: block; }
+  .captureRight .preview_stopmotion .stopmotion_lastImagePreview {
+    padding: 16px;
+    background-color: #fff; }
+    .captureRight .preview_stopmotion .stopmotion_lastImagePreview:not(:first-of-type) {
+      position: absolute;
+      top: 0;
+      left: 0; }
+  .captureRight .preview_stopmotion .meta-stopmotion {
+    margin-top: 10px; }
+    .captureRight .preview_stopmotion .meta-stopmotion .count-image {
+      display: inline-block;
+      vertical-align: top; }
+  .captureRight #canvas-equalizer {
+    background-color: orange; }
   .captureRight .son {
     display: none;
     padding-left: 27px;
     margin-top: 60px;
     margin-bottom: 40px; }
-  .captureRight #camera-preview {
+  .captureRight #video-stream {
     display: none;
     width: 100%; }
   .captureRight #stop-sm {

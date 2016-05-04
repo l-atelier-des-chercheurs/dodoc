@@ -18,7 +18,6 @@ function onSocketError(reason) {
 
 // Variables pour la prise de médias
 var streaming = false,
-    video        = document.querySelector('#video'),
 //     canvas       = document.querySelector('#canvas'),
     photo        = document.querySelector('#photo'),
     startbutton  = document.querySelector('#capture-btn'),
@@ -51,8 +50,8 @@ var sarahCouleur = "gray";
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
 socket.on('mediaCreated', onMediaCreated);
-socket.on('stopMotionDirectoryCreated', onStopMotionDirectoryCreated);
-socket.on('newStopmotionImage', onNewStopmotionImage);
+socket.on('stopMotionDirectoryCreated', function(d) { stopMotionMode.onStopMotionDirectoryCreated( d); });
+socket.on('newStopmotionImage', function(d) { stopMotionMode.onNewStopmotionImage( d); });
 
 jQuery(document).ready(function($) {
 
@@ -61,102 +60,22 @@ jQuery(document).ready(function($) {
 });
 
 function init(){
-	//initial setup
-	$("#photo").addClass('active');
-  $(".choices").hide();
-  $(".image-choice").show();
-  $("body").attr("data-mode", "photo");
-  $(".photo-capture ").hide();
-  photoDisplay();
 
   setTimeout(function(){
     $(".image-choice").fadeOut();
   }, 2000);
 
-  $("#canvas-equalizer").hide();
 
 	//Quand on change de media
-    // au click
-    $('.btn-choice button').on('click', function(){
-      changeMediaClick($(this));
-    });
-    // au boîtier avec les boutons
-    $("body").keypress(function(e){
-      changeMediaBoitier(e);
-    });
-
-	displayVideoStream();
-
-	//recording medias events
-	//Mouse events
-	$(".photo-capture #capture-btn").on('click', takePictures);
-  $("#video-btn").on('click', function(){
-    recordingVideo('click');
+  // au click
+  $('.js--modeSelector').on('click', function(){
+    var newMode = $(this).attr('data-mediatype');
+    $('.js--modeSelector').removeClass('is--active');
+    $(this).addClass('is--active');
+    changeMediaMode( newMode);
+    backAnimation();
   });
-  $("#start-sm-btn").on('click', startStopMotion);
-  $("#capture-sm-btn").on('click', takeStopMotionPic);
-  $("#stop-sm-btn").on('click', stopStopMotion);
-
-  $("#audio").on('click', function(e){
-    audioCapture("click");
-  });
-  //initiate Equalizer at the beginning
-//   createEqualizer();
-
-	// Keypressed (makey-makey) event
-  $("body").keypress(function(e){
-	  var code = e.keyCode || e.which;
-	  if($("#photo").hasClass('active')){
-	    if(code == 113) { //When Q is pressed
-	      takePictures();
-	      console.log("taking a picture");
-	    }
-	  }
-    if($("#video-btn").hasClass('active')){
-      if(code == 113) {//When Q is pressed
-        countPress ++;
-        recordingVideo();
-      }
-    }
-    if($("#stopmotion").hasClass('active')){
-      //redémarre le stop motion quand un autre média est choisi au milieu du stop motion
-      if(code == 113) { //When Q is pressed
-        countPress ++;
-        if(countPress == 1){
-          console.log("start a stopmotion");
-          startStopMotion();
-        }
-        else{
-          console.log("start taking pictures");
-          takeStopMotionPic();
-        }
-      }
-    }
-
-    if($("#audio").hasClass('active')){
-      if(code == 113) {
-        countPress ++;
-        countEqualizer ++;
-        audioCapture(code);
-      }
-    }
-	});
-
-  //redémarre le stop motion quand un autre média est choisi au milieu du stop motion
-  // var isEventExecutedSM = false;
-  // $("#stopmotion").click(function(){
-  //   isEventExecutedSM = false;
-  //   $(".btn-choice button").click(function(){
-  //     // $('#modal-change-alert').foundation('reveal', 'open');
-  //     if(isEventExecutedSM == false){
-  //       isEventExecutedSM = true;
-  //       $("#stop-sm-btn").hide();
-  //       $("#start-sm-btn").show();
-  //       $("#capture-sm-btn").hide();
-  //       $('.screenshot .meta-stopmotion').remove();
-  //     }
-  //   });
-  // });
+  $('.js--modeSelector[data-mediatype="photo"]').trigger( 'click');
 
   // delete file
   $('body').on('click', '.js--delete-media-capture', function(){
@@ -167,106 +86,44 @@ function init(){
       "mediaFolderPath" : $(document).data('lastCapturedMediaFolderPath'),
     }
     sendData.deleteMedia( mediaToDelete);
-
     backAnimation();
-    e.stopPropagation;
 
   });
 
-  // delete last stopmotion
-  $('body').on('click', '.js--delete_image', function(){
-
-    var mediaToDelete =
-    {
-      "mediaName" : $(document).data('lastCapturedMediaName'),
-      "mediaFolderPath" : $(document).data('lastCapturedMediaFolderPath'),
-    }
-    sendData.deleteMedia( mediaToDelete);
-
-    backAnimation();
-    e.stopPropagation;
-
-  });
 
   fullscreen();
 
-  // Events sur la fenêtre modal d'alerte de changement de mode stop motion
-  $('#modal-change-alert button.ok').on('click', function(){
-    $("#stop-sm-btn").show();
-    $("#start-sm-btn").hide(); $("#capture-sm-btn").show();
-    $(".screenshot .meta-stopmotion").remove();
-    $(".screenshot").append("<div class='meta-stopmotion'><div class='delete-image js--delete_image'><img src='/images/clear.svg'></div><p class='count-image'></p></div>");
-    $(".screenshot .meta-stopmotion").show();
-    $(".screenshot .count-image").html("<span>Image n° " + countImage+"</span>");
-  });
-
-  $('#modal-change-alert .supprimer-stop-motion').on('click', function(){
-    var thisId = $(this).attr('data-choice');
-    countPress = 0;
-    $("#stop-sm-btn").hide();
-    $("#start-sm-btn").show();
-    $("#capture-sm-btn").hide();
-    $('.screenshot .meta-stopmotion').remove();
-    $('#modal-change-alert').foundation('reveal', 'close');
-    $(".btn-choice button").removeClass('active');
-    $('#'+thisId).addClass('active');
-    $('body').removeClass('takingstopmotion');
-
-    switch(thisId){
-      case 'photo':
-        photoDisplay();
-        break;
-      case 'video-btn':
-        videoDisplay();
-        break;
-      case 'stopmotion':
-        stopMotionDisplay();
-        break;
-      case 'audio':
-        audioDisplay();
-        break;
-    }
-    backAnimation();
-  });
 }
 
-function changeMediaClick($this){
-  var thisId = $this.attr('id');
+function changeMediaMode( newMode) {
 
-  if($('body').hasClass('takingstopmotion')){
-    $('#modal-change-alert').foundation('reveal', 'open');
-    $('#modal-change-alert .supprimer-stop-motion').attr('data-choice', thisId);
+  console.log('A new mode has been selected : ' + newMode);
+  switch( newMode){
+    case 'photo':
+      photoDisplay();
+      break;
+    case 'video':
+      videoDisplay();
+      break;
+    case 'stopmotion':
+      stopMotionDisplay();
+      break;
+    case 'audio':
+      audioDisplay();
+      break;
   }
 
-  else{
-     console.log('you can change mode');
-    $(".btn-choice button").removeClass('active');
-    $this.addClass('active');
-    $('body').removeClass('takingstopmotion');
-
-    switch(thisId){
-      case 'photo':
-        photoDisplay();
-        break;
-      case 'video-btn':
-        videoDisplay();
-        break;
-      case 'stopmotion':
-        stopMotionDisplay();
-        break;
-      case 'audio':
-        audioDisplay();
-        break;
-    }
-    backAnimation();
-  }
 }
 
+
+// REMOVED
+// should reimplement better
 function changeMediaBoitier(e){
   var code = e.keyCode || e.which;
   var $activeButton = $(".btn-choice").find('.active');
   var thisId;
 
+/*
   if($('body').hasClass('takingstopmotion') && (code == 115 || code == 122)){
     if(code == 115){
       var $nextButton = $activeButton.next();
@@ -282,6 +139,7 @@ function changeMediaBoitier(e){
   }
 
   else{
+*/
     if(code == 115) { // Z keypress
       var $nextButton = $activeButton.next();
       $activeButton.removeClass('active');
@@ -322,15 +180,20 @@ function changeMediaBoitier(e){
         audioDisplay();
       }
     }
-  }
+//   }
 }
+
+
+
 
 function photoDisplay(){
   $(document)
     .data('currentMode', 'photo')
 
   $(".preview_image").show();
-  $('.screenshot .canvas-view').hide();
+  $(".preview_stopmotion").hide();
+  $(".preview_audio").hide();
+
   $('.screenshot video').hide();
   $('.js--delete-media-capture').show();
   // setTimeout(function(){
@@ -339,21 +202,28 @@ function photoDisplay(){
   $('.video-capture').hide();
   $('.stopmotion-capture').hide();
   $('.audio-capture').hide();
-  $(".son").css("display", "none");
   $('#video').show();
-  $('#canvas-audio').hide();$("#canvas-equalizer").hide();
-  $('.instructions-stopmotion').hide(); $(".meta-stopmotion").hide();
-  $(".image-choice").fadeIn( 100, function(){
-    $(this).delay(600).fadeOut('slow');
-  });
+  $('#canvas-audio').hide();
+  $(".image-choice").show();
   $("body").attr("data-mode", "photo");
+
+  currentStream.stopAllFeeds();
+  currentStream.startCameraFeed().then( function() {
+    $(".image-choice").fadeOut('slow');
+    imageMode.init();
+
+  }, function() {
+    console.log( "Failed to start camera feed for photo");
+  });
 }
 function videoDisplay(){
   $(document)
     .data('currentMode', 'video')
 
   $(".preview_image").hide();
-  $('.screenshot .canvas-view').show();
+  $(".preview_stopmotion").hide();
+  $(".preview_audio").hide();
+
   $('.photo-capture').css('display', 'none');
   $('.js--delete-media-capture').show();
   //setTimeout(function(){
@@ -361,43 +231,62 @@ function videoDisplay(){
   //},1000);
   $('.stopmotion-capture').css('display','none');
   $('.audio-capture').css('display','none');
-  $(".son").css("display", "none");
   $('#video').show();
-  $('#canvas-audio').hide();$("#canvas-equalizer").hide();
-  $('.instructions-stopmotion').hide(); $(".meta-stopmotion").hide();
-  $(".video-choice").fadeIn( 100, function(){
-    $(this).delay(600).fadeOut('slow');
-  });
+  $('#canvas-audio').hide();
+  $(".video-choice").show();
   $("body").attr("data-mode", "video");
+
+  currentStream.stopAllFeeds();
+  currentStream.startCameraFeed().then( function() {
+
+    $(".video-choice").fadeOut('slow');
+    videoMode.init();
+
+  }, function() {
+    console.log( "Failed to start camera feed for video");
+  });
+
 }
 function stopMotionDisplay(){
   $(document)
     .data('currentMode', 'animation')
 
+  $(".preview_image").hide();
+  $(".preview_stopmotion").hide();
+  $(".preview_audio").hide();
 
-  $('.screenshot .canvas-view').show();
-  $('.preview_image').hide();
-  $('.screenshot #camera-preview').hide();
+  $('.screenshot #video-stream').hide();
   $('.photo-capture').css('display', 'none');
   $('.video-capture').css('display','none');
   //setTimeout(function(){
     $('.stopmotion-capture').fadeIn(2000);
   //}, 1000);
   $('.audio-capture').css('display','none');
-  $(".son").css("display", "none");
   $('#video').show();
-  $(".stopmotion-choice").fadeIn( 100, function(){
-    $(this).delay(600).fadeOut('slow');
-  });
-  $('#canvas-audio').hide(); $("#canvas-equalizer").hide();
+  $(".stopmotion-choice").show();
+  $('#canvas-audio').hide();
   $("body").attr("data-mode", "stopmotion");
+
+
+  currentStream.stopAllFeeds();
+  currentStream.startCameraFeed().then( function() {
+
+    $(".stopmotion-choice").fadeOut('slow');
+    stopMotionMode.init();
+
+  }, function() {
+    console.log( "Failed to start camera feed for stop-motion");
+  });
 }
 function audioDisplay(){
   $(document)
     .data('currentMode', 'audio')
 
-  $('.screenshot #camera-preview').hide();
-  $('.preview_image').hide();
+  $(".preview_image").hide();
+  $(".preview_stopmotion").hide();
+  $(".preview_audio").show();
+
+  $('.screenshot #video-stream').hide();
   $('.js--delete-media-capture').show();
   $('.photo-capture').css('display', 'none');
   $('.video-capture').css('display','none');
@@ -406,15 +295,299 @@ function audioDisplay(){
     $('.audio-capture').fadeIn(2000);
   //}, 1000);
   $('.screenshot #canvas').css('display', 'none');
-  $('.captureRight .son').css('display', 'block');
   $('#video').hide();
-  $('.instructions-stopmotion').hide(); $(".meta-stopmotion").hide();
-  $('#canvas-audio').show();$("#canvas-equalizer").show();
-  $(".audio-choice").fadeIn( 100, function(){
-    $(this).delay(600).fadeOut('slow');
-  });
+  $('#canvas-audio').show();
+
+  $(".audio-choice").show();
   $("body").attr("data-mode", "audio");
+
+  currentStream.stopAllFeeds();
+  currentStream.startAudioFeed().then( function( stream) {
+
+    $(".audio-choice").fadeOut('slow');
+    audioMode.init( stream);
+
+  }, function() {
+    console.log( "Failed to start audio feed for audio");
+  });
 }
+
+var currentStream = (function() {
+
+  // déclaration des variables privées ici
+  var videoFeed_preview = $("#video").get(0);
+
+  var videoStream, audioStream;
+
+  var recordVideoFeed;
+  var recordAudioFeed;
+
+  // get camera feed (private)
+  function getCameraFeed() {
+    return new Promise(function(resolve, reject) {
+      console.log( "Getting camera feed");
+      navigator.getUserMedia = ( navigator.getUserMedia ||
+                             navigator.webkitGetUserMedia ||
+                             navigator.mozGetUserMedia ||
+                             navigator.msGetUserMedia);
+      if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+        console.log("enumerateDevices() not supported.");
+        return;
+      }
+
+      // List cameras and microphones.
+      var mediaDevices = [];
+      navigator.mediaDevices.enumerateDevices()
+        .then(function(devices) {
+          console.log("Media devices : ");
+          devices.forEach(function(device) {
+            console.log( " " + device.kind + " = " + device.label + " id = " + device.deviceId);
+            if(device.kind === 'videoinput') {
+              mediaDevices.push(device);
+            }
+          });
+        })
+        .then(function(){
+          var deviceChoiceId;
+          if(mediaDevices.length < 2){
+            deviceChoiceId = mediaDevices[0].deviceId;
+            //$('.container-inner').prepend("<h2>"+mediaDevices[0].label+"</h2>");
+          }
+          else{
+            deviceChoiceId = mediaDevices[1].deviceId;
+            //$('.container-inner').prepend("<h2>"+mediaDevices[1].label+"</h2>");
+          }
+
+          navigator.getUserMedia(
+            {
+              //video: {deviceId: deviceChoiceId ? {exact: deviceChoiceId} : undefined},
+              video: {
+                optional: [{sourceId: deviceChoiceId}]
+              },
+              audio: false
+            },
+            function (stream) {
+              resolve( stream);
+            },
+            function(err) {
+              alert(JSON.stringify(error));
+            }
+          );
+        })
+        .catch(function(err) {
+          console.log(err.name + ": " + error.message);
+        })
+        ;
+
+  /*
+      navigator.getUserMedia(
+        {
+          video: true ,
+          audio: false
+        },
+        function (stream) {
+          if (navigator.mozGetUserMedia) {
+            video.mozSrcObject = stream;
+          } else {
+            var vendorURL = window.URL || window.webkitURL;
+            video.src = vendorURL.createObjectURL(stream);
+          }
+          video.play();
+        },
+        function(err) {
+          alert(JSON.stringify(error));
+        }
+      );
+  */
+    });
+  }
+
+  function getAudioFeed() {
+    return new Promise(function(resolve, reject) {
+
+      console.log( "Getting audio feed");
+      navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+      if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+        console.log("enumerateDevices() not supported.");
+        return;
+      }
+
+      // List cameras and microphones.
+      var mediaDevices = [];
+      navigator.mediaDevices.enumerateDevices()
+        .then(function(devices) {
+          console.log("Media devices : ");
+          devices.forEach(function(device) {
+            console.log( " " + device.kind + " = " + device.label + " id = " + device.deviceId);
+            if(device.kind === 'audioinput') {
+              mediaDevices.push(device);
+            }
+          });
+        })
+        .then(function(){
+          var deviceChoiceId;
+          if(mediaDevices.length < 2){
+            deviceChoiceId = mediaDevices[0].deviceId;
+            //$('.container-inner').prepend("<h2>"+mediaDevices[0].label+"</h2>");
+          }
+          else{
+            deviceChoiceId = mediaDevices[1].deviceId;
+            //$('.container-inner').prepend("<h2>"+mediaDevices[1].label+"</h2>");
+          }
+
+          navigator.getUserMedia(
+            {
+              //video: {deviceId: deviceChoiceId ? {exact: deviceChoiceId} : undefined},
+              video: false,
+              audio: true
+            },
+            function (stream) {
+              resolve( stream);
+            },
+            function(err) {
+              alert(JSON.stringify(error));
+            }
+          );
+        })
+        .catch(function(err) {
+          reject(err.name + ": " + error.message);
+        })
+        ;
+
+    });
+  }
+
+  // déclaration des fonctions accessibles de l'extérieur ici
+  return {
+
+    getVideoFrame : function() {
+      return videoFeed_preview;
+    },
+
+    stopAllFeeds : function() {
+      if( !videoFeed_preview.paused)
+        videoFeed_preview.pause();
+
+      if(videoStream) videoStream.stop();
+      if(audioStream) audioStream.stop();
+
+      audioMode.stop();
+
+    },
+
+    startCameraFeed : function() {
+      return new Promise(function(resolve, reject) {
+        getCameraFeed()
+          .then( function( stream) {
+
+            videoStream = stream;
+
+            if (navigator.mozGetUserMedia) {
+              videoFeed_preview.mozSrcObject = stream;
+            } else {
+              var vendorURL = window.URL || window.webkitURL;
+              videoFeed_preview.src = vendorURL.createObjectURL(stream);
+            }
+            videoFeed_preview.play();
+            resolve();
+          }, function() {
+            console.log( " failed to get camera feed");
+            reject();
+          })
+          ;
+      });
+    },
+
+    startRecordCameraFeed : function() {
+      return new Promise(function(resolve, reject) {
+        getCameraFeed()
+          .then( function( stream) {
+            recordVideoFeed = RecordRTC(stream, {
+              type: 'video',
+              video: { width: dodoc.captureVideoWidth, height: dodoc.captureVideoHeight },
+              canvas: { width: dodoc.captureVideoWidth, height: dodoc.captureVideoHeight },
+            });
+            recordVideoFeed.startRecording();
+            resolve();
+          }, function() {
+            console.log( " failed to get camera feed");
+            reject();
+          });
+          ;
+      });
+    },
+
+    stopRecordCameraFeed : function() {
+      return new Promise(function(resolve, reject) {
+        if( recordVideoFeed !== undefined) {
+          recordVideoFeed.stopRecording(function() {
+            recordVideoFeed.getDataURL(function(videoDataURL) {
+              resolve( videoDataURL);
+            });
+          });
+        }
+      });
+    },
+
+    getAudioStream : function() {
+      return ;
+    },
+
+    startAudioFeed : function() {
+      return new Promise(function(resolve, reject) {
+        getAudioFeed()
+          .then( function( stream) {
+            audioStream = stream;
+            resolve( stream);
+          }, function() {
+            console.log( " failed to get audio feed");
+            reject();
+          })
+          ;
+      });
+    },
+
+    startRecordAudioFeed : function() {
+      return new Promise(function(resolve, reject) {
+        getAudioFeed()
+          .then( function( stream) {
+            recordAudioFeed = RecordRTC(stream, {
+              type: 'audio'
+            });
+            recordAudioFeed.startRecording();
+            resolve();
+          }, function() {
+            console.log( " failed to start audio recording");
+            reject();
+          })
+          ;
+      });
+    },
+
+    stopRecordAudioFeed : function() {
+      return new Promise(function(resolve, reject) {
+        if( recordAudioFeed !== undefined) {
+          recordAudioFeed.stopRecording(function(url) {
+            recordAudioFeed.getDataURL(function(audioDataURL) {
+      //             type: recordVideo.getBlob().type || 'video/webm',
+              // send instruction to record video
+              resolve( audioDataURL);
+            });
+          });
+        }
+      });
+    },
+
+  }
+
+
+
+
+
+
+
+
+})();
 
 
 
@@ -433,8 +606,6 @@ function onMediaCreated( mediasData){
     return;
 
   // ideally, we should also check the user who created that media and check it against a client variable, however I like the idea that another user can also see what the other is doing
-
-
   var newMediaType = mediaData.type;
   var mediaName = mediaData.mediaName;
 
@@ -443,7 +614,7 @@ function onMediaCreated( mediasData){
 
   var pathToMediaFile = '/' + getPathToMediaFile( projectPath, mediasFolderPath, mediaName);
 
-  var cameraPreview = document.getElementById('camera-preview');
+  var cameraPreview = document.getElementById('video-stream');
 
   $(document)
     .data('lastCapturedMediaName', mediaName)
@@ -467,11 +638,19 @@ function onMediaCreated( mediasData){
     cameraPreview.play();
     cameraPreview.muted = false;
     cameraPreview.controls = true;
-    $('#camera-preview').show();
-    $('.screenshot .canvas-view').hide();
+    $('#video-stream').show();
     animateWindows();
   }
   else if( newMediaType === 'audio') {
+    debugger;
+    $('.preview_audio')
+      .find('img')
+        .attr('src', pathToMediaFile + '.png')
+      .end()
+      .find('audio')
+        .attr('src', pathToMediaFile + '.wav')
+      .end()
+      ;
 
   }
 }
@@ -532,3 +711,6 @@ function fullscreen(){
       });
   }
 }
+
+
+

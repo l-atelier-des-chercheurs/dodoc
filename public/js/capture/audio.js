@@ -1,94 +1,62 @@
+/*************
+
+  should rewrite each mode as a single var with functions...
+
+  **************/
+
+var audioMode = (function() {
+
+  var eq;
+
+  return {
+    init : function( stream) {
+      audioCapture();
+      eq = new equalizer( $("#canvas-audio"), stream);
+    },
+
+    stop : function() {
+      debugger;
+      if( eq !== undefined)
+        eq.stopEqualizer();
+    },
+  }
+})();
+
+
+
+
+/*************
+  LEGACY
+  **************/
+
 //Capture le flux audio
-function audioCapture(code){
+function audioCapture(){
   //Variables
   var mediaStream = null;
 
   var startRecordingBtn = document.getElementById('start-recording-btn');
   var stopRecordingBtn = document.getElementById('stop-recording-btn');
-  var cameraPreview = document.getElementById('son');
 
   //click events
-  if(code == "click"){
-    $("#start-recording-btn").off();
-    $("#start-recording-btn").on('click', function(){
-      console.log("you are using the mouse for recording audio");
-      startRecordAudio();
-      isEventExecutedVideo = false;
-      $(".btn-choice").click(function(e){
-        isEventExecutedVideo = false;
-        stopAudioOnChange(e, isEventExecutedVideo);
-      });
-    });
-
-    $("#stop-recording-btn").off();
-    $("#stop-recording-btn").on('click', function(){
-      stopRecordAudio();
-      console.log("stop recording audio");
-    });
-  }
-
-  //keyboard events
-  if(countPress == 1){
+  $("#start-recording-btn").off();
+  $("#start-recording-btn").on('click', function(){
+    console.log("you are using the mouse for recording audio");
     startRecordAudio();
-    console.log("recording audio");
-    isEventExecutedAudio = false;
-    $("body").unbind("keypress.key115");
-    $("body").bind("keypress.key115", function(e){
-      var code = e.keyCode || e.which;
-      if(code == 115 || code == 122){
-        isEventExecutedVideo = false;
-        stopAudioOnChange(e, isEventExecutedVideo);
-      }
-    });
-  }
+    isEventExecutedVideo = false;
+  });
 
-  if(countPress > 1){
+  $("#stop-recording-btn").off();
+  $("#stop-recording-btn").on('click', function(){
     stopRecordAudio();
     console.log("stop recording audio");
-    countPress = 0;
-  }
+  });
 
-
-  function stopAudioOnChange(e){
-    if(isEventExecutedVideo == false){
-      isEventExecutedVideo = true;
-      console.log("Audio File was not saved");
-      recordAudio.stopRecording();
-      startRecordingBtn.style.display = "block";
-      stopRecordingBtn.style.display = "none";
-      startRecordingBtn.disabled = false;
-      stopRecordingBtn.disabled = true;
-      countPress = 0;
-      sarahCouleur = "gray";
-    }
-  }
 
   function startRecordAudio(){
     backAnimation();
 
-    // Initialise getUserMedia
-    navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
-    navigator.getMedia(
-      {
-        "video" : false,
-        "audio" : true
-      },
-      function (stream) {
-        // get user media pour le son
-        mediaStream = stream;
-        recordAudio = RecordRTC(stream, {
-          "type" : 'audio'
-        });
-        recordAudio.startRecording();
-        cameraPreview.src = window.URL.createObjectURL(stream);
-        cameraPreview.play();
-        cameraPreview.muted = false;
-        cameraPreview.controls = true;
-      },
-      function(error) {
-        alert(JSON.stringify(error));
-      }
-    );
+    currentStream.startRecordAudioFeed();
+
     startRecordingBtn.disabled = true;
     stopRecordingBtn.disabled = false;
     startRecordingBtn.style.display = "none";
@@ -102,49 +70,25 @@ function audioCapture(code){
     stopRecordingBtn.disabled = true;
     startRecordingBtn.style.display = "block";
     stopRecordingBtn.style.display = "none";
-    cameraPreview.style.display = "block";
     sarahCouleur = "gray";
 
-    //display equalizer image
-    var canvas = document.querySelector('#canvas-equalizer');
-    var canvasAudio = document.querySelector('#canvas-audio');
-    var context = canvas.getContext('2d');
-    var widthAudio = canvas.width;
-    var heightAudio = canvas.height;
-    context.clearRect(0, 0, widthAudio, heightAudio);
-    context.drawImage(canvasAudio, 0, 0, widthAudio, heightAudio);
-    var data = canvas.toDataURL('image/png');
-    photo.setAttribute('src', data);
-    $('#canvas-equalizer').show();
+    var imageData = $("#canvas-audio")[0].toDataURL('image/png');
+    photo.setAttribute('src', imageData);
 
     // stop audio recorder
-    recordAudio.stopRecording(function(url) {
-      // get audio data-URL
-      recordAudio.getDataURL(function(audioDataURL) {
-/*
-        var files = {
-            audio: {
-              type: recordAudio.getBlob().type || 'audio/wav',
-              dataURL: audioDataURL
-            }
-        };
-*/
+    currentStream.stopRecordAudioFeed().then(function(audioDataURL) {
 
-        var mediaData =
-        {
-          "mediaType" : "audio",
-          "mediaData" : audioDataURL
-        };
+      var mediaData =
+      {
+        "mediaType" : "audio",
+        "mediaData" : audioDataURL,
+        "audioScreenshot" : imageData
+      };
+      sendData.createNewMedia( mediaData);
 
-        //socket.emit('audio', {files: files, id: sessionId, name: currentFolder});
-        animateWindows();
+      animateWindows();
+      saveFeedback("/images/icone-dodoc_son.png");
 
-        // send instruction to finish audio recording
-        sendData.createNewMedia( mediaData);
-
-        saveFeedback("/images/icone-dodoc_son.png");
-        if (mediaStream) mediaStream.stop();
-      });
     });
   }
 }
@@ -152,7 +96,7 @@ function audioCapture(code){
 
 
 // CREATE A SOUND EQUALIZER
-function createEqualizer(event){
+function equalizer( $canvas, stream) {
   window.requestAnimFrame = (function(){
     return  window.requestAnimationFrame       ||
             window.webkitRequestAnimationFrame ||
@@ -169,7 +113,7 @@ function createEqualizer(event){
   // Global Variables for Audio
   var audioContext;
   var analyserNode;
-  //var javascriptNode;
+  var javascriptNode;
   var sampleSize = 1024;  // number of samples to collect before analyzing
                           // decreasing this gives a faster sonogram, increasing it slows it down
   var amplitudeArray;     // array to hold frequency data
@@ -181,7 +125,7 @@ function createEqualizer(event){
   var canvasHeight = 256;
   var ctx;
 
-  ctx = $("#canvas-audio").get()[0].getContext("2d");
+  ctx = $canvas.get(0).getContext("2d");
 
   try {
       audioContext = new AudioContext();
@@ -189,27 +133,16 @@ function createEqualizer(event){
       console.log('Web Audio API is not supported in this browser');
   }
 
-  startEqualizer();
+  startEqualizer( stream);
 
-  function startEqualizer(){
+  function startEqualizer( stream){
     // e.preventDefault();
     clearCanvas();
     // Initialise getUserMedia
-    navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
-    navigator.getMedia(
-      {
-        video: false,
-        audio: true
-      },
-      setupAudioNodes,
-      function(err) {
-        alert(JSON.stringify(error));
-      }
-    );
+    setupAudioNodes( stream);
   }
 
-  function stopEqualizer(e){
-    e.preventDefault();
+  this.stopEqualizer = function(){
     javascriptNode.onaudioprocess = null;
     if(audioStream) audioStream.stop();
     if(sourceNode)  sourceNode.disconnect();
@@ -268,6 +201,9 @@ function createEqualizer(event){
 
       // loop around the canvas when we reach the end
       column += 1;
+
+      console.log( 'equalizer is running');
+
       if(column >= canvasWidth) {
           column = 0;
           clearCanvas();

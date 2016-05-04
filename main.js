@@ -10,7 +10,8 @@ var fs = require('fs-extra'),
 	sprintf = require("sprintf-js").sprintf,
 	vsprintf = require("sprintf-js").vsprintf,
 	flags = require('flags'),
-  merge = require('merge')
+  merge = require('merge'),
+  gutil = require('gulp-util')
 ;
 
 var dodoc  = require('./public/dodoc.js');
@@ -61,8 +62,7 @@ module.exports = function(app, io){
 		//STOP MOTION
 		socket.on("startStopMotion", onStartStopMotion);
 		socket.on("addImageToStopMotion", function (data){ onAddImageToStopMotion( socket, data); });
-		socket.on("deleteLastImageOfStopMotion", onDeleteLastImageOfStopMotion);
-		socket.on("deleteImageMotion", deleteImageMotion);
+		socket.on( 'deleteLastImageOfStopMotion', onDeleteLastImageOfStopMotion);
 
 		// B I B L I        P A G E
 		socket.on( 'listOneProjectMedias', onListOneProjectMedias);
@@ -329,6 +329,7 @@ module.exports = function(app, io){
 		var mediaData =
   		{
     		"imageFullPath" : imageFullPath,
+    		"imageCount" : imageCount
   		};
 
 		fs.writeFile( imageFullPath, imageBuffer.data, function(err) {
@@ -338,33 +339,21 @@ module.exports = function(app, io){
   }
 
 
-  function onDeleteLastImageOfStopMotion( imageData) {
-		dev.logfunction( "onDeleteLastImageOfStopMotion");
+  function onDeleteLastImageOfStopMotion( idata) {
+		dev.logfunction( "onDeleteLastImageOfStopMotion : " + JSON.stringify( idata, null, 4));
 
-		var imageFolder = imageData.folderCacheName;
-		var folderPath = imageData.folderCachePath;
-		var imageCount = imageData.imageCount;
+    var fullPathToStopmotionImage = getFullPath( idata.pathToStopmotionImage);
 
-		var imagePath = folderPath + '/' + imageCount + '.png';
-    fs.exists( imagePath, function(exists) {
+    fs.exists( fullPathToStopmotionImage, function(exists) {
       if(exists) {
         console.log( '--> Will remove last stop-motion image.');
-        fs.unlink( imagePath);
+        fs.unlink( fullPathToStopmotionImage);
       } else {
         console.log( gutil.colors.red('--> Couldn\'t find the last stop-motion image, so couldn\'t delete it.'));
       }
     });
   }
 
-	// Supprime une image du Stop Motion
-	function deleteImageMotion(req){
-		dev.logfunction( "deleteImageMotion");
-		filename = req.dir + '/' + req.count + '.png';
-		fs.unlinkSync(filename, function (err) {
-	  if (err) console.log(err);
-	  	console.log('successfully deleted ' + filename);
-		});
-	}
 
 	// Delete File
 	function onDeleteMedia( mediaData) {
@@ -1070,7 +1059,7 @@ MEDIA METHODS
   function createNewMedia( newMediaData) {
 
     return new Promise(function(resolve, reject) {
-  		dev.logfunction( "COMMON - createNewMedia");
+  		dev.logfunction( "COMMON - createNewMedia : " + JSON.stringify( newMediaData, null, 4));
 
 			var slugFolderName = newMediaData.slugFolderName;
 			var slugProjectName = newMediaData.slugProjectName;
@@ -1090,10 +1079,7 @@ MEDIA METHODS
           pathToFile = mediaPath + '/' + newFileName;
 
           fileExtension = '.jpg';
-          var dataMedia = newMediaData.mediaData;
-          var imageBuffer = decodeBase64Image( dataMedia);
-
-          console.log("promise before");
+          var imageBuffer = decodeBase64Image( newMediaData.mediaData);
 
           fs.writeFileSync( pathToFile + fileExtension, imageBuffer.data);
 
@@ -1114,9 +1100,7 @@ MEDIA METHODS
           pathToFile = mediaPath + '/' + newFileName;
           fileExtension = '.webm';
 
-          var dataMedia = newMediaData.mediaData;
-
-          writeVideoToDisk( pathToFile, fileExtension, dataMedia)
+          writeVideoToDisk( pathToFile, fileExtension, newMediaData.mediaData)
           .then(function() {
             console.error("Saved a video.");
             mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension, newFileName);
@@ -1169,7 +1153,6 @@ MEDIA METHODS
                   console.error("Failed to make a thumbnail one media! Error: ", error);
                   resolve( mediaMetaData);
                 });
-
             })
             .on('error', function(err) {
               console.log('an error happened: ' + err.message);
@@ -1186,9 +1169,12 @@ MEDIA METHODS
 
           fileExtension = '.wav';
           var dataMedia = newMediaData.mediaData.split(',').pop();
-          var imageBuffer = new Buffer( dataMedia, 'base64');
+          var audioBuffer = new Buffer( dataMedia, 'base64');
+          fs.writeFileSync( pathToFile + fileExtension, audioBuffer);
 
-          fs.writeFileSync( pathToFile + fileExtension, imageBuffer);
+          var imgExtension = '.png';
+          var imageBuffer = decodeBase64Image( newMediaData.audioScreenshot);
+          fs.writeFileSync( pathToFile + imgExtension, imageBuffer.data);
 
           mediaMetaData = createMediaJSON( newMediaType, pathToFile, fileExtension, newFileName);
           mediaMetaData.slugFolderName = slugFolderName;
