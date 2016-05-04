@@ -8,7 +8,8 @@ var fs = require('fs-extra'),
 	ffmpeg = require('fluent-ffmpeg'),
 	sprintf = require("sprintf-js").sprintf,
 	vsprintf = require("sprintf-js").vsprintf,
-	markdown = require( "markdown" ).markdown;
+	markdown = require( "markdown" ).markdown,
+	nodemailer = require('nodemailer');
 
 
 
@@ -1114,6 +1115,7 @@ module.exports = function(app, io){
 			  io.sockets.emit('sendPubliData', {name:jsonObj.name, html:jsonObj.html});
 			});
 		}
+
 	// F I N     P U B L I     P A G E
 
 	// - - -

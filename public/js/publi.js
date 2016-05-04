@@ -12,7 +12,6 @@ var currentPubli = app.publi;
 /* sockets */
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
-socket.on('sendPubliData', sendPubliData);
 
 
 jQuery(document).ready(function($) {
@@ -22,12 +21,7 @@ jQuery(document).ready(function($) {
 
 function init(){
 
-
-}
-
-function sendPubliData(data){
-	$('.publi-title').html(data.name);
-	$('.publi-content').html(data.html);
+	
 }
 
 /* sockets */
