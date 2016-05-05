@@ -5,9 +5,10 @@ DoDoc
 
 DoDoc is a documentation tool for children in classrooms.   
 DoDoc is a research project of [l'atelier des chercheurs](http://latelier-des-chercheurs.fr/).  
-Dodoc is both a web documentation platform and a physical device.  
-![dodoc](http://www.lopendoc.org/lopendocresearch/wp-content/uploads/sites/5/2015/06/schema-dodoc-02.png)
-![dodoc](http://latelier-des-chercheurs.fr/img/img-dodoc-fes0.jpg)  
+Dodoc is both a web documentation platform connected to a physical device that operates a camera and a microphone.  
+![dodoc](http://www.lopendoc.org/dodoc/wp-content/uploads/sites/23/2016/05/Capture-d%E2%80%99e%CC%81cran-2016-05-05-a%CC%80-18.13.31.png)
+![dodoc](http://www.lopendoc.org/dodoc/wp-content/uploads/sites/23/2016/05/Capture-d%E2%80%99e%CC%81cran-2016-05-05-a%CC%80-18.13.44.png)  
+TO INSTALL THE PROGRAM
 
 ### Using the terminal
 #### Windows
@@ -22,7 +23,7 @@ If you have Linux you know how to use the terminal
 ### Clone the repo or download it
 To download the repository, click on the "Download zip" button on the dodoc Github page  
 
-To clone the repository open the terminal and type this command  
+(Recommended - easier for Updates) To clone the repository open the terminal and type this command  
 ```git clone https://github.com/sarahgarcin/dodoc.git```
 
 ###Install nodejs on your computer
@@ -42,8 +43,6 @@ Once you are in the right directory
 (the terminal says for example ```MacBook-Pro-de-Pauline-3:dodoc Pauline$``` )   
 Enter the command:    
 ```npm install```  
-Then enter:
-```cd public && bower install```
 
 On Windows XP, if you get the following error : 
 ```Error: Failed to replace env in config: ${APPDATA}```
@@ -52,7 +51,6 @@ Replace the line
 'prefix=${APPDATA}\npm'
 with
 ```prefix=C:\Program Files\nodejs\node_modules\npm```
-
 
 ###Install ffmpeg
 Official page [https://www.ffmpeg.org/](https://www.ffmpeg.org/)
@@ -66,13 +64,9 @@ Follow this tutorial: [http://adaptivesamples.com/how-to-install-ffmpeg-on-windo
 ####On Mac OSX
 Follow this tutorial: [http://www.renevolution.com/how-to-install-ffmpeg-on-mac-os-x/](http://www.renevolution.com/how-to-install-ffmpeg-on-mac-os-x/)
 
-###Add the missing files
-- Create a new folder named "sessions" into your dodoc directory (right click in the folder "dodoc", then "new folder" and you rename it "sessions").  
-- Add the 3 certificates files for using https. (To get these files, send us an email)  
-
 ###Run DoDoc
 In the right directory    
-(the terminal says for example ```MacBook-Pro-de-Pauline-3:dodoc Pauline$``` )  
+(the terminal says for example ```MacBook-de-Toto:dodoc Pauline$``` )  
 Run the server in the terminal (enter the following command:)  
 ```node server.js```
 
