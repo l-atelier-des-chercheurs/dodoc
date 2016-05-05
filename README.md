@@ -1,6 +1,6 @@
 DoDoc
 ==========
-![dodoc](http://www.lopendoc.org/dodoc/wp-content/uploads/sites/23/2016/02/logo-def_carre-02.png)
+![dodoc](http://www.lopendoc.org/dodoc/wp-content/uploads/sites/23/2016/05/Capture-d%E2%80%99e%CC%81cran-2016-05-05-a%CC%80-18.29.52.png)
 
 ##Presentation
 
