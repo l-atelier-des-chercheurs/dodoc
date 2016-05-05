@@ -11,7 +11,8 @@ You can find more documentation and contribute to the project [here](http://www.
 ![dodoc](http://www.lopendoc.org/dodoc/wp-content/uploads/sites/23/2016/05/Capture-d%E2%80%99e%CC%81cran-2016-05-05-a%CC%80-18.13.31.png)
 
 ![dodoc](http://www.lopendoc.org/dodoc/wp-content/uploads/sites/23/2016/05/Capture-d%E2%80%99e%CC%81cran-2016-05-05-a%CC%80-18.13.44.png)  
-TO INSTALL THE PROGRAM
+
+##TO INSTALL THE PROGRAM
 
 ### Using the terminal
 #### Windows
