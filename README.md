@@ -1,12 +1,16 @@
 DoDoc
 ==========
+![dodoc](http://www.lopendoc.org/dodoc/wp-content/uploads/sites/23/2016/02/logo-def_carre-02.png)
 
 ##Presentation
 
 DoDoc is a documentation tool for children in classrooms.   
-DoDoc is a research project of [l'atelier des chercheurs](http://latelier-des-chercheurs.fr/).  
-Dodoc is both a web documentation platform connected to a physical device that operates a camera and a microphone.  
+DoDoc is a research project made by [l'atelier des chercheurs](http://latelier-des-chercheurs.fr/).
+You can find more documentation and contribute to the project [here](http://www.lopendoc.org/dodoc/).
+Dodoc is a documentation platform connected to a physical device that operates a camera and a microphone. It enables one to capture traces from an on-going experience for later reflections, reconstructions and creations of narratives.  
+
 ![dodoc](http://www.lopendoc.org/dodoc/wp-content/uploads/sites/23/2016/05/Capture-d%E2%80%99e%CC%81cran-2016-05-05-a%CC%80-18.13.31.png)
+
 ![dodoc](http://www.lopendoc.org/dodoc/wp-content/uploads/sites/23/2016/05/Capture-d%E2%80%99e%CC%81cran-2016-05-05-a%CC%80-18.13.44.png)  
 TO INSTALL THE PROGRAM
 
