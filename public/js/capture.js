@@ -370,12 +370,12 @@ var currentStream = (function() {
               resolve( stream);
             },
             function(err) {
-              alert(JSON.stringify(error));
+              alert(JSON.stringify(err));
             }
           );
         })
         .catch(function(err) {
-          console.log(err.name + ": " + error.message);
+          console.log(err.name + ": " + err.message);
         })
         ;
 
