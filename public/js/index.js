@@ -19,7 +19,7 @@ socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
 socket.on('folderCreated', onFolderCreated); // Quand un dossier est crée
 socket.on('folderAlreadyExist', onFolderAlreadyExist); // Si le nom de dossier existe déjà.
-socket.on('listAllFolders', onListFolders); // Liste tous les dossiers
+socket.on('listAllFolders', onListAllFolders); // Liste tous les dossiers
 socket.on('listAllProjectsOfOneFolder', onListAllProjectsOfOneFolder); // Liste tous les enfants des dossiers
 socket.on('folderModified', onFolderModified);
 socket.on('folderRemoved', onFolderRemoved);
@@ -121,7 +121,7 @@ function onListOneFolder( folderData){
   return insertOrReplaceFolder( folderData.slugFolderName, $folderContent);
 }
 
-function onListFolders( foldersData) {
+function onListAllFolders( foldersData) {
   $.each( foldersData, function( index, fdata) {
   	var $folderContent = makeFolderContent( fdata);
     return insertOrReplaceFolder( fdata.slugFolderName, $folderContent);
@@ -185,6 +185,8 @@ function loadProject( pdata) {
       .attr( 'alt', pdata.name)
     ;
 
+  $folder.find( '.nb-projets-count').html(function(i, val) { return +val+1 });
+
 	$folder.find(".projet-list").prepend(newSnippetProjet);
 	return;
 }
@@ -197,9 +199,7 @@ function makeFolderContent( projectData){
 	var created = projectData.created;
 	var modified = projectData.modified;
 	var statut = projectData.statut;
-	var nb_projets = projectData.nb_projets;
 
-	var projetName = nb_projets > 1 ? 'projets' : 'projet';
 	var newFolder = $(".js--templates > .dossier").clone(false);
 
   // customisation du projet
@@ -218,8 +218,7 @@ function makeFolderContent( projectData){
 	  .find( '.create-date').text( transformDatetoString( created)).end()
 	  .find( '.modify-date').text( modified !== false ? transformDatetoString( modified) : '').end()
 	  .find( '.nb-projets')
-	    .find( '.nb-projets-intitule').text( projetName).end()
-	    .find( '.nb-projets-count').text( nb_projets).end()
+	    .find( '.nb-projets-intitule').text( dodoc.nameOfProjects).end()
     .end()
   ;
 

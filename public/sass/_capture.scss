@@ -304,7 +304,6 @@ body.capture{
     .btn.icon {
       border: 4px solid #EFEFEF;
       padding: 0;
-
     }
     &:hover {
       .btn.icon {
@@ -322,7 +321,11 @@ body.capture{
     body.is--fullscreen & {
       display: none;
     }
+    body[data-mode="audio"] & {
+      display: none;
+    }
   }
+
 
   .button-wrapper_leavefullscreen {
 

@@ -110,18 +110,15 @@ module.exports = function(app, io){
 	function onListFolders( socket){
 		dev.logfunction( "EVENT - onListFolders");
     listAllFolders().then(function( allFoldersData) {
-
       sendEventWithContent( 'listAllFolders', allFoldersData, socket);
-
+      // also list projects !
       allFoldersData.forEach( function( fdata) {
         onListProjects( socket, fdata);
       });
-
     }, function(error) {
       console.error("Failed to list folders! Error: ", error);
     });
 	}
-
 
 	// Modifier un dossier
 	function onEditFolder( updatedFolderData){
@@ -150,9 +147,7 @@ module.exports = function(app, io){
 	function onListProjects( socket, dataFolder) {
 		dev.logfunction( "EVENT - onListProjects");
     listAllProjectsOfOneFolder( dataFolder.slugFolderName).then(function( allProjectsData) {
-
       sendEventWithContent( 'listAllProjectsOfOneFolder', allProjectsData, socket);
-
     }, function(error) {
       console.error("Failed to list projects! Error: ", error);
     });

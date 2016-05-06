@@ -13,6 +13,7 @@ var dodoc = {
 
   "nameOfFolder" : "Dossier",
   "nameOfProject" : "Projet",
+  "nameOfProjects" : "Projets",
   "nameOfCapture" : "Prise de vue",
   "nameOfBibli" : "Bibliotheque de médias",
   "nameOfPubli" : "Publication",

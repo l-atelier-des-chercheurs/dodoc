@@ -7538,7 +7538,7 @@ body.bibli {
         height: 2.8rem; }
   .montage .inner-montage {
     height: 100%;
-    min-height: 200px;
+    min-height: 60vh;
     padding: 0 16px;
     padding-top: 1.875rem;
     padding-bottom: 3.75rem;
@@ -7590,7 +7590,8 @@ body.bibli {
       animation-duration: 0.3s; }
     .montage .inner-montage .media.gu-transit .mediaContent {
       opacity: 1;
-      background-color: #FFB520; }
+      background-color: #FFB520;
+      box-shadow: none; }
       .montage .inner-montage .media.gu-transit .mediaContent > * {
         opacity: 0; }
 
@@ -7999,6 +8000,8 @@ body.capture .content-wrapper:after {
     margin-right: -20px;
     margin-top: -20px; }
     body.is--fullscreen .captureLeft .button-wrapper_gofullscreen {
+      display: none; }
+    body[data-mode="audio"] .captureLeft .button-wrapper_gofullscreen {
       display: none; }
   .captureLeft .button-wrapper_leavefullscreen {
     margin-right: 20px;

@@ -211,7 +211,7 @@ body.bibli {
   .inner-montage{
 
     height:100%;
-    min-height:200px;
+    min-height:60vh;
 
     padding: 0 $margin;
     padding-top: 1.875rem;
@@ -307,6 +307,7 @@ body.bibli {
     .media.gu-transit .mediaContent {
       opacity: 1;
       background-color: $c-images;
+      box-shadow: none;
 
       > * {
         opacity: 0;
