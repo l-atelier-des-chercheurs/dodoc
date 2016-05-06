@@ -377,15 +377,6 @@ body.capture{
   left: 25%;
   width: 40%;
 
-  #stop-sm-btn {
-    body:not([data-mode="stopmotion"]) & {
-      display: none;
-    }
-    border: none !important;
-    outline: none !important;
-    background:none !important;
-    float: right;
-  }
   .flash{
     height:100%;
     background-color: #FFF;
@@ -424,18 +415,40 @@ body.capture{
     }
   }
 
+  .output[src=''] {
+    display: none;
+  }
 
   .preview_stopmotion {
 
-    .preview_stopmotion--container:empty + .mode-instructions {
-      // only show instructions if container is empty
-      display: block;
+    // if we have a stopmotion preview active
+    video.output:not([src='']) ~ {
+      .mode-instructions {
+        display: none;
+      }
     }
+
+    .preview_stopmotion--container:empty ~ {
+
+      .mode-instructions {
+        // only show instructions if container is empty
+        display: block;
+      }
+
+      .button-wrapper_finishStopmotion {
+        display: none;
+      }
+    }
+
+    .button-wrapper_finishStopmotion {
+      display: block;
+      float: right;
+    }
+
     .stopmotion_lastImagePreview {
 
       padding: $margin;
       background-color: #fff;
-
 
       &:not(:first-of-type) {
         position: absolute;

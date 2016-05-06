@@ -204,7 +204,7 @@ button{
     background-color: $c-bibli;
     color: white;
   }
-  &_accept, &_addText, &_highlightMedia {
+  &_accept, &_addText, &_highlightMedia, &_finishStopmotion {
     background-color: $bleuvert;
     color: white;
   }
@@ -372,6 +372,11 @@ button{
 
   .mediaContent {
     @include style--dossierBorders;
+
+    // posters for <audio>
+    .poster {
+
+    }
   }
 
 

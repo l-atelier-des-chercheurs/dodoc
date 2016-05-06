@@ -6,6 +6,8 @@
 
 var imageMode = (function() {
 
+  var $preview = $(".preview_image");
+
   // Fonction qui prend les photos
   function takePictures() {
 
@@ -35,16 +37,21 @@ var imageMode = (function() {
     }
     // send instruction to record photo
     sendData.createNewMedia( mediaData);
+    $preview.attr('src', '');
     saveFeedback("/images/icone-dodoc_image.png");
   }
 
 
   return {
-
     init : function() {
       $(".photo-capture #capture-btn").off().on('click', takePictures);
+      $preview.find('.js--delete-media-capture').hide();
+      $preview.attr('src', '');
     },
-
+    showImagePreview : function( pathToMediaFile) {
+      $preview.find('.output').attr("src", pathToMediaFile);
+      $preview.find('.js--delete-media-capture').show();
+    },
   }
 
 })();

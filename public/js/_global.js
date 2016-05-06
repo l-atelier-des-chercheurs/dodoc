@@ -211,12 +211,27 @@ function showAudio( mediaDatas) {
   var mediaFolderPath = mediaDatas.mediaFolderPath;
   var mediaFilenames = mediaDatas.files;
 
-  var pathToFile = makeFullPathForProject( mediaFolderPath + '/' + mediaFilenames[0]);
+  var thumbFilename;
+  var audioFilename;
+
+  $.each( mediaFilenames, function( key, mediaFilename) {
+    if( mediaFilename.indexOf( "png") !== -1) {
+      thumbFilename = mediaFilename;
+    } else if ( mediaFilename.indexOf( "wav") !== false) {
+      audioFilename = mediaFilename;
+    }
+  });
+
+  var pathToThumb = makeFullPathForProject( mediaFolderPath + '/' + thumbFilename);
+  var pathToAudioFile = makeFullPathForProject( mediaFolderPath + '/' + audioFilename);
 
 	var mediaItem = $(".js--templates .media_audio").clone(false);
+
 	mediaItem
-    .find( 'source').attr( 'src', pathToFile)
+    .find( 'source').attr( 'src', pathToAudioFile).end()
+    .find( '.poster').attr( 'src', pathToThumb).end()
     ;
+
 	return mediaItem;
 }
 

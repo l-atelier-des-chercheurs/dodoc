@@ -7,17 +7,24 @@
 var audioMode = (function() {
 
   var eq;
+  var $preview = $(".preview_audio");
 
   return {
     init : function( stream) {
       audioCapture();
       eq = new equalizer( $('#canvas-audio'), stream);
+      $preview.find('.js--delete-media-capture').hide();
     },
 
     stop : function() {
       if( eq !== undefined) {
         eq.stopEqualizer();
       }
+    },
+    showAudioPreview : function( pathToAudioFile, pathToEqualizerPreview) {
+      $preview.find('audio.output').attr('src', pathToAudioFile);
+      $preview.find('img.output').attr('src', pathToEqualizerPreview);
+      $preview.find('.js--delete-media-capture').show();
     },
   }
 })();

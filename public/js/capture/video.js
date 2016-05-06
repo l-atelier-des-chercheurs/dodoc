@@ -7,12 +7,12 @@
 var videoMode = (function() {
 
   // private vars and functions
+  var $preview = $(".preview_video");
 
   // Function qui enregistre de la vidéo
   function recordingVideo(){
     var startVideoRecording = document.getElementById('start-record-btn');
     var stopVideoRecording = document.getElementById('stop-record-btn');
-    var cameraPreview = document.getElementById('video-stream');
 
     $("#start-record-btn").off().on('click', function(){
       console.log("you are using the mouse for recording");
@@ -26,7 +26,6 @@ var videoMode = (function() {
     function startVideo(){
       console.log('starting-video');
       backAnimation();
-      $('#video-stream').hide();
       recordingFeedback();
 
       $('body').attr('data-videorecording', 'yes');
@@ -68,12 +67,11 @@ var videoMode = (function() {
     }
 
     function stopVideo(){
-      $('.video-capture').hide();
+
       startVideoRecording.disabled = false;
       stopVideoRecording.disabled = true;
       startVideoRecording.style.display = "block";
       stopVideoRecording.style.display = "none";
-      cameraPreview.style.display = "block";
       $('body').attr('data-videorecording', '');
       $(".recording-feedback").remove();
       // stop video recorder
@@ -88,9 +86,8 @@ var videoMode = (function() {
           };
           // send instruction to record video
           sendData.createNewMedia( mediaData);
-
-          cameraPreview.src = '';
-          cameraPreview.poster = 'https://localhost:8080/loading.gif';
+          $preview.find('video').src = '';
+          $preview.find('video').poster = 'https://localhost:8080/loading.gif';
           saveFeedback("/images/icone-dodoc_video.png");
         }, function() {
           console.log("Failed stopping the recording of a video.");
@@ -105,11 +102,17 @@ var videoMode = (function() {
 
     init : function() {
       recordingVideo();
+      $preview.find('.js--delete-media-capture').hide();
     },
 
 
     stop : function() {
 
+    },
+
+    showVideoPreview : function( pathToMediaFile) {
+      $preview.find('video').attr('src', pathToMediaFile);
+      $preview.find('.js--delete-media-capture').show();
     },
 
 

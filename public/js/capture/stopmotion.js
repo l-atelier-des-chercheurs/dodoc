@@ -7,16 +7,20 @@
 var stopMotionMode = (function() {
 
   var $preview = $(".preview_stopmotion");
+  var $startsm = $("#start-sm-btn");
+  var $capturesm = $("#capture-sm-btn");
+  var $finishsm = $(".js--finish-stopmotion");
 
   function startStopMotion(){
     countImage = 0;
     console.log('start stop-motion');
-    $("#start-sm-btn").hide();
-    $("#capture-sm-btn").show();
-    $("#stop-sm-btn").hide();
-    $('.js--delete-media-capture').hide();
-    $('#video-stream').hide();
 
+    $startsm.hide();
+    $capturesm.show();
+
+    $preview.find('.js--delete-media-capture').hide();
+
+    $preview.find('.output').attr('src', '');
     animateWindows();
 
     var mediaData = {};
@@ -86,10 +90,9 @@ var stopMotionMode = (function() {
     var smCacheName = $("body").data( "smCacheName");
     var smCachePath = $("body").data( "smCachePath");
 
-    $("#stop-sm-btn").hide();
-    $("#capture-sm-btn").hide();
+    $capturesm.hide();
 
-    $preview.find('.preview_stopmotion--container').remove();
+    $preview.find('.preview_stopmotion--container').empty();
 
     saveFeedback("/images/icone-dodoc_anim.png");
 
@@ -102,8 +105,7 @@ var stopMotionMode = (function() {
     // send instruction to finish stopmotion
     sendData.createNewMedia( mediaData);
 
-    $("#start-sm-btn").show();
-    $('.js--delete-media-capture').show();
+    $startsm.show();
 
   }
 
@@ -111,13 +113,17 @@ var stopMotionMode = (function() {
   return {
 
     init : function() {
-      $("#capture-sm-btn").off().on('click', takeStopMotionPic);
-      $("#stop-sm-btn").off().on('click', stopStopMotion);
+      $startsm.off().on('click', startStopMotion);
+      $capturesm.off().on('click', takeStopMotionPic);
+      $finishsm.off().on('click', stopStopMotion);
       $preview.show();
-      startStopMotion();
+      $preview.find('.output').attr('src', '');
+      $preview.find('.js--delete-media-capture').hide();
     },
 
     stop : function() {
+
+      $preview.find('.output').attr('src', '');
 
     },
 
@@ -146,11 +152,14 @@ var stopMotionMode = (function() {
       var folderCacheName = newStopMotionData.folderCacheName;
       var folderCachePath = newStopMotionData.folderCachePath;
 
-      $("#stop-sm-btn").show();
-
       $("body").data( "smCacheName", folderCacheName);
       $("body").data( "smCachePath", folderCachePath);
       $("body").data( "smImageCount", 0);
+    },
+
+    showStopMotionPreview : function( pathToMediaFile) {
+      $preview.find('.output').attr( 'src', pathToMediaFile);
+      $preview.find('.js--delete-media-capture').show();
     },
 
   }

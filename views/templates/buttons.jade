@@ -154,6 +154,12 @@ mixin button(typeOfButton, navOrButton, style)
         include images/clear.svg
       span Supprimer cette image
 
+  if( typeOfButton === 'finishStopmotion')
+    a(href="#" title="Dodoc publi" class='button-wrapper_finishStopmotion js--finish-stopmotion #{defaultClasses}')
+      .btn.icon
+        include images/enregistre.svg
+      span Valider l’animation
+
   if( typeOfButton === 'flag')
     a(href="#" title="Favoris" class='button-wrapper_flagMedia js--flagMedia')
       .btn.icon

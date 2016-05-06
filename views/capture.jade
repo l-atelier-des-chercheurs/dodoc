@@ -74,31 +74,28 @@ html
           div.captureRight.small-5.columns
             div.flash.small-12
 
+            .preview_image
+              img.output
+              +button( 'deleteMediaCapture', '', 'isCollapsed')
 
-
+            .preview_video
+              video.output(controls autoplay loop)
 
             .preview_stopmotion
+              video.output(controls autoplay loop)
               .preview_stopmotion--container
               .mode-instructions
                 img.icone-stopmotion(src="/images/stopmotion.svg")
                 h4
-                  | Vous venez de créer un nouveau stop motion.</br>Cliquez que le <b>bouton d\'enregistrement</b> pour commencer à prendre des photos
+                  | Vous allez de créer un nouveau stop motion.</br>Cliquez que le <b>bouton d\'enregistrement</b> pour commencer à prendre des photos
+              +button( 'finishStopmotion', '', 'isCollapsed')
+              +button( 'deleteMediaCapture', '', '')
 
             .preview_audio
-              img
-              audio(controls)
+              img.output
+              audio(controls).output
+              +button( 'deleteMediaCapture', '', '')
 
-
-
-            div(class="screenshot small-12" data-file="none")
-              img.preview_image
-
-              video(id="video-stream" autoplay controls loop)
-              button#stop-sm-btn.btn.icon
-                include templates/images/enregistre.svg
-
-
-            +button( 'deleteMediaCapture', '', '')
 
        //- ALERT CHANGER DE MEDIA
       div(id="modal-change-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
@@ -112,8 +109,8 @@ html
       .stopmotion_lastImagePreview
         img
         .meta-stopmotion
-          +button( 'deleteLastMedia', '', '')
           .image_count
+          +button( 'deleteLastMedia', '', 'isCollapsed')
 
 
 
