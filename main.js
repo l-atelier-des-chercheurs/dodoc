@@ -126,7 +126,7 @@ module.exports = function(app, io){
 	// Modifier un dossier
 	function onEditFolder( updatedFolderData){
 		dev.logfunction( "EVENT - onEditFolder with packet " + JSON.stringify( updatedFolderData, null, 4));
-    updateFolderDataJSON( updatedFolderData).then(function( currentDataJSON) {
+    updateFolderMeta( updatedFolderData).then(function( currentDataJSON) {
       sendEventWithContent( 'folderModified', currentDataJSON);
     }, function(error) {
       console.error("Failed to update a folder! Error: ", error);
@@ -567,8 +567,9 @@ FOLDER METHODS
 
   		    if( new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName)
   		    && slugFolderName.indexOf( dodoc.deletedPrefix)){
-          	var folderJSON = getFolderDataJSON( slugFolderName);
-            allFoldersData.push( folderJSON);
+          	var fmeta = getFolderMeta( slugFolderName);
+          	fmeta.slugFolderName = slugFolderName;
+            allFoldersData.push( fmeta);
           }
 
           foldersProcessed++;
@@ -611,8 +612,12 @@ FOLDER METHODS
   		  projects.forEach( function( slugProjectName) {
   		    if( new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugProjectName)
   		    && slugProjectName.indexOf( dodoc.deletedPrefix)){
-            var projectData = getProjectMeta( slugFolderName, slugProjectName);
-            allProjectsData.push( projectData);
+            var pdata = getProjectMeta( slugFolderName, slugProjectName);
+            var projectPath = getProjectPath( slugFolderName, slugProjectName);
+            pdata.slugFolderName = slugFolderName;
+            pdata.slugProjectName = slugProjectName;
+            pdata.projectPreviewName = getProjectPreview( projectPath);
+            allProjectsData.push( pdata);
           }
 
           projectsProcessed++;
@@ -626,8 +631,8 @@ FOLDER METHODS
   }
 
 
-  function getFolderDataJSON( slugFolderName) {
-		dev.logfunction( "COMMON — getFolderDataJSON");
+  function getFolderMeta( slugFolderName) {
+		dev.logfunction( "COMMON — getFolderMeta");
 
     var folderPath = getFullPath( slugFolderName);
   	var folderMetaFile = getMetaFileOfFolder( folderPath);
@@ -635,14 +640,13 @@ FOLDER METHODS
 		var folderData = fs.readFileSync( folderMetaFile,dodoc.textEncoding);
 		var folderMetadata = parseData( folderData);
 
-		folderMetadata.slugFolderName = slugFolderName;
     return folderMetadata;
   }
 
   // accepts a folderData with at least a "name" and a "slugFolderName"
-  function updateFolderDataJSON( folderData) {
+  function updateFolderMeta( folderData) {
     return new Promise(function(resolve, reject) {
-  		dev.logfunction( "COMMON — updateFolderDataJSON");
+  		dev.logfunction( "COMMON — updateFolderMeta");
 
   		var isNameChanged = folderData.newName !== undefined;
   		var slugFolderName = folderData.slugFolderName;
@@ -651,7 +655,7 @@ FOLDER METHODS
       var newStatut = folderData.statut;
 
       // récupérer les infos sur le folder
-      var fmeta = getFolderDataJSON( slugFolderName);
+      var fmeta = getFolderMeta( slugFolderName);
 
       // éditer les métas récupéré
       if( isNameChanged)
@@ -662,8 +666,9 @@ FOLDER METHODS
       fmeta.modified = currentDateString;
 
       // envoyer les changements dans le JSON du folder
-      storeData( getMetaFileOfFolder( folderPath), fmeta, "update").then(function( meta) {
-        resolve( meta);
+      storeData( getMetaFileOfFolder( folderPath), fmeta, "update").then(function( ufmeta) {
+        ufmeta.slugFolderName = slugFolderName;
+        resolve( ufmeta);
       });
     });
   }
@@ -722,10 +727,6 @@ PROJECT METHODS
 		var projectData = fs.readFileSync( projectJSONFile, dodoc.textEncoding);
 		var projectJSONdata = parseData(projectData);
 
-    projectJSONdata.slugFolderName = slugFolderName;
-    projectJSONdata.slugProjectName = slugProjectName;
-    projectJSONdata.projectPreviewName = getProjectPreview( projectPath);
-
     return projectJSONdata;
   }
 
@@ -769,6 +770,9 @@ PROJECT METHODS
 
       storeData( getMetaFileOfProject( projectPath), pmeta, "create").then(function( meta) {
         var updatedpmeta = getProjectMeta( slugFolderName, slugProjectName);
+        updatedpmeta.slugFolderName = slugFolderName;
+        updatedpmeta.slugProjectName = slugProjectName;
+        updatedpmeta.projectPreviewName = getProjectPreview( projectPath);
         resolve( updatedpmeta);
       });
 
@@ -823,6 +827,9 @@ PROJECT METHODS
 
       storeData( getMetaFileOfProject( projectPath), currentpdata, 'update').then(function( meta) {
         var updatedpmeta = getProjectMeta( slugFolderName, slugProjectName);
+        updatedpmeta.slugFolderName = slugFolderName;
+        updatedpmeta.slugProjectName = slugProjectName;
+        updatedpmeta.projectPreviewName = getProjectPreview( projectPath);
         resolve( updatedpmeta);
       }, function() {
         console.log( gutil.colors.red('--> Couldn\'t update project meta.'));
@@ -832,7 +839,11 @@ PROJECT METHODS
   }
 
   function listOneProject( slugFolderName, slugProjectName) {
+    var projectPath = getProjectPath( slugFolderName, slugProjectName);
     var pdata = getProjectMeta( slugFolderName, slugProjectName);
+    pdata.slugFolderName = slugFolderName;
+    pdata.slugProjectName = slugProjectName;
+    pdata.projectPreviewName = getProjectPreview( projectPath);
     return pdata;
   }
 
@@ -976,7 +987,7 @@ MEDIA METHODS
             // let's make one
             folderMediaMetaAndFileName[mediaObjKey] = new Object();
             // read JSON file and add the content to the folder
-            var mediaMetaData = getMediaDataJSON( projectPath, mediasFolderPath, fileNameWithoutExtension);
+            var mediaMetaData = getMediaMeta( projectPath, mediasFolderPath, fileNameWithoutExtension);
             mediaMetaData.mediaFolderPath = mediasFolderPath;
             mediaMetaData.mediaName = fileNameWithoutExtension;
             mediaMetaData.slugFolderName = slugFolderName;
@@ -1007,8 +1018,8 @@ MEDIA METHODS
 
 
 
-  function getMediaDataJSON( projectPath, mediaFolderPath, mediaName) {
-		dev.logfunction( "COMMON — getMediaDataJSON : projectPath = " + projectPath + " mediaFolderPath = " + mediaFolderPath + " mediaName = " + mediaName);
+  function getMediaMeta( projectPath, mediaFolderPath, mediaName) {
+		dev.logfunction( "COMMON — getMediaMeta : projectPath = " + projectPath + " mediaFolderPath = " + mediaFolderPath + " mediaName = " + mediaName);
 
     var mediaJSONFilepath = getPathToMedia( projectPath, mediaFolderPath, mediaName) + dodoc.metaFileext;
 		var mediaData = fs.readFileSync( mediaJSONFilepath, dodoc.textEncoding);
@@ -1223,7 +1234,7 @@ MEDIA METHODS
       // get the path to the media JSON and its content
       var projectPath = getProjectPath( slugFolderName, slugProjectName);
       var mediaFilepath = getPathToMedia( projectPath, mediaFolderPath, mediaName);
-      var mediaMetaData = getMediaDataJSON( projectPath, mediaFolderPath, mediaName);
+      var mediaMetaData = getMediaMeta( projectPath, mediaFolderPath, mediaName);
 
       // switch the fav state
       if( editMediaData.switchFav !== undefined)

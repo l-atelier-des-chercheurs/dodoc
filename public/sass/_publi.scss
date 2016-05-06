@@ -38,6 +38,10 @@
 
       margin-bottom: 22px;
 
+      &::before {
+        display: none;
+      }
+
       .mediaContent {
         box-shadow: none;
       }

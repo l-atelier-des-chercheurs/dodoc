@@ -97,17 +97,18 @@ body.capture{
   $buttonBar: $margin + 64px;
 
 .captureLeft {
+
   margin: auto;
   position: absolute;
   background-color: #FFF;
   z-index:2;
   margin-bottom:  25px;
 
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
   width: 50%;
-  height: 0;
-  padding-bottom: calc(37.5% + #{$buttonBar});
+  height: auto;
+//   padding-bottom: calc(37.5% + #{$buttonBar});
 
   left:25%;
 
@@ -119,9 +120,13 @@ body.capture{
     padding: 2vh;
   }
 
+  body.is--fullscreen[data-justcaptured="yes"] & {
+    background-color: #FF4246;
+  }
+
 
   .video-view {
-    position: absolute;
+    position: relative;
     padding-bottom:  $buttonBar;
     height: 100%;
     width: 100%;
@@ -334,6 +339,7 @@ body.capture{
     z-index: 100;
     top: 10px;
     left: 10px;
+
     .record-feedback{
       width:15px;
       height:15px;
@@ -358,7 +364,7 @@ body.capture{
   width: 50px;
   top:20%;
   left:90%;
-  z-index: 1001;
+  z-index: 2001;
   display: none;
 
   pointer-events: none;

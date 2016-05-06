@@ -7085,6 +7085,8 @@ select {
       width: 100%;
       float: none;
       margin-bottom: 22px; }
+      .publi-container .publi_medias .media::before {
+        display: none; }
       .publi-container .publi_medias .media .mediaContent {
         box-shadow: none; }
       .publi-container .publi_medias .media img {
@@ -7881,8 +7883,7 @@ body.capture .content-wrapper:after {
   margin-bottom: 25px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   width: 50%;
-  height: 0;
-  padding-bottom: calc(37.5% + 80px);
+  height: auto;
   left: 25%; }
   body.is--fullscreen .captureLeft {
     width: 100%;
@@ -7890,8 +7891,10 @@ body.capture .content-wrapper:after {
     top: 0;
     height: 100%;
     padding: 2vh; }
+  body.is--fullscreen[data-justcaptured="yes"] .captureLeft {
+    background-color: #FF4246; }
   .captureLeft .video-view {
-    position: absolute;
+    position: relative;
     padding-bottom: 80px;
     height: 100%;
     width: 100%; }
@@ -8027,7 +8030,7 @@ body.capture .content-wrapper:after {
   width: 50px;
   top: 20%;
   left: 90%;
-  z-index: 1001;
+  z-index: 2001;
   display: none;
   pointer-events: none; }
 
