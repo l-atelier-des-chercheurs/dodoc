@@ -12,6 +12,10 @@ var stopMotionMode = (function() {
   var $finishsm = $(".js--finish-stopmotion");
 
   function startStopMotion(){
+
+    if( mediaJustCaptured())
+      return;
+
     countImage = 0;
     console.log('start stop-motion');
 
@@ -31,6 +35,9 @@ var stopMotionMode = (function() {
   }
 
   function takeStopMotionPic() {
+
+    if( mediaJustCaptured())
+      return;
 
     var smCacheName = $("body").data( "smCacheName");
     var smCachePath = $("body").data( "smCachePath");
@@ -59,10 +66,8 @@ var stopMotionMode = (function() {
       $(this).fadeOut(500);
     });
 
-    $('body').attr('data-justcaptured', 'yes');
-    setTimeout( function() {
-      $('body').attr('data-justcaptured', '');
-    }, 600);
+    justCaptured();
+    animateWindows();
 
     $('body').data( "smImageCount", smImageCount);
 

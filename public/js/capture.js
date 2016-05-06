@@ -70,7 +70,9 @@ function init(){
     $('.js--modeSelector').removeClass('is--active');
     $(this).addClass('is--active');
     changeMediaMode( newMode);
+
     backAnimation();
+
   });
   $('.js--modeSelector[data-mediatype="photo"]').trigger( 'click');
 
@@ -92,6 +94,9 @@ function init(){
 }
 
 function changeMediaMode( newMode) {
+
+  if( mediaJustCaptured())
+    return;
 
   console.log('A new mode has been selected : ' + newMode);
   switch( newMode){
@@ -651,6 +656,19 @@ function backAnimation(){
     });
   }
 }
+
+function justCaptured() {
+  // passer le body en "data-justcaptured=yes" pendant un temps
+  $('body').attr('data-justcaptured', 'yes');
+  setTimeout( function() {
+    $('body').attr('data-justcaptured', '');
+  }, 1000);
+}
+
+function mediaJustCaptured() {
+  return $('body').attr('data-justcaptured') === 'yes';
+}
+
 
 function saveFeedback(icone){
 

@@ -24,9 +24,13 @@ var videoMode = (function() {
     });
 
     function startVideo(){
+      if( mediaJustCaptured())
+        return;
+
       console.log('starting-video');
       backAnimation();
       recordingFeedback();
+
 
       $('body').attr('data-videorecording', 'yes');
 
@@ -76,22 +80,23 @@ var videoMode = (function() {
       $(".recording-feedback").remove();
       // stop video recorder
 
-      currentStream.stopRecordCameraFeed()
-        .then(function( videoDataURL) {
+      currentStream.stopRecordCameraFeed().then(function( videoDataURL) {
+        var mediaData =
+        {
+          "mediaType" : "video",
+          "mediaData" : videoDataURL
+        };
+        // send instruction to record video
+        sendData.createNewMedia( mediaData);
+        $preview.find('video').src = '';
+        $preview.find('video').poster = 'https://localhost:8080/loading.gif';
+        saveFeedback("/images/icone-dodoc_video.png");
+      }, function() {
+        console.log("Failed stopping the recording of a video.");
+      });
 
-          var mediaData =
-          {
-            "mediaType" : "video",
-            "mediaData" : videoDataURL
-          };
-          // send instruction to record video
-          sendData.createNewMedia( mediaData);
-          $preview.find('video').src = '';
-          $preview.find('video').poster = 'https://localhost:8080/loading.gif';
-          saveFeedback("/images/icone-dodoc_video.png");
-        }, function() {
-          console.log("Failed stopping the recording of a video.");
-        });
+      justCaptured();
+
     }
 
   }

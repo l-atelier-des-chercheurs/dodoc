@@ -60,6 +60,9 @@ function audioCapture(){
 
 
   function startRecordAudio(){
+    if( mediaJustCaptured())
+      return;
+
     backAnimation();
 
     currentStream.startRecordAudioFeed();
@@ -97,6 +100,9 @@ function audioCapture(){
       saveFeedback("/images/icone-dodoc_son.png");
 
     });
+
+    justCaptured();
+
   }
 }
 

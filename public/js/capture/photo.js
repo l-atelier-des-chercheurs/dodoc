@@ -11,6 +11,9 @@ var imageMode = (function() {
   // Fonction qui prend les photos
   function takePictures() {
 
+    if( mediaJustCaptured())
+      return;
+
     var invisibleCanvas = document.createElement('canvas');
     invisibleCanvas.width = dodoc.captureVideoWidth;
     invisibleCanvas.height = dodoc.captureVideoHeight;
@@ -24,11 +27,6 @@ var imageMode = (function() {
     });
     console.log("Yeah you take a picture");
 
-    // passer le body en "data-justcaptured=yes" pendant un temps
-    $('body').attr('data-justcaptured', 'yes');
-    setTimeout( function() {
-      $('body').attr('data-justcaptured', '');
-    }, 600);
 
     var mediaData =
     {
@@ -38,6 +36,8 @@ var imageMode = (function() {
     // send instruction to record photo
     sendData.createNewMedia( mediaData);
     $preview.attr('src', '');
+
+    justCaptured();
     saveFeedback("/images/icone-dodoc_image.png");
   }
 
