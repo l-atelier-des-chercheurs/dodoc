@@ -54,7 +54,7 @@ module.exports = function(app,io,m){
     return getFullPath( publiPath);
   }
   function getCurrentDate() {
-    return moment().format( dodoc.jsonDateFormat);
+    return moment().format( dodoc.metaDateFormat);
   }
   function eventAndContent( sendEvent, objectJson) {
     var eventContentJSON =
@@ -73,7 +73,7 @@ module.exports = function(app,io,m){
     var slugFolderName = req.param('folder');
     if( slugFolderName !== undefined) {
       var jsonFileOfFolder = getMetaFileOfFolder( slugFolderName);
-      var folderData = readJsonFile( jsonFileOfFolder);
+      var folderData = readMetaFile( jsonFileOfFolder);
 
       pageDataJSON.slugFolderName = slugFolderName;
       pageDataJSON.folderName = folderData.name;
@@ -83,16 +83,16 @@ module.exports = function(app,io,m){
       if( slugProjectName !== undefined) {
         var projectPath = getProjectPath( slugFolderName, slugProjectName)
         var jsonFileOfProject = getMetaFileOfProject( projectPath);
-        var projectData = readJsonFile( jsonFileOfProject);
+        var projectData = readMetaFile( jsonFileOfProject);
 
         pageDataJSON.slugProjectName = slugProjectName;
         pageDataJSON.projectName = projectData.name;
 
         var slugPubliName = req.param('publi');
         if( slugPubliName !== undefined) {
-          var jsonFileOfPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName) + '.json';
+          var jsonFileOfPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName) + dodoc.metaFileext;
           var fullPathToJsonFileOfPubli = makePathToPubliFull( jsonFileOfPubli);
-          var publiData = readJsonFile( fullPathToJsonFileOfPubli);
+          var publiData = readMetaFile( fullPathToJsonFileOfPubli);
 
           pageDataJSON.slugPubliName = slugPubliName;
           pageDataJSON.publiName = publiData.name;
@@ -159,13 +159,18 @@ module.exports = function(app,io,m){
     res.render("publi", generatePageDataJSON);
   };
 
-  function readJsonFile( jsonFile){
-    var jsonFileContent = fs.readFileSync(jsonFile, 'utf8');
-    var jsonFileContentParsed = parseData( jsonFileContent);
-    return jsonFileContentParsed;
+  function readMetaFile( metaFile){
+    var metaFileContent = fs.readFileSync( metaFile, 'utf8');
+    var metaFileContentParsed = parseData( metaFileContent);
+    return metaFileContentParsed;
   }
+
 	function parseData(d) {
-		return parsedown(d);
+  	var parsed = parsedown(d);
+  	// if there is a field called medias, this one has to be made into an array
+  	if( parsed.hasOwnProperty('medias'))
+  	  parsed.medias = parsed.medias.split(',');
+		return parsed;
 	}
 
   function getMediaFolderPathByType( mediaType) {

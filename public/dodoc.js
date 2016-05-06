@@ -17,7 +17,7 @@ var dodoc = {
   "nameOfBibli" : "Bibliotheque de médias",
   "nameOfPubli" : "Publication",
 
-  "jsonDateFormat" : "YYYYMMDD_HHmmss",
+  "metaDateFormat" : "YYYYMMDD_HHmmss",
   "textEncoding" : "UTF-8",
   "textFieldSeparator" : "\n\n----\n\n",
   "deletedPrefix" : "x_",

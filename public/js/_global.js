@@ -532,16 +532,16 @@ var publi = {
       });
 
       // check if there is two times the same
+/*
       if( anyDuplicates( listMediasPaths)) {
         alert( "Ce média existe déjà dans la publication ! Veuillez le supprimer.");
         return false;
       }
+*/
 
       var publiJson = new Object();
       publiJson.slugPubliName = slugPubliName;
       publiJson.medias = listMediasPaths;
-
-      debugger;
 
       // let's send it over to node so it is saved in the publication jsonfile
       sendData.editPubliMedias( publiJson);
@@ -587,7 +587,13 @@ var publi = {
   },
 
   makePubliMedias : function( listOfMediasToAdd) {
-    return listAllMedias( listOfMediasToAdd.medias)
+    // publi medias are listed in an array (to respect order and make sure that 2 medias with same keys aren't removed)
+    // so we need to listAllMedias one by one
+    var $medias = $();
+    for( media of listOfMediasToAdd.medias) {
+      $medias = $medias.add( listAllMedias(media));
+    }
+    return $medias;
   }
 
 }
@@ -612,9 +618,6 @@ function listMontagePubliMeta( whichPubli, pdata, $publiContent) {
 
 // update montage content with new medias
 function listMontagePubliMedias( whichPubli, pdata, $publiContent) {
-
-  debugger;
-
   // make sure that publi is requested
   if( pdata.slugFolderName !== currentFolder || pdata.slugProjectName !== currentProject || pdata.slugPubliName !== whichPubli)
     return;

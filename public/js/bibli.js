@@ -217,6 +217,7 @@ function updateMontagePubliMedias( psdata) {
   var $publiContent = $('.montage-edit-container .montage-edit');
   var publiShown = $publiContent.data('publishown');
 
+
   $.each( psdata, function( slugPubliName, pdata) {
     listMontagePubliMedias( publiShown, pdata, $publiContent);
   });

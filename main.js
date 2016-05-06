@@ -275,7 +275,7 @@ module.exports = function(app, io){
 	}
 
 	function onAddImageToStopMotion( socket, imageData) {
-		dev.logfunction( "onAddImageToStopMotion");
+		dev.logfunction( "EVENT - onAddImageToStopMotion");
 
 		var imageContent = imageData.imageContent;
 		var imageFolder = imageData.folderCacheName;
@@ -299,7 +299,7 @@ module.exports = function(app, io){
 
 
   function onDeleteLastImageOfStopMotion( idata) {
-		dev.logfunction( "onDeleteLastImageOfStopMotion : " + JSON.stringify( idata, null, 4));
+		dev.logfunction( "EVENT - onDeleteLastImageOfStopMotion : " + JSON.stringify( idata, null, 4));
 
     var fullPathToStopmotionImage = getFullPath( idata.pathToStopmotionImage);
 
@@ -316,7 +316,7 @@ module.exports = function(app, io){
 
 	// Delete File
 	function onDeleteMedia( mediaData) {
-		dev.logfunction( "onDeleteMedia");
+		dev.logfunction( "EVENT - onDeleteMedia");
 		var slugFolderName = mediaData.slugFolderName;
 		var slugProjectName = mediaData.slugProjectName;
 		var mediaFolder = mediaData.mediaFolderPath;
@@ -335,7 +335,7 @@ module.exports = function(app, io){
 
 
   function onListOneProjectPublis( publiMetaData, socket) {
-		dev.logfunction( "onListOneProjectPublis");
+		dev.logfunction( "EVENT - onListOneProjectPublis");
 		var slugFolderName = publiMetaData.slugFolderName;
 		var slugProjectName = publiMetaData.slugProjectName;
 
@@ -348,7 +348,7 @@ module.exports = function(app, io){
 
 
   function onCreatePubli( publiData) {
-		dev.logfunction( "onCreatePubli");
+		dev.logfunction( "EVENT - onCreatePubli");
 
   	createPubli( publiData).then(function( publiMetaData) {
     	listPublis( publiMetaData.slugFolderName, publiMetaData.slugProjectName, publiMetaData.slugPubliName).then(function( publiProjectContent) {
@@ -363,7 +363,7 @@ module.exports = function(app, io){
   }
 
   function onEditMetaPubli( publiData) {
-		dev.logfunction( "onEditMetaPubli");
+		dev.logfunction( "EVENT - onEditMetaPubli");
 
 		editThisPubli( publiData).then(function( publiMetaData) {
   		var slugFolderName = publiMetaData.slugFolderName;
@@ -383,7 +383,7 @@ module.exports = function(app, io){
   }
 
   function onEditMediasPubli( publiData) {
-		dev.logfunction( "onEditMediasPubli");
+		dev.logfunction( "EVENT - onEditMediasPubli");
 
 		editThisPubli( publiData).then(function( publiMetaData) {
   		var slugFolderName = publiMetaData.slugFolderName;
@@ -391,7 +391,7 @@ module.exports = function(app, io){
   		var slugPubliName = publiMetaData.slugPubliName;
 
     	listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
-        sendEventWithContent( 'publiMediasUpdated', publiMedias, socket);
+        sendEventWithContent( 'publiMediasUpdated', publiMedias);
       }, function(error) {
         console.error("Failed to list publi media! Error: ", error);
       });
@@ -406,8 +406,7 @@ module.exports = function(app, io){
 
 // P U B L I     P A G E
 	function onListOnePubliMetaAndMedias( publiData) {
-
-    dev.logfunction( "onListOnePubliMetaAndMedias : " + JSON.stringify( publiData, null, 4));
+    dev.logfunction( "EVENT - onListOnePubliMetaAndMedias : " + JSON.stringify( publiData, null, 4));
 		var slugFolderName = publiData.slugFolderName;
 		var slugProjectName = publiData.slugProjectName;
 		var slugPubliName = publiData.slugPubliName;
@@ -433,10 +432,7 @@ module.exports = function(app, io){
                                 - update folder data
                                 - etc.
 
-                                Functions that should call a socket.emit should call
-                                eventAndContent() as return functions, for example :
-
-                                  return eventAndContent( "folderCreated", objectJson);
+                                Functions sould return only their content with Promise.
 
                                 See onNewFolder() and createNewFolder() for working examples.
 
@@ -488,7 +484,7 @@ module.exports = function(app, io){
     return dodoc.contentDir + "/" + path;
   }
   function getCurrentDate() {
-    return moment().format( dodoc.jsonDateFormat);
+    return moment().format( dodoc.metaDateFormat);
   }
   function eventAndContent( sendEvent, objectJson) {
     var eventContentJSON =
@@ -498,11 +494,9 @@ module.exports = function(app, io){
     };
     return eventContentJSON;
   }
-
-
   function sendEventWithContent( sendEvent, objectContent, socket) {
     var eventAndContentJson = eventAndContent( sendEvent, objectContent);
-    dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
+    dev.log( gutil.colors.green( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4)));
     if( socket === undefined)
       io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
     else
@@ -672,11 +666,6 @@ FOLDER METHODS
         resolve( meta);
       });
     });
-  }
-
-  function listOneFolder( slugFolderName) {
-		dev.logfunction( "COMMON — listOneFolder for folder slug-named " + slugFolderName);
-    return eventAndContent( "listOneFolder", folderJSON);
   }
 
 /************
@@ -1478,6 +1467,7 @@ PUBLIS METHODS
       var publiContent = getPubliMeta( slugFolderName, slugProjectName, slugPubliName);
     	listAllMedias( slugFolderName, slugProjectName).then(function( mediaFolderContent) {
         filterMediasFromList( publiContent, mediaFolderContent).then(function( publiMedias) {
+
         	publiContent.medias = publiMedias;
         	publiContent.slugFolderName = slugFolderName;
         	publiContent.slugProjectName = slugProjectName;
@@ -1487,7 +1477,6 @@ PUBLIS METHODS
         	// make an array that looks like listPublis
           var folderPubliMeta = {};
           folderPubliMeta[slugPubliName] = publiContent;
-
           resolve( folderPubliMeta);
         }, function(error) {
           console.error("Failed to filter medias for a publi! Error: ", error);
@@ -1504,12 +1493,14 @@ PUBLIS METHODS
     return new Promise(function(resolve, reject) {
   		dev.logfunction( "COMMON — filterMediasFromList : publiContent = " + JSON.stringify(publiContent, null, 4) + " mediaFolderContent = " + JSON.stringify(mediaFolderContent, null, 4));
 
-      var publiMedias = {};
+      var publiMedias = [];
       for( var item of publiContent.medias) {
         dev.log('item : ' + item);
         if( mediaFolderContent.hasOwnProperty( item) === true) {
           // and copy it to an empty obj
-          publiMedias[item] = mediaFolderContent[item];
+          var mediaitem = {};
+          mediaitem[item] = mediaFolderContent[item];
+          publiMedias.push( mediaitem);
         }
       }
       resolve( publiMedias);
