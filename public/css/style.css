@@ -8088,8 +8088,6 @@ body.capture .content-wrapper:after {
     .captureRight .preview_stopmotion .meta-stopmotion .count-image {
       display: inline-block;
       vertical-align: top; }
-  .captureRight #canvas-equalizer {
-    background-color: orange; }
   .captureRight .son {
     display: none;
     padding-left: 27px;

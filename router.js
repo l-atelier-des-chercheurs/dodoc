@@ -199,24 +199,4 @@ module.exports = function(app,io,m){
     return dodoc.projectPublisFoldername;
   }
 
-  // new write json function that writes in json and returns true or false depending on success
-  function jsonWriteToFile( jsonFile, objectJson, sendEvent) {
-		var jsonString = JSON.stringify( objectJson, null, 4);
-		if( sendEvent === "create") {
-  		try {
-  			fs.appendFileSync( jsonFile, jsonString);
-        console.log("Success for event : " + sendEvent);
-        return true;
-  		} catch(err) {
-        console.log(err);
-        return false;
-      }
-    }
-    else if( sendEvent === "update") {
-      console.log("Success for event : " + sendEvent);
-      fs.writeFileSync(jsonFile, jsonString);
-      return true;
-	  }
-  }
-
 };
