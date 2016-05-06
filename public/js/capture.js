@@ -349,7 +349,10 @@ var currentStream = (function() {
         })
         .then(function(){
           var deviceChoiceId;
-          if(mediaDevices.length < 2){
+          if( mediaDevices.length === 0) {
+            reject( 'No videoinput found.');
+          } else
+          if(mediaDevices.length < 2) {
             deviceChoiceId = mediaDevices[0].deviceId;
             //$('.container-inner').prepend("<h2>"+mediaDevices[0].label+"</h2>");
           }
@@ -642,7 +645,6 @@ function onMediaCreated( mediasData){
     animateWindows();
   }
   else if( newMediaType === 'audio') {
-    debugger;
     $('.preview_audio')
       .find('img')
         .attr('src', pathToMediaFile + '.png')

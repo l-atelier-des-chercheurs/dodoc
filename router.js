@@ -30,15 +30,15 @@ module.exports = function(app,io,m){
     return dodoc.contentDir + "/" + path;
   }
 
-  function getJsonFileOfFolder( slugFolderName) {
-    return getFullPath( slugFolderName) + '/' + dodoc.folderJSONfilename;
+  function getMetaFileOfFolder( slugFolderName) {
+    return getFullPath( slugFolderName) + '/' + dodoc.folderMetafilename + dodoc.metaFileext;
   }
 
   function getProjectPath( slugFolderName, slugProjectName) {
     return slugFolderName + '/' + slugProjectName;
   }
-  function getJsonFileOfProject( projectPath) {
-    return getFullPath( projectPath) + '/' + dodoc.projectJSONfilename;
+  function getMetaFileOfProject( projectPath) {
+    return getFullPath( projectPath) + '/' + dodoc.projectMetafilename + dodoc.metaFileext;
   }
 
   function getPathToPubli( slugFolderName, slugProjectName, pslug) {
@@ -71,7 +71,7 @@ module.exports = function(app,io,m){
 
     var slugFolderName = req.param('folder');
     if( slugFolderName !== undefined) {
-      var jsonFileOfFolder = getJsonFileOfFolder( slugFolderName);
+      var jsonFileOfFolder = getMetaFileOfFolder( slugFolderName);
       var folderData = readJsonFile( jsonFileOfFolder);
 
       pageDataJSON.slugFolderName = slugFolderName;
@@ -81,7 +81,7 @@ module.exports = function(app,io,m){
       var slugProjectName = req.param('project');
       if( slugProjectName !== undefined) {
         var projectPath = getProjectPath( slugFolderName, slugProjectName)
-        var jsonFileOfProject = getJsonFileOfProject( projectPath);
+        var jsonFileOfProject = getMetaFileOfProject( projectPath);
         var projectData = readJsonFile( jsonFileOfProject);
 
         pageDataJSON.slugProjectName = slugProjectName;
@@ -160,9 +160,12 @@ module.exports = function(app,io,m){
 
   function readJsonFile( jsonFile){
     var jsonFileContent = fs.readFileSync(jsonFile, 'utf8');
-    var jsonFileContentParsed = JSON.parse( jsonFileContent);
+    var jsonFileContentParsed = parseData( jsonFileContent);
     return jsonFileContentParsed;
   }
+	function parseData(d) {
+		return JSON.parse(d);
+	}
 
   function getMediaFolderPathByType( mediaType) {
     if( mediaType == 'photo')

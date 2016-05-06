@@ -11,13 +11,13 @@ var audioMode = (function() {
   return {
     init : function( stream) {
       audioCapture();
-      eq = new equalizer( $("#canvas-audio"), stream);
+      eq = new equalizer( $('#canvas-audio'), stream);
     },
 
     stop : function() {
-      debugger;
-      if( eq !== undefined)
+      if( eq !== undefined) {
         eq.stopEqualizer();
+      }
     },
   }
 })();

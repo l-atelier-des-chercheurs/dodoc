@@ -1,8 +1,8 @@
 var dodoc = {
   "contentDir" : "sessions",
-  "folderJSONfilename" : "dossier.json",
-  "projectJSONfilename" : "projet.json",
-  "publiJSONfilename" : "publi.json",
+  "metaFileext" : ".json",
+  "folderMetafilename" : "dossier",
+  "projectMetafilename" : "projet",
 
   "projectPublisFoldername" : "publications",
   "projectPhotosFoldername" : "01-photos",
