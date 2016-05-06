@@ -1032,10 +1032,12 @@ var modals = {
     	var titleOfTextmediaMd = $modal.find('.js--submit-new-text_title').val();
     	var textOfTextmediaMd =  $modal.find('.js--submit-new-text_text').val();
 
-      if( titleOfTextmediaMd !== undefined && titleOfTextmediaMd.length > 0)
+    	debugger;
+
+      if( titleOfTextmediaMd !== undefined)
         editMediaData.titleOfTextmediaMd = titleOfTextmediaMd;
 
-      if( textOfTextmediaMd !== undefined && textOfTextmediaMd.length > 0)
+      if( textOfTextmediaMd !== undefined)
         editMediaData.textOfTextmediaMd = textOfTextmediaMd;
 
       sendData.editMedia( editMediaData);

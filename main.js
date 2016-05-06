@@ -439,11 +439,9 @@ module.exports = function(app, io){
   	// if there is a field called medias, this one has to be made into an array
   	if( parsed.hasOwnProperty('medias'))
   	  parsed.medias = parsed.medias.split(',');
-    // the fav field is a boolean, so let's
-  	if( parsed.hasOwnProperty('fav')) {
-  	  dev.log( "This file has a fav field, with current value " + parsed.fav + ". If we bool it we have " + (parsed.fav === 'true'));
+    // the fav field is a boolean, so let's convert it
+  	if( parsed.hasOwnProperty('fav'))
   	  parsed.fav = (parsed.fav === 'true');
-    }
 
 		return parsed;
 	}
@@ -1249,11 +1247,12 @@ MEDIA METHODS
       storeData( mediaFilepath + dodoc.metaFileext, mediaMetaData, 'update').then(function( mdata) {
 
         // if media is a text, let's add the text content to the obj for convenience client-side
-        if( mediaFolderPath === dodoc.projectTextsFoldername && editMediaData.titleOfTextmediaMd !== undefined && editMediaData.textOfTextmediaMd) {
+        if( mediaFolderPath === dodoc.projectTextsFoldername && editMediaData.titleOfTextmediaMd !== undefined && editMediaData.textOfTextmediaMd !== undefined) {
           var contentOfText = updateTextMediaContent( mediaFilepath + '.md', editMediaData.titleOfTextmediaMd, editMediaData.textOfTextmediaMd);
           mdata.contentOfText = contentOfText;
           mdata = merge( mdata, getTextMediaContentToJsonObj( mediaFilepath + '.md'));
         }
+
         // for updating the result
         mdata.mediaName = mediaName;
         mdata.mediaFolderPath = mediaFolderPath;
