@@ -179,48 +179,27 @@ module.exports = function(app, io){
 	}
 
 	// Supprimer un dossier
-	function onRemoveOneProject( projectData){
+	function onRemoveOneProject( pdata){
 		dev.logfunction( "EVENT - onRemoveProject");
-		var slugFolderName = projectData.slugFolderName;
-		var slugProjectName = projectData.slugProjectName;
-    var eventAndContentJson = removeOneProject( slugFolderName, slugProjectName);
-    dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
-    io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
-	}
-
-	function removeOneProject( slugFolderName, slugProjectName) {
-		dev.logfunction( "COMMON - onRemoveProject _ slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName);
-
-    var projectPath = getProjectPath( slugFolderName, slugProjectName);
-    var projectPathToDeleted = getProjectPath( slugFolderName, dodoc.deletedPrefix + slugProjectName);
-		fs.renameSync( projectPath, projectPathToDeleted);
-
-    var projectData =
-    {
-      "slugFolderName" : slugFolderName,
-      "slugProjectName" : slugProjectName,
-    }
-
-    return eventAndContent( "projectRemoved", projectData);
+    removeOneProject( pdata.slugFolderName, pdata.slugProjectName).then( function( rpdata) {
+      sendEventWithContent( 'projectRemoved', rpdata);
+    }, function(error) {
+      console.error("Failed to remove the project called " + pdata.slugProjectName + "! Error: ", error);
+    });
 	}
 
 // F I N     P R O J E T S     P A G E
 
 // P R O J E T      P A G E
-	function onListProject( projectData, socket){
-		dev.logfunction( "onListProject");
-		var slugFolderName = projectData.slugFolderName;
-		var slugProjectName = projectData.slugProjectName;
-    var eventAndContentJson = listOneProject( slugFolderName, slugProjectName);
-    dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
-    io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+	function onListProject( pdata, socket) {
+		dev.logfunction( "EVENT - onListProject");
+    var npdata = listOneProject( pdata.slugFolderName, pdata.slugProjectName);
+    sendEventWithContent( 'listOneProject', npdata);
   }
 
-  function onListOneProjectMedias( projectData, socket) {
-		dev.logfunction( "listOneProjectMedias");
-		var slugFolderName = projectData.slugFolderName;
-		var slugProjectName = projectData.slugProjectName;
-  	listAllMedias( slugFolderName, slugProjectName).then(function( mediaFolderContent) {
+  function onListOneProjectMedias( pdata, socket) {
+		dev.logfunction( "EVENT - listOneProjectMedias");
+  	listAllMedias( pdata.slugFolderName, pdata.slugProjectName).then(function( mediaFolderContent) {
       sendEventWithContent( 'listAllMedias', mediaFolderContent, socket);
     }, function(error) {
       console.error("Failed to list one media! Error: ", error);
@@ -234,8 +213,6 @@ module.exports = function(app, io){
 		var slugProjectName = projectData.slugProjectName;
 		var mediaName = projectData.mediaName;
     var mediaFolderPath = getMediaFolderPathByType( projectData.type);
-    console.log( 'mediaFolderPath : ' + mediaFolderPath);
-
     listOneMedia( slugFolderName, slugProjectName, mediaFolderPath, mediaName).then(function( oneMediaData) {
       sendEventWithContent( 'listOneMedia', oneMediaData, socket);
     }, function(error) {
@@ -266,7 +243,6 @@ module.exports = function(app, io){
 	function onEditMediaMeta( editMediaData) {
 		dev.logfunction( "EVENT - onEditMediaMeta");
   	editMediaMeta( editMediaData).then(function( mediaMetaData) {
-
     	listOneMedia( mediaMetaData.slugFolderName, mediaMetaData.slugProjectName, mediaMetaData.mediaFolderPath, mediaMetaData.mediaName).then(function( oneMediaData) {
         sendEventWithContent( 'mediaUpdated', oneMediaData);
       }, function(error) {
@@ -288,16 +264,13 @@ module.exports = function(app, io){
 		var slugProjectName = mediaData.slugProjectName;
 		var mediaFolder = getAnimationPathOfProject();
 		var folderCachePath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder + '/' + folderCacheName;
-
 		fs.removeSync( folderCachePath);
 		fs.ensureDirSync( folderCachePath);
-
 		var newStopMotionData =
 		{
 			"folderCacheName" : folderCacheName,
 			"folderCachePath" : folderCachePath
 		}
-
 		io.sockets.emit('stopMotionDirectoryCreated', newStopMotionData);
 	}
 
@@ -350,11 +323,7 @@ module.exports = function(app, io){
 		var mediaName = mediaData.mediaName;
 
   	deleteOneMedia( slugFolderName, slugProjectName, mediaFolder, mediaName).then(function( mediaMetaData) {
-
-      var eventAndContentJson = eventAndContent( 'mediaRemoved', mediaMetaData);
-      dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
-      io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
-
+      sendEventWithContent( 'mediaRemoved', mediaMetaData);
     }, function(error) {
       console.error("Failed to remove one media! Error: ", error);
     });
@@ -371,11 +340,7 @@ module.exports = function(app, io){
 		var slugProjectName = publiMetaData.slugProjectName;
 
   	listPublis( slugFolderName, slugProjectName).then(function( publiProjectContent) {
-
-      var eventAndContentJson = eventAndContent( 'listOneProjectPublis', publiProjectContent);
-      dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
-      io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
-
+      sendEventWithContent( 'listOneProjectPublis', publiProjectContent, socket);
     }, function(error) {
       console.error("Failed to list all publis! Error: ", error);
     });
@@ -406,9 +371,7 @@ module.exports = function(app, io){
   		var slugPubliName = publiMetaData.slugPubliName;
 
     	listPublis( slugFolderName, slugProjectName, slugPubliName).then(function( publiProjectContent) {
-        var eventAndContentJson = eventAndContent( 'publiMetaUpdated', publiProjectContent);
-        dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
-        io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+        sendEventWithContent( 'publiMetaUpdated', publiProjectContent);
       }, function(error) {
         console.error("Failed to listPublis from create! Error: ", error);
       });
@@ -428,9 +391,7 @@ module.exports = function(app, io){
   		var slugPubliName = publiMetaData.slugPubliName;
 
     	listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
-      	var eventAndContentJson = eventAndContent( 'publiMediasUpdated', publiMedias);
-        dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
-        io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+        sendEventWithContent( 'publiMediasUpdated', publiMedias, socket);
       }, function(error) {
         console.error("Failed to list publi media! Error: ", error);
       });
@@ -452,9 +413,7 @@ module.exports = function(app, io){
 		var slugPubliName = publiData.slugPubliName;
 
   	listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
-    	var eventAndContentJson = eventAndContent( 'listOnePubliMetaAndMedias', publiMedias);
-      dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
-      io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+      sendEventWithContent( 'listOnePubliMetaAndMedias', publiMedias);
     }, function(error) {
       console.error("Failed to list one media! Error: ", error);
     });
@@ -885,8 +844,28 @@ PROJECT METHODS
 
   function listOneProject( slugFolderName, slugProjectName) {
     var pdata = getProjectMeta( slugFolderName, slugProjectName);
-    return eventAndContent( "listOneProject", pdata);
+    return pdata;
   }
+
+	function removeOneProject( slugFolderName, slugProjectName) {
+    return new Promise(function(resolve, reject) {
+  		dev.logfunction( "COMMON - onRemoveProject _ slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName);
+
+      var projectPath = getProjectPath( slugFolderName, slugProjectName);
+      var projectPathToDeleted = getProjectPath( slugFolderName, dodoc.deletedPrefix + slugProjectName);
+  		fs.rename( projectPath, projectPathToDeleted, function(err) {
+        if (err) reject(err);
+        var projectData =
+        {
+          "slugFolderName" : slugFolderName,
+          "slugProjectName" : slugProjectName,
+        }
+        resolve( projectData);
+  		});
+    });
+	}
+
+
 
 /************
 
