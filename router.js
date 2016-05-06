@@ -6,7 +6,8 @@ var fs = require('fs-extra');
 var ffmpeg = require('fluent-ffmpeg');
 var dodoc  = require('./public/dodoc.js'),
 	moment = require( "moment" ),
-  merge = require('merge')
+  merge = require('merge'),
+  parsedown = require('woods-parsedown')
 ;
 
 module.exports = function(app,io,m){
@@ -164,7 +165,7 @@ module.exports = function(app,io,m){
     return jsonFileContentParsed;
   }
 	function parseData(d) {
-		return JSON.parse(d);
+		return parsedown(d);
 	}
 
   function getMediaFolderPathByType( mediaType) {

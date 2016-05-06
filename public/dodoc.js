@@ -1,6 +1,6 @@
 var dodoc = {
   "contentDir" : "sessions",
-  "metaFileext" : ".json",
+  "metaFileext" : ".txt",
   "folderMetafilename" : "dossier",
   "projectMetafilename" : "projet",
 

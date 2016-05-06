@@ -32,7 +32,8 @@
     "sprintf-js": "*",
     "thumbbot": "^0.4.1",
     "underscore": "*",
-    "video-recorder": "*"
+    "video-recorder": "*",
+    "woods-parsedown": "0.0.4"
   },
   "devDependencies": {
     "gulp": "^3.9.0",

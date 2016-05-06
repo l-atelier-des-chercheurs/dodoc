@@ -204,7 +204,7 @@ function onListOnePubliMetaAndMedias( psdata) {
 }
 
 function updateMontagePubliMeta( psdata) {
-  // check if a publi content was requested (not ideal, we could use a session tag in the json to check but also not ideal).
+
   var $publiContent = $('.montage-edit-container .montage-edit');
   var publiShown = $publiContent.data('publishown');
 
@@ -213,7 +213,7 @@ function updateMontagePubliMeta( psdata) {
   });
 }
 function updateMontagePubliMedias( psdata) {
-  // check if a publi content was requested (not ideal, we could use a session tag in the json to check but also not ideal).
+
   var $publiContent = $('.montage-edit-container .montage-edit');
   var publiShown = $publiContent.data('publishown');
 

@@ -11,7 +11,8 @@ var fs = require('fs-extra'),
 	vsprintf = require("sprintf-js").vsprintf,
 	flags = require('flags'),
   merge = require('merge'),
-  gutil = require('gulp-util')
+  gutil = require('gulp-util'),
+  parsedown = require('woods-parsedown')
 ;
 
 var dodoc  = require('./public/dodoc.js');
@@ -385,13 +386,8 @@ module.exports = function(app, io){
 		dev.logfunction( "onCreatePubli");
 
   	createPubli( publiData).then(function( publiMetaData) {
-
     	listPublis( publiMetaData.slugFolderName, publiMetaData.slugProjectName, publiMetaData.slugPubliName).then(function( publiProjectContent) {
-
-        var eventAndContentJson = eventAndContent( 'publiCreated', publiProjectContent);
-        dev.log( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
-        io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
-
+        sendEventWithContent( 'publiCreated', publiProjectContent);
       }, function(error) {
         console.error("Failed to listPublis from create! Error: ", error);
       });
@@ -489,24 +485,45 @@ module.exports = function(app, io){
 
 
 	function parseData(d) {
-		return JSON.parse(d);
+  	var parsed = parsedown(d);
+  	// if there is a field called medias, this one has to be made into an array
+  	if( parsed.hasOwnProperty('medias'))
+  	  parsed.medias = parsed.medias.split(',');
+		return parsed;
 	}
 	function storeData( mpath, d, e) {
     return new Promise(function(resolve, reject) {
+      // make string from js obj, that fits woods-parsedown conventions
+      var textd = textifyObj(d);
       if( e === "create") {
-        fs.appendFile( mpath, JSON.stringify( d, null, 4), function(err) {
-        if (err) reject( err);
-          resolve(d);
+        fs.appendFile( mpath, textd, function(err) {
+          if (err) reject( err);
+          resolve( parseData(textd));
         });
       }
 		  if( e === "update") {
-        fs.writeFile( mpath, JSON.stringify( d, null, 4), function(err) {
+        fs.writeFile( mpath, textd, function(err) {
         if (err) reject( err);
-          resolve(d);
+          resolve( parseData(textd));
         });
       }
     });
 	}
+
+  function textifyObj( obj) {
+    var str = '---\n';
+    for (var prop in obj) {
+      var value = obj[prop];
+      // if value is a string, it's all good
+      // but if it's an array (like it is for medias in publications) we'll need to make it into a string
+      if( typeof obj[prop] === 'array')
+        value = value.join(',');
+
+      str += prop + ': ' + value+'\n\n';
+    }
+    dev.log( 'textified object : ' + str);
+    return str;
+  }
 
   function getFullPath( path) {
     return dodoc.contentDir + "/" + path;
@@ -895,7 +912,7 @@ MEDIA METHODS
   }
 
   function findFirstFilenameNotTaken( fileName, path, fileext) {
-    fileext = typeof fileext !== 'undefined' ?  fileext : '.json';
+    fileext = typeof fileext !== 'undefined' ?  fileext : dodoc.metaFileext;
 
     try {
       var newFileName = fileName;
@@ -957,10 +974,10 @@ MEDIA METHODS
 //         dev.log( "- - fileEXTENSION of " + filename + " is " + fileExtension);
 //         dev.log( "- - Is file a deleted file ? " + new RegExp( '^' + dodoc.deletedPrefix).test( filename));
         // match only json that are not deleted (prefixed with a custom prefix
-        if( fileExtension === ".json" && !new RegExp( '^' + dodoc.deletedPrefix).test( filename)) {
+        if( fileExtension === dodoc.metaFileext && !new RegExp( '^' + dodoc.deletedPrefix).test( filename)) {
           if( !lookingForSpecificJson)
   				  foldersMediasMeta.push( filename);
-  				else if( filename == mediaName + ".json") {
+  				else if( filename == mediaName + dodoc.metaFileext) {
   				  foldersMediasMeta.push( filename);
   				  return;
   				}
@@ -1025,7 +1042,7 @@ MEDIA METHODS
   function getMediaDataJSON( projectPath, mediaFolderPath, mediaName) {
 		dev.logfunction( "COMMON — getMediaDataJSON : projectPath = " + projectPath + " mediaFolderPath = " + mediaFolderPath + " mediaName = " + mediaName);
 
-    var mediaJSONFilepath = getPathToMedia( projectPath, mediaFolderPath, mediaName) + '.json';
+    var mediaJSONFilepath = getPathToMedia( projectPath, mediaFolderPath, mediaName) + dodoc.metaFileext;
 		var mediaData = fs.readFileSync( mediaJSONFilepath, dodoc.textEncoding);
 		var mediaMetaData = parseData( mediaData);
 
@@ -1293,7 +1310,7 @@ MEDIA METHODS
           "slugProjectName" : slugProjectName,
           "mediaFolder" : mediaFolder,
           "mediaName" : mediaName,
-          "mediaKey" : mediaFolder + '/' + mediaName + '.json'
+          "mediaKey" : mediaFolder + '/' + mediaName + dodoc.metaFileext
         }
         resolve( mediaMetaData);
       } catch( err) {
@@ -1336,9 +1353,9 @@ PUBLIS METHODS
     return pathToPubli;
   }
 
-  function getPubliDataJSON( slugFolderName, slugProjectName, pslug) {
+  function getPubliMeta( slugFolderName, slugProjectName, pslug) {
     var pathToPubli = getPathToPubli( slugFolderName, slugProjectName, pslug);
-    var publiJSONFilepath = pathToPubli + '.json';
+    var publiJSONFilepath = pathToPubli + dodoc.metaFileext;
 		var publiData = fs.readFileSync( publiJSONFilepath, dodoc.textEncoding);
 		var publiMetaData = parseData( publiData);
     return publiMetaData;
@@ -1360,7 +1377,7 @@ PUBLIS METHODS
       var pathToThisPubliFolder = getPathToPubli( slugFolderName, slugProjectName);
       pslug = findFirstFilenameNotTaken( pslug, pathToThisPubliFolder);
 
-      var pathToThisPubli = getPathToPubli( slugFolderName, slugProjectName, pslug) + '.json';
+      var pathToThisPubli = getPathToPubli( slugFolderName, slugProjectName, pslug) + dodoc.metaFileext;
 
     	console.log("New publi created with name " + pname + " and path " + pathToThisPubli);
 
@@ -1405,10 +1422,10 @@ PUBLIS METHODS
       filesInPubliFolder.forEach( function( filename) {
         if( !new RegExp( dodoc.regexpMatchFolderNames, 'i').test( filename) && filename !== ".DS_Store") {
           var fileExtension = new RegExp( dodoc.regexpGetFileExtension, 'i').exec( filename);
-          if( fileExtension == ".json" && !new RegExp( '^' + dodoc.deletedPrefix).test( filename)) {
+          if( fileExtension == dodoc.metaFileext && !new RegExp( '^' + dodoc.deletedPrefix).test( filename)) {
             if( !lookingForSpecificJson)
     				  foldersPublisMeta.push( filename);
-    				else if( filename == thisPubliName + ".json") {
+    				else if( filename == thisPubliName + dodoc.metaFileext) {
     				  foldersPublisMeta.push( filename);
     				  return;
     				}
@@ -1425,8 +1442,8 @@ PUBLIS METHODS
 
         if( !folderPubliMeta.hasOwnProperty( slugPubliName)) {
           folderPubliMeta[slugPubliName] = new Object();
-          // read JSON file and add the content to the folder
-          var publiMetaData = getPubliDataJSON( slugFolderName, slugProjectName, slugPubliName);
+          // read meta file and add the content to the folder
+          var publiMetaData = getPubliMeta( slugFolderName, slugProjectName, slugPubliName);
           publiMetaData.slugPubliName = slugPubliName;
           publiMetaData.slugFolderName = slugFolderName;
           publiMetaData.slugProjectName = slugProjectName;
@@ -1445,10 +1462,10 @@ PUBLIS METHODS
   		dev.logfunction( "COMMON — editThisPubli : publiData = " + JSON.stringify( pdata, null, 4));
 
       var pathToPubli = getPathToPubli( pdata.slugFolderName, pdata.slugProjectName, pdata.slugPubliName);
-      var publiMetaFilepath = pathToPubli + '.json';
+      var publiMetaFilepath = pathToPubli + dodoc.metaFileext;
 
       // get and parse publi json data
-      var publiMetaData = getPubliDataJSON( pdata.slugFolderName, pdata.slugProjectName, pdata.slugPubliName);
+      var publiMetaData = getPubliMeta( pdata.slugFolderName, pdata.slugProjectName, pdata.slugPubliName);
 
       // update modified date
       publiMetaData.modified = getCurrentDate();
@@ -1479,7 +1496,7 @@ PUBLIS METHODS
     return new Promise(function(resolve, reject) {
   		dev.logfunction( "COMMON — listMediaAndMetaFromOnePubli : slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName + " publiName = " + slugPubliName);
 
-      var publiContent = getPubliDataJSON( slugFolderName, slugProjectName, slugPubliName);
+      var publiContent = getPubliMeta( slugFolderName, slugProjectName, slugPubliName);
     	listAllMedias( slugFolderName, slugProjectName).then(function( mediaFolderContent) {
         filterMediasFromList( publiContent, mediaFolderContent).then(function( publiMedias) {
         	publiContent.medias = publiMedias;
@@ -1508,10 +1525,8 @@ PUBLIS METHODS
     return new Promise(function(resolve, reject) {
   		dev.logfunction( "COMMON — filterMediasFromList : publiContent = " + JSON.stringify(publiContent, null, 4) + " mediaFolderContent = " + JSON.stringify(mediaFolderContent, null, 4));
 
-      var publiMediasList = publiContent.medias;
       var publiMedias = {};
-      // let's check for each item in publicontent its corresponding media in mediaFolderContent
-      for( var item of publiMediasList) {
+      for( var item of publiContent.medias) {
         dev.log('item : ' + item);
         if( mediaFolderContent.hasOwnProperty( item) === true) {
           // and copy it to an empty obj

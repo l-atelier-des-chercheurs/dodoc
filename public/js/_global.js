@@ -541,6 +541,8 @@ var publi = {
       publiJson.slugPubliName = slugPubliName;
       publiJson.medias = listMediasPaths;
 
+      debugger;
+
       // let's send it over to node so it is saved in the publication jsonfile
       sendData.editPubliMedias( publiJson);
     });
@@ -584,36 +586,6 @@ var publi = {
     $(document).trigger('restart_dragula');
   },
 
-  updateMontageContent : function( listOfMediasToAdd) {
-
-    var $lib = $(".mainContent .medias-list");
-    var $montage = $('.montage-edit-container .montage-edit');
-
-    var $publiMedias = $();
-
-    $.each( listOfMediasToAdd, function( i, media) {
-
-      // let's find the item with mediakey="01-photos/20160419_224310.json" in lib
-      var $mediaFromLib = $lib
-        .find('.media')
-          .filter("[data-mediakey='" + media + "']")
-            .clone(true)
-        ;
-
-/*
-      // let's find the item with mediakey="01-photos/20160419_224310.json" in montage
-      var $mediaFromMontage = $montage
-        .find('.media')
-          .filter("[data-mediakey='" + media + "']")
-        ;
-*/
-
-      $publiMedias = $publiMedias.add( $mediaFromLib);
-    });
-
-    return $publiMedias;
-  },
-
   makePubliMedias : function( listOfMediasToAdd) {
     return listAllMedias( listOfMediasToAdd.medias)
   }
@@ -640,6 +612,9 @@ function listMontagePubliMeta( whichPubli, pdata, $publiContent) {
 
 // update montage content with new medias
 function listMontagePubliMedias( whichPubli, pdata, $publiContent) {
+
+  debugger;
+
   // make sure that publi is requested
   if( pdata.slugFolderName !== currentFolder || pdata.slugProjectName !== currentProject || pdata.slugPubliName !== whichPubli)
     return;
