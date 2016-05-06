@@ -5,7 +5,6 @@ html
   head
     include templates/head.jade
   body.capture
-
     .navbar-container
 
       header.navbar
@@ -22,10 +21,14 @@ html
         div.media-choice
           div.btn-choice
             div
-              button#photo.js--modeSelector(data-mediatype="photo") image
-              button#video-btn.js--modeSelector(data-mediatype="video") vidéo
-              button#stopmotion.js--modeSelector(data-mediatype="stopmotion") stop motion
-              button#audio.js--modeSelector(data-mediatype="audio") audio
+              button#photo.js--modeSelector(data-mediatype="photo")
+                | #{dodoc.lang.photo}
+              button#video-btn.js--modeSelector(data-mediatype="video")
+                | #{dodoc.lang.video}
+              button#stopmotion.js--modeSelector(data-mediatype="stopmotion")
+                | #{dodoc.lang.stopmotion}
+              button#audio.js--modeSelector(data-mediatype="audio")
+                | #{dodoc.lang.audio}
 
         div.content-wrapper
           div.captureLeft
@@ -59,13 +62,17 @@ html
 
               div.display-choice.small-12
                 div.choices.image-choice
-                  .caption image
+                  .caption
+                    | #{dodoc.lang.photo}
                 div.choices.video-choice
-                  .caption vidéo
+                  .caption
+                    | #{dodoc.lang.video}
                 div.choices.stopmotion-choice
-                  .caption stop motion
+                  .caption
+                    | #{dodoc.lang.stopmotion}
                 div.choices.audio-choice
-                  .caption audio
+                  .caption
+                    | #{dodoc.lang.audio}
 
             div.full-screen-wrapper
               +button( 'fullscreen', '', 'isCollapsed')

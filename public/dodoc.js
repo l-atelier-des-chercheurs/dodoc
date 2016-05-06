@@ -1,4 +1,69 @@
-var dodoc = {
+var lang = 'fr';
+
+
+if( lang === 'fr') {
+  var localize = {
+    "lang" : {
+      "folder" : "Dossier",
+      "project" : "Projet",
+      "projects" : "Projets",
+      "capture" : "Prise de vue",
+      "bibli" : "Bibliotheque de médias",
+      "publi" : "Publication",
+
+      "photo" : "photo",
+      "video" : "video",
+      "stopmotion" : "animation",
+      "audio" : "son",
+
+      "yes" : "oui",
+      "cancel" : "annuler",
+
+      "lastMediasAdded" : "Derniers médias ajoutés",
+      "listOfPublications" : "Liste des publications",
+      "createPublication" : "Créer une nouvelle publication",
+
+      "quickAccess" : "Accès rapide",
+      "createdOn" : "créé le",
+      "modifiedOn" : "modifié le",
+      "status" : "état",
+
+      "modal" : {
+        "sureRemoveMedia" : "Êtes-vous sûr de vouloir supprimer ce média ?",
+        "addText" : "Ajouter du texte",
+        "importAMedia" : "Importer un média",
+        "importAFile" : "Importer un fichier depuis l'ordinateur",
+        "acceptedFormats" : "Les formats acceptés sont le .jpg et le .mp4.",
+
+
+      },
+
+      "button" : {
+
+
+      }
+
+
+    }
+  };
+} else if( lang === 'en') {
+  var localize = {
+    "lang" : {
+      "folder" : "Folder",
+      "project" : "Project",
+      "projects" : "Projects",
+      "capture" : "Media capture",
+      "bibli" : "Media library",
+      "publi" : "Publication",
+
+      "lastMediasAdded" : "Last medias added",
+      "listOfPublications" : "List of publications",
+
+    }
+  };
+}
+
+var settings = {
   "contentDir" : "sessions",
   "metaFileext" : ".txt",
   "folderMetafilename" : "dossier",
@@ -10,13 +75,6 @@ var dodoc = {
   "projectVideosFoldername" : "03-videos",
   "projectAudiosFoldername" : "04-sons",
   "projectTextsFoldername" : "05-textes",
-
-  "nameOfFolder" : "Dossier",
-  "nameOfProject" : "Projet",
-  "nameOfProjects" : "Projets",
-  "nameOfCapture" : "Prise de vue",
-  "nameOfBibli" : "Bibliotheque de médias",
-  "nameOfPubli" : "Publication",
 
   "metaDateFormat" : "YYYYMMDD_HHmmss",
   "textEncoding" : "UTF-8",
@@ -31,7 +89,10 @@ var dodoc = {
 
   "captureVideoWidth" : 640,
   "captureVideoHeight" : 480,
-}
+};
+
+// should work in ES6
+var dodoc = Object.assign( localize, settings);
 
 try {
   module.exports = dodoc;

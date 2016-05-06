@@ -14,7 +14,9 @@ html
     #container.row.mainContent
 
       .folder-wrapper
-        .legende Dossier
+        .legende
+          | #{dodoc.lang.folder}
+
         h1.folder-title #{folderName}
         +button('nouveauProjet')
 

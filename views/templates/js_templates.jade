@@ -98,26 +98,32 @@ div.media-big_text.media-big(data-type="text" data-id)
         h2.title
       .meta-data.flex_40
         .statut
-          span statut
+          span
+            | #{dodoc.lang.status}
           span.statut-type
         .created
-          span créé le
+          span
+            | #{dodoc.lang.createdOn}
           span.create-date
         .modified
-          span modifié le
+          span
+            | #{dodoc.lang.modifiedOn}
           span.modify-date
       .button-to-pages.flex_60
-        h3.legende accès rapide
+        h3.legende
+          | #{dodoc.lang.quickAccess}
         +button('capture', '', 'isCollapsed')
         +button('bibli', '', 'isCollapsed')
         +button('publications', '', 'isCollapsed')
     .image-wrapper.flex_50
       img
   ul.last-medias
-    h3.legende Derniers médias ajoutés
+    h3.legende
+      | #{dodoc.lang.lastMediasAdded}
 
   .montage-list
-    h1.legende Liste des publications
+    h1.legende
+      | #{dodoc.lang.listOfPublications}
     ul.list-publi
 
 
@@ -130,16 +136,20 @@ li.dossier.small-6.medium-4.large-4.columns(data-statut data-name data-nom)
       .projet-list
     .meta-data.row
       .nb-projets.small-6.columns
-        span.nb-projets-intitule projets
+        span.nb-projets-intitule
+          | #{dodoc.lang.projects}
         span.nb-projets-count 0
       .statut.small-6.columns
-        span statut
+        span
+          | #{dodoc.lang.status}
         span.statut-type
       .created.small-6.columns
-        span créé le
+        span
+          | #{dodoc.lang.createdOn}
         span.create-date
       .modified.small-6.columns
-        span modifié le
+        span
+          | #{dodoc.lang.modifiedOn}
         span.modify-date
 
     li.projetSnippet

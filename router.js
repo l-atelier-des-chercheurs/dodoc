@@ -112,6 +112,8 @@ module.exports = function(app,io,m){
 
     pageDataJSON.url = req.path;
 
+    pageDataJSON.dodoc = dodoc;
+
     return pageDataJSON;
   }
 
@@ -124,37 +126,37 @@ module.exports = function(app,io,m){
   };
 
   function getFolder(req, res) {
-    var pageTitle = dodoc.nameOfFolder;
+    var pageTitle = dodoc.lang.folder;
     var generatePageDataJSON = generatePageData(req, pageTitle);
     res.render("folder", generatePageDataJSON);
   };
 
   function getProject(req, res) {
-    var pageTitle = dodoc.nameOfProject;
+    var pageTitle = dodoc.lang.project;
     var generatePageDataJSON = generatePageData(req, pageTitle);
     res.render("project", generatePageDataJSON);
   };
 
   function getCapture(req, res) {
-    var pageTitle = dodoc.nameOfCapture;
+    var pageTitle = dodoc.lang.capture;
     var generatePageDataJSON = generatePageData(req, pageTitle);
     res.render("capture", generatePageDataJSON);
   };
 
   function getBibli(req, res) {
-    var pageTitle = dodoc.nameOfBibli;
+    var pageTitle = dodoc.lang.bibli;
     var generatePageDataJSON = generatePageData(req, pageTitle);
     res.render("bibli", generatePageDataJSON);
   };
 
   function getBibliPubli(req, res) {
-    var pageTitle = dodoc.nameOfBibli;
+    var pageTitle = dodoc.lang.bibli;
     var generatePageDataJSON = generatePageData(req, pageTitle);
     res.render("bibli", generatePageDataJSON);
   };
 
   function getPubli(req, res) {
-    var pageTitle = dodoc.nameOfPubli;
+    var pageTitle = dodoc.lang.publi;
     var generatePageDataJSON = generatePageData(req, pageTitle);
     res.render("publi", generatePageDataJSON);
   };

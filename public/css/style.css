@@ -8180,7 +8180,7 @@ body.capture .content-wrapper:after {
   .media.is--highlight::after {
     background-color: #48C2B5;
     left: .4687rem;
-    top: 90%;
+    top: .4687rem;
     right: .4687rem;
     bottom: .4687rem; }
   .media.is--highlight .mediaContent {

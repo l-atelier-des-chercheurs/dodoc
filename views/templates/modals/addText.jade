@@ -1,5 +1,6 @@
 div(id="modal-add-text" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-  h2#modalTitle.popoverTitle Ajouter du texte
+  h2#modalTitle.popoverTitle
+    | #{dodoc.lang.modal.addText}
   form(onsubmit='return false;' class='add-text-form')
     input.js--submit-new-text_title(type='text' placeholder='Titre')
     textarea.js--submit-new-text_text(placeholder="Ajouter du texte ici")

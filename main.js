@@ -439,11 +439,16 @@ module.exports = function(app, io){
   	// if there is a field called medias, this one has to be made into an array
   	if( parsed.hasOwnProperty('medias'))
   	  parsed.medias = parsed.medias.split(',');
+    // the fav field is a boolean, so let's
+  	if( parsed.hasOwnProperty('fav')) {
+  	  dev.log( "This file has a fav field, with current value " + parsed.fav + ". If we bool it we have " + (parsed.fav === 'true'));
+  	  parsed.fav = (parsed.fav === 'true');
+    }
+
 		return parsed;
 	}
 	function storeData( mpath, d, e) {
     return new Promise(function(resolve, reject) {
-      // make string from js obj, that fits woods-parsedown conventions
       var textd = textifyObj(d);
       if( e === "create") {
         fs.appendFile( mpath, textd, function(err) {

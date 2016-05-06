@@ -218,7 +218,7 @@ function makeFolderContent( projectData){
 	  .find( '.create-date').text( transformDatetoString( created)).end()
 	  .find( '.modify-date').text( modified !== false ? transformDatetoString( modified) : '').end()
 	  .find( '.nb-projets')
-	    .find( '.nb-projets-intitule').text( dodoc.nameOfProjects).end()
+	    .find( '.nb-projets-intitule').text( dodoc.lang.projects).end()
     .end()
   ;
 
