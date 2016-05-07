@@ -640,21 +640,27 @@ function onMediaCreated( mediasData){
 
 //animation des fenêtres à la capture
 function animateWindows(){
+	$('body').attr('data-state', 'expanded');
+/*
 	if(!$('.captureRight').hasClass('active')){
 		$(".captureRight").css('display', 'block').addClass('active');
     $('.captureLeft').velocity({'left':'5%'}, 'slow');
     $('.captureRight').velocity({'left':'57%'}, 'slow');
 	}
+*/
 }
 
 //fenêtre de preview retourne au center
 function backAnimation(){
+	$('body').attr('data-state', '');
+/*
   if($(".captureRight").hasClass('active')){
     $('.captureLeft').velocity({'left':'25%'}, 'slow');
     $('.captureRight').removeClass('active').velocity({'left':'25%'}, 500,function(){
 //       $(this).fadeOut('slow');
     });
   }
+*/
 }
 
 function justCaptured() {

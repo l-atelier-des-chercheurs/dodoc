@@ -36,7 +36,7 @@ html
               //- display camera
               video(id="video" autoplay)
               //- display audio vizualizer
-              canvas(id="canvas-audio" width="480" height="256")
+              canvas(id="canvas-audio" width="720" height="256")
 
               div.btn-capture-wrapper
                 div.photo-capture
@@ -81,15 +81,15 @@ html
           div.captureRight.small-5.columns
             div.flash.small-12
 
-            .preview_image
+            .preview.preview_image
               img.output
               +button( 'deleteMediaCapture', '', 'isCollapsed')
 
-            .preview_video
+            .preview.preview_video
               video.output(controls autoplay loop)
               +button( 'deleteMediaCapture', '', 'isCollapsed')
 
-            .preview_stopmotion
+            .preview.preview_stopmotion
               video.output(controls autoplay loop)
               .preview_stopmotion--container
               .mode-instructions
@@ -97,12 +97,12 @@ html
                 h4
                   | Vous allez de créer un nouveau stop motion.</br>Cliquez que le <b>bouton d\'enregistrement</b> pour commencer à prendre des photos
               +button( 'finishStopmotion', '', 'isCollapsed')
-              +button( 'deleteMediaCapture', '', '')
+              +button( 'deleteMediaCapture', '', 'isCollapsed')
 
-            .preview_audio
+            .preview.preview_audio
               img.output
               audio(controls).output
-              +button( 'deleteMediaCapture', '', '')
+              +button( 'deleteMediaCapture', '', 'isCollapsed')
 
 
        //- ALERT CHANGER DE MEDIA

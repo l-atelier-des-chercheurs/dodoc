@@ -6747,7 +6747,7 @@ th.hide-for-touch {
 
 .navbar-container {
   width: 100%;
-  min-height: 80px;
+  min-height: 70px;
   font-size: 1.1rem;
   font-weight: 400; }
   body.index .navbar-container .logo {
@@ -6765,8 +6765,8 @@ th.hide-for-touch {
   .navbar-container .navbar {
     position: relative;
     width: 100%;
-    min-height: 80px;
-    padding: 15px;
+    min-height: 70px;
+    padding: 10px;
     height: auto;
     background-color: #fff;
     z-index: 1000;
@@ -7883,15 +7883,22 @@ body.capture .content-wrapper:after {
   z-index: 2;
   margin-bottom: 25px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  width: 50%;
   height: auto;
-  left: 25%; }
+  max-width: 46%;
+  width: 80vh;
+  left: 50%;
+  transform: translate3d(-50%, 0, 0);
+  transition: transform .4s ease-out; }
+  body[data-state="expanded"] .captureLeft {
+    transform: translate3d(-104%, 0, 0); }
   body.is--fullscreen .captureLeft {
     width: 100%;
     left: 0 !important;
     top: 0;
     height: 100%;
-    padding: 2vh; }
+    padding: 2vh;
+    max-width: none;
+    transform: translate3d(0%, 0, 0); }
   body.is--fullscreen[data-justcaptured="yes"] .captureLeft {
     background-color: #FF4246; }
   .captureLeft .video-view {
@@ -7986,7 +7993,8 @@ body.capture .content-wrapper:after {
         position: absolute;
         word-wrap: break-word; }
   .captureLeft #canvas-audio {
-    display: none; }
+    display: none;
+    width: 100%; }
   .captureLeft .full-screen-wrapper {
     position: absolute;
     top: 0;
@@ -8041,12 +8049,20 @@ body.capture .content-wrapper:after {
   background-color: #FFF;
   position: absolute;
   z-index: 1;
-  display: none;
+  display: block;
   overflow: hidden;
+  opacity: 0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 10px;
-  left: 25%;
-  width: 40%; }
+  height: auto;
+  max-width: 41%;
+  width: 80vh;
+  left: 50%;
+  transform: translate3d(-50%, 0, 0);
+  transition: transform .4s ease-out, opacity .6s ease-out; }
+  body[data-state="expanded"] .captureRight {
+    opacity: 1;
+    transform: translate3d(4%, 0, 0); }
   .captureRight .flash {
     height: 100%;
     background-color: #FFF;
@@ -8075,6 +8091,10 @@ body.capture .content-wrapper:after {
       font-size: 1em; }
   .captureRight .output[src=''] {
     display: none; }
+  .captureRight .preview {
+    position: relative; }
+    .captureRight .preview .output {
+      padding-bottom: 10px; }
   .captureRight .preview_stopmotion video.output:not([src='']) ~ .mode-instructions {
     display: none; }
   .captureRight .preview_stopmotion .preview_stopmotion--container:empty ~ .mode-instructions {

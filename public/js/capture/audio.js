@@ -134,7 +134,7 @@ function equalizer( $canvas, stream) {
 
   // Global Variables for Drawing
   var column = 0;
-  var canvasWidth  = 620;
+  var canvasWidth  = 720;
   var canvasHeight = 256;
   var ctx;
 
