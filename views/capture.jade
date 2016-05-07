@@ -22,13 +22,13 @@ html
           div.btn-choice
             div
               button#photo.js--modeSelector(data-mediatype="photo")
-                | #{dodoc.lang.photo}
+                | !{dodoc.lang.photo}
               button#video-btn.js--modeSelector(data-mediatype="video")
-                | #{dodoc.lang.video}
+                | !{dodoc.lang.video}
               button#stopmotion.js--modeSelector(data-mediatype="stopmotion")
-                | #{dodoc.lang.stopmotion}
+                | !{dodoc.lang.stopmotion}
               button#audio.js--modeSelector(data-mediatype="audio")
-                | #{dodoc.lang.audio}
+                | !{dodoc.lang.audio}
 
         div.content-wrapper
           div.captureLeft
@@ -63,16 +63,16 @@ html
               div.display-choice.small-12
                 div.choices.image-choice
                   .caption
-                    | #{dodoc.lang.photo}
+                    | !{dodoc.lang.photo}
                 div.choices.video-choice
                   .caption
-                    | #{dodoc.lang.video}
+                    | !{dodoc.lang.video}
                 div.choices.stopmotion-choice
                   .caption
-                    | #{dodoc.lang.stopmotion}
+                    | !{dodoc.lang.stopmotion}
                 div.choices.audio-choice
                   .caption
-                    | #{dodoc.lang.audio}
+                    | !{dodoc.lang.audio}
 
             div.full-screen-wrapper
               +button( 'fullscreen', '', 'isCollapsed')
@@ -95,7 +95,7 @@ html
               .mode-instructions
                 img.icone-stopmotion(src="/images/stopmotion.svg")
                 h4
-                  | Vous allez de créer un nouveau stop motion.</br>Cliquez que le <b>bouton d\'enregistrement</b> pour commencer à prendre des photos
+                  | !{dodoc.lang.createNewStopmotion}
               +button( 'finishStopmotion', '', 'isCollapsed')
               +button( 'deleteMediaCapture', '', 'isCollapsed')
 
@@ -107,10 +107,13 @@ html
 
        //- ALERT CHANGER DE MEDIA
       div(id="modal-change-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-        p Attention, vous devez valider votre stop-motion pour l'enregistrer.
+        p
+          | !{dodoc.lang.changingMediaWhileStopmotion}
         a(class="close-reveal-modal" aria-label="Close")
-          button.ok Continuer le stop motion
-        button.supprimer-stop-motion Supprimer le stop motion
+          button.ok
+            | !{dodoc.lang.continueStopmotion}
+        button.supprimer-stop-motion
+          | !{dodoc.lang.removeStopmotion}
         a(class="close-reveal-modal" aria-label="Close") &#215;
 
     .js--templates

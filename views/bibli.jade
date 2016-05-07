@@ -34,12 +34,12 @@ html
         button.open-montage-bar.js--toggleMontage
         .montage-list
           h1.legende
-            | #{dodoc.lang.listOfPublications}
+            | !{dodoc.lang.listOfPublications}
           a(href="" data-reveal-id="modal-add-publi").button-wrapper.button-wrapper_add
             .btn.icon
               include templates/images/add.svg
             span
-              | #{dodoc.lang.createPublication}
+              | !{dodoc.lang.createPublication}
           ul
         .montage-edit-container
 
@@ -55,11 +55,11 @@ html
     //- ALERT SUPPRIMER UN Media
     div(id="modal-delete-alert-media" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
       p
-        | #{dodoc.lang.modal.sureRemoveMedia}
+        | !{dodoc.lang.modal.sureRemoveMedia}
       button.oui.button_coteacote
-        | #{dodoc.lang.yes}
+        | !{dodoc.lang.yes}
       button.annuler.button_coteacote
-        | #{dodoc.lang.cancel}
+        | !{dodoc.lang.cancel}
       a(class="close-reveal-modal" aria-label="Close") &#215;
 
     .js--templates

@@ -1,5 +1,6 @@
 div(id="modal-add-folder" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-  h2#modalTitle.popoverTitle Nouveau dossier
+  h2#modalTitle.popoverTitle
+    | !{dodoc.lang.modal.newFolder}
   form(onsubmit='return false;' class='add-folder-form lead')
     input(type='text' class='new-folder' placeholder='Nom')
 

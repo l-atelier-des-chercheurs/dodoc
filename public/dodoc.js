@@ -1,6 +1,15 @@
+// set lang here
 var lang = 'fr';
 
 
+
+
+
+
+
+
+
+// localize strings
 if( lang === 'fr') {
   var localize = {
     "lang" : {
@@ -17,7 +26,12 @@ if( lang === 'fr') {
       "audio" : "son",
 
       "yes" : "oui",
+      "ok" : "ok",
       "cancel" : "annuler",
+      "name" : "Nom",
+      "remove" : "Supprimer",
+      "edit" : "Modifier",
+      "accept" : "Valider",
 
       "lastMediasAdded" : "Derniers médias ajoutés",
       "listOfPublications" : "Liste des publications",
@@ -28,18 +42,54 @@ if( lang === 'fr') {
       "modifiedOn" : "modifié le",
       "status" : "état",
 
+      "editTitle" : "Éditer le titre",
+      "createText" : "Créer du texte",
+      "importMedia" : "Importer un média",
+      "back" : "retour",
+      "fullscreen" : "Plein écran",
+      "quitFullscreen" : "Quitter le plein écran",
+      "removeThisImage" : "Supprimer cette image",
+      "finishStopmotion" : "Finaliser l’animation",
+      "addToFav" : "Mettre en favoris",
+
+      "createNewStopmotion" : "Vous allez créer un nouveau stop motion.</br>Cliquez sur le <b>bouton d\’enregistrement</b> pour commencer à prendre des photos.",
+      "changingMediaWhileStopmotion" : "Attention, vous devez valider votre stop-motion pour l’enregistrer.",
+      "continueStopmotion" : "Continuer le stop motion",
+      "removeStopmotion" : "Supprimer le stop motion",
+
+
       "modal" : {
         "sureRemoveMedia" : "Êtes-vous sûr de vouloir supprimer ce média ?",
+
         "addText" : "Ajouter du texte",
+
         "importAMedia" : "Importer un média",
         "importAFile" : "Importer un fichier depuis l'ordinateur",
         "acceptedFormats" : "Les formats acceptés sont le .jpg et le .mp4.",
 
+        "newFolder" : "Nouveau dossier",
+        "informations" : "Informations",
+
+        "editFolder" : "Modifier le dossier",
+        "inprogress" : "En cours",
+        "finished" : "Terminé",
+        "warningFinishedStatus" : "Attention&nbsp;! Le statut terminé ne vous permettra plus d'éditer.",
+        "sureToRemoveFolder" : "Êtes-vous sûr de vouloir supprimer le dossier&nbsp;?",
+
+        "editProject" : "Modifier le projet",
+
+        "selectAnImage" : "Sélectionnez une image",
+        "sureToRemoveProject" : "Êtes-vous sûr de vouloir supprimer le projet&nbsp;?",
+
+        "newProject" : "Nouveau projet"
 
       },
 
       "button" : {
-
+        "removeProject" : "Supprimer le projet",
+        "createFolder" : "Créer un dossier",
+        "createProject" : "Créer un projet",
+        "show" : "afficher",
 
       }
 
@@ -56,6 +106,8 @@ if( lang === 'fr') {
       "bibli" : "Media library",
       "publi" : "Publication",
 
+      "remove" : "Remove",
+
       "lastMediasAdded" : "Last medias added",
       "listOfPublications" : "List of publications",
 
@@ -64,6 +116,7 @@ if( lang === 'fr') {
 }
 
 var settings = {
+  "codelang" : "fr",
   "contentDir" : "sessions",
   "metaFileext" : ".txt",
   "folderMetafilename" : "dossier",

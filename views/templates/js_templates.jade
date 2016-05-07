@@ -7,7 +7,7 @@ li.media.media_image(data-ratio data-title data-legende data-highlight=false)
   +button('deleteMedia', '', 'isCollapsed')
 li.media.media_video(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
-    video(preload="none" controls)
+    video(preload controls)
       source()
     .mediaData
       p.mediaData--informations
@@ -24,7 +24,7 @@ li.media.media_stopmotion(data-ratio data-title data-legende data-highlight=fals
 li.media.media_audio(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     img.poster
-    audio(preload="none" controls)
+    audio(preload controls)
       source()
     .mediaData
       p.mediaData--informations
@@ -99,19 +99,19 @@ div.media-big_text.media-big(data-type="text" data-id)
       .meta-data.flex_40
         .statut
           span
-            | #{dodoc.lang.status}
+            | !{dodoc.lang.status}
           span.statut-type
         .created
           span
-            | #{dodoc.lang.createdOn}
+            | !{dodoc.lang.createdOn}
           span.create-date
         .modified
           span
-            | #{dodoc.lang.modifiedOn}
+            | !{dodoc.lang.modifiedOn}
           span.modify-date
       .button-to-pages.flex_60
         h3.legende
-          | #{dodoc.lang.quickAccess}
+          | !{dodoc.lang.quickAccess}
         +button('capture', '', 'isCollapsed')
         +button('bibli', '', 'isCollapsed')
         +button('publications', '', 'isCollapsed')
@@ -119,11 +119,11 @@ div.media-big_text.media-big(data-type="text" data-id)
       img
   ul.last-medias
     h3.legende
-      | #{dodoc.lang.lastMediasAdded}
+      | !{dodoc.lang.lastMediasAdded}
 
   .montage-list
     h1.legende
-      | #{dodoc.lang.listOfPublications}
+      | !{dodoc.lang.listOfPublications}
     ul.list-publi
 
 
@@ -137,19 +137,19 @@ li.dossier.small-6.medium-4.large-4.columns(data-statut data-name data-nom)
     .meta-data.row
       .nb-projets.small-6.columns
         span.nb-projets-intitule
-          | #{dodoc.lang.projects}
+          | !{dodoc.lang.projects}
         span.nb-projets-count 0
       .statut.small-6.columns
         span
-          | #{dodoc.lang.status}
+          | !{dodoc.lang.status}
         span.statut-type
       .created.small-6.columns
         span
-          | #{dodoc.lang.createdOn}
+          | !{dodoc.lang.createdOn}
         span.create-date
       .modified.small-6.columns
         span
-          | #{dodoc.lang.modifiedOn}
+          | !{dodoc.lang.modifiedOn}
         span.modify-date
 
     li.projetSnippet
