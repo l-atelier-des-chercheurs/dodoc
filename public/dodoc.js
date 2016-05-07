@@ -57,6 +57,10 @@ if( lang === 'fr') {
       "continueStopmotion" : "Continuer le stop motion",
       "removeStopmotion" : "Supprimer le stop motion",
 
+      "removeProject" : "Supprimer le projet",
+      "createFolder" : "Créer un dossier",
+      "createProject" : "Créer un projet",
+      "show" : "afficher",
 
       "modal" : {
         "sureRemoveMedia" : "Êtes-vous sûr de vouloir supprimer ce média ?",
@@ -84,14 +88,6 @@ if( lang === 'fr') {
         "newProject" : "Nouveau projet"
 
       },
-
-      "button" : {
-        "removeProject" : "Supprimer le projet",
-        "createFolder" : "Créer un dossier",
-        "createProject" : "Créer un projet",
-        "show" : "afficher",
-
-      }
 
 
     }
