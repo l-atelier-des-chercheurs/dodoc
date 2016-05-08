@@ -1,20 +1,39 @@
-function transformDatetoString(date){
-	var date = new Date(date);
-	var day = date.getDate();
-	var month = date.getMonth() + 1;
-	var year = date.getFullYear();
-	if(month<10){month = "0"+month;}
-	if(day<10){day = "0"+day;}
-	var formatDate = day + "/" + month + "/" + year;
+jQuery.fn.reverse = [].reverse;
+
+function transformDatetoString( date){
+  if( date == undefined)
+    return false;
+
+  var getMomentObject = moment( date, 'YYYYMMDD_HH:mm:ss');
+  var formatDate = getMomentObject.format('Do MMMM YYYY');
 	return formatDate;
 }
 
+function transformDatetoTimestamp( date) {
+  if( date == undefined)
+    return false;
+  var getMomentObject = moment( date, 'YYYYMMDD_HH:mm:ss');
+  var formatDate = getMomentObject.format('X');
+	return formatDate;
+}
+
+function anyDuplicates(a) {
+    var counts = [];
+    for(var i = 0; i <= a.length; i++) {
+        if(counts[a[i]] === undefined) {
+            counts[a[i]] = 1;
+        } else {
+            return true;
+        }
+    }
+    return false;
+}
+
 function convertToSlug(Text){
-  // return Text
-  // .toLowerCase()
-  // .replace(/ /g,'-')
-  // .replace(/[^\w-]+/g,'')
-  // ;
+
+  if( Text === undefined)
+    return false;
+
   // converti le texte en minuscule
 	var s = Text.toLowerCase();
 	// remplace les a accentué
@@ -39,19 +58,3 @@ function convertToSlug(Text){
 	return s;
 }
 
-function uploadImage($button){
-
-	$('body').bind('change', $button, function(e){
-		imageData = e.originalEvent.target.files;
-
-  	// //change the label of the button in the name of the image
-  	// console.log(this.files);
-  	// imageName = this.files[0].name;
-	  // var dflt = $(this).attr("placeholder");
-	  // if($(this).val()!=""){
-	  //   $(this).next().text(imageName);
-	  // } else {
-	  //   $(this).next().text(dflt);
-	  // }
-	});
-}

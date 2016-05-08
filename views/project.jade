@@ -1,0 +1,32 @@
+include templates/buttons.jade
+
+doctype html
+html
+  head
+    include templates/head.jade
+  body.projet
+
+    .navbar-container
+      header.navbar
+        +logo()
+        +button( 'dossier', 'isNav')
+        +button( 'projet', 'isNav')
+        +button('capture', '', 'isCollapsed')
+        +button('bibli', '', 'isCollapsed')
+        +button('publications', '', 'isCollapsed')
+
+    #container.row.mainContent
+
+      ul.project-list
+        .legende
+          | !{dodoc.lang.project}
+
+    //- MODAL WINDOWS
+    include templates/modals/editProject
+
+    .js--templates
+      include templates/js_templates
+
+    //- //footer
+    include templates/footer.jade
+    script(src='/js/project.js')

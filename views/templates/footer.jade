@@ -1,12 +1,17 @@
 script(src='/socket.io/socket.io.js')
-script var app = {}; app.session = "#{session}";
-script var projet = {}; app.projet = "#{projet}";
-script var publi = {}; app.publi = "#{publi}";
+script
+  | var app = {};
+  | app.currentFolder = "#{slugFolderName}";
+  | app.currentProject = "#{slugProjectName}";
+  | app.currentPubli = "#{slugPubliName}";
 script(src='/bower_components/jquery/dist/jquery.min.js')
 script(src='/bower_components/jquery-ui/jquery-ui.min.js')
 script(src='/bower_components/velocity/velocity.min.js')
+script(src='/bower_components/moment/min/moment-with-locales.js')
+script moment.locale("#{dodoc.codelang}");
 script(src='/bower_components/foundation/js/foundation.min.js')
 script(src='/bower_components/foundation/js/foundation/foundation.reveal.js')
 
-//- script( src='/js/script.js')
+script( src='/dodoc.js')
 script( src='/js/common.js')
+script( src='/js/_global.js')

@@ -7,22 +7,20 @@ html
     include templates/head.jade
   body.publi
 
-    //- .navbar-container
-    //-   header.navbar
-    //-     +logo()
-    //-     +button( 'dossier', 'isNav')
-    //-     +button( 'projet', 'isNav')
-    //-     +button( 'bibli', 'isNav')
-    //-     +button('capture', '', 'isCollapsed')
+    +button( 'projet', 'isNav')
 
-    div.publi-container
+    div.publi-container.mainContent
       h3.legende
-        | publication
+        | !{dodoc.lang.publi}
+
       div.publi-title
-        h2
-      div.publi-content
+        h2(data-publi_title)
+          | #{publiName}
+      div.publi_medias(data-publi_medias)
+
+    .js--templates
+      include templates/js_templates
 
     //- //footer
     include templates/footer.jade
-
     script(src='/js/publi.js')

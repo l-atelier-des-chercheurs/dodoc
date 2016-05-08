@@ -1,0 +1,35 @@
+include templates/buttons.jade
+
+doctype html
+html
+  head
+    include templates/head.jade
+  body.projets
+
+    .navbar-container
+      header.navbar
+        +logo()
+        +button( 'dossier', 'isNav')
+
+    #container.row.mainContent
+
+      .folder-wrapper
+        .legende
+          | !{dodoc.lang.folder}
+
+        h1.folder-title #{folderName}
+        +button('nouveauProjet')
+
+      ul.project-list
+
+    //- MODAL WINDOWS
+    include templates/modals/addProject
+    include templates/modals/editProject
+
+    .js--templates
+      include templates/js_templates
+
+
+    //- scripts
+    include templates/footer.jade
+    script(src='/js/folder.js')

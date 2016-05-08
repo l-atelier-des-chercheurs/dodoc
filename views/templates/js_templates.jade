@@ -1,0 +1,161 @@
+li.media.media_image(data-ratio data-title data-legende data-highlight=false)
+  .mediaContent
+    img
+    .mediaData
+      p.mediaData--informations
+  +button( 'flag', '', 'isCollapsed')
+  +button('deleteMedia', '', 'isCollapsed')
+li.media.media_video(data-ratio data-title data-legende data-highlight=false)
+  .mediaContent
+    video(preload controls)
+      source()
+    .mediaData
+      p.mediaData--informations
+  +button( 'flag', '', '')
+  +button('deleteMedia', '', 'isCollapsed')
+li.media.media_stopmotion(data-ratio data-title data-legende data-highlight=false)
+  .mediaContent
+    video(preload="none" controls)
+      source()
+    .mediaData
+      p.mediaData--informations
+  +button( 'flag', '', '')
+  +button('deleteMedia', '', 'isCollapsed')
+li.media.media_audio(data-ratio data-title data-legende data-highlight=false)
+  .mediaContent
+    img.poster
+    audio(preload controls)
+      source()
+    .mediaData
+      p.mediaData--informations
+  +button( 'flag', '', '')
+  +button('deleteMedia', '', 'isCollapsed')
+li.media.media_text(data-ratio data-title data-legende data-highlight=false)
+  .mediaContent
+    .mediaContent--titleOfTextmedia
+    .mediaContent--textOfTextmedia
+  +button( 'flag', '', '')
+  +button('deleteMedia', '', 'isCollapsed')
+
+li.publi-folder(data-publi="")
+  .content
+    a.js--edit_view
+      h2.title
+  .publi-btn
+    +button('view_publication', '', 'isCollapsed')
+
+.montage-edit
+  .montage-btn
+    +button('backButton', '', 'isCollapsed')
+    +button('view_publication', '', 'isCollapsed')
+  .montage-title
+    input(type="text" placeholder="Titre")
+    h2.title(data-publi_title)
+    .publi-btn
+      +button('validerTitre', '', '')
+      +button('editerTitre', '', 'isCollapsed')
+  .inner-montage.small-12(data-publi_medias)
+
+//- Pop up media
+div.media-big_image.media-big.row(data-type="image")
+  .mediaContent.small-8.columns
+    img
+  .mediaDataForm.small-4.columns
+    include modals/mediaForm.jade
+div.media-big_video.media-big(data-type="video")
+  .mediaContent.small-8.columns
+    video(preload="none" controls)
+      source()
+  .mediaDataForm.small-4.columns
+    include modals/mediaForm.jade
+div.media-big_stopmotion.media-big(data-type="stopmotion")
+  .mediaContent.small-8.columns
+    video(preload="none" controls)
+      source()
+  .mediaDataForm.small-4.columns
+    include modals/mediaForm.jade
+div.media-big_audio.media-big(data-type="audio")
+  .mediaContent.small-8.columns
+    audio(preload="none" controls)
+      source()
+  .mediaDataForm.small-4.columns
+    include modals/mediaForm.jade
+div.media-big_text.media-big(data-type="text" data-id)
+  .mediaContent
+    form(onsubmit='return false;' class='add-media-text lead')
+      input.js--submit-new-text_title(type='text' placeholder='Titre')
+      textarea.js--submit-new-text_text(placeholder="Ajouter du texte ici")
+      input(type='submit' class='js--submit-view-text-modify' value='Valider')
+    +button('favButton', '', '')
+    +button('deleteMediaBibli', '', '')
+
+
+.project(data-statut)
+  +button('editProjet', '', 'isCollapsed')
+  .project-inside.flex_structure
+    .project-content.flex_50.flex_structure
+      a(href="" title="Dodoc").project-link
+        h2.title
+      .meta-data.flex_40
+        .statut
+          span
+            | !{dodoc.lang.status}
+          span.statut-type
+        .created
+          span
+            | !{dodoc.lang.createdOn}
+          span.create-date
+        .modified
+          span
+            | !{dodoc.lang.modifiedOn}
+          span.modify-date
+      .button-to-pages.flex_60
+        h3.legende
+          | !{dodoc.lang.quickAccess}
+        +button('capture', '', 'isCollapsed')
+        +button('bibli', '', 'isCollapsed')
+        +button('publications', '', 'isCollapsed')
+    .image-wrapper.flex_50
+      img
+  ul.last-medias
+    h3.legende
+      | !{dodoc.lang.lastMediasAdded}
+
+  .montage-list
+    h1.legende
+      | !{dodoc.lang.listOfPublications}
+    ul.list-publi
+
+
+li.dossier.small-6.medium-4.large-4.columns(data-statut data-name data-nom)
+  .dossier-inside
+    .content
+      +button('editFolder', '', 'isCollapsed')
+      a.folder-link(href title)
+        h2.title
+      .projet-list
+    .meta-data.row
+      .nb-projets.small-6.columns
+        span.nb-projets-intitule
+          | !{dodoc.lang.projects}
+        span.nb-projets-count 0
+      .statut.small-6.columns
+        span
+          | !{dodoc.lang.status}
+        span.statut-type
+      .created.small-6.columns
+        span
+          | !{dodoc.lang.createdOn}
+        span.create-date
+      .modified.small-6.columns
+        span
+          | !{dodoc.lang.modifiedOn}
+        span.modify-date
+
+    li.projetSnippet
+      a.project-link(href)
+        h3.title
+        .vignette-visuel
+          img(src)
+
+

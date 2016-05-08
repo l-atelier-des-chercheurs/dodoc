@@ -11,39 +11,20 @@ html
         +logo()
         +button('nouveauDossier')
 
-    #container.row
+    #container.row.mainContent
       ul.dossier-list
-      //- MODAL WINDOWS
-      include templates/modals/addFolder
-      include templates/modals/modifyFolder
+
+
+
+
+
+
+    //- MODAL WINDOWS
+    include templates/modals/addFolder
+    include templates/modals/editFolder
 
     .js--templates
-      li.dossier.small-6.medium-4.large-4.columns(data-statut data-name data-nom)
-        .dossier-inside
-          .content
-            +button('editFolder', '', 'isCollapsed')
-            a.folder-link(href title)
-              h2.title
-            .projet-list
-          .meta-data.row
-            .nb-projets.small-6.columns
-              span.nb-projets-intitule projets
-              span.nb-projets-count
-            .statut.small-6.columns
-              span statut
-              span.statut-type
-            .created.small-6.columns
-              span créé le
-              span.create-date
-            .modified.small-6.columns
-              span modifié le
-              span.modify-date
-
-      li.projetSnippet
-        a.project-link(href)
-          h3.title
-          .vignette-visuel
-            img(src)
+      include templates/js_templates
 
     include templates/footer.jade
     script(src='/js/index.js')

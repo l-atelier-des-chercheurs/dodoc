@@ -92,3 +92,8 @@ Example: ```cd dodoc```
 - Change the name of the old version directory (example: "Dodoc" > "DoDoc_01")
 - Paste all files and directories of your newly downlaod docdoc directory into your copy directory and replace all existed files
 
+### Contributing or forking dodoc
+--> mention the hackpad with spec
+
+To debug dodoc, you can enable extra-logging with the flag --debug:
+```node server.js --debug```

@@ -1,0 +1,45 @@
+
+@font-face {
+    font-family: 'share';
+    src: url('Share-Regular-webfont.eot');
+    src: url('Share-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('Share-Regular-webfont.woff') format('woff'),
+         url('Share-Regular-webfont.ttf') format('truetype'),
+         url('Share-Regular-webfont.svg#share-regularregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'share';
+    src: url('Share-Bold-webfont.eot');
+    src: url('Share-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('Share-Bold-webfont.woff') format('woff'),
+         url('Share-Bold-webfont.ttf') format('truetype'),
+         url('Share-Bold-webfont.svg#sharebold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'share';
+    src: url('Share-Italic-webfont.eot');
+    src: url('Share-Italic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('Share-Italic-webfont.woff') format('woff'),
+         url('Share-Italic-webfont.ttf') format('truetype'),
+         url('Share-Italic-webfont.svg#shareitalic') format('svg');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'share';
+    src: url('Share-BoldItalic-webfont.eot');
+    src: url('Share-BoldItalic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('Share-BoldItalic-webfont.woff') format('woff'),
+         url('Share-BoldItalic-webfont.ttf') format('truetype'),
+         url('Share-BoldItalic-webfont.svg#sharebold_italic') format('svg');
+    font-weight: bold;
+    font-style: italic;
+
+}
