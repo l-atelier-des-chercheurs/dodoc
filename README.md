@@ -22,6 +22,13 @@ Go to Applications->Utilitaries->Terminal
 #### Linux
 If you have Linux you know how to use the terminal
 
+###Open a folder to install DoDoc
+Select where you want DoDoc to be copied on your computer. 
+To open this folder, type ```cd path/of/the/folder``` 
+Example : in your folder "Documents", which is on your C:/ harddrive.
+Type ```cd C:/Documents``` 
+
+
 ##How to install Dodoc
 
 ### Clone the repo or download it
