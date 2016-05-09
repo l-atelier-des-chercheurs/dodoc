@@ -488,12 +488,10 @@ var currentStream = (function(context) {
       });
 
       audioMode.stop();
-
     },
 
     startCameraFeed : function() {
       return new Promise(function(resolve, reject) {
-
         currentStream.stopAllFeeds();
         getCameraFeed()
           .then( function( stream) {
@@ -515,7 +513,6 @@ var currentStream = (function(context) {
 
     startRecordCameraFeed : function() {
       return new Promise(function(resolve, reject) {
-        stopAllFeeds();
         getCameraFeed()
           .then( function( stream) {
             recordVideoFeed = RecordRTC(stream, {
@@ -551,6 +548,7 @@ var currentStream = (function(context) {
 
     startAudioFeed : function() {
       return new Promise(function(resolve, reject) {
+        currentStream.stopAllFeeds();
         getAudioFeed()
           .then( function( stream) {
             audioStream = stream;
