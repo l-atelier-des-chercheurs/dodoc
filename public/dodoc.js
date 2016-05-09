@@ -62,6 +62,10 @@ if( lang === 'fr') {
       "createProject" : "Créer un projet",
       "show" : "afficher",
 
+      "audioInputSource" : "source audio&nbsp;:",
+      "audioOutputDestination" : "destination audio&nbsp;:",
+      "videoInputSource" : "source video:",
+
       "modal" : {
         "sureRemoveMedia" : "Êtes-vous sûr de vouloir supprimer ce média ?",
 

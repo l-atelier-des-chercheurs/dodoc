@@ -1032,8 +1032,6 @@ var modals = {
     	var titleOfTextmediaMd = $modal.find('.js--submit-new-text_title').val();
     	var textOfTextmediaMd =  $modal.find('.js--submit-new-text_text').val();
 
-    	debugger;
-
       if( titleOfTextmediaMd !== undefined)
         editMediaData.titleOfTextmediaMd = titleOfTextmediaMd;
 

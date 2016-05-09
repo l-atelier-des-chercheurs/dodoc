@@ -1,8 +1,11 @@
 // C A P T U R E
 body.capture{
-
+  .mainContent {
+    max-width: none;
+  }
   .container-inner{
     margin:auto;
+    position: relative;
   }
 
   .content-wrapper {
@@ -93,6 +96,21 @@ body.capture{
     }
   }
 }
+
+.sourceSelector {
+
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-right:25px;
+
+  .selectField {
+    display: block;
+    width:  180px;
+  }
+
+}
+
 
 $buttonBar: $margin + 64px;
 $t-decalageDuCentre: 4%;

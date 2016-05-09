@@ -7819,8 +7819,12 @@ body.projet .project-inside .project-link {
   pointer-events: none;
   cursor: default; }
 
+body.capture .mainContent {
+  max-width: none; }
+
 body.capture .container-inner {
-  margin: auto; }
+  margin: auto;
+  position: relative; }
 
 body.capture .content-wrapper:before, body.capture .content-wrapper:after {
   content: " ";
@@ -7875,6 +7879,15 @@ body.capture .content-wrapper:after {
         background-color: #09227c; }
         .media-choice .btn-choice button[data-mediatype="audio"]::before {
           background-image: url("/images/icone-dodoc_son.png"); }
+
+.sourceSelector {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-right: 25px; }
+  .sourceSelector .selectField {
+    display: block;
+    width: 180px; }
 
 .captureLeft {
   margin: auto;
