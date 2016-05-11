@@ -28,6 +28,16 @@ jQuery(document).ready(function($) {
   $(".templateSelector a").on('click',function(){
     var template = $(this).attr('class');
     $(this).parents('body.publi').attr("data-template", template);
+    if($('body.publi').attr('data-template') == 'bordel'){
+      randomPosition();
+    }
+    else{
+      $("body.publi .media").each(function(){
+        $(this).css({
+          "left": 0
+        });
+      });
+    }
   });
 
 });
@@ -37,7 +47,10 @@ function onListOnePubliMetaAndMedias( psdata) {
   console.log( "onListOnePubliMetaAndMedias");
   updateMontagePubliMeta( psdata);
   updateMontagePubliMedias( psdata);
-  randomPosition();
+  if($('body.publi').attr('data-template') == 'bordel'){
+    randomPosition();
+  }
+  
 }
 function onPubliMetaUpdated( psdata) {
   console.log( "onPubliMetaUpdated");
@@ -45,13 +58,17 @@ function onPubliMetaUpdated( psdata) {
   onListOneProjectPublis( psdata);
   // update meta of montage
   updateMontagePubliMeta( psdata);
-  randomPosition();
+  if($('body.publi').attr('data-template') == 'bordel'){
+    randomPosition();
+  }
 }
 function onPubliMediasUpdated( psdata) {
   console.log( "onPubliMetaUpdated");
   // update medias of montage if necessary
   updateMontagePubliMedias( psdata);
-  randomPosition();
+  if($('body.publi').attr('data-template') == 'bordel'){
+    randomPosition();
+  }
 }
 
 
