@@ -1,0 +1,29 @@
+@media print {
+  @page {
+    margin-top: 2cm; 
+    margin-bottom: 2cm;
+  }
+  body.publi{
+    .navbar-container{display:none;}
+    .publi-container {
+      margin-top: 0;
+      margin-bottom: 0;
+    &[data-template="basic"]{
+        max-width: 50%;
+        h3.legende{display:none;}
+        .media .mediaContent{
+          border:none;
+          padding: 0;
+        }
+        .mediaData--informations{
+          padding-left:0;
+        }
+      } 
+    }
+
+    &[data-template="bordel"]{
+
+    }
+  } 
+
+}
