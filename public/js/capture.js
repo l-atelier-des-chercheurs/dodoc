@@ -370,7 +370,6 @@ var currentStream = (function(context) {
         }
       }
     }
-    debugger;
   }
 
   // Attach audio output device to video element using device/sink ID.

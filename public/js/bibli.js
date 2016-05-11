@@ -53,6 +53,7 @@ function init(){
 		$m = $(this);
 		modals.bigMedia($m);
   });
+
   // Au click sur le bouton "submit" d'un popup de texte
   modals.createTextMedia();
 

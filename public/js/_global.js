@@ -69,20 +69,42 @@ function listAllMedias( mediasData) {
   var lastMedias = mediasData;
 
   $.each( lastMedias, function( mediaKey, mediaDatas) {
-    var newMedia = makeOneMedia( mediaKey, mediaDatas);
+    var $newMedia = makeOneMedia( mediaKey, mediaDatas);
+    mediaInit( $newMedia);
 
-    if( newMedia !== undefined)
-      $allMedias = $allMedias.add( newMedia);
+    if( $newMedia !== undefined)
+      $allMedias = $allMedias.add( $newMedia);
   });
 
   return $allMedias;
 }
 
 function listMedia( mediaData) {
-  var newMedia = makeOneMedia( mediaKey, mediaData);
-  if( newMedia !== undefined)
-    return newMedia;
+  var $newMedia = makeOneMedia( mediaKey, mediaData);
+  if( $newMedia !== undefined)
+    return $newMedia;
   return false;
+}
+
+
+function mediaInit( $m) {
+  var $v = $m.find('video');
+  $m.hover(function() {
+    if( $v !== undefined) {
+      $v
+        .attr('loop', true)
+        .removeAttr('controls')
+        .get(0)
+          .play()
+        ;
+    }
+  }, function() {
+    $v
+      .removeAttr('loop')
+      .attr('controls', true)
+      ;
+
+  });
 }
 
 
@@ -149,8 +171,6 @@ function showImage( mediaDatas) {
       thumbFilename = mediaFilename;
     }
   });
-
-  debugger;
 
   var pathToFile = makeFullPathForProject( mediaFolderPath + '/' + (thumbFilename !== undefined ? thumbFilename : mediaFilenames[0]));
 
