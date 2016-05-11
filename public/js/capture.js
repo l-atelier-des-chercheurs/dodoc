@@ -505,11 +505,7 @@ var currentStream = (function(context) {
     },
 
     getVideoFrame : function() {
-      var videoObj = {};
-      videoObj.feed = videoElement;
-      videoObj.width = getVideoResFromRadio().width;
-      videoObj.height = getVideoResFromRadio().height;
-      return videoObj;
+      return videoElement;
     },
 
     stopAllFeeds : function() {

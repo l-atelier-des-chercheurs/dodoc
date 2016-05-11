@@ -122,7 +122,8 @@ if( lang === 'fr') {
 }
 
 var settings = {
-  "codelang" : "fr",
+
+  "codelang" : lang,
   "contentDir" : "sessions",
   "metaFileext" : ".txt",
   "folderMetafilename" : "dossier",
@@ -139,6 +140,10 @@ var settings = {
   "textEncoding" : "UTF-8",
   "textFieldSeparator" : "\n\n----\n\n",
   "deletedPrefix" : "x_",
+  "thumbSuffix" : "_thumb",
+
+  "mediaThumbWidth" : 320,
+  "mediaThumbHeight" : 240,
 
   "_comment" : "// see http://regexr.com/3d4t8",
   "regexpMatchFolderNames" : "^([^.]+)$",

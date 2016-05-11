@@ -291,28 +291,8 @@ function modifyStatut(){
 
 // Quand le dossier est modifié
 function onFolderModified(data){
-
-/*
-	var name = data.name;
-	var statut = data.statut;
-	var modified = transformDatetoString(data.modified);
-	var created = $thisEl.find('.create-date').html();
-	var nbProj = $thisEl.find('.numero-projet').html();
-	$('#modal-modify-folder').foundation('reveal', 'close');
-
-	if(statut == "terminé"){
-		$thisEl.find('.edit-icon').remove();
-	}
-*/
-
   // MISSING - not ideal, should display a notice saying that the folder has been updated and replace it instead
 	location.reload();
-	// $thisEl.remove();
-	// displayFolder(name, created, modified, statut, nbProj)
-	// $thisEl.find('h2').html(name);
-	// $thisEl.find('.statut-type').html(" "+statut);
-	// $thisEl.find('.modify-date').html(modified);
-	// $thisEl.find('.folder-link').attr('href', '/'+convertToSlug(name));
 }
 
 //Suppression du dossier

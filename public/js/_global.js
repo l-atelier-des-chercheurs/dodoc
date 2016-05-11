@@ -142,7 +142,17 @@ function showImage( mediaDatas) {
   var mediaFolderPath = mediaDatas.mediaFolderPath;
   var mediaFilenames = mediaDatas.files;
 
-  var pathToFile = makeFullPathForProject( mediaFolderPath + '/' + mediaFilenames[0]);
+  var thumbFilename;
+
+  $.each( mediaFilenames, function( key, mediaFilename) {
+    if( mediaFilename.indexOf( dodoc.thumbSuffix) !== -1) {
+      thumbFilename = mediaFilename;
+    }
+  });
+
+  debugger;
+
+  var pathToFile = makeFullPathForProject( mediaFolderPath + '/' + (thumbFilename !== undefined ? thumbFilename : mediaFilenames[0]));
 
 	var mediaItem = $(".js--templates .media_image").clone(false);
 	mediaItem
