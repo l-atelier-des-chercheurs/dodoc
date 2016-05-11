@@ -404,11 +404,9 @@ var currentStream = (function(context) {
     var requestedVideoRes = getVideoResFromRadio( videoResSwitches);
 
     currentFeedsSource = {
-      audio: {
-        optional: [ audioSource ? {sourceId: audioSource} : undefined ],
-      }
+      audio: {deviceId: audioSource ? {exact: audioSource} : undefined},
       video: {
-        optional: [ videoSource ? {sourceId: videoSource} : undefined],
+        deviceId: videoSource ? {exact: videoSource} : undefined,
         mandatory: {
           minWidth: requestedVideoRes.vwidth,
           minHeight: requestedVideoRes.vheight
@@ -527,6 +525,7 @@ var currentStream = (function(context) {
               videoElement.src = vendorURL.createObjectURL(stream);
             }
             videoElement.play();
+            debugger;
             resolve();
           }, function(err) {
             console.log( " failed to start camera feed: " + err);
@@ -540,6 +539,7 @@ var currentStream = (function(context) {
         getCameraFeed()
           .then( function( stream) {
             var requestedVideoRes = getVideoResFromRadio( videoResSwitches);
+            debugger;
             recordVideoFeed = RecordRTC(stream, {
               type: 'video',
               canvas: { width: requestedVideoRes.vwidth, height: requestedVideoRes.vheight },
