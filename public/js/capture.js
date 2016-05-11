@@ -295,24 +295,12 @@ var currentStream = (function(context) {
 
   var videoResSwitches = document.querySelector('.js--resolutionSelector').videoRes;
 
-  var qvgaConstraints = {
-    video: {width: {exact: 320}, height: {exact: 240}}
-  };
-
-  var vgaConstraints = {
-    video: {width: {exact: 640}, height: {exact: 480}}
-  };
-
-  var hdConstraints = {
-    video: {width: 1280, height: 720}
-  };
-
-  var fullHdConstraints = {
-    video: {width: {exact: 1920}, height: {exact: 1080}}
-  };
-
   var recordVideoFeed;
   var recordAudioFeed;
+
+  var userSelectedVideoDevice = 'selectedVideoDeviceId';
+  var userSelectedAudioDevice = 'selectedAudioDeviceId';
+  var userSelectedRes = 'selectedVideoRes';
 
   var currentFeedsSource;
 
@@ -327,17 +315,21 @@ var currentStream = (function(context) {
         select.removeChild(select.firstChild);
       }
     });
+    var previousVideoDeviceId = store.get(userSelectedVideoDevice);
+    var previousAudioDeviceId = store.get(userSelectedAudioDevice);
+
     for (var i = 0; i !== deviceInfos.length; ++i) {
       var deviceInfo = deviceInfos[i];
+      var deviceId = deviceInfo.deviceId;
       var option = document.createElement('option');
-      option.value = deviceInfo.deviceId;
+      option.value = deviceId;
+      if( deviceId === previousVideoDeviceId || deviceId === previousAudioDeviceId)
+        option.selected = true;
       if (deviceInfo.kind === 'audioinput') {
-        option.text = deviceInfo.label ||
-          'microphone ' + (audioInputSelect.length + 1);
+        option.text = deviceInfo.label || 'microphone ' + (audioInputSelect.length + 1);
         audioInputSelect.appendChild(option);
       } else if (deviceInfo.kind === 'audiooutput') {
-        option.text = deviceInfo.label || 'speaker ' +
-            (audioOutputSelect.length + 1);
+        option.text = deviceInfo.label || 'speaker ' + (audioOutputSelect.length + 1);
         audioOutputSelect.appendChild(option);
       } else if (deviceInfo.kind === 'videoinput') {
         option.text = deviceInfo.label || 'camera ' + (videoSelect.length + 1);
@@ -353,18 +345,32 @@ var currentStream = (function(context) {
         select.value = values[selectorIndex];
       }
     });
+
   }
   function errorCallback(error) {
     console.log('navigator.getUserMedia error: ', error);
   }
 
-  function getVideoResFromRadio( eles) {
-    for (index=0; index < eles.length; index++) {
-      if (eles[index].checked) {
-        var radioValue = {};
-        return eles[index].dataset;
+  function getVideoResFromRadio() {
+    for (index=0; index < videoResSwitches.length; index++) {
+      if (videoResSwitches[index].checked) {
+        return videoResSwitches[index].dataset;
       }
     }
+  }
+  function setVideoResFromLocalstorage() {
+    console.log( userSelectedRes);
+    var getPreviousSessionRes = store.get(userSelectedRes);
+    if(getPreviousSessionRes !== undefined) {
+      for (index=0; index < videoResSwitches.length; index++) {
+        if( getPreviousSessionRes.width === videoResSwitches[index].dataset.width && getPreviousSessionRes.height === videoResSwitches[index].dataset.height) {
+          videoResSwitches[index].checked = true;
+        } else {
+          videoResSwitches[index].checked = false;
+        }
+      }
+    }
+    debugger;
   }
 
   // Attach audio output device to video element using device/sink ID.
@@ -397,11 +403,15 @@ var currentStream = (function(context) {
   function setSources() {
 
     console.log( 'setting new sources for audio and video feeds');
-
     var audioSource = audioInputSelect.value;
     var videoSource = videoSelect.value;
 
-    var requestedVideoRes = getVideoResFromRadio( videoResSwitches);
+    // set source in localstorage for next time
+    store.set(userSelectedVideoDevice, videoSource);
+    store.set(userSelectedAudioDevice, audioSource);
+
+    var requestedVideoRes = getVideoResFromRadio();
+    store.set(userSelectedRes, requestedVideoRes);
 
     currentFeedsSource = {
       audio: {
@@ -410,8 +420,8 @@ var currentStream = (function(context) {
       video: {
         optional: [ videoSource ? {sourceId: videoSource} : undefined],
         mandatory: {
-          minWidth: requestedVideoRes.vwidth,
-          minHeight: requestedVideoRes.vheight
+          minWidth: requestedVideoRes.width,
+          minHeight: requestedVideoRes.height
         }
       }
     };
@@ -476,6 +486,8 @@ var currentStream = (function(context) {
         $(this).closest('.feedSettings').toggleClass('is--open');
       });
 
+      setVideoResFromLocalstorage();
+
       return new Promise(function(resolve, reject) {
         navigator.mediaDevices.enumerateDevices()
           .then(function(deviceInfos) {
@@ -495,8 +507,8 @@ var currentStream = (function(context) {
     getVideoFrame : function() {
       var videoObj = {};
       videoObj.feed = videoElement;
-      videoObj.width = getVideoResFromRadio( videoResSwitches).vwidth;
-      videoObj.height = getVideoResFromRadio( videoResSwitches).vheight;
+      videoObj.width = getVideoResFromRadio().width;
+      videoObj.height = getVideoResFromRadio().height;
       return videoObj;
     },
 
@@ -539,10 +551,10 @@ var currentStream = (function(context) {
       return new Promise(function(resolve, reject) {
         getCameraFeed()
           .then( function( stream) {
-            var requestedVideoRes = getVideoResFromRadio( videoResSwitches);
+            var requestedVideoRes = getVideoResFromRadio();
             recordVideoFeed = RecordRTC(stream, {
               type: 'video',
-              canvas: { width: requestedVideoRes.vwidth, height: requestedVideoRes.vheight },
+              canvas: { width: requestedVideoRes.width, height: requestedVideoRes.height },
             });
             recordVideoFeed.startRecording();
             resolve();
