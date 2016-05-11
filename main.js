@@ -1571,6 +1571,9 @@ PUBLIS METHODS
 	//Décode les images en base64
 	// http://stackoverflow.com/a/20272545
 	function decodeBase64Image(dataString) {
+
+  	dev.log("Decoding base 64 image");
+
 		var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
 		response = {};
 

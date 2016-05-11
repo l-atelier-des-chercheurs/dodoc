@@ -2,10 +2,14 @@
 body.capture{
   .mainContent {
     max-width: none;
+    height: calc( 100vh - 70px);
+    overflow-x: hidden;
   }
+
   .container-inner{
-    margin:auto;
     position: relative;
+    margin:auto;
+    height: 100%;
   }
 
   .content-wrapper {
@@ -15,8 +19,7 @@ body.capture{
 
 .media-choice {
 
-  margin-top:   $margin;
-  margin-bottom:   $margin;
+  padding: $margin 0;
 
   .btn-choice{
 
@@ -97,20 +100,76 @@ body.capture{
   }
 }
 
-.sourceSelector {
+.feedSettings {
 
-  position: absolute;
+  position: fixed;
+  top: 70px;
   right: 0;
-  top: 0;
-  margin-right:25px;
+  bottom: 0;
+  z-index: 1500;
 
-  .selectField {
-    display: block;
-    width:  180px;
+  background:   #EFEFEF;
+  border-left: 4px solid #EF474B;
+
+  width: 300px;
+
+  transform: translate( 100%, 0);
+  transition: transform .7s ease-out;
+
+  -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  &.is--open {
+    transform: translate( 0%, 0);
   }
 
-}
+  .feedSettings--scrollWindow {
+    height: 100%;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
 
+    padding-left: 0.9375rem * 2;
+    padding-right: 0.9375rem * 2;
+    padding-top:  0.9375rem * 2;
+
+  }
+
+  .openCloseSettings {
+    position: absolute;
+    top: 0;
+    margin-top: $margin;
+    width: 40px;
+    z-index: 500;
+    right: 100%;
+    background-color: #333;
+    border-radius: 4px 0 0 4px;
+    transition: all .7s ease-out;
+
+    &:hover {
+      width: 155px;
+    }
+
+    .button-wrapper_settings {
+
+    }
+  }
+
+  .sourceSelector {
+    .selectField {
+      display: block;
+      width:  100%;
+    }
+  }
+
+  .resolutionSelector {
+    margin-top:   $margin;
+    input {
+      margin: 0;
+    }
+
+
+  }
+}
 
 $buttonBar: $margin + 64px;
 $t-decalageDuCentre: 4%;

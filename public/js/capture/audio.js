@@ -39,10 +39,9 @@ var audioMode = (function() {
 //Capture le flux audio
 function audioCapture(){
   //Variables
-  var mediaStream = null;
-
   var startRecordingBtn = document.getElementById('start-recording-btn');
   var stopRecordingBtn = document.getElementById('stop-recording-btn');
+  var sarahCouleur = "gray";
 
   //click events
   $("#start-recording-btn").off();
