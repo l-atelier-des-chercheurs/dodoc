@@ -189,8 +189,8 @@ function photoDisplay(){
     $(".image-choice").fadeOut('slow');
     imageMode.init();
 
-  }, function() {
-    console.log( "Failed to start camera feed for photo");
+  }, function(err) {
+    console.log( "Failed to start camera feed for photo : " + err);
   });
 }
 function videoDisplay(){
@@ -276,8 +276,8 @@ function audioDisplay(){
     $(".audio-choice").fadeOut('slow');
     audioMode.init( stream);
 
-  }, function() {
-    console.log( "Failed to start audio feed for audio");
+  }, function(err) {
+    console.log( "Failed to start audio feed for audio : " + err);
   });
 }
 

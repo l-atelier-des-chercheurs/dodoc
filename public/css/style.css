@@ -7758,6 +7758,7 @@ body.projets #container {
       .project-list .project .project-content .meta-data .modified .modify-date {
         font-weight: bold; }
   .project-list .project .image-wrapper {
+    position: relative;
     background-color: #fff;
     border: 1px solid #DFDFDF;
     background-color: #DFDFDF;
@@ -7767,8 +7768,9 @@ body.projets #container {
     .project-list .project .image-wrapper::after {
       content: '';
       display: block;
-      padding-bottom: 33%;
-      height: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
       background-image: linear-gradient(30deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.4));
       opacity: 1;
       transition: opacity .6s ease-out; }
@@ -7788,10 +7790,12 @@ body.projets #container {
       display: none; }
     .project-list .project .last-medias .legende {
       padding: 0 16px; }
-    .project-list .project .last-medias .media:nth-of-type(4n+1) {
-      clear: left; }
-    .project-list .project .last-medias .media:nth-of-type(n+5) {
-      display: none; }
+    .project-list .project .last-medias .media {
+      cursor: pointer; }
+      .project-list .project .last-medias .media:nth-of-type(4n+1) {
+        clear: left; }
+      .project-list .project .last-medias .media:nth-of-type(n+5) {
+        display: none; }
     .project-list .project .last-medias .button-wrapper_flagMedia {
       display: none; }
   .project-list .project .montage-list {

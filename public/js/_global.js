@@ -90,7 +90,7 @@ function listMedia( mediaData) {
 function mediaInit( $m) {
   var $v = $m.find('video');
   $m.hover(function() {
-    if( $v !== undefined) {
+    if( $v.length > 0) {
       $v
         .attr('loop', true)
         .removeAttr('controls')

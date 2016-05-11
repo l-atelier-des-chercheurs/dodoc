@@ -50,6 +50,7 @@ if( lang === 'fr') {
       "fullscreen" : "Plein écran",
       "quitFullscreen" : "Quitter le plein écran",
       "removeThisImage" : "Supprimer cette image",
+      "removeThisMedia" : "Supprimer ce média",
       "finishStopmotion" : "Finaliser l’animation",
       "addToFav" : "Mettre en favoris",
 
