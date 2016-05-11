@@ -406,7 +406,7 @@ var currentStream = (function(context) {
     currentFeedsSource = {
       audio: {
         optional: [ audioSource ? {sourceId: audioSource} : undefined ],
-      }
+      },
       video: {
         optional: [ videoSource ? {sourceId: videoSource} : undefined],
         mandatory: {
