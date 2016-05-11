@@ -7158,6 +7158,9 @@ body.publi[data-template="bordel"] .publi-container {
     body.publi[data-template="bordel"] .publi-container .publi_medias .media:hover {
       z-index: 300; }
     body.publi[data-template="bordel"] .publi-container .publi_medias .media.media_text {
+      width: auto;
+      max-width: 40%;
+      display: inline-block;
       z-index: 200;
       border: 4px solid #48C2B5; }
     body.publi[data-template="bordel"] .publi-container .publi_medias .media .mediaContent {
