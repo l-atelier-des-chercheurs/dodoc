@@ -447,7 +447,7 @@ var currentStream = (function(context) {
           resolve( stream);
         },
         function(err) {
-          alert(JSON.stringify(err));
+          alert( dodoc.lang.videoStreamCouldntBeStartedTryChangingRes + '\n\n error: ' + JSON.stringify(err));
         }
       );
     });
@@ -457,7 +457,7 @@ var currentStream = (function(context) {
     return new Promise(function(resolve, reject) {
 
       if( currentFeedsSource === undefined || currentFeedsSource.audio === undefined) {
-        reject("Camera not yet ready");
+        reject("audio devices not yet ready");
       }
 
       console.log( "Getting audio feed");
@@ -471,7 +471,7 @@ var currentStream = (function(context) {
           resolve(stream);
         },
         function(err) {
-          alert(JSON.stringify(err));
+          alert( dodoc.lang.audioStreamCouldntBeStarted + '\n\n error: ' + JSON.stringify(err));
         }
       );
     });

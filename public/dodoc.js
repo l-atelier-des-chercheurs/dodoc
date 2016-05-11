@@ -69,6 +69,9 @@ if( lang === 'fr') {
       "audioOutputDestination" : "destination audio&nbsp;:",
       "videoInputSource" : "source video:",
 
+      "videoStreamCouldntBeStartedTryChangingRes" : "Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la résolution dans le panneau de droite.",
+      "audioStreamCouldntBeStarted" : "Le flux audio n’a pas pu être démarré.",
+
       "modal" : {
         "sureRemoveMedia" : "Êtes-vous sûr de vouloir supprimer ce média ?",
 
