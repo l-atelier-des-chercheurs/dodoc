@@ -16,31 +16,6 @@ function onSocketError(reason) {
 };
 
 
-// Variables pour la prise de médias
-var streaming = false,
-//     canvas       = document.querySelector('#canvas'),
-    photo        = document.querySelector('#photo'),
-    startbutton  = document.querySelector('#capture-btn'),
-    width = dodoc.captureVideoWidth,
-    height = dodoc.captureVideoHeight;
-var mediaStream = null;
-
-//Event variables for recording
-var isEventExecutedVideo = false;
-var isEventExecutedVideoBtn = false;
-var isEventExecutedAudio = false;
-var isEventExecutedEqualizer = false;
-
-//compteur d'image pour le stop motion
-var countImage = 0;
-//compteur de clicks pour le stopmotion
-var countPress = 0;
-//compteur de click général
-var countClick = 0;
-//compteur pour l'equalizer
-var countEqualizer = 0;
-
-var sarahCouleur = "gray";
 
 
 /* sockets */
@@ -313,10 +288,28 @@ var currentStream = (function(context) {
   var videoElement = document.querySelector('#video');
   var videoStream, audioStream;
 
-  var audioInputSelect = document.querySelector('select#audioSource');
-  var audioOutputSelect = document.querySelector('select#audioOutput');
-  var videoSelect = document.querySelector('select#videoSource');
+  var audioInputSelect = document.querySelector('.js--audioSource');
+  var audioOutputSelect = document.querySelector('.js--audioOutput');
+  var videoSelect = document.querySelector('.js--videoSource');
   var selectors = [audioInputSelect, audioOutputSelect, videoSelect];
+
+  var videoResSwitches = document.querySelector('.js--resolutionSelector').videoRes;
+
+  var qvgaConstraints = {
+    video: {width: {exact: 320}, height: {exact: 240}}
+  };
+
+  var vgaConstraints = {
+    video: {width: {exact: 640}, height: {exact: 480}}
+  };
+
+  var hdConstraints = {
+    video: {width: 1280, height: 720}
+  };
+
+  var fullHdConstraints = {
+    video: {width: {exact: 1920}, height: {exact: 1080}}
+  };
 
   var recordVideoFeed;
   var recordAudioFeed;
@@ -365,6 +358,15 @@ var currentStream = (function(context) {
     console.log('navigator.getUserMedia error: ', error);
   }
 
+  function getVideoResFromRadio( eles) {
+    for (index=0; index < eles.length; index++) {
+      if (eles[index].checked) {
+        var radioValue = {};
+        return eles[index].dataset;
+      }
+    }
+  }
+
   // Attach audio output device to video element using device/sink ID.
   function attachSinkId(element, sinkId) {
     if (typeof element.sinkId !== 'undefined') {
@@ -394,15 +396,26 @@ var currentStream = (function(context) {
 
   function setSources() {
 
+    console.log( 'setting new sources for audio and video feeds');
+
     var audioSource = audioInputSelect.value;
     var videoSource = videoSelect.value;
+
+    var requestedVideoRes = getVideoResFromRadio( videoResSwitches);
+
     currentFeedsSource = {
       audio: {deviceId: audioSource ? {exact: audioSource} : undefined},
-      video: {deviceId: videoSource ? {exact: videoSource} : undefined}
+      video: {
+        deviceId: videoSource ? {exact: videoSource} : undefined,
+        mandatory: {
+          minWidth: requestedVideoRes.vwidth,
+          minHeight: requestedVideoRes.vheight
+        }
+      }
     };
 
-    // restart the mode (could be cleaner)
-    $('.js--modeSelector').find('.is-active').trigger('click');
+    // restart the mode (should be cleaner)
+    $('.js--modeSelector').filter('.is--active').trigger('click');
 
   }
 
@@ -413,7 +426,6 @@ var currentStream = (function(context) {
       if( currentFeedsSource === undefined || currentFeedsSource.video === undefined) {
         reject("Camera not yet ready");
       }
-
       navigator.getUserMedia(
         {
           video: currentFeedsSource.video,
@@ -457,6 +469,11 @@ var currentStream = (function(context) {
   return {
 
     init : function() {
+
+      $('.js--settings').click(function() {
+        $(this).closest('.feedSettings').toggleClass('is--open');
+      });
+
       return new Promise(function(resolve, reject) {
         navigator.mediaDevices.enumerateDevices()
           .then(function(deviceInfos) {
@@ -465,6 +482,7 @@ var currentStream = (function(context) {
             audioInputSelect.onchange = setSources;
             audioOutputSelect.onchange = changeAudioDestination;
             videoSelect.onchange = setSources;
+            $(videoResSwitches).change(setSources);
             resolve();
           }, function(err) {
             reject("Failed to init stream : " + err);
@@ -473,7 +491,11 @@ var currentStream = (function(context) {
     },
 
     getVideoFrame : function() {
-      return videoElement;
+      var videoObj = {};
+      videoObj.feed = videoElement;
+      videoObj.width = getVideoResFromRadio( videoResSwitches).vwidth;
+      videoObj.height = getVideoResFromRadio( videoResSwitches).vheight;
+      return videoObj;
     },
 
     stopAllFeeds : function() {
@@ -503,6 +525,7 @@ var currentStream = (function(context) {
               videoElement.src = vendorURL.createObjectURL(stream);
             }
             videoElement.play();
+            debugger;
             resolve();
           }, function(err) {
             console.log( " failed to start camera feed: " + err);
@@ -515,10 +538,11 @@ var currentStream = (function(context) {
       return new Promise(function(resolve, reject) {
         getCameraFeed()
           .then( function( stream) {
+            var requestedVideoRes = getVideoResFromRadio( videoResSwitches);
+            debugger;
             recordVideoFeed = RecordRTC(stream, {
               type: 'video',
-              video: { width: dodoc.captureVideoWidth, height: dodoc.captureVideoHeight },
-              canvas: { width: dodoc.captureVideoWidth, height: dodoc.captureVideoHeight },
+              canvas: { width: requestedVideoRes.vwidth, height: requestedVideoRes.vheight },
             });
             recordVideoFeed.startRecording();
             resolve();
@@ -657,6 +681,7 @@ function onMediaCreated( mediasData){
 
 //animation des fenêtres à la capture
 function animateWindows(){
+  $('.feedSettings').removeClass('is--open');
 	$('body').attr('data-state', 'expanded');
 /*
 	if(!$('.captureRight').hasClass('active')){

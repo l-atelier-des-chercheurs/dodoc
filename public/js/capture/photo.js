@@ -14,12 +14,15 @@ var imageMode = (function() {
     if( mediaJustCaptured())
       return;
 
+    var videoFrame = currentStream.getVideoFrame();
+
     var invisibleCanvas = document.createElement('canvas');
-    invisibleCanvas.width = dodoc.captureVideoWidth;
-    invisibleCanvas.height = dodoc.captureVideoHeight;
+    invisibleCanvas.width = videoFrame.width;
+    invisibleCanvas.height = videoFrame.height;
     var invisibleCtx = invisibleCanvas.getContext('2d');
 
-    invisibleCtx.drawImage( currentStream.getVideoFrame(), 0, 0, invisibleCanvas.width, invisibleCanvas.height);
+    debugger;
+    invisibleCtx.drawImage( videoFrame.feed, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
     var imageData = invisibleCanvas.toDataURL('image/png');
 
     $(".captureRight .flash").fadeIn(0, function(){

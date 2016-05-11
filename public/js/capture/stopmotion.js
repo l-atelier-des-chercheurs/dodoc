@@ -16,7 +16,6 @@ var stopMotionMode = (function() {
     if( mediaJustCaptured())
       return;
 
-    countImage = 0;
     console.log('start stop-motion');
 
     $startsm.hide();

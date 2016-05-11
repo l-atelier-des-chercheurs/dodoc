@@ -171,6 +171,11 @@ mixin button(typeOfButton, navOrButton, style)
         include images/clear.svg
       span !{dodoc.lang.remove}
 
+  if( typeOfButton === 'settings')
+    a(href="#" title="Dodoc media" class='button-wrapper_settings js--settings #{defaultClasses}')
+      .btn.icon
+        include images/cog.svg
+      span !{dodoc.lang.settings}
 
 
   if( navOrButton === 'isNav')
