@@ -284,6 +284,8 @@ function audioDisplay(){
 var currentStream = (function(context) {
   // using https://github.com/webrtc/samples/blob/gh-pages/src/content/devices/input-output/js/main.js
   // to select audio/video source
+  var $settingsPane = $('.feedSettings');
+  var $settingsButton = $('.js--settings');
 
   var videoElement = document.querySelector('#video');
   var videoStream, audioStream;
@@ -481,11 +483,26 @@ var currentStream = (function(context) {
 
     init : function() {
 
-      $('.js--settings').click(function() {
-        $(this).closest('.feedSettings').toggleClass('is--open');
+      $settingsButton.click(function() {
+        $(document).trigger('toggle_settings_pane');
       });
 
+      $(document)
+        .on( 'toggle_settings_pane', function() {
+          $settingsPane.toggleClass('is--open');
+        })
+        .on( 'open_settings_pane', function() {
+          $settingsPane.addClass('is--open');
+        })
+        .on( 'close_settings_pane', function() {
+          $settingsPane.removeClass('is--open');
+        })
+        ;
+
       setVideoResFromLocalstorage();
+
+      if( store.get(userSelectedVideoDevice) === undefined)
+        $(document).trigger('open_settings_pane');
 
       return new Promise(function(resolve, reject) {
         navigator.mediaDevices.enumerateDevices()
@@ -688,7 +705,7 @@ function onMediaCreated( mediasData){
 
 //animation des fenêtres à la capture
 function animateWindows(){
-  $('.feedSettings').removeClass('is--open');
+  $(document).trigger('close_settings_pane');
 	$('body').attr('data-state', 'expanded');
 /*
 	if(!$('.captureRight').hasClass('active')){

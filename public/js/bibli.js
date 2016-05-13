@@ -89,8 +89,8 @@ function init(){
     };
     sendData.editMedia( editMediaData);
   });
-
 }
+
 
 function onListAllMedias( mediasData) {
   console.log( "onListAllMedias");
@@ -110,12 +110,25 @@ function onListAllMedias( mediasData) {
 // returns when a text content has been added
 function onMediaCreated( mediasData) {
   console.log( "onMediaCreated");
-  onListAllMedias( mediasData);
-}
+  var $getAllMediasFormatted = listAllMedias( mediasData);
+  var $mediaContainer = $(".mainContent .medias-list");
+
+  $getAllMediasFormatted.each( function() {
+    var $m = $(this);
+    $m.attr('data-oninsert', 'slideFromTop');
+    insertOrReplaceMedia( $m, $mediaContainer);
+  });}
 
 function onMediaUpdated( mediasData) {
   console.log( "onMediaUpdated");
-  onListAllMedias( mediasData);
+  var $getAllMediasFormatted = listAllMedias( mediasData);
+  var $mediaContainer = $(".mainContent .medias-list");
+
+  $getAllMediasFormatted.each( function() {
+    var $m = $(this);
+    $m.attr('data-oninsert', 'blink');
+    insertOrReplaceMedia( $m, $mediaContainer);
+  });
 
   // if the publi pane is open, there's a chance we juste updated a media that's also in the publi !
   // if publi pane is open, let's ask for a new publimedias list

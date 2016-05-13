@@ -99,10 +99,15 @@ function mediaInit( $m) {
         ;
     }
   }, function() {
-    $v
-      .removeAttr('loop')
-      .attr('controls', true)
-      ;
+    if( $v.length > 0) {
+      $v
+        .removeAttr('loop')
+        .attr('controls', true)
+        .get(0)
+          .pause()
+        ;
+      $v.get(0).currentTime = 0;
+    }
 
   });
 }
