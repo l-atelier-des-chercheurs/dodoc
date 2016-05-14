@@ -14,12 +14,14 @@ var imageMode = (function() {
     if( mediaJustCaptured())
       return;
 
-    var invisibleCanvas = document.createElement('canvas');
-    invisibleCanvas.width = dodoc.captureVideoWidth;
-    invisibleCanvas.height = dodoc.captureVideoHeight;
-    var invisibleCtx = invisibleCanvas.getContext('2d');
+    var videoFrame = currentStream.getVideoFrame();
 
-    invisibleCtx.drawImage( currentStream.getVideoFrame(), 0, 0, invisibleCanvas.width, invisibleCanvas.height);
+    var invisibleCanvas = document.createElement('canvas');
+    invisibleCanvas.width = videoFrame.videoWidth;
+    invisibleCanvas.height = videoFrame.videoHeight;
+    var invisibleCtx = invisibleCanvas.getContext('2d');
+    invisibleCtx.drawImage( videoFrame, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
+
     var imageData = invisibleCanvas.toDataURL('image/png');
 
     $(".captureRight .flash").fadeIn(0, function(){
@@ -35,7 +37,9 @@ var imageMode = (function() {
     }
     // send instruction to record photo
     sendData.createNewMedia( mediaData);
-    $preview.attr('src', '');
+
+
+    $preview.find('.output').attr('src', '');
 
     justCaptured();
     saveFeedback("/images/icone-dodoc_image.png");
@@ -46,7 +50,7 @@ var imageMode = (function() {
     init : function() {
       $(".photo-capture #capture-btn").off().on('click', takePictures);
       $preview.find('.js--delete-media-capture').hide();
-      $preview.attr('src', '');
+      $preview.find('.output').attr('src', '');
     },
     showImagePreview : function( pathToMediaFile) {
       $preview.find('.output').attr("src", pathToMediaFile);

@@ -12,7 +12,9 @@ var fs = require('fs-extra'),
 	flags = require('flags'),
   merge = require('merge'),
   gutil = require('gulp-util'),
-  parsedown = require('woods-parsedown')
+  parsedown = require('woods-parsedown'),
+  slugg = require('slugg'),
+  gm = require('gm').subClass({imageMagick: true})
 ;
 
 var dodoc  = require('./public/dodoc.js');
@@ -98,12 +100,10 @@ module.exports = function(app, io){
 	function onNewFolder( folderData) {
 		dev.logfunction( "EVENT - onNewFolder");
 		createNewFolder( folderData).then( function( newpdata) {
-
       sendEventWithContent( 'folderCreated', newpdata);
-
     }, function(errorpdata) {
-      sendEventWithContent( 'folderAlreadyExist', errorpdata);
       console.error("Failed to create a new folder! Error: ", errorpdata);
+      sendEventWithContent( 'folderAlreadyExist', errorpdata);
     });
 	}
 
@@ -517,7 +517,7 @@ FOLDER METHODS
     	dev.logfunction( "COMMON — createNewFolder");
 
     	var folderName = folderData.name;
-    	var slugFolderName = convertToSlug(folderName);
+    	var slugFolderName = slugg(folderName);
     	var folderPath = getFullPath( slugFolderName);
     	var currentDateString = getCurrentDate();
 
@@ -733,7 +733,7 @@ PROJECT METHODS
   		dev.logfunction( "COMMON — createNewProject");
 
   		var projectName = projectData.projectName;
-  		var slugProjectName = convertToSlug( projectName);
+  		var slugProjectName = slugg( projectName);
   		var slugFolderName = projectData.slugFolderName;
 
   		var currentDateString = getCurrentDate();
@@ -933,7 +933,7 @@ MEDIA METHODS
   }
 
   function listMediasOfOneType( slugFolderName, slugProjectName, mediasFolderPath, mediaName) {
-		dev.logfunction( "COMMON — listMediasOfOneType");
+		dev.logfunction( "COMMON — listMediasOfOneType with");
 
     var projectPath = getProjectPath( slugFolderName, slugProjectName);
     var mediasPath = projectPath + '/' + mediasFolderPath;
@@ -971,23 +971,26 @@ MEDIA METHODS
     console.log( "- foldersMediasMeta : " + JSON.stringify( foldersMediasMeta, null, 4));
 
     for( var mediaMetaFilename of foldersMediasMeta) {
-      var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( mediaMetaFilename)[1];
-//       dev.log( "- looking for medias filenames that start with " + fileNameWithoutExtension);
+      var metaFileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( mediaMetaFilename)[1];
+//       dev.log( "- looking for medias filenames that start with " + metaFileNameWithoutExtension);
       for( var mediaFilename of foldersMediasFiles) {
 //         dev.log( "- comparing to " + mediaFilename);
-        // if this media filename corresponds to a json filename
-        if ( mediaFilename.indexOf( fileNameWithoutExtension) !== -1) {
+        // check if both mediaFilename and metaFileNameWithoutExtension have a dash in them or not
+        // only match XXX.txt with XXX.jpg, and -1.txt with -1.jpg
+        if( (mediaFilename.indexOf('-') === -1) !== (metaFileNameWithoutExtension.indexOf('-') === -1))
+          continue;
 
+        // if this media filename corresponds to the meta filename
+        if (mediaFilename.indexOf(metaFileNameWithoutExtension) !== -1 ) {
           var mediaObjKey = mediasFolderPath + '/' + mediaMetaFilename;
-
           // if we don't have an obj with this key
           if( !folderMediaMetaAndFileName.hasOwnProperty( mediaObjKey)) {
             // let's make one
             folderMediaMetaAndFileName[mediaObjKey] = new Object();
             // read JSON file and add the content to the folder
-            var mediaMetaData = getMediaMeta( projectPath, mediasFolderPath, fileNameWithoutExtension);
+            var mediaMetaData = getMediaMeta( projectPath, mediasFolderPath, metaFileNameWithoutExtension);
             mediaMetaData.mediaFolderPath = mediasFolderPath;
-            mediaMetaData.mediaName = fileNameWithoutExtension;
+            mediaMetaData.mediaName = metaFileNameWithoutExtension;
             mediaMetaData.slugFolderName = slugFolderName;
             mediaMetaData.slugProjectName = slugProjectName;
 
@@ -1051,19 +1054,27 @@ MEDIA METHODS
           fileExtension = '.jpg';
           var imageBuffer = decodeBase64Image( newMediaData.mediaData);
 
-          fs.writeFileSync( pathToFile + fileExtension, imageBuffer.data);
+          fs.writeFile( pathToFile + fileExtension, imageBuffer.data, function(err) {
+            if (err) reject( err);
+            console.log("Image added at path " + pathToFile);
 
-					console.log("Image added at path " + pathToFile);
+            gm( pathToFile + fileExtension)
+              .resize( dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
+              .write( pathToFile + dodoc.thumbSuffix + fileExtension, function (err) {
+                if( err)
+                  console.log( gutil.colors.red('--> Failed to make a thumbnail for a photo! Error: ', err));
+                createMediaMeta( newMediaType, pathToFile, fileExtension, newFileName).then( function( mdata) {
+                  mdata.slugFolderName = slugFolderName;
+                  mdata['slugProjectName'] = slugProjectName;
+                  mdata['mediaFolderPath'] = mediaFolder;
+              		console.log( 'just created a photo, its meta is ' + JSON.stringify( mdata, null, 4));
+                  resolve( mdata);
+                }, function() {
+                  reject( 'failed to create meta for photo');
+                });
 
-          createMediaMeta( newMediaType, pathToFile, fileExtension, newFileName).then( function( mdata) {
-            mdata.slugFolderName = slugFolderName;
-            mdata['slugProjectName'] = slugProjectName;
-            mdata['mediaFolderPath'] = mediaFolder;
-        		console.log( 'just created a photo, its meta is ' + JSON.stringify( mdata, null, 4));
-            resolve( mdata);
-          }, function() {
-            reject( 'failed to create meta for photo');
-          });
+            });
+      		});
 
           break;
         case 'video':
@@ -1347,7 +1358,7 @@ PUBLIS METHODS
   		var currentDateString = getCurrentDate();
 
   		var pname = publiData.publiName;
-  		var pslug = convertToSlug( pname);
+  		var pslug = slugg( pname);
 
   		var slugFolderName = publiData.slugFolderName;
   		var slugProjectName = publiData.slugProjectName;
@@ -1571,6 +1582,9 @@ PUBLIS METHODS
 	//Décode les images en base64
 	// http://stackoverflow.com/a/20272545
 	function decodeBase64Image(dataString) {
+
+  	dev.log("Decoding base 64 image");
+
 		var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
 		response = {};
 
@@ -1582,33 +1596,6 @@ PUBLIS METHODS
 		response.data = new Buffer(matches[2], 'base64');
 
 		return response;
-	}
-
-	function convertToSlug( text){
-  	// trim le texte
-  	text = text.trim();
-	  // converti le texte en minuscule
-		var s = text.toLowerCase();
-		// remplace les a accentué
-		s = s.replace(/[àâäáã]/g, 'a');
-		// remplace les e accentué
-		s = s.replace(/[èêëé]/g, 'e');
-		// remplace les i accentué
-		s = s.replace(/[ìîïí]/g, 'i');
-		// remplace les u accentué
-		s = s.replace(/[ùûüú]/g, 'u');
-		// remplace les o accentué
-		s = s.replace(/[òôöó]/g, 'o');
-		// remplace le c cédille
-		s = s.replace(/[ç]/g, 'c');
-		// remplace le ene tilde espagnol
-		s = s.replace(/[ñ]/g, 'n');
-		// remplace tous les caractères qui ne sont pas alphanumérique en tiret
-		s = s.replace(/\W/g, '-');
-		// remplace les double tirets en tiret unique
-		s = s.replace(/\-+/g, '-');
-		// renvoi le texte modifié
-		return s;
 	}
 
 	// Remove all files and directory

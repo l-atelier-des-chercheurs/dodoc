@@ -6,58 +6,11 @@
 
 var audioMode = (function() {
 
-  var eq;
   var $preview = $(".preview_audio");
 
-  return {
-    init : function( stream) {
-      audioCapture();
-      eq = new equalizer( $('#canvas-audio'), stream);
-      $preview.find('.js--delete-media-capture').hide();
-    },
-
-    stop : function() {
-      if( eq !== undefined) {
-        eq.stopEqualizer();
-      }
-    },
-    showAudioPreview : function( pathToAudioFile, pathToEqualizerPreview) {
-      $preview.find('audio.output').attr('src', pathToAudioFile);
-      $preview.find('img.output').attr('src', pathToEqualizerPreview);
-      $preview.find('.js--delete-media-capture').show();
-    },
-  }
-})();
-
-
-
-
-/*************
-  LEGACY
-  **************/
-
-//Capture le flux audio
-function audioCapture(){
   //Variables
-  var mediaStream = null;
-
   var startRecordingBtn = document.getElementById('start-recording-btn');
   var stopRecordingBtn = document.getElementById('stop-recording-btn');
-
-  //click events
-  $("#start-recording-btn").off();
-  $("#start-recording-btn").on('click', function(){
-    console.log("you are using the mouse for recording audio");
-    startRecordAudio();
-    isEventExecutedVideo = false;
-  });
-
-  $("#stop-recording-btn").off();
-  $("#stop-recording-btn").on('click', function(){
-    stopRecordAudio();
-    console.log("stop recording audio");
-  });
-
 
   function startRecordAudio(){
     if( mediaJustCaptured())
@@ -104,12 +57,55 @@ function audioCapture(){
     justCaptured();
 
   }
-}
 
+  return {
+    init : function( stream) {
+
+      equalizer.start( $('#canvas-audio'), stream);
+
+      $preview.find('.js--delete-media-capture').hide();
+      //click events
+      $(startRecordingBtn)
+        .off()
+        .on('click', function(){
+          console.log("you are using the mouse for recording audio");
+          startRecordAudio();
+          isEventExecutedVideo = false;
+        });
+
+      $(stopRecordingBtn)
+        .off()
+        .on('click', function(){
+          stopRecordAudio();
+          equalizer.clearCanvas();
+          console.log("stop recording audio");
+        });
+
+    },
+    stop : function() {
+      equalizer.stop();
+    },
+    showAudioPreview : function( pathToAudioFile, pathToEqualizerPreview) {
+      $preview.find('audio.output').attr('src', pathToAudioFile);
+      $preview.find('img.output').attr('src', pathToEqualizerPreview);
+      $preview.find('.js--delete-media-capture').show();
+    },
+  }
+})();
+
+
+
+
+/*************
+  LEGACY
+  **************/
+
+var sarahCouleur = "gray";
 
 
 // CREATE A SOUND EQUALIZER
-function equalizer( $canvas, stream) {
+var equalizer = (function() {
+
   window.requestAnimFrame = (function(){
     return  window.requestAnimationFrame       ||
             window.webkitRequestAnimationFrame ||
@@ -117,10 +113,6 @@ function equalizer( $canvas, stream) {
             function(callback, element){
               window.setTimeout(callback, 1000 / 60);
             };
-  })();
-
-  window.AudioContext = (function(){
-      return  window.AudioContext || window.mozAudioContext;
   })();
 
   // Global Variables for Audio
@@ -131,6 +123,7 @@ function equalizer( $canvas, stream) {
                           // decreasing this gives a faster sonogram, increasing it slows it down
   var amplitudeArray;     // array to hold frequency data
   var audioStream;
+  var sourceNode;
 
   // Global Variables for Drawing
   var column = 0;
@@ -138,27 +131,22 @@ function equalizer( $canvas, stream) {
   var canvasHeight = 256;
   var ctx;
 
-  ctx = $canvas.get(0).getContext("2d");
-
-  try {
-      audioContext = new AudioContext();
-  } catch(e) {
-      console.log('Web Audio API is not supported in this browser');
-  }
-
-  startEqualizer( stream);
-
   function startEqualizer( stream){
+    console.log( 'starting equalizer');
     // e.preventDefault();
     clearCanvas();
     // Initialise getUserMedia
     setupAudioNodes( stream);
   }
 
-  this.stopEqualizer = function(){
-    javascriptNode.onaudioprocess = null;
-    if(audioStream) audioStream.stop();
-    if(sourceNode)  sourceNode.disconnect();
+  function stopEqualizer(){
+    debugger;
+    if( javascriptNode !== undefined)
+      javascriptNode.onaudioprocess = null;
+    if(audioStream !== undefined)
+      audioStream.stop();
+    if(sourceNode !== undefined)
+      sourceNode.disconnect();
   }
 
   function setupAudioNodes(stream) {
@@ -224,13 +212,35 @@ function equalizer( $canvas, stream) {
   }
 
   function clearCanvas() {
-      column = 0;
-      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-      ctx.strokeStyle = 'blue';
-      var y = (canvasHeight / 2) + 0.5;
-      ctx.moveTo(0, y);
-      ctx.lineTo(canvasWidth-1, y);
-      ctx.stroke();
+    column = 0;
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctx.strokeStyle = 'blue';
+    var y = (canvasHeight / 2) + 0.5;
+    ctx.moveTo(0, y);
+    ctx.lineTo(canvasWidth-1, y);
+    ctx.stroke();
   }
 
-}
+  return {
+    start : function($canvas, stream) {
+      ctx = $canvas.get(0).getContext("2d");
+
+      window.AudioContext = (function(){
+          return  window.AudioContext || window.mozAudioContext;
+      })();
+
+      try {
+          audioContext = new AudioContext();
+      } catch(e) {
+          console.log('Web Audio API is not supported in this browser');
+      }
+      startEqualizer( stream);
+    },
+    stop : function() {
+      stopEqualizer();
+    },
+    clearCanvas : function() {
+      clearCanvas();
+    }
+  }
+})();

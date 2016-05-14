@@ -41,6 +41,7 @@ if( lang === 'fr') {
       "createdOn" : "créé le",
       "modifiedOn" : "modifié le",
       "status" : "état",
+      "settings" : "Paramètres",
 
       "editTitle" : "Éditer le titre",
       "createText" : "Créer du texte",
@@ -49,6 +50,7 @@ if( lang === 'fr') {
       "fullscreen" : "Plein écran",
       "quitFullscreen" : "Quitter le plein écran",
       "removeThisImage" : "Supprimer cette image",
+      "removeThisMedia" : "Supprimer ce média",
       "finishStopmotion" : "Finaliser l’animation",
       "addToFav" : "Mettre en favoris",
 
@@ -57,10 +59,19 @@ if( lang === 'fr') {
       "continueStopmotion" : "Continuer le stop motion",
       "removeStopmotion" : "Supprimer le stop motion",
 
+      "chooseCameraResolution" : "Sélectionnez la résolution de votre caméra",
+
       "removeProject" : "Supprimer le projet",
       "createFolder" : "Créer un dossier",
       "createProject" : "Créer un projet",
       "show" : "afficher",
+
+      "audioInputSource" : "source audio&nbsp;:",
+      "audioOutputDestination" : "destination audio&nbsp;:",
+      "videoInputSource" : "source video:",
+
+      "videoStreamCouldntBeStartedTryChangingRes" : "Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la résolution dans le panneau de droite.",
+      "audioStreamCouldntBeStarted" : "Le flux audio n’a pas pu être démarré.",
 
       "modal" : {
         "sureRemoveMedia" : "Êtes-vous sûr de vouloir supprimer ce média ?",
@@ -112,7 +123,8 @@ if( lang === 'fr') {
 }
 
 var settings = {
-  "codelang" : "fr",
+
+  "codelang" : lang,
   "contentDir" : "sessions",
   "metaFileext" : ".txt",
   "folderMetafilename" : "dossier",
@@ -129,15 +141,17 @@ var settings = {
   "textEncoding" : "UTF-8",
   "textFieldSeparator" : "\n\n----\n\n",
   "deletedPrefix" : "x_",
+  "thumbSuffix" : "_thumb",
+
+  "mediaThumbWidth" : 320,
+  "mediaThumbHeight" : 240,
 
   "_comment" : "// see http://regexr.com/3d4t8",
   "regexpMatchFolderNames" : "^([^.]+)$",
   "regexpMatchProjectPreviewNames" : "^(apercu|preview)",
   "regexpGetFileExtension" : "\\.[^.]*$",
-  "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)",
+  "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)"
 
-  "captureVideoWidth" : 640,
-  "captureVideoHeight" : 480,
 };
 
 // should work in ES6

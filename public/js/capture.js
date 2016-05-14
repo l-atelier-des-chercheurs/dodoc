@@ -16,31 +16,6 @@ function onSocketError(reason) {
 };
 
 
-// Variables pour la prise de médias
-var streaming = false,
-//     canvas       = document.querySelector('#canvas'),
-    photo        = document.querySelector('#photo'),
-    startbutton  = document.querySelector('#capture-btn'),
-    width = dodoc.captureVideoWidth,
-    height = dodoc.captureVideoHeight;
-var mediaStream = null;
-
-//Event variables for recording
-var isEventExecutedVideo = false;
-var isEventExecutedVideoBtn = false;
-var isEventExecutedAudio = false;
-var isEventExecutedEqualizer = false;
-
-//compteur d'image pour le stop motion
-var countImage = 0;
-//compteur de clicks pour le stopmotion
-var countPress = 0;
-//compteur de click général
-var countClick = 0;
-//compteur pour l'equalizer
-var countEqualizer = 0;
-
-var sarahCouleur = "gray";
 
 
 /* sockets */
@@ -58,10 +33,10 @@ jQuery(document).ready(function($) {
 
 function init(){
 
+
   setTimeout(function(){
     $(".image-choice").fadeOut();
   }, 2000);
-
 
 	//Quand on change de media
   // au click
@@ -70,11 +45,15 @@ function init(){
     $('.js--modeSelector').removeClass('is--active');
     $(this).addClass('is--active');
     changeMediaMode( newMode);
-
     backAnimation();
-
   });
-  $('.js--modeSelector[data-mediatype="photo"]').trigger( 'click');
+
+  currentStream.init()
+    .then( function() {
+      $('.js--modeSelector[data-mediatype="photo"]').trigger( 'click');
+    }, function(err) {
+      console.log("failed to init : " + err);
+    });
 
   // delete file
   $('body').on('click', '.js--delete-media-capture', function(){
@@ -206,13 +185,12 @@ function photoDisplay(){
   $(".image-choice").show();
   $("body").attr("data-mode", "photo");
 
-  currentStream.stopAllFeeds();
   currentStream.startCameraFeed().then( function() {
     $(".image-choice").fadeOut('slow');
     imageMode.init();
 
-  }, function() {
-    console.log( "Failed to start camera feed for photo");
+  }, function(err) {
+    console.log( "Failed to start camera feed for photo : " + err);
   });
 }
 function videoDisplay(){
@@ -234,7 +212,6 @@ function videoDisplay(){
   $(".video-choice").show();
   $("body").attr("data-mode", "video");
 
-  currentStream.stopAllFeeds();
   currentStream.startCameraFeed().then( function() {
 
     $(".video-choice").fadeOut('slow');
@@ -265,7 +242,6 @@ function stopMotionDisplay(){
   $("body").attr("data-mode", "stopmotion");
 
 
-  currentStream.stopAllFeeds();
   currentStream.startCameraFeed().then( function() {
 
     $(".stopmotion-choice").fadeOut('slow');
@@ -295,203 +271,291 @@ function audioDisplay(){
   $(".audio-choice").show();
   $("body").attr("data-mode", "audio");
 
-  currentStream.stopAllFeeds();
   currentStream.startAudioFeed().then( function( stream) {
 
     $(".audio-choice").fadeOut('slow');
     audioMode.init( stream);
 
-  }, function() {
-    console.log( "Failed to start audio feed for audio");
+  }, function(err) {
+    console.log( "Failed to start audio feed for audio : " + err);
   });
 }
 
-var currentStream = (function() {
+var currentStream = (function(context) {
+  // using https://github.com/webrtc/samples/blob/gh-pages/src/content/devices/input-output/js/main.js
+  // to select audio/video source
+  var $settingsPane = $('.feedSettings');
+  var $settingsButton = $('.js--settings');
 
-  // déclaration des variables privées ici
-  var videoFeed_preview = $("#video").get(0);
-
+  var videoElement = document.querySelector('#video');
   var videoStream, audioStream;
+
+  var audioInputSelect = document.querySelector('.js--audioSource');
+  var audioOutputSelect = document.querySelector('.js--audioOutput');
+  var videoSelect = document.querySelector('.js--videoSource');
+  var selectors = [audioInputSelect, audioOutputSelect, videoSelect];
+
+  var videoResSwitches = document.querySelector('.js--resolutionSelector').videoRes;
 
   var recordVideoFeed;
   var recordAudioFeed;
 
-  // get camera feed (private)
+  var userSelectedVideoDevice = 'selectedVideoDeviceId';
+  var userSelectedAudioDevice = 'selectedAudioDeviceId';
+  var userSelectedRes = 'selectedVideoRes';
+
+  var currentFeedsSource;
+
+
+  function gotDevices(deviceInfos) {
+    // Handles being called several times to update labels. Preserve values.
+    var values = selectors.map(function(select) {
+      return select.value;
+    });
+    selectors.forEach(function(select) {
+      while (select.firstChild) {
+        select.removeChild(select.firstChild);
+      }
+    });
+    var previousVideoDeviceId = store.get(userSelectedVideoDevice);
+    var previousAudioDeviceId = store.get(userSelectedAudioDevice);
+
+    for (var i = 0; i !== deviceInfos.length; ++i) {
+      var deviceInfo = deviceInfos[i];
+      var deviceId = deviceInfo.deviceId;
+      var option = document.createElement('option');
+      option.value = deviceId;
+      if( deviceId === previousVideoDeviceId || deviceId === previousAudioDeviceId)
+        option.selected = true;
+      if (deviceInfo.kind === 'audioinput') {
+        option.text = deviceInfo.label || 'microphone ' + (audioInputSelect.length + 1);
+        audioInputSelect.appendChild(option);
+      } else if (deviceInfo.kind === 'audiooutput') {
+        option.text = deviceInfo.label || 'speaker ' + (audioOutputSelect.length + 1);
+        audioOutputSelect.appendChild(option);
+      } else if (deviceInfo.kind === 'videoinput') {
+        option.text = deviceInfo.label || 'camera ' + (videoSelect.length + 1);
+        videoSelect.appendChild(option);
+      } else {
+        console.log('Some other kind of source/device: ', deviceInfo);
+      }
+    }
+    selectors.forEach(function(select, selectorIndex) {
+      if (Array.prototype.slice.call(select.childNodes).some(function(n) {
+        return n.value === values[selectorIndex];
+      })) {
+        select.value = values[selectorIndex];
+      }
+    });
+
+  }
+  function errorCallback(error) {
+    console.log('navigator.getUserMedia error: ', error);
+  }
+
+  function getVideoResFromRadio() {
+    for (index=0; index < videoResSwitches.length; index++) {
+      if (videoResSwitches[index].checked) {
+        return videoResSwitches[index].dataset;
+      }
+    }
+  }
+  function setVideoResFromLocalstorage() {
+    console.log( userSelectedRes);
+    var getPreviousSessionRes = store.get(userSelectedRes);
+    if(getPreviousSessionRes !== undefined) {
+      for (index=0; index < videoResSwitches.length; index++) {
+        if( getPreviousSessionRes.width === videoResSwitches[index].dataset.width && getPreviousSessionRes.height === videoResSwitches[index].dataset.height) {
+          videoResSwitches[index].checked = true;
+        } else {
+          videoResSwitches[index].checked = false;
+        }
+      }
+    }
+  }
+
+  // Attach audio output device to video element using device/sink ID.
+  function attachSinkId(element, sinkId) {
+    if (typeof element.sinkId !== 'undefined') {
+      element.setSinkId(sinkId)
+      .then(function() {
+        console.log('Success, audio output device attached: ' + sinkId);
+      })
+      .catch(function(error) {
+        var errorMessage = error;
+        if (error.name === 'SecurityError') {
+          errorMessage = 'You need to use HTTPS for selecting audio output ' +
+              'device: ' + error;
+        }
+        console.error(errorMessage);
+        // Jump back to first output device in the list as it's the default.
+        audioOutputSelect.selectedIndex = 0;
+      });
+    } else {
+      console.warn('Browser does not support output device selection.');
+    }
+  }
+
+  function changeAudioDestination() {
+    var audioDestination = audioOutputSelect.value;
+    attachSinkId(videoElement, audioDestination);
+  }
+
+  function setSources() {
+
+    console.log( 'setting new sources for audio and video feeds');
+    var audioSource = audioInputSelect.value;
+    var videoSource = videoSelect.value;
+
+    // set source in localstorage for next time
+    store.set(userSelectedVideoDevice, videoSource);
+    store.set(userSelectedAudioDevice, audioSource);
+
+    var requestedVideoRes = getVideoResFromRadio();
+    store.set(userSelectedRes, requestedVideoRes);
+
+    currentFeedsSource = {
+      audio: {
+        optional: [ audioSource ? {sourceId: audioSource} : undefined ],
+      },
+      video: {
+        optional: [ videoSource ? {sourceId: videoSource} : undefined],
+        mandatory: {
+          minWidth: requestedVideoRes.width,
+          minHeight: requestedVideoRes.height
+        }
+      }
+    };
+
+    // restart the mode (should be cleaner)
+    $('.js--modeSelector').filter('.is--active').trigger('click');
+
+  }
+
   function getCameraFeed() {
     return new Promise(function(resolve, reject) {
       console.log( "Getting camera feed");
-      navigator.getUserMedia = ( navigator.getUserMedia ||
-                             navigator.webkitGetUserMedia ||
-                             navigator.mozGetUserMedia ||
-                             navigator.msGetUserMedia);
-      if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-        console.log("enumerateDevices() not supported.");
-        return;
+
+      if( currentFeedsSource === undefined || currentFeedsSource.video === undefined) {
+        reject("Camera not yet ready");
       }
-
-      // List cameras and microphones.
-      var mediaDevices = [];
-      navigator.mediaDevices.enumerateDevices()
-        .then(function(devices) {
-          console.log("Media devices : ");
-          devices.forEach(function(device) {
-            console.log( " " + device.kind + " = " + device.label + " id = " + device.deviceId);
-            if(device.kind === 'videoinput') {
-              mediaDevices.push(device);
-            }
-          });
-        })
-        .then(function(){
-          var deviceChoiceId;
-          if( mediaDevices.length === 0) {
-            reject( 'No videoinput found.');
-          } else
-          if(mediaDevices.length < 2) {
-            deviceChoiceId = mediaDevices[0].deviceId;
-            //$('.container-inner').prepend("<h2>"+mediaDevices[0].label+"</h2>");
-          }
-          else{
-            deviceChoiceId = mediaDevices[1].deviceId;
-            //$('.container-inner').prepend("<h2>"+mediaDevices[1].label+"</h2>");
-          }
-
-          navigator.getUserMedia(
-            {
-              //video: {deviceId: deviceChoiceId ? {exact: deviceChoiceId} : undefined},
-              video: {
-                optional: [{sourceId: deviceChoiceId}]
-              },
-              audio: false
-            },
-            function (stream) {
-              resolve( stream);
-            },
-            function(err) {
-              alert(JSON.stringify(err));
-            }
-          );
-        })
-        .catch(function(err) {
-          console.log(err.name + ": " + err.message);
-        })
-        ;
-
-  /*
       navigator.getUserMedia(
         {
-          video: true ,
+          video: currentFeedsSource.video,
           audio: false
         },
         function (stream) {
-          if (navigator.mozGetUserMedia) {
-            video.mozSrcObject = stream;
-          } else {
-            var vendorURL = window.URL || window.webkitURL;
-            video.src = vendorURL.createObjectURL(stream);
-          }
-          video.play();
+          resolve( stream);
         },
         function(err) {
-          alert(JSON.stringify(error));
+          alert( dodoc.lang.videoStreamCouldntBeStartedTryChangingRes + '\n\n error: ' + JSON.stringify(err));
         }
       );
-  */
     });
   }
 
   function getAudioFeed() {
     return new Promise(function(resolve, reject) {
 
-      console.log( "Getting audio feed");
-      navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
-      if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-        console.log("enumerateDevices() not supported.");
-        return;
+      if( currentFeedsSource === undefined || currentFeedsSource.audio === undefined) {
+        reject("audio devices not yet ready");
       }
 
-      // List cameras and microphones.
-      var mediaDevices = [];
-      navigator.mediaDevices.enumerateDevices()
-        .then(function(devices) {
-          console.log("Media devices : ");
-          devices.forEach(function(device) {
-            console.log( " " + device.kind + " = " + device.label + " id = " + device.deviceId);
-            if(device.kind === 'audioinput') {
-              mediaDevices.push(device);
-            }
-          });
-        })
-        .then(function(){
-          var deviceChoiceId;
-          if(mediaDevices.length < 2){
-            deviceChoiceId = mediaDevices[0].deviceId;
-            //$('.container-inner').prepend("<h2>"+mediaDevices[0].label+"</h2>");
-          }
-          else{
-            deviceChoiceId = mediaDevices[1].deviceId;
-            //$('.container-inner').prepend("<h2>"+mediaDevices[1].label+"</h2>");
-          }
+      console.log( "Getting audio feed");
 
-          navigator.getUserMedia(
-            {
-              //video: {deviceId: deviceChoiceId ? {exact: deviceChoiceId} : undefined},
-              video: false,
-              audio: true
-            },
-            function (stream) {
-              resolve( stream);
-            },
-            function(err) {
-              alert(JSON.stringify(error));
-            }
-          );
-        })
-        .catch(function(err) {
-          reject(err.name + ": " + error.message);
-        })
-        ;
-
+      navigator.getUserMedia(
+        {
+          video: false,
+          audio: currentFeedsSource.audio
+        },
+        function (stream) {
+          resolve(stream);
+        },
+        function(err) {
+          alert( dodoc.lang.audioStreamCouldntBeStarted + '\n\n error: ' + JSON.stringify(err));
+        }
+      );
     });
   }
 
   // déclaration des fonctions accessibles de l'extérieur ici
   return {
 
+    init : function() {
+
+      $settingsButton.click(function() {
+        $(document).trigger('toggle_settings_pane');
+      });
+
+      $(document)
+        .on( 'toggle_settings_pane', function() {
+          $settingsPane.toggleClass('is--open');
+        })
+        .on( 'open_settings_pane', function() {
+          $settingsPane.addClass('is--open');
+        })
+        .on( 'close_settings_pane', function() {
+          $settingsPane.removeClass('is--open');
+        })
+        ;
+
+      setVideoResFromLocalstorage();
+
+      if( store.get(userSelectedVideoDevice) === undefined)
+        $(document).trigger('open_settings_pane');
+
+      return new Promise(function(resolve, reject) {
+        navigator.mediaDevices.enumerateDevices()
+          .then(function(deviceInfos) {
+            gotDevices(deviceInfos);
+            setSources();
+            audioInputSelect.onchange = setSources;
+            audioOutputSelect.onchange = changeAudioDestination;
+            videoSelect.onchange = setSources;
+            $(videoResSwitches).change(setSources);
+            resolve();
+          }, function(err) {
+            reject("Failed to init stream : " + err);
+          });
+      });
+    },
+
     getVideoFrame : function() {
-      return videoFeed_preview;
+      return videoElement;
     },
 
     stopAllFeeds : function() {
-      if( !videoFeed_preview.paused)
-        videoFeed_preview.pause();
+      if( !videoElement.paused)
+        videoElement.pause();
 
-      if(videoStream) videoStream.stop();
-      if(audioStream) audioStream.stop();
+      if(videoStream) videoStream.getTracks().forEach(function(track) {
+        track.stop();
+      });
+      if(audioStream) audioStream.getTracks().forEach(function(track) {
+        track.stop();
+      });
 
       audioMode.stop();
-
     },
 
     startCameraFeed : function() {
       return new Promise(function(resolve, reject) {
+        currentStream.stopAllFeeds();
         getCameraFeed()
           .then( function( stream) {
-
             videoStream = stream;
-
             if (navigator.mozGetUserMedia) {
-              videoFeed_preview.mozSrcObject = stream;
+              videoElement.mozSrcObject = stream;
             } else {
               var vendorURL = window.URL || window.webkitURL;
-              videoFeed_preview.src = vendorURL.createObjectURL(stream);
+              videoElement.src = vendorURL.createObjectURL(stream);
             }
-            videoFeed_preview.play();
+            videoElement.play();
             resolve();
-          }, function() {
-            console.log( " failed to get camera feed");
+          }, function(err) {
+            console.log( " failed to start camera feed: " + err);
             reject();
-          })
-          ;
+          });
       });
     },
 
@@ -499,15 +563,15 @@ var currentStream = (function() {
       return new Promise(function(resolve, reject) {
         getCameraFeed()
           .then( function( stream) {
+            var requestedVideoRes = getVideoResFromRadio();
             recordVideoFeed = RecordRTC(stream, {
               type: 'video',
-              video: { width: dodoc.captureVideoWidth, height: dodoc.captureVideoHeight },
-              canvas: { width: dodoc.captureVideoWidth, height: dodoc.captureVideoHeight },
+              canvas: { width: requestedVideoRes.width, height: requestedVideoRes.height },
             });
             recordVideoFeed.startRecording();
             resolve();
-          }, function() {
-            console.log( " failed to get camera feed");
+          }, function(err) {
+            console.log( " failed to start camera feed: " + err);
             reject();
           });
           ;
@@ -532,6 +596,7 @@ var currentStream = (function() {
 
     startAudioFeed : function() {
       return new Promise(function(resolve, reject) {
+        currentStream.stopAllFeeds();
         getAudioFeed()
           .then( function( stream) {
             audioStream = stream;
@@ -640,6 +705,7 @@ function onMediaCreated( mediasData){
 
 //animation des fenêtres à la capture
 function animateWindows(){
+  $(document).trigger('close_settings_pane');
 	$('body').attr('data-state', 'expanded');
 /*
 	if(!$('.captureRight').hasClass('active')){

@@ -16,7 +16,6 @@ var stopMotionMode = (function() {
     if( mediaJustCaptured())
       return;
 
-    countImage = 0;
     console.log('start stop-motion');
 
     $startsm.hide();
@@ -43,12 +42,14 @@ var stopMotionMode = (function() {
     var smCachePath = $("body").data( "smCachePath");
     var smImageCount = parseInt( $("body").data( "smImageCount")) + 1;
 
-    var invisibleCanvas = document.createElement('canvas');
-    invisibleCanvas.width = dodoc.captureVideoWidth;
-    invisibleCanvas.height = dodoc.captureVideoHeight;
-    var invisibleCtx = invisibleCanvas.getContext('2d');
+    var videoFrame = currentStream.getVideoFrame();
 
-    invisibleCtx.drawImage( currentStream.getVideoFrame(), 0, 0, invisibleCanvas.width, invisibleCanvas.height);
+    var invisibleCanvas = document.createElement('canvas');
+    invisibleCanvas.width = videoFrame.videoWidth;
+    invisibleCanvas.height = videoFrame.videoHeight;
+    var invisibleCtx = invisibleCanvas.getContext('2d');
+    invisibleCtx.drawImage( videoFrame, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
+
     var imageData = invisibleCanvas.toDataURL('image/png');
 
     var smImage =

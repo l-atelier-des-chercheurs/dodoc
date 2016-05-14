@@ -69,20 +69,47 @@ function listAllMedias( mediasData) {
   var lastMedias = mediasData;
 
   $.each( lastMedias, function( mediaKey, mediaDatas) {
-    var newMedia = makeOneMedia( mediaKey, mediaDatas);
+    var $newMedia = makeOneMedia( mediaKey, mediaDatas);
+    mediaInit( $newMedia);
 
-    if( newMedia !== undefined)
-      $allMedias = $allMedias.add( newMedia);
+    if( $newMedia !== undefined)
+      $allMedias = $allMedias.add( $newMedia);
   });
 
   return $allMedias;
 }
 
 function listMedia( mediaData) {
-  var newMedia = makeOneMedia( mediaKey, mediaData);
-  if( newMedia !== undefined)
-    return newMedia;
+  var $newMedia = makeOneMedia( mediaKey, mediaData);
+  if( $newMedia !== undefined)
+    return $newMedia;
   return false;
+}
+
+
+function mediaInit( $m) {
+  var $v = $m.find('video');
+  $m.hover(function() {
+    if( $v.length > 0) {
+      $v
+        .attr('loop', true)
+        .removeAttr('controls')
+        .get(0)
+          .play()
+        ;
+    }
+  }, function() {
+    if( $v.length > 0) {
+      $v
+        .removeAttr('loop')
+        .attr('controls', true)
+        .get(0)
+          .pause()
+        ;
+      $v.get(0).currentTime = 0;
+    }
+
+  });
 }
 
 
@@ -142,7 +169,15 @@ function showImage( mediaDatas) {
   var mediaFolderPath = mediaDatas.mediaFolderPath;
   var mediaFilenames = mediaDatas.files;
 
-  var pathToFile = makeFullPathForProject( mediaFolderPath + '/' + mediaFilenames[0]);
+  var thumbFilename;
+
+  $.each( mediaFilenames, function( key, mediaFilename) {
+    if( mediaFilename.indexOf( dodoc.thumbSuffix) !== -1) {
+      thumbFilename = mediaFilename;
+    }
+  });
+
+  var pathToFile = makeFullPathForProject( mediaFolderPath + '/' + (thumbFilename !== undefined ? thumbFilename : mediaFilenames[0]));
 
 	var mediaItem = $(".js--templates .media_image").clone(false);
 	mediaItem
@@ -1031,8 +1066,6 @@ var modals = {
 
     	var titleOfTextmediaMd = $modal.find('.js--submit-new-text_title').val();
     	var textOfTextmediaMd =  $modal.find('.js--submit-new-text_text').val();
-
-    	debugger;
 
       if( titleOfTextmediaMd !== undefined)
         editMediaData.titleOfTextmediaMd = titleOfTextmediaMd;

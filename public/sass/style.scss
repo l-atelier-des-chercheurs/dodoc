@@ -192,7 +192,7 @@ button{
 
   }
 
-  &_add, &_edit, &_publi, &_editProjet, &_addMedia, &_backButton, &_editFolder {
+  &_add, &_edit, &_publi, &_editProjet, &_addMedia, &_backButton, &_editFolder, &_settings {
     background-color: $rouge;
     color: white;
   }
@@ -502,7 +502,38 @@ button{
 
 }
 
+@keyframes slideFromTop {
+   0% {
+    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0;
+  }
+  100% {
+     opacity: 1;
+    transform: translate3d(0, 0%, 0);
+  }
+}
+[data-oninsert="slideFromTop"] {
+  -webkit-animation: slideFromTop .4s ease-out 1;
+  animation: slideFromTop .4s ease-out 1;
+}
 
+@keyframes blink {
+   0% {
+    opacity: 0;
+    background-color: $c-images;
+  }
+  100% {
+    opacity: 1;
+    background-color: transparent;
+  }
+}
+[data-oninsert="blink"] {
+  -webkit-animation: blink 1.4s ease-out 1;
+  animation: blink 1.4s ease-out 1;
+}
 
 .js--templates {
   display: none;

@@ -9,6 +9,7 @@ var videoMode = (function() {
   // private vars and functions
   var $preview = $(".preview_video");
 
+
   // Function qui enregistre de la vidéo
   function recordingVideo(){
     var startVideoRecording = document.getElementById('start-record-btn');
@@ -27,7 +28,6 @@ var videoMode = (function() {
       if( mediaJustCaptured())
         return;
 
-      console.log('starting-video');
       backAnimation();
       recordingFeedback();
 
