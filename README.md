@@ -34,8 +34,11 @@ Type ```cd C:/Documents```
 ### Clone the repo or download it
 To download the repository, click on the "Download zip" button on the dodoc Github page  
 
-(Recommended - easier for Updates) To clone the repository open the terminal and type this command  
+(Recommended - easier for Updates) 
+To clone the repository open the terminal, open the directory where you want to place dodoc (for example > cd C:/Documents),
+and type this command  
 ```git clone https://github.com/sarahgarcin/dodoc.git```
+then open the dodoc directory by typing ```cd dodoc```
 
 ###Install nodejs on your computer
 
@@ -76,7 +79,7 @@ Follow this tutorial: [http://adaptivesamples.com/how-to-install-ffmpeg-on-windo
 Follow this tutorial: [http://www.renevolution.com/how-to-install-ffmpeg-on-mac-os-x/](http://www.renevolution.com/how-to-install-ffmpeg-on-mac-os-x/)
 
 ###Run DoDoc
-In the right directory    
+In the right directory  (```cd path/of/the/dodoc/directory```  )
 (the terminal says for example ```MacBook-de-Toto:dodoc Pauline$``` )  
 Run the server in the terminal (enter the following command:)  
 ```node server.js```
