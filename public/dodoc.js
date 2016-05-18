@@ -50,6 +50,7 @@ if( lang === 'fr') {
       "fullscreen" : "Plein écran",
       "quitFullscreen" : "Quitter le plein écran",
       "removeThisImage" : "Supprimer cette image",
+      "removeThisMedia" : "Supprimer ce média",
       "finishStopmotion" : "Finaliser l’animation",
       "addToFav" : "Mettre en favoris",
 
@@ -68,6 +69,9 @@ if( lang === 'fr') {
       "audioInputSource" : "source audio&nbsp;:",
       "audioOutputDestination" : "destination audio&nbsp;:",
       "videoInputSource" : "source video:",
+
+      "videoStreamCouldntBeStartedTryChangingRes" : "Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la résolution dans le panneau de droite.",
+      "audioStreamCouldntBeStarted" : "Le flux audio n’a pas pu être démarré.",
 
       "modal" : {
         "sureRemoveMedia" : "Êtes-vous sûr de vouloir supprimer ce média ?",
@@ -119,7 +123,8 @@ if( lang === 'fr') {
 }
 
 var settings = {
-  "codelang" : "fr",
+
+  "codelang" : lang,
   "contentDir" : "sessions",
   "metaFileext" : ".txt",
   "folderMetafilename" : "dossier",
@@ -136,6 +141,10 @@ var settings = {
   "textEncoding" : "UTF-8",
   "textFieldSeparator" : "\n\n----\n\n",
   "deletedPrefix" : "x_",
+  "thumbSuffix" : "_thumb",
+
+  "mediaThumbWidth" : 320,
+  "mediaThumbHeight" : 240,
 
   "_comment" : "// see http://regexr.com/3d4t8",
   "regexpMatchFolderNames" : "^([^.]+)$",

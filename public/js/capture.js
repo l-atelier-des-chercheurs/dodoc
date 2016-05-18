@@ -189,8 +189,8 @@ function photoDisplay(){
     $(".image-choice").fadeOut('slow');
     imageMode.init();
 
-  }, function() {
-    console.log( "Failed to start camera feed for photo");
+  }, function(err) {
+    console.log( "Failed to start camera feed for photo : " + err);
   });
 }
 function videoDisplay(){
@@ -276,14 +276,16 @@ function audioDisplay(){
     $(".audio-choice").fadeOut('slow');
     audioMode.init( stream);
 
-  }, function() {
-    console.log( "Failed to start audio feed for audio");
+  }, function(err) {
+    console.log( "Failed to start audio feed for audio : " + err);
   });
 }
 
 var currentStream = (function(context) {
   // using https://github.com/webrtc/samples/blob/gh-pages/src/content/devices/input-output/js/main.js
   // to select audio/video source
+  var $settingsPane = $('.feedSettings');
+  var $settingsButton = $('.js--settings');
 
   var videoElement = document.querySelector('#video');
   var videoStream, audioStream;
@@ -370,7 +372,6 @@ var currentStream = (function(context) {
         }
       }
     }
-    debugger;
   }
 
   // Attach audio output device to video element using device/sink ID.
@@ -447,7 +448,7 @@ var currentStream = (function(context) {
           resolve( stream);
         },
         function(err) {
-          alert(JSON.stringify(err));
+          alert( dodoc.lang.videoStreamCouldntBeStartedTryChangingRes + '\n\n error: ' + JSON.stringify(err));
         }
       );
     });
@@ -457,7 +458,7 @@ var currentStream = (function(context) {
     return new Promise(function(resolve, reject) {
 
       if( currentFeedsSource === undefined || currentFeedsSource.audio === undefined) {
-        reject("Camera not yet ready");
+        reject("audio devices not yet ready");
       }
 
       console.log( "Getting audio feed");
@@ -471,7 +472,7 @@ var currentStream = (function(context) {
           resolve(stream);
         },
         function(err) {
-          alert(JSON.stringify(err));
+          alert( dodoc.lang.audioStreamCouldntBeStarted + '\n\n error: ' + JSON.stringify(err));
         }
       );
     });
@@ -482,11 +483,26 @@ var currentStream = (function(context) {
 
     init : function() {
 
-      $('.js--settings').click(function() {
-        $(this).closest('.feedSettings').toggleClass('is--open');
+      $settingsButton.click(function() {
+        $(document).trigger('toggle_settings_pane');
       });
 
+      $(document)
+        .on( 'toggle_settings_pane', function() {
+          $settingsPane.toggleClass('is--open');
+        })
+        .on( 'open_settings_pane', function() {
+          $settingsPane.addClass('is--open');
+        })
+        .on( 'close_settings_pane', function() {
+          $settingsPane.removeClass('is--open');
+        })
+        ;
+
       setVideoResFromLocalstorage();
+
+      if( store.get(userSelectedVideoDevice) === undefined)
+        $(document).trigger('open_settings_pane');
 
       return new Promise(function(resolve, reject) {
         navigator.mediaDevices.enumerateDevices()
@@ -505,11 +521,7 @@ var currentStream = (function(context) {
     },
 
     getVideoFrame : function() {
-      var videoObj = {};
-      videoObj.feed = videoElement;
-      videoObj.width = getVideoResFromRadio().width;
-      videoObj.height = getVideoResFromRadio().height;
-      return videoObj;
+      return videoElement;
     },
 
     stopAllFeeds : function() {
@@ -693,7 +705,7 @@ function onMediaCreated( mediasData){
 
 //animation des fenêtres à la capture
 function animateWindows(){
-  $('.feedSettings').removeClass('is--open');
+  $(document).trigger('close_settings_pane');
 	$('body').attr('data-state', 'expanded');
 /*
 	if(!$('.captureRight').hasClass('active')){

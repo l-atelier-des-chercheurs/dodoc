@@ -127,6 +127,8 @@ body.projets{
     }
     .image-wrapper{
 
+      position: relative;
+
       @include style--dossierBorders;
       background-color: $c-separator;
 
@@ -137,8 +139,10 @@ body.projets{
       &::after {
         content: '';
         display: block;
-        padding-bottom: 33%;
-        height: 0;
+        position: absolute;
+
+        width: 100%;
+        height: 100%;
 
         background-image: linear-gradient(30deg, transparentize( #fff, .9), transparentize( #fff, 0.6));
 
@@ -169,6 +173,8 @@ body.projets{
       }
 
       .media {
+        cursor: pointer;
+
         &:nth-of-type(4n+1) {
           clear: left;
         }
@@ -218,7 +224,6 @@ body.projet {
   }
 
   .project-inside {
-
 
     .project-link {
       pointer-events: none;
