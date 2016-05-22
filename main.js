@@ -442,7 +442,6 @@ module.exports = function(app, io){
     // the fav field is a boolean, so let's convert it
   	if( parsed.hasOwnProperty('fav'))
   	  parsed.fav = (parsed.fav === 'true');
-
 		return parsed;
 	}
 	function storeData( mpath, d, e) {
@@ -451,20 +450,20 @@ module.exports = function(app, io){
       if( e === "create") {
         fs.appendFile( mpath, textd, function(err) {
           if (err) reject( err);
-          resolve( parseData(textd));
+          resolve(parseData(textd));
         });
       }
 		  if( e === "update") {
         fs.writeFile( mpath, textd, function(err) {
         if (err) reject( err);
-          resolve( parseData(textd));
+          resolve(parseData(textd));
         });
       }
     });
 	}
 
   function textifyObj( obj) {
-    var str = '---\n';
+    var str = '';
     for (var prop in obj) {
       var value = obj[prop];
       // if value is a string, it's all good
@@ -472,7 +471,7 @@ module.exports = function(app, io){
       if( typeof obj[prop] === 'array')
         value = value.join(',');
 
-      str += prop + ': ' + value+'\n\n';
+      str += prop + ': ' + value + dodoc.textFieldSeparator;
     }
     dev.log( 'textified object : ' + str);
     return str;
@@ -1579,7 +1578,7 @@ PUBLIS METHODS
 
 // H E L P E R S
 
-	//Décode les images en base64
+	// Décode les images en base64
 	// http://stackoverflow.com/a/20272545
 	function decodeBase64Image(dataString) {
 
