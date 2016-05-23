@@ -442,7 +442,6 @@ module.exports = function(app, io){
     // the fav field is a boolean, so let's convert it
   	if( parsed.hasOwnProperty('fav'))
   	  parsed.fav = (parsed.fav === 'true');
-
 		return parsed;
 	}
 	function storeData( mpath, d, e) {
@@ -451,30 +450,37 @@ module.exports = function(app, io){
       if( e === "create") {
         fs.appendFile( mpath, textd, function(err) {
           if (err) reject( err);
-          resolve( parseData(textd));
+          resolve(parseData(textd));
         });
       }
 		  if( e === "update") {
         fs.writeFile( mpath, textd, function(err) {
         if (err) reject( err);
-          resolve( parseData(textd));
+          resolve(parseData(textd));
         });
       }
     });
 	}
 
   function textifyObj( obj) {
-    var str = '---\n';
+    var str = '';
+//     dev.log( '1. will prepare string for storage');
     for (var prop in obj) {
       var value = obj[prop];
+//       dev.log('2. value ? ' + value);
       // if value is a string, it's all good
       // but if it's an array (like it is for medias in publications) we'll need to make it into a string
-      if( typeof obj[prop] === 'array')
-        value = value.join(',');
-
-      str += prop + ': ' + value+'\n\n';
+      if( typeof value === 'array')
+        value = value.join(', ');
+      // check if value contains a delimiter
+      if( typeof value === 'string' && value.indexOf('\n----\n') >= 0) {
+//         dev.log( '2. WARNING : found a delimiter in string, replacing it with a backslash');
+        // prepend with a space to neutralize it
+        value = value.replace('\n----\n', '\n ----\n');
+      }
+      str += prop + ': ' + value + dodoc.textFieldSeparator;
     }
-    dev.log( 'textified object : ' + str);
+//     dev.log( '3. textified object : ' + str);
     return str;
   }
 
@@ -1579,7 +1585,7 @@ PUBLIS METHODS
 
 // H E L P E R S
 
-	//Décode les images en base64
+	// Décode les images en base64
 	// http://stackoverflow.com/a/20272545
 	function decodeBase64Image(dataString) {
 
