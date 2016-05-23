@@ -464,16 +464,23 @@ module.exports = function(app, io){
 
   function textifyObj( obj) {
     var str = '';
+//     dev.log( '1. will prepare string for storage');
     for (var prop in obj) {
       var value = obj[prop];
+//       dev.log('2. value ? ' + value);
       // if value is a string, it's all good
       // but if it's an array (like it is for medias in publications) we'll need to make it into a string
-      if( typeof obj[prop] === 'array')
-        value = value.join(',');
-
+      if( typeof value === 'array')
+        value = value.join(', ');
+      // check if value contains a delimiter
+      if( typeof value === 'string' && value.indexOf('\n----\n') >= 0) {
+//         dev.log( '2. WARNING : found a delimiter in string, replacing it with a backslash');
+        // prepend with a space to neutralize it
+        value = value.replace('\n----\n', '\n ----\n');
+      }
       str += prop + ': ' + value + dodoc.textFieldSeparator;
     }
-    dev.log( 'textified object : ' + str);
+//     dev.log( '3. textified object : ' + str);
     return str;
   }
 
