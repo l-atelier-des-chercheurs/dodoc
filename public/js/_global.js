@@ -272,10 +272,11 @@ function showAudio( mediaDatas) {
 
 function showText( mediaDatas) {
 
-  var mediaTitle = mediaDatas.titleOfTextmedia;
-  var mediaText = mediaDatas.textOfTextmedia;
-  var titleOfTextmediaMd = mediaDatas.titleOfTextmediaMd;
-  var textOfTextmediaMd = mediaDatas.textOfTextmediaMd;
+  debugger;
+  var mediaTitle = mediaDatas.textMediaContent.title_md;
+  var mediaText = mediaDatas.textMediaContent.text_md;
+  var titleOfTextmediaMd = mediaDatas.textMediaContent.title;
+  var textOfTextmediaMd = mediaDatas.textMediaContent.text;
 
 	var mediaItem = $(".js--templates .media_text").clone(false);
 	mediaItem
@@ -1064,14 +1065,14 @@ var modals = {
         "mediaFolderPath" : mtype,
       };
 
-    	var titleOfTextmediaMd = $modal.find('.js--submit-new-text_title').val();
-    	var textOfTextmediaMd =  $modal.find('.js--submit-new-text_text').val();
+    	var titleOfTextmedia = $modal.find('.js--submit-new-text_title').val();
+    	var textOfTextmedia =  $modal.find('.js--submit-new-text_text').val();
 
-      if( titleOfTextmediaMd !== undefined)
-        editMediaData.titleOfTextmediaMd = titleOfTextmediaMd;
+      if( titleOfTextmedia !== undefined)
+        editMediaData.titleOfTextmedia = titleOfTextmedia;
 
-      if( textOfTextmediaMd !== undefined)
-        editMediaData.textOfTextmediaMd = textOfTextmediaMd;
+      if( textOfTextmedia !== undefined)
+        editMediaData.textOfTextmedia = textOfTextmedia;
 
       sendData.editMedia( editMediaData);
 

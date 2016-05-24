@@ -372,6 +372,8 @@ button{
 
   .mediaContent {
     @include style--dossierBorders;
+    max-height: 400px;
+    overflow-y: hidden;
 
     // posters for <audio>
     .poster {
