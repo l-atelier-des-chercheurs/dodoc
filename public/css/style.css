@@ -8206,7 +8206,9 @@ body.capture .content-wrapper:after {
   z-index: 1; }
   .media .mediaContent {
     background-color: #fff;
-    border: 1px solid #DFDFDF; }
+    border: 1px solid #DFDFDF;
+    max-height: 400px;
+    overflow-y: hidden; }
   .media.media_text .mediaContent {
     padding: .9375rem;
     min-height: 15px; }

@@ -140,7 +140,6 @@ var equalizer = (function() {
   }
 
   function stopEqualizer(){
-    debugger;
     if( javascriptNode !== undefined)
       javascriptNode.onaudioprocess = null;
     if(audioStream !== undefined)

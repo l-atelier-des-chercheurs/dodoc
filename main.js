@@ -1,14 +1,16 @@
+"use strict";
+
 var fs = require('fs-extra'),
-	glob = require("glob"),
-	path = require("path"),
+	glob = require('glob'),
+	path = require('path'),
 	gm = require('gm'),
   mm = require('marky-mark'),
-	moment = require( "moment" ),
+	moment = require('moment'),
 	exec = require('child_process').exec,
 // 	phantom = require('phantom'),
 	ffmpeg = require('fluent-ffmpeg'),
-	sprintf = require("sprintf-js").sprintf,
-	vsprintf = require("sprintf-js").vsprintf,
+	sprintf = require('sprintf-js').sprintf,
+	vsprintf = require('sprintf-js').vsprintf,
 	flags = require('flags'),
   merge = require('merge'),
   gutil = require('gulp-util'),
@@ -23,23 +25,44 @@ module.exports = function(app, io){
 
   // VARIABLES
   flags.defineBoolean('debug');
+  flags.defineBoolean('verbose');
   flags.parse();
-  var isDebugMode = flags.get('debug');
-  if( isDebugMode) {
-    console.log( 'Debug mode is Enabled');
-    console.log( '---');
-  }
 
-  var dev = {
-    log : function( term) {
-      if( isDebugMode)
-        console.log( "- " + term);
-    },
-    logfunction : function( term) {
-      if( isDebugMode)
-        console.info( "~" + term)
+  var dev = (function() {
+    var isDebugMode = flags.get('debug');
+    var isVerbose = flags.get('verbose');
+
+    return {
+      init : function() {
+        if(isDebugMode) {
+          console.log('Debug mode is Enabled');
+          console.log('---');
+          dev.log('all functions are prepended with ~ ');
+          dev.logpackets('(dev mode) green for sent packets');
+          if(isVerbose) {
+            dev.logverbose('(dev and verbose) gray for regular parsing data');
+          }
+        }
+      },
+      log : function(term) {
+        if( isDebugMode)
+          console.log(gutil.colors.blue('- ' + term));
+      },
+      logverbose : function(term) {
+        if( isDebugMode && isVerbose)
+          console.log(gutil.colors.gray('- ' + term));
+      },
+      logpackets : function(term) {
+        if( isDebugMode)
+          console.log(gutil.colors.green('- ' + term));
+      },
+      logfunction : function(term) {
+        if( isDebugMode)
+          console.info(gutil.colors.magenta('~ ' + term))
+      }
     }
-  };
+  })();
+  dev.init();
 
 	console.log("main module initialized");
 
@@ -442,39 +465,46 @@ module.exports = function(app, io){
     // the fav field is a boolean, so let's convert it
   	if( parsed.hasOwnProperty('fav'))
   	  parsed.fav = (parsed.fav === 'true');
-
 		return parsed;
 	}
 	function storeData( mpath, d, e) {
     return new Promise(function(resolve, reject) {
+      dev.logverbose('Will store data');
       var textd = textifyObj(d);
       if( e === "create") {
         fs.appendFile( mpath, textd, function(err) {
           if (err) reject( err);
-          resolve( parseData(textd));
+          resolve(parseData(textd));
         });
       }
 		  if( e === "update") {
         fs.writeFile( mpath, textd, function(err) {
         if (err) reject( err);
-          resolve( parseData(textd));
+          resolve(parseData(textd));
         });
       }
     });
 	}
 
   function textifyObj( obj) {
-    var str = '---\n';
+    var str = '';
+    dev.logverbose( '1. will prepare string for storage');
     for (var prop in obj) {
       var value = obj[prop];
+      dev.logverbose('2. value ? ' + value);
       // if value is a string, it's all good
       // but if it's an array (like it is for medias in publications) we'll need to make it into a string
-      if( typeof obj[prop] === 'array')
-        value = value.join(',');
-
-      str += prop + ': ' + value+'\n\n';
+      if( typeof value === 'array')
+        value = value.join(', ');
+      // check if value contains a delimiter
+      if( typeof value === 'string' && value.indexOf('\n----\n') >= 0) {
+        dev.logverbose( '2. WARNING : found a delimiter in string, replacing it with a backslash');
+        // prepend with a space to neutralize it
+        value = value.replace('\n----\n', '\n ----\n');
+      }
+      str += prop + ': ' + value + dodoc.textFieldSeparator;
     }
-    dev.log( 'textified object : ' + str);
+    dev.logverbose( '3. textified object : ' + str);
     return str;
   }
 
@@ -494,7 +524,7 @@ module.exports = function(app, io){
   }
   function sendEventWithContent( sendEvent, objectContent, socket) {
     var eventAndContentJson = eventAndContent( sendEvent, objectContent);
-    dev.log( gutil.colors.green( "eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4)));
+    dev.logpackets("eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
     if( socket === undefined)
       io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
     else
@@ -557,7 +587,7 @@ FOLDER METHODS
         if (err) return console.log( 'Couldn\'t read content dir : ' + err);
 
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
-  	    dev.log( "Number of folders in " + dodoc.contentDir + " = " + folders.length + ". Folders are " + folders);
+  	    dev.logverbose( "Number of folders in " + dodoc.contentDir + " = " + folders.length + ". Folders are " + folders);
 
   	    var foldersProcessed = 0;
   	    var allFoldersData = [];
@@ -572,7 +602,7 @@ FOLDER METHODS
 
           foldersProcessed++;
           if( foldersProcessed === folders.length && allFoldersData.length > 0) {
-            dev.log( "- - - - all folders JSON have been processed.");
+            dev.logverbose( "- - - - all folders JSON have been processed.");
             resolve( allFoldersData);
           }
   		  });
@@ -604,7 +634,7 @@ FOLDER METHODS
 
         if (err) reject( err);
         if (projects === undefined) reject( 'no projet in this folder');
-  	    dev.log( "- number of files and folders in " + folderPath + " = " + projects.length + ". They are " + projects);
+  	    dev.logverbose( "- number of files and folders in " + folderPath + " = " + projects.length + ". They are " + projects);
   	    var projectsProcessed = 0;
   	    var allProjectsData = [];
   		  projects.forEach( function( slugProjectName) {
@@ -620,7 +650,7 @@ FOLDER METHODS
 
           projectsProcessed++;
           if( projectsProcessed === projects.length && allProjectsData.length > 0) {
-            dev.log( "- - - - all Project JSON have been processed.");
+            dev.logverbose( "- - - - all Project JSON have been processed.");
             resolve( allProjectsData);
           }
         });
@@ -780,19 +810,19 @@ PROJECT METHODS
 
   function getProjectPreview( projectPath) {
 
-    dev.log( "detecting preview");
+    dev.logverbose( "detecting preview");
     // looking for an image whose name starts with apercu or preview in the project folder
     var filesInProjectFolder = fs.readdirSync( projectPath);
     var previewName = false;
 
-    dev.log( "- match apercu/preview in array : " + filesInProjectFolder);
+    dev.logverbose( "- match apercu/preview in array : " + filesInProjectFolder);
     filesInProjectFolder.forEach( function( filename) {
       if( new RegExp( dodoc.regexpMatchProjectPreviewNames, 'i').test(filename)) {
         previewName = filename;
-        dev.log( "- - match preview called " + previewName);
+        dev.logverbose( "- - match preview called " + previewName);
       }
     });
-    dev.log( "- final filename ? " + previewName);
+    dev.logverbose( "- final filename ? " + previewName);
     return previewName;
 
   }
@@ -896,7 +926,7 @@ MEDIA METHODS
       var index = 0;
       var newPathToFile = path + '/' + newFileName;
       while( !fs.accessSync( newPathToFile + fileext, fs.F_OK)){
-        dev.log("- - following path is already taken : " + newPathToFile);
+        dev.logverbose("- - following path is already taken : " + newPathToFile);
         index++;
         newFileName = fileName + "-" + index;
         newPathToFile = path + '/' + newFileName;
@@ -968,7 +998,7 @@ MEDIA METHODS
     // in foldersMediasMeta, there should always be at least another file with the same name.
     // Let's add them inside our json reference file
     var folderMediaMetaAndFileName = new Object();
-    console.log( "- foldersMediasMeta : " + JSON.stringify( foldersMediasMeta, null, 4));
+    dev.logverbose( "- foldersMediasMeta : " + JSON.stringify( foldersMediasMeta, null, 4));
 
     for( var mediaMetaFilename of foldersMediasMeta) {
       var metaFileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( mediaMetaFilename)[1];
@@ -988,18 +1018,19 @@ MEDIA METHODS
             // let's make one
             folderMediaMetaAndFileName[mediaObjKey] = new Object();
             // read JSON file and add the content to the folder
-            var mediaMetaData = getMediaMeta( projectPath, mediasFolderPath, metaFileNameWithoutExtension);
-            mediaMetaData.mediaFolderPath = mediasFolderPath;
-            mediaMetaData.mediaName = metaFileNameWithoutExtension;
-            mediaMetaData.slugFolderName = slugFolderName;
-            mediaMetaData.slugProjectName = slugProjectName;
+            var mdata = getMediaMeta( projectPath, mediasFolderPath, metaFileNameWithoutExtension);
+            mdata.mediaFolderPath = mediasFolderPath;
+            mdata.mediaName = metaFileNameWithoutExtension;
+            mdata.slugFolderName = slugFolderName;
+            mdata.slugProjectName = slugProjectName;
 
             // if the file is a text, then also add the content of the TXT in the answer
             if( new RegExp( dodoc.regexpGetFileExtension, 'i').exec( mediaFilename)[0] === '.md') {
-              mediaMetaData = merge( mediaMetaData, getTextMediaContentToJsonObj( projectPath + '/' + mediasFolderPath + '/' + mediaFilename));
+              var textMediaData = readTextMedia(projectPath + '/' + mediasFolderPath + '/' + mediaFilename);
+              mdata.textMediaContent = textMediaData;
             }
 
-            folderMediaMetaAndFileName[mediaObjKey] = mediaMetaData;
+            folderMediaMetaAndFileName[mediaObjKey] = mdata;
           }
 
           // otherwise if we have already initialized that key, but we don't have a files property
@@ -1017,14 +1048,22 @@ MEDIA METHODS
 
   }
 
+  function readTextMedia(textMediaPath) {
+    var textMediaData = fs.readFileSync(textMediaPath, dodoc.textEncoding);
+    textMediaData = parseData(textMediaData);
+    // we should get a title and text field, let's parse them in markdown and add title_md and text_md fields
+    textMediaData.title_md = mm.parse(textMediaData.title).content;
+    textMediaData.text_md = mm.parse(textMediaData.text).content;
+    return textMediaData;
+  }
 
 
   function getMediaMeta( projectPath, mediaFolderPath, mediaName) {
 		dev.logfunction( "COMMON — getMediaMeta : projectPath = " + projectPath + " mediaFolderPath = " + mediaFolderPath + " mediaName = " + mediaName);
 
-    var mediaJSONFilepath = getPathToMedia( projectPath, mediaFolderPath, mediaName) + dodoc.metaFileext;
-		var mediaData = fs.readFileSync( mediaJSONFilepath, dodoc.textEncoding);
-		var mediaMetaData = parseData( mediaData);
+    var mediaJSONFilepath = getPathToMedia(projectPath, mediaFolderPath, mediaName) + dodoc.metaFileext;
+		var mediaData = fs.readFileSync(mediaJSONFilepath, dodoc.textEncoding);
+		var mediaMetaData = parseData(mediaData);
 
     return mediaMetaData;
   }
@@ -1063,7 +1102,7 @@ MEDIA METHODS
               .write( pathToFile + dodoc.thumbSuffix + fileExtension, function (err) {
                 if( err)
                   console.log( gutil.colors.red('--> Failed to make a thumbnail for a photo! Error: ', err));
-                createMediaMeta( newMediaType, pathToFile, fileExtension, newFileName).then( function( mdata) {
+                createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
                   mdata.slugFolderName = slugFolderName;
                   mdata['slugProjectName'] = slugProjectName;
                   mdata['mediaFolderPath'] = mediaFolder;
@@ -1087,7 +1126,7 @@ MEDIA METHODS
           writeVideoToDisk( pathToFile, fileExtension, newMediaData.mediaData)
           .then(function() {
             console.error("Saved a video.");
-            createMediaMeta( newMediaType, pathToFile, fileExtension, newFileName).then( function( mdata) {
+            createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
               mdata.slugFolderName = slugFolderName;
               mdata.slugProjectName = slugProjectName;
               mdata.mediaFolderPath = mediaFolder;
@@ -1127,7 +1166,7 @@ MEDIA METHODS
             .on('end', function() {
               console.log('file has been converted succesfully');
 
-              createMediaMeta( newMediaType, pathToFile, fileExtension, newFileName).then( function( mdata) {
+              createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
                 mdata.slugFolderName = slugFolderName;
                 mdata.slugProjectName = slugProjectName;
                 mdata.mediaFolderPath = mediaFolder;
@@ -1163,7 +1202,7 @@ MEDIA METHODS
           var imageBuffer = decodeBase64Image( newMediaData.audioScreenshot);
           fs.writeFileSync( pathToFile + imgExtension, imageBuffer.data);
 
-          createMediaMeta( newMediaType, pathToFile, fileExtension, newFileName).then( function( mdata) {
+          createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
             mdata.slugFolderName = slugFolderName;
             mdata.slugProjectName = slugProjectName;
             mdata.mediaFolderPath = mediaFolder;
@@ -1181,20 +1220,25 @@ MEDIA METHODS
           fileExtension = '.md';
           var dataTitle = newMediaData.title;
           var dataText = newMediaData.text;
+          console.log( "Creating a new text media at path " + pathToFile + fileExtension + " with title : " + dataTitle + " and text : " + dataText);
 
-          var textContent = makeTextMedia( dataTitle, dataText);
-          console.log( "Creating a new text media at path " + pathToFile + fileExtension + " with content \n" + textContent);
-
-          fs.writeFileSync( pathToFile + fileExtension, textContent);
-
-          createMediaMeta( newMediaType, pathToFile, fileExtension, newFileName).then( function( mdata) {
-            mdata.contentOfText = textContent;
-            mdata.slugFolderName = slugFolderName;
-            mdata.slugProjectName = slugProjectName;
-            mdata.mediaFolderPath = mediaFolder;
-            resolve( mdata);
-          }, function() {
-            reject( 'failed to create meta for text');
+          var mediaData = {
+            "title" : dataTitle,
+            "text" : dataText
+          };
+          storeData(pathToFile + fileExtension, mediaData, "create").then(function( meta) {
+            createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
+              var textMediaData = readTextMedia(pathToFile + fileExtension);
+              mdata.textMediaContent = textMediaData;
+              mdata.slugFolderName = slugFolderName;
+              mdata.slugProjectName = slugProjectName;
+              mdata.mediaFolderPath = mediaFolder;
+              resolve( mdata);
+            }, function(err) {
+              reject( 'failed to create meta for text media : ' + err);
+            });
+          }, function(err) {
+            reject( 'failed to create textfile for text media : ' + err);
           });
 
           break;
@@ -1204,12 +1248,8 @@ MEDIA METHODS
     });
   }
 
-  function makeTextMedia( dataTitle, dataText) {
-    return dataTitle + dodoc.textFieldSeparator + dataText;
-  }
 
-
-  function createMediaMeta( newMediaType, pathToFile, fileExtension, fileName) {
+  function createMediaMeta( newMediaType, pathToFile, fileName) {
     return new Promise(function(resolve, reject) {
       var mdata =
         {
@@ -1256,20 +1296,39 @@ MEDIA METHODS
       mediaMetaData.modified = getCurrentDate();
 
       storeData( mediaFilepath + dodoc.metaFileext, mediaMetaData, 'update').then(function( mdata) {
-
+        dev.log('stored meta');
         // if media is a text, let's add the text content to the obj for convenience client-side
-        if( mediaFolderPath === dodoc.projectTextsFoldername && editMediaData.titleOfTextmediaMd !== undefined && editMediaData.textOfTextmediaMd !== undefined) {
-          var contentOfText = updateTextMediaContent( mediaFilepath + '.md', editMediaData.titleOfTextmediaMd, editMediaData.textOfTextmediaMd);
-          mdata.contentOfText = contentOfText;
-          mdata = merge( mdata, getTextMediaContentToJsonObj( mediaFilepath + '.md'));
+        if( mediaFolderPath === dodoc.projectTextsFoldername && editMediaData.titleOfTextmedia !== undefined && editMediaData.textOfTextmedia !== undefined) {
+
+          var mediaFilepathWithExt = mediaFilepath + '.md';
+          var mediaData = {
+            "title" : editMediaData.titleOfTextmedia,
+            "text" : editMediaData.textOfTextmedia
+          };
+          dev.log('now storing text media');
+          storeData( mediaFilepathWithExt, mediaData, 'update').then(function(mediaData) {
+            dev.log('just stored text media');
+            var textMediaData = readTextMedia(mediaFilepathWithExt);
+            mdata.textMediaContent = textMediaData;
+            mdata.mediaName = mediaName;
+            mdata.mediaFolderPath = mediaFolderPath;
+        		mdata.slugFolderName = slugFolderName;
+        		mdata.slugProjectName = slugProjectName;
+            resolve( mdata);
+          }, function(err) {
+            console.log( gutil.colors.red('--> Couldn\'t update text media : ' + err));
+            reject( 'Couldn\'t update text media');
+          });
+        } else {
+          dev.log('not a text media');
+          // for updating the result
+          mdata.mediaName = mediaName;
+          mdata.mediaFolderPath = mediaFolderPath;
+      		mdata.slugFolderName = slugFolderName;
+      		mdata.slugProjectName = slugProjectName;
+          resolve( mdata);
         }
 
-        // for updating the result
-        mdata.mediaName = mediaName;
-        mdata.mediaFolderPath = mediaFolderPath;
-    		mdata.slugFolderName = slugFolderName;
-    		mdata.slugProjectName = slugProjectName;
-        resolve( mdata);
       }, function() {
         console.log( gutil.colors.red('--> Couldn\'t update media meta.'));
         reject( 'Couldn\'t update media meta');
@@ -1307,23 +1366,6 @@ MEDIA METHODS
       }
     });
 	}
-
-  function updateTextMediaContent( pathToTextMedia, titleOfTextmediaMd, textOfTextmediaMd) {
-    var contentOfText = makeTextMedia( titleOfTextmediaMd, textOfTextmediaMd);
-    fs.writeFileSync( pathToTextMedia, contentOfText);
-    return contentOfText;
-  }
-
-  function getTextMediaContentToJsonObj( pathToTextMedia) {
-    var mediaMetaData = {};
-    var contentOfMediaText = fs.readFileSync( pathToTextMedia, dodoc.textEncoding);
-    var textContent = contentOfMediaText.split( dodoc.textFieldSeparator);
-    mediaMetaData.titleOfTextmedia = mm.parse( textContent[0]).content;
-    mediaMetaData.textOfTextmedia = mm.parse( textContent[1]).content;
-    mediaMetaData.titleOfTextmediaMd = mm.parse( textContent[0]).markdown;
-    mediaMetaData.textOfTextmediaMd = mm.parse( textContent[1]).markdown;
-    return mediaMetaData;
-  }
 
 
 /************
@@ -1516,7 +1558,7 @@ PUBLIS METHODS
 
       var publiMedias = [];
       for( var item of publiContent.medias) {
-        dev.log('item : ' + item);
+        dev.logverbose('item : ' + item);
         if( mediaFolderContent.hasOwnProperty( item) === true) {
           // and copy it to an empty obj
           var mediaitem = {};
@@ -1540,7 +1582,7 @@ PUBLIS METHODS
     return new Promise(function(resolve, reject) {
 
       dataURL = dataURL.split(',').pop();
-      dev.log( 'Will save the video at path : ' + pathToFile + fileExtension);
+      dev.logverbose( 'Will save the video at path : ' + pathToFile + fileExtension);
 
       var fileBuffer = new Buffer(dataURL, 'base64');
   		fs.writeFile( pathToFile + fileExtension, fileBuffer, function(err) {
@@ -1579,11 +1621,11 @@ PUBLIS METHODS
 
 // H E L P E R S
 
-	//Décode les images en base64
+	// Décode les images en base64
 	// http://stackoverflow.com/a/20272545
 	function decodeBase64Image(dataString) {
 
-  	dev.log("Decoding base 64 image");
+  	dev.logverbose("Decoding base 64 image");
 
 		var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
 		response = {};
@@ -1597,22 +1639,4 @@ PUBLIS METHODS
 
 		return response;
 	}
-
-	// Remove all files and directory
-	rmDir = function(dirPath, removeSelf) {
-      if (removeSelf === undefined)
-        removeSelf = true;
-      try { var files = fs.readdirSync(dirPath); }
-      catch(e) { return; }
-      if (files.length > 0)
-        for (var i = 0; i < files.length; i++) {
-          var filePath = dirPath + '/' + files[i];
-          if (fs.statSync(filePath).isFile())
-            fs.unlinkSync(filePath);
-          else
-            rmDir(filePath);
-        }
-      if (removeSelf)
-        fs.rmdirSync(dirPath);
-    };
 }

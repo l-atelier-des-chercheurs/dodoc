@@ -34,7 +34,7 @@
     "thumbbot": "^0.4.1",
     "underscore": "*",
     "video-recorder": "*",
-    "woods-parsedown": "0.0.4"
+    "woods-parsedown": "git://github.com/louis-ev/woods-parsedown.git#master"
   },
   "devDependencies": {
     "gulp": "^3.9.0",
