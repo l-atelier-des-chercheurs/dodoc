@@ -217,7 +217,6 @@ function showVideo( mediaDatas) {
 function showAudio( mediaDatas) {
 
   var imagesPath = getMediaFiles(mediaDatas);
-  debugger;
 	var mediaItem = $(".js--templates .media_audio").clone(false);
 
 	mediaItem
@@ -273,7 +272,6 @@ function getMediaFiles(mediaDatas) {
       mediaImages.audio = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
     }
   });
-  debugger;
   return mediaImages;
 }
 
@@ -969,7 +967,6 @@ var modals = {
 			case dodoc.projectAudiosFoldername:
 
 				var audioPath = $m.find("source").attr("src");
-				debugger;
 				var $mediaItem = $(".js--templates .media-big_audio").clone(false);
 
 				$mediaItem

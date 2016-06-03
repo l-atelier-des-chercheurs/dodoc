@@ -297,7 +297,8 @@ $t-decalageDuCentre: 4%;
             }
           }
 
-          body:not(.is--fullscreen)[data-videorecording="yes"] &
+          body:not(.is--fullscreen)[data-videorecording="yes"] &,
+          body:not(.is--fullscreen)[data-audiorecording="yes"] &
           {
             #FOND {
               transform: scale(15);

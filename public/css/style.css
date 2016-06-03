@@ -7998,11 +7998,13 @@ body.capture .content-wrapper:after {
           transition: transform .2s ease-out, fill .3s; }
         body:not(.is--fullscreen)[data-justcaptured="yes"][data-mode="stopmotion"] .captureLeft .btn-capture-wrapper .btn.icon svg #FOND {
           fill: #48c2b5; }
-        body:not(.is--fullscreen)[data-videorecording="yes"] .captureLeft .btn-capture-wrapper .btn.icon svg #FOND {
+        body:not(.is--fullscreen)[data-videorecording="yes"] .captureLeft .btn-capture-wrapper .btn.icon svg #FOND,
+        body:not(.is--fullscreen)[data-audiorecording="yes"] .captureLeft .btn-capture-wrapper .btn.icon svg #FOND {
           transform: scale(15);
           fill: #FF4246;
           transition: transform .2s ease-out, fill .3s; }
-        body:not(.is--fullscreen)[data-videorecording="yes"] .captureLeft .btn-capture-wrapper .btn.icon svg #CENTRE {
+        body:not(.is--fullscreen)[data-videorecording="yes"] .captureLeft .btn-capture-wrapper .btn.icon svg #CENTRE,
+        body:not(.is--fullscreen)[data-audiorecording="yes"] .captureLeft .btn-capture-wrapper .btn.icon svg #CENTRE {
           fill: #FFB520; }
     .captureLeft .btn-capture-wrapper .video-capture .video-save #stop-record-btn {
       display: none; }

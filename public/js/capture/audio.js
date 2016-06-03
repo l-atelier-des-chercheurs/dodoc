@@ -7,36 +7,39 @@
 var audioMode = (function() {
 
   var $preview = $(".preview_audio");
+  var isRunning = false;
+  var isRecording = false;
 
   //Variables
-  var startRecordingBtn = document.getElementById('start-recording-btn');
-  var stopRecordingBtn = document.getElementById('stop-recording-btn');
+  var $startAudioRecording = $('#start-recording-btn');
+  var $stopAudioRecording = $('#stop-recording-btn');
 
   function startRecordAudio(){
+
     if( mediaJustCaptured())
       return;
 
     backAnimation();
+    isRecording = true;
 
+    $('body').attr('data-audiorecording', 'yes');
     currentStream.startRecordAudioFeed();
 
-    startRecordingBtn.disabled = true;
-    stopRecordingBtn.disabled = false;
-    startRecordingBtn.style.display = "none";
-    stopRecordingBtn.style.display = "block";
+    $startAudioRecording.attr('disabled', true).hide();
+    $stopAudioRecording.attr('disabled', false).show();
 
-    sarahCouleur = "red";
+    sarahCouleur = 'red';
   }
 
   function stopRecordAudio(){
-    startRecordingBtn.disabled = false;
-    stopRecordingBtn.disabled = true;
-    startRecordingBtn.style.display = "block";
-    stopRecordingBtn.style.display = "none";
-    sarahCouleur = "gray";
+
+    $startAudioRecording.attr('disabled', false).show();
+    $stopAudioRecording.attr('disabled', true).hide();
+    isRecording = false;
 
     var imageData = $("#canvas-audio")[0].toDataURL('image/png');
     photo.setAttribute('src', imageData);
+    $('body').attr('data-audiorecording', '');
 
     // stop audio recorder
     currentStream.stopRecordAudioFeed().then(function(audioDataURL) {
@@ -54,42 +57,51 @@ var audioMode = (function() {
 
     });
 
+    sarahCouleur = 'gray';
     justCaptured();
 
   }
 
   return {
-    init : function( stream) {
-
+    init: function( stream) {
+      isRunning = true;
       equalizer.start( $('#canvas-audio'), stream);
-
       $preview.find('.js--delete-media-capture').hide();
       //click events
-      $(startRecordingBtn)
-        .off()
-        .on('click', function(){
-          console.log("you are using the mouse for recording audio");
-          startRecordAudio();
-          isEventExecutedVideo = false;
-        });
 
-      $(stopRecordingBtn)
-        .off()
-        .on('click', function(){
-          stopRecordAudio();
-          equalizer.clearCanvas();
-          console.log("stop recording audio");
-        });
-
+      $startAudioRecording.off().on('click', this.startRecord);
+      $stopAudioRecording.off().on('click', this.stopRecord);
     },
-    stop : function() {
+
+    startRecord: function() {
+      equalizer.clearCanvas();
+      startRecordAudio();
+    },
+    stopRecord: function() {
+      stopRecordAudio();
+      equalizer.clearCanvas();
+    },
+
+    stop: function() {
+      isRunning = false;
       equalizer.stop();
     },
-    showAudioPreview : function( pathToAudioFile, pathToEqualizerPreview) {
+
+    showAudioPreview: function( pathToAudioFile, pathToEqualizerPreview) {
       $preview.find('audio.output').attr('src', pathToAudioFile);
       $preview.find('img.output').attr('src', pathToEqualizerPreview);
       $preview.find('.js--delete-media-capture').show();
     },
+
+    isRunning: function() {
+      return isRunning;
+    },
+    captureButtonPress: function() {
+      if(!isRunning) return;
+      if(isRecording) this.stopRecord();
+      else this.startRecord();
+    },
+
   }
 })();
 
@@ -234,6 +246,7 @@ var equalizer = (function() {
           console.log('Web Audio API is not supported in this browser');
       }
       startEqualizer( stream);
+
     },
     stop : function() {
       stopEqualizer();

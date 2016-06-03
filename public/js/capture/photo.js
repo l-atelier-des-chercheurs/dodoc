@@ -1,14 +1,9 @@
-/*************
-
-  should rewrite each mode as a single var with functions...
-
-  **************/
 
 var imageMode = (function() {
 
   var $preview = $(".preview_image");
+  var isRunning = true;
 
-  // Fonction qui prend les photos
   function takePictures() {
 
     if( mediaJustCaptured())
@@ -51,13 +46,26 @@ var imageMode = (function() {
       $(".photo-capture #capture-btn").off().on('click', takePictures);
       $preview.find('.js--delete-media-capture').hide();
       $preview.find('.output').attr('src', '');
+      isRunning = true;
+    },
+
+    stop: function() {
+      isRunning = false;
     },
     showImagePreview : function( pathToMediaFile) {
       $preview.find('.output').attr("src", pathToMediaFile);
       $preview.find('.js--delete-media-capture').show();
     },
-  }
 
+    isRunning: function() {
+      return isRunning;
+    },
+    // function that takes a picture if the mode is enabled
+    captureButtonPress: function() {
+      if(!isRunning) return;
+      takePictures();
+    },
+  }
 })();
 
 

@@ -3,12 +3,6 @@ var lang = 'fr';
 
 
 
-
-
-
-
-
-
 // localize strings
 if( lang === 'fr') {
   var localize = {

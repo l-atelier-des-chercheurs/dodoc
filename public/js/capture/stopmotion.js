@@ -6,6 +6,9 @@
 
 var stopMotionMode = (function() {
 
+  var isRunning = false;
+  var isRecording = false;
+
   var $preview = $(".preview_stopmotion");
   var $startsm = $("#start-sm-btn");
   var $capturesm = $("#capture-sm-btn");
@@ -26,6 +29,8 @@ var stopMotionMode = (function() {
     $preview.find('.output').attr('src', '');
     animateWindows();
 
+    isRecording = true;
+
     var mediaData = {};
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
@@ -37,6 +42,8 @@ var stopMotionMode = (function() {
 
     if( mediaJustCaptured())
       return;
+
+    isRecording = true;
 
     var smCacheName = $("body").data( "smCacheName");
     var smCachePath = $("body").data( "smCachePath");
@@ -93,6 +100,8 @@ var stopMotionMode = (function() {
 
   function stopStopMotion( ) {
 
+    isRecording = false;
+
     var smCacheName = $("body").data( "smCacheName");
     var smCachePath = $("body").data( "smCachePath");
 
@@ -119,6 +128,7 @@ var stopMotionMode = (function() {
   return {
 
     init : function() {
+      isRunning = true;
       $startsm.off().on('click', startStopMotion);
       $capturesm.off().on('click', takeStopMotionPic);
       $finishsm.off().on('click', stopStopMotion);
@@ -128,9 +138,8 @@ var stopMotionMode = (function() {
     },
 
     stop : function() {
-
+      isRunning = false;
       $preview.find('.output').attr('src', '');
-
     },
 
     onNewStopmotionImage : function( smdata) {
@@ -168,6 +177,14 @@ var stopMotionMode = (function() {
       $preview.find('.js--delete-media-capture').show();
     },
 
+    isRunning: function() {
+      return isRunning;
+    },
+    captureButtonPress: function() {
+      if(!isRunning) return;
+      if(isRecording) takeStopMotionPic();
+      else startStopMotion();
+    },
   }
 
 })();
