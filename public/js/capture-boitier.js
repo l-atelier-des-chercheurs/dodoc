@@ -23,21 +23,20 @@ var boitierExterne = (function() {
   	  // switch mode if code == 115 (next mode, Z) or 122 (prev mode, S)
   	  // can't overflow past first or last mode buttons
       $("body").keypress(function(e){
-        var code = e.keyCode || e.which;
+        debugger;
+        var key = e.key;
         // next/prev
-        if( code == 115 || code == 122) {
-          var direction = code == 115 ? 'next' : 'prev';
+        if( key === 'w' || key == 's' || key === 'z') {
+          var direction = key === 's' ? 'next' : 'prev';
           switchMediaMode(direction);
         } else
-        if( code == 113) {
+        // capture
+        if( key === 'a' || key === 'q') {
           if( imageMode.isRunning())      imageMode.captureButtonPress();
           else if( videoMode.isRunning())       videoMode.captureButtonPress();
           else if( stopMotionMode.isRunning()) stopMotionMode.captureButtonPress();
           else if( audioMode.isRunning())      audioMode.captureButtonPress();
         }
-
-        // capture
-
       });
 
 
