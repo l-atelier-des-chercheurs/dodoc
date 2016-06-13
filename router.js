@@ -172,9 +172,11 @@ module.exports = function(app,io,m){
   	// if there is a field called medias, this one has to be made into an array
   	if( parsed.hasOwnProperty('medias'))
   	  parsed.medias = parsed.medias.split(',');
+    // the fav field is a boolean, so let's convert it
+  	if( parsed.hasOwnProperty('fav'))
+  	  parsed.fav = (parsed.fav === 'true');
 		return parsed;
 	}
-
   function getMediaFolderPathByType( mediaType) {
     if( mediaType == 'photo')
       return getPhotoPathOfProject();

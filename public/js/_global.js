@@ -135,9 +135,10 @@ function makeOneMedia( mediaKey, mdata) {
   if( mdata.mediaFolderPath === dodoc.projectTextsFoldername)
     $currentMedia = showText( mdata);
 
+
   $currentMedia
-    .attr( 'data-mediaName', mdata.mediaName)
     .attr( 'data-mediakey', mediaKey)
+    .attr( 'data-mediaName', mdata.mediaName)
     .attr( 'data-mediatype', mdata.mediaFolderPath)
     .attr( 'data-type', mdata.mediaFolderPath)
   	.attr( 'data-informations', mdata.informations)
@@ -166,116 +167,77 @@ function makeFullPathForProject( path) {
 
 function showImage( mediaDatas) {
 
-  var mediaFolderPath = mediaDatas.mediaFolderPath;
-  var mediaFilenames = mediaDatas.files;
-
-  var thumbFilename;
-
-  $.each( mediaFilenames, function( key, mediaFilename) {
-    if( mediaFilename.indexOf( dodoc.thumbSuffix) !== -1) {
-      thumbFilename = mediaFilename;
-    }
-  });
-
-  var pathToFile = makeFullPathForProject( mediaFolderPath + '/' + (thumbFilename !== undefined ? thumbFilename : mediaFilenames[0]));
+  var imagesPath = getMediaFiles(mediaDatas);
 
 	var mediaItem = $(".js--templates .media_image").clone(false);
 	mediaItem
-    .find( 'img').attr('src', pathToFile)
+    .data('imagesrc_fullsize', imagesPath.img_large)
+    .find( 'img')
+      .attr('src', imagesPath.img_thumb)
+    .end()
     ;
 	return mediaItem;
 }
 
+
 function showAnimation( mediaDatas) {
 
-  var mediaFolderPath = mediaDatas.mediaFolderPath;
-  var mediaFilenames = mediaDatas.files;
-
-  var thumbFilename;
-  var videoFilename;
-
-  $.each( mediaFilenames, function( key, mediaFilename) {
-    if( mediaFilename.indexOf( "jpg") !== -1 || mediaFilename.indexOf( "png") !== -1) {
-      thumbFilename = mediaFilename;
-    } else if ( mediaFilename.indexOf( "mp4") !== false ||  mediaFilename.indexOf( "webm") !== false) {
-      videoFilename = mediaFilename;
-    }
-  });
-
-  var pathToThumb = makeFullPathForProject( mediaFolderPath + '/' + thumbFilename);
-  var pathToVideoFile = makeFullPathForProject( mediaFolderPath + '/' + videoFilename);
+  var imagesPath = getMediaFiles(mediaDatas);
 
 	var mediaItem = $(".js--templates .media_stopmotion").clone(false);
 	mediaItem
-    .find( 'video').attr( 'poster', pathToThumb).end()
-    .find( 'source').attr( 'src', pathToVideoFile).end()
+    .data('imagesrc_fullsize', imagesPath.img_large)
+    .find( 'video')
+      .attr( 'poster', imagesPath.img_large)
+    .end()
+    .find( 'source')
+      .attr( 'src', imagesPath.video)
+    .end()
   ;
 
 	return mediaItem;
 }
 
 function showVideo( mediaDatas) {
-
-  var mediaFolderPath = mediaDatas.mediaFolderPath;
-  var mediaFilenames = mediaDatas.files;
-
-  var thumbFilename;
-  var videoFilename;
-
-  $.each( mediaFilenames, function( key, mediaFilename) {
-    if( mediaFilename.indexOf( "jpg") !== -1 || mediaFilename.indexOf( "png") !== -1) {
-      thumbFilename = mediaFilename;
-    } else if ( mediaFilename.indexOf( "mp4") !== false ||  mediaFilename.indexOf( "webm") !== false) {
-      videoFilename = mediaFilename;
-    }
-  });
-
-  var pathToThumb = makeFullPathForProject( mediaFolderPath + '/' + thumbFilename);
-  var pathToVideoFile = makeFullPathForProject( mediaFolderPath + '/' + videoFilename);
-
+  var imagesPath = getMediaFiles(mediaDatas);
 	var mediaItem = $(".js--templates .media_video").clone(false);
 	mediaItem
-    .find( 'video').attr( 'poster', pathToThumb).end()
-    .find( 'source').attr( 'src', pathToVideoFile).end()
+    .data('imagesrc_fullsize', imagesPath.img_large)
+    .find( 'video')
+      .attr( 'poster', imagesPath.img_large)
+    .end()
+    .find( 'source')
+      .attr( 'src', imagesPath.video)
+    .end()
   ;
 
 	return mediaItem;
 }
 
 function showAudio( mediaDatas) {
-  var mediaFolderPath = mediaDatas.mediaFolderPath;
-  var mediaFilenames = mediaDatas.files;
 
-  var thumbFilename;
-  var audioFilename;
-
-  $.each( mediaFilenames, function( key, mediaFilename) {
-    if( mediaFilename.indexOf( "png") !== -1) {
-      thumbFilename = mediaFilename;
-    } else if ( mediaFilename.indexOf( "wav") !== false) {
-      audioFilename = mediaFilename;
-    }
-  });
-
-  var pathToThumb = makeFullPathForProject( mediaFolderPath + '/' + thumbFilename);
-  var pathToAudioFile = makeFullPathForProject( mediaFolderPath + '/' + audioFilename);
-
+  var imagesPath = getMediaFiles(mediaDatas);
 	var mediaItem = $(".js--templates .media_audio").clone(false);
 
 	mediaItem
-    .find( 'source').attr( 'src', pathToAudioFile).end()
-    .find( '.poster').attr( 'src', pathToThumb).end()
-    ;
+    .data('imagesrc_fullsize', imagesPath.img_large)
+    .find('source')
+      .attr( 'src', imagesPath.audio)
+    .end()
+    .find('.poster')
+      .attr('src', imagesPath.img_large)
+    .end()
+  ;
 
 	return mediaItem;
 }
 
 function showText( mediaDatas) {
 
-  var mediaTitle = mediaDatas.titleOfTextmedia;
-  var mediaText = mediaDatas.textOfTextmedia;
-  var titleOfTextmediaMd = mediaDatas.titleOfTextmediaMd;
-  var textOfTextmediaMd = mediaDatas.textOfTextmediaMd;
+  var mediaTitle = mediaDatas.textMediaContent.title_md;
+  var mediaText = mediaDatas.textMediaContent.text_md;
+  var titleOfTextmediaMd = mediaDatas.textMediaContent.title;
+  var textOfTextmediaMd = mediaDatas.textMediaContent.text;
 
 	var mediaItem = $(".js--templates .media_text").clone(false);
 	mediaItem
@@ -291,6 +253,29 @@ function showText( mediaDatas) {
 	return mediaItem;
 
 }
+
+
+function getMediaFiles(mediaDatas) {
+  var mediaFolderPath = mediaDatas.mediaFolderPath;
+  var mediaFilenames = mediaDatas.files;
+  var mediaImages = {};
+  $.each( mediaFilenames, function( key, mediaFilename) {
+    if( mediaFilename.indexOf( ".jpg") !== -1 || mediaFilename.indexOf( ".png") !== -1) {
+      if( mediaFilename.indexOf( dodoc.thumbSuffix) !== -1) {
+        mediaImages.img_thumb = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
+      } else {
+        mediaImages.img_large = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
+      }
+    } else if( mediaFilename.indexOf( ".mp4") !== -1 ||  mediaFilename.indexOf( ".webm") !== -1) {
+      mediaImages.video = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
+    } else if ( mediaFilename.indexOf( ".wav") !== -1) {
+      mediaImages.audio = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
+    }
+  });
+  return mediaImages;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROJECT
 
 function insertOrReplaceProject( $item, $container) {
 
@@ -941,29 +926,27 @@ var modals = {
     var mtype = mdata.type;
     var minfos = mdata.informations;
     var mname = mdata.medianame;
+    var mfullsizeimagesrc = mdata.imagesrc_fullsize;
   	$modal.foundation('reveal', 'open');
 
   	switch( mtype){
   		case dodoc.projectPhotosFoldername:
-	  		var imagePath = $m.find("img").attr("src");
 				var $mediaItem = $(".js--templates .media-big_image").clone(false);
 
 				$mediaItem
 					.find( 'img')
-					  .attr('src', imagePath)
+					  .attr('src', mfullsizeimagesrc)
 					.end()
 					;
 				break;
 			case dodoc.projectVideosFoldername:
 
-	  		var thumbPath = $m.find("video").attr("poster");
 				var videoPath = $m.find("source").attr("src");
-
 				var $mediaItem = $(".js--templates .media-big_video").clone(false);
 
 				$mediaItem
 			    .find( 'video')
-			      .attr( 'poster', thumbPath)
+			      .attr( 'poster', mfullsizeimagesrc)
   			    .find( 'source')
   			      .attr( 'src', videoPath)
 					;
@@ -971,14 +954,12 @@ var modals = {
 				break;
 			case dodoc.projectAnimationsFoldername:
 
-	  		var thumbPath = $m.find("video").attr("poster");
 				var videoPath = $m.find("source").attr("src");
-
 				var $mediaItem = $(".js--templates .media-big_stopmotion").clone(false);
 
 				$mediaItem
 			    .find( 'video')
-			      .attr( 'poster', thumbPath)
+			      .attr( 'poster', mfullsizeimagesrc)
   			    .find( 'source')
   			      .attr( 'src', videoPath)
 					;
@@ -989,6 +970,9 @@ var modals = {
 				var $mediaItem = $(".js--templates .media-big_audio").clone(false);
 
 				$mediaItem
+					.find( 'img')
+					  .attr('src', mfullsizeimagesrc)
+					.end()
 			    .find( 'source')
 			      .attr( 'src', audioPath)
 			    .end()
@@ -1064,14 +1048,14 @@ var modals = {
         "mediaFolderPath" : mtype,
       };
 
-    	var titleOfTextmediaMd = $modal.find('.js--submit-new-text_title').val();
-    	var textOfTextmediaMd =  $modal.find('.js--submit-new-text_text').val();
+    	var titleOfTextmedia = $modal.find('.js--submit-new-text_title').val();
+    	var textOfTextmedia =  $modal.find('.js--submit-new-text_text').val();
 
-      if( titleOfTextmediaMd !== undefined)
-        editMediaData.titleOfTextmediaMd = titleOfTextmediaMd;
+      if( titleOfTextmedia !== undefined)
+        editMediaData.titleOfTextmedia = titleOfTextmedia;
 
-      if( textOfTextmediaMd !== undefined)
-        editMediaData.textOfTextmediaMd = textOfTextmediaMd;
+      if( textOfTextmedia !== undefined)
+        editMediaData.textOfTextmedia = textOfTextmedia;
 
       sendData.editMedia( editMediaData);
 

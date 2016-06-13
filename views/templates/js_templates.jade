@@ -7,7 +7,7 @@ li.media.media_image(data-ratio data-title data-legende data-highlight=false)
   +button('deleteMedia', '', 'isCollapsed')
 li.media.media_video(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
-    video(preload controls)
+    video(preload="none" controls)
       source()
     .mediaData
       p.mediaData--informations
@@ -24,7 +24,7 @@ li.media.media_stopmotion(data-ratio data-title data-legende data-highlight=fals
 li.media.media_audio(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     img.poster
-    audio(preload controls)
+    audio(preload="none" controls)
       source()
     .mediaData
       p.mediaData--informations
@@ -76,6 +76,7 @@ div.media-big_stopmotion.media-big(data-type="stopmotion")
     include modals/mediaForm.jade
 div.media-big_audio.media-big(data-type="audio")
   .mediaContent.small-8.columns
+    img
     audio(preload="none" controls)
       source()
   .mediaDataForm.small-4.columns

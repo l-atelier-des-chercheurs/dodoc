@@ -42,11 +42,12 @@ function init(){
   // au click
   $('.js--modeSelector').on('click', function(){
     var newMode = $(this).attr('data-mediatype');
-    $('.js--modeSelector').removeClass('is--active');
-    $(this).addClass('is--active');
     changeMediaMode( newMode);
-    backAnimation();
   });
+
+
+  /******************************************************/
+  boitierExterne.init();
 
   currentStream.init()
     .then( function() {
@@ -67,7 +68,6 @@ function init(){
 
   });
 
-
   fullscreen();
 
 }
@@ -76,6 +76,17 @@ function changeMediaMode( newMode) {
 
   if( mediaJustCaptured())
     return;
+
+  $('.js--modeSelector')
+    .removeClass('is--active')
+    .filter(function(){
+      return $(this).attr('data-mediatype') == newMode;
+    })
+      .addClass('is--active')
+    .end()
+  ;
+
+  backAnimation();
 
   console.log('A new mode has been selected : ' + newMode);
   switch( newMode){
@@ -94,75 +105,6 @@ function changeMediaMode( newMode) {
   }
 
 }
-
-
-// REMOVED
-// should reimplement better
-function changeMediaBoitier(e){
-  var code = e.keyCode || e.which;
-  var $activeButton = $(".btn-choice").find('.active');
-  var thisId;
-
-/*
-  if($('body').hasClass('takingstopmotion') && (code == 115 || code == 122)){
-    if(code == 115){
-      var $nextButton = $activeButton.next();
-      thisId = $nextButton.attr('id');
-    }
-
-    if(code == 122){
-      var $prevButton = $activeButton.prev();
-      thisId = $prevButton.attr('id');
-    }
-    $('#modal-change-alert').foundation('reveal', 'open');
-    $('#modal-change-alert .supprimer-stop-motion').attr('data-choice', thisId);
-  }
-
-  else{
-*/
-    if(code == 115) { // Z keypress
-      var $nextButton = $activeButton.next();
-      $activeButton.removeClass('active');
-      if ($nextButton.length){
-        $nextButton.addClass('active');
-      }
-      else{
-        $nextButton = $(".btn-choice button").first().addClass('active');
-      }
-    }
-    if(code == 122) { // S keypress
-      var $prevButton = $activeButton.prev();
-      $activeButton.removeClass('active');
-      if ($prevButton.length){
-        $prevButton.addClass('active');
-      }
-      else{
-        $prevButton = $(".btn-choice button").last().addClass('active');
-        $activeButton.removeClass('active');
-      }
-    }
-    if(code == 115 || code == 122){
-      if($('.screenshot .count-image')){
-        $('.screenshot .count-image').remove();
-      }
-      backAnimation();
-
-      if($("#photo").hasClass('active')){
-        photoDisplay();
-      }
-      if($("#video-btn").hasClass('active')){
-        videoDisplay();
-      }
-      if($("#stopmotion").hasClass('active')){
-        stopMotionDisplay();
-      }
-      if($("#audio").hasClass('active')){
-        audioDisplay();
-      }
-    }
-//   }
-}
-
 
 
 
@@ -535,6 +477,9 @@ var currentStream = (function(context) {
         track.stop();
       });
 
+      imageMode.stop();
+      videoMode.stop();
+      stopMotionMode.stop();
       audioMode.stop();
     },
 

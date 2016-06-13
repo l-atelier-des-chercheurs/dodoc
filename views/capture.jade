@@ -132,7 +132,7 @@ html
                 img.icone-stopmotion(src="/images/stopmotion.svg")
                 h4
                   | !{dodoc.lang.createNewStopmotion}
-              +button( 'finishStopmotion', '', 'isCollapsed')
+              +button( 'finishStopmotion', '', '')
               +button( 'deleteMediaCapture', '', 'isCollapsed')
 
             .preview.preview_audio
@@ -166,6 +166,7 @@ html
 
     script(src="/bower_components/recordrtc/RecordRTC.min.js")
     script(src="/js/libs/screenfull.min.js")
+    script(src='/js/capture-boitier.js')
     script(src='/js/capture/audio.js')
     script(src='/js/capture/photo.js')
     script(src='/js/capture/video.js')
