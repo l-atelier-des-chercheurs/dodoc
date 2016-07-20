@@ -5,7 +5,8 @@ DoDoc
 ##Presentation
 
 DoDoc is a documentation tool, first designed for a children use in classrooms.  It is is a documentation platform connected to a physical device that operates a camera and a microphone. It enables one to capture traces from an on-going experience for later reflections, reconstructions and creations of narratives. <br> 
-DoDoc is a research project made by [l'atelier des chercheurs](http://latelier-des-chercheurs.fr/).
+DoDoc is a research project developed by [l'atelier des chercheurs](http://latelier-des-chercheurs.fr/) (Sarah Garcin, Pauline Gourlet & Louis Eveillard).<br>
+License CC BY-NC <br>
 You can find more documentation and contribute to the project [here](http://www.lopendoc.org/dodoc/).
 
 ![dodoc](http://www.lopendoc.org/dodoc/wp-content/uploads/sites/23/2016/05/Capture-d%E2%80%99e%CC%81cran-2016-05-05-a%CC%80-18.13.31.png)
@@ -103,7 +104,7 @@ Example: ```cd dodoc```
 - Paste all files and directories of your newly downlaod docdoc directory into your copy directory and replace all existed files
 
 ### Contributing or forking dodoc
--->  1 hackpad with spec (in french): https://hackpad.com/dodoc-5iYRCxUY8D5
+-->  1 hackpad with spec (in french): https://hackpad.com/dodoc-5iYRCxUY8D5 <br>
 -->  1 blog : http://www.lopendoc.org/dodoc/
 
 
