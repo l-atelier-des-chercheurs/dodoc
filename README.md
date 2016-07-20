@@ -103,7 +103,9 @@ Example: ```cd dodoc```
 - Paste all files and directories of your newly downlaod docdoc directory into your copy directory and replace all existed files
 
 ### Contributing or forking dodoc
---> mention the hackpad with spec
+-->  1 hackpad with spec (in french): https://hackpad.com/dodoc-5iYRCxUY8D5
+-->  1 blog : http://www.lopendoc.org/dodoc/
+
 
 To debug dodoc, you can enable extra-logging with the flag --debug:
 ```node server.js --debug```
