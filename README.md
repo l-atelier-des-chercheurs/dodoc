@@ -101,7 +101,7 @@ Example: ```cd dodoc```
 - Click on the "Download zip" button to download the new version
 - Copy your old version directory.
 - Change the name of the old version directory (example: "Dodoc" > "DoDoc_01")
-- Paste all files and directories of your newly downlaod docdoc directory into your copy directory and replace all existed files
+- Paste all files and directories of the freshly-downloaded docdoc directory into your copy directory and replace all existed files
 
 ### Contributing or forking dodoc
 -->  1 hackpad with spec (in french): https://hackpad.com/dodoc-5iYRCxUY8D5 <br>
