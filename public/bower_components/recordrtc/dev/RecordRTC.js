@@ -13,7 +13,7 @@
  *     type: 'video' // audio or video or gif or canvas
  * });
  *
- * // or, you can even use keyword "new"
+ * // or, you can also use the "new" keyword
  * var recordRTC = new RecordRTC(mediaStream[, config]);
  * @see For further information:
  * @see {@link https://github.com/muaz-khan/RecordRTC|RecordRTC Source Code}
@@ -25,6 +25,10 @@ function RecordRTC(mediaStream, config) {
     if (!mediaStream) {
         throw 'MediaStream is mandatory.';
     }
+
+    config = config || {
+        type: 'video'
+    };
 
     config = new RecordRTCConfiguration(mediaStream, config);
 
@@ -56,10 +60,6 @@ function RecordRTC(mediaStream, config) {
     }
 
     function initRecorder(initCallback) {
-        if (!config.disableLogs) {
-            console.debug('initializing ' + config.type + ' stream recorder.');
-        }
-
         if (initCallback) {
             config.initCallback = function() {
                 initCallback();
@@ -71,6 +71,10 @@ function RecordRTC(mediaStream, config) {
 
         mediaRecorder = new Recorder(mediaStream, config);
         mediaRecorder.record();
+
+        if (!config.disableLogs) {
+            console.debug('Initialized recorderType:', mediaRecorder.constructor.name, 'for output-type:', config.type);
+        }
     }
 
     function stopRecording(callback) {
@@ -92,7 +96,7 @@ function RecordRTC(mediaStream, config) {
             _callback();
         }
 
-        function _callback() {
+        function _callback(__blob) {
             for (var item in mediaRecorder) {
                 if (self) {
                     self[item] = mediaRecorder[item];
@@ -104,6 +108,15 @@ function RecordRTC(mediaStream, config) {
             }
 
             var blob = mediaRecorder.blob;
+
+            if (!blob) {
+                if (__blob) {
+                    mediaRecorder.blob = blob = __blob;
+                } else {
+                    throw 'Recording failed.';
+                }
+            }
+
             if (callback) {
                 var url = URL.createObjectURL(blob);
                 callback(url);
@@ -142,7 +155,7 @@ function RecordRTC(mediaStream, config) {
             return console.warn(WARNING);
         }
 
-        // not all libs yet having  this method
+        // not all libs have this method yet
         mediaRecorder.resume();
 
         if (!config.disableLogs) {
@@ -159,11 +172,11 @@ function RecordRTC(mediaStream, config) {
             throw 'Pass a callback function over getDataURL.';
         }
 
-        var blob = _mediaRecorder ? _mediaRecorder.blob : mediaRecorder.blob;
+        var blob = _mediaRecorder ? _mediaRecorder.blob : (mediaRecorder || {}).blob;
 
         if (!blob) {
             if (!config.disableLogs) {
-                console.warn('Blob encoder did not yet finished its job.');
+                console.warn('Blob encoder did not finish its job yet.');
             }
 
             setTimeout(function() {
@@ -213,7 +226,7 @@ function RecordRTC(mediaStream, config) {
 
     var returnObject = {
         /**
-         * This method starts recording. It doesn't take any argument.
+         * This method starts recording. It doesn't take any arguments.
          * @method
          * @memberof RecordRTC
          * @instance
@@ -223,7 +236,7 @@ function RecordRTC(mediaStream, config) {
         startRecording: startRecording,
 
         /**
-         * This method stops recording. It takes single "callback" argument. It is suggested to get blob or URI in the callback to make sure all encoders finished their jobs.
+         * This method stops recording. It takes a single "callback" argument. It is suggested to get blob or URI in the callback to make sure all encoders finished their jobs.
          * @param {function} callback - This callback function is invoked after completion of all encoding jobs.
          * @method
          * @memberof RecordRTC
@@ -267,12 +280,12 @@ function RecordRTC(mediaStream, config) {
         initRecorder: initRecorder,
 
         /**
-         * This method initializes the recording process.
+         * This method sets the recording duration.
          * @method
          * @memberof RecordRTC
          * @instance
          * @example
-         * recordRTC.initRecorder();
+         * recordRTC.setRecordingDuration();
          */
         setRecordingDuration: function(milliseconds, callback) {
             if (typeof milliseconds === 'undefined') {
@@ -335,7 +348,7 @@ function RecordRTC(mediaStream, config) {
         },
 
         /**
-         * This method returns DataURL. It takes single "callback" argument.
+         * This method returns the DataURL. It takes a single "callback" argument.
          * @param {function} callback - DataURL is passed back over this callback.
          * @method
          * @memberof RecordRTC
@@ -350,7 +363,7 @@ function RecordRTC(mediaStream, config) {
         getDataURL: getDataURL,
 
         /**
-         * This method returns Virutal/Blob URL. It doesn't take any argument.
+         * This method returns the Virutal/Blob URL. It doesn't take any arguments.
          * @method
          * @memberof RecordRTC
          * @instance
@@ -368,7 +381,7 @@ function RecordRTC(mediaStream, config) {
         },
 
         /**
-         * This method saves blob/file into disk (by inovking save-as dialog). It takes single (optional) argument i.e. FileName
+         * This method saves the blob/file to disk (by invoking save-as dialog). It takes a single (optional) argument i.e. FileName
          * @method
          * @memberof RecordRTC
          * @instance
@@ -386,7 +399,7 @@ function RecordRTC(mediaStream, config) {
         },
 
         /**
-         * This method gets blob from indexed-DB storage. It takes single "callback" argument.
+         * This method gets a blob from indexed-DB storage. It takes a single "callback" argument.
          * @method
          * @memberof RecordRTC
          * @instance
@@ -404,7 +417,7 @@ function RecordRTC(mediaStream, config) {
         },
 
         /**
-         * This method appends prepends array of webp images to the recorded video-blob. It takes an "array" object.
+         * This method appends an array of webp images to the recorded video-blob. It takes an "array" object.
          * @type {Array.<Array>}
          * @param {Array} arrayOfWebPImages - Array of webp images.
          * @method
@@ -499,7 +512,7 @@ function RecordRTC(mediaStream, config) {
         return returnObject;
     }
 
-    // if someone wanna use RecordRTC with "new" keyword.
+    // if someone wants to use RecordRTC with the "new" keyword.
     for (var prop in returnObject) {
         this[prop] = returnObject[prop];
     }

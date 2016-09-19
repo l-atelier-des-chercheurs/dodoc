@@ -15,7 +15,7 @@
     "branch": "master",
     "commit": "f1ec7822296b706763d48726d446a27825218518"
   },
-  "_source": "git://github.com/kissygalleryteam/tooltip.git",
+  "_source": "https://github.com/kissygalleryteam/tooltip.git",
   "_target": "*",
   "_originalSource": "tooltip"
 }
