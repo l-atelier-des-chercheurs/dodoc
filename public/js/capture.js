@@ -629,7 +629,7 @@ function onMediaCreated( mediasData){
     ;
 
   if( newMediaType === 'photo') {
-    imageMode.showImagePreview( pathToMediaFile + '.jpg');
+    imageMode.showImagePreview( pathToMediaFile + '.png');
     animateWindows();
   }
   else if( newMediaType === 'video') {

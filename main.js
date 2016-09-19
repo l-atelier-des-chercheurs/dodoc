@@ -114,7 +114,6 @@ module.exports = function(app, io){
                                   to the client. The content transits by json objects
                                   These functions should be as concise as possible.
 
-
 	****************************************************************************/
 
 	// I N D E X     P A G E
@@ -1090,7 +1089,7 @@ MEDIA METHODS
           newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
           pathToFile = mediaPath + '/' + newFileName;
 
-          fileExtension = '.jpg';
+          fileExtension = '.png';
           var imageBuffer = decodeBase64Image( newMediaData.mediaData);
 
           fs.writeFile( pathToFile + fileExtension, imageBuffer.data, function(err) {
@@ -1585,17 +1584,17 @@ PUBLIS METHODS
       dev.logverbose( 'Will save the video at path : ' + pathToFile + fileExtension);
 
       var fileBuffer = new Buffer(dataURL, 'base64');
-  		fs.writeFile( pathToFile + fileExtension, fileBuffer, function(err) {
-        if (err) reject( err);
-        resolve();
-  		});
+    		fs.writeFile( pathToFile + fileExtension, fileBuffer, function(err) {
+          if (err) reject( err);
+          resolve();
+    		});
     });
 	}
 
 
 
 	function addProjectImage( imageNameSlug, parentPath, imageData){
-		var filePath = parentPath + "/" + imageNameSlug + ".jpg";
+		var filePath = parentPath + "/" + imageNameSlug + ".png";
 		var imageBuffer = decodeBase64Image( imageData);
 		fs.writeFileSync(filePath, imageBuffer.data);
   	console.info("write new file to " + filePath);
