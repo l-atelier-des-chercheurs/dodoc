@@ -32,7 +32,6 @@ jQuery(document).ready(function($) {
 
 function init(){
 
-
   setTimeout(function(){
     $(".image-choice").fadeOut();
   }, 2000);
@@ -44,13 +43,16 @@ function init(){
     changeMediaMode( newMode);
   });
 
-
   /******************************************************/
   boitierExterne.init();
 
   currentStream.init()
     .then( function() {
-      $('.js--modeSelector[data-mediatype="photo"]').trigger( 'click');
+      // detect last selected mode
+      var lastMode = store.get('lastMode');
+      if(lastMode === undefined){ lastMode = 'photo'; }
+      $('.js--modeSelector[data-mediatype="' + lastMode + '"]').trigger( 'click');
+
     }, function(err) {
       console.log("failed to init : " + err);
     });
@@ -88,6 +90,8 @@ function changeMediaMode( newMode) {
   backAnimation();
 
   console.log('A new mode has been selected : ' + newMode);
+  store.set('lastMode', newMode);
+
   switch( newMode){
     case 'photo':
       photoDisplay();
