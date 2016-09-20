@@ -1,3 +1,21 @@
+@media #{$medium-only} {
+  .reveal-modal {
+    max-width: 100% !important;
+    .popoverTitle {
+      font-size: 2.5em !important;
+    }
+    input[type="text"], select {
+      font-size: 2.3em !important;
+      height: 3em !important;
+    }
+    input[type="submit"], button {
+      padding: 20px 22px !important;
+      font-size: 2.3em;
+    }
+  }
+
+}
+
 .reveal-modal {
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 2px;

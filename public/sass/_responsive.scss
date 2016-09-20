@@ -1,0 +1,22 @@
+@media #{$medium-only} {
+  .button-wrapper{
+    background-color: transparent !important;
+    width: 100px !important;
+    // height: 100px !important;
+    height: auto !important;
+    span{
+      display:none !important;
+    }
+  }
+  .button-wrapper_collapsed{
+    overflow: visible !important;
+  }
+  .btn.icon{
+    width: 100px !important;
+    height: 100px !important;
+    float: right !important;
+  }
+  p{
+    font-size: 2em !important;
+  }
+}

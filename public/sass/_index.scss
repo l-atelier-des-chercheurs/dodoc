@@ -1,23 +1,22 @@
 // I N D E X
+@media #{$medium-only} {
+  h2{font-size: $h2Size *1.5 !important;}
+  h3{font-size: $h2Size !important;}
+  .meta-data{height: auto !important; font-size: $h2Size !important;}
+  .projet-list{height:auto !important;}
+
+}
+
+
 body.index{
 
   #container{
     padding:50px 0px;
-    width:100%;
-
-    .dossier-list{
-
-      margin: 0;
-    }
   }
 }
 
 .dossier {
   margin-bottom: $margin * 2;
-
-  &:nth-child(3n+1) {
-    clear: left;
-  }
 
   .dossier-inside {
     @include style--dossierBorders;
@@ -54,9 +53,8 @@ body.index{
       margin: 0;
       padding: 18px;
       padding-bottom: 70px;
-      height: 235px;
-
       background-color: #f9f9f9;
+      height: 235px;
 
 
       li {
@@ -116,13 +114,13 @@ body.index{
       }
     }
 
-  }
+    }
   .meta-data{
 
     margin: 0;
     padding-top: 4px;
     padding-bottom: 8px;
-
+    height: 100px;
     background-color: #fff;
     color: #8d8d8d;
 

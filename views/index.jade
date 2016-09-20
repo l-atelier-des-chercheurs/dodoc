@@ -6,18 +6,13 @@ html
     include templates/head.jade
   body.index
 
-    .navbar-container.is--opened
+    .navbar-container.is--opened.row
       header.navbar
         +logo()
         +button('nouveauDossier')
 
     #container.row.mainContent
       ul.dossier-list
-
-
-
-
-
 
     //- MODAL WINDOWS
     include templates/modals/addFolder

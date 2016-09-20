@@ -1,5 +1,5 @@
 mixin logo()
-  .logo
+  .logo.small-6.medium-6.small-push-3.medium-push-3
     a(href="/" title="Dodoc")
       include images/dodoc-logo.svg
 
@@ -35,10 +35,11 @@ mixin button(typeOfButton, navOrButton, style)
       span #{projectName}
 
   if( typeOfButton === 'nouveauDossier')
-    a(href="#" data-reveal-id="modal-add-folder" class='button-wrapper_add #{defaultClasses}')
-      .btn.icon
-        include images/add.svg
-      span !{dodoc.lang.createFolder}
+    div.button-container.small-2.small-push-10.large-3.large-push-9
+      a(href="#" data-reveal-id="modal-add-folder" class='button-wrapper_add #{defaultClasses}')
+        .btn.icon
+          include images/add.svg
+        span !{dodoc.lang.createFolder}
 
   if( typeOfButton === 'nouveauProjet')
     a(href="#" data-reveal-id="modal-add-project" class='button-wrapper_add js--add-project #{defaultClasses}')

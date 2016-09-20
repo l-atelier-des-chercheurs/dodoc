@@ -16,6 +16,7 @@
 @import "_popover.scss";
 @import "_publi.scss";
 @import "_print.scss";
+@import "_responsive.scss";
 
 html {
 	margin:0;
@@ -146,7 +147,7 @@ button{
 .button-wrapper {
   display: block;
   position: relative;
-  width:  245px;
+  width:  auto;
   height: 40px;
   background-color: #ccc;
 
