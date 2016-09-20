@@ -118,8 +118,10 @@ module.exports = function(app,io,m){
       getLocalIP().then(function(localNetworkInfos) {
         pageDataJSON.localNetworkInfos = localNetworkInfos;
 
+/*
         console.log('pageDataJSON');
         console.log(pageDataJSON);
+*/
 
         resolve(pageDataJSON);
       }, function(err) {

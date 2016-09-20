@@ -243,14 +243,16 @@ module.exports = function(app, io){
 // C A P T U R E      P A G E
 
 	function onNewMedia( mediaData) {
-		dev.logfunction( "EVENT - onNewMedia : " + mediaData);
-  	createNewMedia( mediaData).then(function( mediaMetaData) {
-    	listOneMedia( mediaMetaData.slugFolderName, mediaMetaData.slugProjectName, mediaMetaData.mediaFolderPath, mediaMetaData.mediaName).then(function( oneMediaData) {
+		dev.logfunction( "EVENT - onNewMedia : " + JSON.stringify( mediaData, null, 4));
+    	createNewMedia( mediaData).then(function( mediaMetaData) {
+      	listOneMedia( mediaMetaData.slugFolderName, mediaMetaData.slugProjectName, mediaMetaData.mediaFolderPath, mediaMetaData.mediaName).then(function( oneMediaData) {
+        for(var prop in oneMediaData) {
+          oneMediaData[prop]["author"] = mediaData.author;
+        }
         sendEventWithContent( 'mediaCreated', oneMediaData);
       }, function(error) {
         console.error("Failed to listOneMedia from create! Error: ", error);
       });
-
     }, function(error) {
       console.error("Failed to createNewMedia! Error: ", error);
     });
