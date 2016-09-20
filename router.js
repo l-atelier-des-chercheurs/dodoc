@@ -7,8 +7,10 @@ var ffmpeg = require('fluent-ffmpeg');
 var dodoc  = require('./public/dodoc.js'),
 	moment = require( "moment" ),
   merge = require('merge'),
-  parsedown = require('woods-parsedown')
+  parsedown = require('woods-parsedown'),
+  os = require('os')
 ;
+
 
 module.exports = function(app,io,m){
 
@@ -22,7 +24,6 @@ module.exports = function(app,io,m){
   app.get("/:folder/:project/bibliotheque/medias", getBibli);
   app.get("/:folder/:project/bibliotheque/panneau-de-publications", getBibliPubli);
   app.get("/:folder/:project/publications/:publi", getPubli);
-
 
   /**
   * routing functions
@@ -67,86 +68,102 @@ module.exports = function(app,io,m){
 
 
   function generatePageData( req, pageTitle) {
+    return new Promise(function(resolve, reject) {
 
-    var pageDataJSON = [];
+      var pageDataJSON = [];
 
-    var slugFolderName = req.param('folder');
-    if( slugFolderName !== undefined) {
-      var jsonFileOfFolder = getMetaFileOfFolder( slugFolderName);
-      var folderData = readMetaFile( jsonFileOfFolder);
+      var slugFolderName = req.param('folder');
+      if( slugFolderName !== undefined) {
+        var jsonFileOfFolder = getMetaFileOfFolder( slugFolderName);
+        var folderData = readMetaFile( jsonFileOfFolder);
 
-      pageDataJSON.slugFolderName = slugFolderName;
-      pageDataJSON.folderName = folderData.name;
-      pageDataJSON.statut = folderData.statut;
+        pageDataJSON.slugFolderName = slugFolderName;
+        pageDataJSON.folderName = folderData.name;
+        pageDataJSON.statut = folderData.statut;
 
-      var slugProjectName = req.param('project');
-      if( slugProjectName !== undefined) {
-        var projectPath = getProjectPath( slugFolderName, slugProjectName)
-        var jsonFileOfProject = getMetaFileOfProject( projectPath);
-        var projectData = readMetaFile( jsonFileOfProject);
+        var slugProjectName = req.param('project');
+        if( slugProjectName !== undefined) {
+          var projectPath = getProjectPath( slugFolderName, slugProjectName)
+          var jsonFileOfProject = getMetaFileOfProject( projectPath);
+          var projectData = readMetaFile( jsonFileOfProject);
 
-        pageDataJSON.slugProjectName = slugProjectName;
-        pageDataJSON.projectName = projectData.name;
+          pageDataJSON.slugProjectName = slugProjectName;
+          pageDataJSON.projectName = projectData.name;
 
-        var slugPubliName = req.param('publi');
-        if( slugPubliName !== undefined) {
-          var jsonFileOfPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName) + dodoc.metaFileext;
-          var fullPathToJsonFileOfPubli = makePathToPubliFull( jsonFileOfPubli);
-          var publiData = readMetaFile( fullPathToJsonFileOfPubli);
+          var slugPubliName = req.param('publi');
+          if( slugPubliName !== undefined) {
+            var jsonFileOfPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName) + dodoc.metaFileext;
+            var fullPathToJsonFileOfPubli = makePathToPubliFull( jsonFileOfPubli);
+            var publiData = readMetaFile( fullPathToJsonFileOfPubli);
 
-          pageDataJSON.slugPubliName = slugPubliName;
-          pageDataJSON.publiName = publiData.name;
+            pageDataJSON.slugPubliName = slugPubliName;
+            pageDataJSON.publiName = publiData.name;
+          }
         }
       }
-    }
 
-    if( publiData !== undefined)
-      pageTitle += " | " + publiData.name;
-    else if( projectData !== undefined)
-      pageTitle += " | " + projectData.name;
-    else if( folderData !== undefined)
-      pageTitle += " | " + folderData.name;
+      if( publiData !== undefined)
+        pageTitle += " | " + publiData.name;
+      else if( projectData !== undefined)
+        pageTitle += " | " + projectData.name;
+      else if( folderData !== undefined)
+        pageTitle += " | " + folderData.name;
 
-    if( pageTitle !== undefined)
-      pageDataJSON.pageTitle = pageTitle;
+      if( pageTitle !== undefined)
+        pageDataJSON.pageTitle = pageTitle;
 
-    pageDataJSON.url = req.path;
+      pageDataJSON.url = req.path;
+      pageDataJSON.dodoc = dodoc;
 
-    pageDataJSON.dodoc = dodoc;
+      getLocalIP().then(function(localNetworkInfos) {
+        pageDataJSON.localNetworkInfos = localNetworkInfos;
 
-    return pageDataJSON;
+        console.log('pageDataJSON');
+        console.log(pageDataJSON);
+
+        resolve(pageDataJSON);
+      }, function(err) {
+        console.log('err ' + err);
+        reject(err);
+      });
+    });
   }
 
 
   // GET
   function getIndex(req, res) {
     var pageTitle = "Do.Doc";
-    var generatePageDataJSON = generatePageData(req, pageTitle);
-    res.render("index", generatePageDataJSON);
+    generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
+      res.render("index", generatePageDataJSON);
+    });
   };
 
   function getFolder(req, res) {
     var pageTitle = dodoc.lang.folder;
-    var generatePageDataJSON = generatePageData(req, pageTitle);
-    res.render("folder", generatePageDataJSON);
+    generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
+      res.render("folder", generatePageDataJSON);
+    });
   };
 
   function getProject(req, res) {
     var pageTitle = dodoc.lang.project;
-    var generatePageDataJSON = generatePageData(req, pageTitle);
-    res.render("project", generatePageDataJSON);
+    generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
+      res.render("folder", generatePageDataJSON);
+    });
   };
 
   function getCapture(req, res) {
     var pageTitle = dodoc.lang.capture;
-    var generatePageDataJSON = generatePageData(req, pageTitle);
-    res.render("capture", generatePageDataJSON);
+    generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
+      res.render("capture", generatePageDataJSON);
+    });
   };
 
   function getBibli(req, res) {
     var pageTitle = dodoc.lang.bibli;
-    var generatePageDataJSON = generatePageData(req, pageTitle);
-    res.render("bibli", generatePageDataJSON);
+    generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
+      res.render("bibli", generatePageDataJSON);
+    });
   };
 
   function getBibliPubli(req, res) {
@@ -207,6 +224,23 @@ module.exports = function(app,io,m){
   }
   function getPubliPathOfProject() {
     return dodoc.projectPublisFoldername;
+  }
+
+  // from http://stackoverflow.com/a/8440736
+  function getLocalIP() {
+    return new Promise(function(resolve, reject) {
+      var ifaces = os.networkInterfaces();
+      var networkInfo = {};
+      Object.keys(ifaces).forEach(function (ifname) {
+        var alias = 0;
+        ifaces[ifname].forEach(function (iface) {
+          if ('IPv4' === iface.family && iface.internal === false) {
+            networkInfo[ifname] = iface.address;
+          }
+        });
+      });
+      resolve(networkInfo);
+    });
   }
 
 };

@@ -7286,6 +7286,18 @@ button {
 .big-mediaContent textarea {
   min-height: 150px; }
 
+.module_localNetworkInfos {
+  position: relative;
+  float: right;
+  padding: 16px;
+  margin-top: 32px;
+  color: #B5B5B5;
+  text-align: right; }
+  .module_localNetworkInfos h3 {
+    font-size: .7em;
+    margin-bottom: 0;
+    color: inherit; }
+
 body.index #container {
   padding: 50px 0px;
   width: 100%; }
