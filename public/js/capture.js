@@ -598,7 +598,6 @@ var currentStream = (function(context) {
 
 
 // EVENT: a new media has been created (could be one from the current client or one from another user
-//
 function onMediaCreated( mediasData){
 
   var mediaData = getFirstMediaFromObj( mediasData);
@@ -640,7 +639,7 @@ function onMediaCreated( mediasData){
     animateWindows();
   }
   else if( newMediaType === 'animation') {
-    stopMotionMode.showStopMotionPreview( pathToMediaFile + '.mp4');
+    stopMotionMode.showStopMotionPreview( pathToMediaFile + '.webm');
     animateWindows();
   }
   else if( newMediaType === 'audio') {
