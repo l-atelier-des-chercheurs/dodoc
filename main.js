@@ -1150,19 +1150,21 @@ MEDIA METHODS
           break;
         case 'animation':
           // get the path to the mediaFolder
-    			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
+      			var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
 
           // get the path to the cache folder and the mp4 (it's the same without the extension)
           // WARNING : animation doesn't use newFileName, it already has a filename to use (generated at the beginning of a stopmotion capture)
           newFileName = newMediaData.stopMotionCacheFolder;
           pathToFile = mediaPath + '/' + newFileName;
-          fileExtension = '.mp4';
+          fileExtension = '.webm';
 
           // ask ffmpeg to make a video from the cache images
           var proc = new ffmpeg({ "source" : pathToFile + '/%d.png'})
             // using 12 fps
             .withFpsInput(4)
             .fps(4)
+            .withVideoCodec('libvpx')
+            .addOptions(['-vb 8000k', '-f webm'])
             // setup event handlers
             .on('end', function() {
               console.log('file has been converted succesfully');
