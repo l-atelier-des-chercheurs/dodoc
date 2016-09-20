@@ -325,6 +325,22 @@ button{
   }
 }
 
+.module_localNetworkInfos {
+  position: relative;
+
+  float:right;
+  padding: $margin;
+  margin-top:   $margin*2;
+  color: $grisclair;
+  text-align: right;
+
+  h3 {
+    font-size: .7em;
+    margin-bottom: 0;
+    color: inherit;
+  }
+}
+
 
 @import '_index';
 

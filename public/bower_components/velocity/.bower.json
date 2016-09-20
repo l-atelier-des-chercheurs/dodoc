@@ -44,7 +44,7 @@
     "tag": "1.2.3",
     "commit": "1ad0a8196fa973f96e347a9b7f5bdaf7498ed1a6"
   },
-  "_source": "git://github.com/julianshapiro/velocity.git",
+  "_source": "https://github.com/julianshapiro/velocity.git",
   "_target": "~1.2.3",
   "_originalSource": "velocity"
 }

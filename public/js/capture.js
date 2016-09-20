@@ -22,11 +22,10 @@ function onSocketError(reason) {
 socket.on('connect', onSocketConnect);
 socket.on('error', onSocketError);
 socket.on('mediaCreated', onMediaCreated);
-socket.on('stopMotionDirectoryCreated', function(d) { stopMotionMode.onStopMotionDirectoryCreated( d); });
-socket.on('newStopmotionImage', function(d) { stopMotionMode.onNewStopmotionImage( d); });
+socket.on('stopMotionDirectoryCreated', function(d) { stopMotionMode.onStopMotionDirectoryCreated(d); });
+socket.on('newStopmotionImage', function(d) { stopMotionMode.onNewStopmotionImage(d); });
 
 jQuery(document).ready(function($) {
-
 	$(document).foundation();
 	init();
 });
@@ -597,7 +596,8 @@ var currentStream = (function(context) {
 
 
 
-
+// EVENT: a new media has been created (could be one from the current client or one from another user
+//
 function onMediaCreated( mediasData){
 
   var mediaData = getFirstMediaFromObj( mediasData);
@@ -611,7 +611,10 @@ function onMediaCreated( mediasData){
   if( mediaData.type !== currentMode)
     return;
 
-  // ideally, we should also check the user who created that media and check it against a client variable, however I like the idea that another user can also see what the other is doing
+  // check if the media was created by the current user
+  if(mediaData.author !== sessionId)
+    return;
+
   var newMediaType = mediaData.type;
   var mediaName = mediaData.mediaName;
 
@@ -628,7 +631,7 @@ function onMediaCreated( mediasData){
     ;
 
   if( newMediaType === 'photo') {
-    imageMode.showImagePreview( pathToMediaFile + '.jpg');
+    imageMode.showImagePreview( pathToMediaFile + '.png');
     animateWindows();
   }
   else if( newMediaType === 'video') {

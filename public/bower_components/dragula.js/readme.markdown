@@ -1,6 +1,6 @@
 [![logo.png][3]][2]
 
-[![Travis CI][5]][4] [![Slack Status][17]][18] [![Flattr][6]][7] [![Patreon][19]][20]
+[![Travis CI][5]][4] [![Slack Status][17]][18] [![Support](https://supporter.60devs.com/api/b/f4co3kmopd9mngbzjgn6ymbug)](https://supporter.60devs.com/give/f4co3kmopd9mngbzjgn6ymbug) [![Patreon][19]][20]
 
 > Drag and drop so simple it hurts
 
@@ -9,6 +9,7 @@ Browser support includes every sane browser and **IE7+**. <sub>_(Granted you pol
 Framework support includes vanilla JavaScript, Angular, and React.
 
 - Official [Angular bridge][8] for `dragula` [_(demo)_][10]
+- Official [Angular 2 bridge][22] for `dragula` [_(demo)_][23]
 - Official [React bridge][9] for `dragula` [_(demo)_][11]
 
 # Demo
@@ -97,7 +98,7 @@ dragula(containers, {
   accepts: function (el, target, source, sibling) {
     return true; // elements can be dropped in any of the `containers` by default
   },
-  invalid: function (el, target) {
+  invalid: function (el, handle) {
     return false; // don't prevent any drags from initiating by default
   },
   direction: 'vertical',             // Y axis is considered when determining where an element would be dropped
@@ -202,10 +203,10 @@ When an element is dropped onto a container, it'll be placed near the point wher
 
 #### `options.invalid`
 
-You can provide an `invalid` method with a `(el, target)` signature. This method should return `true` for elements that shouldn't trigger a drag. Here's the default implementation, which doesn't prevent any drags.
+You can provide an `invalid` method with a `(el, handle)` signature. This method should return `true` for elements that shouldn't trigger a drag. The `handle` argument is the element that was clicked, while `el` is the item that would be dragged. Here's the default implementation, which doesn't prevent any drags.
 
 ```js
-function invalidTarget (el, target) {
+function invalidTarget (el, handle) {
   return false;
 }
 ```
@@ -215,7 +216,7 @@ Note that `invalid` will be invoked on the DOM element that was clicked and ever
 As an example, you could set `invalid` to return `false` whenever the clicked element _(or any of its parents)_ is an anchor tag.
 
 ```js
-invalid: function (el) {
+invalid: function (el, handle) {
   return el.tagName === 'A';
 }
 ```
@@ -279,6 +280,14 @@ Event Name | Listener Arguments               | Event Description
 `out`      | `el, container, source`          | `el` was dragged out of `container` or dropped, and originally came from `source`
 `cloned`   | `clone, original, type`          | DOM element `original` was cloned as `clone`, of `type` _(`'mirror'` or `'copy'`)_. Fired for mirror images and when `copy: true`
 
+#### `drake.canMove(item)`
+
+Returns whether the `drake` instance can accept drags for a DOM element `item`. This method returns `true` when all the conditions outlined below are met, and `false` otherwise.
+
+- `item` is a child of one of the specified containers for `drake`
+- `item` passes the pertinent [`invalid`](#optionsinvalid) checks
+- `item` passes a `moves` check
+
 #### `drake.destroy()`
 
 Removes all drag and drop events used by `dragula` to manage drag and drop between the `containers`. If `.destroy` is called while an element is being dragged, the drag will be effectively cancelled.
@@ -317,7 +326,7 @@ MIT
 [11]: http://bevacqua.github.io/react-dragula/
 [12]: https://github.com/bevacqua/dragula/blob/master/dist/dragula.css
 [13]: https://github.com/bevacqua/dragula/blob/master/dist/dragula.min.css
-[14]: https://github.com/bevacqua/dragula/blob/master/contributing.markdown
+[14]: https://github.com/bevacqua/dragula/blob/master/.github/contributing.markdown
 [15]: https://github.com/bevacqua/dragula/blob/master/dist
 [16]: #css
 [17]: https://dragula-slackin.herokuapp.com/badge.svg
@@ -325,3 +334,5 @@ MIT
 [19]: https://rawgit.com/bevacqua/dragula/master/resources/patreon.svg
 [20]: https://patreon.com/bevacqua
 [21]: https://dragula-slackin.herokuapp.com/
+[22]: https://github.com/valor-software/ng2-dragula
+[23]: http://valor-software.com/ng2-dragula/index.html

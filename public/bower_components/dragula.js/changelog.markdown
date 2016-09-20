@@ -1,3 +1,23 @@
+# 3.7.2 Parental Control
+
+- Fixed a bug where a missing parent check would cause exceptions
+
+# 3.7.1 Contrarian Views
+
+- Bumped `contra@1.9.4`
+
+# 3.7.0 Party Like It's the End of the World
+
+- Added a `canMove` method that returns whether `drake` can move a DOM element
+
+# 3.6.8 Calculated Risk
+
+- Fixed a bug where `drake.cancel` would misbehave when `copy` was `true`
+
+# 3.6.7 Miscalculation
+
+- Fixed a long-standing bug where candidate positioning would be off by one position
+
 # 3.6.6 Living on the Edge
 
 - Fixed a bug with clicks on IE7, IE8, IE9

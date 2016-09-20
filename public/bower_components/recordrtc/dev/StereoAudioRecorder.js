@@ -65,6 +65,7 @@ function StereoAudioRecorder(mediaStream, config) {
                 return false;
             }
         }
+        return true;
     }
 
     /**
@@ -309,7 +310,7 @@ function StereoAudioRecorder(mediaStream, config) {
              *     var buffer = recorder.buffer;
              * });
              */
-            self.buffer = new ArrayBuffer(view);
+            self.buffer = new ArrayBuffer(view.buffer.byteLength);
 
             /**
              * @property {DataView} view - The recorded data-view object.
@@ -475,7 +476,7 @@ function StereoAudioRecorder(mediaStream, config) {
 
         if (isMediaStreamActive() === false) {
             if (!config.disableLogs) {
-                console.error('MediaStream seems stopped.');
+                console.log('MediaStream seems stopped.');
             }
             jsAudioNode.disconnect();
             recording = false;
@@ -521,4 +522,8 @@ function StereoAudioRecorder(mediaStream, config) {
 
     // to prevent self audio to be connected with speakers
     jsAudioNode.connect(context.destination);
+}
+
+if (typeof RecordRTC !== 'undefined') {
+    RecordRTC.StereoAudioRecorder = StereoAudioRecorder;
 }
