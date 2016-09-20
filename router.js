@@ -150,7 +150,7 @@ module.exports = function(app,io,m){
   function getProject(req, res) {
     var pageTitle = dodoc.lang.project;
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
-      res.render("folder", generatePageDataJSON);
+      res.render("project", generatePageDataJSON);
     });
   };
 
@@ -171,13 +171,17 @@ module.exports = function(app,io,m){
   function getBibliPubli(req, res) {
     var pageTitle = dodoc.lang.bibli;
     var generatePageDataJSON = generatePageData(req, pageTitle);
-    res.render("bibli", generatePageDataJSON);
+    generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
+      res.render("bibli", generatePageDataJSON);
+    });
   };
 
   function getPubli(req, res) {
     var pageTitle = dodoc.lang.publi;
     var generatePageDataJSON = generatePageData(req, pageTitle);
-    res.render("publi", generatePageDataJSON);
+    generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
+      res.render("publi", generatePageDataJSON);
+    });
   };
 
   function readMetaFile( metaFile){
