@@ -403,6 +403,7 @@ module.exports = function(app, io){
 
   function onEditMediasPubli( publiData) {
 		dev.logfunction( "EVENT - onEditMediasPubli");
+		debugger;
 
 		editThisPubli( publiData).then(function( publiMetaData) {
   		var slugFolderName = publiMetaData.slugFolderName;
@@ -459,13 +460,10 @@ module.exports = function(app, io){
 
 
 	function parseData(d) {
-  	var parsed = parsedown(d);
-  	// if there is a field called medias, this one has to be made into an array
-  	if( parsed.hasOwnProperty('medias'))
-  	  parsed.medias = parsed.medias.split(',');
+    	var parsed = parsedown(d);
     // the fav field is a boolean, so let's convert it
-  	if( parsed.hasOwnProperty('fav'))
-  	  parsed.fav = (parsed.fav === 'true');
+    	if( parsed.hasOwnProperty('fav'))
+    	  parsed.fav = (parsed.fav === 'true');
 		return parsed;
 	}
 	function storeData( mpath, d, e) {

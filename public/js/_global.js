@@ -559,11 +559,15 @@ var publi = {
       var $montageMedias = $montage.find('.media');
 
       // listMediasPaths is a list of all the medias referenced by their json meta-file
-      var listMediasPaths = [];
+      var listMediasItems = [];
       $montageMedias.each(function() {
         $mma = $(this);
         var mediakey = $mma.data('mediakey');
-        listMediasPaths.push( mediakey);
+        var mediaJson = {
+          "name" : mediakey,
+          "metaTest" : "Plip"
+        };
+        listMediasItems.push( mediaJson);
       });
 
       // check if there is two times the same
@@ -576,7 +580,7 @@ var publi = {
 
       var publiJson = new Object();
       publiJson.slugPubliName = slugPubliName;
-      publiJson.medias = listMediasPaths;
+      publiJson.medias = listMediasItems;
 
       // let's send it over to node so it is saved in the publication jsonfile
       sendData.editPubliMedias( publiJson);
@@ -713,7 +717,7 @@ var sendData = {
   editPubliMedias : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
-  	socket.emit( 'editMediasPubli', publiData);
+    	socket.emit( 'editMediasPubli', publiData);
   },
 
 }
