@@ -86,9 +86,9 @@ module.exports = function(app, io){
     socket.on("newMedia", onNewMedia);
 
 		//STOP MOTION
-		socket.on("startStopMotion", onStartStopMotion);
-		socket.on("addImageToStopMotion", function (data){ onAddImageToStopMotion( socket, data); });
-		socket.on( 'deleteLastImageOfStopMotion', onDeleteLastImageOfStopMotion);
+		socket.on( "startStopMotion", function (data){ onStartStopMotion( socket, data); });
+		socket.on( "addImageToStopMotion", function (data){ onAddImageToStopMotion( socket, data); });
+		socket.on( 'deleteLastImageOfStopMotion', function (data){ onDeleteLastImageOfStopMotion(socket, data); });
 
 		// B I B L I        P A G E
 		socket.on( 'listOneProjectMedias', onListOneProjectMedias);
@@ -274,7 +274,7 @@ module.exports = function(app, io){
 	}
 
 
-	function onStartStopMotion( mediaData) {
+	function onStartStopMotion( socket, mediaData) {
 		dev.logfunction( "EVENT - onStartStopMotion");
 
 		var folderCacheName = getCurrentDate();
@@ -290,7 +290,7 @@ module.exports = function(app, io){
 			"folderCacheName" : folderCacheName,
 			"folderCachePath" : folderCachePath
 		}
-		io.sockets.emit('stopMotionDirectoryCreated', newStopMotionData);
+    sendEventWithContent( 'stopMotionDirectoryCreated', newStopMotionData, socket);
 	}
 
 	function onAddImageToStopMotion( socket, imageData) {
@@ -317,7 +317,7 @@ module.exports = function(app, io){
   }
 
 
-  function onDeleteLastImageOfStopMotion( idata) {
+  function onDeleteLastImageOfStopMotion( socket, idata) {
 		dev.logfunction( "EVENT - onDeleteLastImageOfStopMotion : " + JSON.stringify( idata, null, 4));
 
     var fullPathToStopmotionImage = getFullPath( idata.pathToStopmotionImage);
