@@ -9,15 +9,7 @@ var imageMode = (function() {
     if( mediaJustCaptured())
       return;
 
-    var videoFrame = currentStream.getVideoFrame();
-
-    var invisibleCanvas = document.createElement('canvas');
-    invisibleCanvas.width = videoFrame.videoWidth;
-    invisibleCanvas.height = videoFrame.videoHeight;
-    var invisibleCtx = invisibleCanvas.getContext('2d');
-    invisibleCtx.drawImage( videoFrame, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
-
-    var imageData = invisibleCanvas.toDataURL('image/png');
+    var imageData = currentStream.getStaticImageFromVideo();
 
     $(".captureRight .flash").fadeIn(0, function(){
       $(this).fadeOut(500);

@@ -291,23 +291,30 @@ module.exports = function(app, io){
 			"folderCachePath" : folderCachePath
 		}
     sendEventWithContent( 'stopMotionDirectoryCreated', newStopMotionData, socket);
+
+    if( mediaData.imageContent !== undefined) {
+      // also add the linked image as first image to the stopmotion
+      var imageData =
+      {
+        "imageContent" : mediaData.imageContent,
+        "folderCacheName" : folderCacheName,
+        "folderCachePath" : folderCachePath,
+        "imageCount" : 0
+      };
+      onAddImageToStopMotion( socket, imageData);
+    }
 	}
 
 	function onAddImageToStopMotion( socket, imageData) {
 		dev.logfunction( "EVENT - onAddImageToStopMotion");
 
-		var imageContent = imageData.imageContent;
-		var imageFolder = imageData.folderCacheName;
-		var folderPath = imageData.folderCachePath;
-		var imageCount = imageData.imageCount;
-
-		var imageBuffer = decodeBase64Image( imageContent);
-		var imageFullPath = folderPath + '/' + imageCount + '.png';
+		var imageBuffer = decodeBase64Image( imageData.imageContent);
+		var imageFullPath = imageData.folderCachePath + '/' + imageData.imageCount + '.png';
 
 		var mediaData =
   		{
     		"imageFullPath" : imageFullPath,
-    		"imageCount" : imageCount
+    		"imageCount" : imageData.imageCount
   		};
 
 		fs.writeFile( imageFullPath, imageBuffer.data, function(err) {
