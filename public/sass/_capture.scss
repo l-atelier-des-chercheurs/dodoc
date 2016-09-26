@@ -42,7 +42,7 @@
   }
 
   .feedSettings{
-    
+
     top: 0px !important;
     width: 85% !important;
     .openCloseSettings{
@@ -54,6 +54,11 @@
       }
     }
   }
+
+}
+
+@media #{$medium-only} {
+
 
 }
 

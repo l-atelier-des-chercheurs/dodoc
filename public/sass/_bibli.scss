@@ -1,5 +1,32 @@
 $pourcentageBuffer: 66%;
 
+@media #{$small-only}{
+
+  .medias-list{
+    .media {
+      padding-left: 0.9375rem !important;
+      padding-right: 0.9375rem !important;
+      width: 50% !important;
+      float: left !important;
+
+      .button-wrapper_flagMedia{
+        display:none !important;
+      }
+    }   
+  }
+
+  .reveal-modal#modal-media-view{
+    max-width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    .button-wrapper{
+      float: left;
+    }
+  }
+
+}
+
+
 body.bibli {
   overflow: hidden;
 }
