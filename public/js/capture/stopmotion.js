@@ -116,6 +116,9 @@ var stopMotionMode = (function() {
       $preview.show();
       $preview.find('.output').attr('src', '');
       $preview.find('.js--delete-media-capture').hide();
+
+      if(isRecording)
+        animateWindows();
     },
 
     stop : function() {

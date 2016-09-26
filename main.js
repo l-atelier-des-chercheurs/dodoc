@@ -1130,7 +1130,6 @@ MEDIA METHODS
                 }, function() {
                   reject( 'failed to create meta for photo');
                 });
-
             });
       		});
 
