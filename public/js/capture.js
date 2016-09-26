@@ -639,11 +639,11 @@ function onMediaCreated( mediasData){
     animateWindows();
   }
   else if( newMediaType === 'video') {
-    videoMode.showVideoPreview( pathToMediaFile + '.webm');
+    videoMode.showVideoPreview( pathToMediaFile + dodoc.videoext);
     animateWindows();
   }
   else if( newMediaType === 'animation') {
-    stopMotionMode.showStopMotionPreview( pathToMediaFile + '.webm');
+    stopMotionMode.showStopMotionPreview( pathToMediaFile + dodoc.stopMotionext);
     animateWindows();
   }
   else if( newMediaType === 'audio') {

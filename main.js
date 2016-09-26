@@ -1133,7 +1133,7 @@ MEDIA METHODS
 
           newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
           pathToFile = mediaPath + '/' + newFileName;
-          fileExtension = '.webm';
+          fileExtension = dodoc.videoext;
 
           writeVideoToDisk( pathToFile, fileExtension, newMediaData.mediaData)
           .then(function() {
@@ -1167,15 +1167,15 @@ MEDIA METHODS
           // WARNING : animation doesn't use newFileName, it already has a filename to use (generated at the beginning of a stopmotion capture)
           newFileName = newMediaData.stopMotionCacheFolder;
           pathToFile = mediaPath + '/' + newFileName;
-          fileExtension = '.webm';
+          fileExtension = dodoc.stopMotionext;
 
           // ask ffmpeg to make a video from the cache images
           var proc = new ffmpeg({ "source" : pathToFile + '/%d.png'})
             // using 12 fps
             .withFpsInput(4)
             .fps(4)
-            .withVideoCodec('libvpx')
-            .addOptions(['-vb 8000k', '-f webm'])
+            .withVideoCodec('libx264')
+            .addOptions(['-vb 8000k', '-f mp4'])
             // setup event handlers
             .on('end', function() {
               console.log('file has been converted succesfully');

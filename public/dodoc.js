@@ -121,6 +121,8 @@ var settings = {
   "codelang" : lang,
   "contentDir" : "sessions",
   "metaFileext" : ".txt",
+  "videoext" : ".webm",
+  "stopMotionext" : ".mp4",
   "folderMetafilename" : "dossier",
   "projectMetafilename" : "projet",
 
