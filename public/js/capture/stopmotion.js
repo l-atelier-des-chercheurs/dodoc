@@ -46,16 +46,13 @@ var stopMotionMode = (function() {
 
     var smCacheName = $("body").data( "smCacheName");
     var smCachePath = $("body").data( "smCachePath");
-    var smImageCount = parseInt( $("body").data( "smImageCount")) + 1;
-
     var imageData = currentStream.getStaticImageFromVideo();
 
     var smImage =
     {
       "imageContent" : imageData,
       "folderCacheName" : smCacheName,
-      "folderCachePath" : smCachePath,
-      "imageCount" : smImageCount
+      "folderCachePath" : smCachePath
     };
 
     socket.emit( 'addImageToStopMotion', smImage);
@@ -68,8 +65,6 @@ var stopMotionMode = (function() {
     justCaptured();
     animateWindows();
 
-    $('body').data( "smImageCount", smImageCount);
-
   }
 
   function removeImageFromStopMotion( imagePath) {
@@ -80,9 +75,6 @@ var stopMotionMode = (function() {
       "pathToStopmotionImage" : imagePath,
     }
     socket.emit( 'deleteLastImageOfStopMotion', mediaToDelete);
-
-    var smImageCount = parseInt( $("body").data( "smImageCount")) - 1;
-    $('body').data( "smImageCount", smImageCount);
 
   }
 
@@ -145,8 +137,6 @@ var stopMotionMode = (function() {
       });
 
       newPreview.find('img').attr("src", imagePath);
-      newPreview.find('.image_count').html('<span>Image n° "' + smdata.imageCount + '"</span>');
-
       $preview.find('.preview_stopmotion--container').append( newPreview);
 
     },
@@ -158,8 +148,6 @@ var stopMotionMode = (function() {
 
       $("body").data( "smCacheName", folderCacheName);
       $("body").data( "smCachePath", folderCachePath);
-      $("body").data( "smImageCount", 0);
-
     },
 
     showStopMotionPreview : function( pathToMediaFile) {

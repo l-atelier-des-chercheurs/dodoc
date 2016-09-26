@@ -298,8 +298,7 @@ module.exports = function(app, io){
       {
         "imageContent" : mediaData.imageContent,
         "folderCacheName" : folderCacheName,
-        "folderCachePath" : folderCachePath,
-        "imageCount" : 0
+        "folderCachePath" : folderCachePath
       };
       onAddImageToStopMotion( socket, imageData);
     }
@@ -308,15 +307,16 @@ module.exports = function(app, io){
 	function onAddImageToStopMotion( socket, imageData) {
 		dev.logfunction( "EVENT - onAddImageToStopMotion");
 
-		var imageBuffer = decodeBase64Image( imageData.imageContent);
-		var imageFullPath = imageData.folderCachePath + '/' + imageData.imageCount + '.png';
+    var newImageName = moment().format('x');
+    newImageName = findFirstFilenameNotTaken( newImageName, imageData.folderCachePath, '.png');
+  		var imageFullPath = imageData.folderCachePath + '/' + newImageName + '.png';
 
 		var mediaData =
   		{
     		"imageFullPath" : imageFullPath,
-    		"imageCount" : imageData.imageCount
   		};
 
+		var imageBuffer = decodeBase64Image( imageData.imageContent);
 		fs.writeFile( imageFullPath, imageBuffer.data, function(err) {
       if (err) console.log( err);
       sendEventWithContent( 'newStopmotionImage', mediaData, socket);
@@ -1177,7 +1177,7 @@ MEDIA METHODS
           fileExtension = dodoc.stopMotionext;
 
           // ask ffmpeg to make a video from the cache images
-          var proc = new ffmpeg({ "source" : pathToFile + '/%d.png'})
+          var proc = new ffmpeg({ "source" : pathToFile + '/%*.png'})
             // using 12 fps
             .withFpsInput(4)
             .fps(4)
