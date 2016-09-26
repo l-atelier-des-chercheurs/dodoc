@@ -7587,6 +7587,8 @@ body.index #container {
     float: left !important; }
     .medias-list .media .button-wrapper_flagMedia {
       display: none !important; }
+    .medias-list .media p {
+      font-size: 1rem !important; }
   .reveal-modal#modal-media-view {
     max-width: 100%;
     height: 100vh;
