@@ -1530,7 +1530,7 @@ PUBLIS METHODS
 
       var publiContent = getPubliMeta( slugFolderName, slugProjectName, slugPubliName);
     	listAllMedias( slugFolderName, slugProjectName).then(function( mediaFolderContent) {
-        filterMediasFromList( publiContent, mediaFolderContent).then(function( publiMedias) {
+      filterMediasFromList( publiContent, mediaFolderContent).then(function( publiMedias) {
 
         	publiContent.medias = publiMedias;
         	publiContent.slugFolderName = slugFolderName;
@@ -1555,15 +1555,14 @@ PUBLIS METHODS
 
   function filterMediasFromList( publiContent, mediaFolderContent) {
     return new Promise(function(resolve, reject) {
-  		dev.logfunction( "COMMON — filterMediasFromList : publiContent = " + JSON.stringify(publiContent, null, 4) + " mediaFolderContent = " + JSON.stringify(mediaFolderContent, null, 4));
-
+  		  dev.logfunction( "COMMON — filterMediasFromList : publiContent = " + JSON.stringify(publiContent, null, 4) + " mediaFolderContent = " + JSON.stringify(mediaFolderContent, null, 4));
       var publiMedias = [];
       for( var item of publiContent.medias) {
-        dev.logverbose('item : ' + item);
-        if( mediaFolderContent.hasOwnProperty( item) === true) {
+        dev.logverbose('item : ' + item.name);
+        if( mediaFolderContent.hasOwnProperty( item.name) === true) {
           // and copy it to an empty obj
           var mediaitem = {};
-          mediaitem[item] = mediaFolderContent[item];
+          mediaitem[item.name] = mediaFolderContent[item.name];
           publiMedias.push( mediaitem);
         }
       }
