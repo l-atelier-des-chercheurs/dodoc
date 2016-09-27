@@ -14,11 +14,12 @@ var fs = require('fs-extra'),
   gutil = require('gulp-util'),
   parsedown = require('woods-parsedown'),
   slugg = require('slugg'),
-  gm = require('gm').subClass({imageMagick: true})
+  gm = require('gm').subClass({imageMagick: true}),
+  JSFtp = require("jsftp"),
+  Client = require('ftp')
 ;
 
 var dodoc  = require('./public/dodoc.js');
-var ftpexport = require('./dodoc-modules/export-ftp.js')
 
 module.exports = function(app, io){
 
@@ -102,7 +103,7 @@ module.exports = function(app, io){
 
 		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 
-    socket.on( 'exportFtp', ftpexport);
+    socket.on( 'exportFtp', exportFTP);
 	});
 
   /***************************************************************************
@@ -431,6 +432,96 @@ module.exports = function(app, io){
 // F I N    B I B L I    P A G E
 
 // P U B L I     P A G E
+  function exportFTP(data) {
+
+    // instance for FTP Client 
+    var c = new Client();
+
+    var slugFolderName = data.slugFolderName;
+    var slugProjectName = data.slugProjectName;
+    var slugPubliName = data.slugPubliName;
+
+    var projectPath = "sessions/"+ slugFolderName + "/" + slugProjectName;
+    var publiPath =  projectPath + "/publications/";
+    var folderPath = publiPath + slugPubliName;
+    var mediasPath = folderPath+'/medias';
+
+    var imagesOnServer = [];
+    
+    if (!fs.existsSync(folderPath)){
+        fs.mkdirSync(folderPath);
+    }
+    if (!fs.existsSync(mediasPath)){
+        fs.mkdirSync(mediasPath);
+    }
+
+
+    // fs.writeFileSync(folderPath+'index.html', data.html);
+      
+      // c.on('ready', function() {
+      //   c.list('./www/dodoc-test/'+ slugPubliName+'/medias/', function(err, list) {
+      //       if (err) throw err;
+      //       // console.log(list);
+      //       for(var i in list){
+      //         console.log(list[i].name);
+      //         imagesOnServer.push(list[i].name);
+      //         // console.log(imagesOnServer);
+      //       }
+      //   });
+      // }); 
+
+    c.on('ready', function() {
+      c.mkdir('./www/dodoc-test/'+ slugPubliName, function(err) {
+        if (err) console.log('not transferred:' + err);
+        else console.log("File transferred successfully!");
+        c.mkdir('./www/dodoc-test/'+ slugPubliName+'/medias', function(err) {
+          if (err) console.log('not transferred:' + err);
+          else console.log("File transferred successfully!");
+          sendImageToServer();
+        });
+      });
+
+    });
+
+
+    function sendImageToServer(){
+      listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function(publi) {
+        for (var prop in publi) {
+          var medias = publi[prop].medias;
+          for(var index in medias){
+            var media = medias[index];
+            for(var fichiers in media){
+              var eachFiles = media[fichiers].files;
+              var mediaFolder = media[fichiers].mediaFolderPath;
+              for(var fileToCopy in eachFiles){
+                var oldPath = projectPath + '/' + mediaFolder + '/' + eachFiles[fileToCopy];
+                var newPath = mediasPath + '/' + eachFiles[fileToCopy];
+                fs.createReadStream(oldPath).pipe(fs.createWriteStream(newPath));
+                
+                    // c.put(newPath, './www/dodoc-test/'+ slugPubliName+'/medias/'+eachFiles[fileToCopy], function(err) {
+                    //   if (err) console.log('not transferred:' + err);
+                    //   else console.log("File transferred successfully!");
+                    //   c.end();
+                    // });
+              }
+            }
+
+          }
+
+        }
+      }, function(error) {
+        console.error("Failed to list one media! Error: ", error);
+      });
+    }
+
+    c.connect({
+      host: "ftp.sarahgarcin.com",
+      port: 21, // defaults to 21 
+      user: "sarahgar", // defaults to "anonymous" 
+      password: "saracroche28" // defaults to "@anonymous"
+    });
+  }
+
   function onListOnePubliMetaAndMedias( publiData) {
     dev.logfunction( "EVENT - onListOnePubliMetaAndMedias : " + JSON.stringify( publiData, null, 4));
     var slugFolderName = publiData.slugFolderName;

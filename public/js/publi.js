@@ -33,8 +33,8 @@ function init(){
 
   // Valider et exporter vers un ftp 
   $('body.publi .js--validerTitre').on('click', function (){
-    var publiHtml = $(".publi-container").html();
-    socket.emit('exportFtp', {"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
+    var publiHtml = $('html').html();
+    socket.emit('exportFtp', {"html": publiHtml ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
   });
 
   // Selection des templates 
