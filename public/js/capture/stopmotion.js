@@ -89,6 +89,7 @@ var stopMotionMode = (function() {
     $capturesm.hide();
 
     $preview.find('.preview_stopmotion--container').empty();
+    $preview.find('.preview_stopmotion--timeline').empty();
 
     saveFeedback("/images/icone-dodoc_anim.png");
 
@@ -128,6 +129,9 @@ var stopMotionMode = (function() {
 
     onNewStopmotionImage : function( smdata) {
 
+      var $previewContainer = $preview.find('.preview_stopmotion--container');
+      var $timeline = $preview.find('.preview_stopmotion--timeline');
+
       var imagePath = smdata.imageFullPath.substring( dodoc.contentDir.length);
 
       /********* LARGE PREVIEW ***************/
@@ -141,13 +145,22 @@ var stopMotionMode = (function() {
         $newPreview.fadeOut(600, function() { $(this).remove(); });
         $newSmallPreview.fadeOut(600, function() { $(this).remove(); });
       });
+      $newSmallPreview.on('click', function() {
+        $previewContainer.find('.stopmotion_lastImagePreview.is--active').removeClass('is--active');
+        $timeline.find('.stopmotion_lastImageSmallPreview.is--active').removeClass('is--active');
 
-      $newPreview.find('img').attr("src", imagePath);
-      $newSmallPreview.find('img').attr("src", imagePath);
+        $newPreview.addClass('is--active');
+        $newSmallPreview.addClass('is--active');
+      });
 
-      $preview.find('.preview_stopmotion--container').append( $newPreview);
+      $previewContainer.find('.stopmotion_lastImagePreview.is--active').removeClass('is--active');
+      $timeline.find('.stopmotion_lastImageSmallPreview.is--active').removeClass('is--active');
 
-      $preview.find('.preview_stopmotion--timeline').append( $newSmallPreview);
+      $newPreview.addClass('is--active').find('img').attr("src", imagePath);
+      $newSmallPreview.addClass('is--active').find('img').attr("src", imagePath);
+
+      $previewContainer.append( $newPreview);
+      $timeline.append( $newSmallPreview);
 
 
     },

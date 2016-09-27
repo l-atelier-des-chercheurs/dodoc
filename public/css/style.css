@@ -8180,10 +8180,15 @@ body.capture .content-wrapper:after {
         left: 0; }
       .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview:last-child, .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview:nth-last-child(2) {
         visibility: visible; }
+      .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview.is--active {
+        z-index: 1;
+        visibility: visible; }
   .captureRight .preview_stopmotion .preview_stopmotion--timeline {
     width: 100%;
-    padding: 4px;
-    border-top: 1px solid #DFDFDF; }
+    padding: 8px 4px;
+    margin-bottom: 16px;
+    border-top: 1px solid #DFDFDF;
+    counter-reset: compteListe; }
     .captureRight .preview_stopmotion .preview_stopmotion--timeline:before, .captureRight .preview_stopmotion .preview_stopmotion--timeline:after {
       content: " ";
       display: table; }
@@ -8191,8 +8196,26 @@ body.capture .content-wrapper:after {
       clear: both; }
     .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview {
       float: left;
-      width: 10%;
-      padding: 4px; }
+      cursor: pointer;
+      width: 0;
+      visibility: hidden; }
+      .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview img {
+        padding: 4px; }
+      .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview.is--active {
+        background-color: #48C2B5; }
+        .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview.is--active::after {
+          background-color: #48C2B5;
+          font-size: 70%;
+          color: white; }
+      .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview::after {
+        counter-increment: compteListe 1;
+        content: counter(compteListe) " ";
+        position: absolute;
+        font-size: 60%;
+        padding: 0px 4px; }
+      .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview:nth-last-child(-n+10) {
+        visibility: visible;
+        width: 10%; }
   .captureRight .son {
     display: none;
     padding-left: 27px;

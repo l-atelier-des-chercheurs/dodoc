@@ -577,20 +577,55 @@ $t-decalageDuCentre: 4%;
         &:last-child, &:nth-last-child(2) {
           visibility: visible;
         }
+
+        &.is--active {
+          z-index:  1;
+          visibility: visible;
+        }
       }
     }
 
     .preview_stopmotion--timeline {
       width: 100%;
       @include clearfix();
-      padding: $margin/4;
-
+      padding: $margin/2 $margin/4;
+      margin-bottom:  $margin;
       border-top: 1px solid $c-separator;
+      counter-reset: compteListe;
 
       .stopmotion_lastImageSmallPreview {
         float:left;
-        width: 10%;
-        padding: $margin/4;
+        cursor: pointer;
+
+        width: 0;
+        visibility: hidden;
+
+        img {
+          padding: $margin/4;
+        }
+
+        &.is--active {
+          background-color: $bleuvert;
+
+          &::after {
+            background-color: $bleuvert;
+            font-size:  70%;
+            color:white;
+          }
+        }
+
+        &::after {
+          counter-increment: compteListe 1;
+          content: counter(compteListe) " ";
+          position: absolute;
+          font-size: 60%;
+          padding: 0px $margin/4;
+        }
+
+        &:nth-last-child(-n+10) {
+          visibility: visible;
+          width: 10%;
+        }
       }
 
 
