@@ -92,11 +92,13 @@ var stopMotionMode = (function() {
     $preview.find('.preview_stopmotion--timeline').empty();
 
     saveFeedback("/images/icone-dodoc_anim.png");
+    var frameRate = $preview.find('.preview_stopmotion--frameRate input').val();
 
     var mediaData =
     {
       "stopMotionCacheFolder" : smCacheName,
-      "mediaType" : "animation"
+      "mediaType" : "animation",
+      "frameRate" : frameRate
     }
 
     // send instruction to finish stopmotion

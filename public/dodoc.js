@@ -48,10 +48,6 @@ if( lang === 'fr') {
       "finishStopmotion" : "Finaliser l’animation",
       "addToFav" : "Mettre en favoris",
 
-      "changingMediaWhileStopmotion" : "Attention, vous devez valider votre stop-motion pour l’enregistrer.",
-      "continueStopmotion" : "Continuer le stop motion",
-      "removeStopmotion" : "Supprimer le stop motion",
-
       "chooseCameraResolution" : "Sélectionnez la résolution de votre caméra",
 
       "removeProject" : "Supprimer le projet",
@@ -60,6 +56,7 @@ if( lang === 'fr') {
       "show" : "afficher",
 
       "imageCount" : "Image ",
+      "frameRate" : "Vitesse de lecture&nbsp;: ",
 
       "audioInputSource" : "source audio&nbsp;:",
       "audioOutputDestination" : "destination audio&nbsp;:",

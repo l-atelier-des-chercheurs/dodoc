@@ -1173,11 +1173,12 @@ MEDIA METHODS
           pathToFile = mediaPath + '/' + newFileName;
           fileExtension = dodoc.stopMotionext;
 
+          var frameRate = newMediaData.frameRate || 4;
+
           // ask ffmpeg to make a video from the cache images
           var proc = new ffmpeg({ "source" : pathToFile + '/%*.png'})
             // using 12 fps
-            .withFpsInput(4)
-            .fps(4)
+            .withFpsInput(frameRate)
             .withVideoCodec('libx264')
             .addOptions(['-vb 8000k', '-f mp4'])
             // setup event handlers
