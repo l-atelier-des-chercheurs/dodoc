@@ -364,8 +364,13 @@ $include-html-global-classes: $include-html-classes !default;
 $column-gutter: rem-calc(30) !default;
 
 // Media Query Ranges
+// $small-breakpoint:  em-calc(640)  !default;
+// $medium-breakpoint: em-calc(1024) !default;
+// $large-breakpoint:  em-calc(1440) !default;
+// $xlarge-breakpoint: em-calc(1920) !default;
+
 $small-breakpoint:  em-calc(640)  !default;
-$medium-breakpoint: em-calc(1024) !default;
+$medium-breakpoint: em-calc(768) !default;
 $large-breakpoint:  em-calc(1440) !default;
 $xlarge-breakpoint: em-calc(1920) !default;
 

@@ -232,3 +232,13 @@ body.projet {
 
   }
 }
+
+@media #{$small-only}{
+  #container {
+    .folder-wrapper {
+      .folder-title{
+        font-size: 2rem !important;
+      }
+    }
+  }
+}

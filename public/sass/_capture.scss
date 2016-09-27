@@ -1,3 +1,73 @@
+// ---------- MEDIA QUERIES ----------
+
+@media #{$small-only} {
+
+  body.capture .mainContent{
+    overflow-x: visible !important;
+    // height: auto !important;
+  }
+
+  .media-choice{
+    .btn-choice{
+      button{
+        &:before{
+          margin:0 !important;
+        }
+        span{
+          display:none;
+        }
+      }
+    }
+  }
+
+  .captureLeft{
+    position:relative !important;
+    width: 80% !important;
+    max-width: 100% !important;
+    margin: auto !important;
+    left: 0 !important;
+
+    transform: translate3d(0, 0, 0) !important;
+
+    body[data-state="expanded"] & {
+      transform: translate3d(0,0,0) !important;
+    }
+  }
+
+  .captureRight{
+    width: 80% !important;
+    max-width: 100% !important;
+    margin-top: $margin;
+    left: 10% !important; 
+
+    transform: translate3d(0, -50%, 0) !important;
+
+    body[data-state="expanded"] & {
+      transform: translate3d( 0, 4%,0) !important;
+    }
+  }
+
+  .feedSettings{
+
+    top: 0px !important;
+    width: 85% !important;
+    .openCloseSettings{
+      top: 80vh !important;
+      width: auto !important;
+      a{float: none !important;}
+      &:hover{
+        width: auto !important;
+      }
+    }
+  }
+
+}
+
+@media #{$medium-only} {
+
+
+}
+
 // C A P T U R E
 body.capture{
   .mainContent {
@@ -19,7 +89,7 @@ body.capture{
 
 .media-choice {
 
-  padding: $margin 0;
+  padding: $margin*2 0;
 
   .btn-choice{
 

@@ -11,9 +11,10 @@ html
         +logo()
         +button( 'dossier', 'isNav')
         +button( 'projet', 'isNav')
-        +button('capture', '', 'isCollapsed')
-        +button('bibli', '', 'isCollapsed')
-        +button('publications', '', 'isCollapsed')
+        div.shortcut-button
+          +button('capture', '', 'isCollapsed')
+          +button('bibli', '', 'isCollapsed')
+          +button('publications', '', 'isCollapsed')
 
     #container.row.mainContent
 

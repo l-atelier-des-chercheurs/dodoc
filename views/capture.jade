@@ -12,8 +12,9 @@ html
         +button( 'dossier', 'isNav')
         +button( 'projet', 'isNav')
         +button( 'capture', 'isNav')
-        +button('bibli', '', 'isCollapsed')
-        +button('publications', '', 'isCollapsed')
+        div.shortcut-button
+          +button('bibli', '', 'isCollapsed')
+          +button('publications', '', 'isCollapsed')
 
 
     div#container.row.mainContent
@@ -22,13 +23,13 @@ html
           div.btn-choice
             div
               button#photo.js--modeSelector(data-mediatype="photo")
-                | !{dodoc.lang.photo}
+                span !{dodoc.lang.photo}
               button#video-btn.js--modeSelector(data-mediatype="video")
-                | !{dodoc.lang.video}
+                span !{dodoc.lang.video}
               button#stopmotion.js--modeSelector(data-mediatype="stopmotion")
-                | !{dodoc.lang.stopmotion}
+                span !{dodoc.lang.stopmotion}
               button#audio.js--modeSelector(data-mediatype="audio")
-                | !{dodoc.lang.audio}
+                span !{dodoc.lang.audio}
 
         .feedSettings
           .openCloseSettings
