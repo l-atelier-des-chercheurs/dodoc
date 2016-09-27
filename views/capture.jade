@@ -127,14 +127,16 @@ html
               +button( 'deleteMediaCapture', '', 'isCollapsed')
 
             .preview.preview_stopmotion
-              video.output(controls autoplay loop)
               .preview_stopmotion--container
               .preview_stopmotion--timeline
               .preview_stopmotion--frameRate
                 span !{dodoc.lang.frameRate}
                 input(type='number' step='1' value='4' min='1' max='25')
-              +button( 'finishStopmotion', '', '')
-              +button( 'deleteMediaCapture', '', 'isCollapsed')
+              +button( 'previzStopmotion', '', '')
+              .output_container
+                video.output(controls autoplay loop)
+                +button( 'deleteMediaCaptureStopmotion', '', '')
+                +button( 'finishStopmotion', '', '')
 
             .preview.preview_audio
               img.output

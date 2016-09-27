@@ -45,10 +45,12 @@ if( lang === 'fr') {
       "quitFullscreen" : "Quitter le plein écran",
       "removeThisImage" : "Supprimer cette image",
       "removeThisMedia" : "Supprimer ce média",
+      "previzStopMotion" : "Prévisualiser l’animation",
       "finishStopmotion" : "Finaliser l’animation",
       "addToFav" : "Mettre en favoris",
 
       "chooseCameraResolution" : "Sélectionnez la résolution de votre caméra",
+      "backToAnimation" : "Retour à l’animation",
 
       "removeProject" : "Supprimer le projet",
       "createFolder" : "Créer un dossier",

@@ -195,7 +195,7 @@ button{
     background-color: $rouge;
     color: white;
   }
-  &_capture, &_view, &_deleteFolder, &_deleteMedia, &_deleteMediaCapture, &_deleteProject, &_deleteLastMedia {
+  &_capture, &_view, &_deleteFolder, &_deleteMedia, &_deleteMediaCapture, &_deleteProject, &_deleteLastMedia, &_deleteMediaCaptureStopmotion {
     background-color: $c-images;
     color: white;
   }
@@ -203,7 +203,7 @@ button{
     background-color: $c-bibli;
     color: white;
   }
-  &_accept, &_addText, &_highlightMedia, &_finishStopmotion {
+  &_accept, &_addText, &_highlightMedia, &_finishStopmotion, &_previzStopmotion {
     background-color: $bleuvert;
     color: white;
   }

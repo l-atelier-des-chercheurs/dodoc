@@ -38,7 +38,7 @@
     width: 80% !important;
     max-width: 100% !important;
     margin-top: $margin;
-    left: 10% !important; 
+    left: 10% !important;
 
     transform: translate3d(0, -50%, 0) !important;
 
@@ -603,17 +603,29 @@ $t-decalageDuCentre: 4%;
 
   .preview_stopmotion {
 
-    // if we have a stopmotion preview active
-    video.output:not([src='']) ~ {
-    }
+    @include clearfix();
 
-    .preview_stopmotion--container:empty ~ {
-      .button-wrapper_finishStopmotion {
-        display: none;
+    // container with video to preview stopmotion render
+    .output_container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255,255,255,.9);
+      z-index: 9;
+
+      video {
+
+      }
+
+      .button-wrapper_deleteMediaCaptureStopmotion {
+        position: relative;
       }
     }
 
-    .button-wrapper_finishStopmotion {
+
+    .button-wrapper_previzStopmotion, .button-wrapper_finishStopmotion {
       display: block;
       float: right;
     }
@@ -707,6 +719,7 @@ $t-decalageDuCentre: 4%;
       input {
         display: inline-block;
         width:  50px;
+        font-size: 120%;
       }
 
 

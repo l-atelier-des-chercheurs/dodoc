@@ -699,6 +699,12 @@ var sendData = {
   	socket.emit( 'deleteMedia', mediaData);
   },
 
+  deleteStopmotion : function( mediaData) {
+    mediaData.slugFolderName = currentFolder;
+    mediaData.slugProjectName = currentProject;
+  	socket.emit( 'deleteStopmotion', mediaData);
+  },
+
   createNewPubli : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
