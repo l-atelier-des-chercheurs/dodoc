@@ -442,7 +442,7 @@ module.exports = function(app, io){
     var slugPubliName = data.slugPubliName;
 
     var projectPath = "sessions/"+ slugFolderName + "/" + slugProjectName;
-    var publiPath =  projectPath + "/publications/";
+    var publiPath =  "publications/";
     var folderPath = publiPath + slugPubliName;
     var mediasPath = folderPath+'/medias';
 
@@ -455,8 +455,10 @@ module.exports = function(app, io){
         fs.mkdirSync(mediasPath);
     }
 
+    fs.createReadStream('public/css/style.css').pipe(fs.createWriteStream(folderPath+'/style.css'));
 
-    // fs.writeFileSync(folderPath+'index.html', data.html);
+
+    fs.writeFileSync(folderPath+'/index.html', data.html);
       
       // c.on('ready', function() {
       //   c.list('./www/dodoc-test/'+ slugPubliName+'/medias/', function(err, list) {
