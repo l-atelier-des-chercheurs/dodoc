@@ -5,13 +5,11 @@ var fs = require('fs-extra'),
   path = require('path'),
   gm = require('gm'),
   mm = require('marky-mark'),
-  moment = require('moment'),
-  exec = require('child_process').exec,
-//  phantom = require('phantom'),
-  ffmpeg = require('fluent-ffmpeg'),
-  sprintf = require('sprintf-js').sprintf,
-  vsprintf = require('sprintf-js').vsprintf,
-  flags = require('flags'),
+	moment = require('moment'),
+	exec = require('child_process').exec,
+// 	phantom = require('phantom'),
+	ffmpeg = require('fluent-ffmpeg'),
+	flags = require('flags'),
   merge = require('merge'),
   gutil = require('gulp-util'),
   parsedown = require('woods-parsedown'),
@@ -298,8 +296,7 @@ module.exports = function(app, io){
       {
         "imageContent" : mediaData.imageContent,
         "folderCacheName" : folderCacheName,
-        "folderCachePath" : folderCachePath,
-        "imageCount" : 0
+        "folderCachePath" : folderCachePath
       };
       onAddImageToStopMotion( socket, imageData);
     }
@@ -308,16 +305,17 @@ module.exports = function(app, io){
   function onAddImageToStopMotion( socket, imageData) {
     dev.logfunction( "EVENT - onAddImageToStopMotion");
 
-    var imageBuffer = decodeBase64Image( imageData.imageContent);
-    var imageFullPath = imageData.folderCachePath + '/' + imageData.imageCount + '.png';
+    var newImageName = moment().format('x');
+    newImageName = findFirstFilenameNotTaken( newImageName, imageData.folderCachePath, '.png');
+  		var imageFullPath = imageData.folderCachePath + '/' + newImageName + '.png';
 
-    var mediaData =
-      {
-        "imageFullPath" : imageFullPath,
-        "imageCount" : imageData.imageCount
-      };
+		var mediaData =
+  		{
+    		"imageFullPath" : imageFullPath,
+  		};
 
-    fs.writeFile( imageFullPath, imageBuffer.data, function(err) {
+		var imageBuffer = decodeBase64Image( imageData.imageContent);
+		fs.writeFile( imageFullPath, imageBuffer.data, function(err) {
       if (err) console.log( err);
       sendEventWithContent( 'newStopmotionImage', mediaData, socket);
     });
@@ -1130,7 +1128,6 @@ MEDIA METHODS
                 }, function() {
                   reject( 'failed to create meta for photo');
                 });
-
             });
           });
 
@@ -1177,7 +1174,7 @@ MEDIA METHODS
           fileExtension = dodoc.stopMotionext;
 
           // ask ffmpeg to make a video from the cache images
-          var proc = new ffmpeg({ "source" : pathToFile + '/%d.png'})
+          var proc = new ffmpeg({ "source" : pathToFile + '/%*.png'})
             // using 12 fps
             .withFpsInput(4)
             .fps(4)

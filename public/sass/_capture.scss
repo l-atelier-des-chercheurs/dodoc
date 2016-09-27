@@ -523,6 +523,12 @@ $t-decalageDuCentre: 4%;
     .output {
       padding-bottom:   10px;
     }
+
+    .button-wrapper_deleteLastMedia, .button-wrapper_deleteMediaCapture {
+      position: absolute;
+      top:-10px;
+      right:-10px;
+    }
   }
 
   .preview_stopmotion {
@@ -542,24 +548,88 @@ $t-decalageDuCentre: 4%;
       float: right;
     }
 
-    .stopmotion_lastImagePreview {
+    .preview_stopmotion--container {
+      counter-reset: compteListe;
 
-      padding: $margin;
-      background-color: #fff;
+      .stopmotion_lastImagePreview {
 
-      &:not(:first-of-type) {
-        position: absolute;
-        top: 0; left: 0;
+        position: relative;
+        padding: $margin/2;
+        background-color: #fff;
+        visibility: hidden;
+
+        .image_count {
+          font-size:  80%;
+          font-variant: small-caps;
+          text-transform: lowercase;
+
+          &::after {
+            counter-increment: compteListe 1;
+            content: counter(compteListe) " ";
+          }
+        }
+
+        &:not(:last-of-type) {
+          position: absolute;
+          top: 0; left: 0;
+        }
+
+        &:last-child, &:nth-last-child(2) {
+          visibility: visible;
+        }
+
+        &.is--active {
+          z-index:  1;
+          visibility: visible;
+        }
       }
-
     }
-    .meta-stopmotion {
-      margin-top: 10px;
 
-      .count-image{
-        display: inline-block;
-        vertical-align: top;
+    .preview_stopmotion--timeline {
+      width: 100%;
+      @include clearfix();
+      padding: $margin/2 $margin/4;
+      margin-bottom:  $margin;
+      border-top: 1px solid $c-separator;
+      counter-reset: compteListe;
+
+      .stopmotion_lastImageSmallPreview {
+        float:left;
+        cursor: pointer;
+
+        width: 0;
+        visibility: hidden;
+
+        img {
+          padding: $margin/4;
+        }
+
+        &.is--active {
+          background-color: $bleuvert;
+
+          &::after {
+            background-color: $bleuvert;
+            font-size:  70%;
+            color:white;
+          }
+        }
+
+        &::after {
+          counter-increment: compteListe 1;
+          content: counter(compteListe) " ";
+          position: absolute;
+          font-size: 60%;
+          padding: 0px $margin/4;
+        }
+
+        &:nth-last-child(-n+10) {
+          visibility: visible;
+          width: 10%;
+        }
       }
+
+
+
     }
   }
 

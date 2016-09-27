@@ -59,6 +59,8 @@ if( lang === 'fr') {
       "createProject" : "Créer un projet",
       "show" : "afficher",
 
+      "imageCount" : "Image ",
+
       "audioInputSource" : "source audio&nbsp;:",
       "audioOutputDestination" : "destination audio&nbsp;:",
       "videoInputSource" : "source video:",

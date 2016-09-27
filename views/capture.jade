@@ -128,6 +128,7 @@ html
             .preview.preview_stopmotion
               video.output(controls autoplay loop)
               .preview_stopmotion--container
+              .preview_stopmotion--timeline
               +button( 'finishStopmotion', '', '')
               +button( 'deleteMediaCapture', '', 'isCollapsed')
 
@@ -153,8 +154,10 @@ html
         img
         .meta-stopmotion
           .image_count
+            | !{dodoc.lang.imageCount}
           +button( 'deleteLastMedia', '', 'isCollapsed')
-
+      .stopmotion_lastImageSmallPreview
+        img
 
 
     //- scripts

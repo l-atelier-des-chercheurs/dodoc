@@ -46,16 +46,13 @@ var stopMotionMode = (function() {
 
     var smCacheName = $("body").data( "smCacheName");
     var smCachePath = $("body").data( "smCachePath");
-    var smImageCount = parseInt( $("body").data( "smImageCount")) + 1;
-
     var imageData = currentStream.getStaticImageFromVideo();
 
     var smImage =
     {
       "imageContent" : imageData,
       "folderCacheName" : smCacheName,
-      "folderCachePath" : smCachePath,
-      "imageCount" : smImageCount
+      "folderCachePath" : smCachePath
     };
 
     socket.emit( 'addImageToStopMotion', smImage);
@@ -68,8 +65,6 @@ var stopMotionMode = (function() {
     justCaptured();
     animateWindows();
 
-    $('body').data( "smImageCount", smImageCount);
-
   }
 
   function removeImageFromStopMotion( imagePath) {
@@ -80,9 +75,6 @@ var stopMotionMode = (function() {
       "pathToStopmotionImage" : imagePath,
     }
     socket.emit( 'deleteLastImageOfStopMotion', mediaToDelete);
-
-    var smImageCount = parseInt( $("body").data( "smImageCount")) - 1;
-    $('body').data( "smImageCount", smImageCount);
 
   }
 
@@ -97,6 +89,7 @@ var stopMotionMode = (function() {
     $capturesm.hide();
 
     $preview.find('.preview_stopmotion--container').empty();
+    $preview.find('.preview_stopmotion--timeline').empty();
 
     saveFeedback("/images/icone-dodoc_anim.png");
 
@@ -124,6 +117,9 @@ var stopMotionMode = (function() {
       $preview.show();
       $preview.find('.output').attr('src', '');
       $preview.find('.js--delete-media-capture').hide();
+
+      if(isRecording)
+        animateWindows();
     },
 
     stop : function() {
@@ -133,21 +129,39 @@ var stopMotionMode = (function() {
 
     onNewStopmotionImage : function( smdata) {
 
+      var $previewContainer = $preview.find('.preview_stopmotion--container');
+      var $timeline = $preview.find('.preview_stopmotion--timeline');
+
       var imagePath = smdata.imageFullPath.substring( dodoc.contentDir.length);
 
-      // create a new lastImage preview
-      var newPreview = $('.js--templates .stopmotion_lastImagePreview').clone( false);
+      /********* LARGE PREVIEW ***************/
+      var $newPreview = $('.js--templates .stopmotion_lastImagePreview').clone( false);
+      /********* SMALL PREVIEW ***************/
+      var $newSmallPreview = $('.js--templates .stopmotion_lastImageSmallPreview').clone( false);
 
       // delete last stopmotion image
-      newPreview.on('click', '.js--delete-sm-lastimage', function(){
+      $newPreview.on('click', '.js--delete-sm-lastimage', function(){
         removeImageFromStopMotion( imagePath);
-        $(this).closest('.stopmotion_lastImagePreview').fadeOut(600, function() { $(this).remove(); });
+        $newPreview.fadeOut(600, function() { $(this).remove(); });
+        $newSmallPreview.fadeOut(600, function() { $(this).remove(); });
+      });
+      $newSmallPreview.on('click', function() {
+        $previewContainer.find('.stopmotion_lastImagePreview.is--active').removeClass('is--active');
+        $timeline.find('.stopmotion_lastImageSmallPreview.is--active').removeClass('is--active');
+
+        $newPreview.addClass('is--active');
+        $newSmallPreview.addClass('is--active');
       });
 
-      newPreview.find('img').attr("src", imagePath);
-      newPreview.find('.image_count').html('<span>Image n° "' + smdata.imageCount + '"</span>');
+      $previewContainer.find('.stopmotion_lastImagePreview.is--active').removeClass('is--active');
+      $timeline.find('.stopmotion_lastImageSmallPreview.is--active').removeClass('is--active');
 
-      $preview.find('.preview_stopmotion--container').append( newPreview);
+      $newPreview.addClass('is--active').find('img').attr("src", imagePath);
+      $newSmallPreview.addClass('is--active').find('img').attr("src", imagePath);
+
+      $previewContainer.append( $newPreview);
+      $timeline.append( $newSmallPreview);
+
 
     },
 
@@ -158,8 +172,6 @@ var stopMotionMode = (function() {
 
       $("body").data( "smCacheName", folderCacheName);
       $("body").data( "smCachePath", folderCachePath);
-      $("body").data( "smImageCount", 0);
-
     },
 
     showStopMotionPreview : function( pathToMediaFile) {
