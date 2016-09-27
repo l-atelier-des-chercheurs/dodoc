@@ -86,9 +86,9 @@ module.exports = function(app, io){
     socket.on("newMedia", onNewMedia);
 
 		//STOP MOTION
-		socket.on("startStopMotion", onStartStopMotion);
-		socket.on("addImageToStopMotion", function (data){ onAddImageToStopMotion( socket, data); });
-		socket.on( 'deleteLastImageOfStopMotion', onDeleteLastImageOfStopMotion);
+		socket.on( "startStopMotion", function (data){ onStartStopMotion( socket, data); });
+		socket.on( "addImageToStopMotion", function (data){ onAddImageToStopMotion( socket, data); });
+		socket.on( 'deleteLastImageOfStopMotion', function (data){ onDeleteLastImageOfStopMotion(socket, data); });
 
 		// B I B L I        P A G E
 		socket.on( 'listOneProjectMedias', onListOneProjectMedias);
@@ -274,7 +274,7 @@ module.exports = function(app, io){
 	}
 
 
-	function onStartStopMotion( mediaData) {
+	function onStartStopMotion( socket, mediaData) {
 		dev.logfunction( "EVENT - onStartStopMotion");
 
 		var folderCacheName = getCurrentDate();
@@ -290,24 +290,31 @@ module.exports = function(app, io){
 			"folderCacheName" : folderCacheName,
 			"folderCachePath" : folderCachePath
 		}
-		io.sockets.emit('stopMotionDirectoryCreated', newStopMotionData);
+    sendEventWithContent( 'stopMotionDirectoryCreated', newStopMotionData, socket);
+
+    if( mediaData.imageContent !== undefined) {
+      // also add the linked image as first image to the stopmotion
+      var imageData =
+      {
+        "imageContent" : mediaData.imageContent,
+        "folderCacheName" : folderCacheName,
+        "folderCachePath" : folderCachePath,
+        "imageCount" : 0
+      };
+      onAddImageToStopMotion( socket, imageData);
+    }
 	}
 
 	function onAddImageToStopMotion( socket, imageData) {
 		dev.logfunction( "EVENT - onAddImageToStopMotion");
 
-		var imageContent = imageData.imageContent;
-		var imageFolder = imageData.folderCacheName;
-		var folderPath = imageData.folderCachePath;
-		var imageCount = imageData.imageCount;
-
-		var imageBuffer = decodeBase64Image( imageContent);
-		var imageFullPath = folderPath + '/' + imageCount + '.png';
+		var imageBuffer = decodeBase64Image( imageData.imageContent);
+		var imageFullPath = imageData.folderCachePath + '/' + imageData.imageCount + '.png';
 
 		var mediaData =
   		{
     		"imageFullPath" : imageFullPath,
-    		"imageCount" : imageCount
+    		"imageCount" : imageData.imageCount
   		};
 
 		fs.writeFile( imageFullPath, imageBuffer.data, function(err) {
@@ -317,7 +324,7 @@ module.exports = function(app, io){
   }
 
 
-  function onDeleteLastImageOfStopMotion( idata) {
+  function onDeleteLastImageOfStopMotion( socket, idata) {
 		dev.logfunction( "EVENT - onDeleteLastImageOfStopMotion : " + JSON.stringify( idata, null, 4));
 
     var fullPathToStopmotionImage = getFullPath( idata.pathToStopmotionImage);
@@ -358,7 +365,7 @@ module.exports = function(app, io){
 		var slugFolderName = publiMetaData.slugFolderName;
 		var slugProjectName = publiMetaData.slugProjectName;
 
-  	listPublis( slugFolderName, slugProjectName).then(function( publiProjectContent) {
+    	listPublis( slugFolderName, slugProjectName).then(function( publiProjectContent) {
       sendEventWithContent( 'listOneProjectPublis', publiProjectContent, socket);
     }, function(error) {
       console.error("Failed to list all publis! Error: ", error);
@@ -405,16 +412,15 @@ module.exports = function(app, io){
 		dev.logfunction( "EVENT - onEditMediasPubli");
 
 		editThisPubli( publiData).then(function( publiMetaData) {
-  		var slugFolderName = publiMetaData.slugFolderName;
-  		var slugProjectName = publiMetaData.slugProjectName;
-  		var slugPubliName = publiMetaData.slugPubliName;
+    		var slugFolderName = publiMetaData.slugFolderName;
+    		var slugProjectName = publiMetaData.slugProjectName;
+    		var slugPubliName = publiMetaData.slugPubliName;
 
-    	listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
+      	listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
         sendEventWithContent( 'publiMediasUpdated', publiMedias);
       }, function(error) {
         console.error("Failed to list publi media! Error: ", error);
       });
-
     }, function(error) {
       console.error("Failed to edit this publi! Error: ", error);
     });
@@ -430,7 +436,7 @@ module.exports = function(app, io){
 		var slugProjectName = publiData.slugProjectName;
 		var slugPubliName = publiData.slugPubliName;
 
-  	listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
+  	  listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
       sendEventWithContent( 'listOnePubliMetaAndMedias', publiMedias);
     }, function(error) {
       console.error("Failed to list one media! Error: ", error);
@@ -459,13 +465,10 @@ module.exports = function(app, io){
 
 
 	function parseData(d) {
-  	var parsed = parsedown(d);
-  	// if there is a field called medias, this one has to be made into an array
-  	if( parsed.hasOwnProperty('medias'))
-  	  parsed.medias = parsed.medias.split(',');
+    	var parsed = parsedown(d);
     // the fav field is a boolean, so let's convert it
-  	if( parsed.hasOwnProperty('fav'))
-  	  parsed.fav = (parsed.fav === 'true');
+    	if( parsed.hasOwnProperty('fav'))
+    	  parsed.fav = (parsed.fav === 'true');
 		return parsed;
 	}
 	function storeData( mpath, d, e) {
@@ -495,13 +498,28 @@ module.exports = function(app, io){
       dev.logverbose('2. value ? ' + value);
       // if value is a string, it's all good
       // but if it's an array (like it is for medias in publications) we'll need to make it into a string
-      if( typeof value === 'array')
+      if( typeof value === 'array') {
         value = value.join(', ');
+      }
       // check if value contains a delimiter
       if( typeof value === 'string' && value.indexOf('\n----\n') >= 0) {
         dev.logverbose( '2. WARNING : found a delimiter in string, replacing it with a backslash');
         // prepend with a space to neutralize it
         value = value.replace('\n----\n', '\n ----\n');
+      }
+      if( typeof value === 'object') {
+        // loop for each item in object
+        var objstr = '\n\n';
+
+        for (var index in value) {
+          var thisItem = value[index];
+          objstr += '-\n';
+          // loop for each prop for each object
+          for (var itemProp in thisItem) {
+            objstr += itemProp + ': ' + thisItem[itemProp] + '\n';
+          }
+        }
+        value = objstr;
       }
       str += prop + ': ' + value + dodoc.textFieldSeparator;
     }
@@ -1122,7 +1140,7 @@ MEDIA METHODS
 
           newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
           pathToFile = mediaPath + '/' + newFileName;
-          fileExtension = '.webm';
+          fileExtension = dodoc.videoext;
 
           writeVideoToDisk( pathToFile, fileExtension, newMediaData.mediaData)
           .then(function() {
@@ -1156,15 +1174,15 @@ MEDIA METHODS
           // WARNING : animation doesn't use newFileName, it already has a filename to use (generated at the beginning of a stopmotion capture)
           newFileName = newMediaData.stopMotionCacheFolder;
           pathToFile = mediaPath + '/' + newFileName;
-          fileExtension = '.webm';
+          fileExtension = dodoc.stopMotionext;
 
           // ask ffmpeg to make a video from the cache images
           var proc = new ffmpeg({ "source" : pathToFile + '/%d.png'})
             // using 12 fps
             .withFpsInput(4)
             .fps(4)
-            .withVideoCodec('libvpx')
-            .addOptions(['-vb 8000k', '-f webm'])
+            .withVideoCodec('libx264')
+            .addOptions(['-vb 8000k', '-f mp4'])
             // setup event handlers
             .on('end', function() {
               console.log('file has been converted succesfully');
@@ -1398,37 +1416,36 @@ PUBLIS METHODS
 
   function createPubli( publiData) {
     return new Promise(function(resolve, reject) {
-  		dev.logfunction( "COMMON — createPubli : " + JSON.stringify(publiData, null, 4));
+    		dev.logfunction( "COMMON — createPubli : " + JSON.stringify(publiData, null, 4));
 
-  		var currentDateString = getCurrentDate();
+    		var currentDateString = getCurrentDate();
 
-  		var pname = publiData.publiName;
-  		var pslug = slugg( pname);
+    		var pname = publiData.publiName;
+    		var pslug = slugg( pname);
 
-  		var slugFolderName = publiData.slugFolderName;
-  		var slugProjectName = publiData.slugProjectName;
+    		var slugFolderName = publiData.slugFolderName;
+    		var slugProjectName = publiData.slugProjectName;
 
       var pathToThisPubliFolder = getPathToPubli( slugFolderName, slugProjectName);
       pslug = findFirstFilenameNotTaken( pslug, pathToThisPubliFolder);
 
       var pathToThisPubli = getPathToPubli( slugFolderName, slugProjectName, pslug) + dodoc.metaFileext;
 
-    	console.log("New publi created with name " + pname + " and path " + pathToThisPubli);
+     	console.log("New publi created with name " + pname + " and path " + pathToThisPubli);
 
       var newPubliData =
-        {
-	        "name" : pname,
-	        "created" : currentDateString,
-	        "modified" : currentDateString,
-	        "informations" : "",
-	        "medias" : [{}],
-	      };
+      {
+        "name" : pname,
+        "created" : currentDateString,
+        "modified" : currentDateString,
+        "informations" : "",
+        "medias" : [{}],
+      };
 
       storeData( pathToThisPubli, newPubliData, 'create').then(function( newPubliData) {
         newPubliData.slugProjectName = slugProjectName;
         newPubliData.slugFolderName = slugFolderName;
         newPubliData.slugPubliName = pslug;
-
         resolve( newPubliData);
       }, function() {
         console.log( gutil.colors.red('--> Couldn\'t create publi file.'));
@@ -1532,7 +1549,7 @@ PUBLIS METHODS
 
       var publiContent = getPubliMeta( slugFolderName, slugProjectName, slugPubliName);
     	listAllMedias( slugFolderName, slugProjectName).then(function( mediaFolderContent) {
-        filterMediasFromList( publiContent, mediaFolderContent).then(function( publiMedias) {
+      filterMediasFromList( publiContent, mediaFolderContent).then(function( publiMedias) {
 
         	publiContent.medias = publiMedias;
         	publiContent.slugFolderName = slugFolderName;
@@ -1557,15 +1574,14 @@ PUBLIS METHODS
 
   function filterMediasFromList( publiContent, mediaFolderContent) {
     return new Promise(function(resolve, reject) {
-  		dev.logfunction( "COMMON — filterMediasFromList : publiContent = " + JSON.stringify(publiContent, null, 4) + " mediaFolderContent = " + JSON.stringify(mediaFolderContent, null, 4));
-
+  		  dev.logfunction( "COMMON — filterMediasFromList : publiContent = " + JSON.stringify(publiContent, null, 4) + " mediaFolderContent = " + JSON.stringify(mediaFolderContent, null, 4));
       var publiMedias = [];
       for( var item of publiContent.medias) {
-        dev.logverbose('item : ' + item);
-        if( mediaFolderContent.hasOwnProperty( item) === true) {
+        dev.logverbose('item : ' + item.name);
+        if( mediaFolderContent.hasOwnProperty( item.name) === true) {
           // and copy it to an empty obj
           var mediaitem = {};
-          mediaitem[item] = mediaFolderContent[item];
+          mediaitem[item.name] = mediaFolderContent[item.name];
           publiMedias.push( mediaitem);
         }
       }

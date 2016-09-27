@@ -512,21 +512,6 @@ $t-decalageDuCentre: 4%;
     }
   }
 
-  .mode-instructions {
-    width:  100%;
-    padding: 40px;
-    display: none;
-
-    .icone-stopmotion {
-      min-width: 0;
-      width: 70%;
-      margin: 0 auto 40px;
-    }
-    h4 {
-      font-size:1em;
-    }
-  }
-
 
   .output[src=''] {
     display: none;
@@ -544,18 +529,9 @@ $t-decalageDuCentre: 4%;
 
     // if we have a stopmotion preview active
     video.output:not([src='']) ~ {
-      .mode-instructions {
-        display: none;
-      }
     }
 
     .preview_stopmotion--container:empty ~ {
-
-      .mode-instructions {
-        // only show instructions if container is empty
-        display: block;
-      }
-
       .button-wrapper_finishStopmotion {
         display: none;
       }

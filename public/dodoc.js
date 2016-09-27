@@ -48,7 +48,6 @@ if( lang === 'fr') {
       "finishStopmotion" : "Finaliser l’animation",
       "addToFav" : "Mettre en favoris",
 
-      "createNewStopmotion" : "Vous allez créer un nouveau stop motion.</br>Cliquez sur le <b>bouton d\’enregistrement</b> pour commencer à prendre des photos.",
       "changingMediaWhileStopmotion" : "Attention, vous devez valider votre stop-motion pour l’enregistrer.",
       "continueStopmotion" : "Continuer le stop motion",
       "removeStopmotion" : "Supprimer le stop motion",
@@ -121,6 +120,8 @@ var settings = {
   "codelang" : lang,
   "contentDir" : "sessions",
   "metaFileext" : ".txt",
+  "videoext" : ".webm",
+  "stopMotionext" : ".mp4",
   "folderMetafilename" : "dossier",
   "projectMetafilename" : "projet",
 

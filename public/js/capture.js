@@ -468,6 +468,18 @@ var currentStream = (function(context) {
       return videoElement;
     },
 
+    getStaticImageFromVideo : function() {
+      var videoFrame = currentStream.getVideoFrame();
+
+      var invisibleCanvas = document.createElement('canvas');
+      invisibleCanvas.width = videoFrame.videoWidth;
+      invisibleCanvas.height = videoFrame.videoHeight;
+      var invisibleCtx = invisibleCanvas.getContext('2d');
+      invisibleCtx.drawImage( videoFrame, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
+
+      return imageData = invisibleCanvas.toDataURL('image/png');
+    },
+
     stopAllFeeds : function() {
       if( !videoElement.paused)
         videoElement.pause();
@@ -638,11 +650,11 @@ function onMediaCreated( mediasData){
     animateWindows();
   }
   else if( newMediaType === 'video') {
-    videoMode.showVideoPreview( pathToMediaFile + '.webm');
+    videoMode.showVideoPreview( pathToMediaFile + dodoc.videoext);
     animateWindows();
   }
   else if( newMediaType === 'animation') {
-    stopMotionMode.showStopMotionPreview( pathToMediaFile + '.webm');
+    stopMotionMode.showStopMotionPreview( pathToMediaFile + dodoc.stopMotionext);
     animateWindows();
   }
   else if( newMediaType === 'audio') {

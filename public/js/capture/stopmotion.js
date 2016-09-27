@@ -1,8 +1,3 @@
-/*************
-
-  should rewrite each mode as a single var with functions...
-
-  **************/
 
 var stopMotionMode = (function() {
 
@@ -35,6 +30,10 @@ var stopMotionMode = (function() {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
 
+    // get a first image to send with project data
+    var imageData = currentStream.getStaticImageFromVideo();
+    mediaData.imageContent = imageData;
+
     socket.emit( 'startStopMotion', mediaData);
   }
 
@@ -49,15 +48,7 @@ var stopMotionMode = (function() {
     var smCachePath = $("body").data( "smCachePath");
     var smImageCount = parseInt( $("body").data( "smImageCount")) + 1;
 
-    var videoFrame = currentStream.getVideoFrame();
-
-    var invisibleCanvas = document.createElement('canvas');
-    invisibleCanvas.width = videoFrame.videoWidth;
-    invisibleCanvas.height = videoFrame.videoHeight;
-    var invisibleCtx = invisibleCanvas.getContext('2d');
-    invisibleCtx.drawImage( videoFrame, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
-
-    var imageData = invisibleCanvas.toDataURL('image/png');
+    var imageData = currentStream.getStaticImageFromVideo();
 
     var smImage =
     {
@@ -92,8 +83,6 @@ var stopMotionMode = (function() {
 
     var smImageCount = parseInt( $("body").data( "smImageCount")) - 1;
     $('body').data( "smImageCount", smImageCount);
-
-
 
   }
 
@@ -170,6 +159,7 @@ var stopMotionMode = (function() {
       $("body").data( "smCacheName", folderCacheName);
       $("body").data( "smCachePath", folderCachePath);
       $("body").data( "smImageCount", 0);
+
     },
 
     showStopMotionPreview : function( pathToMediaFile) {

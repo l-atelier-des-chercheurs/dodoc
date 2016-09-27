@@ -8230,26 +8230,12 @@ body.capture .content-wrapper:after {
       background-color: #48c2b5; }
     body[data-mode="audio"] .captureRight .flash {
       background-color: #09227c; }
-  .captureRight .mode-instructions {
-    width: 100%;
-    padding: 40px;
-    display: none; }
-    .captureRight .mode-instructions .icone-stopmotion {
-      min-width: 0;
-      width: 70%;
-      margin: 0 auto 40px; }
-    .captureRight .mode-instructions h4 {
-      font-size: 1em; }
   .captureRight .output[src=''] {
     display: none; }
   .captureRight .preview {
     position: relative; }
     .captureRight .preview .output {
       padding-bottom: 10px; }
-  .captureRight .preview_stopmotion video.output:not([src='']) ~ .mode-instructions {
-    display: none; }
-  .captureRight .preview_stopmotion .preview_stopmotion--container:empty ~ .mode-instructions {
-    display: block; }
   .captureRight .preview_stopmotion .preview_stopmotion--container:empty ~ .button-wrapper_finishStopmotion {
     display: none; }
   .captureRight .preview_stopmotion .button-wrapper_finishStopmotion {
