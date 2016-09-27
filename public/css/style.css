@@ -8392,23 +8392,81 @@ body.capture .content-wrapper:after {
     position: relative; }
     .captureRight .preview .output {
       padding-bottom: 10px; }
+    .captureRight .preview .button-wrapper_deleteLastMedia, .captureRight .preview .button-wrapper_deleteMediaCapture {
+      position: absolute;
+      top: -10px;
+      right: -10px; }
   .captureRight .preview_stopmotion .preview_stopmotion--container:empty ~ .button-wrapper_finishStopmotion {
     display: none; }
   .captureRight .preview_stopmotion .button-wrapper_finishStopmotion {
     display: block;
     float: right; }
-  .captureRight .preview_stopmotion .stopmotion_lastImagePreview {
-    padding: 16px;
-    background-color: #fff; }
-    .captureRight .preview_stopmotion .stopmotion_lastImagePreview:not(:first-of-type) {
-      position: absolute;
-      top: 0;
-      left: 0; }
-  .captureRight .preview_stopmotion .meta-stopmotion {
-    margin-top: 10px; }
-    .captureRight .preview_stopmotion .meta-stopmotion .count-image {
-      display: inline-block;
-      vertical-align: top; }
+  .captureRight .preview_stopmotion .preview_stopmotion--container {
+    counter-reset: compteListe; }
+    .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview {
+      position: relative;
+      padding: 8px;
+      background-color: #fff;
+      visibility: hidden; }
+      .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview .image_count {
+        font-size: 80%;
+        font-variant: small-caps;
+        text-transform: lowercase; }
+        .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview .image_count::after {
+          counter-increment: compteListe 1;
+          content: counter(compteListe) " "; }
+      .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview:not(:last-of-type) {
+        position: absolute;
+        top: 0;
+        left: 0; }
+      .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview:last-child, .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview:nth-last-child(2) {
+        visibility: visible; }
+      .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview.is--active {
+        z-index: 1;
+        visibility: visible; }
+  .captureRight .preview_stopmotion .preview_stopmotion--timeline {
+    width: 100%;
+    padding: 8px 4px;
+    margin-bottom: 16px;
+    border-top: 1px solid #DFDFDF;
+    counter-reset: compteListe; }
+    .captureRight .preview_stopmotion .preview_stopmotion--timeline:before, .captureRight .preview_stopmotion .preview_stopmotion--timeline:after {
+      content: " ";
+      display: table; }
+    .captureRight .preview_stopmotion .preview_stopmotion--timeline:after {
+      clear: both; }
+    .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview {
+      float: left;
+      cursor: pointer;
+      width: 0;
+      visibility: hidden; }
+      .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview img {
+        padding: 4px; }
+      .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview.is--active {
+        background-color: #48C2B5; }
+        .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview.is--active::after {
+          background-color: #48C2B5;
+          font-size: 70%;
+          color: white; }
+      .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview::after {
+        counter-increment: compteListe 1;
+        content: counter(compteListe) " ";
+        position: absolute;
+        font-size: 60%;
+        padding: 0px 4px; }
+      .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview:nth-last-child(-n+10) {
+        visibility: visible;
+        width: 10%; }
+  .captureRight .preview_stopmotion .preview_stopmotion--frameRate span {
+    font-family: 'share';
+    color: #B5B5B5;
+    font-size: 1em;
+    font-style: italic;
+    text-transform: lowercase;
+    margin-right: 4px; }
+  .captureRight .preview_stopmotion .preview_stopmotion--frameRate input {
+    display: inline-block;
+    width: 50px; }
   .captureRight .son {
     display: none;
     padding-left: 27px;

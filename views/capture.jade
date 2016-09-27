@@ -129,6 +129,10 @@ html
             .preview.preview_stopmotion
               video.output(controls autoplay loop)
               .preview_stopmotion--container
+              .preview_stopmotion--timeline
+              .preview_stopmotion--frameRate
+                span !{dodoc.lang.frameRate}
+                input(type='number' step='1' value='4' min='1' max='25')
               +button( 'finishStopmotion', '', '')
               +button( 'deleteMediaCapture', '', 'isCollapsed')
 
@@ -137,25 +141,15 @@ html
               audio(controls).output
               +button( 'deleteMediaCapture', '', 'isCollapsed')
 
-
-       //- ALERT CHANGER DE MEDIA
-      div(id="modal-change-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-        p
-          | !{dodoc.lang.changingMediaWhileStopmotion}
-        a(class="close-reveal-modal" aria-label="Close")
-          button.ok
-            | !{dodoc.lang.continueStopmotion}
-        button.supprimer-stop-motion
-          | !{dodoc.lang.removeStopmotion}
-        a(class="close-reveal-modal" aria-label="Close") &#215;
-
     .js--templates
       .stopmotion_lastImagePreview
         img
         .meta-stopmotion
           .image_count
+            | !{dodoc.lang.imageCount}
           +button( 'deleteLastMedia', '', 'isCollapsed')
-
+      .stopmotion_lastImageSmallPreview
+        img
 
 
     //- scripts
