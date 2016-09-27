@@ -130,17 +130,25 @@ var stopMotionMode = (function() {
 
       var imagePath = smdata.imageFullPath.substring( dodoc.contentDir.length);
 
-      // create a new lastImage preview
-      var newPreview = $('.js--templates .stopmotion_lastImagePreview').clone( false);
+      /********* LARGE PREVIEW ***************/
+      var $newPreview = $('.js--templates .stopmotion_lastImagePreview').clone( false);
+      /********* SMALL PREVIEW ***************/
+      var $newSmallPreview = $('.js--templates .stopmotion_lastImageSmallPreview').clone( false);
 
       // delete last stopmotion image
-      newPreview.on('click', '.js--delete-sm-lastimage', function(){
+      $newPreview.on('click', '.js--delete-sm-lastimage', function(){
         removeImageFromStopMotion( imagePath);
-        $(this).closest('.stopmotion_lastImagePreview').fadeOut(600, function() { $(this).remove(); });
+        $newPreview.fadeOut(600, function() { $(this).remove(); });
+        $newSmallPreview.fadeOut(600, function() { $(this).remove(); });
       });
 
-      newPreview.find('img').attr("src", imagePath);
-      $preview.find('.preview_stopmotion--container').append( newPreview);
+      $newPreview.find('img').attr("src", imagePath);
+      $newSmallPreview.find('img').attr("src", imagePath);
+
+      $preview.find('.preview_stopmotion--container').append( $newPreview);
+
+      $preview.find('.preview_stopmotion--timeline').append( $newSmallPreview);
+
 
     },
 
