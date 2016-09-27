@@ -6,8 +6,10 @@ html
     link(rel='stylesheet', href='/bower_components/dragula.js/dist/dragula.min.css')
     include templates/head.jade
   body.publi
-
-    +button( 'projet', 'isNav')
+    .navbar-container
+      header.navbar
+        +logo()
+        +button( 'projet', 'isNav')
 
     div.publi-container.mainContent
       h3.legende
