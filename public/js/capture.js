@@ -380,7 +380,6 @@ var currentStream = (function(context) {
   function getCameraFeed() {
     return new Promise(function(resolve, reject) {
       console.log( "Getting camera feed");
-
       if( currentFeedsSource === undefined || currentFeedsSource.video === undefined) {
         reject("Camera not yet ready");
       }

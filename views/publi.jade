@@ -5,11 +5,19 @@ html
   head
     link(rel='stylesheet', href='/bower_components/dragula.js/dist/dragula.min.css')
     include templates/head.jade
-  body.publi
+  body(class="publi" data-template="basic")
+
     .navbar-container
       header.navbar
-        +logo()
         +button( 'projet', 'isNav')
+
+        //- .templateSelector
+        //-   .basicTemplate
+        //-     a.basic Template Basique
+        //-   .newTemplate
+        //-     a.new Template New
+        //-   .bordelTemplate
+        //-     a.bordel Bordel
 
     div.publi-container.mainContent
       h3.legende
