@@ -47,6 +47,7 @@ function dragula (initialContainers, options) {
     cancel: cancel,
     remove: remove,
     destroy: destroy,
+    canMove: canMove,
     dragging: false
   });
 
@@ -186,6 +187,10 @@ function dragula (initialContainers, options) {
     };
   }
 
+  function canMove (item) {
+    return !!canStart(item);
+  }
+
   function manualStart (item) {
     var context = canStart(item);
     if (context) {
@@ -278,12 +283,15 @@ function dragula (initialContainers, options) {
     var reverts = arguments.length > 0 ? revert : o.revertOnSpill;
     var item = _copy || _item;
     var parent = getParent(item);
-    if (parent === _source && _copy) {
-      parent.removeChild(_copy);
-    }
     var initial = isInitialPlacement(parent);
-    if (initial === false && !_copy && reverts) {
-      _source.insertBefore(item, _initialSibling);
+    if (initial === false && reverts) {
+      if (_copy) {
+        if (parent) {
+          parent.removeChild(_copy);
+        }
+      } else {
+        _source.insertBefore(item, _initialSibling);
+      }
     }
     if (initial || reverts) {
       drake.emit('cancel', item, _source, _source);
@@ -392,8 +400,7 @@ function dragula (initialContainers, options) {
     if (
       (reference === null && changed) ||
       reference !== item &&
-      reference !== nextEl(item) &&
-      reference !== _currentSibling
+      reference !== nextEl(item)
     ) {
       _currentSibling = reference;
       dropTarget.insertBefore(item, reference);
@@ -461,8 +468,8 @@ function dragula (initialContainers, options) {
       for (i = 0; i < len; i++) {
         el = dropTarget.children[i];
         rect = el.getBoundingClientRect();
-        if (horizontal && rect.left > x) { return el; }
-        if (!horizontal && rect.top > y) { return el; }
+        if (horizontal && (rect.left + rect.width / 2) > x) { return el; }
+        if (!horizontal && (rect.top + rect.height / 2) > y) { return el; }
       }
       return null;
     }

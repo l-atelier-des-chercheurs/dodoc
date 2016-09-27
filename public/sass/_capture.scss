@@ -1,14 +1,15 @@
 // C A P T U R E
 body.capture{
-
-  .container-inner{
-    margin:auto;
+  .mainContent {
+    max-width: none;
+    height: calc( 100vh - 70px);
+    overflow-x: hidden;
   }
 
-  .clone{
-    position: absolute;
-    left:52%;
-    top:0px;
+  .container-inner{
+    position: relative;
+    margin:auto;
+    height: 100%;
   }
 
   .content-wrapper {
@@ -18,8 +19,7 @@ body.capture{
 
 .media-choice {
 
-  margin-top:   $margin;
-  margin-bottom:   $margin;
+  padding: $margin 0;
 
   .btn-choice{
 
@@ -42,11 +42,11 @@ body.capture{
         margin-right: 0;
       }
 
-      &:not(.active):not(:hover) {
+      &:not(.is--active):not(:hover) {
         background-color: #fff;
       }
 
-      &.active, &:hover {
+      &.is--active, &:hover {
         color: #fff;
         outline: none;
       }
@@ -71,26 +71,26 @@ body.capture{
       }
 
       // page bibli, page capture, page projet
-      &[data-mediatype="image"] {
-        background-color: $cimages;
+      &[data-mediatype="photo"] {
+        background-color: $c-images;
         &::before {
           background-image: url("/images/icone-dodoc_image.png");
         }
       }
       &[data-mediatype="video"] {
-        background-color: $cvideos;
+        background-color: $c-videos;
         &::before {
           background-image: url("/images/icone-dodoc_video.png");
         }
       }
       &[data-mediatype="stopmotion"] {
-        background-color: $canim;
+        background-color: $c-anim;
         &::before {
           background-image: url("/images/icone-dodoc_anim.png");
         }
       }
       &[data-mediatype="audio"] {
-        background-color: $csons;
+        background-color: $c-sons;
         &::before {
           background-image: url("/images/icone-dodoc_son.png");
         }
@@ -100,17 +100,102 @@ body.capture{
   }
 }
 
+.feedSettings {
+
+  position: fixed;
+  top: 70px;
+  right: 0;
+  bottom: 0;
+  z-index: 1500;
+
+  background:   #EFEFEF;
+  border-left: 4px solid #EF474B;
+
+  width: 300px;
+
+  transform: translate( 100%, 0);
+  transition: transform .7s ease-out;
+
+  -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  &.is--open {
+    transform: translate( 0%, 0);
+  }
+
+  .feedSettings--scrollWindow {
+    height: 100%;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+
+    padding-left: 0.9375rem * 2;
+    padding-right: 0.9375rem * 2;
+    padding-top:  0.9375rem * 2;
+
+  }
+
+  .openCloseSettings {
+    position: absolute;
+    top: 0;
+    margin-top: $margin;
+    width: 40px;
+    z-index: 500;
+    right: 100%;
+    background-color: #333;
+    border-radius: 4px 0 0 4px;
+    transition: all .7s ease-out;
+
+    &:hover {
+      width: 155px;
+    }
+
+    .button-wrapper_settings {
+
+    }
+  }
+
+  .sourceSelector {
+    .selectField {
+      display: block;
+      width:  100%;
+    }
+  }
+
+  .resolutionSelector {
+    margin-top:   $margin;
+    input {
+      margin: 0;
+    }
+
+
+  }
+}
+
+$buttonBar: $margin + 64px;
+$t-decalageDuCentre: 4%;
+
 .captureLeft {
+
   margin: auto;
   position: absolute;
   background-color: #FFF;
   z-index:2;
   margin-bottom:  25px;
 
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
-  width: 50%;
-  left:25%;
+  height: auto;
+  max-width: 50% - $t-decalageDuCentre;
+  width: 80vh;
+
+  left: 50%;
+  transform: translate3d(-50%, 0, 0);
+
+  transition: transform .4s ease-out;
+
+  body[data-state="expanded"] & {
+    transform: translate3d(-100%  - $t-decalageDuCentre,0,0);
+  }
 
   body.is--fullscreen & {
     width: 100%;
@@ -118,14 +203,21 @@ body.capture{
     top: 0;
     height: 100%;
     padding: 2vh;
+
+    max-width: none;
+    transform: translate3d( 0%, 0, 0);
   }
 
-  $buttonBar: $margin + 64px;
+  body.is--fullscreen[data-justcaptured="yes"] & {
+    background-color: #FF4246;
+  }
+
 
   .video-view {
     position: relative;
     padding-bottom:  $buttonBar;
     height: 100%;
+    width: 100%;
 
     body.is--fullscreen & {
       padding-bottom:   0;
@@ -201,11 +293,12 @@ body.capture{
           body:not(.is--fullscreen)[data-justcaptured="yes"][data-mode="stopmotion"] &
           {
             #FOND {
-              fill: $canim;
+              fill: $c-anim;
             }
           }
 
-          body:not(.is--fullscreen)[data-videorecording="yes"] &
+          body:not(.is--fullscreen)[data-videorecording="yes"] &,
+          body:not(.is--fullscreen)[data-audiorecording="yes"] &
           {
             #FOND {
               transform: scale(15);
@@ -213,7 +306,7 @@ body.capture{
               transition: transform .2s ease-out, fill .3s;
             }
             #CENTRE {
-              fill: $orange;
+              fill: $c-images;
             }
           }
         }
@@ -258,16 +351,16 @@ body.capture{
       left: 0;
       display:none;
       &.image-choice {
-        background-color: $cimages;
+        background-color: $c-images;
       }
       &.video-choice {
-        background-color: $cvideos;
+        background-color: $c-videos;
       }
       &.stopmotion-choice {
-        background-color: $canim;
+        background-color: $c-anim;
       }
       &.audio-choice {
-        background-color: $csons;
+        background-color: $c-sons;
       }
 
       .caption {
@@ -287,6 +380,7 @@ body.capture{
   }
   #canvas-audio{
     display: none;
+    width: 100%;
   }
 
   .full-screen-wrapper {
@@ -300,7 +394,6 @@ body.capture{
     .btn.icon {
       border: 4px solid #EFEFEF;
       padding: 0;
-
     }
     &:hover {
       .btn.icon {
@@ -318,7 +411,11 @@ body.capture{
     body.is--fullscreen & {
       display: none;
     }
+    body[data-mode="audio"] & {
+      display: none;
+    }
   }
+
 
   .button-wrapper_leavefullscreen {
 
@@ -335,6 +432,7 @@ body.capture{
     z-index: 100;
     top: 10px;
     left: 10px;
+
     .record-feedback{
       width:15px;
       height:15px;
@@ -359,7 +457,7 @@ body.capture{
   width: 50px;
   top:20%;
   left:90%;
-  z-index: 1001;
+  z-index: 2001;
   display: none;
 
   pointer-events: none;
@@ -369,24 +467,28 @@ body.capture{
   background-color: #FFF;
   position: absolute;
   z-index: 1;
-  display: none;
+  display: block;
   overflow: hidden;
 
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
   padding: 10px;
-  left: 25%;
-  width: 40%;
 
-  #stop-sm-btn {
-    body:not([data-mode="stopmotion"]) & {
-      display: none;
-    }
-    border: none !important;
-    outline: none !important;
-    background:none !important;
-    float: right;
+  height: auto;
+  max-width: 45% - $t-decalageDuCentre;
+  width: 80vh;
+
+  left: 50%;
+  transform: translate3d(-50%, 0, 0);
+
+  transition: transform .4s ease-out, opacity .6s ease-out;
+
+  body[data-state="expanded"] & {
+    opacity: 1;
+    transform: translate3d( 0% + $t-decalageDuCentre,0,0);
   }
+
   .flash{
     height:100%;
     background-color: #FFF;
@@ -397,51 +499,71 @@ body.capture{
 
 
     body[data-mode="photo"] & {
-      background-color: $cimages;
+      background-color: $c-images;
     }
     body[data-mode="video"] & {
-      background-color: $cvideos;
+      background-color: $c-videos;
     }
     body[data-mode="stopmotion"] & {
-      background-color: $canim;
+      background-color: $c-anim;
     }
     body[data-mode="audio"] & {
-      background-color: $csons;
+      background-color: $c-sons;
     }
   }
-  .screenshot {
-    margin:0px auto 0px auto;
-    .meta-stopmotion{
+
+
+  .output[src=''] {
+    display: none;
+  }
+
+  .preview {
+    position: relative;
+
+    .output {
+      padding-bottom:   10px;
+    }
+  }
+
+  .preview_stopmotion {
+
+    // if we have a stopmotion preview active
+    video.output:not([src='']) ~ {
+    }
+
+    .preview_stopmotion--container:empty ~ {
+      .button-wrapper_finishStopmotion {
+        display: none;
+      }
+    }
+
+    .button-wrapper_finishStopmotion {
+      display: block;
+      float: right;
+    }
+
+    .stopmotion_lastImagePreview {
+
+      padding: $margin;
+      background-color: #fff;
+
+      &:not(:first-of-type) {
+        position: absolute;
+        top: 0; left: 0;
+      }
+
+    }
+    .meta-stopmotion {
       margin-top: 10px;
+
       .count-image{
         display: inline-block;
         vertical-align: top;
       }
-      .delete-image{
-        width: 30px;
-        display: inline-block;
-        vertical-align: top;
-        margin-right: 10px;
-        cursor: pointer;
-      }
-    }
-    .instructions-stopmotion{
-      width:80%;
-      margin:auto;
-      .icone-stopmotion{
-        width:100%;
-        margin-bottom: 10px;
-      }
-      h4{font-size:1em;}
-    }
-    #canvas-equalizer{
-      background-color: orange;
-    }
-
-    .canvas-view {
-      width: 100%;
     }
   }
+
+
   .son {
     display: none;
     padding-left:27px;
@@ -449,7 +571,7 @@ body.capture{
     margin-bottom: 40px;
   }
 
-  #camera-preview {
+  #video-stream {
     display: none;
     width: 100%;
   }

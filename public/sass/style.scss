@@ -11,6 +11,7 @@
 
 
 @import "_variables.scss";
+@import "_fonts.scss";
 @import "_navbar.scss";
 @import "_popover.scss";
 @import "_publi.scss";
@@ -23,9 +24,39 @@ body,html {
 	height:100%;
 }
 
+p {
+  font-size: 1em;
+  margin-bottom: .5em;
+  line-height:  1.4;
+}
+
 li{list-style: none;}
 
-h1,h2,h3,h4,h5,h6{font-family:"fira", sans-serif;}
+h1,h2,h3,h4,h5,h6{font-family: 'Fira Sans', sans-serif;}
+
+
+/******************
+  Mixins
+  ********************/
+@mixin style--dossierBorders {
+  background-color: #fff;
+  border: 1px solid $c-separator;
+}
+
+@mixin style--titrelegende {
+  font-family:  'share';
+  color: $grisclair;
+  font-size: 1em;
+  font-style: italic;
+  text-transform: lowercase;
+
+}
+
+@mixin clearfix {
+  &:before, &:after { content: " "; display: table; }
+  &:after { clear: both; }
+}
+
 
 
 body {
@@ -33,7 +64,7 @@ body {
   background-color: rgb(239, 239, 239);
   color: #000;
   font-size: 1em;
-  font-family: 'fira', sans-serif;
+  font-family: 'Fira Sans', sans-serif;
 
 	&:after {
 		position: fixed;
@@ -96,34 +127,14 @@ button{
 }
 
 .legende {
-  font-style: italic;
-  font-size: 1rem;
-  color: #8d8d8d;
-  text-transform: lowercase;
+  @include style--titrelegende;
 
-  margin-bottom:  15px;
 }
 
 .row{max-width:90%;}
 .columns+.columns:last-child{float:left;}
 
 
-
-
-/******************
-  Mixins
-  ********************/
-@mixin style--dossierBorders {
-  border-bottom: 2px solid #eeeeee;
-  background-color: #fff;
-  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-}
-
-@mixin clearfix {
-  &:before, &:after { content: " "; display: table; }
-  &:after { clear: both; }
-}
 
 
 
@@ -170,30 +181,30 @@ button{
     }
 
     &.button-wrapper_capture {
-      color: #FFB520;
+      color: $c-images;
     }
     &.button-wrapper_bibli {
-      color: #293275;
+      color: $c-bibli;
     }
     &.button-wrapper_publi {
-      color: #EF4651;
+      color: $c-publi;
     }
 
   }
 
-  &_add, &_edit, &_publi, &_editProjet, &_addMedia, &_backButton, &_editFolder {
+  &_add, &_edit, &_publi, &_editProjet, &_addMedia, &_backButton, &_editFolder, &_settings {
     background-color: $rouge;
     color: white;
   }
-  &_capture, &_view, &_deleteFolder, &_deleteMedia, &_deleteMediaCapture {
-    background-color: $orange;
+  &_capture, &_view, &_deleteFolder, &_deleteMedia, &_deleteMediaCapture, &_deleteProject, &_deleteLastMedia {
+    background-color: $c-images;
     color: white;
   }
   &_bibli, &_gofullscreen , &_leavefullscreen {
-    background-color: $bleumarine;
+    background-color: $c-bibli;
     color: white;
   }
-  &_accept, &_addText {
+  &_accept, &_addText, &_highlightMedia, &_finishStopmotion {
     background-color: $bleuvert;
     color: white;
   }
@@ -237,7 +248,7 @@ button{
   }
 
   .btn.icon + span {
-    left: 44px;
+    left: 54px;
     width:  185px;
 
   }
@@ -295,10 +306,37 @@ button{
     min-height: 250px;
   }
 }
+#modal-modify-project {
+
+  .button_submit {
+
+  }
+
+  .button-wrapper_deleteProject {
+    float: right;
+  }
+}
+
 
 .big-mediaContent {
   textarea {
     min-height: 150px;
+  }
+}
+
+.module_localNetworkInfos {
+  position: relative;
+
+  float:right;
+  padding: $margin;
+  margin-top:   $margin*2;
+  color: $grisclair;
+  text-align: right;
+
+  h3 {
+    font-size: .7em;
+    margin-bottom: 0;
+    color: inherit;
   }
 }
 
@@ -307,11 +345,213 @@ button{
 
 @import '_bibli';
 
-@import '_projets';
+@import '_folder';
 
 @import '_capture';
 
 
+.flex_structure {
+  display: flex;
+  flex-flow: row wrap;
+  align-content: flex-start;
+
+  > * {
+    flex: 1 100%;
+  }
+
+  > .flex_40 {
+    flex: 1 40%;
+  }
+  > .flex_50 {
+    flex: 1 50%;
+  }
+  > .flex_60 {
+    flex: 1 60%;
+  }
+}
+
+.insidePadding {
+  padding: 0 16px;
+}
+
+// MEDIA
+.media {
+
+  position: relative;
+
+  float: left;
+  width: 25%;
+  padding: $margin;
+
+  border: 0 solid #f9f9f9;
+  z-index: 1;
+
+  .mediaContent {
+    @include style--dossierBorders;
+    max-height: 400px;
+    overflow-y: hidden;
+
+    // posters for <audio>
+    .poster {
+
+    }
+  }
+
+
+  &.media_text {
+    .mediaContent {
+      padding: .9375rem;
+      min-height: 15px;
+      .mediaContent--titleOfTextmedia {
+        font-size: 1.2em;
+        font-weight: normal;
+
+      }
+      .mediaContent--textOfTextmedia {
+        font-size:1em;
+      }
+      p:first-child {
+        margin-top:   0;
+      }
+    }
+  }
+
+  .mediaData {
+    .mediaData--informations {
+      padding: .9375rem;
+      margin: 0;
+      &:empty {
+        display: none;
+      }
+    }
+  }
+
+
+
+  // type de media (anciennement icone-media)
+  &::before {
+    content:"";
+    position: absolute;
+
+    width: 20px;
+    height: 20px;
+    right: 5px;
+    top: 5px;
+    z-index:  100;
+
+    background-size: cover;
+  }
+
+  &[data-mediatype="01-photos"]::before {
+    background-image: url("/images/icone-dodoc_image.png");
+  }
+  &[data-mediatype="02-animations"]::before {
+    background-image: url("/images/icone-dodoc_anim.png");
+  }
+  &[data-mediatype="03-videos"]::before {
+    background-image: url("/images/icone-dodoc_video.png");
+  }
+  &[data-mediatype="04-sons"]::before {
+    background-image: url("/images/icone-dodoc_son.png");
+  }
+
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: .9375rem;
+    top: .9375rem;
+    right: .9375rem;
+    bottom: .9375rem;
+    z-index: -1;
+    border: 0 solid transparent;
+    transition: all .35s;
+
+  }
+
+  &.is--highlight {
+    &::after {
+      background-color: $bleuvert;
+      left: .4687rem;
+      top: .4687rem;
+      right: .4687rem;
+      bottom: .4687rem;
+
+    }
+
+    .mediaContent {
+      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.4)
+    }
+  }
+
+  .button-wrapper_deleteMedia {
+    display: none;
+  }
+
+  //Flag button
+  .button-wrapper_flagMedia {
+    position: absolute;
+    right:    -0px;
+    bottom:  -0;
+    z-index:  101;
+
+    display: block;
+
+    transform-origin: right bottom;
+    opacity: 0;
+    border-radius: 50%;
+
+    transition: transform .2s ease-out, opacity .2s ease-out;
+  }
+  &:hover {
+    &.is--highlight .button-wrapper_flagMedia {
+
+    }
+    .button-wrapper_flagMedia {
+//       transform: scale(1);
+      opacity: .8;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+
+}
+
+@keyframes slideFromTop {
+   0% {
+    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0;
+  }
+  100% {
+     opacity: 1;
+    transform: translate3d(0, 0%, 0);
+  }
+}
+[data-oninsert="slideFromTop"] {
+  -webkit-animation: slideFromTop .4s ease-out 1;
+  animation: slideFromTop .4s ease-out 1;
+}
+
+@keyframes blink {
+   0% {
+    opacity: 0;
+    background-color: $c-images;
+  }
+  100% {
+    opacity: 1;
+    background-color: transparent;
+  }
+}
+[data-oninsert="blink"] {
+  -webkit-animation: blink 1.4s ease-out 1;
+  animation: blink 1.4s ease-out 1;
+}
 
 .js--templates {
   display: none;

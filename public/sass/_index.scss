@@ -123,9 +123,8 @@ body.index{
     padding-top: 4px;
     padding-bottom: 8px;
 
-    background-color: #eee;
-        color: #8d8d8d;
-    font-style:italic;
+    background-color: #fff;
+    color: #8d8d8d;
 
     font-family: "share", monospace;
 
@@ -133,6 +132,7 @@ body.index{
       padding-top: 4px;
     }
     span:nth-of-type(1) {
+      @include style--titrelegende;
       margin-right: 5px;
     }
 
@@ -174,12 +174,12 @@ body.index{
 
   &[data-statut="en cours"] {
     .content a:hover h2 {
-      background-color: $orange;
+      background-color: $c-dossier;
       color: white;
     }
 
     .statut-type {
-      color: $orange;
+      color: $c-images;
     }
   }
 }

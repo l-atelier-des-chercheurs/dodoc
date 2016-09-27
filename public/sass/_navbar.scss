@@ -1,13 +1,11 @@
 .navbar-container {
   width: 100%;
-  min-height:  70px;
+  min-height:  $t-navbarheight;
 
   font-size:  1.1rem;
   font-weight: 400;
 
   body.index & {
-    height:   350px;
-
     .logo {
       pointer-events: none;
     }
@@ -15,7 +13,8 @@
     &.is--opened {
       .navbar {
         background-color: transparent;
-        padding: 80px;
+        padding: 60px;
+        padding-bottom:   20px;
         box-shadow: none;
 
         .logo {
@@ -39,11 +38,9 @@
 
   .navbar {
 
-    @include clearfix;
-
     position: relative;
     width:   100%;
-    min-height: 70px;
+    min-height: $t-navbarheight;
     padding:10px;
     height:   auto;
     background-color: #fff;
@@ -52,10 +49,15 @@
 
     transition: height .6s ease-out, padding .45s ease-out, background-color .3s ease-out;
 
+    @include clearfix;
+
     .logo{
       margin:auto;
       height: 50px;
       float:left;
+
+      padding: 5px;
+      margin-right: 10px;
 
       transition: height .6s ease-out;
 
@@ -119,7 +121,7 @@
           left: 5px;
           right: 0px;
           top:      3px;
-          bottom:  7px;
+          bottom:  5px;
           -webkit-transition: all .1s;
           transition: all .1s;
           z-index: -1;
@@ -129,14 +131,14 @@
           transform: skewX(-20deg) skewY(0);
 
            border-radius: 4px;
-          background-color: transparentize( #40BEB3, $transparentize);
+          background-color: transparentize( $c-projet, $transparentize);
 
           transition: background-color .2s;
         }
 
 
         &:hover {
-          color: #40BEB3;
+          color: $c-projet;
           &::after {
             background-color: transparent;
           }
@@ -148,11 +150,11 @@
             margin-top:   -8px;
           }
           &::after {
-            background-color: transparentize( #F2682C, $transparentize);
+            background-color: transparentize( $c-dossier, $transparentize);
           }
 
           &:hover {
-            color: #F2682C;
+            color: $c-dossier;
           }
 
 
@@ -161,21 +163,21 @@
 
         &_bibli {
           &::after {
-            background-color: transparentize( #293275, $transparentize);
+            background-color: transparentize( $c-bibli, $transparentize);
           }
           &:hover {
-            color: #293275;
+            color: $c-bibli;
           }
         }
 
         &_capture {
           &::after {
-            background-color: #FFB520;
-            background-color: transparentize( #FFB520, $transparentize);
+            background-color: $c-images;
+            background-color: transparentize( $c-images, $transparentize);
           }
 
           &:hover {
-            color: #FFB520;
+            color: $c-images;
           }
         }
 

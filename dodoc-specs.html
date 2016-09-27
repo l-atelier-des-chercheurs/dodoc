@@ -1,0 +1,249 @@
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+  <style type="text/css">
+    body { background: #F0F0F0; }
+    #editor {
+      width: 590px;
+      margin: auto;
+      margin-top: 60px;
+      color: #333;
+      background-color: #fff;
+      font-size: 13px;
+      line-height: 17px;
+      font-family: 'Helvetica Neue';
+      border: 1px solid #CCC;
+
+      padding-top: 1px; /* important for some reason? */
+      padding-right: 10px;
+      padding-bottom: 8px;
+      padding-left: 0px /* prevents characters from looking chopped off in FF3 */;
+      overflow: hidden;
+      /* blank 1x1 gif, so that IE8 doesn't consider the body transparent */
+      background-image: url(data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==);
+    }
+
+    #editor > div:first-child span {
+      font-size: 140%;
+      font-weight: bold;
+    }
+    #editor > div:first-child {
+      margin-top:10px;
+      margin-bottom:10px;
+    }
+
+    .gutter-noauthor {
+      padding-left: 15px;
+    }
+
+    .inline-img {
+      max-width:400px;
+      max-height:300px;
+      width: expression(this.width > 400 ? 400: true);
+      height: expression(this.height > 300 ? 300: true);
+    }
+
+    .inline-tex{
+      border: 1px solid transparent;
+    }
+
+    .inline-tex:hover {
+      border: 1px dashed red;
+    }
+
+    a.attrlink {
+      /*  font-weight: bold;
+     text-decoration: none;*/
+    }
+
+    .code {
+      font-family: monospace;
+      color: #777;
+      white-space: pre-wrap;
+    }
+
+    .code span {
+      padding-left: 32px;
+      text-indent: -32px;
+      display: inline-block;
+    }
+
+    a.attrlink:hover {
+      text-decoration: underline;
+    }
+
+    .gutter-author-p-272257 { border-left: 5px solid #2996c3; padding-left: 10px; } .author-p-272257 { border-bottom: 2px dotted #2996c3; } 
+  </style>
+
+</head>
+
+<!-- todo: author colors, sidebar, embedly -->
+
+<body>
+<div id="editor">
+  <div class="ace-line gutter-author-p-272257 emptyGutter"><span class="">d</span><span class="author-p-272257">odoc</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Ce document récapitule la structure de dodoc et la manière dont sont stockées les données dans dodoc. Il facilite la mise à plat et l&#39;accord sur les principes de design, et il sert aussi de documentation à qui voudrait récupérer, comprendre et modifier le code.</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 line-list-type-hone emptyGutter"><ul class="listtype-hone listindent1 list-hone1" ><li><span class="author-p-272257">Le stockage</span></li></ul></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Tous les contenus se placent dans le dossier </span><span class="author-p-272257 b"><b>sessions</b></span><span class="author-p-272257">.</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 line-list-type-comment emptyGutter"><ul class="listtype-comment listindent1 list-comment1" ><li><span class="author-p-272257">idéallement quand on aura un exécutable il faudrait que ce soit un emplacement à sélectionner au premier lancement avec l&#39;option de créer un nouveau dossier. Comme ça si la personne met à jour dodoc elle peut sélectionner le dossier qu&#39;elle a déjà, et sinon elle peut en créer un ou bon lui semble.</span></li></ul></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Dans dodoc, il existe trois niveaux de contenus :&nbsp;</span></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-number emptyGutter"><ol start="1" class="listtype-number listindent1 list-number1"><li><span class="author-p-272257">les dossiers</span></li></ol></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-number emptyGutter"><ol start="2" class="listtype-number listindent1 list-number1"><li><span class="author-p-272257">les projets (appartiennent à un seul dossier)</span></li></ol></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-number emptyGutter"><ol start="3" class="listtype-number listindent1 list-number1"><li><span class="author-p-272257">les médias (qui constituent l’intégralité des contenus d’un projet)</span></li></ol></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-number emptyGutter"><ol start="4" class="listtype-number listindent1 list-number1"><li><span class="author-p-272257">les publications (qui appartiennent à un projet et comportent une sélection de médias)</span></li></ol></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Les dossiers et les projets portent des noms qui leurs sont données à leur création. Ce nom peut contenir des espaces, des accents et des caractères spéciaux. Il doit donc être </span><span class="author-p-272257 i"><i>slugifié</i></span><span class="author-p-272257"> (suppression des caractères interdits dans les URL) pour devenir le nom du dossier (par exemple, </span><span class="author-p-272257 b"><b>Découpage &amp; collage</b></span><span class="author-p-272257"> devient </span><span class="author-p-272257 b"><b>decoupage-et-collage</b></span><span class="author-p-272257">). Le nom original est lui contenu dans un fichier dossier.json ou projet.json, situé directement à l’intérieur de lui. Ce fichier peut également contenir des informations relatives au contexte du dossier ou du projet, par exemple les consignes d’un exercice donné en classe ou la date de création de l’élément en question.</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257 b"><b>Les dossiers</b></span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Voici un exemple d’un fichier dossier.json situé dans un dossier nommé </span><span class="author-p-272257 b"><b>les-origamis</b></span><span class="author-p-272257"> :&nbsp;</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257 attrimg img"><img class="inline-img" src="https://hackpad-attachments.imgix.net/hackpad.com_5iYRCxUY8D5_p.272257_1459173070811_undefined?fit=max&amp;w=882" faketext="*" contenteditable="false"><div class="remove-media" contenteditable="false"></div></span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">dossier.json &gt;</span></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">{</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;name&#34;:&#34;Les Origamis&#34;,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;created&#34;:1454523574923,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;modified&#34;:1454523746380,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;statut&#34;:&#34;en cours&#34;,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;informations&#34;:&#34;Un sujet donné aux enfants la première semaine de Juin.&#34;</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">}</span></li></ul></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Et voici le rendu dans l&#39;interface :&nbsp;</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257 attrimg img"><img class="inline-img" src="https://hackpad-attachments.imgix.net/hackpad.com_5iYRCxUY8D5_p.272257_1459173467543_undefined?fit=max&amp;w=882" faketext="*" contenteditable="false"><div class="remove-media" contenteditable="false"></div></span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257 b"><b>Les projets</b></span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Chaque projet contient également un fichier json qui le décrit. Dans le cas de figure précédent, le fichier </span><span class="author-p-272257 b"><b>projet.json</b></span><span class="author-p-272257"> situé dans sessions &gt; les-origamis &gt; faire-une-grue pourrait ressembler à ça :</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">{</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;name&#34;:&#34;Faire une grue&#34;,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;created&#34;:1454523594923,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;modified&#34;:1454524746380,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;statut&#34;:&#34;en cours&#34;,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;informations&#34;:&#34;Le projet de Samuel et Liam. Instructions pas-à-pas pour faire une grue japonaise en origami.&#34;</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">}</span></li></ul></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Le fichier projet.json ne contient donc pas le nom du dossier parent, de manière à ce que celui-ci puisse changer sans que cela ne fasse de conflit. Un projet peut aussi être déplacé facilement d’une activité à une autre si une erreur a été commise. Il ne contient pas non plus de référence aux médias qui ont été produits dans l&#39;interface.&nbsp;</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Le projet peut contenir une vignette utilisées comme couverture dans l’interface. Pour cela, il suffit de placer un fichier </span><span class="author-p-272257 b"><b>apercu.jpg</b></span><span class="author-p-272257"> au même niveau qu’un projet.json. Node détecte le préfix </span><span class="author-p-272257 i"><i>apercu</i></span><span class="author-p-272257"> (ou </span><span class="author-p-272257 i"><i>preview</i></span><span class="author-p-272257">) donc il est possible d&#39;utiliser tout type de fichiers (notamment, jpeg, png et gif).</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Quand un projet est supprimé, il n&#39;est pas supprimé réellement mais son nom de dossier est renommé avec un prefix, ce qui permet de récupérer son contenu ensuite ou de le rétablir (en le renommant). Ce prefix peut être configuré dans le fichier dodoc.js situé dans le dossier public de dodoc.</span></div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Par exemple, </span><span class="author-p-272257 b"><b>projet-1</b></span><span class="author-p-272257"> devient </span><span class="author-p-272257 b"><b>x_projet-1</b></span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257 b"><b>Les médias</b></span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Les médias sont regroupés par type dans 5 dossiers numérotés dans chaque projet :&nbsp;</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">01-photos</span></div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">02-animations</span></div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">03-videos</span></div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">04-sons</span></div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">05-textes</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 line-list-type-comment emptyGutter"><ul class="listtype-comment listindent1 list-comment1" ><li><span class="author-p-272257">&nbsp;il faudrait vraiment valider une nomenclature et s&#39;en servir partout. Dans le sass et le js on parle par exemple de sons, de audio, de stopmotion et d&#39;anims... On part sur quoi ?</span></li></ul></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">À l&#39;intérieur de ces dossiers, chaque média est nommé par date sur le format suivant : yyyymmdd_hhmmss</span></div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Par défaut, un média est nommé -1. C&#39;est le premier média capturé à ce moment là. Si d&#39;autres médias du même type sont capturés au même moment, le programme détecte l&#39;existence d&#39;un fichier du même nom et remplace le &#34;-1&#34; par un &#34;-2&#34;. Si ce fichier existe également, il écrit un &#34;-3&#34;, et ainsi de suite.</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">De la même manière, pour faciliter l&#39;identification des médias, chaque média contient un suffixe indiquant l&#39;appareil qui en est l&#39;auteur, en 3 lettres</span></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-bullet emptyGutter"><ul class="listtype-bullet listindent1 list-bullet1" ><li><span class="author-p-272257">sta (station)</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-bullet emptyGutter"><ul class="listtype-bullet listindent1 list-bullet1" ><li><span class="author-p-272257">smp (smartphone)</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-bullet emptyGutter"><ul class="listtype-bullet listindent1 list-bullet1" ><li><span class="author-p-272257">tab</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-bullet emptyGutter"><ul class="listtype-bullet listindent1 list-bullet1" ><li><span class="author-p-272257">rpi (raspberry)</span></li></ul></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Ce qui donne :&nbsp;</span></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1" ><li><span class="author-p-272257">20160212_161212-1-rpi.jpg</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1" ><li><span class="author-p-272257">20160212_161212-2-rpi.jpg</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1" ><li><span class="author-p-272257">20160212_161212-3-sta.jpg</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1" ><li><span class="author-p-272257">20160212_161214-1-sta.jpg</span></li></ul></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Lors de l&#39;enregistrement et de l&#39;attribution du nom, le programme créé également un fichier JSON du même nom (avec le suffixe si nécessaire). Il y a donc autant de fichier de média que de json de média.</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257 attrimg img"><img class="inline-img" src="https://hackpad-attachments.imgix.net/hackpad.com_5iYRCxUY8D5_p.272257_1459175320958_undefined?fit=max&amp;w=882" faketext="*" contenteditable="false"><div class="remove-media" contenteditable="false"></div></span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Ce fichier contiendra des informations liées au média en lui-même, par exemple :&nbsp;</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">{</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;created&#34;:1454523594923,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;modified&#34;:1454524746380,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;title&#34;:&#34;Photo 3/4 de la grue.&#34;,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;informations&#34;:&#34;Le détail du repli en haut à gauche. Attention à ne pas déchirer le papier !&#34;</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">}</span></li></ul></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 line-list-type-hthree emptyGutter"><ul class="listtype-hthree listindent1 list-hthree1" ><li><span class="author-p-272257 b"><b>Les favoris</b></span></li></ul></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Les favoris sont stockés en fin de nom de fichier pour les repérer facilement dans la lecture d&#39;un fichier.</span></div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Attention ! Cela signifie donc que le nom du média peut changer. Pour y faire référence et le retrouver, il faut que node liste les médias d&#39;après le contenu de leur fichier JSON ou d&#39;après leur nom sans prendre en compte le -fav (ce qui peut être plus rapide).</span></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-comment emptyGutter"><ul class="listtype-comment listindent1 list-comment1" ><li><span class="author-p-272257">&nbsp;trop galère à faire proprement, pour l&#39;instant ce sera dans le json</span></li></ul></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1" ><li><span class="author-p-272257">20160212_161212-1-rpi.jpg</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1" ><li><span class="author-p-272257">20160212_161212-2-rpi-fav.jpg</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1" ><li><span class="author-p-272257">20160212_161212-3-sta-fav.jpg</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1" ><li><span class="author-p-272257">20160212_161214-1-sta.jpg</span></li></ul></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 line-list-type-hthree emptyGutter"><ul class="listtype-hthree listindent1 list-hthree1" ><li><span class="author-p-272257">Champs spécifiques aux médias</span></li></ul></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Certains champs sont spécifiques à des types de médias. Par exemple, les photos, les vidéos et les animations peuvent stocker des champs contenant les dimensions des médias. Les vidéos peuvent conserver un champ indiquant leur durée. Les médias textes, créé dans la page </span><span class="author-p-272257 b"><b>bibliothèque</b></span><span class="author-p-272257">, sont constitués d’un fichier .json associé à un fichier markdown.</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">D’autre part, certains médias peuvent faire appel à une image de couverture pour faciliter leur affichage dans la bibliothèque. C’est notamment le cas des sons et des vidéos. Dans ce cas, leur couverture reprendra le nom du média suffixé du terme -apercu avant l’extension de fichier, pour qu&#39;il soit bien placé à côté de son média référent dans le navigateur de fichier. Cela permet aussi à une image d&#39;avoir un aperçu dans une résolution plus faible, si nous utilisons des smartphones de très haute qualité par exemple. Les aperçus font une taille qui permet de les afficher dans la bibliothèque et dans une page de publication dans une qualité correcte : par exemple 1200*800 (pour une image format 3:2).</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257 b"><b>Les publications</b></span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Les publications ont un statut très particulier : elles ne contiennent presque pas de contenus propres mais uniquement des références à d&#39;autres éléments dans un ordre particulier.</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Le dossier des publications se nomme </span><span class="author-p-272257 b"><b>publications</b></span><span class="author-p-272257">. En reprenant la structure précédente, on arrive au chemin suivant.</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257 attrimg img"><img class="inline-img" src="https://hackpad-attachments.imgix.net/hackpad.com_5iYRCxUY8D5_p.272257_1459177380404_undefined?fit=max&amp;w=882" faketext="*" contenteditable="false"><div class="remove-media" contenteditable="false"></div></span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Il y a ici deux publications, qui comportent une sélection et un ordre des média différent.</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">Le fichier la-grue.json contient par exemple les champs suivants :&nbsp;</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">{</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;name&#34;:&#34;La grue&#34;,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;created&#34;:1454523594923,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1" ><li><span class="author-p-272257">&nbsp; &#34;modified&#34;:1454524746380,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;informations&#34;:&#34;La première version du tutoriel pour plier la grue.&#34;</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp; &#34;medias&#34;: [{</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#34;name&#34;:&#34;01-photos/20160212_161212.json&#34;,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#34;name&#34;:&#34;01-photos/20160213_111010.json&#34;,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#34;name&#34;:&#34;02-animations/20160213_111019.json&#34;,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#34;name&#34;:&#34;05-textes/20160213_111019.json&#34;,</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1" ><li><span class="author-p-272257">&nbsp; }]&nbsp;</span></li></ul></div>
+<div class="ace-line gutter-author-p-272257 line-list-type-code emptyGutter"><ul class="listtype-code listindent1 list-code1 lang-js" spellcheck="false"><li><span class="author-p-272257">}</span></li></ul></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line gutter-author-p-272257 emptyGutter"><span class="author-p-272257">L&#39;ordre est signifiant.</span></div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+<div class="ace-line longKeep gutter-noauthor">&nbsp;</div>
+
+</div>
+
+<script type='text/javascript'>
+  function goLive() {
+    if (navigator.onLine) {
+      document.location = 'https://hackpad.com/5iYRCxUY8D5#dodoc';
+    } else {
+      setTimeout(goLive, 250);
+    }
+  }
+  goLive();
+</script>
+
+</body>
+</html>
+ 

@@ -1,0 +1,14 @@
+div(id="modal-media-view" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+  .big-mediaContent
+  a(class="close-reveal-modal" aria-label="Close") &#215;
+
+//- ALERT SUPPRIMER UN Media
+div(id="modal-delete-alert-media" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+  p
+    | !{dodoc.lang.modal.sureRemoveMedia}
+  button.oui.button_coteacote
+    | !{dodoc.lang.yes}
+  button.annuler.button_coteacote
+    | !{dodoc.lang.cancel}
+  a(class="close-reveal-modal" aria-label="Close") &#215;
+

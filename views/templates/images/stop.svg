@@ -1,10 +1,7 @@
-<svg version="1.1" id="Layer_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
+<svg version="1.1" id="Layer_1"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="64px" height="64px"
 	 viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
-<switch>
-	<g i:extraneous="self">
-		<path fill="#FFB520" id="FOND" d="M32.005,0.462c-17.191,0-31.129,13.938-31.129,31.129c0,17.193,13.938,31.13,31.129,31.13
-			c17.193,0,31.131-13.938,31.131-31.13C63.136,14.399,49.198,0.462,32.005,0.462z"/>
-		<rect x="17.823" y="17.759" id="CENTRE" fill="#FF4246" width="28.127" height="28.128"/>
-	</g>
+	<path fill="#FFB520" id="FOND" d="M32.005,0.462c-17.191,0-31.129,13.938-31.129,31.129c0,17.193,13.938,31.13,31.129,31.13
+		c17.193,0,31.131-13.938,31.131-31.13C63.136,14.399,49.198,0.462,32.005,0.462z"/>
+	<rect x="17.823" y="17.759" id="CENTRE" fill="#FF4246" width="28.127" height="28.128"/>
 </svg>

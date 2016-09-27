@@ -7,7 +7,7 @@ module.exports = function(grunt) {
         scope: 'devDependencies'
     });
 
-    var banner = '// Last time updated: <%= grunt.template.today("UTC:yyyy-mm-dd h:MM:ss TT Z") %>\n\n';
+    var banner = '\'use strict\';\n\n// Last time updated: <%= grunt.template.today("UTC:yyyy-mm-dd h:MM:ss TT Z") %>\n\n';
 
     // configure project
     grunt.initConfig({
@@ -26,6 +26,7 @@ module.exports = function(grunt) {
                     'dev/RecordRTC-Configuration.js',
                     'dev/GetRecorderType.js',
                     'dev/MRecordRTC.js',
+                    'dev/amd.js',
                     'dev/Cross-Browser-Declarations.js',
                     'dev/Storage.js',
                     'dev/isMediaRecorderCompatible.js',
