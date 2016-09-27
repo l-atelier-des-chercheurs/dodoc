@@ -556,10 +556,3 @@ button{
   display: none;
 }
 
-@media #{$small-only} {
-  .module_localNetworkInfos{
-    margin-top: 0 !important;
-    padding: $margin /2 !important;
-  }
-}
-

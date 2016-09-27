@@ -7252,8 +7252,11 @@ body.publi[data-template="bordel"] .publi-container {
   .btn.icon {
     width: 50px !important;
     height: 50px !important; }
-  p {
-    font-size: 2em !important; } }
+  .media {
+    width: 50% !important; }
+  .module_localNetworkInfos {
+    margin-top: 0 !important;
+    padding: 8px !important; } }
 
 @media only screen and (min-width: 40.0625em) and (max-width: 48em) {
   .button-wrapper {
@@ -7266,9 +7269,7 @@ body.publi[data-template="bordel"] .publi-container {
     overflow: visible !important; }
   .btn.icon {
     width: 60px !important;
-    height: 60px !important; }
-  p {
-    font-size: 2em !important; } }
+    height: 60px !important; } }
 
 html {
   margin: 0; }
@@ -7579,23 +7580,6 @@ body.index #container {
 .dossier[data-statut="en cours"] .statut-type {
   color: #FFB520; }
 
-@media only screen and (max-width: 40em) {
-  .medias-list .media {
-    padding-left: 0.9375rem !important;
-    padding-right: 0.9375rem !important;
-    width: 50% !important;
-    float: left !important; }
-    .medias-list .media .button-wrapper_flagMedia {
-      display: none !important; }
-    .medias-list .media p {
-      font-size: 1rem !important; }
-  .reveal-modal#modal-media-view {
-    max-width: 100%;
-    height: 100vh;
-    overflow: hidden; }
-    .reveal-modal#modal-media-view .button-wrapper {
-      float: left; } }
-
 body.bibli {
   overflow: hidden; }
 
@@ -7888,6 +7872,37 @@ body.bibli {
     right: 9px;
     top: 11px; }
 
+@media only screen and (max-width: 40em) {
+  .medias-list .media {
+    padding-left: 0.9375rem !important;
+    padding-right: 0.9375rem !important;
+    width: 50% !important;
+    float: left !important; }
+    .medias-list .media .button-wrapper_flagMedia {
+      display: none !important; }
+  .reveal-modal#modal-media-view {
+    max-width: 100%;
+    height: 100vh;
+    overflow: hidden; }
+    .reveal-modal#modal-media-view .button-wrapper {
+      float: left; }
+  body[data-publicationpane="open"] .bibli-buffer .btn-medias {
+    left: 0; }
+  .bibli-buffer .btn-medias {
+    right: 46%; }
+    .bibli-buffer .btn-medias:hover {
+      width: 50px !important; }
+  .montage-list ul {
+    margin-top: 50px; }
+  .montage {
+    width: 85%;
+    left: 15% !important;
+    z-index: 499 !important; }
+    .montage .inner-montage:empty:before {
+      content: "Cette publication est vide" !important; }
+    .montage .inner-montage .media {
+      width: 100% !important; } }
+
 body.projets #container {
   padding: 50px 0px;
   width: 100%; }
@@ -8023,6 +8038,12 @@ body.projet .project-inside .project-link {
   cursor: default; }
 
 @media only screen and (max-width: 40em) {
+  #container .folder-wrapper .folder-title {
+    font-size: 2rem !important; } }
+
+@media only screen and (max-width: 40em) {
+  body.capture .mainContent {
+    overflow-x: visible !important; }
   .media-choice .btn-choice button:before {
     margin: 0 !important; }
   .media-choice .btn-choice button span {
@@ -8538,8 +8559,3 @@ body.capture .content-wrapper:after {
 
 .js--templates {
   display: none; }
-
-@media only screen and (max-width: 40em) {
-  .module_localNetworkInfos {
-    margin-top: 0 !important;
-    padding: 8px !important; } }

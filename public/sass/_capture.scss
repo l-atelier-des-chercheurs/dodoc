@@ -1,6 +1,12 @@
 // ---------- MEDIA QUERIES ----------
 
 @media #{$small-only} {
+
+  body.capture .mainContent{
+    overflow-x: visible !important;
+    // height: auto !important;
+  }
+
   .media-choice{
     .btn-choice{
       button{

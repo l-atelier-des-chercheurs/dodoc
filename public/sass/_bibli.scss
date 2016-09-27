@@ -1,34 +1,5 @@
 $pourcentageBuffer: 66%;
 
-@media #{$small-only}{
-
-  .medias-list{
-    .media {
-      padding-left: 0.9375rem !important;
-      padding-right: 0.9375rem !important;
-      width: 50% !important;
-      float: left !important;
-
-      .button-wrapper_flagMedia{
-        display:none !important;
-      }
-      p{
-        font-size: 1rem !important;
-      }
-    }   
-  }
-
-  .reveal-modal#modal-media-view{
-    max-width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    .button-wrapper{
-      float: left;
-    }
-  }
-
-}
-
 
 body.bibli {
   overflow: hidden;
@@ -480,4 +451,62 @@ body.bibli {
       top: 11px;
     }
   }
+}
+
+
+@media #{$small-only}{
+
+  .medias-list{
+    .media {
+      padding-left: 0.9375rem !important;
+      padding-right: 0.9375rem !important;
+      width: 50% !important;
+      float: left !important;
+
+      .button-wrapper_flagMedia{
+        display:none !important;
+      }
+    }   
+  }
+
+  .reveal-modal#modal-media-view{
+    max-width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    .button-wrapper{
+      float: left;
+    }
+  }
+
+  body[data-publicationpane="open"] .bibli-buffer .btn-medias{
+    left: 0;
+  }
+
+  .bibli-buffer .btn-medias{
+    right: 46%;
+    &:hover{
+      width: 50px !important;
+    }
+  }
+
+  .montage-list ul{
+    margin-top: 50px;
+  }
+
+  .montage{
+    width: 85%;
+    left:15% !important;
+    z-index: 499 !important;
+    .inner-montage{
+      &:empty {
+        &:before{
+          content: "Cette publication est vide" !important; 
+        }
+      }
+      .media{
+        width: 100% !important;
+      }
+    }
+  }
+
 }

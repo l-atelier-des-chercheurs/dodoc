@@ -14,8 +14,14 @@
     width: 50px !important;
     height: 50px !important;
   }
-  p{
-    font-size: 2em !important;
+
+  .media {
+    width: 50% !important;
+  }
+
+  .module_localNetworkInfos{
+    margin-top: 0 !important;
+    padding: $margin /2 !important;
   }
 }
 
@@ -34,8 +40,5 @@
   .btn.icon{
     width: 60px !important;
     height: 60px !important;
-  }
-  p{
-    font-size: 2em !important;
   }
 }
