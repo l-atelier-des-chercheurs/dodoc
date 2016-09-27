@@ -20,6 +20,7 @@ var fs = require('fs-extra'),
 ;
 
 var dodoc  = require('./public/dodoc.js');
+var ftpexport = require('./dodoc-modules/export-ftp.js')
 
 module.exports = function(app, io){
 
@@ -102,6 +103,8 @@ module.exports = function(app, io){
 		socket.on("deleteMedia", onDeleteMedia);
 
 		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
+
+    socket.on( 'exportFtp', ftpexport);
 	});
 
 	/***************************************************************************

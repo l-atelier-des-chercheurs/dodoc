@@ -25,6 +25,18 @@ socket.on('publiMediasUpdated', onPubliMediasUpdated);
 
 jQuery(document).ready(function($) {
 
+  init();
+
+});
+
+function init(){
+
+  // Valider et exporter vers un ftp 
+  $('body.publi .js--validerTitre').on('click', function (){
+    socket.emit('exportFtp');
+  });
+
+  // Selection des templates 
   $(".templateSelector a").on('click',function(){
     var template = $(this).attr('class');
     $(this).parents('body.publi').attr("data-template", template);
@@ -40,7 +52,9 @@ jQuery(document).ready(function($) {
     }
   });
 
-});
+
+
+}
 
 
 function onListOnePubliMetaAndMedias( psdata) {
