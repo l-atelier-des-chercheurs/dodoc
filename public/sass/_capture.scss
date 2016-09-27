@@ -550,7 +550,6 @@ $t-decalageDuCentre: 4%;
 
     .preview_stopmotion--container {
       counter-reset: compteListe;
-
       .stopmotion_lastImagePreview {
 
         position: relative;
@@ -627,10 +626,23 @@ $t-decalageDuCentre: 4%;
           width: 10%;
         }
       }
+    }
 
+    .preview_stopmotion--frameRate {
+      span {
+        @include style--titrelegende;
+        margin-right: $margin/4;
+      }
+
+      input {
+        display: inline-block;
+        width:  50px;
+      }
 
 
     }
+
+
   }
 
 

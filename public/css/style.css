@@ -8216,6 +8216,16 @@ body.capture .content-wrapper:after {
       .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview:nth-last-child(-n+10) {
         visibility: visible;
         width: 10%; }
+  .captureRight .preview_stopmotion .preview_stopmotion--frameRate span {
+    font-family: 'share';
+    color: #B5B5B5;
+    font-size: 1em;
+    font-style: italic;
+    text-transform: lowercase;
+    margin-right: 4px; }
+  .captureRight .preview_stopmotion .preview_stopmotion--frameRate input {
+    display: inline-block;
+    width: 50px; }
   .captureRight .son {
     display: none;
     padding-left: 27px;

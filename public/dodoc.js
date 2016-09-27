@@ -56,6 +56,7 @@ if( lang === 'fr') {
       "show" : "afficher",
 
       "imageCount" : "Image ",
+      "frameRate" : "Vitesse de lecture&nbsp;: ",
 
       "audioInputSource" : "source audio&nbsp;:",
       "audioOutputDestination" : "destination audio&nbsp;:",
