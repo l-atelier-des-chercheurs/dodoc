@@ -329,7 +329,7 @@ button{
   float:right;
   padding: $margin;
   margin-top:   $margin*2;
-  color: $grisclair;
+  color: $grisfonce;
   text-align: right;
 
   h3 {
@@ -535,6 +535,50 @@ button{
 [data-oninsert="slideFromTop"] {
   -webkit-animation: slideFromTop .4s ease-out 1;
   animation: slideFromTop .4s ease-out 1;
+}
+
+.div_is_loading {
+  display: none;
+  &::before, &::after {
+    content: '';
+
+    position: absolute;
+    width: 20px;
+    height: 20px;
+
+    top: 45%;
+    left: 0;
+    right: 0;
+
+    margin: 0 auto;
+
+    border-radius: 50%;
+    background-color: $c-images;
+
+    -webkit-animation: bounce 2.0s infinite ease-in-out;
+    animation: bounce 2.0s infinite ease-in-out;
+  }
+
+  &::after {
+  	background-color: $c-videos;
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s;
+  }
+
+  @-webkit-keyframes bounce {
+    0%, 100% { -webkit-transform: scale(0.0) }
+    50% { -webkit-transform: scale(1.0) }
+  }
+
+  @keyframes bounce {
+    0%, 100% {
+      transform: scale(0.0);
+      -webkit-transform: scale(0.0);
+    } 50% {
+      transform: scale(1.0);
+      -webkit-transform: scale(1.0);
+    }
+  }
 }
 
 @keyframes blink {

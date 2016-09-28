@@ -30,6 +30,7 @@ var stopMotionMode = (function() {
     $("body").data("smCacheName", "");
     $("body").data("smCachePath", "");
     $preview.find('.output').attr('src', '');
+    $previewOutput.hide();
 
     justCaptured();
     animateWindows();
@@ -103,6 +104,8 @@ var stopMotionMode = (function() {
     }
     // send instruction to finish stopmotion
     sendData.createNewMedia( mediaData);
+
+    $previewOutput.show();
 
   }
 
@@ -191,7 +194,6 @@ var stopMotionMode = (function() {
     showStopMotionPreview : function( pathToMediaFile) {
       // to prevent cache from being used, we add a unix timestamp at the end of the filename
       $preview.find('.output').attr( 'src', pathToMediaFile + '?' + moment().format('x'));
-      $previewOutput.show();
 
       $backToAnimation.off().on('click', function() {
         var mediaToDelete =
@@ -201,6 +203,7 @@ var stopMotionMode = (function() {
         }
         sendData.deleteStopmotion( mediaToDelete);
         $previewOutput.hide();
+        $preview.find('.output').attr('src', '');
       });
     },
 
