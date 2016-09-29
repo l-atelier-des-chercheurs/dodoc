@@ -87,6 +87,7 @@ body.projets{
 
       @include style--dossierBorders;
       border-right: none;
+      padding: $margin/2 0px ;
 
       .title {
         display: block;
@@ -107,13 +108,11 @@ body.projets{
         }
         .created{
           .create-date{
-            font-weight:bold;
           }
         }
         .modified{
           text-align: left;
           .modify-date{
-            font-weight:bold;
           }
         }
       }
