@@ -1,12 +1,10 @@
 body.publi{
+  background-color: #fff;
   header{
-    .templateSelector{
-      float:right;
-      >div {
-        display:inline-block;
-        padding: 10px;
-      }
-    }
+  }
+
+  .publi-title {
+    margin-bottom: 35px;
   }
 
   .media {
@@ -82,63 +80,9 @@ body.publi{
     }
   }
 
-  .template_container[data-template="marseille"]{
-    position: relative;
-    width: 960px;
-    margin: 0 auto;
-    background-color: #fff;
-    padding: 1em;
 
-    .publi_medias {
-      position: relative;
-      @include clearfix();
-    }
-
-
-    .media {
-      position: absolute;
-      float:left;
-      width: 33%;
-      height: 0;
-      padding-bottom:  33%;
-      top: 0;
-      left: 0;
-
-
-      &:nth-child(1) {
-
-      }
-      &:nth-child(2) {
-        top:0;
-        margin-left: 33%;
-
-      }
-      &:nth-child(3) {
-        left: 66%;
-      }
-      &:nth-child(4) {
-        margin-top: 33%;
-        left: 0%;
-      }
-      &:nth-child(5) {
-        margin-top: 33%;
-        left: 33%;
-      }
-    }
-
-/*
-    .publi_medias {
-      column-gap: 1em;
-      -moz-column-count: 3;
-      -webkit-column-count: 3;
-      column-count: 3;
-      .media {
-        display: inline-block;
-        margin: 0 0 1em;
-        width: 100%;
-      }
-    }
-*/
+  .template_container[data-template="marseille"] {
+    @import "publiTemplates/marseille.scss";
   }
 
   // Template new york times

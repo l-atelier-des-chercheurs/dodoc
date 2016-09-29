@@ -12865,7 +12865,7 @@ if( lang === 'fr') {
 
         "importAMedia" : "Importer un média",
         "importAFile" : "Importer un fichier depuis l'ordinateur",
-        "acceptedFormats" : "Les formats acceptés sont le .jpg et le .mp4.",
+        "acceptedFormats" : "Les formats acceptés sont le .jpg, .png et le .mp4.",
 
         "newFolder" : "Nouveau dossier",
         "informations" : "Informations",
@@ -12913,7 +12913,7 @@ var settings = {
   "contentDir" : "sessions",
   "metaFileext" : ".txt",
   "videoext" : ".webm",
-  "stopMotionext" : ".mp4",
+  "stopMotionext" : ".webm",
   "folderMetafilename" : "dossier",
   "projectMetafilename" : "projet",
 

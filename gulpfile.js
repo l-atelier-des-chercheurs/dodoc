@@ -36,7 +36,7 @@ gulp.task('css', function() {
 gulp.task('scripts', function() {
   return gulp.src([
     'public/bower_components/jquery/dist/jquery.min.js',
-    'public/bower_components/velocity/velocity.min.js', 
+    'public/bower_components/velocity/velocity.min.js',
     'public/bower_components/moment/min/moment-with-locales.js',
     'public/bower_components/foundation/js/foundation.min.js',
     'public/bower_components/foundation/js/foundation/foundation.reveal.js',
@@ -58,7 +58,7 @@ gulp.task('scripts', function() {
 // Watch Files For Changes
 gulp.task('watch', function() {
   gulp.watch(['public/js/*.js', 'public/js/libs/*.js','public/js/capture/*.js',], ['scripts']);
-  gulp.watch('public/sass/*.scss', ['sass', 'css']);
+  gulp.watch(['public/sass/*.scss', 'public/sass/*/*.scss'], ['sass', 'css']);
 });
 
 // Default Task

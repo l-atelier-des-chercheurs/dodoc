@@ -156,11 +156,11 @@ body.bibli {
 
       @include clearfix();
 
-
       position: relative;
       padding: 9px 15px;
       margin-bottom: 0;
       background-color: #fff;
+      z-index: 1;
 
       -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
@@ -170,6 +170,7 @@ body.bibli {
 
         font-weight: bold;
         font-size: 1.6em;
+        line-height: 2;
         margin: 0;
         @extend .insidePadding;
 
@@ -227,23 +228,9 @@ body.bibli {
 
     &[data-template="marseille"] {
 
+      @import "publiTemplates/marseille.scss";
+      width: 100% !important;
 
-/*
-      column-gap: 1em;
-      -moz-column-count: 3;
-      -webkit-column-count: 3;
-      column-count: 3;
-      .media {
-        display: inline-block;
-        margin: 0 0 1em;
-        padding:0;
-        width: 100%;
-
-        &.gu-transit {
-          height: 5px;
-        }
-      }
-*/
     }
 
     body.gu-unselectable & {
@@ -310,8 +297,8 @@ body.bibli {
 
 
     .media.gu-transit {
-      height: 120px;
       width:  100%;
+      height: 100%;
       width: auto;
       display: block;
 
