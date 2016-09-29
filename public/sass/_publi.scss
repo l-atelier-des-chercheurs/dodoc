@@ -1,12 +1,15 @@
 body.publi{
+  background-color: #fff;
   header{
-    .templateSelector{
-      float:right;
-      >div {
-        display:inline-block;
-        padding: 10px;
-      }
-    }
+
+  }
+
+  .module_localNetworkInfos {
+    display: none;
+  }
+
+  .publi-title {
+    margin-bottom: 35px;
   }
 
   .media {
@@ -80,7 +83,13 @@ body.publi{
 
       }
     }
-  }  
+  }
+
+
+  .template_container[data-template="marseille"] {
+    @import "publiTemplates/marseille.scss";
+  }
+
   // Template new york times
   &[data-template="new"]{
     background: #FFF;

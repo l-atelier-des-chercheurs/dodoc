@@ -5,7 +5,7 @@ html
   head
     link(rel='stylesheet', href='/bower_components/dragula.js/dist/dragula.min.css')
     include templates/head.jade
-  body(class="publi" data-template="basic")
+  body(class="publi")
 
     .navbar-container
       header.navbar
@@ -20,14 +20,14 @@ html
         //-   .bordelTemplate
         //-     a.bordel Bordel
 
-    div.publi-container.mainContent
+    .publi-container.mainContent.template_container(data-template="marseille")
       h3.legende
         | !{dodoc.lang.publi}
 
-      div.publi-title
+      .publi-title
         h2(data-publi_title)
           | #{publiName}
-      div.publi_medias(data-publi_medias)
+      .publi_medias(data-publi_medias)
 
     .js--templates
       include templates/js_templates

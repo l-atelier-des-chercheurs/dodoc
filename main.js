@@ -372,8 +372,6 @@ module.exports = function(app, io){
 
     var pathToMediaFolder = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
 
-    debugger;
-
     try {
       var filesInMediaFolder = fs.readdirSync( pathToMediaFolder);
       filesInMediaFolder.forEach( function( filename) {

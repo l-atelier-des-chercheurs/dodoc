@@ -87,7 +87,7 @@ body.bibli {
   left: $pourcentageBuffer;
   right: 0;
 
-  background:   #EFEFEF;
+  background: $rouge;
   border-left: 4px solid #EF474B;
 
   height: calc( 100vh - 70px);
@@ -100,10 +100,6 @@ body.bibli {
   transform: translate( 100%, 0);
 
   transition: transform .7s ease-out;
-
-  -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
-
 
   body[data-publicationpane="open"] & {
     transform: translate( 0, 0);
@@ -132,7 +128,7 @@ body.bibli {
 
 
   .montage-edit {
-    background:$gristresclair;
+    background: #fff;
     position:absolute;
     width:100%;
     top:0;
@@ -143,6 +139,7 @@ body.bibli {
     .montage-btn {
       @include clearfix();
       padding: 15px;
+      background-color: $gristresclair;
 
       .button-wrapper_backButton {
         float: left;
@@ -156,11 +153,11 @@ body.bibli {
 
       @include clearfix();
 
-
       position: relative;
       padding: 9px 15px;
       margin-bottom: 0;
       background-color: #fff;
+      z-index: 1;
 
       -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
@@ -170,6 +167,7 @@ body.bibli {
 
         font-weight: bold;
         font-size: 1.6em;
+        line-height: 2;
         margin: 0;
         @extend .insidePadding;
 
@@ -218,12 +216,15 @@ body.bibli {
     padding-top: 1.875rem;
     padding-bottom: 1.875rem * 2;
     margin-bottom: 1.875rem * 2;
-
-    border-bottom:  2px solid #eee;
-
     background-color: #f9f9f9;
-
     transition: background-color .4s, transform .6s ease-out;
+
+    &[data-template="marseille"] {
+
+      @import "publiTemplates/marseille.scss";
+      width: 100% !important;
+
+    }
 
     body.gu-unselectable & {
       // une bonne idéé à retravailler
@@ -289,9 +290,6 @@ body.bibli {
 
 
     .media.gu-transit {
-      height: 120px;
-      width:  100%;
-      width: auto;
       display: block;
 
       opacity: 1;
@@ -466,7 +464,7 @@ body.bibli {
       .button-wrapper_flagMedia{
         display:none !important;
       }
-    }   
+    }
   }
 
   .reveal-modal#modal-media-view{
@@ -500,7 +498,7 @@ body.bibli {
     .inner-montage{
       &:empty {
         &:before{
-          content: "Cette publication est vide" !important; 
+          content: "Cette publication est vide" !important;
         }
       }
       .media{
