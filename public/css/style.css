@@ -7121,6 +7121,8 @@ select {
 
 body.publi {
   background-color: #fff; }
+  body.publi .module_localNetworkInfos {
+    display: none; }
   body.publi .publi-title {
     margin-bottom: 35px; }
   body.publi .media {
@@ -7212,6 +7214,8 @@ body.publi {
           width: 100%;
           height: 100%;
           object-fit: cover; }
+      body.publi .template_container[data-template="marseille"] .media.media_text .mediaContent {
+        overflow: scroll !important; }
       body.publi .template_container[data-template="marseille"] .media:nth-child(1) {
         padding-bottom: 16.6665%; }
       body.publi .template_container[data-template="marseille"] .media:nth-child(4) {
@@ -7809,6 +7813,8 @@ body.bibli {
               width: 100%;
               height: 100%;
               object-fit: cover; }
+          .montage .inner-montage[data-template="marseille"] .media.media_text .mediaContent {
+            overflow: scroll !important; }
           .montage .inner-montage[data-template="marseille"] .media:nth-child(1) {
             padding-bottom: 16.6665%; }
           .montage .inner-montage[data-template="marseille"] .media:nth-child(4) {
@@ -7852,9 +7858,6 @@ body.bibli {
       .montage .inner-montage .media:hover .button-wrapper_deleteMedia {
         opacity: 1; }
     .montage .inner-montage .media.gu-transit {
-      width: 100%;
-      height: 100%;
-      width: auto;
       display: block;
       opacity: 1;
       overflow: hidden;
