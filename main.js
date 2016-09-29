@@ -101,6 +101,7 @@ module.exports = function(app, io){
 
     socket.on("editMediaMeta", onEditMediaMeta);
     socket.on("deleteMedia", onDeleteMedia);
+    socket.on("deleteStopmotion", onDeleteStopmotion);
 
 		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 
@@ -356,6 +357,35 @@ module.exports = function(app, io){
     }, function(error) {
       console.error("Failed to remove one media! Error: ", error);
     });
+  }
+
+  function onDeleteStopmotion( mediaData) {
+    dev.logfunction( "EVENT - onDeleteStopmotion");
+    var slugFolderName = mediaData.slugFolderName;
+    var slugProjectName = mediaData.slugProjectName;
+    var mediaFolder = mediaData.mediaFolderPath;
+    var mediaName = mediaData.mediaName;
+
+    var pathToMediaFolder = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
+
+    debugger;
+
+    try {
+      var filesInMediaFolder = fs.readdirSync( pathToMediaFolder);
+      filesInMediaFolder.forEach( function( filename) {
+        var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( filename)[1];
+        // only remove files with extension, not folder (in case a user wants to continue her stopmotion)
+        if( new RegExp( dodoc.regexpGetFileExtension, 'i').exec( filename) === null) {
+          return;
+        }
+
+        if( fileNameWithoutExtension === mediaName) {
+          var filePath = pathToMediaFolder + '/' + filename;
+          fs.unlinkSync( filePath);
+        }
+      });
+    } catch( err) {
+    }
   }
 
 // F I N     C A P T U R E    P A G E

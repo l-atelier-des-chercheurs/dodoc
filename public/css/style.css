@@ -7390,13 +7390,13 @@ button {
   .button-wrapper_add, .button-wrapper_edit, .button-wrapper_publi, .button-wrapper_editProjet, .button-wrapper_addMedia, .button-wrapper_backButton, .button-wrapper_editFolder, .button-wrapper_settings {
     background-color: #EF474B;
     color: white; }
-  .button-wrapper_capture, .button-wrapper_view, .button-wrapper_deleteFolder, .button-wrapper_deleteMedia, .button-wrapper_deleteMediaCapture, .button-wrapper_deleteProject, .button-wrapper_deleteLastMedia {
+  .button-wrapper_capture, .button-wrapper_view, .button-wrapper_deleteFolder, .button-wrapper_deleteMedia, .button-wrapper_deleteMediaCapture, .button-wrapper_deleteProject, .button-wrapper_deleteLastMedia, .button-wrapper_deleteMediaCaptureStopmotion {
     background-color: #FFB520;
     color: white; }
   .button-wrapper_bibli, .button-wrapper_gofullscreen, .button-wrapper_leavefullscreen {
     background-color: #293275;
     color: white; }
-  .button-wrapper_accept, .button-wrapper_addText, .button-wrapper_highlightMedia, .button-wrapper_finishStopmotion {
+  .button-wrapper_accept, .button-wrapper_addText, .button-wrapper_highlightMedia, .button-wrapper_finishStopmotion, .button-wrapper_previzStopmotion {
     background-color: #48C2B5;
     color: white; }
   .button-wrapper.button-wrapper_collapsed {
@@ -7462,7 +7462,7 @@ button {
   float: right;
   padding: 16px;
   margin-top: 32px;
-  color: #B5B5B5;
+  color: #535353;
   text-align: right; }
   .module_localNetworkInfos h3 {
     font-size: .7em;
@@ -8394,11 +8394,37 @@ body.capture .content-wrapper:after {
       padding-bottom: 10px; }
     .captureRight .preview .button-wrapper_deleteLastMedia, .captureRight .preview .button-wrapper_deleteMediaCapture {
       position: absolute;
-      top: -10px;
-      right: -10px; }
-  .captureRight .preview_stopmotion .preview_stopmotion--container:empty ~ .button-wrapper_finishStopmotion {
-    display: none; }
-  .captureRight .preview_stopmotion .button-wrapper_finishStopmotion {
+      top: 0px;
+      right: 0px; }
+  .captureRight .preview_stopmotion:before, .captureRight .preview_stopmotion:after {
+    content: " ";
+    display: table; }
+  .captureRight .preview_stopmotion:after {
+    clear: both; }
+  .captureRight .preview_stopmotion .output_container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    z-index: 9; }
+    .captureRight .preview_stopmotion .output_container video.output[src=""] ~ .button-wrapper {
+      display: none; }
+    .captureRight .preview_stopmotion .output_container video.output[src=""] ~ .div_is_loading {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0; }
+    .captureRight .preview_stopmotion .output_container .button-wrapper_deleteMediaCaptureStopmotion {
+      position: relative;
+      float: left; }
+  .captureRight .preview_stopmotion .button-wrapper_previzStopmotion, .captureRight .preview_stopmotion .button-wrapper_finishStopmotion {
     display: block;
     float: right; }
   .captureRight .preview_stopmotion .preview_stopmotion--container {
@@ -8466,7 +8492,8 @@ body.capture .content-wrapper:after {
     margin-right: 4px; }
   .captureRight .preview_stopmotion .preview_stopmotion--frameRate input {
     display: inline-block;
-    width: 50px; }
+    width: 50px;
+    font-size: 120%; }
   .captureRight .son {
     display: none;
     padding-left: 27px;
@@ -8588,6 +8615,40 @@ body.capture .content-wrapper:after {
 [data-oninsert="slideFromTop"] {
   -webkit-animation: slideFromTop .4s ease-out 1;
   animation: slideFromTop .4s ease-out 1; }
+
+.div_is_loading {
+  display: none; }
+  .div_is_loading::before, .div_is_loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 45%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    border-radius: 50%;
+    background-color: #FFB520;
+    -webkit-animation: bounce 2.0s infinite ease-in-out;
+    animation: bounce 2.0s infinite ease-in-out; }
+  .div_is_loading::after {
+    background-color: #fe414d;
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s; }
+
+@-webkit-keyframes bounce {
+  0%, 100% {
+    -webkit-transform: scale(0); }
+  50% {
+    -webkit-transform: scale(1); } }
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scale(0);
+    -webkit-transform: scale(0); }
+  50% {
+    transform: scale(1);
+    -webkit-transform: scale(1); } }
 
 @keyframes blink {
   0% {

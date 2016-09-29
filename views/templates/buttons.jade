@@ -142,11 +142,24 @@ mixin button(typeOfButton, navOrButton, style)
         include images/clear.svg
       span !{dodoc.lang.remove}
 
+  if( typeOfButton === 'deleteMediaCaptureStopmotion')
+    a(href="#" title="Dodoc media" class='button-wrapper_deleteMediaCaptureStopmotion js--delete-media-capture-stopmotion #{defaultClasses}')
+      .btn.icon
+        include images/clear.svg
+      span !{dodoc.lang.backToAnimation}
+
+
   if( typeOfButton === 'deleteLastMedia')
     a(href="#" title="Dodoc media" class='button-wrapper_deleteLastMedia js--delete-sm-lastimage #{defaultClasses}')
       .btn.icon
         include images/clear.svg
       span !{dodoc.lang.removeThisImage}
+
+  if( typeOfButton === 'previzStopmotion')
+    a(href="#" title="Dodoc publi" class='button-wrapper_previzStopmotion js--previz-stopmotion #{defaultClasses}')
+      .btn.icon
+        include images/enregistre.svg
+      span !{dodoc.lang.previzStopMotion}
 
   if( typeOfButton === 'finishStopmotion')
     a(href="#" title="Dodoc publi" class='button-wrapper_finishStopmotion js--finish-stopmotion #{defaultClasses}')
