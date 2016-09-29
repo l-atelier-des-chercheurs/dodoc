@@ -20,7 +20,11 @@ var fs = require('fs-extra'),
 ;
 
 var dodoc  = require('./public/dodoc.js');
-var ftpConfig  = require('./ftp-config.js');
+try {
+  var ftpConfig  = require('./ftp-config.js');
+} catch( err) {
+  console.log('No ftp config files have been found');
+}
 
 module.exports = function(app, io){
 
@@ -465,7 +469,7 @@ module.exports = function(app, io){
 // P U B L I     P A G E
   function exportFTP(data) {
 
-    // instance for FTP Client 
+    // instance for FTP Client
     var c = new Client();
 
     var slugFolderName = data.slugFolderName;
@@ -476,12 +480,12 @@ module.exports = function(app, io){
     var publiPath =  "publications/";
     var folderPath = publiPath + slugPubliName;
     var mediasPath = folderPath+'/medias';
-    
+
     // create publi directory with publi name
     fs.mkdir(folderPath, function(){
       // create medias directory in publi directory
       fs.mkdir(mediasPath, function(){
-        // copy css file 
+        // copy css file
         copyFiles('public/css/style.css', folderPath+'/style.css', function(){
           // copy js file
           copyFiles('public/js/production/all.min.js', folderPath+'/script.min.js', function(){
@@ -504,8 +508,12 @@ module.exports = function(app, io){
         console.log("No connection");
       } else {
         // config ftp in ftp-config.js
-        c.connect(ftpConfig);
-        console.log("Connected");
+        if(ftpConfig !== undefined) {
+          c.connect(ftpConfig);
+          console.log("Connected");
+        } else {
+          console.error("Couldn't find a ftp-config.js with FTP information to use.");
+        }
       }
     });
   }
