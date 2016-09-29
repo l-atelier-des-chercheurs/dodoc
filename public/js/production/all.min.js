@@ -12836,10 +12836,12 @@ if( lang === 'fr') {
       "quitFullscreen" : "Quitter le plein écran",
       "removeThisImage" : "Supprimer cette image",
       "removeThisMedia" : "Supprimer ce média",
+      "previzStopMotion" : "Prévisualiser l’animation",
       "finishStopmotion" : "Finaliser l’animation",
       "addToFav" : "Mettre en favoris",
 
       "chooseCameraResolution" : "Sélectionnez la résolution de votre caméra",
+      "backToAnimation" : "Retour à l’animation",
 
       "removeProject" : "Supprimer le projet",
       "createFolder" : "Créer un dossier",
@@ -13283,9 +13285,15 @@ var stopMotionMode = (function() {
   var isRecording = false;
 
   var $preview = $(".preview_stopmotion");
+  var $previewOutput = $preview.find(".output_container");
   var $startsm = $("#start-sm-btn");
   var $capturesm = $("#capture-sm-btn");
-  var $finishsm = $(".js--finish-stopmotion");
+  var $previzsm = $preview.find(".js--previz-stopmotion");
+  var $finishsm = $preview.find(".js--finish-stopmotion");
+  var $backToAnimation = $preview.find(".js--delete-media-capture-stopmotion");
+
+  var $previewContainer = $preview.find('.preview_stopmotion--container');
+  var $timeline = $preview.find('.preview_stopmotion--timeline');
 
   function startStopMotion(){
 
@@ -13297,9 +13305,14 @@ var stopMotionMode = (function() {
     $startsm.hide();
     $capturesm.show();
 
-    $preview.find('.js--delete-media-capture').hide();
-
+    $preview.find('.preview_stopmotion--container').empty();
+    $preview.find('.preview_stopmotion--timeline').empty();
+    $("body").data("smCacheName", "");
+    $("body").data("smCachePath", "");
     $preview.find('.output').attr('src', '');
+    $previewOutput.hide();
+
+    justCaptured();
     animateWindows();
 
     isRecording = true;
@@ -13317,14 +13330,16 @@ var stopMotionMode = (function() {
 
   function takeStopMotionPic() {
 
-    if( mediaJustCaptured())
+    if(mediaJustCaptured())
       return;
 
     isRecording = true;
 
-    var smCacheName = $("body").data( "smCacheName");
-    var smCachePath = $("body").data( "smCachePath");
+    var smCacheName = $("body").data("smCacheName");
+    var smCachePath = $("body").data("smCachePath");
     var imageData = currentStream.getStaticImageFromVideo();
+
+    if(smCacheName.length > 0 && smCachePath.length > 0)
 
     var smImage =
     {
@@ -13346,8 +13361,6 @@ var stopMotionMode = (function() {
   }
 
   function removeImageFromStopMotion( imagePath) {
-
-  // MISSING
     var mediaToDelete =
     {
       "pathToStopmotionImage" : imagePath,
@@ -13357,19 +13370,10 @@ var stopMotionMode = (function() {
   }
 
 
-  function stopStopMotion( ) {
-
-    isRecording = false;
+  function previzStopMotion( ) {
 
     var smCacheName = $("body").data( "smCacheName");
     var smCachePath = $("body").data( "smCachePath");
-
-    $capturesm.hide();
-
-    $preview.find('.preview_stopmotion--container').empty();
-    $preview.find('.preview_stopmotion--timeline').empty();
-
-    saveFeedback("/images/icone-dodoc_anim.png");
     var frameRate = $preview.find('.preview_stopmotion--frameRate input').val();
 
     var mediaData =
@@ -13378,11 +13382,22 @@ var stopMotionMode = (function() {
       "mediaType" : "animation",
       "frameRate" : frameRate
     }
-
     // send instruction to finish stopmotion
     sendData.createNewMedia( mediaData);
 
+    $previewOutput.show();
+
+  }
+
+  function finishStopmotion( ) {
+    isRecording = false;
+    saveFeedback("/images/icone-dodoc_anim.png");
+
     $startsm.show();
+    $capturesm.hide();
+
+    backAnimation();
+    stopMotionMode.init();
 
   }
 
@@ -13393,10 +13408,14 @@ var stopMotionMode = (function() {
       isRunning = true;
       $startsm.off().on('click', startStopMotion);
       $capturesm.off().on('click', takeStopMotionPic);
-      $finishsm.off().on('click', stopStopMotion);
+      $previzsm.off().on('click', previzStopMotion);
+      $finishsm.off().on('click', finishStopmotion);
       $preview.show();
       $preview.find('.output').attr('src', '');
-      $preview.find('.js--delete-media-capture').hide();
+      $previewOutput.hide();
+
+      $previewContainer.find('.stopmotion_lastImagePreview').remove();
+      $timeline.find('.stopmotion_lastImageSmallPreview').remove();
 
       if(isRecording)
         animateWindows();
@@ -13409,8 +13428,6 @@ var stopMotionMode = (function() {
 
     onNewStopmotionImage : function( smdata) {
 
-      var $previewContainer = $preview.find('.preview_stopmotion--container');
-      var $timeline = $preview.find('.preview_stopmotion--timeline');
 
       var imagePath = smdata.imageFullPath.substring( dodoc.contentDir.length);
 
@@ -13455,8 +13472,19 @@ var stopMotionMode = (function() {
     },
 
     showStopMotionPreview : function( pathToMediaFile) {
-      $preview.find('.output').attr( 'src', pathToMediaFile);
-      $preview.find('.js--delete-media-capture').show();
+      // to prevent cache from being used, we add a unix timestamp at the end of the filename
+      $preview.find('.output').attr( 'src', pathToMediaFile + '?' + moment().format('x'));
+
+      $backToAnimation.off().on('click', function() {
+        var mediaToDelete =
+        {
+          "mediaName" : $(document).data('lastCapturedMediaName'),
+          "mediaFolderPath" : $(document).data('lastCapturedMediaFolderPath'),
+        }
+        sendData.deleteStopmotion( mediaToDelete);
+        $previewOutput.hide();
+        $preview.find('.output').attr('src', '');
+      });
     },
 
     isRunning: function() {
@@ -14310,6 +14338,12 @@ var sendData = {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
   	socket.emit( 'deleteMedia', mediaData);
+  },
+
+  deleteStopmotion : function( mediaData) {
+    mediaData.slugFolderName = currentFolder;
+    mediaData.slugProjectName = currentProject;
+  	socket.emit( 'deleteStopmotion', mediaData);
   },
 
   createNewPubli : function( publiData) {
@@ -15182,7 +15216,7 @@ var boitierExterne = (function() {
           switchMediaMode(direction);
         } else
         // capture
-        if( key === 'a' || key === 'q') {
+        if( key === 'a' || key === 'q' || key === ' ') {
           if( imageMode.isRunning())      imageMode.captureButtonPress();
           else if( videoMode.isRunning())       videoMode.captureButtonPress();
           else if( stopMotionMode.isRunning()) stopMotionMode.captureButtonPress();
@@ -18114,7 +18148,7 @@ function init(){
     var cssFile = '<link rel="stylesheet" href="style.css">';
     var head = '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="stylesheet" href="/css/style.css"><title>Publication | '+currentPubli+'</title>'+cssFile+'</head>';
     var body = '<body data-template="basic" class="publi"><div class="publi-container mainContent">';
-    var footer = '</div><script></script></body></html>'
+    var footer = '</div><script src="script.min.js"></script></body></html>'
     
     var html = head +body + publiClean + footer;
     socket.emit('exportFtp', {"html": html ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
