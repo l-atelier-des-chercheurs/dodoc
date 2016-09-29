@@ -25,6 +25,31 @@ socket.on('publiMediasUpdated', onPubliMediasUpdated);
 
 jQuery(document).ready(function($) {
 
+  init();
+
+});
+
+function init(){
+
+  // Valider et exporter vers un ftp 
+  $('body.publi .js--validerTitre').on('click', function (){    
+    var publiHtml = $('.publi-container').html();
+    var publiClean = publiHtml.replaceAll('/'+currentFolder+'/'+currentProject+'/01-photos', 'medias')
+    .replaceAll('/'+currentFolder+'/'+currentProject+'/02-animations', 'medias')
+    .replaceAll('/'+currentFolder+'/'+currentProject+'/03-videos', 'medias')
+    .replaceAll('/'+currentFolder+'/'+currentProject+'/04-sons', 'medias')
+    .replaceAll('/'+currentFolder+'/'+currentProject+'/05-textes', 'medias');
+    
+    var cssFile = '<link rel="stylesheet" href="style.css">';
+    var head = '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="stylesheet" href="/css/style.css"><title>Publication | '+currentPubli+'</title>'+cssFile+'</head>';
+    var body = '<body data-template="basic" class="publi"><div class="publi-container mainContent">';
+    var footer = '</div><script src="script.min.js"></script></body></html>'
+    
+    var html = head +body + publiClean + footer;
+    socket.emit('exportFtp', {"html": html ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
+  });
+
+  // Selection des templates 
   $(".templateSelector a").on('click',function(){
     var template = $(this).attr('class');
     $(this).parents('body.publi').attr("data-template", template);
@@ -40,7 +65,13 @@ jQuery(document).ready(function($) {
     }
   });
 
-});
+
+
+}
+
+String.prototype.replaceAll = function(target, replacement) {
+  return this.split(target).join(replacement);
+};
 
 
 function onListOnePubliMetaAndMedias( psdata) {

@@ -2,6 +2,7 @@
 node_modules
 #bower_components
 sessions
+ftp-config.js
 
 # Compiled source #
 # ###################
