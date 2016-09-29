@@ -87,7 +87,7 @@ body.bibli {
   left: $pourcentageBuffer;
   right: 0;
 
-  background:   #EFEFEF;
+  background: $rouge;
   border-left: 4px solid #EF474B;
 
   height: calc( 100vh - 70px);
@@ -100,10 +100,6 @@ body.bibli {
   transform: translate( 100%, 0);
 
   transition: transform .7s ease-out;
-
-  -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
-
 
   body[data-publicationpane="open"] & {
     transform: translate( 0, 0);
@@ -132,7 +128,7 @@ body.bibli {
 
 
   .montage-edit {
-    background:$gristresclair;
+    background: #fff;
     position:absolute;
     width:100%;
     top:0;
@@ -143,6 +139,7 @@ body.bibli {
     .montage-btn {
       @include clearfix();
       padding: 15px;
+      background-color: $gristresclair;
 
       .button-wrapper_backButton {
         float: left;
@@ -219,11 +216,7 @@ body.bibli {
     padding-top: 1.875rem;
     padding-bottom: 1.875rem * 2;
     margin-bottom: 1.875rem * 2;
-
-    border-bottom:  2px solid #eee;
-
     background-color: #f9f9f9;
-
     transition: background-color .4s, transform .6s ease-out;
 
     &[data-template="marseille"] {
