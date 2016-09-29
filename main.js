@@ -14,10 +14,13 @@ var fs = require('fs-extra'),
   gutil = require('gulp-util'),
   parsedown = require('woods-parsedown'),
   slugg = require('slugg'),
-  gm = require('gm').subClass({imageMagick: true})
+  gm = require('gm').subClass({imageMagick: true}),
+  JSFtp = require("jsftp"),
+  Client = require('ftp')
 ;
 
 var dodoc  = require('./public/dodoc.js');
+var ftpConfig  = require('./ftp-config.js');
 
 module.exports = function(app, io){
 
@@ -100,8 +103,10 @@ module.exports = function(app, io){
     socket.on("deleteMedia", onDeleteMedia);
     socket.on("deleteStopmotion", onDeleteStopmotion);
 
-    socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
-  });
+		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
+
+    socket.on( 'exportFtp', exportFTP);
+	});
 
   /***************************************************************************
 
@@ -458,6 +463,122 @@ module.exports = function(app, io){
 // F I N    B I B L I    P A G E
 
 // P U B L I     P A G E
+  function exportFTP(data) {
+
+    // instance for FTP Client 
+    var c = new Client();
+
+    var slugFolderName = data.slugFolderName;
+    var slugProjectName = data.slugProjectName;
+    var slugPubliName = data.slugPubliName;
+
+    var projectPath = "sessions/"+ slugFolderName + "/" + slugProjectName;
+    var publiPath =  "publications/";
+    var folderPath = publiPath + slugPubliName;
+    var mediasPath = folderPath+'/medias';
+    
+    // create publi directory with publi name
+    fs.mkdir(folderPath, function(){
+      // create medias directory in publi directory
+      fs.mkdir(mediasPath, function(){
+        // copy css file 
+        copyFiles('public/css/style.css', folderPath+'/style.css', function(){
+          // copy js file
+          copyFiles('public/js/production/all.min.js', folderPath+'/script.min.js', function(){
+            fs.unlink(folderPath+'/index.html', function(){
+              // create html file
+              fs.writeFile(folderPath+'/index.html', data.html, function(){
+                // start ftp connection
+                c.on('ready', function() {
+                  sendFileToServer(folderPath, projectPath, mediasPath, slugPubliName, slugFolderName, slugProjectName, c);
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+
+    require('dns').resolve('www.google.com', function(err) {
+      if (err) {
+        console.log("No connection");
+      } else {
+        // config ftp in ftp-config.js
+        c.connect(ftpConfig);
+        console.log("Connected");
+      }
+    });
+  }
+
+  function sendFileToServer(folderPath, projectPath, mediasPath, slugPubliName, slugFolderName, slugProjectName, c){
+    c.mkdir('./www/dodoc-test/'+ slugPubliName, function(err) {
+      if (err) console.log(slugPubliName+ ' not transferred:' + err);
+      else {
+        console.log("Folder create on server transferred successfully!");
+      }
+      c.put(folderPath + '/index.html', './www/dodoc-test/'+ slugPubliName+'/index.html', function(err) {
+        if (err) console.log('not transferred:' + err);
+        else console.log("HTML File transferred successfully!");
+      });
+      c.put(folderPath + '/style.css', './www/dodoc-test/'+ slugPubliName+'/style.css', function(err) {
+        if (err) console.log('not transferred:' + err);
+        else console.log("CSS File transferred successfully!");
+      });
+      c.put(folderPath + '/script.min.js', './www/dodoc-test/'+ slugPubliName+'/script.min.jss', function(err) {
+        if (err) console.log('not transferred:' + err);
+        else console.log("JS File transferred successfully!");
+      });
+
+      c.mkdir('./www/dodoc-test/'+ slugPubliName+'/medias', function(err) {
+        if (err) console.log('medias: not transferred:' + err);
+        else console.log("File transferred successfully!");
+        sendImageToServer(projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, c);
+      });
+    });
+  }
+
+  function sendImageToServer(projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, c){
+    listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function(publi) {
+      for (var prop in publi) {
+        var medias = publi[prop].medias;
+        for(var index in medias){
+          var media = medias[index];
+          for(var fichiers in media){
+            var eachFiles = media[fichiers].files;
+            var mediaFolder = media[fichiers].mediaFolderPath;
+            for(var fileToCopy in eachFiles){
+              var fileName = eachFiles[fileToCopy];
+              var oldPath = projectPath + '/' + mediaFolder + '/' + fileName;
+              var newPath = mediasPath + '/' + fileName;
+              try {
+                fs.copySync(oldPath, newPath);
+                console.log("success!");
+              } catch (err) {
+                console.error(err)
+              }
+              c.append(newPath, './www/dodoc-test/'+ slugPubliName+'/medias/'+fileName, function(err) {
+                if (err) console.log('not transferred:' + err);
+                else {
+                  console.log("media transferred");
+                  // console.log("Publication was transferred at sarahgarcin.com/dodoc-test/"+slugPubliName);
+                }
+                c.end();
+              });
+            }
+          }
+        }
+      }
+    }, function(error) {
+      console.error("Failed to list one media! Error: ", error);
+    });
+  }
+
+  function copyFiles(sourceFile, destFile, callback){
+    fs.unlink(destFile, function(){
+      fs.copy(sourceFile, destFile, callback);
+    });
+  }
+
   function onListOnePubliMetaAndMedias( publiData) {
     dev.logfunction( "EVENT - onListOnePubliMetaAndMedias : " + JSON.stringify( publiData, null, 4));
     var slugFolderName = publiData.slugFolderName;
