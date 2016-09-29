@@ -1338,8 +1338,8 @@ MEDIA METHODS
           var proc = new ffmpeg({ "source" : pathToFile + '/%*.png'})
             // using 12 fps
             .withFpsInput(frameRate)
-            .withVideoCodec('libx264')
-            .addOptions(['-vb 8000k', '-f mp4'])
+            .withVideoCodec('libvpx')
+            .addOptions(['-vb 8000k', '-f webm'])
             // setup event handlers
             .on('end', function() {
               console.log('file has been converted succesfully');

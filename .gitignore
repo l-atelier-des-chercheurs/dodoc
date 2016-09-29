@@ -2,6 +2,9 @@
 node_modules
 #bower_components
 sessions
+publications
+
+# FTP Config file
 ftp-config.js
 
 # Compiled source #
@@ -49,3 +52,4 @@ sessions/**
 
 public/fonts/Fira/source/
 public/fonts/Fira/technical reports/
+publications/yes-we-can/medias/20160928_162717.png
