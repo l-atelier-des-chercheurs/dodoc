@@ -14205,8 +14205,7 @@ var publi = {
         $mma = $(this);
         var mediakey = $mma.data('mediakey');
         var mediaJson = {
-          "name" : mediakey,
-          "metaTest" : "Plip"
+          "name" : mediakey
         };
         listMediasItems.push( mediaJson);
       });
