@@ -7950,7 +7950,8 @@ body.projets #container {
   .project-list .project .project-content {
     background-color: #fff;
     border: 1px solid #DFDFDF;
-    border-right: none; }
+    border-right: none;
+    padding: 8px 0px; }
     .project-list .project .project-content .title {
       display: block;
       font-weight: bold;
@@ -7965,12 +7966,8 @@ body.projets #container {
       font-size: 1em;
       font-style: italic;
       text-transform: lowercase; }
-    .project-list .project .project-content .meta-data .created .create-date {
-      font-weight: bold; }
     .project-list .project .project-content .meta-data .modified {
       text-align: left; }
-      .project-list .project .project-content .meta-data .modified .modify-date {
-        font-weight: bold; }
   .project-list .project .image-wrapper {
     position: relative;
     background-color: #fff;

@@ -225,6 +225,27 @@ body.bibli {
 
     transition: background-color .4s, transform .6s ease-out;
 
+    &[data-template="marseille"] {
+
+
+/*
+      column-gap: 1em;
+      -moz-column-count: 3;
+      -webkit-column-count: 3;
+      column-count: 3;
+      .media {
+        display: inline-block;
+        margin: 0 0 1em;
+        padding:0;
+        width: 100%;
+
+        &.gu-transit {
+          height: 5px;
+        }
+      }
+*/
+    }
+
     body.gu-unselectable & {
       // une bonne idéé à retravailler
 //       transform: scale( .8);
@@ -466,7 +487,7 @@ body.bibli {
       .button-wrapper_flagMedia{
         display:none !important;
       }
-    }   
+    }
   }
 
   .reveal-modal#modal-media-view{
@@ -500,7 +521,7 @@ body.bibli {
     .inner-montage{
       &:empty {
         &:before{
-          content: "Cette publication est vide" !important; 
+          content: "Cette publication est vide" !important;
         }
       }
       .media{
