@@ -7121,6 +7121,8 @@ select {
 
 body.publi {
   background-color: #fff; }
+  body.publi .js--validerTitre {
+    opacity: 0; }
   body.publi .module_localNetworkInfos {
     display: none; }
   body.publi .publi-title {

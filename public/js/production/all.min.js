@@ -18149,7 +18149,7 @@ function init(){
     
     var cssFile = '<link rel="stylesheet" href="./style.css">';
     var head = '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="apple-mobile-web-app-capable" content="yes"><title>Publication | '+currentPubli+'</title>'+cssFile+'</head>';
-    var body = '<body data-template="marseille" class="publi"><div class="publi-container mainContent">';
+    var body = '<body class="publi"><div class="publi-container mainContent template_container" data-template="marseille">';
     var footer = '</div><script src="./script.min.js"></script></body></html>'
     
     var html = head +body + publiClean + footer;
