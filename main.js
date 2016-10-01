@@ -493,53 +493,6 @@ module.exports = function(app, io){
       });
     });
 
-    require('dns').resolve('www.google.com', function(err) {
-      if (err) {
-        console.log("No connection");
-        socket.emit('noConnection');
-      } else {
-        // config ftp in ftp-config.js
-        if(exportConfig !== undefined) {
-          c.connect({
-            host: exportConfig.host,
-            port: exportConfig.port,
-            user: exportConfig.user,
-            password: exportConfig.password
-          });
-          console.log("Connected");
-        } else {
-          console.error("Couldn't find a ftp-config.js with FTP information to use.");
-        }
-      }
-    });
-  }
-
-  function sendFileToServer(folderPath, projectPath, mediasPath, slugPubliName, slugFolderName, slugProjectName, c, domainFolder, domain, socket){
-    c.mkdir('./www/'+domainFolder+'/'+ slugPubliName, function(err) {
-      if (err) console.log(slugPubliName+ ' not transferred:' + err);
-      else {
-        console.log("Folder create on server transferred successfully!");
-      }
-      c.put(folderPath + '/index.html', './www/'+domainFolder+'/'+ slugPubliName+'/index.html', function(err) {
-        if (err) console.log('not transferred:' + err);
-        else console.log("HTML File transferred successfully!");
-      });
-      c.put(folderPath + '/style.css', './www/'+domainFolder+'/'+ slugPubliName+'/style.css', function(err) {
-        if (err) console.log('not transferred:' + err);
-        else console.log("CSS File transferred successfully!");
-      });
-      c.put(folderPath + '/script.min.js', './www/'+domainFolder+'/'+ slugPubliName+'/script.min.jss', function(err) {
-        if (err) console.log('not transferred:' + err);
-        else console.log("JS File transferred successfully!");
-      });
-
-      c.mkdir('./www/'+domainFolder+'/'+ slugPubliName+'/medias', function(err) {
-        if (err) console.log('medias: not transferred:' + err);
-        else console.log("File transferred successfully!");
-        sendImageToServer(projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, c, domainFolder, domain);
-      });
-    });
->>>>>>> master
   }
 
   function saveImagesLocal(projectPath, folderPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket){
@@ -589,7 +542,7 @@ module.exports = function(app, io){
       var domainFolder = exportConfig.subFolder
       // instance for FTP Client
       var c = new Client();
-
+      
       c.on('ready', function() {
         c.mkdir(domainFolder+'/'+ slugPubliName, function(err) {
           if (err) console.log(slugPubliName+ ' not transferred:' + err);
@@ -620,12 +573,12 @@ module.exports = function(app, io){
 
       c.connect({
         host: exportConfig.host,
-        port: exportConfig.port,
-        user: exportConfig.user,
-        password: exportConfig.password
+        port: exportConfig.port, 
+        user: exportConfig.user, 
+        password: exportConfig.password 
       });
       console.log("Connected");
-
+      
     } else {
       console.error("Couldn't find a ftp-config.js with FTP information to use.");
     }
@@ -1339,7 +1292,6 @@ MEDIA METHODS
 
             gm( pathToFile + fileExtension)
               .resize( dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
-              .quality( dodoc.mediaThumbQuality)
               .write( pathToFile + dodoc.thumbSuffix + fileExtension, function (err) {
                 if( err)
                   console.log( gutil.colors.red('--> Failed to make a thumbnail for a photo! Error: ', err));
