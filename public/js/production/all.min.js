@@ -12930,9 +12930,8 @@ var settings = {
   "deletedPrefix" : "x_",
   "thumbSuffix" : "_thumb",
 
-  "mediaThumbWidth" : 720,
-  "mediaThumbHeight" : 720,
-  "mediaThumbQuality" : 60,
+  "mediaThumbWidth" : 320,
+  "mediaThumbHeight" : 240,
 
   "_comment" : "// see http://regexr.com/3d4t8",
   "regexpMatchFolderNames" : "^([^.]+)$",
@@ -13729,19 +13728,8 @@ function listMedia( mediaData) {
 }
 
 
-// fonction qui réunit les fonctionnalités d'un média (que ce soit une vidéo, une image, un son, etc.
-
 function mediaInit( $m) {
   var $v = $m.find('video');
-
-  if( $('body').hasClass('publi')) {
-    if( $m.data('informations').length > 0) {
-      var $button = $('<button class="showCaption">t</button>');
-      $m.find('.mediaContent').prepend($button);
-      $button.on('click', function() { $(this).toggleClass('is--clicked');});
-    }
-  }
-
   $m.hover(function() {
     if( $v.length > 0) {
       $v
@@ -13761,8 +13749,8 @@ function mediaInit( $m) {
         ;
       $v.get(0).currentTime = 0;
     }
-  });
 
+  });
 }
 
 
@@ -13823,14 +13811,12 @@ function showImage( mediaDatas) {
   var imagesPath = getMediaFiles(mediaDatas);
 
 	var mediaItem = $(".js--templates .media_image").clone(false);
-
-  	mediaItem
-      .data('imagesrc_fullsize', imagesPath.img_large)
-      .find( 'img')
-        .attr('src', imagesPath.img_thumb)
-      .end()
-      ;
-
+	mediaItem
+    .data('imagesrc_fullsize', imagesPath.img_large)
+    .find( 'img')
+      .attr('src', imagesPath.img_thumb)
+    .end()
+    ;
 	return mediaItem;
 }
 
@@ -18141,7 +18127,7 @@ socket.on('publiMetaUpdated', onPubliMetaUpdated);
 socket.on('publiMediasUpdated', onPubliMediasUpdated);
 
 socket.on('noConnection', onNoConnection);
-socket.on('publiTransferred', onPubliTransferred)
+socket.on('pubiTransferred', onPubliTransferred)
 
 
 jQuery(document).ready(function($) {
@@ -18161,10 +18147,10 @@ function init(){
     .replaceAll('/'+currentFolder+'/'+currentProject+'/04-sons', 'medias')
     .replaceAll('/'+currentFolder+'/'+currentProject+'/05-textes', 'medias');
     
-    var cssFile = '<link rel="stylesheet" href="style.css">';
-    var head = '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="stylesheet" href="/css/style.css"><title>Publication | '+currentPubli+'</title>'+cssFile+'</head>';
-    var body = '<body data-template="basic" class="publi"><div class="publi-container mainContent">';
-    var footer = '</div><script src="script.min.js"></script></body></html>'
+    var cssFile = '<link rel="stylesheet" href="./style.css">';
+    var head = '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="apple-mobile-web-app-capable" content="yes"><title>Publication | '+currentPubli+'</title>'+cssFile+'</head>';
+    var body = '<body class="publi"><div class="publi-container mainContent template_container" data-template="marseille">';
+    var footer = '</div><script src="./script.min.js"></script></body></html>'
     
     var html = head +body + publiClean + footer;
     socket.emit('exportFtp', {"html": html ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
@@ -18227,6 +18213,7 @@ function onNoConnection(){
 }
 
 function onPubliTransferred(adress){
+  console.log(adress);
   alert('Votre publication a été envoyé à l\'adresse suivant: '+adress);
   enableButton();
 }
