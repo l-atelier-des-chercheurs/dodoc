@@ -181,12 +181,23 @@ function showImage( mediaDatas) {
   var imagesPath = getMediaFiles(mediaDatas);
 
 	var mediaItem = $(".js--templates .media_image").clone(false);
-	mediaItem
-    .data('imagesrc_fullsize', imagesPath.img_large)
-    .find( 'img')
-      .attr('src', imagesPath.img_thumb)
-    .end()
-    ;
+
+  if( $('body').hasClass('publi')) {
+    	mediaItem
+        .data('imagesrc_fullsize', imagesPath.img_large)
+        .find( 'img')
+          .attr('src', imagesPath.img_large)
+        .end()
+        ;
+  } else {
+    	mediaItem
+        .data('imagesrc_fullsize', imagesPath.img_large)
+        .find( 'img')
+          .attr('src', imagesPath.img_thumb)
+        .end()
+        ;
+  }
+
 	return mediaItem;
 }
 

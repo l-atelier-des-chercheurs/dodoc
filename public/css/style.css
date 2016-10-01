@@ -7181,7 +7181,7 @@ body.publi {
         max-height: 70vh; }
   body.publi .template_container[data-template="marseille"] {
     position: relative;
-    width: 960px;
+    width: 100%;
     margin: 0 auto;
     background-color: #fff;
     padding: 1em; }
@@ -7206,6 +7206,12 @@ body.publi {
       -moz-perspective: 1000;
       -ms-perspective: 1000;
       perspective: 1000; }
+      @media only screen and (max-width: 40em) {
+        body.publi .template_container[data-template="marseille"] .media {
+          width: 100% !important;
+          padding-bottom: 100% !important;
+          height: auto;
+          margin-top: 0 !important; } }
       body.publi .template_container[data-template="marseille"] .media .mediaContent {
         border: none;
         max-height: none;
@@ -7236,9 +7242,9 @@ body.publi {
           background-color: #333;
           color: white;
           transform: rotateY(-180deg);
-          overflow-y: scroll; }
+          overflow-y: auto; }
           body.publi .template_container[data-template="marseille"] .media:not([data-informations=""]) .mediaContent .mediaData .mediaData--informations {
-            padding: .9375rem; }
+            padding-right: 2.8125rem; }
         body.publi .template_container[data-template="marseille"] .media:not([data-informations=""]) .mediaContent .showCaption {
           position: absolute;
           top: 0;
@@ -7264,7 +7270,7 @@ body.publi {
           body.publi .template_container[data-template="marseille"] .media:not([data-informations=""]) .mediaContent .showCaption.is--clicked ~ .mediaData {
             transform: rotateY(0deg); }
       body.publi .template_container[data-template="marseille"] .media.media_text .mediaContent {
-        overflow: scroll !important; }
+        overflow: auto !important; }
       body.publi .template_container[data-template="marseille"] .media:nth-child(1) {
         padding-bottom: 16.6665%; }
       body.publi .template_container[data-template="marseille"] .media:nth-child(4) {
@@ -7827,7 +7833,7 @@ body.bibli {
       width: 100% !important; }
       .montage .inner-montage[data-template="marseille"] {
         position: relative;
-        width: 960px;
+        width: 100%;
         margin: 0 auto;
         background-color: #fff;
         padding: 1em; }
@@ -7852,6 +7858,12 @@ body.bibli {
           -moz-perspective: 1000;
           -ms-perspective: 1000;
           perspective: 1000; }
+          @media only screen and (max-width: 40em) {
+            .montage .inner-montage[data-template="marseille"] .media {
+              width: 100% !important;
+              padding-bottom: 100% !important;
+              height: auto;
+              margin-top: 0 !important; } }
           .montage .inner-montage[data-template="marseille"] .media .mediaContent {
             border: none;
             max-height: none;
@@ -7882,9 +7894,9 @@ body.bibli {
               background-color: #333;
               color: white;
               transform: rotateY(-180deg);
-              overflow-y: scroll; }
+              overflow-y: auto; }
               .montage .inner-montage[data-template="marseille"] .media:not([data-informations=""]) .mediaContent .mediaData .mediaData--informations {
-                padding: .9375rem; }
+                padding-right: 2.8125rem; }
             .montage .inner-montage[data-template="marseille"] .media:not([data-informations=""]) .mediaContent .showCaption {
               position: absolute;
               top: 0;
@@ -7910,7 +7922,7 @@ body.bibli {
               .montage .inner-montage[data-template="marseille"] .media:not([data-informations=""]) .mediaContent .showCaption.is--clicked ~ .mediaData {
                 transform: rotateY(0deg); }
           .montage .inner-montage[data-template="marseille"] .media.media_text .mediaContent {
-            overflow: scroll !important; }
+            overflow: auto !important; }
           .montage .inner-montage[data-template="marseille"] .media:nth-child(1) {
             padding-bottom: 16.6665%; }
           .montage .inner-montage[data-template="marseille"] .media:nth-child(4) {
