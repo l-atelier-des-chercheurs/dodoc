@@ -182,21 +182,12 @@ function showImage( mediaDatas) {
 
 	var mediaItem = $(".js--templates .media_image").clone(false);
 
-  if( $('body').hasClass('publi')) {
-    	mediaItem
-        .data('imagesrc_fullsize', imagesPath.img_large)
-        .find( 'img')
-          .attr('src', imagesPath.img_large)
-        .end()
-        ;
-  } else {
-    	mediaItem
-        .data('imagesrc_fullsize', imagesPath.img_large)
-        .find( 'img')
-          .attr('src', imagesPath.img_thumb)
-        .end()
-        ;
-  }
+  	mediaItem
+      .data('imagesrc_fullsize', imagesPath.img_large)
+      .find( 'img')
+        .attr('src', imagesPath.img_thumb)
+      .end()
+      ;
 
 	return mediaItem;
 }

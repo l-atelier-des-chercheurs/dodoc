@@ -512,9 +512,9 @@ module.exports = function(app, io){
         if(exportConfig !== undefined) {
           c.connect({
             host: exportConfig.host,
-            port: exportConfig.port, 
-            user: exportConfig.user, 
-            password: exportConfig.password 
+            port: exportConfig.port,
+            user: exportConfig.user,
+            password: exportConfig.password
           });
           console.log("Connected");
         } else {
@@ -1282,6 +1282,7 @@ MEDIA METHODS
 
             gm( pathToFile + fileExtension)
               .resize( dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
+              .quality( dodoc.mediaThumbQuality)
               .write( pathToFile + dodoc.thumbSuffix + fileExtension, function (err) {
                 if( err)
                   console.log( gutil.colors.red('--> Failed to make a thumbnail for a photo! Error: ', err));

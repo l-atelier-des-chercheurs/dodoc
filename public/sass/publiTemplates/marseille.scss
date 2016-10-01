@@ -1,9 +1,13 @@
 & {
   position: relative;
-  width: 100%;
+  width: 960px;
   margin: 0 auto;
   background-color: #fff;
   padding: 1em;
+
+  @media #{$small-only} {
+    width: 100%;
+  }
 
   .publi_medias {
     position: relative;

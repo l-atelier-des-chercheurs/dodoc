@@ -12930,8 +12930,9 @@ var settings = {
   "deletedPrefix" : "x_",
   "thumbSuffix" : "_thumb",
 
-  "mediaThumbWidth" : 480,
-  "mediaThumbHeight" : 320,
+  "mediaThumbWidth" : 720,
+  "mediaThumbHeight" : 720,
+  "mediaThumbQuality" : 60,
 
   "_comment" : "// see http://regexr.com/3d4t8",
   "regexpMatchFolderNames" : "^([^.]+)$",
@@ -13823,21 +13824,12 @@ function showImage( mediaDatas) {
 
 	var mediaItem = $(".js--templates .media_image").clone(false);
 
-  if( $('body').hasClass('publi')) {
-    	mediaItem
-        .data('imagesrc_fullsize', imagesPath.img_large)
-        .find( 'img')
-          .attr('src', imagesPath.img_large)
-        .end()
-        ;
-  } else {
-    	mediaItem
-        .data('imagesrc_fullsize', imagesPath.img_large)
-        .find( 'img')
-          .attr('src', imagesPath.img_thumb)
-        .end()
-        ;
-  }
+  	mediaItem
+      .data('imagesrc_fullsize', imagesPath.img_large)
+      .find( 'img')
+        .attr('src', imagesPath.img_thumb)
+      .end()
+      ;
 
 	return mediaItem;
 }
