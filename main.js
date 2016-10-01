@@ -15,13 +15,12 @@ var fs = require('fs-extra'),
   parsedown = require('woods-parsedown'),
   slugg = require('slugg'),
   gm = require('gm').subClass({imageMagick: true}),
-  JSFtp = require("jsftp"),
   Client = require('ftp')
 ;
 
 var dodoc  = require('./public/dodoc.js');
 try {
-  var ftpConfig  = require('./ftp-config.js');
+  var exportConfig  = require('./ftp-config.js');
 } catch( err) {
   console.log('No ftp config files have been found');
 }
@@ -109,7 +108,7 @@ module.exports = function(app, io){
 
 		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 
-    socket.on( 'exportFtp', exportFTP);
+    socket.on( 'exportFtp', function (data){ exportFTP( socket, data); });
 	});
 
   /***************************************************************************
@@ -124,7 +123,7 @@ module.exports = function(app, io){
 
   ****************************************************************************/
 
-  // I N D E X     P A G E
+// I N D E X     P A G E
 
   // Create a new folder
   function onNewFolder( folderData) {
@@ -465,7 +464,7 @@ module.exports = function(app, io){
 // F I N    B I B L I    P A G E
 
 // P U B L I     P A G E
-  function exportFTP(data) {
+  function exportFTP(socket, data) {
 
     // instance for FTP Client
     var c = new Client();
@@ -478,6 +477,9 @@ module.exports = function(app, io){
     var publiPath =  "publications/";
     var folderPath = publiPath + slugPubliName;
     var mediasPath = folderPath+'/medias';
+
+    var domain = exportConfig.domaineName;
+    var domainFolder = exportConfig.subFolder
 
     // create publi directory with publi name
     fs.mkdir(folderPath, function(){
@@ -492,7 +494,7 @@ module.exports = function(app, io){
               fs.writeFile(folderPath+'/index.html', data.html, function(){
                 // start ftp connection
                 c.on('ready', function() {
-                  sendFileToServer(folderPath, projectPath, mediasPath, slugPubliName, slugFolderName, slugProjectName, c);
+                  sendFileToServer(folderPath, projectPath, mediasPath, slugPubliName, slugFolderName, slugProjectName, c, domainFolder, domain, socket);
                 });
               });
             });
@@ -504,10 +506,16 @@ module.exports = function(app, io){
     require('dns').resolve('www.google.com', function(err) {
       if (err) {
         console.log("No connection");
+        socket.emit('noConnection');
       } else {
         // config ftp in ftp-config.js
-        if(ftpConfig !== undefined) {
-          c.connect(ftpConfig);
+        if(exportConfig !== undefined) {
+          c.connect({
+            host: exportConfig.host,
+            port: exportConfig.port, 
+            user: exportConfig.user, 
+            password: exportConfig.password 
+          });
           console.log("Connected");
         } else {
           console.error("Couldn't find a ftp-config.js with FTP information to use.");
@@ -516,34 +524,34 @@ module.exports = function(app, io){
     });
   }
 
-  function sendFileToServer(folderPath, projectPath, mediasPath, slugPubliName, slugFolderName, slugProjectName, c){
-    c.mkdir('./www/dodoc-test/'+ slugPubliName, function(err) {
+  function sendFileToServer(folderPath, projectPath, mediasPath, slugPubliName, slugFolderName, slugProjectName, c, domainFolder, domain, socket){
+    c.mkdir('./www/'+domainFolder+'/'+ slugPubliName, function(err) {
       if (err) console.log(slugPubliName+ ' not transferred:' + err);
       else {
         console.log("Folder create on server transferred successfully!");
       }
-      c.put(folderPath + '/index.html', './www/dodoc-test/'+ slugPubliName+'/index.html', function(err) {
+      c.put(folderPath + '/index.html', './www/'+domainFolder+'/'+ slugPubliName+'/index.html', function(err) {
         if (err) console.log('not transferred:' + err);
         else console.log("HTML File transferred successfully!");
       });
-      c.put(folderPath + '/style.css', './www/dodoc-test/'+ slugPubliName+'/style.css', function(err) {
+      c.put(folderPath + '/style.css', './www/'+domainFolder+'/'+ slugPubliName+'/style.css', function(err) {
         if (err) console.log('not transferred:' + err);
         else console.log("CSS File transferred successfully!");
       });
-      c.put(folderPath + '/script.min.js', './www/dodoc-test/'+ slugPubliName+'/script.min.jss', function(err) {
+      c.put(folderPath + '/script.min.js', './www/'+domainFolder+'/'+ slugPubliName+'/script.min.jss', function(err) {
         if (err) console.log('not transferred:' + err);
         else console.log("JS File transferred successfully!");
       });
 
-      c.mkdir('./www/dodoc-test/'+ slugPubliName+'/medias', function(err) {
+      c.mkdir('./www/'+domainFolder+'/'+ slugPubliName+'/medias', function(err) {
         if (err) console.log('medias: not transferred:' + err);
         else console.log("File transferred successfully!");
-        sendImageToServer(projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, c);
+        sendImageToServer(projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, c, domainFolder, domain);
       });
     });
   }
 
-  function sendImageToServer(projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, c){
+  function sendImageToServer(projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, c, domainFolder, domain, socket){
     listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function(publi) {
       for (var prop in publi) {
         var medias = publi[prop].medias;
@@ -562,15 +570,16 @@ module.exports = function(app, io){
               } catch (err) {
                 console.error(err)
               }
-              c.append(newPath, './www/dodoc-test/'+ slugPubliName+'/medias/'+fileName, function(err) {
+              c.append(newPath, './www/'+domainFolder+'/'+ slugPubliName+'/medias/'+fileName, function(err) {
                 if (err) console.log('not transferred:' + err);
                 else {
                   console.log("media transferred");
-                  // console.log("Publication was transferred at sarahgarcin.com/dodoc-test/"+slugPubliName);
                 }
-                c.end();
               });
             }
+            console.log("Publication was transferred at"+domain+domainFolder+'/'+slugPubliName);
+            socket.emit('pubiTransferred', domain+domainFolder+'/'+slugPubliName)
+            c.end();
           }
         }
       }
