@@ -23,7 +23,7 @@ socket.on('publiMetaUpdated', onPubliMetaUpdated);
 socket.on('publiMediasUpdated', onPubliMediasUpdated);
 
 socket.on('noConnection', onNoConnection);
-socket.on('publiTransferred', onPubliTransferred)
+socket.on('pubiTransferred', onPubliTransferred)
 
 
 jQuery(document).ready(function($) {
@@ -43,10 +43,10 @@ function init(){
     .replaceAll('/'+currentFolder+'/'+currentProject+'/04-sons', 'medias')
     .replaceAll('/'+currentFolder+'/'+currentProject+'/05-textes', 'medias');
     
-    var cssFile = '<link rel="stylesheet" href="style.css">';
-    var head = '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="stylesheet" href="/css/style.css"><title>Publication | '+currentPubli+'</title>'+cssFile+'</head>';
-    var body = '<body data-template="basic" class="publi"><div class="publi-container mainContent">';
-    var footer = '</div><script src="script.min.js"></script></body></html>'
+    var cssFile = '<link rel="stylesheet" href="./style.css">';
+    var head = '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="apple-mobile-web-app-capable" content="yes"><title>Publication | '+currentPubli+'</title>'+cssFile+'</head>';
+    var body = '<body class="publi"><div class="publi-container mainContent template_container" data-template="marseille">';
+    var footer = '</div><script src="./script.min.js"></script></body></html>'
     
     var html = head +body + publiClean + footer;
     socket.emit('exportFtp', {"html": html ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
@@ -109,6 +109,7 @@ function onNoConnection(){
 }
 
 function onPubliTransferred(adress){
+  console.log(adress);
   alert('Votre publication a été envoyé à l\'adresse suivant: '+adress);
   enableButton();
 }
