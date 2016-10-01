@@ -22,6 +22,9 @@ socket.on('listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 socket.on('publiMetaUpdated', onPubliMetaUpdated);
 socket.on('publiMediasUpdated', onPubliMediasUpdated);
 
+socket.on('noConnection', onNoConnection);
+socket.on('publiTransferred', onPubliTransferred)
+
 
 jQuery(document).ready(function($) {
 
@@ -47,6 +50,9 @@ function init(){
     
     var html = head +body + publiClean + footer;
     socket.emit('exportFtp', {"html": html ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
+    $(this).attr('disable', 'disable')
+    .css({'background-color':'#A6A6A6', 'cursor':'default'})
+    .find('svg circle').css('fill', '#A6A6A6');  
   });
 
   // Selection des templates 
@@ -68,11 +74,6 @@ function init(){
 
 
 }
-
-String.prototype.replaceAll = function(target, replacement) {
-  return this.split(target).join(replacement);
-};
-
 
 function onListOnePubliMetaAndMedias( psdata) {
   console.log( "onListOnePubliMetaAndMedias");
@@ -102,9 +103,24 @@ function onPubliMediasUpdated( psdata) {
   }
 }
 
+function onNoConnection(){
+  alert('Vous n\'êtes pas connecté à internet, vous ne pouvez pas envoyer cette publication au serveur. Connectez-vous et cliquez sur le bouton à nouveau'); 
+  enableButton();
+}
+
+function onPubliTransferred(adress){
+  alert('Votre publication a été envoyé à l\'adresse suivant: '+adress);
+  enableButton();
+}
+
 
 // ----------------------------------------------
 
+function enableButton(){
+  $('body.publi .js--validerTitre').removeAttr('disable')
+  .css({'background-color':'#48C2B5', 'cursor':'pointer'})
+  .find('svg circle').css('fill', '#48C2B5');
+}
 
 function updateMontagePubliMeta( psdata) {
   var $publiContent = $('.publi-container');
@@ -134,5 +150,10 @@ function randomPosition(){
       });
   });
 }
+
+String.prototype.replaceAll = function(target, replacement) {
+  return this.split(target).join(replacement);
+};
+
 
 
