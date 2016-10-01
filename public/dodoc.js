@@ -139,8 +139,9 @@ var settings = {
   "deletedPrefix" : "x_",
   "thumbSuffix" : "_thumb",
 
-  "mediaThumbWidth" : 320,
-  "mediaThumbHeight" : 240,
+  "mediaThumbWidth" : 720,
+  "mediaThumbHeight" : 720,
+  "mediaThumbQuality" : 60,
 
   "_comment" : "// see http://regexr.com/3d4t8",
   "regexpMatchFolderNames" : "^([^.]+)$",

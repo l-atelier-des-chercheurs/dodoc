@@ -87,8 +87,19 @@ function listMedia( mediaData) {
 }
 
 
+// fonction qui réunit les fonctionnalités d'un média (que ce soit une vidéo, une image, un son, etc.
+
 function mediaInit( $m) {
   var $v = $m.find('video');
+
+  if( $('body').hasClass('publi')) {
+    if( $m.data('informations').length > 0) {
+      var $button = $('<button class="showCaption">t</button>');
+      $m.find('.mediaContent').prepend($button);
+      $button.on('click', function() { $(this).toggleClass('is--clicked');});
+    }
+  }
+
   $m.hover(function() {
     if( $v.length > 0) {
       $v
@@ -108,8 +119,8 @@ function mediaInit( $m) {
         ;
       $v.get(0).currentTime = 0;
     }
-
   });
+
 }
 
 
@@ -170,12 +181,14 @@ function showImage( mediaDatas) {
   var imagesPath = getMediaFiles(mediaDatas);
 
 	var mediaItem = $(".js--templates .media_image").clone(false);
-	mediaItem
-    .data('imagesrc_fullsize', imagesPath.img_large)
-    .find( 'img')
-      .attr('src', imagesPath.img_thumb)
-    .end()
-    ;
+
+  	mediaItem
+      .data('imagesrc_fullsize', imagesPath.img_large)
+      .find( 'img')
+        .attr('src', imagesPath.img_thumb)
+      .end()
+      ;
+
 	return mediaItem;
 }
 
