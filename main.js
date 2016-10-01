@@ -542,7 +542,7 @@ module.exports = function(app, io){
       var domainFolder = exportConfig.subFolder
       // instance for FTP Client
       var c = new Client();
-      
+
       c.on('ready', function() {
         c.mkdir(domainFolder+'/'+ slugPubliName, function(err) {
           if (err) console.log(slugPubliName+ ' not transferred:' + err);
@@ -573,12 +573,12 @@ module.exports = function(app, io){
 
       c.connect({
         host: exportConfig.host,
-        port: exportConfig.port, 
-        user: exportConfig.user, 
-        password: exportConfig.password 
+        port: exportConfig.port,
+        user: exportConfig.user,
+        password: exportConfig.password
       });
       console.log("Connected");
-      
+
     } else {
       console.error("Couldn't find a ftp-config.js with FTP information to use.");
     }
@@ -1292,6 +1292,8 @@ MEDIA METHODS
 
             gm( pathToFile + fileExtension)
               .resize( dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
+              .quality( 60)
+              .autoOrient()
               .write( pathToFile + dodoc.thumbSuffix + fileExtension, function (err) {
                 if( err)
                   console.log( gutil.colors.red('--> Failed to make a thumbnail for a photo! Error: ', err));
