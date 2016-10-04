@@ -7276,14 +7276,14 @@ body.publi {
             transform: rotateY(0deg); }
       body.publi .template_container[data-template="marseille"] .media.media_text .mediaContent {
         overflow: auto !important; }
-      body.publi .template_container[data-template="marseille"] .media:nth-child(1) {
+      body.publi .template_container[data-template="marseille"] .media:nth-child(8n+1) {
         padding-bottom: 16.6665%; }
-      body.publi .template_container[data-template="marseille"] .media:nth-child(4) {
+      body.publi .template_container[data-template="marseille"] .media:nth-child(8n+4) {
         clear: left;
         margin-top: -16.6665%; }
-      body.publi .template_container[data-template="marseille"] .media:nth-child(5) {
+      body.publi .template_container[data-template="marseille"] .media:nth-child(8n+5) {
         width: 66.666%; }
-      body.publi .template_container[data-template="marseille"] .media:nth-child(6) {
+      body.publi .template_container[data-template="marseille"] .media:nth-child(8n+6) {
         clear: left;
         margin-top: -16.6665%;
         padding-bottom: 49.9995%; }
@@ -7931,14 +7931,14 @@ body.bibli {
                 transform: rotateY(0deg); }
           .montage .inner-montage[data-template="marseille"] .media.media_text .mediaContent {
             overflow: auto !important; }
-          .montage .inner-montage[data-template="marseille"] .media:nth-child(1) {
+          .montage .inner-montage[data-template="marseille"] .media:nth-child(8n+1) {
             padding-bottom: 16.6665%; }
-          .montage .inner-montage[data-template="marseille"] .media:nth-child(4) {
+          .montage .inner-montage[data-template="marseille"] .media:nth-child(8n+4) {
             clear: left;
             margin-top: -16.6665%; }
-          .montage .inner-montage[data-template="marseille"] .media:nth-child(5) {
+          .montage .inner-montage[data-template="marseille"] .media:nth-child(8n+5) {
             width: 66.666%; }
-          .montage .inner-montage[data-template="marseille"] .media:nth-child(6) {
+          .montage .inner-montage[data-template="marseille"] .media:nth-child(8n+6) {
             clear: left;
             margin-top: -16.6665%;
             padding-bottom: 49.9995%; }
