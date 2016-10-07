@@ -1598,6 +1598,7 @@ PUBLIS METHODS
 
         var pname = publiData.publiName;
         var pslug = slugg( pname);
+        var ptemplate = publiData.template;
 
         var slugFolderName = publiData.slugFolderName;
         var slugProjectName = publiData.slugProjectName;
@@ -1612,6 +1613,7 @@ PUBLIS METHODS
       var newPubliData =
       {
         "name" : pname,
+        "template" : ptemplate,
         "created" : currentDateString,
         "modified" : currentDateString,
         "informations" : "",

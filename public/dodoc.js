@@ -90,7 +90,8 @@ if( lang === 'fr') {
         "selectAnImage" : "Sélectionnez une image",
         "sureToRemoveProject" : "Êtes-vous sûr de vouloir supprimer le projet&nbsp;?",
 
-        "newProject" : "Nouveau projet"
+        "newProject" : "Nouveau projet",
+        "newPubli" : "Nouvelle publication"
 
       },
 

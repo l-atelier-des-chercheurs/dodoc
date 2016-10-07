@@ -1,7 +1,20 @@
+//- MODIFY PROJECT
 div(id="modal-add-publi" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-  h2#modalTitle.popoverTitle Nouvelle publication
-  form(onsubmit='return false;' class='add-publi-form lead')
-    input(type='text' class='new-publi' placeholder='Nom')
+
+div(class="modal-add-publi_content" style="display:none;")
+  h2.popoverTitle
+    | !{dodoc.lang.modal.newPubli}
+  form(onsubmit='return false;')
+    input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus)
+    fieldset
+      input.js--modal_template(type="radio" name="publiTemplate" id="unecolonne" value="unecolonne" checked)
+      label(for="unecolonne")
+        | Une colonne
+      input.js--modal_template(type="radio" name="publiTemplate" id="grille" value="grille")
+      label(for="grille")
+        | Grille
+    
     hr
-    input(type='submit' class='js--submit-new-publi' value='Valider')
+    
+    input(type='submit' class='button_submit js--modal_submit' value='Valider')
   a(class="close-reveal-modal" aria-label="Close") &#215;
