@@ -469,15 +469,22 @@ var currentStream = (function(context) {
     },
 
     getStaticImageFromVideo : function() {
-      var videoFrame = currentStream.getVideoFrame();
-
-      var invisibleCanvas = document.createElement('canvas');
-      invisibleCanvas.width = videoFrame.videoWidth;
-      invisibleCanvas.height = videoFrame.videoHeight;
-      var invisibleCtx = invisibleCanvas.getContext('2d');
-      invisibleCtx.drawImage( videoFrame, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
-
-      return imageData = invisibleCanvas.toDataURL('image/png');
+      return new Promise(function(resolve, reject) {
+        var videoFrame = currentStream.getVideoFrame();
+  
+        var invisibleCanvas = document.createElement('canvas');
+        invisibleCanvas.width = videoFrame.videoWidth;
+        invisibleCanvas.height = videoFrame.videoHeight;
+        var invisibleCtx = invisibleCanvas.getContext('2d');
+        invisibleCtx.drawImage( videoFrame, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
+  
+        Caman( invisibleCtx.canvas, function () {
+//           this.brightness(10);
+          this.render(function () {
+            resolve( imageData = invisibleCanvas.toDataURL('image/png'));
+          });
+        });
+      });
     },
 
     stopAllFeeds : function() {

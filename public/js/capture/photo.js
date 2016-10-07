@@ -9,27 +9,29 @@ var imageMode = (function() {
     if( mediaJustCaptured())
       return;
 
-    var imageData = currentStream.getStaticImageFromVideo();
-
-    $(".captureRight .flash").fadeIn(0, function(){
-      $(this).fadeOut(500);
+    currentStream.getStaticImageFromVideo().then(function(imageData) {  
+      $(".captureRight .flash").fadeIn(0, function(){
+        $(this).fadeOut(500);
+      });
+      console.log("Yeah you take a picture");
+  
+  
+      var mediaData =
+      {
+        "mediaType" : "photo",
+        "mediaData" : imageData
+      }
+      // send instruction to record photo
+      sendData.createNewMedia( mediaData);
+  
+      $preview.find('.output').attr('src', '');
+  
+      justCaptured();
+      saveFeedback("/images/icone-dodoc_image.png");      
+    }, function(err) {
+      console.log('err ' + err);
     });
-    console.log("Yeah you take a picture");
 
-
-    var mediaData =
-    {
-      "mediaType" : "photo",
-      "mediaData" : imageData
-    }
-    // send instruction to record photo
-    sendData.createNewMedia( mediaData);
-
-
-    $preview.find('.output').attr('src', '');
-
-    justCaptured();
-    saveFeedback("/images/icone-dodoc_image.png");
   }
 
 

@@ -1,0 +1,27 @@
+{
+  "name": "caman",
+  "version": "4.1.2",
+  "main": [
+    "./dist/caman.min.js",
+    "./dist/caman.full.min.js"
+  ],
+  "ignore": [
+    "adapters/",
+    "docs/",
+    "examples/",
+    "src/",
+    "test/"
+  ],
+  "dependencies": {},
+  "homepage": "https://github.com/meltingice/CamanJS",
+  "_release": "4.1.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v4.1.2",
+    "commit": "88b20f42641c29bfe820061990c94af5176aff0c"
+  },
+  "_source": "https://github.com/meltingice/CamanJS.git",
+  "_target": "^4.1.2",
+  "_originalSource": "caman",
+  "_direct": true
+}
