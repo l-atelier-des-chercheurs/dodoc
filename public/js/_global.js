@@ -421,10 +421,10 @@ function makeOnePubli( publiData) {
 	$publiItem
 		.data( 'publiName', publiData.name)
 		.data( 'slugPubliName', publiData.slugPubliName)
-  	.data( 'mtimestamp', transformDatetoTimestamp( publiData.modified))
-  	.data( 'ctimestamp', transformDatetoTimestamp( publiData.created))
-  	.data( 'medias', publiData.medias)
-  	.data( 'linkToPubli', publiPath)
+    	.data( 'mtimestamp', transformDatetoTimestamp( publiData.modified))
+    	.data( 'ctimestamp', transformDatetoTimestamp( publiData.created))
+    	.data( 'medias', publiData.medias)
+    	.data( 'linkToPubli', publiPath)
 		.find('h2')
 		  .html( publiData.name)
 		.end()
@@ -482,11 +482,11 @@ var publi = {
     	.on('click', '.js--edit_view', function(e){
       	e.preventDefault();
     		var $thisPubli = $(this).closest('.publi-folder');
-        publi.openPubli( $thisPubli);
+      publi.openPubli( $thisPubli);
     	})
 
     	.on('click', '.js--backButton', function(){
-  		  $('.montage-edit-container')
+  		  $('.montage_publi_container')
   		    .empty()
   		    .hide()
   		    ;
@@ -495,7 +495,7 @@ var publi = {
     	var $elementToDel = $(this).parent("li.media");
 
     	// check if media is in the montage
-    	if( $elementToDel.closest('.montage-edit').length > 0) {
+    	if( $elementToDel.closest('.montage_publi').length > 0) {
       	$elementToDel.fadeOut( 600,function(){
       		$elementToDel.remove();
           $(document).trigger( 'update_media_montage');
@@ -504,11 +504,11 @@ var publi = {
     })
     ;
 
-    // a drag and drop has succeeded, let's scan inner-montage to parse all medias
+    // a drag and drop has succeeded, let's scan publi_medias to parse all medias
     // and send it to the right json
     $(document).on( 'update_media_montage', function() {
 
-      var $montage = $('.montage-edit-container .montage-edit');
+      var $montage = $('.montage_publi_container > .montage_publi');
       var slugPubliName = $montage.data('publishown');
       var $montageMedias = $montage.find('.media');
 
@@ -543,10 +543,10 @@ var publi = {
 
   openPubli : function( $thisPubli) {
 
-    var $montageEditContainer = $('.montage-edit-container');
+    var $montageEditContainer = $('.montage_publi_container');
 
     // cloner un .montage-edit
-    var $montageEdit = $(".js--templates .montage-edit").clone(false);
+    var $montageEdit = $(".js--templates .montage_publi").clone(false);
     var pdata = $thisPubli.data();
 
     $montageEdit
@@ -591,13 +591,22 @@ function listMontagePubliMeta( whichPubli, pdata, $publiContent) {
   var publiPath = makeFullPathForProject( dodoc.projectPublisFoldername + '/' + pdata.slugPubliName);
 
   $publiContent
-    .find("[data-publi_title]")
+    .find(".js--publiTitle")
       .html( pdata.name)
     .end()
-    .find(".js--publi_view")
+    .find(".js--publiLink")
       .attr('href', publiPath)
     .end()
+    .data("name", pdata.name)
+    .data("template", pdata.template)
     ;
+    
+  if( $publiContent.find('.template_container').length > 0) {
+    $publiContent.find('.template_container').attr("data-template", pdata.template);
+  }
+  else {
+    $publiContent.attr("data-template", pdata.template);
+  }
 }
 
 // update montage content with new medias
@@ -609,7 +618,7 @@ function listMontagePubliMedias( whichPubli, pdata, $publiContent) {
   var $publiMedias = publi.makePubliMedias( pdata);
 
   $publiContent
-    .find("[data-publi_medias]")
+    .find(".publi_medias")
       .html( $publiMedias)
     .end()
     ;
@@ -655,6 +664,12 @@ var sendData = {
     publiData.slugProjectName = currentProject;
   	socket.emit( 'createPubli', publiData);
   },
+  editPubli : function( publiData) {
+    publiData.slugFolderName = currentFolder;
+    publiData.slugProjectName = currentProject;
+  	socket.emit( 'editPubli', publiData);
+  },
+  
   listOnePubliMetaAndMedias : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;

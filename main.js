@@ -437,7 +437,7 @@ module.exports = function(app, io){
       });
 
     }, function(error) {
-      console.error("Failed to create New Publi! Error: ", error);
+      console.error("Failed to edit Publi! Error: ", error);
     });
 
   }
@@ -446,11 +446,11 @@ module.exports = function(app, io){
     dev.logfunction( "EVENT - onEditMediasPubli");
 
     editThisPubli( publiData).then(function( publiMetaData) {
-        var slugFolderName = publiMetaData.slugFolderName;
-        var slugProjectName = publiMetaData.slugProjectName;
-        var slugPubliName = publiMetaData.slugPubliName;
+      var slugFolderName = publiMetaData.slugFolderName;
+      var slugProjectName = publiMetaData.slugProjectName;
+      var slugPubliName = publiMetaData.slugPubliName;
 
-        listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
+      listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
         sendEventWithContent( 'publiMediasUpdated', publiMedias);
       }, function(error) {
         console.error("Failed to list publi media! Error: ", error);
@@ -1700,8 +1700,11 @@ PUBLIS METHODS
       publiMetaData.modified = getCurrentDate();
 
       // update title if pdata has newPubliName
-      if( pdata.newPubliName !== undefined)
-        publiMetaData.name = pdata.newPubliName;
+      if( pdata.name !== undefined)
+        publiMetaData.name = pdata.name;
+
+      if( pdata.template !== undefined)
+        publiMetaData.template = pdata.template;
 
       // update medias if pdata has medias
       if( pdata.medias !== undefined)

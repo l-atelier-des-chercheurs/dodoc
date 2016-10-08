@@ -1,7 +1,7 @@
 //- MODIFY PROJECT
 div(id="modal-add-publi" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
 
-div(class="modal-add-publi_content" style="display:none;")
+div(style="display:none;")
   h2.popoverTitle
     | !{dodoc.lang.modal.newPubli}
   form(onsubmit='return false;')
@@ -10,6 +10,7 @@ div(class="modal-add-publi_content" style="display:none;")
       input.js--modal_template(type="radio" name="publiTemplate" id="unecolonne" value="unecolonne" checked)
       label(for="unecolonne")
         | Une colonne
+    fieldset
       input.js--modal_template(type="radio" name="publiTemplate" id="grille" value="grille")
       label(for="grille")
         | Grille

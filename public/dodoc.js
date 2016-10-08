@@ -91,7 +91,8 @@ if( lang === 'fr') {
         "sureToRemoveProject" : "Êtes-vous sûr de vouloir supprimer le projet&nbsp;?",
 
         "newProject" : "Nouveau projet",
-        "newPubli" : "Nouvelle publication"
+        "newPubli" : "Nouvelle publication",
+        "editPubli" : "Éditer la publication"
 
       },
 

@@ -13075,7 +13075,8 @@ if( lang === 'fr') {
         "sureToRemoveProject" : "Êtes-vous sûr de vouloir supprimer le projet&nbsp;?",
 
         "newProject" : "Nouveau projet",
-        "newPubli" : "Nouvelle publication"
+        "newPubli" : "Nouvelle publication",
+        "editPubli" : "Éditer la publication"
 
       },
 
@@ -14265,10 +14266,10 @@ function makeOnePubli( publiData) {
 	$publiItem
 		.data( 'publiName', publiData.name)
 		.data( 'slugPubliName', publiData.slugPubliName)
-  	.data( 'mtimestamp', transformDatetoTimestamp( publiData.modified))
-  	.data( 'ctimestamp', transformDatetoTimestamp( publiData.created))
-  	.data( 'medias', publiData.medias)
-  	.data( 'linkToPubli', publiPath)
+    	.data( 'mtimestamp', transformDatetoTimestamp( publiData.modified))
+    	.data( 'ctimestamp', transformDatetoTimestamp( publiData.created))
+    	.data( 'medias', publiData.medias)
+    	.data( 'linkToPubli', publiPath)
 		.find('h2')
 		  .html( publiData.name)
 		.end()
@@ -14326,11 +14327,11 @@ var publi = {
     	.on('click', '.js--edit_view', function(e){
       	e.preventDefault();
     		var $thisPubli = $(this).closest('.publi-folder');
-        publi.openPubli( $thisPubli);
+      publi.openPubli( $thisPubli);
     	})
 
     	.on('click', '.js--backButton', function(){
-  		  $('.montage-edit-container')
+  		  $('.montage_publi_container')
   		    .empty()
   		    .hide()
   		    ;
@@ -14339,7 +14340,7 @@ var publi = {
     	var $elementToDel = $(this).parent("li.media");
 
     	// check if media is in the montage
-    	if( $elementToDel.closest('.montage-edit').length > 0) {
+    	if( $elementToDel.closest('.montage_publi').length > 0) {
       	$elementToDel.fadeOut( 600,function(){
       		$elementToDel.remove();
           $(document).trigger( 'update_media_montage');
@@ -14348,11 +14349,11 @@ var publi = {
     })
     ;
 
-    // a drag and drop has succeeded, let's scan inner-montage to parse all medias
+    // a drag and drop has succeeded, let's scan publi_medias to parse all medias
     // and send it to the right json
     $(document).on( 'update_media_montage', function() {
 
-      var $montage = $('.montage-edit-container .montage-edit');
+      var $montage = $('.montage_publi_container > .montage_publi');
       var slugPubliName = $montage.data('publishown');
       var $montageMedias = $montage.find('.media');
 
@@ -14387,10 +14388,10 @@ var publi = {
 
   openPubli : function( $thisPubli) {
 
-    var $montageEditContainer = $('.montage-edit-container');
+    var $montageEditContainer = $('.montage_publi_container');
 
     // cloner un .montage-edit
-    var $montageEdit = $(".js--templates .montage-edit").clone(false);
+    var $montageEdit = $(".js--templates .montage_publi").clone(false);
     var pdata = $thisPubli.data();
 
     $montageEdit
@@ -14435,13 +14436,22 @@ function listMontagePubliMeta( whichPubli, pdata, $publiContent) {
   var publiPath = makeFullPathForProject( dodoc.projectPublisFoldername + '/' + pdata.slugPubliName);
 
   $publiContent
-    .find("[data-publi_title]")
+    .find(".js--publiTitle")
       .html( pdata.name)
     .end()
-    .find(".js--publi_view")
+    .find(".js--publiLink")
       .attr('href', publiPath)
     .end()
+    .data("name", pdata.name)
+    .data("template", pdata.template)
     ;
+    
+  if( $publiContent.find('.template_container').length > 0) {
+    $publiContent.find('.template_container').attr("data-template", pdata.template);
+  }
+  else {
+    $publiContent.attr("data-template", pdata.template);
+  }
 }
 
 // update montage content with new medias
@@ -14453,7 +14463,7 @@ function listMontagePubliMedias( whichPubli, pdata, $publiContent) {
   var $publiMedias = publi.makePubliMedias( pdata);
 
   $publiContent
-    .find("[data-publi_medias]")
+    .find(".publi_medias")
       .html( $publiMedias)
     .end()
     ;
@@ -14499,6 +14509,12 @@ var sendData = {
     publiData.slugProjectName = currentProject;
   	socket.emit( 'createPubli', publiData);
   },
+  editPubli : function( publiData) {
+    publiData.slugFolderName = currentFolder;
+    publiData.slugProjectName = currentProject;
+  	socket.emit( 'editPubli', publiData);
+  },
+  
   listOnePubliMetaAndMedias : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
@@ -14740,7 +14756,7 @@ function onPubliMetaUpdated( psdata) {
   updateMontagePubliMeta( psdata);
 }
 function onPubliMediasUpdated( psdata) {
-  console.log( "onPubliMetaUpdated");
+  console.log( "onPubliMediasUpdated");
   // update medias of montage if necessary
   updateMontagePubliMedias( psdata);
 }
@@ -14766,7 +14782,7 @@ function askToUpdateCurrentPubli() {
 function onListOnePubliMetaAndMedias( psdata) {
   console.log( "onListOnePubliMetaAndMedias");
 
-  var $publiContent = $('.montage-edit-container .montage-edit');
+  var $publiContent = $('.montage_publi_container .montage_publi');
 
   // if publi pane isn't visible with a pubi inside
   if( $publiContent.length === 0) return;
@@ -14787,7 +14803,7 @@ function onListOnePubliMetaAndMedias( psdata) {
 
 function updateMontagePubliMeta( psdata) {
 
-  var $publiContent = $('.montage-edit-container .montage-edit');
+  var $publiContent = $('.montage_publi_container .montage_publi');
   var publiShown = $publiContent.data('publishown');
 
   $.each( psdata, function( slugPubliName, pdata) {
@@ -14796,7 +14812,7 @@ function updateMontagePubliMeta( psdata) {
 }
 function updateMontagePubliMedias( psdata) {
 
-  var $publiContent = $('.montage-edit-container .montage-edit');
+  var $publiContent = $('.montage_publi_container .montage_publi');
   var publiShown = $publiContent.data('publishown');
 
 
@@ -17131,7 +17147,7 @@ module.exports = tick;
       drake.destroy();
 
     var left = document.querySelector('.medias-list');
-    var right = document.querySelector('.inner-montage');
+    var right = document.querySelector('.publi_medias');
 
   	drake = dragula([left, right], {
   	  copy: function (el, source) {
@@ -17531,10 +17547,10 @@ function editFolder($this){
     .end()
   	.find('.modify-statut')
   	  .find('option')
-  	    .removeAttr('checked')
+      .prop("checked", false)
       .end()
   	  .find('option[value="' + folderStatut + '"]')
-  	    .attr('checked', '')
+      .prop("checked", true)
   	  .end()
     .end()
     .data(
@@ -17770,7 +17786,7 @@ function init(){
 
   // Valider et exporter vers un ftp 
   $('body.publi .js--validerTitre').on('click', function (){    
-    var publiHtml = $('.publi-container').html();
+    var publiHtml = $('.template_container').html();
     var publiClean = publiHtml.replaceAll('/'+currentFolder+'/'+currentProject+'/01-photos', 'medias')
     .replaceAll('/'+currentFolder+'/'+currentProject+'/02-animations', 'medias')
     .replaceAll('/'+currentFolder+'/'+currentProject+'/03-videos', 'medias')
@@ -17779,7 +17795,7 @@ function init(){
     
     var cssFile = '<link rel="stylesheet" href="./style.css">';
     var head = '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="apple-mobile-web-app-capable" content="yes"><title>Publication | '+currentPubli+'</title>'+cssFile+'</head>';
-    var body = '<body class="publi"><div class="publi-container mainContent template_container" data-template="marseille">';
+    var body = '<body class="publi"><div class="template_container" data-template="unecolonne">';
     var footer = '</div><script src="./script.min.js"></script></body></html>'
     
     var html = head +body + publiClean + footer;
@@ -17820,8 +17836,6 @@ function onListOnePubliMetaAndMedias( psdata) {
 }
 function onPubliMetaUpdated( psdata) {
   console.log( "onPubliMetaUpdated");
-  // re-list all publis
-  onListOneProjectPublis( psdata);
   // update meta of montage
   updateMontagePubliMeta( psdata);
   if($('body.publi').attr('data-template') == 'bordel'){
@@ -17829,7 +17843,7 @@ function onPubliMetaUpdated( psdata) {
   }
 }
 function onPubliMediasUpdated( psdata) {
-  console.log( "onPubliMetaUpdated");
+  console.log( "onPubliMediasUpdated");
   // update medias of montage if necessary
   updateMontagePubliMedias( psdata);
   if($('body.publi').attr('data-template') == 'bordel'){
@@ -17858,14 +17872,14 @@ function enableButton(){
 }
 
 function updateMontagePubliMeta( psdata) {
-  var $publiContent = $('.publi-container');
+  var $publiContent = $('.template_container');
 
   $.each( psdata, function( slugPubliName, pdata) {
     listMontagePubliMeta( currentPubli, pdata, $publiContent);
   });
 }
 function updateMontagePubliMedias( psdata) {
-  var $publiContent = $('.publi-container');
+  var $publiContent = $('.template_container');
 
   $.each( psdata, function( slugPubliName, pdata) {
     listMontagePubliMedias( currentPubli, pdata, $publiContent);

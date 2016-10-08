@@ -83,7 +83,7 @@ mixin button(typeOfButton, navOrButton, style)
       span !{dodoc.lang.createPublication}
         
   if( typeOfButton === 'view_publication')
-    a(href="/#{slugFolderName}/#{slugProjectName}/publication" title="Dodoc publi" class='button-wrapper_view js--publi_view #{defaultClasses}' target="_blank")
+    a(href="/#{slugFolderName}/#{slugProjectName}/publication" title="Dodoc publi" class='button-wrapper_view js--publiLink #{defaultClasses}' target="_blank")
       .btn.icon
         include images/view.svg
       span !{dodoc.lang.show}

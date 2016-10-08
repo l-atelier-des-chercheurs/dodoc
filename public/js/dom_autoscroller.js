@@ -1493,7 +1493,7 @@ module.exports = tick;
       drake.destroy();
 
     var left = document.querySelector('.medias-list');
-    var right = document.querySelector('.inner-montage');
+    var right = document.querySelector('.publi_medias');
 
   	drake = dragula([left, right], {
   	  copy: function (el, source) {

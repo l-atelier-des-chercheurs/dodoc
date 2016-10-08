@@ -12,7 +12,7 @@ var modals = (function() {
       		modals.createProjectPopup();
       	});
       	$('body').on('click', '.js--edit-project', function(){
-      		$thisProject = $(this).closest(".project");
+      		var $thisProject = $(this).closest(".project");
       		modals.editProjectPopup( $thisProject);
       	});
   
@@ -20,7 +20,8 @@ var modals = (function() {
       		modals.createPubliPopup();
       	});
       	$('body').on('click', '.js--editPubli', function(){
-      		modals.createPubliPopup();
+      		var $thisPubli = $(this).closest(".montage_publi");
+      		modals.editPubliPopup($thisPubli);
       	});
       	
     },
@@ -229,115 +230,37 @@ var modals = (function() {
       });
     },
 
-    // à modifier !
     editPubliPopup : function($publi) {
-      var $modal = $("#modal-modify-publi");
-      $modal
-        .empty()
-        ;
-  
-      var $modalContent = $(".modal-modify-project_content").clone(false);
-      $modal
-        .append( $modalContent.show())
-        ;
-  
-      var pdata = $project.data();
+      
+      var $modal = $("#modal-modify-publi").empty();
+      var $modalContent = $modal.next().clone(false);
+      $modal.append( $modalContent.show());
+      $modal.foundation('reveal', 'open');
+    
+      var pdata = $publi.data();
       $modal
         .find(".js--modal_name")
-          .attr( "value", pdata.projectName)
+          .attr( "value", pdata.name)
         .end()
-        .find(".modify-project-statut option")
-          .filter("[value='" + pdata.statut + "']")
-            .attr('selected', '')
+        .find(".js--modal_template")
+          .prop("checked", false)
+          .filter("[value='" + pdata.template + "']")
+            .prop("checked", true)
           .end()
         .end()
         ;
-  
-      	var $filePicker = $modal.find('.js--modal_inputfile');
-      	var $label = $filePicker.next().find('span');
-      	var labelVal = $label.text();
-    
-      	$filePicker.on( 'change', function( e )
-      	{
-      		var fileName = '';
-    			fileName = e.target.value.split( '\\' ).pop();
-    
-    			var fileData = e.originalEvent.target.files;
-    
-      		if( fileName ) {
-      			$(this)
-      			  .data('fileName', fileName)
-      			  .data('fileData', fileData)
-      			  ;
-      			$label
-    			    .html( fileName)
-              ;
-      		} else
-      			$(this)
-      			  .data('fileName', '')
-      			  .data('fileData', '')
-      			  ;
-      			$label.innerHTML = labelVal;
-      	});
-  
-      	var $deleteModal = $('#modal-deleteproject-alert');
-      	$deleteModal.data('slugProjectName', pdata.slugProjectName)
-    
-      	//Au click sur le bouton supprimer le dossier
-      	$modal.find('.js--deleteProject').on('click', function(){
-      		$deleteModal.foundation('reveal', 'open');
-      	});
-    
-      	$modal.find('.modify-project-statut').bind('change', function(){
-        	$alertModal = $('#modal-statut-alert');
-        	$statutField = $(this);
-      		if( $statutField.val() === "terminé"){
-      			$alertModal.foundation('reveal', 'open');
-      			$alertModal.find('button.oui').on('click', function(){
-      				$alertModal.foundation('reveal', 'close');
-      				$modal.foundation('reveal', 'open');
-      			});
-      			$alertModal.find('button.annuler').on('click', function(){
-      				console.log('non');
-      				$statutField.val('en cours');
-      				$alertModal.foundation('reveal', 'close');
-      				$modal.foundation('reveal', 'open');
-      			});
-      		}
-      	});
-  
+                  
       $modal.find(".js--modal_submit").on('click', function(){
-      	var newProjectName = $modal.find('.js--modal_name').val();
-      	var newStatut = $modal.find('.modify-project-statut').val();
-      	var fileData = $filePicker.data( "fileData");
-      	//Images changed
-  
-      	if( fileData !== undefined && fileData !== null){
-      		console.log('Une image a été ajoutée');
-      		var f = fileData[0];
-      		var reader = new FileReader();
-      		reader.onload = function(evt){
-        		var projectData =
-      			{
-       				"name" : newProjectName,
-              "slugProjectName" : pdata.slugProjectName,
-      				"statut" : newStatut,
-      				"imageData" : evt.target.result
-      		  }
-      		  sendData.editProject( projectData);
-      		};
-      		reader.readAsDataURL(f);
-      	}
-      	else{
-      		console.log("Pas d'image chargé");
-      		var projectData =
+        	var newName = $modal.find('.js--modal_name').val();
+        	var newTemplate = $modal.find('.js--modal_template:checked').val();
+      		var publiData =
           {
-       				"name" : newProjectName,
-              "slugProjectName" : pdata.slugProjectName,
-      				"statut" : newStatut,
+            "name" : newName,
+            "slugPubliName" : pdata.publishown,
+            "template" : newTemplate,
+            "slugProjectName" : pdata.slugProjectName
       		}
-    		  sendData.editProject( projectData);
-      	}
+    		  sendData.editPubliMeta( publiData);
         $modal.foundation('reveal', 'close');
       });
     },
@@ -661,13 +584,6 @@ var modals = (function() {
       	  	$('#modal-modify-project').foundation('reveal', 'open');
       		});
       	});
-    },
-    
-    
-    editPubliInit : function() {
-      
-      
-      
     },
   }  
 })();

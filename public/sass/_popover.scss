@@ -42,11 +42,11 @@
   }
 
   .button_submit {
-    float:left;
+    float:right;
   }
 
   .button-wrapper_deleteFolder  {
-    float:right;
+    float:left;
   }
 
   button {
@@ -55,12 +55,18 @@
 
 
   input[type="submit"], button {
+
     display: block;
     border: none;
     background-color: $bleuvert;
-    padding: 6px 22px;
-    border-radius: 20px;
+
+    padding: 4px 24px;
+    height: 42px;
+    border-radius: 22px;
+    cursor: pointer;
+
     color: white;
+    float: right;
   }
 
   &#modal-statut-alert, &#modal-delete-alert {

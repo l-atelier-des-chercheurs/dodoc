@@ -173,7 +173,7 @@ function onPubliMetaUpdated( psdata) {
   updateMontagePubliMeta( psdata);
 }
 function onPubliMediasUpdated( psdata) {
-  console.log( "onPubliMetaUpdated");
+  console.log( "onPubliMediasUpdated");
   // update medias of montage if necessary
   updateMontagePubliMedias( psdata);
 }
@@ -199,7 +199,7 @@ function askToUpdateCurrentPubli() {
 function onListOnePubliMetaAndMedias( psdata) {
   console.log( "onListOnePubliMetaAndMedias");
 
-  var $publiContent = $('.montage-edit-container .montage-edit');
+  var $publiContent = $('.montage_publi_container .montage_publi');
 
   // if publi pane isn't visible with a pubi inside
   if( $publiContent.length === 0) return;
@@ -220,7 +220,7 @@ function onListOnePubliMetaAndMedias( psdata) {
 
 function updateMontagePubliMeta( psdata) {
 
-  var $publiContent = $('.montage-edit-container .montage-edit');
+  var $publiContent = $('.montage_publi_container .montage_publi');
   var publiShown = $publiContent.data('publishown');
 
   $.each( psdata, function( slugPubliName, pdata) {
@@ -229,7 +229,7 @@ function updateMontagePubliMeta( psdata) {
 }
 function updateMontagePubliMedias( psdata) {
 
-  var $publiContent = $('.montage-edit-container .montage-edit');
+  var $publiContent = $('.montage_publi_container .montage_publi');
   var publiShown = $publiContent.data('publishown');
 
 

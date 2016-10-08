@@ -20,14 +20,11 @@ html
         //-   .bordelTemplate
         //-     a.bordel Bordel
 
-    .publi-container.mainContent.template_container(data-template="marseille")
-      h3.legende
-        | !{dodoc.lang.publi}
 
-      .publi-title
-        h2(data-publi_title)
-          | #{publiName}
-      .publi_medias(data-publi_medias)
+    h3.legende
+      | !{dodoc.lang.publi}
+
+    include templates/publiTemplate.jade
 
     .js--templates
       include templates/js_templates

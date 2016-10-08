@@ -36,7 +36,7 @@ function init(){
 
   // Valider et exporter vers un ftp 
   $('body.publi .js--validerTitre').on('click', function (){    
-    var publiHtml = $('.publi-container').html();
+    var publiHtml = $('.template_container').html();
     var publiClean = publiHtml.replaceAll('/'+currentFolder+'/'+currentProject+'/01-photos', 'medias')
     .replaceAll('/'+currentFolder+'/'+currentProject+'/02-animations', 'medias')
     .replaceAll('/'+currentFolder+'/'+currentProject+'/03-videos', 'medias')
@@ -45,7 +45,7 @@ function init(){
     
     var cssFile = '<link rel="stylesheet" href="./style.css">';
     var head = '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="apple-mobile-web-app-capable" content="yes"><title>Publication | '+currentPubli+'</title>'+cssFile+'</head>';
-    var body = '<body class="publi"><div class="publi-container mainContent template_container" data-template="marseille">';
+    var body = '<body class="publi"><div class="template_container" data-template="unecolonne">';
     var footer = '</div><script src="./script.min.js"></script></body></html>'
     
     var html = head +body + publiClean + footer;
@@ -86,8 +86,6 @@ function onListOnePubliMetaAndMedias( psdata) {
 }
 function onPubliMetaUpdated( psdata) {
   console.log( "onPubliMetaUpdated");
-  // re-list all publis
-  onListOneProjectPublis( psdata);
   // update meta of montage
   updateMontagePubliMeta( psdata);
   if($('body.publi').attr('data-template') == 'bordel'){
@@ -95,7 +93,7 @@ function onPubliMetaUpdated( psdata) {
   }
 }
 function onPubliMediasUpdated( psdata) {
-  console.log( "onPubliMetaUpdated");
+  console.log( "onPubliMediasUpdated");
   // update medias of montage if necessary
   updateMontagePubliMedias( psdata);
   if($('body.publi').attr('data-template') == 'bordel'){
@@ -124,14 +122,14 @@ function enableButton(){
 }
 
 function updateMontagePubliMeta( psdata) {
-  var $publiContent = $('.publi-container');
+  var $publiContent = $('.template_container');
 
   $.each( psdata, function( slugPubliName, pdata) {
     listMontagePubliMeta( currentPubli, pdata, $publiContent);
   });
 }
 function updateMontagePubliMedias( psdata) {
-  var $publiContent = $('.publi-container');
+  var $publiContent = $('.template_container');
 
   $.each( psdata, function( slugPubliName, pdata) {
     listMontagePubliMedias( currentPubli, pdata, $publiContent);
