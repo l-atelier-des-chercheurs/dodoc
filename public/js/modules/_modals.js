@@ -23,7 +23,6 @@ var modals = (function() {
       		modals.createPubliPopup();
       	});
       	$('body').on('click', '.js--editPubli', function(){
-        	debugger;
       		var pdata = $(this).closest("[data-publidata]").data();
       		modals.editPubliPopup(pdata);
       	});

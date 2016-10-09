@@ -33,7 +33,6 @@ jQuery(document).ready(function($) {
 
 function onListOnePubliMetaAndMedias( psdata) {
   console.log( "onListOnePubliMetaAndMedias");
-  $('[data-publidata]').data('publishown', getFirstMediaFromObj( psdata).slugPubliName);
   updateMontagePubliMeta( psdata);
   updateMontagePubliMedias( psdata);  
 }
@@ -48,13 +47,5 @@ function onPubliMediasUpdated( psdata) {
   updateMontagePubliMedias( psdata);
 }
 
-function updateMontagePubliMedias( psdata) {
-  // prendre le premier, celui qui n'est pas dans js--template
-  var $publiContent = $('[data-publidata]');
-
-  $.each( psdata, function( slugPubliName, pdata) {
-    listMontagePubliMedias( currentPubli, pdata, $publiContent);
-  });
-}
 
 

@@ -24,7 +24,7 @@ html
     h3.legende
       | !{dodoc.lang.publi}
 
-    .publi_container(data-publidata) 
+    .publi_container(data-publidata data-publishown="#{slugPubliName}") 
       include templates/publiTemplate.jade
       
     include templates/modals/editPubli

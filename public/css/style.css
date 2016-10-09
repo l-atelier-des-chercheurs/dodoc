@@ -6964,8 +6964,7 @@ th.hide-for-touch {
     height: 42px;
     border-radius: 22px;
     cursor: pointer;
-    color: white;
-    float: right; }
+    color: white; }
   .reveal-modal#modal-statut-alert button, .reveal-modal#modal-delete-alert button {
     display: inline-block;
     padding: 9px 22px;
@@ -7361,7 +7360,7 @@ button {
   min-height: 250px; }
 
 #modal-modify-project .button-wrapper_deleteProject {
-  float: right; }
+  float: left; }
 
 .big-mediaContent textarea {
   min-height: 150px; }
@@ -7595,36 +7594,10 @@ body.bibli {
       width: 100% !important; }
       .montage .montage_publi .template_container:empty:before {
         content: "Cette publication est vide" !important; }
-    .montage .montage_publi .publi-title {
-      position: relative;
-      padding: 9px 15px;
-      margin-bottom: 0;
-      background-color: #fff;
-      z-index: 1;
-      width: 100%;
-      -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-      float: left;
-      font-weight: bold;
-      font-size: 1.6em;
-      line-height: 2;
-      margin: 0; }
-    .montage .montage_publi .publi-btn {
-      position: relative; }
-      .montage .montage_publi .publi-btn:before, .montage .montage_publi .publi-btn:after {
-        content: " ";
-        display: table; }
-      .montage .montage_publi .publi-btn:after {
-        clear: both; }
   .montage .publi_medias {
     height: 100%;
     width: 100%;
     min-height: 60vh;
-    padding: 0 16px;
-    padding-top: 1.875rem;
-    padding-bottom: 3.75rem;
-    margin-bottom: 3.75rem;
-    background-color: #f9f9f9;
     transition: background-color .4s, transform .6s ease-out; }
     .montage .publi_medias:before, .montage .publi_medias:after {
       content: " ";
@@ -7643,7 +7616,7 @@ body.bibli {
       float: none;
       position: relative;
       cursor: move;
-      transition: all .4s; }
+      transition: all .15s; }
       .montage .publi_medias .media .button-wrapper {
         position: absolute;
         top: 0;
@@ -7665,11 +7638,7 @@ body.bibli {
     .montage .publi_medias .media.gu-transit {
       display: block;
       opacity: 1;
-      overflow: hidden;
-      animation-name: insertBloc;
-      animation-iteration-count: 1;
-      animation-timing-function: ease-out;
-      animation-duration: 0.3s; }
+      overflow: hidden; }
     .montage .publi_medias .media.gu-transit .mediaContent {
       opacity: 1;
       background-color: #FFB520;
@@ -8414,7 +8383,7 @@ body.capture .content-wrapper:after {
   .flex_structure > .flex_60 {
     flex: 1 60%; }
 
-.insidePadding, .montage .montage_publi .publi-title, .project-list .project .project-inside .project-link .title, .project-list .project .project-content .meta-data, .project-list .project .project-content .button-to-pages {
+.insidePadding, .project-list .project .project-inside .project-link .title, .project-list .project .project-content .meta-data, .project-list .project .project-content .button-to-pages, .template_container .publi-title {
   padding: 0 16px; }
 
 .media {
@@ -8559,19 +8528,38 @@ body.capture .content-wrapper:after {
 .js--templates {
   display: none; }
 
-.publi-btn:before, .publi-btn:after {
-  content: " ";
-  display: table; }
-
-.publi-btn:after {
-  clear: both; }
-
 .publi_medias:before, .publi_medias:after {
   content: " ";
   display: table; }
 
 .publi_medias:after {
   clear: both; }
+
+.template_container .publi-title {
+  position: relative;
+  display: block;
+  padding: 9px 15px;
+  margin-bottom: 0;
+  background-color: #fff;
+  z-index: 1;
+  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  float: left;
+  width: calc(100% - 40px);
+  font-weight: bold;
+  font-size: 1.6em;
+  line-height: 2;
+  margin: 0; }
+
+.template_container .publi-btn {
+  position: relative;
+  width: 40px;
+  float: left; }
+  .template_container .publi-btn:before, .template_container .publi-btn:after {
+    content: " ";
+    display: table; }
+  .template_container .publi-btn:after {
+    clear: both; }
 
 .template_container[data-template="unecolonne"] {
   margin: 0 auto;

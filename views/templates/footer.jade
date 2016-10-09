@@ -8,15 +8,9 @@ script
   | app.currentFolder = "#{slugFolderName}";
   | app.currentProject = "#{slugProjectName}";
   | app.currentPubli = "#{slugPubliName}";
-script(src='/bower_components/jquery/dist/jquery.min.js')
-script(src='/bower_components/jquery-ui/jquery-ui.min.js')
-script(src='/bower_components/velocity/velocity.min.js')
-script(src='/bower_components/moment/min/moment-with-locales.js')
+script( src='/js/production/plugins.js')
 script moment.locale("#{dodoc.codelang}");
-script(src='/bower_components/foundation/js/foundation.min.js')
-script(src='/bower_components/foundation/js/foundation/foundation.reveal.js')
-script(src='/bower_components/store-js/store.min.js')
-script(src='/bower_components/caman/dist/caman.min.js')
+
 script( src='/dodoc.js')
 script( src='/js/common.js')
 script( src='/js/modules/_modals.js')

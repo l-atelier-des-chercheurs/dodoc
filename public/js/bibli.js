@@ -204,28 +204,7 @@ function onListOnePubliMetaAndMedias( psdata) {
   // if publi pane isn't visible with a pubi inside
   if( $publiContent.length === 0) return;
 
-  var publiRequested = $publiContent.data('publirequested');
-
-  // if this is the answer to a publi request (i.e. click on publi title has just been done)
-  // let's put publirequested in publishown and remove publirequested
-  if( publiRequested !== undefined && publiRequested !== '') {
-    $publiContent.data('publishown', publiRequested);
-    $publiContent.data('publirequested', '');
-  }
-
   updateMontagePubliMeta( psdata);
   updateMontagePubliMedias( psdata);
 
 }
-
-function updateMontagePubliMedias( psdata) {
-
-  var $publiContent = $('[data-publidata]');
-  var publiShown = $publiContent.data('publishown');
-
-
-  $.each( psdata, function( slugPubliName, pdata) {
-    listMontagePubliMedias( publiShown, pdata, $publiContent);
-  });
-}
-

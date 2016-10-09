@@ -7,7 +7,25 @@ var minifyCss = require('gulp-minify-css');
 var plumber = require('gulp-plumber');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
+var jshint       = require('gulp-jshint');
 // var uglify = require('gulp-uglify');
+    
+var pluginsScripts = [
+  'public/bower_components/jquery/dist/jquery.min.js',
+  'public/bower_components/velocity/velocity.min.js',
+  'public/bower_components/moment/min/moment-with-locales.js',
+  'public/bower_components/foundation/js/foundation.min.js',
+  'public/bower_components/foundation/js/foundation/foundation.reveal.js',
+  'public/bower_components/store-js/store.min.js',
+  'public/bower_components/caman/dist/caman.min.js',
+];
+var userScripts = [
+  'public/dodoc.js',
+  'public/js/common.js',
+  'public/js/modules/_modals.js',
+  'public/js/_global.js',
+];
+
 
 // Compile Our Sass
 gulp.task('sass', function() {
@@ -32,35 +50,28 @@ gulp.task('css', function() {
     .pipe(gulp.dest('public/production'));
 });
 
-// Concatenate & Minify JS
-gulp.task('scripts', function() {
-  return gulp.src([
-    'public/bower_components/jquery/dist/jquery.min.js',
-    'public/bower_components/velocity/velocity.min.js',
-    'public/bower_components/moment/min/moment-with-locales.js',
-    'public/bower_components/foundation/js/foundation.min.js',
-    'public/bower_components/foundation/js/foundation/foundation.reveal.js',
-    'public/bower_components/store-js/store.min.js',
-    'public/bower_components/caman/dist/caman.min.js',
-    'public/dodoc.js',
-    'public/js/libs/*.js',
-    'public/js/capture/*.js',
-    'public/js/*.js',
-    ])
-    .pipe(concat('all.js'))
-    .pipe(gulp.dest('public/js/production'))
-    .pipe(rename('all.min.js'))
-    // .pipe(uglify().on('error', function(e){
-    //   console.log(e);
-    // }))
+
+// Lint Task
+gulp.task('lint', function() {
+  return gulp.src( userScripts)
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'));
+});
+
+
+// Concatenate JS plugin
+gulp.task('script-plugins', function() {
+  return gulp.src(pluginsScripts)
+    .pipe(concat('plugins.js'))
     .pipe(gulp.dest('public/js/production'));
 });
 
+
 // Watch Files For Changes
 gulp.task('watch', function() {
-  gulp.watch(['public/js/*.js', 'public/js/libs/*.js','public/js/capture/*.js',], ['scripts']);
+  gulp.watch(['public/js/*.js', 'public/js/libs/*.js','public/js/capture/*.js',], ['lint']);
   gulp.watch(['public/sass/*.scss', 'public/sass/*/*.scss'], ['sass', 'css']);
 });
 
 // Default Task
-gulp.task('default', ['sass', 'css', 'scripts', 'watch']);
+gulp.task('default', ['sass', 'css', 'script-plugins', 'watch']);
