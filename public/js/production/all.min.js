@@ -14248,7 +14248,6 @@ function listPublis( publisData) {
     var newPubli = makeOnePubli( publiContent);
     if( newPubli !== undefined)
       $allPublis = $allPublis.add( newPubli);
-
   });
 
   return $allPublis;
@@ -14273,7 +14272,7 @@ function makeOnePubli( publiData) {
 		.find('h2')
 		  .html( publiData.name)
 		.end()
-		.find('.js--publi_view')
+		.find('.js--publiLink')
 		  .attr('href', publiPath)
 		.end()
 		.find('.js--edit_view')
@@ -14388,13 +14387,13 @@ var publi = {
 
   openPubli : function( $thisPubli) {
 
-    var $montageEditContainer = $('.montage_publi_container');
+    var $montageContainer = $('.montage_publi_container');
 
     // cloner un .montage-edit
-    var $montageEdit = $(".js--templates .montage_publi").clone(false);
+    var $montage = $(".js--templates .montage_publi").clone(false);
     var pdata = $thisPubli.data();
 
-    $montageEdit
+    $montageContainer
       .attr("data-publirequested", pdata.slugPubliName)
       ;
 
@@ -14404,8 +14403,8 @@ var publi = {
     };
 
     // le placer dans .montage-edit-container
-    $montageEditContainer
-      .html( $montageEdit)
+    $montageContainer
+      .html( $montage)
       .show()
       ;
 
