@@ -179,7 +179,7 @@ function onPubliMediasUpdated( psdata) {
 }
 
 function askToUpdateCurrentPubli() {
-  var $publiContent = $('.montage-edit-container .montage-edit');
+  var $publiContent = $('[data-publidata]');
   // if publi pane isn't visible with a pubi inside
   if( $publiContent.length === 0) return;
 
@@ -199,7 +199,7 @@ function askToUpdateCurrentPubli() {
 function onListOnePubliMetaAndMedias( psdata) {
   console.log( "onListOnePubliMetaAndMedias");
 
-  var $publiContent = $('.montage_publi_container .montage_publi');
+  var $publiContent = $('[data-publidata]');
 
   // if publi pane isn't visible with a pubi inside
   if( $publiContent.length === 0) return;
@@ -218,18 +218,9 @@ function onListOnePubliMetaAndMedias( psdata) {
 
 }
 
-function updateMontagePubliMeta( psdata) {
-
-  var $publiContent = $('.montage_publi_container .montage_publi');
-  var publiShown = $publiContent.data('publishown');
-
-  $.each( psdata, function( slugPubliName, pdata) {
-    listMontagePubliMeta( publiShown, pdata, $publiContent);
-  });
-}
 function updateMontagePubliMedias( psdata) {
 
-  var $publiContent = $('.montage_publi_container .montage_publi');
+  var $publiContent = $('[data-publidata]');
   var publiShown = $publiContent.data('publishown');
 
 

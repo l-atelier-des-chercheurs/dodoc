@@ -495,7 +495,7 @@ var publi = {
     	var $elementToDel = $(this).parent("li.media");
 
     	// check if media is in the montage
-    	if( $elementToDel.closest('.montage_publi').length > 0) {
+    	if( $elementToDel.closest('[data-publidata]').length > 0) {
       	$elementToDel.fadeOut( 600,function(){
       		$elementToDel.remove();
           $(document).trigger( 'update_media_montage');
@@ -508,7 +508,7 @@ var publi = {
     // and send it to the right json
     $(document).on( 'update_media_montage', function() {
 
-      var $montage = $('.montage_publi_container > .montage_publi');
+      var $montage = $('[data-publidata]');
       var slugPubliName = $montage.data('publishown');
       var $montageMedias = $montage.find('.media');
 
@@ -582,8 +582,19 @@ var publi = {
 
 }
 
+
+function updateMontagePubliMeta( psdata) {
+  var $publiContent = $('[data-publidata]');
+  var publiShown = $publiContent.data('publishown');
+  $.each( psdata, function( slugPubliName, pdata) {
+    listMontagePubliMeta( publiShown, pdata, $publiContent);
+  });
+}
+
 // update montage content with new meta (title and link)
 function listMontagePubliMeta( whichPubli, pdata, $publiContent) {
+  console.log('listMontagePubliMeta');
+  
   // make sure that publi is requested
   if( pdata.slugFolderName !== currentFolder || pdata.slugProjectName !== currentProject || pdata.slugPubliName !== whichPubli)
     return;
@@ -601,12 +612,8 @@ function listMontagePubliMeta( whichPubli, pdata, $publiContent) {
     .data("template", pdata.template)
     ;
     
-  if( $publiContent.find('.template_container').length > 0) {
-    $publiContent.find('.template_container').attr("data-template", pdata.template);
-  }
-  else {
-    $publiContent.attr("data-template", pdata.template);
-  }
+  debugger;
+  $publiContent.find('.template_container').attr("data-template", pdata.template);
 }
 
 // update montage content with new medias

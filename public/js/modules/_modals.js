@@ -5,6 +5,9 @@ var modals = (function() {
   return {
 
     init : function() {
+      
+      console.log('Modals.init()');
+      
       modals.statusChangeAlertInit();
       modals.removeProjectInit();
   
@@ -20,8 +23,9 @@ var modals = (function() {
       		modals.createPubliPopup();
       	});
       	$('body').on('click', '.js--editPubli', function(){
-      		var $thisPubli = $(this).closest(".montage_publi");
-      		modals.editPubliPopup($thisPubli);
+        	debugger;
+      		var pdata = $(this).closest("[data-publidata]").data();
+      		modals.editPubliPopup(pdata);
       	});
       	
     },
@@ -230,14 +234,13 @@ var modals = (function() {
       });
     },
 
-    editPubliPopup : function($publi) {
+    editPubliPopup : function(pdata) {
       
       var $modal = $("#modal-modify-publi").empty();
       var $modalContent = $modal.next().clone(false);
       $modal.append( $modalContent.show());
       $modal.foundation('reveal', 'open');
     
-      var pdata = $publi.data();
       $modal
         .find(".js--modal_name")
           .attr( "value", pdata.name)

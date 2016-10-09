@@ -24,7 +24,10 @@ html
     h3.legende
       | !{dodoc.lang.publi}
 
-    include templates/publiTemplate.jade
+    .publi_container(data-publidata) 
+      include templates/publiTemplate.jade
+      
+    include templates/modals/editPubli
 
     .js--templates
       include templates/js_templates
@@ -32,3 +35,4 @@ html
     //- //footer
     include templates/footer.jade
     script(src='/js/publi.js')
+    script(src='/js/uploadToFtp.js')    
