@@ -7713,7 +7713,8 @@ body.bibli {
       padding-right: 0.9375rem;
       width: 33.33333%;
       float: left;
-      cursor: move; }
+      cursor: move;
+      padding: 8px; }
       body[data-publicationpane="open"] .medias-list .media:nth-child(3n+1) {
         clear: left; }
 

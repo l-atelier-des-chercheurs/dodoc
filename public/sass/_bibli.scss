@@ -338,6 +338,8 @@ body.bibli {
     body[data-publicationpane="open"] & {
       @include grid-column(4);
       cursor: move;
+      
+      padding: $margin/2;
 
       &:nth-child(3n+1) {
         clear: left;
