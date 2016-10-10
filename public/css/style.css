@@ -8422,13 +8422,13 @@ body.capture .content-wrapper:after {
     z-index: 100;
     background-size: cover; }
   .media[data-mediatype="01-photos"]::before {
-    background-image: url("/images/icone-dodoc_image.png"); }
+    background-image: url("/images/i_icone-dodoc_image.svg"); }
   .media[data-mediatype="02-animations"]::before {
-    background-image: url("/images/icone-dodoc_anim.png"); }
+    background-image: url("/images/i_icone-dodoc_anim.svg"); }
   .media[data-mediatype="03-videos"]::before {
-    background-image: url("/images/icone-dodoc_video.png"); }
+    background-image: url("/images/i_icone-dodoc_video.svg"); }
   .media[data-mediatype="04-sons"]::before {
-    background-image: url("/images/icone-dodoc_son.png"); }
+    background-image: url("/images/i_icone-dodoc_audio.svg"); }
   .media::after {
     content: "";
     position: absolute;
