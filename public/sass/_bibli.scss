@@ -126,7 +126,7 @@ body.bibli {
 
     width:  5px;
     z-index:  1000;
-    background-color: #EF474B;
+    background-color: $rouge;
     background-size: 5px 100%;
 
     display: none;
@@ -138,13 +138,13 @@ body.bibli {
 
 
   .montage_publi {
-    background: #fff;
     position:absolute;
     width:100%;
     top:0;
     left:0;
     display: block;
     min-height: 100vh;
+    background-color: $rouge;
 
     .montage-btn {
       @include clearfix();
@@ -161,7 +161,7 @@ body.bibli {
 
 
     .template_container{
-      width: 100% !important;  
+      width: calc(100% - 2em) !important;
       &:empty {
         &:before{
           content: "Cette publication est vide" !important;
