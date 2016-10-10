@@ -7,23 +7,6 @@ html
     include templates/head.jade
   body(class="publi")
 
-    .navbar-container
-      header.navbar
-        +button( 'projet', 'isNav')
-        +button('validerTitre')
-
-        //- .templateSelector
-        //-   .basicTemplate
-        //-     a.basic Template Basique
-        //-   .newTemplate
-        //-     a.new Template New
-        //-   .bordelTemplate
-        //-     a.bordel Bordel
-
-
-    h3.legende
-      | !{dodoc.lang.publi}
-
     .publi_container(data-publidata data-publishown="#{slugPubliName}") 
       include templates/publiTemplate.jade
       

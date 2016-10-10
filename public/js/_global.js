@@ -553,8 +553,6 @@ var publi = {
       .data("publishown", pdata.slugPubliName)
       ;
       
-    debugger;
-
     var publiData =
     {
       "slugPubliName" : pdata.slugPubliName
