@@ -12,5 +12,5 @@ module.exports = function(app,express){
   //app.use(express.bodyParser()); //Tells server to support JSON, urlencoded, and multipart requests
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
-  app.use(favicon(__dirname + '/public/images/favicon.ico'));
+//   app.use(favicon(__dirname + '/public/images/favicon.ico'));
 }
