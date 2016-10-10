@@ -106,10 +106,6 @@ body.bibli {
   background: $rouge;
   border-left: 4px solid darken($rouge, 8%);
 
-  height: calc( 100vh - 70px);
-
-  overflow-y: visible scroll; /* has to be scroll, not auto, to get momentum scrolling */
-  -webkit-overflow-scrolling: touch;
 
   padding-left: 0.9375rem * 2;
   padding-right: 0.9375rem * 2;
@@ -135,6 +131,15 @@ body.bibli {
 
   .montage_publi_container {
     display: none;
+    top: 0;
+    left: 0;
+    position: fixed;
+    height: 100%;
+    width: 100%;    
+
+    overflow: scroll; /* has to be scroll, not auto, to get momentum scrolling */
+    -webkit-overflow-scrolling: touch;
+
   }
 
 
@@ -353,6 +358,10 @@ body.bibli {
 
 
 .montage-list {
+
+  height:   100%;
+  overflow: scroll; /* has to be scroll, not auto, to get momentum scrolling */
+  -webkit-overflow-scrolling: touch;
 
   > .button-wrapper {
     margin-bottom:  15px;

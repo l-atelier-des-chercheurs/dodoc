@@ -4,16 +4,28 @@ div(id="modal-add-publi" class="reveal-modal" data-reveal aria-labelledby="modal
 div(style="display:none;")
   h2.popoverTitle
     | !{dodoc.lang.modal.newPubli}
+    
   form(onsubmit='return false;')
     input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus)
-    fieldset
+
+    .legende
+      | !{dodoc.lang.selectTemplate}
+    
+    fieldset.templateSelector
       input.js--modal_template(type="radio" name="publiTemplate" id="unecolonne" value="unecolonne" checked)
       label(for="unecolonne")
         | Une colonne
-    fieldset
+        include ../../../templates/unecolonne/icone.svg
+    fieldset.templateSelector
       input.js--modal_template(type="radio" name="publiTemplate" id="grille" value="grille")
       label(for="grille")
         | Grille
+        include ../../../templates/grille/icone.svg
+    fieldset.templateSelector
+      input.js--modal_template(type="radio" name="publiTemplate" id="marseille" value="marseille")
+      label(for="marseille")
+        | Marseille
+        include ../../../templates/marseille/icone.svg
     
     hr
     

@@ -25,6 +25,8 @@
 
   max-width: 32.5rem;
 
+  max-height: 80vh;
+  overflow-y: scroll;
 
   .popoverTitle {
     font-weight: bold;
@@ -55,7 +57,6 @@
 
 
   input[type="submit"], button {
-
     display: block;
     border: none;
     background-color: $bleuvert;
@@ -66,6 +67,44 @@
     cursor: pointer;
 
     color: white;
+  }
+  
+  .templateSelector {
+    
+    position: relative;
+    display: inline-block; 
+    vertical-align: top;  
+    width: 140px;
+    height: 140px;
+    padding: 0;
+    margin-right: $margin;
+    
+    input {
+      opacity: 0; 
+    }
+    
+    label {
+      width: 100%;  
+      
+      svg {
+        position: absolute;
+        top: 0; left: 0;  right: 0; bottom: 0;  
+        z-index: 1; 
+        #fond * {
+          fill: $orange-clair;
+        }
+      }
+    }
+      
+    input:checked ~ label svg {
+      #fond > * {
+          fill: $orange;
+      }
+      #modules > * {
+        fill: $bleumarine;
+      }
+    }
+    
   }
 
   &#modal-statut-alert, &#modal-delete-alert {

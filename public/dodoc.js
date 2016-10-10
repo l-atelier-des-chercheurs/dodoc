@@ -122,6 +122,7 @@ var settings = {
 
   "codelang" : lang,
   "contentDir" : "sessions",
+  "publicationTemplateDir" : "templates",
   "metaFileext" : ".txt",
   "videoext" : ".webm",
   "stopMotionext" : ".webm",

@@ -33,7 +33,6 @@
 	.st27{fill:#A5E5DA;}
 	.st28{fill:#293275;}
 	.st29{opacity:0.9;}
-	.st30{fill:#40BEB3;}
 	.st31{fill:none;stroke:#FFFFFF;stroke-width:8;stroke-miterlimit:10;}
 	.st32{fill:none;}
 	.st33{fill:none;stroke:#FF3E51;stroke-width:6;stroke-miterlimit:10;}
@@ -94,7 +93,6 @@
 		<circle class="st20" cx="145.3" cy="101.1" r="37.6"/>
 	</g>
 	<g class="st29">
-		<polyline class="st30" points="423.4,64.6 460.2,101.4 423.4,138.2 		"/>
 		<polyline class="st21" points="423.4,64.1 460.2,100.9 423.4,137.7 		"/>
 		<circle class="st21" cx="288.3" cy="100.6" r="37.6"/>
 		<circle class="st21" cx="52" cy="100.6" r="37.6"/>

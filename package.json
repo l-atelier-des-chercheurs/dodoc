@@ -28,6 +28,7 @@
     "marky-mark": "^1.2.1",
     "merge": "^1.2.0",
     "moment": "^2.12.0",
+    "path": "^0.12.7",
     "recordrtc-socketio": "*",
     "serve-favicon": "^2.3.0",
     "slugg": "^1.0.0",

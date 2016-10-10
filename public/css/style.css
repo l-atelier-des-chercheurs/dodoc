@@ -6939,6 +6939,8 @@ th.hide-for-touch {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   padding: 10px 16px 16px 16px;
   max-width: 32.5rem;
+  max-height: 80vh;
+  overflow-y: scroll;
   /* style 6 */ }
   .reveal-modal .popoverTitle {
     font-weight: bold;
@@ -6964,6 +6966,31 @@ th.hide-for-touch {
     border-radius: 22px;
     cursor: pointer;
     color: white; }
+  .reveal-modal .templateSelector {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    width: 140px;
+    height: 140px;
+    padding: 0;
+    margin-right: 16px; }
+    .reveal-modal .templateSelector input {
+      opacity: 0; }
+    .reveal-modal .templateSelector label {
+      width: 100%; }
+      .reveal-modal .templateSelector label svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1; }
+        .reveal-modal .templateSelector label svg #fond * {
+          fill: #FFD892; }
+    .reveal-modal .templateSelector input:checked ~ label svg #fond > * {
+      fill: #FFBE32; }
+    .reveal-modal .templateSelector input:checked ~ label svg #modules > * {
+      fill: #0E2173; }
   .reveal-modal#modal-statut-alert button, .reveal-modal#modal-delete-alert button {
     display: inline-block;
     padding: 9px 22px;
@@ -7562,10 +7589,6 @@ body.bibli {
   right: 0;
   background: #FF3E51;
   border-left: 4px solid #ff152c;
-  height: calc( 100vh - 70px);
-  overflow-y: visible scroll;
-  /* has to be scroll, not auto, to get momentum scrolling */
-  -webkit-overflow-scrolling: touch;
   padding-left: 1.875rem;
   padding-right: 1.875rem;
   transform: translate(100%, 0);
@@ -7581,7 +7604,15 @@ body.bibli {
     right: 100%;
     z-index: 1900; }
   .montage .montage_publi_container {
-    display: none; }
+    display: none;
+    top: 0;
+    left: 0;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    overflow: scroll;
+    /* has to be scroll, not auto, to get momentum scrolling */
+    -webkit-overflow-scrolling: touch; }
   .montage .montage_publi {
     position: absolute;
     width: 100%;
@@ -7718,38 +7749,42 @@ body.bibli {
       body[data-publicationpane="open"] .medias-list .media:nth-child(3n+1) {
         clear: left; }
 
-.montage-list > .button-wrapper {
-  margin-bottom: 15px; }
-
-.montage-list .publi-folder {
-  position: relative;
-  padding: 7px 15px 9px;
-  margin-bottom: 15px;
-  background-color: #fff;
-  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
-  .montage-list .publi-folder:before, .montage-list .publi-folder:after {
-    content: " ";
-    display: table; }
-  .montage-list .publi-folder:after {
-    clear: both; }
-  .montage-list .publi-folder .content {
-    float: left; }
-    .montage-list .publi-folder .content .title {
-      font-weight: bold;
-      font-size: 1.5em;
-      margin: 0;
-      margin-top: 6px;
-      margin-bottom: 6px;
-      cursor: pointer; }
-      .montage-list .publi-folder .content .title:hover {
-        color: #FF3E51; }
-  .montage-list .publi-folder .publi-btn {
-    display: block;
-    float: none;
-    position: absolute;
-    right: 9px;
-    top: 11px; }
+.montage-list {
+  height: 100%;
+  overflow: scroll;
+  /* has to be scroll, not auto, to get momentum scrolling */
+  -webkit-overflow-scrolling: touch; }
+  .montage-list > .button-wrapper {
+    margin-bottom: 15px; }
+  .montage-list .publi-folder {
+    position: relative;
+    padding: 7px 15px 9px;
+    margin-bottom: 15px;
+    background-color: #fff;
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
+    .montage-list .publi-folder:before, .montage-list .publi-folder:after {
+      content: " ";
+      display: table; }
+    .montage-list .publi-folder:after {
+      clear: both; }
+    .montage-list .publi-folder .content {
+      float: left; }
+      .montage-list .publi-folder .content .title {
+        font-weight: bold;
+        font-size: 1.5em;
+        margin: 0;
+        margin-top: 6px;
+        margin-bottom: 6px;
+        cursor: pointer; }
+        .montage-list .publi-folder .content .title:hover {
+          color: #FF3E51; }
+    .montage-list .publi-folder .publi-btn {
+      display: block;
+      float: none;
+      position: absolute;
+      right: 9px;
+      top: 11px; }
 
 @media only screen and (max-width: 40em) {
   .medias-list .media {

@@ -7,17 +7,23 @@ div(style="display:none;")
     
   form(onsubmit='return false;')
     input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus)
-    fieldset
+    fieldset.templateSelector
       input.js--modal_template(type="radio" name="publiTemplate" id="unecolonne" value="unecolonne" checked)
       label(for="unecolonne")
         | Une colonne
-    fieldset
+        include ../../../templates/unecolonne/icone.svg
+    fieldset.templateSelector
       input.js--modal_template(type="radio" name="publiTemplate" id="grille" value="grille")
       label(for="grille")
         | Grille
-
+        include ../../../templates/grille/icone.svg
+    fieldset.templateSelector
+      input.js--modal_template(type="radio" name="publiTemplate" id="marseille" value="marseille")
+      label(for="marseille")
+        | Marseille
+        include ../../../templates/marseille/icone.svg
+    
     hr
 
     input(type='submit' class='button_submit js--modal_submit' value='Valider')
-//- ajouter un bouton de supression de publi    +button('deleteProject', '', '')
   a(class="close-reveal-modal" aria-label="Close") &#215;
