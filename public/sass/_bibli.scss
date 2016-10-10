@@ -19,7 +19,6 @@ body.bibli {
 
   text-align: left;
 
-
   .btn-medias {
     position: fixed;
 
@@ -35,7 +34,7 @@ body.bibli {
 
     body[data-publicationpane="open"] & {
       right: 100 - $pourcentageBuffer;
-      background-color: #EF474B;
+      background-color: $rouge;
     }
 
     &:hover {
@@ -88,7 +87,7 @@ body.bibli {
   right: 0;
 
   background: $rouge;
-  border-left: 4px solid #EF474B;
+  border-left: 4px solid darken($rouge, 8%);
 
   height: calc( 100vh - 70px);
   overflow-y: scroll; /* has to be scroll, not auto */

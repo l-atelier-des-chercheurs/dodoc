@@ -9,27 +9,29 @@ $marginrem: .9375rem;
 $t-navbarheight: 70px;
 
 // C O L O R S
-$bleumarine: #293275;
-$bleuvert: #48C2B5;
+
+
+$bleumarine: #0E2173;
+$bleuvert: #4BC0B4;
+$orange: #FFBE32;
+$rouge: #FF3E51;
 
 $grisfonce: #535353;
 $grisclair: #B5B5B5;
 $gristresclair: #e5e5e5;
 
-$orange: #FFB520;
-$rouge: #EF474B;
 
 // new colors
-$c-images: #FFB520;
-$c-videos: #fe414d;
-$c-sons: #09227c;
-$c-anim: #48c2b5;
+$c-images: $orange;
+$c-videos: $rouge;
+$c-sons: $bleumarine;
+$c-anim: $bleuvert;
 
-$c-dossier: #F56A4B; // #F56A4B
-$c-projet: #40beb3;
-$c-bibli: #293275;
+$c-dossier: $rouge; // #F56A4B
+$c-projet: $bleuvert;
+$c-bibli: $bleumarine;
 $c-capture: $orange;
-$c-publi: #EF4651;
+$c-publi: $rouge;
 
 $c-separator: #DFDFDF;
 

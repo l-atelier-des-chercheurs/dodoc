@@ -142,7 +142,6 @@
       float:left;
 
       padding: 5px;
-      margin-bottom: 15px;
       margin-right: 10px;
 
       transition: height .6s ease-out;
@@ -234,20 +233,8 @@
           }
         }
 
-        &_dossier {
-          .btn.icon {
-            padding: 12px;
-            margin-top:   -8px;
-          }
-          &::after {
-            background-color: transparentize( $c-dossier, $transparentize);
-          }
-
-          &:hover {
-            color: $c-dossier;
-          }
-
-
+        .btn.icon {
+          margin-top:   -8px;
         }
 
 

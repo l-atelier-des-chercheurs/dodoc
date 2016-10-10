@@ -144,25 +144,25 @@ body.capture{
       &[data-mediatype="photo"] {
         background-color: $c-images;
         &::before {
-          background-image: url("/images/icone-dodoc_image.png");
+          background-image: url("/images/i_icone-dodoc_image.svg");
         }
       }
       &[data-mediatype="video"] {
         background-color: $c-videos;
         &::before {
-          background-image: url("/images/icone-dodoc_video.png");
+          background-image: url("/images/i_icone-dodoc_video.svg");
         }
       }
       &[data-mediatype="stopmotion"] {
         background-color: $c-anim;
         &::before {
-          background-image: url("/images/icone-dodoc_anim.png");
+          background-image: url("/images/i_icone-dodoc_anim.svg");
         }
       }
       &[data-mediatype="audio"] {
         background-color: $c-sons;
         &::before {
-          background-image: url("/images/icone-dodoc_son.png");
+          background-image: url("/images/i_icone-dodoc_son.svg");
         }
       }
 
