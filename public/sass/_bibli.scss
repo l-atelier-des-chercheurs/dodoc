@@ -1,4 +1,4 @@
-$pourcentageBuffer: 66%;
+$pourcentageBuffer: 50%;
 
 
 body.bibli {
@@ -138,7 +138,7 @@ body.bibli {
     .montage-btn {
       @include clearfix();
       padding: 15px;
-      background-color: $gristresclair;
+      background-color: $rouge;
 
       .button-wrapper_backButton {
         float: left;
@@ -329,10 +329,10 @@ body.bibli {
     }
 
     body[data-publicationpane="open"] & {
-      @include grid-column(3);
+      @include grid-column(4);
       cursor: move;
 
-      &:nth-child(4n+1) {
+      &:nth-child(3n+1) {
         clear: left;
       }
     }

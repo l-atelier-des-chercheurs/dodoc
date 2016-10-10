@@ -7509,7 +7509,7 @@ body.bibli {
     border-radius: 4px 0 0 4px;
     transition: all .7s ease-out; }
     body[data-publicationpane="open"] .bibli-buffer .btn-medias {
-      right: 34%;
+      right: 50%;
       background-color: #FF3E51; }
     .bibli-buffer .btn-medias:hover {
       width: 170px; }
@@ -7540,7 +7540,7 @@ body.bibli {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 66%;
+  left: 50%;
   right: 0;
   background: #FF3E51;
   border-left: 4px solid #ff152c;
@@ -7578,7 +7578,7 @@ body.bibli {
     min-height: 100vh; }
     .montage .montage_publi .montage-btn {
       padding: 15px;
-      background-color: #e5e5e5; }
+      background-color: #FF3E51; }
       .montage .montage_publi .montage-btn:before, .montage .montage_publi .montage-btn:after {
         content: " ";
         display: table; }
@@ -7677,7 +7677,7 @@ body.bibli {
   .medias-list:after {
     clear: both; }
   body[data-publicationpane="open"] .medias-list {
-    width: 66%; }
+    width: 50%; }
   body.gu-unselectable .medias-list {
     opacity: .6; }
   .medias-list:empty::after {
@@ -7699,10 +7699,10 @@ body.bibli {
     body[data-publicationpane="open"] .medias-list .media {
       padding-left: 0.9375rem;
       padding-right: 0.9375rem;
-      width: 25%;
+      width: 33.33333%;
       float: left;
       cursor: move; }
-      body[data-publicationpane="open"] .medias-list .media:nth-child(4n+1) {
+      body[data-publicationpane="open"] .medias-list .media:nth-child(3n+1) {
         clear: left; }
 
 .montage-list > .button-wrapper {
