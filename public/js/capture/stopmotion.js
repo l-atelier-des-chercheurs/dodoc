@@ -42,10 +42,12 @@ var stopMotionMode = (function() {
     mediaData.slugProjectName = currentProject;
 
     // get a first image to send with project data
-    var imageData = currentStream.getStaticImageFromVideo();
-    mediaData.imageContent = imageData;
-
-    socket.emit( 'startStopMotion', mediaData);
+    currentStream.getStaticImageFromVideo().then(function(imageData) {  
+      mediaData.imageContent = imageData;
+      socket.emit( 'startStopMotion', mediaData);
+    }, function(err) {
+      console.log('err ' + err);
+    });
   }
 
   function takeStopMotionPic() {
@@ -59,24 +61,28 @@ var stopMotionMode = (function() {
     var smCachePath = $("body").data("smCachePath");
     var imageData = currentStream.getStaticImageFromVideo();
 
-    if(smCacheName.length > 0 && smCachePath.length > 0)
+    currentStream.getStaticImageFromVideo().then(function(imageData) {  
 
-    var smImage =
-    {
-      "imageContent" : imageData,
-      "folderCacheName" : smCacheName,
-      "folderCachePath" : smCachePath
-    };
-
-    socket.emit( 'addImageToStopMotion', smImage);
-
-    $('body').addClass('takingstopmotion');
-    $(".captureRight .flash").fadeIn(0, function(){
-      $(this).fadeOut(500);
+      var smImage =
+      {
+        "imageContent" : imageData,
+        "folderCacheName" : smCacheName,
+        "folderCachePath" : smCachePath
+      };
+  
+      socket.emit( 'addImageToStopMotion', smImage);
+  
+      $('body').addClass('takingstopmotion');
+      $(".captureRight .flash").fadeIn(0, function(){
+        $(this).fadeOut(500);
+      });
+  
+      justCaptured();
+      animateWindows();
+  
+    }, function(err) {
+      console.log('err ' + err);
     });
-
-    justCaptured();
-    animateWindows();
 
   }
 

@@ -191,7 +191,7 @@ button{
 
   }
 
-  &_add, &_edit, &_publi, &_editProjet, &_addMedia, &_backButton, &_editFolder, &_settings {
+  &_add, &_edit, &_publi, &_editProjet, &_addMedia, &_backButton, &_editFolder, &_settings, &_createPublication {
     background-color: $rouge;
     color: white;
   }
@@ -312,7 +312,7 @@ button{
   }
 
   .button-wrapper_deleteProject {
-    float: right;
+    float: left;
   }
 }
 
@@ -599,4 +599,53 @@ button{
 .js--templates {
   display: none;
 }
+
+
+.publi_medias {
+  @include clearfix();
+}
+
+
+.template_container {
+  
+  .publi-title{
+    position: relative;
+    display: block; 
+    padding: 9px 15px;
+    margin-bottom: 0;
+    background-color: #fff;
+    z-index: 1;
+
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+    float: left;
+    width: calc(100% - 40px);
+
+    font-weight: bold;
+    font-size: 1.6em;
+    line-height: 2;
+    margin: 0;
+    @extend .insidePadding;
+  }
+  
+  .publi-btn {
+    @include clearfix();
+    position: relative;
+    width: 40px;
+    float: left;  
+  }
+  
+}
+
+
+.template_container[data-template="unecolonne"] {
+  @import "publiTemplates/unecolonne.scss";
+}
+
+
+.template_container[data-template="grille"] {
+  @import "publiTemplates/grille.scss";
+}
+
 

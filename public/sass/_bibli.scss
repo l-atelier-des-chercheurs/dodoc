@@ -122,12 +122,12 @@ body.bibli {
     display: none;
   }
 
-  .montage-edit-container {
+  .montage_publi_container {
     display: none;
   }
 
 
-  .montage-edit {
+  .montage_publi {
     background: #fff;
     position:absolute;
     width:100%;
@@ -149,82 +149,27 @@ body.bibli {
       }
     }
 
-    .montage-title{
 
-      @include clearfix();
-
-      position: relative;
-      padding: 9px 15px;
-      margin-bottom: 0;
-      background-color: #fff;
-      z-index: 1;
-
-      -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-
-      .title {
-        float: left;
-
-        font-weight: bold;
-        font-size: 1.6em;
-        line-height: 2;
-        margin: 0;
-        @extend .insidePadding;
-
-      }
-
-      .publi-btn {
-
-        float: right;
-        margin-top: 4px;
-
-
-        .button-wrapper {
-          display: block;
-          float: none;
-
-          &.button-wrapper_accept {
-            display: none;
-            width:  142px;
-
-            span {
-              width: 95px;
-            }
-          }
+    .template_container{
+      width: 100% !important;  
+      &:empty {
+        &:before{
+          content: "Cette publication est vide" !important;
         }
       }
-
-      input{
-        display:none;
-        width: calc( 100% - 160px);
-        float: left;
-        margin: 0;
-        margin: 0;
-        font-size: 1.4em;
-        height: 2.8rem;
-      }
-
-
     }
+
+
   }
-  .inner-montage{
+  .publi_medias {
+
+    @include clearfix();
 
     height:100%;
+    width: 100%;  
     min-height:60vh;
 
-    padding: 0 $margin;
-    padding-top: 1.875rem;
-    padding-bottom: 1.875rem * 2;
-    margin-bottom: 1.875rem * 2;
-    background-color: #f9f9f9;
     transition: background-color .4s, transform .6s ease-out;
-
-    &[data-template="marseille"] {
-
-      @import "publiTemplates/marseille.scss";
-      width: 100% !important;
-
-    }
 
     body.gu-unselectable & {
       // une bonne idéé à retravailler
@@ -248,7 +193,7 @@ body.bibli {
       position: relative;
       cursor: move;
 
-      transition: all .4s;
+      transition: all .15s;
 
 
       .button-wrapper {
@@ -295,11 +240,6 @@ body.bibli {
       opacity: 1;
 
       overflow: hidden;
-
-      animation-name: insertBloc;
-      animation-iteration-count: 1;
-      animation-timing-function: ease-out;
-      animation-duration: 0.3s;
     }
 
 
@@ -491,16 +431,11 @@ body.bibli {
     margin-top: 50px;
   }
 
-  .montage{
+  .montage_publi {
     width: 85%;
     left:15% !important;
     z-index: 499 !important;
-    .inner-montage{
-      &:empty {
-        &:before{
-          content: "Cette publication est vide" !important;
-        }
-      }
+    .template_container{
       .media{
         width: 100% !important;
       }

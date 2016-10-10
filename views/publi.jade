@@ -20,14 +20,14 @@ html
         //-   .bordelTemplate
         //-     a.bordel Bordel
 
-    .publi-container.mainContent.template_container(data-template="marseille")
-      h3.legende
-        | !{dodoc.lang.publi}
 
-      .publi-title
-        h2(data-publi_title)
-          | #{publiName}
-      .publi_medias(data-publi_medias)
+    h3.legende
+      | !{dodoc.lang.publi}
+
+    .publi_container(data-publidata data-publishown="#{slugPubliName}") 
+      include templates/publiTemplate.jade
+      
+    include templates/modals/editPubli
 
     .js--templates
       include templates/js_templates
@@ -35,3 +35,4 @@ html
     //- //footer
     include templates/footer.jade
     script(src='/js/publi.js')
+    script(src='/js/uploadToFtp.js')    

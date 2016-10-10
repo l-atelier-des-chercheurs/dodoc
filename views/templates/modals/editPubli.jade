@@ -1,0 +1,23 @@
+//- MODIFY PROJECT
+div(id="modal-modify-publi" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+
+div(style="display:none;")
+  h2.popoverTitle
+    | !{dodoc.lang.modal.editPubli}
+    
+  form(onsubmit='return false;')
+    input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus)
+    fieldset
+      input.js--modal_template(type="radio" name="publiTemplate" id="unecolonne" value="unecolonne" checked)
+      label(for="unecolonne")
+        | Une colonne
+    fieldset
+      input.js--modal_template(type="radio" name="publiTemplate" id="grille" value="grille")
+      label(for="grille")
+        | Grille
+
+    hr
+
+    input(type='submit' class='button_submit js--modal_submit' value='Valider')
+//- ajouter un bouton de supression de publi    +button('deleteProject', '', '')
+  a(class="close-reveal-modal" aria-label="Close") &#215;

@@ -36,18 +36,16 @@ html
         .montage-list
           h1.legende
             | !{dodoc.lang.listOfPublications}
-          a(href="" data-reveal-id="modal-add-publi").button-wrapper.button-wrapper_add
-            .btn.icon
-              include templates/images/add.svg
-            span
-              | !{dodoc.lang.createPublication}
+          +button( 'createPublication', '', '')
+              
           ul
-        .montage-edit-container
+        .montage_publi_container(data-publidata)
 
     include templates/modals/addPubli
     include templates/modals/importMedia
     include templates/modals/addText
     include templates/modals/bigMedia
+    include templates/modals/editPubli
 
     .js--templates
       include templates/js_templates

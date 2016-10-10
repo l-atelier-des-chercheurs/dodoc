@@ -173,13 +173,13 @@ function onPubliMetaUpdated( psdata) {
   updateMontagePubliMeta( psdata);
 }
 function onPubliMediasUpdated( psdata) {
-  console.log( "onPubliMetaUpdated");
+  console.log( "onPubliMediasUpdated");
   // update medias of montage if necessary
   updateMontagePubliMedias( psdata);
 }
 
 function askToUpdateCurrentPubli() {
-  var $publiContent = $('.montage-edit-container .montage-edit');
+  var $publiContent = $('[data-publidata]');
   // if publi pane isn't visible with a pubi inside
   if( $publiContent.length === 0) return;
 
@@ -199,42 +199,12 @@ function askToUpdateCurrentPubli() {
 function onListOnePubliMetaAndMedias( psdata) {
   console.log( "onListOnePubliMetaAndMedias");
 
-  var $publiContent = $('.montage-edit-container .montage-edit');
+  var $publiContent = $('[data-publidata]');
 
   // if publi pane isn't visible with a pubi inside
   if( $publiContent.length === 0) return;
-
-  var publiRequested = $publiContent.data('publirequested');
-
-  // if this is the answer to a publi request (i.e. click on publi title has just been done)
-  // let's put publirequested in publishown and remove publirequested
-  if( publiRequested !== undefined && publiRequested !== '') {
-    $publiContent.data('publishown', publiRequested);
-    $publiContent.data('publirequested', '');
-  }
 
   updateMontagePubliMeta( psdata);
   updateMontagePubliMedias( psdata);
 
 }
-
-function updateMontagePubliMeta( psdata) {
-
-  var $publiContent = $('.montage-edit-container .montage-edit');
-  var publiShown = $publiContent.data('publishown');
-
-  $.each( psdata, function( slugPubliName, pdata) {
-    listMontagePubliMeta( publiShown, pdata, $publiContent);
-  });
-}
-function updateMontagePubliMedias( psdata) {
-
-  var $publiContent = $('.montage-edit-container .montage-edit');
-  var publiShown = $publiContent.data('publishown');
-
-
-  $.each( psdata, function( slugPubliName, pdata) {
-    listMontagePubliMedias( publiShown, pdata, $publiContent);
-  });
-}
-

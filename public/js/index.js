@@ -248,10 +248,10 @@ function editFolder($this){
     .end()
   	.find('.modify-statut')
   	  .find('option')
-  	    .removeAttr('checked')
+      .prop("checked", false)
       .end()
   	  .find('option[value="' + folderStatut + '"]')
-  	    .attr('checked', '')
+      .prop("checked", true)
   	  .end()
     .end()
     .data(
