@@ -6899,6 +6899,10 @@ th.hide-for-touch {
             background-color: transparent; }
         .navbar-container .navbar .item .button-wrapper .btn.icon {
           margin-top: -8px; }
+        .navbar-container .navbar .item .button-wrapper_dossier::after {
+          background-color: #ff3e51; }
+        .navbar-container .navbar .item .button-wrapper_dossier:hover {
+          color: #FF3E51; }
         .navbar-container .navbar .item .button-wrapper_bibli::after {
           background-color: #0e2173; }
         .navbar-container .navbar .item .button-wrapper_bibli:hover {
@@ -6910,7 +6914,7 @@ th.hide-for-touch {
           color: #FFBE32; }
     .navbar-container .navbar > .button-wrapper {
       float: right;
-      margin: 5px 5px;
+      margin: 5px 15px;
       position: relative; }
       .navbar-container .navbar > .button-wrapper:nth-of-type(1) {
         margin-right: 15px; }
@@ -7476,7 +7480,7 @@ body.index #container {
   color: #4BC0B4; }
 
 .dossier[data-statut="en cours"] .content a:hover h2 {
-  background-color: #FF3E51;
+  background-color: #FFBE32;
   color: white; }
 
 .dossier[data-statut="en cours"] .statut-type {

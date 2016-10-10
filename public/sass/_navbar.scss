@@ -238,6 +238,19 @@
         }
 
 
+        &_dossier {
+          &::after {
+            background-color: transparentize( $c-dossier, $transparentize);
+          }
+
+          &:hover {
+            color: $c-dossier;
+          }
+
+
+        }        
+
+
         &_bibli {
           &::after {
             background-color: transparentize( $c-bibli, $transparentize);
@@ -267,7 +280,7 @@
 
     > .button-wrapper {
       float:right;
-      margin: 5px 5px;
+      margin: 5px 15px;
       position: relative;
 
       // buttons that are not wrapped in items are in float:right in the navbar. So the first of type is actually on the right
