@@ -22,11 +22,12 @@ html
           +button('capture', '', 'isCollapsed')
 
     .biblimontage-container.mainContent
+      .bibli-btn    
+        +button( 'ajoutText', '', 'isCollapsed')
+        +button( 'ajoutMedia', '', 'isCollapsed')
       .bibli-buffer
         .btn-medias
           ul
-            +button( 'ajoutText', '', 'isCollapsed')
-            +button( 'ajoutMedia', '', 'isCollapsed')
             +button( 'publications', '', 'isCollapsed')
 
         ul.medias-list

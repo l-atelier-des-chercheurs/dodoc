@@ -10,6 +10,17 @@ body.bibli {
   position: relative;
 
 }
+
+.bibli-btn {
+  @include clearfix();
+  position: relative;
+  width: 100%;
+  padding: $margin;
+  
+  @include style--dossierBorders;
+  background-color: $c-separator;
+}
+
 .bibli-buffer {
 
   position: relative;
