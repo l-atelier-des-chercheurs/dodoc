@@ -7492,6 +7492,19 @@ body.bibli {
 .biblimontage-container {
   position: relative; }
 
+.bibli-btn {
+  position: relative;
+  width: 100%;
+  padding: 16px;
+  background-color: #fff;
+  border: 1px solid #DFDFDF;
+  background-color: #DFDFDF; }
+  .bibli-btn:before, .bibli-btn:after {
+    content: " ";
+    display: table; }
+  .bibli-btn:after {
+    clear: both; }
+
 .bibli-buffer {
   position: relative;
   height: calc( 100vh - 70px);
@@ -7563,19 +7576,19 @@ body.bibli {
     bottom: 0;
     width: 5px;
     z-index: 1000;
-    background-color: #EF474B;
+    background-color: #FF3E51;
     background-size: 5px 100%;
     display: none; }
   .montage .montage_publi_container {
     display: none; }
   .montage .montage_publi {
-    background: #fff;
     position: absolute;
     width: 100%;
     top: 0;
     left: 0;
     display: block;
-    min-height: 100vh; }
+    min-height: 100vh;
+    background-color: #FF3E51; }
     .montage .montage_publi .montage-btn {
       padding: 15px;
       background-color: #FF3E51; }
@@ -7589,7 +7602,7 @@ body.bibli {
       .montage .montage_publi .montage-btn .button-wrapper_view {
         float: right; }
     .montage .montage_publi .template_container {
-      width: 100% !important; }
+      width: calc(100% - 2em) !important; }
       .montage .montage_publi .template_container:empty:before {
         content: "Cette publication est vide" !important; }
   .montage .publi_medias {
@@ -8534,31 +8547,32 @@ body.capture .content-wrapper:after {
 .publi_medias:after {
   clear: both; }
 
-.template_container .publi-title {
-  position: relative;
-  display: block;
-  padding: 9px 15px;
-  margin-bottom: 0;
-  background-color: #fff;
-  z-index: 1;
-  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  float: left;
-  width: calc(100% - 40px);
-  font-weight: bold;
-  font-size: 1.6em;
-  line-height: 1.4;
-  margin: 0; }
-
-.template_container .publi-btn {
-  position: relative;
-  width: 40px;
-  float: left; }
-  .template_container .publi-btn:before, .template_container .publi-btn:after {
-    content: " ";
-    display: table; }
-  .template_container .publi-btn:after {
-    clear: both; }
+.template_container {
+  margin: 0 1em; }
+  .template_container .publi-title {
+    position: relative;
+    display: block;
+    padding: 9px 15px;
+    margin-bottom: 0;
+    background-color: #fff;
+    z-index: 1;
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    float: left;
+    width: calc(100% - 40px);
+    font-weight: bold;
+    font-size: 1.6em;
+    line-height: 1.4;
+    margin: 0; }
+  .template_container .publi-btn {
+    position: relative;
+    width: 40px;
+    float: left; }
+    .template_container .publi-btn:before, .template_container .publi-btn:after {
+      content: " ";
+      display: table; }
+    .template_container .publi-btn:after {
+      clear: both; }
 
 .template_container[data-template="unecolonne"] {
   margin: 0 auto;
