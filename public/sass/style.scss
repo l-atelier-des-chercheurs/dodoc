@@ -381,7 +381,7 @@ button{
 
   float: left;
   width: 25%;
-  padding: $margin;
+  padding: $margin/2;
 
   border: 0 solid #f9f9f9;
   z-index: 1;
@@ -459,10 +459,10 @@ button{
   &::after {
     content: "";
     position: absolute;
-    left: .9375rem;
-    top: .9375rem;
-    right: .9375rem;
-    bottom: .9375rem;
+    left: $margin/4;
+    top: $margin/4;
+    right: $margin/4;
+    bottom: $margin/4;
     z-index: -1;
     border: 0 solid transparent;
     transition: all .35s;
@@ -472,11 +472,6 @@ button{
   &.is--highlight {
     &::after {
       background-color: $bleuvert;
-      left: .4687rem;
-      top: .4687rem;
-      right: .4687rem;
-      bottom: .4687rem;
-
     }
 
     .mediaContent {

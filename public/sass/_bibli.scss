@@ -14,11 +14,17 @@ body.bibli {
 .bibli-btn {
   @include clearfix();
   position: relative;
-  width: 100%;
-  padding: $margin;
+  padding: $margin/2;
+  margin: 0 $margin/2;
   
   @include style--dossierBorders;
-  background-color: $c-separator;
+  background-color: transparent;
+  border:none;
+  border-bottom: 2px solid $c-separator;
+  
+  .button-wrapper {
+    float: left;  
+  }
 }
 
 .bibli-buffer {
@@ -89,7 +95,7 @@ body.bibli {
   }
 
 }
-.montage{
+.montage {
 
   position: absolute;
   top: 0;
@@ -101,7 +107,8 @@ body.bibli {
   border-left: 4px solid darken($rouge, 8%);
 
   height: calc( 100vh - 70px);
-  overflow-y: scroll; /* has to be scroll, not auto */
+
+  overflow-y: visible scroll; /* has to be scroll, not auto, to get momentum scrolling */
   -webkit-overflow-scrolling: touch;
 
   padding-left: 0.9375rem * 2;
@@ -109,28 +116,22 @@ body.bibli {
 
   transform: translate( 100%, 0);
 
+  z-index: 190;
   transition: transform .7s ease-out;
 
   body[data-publicationpane="open"] & {
     transform: translate( 0, 0);
   }
 
-  .open-montage-bar {
+  .button-wrapper_publi {
     position: absolute;
-
-    padding: 0; margin: 0;
-
-    top:0;
-    left: 0;
-    bottom: 0;
-
-    width:  5px;
-    z-index:  1000;
-    background-color: $rouge;
-    background-size: 5px 100%;
-
-    display: none;
+    top: $margin/2;
+    background-color: $rouge !important;
+    border-radius: 4px 0 0 4px;
+    right: 100%;  
+    z-index: 1900;    
   }
+
 
   .montage_publi_container {
     display: none;
@@ -174,7 +175,6 @@ body.bibli {
   .publi_medias {
 
     @include clearfix();
-
     height:100%;
     width: 100%;  
     min-height:60vh;
@@ -202,6 +202,7 @@ body.bibli {
 
       position: relative;
       cursor: move;
+      padding: $margin/2;
 
       transition: all .15s;
 
@@ -301,14 +302,8 @@ body.bibli {
 
   width: 100%;
 
-  padding-left:  0.9375rem;
-  padding-right:  0.9375rem;
-
-  padding-top:  0.9375rem;
-  padding-bottom:  0.9375rem;
-
-  transition: width .8s, opacity .8s;
-
+  padding: $margin/2;
+  
   body[data-publicationpane="open"] & {
     width: $pourcentageBuffer;
   }
@@ -330,6 +325,7 @@ body.bibli {
   .media {
 
     @include grid-column(2);
+    padding: $margin/2;
 
     cursor: pointer;
     transition: width 1.1s ease;
@@ -425,18 +421,7 @@ body.bibli {
       float: left;
     }
   }
-
-  body[data-publicationpane="open"] .bibli-buffer .btn-medias{
-    left: 0;
-  }
-
-  .bibli-buffer .btn-medias{
-    right: 46%;
-    &:hover{
-      width: 50px !important;
-    }
-  }
-
+  
   .montage-list ul{
     margin-top: 50px;
   }

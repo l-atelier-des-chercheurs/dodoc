@@ -22,18 +22,14 @@ html
           +button('capture', '', 'isCollapsed')
 
     .biblimontage-container.mainContent
-      .bibli-btn    
-        +button( 'ajoutText', '', 'isCollapsed')
-        +button( 'ajoutMedia', '', 'isCollapsed')
       .bibli-buffer
-        .btn-medias
-          ul
-            +button( 'publications', '', 'isCollapsed')
-
+        .bibli-btn    
+          +button( 'ajoutText', '', '')
+          +button( 'ajoutMedia', '', '')
         ul.medias-list
 
       .montage
-        button.open-montage-bar.js--toggleMontage
+        +button( 'publications', '', 'isCollapsed')
         .montage-list
           h1.legende
             | !{dodoc.lang.listOfPublications}
