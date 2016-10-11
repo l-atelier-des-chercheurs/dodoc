@@ -7650,7 +7650,8 @@ body.bibli {
       .montage .montage_publi .montage-btn .button-wrapper_view {
         float: right; }
     .montage .montage_publi .template_container {
-      width: calc(100% - 2em) !important; }
+      width: calc(100% - 2em) !important;
+      margin-bottom: 1em; }
       .montage .montage_publi .template_container:empty:before {
         content: "Cette publication est vide" !important; }
   .montage .publi_medias {
@@ -7938,7 +7939,7 @@ body.projets #container {
     margin-bottom: 75px;
     padding: 16px 0;
     height: 100%;
-    overflow-y: scroll; }
+    overflow: scroll; }
     .project-list .project .montage-list:before, .project-list .project .montage-list:after {
       content: " ";
       display: table; }

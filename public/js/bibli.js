@@ -49,7 +49,7 @@ function init(){
   	$('body').attr( "data-publicationpane", $('body').attr('data-publicationPane') === 'open' ? '' : 'open');
   });
 	// Au click sur un media
-	$('body').on('click', '.medias-list .media', function(){
+	$('body').on('click', '.media', function(){
 		$m = $(this);
 		modals.bigMedia($m);
   });

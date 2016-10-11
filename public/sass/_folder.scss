@@ -199,7 +199,7 @@ body.projets{
       padding: $margin 0;
 
       height: 100%;
-      overflow-y: scroll;
+      overflow: scroll;
       
       .legende {
         padding: 0 $margin;
