@@ -198,6 +198,9 @@ body.projets{
       margin-bottom:  75px;
       padding: $margin 0;
 
+      height: 100%;
+      overflow: scroll;
+      
       .legende {
         padding: 0 $margin;
       }

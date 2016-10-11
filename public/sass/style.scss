@@ -388,8 +388,6 @@ button{
 
   .mediaContent {
     @include style--dossierBorders;
-    max-height: 400px;
-    overflow-y: hidden;
 
     // posters for <audio>
     .poster {
@@ -645,4 +643,7 @@ button{
   @import "publiTemplates/grille.scss";
 }
 
+.template_container[data-template="marseille"] {
+  @import "publiTemplates/marseille.scss";
+}
 

@@ -72,39 +72,64 @@
   .templateSelector {
     
     position: relative;
-    display: inline-block; 
-    vertical-align: top;  
-    width: 140px;
-    height: 140px;
-    padding: 0;
-    margin-right: $margin;
-    
+    width: 100%;  
+
+    border:none;
+    border-bottom: 2px solid #ccc;
+    box-shadow: none;
+    padding: $margin;
+    background-color: #eee;
+            
     input {
-      opacity: 0; 
+      width: 0.1px;
+      height: 0.1px;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      z-index: -1;
     }
     
     label {
-      width: 100%;  
+    
+      position: relative;
+      display: inline-block; 
+      width: 130px;
+      vertical-align: top;
+      padding: 0;
+      margin-right: $margin;
+      color: $grisfonce;
+            
+      span {
+        display: block; 
+        width: 100%;
+        padding: $margin/2;
+        background-color: $orange-clair;
+      }
+
+      input:checked {
+        & ~ span { 
+          background-color: $orange;
+        }
+        
+        & ~ svg {
+          #fond > * {
+              fill: $orange;
+          }
+          #modules > * {
+            fill: $bleumarine;
+          }
+        }
+      }
       
       svg {
-        position: absolute;
-        top: 0; left: 0;  right: 0; bottom: 0;  
-        z-index: 1; 
+        position: relative;
+
         #fond * {
           fill: $orange-clair;
         }
       }
     }
-      
-    input:checked ~ label svg {
-      #fond > * {
-          fill: $orange;
-      }
-      #modules > * {
-        fill: $bleumarine;
-      }
-    }
-    
+        
   }
 
   &#modal-statut-alert, &#modal-delete-alert {

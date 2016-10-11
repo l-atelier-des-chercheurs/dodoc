@@ -129,6 +129,32 @@
       overflow: auto !important;
     }
 
+    &:nth-child(8n+1) {
+      padding-bottom: $itemWidth/2;
+    }
+    &:nth-child(8n+2) {
+    }
+    &:nth-child(8n+3) {
+    }
+
+    &:nth-child(8n+4) {
+      clear:left;
+      margin-top:   -$itemWidth/2;
+    }
+    &:nth-child(8n+5) {
+      width: $itemWidth*2;
+    }
+
+    &:nth-child(8n+6) {
+      clear:left;
+      margin-top:   -$itemWidth/2;
+      padding-bottom: $itemWidth*1.5;
+    }
+
+    &:nth-child(8n+7) {
+    }
+    &:nth-child(8n+8) {
+    }
   }
 
 }

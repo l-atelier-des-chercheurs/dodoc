@@ -8,24 +8,22 @@ div(style="display:none;")
   form(onsubmit='return false;')
     input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus)
 
-    .legende
-      | !{dodoc.lang.selectTemplate}
     
     fieldset.templateSelector
-      input.js--modal_template(type="radio" name="publiTemplate" id="unecolonne" value="unecolonne" checked)
-      label(for="unecolonne")
-        | Une colonne
+      .legende
+        | !{dodoc.lang.selectTemplate}
+      label
+        input.js--modal_template(type="radio" name="publiTemplate" value="unecolonne" checked)
         include ../../../templates/unecolonne/icone.svg
-    fieldset.templateSelector
-      input.js--modal_template(type="radio" name="publiTemplate" id="grille" value="grille")
-      label(for="grille")
-        | Grille
+        span Une colonne
+      label
+        input.js--modal_template(type="radio" name="publiTemplate" value="grille")
         include ../../../templates/grille/icone.svg
-    fieldset.templateSelector
-      input.js--modal_template(type="radio" name="publiTemplate" id="marseille" value="marseille")
-      label(for="marseille")
-        | Marseille
+        span Grille
+      label
+        input.js--modal_template(type="radio" name="publiTemplate" value="marseille")
         include ../../../templates/marseille/icone.svg
+        span Marseille
     
     hr
     

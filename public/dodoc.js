@@ -48,6 +48,8 @@ if( lang === 'fr') {
       "previzStopMotion" : "Prévisualiser l’animation",
       "finishStopmotion" : "Finaliser l’animation",
       "addToFav" : "Mettre en favoris",
+      
+      "selectTemplate" : "Sélection de gabarit",
 
       "chooseCameraResolution" : "Sélectionnez la résolution de votre caméra",
       "backToAnimation" : "Retour à l’animation",
