@@ -6,6 +6,10 @@
     "type": "git",
     "url": "git://github.com/sarahgarcin/opendoc-tangible.git"
   },
+  "scripts": {
+    "start": "node server.js",
+    "debug": "node server.js --debug"
+  },
   "dependencies": {
     "body-parser": "^1.15.0",
     "connect-multiparty": "^2.0.0",
