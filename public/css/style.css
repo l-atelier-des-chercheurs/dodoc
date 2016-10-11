@@ -6942,6 +6942,8 @@ th.hide-for-touch {
   max-height: 80vh;
   overflow-y: scroll;
   /* style 6 */ }
+  .reveal-modal:focus {
+    outline: none; }
   .reveal-modal .popoverTitle {
     font-weight: bold;
     font-size: 1.5em;
@@ -6966,36 +6968,45 @@ th.hide-for-touch {
     border-radius: 22px;
     cursor: pointer;
     color: white; }
-  .reveal-modal .templateSelector input {
-    width: 0.1px;
-    height: 0.1px;
-    opacity: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: -1; }
-  .reveal-modal .templateSelector label {
-    position: relative;
-    display: inline-block;
-    width: 130px;
-    vertical-align: top;
+  .reveal-modal .templateSelector {
+    text-align: center;
     padding: 0;
-    margin-right: 16px;
-    color: #535353; }
-    .reveal-modal .templateSelector label span {
-      display: block;
-      width: 100%;
-      padding: 8px;
-      background-color: #FFD892; }
-    .reveal-modal .templateSelector label input:checked ~ span {
-      background-color: #FFBE32; }
-    .reveal-modal .templateSelector label input:checked ~ svg #fond > * {
-      fill: #FFBE32; }
-    .reveal-modal .templateSelector label input:checked ~ svg #modules > * {
-      fill: #0E2173; }
-    .reveal-modal .templateSelector label svg {
-      position: relative; }
-      .reveal-modal .templateSelector label svg #fond * {
-        fill: #FFD892; }
+    background-color: #e5e5e5; }
+    .reveal-modal .templateSelector:before, .reveal-modal .templateSelector:after {
+      content: " ";
+      display: table; }
+    .reveal-modal .templateSelector:after {
+      clear: both; }
+    .reveal-modal .templateSelector input {
+      width: 0.1px;
+      height: 0.1px;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      z-index: -1; }
+    .reveal-modal .templateSelector label {
+      position: relative;
+      float: left;
+      width: 33.3333%;
+      vertical-align: top;
+      padding: 0;
+      padding: 0 8px 16px;
+      color: #535353; }
+      .reveal-modal .templateSelector label span {
+        display: block;
+        width: 100%;
+        padding: 8px;
+        background-color: #FFD892; }
+      .reveal-modal .templateSelector label input:checked ~ span {
+        background-color: #FFBE32; }
+      .reveal-modal .templateSelector label input:checked ~ svg #fond > * {
+        fill: #FFBE32; }
+      .reveal-modal .templateSelector label input:checked ~ svg #modules > * {
+        fill: #0E2173; }
+      .reveal-modal .templateSelector label svg {
+        position: relative; }
+        .reveal-modal .templateSelector label svg #fond * {
+          fill: #FFD892; }
   .reveal-modal#modal-statut-alert button, .reveal-modal#modal-delete-alert button {
     display: inline-block;
     padding: 9px 22px;
@@ -7010,7 +7021,7 @@ th.hide-for-touch {
     padding-left: .6em;
     font-size: 1em;
     min-height: 3.3em;
-    background-color: #B5B5B5; }
+    background-color: #e5e5e5; }
   .reveal-modal .inputfile {
     width: 0.1px;
     height: 0.1px;
@@ -7615,7 +7626,7 @@ body.bibli {
     position: fixed;
     height: 100%;
     width: 100%;
-    overflow: scroll;
+    overflow-y: scroll;
     /* has to be scroll, not auto, to get momentum scrolling */
     -webkit-overflow-scrolling: touch; }
   .montage .montage_publi {
@@ -7756,8 +7767,7 @@ body.bibli {
 
 .montage-list {
   height: 100%;
-  overflow: scroll;
-  /* has to be scroll, not auto, to get momentum scrolling */
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch; }
   .montage-list > .button-wrapper {
     margin-bottom: 15px; }
@@ -7928,7 +7938,7 @@ body.projets #container {
     margin-bottom: 75px;
     padding: 16px 0;
     height: 100%;
-    overflow: scroll; }
+    overflow-y: scroll; }
     .project-list .project .montage-list:before, .project-list .project .montage-list:after {
       content: " ";
       display: table; }

@@ -137,7 +137,7 @@ body.bibli {
     height: 100%;
     width: 100%;    
 
-    overflow: scroll; /* has to be scroll, not auto, to get momentum scrolling */
+    overflow-y: scroll; /* has to be scroll, not auto, to get momentum scrolling */
     -webkit-overflow-scrolling: touch;
 
   }
@@ -360,7 +360,7 @@ body.bibli {
 .montage-list {
 
   height:   100%;
-  overflow: scroll; /* has to be scroll, not auto, to get momentum scrolling */
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 
   > .button-wrapper {

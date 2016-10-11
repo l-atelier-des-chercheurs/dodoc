@@ -27,6 +27,10 @@
 
   max-height: 80vh;
   overflow-y: scroll;
+  
+  &:focus {
+    outline: none;
+  }
 
   .popoverTitle {
     font-weight: bold;
@@ -72,6 +76,11 @@
   
   .templateSelector {
     
+    @include clearfix();
+    text-align: center; 
+    padding: 0; 
+    background-color: $gristresclair;
+
             
     input {
       width: 0.1px;
@@ -85,11 +94,11 @@
     label {
     
       position: relative;
-      display: inline-block; 
-      width: 130px;
+      float: left;  
+      width: 33.3333%;
       vertical-align: top;
       padding: 0;
-      margin-right: $margin;
+      padding: 0 $margin/2 $margin;
       color: $grisfonce;
             
       span {
@@ -146,7 +155,7 @@
     padding-left: .6em;
     font-size: 1em;
     min-height: 3.3em;
-    background-color: $grisclair;
+    background-color: $gristresclair;
   }
 
 
