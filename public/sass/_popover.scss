@@ -69,16 +69,9 @@
     color: white;
   }
   
+  
   .templateSelector {
     
-    position: relative;
-    width: 100%;  
-
-    border:none;
-    border-bottom: 2px solid #ccc;
-    box-shadow: none;
-    padding: $margin;
-    background-color: #eee;
             
     input {
       width: 0.1px;
@@ -148,12 +141,12 @@
 
   textarea {
     border: none;
-    border-bottom: 2px solid #ccc;
+    border-bottom: 2px solid $grisclair;
     box-shadow: none;
     padding-left: .6em;
     font-size: 1em;
     min-height: 3.3em;
-    background-color: #eee;
+    background-color: $grisclair;
   }
 
 
@@ -334,12 +327,12 @@
 
 input[type="text"], select {
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid $grisclair;
   box-shadow: none;
   padding-left: .6em;
   font-size: 1.3em;
   height: 2.3em;
-  background-color: #eee;
+  background-color: $gristresclair;
 
   &:focus {
     border-color: $c-images;
@@ -351,7 +344,7 @@ input[type="text"], select {
 }
 
 select {
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid $grisclair;
 
 
 }

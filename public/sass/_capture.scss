@@ -232,11 +232,26 @@ body.capture{
   }
 
   .resolutionSelector {
-    margin-top:   $margin;
-    input {
-      margin: 0;
-    }
+    label {
 
+      margin-top:   $margin;
+  
+      position: relative;
+      width: 100%;  
+  
+      border:none;
+      border-bottom: 2px solid $grisclair;
+      box-shadow: none;
+      padding: $margin;
+      background-color: $gristresclair;
+                  
+      input {
+        margin: 0;
+        margin-right:   $margin;
+      }
+
+
+    }
 
   }
 }

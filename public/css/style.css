@@ -6966,44 +6966,36 @@ th.hide-for-touch {
     border-radius: 22px;
     cursor: pointer;
     color: white; }
-  .reveal-modal .templateSelector {
+  .reveal-modal .templateSelector input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1; }
+  .reveal-modal .templateSelector label {
     position: relative;
-    width: 100%;
-    border: none;
-    border-bottom: 2px solid #ccc;
-    box-shadow: none;
-    padding: 16px;
-    background-color: #eee; }
-    .reveal-modal .templateSelector input {
-      width: 0.1px;
-      height: 0.1px;
-      opacity: 0;
-      overflow: hidden;
-      position: absolute;
-      z-index: -1; }
-    .reveal-modal .templateSelector label {
-      position: relative;
-      display: inline-block;
-      width: 130px;
-      vertical-align: top;
-      padding: 0;
-      margin-right: 16px;
-      color: #535353; }
-      .reveal-modal .templateSelector label span {
-        display: block;
-        width: 100%;
-        padding: 8px;
-        background-color: #FFD892; }
-      .reveal-modal .templateSelector label input:checked ~ span {
-        background-color: #FFBE32; }
-      .reveal-modal .templateSelector label input:checked ~ svg #fond > * {
-        fill: #FFBE32; }
-      .reveal-modal .templateSelector label input:checked ~ svg #modules > * {
-        fill: #0E2173; }
-      .reveal-modal .templateSelector label svg {
-        position: relative; }
-        .reveal-modal .templateSelector label svg #fond * {
-          fill: #FFD892; }
+    display: inline-block;
+    width: 130px;
+    vertical-align: top;
+    padding: 0;
+    margin-right: 16px;
+    color: #535353; }
+    .reveal-modal .templateSelector label span {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      background-color: #FFD892; }
+    .reveal-modal .templateSelector label input:checked ~ span {
+      background-color: #FFBE32; }
+    .reveal-modal .templateSelector label input:checked ~ svg #fond > * {
+      fill: #FFBE32; }
+    .reveal-modal .templateSelector label input:checked ~ svg #modules > * {
+      fill: #0E2173; }
+    .reveal-modal .templateSelector label svg {
+      position: relative; }
+      .reveal-modal .templateSelector label svg #fond * {
+        fill: #FFD892; }
   .reveal-modal#modal-statut-alert button, .reveal-modal#modal-delete-alert button {
     display: inline-block;
     padding: 9px 22px;
@@ -7013,12 +7005,12 @@ th.hide-for-touch {
       background-color: #FF3E51; }
   .reveal-modal textarea {
     border: none;
-    border-bottom: 2px solid #ccc;
+    border-bottom: 2px solid #B5B5B5;
     box-shadow: none;
     padding-left: .6em;
     font-size: 1em;
     min-height: 3.3em;
-    background-color: #eee; }
+    background-color: #B5B5B5; }
   .reveal-modal .inputfile {
     width: 0.1px;
     height: 0.1px;
@@ -7145,12 +7137,12 @@ th.hide-for-touch {
 
 input[type="text"], select {
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid #B5B5B5;
   box-shadow: none;
   padding-left: .6em;
   font-size: 1.3em;
   height: 2.3em;
-  background-color: #eee; }
+  background-color: #e5e5e5; }
   input[type="text"]:focus, select:focus {
     border-color: #FFBE32; }
 
@@ -7158,7 +7150,7 @@ input[type="text"], select {
   color: #bbb; }
 
 select {
-  border-bottom: 2px solid #ccc; }
+  border-bottom: 2px solid #B5B5B5; }
 
 body.publi {
   background-color: #fff; }
@@ -7285,8 +7277,8 @@ img, video, audio, svg {
 button {
   outline: none;
   border: none;
-  background: #eee;
-  font-family: inherit; }
+  font-family: inherit;
+  background: #e5e5e5; }
   button.button_coteacote {
     display: inline-block;
     margin-right: 8px; }
@@ -7309,7 +7301,7 @@ button {
   position: relative;
   width: 245px;
   height: 40px;
-  background-color: #ccc;
+  background-color: #B5B5B5;
   text-align: left;
   border-radius: 30px;
   padding: 8px;
@@ -7477,7 +7469,7 @@ body.index #container {
           overflow: hidden; }
         .dossier .content .projet-list li .vignette-visuel {
           overflow: hidden;
-          background-color: #eee;
+          background-color: #e5e5e5;
           position: relative;
           height: 0;
           padding-bottom: 15%;
@@ -8095,10 +8087,18 @@ body.capture .content-wrapper:after {
   .feedSettings .sourceSelector .selectField {
     display: block;
     width: 100%; }
-  .feedSettings .resolutionSelector {
-    margin-top: 16px; }
-    .feedSettings .resolutionSelector input {
-      margin: 0; }
+  .feedSettings .resolutionSelector label {
+    margin-top: 16px;
+    position: relative;
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #B5B5B5;
+    box-shadow: none;
+    padding: 16px;
+    background-color: #e5e5e5; }
+    .feedSettings .resolutionSelector label input {
+      margin: 0;
+      margin-right: 16px; }
 
 .captureLeft {
   margin: auto;
@@ -8451,7 +8451,8 @@ body.capture .content-wrapper:after {
   z-index: 1; }
   .media .mediaContent {
     background-color: #fff;
-    border: 1px solid #DFDFDF; }
+    border: 1px solid #DFDFDF;
+    overflow: hidden; }
   .media.media_text .mediaContent {
     padding: .9375rem;
     min-height: 15px; }
