@@ -367,7 +367,9 @@ var currentStream = (function(context) {
         optional: [ videoSource ? {sourceId: videoSource} : undefined],
         mandatory: {
           minWidth: requestedVideoRes.width,
-          minHeight: requestedVideoRes.height
+          maxWidth: requestedVideoRes.width,
+          minHeight: requestedVideoRes.height,
+          maxHeight: requestedVideoRes.height
         }
       }
     };
