@@ -65,6 +65,7 @@ if( lang === 'fr') {
       "audioInputSource" : "source audio&nbsp;:",
       "audioOutputDestination" : "destination audio&nbsp;:",
       "videoInputSource" : "source video:",
+      "lastImageOpacity" : "Afficher la dernière image en transparence",
 
       "videoStreamCouldntBeStartedTryChangingRes" : "Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la résolution dans le panneau de droite.",
       "audioStreamCouldntBeStarted" : "Le flux audio n’a pas pu être démarré.",

@@ -8000,7 +8000,7 @@ body.projet .project-inside .project-link {
 
 body.capture .mainContent {
   max-width: none;
-  height: calc( 100vh - 70px);
+  height: calc( 110vh);
   overflow-x: hidden; }
 
 body.capture .container-inner {
@@ -8143,6 +8143,25 @@ body.capture .content-wrapper:after {
     width: 100%; }
     body.is--fullscreen .captureLeft .video-view {
       padding-bottom: 0; }
+    .captureLeft .video-view .captureLeft-lastStopmotionImage {
+      position: absolute;
+      opacity: 0; }
+  .captureLeft .slider--lastImageOpacity {
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: left;
+    width: 140px;
+    padding: 8px;
+    font-size: 70%;
+    color: #535353;
+    border-left: 1px solid #e5e5e5;
+    height: 100%; }
+    .captureLeft .slider--lastImageOpacity input {
+      margin-top: 16px;
+      width: 100%; }
+  .captureLeft .captureLeft-lastStopmotionImage[src=""] ~ .btn-capture-wrapper > .stopmotion-capture > .slider--lastImageOpacity {
+    display: none; }
   .captureLeft video {
     height: auto;
     max-height: 100%; }
@@ -8320,8 +8339,6 @@ body.capture .content-wrapper:after {
     display: none; }
   .captureRight .preview {
     position: relative; }
-    .captureRight .preview .output {
-      padding-bottom: 10px; }
     .captureRight .preview .button-wrapper_deleteLastMedia, .captureRight .preview .button-wrapper_deleteMediaCapture {
       position: absolute;
       top: 0px;
@@ -8339,6 +8356,8 @@ body.capture .content-wrapper:after {
     bottom: 0;
     background-color: rgba(255, 255, 255, 0.9);
     z-index: 9; }
+    .captureRight .preview_stopmotion .output_container video.output {
+      padding-bottom: 10px; }
     .captureRight .preview_stopmotion .output_container video.output[src=""] ~ .button-wrapper {
       display: none; }
     .captureRight .preview_stopmotion .output_container video.output[src=""] ~ .div_is_loading {
@@ -8586,6 +8605,30 @@ body.capture .content-wrapper:after {
 [data-oninsert="blink"] {
   -webkit-animation: blink 1.4s ease-out 1;
   animation: blink 1.4s ease-out 1; }
+
+input[type=range] {
+  -webkit-appearance: none;
+  margin: 18px 0;
+  width: 100%; }
+
+input[type=range]:focus {
+  outline: none; }
+
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: #A5E5DA; }
+
+input[type=range]::-webkit-slider-thumb {
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #4BC0B4;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -7px; }
 
 .js--templates {
   display: none; }

@@ -11,6 +11,9 @@ var stopMotionMode = (function() {
   var $previzsm = $preview.find(".js--previz-stopmotion");
   var $finishsm = $preview.find(".js--finish-stopmotion");
   var $backToAnimation = $preview.find(".js--delete-media-capture-stopmotion");
+  
+  var $lastStopmotionImage = $(".video-view .js--lastStopmotionImage");
+  var $lastStopmotionImageSlider = $(".video-view .js--lastImageOpacity");
 
   var $previewContainer = $preview.find('.preview_stopmotion--container');
   var $timeline = $preview.find('.preview_stopmotion--timeline');
@@ -27,6 +30,7 @@ var stopMotionMode = (function() {
 
     $preview.find('.preview_stopmotion--container').empty();
     $preview.find('.preview_stopmotion--timeline').empty();
+    $lastStopmotionImage.attr('src', '');
     $("body").data("smCacheName", "");
     $("body").data("smCachePath", "");
     $preview.find('.output').attr('src', '');
@@ -140,11 +144,13 @@ var stopMotionMode = (function() {
       $preview.find('.output').attr('src', '');
       $previewOutput.hide();
 
-      $previewContainer.find('.stopmotion_lastImagePreview').remove();
-      $timeline.find('.stopmotion_lastImageSmallPreview').remove();
-
-      if(isRecording)
+      $lastStopmotionImageSlider.bind("change", function() {
+        $lastStopmotionImage.css("opacity", $lastStopmotionImageSlider.val());
+      });
+      
+      if(isRecording) {
         animateWindows();
+      }
     },
 
     stop : function() {
@@ -181,10 +187,10 @@ var stopMotionMode = (function() {
 
       $newPreview.addClass('is--active').find('img').attr("src", imagePath);
       $newSmallPreview.addClass('is--active').find('img').attr("src", imagePath);
+      $lastStopmotionImage.attr("src", imagePath);
 
       $previewContainer.append( $newPreview);
       $timeline.append( $newSmallPreview);
-
 
     },
 

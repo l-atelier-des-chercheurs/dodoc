@@ -72,7 +72,7 @@
 body.capture{
   .mainContent {
     max-width: none;
-    height: calc( 100vh - 70px);
+    height: calc( 110vh);
     overflow-x: hidden;
   }
 
@@ -307,8 +307,36 @@ $t-decalageDuCentre: 4%;
     body.is--fullscreen & {
       padding-bottom:   0;
     }
+    
+    .captureLeft-lastStopmotionImage {
+      position: absolute;
+      opacity: 0; 
+    }
   }
 
+  .slider--lastImageOpacity {
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: left;
+    width: 140px;    
+    padding: $margin/2;
+    font-size: 70%;
+    color: $grisfonce;
+
+    border-left: 1px solid $gristresclair;
+    height: 100%;
+    
+    input {
+      margin-top:   $margin;
+      width: 100%;  
+    }
+  }
+  
+  // pas d'image, pas de slider
+  .captureLeft-lastStopmotionImage[src=""] ~ .btn-capture-wrapper > .stopmotion-capture > .slider--lastImageOpacity {
+    display: none;  
+  }
 
 
   video {
@@ -606,7 +634,7 @@ $t-decalageDuCentre: 4%;
     position: relative;
 
     .output {
-      padding-bottom:   10px;
+
     }
 
     .button-wrapper_deleteLastMedia, .button-wrapper_deleteMediaCapture {
@@ -630,9 +658,13 @@ $t-decalageDuCentre: 4%;
       background-color: rgba(255,255,255,.9);
       z-index: 9;
 
+      video.output {
+        padding-bottom: 10px; 
+        
+      }
+      
       // video with empty src
       video.output[src=""] {
-
         // hide buttons that follow
         & ~ .button-wrapper {
           display: none;

@@ -69,6 +69,8 @@ html
         div.content-wrapper
           div.captureLeft
             div.video-view
+              //- display last stopmotion image (if needed)
+              img.captureLeft-lastStopmotionImage.js--lastStopmotionImage(src)
               //- display camera
               video(id="video" autoplay)
               //- display audio vizualizer
@@ -90,6 +92,10 @@ html
                     include ../public/images/i_record.svg
                   button#capture-sm-btn.btn.icon
                     include ../public/images/i_record.svg
+                  label#lastImageOpacity.slider--lastImageOpacity
+                    | !{dodoc.lang.lastImageOpacity}
+                    input.js--lastImageOpacity(type="range" value="0" min="0" max="1" step="0.1" id="lastImageOpacity")
+                  
                 div.audio-capture
                   button#start-recording-btn.btn.icon
                     include ../public/images/i_record.svg
