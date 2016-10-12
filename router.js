@@ -176,7 +176,6 @@ module.exports = function(app,io,m){
     var generatePageDataJSON = generatePageData(req, pageTitle);
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       getAllTemplates().then(function(allTemplates) {
-        console.log('plip');
         generatePageDataJSON["templates"] = allTemplates;
         res.render("bibli", generatePageDataJSON);
       }, function(err) {
@@ -189,8 +188,14 @@ module.exports = function(app,io,m){
     var pageTitle = dodoc.lang.publi;
     var generatePageDataJSON = generatePageData(req, pageTitle);
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
-      res.render("publi", generatePageDataJSON);
+      getAllTemplates().then(function(allTemplates) {
+        generatePageDataJSON["templates"] = allTemplates;
+        res.render("publi", generatePageDataJSON);
+      }, function(err) {
+        console.log('err ' + err);
+      });
     });
+
   };
 
   function readMetaFile( metaFile){

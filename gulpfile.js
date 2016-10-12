@@ -29,6 +29,9 @@ var userScripts = [
 var templateCss = [
   'templates/**/*.scss'
 ]
+var templateCss = [
+  'templates/**/*.scss'
+]
 
 var userCss = [
   'public/sass/style.scss'

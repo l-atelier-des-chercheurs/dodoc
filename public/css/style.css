@@ -6994,7 +6994,7 @@ th.hide-for-touch {
       padding: 0;
       padding: 8px;
       color: #535353; }
-      .reveal-modal .templateSelector label:nth-child(3n+1) {
+      .reveal-modal .templateSelector label:nth-of-type(3n+1) {
         clear: left; }
       .reveal-modal .templateSelector label span {
         display: block;

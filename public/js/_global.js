@@ -93,34 +93,49 @@ function mediaInit( $m) {
   var $v = $m.find('video');
 
   if( $('body').hasClass('publi')) {
+    
+    // special template "grille", "marseille" et "numok" (à compartimenter plus proprement)
     if( $m.data('informations').length > 0) {
       var $button = $('<button class="showCaption">t</button>');
       $m.find('.mediaContent').prepend($button);
       $button.on('click', function() { $(this).toggleClass('is--clicked');});
     }
+    
+    if( $('.publi_container .template_container').data("template") === "numok") {
+      if( $v.length > 0) {
+        $v
+          .attr('loop', true)
+          .removeAttr('controls')
+          .get(0)
+            .play()
+          ;
+      }
+    }
+    
   }
 
-  $m.hover(function() {
-    if( $v.length > 0) {
-      $v
-        .attr('loop', true)
-        .removeAttr('controls')
-        .get(0)
-          .play()
-        ;
-    }
-  }, function() {
-    if( $v.length > 0) {
-      $v
-        .removeAttr('loop')
-        .attr('controls', true)
-        .get(0)
-          .pause()
-        ;
-      $v.get(0).currentTime = 0;
-    }
-  });
-
+  if( $('.publi_container > .template_container').data("template") !== "numok") {
+    $m.hover(function() {
+      if( $v.length > 0) {
+        $v
+          .attr('loop', true)
+          .removeAttr('controls')
+          .get(0)
+            .play()
+          ;
+      }
+    }, function() {
+      if( $v.length > 0) {
+        $v
+          .removeAttr('loop')
+          .attr('controls', true)
+          .get(0)
+            .pause()
+          ;
+        $v.get(0).currentTime = 0;
+      }
+    });
+  }
 }
 
 
