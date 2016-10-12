@@ -1,6 +1,4 @@
 .template_container[data-template="unecolonne"] {
-  @include clearfix();
-  @include grid-row;
   max-width: 35rem;
   position: relative;
 

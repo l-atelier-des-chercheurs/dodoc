@@ -84,9 +84,6 @@
     text-align: left; 
     padding: 0; 
     background-color: $gristresclair;
-
-            
-            
             
     input {
       width: 0.1px;
@@ -106,6 +103,10 @@
       padding: 0;
       padding: $margin/2;
       color: $grisfonce;
+            
+      &:nth-of-type(3n+1){ 
+        clear: left;
+      }
             
       span {
         display: block; 

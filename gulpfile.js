@@ -26,10 +26,18 @@ var userScripts = [
   'public/js/_global.js',
 ];
 
+var templateCss = [
+  'templates/**/*.scss'
+]
+
+var userCss = [
+  'public/sass/style.scss'
+]
+
 
 // Compile Our Sass
 gulp.task('sass', function() {
-  return gulp.src('public/sass/*.scss')
+  return gulp.src(userCss)
     .pipe(plumber({
         errorHandler: function (err) {
             console.log(err);
@@ -37,8 +45,23 @@ gulp.task('sass', function() {
         }
     }))
     .pipe(sass())
+    .pipe(concat('style.css'))    
     .pipe(gulp.dest('public/css'));
 });
+
+gulp.task('templatesSass', function() {
+  return gulp.src(templateCss)
+    .pipe(plumber({
+        errorHandler: function (err) {
+            console.log(err);
+            this.emit('end');
+        }
+    }))
+    .pipe(sass())
+    .pipe(concat('templates.css'))    
+    .pipe(gulp.dest('public/css'));
+})
+
 
 // Concatenate & Minify CSS
 gulp.task('css', function() {
@@ -74,4 +97,4 @@ gulp.task('watch', function() {
 });
 
 // Default Task
-gulp.task('default', ['sass', 'css', 'script-plugins', 'watch']);
+gulp.task('default', ['sass', 'templatesSass', 'css', 'script-plugins', 'watch']);

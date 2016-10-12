@@ -7,13 +7,8 @@
   background-color: #fff;
   padding: 1em;
 
-  @media #{$small-only} {
-    width: 100%;
-  }
-
   .publi_medias {
     position: relative;
-    @include clearfix();
   }
 
   $itemWidth: 33.333%;
@@ -30,13 +25,6 @@
     top: 0;
     left: 0;
 
-    @media #{$small-only} {
-      width: 100% !important;
-      padding-bottom: 100% !important;
-      height: auto;
-      margin-top:   0 !important;
-
-    }
 
     // pour l'animation des légendes
     -webkit-perspective: 1000;
@@ -107,14 +95,14 @@
           font-size: 1rem;
           color: white;
           border-radius: 50%;
-          background-color: $rouge;
+          background-color: #FF3E51;
           margin: 10px;
 
           transition: all .6s ease-out;
         }
 
         .showCaption.is--clicked {
-          color: $rouge;
+          color: #FF3E51;
           background-color: white;
           + img, + video, + audio {
             transform: rotateY(180deg);
