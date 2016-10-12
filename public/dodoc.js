@@ -98,8 +98,6 @@ if( lang === 'fr') {
         "editPubli" : "Éditer la publication"
 
       },
-
-
     }
   };
 } else if( lang === 'en') {

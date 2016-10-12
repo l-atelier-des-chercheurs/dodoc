@@ -2,10 +2,6 @@
 @import "../bower_components/foundation/scss/normalize";
 @import "../bower_components/foundation/scss/foundation";
 
-@mixin headline($size, $color: red) {
-  color: $color;
-  font-size: $size;
-}
 
 
 @import "_variables.scss";
@@ -37,6 +33,12 @@ h1,h2,h3,h4,h5,h6{font-family: 'Fira Sans', sans-serif;}
 /******************
   Mixins
   ********************/
+  
+@mixin headline($size, $color: red) {
+  color: $color;
+  font-size: $size;
+}
+
 @mixin style--dossierBorders {
   background-color: #fff;
   border: 1px solid $c-separator;
@@ -44,7 +46,7 @@ h1,h2,h3,h4,h5,h6{font-family: 'Fira Sans', sans-serif;}
 
 @mixin style--titrelegende {
   font-family:  'share';
-  color: $grisclair;
+  color: $gris;
   font-size: 1em;
   font-style: italic;
   text-transform: lowercase;
@@ -146,7 +148,7 @@ button{
   position: relative;
   width:  245px;
   height: 40px;
-  background-color: $grisclair;
+  background-color: $gris;
 
   text-align: left;
 
@@ -631,6 +633,7 @@ input[type=range] {
 
 .template_container {
   margin: 0 1em;
+  background:   white;
   
   .publi-title{ 
     position: relative;
@@ -661,20 +664,5 @@ input[type=range] {
   }
   
 }
-
-
-.template_container[data-template="unecolonne"] {
-  @import "publiTemplates/unecolonne.scss";
-}
-
-
-.template_container[data-template="grille"] {
-  @import "publiTemplates/grille.scss";
-}
-
-.template_container[data-template="marseille"] {
-  @import "publiTemplates/marseille.scss";
-}
-
 
 

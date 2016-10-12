@@ -12,19 +12,14 @@ div(style="display:none;")
     fieldset.templateSelector
       .legende
         | !{dodoc.lang.selectTemplate}
+
+      - for (var i = 0; i < templates.length; i++) {
       label
-        input.js--modal_template(type="radio" name="publiTemplate" value="unecolonne" checked)
+        input.js--modal_template(type="radio" name="publiTemplate" value="#{templates[i]}" checked)
         include ../../../templates/unecolonne/icone.svg
-        span Une colonne
-      label
-        input.js--modal_template(type="radio" name="publiTemplate" value="grille")
-        include ../../../templates/grille/icone.svg
-        span Grille
-      label
-        input.js--modal_template(type="radio" name="publiTemplate" value="marseille")
-        include ../../../templates/marseille/icone.svg
-        span Marseille
-    
+        span #{templates[i]}
+      - }
+      
     hr
     
     input(type='submit' class='button_submit js--modal_submit' value='Valider')

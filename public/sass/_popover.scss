@@ -58,6 +58,10 @@
   button {
     margin-bottom: 0;
   }
+  
+  .legende {
+    padding: $margin/2;    
+  }
 
 
   input[type="submit"], button {
@@ -77,10 +81,12 @@
   .templateSelector {
     
     @include clearfix();
-    text-align: center; 
+    text-align: left; 
     padding: 0; 
     background-color: $gristresclair;
 
+            
+            
             
     input {
       width: 0.1px;
@@ -98,7 +104,7 @@
       width: 33.3333%;
       vertical-align: top;
       padding: 0;
-      padding: 0 $margin/2 $margin;
+      padding: $margin/2;
       color: $grisfonce;
             
       span {
@@ -150,7 +156,7 @@
 
   textarea {
     border: none;
-    border-bottom: 2px solid $grisclair;
+    border-bottom: 2px solid $gris;
     box-shadow: none;
     padding-left: .6em;
     font-size: 1em;
@@ -336,7 +342,7 @@
 
 input[type="text"], select {
   border: none;
-  border-bottom: 2px solid $grisclair;
+  border-bottom: 2px solid $gris;
   box-shadow: none;
   padding-left: .6em;
   font-size: 1.3em;
@@ -353,7 +359,7 @@ input[type="text"], select {
 }
 
 select {
-  border-bottom: 2px solid $grisclair;
+  border-bottom: 2px solid $gris;
 
 
 }

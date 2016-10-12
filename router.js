@@ -162,7 +162,12 @@ module.exports = function(app,io,m){
   function getBibli(req, res) {
     var pageTitle = dodoc.lang.bibli;
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
-      res.render("bibli", generatePageDataJSON);
+      getAllTemplates().then(function(allTemplates) {
+        generatePageDataJSON["templates"] = allTemplates;
+        res.render("bibli", generatePageDataJSON);        
+      }, function(err) {
+        console.log('err ' + err);
+      });
     });
   };
 
@@ -170,7 +175,13 @@ module.exports = function(app,io,m){
     var pageTitle = dodoc.lang.bibli;
     var generatePageDataJSON = generatePageData(req, pageTitle);
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
-      res.render("bibli", generatePageDataJSON);
+      getAllTemplates().then(function(allTemplates) {
+        console.log('plip');
+        generatePageDataJSON["templates"] = allTemplates;
+        res.render("bibli", generatePageDataJSON);
+      }, function(err) {
+        console.log('err ' + err);
+      });
     });
   };
 
@@ -186,6 +197,18 @@ module.exports = function(app,io,m){
     var metaFileContent = fs.readFileSync( metaFile, 'utf8');
     var metaFileContentParsed = parseData( metaFileContent);
     return metaFileContentParsed;
+  }
+  
+  function getAllTemplates() {
+    return new Promise(function(resolve, reject) {
+      var templateFolder = 'templates';
+      fs.readdir( templateFolder, function (err, filenames) {
+        if (err) reject( console.log( 'Couldn\'t read content dir : ' + err));
+
+        var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
+        resolve(folders);
+      });
+    });    
   }
 
 	function parseData(d) {

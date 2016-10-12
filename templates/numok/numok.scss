@@ -1,4 +1,4 @@
-& {
+.template_container[data-template="numok"] {
   position: relative;
   width: 960px;
   margin: 0 auto;
@@ -15,7 +15,7 @@
   }
 
   $itemWidth: 33.333%;
-  $gutter: 5px;
+  $gutter: 1px;
 
   .media {
     position: relative;
