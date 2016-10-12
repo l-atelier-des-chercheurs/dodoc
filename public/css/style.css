@@ -8140,6 +8140,8 @@ body.capture .content-wrapper:after {
     transform: translate3d(0%, 0, 0); }
   body.is--fullscreen[data-justcaptured="yes"] .captureLeft {
     background-color: #FF4246; }
+  body:not(.is--fullscreen)[data-justcaptured="yes"] .captureLeft {
+    background-color: #FF3E51; }
   .captureLeft .video-view {
     position: relative;
     padding-bottom: 80px;
@@ -8156,6 +8158,7 @@ body.capture .content-wrapper:after {
     right: 0;
     text-align: left;
     width: 140px;
+    max-width: 40%;
     padding: 8px;
     font-size: 70%;
     color: #535353;
@@ -8198,12 +8201,6 @@ body.capture .content-wrapper:after {
           transform-origin: center;
           transform: scale(1);
           transition: transform .6s ease-out, fill .4s; }
-        body:not(.is--fullscreen)[data-justcaptured="yes"] .captureLeft .btn-capture-wrapper .btn.icon svg #FOND {
-          transform: scale(15);
-          fill: #FF4246;
-          transition: transform .2s ease-out, fill .3s; }
-        body:not(.is--fullscreen)[data-justcaptured="yes"][data-mode="stopmotion"] .captureLeft .btn-capture-wrapper .btn.icon svg #FOND {
-          fill: #4BC0B4; }
         body:not(.is--fullscreen)[data-videorecording="yes"] .captureLeft .btn-capture-wrapper .btn.icon svg #FOND,
         body:not(.is--fullscreen)[data-audiorecording="yes"] .captureLeft .btn-capture-wrapper .btn.icon svg #FOND {
           transform: scale(15);
@@ -8386,7 +8383,7 @@ body.capture .content-wrapper:after {
       position: relative;
       padding: 8px;
       background-color: #fff;
-      visibility: hidden; }
+      display: none; }
       .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview .image_count {
         font-size: 80%;
         font-variant: small-caps;
@@ -8399,10 +8396,10 @@ body.capture .content-wrapper:after {
         top: 0;
         left: 0; }
       .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview:last-child, .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview:nth-last-child(2) {
-        visibility: visible; }
+        display: block; }
       .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview.is--active {
         z-index: 1;
-        visibility: visible; }
+        display: block; }
   .captureRight .preview_stopmotion .preview_stopmotion--timeline {
     width: 100%;
     padding: 8px 4px;

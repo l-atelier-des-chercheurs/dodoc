@@ -690,7 +690,7 @@ function justCaptured() {
   $('body').attr('data-justcaptured', 'yes');
   setTimeout( function() {
     $('body').attr('data-justcaptured', '');
-  }, 100);
+  }, 600);
 }
 
 function mediaJustCaptured() {
