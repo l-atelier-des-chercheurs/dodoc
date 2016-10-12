@@ -190,8 +190,8 @@ var stopMotionMode = (function() {
       $lastStopmotionImage.attr("src", imagePath);
       
       // supprimer les images plus anciennes que 10
-      $previewContainer.find(".stopmotion_lastImagePreview").eq(-11).prevAll().remove();
-      $timeline.find(".stopmotion_lastImageSmallPreview").eq(-11).prevAll().remove();
+      $previewContainer.find(".stopmotion_lastImagePreview").eq(-11).find("img").remove();
+      $timeline.find(".stopmotion_lastImageSmallPreview").eq(-11).find("img").remove();
       
 
       $previewContainer.append( $newPreview);

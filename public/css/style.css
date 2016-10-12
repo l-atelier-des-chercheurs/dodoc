@@ -8127,7 +8127,7 @@ body.capture .content-wrapper:after {
   width: 80vh;
   left: 50%;
   transform: translate3d(-50%, 0, 0);
-  transition: transform .4s ease-out; }
+  transition: transform .4s ease-out, background-color .4s; }
   body[data-state="expanded"] .captureLeft {
     transform: translate3d(-104%, 0, 0); }
   body.is--fullscreen .captureLeft {
@@ -8162,6 +8162,7 @@ body.capture .content-wrapper:after {
     padding: 8px;
     font-size: 70%;
     color: #535353;
+    background-color: rgba(255, 255, 255, 0.6);
     border-left: 1px solid #e5e5e5;
     height: 100%; }
     .captureLeft .slider--lastImageOpacity input {
@@ -8383,7 +8384,7 @@ body.capture .content-wrapper:after {
       position: relative;
       padding: 8px;
       background-color: #fff;
-      display: none; }
+      visibility: hidden; }
       .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview .image_count {
         font-size: 80%;
         font-variant: small-caps;
@@ -8396,10 +8397,10 @@ body.capture .content-wrapper:after {
         top: 0;
         left: 0; }
       .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview:last-child, .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview:nth-last-child(2) {
-        display: block; }
+        visibility: visible; }
       .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview.is--active {
         z-index: 1;
-        display: block; }
+        visibility: visible; }
   .captureRight .preview_stopmotion .preview_stopmotion--timeline {
     width: 100%;
     padding: 8px 4px;

@@ -276,7 +276,7 @@ $t-decalageDuCentre: 4%;
   left: 50%;
   transform: translate3d(-50%, 0, 0);
 
-  transition: transform .4s ease-out, background-color .4s;
+  transition: transform .4s ease-out, background-color .1s;
 
   body[data-state="expanded"] & {
     transform: translate3d(-100%  - $t-decalageDuCentre,0,0);
@@ -329,6 +329,7 @@ $t-decalageDuCentre: 4%;
     font-size: 70%;
     color: $grisfonce;
 
+    background-color: transparentize( #fff, .4);
     border-left: 1px solid $gristresclair;
     height: 100%;
     
