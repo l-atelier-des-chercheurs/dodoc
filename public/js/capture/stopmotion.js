@@ -188,6 +188,11 @@ var stopMotionMode = (function() {
       $newPreview.addClass('is--active').find('img').attr("src", imagePath);
       $newSmallPreview.addClass('is--active').find('img').attr("src", imagePath);
       $lastStopmotionImage.attr("src", imagePath);
+      
+      // supprimer les images plus anciennes que 10
+      $previewContainer.find(".stopmotion_lastImagePreview").eq(-11).prevAll().remove();
+      $timeline.find(".stopmotion_lastImageSmallPreview").eq(-11).prevAll().remove();
+      
 
       $previewContainer.append( $newPreview);
       $timeline.append( $newSmallPreview);
