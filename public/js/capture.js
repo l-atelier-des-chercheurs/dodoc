@@ -479,13 +479,16 @@ var currentStream = (function(context) {
         invisibleCanvas.height = videoFrame.videoHeight;
         var invisibleCtx = invisibleCanvas.getContext('2d');
         invisibleCtx.drawImage( videoFrame, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
+
+        resolve( imageData = invisibleCanvas.toDataURL('image/png'));
   
+/*
         Caman( invisibleCtx.canvas, function () {
 //           this.brightness(10);
           this.render(function () {
-            resolve( imageData = invisibleCanvas.toDataURL('image/png'));
           });
         });
+*/
       });
     },
 

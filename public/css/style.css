@@ -8127,7 +8127,7 @@ body.capture .content-wrapper:after {
   width: 80vh;
   left: 50%;
   transform: translate3d(-50%, 0, 0);
-  transition: transform .4s ease-out, background-color .4s; }
+  transition: transform .4s ease-out, background-color .1s; }
   body[data-state="expanded"] .captureLeft {
     transform: translate3d(-104%, 0, 0); }
   body.is--fullscreen .captureLeft {

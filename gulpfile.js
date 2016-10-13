@@ -17,7 +17,7 @@ var pluginsScripts = [
   'public/bower_components/foundation/js/foundation.min.js',
   'public/bower_components/foundation/js/foundation/foundation.reveal.js',
   'public/bower_components/store-js/store.min.js',
-  'public/bower_components/caman/dist/caman.min.js',
+//   'public/bower_components/caman/dist/caman.min.js',
 ];
 var userScripts = [
   'public/dodoc.js',

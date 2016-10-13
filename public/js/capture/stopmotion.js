@@ -190,19 +190,17 @@ var stopMotionMode = (function() {
       $lastStopmotionImage.attr("src", imagePath);
       
       // supprimer les images plus anciennes que 10
-      $previewContainer.find(".stopmotion_lastImagePreview").eq(-3).trigger("removeMe");
+      $previewContainer.find(".stopmotion_lastImagePreview").eq(-10).trigger("removeMe");
       $newPreview.on("removeMe", function(){
-        debugger;
-        $newPreview.find("img").attr("src", "").remove();
+        $newPreview.off().find("img").attr("src", "").remove();
         $newPreview = null;
         $newSmallPreview.remove();
         $newSmallPreview = null;
-        debugger;
       });
 
-      $timeline.find(".stopmotion_lastImageSmallPreview").eq(-3).trigger("removeMe");
+      $timeline.find(".stopmotion_lastImageSmallPreview").eq(-10).trigger("removeMe");
       $newSmallPreview.on("removeMe", function(){
-        $newPreview.find("img").attr("src", "").remove();
+        $newPreview.off().find("img").attr("src", "").remove();
         $newPreview = null;
         $newSmallPreview.find("img").attr("src", "").remove();
         $newSmallPreview = null;
