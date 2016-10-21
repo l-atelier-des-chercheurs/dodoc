@@ -6,12 +6,13 @@ DoDoc
 
 DoDoc is a documentation tool, first designed for use in classrooms with children. It is is a documentation platform connected to a physical device that operates a camera and a microphone, and enables one to capture traces from an on-going experience for later reflections, reconstructions and creation of narratives.<br> 
 DoDoc is a research project developed by [l'atelier des chercheurs](http://latelier-des-chercheurs.fr/) (Sarah Garcin, Pauline Gourlet & Louis Eveillard).<br>
-License CC BY-NC <br>
+## License CC BY-NC <br>
 You can find more documentation and contribute to the project [here](http://www.lopendoc.org/dodoc/).
 
 ![dodoc](http://www.lopendoc.org/dodoc/wp-content/uploads/sites/23/2016/05/Capture-d%E2%80%99e%CC%81cran-2016-05-05-a%CC%80-18.13.31.png)
 
-![dodoc](http://www.lopendoc.org/dodoc/wp-content/uploads/sites/23/2016/05/Capture-d%E2%80%99e%CC%81cran-2016-05-05-a%CC%80-18.13.44.png)  
+![dodoc](http://www.lopendoc.org/dodoc/wp-content/uploads/sites/23/2016/05/Capture-d%E2%80%99e%CC%81cran-2016-05-05-a%CC%80-18.13.44.png) 
+
 
 ##TO INSTALL THE PROGRAM
 
