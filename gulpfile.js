@@ -9,7 +9,7 @@ var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var jshint       = require('gulp-jshint');
 // var uglify = require('gulp-uglify');
-    
+
 var pluginsScripts = [
   'public/bower_components/jquery/dist/jquery.min.js',
   'public/bower_components/velocity/velocity.min.js',
@@ -17,7 +17,6 @@ var pluginsScripts = [
   'public/bower_components/foundation/js/foundation.min.js',
   'public/bower_components/foundation/js/foundation/foundation.reveal.js',
   'public/bower_components/store-js/store.min.js',
-//   'public/bower_components/caman/dist/caman.min.js',
 ];
 var userScripts = [
   'public/dodoc.js',
@@ -48,7 +47,7 @@ gulp.task('sass', function() {
         }
     }))
     .pipe(sass())
-    .pipe(concat('style.css'))    
+    .pipe(concat('style.css'))
     .pipe(gulp.dest('public/css'));
 });
 
@@ -61,7 +60,7 @@ gulp.task('templatesSass', function() {
         }
     }))
     .pipe(sass())
-    .pipe(concat('templates.css'))    
+    .pipe(concat('templates.css'))
     .pipe(gulp.dest('public/css'));
 })
 
@@ -96,7 +95,7 @@ gulp.task('script-plugins', function() {
 // Watch Files For Changes
 gulp.task('watch', function() {
   gulp.watch(['public/js/*.js', 'public/js/libs/*.js','public/js/capture/*.js',], ['lint']);
-  gulp.watch( ['public/sass/*/*.scss'].concat(templateCss).concat(userCss), ['sass', 'css']);
+  gulp.watch( ['public/sass/*.scss'].concat(templateCss).concat(userCss), ['sass', 'css']);
 });
 
 // Default Task
