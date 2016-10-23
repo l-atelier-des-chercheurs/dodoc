@@ -33,7 +33,7 @@ h1,h2,h3,h4,h5,h6{font-family: 'Fira Sans', sans-serif;}
 /******************
   Mixins
   ********************/
-  
+
 @mixin headline($size, $color: red) {
   color: $color;
   font-size: $size;
@@ -209,7 +209,7 @@ button{
     background-color: $bleuvert;
     color: white;
   }
-  
+
 
   &.button-wrapper_collapsed {
     overflow: hidden;
@@ -634,10 +634,10 @@ input[type=range] {
 .template_container {
   margin: 0 auto;
   background:   white;
-  
-  .publi-title{ 
+
+  .publi-title{
     position: relative;
-    display: block; 
+    display: block;
     padding: 9px 15px;
     margin-bottom: 0;
     background-color: #fff;
@@ -655,14 +655,14 @@ input[type=range] {
     margin: 0;
     @extend .insidePadding;
   }
-  
+
   .publi-btn {
     @include clearfix();
     position: relative;
     width: 40px;
-    float: left;  
+    float: left;
   }
-  
+
 }
 
 

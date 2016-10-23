@@ -16,14 +16,14 @@ body.bibli {
   position: relative;
   padding: $margin/2;
   margin: 0 $margin/2;
-  
+
   @include style--dossierBorders;
   background-color: transparent;
   border:none;
   border-bottom: 2px solid $c-separator;
-  
+
   .button-wrapper {
-    float: left;  
+    float: left;
   }
 }
 
@@ -124,8 +124,8 @@ body.bibli {
     top: $margin/2;
     background-color: $rouge !important;
     border-radius: 4px 0 0 4px;
-    right: 100%;  
-    z-index: 1900;    
+    right: 100%;
+    z-index: 1900;
   }
 
 
@@ -135,7 +135,7 @@ body.bibli {
     left: 0;
     position: fixed;
     height: 100%;
-    width: 100%;    
+    width: 100%;
 
     overflow-y: scroll; /* has to be scroll, not auto, to get momentum scrolling */
     -webkit-overflow-scrolling: touch;
@@ -182,7 +182,7 @@ body.bibli {
 
     @include clearfix();
     height:100%;
-    width: 100%;  
+    width: 100%;
     min-height:60vh;
 
     transition: background-color .4s, transform .6s ease-out;
@@ -309,7 +309,7 @@ body.bibli {
   width: 100%;
 
   padding: $margin/2;
-  
+
   body[data-publicationpane="open"] & {
     width: $pourcentageBuffer;
   }
@@ -322,10 +322,10 @@ body.bibli {
   &:empty::after {
     content: "Ce projet ne contient pas encore de médias. \A  \A Rendez-vous sur l'écran de capture pour en ajouter ou importez les avec la barre de droite.";
     max-width: 36rem;
+    width: 100%;
     margin: 32vh auto;
     color: #aaa;
     text-align:center;
-    white-space: pre;
   }
 
   .media {
@@ -344,7 +344,7 @@ body.bibli {
     body[data-publicationpane="open"] & {
       @include grid-column(4);
       cursor: move;
-      
+
       padding: $margin/2;
 
       &:nth-child(3n+1) {
@@ -433,7 +433,7 @@ body.bibli {
       float: left;
     }
   }
-  
+
   .montage-list ul{
     margin-top: 50px;
   }

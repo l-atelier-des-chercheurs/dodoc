@@ -6853,7 +6853,7 @@ th.hide-for-touch {
         margin: 0 auto;
         height: 100%; }
         .navbar-container .navbar .logo svg circle, .navbar-container .navbar .logo svg rect, .navbar-container .navbar .logo svg polyline {
-          opacity: .8;
+          opacity: .9;
           transition: opacity .4s; }
         .navbar-container .navbar .logo svg:hover circle, .navbar-container .navbar .logo svg:hover rect, .navbar-container .navbar .logo svg:hover polyline {
           opacity: 1; }
@@ -7746,10 +7746,10 @@ body.bibli {
   .medias-list:empty::after {
     content: "Ce projet ne contient pas encore de médias. \A  \A Rendez-vous sur l'écran de capture pour en ajouter ou importez les avec la barre de droite.";
     max-width: 36rem;
+    width: 100%;
     margin: 32vh auto;
     color: #aaa;
-    text-align: center;
-    white-space: pre; }
+    text-align: center; }
   .medias-list .media {
     padding-left: 0.9375rem;
     padding-right: 0.9375rem;
