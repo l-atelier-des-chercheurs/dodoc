@@ -6989,18 +6989,20 @@ th.hide-for-touch {
     .reveal-modal .templateSelector label {
       position: relative;
       float: left;
-      width: 33.3333%;
+      width: 25%;
       vertical-align: top;
       padding: 0;
       padding: 8px;
       color: #535353; }
-      .reveal-modal .templateSelector label:nth-of-type(3n+1) {
+      .reveal-modal .templateSelector label:nth-of-type(4n+1) {
         clear: left; }
       .reveal-modal .templateSelector label span {
         display: block;
         width: 100%;
         padding: 8px;
-        background-color: #FFD892; }
+        background-color: #FFD892;
+        text-transform: uppercase;
+        text-align: center; }
       .reveal-modal .templateSelector label input:checked ~ span {
         background-color: #FFBE32; }
       .reveal-modal .templateSelector label input:checked ~ svg #fond > * {

@@ -27,7 +27,7 @@
 
   max-height: 80vh;
   overflow-y: scroll;
-  
+
   &:focus {
     outline: none;
   }
@@ -58,9 +58,9 @@
   button {
     margin-bottom: 0;
   }
-  
+
   .legende {
-    padding: $margin/2;    
+    padding: $margin/2;
   }
 
 
@@ -76,15 +76,15 @@
 
     color: white;
   }
-  
-  
+
+
   .templateSelector {
-    
+
     @include clearfix();
-    text-align: left; 
-    padding: 0; 
+    text-align: left;
+    padding: 0;
     background-color: $gristresclair;
-            
+
     input {
       width: 0.1px;
       height: 0.1px;
@@ -93,33 +93,35 @@
       position: absolute;
       z-index: -1;
     }
-    
+
     label {
-    
+
       position: relative;
-      float: left;  
-      width: 33.3333%;
+      float: left;
+      width: 25%;
       vertical-align: top;
       padding: 0;
       padding: $margin/2;
       color: $grisfonce;
-            
-      &:nth-of-type(3n+1){ 
+
+      &:nth-of-type(4n+1){
         clear: left;
       }
-            
+
       span {
-        display: block; 
+        display: block;
         width: 100%;
         padding: $margin/2;
         background-color: $orange-clair;
+        text-transform: uppercase;
+        text-align: center;
       }
 
       input:checked {
-        & ~ span { 
+        & ~ span {
           background-color: $orange;
         }
-        
+
         & ~ svg {
           #fond > * {
               fill: $orange;
@@ -129,7 +131,7 @@
           }
         }
       }
-      
+
       svg {
         position: relative;
 
@@ -138,7 +140,7 @@
         }
       }
     }
-        
+
   }
 
   &#modal-statut-alert, &#modal-delete-alert {
