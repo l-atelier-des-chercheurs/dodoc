@@ -93,14 +93,14 @@ function mediaInit( $m) {
   var $v = $m.find('video');
 
   if( $('body').hasClass('publi')) {
-    
+
     // special template "grille", "marseille" et "numok" (à compartimenter plus proprement)
     if( $m.data('informations').length > 0) {
       var $button = $('<button class="showCaption">t</button>');
       $m.find('.mediaContent').prepend($button);
       $button.on('click', function() { $(this).toggleClass('is--clicked');});
     }
-    
+
     if( $('.publi_container .template_container').data("template") === "numok") {
       if( $v.length > 0) {
         $v
@@ -111,7 +111,7 @@ function mediaInit( $m) {
           ;
       }
     }
-    
+
   }
 
   if( $('.publi_container > .template_container').data("template") !== "numok") {
@@ -200,7 +200,7 @@ function showImage( mediaDatas) {
   	mediaItem
       .data('imagesrc_fullsize', imagesPath.img_large)
       .find( 'img')
-        .attr('src', imagesPath.img_thumb)
+        .attr('src', imagesPath.img_thumb !== undefined ? imagesPath.img_thumb:imagesPath.img_large)
       .end()
       ;
 
@@ -562,12 +562,12 @@ var publi = {
     // cloner un .montage-edit
     var $montage = $(".js--templates .montage_publi").clone(false);
     var pdata = $thisPubli.data();
-    
+
     $montageContainer
       .attr("data-publishown", pdata.slugPubliName)
       .data("publishown", pdata.slugPubliName)
       ;
-      
+
     var publiData =
     {
       "slugPubliName" : pdata.slugPubliName
@@ -599,14 +599,14 @@ var publi = {
 
 
 function updateMontagePubliMeta( psdata) {
-  
+
   $.each( psdata, function( slugPubliName, pdata) {
     var $publiContent = $('[data-publidata]');
     var publiShown = $publiContent.data('publishown');
 
     if( pdata.slugFolderName !== currentFolder || pdata.slugProjectName !== currentProject || pdata.slugPubliName !== publiShown)
-      return;  
-    
+      return;
+
     listMontagePubliMeta( $publiContent, pdata);
   });
 }
@@ -616,8 +616,8 @@ function updateMontagePubliMedias( psdata) {
     var $publiContent = $('[data-publidata]');
     var publiShown = $publiContent.data('publishown');
     if( pdata.slugFolderName !== currentFolder || pdata.slugProjectName !== currentProject || pdata.slugPubliName !== publiShown)
-      return;  
-  
+      return;
+
     listMontagePubliMedias( $publiContent, pdata);
   });
 }
@@ -626,7 +626,7 @@ function updateMontagePubliMedias( psdata) {
 // update montage content with new meta (title and link)
 function listMontagePubliMeta( $publiContent, pdata) {
   console.log('listMontagePubliMeta');
-  
+
   var publiPath = makeFullPathForProject( dodoc.projectPublisFoldername + '/' + pdata.slugPubliName);
 
   $publiContent
@@ -639,7 +639,7 @@ function listMontagePubliMeta( $publiContent, pdata) {
     .data("name", pdata.name)
     .data("template", pdata.template)
     ;
-    
+
   $publiContent.find('.template_container').attr("data-template", pdata.template);
 }
 
@@ -666,7 +666,7 @@ var sendData = {
     pdata.slugFolderName = currentFolder;
   	socket.emit( 'editProject', pdata);
   },
-  
+
   createNewMedia : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
@@ -700,7 +700,7 @@ var sendData = {
     publiData.slugProjectName = currentProject;
   	socket.emit( 'editPubli', publiData);
   },
-  
+
   listOnePubliMetaAndMedias : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
