@@ -1,8 +1,5 @@
 # Folder modules#
 node_modules
-#bower_components
-sessions
-publications
 
 # FTP Config file
 ftp-config.js
@@ -48,10 +45,10 @@ node_modules
 
 # dodoc customs #
 ######################
-sessions/**
+sessions
+publications
 
 public/fonts/Fira/source/
 public/fonts/Fira/technical reports/
-publications/yes-we-can/medias/20160928_162717.png
 
 .com.apple.timemachine.supported
