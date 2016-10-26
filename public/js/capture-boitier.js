@@ -30,7 +30,7 @@ var boitierExterne = (function() {
           switchMediaMode(direction);
         } else
         // capture
-        if( key === 'a' || key === 'q' || key === ' ') {
+        if( key === 'a' || key === 'q' || key === ' ' || key === 'Enter') {
           if( imageMode.isRunning())      imageMode.captureButtonPress();
           else if( videoMode.isRunning())       videoMode.captureButtonPress();
           else if( stopMotionMode.isRunning()) stopMotionMode.captureButtonPress();
