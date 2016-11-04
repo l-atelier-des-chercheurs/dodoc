@@ -7,7 +7,9 @@
     "url": "git://github.com/sarahgarcin/opendoc-tangible.git"
   },
   "scripts": {
-    "start": "gulp"
+    "serve": "node server.js",
+    "watch": "gulp",
+    "start": "concurrently 'npm run watch' 'npm run serve'"
   },
   "dependencies": {
     "body-parser": "^1.15.0",
@@ -21,7 +23,6 @@
     "ftp": "^0.3.10",
     "glob": "*",
     "gm": "^1.22.0",
-
     "i18n": "^0.5.0",
     "jade": "*",
     "jsftp": "^1.5.4",
@@ -41,15 +42,16 @@
     "woods-parsedown": "git://github.com/louis-ev/woods-parsedown.git#master"
   },
   "devDependencies": {
+    "concurrently": "^3.1.0",
     "gulp": "^3.9.0",
-    "gulp-uglify": "^2.0.0",
-    "gulp-util": "^3.0.7",
     "gulp-concat": "^2.6.0",
     "gulp-jshint": "^2.0.1",
     "gulp-minify-css": "^1.2.3",
     "gulp-plumber": "^1.0.1",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.1.1",
+    "gulp-uglify": "^2.0.0",
+    "gulp-util": "^3.0.7",
     "jshint": "^2.9.3"
   }
 }
