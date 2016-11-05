@@ -8104,7 +8104,7 @@ body.capture .content-wrapper:after {
   .feedSettings .sourceSelector .selectField {
     display: block;
     width: 100%; }
-  .feedSettings .resolutionSelector label {
+  .feedSettings .resolutionSelector > label {
     margin-top: 16px;
     position: relative;
     width: 100%;
@@ -8113,9 +8113,18 @@ body.capture .content-wrapper:after {
     box-shadow: none;
     padding: 16px;
     background-color: #e5e5e5; }
-    .feedSettings .resolutionSelector label input {
+    .feedSettings .resolutionSelector > label > input {
       margin: 0;
       margin-right: 16px; }
+    .feedSettings .resolutionSelector > label .setCustomRes {
+      width: 70px;
+      text-align: center; }
+    .feedSettings .resolutionSelector > label hr {
+      margin: 8px 0;
+      border-color: #e5e5e5; }
+    .feedSettings .resolutionSelector > label > label {
+      display: inline-block;
+      width: 50%; }
 
 .captureLeft {
   margin: auto;

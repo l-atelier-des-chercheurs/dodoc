@@ -232,7 +232,7 @@ body.capture{
   }
 
   .resolutionSelector {
-    label {
+    > label {
 
       margin-top:   $margin;
 
@@ -245,12 +245,24 @@ body.capture{
       padding: $margin;
       background-color: $gristresclair;
 
-      input {
+      > input {
         margin: 0;
         margin-right:   $margin;
       }
 
+      .setCustomRes {
+        width: 70px;
+        text-align: center;
+      }
+      hr {
+        margin: $margin/2 0;
+        border-color: $gristresclair;
+      }
 
+      > label {
+        display: inline-block;
+        width: 50%;
+      }
     }
 
   }

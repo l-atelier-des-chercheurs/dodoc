@@ -52,6 +52,7 @@ if( lang === 'fr') {
       "selectTemplate" : "Sélection de gabarit",
 
       "chooseCameraResolution" : "Sélectionnez la résolution de votre caméra",
+      "customCameraResolution" : "Choississez une résolution",
       "backToAnimation" : "Retour à l’animation",
 
       "removeProject" : "Supprimer le projet",

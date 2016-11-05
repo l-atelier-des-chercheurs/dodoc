@@ -243,6 +243,9 @@ var currentStream = (function(context) {
 
   var videoResSwitches = document.querySelector('.js--resolutionSelector').videoRes;
 
+  var customVideoResInput = document.querySelector('.js--customVideoResInput');
+  var customVideoResSwitches = document.querySelectorAll('.js--setCustomVideoRes');
+
   var recordVideoFeed;
   var recordAudioFeed;
 
@@ -250,7 +253,7 @@ var currentStream = (function(context) {
   var userSelectedAudioDevice = 'selectedAudioDeviceId';
   var userSelectedRes = 'selectedVideoRes';
 
-  var currentFeedsSource;
+  var currentFeedsSource = {};
 
 
   function gotDevices(deviceInfos) {
@@ -307,18 +310,26 @@ var currentStream = (function(context) {
     }
   }
   function setVideoResFromLocalstorage() {
-    console.log( userSelectedRes);
     var getPreviousSessionRes = store.get(userSelectedRes);
     if(getPreviousSessionRes !== undefined) {
+      console.log('The following resolution for video was used last time, it is: ' + getPreviousSessionRes.width+'×'+getPreviousSessionRes.height);
       for (index=0; index < videoResSwitches.length; index++) {
         if( getPreviousSessionRes.width === videoResSwitches[index].dataset.width && getPreviousSessionRes.height === videoResSwitches[index].dataset.height) {
           videoResSwitches[index].checked = true;
+          return;
         } else {
           videoResSwitches[index].checked = false;
         }
       }
+      // if no existing radio dataset were found, this means we probably have a custom value on our hand
+      $(customVideoResSwitches).filter('[name="data-width"]').val(getPreviousSessionRes.width).trigger('change');
+      $(customVideoResSwitches).filter('[name="data-height"]').val(getPreviousSessionRes.height).trigger('change');
+      customVideoResInput.checked = true;
+
+
     }
   }
+
 
   // Attach audio output device to video element using device/sink ID.
   function attachSinkId(element, sinkId) {
@@ -338,7 +349,7 @@ var currentStream = (function(context) {
         audioOutputSelect.selectedIndex = 0;
       });
     } else {
-      console.warn('Browser does not support output device selection.');
+      console.warn('Your browser does not support output device selection.');
     }
   }
 
@@ -349,7 +360,7 @@ var currentStream = (function(context) {
 
   function setSources() {
 
-    console.log( 'setting new sources for audio and video feeds');
+    console.log( '1. Setting new sources for audio and video feeds');
     var audioSource = audioInputSelect.value;
     var videoSource = videoSelect.value;
 
@@ -360,20 +371,32 @@ var currentStream = (function(context) {
     var requestedVideoRes = getVideoResFromRadio();
     store.set(userSelectedRes, requestedVideoRes);
 
-    currentFeedsSource = {
-      audio: {
-        optional: [ audioSource ? {sourceId: audioSource} : undefined ],
-      },
-      video: {
-        optional: [ videoSource ? {sourceId: videoSource} : undefined],
-        mandatory: {
+    if( requestedVideoRes !== undefined)
+      console.log( '2. Trying to use the following resolution: ' + requestedVideoRes.width+'×'+requestedVideoRes.height);
+    else
+      console.log( '2. No resolution set');
+
+    if( audioSource !== undefined) {
+      currentFeedsSource.audio = {
+        optional: [ audioSource ? {sourceId: audioSource} : undefined ]
+      }
+    }
+
+    if( videoSource !== undefined) {
+      currentFeedsSource.video = {
+        optional: [{sourceId: videoSource}]
+      }
+    }
+
+    if( requestedVideoRes !== undefined) {
+      currentFeedsSource.video.mandatory = {
           minWidth: requestedVideoRes.width,
           maxWidth: requestedVideoRes.width,
           minHeight: requestedVideoRes.height,
           maxHeight: requestedVideoRes.height
         }
-      }
-    };
+
+    }
 
     // restart the mode (should be cleaner)
     $('.js--modeSelector').filter('.is--active').trigger('click');
@@ -396,7 +419,10 @@ var currentStream = (function(context) {
         },
         function(err) {
           $(document).trigger('open_settings_pane');
-          alert( dodoc.lang.videoStreamCouldntBeStartedTryChangingRes);
+          for (index=0; index < videoResSwitches.length; index++) {
+            videoResSwitches[index].checked = false;
+          }
+          alert(dodoc.lang.videoStreamCouldntBeStartedTryChangingRes);
         }
       );
     });
@@ -454,6 +480,18 @@ var currentStream = (function(context) {
         ;
 
       videoElement.addEventListener('resize', updateVideoSize);
+
+      $(customVideoResSwitches).on('change', function(){
+        var typeOfValueChanged = $(this).attr('name');
+        var newValue = $(this).val();
+        $(customVideoResInput).attr(typeOfValueChanged, newValue);
+        if( $(customVideoResInput).attr('data-width') !== undefined && $(customVideoResInput).attr('data-height') !== undefined ) {
+          $(customVideoResInput).removeAttr('disabled');
+          customVideoResInput.checked = true;
+          $(videoResSwitches).trigger('change');
+        }
+      });
+
       setVideoResFromLocalstorage();
 
       if( store.get(userSelectedVideoDevice) === undefined)
