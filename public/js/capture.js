@@ -394,7 +394,8 @@ var currentStream = (function(context) {
           resolve( stream);
         },
         function(err) {
-          alert( dodoc.lang.videoStreamCouldntBeStartedTryChangingRes + '\n\n error: ' + JSON.stringify(err));
+          $(document).trigger('open_settings_pane');
+          alert( dodoc.lang.videoStreamCouldntBeStartedTryChangingRes);
         }
       );
     });
@@ -473,7 +474,7 @@ var currentStream = (function(context) {
     getStaticImageFromVideo : function() {
       return new Promise(function(resolve, reject) {
         var videoFrame = currentStream.getVideoFrame();
-  
+
         var invisibleCanvas = document.createElement('canvas');
         invisibleCanvas.width = videoFrame.videoWidth;
         invisibleCanvas.height = videoFrame.videoHeight;
@@ -481,7 +482,7 @@ var currentStream = (function(context) {
         invisibleCtx.drawImage( videoFrame, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
 
         resolve( imageData = invisibleCanvas.toDataURL('image/png'));
-  
+
 /*
         Caman( invisibleCtx.canvas, function () {
 //           this.brightness(10);
