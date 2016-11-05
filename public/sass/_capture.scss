@@ -235,16 +235,16 @@ body.capture{
     label {
 
       margin-top:   $margin;
-  
+
       position: relative;
-      width: 100%;  
-  
+      width: 100%;
+
       border:none;
       border-bottom: 2px solid $gris;
       box-shadow: none;
       padding: $margin;
       background-color: $gristresclair;
-                  
+
       input {
         margin: 0;
         margin-right:   $margin;
@@ -311,10 +311,10 @@ $t-decalageDuCentre: 4%;
     body.is--fullscreen & {
       padding-bottom:   0;
     }
-    
+
     .captureLeft-lastStopmotionImage {
       position: absolute;
-      opacity: 0; 
+      opacity: 0;
     }
   }
 
@@ -323,7 +323,7 @@ $t-decalageDuCentre: 4%;
     top: 0;
     right: 0;
     text-align: left;
-    width: 140px;    
+    width: 140px;
     max-width: 40%;
     padding: $margin/2;
     font-size: 70%;
@@ -332,16 +332,16 @@ $t-decalageDuCentre: 4%;
     background-color: transparentize( #fff, .4);
     border-left: 1px solid $gristresclair;
     height: 100%;
-    
+
     input {
       margin-top:   $margin;
-      width: 100%;  
+      width: 100%;
     }
   }
-  
+
   // pas d'image, pas de slider
   .captureLeft-lastStopmotionImage[src=""] ~ .btn-capture-wrapper > .stopmotion-capture > .slider--lastImageOpacity {
-    display: none;  
+    display: none;
   }
 
 
@@ -479,8 +479,26 @@ $t-decalageDuCentre: 4%;
         word-wrap: break-word;
       }
     }
-
   }
+
+  .videoContainer {
+    position: relative;
+
+    .videoFeed {
+      border-bottom:2px solid $gristresclair;
+    }
+
+    .currentStreamResolution {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 45%;
+      color: $grisfonce;
+      padding: $margin/4 $margin/2;
+      font-size: 80%;
+    }
+  }
+
   #canvas-audio{
     display: none;
     width: 100%;
@@ -649,10 +667,10 @@ $t-decalageDuCentre: 4%;
       z-index: 9;
 
       video.output {
-        padding-bottom: 10px; 
-        
+        padding-bottom: 10px;
+
       }
-      
+
       // video with empty src
       video.output[src=""] {
         // hide buttons that follow
@@ -789,11 +807,6 @@ $t-decalageDuCentre: 4%;
     padding-left:27px;
     margin-top: 60px;
     margin-bottom: 40px;
-  }
-
-  #video-stream {
-    display: none;
-    width: 100%;
   }
   #stop-sm{
     display: none;

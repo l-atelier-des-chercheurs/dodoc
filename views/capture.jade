@@ -72,7 +72,9 @@ html
               //- display last stopmotion image (if needed)
               img.captureLeft-lastStopmotionImage.js--lastStopmotionImage(src)
               //- display camera
-              video(id="video" autoplay)
+              .videoContainer.js--videoContainer
+                video.videoFeed.js--videoFeed(autoplay)
+                div.currentStreamResolution.js--currentStreamResolution
               //- display audio vizualizer
               canvas(id="canvas-audio" width="720" height="256")
 

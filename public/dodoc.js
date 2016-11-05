@@ -48,7 +48,7 @@ if( lang === 'fr') {
       "previzStopMotion" : "Prévisualiser l’animation",
       "finishStopmotion" : "Finaliser l’animation",
       "addToFav" : "Mettre en favoris",
-      
+
       "selectTemplate" : "Sélection de gabarit",
 
       "chooseCameraResolution" : "Sélectionnez la résolution de votre caméra",
@@ -67,6 +67,7 @@ if( lang === 'fr') {
       "videoInputSource" : "source video:",
       "lastImageOpacity" : "Afficher la dernière image en transparence",
 
+      "currentVideoResolutionIs" : "Résolution actuelle&nbsp;: ",
       "videoStreamCouldntBeStartedTryChangingRes" : "Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la résolution dans le panneau de droite.",
       "audioStreamCouldntBeStarted" : "Le flux audio n’a pas pu être démarré.",
 

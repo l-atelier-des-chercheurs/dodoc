@@ -125,7 +125,7 @@ function photoDisplay(){
   $('.stopmotion-capture').hide();
   $('.audio-capture').hide();
 
-  $('#video').show();
+  $('.js--videoContainer').show();
   $('#canvas-audio').hide();
   $(".image-choice").show();
   $("body").attr("data-mode", "photo");
@@ -152,7 +152,7 @@ function videoDisplay(){
   $('.audio-capture').css('display','none');
   $('.photo-capture').css('display', 'none');
 
-  $('#video').show();
+  $('.js--videoContainer').show();
   $('#canvas-audio').hide();
   $(".video-choice").show();
   $("body").attr("data-mode", "video");
@@ -181,7 +181,7 @@ function stopMotionDisplay(){
   $('.stopmotion-capture').fadeIn(2000);
   $('.audio-capture').css('display','none');
 
-  $('#video').show();
+  $('.js--videoContainer').show();
   $(".stopmotion-choice").show();
   $('#canvas-audio').hide();
   $("body").attr("data-mode", "stopmotion");
@@ -210,7 +210,7 @@ function audioDisplay(){
   $('.stopmotion-capture').css('display','none');
   $('.audio-capture').fadeIn(2000);
 
-  $('#video').hide();
+  $('.js--videoContainer').hide();
   $('#canvas-audio').show();
 
   $(".audio-choice").show();
@@ -232,7 +232,8 @@ var currentStream = (function(context) {
   var $settingsPane = $('.feedSettings');
   var $settingsButton = $('.js--settings');
 
-  var videoElement = document.querySelector('#video');
+  var videoElement = document.querySelector('.js--videoContainer .js--videoFeed');
+  var videoResolutionIndicator = document.querySelector('.js--currentStreamResolution');
   var videoStream, audioStream;
 
   var audioInputSelect = document.querySelector('.js--audioSource');
@@ -391,7 +392,7 @@ var currentStream = (function(context) {
           audio: false
         },
         function (stream) {
-          resolve( stream);
+          resolve(stream);
         },
         function(err) {
           $(document).trigger('open_settings_pane');
@@ -399,6 +400,12 @@ var currentStream = (function(context) {
         }
       );
     });
+  }
+
+  function updateVideoSize() {
+    if( videoElement === undefined)
+      return;
+    videoResolutionIndicator.innerHTML = dodoc.lang.currentVideoResolutionIs + videoElement.videoWidth + '×' + videoElement.videoHeight;
   }
 
   function getAudioFeed() {
@@ -446,6 +453,7 @@ var currentStream = (function(context) {
         })
         ;
 
+      videoElement.addEventListener('resize', updateVideoSize);
       setVideoResFromLocalstorage();
 
       if( store.get(userSelectedVideoDevice) === undefined)
@@ -516,6 +524,7 @@ var currentStream = (function(context) {
         getCameraFeed()
           .then( function( stream) {
             videoStream = stream;
+
             if (navigator.mozGetUserMedia) {
               videoElement.mozSrcObject = stream;
             } else {

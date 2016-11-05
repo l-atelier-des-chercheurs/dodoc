@@ -8252,6 +8252,18 @@ body.capture .content-wrapper:after {
         transform: translate(-50%, -58%);
         position: absolute;
         word-wrap: break-word; }
+  .captureLeft .videoContainer {
+    position: relative; }
+    .captureLeft .videoContainer .videoFeed {
+      border-bottom: 2px solid #e5e5e5; }
+    .captureLeft .videoContainer .currentStreamResolution {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 45%;
+      color: #535353;
+      padding: 4px 8px;
+      font-size: 80%; }
   .captureLeft #canvas-audio {
     display: none;
     width: 100%; }
@@ -8452,9 +8464,6 @@ body.capture .content-wrapper:after {
     padding-left: 27px;
     margin-top: 60px;
     margin-bottom: 40px; }
-  .captureRight #video-stream {
-    display: none;
-    width: 100%; }
   .captureRight #stop-sm {
     display: none;
     float: right;
