@@ -55,6 +55,10 @@ if( lang === 'fr') {
       "customCameraResolution" : "Choississez une résolution",
       "backToAnimation" : "Retour à l’animation",
 
+      "width" : "largeur",
+      "height" : "hauteur",
+      "apply" : "appliquer",
+
       "removeProject" : "Supprimer le projet",
       "createFolder" : "Créer un dossier",
       "createProject" : "Créer un projet",

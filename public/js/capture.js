@@ -244,7 +244,8 @@ var currentStream = (function(context) {
   var videoResSwitches = document.querySelector('.js--resolutionSelector').videoRes;
 
   var customVideoResInput = document.querySelector('.js--customVideoResInput');
-  var customVideoResSwitches = document.querySelectorAll('.js--setCustomVideoRes');
+  var customVideoResSwitches = document.querySelectorAll('.js--inputCustomVideoRes');
+  var setCustomVideoRes = document.querySelector('.js--setCustomVideoRes');
 
   var recordVideoFeed;
   var recordAudioFeed;
@@ -322,10 +323,10 @@ var currentStream = (function(context) {
         }
       }
       // if no existing radio dataset were found, this means we probably have a custom value on our hand
-      $(customVideoResSwitches).filter('[name="data-width"]').val(getPreviousSessionRes.width).trigger('change');
-      $(customVideoResSwitches).filter('[name="data-height"]').val(getPreviousSessionRes.height).trigger('change');
+      $(customVideoResSwitches).filter('[name="data-width"]').val(getPreviousSessionRes.width);
+      $(customVideoResSwitches).filter('[name="data-height"]').val(getPreviousSessionRes.height);
       customVideoResInput.checked = true;
-
+      $(setCustomVideoRes).trigger("click");
 
     }
   }
@@ -481,15 +482,19 @@ var currentStream = (function(context) {
 
       videoElement.addEventListener('resize', updateVideoSize);
 
-      $(customVideoResSwitches).on('change', function(){
-        var typeOfValueChanged = $(this).attr('name');
-        var newValue = $(this).val();
-        $(customVideoResInput).attr(typeOfValueChanged, newValue);
-        if( $(customVideoResInput).attr('data-width') !== undefined && $(customVideoResInput).attr('data-height') !== undefined ) {
+      $(setCustomVideoRes).on('click', function(){
+
+        $(customVideoResSwitches).each(function() {
+          var typeOfValueChanged = $(this).attr('name');
+          var newValue = $(this).val();
+          $(customVideoResInput).attr(typeOfValueChanged, newValue);
+        })
+        if( $(customVideoResInput).attr('data-width').length > 0 && $(customVideoResInput).attr('data-height').length > 0 ) {
           $(customVideoResInput).removeAttr('disabled');
           customVideoResInput.checked = true;
           $(videoResSwitches).trigger('change');
         }
+        return false;
       });
 
       setVideoResFromLocalstorage();

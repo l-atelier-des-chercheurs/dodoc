@@ -100,13 +100,12 @@ body.capture{
       color:#333;
       margin: 0;
       outline: none;
-      font-size: 1.1em;
 
+      font-size: 1.1rem;
       padding: 11px $margin;
-      margin-right: $margin;
       border-radius: 4px;
 
-
+      margin-right: $margin;
 
       &:last-of-type {
         margin-right: 0;

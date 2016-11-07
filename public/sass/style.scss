@@ -115,10 +115,22 @@ img, video, audio, svg {
 }
 
 button{
+  font-family: inherit;
   outline: none;
   border:none;
-  font-family: inherit;
+
+  color: #000;
+  margin: 0;
+  font-size: 1.1rem;
+  padding: 11px $margin;
+  border-radius: 4px;
   background: $gristresclair;
+
+  &.is--active, &:hover {
+    color: #fff;
+    outline: none;
+    background-color: $grisfonce;
+  }
 
   &.button_coteacote {
     display: inline-block;

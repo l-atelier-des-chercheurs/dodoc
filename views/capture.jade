@@ -67,12 +67,13 @@ html
                 | !{dodoc.lang.customCameraResolution}
                 hr
                 label(for="data-width")
-                  | width
-                  input.setCustomRes.js--setCustomVideoRes(type='number' name="data-width" step='1' value='' min='1' max='3000')
+                  | !{dodoc.lang.width}
+                  input.setCustomRes.js--inputCustomVideoRes(type='number' name="data-width" step='1' value='' min='1' max='3000')
                 label(for="data-height")
-                  | height
-                  input.setCustomRes.js--setCustomVideoRes(type='number' name="data-height" step='1' value='' min='1' max='3000')
-
+                  | !{dodoc.lang.height}
+                  input.setCustomRes.js--inputCustomVideoRes(type='number' name="data-height" step='1' value='' min='1' max='3000')
+                button.js--setCustomVideoRes
+                  | !{dodoc.lang.apply}
 
         div.content-wrapper
           div.captureLeft
