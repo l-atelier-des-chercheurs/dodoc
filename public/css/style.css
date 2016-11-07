@@ -8262,9 +8262,14 @@ body.capture .content-wrapper:after {
         position: absolute;
         word-wrap: break-word; }
   .captureLeft .videoContainer {
-    position: relative; }
+    position: relative;
+    border: 2px solid #e5e5e5;
+    background-color: #e5e5e5; }
     .captureLeft .videoContainer .videoFeed {
-      border-bottom: 2px solid #e5e5e5; }
+      min-width: 0;
+      width: auto;
+      max-width: 100%;
+      margin: 0 auto; }
     .captureLeft .videoContainer .currentStreamResolution {
       position: absolute;
       top: 100%;
@@ -8364,6 +8369,11 @@ body.capture .content-wrapper:after {
     display: none; }
   .captureRight .preview {
     position: relative; }
+    .captureRight .preview .output {
+      min-width: 0;
+      width: auto;
+      max-width: 100%;
+      margin: 0 auto; }
     .captureRight .preview .button-wrapper_deleteLastMedia, .captureRight .preview .button-wrapper_deleteMediaCapture {
       position: absolute;
       top: 0px;
