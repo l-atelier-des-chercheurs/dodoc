@@ -108,7 +108,7 @@ module.exports = function(app, io){
 
 		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 
-    socket.on( 'exportFtp', function (data){ exportPubli( socket, data); });
+    socket.on( 'exportPubliToFtp', function (data){ onExportPubliToFtp( socket, data); });
 	});
 
   /***************************************************************************
@@ -464,35 +464,30 @@ module.exports = function(app, io){
 // F I N    B I B L I    P A G E
 
 // P U B L I     P A G E
-  function exportPubli(socket, data){
-    var slugFolderName = data.slugFolderName;
-    var slugProjectName = data.slugProjectName;
-    var slugPubliName = data.slugPubliName;
+  function onExportPubliToFtp(socket, d){
+    dev.logfunction( "EVENT - onExportPubliToFtp");
+    var currentDateString = getCurrentDate();
+    var projectPath = getProjectPath( d.slugFolderName, d.slugProjectName);
 
-    var projectPath = "sessions/"+ slugFolderName + "/" + slugProjectName;
-    var publiPath =  "publications/";
-    var folderPath = publiPath + slugPubliName;
-    var mediasPath = folderPath+'/medias';
+    var exportedPubliFolderName = currentDateString + "_" + d.slugPubliName;
+    exportedPubliFolderName = findFirstFilenameNotTaken( exportedPubliFolderName, dodoc.exportedPubliDir, '');
 
-        // create publi directory with publi name
-    fs.mkdir(folderPath, function(){
+    var exportedPubliPath = dodoc.exportedPubliDir + "/" + "exportedPubliFolderName";
+    var exportedMediaFolderName = exportedPubliPath + "/" + "medias";
+
+    // create publi directory with publi name
+    fs.mkdir(exportedPubliPath, function(){
       // create medias directory in publi directory
-      fs.mkdir(mediasPath, function(){
+      fs.mkdir(exportedMediaFolderName, function(){
         // copy css file
-        copyFiles('public/css/style.css', folderPath+'/style.css', function(){
-          // copy js file
-          copyFiles('public/js/production/all.min.js', folderPath+'/script.min.js', function(){
-            fs.unlink(folderPath+'/index.html', function(){
-              // create html file
-              fs.writeFile(folderPath+'/index.html', data.html, function(){
-                saveImagesLocal(projectPath, folderPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket);
-              });
-            });
+        copyFiles('public/css/style.css', exportedPubliPath + "/style.css", function(){
+          // create html file
+          fs.writeFile(exportedPubliPath + "/index.html", d.html, function(){
+//             saveImagesLocal(projectPath, folderPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket);
           });
         });
       });
     });
-
   }
 
   function saveImagesLocal(projectPath, folderPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket){

@@ -26,6 +26,7 @@ if( lang === 'fr') {
       "remove" : "Supprimer",
       "edit" : "Modifier",
       "accept" : "Valider",
+      "uploadPubliToFtp" : "Envoyer la publication vers un FTP",
 
       "lastMediasAdded" : "Derniers médias ajoutés",
       "listOfPublications" : "Liste des publications",
@@ -130,6 +131,7 @@ var settings = {
   "codelang" : lang,
   "contentDir" : "sessions",
   "publicationTemplateDir" : "templates",
+  "exportedPubliDir" : "publications",
   "metaFileext" : ".txt",
   "videoext" : ".webm",
   "stopMotionext" : ".webm",
