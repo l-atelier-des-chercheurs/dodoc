@@ -7293,16 +7293,12 @@ button {
   font-family: inherit;
   outline: none;
   border: none;
-  color: #000;
+  color: #fff;
   margin: 0;
   font-size: 1.1rem;
   padding: 11px 16px;
   border-radius: 4px;
-  background: #e5e5e5; }
-  button.is--active, button:hover {
-    color: #fff;
-    outline: none;
-    background-color: #535353; }
+  background: #4BC0B4; }
   button.button_coteacote {
     display: inline-block;
     margin-right: 8px; }
@@ -7332,7 +7328,8 @@ button {
   padding-right: 16px;
   transition: border-radius .4s;
   font-size: 1rem;
-  line-height: 1.1; }
+  line-height: 1.1;
+  pointer-events: auto; }
   .button-wrapper + .button-wrapper {
     margin-left: 8px; }
   .button-wrapper:hover, .button-wrapper:focus {
@@ -8110,7 +8107,8 @@ body.capture .content-wrapper:after {
     -webkit-overflow-scrolling: touch;
     padding-left: 1.875rem;
     padding-right: 1.875rem;
-    padding-top: 1.875rem; }
+    padding-top: 1.875rem;
+    padding-bottom: 1.875rem; }
   .feedSettings .openCloseSettings {
     position: absolute;
     top: 0;
@@ -8120,7 +8118,8 @@ body.capture .content-wrapper:after {
     right: 100%;
     background-color: #333;
     border-radius: 4px 0 0 4px;
-    transition: all .7s ease-out; }
+    transition: all .7s ease-out;
+    pointer-events: none; }
     .feedSettings .openCloseSettings:hover {
       width: 155px; }
   .feedSettings .sourceSelector .selectField {
@@ -8158,6 +8157,7 @@ body.capture .content-wrapper:after {
   height: auto;
   max-width: 46%;
   width: 80vh;
+  padding: 8px;
   left: 50%;
   transform: translate3d(-50%, 0, 0);
   transition: transform .4s ease-out, background-color .1s; }
@@ -8205,7 +8205,8 @@ body.capture .content-wrapper:after {
     display: none; }
   .captureLeft video {
     height: auto;
-    max-height: 100%; }
+    max-height: 100%;
+    min-height: 20px; }
   .captureLeft .btn-capture-wrapper {
     z-index: 1000;
     text-align: center;
@@ -8285,6 +8286,12 @@ body.capture .content-wrapper:after {
         word-wrap: break-word; }
   .captureLeft .videoContainer {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    max-height: 80vh;
+    width: 100%;
     border: 2px solid #e5e5e5;
     background-color: #e5e5e5; }
     .captureLeft .videoContainer .videoFeed {
@@ -8361,7 +8368,7 @@ body.capture .content-wrapper:after {
   overflow: hidden;
   opacity: 0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 10px;
+  padding: 8px;
   height: auto;
   max-width: 41%;
   width: 80vh;
@@ -8390,12 +8397,15 @@ body.capture .content-wrapper:after {
   .captureRight .output[src=''] {
     display: none; }
   .captureRight .preview {
-    position: relative; }
+    position: relative;
+    max-height: 80vh; }
     .captureRight .preview .output {
       min-width: 0;
       width: auto;
       max-width: 100%;
-      margin: 0 auto; }
+      margin: 0 auto;
+      height: auto;
+      object-fit: contain; }
     .captureRight .preview .button-wrapper_deleteLastMedia, .captureRight .preview .button-wrapper_deleteMediaCapture {
       position: absolute;
       top: 0px;

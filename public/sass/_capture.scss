@@ -200,6 +200,7 @@ body.capture{
     padding-left: 0.9375rem * 2;
     padding-right: 0.9375rem * 2;
     padding-top:  0.9375rem * 2;
+    padding-bottom:  0.9375rem * 2;
 
   }
 
@@ -213,6 +214,7 @@ body.capture{
     background-color: #333;
     border-radius: 4px 0 0 4px;
     transition: all .7s ease-out;
+    pointer-events: none;
 
     &:hover {
       width: 155px;
@@ -283,6 +285,7 @@ $t-decalageDuCentre: 4%;
   height: auto;
   max-width: 50% - $t-decalageDuCentre;
   width: 80vh;
+  padding: $margin/2;
 
   left: 50%;
   transform: translate3d(-50%, 0, 0);
@@ -359,6 +362,7 @@ $t-decalageDuCentre: 4%;
   video {
     height: auto;
     max-height: 100%;
+    min-height: 20px;
   }
 
   .btn-capture-wrapper{
@@ -494,6 +498,15 @@ $t-decalageDuCentre: 4%;
 
   .videoContainer {
     position: relative;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    height: 100%;
+    max-height: 80vh;
+    width: 100%;
+
     border:2px solid $gristresclair;
     background-color: $gristresclair;
 
@@ -610,7 +623,7 @@ $t-decalageDuCentre: 4%;
   opacity: 0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
-  padding: 10px;
+  padding: $margin/2;
 
   height: auto;
   max-width: 45% - $t-decalageDuCentre;
@@ -656,12 +669,15 @@ $t-decalageDuCentre: 4%;
 
   .preview {
     position: relative;
+    max-height: 80vh;
 
     .output {
       min-width: 0;
       width: auto;
       max-width: 100%;
       margin: 0 auto;
+      height: auto;
+      object-fit:contain;
     }
 
     .button-wrapper_deleteLastMedia, .button-wrapper_deleteMediaCapture {
