@@ -1,54 +1,52 @@
 # Folder modules#
-node_modules
+**/node_modules
 
 # FTP Config file
-ftp-config.js
+dodoc-app/ftp-config.js
 
 # Compiled source #
 # ###################
-*.com
-*.class
-*.dll
-*.exe
-*.o
-*.so
+dodoc-app/*.com
+dodoc-app/*.class
+dodoc-app/*.dll
+dodoc-app/*.exe
+dodoc-app/*.o
+dodoc-app/*.so
 
 # Packages #
 ############
 # it's better to unpack these files and commit the raw source
 # git has its own built in compression methods
-*.7z
-*.dmg
-*.gz
-*.iso
-*.jar
-*.rar
-*.tar
-*.zip
+dodoc-app/*.7z
+dodoc-app/*.dmg
+dodoc-app/*.gz
+dodoc-app/*.iso
+dodoc-app/*.jar
+dodoc-app/*.rar
+dodoc-app/*.tar
+dodoc-app/*.zip
 
 # Logs and databases #
 ######################
-*.log
-*.sql
-*.sqlite
+dodoc-app/*.log
+dodoc-app/*.sql
+dodoc-app/*.sqlite
 
 # OS generated files #
 ######################
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-node_modules
+**/.DS_Store
+**/._*
+**/.Spotlight-V100
+**/.Trashes
+**/ehthumbs.db
+**/Thumbs.db
 
 # dodoc customs #
 ######################
-sessions
-publications
+dodoc-app/sessions
+dodoc-app/publications
 
-public/fonts/Fira/source/
-public/fonts/Fira/technical reports/
+dodoc-app/public/fonts/Fira/source/
+dodoc-app/public/fonts/Fira/technical reports/
 
-.com.apple.timemachine.supported
+dodoc-app/.com.apple.timemachine.supported
