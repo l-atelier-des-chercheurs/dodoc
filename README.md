@@ -43,11 +43,11 @@ and type this command
 ```git clone https://github.com/sarahgarcin/dodoc.git```
 then open the dodoc directory by typing ```cd dodoc```
 
-###Install nodejs on your computer
+###Install nodejs and npm on your computer
 
 You can install nodejs from this page [https://nodejs.org/](https://nodejs.org/)     
 Then, verify that it is correctly installed  by typing in the terminal    
-```node -v```
+```node -v``` and ```npm -v```
 
 ###Install dependencies
 
@@ -57,8 +57,8 @@ example:
 ```cd Pauline/sites/dodoc```     
 
 Once you are in the right directory   
-(the terminal says for example ```MacBook-Pro-de-Pauline-3:dodoc Pauline$``` )   
-Enter the command:    
+(the terminal says for example ```MacBook-Pro-de-Pauline-3:dodoc Pauline$``` )
+Enter the command:
 ```npm install```  
 
 On Windows XP, if you get the following error : 
@@ -85,13 +85,13 @@ Follow this tutorial: [http://www.renevolution.com/how-to-install-ffmpeg-on-mac-
 In the right directory  (```cd path/of/the/dodoc/directory```  )
 (the terminal says for example ```MacBook-de-Toto:dodoc Pauline$``` )  
 Run the server in the terminal (enter the following command:)  
-```node server.js```
+```npm start```
 
 Go to browser and go to the url (For now dodoc works only on Google Chrome or Chromium)   
 [https://localhost:8080](https://localhost:8080)  
 Your browser is going to tell that the website is unsafe, go on.   
 
-###To update DoDoc with the latest vesrion  
+###To update DoDoc with the latest version  
 There are two options:  
 1) If you have cloned the repository, pull the modifications with the terminal:  
 - Go to your folder directory:   
@@ -111,4 +111,4 @@ Example: ```cd dodoc```
 
 
 To debug dodoc, you can enable extra-logging with the flag --debug:
-```node server.js --debug```
+```npm run debug```
