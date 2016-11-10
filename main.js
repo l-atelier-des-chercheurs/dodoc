@@ -21,10 +21,10 @@ function createWindow () {
   // win.maximize();
 
   // and load the index.html of the app.
-  win.loadURL('http://localhost:8000');
+  win.loadURL(`${config.protocol}://${config.host}:${config.port}`);
 
   // Open the DevTools.
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 
   win.focus();
 

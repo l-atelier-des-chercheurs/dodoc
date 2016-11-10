@@ -2,6 +2,7 @@
   -for(var prop in localNetworkInfos)
     h3 To connect with another device, use https://#{localNetworkInfos[prop]}:8080
 
+script(src='https://code.jquery.com/jquery-3.1.1.min.js')
 script(src='/socket.io/socket.io.js')
 script
   | var app = {};

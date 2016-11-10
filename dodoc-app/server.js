@@ -1,11 +1,12 @@
-module.exports = function() {
-  var express = require("express");
-  var http = require('http');
-  var https = require('https');
-  var fs = require('fs');
-  var io = require('socket.io');
-  var path = require('path');
+var express = require("express");
+var http = require('http');
+var https = require('https');
+var fs = require('fs');
+var io = require('socket.io');
+var path = require('path');
+var config = require('../config.json');
 
+module.exports = function() {
   var app = express();
 
   var privateKey  = fs.readFileSync(path.join(__dirname, 'file.pem'), 'utf8');
@@ -18,7 +19,7 @@ module.exports = function() {
 
   var dodoc = require('./public/dodoc.js');
   var main = require('./main');
-  var config = require('./config');
+  var expressSettings = require('./express-settings');
   var router = require('./router');
 
   var m = new main(app, io);
@@ -27,7 +28,7 @@ module.exports = function() {
   /*
   * Server config
   */
-  config(app, express);
+  expressSettings(app, express);
 
   /**
   * Server routing and io events
@@ -41,7 +42,7 @@ module.exports = function() {
 
   httpsServer.listen(
     app.get("port"), function() {
-      console.log("Server up and running. Go to http://localhost:" + app.get("port"));
+      console.log(`Server up and running. Go to ${config.protocol}://${config.host}:${config.port}`);
     }
   );
 }
