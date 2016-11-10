@@ -423,7 +423,7 @@ var currentStream = (function(context) {
           for (index=0; index < videoResSwitches.length; index++) {
             videoResSwitches[index].checked = false;
           }
-          alert(dodoc.lang.videoStreamCouldntBeStartedTryChangingRes);
+          alertify.log(dodoc.lang.videoStreamCouldntBeStartedTryChangingRes);
         }
       );
     });
@@ -453,7 +453,7 @@ var currentStream = (function(context) {
           resolve(stream);
         },
         function(err) {
-          alert( dodoc.lang.audioStreamCouldntBeStarted + '\n\n error: ' + JSON.stringify(err));
+          alertify.log( dodoc.lang.audioStreamCouldntBeStarted + '\n\n error: ' + JSON.stringify(err));
         }
       );
     });
