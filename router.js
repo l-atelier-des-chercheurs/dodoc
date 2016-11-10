@@ -28,15 +28,18 @@ module.exports = function(app,io,m){
   /**
   * routing functions
   */
-  function getFullPath( thisPath) {
-    return path.join(__dirname, dodoc.contentDir, thisPath);
+  function getContentPath(thisPath) {
+    return path.join( getRootPath(), dodoc.contentDir, thisPath);
+  }
+  function getRootPath() {
+    return __dirname;
   }
 
   function getMetaFileOfFolder( slugFolderName) {
-    return path.join( getFullPath( slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
+    return path.join( getContentPath( slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
   }
   function getProjectPath( slugFolderName, slugProjectName) {
-    return path.join( getFullPath( slugFolderName), slugProjectName);
+    return path.join( getContentPath( slugFolderName), slugProjectName);
   }
   function getMetaFileOfProject( slugFolderName, slugProjectName) {
     return path.join( getProjectPath( slugFolderName, slugProjectName), dodoc.projectMetafilename + dodoc.metaFileext);
@@ -88,7 +91,7 @@ module.exports = function(app,io,m){
           var slugPubliName = req.param('publi');
           if( slugPubliName !== undefined) {
             var jsonFileOfPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName) + dodoc.metaFileext;
-            var fullPathToJsonFileOfPubli = getFullPath( jsonFileOfPubli);
+            var fullPathToJsonFileOfPubli = getContentPath( jsonFileOfPubli);
             var publiData = readMetaFile( fullPathToJsonFileOfPubli);
 
             pageDataJSON.slugPubliName = slugPubliName;
@@ -201,10 +204,9 @@ module.exports = function(app,io,m){
 
   function getAllTemplates() {
     return new Promise(function(resolve, reject) {
-      var templateFolder = 'templates';
-      fs.readdir( templateFolder, function (err, filenames) {
+      var templateFolderPath = getRootPath( dodoc.publicationTemplateDir);
+      fs.readdir( templateFolderPath, function (err, filenames) {
         if (err) reject( console.log( 'Couldn\'t read content dir : ' + err));
-
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
         resolve(folders);
       });
