@@ -11,7 +11,7 @@ var stopMotionMode = (function() {
   var $previzsm = $preview.find(".js--previz-stopmotion");
   var $finishsm = $preview.find(".js--finish-stopmotion");
   var $backToAnimation = $preview.find(".js--delete-media-capture-stopmotion");
-  
+
   var $lastStopmotionImage = $(".video-view .js--lastStopmotionImage");
   var $lastStopmotionImageSlider = $(".video-view .js--lastImageOpacity");
 
@@ -46,7 +46,7 @@ var stopMotionMode = (function() {
     mediaData.slugProjectName = currentProject;
 
     // get a first image to send with project data
-    currentStream.getStaticImageFromVideo().then(function(imageData) {  
+    currentStream.getStaticImageFromVideo().then(function(imageData) {
       mediaData.imageContent = imageData;
       socket.emit( 'startStopMotion', mediaData);
     }, function(err) {
@@ -65,7 +65,7 @@ var stopMotionMode = (function() {
     var smCachePath = $("body").data("smCachePath");
     var imageData = currentStream.getStaticImageFromVideo();
 
-    currentStream.getStaticImageFromVideo().then(function(imageData) {  
+    currentStream.getStaticImageFromVideo().then(function(imageData) {
 
       var smImage =
       {
@@ -73,17 +73,17 @@ var stopMotionMode = (function() {
         "folderCacheName" : smCacheName,
         "folderCachePath" : smCachePath
       };
-  
+
       socket.emit( 'addImageToStopMotion', smImage);
-  
+
       $('body').addClass('takingstopmotion');
       $(".captureRight .flash").fadeIn(0, function(){
         $(this).fadeOut(500);
       });
-  
+
       justCaptured();
       animateWindows();
-  
+
     }, function(err) {
       console.log('err ' + err);
     });
@@ -147,7 +147,7 @@ var stopMotionMode = (function() {
       $lastStopmotionImageSlider.bind("change", function() {
         $lastStopmotionImage.css("opacity", $lastStopmotionImageSlider.val());
       });
-      
+
       if(isRecording) {
         animateWindows();
       }
@@ -161,7 +161,7 @@ var stopMotionMode = (function() {
     onNewStopmotionImage : function( smdata) {
 
 
-      var imagePath = smdata.imageFullPath.substring( dodoc.contentDir.length);
+      var imagePath = smdata.relativeImagePath;
 
       /********* LARGE PREVIEW ***************/
       var $newPreview = $('.js--templates .stopmotion_lastImagePreview').clone( false);
@@ -188,7 +188,7 @@ var stopMotionMode = (function() {
       $newPreview.addClass('is--active').find('img').attr("src", imagePath);
       $newSmallPreview.addClass('is--active').find('img').attr("src", imagePath);
       $lastStopmotionImage.attr("src", imagePath);
-      
+
       // supprimer les images plus anciennes que 10
       $previewContainer.find(".stopmotion_lastImagePreview").eq(-10).trigger("removeMe");
       $newPreview.on("removeMe", function(){
@@ -205,7 +205,7 @@ var stopMotionMode = (function() {
         $newSmallPreview.find("img").attr("src", "").remove();
         $newSmallPreview = null;
       });
-      
+
       $previewContainer.append( $newPreview);
       $timeline.append( $newSmallPreview);
 

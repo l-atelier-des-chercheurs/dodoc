@@ -28,32 +28,28 @@ module.exports = function(app,io,m){
   /**
   * routing functions
   */
-  function getFullPath( path) {
-    return dodoc.contentDir + "/" + path;
+  function getFullPath( thisPath) {
+    return path.join(__dirname, dodoc.contentDir, thisPath);
   }
 
   function getMetaFileOfFolder( slugFolderName) {
-    return getFullPath( slugFolderName) + '/' + dodoc.folderMetafilename + dodoc.metaFileext;
+    return path.join( getFullPath( slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
   }
-
   function getProjectPath( slugFolderName, slugProjectName) {
-    return slugFolderName + '/' + slugProjectName;
+    return path.join( getFullPath( slugFolderName), slugProjectName);
   }
-  function getMetaFileOfProject( projectPath) {
-    return getFullPath( projectPath) + '/' + dodoc.projectMetafilename + dodoc.metaFileext;
+  function getMetaFileOfProject( slugFolderName, slugProjectName) {
+    return path.join( getProjectPath( slugFolderName, slugProjectName), dodoc.projectMetafilename + dodoc.metaFileext);
   }
 
   function getPathToPubli( slugFolderName, slugProjectName, pslug) {
     var projectPath = getProjectPath( slugFolderName, slugProjectName);
-    var pathToPubli = projectPath + '/' + getPubliPathOfProject();
+    var pathToPubli = path.join( projectPath, getPubliPathOfProject());
     if( pslug !== undefined)
-      pathToPubli = pathToPubli + '/' + pslug;
+      pathToPubli = path.join( pathToPubli, pslug);
     return pathToPubli;
   }
 
-  function makePathToPubliFull( publiPath) {
-    return getFullPath( publiPath);
-  }
   function getCurrentDate() {
     return moment().format( dodoc.metaDateFormat);
   }
@@ -83,8 +79,7 @@ module.exports = function(app,io,m){
 
         var slugProjectName = req.param('project');
         if( slugProjectName !== undefined) {
-          var projectPath = getProjectPath( slugFolderName, slugProjectName)
-          var jsonFileOfProject = getMetaFileOfProject( projectPath);
+          var jsonFileOfProject = getMetaFileOfProject( slugFolderName, slugProjectName);
           var projectData = readMetaFile( jsonFileOfProject);
 
           pageDataJSON.slugProjectName = slugProjectName;
@@ -93,7 +88,7 @@ module.exports = function(app,io,m){
           var slugPubliName = req.param('publi');
           if( slugPubliName !== undefined) {
             var jsonFileOfPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName) + dodoc.metaFileext;
-            var fullPathToJsonFileOfPubli = makePathToPubliFull( jsonFileOfPubli);
+            var fullPathToJsonFileOfPubli = getFullPath( jsonFileOfPubli);
             var publiData = readMetaFile( fullPathToJsonFileOfPubli);
 
             pageDataJSON.slugPubliName = slugPubliName;
@@ -164,7 +159,7 @@ module.exports = function(app,io,m){
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       getAllTemplates().then(function(allTemplates) {
         generatePageDataJSON["templates"] = allTemplates;
-        res.render("bibli", generatePageDataJSON);        
+        res.render("bibli", generatePageDataJSON);
       }, function(err) {
         console.log('err ' + err);
       });
@@ -203,7 +198,7 @@ module.exports = function(app,io,m){
     var metaFileContentParsed = parseData( metaFileContent);
     return metaFileContentParsed;
   }
-  
+
   function getAllTemplates() {
     return new Promise(function(resolve, reject) {
       var templateFolder = 'templates';
@@ -213,7 +208,7 @@ module.exports = function(app,io,m){
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
         resolve(folders);
       });
-    });    
+    });
   }
 
 	function parseData(d) {
