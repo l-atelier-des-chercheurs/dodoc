@@ -7417,8 +7417,23 @@ button {
 #modal-modify-project .button-wrapper_deleteProject {
   float: left; }
 
-.big-mediaContent textarea {
-  min-height: 150px; }
+.big-mediaContent {
+  height: 100%;
+  width: 100%; }
+  .big-mediaContent .media-big {
+    height: 100%;
+    width: 100%; }
+    .big-mediaContent .media-big .mediaContent {
+      height: 100%;
+      background-color: #e5e5e5;
+      padding: 0; }
+      .big-mediaContent .media-big .mediaContent img, .big-mediaContent .media-big .mediaContent video {
+        min-width: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: scale-down; }
+  .big-mediaContent textarea {
+    min-height: 150px; }
 
 .module_localNetworkInfos {
   position: relative;
