@@ -100,13 +100,12 @@ body.capture{
       color:#333;
       margin: 0;
       outline: none;
-      font-size: 1.1em;
 
+      font-size: 1.1rem;
       padding: 11px $margin;
-      margin-right: $margin;
       border-radius: 4px;
 
-
+      margin-right: $margin;
 
       &:last-of-type {
         margin-right: 0;
@@ -232,25 +231,37 @@ body.capture{
   }
 
   .resolutionSelector {
-    label {
+    > label {
 
       margin-top:   $margin;
-  
+
       position: relative;
-      width: 100%;  
-  
+      width: 100%;
+
       border:none;
       border-bottom: 2px solid $gris;
       box-shadow: none;
       padding: $margin;
       background-color: $gristresclair;
-                  
-      input {
+
+      > input {
         margin: 0;
         margin-right:   $margin;
       }
 
+      .setCustomRes {
+        width: 70px;
+        text-align: center;
+      }
+      hr {
+        margin: $margin/2 0;
+        border-color: $gristresclair;
+      }
 
+      > label {
+        display: inline-block;
+        width: 50%;
+      }
     }
 
   }
@@ -311,10 +322,10 @@ $t-decalageDuCentre: 4%;
     body.is--fullscreen & {
       padding-bottom:   0;
     }
-    
+
     .captureLeft-lastStopmotionImage {
       position: absolute;
-      opacity: 0; 
+      opacity: 0;
     }
   }
 
@@ -323,7 +334,7 @@ $t-decalageDuCentre: 4%;
     top: 0;
     right: 0;
     text-align: left;
-    width: 140px;    
+    width: 140px;
     max-width: 40%;
     padding: $margin/2;
     font-size: 70%;
@@ -332,16 +343,16 @@ $t-decalageDuCentre: 4%;
     background-color: transparentize( #fff, .4);
     border-left: 1px solid $gristresclair;
     height: 100%;
-    
+
     input {
       margin-top:   $margin;
-      width: 100%;  
+      width: 100%;
     }
   }
-  
+
   // pas d'image, pas de slider
   .captureLeft-lastStopmotionImage[src=""] ~ .btn-capture-wrapper > .stopmotion-capture > .slider--lastImageOpacity {
-    display: none;  
+    display: none;
   }
 
 
@@ -479,8 +490,31 @@ $t-decalageDuCentre: 4%;
         word-wrap: break-word;
       }
     }
-
   }
+
+  .videoContainer {
+    position: relative;
+    border:2px solid $gristresclair;
+    background-color: $gristresclair;
+
+    .videoFeed {
+      min-width: 0;
+      width: auto;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    .currentStreamResolution {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 45%;
+      color: $gris;
+      padding: $margin/4 $margin/2;
+      font-size: 80%;
+    }
+  }
+
   #canvas-audio{
     display: none;
     width: 100%;
@@ -624,7 +658,10 @@ $t-decalageDuCentre: 4%;
     position: relative;
 
     .output {
-
+      min-width: 0;
+      width: auto;
+      max-width: 100%;
+      margin: 0 auto;
     }
 
     .button-wrapper_deleteLastMedia, .button-wrapper_deleteMediaCapture {
@@ -649,10 +686,10 @@ $t-decalageDuCentre: 4%;
       z-index: 9;
 
       video.output {
-        padding-bottom: 10px; 
-        
+        padding-bottom: 10px;
+
       }
-      
+
       // video with empty src
       video.output[src=""] {
         // hide buttons that follow
@@ -789,11 +826,6 @@ $t-decalageDuCentre: 4%;
     padding-left:27px;
     margin-top: 60px;
     margin-bottom: 40px;
-  }
-
-  #video-stream {
-    display: none;
-    width: 100%;
   }
   #stop-sm{
     display: none;

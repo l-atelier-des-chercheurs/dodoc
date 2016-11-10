@@ -125,7 +125,7 @@ function photoDisplay(){
   $('.stopmotion-capture').hide();
   $('.audio-capture').hide();
 
-  $('#video').show();
+  $('.js--videoContainer').show();
   $('#canvas-audio').hide();
   $(".image-choice").show();
   $("body").attr("data-mode", "photo");
@@ -152,7 +152,7 @@ function videoDisplay(){
   $('.audio-capture').css('display','none');
   $('.photo-capture').css('display', 'none');
 
-  $('#video').show();
+  $('.js--videoContainer').show();
   $('#canvas-audio').hide();
   $(".video-choice").show();
   $("body").attr("data-mode", "video");
@@ -181,7 +181,7 @@ function stopMotionDisplay(){
   $('.stopmotion-capture').fadeIn(2000);
   $('.audio-capture').css('display','none');
 
-  $('#video').show();
+  $('.js--videoContainer').show();
   $(".stopmotion-choice").show();
   $('#canvas-audio').hide();
   $("body").attr("data-mode", "stopmotion");
@@ -210,7 +210,7 @@ function audioDisplay(){
   $('.stopmotion-capture').css('display','none');
   $('.audio-capture').fadeIn(2000);
 
-  $('#video').hide();
+  $('.js--videoContainer').hide();
   $('#canvas-audio').show();
 
   $(".audio-choice").show();
@@ -232,7 +232,8 @@ var currentStream = (function(context) {
   var $settingsPane = $('.feedSettings');
   var $settingsButton = $('.js--settings');
 
-  var videoElement = document.querySelector('#video');
+  var videoElement = document.querySelector('.js--videoContainer .js--videoFeed');
+  var videoResolutionIndicator = document.querySelector('.js--currentStreamResolution');
   var videoStream, audioStream;
 
   var audioInputSelect = document.querySelector('.js--audioSource');
@@ -242,6 +243,10 @@ var currentStream = (function(context) {
 
   var videoResSwitches = document.querySelector('.js--resolutionSelector').videoRes;
 
+  var customVideoResInput = document.querySelector('.js--customVideoResInput');
+  var customVideoResSwitches = document.querySelectorAll('.js--inputCustomVideoRes');
+  var setCustomVideoRes = document.querySelector('.js--setCustomVideoRes');
+
   var recordVideoFeed;
   var recordAudioFeed;
 
@@ -249,7 +254,7 @@ var currentStream = (function(context) {
   var userSelectedAudioDevice = 'selectedAudioDeviceId';
   var userSelectedRes = 'selectedVideoRes';
 
-  var currentFeedsSource;
+  var currentFeedsSource = {};
 
 
   function gotDevices(deviceInfos) {
@@ -306,18 +311,26 @@ var currentStream = (function(context) {
     }
   }
   function setVideoResFromLocalstorage() {
-    console.log( userSelectedRes);
     var getPreviousSessionRes = store.get(userSelectedRes);
     if(getPreviousSessionRes !== undefined) {
+      console.log('The following resolution for video was used last time, it is: ' + getPreviousSessionRes.width+'×'+getPreviousSessionRes.height);
       for (index=0; index < videoResSwitches.length; index++) {
         if( getPreviousSessionRes.width === videoResSwitches[index].dataset.width && getPreviousSessionRes.height === videoResSwitches[index].dataset.height) {
           videoResSwitches[index].checked = true;
+          return;
         } else {
           videoResSwitches[index].checked = false;
         }
       }
+      // if no existing radio dataset were found, this means we probably have a custom value on our hand
+      $(customVideoResSwitches).filter('[name="data-width"]').val(getPreviousSessionRes.width);
+      $(customVideoResSwitches).filter('[name="data-height"]').val(getPreviousSessionRes.height);
+      customVideoResInput.checked = true;
+      $(setCustomVideoRes).trigger("click");
+
     }
   }
+
 
   // Attach audio output device to video element using device/sink ID.
   function attachSinkId(element, sinkId) {
@@ -337,7 +350,7 @@ var currentStream = (function(context) {
         audioOutputSelect.selectedIndex = 0;
       });
     } else {
-      console.warn('Browser does not support output device selection.');
+      console.warn('Your browser does not support output device selection.');
     }
   }
 
@@ -348,7 +361,7 @@ var currentStream = (function(context) {
 
   function setSources() {
 
-    console.log( 'setting new sources for audio and video feeds');
+    console.log( '1. Setting new sources for audio and video feeds');
     var audioSource = audioInputSelect.value;
     var videoSource = videoSelect.value;
 
@@ -359,20 +372,32 @@ var currentStream = (function(context) {
     var requestedVideoRes = getVideoResFromRadio();
     store.set(userSelectedRes, requestedVideoRes);
 
-    currentFeedsSource = {
-      audio: {
-        optional: [ audioSource ? {sourceId: audioSource} : undefined ],
-      },
-      video: {
-        optional: [ videoSource ? {sourceId: videoSource} : undefined],
-        mandatory: {
+    if( requestedVideoRes !== undefined)
+      console.log( '2. Trying to use the following resolution: ' + requestedVideoRes.width+'×'+requestedVideoRes.height);
+    else
+      console.log( '2. No resolution set');
+
+    if( audioSource !== undefined) {
+      currentFeedsSource.audio = {
+        optional: [ audioSource ? {sourceId: audioSource} : undefined ]
+      }
+    }
+
+    if( videoSource !== undefined) {
+      currentFeedsSource.video = {
+        optional: [{sourceId: videoSource}]
+      }
+    }
+
+    if( requestedVideoRes !== undefined) {
+      currentFeedsSource.video.mandatory = {
           minWidth: requestedVideoRes.width,
           maxWidth: requestedVideoRes.width,
           minHeight: requestedVideoRes.height,
           maxHeight: requestedVideoRes.height
         }
-      }
-    };
+
+    }
 
     // restart the mode (should be cleaner)
     $('.js--modeSelector').filter('.is--active').trigger('click');
@@ -391,13 +416,23 @@ var currentStream = (function(context) {
           audio: false
         },
         function (stream) {
-          resolve( stream);
+          resolve(stream);
         },
         function(err) {
-          alert( dodoc.lang.videoStreamCouldntBeStartedTryChangingRes + '\n\n error: ' + JSON.stringify(err));
+          $(document).trigger('open_settings_pane');
+          for (index=0; index < videoResSwitches.length; index++) {
+            videoResSwitches[index].checked = false;
+          }
+          alert(dodoc.lang.videoStreamCouldntBeStartedTryChangingRes);
         }
       );
     });
+  }
+
+  function updateVideoSize() {
+    if( videoElement === undefined)
+      return;
+    videoResolutionIndicator.innerHTML = dodoc.lang.currentVideoResolutionIs + videoElement.videoWidth + '×' + videoElement.videoHeight;
   }
 
   function getAudioFeed() {
@@ -445,6 +480,23 @@ var currentStream = (function(context) {
         })
         ;
 
+      videoElement.addEventListener('resize', updateVideoSize);
+
+      $(setCustomVideoRes).on('click', function(){
+
+        $(customVideoResSwitches).each(function() {
+          var typeOfValueChanged = $(this).attr('name');
+          var newValue = $(this).val();
+          $(customVideoResInput).attr(typeOfValueChanged, newValue);
+        })
+        if( $(customVideoResInput).attr('data-width').length > 0 && $(customVideoResInput).attr('data-height').length > 0 ) {
+          $(customVideoResInput).removeAttr('disabled');
+          customVideoResInput.checked = true;
+          $(videoResSwitches).trigger('change');
+        }
+        return false;
+      });
+
       setVideoResFromLocalstorage();
 
       if( store.get(userSelectedVideoDevice) === undefined)
@@ -473,7 +525,7 @@ var currentStream = (function(context) {
     getStaticImageFromVideo : function() {
       return new Promise(function(resolve, reject) {
         var videoFrame = currentStream.getVideoFrame();
-  
+
         var invisibleCanvas = document.createElement('canvas');
         invisibleCanvas.width = videoFrame.videoWidth;
         invisibleCanvas.height = videoFrame.videoHeight;
@@ -481,7 +533,7 @@ var currentStream = (function(context) {
         invisibleCtx.drawImage( videoFrame, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
 
         resolve( imageData = invisibleCanvas.toDataURL('image/png'));
-  
+
 /*
         Caman( invisibleCtx.canvas, function () {
 //           this.brightness(10);
@@ -515,6 +567,7 @@ var currentStream = (function(context) {
         getCameraFeed()
           .then( function( stream) {
             videoStream = stream;
+
             if (navigator.mozGetUserMedia) {
               videoElement.mozSrcObject = stream;
             } else {

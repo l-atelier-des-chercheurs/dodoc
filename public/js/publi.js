@@ -2,7 +2,7 @@
 var socket = io.connect();
 
 // need to make it a module
-// var uploadToFtp = require("modules/_uploadToFtp.js");
+// var uploadPubliToFtp = require("modules/_uploadPubliToFtp.js");
 
 /* sockets */
 function onSocketConnect() {
@@ -26,15 +26,13 @@ socket.on('publiMediasUpdated', onPubliMediasUpdated);
 
 
 jQuery(document).ready(function($) {
-
-//   uploadToFtp.init();
-
+  uploadPubliToFtp.init();
 });
 
 function onListOnePubliMetaAndMedias( psdata) {
   console.log( "onListOnePubliMetaAndMedias");
   updateMontagePubliMeta( psdata);
-  updateMontagePubliMedias( psdata);  
+  updateMontagePubliMedias( psdata);
 }
 function onPubliMetaUpdated( psdata) {
   console.log( "onPubliMetaUpdated");

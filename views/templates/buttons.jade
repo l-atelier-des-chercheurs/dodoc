@@ -79,7 +79,7 @@ mixin button(typeOfButton, navOrButton, style)
       .btn.icon
         include ../../public/images/i_add.svg
       span !{dodoc.lang.createPublication}
-        
+
   if( typeOfButton === 'view_publication')
     a(href="/#{slugFolderName}/#{slugProjectName}/publication" title="Dodoc publi" class='button-wrapper_view js--publiLink #{defaultClasses}' target="_blank")
       .btn.icon
@@ -97,6 +97,12 @@ mixin button(typeOfButton, navOrButton, style)
       .btn.icon
         include ../../public/images/i_enregistre.svg
       span !{dodoc.lang.accept}
+
+  if( typeOfButton === 'uploadPubliToFtp')
+    a(href="#" title="Dodoc upload publi" class='button-wrapper_upload js--uploadPubliToFtp #{defaultClasses}')
+      .btn.icon
+        include ../../public/images/i_enregistre.svg
+      span !{dodoc.lang.uploadPubliToFtp}
 
   if( typeOfButton === 'editPubli')
     a(href="#" title="Dodoc publi" class='button-wrapper_edit js--editPubli #{defaultClasses}')

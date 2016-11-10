@@ -62,9 +62,18 @@ html
               label(for="fhd")
                 input(type="radio" name="videoRes" id="fhd" value="fhd" data-width="1920" data-height="1080")
                 | 1920×1080
-              label(for="square")
-                input(type="radio" name="videoRes" id="square" value="square" data-width="540" data-height="540")
-                | 540×540 (carré)
+              label(for="custom")
+                input.js--customVideoResInput(type="radio" name="videoRes" id="custom" value="" disabled)
+                | !{dodoc.lang.customCameraResolution}
+                hr
+                label(for="data-width")
+                  | !{dodoc.lang.width}
+                  input.setCustomRes.js--inputCustomVideoRes(type='number' name="data-width" step='1' value='' min='1' max='3000')
+                label(for="data-height")
+                  | !{dodoc.lang.height}
+                  input.setCustomRes.js--inputCustomVideoRes(type='number' name="data-height" step='1' value='' min='1' max='3000')
+                button.js--setCustomVideoRes
+                  | !{dodoc.lang.apply}
 
         div.content-wrapper
           div.captureLeft
@@ -72,7 +81,9 @@ html
               //- display last stopmotion image (if needed)
               img.captureLeft-lastStopmotionImage.js--lastStopmotionImage(src)
               //- display camera
-              video(id="video" autoplay)
+              .videoContainer.js--videoContainer
+                video.videoFeed.js--videoFeed(autoplay)
+                div.currentStreamResolution.js--currentStreamResolution
               //- display audio vizualizer
               canvas(id="canvas-audio" width="720" height="256")
 

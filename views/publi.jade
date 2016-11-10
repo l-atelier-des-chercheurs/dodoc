@@ -7,15 +7,16 @@ html
     include templates/head.jade
   body(class="publi")
 
-    .publi_container(data-publidata data-publishown="#{slugPubliName}") 
-      include templates/publiTemplate.jade
-      
-    include templates/modals/edit_publi
+    +button( 'uploadPubliToFtp', '')
 
+    .publi_container(data-publidata data-publishown="#{slugPubliName}")
+      include templates/publiTemplate.jade
+
+    include templates/modals/edit_publi
     .js--templates
       include templates/js_templates
 
     //- //footer
     include templates/footer.jade
+    script(src='/js/modules/_uploadPubliToFtp.js')
     script(src='/js/publi.js')
-    script(src='/js/uploadToFtp.js')    

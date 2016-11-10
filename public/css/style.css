@@ -7171,8 +7171,6 @@ select {
 
 body.publi {
   background-color: #fff; }
-  body.publi .js--validerTitre {
-    opacity: 0; }
   body.publi .module_localNetworkInfos {
     display: none; }
   body.publi .publi-title {
@@ -7292,10 +7290,19 @@ img, video, audio, svg {
   width: 100%; }
 
 button {
+  font-family: inherit;
   outline: none;
   border: none;
-  font-family: inherit;
+  color: #000;
+  margin: 0;
+  font-size: 1.1rem;
+  padding: 11px 16px;
+  border-radius: 4px;
   background: #e5e5e5; }
+  button.is--active, button:hover {
+    color: #fff;
+    outline: none;
+    background-color: #535353; }
   button.button_coteacote {
     display: inline-block;
     margin-right: 8px; }
@@ -7410,8 +7417,23 @@ button {
 #modal-modify-project .button-wrapper_deleteProject {
   float: left; }
 
-.big-mediaContent textarea {
-  min-height: 150px; }
+.big-mediaContent {
+  height: 100%;
+  width: 100%; }
+  .big-mediaContent .media-big {
+    height: 100%;
+    width: 100%; }
+    .big-mediaContent .media-big .mediaContent {
+      height: 100%;
+      background-color: #e5e5e5;
+      padding: 0; }
+      .big-mediaContent .media-big .mediaContent img, .big-mediaContent .media-big .mediaContent video {
+        min-width: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: scale-down; }
+  .big-mediaContent textarea {
+    min-height: 150px; }
 
 .module_localNetworkInfos {
   position: relative;
@@ -8029,10 +8051,10 @@ body.capture .content-wrapper:after {
       color: #333;
       margin: 0;
       outline: none;
-      font-size: 1.1em;
+      font-size: 1.1rem;
       padding: 11px 16px;
-      margin-right: 16px;
-      border-radius: 4px; }
+      border-radius: 4px;
+      margin-right: 16px; }
       .media-choice .btn-choice button:last-of-type {
         margin-right: 0; }
       .media-choice .btn-choice button:not(.is--active):not(:hover) {
@@ -8104,7 +8126,7 @@ body.capture .content-wrapper:after {
   .feedSettings .sourceSelector .selectField {
     display: block;
     width: 100%; }
-  .feedSettings .resolutionSelector label {
+  .feedSettings .resolutionSelector > label {
     margin-top: 16px;
     position: relative;
     width: 100%;
@@ -8113,9 +8135,18 @@ body.capture .content-wrapper:after {
     box-shadow: none;
     padding: 16px;
     background-color: #e5e5e5; }
-    .feedSettings .resolutionSelector label input {
+    .feedSettings .resolutionSelector > label > input {
       margin: 0;
       margin-right: 16px; }
+    .feedSettings .resolutionSelector > label .setCustomRes {
+      width: 70px;
+      text-align: center; }
+    .feedSettings .resolutionSelector > label hr {
+      margin: 8px 0;
+      border-color: #e5e5e5; }
+    .feedSettings .resolutionSelector > label > label {
+      display: inline-block;
+      width: 50%; }
 
 .captureLeft {
   margin: auto;
@@ -8252,6 +8283,23 @@ body.capture .content-wrapper:after {
         transform: translate(-50%, -58%);
         position: absolute;
         word-wrap: break-word; }
+  .captureLeft .videoContainer {
+    position: relative;
+    border: 2px solid #e5e5e5;
+    background-color: #e5e5e5; }
+    .captureLeft .videoContainer .videoFeed {
+      min-width: 0;
+      width: auto;
+      max-width: 100%;
+      margin: 0 auto; }
+    .captureLeft .videoContainer .currentStreamResolution {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 45%;
+      color: #C3C3C3;
+      padding: 4px 8px;
+      font-size: 80%; }
   .captureLeft #canvas-audio {
     display: none;
     width: 100%; }
@@ -8343,6 +8391,11 @@ body.capture .content-wrapper:after {
     display: none; }
   .captureRight .preview {
     position: relative; }
+    .captureRight .preview .output {
+      min-width: 0;
+      width: auto;
+      max-width: 100%;
+      margin: 0 auto; }
     .captureRight .preview .button-wrapper_deleteLastMedia, .captureRight .preview .button-wrapper_deleteMediaCapture {
       position: absolute;
       top: 0px;
@@ -8452,9 +8505,6 @@ body.capture .content-wrapper:after {
     padding-left: 27px;
     margin-top: 60px;
     margin-bottom: 40px; }
-  .captureRight #video-stream {
-    display: none;
-    width: 100%; }
   .captureRight #stop-sm {
     display: none;
     float: right;

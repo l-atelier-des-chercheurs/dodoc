@@ -26,6 +26,7 @@ if( lang === 'fr') {
       "remove" : "Supprimer",
       "edit" : "Modifier",
       "accept" : "Valider",
+      "uploadPubliToFtp" : "Envoyer la publication vers un FTP",
 
       "lastMediasAdded" : "Derniers médias ajoutés",
       "listOfPublications" : "Liste des publications",
@@ -48,11 +49,16 @@ if( lang === 'fr') {
       "previzStopMotion" : "Prévisualiser l’animation",
       "finishStopmotion" : "Finaliser l’animation",
       "addToFav" : "Mettre en favoris",
-      
+
       "selectTemplate" : "Sélection de gabarit",
 
       "chooseCameraResolution" : "Sélectionnez la résolution de votre caméra",
+      "customCameraResolution" : "Choississez une résolution",
       "backToAnimation" : "Retour à l’animation",
+
+      "width" : "largeur",
+      "height" : "hauteur",
+      "apply" : "appliquer",
 
       "removeProject" : "Supprimer le projet",
       "createFolder" : "Créer un dossier",
@@ -67,6 +73,7 @@ if( lang === 'fr') {
       "videoInputSource" : "source video:",
       "lastImageOpacity" : "Afficher la dernière image en transparence",
 
+      "currentVideoResolutionIs" : "Résolution actuelle&nbsp;: ",
       "videoStreamCouldntBeStartedTryChangingRes" : "Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la résolution dans le panneau de droite.",
       "audioStreamCouldntBeStarted" : "Le flux audio n’a pas pu être démarré.",
 
@@ -124,6 +131,7 @@ var settings = {
   "codelang" : lang,
   "contentDir" : "sessions",
   "publicationTemplateDir" : "templates",
+  "exportedPubliDir" : "publications",
   "metaFileext" : ".txt",
   "videoext" : ".webm",
   "stopMotionext" : ".webm",

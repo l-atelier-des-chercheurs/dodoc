@@ -115,10 +115,22 @@ img, video, audio, svg {
 }
 
 button{
+  font-family: inherit;
   outline: none;
   border:none;
-  font-family: inherit;
+
+  color: #000;
+  margin: 0;
+  font-size: 1.1rem;
+  padding: 11px $margin;
+  border-radius: 4px;
   background: $gristresclair;
+
+  &.is--active, &:hover {
+    color: #fff;
+    outline: none;
+    background-color: $grisfonce;
+  }
 
   &.button_coteacote {
     display: inline-block;
@@ -321,6 +333,31 @@ button{
 
 
 .big-mediaContent {
+  height: 100%;
+  width: 100%;
+
+  .media-big {
+    height: 100%;
+    width: 100%;
+
+    .mediaContent {
+      height: 100%;
+      background-color: $gristresclair;
+      padding:0;
+
+      img, video {
+        min-width: 0;
+        width: 100%;
+        height: 100%;
+
+        object-fit: scale-down;
+
+      }
+    }
+  }
+
+
+
   textarea {
     min-height: 150px;
   }
