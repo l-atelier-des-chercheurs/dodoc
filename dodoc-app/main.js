@@ -5,11 +5,11 @@ var fs = require('fs-extra'),
   path = require('path'),
   gm = require('gm'),
   mm = require('marky-mark'),
-	moment = require('moment'),
-	exec = require('child_process').exec,
-// 	phantom = require('phantom'),
-	ffmpeg = require('fluent-ffmpeg'),
-	flags = require('flags'),
+  moment = require('moment'),
+  exec = require('child_process').exec,
+//  phantom = require('phantom'),
+  ffmpeg = require('fluent-ffmpeg'),
+  flags = require('flags'),
   merge = require('merge'),
   gutil = require('gulp-util'),
   parsedown = require('woods-parsedown'),
@@ -106,10 +106,10 @@ module.exports = function(app, io){
     socket.on("deleteMedia", onDeleteMedia);
     socket.on("deleteStopmotion", onDeleteStopmotion);
 
-		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
+    socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 
     socket.on( 'exportPubliToFtp', function (data){ onExportPubliToFtp( socket, data); });
-	});
+  });
 
   /***************************************************************************
 
@@ -289,7 +289,7 @@ module.exports = function(app, io){
     var slugFolderName = mediaData.slugFolderName;
     var slugProjectName = mediaData.slugProjectName;
     var mediaFolder = getAnimationPathOfProject();
-    var folderCachePath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder + '/' + folderCacheName;
+    var folderCachePath = path.join( getProjectPath( slugFolderName, slugProjectName), mediaFolder, folderCacheName);
     fs.removeSync( folderCachePath);
     fs.ensureDirSync( folderCachePath);
     var newStopMotionData =
@@ -301,31 +301,34 @@ module.exports = function(app, io){
 
     if( mediaData.imageContent !== undefined) {
       // also add the linked image as first image to the stopmotion
+      var relativeCachePath = path.join('/', slugFolderName, slugProjectName, mediaFolder, folderCacheName);
+      console.log( 'relativeCachePath ? = ' + relativeCachePath);
       var imageData =
       {
         "imageContent" : mediaData.imageContent,
-        "folderCacheName" : folderCacheName,
-        "folderCachePath" : folderCachePath
+        "folderCachePath" : folderCachePath,
+        "relativeCachePath" : relativeCachePath
       };
       onAddImageToStopMotion( socket, imageData);
     }
   }
 
   function onAddImageToStopMotion( socket, imageData) {
-    dev.logfunction( "EVENT - onAddImageToStopMotion");
+    dev.logfunction( "EVENT - onAddImageToStopMotion : " + JSON.stringify( imageData, null, 4));
 
     var newImageName = moment().format('x');
-    newImageName = findFirstFilenameNotTaken( newImageName, imageData.folderCachePath, '.png');
-  		var imageFullPath = imageData.folderCachePath + '/' + newImageName + '.png';
+    newImageName = findFirstFilenameNotTaken( newImageName, imageData.folderCachePath, '.png') + '.png';
+      var imageFullPath = path.join( imageData.folderCachePath, newImageName);
+    var imageBuffer = decodeBase64Image( imageData.imageContent);
 
-		var mediaData =
-  		{
-    		"imageFullPath" : imageFullPath,
-  		};
-
-		var imageBuffer = decodeBase64Image( imageData.imageContent);
-		fs.writeFile( imageFullPath, imageBuffer.data, function(err) {
+    fs.writeFile( imageFullPath, imageBuffer.data, function(err) {
       if (err) console.log( err);
+      var relativeImagePath = path.join( imageData.relativeCachePath, newImageName);
+        var mediaData =
+        {
+          "relativeImagePath" : relativeImagePath,
+        };
+
       sendEventWithContent( 'newStopmotionImage', mediaData, socket);
     });
   }
@@ -334,7 +337,7 @@ module.exports = function(app, io){
   function onDeleteLastImageOfStopMotion( socket, idata) {
     dev.logfunction( "EVENT - onDeleteLastImageOfStopMotion : " + JSON.stringify( idata, null, 4));
 
-    var fullPathToStopmotionImage = getFullPath( idata.pathToStopmotionImage);
+    var fullPathToStopmotionImage = getContentPath( idata.pathToStopmotionImage);
 
     fs.exists( fullPathToStopmotionImage, function(exists) {
       if(exists) {
@@ -369,7 +372,7 @@ module.exports = function(app, io){
     var mediaFolder = mediaData.mediaFolderPath;
     var mediaName = mediaData.mediaName;
 
-    var pathToMediaFolder = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
+    var pathToMediaFolder = path.join( getProjectPath( slugFolderName, slugProjectName), mediaFolder);
 
     try {
       var filesInMediaFolder = fs.readdirSync( pathToMediaFolder);
@@ -381,7 +384,7 @@ module.exports = function(app, io){
         }
 
         if( fileNameWithoutExtension === mediaName) {
-          var filePath = pathToMediaFolder + '/' + filename;
+          var filePath = path.join( pathToMediaFolder, filename);
           fs.unlinkSync( filePath);
         }
       });
@@ -502,8 +505,8 @@ module.exports = function(app, io){
             var mediaFolder = media[fichiers].mediaFolderPath;
             for(var fileToCopy in eachFiles){
               var fileName = eachFiles[fileToCopy];
-              var oldPath = projectPath + '/' + mediaFolder + '/' + fileName;
-              var newPath = mediasPath + '/' + fileName;
+              var oldPath = path.join( projectPath, mediaFolder, fileName);
+              var newPath = path.join( mediasPath, fileName);
               arrayImages.push(fileName);
               try {
                 fs.copySync(oldPath, newPath);
@@ -539,7 +542,7 @@ module.exports = function(app, io){
       var c = new Client();
 
       c.on('ready', function() {
-        c.mkdir(domainFolder+'/'+ slugPubliName, function(err) {
+        c.mkdir( path.join( domainFolder, slugPubliName), function(err) {
           if (err) console.log(slugPubliName+ ' not transferred:' + err);
           else {
             console.log("Folder create on server transferred successfully!");
@@ -696,9 +699,6 @@ module.exports = function(app, io){
     return str;
   }
 
-  function getFullPath( path) {
-    return dodoc.contentDir + "/" + path;
-  }
   function getCurrentDate() {
     return moment().format( dodoc.metaDateFormat);
   }
@@ -726,8 +726,15 @@ FOLDER METHODS
 
 *************/
 
-  function getMetaFileOfFolder( folderPath) {
-    return folderPath + '/' + dodoc.folderMetafilename + dodoc.metaFileext;
+  function getContentPath(thisPath) {
+    return path.join( getRootPath(), dodoc.contentDir, thisPath);
+  }
+  function getRootPath() {
+    return __dirname;
+  }
+
+  function getMetaFileOfFolder( slugFolderName) {
+    return path.join( getContentPath( slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
   }
 
   function createNewFolder( folderData) {
@@ -736,7 +743,7 @@ FOLDER METHODS
 
       var folderName = folderData.name;
       var slugFolderName = slugg(folderName);
-      var folderPath = getFullPath( slugFolderName);
+      var folderPath = getContentPath( slugFolderName);
       var currentDateString = getCurrentDate();
 
       fs.access( folderPath, fs.F_OK, function( err) {
@@ -751,7 +758,7 @@ FOLDER METHODS
               "modified" : currentDateString,
               "statut" : "en cours",
             };
-          storeData( getMetaFileOfFolder( folderPath), fmeta, "create").then(function( meta) {
+          storeData( getMetaFileOfFolder( slugFolderName), fmeta, "create").then(function( meta) {
             resolve( meta);
           });
 
@@ -771,11 +778,11 @@ FOLDER METHODS
 
   function listAllFolders() {
     return new Promise(function(resolve, reject) {
-      fs.readdir( dodoc.contentDir, function (err, filenames) {
+      fs.readdir( getContentPath(''), function (err, filenames) {
         if (err) return console.log( 'Couldn\'t read content dir : ' + err);
 
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
-        dev.logverbose( "Number of folders in " + dodoc.contentDir + " = " + folders.length + ". Folders are " + folders);
+        dev.logverbose( "Number of folders in " + getContentPath('') + " = " + folders.length + ". Folders are " + folders);
 
         var foldersProcessed = 0;
         var allFoldersData = [];
@@ -801,8 +808,8 @@ FOLDER METHODS
   function removeFolderNamed( slugFolderName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — removeFolderNamed : " + JSON.stringify(slugFolderName, null, 4));
-      var folderPath = getFullPath( slugFolderName);
-      var deletedFolderPath = getFullPath( dodoc.deletedPrefix + slugFolderName);
+      var folderPath = getContentPath( slugFolderName);
+      var deletedFolderPath = getContentPath( dodoc.deletedPrefix + slugFolderName);
 
       fs.rename( folderPath, deletedFolderPath, function(err) {
         if (err) reject( err);
@@ -815,7 +822,7 @@ FOLDER METHODS
   function listAllProjectsOfOneFolder( slugFolderName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "EVENT — listAllProjectsOfOneFolder : " + slugFolderName);
-      var folderPath = getFullPath( slugFolderName);
+      var folderPath = getContentPath( slugFolderName);
 
       // list all projects
       fs.readdir( folderPath, function (err, projects) {
@@ -850,8 +857,7 @@ FOLDER METHODS
   function getFolderMeta( slugFolderName) {
     dev.logfunction( "COMMON — getFolderMeta");
 
-    var folderPath = getFullPath( slugFolderName);
-    var folderMetaFile = getMetaFileOfFolder( folderPath);
+    var folderMetaFile = getMetaFileOfFolder( slugFolderName);
 
     var folderData = fs.readFileSync( folderMetaFile,dodoc.textEncoding);
     var folderMetadata = parseData( folderData);
@@ -866,7 +872,6 @@ FOLDER METHODS
 
       var isNameChanged = folderData.newName !== undefined;
       var slugFolderName = folderData.slugFolderName;
-      var folderPath = getFullPath( slugFolderName);
       var currentDateString = getCurrentDate();
       var newStatut = folderData.statut;
 
@@ -882,7 +887,7 @@ FOLDER METHODS
       fmeta.modified = currentDateString;
 
       // envoyer les changements dans le JSON du folder
-      storeData( getMetaFileOfFolder( folderPath), fmeta, "update").then(function( ufmeta) {
+      storeData( getMetaFileOfFolder( slugFolderName), fmeta, "update").then(function( ufmeta) {
         ufmeta.slugFolderName = slugFolderName;
         resolve( ufmeta);
       });
@@ -897,14 +902,11 @@ PROJECT METHODS
 
 
   function getProjectPath( slugFolderName, slugProjectName) {
-    return getFullPath( slugFolderName + '/' + slugProjectName);
+    return path.join( getContentPath( slugFolderName), slugProjectName);
   }
-
-  function getMetaFileOfProject( projectPath) {
-//     dev.log( 'projectPath : ' + projectPath + ' expecting filename : ' + dodoc.projectMetafilename + dodoc.metaFileext);
-    return projectPath + '/' + dodoc.projectMetafilename + dodoc.metaFileext;
+  function getMetaFileOfProject( slugFolderName, slugProjectName) {
+    return path.join( getProjectPath( slugFolderName, slugProjectName), dodoc.projectMetafilename + dodoc.metaFileext);
   }
-
   function getPhotoPathOfProject() {
     return dodoc.projectPhotosFoldername;
   }
@@ -919,6 +921,10 @@ PROJECT METHODS
   }
   function getTextPathOfProject() {
     return dodoc.projectTextsFoldername;
+  }
+
+  function getMediaPath( slugFolderName, slugProjectName, mediaFolder) {
+    return path.join( getProjectPath( slugFolderName, slugProjectName), mediaFolder);
   }
 
   function getAllMediasFoldersPathAsArray() {
@@ -937,8 +943,7 @@ PROJECT METHODS
   function getProjectMeta( slugFolderName, slugProjectName) {
 
 //    dev.log( "getProjectMeta with slugFolderName : " + slugFolderName + " slugProjectName : " + slugProjectName);
-    var projectPath = getProjectPath( slugFolderName, slugProjectName);
-    var projectJSONFile = getMetaFileOfProject( projectPath);
+    var projectJSONFile = getMetaFileOfProject( slugFolderName, slugProjectName);
 
     var projectData = fs.readFileSync( projectJSONFile, dodoc.textEncoding);
     var projectJSONdata = parseData(projectData);
@@ -955,7 +960,7 @@ PROJECT METHODS
       var slugFolderName = projectData.slugFolderName;
 
       var currentDateString = getCurrentDate();
-      var pathToFolder = getFullPath( slugFolderName);
+      var pathToFolder = getContentPath( slugFolderName);
 
       // Vérifie si le projet existe déjà, change son slug si besoin
       slugProjectName = findFirstFilenameNotTaken( slugProjectName, pathToFolder, '');
@@ -970,10 +975,10 @@ PROJECT METHODS
 
       var mediaFolders = getAllMediasFoldersPathAsArray();
       mediaFolders.forEach( function( mediaFolder) {
-        fs.ensureDirSync( projectPath + '/' + mediaFolder);//write new folder in folders
+        fs.ensureDirSync( path.join( projectPath, mediaFolder));//write new folder in folders
       });
       var publiFolder = getPubliPathOfProject();
-      fs.ensureDirSync( projectPath + '/' + publiFolder);//write new folder in folders
+      fs.ensureDirSync( path.join( projectPath, publiFolder));//write new folder in folders
 
       var pmeta =
         {
@@ -984,7 +989,7 @@ PROJECT METHODS
           "informations" : 0
         };
 
-      storeData( getMetaFileOfProject( projectPath), pmeta, "create").then(function( meta) {
+      storeData( getMetaFileOfProject( slugFolderName, slugProjectName), pmeta, "create").then(function( meta) {
         var updatedpmeta = getProjectMeta( slugFolderName, slugProjectName);
         updatedpmeta.slugFolderName = slugFolderName;
         updatedpmeta.slugProjectName = slugProjectName;
@@ -1041,7 +1046,7 @@ PROJECT METHODS
         currentpdata.statut = pdata.statut;
       currentpdata.modified = currentDateString;
 
-      storeData( getMetaFileOfProject( projectPath), currentpdata, 'update').then(function( meta) {
+      storeData( getMetaFileOfProject( slugFolderName, slugProjectName), currentpdata, 'update').then(function( meta) {
         var updatedpmeta = getProjectMeta( slugFolderName, slugProjectName);
         updatedpmeta.slugFolderName = slugFolderName;
         updatedpmeta.slugProjectName = slugProjectName;
@@ -1090,7 +1095,7 @@ MEDIA METHODS
 *************/
 
   function getPathToMedia( projectPath, mediasFolderPath, mediaName) {
-    return projectPath + '/' + mediasFolderPath + '/' + mediaName;
+    return path.join( projectPath, mediasFolderPath, mediaName);
   }
 
   function getMediaFolderPathByType( mediaType) {
@@ -1106,18 +1111,18 @@ MEDIA METHODS
       return getTextPathOfProject();
   }
 
-  function findFirstFilenameNotTaken( fileName, path, fileext) {
+  function findFirstFilenameNotTaken( fileName, currentPath, fileext) {
     fileext = typeof fileext !== 'undefined' ?  fileext : dodoc.metaFileext;
 
     try {
       var newFileName = fileName;
       var index = 0;
-      var newPathToFile = path + '/' + newFileName;
+      var newPathToFile = path.join( currentPath, newFileName);
       while( !fs.accessSync( newPathToFile + fileext, fs.F_OK)){
         dev.logverbose("- - following path is already taken : " + newPathToFile);
         index++;
         newFileName = fileName + "-" + index;
-        newPathToFile = path + '/' + newFileName;
+        newPathToFile = path.join( currentPath, newFileName);
       }
     } catch( err) {}
 
@@ -1154,7 +1159,7 @@ MEDIA METHODS
     dev.logfunction( "COMMON — listMediasOfOneType with");
 
     var projectPath = getProjectPath( slugFolderName, slugProjectName);
-    var mediasPath = projectPath + '/' + mediasFolderPath;
+    var mediasPath = path.join( projectPath, mediasFolderPath);
     var lookingForSpecificJson = mediaName !== undefined ? true : false;
 
     var filesInMediaFolder = fs.readdirSync( mediasPath);
@@ -1200,7 +1205,7 @@ MEDIA METHODS
 
         // if this media filename corresponds to the meta filename
         if (mediaFilename.indexOf(metaFileNameWithoutExtension) !== -1 ) {
-          var mediaObjKey = mediasFolderPath + '/' + mediaMetaFilename;
+          var mediaObjKey = path.join( mediasFolderPath, mediaMetaFilename);
           // if we don't have an obj with this key
           if( !folderMediaMetaAndFileName.hasOwnProperty( mediaObjKey)) {
             // let's make one
@@ -1214,7 +1219,7 @@ MEDIA METHODS
 
             // if the file is a text, then also add the content of the TXT in the answer
             if( new RegExp( dodoc.regexpGetFileExtension, 'i').exec( mediaFilename)[0] === '.md') {
-              var textMediaData = readTextMedia(projectPath + '/' + mediasFolderPath + '/' + mediaFilename);
+              var textMediaData = readTextMedia( path.join( projectPath, mediasFolderPath, mediaFilename));
               mdata.textMediaContent = textMediaData;
             }
 
@@ -1274,9 +1279,9 @@ MEDIA METHODS
 
       switch (newMediaType) {
         case 'photo':
-          var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
+          var mediaPath = getMediaPath( slugFolderName, slugProjectName, mediaFolder);
           newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
-          pathToFile = mediaPath + '/' + newFileName;
+          pathToFile = path.join( mediaPath, newFileName);
 
           fileExtension = '.png';
           var imageBuffer = decodeBase64Image( newMediaData.mediaData);
@@ -1306,10 +1311,11 @@ MEDIA METHODS
 
           break;
         case 'video':
-          var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
+          var mediaPath = getMediaPath( slugFolderName, slugProjectName, mediaFolder);
 
           newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
-          pathToFile = mediaPath + '/' + newFileName;
+          pathToFile = path.join( mediaPath, newFileName);
+
           fileExtension = dodoc.videoext;
 
           writeVideoToDisk( pathToFile, fileExtension, newMediaData.mediaData)
@@ -1338,12 +1344,12 @@ MEDIA METHODS
           break;
         case 'animation':
           // get the path to the mediaFolder
-            var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
+            var mediaPath = getMediaPath( slugFolderName, slugProjectName, mediaFolder);
 
           // get the path to the cache folder and the mp4 (it's the same without the extension)
           // WARNING : animation doesn't use newFileName, it already has a filename to use (generated at the beginning of a stopmotion capture)
           newFileName = newMediaData.stopMotionCacheFolder;
-          pathToFile = mediaPath + '/' + newFileName;
+          pathToFile = path.join( mediaPath, newFileName);
           fileExtension = dodoc.stopMotionext;
 
           var frameRate = newMediaData.frameRate || 4;
@@ -1381,9 +1387,9 @@ MEDIA METHODS
             .save( pathToFile + fileExtension);
           break;
         case 'audio':
-          var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
+          var mediaPath = getMediaPath( slugFolderName, slugProjectName, mediaFolder);
           newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
-          pathToFile = mediaPath + '/' + newFileName;
+          pathToFile = path.join( mediaPath, newFileName);
 
           fileExtension = '.wav';
           var dataMedia = newMediaData.mediaData.split(',').pop();
@@ -1405,9 +1411,9 @@ MEDIA METHODS
 
           break;
         case 'text':
-          var mediaPath = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
+          var mediaPath = getMediaPath( slugFolderName, slugProjectName, mediaFolder);
           newFileName = findFirstFilenameNotTaken( newFileName, mediaPath);
-          pathToFile = mediaPath + '/' + newFileName;
+          pathToFile = path.join( mediaPath, newFileName);
 
           fileExtension = '.md';
           var dataTitle = newMediaData.title;
@@ -1530,7 +1536,7 @@ MEDIA METHODS
 
   function deleteOneMedia( slugFolderName, slugProjectName, mediaFolder, mediaName) {
     return new Promise(function(resolve, reject) {
-      var pathToMediaFolder = getProjectPath( slugFolderName, slugProjectName) + '/' + mediaFolder;
+      var pathToMediaFolder = getMediaPath( slugFolderName, slugProjectName, mediaFolder);
       // find in path
 
       try {
@@ -1538,8 +1544,8 @@ MEDIA METHODS
         filesInMediaFolder.forEach( function( filename) {
           var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( filename)[1];
           if( fileNameWithoutExtension === mediaName) {
-            var filePath = pathToMediaFolder + '/' + filename;
-            var deletedFilePath = pathToMediaFolder + '/' + dodoc.deletedPrefix + filename;
+            var filePath = path.join( pathToMediaFolder, filename);
+            var deletedFilePath = path.join( pathToMediaFolder, dodoc.deletedPrefix + filename);
             fs.renameSync( filePath, deletedFilePath);
             console.log( "A file will be deleted (actually, renamed but hidden from dodoc) : \n - " + filePath + "\n - " + deletedFilePath);
           }
@@ -1550,7 +1556,7 @@ MEDIA METHODS
           "slugProjectName" : slugProjectName,
           "mediaFolder" : mediaFolder,
           "mediaName" : mediaName,
-          "mediaKey" : mediaFolder + '/' + mediaName + dodoc.metaFileext
+          "mediaKey" : path.join( mediaFolder, mediaName + dodoc.metaFileext)
         }
         resolve( mediaMetaData);
       } catch( err) {
@@ -1566,13 +1572,15 @@ PUBLIS METHODS
 
 *************/
 
+
+
   // if two args, then get path to publi folder
   // if three args, then get path to one publi
   function getPathToPubli( slugFolderName, slugProjectName, pslug) {
     var projectPath = getProjectPath( slugFolderName, slugProjectName);
-    var pathToPubli = projectPath + '/' + getPubliPathOfProject();
+    var pathToPubli = path.join( projectPath, getPubliPathOfProject());
     if( pslug !== undefined)
-      pathToPubli = pathToPubli + '/' + pslug;
+      pathToPubli = path.join( pathToPubli, pslug);
     return pathToPubli;
   }
 

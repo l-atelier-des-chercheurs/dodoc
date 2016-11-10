@@ -5,7 +5,7 @@ var path = require("path");
 var fs = require('fs-extra');
 var ffmpeg = require('fluent-ffmpeg');
 var dodoc  = require('./public/dodoc.js'),
-	moment = require( "moment" ),
+  moment = require( "moment" ),
   merge = require('merge'),
   parsedown = require('woods-parsedown'),
   os = require('os')
@@ -28,32 +28,31 @@ module.exports = function(app,io,m){
   /**
   * routing functions
   */
-  function getFullPath( path) {
-    return dodoc.contentDir + "/" + path;
+  function getContentPath(thisPath) {
+    return path.join( getRootPath(), dodoc.contentDir, thisPath);
+  }
+  function getRootPath() {
+    return __dirname;
   }
 
   function getMetaFileOfFolder( slugFolderName) {
-    return getFullPath( slugFolderName) + '/' + dodoc.folderMetafilename + dodoc.metaFileext;
+    return path.join( getContentPath( slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
   }
-
   function getProjectPath( slugFolderName, slugProjectName) {
-    return slugFolderName + '/' + slugProjectName;
+    return path.join( getContentPath( slugFolderName), slugProjectName);
   }
-  function getMetaFileOfProject( projectPath) {
-    return getFullPath( projectPath) + '/' + dodoc.projectMetafilename + dodoc.metaFileext;
+  function getMetaFileOfProject( slugFolderName, slugProjectName) {
+    return path.join( getProjectPath( slugFolderName, slugProjectName), dodoc.projectMetafilename + dodoc.metaFileext);
   }
 
   function getPathToPubli( slugFolderName, slugProjectName, pslug) {
     var projectPath = getProjectPath( slugFolderName, slugProjectName);
-    var pathToPubli = projectPath + '/' + getPubliPathOfProject();
+    var pathToPubli = path.join( projectPath, getPubliPathOfProject());
     if( pslug !== undefined)
-      pathToPubli = pathToPubli + '/' + pslug;
+      pathToPubli = path.join( pathToPubli, pslug);
     return pathToPubli;
   }
 
-  function makePathToPubliFull( publiPath) {
-    return getFullPath( publiPath);
-  }
   function getCurrentDate() {
     return moment().format( dodoc.metaDateFormat);
   }
@@ -83,8 +82,7 @@ module.exports = function(app,io,m){
 
         var slugProjectName = req.param('project');
         if( slugProjectName !== undefined) {
-          var projectPath = getProjectPath( slugFolderName, slugProjectName)
-          var jsonFileOfProject = getMetaFileOfProject( projectPath);
+          var jsonFileOfProject = getMetaFileOfProject( slugFolderName, slugProjectName);
           var projectData = readMetaFile( jsonFileOfProject);
 
           pageDataJSON.slugProjectName = slugProjectName;
@@ -93,7 +91,7 @@ module.exports = function(app,io,m){
           var slugPubliName = req.param('publi');
           if( slugPubliName !== undefined) {
             var jsonFileOfPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName) + dodoc.metaFileext;
-            var fullPathToJsonFileOfPubli = makePathToPubliFull( jsonFileOfPubli);
+            var fullPathToJsonFileOfPubli = getContentPath( jsonFileOfPubli);
             var publiData = readMetaFile( fullPathToJsonFileOfPubli);
 
             pageDataJSON.slugPubliName = slugPubliName;
@@ -164,7 +162,7 @@ module.exports = function(app,io,m){
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       getAllTemplates().then(function(allTemplates) {
         generatePageDataJSON["templates"] = allTemplates;
-        res.render("bibli", generatePageDataJSON);        
+        res.render("bibli", generatePageDataJSON);
       }, function(err) {
         console.log('err ' + err);
       });
@@ -203,26 +201,25 @@ module.exports = function(app,io,m){
     var metaFileContentParsed = parseData( metaFileContent);
     return metaFileContentParsed;
   }
-  
+
   function getAllTemplates() {
     return new Promise(function(resolve, reject) {
-      var templateFolder = 'templates';
-      fs.readdir( templateFolder, function (err, filenames) {
+      var templateFolderPath = getRootPath( dodoc.publicationTemplateDir);
+      fs.readdir( templateFolderPath, function (err, filenames) {
         if (err) reject( console.log( 'Couldn\'t read content dir : ' + err));
-
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
         resolve(folders);
       });
-    });    
+    });
   }
 
-	function parseData(d) {
-    	var parsed = parsedown(d);
+  function parseData(d) {
+      var parsed = parsedown(d);
     // the fav field is a boolean, so let's convert it
-    	if( parsed.hasOwnProperty('fav'))
-    	  parsed.fav = (parsed.fav === 'true');
-		return parsed;
-	}
+      if( parsed.hasOwnProperty('fav'))
+        parsed.fav = (parsed.fav === 'true');
+    return parsed;
+  }
   function getMediaFolderPathByType( mediaType) {
     if( mediaType == 'photo')
       return getPhotoPathOfProject();
