@@ -344,7 +344,7 @@ button {
       height: 100%;
       padding:0;
 
-      img, video, audio {
+      img, video {
         min-width: 0;
         width: 100%;
         height: 100%;
@@ -354,13 +354,22 @@ button {
         background-color: $gristresclair;
       }
     }
+
+    &.media-big_audio {
+      img {
+        height: 90%;
+      }
+      audio {
+        width: 100%;
+      }
+    }
   }
-
-
 
   textarea {
     min-height: 150px;
   }
+
+
 }
 
 .module_localNetworkInfos {
@@ -431,13 +440,24 @@ button {
     border: 1px solid $c-separator;
     border-left: 1px solid #fff;
 
-    img, video, audio {
+    img, video {
       min-width: 0;
       width: 100%;
       height: 80%;
       object-fit: scale-down;
       background-color: $gristresclair;
 
+    }
+  }
+
+  &.media_audio {
+    .mediaContent {
+
+
+      audio {
+        width: 100%;
+
+      }
     }
   }
 

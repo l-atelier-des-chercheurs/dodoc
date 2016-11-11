@@ -7421,13 +7421,17 @@ button {
     .big-mediaContent .media-big .mediaContent {
       height: 100%;
       padding: 0; }
-      .big-mediaContent .media-big .mediaContent img, .big-mediaContent .media-big .mediaContent video, .big-mediaContent .media-big .mediaContent audio {
+      .big-mediaContent .media-big .mediaContent img, .big-mediaContent .media-big .mediaContent video {
         min-width: 0;
         width: 100%;
         height: 100%;
         object-fit: scale-down;
         padding: 4px;
         background-color: #e5e5e5; }
+    .big-mediaContent .media-big.media-big_audio img {
+      height: 90%; }
+    .big-mediaContent .media-big.media-big_audio audio {
+      width: 100%; }
   .big-mediaContent textarea {
     min-height: 150px; }
 
@@ -8549,12 +8553,14 @@ body.capture .content-wrapper:after {
     bottom: 0;
     border: 1px solid #DFDFDF;
     border-left: 1px solid #fff; }
-    .media .mediaContent img, .media .mediaContent video, .media .mediaContent audio {
+    .media .mediaContent img, .media .mediaContent video {
       min-width: 0;
       width: 100%;
       height: 80%;
       object-fit: scale-down;
       background-color: #e5e5e5; }
+  .media.media_audio .mediaContent audio {
+    width: 100%; }
   .media.media_text .mediaContent {
     min-height: 15px; }
     .media.media_text .mediaContent .mediaContent--titleOfTextmedia {
