@@ -94,7 +94,7 @@ body.projets{
         font-weight: bold;
         font-size: $h2Size;
         margin: 0;
-        line-height: 1.4; 
+        line-height: 1.4;
 
         &:hover {
           color: $bleuvert;
@@ -162,14 +162,14 @@ body.projets{
 
       border-bottom:   1px solid $c-separator;
       background-color: #f9f9f9;
-      padding: $margin 0;
+      padding: $margin $margin/2;
 
       body.projets & {
         display: none;
       }
 
       .legende {
-        padding: 0 $margin;
+        padding: 0 $margin/4;
       }
 
       .media {
@@ -200,7 +200,7 @@ body.projets{
 
       height: 100%;
       overflow: scroll;
-      
+
       .legende {
         padding: 0 $margin;
       }

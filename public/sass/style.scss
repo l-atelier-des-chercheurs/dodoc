@@ -42,6 +42,7 @@ h1,h2,h3,h4,h5,h6{font-family: 'Fira Sans', sans-serif;}
 @mixin style--dossierBorders {
   background-color: #fff;
   border: 1px solid $c-separator;
+  border-top: 0;
 }
 
 @mixin style--titrelegende {
@@ -341,15 +342,16 @@ button {
 
     .mediaContent {
       height: 100%;
-      background-color: $gristresclair;
       padding:0;
 
-      img, video {
+      img, video, audio {
         min-width: 0;
         width: 100%;
         height: 100%;
         object-fit: scale-down;
 
+        padding: $margin/4;
+        background-color: $gristresclair;
       }
     }
   }
@@ -418,33 +420,38 @@ button {
 
   float: left;
   width: 25%;
-  padding: $margin/2;
+  padding-bottom: 25%;
 
-  border: 0 solid #f9f9f9;
   z-index: 1;
 
   .mediaContent {
-    @include style--dossierBorders;
-    overflow: hidden;
+    position: absolute;
+    top: 0; left: 0;  right: 0; bottom: 0;
 
-    // posters for <audio>
-    .poster {
+    border: 1px solid $c-separator;
+    border-left: 1px solid #fff;
+
+    img, video, audio {
+      min-width: 0;
+      width: 100%;
+      height: 80%;
+      object-fit: scale-down;
+      background-color: $gristresclair;
 
     }
   }
 
-
   &.media_text {
     .mediaContent {
-      padding: .9375rem;
       min-height: 15px;
       .mediaContent--titleOfTextmedia {
         font-size: 1.2em;
         font-weight: normal;
-
+        padding:  $margin;
       }
       .mediaContent--textOfTextmedia {
         font-size:1em;
+        padding:  $margin;
       }
       p:first-child {
         margin-top:   0;
@@ -453,9 +460,11 @@ button {
   }
 
   .mediaData {
+    height: 20%;
     .mediaData--informations {
-      padding: .9375rem;
+      padding: $margin/2;
       margin: 0;
+      font-size: 80%;
       &:empty {
         display: none;
       }
@@ -511,7 +520,15 @@ button {
     }
 
     .mediaContent {
-      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.4)
+      background-color: #fff;
+      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+      z-index: 2;
+    }
+
+    .button-wrapper_flagMedia {
+      transform: scale(1);
+      opacity: 1;
+
     }
   }
 
@@ -527,10 +544,11 @@ button {
     z-index:  101;
 
     display: block;
+    border-radius: 50%;
 
     transform-origin: right bottom;
     opacity: 0;
-    border-radius: 50%;
+    transform: scale(0);
 
     transition: transform .2s ease-out, opacity .2s ease-out;
   }
@@ -539,11 +557,10 @@ button {
 
     }
     .button-wrapper_flagMedia {
-//       transform: scale(1);
-      opacity: .8;
+      transform: scale(1);
+      opacity: 1;
 
       &:hover {
-        opacity: 1;
       }
     }
   }

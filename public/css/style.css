@@ -6940,6 +6940,7 @@ th.hide-for-touch {
   padding: 10px 16px 16px 16px;
   max-width: 32.5rem;
   max-height: 80vh;
+  height: 100%;
   overflow-y: scroll;
   /* style 6 */ }
   .reveal-modal:focus {
@@ -7110,9 +7111,6 @@ th.hide-for-touch {
     color: #722040; }
   .reveal-modal#modal-media-view {
     max-width: 80%;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    bottom: 60px;
     overflow-y: auto; }
     .reveal-modal#modal-media-view .row {
       max-width: 100%; }
@@ -7422,13 +7420,14 @@ button {
     width: 100%; }
     .big-mediaContent .media-big .mediaContent {
       height: 100%;
-      background-color: #e5e5e5;
       padding: 0; }
-      .big-mediaContent .media-big .mediaContent img, .big-mediaContent .media-big .mediaContent video {
+      .big-mediaContent .media-big .mediaContent img, .big-mediaContent .media-big .mediaContent video, .big-mediaContent .media-big .mediaContent audio {
         min-width: 0;
         width: 100%;
         height: 100%;
-        object-fit: scale-down; }
+        object-fit: scale-down;
+        padding: 4px;
+        background-color: #e5e5e5; }
   .big-mediaContent textarea {
     min-height: 150px; }
 
@@ -7456,7 +7455,8 @@ body.index #container {
     clear: left; }
   .dossier .dossier-inside {
     background-color: #fff;
-    border: 1px solid #DFDFDF; }
+    border: 1px solid #DFDFDF;
+    border-top: 0; }
   .dossier .button-wrapper_editFolder {
     position: absolute;
     top: -16px;
@@ -7567,6 +7567,7 @@ body.bibli {
   margin: 0 8px;
   background-color: #fff;
   border: 1px solid #DFDFDF;
+  border-top: 0;
   background-color: transparent;
   border: none;
   border-bottom: 2px solid #DFDFDF; }
@@ -7754,7 +7755,9 @@ body.bibli {
 
 .medias-list {
   width: 100%;
-  padding: 8px; }
+  padding: 0;
+  border-left: 1px solid #DFDFDF;
+  border-right: 1px solid #DFDFDF; }
   .medias-list:before, .medias-list:after {
     content: " ";
     display: table; }
@@ -7772,23 +7775,17 @@ body.bibli {
     color: #aaa;
     text-align: center; }
   .medias-list .media {
-    padding-left: 0.9375rem;
-    padding-right: 0.9375rem;
     width: 16.66667%;
-    float: left;
-    padding: 8px;
+    padding-bottom: 16.66667%;
     cursor: pointer;
     transition: width 1.1s ease; }
     body:not([data-publicationpane="open"]) .medias-list .media:nth-child(6n+1) {
       clear: left; }
     body[data-publicationpane="open"] .medias-list .media {
-      padding-left: 0.9375rem;
-      padding-right: 0.9375rem;
-      width: 33.33333%;
-      float: left;
-      cursor: move;
-      padding: 8px; }
-      body[data-publicationpane="open"] .medias-list .media:nth-child(3n+1) {
+      width: 25%;
+      padding-bottom: 25%;
+      cursor: move; }
+      body[data-publicationpane="open"] .medias-list .media:nth-child(4n+1) {
         clear: left; }
 
 .montage-list {
@@ -7897,6 +7894,7 @@ body.projets #container {
   .project-list .project .project-content {
     background-color: #fff;
     border: 1px solid #DFDFDF;
+    border-top: 0;
     border-right: none;
     padding: 8px 0px; }
     .project-list .project .project-content .title {
@@ -7920,6 +7918,7 @@ body.projets #container {
     position: relative;
     background-color: #fff;
     border: 1px solid #DFDFDF;
+    border-top: 0;
     background-color: #DFDFDF;
     -webkit-background-size: cover;
     background-size: cover;
@@ -7939,7 +7938,7 @@ body.projets #container {
     background-color: #fff;
     border-bottom: 1px solid #DFDFDF;
     background-color: #f9f9f9;
-    padding: 16px 0; }
+    padding: 16px 8px; }
     .project-list .project .last-medias:before, .project-list .project .last-medias:after {
       content: " ";
       display: table; }
@@ -7948,7 +7947,7 @@ body.projets #container {
     body.projets .project-list .project .last-medias {
       display: none; }
     .project-list .project .last-medias .legende {
-      padding: 0 16px; }
+      padding: 0 4px; }
     .project-list .project .last-medias .media {
       cursor: pointer; }
       .project-list .project .last-medias .media:nth-of-type(4n+1) {
@@ -8540,28 +8539,41 @@ body.capture .content-wrapper:after {
   position: relative;
   float: left;
   width: 25%;
-  padding: 8px;
-  border: 0 solid #f9f9f9;
+  padding-bottom: 25%;
   z-index: 1; }
   .media .mediaContent {
-    background-color: #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     border: 1px solid #DFDFDF;
-    overflow: hidden; }
+    border-left: 1px solid #fff; }
+    .media .mediaContent img, .media .mediaContent video, .media .mediaContent audio {
+      min-width: 0;
+      width: 100%;
+      height: 80%;
+      object-fit: scale-down;
+      background-color: #e5e5e5; }
   .media.media_text .mediaContent {
-    padding: .9375rem;
     min-height: 15px; }
     .media.media_text .mediaContent .mediaContent--titleOfTextmedia {
       font-size: 1.2em;
-      font-weight: normal; }
+      font-weight: normal;
+      padding: 16px; }
     .media.media_text .mediaContent .mediaContent--textOfTextmedia {
-      font-size: 1em; }
+      font-size: 1em;
+      padding: 16px; }
     .media.media_text .mediaContent p:first-child {
       margin-top: 0; }
-  .media .mediaData .mediaData--informations {
-    padding: .9375rem;
-    margin: 0; }
-    .media .mediaData .mediaData--informations:empty {
-      display: none; }
+  .media .mediaData {
+    height: 20%; }
+    .media .mediaData .mediaData--informations {
+      padding: 8px;
+      margin: 0;
+      font-size: 80%; }
+      .media .mediaData .mediaData--informations:empty {
+        display: none; }
   .media::before {
     content: "";
     position: absolute;
@@ -8592,7 +8604,12 @@ body.capture .content-wrapper:after {
   .media.is--highlight::after {
     background-color: #4BC0B4; }
   .media.is--highlight .mediaContent {
-    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.4); }
+    background-color: #fff;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+    z-index: 2; }
+  .media.is--highlight .button-wrapper_flagMedia {
+    transform: scale(1);
+    opacity: 1; }
   .media .button-wrapper_deleteMedia {
     display: none; }
   .media .button-wrapper_flagMedia {
@@ -8601,14 +8618,14 @@ body.capture .content-wrapper:after {
     bottom: -0;
     z-index: 101;
     display: block;
+    border-radius: 50%;
     transform-origin: right bottom;
     opacity: 0;
-    border-radius: 50%;
+    transform: scale(0);
     transition: transform .2s ease-out, opacity .2s ease-out; }
   .media:hover .button-wrapper_flagMedia {
-    opacity: .8; }
-    .media:hover .button-wrapper_flagMedia:hover {
-      opacity: 1; }
+    transform: scale(1);
+    opacity: 1; }
 
 @keyframes slideFromTop {
   0% {

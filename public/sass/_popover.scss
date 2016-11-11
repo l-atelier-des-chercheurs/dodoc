@@ -24,8 +24,9 @@
   padding: 10px 16px 16px 16px;
 
   max-width: 32.5rem;
-
   max-height: 80vh;
+  height: 100%;
+
   overflow-y: scroll;
 
   &:focus {
@@ -287,10 +288,6 @@
 
   &#modal-media-view{
     max-width: 80%;
-    padding-top: 30px;
-    padding-bottom: 30px;
-
-    bottom: 60px;
     overflow-y: auto;
 
     .row{
