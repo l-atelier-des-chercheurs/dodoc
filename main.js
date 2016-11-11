@@ -14,6 +14,8 @@ function createWindow () {
   // Create the browser window.
   win = new BrowserWindow({
     webPreferences: {
+      width: 1024,
+      height: 800,
       allowDisplayingInsecureContent: true,
       allowRunningInsecureContent: true
     }
@@ -24,7 +26,7 @@ function createWindow () {
   win.loadURL(`${config.protocol}://${config.host}:${config.port}`);
 
   // Open the DevTools.
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
 
   win.focus();
 
