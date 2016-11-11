@@ -85,7 +85,7 @@ Follow this tutorial: [http://www.renevolution.com/how-to-install-ffmpeg-on-mac-
 In the right directory  (```cd path/of/the/dodoc/directory```  )
 (the terminal says for example ```MacBook-de-Toto:dodoc Pauline$``` )  
 Run the server in the terminal (enter the following command:)  
-```node server.js```
+```node index.js```
 
 Go to browser and go to the url (For now dodoc works only on Google Chrome or Chromium)   
 [https://localhost:8080](https://localhost:8080)  
@@ -111,4 +111,4 @@ Example: ```cd dodoc```
 
 
 To debug dodoc, you can enable extra-logging with the flag --debug:
-```node server.js --debug```
+```node index.js --debug```
