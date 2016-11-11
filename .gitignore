@@ -45,7 +45,8 @@ node_modules
 
 # dodoc customs #
 ######################
-sessions
+sessions/**/
+!sessions/.gitkeep
 publications
 
 public/fonts/Fira/source/
