@@ -4,19 +4,35 @@ var https = require('https');
 var fs = require('fs');
 var io = require('socket.io');
 var path = require('path');
-var config = require('./config.json');
+
+try {
+  // root config.json is specific to electron
+  var config = require('../config.json');
+} catch( err) {
+  // local config.json is for node
+  var config = require('./config.json');
+}
+
 
 
 module.exports = function() {
   var app = express();
 
-  var privateKey  = fs.readFileSync(path.join(__dirname, 'file.pem'), 'utf8');
-  var certificate = fs.readFileSync(path.join(__dirname, 'file.crt'), 'utf8');
+  const options = {
+    key:  fs.readFileSync( path.join(__dirname, 'ssl', 'server.key')),
+    cert: fs.readFileSync( path.join(__dirname, 'ssl', 'server.crt')),
+    ca:   fs.readFileSync( path.join(__dirname, 'ssl', 'rootCA.crt')),
+    password: 'dodoc',
+    requestCert:        true,
+    rejectUnauthorized: false
+  };
 
-  //create https server
-  var credentials = { key: privateKey, cert: certificate };
-  var httpsServer = https.createServer(credentials, app);
-  var io = require("socket.io").listen(httpsServer);
+  if( config.protocol === 'http')
+    var server = http.createServer(app);
+  else if( config.protocol === 'https')
+    var server = https.createServer(options, app);
+
+  var io = require("socket.io").listen(server);
 
   var dodoc = require('./public/dodoc.js');
   var main = require('./main');
@@ -41,7 +57,7 @@ module.exports = function() {
   * Start the http server at port and IP defined before
   */
 
-  httpsServer.listen(
+  server.listen(
     app.get("port"), function() {
       console.log(`Server up and running. Go to ${config.protocol}://${config.host}:${config.port}`);
     }
