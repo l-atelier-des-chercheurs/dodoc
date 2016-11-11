@@ -5,7 +5,7 @@ var path = require("path");
 var fs = require('fs-extra');
 var ffmpeg = require('fluent-ffmpeg');
 var dodoc  = require('./public/dodoc.js'),
-	moment = require( "moment" ),
+  moment = require( "moment" ),
   merge = require('merge'),
   parsedown = require('woods-parsedown'),
   os = require('os')
@@ -213,13 +213,13 @@ module.exports = function(app,io,m){
     });
   }
 
-	function parseData(d) {
-    	var parsed = parsedown(d);
+  function parseData(d) {
+      var parsed = parsedown(d);
     // the fav field is a boolean, so let's convert it
-    	if( parsed.hasOwnProperty('fav'))
-    	  parsed.fav = (parsed.fav === 'true');
-		return parsed;
-	}
+      if( parsed.hasOwnProperty('fav'))
+        parsed.fav = (parsed.fav === 'true');
+    return parsed;
+  }
   function getMediaFolderPathByType( mediaType) {
     if( mediaType == 'photo')
       return getPhotoPathOfProject();
