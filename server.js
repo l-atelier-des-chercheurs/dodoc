@@ -6,21 +6,22 @@ var io = require('socket.io');
 var path = require('path');
 var config = require('./config.json');
 
-module.exports = function() {
-  var app     = express();
 
-  var privateKey  = fs.readFileSync('file.pem', 'utf8');
-  var certificate = fs.readFileSync('file.crt', 'utf8');
+module.exports = function() {
+  var app = express();
+
+  var privateKey  = fs.readFileSync(path.join(__dirname, 'file.pem'), 'utf8');
+  var certificate = fs.readFileSync(path.join(__dirname, 'file.crt'), 'utf8');
 
   //create https server
-  var credentials = {key: privateKey, cert: certificate};
+  var credentials = { key: privateKey, cert: certificate };
   var httpsServer = https.createServer(credentials, app);
-  var io      = require("socket.io").listen(httpsServer);
+  var io = require("socket.io").listen(httpsServer);
 
-  var dodoc  = require('./public/dodoc.js');
-  var main    = require('./main');
+  var dodoc = require('./public/dodoc.js');
+  var main = require('./main');
   var expressSettings = require('./express-settings');
-  var router  = require('./router');
+  var router = require('./router');
 
   var m = new main(app, io);
 
