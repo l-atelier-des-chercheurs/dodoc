@@ -4,7 +4,7 @@ var https = require('https');
 var fs = require('fs');
 var io = require('socket.io');
 var path = require('path');
-var config = require('../config.json');
+var config = require('./config.json');
 
 module.exports = function() {
   var app = express();
