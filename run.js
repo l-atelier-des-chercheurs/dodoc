@@ -1,1 +1,0 @@
-server = require(__dirname + '/server')();
