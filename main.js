@@ -1291,7 +1291,7 @@ MEDIA METHODS
             console.log("Image added at path " + pathToFile);
 
             gm( pathToFile + fileExtension)
-              .resize( dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
+              .resize( dodoc.mediaThumbWidth+'>', dodoc.mediaThumbHeight+'>')
               .quality( 60)
               .autoOrient()
               .write( pathToFile + dodoc.thumbSuffix + fileExtension, function (err) {
