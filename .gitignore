@@ -1,6 +1,3 @@
-# Folder modules#
-node_modules
-
 # FTP Config file
 ftp-config.js
 
@@ -41,11 +38,10 @@ ftp-config.js
 .Trashes
 ehthumbs.db
 Thumbs.db
-node_modules
 
 # dodoc customs #
 ######################
-sessions/**/
+sessions
 !sessions/.gitkeep
 publications
 

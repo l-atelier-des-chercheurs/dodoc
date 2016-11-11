@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<script src="node_modules/getusermedia/getusermedia.bundle.js"></script>
+<script src="node_modules/attachmediastream/attachmediastream.bundle.js"></script>
+<script src="photograb.bundle.js"></script>
+<video id="local" height="300"></video>
+<div id="images"></div>
+<p>click image to test various captures</p>
+<script>
+var videoEl = document.getElementById('local');
+var container = document.getElementById('images');
+var counter = 0;
+var options = {
+    '0': {
+        width: 50
+    },
+    '1': {
+        height: 50
+    },
+    '2': {
+        width: 20,
+        height: 20
+    },
+    '3': {}
+};
+
+getUserMedia(function (err, stream) {
+    if (stream) {
+        attachMediaStream(stream, videoEl, {muted: true});
+    }
+});
+
+function capture() {
+    var image = document.createElement('img');
+    var opt = options['' + counter++];
+    if (!opt) {
+        counter = 0;
+        opt = options['' + counter];
+    }
+    console.log(opt);
+    image.src = photograb(videoEl, opt);
+    container.innerHTML = image.outerHTML;
+    return false;
+}
+
+videoEl.addEventListener('click', capture, false);
+</script>
