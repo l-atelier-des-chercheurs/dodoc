@@ -1,6 +1,6 @@
 const { app, BrowserWindow } = require('electron');
 const fs = require('fs');
-const config = require('./dodoc-app/config.json');
+var config = require('./config.json');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

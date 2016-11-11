@@ -2,7 +2,13 @@ var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
 var dodoc  = require('./public/dodoc');
 var path = require('path');
-var config = require('./config.json');
+try {
+  // root config.json is specific to electron
+  var config = require('../config.json');
+} catch( err) {
+  // local config.json is for node
+  var config = require('./config.json');
+}
 
 module.exports = function(app, express) {
   app.set("port", config.port); //Server's port number
