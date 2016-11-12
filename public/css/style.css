@@ -7110,7 +7110,8 @@ th.hide-for-touch {
     color: #722040; }
   .reveal-modal#modal-media-view {
     max-width: 80%;
-    overflow-y: auto; }
+    overflow-y: auto;
+    height: 80vh; }
     .reveal-modal#modal-media-view .row {
       max-width: 100%; }
     .reveal-modal#modal-media-view .button-wrapper_highlightMedia {
@@ -8558,7 +8559,7 @@ body.capture .content-wrapper:after {
     border-top-color: white;
     box-sizing: content-box;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     flex-direction: column; }
     .media .mediaContent img, .media .mediaContent video {
       min-width: 0;
@@ -8597,7 +8598,7 @@ body.capture .content-wrapper:after {
       background-color: #fff;
       overflow: hidden;
       display: -webkit-box;
-      -webkit-line-clamp: 1;
+      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical; }
       .media .mediaData .mediaData--informations:empty {
         display: none; }

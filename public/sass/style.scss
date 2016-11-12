@@ -447,7 +447,7 @@ button {
 
     box-sizing: content-box;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     flex-direction: column;
 
     img, video {
@@ -512,7 +512,7 @@ button {
 
       overflow: hidden;
       display: -webkit-box;
-      -webkit-line-clamp: 1;
+      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
 
       &:empty {
