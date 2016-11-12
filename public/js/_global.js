@@ -505,16 +505,17 @@ var publi = {
   		    .hide()
   		    ;
   	  })
-    .on('click', '.js--delete-media-montage', function(){
-    	var $elementToDel = $(this).parent("li.media");
-
-    	// check if media is in the montage
-    	if( $elementToDel.closest('[data-publidata]').length > 0) {
-      	$elementToDel.fadeOut( 600,function(){
-      		$elementToDel.remove();
-          $(document).trigger( 'update_media_montage');
-      	});
+    .on('click', '.js--delete-media-montage', function(e){
+      e.preventDefault();
+      	var $elementToDel = $(this).parent("li.media");
+      	// check if media is in the montage
+      	if( $elementToDel.closest('[data-publidata]').length > 0) {
+        	$elementToDel.fadeOut( 600,function(){
+        		$elementToDel.remove();
+            $(document).trigger( 'update_media_montage');
+        	});
       }
+      return false;
     })
     ;
 
