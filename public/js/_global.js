@@ -176,7 +176,7 @@ function makeOneMedia( mediaKey, mdata) {
   	.data( 'ctimestamp', transformDatetoTimestamp( mdata.created))
     ;
 
-  if( mdata.title === undefined && mdata.informations === undefined) {
+  if( !mdata.title && !mdata.informations) {
     $currentMedia.find('.mediaData').remove();
   }
 

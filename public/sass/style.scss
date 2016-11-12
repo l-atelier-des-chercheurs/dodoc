@@ -349,8 +349,6 @@ button {
         width: 100%;
         height: 100%;
         object-fit: scale-down;
-
-        padding: $margin/4;
         background-color: $gristresclair;
       }
     }
@@ -430,6 +428,7 @@ button {
   float: left;
   width: 25%;
   padding-bottom: 25%;
+  overflow: hidden;
 
   z-index: 1;
 
@@ -437,15 +436,29 @@ button {
     position: absolute;
     top: 0; left: 0;  right: 0; bottom: 0;
 
-    border: 1px solid $c-separator;
-    border-left: 1px solid #fff;
+    background-color: $gristresclair;
+
+    border-width: 1px;
+    border-style: solid;
+    border-color: $c-separator;
+
+    border-right-color: white;
+    border-top-color:   white;
+
+    box-sizing: content-box;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
 
     img, video {
       min-width: 0;
       width: 100%;
-      height: 80%;
       object-fit: scale-down;
-      background-color: $gristresclair;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex: 7;
 
     }
   }
@@ -480,11 +493,25 @@ button {
   }
 
   .mediaData {
-    height: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    overflow: hidden;
+
+    background-color: #fff;
+
     .mediaData--informations {
-      padding: $margin/2;
+      padding: 0 $margin/2;
       margin: 0;
       font-size: 80%;
+      background-color: #fff;
+
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+
       &:empty {
         display: none;
       }
@@ -493,7 +520,7 @@ button {
 
 
 
-  // type de media (anciennement icone-media)
+  // type de media
   &::before {
     content:"";
     position: absolute;
@@ -505,6 +532,10 @@ button {
     z-index:  100;
 
     background-size: cover;
+    transform: translate(50px, -50px);
+
+    transition: transform .2s ease-out, opacity .2s ease-out;
+
   }
 
   &[data-mediatype="01-photos"]::before {
@@ -535,20 +566,28 @@ button {
   }
 
   &.is--highlight {
+
+    z-index: 2;
+
     &::after {
-      background-color: $bleuvert;
     }
 
     .mediaContent {
-      background-color: #fff;
-      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
-      z-index: 2;
+//       box-shadow: 0 1px 8px $bleuvert;
+//       background-color: $bleuvert;
+      background-color: $gristrestresclair;
+
+      img, video {
+      }
+
+      .mediaData {
+
+      }
     }
 
     .button-wrapper_flagMedia {
-      transform: scale(1);
       opacity: 1;
-
+      transform: translate(0px, 0px);
     }
   }
 
@@ -568,17 +607,22 @@ button {
 
     transform-origin: right bottom;
     opacity: 0;
-    transform: scale(0);
+    transform: translate(50px, 50px);
 
     transition: transform .2s ease-out, opacity .2s ease-out;
   }
   &:hover {
+    &::before {
+      transform: translate(0px, 0px);
+
+    }
+
     &.is--highlight .button-wrapper_flagMedia {
 
     }
     .button-wrapper_flagMedia {
-      transform: scale(1);
       opacity: 1;
+      transform: translate(0px, 0px);
 
       &:hover {
       }

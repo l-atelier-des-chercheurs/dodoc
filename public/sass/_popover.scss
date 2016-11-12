@@ -21,11 +21,10 @@
   border-radius: 2px;
   -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  padding: 10px 16px 16px 16px;
+  padding: $margin;
 
   max-width: 32.5rem;
   max-height: 80vh;
-  height: 100%;
 
   overflow-y: scroll;
 
