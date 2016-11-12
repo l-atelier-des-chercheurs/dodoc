@@ -96,7 +96,7 @@ function mediaInit( $m) {
 
     // special template "grille", "marseille" et "numok" (à compartimenter plus proprement)
     if( $m.data('informations').length > 0) {
-      var $button = $('<button class="showCaption">t</button>');
+      var $button = $('<button class="showCaption js--showCaption">t</button>');
       $m.find('.mediaContent').prepend($button);
       $button.on('click', function() { $(this).toggleClass('is--clicked');});
     }

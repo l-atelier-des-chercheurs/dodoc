@@ -271,7 +271,11 @@
     font-size: 1.5em; }
   .template_container[data-template="unecolonne"] .publi_medias {
     padding: 10px 16px; }
+    .template_container[data-template="unecolonne"] .publi_medias .media .mediaContent {
+      position: relative; }
     .template_container[data-template="unecolonne"] .publi_medias .media img {
       width: auto;
       min-width: 0;
       max-height: 70vh; }
+    .template_container[data-template="unecolonne"] .publi_medias .showCaption {
+      display: none; }

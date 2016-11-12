@@ -29,9 +29,6 @@ var userScripts = [
 var templateCss = [
   'templates/**/*.scss'
 ]
-var templateCss = [
-  'templates/**/*.scss'
-]
 
 var userCss = [
   'public/sass/style.scss'
@@ -96,7 +93,7 @@ gulp.task('script-plugins', function() {
 // Watch Files For Changes
 gulp.task('watch', function() {
   gulp.watch(['public/js/*.js', 'public/js/libs/*.js','public/js/capture/*.js',], ['lint']);
-  gulp.watch( ['public/sass/*.scss'].concat(templateCss).concat(userCss), ['sass', 'css']);
+  gulp.watch( ['public/sass/*.scss'].concat(templateCss).concat(userCss), ['sass', 'templatesSass', 'css']);
 });
 
 // Default Task

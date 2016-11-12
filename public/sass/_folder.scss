@@ -162,7 +162,7 @@ body.projets{
 
       border-bottom:   1px solid $c-separator;
       background-color: #f9f9f9;
-      padding: $margin $margin/2;
+      padding: $margin/2 $margin/2;
 
       body.projets & {
         display: none;

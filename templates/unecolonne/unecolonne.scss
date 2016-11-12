@@ -22,11 +22,19 @@
     padding: 10px 16px;
 
       .media {
+
+        .mediaContent {
+          position: relative;
+        }
         img {
           width: auto;
           min-width: 0;
           max-height: 70vh;
         }
+
+      }
+      .showCaption {
+        display: none;
       }
 
   }

@@ -7941,7 +7941,7 @@ body.projets #container {
     background-color: #fff;
     border-bottom: 1px solid #DFDFDF;
     background-color: #f9f9f9;
-    padding: 16px 8px; }
+    padding: 8px 8px; }
     .project-list .project .last-medias:before, .project-list .project .last-medias:after {
       content: " ";
       display: table; }
@@ -8367,7 +8367,7 @@ body.capture .content-wrapper:after {
   position: absolute;
   z-index: 1;
   display: block;
-  overflow: hidden;
+  overflow: visible;
   opacity: 0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 8px;
@@ -8425,6 +8425,11 @@ body.capture .content-wrapper:after {
     bottom: 0;
     background-color: rgba(255, 255, 255, 0.9);
     z-index: 9; }
+    .captureRight .preview_stopmotion .output_container:before, .captureRight .preview_stopmotion .output_container:after {
+      content: " ";
+      display: table; }
+    .captureRight .preview_stopmotion .output_container:after {
+      clear: both; }
     .captureRight .preview_stopmotion .output_container video.output {
       padding-bottom: 10px; }
     .captureRight .preview_stopmotion .output_container video.output[src=""] ~ .button-wrapper {
