@@ -8556,6 +8556,7 @@ body.capture .content-wrapper:after {
     left: 0;
     right: 0;
     bottom: 0;
+    overflow: hidden;
     background-color: #e5e5e5;
     border-width: 1px;
     border-style: solid;
