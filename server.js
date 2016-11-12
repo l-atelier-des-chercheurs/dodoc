@@ -18,6 +18,8 @@ try {
 module.exports = function() {
   var app = express();
 
+/*
+  // not working: asks for a certificate on smartphones
   const options = {
     key:  fs.readFileSync( path.join(__dirname, 'ssl', 'server.key')),
     cert: fs.readFileSync( path.join(__dirname, 'ssl', 'server.crt')),
@@ -26,6 +28,12 @@ module.exports = function() {
     requestCert:        true,
     rejectUnauthorized: false
   };
+*/
+
+  // works without asking for a certificate
+  const privateKey  = fs.readFileSync(path.join(__dirname, 'ssl', 'file.pem'), 'utf8');
+  const certificate = fs.readFileSync(path.join(__dirname, 'ssl', 'file.crt'), 'utf8');
+  const options = { key: privateKey, cert: certificate };
 
   if( config.protocol === 'http')
     var server = http.createServer(app);
