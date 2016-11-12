@@ -8567,7 +8567,8 @@ body.capture .content-wrapper:after {
       display: flex;
       flex-direction: column;
       justify-content: center;
-      flex: 7; }
+      flex: 7;
+      overflow: auto; }
   .media.media_audio .mediaContent audio {
     width: 100%; }
   .media.media_text .mediaContent {
