@@ -23,7 +23,7 @@ html
 
     .biblimontage-container.mainContent
       .bibli-buffer
-        .bibli-btn    
+        .bibli-btn
           +button( 'ajoutText', '', 'isCollapsed')
           +button( 'ajoutMedia', '', 'isCollapsed')
         ul.medias-list
@@ -34,7 +34,7 @@ html
           h1.legende
             | !{dodoc.lang.listOfPublications}
           +button( 'createPublication', '', '')
-              
+
           ul
         .montage_publi_container(data-publidata)
 
@@ -42,7 +42,7 @@ html
     include templates/modals/importMedia
     include templates/modals/addText
     include templates/modals/bigMedia
-    include templates/modals/edit_publi
+    include templates/modals/editPubli
 
     .js--templates
       include templates/js_templates

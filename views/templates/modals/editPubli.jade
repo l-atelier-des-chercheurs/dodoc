@@ -4,21 +4,21 @@ div(id="modal-modify-publi" class="reveal-modal" data-reveal aria-labelledby="mo
 div(style="display:none;")
   h2.popoverTitle
     | !{dodoc.lang.modal.editPubli}
-    
+
   form(onsubmit='return false;')
     input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus)
- 
+
     fieldset.templateSelector
       .legende
         | !{dodoc.lang.selectTemplate}
-        
+
       - for (var i = 0; i < templates.length; i++) {
       label
         input.js--modal_template(type="radio" name="publiTemplate" value="#{templates[i]}" checked)
         img(src="/#{dodoc.publicationTemplateDir}/#{templates[i]}/icone.svg")
         span #{templates[i]}
       - }
-      
+
     hr
 
     input(type='submit' class='button_submit js--modal_submit' value='Valider')
