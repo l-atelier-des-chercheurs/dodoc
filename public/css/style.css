@@ -8576,10 +8576,11 @@ body.capture .content-wrapper:after {
     .media.media_text .mediaContent .mediaContent--titleOfTextmedia {
       font-size: 1.2em;
       font-weight: normal;
-      padding: 16px; }
+      padding: 8px; }
     .media.media_text .mediaContent .mediaContent--textOfTextmedia {
+      flex: 1;
       font-size: 1em;
-      padding: 16px; }
+      padding: 8px; }
     .media.media_text .mediaContent p:first-child {
       margin-top: 0; }
   .media .mediaData {

@@ -482,11 +482,12 @@ button {
       .mediaContent--titleOfTextmedia {
         font-size: 1.2em;
         font-weight: normal;
-        padding:  $margin;
+        padding:  $margin/2;
       }
       .mediaContent--textOfTextmedia {
+        flex: 1;
         font-size:1em;
-        padding:  $margin;
+        padding:  $margin/2;
       }
       p:first-child {
         margin-top:   0;
