@@ -63,6 +63,7 @@ var stopMotionMode = (function() {
 
     var smCacheName = $("body").data("smCacheName");
     var smCachePath = $("body").data("smCachePath");
+    var smRelativeCachePath = $("body").data("smRelativeCachePath");
     var imageData = currentStream.getStaticImageFromVideo();
 
     currentStream.getStaticImageFromVideo().then(function(imageData) {
@@ -71,7 +72,8 @@ var stopMotionMode = (function() {
       {
         "imageContent" : imageData,
         "folderCacheName" : smCacheName,
-        "folderCachePath" : smCachePath
+        "folderCachePath" : smCachePath,
+        "relativeCachePath" : smRelativeCachePath,
       };
 
       socket.emit( 'addImageToStopMotion', smImage);
@@ -90,20 +92,18 @@ var stopMotionMode = (function() {
 
   }
 
-  function removeImageFromStopMotion( imagePath) {
+  function removeImageFromStopMotion( relativeImagePath) {
     var mediaToDelete =
     {
-      "pathToStopmotionImage" : imagePath,
+      "pathToStopmotionImage" : relativeImagePath,
     }
     socket.emit( 'deleteLastImageOfStopMotion', mediaToDelete);
-
   }
 
 
   function previzStopMotion( ) {
 
     var smCacheName = $("body").data( "smCacheName");
-    var smCachePath = $("body").data( "smCachePath");
     var frameRate = $preview.find('.preview_stopmotion--frameRate input').val();
 
     var mediaData =
@@ -160,8 +160,7 @@ var stopMotionMode = (function() {
 
     onNewStopmotionImage : function( smdata) {
 
-
-      var imagePath = smdata.relativeImagePath;
+      var relativeImagePath = $("body").data("smRelativeCachePath") + "/" + smdata.newImageName;
 
       /********* LARGE PREVIEW ***************/
       var $newPreview = $('.js--templates .stopmotion_lastImagePreview').clone( false);
@@ -170,7 +169,7 @@ var stopMotionMode = (function() {
 
       // delete last stopmotion image
       $newPreview.on('click', '.js--delete-sm-lastimage', function(){
-        removeImageFromStopMotion( imagePath);
+        removeImageFromStopMotion( relativeImagePath);
         $newPreview.fadeOut(600, function() { $(this).remove(); });
         $newSmallPreview.fadeOut(600, function() { $(this).remove(); });
       });
@@ -185,9 +184,9 @@ var stopMotionMode = (function() {
       $previewContainer.find('.stopmotion_lastImagePreview.is--active').removeClass('is--active');
       $timeline.find('.stopmotion_lastImageSmallPreview.is--active').removeClass('is--active');
 
-      $newPreview.addClass('is--active').find('img').attr("src", imagePath);
-      $newSmallPreview.addClass('is--active').find('img').attr("src", imagePath);
-      $lastStopmotionImage.attr("src", imagePath);
+      $newPreview.addClass('is--active').find('img').attr("src", relativeImagePath);
+      $newSmallPreview.addClass('is--active').find('img').attr("src", relativeImagePath);
+      $lastStopmotionImage.attr("src", relativeImagePath);
 
       // supprimer les images plus anciennes que 10
       $previewContainer.find(".stopmotion_lastImagePreview").eq(-10).trigger("removeMe");
@@ -212,17 +211,14 @@ var stopMotionMode = (function() {
     },
 
     onStopMotionDirectoryCreated : function( newStopMotionData) {
-
-      var folderCacheName = newStopMotionData.folderCacheName;
-      var folderCachePath = newStopMotionData.folderCachePath;
-
-      $("body").data( "smCacheName", folderCacheName);
-      $("body").data( "smCachePath", folderCachePath);
+      $("body").data( "smCacheName", newStopMotionData.folderCacheName);
+      $("body").data( "smCachePath", newStopMotionData.folderCachePath);
+      $("body").data( "smRelativeCachePath", newStopMotionData.relativeCachePath);
     },
 
     showStopMotionPreview : function( pathToMediaFile) {
       // to prevent cache from being used, we add a unix timestamp at the end of the filename
-      $preview.find('.output').attr( 'src', pathToMediaFile + '?' + moment().format('x'));
+      $preview.find('video.output').attr( 'src', pathToMediaFile + '?' + moment().format('x'));
 
       $backToAnimation.off().on('click', function() {
         var mediaToDelete =
@@ -232,7 +228,7 @@ var stopMotionMode = (function() {
         }
         sendData.deleteStopmotion( mediaToDelete);
         $previewOutput.hide();
-        $preview.find('.output').attr('src', '');
+        $preview.find('video.output').attr('src', '');
       });
     },
 

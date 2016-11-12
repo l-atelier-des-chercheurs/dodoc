@@ -9,13 +9,13 @@ var imageMode = (function() {
     if( mediaJustCaptured())
       return;
 
-    currentStream.getStaticImageFromVideo().then(function(imageData) {  
+    currentStream.getStaticImageFromVideo().then(function(imageData) {
       $(".captureRight .flash").fadeIn(0, function(){
         $(this).fadeOut(500);
       });
       console.log("Yeah you take a picture");
-  
-  
+
+
       var mediaData =
       {
         "mediaType" : "photo",
@@ -23,11 +23,11 @@ var imageMode = (function() {
       }
       // send instruction to record photo
       sendData.createNewMedia( mediaData);
-  
-      $preview.find('.output').attr('src', '');
-  
+
+      $preview.find('img.output').attr('src', '');
+
       justCaptured();
-      saveFeedback("/images/icone-dodoc_image.png");      
+      saveFeedback("/images/icone-dodoc_image.png");
     }, function(err) {
       console.log('err ' + err);
     });
@@ -39,7 +39,7 @@ var imageMode = (function() {
     init : function() {
       $(".photo-capture #capture-btn").off().on('click', takePictures);
       $preview.find('.js--delete-media-capture').hide();
-      $preview.find('.output').attr('src', '');
+      $preview.find('img.output').attr('src', '');
       isRunning = true;
     },
 
@@ -47,7 +47,7 @@ var imageMode = (function() {
       isRunning = false;
     },
     showImagePreview : function( pathToMediaFile) {
-      $preview.find('.output').attr("src", pathToMediaFile);
+      $preview.find('img.output').attr("src", pathToMediaFile);
       $preview.find('.js--delete-media-capture').show();
     },
 

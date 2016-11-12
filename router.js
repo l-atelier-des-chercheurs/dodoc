@@ -34,6 +34,9 @@ module.exports = function(app,io,m){
   function getRootPath() {
     return __dirname;
   }
+  function getRootFolder(thisPath) {
+    return path.join( getRootPath(), thisPath);
+  }
 
   function getMetaFileOfFolder( slugFolderName) {
     return path.join( getContentPath( slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
@@ -91,8 +94,7 @@ module.exports = function(app,io,m){
           var slugPubliName = req.param('publi');
           if( slugPubliName !== undefined) {
             var jsonFileOfPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName) + dodoc.metaFileext;
-            var fullPathToJsonFileOfPubli = getContentPath( jsonFileOfPubli);
-            var publiData = readMetaFile( fullPathToJsonFileOfPubli);
+            var publiData = readMetaFile( jsonFileOfPubli);
 
             pageDataJSON.slugPubliName = slugPubliName;
             pageDataJSON.publiName = publiData.name;
@@ -171,7 +173,6 @@ module.exports = function(app,io,m){
 
   function getBibliPubli(req, res) {
     var pageTitle = dodoc.lang.bibli;
-    var generatePageDataJSON = generatePageData(req, pageTitle);
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       getAllTemplates().then(function(allTemplates) {
         generatePageDataJSON["templates"] = allTemplates;
@@ -184,7 +185,6 @@ module.exports = function(app,io,m){
 
   function getPubli(req, res) {
     var pageTitle = dodoc.lang.publi;
-    var generatePageDataJSON = generatePageData(req, pageTitle);
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       getAllTemplates().then(function(allTemplates) {
         generatePageDataJSON["templates"] = allTemplates;
@@ -192,8 +192,9 @@ module.exports = function(app,io,m){
       }, function(err) {
         console.log('err ' + err);
       });
+    }, function(err) {
+      console.log('err ' + err);
     });
-
   };
 
   function readMetaFile( metaFile){
@@ -204,7 +205,7 @@ module.exports = function(app,io,m){
 
   function getAllTemplates() {
     return new Promise(function(resolve, reject) {
-      var templateFolderPath = getRootPath( dodoc.publicationTemplateDir);
+      var templateFolderPath = getRootFolder( dodoc.publicationTemplateDir);
       fs.readdir( templateFolderPath, function (err, filenames) {
         if (err) reject( console.log( 'Couldn\'t read content dir : ' + err));
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });

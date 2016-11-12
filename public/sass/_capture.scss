@@ -618,7 +618,7 @@ $t-decalageDuCentre: 4%;
   position: absolute;
   z-index: 1;
   display: block;
-  overflow: hidden;
+  overflow: visible;
 
   opacity: 0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -693,6 +693,7 @@ $t-decalageDuCentre: 4%;
 
     // container with video to preview stopmotion render
     .output_container {
+      @include clearfix();
       position: absolute;
       top: 0;
       left: 0;

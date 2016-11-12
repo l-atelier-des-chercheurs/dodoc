@@ -290,24 +290,25 @@ module.exports = function(app, io){
     var slugProjectName = mediaData.slugProjectName;
     var mediaFolder = getAnimationPathOfProject();
     var folderCachePath = path.join( getProjectPath( slugFolderName, slugProjectName), mediaFolder, folderCacheName);
+    var relativeCachePath = path.join('/', slugFolderName, slugProjectName, mediaFolder, folderCacheName);
+
     fs.removeSync( folderCachePath);
     fs.ensureDirSync( folderCachePath);
     var newStopMotionData =
     {
       "folderCacheName" : folderCacheName,
-      "folderCachePath" : folderCachePath
+      "folderCachePath" : folderCachePath,
+      "relativeCachePath" : relativeCachePath
     }
     sendEventWithContent( 'stopMotionDirectoryCreated', newStopMotionData, socket);
 
     if( mediaData.imageContent !== undefined) {
       // also add the linked image as first image to the stopmotion
-      var relativeCachePath = path.join('/', slugFolderName, slugProjectName, mediaFolder, folderCacheName);
       console.log( 'relativeCachePath ? = ' + relativeCachePath);
       var imageData =
       {
         "imageContent" : mediaData.imageContent,
         "folderCachePath" : folderCachePath,
-        "relativeCachePath" : relativeCachePath
       };
       onAddImageToStopMotion( socket, imageData);
     }
@@ -323,10 +324,9 @@ module.exports = function(app, io){
 
 		fs.writeFile( imageFullPath, imageBuffer.data, function(err) {
       if (err) console.log( err);
-      var relativeImagePath = path.join( imageData.relativeCachePath, newImageName);
     		var mediaData =
     		{
-      		"relativeImagePath" : relativeImagePath,
+      		"newImageName" : newImageName,
     		};
 
       sendEventWithContent( 'newStopmotionImage', mediaData, socket);
