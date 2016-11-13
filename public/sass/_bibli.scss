@@ -331,27 +331,25 @@ body.bibli {
 
   .media {
 
-    width: 16.66667%;
-    padding-bottom: 16.66667%;
+    $mediasPerRow: 6;
+    $mediasWidthHeight: 100/$mediasPerRow + %;
+
+    width: $mediasWidthHeight;
+    padding-bottom: $mediasWidthHeight;
 
     cursor: pointer;
-    transition: width 1.1s ease;
-
-
-    body:not([data-publicationpane="open"]) &:nth-child(6n+1) {
-      clear: left;
-    }
+    transition: width 0s ease;
 
     body[data-publicationpane="open"] & {
 
-      width: 25%;
-      padding-bottom: 25%;
+      $mediasPerRow: 3;
+      $mediasWidthHeight: 100/$mediasPerRow + %;
+
+      width: $mediasWidthHeight;
+      padding-bottom: $mediasWidthHeight;
 
       cursor: move;
 
-      &:nth-child(4n+1) {
-        clear: left;
-      }
     }
 
   }

@@ -426,8 +426,13 @@ button {
   position: relative;
 
   float: left;
-  width: 25%;
-  padding-bottom: 25%;
+
+  $mediasPerRow: 6;
+
+  $mediasWidthHeight: 100/$mediasPerRow + %;
+  width: $mediasWidthHeight;
+  padding-bottom: $mediasWidthHeight;
+
   overflow: hidden;
 
   z-index: 1;
@@ -579,7 +584,7 @@ button {
     .mediaContent {
 //       box-shadow: 0 1px 8px $bleuvert;
 //       background-color: $bleuvert;
-      background-color: $gristrestresclair;
+      background-color: $bleuvert;
 
       img, video {
       }

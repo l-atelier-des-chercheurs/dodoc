@@ -175,11 +175,7 @@ body.projets{
       .media {
         cursor: pointer;
 
-        &:nth-of-type(4n+1) {
-          clear: left;
-        }
-
-        &:nth-of-type(n+5) {
+        &:nth-of-type(n+13) {
           display: none;
         }
       }

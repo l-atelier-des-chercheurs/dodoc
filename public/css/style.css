@@ -7781,15 +7781,11 @@ body.bibli {
     width: 16.66667%;
     padding-bottom: 16.66667%;
     cursor: pointer;
-    transition: width 1.1s ease; }
-    body:not([data-publicationpane="open"]) .medias-list .media:nth-child(6n+1) {
-      clear: left; }
+    transition: width 0s ease; }
     body[data-publicationpane="open"] .medias-list .media {
-      width: 25%;
-      padding-bottom: 25%;
+      width: 33.33333%;
+      padding-bottom: 33.33333%;
       cursor: move; }
-      body[data-publicationpane="open"] .medias-list .media:nth-child(4n+1) {
-        clear: left; }
 
 .montage-list {
   height: 100%;
@@ -7953,9 +7949,7 @@ body.projets #container {
       padding: 0 4px; }
     .project-list .project .last-medias .media {
       cursor: pointer; }
-      .project-list .project .last-medias .media:nth-of-type(4n+1) {
-        clear: left; }
-      .project-list .project .last-medias .media:nth-of-type(n+5) {
+      .project-list .project .last-medias .media:nth-of-type(n+13) {
         display: none; }
     .project-list .project .last-medias .button-wrapper_flagMedia {
       display: none; }
@@ -8546,8 +8540,8 @@ body.capture .content-wrapper:after {
 .media {
   position: relative;
   float: left;
-  width: 25%;
-  padding-bottom: 25%;
+  width: 16.66667%;
+  padding-bottom: 16.66667%;
   overflow: hidden;
   z-index: 1; }
   .media .mediaContent {
@@ -8640,7 +8634,7 @@ body.capture .content-wrapper:after {
   .media.is--highlight {
     z-index: 2; }
     .media.is--highlight .mediaContent {
-      background-color: #F9F9F9; }
+      background-color: #4BC0B4; }
     .media.is--highlight .button-wrapper_flagMedia {
       opacity: 1;
       transform: translate(0px, 0px); }
