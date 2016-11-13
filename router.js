@@ -7,11 +7,12 @@ var ffmpeg = require('fluent-ffmpeg');
 var dodoc  = require('./public/dodoc.js');
 var moment = require('moment');
 var merge = require('merge');
-var parsedown = require('dodoc-parsedown');
 var os = require('os');
-var devLog = require('./bin/dev-log.js');
 var flags = require('flags');
 
+var devLog = require('./bin/dev-log.js');
+var parsedown = require('dodoc-parsedown');
+var dodocAPI = require('./bin/dodoc-api.js');
 
 module.exports = function(app,io,m){
 
@@ -75,6 +76,7 @@ module.exports = function(app,io,m){
 
   function generatePageData( req, pageTitle) {
     return new Promise(function(resolve, reject) {
+      console.log('new page has been requested');
 
       var pageDataJSON = [];
 
@@ -139,6 +141,8 @@ module.exports = function(app,io,m){
     var pageTitle = "Do.Doc";
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("index", generatePageDataJSON);
+    }, function(err) {
+      console.log('err ' + err);
     });
   };
 
@@ -146,6 +150,8 @@ module.exports = function(app,io,m){
     var pageTitle = dodoc.lang.folder;
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("folder", generatePageDataJSON);
+    }, function(err) {
+      console.log('err ' + err);
     });
   };
 
@@ -153,6 +159,8 @@ module.exports = function(app,io,m){
     var pageTitle = dodoc.lang.project;
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("project", generatePageDataJSON);
+    }, function(err) {
+      console.log('err ' + err);
     });
   };
 
@@ -160,6 +168,8 @@ module.exports = function(app,io,m){
     var pageTitle = dodoc.lang.capture;
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("capture", generatePageDataJSON);
+    }, function(err) {
+      console.log('err ' + err);
     });
   };
 
@@ -172,6 +182,8 @@ module.exports = function(app,io,m){
       }, function(err) {
         console.log('err ' + err);
       });
+    }, function(err) {
+      console.log('err ' + err);
     });
   };
 
@@ -184,6 +196,8 @@ module.exports = function(app,io,m){
       }, function(err) {
         console.log('err ' + err);
       });
+    }, function(err) {
+      console.log('err ' + err);
     });
   };
 

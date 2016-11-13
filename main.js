@@ -970,7 +970,6 @@ MEDIA METHODS
             // let's make one
             folderMediaMetaAndFileName[mediaObjKey] = new Object();
             // read JSON file and add the content to the folder
-            debugger;
             var mdata = dodocAPI.getMediaMeta( projectPath, mediasFolderPath, metaFileNameWithoutExtension);
             mdata.mediaFolderPath = mediasFolderPath;
             mdata.mediaName = metaFileNameWithoutExtension;

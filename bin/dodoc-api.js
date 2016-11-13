@@ -6,16 +6,16 @@ var fs = require('fs-extra');
 var parsedown = require('dodoc-parsedown');
 
 
-module.exports = {
+var dodocAPI = module.exports = {
   getCurrentDate : function(f = dodoc.metaDateFormat) {
     return moment().format(f);
   },
 
   getMediaMeta : function(projectPath, mediaFolderPath, mediaName) {
     dev.logfunction( "COMMON — getMediaMeta : projectPath = " + projectPath + " mediaFolderPath = " + mediaFolderPath + " mediaName = " + mediaName);
-    var mediaJSONFilepath = this.getPathToMedia(projectPath, mediaFolderPath, mediaName) + dodoc.metaFileext;
+    var mediaJSONFilepath = dodocAPI.getPathToMedia(projectPath, mediaFolderPath, mediaName) + dodoc.metaFileext;
     var mediaData = fs.readFileSync(mediaJSONFilepath, dodoc.textEncoding);
-    var mediaMetaData = this.parseData(mediaData);
+    var mediaMetaData = dodocAPI.parseData(mediaData);
     return mediaMetaData;
   },
 
@@ -24,10 +24,10 @@ module.exports = {
   },
 
   parseData : function(d) {
-      var parsed = parsedown.parse(d);
-    // the fav field is a boolean, so let's convert it
-      if( parsed.hasOwnProperty('fav'))
-        parsed.fav = (parsed.fav === 'true');
+    var parsed = parsedown.parse(d);
+  // the fav field is a boolean, so let's convert it
+    if( parsed.hasOwnProperty('fav'))
+      parsed.fav = (parsed.fav === 'true');
     return parsed;
   },
   storeData : function( mpath, d, e) {
@@ -37,13 +37,13 @@ module.exports = {
       if( e === "create") {
         fs.appendFile( mpath, textd, function(err) {
           if (err) reject( err);
-          resolve(parseData(textd));
+          resolve(dodocAPI.parseData(textd));
         });
       }
       if( e === "update") {
         fs.writeFile( mpath, textd, function(err) {
         if (err) reject( err);
-          resolve(parseData(textd));
+          resolve(dodocAPI.parseData(textd));
         });
       }
     });

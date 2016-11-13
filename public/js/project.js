@@ -118,7 +118,6 @@ function onMediaUpdated( mediasData) {
 function onListAllMedias( mediasData) {
   var $getAllMediasFormatted = listAllMedias( mediasData);
   var $mediaContainer = $(".mainContent .last-medias");
-  debugger;
 
   $getAllMediasFormatted.each( function() {
     insertOrReplaceMedia( $(this), $mediaContainer);
