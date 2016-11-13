@@ -424,20 +424,13 @@ module.exports = function(app, io){
 // F I N    B I B L I    P A G E
 
 // P U B L I     P A G E
-
-  function copyFiles(sourceFile, destFile, callback){
-    fs.unlink(destFile, function(){
-      fs.copy(sourceFile, destFile, callback);
-    });
-  }
-
   function onListOnePubliMetaAndMedias( publiData) {
     dev.logfunction( "EVENT - onListOnePubliMetaAndMedias : " + JSON.stringify( publiData, null, 4));
     var slugFolderName = publiData.slugFolderName;
     var slugProjectName = publiData.slugProjectName;
     var slugPubliName = publiData.slugPubliName;
 
-      listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
+    listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
       sendEventWithContent( 'listOnePubliMetaAndMedias', publiMedias);
     }, function(error) {
       console.error("Failed to list one media! Error: ", error);

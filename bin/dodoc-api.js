@@ -7,6 +7,7 @@ var parsedown = require('dodoc-parsedown');
 
 
 var dodocAPI = module.exports = {
+
   getCurrentDate : function(f = dodoc.metaDateFormat) {
     return moment().format(f);
   },
@@ -30,6 +31,7 @@ var dodocAPI = module.exports = {
       parsed.fav = (parsed.fav === 'true');
     return parsed;
   },
+
   storeData : function( mpath, d, e) {
     return new Promise(function(resolve, reject) {
       dev.logverbose('Will store data');
