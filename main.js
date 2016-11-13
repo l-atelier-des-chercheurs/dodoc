@@ -1,72 +1,29 @@
 "use strict";
 
-var fs = require('fs-extra'),
-  glob = require('glob'),
-  path = require('path'),
-  gm = require('gm'),
-  mm = require('marky-mark'),
-	moment = require('moment'),
-	exec = require('child_process').exec,
-// 	phantom = require('phantom'),
-	ffmpeg = require('fluent-ffmpeg'),
-	flags = require('flags'),
-  merge = require('merge'),
-  gutil = require('gulp-util'),
-  parsedown = require('woods-parsedown'),
-  slugg = require('slugg'),
-  gm = require('gm').subClass({imageMagick: true}),
-  Client = require('ftp')
-;
+var fs = require('fs-extra');
+var glob = require('glob');
+var path = require('path');
+var gm = require('gm');
+var moment = require('moment');
+var mm = require('marky-mark');
+var exec = require('child_process').exec;
+var ffmpeg = require('fluent-ffmpeg');
+var flags = require('flags');
+var merge = require('merge');
+var gutil = require('gulp-util');
+var parsedown = require('dodoc-parsedown');
+var slugg = require('slugg');
+var gm = require('gm').subClass({imageMagick: true});
+var Client = require('ftp');
 
-var dodoc  = require('./public/dodoc.js');
-try {
-  var exportConfig  = require('./ftp-config.js');
-} catch( err) {
-  console.log('No ftp config files have been found');
-}
+var devLog = require('./bin/dev-log.js');
+var dodoc = require('./public/dodoc.js');
+var dodocAPI = require('./bin/dodoc-api.js');
+
+try { var exportConfig  = require('./ftp-config.js'); }
+catch( err) { console.log('No ftp config files have been found'); }
 
 module.exports = function(app, io){
-
-  // VARIABLES
-  flags.defineBoolean('debug');
-  flags.defineBoolean('verbose');
-  flags.parse();
-
-  var dev = (function() {
-    var isDebugMode = flags.get('debug');
-    var isVerbose = flags.get('verbose');
-
-    return {
-      init : function() {
-        if(isDebugMode) {
-          console.log('Debug mode is Enabled');
-          console.log('---');
-          dev.log('all functions are prepended with ~ ');
-          dev.logpackets('(dev mode) green for sent packets');
-          if(isVerbose) {
-            dev.logverbose('(dev and verbose) gray for regular parsing data');
-          }
-        }
-      },
-      log : function(term) {
-        if( isDebugMode)
-          console.log(gutil.colors.blue('- ' + term));
-      },
-      logverbose : function(term) {
-        if( isDebugMode && isVerbose)
-          console.log(gutil.colors.gray('- ' + term));
-      },
-      logpackets : function(term) {
-        if( isDebugMode)
-          console.log(gutil.colors.green('- ' + term));
-      },
-      logfunction : function(term) {
-        if( isDebugMode)
-          console.info(gutil.colors.magenta('~ ' + term))
-      }
-    }
-  })();
-  dev.init();
 
   console.log("main module initialized");
 
@@ -284,7 +241,7 @@ module.exports = function(app, io){
   function onStartStopMotion( socket, mediaData) {
     dev.logfunction( "EVENT - onStartStopMotion");
 
-    var folderCacheName = getCurrentDate();
+    var folderCacheName = dodocAPI.getCurrentDate();
 
     var slugFolderName = mediaData.slugFolderName;
     var slugProjectName = mediaData.slugProjectName;
@@ -317,7 +274,7 @@ module.exports = function(app, io){
   function onAddImageToStopMotion( socket, imageData) {
     dev.logfunction( "EVENT - onAddImageToStopMotion : " + JSON.stringify( imageData, null, 4));
 
-    var newImageName = moment().format('x');
+    var newImageName = dodocAPI.getCurrentDate('x');
     newImageName = findFirstFilenameNotTaken( newImageName, imageData.folderCachePath, '.png') + '.png';
   		var imageFullPath = path.join( imageData.folderCachePath, newImageName);
 		var imageBuffer = decodeBase64Image( imageData.imageContent);
@@ -467,134 +424,6 @@ module.exports = function(app, io){
 // F I N    B I B L I    P A G E
 
 // P U B L I     P A G E
-  function onExportPubliToFtp(socket, d){
-    dev.logfunction( "EVENT - onExportPubliToFtp");
-    var currentDateString = getCurrentDate();
-    var projectPath = getProjectPath( d.slugFolderName, d.slugProjectName);
-
-    var exportedPubliFolderName = currentDateString + "_" + d.slugPubliName;
-    exportedPubliFolderName = findFirstFilenameNotTaken( exportedPubliFolderName, dodoc.exportedPubliDir, '');
-
-    var exportedPubliPath = dodoc.exportedPubliDir + "/" + "exportedPubliFolderName";
-    var exportedMediaFolderName = exportedPubliPath + "/" + "medias";
-
-    // create publi directory with publi name
-    fs.mkdir(exportedPubliPath, function(){
-      // create medias directory in publi directory
-      fs.mkdir(exportedMediaFolderName, function(){
-        // copy css file
-        copyFiles('public/css/style.css', exportedPubliPath + "/style.css", function(){
-          // create html file
-          fs.writeFile(exportedPubliPath + "/index.html", d.html, function(){
-//             saveImagesLocal(projectPath, folderPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket);
-          });
-        });
-      });
-    });
-  }
-
-  function saveImagesLocal(projectPath, folderPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket){
-    var arrayImages = [];
-    listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function(publi) {
-      for (var prop in publi) {
-        var medias = publi[prop].medias;
-        for(var index in medias){
-          var media = medias[index];
-          for(var fichiers in media){
-            var eachFiles = media[fichiers].files;
-            var mediaFolder = media[fichiers].mediaFolderPath;
-            for(var fileToCopy in eachFiles){
-              var fileName = eachFiles[fileToCopy];
-              var oldPath = path.join( projectPath, mediaFolder, fileName);
-              var newPath = path.join( mediasPath, fileName);
-              arrayImages.push(fileName);
-              try {
-                fs.copySync(oldPath, newPath);
-                console.log("success!");
-              } catch (err) {
-                console.error(err)
-              }
-            }
-          }
-        }
-      }
-      // check internet connection
-      require('dns').resolve('www.google.com', function(err) {
-        if (err) {
-          console.log("No connection");
-          socket.emit('noConnection');
-        } else {
-          sendFileToServer(arrayImages, folderPath, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket);
-        }
-      });
-    }, function(error) {
-      console.error("Failed to list one media! Error: ", error);
-    });
-  }
-
-
-  function sendFileToServer(arrayImages, folderPath, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket){
-    // config ftp in ftp-config.js
-    if(exportConfig !== undefined) {
-      var domain = exportConfig.domaineName;
-      var domainFolder = exportConfig.subFolder
-      // instance for FTP Client
-      var c = new Client();
-
-      c.on('ready', function() {
-        c.mkdir( path.join( domainFolder, slugPubliName), function(err) {
-          if (err) console.log(slugPubliName+ ' not transferred:' + err);
-          else {
-            console.log("Folder create on server transferred successfully!");
-          }
-          c.put(folderPath + '/index.html', domainFolder+'/'+ slugPubliName+'/index.html', function(err) {
-            if (err) console.log('not transferred:' + err);
-            else console.log("HTML File transferred successfully!");
-          });
-          c.put(folderPath + '/style.css', domainFolder+'/'+ slugPubliName+'/style.css', function(err) {
-            if (err) console.log('not transferred:' + err);
-            else console.log("CSS File transferred successfully!");
-          });
-          c.put(folderPath + '/script.min.js', domainFolder+'/'+ slugPubliName+'/script.min.jss', function(err) {
-            if (err) console.log('not transferred:' + err);
-            else console.log("JS File transferred successfully!");
-          });
-
-          c.mkdir(domainFolder+'/'+ slugPubliName+'/medias', function(err) {
-            if (err) console.log('medias: not transferred:' + err);
-            else console.log("File transferred successfully!");
-            sendImageToServer(arrayImages, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, c, domainFolder, domain, socket);
-          });
-        });
-      });
-
-
-      c.connect({
-        host: exportConfig.host,
-        port: exportConfig.port,
-        user: exportConfig.user,
-        password: exportConfig.password
-      });
-      console.log("Connected");
-
-    } else {
-      console.error("Couldn't find a ftp-config.js with FTP information to use.");
-    }
-  }
-
-  function sendImageToServer(arrayImages, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, c, domainFolder, domain, socket){
-    for(var fileName in arrayImages){
-      c.append(mediasPath + '/' + arrayImages[fileName], domainFolder+'/'+ slugPubliName+'/medias/'+arrayImages[fileName], function(err) {
-        if (err) console.log('not transferred:' + err);
-        else {
-          console.log("media transferred");
-        }
-      });
-    }
-    console.log("Publication was transferred at: "+domain+domainFolder+'/'+slugPubliName);
-    socket.emit('pubiTransferred', domain+domainFolder+'/'+slugPubliName);
-    c.end();
-  }
 
   function copyFiles(sourceFile, destFile, callback){
     fs.unlink(destFile, function(){
@@ -636,72 +465,6 @@ module.exports = function(app, io){
 ****************************************************************************/
 
 
-  function parseData(d) {
-      var parsed = parsedown(d);
-    // the fav field is a boolean, so let's convert it
-      if( parsed.hasOwnProperty('fav'))
-        parsed.fav = (parsed.fav === 'true');
-    return parsed;
-  }
-  function storeData( mpath, d, e) {
-    return new Promise(function(resolve, reject) {
-      dev.logverbose('Will store data');
-      var textd = textifyObj(d);
-      if( e === "create") {
-        fs.appendFile( mpath, textd, function(err) {
-          if (err) reject( err);
-          resolve(parseData(textd));
-        });
-      }
-      if( e === "update") {
-        fs.writeFile( mpath, textd, function(err) {
-        if (err) reject( err);
-          resolve(parseData(textd));
-        });
-      }
-    });
-  }
-
-  function textifyObj( obj) {
-    var str = '';
-    dev.logverbose( '1. will prepare string for storage');
-    for (var prop in obj) {
-      var value = obj[prop];
-      dev.logverbose('2. value ? ' + value);
-      // if value is a string, it's all good
-      // but if it's an array (like it is for medias in publications) we'll need to make it into a string
-      if( typeof value === 'array') {
-        value = value.join(', ');
-      }
-      // check if value contains a delimiter
-      if( typeof value === 'string' && value.indexOf('\n----\n') >= 0) {
-        dev.logverbose( '2. WARNING : found a delimiter in string, replacing it with a backslash');
-        // prepend with a space to neutralize it
-        value = value.replace('\n----\n', '\n ----\n');
-      }
-      if( typeof value === 'object') {
-        // loop for each item in object
-        var objstr = '\n\n';
-
-        for (var index in value) {
-          var thisItem = value[index];
-          objstr += '-\n';
-          // loop for each prop for each object
-          for (var itemProp in thisItem) {
-            objstr += itemProp + ': ' + thisItem[itemProp] + '\n';
-          }
-        }
-        value = objstr;
-      }
-      str += prop + ': ' + value + dodoc.textFieldSeparator;
-    }
-    dev.logverbose( '3. textified object : ' + str);
-    return str;
-  }
-
-  function getCurrentDate() {
-    return moment().format( dodoc.metaDateFormat);
-  }
   function eventAndContent( sendEvent, objectJson) {
     var eventContentJSON =
     {
@@ -744,7 +507,7 @@ FOLDER METHODS
       var folderName = folderData.name;
       var slugFolderName = slugg(folderName);
       var folderPath = getContentPath( slugFolderName);
-      var currentDateString = getCurrentDate();
+      var currentDateString = dodocAPI.getCurrentDate();
 
       fs.access( folderPath, fs.F_OK, function( err) {
         // if there's nothing at path
@@ -758,7 +521,7 @@ FOLDER METHODS
               "modified" : currentDateString,
               "statut" : "en cours",
             };
-          storeData( getMetaFileOfFolder( slugFolderName), fmeta, "create").then(function( meta) {
+          dodocAPI.storeData( getMetaFileOfFolder( slugFolderName), fmeta, "create").then(function( meta) {
             resolve( meta);
           });
 
@@ -860,7 +623,7 @@ FOLDER METHODS
     var folderMetaFile = getMetaFileOfFolder( slugFolderName);
 
     var folderData = fs.readFileSync( folderMetaFile,dodoc.textEncoding);
-    var folderMetadata = parseData( folderData);
+    var folderMetadata = dodocAPI.parseData( folderData);
 
     return folderMetadata;
   }
@@ -872,7 +635,7 @@ FOLDER METHODS
 
       var isNameChanged = folderData.newName !== undefined;
       var slugFolderName = folderData.slugFolderName;
-      var currentDateString = getCurrentDate();
+      var currentDateString = dodocAPI.getCurrentDate();
       var newStatut = folderData.statut;
 
       // récupérer les infos sur le folder
@@ -887,7 +650,7 @@ FOLDER METHODS
       fmeta.modified = currentDateString;
 
       // envoyer les changements dans le JSON du folder
-      storeData( getMetaFileOfFolder( slugFolderName), fmeta, "update").then(function( ufmeta) {
+      dodocAPI.storeData( getMetaFileOfFolder( slugFolderName), fmeta, "update").then(function( ufmeta) {
         ufmeta.slugFolderName = slugFolderName;
         resolve( ufmeta);
       });
@@ -946,7 +709,7 @@ PROJECT METHODS
     var projectJSONFile = getMetaFileOfProject( slugFolderName, slugProjectName);
 
     var projectData = fs.readFileSync( projectJSONFile, dodoc.textEncoding);
-    var projectJSONdata = parseData(projectData);
+    var projectJSONdata = dodocAPI.parseData(projectData);
 
     return projectJSONdata;
   }
@@ -959,7 +722,7 @@ PROJECT METHODS
       var slugProjectName = slugg( projectName);
       var slugFolderName = projectData.slugFolderName;
 
-      var currentDateString = getCurrentDate();
+      var currentDateString = dodocAPI.getCurrentDate();
       var pathToFolder = getContentPath( slugFolderName);
 
       // Vérifie si le projet existe déjà, change son slug si besoin
@@ -989,7 +752,7 @@ PROJECT METHODS
           "informations" : 0
         };
 
-      storeData( getMetaFileOfProject( slugFolderName, slugProjectName), pmeta, "create").then(function( meta) {
+      dodocAPI.storeData( getMetaFileOfProject( slugFolderName, slugProjectName), pmeta, "create").then(function( meta) {
         var updatedpmeta = getProjectMeta( slugFolderName, slugProjectName);
         updatedpmeta.slugFolderName = slugFolderName;
         updatedpmeta.slugProjectName = slugProjectName;
@@ -1031,7 +794,7 @@ PROJECT METHODS
       var slugFolderName = pdata.slugFolderName;
       var projectPath = getProjectPath( slugFolderName, slugProjectName);
 
-      var currentDateString = getCurrentDate();
+      var currentDateString = dodocAPI.getCurrentDate();
 
       if( pdata.imageData !== undefined) {
         addProjectImage( "apercu", projectPath, pdata.imageData);
@@ -1046,7 +809,7 @@ PROJECT METHODS
         currentpdata.statut = pdata.statut;
       currentpdata.modified = currentDateString;
 
-      storeData( getMetaFileOfProject( slugFolderName, slugProjectName), currentpdata, 'update').then(function( meta) {
+      dodocAPI.storeData( getMetaFileOfProject( slugFolderName, slugProjectName), currentpdata, 'update').then(function( meta) {
         var updatedpmeta = getProjectMeta( slugFolderName, slugProjectName);
         updatedpmeta.slugFolderName = slugFolderName;
         updatedpmeta.slugProjectName = slugProjectName;
@@ -1093,10 +856,6 @@ PROJECT METHODS
 MEDIA METHODS
 
 *************/
-
-  function getPathToMedia( projectPath, mediasFolderPath, mediaName) {
-    return path.join( projectPath, mediasFolderPath, mediaName);
-  }
 
   function getMediaFolderPathByType( mediaType) {
     if( mediaType == 'photo')
@@ -1211,7 +970,8 @@ MEDIA METHODS
             // let's make one
             folderMediaMetaAndFileName[mediaObjKey] = new Object();
             // read JSON file and add the content to the folder
-            var mdata = getMediaMeta( projectPath, mediasFolderPath, metaFileNameWithoutExtension);
+            debugger;
+            var mdata = dodocAPI.getMediaMeta( projectPath, mediasFolderPath, metaFileNameWithoutExtension);
             mdata.mediaFolderPath = mediasFolderPath;
             mdata.mediaName = metaFileNameWithoutExtension;
             mdata.slugFolderName = slugFolderName;
@@ -1243,23 +1003,13 @@ MEDIA METHODS
 
   function readTextMedia(textMediaPath) {
     var textMediaData = fs.readFileSync(textMediaPath, dodoc.textEncoding);
-    textMediaData = parseData(textMediaData);
+    textMediaData = dodocAPI.parseData(textMediaData);
     // we should get a title and text field, let's parse them in markdown and add title_md and text_md fields
     textMediaData.title_md = mm.parse(textMediaData.title).content;
     textMediaData.text_md = mm.parse(textMediaData.text).content;
     return textMediaData;
   }
 
-
-  function getMediaMeta( projectPath, mediaFolderPath, mediaName) {
-    dev.logfunction( "COMMON — getMediaMeta : projectPath = " + projectPath + " mediaFolderPath = " + mediaFolderPath + " mediaName = " + mediaName);
-
-    var mediaJSONFilepath = getPathToMedia(projectPath, mediaFolderPath, mediaName) + dodoc.metaFileext;
-    var mediaData = fs.readFileSync(mediaJSONFilepath, dodoc.textEncoding);
-    var mediaMetaData = parseData(mediaData);
-
-    return mediaMetaData;
-  }
 
   function createNewMedia( newMediaData) {
 
@@ -1268,7 +1018,7 @@ MEDIA METHODS
 
       var slugFolderName = newMediaData.slugFolderName;
       var slugProjectName = newMediaData.slugProjectName;
-      var newFileName = getCurrentDate();
+      var newFileName = dodocAPI.getCurrentDate();
       var newMediaType = newMediaData.mediaType;
 
       var mediaFolder = '';
@@ -1424,7 +1174,7 @@ MEDIA METHODS
             "title" : dataTitle,
             "text" : dataText
           };
-          storeData(pathToFile + fileExtension, mediaData, "create").then(function( meta) {
+          dodocAPI.storeData(pathToFile + fileExtension, mediaData, "create").then(function( meta) {
             createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
               var textMediaData = readTextMedia(pathToFile + fileExtension);
               mdata.textMediaContent = textMediaData;
@@ -1451,13 +1201,13 @@ MEDIA METHODS
     return new Promise(function(resolve, reject) {
       var mdata =
         {
-          "created" : getCurrentDate(),
-          "modified" : getCurrentDate(),
+          "created" : dodocAPI.getCurrentDate(),
+          "modified" : dodocAPI.getCurrentDate(),
           "informations" : "",
           "type" : newMediaType,
           "fav" : false
         };
-      storeData( pathToFile + dodoc.metaFileext, mdata, 'update').then(function( meta) {
+      dodocAPI.storeData( pathToFile + dodoc.metaFileext, mdata, 'update').then(function( meta) {
         meta.mediaName = fileName;
         console.log( "New media meta file created at path " + pathToFile + dodoc.metaFileext);
         resolve( meta);
@@ -1480,8 +1230,8 @@ MEDIA METHODS
 
       // get the path to the media JSON and its content
       var projectPath = getProjectPath( slugFolderName, slugProjectName);
-      var mediaFilepath = getPathToMedia( projectPath, mediaFolderPath, mediaName);
-      var mediaMetaData = getMediaMeta( projectPath, mediaFolderPath, mediaName);
+      var mediaFilepath = dodocAPI.getPathToMedia( projectPath, mediaFolderPath, mediaName);
+      var mediaMetaData = dodocAPI.getMediaMeta( projectPath, mediaFolderPath, mediaName);
 
       // switch the fav state
       if( editMediaData.switchFav !== undefined)
@@ -1491,9 +1241,9 @@ MEDIA METHODS
         mediaMetaData.informations = editMediaData.informations;
 
       // if this is a text media, also update its content
-      mediaMetaData.modified = getCurrentDate();
+      mediaMetaData.modified = dodocAPI.getCurrentDate();
 
-      storeData( mediaFilepath + dodoc.metaFileext, mediaMetaData, 'update').then(function( mdata) {
+      dodocAPI.storeData( mediaFilepath + dodoc.metaFileext, mediaMetaData, 'update').then(function( mdata) {
         dev.log('stored meta');
         // if media is a text, let's add the text content to the obj for convenience client-side
         if( mediaFolderPath === dodoc.projectTextsFoldername && editMediaData.titleOfTextmedia !== undefined && editMediaData.textOfTextmedia !== undefined) {
@@ -1504,7 +1254,7 @@ MEDIA METHODS
             "text" : editMediaData.textOfTextmedia
           };
           dev.log('now storing text media');
-          storeData( mediaFilepathWithExt, mediaData, 'update').then(function(mediaData) {
+          dodocAPI.storeData( mediaFilepathWithExt, mediaData, 'update').then(function(mediaData) {
             dev.log('just stored text media');
             var textMediaData = readTextMedia(mediaFilepathWithExt);
             mdata.textMediaContent = textMediaData;
@@ -1527,8 +1277,8 @@ MEDIA METHODS
           resolve( mdata);
         }
 
-      }, function() {
-        console.log( gutil.colors.red('--> Couldn\'t update media meta.'));
+      }, function(err) {
+        console.log( gutil.colors.red('--> Couldn\'t update media meta. : ' + err));
         reject( 'Couldn\'t update media meta');
       });
     });
@@ -1588,7 +1338,7 @@ PUBLIS METHODS
     var pathToPubli = getPathToPubli( slugFolderName, slugProjectName, pslug);
     var publiJSONFilepath = pathToPubli + dodoc.metaFileext;
     var publiData = fs.readFileSync( publiJSONFilepath, dodoc.textEncoding);
-    var publiMetaData = parseData( publiData);
+    var publiMetaData = dodocAPI.parseData( publiData);
     return publiMetaData;
   }
 
@@ -1597,7 +1347,7 @@ PUBLIS METHODS
     return new Promise(function(resolve, reject) {
         dev.logfunction( "COMMON — createPubli : " + JSON.stringify(publiData, null, 4));
 
-        var currentDateString = getCurrentDate();
+        var currentDateString = dodocAPI.getCurrentDate();
 
         var pname = publiData.publiName;
         var pslug = slugg( pname);
@@ -1623,7 +1373,7 @@ PUBLIS METHODS
         "medias" : [{}],
       };
 
-      storeData( pathToThisPubli, newPubliData, 'create').then(function( newPubliData) {
+      dodocAPI.storeData( pathToThisPubli, newPubliData, 'create').then(function( newPubliData) {
         newPubliData.slugProjectName = slugProjectName;
         newPubliData.slugFolderName = slugFolderName;
         newPubliData.slugPubliName = pslug;
@@ -1700,7 +1450,7 @@ PUBLIS METHODS
       var publiMetaData = getPubliMeta( pdata.slugFolderName, pdata.slugProjectName, pdata.slugPubliName);
 
       // update modified date
-      publiMetaData.modified = getCurrentDate();
+      publiMetaData.modified = dodocAPI.getCurrentDate();
 
       // update title if pdata has newPubliName
       if( pdata.name !== undefined)
@@ -1713,7 +1463,7 @@ PUBLIS METHODS
       if( pdata.medias !== undefined)
         publiMetaData.medias = pdata.medias;
 
-      storeData( publiMetaFilepath, publiMetaData, 'update').then(function( publiMetaData) {
+      dodocAPI.storeData( publiMetaFilepath, publiMetaData, 'update').then(function( publiMetaData) {
         publiMetaData.slugPubliName = pdata.slugPubliName;
         publiMetaData.slugFolderName = pdata.slugFolderName;
         publiMetaData.slugProjectName = pdata.slugProjectName;

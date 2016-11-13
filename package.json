@@ -9,6 +9,7 @@
   "dependencies": {
     "body-parser": "^1.15.0",
     "connect-multiparty": "^2.0.0",
+    "dodoc-parsedown": "git+https://github.com/louis-ev/dodoc-parsedown.git",
     "download": "^3.3.0",
     "express": "3.1.0",
     "ffmpeg": "0.0.4",
@@ -35,8 +36,7 @@
     "socket.io": "^1.3.5",
     "socketio-file-upload": "^0.4.4",
     "underscore": "*",
-    "video-recorder": "*",
-    "woods-parsedown": "git://github.com/louis-ev/woods-parsedown.git#master"
+    "video-recorder": "*"
   },
   "devDependencies": {
     "gulp": "^3.9.0",

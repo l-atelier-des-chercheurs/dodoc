@@ -4,15 +4,23 @@ var fs = require('fs-extra');
 var path = require("path");
 var fs = require('fs-extra');
 var ffmpeg = require('fluent-ffmpeg');
-var dodoc  = require('./public/dodoc.js'),
-  moment = require( "moment" ),
-  merge = require('merge'),
-  parsedown = require('woods-parsedown'),
-  os = require('os')
-;
+var dodoc  = require('./public/dodoc.js');
+var moment = require('moment');
+var merge = require('merge');
+var parsedown = require('dodoc-parsedown');
+var os = require('os');
+var devLog = require('./bin/dev-log.js');
+var flags = require('flags');
 
 
 module.exports = function(app,io,m){
+
+  flags.defineBoolean('debug');
+  flags.defineBoolean('verbose');
+  flags.parse();
+  var isDebugMode = flags.get('debug');
+  var isVerbose = flags.get('verbose');
+  global.dev = devLog( isDebugMode, isVerbose);
 
   /**
   * routing event
@@ -54,10 +62,6 @@ module.exports = function(app,io,m){
     if( pslug !== undefined)
       pathToPubli = path.join( pathToPubli, pslug);
     return pathToPubli;
-  }
-
-  function getCurrentDate() {
-    return moment().format( dodoc.metaDateFormat);
   }
   function eventAndContent( sendEvent, objectJson) {
     var eventContentJSON =
@@ -199,7 +203,7 @@ module.exports = function(app,io,m){
 
   function readMetaFile( metaFile){
     var metaFileContent = fs.readFileSync( metaFile, 'utf8');
-    var metaFileContentParsed = parseData( metaFileContent);
+    var metaFileContentParsed = dodocAPI.parseData( metaFileContent);
     return metaFileContentParsed;
   }
 
@@ -214,13 +218,6 @@ module.exports = function(app,io,m){
     });
   }
 
-  function parseData(d) {
-      var parsed = parsedown(d);
-    // the fav field is a boolean, so let's convert it
-      if( parsed.hasOwnProperty('fav'))
-        parsed.fav = (parsed.fav === 'true');
-    return parsed;
-  }
   function getMediaFolderPathByType( mediaType) {
     if( mediaType == 'photo')
       return getPhotoPathOfProject();
