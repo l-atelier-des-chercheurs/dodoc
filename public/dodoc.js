@@ -147,7 +147,6 @@ var settings = {
 
   "metaDateFormat" : "YYYYMMDD_HHmmss",
   "textEncoding" : "UTF-8",
-  "textFieldSeparator" : "\n\n----\n\n",
   "deletedPrefix" : "x_",
   "thumbSuffix" : "_thumb",
 

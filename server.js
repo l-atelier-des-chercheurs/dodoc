@@ -42,13 +42,11 @@ module.exports = function() {
 
   var io = require("socket.io").listen(server);
 
-  var dodoc = require('./public/dodoc.js');
   var main = require('./main');
   var expressSettings = require('./express-settings');
   var router = require('./router');
 
   var m = new main(app, io);
-
 
   /*
   * Server config

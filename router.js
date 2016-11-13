@@ -4,15 +4,24 @@ var fs = require('fs-extra');
 var path = require("path");
 var fs = require('fs-extra');
 var ffmpeg = require('fluent-ffmpeg');
-var dodoc  = require('./public/dodoc.js'),
-  moment = require( "moment" ),
-  merge = require('merge'),
-  parsedown = require('woods-parsedown'),
-  os = require('os')
-;
+var dodoc  = require('./public/dodoc.js');
+var moment = require('moment');
+var merge = require('merge');
+var os = require('os');
+var flags = require('flags');
 
+var devLog = require('./bin/dev-log.js');
+var parsedown = require('dodoc-parsedown');
+var dodocAPI = require('./bin/dodoc-api.js');
 
 module.exports = function(app,io,m){
+
+  flags.defineBoolean('debug');
+  flags.defineBoolean('verbose');
+  flags.parse();
+  var isDebugMode = flags.get('debug');
+  var isVerbose = flags.get('verbose');
+  global.dev = devLog( isDebugMode, isVerbose);
 
   /**
   * routing event
@@ -55,10 +64,6 @@ module.exports = function(app,io,m){
       pathToPubli = path.join( pathToPubli, pslug);
     return pathToPubli;
   }
-
-  function getCurrentDate() {
-    return moment().format( dodoc.metaDateFormat);
-  }
   function eventAndContent( sendEvent, objectJson) {
     var eventContentJSON =
     {
@@ -71,6 +76,7 @@ module.exports = function(app,io,m){
 
   function generatePageData( req, pageTitle) {
     return new Promise(function(resolve, reject) {
+      console.log('new page has been requested');
 
       var pageDataJSON = [];
 
@@ -135,6 +141,8 @@ module.exports = function(app,io,m){
     var pageTitle = "Do.Doc";
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("index", generatePageDataJSON);
+    }, function(err) {
+      console.log('err ' + err);
     });
   };
 
@@ -142,6 +150,8 @@ module.exports = function(app,io,m){
     var pageTitle = dodoc.lang.folder;
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("folder", generatePageDataJSON);
+    }, function(err) {
+      console.log('err ' + err);
     });
   };
 
@@ -149,6 +159,8 @@ module.exports = function(app,io,m){
     var pageTitle = dodoc.lang.project;
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("project", generatePageDataJSON);
+    }, function(err) {
+      console.log('err ' + err);
     });
   };
 
@@ -156,6 +168,8 @@ module.exports = function(app,io,m){
     var pageTitle = dodoc.lang.capture;
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("capture", generatePageDataJSON);
+    }, function(err) {
+      console.log('err ' + err);
     });
   };
 
@@ -168,6 +182,8 @@ module.exports = function(app,io,m){
       }, function(err) {
         console.log('err ' + err);
       });
+    }, function(err) {
+      console.log('err ' + err);
     });
   };
 
@@ -180,6 +196,8 @@ module.exports = function(app,io,m){
       }, function(err) {
         console.log('err ' + err);
       });
+    }, function(err) {
+      console.log('err ' + err);
     });
   };
 
@@ -199,7 +217,7 @@ module.exports = function(app,io,m){
 
   function readMetaFile( metaFile){
     var metaFileContent = fs.readFileSync( metaFile, 'utf8');
-    var metaFileContentParsed = parseData( metaFileContent);
+    var metaFileContentParsed = dodocAPI.parseData( metaFileContent);
     return metaFileContentParsed;
   }
 
@@ -214,13 +232,6 @@ module.exports = function(app,io,m){
     });
   }
 
-  function parseData(d) {
-      var parsed = parsedown(d);
-    // the fav field is a boolean, so let's convert it
-      if( parsed.hasOwnProperty('fav'))
-        parsed.fav = (parsed.fav === 'true');
-    return parsed;
-  }
   function getMediaFolderPathByType( mediaType) {
     if( mediaType == 'photo')
       return getPhotoPathOfProject();
