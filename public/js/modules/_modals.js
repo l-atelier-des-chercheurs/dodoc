@@ -276,71 +276,73 @@ var modals = (function() {
       var minfos = mdata.informations;
       var mname = mdata.medianame;
       var mfullsizeimagesrc = mdata.imagesrc_fullsize;
-    	$modal.foundation('reveal', 'open');
+      	$modal.foundation('reveal', 'open');
 
-    	switch( mtype){
-    		case dodoc.projectPhotosFoldername:
-  				var $mediaItem = $(".js--templates .media-big_image").clone(false);
+      switch( mtype){
+      		case dodoc.projectPhotosFoldername:
+    				var $mediaItem = $(".js--templates .media-big_image").clone(false);
 
-  				$mediaItem
-  					.find( 'img')
-  					  .attr('src', mfullsizeimagesrc)
-  					.end()
-  					;
-  				break;
-  			case dodoc.projectVideosFoldername:
+    				$mediaItem
+    					.find( 'img')
+    					  .attr('src', mfullsizeimagesrc)
+    					.end()
+    					;
+    				break;
+    			case dodoc.projectVideosFoldername:
 
-  				var videoPath = $m.find("source").attr("src");
-  				var $mediaItem = $(".js--templates .media-big_video").clone(false);
+    				var videoPath = $m.find("source").attr("src");
+    				var $mediaItem = $(".js--templates .media-big_video").clone(false);
 
-  				$mediaItem
-  			    .find( 'video')
-  			      .attr( 'poster', mfullsizeimagesrc)
+    				$mediaItem
+    			    .find( 'video')
+    			      .attr( 'poster', mfullsizeimagesrc)
+    			      .attr( 'preload', 'auto')
+      			    .find( 'source')
+      			      .attr( 'src', videoPath)
+    					;
+
+    				break;
+    			case dodoc.projectAnimationsFoldername:
+
+    				var videoPath = $m.find("source").attr("src");
+    				var $mediaItem = $(".js--templates .media-big_stopmotion").clone(false);
+
+    				$mediaItem
+    			    .find( 'video')
+    			      .attr( 'poster', mfullsizeimagesrc)
+    			      .attr( 'preload', 'auto')
+      			    .find( 'source')
+      			      .attr( 'src', videoPath)
+    					;
+    				break;
+    			case dodoc.projectAudiosFoldername:
+
+    				var audioPath = $m.find("source").attr("src");
+    				var $mediaItem = $(".js--templates .media-big_audio").clone(false);
+
+    				$mediaItem
+    					.find( 'img')
+    					  .attr('src', mfullsizeimagesrc)
+    					.end()
     			    .find( 'source')
-    			      .attr( 'src', videoPath)
-  					;
+    			      .attr( 'src', audioPath)
+    			    .end()
+    					;
+    				break;
+    			case dodoc.projectTextsFoldername:
+    				//console.log($(this).find('h3').html());
+    				var $mediaItem = $(".js--templates .media-big_text").clone(false);
 
-  				break;
-  			case dodoc.projectAnimationsFoldername:
-
-  				var videoPath = $m.find("source").attr("src");
-  				var $mediaItem = $(".js--templates .media-big_stopmotion").clone(false);
-
-  				$mediaItem
-  			    .find( 'video')
-  			      .attr( 'poster', mfullsizeimagesrc)
-    			    .find( 'source')
-    			      .attr( 'src', videoPath)
-  					;
-  				break;
-  			case dodoc.projectAudiosFoldername:
-
-  				var audioPath = $m.find("source").attr("src");
-  				var $mediaItem = $(".js--templates .media-big_audio").clone(false);
-
-  				$mediaItem
-  					.find( 'img')
-  					  .attr('src', mfullsizeimagesrc)
-  					.end()
-  			    .find( 'source')
-  			      .attr( 'src', audioPath)
-  			    .end()
-  					;
-  				break;
-  			case dodoc.projectTextsFoldername:
-  				//console.log($(this).find('h3').html());
-  				var $mediaItem = $(".js--templates .media-big_text").clone(false);
-
-  				$mediaItem
-  					.find('.js--submit-new-text_title')
-  					  .val( mdata.titleOfTextmediaMd)
-  					.end()
-  					.find('.js--submit-new-text_text')
-  					  .val( mdata.textOfTextmediaMd)
-  					.end()
-  					;
-  				break;
-    	}
+      				$mediaItem
+      					.find('.js--submit-new-text_title')
+      					  .val( mdata.titleOfTextmediaMd)
+      					.end()
+      					.find('.js--submit-new-text_text')
+      					  .val( mdata.textOfTextmediaMd)
+      					.end()
+      					;
+      				break;
+      	}
 
   		if( $m.hasClass('is--highlight')){
   			$mediaItem.addClass('is--highlight');
