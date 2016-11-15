@@ -8,7 +8,6 @@ var moment = require('moment');
 var mm = require('marky-mark');
 var exec = require('child_process').exec;
 var ffmpeg = require('fluent-ffmpeg');
-var flags = require('flags');
 var merge = require('merge');
 var gutil = require('gulp-util');
 var parsedown = require('dodoc-parsedown');
