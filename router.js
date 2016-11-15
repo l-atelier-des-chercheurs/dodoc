@@ -76,7 +76,9 @@ module.exports = function(app,io,m){
 
   function generatePageData( req, pageTitle) {
     return new Promise(function(resolve, reject) {
-      console.log('new page has been requested');
+
+      var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+      console.log('— the following page has been requested : ' + fullUrl);
 
       var pageDataJSON = [];
 

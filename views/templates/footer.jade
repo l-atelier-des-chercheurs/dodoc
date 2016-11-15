@@ -5,6 +5,9 @@
     -else
       h3 To connect with another device, use http://#{localNetworkInfos[prop]}:8080
 
+script
+  | if (typeof module === 'object') {window.module = module; module = undefined;}
+
 script(src='/socket.io/socket.io.js')
 script
   | var app = {};
@@ -18,3 +21,6 @@ script( src='/dodoc.js')
 script( src='/js/common.js')
 script( src='/js/modules/_modals.js')
 script( src='/js/_global.js')
+
+script
+  | if (window.module) module = window.module;
