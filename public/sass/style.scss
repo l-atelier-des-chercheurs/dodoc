@@ -355,10 +355,13 @@ button {
 
     &.media-big_audio {
       img {
-        height: 90%;
+        height: 100%;
       }
       audio {
         width: 100%;
+        position: absolute;
+        z-index: 1;
+        bottom: 0;
       }
     }
   }

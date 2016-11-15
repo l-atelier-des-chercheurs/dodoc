@@ -680,6 +680,10 @@ $t-decalageDuCentre: 4%;
       object-fit:contain;
     }
 
+    audio.output {
+      width: 100%;
+    }
+
     .button-wrapper_deleteLastMedia, .button-wrapper_deleteMediaCapture {
       position: absolute;
       top:0px;

@@ -6944,6 +6944,12 @@ th.hide-for-touch {
   /* style 6 */ }
   .reveal-modal:focus {
     outline: none; }
+  .reveal-modal .close-reveal-modal {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    top: 0;
+    right: 0; }
   .reveal-modal .popoverTitle {
     font-weight: bold;
     font-size: 1.5em;
@@ -7428,9 +7434,12 @@ button {
         object-fit: scale-down;
         background-color: #e5e5e5; }
     .big-mediaContent .media-big.media-big_audio img {
-      height: 90%; }
+      height: 100%; }
     .big-mediaContent .media-big.media-big_audio audio {
-      width: 100%; }
+      width: 100%;
+      position: absolute;
+      z-index: 1;
+      bottom: 0; }
   .big-mediaContent textarea {
     min-height: 150px; }
 
@@ -8402,6 +8411,8 @@ body.capture .content-wrapper:after {
       margin: 0 auto;
       height: auto;
       object-fit: contain; }
+    .captureRight .preview audio.output {
+      width: 100%; }
     .captureRight .preview .button-wrapper_deleteLastMedia, .captureRight .preview .button-wrapper_deleteMediaCapture {
       position: absolute;
       top: 0px;
