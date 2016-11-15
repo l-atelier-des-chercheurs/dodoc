@@ -41,7 +41,7 @@ module.exports = function(app,io,m){
     return path.join( getRootPath(), dodoc.contentDir, thisPath);
   }
   function getRootPath() {
-    return __dirname;
+    return global.contentDir;
   }
   function getRootFolder(thisPath) {
     return path.join( getRootPath(), thisPath);
@@ -78,7 +78,7 @@ module.exports = function(app,io,m){
     return new Promise(function(resolve, reject) {
 
       var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-      console.log('— the following page has been requested : ' + fullUrl);
+      console.log('—> the following page has been requested : ' + fullUrl);
 
       var pageDataJSON = [];
 

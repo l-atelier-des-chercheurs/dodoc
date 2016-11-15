@@ -485,7 +485,7 @@ FOLDER METHODS
     return path.join( getRootPath(), dodoc.contentDir, thisPath);
   }
   function getRootPath() {
-    return __dirname;
+    return global.contentDir;
   }
 
   function getMetaFileOfFolder( slugFolderName) {
