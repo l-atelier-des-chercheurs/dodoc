@@ -1,17 +1,23 @@
-var dodocAPI = require('dodoc-api');
-var dev = require('devLog');
+var path = require('path');
+var fs = require('fs-extra');
+
+var devLog = require('./dev-log.js');
+var dodocAPI = require('./dodoc-api.js');
+var dodocPubli = require('./dodoc-publi.js'); 
+var dodoc  = require('./../public/dodoc');
+
 
 var exportPubliToFtp = module.exports = {
 
   exportPubliToFtp : function(socket, d){
     dev.logfunction( "EVENT - exportPubliToFtp");
     var currentDateString = dodocAPI.getCurrentDate();
-    var projectPath = getProjectPath( d.slugFolderName, d.slugProjectName);
+    var projectPath = dodocAPI.getProjectPath( d.slugFolderName, d.slugProjectName);
 
     var exportedPubliFolderName = currentDateString + "_" + d.slugPubliName;
-    exportedPubliFolderName = findFirstFilenameNotTaken( exportedPubliFolderName, dodoc.exportedPubliDir, '');
+    exportedPubliFolderName = dodocAPI.findFirstFilenameNotTaken( exportedPubliFolderName, dodoc.exportedPubliDir, '');
 
-    var exportedPubliPath = dodoc.exportedPubliDir + "/" + "exportedPubliFolderName";
+    var exportedPubliPath = path.join(dodoc.exportedPubliDir, exportedPubliFolderName);
     var exportedMediaFolderName = exportedPubliPath + "/" + "medias";
 
     // create publi directory with publi name
@@ -19,10 +25,15 @@ var exportPubliToFtp = module.exports = {
       // create medias directory in publi directory
       fs.mkdir(exportedMediaFolderName, function(){
         // copy css file
-        copyFiles('public/css/style.css', exportedPubliPath + "/style.css", function(){
-          // create html file
-          fs.writeFile(exportedPubliPath + "/index.html", d.html, function(){
-  //             saveImagesLocal(projectPath, folderPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket);
+        exportPubliToFtp.copyFiles('public/css/style.css', exportedPubliPath + "/style.css", function(){
+          exportPubliToFtp.copyFiles('public/css/templates.css', exportedPubliPath + "/templates.css", function(){
+            //copy js file
+            exportPubliToFtp.copyFiles('public/js/production/all.min.js', exportedPubliPath + "/script.min.js", function(){
+              // create html file
+              fs.writeFile(exportedPubliPath + "/index.html", d.html, function(){
+                  exportPubliToFtp.saveImagesLocal(projectPath, exportedPubliFolderName, exportedMediaFolderName, d.slugFolderName, d.slugProjectName, d.slugPubliName, socket);
+              });
+            });
           });
         });
       });
@@ -31,7 +42,7 @@ var exportPubliToFtp = module.exports = {
 
   saveImagesLocal : function(projectPath, folderPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket){
     var arrayImages = [];
-    listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function(publi) {
+    dodocPubli.listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function(publi) {
       for (var prop in publi) {
         var medias = publi[prop].medias;
         for(var index in medias){
@@ -55,14 +66,14 @@ var exportPubliToFtp = module.exports = {
         }
       }
       // check internet connection
-      require('dns').resolve('www.google.com', function(err) {
-        if (err) {
-          console.log("No connection");
-          socket.emit('noConnection');
-        } else {
-          sendFileToServer(arrayImages, folderPath, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket);
-        }
-      });
+      // require('dns').resolve('www.google.com', function(err) {
+      //   if (err) {
+      //     console.log("No connection");
+      //     socket.emit('noConnection');
+      //   } else {
+      //     sendFileToServer(arrayImages, folderPath, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket);
+      //   }
+      // });
     }, function(error) {
       console.error("Failed to list one media! Error: ", error);
     });
@@ -91,7 +102,7 @@ var exportPubliToFtp = module.exports = {
             if (err) console.log('not transferred:' + err);
             else console.log("CSS File transferred successfully!");
           });
-          c.put(folderPath + '/script.min.js', domainFolder+'/'+ slugPubliName+'/script.min.jss', function(err) {
+          c.put(folderPath + '/script.min.js', domainFolder+'/'+ slugPubliName+'/script.min.js', function(err) {
             if (err) console.log('not transferred:' + err);
             else console.log("JS File transferred successfully!");
           });

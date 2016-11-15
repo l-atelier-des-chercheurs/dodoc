@@ -14,7 +14,7 @@ var uploadPubliToFtp = (function() {
     console.log('init upload ftp');
     // Valider et exporter vers un ftp
     $uploadBtn.on('click', function (){
-      var publiHtml = $('.template_container').html();
+      var publiHtml = $('.publi_container').html();
       var publiClean = publiHtml
         .replaceAll('/'+currentFolder+'/'+currentProject+'/01-photos', 'medias')
         .replaceAll('/'+currentFolder+'/'+currentProject+'/02-animations', 'medias')
@@ -22,10 +22,10 @@ var uploadPubliToFtp = (function() {
         .replaceAll('/'+currentFolder+'/'+currentProject+'/04-sons', 'medias')
         .replaceAll('/'+currentFolder+'/'+currentProject+'/05-textes', 'medias');
 
-      var cssFile = '<link rel="stylesheet" href="./style.css">';
+      var cssFile = '<link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./templates.css">';
       var head = '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="apple-mobile-web-app-capable" content="yes"><title>Publication | '+currentPubli+'</title>'+cssFile+'</head>';
-      var body = '<body class="publi"><div class="template_container" data-template="unecolonne">';
-      var footer = '</div><script src="./script.min.js"></script></body></html>'
+      var body = '<body class="publi"><div class="publi_container">';
+      var footer = '</div><script src="../jquery.min.js"></script><script src="./script.js"></script></body></html>'
 
       var html = head +body + publiClean + footer;
       socket.emit('exportPubliToFtp', {"html": html ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});

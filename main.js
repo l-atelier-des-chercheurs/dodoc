@@ -20,6 +20,8 @@ var devLog = require('./bin/dev-log.js');
 var dodoc = require('./public/dodoc.js');
 var dodocAPI = require('./bin/dodoc-api.js');
 
+var exportPubliToFtp = require('./bin/upload-to-ftp.js');
+
 try { var exportConfig  = require('./ftp-config.js'); }
 catch( err) { console.log('No ftp config files have been found'); }
 
@@ -65,7 +67,7 @@ module.exports = function(app, io){
 
 		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 
-    socket.on( 'exportPubliToFtp', function (data){ onExportPubliToFtp( socket, data); });
+    socket.on( 'exportPubliToFtp', function (data){ exportPubliToFtp.exportPubliToFtp( socket, data); });
 	});
 
   /***************************************************************************
