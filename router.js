@@ -119,14 +119,11 @@ module.exports = function(app,io,m){
         pageDataJSON.pageTitle = pageTitle;
 
       pageDataJSON.url = req.path;
+      pageDataJSON.isHttps = req.connection.encrypted;
       pageDataJSON.dodoc = dodoc;
 
       getLocalIP().then(function(localNetworkInfos) {
         pageDataJSON.localNetworkInfos = localNetworkInfos;
-
-//         console.log('pageDataJSON');
-//         console.log(pageDataJSON);
-
         resolve(pageDataJSON);
       }, function(err) {
         console.log('err ' + err);
