@@ -1,6 +1,9 @@
 .module_localNetworkInfos
   -for(var prop in localNetworkInfos)
-    h3 To connect with another device, use https://#{localNetworkInfos[prop]}:8080
+    -if(isHttps)
+      h3 To connect with another device, use https://#{localNetworkInfos[prop]}:8080
+    -else
+      h3 To connect with another device, use http://#{localNetworkInfos[prop]}:8080
 
 script(src='/socket.io/socket.io.js')
 script
