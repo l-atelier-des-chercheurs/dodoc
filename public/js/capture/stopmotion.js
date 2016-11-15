@@ -33,7 +33,7 @@ var stopMotionMode = (function() {
     $lastStopmotionImage.attr('src', '');
     $("body").data("smCacheName", "");
     $("body").data("smCachePath", "");
-    $preview.find('.output').attr('src', '');
+    $preview.find('.js--output').attr('src', '');
     $previewOutput.hide();
 
     justCaptured();
@@ -141,7 +141,7 @@ var stopMotionMode = (function() {
       $previzsm.off().on('click', previzStopMotion);
       $finishsm.off().on('click', finishStopmotion);
       $preview.show();
-      $preview.find('.output').attr('src', '');
+      $preview.find('video').attr('src', '');
       $previewOutput.hide();
 
       $lastStopmotionImageSlider.bind("change", function() {
@@ -155,7 +155,7 @@ var stopMotionMode = (function() {
 
     stop : function() {
       isRunning = false;
-      $preview.find('.output').attr('src', '');
+      $preview.find('.js--output').attr('src', '');
     },
 
     onNewStopmotionImage : function( smdata) {
@@ -170,8 +170,10 @@ var stopMotionMode = (function() {
       // delete last stopmotion image
       $newPreview.on('click', '.js--delete-sm-lastimage', function(){
         removeImageFromStopMotion( relativeImagePath);
-        $newPreview.fadeOut(600, function() { $(this).remove(); });
-        $newSmallPreview.fadeOut(600, function() { $(this).remove(); });
+        $newPreview.remove();
+        $newSmallPreview.remove();
+        $previewContainer.find('.stopmotion_lastImagePreview').last().addClass('is--active');
+        $timeline.find('.stopmotion_lastImageSmallPreview').last().addClass('is--active');
       });
       $newSmallPreview.on('click', function() {
         $previewContainer.find('.stopmotion_lastImagePreview.is--active').removeClass('is--active');
@@ -218,7 +220,7 @@ var stopMotionMode = (function() {
 
     showStopMotionPreview : function( pathToMediaFile) {
       // to prevent cache from being used, we add a unix timestamp at the end of the filename
-      $preview.find('video.output').attr( 'src', pathToMediaFile + '?' + moment().format('x'));
+      $preview.find('video.js--output').attr( 'src', pathToMediaFile + '?' + moment().format('x'));
 
       $backToAnimation.off().on('click', function() {
         var mediaToDelete =
@@ -228,7 +230,7 @@ var stopMotionMode = (function() {
         }
         sendData.deleteStopmotion( mediaToDelete);
         $previewOutput.hide();
-        $preview.find('video.output').attr('src', '');
+        $preview.find('video.js--output').attr('src', '');
       });
     },
 

@@ -167,13 +167,13 @@ function makeOneMedia( mediaKey, mdata) {
     .attr( 'data-mediaName', mdata.mediaName)
     .attr( 'data-mediatype', mdata.mediaFolderPath)
     .attr( 'data-type', mdata.mediaFolderPath)
-  	.attr( 'data-informations', mdata.informations)
-  	.addClass( mdata.fav ? 'is--highlight' : '')
-  	.find( '.mediaData--informations')
-  	  .html( mdata.informations)
-    .end()
-  	.data( 'mtimestamp', transformDatetoTimestamp( mdata.modified))
-  	.data( 'ctimestamp', transformDatetoTimestamp( mdata.created))
+    	.attr( 'data-informations', mdata.informations)
+    	.addClass( mdata.fav ? 'is--highlight' : '')
+    	.find( '.mediaData--informations')
+    	  .html( mdata.informations)
+      .end()
+    	.data( 'mtimestamp', transformDatetoTimestamp( mdata.modified))
+    	.data( 'ctimestamp', transformDatetoTimestamp( mdata.created))
     ;
 
   if( !mdata.title && !mdata.informations) {

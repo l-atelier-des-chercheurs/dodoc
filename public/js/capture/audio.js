@@ -88,8 +88,8 @@ var audioMode = (function() {
     },
 
     showAudioPreview: function( pathToAudioFile, pathToEqualizerPreview) {
-      $preview.find('audio.output').attr('src', pathToAudioFile);
-      $preview.find('img.output').attr('src', pathToEqualizerPreview);
+      $preview.find('audio').attr('src', pathToAudioFile);
+      $preview.find('img').attr('src', pathToEqualizerPreview);
       $preview.find('.js--delete-media-capture').show();
     },
 
@@ -140,7 +140,7 @@ var equalizer = (function() {
   // Global Variables for Drawing
   var column = 0;
   var canvasWidth  = 720;
-  var canvasHeight = 256;
+  var canvasHeight = 720;
   var ctx;
 
   function startEqualizer( stream){

@@ -24,7 +24,7 @@ var imageMode = (function() {
       // send instruction to record photo
       sendData.createNewMedia( mediaData);
 
-      $preview.find('img.output').attr('src', '');
+      $preview.find('img.js--output').attr('src', '');
 
       justCaptured();
       saveFeedback("/images/icone-dodoc_image.png");
@@ -39,7 +39,7 @@ var imageMode = (function() {
     init : function() {
       $(".photo-capture #capture-btn").off().on('click', takePictures);
       $preview.find('.js--delete-media-capture').hide();
-      $preview.find('img.output').attr('src', '');
+      $preview.find('img.js--output').attr('src', '');
       isRunning = true;
     },
 
