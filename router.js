@@ -37,21 +37,18 @@ module.exports = function(app,io,m){
   /**
   * routing functions
   */
-  function getContentPath(thisPath) {
-    return path.join( getRootPath(), dodoc.contentDir, thisPath);
+  function getFolderPath(slugFolderName) {
+    return path.join( getUserPath(), dodoc.contentDir, slugFolderName);
   }
-  function getRootPath() {
-    return global.contentDir;
-  }
-  function getRootFolder(thisPath) {
-    return path.join( getRootPath(), thisPath);
+  function getUserPath() {
+    return global.userDir;
   }
 
   function getMetaFileOfFolder( slugFolderName) {
-    return path.join( getContentPath( slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
+    return path.join( getFolderPath( slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
   }
   function getProjectPath( slugFolderName, slugProjectName) {
-    return path.join( getContentPath( slugFolderName), slugProjectName);
+    return path.join( getFolderPath( slugFolderName), slugProjectName);
   }
   function getMetaFileOfProject( slugFolderName, slugProjectName) {
     return path.join( getProjectPath( slugFolderName, slugProjectName), dodoc.projectMetafilename + dodoc.metaFileext);
@@ -222,10 +219,12 @@ module.exports = function(app,io,m){
 
   function getAllTemplates() {
     return new Promise(function(resolve, reject) {
-      var templateFolderPath = getRootFolder( dodoc.publicationTemplateDir);
+      dev.log('Getting all templates');
+      var templateFolderPath = path.join( getUserPath(), dodoc.publicationTemplateDir);
       fs.readdir( templateFolderPath, function (err, filenames) {
         if (err) reject( console.log( 'Couldn\'t read content dir : ' + err));
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
+        dev.log('Found ' + folders.length + ' templates in ' + templateFolderPath);
         resolve(folders);
       });
     });

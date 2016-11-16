@@ -41,11 +41,14 @@ Thumbs.db
 
 # dodoc customs #
 ######################
-sessions
-!sessions/.gitkeep
-publications
 
 public/fonts/Fira/source/
 public/fonts/Fira/technical reports/
 
 .com.apple.timemachine.supported
+
+user/contenus/*
+!user/contenus/readme.txt
+
+user/publications/*
+!user/publications/readme.txt

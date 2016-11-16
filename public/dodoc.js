@@ -129,7 +129,8 @@ if( lang === 'fr') {
 var settings = {
 
   "codelang" : lang,
-  "contentDir" : "sessions",
+  "userDir": "user",
+  "contentDir" : "contenus",
   "publicationTemplateDir" : "templates",
   "exportedPubliDir" : "publications",
   "metaFileext" : ".txt",
