@@ -373,18 +373,19 @@ button {
 
 }
 
-.module_localNetworkInfos {
+.module_infos {
   position: relative;
 
-  float:right;
+  float: none;
   padding: $margin;
   margin-top:   $margin*2;
   color: $grisfonce;
-  text-align: right;
+  text-align: center;
 
   h3 {
-    font-size: .7em;
-    margin-bottom: 0;
+    font-size: .8em;
+    line-height:  1.5;
+    margin-bottom: $margin;
     color: inherit;
   }
 }

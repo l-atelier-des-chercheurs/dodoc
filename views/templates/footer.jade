@@ -1,9 +1,10 @@
-.module_localNetworkInfos
+.module_infos
   -for(var prop in localNetworkInfos)
     -if(isHttps)
-      h3 To connect with another device, use https://#{localNetworkInfos[prop]}:8080
+      h3 !{dodoc.lang.toconnectwithanotherdevice} https://#{localNetworkInfos[prop]}:8080
     -else
-      h3 To connect with another device, use http://#{localNetworkInfos[prop]}:8080
+      h3 !{dodoc.lang.toconnectwithanotherdevice} http://#{localNetworkInfos[prop]}:8080
+  h3 !{dodoc.lang.mediapublitemplatesarestoredint} <br>#{userDirname}
 
 script
   | if (typeof module === 'object') {window.module = module; module = undefined;}

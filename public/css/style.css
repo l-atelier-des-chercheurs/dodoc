@@ -6823,6 +6823,9 @@ th.hide-for-touch {
     body.index .navbar-container.is--opened .navbar .logo {
       width: 100%;
       height: 22vh; }
+  body.index .navbar-container .button-wrapper_add {
+    float: left;
+    margin-top: 32px; }
   .navbar-container .navbar {
     position: relative;
     width: 100%;
@@ -7175,7 +7178,7 @@ select {
 
 body.publi {
   background-color: #fff; }
-  body.publi .module_localNetworkInfos {
+  body.publi .module_infos {
     display: none; }
   body.publi .publi-title {
     margin-bottom: 35px;
@@ -7443,16 +7446,17 @@ button {
   .big-mediaContent textarea {
     min-height: 150px; }
 
-.module_localNetworkInfos {
+.module_infos {
   position: relative;
-  float: right;
+  float: none;
   padding: 16px;
   margin-top: 32px;
   color: #535353;
-  text-align: right; }
-  .module_localNetworkInfos h3 {
-    font-size: .7em;
-    margin-bottom: 0;
+  text-align: center; }
+  .module_infos h3 {
+    font-size: .8em;
+    line-height: 1.5;
+    margin-bottom: 16px;
     color: inherit; }
 
 body.index #container {
