@@ -481,10 +481,10 @@ FOLDER METHODS
 *************/
 
   function getFolderPath(slugFolderName) {
-    return path.join( getUserPath(), dodoc.contentDir, slugFolderName);
+    return path.join( getUserPath(), dodoc.contentDirname, slugFolderName);
   }
   function getUserPath() {
-    return global.userDir;
+    return global.userDirname;
   }
 
 

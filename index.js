@@ -1,9 +1,9 @@
 var dodoc  = require('./public/dodoc.js');
 var path = require('path');
 
-// if contentDir has not been defined by electron, we'll take __dirname as default
-if( global.userDir === undefined)
-  global.userDir = path.join(__dirname, dodoc.userDir);
-console.log('Will store contents in: ' + global.userDir);
+// if contentDirname has not been defined, we'll take __dirname/userDirname as default
+if( global.userDirname === undefined)
+  global.userDirname = path.join(__dirname, dodoc.userDirname);
+console.log('Will store contents in: ' + global.userDirname);
 
 require('./server.js')();

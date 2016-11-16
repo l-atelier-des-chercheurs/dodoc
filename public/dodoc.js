@@ -129,9 +129,9 @@ if( lang === 'fr') {
 var settings = {
 
   "codelang" : lang,
-  "userDir": "user",
-  "contentDir" : "contenus",
-  "publicationTemplateDir" : "templates",
+  "userDirname": "user",
+  "contentDirname" : "contenus",
+  "publicationTemplateDirname" : "templates",
   "exportedPubliDir" : "publications",
   "metaFileext" : ".txt",
   "videoext" : ".webm",

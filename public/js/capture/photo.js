@@ -47,7 +47,7 @@ var imageMode = (function() {
       isRunning = false;
     },
     showImagePreview : function( pathToMediaFile) {
-      $preview.find('img.output').attr("src", pathToMediaFile);
+      $preview.find('img.js--output').attr("src", pathToMediaFile);
       $preview.find('.js--delete-media-capture').show();
     },
 

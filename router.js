@@ -38,10 +38,10 @@ module.exports = function(app,io,m){
   * routing functions
   */
   function getFolderPath(slugFolderName) {
-    return path.join( getUserPath(), dodoc.contentDir, slugFolderName);
+    return path.join( getUserPath(), dodoc.contentDirname, slugFolderName);
   }
   function getUserPath() {
-    return global.userDir;
+    return global.userDirname;
   }
 
   function getMetaFileOfFolder( slugFolderName) {
@@ -220,7 +220,7 @@ module.exports = function(app,io,m){
   function getAllTemplates() {
     return new Promise(function(resolve, reject) {
       dev.log('Getting all templates');
-      var templateFolderPath = path.join( getUserPath(), dodoc.publicationTemplateDir);
+      var templateFolderPath = path.join( getUserPath(), dodoc.publicationTemplateDirname);
       fs.readdir( templateFolderPath, function (err, filenames) {
         if (err) reject( console.log( 'Couldn\'t read content dir : ' + err));
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
