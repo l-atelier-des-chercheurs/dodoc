@@ -48,6 +48,7 @@ then open the dodoc directory by typing ```cd dodoc```
 You can install nodejs from this page [https://nodejs.org/](https://nodejs.org/)     
 Then, verify that it is correctly installed  by typing in the terminal    
 ```node -v```
+You need a recent version of node (6 or more), so this line should return something like `Now using node v6.9.1 (npm v3.10.8)`.
 
 ###Install dependencies
 
@@ -85,11 +86,12 @@ Follow this tutorial: [http://www.renevolution.com/how-to-install-ffmpeg-on-mac-
 In the right directory  (```cd path/of/the/dodoc/directory```  )
 (the terminal says for example ```MacBook-de-Toto:dodoc Pauline$``` )  
 Run the server in the terminal (enter the following command:)  
-```node index.js```
+```npm start```
 
-Go to browser and go to the url (For now dodoc works only on Google Chrome or Chromium)   
-[https://localhost:8080](https://localhost:8080)  
-Your browser is going to tell that the website is unsafe, go on.   
+If all goes well your terminal should tell you to navigate to a specific URL.
+Open your web-browser (recommended is Chrome) and copy-paste this URL (which should be [https://localhost:8080](https://localhost:8080)).
+
+Your browser is going to tell you that this website is unsafe, click through the warnings to the homepage of dodoc.
 
 ###To update DoDoc with the latest vesrion  
 There are two options:  
@@ -110,5 +112,5 @@ Example: ```cd dodoc```
 -->  1 blog : http://www.lopendoc.org/dodoc/
 
 
-To debug dodoc, you can enable extra-logging with the flag --debug:
-```node index.js --debug```
+To debug dodoc, you can enable extra-logging with the following command:
+```npm run debug```
