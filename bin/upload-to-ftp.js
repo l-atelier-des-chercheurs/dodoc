@@ -3,16 +3,15 @@ var fs = require('fs-extra');
 
 var devLog = require('./dev-log.js');
 var dodocAPI = require('./dodoc-api.js');
-var dodocPubli = require('./dodoc-publi.js'); 
+var dodocPubli = require('./dodoc-publi.js');
 var dodoc  = require('./../public/dodoc');
-
 
 var exportPubliToFtp = module.exports = {
 
   exportPubliToFtp : function(socket, d){
     dev.logfunction( "EVENT - exportPubliToFtp");
     var currentDateString = dodocAPI.getCurrentDate();
-    var projectPath = dodocAPI.getProjectPath( d.slugFolderName, d.slugProjectName);
+    var projectPath = dodocProject.getProjectPath( d.slugFolderName, d.slugProjectName);
 
     var exportedPubliFolderName = currentDateString + "_" + d.slugPubliName;
     exportedPubliFolderName = dodocAPI.findFirstFilenameNotTaken( exportedPubliFolderName, dodoc.exportedPubliDir, '');
@@ -59,7 +58,7 @@ var exportPubliToFtp = module.exports = {
                 fs.copySync(oldPath, newPath);
                 console.log("success!");
               } catch (err) {
-                console.error(err)
+                dev.error(err)
               }
             }
           }
@@ -75,7 +74,7 @@ var exportPubliToFtp = module.exports = {
       //   }
       // });
     }, function(error) {
-      console.error("Failed to list one media! Error: ", error);
+      dev.error("Failed to list one media! Error: ", error);
     });
   },
 
@@ -110,7 +109,7 @@ var exportPubliToFtp = module.exports = {
           c.mkdir(domainFolder+'/'+ slugPubliName+'/medias', function(err) {
             if (err) console.log('medias: not transferred:' + err);
             else console.log("File transferred successfully!");
-            sendImageToServer(arrayImages, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, c, domainFolder, domain, socket);
+            exportPubliToFtp.sendImageToServer(arrayImages, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, c, domainFolder, domain, socket);
           });
         });
       });
@@ -125,7 +124,7 @@ var exportPubliToFtp = module.exports = {
       console.log("Connected");
 
     } else {
-      console.error("Couldn't find a ftp-config.js with FTP information to use.");
+      dev.error("Couldn't find a ftp-config.js with FTP information to use.");
     }
   },
 

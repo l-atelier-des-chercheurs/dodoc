@@ -11,7 +11,6 @@
     "url": "git://github.com/sarahgarcin/opendoc-tangible.git"
   },
   "dependencies": {
-    "app-root-path": "^2.0.1",
     "body-parser": "^1.15.0",
     "connect-multiparty": "^2.0.0",
     "dodoc-parsedown": "git+https://github.com/louis-ev/dodoc-parsedown.git",

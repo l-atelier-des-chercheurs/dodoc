@@ -721,9 +721,6 @@ var sendData = {
 }
 
 
-function getPathToMedia( projectPath, mediasFolderPath, mediaName) {
-  return projectPath + '/' + mediasFolderPath + '/' + mediaName;
-}
 function getProjectPath( slugFolderName, slugProjectName) {
   return slugFolderName + '/' + slugProjectName;
 }

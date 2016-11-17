@@ -8090,16 +8090,17 @@ body.capture .content-wrapper:after {
       .media-choice .btn-choice button[data-mediatype="audio"] {
         background-color: #0E2173; }
         .media-choice .btn-choice button[data-mediatype="audio"]::before {
-          background-image: url("/images/i_icone-dodoc_son.svg"); }
+          background-image: url("/images/i_icone-dodoc_audio.svg"); }
 
 .feedSettings {
-  position: fixed;
-  top: 70px;
+  position: absolute;
+  top: 0;
   right: 0;
   bottom: 0;
   z-index: 1500;
   background: #EFEFEF;
-  border-left: 4px solid #EF474B;
+  border-left: 4px solid #FF3E51;
+  border-bottom: 4px solid #FF3E51;
   width: 300px;
   transform: translate(100%, 0);
   transition: transform .7s ease-out;
@@ -8111,10 +8112,7 @@ body.capture .content-wrapper:after {
     height: 100%;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
-    padding-left: 1.875rem;
-    padding-right: 1.875rem;
-    padding-top: 1.875rem;
-    padding-bottom: 1.875rem; }
+    padding: 16px; }
   .feedSettings .openCloseSettings {
     position: absolute;
     top: 0;
