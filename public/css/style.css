@@ -7730,6 +7730,7 @@ body.bibli {
       .montage .publi_medias .media .button-wrapper_deleteMedia {
         opacity: 0;
         display: block;
+        z-index: 3;
         transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out, opacity .4s ease-out; }
       .montage .publi_medias .media:hover .mediaContent {
         outline: 4px dashed #aaa; }

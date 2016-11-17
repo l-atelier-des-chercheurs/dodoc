@@ -3,44 +3,47 @@ var fs = require('fs-extra');
 var slugg = require('slugg');
 
 var dodoc  = require('../public/dodoc');
-var devLog = require('./dev-log.js');
-
 var dodocAPI = require('./dodoc-api.js');
 
-var dodocFolder = module.exports = {
+var dodocFolder = (function() {
 
-  plip: function() {
-    return 'plop';
-  },
+  const API = {
+    getFolderPath           : function(slugFolderName) { return getFolderPath(slugFolderName); },
+    getMetaFileOfFolder     : function(slugFolderName) { return getMetaFileOfFolder(slugFolderName); },
+    createNewFolder         : function(folderData) { return createNewFolder(folderData); },
+    listAllFolders          : function() { return listAllFolders(); },
+    removeFolderNamed       : function(slugFolderName) { return getFolderPath(slugFolderName); },
+    updateFolderMeta        : function(folderData) { return updateFolderMeta(folderData); },
+    listAllProjectsOfOneFolder: function(slugFolderName) { return listAllProjectsOfOneFolder(slugFolderName); },
+  };
 
   /********************************************* SHORT FUNCTIONS *********************************************/
-  getFolderPath: function(slugFolderName) {
+  function getFolderPath(slugFolderName) {
+    dev.logfunction( "COMMON — getFolderPath");
     slugFolderName = slugFolderName === undefined ? '' : slugFolderName;
     return path.join(dodocAPI.getUserPath(), dodoc.contentDirname, slugFolderName);
-  },
-  getMetaFileOfFolder: function( slugFolderName) {
+  }
+
+  function getMetaFileOfFolder( slugFolderName) {
     dev.logfunction( "COMMON — getMetaFileOfFolder");
-    return path.join( dodocFolder.getFolderPath(slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
-  },
-  getFolderMeta: function( slugFolderName) {
+    return path.join( getFolderPath(slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
+  }
+
+  function getFolderMeta( slugFolderName) {
     dev.logfunction( "COMMON — getFolderMeta");
-    var folderMetaFile = dodocFolder.getMetaFileOfFolder( slugFolderName);
+    var folderMetaFile = getMetaFileOfFolder( slugFolderName);
     var folderData = fs.readFileSync( folderMetaFile,dodoc.textEncoding);
     var folderMetadata = dodocAPI.parseData( folderData);
     return folderMetadata;
-  },
+  }
 
-
-
-  /********************************************* LONG FUNCTIONS *********************************************/
-
-  createNewFolder: function( folderData) {
+  function createNewFolder( folderData) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — createNewFolder");
 
       var folderName = folderData.name;
       var slugFolderName = slugg(folderName);
-      var folderPath = dodocFolder.getFolderPath( slugFolderName);
+      var folderPath = getFolderPath( slugFolderName);
       var currentDateString = dodocAPI.getCurrentDate();
 
       fs.access( folderPath, fs.F_OK, function( err) {
@@ -55,7 +58,7 @@ var dodocFolder = module.exports = {
               "modified" : currentDateString,
               "statut" : "en cours",
             };
-          dodocAPI.storeData( dodocFolder.getMetaFileOfFolder( slugFolderName), fmeta, "create").then(function( meta) {
+          dodocAPI.storeData( getMetaFileOfFolder( slugFolderName), fmeta, "create").then(function( meta) {
             resolve( meta);
           });
 
@@ -71,15 +74,17 @@ var dodocFolder = module.exports = {
       });
 
     });
-  },
+  }
 
-  listAllFolders: function() {
+  function listAllFolders() {
     return new Promise(function(resolve, reject) {
-      fs.readdir( dodocFolder.getFolderPath(), function (err, filenames) {
+      dev.logfunction( "COMMON — listAllFolders");
+
+      fs.readdir( getFolderPath(), function (err, filenames) {
         if (err) return console.log( 'Couldn\'t read content dir : ' + err);
 
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
-        dev.logverbose( "Number of folders in " + dodocFolder.getFolderPath() + " = " + folders.length + ". Folders are " + folders);
+        dev.logverbose( "Number of folders in " + getFolderPath() + " = " + folders.length + ". Folders are " + folders);
 
         var foldersProcessed = 0;
         var allFoldersData = [];
@@ -87,7 +92,7 @@ var dodocFolder = module.exports = {
 
           if( new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName)
           && slugFolderName.indexOf( dodoc.deletedPrefix)){
-            var fmeta = dodocFolder.getFolderMeta( slugFolderName);
+            var fmeta = getFolderMeta( slugFolderName);
             fmeta.slugFolderName = slugFolderName;
             allFoldersData.push( fmeta);
           }
@@ -100,13 +105,14 @@ var dodocFolder = module.exports = {
         });
       });
     });
-  },
+  }
 
-  removeFolderNamed: function(slugFolderName) {
+  function removeFolderNamed(slugFolderName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — removeFolderNamed : " + JSON.stringify(slugFolderName, null, 4));
-      var folderPath = dodocFolder.getFolderPath( slugFolderName);
-      var deletedFolderPath = dodocFolder.getFolderPath( dodoc.deletedPrefix + slugFolderName);
+
+      var folderPath = getFolderPath( slugFolderName);
+      var deletedFolderPath = getFolderPath( dodoc.deletedPrefix + slugFolderName);
 
       fs.rename( folderPath, deletedFolderPath, function(err) {
         if (err) reject( err);
@@ -114,11 +120,10 @@ var dodocFolder = module.exports = {
         resolve( removedFolderData);
       });
     });
-  },
-
+  }
 
   // accepts a folderData with at least a "name" and a "slugFolderName"
-  updateFolderMeta: function(folderData) {
+  function updateFolderMeta(folderData) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — updateFolderMeta");
 
@@ -127,7 +132,7 @@ var dodocFolder = module.exports = {
       var currentDateString = dodocAPI.getCurrentDate();
       var newStatut = folderData.statut;
       // récupérer les infos sur le folder
-      var fmeta = dodocFolder.getFolderMeta( slugFolderName);
+      var fmeta = getFolderMeta( slugFolderName);
       // éditer les métas récupéré
       if( isNameChanged)
         fmeta.name = folderData.newName;
@@ -135,17 +140,17 @@ var dodocFolder = module.exports = {
         fmeta.statut = newStatut;
       fmeta.modified = currentDateString;
       // envoyer les changements dans le JSON du folder
-      dodocAPI.storeData( dodocFolder.getMetaFileOfFolder( slugFolderName), fmeta, "update").then(function( ufmeta) {
+      dodocAPI.storeData( getMetaFileOfFolder( slugFolderName), fmeta, "update").then(function( ufmeta) {
         ufmeta.slugFolderName = slugFolderName;
         resolve( ufmeta);
       });
     });
-  },
+  }
 
-  listAllProjectsOfOneFolder: function(slugFolderName) {
+  function listAllProjectsOfOneFolder(slugFolderName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "EVENT — listAllProjectsOfOneFolder : " + slugFolderName);
-      var folderPath = dodocFolder.getFolderPath( slugFolderName);
+      var folderPath = getFolderPath( slugFolderName);
 
       // list all projects
       fs.readdir( folderPath, function (err, projects) {
@@ -175,6 +180,9 @@ var dodocFolder = module.exports = {
         });
       });
     });
-  },
+  }
 
-};
+  return API;
+})();
+
+module.exports = dodocFolder;

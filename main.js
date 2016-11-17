@@ -23,7 +23,7 @@ module.exports = function(app, io){
 
   io.on("connection", function(socket){
     // I N D E X    P A G E
-    socket.on( 'listFolders', function (data){ onListFolders( socket); });
+    socket.on( 'listFolders', function (data){ onListFolders(socket); });
     socket.on("newFolder", onNewFolder);
     socket.on("editFolder", onEditFolder);
     socket.on("removeFolder", onRemoveFolder);
@@ -87,8 +87,9 @@ module.exports = function(app, io){
     });
   }
 
-  function onListFolders( socket){
+  function onListFolders(socket){
     dev.logfunction( "EVENT - onListFolders");
+    console.log('dodocAPI ' + dodocAPI.getCurrentDate());
     dodocFolder.listAllFolders().then(function( allFoldersData) {
       dodocAPI.sendEventWithContent( 'listAllFolders', allFoldersData, io, socket);
       // also list projects !

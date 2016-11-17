@@ -3,54 +3,52 @@ var fs = require('fs-extra');
 var slugg = require('slugg');
 
 var dodoc  = require('../public/dodoc');
-var devLog = require('./dev-log.js');
 
 var dodocAPI = require('./dodoc-api.js');
 var dodocFolder = require('./dodoc-folder.js');
 var dodocProject = require('./dodoc-project.js');
 var dodocMedia = require('./dodoc-media.js');
 
-var dodocPubli = module.exports = {
+var dodocPubli = (function() {
 
-  /********************************************* SHORT FUNCTIONS *********************************************/
+  const API = {
+    getPathToPubli             : function(slugFolderName, slugProjectName, pslug) { return getPathToPubli( slugFolderName, slugProjectName, pslug); },
+    listMediaAndMetaFromOnePubli : function(slugFolderName, slugProjectName, slugPubliName) { return listMediaAndMetaFromOnePubli(slugFolderName, slugProjectName, slugPubliName); },
+    filterMediasFromPubliList  : function(publiContent, mediaFolderContent) { return filterMediasFromPubliList(publiContent, mediaFolderContent); },
+    createPubli                : function(publiData) { return createPubli(publiData); },
+    editThisPubli              : function(pdata) { return editThisPubli(pdata); },
+    listPublis                 : function(slugFolderName, slugProjectName, thisPubliName) { return listPublis(slugFolderName, slugProjectName, thisPubliName); },
+  };
+
+  /***************************************************************************************************/
+  /******************************************** public functions *************************************/
+  /***************************************************************************************************/
 
   // if two args, then get path to publi folder
   // if three args, then get path to one publi
-  getPathToPubli: function( slugFolderName, slugProjectName, pslug) {
+  function getPathToPubli(slugFolderName, slugProjectName, pslug) {
     var projectPath = dodocProject.getProjectPath( slugFolderName, slugProjectName);
-    var pathToPubli = path.join( projectPath, dodocPubli.getPubliPathOfProject());
+    var pathToPubli = path.join( projectPath, getPubliPathOfProject());
     if( pslug !== undefined)
       pathToPubli = path.join( pathToPubli, pslug);
     return pathToPubli;
-  },
-
-  getPubliMeta: function( slugFolderName, slugProjectName, pslug) {
-    var pathToPubli = dodocPubli.getPathToPubli( slugFolderName, slugProjectName, pslug);
-    var publiJSONFilepath = pathToPubli + dodoc.metaFileext;
-    var publiData = fs.readFileSync( publiJSONFilepath, dodoc.textEncoding);
-    var publiMetaData = dodocAPI.parseData( publiData);
-    return publiMetaData;
-  },
-
-  getPubliPathOfProject: function () {
+  }
+  function getPubliPathOfProject() {
     return dodoc.projectPublisFoldername;
-  },
+  }
 
-
-  /********************************************* LONG FUNCTIONS *********************************************/
-
-  listMediaAndMetaFromOnePubli: function ( slugFolderName, slugProjectName, slugPubliName) {
+  function listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — listMediaAndMetaFromOnePubli : slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName + " publiName = " + slugPubliName);
 
-      var publiContent = dodocPubli.getPubliMeta( slugFolderName, slugProjectName, slugPubliName);
+      var publiContent = _getPubliMeta( slugFolderName, slugProjectName, slugPubliName);
       dodocMedia.listAllMedias( slugFolderName, slugProjectName).then(function( mediaFolderContent) {
-        dodocPubli.filterMediasFromPubliList( publiContent, mediaFolderContent).then(function( publiMedias) {
+        filterMediasFromPubliList( publiContent, mediaFolderContent).then(function( publiMedias) {
           publiContent.medias = publiMedias;
           publiContent.slugFolderName = slugFolderName;
           publiContent.slugProjectName = slugProjectName;
           publiContent.slugPubliName = slugPubliName;
-          publiContent.pathToPubli = dodocPubli.getPathToPubli( slugFolderName, slugProjectName, slugPubliName);
+          publiContent.pathToPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName);
 
           // make an array that looks like listPublis
           var folderPubliMeta = {};
@@ -65,9 +63,9 @@ var dodocPubli = module.exports = {
         reject( 'fail');
       });
     });
-  },
+  }
 
-  filterMediasFromPubliList: function ( publiContent, mediaFolderContent) {
+  function filterMediasFromPubliList(publiContent, mediaFolderContent) {
     return new Promise(function(resolve, reject) {
         dev.logfunction( "COMMON — filterMediasFromPubliList : publiContent = " + JSON.stringify(publiContent, null, 4) + " mediaFolderContent = " + JSON.stringify(mediaFolderContent, null, 4));
       var publiMedias = [];
@@ -82,11 +80,11 @@ var dodocPubli = module.exports = {
       }
       resolve( publiMedias);
     });
-  },
+  }
 
-  createPubli: function( publiData) {
+  function createPubli(publiData) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction( "COMMON — createPubli : " + JSON.stringify(publiData, null, 4));
+      dev.logfunction( "COMMON — createPubli: " + JSON.stringify(publiData, null, 4));
 
       var currentDateString = dodocAPI.getCurrentDate();
 
@@ -97,10 +95,10 @@ var dodocPubli = module.exports = {
       var slugFolderName = publiData.slugFolderName;
       var slugProjectName = publiData.slugProjectName;
 
-      var pathToThisPubliFolder = dodocPubli.getPathToPubli( slugFolderName, slugProjectName);
+      var pathToThisPubliFolder = getPathToPubli( slugFolderName, slugProjectName);
       pslug = dodocAPI.findFirstFilenameNotTaken( pslug, pathToThisPubliFolder, dodoc.metaFileext);
 
-      var pathToThisPubli = dodocPubli.getPathToPubli( slugFolderName, slugProjectName, pslug) + dodoc.metaFileext;
+      var pathToThisPubli = getPathToPubli( slugFolderName, slugProjectName, pslug) + dodoc.metaFileext;
 
       console.log("New publi created with name " + pname + " and path " + pathToThisPubli);
 
@@ -125,17 +123,16 @@ var dodocPubli = module.exports = {
       });
 
     });
-  },
-
-  editThisPubli: function( pdata) {
+  }
+  function editThisPubli(pdata) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — editThisPubli : publiData = " + JSON.stringify( pdata, null, 4));
 
-      var pathToPubli = dodocPubli.getPathToPubli( pdata.slugFolderName, pdata.slugProjectName, pdata.slugPubliName);
+      var pathToPubli = getPathToPubli( pdata.slugFolderName, pdata.slugProjectName, pdata.slugPubliName);
       var publiMetaFilepath = pathToPubli + dodoc.metaFileext;
 
       // get and parse publi json data
-      var publiMetaData = dodocPubli.getPubliMeta( pdata.slugFolderName, pdata.slugProjectName, pdata.slugPubliName);
+      var publiMetaData = _getPubliMeta( pdata.slugFolderName, pdata.slugProjectName, pdata.slugPubliName);
 
       // update modified date
       publiMetaData.modified = dodocAPI.getCurrentDate();
@@ -161,17 +158,17 @@ var dodocPubli = module.exports = {
         reject( 'Couldn\'t update publi');
       });
     });
-  },
+  }
 
   // if thisPubliName !== undefined => list that publi meta
   // otherwise => return all publis of this project
   // returns a JSON array of json with filenames as keys
-  listPublis: function( slugFolderName, slugProjectName, thisPubliName) {
+  function listPublis( slugFolderName, slugProjectName, thisPubliName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — listPublis : slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName + " publiName (can be undefined) = " + thisPubliName);
 
       // lister toutes les publis issues du dossier publi
-      var pathToPubliFolder = dodocPubli.getPathToPubli(slugFolderName, slugProjectName);
+      var pathToPubliFolder = getPathToPubli(slugFolderName, slugProjectName);
       var lookingForSpecificJson = thisPubliName !== undefined ? true : false;
       var filesInPubliFolder = fs.readdirSync( pathToPubliFolder);
 
@@ -201,18 +198,33 @@ var dodocPubli = module.exports = {
         if( !folderPubliMeta.hasOwnProperty( slugPubliName)) {
           folderPubliMeta[slugPubliName] = new Object();
           // read meta file and add the content to the folder
-          var publiMetaData = dodocPubli.getPubliMeta( slugFolderName, slugProjectName, slugPubliName);
+          var publiMetaData = _getPubliMeta( slugFolderName, slugProjectName, slugPubliName);
           publiMetaData.slugPubliName = slugPubliName;
           publiMetaData.slugFolderName = slugFolderName;
           publiMetaData.slugProjectName = slugProjectName;
-          publiMetaData.pathToPubli = dodocPubli.getPathToPubli( slugFolderName, slugProjectName, slugPubliName);
+          publiMetaData.pathToPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName);
 
           folderPubliMeta[slugPubliName] = publiMetaData;
         }
       }
       resolve( folderPubliMeta);
     });
-  },
+  }
 
 
-};
+  /***************************************************************************************************/
+  /******************************************** private functions ************************************/
+  /***************************************************************************************************/
+
+  function _getPubliMeta(slugFolderName, slugProjectName, pslug) {
+    var pathToPubli = getPathToPubli( slugFolderName, slugProjectName, pslug);
+    var publiJSONFilepath = pathToPubli + dodoc.metaFileext;
+    var publiData = fs.readFileSync( publiJSONFilepath, dodoc.textEncoding);
+    var publiMetaData = dodocAPI.parseData( publiData);
+    return publiMetaData;
+  }
+
+  return API;
+})();
+
+module.exports = dodocPubli;

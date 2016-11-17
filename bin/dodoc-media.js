@@ -9,98 +9,397 @@ var gm = require('gm');
 var gm = require('gm').subClass({imageMagick: true});
 
 var dodoc  = require('../public/dodoc');
-var devLog = require('./dev-log.js');
 
 var dodocAPI = require('./dodoc-api.js');
 var dodocProject = require('./dodoc-project.js');
 
-var dodocMedia = module.exports = {
+var dodocMedia = (function() {
 
-  /********************************************* SHORT FUNCTIONS *********************************************/
+  const API = {
+    getMediaFolderPathByType  : function(mediaType) { return getMediaFolderPathByType(mediaType); },
+    getAnimationPathOfProject : function() { return getAnimationPathOfProject(); },
+    getAllMediasFoldersPathAsArray : function() { return getAllMediasFoldersPathAsArray(); },
+    listAllMedias             : function(slugFolderName, slugProjectName) { return listAllMedias(slugFolderName, slugProjectName); },
+    listOneMedia              : function(slugFolderName, slugProjectName, singleMediaFolderPath, mediaName) { return listOneMedia(slugFolderName, slugProjectName, singleMediaFolderPath, mediaName); },
+    createNewMedia            : function(newMediaData) { return createNewMedia(newMediaData); },
+    editMediaMeta             : function(editMediaData) { return editMediaMeta(editMediaData); },
+    deleteOneMedia            : function(slugFolderName, slugProjectName, mediaFolder, mediaName) { return deleteOneMedia(slugFolderName, slugProjectName, mediaFolder, mediaName); },
+  };
 
-  getMediaFolderPathByType: function( mediaType) {
+  /***************************************************************************************************/
+  /******************************************** public functions *************************************/
+  /***************************************************************************************************/
+
+  function getMediaFolderPathByType( mediaType) {
     if( mediaType == 'photo')
-      return dodocMedia.getPhotoPathOfProject();
+      return _getPhotoPathOfProject();
     if( mediaType == 'video')
-      return dodocMedia.getVideoPathOfProject();
+      return _getVideoPathOfProject();
     if( mediaType == 'animation')
-      return dodocMedia.getAnimationPathOfProject();
+      return getAnimationPathOfProject();
     if( mediaType == 'audio')
-      return dodocMedia.getAudioPathOfProject();
+      return _getAudioPathOfProject();
     if( mediaType == 'text')
-      return dodocMedia.getTextPathOfProject();
-  },
-  getMediaPath: function( slugFolderName, slugProjectName, mediaFolder) {
-    return path.join( dodocProject.getProjectPath( slugFolderName, slugProjectName), mediaFolder);
-  },
-  getPhotoPathOfProject: function() {
-    return dodoc.projectPhotosFoldername;
-  },
-  getAnimationPathOfProject: function() {
+      return _getTextPathOfProject();
+  }
+  function getAnimationPathOfProject() {
     return dodoc.projectAnimationsFoldername;
-  },
-  getVideoPathOfProject: function() {
-    return dodoc.projectVideosFoldername;
-  },
-  getAudioPathOfProject: function() {
-    return dodoc.projectAudiosFoldername;
-  },
-  getTextPathOfProject: function() {
-    return dodoc.projectTextsFoldername;
-  },
-
-  getAllMediasFoldersPathAsArray: function() {
+  }
+  function getAllMediasFoldersPathAsArray() {
     var mediasFolders = [];
-    mediasFolders.push( dodocMedia.getPhotoPathOfProject());
-    mediasFolders.push( dodocMedia.getAnimationPathOfProject());
-    mediasFolders.push( dodocMedia.getVideoPathOfProject());
-    mediasFolders.push( dodocMedia.getAudioPathOfProject());
-    mediasFolders.push( dodocMedia.getTextPathOfProject());
+    mediasFolders.push( _getPhotoPathOfProject());
+    mediasFolders.push( getAnimationPathOfProject());
+    mediasFolders.push( _getVideoPathOfProject());
+    mediasFolders.push( _getAudioPathOfProject());
+    mediasFolders.push( _getTextPathOfProject());
     return mediasFolders;
-  },
+  }
 
-  getMediaMeta : function(projectPath, mediaFolderPath, mediaName) {
-    dev.logfunction( "COMMON — getMediaMeta : projectPath = " + projectPath + " mediaFolderPath = " + mediaFolderPath + " mediaName = " + mediaName);
-    var mediaJSONFilepath = dodocMedia.getPathToMedia(projectPath, mediaFolderPath, mediaName) + dodoc.metaFileext;
+  function listAllMedias( slugFolderName, slugProjectName) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction( "COMMON — listAllMedias : slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName);
+      // lister tous les contenus issues des dossiers commencant par 01, 02, 03, 04
+      var mediasFoldersPath = getAllMediasFoldersPathAsArray();
+      var mediasProcessed = 0;
+      var mediaFolderContent = [];
+      mediasFoldersPath.forEach( function( mediasFolderPath) {
+        mediaFolderContent = merge( mediaFolderContent, _listMediasOfOneType( slugFolderName, slugProjectName, mediasFolderPath));
+      });
+      resolve( mediaFolderContent);
+    });
+  }
+
+  function listOneMedia( slugFolderName, slugProjectName, singleMediaFolderPath, mediaName) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction( "COMMON — listOneMedia : slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName + " singleMediaFolderPath = " + singleMediaFolderPath + " mediaName = " + mediaName);
+      // lister tous les contenus issues des dossiers commencant par 01, 02, 03, 04
+      var mediaFolderContent = [];
+      mediaFolderContent = merge( mediaFolderContent, _listMediasOfOneType( slugFolderName, slugProjectName, singleMediaFolderPath, mediaName));
+      resolve( mediaFolderContent);
+    });
+  }
+  function createNewMedia(newMediaData) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction( "COMMON - createNewMedia " + newMediaData.mediaType + " in project " + newMediaData.slugProjectName);
+
+      var slugFolderName = newMediaData.slugFolderName;
+      var slugProjectName = newMediaData.slugProjectName;
+      var newFileName = dodocAPI.getCurrentDate();
+      var newMediaType = newMediaData.mediaType;
+
+      var mediaFolder = '';
+      var pathToFile = '';
+      var fileExtension;
+
+      var mediaFolder = getMediaFolderPathByType( newMediaType);
+
+      switch (newMediaType) {
+        case 'photo':
+          var mediaPath = _getMediaPath( slugFolderName, slugProjectName, mediaFolder);
+          newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath, dodoc.metaFileext);
+          pathToFile = path.join( mediaPath, newFileName);
+
+          fileExtension = '.png';
+          var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.mediaData);
+
+          fs.writeFile( pathToFile + fileExtension, imageBuffer.data, function(err) {
+            if (err) reject( err);
+            console.log("Image added at path " + pathToFile);
+
+            gm( pathToFile + fileExtension)
+              .resize( dodoc.mediaThumbWidth+'>', dodoc.mediaThumbHeight+'>')
+              .quality( 60)
+              .autoOrient()
+              .write( pathToFile + dodoc.thumbSuffix + fileExtension, function (err) {
+                if( err)
+                  console.log( gutil.colors.red('--> Failed to make a thumbnail for a photo! Error: ', err));
+                  _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
+                  mdata.slugFolderName = slugFolderName;
+                  mdata['slugProjectName'] = slugProjectName;
+                  mdata['mediaFolderPath'] = mediaFolder;
+                  console.log( 'just created a photo, its meta is ' + JSON.stringify( mdata, null, 4));
+                  resolve( mdata);
+                }, function() {
+                  reject( 'failed to create meta for photo');
+                });
+            });
+          });
+
+          break;
+        case 'video':
+          var mediaPath = _getMediaPath( slugFolderName, slugProjectName, mediaFolder);
+
+          newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath);
+          pathToFile = path.join( mediaPath, newFileName);
+
+          fileExtension = dodoc.videoext;
+
+          dodocAPI.writeVideoToDisk( pathToFile, fileExtension, newMediaData.mediaData)
+          .then(function() {
+            dev.error("Saved a video.");
+            _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
+              mdata.slugFolderName = slugFolderName;
+              mdata.slugProjectName = slugProjectName;
+              mdata.mediaFolderPath = mediaFolder;
+
+              dodocAPI.createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
+                resolve( mdata);
+              }, function(error) {
+                console.log( gutil.colors.red('--> Failed to make a thumbnail one media! Error: ', error));
+                resolve( mdata);
+              });
+            }, function() {
+              reject( 'failed to create meta for video');
+            });
+
+          }, function(error) {
+            dev.error("Failed to save video! Error: ", error);
+            reject();
+          });
+
+          break;
+        case 'animation':
+          // get the path to the mediaFolder
+            var mediaPath = _getMediaPath( slugFolderName, slugProjectName, mediaFolder);
+
+          // get the path to the cache folder and the mp4 (it's the same without the extension)
+          // WARNING : animation doesn't use newFileName, it already has a filename to use (generated at the beginning of a stopmotion capture)
+          newFileName = newMediaData.stopMotionCacheFolder;
+          pathToFile = path.join( mediaPath, newFileName);
+          fileExtension = dodoc.stopMotionext;
+
+          var frameRate = newMediaData.frameRate || 4;
+
+          // ask ffmpeg to make a video from the cache images
+          var proc = new ffmpeg({ "source" : pathToFile + '/%*.png'})
+            // using 12 fps
+            .withFpsInput(frameRate)
+            .withVideoCodec('libvpx')
+            .addOptions(['-vb 8000k', '-f webm'])
+            // setup event handlers
+            .on('end', function() {
+              console.log('file has been converted succesfully');
+
+              _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
+                mdata.slugFolderName = slugFolderName;
+                mdata.slugProjectName = slugProjectName;
+                mdata.mediaFolderPath = mediaFolder;
+                dodocAPI.createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
+                  resolve( mdata);
+                }, function(error) {
+                  dev.error("Failed to make a thumbnail one media! Error: ", error);
+                  resolve( mdata);
+                });
+              }, function() {
+                reject( 'failed to create meta for stopmotion');
+              });
+
+            })
+            .on('error', function(err) {
+              console.log('an error happened: ' + err.message);
+              reject( "couldn't create a stopmotion animation");
+            })
+            // save to file
+            .save( pathToFile + fileExtension);
+          break;
+        case 'audio':
+          var mediaPath = _getMediaPath( slugFolderName, slugProjectName, mediaFolder);
+          newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath, dodoc.metaFileext);
+          pathToFile = path.join( mediaPath, newFileName);
+
+          fileExtension = '.wav';
+          var dataMedia = newMediaData.mediaData.split(',').pop();
+          var audioBuffer = new Buffer( dataMedia, 'base64');
+          fs.writeFileSync( pathToFile + fileExtension, audioBuffer);
+
+          var imgExtension = '.png';
+          var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.audioScreenshot);
+          fs.writeFileSync( pathToFile + imgExtension, imageBuffer.data);
+
+          _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
+            mdata.slugFolderName = slugFolderName;
+            mdata.slugProjectName = slugProjectName;
+            mdata.mediaFolderPath = mediaFolder;
+            resolve( mdata);
+          }, function() {
+            reject( 'failed to create meta for audio');
+          });
+
+          break;
+        case 'text':
+          var mediaPath = _getMediaPath( slugFolderName, slugProjectName, mediaFolder);
+          newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath, dodoc.metaFileext);
+          pathToFile = path.join( mediaPath, newFileName);
+
+          fileExtension = '.md';
+          var dataTitle = newMediaData.title;
+          var dataText = newMediaData.text;
+          console.log( "Creating a new text media at path " + pathToFile + fileExtension + " with title : " + dataTitle + " and text : " + dataText);
+
+          var mediaData = {
+            "title" : dataTitle,
+            "text" : dataText
+          };
+          dodocAPI.storeData(pathToFile + fileExtension, mediaData, "create").then(function( meta) {
+            _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
+              var textMediaData = _readTextMedia(pathToFile + fileExtension);
+              mdata.textMediaContent = textMediaData;
+              mdata.slugFolderName = slugFolderName;
+              mdata.slugProjectName = slugProjectName;
+              mdata.mediaFolderPath = mediaFolder;
+              resolve( mdata);
+            }, function(err) {
+              reject( 'failed to create meta for text media : ' + err);
+            });
+          }, function(err) {
+            reject( 'failed to create textfile for text media : ' + err);
+          });
+
+          break;
+      // end of switch
+      }
+    // end of promise
+    });
+  }
+  function editMediaMeta(editMediaData) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction( "COMMON - editMediaMeta : " + JSON.stringify(editMediaData, null, 4));
+
+      var slugFolderName = editMediaData.slugFolderName;
+      var slugProjectName = editMediaData.slugProjectName;
+      var mediaFolderPath = editMediaData.mediaFolderPath;
+      var mediaName = editMediaData.mediaName;
+
+      // get the path to the media JSON and its content
+      var projectPath = dodocProject.getProjectPath( slugFolderName, slugProjectName);
+      var mediaFilepath = _getPathToMedia( projectPath, mediaFolderPath, mediaName);
+      var mediaMetaData = _getMediaMeta( projectPath, mediaFolderPath, mediaName);
+
+      // switch the fav state
+      if( editMediaData.switchFav !== undefined)
+        mediaMetaData.fav = !mediaMetaData.fav;
+
+      if( editMediaData.informations !== undefined)
+        mediaMetaData.informations = editMediaData.informations;
+
+      // if this is a text media, also update its content
+      mediaMetaData.modified = dodocAPI.getCurrentDate();
+
+      dodocAPI.storeData( mediaFilepath + dodoc.metaFileext, mediaMetaData, 'update').then(function( mdata) {
+        dev.log('stored meta');
+        // if media is a text, let's add the text content to the obj for convenience client-side
+        if( mediaFolderPath === dodoc.projectTextsFoldername && editMediaData.titleOfTextmedia !== undefined && editMediaData.textOfTextmedia !== undefined) {
+
+          var mediaFilepathWithExt = mediaFilepath + '.md';
+          var mediaData = {
+            "title" : editMediaData.titleOfTextmedia,
+            "text" : editMediaData.textOfTextmedia
+          };
+          dev.log('now storing text media');
+          dodocAPI.storeData( mediaFilepathWithExt, mediaData, 'update').then(function(mediaData) {
+            dev.log('just stored text media');
+            var textMediaData = _readTextMedia(mediaFilepathWithExt);
+            mdata.textMediaContent = textMediaData;
+            mdata.mediaName = mediaName;
+            mdata.mediaFolderPath = mediaFolderPath;
+            mdata.slugFolderName = slugFolderName;
+            mdata.slugProjectName = slugProjectName;
+            resolve( mdata);
+          }, function(err) {
+            console.log( gutil.colors.red('--> Couldn\'t update text media : ' + err));
+            reject( 'Couldn\'t update text media');
+          });
+        } else {
+          dev.log('not a text media');
+          // for updating the result
+          mdata.mediaName = mediaName;
+          mdata.mediaFolderPath = mediaFolderPath;
+          mdata.slugFolderName = slugFolderName;
+          mdata.slugProjectName = slugProjectName;
+          resolve( mdata);
+        }
+
+      }, function(err) {
+        console.log( gutil.colors.red('--> Couldn\'t update media meta. : ' + err));
+        reject( 'Couldn\'t update media meta');
+      });
+    });
+  }
+
+  function deleteOneMedia(slugFolderName, slugProjectName, mediaFolder, mediaName) {
+    return new Promise(function(resolve, reject) {
+      var pathToMediaFolder = _getMediaPath( slugFolderName, slugProjectName, mediaFolder);
+      // find in path
+
+      try {
+        var filesInMediaFolder = fs.readdirSync( pathToMediaFolder);
+        filesInMediaFolder.forEach( function( filename) {
+          var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( filename)[1];
+          if( fileNameWithoutExtension === mediaName) {
+            var filePath = path.join( pathToMediaFolder, filename);
+            var deletedFilePath = path.join( pathToMediaFolder, dodoc.deletedPrefix + filename);
+            fs.renameSync( filePath, deletedFilePath);
+            console.log( "A file will be deleted (renamed but hidden from dodoc) : \n - " + filePath + "\n - " + deletedFilePath);
+          }
+        });
+        var mediaMetaData =
+        {
+          "slugFolderName" : slugFolderName,
+          "slugProjectName" : slugProjectName,
+          "mediaFolder" : mediaFolder,
+          "mediaName" : mediaName,
+          "mediaKey" : path.join( mediaFolder, mediaName + dodoc.metaFileext)
+        }
+        resolve( mediaMetaData);
+      } catch( err) {
+        reject( err);
+      }
+    });
+  }
+
+  /***************************************************************************************************/
+  /******************************************** private functions ************************************/
+  /***************************************************************************************************/
+
+
+  function _getMediaPath( slugFolderName, slugProjectName, mediaFolder) {
+    return path.join( dodocProject.getProjectPath( slugFolderName, slugProjectName), mediaFolder);
+  }
+
+  function _getPhotoPathOfProject() {
+    return dodoc.projectPhotosFoldername;
+  }
+  function _getVideoPathOfProject() {
+    return dodoc.projectVideosFoldername;
+  }
+  function _getAudioPathOfProject() {
+    return dodoc.projectAudiosFoldername;
+  }
+
+
+  function _getTextPathOfProject() {
+    return dodoc.projectTextsFoldername;
+  }
+  function _getMediaMeta(projectPath, mediaFolderPath, mediaName) {
+    dev.logfunction( "COMMON — _getMediaMeta : projectPath = " + projectPath + " mediaFolderPath = " + mediaFolderPath + " mediaName = " + mediaName);
+    var mediaJSONFilepath = _getPathToMedia(projectPath, mediaFolderPath, mediaName) + dodoc.metaFileext;
     var mediaData = fs.readFileSync(mediaJSONFilepath, dodoc.textEncoding);
     var mediaMetaData = dodocAPI.parseData(mediaData);
     return mediaMetaData;
-  },
-
-  getPathToMedia : function( projectPath, mediasFolderPath, mediaName) {
+  }
+  function _getPathToMedia( projectPath, mediasFolderPath, mediaName) {
     return path.join( projectPath, mediasFolderPath, mediaName);
-  },
-
-
-  readTextMedia: function(textMediaPath) {
+  }
+  function _readTextMedia(textMediaPath) {
     var textMediaData = fs.readFileSync(textMediaPath, dodoc.textEncoding);
     textMediaData = dodocAPI.parseData(textMediaData);
     // we should get a title and text field, let's parse them in markdown and add title_md and text_md fields
     textMediaData.title_md = mm.parse(textMediaData.title).content;
     textMediaData.text_md = mm.parse(textMediaData.text).content;
     return textMediaData;
-  },
-
-
-
-  /********************************************* LONG FUNCTIONS *********************************************/
-
-  listAllMedias: function( slugFolderName, slugProjectName) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction( "COMMON — listAllMedias : slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName);
-      // lister tous les contenus issues des dossiers commencant par 01, 02, 03, 04
-      var mediasFoldersPath = dodocMedia.getAllMediasFoldersPathAsArray();
-      var mediasProcessed = 0;
-      var mediaFolderContent = [];
-      mediasFoldersPath.forEach( function( mediasFolderPath) {
-        mediaFolderContent = merge( mediaFolderContent, dodocMedia.listMediasOfOneType( slugFolderName, slugProjectName, mediasFolderPath));
-      });
-      resolve( mediaFolderContent);
-    });
-  },
-
-  listMediasOfOneType: function(slugFolderName, slugProjectName, mediasFolderPath, mediaName) {
-    dev.logfunction( "COMMON — listMediasOfOneType with");
+  }
+  function _listMediasOfOneType(slugFolderName, slugProjectName, mediasFolderPath, mediaName) {
+    dev.logfunction( "COMMON — _listMediasOfOneType with");
 
     var projectPath = dodocProject.getProjectPath( slugFolderName, slugProjectName);
     var mediasPath = path.join( projectPath, mediasFolderPath);
@@ -155,7 +454,7 @@ var dodocMedia = module.exports = {
             // let's make one
             folderMediaMetaAndFileName[mediaObjKey] = new Object();
             // read JSON file and add the content to the folder
-            var mdata = dodocMedia.getMediaMeta( projectPath, mediasFolderPath, metaFileNameWithoutExtension);
+            var mdata = _getMediaMeta( projectPath, mediasFolderPath, metaFileNameWithoutExtension);
             mdata.mediaFolderPath = mediasFolderPath;
             mdata.mediaName = metaFileNameWithoutExtension;
             mdata.slugFolderName = slugFolderName;
@@ -163,7 +462,7 @@ var dodocMedia = module.exports = {
 
             // if the file is a text, then also add the content of the TXT in the answer
             if( new RegExp( dodoc.regexpGetFileExtension, 'i').exec( mediaFilename)[0] === '.md') {
-              var textMediaData = dodocMedia.readTextMedia( path.join( projectPath, mediasFolderPath, mediaFilename));
+              var textMediaData = _readTextMedia( path.join( projectPath, mediasFolderPath, mediaFilename));
               mdata.textMediaContent = textMediaData;
             }
 
@@ -180,204 +479,8 @@ var dodocMedia = module.exports = {
       }
     }
     return folderMediaMetaAndFileName;
-  },
-
-  listOneMedia: function( slugFolderName, slugProjectName, singleMediaFolderPath, mediaName) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction( "COMMON — listOneMedia : slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName + " singleMediaFolderPath = " + singleMediaFolderPath + " mediaName = " + mediaName);
-      // lister tous les contenus issues des dossiers commencant par 01, 02, 03, 04
-      var mediaFolderContent = [];
-      mediaFolderContent = merge( mediaFolderContent, dodocMedia.listMediasOfOneType( slugFolderName, slugProjectName, singleMediaFolderPath, mediaName));
-      resolve( mediaFolderContent);
-    });
-  },
-
-  createNewMedia:function(newMediaData) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction( "COMMON - createNewMedia " + newMediaData.mediaType + " in project " + newMediaData.slugProjectName);
-
-      var slugFolderName = newMediaData.slugFolderName;
-      var slugProjectName = newMediaData.slugProjectName;
-      var newFileName = dodocAPI.getCurrentDate();
-      var newMediaType = newMediaData.mediaType;
-
-      var mediaFolder = '';
-      var pathToFile = '';
-      var fileExtension;
-
-      var mediaFolder = dodocMedia.getMediaFolderPathByType( newMediaType);
-
-      switch (newMediaType) {
-        case 'photo':
-          var mediaPath = dodocMedia.getMediaPath( slugFolderName, slugProjectName, mediaFolder);
-          newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath, dodoc.metaFileext);
-          pathToFile = path.join( mediaPath, newFileName);
-
-          fileExtension = '.png';
-          var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.mediaData);
-
-          fs.writeFile( pathToFile + fileExtension, imageBuffer.data, function(err) {
-            if (err) reject( err);
-            console.log("Image added at path " + pathToFile);
-
-            gm( pathToFile + fileExtension)
-              .resize( dodoc.mediaThumbWidth+'>', dodoc.mediaThumbHeight+'>')
-              .quality( 60)
-              .autoOrient()
-              .write( pathToFile + dodoc.thumbSuffix + fileExtension, function (err) {
-                if( err)
-                  console.log( gutil.colors.red('--> Failed to make a thumbnail for a photo! Error: ', err));
-                  dodocMedia.createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
-                  mdata.slugFolderName = slugFolderName;
-                  mdata['slugProjectName'] = slugProjectName;
-                  mdata['mediaFolderPath'] = mediaFolder;
-                  console.log( 'just created a photo, its meta is ' + JSON.stringify( mdata, null, 4));
-                  resolve( mdata);
-                }, function() {
-                  reject( 'failed to create meta for photo');
-                });
-            });
-          });
-
-          break;
-        case 'video':
-          var mediaPath = dodocMedia.getMediaPath( slugFolderName, slugProjectName, mediaFolder);
-
-          newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath);
-          pathToFile = path.join( mediaPath, newFileName);
-
-          fileExtension = dodoc.videoext;
-
-          dodocAPI.writeVideoToDisk( pathToFile, fileExtension, newMediaData.mediaData)
-          .then(function() {
-            dev.error("Saved a video.");
-            dodocMedia.createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
-              mdata.slugFolderName = slugFolderName;
-              mdata.slugProjectName = slugProjectName;
-              mdata.mediaFolderPath = mediaFolder;
-
-              dodocAPI.createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
-                resolve( mdata);
-              }, function(error) {
-                console.log( gutil.colors.red('--> Failed to make a thumbnail one media! Error: ', error));
-                resolve( mdata);
-              });
-            }, function() {
-              reject( 'failed to create meta for video');
-            });
-
-          }, function(error) {
-            dev.error("Failed to save video! Error: ", error);
-            reject();
-          });
-
-          break;
-        case 'animation':
-          // get the path to the mediaFolder
-            var mediaPath = dodocMedia.getMediaPath( slugFolderName, slugProjectName, mediaFolder);
-
-          // get the path to the cache folder and the mp4 (it's the same without the extension)
-          // WARNING : animation doesn't use newFileName, it already has a filename to use (generated at the beginning of a stopmotion capture)
-          newFileName = newMediaData.stopMotionCacheFolder;
-          pathToFile = path.join( mediaPath, newFileName);
-          fileExtension = dodoc.stopMotionext;
-
-          var frameRate = newMediaData.frameRate || 4;
-
-          // ask ffmpeg to make a video from the cache images
-          var proc = new ffmpeg({ "source" : pathToFile + '/%*.png'})
-            // using 12 fps
-            .withFpsInput(frameRate)
-            .withVideoCodec('libvpx')
-            .addOptions(['-vb 8000k', '-f webm'])
-            // setup event handlers
-            .on('end', function() {
-              console.log('file has been converted succesfully');
-
-              dodocMedia.createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
-                mdata.slugFolderName = slugFolderName;
-                mdata.slugProjectName = slugProjectName;
-                mdata.mediaFolderPath = mediaFolder;
-                dodocAPI.createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
-                  resolve( mdata);
-                }, function(error) {
-                  dev.error("Failed to make a thumbnail one media! Error: ", error);
-                  resolve( mdata);
-                });
-              }, function() {
-                reject( 'failed to create meta for stopmotion');
-              });
-
-            })
-            .on('error', function(err) {
-              console.log('an error happened: ' + err.message);
-              reject( "couldn't create a stopmotion animation");
-            })
-            // save to file
-            .save( pathToFile + fileExtension);
-          break;
-        case 'audio':
-          var mediaPath = dodocMedia.getMediaPath( slugFolderName, slugProjectName, mediaFolder);
-          newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath, dodoc.metaFileext);
-          pathToFile = path.join( mediaPath, newFileName);
-
-          fileExtension = '.wav';
-          var dataMedia = newMediaData.mediaData.split(',').pop();
-          var audioBuffer = new Buffer( dataMedia, 'base64');
-          fs.writeFileSync( pathToFile + fileExtension, audioBuffer);
-
-          var imgExtension = '.png';
-          var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.audioScreenshot);
-          fs.writeFileSync( pathToFile + imgExtension, imageBuffer.data);
-
-          dodocMedia.createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
-            mdata.slugFolderName = slugFolderName;
-            mdata.slugProjectName = slugProjectName;
-            mdata.mediaFolderPath = mediaFolder;
-            resolve( mdata);
-          }, function() {
-            reject( 'failed to create meta for audio');
-          });
-
-          break;
-        case 'text':
-          var mediaPath = dodocMedia.getMediaPath( slugFolderName, slugProjectName, mediaFolder);
-          newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath, dodoc.metaFileext);
-          pathToFile = path.join( mediaPath, newFileName);
-
-          fileExtension = '.md';
-          var dataTitle = newMediaData.title;
-          var dataText = newMediaData.text;
-          console.log( "Creating a new text media at path " + pathToFile + fileExtension + " with title : " + dataTitle + " and text : " + dataText);
-
-          var mediaData = {
-            "title" : dataTitle,
-            "text" : dataText
-          };
-          dodocAPI.storeData(pathToFile + fileExtension, mediaData, "create").then(function( meta) {
-            dodocMedia.createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
-              var textMediaData = dodocMedia.readTextMedia(pathToFile + fileExtension);
-              mdata.textMediaContent = textMediaData;
-              mdata.slugFolderName = slugFolderName;
-              mdata.slugProjectName = slugProjectName;
-              mdata.mediaFolderPath = mediaFolder;
-              resolve( mdata);
-            }, function(err) {
-              reject( 'failed to create meta for text media : ' + err);
-            });
-          }, function(err) {
-            reject( 'failed to create textfile for text media : ' + err);
-          });
-
-          break;
-      // end of switch
-      }
-    // end of promise
-    });
-  },
-
-
-  createMediaMeta: function(newMediaType, pathToFile, fileName) {
+  }
+  function _createMediaMeta(newMediaType, pathToFile, fileName) {
     return new Promise(function(resolve, reject) {
       var mdata =
         {
@@ -396,105 +499,9 @@ var dodocMedia = module.exports = {
         reject( 'Couldn\'t create media meta');
       });
     });
-  },
+  }
 
+  return API;
+})();
 
-  editMediaMeta: function(editMediaData) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction( "COMMON - editMediaMeta : " + JSON.stringify(editMediaData, null, 4));
-
-      var slugFolderName = editMediaData.slugFolderName;
-      var slugProjectName = editMediaData.slugProjectName;
-      var mediaFolderPath = editMediaData.mediaFolderPath;
-      var mediaName = editMediaData.mediaName;
-
-      // get the path to the media JSON and its content
-      var projectPath = dodocProject.getProjectPath( slugFolderName, slugProjectName);
-      var mediaFilepath = dodocMedia.getPathToMedia( projectPath, mediaFolderPath, mediaName);
-      var mediaMetaData = dodocMedia.getMediaMeta( projectPath, mediaFolderPath, mediaName);
-
-      // switch the fav state
-      if( editMediaData.switchFav !== undefined)
-        mediaMetaData.fav = !mediaMetaData.fav;
-
-      if( editMediaData.informations !== undefined)
-        mediaMetaData.informations = editMediaData.informations;
-
-      // if this is a text media, also update its content
-      mediaMetaData.modified = dodocAPI.getCurrentDate();
-
-      dodocAPI.storeData( mediaFilepath + dodoc.metaFileext, mediaMetaData, 'update').then(function( mdata) {
-        dev.log('stored meta');
-        // if media is a text, let's add the text content to the obj for convenience client-side
-        if( mediaFolderPath === dodoc.projectTextsFoldername && editMediaData.titleOfTextmedia !== undefined && editMediaData.textOfTextmedia !== undefined) {
-
-          var mediaFilepathWithExt = mediaFilepath + '.md';
-          var mediaData = {
-            "title" : editMediaData.titleOfTextmedia,
-            "text" : editMediaData.textOfTextmedia
-          };
-          dev.log('now storing text media');
-          dodocAPI.storeData( mediaFilepathWithExt, mediaData, 'update').then(function(mediaData) {
-            dev.log('just stored text media');
-            var textMediaData = dodocMedia.readTextMedia(mediaFilepathWithExt);
-            mdata.textMediaContent = textMediaData;
-            mdata.mediaName = mediaName;
-            mdata.mediaFolderPath = mediaFolderPath;
-            mdata.slugFolderName = slugFolderName;
-            mdata.slugProjectName = slugProjectName;
-            resolve( mdata);
-          }, function(err) {
-            console.log( gutil.colors.red('--> Couldn\'t update text media : ' + err));
-            reject( 'Couldn\'t update text media');
-          });
-        } else {
-          dev.log('not a text media');
-          // for updating the result
-          mdata.mediaName = mediaName;
-          mdata.mediaFolderPath = mediaFolderPath;
-          mdata.slugFolderName = slugFolderName;
-          mdata.slugProjectName = slugProjectName;
-          resolve( mdata);
-        }
-
-      }, function(err) {
-        console.log( gutil.colors.red('--> Couldn\'t update media meta. : ' + err));
-        reject( 'Couldn\'t update media meta');
-      });
-    });
-  },
-
-  deleteOneMedia: function(slugFolderName, slugProjectName, mediaFolder, mediaName) {
-    return new Promise(function(resolve, reject) {
-      var pathToMediaFolder = dodocMedia.getMediaPath( slugFolderName, slugProjectName, mediaFolder);
-      // find in path
-
-      try {
-        var filesInMediaFolder = fs.readdirSync( pathToMediaFolder);
-        filesInMediaFolder.forEach( function( filename) {
-          var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( filename)[1];
-          if( fileNameWithoutExtension === mediaName) {
-            var filePath = path.join( pathToMediaFolder, filename);
-            var deletedFilePath = path.join( pathToMediaFolder, dodoc.deletedPrefix + filename);
-            fs.renameSync( filePath, deletedFilePath);
-            console.log( "A file will be deleted (renamed but hidden from dodoc) : \n - " + filePath + "\n - " + deletedFilePath);
-          }
-        });
-        var mediaMetaData =
-        {
-          "slugFolderName" : slugFolderName,
-          "slugProjectName" : slugProjectName,
-          "mediaFolder" : mediaFolder,
-          "mediaName" : mediaName,
-          "mediaKey" : path.join( mediaFolder, mediaName + dodoc.metaFileext)
-        }
-        resolve( mediaMetaData);
-      } catch( err) {
-        reject( err);
-      }
-    });
-  },
-
-
-
-};
+module.exports = dodocMedia;

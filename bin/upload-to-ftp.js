@@ -1,7 +1,6 @@
 var path = require('path');
 var fs = require('fs-extra');
 
-var devLog = require('./dev-log.js');
 var dodocAPI = require('./dodoc-api.js');
 var dodocPubli = require('./dodoc-publi.js');
 var dodoc  = require('./../public/dodoc');

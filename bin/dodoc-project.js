@@ -4,33 +4,43 @@ var slugg = require('slugg');
 var merge = require('merge');
 
 var dodoc  = require('../public/dodoc');
-var devLog = require('./dev-log.js');
 
 var dodocAPI = require('./dodoc-api.js');
 
-var dodocProject = module.exports = {
+var dodocProject = (function() {
 
-  /********************************************* SHORT FUNCTIONS *********************************************/
+  const API = {
+    getProjectPath           : function(slugFolderName, slugProjectName) { return getProjectPath(slugFolderName, slugProjectName); },
+    getMetaFileOfProject     : function(slugFolderName, slugProjectName) { return getMetaFileOfProject(slugFolderName, slugProjectName); },
+    getProjectMeta           : function(slugFolderName, slugProjectName) { return getProjectMeta(slugFolderName, slugProjectName); },
+    createNewProject         : function(projectData) { return createNewProject(projectData); },
+    getProjectPreview        : function(projectPath) { return getProjectPreview(projectPath); },
+    addProjectImage          : function(imageNameSlug, parentPath, imageData) { return addProjectImage(imageNameSlug, parentPath, imageData); },
+    updateProjectMeta        : function(pdata) { return updateProjectMeta(pdata); },
+    listOneProject           : function(slugFolderName, slugProjectName) { return listOneProject(slugFolderName, slugProjectName); },
+    removeOneProject         : function(pdata) { return removeOneProject(pdata); },
+  };
 
-  getProjectPath: function( slugFolderName, slugProjectName) {
+  /***************************************************************************************************/
+  /******************************************** public functions *************************************/
+  /***************************************************************************************************/
+
+  function getProjectPath( slugFolderName, slugProjectName) {
     var dodocFolder = require('./dodoc-folder.js');
     return path.join( dodocFolder.getFolderPath(slugFolderName), slugProjectName);
-  },
-  getMetaFileOfProject: function( slugFolderName, slugProjectName) {
-    return path.join( dodocProject.getProjectPath( slugFolderName, slugProjectName), dodoc.projectMetafilename + dodoc.metaFileext);
-  },
-
-  getProjectMeta: function(slugFolderName, slugProjectName) {
+  }
+  function getMetaFileOfProject( slugFolderName, slugProjectName) {
+    return path.join( getProjectPath( slugFolderName, slugProjectName), dodoc.projectMetafilename + dodoc.metaFileext);
+  }
+  function getProjectMeta(slugFolderName, slugProjectName) {
 //    dev.log( "getProjectMeta with slugFolderName : " + slugFolderName + " slugProjectName : " + slugProjectName);
-    var projectJSONFile = dodocProject.getMetaFileOfProject( slugFolderName, slugProjectName);
+    var projectJSONFile = getMetaFileOfProject( slugFolderName, slugProjectName);
     var projectData = fs.readFileSync( projectJSONFile, dodoc.textEncoding);
     var projectJSONdata = dodocAPI.parseData(projectData);
 
     return projectJSONdata;
-  },
-
-  /********************************************* LONG FUNCTIONS *********************************************/
-  createNewProject: function( projectData) {
+  }
+  function createNewProject( projectData) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — createNewProject");
 
@@ -44,13 +54,13 @@ var dodocProject = module.exports = {
 
       // Vérifie si le projet existe déjà, change son slug si besoin
       slugProjectName = dodocAPI.findFirstFilenameNotTaken( slugProjectName, pathToFolder, '');
-      var projectPath = dodocProject.getProjectPath( slugFolderName, slugProjectName);
+      var projectPath = getProjectPath( slugFolderName, slugProjectName);
 
       console.log("New project created with name " + projectName + " and path " + projectPath);
       fs.ensureDirSync(projectPath);//new project
 
       if( projectData.imageData !== undefined) {
-        dodocProject.addProjectImage( "apercu", projectPath, projectData.imageData);
+        addProjectImage( "apercu", projectPath, projectData.imageData);
       }
 
       var dodocMedia = require('./dodoc-media.js');
@@ -70,17 +80,16 @@ var dodocProject = module.exports = {
           "informations" : 0
         };
 
-      dodocAPI.storeData( dodocProject.getMetaFileOfProject( slugFolderName, slugProjectName), pmeta, "create").then(function( meta) {
-        var updatedpmeta = dodocProject.getProjectMeta( slugFolderName, slugProjectName);
+      dodocAPI.storeData( getMetaFileOfProject( slugFolderName, slugProjectName), pmeta, "create").then(function( meta) {
+        var updatedpmeta = getProjectMeta( slugFolderName, slugProjectName);
         updatedpmeta.slugFolderName = slugFolderName;
         updatedpmeta.slugProjectName = slugProjectName;
-        updatedpmeta.projectPreviewName = dodocProject.getProjectPreview( projectPath);
+        updatedpmeta.projectPreviewName = getProjectPreview( projectPath);
         resolve( updatedpmeta);
       });
     });
-  },
-
-  getProjectPreview: function(projectPath) {
+  }
+  function getProjectPreview(projectPath) {
     dev.logverbose( "COMMON — detecting preview for project path : " + projectPath);
     // looking for an image whose name starts with apercu or preview in the project folder
     var filesInProjectFolder = fs.readdirSync( projectPath);
@@ -94,17 +103,15 @@ var dodocProject = module.exports = {
     });
     dev.logverbose( "- final filename ? " + previewName);
     return previewName;
-  },
-
-  addProjectImage: function(imageNameSlug, parentPath, imageData){
+  }
+  function addProjectImage(imageNameSlug, parentPath, imageData){
     var filePath = parentPath + "/" + imageNameSlug + ".png";
     var imageBuffer = dodocAPI.decodeBase64Image( imageData);
     fs.writeFileSync(filePath, imageBuffer.data);
     console.info("write new file to " + filePath);
-  },
-
+  }
   // accepts a folderData with at least a "foldername", a "slugFolderName", a "projectname" and a "slugProjectName"
-  updateProjectMeta: function(pdata) {
+  function updateProjectMeta(pdata) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — updateProjectMeta : " + JSON.stringify( pdata, null, 4));
 
@@ -112,16 +119,16 @@ var dodocProject = module.exports = {
 
       var slugProjectName = pdata.slugProjectName;
       var slugFolderName = pdata.slugFolderName;
-      var projectPath = dodocProject.getProjectPath( slugFolderName, slugProjectName);
+      var projectPath = getProjectPath( slugFolderName, slugProjectName);
 
       var currentDateString = dodocAPI.getCurrentDate();
 
       if( pdata.imageData !== undefined) {
-        dodocProject.addProjectImage( "apercu", projectPath, pdata.imageData);
+        addProjectImage( "apercu", projectPath, pdata.imageData);
       }
 
       // récupérer les infos sur le project
-      var currentpdata = dodocProject.getProjectMeta( slugFolderName, slugProjectName);
+      var currentpdata = getProjectMeta( slugFolderName, slugProjectName);
 
       // éditer le JSON récupéré
       currentpdata.name = pdata.name;
@@ -129,37 +136,35 @@ var dodocProject = module.exports = {
         currentpdata.statut = pdata.statut;
       currentpdata.modified = currentDateString;
 
-      dodocAPI.storeData( dodocProject.getMetaFileOfProject( slugFolderName, slugProjectName), currentpdata, 'update').then(function( meta) {
-        var updatedpmeta = dodocProject.getProjectMeta( slugFolderName, slugProjectName);
+      dodocAPI.storeData( getMetaFileOfProject( slugFolderName, slugProjectName), currentpdata, 'update').then(function( meta) {
+        var updatedpmeta = getProjectMeta( slugFolderName, slugProjectName);
         updatedpmeta.slugFolderName = slugFolderName;
         updatedpmeta.slugProjectName = slugProjectName;
-        updatedpmeta.projectPreviewName = dodocProject.getProjectPreview( projectPath);
+        updatedpmeta.projectPreviewName = getProjectPreview( projectPath);
         resolve( updatedpmeta);
       }, function() {
         console.log( gutil.colors.red('--> Couldn\'t update project meta.'));
         reject( 'Couldn\'t update project meta');
       });
     });
-  },
-
-  listOneProject: function(slugFolderName, slugProjectName) {
+  }
+  function listOneProject(slugFolderName, slugProjectName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON - listOneProject slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName);
-      var projectPath = dodocProject.getProjectPath( slugFolderName, slugProjectName);
-      var pdata = dodocProject.getProjectMeta( slugFolderName, slugProjectName);
+      var projectPath = getProjectPath( slugFolderName, slugProjectName);
+      var pdata = getProjectMeta( slugFolderName, slugProjectName);
       pdata.slugFolderName = slugFolderName;
       pdata.slugProjectName = slugProjectName;
-      pdata.projectPreviewName = dodocProject.getProjectPreview( projectPath);
+      pdata.projectPreviewName = getProjectPreview( projectPath);
       resolve(pdata);
     });
-  },
-
-  removeOneProject: function( slugFolderName, slugProjectName) {
+  }
+  function removeOneProject( slugFolderName, slugProjectName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON - onRemoveProject _ slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName);
 
-      var projectPath = dodocProject.getProjectPath( slugFolderName, slugProjectName);
-      var projectPathToDeleted = dodocProject.getProjectPath( slugFolderName, dodoc.deletedPrefix + slugProjectName);
+      var projectPath = getProjectPath( slugFolderName, slugProjectName);
+      var projectPathToDeleted = getProjectPath( slugFolderName, dodoc.deletedPrefix + slugProjectName);
       fs.rename( projectPath, projectPathToDeleted, function(err) {
         if (err) reject(err);
         var projectData =
@@ -170,6 +175,20 @@ var dodocProject = module.exports = {
         resolve( projectData);
       });
     });
-  },
+  }
 
-};
+  /***************************************************************************************************/
+  /******************************************** private functions ************************************/
+  /***************************************************************************************************/
+
+
+
+
+
+
+
+
+  return API;
+})();
+
+module.exports = dodocProject;

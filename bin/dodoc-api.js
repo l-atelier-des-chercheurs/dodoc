@@ -5,53 +5,65 @@ var moment = require('moment');
 var parsedown = require('dodoc-parsedown');
 
 var dodoc  = require('../public/dodoc');
-var devLog = require('./dev-log.js');
 
+var dodocAPI = (function() {
 
-var dodocAPI = module.exports = {
+  const API = {
+    getCurrentDate      : function(f) { return getCurrentDate(f = dodoc.metaDateFormat); },
+    parseData           : function(d) { return parseData(d); },
+    storeData           : function(mpath, d, e) { return storeData(mpath, d, e); },
+    readMetaFile        : function(metaFile) { return readMetaFile(metaFile); },
+    getUserPath         : function() { return getUserPath(); },
+    findFirstFilenameNotTaken : function(fileName, currentPath, fileext) { return findFirstFilenameNotTaken(fileName, currentPath, fileext); },
+    eventAndContent     : function(sendEvent, objectJson) { return eventAndContent(sendEvent, objectJson); },
+    sendEventWithContent: function(sendEvent, objectContent, io, socket) { return sendEventWithContent(sendEvent, objectContent, io, socket); },
+    decodeBase64Image   : function(dataString) { return decodeBase64Image(dataString); },
+    writeVideoToDisk    : function(pathToFile, fileExtension, dataURL) { return writeVideoToDisk(pathToFile, fileExtension, dataURL); },
+    createThumbnails     : function(videoPath, videoFilename, pathToMediaFolder) { return createThumbnails(videoPath, videoFilename, pathToMediaFolder); }
+  };
 
-  getCurrentDate : function(f = dodoc.metaDateFormat) {
+  function getCurrentDate(f) {
     return moment().format(f);
-  },
+  }
 
-  parseData : function(d) {
+  function parseData(d) {
     var parsed = parsedown.parse(d);
   // the fav field is a boolean, so let's convert it
     if( parsed.hasOwnProperty('fav'))
       parsed.fav = (parsed.fav === 'true');
     return parsed;
-  },
+  }
 
-  storeData : function( mpath, d, e) {
+  function storeData(mpath, d, e) {
     return new Promise(function(resolve, reject) {
       dev.logverbose('Will store data');
       var textd = parsedown.textify(d);
       if( e === "create") {
         fs.appendFile( mpath, textd, function(err) {
           if (err) reject( err);
-          resolve(dodocAPI.parseData(textd));
+          resolve(parseData(textd));
         });
       }
       if( e === "update") {
         fs.writeFile( mpath, textd, function(err) {
         if (err) reject( err);
-          resolve(dodocAPI.parseData(textd));
+          resolve(parseData(textd));
         });
       }
     });
-  },
+  }
 
-  readMetaFile: function(metaFile){
+  function readMetaFile(metaFile){
     var metaFileContent = fs.readFileSync( metaFile, 'utf8');
-    var metaFileContentParsed = dodocAPI.parseData( metaFileContent);
+    var metaFileContentParsed = parseData( metaFileContent);
     return metaFileContentParsed;
-  },
+  }
 
-  getUserPath: function() {
+  function getUserPath() {
     return global.userDirname;
-  },
+  }
 
-  findFirstFilenameNotTaken: function( fileName, currentPath, fileext) {
+  function findFirstFilenameNotTaken( fileName, currentPath, fileext) {
     // no fileext = search for folder
     fileext = typeof fileext !== 'undefined' ?  fileext : '';
 
@@ -70,30 +82,30 @@ var dodocAPI = module.exports = {
     }
     console.log( "- - this filename is not taken : " + newFileName);
     return newFileName;
-  },
+  }
 
-  eventAndContent: function(sendEvent, objectJson) {
+  function eventAndContent(sendEvent, objectJson) {
     var eventContentJSON =
     {
       "socketevent" : sendEvent,
       "content" : objectJson
     };
     return eventContentJSON;
-  },
-  sendEventWithContent: function(sendEvent, objectContent, io, socket) {
-    var eventAndContentJson = dodocAPI.eventAndContent( sendEvent, objectContent);
+  }
+
+  function sendEventWithContent(sendEvent, objectContent, io, socket) {
+    var eventAndContentJson = eventAndContent( sendEvent, objectContent);
     dev.logpackets("eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
     if(socket === undefined)
       io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
     else
       socket.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
     dev.logpackets("packet sent");
-  },
-
+  }
 
   // Décode les images en base64
   // http://stackoverflow.com/a/20272545
-  decodeBase64Image: function(dataString) {
+  function decodeBase64Image(dataString) {
     dev.logverbose("Decoding base 64 image");
     var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
     response = {};
@@ -103,9 +115,9 @@ var dodocAPI = module.exports = {
     response.type = matches[1];
     response.data = new Buffer(matches[2], 'base64');
     return response;
-  },
+  }
 
-  writeVideoToDisk: function( pathToFile, fileExtension, dataURL) {
+  function writeVideoToDisk(pathToFile, fileExtension, dataURL) {
     return new Promise(function(resolve, reject) {
 
       dataURL = dataURL.split(',').pop();
@@ -117,9 +129,9 @@ var dodocAPI = module.exports = {
           resolve();
         });
     });
-  },
+  }
 
-  createThumbnails: function( videoPath, videoFilename, pathToMediaFolder){
+  function createThumbnails(videoPath, videoFilename, pathToMediaFolder){
     return new Promise(function(resolve, reject) {
       var proc = ffmpeg( videoPath)
       // setup event handlers
@@ -134,6 +146,9 @@ var dodocAPI = module.exports = {
       // take 2 screenshots at predefined timemarks
       .takeScreenshots({ count: 1, timemarks: [ '00:00:00'], "filename" : videoFilename + ".png"}, pathToMediaFolder);
     });
-  },
+  }
 
-};
+  return API;
+})();
+
+module.exports = dodocAPI;
