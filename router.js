@@ -11,8 +11,13 @@ var os = require('os');
 var flags = require('flags');
 
 var devLog = require('./bin/dev-log.js');
-var parsedown = require('dodoc-parsedown');
+
 var dodocAPI = require('./bin/dodoc-api.js');
+var dodocFolder = require('./bin/dodoc-folder.js');
+var dodocProject = require('./bin/dodoc-project.js');
+var dodocMedia = require('./bin/dodoc-media.js');
+var dodocPubli = require('./bin/dodoc-publi.js');
+
 
 module.exports = function(app,io,m){
 
@@ -37,40 +42,6 @@ module.exports = function(app,io,m){
   /**
   * routing functions
   */
-  function getFolderPath(slugFolderName) {
-    return path.join( getUserPath(), dodoc.contentDirname, slugFolderName);
-  }
-  function getUserPath() {
-    return global.userDirname;
-  }
-
-  function getMetaFileOfFolder( slugFolderName) {
-    return path.join( getFolderPath( slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
-  }
-  function getProjectPath( slugFolderName, slugProjectName) {
-    return path.join( getFolderPath( slugFolderName), slugProjectName);
-  }
-  function getMetaFileOfProject( slugFolderName, slugProjectName) {
-    return path.join( getProjectPath( slugFolderName, slugProjectName), dodoc.projectMetafilename + dodoc.metaFileext);
-  }
-
-  function getPathToPubli( slugFolderName, slugProjectName, pslug) {
-    var projectPath = getProjectPath( slugFolderName, slugProjectName);
-    var pathToPubli = path.join( projectPath, getPubliPathOfProject());
-    if( pslug !== undefined)
-      pathToPubli = path.join( pathToPubli, pslug);
-    return pathToPubli;
-  }
-  function eventAndContent( sendEvent, objectJson) {
-    var eventContentJSON =
-    {
-      "socketevent" : sendEvent,
-      "content" : objectJson
-    };
-    return eventContentJSON;
-  }
-
-
   function generatePageData( req, pageTitle) {
     return new Promise(function(resolve, reject) {
 
@@ -81,8 +52,8 @@ module.exports = function(app,io,m){
 
       var slugFolderName = req.param('folder');
       if( slugFolderName !== undefined) {
-        var jsonFileOfFolder = getMetaFileOfFolder( slugFolderName);
-        var folderData = readMetaFile( jsonFileOfFolder);
+        var jsonFileOfFolder = dodocFolder.getMetaFileOfFolder( slugFolderName);
+        var folderData = dodocAPI.readMetaFile(jsonFileOfFolder);
 
         pageDataJSON.slugFolderName = slugFolderName;
         pageDataJSON.folderName = folderData.name;
@@ -90,16 +61,16 @@ module.exports = function(app,io,m){
 
         var slugProjectName = req.param('project');
         if( slugProjectName !== undefined) {
-          var jsonFileOfProject = getMetaFileOfProject( slugFolderName, slugProjectName);
-          var projectData = readMetaFile( jsonFileOfProject);
+          var jsonFileOfProject = dodocProject.getMetaFileOfProject( slugFolderName, slugProjectName);
+          var projectData = dodocAPI.readMetaFile( jsonFileOfProject);
 
           pageDataJSON.slugProjectName = slugProjectName;
           pageDataJSON.projectName = projectData.name;
 
           var slugPubliName = req.param('publi');
           if( slugPubliName !== undefined) {
-            var jsonFileOfPubli = getPathToPubli( slugFolderName, slugProjectName, slugPubliName) + dodoc.metaFileext;
-            var publiData = readMetaFile( jsonFileOfPubli);
+            var jsonFileOfPubli = dodocPubli.getPathToPubli( slugFolderName, slugProjectName, slugPubliName) + dodoc.metaFileext;
+            var publiData = dodocAPI.readMetaFile( jsonFileOfPubli);
 
             pageDataJSON.slugPubliName = slugPubliName;
             pageDataJSON.publiName = publiData.name;
@@ -138,7 +109,7 @@ module.exports = function(app,io,m){
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("index", generatePageDataJSON);
     }, function(err) {
-      console.log('err ' + err);
+      console.log('Err ' + err);
     });
   };
 
@@ -147,7 +118,7 @@ module.exports = function(app,io,m){
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("folder", generatePageDataJSON);
     }, function(err) {
-      console.log('err ' + err);
+      console.log('Err while getting folder data : ' + err);
     });
   };
 
@@ -211,16 +182,10 @@ module.exports = function(app,io,m){
     });
   };
 
-  function readMetaFile( metaFile){
-    var metaFileContent = fs.readFileSync( metaFile, 'utf8');
-    var metaFileContentParsed = dodocAPI.parseData( metaFileContent);
-    return metaFileContentParsed;
-  }
-
   function getAllTemplates() {
     return new Promise(function(resolve, reject) {
       dev.log('Getting all templates');
-      var templateFolderPath = path.join( getUserPath(), dodoc.publicationTemplateDirname);
+      var templateFolderPath = path.join( dodocAPI.getUserPath(), dodoc.publicationTemplateDirname);
       fs.readdir( templateFolderPath, function (err, filenames) {
         if (err) reject( console.log( 'Couldn\'t read content dir : ' + err));
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
@@ -228,38 +193,6 @@ module.exports = function(app,io,m){
         resolve(folders);
       });
     });
-  }
-
-  function getMediaFolderPathByType( mediaType) {
-    if( mediaType == 'photo')
-      return getPhotoPathOfProject();
-    if( mediaType == 'video')
-      return getVideoPathOfProject();
-    if( mediaType == 'animation')
-      return getAnimationPathOfProject();
-    if( mediaType == 'audio')
-      return getAudioPathOfProject();
-    if( mediaType == 'text')
-      return getTextPathOfProject();
-  }
-
-  function getPhotoPathOfProject() {
-    return dodoc.projectPhotosFoldername;
-  }
-  function getAnimationPathOfProject() {
-    return dodoc.projectAnimationsFoldername;
-  }
-  function getVideoPathOfProject() {
-    return dodoc.projectVideosFoldername;
-  }
-  function getAudioPathOfProject() {
-    return dodoc.projectAudiosFoldername;
-  }
-  function getTextPathOfProject() {
-    return dodoc.projectTextsFoldername;
-  }
-  function getPubliPathOfProject() {
-    return dodoc.projectPublisFoldername;
   }
 
   // from http://stackoverflow.com/a/8440736

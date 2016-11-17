@@ -3,6 +3,7 @@ var imageMode = (function() {
 
   var $preview = $(".preview_image");
   var isRunning = true;
+  var $captureflash = $(".captureRight .flash");
 
   function takePictures() {
 
@@ -10,9 +11,7 @@ var imageMode = (function() {
       return;
 
     currentStream.getStaticImageFromVideo().then(function(imageData) {
-      $(".captureRight .flash").fadeIn(0, function(){
-        $(this).fadeOut(500);
-      });
+      $captureflash.fadeIn(0);
       console.log("Yeah you take a picture");
 
 
@@ -49,6 +48,7 @@ var imageMode = (function() {
     showImagePreview : function( pathToMediaFile) {
       $preview.find('img.js--output').attr("src", pathToMediaFile);
       $preview.find('.js--delete-media-capture').show();
+      $captureflash.fadeOut(200);
     },
 
     isRunning: function() {

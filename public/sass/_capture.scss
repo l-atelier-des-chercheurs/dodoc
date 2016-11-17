@@ -161,7 +161,7 @@ body.capture{
       &[data-mediatype="audio"] {
         background-color: $c-sons;
         &::before {
-          background-image: url("/images/i_icone-dodoc_son.svg");
+          background-image: url("/images/i_icone-dodoc_audio.svg");
         }
       }
 
@@ -171,14 +171,13 @@ body.capture{
 
 .feedSettings {
 
-  position: fixed;
-  top: 70px;
-  right: 0;
-  bottom: 0;
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
   z-index: 1500;
 
   background:   #EFEFEF;
-  border-left: 4px solid #EF474B;
+  border-left: 4px solid $rouge;
+  border-bottom: 4px solid $rouge;
 
   width: 300px;
 
@@ -196,12 +195,7 @@ body.capture{
     height: 100%;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
-
-    padding-left: 0.9375rem * 2;
-    padding-right: 0.9375rem * 2;
-    padding-top:  0.9375rem * 2;
-    padding-bottom:  0.9375rem * 2;
-
+    padding: $margin;
   }
 
   .openCloseSettings {

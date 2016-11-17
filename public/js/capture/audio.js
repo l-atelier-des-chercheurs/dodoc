@@ -51,10 +51,8 @@ var audioMode = (function() {
         "audioScreenshot" : imageData
       };
       sendData.createNewMedia( mediaData);
-
       animateWindows();
-      saveFeedback("/images/icone-dodoc_son.png");
-
+      saveFeedback("/images/icone-dodoc_audio.png");
     });
 
     sarahCouleur = 'gray';

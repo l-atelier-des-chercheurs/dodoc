@@ -18,7 +18,7 @@ var stopMotionMode = (function() {
   var $previewContainer = $preview.find('.preview_stopmotion--container');
   var $timeline = $preview.find('.preview_stopmotion--timeline');
 
-  const $captureflash = $(".captureRight .flash");
+  var $captureflash = $(".captureRight .flash");
 
   function startStopMotion(){
 
@@ -51,6 +51,7 @@ var stopMotionMode = (function() {
     currentStream.getStaticImageFromVideo().then(function(imageData) {
       mediaData.imageContent = imageData;
       socket.emit( 'startStopMotion', mediaData);
+      $captureflash.fadeIn(0);
     }, function(err) {
       console.log('err ' + err);
     });
@@ -206,7 +207,7 @@ var stopMotionMode = (function() {
 
       $previewContainer.append( $newPreview);
       $timeline.append( $newSmallPreview);
-      $captureflash.fadeOut(500);
+      $captureflash.fadeOut(200);
 
     },
 
