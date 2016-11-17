@@ -8,7 +8,6 @@ var moment = require('moment');
 var mm = require('marky-mark');
 var exec = require('child_process').exec;
 var ffmpeg = require('fluent-ffmpeg');
-var flags = require('flags');
 var merge = require('merge');
 var gutil = require('gulp-util');
 var parsedown = require('dodoc-parsedown');
@@ -27,7 +26,7 @@ catch( err) { console.log('No ftp config files have been found'); }
 
 module.exports = function(app, io){
 
-  console.log("main module initialized");
+  console.log("Main module initialized");
 
   io.on("connection", function(socket){
     // I N D E X    P A G E
@@ -295,8 +294,7 @@ module.exports = function(app, io){
 
   function onDeleteLastImageOfStopMotion( socket, idata) {
     dev.logfunction( "EVENT - onDeleteLastImageOfStopMotion : " + JSON.stringify( idata, null, 4));
-
-    var fullPathToStopmotionImage = getContentPath( idata.pathToStopmotionImage);
+    var fullPathToStopmotionImage = getFolderPath( idata.pathToStopmotionImage);
 
     fs.exists( fullPathToStopmotionImage, function(exists) {
       if(exists) {
@@ -484,15 +482,16 @@ FOLDER METHODS
 
 *************/
 
-  function getContentPath(thisPath) {
-    return path.join( getRootPath(), dodoc.contentDir, thisPath);
+  function getFolderPath(slugFolderName) {
+    return path.join( getUserPath(), dodoc.contentDirname, slugFolderName);
   }
-  function getRootPath() {
-    return __dirname;
+  function getUserPath() {
+    return global.userDirname;
   }
 
+
   function getMetaFileOfFolder( slugFolderName) {
-    return path.join( getContentPath( slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
+    return path.join( getFolderPath( slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
   }
 
   function createNewFolder( folderData) {
@@ -501,12 +500,12 @@ FOLDER METHODS
 
       var folderName = folderData.name;
       var slugFolderName = slugg(folderName);
-      var folderPath = getContentPath( slugFolderName);
+      var folderPath = getFolderPath( slugFolderName);
       var currentDateString = dodocAPI.getCurrentDate();
 
       fs.access( folderPath, fs.F_OK, function( err) {
         // if there's nothing at path
-        if ( err) {
+        if(err) {
           console.log("New folder created with name " + folderName + " and path " + folderPath);
           fs.ensureDirSync(folderPath);//write new folder in folders
           var fmeta =
@@ -536,11 +535,11 @@ FOLDER METHODS
 
   function listAllFolders() {
     return new Promise(function(resolve, reject) {
-      fs.readdir( getContentPath(''), function (err, filenames) {
+      fs.readdir( getFolderPath(''), function (err, filenames) {
         if (err) return console.log( 'Couldn\'t read content dir : ' + err);
 
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
-        dev.logverbose( "Number of folders in " + getContentPath('') + " = " + folders.length + ". Folders are " + folders);
+        dev.logverbose( "Number of folders in " + getFolderPath('') + " = " + folders.length + ". Folders are " + folders);
 
         var foldersProcessed = 0;
         var allFoldersData = [];
@@ -566,8 +565,8 @@ FOLDER METHODS
   function removeFolderNamed( slugFolderName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — removeFolderNamed : " + JSON.stringify(slugFolderName, null, 4));
-      var folderPath = getContentPath( slugFolderName);
-      var deletedFolderPath = getContentPath( dodoc.deletedPrefix + slugFolderName);
+      var folderPath = getFolderPath( slugFolderName);
+      var deletedFolderPath = getFolderPath( dodoc.deletedPrefix + slugFolderName);
 
       fs.rename( folderPath, deletedFolderPath, function(err) {
         if (err) reject( err);
@@ -580,7 +579,7 @@ FOLDER METHODS
   function listAllProjectsOfOneFolder( slugFolderName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "EVENT — listAllProjectsOfOneFolder : " + slugFolderName);
-      var folderPath = getContentPath( slugFolderName);
+      var folderPath = getFolderPath( slugFolderName);
 
       // list all projects
       fs.readdir( folderPath, function (err, projects) {
@@ -660,7 +659,7 @@ PROJECT METHODS
 
 
   function getProjectPath( slugFolderName, slugProjectName) {
-    return path.join( getContentPath( slugFolderName), slugProjectName);
+    return path.join( getFolderPath( slugFolderName), slugProjectName);
   }
   function getMetaFileOfProject( slugFolderName, slugProjectName) {
     return path.join( getProjectPath( slugFolderName, slugProjectName), dodoc.projectMetafilename + dodoc.metaFileext);
@@ -718,7 +717,7 @@ PROJECT METHODS
       var slugFolderName = projectData.slugFolderName;
 
       var currentDateString = dodocAPI.getCurrentDate();
-      var pathToFolder = getContentPath( slugFolderName);
+      var pathToFolder = getFolderPath( slugFolderName);
 
       // Vérifie si le projet existe déjà, change son slug si besoin
       slugProjectName = findFirstFilenameNotTaken( slugProjectName, pathToFolder, '');

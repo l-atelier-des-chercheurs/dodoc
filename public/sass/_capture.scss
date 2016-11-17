@@ -105,7 +105,7 @@ body.capture{
       padding: 11px $margin;
       border-radius: 4px;
 
-      margin-right: $margin;
+      margin: 0 $margin/2;
 
       &:last-of-type {
         margin-right: 0;
@@ -282,9 +282,9 @@ $t-decalageDuCentre: 4%;
 
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
-  height: auto;
   max-width: 50% - $t-decalageDuCentre;
   width: 80vh;
+  height: 80vh;
   padding: $margin/2;
 
   left: 50%;
@@ -531,6 +531,7 @@ $t-decalageDuCentre: 4%;
   #canvas-audio{
     display: none;
     width: 100%;
+    height: 100%;
   }
 
   .full-screen-wrapper {
@@ -625,7 +626,7 @@ $t-decalageDuCentre: 4%;
 
   padding: $margin/2;
 
-  height: auto;
+  height: 80vh;
   max-width: 45% - $t-decalageDuCentre;
   width: 80vh;
 
@@ -669,15 +670,18 @@ $t-decalageDuCentre: 4%;
 
   .preview {
     position: relative;
-    max-height: 80vh;
+    height: 100%;
 
     .output {
       min-width: 0;
-      width: auto;
-      max-width: 100%;
-      margin: 0 auto;
-      height: auto;
-      object-fit:contain;
+      width: 100%;
+      height: 100%;
+      object-fit: scale-down;
+      background-color: $gristresclair;
+    }
+
+    audio.output {
+      width: 100%;
     }
 
     .button-wrapper_deleteLastMedia, .button-wrapper_deleteMediaCapture {
@@ -699,11 +703,14 @@ $t-decalageDuCentre: 4%;
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: rgba(255,255,255,.9);
+      background-color: rgba(255,255,255,.94);
       z-index: 9;
 
-      video.output {
-        padding-bottom: 10px;
+      video {
+        width: 100%;
+        height: 75%;
+        background:   $gristresclair;
+        margin-bottom: $margin;
 
       }
 
@@ -740,18 +747,35 @@ $t-decalageDuCentre: 4%;
     }
 
     .preview_stopmotion--container {
+      position: relative;
+      width: 100%;
+      height: 75%;
       counter-reset: compteListe;
+
       .stopmotion_lastImagePreview {
 
-        position: relative;
-        padding: $margin/2;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+
+        padding: 0;
         background-color: #fff;
-        visibility: hidden;
+
+        transition: opacity .6s ease-out;
 
         .image_count {
           font-size:  80%;
           font-variant: small-caps;
           text-transform: lowercase;
+
+          position: absolute;
+          z-index: 1200;
+          bottom: 0;
+          left: 0;
+          padding: $margin/2;
+
+          text-shadow: 0px 0px 5px black;
+          color: white;
 
           &::after {
             counter-increment: compteListe 1;
@@ -759,39 +783,37 @@ $t-decalageDuCentre: 4%;
           }
         }
 
-        &:not(:last-of-type) {
-          position: absolute;
-          top: 0; left: 0;
-        }
-
-        &:last-child, &:nth-last-child(2) {
-          visibility: visible;
-        }
+        opacity: 0;
 
         &.is--active {
           z-index:  1;
-          visibility: visible;
+          opacity: 1;
         }
       }
     }
 
     .preview_stopmotion--timeline {
       width: 100%;
+      height: 15%;
       @include clearfix();
-      padding: $margin/2 $margin/4;
-      margin-bottom:  $margin;
-      border-top: 1px solid $c-separator;
+      padding: 0;
+      padding-bottom:  $margin/2;
       counter-reset: compteListe;
 
       .stopmotion_lastImageSmallPreview {
+        position: relative;
         float:left;
         cursor: pointer;
-
+        height: 100%;
         width: 0;
+
         visibility: hidden;
 
         img {
           padding: $margin/4;
+          height: 100%;
+          width: 100%;
+          object-fit: scale-down;
         }
 
         &.is--active {
@@ -808,6 +830,7 @@ $t-decalageDuCentre: 4%;
           counter-increment: compteListe 1;
           content: counter(compteListe) " ";
           position: absolute;
+          bottom: 0;
           font-size: 60%;
           padding: 0px $margin/4;
         }
@@ -820,6 +843,9 @@ $t-decalageDuCentre: 4%;
     }
 
     .preview_stopmotion--frameRate {
+      float: left;
+      width: 50%;
+
       span {
         @include style--titrelegende;
         margin-right: $margin/4;
@@ -834,6 +860,17 @@ $t-decalageDuCentre: 4%;
 
     }
 
+
+  }
+
+  .preview_audio {
+
+    audio {
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      height: auto;
+    }
 
   }
 

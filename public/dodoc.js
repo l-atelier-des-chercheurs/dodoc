@@ -77,6 +77,9 @@ if( lang === 'fr') {
       "videoStreamCouldntBeStartedTryChangingRes" : "Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la résolution dans le panneau de droite.",
       "audioStreamCouldntBeStarted" : "Le flux audio n’a pas pu être démarré.",
 
+      "mediapublitemplatesarestoredint" : "Les médias, les publications et les templates sont actuellement stockés dans le dossier ",
+      "toconnectwithanotherdevice" : "Pour vous connecter avec un autre appareil connecté au même réseau wifi, naviguez vers l’adresse suivante (et ignorez l’avertissement qui s’affiche)&nbsp;:",
+
       "modal" : {
         "sureRemoveMedia" : "Êtes-vous sûr de vouloir supprimer ce média ?",
 
@@ -122,6 +125,9 @@ if( lang === 'fr') {
       "lastMediasAdded" : "Last medias added",
       "listOfPublications" : "List of publications",
 
+      "mediapublitemplatesarestoredint" : "Medias, publications and templates are currently stored in ",
+      "toconnectwithanotherdevice" : "To connect with another device, use the following URL (and ignore the warning that’s shown):",
+
     }
   };
 }
@@ -129,8 +135,9 @@ if( lang === 'fr') {
 var settings = {
 
   "codelang" : lang,
-  "contentDir" : "sessions",
-  "publicationTemplateDir" : "templates",
+  "userDirname": "user",
+  "contentDirname" : "contenus",
+  "publicationTemplateDirname" : "templates",
   "exportedPubliDir" : "publications",
   "metaFileext" : ".txt",
   "videoext" : ".webm",

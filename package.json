@@ -2,6 +2,10 @@
   "name": "dodoc",
   "version": "0.8.2",
   "description": "Dodoc is a documentation tool for children",
+  "scripts": {
+    "start": "node index.js",
+    "debug": "node --inspect index.js --debug"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/sarahgarcin/opendoc-tangible.git"

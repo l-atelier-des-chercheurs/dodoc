@@ -37,21 +37,18 @@ module.exports = function(app,io,m){
   /**
   * routing functions
   */
-  function getContentPath(thisPath) {
-    return path.join( getRootPath(), dodoc.contentDir, thisPath);
+  function getFolderPath(slugFolderName) {
+    return path.join( getUserPath(), dodoc.contentDirname, slugFolderName);
   }
-  function getRootPath() {
-    return __dirname;
-  }
-  function getRootFolder(thisPath) {
-    return path.join( getRootPath(), thisPath);
+  function getUserPath() {
+    return global.userDirname;
   }
 
   function getMetaFileOfFolder( slugFolderName) {
-    return path.join( getContentPath( slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
+    return path.join( getFolderPath( slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
   }
   function getProjectPath( slugFolderName, slugProjectName) {
-    return path.join( getContentPath( slugFolderName), slugProjectName);
+    return path.join( getFolderPath( slugFolderName), slugProjectName);
   }
   function getMetaFileOfProject( slugFolderName, slugProjectName) {
     return path.join( getProjectPath( slugFolderName, slugProjectName), dodoc.projectMetafilename + dodoc.metaFileext);
@@ -76,7 +73,9 @@ module.exports = function(app,io,m){
 
   function generatePageData( req, pageTitle) {
     return new Promise(function(resolve, reject) {
-      console.log('new page has been requested');
+
+      var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+      console.log('—> the following page has been requested : ' + fullUrl);
 
       var pageDataJSON = [];
 
@@ -119,14 +118,11 @@ module.exports = function(app,io,m){
         pageDataJSON.pageTitle = pageTitle;
 
       pageDataJSON.url = req.path;
+      pageDataJSON.isHttps = req.connection.encrypted;
       pageDataJSON.dodoc = dodoc;
 
       getLocalIP().then(function(localNetworkInfos) {
         pageDataJSON.localNetworkInfos = localNetworkInfos;
-
-//         console.log('pageDataJSON');
-//         console.log(pageDataJSON);
-
         resolve(pageDataJSON);
       }, function(err) {
         console.log('err ' + err);
@@ -223,10 +219,12 @@ module.exports = function(app,io,m){
 
   function getAllTemplates() {
     return new Promise(function(resolve, reject) {
-      var templateFolderPath = getRootFolder( dodoc.publicationTemplateDir);
+      dev.log('Getting all templates');
+      var templateFolderPath = path.join( getUserPath(), dodoc.publicationTemplateDirname);
       fs.readdir( templateFolderPath, function (err, filenames) {
         if (err) reject( console.log( 'Couldn\'t read content dir : ' + err));
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
+        dev.log('Found ' + folders.length + ' templates in ' + templateFolderPath);
         resolve(folders);
       });
     });

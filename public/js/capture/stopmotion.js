@@ -12,11 +12,13 @@ var stopMotionMode = (function() {
   var $finishsm = $preview.find(".js--finish-stopmotion");
   var $backToAnimation = $preview.find(".js--delete-media-capture-stopmotion");
 
-  var $lastStopmotionImage = $(".video-view .js--lastStopmotionImage");
+  var $lastStopmotionImage = $(".js--lastStopmotionImage");
   var $lastStopmotionImageSlider = $(".video-view .js--lastImageOpacity");
 
   var $previewContainer = $preview.find('.preview_stopmotion--container');
   var $timeline = $preview.find('.preview_stopmotion--timeline');
+
+  const $captureflash = $(".captureRight .flash");
 
   function startStopMotion(){
 
@@ -33,7 +35,7 @@ var stopMotionMode = (function() {
     $lastStopmotionImage.attr('src', '');
     $("body").data("smCacheName", "");
     $("body").data("smCachePath", "");
-    $preview.find('.output').attr('src', '');
+    $preview.find('.js--output').attr('src', '');
     $previewOutput.hide();
 
     justCaptured();
@@ -79,9 +81,7 @@ var stopMotionMode = (function() {
       socket.emit( 'addImageToStopMotion', smImage);
 
       $('body').addClass('takingstopmotion');
-      $(".captureRight .flash").fadeIn(0, function(){
-        $(this).fadeOut(500);
-      });
+      $captureflash.fadeIn(0);
 
       justCaptured();
       animateWindows();
@@ -141,7 +141,7 @@ var stopMotionMode = (function() {
       $previzsm.off().on('click', previzStopMotion);
       $finishsm.off().on('click', finishStopmotion);
       $preview.show();
-      $preview.find('.output').attr('src', '');
+      $preview.find('video').attr('src', '');
       $previewOutput.hide();
 
       $lastStopmotionImageSlider.bind("change", function() {
@@ -155,7 +155,7 @@ var stopMotionMode = (function() {
 
     stop : function() {
       isRunning = false;
-      $preview.find('.output').attr('src', '');
+      $preview.find('.js--output').attr('src', '');
     },
 
     onNewStopmotionImage : function( smdata) {
@@ -170,8 +170,10 @@ var stopMotionMode = (function() {
       // delete last stopmotion image
       $newPreview.on('click', '.js--delete-sm-lastimage', function(){
         removeImageFromStopMotion( relativeImagePath);
-        $newPreview.fadeOut(600, function() { $(this).remove(); });
-        $newSmallPreview.fadeOut(600, function() { $(this).remove(); });
+        $newPreview.remove();
+        $newSmallPreview.remove();
+        $previewContainer.find('.stopmotion_lastImagePreview').last().addClass('is--active');
+        $timeline.find('.stopmotion_lastImageSmallPreview').last().addClass('is--active');
       });
       $newSmallPreview.on('click', function() {
         $previewContainer.find('.stopmotion_lastImagePreview.is--active').removeClass('is--active');
@@ -189,24 +191,22 @@ var stopMotionMode = (function() {
       $lastStopmotionImage.attr("src", relativeImagePath);
 
       // supprimer les images plus anciennes que 10
-      $previewContainer.find(".stopmotion_lastImagePreview").eq(-10).trigger("removeMe");
-      $newPreview.on("removeMe", function(){
+      $previewContainer.find(".stopmotion_lastImagePreview").eq(-10).trigger("hideMe");
+      $newPreview.on("hideMe", function(){
         $newPreview.off().find("img").attr("src", "").remove();
         $newPreview = null;
-        $newSmallPreview.remove();
-        $newSmallPreview = null;
       });
 
-      $timeline.find(".stopmotion_lastImageSmallPreview").eq(-10).trigger("removeMe");
-      $newSmallPreview.on("removeMe", function(){
-        $newPreview.off().find("img").attr("src", "").remove();
-        $newPreview = null;
+      $timeline.find(".stopmotion_lastImageSmallPreview").eq(-10).trigger("hideMe");
+      $newSmallPreview.on("hideMe", function(){
         $newSmallPreview.find("img").attr("src", "").remove();
+        $newSmallPreview.off().css("width", "0");
         $newSmallPreview = null;
       });
 
       $previewContainer.append( $newPreview);
       $timeline.append( $newSmallPreview);
+      $captureflash.fadeOut(500);
 
     },
 
@@ -218,7 +218,7 @@ var stopMotionMode = (function() {
 
     showStopMotionPreview : function( pathToMediaFile) {
       // to prevent cache from being used, we add a unix timestamp at the end of the filename
-      $preview.find('video.output').attr( 'src', pathToMediaFile + '?' + moment().format('x'));
+      $preview.find('video.js--output').attr( 'src', pathToMediaFile + '?' + moment().format('x'));
 
       $backToAnimation.off().on('click', function() {
         var mediaToDelete =
@@ -228,7 +228,7 @@ var stopMotionMode = (function() {
         }
         sendData.deleteStopmotion( mediaToDelete);
         $previewOutput.hide();
-        $preview.find('video.output').attr('src', '');
+        $preview.find('video.js--output').attr('src', '');
       });
     },
 

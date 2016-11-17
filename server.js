@@ -66,6 +66,7 @@ module.exports = function() {
   server.listen(
     app.get("port"), function() {
       console.log(`Server up and running. Go to ${config.protocol}://${config.host}:${config.port}`);
+      console.log(' ');
     }
   );
 }

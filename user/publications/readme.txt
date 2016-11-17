@@ -1,0 +1,1 @@
+This folder contains all exported publications (export option is in a publication’s page).

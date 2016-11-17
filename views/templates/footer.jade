@@ -1,6 +1,13 @@
-.module_localNetworkInfos
+.module_infos
   -for(var prop in localNetworkInfos)
-    h3 To connect with another device, use https://#{localNetworkInfos[prop]}:8080
+    -if(isHttps)
+      h3 !{dodoc.lang.toconnectwithanotherdevice} https://#{localNetworkInfos[prop]}:8080
+    -else
+      h3 !{dodoc.lang.toconnectwithanotherdevice} http://#{localNetworkInfos[prop]}:8080
+  h3 !{dodoc.lang.mediapublitemplatesarestoredint} <br>#{userDirname}
+
+script
+  | if (typeof module === 'object') {window.module = module; module = undefined;}
 
 script(src='/socket.io/socket.io.js')
 script
@@ -15,3 +22,6 @@ script( src='/dodoc.js')
 script( src='/js/common.js')
 script( src='/js/modules/_modals.js')
 script( src='/js/_global.js')
+
+script
+  | if (window.module) module = window.module;

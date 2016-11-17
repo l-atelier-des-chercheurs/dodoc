@@ -78,14 +78,14 @@ html
         div.content-wrapper
           div.captureLeft
             div.video-view
-              //- display last stopmotion image (if needed)
-              img.captureLeft-lastStopmotionImage.js--lastStopmotionImage(src)
               //- display camera
               .videoContainer.js--videoContainer
+                //- display last stopmotion image (if needed)
+                img.captureLeft-lastStopmotionImage.js--lastStopmotionImage(src)
                 video.videoFeed.js--videoFeed(autoplay)
                 div.currentStreamResolution.js--currentStreamResolution
               //- display audio vizualizer
-              canvas(id="canvas-audio" width="720" height="256")
+              canvas(id="canvas-audio" width="720" height="720")
 
               div.btn-capture-wrapper
                 div.photo-capture
@@ -135,11 +135,11 @@ html
             div.flash.small-12
 
             .preview.preview_image
-              img.output
+              img.output.js--output
               +button( 'deleteMediaCapture', '', 'isCollapsed')
 
             .preview.preview_video
-              video.output(controls autoplay loop)
+              video.output.js--output(controls autoplay loop)
               +button( 'deleteMediaCapture', '', 'isCollapsed')
 
             .preview.preview_stopmotion
@@ -150,14 +150,14 @@ html
                 input(type='number' step='1' value='4' min='1' max='25')
               +button( 'previzStopmotion', '', '')
               .output_container
-                video.output(controls autoplay loop)
+                video.js--output(controls autoplay loop)
                 +button( 'deleteMediaCaptureStopmotion', '', '')
                 +button( 'finishStopmotion', '', '')
                 .div_is_loading
 
             .preview.preview_audio
-              img.output
-              audio(controls).output
+              img.output.js--output
+              audio(controls)
               +button( 'deleteMediaCapture', '', 'isCollapsed')
 
     .js--templates

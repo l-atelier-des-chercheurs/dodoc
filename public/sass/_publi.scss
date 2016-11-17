@@ -1,10 +1,11 @@
+// page publi mais pas "encart publi" donc pas de style !
 body.publi{
   background-color: #fff;
   header{
 
   }
 
-  .module_localNetworkInfos {
+  .module_infos {
     display: none;
   }
 
@@ -20,14 +21,11 @@ body.publi{
     width: 100%;
     float: none;
 
-    margin-bottom: 22px;
-
     &::before {
       display: none;
     }
 
     .mediaContent {
-      box-shadow: none;
     }
     // hide fav color
     &::after {
