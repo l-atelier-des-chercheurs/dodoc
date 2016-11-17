@@ -503,7 +503,7 @@ FOLDER METHODS
 
       fs.access( folderPath, fs.F_OK, function( err) {
         // if there's nothing at path
-        if ( err) {
+        if(err) {
           console.log("New folder created with name " + folderName + " and path " + folderPath);
           fs.ensureDirSync(folderPath);//write new folder in folders
           var fmeta =

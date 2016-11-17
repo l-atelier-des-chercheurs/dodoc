@@ -78,10 +78,10 @@ html
         div.content-wrapper
           div.captureLeft
             div.video-view
-              //- display last stopmotion image (if needed)
-              img.captureLeft-lastStopmotionImage.js--lastStopmotionImage(src)
               //- display camera
               .videoContainer.js--videoContainer
+                //- display last stopmotion image (if needed)
+                img.captureLeft-lastStopmotionImage.js--lastStopmotionImage(src)
                 video.videoFeed.js--videoFeed(autoplay)
                 div.currentStreamResolution.js--currentStreamResolution
               //- display audio vizualizer

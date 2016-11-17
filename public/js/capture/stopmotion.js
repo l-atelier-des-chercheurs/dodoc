@@ -12,11 +12,13 @@ var stopMotionMode = (function() {
   var $finishsm = $preview.find(".js--finish-stopmotion");
   var $backToAnimation = $preview.find(".js--delete-media-capture-stopmotion");
 
-  var $lastStopmotionImage = $(".video-view .js--lastStopmotionImage");
+  var $lastStopmotionImage = $(".js--lastStopmotionImage");
   var $lastStopmotionImageSlider = $(".video-view .js--lastImageOpacity");
 
   var $previewContainer = $preview.find('.preview_stopmotion--container');
   var $timeline = $preview.find('.preview_stopmotion--timeline');
+
+  const $captureflash = $(".captureRight .flash");
 
   function startStopMotion(){
 
@@ -79,9 +81,7 @@ var stopMotionMode = (function() {
       socket.emit( 'addImageToStopMotion', smImage);
 
       $('body').addClass('takingstopmotion');
-      $(".captureRight .flash").fadeIn(0, function(){
-        $(this).fadeOut(500);
-      });
+      $captureflash.fadeIn(0);
 
       justCaptured();
       animateWindows();
@@ -191,24 +191,22 @@ var stopMotionMode = (function() {
       $lastStopmotionImage.attr("src", relativeImagePath);
 
       // supprimer les images plus anciennes que 10
-      $previewContainer.find(".stopmotion_lastImagePreview").eq(-10).trigger("removeMe");
-      $newPreview.on("removeMe", function(){
+      $previewContainer.find(".stopmotion_lastImagePreview").eq(-10).trigger("hideMe");
+      $newPreview.on("hideMe", function(){
         $newPreview.off().find("img").attr("src", "").remove();
         $newPreview = null;
-        $newSmallPreview.remove();
-        $newSmallPreview = null;
       });
 
-      $timeline.find(".stopmotion_lastImageSmallPreview").eq(-10).trigger("removeMe");
-      $newSmallPreview.on("removeMe", function(){
-        $newPreview.off().find("img").attr("src", "").remove();
-        $newPreview = null;
+      $timeline.find(".stopmotion_lastImageSmallPreview").eq(-10).trigger("hideMe");
+      $newSmallPreview.on("hideMe", function(){
         $newSmallPreview.find("img").attr("src", "").remove();
+        $newSmallPreview.off().css("width", "0");
         $newSmallPreview = null;
       });
 
       $previewContainer.append( $newPreview);
       $timeline.append( $newSmallPreview);
+      $captureflash.fadeOut(500);
 
     },
 
