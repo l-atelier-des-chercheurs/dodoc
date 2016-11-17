@@ -7188,12 +7188,9 @@ body.publi {
   body.publi .media {
     padding: 0 0;
     width: 100%;
-    float: none;
-    margin-bottom: 22px; }
+    float: none; }
     body.publi .media::before {
       display: none; }
-    body.publi .media .mediaContent {
-      box-shadow: none; }
     body.publi .media::after {
       display: none; }
     body.publi .media .button-wrapper_deleteMedia {
@@ -8612,6 +8609,7 @@ body.capture .content-wrapper:after {
   .media.media_audio .mediaContent audio {
     width: 100%; }
   .media.media_text .mediaContent {
+    background-color: #fff;
     min-height: 15px; }
     .media.media_text .mediaContent .mediaContent--titleOfTextmedia {
       font-size: 1.2em;
@@ -8663,20 +8661,20 @@ body.capture .content-wrapper:after {
   .media::after {
     content: "";
     position: absolute;
-    left: 4px;
-    top: 4px;
-    right: 4px;
-    bottom: 4px;
-    z-index: -1;
-    border: 0 solid transparent;
-    transition: all .35s; }
+    right: -70px;
+    bottom: -70px;
+    width: 100px;
+    height: 100px;
+    z-index: 0;
+    background-color: #4BC0B4;
+    transform: rotate(45deg) translate3d(50px, 0, 0px);
+    transition: transform .35s; }
   .media.is--highlight {
     z-index: 2; }
-    .media.is--highlight .mediaContent {
-      background-color: #4BC0B4; }
-    .media.is--highlight .button-wrapper_flagMedia {
-      opacity: 1;
-      transform: translate(0px, 0px); }
+    .media.is--highlight::after {
+      transform: rotate(45deg) translate3d(0px, 0px, 0px); }
+    .media.is--highlight:hover::after {
+      transform: rotate(45deg) translate3d(-30px, 0, 0px); }
   .media .button-wrapper_deleteMedia {
     display: none; }
   .media .button-wrapper_flagMedia {
@@ -8811,12 +8809,19 @@ input[type=range]::-webkit-slider-thumb {
   .template_container .publi-btn {
     position: relative;
     width: 40px;
-    float: left; }
+    float: left;
+    padding: 6px 0 0; }
     .template_container .publi-btn:before, .template_container .publi-btn:after {
       content: " ";
       display: table; }
     .template_container .publi-btn:after {
       clear: both; }
+    .template_container .publi-btn .button-wrapper {
+      float: right;
+      z-index: 1500; }
+  .template_container .media .mediaContent {
+    box-shadow: none;
+    border: none; }
 
 .alertify-logs {
   z-index: 15000; }

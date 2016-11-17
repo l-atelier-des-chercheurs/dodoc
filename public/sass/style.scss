@@ -488,6 +488,7 @@ button {
 
   &.media_text {
     .mediaContent {
+        background-color: #fff;
       min-height: 15px;
       .mediaContent--titleOfTextmedia {
         font-size: 1.2em;
@@ -568,14 +569,15 @@ button {
   &::after {
     content: "";
     position: absolute;
-    left: $margin/4;
-    top: $margin/4;
-    right: $margin/4;
-    bottom: $margin/4;
-    z-index: -1;
-    border: 0 solid transparent;
-    transition: all .35s;
+    right: -70px;
+    bottom: -70px;
+    width: 100px;
+    height: 100px;
+    z-index: 0;
+    background-color: $bleuvert;
+    transform: rotate(45deg) translate3d(50px, 0, 0px);
 
+    transition: transform .35s;
   }
 
   &.is--highlight {
@@ -583,12 +585,13 @@ button {
     z-index: 2;
 
     &::after {
+      transform: rotate(45deg) translate3d(0px, 0px, 0px);
     }
 
     .mediaContent {
 //       box-shadow: 0 1px 8px $bleuvert;
 //       background-color: $bleuvert;
-      background-color: $bleuvert;
+//       background-color: $bleuvert;
 
       img, video {
       }
@@ -599,8 +602,12 @@ button {
     }
 
     .button-wrapper_flagMedia {
-      opacity: 1;
-      transform: translate(0px, 0px);
+//       opacity: 1;
+//       transform: translate(0px, 0px);
+    }
+
+    &:hover::after {
+      transform: rotate(45deg) translate3d(-30px, 0, 0px);
     }
   }
 
@@ -790,8 +797,21 @@ input[type=range] {
     position: relative;
     width: 40px;
     float: left;
+    padding: 6px 0 0;
+
+    .button-wrapper {
+      float: right;
+      z-index: 1500;
+    }
   }
 
+  .media {
+
+    .mediaContent {
+      box-shadow: none;
+      border: none;
+    }
+  }
 }
 
 
