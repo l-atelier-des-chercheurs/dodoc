@@ -243,7 +243,7 @@ module.exports = function(app, io){
 
     var slugFolderName = mediaData.slugFolderName;
     var slugProjectName = mediaData.slugProjectName;
-    var mediaFolder = getAnimationPathOfProject();
+    var mediaFolder = dodocMedia.getAnimationPathOfProject();
     var folderCachePath = path.join( dodocProject.getProjectPath( slugFolderName, slugProjectName), mediaFolder, folderCacheName);
     var relativeCachePath = path.join('/', slugFolderName, slugProjectName, mediaFolder, folderCacheName);
 
