@@ -89,7 +89,6 @@ module.exports = function(app, io){
 
   function onListFolders(socket){
     dev.logfunction( "EVENT - onListFolders");
-    console.log('dodocAPI ' + dodocAPI.getCurrentDate());
     dodocFolder.listAllFolders().then(function( allFoldersData) {
       dodocAPI.sendEventWithContent( 'listAllFolders', allFoldersData, io, socket);
       // also list projects !
