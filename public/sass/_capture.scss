@@ -705,7 +705,7 @@ $t-decalageDuCentre: 4%;
         height: 75%;
         background:   $gristresclair;
         margin-bottom: $margin;
-
+        object-fit: scale-down;
       }
 
       // video with empty src

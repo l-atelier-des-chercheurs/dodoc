@@ -13,6 +13,7 @@ var dodocPubli = (function() {
 
   const API = {
     getPathToPubli             : function(slugFolderName, slugProjectName, pslug) { return getPathToPubli( slugFolderName, slugProjectName, pslug); },
+    getPubliPathOfProject      : function() { return getPubliPathOfProject(); },
     listMediaAndMetaFromOnePubli : function(slugFolderName, slugProjectName, slugPubliName) { return listMediaAndMetaFromOnePubli(slugFolderName, slugProjectName, slugPubliName); },
     filterMediasFromPubliList  : function(publiContent, mediaFolderContent) { return filterMediasFromPubliList(publiContent, mediaFolderContent); },
     createPubli                : function(publiData) { return createPubli(publiData); },
@@ -27,7 +28,7 @@ var dodocPubli = (function() {
   // if two args, then get path to publi folder
   // if three args, then get path to one publi
   function getPathToPubli(slugFolderName, slugProjectName, pslug) {
-    var projectPath = dodocProject.getProjectPath( slugFolderName, slugProjectName);
+    var projectPath = dodocAPI.getProjectPath( slugFolderName, slugProjectName);
     var pathToPubli = path.join( projectPath, getPubliPathOfProject());
     if( pslug !== undefined)
       pathToPubli = path.join( pathToPubli, pslug);

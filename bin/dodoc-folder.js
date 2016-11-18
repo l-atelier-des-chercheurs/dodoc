@@ -8,30 +8,25 @@ var dodocAPI = require('./dodoc-api.js');
 var dodocFolder = (function() {
 
   const API = {
-    getFolderPath           : function(slugFolderName) { return getFolderPath(slugFolderName); },
     getMetaFileOfFolder     : function(slugFolderName) { return getMetaFileOfFolder(slugFolderName); },
     createNewFolder         : function(folderData) { return createNewFolder(folderData); },
     listAllFolders          : function() { return listAllFolders(); },
-    removeFolderNamed       : function(slugFolderName) { return getFolderPath(slugFolderName); },
+    removeFolderNamed       : function(slugFolderName) { return removeFolderNamed(slugFolderName); },
     updateFolderMeta        : function(folderData) { return updateFolderMeta(folderData); },
     listAllProjectsOfOneFolder: function(slugFolderName) { return listAllProjectsOfOneFolder(slugFolderName); },
   };
 
   /********************************************* SHORT FUNCTIONS *********************************************/
-  function getFolderPath(slugFolderName) {
-    dev.logfunction( "COMMON — getFolderPath");
-    slugFolderName = slugFolderName === undefined ? '' : slugFolderName;
-    return path.join(dodocAPI.getUserPath(), dodoc.contentDirname, slugFolderName);
-  }
 
   function getMetaFileOfFolder( slugFolderName) {
-    dev.logfunction( "COMMON — getMetaFileOfFolder");
-    return path.join( getFolderPath(slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
+    dev.logfunction( "COMMON — getMetaFileOfFolder: " + slugFolderName);
+    return path.join( dodocAPI.getFolderPath(slugFolderName), dodoc.folderMetafilename + dodoc.metaFileext);
   }
 
   function getFolderMeta( slugFolderName) {
-    dev.logfunction( "COMMON — getFolderMeta");
-    var folderMetaFile = getMetaFileOfFolder( slugFolderName);
+    dev.logfunction( "COMMON — getFolderMeta: " + slugFolderName);
+    var folderMetaFile = getMetaFileOfFolder(slugFolderName);
+    dev.logfunction( "folderMetaFile: " + folderMetaFile);
     var folderData = fs.readFileSync( folderMetaFile,dodoc.textEncoding);
     var folderMetadata = dodocAPI.parseData( folderData);
     return folderMetadata;
@@ -43,7 +38,7 @@ var dodocFolder = (function() {
 
       var folderName = folderData.name;
       var slugFolderName = slugg(folderName);
-      var folderPath = getFolderPath( slugFolderName);
+      var folderPath = dodocAPI.getFolderPath( slugFolderName);
       var currentDateString = dodocAPI.getCurrentDate();
 
       fs.access( folderPath, fs.F_OK, function( err) {
@@ -80,15 +75,16 @@ var dodocFolder = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — listAllFolders");
 
-      fs.readdir( getFolderPath(), function (err, filenames) {
+      fs.readdir( dodocAPI.getFolderPath(), function (err, filenames) {
         if (err) return console.log( 'Couldn\'t read content dir : ' + err);
 
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
-        dev.logverbose( "Number of folders in " + getFolderPath() + " = " + folders.length + ". Folders are " + folders);
+        dev.logverbose( "Number of folders in " + dodocAPI.getFolderPath() + " = " + folders.length + ". Folders are " + folders);
 
         var foldersProcessed = 0;
         var allFoldersData = [];
         folders.forEach( function( slugFolderName) {
+          dev.logverbose('listAllFolders -- current folder to look into: ' + slugFolderName);
 
           if( new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName)
           && slugFolderName.indexOf( dodoc.deletedPrefix)){
@@ -111,8 +107,8 @@ var dodocFolder = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — removeFolderNamed : " + JSON.stringify(slugFolderName, null, 4));
 
-      var folderPath = getFolderPath( slugFolderName);
-      var deletedFolderPath = getFolderPath( dodoc.deletedPrefix + slugFolderName);
+      var folderPath = dodocAPI.getFolderPath( slugFolderName);
+      var deletedFolderPath = dodocAPI.getFolderPath( dodoc.deletedPrefix + slugFolderName);
 
       fs.rename( folderPath, deletedFolderPath, function(err) {
         if (err) reject( err);
@@ -150,7 +146,7 @@ var dodocFolder = (function() {
   function listAllProjectsOfOneFolder(slugFolderName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "EVENT — listAllProjectsOfOneFolder : " + slugFolderName);
-      var folderPath = getFolderPath( slugFolderName);
+      var folderPath = dodocAPI.getFolderPath( slugFolderName);
 
       // list all projects
       fs.readdir( folderPath, function (err, projects) {
@@ -165,7 +161,7 @@ var dodocFolder = (function() {
 
             var dodocProject = require('./dodoc-project.js');
             var pdata = dodocProject.getProjectMeta( slugFolderName, slugProjectName);
-            var projectPath = dodocProject.getProjectPath( slugFolderName, slugProjectName);
+            var projectPath = dodocAPI.getProjectPath( slugFolderName, slugProjectName);
             pdata.slugFolderName = slugFolderName;
             pdata.slugProjectName = slugProjectName;
             pdata.projectPreviewName = dodocProject.getProjectPreview( projectPath);

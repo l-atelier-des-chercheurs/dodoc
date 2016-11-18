@@ -6,11 +6,11 @@ var merge = require('merge');
 var dodoc  = require('../public/dodoc');
 
 var dodocAPI = require('./dodoc-api.js');
+var dodocPubli = require('./dodoc-publi.js');
 
 var dodocProject = (function() {
 
   const API = {
-    getProjectPath           : function(slugFolderName, slugProjectName) { return getProjectPath(slugFolderName, slugProjectName); },
     getMetaFileOfProject     : function(slugFolderName, slugProjectName) { return getMetaFileOfProject(slugFolderName, slugProjectName); },
     getProjectMeta           : function(slugFolderName, slugProjectName) { return getProjectMeta(slugFolderName, slugProjectName); },
     createNewProject         : function(projectData) { return createNewProject(projectData); },
@@ -25,12 +25,8 @@ var dodocProject = (function() {
   /******************************************** public functions *************************************/
   /***************************************************************************************************/
 
-  function getProjectPath( slugFolderName, slugProjectName) {
-    var dodocFolder = require('./dodoc-folder.js');
-    return path.join( dodocFolder.getFolderPath(slugFolderName), slugProjectName);
-  }
   function getMetaFileOfProject( slugFolderName, slugProjectName) {
-    return path.join( getProjectPath( slugFolderName, slugProjectName), dodoc.projectMetafilename + dodoc.metaFileext);
+    return path.join( dodocAPI.getProjectPath( slugFolderName, slugProjectName), dodoc.projectMetafilename + dodoc.metaFileext);
   }
   function getProjectMeta(slugFolderName, slugProjectName) {
 //    dev.log( "getProjectMeta with slugFolderName : " + slugFolderName + " slugProjectName : " + slugProjectName);
@@ -50,11 +46,11 @@ var dodocProject = (function() {
 
       var currentDateString = dodocAPI.getCurrentDate();
       var dodocFolder = require('./dodoc-folder.js');
-      var pathToFolder = dodocFolder.getFolderPath( slugFolderName);
+      var pathToFolder = dodocAPI.getFolderPath( slugFolderName);
 
       // Vérifie si le projet existe déjà, change son slug si besoin
       slugProjectName = dodocAPI.findFirstFilenameNotTaken( slugProjectName, pathToFolder, '');
-      var projectPath = getProjectPath( slugFolderName, slugProjectName);
+      var projectPath = dodocAPI.getProjectPath( slugFolderName, slugProjectName);
 
       console.log("New project created with name " + projectName + " and path " + projectPath);
       fs.ensureDirSync(projectPath);//new project
@@ -69,7 +65,7 @@ var dodocProject = (function() {
         fs.ensureDirSync( path.join( projectPath, mediaFolder));//write new medias folder in folders
       });
       var publiFolder = dodocPubli.getPubliPathOfProject();
-      fs.ensureDirSync( path.join( projectPath, publiFolder));//write new publi folder in folders
+      fs.ensureDirSync( path.join(projectPath, publiFolder));//write new publi folder in folders
 
       var pmeta =
         {
@@ -80,7 +76,10 @@ var dodocProject = (function() {
           "informations" : 0
         };
 
-      dodocAPI.storeData( getMetaFileOfProject( slugFolderName, slugProjectName), pmeta, "create").then(function( meta) {
+      var metaFileOfProject = getMetaFileOfProject( slugFolderName, slugProjectName);
+
+      dodocAPI.storeData(metaFileOfProject, pmeta, "create").then(function( meta) {
+        dev.logverbose('Just stored new project data, returning this data to client');
         var updatedpmeta = getProjectMeta( slugFolderName, slugProjectName);
         updatedpmeta.slugFolderName = slugFolderName;
         updatedpmeta.slugProjectName = slugProjectName;
@@ -119,7 +118,7 @@ var dodocProject = (function() {
 
       var slugProjectName = pdata.slugProjectName;
       var slugFolderName = pdata.slugFolderName;
-      var projectPath = getProjectPath( slugFolderName, slugProjectName);
+      var projectPath = dodocAPI.getProjectPath( slugFolderName, slugProjectName);
 
       var currentDateString = dodocAPI.getCurrentDate();
 
@@ -151,7 +150,7 @@ var dodocProject = (function() {
   function listOneProject(slugFolderName, slugProjectName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON - listOneProject slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName);
-      var projectPath = getProjectPath( slugFolderName, slugProjectName);
+      var projectPath = dodocAPI.getProjectPath( slugFolderName, slugProjectName);
       var pdata = getProjectMeta( slugFolderName, slugProjectName);
       pdata.slugFolderName = slugFolderName;
       pdata.slugProjectName = slugProjectName;
@@ -163,8 +162,8 @@ var dodocProject = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON - onRemoveProject _ slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName);
 
-      var projectPath = getProjectPath( slugFolderName, slugProjectName);
-      var projectPathToDeleted = getProjectPath( slugFolderName, dodoc.deletedPrefix + slugProjectName);
+      var projectPath = dodocAPI.getProjectPath( slugFolderName, slugProjectName);
+      var projectPathToDeleted = dodocAPI.getProjectPath( slugFolderName, dodoc.deletedPrefix + slugProjectName);
       fs.rename( projectPath, projectPathToDeleted, function(err) {
         if (err) reject(err);
         var projectData =

@@ -4,7 +4,7 @@
   "description": "Dodoc is a documentation tool for children",
   "scripts": {
     "start": "node index.js",
-    "debug": "node --inspect index.js --debug"
+    "debug": "node --inspect index.js --debug --verbose"
   },
   "repository": {
     "type": "git",

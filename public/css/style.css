@@ -7070,9 +7070,8 @@ th.hide-for-touch {
     height: 1em;
     vertical-align: middle;
     fill: currentColor;
-    margin-top: -0.25em;
     /* 4px */
-    margin-right: 0.25em;
+    margin: auto;
     /* 4px */ }
   .reveal-modal .inputfile-6 + label {
     color: #d3394c; }
@@ -7731,10 +7730,10 @@ body.bibli {
 .gu-mirror .button-wrapper_flagMedia {
   display: none; }
 
-.gu-mirror .button-wrapper_deleteMedia {
+.button-wrapper_flagMedia {
   display: none; }
 
-.button-wrapper_flagMedia {
+.button-wrapper_deleteMedia {
   display: none; }
 
 .medias-list {
@@ -8409,7 +8408,8 @@ body.capture .content-wrapper:after {
       width: 100%;
       height: 75%;
       background: #e5e5e5;
-      margin-bottom: 16px; }
+      margin-bottom: 16px;
+      object-fit: scale-down; }
     .captureRight .preview_stopmotion .output_container video.output[src=""] ~ .button-wrapper {
       display: none; }
     .captureRight .preview_stopmotion .output_container video.output[src=""] ~ .div_is_loading {

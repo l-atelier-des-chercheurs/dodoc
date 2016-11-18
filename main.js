@@ -243,7 +243,7 @@ module.exports = function(app, io){
     var slugFolderName = mediaData.slugFolderName;
     var slugProjectName = mediaData.slugProjectName;
     var mediaFolder = dodocMedia.getAnimationPathOfProject();
-    var folderCachePath = path.join( dodocProject.getProjectPath( slugFolderName, slugProjectName), mediaFolder, folderCacheName);
+    var folderCachePath = path.join( dodocAPI.getProjectPath( slugFolderName, slugProjectName), mediaFolder, folderCacheName);
     var relativeCachePath = path.join('/', slugFolderName, slugProjectName, mediaFolder, folderCacheName);
 
     fs.removeSync( folderCachePath);
@@ -290,7 +290,7 @@ module.exports = function(app, io){
 
   function onDeleteLastImageOfStopMotion( socket, idata) {
     dev.logfunction( "EVENT - onDeleteLastImageOfStopMotion : " + JSON.stringify( idata, null, 4));
-    var fullPathToStopmotionImage = dodocFolder.getFolderPath(idata.pathToStopmotionImage);
+    var fullPathToStopmotionImage = dodocAPI.getFolderPath(idata.pathToStopmotionImage);
     fs.exists( fullPathToStopmotionImage, function(exists) {
       if(exists) {
         console.log( '--> Will remove last stop-motion image.');
@@ -324,7 +324,7 @@ module.exports = function(app, io){
     var mediaFolder = mediaData.mediaFolderPath;
     var mediaName = mediaData.mediaName;
 
-    var pathToMediaFolder = path.join( dodocProject.getProjectPath( slugFolderName, slugProjectName), mediaFolder);
+    var pathToMediaFolder = path.join( dodocAPI.getProjectPath( slugFolderName, slugProjectName), mediaFolder);
 
     try {
       var filesInMediaFolder = fs.readdirSync( pathToMediaFolder);

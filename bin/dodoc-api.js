@@ -9,12 +9,14 @@ var dodoc  = require('../public/dodoc');
 var dodocAPI = (function() {
 
   const API = {
-    getCurrentDate      : function(f) { return getCurrentDate(f = dodoc.metaDateFormat); },
+    getCurrentDate      : function(f = dodoc.metaDateFormat) { return getCurrentDate(f); },
+    getFolderPath       : function(slugFolderName = '') { return getFolderPath(slugFolderName); },
+    getProjectPath           : function(slugFolderName, slugProjectName) { return getProjectPath(slugFolderName, slugProjectName); },
     parseData           : function(d) { return parseData(d); },
     storeData           : function(mpath, d, e) { return storeData(mpath, d, e); },
     readMetaFile        : function(metaFile) { return readMetaFile(metaFile); },
     getUserPath         : function() { return getUserPath(); },
-    findFirstFilenameNotTaken : function(fileName, currentPath, fileext) { return findFirstFilenameNotTaken(fileName, currentPath, fileext); },
+    findFirstFilenameNotTaken : function(fileName, currentPath, fileext = '') { return findFirstFilenameNotTaken(fileName, currentPath, fileext); },
     eventAndContent     : function(sendEvent, objectJson) { return eventAndContent(sendEvent, objectJson); },
     sendEventWithContent: function(sendEvent, objectContent, io, socket) { return sendEventWithContent(sendEvent, objectContent, io, socket); },
     decodeBase64Image   : function(dataString) { return decodeBase64Image(dataString); },
@@ -25,6 +27,14 @@ var dodocAPI = (function() {
 
   function getCurrentDate(f) {
     return moment().format(f);
+  }
+  function getFolderPath(slugFolderName) {
+    dev.logverbose( "COMMON — getFolderPath : " + slugFolderName);
+    return path.join(getUserPath(), dodoc.contentDirname, slugFolderName);
+  }
+  function getProjectPath( slugFolderName, slugProjectName) {
+    dev.logverbose( "COMMON — getProjectPath, slugFolderName:" + slugFolderName + " slugProjectName: " + slugProjectName);
+    return path.join(getFolderPath(slugFolderName), slugProjectName);
   }
 
   function parseData(d) {
@@ -41,7 +51,7 @@ var dodocAPI = (function() {
       var textd = parsedown.textify(d);
       if( e === "create") {
         fs.appendFile( mpath, textd, function(err) {
-          if (err) reject( err);
+        if (err) reject( err);
           resolve(parseData(textd));
         });
       }
@@ -66,8 +76,6 @@ var dodocAPI = (function() {
 
   function findFirstFilenameNotTaken( fileName, currentPath, fileext) {
     // no fileext = search for folder
-    fileext = typeof fileext !== 'undefined' ?  fileext : '';
-
     try {
       var newFileName = fileName;
       var index = 0;

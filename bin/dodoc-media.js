@@ -11,7 +11,6 @@ var gm = require('gm').subClass({imageMagick: true});
 var dodoc  = require('../public/dodoc');
 
 var dodocAPI = require('./dodoc-api.js');
-var dodocProject = require('./dodoc-project.js');
 
 var dodocMedia = (function() {
 
@@ -91,37 +90,40 @@ var dodocMedia = (function() {
       var pathToFile = '';
       var fileExtension;
 
-      var mediaFolder = getMediaFolderPathByType( newMediaType);
+      var mediaFolder = getMediaFolderPathByType(newMediaType);
 
+      dev.logverbose('Adding a new media…');
       switch (newMediaType) {
         case 'photo':
-          var mediaPath = _getMediaPath( slugFolderName, slugProjectName, mediaFolder);
-          newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath, dodoc.metaFileext);
-          pathToFile = path.join( mediaPath, newFileName);
+          dev.logverbose('passed');
+          var mediaPath = _getMediaPath(slugFolderName, slugProjectName, mediaFolder);
+          dev.logverbose('passed');
+          newFileName = dodocAPI.findFirstFilenameNotTaken(newFileName, mediaPath, dodoc.metaFileext);
+          pathToFile = path.join(mediaPath, newFileName);
 
           fileExtension = '.png';
           var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.mediaData);
 
+          dev.logverbose('Will store this photo at path: ' + pathToFile + fileExtension);
+
           fs.writeFile( pathToFile + fileExtension, imageBuffer.data, function(err) {
             if (err) reject( err);
             console.log("Image added at path " + pathToFile);
-
             gm( pathToFile + fileExtension)
               .resize( dodoc.mediaThumbWidth+'>', dodoc.mediaThumbHeight+'>')
               .quality( 60)
               .autoOrient()
               .write( pathToFile + dodoc.thumbSuffix + fileExtension, function (err) {
-                if( err)
-                  console.log( gutil.colors.red('--> Failed to make a thumbnail for a photo! Error: ', err));
-                  _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
-                  mdata.slugFolderName = slugFolderName;
-                  mdata['slugProjectName'] = slugProjectName;
-                  mdata['mediaFolderPath'] = mediaFolder;
-                  console.log( 'just created a photo, its meta is ' + JSON.stringify( mdata, null, 4));
-                  resolve( mdata);
-                }, function() {
-                  reject( 'failed to create meta for photo');
-                });
+                if( err) { console.log( gutil.colors.red('--> Failed to make a thumbnail for a photo! Error: ', err)); }
+                _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
+                mdata.slugFolderName = slugFolderName;
+                mdata['slugProjectName'] = slugProjectName;
+                mdata['mediaFolderPath'] = mediaFolder;
+                console.log( 'just created a photo, its meta is ' + JSON.stringify( mdata, null, 4));
+                resolve( mdata);
+              }, function() {
+                reject( 'failed to create meta for photo');
+              });
             });
           });
 
@@ -271,7 +273,7 @@ var dodocMedia = (function() {
       var mediaName = editMediaData.mediaName;
 
       // get the path to the media JSON and its content
-      var projectPath = dodocProject.getProjectPath( slugFolderName, slugProjectName);
+      var projectPath = dodocAPI.getProjectPath( slugFolderName, slugProjectName);
       var mediaFilepath = _getPathToMedia( projectPath, mediaFolderPath, mediaName);
       var mediaMetaData = _getMediaMeta( projectPath, mediaFolderPath, mediaName);
 
@@ -363,7 +365,8 @@ var dodocMedia = (function() {
 
 
   function _getMediaPath( slugFolderName, slugProjectName, mediaFolder) {
-    return path.join( dodocProject.getProjectPath( slugFolderName, slugProjectName), mediaFolder);
+    dev.logverbose('_getMediaPath with slugFolderName:' + slugFolderName + ' slugProjectName: ' + slugProjectName + ' mediaFolder: ' + mediaFolder);
+    return path.join( dodocAPI.getProjectPath(slugFolderName, slugProjectName), mediaFolder);
   }
 
   function _getPhotoPathOfProject() {
@@ -401,7 +404,7 @@ var dodocMedia = (function() {
   function _listMediasOfOneType(slugFolderName, slugProjectName, mediasFolderPath, mediaName) {
     dev.logfunction( "COMMON — _listMediasOfOneType with");
 
-    var projectPath = dodocProject.getProjectPath( slugFolderName, slugProjectName);
+    var projectPath = dodocAPI.getProjectPath( slugFolderName, slugProjectName);
     var mediasPath = path.join( projectPath, mediasFolderPath);
     var lookingForSpecificJson = mediaName !== undefined ? true : false;
 

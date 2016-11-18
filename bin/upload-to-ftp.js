@@ -10,7 +10,7 @@ var exportPubliToFtp = module.exports = {
   exportPubliToFtp : function(socket, d){
     dev.logfunction( "EVENT - exportPubliToFtp");
     var currentDateString = dodocAPI.getCurrentDate();
-    var projectPath = dodocProject.getProjectPath( d.slugFolderName, d.slugProjectName);
+    var projectPath = dodocAPI.getProjectPath( d.slugFolderName, d.slugProjectName);
 
     var exportedPubliFolderName = currentDateString + "_" + d.slugPubliName;
     exportedPubliFolderName = dodocAPI.findFirstFilenameNotTaken( exportedPubliFolderName, dodoc.exportedPubliDir, '');
