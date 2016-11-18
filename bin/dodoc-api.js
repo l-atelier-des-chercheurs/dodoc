@@ -79,7 +79,7 @@ var dodocAPI = (function() {
         newPathToFile = path.join( currentPath, newFileName);
       }
     } catch( err) {
-      dev.error('Error while finding unused filename in findFirstFilenameNotTaken : ' + err);
+      // no file of this name has been found
     }
     console.log( "- - this filename is not taken : " + newFileName);
     return newFileName;

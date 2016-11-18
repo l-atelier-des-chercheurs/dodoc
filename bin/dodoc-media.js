@@ -145,7 +145,7 @@ var dodocMedia = (function() {
               dodocAPI.createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
                 resolve( mdata);
               }, function(error) {
-                console.log( gutil.colors.red('--> Failed to make a thumbnail one media! Error: ', error));
+                console.log( gutil.colors.red('--> Failed to make a thumbnail for a video! Error: ', error));
                 resolve( mdata);
               });
             }, function() {
@@ -187,7 +187,7 @@ var dodocMedia = (function() {
                 dodocAPI.createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
                   resolve( mdata);
                 }, function(error) {
-                  dev.error("Failed to make a thumbnail one media! Error: ", error);
+                  dev.error("Failed to make a thumbnail for a stopmotion! Error: ", error);
                   resolve( mdata);
                 });
               }, function() {
