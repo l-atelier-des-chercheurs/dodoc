@@ -19,7 +19,8 @@ var dodocAPI = (function() {
     sendEventWithContent: function(sendEvent, objectContent, io, socket) { return sendEventWithContent(sendEvent, objectContent, io, socket); },
     decodeBase64Image   : function(dataString) { return decodeBase64Image(dataString); },
     writeVideoToDisk    : function(pathToFile, fileExtension, dataURL) { return writeVideoToDisk(pathToFile, fileExtension, dataURL); },
-    createThumbnails     : function(videoPath, videoFilename, pathToMediaFolder) { return createThumbnails(videoPath, videoFilename, pathToMediaFolder); }
+    createThumbnails    : function(videoPath, videoFilename, pathToMediaFolder) { return createThumbnails(videoPath, videoFilename, pathToMediaFolder);},
+    listAllTemplates    : function() { return listAllTemplates(); },
   };
 
   function getCurrentDate(f) {
@@ -145,6 +146,22 @@ var dodocAPI = (function() {
       })
       // take 2 screenshots at predefined timemarks
       .takeScreenshots({ count: 1, timemarks: [ '00:00:00'], "filename" : videoFilename + ".png"}, pathToMediaFolder);
+    });
+  }
+
+  function listAllTemplates() {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction( "COMMON — listAllTemplates");
+      var templateFolderPath = path.join( getUserPath(), dodoc.publicationTemplateDirname);
+      fs.readdir( templateFolderPath, function (err, filenames) {
+        if (err) reject( dev.error('Couldn\'t read content dir : ' + err));
+        var folders = filenames.filter(function(slugPubliName){
+          // only get folders that don't start with "_"
+          return new RegExp(dodoc.regexpMatchFolderNames, 'i').test(slugPubliName) && slugPubliName.substr(0,1) !== '_';
+        });
+        dev.log('Found ' + folders.length + ' templates in ' + templateFolderPath);
+        resolve(folders);
+      });
     });
   }
 

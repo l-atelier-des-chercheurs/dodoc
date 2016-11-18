@@ -1,41 +1,27 @@
-.template_container[data-template="unecolonne"] {
-  max-width: 35rem;
-  position: relative;
+// une colonne
+.template_container {
 
-  background-color: #fff;
   -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   border-bottom: 0;
 
-  > .legende {
-    position: absolute;
-    bottom:100%;
-    margin-bottom:  5px;
-  }
-
   .publi-title {
-    font-weight: bold;
-    font-size: 1.5em;
+
   }
 
   .publi_medias {
     padding: 10px 16px;
 
-      .media {
-
-        .mediaContent {
-          position: relative;
-        }
-        img {
-          width: auto;
-          min-width: 0;
-          max-height: 70vh;
-        }
-
+    .media {
+      .mediaContent {
+        position: relative;
       }
-      .showCaption {
-        display: none;
+      img, video, audio, svg {
+        width: auto;
+        min-width: 0;
+        max-height: 70vh;
       }
 
+    }
   }
 }

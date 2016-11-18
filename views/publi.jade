@@ -7,7 +7,10 @@ html
     include templates/head.jade
   body(class="publi")
 
-    +button( 'uploadPubliToFtp', '')
+    .navbar-container
+      header.navbar
+        +logo()
+        +button( 'uploadPubliToFtp', '')
 
     .publi_container(data-publidata data-publishown="#{slugPubliName}")
       include templates/publiTemplate.jade

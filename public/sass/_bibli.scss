@@ -20,7 +20,7 @@ body.bibli {
   @include style--dossierBorders;
   background-color: transparent;
   border:none;
-  border-bottom: 2px solid $c-separator;
+  border-bottom: 1px solid $c-separator;
 
   .button-wrapper {
     float: left;
@@ -203,43 +203,17 @@ body.bibli {
     }
 
     .media {
-      width:100%;
-      float: none;
-
-      position: relative;
       cursor: move;
-      padding: $margin/2;
-
-      transition: all .15s;
-
-
-      .button-wrapper {
-        position: absolute;
-        top:0;
-        right: 0;
-      }
-
-      &::before {
-        display: none;
-      }
-      &::after {
-        display: none;
-      }
-
-      .button-wrapper_flagMedia {
-        display: none;
-      }
-
 
       .button-wrapper_deleteMedia {
         opacity:0;
         display: block;
+
         z-index: 3;
         transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out, opacity .4s ease-out;
       }
 
       &:hover {
-
         .mediaContent {
           outline:4px dashed #aaa;
         }
@@ -296,6 +270,9 @@ body.bibli {
 // class ajoutée aux éléments draggés. En bas du dom
 .gu-mirror {
   .button-wrapper_flagMedia {
+    display: none;
+  }
+  .button-wrapper_deleteMedia {
     display: none;
   }
 }

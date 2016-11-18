@@ -1,9 +1,9 @@
-.template_container[data-template="grille"] {
+// grille
+.template_container {
   position: relative;
-  width: 960px;
+  max-width: 960px;
   margin: 0 auto;
   background-color: #fff;
-  padding: 1em;
 
   .publi_medias {
     position: relative;
@@ -34,6 +34,7 @@
       max-height: none;
       position: absolute;
       bottom: $gutter; top: $gutter; left: $gutter; right: $gutter;
+      overflow: hidden;
 
       img, video, audio {
         width: 100%;

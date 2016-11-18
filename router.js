@@ -74,6 +74,7 @@ module.exports = function(app,io,m){
 
             pageDataJSON.slugPubliName = slugPubliName;
             pageDataJSON.publiName = publiData.name;
+            pageDataJSON.publiTemplateName = publiData.template;
           }
         }
       }
@@ -143,7 +144,7 @@ module.exports = function(app,io,m){
   function getBibli(req, res) {
     var pageTitle = dodoc.lang.bibli;
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
-      getAllTemplates().then(function(allTemplates) {
+      dodocAPI.listAllTemplates().then(function(allTemplates) {
         generatePageDataJSON["templates"] = allTemplates;
         res.render("bibli", generatePageDataJSON);
       }, function(err) {
@@ -155,23 +156,13 @@ module.exports = function(app,io,m){
   };
 
   function getBibliPubli(req, res) {
-    var pageTitle = dodoc.lang.bibli;
-    generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
-      getAllTemplates().then(function(allTemplates) {
-        generatePageDataJSON["templates"] = allTemplates;
-        res.render("bibli", generatePageDataJSON);
-      }, function(err) {
-        console.log('err ' + err);
-      });
-    }, function(err) {
-      console.log('err ' + err);
-    });
+    getBibli(req, res);
   };
 
   function getPubli(req, res) {
     var pageTitle = dodoc.lang.publi;
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
-      getAllTemplates().then(function(allTemplates) {
+      dodocAPI.listAllTemplates().then(function(allTemplates) {
         generatePageDataJSON["templates"] = allTemplates;
         res.render("publi", generatePageDataJSON);
       }, function(err) {
@@ -181,19 +172,6 @@ module.exports = function(app,io,m){
       console.log('err ' + err);
     });
   };
-
-  function getAllTemplates() {
-    return new Promise(function(resolve, reject) {
-      dev.log('Getting all templates');
-      var templateFolderPath = path.join( dodocAPI.getUserPath(), dodoc.publicationTemplateDirname);
-      fs.readdir( templateFolderPath, function (err, filenames) {
-        if (err) reject( console.log( 'Couldn\'t read content dir : ' + err));
-        var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
-        dev.log('Found ' + folders.length + ' templates in ' + templateFolderPath);
-        resolve(folders);
-      });
-    });
-  }
 
   // from http://stackoverflow.com/a/8440736
   function getLocalIP() {

@@ -88,54 +88,31 @@ function listMedia( mediaData) {
 
 
 // fonction qui réunit les fonctionnalités d'un média (que ce soit une vidéo, une image, un son, etc.
-
+// pas de fichier .js sur la page publi, ne s'applique pas
 function mediaInit( $m) {
+  if( $('body').hasClass('publi')) return;
+
   var $v = $m.find('video');
-
-  if( $('body').hasClass('publi')) {
-
-    // special template "grille", "marseille" et "numok" (à compartimenter plus proprement)
-    if( $m.data('informations').length > 0) {
-      var $button = $('<button class="showCaption js--showCaption">t</button>');
-      $m.find('.mediaContent').prepend($button);
-      $button.on('click', function() { $(this).toggleClass('is--clicked');});
+  $m.hover(function() {
+    if( $v.length > 0) {
+      $v
+        .attr('loop', true)
+        .removeAttr('controls')
+        .get(0)
+          .play()
+        ;
     }
-
-    if( $('.publi_container .template_container').data("template") === "numok") {
-      if( $v.length > 0) {
-        $v
-          .attr('loop', true)
-          .removeAttr('controls')
-          .get(0)
-            .play()
-          ;
-      }
+  }, function() {
+    if( $v.length > 0) {
+      $v
+        .removeAttr('loop')
+        .attr('controls', true)
+        .get(0)
+          .pause()
+        ;
+      $v.get(0).currentTime = 0;
     }
-
-  }
-
-  if( $('.publi_container > .template_container').data("template") !== "numok") {
-    $m.hover(function() {
-      if( $v.length > 0) {
-        $v
-          .attr('loop', true)
-          .removeAttr('controls')
-          .get(0)
-            .play()
-          ;
-      }
-    }, function() {
-      if( $v.length > 0) {
-        $v
-          .removeAttr('loop')
-          .attr('controls', true)
-          .get(0)
-            .pause()
-          ;
-        $v.get(0).currentTime = 0;
-      }
-    });
-  }
+  });
 }
 
 
@@ -640,6 +617,10 @@ function listMontagePubliMeta( $publiContent, pdata) {
     .data("name", pdata.name)
     .data("template", pdata.template)
     ;
+
+  // load the css file corresponding to this
+  var publiTemplateCSSPath = '/' + dodoc.publicationTemplateDirname + '/' + pdata.template + '/' + 'style.css';
+  $('.publi_container,.montage_publi_container').find('#templateCss').attr('href', publiTemplateCSSPath);
 
   $publiContent.find('.template_container').attr("data-template", pdata.template);
 }

@@ -5,22 +5,20 @@ body.publi{
 
   }
 
+  .button-wrapper_upload {
+
+    margin: $margin;
+  }
+
+
   .module_infos {
     display: none;
   }
 
   .publi-title {
-    margin-bottom: 35px;
-    padding: 9px 15px;
-    margin: 0;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   }
 
   .media {
-    padding: 0 0;
-    width: 100%;
-    float: none;
-
     &::before {
       display: none;
     }
@@ -31,7 +29,6 @@ body.publi{
     &::after {
       display: none;
     }
-
     // hide delete button
     .button-wrapper_deleteMedia {
       display: none;
