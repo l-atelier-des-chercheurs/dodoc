@@ -142,6 +142,7 @@ var dodocAPI = (function() {
 
   function createThumbnails(videoPath, videoFilename, pathToMediaFolder){
     return new Promise(function(resolve, reject) {
+      dev.logverbose('Will attempt to make a thumbnail out of a video or stopmotion.');
       var proc = ffmpeg( videoPath)
       // setup event handlers
       .on('end', function(files) {
