@@ -113,7 +113,7 @@ var dodocMedia = (function() {
               .resize( dodoc.mediaThumbWidth+'>', dodoc.mediaThumbHeight+'>')
               .quality( 60)
               .autoOrient()
-              .write( pathToFile + dodoc.thumbSuffix + fileExtension, function (err) {
+              .write( pathToFile + '-' + dodoc.thumbSuffix + fileExtension, function (err) {
                 if( err) { console.log( gutil.colors.red('--> Failed to make a thumbnail for a photo! Error: ', err)); }
                 _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
                 mdata.slugFolderName = slugFolderName;
@@ -333,9 +333,9 @@ var dodocMedia = (function() {
       var pathToMediaFolder = _getMediaPath( slugFolderName, slugProjectName, mediaFolder);
       try {
         var filesInMediaFolder = fs.readdirSync( pathToMediaFolder);
-        filesInMediaFolder.forEach( function( filename) {
-          var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( filename)[1];
-          if( fileNameWithoutExtension === mediaName) {
+        filesInMediaFolder.forEach(function(filename) {
+          var cleanMediaName = _getMediaFileNameFromFileName(filename);
+          if( cleanMediaName === mediaName) {
             var filePath = path.join( pathToMediaFolder, filename);
             var deletedFilePath = path.join( pathToMediaFolder, dodoc.deletedPrefix + filename);
             fs.renameSync( filePath, deletedFilePath);
@@ -499,6 +499,16 @@ var dodocMedia = (function() {
         reject( 'Couldn\'t create media meta');
       });
     });
+  }
+
+  // a mediaFileName starts at the beginning of a filename and end at the first dash
+  // i.e. the following filenames have the same mediaFileName :
+  // --> 20161121_164329-1.txt
+  // --> 20161121_164329_1-thumb.png
+  // --> 20161121_164329_1-any-option.webm
+  function _getMediaFileNameFromFileName() {
+    var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec(filename)[1];
+    // get the "name" part of this filename
   }
 
   return API;

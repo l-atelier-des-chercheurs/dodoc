@@ -155,7 +155,7 @@ var settings = {
   "metaDateFormat" : "YYYYMMDD_HHmmss",
   "textEncoding" : "UTF-8",
   "deletedPrefix" : "x_",
-  "thumbSuffix" : "_thumb",
+  "thumbSuffix" : "thumb",
 
   "mediaThumbWidth" : 720,
   "mediaThumbHeight" : 720,
