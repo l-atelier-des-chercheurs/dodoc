@@ -351,6 +351,10 @@ button {
         object-fit: scale-down;
         background-color: $gristresclair;
       }
+
+    }
+    .button-wrapper_deleteMedia {
+      display: block;
     }
 
     &.media-big_audio {

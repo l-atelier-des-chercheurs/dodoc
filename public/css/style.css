@@ -7414,6 +7414,8 @@ button {
         height: 100%;
         object-fit: scale-down;
         background-color: #e5e5e5; }
+    .big-mediaContent .media-big .button-wrapper_deleteMedia {
+      display: block; }
     .big-mediaContent .media-big.media-big_audio img {
       height: 100%; }
     .big-mediaContent .media-big.media-big_audio audio {

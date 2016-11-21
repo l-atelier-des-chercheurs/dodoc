@@ -310,7 +310,7 @@ module.exports = function(app, io){
     var mediaFolder = mediaData.mediaFolderPath;
     var mediaName = mediaData.mediaName;
 
-    deleteOneMedia( slugFolderName, slugProjectName, mediaFolder, mediaName).then(function( mediaMetaData) {
+    dodocMedia.deleteOneMedia( slugFolderName, slugProjectName, mediaFolder, mediaName).then(function( mediaMetaData) {
       dodocAPI.sendEventWithContent( 'mediaRemoved', mediaMetaData, io);
     }, function(error) {
       dev.error("Failed to remove one media! Error: ", error);
