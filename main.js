@@ -184,21 +184,6 @@ module.exports = function(app, io){
     });
   }
 
-
-  function onListOneMedia( projectData, socket) {
-    dev.logfunction( "EVENT - onListOneMedia with packet " + JSON.stringify( projectData, null, 4));
-    var slugFolderName = projectData.slugFolderName;
-    var slugProjectName = projectData.slugProjectName;
-    var mediaName = projectData.mediaName;
-    var mediaFolderPath = dodocProject.getMediaFolderPathByType( projectData.type);
-    listOneMedia( slugFolderName, slugProjectName, mediaFolderPath, mediaName).then(function( oneMediaData) {
-      dodocAPI.sendEventWithContent( 'listOneMedia', oneMediaData, socket, io);
-    }, function(error) {
-      dev.error("Failed to listOneMedia! Error: ", error);
-    });
-  }
-
-
 // F I N     P R O J E T      P A G E
 
 // C A P T U R E      P A G E

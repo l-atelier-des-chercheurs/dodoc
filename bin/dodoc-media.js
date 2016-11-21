@@ -331,8 +331,6 @@ var dodocMedia = (function() {
   function deleteOneMedia(slugFolderName, slugProjectName, mediaFolder, mediaName) {
     return new Promise(function(resolve, reject) {
       var pathToMediaFolder = _getMediaPath( slugFolderName, slugProjectName, mediaFolder);
-      // find in path
-
       try {
         var filesInMediaFolder = fs.readdirSync( pathToMediaFolder);
         filesInMediaFolder.forEach( function( filename) {
@@ -411,19 +409,18 @@ var dodocMedia = (function() {
     var filesInMediaFolder = fs.readdirSync( mediasPath);
     var foldersMediasMeta = [];
     var foldersMediasFiles = [];
-
 //     dev.log( "- looking for files in " + mediasPath);
-
     filesInMediaFolder.forEach( function( filename) {
+      // if file is not a folder and not .DS_STORE
       if( !new RegExp( dodoc.regexpMatchFolderNames, 'i').test( filename) && filename !== ".DS_Store") {
         var fileExtension = new RegExp( dodoc.regexpGetFileExtension, 'i').exec( filename)[0];
 //         dev.log( "- - fileEXTENSION of " + filename + " is " + fileExtension);
 //         dev.log( "- - Is file a deleted file ? " + new RegExp( '^' + dodoc.deletedPrefix).test( filename));
-        // match only json that are not deleted (prefixed with a custom prefix
+        // match only meta files that are not deleted (prefixed with a custom prefix
         if( fileExtension === dodoc.metaFileext && !new RegExp( '^' + dodoc.deletedPrefix).test( filename)) {
           if( !lookingForSpecificJson)
             foldersMediasMeta.push( filename);
-          else if( filename == mediaName + dodoc.metaFileext) {
+          else if( filename === mediaName + dodoc.metaFileext) {
             foldersMediasMeta.push( filename);
             return;
           }
