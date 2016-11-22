@@ -95,33 +95,33 @@ var dodocMedia = (function() {
       dev.logverbose('Adding a new media…');
       switch (newMediaType) {
         case 'photo':
-          dev.logverbose('passed');
           var mediaPath = _getMediaPath(slugFolderName, slugProjectName, mediaFolder);
-          dev.logverbose('passed');
           newFileName = dodocAPI.findFirstFilenameNotTaken(newFileName, mediaPath, dodoc.metaFileext);
           pathToFile = path.join(mediaPath, newFileName);
 
           fileExtension = '.png';
           var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.mediaData);
+          var imagePath = pathToFile + fileExtension;
 
           dev.logverbose('Will store this photo at path: ' + pathToFile + fileExtension);
 
-          fs.writeFile( pathToFile + fileExtension, imageBuffer.data, function(err) {
-            if (err) reject( err);
-            console.log("Image added at path " + pathToFile);
-            gm( pathToFile + fileExtension)
-              .resize( dodoc.mediaThumbWidth+'>', dodoc.mediaThumbHeight+'>')
-              .quality( 60)
-              .autoOrient()
-              .write( pathToFile + '-' + dodoc.thumbSuffix + fileExtension, function (err) {
-                if( err) { console.log( gutil.colors.red('--> Failed to make a thumbnail for a photo! Error: ', err)); }
-                _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
+          fs.writeFile(imagePath, imageBuffer.data, function(err) {
+            if (err)
+              reject( err);
+
+            console.log("Image added at path " + imagePath);
+            var thumbPath = pathToFile + '-' + dodoc.thumbSuffix + fileExtension;
+
+            _makeImageThumb(imagePath, thumbPath).then(function() {
+              if( err) { console.log( gutil.colors.red('--> Failed to make a thumbnail for a photo! Error: ', err)); }
+              _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
                 mdata.slugFolderName = slugFolderName;
                 mdata['slugProjectName'] = slugProjectName;
                 mdata['mediaFolderPath'] = mediaFolder;
-                console.log( 'just created a photo, its meta is ' + JSON.stringify( mdata, null, 4));
+                console.log('Just created a photo, its meta is ' + JSON.stringify( mdata, null, 4));
                 resolve( mdata);
-              }, function() {
+              }, function(error) {
+                dev.error("failed to create meta for photo! Error: ", error);
                 reject( 'failed to create meta for photo');
               });
             });
@@ -502,13 +502,27 @@ var dodocMedia = (function() {
   }
 
   // a mediaFileName starts at the beginning of a filename and end at the first dash
-  // i.e. the following filenames have the same mediaFileName :
-  // --> 20161121_164329-1.txt
+  // i.e. the following filenames have the same mediaFileName "20161121_164329_1" :
+  // --> 20161121_164329_1.txt
   // --> 20161121_164329_1-thumb.png
   // --> 20161121_164329_1-any-option.webm
   function _getMediaFileNameFromFileName() {
     var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec(filename)[1];
     // get the "name" part of this filename
+    var cleanMediaName = new RegExp( dodoc.regexpGetMediaName, 'i').exec(fileNameWithoutExtension);
+    return cleanMediaName;
+  }
+
+  function _makeImageThumb(imagePath, thumbPath) {
+    return new Promise(function(resolve, reject) {
+      dev.logverbose("Making a thumb at thumbPath: " + thumbPath);
+      gm(imagePath)
+        .resize(dodoc.mediaThumbWidth+'>', dodoc.mediaThumbHeight+'>')
+        .quality(70)
+        .write(thumbPath, function (err) {
+          resolve()
+        });
+    });
   }
 
   return API;

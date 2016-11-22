@@ -165,7 +165,8 @@ var settings = {
   "regexpMatchFolderNames" : "^([^.]+)$",
   "regexpMatchProjectPreviewNames" : "^(apercu|preview)",
   "regexpGetFileExtension" : "\\.[^.]*$",
-  "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)"
+  "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)",
+  "regexpGetMediaName" : "^[^\-]*",
 
 };
 
