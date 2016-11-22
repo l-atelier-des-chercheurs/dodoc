@@ -89,7 +89,7 @@ var dodocAPI = (function() {
     } catch( err) {
       // no file of this name has been found
     }
-    console.log( "- - this filename is not taken : " + newFileName);
+    dev.logverbose( "- - this filename is not taken : " + newFileName);
     return newFileName;
   }
 

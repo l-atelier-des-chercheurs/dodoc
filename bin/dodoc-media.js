@@ -98,10 +98,9 @@ var dodocMedia = (function() {
           newFileName = dodocAPI.findFirstFilenameNotTaken(newFileName, mediaPath, dodoc.metaFileext);
           pathToFile = path.join(mediaPath, newFileName);
 
-          fileExtension = '.png';
           var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.mediaData);
+          fileExtension = '.png';
           var imagePath = pathToFile + fileExtension;
-
           dev.logverbose('Will store this photo at path: ' + pathToFile + fileExtension);
 
           fs.writeFile(imagePath, imageBuffer.data, function(err) {
@@ -514,6 +513,10 @@ var dodocMedia = (function() {
       var optimizedPhotoFileName = pathToFile + '-optim' + optimizedFileExtension;
       var imagePath = pathToFile + fileExtension;
 
+      if(typeof sharp === 'undefined') {
+        resolve(imagePath);
+      }
+
       sharp(imagePath)
         .rotate()
         .withMetadata()
@@ -541,6 +544,9 @@ var dodocMedia = (function() {
   function _makeImageThumb(imagePath, thumbPath) {
     return new Promise(function(resolve, reject) {
       dev.logverbose("Making a thumb at thumbPath: " + thumbPath);
+      if(typeof sharp === 'undefined') {
+        reject(imagePath);
+      }
       sharp(imagePath)
         .rotate()
         .resize(dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
