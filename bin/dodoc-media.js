@@ -5,8 +5,7 @@ var merge = require('merge');
 
 var mm = require('marky-mark');
 var ffmpeg = require('fluent-ffmpeg');
-var gm = require('gm');
-var gm = require('gm').subClass({imageMagick: true});
+var sharp = require('sharp');
 
 var dodoc  = require('../public/dodoc');
 
@@ -95,36 +94,38 @@ var dodocMedia = (function() {
       dev.logverbose('Adding a new media…');
       switch (newMediaType) {
         case 'photo':
-          dev.logverbose('passed');
           var mediaPath = _getMediaPath(slugFolderName, slugProjectName, mediaFolder);
-          dev.logverbose('passed');
           newFileName = dodocAPI.findFirstFilenameNotTaken(newFileName, mediaPath, dodoc.metaFileext);
           pathToFile = path.join(mediaPath, newFileName);
 
           fileExtension = '.png';
           var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.mediaData);
+          var imagePath = pathToFile + fileExtension;
 
           dev.logverbose('Will store this photo at path: ' + pathToFile + fileExtension);
 
-          fs.writeFile( pathToFile + fileExtension, imageBuffer.data, function(err) {
-            if (err) reject( err);
-            console.log("Image added at path " + pathToFile);
-            gm( pathToFile + fileExtension)
-              .resize( dodoc.mediaThumbWidth+'>', dodoc.mediaThumbHeight+'>')
-              .quality( 60)
-              .autoOrient()
-              .write( pathToFile + dodoc.thumbSuffix + fileExtension, function (err) {
-                if( err) { console.log( gutil.colors.red('--> Failed to make a thumbnail for a photo! Error: ', err)); }
+          fs.writeFile(imagePath, imageBuffer.data, function(err) {
+            if (err)
+              reject( err);
+
+            _makeImageOptimizations(pathToFile, fileExtension).then(function(imagePath) {
+              var thumbPath = pathToFile + '-' + dodoc.thumbSuffix + '.jpeg';
+              _makeImageThumb(imagePath, thumbPath).then(function(err) {
+                if( err) { dev.error('--> Failed to make a thumbnail for a photo! Error: ', err); }
                 _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
-                mdata.slugFolderName = slugFolderName;
-                mdata['slugProjectName'] = slugProjectName;
-                mdata['mediaFolderPath'] = mediaFolder;
-                console.log( 'just created a photo, its meta is ' + JSON.stringify( mdata, null, 4));
-                resolve( mdata);
-              }, function() {
-                reject( 'failed to create meta for photo');
+                  mdata.slugFolderName = slugFolderName;
+                  mdata['slugProjectName'] = slugProjectName;
+                  mdata['mediaFolderPath'] = mediaFolder;
+                  console.log('Just created a photo, its meta is ' + JSON.stringify( mdata, null, 4));
+                  resolve( mdata);
+                }, function(error) {
+                  dev.error('Failed to create meta for photo! Error: ', error);
+                  reject( 'failed to create meta for photo');
+                });
               });
+
             });
+
           });
 
           break;
@@ -147,7 +148,7 @@ var dodocMedia = (function() {
               dodocAPI.createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
                 resolve( mdata);
               }, function(error) {
-                console.log( gutil.colors.red('--> Failed to make a thumbnail for a video! Error: ', error));
+                dev.error('--> Failed to make a thumbnail for a video! Error: ', error);
                 resolve( mdata);
               });
             }, function() {
@@ -308,7 +309,7 @@ var dodocMedia = (function() {
             mdata.slugProjectName = slugProjectName;
             resolve( mdata);
           }, function(err) {
-            console.log( gutil.colors.red('--> Couldn\'t update text media : ' + err));
+            dev.error('--> Couldn\'t update text media : ' + err);
             reject( 'Couldn\'t update text media');
           });
         } else {
@@ -322,7 +323,7 @@ var dodocMedia = (function() {
         }
 
       }, function(err) {
-        console.log( gutil.colors.red('--> Couldn\'t update media meta. : ' + err));
+        dev.error('--> Couldn\'t update media meta. : ' + err);
         reject( 'Couldn\'t update media meta');
       });
     });
@@ -333,9 +334,9 @@ var dodocMedia = (function() {
       var pathToMediaFolder = _getMediaPath( slugFolderName, slugProjectName, mediaFolder);
       try {
         var filesInMediaFolder = fs.readdirSync( pathToMediaFolder);
-        filesInMediaFolder.forEach( function( filename) {
-          var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( filename)[1];
-          if( fileNameWithoutExtension === mediaName) {
+        filesInMediaFolder.forEach(function(filename) {
+          var cleanMediaName = _getMediaFileNameFromFileName(filename);
+          if( cleanMediaName === mediaName) {
             var filePath = path.join( pathToMediaFolder, filename);
             var deletedFilePath = path.join( pathToMediaFolder, dodoc.deletedPrefix + filename);
             fs.renameSync( filePath, deletedFilePath);
@@ -400,7 +401,7 @@ var dodocMedia = (function() {
     return textMediaData;
   }
   function _listMediasOfOneType(slugFolderName, slugProjectName, mediasFolderPath, mediaName) {
-    dev.logfunction( "COMMON — _listMediasOfOneType with");
+    dev.logfunction( "COMMON — _listMediasOfOneType with " + JSON.stringify({slugFolderName, slugProjectName, mediasFolderPath, mediaName}));
 
     var projectPath = dodocAPI.getProjectPath( slugFolderName, slugProjectName);
     var mediasPath = path.join( projectPath, mediasFolderPath);
@@ -414,8 +415,6 @@ var dodocMedia = (function() {
       // if file is not a folder and not .DS_STORE
       if( !new RegExp( dodoc.regexpMatchFolderNames, 'i').test( filename) && filename !== ".DS_Store") {
         var fileExtension = new RegExp( dodoc.regexpGetFileExtension, 'i').exec( filename)[0];
-//         dev.log( "- - fileEXTENSION of " + filename + " is " + fileExtension);
-//         dev.log( "- - Is file a deleted file ? " + new RegExp( '^' + dodoc.deletedPrefix).test( filename));
         // match only meta files that are not deleted (prefixed with a custom prefix
         if( fileExtension === dodoc.metaFileext && !new RegExp( '^' + dodoc.deletedPrefix).test( filename)) {
           if( !lookingForSpecificJson)
@@ -440,12 +439,6 @@ var dodocMedia = (function() {
       var metaFileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( mediaMetaFilename)[1];
 //       dev.log( "- looking for medias filenames that start with " + metaFileNameWithoutExtension);
       for( var mediaFilename of foldersMediasFiles) {
-//         dev.log( "- comparing to " + mediaFilename);
-        // check if both mediaFilename and metaFileNameWithoutExtension have a dash in them or not
-        // only match XXX.txt with XXX.jpg, and -1.txt with -1.jpg
-        if( (mediaFilename.indexOf('-') === -1) !== (metaFileNameWithoutExtension.indexOf('-') === -1))
-          continue;
-
         // if this media filename corresponds to the meta filename
         if (mediaFilename.indexOf(metaFileNameWithoutExtension) !== -1 ) {
           var mediaObjKey = path.join( mediasFolderPath, mediaMetaFilename);
@@ -495,9 +488,71 @@ var dodocMedia = (function() {
         console.log( "New media meta file created at path " + pathToFile + dodoc.metaFileext);
         resolve( meta);
       }, function() {
-        console.log( gutil.colors.red('--> Couldn\'t create media meta.'));
+        dev.error('--> Couldn\'t create media meta.');
         reject( 'Couldn\'t create media meta');
       });
+    });
+  }
+
+  // a mediaFileName starts at the beginning of a filename and end at the first dash
+  // i.e. the following filenames have the same mediaFileName "20161121_164329_1" :
+  // --> 20161121_164329_1.txt
+  // --> 20161121_164329_1-thumb.png
+  // --> 20161121_164329_1-any-option.webm
+  function _getMediaFileNameFromFileName(filename) {
+    var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec(filename)[1];
+    // get the "name" part of this filename
+    var cleanMediaName = new RegExp( dodoc.regexpGetMediaName, 'i').exec(fileNameWithoutExtension)[0];
+    return cleanMediaName;
+  }
+
+  function _makeImageOptimizations(pathToFile, fileExtension) {
+    return new Promise(function(resolve, reject) {
+      dev.logverbose("Optimizing images at path: " + pathToFile);
+
+      var optimizedFileExtension = '.jpg';
+      var optimizedPhotoFileName = pathToFile + '-optim' + optimizedFileExtension;
+      var imagePath = pathToFile + fileExtension;
+
+      sharp(imagePath)
+        .rotate()
+        .withMetadata()
+        .toFormat(sharp.format.jpeg)
+        .quality(90)
+        .toFile(optimizedPhotoFileName, function(err, info) {
+          if(err) {
+            dev.error( '--> Couldn’t optimize photo! Error: ', err);
+            resolve(imagePath);
+          }
+          fs.unlink(imagePath, function(err) {
+            if (err) { dev.error('Error while trying to remove original image.'); }
+
+            var imagePath = pathToFile + optimizedFileExtension;
+            fs.rename(optimizedPhotoFileName, imagePath, function(err) {
+              if (err) { dev.error('Error while trying to rename optimized image.'); }
+              resolve(imagePath);
+            });
+          });
+
+        });
+    });
+  }
+
+  function _makeImageThumb(imagePath, thumbPath) {
+    return new Promise(function(resolve, reject) {
+      dev.logverbose("Making a thumb at thumbPath: " + thumbPath);
+      sharp(imagePath)
+        .rotate()
+        .resize(dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
+        .min()
+        .withoutEnlargement()
+        .withMetadata()
+        .toFormat(sharp.format.jpeg)
+        .quality(70)
+        .toFile(thumbPath)
+        .then(function() {
+          resolve();
+        });
     });
   }
 

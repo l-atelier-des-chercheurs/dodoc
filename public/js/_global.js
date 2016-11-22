@@ -170,14 +170,14 @@ function makeFullPathForProject( path) {
 
 function showImage( mediaDatas) {
 
-  var imagesPath = getMediaFiles(mediaDatas);
+  var mediasFilesPath = getMediaFiles(mediaDatas);
 
 	var mediaItem = $(".js--templates .media_image").clone(false);
 
   	mediaItem
-      .data('imagesrc_fullsize', imagesPath.img_large)
+      .data('imagesrc_fullsize', mediasFilesPath.img_large)
       .find( 'img')
-        .attr('src', imagesPath.img_thumb !== undefined ? imagesPath.img_thumb:imagesPath.img_large)
+        .attr('src', mediasFilesPath.img_thumb !== undefined ? mediasFilesPath.img_thumb:mediasFilesPath.img_large)
       .end()
       ;
 
@@ -187,16 +187,16 @@ function showImage( mediaDatas) {
 
 function showAnimation( mediaDatas) {
 
-  var imagesPath = getMediaFiles(mediaDatas);
+  var mediasFilesPath = getMediaFiles(mediaDatas);
 
 	var mediaItem = $(".js--templates .media_stopmotion").clone(false);
 	mediaItem
-    .data('imagesrc_fullsize', imagesPath.img_large)
+    .data('imagesrc_fullsize', mediasFilesPath.img_large)
     .find( 'video')
-      .attr( 'poster', imagesPath.img_large)
+      .attr( 'poster', mediasFilesPath.img_large)
     .end()
     .find( 'source')
-      .attr( 'src', imagesPath.video)
+      .attr( 'src', mediasFilesPath.video)
     .end()
   ;
 
@@ -204,15 +204,15 @@ function showAnimation( mediaDatas) {
 }
 
 function showVideo( mediaDatas) {
-  var imagesPath = getMediaFiles(mediaDatas);
+  var mediasFilesPath = getMediaFiles(mediaDatas);
 	var mediaItem = $(".js--templates .media_video").clone(false);
 	mediaItem
-    .data('imagesrc_fullsize', imagesPath.img_large)
+    .data('imagesrc_fullsize', mediasFilesPath.img_large)
     .find( 'video')
-      .attr( 'poster', imagesPath.img_large)
+      .attr( 'poster', mediasFilesPath.img_large)
     .end()
     .find( 'source')
-      .attr( 'src', imagesPath.video)
+      .attr( 'src', mediasFilesPath.video)
     .end()
   ;
 
@@ -221,16 +221,16 @@ function showVideo( mediaDatas) {
 
 function showAudio( mediaDatas) {
 
-  var imagesPath = getMediaFiles(mediaDatas);
+  var mediasFilesPath = getMediaFiles(mediaDatas);
 	var mediaItem = $(".js--templates .media_audio").clone(false);
 
 	mediaItem
-    .data('imagesrc_fullsize', imagesPath.img_large)
+    .data('imagesrc_fullsize', mediasFilesPath.img_large)
     .find('source')
-      .attr( 'src', imagesPath.audio)
+      .attr( 'src', mediasFilesPath.audio)
     .end()
     .find('.poster')
-      .attr('src', imagesPath.img_large)
+      .attr('src', mediasFilesPath.img_large)
     .end()
   ;
 
@@ -265,15 +265,18 @@ function getMediaFiles(mediaDatas) {
   var mediaFilenames = mediaDatas.files;
   var mediaImages = {};
   $.each( mediaFilenames, function( key, mediaFilename) {
-    if( mediaFilename.indexOf( ".jpg") !== -1 || mediaFilename.indexOf( ".png") !== -1) {
-      if( mediaFilename.indexOf( dodoc.thumbSuffix) !== -1) {
+    // if media is either a jpg or a png
+    if(mediaFilename.toLowerCase().match(".jpg") || mediaFilename.toLowerCase().match(".jpeg") || mediaFilename.toLowerCase().match(".png")) {
+      // if its name is made of the thumb suffix, its a thumb
+      if(mediaFilename.toLowerCase().match(dodoc.thumbSuffix)) {
         mediaImages.img_thumb = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
       } else {
+      // otherwise its probably the large image (original or optimized version)
         mediaImages.img_large = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
       }
-    } else if( mediaFilename.indexOf( ".mp4") !== -1 ||  mediaFilename.indexOf( ".webm") !== -1) {
+    } else if(mediaFilename.toLowerCase().match(".mp4") ||  mediaFilename.toLowerCase().match(".webm")) {
       mediaImages.video = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
-    } else if ( mediaFilename.indexOf( ".wav") !== -1) {
+    } else if(mediaFilename.toLowerCase().match(".wav")) {
       mediaImages.audio = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
     }
   });
@@ -642,56 +645,56 @@ var sendData = {
 
   createNewProject : function( pdata) {
     pdata.slugFolderName = currentFolder;
-  	socket.emit( 'newProject', pdata);
+    	socket.emit( 'newProject', pdata);
   },
   editProject : function( pdata) {
     pdata.slugFolderName = currentFolder;
-  	socket.emit( 'editProject', pdata);
+    	socket.emit( 'editProject', pdata);
   },
 
   createNewMedia : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
     mediaData.author = sessionId;
-  	socket.emit( 'newMedia', mediaData);
+    	socket.emit( 'newMedia', mediaData);
   },
   editMedia : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
-  	socket.emit( 'editMediaMeta', mediaData);
+    	socket.emit( 'editMediaMeta', mediaData);
   },
   deleteMedia : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
-  	socket.emit( 'deleteMedia', mediaData);
+    	socket.emit( 'deleteMedia', mediaData);
   },
 
   deleteStopmotion : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
-  	socket.emit( 'deleteStopmotion', mediaData);
+    	socket.emit( 'deleteStopmotion', mediaData);
   },
 
   createNewPubli : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
-  	socket.emit( 'createPubli', publiData);
+    	socket.emit( 'createPubli', publiData);
   },
   editPubli : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
-  	socket.emit( 'editPubli', publiData);
+    	socket.emit( 'editPubli', publiData);
   },
 
   listOnePubliMetaAndMedias : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
-  	socket.emit( 'listOnePubliMetaAndMedias', publiData);
+    	socket.emit( 'listOnePubliMetaAndMedias', publiData);
   },
   editPubliMeta : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
-  	socket.emit( 'editMetaPubli', publiData);
+    	socket.emit( 'editMetaPubli', publiData);
   },
   editPubliMedias : function( publiData) {
     publiData.slugFolderName = currentFolder;

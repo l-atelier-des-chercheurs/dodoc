@@ -52,36 +52,40 @@ li.publi-folder(data-publi="")
   include publiTemplate.jade
 
 //- Pop up media
-div.media-big_image.media-big.row(data-type="image")
+.media-big_image.media-big.row(data-type="image")
   .mediaContent.small-12.large-8.columns
     img
   .mediaDataForm.small-12.large-4.columns
     include modals/mediaForm.jade
-div.media-big_video.media-big(data-type="video")
+
+.media-big_video.media-big(data-type="video")
   .mediaContent.small-12.large-8.columns
     video(preload="none" controls)
       source()
   .mediaDataForm.small-12.large-4.columns
     include modals/mediaForm.jade
-div.media-big_stopmotion.media-big(data-type="stopmotion")
+
+.media-big_stopmotion.media-big(data-type="stopmotion")
   .mediaContent.small-12.large-8.columns
     video(preload="none" controls)
       source()
   .mediaDataForm.small-12.large-4.columns
     include modals/mediaForm.jade
-div.media-big_audio.media-big(data-type="audio")
+
+.media-big_audio.media-big(data-type="audio")
   .mediaContent.small-12.large-8.columns
     img
     audio(preload="none" controls)
       source()
   .mediaDataForm.small-12.large-4.columns
     include modals/mediaForm.jade
-div.media-big_text.media-big(data-type="text" data-id)
+
+.media-big_text.media-big(data-type="text" data-id)
   .mediaContent
     form(onsubmit='return false;' class='add-media-text lead')
       input.js--submit-new-text_title(type='text' placeholder='Titre')
       textarea.js--submit-new-text_text(placeholder="Ajouter du texte ici")
-      input(type='submit' class='js--submit-view-text-modify' value='Valider')
+      input.js--submit-view-text-modify(type='submit' value='Valider')
     +button('favButton', '', '')
     +button('deleteMediaBibli', '', '')
 
@@ -113,7 +117,7 @@ div.media-big_text.media-big(data-type="text" data-id)
         +button('publications', '', 'isCollapsed')
     .image-wrapper.flex_50
       img
-  ul.last-medias
+  ul.last-medias.grille_de_medias
     h3.legende
       | !{dodoc.lang.lastMediasAdded}
 

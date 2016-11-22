@@ -25,7 +25,6 @@ socket.on('error', onSocketError);
 
 socket.on('listOneProject', onListOneProject);
 socket.on('listAllMedias', onListAllMedias);
-// socket.on('listProjectPubli', onListProjectPubli);
 socket.on('listOneProjectPublis', onListOneProjectPublis);
 
 socket.on('projectModified', onProjectModified); //Quand on reçoit les modification du projet

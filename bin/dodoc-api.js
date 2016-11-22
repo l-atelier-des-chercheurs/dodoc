@@ -142,7 +142,7 @@ var dodocAPI = (function() {
 
   function createThumbnails(videoPath, videoFilename, pathToMediaFolder){
     return new Promise(function(resolve, reject) {
-      dev.logverbose('Will attempt to make a thumbnail out of a video or stopmotion.');
+      dev.logverbose('Will attempt to make a thumbnail out of a video or stopmotion with info ' + JSON.stringify({videoPath, videoFilename, pathToMediaFolder}));
       var proc = ffmpeg( videoPath)
       // setup event handlers
       .on('end', function(files) {
@@ -151,7 +151,7 @@ var dodocAPI = (function() {
       })
       .on('error', function(err) {
         console.log('an error happened: ' + err.message);
-        reject();
+        reject(err.message);
       })
       // take 2 screenshots at predefined timemarks
       .takeScreenshots({ count: 1, timemarks: [ '00:00:00'], "filename" : videoFilename + ".png"}, pathToMediaFolder);

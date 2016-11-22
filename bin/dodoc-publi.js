@@ -119,7 +119,7 @@ var dodocPubli = (function() {
         newPubliData.slugPubliName = pslug;
         resolve( newPubliData);
       }, function() {
-        console.log( gutil.colors.red('--> Couldn\'t create publi file.'));
+        dev.error('--> Couldn\'t create publi file.');
         reject( 'Couldn\'t create publi');
       });
 
@@ -155,7 +155,7 @@ var dodocPubli = (function() {
         publiMetaData.slugProjectName = pdata.slugProjectName;
         resolve( publiMetaData);
       }, function() {
-        console.log( gutil.colors.red('--> Couldn\'t update publi file.'));
+        dev.error('--> Couldn\'t update publi file.');
         reject( 'Couldn\'t update publi');
       });
     });
