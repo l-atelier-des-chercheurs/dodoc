@@ -142,7 +142,7 @@ var dodocProject = (function() {
         updatedpmeta.projectPreviewName = getProjectPreview( projectPath);
         resolve( updatedpmeta);
       }, function() {
-        console.log( gutil.colors.red('--> Couldn\'t update project meta.'));
+        dev.error('--> Couldn\'t update project meta.');
         reject( 'Couldn\'t update project meta');
       });
     });

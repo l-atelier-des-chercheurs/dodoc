@@ -280,7 +280,7 @@ body.bibli {
   display: none;
 }
 
-.medias-list {
+.grille_de_medias {
 
   @include clearfix();
 
@@ -390,7 +390,7 @@ body.bibli {
 
 @media #{$small-only}{
 
-  .medias-list{
+  .grille_de_medias {
     .media {
       padding-left: 0.9375rem !important;
       padding-right: 0.9375rem !important;

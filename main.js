@@ -279,7 +279,7 @@ module.exports = function(app, io){
     fs.exists( fullPathToStopmotionImage, function(exists) {
       if(exists) {
         console.log( '--> Will remove last stop-motion image.');
-        fs.unlink( fullPathToStopmotionImage);
+        fs.unlink(fullPathToStopmotionImage);
       } else {
         dev.error('--> Couldn\'t find the last stop-motion image, so couldn\'t delete it.');
       }

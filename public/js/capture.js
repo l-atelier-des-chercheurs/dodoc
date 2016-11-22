@@ -698,10 +698,13 @@ function onMediaCreated( mediasData){
   var newMediaType = mediaData.type;
   var mediaName = mediaData.mediaName;
 
+
   var projectPath = getProjectPath( currentFolder, currentProject);
   var mediasFolderPath = getMediaFolderPathByType( newMediaType);
 
-  var pathToMediaFile = '/' + getPathToMediaFile( projectPath, mediasFolderPath, mediaName);
+//   var pathToMediaFile = '/' + getPathToMediaFile( projectPath, mediasFolderPath, mediaName);
+  var mediasFilesPath = getMediaFiles(mediaData);
+  debugger;
 
   var cameraPreview = document.getElementById('video-stream');
 
@@ -711,24 +714,23 @@ function onMediaCreated( mediasData){
     ;
 
   if( newMediaType === 'photo') {
-    imageMode.showImagePreview( pathToMediaFile + '.png');
+    imageMode.showImagePreview(mediasFilesPath.img_large);
     animateWindows();
   }
   else if( newMediaType === 'video') {
-    videoMode.showVideoPreview( pathToMediaFile + dodoc.videoext);
+    videoMode.showVideoPreview(mediasFilesPath.video);
     animateWindows();
   }
   else if( newMediaType === 'animation') {
-    stopMotionMode.showStopMotionPreview( pathToMediaFile + dodoc.stopMotionext);
+    stopMotionMode.showStopMotionPreview(mediasFilesPath.video);
     animateWindows();
   }
   else if( newMediaType === 'audio') {
-    audioMode.showAudioPreview( pathToMediaFile + '.wav', pathToMediaFile + '.png');
+    audioMode.showAudioPreview( mediasFilesPath.audio, mediasFilesPath.img_large);
     animateWindows();
   }
 
 }
-
 
 //animation des fenêtres à la capture
 function animateWindows(){
