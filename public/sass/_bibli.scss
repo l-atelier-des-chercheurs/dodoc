@@ -392,10 +392,12 @@ body.bibli {
 
   .grille_de_medias {
     .media {
-      padding-left: 0.9375rem !important;
-      padding-right: 0.9375rem !important;
-      width: 50% !important;
-      float: left !important;
+
+      $mediasPerRow: 3;
+
+      $mediasWidthHeight: 100/$mediasPerRow + %;
+      width: $mediasWidthHeight !important;
+      padding-bottom: $mediasWidthHeight !important;
 
       .button-wrapper_flagMedia{
         display:none !important;

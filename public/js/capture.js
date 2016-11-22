@@ -704,7 +704,6 @@ function onMediaCreated( mediasData){
 
 //   var pathToMediaFile = '/' + getPathToMediaFile( projectPath, mediasFolderPath, mediaName);
   var mediasFilesPath = getMediaFiles(mediaData);
-  debugger;
 
   var cameraPreview = document.getElementById('video-stream');
 

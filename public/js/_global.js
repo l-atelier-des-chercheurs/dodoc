@@ -266,7 +266,6 @@ function getMediaFiles(mediaDatas) {
   var mediaImages = {};
   $.each( mediaFilenames, function( key, mediaFilename) {
     // if media is either a jpg or a png
-    debugger;
     if(mediaFilename.toLowerCase().match(".jpg") || mediaFilename.toLowerCase().match(".jpeg") || mediaFilename.toLowerCase().match(".png")) {
       // if its name is made of the thumb suffix, its a thumb
       if(mediaFilename.toLowerCase().match(dodoc.thumbSuffix)) {
@@ -646,56 +645,56 @@ var sendData = {
 
   createNewProject : function( pdata) {
     pdata.slugFolderName = currentFolder;
-  	socket.emit( 'newProject', pdata);
+    	socket.emit( 'newProject', pdata);
   },
   editProject : function( pdata) {
     pdata.slugFolderName = currentFolder;
-  	socket.emit( 'editProject', pdata);
+    	socket.emit( 'editProject', pdata);
   },
 
   createNewMedia : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
     mediaData.author = sessionId;
-  	socket.emit( 'newMedia', mediaData);
+    	socket.emit( 'newMedia', mediaData);
   },
   editMedia : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
-  	socket.emit( 'editMediaMeta', mediaData);
+    	socket.emit( 'editMedia', mediaData);
   },
   deleteMedia : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
-  	socket.emit( 'deleteMedia', mediaData);
+    	socket.emit( 'deleteMedia', mediaData);
   },
 
   deleteStopmotion : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
-  	socket.emit( 'deleteStopmotion', mediaData);
+    	socket.emit( 'deleteStopmotion', mediaData);
   },
 
   createNewPubli : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
-  	socket.emit( 'createPubli', publiData);
+    	socket.emit( 'createPubli', publiData);
   },
   editPubli : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
-  	socket.emit( 'editPubli', publiData);
+    	socket.emit( 'editPubli', publiData);
   },
 
   listOnePubliMetaAndMedias : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
-  	socket.emit( 'listOnePubliMetaAndMedias', publiData);
+    	socket.emit( 'listOnePubliMetaAndMedias', publiData);
   },
   editPubliMeta : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
-  	socket.emit( 'editMetaPubli', publiData);
+    	socket.emit( 'editMetaPubli', publiData);
   },
   editPubliMedias : function( publiData) {
     publiData.slugFolderName = currentFolder;

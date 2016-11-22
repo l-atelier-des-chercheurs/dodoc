@@ -6930,10 +6930,7 @@ th.hide-for-touch {
       font-size: 2.5em !important; }
     .reveal-modal input[type="text"], .reveal-modal select {
       font-size: 2.3em !important;
-      height: 3em !important; }
-    .reveal-modal input[type="submit"], .reveal-modal button {
-      padding: 20px 22px !important;
-      font-size: 2.3em; } }
+      height: 3em !important; } }
 
 .reveal-modal {
   border: 1px solid rgba(0, 0, 0, 0.2);
@@ -7807,10 +7804,8 @@ body.bibli {
 
 @media only screen and (max-width: 40em) {
   .grille_de_medias .media {
-    padding-left: 0.9375rem !important;
-    padding-right: 0.9375rem !important;
-    width: 50% !important;
-    float: left !important; }
+    width: 33.33333% !important;
+    padding-bottom: 33.33333% !important; }
     .grille_de_medias .media .button-wrapper_flagMedia {
       display: none !important; }
   .reveal-modal#modal-media-view {
