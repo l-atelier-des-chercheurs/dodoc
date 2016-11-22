@@ -499,10 +499,10 @@ var dodocMedia = (function() {
   // --> 20161121_164329_1.txt
   // --> 20161121_164329_1-thumb.png
   // --> 20161121_164329_1-any-option.webm
-  function _getMediaFileNameFromFileName() {
+  function _getMediaFileNameFromFileName(filename) {
     var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec(filename)[1];
     // get the "name" part of this filename
-    var cleanMediaName = new RegExp( dodoc.regexpGetMediaName, 'i').exec(fileNameWithoutExtension);
+    var cleanMediaName = new RegExp( dodoc.regexpGetMediaName, 'i').exec(fileNameWithoutExtension)[0];
     return cleanMediaName;
   }
 

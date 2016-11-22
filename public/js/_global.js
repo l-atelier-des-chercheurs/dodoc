@@ -661,7 +661,7 @@ var sendData = {
   editMedia : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
-    	socket.emit( 'editMedia', mediaData);
+    	socket.emit( 'editMediaMeta', mediaData);
   },
   deleteMedia : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
