@@ -553,7 +553,7 @@ var dodocMedia = (function() {
       sharp(imagePath)
         .rotate()
         .resize(dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
-        .min()
+        .max()
         .withoutEnlargement()
         .withMetadata()
         .toFormat(sharp.format.jpeg)
