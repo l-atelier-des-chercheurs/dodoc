@@ -2,6 +2,8 @@ const electron = require('electron');
 const {app, BrowserWindow} = electron;
 const path = require('path');
 const fs = require('fs-extra');
+const flags = require('flags');
+var devLog = require('./app/bin/dev-log');
 
 const config = require('./config.json');
 const dodoc = require('./app/dodoc');
@@ -21,8 +23,15 @@ function createWindow () {
     global.userDirname = dodocPath;
     console.log('Will store contents in: ' + global.userDirname);
 
+    flags.defineBoolean('debug');
+    flags.defineBoolean('verbose');
+    flags.parse();
+    var isDebugMode = flags.get('debug');
+    var isVerbose = flags.get('verbose');
+    global.dev = devLog(isDebugMode, isVerbose);
+
     // Instantiate Express App
-    app.server = require(path.join(__dirname, 'dodoc', 'server'))();
+    app.server = require(path.join(__dirname, 'app', 'server'))();
 
     // const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
 
@@ -42,7 +51,8 @@ function createWindow () {
     win.loadURL(`${config.protocol}://${config.host}:${config.port}`);
 
     // Open the DevTools.
-    //win.webContents.openDevTools();
+    if(dev.isDebug())
+      win.webContents.openDevTools();
 
     win.focus();
 
@@ -86,7 +96,7 @@ app.on('activate', () => {
 function copyAndRenameUserFolder() {
   return new Promise(function(resolve, reject) {
 
-    const sourcePathInApp = path.join(__dirname, 'dodoc', dodoc.userDirname)
+    const sourcePathInApp = path.join(__dirname, 'app', dodoc.userDirname)
     const dodocPathInUser = path.join( app.getPath(config.userDirpath), config.userDirname);
 
     // if dodoc folder doesn't exist yet at destination

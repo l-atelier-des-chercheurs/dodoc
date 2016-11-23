@@ -2,7 +2,6 @@
 
 var fs = require('fs-extra');
 var path = require('path');
-// var exec = require('child_process').exec;
 
 var dodoc = require('./dodoc');
 var dodocAPI = require('./bin/dodoc-api');

@@ -6,10 +6,11 @@ var merge = require('merge');
 var mm = require('marky-mark');
 var ffmpeg = require('fluent-ffmpeg');
 
-var sharp = require('sharp');
+// only load sharp if not in electron (need to find how to make it work eventually)
+if(process.versions['electron'] === undefined)
+  var sharp = require('sharp');
 
 var dodoc  = require('../dodoc');
-
 var dodocAPI = require('./dodoc-api');
 
 var dodocMedia = (function() {

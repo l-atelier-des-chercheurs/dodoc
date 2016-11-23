@@ -11,6 +11,7 @@ function devLog( d, v) {
     logpackets  : function(term) { if( isDebugMode) console.log(gutil.colors.green('- ' + term)); },
     logfunction : function(term) { if( isDebugMode) console.info(gutil.colors.magenta('~ ' + term)); },
     error : function(term) { console.info(gutil.colors.red('! -->  ' + term)); },
+    isDebug : function() { return isDebugMode; },
   };
 
   function initModule() {

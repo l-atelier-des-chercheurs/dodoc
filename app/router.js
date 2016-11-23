@@ -20,12 +20,14 @@ var dodocPubli = require('./bin/dodoc-publi');
 
 module.exports = function(app,io,m){
 
-  flags.defineBoolean('debug');
-  flags.defineBoolean('verbose');
-  flags.parse();
-  var isDebugMode = flags.get('debug');
-  var isVerbose = flags.get('verbose');
-  global.dev = devLog( isDebugMode, isVerbose);
+  if(typeof global.dev === "undefined") {
+    flags.defineBoolean('debug');
+    flags.defineBoolean('verbose');
+    flags.parse();
+    var isDebugMode = flags.get('debug');
+    var isVerbose = flags.get('verbose');
+    global.dev = devLog( isDebugMode, isVerbose);
+  }
 
   /**
   * routing event

@@ -1,10 +1,11 @@
 {
-  "name": "dodoc-app",
+  "name": "dodoc",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "electron main"
+    "start": "electron main",
+    "debug": "electron main --debug --verbose"
   },
   "repository": {
     "type": "git",
@@ -17,8 +18,10 @@
   },
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc-app#readme",
   "dependencies": {
-    "electron": "^1.4.8",
+    "electron": "1.4.8",
     "fs-extra": "^1.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "flags": "^0.1.3"
+  }
 }
