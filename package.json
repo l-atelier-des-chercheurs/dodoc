@@ -1,7 +1,7 @@
 {
   "name": "dodoc",
-  "version": "1.0.0",
-  "description": "",
+  "version": "3.5.0",
+  "description": "Dodoc is a documentation tool.",
   "main": "main.js",
   "scripts": {
     "start": "electron main",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/l-atelier-des-chercheurs/dodoc-app.git"
+    "url": "git+https://github.com/l-atelier-des-chercheurs/dodoc.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/l-atelier-des-chercheurs/dodoc-app/issues"
+    "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
   },
-  "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc-app#readme",
+  "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
   "dependencies": {
     "electron": "1.4.8",
     "fs-extra": "^1.0.0"

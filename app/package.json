@@ -1,7 +1,7 @@
 {
   "name": "dodoc",
   "version": "0.8.2",
-  "description": "Dodoc is a documentation tool for children",
+  "description": "Dodoc is a documentation tool.",
   "scripts": {
     "start": "node index.js",
     "debug": "node --inspect index.js --debug --verbose"
