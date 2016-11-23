@@ -23,6 +23,7 @@ var dodocMedia = (function() {
     listOneMedia              : function(slugFolderName, slugProjectName, singleMediaFolderPath, mediaName) { return listOneMedia(slugFolderName, slugProjectName, singleMediaFolderPath, mediaName); },
     createNewMedia            : function(newMediaData) { return createNewMedia(newMediaData); },
     editMediaMeta             : function(editMediaData) { return editMediaMeta(editMediaData); },
+    createThumbnails    : function(videoPath, videoFilename, pathToMediaFolder) { return createThumbnails(videoPath, videoFilename, pathToMediaFolder);},
     deleteOneMedia            : function(slugFolderName, slugProjectName, mediaFolder, mediaName) { return deleteOneMedia(slugFolderName, slugProjectName, mediaFolder, mediaName); },
   };
 
@@ -146,7 +147,7 @@ var dodocMedia = (function() {
               mdata.slugProjectName = slugProjectName;
               mdata.mediaFolderPath = mediaFolder;
 
-              dodocAPI.createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
+              createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
                 resolve( mdata);
               }, function(error) {
                 dev.error('--> Failed to make a thumbnail for a video! Error: ', error);
@@ -188,7 +189,7 @@ var dodocMedia = (function() {
                 mdata.slugFolderName = slugFolderName;
                 mdata.slugProjectName = slugProjectName;
                 mdata.mediaFolderPath = mediaFolder;
-                dodocAPI.createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
+                createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
                   resolve( mdata);
                 }, function(error) {
                   dev.error("Failed to make a thumbnail for a stopmotion! Error: ", error);
@@ -358,6 +359,26 @@ var dodocMedia = (function() {
       }
     });
   }
+
+
+  function createThumbnails(videoPath, videoFilename, pathToMediaFolder){
+    return new Promise(function(resolve, reject) {
+      dev.logverbose('Will attempt to make a thumbnail out of a video or stopmotion with info ' + JSON.stringify({videoPath, videoFilename, pathToMediaFolder}));
+      var proc = ffmpeg( videoPath)
+      // setup event handlers
+      .on('end', function(files) {
+        console.log('screenshot was saved');
+        resolve();
+      })
+      .on('error', function(err) {
+        console.log('an error happened: ' + err.message);
+        reject(err.message);
+      })
+      // take 2 screenshots at predefined timemarks
+      .takeScreenshots({ count: 1, timemarks: [ '00:00:00'], "filename" : videoFilename + ".png"}, pathToMediaFolder);
+    });
+  }
+
 
   /***************************************************************************************************/
   /******************************************** private functions ************************************/
