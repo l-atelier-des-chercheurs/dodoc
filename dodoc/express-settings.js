@@ -1,7 +1,8 @@
 var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
-var dodoc  = require('./public/dodoc');
 var path = require('path');
+
+var dodoc  = require('./dodoc');
 try {
   // root config.json is specific to electron
   var config = require('../config.json');
@@ -17,7 +18,7 @@ module.exports = function(app, express) {
 
   app.use(express.static(global.userDirname));
   app.use(express.static(path.join(global.userDirname, dodoc.contentDirname)));
-  app.use(express.static(path.join(__dirname, "public")));
+  app.use(express.static(path.join(__dirname, "client")));
 
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());

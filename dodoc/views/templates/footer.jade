@@ -12,10 +12,10 @@ script
 script(src='/socket.io/socket.io.js')
 script
   | var app = {};
-  | app.currentFolder = "#{slugFolderName}";
-  | app.currentProject = "#{slugProjectName}";
-  | app.currentPubli = "#{slugPubliName}";
-  | var dodoc = #{dodoc};
+  | app.currentFolder = "!{slugFolderName}";
+  | app.currentProject = "!{slugProjectName}";
+  | app.currentPubli = "!{slugPubliName}";
+  | var dodoc = !{JSON.stringify(dodoc)};
 script( src='/js/production/plugins.js')
 script moment.locale("#{dodoc.codelang}");
 

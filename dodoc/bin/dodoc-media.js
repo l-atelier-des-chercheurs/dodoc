@@ -6,7 +6,7 @@ var merge = require('merge');
 var mm = require('marky-mark');
 var ffmpeg = require('fluent-ffmpeg');
 
-// var sharp = require('sharp');
+var sharp = require('sharp');
 
 var dodoc  = require('../dodoc');
 
