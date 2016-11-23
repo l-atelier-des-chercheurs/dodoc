@@ -1,0 +1,205 @@
+mixin logo()
+  .logo
+    a(href="/" title="Dodoc")
+      include ../../client/images/i_logo.svg
+
+mixin button(typeOfButton, navOrButton, style)
+  if( navOrButton === 'isNav')
+    | <div class='item'>
+
+  - var defaultClasses = 'button-wrapper '
+
+  if( style === 'isCollapsed')
+    - defaultClasses = defaultClasses + 'button-wrapper_collapsed '
+
+  if( typeOfButton === 'dossier')
+    a(href="/#{slugFolderName}" title="Dodoc" class='button-wrapper_dossier #{defaultClasses}')
+      span #{folderName}
+
+  if( typeOfButton === 'deleteFolder')
+    a(href="#" title="Dodoc" class='button-wrapper_deleteFolder js--deleteFolder #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_clear.svg
+      span !{dodoc.lang.remove}
+
+  if( typeOfButton === 'deleteProject')
+    a(href="#" title="Dodoc" class='button-wrapper_deleteProject js--deleteProject #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_clear.svg
+      span !{dodoc.lang.removeProject}
+
+  if( typeOfButton === 'projet')
+    a(href="/#{slugFolderName}/#{slugProjectName}" title="Dodoc" class='button-wrapper_projet #{defaultClasses}')
+      span #{projectName}
+
+  if( typeOfButton === 'nouveauDossier')
+    a(href="#" data-reveal-id="modal-add-folder" class='button-wrapper_add #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_add.svg
+      span !{dodoc.lang.createFolder}
+
+  if( typeOfButton === 'nouveauProjet')
+    a(href="#" class='button-wrapper_add js--add-project #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_add.svg
+      span !{dodoc.lang.createProject}
+
+  if( typeOfButton === 'editFolder')
+    a(href="#" data-reveal-id="modal-modify-folder" class='button-wrapper_editFolder js--edit-folder #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_cog.svg
+      span !{dodoc.lang.modal.editFolder}
+
+  if( typeOfButton === 'editProjet')
+    a(href="#" class='button-wrapper_editProjet js--edit-project #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_cog.svg
+      span !{dodoc.lang.modal.editProject}
+
+  if( typeOfButton === 'capture')
+    a(href="/#{slugFolderName}/#{slugProjectName}/capture" title="Dodoc page de capture" class='button-wrapper_capture #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_record.svg
+      span !{dodoc.lang.capture}
+
+  if( typeOfButton === 'bibli')
+    a(href="/#{slugFolderName}/#{slugProjectName}/bibliotheque/medias" title="Dodoc bibliotheque" class='button-wrapper_bibli #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_bibli.svg
+      span !{dodoc.lang.bibli}
+
+  if( typeOfButton === 'publications')
+    a(href="/#{slugFolderName}/#{slugProjectName}/bibliotheque/panneau-de-publications" title="Dodoc publi" class='button-wrapper_publi js--open_publicationspane #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_publi.svg
+      span !{dodoc.lang.publi}
+
+  if( typeOfButton === 'createPublication')
+    a(href="#" title="#{dodoc.lang.createPublication}" class='button-wrapper_#{typeOfButton} js--createPublication #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_add.svg
+      span !{dodoc.lang.createPublication}
+
+  if( typeOfButton === 'view_publication')
+    a(href="/#{slugFolderName}/#{slugProjectName}/publication" title="Dodoc publi" class='button-wrapper_view js--publiLink #{defaultClasses}' target="_blank")
+      .btn.icon
+        include ../../client/images/i_view.svg
+      span !{dodoc.lang.show}
+
+  if( typeOfButton === 'edit_publication')
+    a(href="/#{slugFolderName}/#{slugProjectName}/publication" title="Dodoc publi" class='button-wrapper_edit js--edit_view #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_pen.svg
+      span !{dodoc.lang.edit}
+
+  if( typeOfButton === 'validerTitre')
+    a(href="#" title="Dodoc publi" class='button-wrapper_accept js--validerTitre #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_enregistre.svg
+      span !{dodoc.lang.accept}
+
+  if( typeOfButton === 'uploadPubliToFtp')
+    a(href="#" title="Dodoc upload publi" class='button-wrapper_upload js--uploadPubliToFtp #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_enregistre.svg
+      span !{dodoc.lang.uploadPubliToFtp}
+
+  if( typeOfButton === 'editPubli')
+    a(href="#" title="Dodoc publi" class='button-wrapper_edit js--editPubli #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_cog.svg
+      span !{dodoc.lang.editTitle}
+
+  if( typeOfButton === 'ajoutText')
+    a(href="#" data-reveal-id="modal-add-text" title="Dodoc texte" class='button-wrapper_addText js--ajoutText #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_text.svg
+      span !{dodoc.lang.createText}
+
+  if( typeOfButton === 'ajoutMedia')
+    a(href="#" data-reveal-id="modal-add-local" title="Dodoc media" class='button-wrapper_addMedia js--ajoutMedia #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_add.svg
+      span !{dodoc.lang.importMedia}
+
+  if( typeOfButton === 'deleteMedia')
+    a(href="#" title="Dodoc media" class='button-wrapper_deleteMedia js--delete-media-montage #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_clear.svg
+      span !{dodoc.lang.remove}
+
+  if( typeOfButton === 'backButton')
+    a(href="#" title="Dodoc media" class='button-wrapper_backButton js--backButton #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_back.svg
+      span !{dodoc.lang.back}
+
+  if( typeOfButton === 'fullscreen')
+    a(href="#" title="Dodoc media" class='button-wrapper_gofullscreen js--goFullscreen #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_fullscreen.svg
+      span !{dodoc.lang.fullscreen}
+
+  if( typeOfButton === 'nofullscreen')
+    a(href="#" title="Dodoc media" class='button-wrapper_leavefullscreen js--leaveFullscreen #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_nofullscreen.svg
+      span !{dodoc.lang.quitFullscreen}
+
+  if( typeOfButton === 'deleteMediaCapture')
+    a(href="#" title="Dodoc media" class='button-wrapper_deleteMediaCapture js--delete-media-capture #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_clear.svg
+      span !{dodoc.lang.remove}
+
+  if( typeOfButton === 'deleteMediaCaptureStopmotion')
+    a(href="#" title="Dodoc media" class='button-wrapper_deleteMediaCaptureStopmotion js--delete-media-capture-stopmotion #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_clear.svg
+      span !{dodoc.lang.backToAnimation}
+
+
+  if( typeOfButton === 'deleteLastMedia')
+    a(href="#" title="Dodoc media" class='button-wrapper_deleteLastMedia js--delete-sm-lastimage #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_clear.svg
+      span !{dodoc.lang.removeThisImage}
+
+  if( typeOfButton === 'previzStopmotion')
+    a(href="#" title="Dodoc publi" class='button-wrapper_previzStopmotion js--previz-stopmotion #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_enregistre.svg
+      span !{dodoc.lang.previzStopMotion}
+
+  if( typeOfButton === 'finishStopmotion')
+    a(href="#" title="Dodoc publi" class='button-wrapper_finishStopmotion js--finish-stopmotion #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_enregistre.svg
+      span !{dodoc.lang.finishStopmotion}
+
+  if( typeOfButton === 'flag')
+    a(href="#" title="Favoris" class='button-wrapper_flagMedia js--flagMedia')
+      .btn.icon
+        include ../../client/images/i_flag.svg
+
+  if( typeOfButton === 'favButton')
+    a(href="#" title="Favoris" class='button-wrapper_highlightMedia js--highlightMedia #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_flag.svg
+      span !{dodoc.lang.addToFav}
+
+  if( typeOfButton === 'deleteMediaBibli')
+    a(href="#" title="Dodoc media" class='button-wrapper_deleteMedia js--delete-media-bibli #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_clear.svg
+      span !{dodoc.lang.removeThisMedia}
+
+  if( typeOfButton === 'settings')
+    a(href="#" title="Dodoc media" class='button-wrapper_settings js--settings #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_cog.svg
+      span !{dodoc.lang.settings}
+
+
+  if( navOrButton === 'isNav')
+    | </div>
