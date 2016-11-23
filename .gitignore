@@ -45,13 +45,13 @@ Thumbs.db
 # dodoc customs #
 ######################
 
-dodoc/client/fonts/Fira/source/
-dodoc/client/fonts/Fira/technical reports/
+app/client/fonts/Fira/source/
+app/client/fonts/Fira/technical reports/
 
 .com.apple.timemachine.supported
 
-dodoc/user/contenus/*
-!dodoc/user/contenus/readme.txt
+app/user/contenus/*
+!app/user/contenus/readme.txt
 
-dodoc/user/publications/*
-!dodoc/user/publications/readme.txt
+app/user/publications/*
+!app/user/publications/readme.txt
