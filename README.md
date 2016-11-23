@@ -40,7 +40,7 @@ To download the repository, click on the "Download zip" button on the dodoc Gith
 (Recommended - easier for Updates) 
 To clone the repository open the terminal, open the directory where you want to place dodoc (for example > cd C:/Documents),
 and type this command  
-```git clone https://github.com/sarahgarcin/dodoc.git```
+```git clone https://github.com/l-atelier-des-chercheurs/dodoc.git```
 then open the dodoc directory by typing ```cd dodoc```
 
 ###Install nodejs on your computer
