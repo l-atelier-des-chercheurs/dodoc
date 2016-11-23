@@ -17,10 +17,12 @@ You can find more documentation and contribute to the project [here](http://www.
 
 ##Install DoDoc
 
+# Method 1 - OSX only
 ### Download the app (simplest way, MacOS only for now)
 
 Check out the latest releases: https://github.com/l-atelier-des-chercheurs/dodoc/releases
 
+# Method 2 - All OS
 ### With a terminal (a little more complicated)
 
 _You need both [git](https://git-scm.com/downloads) and [node.js](https://nodejs.org/) to install DoDoc._
