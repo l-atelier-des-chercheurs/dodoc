@@ -49,6 +49,7 @@ app/client/fonts/Fira/technical reports/
 
 node_modules
 dodoc-darwin-x64
+dodoc-linux-ia32
 
 app/user/contenus/*
 !app/user/contenus/readme.txt

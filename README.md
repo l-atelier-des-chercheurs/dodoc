@@ -15,9 +15,13 @@ You can find more documentation and contribute to the project [here](http://www.
 ![dodoc](http://www.lopendoc.org/dodoc/wp-content/uploads/sites/23/2016/05/Capture-d%E2%80%99e%CC%81cran-2016-05-05-a%CC%80-18.13.44.png) 
 
 
-##TO INSTALL DODOC
+##Install DoDoc
 
-### Using the terminal
+### Download the app (MacOS only for now)
+
+Check out the latest releases: https://github.com/l-atelier-des-chercheurs/dodoc/releases
+
+### Using a terminal
 #### Windows
 Follow this tutorial: http://wikistrea.fr/Comment_ouvrir_la_console_de_commande_Windows_en_mode_administrateur_%3F
 #### Mac OSX
@@ -112,5 +116,5 @@ Example: ```cd dodoc```
 -->  1 blog : http://www.lopendoc.org/dodoc/
 
 
-To debug dodoc, you can enable extra-logging with the following command:
+To debug DoDoc, you can enable extra-logging with the following command:
 ```npm run debug```
