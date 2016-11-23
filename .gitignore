@@ -1,3 +1,6 @@
+node_modules
+dodoc-app-darwin-x64
+
 # FTP Config file
 ftp-config.js
 
@@ -42,13 +45,13 @@ Thumbs.db
 # dodoc customs #
 ######################
 
-public/fonts/Fira/source/
-public/fonts/Fira/technical reports/
+dodoc/client/fonts/Fira/source/
+dodoc/client/fonts/Fira/technical reports/
 
 .com.apple.timemachine.supported
 
-user/contenus/*
-!user/contenus/readme.txt
+dodoc/user/contenus/*
+!dodoc/user/contenus/readme.txt
 
-user/publications/*
-!user/publications/readme.txt
+dodoc/user/publications/*
+!dodoc/user/publications/readme.txt

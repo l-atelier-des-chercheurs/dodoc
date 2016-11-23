@@ -1,0 +1,6 @@
+{
+  "protocol": "https",
+  "host": "localhost",
+  "port": 8080,
+  "templateEngine": "jade"
+}

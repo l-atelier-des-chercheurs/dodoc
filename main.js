@@ -1,423 +1,108 @@
-"use strict";
+const electron = require('electron');
+const {app, BrowserWindow} = electron;
+const path = require('path');
+const fs = require('fs-extra');
 
-var fs = require('fs-extra');
-var path = require('path');
-// var exec = require('child_process').exec;
+const config = require('./config.json');
+const dodoc = require('./dodoc/dodoc');
 
-var dodoc = require('./public/dodoc.js');
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+let win;
 
-var dodocAPI = require('./bin/dodoc-api.js');
-var dodocFolder = require('./bin/dodoc-folder.js');
-var dodocProject = require('./bin/dodoc-project.js');
-var dodocMedia = require('./bin/dodoc-media.js');
-var dodocPubli = require('./bin/dodoc-publi.js');
-
-var exportPubliToFtp = require('./bin/upload-to-ftp.js');
-
-try { var exportConfig  = require('./ftp-config.js'); }
-catch( err) { console.log('No ftp config files have been found'); }
-
-module.exports = function(app, io){
-
-  console.log("Main module initialized");
-
-  io.on("connection", function(socket){
-    // I N D E X    P A G E
-    socket.on( 'listFolders', function (data){ onListFolders(socket); });
-    socket.on("newFolder", onNewFolder);
-    socket.on("editFolder", onEditFolder);
-    socket.on("removeFolder", onRemoveFolder);
-
-    // F O L D E R     P A G E
-    socket.on("listProjects", function (data){ onListProjects( socket, data); });
-    socket.on("newProject", onNewProject);
-    socket.on("editProject", onEditProject);
-    socket.on("removeOneProject", onRemoveOneProject);
-
-    // P R O J E T      P A G E
-    socket.on("listProject", onListProject);
-
-    // C A P T U R E     P A G E
-    socket.on("newMedia", onNewMedia);
-
-    //STOP MOTION
-    socket.on( "startStopMotion", function (data){ onStartStopMotion( socket, data); });
-    socket.on( "addImageToStopMotion", function (data){ onAddImageToStopMotion( socket, data); });
-    socket.on( 'deleteLastImageOfStopMotion', function (data){ onDeleteLastImageOfStopMotion(socket, data); });
-
-    // B I B L I        P A G E
-    socket.on( 'listOneProjectMedias', onListOneProjectMedias);
-    socket.on( 'listOneProjectPublis', onListOneProjectPublis);
-
-    socket.on( 'createPubli', onCreatePubli);
-    socket.on( 'editMetaPubli', onEditMetaPubli);
-    socket.on( 'editMediasPubli', onEditMediasPubli);
-
-    socket.on("editMediaMeta", onEditMediaMeta);
-    socket.on("deleteMedia", onDeleteMedia);
-    socket.on("deleteStopmotion", onDeleteStopmotion);
-
-		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
-
-    socket.on( 'exportPubliToFtp', function (data){ onExportPubliToFtp( socket, data); });
-	});
-
-  /***************************************************************************
-
-                                                E V E N T S
-
-                                  All those functions are triggered by events.
-                                  They send their content over to COMMON functions
-                                  and then use io.sockets.emit to send content
-                                  to the client. The content transits by json objects
-                                  These functions should be as concise as possible.
-
-  ****************************************************************************/
-
-// I N D E X     P A G E
-
-  // Create a new folder
-  function onNewFolder( folderData) {
-    dev.logfunction( "EVENT - onNewFolder");
-    dodocFolder.createNewFolder( folderData).then( function( newpdata) {
-      dodocAPI.sendEventWithContent( 'folderCreated', newpdata, io);
-    }, function(errorpdata) {
-      dev.error("Failed to create a new folder! Error: ", errorpdata);
-      dodocAPI.sendEventWithContent( 'folderAlreadyExist', io, errorpdata);
-    });
-  }
-
-  function onListFolders(socket){
-    dev.logfunction( "EVENT - onListFolders");
-    dodocFolder.listAllFolders().then(function( allFoldersData) {
-      dodocAPI.sendEventWithContent( 'listAllFolders', allFoldersData, io, socket);
-      // also list projects !
-      allFoldersData.forEach( function( fdata) {
-        onListProjects( socket, fdata);
-      });
-    }, function(error) {
-      dev.error("Failed to list folders! Error: ", error);
-    });
-  }
-
-  // Modifier un dossier
-  function onEditFolder( updatedFolderData){
-    dev.logfunction( "EVENT - onEditFolder with packet " + JSON.stringify( updatedFolderData, null, 4));
-    dodocFolder.updateFolderMeta( updatedFolderData).then(function( currentDataJSON) {
-      dodocAPI.sendEventWithContent( 'folderModified', currentDataJSON, io);
-    }, function(error) {
-      dev.error("Failed to update a folder! Error: ", error);
-    });
-  }
-
-  // Supprimer un dossier
-  function onRemoveFolder( fdata){
-    dev.logfunction( "EVENT - onRemoveFolder");
-    dodocFolder.removeFolderNamed( fdata.slugFolderName).then(function( removedFolderData) {
-      dodocAPI.sendEventWithContent( 'folderRemoved', removedFolderData, io);
-    }, function(error) {
-      dev.error("Failed to remove a folder! Error: ", error);
-    });
-  }
+app.commandLine.appendSwitch('--ignore-certificate-errors');
 
 
-// P R O J E T S     P A G E
-// Liste les projets existants
+function createWindow () {
 
-  function onListProjects( socket, dataFolder) {
-    dev.logfunction( "EVENT - onListProjects");
-    dodocFolder.listAllProjectsOfOneFolder(dataFolder.slugFolderName).then(function( allProjectsData) {
-      dodocAPI.sendEventWithContent( 'listAllProjectsOfOneFolder', allProjectsData, io, socket);
-    }, function(error) {
-      dev.error("Failed to list projects! Error: ", error);
-    });
-  }
+  // check if content folder exists
+  copyAndRenameUserFolder().then(function(dodocPath) {
 
-  function onNewProject( projectData) {
-    dev.logfunction( "EVENT - onNewProject");
-    dodocProject.createNewProject( projectData).then( function( newpdata) {
-      dodocAPI.sendEventWithContent( 'projectCreated', newpdata, io);
-    }, function(error) {
-      dev.error("Failed to create a new project! Error: ", error);
-    });
-  }
+    global.userDirname = dodocPath;
+    console.log('Will store contents in: ' + global.userDirname);
 
-  // Modifier un projet
-  function onEditProject( pdata) {
-    dev.logfunction( "EVENT - onEditProject with packet " + JSON.stringify( pdata, null, 4));
-    dodocProject.updateProjectMeta( pdata).then( function( newpdata) {
-      dodocAPI.sendEventWithContent( 'projectModified', newpdata, io);
-    }, function(error) {
-      dev.error("Failed to update a project! Error: ", error);
-    });
-  }
+    // Instantiate Express App
+    app.server = require(path.join(__dirname, 'dodoc', 'server'))();
 
-  // Supprimer un dossier
-  function onRemoveOneProject( pdata){
-    dev.logfunction( "EVENT - onRemoveProject");
-    dodocProject.removeOneProject( pdata.slugFolderName, pdata.slugProjectName).then( function( rpdata) {
-      dodocAPI.sendEventWithContent( 'projectRemoved', rpdata, io);
-    }, function(error) {
-      dev.error("Failed to remove the project called " + pdata.slugProjectName + "! Error: ", error);
-    });
-  }
+    // const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
 
-
-// F I N     P R O J E T S     P A G E
-
-// P R O J E T      P A G E
-  function onListProject( pdata, socket) {
-    dev.logfunction( "EVENT - onListProject");
-    dodocProject.listOneProject( pdata.slugFolderName, pdata.slugProjectName).then(function(npdata) {
-      dodocAPI.sendEventWithContent( 'listOneProject', npdata, io);
-    }, function(error) {
-      dev.error("Failed to list one project! Error: ", error);
-    });
-  }
-
-  function onListOneProjectMedias( pdata, socket) {
-    dev.logfunction( "EVENT - listOneProjectMedias");
-    dodocMedia.listAllMedias( pdata.slugFolderName, pdata.slugProjectName).then(function( mediaFolderContent) {
-      dodocAPI.sendEventWithContent( 'listAllMedias', mediaFolderContent, io, socket);
-    }, function(error) {
-      dev.error("Failed to list one media! Error: ", error);
-    });
-  }
-
-// F I N     P R O J E T      P A G E
-
-// C A P T U R E      P A G E
-
-  function onNewMedia( mediaData) {
-    dev.logfunction( "EVENT - onNewMedia : " + JSON.stringify( mediaData, null, 4));
-    dodocMedia.createNewMedia( mediaData).then(function( mediaMetaData) {
-      dodocMedia.listOneMedia( mediaMetaData.slugFolderName, mediaMetaData.slugProjectName, mediaMetaData.mediaFolderPath, mediaMetaData.mediaName).then(function( oneMediaData) {
-        for(var prop in oneMediaData) {
-          oneMediaData[prop]["author"] = mediaData.author;
-        }
-        dodocAPI.sendEventWithContent( 'mediaCreated', oneMediaData, io);
-      }, function(error) {
-        dev.error("Failed to listOneMedia from create! Error: ", error);
-      });
-    }, function(error) {
-      dev.error("Failed to createNewMedia! Error: ", error);
-    });
-  }
-
-
-  function onEditMediaMeta( editMediaData) {
-    dev.logfunction( "EVENT - onEditMediaMeta");
-    dodocMedia.editMediaMeta( editMediaData).then(function( mediaMetaData) {
-      dodocMedia.listOneMedia( mediaMetaData.slugFolderName, mediaMetaData.slugProjectName, mediaMetaData.mediaFolderPath, mediaMetaData.mediaName).then(function( oneMediaData) {
-        dodocAPI.sendEventWithContent( 'mediaUpdated', oneMediaData, io);
-      }, function(error) {
-        dev.error("Failed to listOneMedia from create! Error: ", error);
-      });
-
-    }, function(error) {
-      dev.error("Failed to edit media! Error: ", error);
-    });
-  }
-
-
-  function onStartStopMotion( socket, mediaData) {
-    dev.logfunction( "EVENT - onStartStopMotion");
-
-    var folderCacheName = dodocAPI.getCurrentDate();
-
-    var slugFolderName = mediaData.slugFolderName;
-    var slugProjectName = mediaData.slugProjectName;
-    var mediaFolder = dodocMedia.getAnimationPathOfProject();
-    var folderCachePath = path.join( dodocAPI.getProjectPath( slugFolderName, slugProjectName), mediaFolder, folderCacheName);
-    var relativeCachePath = path.join('/', slugFolderName, slugProjectName, mediaFolder, folderCacheName);
-
-    fs.removeSync( folderCachePath);
-    fs.ensureDirSync( folderCachePath);
-    var newStopMotionData =
-    {
-      "folderCacheName" : folderCacheName,
-      "folderCachePath" : folderCachePath,
-      "relativeCachePath" : relativeCachePath
-    }
-    dodocAPI.sendEventWithContent( 'stopMotionDirectoryCreated', newStopMotionData, io, socket);
-
-    if( mediaData.imageContent !== undefined) {
-      // also add the linked image as first image to the stopmotion
-      console.log( 'relativeCachePath ? = ' + relativeCachePath);
-      var imageData =
-      {
-        "imageContent" : mediaData.imageContent,
-        "folderCachePath" : folderCachePath,
-      };
-      onAddImageToStopMotion( socket, imageData);
-    }
-  }
-
-  function onAddImageToStopMotion( socket, imageData) {
-    dev.logfunction( "EVENT - onAddImageToStopMotion : " + JSON.stringify( imageData, null, 4));
-
-    var newImageName = dodocAPI.getCurrentDate('x');
-    newImageName = dodocAPI.findFirstFilenameNotTaken( newImageName, imageData.folderCachePath, '.png') + '.png';
-  		var imageFullPath = path.join( imageData.folderCachePath, newImageName);
-		var imageBuffer = dodocAPI.decodeBase64Image( imageData.imageContent);
-
-		fs.writeFile( imageFullPath, imageBuffer.data, function(err) {
-      if (err) console.log( err);
-    		var mediaData =
-    		{
-      		"newImageName" : newImageName,
-    		};
-
-      dodocAPI.sendEventWithContent( 'newStopmotionImage', mediaData, io, socket);
-    });
-  }
-
-
-  function onDeleteLastImageOfStopMotion( socket, idata) {
-    dev.logfunction( "EVENT - onDeleteLastImageOfStopMotion : " + JSON.stringify( idata, null, 4));
-    var fullPathToStopmotionImage = dodocAPI.getFolderPath(idata.pathToStopmotionImage);
-    fs.exists( fullPathToStopmotionImage, function(exists) {
-      if(exists) {
-        console.log( '--> Will remove last stop-motion image.');
-        fs.unlink(fullPathToStopmotionImage);
-      } else {
-        dev.error('--> Couldn\'t find the last stop-motion image, so couldn\'t delete it.');
+    // Create the browser window.
+    win = new BrowserWindow({
+      width: 1180,
+      height: 700,
+      webPreferences: {
+        allowDisplayingInsecureContent: true,
+        allowRunningInsecureContent: true,
+        nodeIntegration: true
       }
     });
-  }
+    // win.maximize();
 
+    // and load the index.html of the app.
+    win.loadURL(`${config.protocol}://${config.host}:${config.port}`);
 
-  // Delete File
-  function onDeleteMedia( mediaData) {
-    dev.logfunction( "EVENT - onDeleteMedia");
-    var slugFolderName = mediaData.slugFolderName;
-    var slugProjectName = mediaData.slugProjectName;
-    var mediaFolder = mediaData.mediaFolderPath;
-    var mediaName = mediaData.mediaName;
+    // Open the DevTools.
+    //win.webContents.openDevTools();
 
-    dodocMedia.deleteOneMedia( slugFolderName, slugProjectName, mediaFolder, mediaName).then(function( mediaMetaData) {
-      dodocAPI.sendEventWithContent( 'mediaRemoved', mediaMetaData, io);
-    }, function(error) {
-      dev.error("Failed to remove one media! Error: ", error);
+    win.focus();
+
+    // Emitted when the window is closed.
+    win.on('closed', () => {
+      // Dereference the window object, usually you would store windows
+      // in an array if your app supports multi windows, this is the time
+      // when you should delete the corresponding element.
+      win = null
     });
-  }
-
-  function onDeleteStopmotion( mediaData) {
-    dev.logfunction( "EVENT - onDeleteStopmotion");
-    var slugFolderName = mediaData.slugFolderName;
-    var slugProjectName = mediaData.slugProjectName;
-    var mediaFolder = mediaData.mediaFolderPath;
-    var mediaName = mediaData.mediaName;
-
-    var pathToMediaFolder = path.join( dodocAPI.getProjectPath( slugFolderName, slugProjectName), mediaFolder);
-
-    try {
-      var filesInMediaFolder = fs.readdirSync( pathToMediaFolder);
-      filesInMediaFolder.forEach( function( filename) {
-        var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( filename)[1];
-        // only remove files with extension, not folder (in case a user wants to continue her stopmotion)
-        if( new RegExp( dodoc.regexpGetFileExtension, 'i').exec( filename) === null) {
-          return;
-        }
-
-        if( fileNameWithoutExtension === mediaName) {
-          var filePath = path.join( pathToMediaFolder, filename);
-          fs.unlinkSync( filePath);
-        }
-      });
-    } catch( err) {
-    }
-  }
-
-// F I N     C A P T U R E    P A G E
-
-// B I B L I    P A G E
-
-  function onListOneProjectPublis( publiMetaData, socket) {
-    dev.logfunction( "EVENT - onListOneProjectPublis");
-    var slugFolderName = publiMetaData.slugFolderName;
-    var slugProjectName = publiMetaData.slugProjectName;
-
-    dodocPubli.listPublis( slugFolderName, slugProjectName).then(function( publiProjectContent) {
-      dodocAPI.sendEventWithContent( 'listOneProjectPublis', publiProjectContent, io, socket);
-    }, function(error) {
-      dev.error("Failed to list all publis! Error: ", error);
-    });
-  }
+  }, function(err) {
+    console.log( 'Failed to check existing content folder : ' + err);
+  });
 
 
-  function onCreatePubli( publiData) {
-    dev.logfunction( "EVENT - onCreatePubli");
-
-    dodocPubli.createPubli( publiData).then(function( publiMetaData) {
-      dodocPubli.listPublis( publiMetaData.slugFolderName, publiMetaData.slugProjectName, publiMetaData.slugPubliName).then(function( publiProjectContent) {
-        dodocAPI.sendEventWithContent( 'publiCreated', publiProjectContent, io);
-      }, function(error) {
-        dev.error("Failed to listPublis from create! Error: ", error);
-      });
-
-    }, function(error) {
-      dev.error("Failed to create New Publi! Error: ", error);
-    });
-  }
-
-  function onEditMetaPubli( publiData) {
-    dev.logfunction( "EVENT - onEditMetaPubli");
-
-    dodocPubli.editThisPubli(publiData).then(function( publiMetaData) {
-      var slugFolderName = publiMetaData.slugFolderName;
-      var slugProjectName = publiMetaData.slugProjectName;
-      var slugPubliName = publiMetaData.slugPubliName;
-
-      dodocPubli.listPublis(slugFolderName, slugProjectName, slugPubliName).then(function( publiProjectContent) {
-        dodocAPI.sendEventWithContent( 'publiMetaUpdated', publiProjectContent, io);
-      }, function(error) {
-        dev.error("Failed to listPublis from create! Error: ", error);
-      });
-    }, function(error) {
-      dev.error("Failed to edit Publi! Error: ", error);
-    });
-
-  }
-
-  function onEditMediasPubli( publiData) {
-    dev.logfunction( "EVENT - onEditMediasPubli");
-
-    dodocPubli.editThisPubli( publiData).then(function( publiMetaData) {
-      var slugFolderName = publiMetaData.slugFolderName;
-      var slugProjectName = publiMetaData.slugProjectName;
-      var slugPubliName = publiMetaData.slugPubliName;
-
-      dodocPubli.listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
-        dodocAPI.sendEventWithContent( 'publiMediasUpdated', publiMedias, io);
-      }, function(error) {
-        dev.error("Failed to list publi media! Error: ", error);
-      });
-    }, function(error) {
-      dev.error("Failed to edit this publi! Error: ", error);
-    });
-
-  }
-
-// F I N    B I B L I    P A G E
-
-// P U B L I     P A G E
-  function onListOnePubliMetaAndMedias( publiData) {
-    dev.logfunction( "EVENT - onListOnePubliMetaAndMedias : " + JSON.stringify( publiData, null, 4));
-    var slugFolderName = publiData.slugFolderName;
-    var slugProjectName = publiData.slugProjectName;
-    var slugPubliName = publiData.slugPubliName;
-
-    dodocPubli.listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
-      dodocAPI.sendEventWithContent( 'listOnePubliMetaAndMedias', publiMedias, io);
-    }, function(error) {
-      dev.error("Failed to list one media! Error: ", error);
-    });
-  }
-
-  function onExportPubliToFtp(socket, publiData) {
-    exportPubliToFtp.exportPubliToFtp( socket, publiData);
-  }
-
-// F I N     P U B L I     P A G E
 }
+
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on('ready', createWindow);
+
+// Quit when all windows are closed.
+app.on('window-all-closed', () => {
+  // On macOS it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  // if (process.platform !== 'darwin') {
+    app.quit();
+  // }
+})
+
+app.on('activate', () => {
+  // On macOS it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (win === null) {
+    createWindow();
+  }
+})
+
+
+function copyAndRenameUserFolder() {
+  return new Promise(function(resolve, reject) {
+
+    const sourcePathInApp = path.join(__dirname, 'dodoc', dodoc.userDirname)
+    const dodocPathInUser = path.join( app.getPath(config.userDirpath), config.userDirname);
+
+    // if dodoc folder doesn't exist yet at destination
+    fs.access(dodocPathInUser, fs.F_OK, function(err) {
+      if(!err) {
+        console.log('Content folder ' + config.userDirname + ' already exists in ' + config.userDirpath);
+        console.log('->not creating a new one');
+        resolve(dodocPathInUser);
+      }
+      fs.copy(sourcePathInApp, dodocPathInUser, {clobber: false}, function (err) {
+        if(err) reject(err);
+        resolve(dodocPathInUser);
+      });
+    });
+  });
+}
+
+// In this file you can include the rest of your app's specific main process
+// code. You can also put them in separate files and require them here.
