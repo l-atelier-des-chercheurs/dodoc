@@ -12,11 +12,14 @@
 
 }
 
+.reveal-modal-bg {
+  background-color: transparentize( white, .1);
+}
 .reveal-modal {
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid $gristresclair;
+
   border-radius: 2px;
-  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 15px 10px white;
   padding: $margin;
 
   max-width: 32.5rem;

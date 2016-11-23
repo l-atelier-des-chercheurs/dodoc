@@ -3,10 +3,11 @@ const {app, BrowserWindow} = electron;
 const path = require('path');
 const fs = require('fs-extra');
 const flags = require('flags');
-var devLog = require('./app/bin/dev-log');
+const devLog = require('./app/bin/dev-log');
 
 const config = require('./config.json');
 const dodoc = require('./app/dodoc');
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -29,6 +30,16 @@ function createWindow () {
     var isDebugMode = flags.get('debug');
     var isVerbose = flags.get('verbose');
     global.dev = devLog(isDebugMode, isVerbose);
+
+    if(dev.isDebug()) {
+      const contextMenu = require('electron-context-menu')({
+        prepend: (params, browserWindow) => [{
+          label: 'Rainbow',
+          // only show it when right-clicking images
+          visible: params.mediaType === 'image'
+        }]
+      });
+    }
 
     // Instantiate Express App
     app.server = require(path.join(__dirname, 'app', 'server'))();

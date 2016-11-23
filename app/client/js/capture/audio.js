@@ -52,7 +52,7 @@ var audioMode = (function() {
       };
       sendData.createNewMedia( mediaData);
       animateWindows();
-      saveFeedback("/images/icone-dodoc_audio.png");
+      saveFeedback("/images/i_icone-dodoc_audio.svg");
     });
 
     sarahCouleur = 'gray';

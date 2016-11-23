@@ -122,13 +122,14 @@ var stopMotionMode = (function() {
 
   function finishStopmotion( ) {
     isRecording = false;
-    saveFeedback("/images/icone-dodoc_anim.png");
 
     $startsm.show();
     $capturesm.hide();
 
     backAnimation();
     stopMotionMode.init();
+
+    saveFeedback("/images/i_icone-dodoc_anim.svg");
 
   }
 

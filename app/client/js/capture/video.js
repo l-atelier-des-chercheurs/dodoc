@@ -80,7 +80,7 @@ var videoMode = (function() {
       sendData.createNewMedia( mediaData);
       $preview.find('video').src = '';
       $preview.find('video').poster = 'https://localhost:8080/loading.gif';
-      saveFeedback("/images/icone-dodoc_video.png");
+      saveFeedback("/images/i_icone-dodoc_video.svg");
     }, function() {
       console.log("Failed stopping the recording of a video.");
     });

@@ -26,7 +26,7 @@ var imageMode = (function() {
       $preview.find('img.js--output').attr('src', '');
 
       justCaptured();
-      saveFeedback("/images/icone-dodoc_image.png");
+      saveFeedback("/images/i_icone-dodoc_image.svg");
     }, function(err) {
       console.log('err ' + err);
     });
