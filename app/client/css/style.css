@@ -6932,13 +6932,11 @@ th.hide-for-touch {
       font-size: 2.3em !important;
       height: 3em !important; } }
 
-.reveal-modal-bg {
-  background-color: rgba(255, 255, 255, 0.9); }
-
 .reveal-modal {
-  border: 1px solid #e5e5e5;
+  border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 2px;
-  box-shadow: 0 15px 10px white;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   padding: 16px;
   max-width: 32.5rem;
   max-height: 80vh;

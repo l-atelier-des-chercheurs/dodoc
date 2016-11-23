@@ -21,7 +21,6 @@ var dodocAPI = (function() {
     sendEventWithContent: function(sendEvent, objectContent, io, socket) { return sendEventWithContent(sendEvent, objectContent, io, socket); },
     decodeBase64Image   : function(dataString) { return decodeBase64Image(dataString); },
     writeVideoToDisk    : function(pathToFile, fileExtension, dataURL) { return writeVideoToDisk(pathToFile, fileExtension, dataURL); },
-    createThumbnails    : function(videoPath, videoFilename, pathToMediaFolder) { return createThumbnails(videoPath, videoFilename, pathToMediaFolder);},
     listAllTemplates    : function() { return listAllTemplates(); },
   };
 
@@ -137,24 +136,6 @@ var dodocAPI = (function() {
           if (err) reject( err);
           resolve();
         });
-    });
-  }
-
-  function createThumbnails(videoPath, videoFilename, pathToMediaFolder){
-    return new Promise(function(resolve, reject) {
-      dev.logverbose('Will attempt to make a thumbnail out of a video or stopmotion with info ' + JSON.stringify({videoPath, videoFilename, pathToMediaFolder}));
-      var proc = ffmpeg( videoPath)
-      // setup event handlers
-      .on('end', function(files) {
-        console.log('screenshot was saved');
-        resolve();
-      })
-      .on('error', function(err) {
-        console.log('an error happened: ' + err.message);
-        reject(err.message);
-      })
-      // take 2 screenshots at predefined timemarks
-      .takeScreenshots({ count: 1, timemarks: [ '00:00:00'], "filename" : videoFilename + ".png"}, pathToMediaFolder);
     });
   }
 

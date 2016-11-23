@@ -17,64 +17,54 @@ You can find more documentation and contribute to the project [here](http://www.
 
 ##Install DoDoc
 
-### Download the app (MacOS only for now)
+# Method 1 - OSX only
+### Download the app (simplest way, MacOS only for now)
 
 Check out the latest releases: https://github.com/l-atelier-des-chercheurs/dodoc/releases
 
-### Using a terminal
+# Method 2 - All OS
+### With a terminal (a little more complicated)
+
+_You need both [git](https://git-scm.com/downloads) and [node.js](https://nodejs.org/) to install DoDoc._
+
 #### Windows
-Follow this tutorial: http://wikistrea.fr/Comment_ouvrir_la_console_de_commande_Windows_en_mode_administrateur_%3F
+Follow [this tutorial](http://wikistrea.fr/Comment_ouvrir_la_console_de_commande_Windows_en_mode_administrateur_%3F): 
 #### Mac OSX
-Go to Applications->Utilitaries->Terminal
+Go to Applications->Utilities->Terminal
 #### Linux
-If you have Linux you know how to use the terminal
+You should already be able to open a terminal
 
-###Open a folder to install DoDoc
-Select where you want DoDoc to be copied on your computer. 
-To open this folder, type ```cd path/of/the/folder``` 
-Example : in your folder "Documents", which is on your C:/ harddrive.
-Type ```cd C:/Documents``` 
+### 1. Open/create a folder to install DoDoc
+Select where you want DoDoc to be copied on your computer with the following command
+```cd path/to/a/folder``` 
 
-
-##How to install Dodoc
-
-### Clone the repo or download it
-To download the repository, click on the "Download zip" button on the dodoc Github page  
-
-(Recommended - easier for Updates) 
-To clone the repository open the terminal, open the directory where you want to place dodoc (for example > cd C:/Documents),
-and type this command  
+### 2. Clone the repo or download it
+Clone dodoc to a `dodoc` folder:
 ```git clone https://github.com/l-atelier-des-chercheurs/dodoc.git```
-then open the dodoc directory by typing ```cd dodoc```
+then open that folder with ```cd dodoc```
 
-###Install nodejs on your computer
+### 3. Install dependencies
 
-You can install nodejs from this page [https://nodejs.org/](https://nodejs.org/)     
-Then, verify that it is correctly installed  by typing in the terminal    
-```node -v```
-You need a recent version of node (6 or more), so this line should return something like `Now using node v6.9.1 (npm v3.10.8)`.
-
-###Install dependencies
-
-In terminal go to the dodoc directory you have just cloned or downloaded:  
-```cd path/of/the/dodoc/directory```  
-example:  
-```cd Pauline/sites/dodoc```     
-
-Once you are in the right directory   
-(the terminal says for example ```MacBook-Pro-de-Pauline-3:dodoc Pauline$``` )   
-Enter the command:    
+Install electron dependencies
 ```npm install```  
 
-On Windows XP, if you get the following error : 
-```Error: Failed to replace env in config: ${APPDATA}```
-you have to first set the right path to a writable folder for node. Go to C:\Program Files\nodejs\node_modules\npm and open npmrc.
-Replace the line 
-'prefix=${APPDATA}\npm'
-with
-```prefix=C:\Program Files\nodejs\node_modules\npm```
+Then install dodoc dependencies
+```cd app```
+```npm install```
 
-###Install ffmpeg
+### 4. Run dodoc
+
+Go back to the dodoc folder
+```cd ../```
+
+Then start dodoc
+```npm start```
+
+
+
+## Third-party packages
+
+### Install ffmpeg to make stopmotions
 Official page [https://www.ffmpeg.org/](https://www.ffmpeg.org/)
 
 ####On Linux
@@ -86,35 +76,17 @@ Follow this tutorial: [http://adaptivesamples.com/how-to-install-ffmpeg-on-windo
 ####On Mac OSX
 Follow this tutorial: [http://www.renevolution.com/how-to-install-ffmpeg-on-mac-os-x/](http://www.renevolution.com/how-to-install-ffmpeg-on-mac-os-x/)
 
-###Run DoDoc
-In the right directory  (```cd path/of/the/dodoc/directory```  )
-(the terminal says for example ```MacBook-de-Toto:dodoc Pauline$``` )  
-Run the server in the terminal (enter the following command:)  
-```npm start```
 
-If all goes well your terminal should tell you to navigate to a specific URL.
-Open your web-browser (recommended is Chrome) and copy-paste this URL (which should be [https://localhost:8080](https://localhost:8080)).
+## Update dodoc
 
-Your browser is going to tell you that this website is unsafe, click through the warnings to the homepage of dodoc.
+###To update DoDoc with the latest version  
 
-###To update DoDoc with the latest vesrion  
-There are two options:  
-1) If you have cloned the repository, pull the modifications with the terminal:  
-- Go to your folder directory:   
-Example: ```cd dodoc```   
-- Pull the modifications:   
-```git pull```   
-
-2) If you have downloaded the zip file and you want the updated version:
-- Click on the "Download zip" button to download the new version
-- Copy your old version directory.
-- Change the name of the old version directory (example: "Dodoc" > "DoDoc_01")
-- Paste all files and directories of the freshly-downloaded docdoc directory into your copy directory and replace all existed files
+As the content folder (medias, texts, etc.) is outside the app, just replace the dodoc.app or redownload the repository. 
 
 ### Contributing or forking dodoc
 -->  1 hackpad with spec (in french): https://hackpad.com/dodoc-5iYRCxUY8D5 <br>
 -->  1 blog : http://www.lopendoc.org/dodoc/
 
-
+### Debug and edit dodoc
 To debug DoDoc, you can enable extra-logging with the following command:
 ```npm run debug```
