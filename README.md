@@ -26,7 +26,7 @@ Check out the latest releases: https://github.com/l-atelier-des-chercheurs/dodoc
 _You need both [git](https://git-scm.com/downloads) and [node.js](https://nodejs.org/) to install DoDoc._
 
 #### Windows
-Follow this tutorial: http://wikistrea.fr/Comment_ouvrir_la_console_de_commande_Windows_en_mode_administrateur_%3F
+Follow [this tutorial](http://wikistrea.fr/Comment_ouvrir_la_console_de_commande_Windows_en_mode_administrateur_%3F): 
 #### Mac OSX
 Go to Applications->Utilities->Terminal
 #### Linux
