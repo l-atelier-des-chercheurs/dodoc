@@ -74,6 +74,7 @@
   input[type="submit"], button {
     display: block;
     border: none;
+    float: right;
     background-color: $bleuvert;
 
     padding: 4px 24px;
@@ -83,7 +84,6 @@
 
     color: white;
   }
-
 
   .templateSelector {
 
@@ -366,6 +366,17 @@ input[type="text"], select {
 
 select {
   border-bottom: 2px solid $gris;
+}
 
-
+.alertify-logs {
+  z-index:  15000;
+}
+.alertify-logs>.default {
+  font-weight: 500;
+  border: 3px solid $rouge;
+  background-color: white;
+  color: $rouge;
+}
+.alertify-logs>.show {
+  margin-right:   16px;
 }

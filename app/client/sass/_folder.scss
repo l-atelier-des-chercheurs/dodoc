@@ -84,8 +84,6 @@ body.projets{
     }
 
     .project-content {
-
-      @include style--dossierBorders;
       border-right: none;
       padding: $margin/2 0px ;
 
@@ -105,7 +103,6 @@ body.projets{
 
         span:nth-of-type(1) {
           margin-right: 5px;
-          @include style--titrelegende;
         }
         .created{
           .create-date{
@@ -128,8 +125,6 @@ body.projets{
     .image-wrapper{
 
       position: relative;
-
-      @include style--dossierBorders;
       background-color: $c-separator;
 
       -webkit-background-size: cover;

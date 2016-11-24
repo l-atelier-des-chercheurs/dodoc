@@ -16,7 +16,6 @@ body.bibli {
   padding: $margin/2;
   margin: 0 $margin/2;
 
-  @include style--dossierBorders;
   background-color: transparent;
   border:none;
   border-bottom: 1px solid $c-separator;

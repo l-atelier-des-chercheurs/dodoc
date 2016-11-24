@@ -45,15 +45,6 @@ h1,h2,h3,h4,h5,h6{font-family: 'Fira Sans', sans-serif;}
   border-top: 0;
 }
 
-@mixin style--titrelegende {
-  font-family:  'share';
-  color: $gris;
-  font-size: 1em;
-  font-style: italic;
-  text-transform: lowercase;
-
-}
-
 @mixin clearfix {
   &:before, &:after { content: " "; display: table; }
   &:after { clear: both; }
@@ -139,8 +130,6 @@ button {
 }
 
 .legende {
-  @include style--titrelegende;
-
 }
 
 .row{max-width:90%;}
@@ -389,11 +378,16 @@ button {
 
 
 .txt-small_info {
-  color: $grisfonce;
+  color: $gris;
   font-size: .8em;
   line-height:  1.5;
   margin-bottom: $margin;
 }
+
+.txt-mono {
+  font-family:  'Fira Mono', monospace;
+}
+
 .txt-wrap_long_lines {
   /* These are technically the same, but use both */
   overflow-wrap: break-word;
@@ -841,6 +835,3 @@ input[type=range] {
 }
 
 
-.alertify-logs {
-  z-index:  15000;
-}

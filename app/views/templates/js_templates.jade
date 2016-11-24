@@ -91,7 +91,7 @@ li.publi-folder(data-publi="")
     .project-content.flex_50.flex_structure
       a(href="" title="Dodoc").project-link
         h2.title
-      .meta-data.flex_40
+      .meta-data.txt-small_info.txt-mono.flex_40
         .statut
           span
             | !{dodoc.lang.status}
@@ -105,7 +105,7 @@ li.publi-folder(data-publi="")
             | !{dodoc.lang.modifiedOn}
           span.modify-date
       .button-to-pages.flex_60
-        h3.legende
+        h3.txt-small_info
           | !{dodoc.lang.quickAccess}
         +button('capture', '', 'isCollapsed')
         +button('bibli', '', 'isCollapsed')
@@ -113,11 +113,11 @@ li.publi-folder(data-publi="")
     .image-wrapper.flex_50
       img
   ul.last-medias.grille_de_medias
-    h3.legende
+    h3.txt-small_info
       | !{dodoc.lang.lastMediasAdded}
 
   .montage-list
-    h1.legende
+    h1.txt-small_info
       | !{dodoc.lang.listOfPublications}
     ul.list-publi
 
@@ -129,7 +129,7 @@ li.dossier.small-12.medium-12.large-4.columns(data-statut data-name data-nom)
       a.folder-link(href title)
         h2.title
       .projet-list
-    .meta-data.row
+    .meta-data.txt-small_info.txt-mono.row
       .nb-projets.small-6.columns
         span.nb-projets-intitule
           | !{dodoc.lang.projects}

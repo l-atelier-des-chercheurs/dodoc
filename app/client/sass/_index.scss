@@ -20,7 +20,8 @@ body.index{
   }
 
   .dossier-inside {
-    @include style--dossierBorders;
+    background-color: #fff;
+
   }
 
   .button-wrapper_editFolder{
@@ -126,13 +127,10 @@ body.index{
     background-color: #fff;
     color: #8d8d8d;
 
-    font-family: "share", monospace;
-
     > * {
       padding-top: 4px;
     }
     span:nth-of-type(1) {
-      @include style--titrelegende;
       margin-right: 5px;
     }
 
@@ -164,8 +162,7 @@ body.index{
 .dossier {
 
   .content a:hover h2 {
-    background-color: $bleuvert;
-    color: white;
+    color: $bleuvert;
   }
   .statut-type {
     color: $bleuvert;
@@ -174,8 +171,7 @@ body.index{
 
   &[data-statut="en cours"] {
     .content a:hover h2 {
-      background-color: $c-images;
-      color: white;
+      color: $c-images;
     }
 
     .statut-type {

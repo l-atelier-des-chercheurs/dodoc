@@ -106,7 +106,9 @@ if( lang === 'fr') {
 
         "newProject" : "Nouveau projet",
         "newPubli" : "Nouvelle publication",
-        "editPubli" : "Éditer la publication"
+        "editPubli" : "Éditer la publication",
+
+        "newMediaCreatedAtPath" : "Un nouveau média vient d’être créé dans le projet "
 
       },
     }
