@@ -26,6 +26,12 @@ socket.on("*",function(event,data) {
         ;
     }
   }
+  // log folder created
+
+  // log project created
+
+  // log publication created
+
 });
 
 
