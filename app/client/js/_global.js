@@ -5,14 +5,25 @@ var currentFolder = app.currentFolder;
 var currentProject = app.currentProject;
 var currentPubli = app.currentPubli;
 
-/* fonction accessible depuis l'extérieur :
-    - listAllMedias
-    - loadProject
-
-*/
 
 
-function loadProject( projectData) {
+
+
+function loadProjectSnippet(pdata) {
+	var projectPath = '/' + pdata.slugFolderName + '/' + pdata.slugProjectName;
+	var newSnippetProjet = $(".js--templates > .projetSnippet").clone(false);
+	if( pdata.projectPreviewName === false){
+    	newSnippetProjet.find( '.vignette-visuel img').remove();
+	}
+	newSnippetProjet
+    .find( '.project-link').attr('href', projectPath).end()
+    .find( 'h3').text( pdata.name).end()
+    .find( '.vignette-visuel img')
+      .attr( 'src', projectPath + "/" + pdata.projectPreviewName)
+      .attr( 'alt', pdata.name)
+    ;
+	return;
+}
 
 	var projectName = projectData.name;
 	var slugProjectName = projectData.slugProjectName;
@@ -659,7 +670,6 @@ var sendData = {
   createNewMedia : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
-    mediaData.author = sessionId;
     	socket.emit( 'newMedia', mediaData);
   },
   editMedia : function( mediaData) {

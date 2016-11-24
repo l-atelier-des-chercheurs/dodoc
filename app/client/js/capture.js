@@ -678,22 +678,9 @@ var currentStream = (function(context) {
 
 
 // EVENT: a new media has been created (could be one from the current client or one from another user
-function onMediaCreated( mediasData){
+function onMediaCreated(mediasData){
 
   var mediaData = getFirstMediaFromObj( mediasData);
-
-  // check if media created belongs to the same project
-  if( mediaData.slugFolderName !== currentFolder || mediaData.slugProjectName !== currentProject)
-    return;
-
-  // check if media created is of the same type as the current mode (otherwise this probably means that someone else is also capturing at the same time
-  var currentMode = $(document).data('currentMode');
-  if( mediaData.type !== currentMode)
-    return;
-
-  // check if the media was created by the current user
-  if(mediaData.author !== sessionId)
-    return;
 
   var newMediaType = mediaData.type;
   var mediaName = mediaData.mediaName;

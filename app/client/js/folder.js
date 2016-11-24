@@ -23,17 +23,12 @@ socket.on('projectModified', onProjectModified); //Quand on reçoit les modifica
 socket.on('projectRemoved', onProjectRemoved); // Quand le dossier a été supprimé sur le serveur
 
 jQuery(document).ready(function($) {
-
 	$(document).foundation();
 	init();
-
 });
 
 function init(){
-
-	// Remove Folder
 	removeProject();
-
 }
 
 // Affiche le projet dès qu'il est crée
