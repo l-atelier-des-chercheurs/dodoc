@@ -81,13 +81,8 @@ li.publi-folder(data-publi="")
     include modals/mediaForm.jade
 
 .media-big_text.media-big(data-type="text" data-id)
-  .mediaContent
-    form(onsubmit='return false;' class='add-media-text lead')
-      input.js--submit-new-text_title(type='text' placeholder='Titre')
-      textarea.js--submit-new-text_text(placeholder="Ajouter du texte ici")
-      input.js--submit-view-text-modify(type='submit' value='Valider')
-    +button('favButton', '', '')
-    +button('deleteMediaBibli', '', '')
+  .mediaDataForm
+    include modals/mediaForm_txt.jade
 
 
 .project(data-statut)

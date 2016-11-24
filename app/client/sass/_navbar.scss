@@ -84,11 +84,14 @@
 // ---------- DESKTOP ----------
 
 .navbar-container {
+  position: relative;
   width: 100%;
   min-height:  $t-navbarheight;
 
   font-size:  1.1rem;
   font-weight: 400;
+
+  z-index: 100;
 
   body.index & {
     .logo {

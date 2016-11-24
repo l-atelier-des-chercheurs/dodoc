@@ -6809,10 +6809,12 @@ th.hide-for-touch {
       top: 20px; } }
 
 .navbar-container {
+  position: relative;
   width: 100%;
   min-height: 70px;
   font-size: 1.1rem;
-  font-weight: 400; }
+  font-weight: 400;
+  z-index: 100; }
   body.index .navbar-container .logo {
     pointer-events: none; }
   body.index .navbar-container.is--opened .navbar {
@@ -6932,11 +6934,13 @@ th.hide-for-touch {
       font-size: 2.3em !important;
       height: 3em !important; } }
 
+.reveal-modal-bg {
+  background-color: rgba(255, 255, 255, 0.8); }
+
 .reveal-modal {
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 2px solid white;
   border-radius: 2px;
-  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 20px #C3C3C3;
   padding: 16px;
   max-width: 32.5rem;
   max-height: 80vh;
@@ -7430,11 +7434,27 @@ button {
   margin-top: 32px;
   color: #535353;
   text-align: center; }
-  .module_infos h3 {
-    font-size: .8em;
-    line-height: 1.5;
-    margin-bottom: 16px;
-    color: inherit; }
+
+.txt-small_info {
+  color: #535353;
+  font-size: .8em;
+  line-height: 1.5;
+  margin-bottom: 16px; }
+
+.txt-wrap_long_lines {
+  /* These are technically the same, but use both */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  /* This is the dangerous one in WebKit, as it breaks things wherever */
+  word-break: break-all;
+  /* Instead use this non-standard one: */
+  word-break: break-word;
+  /* Adds a hyphen where the word breaks, if supported (No Blink) */
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto; }
 
 body.index #container {
   padding: 50px 0px;
@@ -7547,9 +7567,6 @@ body.index #container {
 
 .dossier[data-statut="en cours"] .statut-type {
   color: #FFBE32; }
-
-body.bibli {
-  overflow: hidden; }
 
 .biblimontage-container {
   position: relative; }

@@ -13,13 +13,13 @@
 }
 
 .reveal-modal-bg {
-  background-color: transparentize( white, .1);
+  background-color: transparentize( white, .2);
 }
 .reveal-modal {
-  border: 1px solid $gristresclair;
+  border: 2px solid white;
 
   border-radius: 2px;
-  box-shadow: 0 15px 10px white;
+  box-shadow: 0 5px 20px $gris;
   padding: $margin;
 
   max-width: 32.5rem;

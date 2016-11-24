@@ -256,11 +256,11 @@ var modals = (function() {
         	var newName = $modal.find('.js--modal_name').val();
         	var newTemplate = $modal.find('.js--modal_template:checked').val();
       		var publiData =
-          {
-            "name" : newName,
-            "slugPubliName" : pdata.publishown,
-            "template" : newTemplate,
-            "slugProjectName" : pdata.slugProjectName
+        {
+          "name" : newName,
+          "slugPubliName" : pdata.publishown,
+          "template" : newTemplate,
+          "slugProjectName" : pdata.slugProjectName
       		}
     		  sendData.editPubliMeta( publiData);
         $modal.foundation('reveal', 'close');
@@ -276,11 +276,13 @@ var modals = (function() {
       var minfos = mdata.informations;
       var mname = mdata.medianame;
       var mfullsizeimagesrc = mdata.imagesrc_fullsize;
+
       	$modal.foundation('reveal', 'open');
 
       switch( mtype){
       		case dodoc.projectPhotosFoldername:
     				var $mediaItem = $(".js--templates .media-big_image").clone(false);
+          var mfullpath = app.contentDir+'/'+mfullsizeimagesrc;
 
     				$mediaItem
     					.find( 'img')
@@ -292,6 +294,7 @@ var modals = (function() {
 
     				var videoPath = $m.find("source").attr("src");
     				var $mediaItem = $(".js--templates .media-big_video").clone(false);
+          var mfullpath = app.contentDir+'/'+videoPath;
 
     				$mediaItem
     			    .find( 'video')
@@ -306,6 +309,7 @@ var modals = (function() {
 
     				var videoPath = $m.find("source").attr("src");
     				var $mediaItem = $(".js--templates .media-big_stopmotion").clone(false);
+          var mfullpath = app.contentDir+'/'+videoPath;
 
     				$mediaItem
     			    .find( 'video')
@@ -319,6 +323,7 @@ var modals = (function() {
 
     				var audioPath = $m.find("source").attr("src");
     				var $mediaItem = $(".js--templates .media-big_audio").clone(false);
+          var mfullpath = app.contentDir+'/'+audioPath;
 
     				$mediaItem
     					.find( 'img')
@@ -332,6 +337,7 @@ var modals = (function() {
     			case dodoc.projectTextsFoldername:
     				//console.log($(this).find('h3').html());
     				var $mediaItem = $(".js--templates .media-big_text").clone(false);
+          var mfullpath = app.contentDir+'/'+mdata.textFilePath;
 
       				$mediaItem
       					.find('.js--submit-new-text_title')
@@ -344,37 +350,38 @@ var modals = (function() {
       				break;
       	}
 
-  		if( $m.hasClass('is--highlight')){
-  			$mediaItem.addClass('is--highlight');
-  		}
+    		if( $m.hasClass('is--highlight')){
+    			$mediaItem.addClass('is--highlight');
+    		}
 
-    	$mediaItem
-    	  .attr( 'data-medianame', mname)
-    	  .attr( 'data-mediatype', mtype)
-    	  .find('.js--mediaInformations')
-    	    .val( minfos)
+      mfullpath = mfullpath.replace(/\//g, '\u200B\/');
+
+      	$mediaItem
+      	  .attr( 'data-medianame', mname)
+      	  .attr( 'data-mediatype', mtype)
+      	  .find('.js--mediaInformations')
+      	    .val( minfos)
         .end()
+        .find('.js--mediaFullPath')
+          .text(mfullpath)
+        .end()
+        ;
 
-  		$modal.find('.big-mediaContent').html( $mediaItem);
+    		$modal.find('.big-mediaContent').html( $mediaItem);
 
-    //Envoie les titres et légendes au serveur
-    $modal.find('.js--submit-add-media-data').on( 'click', function(){
-
-      var editMediaData =
-      {
-        "mediaName" : mname,
-        "mediaFolderPath" : mtype,
-      };
-
-    		var informations = $modal.find( '.js--mediaInformations').val();
-        if( informations !== undefined && informations.length > 0)
-          editMediaData.informations = informations;
-
+      //Envoie les titres et légendes au serveur
+      $modal.find('.js--submit-add-media-data').on( 'click', function(){
+        var editMediaData =
+        {
+          "mediaName" : mname,
+          "mediaFolderPath" : mtype,
+        };
+      		var informations = $modal.find( '.js--mediaInformations').val();
+          if( informations !== undefined && informations.length > 0)
+            editMediaData.informations = informations;
         sendData.editMedia( editMediaData);
-
-    		$modal.foundation('reveal', 'close');
-    		$modal.find('.big-mediaContent').empty();
-
+      		$modal.foundation('reveal', 'close');
+      		$modal.find('.big-mediaContent').empty();
       });
 
       // Ajoute ou enlève un highlight quand on clique sur "Highlight" dans la fenêtre modal

@@ -43,8 +43,8 @@ function loadProject( projectData) {
 	  .attr( 'data-statut', statut)
 	  .data( 'slugProjectName', slugProjectName)
 	  .data( 'projectName', projectName)
-  	.data( 'mtimestamp', transformDatetoTimestamp( createdDate))
-  	.data( 'ctimestamp', transformDatetoTimestamp( modifiedDate))
+    	.data( 'mtimestamp', transformDatetoTimestamp( createdDate))
+    	.data( 'ctimestamp', transformDatetoTimestamp( modifiedDate))
 	  .find( '.statut-type').text( statut).end()
 	  .find( '.image-wrapper')
 	    .css('background-image', 'url(' + imageSrc + ')')
@@ -239,6 +239,7 @@ function showAudio( mediaDatas) {
 
 function showText( mediaDatas) {
 
+  var mediasFilesPath = getMediaFiles(mediaDatas);
   var mediaTitle = mediaDatas.textMediaContent.title_md;
   var mediaText = mediaDatas.textMediaContent.text_md;
   var titleOfTextmediaMd = mediaDatas.textMediaContent.title;
@@ -246,6 +247,7 @@ function showText( mediaDatas) {
 
 	var mediaItem = $(".js--templates .media_text").clone(false);
 	mediaItem
+    .data( 'textFilePath', mediasFilesPath.md)
 	  .find( '.mediaContent--titleOfTextmedia')
 	    .html( mediaTitle)
     .end()
@@ -278,6 +280,8 @@ function getMediaFiles(mediaDatas) {
       mediaImages.video = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
     } else if(mediaFilename.toLowerCase().match(".wav")) {
       mediaImages.audio = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
+    } else if(mediaFilename.toLowerCase().match(".md")) {
+      mediaImages.md = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
     }
   });
   return mediaImages;

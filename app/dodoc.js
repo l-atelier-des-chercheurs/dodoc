@@ -77,7 +77,7 @@ if( lang === 'fr') {
       "videoStreamCouldntBeStartedTryChangingRes" : "Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la résolution dans le panneau de droite.",
       "audioStreamCouldntBeStarted" : "Le flux audio n’a pas pu être démarré.",
 
-      "mediapublitemplatesarestoredint" : "Les médias, les publications et les templates sont actuellement stockés dans le dossier ",
+      "mediapublitemplatesarestoredint" : "Les données chargées sur cette page sont stockées dans le dossier suivant&nbsp;: ",
       "toconnectwithanotherdevice" : "Pour vous connecter avec un autre appareil connecté au même réseau wifi, naviguez vers l’adresse suivante (et ignorez l’avertissement qui s’affiche)&nbsp;:",
 
       "modal" : {
@@ -91,6 +91,7 @@ if( lang === 'fr') {
 
         "newFolder" : "Nouveau dossier",
         "informations" : "Informations",
+        "pathofmedia" : "Emplacement du média sur le disque dur&nbsp;:",
 
         "editFolder" : "Modifier le dossier",
         "inprogress" : "En cours",
