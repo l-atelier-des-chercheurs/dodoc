@@ -11,7 +11,7 @@ var dodocAPI = (function() {
   const API = {
     getCurrentDate      : function(f = dodoc.metaDateFormat) { return getCurrentDate(f); },
     getFolderPath       : function(slugFolderName = '') { return getFolderPath(slugFolderName); },
-    getProjectPath           : function(slugFolderName, slugProjectName) { return getProjectPath(slugFolderName, slugProjectName); },
+    getProjectPath      : function(slugFolderName, slugProjectName) { return getProjectPath(slugFolderName, slugProjectName); },
     parseData           : function(d) { return parseData(d); },
     storeData           : function(mpath, d, e) { return storeData(mpath, d, e); },
     readMetaFile        : function(metaFile) { return readMetaFile(metaFile); },
