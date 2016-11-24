@@ -1,5 +1,4 @@
 /* VARIABLES */
-var socket = io.connect();
 
 
 /* sockets */
@@ -163,11 +162,11 @@ function insertOrReplaceFolder( slugFolderName, $folderContent) {
 
 function onListAllProjectsOfOneFolder(fdata){
 
-  var $newSnippetProjet = $();
-  $.each(fdata, function(index, projectData) {
-    $newSnippetProjet = loadProjectSnippet(projectData);
+  var $newSnippetProjet = $('');
+  $.each(fdata, function(index, pd) {
+    $newSnippetProjet = $newSnippetProjet.add(loadProjectSnippet(pd));
   });
-  var $folder = $(".dossier-list .dossier[data-slugFolderName=" + fdata.slugFolderName + "]");
+  var $folder = $(".dossier-list .dossier[data-slugFolderName=" + fdata[0].slugFolderName + "]");
 //   $folder.find( '.nb-projets-count').html(function(i, val) { return +val+1 });
   $folder.find(".projet-list").prepend($newSnippetProjet);
   return;

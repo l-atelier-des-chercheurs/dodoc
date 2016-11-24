@@ -1,74 +1,91 @@
 
-var sessionId;
+window.sessionId = '';
+window.socket = io.connect();
+
+
+// binding an event to all packets to log some events
+// see http://stackoverflow.com/a/33960032
+var onevent = socket.onevent;
+socket.onevent = function (packet) {
+  var args = packet.data || [];
+  onevent.call (this, packet);    // original call
+  packet.data = ["*"].concat(args);
+  onevent.call(this, packet);      // additional call to catch-all
+};
+
+socket.on("*",function(event,data) {
+  // only log the following events
+  if(event === "mediaCreated") {
+    for(mdata in data) {
+      var thisMedia = data[mdata];
+      console.log(thisMedia.slugFolderName);
+      var logMediaCreated = dodoc.lang.modal.newMediaCreatedAtPath+thisMedia.slugFolderName+'/'+thisMedia.slugProjectName;
+      alertify
+        .delay(4000)
+        .log(logMediaCreated)
+        ;
+    }
+  }
+});
+
+
 // context vars sent by Node via router.js to footer.jade namespaced with app
 var currentFolder = app.currentFolder;
 var currentProject = app.currentProject;
 var currentPubli = app.currentPubli;
 
 
-
-
-
-function loadProjectSnippet(pdata) {
-	var projectPath = '/' + pdata.slugFolderName + '/' + pdata.slugProjectName;
-	var newSnippetProjet = $(".js--templates > .projetSnippet").clone(false);
-	if( pdata.projectPreviewName === false){
-    	newSnippetProjet.find( '.vignette-visuel img').remove();
+function loadProjectSnippet(pd) {
+	var pathToProject = '/' + pd.slugFolderName + '/' + pd.slugProjectName;
+	var $newSnippetProjet = $(".js--templates > .projetSnippet").clone(false);
+	if( pd.projectPreviewName === false) {
+    	$newSnippetProjet.find('.vignette-visuel img').remove();
 	}
-	newSnippetProjet
-    .find( '.project-link').attr('href', projectPath).end()
-    .find( 'h3').text( pdata.name).end()
+	$newSnippetProjet
+    .find( '.project-link').attr('href', pathToProject).end()
+    .find( 'h3').text( pd.name).end()
     .find( '.vignette-visuel img')
-      .attr( 'src', projectPath + "/" + pdata.projectPreviewName)
-      .attr( 'alt', pdata.name)
+      .attr( 'src', pathToProject + "/" + pd.projectPreviewName)
+      .attr( 'alt', pd.name)
     ;
-	return;
+	return $newSnippetProjet;
 }
 
-	var projectName = projectData.name;
-	var slugProjectName = projectData.slugProjectName;
-	var slugFolderName = projectData.slugFolderName;
-
-  var createdDate = projectData.created;
-  var modifiedDate = projectData.modified;
-
-	var createdDateUser = transformDatetoString( createdDate);
-	var modifiedDateUser = transformDatetoString( modifiedDate);
-
-	var statut = projectData.statut;
+function loadProject(pd) {
 
 	var $newProject = $(".js--templates > .project").clone(false);
-	var path = '/' + slugFolderName + '/' + slugProjectName;
+	var pathToProject = '/' + pd.slugFolderName + '/' + pd.slugProjectName;
 
   var imageSrc = '';
-  if( projectData.projectPreviewName !== undefined && projectData.projectPreviewName !== false)
-  	imageSrc = path + "/" + projectData.projectPreviewName + '?' + modifiedDate;
+  if(pd.projectPreviewName !== undefined && pd.projectPreviewName !== false)
+    	imageSrc = pathToProject + "/" + pd.projectPreviewName + '?' + pd.modified;
 
-  if( modifiedDate === null)
+  if( pd.modified === null)
     $newProject.find('.modify-date').remove();
 
 
   // customisation du projet
 	$newProject
-	  .attr( 'data-projectname', slugProjectName)
-	  .attr( 'data-statut', statut)
-	  .data( 'slugProjectName', slugProjectName)
-	  .data( 'projectName', projectName)
-    	.data( 'mtimestamp', transformDatetoTimestamp( createdDate))
-    	.data( 'ctimestamp', transformDatetoTimestamp( modifiedDate))
-	  .find( '.statut-type').text( statut).end()
+	  .attr( 'data-projectname', pd.slugProjectName)
+	  .attr( 'data-statut', pd.statut)
+	  .data( 'slugProjectName', pd.slugProjectName)
+	  .data( 'projectName', pd.name)
+    	.data( 'mtimestamp', transformDatetoTimestamp(pd.created))
+    	.data( 'ctimestamp', transformDatetoTimestamp(pd.modified))
+	  .find( '.statut-type').text( pd.statut).end()
 	  .find( '.image-wrapper')
 	    .css('background-image', 'url(' + imageSrc + ')')
-	    .attr('alt', projectName)
+	    .attr('alt', pd.name)
 	  .end()
-	  .find( '.create-date').text( createdDateUser).end()
-	  .find( '.modify-date').text( modifiedDateUser).end()
-	  .find( '.title').text( projectName).end()
-	  .find( '.project-link').attr( 'href', path).end()
-	  .find( '.button-wrapper_capture').attr( 'href', path + '/capture').end()
-	  .find( '.button-wrapper_bibli').attr( 'href',  path + '/bibliotheque/medias').end()
-	  .find( '.button-wrapper_publi').attr( 'href', path + '/bibliotheque/panneau-de-publications').end()
+	  .find( '.create-date').text( transformDatetoString(pd.created)).end()
+	  .find( '.modify-date').text( transformDatetoString(pd.modified)).end()
+	  .find( '.title').text( pd.name).end()
+	  .find( '.project-link').attr( 'href', pathToProject).end()
+	  .find( '.button-wrapper_capture').attr( 'href', pathToProject + '/capture').end()
+	  .find( '.button-wrapper_bibli').attr( 'href',  pathToProject + '/bibliotheque/medias').end()
+	  .find( '.button-wrapper_publi').attr( 'href', pathToProject + '/bibliotheque/panneau-de-publications').end()
   ;
+
 	return $newProject;
 }
 
