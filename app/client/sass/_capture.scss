@@ -501,7 +501,6 @@ $t-decalageDuCentre: 4%;
     max-height: 80vh;
     width: 100%;
 
-    border:2px solid $gristresclair;
     background-color: $gristresclair;
 
     .videoFeed {
@@ -515,10 +514,8 @@ $t-decalageDuCentre: 4%;
       position: absolute;
       top: 100%;
       left: 0;
-      width: 45%;
-      color: $gris;
-      padding: $margin/4 $margin/2;
-      font-size: 80%;
+      width: 50%;
+      padding: $margin/4 0;
     }
   }
 
@@ -841,7 +838,6 @@ $t-decalageDuCentre: 4%;
       width: 50%;
 
       span {
-        @include style--titrelegende;
         margin-right: $margin/4;
       }
 

@@ -1,9 +1,3 @@
-/*************
-
-  should rewrite each mode as a single var with functions...
-
-  **************/
-
 var videoMode = (function() {
 
   // private vars and functions

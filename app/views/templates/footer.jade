@@ -1,10 +1,10 @@
 .module_infos
   -for(var prop in localNetworkInfos)
     -if(isHttps)
-      h3 !{dodoc.lang.toconnectwithanotherdevice} https://#{localNetworkInfos[prop]}:8080
+      h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice} https://#{localNetworkInfos[prop]}:8080
     -else
-      h3 !{dodoc.lang.toconnectwithanotherdevice} http://#{localNetworkInfos[prop]}:8080
-  h3 !{dodoc.lang.mediapublitemplatesarestoredint} <br>#{userDirname}
+      h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice} http://#{localNetworkInfos[prop]}:8080
+  h3.txt-small_info !{dodoc.lang.mediapublitemplatesarestoredint} <br>#{currentUserDirPath}
 
 script
   | if (typeof module === 'object') {window.module = module; module = undefined;}
@@ -15,6 +15,8 @@ script
   | app.currentFolder = "!{slugFolderName}";
   | app.currentProject = "!{slugProjectName}";
   | app.currentPubli = "!{slugPubliName}";
+  | app.contentDir = "!{contentDir}";
+  | app.currentUserDirPath = "!{currentUserDirPath}";
   | var dodoc = !{JSON.stringify(dodoc)};
 script( src='/js/production/plugins.js')
 script moment.locale("#{dodoc.codelang}");

@@ -1,11 +1,4 @@
-var _ = require("underscore");
-var url = require('url')
 var fs = require('fs-extra');
-var path = require("path");
-var fs = require('fs-extra');
-var ffmpeg = require('fluent-ffmpeg');
-var moment = require('moment');
-var merge = require('merge');
 var os = require('os');
 var flags = require('flags');
 
@@ -50,6 +43,8 @@ module.exports = function(app,io,m){
       console.log('—> the following page has been requested : ' + fullUrl);
 
       var pageDataJSON = [];
+      pageDataJSON.contentDir = dodocAPI.getFolderPath();
+      pageDataJSON.currentUserDirPath = dodocAPI.getFolderPath();
 
       var slugFolderName = req.param('folder');
       if( slugFolderName !== undefined) {
@@ -59,23 +54,26 @@ module.exports = function(app,io,m){
         pageDataJSON.slugFolderName = slugFolderName;
         pageDataJSON.folderName = folderData.name;
         pageDataJSON.statut = folderData.statut;
+        pageDataJSON.currentUserDirPath = dodocAPI.getFolderPath(slugFolderName);
 
         var slugProjectName = req.param('project');
         if( slugProjectName !== undefined) {
-          var jsonFileOfProject = dodocProject.getMetaFileOfProject( slugFolderName, slugProjectName);
+          var jsonFileOfProject = dodocProject.getMetaFileOfProject(slugFolderName, slugProjectName);
           var projectData = dodocAPI.readMetaFile( jsonFileOfProject);
 
           pageDataJSON.slugProjectName = slugProjectName;
           pageDataJSON.projectName = projectData.name;
+          pageDataJSON.currentUserDirPath = dodocAPI.getProjectPath(slugFolderName, slugProjectName);
 
           var slugPubliName = req.param('publi');
           if( slugPubliName !== undefined) {
-            var jsonFileOfPubli = dodocPubli.getPathToPubli( slugFolderName, slugProjectName, slugPubliName) + dodoc.metaFileext;
+            var jsonFileOfPubli = dodocPubli.getPubliPath( slugFolderName, slugProjectName, slugPubliName) + dodoc.metaFileext;
             var publiData = dodocAPI.readMetaFile( jsonFileOfPubli);
 
             pageDataJSON.slugPubliName = slugPubliName;
             pageDataJSON.publiName = publiData.name;
             pageDataJSON.publiTemplateName = publiData.template;
+            pageDataJSON.currentUserDirPath = jsonFileOfPubli;
           }
         }
       }

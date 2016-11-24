@@ -83,7 +83,7 @@ html
                 //- display last stopmotion image (if needed)
                 img.captureLeft-lastStopmotionImage.js--lastStopmotionImage(src)
                 video.videoFeed.js--videoFeed(autoplay)
-                div.currentStreamResolution.js--currentStreamResolution
+                div.currentStreamResolution.txt-small_info.txt-mono.js--currentStreamResolution
               //- display audio vizualizer
               canvas(id="canvas-audio" width="720" height="720")
 
@@ -176,9 +176,9 @@ html
 
     script(src="/bower_components/recordrtc/RecordRTC.min.js")
     script(src="/js/libs/screenfull.min.js")
-    script(src='/js/capture-boitier.js')
-    script(src='/js/capture/audio.js')
-    script(src='/js/capture/photo.js')
-    script(src='/js/capture/video.js')
-    script(src='/js/capture/stopmotion.js')
+    script(src='/js/modules/_capture-boitier.js')
+    script(src='/js/modules/_capture-audio.js')
+    script(src='/js/modules/_capture-photo.js')
+    script(src='/js/modules/_capture-video.js')
+    script(src='/js/modules/_capture-stopmotion.js')
     script(src='/js/capture.js')

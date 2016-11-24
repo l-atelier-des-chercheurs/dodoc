@@ -64,8 +64,7 @@ var dodocProject = (function() {
       mediaFolders.forEach( function( mediaFolder) {
         fs.ensureDirSync( path.join( projectPath, mediaFolder));//write new medias folder in folders
       });
-      var publiFolder = dodocPubli.getPubliPathOfProject();
-      fs.ensureDirSync( path.join(projectPath, publiFolder));//write new publi folder in folders
+      fs.ensureDirSync( path.join(projectPath, dodoc.projectPublisFoldername));//write new publi folder in folders
 
       var pmeta =
         {

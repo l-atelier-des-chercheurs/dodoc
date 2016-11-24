@@ -3,9 +3,11 @@ form(onsubmit='return false;' class='add-media-data lead')
     | !{dodoc.lang.modal.informations}
   textarea(type='text' class='js--mediaInformations')
 
-  hr
+h3.txt-small_info
+  | !{dodoc.lang.modal.pathofmedia}
+  .js--mediaFullPath
 
-
+hr
 
 +button('favButton', '', '')
 +button('deleteMediaBibli', '', '')

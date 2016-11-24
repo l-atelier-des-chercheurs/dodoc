@@ -1,5 +1,4 @@
 /* VARIABLES */
-var socket = io.connect();
 
 
 /* sockets */
@@ -161,35 +160,18 @@ function insertOrReplaceFolder( slugFolderName, $folderContent) {
 
 }
 
-function onListAllProjectsOfOneFolder(data){
-  data.forEach( loadProject);
+function onListAllProjectsOfOneFolder(fdata){
+
+  var $newSnippetProjet = $('');
+  $.each(fdata, function(index, pd) {
+    $newSnippetProjet = $newSnippetProjet.add(loadProjectSnippet(pd));
+  });
+  var $folder = $(".dossier-list .dossier[data-slugFolderName=" + fdata[0].slugFolderName + "]");
+//   $folder.find( '.nb-projets-count').html(function(i, val) { return +val+1 });
+  $folder.find(".projet-list").prepend($newSnippetProjet);
   return;
 }
 
-function loadProject( pdata) {
-
-	var projectPath = '/' + pdata.slugFolderName + '/' + pdata.slugProjectName;
-	var $folder = $(".dossier-list .dossier[data-slugFolderName=" + pdata.slugFolderName + "]");
-
-	var newSnippetProjet = $(".js--templates > .projetSnippet").clone(false);
-
-	if( pdata.projectPreviewName === false){
-  	newSnippetProjet.find( '.vignette-visuel img').remove();
-	}
-
-	newSnippetProjet
-    .find( '.project-link').attr('href', projectPath).end()
-    .find( 'h3').text( pdata.name).end()
-    .find( '.vignette-visuel img')
-      .attr( 'src', projectPath + "/" + pdata.projectPreviewName)
-      .attr( 'alt', pdata.name)
-    ;
-
-  $folder.find( '.nb-projets-count').html(function(i, val) { return +val+1 });
-
-	$folder.find(".projet-list").prepend(newSnippetProjet);
-	return;
-}
 
 // Fonction qui affiche les dossiers HTML
 function makeFolderContent( projectData){

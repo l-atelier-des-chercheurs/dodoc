@@ -6809,10 +6809,12 @@ th.hide-for-touch {
       top: 20px; } }
 
 .navbar-container {
+  position: relative;
   width: 100%;
   min-height: 70px;
   font-size: 1.1rem;
-  font-weight: 400; }
+  font-weight: 400;
+  z-index: 100; }
   body.index .navbar-container .logo {
     pointer-events: none; }
   body.index .navbar-container.is--opened .navbar {
@@ -6908,9 +6910,9 @@ th.hide-for-touch {
         .navbar-container .navbar .item .button-wrapper_dossier:hover {
           color: #FF3E51; }
         .navbar-container .navbar .item .button-wrapper_bibli::after {
-          background-color: #0e2173; }
+          background-color: #1d327f; }
         .navbar-container .navbar .item .button-wrapper_bibli:hover {
-          color: #0E2173; }
+          color: #1d327f; }
         .navbar-container .navbar .item .button-wrapper_capture::after {
           background-color: #FFBE32;
           background-color: #ffbe32; }
@@ -6932,11 +6934,13 @@ th.hide-for-touch {
       font-size: 2.3em !important;
       height: 3em !important; } }
 
+.reveal-modal-bg {
+  background-color: rgba(255, 255, 255, 0.8); }
+
 .reveal-modal {
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 2px solid white;
   border-radius: 2px;
-  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 20px #C3C3C3;
   padding: 16px;
   max-width: 32.5rem;
   max-height: 80vh;
@@ -6970,6 +6974,7 @@ th.hide-for-touch {
   .reveal-modal input[type="submit"], .reveal-modal button {
     display: block;
     border: none;
+    float: right;
     background-color: #4BC0B4;
     padding: 4px 24px;
     height: 42px;
@@ -7014,7 +7019,7 @@ th.hide-for-touch {
       .reveal-modal .templateSelector label input:checked ~ svg #fond > * {
         fill: #FFBE32; }
       .reveal-modal .templateSelector label input:checked ~ svg #modules > * {
-        fill: #0E2173; }
+        fill: #1d327f; }
       .reveal-modal .templateSelector label svg {
         position: relative; }
         .reveal-modal .templateSelector label svg #fond * {
@@ -7172,6 +7177,18 @@ input[type="text"], select {
 select {
   border-bottom: 2px solid #C3C3C3; }
 
+.alertify-logs {
+  z-index: 15000; }
+
+.alertify-logs > .default {
+  font-weight: 500;
+  border: 3px solid #FF3E51;
+  background-color: white;
+  color: #FF3E51; }
+
+.alertify-logs > .show {
+  margin-right: 16px; }
+
 body.publi {
   background-color: #fff; }
   body.publi .button-wrapper_upload {
@@ -7285,13 +7302,6 @@ button {
     display: inline-block;
     margin-right: 8px; }
 
-.legende {
-  font-family: 'share';
-  color: #C3C3C3;
-  font-size: 1em;
-  font-style: italic;
-  text-transform: lowercase; }
-
 .row {
   max-width: 90%; }
 
@@ -7326,7 +7336,7 @@ button {
     .button-wrapper.button-wrapper_without-bg.button-wrapper_capture {
       color: #FFBE32; }
     .button-wrapper.button-wrapper_without-bg.button-wrapper_bibli {
-      color: #0E2173; }
+      color: #1d327f; }
     .button-wrapper.button-wrapper_without-bg.button-wrapper_publi {
       color: #FF3E51; }
   .button-wrapper_add, .button-wrapper_edit, .button-wrapper_publi, .button-wrapper_editProjet, .button-wrapper_addMedia, .button-wrapper_backButton, .button-wrapper_editFolder, .button-wrapper_settings, .button-wrapper_createPublication {
@@ -7336,7 +7346,7 @@ button {
     background-color: #FFBE32;
     color: white; }
   .button-wrapper_bibli, .button-wrapper_gofullscreen, .button-wrapper_leavefullscreen {
-    background-color: #0E2173;
+    background-color: #1d327f;
     color: white; }
   .button-wrapper_accept, .button-wrapper_addText, .button-wrapper_highlightMedia, .button-wrapper_finishStopmotion, .button-wrapper_previzStopmotion, .button-wrapper_upload {
     background-color: #4BC0B4;
@@ -7430,11 +7440,30 @@ button {
   margin-top: 32px;
   color: #535353;
   text-align: center; }
-  .module_infos h3 {
-    font-size: .8em;
-    line-height: 1.5;
-    margin-bottom: 16px;
-    color: inherit; }
+
+.txt-small_info {
+  color: #C3C3C3;
+  font-size: .8em;
+  line-height: 1.5;
+  margin-bottom: 16px; }
+
+.txt-mono {
+  font-family: 'Fira Mono', monospace; }
+
+.txt-wrap_long_lines {
+  /* These are technically the same, but use both */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  /* This is the dangerous one in WebKit, as it breaks things wherever */
+  word-break: break-all;
+  /* Instead use this non-standard one: */
+  word-break: break-word;
+  /* Adds a hyphen where the word breaks, if supported (No Blink) */
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto; }
 
 body.index #container {
   padding: 50px 0px;
@@ -7447,9 +7476,7 @@ body.index #container {
   .dossier:nth-child(3n+1) {
     clear: left; }
   .dossier .dossier-inside {
-    background-color: #fff;
-    border: 1px solid #DFDFDF;
-    border-top: 0; }
+    background-color: #fff; }
   .dossier .button-wrapper_editFolder {
     position: absolute;
     top: -16px;
@@ -7514,16 +7541,10 @@ body.index #container {
     padding-top: 4px;
     padding-bottom: 8px;
     background-color: #fff;
-    color: #8d8d8d;
-    font-family: "share", monospace; }
+    color: #8d8d8d; }
     .dossier .meta-data > * {
       padding-top: 4px; }
     .dossier .meta-data span:nth-of-type(1) {
-      font-family: 'share';
-      color: #C3C3C3;
-      font-size: 1em;
-      font-style: italic;
-      text-transform: lowercase;
       margin-right: 5px; }
     .dossier .meta-data .nb-projets .nb-projets-count {
       font-weight: bold; }
@@ -7535,21 +7556,16 @@ body.index #container {
       font-weight: bold; }
 
 .dossier .content a:hover h2 {
-  background-color: #4BC0B4;
-  color: white; }
+  color: #4BC0B4; }
 
 .dossier .statut-type {
   color: #4BC0B4; }
 
 .dossier[data-statut="en cours"] .content a:hover h2 {
-  background-color: #FFBE32;
-  color: white; }
+  color: #FFBE32; }
 
 .dossier[data-statut="en cours"] .statut-type {
   color: #FFBE32; }
-
-body.bibli {
-  overflow: hidden; }
 
 .biblimontage-container {
   position: relative; }
@@ -7558,9 +7574,6 @@ body.bibli {
   position: relative;
   padding: 8px;
   margin: 0 8px;
-  background-color: #fff;
-  border: 1px solid #DFDFDF;
-  border-top: 0;
   background-color: transparent;
   border: none;
   border-bottom: 1px solid #DFDFDF; }
@@ -7604,7 +7617,7 @@ body.bibli {
         background-color: #FFBE32;
         color: white; }
       .bibli-buffer .btn-medias:hover .button-wrapper_bibli, .bibli-buffer .btn-medias:hover .button-wrapper_gofullscreen, .bibli-buffer .btn-medias:hover .button-wrapper_leavefullscreen {
-        background-color: #0E2173;
+        background-color: #1d327f;
         color: white; }
       .bibli-buffer .btn-medias:hover .button-wrapper_accept, .bibli-buffer .btn-medias:hover .button-wrapper_addText {
         background-color: #4BC0B4;
@@ -7868,9 +7881,6 @@ body.projets #container {
     right: -19px;
     z-index: 5; }
   .project-list .project .project-content {
-    background-color: #fff;
-    border: 1px solid #DFDFDF;
-    border-top: 0;
     border-right: none;
     padding: 8px 0px; }
     .project-list .project .project-content .title {
@@ -7882,19 +7892,11 @@ body.projets #container {
       .project-list .project .project-content .title:hover {
         color: #4BC0B4; }
     .project-list .project .project-content .meta-data span:nth-of-type(1) {
-      margin-right: 5px;
-      font-family: 'share';
-      color: #C3C3C3;
-      font-size: 1em;
-      font-style: italic;
-      text-transform: lowercase; }
+      margin-right: 5px; }
     .project-list .project .project-content .meta-data .modified {
       text-align: left; }
   .project-list .project .image-wrapper {
     position: relative;
-    background-color: #fff;
-    border: 1px solid #DFDFDF;
-    border-top: 0;
     background-color: #DFDFDF;
     -webkit-background-size: cover;
     background-size: cover;
@@ -8055,7 +8057,7 @@ body.capture .content-wrapper:after {
         .media-choice .btn-choice button[data-mediatype="stopmotion"]::before {
           background-image: url("/images/i_icone-dodoc_anim.svg"); }
       .media-choice .btn-choice button[data-mediatype="audio"] {
-        background-color: #0E2173; }
+        background-color: #1d327f; }
         .media-choice .btn-choice button[data-mediatype="audio"]::before {
           background-image: url("/images/i_icone-dodoc_audio.svg"); }
 
@@ -8243,7 +8245,7 @@ body.capture .content-wrapper:after {
       .captureLeft .display-choice .choices.stopmotion-choice {
         background-color: #4BC0B4; }
       .captureLeft .display-choice .choices.audio-choice {
-        background-color: #0E2173; }
+        background-color: #1d327f; }
       .captureLeft .display-choice .choices .caption {
         font-size: 3em;
         text-align: center;
@@ -8263,7 +8265,6 @@ body.capture .content-wrapper:after {
     height: 100%;
     max-height: 80vh;
     width: 100%;
-    border: 2px solid #e5e5e5;
     background-color: #e5e5e5; }
     .captureLeft .videoContainer .videoFeed {
       min-width: 0;
@@ -8274,10 +8275,8 @@ body.capture .content-wrapper:after {
       position: absolute;
       top: 100%;
       left: 0;
-      width: 45%;
-      color: #C3C3C3;
-      padding: 4px 8px;
-      font-size: 80%; }
+      width: 50%;
+      padding: 4px 0; }
   .captureLeft #canvas-audio {
     display: none;
     width: 100%;
@@ -8365,7 +8364,7 @@ body.capture .content-wrapper:after {
     body[data-mode="stopmotion"] .captureRight .flash {
       background-color: #4BC0B4; }
     body[data-mode="audio"] .captureRight .flash {
-      background-color: #0E2173; }
+      background-color: #1d327f; }
   .captureRight .output[src=''] {
     display: none; }
   .captureRight .preview {
@@ -8498,11 +8497,6 @@ body.capture .content-wrapper:after {
     float: left;
     width: 50%; }
     .captureRight .preview_stopmotion .preview_stopmotion--frameRate span {
-      font-family: 'share';
-      color: #C3C3C3;
-      font-size: 1em;
-      font-style: italic;
-      text-transform: lowercase;
       margin-right: 4px; }
     .captureRight .preview_stopmotion .preview_stopmotion--frameRate input {
       display: inline-block;
@@ -8792,6 +8786,3 @@ input[type=range]::-webkit-slider-thumb {
       right: 0; }
   .template_container img, .template_container video, .template_container audio, .template_container svg {
     max-width: 100%; }
-
-.alertify-logs {
-  z-index: 15000; }

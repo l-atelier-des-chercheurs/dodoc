@@ -1,9 +1,6 @@
 /* VARIABLES */
 var socket = io.connect();
 
-// need to make it a module
-// var uploadPubliToFtp = require("modules/_uploadPubliToFtp.js");
-
 /* sockets */
 function onSocketConnect() {
 	sessionId = socket.io.engine.id;
