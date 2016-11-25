@@ -52,6 +52,7 @@ if( lang === 'fr') {
 
       "selectTemplate" : "Sélection de gabarit",
 
+      "browserCantUserWebRTC" : "Attention ! Votre navigateur ne permet pas de capturer des photos et du son (Safari ou appareils Apple).\nUtilisez l’option d’import  de la page Bibliothèque (croix jaune) pour ajouter des photos, des vidéos et du son.",
       "chooseCameraResolution" : "Sélectionnez la résolution de votre caméra",
       "customCameraResolution" : "Choississez une résolution",
       "backToAnimation" : "Retour à l’animation",
