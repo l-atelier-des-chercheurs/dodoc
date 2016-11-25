@@ -352,10 +352,10 @@ var modals = (function() {
 
       				$mediaItem
       					.find('.js--submit-new-text_title')
-      					  .val( mdata.titleOfTextmediaMd)
+      					  .val( mdata.originalTitle)
       					.end()
       					.find('.js--submit-new-text_text')
-      					  .val( mdata.textOfTextmediaMd)
+      					  .val( mdata.originalText)
       					.end()
       					;
       				break;

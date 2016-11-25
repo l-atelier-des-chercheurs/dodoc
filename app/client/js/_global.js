@@ -184,13 +184,13 @@ function makeOneMedia( mediaKey, mdata) {
     	.attr( 'data-informations', mdata.informations)
     	.addClass( mdata.fav ? 'is--highlight' : '')
     	.find( '.mediaData--informations')
-    	  .html( mdata.informations)
+    	  .html( mdata.informations.replace(/(\r\n|\n|\r)/gm, "<br>"))
       .end()
     	.data( 'mtimestamp', transformDatetoTimestamp( mdata.modified))
     	.data( 'ctimestamp', transformDatetoTimestamp( mdata.created))
     ;
 
-  if( !mdata.title && !mdata.informations) {
+  if(!mdata.informations) {
     $currentMedia.find('.mediaData').remove();
   }
 
@@ -277,22 +277,22 @@ function showAudio( mediaDatas) {
 function showText( mediaDatas) {
 
   var mediasFilesPath = getMediaFiles(mediaDatas);
-  var mediaTitle = mediaDatas.textMediaContent.title_md;
-  var mediaText = mediaDatas.textMediaContent.text_md;
-  var titleOfTextmediaMd = mediaDatas.textMediaContent.title;
-  var textOfTextmediaMd = mediaDatas.textMediaContent.text;
+//   var parsedTitle = mediaDatas.textMediaContent.title_md;
+  var parsedText = mediaDatas.textMediaContent.text_md.replace(/(\r\n|\n|\r)/gm, "<br>");
+  var originalTitle = mediaDatas.textMediaContent.title;
+  var originalText = mediaDatas.textMediaContent.text;
 
 	var mediaItem = $(".js--templates .media_text").clone(false);
 	mediaItem
     .data( 'textFilePath', mediasFilesPath.md)
+    .data( 'originalTitle', originalTitle)
+    .data( 'originalText', originalText)
 	  .find( '.mediaContent--titleOfTextmedia')
-	    .html( mediaTitle)
+	    .html(originalTitle)
     .end()
-    .data( 'titleOfTextmediaMd', titleOfTextmediaMd)
 	  .find( '.mediaContent--textOfTextmedia')
-	    .html( mediaText)
+	    .html(parsedText)
     .end()
-    .data( 'textOfTextmediaMd', textOfTextmediaMd)
     ;
 	return mediaItem;
 
