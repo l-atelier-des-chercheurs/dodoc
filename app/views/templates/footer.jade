@@ -17,6 +17,7 @@ script
   | app.currentPubli = "!{slugPubliName}";
   | app.contentDir = "!{contentDir}";
   | app.currentUserDirPath = "!{currentUserDirPath}";
+  | app.url = "!{url}";
   | var dodoc = !{JSON.stringify(dodoc)};
 script( src='/js/production/plugins.js')
 script moment.locale("#{dodoc.codelang}");

@@ -2,6 +2,10 @@
 window.sessionId = '';
 window.socket = io.connect();
 
+// context vars sent by Node via router.js to footer.jade namespaced with app
+var currentFolder = app.currentFolder;
+var currentProject = app.currentProject;
+var currentPubli = app.currentPubli;
 
 // binding an event to all packets to log some events
 // see http://stackoverflow.com/a/33960032
@@ -12,7 +16,6 @@ socket.onevent = function (packet) {
   packet.data = ["*"].concat(args);
   onevent.call(this, packet);      // additional call to catch-all
 };
-
 socket.on("*",function(event,data) {
   // only log the following events
   if(event === "mediaCreated") {
@@ -26,19 +29,13 @@ socket.on("*",function(event,data) {
         ;
     }
   }
-  // log folder created
+  // todo: log folder created
 
-  // log project created
+  // todo: log project created
 
-  // log publication created
+  // todo: log publication created
 
 });
-
-
-// context vars sent by Node via router.js to footer.jade namespaced with app
-var currentFolder = app.currentFolder;
-var currentProject = app.currentProject;
-var currentPubli = app.currentPubli;
 
 
 function loadProjectSnippet(pd) {
