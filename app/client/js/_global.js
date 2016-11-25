@@ -690,6 +690,7 @@ var sendData = {
   createNewMedia : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
+    mediaData.author = sessionId;
     	socket.emit( 'newMedia', mediaData);
   },
   editMedia : function( mediaData) {

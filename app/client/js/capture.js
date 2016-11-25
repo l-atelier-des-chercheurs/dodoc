@@ -303,14 +303,14 @@ var currentStream = (function(context) {
     console.log('navigator.getUserMedia error: ', error);
   }
 
-  function getVideoResFromRadio() {
+  function _getVideoResFromRadio() {
     for (index=0; index < videoResSwitches.length; index++) {
       if (videoResSwitches[index].checked) {
         return videoResSwitches[index].dataset;
       }
     }
   }
-  function setVideoResFromLocalstorage() {
+  function _setVideoResFromLocalstorage() {
     var getPreviousSessionRes = store.get(userSelectedRes);
     if(getPreviousSessionRes !== undefined) {
       console.log('The following resolution for video was used last time, it is: ' + getPreviousSessionRes.width+'×'+getPreviousSessionRes.height);
@@ -333,7 +333,7 @@ var currentStream = (function(context) {
 
 
   // Attach audio output device to video element using device/sink ID.
-  function attachSinkId(element, sinkId) {
+  function _attachSinkId(element, sinkId) {
     if (typeof element.sinkId !== 'undefined') {
       element.setSinkId(sinkId)
       .then(function() {
@@ -354,12 +354,12 @@ var currentStream = (function(context) {
     }
   }
 
-  function changeAudioDestination() {
+  function _changeAudioDestination() {
     var audioDestination = audioOutputSelect.value;
-    attachSinkId(videoElement, audioDestination);
+    _attachSinkId(videoElement, audioDestination);
   }
 
-  function setSources() {
+  function _setSources() {
 
     console.log( '1. Setting new sources for audio and video feeds');
     var audioSource = audioInputSelect.value;
@@ -369,7 +369,7 @@ var currentStream = (function(context) {
     store.set(userSelectedVideoDevice, videoSource);
     store.set(userSelectedAudioDevice, audioSource);
 
-    var requestedVideoRes = getVideoResFromRadio();
+    var requestedVideoRes = _getVideoResFromRadio();
     store.set(userSelectedRes, requestedVideoRes);
 
     if( requestedVideoRes !== undefined)
@@ -404,7 +404,7 @@ var currentStream = (function(context) {
 
   }
 
-  function getCameraFeed() {
+  function _getCameraFeed() {
     return new Promise(function(resolve, reject) {
       console.log( "Getting camera feed");
       if( currentFeedsSource === undefined || currentFeedsSource.video === undefined) {
@@ -497,7 +497,7 @@ var currentStream = (function(context) {
         return false;
       });
 
-      setVideoResFromLocalstorage();
+      _setVideoResFromLocalstorage();
 
       if( store.get(userSelectedVideoDevice) === undefined)
         $(document).trigger('open_settings_pane');
@@ -506,11 +506,11 @@ var currentStream = (function(context) {
         navigator.mediaDevices.enumerateDevices()
           .then(function(deviceInfos) {
             gotDevices(deviceInfos);
-            setSources();
-            audioInputSelect.onchange = setSources;
-            audioOutputSelect.onchange = changeAudioDestination;
-            videoSelect.onchange = setSources;
-            $(videoResSwitches).change(setSources);
+            _setSources();
+            audioInputSelect.onchange = _setSources;
+            audioOutputSelect.onchange = _changeAudioDestination;
+            videoSelect.onchange = _setSources;
+            $(videoResSwitches).change(_setSources);
             resolve();
           }, function(err) {
             reject("Failed to init stream : " + err);
@@ -564,7 +564,7 @@ var currentStream = (function(context) {
     startCameraFeed : function() {
       return new Promise(function(resolve, reject) {
         currentStream.stopAllFeeds();
-        getCameraFeed()
+        _getCameraFeed()
           .then( function( stream) {
             videoStream = stream;
 
@@ -585,9 +585,9 @@ var currentStream = (function(context) {
 
     startRecordCameraFeed : function() {
       return new Promise(function(resolve, reject) {
-        getCameraFeed()
+        _getCameraFeed()
           .then( function( stream) {
-            var requestedVideoRes = getVideoResFromRadio();
+            var requestedVideoRes = _getVideoResFromRadio();
             recordVideoFeed = RecordRTC(stream, {
               type: 'video',
               canvas: { width: requestedVideoRes.width, height: requestedVideoRes.height },
@@ -677,10 +677,20 @@ var currentStream = (function(context) {
 
 
 
-// EVENT: a new media has been created (could be one from the current client or one from another user
+// EVENT: a new media has been created
 function onMediaCreated(mediasData){
 
   var mediaData = getFirstMediaFromObj( mediasData);
+
+  debugger;
+
+  if( mediaData.slugFolderName !== currentFolder || mediaData.slugProjectName !== currentProject)
+    return;
+  var currentMode = $(document).data('currentMode');
+  if( mediaData.type !== currentMode)
+    return;
+  if(mediaData.author !== sessionId)
+    return;
 
   var newMediaType = mediaData.type;
   var mediaName = mediaData.mediaName;
