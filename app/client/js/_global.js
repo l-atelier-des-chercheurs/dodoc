@@ -559,14 +559,6 @@ var publi = {
         listMediasItems.push( mediaJson);
       });
 
-      // check if there is two times the same
-/*
-      if( anyDuplicates( listMediasPaths)) {
-        alert( "Ce média existe déjà dans la publication ! Veuillez le supprimer.");
-        return false;
-      }
-*/
-
       var publiJson = new Object();
       publiJson.slugPubliName = slugPubliName;
       publiJson.medias = listMediasItems;
