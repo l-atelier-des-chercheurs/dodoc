@@ -1,3 +1,9 @@
+// if there’s not webrtc here (thanks Apple)
+if(typeof navigator.getUserMedia !== 'function') {
+  alert(dodoc.lang.browserCantUserWebRTC);
+}
+
+
 
 
 /* VARIABLES */
@@ -14,7 +20,6 @@ function onSocketConnect() {
 function onSocketError(reason) {
 	console.log('Unable to connect to server', reason);
 };
-
 
 
 
