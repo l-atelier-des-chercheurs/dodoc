@@ -145,9 +145,9 @@ html
             .preview.preview_stopmotion
               .preview_stopmotion--container
               .preview_stopmotion--timeline
-              .preview_stopmotion--frameRate
+              .preview_stopmotion--frameRate.txt-small_info
                 span !{dodoc.lang.frameRate}
-                input(type='number' step='1' value='4' min='1' max='25')
+                input.js--stopmotion_frameRate(type='number' step='1' value='4' min='1' max='25')
               +button( 'previzStopmotion', '', '')
               .output_container
                 video.js--output(controls autoplay loop)

@@ -32,6 +32,8 @@ jQuery(document).ready(function($) {
 
 function init(){
 
+  // detect if iOS device
+
   setTimeout(function(){
     $(".image-choice").fadeOut();
   }, 2000);
@@ -256,8 +258,197 @@ var currentStream = (function(context) {
 
   var currentFeedsSource = {};
 
+  var API = {
+    init                    : function() { return init(); },
+    getStaticImageFromVideo : function() { return getStaticImageFromVideo(); },
+    stopAllFeeds            : function() { return stopAllFeeds(); },
+    startCameraFeed         : function() { return startCameraFeed(); },
+    startRecordCameraFeed   : function() { return startRecordCameraFeed(); },
+    stopRecordCameraFeed    : function() { return stopRecordCameraFeed(); },
+    startAudioFeed          : function() { return startAudioFeed(); },
+    startRecordAudioFeed    : function() { return startRecordAudioFeed(); },
+    stopRecordAudioFeed     : function() { return stopRecordAudioFeed(); }
+  };
 
-  function gotDevices(deviceInfos) {
+  function init() {
+    return new Promise(function(resolve, reject) {
+      $settingsButton.click(function() {
+        $(document).trigger('toggle_settings_pane');
+      });
+
+      $(document)
+        .on( 'toggle_settings_pane', function() {
+          $settingsPane.toggleClass('is--open');
+        })
+        .on( 'open_settings_pane', function() {
+          $settingsPane.addClass('is--open');
+        })
+        .on( 'close_settings_pane', function() {
+          $settingsPane.removeClass('is--open');
+        })
+        ;
+
+      videoElement.addEventListener('resize', updateVideoSize);
+
+      $(setCustomVideoRes).on('click', function(){
+
+        $(customVideoResSwitches).each(function() {
+          var typeOfValueChanged = $(this).attr('name');
+          var newValue = $(this).val();
+          $(customVideoResInput).attr(typeOfValueChanged, newValue);
+        })
+        if( $(customVideoResInput).attr('data-width').length > 0 && $(customVideoResInput).attr('data-height').length > 0 ) {
+          $(customVideoResInput).removeAttr('disabled');
+          customVideoResInput.checked = true;
+          $(videoResSwitches).trigger('change');
+        }
+        return false;
+      });
+
+      _setVideoResFromLocalstorage();
+
+      if( store.get(userSelectedVideoDevice) === undefined)
+        $(document).trigger('open_settings_pane');
+
+      navigator.mediaDevices.enumerateDevices()
+      .then(function(deviceInfos) {
+        _gotDevices(deviceInfos);
+        _setSources();
+        audioInputSelect.onchange = _setSources;
+        audioOutputSelect.onchange = _changeAudioDestination;
+        videoSelect.onchange = _setSources;
+        $(videoResSwitches).change(_setSources);
+        resolve();
+      }, function(err) {
+        reject("Failed to init stream : " + err);
+      });
+    });
+  }
+  function getStaticImageFromVideo() {
+    return new Promise(function(resolve, reject) {
+      var invisibleCanvas = document.createElement('canvas');
+      invisibleCanvas.width = videoElement.videoWidth;
+      invisibleCanvas.height = videoElement.videoHeight;
+      var invisibleCtx = invisibleCanvas.getContext('2d');
+      invisibleCtx.drawImage( videoElement, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
+      var imageData = invisibleCanvas.toDataURL('image/png');
+      if(imageData === "data:,")
+        reject('Video feed not yet available');
+      resolve(imageData);
+    });
+  }
+  function stopAllFeeds() {
+    if( !videoElement.paused)
+      videoElement.pause();
+
+    if(videoStream) videoStream.getTracks().forEach(function(track) {
+      track.stop();
+    });
+    if(audioStream) audioStream.getTracks().forEach(function(track) {
+      track.stop();
+    });
+
+    imageMode.stop();
+    videoMode.stop();
+    stopMotionMode.stop();
+    audioMode.stop();
+  }
+  function startCameraFeed() {
+    return new Promise(function(resolve, reject) {
+      currentStream.stopAllFeeds();
+      _getCameraFeed()
+        .then( function( stream) {
+          videoStream = stream;
+
+          if (navigator.mozGetUserMedia) {
+            videoElement.mozSrcObject = stream;
+          } else {
+            var vendorURL = window.URL || window.webkitURL;
+            videoElement.src = vendorURL.createObjectURL(stream);
+          }
+          videoElement.play();
+          resolve();
+        }, function(err) {
+          console.log( " failed to start camera feed: " + err);
+          reject();
+        });
+    });
+  }
+  function startRecordCameraFeed() {
+    return new Promise(function(resolve, reject) {
+      _getCameraFeed()
+      .then(function(stream) {
+        var requestedVideoRes = _getVideoResFromRadio();
+        recordVideoFeed = RecordRTC(stream, {
+          type: 'video',
+          canvas: { width: requestedVideoRes.width, height: requestedVideoRes.height },
+        });
+        recordVideoFeed.startRecording();
+        resolve();
+      }, function(err) {
+        console.log( " failed to start camera feed: " + err);
+        reject();
+      });
+      ;
+    });
+  }
+  function stopRecordCameraFeed() {
+    return new Promise(function(resolve, reject) {
+      if( recordVideoFeed !== undefined) {
+        recordVideoFeed.stopRecording(function() {
+          recordVideoFeed.getDataURL(function(videoDataURL) {
+            resolve( videoDataURL);
+          });
+        });
+      }
+    });
+  }
+  function startAudioFeed() {
+    return new Promise(function(resolve, reject) {
+      currentStream.stopAllFeeds();
+      _getAudioFeed()
+      .then( function( stream) {
+        audioStream = stream;
+        resolve( stream);
+      }, function(err) {
+        console.log( "Failed to get audio feed:" + err);
+        reject(err);
+      })
+      ;
+    });
+  }
+  function startRecordAudioFeed() {
+    return new Promise(function(resolve, reject) {
+      _getAudioFeed()
+        .then( function( stream) {
+          recordAudioFeed = RecordRTC(stream, {
+            type: 'audio'
+          });
+          recordAudioFeed.startRecording();
+          resolve();
+        }, function() {
+          console.log( " failed to start audio recording");
+          reject();
+        })
+        ;
+    });
+  }
+  function stopRecordAudioFeed() {
+    return new Promise(function(resolve, reject) {
+      if( recordAudioFeed !== undefined) {
+        recordAudioFeed.stopRecording(function(url) {
+          recordAudioFeed.getDataURL(function(audioDataURL) {
+            resolve( audioDataURL);
+          });
+        });
+      }
+    });
+  }
+
+
+
+
+  function _gotDevices(deviceInfos) {
     // Handles being called several times to update labels. Preserve values.
     var values = selectors.map(function(select) {
       return select.value;
@@ -299,18 +490,15 @@ var currentStream = (function(context) {
     });
 
   }
-  function errorCallback(error) {
-    console.log('navigator.getUserMedia error: ', error);
-  }
 
-  function getVideoResFromRadio() {
+  function _getVideoResFromRadio() {
     for (index=0; index < videoResSwitches.length; index++) {
       if (videoResSwitches[index].checked) {
         return videoResSwitches[index].dataset;
       }
     }
   }
-  function setVideoResFromLocalstorage() {
+  function _setVideoResFromLocalstorage() {
     var getPreviousSessionRes = store.get(userSelectedRes);
     if(getPreviousSessionRes !== undefined) {
       console.log('The following resolution for video was used last time, it is: ' + getPreviousSessionRes.width+'×'+getPreviousSessionRes.height);
@@ -333,7 +521,7 @@ var currentStream = (function(context) {
 
 
   // Attach audio output device to video element using device/sink ID.
-  function attachSinkId(element, sinkId) {
+  function _attachSinkId(element, sinkId) {
     if (typeof element.sinkId !== 'undefined') {
       element.setSinkId(sinkId)
       .then(function() {
@@ -354,12 +542,12 @@ var currentStream = (function(context) {
     }
   }
 
-  function changeAudioDestination() {
+  function _changeAudioDestination() {
     var audioDestination = audioOutputSelect.value;
-    attachSinkId(videoElement, audioDestination);
+    _attachSinkId(videoElement, audioDestination);
   }
 
-  function setSources() {
+  function _setSources() {
 
     console.log( '1. Setting new sources for audio and video feeds');
     var audioSource = audioInputSelect.value;
@@ -369,7 +557,7 @@ var currentStream = (function(context) {
     store.set(userSelectedVideoDevice, videoSource);
     store.set(userSelectedAudioDevice, audioSource);
 
-    var requestedVideoRes = getVideoResFromRadio();
+    var requestedVideoRes = _getVideoResFromRadio();
     store.set(userSelectedRes, requestedVideoRes);
 
     if( requestedVideoRes !== undefined)
@@ -404,7 +592,7 @@ var currentStream = (function(context) {
 
   }
 
-  function getCameraFeed() {
+  function _getCameraFeed() {
     return new Promise(function(resolve, reject) {
       console.log( "Getting camera feed");
       if( currentFeedsSource === undefined || currentFeedsSource.video === undefined) {
@@ -435,7 +623,7 @@ var currentStream = (function(context) {
     videoResolutionIndicator.innerHTML = dodoc.lang.currentVideoResolutionIs+'<br>'+videoElement.videoWidth + '×' + videoElement.videoHeight;
   }
 
-  function getAudioFeed() {
+  function _getAudioFeed() {
     return new Promise(function(resolve, reject) {
 
       if( currentFeedsSource === undefined || currentFeedsSource.audio === undefined) {
@@ -459,228 +647,21 @@ var currentStream = (function(context) {
     });
   }
 
-  // déclaration des fonctions accessibles de l'extérieur ici
-  return {
-
-    init : function() {
-
-      $settingsButton.click(function() {
-        $(document).trigger('toggle_settings_pane');
-      });
-
-      $(document)
-        .on( 'toggle_settings_pane', function() {
-          $settingsPane.toggleClass('is--open');
-        })
-        .on( 'open_settings_pane', function() {
-          $settingsPane.addClass('is--open');
-        })
-        .on( 'close_settings_pane', function() {
-          $settingsPane.removeClass('is--open');
-        })
-        ;
-
-      videoElement.addEventListener('resize', updateVideoSize);
-
-      $(setCustomVideoRes).on('click', function(){
-
-        $(customVideoResSwitches).each(function() {
-          var typeOfValueChanged = $(this).attr('name');
-          var newValue = $(this).val();
-          $(customVideoResInput).attr(typeOfValueChanged, newValue);
-        })
-        if( $(customVideoResInput).attr('data-width').length > 0 && $(customVideoResInput).attr('data-height').length > 0 ) {
-          $(customVideoResInput).removeAttr('disabled');
-          customVideoResInput.checked = true;
-          $(videoResSwitches).trigger('change');
-        }
-        return false;
-      });
-
-      setVideoResFromLocalstorage();
-
-      if( store.get(userSelectedVideoDevice) === undefined)
-        $(document).trigger('open_settings_pane');
-
-      return new Promise(function(resolve, reject) {
-        navigator.mediaDevices.enumerateDevices()
-          .then(function(deviceInfos) {
-            gotDevices(deviceInfos);
-            setSources();
-            audioInputSelect.onchange = setSources;
-            audioOutputSelect.onchange = changeAudioDestination;
-            videoSelect.onchange = setSources;
-            $(videoResSwitches).change(setSources);
-            resolve();
-          }, function(err) {
-            reject("Failed to init stream : " + err);
-          });
-      });
-    },
-
-    getVideoFrame : function() {
-      return videoElement;
-    },
-
-    getStaticImageFromVideo : function() {
-      return new Promise(function(resolve, reject) {
-        var videoFrame = currentStream.getVideoFrame();
-
-        var invisibleCanvas = document.createElement('canvas');
-        invisibleCanvas.width = videoFrame.videoWidth;
-        invisibleCanvas.height = videoFrame.videoHeight;
-        var invisibleCtx = invisibleCanvas.getContext('2d');
-        invisibleCtx.drawImage( videoFrame, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
-
-        resolve( imageData = invisibleCanvas.toDataURL('image/png'));
-
-/*
-        Caman( invisibleCtx.canvas, function () {
-//           this.brightness(10);
-          this.render(function () {
-          });
-        });
-*/
-      });
-    },
-
-    stopAllFeeds : function() {
-      if( !videoElement.paused)
-        videoElement.pause();
-
-      if(videoStream) videoStream.getTracks().forEach(function(track) {
-        track.stop();
-      });
-      if(audioStream) audioStream.getTracks().forEach(function(track) {
-        track.stop();
-      });
-
-      imageMode.stop();
-      videoMode.stop();
-      stopMotionMode.stop();
-      audioMode.stop();
-    },
-
-    startCameraFeed : function() {
-      return new Promise(function(resolve, reject) {
-        currentStream.stopAllFeeds();
-        getCameraFeed()
-          .then( function( stream) {
-            videoStream = stream;
-
-            if (navigator.mozGetUserMedia) {
-              videoElement.mozSrcObject = stream;
-            } else {
-              var vendorURL = window.URL || window.webkitURL;
-              videoElement.src = vendorURL.createObjectURL(stream);
-            }
-            videoElement.play();
-            resolve();
-          }, function(err) {
-            console.log( " failed to start camera feed: " + err);
-            reject();
-          });
-      });
-    },
-
-    startRecordCameraFeed : function() {
-      return new Promise(function(resolve, reject) {
-        getCameraFeed()
-          .then( function( stream) {
-            var requestedVideoRes = getVideoResFromRadio();
-            recordVideoFeed = RecordRTC(stream, {
-              type: 'video',
-              canvas: { width: requestedVideoRes.width, height: requestedVideoRes.height },
-            });
-            recordVideoFeed.startRecording();
-            resolve();
-          }, function(err) {
-            console.log( " failed to start camera feed: " + err);
-            reject();
-          });
-          ;
-      });
-    },
-
-    stopRecordCameraFeed : function() {
-      return new Promise(function(resolve, reject) {
-        if( recordVideoFeed !== undefined) {
-          recordVideoFeed.stopRecording(function() {
-            recordVideoFeed.getDataURL(function(videoDataURL) {
-              resolve( videoDataURL);
-            });
-          });
-        }
-      });
-    },
-
-    getAudioStream : function() {
-      return ;
-    },
-
-    startAudioFeed : function() {
-      return new Promise(function(resolve, reject) {
-        currentStream.stopAllFeeds();
-        getAudioFeed()
-          .then( function( stream) {
-            audioStream = stream;
-            resolve( stream);
-          }, function() {
-            console.log( " failed to get audio feed");
-            reject();
-          })
-          ;
-      });
-    },
-
-    startRecordAudioFeed : function() {
-      return new Promise(function(resolve, reject) {
-        getAudioFeed()
-          .then( function( stream) {
-            recordAudioFeed = RecordRTC(stream, {
-              type: 'audio'
-            });
-            recordAudioFeed.startRecording();
-            resolve();
-          }, function() {
-            console.log( " failed to start audio recording");
-            reject();
-          })
-          ;
-      });
-    },
-
-    stopRecordAudioFeed : function() {
-      return new Promise(function(resolve, reject) {
-        if( recordAudioFeed !== undefined) {
-          recordAudioFeed.stopRecording(function(url) {
-            recordAudioFeed.getDataURL(function(audioDataURL) {
-      //             type: recordVideo.getBlob().type || 'video/webm',
-              // send instruction to record video
-              resolve( audioDataURL);
-            });
-          });
-        }
-      });
-    },
-
-  }
-
-
-
-
-
-
-
-
+  return API;
 })();
 
 
 
-// EVENT: a new media has been created (could be one from the current client or one from another user
+// EVENT: a new media has been created
 function onMediaCreated(mediasData){
-
   var mediaData = getFirstMediaFromObj( mediasData);
+  if( mediaData.slugFolderName !== currentFolder || mediaData.slugProjectName !== currentProject)
+    return;
+  var currentMode = $(document).data('currentMode');
+  if( mediaData.type !== currentMode)
+    return;
+  if(mediaData.author !== sessionId)
+    return;
 
   var newMediaType = mediaData.type;
   var mediaName = mediaData.mediaName;

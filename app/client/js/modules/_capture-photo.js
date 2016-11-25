@@ -5,36 +5,7 @@ var imageMode = (function() {
   var isRunning = true;
   var $captureflash = $(".captureRight .flash");
 
-  function takePictures() {
-
-    if( mediaJustCaptured())
-      return;
-
-    currentStream.getStaticImageFromVideo().then(function(imageData) {
-      $captureflash.fadeIn(0);
-      console.log("Yeah you take a picture");
-
-
-      var mediaData =
-      {
-        "mediaType" : "photo",
-        "mediaData" : imageData
-      }
-      // send instruction to record photo
-      sendData.createNewMedia( mediaData);
-
-      $preview.find('img.js--output').attr('src', '');
-
-      justCaptured();
-      saveFeedback("/images/i_icone-dodoc_image.svg");
-    }, function(err) {
-      console.log('err ' + err);
-    });
-
-  }
-
-
-  return {
+  var API = {
     init : function() {
       $(".photo-capture #capture-btn").off().on('click', takePictures);
       $preview.find('.js--delete-media-capture').hide();
@@ -60,6 +31,34 @@ var imageMode = (function() {
       takePictures();
     },
   }
+
+  function takePictures() {
+
+    if( mediaJustCaptured())
+      return;
+
+    currentStream.getStaticImageFromVideo().then(function(imageData) {
+      $captureflash.fadeIn(0);
+      var mediaData =
+      {
+        "mediaType" : "photo",
+        "mediaData" : imageData
+      }
+      // send instruction to record photo
+      sendData.createNewMedia( mediaData);
+
+      $preview.find('img.js--output').attr('src', '');
+
+      justCaptured();
+      saveFeedback("/images/i_icone-dodoc_image.svg");
+    }, function(err) {
+      console.log('err ' + err);
+      alertify.error( dodoc.lang.videoStreamNotAvailable + '<br><em>' + JSON.stringify(err) + '</em>');
+    });
+  }
+
+
+  return API;
 })();
 
 

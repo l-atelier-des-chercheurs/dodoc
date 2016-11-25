@@ -324,6 +324,8 @@ button {
 .big-mediaContent {
   height: 100%;
   width: 100%;
+  // to animate the fade in of elements
+  transition: opacity .1s;
 
   .media-big {
     height: 100%;
@@ -362,9 +364,64 @@ button {
   textarea {
     min-height: 150px;
   }
+}
 
+.big-mediaNav {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+
+  .big-mediaNav-arrow {
+    position: absolute;
+    top:45%;
+    pointer-events: auto;
+    padding: 0;
+
+    color: $gris;
+    background-color: white;
+    box-shadow: 0 5px 20px $gris;
+
+    transform-origin: center center;
+
+    opacity: 1;
+    transition: transform .4s, border-color .5s, opacity .4s;
+
+    &::before {
+      content:'';
+      font-family: 'Fira Mono';
+      font-size: 3em;
+    }
+
+    &.is--disabled {
+      opacity: 0;
+      pointer-events: none;
+      transform: rotate(0deg);
+    }
+    &:hover {
+      color: $bleuvert;
+    }
+  }
+
+  .big-mediaNav-arrow_left {
+    right: 101%;
+    &::before {
+      content:'<';
+    }
+  }
+  .big-mediaNav-arrow_right {
+    left: 101%;
+    &::before {
+      content:'>';
+    }
+  }
 
 }
+
+
+
 
 .module_infos {
   position: relative;
@@ -707,7 +764,7 @@ button {
   }
 
   &::after {
-  	background-color: $c-videos;
+    	background-color: $c-videos;
     -webkit-animation-delay: -1.0s;
     animation-delay: -1.0s;
   }

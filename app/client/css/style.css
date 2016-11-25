@@ -6813,7 +6813,7 @@ th.hide-for-touch {
   width: 100%;
   min-height: 70px;
   font-size: 1.1rem;
-  font-weight: 400;
+  font-weight: 600;
   z-index: 100; }
   body.index .navbar-container .logo {
     pointer-events: none; }
@@ -6877,7 +6877,6 @@ th.hide-for-touch {
         background-color: transparent;
         color: white;
         padding: 10px;
-        padding-left: 15px;
         transition: color .2s; }
         .navbar-container .navbar .item .button-wrapper + .button-wrapper::after {
           left: -10px;
@@ -6971,7 +6970,7 @@ th.hide-for-touch {
     margin-bottom: 0; }
   .reveal-modal .legende {
     padding: 8px; }
-  .reveal-modal input[type="submit"], .reveal-modal button {
+  .reveal-modal input[type="submit"] {
     display: block;
     border: none;
     float: right;
@@ -7120,45 +7119,23 @@ th.hide-for-touch {
     color: #722040; }
   .reveal-modal#modal-media-view {
     max-width: 80%;
-    overflow-y: auto;
-    height: 80vh; }
+    height: 80vh;
+    overflow: visible; }
+    .reveal-modal#modal-media-view .big-mediaContent {
+      overflow: auto; }
+      .reveal-modal#modal-media-view .big-mediaContent .button-wrapper {
+        margin: 20px 0px 25px 0px;
+        float: none; }
+        .reveal-modal#modal-media-view .big-mediaContent .button-wrapper span {
+          margin-left: 10px; }
     .reveal-modal#modal-media-view .row {
       max-width: 100%; }
     .reveal-modal#modal-media-view .button-wrapper_highlightMedia {
       color: #4BC0B4;
-      background-color: transparent;
-      /*
-      border: 1px solid $bleuvert;
-      color:$bleuvert;
-      padding: 6px 22px;
-      border-radius: 20px;
-      &:hover{
-        background-color:$bleuvert;
-        color: #FFF;
-        border:none;
-      }
-*/ }
-    .reveal-modal#modal-media-view .is--highlight {
-      /*
-      .button-wrapper_highlightMedia{
-        background-color:$bleuvert;
-        color: #FFF;
-        border:none;
-        &:hover{
-          border: 1px solid $bleuvert;
-          color:$bleuvert;
-          background-color:#FFF;
-        }
-      }
-*/ }
-      .reveal-modal#modal-media-view .is--highlight .button-wrapper_highlightMedia {
-        color: white;
-        background-color: #4BC0B4; }
-    .reveal-modal#modal-media-view .button-wrapper {
-      margin: 20px 0px 25px 0px;
-      float: none; }
-      .reveal-modal#modal-media-view .button-wrapper span {
-        margin-left: 10px; }
+      background-color: transparent; }
+    .reveal-modal#modal-media-view .is--highlight .button-wrapper_highlightMedia {
+      color: white;
+      background-color: #4BC0B4; }
 
 input[type="text"], select {
   border: none;
@@ -7178,16 +7155,24 @@ select {
   border-bottom: 2px solid #C3C3C3; }
 
 .alertify-logs {
-  z-index: 15000; }
-
-.alertify-logs > .default {
   font-weight: 500;
-  border: 3px solid #FF3E51;
-  background-color: white;
-  color: #FF3E51; }
-
-.alertify-logs > .show {
-  margin-right: 16px; }
+  z-index: 15000; }
+  .alertify-logs > .show {
+    margin-right: 16px;
+    background-color: white;
+    color: #4BC0B4;
+    border: 3px solid currentColor; }
+  .alertify-logs > .error {
+    color: #FF3E51; }
+  .alertify-logs a {
+    font-weight: inherit;
+    background-color: #4BC0B4;
+    padding: 3px 4px;
+    border-radius: 6px;
+    color: white; }
+    .alertify-logs a:hover {
+      color: currentColor;
+      background-color: white; }
 
 body.publi {
   background-color: #fff; }
@@ -7408,7 +7393,8 @@ button {
 
 .big-mediaContent {
   height: 100%;
-  width: 100%; }
+  width: 100%;
+  transition: opacity .1s; }
   .big-mediaContent .media-big {
     height: 100%;
     width: 100%; }
@@ -7432,6 +7418,43 @@ button {
       bottom: 0; }
   .big-mediaContent textarea {
     min-height: 150px; }
+
+.big-mediaNav {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none; }
+  .big-mediaNav .big-mediaNav-arrow {
+    position: absolute;
+    top: 45%;
+    pointer-events: auto;
+    padding: 0;
+    color: #C3C3C3;
+    background-color: white;
+    box-shadow: 0 5px 20px #C3C3C3;
+    transform-origin: center center;
+    opacity: 1;
+    transition: transform .4s, border-color .5s, opacity .4s; }
+    .big-mediaNav .big-mediaNav-arrow::before {
+      content: '';
+      font-family: 'Fira Mono';
+      font-size: 3em; }
+    .big-mediaNav .big-mediaNav-arrow.is--disabled {
+      opacity: 0;
+      pointer-events: none;
+      transform: rotate(0deg); }
+    .big-mediaNav .big-mediaNav-arrow:hover {
+      color: #4BC0B4; }
+  .big-mediaNav .big-mediaNav-arrow_left {
+    right: 101%; }
+    .big-mediaNav .big-mediaNav-arrow_left::before {
+      content: '<'; }
+  .big-mediaNav .big-mediaNav-arrow_right {
+    left: 101%; }
+    .big-mediaNav .big-mediaNav-arrow_right::before {
+      content: '>'; }
 
 .module_infos {
   position: relative;
@@ -8157,7 +8180,9 @@ body.capture .content-wrapper:after {
       padding-bottom: 0; }
     .captureLeft .video-view .captureLeft-lastStopmotionImage {
       position: absolute;
-      opacity: 0; }
+      opacity: 0;
+      object-fit: scale-down;
+      width: 100%; }
   .captureLeft .slider--lastImageOpacity {
     position: absolute;
     top: 0;
@@ -8305,22 +8330,21 @@ body.capture .content-wrapper:after {
   .captureLeft .recording-feedback {
     position: absolute;
     z-index: 100;
-    top: 10px;
-    left: 10px; }
+    top: 8px;
+    left: 8px;
+    color: #FF3E51; }
     .captureLeft .recording-feedback .record-feedback {
-      width: 15px;
-      height: 15px;
-      background-color: #FF3E51;
-      border-radius: 50%;
       display: inline-block;
-      vertical-align: middle; }
+      vertical-align: middle;
+      width: 10px;
+      height: 10px;
+      background-color: currentColor;
+      border-radius: 50%; }
     .captureLeft .recording-feedback .time-feedback {
       display: inline-block;
       vertical-align: middle;
-      margin-bottom: 2px;
-      margin-left: 10px;
-      color: #fff;
-      text-shadow: 0px 0px 2px #999; }
+      color: currentColor;
+      margin-left: 8px; }
 
 .icone-feedback {
   position: absolute;
@@ -8421,6 +8445,9 @@ body.capture .content-wrapper:after {
     .captureRight .preview_stopmotion .output_container .button-wrapper_deleteMediaCaptureStopmotion {
       position: relative;
       float: left; }
+  .captureRight .preview_stopmotion .button-wrapper_previzStopmotion {
+    max-width: 50%;
+    overflow: hidden; }
   .captureRight .preview_stopmotion .button-wrapper_previzStopmotion, .captureRight .preview_stopmotion .button-wrapper_finishStopmotion {
     display: block;
     float: right; }

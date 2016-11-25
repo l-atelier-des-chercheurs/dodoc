@@ -190,6 +190,9 @@ module.exports = function(app, io){
     dev.logfunction( "EVENT - onNewMedia : " + JSON.stringify( mediaData, null, 4));
     dodocMedia.createNewMedia( mediaData).then(function( mediaMetaData) {
       dodocMedia.listOneMedia( mediaMetaData.slugFolderName, mediaMetaData.slugProjectName, mediaMetaData.mediaFolderPath, mediaMetaData.mediaName).then(function( oneMediaData) {
+        for(var prop in oneMediaData) {
+          oneMediaData[prop]["author"] = mediaData.author;
+        }
         dodocAPI.sendEventWithContent( 'mediaCreated', oneMediaData, io);
       }, function(error) {
         dev.error("Failed to listOneMedia from create! Error: ", error);

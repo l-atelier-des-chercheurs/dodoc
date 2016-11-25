@@ -2,7 +2,7 @@
 // en cours : gestion des modals. Elles s'ouvrent avec un trigger sur $(document), qui passe les données à afficher dedans
 var modals = (function() {
 
-  return {
+  var API = {
 
     init : function() {
 
@@ -270,7 +270,18 @@ var modals = (function() {
     bigMedia : function( $m) {
 
       var $modal = $('#modal-media-view');
+      var $modalContent = $modal.find('.big-mediaContent');
       var mdata = $m.data();
+
+      var $nextm = $m.next('.media');
+      var $prevm = $m.prev('.media');
+
+      var $navNextMedia = $modal.find('.js--big-mediaNav-next');
+      var $navPrevMedia = $modal.find('.js--big-mediaNav-prev');
+
+      // arrow logic
+      _setBigmediaArrow($modalContent, $nextm, $navNextMedia);
+      _setBigmediaArrow($modalContent, $prevm, $navPrevMedia);
 
       var mtype = mdata.type;
       var minfos = mdata.informations;
@@ -367,10 +378,13 @@ var modals = (function() {
         .end()
         ;
 
-    		$modal.find('.big-mediaContent').html( $mediaItem);
+      // animate the inside : set $modalContent to opacity 0
+      $modalContent.css('opacity',0);
+
+      setTimeout(function() { $modalContent.html( $mediaItem); $modalContent.css('opacity',1); }, 125);
 
       //Envoie les titres et légendes au serveur
-      $modal.find('.js--submit-add-media-data').on( 'click', function(){
+      $mediaItem.find('.js--submit-add-media-data').on( 'click', function(){
         var editMediaData =
         {
           "mediaName" : mname,
@@ -381,11 +395,11 @@ var modals = (function() {
             editMediaData.informations = informations;
         sendData.editMedia( editMediaData);
       		$modal.foundation('reveal', 'close');
-      		$modal.find('.big-mediaContent').empty();
+      		$modalContent.empty();
       });
 
       // Ajoute ou enlève un highlight quand on clique sur "Highlight" dans la fenêtre modal
-      $modal.find('.js--highlightMedia').on( 'click', function(){
+      $mediaItem.find('.js--highlightMedia').on( 'click', function(){
     		// trigger a click on its js--flagMedia
         var editMediaData =
         {
@@ -399,7 +413,8 @@ var modals = (function() {
 
       });
 
-      $modal.find('.js--submit-view-text-modify').on( 'click', function(){
+      // text modal only
+      $mediaItem.find('.js--submit-view-text-modify').on( 'click', function(){
 
         var editMediaData =
         {
@@ -419,32 +434,32 @@ var modals = (function() {
         sendData.editMedia( editMediaData);
 
         $modal.foundation('reveal', 'close');
-      		$modal.find('.big-mediaContent').empty();
+      		$modalContent.empty();
 
       });
 
 
-      $modal.find('.js--delete-media-bibli').on( 'click', function(){
+      $mediaItem.find('.js--delete-media-bibli').on( 'click', function(){
 
-      $alertModal = $('#modal-delete-alert-media');
+        $alertModal = $('#modal-delete-alert-media');
 
-      	$modal.foundation('reveal', 'close');
-      	$alertModal.foundation('reveal', 'open');
+        	$modal.foundation('reveal', 'close');
+        	$alertModal.foundation('reveal', 'open');
 
-      $alertModal.find('button.oui').on('click', function(){
-        var mediaToDelete =
-        {
-          "mediaName" : mname,
-          "mediaFolderPath" : mtype,
-        }
-        sendData.deleteMedia( mediaToDelete);
-      		$alertModal.foundation('reveal', 'close');
-      	});
-      	$alertModal.find('button.annuler').on('click', function(){
-      		$alertModal.foundation('reveal', 'close');
-      		$modal.foundation('reveal', 'open');
-      	});
-
+        $alertModal.find('button.oui').on('click', function(){
+          var mediaToDelete =
+          {
+            "mediaName" : mname,
+            "mediaFolderPath" : mtype,
+          }
+          sendData.deleteMedia( mediaToDelete);
+        		$alertModal.foundation('reveal', 'close');
+          $modalContent.empty();
+        	});
+        	$alertModal.find('button.annuler').on('click', function(){
+        		$alertModal.foundation('reveal', 'close');
+        		$modal.foundation('reveal', 'open');
+        	});
       });
 
     },
@@ -599,6 +614,27 @@ var modals = (function() {
       	});
     },
   }
+
+
+  function _setBigmediaArrow($modalContent, $upcomingMedia, $navUpcomingMedia) {
+    if($upcomingMedia.length) {
+      $navUpcomingMedia
+        .removeClass('is--disabled')
+        .off()
+        .on('click', function() {
+        		$modalContent.empty();
+          modals.bigMedia($upcomingMedia);
+        })
+        ;
+    } else {
+      $navUpcomingMedia
+        .addClass('is--disabled')
+        .off()
+        ;
+    }
+  }
+
+  return API;
 })();
 
 modals.init();

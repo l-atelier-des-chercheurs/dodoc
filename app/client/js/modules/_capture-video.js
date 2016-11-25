@@ -9,30 +9,68 @@ var videoMode = (function() {
   var $startVideoRecording = $('#start-record-btn');
   var $stopVideoRecording = $('#stop-record-btn');
 
+  // public functions
+  var API = {
+    init : function() {
+      isRunning = true;
+      $preview.find('.js--delete-media-capture').hide();
+      $startVideoRecording.off().on('click', this.startRecord);
+      $stopVideoRecording.off().on('click', this.stopRecord);
+    },
+
+    startRecord : function() {
+      startVideo();
+    },
+    stopRecord: function() {
+      stopRecordVideo();
+    },
+
+    stop : function() {
+      isRunning = false;
+    },
+
+    showVideoPreview : function( pathToMediaFile) {
+      $preview.find('video').attr('src', pathToMediaFile);
+      $preview.find('.js--delete-media-capture').show();
+    },
+
+    isRunning: function() {
+      return isRunning;
+    },
+    captureButtonPress: function() {
+      if(!isRunning) return;
+      if(isRecording) stopRecordVideo();
+      else startVideo();
+    }
+  }
+
   function startVideo(){
 
     if( mediaJustCaptured())
       return;
 
-    backAnimation();
-    recordingFeedback();
+    currentStream.startRecordCameraFeed()
+    .then(function() {
+      backAnimation();
+      recordingFeedback();
 
-    $('body').attr('data-videorecording', 'yes');
-    isRecording = true;
+      $('body').attr('data-videorecording', 'yes');
+      isRecording = true;
 
-    currentStream.startRecordCameraFeed();
+      $startVideoRecording.attr('disabled', true).hide();
+      $stopVideoRecording.attr('disabled', false).show();
 
-    $startVideoRecording.attr('disabled', true).hide();
-    $stopVideoRecording.attr('disabled', false).show();
-
+    }, function(err) {
+      console.log('err ' + err);
+      alertify.error( dodoc.lang.videoStreamNotAvailable + '<br><em>' + JSON.stringify(err) + '</em>');
+    });
   }
 
   function recordingFeedback(){
     var htmlToAppend = "<div class='recording-feedback'><div class='record-feedback'></div><div class='time-feedback'>[REC] <time>00:00:00</time></div></div>";
     $(".video-view").append(htmlToAppend);
     var counter_text = $(".time-feedback time")[0];
-    var seconds = 0, minutes = 0, hours = 0,
-    t;
+    var seconds = 0, minutes = 0, hours = 0, t;
     timer();
 
     function add() {
@@ -84,42 +122,7 @@ var videoMode = (function() {
   }
 
 
-  // public functions
-  return {
-
-    init : function() {
-      isRunning = true;
-      $preview.find('.js--delete-media-capture').hide();
-      $startVideoRecording.off().on('click', this.startRecord);
-      $stopVideoRecording.off().on('click', this.stopRecord);
-    },
-
-    startRecord : function() {
-      startVideo();
-    },
-    stopRecord: function() {
-      stopRecordVideo();
-    },
-
-    stop : function() {
-      isRunning = false;
-    },
-
-    showVideoPreview : function( pathToMediaFile) {
-      $preview.find('video').attr('src', pathToMediaFile);
-      $preview.find('.js--delete-media-capture').show();
-    },
-
-    isRunning: function() {
-      return isRunning;
-    },
-    captureButtonPress: function() {
-      if(!isRunning) return;
-      if(isRecording) stopRecordVideo();
-      else startVideo();
-    }
-
-  }
+  return API;
 
 })();
 

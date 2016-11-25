@@ -2,23 +2,7 @@ var boitierExterne = (function() {
 
   var $modeButtons = $('.js--modeSelector');
 
-
-  function switchMediaMode( direction) {
-    // current active button
-    var $currentActiveButton = $modeButtons.filter('.is--active');
-    var $getRequestedButton = $();
-
-    if(direction === 'prev')
-      $getRequestedButton = $currentActiveButton.prev().length > 0 ? $currentActiveButton.prev() : $currentActiveButton;
-
-    if(direction === 'next')
-      $getRequestedButton = $currentActiveButton.next().length > 0 ? $currentActiveButton.next() : $currentActiveButton;
-
-    // get its 'data-mediatype' and send it to changeMediaMode
-    changeMediaMode( $getRequestedButton.attr('data-mediatype'));
-  }
-
-  return {
+  var API = {
     init : function() {
   	  // switch mode if code == 115 (next mode, Z) or 122 (prev mode, S)
   	  // can't overflow past first or last mode buttons
@@ -37,9 +21,24 @@ var boitierExterne = (function() {
           else if( audioMode.isRunning())      audioMode.captureButtonPress();
         }
       });
-
-
     },
   }
+
+  function switchMediaMode( direction) {
+    // current active button
+    var $currentActiveButton = $modeButtons.filter('.is--active');
+    var $getRequestedButton = $();
+
+    if(direction === 'prev')
+      $getRequestedButton = $currentActiveButton.prev().length > 0 ? $currentActiveButton.prev() : $currentActiveButton;
+
+    if(direction === 'next')
+      $getRequestedButton = $currentActiveButton.next().length > 0 ? $currentActiveButton.next() : $currentActiveButton;
+
+    // get its 'data-mediatype' and send it to changeMediaMode
+    changeMediaMode( $getRequestedButton.attr('data-mediatype'));
+  }
+
+  return API;
 
 })();

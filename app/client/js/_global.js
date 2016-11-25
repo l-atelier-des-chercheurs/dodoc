@@ -2,6 +2,10 @@
 window.sessionId = '';
 window.socket = io.connect();
 
+// context vars sent by Node via router.js to footer.jade namespaced with app
+var currentFolder = app.currentFolder;
+var currentProject = app.currentProject;
+var currentPubli = app.currentPubli;
 
 // binding an event to all packets to log some events
 // see http://stackoverflow.com/a/33960032
@@ -12,33 +16,32 @@ socket.onevent = function (packet) {
   packet.data = ["*"].concat(args);
   onevent.call(this, packet);      // additional call to catch-all
 };
-
 socket.on("*",function(event,data) {
   // only log the following events
   if(event === "mediaCreated") {
     for(mdata in data) {
       var thisMedia = data[mdata];
-      console.log(thisMedia.slugFolderName);
-      var logMediaCreated = dodoc.lang.modal.newMediaCreatedAtPath+thisMedia.slugFolderName+'/'+thisMedia.slugProjectName;
+      var pathToProjectWhoGotANewMedia = '/'+thisMedia.slugFolderName+'/'+thisMedia.slugProjectName;
+      var logMediaCreated =
+        dodoc.lang.modal.newMediaCreatedAtPath+
+        '<a href="' + pathToProjectWhoGotANewMedia + '">'+
+          pathToProjectWhoGotANewMedia+
+        '</a>'
+        ;
       alertify
+        .closeLogOnClick(true)
         .delay(4000)
         .log(logMediaCreated)
         ;
     }
   }
-  // log folder created
+  // todo: log folder created
 
-  // log project created
+  // todo: log project created
 
-  // log publication created
+  // todo: log publication created
 
 });
-
-
-// context vars sent by Node via router.js to footer.jade namespaced with app
-var currentFolder = app.currentFolder;
-var currentProject = app.currentProject;
-var currentPubli = app.currentPubli;
 
 
 function loadProjectSnippet(pd) {
@@ -693,6 +696,7 @@ var sendData = {
   createNewMedia : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
+    mediaData.author = sessionId;
     	socket.emit( 'newMedia', mediaData);
   },
   editMedia : function( mediaData) {
