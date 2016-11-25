@@ -18,12 +18,12 @@ You can find more documentation and contribute to the project [here](http://www.
 ##Install DoDoc
 
 # Method 1 - OSX only
-### Download the app (simplest way, MacOS only for now)
+### Download the app
 
-Check out the latest releases: https://github.com/l-atelier-des-chercheurs/dodoc/releases
+Download the following app, unzip and launch _dodoc.app_ : https://github.com/l-atelier-des-chercheurs/dodoc/releases/download/3.5.0/dodoc.app.zip
 
 # Method 2 - All OS
-### With a terminal (a little more complicated)
+### With a terminal
 
 _You need both [git](https://git-scm.com/downloads) and [node.js](https://nodejs.org/) to install DoDoc._
 
