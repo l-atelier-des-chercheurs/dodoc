@@ -5,6 +5,33 @@ var imageMode = (function() {
   var isRunning = true;
   var $captureflash = $(".captureRight .flash");
 
+  var API = {
+    init : function() {
+      $(".photo-capture #capture-btn").off().on('click', takePictures);
+      $preview.find('.js--delete-media-capture').hide();
+      $preview.find('img.js--output').attr('src', '');
+      isRunning = true;
+    },
+
+    stop: function() {
+      isRunning = false;
+    },
+    showImagePreview : function( pathToMediaFile) {
+      $preview.find('img.js--output').attr("src", pathToMediaFile);
+      $preview.find('.js--delete-media-capture').show();
+      $captureflash.fadeOut(200);
+    },
+
+    isRunning: function() {
+      return isRunning;
+    },
+    // function that takes a picture if the mode is enabled
+    captureButtonPress: function() {
+      if(!isRunning) return;
+      takePictures();
+    },
+  }
+
   function takePictures() {
 
     if( mediaJustCaptured())
@@ -31,32 +58,7 @@ var imageMode = (function() {
   }
 
 
-  return {
-    init : function() {
-      $(".photo-capture #capture-btn").off().on('click', takePictures);
-      $preview.find('.js--delete-media-capture').hide();
-      $preview.find('img.js--output').attr('src', '');
-      isRunning = true;
-    },
-
-    stop: function() {
-      isRunning = false;
-    },
-    showImagePreview : function( pathToMediaFile) {
-      $preview.find('img.js--output').attr("src", pathToMediaFile);
-      $preview.find('.js--delete-media-capture').show();
-      $captureflash.fadeOut(200);
-    },
-
-    isRunning: function() {
-      return isRunning;
-    },
-    // function that takes a picture if the mode is enabled
-    captureButtonPress: function() {
-      if(!isRunning) return;
-      takePictures();
-    },
-  }
+  return API;
 })();
 
 

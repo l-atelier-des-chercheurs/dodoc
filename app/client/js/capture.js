@@ -265,9 +265,9 @@ var currentStream = (function(context) {
     startCameraFeed         : function() { return startCameraFeed(); },
     startRecordCameraFeed   : function() { return startRecordCameraFeed(); },
     stopRecordCameraFeed    : function() { return stopRecordCameraFeed(); },
-    startAudioFeed          : function() { startAudioFeed(); },
-    startRecordAudioFeed    : function() { startRecordAudioFeed(); },
-    stopRecordAudioFeed     : function() { stopRecordAudioFeed(); }
+    startAudioFeed          : function() { return startAudioFeed(); },
+    startRecordAudioFeed    : function() { return startRecordAudioFeed(); },
+    stopRecordAudioFeed     : function() { return stopRecordAudioFeed(); }
   };
 
   function init() {
@@ -377,19 +377,19 @@ var currentStream = (function(context) {
   function startRecordCameraFeed() {
     return new Promise(function(resolve, reject) {
       _getCameraFeed()
-        .then( function( stream) {
-          var requestedVideoRes = _getVideoResFromRadio();
-          recordVideoFeed = RecordRTC(stream, {
-            type: 'video',
-            canvas: { width: requestedVideoRes.width, height: requestedVideoRes.height },
-          });
-          recordVideoFeed.startRecording();
-          resolve();
-        }, function(err) {
-          console.log( " failed to start camera feed: " + err);
-          reject();
+      .then(function(stream) {
+        var requestedVideoRes = _getVideoResFromRadio();
+        recordVideoFeed = RecordRTC(stream, {
+          type: 'video',
+          canvas: { width: requestedVideoRes.width, height: requestedVideoRes.height },
         });
-        ;
+        recordVideoFeed.startRecording();
+        resolve();
+      }, function(err) {
+        console.log( " failed to start camera feed: " + err);
+        reject();
+      });
+      ;
     });
   }
   function stopRecordCameraFeed() {
@@ -407,14 +407,14 @@ var currentStream = (function(context) {
     return new Promise(function(resolve, reject) {
       currentStream.stopAllFeeds();
       _getAudioFeed()
-        .then( function( stream) {
-          audioStream = stream;
-          resolve( stream);
-        }, function() {
-          console.log( " failed to get audio feed");
-          reject();
-        })
-        ;
+      .then( function( stream) {
+        audioStream = stream;
+        resolve( stream);
+      }, function(err) {
+        console.log( "Failed to get audio feed:" + err);
+        reject(err);
+      })
+      ;
     });
   }
   function startRecordAudioFeed() {

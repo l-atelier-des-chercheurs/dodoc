@@ -21,7 +21,6 @@ socket.on("*",function(event,data) {
   if(event === "mediaCreated") {
     for(mdata in data) {
       var thisMedia = data[mdata];
-      console.log(thisMedia.slugFolderName);
       var pathToProjectWhoGotANewMedia = '/'+thisMedia.slugFolderName+'/'+thisMedia.slugProjectName;
       var logMediaCreated =
         dodoc.lang.modal.newMediaCreatedAtPath+
@@ -30,6 +29,7 @@ socket.on("*",function(event,data) {
         '</a>'
         ;
       alertify
+        .closeLogOnClick(true)
         .delay(4000)
         .log(logMediaCreated)
         ;

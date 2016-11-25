@@ -20,126 +20,13 @@ var stopMotionMode = (function() {
 
   var $captureflash = $(".captureRight .flash");
 
-  function startStopMotion(){
-
-    if( mediaJustCaptured())
-      return;
-
-    // try to get a first image to send with project data. If feed is not available, let’s alert the user
-    currentStream.getStaticImageFromVideo().then(function(imageData) {
-
-      console.log('start stop-motion');
-
-      $startsm.hide();
-      $capturesm.show();
-
-      $preview.find('.preview_stopmotion--container').empty();
-      $preview.find('.preview_stopmotion--timeline').empty();
-      $lastStopmotionImage.attr('src', '');
-      $("body").data("smCacheName", "");
-      $("body").data("smCachePath", "");
-      $preview.find('.js--output').attr('src', '');
-      $previewOutput.hide();
-
-      justCaptured();
-      animateWindows();
-
-      isRecording = true;
-
-      var mediaData = {};
-      mediaData.slugFolderName = currentFolder;
-      mediaData.slugProjectName = currentProject;
-
-      mediaData.imageContent = imageData;
-      socket.emit( 'startStopMotion', mediaData);
-      $captureflash.fadeIn(0);
-    }, function(err) {
-      console.log('err ' + err);
-      alertify.error( dodoc.lang.videoStreamNotAvailable + '<br><em>' + JSON.stringify(err) + '</em>');
-    });
-  }
-
-  function takeStopMotionPic() {
-    if(mediaJustCaptured())
-      return;
-
-    currentStream.getStaticImageFromVideo().then(function(imageData) {
-      isRecording = true;
-      var smCacheName = $("body").data("smCacheName");
-      var smCachePath = $("body").data("smCachePath");
-      var smRelativeCachePath = $("body").data("smRelativeCachePath");
-      var smImage =
-      {
-        "imageContent" : imageData,
-        "folderCacheName" : smCacheName,
-        "folderCachePath" : smCachePath,
-        "relativeCachePath" : smRelativeCachePath,
-      };
-
-      socket.emit( 'addImageToStopMotion', smImage);
-
-      $('body').addClass('takingstopmotion');
-      $captureflash.fadeIn(0);
-
-      justCaptured();
-      animateWindows();
-
-    }, function(err) {
-      console.log('err ' + err);
-      alertify.error( dodoc.lang.videoStreamNotAvailable + '<br><em>' + JSON.stringify(err) + '</em>');
-    });
-
-  }
-
-  function removeImageFromStopMotion( relativeImagePath) {
-    var mediaToDelete =
-    {
-      "pathToStopmotionImage" : relativeImagePath,
-    }
-    socket.emit( 'deleteLastImageOfStopMotion', mediaToDelete);
-  }
-
-
-  function previzStopMotion( ) {
-
-    var smCacheName = $("body").data( "smCacheName");
-    var frameRate = $preview.find('.js--stopmotion_frameRate').val();
-
-    var mediaData =
-    {
-      "stopMotionCacheFolder" : smCacheName,
-      "mediaType" : "animation",
-      "frameRate" : frameRate
-    }
-    // send instruction to finish stopmotion
-    sendData.createNewMedia( mediaData);
-
-    $previewOutput.show();
-
-  }
-
-  function finishStopmotion( ) {
-    isRecording = false;
-
-    $startsm.show();
-    $capturesm.hide();
-
-    backAnimation();
-    stopMotionMode.init();
-
-    saveFeedback("/images/i_icone-dodoc_anim.svg");
-
-  }
-
-
-  return {
-
+  var API = {
     init : function() {
       isRunning = true;
-      $startsm.off().on('click', startStopMotion);
-      $capturesm.off().on('click', takeStopMotionPic);
-      $previzsm.off().on('click', previzStopMotion);
-      $finishsm.off().on('click', finishStopmotion);
+      $startsm.off().on('click', _startStopMotion);
+      $capturesm.off().on('click', _takeStopMotionPic);
+      $previzsm.off().on('click', _previzStopMotion);
+      $finishsm.off().on('click', _finishStopmotion);
       $preview.show();
       $preview.find('video').attr('src', '');
       $previewOutput.hide();
@@ -169,7 +56,7 @@ var stopMotionMode = (function() {
 
       // delete last stopmotion image
       $newPreview.on('click', '.js--delete-sm-lastimage', function(){
-        removeImageFromStopMotion( relativeImagePath);
+        _removeImageFromStopMotion( relativeImagePath);
         $newPreview.remove();
         $newSmallPreview.remove();
         $previewContainer.find('.stopmotion_lastImagePreview').last().addClass('is--active');
@@ -237,10 +124,110 @@ var stopMotionMode = (function() {
     },
     captureButtonPress: function() {
       if(!isRunning) return;
-      if(isRecording) takeStopMotionPic();
-      else startStopMotion();
+      if(isRecording) _takeStopMotionPic();
+      else _startStopMotion();
     },
   }
+
+  function _startStopMotion(){
+
+    if( mediaJustCaptured())
+      return;
+
+    // try to get a first image to send with project data. If feed is not available, let’s alert the user
+    currentStream.getStaticImageFromVideo().then(function(imageData) {
+
+      console.log('start stop-motion');
+
+      $startsm.hide();
+      $capturesm.show();
+
+      $preview.find('.preview_stopmotion--container').empty();
+      $preview.find('.preview_stopmotion--timeline').empty();
+      $lastStopmotionImage.attr('src', '');
+      $("body").data("smCacheName", "");
+      $("body").data("smCachePath", "");
+      $preview.find('.js--output').attr('src', '');
+      $previewOutput.hide();
+
+      justCaptured();
+      animateWindows();
+
+      isRecording = true;
+
+      var mediaData = {};
+      mediaData.slugFolderName = currentFolder;
+      mediaData.slugProjectName = currentProject;
+
+      mediaData.imageContent = imageData;
+      socket.emit( 'startStopMotion', mediaData);
+      $captureflash.fadeIn(0);
+    }, function(err) {
+      console.log('err ' + err);
+      alertify.error( dodoc.lang.videoStreamNotAvailable + '<br><em>' + JSON.stringify(err) + '</em>');
+    });
+  }
+  function _takeStopMotionPic() {
+    if(mediaJustCaptured())
+      return;
+
+    currentStream.getStaticImageFromVideo().then(function(imageData) {
+      isRecording = true;
+      var smCacheName = $("body").data("smCacheName");
+      var smCachePath = $("body").data("smCachePath");
+      var smRelativeCachePath = $("body").data("smRelativeCachePath");
+      var smImage =
+      {
+        "imageContent" : imageData,
+        "folderCacheName" : smCacheName,
+        "folderCachePath" : smCachePath,
+        "relativeCachePath" : smRelativeCachePath,
+      };
+
+      socket.emit( 'addImageToStopMotion', smImage);
+
+      $('body').addClass('takingstopmotion');
+      $captureflash.fadeIn(0);
+
+      justCaptured();
+      animateWindows();
+
+    }, function(err) {
+      console.log('err ' + err);
+      alertify.error( dodoc.lang.videoStreamNotAvailable + '<br><em>' + JSON.stringify(err) + '</em>');
+    });
+
+  }
+  function _removeImageFromStopMotion( relativeImagePath) {
+    var mediaToDelete =
+    {
+      "pathToStopmotionImage" : relativeImagePath,
+    }
+    socket.emit( 'deleteLastImageOfStopMotion', mediaToDelete);
+  }
+  function _previzStopMotion( ) {
+    var smCacheName = $("body").data( "smCacheName");
+    var frameRate = $preview.find('.js--stopmotion_frameRate').val();
+    var mediaData =
+    {
+      "stopMotionCacheFolder" : smCacheName,
+      "mediaType" : "animation",
+      "frameRate" : frameRate
+    }
+    sendData.createNewMedia( mediaData);
+    $previewOutput.show();
+  }
+  function _finishStopmotion( ) {
+    isRecording = false;
+    $startsm.show();
+    $capturesm.hide();
+
+    backAnimation();
+    stopMotionMode.init();
+    saveFeedback("/images/i_icone-dodoc_anim.svg");
+  }
+
+  return API;
 
 })();
 
