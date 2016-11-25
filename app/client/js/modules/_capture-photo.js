@@ -12,9 +12,6 @@ var imageMode = (function() {
 
     currentStream.getStaticImageFromVideo().then(function(imageData) {
       $captureflash.fadeIn(0);
-      console.log("Yeah you take a picture");
-
-
       var mediaData =
       {
         "mediaType" : "photo",
@@ -29,8 +26,8 @@ var imageMode = (function() {
       saveFeedback("/images/i_icone-dodoc_image.svg");
     }, function(err) {
       console.log('err ' + err);
+      alertify.error( dodoc.lang.videoStreamNotAvailable + '<br><em>' + JSON.stringify(err) + '</em>');
     });
-
   }
 
 

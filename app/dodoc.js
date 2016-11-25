@@ -46,7 +46,7 @@ if( lang === 'fr') {
       "quitFullscreen" : "Quitter le plein écran",
       "removeThisImage" : "Supprimer cette image",
       "removeThisMedia" : "Supprimer ce média",
-      "previzStopMotion" : "Prévisualiser l’animation",
+      "previzStopMotion" : "Prévisualiser",
       "finishStopmotion" : "Finaliser l’animation",
       "addToFav" : "Mettre en favoris",
 
@@ -75,6 +75,7 @@ if( lang === 'fr') {
 
       "currentVideoResolutionIs" : "Résolution actuelle&nbsp;: ",
       "videoStreamCouldntBeStartedTryChangingRes" : "Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la résolution dans le panneau de droite.",
+      "videoStreamNotAvailable" : "Erreur : le flux vidéo n’est pas disponible.",
       "audioStreamCouldntBeStarted" : "Le flux audio n’a pas pu être démarré.",
 
       "mediapublitemplatesarestoredint" : "Les données chargées sur cette page sont stockées dans le dossier suivant&nbsp;: ",

@@ -350,14 +350,30 @@ select {
 }
 
 .alertify-logs {
-  z-index:  15000;
-}
-.alertify-logs>.default {
   font-weight: 500;
-  border: 3px solid $rouge;
-  background-color: white;
-  color: $rouge;
-}
-.alertify-logs>.show {
-  margin-right:   16px;
+  z-index:  15000;
+
+  >.show {
+    margin-right:   16px;
+    background-color: white;
+    color: $bleuvert;
+    border: 3px solid currentColor;
+  }
+
+  >.error {
+    color:$rouge;
+  }
+
+  a {
+    font-weight: inherit;
+    background-color: #4BC0B4;
+    padding: 3px 4px;
+    border-radius: 6px;
+    color: white;
+
+    &:hover {
+      color: currentColor;
+      background-color: white;
+    }
+  }
 }

@@ -89,7 +89,7 @@
   min-height:  $t-navbarheight;
 
   font-size:  1.1rem;
-  font-weight: 400;
+  font-weight: 600;
 
   z-index: 100;
 
@@ -196,8 +196,8 @@
         color: white;
 
         padding: 10px;
+//         padding-left: 15px;
 
-        padding-left: 15px;
         transition: color .2s;
 
         .btn.icon + span {

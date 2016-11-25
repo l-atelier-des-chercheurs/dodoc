@@ -6813,7 +6813,7 @@ th.hide-for-touch {
   width: 100%;
   min-height: 70px;
   font-size: 1.1rem;
-  font-weight: 400;
+  font-weight: 600;
   z-index: 100; }
   body.index .navbar-container .logo {
     pointer-events: none; }
@@ -6877,7 +6877,6 @@ th.hide-for-touch {
         background-color: transparent;
         color: white;
         padding: 10px;
-        padding-left: 15px;
         transition: color .2s; }
         .navbar-container .navbar .item .button-wrapper + .button-wrapper::after {
           left: -10px;
@@ -7156,16 +7155,24 @@ select {
   border-bottom: 2px solid #C3C3C3; }
 
 .alertify-logs {
-  z-index: 15000; }
-
-.alertify-logs > .default {
   font-weight: 500;
-  border: 3px solid #FF3E51;
-  background-color: white;
-  color: #FF3E51; }
-
-.alertify-logs > .show {
-  margin-right: 16px; }
+  z-index: 15000; }
+  .alertify-logs > .show {
+    margin-right: 16px;
+    background-color: white;
+    color: #4BC0B4;
+    border: 3px solid currentColor; }
+  .alertify-logs > .error {
+    color: #FF3E51; }
+  .alertify-logs a {
+    font-weight: inherit;
+    background-color: #4BC0B4;
+    padding: 3px 4px;
+    border-radius: 6px;
+    color: white; }
+    .alertify-logs a:hover {
+      color: currentColor;
+      background-color: white; }
 
 body.publi {
   background-color: #fff; }
@@ -8173,7 +8180,9 @@ body.capture .content-wrapper:after {
       padding-bottom: 0; }
     .captureLeft .video-view .captureLeft-lastStopmotionImage {
       position: absolute;
-      opacity: 0; }
+      opacity: 0;
+      object-fit: scale-down;
+      width: 100%; }
   .captureLeft .slider--lastImageOpacity {
     position: absolute;
     top: 0;
@@ -8321,22 +8330,21 @@ body.capture .content-wrapper:after {
   .captureLeft .recording-feedback {
     position: absolute;
     z-index: 100;
-    top: 10px;
-    left: 10px; }
+    top: 8px;
+    left: 8px;
+    color: #FF3E51; }
     .captureLeft .recording-feedback .record-feedback {
-      width: 15px;
-      height: 15px;
-      background-color: #FF3E51;
-      border-radius: 50%;
       display: inline-block;
-      vertical-align: middle; }
+      vertical-align: middle;
+      width: 10px;
+      height: 10px;
+      background-color: currentColor;
+      border-radius: 50%; }
     .captureLeft .recording-feedback .time-feedback {
       display: inline-block;
       vertical-align: middle;
-      margin-bottom: 2px;
-      margin-left: 10px;
-      color: #fff;
-      text-shadow: 0px 0px 2px #999; }
+      color: currentColor;
+      margin-left: 8px; }
 
 .icone-feedback {
   position: absolute;
@@ -8437,6 +8445,9 @@ body.capture .content-wrapper:after {
     .captureRight .preview_stopmotion .output_container .button-wrapper_deleteMediaCaptureStopmotion {
       position: relative;
       float: left; }
+  .captureRight .preview_stopmotion .button-wrapper_previzStopmotion {
+    max-width: 50%;
+    overflow: hidden; }
   .captureRight .preview_stopmotion .button-wrapper_previzStopmotion, .captureRight .preview_stopmotion .button-wrapper_finishStopmotion {
     display: block;
     float: right; }

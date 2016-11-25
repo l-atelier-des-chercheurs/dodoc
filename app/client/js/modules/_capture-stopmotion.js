@@ -25,52 +25,49 @@ var stopMotionMode = (function() {
     if( mediaJustCaptured())
       return;
 
-    console.log('start stop-motion');
-
-    $startsm.hide();
-    $capturesm.show();
-
-    $preview.find('.preview_stopmotion--container').empty();
-    $preview.find('.preview_stopmotion--timeline').empty();
-    $lastStopmotionImage.attr('src', '');
-    $("body").data("smCacheName", "");
-    $("body").data("smCachePath", "");
-    $preview.find('.js--output').attr('src', '');
-    $previewOutput.hide();
-
-    justCaptured();
-    animateWindows();
-
-    isRecording = true;
-
-    var mediaData = {};
-    mediaData.slugFolderName = currentFolder;
-    mediaData.slugProjectName = currentProject;
-
-    // get a first image to send with project data
+    // try to get a first image to send with project data. If feed is not available, let’s alert the user
     currentStream.getStaticImageFromVideo().then(function(imageData) {
+
+      console.log('start stop-motion');
+
+      $startsm.hide();
+      $capturesm.show();
+
+      $preview.find('.preview_stopmotion--container').empty();
+      $preview.find('.preview_stopmotion--timeline').empty();
+      $lastStopmotionImage.attr('src', '');
+      $("body").data("smCacheName", "");
+      $("body").data("smCachePath", "");
+      $preview.find('.js--output').attr('src', '');
+      $previewOutput.hide();
+
+      justCaptured();
+      animateWindows();
+
+      isRecording = true;
+
+      var mediaData = {};
+      mediaData.slugFolderName = currentFolder;
+      mediaData.slugProjectName = currentProject;
+
       mediaData.imageContent = imageData;
       socket.emit( 'startStopMotion', mediaData);
       $captureflash.fadeIn(0);
     }, function(err) {
       console.log('err ' + err);
+      alertify.error( dodoc.lang.videoStreamNotAvailable + '<br><em>' + JSON.stringify(err) + '</em>');
     });
   }
 
   function takeStopMotionPic() {
-
     if(mediaJustCaptured())
       return;
 
-    isRecording = true;
-
-    var smCacheName = $("body").data("smCacheName");
-    var smCachePath = $("body").data("smCachePath");
-    var smRelativeCachePath = $("body").data("smRelativeCachePath");
-    var imageData = currentStream.getStaticImageFromVideo();
-
     currentStream.getStaticImageFromVideo().then(function(imageData) {
-
+      isRecording = true;
+      var smCacheName = $("body").data("smCacheName");
+      var smCachePath = $("body").data("smCachePath");
+      var smRelativeCachePath = $("body").data("smRelativeCachePath");
       var smImage =
       {
         "imageContent" : imageData,
@@ -89,6 +86,7 @@ var stopMotionMode = (function() {
 
     }, function(err) {
       console.log('err ' + err);
+      alertify.error( dodoc.lang.videoStreamNotAvailable + '<br><em>' + JSON.stringify(err) + '</em>');
     });
 
   }
@@ -105,7 +103,7 @@ var stopMotionMode = (function() {
   function previzStopMotion( ) {
 
     var smCacheName = $("body").data( "smCacheName");
-    var frameRate = $preview.find('.preview_stopmotion--frameRate input').val();
+    var frameRate = $preview.find('.js--stopmotion_frameRate').val();
 
     var mediaData =
     {
@@ -147,7 +145,7 @@ var stopMotionMode = (function() {
       $previewOutput.hide();
 
       $lastStopmotionImageSlider.bind("change", function() {
-        $lastStopmotionImage.css("opacity", $lastStopmotionImageSlider.val());
+        $lastStopmotionImage.css("opacity", $lastStopmotionImageSlider.val().replace(/\,/g,'.'));
       });
 
       if(isRecording) {

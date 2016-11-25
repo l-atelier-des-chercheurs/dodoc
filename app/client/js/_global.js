@@ -22,7 +22,13 @@ socket.on("*",function(event,data) {
     for(mdata in data) {
       var thisMedia = data[mdata];
       console.log(thisMedia.slugFolderName);
-      var logMediaCreated = dodoc.lang.modal.newMediaCreatedAtPath+thisMedia.slugFolderName+'/'+thisMedia.slugProjectName;
+      var pathToProjectWhoGotANewMedia = '/'+thisMedia.slugFolderName+'/'+thisMedia.slugProjectName;
+      var logMediaCreated =
+        dodoc.lang.modal.newMediaCreatedAtPath+
+        '<a href="' + pathToProjectWhoGotANewMedia + '">'+
+          pathToProjectWhoGotANewMedia+
+        '</a>'
+        ;
       alertify
         .delay(4000)
         .log(logMediaCreated)
