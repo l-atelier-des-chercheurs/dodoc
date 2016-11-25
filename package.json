@@ -1,6 +1,6 @@
 {
   "name": "dodoc",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "description": "Dodoc is a documentation tool.",
   "main": "main.js",
   "scripts": {
