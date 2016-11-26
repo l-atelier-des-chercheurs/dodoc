@@ -20,70 +20,63 @@ You can find more documentation and contribute to the project [here](http://www.
 # Method 1 - OSX only
 ### Download the app
 
-Download the following app, unzip and launch _dodoc.app_ : https://github.com/l-atelier-des-chercheurs/dodoc/releases/download/3.5.0/dodoc.app.zip
+Download the following app, unzip and launch _dodoc.app_ : https://github.com/l-atelier-des-chercheurs/dodoc/releases/download/4.0.0/dodoc.app.zip
 
 # Method 2 - All OS
-### With a terminal
 
-_You need both [git](https://git-scm.com/downloads) and [node.js](https://nodejs.org/) to install DoDoc._
+_You need [node.js](https://nodejs.org/) to install DoDoc with this method._
+
+### 1. Download this repository
+
+Click on *Clone or Download* in the top right corner of this page, then *Download ZIP*. Unpack this folder.
+
+### 3. Open a terminal window
+
+Open a terminal window to execute commands and install DoDoc.
 
 #### Windows
-Follow [this tutorial](http://wikistrea.fr/Comment_ouvrir_la_console_de_commande_Windows_en_mode_administrateur_%3F): 
+Use [this tutorial](http://wikistrea.fr/Comment_ouvrir_la_console_de_commande_Windows_en_mode_administrateur_%3F) to open a terminal on Windows: 
 #### Mac OSX
 Go to Applications->Utilities->Terminal
 #### Linux
-You should already be able to open a terminal
+Use a terminal app such as Terminal or Konsole
 
-### 1. Open/create a folder to install DoDoc
-Select where you want DoDoc to be copied on your computer with the following command
-```cd path/to/a/folder``` 
+Navigate to the dodoc-master folder with your terminal using the `cd` command:
+```cd path/to/dodoc-master``` 
 
-### 2. Clone the repo or download it
-Clone dodoc to a `dodoc` folder:
-```git clone https://github.com/l-atelier-des-chercheurs/dodoc.git```
-then open that folder with ```cd dodoc```
+### 4. Install dependencies
 
-### 3. Install dependencies
-
-Install electron dependencies
+Install electron dependencies (may take up to 5 minutes):
 ```npm install```  
 
-Then install dodoc dependencies
+Then install dodoc dependencies that are in the app folder.
+Go to app folder:
 ```cd app```
+Install dependencies:
 ```npm install```
 
-### 4. Run dodoc
+Finally run the following command to make sure Sharp binaries are installed (may take 1-2 minutes):
+```./node_modules/.bin/electron-rebuild```
 
-Go back to the dodoc folder
+### 5. Run dodoc
+
+Go back to the dodoc folder with the following command:
 ```cd ../```
 
 Then start dodoc
 ```npm start```
 
-
-
-## Third-party packages
-
-### Install ffmpeg to make stopmotions
-Official page [https://www.ffmpeg.org/](https://www.ffmpeg.org/)
-
-####On Linux
-Install ffmpeg from your package manager.
-
-####On windows (it works on every version of windows)
-Follow this tutorial: [http://adaptivesamples.com/how-to-install-ffmpeg-on-windows/](http://adaptivesamples.com/how-to-install-ffmpeg-on-windows/)
-
-####On Mac OSX
-Follow this tutorial: [http://www.renevolution.com/how-to-install-ffmpeg-on-mac-os-x/](http://www.renevolution.com/how-to-install-ffmpeg-on-mac-os-x/)
-
-
 ## Update dodoc
 
-###To update DoDoc with the latest version  
+### How to update DoDoc with the latest version  
 
-As the content folder (medias, texts, etc.) is outside the app, just replace the dodoc.app or redownload the repository. 
+As the content folder (medias, texts, etc.) is outside the app, just replace the dodoc.app or redownload this repository and reinstall dependencies. If you know how to use _git_ (which is not covered in this tutorial) you can also pull changes to your local copy.
 
 ### Contributing or forking dodoc
+
+We welcome contributions and inputs. Use the Github issue tracker if you encounter a bug or want to suggest a new feature: https://github.com/l-atelier-des-chercheurs/dodoc/issues
+
+Also, some not-so-up-to-date documentations on DoDoc:
 -->  1 hackpad with spec (in french): https://hackpad.com/dodoc-5iYRCxUY8D5 <br>
 -->  1 blog : http://www.lopendoc.org/dodoc/
 

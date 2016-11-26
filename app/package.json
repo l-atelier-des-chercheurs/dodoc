@@ -1,6 +1,6 @@
 {
   "name": "dodoc",
-  "version": "0.8.2",
+  "version": "1.0.0",
   "description": "Dodoc is a documentation tool.",
   "scripts": {
     "start": "node index.js",
