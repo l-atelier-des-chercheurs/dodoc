@@ -240,9 +240,20 @@ body.capture{
       padding: $margin;
       background-color: $gristresclair;
 
+      font-size:  1em;
+      font-weight: 400;
+      color: $grisfonce;
+
+
       > input {
         margin: 0;
         margin-right:   $margin;
+
+        &:checked ~ span, &:checked ~ label > .setCustomRes {
+          color: $bleuvert;
+          font-weight: 600;
+          letter-spacing: 0.01em;
+        }
       }
 
       .setCustomRes {
@@ -325,9 +336,12 @@ $t-decalageDuCentre: 2%;
 
     .captureLeft-lastStopmotionImage {
       position: absolute;
-      opacity: 0;
-      object-fit: scale-down;
       width: 100%;
+      height: 100%;
+
+      opacity: 0;
+      z-index: 1;
+      object-fit: scale-down;
     }
   }
 
@@ -498,10 +512,6 @@ $t-decalageDuCentre: 2%;
   .videoContainer {
     position: relative;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
     height: 100%;
     max-height: 80vh;
     width: 100%;
@@ -509,10 +519,12 @@ $t-decalageDuCentre: 2%;
     background-color: $gristresclair;
 
     .videoFeed {
-      min-width: 0;
-      width: auto;
-      max-width: 100%;
+      position: absolute;
+      width: 100%;
+      height: 100%;
       margin: 0 auto;
+
+      z-index: 0;
     }
 
     .currentStreamResolution {
@@ -630,7 +642,7 @@ $t-decalageDuCentre: 2%;
   padding: $margin/2;
 
   height: 80vh;
-  height: calc(100vh - 280px);
+  height: calc(100vh - 200px);
 
   max-width: 50% - $t-decalageDuCentre;
   width: 80vh;
@@ -652,7 +664,6 @@ $t-decalageDuCentre: 2%;
     position: absolute;
     top: 0; left: 0;
     z-index:  150;
-
 
     body[data-mode="photo"] & {
       background-color: $c-images;
@@ -713,14 +724,14 @@ $t-decalageDuCentre: 2%;
 
       video {
         width: 100%;
-        height: 75%;
+        height: 80%;
         background:   $gristresclair;
         margin-bottom: $margin;
         object-fit: scale-down;
       }
 
       // video with empty src
-      video.output[src=""] {
+      video[src=""] {
         // hide buttons that follow
         & ~ .button-wrapper {
           display: none;
@@ -759,7 +770,7 @@ $t-decalageDuCentre: 2%;
     .preview_stopmotion--container {
       position: relative;
       width: 100%;
-      height: 75%;
+      height: 80%;
       counter-reset: compteListe;
 
       .stopmotion_lastImagePreview {
@@ -802,11 +813,12 @@ $t-decalageDuCentre: 2%;
 
     .preview_stopmotion--timeline {
       width: 100%;
-      height: 15%;
+      height: 10%;
       @include clearfix();
       padding: 0;
       padding-bottom:  $margin/2;
       counter-reset: compteListe;
+      color: $bleuvert;
 
       .stopmotion_lastImageSmallPreview {
         position: relative;
@@ -825,11 +837,10 @@ $t-decalageDuCentre: 2%;
         }
 
         &.is--active {
-          background-color: $bleuvert;
+          background-color: currentcolor;
 
           &::after {
-            background-color: $bleuvert;
-            font-size:  70%;
+            font-size:  80%;
             color:white;
           }
         }
@@ -860,10 +871,8 @@ $t-decalageDuCentre: 2%;
 
       input {
         display: inline-block;
-        width:  50px;
-        font-size: 120%;
+        color: $bleuvert;
       }
-
 
     }
 
