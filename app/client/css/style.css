@@ -8161,15 +8161,16 @@ body.capture .content-wrapper:after {
   z-index: 2;
   margin-bottom: 25px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  max-width: 46%;
+  max-width: 48%;
   width: 80vh;
   height: 80vh;
+  height: calc(100vh - 200px);
   padding: 8px;
   left: 50%;
   transform: translate3d(-50%, 0, 0);
   transition: transform .4s ease-out, background-color .1s; }
   body[data-state="expanded"] .captureLeft {
-    transform: translate3d(-104%, 0, 0); }
+    transform: translate3d(-102%, 0, 0); }
   body.is--fullscreen .captureLeft {
     width: 100%;
     left: 0 !important;
@@ -8379,14 +8380,15 @@ body.capture .content-wrapper:after {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 8px;
   height: 80vh;
-  max-width: 41%;
+  height: calc(100vh - 280px);
+  max-width: 48%;
   width: 80vh;
   left: 50%;
   transform: translate3d(-50%, 0, 0);
   transition: transform .4s ease-out, opacity .6s ease-out; }
   body[data-state="expanded"] .captureRight {
     opacity: 1;
-    transform: translate3d(4%, 0, 0); }
+    transform: translate3d(2%, 0, 0); }
   .captureRight .flash {
     height: 100%;
     background-color: #FFF;

@@ -264,7 +264,7 @@ body.capture{
 }
 
 $buttonBar: $margin + 64px;
-$t-decalageDuCentre: 4%;
+$t-decalageDuCentre: 2%;
 
 .captureLeft {
 
@@ -278,7 +278,10 @@ $t-decalageDuCentre: 4%;
 
   max-width: 50% - $t-decalageDuCentre;
   width: 80vh;
+
   height: 80vh;
+  height: calc(100vh - 200px);
+
   padding: $margin/2;
 
   left: 50%;
@@ -627,7 +630,9 @@ $t-decalageDuCentre: 4%;
   padding: $margin/2;
 
   height: 80vh;
-  max-width: 45% - $t-decalageDuCentre;
+  height: calc(100vh - 280px);
+
+  max-width: 50% - $t-decalageDuCentre;
   width: 80vh;
 
   left: 50%;
