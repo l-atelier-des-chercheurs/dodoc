@@ -241,32 +241,33 @@ module.exports = function(app, io){
 
     if( mediaData.imageContent !== undefined) {
       // also add the linked image as first image to the stopmotion
-      console.log( 'relativeCachePath ? = ' + relativeCachePath);
       var imageData =
       {
         "imageContent" : mediaData.imageContent,
         "folderCachePath" : folderCachePath,
       };
-      onAddImageToStopMotion( socket, imageData);
+      onAddImageToStopMotion(socket, imageData);
     }
   }
 
   function onAddImageToStopMotion( socket, imageData) {
     dev.logfunction( "EVENT - onAddImageToStopMotion : " + JSON.stringify( imageData, null, 4));
 
-    var newImageName = dodocAPI.getCurrentDate('x');
-    newImageName = dodocAPI.findFirstFilenameNotTaken( newImageName, imageData.folderCachePath, '.png') + '.png';
-  		var imageFullPath = path.join( imageData.folderCachePath, newImageName);
-		var imageBuffer = dodocAPI.decodeBase64Image( imageData.imageContent);
+    var newFileName = dodocAPI.getCurrentDate('x');
+    newFileName = dodocAPI.findFirstFilenameNotTaken(newFileName, imageData.folderCachePath, '.jpeg');
 
-		fs.writeFile( imageFullPath, imageBuffer.data, function(err) {
-      if (err) console.log( err);
-    		var mediaData =
-    		{
-      		"newImageName" : newImageName,
-    		};
+    // cache image path without ext
+    var pathToFile = path.join(imageData.folderCachePath, newFileName);
 
-      dodocAPI.sendEventWithContent( 'newStopmotionImage', mediaData, io, socket);
+    var imageBuffer = dodocAPI.decodeBase64Image( imageData.imageContent);
+    dev.logverbose('Will store this photo at path: ' + pathToFile);
+
+    dodocMedia.makeImageFromData(imageBuffer.data, pathToFile)
+    .then(function(imagePath) {
+      dev.log('passed');
+    		var mediaData = {};
+    		mediaData.newImageName = newFileName+'.jpeg';
+      dodocAPI.sendEventWithContent('newStopmotionImage', mediaData, io, socket);
     });
   }
 

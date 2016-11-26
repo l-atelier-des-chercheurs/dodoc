@@ -140,7 +140,7 @@ var equalizer = (function() {
   // Global Variables for Drawing
   var column = 0;
   var canvasWidth  = 720;
-  var canvasHeight = 720;
+  var canvasHeight = 360;
   var ctx;
 
   var API = {

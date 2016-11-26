@@ -232,11 +232,11 @@ body.bibli {
       overflow: hidden;
     }
 
-
     .media.gu-transit .mediaContent {
       opacity: 1;
       background-color: $c-images;
       box-shadow: none;
+
 
       > * {
         opacity: 0;
@@ -267,10 +267,26 @@ body.bibli {
 
 // class ajoutée aux éléments draggés. En bas du dom
 .gu-mirror {
+  .mediaContent {
+    width: 100%;
+    height: 100%;
+
+    > * {
+      object-fit:scale-down;
+      width: 100%;
+      height: 100%;
+
+    }
+    audio {
+      display: none;
+    }
+  }
   .button-wrapper_flagMedia {
     display: none;
   }
 }
+
+
 .button-wrapper_flagMedia {
   display: none;
 }

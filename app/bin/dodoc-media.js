@@ -7,8 +7,7 @@ var mm = require('marky-mark');
 var ffmpeg = require('fluent-ffmpeg');
 
 // only load sharp if not in electron (need to find how to make it work eventually)
-if(process.versions['electron'] === undefined)
-  var sharp = require('sharp');
+var sharp = require('sharp');
 
 var dodoc  = require('../dodoc');
 var dodocAPI = require('./dodoc-api');
@@ -23,8 +22,9 @@ var dodocMedia = (function() {
     listOneMedia              : function(slugFolderName, slugProjectName, singleMediaFolderPath, mediaName) { return listOneMedia(slugFolderName, slugProjectName, singleMediaFolderPath, mediaName); },
     createNewMedia            : function(newMediaData) { return createNewMedia(newMediaData); },
     editMediaMeta             : function(editMediaData) { return editMediaMeta(editMediaData); },
-    createThumbnails    : function(videoPath, videoFilename, pathToMediaFolder) { return createThumbnails(videoPath, videoFilename, pathToMediaFolder);},
+    createThumbnails          : function(videoPath, videoFilename, pathToMediaFolder) { return createThumbnails(videoPath, videoFilename, pathToMediaFolder);},
     deleteOneMedia            : function(slugFolderName, slugProjectName, mediaFolder, mediaName) { return deleteOneMedia(slugFolderName, slugProjectName, mediaFolder, mediaName); },
+    makeImageFromData         : function(imageBufferData, pathToFile) { return makeImageFromData(imageBufferData, pathToFile); },
   };
 
   /***************************************************************************************************/
@@ -102,33 +102,30 @@ var dodocMedia = (function() {
           pathToFile = path.join(mediaPath, newFileName);
 
           var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.mediaData);
-          fileExtension = '.png';
-          var imagePath = pathToFile + fileExtension;
-          dev.logverbose('Will store this photo at path: ' + pathToFile + fileExtension);
+          dev.logverbose('Will store this photo at path: ' + pathToFile);
 
-          fs.writeFile(imagePath, imageBuffer.data, function(err) {
-            if (err)
-              reject( err);
-
-            _makeImageOptimizations(pathToFile, fileExtension).then(function(imagePath) {
-              var thumbPath = pathToFile + '-' + dodoc.thumbSuffix + '.jpeg';
-              _makeImageThumb(imagePath, thumbPath).then(function(err) {
-                if( err) { dev.error('--> Failed to make a thumbnail for a photo! Error: ', err); }
-                _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
-                  mdata.slugFolderName = slugFolderName;
-                  mdata['slugProjectName'] = slugProjectName;
-                  mdata['mediaFolderPath'] = mediaFolder;
-                  console.log('Just created a photo, its meta is ' + JSON.stringify( mdata, null, 4));
-                  resolve( mdata);
-                }, function(error) {
-                  dev.error('Failed to create meta for photo! Error: ', error);
-                  reject( 'failed to create meta for photo');
-                });
+          makeImageFromData(imageBuffer.data, pathToFile)
+          .then(function(imagePath) {
+            var thumbPath = pathToFile + '-' + dodoc.thumbSuffix + '.jpeg';
+            _makeImageThumb(imagePath, thumbPath)
+            .then(function(err) {
+              if( err) { dev.error('--> Failed to make a thumbnail for a photo! Error: ', err); }
+              _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
+                mdata.slugFolderName = slugFolderName;
+                mdata['slugProjectName'] = slugProjectName;
+                mdata['mediaFolderPath'] = mediaFolder;
+                console.log('Just created a photo, its meta is ' + JSON.stringify( mdata, null, 4));
+                resolve( mdata);
+              }, function(error) {
+                dev.error('Failed to create meta for photo! Error: ', error);
+                reject( 'failed to create meta for photo');
               });
-
             });
-
+          }, function(error) {
+            dev.error("Failed to save image! Error: ", error);
+            reject();
           });
+
 
           break;
         case 'video':
@@ -176,7 +173,7 @@ var dodocMedia = (function() {
           var frameRate = newMediaData.frameRate || 4;
 
           // ask ffmpeg to make a video from the cache images
-          var proc = new ffmpeg({ "source" : pathToFile + '/%*.png'})
+          var proc = new ffmpeg({ "source" : pathToFile + '/%*.jpeg'})
             // using 12 fps
             .withFpsInput(frameRate)
             .withVideoCodec('libvpx')
@@ -379,6 +376,23 @@ var dodocMedia = (function() {
     });
   }
 
+  // receives base64data and a path to filename (without ext)
+  function makeImageFromData(imageBufferData, pathToFile) {
+    return new Promise(function(resolve, reject) {
+      var imagePath = pathToFile + '.jpeg';
+      dev.logverbose('Now using sharp to store new image.');
+      sharp(imageBufferData)
+        .rotate()
+        .withMetadata()
+        .toFormat(sharp.format.jpeg)
+        .quality(90)
+        .toFile(imagePath, function(err, info) {
+          dev.logverbose('Image has been saved, resolving its path.');
+          resolve(imagePath);
+        });
+    });
+  }
+
 
   /***************************************************************************************************/
   /******************************************** private functions ************************************/
@@ -528,42 +542,6 @@ var dodocMedia = (function() {
     return cleanMediaName;
   }
 
-  function _makeImageOptimizations(pathToFile, fileExtension) {
-    return new Promise(function(resolve, reject) {
-      dev.logverbose("Optimizing images at path: " + pathToFile);
-
-      var optimizedFileExtension = '.jpg';
-      var optimizedPhotoFileName = pathToFile + '-optim' + optimizedFileExtension;
-      var imagePath = pathToFile + fileExtension;
-
-      if(typeof sharp === 'undefined') {
-        resolve(imagePath);
-      }
-
-      sharp(imagePath)
-        .rotate()
-        .withMetadata()
-        .toFormat(sharp.format.jpeg)
-        .quality(90)
-        .toFile(optimizedPhotoFileName, function(err, info) {
-          if(err) {
-            dev.error( '--> Couldn’t optimize photo! Error: ', err);
-            resolve(imagePath);
-          }
-          fs.unlink(imagePath, function(err) {
-            if (err) { dev.error('Error while trying to remove original image.'); }
-
-            var imagePath = pathToFile + optimizedFileExtension;
-            fs.rename(optimizedPhotoFileName, imagePath, function(err) {
-              if (err) { dev.error('Error while trying to rename optimized image.'); }
-              resolve(imagePath);
-            });
-          });
-
-        });
-    });
-  }
-
   function _makeImageThumb(imagePath, thumbPath) {
     return new Promise(function(resolve, reject) {
       dev.logverbose("Making a thumb at thumbPath: " + thumbPath);
@@ -576,7 +554,7 @@ var dodocMedia = (function() {
         .max()
         .withoutEnlargement()
         .withMetadata()
-        .toFormat(sharp.format.jpeg)
+        .toFormat('jpeg')
         .quality(70)
         .toFile(thumbPath)
         .then(function() {
