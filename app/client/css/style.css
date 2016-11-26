@@ -7763,6 +7763,16 @@ body.index #container {
   100% {
     opacity: 1; } }
 
+.gu-mirror .mediaContent {
+  width: 100%;
+  height: 100%; }
+  .gu-mirror .mediaContent > * {
+    object-fit: scale-down;
+    width: 100%;
+    height: 100%; }
+  .gu-mirror .mediaContent audio {
+    display: none; }
+
 .gu-mirror .button-wrapper_flagMedia {
   display: none; }
 
@@ -8306,7 +8316,8 @@ body.capture .content-wrapper:after {
   .captureLeft #canvas-audio {
     display: none;
     width: 100%;
-    height: 100%; }
+    height: 100%;
+    object-fit: scale-down; }
   .captureLeft .full-screen-wrapper {
     position: absolute;
     top: 0;
@@ -8344,6 +8355,8 @@ body.capture .content-wrapper:after {
     .captureLeft .recording-feedback .time-feedback {
       display: inline-block;
       vertical-align: middle;
+      font-variant: small-caps;
+      text-transform: lowercase;
       color: currentColor;
       margin-left: 8px; }
 
@@ -8466,7 +8479,6 @@ body.capture .content-wrapper:after {
       transition: opacity .6s ease-out;
       opacity: 0; }
       .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview .image_count {
-        font-size: 80%;
         font-variant: small-caps;
         text-transform: lowercase;
         position: absolute;
@@ -8474,8 +8486,7 @@ body.capture .content-wrapper:after {
         bottom: 0;
         left: 0;
         padding: 8px;
-        text-shadow: 0px 0px 5px black;
-        color: white; }
+        color: #4BC0B4; }
         .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview .image_count::after {
           counter-increment: compteListe 1;
           content: counter(compteListe) " "; }
