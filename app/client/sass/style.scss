@@ -814,21 +814,27 @@ input[type=range] {
   }
 }
 
-input:not([type]), input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], input[type="color"] {
+input[type="number"] {
   height: 2em;
   width: 3em;
 
   padding: $margin/2;
   margin: $margin/2 0;
 
+  border:none;
+  border-bottom: 2px solid $gris;
+  background-color: $gristrestresclair;
+
   box-shadow: none;
   text-align: center;
   font-weight: 500;
-  /* color: white; */
-  border: none;
+
   color: currentcolor;
-  background-color: #fff;
-  border: 3px solid currentcolor;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+     opacity: 1;
+  }
 }
 
 

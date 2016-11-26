@@ -8,8 +8,7 @@ app/client/fonts/Fira/technical reports/
 .com.apple.timemachine.supported
 
 node_modules
-dodoc-darwin-x64
-dodoc-linux-ia32
+dist
 
 app/user/contenus/*
 !app/user/contenus/readme.txt
@@ -59,3 +58,4 @@ ftp-config.js
 .Trashes
 ehthumbs.db
 Thumbs.db
+
