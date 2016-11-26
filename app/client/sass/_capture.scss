@@ -630,7 +630,7 @@ $t-decalageDuCentre: 2%;
   padding: $margin/2;
 
   height: 80vh;
-  height: calc(100vh - 280px);
+  height: calc(100vh - 200px);
 
   max-width: 50% - $t-decalageDuCentre;
   width: 80vh;
@@ -676,6 +676,7 @@ $t-decalageDuCentre: 2%;
   .preview {
     position: relative;
     height: 100%;
+    padding-bottom: 80px;
 
     .output {
       min-width: 0;
@@ -697,6 +698,8 @@ $t-decalageDuCentre: 2%;
   }
 
   .preview_stopmotion {
+
+    padding-bottom: 0px;
 
     @include clearfix();
 

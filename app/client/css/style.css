@@ -8380,7 +8380,7 @@ body.capture .content-wrapper:after {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 8px;
   height: 80vh;
-  height: calc(100vh - 280px);
+  height: calc(100vh - 200px);
   max-width: 48%;
   width: 80vh;
   left: 50%;
@@ -8409,7 +8409,8 @@ body.capture .content-wrapper:after {
     display: none; }
   .captureRight .preview {
     position: relative;
-    height: 100%; }
+    height: 100%;
+    padding-bottom: 80px; }
     .captureRight .preview .output {
       min-width: 0;
       width: 100%;
@@ -8422,127 +8423,129 @@ body.capture .content-wrapper:after {
       position: absolute;
       top: 0px;
       right: 0px; }
-  .captureRight .preview_stopmotion:before, .captureRight .preview_stopmotion:after {
-    content: " ";
-    display: table; }
-  .captureRight .preview_stopmotion:after {
-    clear: both; }
-  .captureRight .preview_stopmotion .output_container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.94);
-    z-index: 9; }
-    .captureRight .preview_stopmotion .output_container:before, .captureRight .preview_stopmotion .output_container:after {
+  .captureRight .preview_stopmotion {
+    padding-bottom: 0px; }
+    .captureRight .preview_stopmotion:before, .captureRight .preview_stopmotion:after {
       content: " ";
       display: table; }
-    .captureRight .preview_stopmotion .output_container:after {
+    .captureRight .preview_stopmotion:after {
       clear: both; }
-    .captureRight .preview_stopmotion .output_container video {
-      width: 100%;
-      height: 75%;
-      background: #e5e5e5;
-      margin-bottom: 16px;
-      object-fit: scale-down; }
-    .captureRight .preview_stopmotion .output_container video.output[src=""] ~ .button-wrapper {
-      display: none; }
-    .captureRight .preview_stopmotion .output_container video.output[src=""] ~ .div_is_loading {
-      display: block;
-      width: 100%;
-      height: 100%;
-      background-color: white;
+    .captureRight .preview_stopmotion .output_container {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      bottom: 0; }
-    .captureRight .preview_stopmotion .output_container .button-wrapper_deleteMediaCaptureStopmotion {
-      position: relative;
-      float: left; }
-  .captureRight .preview_stopmotion .button-wrapper_previzStopmotion {
-    max-width: 50%;
-    overflow: hidden; }
-  .captureRight .preview_stopmotion .button-wrapper_previzStopmotion, .captureRight .preview_stopmotion .button-wrapper_finishStopmotion {
-    display: block;
-    float: right; }
-  .captureRight .preview_stopmotion .preview_stopmotion--container {
-    position: relative;
-    width: 100%;
-    height: 75%;
-    counter-reset: compteListe; }
-    .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      padding: 0;
-      background-color: #fff;
-      transition: opacity .6s ease-out;
-      opacity: 0; }
-      .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview .image_count {
-        font-variant: small-caps;
-        text-transform: lowercase;
-        position: absolute;
-        z-index: 1200;
-        bottom: 0;
-        left: 0;
-        padding: 8px;
-        color: #4BC0B4; }
-        .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview .image_count::after {
-          counter-increment: compteListe 1;
-          content: counter(compteListe) " "; }
-      .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview.is--active {
-        z-index: 1;
-        opacity: 1; }
-  .captureRight .preview_stopmotion .preview_stopmotion--timeline {
-    width: 100%;
-    height: 15%;
-    padding: 0;
-    padding-bottom: 8px;
-    counter-reset: compteListe; }
-    .captureRight .preview_stopmotion .preview_stopmotion--timeline:before, .captureRight .preview_stopmotion .preview_stopmotion--timeline:after {
-      content: " ";
-      display: table; }
-    .captureRight .preview_stopmotion .preview_stopmotion--timeline:after {
-      clear: both; }
-    .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview {
-      position: relative;
-      float: left;
-      cursor: pointer;
-      height: 100%;
-      width: 0;
-      visibility: hidden; }
-      .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview img {
-        padding: 4px;
-        height: 100%;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.94);
+      z-index: 9; }
+      .captureRight .preview_stopmotion .output_container:before, .captureRight .preview_stopmotion .output_container:after {
+        content: " ";
+        display: table; }
+      .captureRight .preview_stopmotion .output_container:after {
+        clear: both; }
+      .captureRight .preview_stopmotion .output_container video {
         width: 100%;
+        height: 75%;
+        background: #e5e5e5;
+        margin-bottom: 16px;
         object-fit: scale-down; }
-      .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview.is--active {
-        background-color: #4BC0B4; }
-        .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview.is--active::after {
-          background-color: #4BC0B4;
-          font-size: 70%;
-          color: white; }
-      .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview::after {
-        counter-increment: compteListe 1;
-        content: counter(compteListe) " ";
+      .captureRight .preview_stopmotion .output_container video.output[src=""] ~ .button-wrapper {
+        display: none; }
+      .captureRight .preview_stopmotion .output_container video.output[src=""] ~ .div_is_loading {
+        display: block;
+        width: 100%;
+        height: 100%;
+        background-color: white;
         position: absolute;
-        bottom: 0;
-        font-size: 60%;
-        padding: 0px 4px; }
-      .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview:nth-last-child(-n+10) {
-        visibility: visible;
-        width: 10%; }
-  .captureRight .preview_stopmotion .preview_stopmotion--frameRate {
-    float: left;
-    width: 50%; }
-    .captureRight .preview_stopmotion .preview_stopmotion--frameRate span {
-      margin-right: 4px; }
-    .captureRight .preview_stopmotion .preview_stopmotion--frameRate input {
-      display: inline-block;
-      width: 50px;
-      font-size: 120%; }
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0; }
+      .captureRight .preview_stopmotion .output_container .button-wrapper_deleteMediaCaptureStopmotion {
+        position: relative;
+        float: left; }
+    .captureRight .preview_stopmotion .button-wrapper_previzStopmotion {
+      max-width: 50%;
+      overflow: hidden; }
+    .captureRight .preview_stopmotion .button-wrapper_previzStopmotion, .captureRight .preview_stopmotion .button-wrapper_finishStopmotion {
+      display: block;
+      float: right; }
+    .captureRight .preview_stopmotion .preview_stopmotion--container {
+      position: relative;
+      width: 100%;
+      height: 75%;
+      counter-reset: compteListe; }
+      .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        background-color: #fff;
+        transition: opacity .6s ease-out;
+        opacity: 0; }
+        .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview .image_count {
+          font-variant: small-caps;
+          text-transform: lowercase;
+          position: absolute;
+          z-index: 1200;
+          bottom: 0;
+          left: 0;
+          padding: 8px;
+          color: #4BC0B4; }
+          .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview .image_count::after {
+            counter-increment: compteListe 1;
+            content: counter(compteListe) " "; }
+        .captureRight .preview_stopmotion .preview_stopmotion--container .stopmotion_lastImagePreview.is--active {
+          z-index: 1;
+          opacity: 1; }
+    .captureRight .preview_stopmotion .preview_stopmotion--timeline {
+      width: 100%;
+      height: 15%;
+      padding: 0;
+      padding-bottom: 8px;
+      counter-reset: compteListe; }
+      .captureRight .preview_stopmotion .preview_stopmotion--timeline:before, .captureRight .preview_stopmotion .preview_stopmotion--timeline:after {
+        content: " ";
+        display: table; }
+      .captureRight .preview_stopmotion .preview_stopmotion--timeline:after {
+        clear: both; }
+      .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview {
+        position: relative;
+        float: left;
+        cursor: pointer;
+        height: 100%;
+        width: 0;
+        visibility: hidden; }
+        .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview img {
+          padding: 4px;
+          height: 100%;
+          width: 100%;
+          object-fit: scale-down; }
+        .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview.is--active {
+          background-color: #4BC0B4; }
+          .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview.is--active::after {
+            background-color: #4BC0B4;
+            font-size: 70%;
+            color: white; }
+        .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview::after {
+          counter-increment: compteListe 1;
+          content: counter(compteListe) " ";
+          position: absolute;
+          bottom: 0;
+          font-size: 60%;
+          padding: 0px 4px; }
+        .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview:nth-last-child(-n+10) {
+          visibility: visible;
+          width: 10%; }
+    .captureRight .preview_stopmotion .preview_stopmotion--frameRate {
+      float: left;
+      width: 50%; }
+      .captureRight .preview_stopmotion .preview_stopmotion--frameRate span {
+        margin-right: 4px; }
+      .captureRight .preview_stopmotion .preview_stopmotion--frameRate input {
+        display: inline-block;
+        width: 50px;
+        font-size: 120%; }
   .captureRight .preview_audio audio {
     width: 100%;
     position: absolute;
