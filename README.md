@@ -42,29 +42,43 @@ Go to Applications->Utilities->Terminal
 Use a terminal app such as Terminal or Konsole
 
 Navigate to the dodoc-master folder with your terminal using the `cd` command:
-```cd path/to/dodoc-master``` 
+```
+cd path/to/dodoc-master
+```
 
 ### 4. Install dependencies
 
 Install electron dependencies (may take up to 5 minutes):
-```npm install```  
+```
+npm install
+```  
 
 Then install dodoc dependencies that are in the app folder.
 Go to app folder:
-```cd app```
+```
+cd app
+```
 Install dependencies:
-```npm install```
+```
+npm install
+```
 
 Finally run the following command to make sure Sharp binaries are installed (may take 1-2 minutes):
-```./node_modules/.bin/electron-rebuild```
+```
+./node_modules/.bin/electron-rebuild
+```
 
 ### 5. Run dodoc
 
 Go back to the dodoc folder with the following command:
-```cd ../```
+```
+cd ../
+```
 
 Then start dodoc
-```npm start```
+```
+npm start
+```
 
 ## Update dodoc
 
@@ -82,4 +96,6 @@ Also, some not-so-up-to-date documentations on DoDoc:
 
 ### Debug and edit dodoc
 To debug DoDoc, you can enable extra-logging with the following command:
-```npm run debug```
+```
+npm run debug
+```
