@@ -4,6 +4,8 @@ var slugg = require('slugg');
 var merge = require('merge');
 
 var mm = require('marky-mark');
+
+var ffmpegstatic = require('ffmpeg-static');
 var ffmpeg = require('fluent-ffmpeg');
 
 // only load sharp if not in electron (need to find how to make it work eventually)
@@ -11,6 +13,8 @@ var sharp = require('sharp');
 
 var dodoc  = require('../dodoc');
 var dodocAPI = require('./dodoc-api');
+
+ffmpeg.setFfmpegPath(ffmpegstatic.path);
 
 var dodocMedia = (function() {
 
