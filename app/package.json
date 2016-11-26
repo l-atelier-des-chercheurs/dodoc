@@ -16,7 +16,6 @@
     "dodoc-parsedown": "git+https://github.com/louis-ev/dodoc-parsedown.git",
     "download": "^3.3.0",
     "express": "3.1.0",
-    "ffmpeg": "0.0.4",
     "ffmpeg-static": "^2.0.0",
     "flags": "^0.1.3",
     "fluent-ffmpeg": "^2.1.0",
