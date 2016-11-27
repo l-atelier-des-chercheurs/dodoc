@@ -351,9 +351,6 @@ var modals = (function() {
           var mfullpath = app.contentDir+'/'+mdata.textFilePath;
 
       				$mediaItem
-      					.find('.js--submit-new-text_title')
-      					  .val( mdata.originalTitle)
-      					.end()
       					.find('.js--submit-new-text_text')
       					  .val( mdata.originalText)
       					.end()
@@ -422,11 +419,7 @@ var modals = (function() {
           "mediaFolderPath" : mtype,
         };
 
-        	var titleOfTextmedia = $modal.find('.js--submit-new-text_title').val();
         	var textOfTextmedia =  $modal.find('.js--submit-new-text_text').val();
-
-        if( titleOfTextmedia !== undefined)
-          editMediaData.titleOfTextmedia = titleOfTextmedia;
 
         if( textOfTextmedia !== undefined)
           editMediaData.textOfTextmedia = textOfTextmedia;
@@ -468,25 +461,21 @@ var modals = (function() {
     createTextMedia : function() {
 
       var $modal = $('#modal-add-text');
-      var $titlef = $modal.find('.js--submit-new-text_title');
       var $textf = $modal.find('.js--submit-new-text_text');
 
       $('.js--submit-new-text').on('click',function(){
 
-      	var textTitle = $titlef.val();
       	var textContent = $textf.val();
 
         var mediaData =
         {
           "mediaType" : "text",
           "mediaFolderPath" : dodoc.projectTextsFoldername,
-          "title" : textTitle,
           "text" : textContent,
         }
         sendData.createNewMedia( mediaData);
 
         $modal.foundation('reveal', 'close');
-        $titlef.val('');
         $textf.val('');
 
       });

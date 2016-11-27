@@ -79,8 +79,8 @@ module.exports = function(app, io){
     dev.logfunction( "EVENT - onNewFolder");
     dodocFolder.createNewFolder( folderData).then( function( newpdata) {
       dodocAPI.sendEventWithContent( 'folderCreated', newpdata, io);
-    }, function(errorpdata) {
-      dev.error("Failed to create a new folder! Error: ", errorpdata);
+    }, function(error) {
+      dev.error("Failed to create a new folder! Error: " + error);
       dodocAPI.sendEventWithContent( 'folderAlreadyExist', io, errorpdata);
     });
   }
@@ -94,7 +94,7 @@ module.exports = function(app, io){
         onListProjects( socket, fdata);
       });
     }, function(error) {
-      dev.error("Failed to list folders! Error: ", error);
+      dev.error("Failed to list folders! Error: " + error);
     });
   }
 
@@ -104,7 +104,7 @@ module.exports = function(app, io){
     dodocFolder.updateFolderMeta( updatedFolderData).then(function( currentDataJSON) {
       dodocAPI.sendEventWithContent( 'folderModified', currentDataJSON, io);
     }, function(error) {
-      dev.error("Failed to update a folder! Error: ", error);
+      dev.error("Failed to update a folder! Error: " + error);
     });
   }
 
@@ -114,7 +114,7 @@ module.exports = function(app, io){
     dodocFolder.removeFolderNamed( fdata.slugFolderName).then(function( removedFolderData) {
       dodocAPI.sendEventWithContent( 'folderRemoved', removedFolderData, io);
     }, function(error) {
-      dev.error("Failed to remove a folder! Error: ", error);
+      dev.error("Failed to remove a folder! Error: " + error);
     });
   }
 
@@ -127,7 +127,7 @@ module.exports = function(app, io){
     dodocFolder.listAllProjectsOfOneFolder(dataFolder.slugFolderName).then(function( allProjectsData) {
       dodocAPI.sendEventWithContent( 'listAllProjectsOfOneFolder', allProjectsData, io, socket);
     }, function(error) {
-      dev.error("Failed to list projects! Error: ", error);
+      dev.error("Failed to list projects! Error: " + error);
     });
   }
 
@@ -136,7 +136,7 @@ module.exports = function(app, io){
     dodocProject.createNewProject( projectData).then( function( newpdata) {
       dodocAPI.sendEventWithContent( 'projectCreated', newpdata, io);
     }, function(error) {
-      dev.error("Failed to create a new project! Error: ", error);
+      dev.error("Failed to create a new project! Error: " + error);
     });
   }
 
@@ -146,7 +146,7 @@ module.exports = function(app, io){
     dodocProject.updateProjectMeta( pdata).then( function( newpdata) {
       dodocAPI.sendEventWithContent( 'projectModified', newpdata, io);
     }, function(error) {
-      dev.error("Failed to update a project! Error: ", error);
+      dev.error("Failed to update a project! Error: " + error);
     });
   }
 
@@ -156,7 +156,7 @@ module.exports = function(app, io){
     dodocProject.removeOneProject( pdata.slugFolderName, pdata.slugProjectName).then( function( rpdata) {
       dodocAPI.sendEventWithContent( 'projectRemoved', rpdata, io);
     }, function(error) {
-      dev.error("Failed to remove the project called " + pdata.slugProjectName + "! Error: ", error);
+      dev.error("Failed to remove the project called " + pdata.slugProjectName + "! Error: " + error);
     });
   }
 
@@ -169,7 +169,7 @@ module.exports = function(app, io){
     dodocProject.listOneProject( pdata.slugFolderName, pdata.slugProjectName).then(function(npdata) {
       dodocAPI.sendEventWithContent( 'listOneProject', npdata, io);
     }, function(error) {
-      dev.error("Failed to list one project! Error: ", error);
+      dev.error("Failed to list one project! Error: " + error);
     });
   }
 
@@ -178,7 +178,7 @@ module.exports = function(app, io){
     dodocMedia.listAllMedias( pdata.slugFolderName, pdata.slugProjectName).then(function( mediaFolderContent) {
       dodocAPI.sendEventWithContent( 'listAllMedias', mediaFolderContent, io, socket);
     }, function(error) {
-      dev.error("Failed to list one media! Error: ", error);
+      dev.error("Failed to list one media! Error: " + error);
     });
   }
 
@@ -188,17 +188,17 @@ module.exports = function(app, io){
 
   function onNewMedia( mediaData) {
     dev.logfunction( "EVENT - onNewMedia : " + JSON.stringify( mediaData, null, 4));
-    dodocMedia.createNewMedia( mediaData).then(function( mediaMetaData) {
-      dodocMedia.listOneMedia( mediaMetaData.slugFolderName, mediaMetaData.slugProjectName, mediaMetaData.mediaFolderPath, mediaMetaData.mediaName).then(function( oneMediaData) {
+    dodocMedia.createNewMedia(mediaData).then(function( mediaMetaData) {
+      dodocMedia.listOneMedia(mediaMetaData.slugFolderName, mediaMetaData.slugProjectName, mediaMetaData.mediaFolderPath, mediaMetaData.mediaName).then(function( oneMediaData) {
         for(var prop in oneMediaData) {
           oneMediaData[prop]["author"] = mediaData.author;
         }
         dodocAPI.sendEventWithContent( 'mediaCreated', oneMediaData, io);
       }, function(error) {
-        dev.error("Failed to listOneMedia from create! Error: ", error);
+        dev.error("Failed to listOneMedia from create! Error: " + error);
       });
     }, function(error) {
-      dev.error("Failed to createNewMedia! Error: ", error);
+      dev.error("Failed to createNewMedia! Error: " + error);
     });
   }
 
@@ -209,11 +209,11 @@ module.exports = function(app, io){
       dodocMedia.listOneMedia( mediaMetaData.slugFolderName, mediaMetaData.slugProjectName, mediaMetaData.mediaFolderPath, mediaMetaData.mediaName).then(function( oneMediaData) {
         dodocAPI.sendEventWithContent( 'mediaUpdated', oneMediaData, io);
       }, function(error) {
-        dev.error("Failed to listOneMedia from create! Error: ", error);
+        dev.error("Failed to listOneMedia from create! Error: " + error);
       });
 
     }, function(error) {
-      dev.error("Failed to edit media! Error: ", error);
+      dev.error("Failed to edit media! Error: " + error);
     });
   }
 
@@ -297,7 +297,7 @@ module.exports = function(app, io){
     dodocMedia.deleteOneMedia( slugFolderName, slugProjectName, mediaFolder, mediaName).then(function( mediaMetaData) {
       dodocAPI.sendEventWithContent( 'mediaRemoved', mediaMetaData, io);
     }, function(error) {
-      dev.error("Failed to remove one media! Error: ", error);
+      dev.error("Failed to remove one media! Error: " + error);
     });
   }
 
@@ -340,7 +340,7 @@ module.exports = function(app, io){
     dodocPubli.listPublis( slugFolderName, slugProjectName).then(function( publiProjectContent) {
       dodocAPI.sendEventWithContent( 'listOneProjectPublis', publiProjectContent, io, socket);
     }, function(error) {
-      dev.error("Failed to list all publis! Error: ", error);
+      dev.error("Failed to list all publis! Error: " + error);
     });
   }
 
@@ -352,11 +352,11 @@ module.exports = function(app, io){
       dodocPubli.listPublis( publiMetaData.slugFolderName, publiMetaData.slugProjectName, publiMetaData.slugPubliName).then(function( publiProjectContent) {
         dodocAPI.sendEventWithContent( 'publiCreated', publiProjectContent, io);
       }, function(error) {
-        dev.error("Failed to listPublis from create! Error: ", error);
+        dev.error("Failed to listPublis from create! Error: " + error);
       });
 
     }, function(error) {
-      dev.error("Failed to create New Publi! Error: ", error);
+      dev.error("Failed to create New Publi! Error: " + error);
     });
   }
 
@@ -371,10 +371,10 @@ module.exports = function(app, io){
       dodocPubli.listPublis(slugFolderName, slugProjectName, slugPubliName).then(function( publiProjectContent) {
         dodocAPI.sendEventWithContent( 'publiMetaUpdated', publiProjectContent, io);
       }, function(error) {
-        dev.error("Failed to listPublis from create! Error: ", error);
+        dev.error("Failed to listPublis from create! Error: " + error);
       });
     }, function(error) {
-      dev.error("Failed to edit Publi! Error: ", error);
+      dev.error("Failed to edit Publi! Error: " + error);
     });
 
   }
@@ -390,10 +390,10 @@ module.exports = function(app, io){
       dodocPubli.listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
         dodocAPI.sendEventWithContent( 'publiMediasUpdated', publiMedias, io);
       }, function(error) {
-        dev.error("Failed to list publi media! Error: ", error);
+        dev.error("Failed to list publi media! Error: " + error);
       });
     }, function(error) {
-      dev.error("Failed to edit this publi! Error: ", error);
+      dev.error("Failed to edit this publi! Error: " + error);
     });
 
   }
@@ -410,7 +410,7 @@ module.exports = function(app, io){
     dodocPubli.listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
       dodocAPI.sendEventWithContent( 'listOnePubliMetaAndMedias', publiMedias, io);
     }, function(error) {
-      dev.error("Failed to list one media! Error: ", error);
+      dev.error("Failed to list one media! Error: " + error);
     });
   }
 

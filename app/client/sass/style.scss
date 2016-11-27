@@ -304,11 +304,6 @@ button {
 }
 
 
-#modal-add-text {
-  textarea {
-    min-height: 250px;
-  }
-}
 #modal-modify-project {
 
   .button_submit {
@@ -362,7 +357,7 @@ button {
   }
 
   textarea {
-    min-height: 150px;
+    height: 60vh;
   }
 }
 
@@ -848,13 +843,49 @@ input[type="number"] {
 }
 
 // text medias style
-.mediaContent--titleOfTextmedia {
-  font-size: 1.6em;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
 .mediaContent--textOfTextmedia {
   font-size:1em;
+
+  >*:first-child {
+    margin-top: 0;
+  }
+
+  // keep \n in source, in paragraphs
+  p, blockquote, ul, ol, dl, table, pre {
+    margin-top: 0;
+    margin-bottom: 16px;
+    white-space: pre-wrap;
+  }
+
+  strong, b {
+    color:$rouge;
+  }
+
+  hr {
+    border-width: 1px 0 0;
+    border-color: $gris;
+  }
+
+  h1,h2,h3,h4,h5,h6 {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  h1 {
+    padding-bottom: 0.3em;
+    font-size: 2em;
+    border-bottom: 1px solid $gris;
+  }
+  h2 {
+    padding-bottom: 0.3em;
+    font-size: 1.5em;
+    border-bottom: 1px solid $gris;
+  }
+  h3 {
+    font-size: 1.25em;
+  }
+
 }
 
 

@@ -277,19 +277,13 @@ function showAudio( mediaDatas) {
 function showText( mediaDatas) {
 
   var mediasFilesPath = getMediaFiles(mediaDatas);
-//   var parsedTitle = mediaDatas.textMediaContent.title_md;
-  var parsedText = mediaDatas.textMediaContent.text_md.replace(/(\r\n|\n|\r)/gm, "<br>");
-  var originalTitle = mediaDatas.textMediaContent.title;
+  var parsedText = mediaDatas.textMediaContent.text_md;
   var originalText = mediaDatas.textMediaContent.text;
 
 	var mediaItem = $(".js--templates .media_text").clone(false);
 	mediaItem
     .data( 'textFilePath', mediasFilesPath.md)
-    .data( 'originalTitle', originalTitle)
     .data( 'originalText', originalText)
-	  .find( '.mediaContent--titleOfTextmedia')
-	    .html(originalTitle)
-    .end()
 	  .find( '.mediaContent--textOfTextmedia')
 	    .html(parsedText)
     .end()
