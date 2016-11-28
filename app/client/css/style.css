@@ -6944,8 +6944,7 @@ th.hide-for-touch {
   padding: 16px;
   max-width: 32.5rem;
   max-height: 80vh;
-  overflow-y: scroll;
-  /* style 6 */ }
+  overflow-y: scroll; }
   .reveal-modal:focus {
     outline: none; }
   .reveal-modal .close-reveal-modal {
@@ -7031,93 +7030,8 @@ th.hide-for-touch {
     border-radius: 2px; }
     .reveal-modal#modal-statut-alert button.annuler, .reveal-modal#modal-delete-alert button.annuler {
       background-color: #FF3E51; }
-  .reveal-modal textarea {
-    border: none;
-    border-bottom: 2px solid #C3C3C3;
-    box-shadow: none;
-    padding-left: .6em;
-    font-size: 1em;
-    min-height: 3.3em;
-    background-color: #e5e5e5; }
-  .reveal-modal .inputfile {
-    width: 0.1px;
-    height: 0.1px;
-    opacity: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: -1; }
-  .reveal-modal .inputfile + label {
-    max-width: 80%;
-    font-size: 1.25rem;
-    /* 20px */
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    cursor: pointer;
-    display: inline-block;
-    overflow: hidden;
-    padding: 0.625rem 1.25rem;
-    margin-bottom: 10px;
-    /* 10px 20px */ }
-  .reveal-modal .no-js .inputfile + label {
-    display: none; }
-  .reveal-modal .inputfile:focus + label,
-  .reveal-modal .inputfile.has-focus + label {
-    outline: 1px dotted #000;
-    outline: -webkit-focus-ring-color auto 5px; }
-  .reveal-modal .inputfile + label * {
-    /* pointer-events: none; */
-    /* in case of FastClick lib use */ }
-  .reveal-modal .inputfile + label svg {
-    width: 1em;
-    height: 1em;
-    vertical-align: middle;
-    fill: currentColor;
-    /* 4px */
-    margin: auto;
-    /* 4px */ }
-  .reveal-modal .inputfile-6 + label {
-    color: #d3394c; }
-  .reveal-modal .inputfile-6 + label {
-    background-color: #f1e5e6;
-    border-radius: 6px;
-    padding: 0; }
-  .reveal-modal .inputfile-6:focus + label,
-  .reveal-modal .inputfile-6.has-focus + label,
-  .reveal-modal .inputfile-6 + label:hover {
-    border-color: #722040; }
-  .reveal-modal .inputfile-6 + label span,
-  .reveal-modal .inputfile-6 + label strong {
-    padding: 0.625rem 1.25rem;
-    /* 10px 20px */ }
-  .reveal-modal .inputfile-6 + label span {
-    width: 200px;
-    min-height: 2em;
-    display: inline-block;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    vertical-align: top; }
-  .reveal-modal .inputfile-6 + label strong {
-    height: 100%;
-    color: white;
-    background-color: #FF3E51;
-    display: inline-block;
-    font-weight: normal;
-    font-size: .8em; }
-  .reveal-modal .inputfile-6:focus + label strong,
-  .reveal-modal .inputfile-6.has-focus + label strong,
-  .reveal-modal .inputfile-6 + label:hover strong {
-    background-color: #722040; }
-  @media screen and (max-width: 50em) {
-    .reveal-modal .inputfile-6 + label strong {
-      display: block; } }
-  .reveal-modal .inputfile-2 + label {
-    color: #d3394c;
-    border: 2px solid currentColor; }
-  .reveal-modal .inputfile-2:focus + label,
-  .reveal-modal .inputfile-2.has-focus + label,
-  .reveal-modal .inputfile-2 + label:hover {
-    color: #722040; }
+  .reveal-modal#modal-modify-project .button-wrapper_deleteProject {
+    float: left; }
   .reveal-modal#modal-media-view {
     max-width: 80%;
     height: 80vh;
@@ -7125,7 +7039,7 @@ th.hide-for-touch {
     .reveal-modal#modal-media-view .big-mediaContent {
       overflow: auto; }
       .reveal-modal#modal-media-view .big-mediaContent .button-wrapper {
-        margin: 20px 0px 25px 0px;
+        margin: 8px 0px;
         float: none; }
         .reveal-modal#modal-media-view .big-mediaContent .button-wrapper span {
           margin-left: 10px; }
@@ -7174,6 +7088,180 @@ select {
     .alertify-logs a:hover {
       color: currentColor;
       background-color: white; }
+
+/*************************************************************************************
+                                POPOVER ITEMS
+*************************************************************************************/
+.big-mediaContent {
+  height: 100%;
+  width: 100%;
+  transition: opacity .1s; }
+  .big-mediaContent .media-big {
+    height: 100%;
+    width: 100%; }
+    .big-mediaContent .media-big .mediaContent {
+      height: 100%;
+      padding: 0; }
+      .big-mediaContent .media-big .mediaContent img, .big-mediaContent .media-big .mediaContent video {
+        min-width: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: scale-down;
+        background-color: #e5e5e5; }
+    .big-mediaContent .media-big .button-wrapper_deleteMedia {
+      display: block; }
+    .big-mediaContent .media-big.media-big_audio img {
+      height: 100%; }
+    .big-mediaContent .media-big.media-big_audio audio {
+      width: 100%;
+      position: absolute;
+      z-index: 1;
+      bottom: 0; }
+    .big-mediaContent .media-big.media-big_text textarea {
+      height: 45vh; }
+
+.big-mediaNav {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none; }
+  .big-mediaNav .big-mediaNav-arrow {
+    position: absolute;
+    top: 45%;
+    pointer-events: auto;
+    padding: 0;
+    color: #C3C3C3;
+    background-color: white;
+    box-shadow: 0 5px 20px #C3C3C3;
+    transform-origin: center center;
+    opacity: 1;
+    transition: transform .4s, border-color .5s, opacity .4s; }
+    .big-mediaNav .big-mediaNav-arrow::before {
+      content: '';
+      font-family: 'Fira Mono';
+      font-size: 3em; }
+    .big-mediaNav .big-mediaNav-arrow.is--disabled {
+      opacity: 0;
+      pointer-events: none;
+      transform: rotate(0deg); }
+    .big-mediaNav .big-mediaNav-arrow:hover {
+      color: #4BC0B4; }
+  .big-mediaNav .big-mediaNav-arrow_left {
+    right: 101%; }
+    .big-mediaNav .big-mediaNav-arrow_left::before {
+      content: '<'; }
+  .big-mediaNav .big-mediaNav-arrow_right {
+    left: 101%; }
+    .big-mediaNav .big-mediaNav-arrow_right::before {
+      content: '>'; }
+
+textarea {
+  height: 150px;
+  border: none;
+  border-bottom: 2px solid #C3C3C3;
+  box-shadow: none;
+  padding-left: .6em;
+  font-size: 1em;
+  min-height: 3.3em;
+  background-color: #e5e5e5; }
+
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1; }
+
+.inputfile + label {
+  max-width: 80%;
+  font-size: 1.25rem;
+  /* 20px */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  padding: 0.625rem 1.25rem;
+  margin-bottom: 10px;
+  /* 10px 20px */ }
+
+.no-js .inputfile + label {
+  display: none; }
+
+.inputfile:focus + label,
+.inputfile.has-focus + label {
+  outline: 1px dotted #000;
+  outline: -webkit-focus-ring-color auto 5px; }
+
+.inputfile + label * {
+  /* pointer-events: none; */
+  /* in case of FastClick lib use */ }
+
+.inputfile + label svg {
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+  fill: currentColor;
+  /* 4px */
+  margin: auto;
+  /* 4px */ }
+
+/* style 6 */
+.inputfile-6 + label {
+  color: #d3394c; }
+
+.inputfile-6 + label {
+  background-color: #f1e5e6;
+  border-radius: 6px;
+  padding: 0; }
+
+.inputfile-6:focus + label,
+.inputfile-6.has-focus + label,
+.inputfile-6 + label:hover {
+  border-color: #722040; }
+
+.inputfile-6 + label span,
+.inputfile-6 + label strong {
+  padding: 0.625rem 1.25rem;
+  /* 10px 20px */ }
+
+.inputfile-6 + label span {
+  width: 200px;
+  min-height: 2em;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  vertical-align: top; }
+
+.inputfile-6 + label strong {
+  height: 100%;
+  color: white;
+  background-color: #FF3E51;
+  display: inline-block;
+  font-weight: normal;
+  font-size: .8em; }
+
+.inputfile-6:focus + label strong,
+.inputfile-6.has-focus + label strong,
+.inputfile-6 + label:hover strong {
+  background-color: #722040; }
+
+@media screen and (max-width: 50em) {
+  .inputfile-6 + label strong {
+    display: block; } }
+
+.inputfile-2 + label {
+  color: #d3394c;
+  border: 2px solid currentColor; }
+
+.inputfile-2:focus + label,
+.inputfile-2.has-focus + label,
+.inputfile-2 + label:hover {
+  color: #722040; }
 
 body.publi {
   background-color: #fff; }
@@ -7385,74 +7473,6 @@ button {
   .btn.icon.tooltip {
     width: 110px;
     font-size: 14px; }
-
-#modal-modify-project .button-wrapper_deleteProject {
-  float: left; }
-
-.big-mediaContent {
-  height: 100%;
-  width: 100%;
-  transition: opacity .1s; }
-  .big-mediaContent .media-big {
-    height: 100%;
-    width: 100%; }
-    .big-mediaContent .media-big .mediaContent {
-      height: 100%;
-      padding: 0; }
-      .big-mediaContent .media-big .mediaContent img, .big-mediaContent .media-big .mediaContent video {
-        min-width: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: scale-down;
-        background-color: #e5e5e5; }
-    .big-mediaContent .media-big .button-wrapper_deleteMedia {
-      display: block; }
-    .big-mediaContent .media-big.media-big_audio img {
-      height: 100%; }
-    .big-mediaContent .media-big.media-big_audio audio {
-      width: 100%;
-      position: absolute;
-      z-index: 1;
-      bottom: 0; }
-  .big-mediaContent textarea {
-    height: 60vh; }
-
-.big-mediaNav {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  pointer-events: none; }
-  .big-mediaNav .big-mediaNav-arrow {
-    position: absolute;
-    top: 45%;
-    pointer-events: auto;
-    padding: 0;
-    color: #C3C3C3;
-    background-color: white;
-    box-shadow: 0 5px 20px #C3C3C3;
-    transform-origin: center center;
-    opacity: 1;
-    transition: transform .4s, border-color .5s, opacity .4s; }
-    .big-mediaNav .big-mediaNav-arrow::before {
-      content: '';
-      font-family: 'Fira Mono';
-      font-size: 3em; }
-    .big-mediaNav .big-mediaNav-arrow.is--disabled {
-      opacity: 0;
-      pointer-events: none;
-      transform: rotate(0deg); }
-    .big-mediaNav .big-mediaNav-arrow:hover {
-      color: #4BC0B4; }
-  .big-mediaNav .big-mediaNav-arrow_left {
-    right: 101%; }
-    .big-mediaNav .big-mediaNav-arrow_left::before {
-      content: '<'; }
-  .big-mediaNav .big-mediaNav-arrow_right {
-    left: 101%; }
-    .big-mediaNav .big-mediaNav-arrow_right::before {
-      content: '>'; }
 
 .module_infos {
   position: relative;
