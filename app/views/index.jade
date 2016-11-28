@@ -1,5 +1,3 @@
-include templates/buttons.jade
-
 doctype html
 html
   head
@@ -15,8 +13,8 @@ html
       ul.dossier-list
 
     //- MODAL WINDOWS
-    include templates/modals/addFolder
-    include templates/modals/editFolder
+    +modals('addFolder')
+    +modals('editFolder')
 
     .js--templates
       include templates/js_templates

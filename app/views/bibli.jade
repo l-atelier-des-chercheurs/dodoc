@@ -1,5 +1,3 @@
-include templates/buttons.jade
-
 doctype html
 html
   head
@@ -38,11 +36,11 @@ html
           ul
         .montage_publi_container(data-publidata)
 
-    include templates/modals/addPubli
-    include templates/modals/importMedia
-    include templates/modals/addText
-    include templates/modals/bigMedia
-    include templates/modals/editPubli
+    +modals('addPubli')
+    +modals('editPubli')
+    +modals('importMedia')
+    +modals('addText')
+    +modals('bigMedia')
 
     .js--templates
       include templates/js_templates

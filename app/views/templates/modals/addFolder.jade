@@ -1,7 +1,0 @@
-div(id="modal-add-folder" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-  h2.popoverTitle
-    | !{dodoc.lang.modal.newFolder}
-  form(onsubmit='return false;' class='add-folder-form lead')
-    input(type='text' class='new-folder' placeholder='Nom')
-    input(type='submit' class='submit-new-folder js--submit-new-folder' value='Valider')
-  +button( 'close', '', 'isCollapsed')

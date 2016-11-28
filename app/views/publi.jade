@@ -1,9 +1,6 @@
-include templates/buttons.jade
-
 doctype html
 html
   head
-    link(rel='stylesheet', href='/bower_components/dragula.js/dist/dragula.min.css')
     include templates/head.jade
   body(class="publi")
 
@@ -15,7 +12,7 @@ html
     .publi_container(data-publidata data-publishown="#{slugPubliName}")
       include templates/publiTemplate.jade
 
-    include templates/modals/editPubli
+    +modals('editPubli')
     .js--templates
       include templates/js_templates
 

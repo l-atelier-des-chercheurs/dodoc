@@ -1,5 +1,3 @@
-include templates/buttons.jade
-
 doctype html
 html
   head
@@ -22,9 +20,8 @@ html
         .txt-small_info
           | !{dodoc.lang.project}
 
-    //- MODAL WINDOWS
-    include templates/modals/editProject
-    include templates/modals/bigMedia
+    +modals('editProject')
+    +modals('bigMedia')
 
     .js--templates
       include templates/js_templates
