@@ -7386,9 +7386,6 @@ button {
     width: 110px;
     font-size: 14px; }
 
-#modal-add-text textarea {
-  min-height: 250px; }
-
 #modal-modify-project .button-wrapper_deleteProject {
   float: left; }
 
@@ -7418,7 +7415,7 @@ button {
       z-index: 1;
       bottom: 0; }
   .big-mediaContent textarea {
-    min-height: 150px; }
+    height: 60vh; }
 
 .big-mediaNav {
   position: absolute;
@@ -7735,7 +7732,7 @@ body.index #container {
         z-index: 3;
         transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out, opacity .4s ease-out; }
       .montage .publi_medias .media:hover .mediaContent {
-        outline: 4px dashed #aaa; }
+        outline: 4px dashed #FFBE32; }
       .montage .publi_medias .media:hover .button-wrapper_deleteMedia {
         opacity: 1; }
     .montage .publi_medias .media.gu-transit {
@@ -8803,13 +8800,34 @@ input[type="number"] {
 .publi_medias:after {
   clear: both; }
 
-.mediaContent--titleOfTextmedia {
-  font-size: 1.6em;
-  font-weight: 600;
-  letter-spacing: 0.02em; }
-
 .mediaContent--textOfTextmedia {
   font-size: 1em; }
+  .mediaContent--textOfTextmedia > *:first-child {
+    margin-top: 0; }
+  .mediaContent--textOfTextmedia p, .mediaContent--textOfTextmedia blockquote, .mediaContent--textOfTextmedia ul, .mediaContent--textOfTextmedia ol, .mediaContent--textOfTextmedia dl, .mediaContent--textOfTextmedia table, .mediaContent--textOfTextmedia pre {
+    margin-top: 0;
+    margin-bottom: 16px;
+    white-space: pre-wrap; }
+  .mediaContent--textOfTextmedia strong, .mediaContent--textOfTextmedia b {
+    color: #FF3E51; }
+  .mediaContent--textOfTextmedia hr {
+    border-width: 1px 0 0;
+    border-color: #C3C3C3; }
+  .mediaContent--textOfTextmedia h1, .mediaContent--textOfTextmedia h2, .mediaContent--textOfTextmedia h3, .mediaContent--textOfTextmedia h4, .mediaContent--textOfTextmedia h5, .mediaContent--textOfTextmedia h6 {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    line-height: 1.25; }
+  .mediaContent--textOfTextmedia h1 {
+    padding-bottom: 0.3em;
+    font-size: 2em;
+    border-bottom: 1px solid #C3C3C3; }
+  .mediaContent--textOfTextmedia h2 {
+    padding-bottom: 0.3em;
+    font-size: 1.5em;
+    border-bottom: 1px solid #C3C3C3; }
+  .mediaContent--textOfTextmedia h3 {
+    font-size: 1.25em; }
 
 .template_container {
   position: relative;

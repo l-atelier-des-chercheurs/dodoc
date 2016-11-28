@@ -6,6 +6,7 @@
     "start": "node index.js",
     "debug": "node --inspect index.js --debug --verbose"
   },
+  "author": "L’Atelier des Chercheurs",
   "repository": {
     "type": "git",
     "url": "git://github.com/sarahgarcin/opendoc-tangible.git"

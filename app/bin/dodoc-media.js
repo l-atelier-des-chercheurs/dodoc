@@ -238,12 +238,10 @@ var dodocMedia = (function() {
           pathToFile = path.join( mediaPath, newFileName);
 
           fileExtension = '.md';
-          var dataTitle = newMediaData.title;
           var dataText = newMediaData.text;
-          console.log( "Creating a new text media at path " + pathToFile + fileExtension + " with title : " + dataTitle + " and text : " + dataText);
+          console.log( "Creating a new text media at path " + pathToFile + fileExtension + " with text : " + dataText);
 
           var mediaData = {
-            "title" : dataTitle,
             "text" : dataText
           };
           dodocAPI.storeData(pathToFile + fileExtension, mediaData, "create").then(function( meta) {
@@ -294,11 +292,10 @@ var dodocMedia = (function() {
       dodocAPI.storeData( mediaFilepath + dodoc.metaFileext, mediaMetaData, 'update').then(function( mdata) {
         dev.log('stored meta');
         // if media is a text, let's add the text content to the obj for convenience client-side
-        if( mediaFolderPath === dodoc.projectTextsFoldername && editMediaData.titleOfTextmedia !== undefined && editMediaData.textOfTextmedia !== undefined) {
+        if( mediaFolderPath === dodoc.projectTextsFoldername && editMediaData.textOfTextmedia) {
 
           var mediaFilepathWithExt = mediaFilepath + '.md';
           var mediaData = {
-            "title" : editMediaData.titleOfTextmedia,
             "text" : editMediaData.textOfTextmedia
           };
           dev.log('now storing text media');
@@ -435,8 +432,6 @@ var dodocMedia = (function() {
   function _readTextMedia(textMediaPath) {
     var textMediaData = fs.readFileSync(textMediaPath, dodoc.textEncoding);
     textMediaData = dodocAPI.parseData(textMediaData);
-    // we should get a title and text field, let's parse them in markdown and add title_md and text_md fields
-    textMediaData.title_md = mm.parse(textMediaData.title).content;
     textMediaData.text_md = mm.parse(textMediaData.text).content;
     return textMediaData;
   }

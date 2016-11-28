@@ -9,6 +9,7 @@ app/client/fonts/Fira/technical reports/
 
 node_modules
 dist
+build
 
 app/user/contenus/*
 !app/user/contenus/readme.txt
@@ -58,4 +59,3 @@ ftp-config.js
 .Trashes
 ehthumbs.db
 Thumbs.db
-
