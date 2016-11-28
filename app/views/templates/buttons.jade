@@ -12,12 +12,19 @@ mixin button(typeOfButton, navOrButton, style)
   if( style === 'isCollapsed')
     - defaultClasses = defaultClasses + 'button-wrapper_collapsed '
 
+
   if( typeOfButton === 'dossier')
     a(href="/#{slugFolderName}" title="Dodoc" class='button-wrapper_dossier #{defaultClasses}')
       span #{folderName}
 
+  if( typeOfButton === 'close')
+    a(href="#" title="Close" class='button-wrapper_close js--close close-reveal-modal #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_close.svg
+      span !{dodoc.lang.close}
+
   if( typeOfButton === 'deleteFolder')
-    a(href="#" title="Dodoc" class='button-wrapper_deleteFolder js--deleteFolder #{defaultClasses}')
+    a(href="#" title="Delete" class='button-wrapper_deleteFolder js--deleteFolder #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_clear.svg
       span !{dodoc.lang.remove}

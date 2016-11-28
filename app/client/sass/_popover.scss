@@ -19,8 +19,8 @@
   border: 2px solid white;
 
   border-radius: 2px;
-  box-shadow: 0 5px 20px $gris;
-  padding: $margin;
+  box-shadow: 0 5px 20px $c-gris;
+  padding: $t-margin;
 
   max-width: 32.5rem;
   max-height: 80vh;
@@ -32,11 +32,13 @@
   }
 
   .close-reveal-modal {
-    width: 40px;
-    height: 40px;
-    text-align: center;
+    position: absolute;
     top: 0;
     right: 0;
+    cursor: pointer;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
   }
 
   .popoverTitle {
@@ -47,7 +49,7 @@
 
     width:  80%;
 
-    margin-bottom:  $margin;
+    margin-bottom:  $t-margin;
   }
 
   > p {
@@ -67,7 +69,7 @@
   }
 
   .legende {
-    padding: $margin/2;
+    padding: $t-margin/2;
   }
 
 
@@ -75,7 +77,7 @@
     display: block;
     border: none;
     float: right;
-    background-color: $bleuvert;
+    background-color: $c-bleuvert;
 
     padding: 4px 24px;
     height: 42px;
@@ -90,7 +92,7 @@
     @include clearfix();
     text-align: left;
     padding: 0;
-    background-color: $gristresclair;
+    background-color: $c-gris_clair;
 
     input {
       width: 0.1px;
@@ -108,8 +110,8 @@
       width: 25%;
       vertical-align: top;
       padding: 0;
-      padding: $margin/2;
-      color: $grisfonce;
+      padding: $t-margin/2;
+      color: $c-grisfonce;
 
       &:nth-of-type(4n+1){
         clear: left;
@@ -118,23 +120,23 @@
       span {
         display: block;
         width: 100%;
-        padding: $margin/2;
-        background-color: $orange-clair;
+        padding: $t-margin/2;
+        background-color: $c-orange-clair;
         text-transform: uppercase;
         text-align: center;
       }
 
       input:checked {
         & ~ span {
-          background-color: $orange;
+          background-color: $c-orange;
         }
 
         & ~ svg {
           #fond > * {
-              fill: $orange;
+              fill: $c-orange;
           }
           #modules > * {
-            fill: $bleumarine;
+            fill: $c-bleumarine;
           }
         }
       }
@@ -143,7 +145,7 @@
         position: relative;
 
         #fond * {
-          fill: $orange-clair;
+          fill: $c-orange-clair;
         }
       }
     }
@@ -158,7 +160,7 @@
       border-radius: 2px;
 
       &.annuler {
-        background-color: $rouge;
+        background-color: $c-rouge;
       }
     }
   }
@@ -185,7 +187,7 @@
     .big-mediaContent {
       overflow: auto;
       .button-wrapper {
-        margin: $margin/2 0px;
+        margin: $t-margin/2 0px;
         float: none;
         span{
           margin-left:10px;
@@ -200,13 +202,13 @@
 
 
     .button-wrapper_highlightMedia{
-      color:$bleuvert;
+      color:$c-bleuvert;
       background-color: transparent;
     }
     .is--highlight{
       .button-wrapper_highlightMedia{
         color: white;
-        background-color: $bleuvert;
+        background-color: $c-bleuvert;
       }
     }
   }
@@ -215,12 +217,12 @@
 
 input[type="text"], select {
   border: none;
-  border-bottom: 2px solid $gris;
+  border-bottom: 2px solid $c-gris;
   box-shadow: none;
   padding-left: .6em;
   font-size: 1.3em;
   height: 2.3em;
-  background-color: $gristresclair;
+  background-color: $c-gris_clair;
 
   &:focus {
     border-color: $c-images;
@@ -232,7 +234,7 @@ input[type="text"], select {
 }
 
 select {
-  border-bottom: 2px solid $gris;
+  border-bottom: 2px solid $c-gris;
 }
 
 .alertify-logs {
@@ -242,12 +244,12 @@ select {
   >.show {
     margin-right:   16px;
     background-color: white;
-    color: $bleuvert;
+    color: $c-bleuvert;
     border: 3px solid currentColor;
   }
 
   >.error {
-    color:$rouge;
+    color:$c-rouge;
   }
 
   a {
@@ -287,7 +289,7 @@ select {
         width: 100%;
         height: 100%;
         object-fit: scale-down;
-        background-color: $gristresclair;
+        background-color: $c-gris_clair;
       }
 
     }
@@ -334,9 +336,9 @@ select {
     pointer-events: auto;
     padding: 0;
 
-    color: $gris;
+    color: $c-gris;
     background-color: white;
-    box-shadow: 0 5px 20px $gris;
+    box-shadow: 0 5px 20px $c-gris;
 
     transform-origin: center center;
 
@@ -355,7 +357,7 @@ select {
       transform: rotate(0deg);
     }
     &:hover {
-      color: $bleuvert;
+      color: $c-bleuvert;
     }
   }
 
@@ -380,12 +382,12 @@ select {
 textarea {
   height: 150px;
   border: none;
-  border-bottom: 2px solid $gris;
+  border-bottom: 2px solid $c-gris;
   box-shadow: none;
   padding-left: .6em;
   font-size: 1em;
   min-height: 3.3em;
-  background-color: $gristresclair;
+  background-color: $c-gris_clair;
 }
 
 
@@ -419,7 +421,7 @@ textarea {
 
 .inputfile:focus + label,
 .inputfile.has-focus + label {
-    outline: 1px dotted #000;
+    outline: 1px dotted $c-noir;
     outline: -webkit-focus-ring-color auto 5px;
 }
 
@@ -475,7 +477,7 @@ textarea {
 .inputfile-6 + label strong {
     height: 100%;
     color: white;
-    background-color: $rouge;
+    background-color: $c-rouge;
     display: inline-block;
     font-weight: normal;
     font-size:  .8em;

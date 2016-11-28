@@ -47,7 +47,7 @@ body.projets{
     }
 
     .statut-type {
-      color: $bleuvert;
+      color: $c-bleuvert;
     }
     &[data-statut="en cours"] {
       .title.title:hover {
@@ -68,7 +68,7 @@ body.projets{
 
       .project-link {
         display: block;
-        padding: $margin/2 0px;
+        padding: $t-margin/2 0px;
 
         .title {
           @extend .insidePadding;
@@ -85,7 +85,7 @@ body.projets{
 
     .project-content {
       border-right: none;
-      padding: $margin/2 0px ;
+      padding: $t-margin/2 0px ;
 
       .title {
         display: block;
@@ -95,7 +95,7 @@ body.projets{
         line-height: 1.4;
 
         &:hover {
-          color: $bleuvert;
+          color: $c-bleuvert;
         }
       }
       .meta-data{
@@ -157,14 +157,14 @@ body.projets{
 
       border-bottom:   1px solid $c-separator;
       background-color: #f9f9f9;
-      padding: $margin/2 $margin/2;
+      padding: $t-margin/2 $t-margin/2;
 
       body.projets & {
         display: none;
       }
 
       .legende {
-        padding: 0 $margin/4;
+        padding: 0 $t-margin/4;
       }
 
       .media {
@@ -187,13 +187,13 @@ body.projets{
       border-bottom:   1px solid $c-separator;
       background-color: #f9f9f9;
       margin-bottom:  75px;
-      padding: $margin 0;
+      padding: $t-margin 0;
 
       height: 100%;
       overflow: scroll;
 
       .legende {
-        padding: 0 $margin;
+        padding: 0 $t-margin;
       }
 
       .list-publi {

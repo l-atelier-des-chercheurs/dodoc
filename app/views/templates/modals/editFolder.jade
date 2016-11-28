@@ -13,8 +13,7 @@ div(id="modal-modify-folder" class="reveal-modal" data-reveal aria-labelledby="m
     +button('deleteFolder', '', 'isCollapsed')
     input(type="submit" class="submit-modify-folder" value="Valider")
 
-  a.close-reveal-modal(aria-label="Close")
-    | &#215;
+  +button( 'close', '', 'isCollapsed')
 
 div(id="modal-statut-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
   p
@@ -23,7 +22,7 @@ div(id="modal-statut-alert" class="reveal-modal" data-reveal aria-labelledby="mo
     | !{dodoc.lang.ok}
   button.annuler(autofocus)
     | !{dodoc.lang.cancel}
-  a(class="close-reveal-modal" aria-label="Close") &#215;
+  +button( 'close', '', 'isCollapsed')
 
   //- ALERT SUPPRIMER UN DOSSIER
 div(id="modal-delete-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
@@ -34,4 +33,4 @@ div(id="modal-delete-alert" class="reveal-modal" data-reveal aria-labelledby="mo
     | !{dodoc.lang.yes}
   button.annuler(autofocus)
     | !{dodoc.lang.cancel}
-  a(class="close-reveal-modal" aria-label="Close") &#215;
+  +button( 'close', '', 'isCollapsed')

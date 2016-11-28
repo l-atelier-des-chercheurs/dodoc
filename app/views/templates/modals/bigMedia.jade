@@ -3,7 +3,7 @@ div(id="modal-media-view" class="reveal-modal" data-reveal aria-labelledby="moda
   .big-mediaNav
     button.big-mediaNav-arrow.big-mediaNav-arrow_left.js--big-mediaNav-prev
     button.big-mediaNav-arrow.big-mediaNav-arrow_right.js--big-mediaNav-next
-  a(class="close-reveal-modal" aria-label="Close") &#215;
+  +button( 'close', '', 'isCollapsed')
 
 //- ALERT SUPPRIMER UN Media
 div(id="modal-delete-alert-media" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
@@ -13,5 +13,5 @@ div(id="modal-delete-alert-media" class="reveal-modal" data-reveal aria-labelled
     | !{dodoc.lang.yes}
   button.annuler.button_coteacote
     | !{dodoc.lang.cancel}
-  a(class="close-reveal-modal" aria-label="Close") &#215;
+  +button( 'close', '', 'isCollapsed')
 

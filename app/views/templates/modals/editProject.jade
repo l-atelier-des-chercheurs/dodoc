@@ -22,8 +22,7 @@ div(class="modal-modify-project_content" style="display:none;")
 
     input(type='submit' class="button_submit js--modal_submit" value='Valider')
     +button('deleteProject', '', '')
-  a.close-reveal-modal(aria-label='Close')
-    | &#215
+  +button( 'close', '', 'isCollapsed')
 
 
 //- ALERT CHANGE STATUT (IF STATUT FINISH)
@@ -35,7 +34,7 @@ div(id="modal-statut-alert" class="reveal-modal" data-reveal aria-labelledby="mo
     | !{dodoc.lang.ok}
   button.annuler(autofocus)
     | !{dodoc.lang.cancel}
-  a(class="close-reveal-modal" aria-label="Close") &#215;
+  +button( 'close', '', 'isCollapsed')
 //- ALERT SUPPRIMER UN DOSSIER
 div(id="modal-deleteproject-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
   p
@@ -45,4 +44,4 @@ div(id="modal-deleteproject-alert" class="reveal-modal" data-reveal aria-labelle
     | !{dodoc.lang.yes}
   button.annuler(autofocus)
     | !{dodoc.lang.cancel}
-  a(class="close-reveal-modal" aria-label="Close") &#215;
+  +button( 'close', '', 'isCollapsed')

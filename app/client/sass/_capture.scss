@@ -37,7 +37,7 @@
   .captureRight{
     width: 80% !important;
     max-width: 100% !important;
-    margin-top: $margin;
+    margin-top: $t-margin;
     left: 10% !important;
 
     transform: translate3d(0, -50%, 0) !important;
@@ -89,7 +89,7 @@ body.capture{
 
 .media-choice {
 
-  padding: $margin*2 0;
+  padding: $t-margin*2 0;
 
   .btn-choice{
 
@@ -102,10 +102,10 @@ body.capture{
       outline: none;
 
       font-size: 1.1rem;
-      padding: 11px $margin;
+      padding: 11px $t-margin;
       border-radius: 4px;
 
-      margin: 0 $margin/2;
+      margin: 0 $t-margin/2;
 
       &:last-of-type {
         margin-right: 0;
@@ -176,8 +176,8 @@ body.capture{
   z-index: 1500;
 
   background:   #EFEFEF;
-  border-left: 4px solid $rouge;
-  border-bottom: 4px solid $rouge;
+  border-left: 4px solid $c-rouge;
+  border-bottom: 4px solid $c-rouge;
 
   width: 300px;
 
@@ -195,13 +195,13 @@ body.capture{
     height: 100%;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
-    padding: $margin;
+    padding: $t-margin;
   }
 
   .openCloseSettings {
     position: absolute;
     top: 0;
-    margin-top: $margin;
+    margin-top: $t-margin;
     width: 40px;
     z-index: 500;
     right: 100%;
@@ -229,28 +229,28 @@ body.capture{
   .resolutionSelector {
     > label {
 
-      margin-top:   $margin;
+      margin-top:   $t-margin;
 
       position: relative;
       width: 100%;
 
       border:none;
-      border-bottom: 2px solid $gris;
+      border-bottom: 2px solid $c-gris;
       box-shadow: none;
-      padding: $margin;
-      background-color: $gristresclair;
+      padding: $t-margin;
+      background-color: $c-gris_clair;
 
       font-size:  1em;
       font-weight: 400;
-      color: $grisfonce;
+      color: $c-grisfonce;
 
 
       > input {
         margin: 0;
-        margin-right:   $margin;
+        margin-right:   $t-margin;
 
         &:checked ~ span, &:checked ~ label > .setCustomRes {
-          color: $bleuvert;
+          color: $c-bleuvert;
           font-weight: 600;
           letter-spacing: 0.01em;
         }
@@ -261,8 +261,8 @@ body.capture{
         text-align: center;
       }
       hr {
-        margin: $margin/2 0;
-        border-color: $gristresclair;
+        margin: $t-margin/2 0;
+        border-color: $c-gris_clair;
       }
 
       > label {
@@ -274,7 +274,7 @@ body.capture{
   }
 }
 
-$buttonBar: $margin + 64px;
+$buttonBar: $t-margin + 64px;
 $t-decalageDuCentre: 2%;
 
 .captureLeft {
@@ -293,7 +293,7 @@ $t-decalageDuCentre: 2%;
   height: 80vh;
   height: calc(100vh - 200px);
 
-  padding: $margin/2;
+  padding: $t-margin/2;
 
   left: 50%;
   transform: translate3d(-50%, 0, 0);
@@ -319,7 +319,7 @@ $t-decalageDuCentre: 2%;
     background-color: #FF4246;
   }
   body:not(.is--fullscreen)[data-justcaptured="yes"] & {
-    background-color: $rouge;
+    background-color: $c-rouge;
   }
 
 
@@ -352,16 +352,16 @@ $t-decalageDuCentre: 2%;
     text-align: left;
     width: 140px;
     max-width: 40%;
-    padding: $margin/2;
+    padding: $t-margin/2;
     font-size: 70%;
-    color: $grisfonce;
+    color: $c-grisfonce;
 
     background-color: transparentize( #fff, .4);
-    border-left: 1px solid $gristresclair;
+    border-left: 1px solid $c-gris_clair;
     height: 100%;
 
     input {
-      margin-top:   $margin;
+      margin-top:   $t-margin;
       width: 100%;
     }
   }
@@ -384,8 +384,8 @@ $t-decalageDuCentre: 2%;
     text-align: center;
 
     position: absolute;
-    padding-top: $margin / 2;
-    padding-bottom: $margin / 2;
+    padding-top: $t-margin / 2;
+    padding-bottom: $t-margin / 2;
     height: $buttonBar;
 
     bottom: 0;
@@ -516,7 +516,7 @@ $t-decalageDuCentre: 2%;
     max-height: 80vh;
     width: 100%;
 
-    background-color: $gristresclair;
+    background-color: $c-gris_clair;
 
     .videoFeed {
       position: absolute;
@@ -532,7 +532,7 @@ $t-decalageDuCentre: 2%;
       top: 100%;
       left: 0;
       width: 50%;
-      padding: $margin/4 0;
+      padding: $t-margin/4 0;
     }
   }
 
@@ -591,9 +591,9 @@ $t-decalageDuCentre: 2%;
   .recording-feedback{
     position:absolute;
     z-index: 100;
-    top: $margin/2;
-    left: $margin/2;
-    color: $rouge;
+    top: $t-margin/2;
+    left: $t-margin/2;
+    color: $c-rouge;
 
     .record-feedback{
       display: inline-block;
@@ -613,7 +613,7 @@ $t-decalageDuCentre: 2%;
       text-transform: lowercase;
 
       color: currentColor;
-      margin-left: $margin/2;
+      margin-left: $t-margin/2;
     }
   }
 }
@@ -639,7 +639,7 @@ $t-decalageDuCentre: 2%;
   opacity: 0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
-  padding: $margin/2;
+  padding: $t-margin/2;
 
   height: 80vh;
   height: calc(100vh - 200px);
@@ -694,7 +694,7 @@ $t-decalageDuCentre: 2%;
       width: 100%;
       height: 100%;
       object-fit: scale-down;
-      background-color: $gristresclair;
+      background-color: $c-gris_clair;
     }
 
     audio.output {
@@ -728,8 +728,8 @@ $t-decalageDuCentre: 2%;
       video {
         width: 100%;
         height: 80%;
-        background:   $gristresclair;
-        margin-bottom: $margin;
+        background:   $c-gris_clair;
+        margin-bottom: $t-margin;
         object-fit: scale-down;
       }
 
@@ -795,9 +795,9 @@ $t-decalageDuCentre: 2%;
           z-index: 1200;
           bottom: 0;
           left: 0;
-          padding: $margin/2;
+          padding: $t-margin/2;
 
-          color: $bleuvert;
+          color: $c-bleuvert;
 
           &::after {
             counter-increment: compteListe 1;
@@ -819,9 +819,9 @@ $t-decalageDuCentre: 2%;
       height: 10%;
       @include clearfix();
       padding: 0;
-      padding-bottom:  $margin/2;
+      padding-bottom:  $t-margin/2;
       counter-reset: compteListe;
-      color: $bleuvert;
+      color: $c-bleuvert;
 
       .stopmotion_lastImageSmallPreview {
         position: relative;
@@ -833,7 +833,7 @@ $t-decalageDuCentre: 2%;
         visibility: hidden;
 
         img {
-          padding: $margin/4;
+          padding: $t-margin/4;
           height: 100%;
           width: 100%;
           object-fit: scale-down;
@@ -854,7 +854,7 @@ $t-decalageDuCentre: 2%;
           position: absolute;
           bottom: 0;
           font-size: 60%;
-          padding: 0px $margin/4;
+          padding: 0px $t-margin/4;
         }
 
         &:nth-last-child(-n+10) {
@@ -869,12 +869,12 @@ $t-decalageDuCentre: 2%;
       width: 50%;
 
       span {
-        margin-right: $margin/4;
+        margin-right: $t-margin/4;
       }
 
       input {
         display: inline-block;
-        color: $bleuvert;
+        color: $c-bleuvert;
       }
 
     }

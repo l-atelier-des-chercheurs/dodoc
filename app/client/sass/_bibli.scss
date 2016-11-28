@@ -13,8 +13,8 @@ body.bibli {
 .bibli-btn {
   @include clearfix();
   position: relative;
-  padding: $margin/2;
-  margin: 0 $margin/2;
+  padding: $t-margin/2;
+  margin: 0 $t-margin/2;
 
   background-color: transparent;
   border:none;
@@ -49,7 +49,7 @@ body.bibli {
 
     body[data-publicationpane="open"] & {
       right: 100 - $pourcentageBuffer;
-      background-color: $rouge;
+      background-color: $c-rouge;
     }
 
     &:hover {
@@ -63,7 +63,7 @@ body.bibli {
 
       .button-wrapper {
         &_add, &_edit, &_publi, &_editProjet, &_addMedia, &_backButton, &_editFolder {
-          background-color: $rouge;
+          background-color: $c-rouge;
           color: white;
         }
         &_capture, &_view, &_deleteFolder, &_deleteMedia {
@@ -75,7 +75,7 @@ body.bibli {
           color: white;
         }
         &_accept, &_addText {
-          background-color: $bleuvert;
+          background-color: $c-bleuvert;
           color: white;
         }
 
@@ -101,8 +101,8 @@ body.bibli {
   left: $pourcentageBuffer;
   right: 0;
 
-  background: $rouge;
-  border-left: 4px solid darken($rouge, 8%);
+  background: $c-rouge;
+  border-left: 4px solid darken($c-rouge, 8%);
 
 
   padding-left: 0.9375rem * 2;
@@ -119,8 +119,8 @@ body.bibli {
 
   .button-wrapper_publi {
     position: absolute;
-    top: $margin/2;
-    background-color: $rouge !important;
+    top: $t-margin/2;
+    background-color: $c-rouge !important;
     border-radius: 4px 0 0 4px;
     right: 100%;
     z-index: 1900;
@@ -148,12 +148,12 @@ body.bibli {
     left:0;
     display: block;
     min-height: 100vh;
-    background-color: $rouge;
+    background-color: $c-rouge;
 
     .montage-btn {
       @include clearfix();
       padding: 15px;
-      background-color: $rouge;
+      background-color: $c-rouge;
 
       .button-wrapper_backButton {
         float: left;
@@ -213,7 +213,7 @@ body.bibli {
 
       &:hover {
         .mediaContent {
-          outline: 4px dashed $orange;
+          outline: 4px dashed $c-orange;
         }
         .button-wrapper_deleteMedia {
           opacity:1;
@@ -385,7 +385,7 @@ body.bibli {
         cursor: pointer;
 
         &:hover {
-          color: $rouge;
+          color: $c-rouge;
         }
       }
     }

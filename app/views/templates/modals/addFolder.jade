@@ -4,4 +4,4 @@ div(id="modal-add-folder" class="reveal-modal" data-reveal aria-labelledby="moda
   form(onsubmit='return false;' class='add-folder-form lead')
     input(type='text' class='new-folder' placeholder='Nom')
     input(type='submit' class='submit-new-folder js--submit-new-folder' value='Valider')
-  a(class="close-reveal-modal" aria-label="Close") &#215;
+  +button( 'close', '', 'isCollapsed')

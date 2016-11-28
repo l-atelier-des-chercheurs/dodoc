@@ -23,6 +23,7 @@ if( lang === 'fr') {
       "ok" : "ok",
       "cancel" : "annuler",
       "name" : "Nom",
+      "close" : "Fermer",
       "remove" : "Supprimer",
       "edit" : "Modifier",
       "accept" : "Valider",
