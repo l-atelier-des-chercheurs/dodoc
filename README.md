@@ -93,7 +93,7 @@ Also, some not-so-up-to-date documentations on DoDoc:
 
 -->  1 blog : http://www.lopendoc.org/dodoc/
 
-### Debug and edit dodoc
+## Debug and edit dodoc
 To debug DoDoc, you can enable extra-logging with the following command:
 ```
 npm run debug
