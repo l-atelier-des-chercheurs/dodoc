@@ -7,15 +7,13 @@ var minifyCss = require('gulp-minify-css');
 var plumber = require('gulp-plumber');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
-var jshint       = require('gulp-jshint');
+var jshint = require('gulp-jshint');
 var dodoc  = require('./dodoc.js');
 
 var pluginsScripts = [
   'client/bower_components/jquery/dist/jquery.min.js',
   'client/bower_components/velocity/velocity.min.js',
   'client/bower_components/moment/min/moment-with-locales.js',
-  'client/bower_components/foundation/js/foundation.min.js',
-  'client/bower_components/foundation/js/foundation/foundation.reveal.js',
   'client/bower_components/store-js/store.min.js',
   'client/bower_components/alertifyjs/dist/js/alertify.js',
 ];

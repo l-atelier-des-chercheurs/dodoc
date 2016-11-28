@@ -10,15 +10,15 @@ html
         +button( 'dossier', 'isNav')
         +button( 'projet', 'isNav')
         +button( 'capture', 'isNav')
-        div.shortcut-button
+        .shortcut-button
           +button('bibli', '', 'isCollapsed')
           +button('publications', '', 'isCollapsed')
 
 
     div#container.row.mainContent
-      div.container-inner
-        div.media-choice
-          div.btn-choice
+      .container-inner
+        .media-choice
+          .btn-choice
             div
               button#photo.js--modeSelector(data-mediatype="photo")
                 span !{dodoc.lang.photo}
@@ -73,30 +73,30 @@ html
                 button.js--setCustomVideoRes
                   | !{dodoc.lang.apply}
 
-        div.content-wrapper
-          div.captureLeft
-            div.video-view
+        .content-wrapper
+          .captureLeft
+            .video-view
               //- display camera
               .videoContainer.js--videoContainer
                 //- display last stopmotion image (if needed)
                 img.captureLeft-lastStopmotionImage.js--lastStopmotionImage(src)
                 video.videoFeed.js--videoFeed(autoplay)
-                div.currentStreamResolution.txt-small_info.txt-mono.js--currentStreamResolution
+                .currentStreamResolution.txt-small_info.txt-mono.js--currentStreamResolution
               //- display audio vizualizer
               canvas(id="canvas-audio" width="720" height="360")
 
-              div.btn-capture-wrapper
-                div.photo-capture
+              .btn-capture-wrapper
+                .photo-capture
                   button#capture-btn.btn.icon
                     include ../client/images/i_record.svg
-                div.video-capture
-                  div.video-save
+                .video-capture
+                  .video-save
                     button#start-record-btn.btn.icon
                       include ../client/images/i_record.svg
                     button(id='stop-record-btn' class="btn icon" disabled)
                       include ../client/images/i_stop.svg
                   span#elasped-time
-                div.stopmotion-capture
+                .stopmotion-capture
                   button#start-sm-btn.btn.icon
                     include ../client/images/i_record.svg
                   button#capture-sm-btn.btn.icon
@@ -105,32 +105,32 @@ html
                     | !{dodoc.lang.lastImageOpacity}
                     input.js--lastImageOpacity(type="range" value="0" min="0" max="1" step="0.1" id="lastImageOpacity")
 
-                div.audio-capture
+                .audio-capture
                   button#start-recording-btn.btn.icon
                     include ../client/images/i_record.svg
                   button(id='stop-recording-btn' class='btn icon' disabled)
                     include ../client/images/i_stop.svg
 
-              div.display-choice.small-12
-                div.choices.image-choice
+              .display-choice
+                .choices.image-choice
                   .caption
                     | !{dodoc.lang.photo}
-                div.choices.video-choice
+                .choices.video-choice
                   .caption
                     | !{dodoc.lang.video}
-                div.choices.stopmotion-choice
+                .choices.stopmotion-choice
                   .caption
                     | !{dodoc.lang.stopmotion}
-                div.choices.audio-choice
+                .choices.audio-choice
                   .caption
                     | !{dodoc.lang.audio}
 
-            div.full-screen-wrapper
+            .full-screen-wrapper
               +button( 'fullscreen', '', 'isCollapsed')
               +button( 'nofullscreen', '', 'isCollapsed')
 
-          div.captureRight.small-5.columns
-            div.flash.small-12
+          .captureRight
+            .flash
 
             .preview.preview_image
               img.output.js--output

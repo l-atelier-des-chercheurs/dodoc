@@ -1,6 +1,7 @@
 // I M P O R T
 @import "../bower_components/foundation/scss/normalize";
-@import "../bower_components/foundation/scss/foundation";
+// @import "../bower_components/foundation/scss/foundation";
+@import '../bower_components/foundation/scss/foundation/components/reveal';
 
 
 
@@ -27,7 +28,11 @@ p {
 
 li{list-style: none;}
 
-h1,h2,h3,h4,h5,h6{font-family: 'Fira Sans', sans-serif;}
+h1,h2,h3,h4,h5,h6{
+  margin: 0;
+  font-family: 'Fira Sans', sans-serif;
+  font-weight: inherit;
+}
 
 
 /******************
@@ -98,6 +103,7 @@ a:hover {
 
 ul {
   margin: 0;
+  padding: 0;
 }
 
 img, video, audio, svg {
@@ -326,7 +332,6 @@ button {
   color: $c-gris;
   font-size: .8em;
   line-height:  1.5;
-  margin-bottom: $t-margin;
 }
 
 .txt-mono {
@@ -673,6 +678,11 @@ button {
 [data-oninsert="blink"] {
   -webkit-animation: blink 1.4s ease-out 1;
   animation: blink 1.4s ease-out 1;
+}
+
+// foundation override
+input[type="file"] {
+  width:  0.1px;
 }
 
 input[type=range] {
