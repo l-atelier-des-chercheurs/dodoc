@@ -17,7 +17,7 @@ You can find more documentation and contribute to the project [here](http://www.
 
 ##Install DoDoc
 
-# Method 1 - OSX only
+# Method 1 - macOS only
 ### Download the app
 
 Download the following app, unzip and launch _dodoc.app_ : https://github.com/l-atelier-des-chercheurs/dodoc/releases/download/4.0.0/dodoc.app.zip
@@ -30,41 +30,52 @@ _You need [node.js](https://nodejs.org/) to install DoDoc with this method._
 
 Click on *Clone or Download* in the top right corner of this page, then *Download ZIP*. Unpack this folder.
 
-### 3. Open a terminal window
+### 2. Open a terminal window
 
 Open a terminal window to execute commands and install DoDoc.
 
-#### Windows
-Use [this tutorial](http://wikistrea.fr/Comment_ouvrir_la_console_de_commande_Windows_en_mode_administrateur_%3F) to open a terminal on Windows: 
-#### Mac OSX
-Go to Applications->Utilities->Terminal
-#### Linux
-Use a terminal app such as Terminal or Konsole
+- Windows: use [this tutorial](http://wikistrea.fr/Comment_ouvrir_la_console_de_commande_Windows_en_mode_administrateur_%3F) to open a terminal on Windows: 
+- macOS: go to Applications->Utilities->Terminal
+- Linux: use a terminal app such as Terminal or Konsole
 
-Navigate to the dodoc-master folder with your terminal using the `cd` command:
-```cd path/to/dodoc-master``` 
+In your terminal, navigate to the dodoc-master folder with your terminal using the `cd` command:
+```
+cd path/to/dodoc-master
+```
 
-### 4. Install dependencies
+### 3. Install dependencies
 
 Install electron dependencies (may take up to 5 minutes):
-```npm install```  
+```
+npm install
+```  
 
 Then install dodoc dependencies that are in the app folder.
 Go to app folder:
-```cd app```
+```
+cd app
+```
 Install dependencies:
-```npm install```
+```
+npm install
+```
 
-Finally run the following command to make sure Sharp binaries are installed (may take 1-2 minutes):
-```./node_modules/.bin/electron-rebuild```
+Finally run the following command to make sure native dependencies are installed (may take 1-2 minutes):
+```
+./node_modules/.bin/electron-rebuild
+```
 
-### 5. Run dodoc
+### 4. Run dodoc
 
 Go back to the dodoc folder with the following command:
-```cd ../```
+```
+cd ../
+```
 
-Then start dodoc
-```npm start```
+Then start dodoc:
+```
+npm start
+```
 
 ## Update dodoc
 
@@ -77,9 +88,19 @@ As the content folder (medias, texts, etc.) is outside the app, just replace the
 We welcome contributions and inputs. Use the Github issue tracker if you encounter a bug or want to suggest a new feature: https://github.com/l-atelier-des-chercheurs/dodoc/issues
 
 Also, some not-so-up-to-date documentations on DoDoc:
+
 -->  1 hackpad with spec (in french): https://hackpad.com/dodoc-5iYRCxUY8D5 <br>
+
 -->  1 blog : http://www.lopendoc.org/dodoc/
 
-### Debug and edit dodoc
+## Debug and edit dodoc
 To debug DoDoc, you can enable extra-logging with the following command:
-```npm run debug```
+```
+npm run debug
+```
+
+To edit the SCSS (css) files, you’ll need to run a gulp task on the app folder.
+```
+cd app
+gulp
+```
