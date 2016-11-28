@@ -55,8 +55,7 @@ function init(){
 		var oldFolderStatut = $('#modal-modify-folder').data( "folderStatut");
 		var slugFolderName = $('#modal-modify-folder').data( "slugFolderName");
 
-		socket.emit( 'editFolder',
-		  {
+		socket.emit( 'editFolder', {
   		  "name" : oldFolderName,
   		  "newName" : newFolderName,
   		  "slugFolderName" : slugFolderName,
@@ -250,21 +249,15 @@ function editFolder($this){
 
 function modifyStatut(){
 	$('#modal-modify-folder .modify-statut').bind('change', function(){
-		if($(this).val() == "terminé"){
+		if($(this).val() === "terminé"){
 			$('#modal-statut-alert').foundation('reveal', 'open');
 			$('#modal-statut-alert button.oui').on('click', function(){
 				console.log('oui ');
 				$('#modal-statut-alert').foundation('reveal', 'close');
-				$("#modal-modify-folder").foundation('reveal', 'open');
 			});
 			$('#modal-statut-alert button.annuler').on('click', function(){
-				console.log('non');
 				$('#modal-modify-folder .modify-statut').val('en cours');
 				$('#modal-statut-alert').foundation('reveal', 'close');
-				$("#modal-modify-folder").foundation('reveal', 'open');
-			});
-			$(document).on('closed.fndtn.reveal', '#modal-statut-alert[data-reveal]', function () {
-	  		$("#modal-modify-folder").foundation('reveal', 'open');
 			});
 		}
 	});
@@ -279,16 +272,24 @@ function onFolderModified(data){
 
 //Suppression du dossier
 function removeFolder(){
+
 	$('#modal-delete-alert button.oui').on('click', function(){
-  	var slugFolderNameOfFolderToDelete = $(this).parents( '#modal-delete-alert').attr('data-foldertodelete');
+
+    	var slugFolderNameOfFolderToDelete = $(this).parents( '#modal-delete-alert').attr('data-foldertodelete');
 		console.log('delete ' + slugFolderNameOfFolderToDelete);
 		socket.emit('removeFolder', { "slugFolderName" : slugFolderNameOfFolderToDelete});
+
 		$('#modal-delete-alert').foundation('reveal', 'close');
+		$("#modal-modify-folder").foundation('reveal', 'close');
+		$(".reveal-modal-bg").remove();
+
 	});
+
 	$('#modal-delete-alert button.annuler').on('click', function(){
+
 		console.log('annuler');
 		$('#modal-delete-alert').foundation('reveal', 'close');
-		$("#modal-modify-folder").foundation('reveal', 'open');
+
 	});
 /*
 	$(document).on('closed.fndtn.reveal', '#modal-delete-alert[data-reveal]', function () {

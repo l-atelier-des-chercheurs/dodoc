@@ -92,7 +92,7 @@ gulp.task('script-plugins', function() {
 // Watch Files For Changes
 gulp.task('watch', function() {
 //   gulp.watch(['client/js/*.js', 'client/js/libs/*.js','client/js/capture/*.js',], ['lint']);
-  gulp.watch( ['client/sass/*.scss'].concat(templateCss).concat(userCss), ['sass', 'templatesSass', 'css']);
+  gulp.watch( ['client/sass/*.scss', 'client/sass/basic/*.scss'].concat(templateCss).concat(userCss), ['sass', 'templatesSass', 'css']);
 });
 
 // Default Task

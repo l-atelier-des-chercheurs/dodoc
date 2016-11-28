@@ -1,0 +1,82 @@
+/*
+
+input[type="file"] {
+  width:  0.1px;
+}
+*/
+
+input[type=range] {
+  & {
+    -webkit-appearance: none;
+    margin: 18px 0;
+    width: 100%;
+  }
+  &:focus {
+    outline: none;
+  }
+  &::-webkit-slider-runnable-track  {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    animate: 0.2s;
+    background: $c-bleuvert-clair;
+  }
+  &::-webkit-slider-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: $c-bleuvert;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -7px;
+  }
+}
+
+/*
+input[type="number"] {
+  height: 2em;
+  width: 3em;
+
+
+  border:none;
+  border-bottom: 2px solid $c-gris;
+  background-color: $c-creme;
+
+  box-shadow: none;
+  text-align: center;
+  font-weight: 500;
+
+  color: currentcolor;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+     opacity: 1;
+  }
+}
+*/
+
+
+input:not([type]), input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], input[type="color"], textarea, select {
+
+  border:none;
+
+  display: block;
+  font-family: inherit;
+  width: 100%;
+
+  font-size: 1.5rem;
+  height: 3.3125rem;
+
+  padding: $t-margin/2;
+  margin: 0 0 $t-margin 0;
+
+  color: inherit;
+  background-color: $c-gris_clair;
+  border-bottom: 2px solid $c-gris;
+
+  transition: border-color 0.15s linear, background 0.15s linear;
+
+  &:focus {
+    border-color: $c-images;
+  }
+}

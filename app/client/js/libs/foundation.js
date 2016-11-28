@@ -740,8 +740,6 @@
   Foundation.libs.reveal = {
     name : 'reveal',
 
-    version : '5.5.3',
-
     locked : false,
 
     settings : {
@@ -749,8 +747,8 @@
       animation_speed : 250,
       close_on_background_click : true,
       close_on_esc : true,
-      dismiss_modal_class : 'close-reveal-modal',
-      multiple_opened : false,
+      dismiss_modal_class : 'js--close',
+      multiple_opened : true,
       bg_class : 'reveal-modal-bg',
       root_element : 'body',
       open : function(){},
@@ -1094,9 +1092,8 @@
           }, settings.animation_speed / 2);
         }
 
-        css.top = $(window).scrollTop() + el.data('css-top') + 'px';
-
         if (animData.fade) {
+          css.top = $(window).scrollTop() + el.data('css-top') + 'px';
           var end_css = {opacity: 1};
 
           return setTimeout(function () {

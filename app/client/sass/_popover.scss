@@ -1,16 +1,4 @@
-@media #{$medium-only} {
-  .reveal-modal {
-    max-width: 100% !important;
-    .popoverTitle {
-      font-size: 2.5em !important;
-    }
-    input[type="text"], select {
-      font-size: 2.3em !important;
-      height: 3em !important;
-    }
-  }
 
-}
 
 .reveal-modal-bg {
   background-color: transparentize( white, .2);
@@ -31,14 +19,10 @@
     outline: none;
   }
 
-  .close-reveal-modal {
+  .button-wrapper_close {
     position: absolute;
     top: 0;
     right: 0;
-    cursor: pointer;
-    font-size: inherit;
-    font-weight: inherit;
-    line-height: inherit;
   }
 
   .popoverTitle {
@@ -213,20 +197,6 @@
     }
   }
 
-}
-
-input[type="text"], select {
-  border: none;
-  border-bottom: 2px solid $c-gris;
-  box-shadow: none;
-  padding-left: .6em;
-  font-size: 1.3em;
-  height: 2.3em;
-  background-color: $c-gris_clair;
-
-  &:focus {
-    border-color: $c-images;
-  }
 }
 
 ::-webkit-input-placeholder {

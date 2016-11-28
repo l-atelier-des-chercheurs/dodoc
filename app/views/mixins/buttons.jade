@@ -18,7 +18,7 @@ mixin button(typeOfButton, navOrButton, style)
       span #{folderName}
 
   if( typeOfButton === 'close')
-    a(href="#" title="Close" class='button-wrapper_close js--close close-reveal-modal #{defaultClasses}')
+    a(href="#" title="Close" class='button-wrapper_close js--close #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_close.svg
       span !{dodoc.lang.close}
