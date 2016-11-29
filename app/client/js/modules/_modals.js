@@ -388,8 +388,8 @@ var modals = (function() {
           "mediaFolderPath" : mtype,
         };
       		var informations = $modal.find( '.js--mediaInformations').val();
-          if( informations !== undefined && informations.length > 0)
-            editMediaData.informations = informations;
+        if(informations !== undefined)
+          editMediaData.informations = informations;
         sendData.editMedia( editMediaData);
       		$modal.foundation('reveal', 'close');
       		$modalContent.empty();
@@ -405,9 +405,7 @@ var modals = (function() {
           "switchFav" : true
         };
         sendData.editMedia( editMediaData);
-
         $mediaItem.toggleClass( 'is--highlight');
-
       });
 
       // text modal only
