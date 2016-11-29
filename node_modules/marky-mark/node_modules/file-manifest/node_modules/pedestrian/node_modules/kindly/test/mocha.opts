@@ -1,4 +1,0 @@
---reporter spec
---ui mocha-given
---compilers coffee:coffee-script/register
---recursive

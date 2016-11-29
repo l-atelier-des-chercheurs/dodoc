@@ -1,0 +1,12 @@
+form(onsubmit='return false;' class='add-media-text lead')
+  textarea.js--submit-new-text_text(placeholder="Ajouter du texte ici")
+
+h3.txt-small_info
+  | !{dodoc.lang.modal.pathofmedia}
+  .js--mediaFullPath
+
+hr
+
++button('favButton', '', '')
++button('deleteMediaBibli', '', '')
+input.js--submit-view-text-modify(type='submit' value='Valider')

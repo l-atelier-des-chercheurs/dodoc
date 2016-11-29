@@ -1,8 +1,29 @@
-# FTP Config file
+
+# dodoc customs #
+######################
+
+app/client/fonts/Fira/source/
+app/client/fonts/Fira/technical reports/
+
+.com.apple.timemachine.supported
+
+node_modules
+dist
+build
+
+app/user/contenus/*
+!app/user/contenus/readme.txt
+
+app/user/publications/*
+!app/user/publications/readme.txt
+
+
+# FTP Config file #
+###################
 ftp-config.js
 
 # Compiled source #
-# ###################
+###################
 *.com
 *.class
 *.dll
@@ -38,17 +59,3 @@ ftp-config.js
 .Trashes
 ehthumbs.db
 Thumbs.db
-
-# dodoc customs #
-######################
-
-public/fonts/Fira/source/
-public/fonts/Fira/technical reports/
-
-.com.apple.timemachine.supported
-
-user/contenus/*
-!user/contenus/readme.txt
-
-user/publications/*
-!user/publications/readme.txt

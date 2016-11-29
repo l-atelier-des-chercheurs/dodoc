@@ -1,0 +1,446 @@
+$pourcentageBuffer: 50%;
+
+
+body.bibli {
+}
+
+
+.biblimontage-container {
+  position: relative;
+
+}
+
+.bibli-btn {
+  @include clearfix();
+  position: relative;
+  padding: $margin/2;
+  margin: 0 $margin/2;
+
+  background-color: transparent;
+  border:none;
+  border-bottom: 1px solid $c-separator;
+
+  .button-wrapper {
+    float: left;
+  }
+}
+
+.bibli-buffer {
+
+  position: relative;
+  height: calc( 100vh - 70px);
+  overflow-y: scroll; /* has to be scroll, not auto */
+  -webkit-overflow-scrolling: touch;
+
+  text-align: left;
+
+  .btn-medias {
+    position: fixed;
+
+    margin-top: 10vh;
+    width: 50px;
+    z-index: 500;
+    right: 0;
+
+    background-color: #333;
+    border-radius: 4px 0 0 4px;
+
+    transition: all .7s ease-out;
+
+    body[data-publicationpane="open"] & {
+      right: 100 - $pourcentageBuffer;
+      background-color: $rouge;
+    }
+
+    &:hover {
+      width:  170px;
+
+      .button-wrapper_collapsed {
+        width:  155px;
+        color: inherit;
+        background-color: inherit;
+      }
+
+      .button-wrapper {
+        &_add, &_edit, &_publi, &_editProjet, &_addMedia, &_backButton, &_editFolder {
+          background-color: $rouge;
+          color: white;
+        }
+        &_capture, &_view, &_deleteFolder, &_deleteMedia {
+          background-color: $c-images;
+          color: white;
+        }
+        &_bibli, &_gofullscreen , &_leavefullscreen {
+          background-color: $c-bibli;
+          color: white;
+        }
+        &_accept, &_addText {
+          background-color: $bleuvert;
+          color: white;
+        }
+
+      }
+    }
+
+    .button-wrapper {
+      display: block;
+      margin-top:   0;
+      margin-bottom: 0;
+      float: none;
+
+      margin: 5px !important;
+    }
+  }
+
+}
+.montage {
+
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: $pourcentageBuffer;
+  right: 0;
+
+  background: $rouge;
+  border-left: 4px solid darken($rouge, 8%);
+
+
+  padding-left: 0.9375rem * 2;
+  padding-right: 0.9375rem * 2;
+
+  transform: translate( 100%, 0);
+
+  z-index: 190;
+  transition: transform .7s ease-out;
+
+  body[data-publicationpane="open"] & {
+    transform: translate( 0, 0);
+  }
+
+  .button-wrapper_publi {
+    position: absolute;
+    top: $margin/2;
+    background-color: $rouge !important;
+    border-radius: 4px 0 0 4px;
+    right: 100%;
+    z-index: 1900;
+  }
+
+
+  .montage_publi_container {
+    display: none;
+    top: 0;
+    left: 0;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+
+    overflow-y: scroll; /* has to be scroll, not auto, to get momentum scrolling */
+    -webkit-overflow-scrolling: touch;
+
+  }
+
+
+  .montage_publi {
+    position:absolute;
+    width:100%;
+    top:0;
+    left:0;
+    display: block;
+    min-height: 100vh;
+    background-color: $rouge;
+
+    .montage-btn {
+      @include clearfix();
+      padding: 15px;
+      background-color: $rouge;
+
+      .button-wrapper_backButton {
+        float: left;
+      }
+      .button-wrapper_view {
+        float: right;
+      }
+    }
+
+
+    .template_container{
+      width: calc(100% - 2em) !important;
+      margin-bottom: 1em;
+      &:empty {
+        &:before{
+          content: "Cette publication est vide" !important;
+        }
+      }
+    }
+
+
+  }
+  .publi_medias {
+
+    @include clearfix();
+    height:100%;
+    width: 100%;
+    min-height:60vh;
+
+    transition: background-color .4s, transform .6s ease-out;
+
+    body.gu-unselectable & {
+      // une bonne idéé à retravailler
+//       transform: scale( .8);
+    }
+
+    &:empty {
+      background-color: #fff;
+      padding:15px;
+      &::before {
+        content: "Glissez ici vos médias pour composer un récit.";
+        color: #aaa;
+        position: relative;
+      }
+    }
+
+    .media {
+      cursor: move;
+
+      .button-wrapper_deleteMedia {
+        opacity:0;
+        display: block;
+
+        z-index: 3;
+        transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out, opacity .4s ease-out;
+      }
+
+      &:hover {
+        .mediaContent {
+          outline: 4px dashed $orange;
+        }
+        .button-wrapper_deleteMedia {
+          opacity:1;
+        }
+      }
+
+    }
+
+
+
+    .media.gu-transit {
+      display: block;
+
+      opacity: 1;
+
+      overflow: hidden;
+    }
+
+    .media.gu-transit .mediaContent {
+      opacity: 1;
+      background-color: $c-images;
+      box-shadow: none;
+
+
+      > * {
+        opacity: 0;
+      }
+     }
+  }
+}
+
+@keyframes insertBloc {
+    0% {
+      height: 0;
+      opacity: 0;
+    }
+    100% {
+      height:   120px;
+      opacity: .8;
+    }
+}
+@keyframes insertMedia {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+}
+
+
+// class ajoutée aux éléments draggés. En bas du dom
+.gu-mirror {
+  .mediaContent {
+    width: 100%;
+    height: 100%;
+
+    > * {
+      object-fit:scale-down;
+      width: 100%;
+      height: 100%;
+
+    }
+    audio {
+      display: none;
+    }
+  }
+  .button-wrapper_flagMedia {
+    display: none;
+  }
+}
+
+
+.button-wrapper_flagMedia {
+  display: none;
+}
+.button-wrapper_deleteMedia {
+  display: none;
+}
+
+.grille_de_medias {
+
+  @include clearfix();
+
+  width: 100%;
+  padding: 0;
+  border-left: 1px solid $c-separator;
+  border-right: 1px solid $c-separator;
+
+  body[data-publicationpane="open"] & {
+    width: $pourcentageBuffer;
+  }
+
+  body.gu-unselectable & {
+    opacity: .6;
+  }
+
+
+  &:empty::after {
+    content: "Ce projet ne contient pas encore de médias. \A  \A Rendez-vous sur l'écran de capture pour en ajouter ou importez les avec la barre de droite.";
+    max-width: 36rem;
+    width: 100%;
+    margin: 32vh auto;
+    color: #aaa;
+    text-align:center;
+  }
+
+  .media {
+
+    $mediasPerRow: 6;
+    $mediasWidthHeight: 100/$mediasPerRow + %;
+
+    width: $mediasWidthHeight;
+    padding-bottom: $mediasWidthHeight;
+
+    cursor: pointer;
+    transition: width 0s ease;
+
+    body[data-publicationpane="open"] & {
+
+      $mediasPerRow: 3;
+      $mediasWidthHeight: 100/$mediasPerRow + %;
+
+      width: $mediasWidthHeight;
+      padding-bottom: $mediasWidthHeight;
+
+      cursor: move;
+
+    }
+
+  }
+
+}
+
+
+
+.montage-list {
+
+  height:   100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  > .button-wrapper {
+    margin-bottom:  15px;
+  }
+  .publi-folder {
+
+    position: relative;
+    padding: 7px 15px 9px;
+
+    margin-bottom:  15px;
+
+    background-color: #fff;
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+    @include clearfix();
+
+    .content {
+      float:left;
+
+      .title {
+        font-weight: bold;
+        font-size: 1.5em;
+        margin: 0;
+        margin-top:  6px;
+        margin-bottom:  6px;
+
+        cursor: pointer;
+
+        &:hover {
+          color: $rouge;
+        }
+      }
+    }
+
+    .publi-btn {
+      display: block;
+      float: none;
+
+      position: absolute;
+      right: 9px;
+      top: 11px;
+    }
+  }
+}
+
+
+@media #{$small-only}{
+
+  .grille_de_medias {
+    .media {
+
+      $mediasPerRow: 3;
+
+      $mediasWidthHeight: 100/$mediasPerRow + %;
+      width: $mediasWidthHeight !important;
+      padding-bottom: $mediasWidthHeight !important;
+
+      .button-wrapper_flagMedia{
+        display:none !important;
+      }
+    }
+  }
+
+  .reveal-modal#modal-media-view{
+    max-width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    .button-wrapper{
+      float: left;
+    }
+  }
+
+  .montage-list ul{
+    margin-top: 50px;
+  }
+
+  .montage_publi {
+    width: 85%;
+    left:15% !important;
+    z-index: 499 !important;
+    .template_container{
+      .media{
+        width: 100% !important;
+      }
+    }
+  }
+
+}

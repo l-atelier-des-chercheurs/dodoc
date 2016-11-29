@@ -1,0 +1,30 @@
+.module_infos
+  -for(var prop in localNetworkInfos)
+    -if(isHttps)
+      h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice} https://#{localNetworkInfos[prop]}:8080
+    -else
+      h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice} http://#{localNetworkInfos[prop]}:8080
+  h3.txt-small_info !{dodoc.lang.mediapublitemplatesarestoredint} <br>#{currentUserDirPath}
+
+script
+  | if (typeof module === 'object') {window.module = module; module = undefined;}
+
+script(src='/socket.io/socket.io.js')
+script
+  | var app = {};
+  | app.currentFolder = "!{slugFolderName}";
+  | app.currentProject = "!{slugProjectName}";
+  | app.currentPubli = "!{slugPubliName}";
+  | app.contentDir = "!{contentDir}";
+  | app.currentUserDirPath = "!{currentUserDirPath}";
+  | app.url = "!{url}";
+  | var dodoc = !{JSON.stringify(dodoc)};
+script( src='/js/production/plugins.js')
+script moment.locale("#{dodoc.codelang}");
+
+script( src='/js/common.js')
+script( src='/js/modules/_modals.js')
+script( src='/js/_global.js')
+
+script
+  | if (window.module) module = window.module;
