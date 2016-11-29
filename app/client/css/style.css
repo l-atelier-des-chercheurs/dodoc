@@ -1665,7 +1665,7 @@ select {
         width: 100%;
         padding: 8px;
         background-color: #FFD892;
-        text-transform: uppercase;
+        text-transform: lowercase;
         text-align: center; }
       .reveal-modal .templateSelector label input:checked ~ span {
         background-color: #FFBE32; }
@@ -2299,7 +2299,8 @@ body.index #container {
   left: 50%;
   right: 0;
   background: #FF3E51;
-  border-left: 4px solid #ff152c;
+  border-left: 4px solid #ff011a;
+  border-bottom: 4px solid #ff011a;
   padding-left: 1.875rem;
   padding-right: 1.875rem;
   transform: translate(100%, 0);

@@ -15,7 +15,6 @@ var dodocProject = (function() {
     getProjectMeta           : function(slugFolderName, slugProjectName) { return getProjectMeta(slugFolderName, slugProjectName); },
     createNewProject         : function(projectData) { return createNewProject(projectData); },
     getProjectPreview        : function(projectPath) { return getProjectPreview(projectPath); },
-    addProjectImage          : function(imageNameSlug, parentPath, imageData) { return addProjectImage(imageNameSlug, parentPath, imageData); },
     updateProjectMeta        : function(pdata) { return updateProjectMeta(pdata); },
     listOneProject           : function(slugFolderName, slugProjectName) { return listOneProject(slugFolderName, slugProjectName); },
     removeOneProject         : function(pdata) { return removeOneProject(pdata); },
@@ -56,7 +55,7 @@ var dodocProject = (function() {
       fs.ensureDirSync(projectPath);//new project
 
       if( projectData.imageData !== undefined) {
-        addProjectImage( "apercu", projectPath, projectData.imageData);
+        _addProjectPreview( "apercu", projectPath, projectData.imageData);
       }
 
       var dodocMedia = require('./dodoc-media.js');
@@ -102,12 +101,6 @@ var dodocProject = (function() {
     dev.logverbose( "- final filename ? " + previewName);
     return previewName;
   }
-  function addProjectImage(imageNameSlug, parentPath, imageData){
-    var filePath = parentPath + "/" + imageNameSlug + ".png";
-    var imageBuffer = dodocAPI.decodeBase64Image( imageData);
-    fs.writeFileSync(filePath, imageBuffer.data);
-    console.info("write new file to " + filePath);
-  }
   // accepts a folderData with at least a "foldername", a "slugFolderName", a "projectname" and a "slugProjectName"
   function updateProjectMeta(pdata) {
     return new Promise(function(resolve, reject) {
@@ -122,7 +115,7 @@ var dodocProject = (function() {
       var currentDateString = dodocAPI.getCurrentDate();
 
       if( pdata.imageData !== undefined) {
-        addProjectImage( "apercu", projectPath, pdata.imageData);
+        _addProjectPreview( "apercu", projectPath, pdata.imageData);
       }
 
       // récupérer les infos sur le project
@@ -179,7 +172,12 @@ var dodocProject = (function() {
   /******************************************** private functions ************************************/
   /***************************************************************************************************/
 
-
+  function _addProjectPreview(imageNameSlug, parentPath, imageData){
+    var filePath = parentPath + "/" + imageNameSlug + ".png";
+    var imageBuffer = dodocAPI.decodeBase64Image( imageData);
+    fs.writeFileSync(filePath, imageBuffer.data);
+    console.info("write new file to " + filePath);
+  }
 
 
 

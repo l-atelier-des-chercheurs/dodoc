@@ -102,8 +102,8 @@ body.bibli {
   right: 0;
 
   background: $c-rouge;
-  border-left: 4px solid darken($c-rouge, 8%);
-
+  border-left: 4px solid darken($c-rouge, 12%);
+  border-bottom: 4px solid darken($c-rouge, 12%);
 
   padding-left: 0.9375rem * 2;
   padding-right: 0.9375rem * 2;

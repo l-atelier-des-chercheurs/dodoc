@@ -1,3 +1,15 @@
+.m_modal {
+
+
+
+}
+
+.m_modal-content {
+
+
+
+}
+
 
 
 .reveal-modal-bg {
@@ -90,7 +102,6 @@
     }
 
     label {
-
       position: relative;
       float: left;
       width: 25%;
@@ -108,7 +119,7 @@
         width: 100%;
         padding: $t-margin/2;
         background-color: $c-orange-clair;
-        text-transform: uppercase;
+        text-transform: lowercase;
         text-align: center;
       }
 

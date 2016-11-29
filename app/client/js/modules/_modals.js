@@ -12,7 +12,7 @@ var modals = (function() {
       modals.removeProjectInit();
 
       	$('body').on('click', '.js--add-project', function(){
-      		modals.createProjectPopup();
+      		modals.createModal('addProject');
       	});
       	$('body').on('click', '.js--edit-project', function(){
       		var $thisProject = $(this).closest(".project");
@@ -29,72 +29,21 @@ var modals = (function() {
 
     },
 
-    createProjectPopup : function() {
+    createModal : function(typeOfModal) {
 
-      var $modal = $("#modal-add-project").empty();
+      var $modal = $('.js--modal_' + typeOfModal).empty();
       var $modalContent = $modal.next().clone(false);
-      $modal.append( $modalContent.show());
 
+      if(typeOfModal === 'addProject') {
+        $modalContent = _initAddProjectModal($modalContent);
+        debugger;
+      }
+
+      $modal.append($modalContent.show());
       $modal.foundation('reveal', 'open');
 
-      	var $filePicker = $modal.find('.js--modal_inputfile');
-      	var $label = $filePicker.next().find('span');
-      	var labelVal = $label.text();
-
-      	$filePicker.on( 'change', function( e )
-      	{
-      		var fileName = '';
-    			fileName = e.target.value.split( '\\' ).pop();
-
-    			var fileData = e.originalEvent.target.files;
-
-      		if( fileName ) {
-      			$(this)
-      			  .data('fileName', fileName)
-      			  .data('fileData', fileData)
-      			  ;
-      			$label
-    			    .html( fileName)
-              ;
-      		} else
-      			$(this)
-      			  .data('fileName', '')
-      			  .data('fileData', '')
-      			  ;
-      			$label.innerHTML = labelVal;
-      	});
-
-
-      $modal.find(".js--modal_submit").on('click', function(){
-        	var newProjectName = $modal.find('.js--modal_name').val();
-        	var fileData = $filePicker.data( "fileData");
-        	//Images changed
-
-        	if( fileData !== undefined && fileData !== null){
-        		console.log('Une image a été ajoutée');
-        		var f = fileData[0];
-        		var reader = new FileReader();
-        		reader.onload = function(evt){
-        			var newProjectData =
-        			{
-         				"projectName" : newProjectName,
-        				"imageData" : evt.target.result
-        		  }
-        		  sendData.createNewProject( newProjectData);
-        		};
-        		reader.readAsDataURL(f);
-        	}
-        	else{
-        		console.log("Pas d'image chargé");
-      			var newProjectData =
-            {
-         				"projectName" : newProjectName,
-        		}
-      		  sendData.createNewProject( newProjectData);
-        	}
-        $modal.foundation('reveal', 'close');
-      });
     },
+
 
     editProjectPopup : function($project) {
       var $modal = $("#modal-modify-project");
@@ -602,6 +551,69 @@ var modals = (function() {
     },
   }
 
+  function _initAddProjectModal($m) {
+
+    	var $filePicker = $m.find('.js--modal_inputfile');
+    	var $label = $filePicker.next().find('span');
+    	var labelVal = $label.text();
+
+    	$filePicker.on( 'change', function( e )
+    	{
+    		var fileName = '';
+  			fileName = e.target.value.split( '\\' ).pop();
+
+  			var fileData = e.originalEvent.target.files;
+
+    		if( fileName ) {
+    			$(this)
+    			  .data('fileName', fileName)
+    			  .data('fileData', fileData)
+    			  ;
+    			$label
+  			    .html( fileName)
+            ;
+    		} else
+    			$(this)
+    			  .data('fileName', '')
+    			  .data('fileData', '')
+    			  ;
+    			$label.innerHTML = labelVal;
+    	});
+
+
+    $m.find(".js--modal_submit").on('click', function(){
+      	var newProjectName = $m.find('.js--modal_name').val();
+      	var fileData = $filePicker.data( "fileData");
+      	//Images changed
+
+      	if( fileData !== undefined && fileData !== null){
+      		console.log('Une image a été ajoutée');
+      		var f = fileData[0];
+      		var reader = new FileReader();
+      		reader.onload = function(evt){
+      			var newProjectData =
+      			{
+       				"projectName" : newProjectName,
+      				"imageData" : evt.target.result
+      		  }
+      		  sendData.createNewProject( newProjectData);
+      		};
+      		reader.readAsDataURL(f);
+      	}
+      	else{
+      		console.log("Pas d'image chargé");
+    			var newProjectData =
+          {
+       				"projectName" : newProjectName,
+      		}
+    		  sendData.createNewProject( newProjectData);
+      	}
+      $m.foundation('reveal', 'close');
+    });
+
+    debugger;
+    return $m;
+  }
 
   function _setBigmediaArrow($modalContent, $upcomingMedia, $navUpcomingMedia) {
     if($upcomingMedia.length) {

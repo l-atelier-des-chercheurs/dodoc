@@ -40,7 +40,7 @@ mixin button(typeOfButton, navOrButton, style)
       span #{projectName}
 
   if( typeOfButton === 'nouveauDossier')
-    a(href="#" data-reveal-id="modal-add-folder" class='button-wrapper_add #{defaultClasses}')
+    a(href="#" data-reveal-id="modal_addFolder" class='button-wrapper_add #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_add.svg
       span !{dodoc.lang.createFolder}

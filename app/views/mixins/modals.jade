@@ -1,9 +1,10 @@
 mixin modals(typeOfModal)
 
+  div(class="reveal-modal m_modal js--modal_#{typeOfModal}" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+
   if( typeOfModal === 'addFolder')
     //////////////////////////////////////////////   ADD FOLDER  //////////////////////////////////
-
-    div(id="modal-add-folder" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+    .m_modal-content
       h2.popoverTitle
         | !{dodoc.lang.modal.newFolder}
       form(onsubmit='return false;' class='add-folder-form lead')
@@ -49,10 +50,7 @@ mixin modals(typeOfModal)
 
   if( typeOfModal === 'addProject')
     //////////////////////////////////////////////   ADD PROJECT  //////////////////////////////////
-
-    div(id="modal-add-project" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-
-    div(style="display:none;")
+    .m_modal-content(style="display:none;")
       h2.popoverTitle
         | !{dodoc.lang.modal.newProject}
       form(onsubmit='return false;')

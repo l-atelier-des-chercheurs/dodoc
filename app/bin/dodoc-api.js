@@ -35,6 +35,9 @@ var dodocAPI = (function() {
     dev.logverbose( "COMMON — getProjectPath, slugFolderName:" + slugFolderName + " slugProjectName: " + slugProjectName);
     return path.join(getFolderPath(slugFolderName), slugProjectName);
   }
+  function getUserPath() {
+    return global.userDirname;
+  }
 
   function parseData(d) {
     var parsed = parsedown.parse(d);
@@ -67,10 +70,6 @@ var dodocAPI = (function() {
     var metaFileContent = fs.readFileSync( metaFile, 'utf8');
     var metaFileContentParsed = parseData( metaFileContent);
     return metaFileContentParsed;
-  }
-
-  function getUserPath() {
-    return global.userDirname;
   }
 
   function findFirstFilenameNotTaken( fileName, currentPath, fileext) {

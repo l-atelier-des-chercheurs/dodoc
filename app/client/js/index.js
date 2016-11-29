@@ -98,13 +98,7 @@ function init(){
 
 // Affiche le fichier dès qu'il est crée
 function onFolderCreated(data){
-
 	location.reload();
-/*
-	$('input.new-folder').val('');
-	$('#modal-add-folder').foundation('reveal', 'close');
-	return onListOneFolder( data);
-*/
 }
 
 // Si un fichier existe déjà, affiche un message d'alerte
