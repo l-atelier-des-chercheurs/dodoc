@@ -1557,10 +1557,10 @@ select {
           -webkit-transition: all .1s;
           transition: all .1s;
           z-index: -1;
-          -webkit-transform: skewX(-14deg) skewY(0);
-          -ms-transform: skewX(-14deg) skewY(0);
-          -o-transform: skewX(-14deg) skewY(0);
-          transform: skewX(-14deg) skewY(0);
+          -webkit-transform: skewX(-16deg) skewY(0);
+          -ms-transform: skewX(-16deg) skewY(0);
+          -o-transform: skewX(-16deg) skewY(0);
+          transform: skewX(-16deg) skewY(0);
           background-color: #4bc0b4;
           border-radius: 4px;
           transition: background-color .2s; }
@@ -1590,36 +1590,23 @@ select {
       .navbar-container .navbar > .button-wrapper:nth-of-type(1) {
         margin-right: 15px; }
 
-@media only screen and (min-width: 40.0625em) and (max-width: 48em) {
-  .reveal-modal {
-    max-width: 100% !important; }
-    .reveal-modal .popoverTitle {
-      font-size: 2.5em !important; }
-    .reveal-modal input[type="text"], .reveal-modal select {
-      font-size: 2.3em !important;
-      height: 3em !important; } }
-
 .reveal-modal-bg {
   background-color: rgba(255, 255, 255, 0.8); }
 
 .reveal-modal {
-  border: 2px solid white;
   border-radius: 2px;
   box-shadow: 0 5px 20px #C3C3C3;
+  border: 2px solid white;
   padding: 16px;
   max-width: 32.5rem;
   max-height: 80vh;
   overflow-y: scroll; }
   .reveal-modal:focus {
     outline: none; }
-  .reveal-modal .close-reveal-modal {
+  .reveal-modal .button-wrapper_close {
     position: absolute;
     top: 0;
-    right: 0;
-    cursor: pointer;
-    font-size: inherit;
-    font-weight: inherit;
-    line-height: inherit; }
+    right: 0; }
   .reveal-modal .popoverTitle {
     font-weight: bold;
     font-size: 1.5em;
@@ -1719,17 +1706,6 @@ select {
       color: white;
       background-color: #4BC0B4; }
 
-input[type="text"], select {
-  border: none;
-  border-bottom: 2px solid #C3C3C3;
-  box-shadow: none;
-  padding-left: .6em;
-  font-size: 1.3em;
-  height: 2.3em;
-  background-color: #EBEBEB; }
-  input[type="text"]:focus, select:focus {
-    border-color: #FFBE32; }
-
 ::-webkit-input-placeholder {
   color: #bbb; }
 
@@ -1824,112 +1800,6 @@ select {
     .big-mediaNav .big-mediaNav-arrow_right::before {
       content: '>'; }
 
-textarea {
-  height: 150px;
-  border: none;
-  border-bottom: 2px solid #C3C3C3;
-  box-shadow: none;
-  padding-left: .6em;
-  font-size: 1em;
-  min-height: 3.3em;
-  background-color: #EBEBEB; }
-
-.inputfile {
-  width: 0.1px;
-  height: 0.1px;
-  opacity: 0;
-  overflow: hidden;
-  position: absolute;
-  z-index: -1; }
-
-.inputfile + label {
-  max-width: 80%;
-  font-size: 1.25rem;
-  /* 20px */
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  cursor: pointer;
-  display: inline-block;
-  overflow: hidden;
-  padding: 0.625rem 1.25rem;
-  margin-bottom: 10px;
-  /* 10px 20px */ }
-
-.no-js .inputfile + label {
-  display: none; }
-
-.inputfile:focus + label,
-.inputfile.has-focus + label {
-  outline: 1px dotted #353535;
-  outline: -webkit-focus-ring-color auto 5px; }
-
-.inputfile + label * {
-  /* pointer-events: none; */
-  /* in case of FastClick lib use */ }
-
-.inputfile + label svg {
-  width: 1em;
-  height: 1em;
-  vertical-align: middle;
-  fill: currentColor;
-  /* 4px */
-  margin: auto;
-  /* 4px */ }
-
-/* style 6 */
-.inputfile-6 + label {
-  color: #d3394c; }
-
-.inputfile-6 + label {
-  background-color: #f1e5e6;
-  border-radius: 6px;
-  padding: 0; }
-
-.inputfile-6:focus + label,
-.inputfile-6.has-focus + label,
-.inputfile-6 + label:hover {
-  border-color: #722040; }
-
-.inputfile-6 + label span,
-.inputfile-6 + label strong {
-  padding: 0.625rem 1.25rem;
-  /* 10px 20px */ }
-
-.inputfile-6 + label span {
-  width: 200px;
-  min-height: 2em;
-  display: inline-block;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  vertical-align: top; }
-
-.inputfile-6 + label strong {
-  height: 100%;
-  color: white;
-  background-color: #FF3E51;
-  display: inline-block;
-  font-weight: normal;
-  font-size: .8em; }
-
-.inputfile-6:focus + label strong,
-.inputfile-6.has-focus + label strong,
-.inputfile-6 + label:hover strong {
-  background-color: #722040; }
-
-@media screen and (max-width: 50em) {
-  .inputfile-6 + label strong {
-    display: block; } }
-
-.inputfile-2 + label {
-  color: #d3394c;
-  border: 2px solid currentColor; }
-
-.inputfile-2:focus + label,
-.inputfile-2.has-focus + label,
-.inputfile-2 + label:hover {
-  color: #722040; }
-
 body.publi {
   background-color: #fff; }
   body.publi .button-wrapper_upload {
@@ -1965,6 +1835,100 @@ body.publi {
   .button-wrapper_collapsed {
     overflow: visible !important; } }
 
+input:not([type]), input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], input[type="color"], textarea, select {
+  border: none;
+  display: block;
+  font-family: inherit;
+  width: 100%;
+  font-size: 1.5rem;
+  height: 3.3125rem;
+  padding: 8px;
+  margin: 0 0 16px 0;
+  color: inherit;
+  background-color: #EBEBEB;
+  border-bottom: 2px solid #C3C3C3;
+  transition: border-color 0.15s linear, background 0.15s linear; }
+  input:not([type]):focus, input[type="text"]:focus, input[type="password"]:focus, input[type="date"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="month"]:focus, input[type="week"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="time"]:focus, input[type="url"]:focus, input[type="color"]:focus, textarea:focus, select:focus {
+    border-color: #FFBE32;
+    outline: none; }
+
+input[type=range] {
+  -webkit-appearance: none;
+  margin: 18px 0;
+  width: 100%; }
+
+input[type=range]:focus {
+  outline: none; }
+
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: #A5E5DA; }
+
+input[type=range]::-webkit-slider-thumb {
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #4BC0B4;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -7px; }
+
+input[type="number"] {
+  text-align: center; }
+  input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1; }
+
+textarea {
+  height: 4rem; }
+
+textarea {
+  height: 6rem; }
+
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1; }
+  .inputfile + label {
+    max-width: 80%;
+    font-size: 1.25rem;
+    /* 20px */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 0.625rem 1.25rem;
+    margin-bottom: 10px;
+    /* 10px 20px */ }
+  .inputfile :focus + label,
+  .inputfile.has-focus + label {
+    outline: 1px dotted #353535;
+    outline: -webkit-focus-ring-color auto 5px; }
+  .inputfile + label * {
+    /* pointer-events: none; */
+    /* in case of FastClick lib use */ }
+  .inputfile + label svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    fill: currentColor;
+    /* 4px */
+    margin: auto;
+    /* 4px */ }
+  .inputfile.inputfile-2 + label {
+    color: #d3394c;
+    border: 2px solid currentColor; }
+  .inputfile.inputfile-2:focus + label,
+  .inputfile.inputfile-2.has-focus + label,
+  .inputfile.inputfile-2 + label:hover {
+    color: #722040; }
+
 html {
   margin: 0; }
 
@@ -1979,6 +1943,11 @@ p {
 li {
   list-style: none; }
 
+hr {
+  border: none;
+  border-bottom: 1px solid #EBEBEB;
+  width: 100%; }
+
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
   font-family: 'Fira Sans', sans-serif;
@@ -1989,31 +1958,10 @@ h1, h2, h3, h4, h5, h6 {
   ********************/
 body {
   margin: 0;
-  background-color: #efefef;
+  background-color: #EBEBEB;
   color: #353535;
   font-size: 1em;
   font-family: 'Fira Sans', sans-serif; }
-  body:after {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1100;
-    visibility: hidden;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    content: '';
-    opacity: 0;
-    -webkit-transition: opacity .3s 0s, visibility 0s .3s;
-    -moz-transition: opacity .3s 0s, visibility 0s .3s;
-    transition: opacity .3s; }
-  body.is-overlaid:after {
-    visibility: visible;
-    opacity: 1;
-    cursor: pointer;
-    -webkit-transition: opacity .3s 0s, visibility 0s 0s;
-    -moz-transition: opacity .3s 0s, visibility 0s 0s;
-    transition: opacity .3s 0s, visibility 0s 0s; }
 
 a {
   color: inherit;
@@ -2626,17 +2574,6 @@ body.projets #container {
     -webkit-background-size: cover;
     background-size: cover;
     background-position: center center; }
-    .project-list .project .image-wrapper::after {
-      content: '';
-      display: block;
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-image: linear-gradient(30deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.4));
-      opacity: 1;
-      transition: opacity .6s ease-out; }
-    .project-list .project .image-wrapper:hover::after {
-      opacity: 0; }
   .project-list .project .last-medias {
     background-color: #fff;
     border-bottom: 1px solid #DFDFDF;
@@ -2824,9 +2761,10 @@ body.capture .content-wrapper:after {
     display: block;
     width: 100%; }
   .feedSettings .resolutionSelector > label {
-    margin-top: 16px;
+    display: block;
     position: relative;
     width: 100%;
+    margin-top: 16px;
     border: none;
     border-bottom: 2px solid #C3C3C3;
     box-shadow: none;
@@ -2843,7 +2781,7 @@ body.capture .content-wrapper:after {
         font-weight: 600;
         letter-spacing: 0.01em; }
     .feedSettings .resolutionSelector > label .setCustomRes {
-      width: 70px;
+      width: 90px;
       text-align: center; }
     .feedSettings .resolutionSelector > label hr {
       margin: 8px 0;
@@ -3303,9 +3241,6 @@ body.capture .content-wrapper:after {
       min-width: 0;
       width: 100%;
       object-fit: scale-down;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
       flex: 7;
       overflow: auto; }
   .grille_de_medias .media.media_audio .mediaContent audio {
@@ -3327,7 +3262,7 @@ body.capture .content-wrapper:after {
       background-color: #fff;
       overflow: hidden;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 1;
       -webkit-box-orient: vertical; }
       .grille_de_medias .media .mediaData .mediaData--informations:empty {
         display: none; }
@@ -3446,48 +3381,6 @@ body.capture .content-wrapper:after {
   -webkit-animation: blink 1.4s ease-out 1;
   animation: blink 1.4s ease-out 1; }
 
-input[type="file"] {
-  width: 0.1px; }
-
-input[type=range] {
-  -webkit-appearance: none;
-  margin: 18px 0;
-  width: 100%; }
-
-input[type=range]:focus {
-  outline: none; }
-
-input[type=range]::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 4px;
-  cursor: pointer;
-  animate: 0.2s;
-  background: #A5E5DA; }
-
-input[type=range]::-webkit-slider-thumb {
-  height: 18px;
-  width: 18px;
-  border-radius: 50%;
-  background: #4BC0B4;
-  cursor: pointer;
-  -webkit-appearance: none;
-  margin-top: -7px; }
-
-input[type="number"] {
-  height: 2em;
-  width: 3em;
-  padding: 8px;
-  margin: 8px 0;
-  border: none;
-  border-bottom: 2px solid #C3C3C3;
-  background-color: #FCFCFA;
-  box-shadow: none;
-  text-align: center;
-  font-weight: 500;
-  color: currentcolor; }
-  input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button {
-    opacity: 1; }
-
 .js--templates {
   display: none; }
 
@@ -3508,9 +3401,6 @@ input[type="number"] {
     white-space: pre-wrap; }
   .mediaContent--textOfTextmedia strong, .mediaContent--textOfTextmedia b {
     color: #FF3E51; }
-  .mediaContent--textOfTextmedia hr {
-    border-width: 1px 0 0;
-    border-color: #C3C3C3; }
   .mediaContent--textOfTextmedia h1, .mediaContent--textOfTextmedia h2, .mediaContent--textOfTextmedia h3, .mediaContent--textOfTextmedia h4, .mediaContent--textOfTextmedia h5, .mediaContent--textOfTextmedia h6 {
     margin-top: 24px;
     margin-bottom: 16px;

@@ -3,11 +3,13 @@
 .reveal-modal-bg {
   background-color: transparentize( white, .2);
 }
+
+
 .reveal-modal {
-  border: 2px solid white;
 
   border-radius: 2px;
   box-shadow: 0 5px 20px $c-gris;
+  border: 2px solid white;
   padding: $t-margin;
 
   max-width: 32.5rem;
@@ -345,138 +347,6 @@ select {
   }
 
 }
-
-
-
-// input items basic styles
-textarea {
-  height: 150px;
-  border: none;
-  border-bottom: 2px solid $c-gris;
-  box-shadow: none;
-  padding-left: .6em;
-  font-size: 1em;
-  min-height: 3.3em;
-  background-color: $c-gris_clair;
-}
-
-
-// file picker
-.inputfile {
-    width: 0.1px;
-    height: 0.1px;
-    opacity: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: -1;
-}
-.inputfile + label {
-    max-width: 80%;
-    font-size: 1.25rem;
-    /* 20px */
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    cursor: pointer;
-    display: inline-block;
-    overflow: hidden;
-    padding: 0.625rem 1.25rem;
-
-    margin-bottom:  10px;
-    /* 10px 20px */
-}
-
-.no-js .inputfile + label {
-    display: none;
-}
-
-.inputfile:focus + label,
-.inputfile.has-focus + label {
-    outline: 1px dotted $c-noir;
-    outline: -webkit-focus-ring-color auto 5px;
-}
-
-.inputfile + label * {
-    /* pointer-events: none; */
-    /* in case of FastClick lib use */
-}
-
-.inputfile + label svg {
-    width: 1em;
-    height: 1em;
-    vertical-align: middle;
-    fill: currentColor;
-    /* 4px */
-    margin: auto;
-    /* 4px */
-}
-
-/* style 6 */
-
-.inputfile-6 + label {
-    color: #d3394c;
-}
-
-.inputfile-6 + label {
-    background-color: #f1e5e6;
-    border-radius: 6px;
-    padding: 0;
-}
-
-.inputfile-6:focus + label,
-.inputfile-6.has-focus + label,
-.inputfile-6 + label:hover {
-    border-color: #722040;
-}
-
-.inputfile-6 + label span,
-.inputfile-6 + label strong {
-    padding: 0.625rem 1.25rem;
-    /* 10px 20px */
-}
-
-.inputfile-6 + label span {
-    width: 200px;
-    min-height: 2em;
-    display: inline-block;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    vertical-align: top;
-}
-
-.inputfile-6 + label strong {
-    height: 100%;
-    color: white;
-    background-color: $c-rouge;
-    display: inline-block;
-    font-weight: normal;
-    font-size:  .8em;
-}
-
-.inputfile-6:focus + label strong,
-.inputfile-6.has-focus + label strong,
-.inputfile-6 + label:hover strong {
-    background-color: #722040;
-}
-
-@media screen and (max-width: 50em) {
-	.inputfile-6 + label strong {
-		display: block;
-	}
-}
-
-.inputfile-2 + label {
-    color: #d3394c;
-    border: 2px solid currentColor;
-}
-
-.inputfile-2:focus + label,
-.inputfile-2.has-focus + label,
-.inputfile-2 + label:hover {
-    color: #722040;
-}
-
-
 
 
 

@@ -229,10 +229,11 @@ body.capture{
   .resolutionSelector {
     > label {
 
-      margin-top:   $t-margin;
-
+      display: block;
       position: relative;
       width: 100%;
+
+      margin-top:   $t-margin;
 
       border:none;
       border-bottom: 2px solid $c-gris;
@@ -257,7 +258,7 @@ body.capture{
       }
 
       .setCustomRes {
-        width: 70px;
+        width: 90px;
         text-align: center;
       }
       hr {

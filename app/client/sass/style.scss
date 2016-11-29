@@ -32,7 +32,9 @@ p {
 li{list-style: none;}
 
 hr {
-  border: 1px solid $c-gris_clair;
+  border:none;
+  border-bottom: 1px solid $c-gris_clair;
+  width: 100%;
 }
 
 
@@ -412,9 +414,6 @@ button {
         width: 100%;
         object-fit: scale-down;
 
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
         flex: 7;
 
         overflow: auto;
@@ -457,7 +456,7 @@ button {
 
         overflow: hidden;
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 1;
         -webkit-box-orient: vertical;
 
         &:empty {

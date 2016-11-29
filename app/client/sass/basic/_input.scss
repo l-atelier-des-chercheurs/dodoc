@@ -1,9 +1,31 @@
-/*
 
-input[type="file"] {
-  width:  0.1px;
+
+input:not([type]), input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], input[type="color"], textarea, select {
+
+  border:none;
+
+  display: block;
+  font-family: inherit;
+  width: 100%;
+
+  font-size: 1.5rem;
+  height: 3.3125rem;
+
+  padding: $t-margin/2;
+  margin: 0 0 $t-margin 0;
+
+  color: inherit;
+  background-color: $c-gris_clair;
+  border-bottom: 2px solid $c-gris;
+
+  transition: border-color 0.15s linear, background 0.15s linear;
+
+  &:focus {
+    border-color: $c-images;
+    outline: none;
+  }
 }
-*/
+
 
 input[type=range] {
   & {
@@ -32,51 +54,84 @@ input[type=range] {
   }
 }
 
-/*
 input[type="number"] {
-  height: 2em;
-  width: 3em;
 
-
-  border:none;
-  border-bottom: 2px solid $c-gris;
-  background-color: $c-creme;
-
-  box-shadow: none;
   text-align: center;
-  font-weight: 500;
-
-  color: currentcolor;
 
   &::-webkit-inner-spin-button,
   &::-webkit-outer-spin-button {
      opacity: 1;
   }
 }
-*/
 
-
-input:not([type]), input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], input[type="color"], textarea, select {
-
-  border:none;
-
-  display: block;
-  font-family: inherit;
-  width: 100%;
-
-  font-size: 1.5rem;
-  height: 3.3125rem;
-
-  padding: $t-margin/2;
-  margin: 0 0 $t-margin 0;
-
-  color: inherit;
-  background-color: $c-gris_clair;
-  border-bottom: 2px solid $c-gris;
-
-  transition: border-color 0.15s linear, background 0.15s linear;
-
-  &:focus {
-    border-color: $c-images;
-  }
+textarea {
+  height: 4rem;
 }
+
+
+// input items basic styles
+textarea {
+  height: 6rem;
+}
+
+
+// file picker
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+
+  + label {
+    max-width: 80%;
+    font-size: 1.25rem;
+    /* 20px */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 0.625rem 1.25rem;
+
+    margin-bottom:  10px;
+    /* 10px 20px */
+  }
+
+  :focus + label,
+  &.has-focus + label {
+    outline: 1px dotted $c-noir;
+    outline: -webkit-focus-ring-color auto 5px;
+  }
+
+  + label * {
+    /* pointer-events: none; */
+    /* in case of FastClick lib use */
+  }
+
+  + label svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    fill: currentColor;
+    /* 4px */
+    margin: auto;
+    /* 4px */
+  }
+
+
+  &.inputfile-2 + label {
+    color: #d3394c;
+    border: 2px solid currentColor;
+  }
+
+  &.inputfile-2:focus + label,
+  &.inputfile-2.has-focus + label,
+  &.inputfile-2 + label:hover {
+    color: #722040;
+  }
+
+
+}
+

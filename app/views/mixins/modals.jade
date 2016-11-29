@@ -219,7 +219,7 @@ mixin modals(typeOfModal)
     form(onsubmit='return false;' class='add-media-data lead')
       label
         | !{dodoc.lang.modal.informations}
-      textarea(type='text' class='js--mediaInformations')
+      textarea.mediaContent--textOfTextmedia.js--mediaInformations(type='text')
     h3.txt-small_info
       | !{dodoc.lang.modal.pathofmedia}
       .js--mediaFullPath
@@ -232,7 +232,7 @@ mixin modals(typeOfModal)
     //////////////////////////////////////////////   MEDIA FORM TEXT  //////////////////////////////////
 
     form(onsubmit='return false;' class='add-media-text lead')
-      textarea.js--submit-new-text_text(placeholder="Ajouter du texte ici")
+      textarea.mediaContent--textOfTextmedia.js--submit-new-text_text(placeholder="Ajouter du texte ici")
     h3.txt-small_info
       | !{dodoc.lang.modal.pathofmedia}
       .js--mediaFullPath

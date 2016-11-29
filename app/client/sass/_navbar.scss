@@ -225,10 +225,10 @@
           -webkit-transition: all .1s;
           transition: all .1s;
           z-index: -1;
-          -webkit-transform: skewX(-14deg) skewY(0);
-          -ms-transform: skewX(-14deg) skewY(0);
-          -o-transform: skewX(-14deg) skewY(0);
-          transform: skewX(-14deg) skewY(0);
+          -webkit-transform: skewX(-16deg) skewY(0);
+          -ms-transform: skewX(-16deg) skewY(0);
+          -o-transform: skewX(-16deg) skewY(0);
+          transform: skewX(-16deg) skewY(0);
 
           background-color: transparentize( $c-projet, $transparentize);
           border-radius: 4px;

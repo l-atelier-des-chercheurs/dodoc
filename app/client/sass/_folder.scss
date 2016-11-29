@@ -130,24 +130,6 @@ body.projets{
       -webkit-background-size: cover;
       background-size: cover;
       background-position: center center;
-
-      &::after {
-        content: '';
-        display: block;
-        position: absolute;
-
-        width: 100%;
-        height: 100%;
-
-        background-image: linear-gradient(30deg, transparentize( #fff, .9), transparentize( #fff, 0.6));
-
-        opacity: 1;
-        transition: opacity .6s ease-out;
-      }
-
-      &:hover::after {
-        opacity: 0;
-      }
     }
 
 
