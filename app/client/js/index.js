@@ -41,58 +41,11 @@ function openCloseMenu( scrollY) {
 
 function init(){
 
-	// Submit Folder
-	// Create new folder
-	$('body').on('click', '.js--submit-new-folder', function(){
-		var newFolderName = $('input.new-folder').val();
-		socket.emit( 'newFolder', { "name" : newFolderName });
-  });
-
-	$(".submit-modify-folder").on('click', function(){
-		var newFolderName = $('input.modify-folder').val();
-		var newStatut = $('select.modify-statut').val();
-		var oldFolderName = $('#modal-modify-folder').data( "folderName");
-		var oldFolderStatut = $('#modal-modify-folder').data( "folderStatut");
-		var slugFolderName = $('#modal-modify-folder').data( "slugFolderName");
-
-		socket.emit( 'editFolder', {
-  		  "name" : oldFolderName,
-  		  "newName" : newFolderName,
-  		  "slugFolderName" : slugFolderName,
-  		  "statut" : newStatut
-  		});
-	});
-
-	// Remove Folder
 	removeFolder();
-
-  // ANIMER LA NAVBAR
-
-  scrollY = window.pageYOffset;
-  // openCloseMenu( scrollY);
-
-	$(window).on('scroll', function () {
-    var scrollY = window.pageYOffset;
-    // openCloseMenu( scrollY);
-  });
-
-	//MODIFIER LES DOSSIERS
-	//Au clic sur l'icone éditer
-	$('body').on('click', '.js--edit-folder', function(){
-		thisFolder = $(this).parent();
-		editFolder( $(this));
-	});
-
 
 	//remove modal modify folder when it closing
 	$(document).on('close.fndtn.reveal', '#modal-modify-folder[data-reveal]', function () {
 	//   	$("#modal-modify-folder").empty();
-	});
-
-	//Au click sur le bouton supprimer le dossier
-	$('body').on('click', '.js--deleteFolder', function(){
-  	$('#modal-delete-alert').attr('data-foldertodelete', $('#modal-modify-folder').data('slugFolderName'));
-		$('#modal-delete-alert').foundation('reveal', 'open');
 	});
 }
 
@@ -206,55 +159,6 @@ function makeFolderContent( projectData){
   newFolder.data("mtimestamp", transformDatetoTimestamp( modified));
 
   return newFolder;
-}
-
-function editFolder($this){
-// 	$("#container.row #modal-modify-folder").empty();
-
-  var $thisFolder = $this.closest('.dossier');
-
-	var folderName = $thisFolder.attr('data-nom');
-  var slugFolderName = $thisFolder.attr('data-slugFolderName');
-	var folderStatut = $thisFolder.attr("data-statut");
-
-  $('#modal-modify-folder')
-  	.find('.modify-folder')
-  	  .attr('value', folderName)
-    .end()
-  	.find('.modify-statut')
-  	  .find('option')
-      .prop("checked", false)
-      .end()
-  	  .find('option[value="' + folderStatut + '"]')
-      .prop("checked", true)
-  	  .end()
-    .end()
-    .data(
-      {
-        "folderName" : folderName,
-        "slugFolderName" : slugFolderName,
-        "folderStatut" : folderStatut,
-      }
-    )
-  ;
-// 	$("#container.row #modal-modify-folder").append(newContentToAdd);
-	modifyStatut();
-}
-
-function modifyStatut(){
-	$('#modal-modify-folder .modify-statut').bind('change', function(){
-		if($(this).val() === "terminé"){
-			$('#modal-statut-alert').foundation('reveal', 'open');
-			$('#modal-statut-alert button.oui').on('click', function(){
-				console.log('oui ');
-				$('#modal-statut-alert').foundation('reveal', 'close');
-			});
-			$('#modal-statut-alert button.annuler').on('click', function(){
-				$('#modal-modify-folder .modify-statut').val('en cours');
-				$('#modal-statut-alert').foundation('reveal', 'close');
-			});
-		}
-	});
 }
 
 

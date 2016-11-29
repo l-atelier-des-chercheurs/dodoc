@@ -1,6 +1,6 @@
 mixin modals(typeOfModal)
 
-  div(class="reveal-modal m_modal js--modal_#{typeOfModal}" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+  div(class="reveal-modal m_modal" data-reveal data-modal-id="#{typeOfModal}")
 
   if( typeOfModal === 'addFolder')
     //////////////////////////////////////////////   ADD FOLDER  //////////////////////////////////
@@ -15,7 +15,7 @@ mixin modals(typeOfModal)
   if( typeOfModal === 'editFolder')
     //////////////////////////////////////////////   EDIT FOLDER  //////////////////////////////////
 
-    div(id="modal-modify-folder" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+    .m_modal-content
       h3#modalTitle.popoverTitle
         | !{dodoc.lang.modal.editFolder}
       form(onsubmit="return false;" class="modify-folder-form")
@@ -66,10 +66,7 @@ mixin modals(typeOfModal)
 
   if( typeOfModal === 'editProject')
     //////////////////////////////////////////////   EDIT PROJECT  //////////////////////////////////
-
-    div(id="modal-modify-project" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-
-    div(class="modal-modify-project_content" style="display:none;")
+    .m_modal-content(style="display:none;")
       h3#modalTitle.popoverTitle
         | !{dodoc.lang.modal.editProject}
       form(onsubmit='return false;' class='modify-project-form')

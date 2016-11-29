@@ -40,7 +40,7 @@ mixin button(typeOfButton, navOrButton, style)
       span #{projectName}
 
   if( typeOfButton === 'nouveauDossier')
-    a(href="#" data-reveal-id="modal_addFolder" class='button-wrapper_add #{defaultClasses}')
+    a(href="#" class='button-wrapper_add js--add-folder #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_add.svg
       span !{dodoc.lang.createFolder}
@@ -52,7 +52,7 @@ mixin button(typeOfButton, navOrButton, style)
       span !{dodoc.lang.createProject}
 
   if( typeOfButton === 'editFolder')
-    a(href="#" data-reveal-id="modal-modify-folder" class='button-wrapper_editFolder js--edit-folder #{defaultClasses}')
+    a(href="#" class='button-wrapper_editFolder js--edit-folder #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_cog.svg
       span !{dodoc.lang.modal.editFolder}

@@ -17,7 +17,7 @@ var dodocProject = (function() {
     getProjectPreview        : function(projectPath) { return getProjectPreview(projectPath); },
     updateProjectMeta        : function(pdata) { return updateProjectMeta(pdata); },
     listOneProject           : function(slugFolderName, slugProjectName) { return listOneProject(slugFolderName, slugProjectName); },
-    removeOneProject         : function(pdata) { return removeOneProject(pdata); },
+    removeOneProject         : function(slugFolderName, slugProjectName) { return removeOneProject(slugFolderName, slugProjectName); },
   };
 
   /***************************************************************************************************/
