@@ -10,7 +10,7 @@ var dodocProject = require('./bin/dodoc-project');
 var dodocMedia = require('./bin/dodoc-media');
 var dodocPubli = require('./bin/dodoc-publi');
 
-// var exportPubliToFtp = require('./bin/upload-to-ftp.js');
+var exportPubliToFtp = require('./bin/upload-to-ftp.js');
 var exportPubliToPDF= require('./bin/export-to-pdf.js');
 
 try { var exportConfig  = require('./ftp-config.js'); }

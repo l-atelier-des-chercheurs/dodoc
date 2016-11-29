@@ -21,7 +21,6 @@ socket.on('listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 socket.on('publiMetaUpdated', onPubliMetaUpdated);
 socket.on('publiMediasUpdated', onPubliMediasUpdated);
 
-
 jQuery(document).ready(function($) {
   init();
 });
@@ -40,6 +39,7 @@ function init(){
 }
 
 function onListOnePubliMetaAndMedias( psdata) {
+  $('.publi_container').append('<p>YUP YUP </p>');
   console.log( "onListOnePubliMetaAndMedias");
   updateMontagePubliMeta( psdata);
   updateMontagePubliMedias( psdata);

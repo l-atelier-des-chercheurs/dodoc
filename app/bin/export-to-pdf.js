@@ -11,27 +11,20 @@ var exportPubliToPDF = (function() {
 
   const API = {
     exportPubliToPDF     : function(socket, d) { return exportPubliToPDF(socket, d); },
-    createFolders        : function() { return createNewFolder(); },
+    createFolders        : function() { return createFolders(); },
     generatePDF          : function() { return generatePDF(); },
   };
 
   function exportPubliToPDF(socket, d){
     dev.logfunction( "EVENT - exportPubliToPDF");
-    var publicationsFolder = "/app/user/publications";
-    var pdfFolderPath;
-
-    var folderPath = dodocAPI.getFolderPath( d.slugFolderName);
-    var projectPath = dodocAPI.getProjectPath( d.slugFolderName, d.slugProjectName);
-
-    createFolders(d);
-    
+    createFolders(d); 
   }
 
   function createFolders(d){
     var folderName = d.slugFolderName;
     var projectName = d.slugProjectName;
     var publiName = d.slugPubliName;
-    var publicationsFolder = "user/publications";
+    var publicationsFolder = path.join(dodoc.userDirname, dodoc.exportedPubliDir);
     var printFolderName = "print";
     
     createExportPubliFolder(folderName, publicationsFolder).then(function(exportFolderPath){
@@ -44,10 +37,7 @@ var exportPubliToPDF = (function() {
         });
       });
     });
-
   }
-
-
 
   function generatePDF(printFolderPath, d){
     var currentUrl = d.url; 
@@ -72,7 +62,7 @@ var exportPubliToPDF = (function() {
             // });
 
             setTimeout(function(){
-              page.render(printFolderPath+'/02.pdf').then(function() {
+              page.render(printFolderPath+'/03.pdf').then(function() {
                 console.log('success');
                 //io.sockets.emit('pdfIsGenerated');
                 page.close();
