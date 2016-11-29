@@ -27,6 +27,7 @@ if( lang === 'fr') {
       "edit" : "Modifier",
       "accept" : "Valider",
       "uploadPubliToFtp" : "Envoyer la publication vers un FTP",
+      "generatePDF" : "Exporter la publication en PDF",
 
       "lastMediasAdded" : "Derniers médias ajoutés",
       "listOfPublications" : "Liste des publications",
@@ -128,6 +129,7 @@ if( lang === 'fr') {
       "mediapublitemplatesarestoredint" : "Medias, publications and templates are currently stored in ",
       "toconnectwithanotherdevice" : "To connect with another device, use the following URL (and ignore the warning that’s shown):",
 
+      "generatePDF" : "Export the publication in FTP",
     }
   };
 }

@@ -7,6 +7,12 @@ var dodoc  = require('./../public/dodoc');
 
 var exportPubliToFtp = module.exports = {
 
+  const API = {
+    exportPubliToFtp     : function(socket, d) { return exportPubliToFtp(socket, d); },
+    createFolders        : function() { return createNewFolder(); },
+    generatePDF          : function() { return generatePDF(); },
+  };
+
   exportPubliToFtp : function(socket, d){
     dev.logfunction( "EVENT - exportPubliToFtp");
     var currentDateString = dodocAPI.getCurrentDate();

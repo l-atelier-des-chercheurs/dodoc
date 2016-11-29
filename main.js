@@ -13,6 +13,7 @@ var dodocMedia = require('./bin/dodoc-media.js');
 var dodocPubli = require('./bin/dodoc-publi.js');
 
 var exportPubliToFtp = require('./bin/upload-to-ftp.js');
+var exportPubliToPDF= require('./bin/export-to-pdf.js');
 
 try { var exportConfig  = require('./ftp-config.js'); }
 catch( err) { console.log('No ftp config files have been found'); }
@@ -60,6 +61,7 @@ module.exports = function(app, io){
 		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 
     socket.on( 'exportPubliToFtp', function (data){ onExportPubliToFtp( socket, data); });
+    socket.on( 'generatePDF', function (data){ onGeneratePDF( socket, data); });
 	});
 
   /***************************************************************************
@@ -417,6 +419,10 @@ module.exports = function(app, io){
 
   function onExportPubliToFtp(socket, publiData) {
     exportPubliToFtp.exportPubliToFtp( socket, publiData);
+  }
+
+  function onGeneratePDF(socket, url) {
+    exportPubliToPDF.exportPubliToPDF( socket, url);
   }
 
 // F I N     P U B L I     P A G E

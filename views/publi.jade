@@ -11,6 +11,7 @@ html
       header.navbar
         +logo()
         +button( 'uploadPubliToFtp', '')
+        +button( 'generatePDF', '')
 
     .publi_container(data-publidata data-publishown="#{slugPubliName}")
       include templates/publiTemplate.jade

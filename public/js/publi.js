@@ -26,8 +26,21 @@ socket.on('publiMediasUpdated', onPubliMediasUpdated);
 
 
 jQuery(document).ready(function($) {
-  uploadPubliToFtp.init();
+  init();
 });
+
+function init(){
+  // Save files for web
+  uploadPubliToFtp.init();
+
+  //Generate pdf
+  $('.js--generatePDF').on('click', function(){
+    var currentUrl = window.location.href;
+    console.log(currentUrl);
+    socket.emit('generatePDF', {url: currentUrl ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
+  });
+
+}
 
 function onListOnePubliMetaAndMedias( psdata) {
   console.log( "onListOnePubliMetaAndMedias");

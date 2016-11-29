@@ -104,6 +104,12 @@ mixin button(typeOfButton, navOrButton, style)
         include ../../public/images/i_enregistre.svg
       span !{dodoc.lang.uploadPubliToFtp}
 
+  if( typeOfButton === 'generatePDF')
+    a(href="#" title="Dodoc pdf publi" class='button-wrapper_pdf js--generatePDF #{defaultClasses}')
+      .btn.icon
+        include ../../public/images/i_enregistre.svg
+      span !{dodoc.lang.generatePDF}
+
   if( typeOfButton === 'editPubli')
     a(href="#" title="Dodoc publi" class='button-wrapper_edit js--editPubli #{defaultClasses}')
       .btn.icon
