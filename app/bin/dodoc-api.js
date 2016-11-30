@@ -53,13 +53,19 @@ var dodocAPI = (function() {
       var textd = parsedown.textify(d);
       if( e === "create") {
         fs.appendFile( mpath, textd, function(err) {
-        if (err) reject( err);
+          if (err) {
+            dev.error('Couldn’t update file: ' + err);
+            reject( err);
+          }
           resolve(parseData(textd));
         });
       }
       if( e === "update") {
         fs.writeFile( mpath, textd, function(err) {
-        if (err) reject( err);
+          if (err) {
+            dev.error('Couldn’t update file: ' + err);
+            reject( err);
+          }
           resolve(parseData(textd));
         });
       }

@@ -57,7 +57,6 @@ function onFolderCreated(data){
 // Si un fichier existe déjà, affiche un message d'alerte
 function onFolderAlreadyExist(data){
 	alert("Le nom de dossier " +data.name+ " existe déjà. Veuillez trouvez un autre nom.");
-	$('.new-folder').focus();
 }
 
 // Liste les dossiers
@@ -132,10 +131,12 @@ function makeFolderContent( projectData){
 
   // customisation du projet
 	newFolder
-	  .attr( 'data-nom', name)
-	  .attr( 'data-slugFolderName', slugFolderName)
-	  .attr( 'data-modifiedtimestamp', transformDatetoTimestamp( modified))
-	  .attr( 'data-statut', statut)
+	  .data({
+  	    "nom" : name,
+  	    "slugFolderName" : slugFolderName,
+  	    "modifiedtimestamp" : transformDatetoTimestamp(modified),
+  	    "data-statut" : statut,
+    })
 	  .find( '.statut-type').text( statut).end()
 	  .find( '.folder-link')
 	    .attr('href', '/' + slugFolderName)

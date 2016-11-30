@@ -343,6 +343,14 @@ $t-decalageDuCentre: 2%;
       opacity: 0;
       z-index: 1;
       object-fit: scale-down;
+
+      display: none;
+
+      body[data-mode="stopmotion"] & {
+        display: block;
+      }
+
+
     }
   }
 
@@ -908,3 +916,4 @@ $t-decalageDuCentre: 2%;
     width: 48px;
   }
 }
+

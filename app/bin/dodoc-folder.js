@@ -53,8 +53,11 @@ var dodocFolder = (function() {
               "modified" : currentDateString,
               "statut" : "en cours",
             };
-          dodocAPI.storeData( getMetaFileOfFolder( slugFolderName), fmeta, "create").then(function( meta) {
+          dodocAPI.storeData( getMetaFileOfFolder( slugFolderName), fmeta, "create").then(function(meta) {
             resolve( meta);
+          }, function(error) {
+            dev.error("Failed to create new folder meta! Error: " + error);
+            reject();
           });
 
         } else {
@@ -124,11 +127,12 @@ var dodocFolder = (function() {
       dev.logfunction( "COMMON — updateFolderMeta");
 
       var isNameChanged = folderData.newName !== undefined;
-      var slugFolderName = folderData.slugFolderName;
       var currentDateString = dodocAPI.getCurrentDate();
       var newStatut = folderData.statut;
+      var slugFolderName = folderData.slugFolderName;
+
       // récupérer les infos sur le folder
-      var fmeta = getFolderMeta( slugFolderName);
+      var fmeta = getFolderMeta(folderData.slugFolderName);
       // éditer les métas récupéré
       if( isNameChanged)
         fmeta.name = folderData.newName;
@@ -136,9 +140,12 @@ var dodocFolder = (function() {
         fmeta.statut = newStatut;
       fmeta.modified = currentDateString;
       // envoyer les changements dans le JSON du folder
-      dodocAPI.storeData( getMetaFileOfFolder( slugFolderName), fmeta, "update").then(function( ufmeta) {
+      dodocAPI.storeData(getMetaFileOfFolder(slugFolderName), fmeta, "update").then(function( ufmeta) {
         ufmeta.slugFolderName = slugFolderName;
         resolve( ufmeta);
+      }, function(error) {
+        dev.error("Failed to store data ! Error: " + error);
+        reject();
       });
     });
   }

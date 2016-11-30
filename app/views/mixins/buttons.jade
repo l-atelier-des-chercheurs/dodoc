@@ -99,8 +99,8 @@ mixin button(typeOfButton, navOrButton, style)
         include ../../client/images/i_pen.svg
       span !{dodoc.lang.edit}
 
-  if( typeOfButton === 'validerTitre')
-    a(href="#" title="Dodoc publi" class='button-wrapper_accept js--validerTitre #{defaultClasses}')
+  if( typeOfButton === 'valider')
+    a(href="#" title="Dodoc publi" class='button-wrapper_accept js--valider #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_enregistre.svg
       span !{dodoc.lang.accept}

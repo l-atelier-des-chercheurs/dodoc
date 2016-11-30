@@ -264,7 +264,6 @@ module.exports = function(app, io){
 
     dodocMedia.makeImageFromData(imageBuffer.data, pathToFile)
     .then(function(imagePath) {
-      dev.log('passed');
     		var mediaData = {};
     		mediaData.newImageName = newFileName+'.jpeg';
       dodocAPI.sendEventWithContent('newStopmotionImage', mediaData, io, socket);

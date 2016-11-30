@@ -8,7 +8,7 @@ mixin modals(typeOfModal)
       h2.popoverTitle
         | !{dodoc.lang.modal.newFolder}
       form(onsubmit='return false;' class='add-folder-form lead')
-        input(type='text' class='new-folder' placeholder='Nom')
+        input(type='text' class='new-folder' placeholder='Nom' required)
         input(type='submit' class='submit-new-folder js--submit-new-folder' value='Valider')
       +button( 'close', '', 'isCollapsed')
 
@@ -26,7 +26,7 @@ mixin modals(typeOfModal)
           option(value='terminé')
             | !{dodoc.lang.modal.finished}
         +button('deleteFolder', '', 'isCollapsed')
-        input(type="submit" class="submit-modify-folder" value="Valider")
+        +button('valider', '', 'isCollapsed')
       +button( 'close', '', 'isCollapsed')
 
     div(id="modal-statut-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")

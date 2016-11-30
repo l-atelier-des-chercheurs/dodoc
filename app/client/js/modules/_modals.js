@@ -476,10 +476,21 @@ var modals = (function() {
       	  .end()
       .end()
       .data({
-        "folderName" : folderName,
-        "slugFolderName" : slugFolderName,
-        "folderStatut" : folderStatut,
       });
+
+    $m.find(".js--valider").on('click', function(){
+      var newFolderName = $m.find('input.modify-folder').val();
+      var newStatut = $m.find('select.modify-statut').val();
+      socket.emit( 'editFolder', {
+        "name" : folderName,
+        "newName" : newFolderName,
+        "slugFolderName" : slugFolderName,
+        "statut" : newStatut
+      });
+      $m.foundation('reveal', 'close');
+    });
+
+
 
     // 	$("#container.row #modal-modify-folder").append(newContentToAdd);
     _modifyStatut();
