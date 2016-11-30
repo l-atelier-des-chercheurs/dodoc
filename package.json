@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron main",
-    "debug": "electron main --debug --verbose",
+    "debug": "nodemon  -e js,jade,json --ignore app/client/ --exec 'electron main --debug --verbose'",
     "pack": "build --dir",
     "dist": "build"
   },
@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "electron": "^1.4.8",
-    "electron-builder": "^8.6.0"
+    "electron-builder": "^8.6.0",
+    "nodemon": "^1.11.0"
   }
 }
