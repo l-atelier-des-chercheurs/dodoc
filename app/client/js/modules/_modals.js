@@ -55,8 +55,6 @@ var modals = (function() {
 
       $modal.foundation('reveal', 'open');
       setTimeout(function() { $modal.find('[autofocus]').eq(0).focus() }, 300);
-      debugger;
-
     },
 
 
@@ -453,7 +451,7 @@ var modals = (function() {
   }
 
   function _initAddFolderModal($m) {
-    $m.find('.js--submit-new-folder').on('click', function(){
+    $m.find(".js--valider").on('click', function(){
       if(_isAnyRequiredInputFieldEmpty($m)) return;
       var newFolderName = $m.find('input.new-folder').val();
       socket.emit( 'newFolder', { "name" : newFolderName });

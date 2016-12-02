@@ -23,15 +23,14 @@ input:not([type]), input[type="text"], input[type="password"], input[type="date"
 
   &:focus {
     border-color: $c-images;
-    border-bottom-width: 4px;
     outline: none;
   }
-  &:required {
-    border-color: $c-rouge;
-  }
-
-
-
+}
+input:required {
+  background-image: radial-gradient($c-rouge 20%, transparent 25%);
+  background-size: 16px 16px;
+  background-position: top right;
+  background-repeat: no-repeat;
 }
 
 
