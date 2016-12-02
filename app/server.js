@@ -67,6 +67,11 @@ module.exports = function() {
     app.get("port"), function() {
       console.log(`Server up and running. Go to ${config.protocol}://${config.host}:${config.port}`);
       console.log(' ');
+
+      process.on('unhandledRejection', function(reason, p) {
+          console.error("Unhandled Rejection at: Promise ", p, " reason: ", reason);
+          // application specific logging, throwing an error, or other logic here
+      });
     }
   );
 }
