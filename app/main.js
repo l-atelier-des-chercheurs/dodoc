@@ -22,7 +22,7 @@ module.exports = function(app, io){
   io.on("connection", function(socket){
     // I N D E X    P A G E
     socket.on( 'listFolders', function (data){ onListFolders(socket); });
-    socket.on("newFolder", onNewFolder);
+    socket.on( 'newFolder', function (data){ onNewFolder(socket,data); });
     socket.on("editFolder", onEditFolder);
     socket.on("removeFolder", onRemoveFolder);
 
@@ -75,13 +75,13 @@ module.exports = function(app, io){
 // I N D E X     P A G E
 
   // Create a new folder
-  function onNewFolder( folderData) {
+  function onNewFolder(socket, folderData) {
     dev.logfunction( "EVENT - onNewFolder");
-    dodocFolder.createNewFolder( folderData).then( function( newpdata) {
-      dodocAPI.sendEventWithContent( 'folderCreated', newpdata, io);
+    dodocFolder.createNewFolder( folderData).then(function( newpdata) {
+      dodocAPI.sendEventWithContent('folderCreated', newpdata, io);
     }, function(error) {
       dev.error("Failed to create a new folder! Error: " + error);
-      dodocAPI.sendEventWithContent( 'folderAlreadyExist', io, errorpdata);
+      dodocAPI.sendEventWithContent( 'folderAlreadyExist', error, io, socket);
     });
   }
 

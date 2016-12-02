@@ -32,28 +32,36 @@ var dodocFolder = (function() {
     return folderMetadata;
   }
 
-  function createNewFolder( folderData) {
+  function createNewFolder(d) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — createNewFolder");
 
-      var folderName = folderData.name;
-      var slugFolderName = slugg(folderName);
-      var folderPath = dodocAPI.getFolderPath( slugFolderName);
-      var currentDateString = dodocAPI.getCurrentDate();
+      // list all folders, check their name against the desired name
+      listAllFolders().then(function(allFoldersData) {
+        function findFolderWithSameName(folder) {
+          return folder.name === d.name;
+        }
+        const foldersWithSameNameAlreadyExist = allFoldersData.find(findFolderWithSameName) === undefined;
+        dev.logverbose('Found folders with same name : ' + foldersWithSameNameAlreadyExist);
+        // if no name is found, lets find a slug name not taken and create our folder
+        if(foldersWithSameNameAlreadyExist) {
+          let slugFolderName = slugg(d.name);
+          var foldersPath = dodocAPI.getFolderPath();
+          slugFolderName = dodocAPI.findFirstFilenameNotTaken(slugFolderName, foldersPath, '');
+          console.log("New folder created with name " + d.name + " and slug (folder name) " + slugFolderName);
 
-      fs.access( folderPath, fs.F_OK, function( err) {
-        // if there's nothing at path
-        if(err) {
-          console.log("New folder created with name " + folderName + " and path " + folderPath);
-          fs.ensureDirSync(folderPath);//write new folder in folders
+          var folderPath = dodocAPI.getFolderPath(slugFolderName);
+          fs.ensureDirSync(folderPath);
+
+          var currentDateString = dodocAPI.getCurrentDate();
           var fmeta =
             {
-              "name" : folderName,
+              "name" : d.name,
               "created" : currentDateString,
               "modified" : currentDateString,
               "statut" : "en cours",
             };
-          dodocAPI.storeData( getMetaFileOfFolder( slugFolderName), fmeta, "create").then(function(meta) {
+          dodocAPI.storeData(getMetaFileOfFolder(slugFolderName), fmeta, "create").then(function(meta) {
             resolve( meta);
           }, function(error) {
             dev.error("Failed to create new folder meta! Error: " + error);
@@ -61,14 +69,18 @@ var dodocFolder = (function() {
           });
 
         } else {
-          // if there's already something at path
-          console.log("WARNING - the following folder name already exists: " + slugFolderName);
+          // otherwise, lets fail with a message to the user
+          dev.error("WARNING - the following folder name already exists: " + d.name);
           var objectJson = {
-            "name": folderName,
+            "name": d.name,
             "timestamp": currentDateString
           };
-          reject( objectJson);
+          reject(objectJson);
         }
+
+      }, function(error) {
+        dev.error("Failed to list all folders to create a folder! Error: ", error);
+        reject();
       });
 
     });

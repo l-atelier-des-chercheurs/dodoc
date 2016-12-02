@@ -56,7 +56,7 @@ function onFolderCreated(data){
 
 // Si un fichier existe déjà, affiche un message d'alerte
 function onFolderAlreadyExist(data){
-	alert("Le nom de dossier " +data.name+ " existe déjà. Veuillez trouvez un autre nom.");
+	alertify.error("Le nom de dossier " +data.name+ " existe déjà. Veuillez trouvez un autre nom.");
 }
 
 // Liste les dossiers
@@ -164,9 +164,9 @@ function makeFolderContent( projectData){
 
 
 // Quand le dossier est modifié
-function onFolderModified(data){
-  // MISSING - not ideal, should display a notice saying that the folder has been updated and replace it instead
-	location.reload();
+function onFolderModified(folderData){
+	var $folderContent = makeFolderContent( folderData);
+  return insertOrReplaceFolder( folderData.slugFolderName, $folderContent);
 }
 
 //Suppression du dossier

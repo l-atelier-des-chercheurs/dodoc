@@ -74,9 +74,7 @@ var dodocProject = (function() {
           "informations" : 0
         };
 
-      var metaFileOfProject = getMetaFileOfProject( slugFolderName, slugProjectName);
-
-      dodocAPI.storeData(metaFileOfProject, pmeta, "create").then(function( meta) {
+      dodocAPI.storeData(getMetaFileOfProject(slugFolderName, slugProjectName), pmeta, "create").then(function( meta) {
         dev.logverbose('Just stored new project data, returning this data to client');
         var updatedpmeta = getProjectMeta( slugFolderName, slugProjectName);
         updatedpmeta.slugFolderName = slugFolderName;
