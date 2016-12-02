@@ -54,6 +54,8 @@ var modals = (function() {
       }
 
       $modal.foundation('reveal', 'open');
+      setTimeout(function() { $modal.find('[autofocus]').eq(0).focus() }, 300);
+      debugger;
 
     },
 
@@ -452,6 +454,7 @@ var modals = (function() {
 
   function _initAddFolderModal($m) {
     $m.find('.js--submit-new-folder').on('click', function(){
+      if(_isAnyRequiredInputFieldEmpty($m)) return;
       var newFolderName = $m.find('input.new-folder').val();
       socket.emit( 'newFolder', { "name" : newFolderName });
     });
@@ -459,19 +462,15 @@ var modals = (function() {
 
   function _initEditFolderModal($m, d) {
 
-    var folderName = d.nom;
-    var slugFolderName = d.slugFolderName;
-    var folderStatut = d.statut;
-
     $m
       	.find('.modify-folder')
-      	  .attr('value', folderName)
+      	  .attr('value', d.nom)
         .end()
       	.find('.modify-statut')
       	  .find('option')
           .prop("checked", false)
           .end()
-      	  .find('option[value="' + folderStatut + '"]')
+      	  .find('option[value="' + d.statut + '"]')
           .prop("checked", true)
       	  .end()
       .end()
@@ -479,18 +478,17 @@ var modals = (function() {
       });
 
     $m.find(".js--valider").on('click', function(){
+      if(_isAnyRequiredInputFieldEmpty($m)) return;
       var newFolderName = $m.find('input.modify-folder').val();
       var newStatut = $m.find('select.modify-statut').val();
       socket.emit( 'editFolder', {
-        "name" : folderName,
+        "name" : d.nom,
         "newName" : newFolderName,
-        "slugFolderName" : slugFolderName,
+        "slugFolderName" : d.slugFolderName,
         "statut" : newStatut
       });
       $m.foundation('reveal', 'close');
     });
-
-
 
     // 	$("#container.row #modal-modify-folder").append(newContentToAdd);
     _modifyStatut();
@@ -695,6 +693,18 @@ var modals = (function() {
         .off()
         ;
     }
+  }
+
+  function _isAnyRequiredInputFieldEmpty($m) {
+    let isAnyRequiredInputEmpty = false;
+    $m[0].querySelectorAll('input:required')
+      .forEach(function(eles) {
+        if(!eles.value) {
+          isAnyRequiredInputEmpty = true;
+          alertify.error(dodoc.lang.modal.someFieldsAreEmptyFillThem);
+        }
+      });
+    return isAnyRequiredInputEmpty;
   }
 
   return API;

@@ -18,12 +18,20 @@ input:not([type]), input[type="text"], input[type="password"], input[type="date"
   background-color: $c-gris_clair;
   border-bottom: 2px solid $c-gris;
 
-  transition: border-color 0.15s linear, background 0.15s linear;
+  transition: border-color 0.50s linear, background 0.15s linear, border-width 0.15s;
+
 
   &:focus {
     border-color: $c-images;
+    border-bottom-width: 4px;
     outline: none;
   }
+  &:required {
+    border-color: $c-rouge;
+  }
+
+
+
 }
 
 

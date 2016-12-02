@@ -85,6 +85,7 @@ if( lang === 'fr') {
 
       "modal" : {
         "sureRemoveMedia" : "Êtes-vous sûr de vouloir supprimer ce média ?",
+        "someFieldsAreEmptyFillThem" : "Tous les champs obligatoires ne sont pas remplis.",
 
         "addText" : "Ajouter du texte",
 
