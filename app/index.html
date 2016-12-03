@@ -1,0 +1,980 @@
+<head><style type="text/css" id="alertifyCSS">.alertify-logs>*{padding:12px 24px;color:#fff;box-shadow:0 2px 5px 0 rgba(0,0,0,.2);border-radius:1px}.alertify-logs>*,.alertify-logs>.default{background:rgba(0,0,0,.8)}.alertify-logs>.error{background:rgba(244,67,54,.8)}.alertify-logs>.success{background:rgba(76,175,80,.9)}.alertify{position:fixed;background-color:rgba(0,0,0,.3);left:0;right:0;top:0;bottom:0;width:100%;height:100%;z-index:1}.alertify.hide{opacity:0;pointer-events:none}.alertify,.alertify.show{box-sizing:border-box;transition:all .33s cubic-bezier(.25,.8,.25,1)}.alertify,.alertify *{box-sizing:border-box}.alertify .dialog{padding:12px}.alertify .alert,.alertify .dialog{width:100%;margin:0 auto;position:relative;top:50%;transform:translateY(-50%)}.alertify .alert>*,.alertify .dialog>*{width:400px;max-width:95%;margin:0 auto;text-align:center;padding:12px;background:#fff;box-shadow:0 2px 4px -1px rgba(0,0,0,.14),0 4px 5px 0 rgba(0,0,0,.098),0 1px 10px 0 rgba(0,0,0,.084)}.alertify .alert .msg,.alertify .dialog .msg{padding:12px;margin-bottom:12px;margin:0;text-align:left}.alertify .alert input:not(.form-control),.alertify .dialog input:not(.form-control){margin-bottom:15px;width:100%;font-size:100%;padding:12px}.alertify .alert input:not(.form-control):focus,.alertify .dialog input:not(.form-control):focus{outline-offset:-2px}.alertify .alert nav,.alertify .dialog nav{text-align:right}.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button),.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button){background:transparent;box-sizing:border-box;color:rgba(0,0,0,.87);position:relative;outline:0;border:0;display:inline-block;-ms-flex-align:center;-ms-grid-row-align:center;align-items:center;padding:0 6px;margin:6px 8px;line-height:36px;min-height:36px;white-space:nowrap;min-width:88px;text-align:center;text-transform:uppercase;font-size:14px;text-decoration:none;cursor:pointer;border:1px solid transparent;border-radius:2px}.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):active,.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):hover,.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):active,.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):hover{background-color:rgba(0,0,0,.05)}.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus,.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus{border:1px solid rgba(0,0,0,.1)}.alertify .alert nav button.btn,.alertify .dialog nav button.btn{margin:6px 4px}.alertify-logs{position:fixed;z-index:1}.alertify-logs.bottom,.alertify-logs:not(.top){bottom:16px}.alertify-logs.left,.alertify-logs:not(.right){left:16px}.alertify-logs.left>*,.alertify-logs:not(.right)>*{float:left;transform:translateZ(0);height:auto}.alertify-logs.left>.show,.alertify-logs:not(.right)>.show{left:0}.alertify-logs.left>*,.alertify-logs.left>.hide,.alertify-logs:not(.right)>*,.alertify-logs:not(.right)>.hide{left:-110%}.alertify-logs.right{right:16px}.alertify-logs.right>*{float:right;transform:translateZ(0)}.alertify-logs.right>.show{right:0;opacity:1}.alertify-logs.right>*,.alertify-logs.right>.hide{right:-110%;opacity:0}.alertify-logs.top{top:0}.alertify-logs>*{box-sizing:border-box;transition:all .4s cubic-bezier(.25,.8,.25,1);position:relative;clear:both;backface-visibility:hidden;perspective:1000;max-height:0;margin:0;padding:0;overflow:hidden;opacity:0;pointer-events:none}.alertify-logs>.show{margin-top:12px;opacity:1;max-height:1000px;padding:12px;pointer-events:auto}</style><meta class="foundation-mq-small"><meta class="foundation-mq-small-only"><meta class="foundation-mq-medium"><meta class="foundation-mq-medium-only"><meta class="foundation-mq-large"><meta class="foundation-mq-large-only"><meta class="foundation-mq-xlarge"><meta class="foundation-mq-xlarge-only"><meta class="foundation-mq-xxlarge"><meta class="foundation-data-attribute-namespace"><link rel="stylesheet" href="/bower_components/dragula.js/dist/dragula.min.css"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes"><link rel="stylesheet" href="/css/style.css"><title>Publication | yo</title><link href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC2ElEQVRYR81XP0wTYRT/vfuTijGRDl0aCWWQARJhd+gV42Bqk3ZwlslVjE4ulMHRpI460dmhxEJchPsYjGtrggMMNMGwNBFcENK7+8x3R+0fevfdlRK55Ybv/fl9v/fe994jhPwMszJOXE1zjjyIUgBPAeIvPt4AqAHOG0RY42Rvs0zhOIxpkgkZ5ucUnNYyiBZlsj3nnK9C0VdY5lEjSM8XgLgxHFU4XorkuF+YUASsd36MDATgOueaCWD+Us47yjWQlRkE4gIAw9yYB7dNgMZH5PzcDD8GqRmWyda67fYA8G6u7o/eedulAGFPdTPxD8AV0O5HYE84OgA2qyUQno+Wdh9rHCvsQa4oTl0Abqlxaz+M8zvOEe7Zh7hrNzHBvVI/oHHsqQl8V5P4qcTDmAFImxIl6gHYqq4CeCrTzLR28aRV9xU7IR3r2gyYPi0zJc7LbCG3SOexP5JpPDv7inn7UCbmntfVJN7H7stlyYqTYVbz4KgESctuPkj3oz4HU8YEoUAy+kXMX59+kd+mT0KEoxRLy3KiTMbWJwZQ2s9DtrWDbOtHZABCYUOfwYY+G6DLt8nYrDZAmPSTWjpjmLabQwHYVRMoxYwg3ZoIAQ+SeHtSwRisoQCIMLwaywfqXimAP9Dw8mZBAuD/hqB+DZJQ8gqKMnxxyiLngaD/zY2H+KXcCgpB+Ro8RN70M9KnuKYm8SHEU8wWchS5GT1u7fiGQ9C+rs/Kn2AvKF4zcrthxHY8J9qx08SE7RF3oMaxpyTwTZ2UxbyTD93t2AWxWS2CsDzUixNVqX8g8Vhwc4EBmItqL6J8HWQZ7bnw4lDqaKI33I5oNJw4x28oVmrgUNq24I7ljsNGDsJ1rhiBY3kHxMjD0UN7N12S1UxbunRicqxAsUqRVrNuhOclKkZo6dDalwhlkFYcejntzyq3SqAZEOu5t5qL1a1dMXVAzOgkEngNsFjY9fwvnNhH1RL5OH0AAAAASUVORK5CYII=" id="favicon" rel="icon" type="image/x-icon"><style></style></head><body class="publi"><div class="navbar-container"><header class="navbar"><div class="logo"><a href="/" title="Dodoc"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 515 168" style="enable-background:new 0 0 515 168;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FF3E51;}
+	.st1{fill:#09227C;}
+	.st2{fill:none;stroke:#09227C;stroke-width:10;stroke-miterlimit:10;}
+	.st3{fill:#FFFFFF;}
+	.st4{fill:none;stroke:#09227C;stroke-width:2;stroke-miterlimit:10;}
+	.st5{fill:#0E2173;}
+	.st6{fill:none;stroke:#09227C;stroke-width:6;stroke-miterlimit:10;}
+	.st7{clip-path:url(#SVGID_6_);}
+	.st8{fill:#09227C;stroke:#FFFFFF;stroke-width:6;stroke-miterlimit:10;}
+	.st9{fill:#FF3E51;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st10{clip-path:url(#SVGID_8_);}
+	.st11{fill:none;stroke:#09227C;stroke-width:4;stroke-miterlimit:10;}
+	.st12{clip-path:url(#SVGID_12_);}
+	.st13{fill:none;stroke:#0E2173;stroke-width:4;stroke-miterlimit:10;}
+	.st14{fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st15{fill:#353535;}
+	.st16{fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
+	.st17{clip-path:url(#SVGID_13_);}
+	.st18{fill:#FFFFFF;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st19{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st20{fill:#4BC0B4;}
+	.st21{fill:#FFBE32;}
+	.st22{fill:#4DC4B8;}
+	.st23{fill:#E5E5E5;}
+	.st24{fill:#FFD892;}
+	.st25{fill:#FF808C;}
+	.st26{fill:#BEC6E5;}
+	.st27{fill:#A5E5DA;}
+	.st28{fill:#293275;}
+	.st29{opacity:0.9;}
+	.st31{fill:none;stroke:#FFFFFF;stroke-width:8;stroke-miterlimit:10;}
+	.st32{fill:none;}
+	.st33{fill:none;stroke:#FF3E51;stroke-width:6;stroke-miterlimit:10;}
+	.st34{fill:#48C2B5;}
+	.st35{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st36{clip-path:url(#SVGID_15_);}
+	.st37{fill:none;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st38{clip-path:url(#SVGID_17_);}
+	.st39{fill:none;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st40{clip-path:url(#SVGID_19_);}
+	.st41{clip-path:url(#SVGID_21_);}
+	.st42{clip-path:url(#SVGID_23_);}
+	.st43{clip-path:url(#SVGID_25_);}
+	.st44{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st45{fill:#FF3E51;stroke:#0E2173;stroke-width:12;stroke-miterlimit:10;}
+	.st46{fill:none;stroke:#FF3E51;stroke-width:20;stroke-miterlimit:10;}
+	.st47{clip-path:url(#SVGID_27_);}
+	.st48{clip-path:url(#SVGID_29_);}
+	.st49{fill:none;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st50{clip-path:url(#SVGID_31_);}
+	.st51{clip-path:url(#SVGID_33_);}
+	.st52{clip-path:url(#SVGID_35_);}
+	.st53{clip-path:url(#SVGID_37_);}
+	.st54{clip-path:url(#SVGID_39_);}
+	.st55{clip-path:url(#SVGID_41_);}
+	.st56{clip-path:url(#SVGID_42_);}
+	.st57{fill:none;stroke:#FFFFFF;stroke-width:10;stroke-miterlimit:10;}
+	.st58{fill:#FF3E51;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st59{clip-path:url(#SVGID_43_);}
+	.st60{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st61{fill:#FFFFFF;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st62{clip-path:url(#SVGID_44_);}
+	.st63{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-miterlimit:10;}
+	.st64{clip-path:url(#SVGID_46_);}
+	.st65{clip-path:url(#SVGID_48_);}
+	.st66{fill:none;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st67{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st68{clip-path:url(#SVGID_50_);}
+	.st69{clip-path:url(#SVGID_52_);}
+	.st70{clip-path:url(#SVGID_54_);}
+	.st71{clip-path:url(#SVGID_56_);}
+	.st72{opacity:0.6;}
+	.st73{clip-path:url(#SVGID_58_);}
+	.st74{clip-path:url(#SVGID_60_);}
+	.st75{fill:#40CEBF;}
+	.st76{fill:#4AD1B7;}
+	.st77{fill:#FBB148;}
+</style>
+<g id="archive">
+</g>
+<g id="Calque_1">
+	<g>
+		<rect x="288.3" y="29" class="st20" width="37.6" height="108.7"></rect>
+		<circle class="st20" cx="375.1" cy="101.1" r="37.6"></circle>
+		<polyline class="st20" points="497,64.6 460.2,101.4 423.4,64.6 		"></polyline>
+		<polyline class="st20" points="423.4,138.2 460.2,101.4 497,138.2 		"></polyline>
+		<rect x="52" y="29" class="st20" width="37.6" height="108.7"></rect>
+		<circle class="st20" cx="145.3" cy="101.1" r="37.6"></circle>
+	</g>
+	<g class="st29">
+		<polyline class="st21" points="423.4,64.1 460.2,100.9 423.4,137.7 		"></polyline>
+		<circle class="st21" cx="288.3" cy="100.6" r="37.6"></circle>
+		<circle class="st21" cx="52" cy="100.6" r="37.6"></circle>
+		<circle class="st21" cx="375.1" cy="100.6" r="18.7"></circle>
+		<circle class="st21" cx="145.3" cy="100.6" r="18.7"></circle>
+		<circle class="st21" cx="215.9" cy="101.7" r="18.7"></circle>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+</svg>
+</a></div></header></div><div data-publidata="" data-publishown="yo" class="publi_container"><link id="templateCss" rel="stylesheet" href="/templates/unecolonne/style.css"><div data-template="unecolonne" class="template_container"><h2 class="publi-title js--publiTitle">yo</h2><div class="publi-btn"></div><hr><div class="publi_medias"><li data-ratio="" data-title="" data-legende="" class="media media_text" data-mediakey="05-textes/20161129_105405.txt" data-medianame="20161129_105405" data-mediatype="05-textes" data-type="05-textes" data-informations=""><div class="mediaContent"><div class="mediaContent--textOfTextmedia"><p>Hello world</p></div></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--flagMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FF3E51;}
+	.st1{fill:#09227C;}
+	.st2{fill:none;stroke:#09227C;stroke-width:10;stroke-miterlimit:10;}
+	.st3{fill:#FFFFFF;}
+	.st4{fill:none;stroke:#09227C;stroke-width:2;stroke-miterlimit:10;}
+	.st5{fill:#0E2173;}
+	.st6{fill:none;stroke:#09227C;stroke-width:6;stroke-miterlimit:10;}
+	.st7{clip-path:url(#SVGID_6_);}
+	.st8{fill:#09227C;stroke:#FFFFFF;stroke-width:6;stroke-miterlimit:10;}
+	.st9{fill:#FF3E51;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st10{clip-path:url(#SVGID_8_);}
+	.st11{fill:none;stroke:#09227C;stroke-width:4;stroke-miterlimit:10;}
+	.st12{clip-path:url(#SVGID_12_);}
+	.st13{fill:none;stroke:#0E2173;stroke-width:4;stroke-miterlimit:10;}
+	.st14{fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st15{fill:#353535;}
+	.st16{fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
+	.st17{clip-path:url(#SVGID_13_);}
+	.st18{fill:#FFFFFF;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st19{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st20{fill:#4BC0B4;}
+	.st21{fill:#FFBE32;}
+	.st22{fill:#4DC4B8;}
+	.st23{fill:#E5E5E5;}
+	.st24{fill:#FFD892;}
+	.st25{fill:#FF808C;}
+	.st26{fill:#BEC6E5;}
+	.st27{fill:#A5E5DA;}
+	.st28{fill:#293275;}
+	.st29{opacity:0.9;}
+	.st30{fill:#40BEB3;}
+	.st31{fill:none;stroke:#FFFFFF;stroke-width:8;stroke-miterlimit:10;}
+	.st32{fill:none;}
+	.st33{fill:none;stroke:#FF3E51;stroke-width:6;stroke-miterlimit:10;}
+	.st34{fill:#48C2B5;}
+	.st35{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st36{clip-path:url(#SVGID_15_);}
+	.st37{fill:none;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st38{clip-path:url(#SVGID_17_);}
+	.st39{fill:none;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st40{clip-path:url(#SVGID_19_);}
+	.st41{clip-path:url(#SVGID_21_);}
+	.st42{clip-path:url(#SVGID_23_);}
+	.st43{clip-path:url(#SVGID_25_);}
+	.st44{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st45{fill:#FF3E51;stroke:#0E2173;stroke-width:12;stroke-miterlimit:10;}
+	.st46{fill:none;stroke:#FF3E51;stroke-width:20;stroke-miterlimit:10;}
+	.st47{clip-path:url(#SVGID_27_);}
+	.st48{clip-path:url(#SVGID_29_);}
+	.st49{fill:none;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st50{clip-path:url(#SVGID_31_);}
+	.st51{clip-path:url(#SVGID_33_);}
+	.st52{clip-path:url(#SVGID_35_);}
+	.st53{clip-path:url(#SVGID_37_);}
+	.st54{clip-path:url(#SVGID_39_);}
+	.st55{clip-path:url(#SVGID_41_);}
+	.st56{clip-path:url(#SVGID_42_);}
+	.st57{fill:none;stroke:#FFFFFF;stroke-width:10;stroke-miterlimit:10;}
+	.st58{fill:#FF3E51;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st59{clip-path:url(#SVGID_43_);}
+	.st60{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st61{fill:#FFFFFF;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st62{clip-path:url(#SVGID_44_);}
+	.st63{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-miterlimit:10;}
+	.st64{clip-path:url(#SVGID_46_);}
+	.st65{clip-path:url(#SVGID_48_);}
+	.st66{fill:none;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st67{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st68{clip-path:url(#SVGID_50_);}
+	.st69{clip-path:url(#SVGID_52_);}
+	.st70{clip-path:url(#SVGID_54_);}
+	.st71{clip-path:url(#SVGID_56_);}
+	.st72{opacity:0.6;}
+	.st73{clip-path:url(#SVGID_58_);}
+	.st74{clip-path:url(#SVGID_60_);}
+	.st75{fill:#40CEBF;}
+	.st76{fill:#4AD1B7;}
+	.st77{fill:#FBB148;}
+</style>
+<g id="archive">
+</g>
+<g id="Calque_1">
+	<g>
+		<circle class="st20" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon class="st5" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon class="st5" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+</svg>
+</div></a></li><li data-ratio="" data-title="" data-legende="" class="media media_image" data-mediakey="01-photos/20161129_084509.txt" data-medianame="20161129_084509" data-mediatype="01-photos" data-type="01-photos" data-informations=""><div class="mediaContent"><img src="/hello/ca-cest-beau/01-photos/20161129_084509-thumb.jpeg"></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--flagMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FF3E51;}
+	.st1{fill:#09227C;}
+	.st2{fill:none;stroke:#09227C;stroke-width:10;stroke-miterlimit:10;}
+	.st3{fill:#FFFFFF;}
+	.st4{fill:none;stroke:#09227C;stroke-width:2;stroke-miterlimit:10;}
+	.st5{fill:#0E2173;}
+	.st6{fill:none;stroke:#09227C;stroke-width:6;stroke-miterlimit:10;}
+	.st7{clip-path:url(#SVGID_6_);}
+	.st8{fill:#09227C;stroke:#FFFFFF;stroke-width:6;stroke-miterlimit:10;}
+	.st9{fill:#FF3E51;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st10{clip-path:url(#SVGID_8_);}
+	.st11{fill:none;stroke:#09227C;stroke-width:4;stroke-miterlimit:10;}
+	.st12{clip-path:url(#SVGID_12_);}
+	.st13{fill:none;stroke:#0E2173;stroke-width:4;stroke-miterlimit:10;}
+	.st14{fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st15{fill:#353535;}
+	.st16{fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
+	.st17{clip-path:url(#SVGID_13_);}
+	.st18{fill:#FFFFFF;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st19{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st20{fill:#4BC0B4;}
+	.st21{fill:#FFBE32;}
+	.st22{fill:#4DC4B8;}
+	.st23{fill:#E5E5E5;}
+	.st24{fill:#FFD892;}
+	.st25{fill:#FF808C;}
+	.st26{fill:#BEC6E5;}
+	.st27{fill:#A5E5DA;}
+	.st28{fill:#293275;}
+	.st29{opacity:0.9;}
+	.st30{fill:#40BEB3;}
+	.st31{fill:none;stroke:#FFFFFF;stroke-width:8;stroke-miterlimit:10;}
+	.st32{fill:none;}
+	.st33{fill:none;stroke:#FF3E51;stroke-width:6;stroke-miterlimit:10;}
+	.st34{fill:#48C2B5;}
+	.st35{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st36{clip-path:url(#SVGID_15_);}
+	.st37{fill:none;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st38{clip-path:url(#SVGID_17_);}
+	.st39{fill:none;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st40{clip-path:url(#SVGID_19_);}
+	.st41{clip-path:url(#SVGID_21_);}
+	.st42{clip-path:url(#SVGID_23_);}
+	.st43{clip-path:url(#SVGID_25_);}
+	.st44{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st45{fill:#FF3E51;stroke:#0E2173;stroke-width:12;stroke-miterlimit:10;}
+	.st46{fill:none;stroke:#FF3E51;stroke-width:20;stroke-miterlimit:10;}
+	.st47{clip-path:url(#SVGID_27_);}
+	.st48{clip-path:url(#SVGID_29_);}
+	.st49{fill:none;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st50{clip-path:url(#SVGID_31_);}
+	.st51{clip-path:url(#SVGID_33_);}
+	.st52{clip-path:url(#SVGID_35_);}
+	.st53{clip-path:url(#SVGID_37_);}
+	.st54{clip-path:url(#SVGID_39_);}
+	.st55{clip-path:url(#SVGID_41_);}
+	.st56{clip-path:url(#SVGID_42_);}
+	.st57{fill:none;stroke:#FFFFFF;stroke-width:10;stroke-miterlimit:10;}
+	.st58{fill:#FF3E51;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st59{clip-path:url(#SVGID_43_);}
+	.st60{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st61{fill:#FFFFFF;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st62{clip-path:url(#SVGID_44_);}
+	.st63{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-miterlimit:10;}
+	.st64{clip-path:url(#SVGID_46_);}
+	.st65{clip-path:url(#SVGID_48_);}
+	.st66{fill:none;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st67{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st68{clip-path:url(#SVGID_50_);}
+	.st69{clip-path:url(#SVGID_52_);}
+	.st70{clip-path:url(#SVGID_54_);}
+	.st71{clip-path:url(#SVGID_56_);}
+	.st72{opacity:0.6;}
+	.st73{clip-path:url(#SVGID_58_);}
+	.st74{clip-path:url(#SVGID_60_);}
+	.st75{fill:#40CEBF;}
+	.st76{fill:#4AD1B7;}
+	.st77{fill:#FBB148;}
+</style>
+<g id="archive">
+</g>
+<g id="Calque_1">
+	<g>
+		<circle class="st20" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon class="st5" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon class="st5" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+</svg>
+</div></a></li><li data-ratio="" data-title="" data-legende="" class="media media_image" data-mediakey="01-photos/20161129_084506.txt" data-medianame="20161129_084506" data-mediatype="01-photos" data-type="01-photos" data-informations=""><div class="mediaContent"><img src="/hello/ca-cest-beau/01-photos/20161129_084506-thumb.jpeg"></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--flagMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FF3E51;}
+	.st1{fill:#09227C;}
+	.st2{fill:none;stroke:#09227C;stroke-width:10;stroke-miterlimit:10;}
+	.st3{fill:#FFFFFF;}
+	.st4{fill:none;stroke:#09227C;stroke-width:2;stroke-miterlimit:10;}
+	.st5{fill:#0E2173;}
+	.st6{fill:none;stroke:#09227C;stroke-width:6;stroke-miterlimit:10;}
+	.st7{clip-path:url(#SVGID_6_);}
+	.st8{fill:#09227C;stroke:#FFFFFF;stroke-width:6;stroke-miterlimit:10;}
+	.st9{fill:#FF3E51;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st10{clip-path:url(#SVGID_8_);}
+	.st11{fill:none;stroke:#09227C;stroke-width:4;stroke-miterlimit:10;}
+	.st12{clip-path:url(#SVGID_12_);}
+	.st13{fill:none;stroke:#0E2173;stroke-width:4;stroke-miterlimit:10;}
+	.st14{fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st15{fill:#353535;}
+	.st16{fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
+	.st17{clip-path:url(#SVGID_13_);}
+	.st18{fill:#FFFFFF;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st19{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st20{fill:#4BC0B4;}
+	.st21{fill:#FFBE32;}
+	.st22{fill:#4DC4B8;}
+	.st23{fill:#E5E5E5;}
+	.st24{fill:#FFD892;}
+	.st25{fill:#FF808C;}
+	.st26{fill:#BEC6E5;}
+	.st27{fill:#A5E5DA;}
+	.st28{fill:#293275;}
+	.st29{opacity:0.9;}
+	.st30{fill:#40BEB3;}
+	.st31{fill:none;stroke:#FFFFFF;stroke-width:8;stroke-miterlimit:10;}
+	.st32{fill:none;}
+	.st33{fill:none;stroke:#FF3E51;stroke-width:6;stroke-miterlimit:10;}
+	.st34{fill:#48C2B5;}
+	.st35{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st36{clip-path:url(#SVGID_15_);}
+	.st37{fill:none;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st38{clip-path:url(#SVGID_17_);}
+	.st39{fill:none;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st40{clip-path:url(#SVGID_19_);}
+	.st41{clip-path:url(#SVGID_21_);}
+	.st42{clip-path:url(#SVGID_23_);}
+	.st43{clip-path:url(#SVGID_25_);}
+	.st44{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st45{fill:#FF3E51;stroke:#0E2173;stroke-width:12;stroke-miterlimit:10;}
+	.st46{fill:none;stroke:#FF3E51;stroke-width:20;stroke-miterlimit:10;}
+	.st47{clip-path:url(#SVGID_27_);}
+	.st48{clip-path:url(#SVGID_29_);}
+	.st49{fill:none;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st50{clip-path:url(#SVGID_31_);}
+	.st51{clip-path:url(#SVGID_33_);}
+	.st52{clip-path:url(#SVGID_35_);}
+	.st53{clip-path:url(#SVGID_37_);}
+	.st54{clip-path:url(#SVGID_39_);}
+	.st55{clip-path:url(#SVGID_41_);}
+	.st56{clip-path:url(#SVGID_42_);}
+	.st57{fill:none;stroke:#FFFFFF;stroke-width:10;stroke-miterlimit:10;}
+	.st58{fill:#FF3E51;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st59{clip-path:url(#SVGID_43_);}
+	.st60{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st61{fill:#FFFFFF;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st62{clip-path:url(#SVGID_44_);}
+	.st63{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-miterlimit:10;}
+	.st64{clip-path:url(#SVGID_46_);}
+	.st65{clip-path:url(#SVGID_48_);}
+	.st66{fill:none;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st67{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st68{clip-path:url(#SVGID_50_);}
+	.st69{clip-path:url(#SVGID_52_);}
+	.st70{clip-path:url(#SVGID_54_);}
+	.st71{clip-path:url(#SVGID_56_);}
+	.st72{opacity:0.6;}
+	.st73{clip-path:url(#SVGID_58_);}
+	.st74{clip-path:url(#SVGID_60_);}
+	.st75{fill:#40CEBF;}
+	.st76{fill:#4AD1B7;}
+	.st77{fill:#FBB148;}
+</style>
+<g id="archive">
+</g>
+<g id="Calque_1">
+	<g>
+		<circle class="st20" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon class="st5" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon class="st5" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+</svg>
+</div></a></li><li data-ratio="" data-title="" data-legende="" class="media media_image" data-mediakey="01-photos/20161129_084511.txt" data-medianame="20161129_084511" data-mediatype="01-photos" data-type="01-photos" data-informations=""><div class="mediaContent"><img src="/hello/ca-cest-beau/01-photos/20161129_084511-thumb.jpeg"></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--flagMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FF3E51;}
+	.st1{fill:#09227C;}
+	.st2{fill:none;stroke:#09227C;stroke-width:10;stroke-miterlimit:10;}
+	.st3{fill:#FFFFFF;}
+	.st4{fill:none;stroke:#09227C;stroke-width:2;stroke-miterlimit:10;}
+	.st5{fill:#0E2173;}
+	.st6{fill:none;stroke:#09227C;stroke-width:6;stroke-miterlimit:10;}
+	.st7{clip-path:url(#SVGID_6_);}
+	.st8{fill:#09227C;stroke:#FFFFFF;stroke-width:6;stroke-miterlimit:10;}
+	.st9{fill:#FF3E51;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st10{clip-path:url(#SVGID_8_);}
+	.st11{fill:none;stroke:#09227C;stroke-width:4;stroke-miterlimit:10;}
+	.st12{clip-path:url(#SVGID_12_);}
+	.st13{fill:none;stroke:#0E2173;stroke-width:4;stroke-miterlimit:10;}
+	.st14{fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st15{fill:#353535;}
+	.st16{fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
+	.st17{clip-path:url(#SVGID_13_);}
+	.st18{fill:#FFFFFF;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st19{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st20{fill:#4BC0B4;}
+	.st21{fill:#FFBE32;}
+	.st22{fill:#4DC4B8;}
+	.st23{fill:#E5E5E5;}
+	.st24{fill:#FFD892;}
+	.st25{fill:#FF808C;}
+	.st26{fill:#BEC6E5;}
+	.st27{fill:#A5E5DA;}
+	.st28{fill:#293275;}
+	.st29{opacity:0.9;}
+	.st30{fill:#40BEB3;}
+	.st31{fill:none;stroke:#FFFFFF;stroke-width:8;stroke-miterlimit:10;}
+	.st32{fill:none;}
+	.st33{fill:none;stroke:#FF3E51;stroke-width:6;stroke-miterlimit:10;}
+	.st34{fill:#48C2B5;}
+	.st35{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st36{clip-path:url(#SVGID_15_);}
+	.st37{fill:none;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st38{clip-path:url(#SVGID_17_);}
+	.st39{fill:none;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st40{clip-path:url(#SVGID_19_);}
+	.st41{clip-path:url(#SVGID_21_);}
+	.st42{clip-path:url(#SVGID_23_);}
+	.st43{clip-path:url(#SVGID_25_);}
+	.st44{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st45{fill:#FF3E51;stroke:#0E2173;stroke-width:12;stroke-miterlimit:10;}
+	.st46{fill:none;stroke:#FF3E51;stroke-width:20;stroke-miterlimit:10;}
+	.st47{clip-path:url(#SVGID_27_);}
+	.st48{clip-path:url(#SVGID_29_);}
+	.st49{fill:none;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st50{clip-path:url(#SVGID_31_);}
+	.st51{clip-path:url(#SVGID_33_);}
+	.st52{clip-path:url(#SVGID_35_);}
+	.st53{clip-path:url(#SVGID_37_);}
+	.st54{clip-path:url(#SVGID_39_);}
+	.st55{clip-path:url(#SVGID_41_);}
+	.st56{clip-path:url(#SVGID_42_);}
+	.st57{fill:none;stroke:#FFFFFF;stroke-width:10;stroke-miterlimit:10;}
+	.st58{fill:#FF3E51;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st59{clip-path:url(#SVGID_43_);}
+	.st60{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st61{fill:#FFFFFF;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st62{clip-path:url(#SVGID_44_);}
+	.st63{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-miterlimit:10;}
+	.st64{clip-path:url(#SVGID_46_);}
+	.st65{clip-path:url(#SVGID_48_);}
+	.st66{fill:none;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st67{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st68{clip-path:url(#SVGID_50_);}
+	.st69{clip-path:url(#SVGID_52_);}
+	.st70{clip-path:url(#SVGID_54_);}
+	.st71{clip-path:url(#SVGID_56_);}
+	.st72{opacity:0.6;}
+	.st73{clip-path:url(#SVGID_58_);}
+	.st74{clip-path:url(#SVGID_60_);}
+	.st75{fill:#40CEBF;}
+	.st76{fill:#4AD1B7;}
+	.st77{fill:#FBB148;}
+</style>
+<g id="archive">
+</g>
+<g id="Calque_1">
+	<g>
+		<circle class="st20" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon class="st5" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon class="st5" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+</svg>
+</div></a></li></div></div></div><div id="modal-modify-publi" data-reveal="" aria-labelledby="modalTitle" aria-hidden="true" role="dialog" class="reveal-modal"></div><div style="display:none;"><h2 class="popoverTitle">Éditer la publication</h2><form onsubmit="return false;"><input type="text" placeholder="Nom" autofocus="" class="js--modal_name"><fieldset class="templateSelector"><div class="txt-small_info">Sélection de gabarit</div><label><input type="radio" name="publiTemplate" value="grille" checked="" class="js--modal_template"><img src="/templates/grille/icone.svg"><span>grille</span></label><label><input type="radio" name="publiTemplate" value="marseille" checked="" class="js--modal_template"><img src="/templates/marseille/icone.svg"><span>marseille</span></label><label><input type="radio" name="publiTemplate" value="numok" checked="" class="js--modal_template"><img src="/templates/numok/icone.svg"><span>numok</span></label><label><input type="radio" name="publiTemplate" value="unecolonne" checked="" class="js--modal_template"><img src="/templates/unecolonne/icone.svg"><span>unecolonne</span></label></fieldset><hr><input type="submit" value="Valider" class="button_submit js--modal_submit"></form><a aria-label="Close" class="close-reveal-modal">×</a></div><div class="js--templates"><li data-ratio="" data-title="" data-legende="" class="media media_image"><div class="mediaContent"><img><div class="mediaData"><p class="mediaData--informations"></p></div></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--flagMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FF3E51;}
+	.st1{fill:#09227C;}
+	.st2{fill:none;stroke:#09227C;stroke-width:10;stroke-miterlimit:10;}
+	.st3{fill:#FFFFFF;}
+	.st4{fill:none;stroke:#09227C;stroke-width:2;stroke-miterlimit:10;}
+	.st5{fill:#0E2173;}
+	.st6{fill:none;stroke:#09227C;stroke-width:6;stroke-miterlimit:10;}
+	.st7{clip-path:url(#SVGID_6_);}
+	.st8{fill:#09227C;stroke:#FFFFFF;stroke-width:6;stroke-miterlimit:10;}
+	.st9{fill:#FF3E51;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st10{clip-path:url(#SVGID_8_);}
+	.st11{fill:none;stroke:#09227C;stroke-width:4;stroke-miterlimit:10;}
+	.st12{clip-path:url(#SVGID_12_);}
+	.st13{fill:none;stroke:#0E2173;stroke-width:4;stroke-miterlimit:10;}
+	.st14{fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st15{fill:#353535;}
+	.st16{fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
+	.st17{clip-path:url(#SVGID_13_);}
+	.st18{fill:#FFFFFF;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st19{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st20{fill:#4BC0B4;}
+	.st21{fill:#FFBE32;}
+	.st22{fill:#4DC4B8;}
+	.st23{fill:#E5E5E5;}
+	.st24{fill:#FFD892;}
+	.st25{fill:#FF808C;}
+	.st26{fill:#BEC6E5;}
+	.st27{fill:#A5E5DA;}
+	.st28{fill:#293275;}
+	.st29{opacity:0.9;}
+	.st30{fill:#40BEB3;}
+	.st31{fill:none;stroke:#FFFFFF;stroke-width:8;stroke-miterlimit:10;}
+	.st32{fill:none;}
+	.st33{fill:none;stroke:#FF3E51;stroke-width:6;stroke-miterlimit:10;}
+	.st34{fill:#48C2B5;}
+	.st35{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st36{clip-path:url(#SVGID_15_);}
+	.st37{fill:none;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st38{clip-path:url(#SVGID_17_);}
+	.st39{fill:none;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st40{clip-path:url(#SVGID_19_);}
+	.st41{clip-path:url(#SVGID_21_);}
+	.st42{clip-path:url(#SVGID_23_);}
+	.st43{clip-path:url(#SVGID_25_);}
+	.st44{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st45{fill:#FF3E51;stroke:#0E2173;stroke-width:12;stroke-miterlimit:10;}
+	.st46{fill:none;stroke:#FF3E51;stroke-width:20;stroke-miterlimit:10;}
+	.st47{clip-path:url(#SVGID_27_);}
+	.st48{clip-path:url(#SVGID_29_);}
+	.st49{fill:none;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st50{clip-path:url(#SVGID_31_);}
+	.st51{clip-path:url(#SVGID_33_);}
+	.st52{clip-path:url(#SVGID_35_);}
+	.st53{clip-path:url(#SVGID_37_);}
+	.st54{clip-path:url(#SVGID_39_);}
+	.st55{clip-path:url(#SVGID_41_);}
+	.st56{clip-path:url(#SVGID_42_);}
+	.st57{fill:none;stroke:#FFFFFF;stroke-width:10;stroke-miterlimit:10;}
+	.st58{fill:#FF3E51;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st59{clip-path:url(#SVGID_43_);}
+	.st60{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st61{fill:#FFFFFF;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st62{clip-path:url(#SVGID_44_);}
+	.st63{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-miterlimit:10;}
+	.st64{clip-path:url(#SVGID_46_);}
+	.st65{clip-path:url(#SVGID_48_);}
+	.st66{fill:none;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st67{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st68{clip-path:url(#SVGID_50_);}
+	.st69{clip-path:url(#SVGID_52_);}
+	.st70{clip-path:url(#SVGID_54_);}
+	.st71{clip-path:url(#SVGID_56_);}
+	.st72{opacity:0.6;}
+	.st73{clip-path:url(#SVGID_58_);}
+	.st74{clip-path:url(#SVGID_60_);}
+	.st75{fill:#40CEBF;}
+	.st76{fill:#4AD1B7;}
+	.st77{fill:#FBB148;}
+</style>
+<g id="archive">
+</g>
+<g id="Calque_1">
+	<g>
+		<circle class="st20" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon class="st5" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon class="st5" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+</svg>
+</div></a></li><li data-ratio="" data-title="" data-legende="" class="media media_video"><div class="mediaContent"><video preload="none" controls=""><source></video><div class="mediaData"><p class="mediaData--informations"></p></div></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--flagMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FF3E51;}
+	.st1{fill:#09227C;}
+	.st2{fill:none;stroke:#09227C;stroke-width:10;stroke-miterlimit:10;}
+	.st3{fill:#FFFFFF;}
+	.st4{fill:none;stroke:#09227C;stroke-width:2;stroke-miterlimit:10;}
+	.st5{fill:#0E2173;}
+	.st6{fill:none;stroke:#09227C;stroke-width:6;stroke-miterlimit:10;}
+	.st7{clip-path:url(#SVGID_6_);}
+	.st8{fill:#09227C;stroke:#FFFFFF;stroke-width:6;stroke-miterlimit:10;}
+	.st9{fill:#FF3E51;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st10{clip-path:url(#SVGID_8_);}
+	.st11{fill:none;stroke:#09227C;stroke-width:4;stroke-miterlimit:10;}
+	.st12{clip-path:url(#SVGID_12_);}
+	.st13{fill:none;stroke:#0E2173;stroke-width:4;stroke-miterlimit:10;}
+	.st14{fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st15{fill:#353535;}
+	.st16{fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
+	.st17{clip-path:url(#SVGID_13_);}
+	.st18{fill:#FFFFFF;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st19{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st20{fill:#4BC0B4;}
+	.st21{fill:#FFBE32;}
+	.st22{fill:#4DC4B8;}
+	.st23{fill:#E5E5E5;}
+	.st24{fill:#FFD892;}
+	.st25{fill:#FF808C;}
+	.st26{fill:#BEC6E5;}
+	.st27{fill:#A5E5DA;}
+	.st28{fill:#293275;}
+	.st29{opacity:0.9;}
+	.st30{fill:#40BEB3;}
+	.st31{fill:none;stroke:#FFFFFF;stroke-width:8;stroke-miterlimit:10;}
+	.st32{fill:none;}
+	.st33{fill:none;stroke:#FF3E51;stroke-width:6;stroke-miterlimit:10;}
+	.st34{fill:#48C2B5;}
+	.st35{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st36{clip-path:url(#SVGID_15_);}
+	.st37{fill:none;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st38{clip-path:url(#SVGID_17_);}
+	.st39{fill:none;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st40{clip-path:url(#SVGID_19_);}
+	.st41{clip-path:url(#SVGID_21_);}
+	.st42{clip-path:url(#SVGID_23_);}
+	.st43{clip-path:url(#SVGID_25_);}
+	.st44{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st45{fill:#FF3E51;stroke:#0E2173;stroke-width:12;stroke-miterlimit:10;}
+	.st46{fill:none;stroke:#FF3E51;stroke-width:20;stroke-miterlimit:10;}
+	.st47{clip-path:url(#SVGID_27_);}
+	.st48{clip-path:url(#SVGID_29_);}
+	.st49{fill:none;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st50{clip-path:url(#SVGID_31_);}
+	.st51{clip-path:url(#SVGID_33_);}
+	.st52{clip-path:url(#SVGID_35_);}
+	.st53{clip-path:url(#SVGID_37_);}
+	.st54{clip-path:url(#SVGID_39_);}
+	.st55{clip-path:url(#SVGID_41_);}
+	.st56{clip-path:url(#SVGID_42_);}
+	.st57{fill:none;stroke:#FFFFFF;stroke-width:10;stroke-miterlimit:10;}
+	.st58{fill:#FF3E51;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st59{clip-path:url(#SVGID_43_);}
+	.st60{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st61{fill:#FFFFFF;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st62{clip-path:url(#SVGID_44_);}
+	.st63{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-miterlimit:10;}
+	.st64{clip-path:url(#SVGID_46_);}
+	.st65{clip-path:url(#SVGID_48_);}
+	.st66{fill:none;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st67{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st68{clip-path:url(#SVGID_50_);}
+	.st69{clip-path:url(#SVGID_52_);}
+	.st70{clip-path:url(#SVGID_54_);}
+	.st71{clip-path:url(#SVGID_56_);}
+	.st72{opacity:0.6;}
+	.st73{clip-path:url(#SVGID_58_);}
+	.st74{clip-path:url(#SVGID_60_);}
+	.st75{fill:#40CEBF;}
+	.st76{fill:#4AD1B7;}
+	.st77{fill:#FBB148;}
+</style>
+<g id="archive">
+</g>
+<g id="Calque_1">
+	<g>
+		<circle class="st20" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon class="st5" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon class="st5" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+</svg>
+</div></a></li><li data-ratio="" data-title="" data-legende="" class="media media_stopmotion"><div class="mediaContent"><video preload="none" controls=""><source></video><div class="mediaData"><p class="mediaData--informations"></p></div></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--flagMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FF3E51;}
+	.st1{fill:#09227C;}
+	.st2{fill:none;stroke:#09227C;stroke-width:10;stroke-miterlimit:10;}
+	.st3{fill:#FFFFFF;}
+	.st4{fill:none;stroke:#09227C;stroke-width:2;stroke-miterlimit:10;}
+	.st5{fill:#0E2173;}
+	.st6{fill:none;stroke:#09227C;stroke-width:6;stroke-miterlimit:10;}
+	.st7{clip-path:url(#SVGID_6_);}
+	.st8{fill:#09227C;stroke:#FFFFFF;stroke-width:6;stroke-miterlimit:10;}
+	.st9{fill:#FF3E51;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st10{clip-path:url(#SVGID_8_);}
+	.st11{fill:none;stroke:#09227C;stroke-width:4;stroke-miterlimit:10;}
+	.st12{clip-path:url(#SVGID_12_);}
+	.st13{fill:none;stroke:#0E2173;stroke-width:4;stroke-miterlimit:10;}
+	.st14{fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st15{fill:#353535;}
+	.st16{fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
+	.st17{clip-path:url(#SVGID_13_);}
+	.st18{fill:#FFFFFF;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st19{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st20{fill:#4BC0B4;}
+	.st21{fill:#FFBE32;}
+	.st22{fill:#4DC4B8;}
+	.st23{fill:#E5E5E5;}
+	.st24{fill:#FFD892;}
+	.st25{fill:#FF808C;}
+	.st26{fill:#BEC6E5;}
+	.st27{fill:#A5E5DA;}
+	.st28{fill:#293275;}
+	.st29{opacity:0.9;}
+	.st30{fill:#40BEB3;}
+	.st31{fill:none;stroke:#FFFFFF;stroke-width:8;stroke-miterlimit:10;}
+	.st32{fill:none;}
+	.st33{fill:none;stroke:#FF3E51;stroke-width:6;stroke-miterlimit:10;}
+	.st34{fill:#48C2B5;}
+	.st35{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st36{clip-path:url(#SVGID_15_);}
+	.st37{fill:none;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st38{clip-path:url(#SVGID_17_);}
+	.st39{fill:none;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st40{clip-path:url(#SVGID_19_);}
+	.st41{clip-path:url(#SVGID_21_);}
+	.st42{clip-path:url(#SVGID_23_);}
+	.st43{clip-path:url(#SVGID_25_);}
+	.st44{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st45{fill:#FF3E51;stroke:#0E2173;stroke-width:12;stroke-miterlimit:10;}
+	.st46{fill:none;stroke:#FF3E51;stroke-width:20;stroke-miterlimit:10;}
+	.st47{clip-path:url(#SVGID_27_);}
+	.st48{clip-path:url(#SVGID_29_);}
+	.st49{fill:none;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st50{clip-path:url(#SVGID_31_);}
+	.st51{clip-path:url(#SVGID_33_);}
+	.st52{clip-path:url(#SVGID_35_);}
+	.st53{clip-path:url(#SVGID_37_);}
+	.st54{clip-path:url(#SVGID_39_);}
+	.st55{clip-path:url(#SVGID_41_);}
+	.st56{clip-path:url(#SVGID_42_);}
+	.st57{fill:none;stroke:#FFFFFF;stroke-width:10;stroke-miterlimit:10;}
+	.st58{fill:#FF3E51;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st59{clip-path:url(#SVGID_43_);}
+	.st60{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st61{fill:#FFFFFF;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st62{clip-path:url(#SVGID_44_);}
+	.st63{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-miterlimit:10;}
+	.st64{clip-path:url(#SVGID_46_);}
+	.st65{clip-path:url(#SVGID_48_);}
+	.st66{fill:none;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st67{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st68{clip-path:url(#SVGID_50_);}
+	.st69{clip-path:url(#SVGID_52_);}
+	.st70{clip-path:url(#SVGID_54_);}
+	.st71{clip-path:url(#SVGID_56_);}
+	.st72{opacity:0.6;}
+	.st73{clip-path:url(#SVGID_58_);}
+	.st74{clip-path:url(#SVGID_60_);}
+	.st75{fill:#40CEBF;}
+	.st76{fill:#4AD1B7;}
+	.st77{fill:#FBB148;}
+</style>
+<g id="archive">
+</g>
+<g id="Calque_1">
+	<g>
+		<circle class="st20" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon class="st5" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon class="st5" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+</svg>
+</div></a></li><li data-ratio="" data-title="" data-legende="" class="media media_audio"><div class="mediaContent"><img class="poster"><audio preload="none" controls=""><source></audio><div class="mediaData"><p class="mediaData--informations"></p></div></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--flagMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FF3E51;}
+	.st1{fill:#09227C;}
+	.st2{fill:none;stroke:#09227C;stroke-width:10;stroke-miterlimit:10;}
+	.st3{fill:#FFFFFF;}
+	.st4{fill:none;stroke:#09227C;stroke-width:2;stroke-miterlimit:10;}
+	.st5{fill:#0E2173;}
+	.st6{fill:none;stroke:#09227C;stroke-width:6;stroke-miterlimit:10;}
+	.st7{clip-path:url(#SVGID_6_);}
+	.st8{fill:#09227C;stroke:#FFFFFF;stroke-width:6;stroke-miterlimit:10;}
+	.st9{fill:#FF3E51;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st10{clip-path:url(#SVGID_8_);}
+	.st11{fill:none;stroke:#09227C;stroke-width:4;stroke-miterlimit:10;}
+	.st12{clip-path:url(#SVGID_12_);}
+	.st13{fill:none;stroke:#0E2173;stroke-width:4;stroke-miterlimit:10;}
+	.st14{fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st15{fill:#353535;}
+	.st16{fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
+	.st17{clip-path:url(#SVGID_13_);}
+	.st18{fill:#FFFFFF;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st19{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st20{fill:#4BC0B4;}
+	.st21{fill:#FFBE32;}
+	.st22{fill:#4DC4B8;}
+	.st23{fill:#E5E5E5;}
+	.st24{fill:#FFD892;}
+	.st25{fill:#FF808C;}
+	.st26{fill:#BEC6E5;}
+	.st27{fill:#A5E5DA;}
+	.st28{fill:#293275;}
+	.st29{opacity:0.9;}
+	.st30{fill:#40BEB3;}
+	.st31{fill:none;stroke:#FFFFFF;stroke-width:8;stroke-miterlimit:10;}
+	.st32{fill:none;}
+	.st33{fill:none;stroke:#FF3E51;stroke-width:6;stroke-miterlimit:10;}
+	.st34{fill:#48C2B5;}
+	.st35{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st36{clip-path:url(#SVGID_15_);}
+	.st37{fill:none;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st38{clip-path:url(#SVGID_17_);}
+	.st39{fill:none;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st40{clip-path:url(#SVGID_19_);}
+	.st41{clip-path:url(#SVGID_21_);}
+	.st42{clip-path:url(#SVGID_23_);}
+	.st43{clip-path:url(#SVGID_25_);}
+	.st44{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st45{fill:#FF3E51;stroke:#0E2173;stroke-width:12;stroke-miterlimit:10;}
+	.st46{fill:none;stroke:#FF3E51;stroke-width:20;stroke-miterlimit:10;}
+	.st47{clip-path:url(#SVGID_27_);}
+	.st48{clip-path:url(#SVGID_29_);}
+	.st49{fill:none;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st50{clip-path:url(#SVGID_31_);}
+	.st51{clip-path:url(#SVGID_33_);}
+	.st52{clip-path:url(#SVGID_35_);}
+	.st53{clip-path:url(#SVGID_37_);}
+	.st54{clip-path:url(#SVGID_39_);}
+	.st55{clip-path:url(#SVGID_41_);}
+	.st56{clip-path:url(#SVGID_42_);}
+	.st57{fill:none;stroke:#FFFFFF;stroke-width:10;stroke-miterlimit:10;}
+	.st58{fill:#FF3E51;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st59{clip-path:url(#SVGID_43_);}
+	.st60{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st61{fill:#FFFFFF;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st62{clip-path:url(#SVGID_44_);}
+	.st63{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-miterlimit:10;}
+	.st64{clip-path:url(#SVGID_46_);}
+	.st65{clip-path:url(#SVGID_48_);}
+	.st66{fill:none;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st67{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st68{clip-path:url(#SVGID_50_);}
+	.st69{clip-path:url(#SVGID_52_);}
+	.st70{clip-path:url(#SVGID_54_);}
+	.st71{clip-path:url(#SVGID_56_);}
+	.st72{opacity:0.6;}
+	.st73{clip-path:url(#SVGID_58_);}
+	.st74{clip-path:url(#SVGID_60_);}
+	.st75{fill:#40CEBF;}
+	.st76{fill:#4AD1B7;}
+	.st77{fill:#FBB148;}
+</style>
+<g id="archive">
+</g>
+<g id="Calque_1">
+	<g>
+		<circle class="st20" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon class="st5" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon class="st5" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+</svg>
+</div></a></li><li data-ratio="" data-title="" data-legende="" class="media media_text"><div class="mediaContent"><div class="mediaContent--textOfTextmedia"></div></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--flagMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FF3E51;}
+	.st1{fill:#09227C;}
+	.st2{fill:none;stroke:#09227C;stroke-width:10;stroke-miterlimit:10;}
+	.st3{fill:#FFFFFF;}
+	.st4{fill:none;stroke:#09227C;stroke-width:2;stroke-miterlimit:10;}
+	.st5{fill:#0E2173;}
+	.st6{fill:none;stroke:#09227C;stroke-width:6;stroke-miterlimit:10;}
+	.st7{clip-path:url(#SVGID_6_);}
+	.st8{fill:#09227C;stroke:#FFFFFF;stroke-width:6;stroke-miterlimit:10;}
+	.st9{fill:#FF3E51;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st10{clip-path:url(#SVGID_8_);}
+	.st11{fill:none;stroke:#09227C;stroke-width:4;stroke-miterlimit:10;}
+	.st12{clip-path:url(#SVGID_12_);}
+	.st13{fill:none;stroke:#0E2173;stroke-width:4;stroke-miterlimit:10;}
+	.st14{fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st15{fill:#353535;}
+	.st16{fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
+	.st17{clip-path:url(#SVGID_13_);}
+	.st18{fill:#FFFFFF;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st19{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st20{fill:#4BC0B4;}
+	.st21{fill:#FFBE32;}
+	.st22{fill:#4DC4B8;}
+	.st23{fill:#E5E5E5;}
+	.st24{fill:#FFD892;}
+	.st25{fill:#FF808C;}
+	.st26{fill:#BEC6E5;}
+	.st27{fill:#A5E5DA;}
+	.st28{fill:#293275;}
+	.st29{opacity:0.9;}
+	.st30{fill:#40BEB3;}
+	.st31{fill:none;stroke:#FFFFFF;stroke-width:8;stroke-miterlimit:10;}
+	.st32{fill:none;}
+	.st33{fill:none;stroke:#FF3E51;stroke-width:6;stroke-miterlimit:10;}
+	.st34{fill:#48C2B5;}
+	.st35{fill:#FFFFFF;stroke:#0E2173;stroke-width:10;stroke-miterlimit:10;}
+	.st36{clip-path:url(#SVGID_15_);}
+	.st37{fill:none;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st38{clip-path:url(#SVGID_17_);}
+	.st39{fill:none;stroke:#0E2173;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st40{clip-path:url(#SVGID_19_);}
+	.st41{clip-path:url(#SVGID_21_);}
+	.st42{clip-path:url(#SVGID_23_);}
+	.st43{clip-path:url(#SVGID_25_);}
+	.st44{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st45{fill:#FF3E51;stroke:#0E2173;stroke-width:12;stroke-miterlimit:10;}
+	.st46{fill:none;stroke:#FF3E51;stroke-width:20;stroke-miterlimit:10;}
+	.st47{clip-path:url(#SVGID_27_);}
+	.st48{clip-path:url(#SVGID_29_);}
+	.st49{fill:none;stroke:#0E2173;stroke-width:12;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st50{clip-path:url(#SVGID_31_);}
+	.st51{clip-path:url(#SVGID_33_);}
+	.st52{clip-path:url(#SVGID_35_);}
+	.st53{clip-path:url(#SVGID_37_);}
+	.st54{clip-path:url(#SVGID_39_);}
+	.st55{clip-path:url(#SVGID_41_);}
+	.st56{clip-path:url(#SVGID_42_);}
+	.st57{fill:none;stroke:#FFFFFF;stroke-width:10;stroke-miterlimit:10;}
+	.st58{fill:#FF3E51;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st59{clip-path:url(#SVGID_43_);}
+	.st60{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st61{fill:#FFFFFF;stroke:#FFBE32;stroke-width:10;stroke-miterlimit:10;}
+	.st62{clip-path:url(#SVGID_44_);}
+	.st63{fill:#FFFFFF;stroke:#0E2173;stroke-width:15;stroke-miterlimit:10;}
+	.st64{clip-path:url(#SVGID_46_);}
+	.st65{clip-path:url(#SVGID_48_);}
+	.st66{fill:none;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st67{fill:#FFBE32;stroke:#FFBE32;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st68{clip-path:url(#SVGID_50_);}
+	.st69{clip-path:url(#SVGID_52_);}
+	.st70{clip-path:url(#SVGID_54_);}
+	.st71{clip-path:url(#SVGID_56_);}
+	.st72{opacity:0.6;}
+	.st73{clip-path:url(#SVGID_58_);}
+	.st74{clip-path:url(#SVGID_60_);}
+	.st75{fill:#40CEBF;}
+	.st76{fill:#4AD1B7;}
+	.st77{fill:#FBB148;}
+</style>
+<g id="archive">
+</g>
+<g id="Calque_1">
+	<g>
+		<circle class="st20" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon class="st5" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon class="st5" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+</svg>
+</div></a></li><li data-publi="" class="publi-folder"><div class="content"><a class="js--edit_view"><h2 class="title"></h2></a></div><div class="publi-btn"></div></li><div class="montage_publi"><div class="montage-btn"></div><link id="templateCss" rel="stylesheet" href=""><div data-template="unecolonne" class="template_container"><h2 class="publi-title js--publiTitle"></h2><div class="publi-btn"></div><hr><div class="publi_medias"></div></div></div><div data-type="image" class="media-big_image media-big row"><div class="mediaContent small-12 large-8 columns"><img></div><div class="mediaDataForm small-12 large-4 columns"><form onsubmit="return false;" class="add-media-data lead"><label>Informations</label><textarea type="text" class="js--mediaInformations"></textarea></form><h3 class="txt-small_info">Emplacement du média sur le disque dur&nbsp;:<div class="js--mediaFullPath"></div></h3><hr><input type="submit" value="Valider" class="js--submit-add-media-data"></div></div><div data-type="video" class="media-big_video media-big"><div class="mediaContent small-12 large-8 columns"><video preload="none" controls=""><source></video></div><div class="mediaDataForm small-12 large-4 columns"><form onsubmit="return false;" class="add-media-data lead"><label>Informations</label><textarea type="text" class="js--mediaInformations"></textarea></form><h3 class="txt-small_info">Emplacement du média sur le disque dur&nbsp;:<div class="js--mediaFullPath"></div></h3><hr><input type="submit" value="Valider" class="js--submit-add-media-data"></div></div><div data-type="stopmotion" class="media-big_stopmotion media-big"><div class="mediaContent small-12 large-8 columns"><video preload="none" controls=""><source></video></div><div class="mediaDataForm small-12 large-4 columns"><form onsubmit="return false;" class="add-media-data lead"><label>Informations</label><textarea type="text" class="js--mediaInformations"></textarea></form><h3 class="txt-small_info">Emplacement du média sur le disque dur&nbsp;:<div class="js--mediaFullPath"></div></h3><hr><input type="submit" value="Valider" class="js--submit-add-media-data"></div></div><div data-type="audio" class="media-big_audio media-big"><div class="mediaContent small-12 large-8 columns"><img><audio preload="none" controls=""><source></audio></div><div class="mediaDataForm small-12 large-4 columns"><form onsubmit="return false;" class="add-media-data lead"><label>Informations</label><textarea type="text" class="js--mediaInformations"></textarea></form><h3 class="txt-small_info">Emplacement du média sur le disque dur&nbsp;:<div class="js--mediaFullPath"></div></h3><hr><input type="submit" value="Valider" class="js--submit-add-media-data"></div></div><div data-type="text" data-id="" class="media-big_text media-big"><div class="mediaDataForm"><form onsubmit="return false;" class="add-media-text lead"><textarea placeholder="Ajouter du texte ici" class="js--submit-new-text_text"></textarea></form><h3 class="txt-small_info">Emplacement du média sur le disque dur&nbsp;:<div class="js--mediaFullPath"></div></h3><hr><input type="submit" value="Valider" class="js--submit-view-text-modify"></div></div><div data-statut="" class="project"><div class="project-inside flex_structure"><div class="project-content flex_50 flex_structure"><a href="" title="Dodoc" class="project-link"><h2 class="title"></h2></a><div class="meta-data txt-small_info txt-mono flex_40"><div class="statut"><span>état</span><span class="statut-type"></span></div><div class="created"><span>créé le</span><span class="create-date"></span></div><div class="modified"><span>modifié le</span><span class="modify-date"></span></div></div><div class="button-to-pages flex_60"><h3 class="txt-small_info">Accès rapide</h3></div></div><div class="image-wrapper flex_50"><img></div></div><ul class="last-medias grille_de_medias"><h3 class="txt-small_info">Derniers médias ajoutés</h3></ul><div class="montage-list"><h1 class="txt-small_info">Liste des publications</h1><ul class="list-publi"></ul></div></div><li data-statut="" data-name="" data-nom="" class="dossier small-12 medium-12 large-4 columns"><div class="dossier-inside"><div class="content"><a href="" title="" class="folder-link"><h2 class="title"></h2></a><div class="projet-list"></div></div><div class="meta-data txt-small_info txt-mono row"><div class="nb-projets small-6 columns"><span class="nb-projets-intitule">Projets</span><span class="nb-projets-count">0</span></div><div class="statut small-6 columns"><span>état</span><span class="statut-type"></span></div><div class="created small-6 columns"><span>créé le</span><span class="create-date"></span></div><div class="modified small-6 columns"><span>modifié le</span><span class="modify-date"></span></div></div></div></li><li class="projetSnippet"><a href="" class="project-link"><h3 class="title"></h3><div class="vignette-visuel"><img src=""></div></a></li></div><div class="module_infos"><h3 class="txt-small_info">Pour vous connecter avec un autre appareil connecté au même réseau wifi, naviguez vers l’adresse suivante (et ignorez l’avertissement qui s’affiche)&nbsp;: https://172.20.29.146:8080</h3><h3 class="txt-small_info">Les données chargées sur cette page sont stockées dans le dossier suivant&nbsp;:  <br>/Users/sarahgarcin/Documents/dodoc/contenus/hello/ca-cest-beau/publications/yo.txt</h3></div></body>

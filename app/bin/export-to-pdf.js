@@ -24,7 +24,7 @@ var exportPubliToPDF = (function() {
     var folderName = d.slugFolderName;
     var projectName = d.slugProjectName;
     var publiName = d.slugPubliName;
-    var publicationsFolder = path.join(dodoc.userDirname, dodoc.exportedPubliDir);
+    var publicationsFolder = path.join(dodocAPI.getUserPath(), dodoc.exportedPubliDir);
     var printFolderName = "print";
     
     createExportPubliFolder(folderName, publicationsFolder).then(function(exportFolderPath){
@@ -49,20 +49,12 @@ var exportPubliToPDF = (function() {
     '--local-to-remote-url-access=yes',
     ]).then(function(ph) {
       ph.createPage().then(function(page) {
-        page.open(currentUrl)
+        page.open(currentUrl+"/print")
         .then(function(){
           page.property('paperSize', { format: "A4", orientation: 'portrait', margin: '0cm' })
           .then(function() {
-            // page.property("onLoadFinished").then(function(){
-            //   page.render(printFolderPath+'/01.pdf').then(function() {
-            //     console.log('success');
-            //     page.close();
-            //     ph.exit();
-            //   });
-            // });
-
             setTimeout(function(){
-              page.render(printFolderPath+'/03.pdf').then(function() {
+              page.render(printFolderPath+'/'+dodocAPI.getCurrentDate()+'.pdf').then(function() {
                 console.log('success');
                 //io.sockets.emit('pdfIsGenerated');
                 page.close();

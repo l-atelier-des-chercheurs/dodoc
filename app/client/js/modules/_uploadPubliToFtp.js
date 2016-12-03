@@ -1,4 +1,4 @@
-var uploadPubliToFtp = (function() {
+var uploadPubliToFtp = (function(publiTemplate) {
 
   var $uploadBtn = $('.js--uploadPubliToFtp');
 /*
@@ -11,7 +11,7 @@ var uploadPubliToFtp = (function() {
   };
 
   function init() {
-    console.log('init upload ftp');
+    console.log('init upload ftp', publiTemplate);
     // Valider et exporter vers un ftp
     $uploadBtn.on('click', function (){
       var publiHtml = $('.publi_container').html();
@@ -28,7 +28,7 @@ var uploadPubliToFtp = (function() {
       var footer = '</div><script src="../jquery.min.js"></script><script src="./script.js"></script></body></html>'
 
       var html = head +body + publiClean + footer;
-      socket.emit('exportPubliToFtp', {"html": html ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
+      socket.emit('exportPubliToFtp', {"html": html, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
       $(this).attr('disable', 'disable')
       .css({'background-color':'#A6A6A6', 'cursor':'default'})
       .find('svg circle').css('fill', '#A6A6A6');

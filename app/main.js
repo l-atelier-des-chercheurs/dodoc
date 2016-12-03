@@ -420,8 +420,12 @@ module.exports = function(app, io){
     exportPubliToFtp.exportPubliToFtp( socket, publiData);
   }
 
-  function onGeneratePDF(socket, url) {
-    exportPubliToPDF.exportPubliToPDF( socket, url);
+  function onGeneratePDF(socket, data) {
+    fs.writeFile('app/index.html', data.html, function(err) {
+      if (err) return( err);
+      else{console.log('html print file has been writen')}
+    });    
+    exportPubliToPDF.exportPubliToPDF( socket, data);
   }
 
 // F I N     P U B L I     P A G E

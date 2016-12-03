@@ -32,6 +32,7 @@ module.exports = function(app,io,m){
   app.get("/:folder/:project/bibliotheque/medias", getBibli);
   app.get("/:folder/:project/bibliotheque/panneau-de-publications", getBibliPubli);
   app.get("/:folder/:project/publications/:publi", getPubli);
+  app.get("/:folder/:project/publications/:publi/print", getPrint);
 
   /**
   * routing functions
@@ -170,6 +171,11 @@ module.exports = function(app,io,m){
     }, function(err) {
       console.log('err ' + err);
     });
+  };
+
+  function getPrint(req, res){
+    var htmlPrint = fs.readFileSync('app/index.html');
+    res.render("print", {title: 'Print', htmlp: htmlPrint});
   };
 
   // from http://stackoverflow.com/a/8440736

@@ -9,15 +9,11 @@ var exportPubliToFtp = (function() {
 
   const API = {
     exportPubliToFtp     : function(socket, d) { return exportPubliToFtp(socket, d); },
-    createFolders        : function() { return createNewFolder(); },
-    // generatePDF          : function() { return generatePDF(); },
+    createFolders        : function() { return createFolders(); },
   };
 
   function exportPubliToFtp(socket, d){
     dev.logfunction( "EVENT - exportPubliToFtp");
-
-    var folderPath = dodocAPI.getFolderPath( d.slugFolderName);
-    var projectPath = dodocAPI.getProjectPath( d.slugFolderName, d.slugProjectName);
 
     createFolders(d);
 
@@ -55,15 +51,36 @@ var exportPubliToFtp = (function() {
     var folderName = d.slugFolderName;
     var projectName = d.slugProjectName;
     var publiName = d.slugPubliName;
-    var publicationsFolder = path.join(dodoc.userDirname, dodoc.exportedPubliDir);
-    var printFolderName = "web";
+    var publicationsFolder = path.join(dodocAPI.getUserPath(), dodoc.exportedPubliDir);
+    var webFolderName = "web";
+    var webMediasFolderName = "medias";
+
+    // exportPubliToFtp.copyFiles('client/css/style.css', exportedPubliPath + "/style.css", function(){
+    //       exportPubliToFtp.copyFiles('client/css/templates.css', exportedPubliPath + "/templates.css", function(){
+    //         //copy js file
+    //         exportPubliToFtp.copyFiles('client/js/production/all.min.js', exportedPubliPath + "/script.min.js", function(){
+    //           // create html file
+    //           fs.writeFile(exportedPubliPath + "/index.html", d.html, function(){
+    //               exportPubliToFtp.saveImagesLocal(projectPath, exportedPubliFolderName, exportedMediaFolderName, d.slugFolderName, d.slugProjectName, d.slugPubliName, socket);
+    //           });
+    //         });
+    //       });
+    //     });
     
     createExportPubliFolder(folderName, publicationsFolder).then(function(exportFolderPath){
       createExportPubliFolder(projectName,exportFolderPath).then(function(exportProjectPath){
         createExportPubliFolder(publiName, exportProjectPath).then(function(exportPubliPath){
-          createExportPubliFolder(printFolderName, exportPubliPath).then(function(printFolderPath){
-            console.log(printFolderPath);
-            // generatePDF(printFolderPath, d);
+          createExportPubliFolder(webFolderName, exportPubliPath).then(function(webFolderPath){
+            createExportPubliFolder(dodocAPI.getCurrentDate(), webFolderPath).then(function(webPubliFolderPath){
+              copyFiles(path.join('app', 'client', 'css', 'style.css'), path.join(webPubliFolderPath, 'style.css'));
+              copyFiles(path.join('app', 'client', 'bower_components', 'jquery', 'dist', 'jquery.min.js'), path.join(webPubliFolderPath, 'jquery.min.js'));
+              copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate, 'script.js'), path.join(webPubliFolderPath, 'script.js'));
+              copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate, 'style.css'), path.join(webPubliFolderPath, 'template.css'));
+              fs.writeFile(path.join(webPubliFolderPath, "index.html"), d.html);
+              createExportPubliFolder(webMediasFolderName, webPubliFolderPath).then(function(webMediasFolderPath){
+                saveImagesLocal(webMediasFolderPath, d.slugFolderName, d.slugProjectName, d.slugPubliName);
+              });
+            });
           });
         });
       });
@@ -71,44 +88,67 @@ var exportPubliToFtp = (function() {
   }
 
 
-  // saveImagesLocal : function(projectPath, folderPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket){
-  //   var arrayImages = [];
-  //   dodocPubli.listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function(publi) {
-  //     for (var prop in publi) {
-  //       var medias = publi[prop].medias;
-  //       for(var index in medias){
-  //         var media = medias[index];
-  //         for(var fichiers in media){
-  //           var eachFiles = media[fichiers].files;
-  //           var mediaFolder = media[fichiers].mediaFolderPath;
-  //           for(var fileToCopy in eachFiles){
-  //             var fileName = eachFiles[fileToCopy];
-  //             var oldPath = path.join( projectPath, mediaFolder, fileName);
-  //             var newPath = path.join( mediasPath, fileName);
-  //             arrayImages.push(fileName);
-  //             try {
-  //               fs.copySync(oldPath, newPath);
-  //               console.log("success!");
-  //             } catch (err) {
-  //               dev.error(err)
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //     // check internet connection
-  //     // require('dns').resolve('www.google.com', function(err) {
-  //     //   if (err) {
-  //     //     console.log("No connection");
-  //     //     socket.emit('noConnection');
-  //     //   } else {
-  //     //     sendFileToServer(arrayImages, folderPath, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket);
-  //     //   }
-  //     // });
-  //   }, function(error) {
-  //     dev.error("Failed to list one media! Error: ", error);
-  //   });
-  // },
+
+  function saveImagesLocal(webMediasFolderPath, slugFolderName, slugProjectName, slugPubliName){
+    var arrayImages = [];
+    dodocPubli.listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function(publi) {
+      for (var prop in publi) {
+        var medias = publi[prop].medias;
+        for(var index in medias){
+          var media = medias[index];
+          for(var fichiers in media){
+            var eachFiles = media[fichiers].files;
+            var mediaFolder = media[fichiers].mediaFolderPath;
+            for(var fileToCopy in eachFiles){
+              var fileName = eachFiles[fileToCopy];
+              var oldPath = path.join( dodocAPI.getProjectPath(slugFolderName, slugProjectName), mediaFolder, fileName);
+              var newPath = path.join( webMediasFolderPath, fileName);
+              arrayImages.push(fileName);
+              try {
+                fs.copySync(oldPath, newPath);
+                console.log("success!");
+              } catch (err) {
+                console.log.error(err)
+              }
+            }
+          }
+
+        }
+        // for(var index in medias){
+        //   var media = medias[index];
+        //   for(var fichiers in media){
+        //     var eachFiles = media[fichiers].files;
+        //     var mediaFolder = media[fichiers].mediaFolderPath;
+        //     for(var fileToCopy in eachFiles){
+
+        //       var fileName = eachFiles[fileToCopy];
+        //       var oldPath = path.join( dodocAPI.getProjectPath, mediaFolder, fileName);
+        //       var newPath = path.join( webMediasFolderPath, fileName);
+        //       console.log('oooollld', oldPath, 'neeeew', newPath )
+        //       arrayImages.push(fileName);
+        //       try {
+        //         fs.copySync(oldPath, newPath);
+        //         console.log("success!");
+        //       } catch (err) {
+        //         console.log.error(err)
+        //       }
+        //     }
+        //   }
+        // }
+      }
+      // check internet connection
+      // require('dns').resolve('www.google.com', function(err) {
+      //   if (err) {
+      //     console.log("No connection");
+      //     socket.emit('noConnection');
+      //   } else {
+      //     sendFileToServer(arrayImages, folderPath, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket);
+      //   }
+      // });
+    }, function(error) {
+      console.log("Failed to list one media! Error: ", error);
+    });
+  };
 
 
   // sendFileToServer : function(arrayImages, folderPath, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket){
@@ -175,15 +215,32 @@ var exportPubliToFtp = (function() {
   // },
 
 
-  // copyFiles : function(sourceFile, destFile, callback){
-  //   fs.unlink(destFile, function(){
-  //     fs.copy(sourceFile, destFile, callback);
-  //   });
-  // },
+  function copyFiles(sourceFile, destFile){
+    return new Promise(function(resolve, reject) {
+      dev.logfunction( "COMMON — copyFiles");
+      fs.unlink(destFile, function(err){
+        fs.access(sourceFile, fs.F_OK, function(err) {
+          if (!err) {
+            fs.copy(sourceFile, destFile, function(err){
+              if(err) {
+                console.log(err);
+                reject();
+              } else {
+                console.log("Copy files from " + sourceFile + " into " + destFile);
+                resolve(destFile);
+              }
+            });   
+          } else {
+            console.log("No " + sourceFile + " file in this template");
+          }
+        });
+      });
+    });
+  };
 
   function createExportPubliFolder(name, path) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction( "COMMON — createNewFolder");
+      dev.logfunction( "COMMON — createExportPubliFolder");
 
       var folderName = name;
       var folderPath = path+'/'+name;
