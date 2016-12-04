@@ -112,7 +112,8 @@ if( lang === 'fr') {
         "newPubli" : "Nouvelle publication",
         "editPubli" : "Éditer la publication",
 
-        "newMediaCreatedAtPath" : "Un nouveau média vient d’être créé dans le projet "
+        "newMediaCreatedAtPath" : "Un nouveau média vient d’être créé dans le projet ",
+        "newFolderCreatedWithName" : "Un nouveau dossier vient d’être créé avec pour nom ",
 
       },
     }

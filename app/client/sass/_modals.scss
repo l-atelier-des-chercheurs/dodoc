@@ -17,7 +17,7 @@
 }
 
 
-.reveal-modal {
+.m_modal {
 
   border-radius: 2px;
   box-shadow: 0 5px 20px $c-gris;
@@ -37,6 +37,10 @@
     position: absolute;
     top: 0;
     right: 0;
+  }
+
+  .button-wrapper_valider.button-wrapper_valider {
+    float: right;
   }
 
   .popoverTitle {

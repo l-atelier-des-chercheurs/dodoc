@@ -1599,7 +1599,7 @@ select {
 .reveal-modal-bg {
   background-color: rgba(255, 255, 255, 0.8); }
 
-.reveal-modal {
+.m_modal {
   border-radius: 2px;
   box-shadow: 0 5px 20px #C3C3C3;
   border: 2px solid white;
@@ -1607,30 +1607,32 @@ select {
   max-width: 32.5rem;
   max-height: 80vh;
   overflow-y: scroll; }
-  .reveal-modal:focus {
+  .m_modal:focus {
     outline: none; }
-  .reveal-modal .button-wrapper_close {
+  .m_modal .button-wrapper_close {
     position: absolute;
     top: 0;
     right: 0; }
-  .reveal-modal .popoverTitle {
+  .m_modal .button-wrapper_valider.button-wrapper_valider {
+    float: right; }
+  .m_modal .popoverTitle {
     font-weight: bold;
     font-size: 1.5em;
     margin: 0;
     margin-top: 3px;
     width: 80%;
     margin-bottom: 16px; }
-  .reveal-modal > p {
+  .m_modal > p {
     width: 80%; }
-  .reveal-modal .button_submit {
+  .m_modal .button_submit {
     float: right; }
-  .reveal-modal .button-wrapper_deleteFolder {
+  .m_modal .button-wrapper_deleteFolder {
     float: left; }
-  .reveal-modal button {
+  .m_modal button {
     margin-bottom: 0; }
-  .reveal-modal .legende {
+  .m_modal .legende {
     padding: 8px; }
-  .reveal-modal input[type="submit"] {
+  .m_modal input[type="submit"] {
     display: block;
     border: none;
     float: right;
@@ -1640,23 +1642,23 @@ select {
     border-radius: 22px;
     cursor: pointer;
     color: white; }
-  .reveal-modal .templateSelector {
+  .m_modal .templateSelector {
     text-align: left;
     padding: 0;
     background-color: #EBEBEB; }
-    .reveal-modal .templateSelector:before, .reveal-modal .templateSelector:after {
+    .m_modal .templateSelector:before, .m_modal .templateSelector:after {
       content: " ";
       display: table; }
-    .reveal-modal .templateSelector:after {
+    .m_modal .templateSelector:after {
       clear: both; }
-    .reveal-modal .templateSelector input {
+    .m_modal .templateSelector input {
       width: 0.1px;
       height: 0.1px;
       opacity: 0;
       overflow: hidden;
       position: absolute;
       z-index: -1; }
-    .reveal-modal .templateSelector label {
+    .m_modal .templateSelector label {
       position: relative;
       float: left;
       width: 25%;
@@ -1664,51 +1666,51 @@ select {
       padding: 0;
       padding: 8px;
       color: #535353; }
-      .reveal-modal .templateSelector label:nth-of-type(4n+1) {
+      .m_modal .templateSelector label:nth-of-type(4n+1) {
         clear: left; }
-      .reveal-modal .templateSelector label span {
+      .m_modal .templateSelector label span {
         display: block;
         width: 100%;
         padding: 8px;
         background-color: #FFD892;
         text-transform: lowercase;
         text-align: center; }
-      .reveal-modal .templateSelector label input:checked ~ span {
+      .m_modal .templateSelector label input:checked ~ span {
         background-color: #FFBE32; }
-      .reveal-modal .templateSelector label input:checked ~ svg #fond > * {
+      .m_modal .templateSelector label input:checked ~ svg #fond > * {
         fill: #FFBE32; }
-      .reveal-modal .templateSelector label input:checked ~ svg #modules > * {
+      .m_modal .templateSelector label input:checked ~ svg #modules > * {
         fill: #1d327f; }
-      .reveal-modal .templateSelector label svg {
+      .m_modal .templateSelector label svg {
         position: relative; }
-        .reveal-modal .templateSelector label svg #fond * {
+        .m_modal .templateSelector label svg #fond * {
           fill: #FFD892; }
-  .reveal-modal#modal-statut-alert button, .reveal-modal#modal-delete-alert button {
+  .m_modal#modal-statut-alert button, .m_modal#modal-delete-alert button {
     display: inline-block;
     padding: 9px 22px;
     margin-right: 16px;
     border-radius: 2px; }
-    .reveal-modal#modal-statut-alert button.annuler, .reveal-modal#modal-delete-alert button.annuler {
+    .m_modal#modal-statut-alert button.annuler, .m_modal#modal-delete-alert button.annuler {
       background-color: #FF3E51; }
-  .reveal-modal .button-wrapper_deleteProject {
+  .m_modal .button-wrapper_deleteProject {
     float: left; }
-  .reveal-modal#modal-media-view {
+  .m_modal#modal-media-view {
     max-width: 80%;
     height: 80vh;
     overflow: visible; }
-    .reveal-modal#modal-media-view .big-mediaContent {
+    .m_modal#modal-media-view .big-mediaContent {
       overflow: auto; }
-      .reveal-modal#modal-media-view .big-mediaContent .button-wrapper {
+      .m_modal#modal-media-view .big-mediaContent .button-wrapper {
         margin: 8px 0px;
         float: none; }
-        .reveal-modal#modal-media-view .big-mediaContent .button-wrapper span {
+        .m_modal#modal-media-view .big-mediaContent .button-wrapper span {
           margin-left: 10px; }
-    .reveal-modal#modal-media-view .row {
+    .m_modal#modal-media-view .row {
       max-width: 100%; }
-    .reveal-modal#modal-media-view .button-wrapper_highlightMedia {
+    .m_modal#modal-media-view .button-wrapper_highlightMedia {
       color: #4BC0B4;
       background-color: transparent; }
-    .reveal-modal#modal-media-view .is--highlight .button-wrapper_highlightMedia {
+    .m_modal#modal-media-view .is--highlight .button-wrapper_highlightMedia {
       color: white;
       background-color: #4BC0B4; }
 
@@ -1863,6 +1865,8 @@ input:required {
   background-size: 16px 16px;
   background-position: top right;
   background-repeat: no-repeat; }
+  input:required.is--empty {
+    border-color: #FF3E51; }
 
 input[type=range] {
   -webkit-appearance: none;
@@ -2052,7 +2056,7 @@ button {
   .button-wrapper_bibli, .button-wrapper_gofullscreen, .button-wrapper_leavefullscreen {
     background-color: #1d327f;
     color: white; }
-  .button-wrapper_accept, .button-wrapper_addText, .button-wrapper_highlightMedia, .button-wrapper_finishStopmotion, .button-wrapper_previzStopmotion, .button-wrapper_upload {
+  .button-wrapper_valider, .button-wrapper_addText, .button-wrapper_highlightMedia, .button-wrapper_finishStopmotion, .button-wrapper_previzStopmotion, .button-wrapper_upload {
     background-color: #4BC0B4;
     color: white; }
   .button-wrapper_close {
@@ -2294,7 +2298,7 @@ body.index #container {
       .bibli-buffer .btn-medias:hover .button-wrapper_bibli, .bibli-buffer .btn-medias:hover .button-wrapper_gofullscreen, .bibli-buffer .btn-medias:hover .button-wrapper_leavefullscreen {
         background-color: #1d327f;
         color: white; }
-      .bibli-buffer .btn-medias:hover .button-wrapper_accept, .bibli-buffer .btn-medias:hover .button-wrapper_addText {
+      .bibli-buffer .btn-medias:hover .button-wrapper_valider, .bibli-buffer .btn-medias:hover .button-wrapper_addText {
         background-color: #4BC0B4;
         color: white; }
     .bibli-buffer .btn-medias .button-wrapper {

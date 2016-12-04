@@ -15,8 +15,8 @@ var modals = (function() {
       		modals.createModal('addFolder');
       	});
       	$('body').on('click', '.js--edit-folder', function(){
-      		var ddata = $(this).closest(".dossier").data();
-      		modals.createModal('editFolder', ddata);
+      		var d = $(this).closest(".dossier").data();
+      		modals.createModal('editFolder',d);
       	});
 
       	$('body').on('click', '.js--add-project', function(){
@@ -55,6 +55,7 @@ var modals = (function() {
 
       $modal.foundation('reveal', 'open');
       setTimeout(function() { $modal.find('[autofocus]').eq(0).focus() }, 300);
+
     },
 
 
@@ -451,10 +452,11 @@ var modals = (function() {
   }
 
   function _initAddFolderModal($m) {
-    $m.find(".js--valider").on('click', function(){
-      if(_isAnyRequiredInputFieldEmpty($m)) return;
+    $m.find(".js--valider").on('click', function() {
+      if(_checkAndHighlightEmptyRequiredFields($m)) return;
       var newFolderName = $m.find('input.new-folder').val();
       socket.emit( 'newFolder', { "name" : newFolderName });
+      $m.foundation('reveal', 'close');
     });
   }
 
@@ -476,10 +478,11 @@ var modals = (function() {
       });
 
     $m.find(".js--valider").on('click', function(){
-      if(_isAnyRequiredInputFieldEmpty($m)) return;
+      if(_checkAndHighlightEmptyRequiredFields($m)) return;
       var newFolderName = $m.find('input.modify-folder').val();
       var newStatut = $m.find('select.modify-statut').val();
-      socket.emit( 'editFolder', {
+
+  		  sendData.editFolder({
         "name" : d.nom,
         "newName" : newFolderName,
         "slugFolderName" : d.slugFolderName,
@@ -693,16 +696,38 @@ var modals = (function() {
     }
   }
 
-  function _isAnyRequiredInputFieldEmpty($m) {
-    let isAnyRequiredInputEmpty = false;
+  function _checkAndHighlightEmptyRequiredFields($m) {
+    let emptyReqFields = _getEmptyRequiredFields($m);
+    emptyReqFields.forEach(function(el) {
+      if (el.classList)
+        el.classList.add(className);
+      else
+        el.className += ' ' + className;
+    });
+    if(emptyReqFields.length > 0) {
+      alertify.error(dodoc.lang.modal.someFieldsAreEmptyFillThem);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function _getEmptyRequiredFields($m) {
+    let emptyReqFields = [];
+    const className = 'is--empty';
     $m[0].querySelectorAll('input:required')
-      .forEach(function(eles) {
-        if(!eles.value) {
-          isAnyRequiredInputEmpty = true;
-          alertify.error(dodoc.lang.modal.someFieldsAreEmptyFillThem);
+      .forEach(function(el) {
+        if(!el.value) {
+          el.classList.add(className);
+          emptyReqFields.push(el);
+        } else {
+          if (el.classList)
+            el.classList.remove(className);
+          else
+            el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
         }
       });
-    return isAnyRequiredInputEmpty;
+    return emptyReqFields;
   }
 
   return API;

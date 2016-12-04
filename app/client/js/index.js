@@ -30,19 +30,8 @@ jQuery(document).ready(function($) {
 	init();
 });
 
-function openCloseMenu( scrollY) {
-  if( scrollY < 20) {
-    $(".navbar-container").addClass("is--opened");
-  } else {
-    $(".navbar-container").removeClass("is--opened");
-  }
-}
-
-
 function init(){
-
 	removeFolder();
-
 	//remove modal modify folder when it closing
 	$(document).on('close.fndtn.reveal', '#modal-modify-folder[data-reveal]', function () {
 	//   	$("#modal-modify-folder").empty();
@@ -50,8 +39,8 @@ function init(){
 }
 
 // Affiche le fichier dès qu'il est crée
-function onFolderCreated(data){
-	location.reload();
+function onFolderCreated(d){
+  onListOneFolder(d);
 }
 
 // Si un fichier existe déjà, affiche un message d'alerte

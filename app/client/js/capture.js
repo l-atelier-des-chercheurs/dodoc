@@ -634,9 +634,7 @@ var currentStream = (function(context) {
       if( currentFeedsSource === undefined || currentFeedsSource.audio === undefined) {
         reject("audio devices not yet ready");
       }
-
       console.log( "Getting audio feed");
-
       navigator.getUserMedia(
         {
           video: false,

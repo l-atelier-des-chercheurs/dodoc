@@ -8,7 +8,7 @@
 @import "_variables.scss";
 @import "_fonts.scss";
 @import "_navbar.scss";
-@import "_popover.scss";
+@import "_modals.scss";
 @import "_publi.scss";
 @import "_responsive.scss";
 
@@ -196,7 +196,7 @@ button {
     background-color: $c-bibli;
     color: white;
   }
-  &_accept, &_addText, &_highlightMedia, &_finishStopmotion, &_previzStopmotion, &_upload {
+  &_valider, &_addText, &_highlightMedia, &_finishStopmotion, &_previzStopmotion, &_upload {
     background-color: $c-bleuvert;
     color: white;
   }

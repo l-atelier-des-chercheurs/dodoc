@@ -31,6 +31,10 @@ input:required {
   background-size: 16px 16px;
   background-position: top right;
   background-repeat: no-repeat;
+
+  &.is--empty {
+    border-color: $c-rouge;
+  }
 }
 
 

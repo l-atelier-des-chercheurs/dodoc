@@ -16,11 +16,11 @@ socket.onevent = function (packet) {
   packet.data = ["*"].concat(args);
   onevent.call(this, packet);      // additional call to catch-all
 };
-socket.on("*",function(event,data) {
+socket.on("*",function(event,d) {
   // only log the following events
   if(event === "mediaCreated") {
-    for(mdata in data) {
-      var thisMedia = data[mdata];
+    for(md in d) {
+      var thisMedia = d[md];
       var pathToProjectWhoGotANewMedia = '/'+thisMedia.slugFolderName+'/'+thisMedia.slugProjectName;
       var logMediaCreated =
         dodoc.lang.modal.newMediaCreatedAtPath+
@@ -36,6 +36,16 @@ socket.on("*",function(event,data) {
     }
   }
   // todo: log folder created
+  if(event === "folderCreated") {
+      var log =
+        dodoc.lang.modal.newFolderCreatedWithName+d.name
+        ;
+      alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .log(log)
+        ;
+  }
 
   // todo: log project created
 
@@ -669,6 +679,10 @@ function listMontagePubliMedias( $publiContent, pdata) {
 
 var sendData = {
 
+
+  editFolder : function(d) {
+    socket.emit( 'editFolder',d);
+  },
 
   createNewProject : function( pdata) {
     pdata.slugFolderName = currentFolder;
