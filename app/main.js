@@ -59,7 +59,7 @@ module.exports = function(app, io){
 		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 
     socket.on( 'exportPubliToFtp', function (data){ onExportPubliToFtp( socket, data); });
-    socket.on( 'generatePDF', function (data){ onGeneratePDF( socket, data); });
+    socket.on( 'generatePDF', function (data){ onGeneratePDF( socket, data, io); });
 	});
 
   /***************************************************************************
@@ -420,12 +420,12 @@ module.exports = function(app, io){
     exportPubliToFtp.exportPubliToFtp( socket, publiData);
   }
 
-  function onGeneratePDF(socket, data) {
+  function onGeneratePDF(socket, data, io) {
     fs.writeFile('app/index.html', data.html, function(err) {
       if (err) return( err);
       else{console.log('html print file has been writen')}
     });    
-    exportPubliToPDF.exportPubliToPDF( socket, data);
+    exportPubliToPDF.exportPubliToPDF( socket, data, io);
   }
 
 // F I N     P U B L I     P A G E

@@ -22,6 +22,8 @@ socket.on('listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 socket.on('publiMetaUpdated', onPubliMetaUpdated);
 socket.on('publiMediasUpdated', onPubliMediasUpdated);
 
+socket.on('pdfIsGenerated', onPdfIsGenerated);
+
 jQuery(document).ready(function($) {
   init();
 });
@@ -45,6 +47,18 @@ function init(){
 
     var html = $('html').html(); 
     socket.emit('generatePDF', {html: html, url: currentUrl ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
+    // animation on wait
+    $('body').addClass('generating');
+  });
+
+}
+
+function onPdfIsGenerated(file){
+  $('body').removeClass('generating');
+  $('#modal-confirm-pdf .pdfPath').html(file);
+  $('#modal-confirm-pdf').foundation('reveal', 'open');
+  $(document).on('close.fndtn.reveal', '#modal-confirm-pdf[data-reveal]', function () {
+    location.reload();
   });
 
 }

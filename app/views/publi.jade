@@ -16,7 +16,9 @@ html
     .publi_container(data-publidata data-publishown="#{slugPubliName}")
       include templates/publiTemplate.jade
 
+    .div_is_loading
     include templates/modals/editPubli
+    include templates/modals/confirmPdfExported
     .js--templates
       include templates/js_templates
 

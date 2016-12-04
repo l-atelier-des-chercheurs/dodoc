@@ -105,7 +105,7 @@ mixin button(typeOfButton, navOrButton, style)
       span !{dodoc.lang.uploadPubliToFtp}
 
   if( typeOfButton === 'generatePDF')
-    a(href="#" title="Dodoc pdf publi" class='button-wrapper_pdf js--generatePDF #{defaultClasses}')
+    button(title="Dodoc pdf publi" class='button-wrapper_upload js--generatePDF #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_enregistre.svg
       span !{dodoc.lang.generatePDF}

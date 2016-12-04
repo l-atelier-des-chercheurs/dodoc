@@ -7177,8 +7177,15 @@ select {
 
 body.publi {
   background-color: #fff; }
+  body.publi.generating {
+    background: #FFF;
+    opacity: 0.7; }
+    body.publi.generating .div_is_loading {
+      display: block; }
   body.publi .button-wrapper_upload {
     margin: 16px; }
+    body.publi .button-wrapper_upload:hover {
+      background-color: #4BC0B4; }
   body.publi .module_infos {
     display: none; }
   body.publi .media::before {

@@ -10,17 +10,17 @@ var dodocPubli = require('./dodoc-publi.js');
 var exportPubliToPDF = (function() {
 
   const API = {
-    exportPubliToPDF     : function(socket, d) { return exportPubliToPDF(socket, d); },
-    createFolders        : function() { return createFolders(); },
-    generatePDF          : function() { return generatePDF(); },
+    exportPubliToPDF     : function(socket, d, io) { return exportPubliToPDF(socket, d, io); },
+    createFolders        : function(d, io) { return createFolders(d, io); },
+    generatePDF          : function(printFolderPath, d, io) { return generatePDF(printFolderPath, d, io); },
   };
 
-  function exportPubliToPDF(socket, d){
+  function exportPubliToPDF(socket, d, io){
     dev.logfunction( "EVENT - exportPubliToPDF");
-    createFolders(d); 
+    createFolders(d, io); 
   }
 
-  function createFolders(d){
+  function createFolders(d, io){
     var folderName = d.slugFolderName;
     var projectName = d.slugProjectName;
     var publiName = d.slugPubliName;
@@ -32,15 +32,16 @@ var exportPubliToPDF = (function() {
         createExportPubliFolder(publiName, exportProjectPath).then(function(exportPubliPath){
           createExportPubliFolder(printFolderName, exportPubliPath).then(function(printFolderPath){
             console.log(printFolderPath);
-            generatePDF(printFolderPath, d);
+            generatePDF(printFolderPath, d, io);
           });
         });
       });
     });
   }
 
-  function generatePDF(printFolderPath, d){
+  function generatePDF(printFolderPath, d, io){
     var currentUrl = d.url; 
+    var pdfPath = path.join(printFolderPath, dodocAPI.getCurrentDate()+'.pdf');
 
     phantom.create([
     '--ignore-ssl-errors=yes',
@@ -51,12 +52,13 @@ var exportPubliToPDF = (function() {
       ph.createPage().then(function(page) {
         page.open(currentUrl+"/print")
         .then(function(){
-          page.property('paperSize', { format: "A4", orientation: 'portrait', margin: '0cm' })
+          page.property('paperSize', { format: "A4", orientation: 'portrait', margin: '1cm' })
           .then(function() {
             setTimeout(function(){
-              page.render(printFolderPath+'/'+dodocAPI.getCurrentDate()+'.pdf').then(function() {
+              page.render(pdfPath).then(function() {
                 console.log('success');
-                //io.sockets.emit('pdfIsGenerated');
+
+                io.sockets.emit('pdfIsGenerated', pdfPath);
                 page.close();
                 ph.exit();
               });
