@@ -7,7 +7,7 @@
   position: fixed;
   left: 0; right: 0; top: 0; bottom: 0;
   z-index: 1004;
-  background-color: transparentize( white, .08);
+  background-color: transparentize( #fff, .08);
 }
 
 
@@ -55,7 +55,7 @@
       .button-wrapper {
         margin: $t-margin/2 0px;
         float: none;
-        span{
+        span {
           margin-left:10px;
         }
       }
@@ -158,28 +158,18 @@
   }
 
 
-  .big-mediaContent {
-    overflow: auto;
-    .row {
-      max-width: 100%;
-    }
-
-    .button-wrapper {
-      float: left;
-    }
-    .mediaDataForm {
-      padding: $t-margin;
-    }
-  }
-
+/*
   .button-wrapper_highlightMedia{
     color:$c-bleuvert;
     background-color: transparent;
   }
+*/
   .is--highlight {
     .button-wrapper_highlightMedia{
+/*
       color: white;
       background-color: $c-bleuvert;
+*/
     }
   }
 
@@ -232,6 +222,10 @@ select {
   // to animate the fade in of elements
   transition: opacity .1s;
 
+  .row {
+    max-width: 100%;
+  }
+
   .media-big {
     height: 100%;
     width: 100%;
@@ -240,7 +234,7 @@ select {
       // needs to stretch to contain all things wihout inner scroll
       min-height: 90vh;
       min-height: calc(100vh - #{$t-margin*6});
-      padding:0;
+      padding: $t-margin;
 
       img, video {
         min-width: 0;
@@ -248,8 +242,11 @@ select {
         height: 100%;
         object-fit: scale-down;
         background-color: $c-gris_clair;
-        height: calc(100vh - #{$t-margin*6});
+        height: calc(100vh - #{$t-margin*8});
       }
+    }
+    .mediaDataForm {
+      padding: $t-margin;
     }
 
 
@@ -284,7 +281,7 @@ select {
 
 // nav items (arrows) on the side of the big-media pop-up
 .big-mediaNav {
-  position: absolute;
+  position: fixed;
   left: 0;
   right: 0;
   top: 0;
@@ -323,13 +320,13 @@ select {
   }
 
   .big-mediaNav-arrow_left {
-    right: 101%;
+    left: 0;
     &::before {
       content:'<';
     }
   }
   .big-mediaNav-arrow_right {
-    left: 101%;
+    right: 0;
     &::before {
       content:'>';
     }

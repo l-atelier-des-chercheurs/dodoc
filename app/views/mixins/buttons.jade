@@ -117,17 +117,17 @@ mixin button(typeOfButton, navOrButton, style)
         include ../../client/images/i_cog.svg
       span !{dodoc.lang.editTitle}
 
-  if( typeOfButton === 'ajoutText')
-    a(href="#" data-reveal-id="modal-add-text" title="Dodoc texte" class='button-wrapper_addText js--ajoutText #{defaultClasses}')
+  if( typeOfButton === 'addText')
+    a(href="#" title="Dodoc texte" class='button-wrapper_addText js--addText #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_text.svg
       span !{dodoc.lang.createText}
 
-  if( typeOfButton === 'ajoutMedia')
-    a(href="#" data-reveal-id="modal-add-local" title="Dodoc media" class='button-wrapper_addMedia js--ajoutMedia #{defaultClasses}')
+  if( typeOfButton === 'addLocalMedia')
+    a(href="#" title="Dodoc media" class='button-wrapper_addMedia js--addLocalMedia #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_add.svg
-      span !{dodoc.lang.importMedia}
+      span !{dodoc.lang.addLocalMedia}
 
   if( typeOfButton === 'deleteMedia')
     a(href="#" title="Dodoc media" class='button-wrapper_deleteMedia js--delete-media-montage #{defaultClasses}')
@@ -185,7 +185,7 @@ mixin button(typeOfButton, navOrButton, style)
       span !{dodoc.lang.finishStopmotion}
 
   if( typeOfButton === 'flag')
-    a(href="#" title="Favoris" class='button-wrapper_flagMedia js--flagMedia')
+    a(href="#" title="Favoris" class='button-wrapper_flagMedia js--highlightMedia')
       .btn.icon
         include ../../client/images/i_flag.svg
 

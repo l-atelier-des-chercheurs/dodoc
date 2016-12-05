@@ -35,7 +35,12 @@ var modals = (function() {
         mdata.prevm = $(this).prev('.js--openModal_editMedia');
       		modals.createModal('editMedia', mdata);
       	});
-
+      	$('body').on('click', '.js--addText', function(){
+      		modals.createModal('addText');
+      });
+      	$('body').on('click', '.js--addLocalMedia', function(){
+      		modals.createModal('addLocalMedia');
+      });
     },
 
     createModal : function(typeOfModal, d) {
@@ -55,116 +60,22 @@ var modals = (function() {
         $modalContent = _initAddProjectModal($modal);
       } else if(typeOfModal === 'editProject') {
         $modalContent = _initEditProjectModal($modal, d);
-      } else if(typeOfModal === 'editMedia') {
-        $modalContent = _initEditMediaModal($modal, d);
       } else if(typeOfModal === 'addPubli') {
         $modalContent = _initAddPubliModal($modal);
       } else if(typeOfModal === 'editPubli') {
         $modalContent = _initEditPubliModal($modal, d);
+      } else if(typeOfModal === 'editMedia') {
+        $modalContent = _initEditMediaModal($modal, d);
+      } else if(typeOfModal === 'addText') {
+        $modalContent = _initAddTextModal($modal);
+      } else if(typeOfModal === 'addLocalMedia') {
+        $modalContent = _initAddLocalMedia($modal);
       }
 
       $modal.foundation('reveal', 'open');
       setTimeout(function() { $modal.find('[autofocus]').eq(0).focus() }, 300);
 
     },
-
-    createTextMedia : function() {
-
-      var $modal = $('#modal-add-text');
-      var $textf = $modal.find('.js--submit-new-text_text');
-
-      $modal.find('.js--valider').on('click',function(){
-        	var textContent = $textf.val();
-        var mediaData = {
-          "mediaType" : "text",
-          "mediaFolderPath" : dodoc.projectTextsFoldername,
-          "text" : textContent,
-        }
-        sendData.createNewMedia( mediaData);
-
-        $modal.foundation('reveal', 'close');
-        $textf.val('');
-
-      });
-    },
-
-    importNewMedia : function() {
-
-      var $modal = $('#modal-add-local');
-
-      	var $filePicker = $modal.find('.js--modal_inputfile');
-      	var $label = $filePicker.next().find('span');
-      	var labelVal = $label.text();
-
-      	$filePicker.on( 'change', function( e )
-      	{
-      		var fileName = '';
-    			fileName = e.target.value.split( '\\' ).pop();
-
-    			var fileData = e.originalEvent.target.files;
-
-      		if( fileName ) {
-      			$(this)
-      			  .data('fileName', fileName)
-      			  .data('fileData', fileData)
-      			  ;
-      			$label
-    			    .html( fileName)
-              ;
-      		} else {
-      			$(this)
-      			  .data('fileName', '')
-      			  .data('fileData', '')
-      			  ;
-      			$label.html( labelVal);
-      		}
-      	});
-
-      $modal.find('.js--valider').on('click',function(){
-        	var fileName = $filePicker.data( 'fileName');
-        	var fileData = $filePicker.data( 'fileData');
-        	//Images changed
-
-        	if( fileData !== undefined && fileData !== null){
-        		console.log('An image has been imported');
-        		var f = fileData[0];
-        		var reader = new FileReader();
-        		reader.onload = function(evt){
-          		// check type of content
-          		console.log( fileName);
-          		fileName = fileName.toLowerCase();
-
-              if( fileName.indexOf( ".jpg") !== -1 || fileName.indexOf( ".jpeg") !== -1 || fileName.indexOf( ".png") !== -1) {
-          			var mediaData =
-          			{
-                  "mediaType" : "photo",
-          				"mediaData" : evt.target.result
-          		  }
-          		} else if( fileName.indexOf( ".mp4") !== -1 ||  fileName.indexOf( ".webm")) {
-          			var mediaData =
-          			{
-                  "mediaType" : "video",
-          				"mediaData" : evt.target.result
-          		  }
-          		}
-
-          		if( mediaData !== undefined)
-          		  sendData.createNewMedia( mediaData);
-
-        		};
-        		reader.readAsDataURL(f);
-        	}
-
-        // then remove $filePicker data fileName and fileData, and label
-        $filePicker
-  			  .data('fileName', '')
-  			  .data('fileData', '')
-  			  ;
-  			$label.html( labelVal);
-        $modal.foundation('reveal', 'close');
-      });
-    },
-
 
   }
 
@@ -241,7 +152,6 @@ var modals = (function() {
       $m.foundation('reveal', 'close');
     });
   }
-
   function _initEditFolderModal($m, d) {
 
     $m
@@ -342,7 +252,6 @@ var modals = (function() {
     });
     return $m;
   }
-
   function _initEditProjectModal($m, pdata) {
 
     $m
@@ -495,7 +404,7 @@ var modals = (function() {
         var mfullpath = app.contentDir+'/'+mdata.textFilePath;
 
     				$mediaItem
-    					.find('.js--submit-new-text_text')
+    					.find('.js--textField')
     					  .val( mdata.originalText)
     					.end()
     					;
@@ -521,16 +430,34 @@ var modals = (function() {
     //Envoie les titres et légendes au serveur
     $mediaItem.find('.js--valider').on( 'click', function(){
       if(_checkAndHighlightEmptyRequiredFields($m)) return;
-      var editMediaData = {
-        "mediaName" : mname,
-        "mediaFolderPath" : mtype,
-      };
-    		var informations = $m.find( '.js--mediaInformations').val();
-      if(informations !== undefined)
-        editMediaData.informations = informations;
-      sendData.editMedia( editMediaData);
-    		$m.foundation('reveal', 'close');
-    		$m.empty();
+
+      // if its not a text media
+      if(mtype !== dodoc.projectTextsFoldername) {
+        var editMediaData = {
+          "mediaName" : mname,
+          "mediaFolderPath" : mtype,
+        };
+      		var informations = $m.find( '.js--mediaInformations').val();
+        if(informations !== undefined)
+          editMediaData.informations = informations;
+        sendData.editMedia( editMediaData);
+      		$m.foundation('reveal', 'close');
+      		$m.empty();
+
+    		} else {
+    		// if it is a pure text media
+        var editMediaData = {
+          "mediaName" : mname,
+          "mediaFolderPath" : mtype,
+        };
+        	var textOfTextmedia =  $m.find('.js--textField').val();
+        if( textOfTextmedia !== undefined)
+          editMediaData.textOfTextmedia = textOfTextmedia;
+
+        sendData.editMedia( editMediaData);
+        $m.foundation('reveal', 'close');
+      		$m.empty();
+    		}
     });
 
     // Ajoute ou enlève un highlight quand on clique sur "Highlight" dans la fenêtre modal
@@ -542,22 +469,6 @@ var modals = (function() {
       };
       sendData.editMedia(editMediaData);
       $mediaItem.toggleClass('is--highlight');
-    });
-
-    // Text media modal only
-    $mediaItem.find('.js--valider').on( 'click', function(){
-      if(_checkAndHighlightEmptyRequiredFields($m)) return;
-      var editMediaData = {
-        "mediaName" : mname,
-        "mediaFolderPath" : mtype,
-      };
-      	var textOfTextmedia =  $m.find('.js--submit-new-text_text').val();
-      if( textOfTextmedia !== undefined)
-        editMediaData.textOfTextmedia = textOfTextmedia;
-
-      sendData.editMedia( editMediaData);
-      $m.foundation('reveal', 'close');
-    		$m.empty();
     });
 
 
@@ -591,9 +502,7 @@ var modals = (function() {
       }
       $m.foundation('reveal', 'close');
     });
-
   }
-
   function _initEditPubliModal($m, d) {
     $m
       .find(".js--modal_name")
@@ -621,6 +530,87 @@ var modals = (function() {
       $m.foundation('reveal', 'close');
     });
   }
+
+  function _initAddTextModal($m) {
+    $m.find('.js--valider').on('click',function(){
+      debugger;
+      if(_checkAndHighlightEmptyRequiredFields($m)) return;
+      	var textContent = $m.find('.js--textField').val();
+      var mediaData = {
+        "mediaType" : "text",
+        "mediaFolderPath" : dodoc.projectTextsFoldername,
+        "text" : textContent,
+      };
+      sendData.createNewMedia(mediaData);
+
+      $m.foundation('reveal', 'close');
+    });
+  }
+
+  function _initAddLocalMedia($m) {
+    	var $filePicker = $m.find('.js--modal_inputfile');
+    	var $label = $filePicker.next().find('span');
+    	var labelVal = $label.text();
+
+    	$filePicker.on( 'change', function( e )
+    	{
+    		var fileName = '';
+  			fileName = e.target.value.split( '\\' ).pop();
+
+  			var fileData = e.originalEvent.target.files;
+
+    		if( fileName ) {
+    			$(this)
+    			  .data('fileName', fileName)
+    			  .data('fileData', fileData)
+    			  ;
+    			$label
+  			    .html( fileName)
+            ;
+    		} else {
+    			$(this)
+    			  .data('fileName', '')
+    			  .data('fileData', '')
+    			  ;
+    			$label.html( labelVal);
+    		}
+    	});
+
+    $m.find('.js--valider').on('click',function(){
+      	var fileName = $filePicker.data( 'fileName');
+      	var fileData = $filePicker.data( 'fileData');
+      	//Images changed
+
+      	if( fileData !== undefined && fileData !== null){
+      		console.log('An image has been imported');
+      		var f = fileData[0];
+      		var reader = new FileReader();
+      		reader.onload = function(evt){
+        		// check type of content
+        		console.log( fileName);
+        		fileName = fileName.toLowerCase();
+          if( fileName.indexOf( ".jpg") !== -1 || fileName.indexOf( ".jpeg") !== -1 || fileName.indexOf( ".png") !== -1) {
+        			var mediaData = {
+              "mediaType" : "photo",
+        				"mediaData" : evt.target.result
+        		  };
+        		} else if( fileName.indexOf( ".mp4") !== -1 ||  fileName.indexOf( ".webm")) {
+        			var mediaData = {
+              "mediaType" : "video",
+        				"mediaData" : evt.target.result
+        		  }
+        		}
+
+        		if( mediaData !== undefined)
+        		  sendData.createNewMedia( mediaData);
+
+      		};
+      		reader.readAsDataURL(f);
+      	}
+      $m.foundation('reveal', 'close');
+    });
+  }
+
 
   function _setBigmediaArrow($m, $upcomingMedia, $navUpcomingMedia) {
     if($upcomingMedia.length) {
@@ -652,7 +642,7 @@ var modals = (function() {
   function _getEmptyRequiredFields($m) {
     let emptyReqFields = [];
     const className = 'is--empty';
-    $m[0].querySelectorAll('input:required')
+    $m[0].querySelectorAll(':required')
       .forEach(function(el) {
         if(!el.value) {
           el.classList.add(className);

@@ -41,7 +41,7 @@ if( lang === 'fr') {
 
       "editTitle" : "Éditer le titre",
       "createText" : "Créer du texte",
-      "importMedia" : "Importer un média",
+      "addLocalMedia" : "Importer un média",
       "back" : "retour",
       "fullscreen" : "Plein écran",
       "quitFullscreen" : "Quitter le plein écran",

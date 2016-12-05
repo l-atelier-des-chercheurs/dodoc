@@ -1614,7 +1614,13 @@ select {
   flex-direction: column;
   align-items: center;
   overflow-x: hidden;
-  overflow-y: auto; }
+  overflow-y: auto;
+  /*
+  .button-wrapper_highlightMedia{
+    color:$c-bleuvert;
+    background-color: transparent;
+  }
+*/ }
   .m_modal:focus {
     outline: none; }
   .m_modal .m_modal-content {
@@ -1704,20 +1710,11 @@ select {
         position: relative; }
         .m_modal .templateSelector label svg #fond * {
           fill: #FFD892; }
-  .m_modal .big-mediaContent {
-    overflow: auto; }
-    .m_modal .big-mediaContent .row {
-      max-width: 100%; }
-    .m_modal .big-mediaContent .button-wrapper {
-      float: left; }
-    .m_modal .big-mediaContent .mediaDataForm {
-      padding: 16px; }
-  .m_modal .button-wrapper_highlightMedia {
-    color: #4BC0B4;
-    background-color: transparent; }
   .m_modal .is--highlight .button-wrapper_highlightMedia {
-    color: white;
-    background-color: #4BC0B4; }
+    /*
+      color: white;
+      background-color: $c-bleuvert;
+*/ }
 
 ::-webkit-input-placeholder {
   color: #bbb; }
@@ -1752,20 +1749,24 @@ select {
   height: 100%;
   width: 100%;
   transition: opacity .1s; }
+  .big-mediaContent .row {
+    max-width: 100%; }
   .big-mediaContent .media-big {
     height: 100%;
     width: 100%; }
     .big-mediaContent .media-big .mediaContent {
       min-height: 90vh;
       min-height: calc(100vh - 96px);
-      padding: 0; }
+      padding: 16px; }
       .big-mediaContent .media-big .mediaContent img, .big-mediaContent .media-big .mediaContent video {
         min-width: 0;
         width: 100%;
         height: 100%;
         object-fit: scale-down;
         background-color: #EBEBEB;
-        height: calc(100vh - 96px); }
+        height: calc(100vh - 128px); }
+    .big-mediaContent .media-big .mediaDataForm {
+      padding: 16px; }
     .big-mediaContent .media-big .button-wrapper_deleteMedia {
       display: block; }
     .big-mediaContent .media-big textarea {
@@ -1781,7 +1782,7 @@ select {
       height: 45vh; }
 
 .big-mediaNav {
-  position: absolute;
+  position: fixed;
   left: 0;
   right: 0;
   top: 0;
@@ -1809,11 +1810,11 @@ select {
     .big-mediaNav .big-mediaNav-arrow:hover {
       color: #4BC0B4; }
   .big-mediaNav .big-mediaNav-arrow_left {
-    right: 101%; }
+    left: 0; }
     .big-mediaNav .big-mediaNav-arrow_left::before {
       content: '<'; }
   .big-mediaNav .big-mediaNav-arrow_right {
-    left: 101%; }
+    right: 0; }
     .big-mediaNav .big-mediaNav-arrow_right::before {
       content: '>'; }
 

@@ -49,9 +49,6 @@ function init(){
   	$('body').attr( "data-publicationpane", $('body').attr('data-publicationPane') === 'open' ? '' : 'open');
   });
 
-  // Au click sur le bouton "submit" d'un popup de texte
-  modals.createTextMedia();
-
   modals.importNewMedia();
 
   // si en arrivant sur la page, il y a un hash dans l'url
@@ -71,8 +68,8 @@ function init(){
   }
 
  // Ajoute ou enlève un highlight quand on clique sur le drapeau dans les médias
-  $('body').on('click', '.js--flagMedia', function(e){
-  	e.stopPropagation();
+  $('body').on('click', '.js--highlightMedia', function(e){
+    	e.stopPropagation();
 		var $thisMedia = $(this).closest(".media");
 		var medianame = $thisMedia.attr("data-medianame");
 		var mediaFolderPath = $thisMedia.attr("data-mediatype");
