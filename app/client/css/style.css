@@ -1912,6 +1912,7 @@ input[type=range]::-webkit-slider-thumb {
   margin-top: -7px; }
 
 input[type="number"] {
+  width: 4rem;
   text-align: center; }
   input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button {
     opacity: 1; }
@@ -3207,7 +3208,7 @@ body.capture .content-wrapper:after {
           content: counter(compteListe) " ";
           position: absolute;
           bottom: 0;
-          font-size: 60%;
+          font-size: 70%;
           padding: 0px 4px; }
         .captureRight .preview_stopmotion .preview_stopmotion--timeline .stopmotion_lastImageSmallPreview:nth-last-child(-n+10) {
           visibility: visible;

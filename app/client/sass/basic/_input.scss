@@ -68,6 +68,7 @@ input[type=range] {
 
 input[type="number"] {
 
+  width: 4rem;
   text-align: center;
 
   &::-webkit-inner-spin-button,
