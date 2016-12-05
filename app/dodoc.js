@@ -53,6 +53,9 @@ if( lang === 'fr') {
 
       "selectTemplate" : "Sélection de gabarit",
 
+      "thisFolderNameIsAlreadyTaken" : "Le nom de dossier suivant existe déjà : ",
+      "pleaseUseAnother" : "Veuillez en utiliser un autre.",
+
       "browserCantUserWebRTC" : "Attention ! Votre navigateur ne permet pas de capturer des photos et du son (Safari ou appareils Apple).\nUtilisez l’option d’import  de la page Bibliothèque (croix jaune) pour ajouter des photos, des vidéos et du son.",
       "chooseCameraResolution" : "Sélectionnez la résolution de votre caméra",
       "customCameraResolution" : "Choississez une résolution",
@@ -101,12 +104,12 @@ if( lang === 'fr') {
         "inprogress" : "En cours",
         "finished" : "Terminé",
         "warningFinishedStatus" : "Attention&nbsp;! Le statut terminé ne vous permettra plus d'éditer.",
-        "sureToRemoveFolder" : "Êtes-vous sûr de vouloir supprimer le dossier&nbsp;?",
+        "sureToRemoveFolder" : "Êtes-vous sûr de vouloir supprimer le dossier ?",
 
         "editProject" : "Modifier le projet",
 
         "selectAnImage" : "Sélectionnez une image",
-        "sureToRemoveProject" : "Êtes-vous sûr de vouloir supprimer le projet&nbsp;?",
+        "sureToRemoveProject" : "Êtes-vous sûr de vouloir supprimer le projet ?",
 
         "newProject" : "Nouveau projet",
         "newPubli" : "Nouvelle publication",

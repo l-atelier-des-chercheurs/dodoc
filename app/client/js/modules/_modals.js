@@ -8,6 +8,7 @@ var modals = (function() {
 
       console.log('Modals.init()');
 
+
       	$('body').on('click', '.js--openModal_addFolder', function(){
       		modals.createModal('addFolder');
       	});
@@ -48,7 +49,7 @@ var modals = (function() {
       console.log('Creating a new modal of type ' + typeOfModal + ' from data ');
       console.log({d});
 
-      var $modal = $('[data-modal-id="' + typeOfModal + '"]').empty();
+      var $modal = $('[data-modal-id="' + typeOfModal + '"]').empty().off();
       var $modalContent = $modal.next().clone(false);
       $modal.append($modalContent.show());
 
@@ -72,6 +73,22 @@ var modals = (function() {
         $modalContent = _initAddLocalMedia($modal);
       }
 
+      $modal
+        .on('close_that_modal', function() {
+          $modal.foundation('reveal', 'close');
+          setTimeout(function() {
+            $modal.empty();
+            $modal.off()
+          }, 500);
+        })
+        .keyup(function(e) {
+          var key = e.which;
+          if (key == 13) {
+            $modal.find('.js--valider').click();
+          }
+        })
+        ;
+
       $modal.foundation('reveal', 'open');
       setTimeout(function() { $modal.find('[autofocus]').eq(0).focus() }, 300);
 
@@ -79,78 +96,14 @@ var modals = (function() {
 
   }
 
-/*
-  function _statusChangeAlertInit() {
-    	$('#modal-modify-project .modify-statut').bind('change', function(){
-    		if($(this).val() == "terminé"){
-    			$('#modal-statut-alert').foundation('reveal', 'open');
-    			$('#modal-statut-alert button.oui').on('click', function(){
-    				console.log('oui ');
-    				$('#modal-statut-alert').foundation('reveal', 'close');
-    				$("#modal-modify-project").foundation('reveal', 'open');
-    			});
-    			$('#modal-statut-alert button.annuler').on('click', function(){
-    				console.log('non');
-    				$('#modal-modify-project .modify-statut').val('en cours');
-    				$('#modal-statut-alert').foundation('reveal', 'close');
-    				$("#modal-modify-project").foundation('reveal', 'open');
-    			});
-    			$(document).on('closed.fndtn.reveal', '#modal-statut-alert[data-reveal]', function () {
-    	  		$(".js--modal_editProject").foundation('reveal', 'open');
-    			});
-    		}
-    	});
-  }
-  function _removeProjectInit() {
-    	var $deleteModal = $('#modal-deleteproject-alert');
-    	$deleteModal.find('button.oui').on('click', function(){
-      	var slugProjectName = $deleteModal.data('slugProjectName');
-      	var slugFolderName = currentFolder;
-    		socket.emit('removeOneProject',
-    		{
-      		"slugFolderName" : slugFolderName,
-      		"slugProjectName" : slugProjectName
-        });
-    		$deleteModal.foundation('reveal', 'close');
-    	});
-    	$deleteModal.find('button.annuler').on('click', function(){
-    		console.log('annuler');
-    		$deleteModal.foundation('reveal', 'close');
-    		$(document).on('close.fndtn.reveal', '#modal-deleteFolder-alert[data-reveal]', function () {
-      	  	$('#modal-modify-project').foundation('reveal', 'open');
-    		});
-    	});
-  }
-
-  function _removeFolderInit() {
-    	var $deleteModal = $('#modal-deleteproject-alert');
-    	$deleteModal.find('button.oui').on('click', function(){
-      	var slugProjectName = $deleteModal.data('slugProjectName');
-      	var slugFolderName = currentFolder;
-    		socket.emit('removeOneProject',
-    		{
-      		"slugFolderName" : slugFolderName,
-      		"slugProjectName" : slugProjectName
-        });
-    		$deleteModal.foundation('reveal', 'close');
-    	});
-    	$deleteModal.find('button.annuler').on('click', function(){
-    		console.log('annuler');
-    		$deleteModal.foundation('reveal', 'close');
-    		$(document).on('close.fndtn.reveal', '#modal-delete-alert[data-reveal]', function () {
-      	  	$('#modal-modify-project').foundation('reveal', 'open');
-    		});
-    	});
-  }
-*/
-
   function _initAddFolderModal($m) {
     $m.find(".js--valider").on('click', function() {
       if(_checkAndHighlightEmptyRequiredFields($m)) return;
-      var newFolderName = $m.find('input.js--data_folderName').val();
+      var newFolderName = $m.find('input.js--data_folderName').val().trim();
       sendData.addFolder({ "name" : newFolderName });
-      $m.foundation('reveal', 'close');
+      $m.trigger('close_that_modal');
     });
+    return $m;
   }
   function _initEditFolderModal($m, d) {
 
@@ -166,8 +119,7 @@ var modals = (function() {
           .prop("checked", true)
       	  .end()
       .end()
-      .data({
-      });
+      ;
 
     $m.find(".js--valider").on('click', function(){
       if(_checkAndHighlightEmptyRequiredFields($m)) return;
@@ -180,12 +132,17 @@ var modals = (function() {
         "slugFolderName" : d.slugFolderName,
         "statut" : newStatut
       });
-      $m.foundation('reveal', 'close');
+      $m.trigger('close_that_modal');
     });
 
-    $m.find(".button-wrapper_deleteFolder").on("click", function() {
-
-    });
+    $m.find(".js--deleteFolder").on("click", function() {
+      if(window.confirm(dodoc.lang.modal.sureToRemoveFolder)) {
+    		  sendData.removeOneFolder({
+          "slugFolderName" : d.slugFolderName,
+        });
+        $m.trigger('close_that_modal');
+      }
+    	});
 
     return $m;
   }
@@ -226,32 +183,28 @@ var modals = (function() {
       	var fileData = $filePicker.data( "fileData");
       	//Images changed
 
+  			var newProjectData = {
+ 				"projectName" : newProjectName
+ 			}
+
       	if( fileData !== undefined && fileData !== null){
       		console.log('Une image a été ajoutée');
       		var f = fileData[0];
       		var reader = new FileReader();
       		reader.onload = function(evt){
-      			var newProjectData =
-      			{
-       				"projectName" : newProjectName,
-      				"imageData" : evt.target.result
-      		  }
-      		  sendData.createNewProject( newProjectData);
+          newProjectData.imageData = evt.target.result;
+      		  sendData.createNewProject(newProjectData);
+          $m.trigger('close_that_modal');
       		};
       		reader.readAsDataURL(f);
+      	} else {
+    		  sendData.createNewProject(newProjectData);
+        $m.trigger('close_that_modal');
       	}
-      	else{
-      		console.log("Pas d'image chargé");
-    			var newProjectData =
-          {
-       				"projectName" : newProjectName,
-      		}
-    		  sendData.createNewProject( newProjectData);
-      	}
-      $m.foundation('reveal', 'close');
     });
     return $m;
   }
+
   function _initEditProjectModal($m, pdata) {
 
     $m
@@ -291,16 +244,16 @@ var modals = (function() {
     			$label.innerHTML = labelVal;
     	});
 
-    	var $deleteModal = $('#modal-deleteproject-alert');
-    	$deleteModal.data('slugProjectName', pdata.slugProjectName)
-
-    	//Au click sur le bouton supprimer le dossier
     	$m.find('.js--deleteProject').on('click', function(){
-    		$deleteModal.foundation('reveal', 'open');
+      if(window.confirm(dodoc.lang.modal.sureToRemoveProject)) {
+    		  sendData.removeOneProject({
+        		"slugProjectName" : pdata.slugProjectName
+        });
+        $m.trigger('close_that_modal');
+      }
     	});
 
     // remettre le statut
-
     $m.find(".js--valider").on('click', function(){
       if(_checkAndHighlightEmptyRequiredFields($m)) return;
       	var newProjectName = $m.find('.js--modal_name').val();
@@ -311,7 +264,6 @@ var modals = (function() {
         "slugProjectName" : pdata.slugProjectName,
   				"statut" : newStatut,
     		}
-
       	var fileData = $filePicker.data( "fileData");
       	if( fileData !== undefined && fileData !== null){
       		console.log('Une image a été ajoutée');
@@ -319,13 +271,13 @@ var modals = (function() {
       		var reader = new FileReader();
       		reader.onload = function(evt){
         		projectData.imageData = evt.target.result;
-      		  sendData.editProject( projectData);
+      		  sendData.editProject(projectData);
       		};
       		reader.readAsDataURL(f);
       	} else {
     		  sendData.editProject( projectData);
     		}
-      $m.foundation('reveal', 'close');
+      $m.trigger('close_that_modal');
     });
     return $m;
   }
@@ -441,7 +393,7 @@ var modals = (function() {
         if(informations !== undefined)
           editMediaData.informations = informations;
         sendData.editMedia( editMediaData);
-      		$m.foundation('reveal', 'close');
+      		$m.trigger('close_that_modal');
       		$m.empty();
 
     		} else {
@@ -455,7 +407,7 @@ var modals = (function() {
           editMediaData.textOfTextmedia = textOfTextmedia;
 
         sendData.editMedia( editMediaData);
-        $m.foundation('reveal', 'close');
+        $m.trigger('close_that_modal');
       		$m.empty();
     		}
     });
@@ -475,7 +427,7 @@ var modals = (function() {
     $mediaItem.find('.js--delete-media-bibli').on( 'click', function(){
 
       $alertModal = $('#modal-delete-alert-media');
-      	$m.foundation('reveal', 'close');
+      	$m.trigger('close_that_modal');
       var mediaToDelete = {
         "mediaName" : mname,
         "mediaFolderPath" : mtype,
@@ -500,8 +452,9 @@ var modals = (function() {
         		"template" : newPubliTemplate
       		});
       }
-      $m.foundation('reveal', 'close');
+      $m.trigger('close_that_modal');
     });
+    return $m;
   }
   function _initEditPubliModal($m, d) {
     $m
@@ -527,13 +480,13 @@ var modals = (function() {
         "slugProjectName" : d.slugProjectName
     		}
   		  sendData.editPubliMeta( publiData);
-      $m.foundation('reveal', 'close');
+      $m.trigger('close_that_modal');
     });
+    return $m;
   }
 
   function _initAddTextModal($m) {
     $m.find('.js--valider').on('click',function(){
-      debugger;
       if(_checkAndHighlightEmptyRequiredFields($m)) return;
       	var textContent = $m.find('.js--textField').val();
       var mediaData = {
@@ -543,8 +496,9 @@ var modals = (function() {
       };
       sendData.createNewMedia(mediaData);
 
-      $m.foundation('reveal', 'close');
+      $m.trigger('close_that_modal');
     });
+    return $m;
   }
 
   function _initAddLocalMedia($m) {
@@ -607,10 +561,10 @@ var modals = (function() {
       		};
       		reader.readAsDataURL(f);
       	}
-      $m.foundation('reveal', 'close');
+      $m.trigger('close_that_modal');
     });
+    return $m;
   }
-
 
   function _setBigmediaArrow($m, $upcomingMedia, $navUpcomingMedia) {
     if($upcomingMedia.length) {

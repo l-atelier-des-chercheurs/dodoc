@@ -123,22 +123,20 @@ body.projets{
       }
     }
     .image-wrapper{
-
       position: relative;
       background-color: $c-separator;
 
       -webkit-background-size: cover;
       background-size: cover;
       background-position: center center;
+
+      min-height: 160px;
     }
 
 
     .last-medias {
       @include clearfix();
       background-color: #fff;
-
-      border-bottom:   1px solid $c-separator;
-      background-color: #f9f9f9;
       padding: $t-margin/2 $t-margin/2;
 
       body.projets & {

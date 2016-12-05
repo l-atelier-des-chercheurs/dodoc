@@ -111,14 +111,17 @@ fieldset {
     justify-content: space-around;
 
     padding: $t-margin/2 $t-margin;
-    margin-bottom:  10px;
+    margin-bottom:  $t-margin;
 
+    border-radius: 5px;
     min-height: 3.3125rem;
+
+    transition: color 1s;
   }
 
   :focus + label,
   &.has-focus + label {
-    outline: 1px dotted $c-noir;
+    outline: 1px dotted $c-rouge;
     outline: -webkit-focus-ring-color auto 5px;
   }
 
@@ -134,14 +137,15 @@ fieldset {
 
 
   &.inputfile-2 + label {
-    color: #d3394c;
-    border: 2px solid currentColor;
+    background-color: $c-rouge;
+    color: white;
+    border: 0px solid currentColor;
   }
 
   &.inputfile-2:focus + label,
   &.inputfile-2.has-focus + label,
   &.inputfile-2 + label:hover {
-    color: #722040;
+
   }
 
 

@@ -109,10 +109,10 @@ var dodocAPI = (function() {
   function sendEventWithContent(sendEvent, objectContent, io, socket) {
     var eventAndContentJson = eventAndContent( sendEvent, objectContent);
     dev.logpackets("eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
-    if(socket === undefined)
-      io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
-    else
+    if(socket)
       socket.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+    else
+      io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
     dev.logpackets("packet sent");
   }
 

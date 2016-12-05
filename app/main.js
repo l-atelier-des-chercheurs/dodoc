@@ -36,7 +36,7 @@ module.exports = function(app, io){
     socket.on( 'listFolders', function (data){ onListFolders(socket); });
     socket.on( 'addFolder', function (data){ onNewFolder(socket,data); });
     socket.on( 'editFolder', onEditFolder);
-    socket.on( 'removeFolder', onRemoveFolder);
+    socket.on( 'removeOneFolder', onRemoveOneFolder);
 
     // F O L D E R     P A G E
     socket.on("listProjects", function (data){ onListProjects( socket, data); });
@@ -104,7 +104,7 @@ module.exports = function(app, io){
       // also list projects if there are folders
       if(allFoldersData !== undefined) {
         allFoldersData.forEach( function( fdata) {
-          onListProjects( socket, fdata);
+          onListProjects(socket, fdata);
         });
       }
     }, function(error) {
@@ -113,18 +113,19 @@ module.exports = function(app, io){
   }
 
   // Modifier un dossier
-  function onEditFolder( updatedFolderData){
+  function onEditFolder(updatedFolderData){
     dev.logfunction( "EVENT - onEditFolder with packet " + JSON.stringify( updatedFolderData, null, 4));
-    dodocFolder.updateFolderMeta( updatedFolderData).then(function( currentDataJSON) {
-      dodocAPI.sendEventWithContent( 'folderModified', currentDataJSON, io);
+    dodocFolder.updateFolderMeta( updatedFolderData).then(function(fdata) {
+      dodocAPI.sendEventWithContent( 'folderModified', fdata, io);
+      onListProjects('', fdata);
     }, function(error) {
       dev.error("Failed to update a folder! Error: " + error);
     });
   }
 
   // Supprimer un dossier
-  function onRemoveFolder( fdata){
-    dev.logfunction( "EVENT - onRemoveFolder");
+  function onRemoveOneFolder( fdata){
+    dev.logfunction( "EVENT - onRemoveOneFolder");
     dodocFolder.removeFolderNamed( fdata.slugFolderName).then(function( removedFolderData) {
       dodocAPI.sendEventWithContent( 'folderRemoved', removedFolderData, io);
     }, function(error) {
@@ -145,9 +146,9 @@ module.exports = function(app, io){
     });
   }
 
-  function onNewProject( projectData) {
+  function onNewProject(projectData) {
     dev.logfunction( "EVENT - onNewProject");
-    dodocProject.createNewProject( projectData).then( function( newpdata) {
+    dodocProject.createNewProject(projectData).then( function( newpdata) {
       dodocAPI.sendEventWithContent( 'projectCreated', newpdata, io);
     }, function(error) {
       dev.error("Failed to create a new project! Error: " + error);

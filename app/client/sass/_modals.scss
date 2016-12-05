@@ -53,13 +53,16 @@
       min-height: calc(100vh - #{$t-margin*6});
 
       .button-wrapper {
-        margin: $t-margin/2 0px;
         float: none;
         span {
           margin-left:10px;
         }
       }
     }
+  }
+
+  .button-wrapper {
+    margin: 0px 0px $t-margin;
   }
 
   .button-wrapper_close {
@@ -74,7 +77,6 @@
 
   .modal_title {
     margin: 0;
-    margin-top: -$t-margin/2;
     width:  90%;
     margin-bottom:  $t-margin/2;
   }

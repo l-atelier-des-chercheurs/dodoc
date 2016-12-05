@@ -8,6 +8,7 @@ var plumber = require('gulp-plumber');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var jshint = require('gulp-jshint');
+var sourcemaps = require('gulp-sourcemaps');
 var dodoc  = require('./dodoc.js');
 
 var pluginsScripts = [
@@ -42,7 +43,9 @@ gulp.task('sass', function() {
             this.emit('end');
         }
     }))
+    .pipe(sourcemaps.init())
     .pipe(sass())
+    .pipe(sourcemaps.write())
     .pipe(concat('style.css'))
     .pipe(gulp.dest('client/css'));
 });

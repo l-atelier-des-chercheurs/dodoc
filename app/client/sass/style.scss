@@ -315,14 +315,16 @@ button {
     flex: 1 100%;
   }
 
-  > .flex_40 {
-    flex: 1 40%;
-  }
-  > .flex_50 {
-    flex: 1 50%;
-  }
-  > .flex_60 {
-    flex: 1 60%;
+  @media #{$large-only}{
+    > .flex_40 {
+      flex: 1 40%;
+    }
+    > .flex_50 {
+      flex: 1 50%;
+    }
+    > .flex_60 {
+      flex: 1 60%;
+    }
   }
 }
 
@@ -342,6 +344,7 @@ button {
     width: $mediasWidthHeight;
     padding-bottom: $mediasWidthHeight;
 
+    background-color: $c-gris_clair;
     overflow: hidden;
 
     z-index: 1;
@@ -351,8 +354,6 @@ button {
       top: 0; left: 0;  right: 0; bottom: 0;
 
       overflow: hidden;
-      background-color: $c-gris_clair;
-
       border-width: 1px;
       border-style: solid;
       border-color: $c-separator;
@@ -386,8 +387,8 @@ button {
     }
 
     &.media_text {
+      background-color: $c-creme;
       .mediaContent {
-        background-color: $c-creme;
         padding:  $t-margin/2;
       }
     }
@@ -601,17 +602,15 @@ button {
 
 @keyframes blink {
    0% {
-    opacity: 0;
     background-color: $c-images;
   }
   100% {
-    opacity: 1;
     background-color: transparent;
   }
 }
 [data-oninsert="blink"] {
-  -webkit-animation: blink 1.4s ease-out 1;
-  animation: blink 1.4s ease-out 1;
+  -webkit-animation: blink 1.4s ease-in 1;
+  animation: blink 1.4s ease-in 1;
 }
 
 .js--templates {
@@ -625,7 +624,7 @@ button {
 
 // text medias style
 .mediaContent--textOfTextmedia {
-  font-size:1em;
+  font-size:1rem;
 
   >*:first-child {
     margin-top: 0;

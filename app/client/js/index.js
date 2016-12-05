@@ -25,27 +25,17 @@ socket.on('folderRemoved', onFolderRemoved);
 
 
 jQuery(document).ready(function($) {
-
 	$(document).foundation();
-	init();
 });
 
-function init(){
-	removeFolder();
-	//remove modal modify folder when it closing
-	$(document).on('close.fndtn.reveal', '#modal-modify-folder[data-reveal]', function () {
-	//   	$("#modal-modify-folder").empty();
-	});
-}
-
-// Affiche le fichier dès qu'il est crée
+// Show created folders
 function onFolderCreated(d){
   onListOneFolder(d);
 }
 
 // Si un fichier existe déjà, affiche un message d'alerte
 function onFolderAlreadyExist(data){
-	alertify.error("Le nom de dossier " +data.name+ " existe déjà. Veuillez trouvez un autre nom.");
+	alertify.error(dodoc.lang.thisFolderNameIsAlreadyTaken+'<em>'+data.name+'</em>'+'<br>'+dodoc.lang.pleaseUseAnother);
 }
 
 // Liste les dossiers
@@ -160,33 +150,6 @@ function onFolderModified(folderData){
   return insertOrReplaceFolder( folderData.slugFolderName, $folderContent);
 }
 
-//Suppression du dossier
-function removeFolder(){
-
-	$('#modal-delete-alert button.oui').on('click', function(){
-
-    	var slugFolderNameOfFolderToDelete = $(this).parents( '#modal-delete-alert').attr('data-foldertodelete');
-		console.log('delete ' + slugFolderNameOfFolderToDelete);
-		socket.emit('removeFolder', { "slugFolderName" : slugFolderNameOfFolderToDelete});
-
-		$('#modal-delete-alert').foundation('reveal', 'close');
-		$("#modal-modify-folder").foundation('reveal', 'close');
-		$(".m_modal-bg").remove();
-
-	});
-
-	$('#modal-delete-alert button.annuler').on('click', function(){
-
-		console.log('annuler');
-		$('#modal-delete-alert').foundation('reveal', 'close');
-
-	});
-/*
-	$(document).on('closed.fndtn.reveal', '#modal-delete-alert[data-reveal]', function () {
-		$("#modal-modify-folder").foundation('reveal', 'open');
-	});
-*/
-}
 
 //Remove the folder from list
 function onFolderRemoved( removedFolderData){

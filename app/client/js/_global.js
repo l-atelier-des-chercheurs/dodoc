@@ -92,7 +92,6 @@ function loadProject(pd) {
   if( pd.modified === null)
     $newProject.find('.modify-date').remove();
 
-
   // customisation du projet
 	$newProject
 	  .attr( 'data-projectname', pd.slugProjectName)
@@ -401,8 +400,9 @@ function removeThisFolder( $container, slugFolderName) {
   var $items = $container.find(".dossier");
 
   var $itemToRemove = $items
-    .filter("[data-slugfoldername='" + slugFolderName + "']")
+    .filter(function() { return $(this).data('slugFolderName') === slugFolderName })
     ;
+
   $itemToRemove
     .fadeOut( 400, function() {
       $(this).remove();
@@ -696,14 +696,21 @@ var sendData = {
   editFolder : function(d) {
     socket.emit('editFolder',d);
   },
-
-  createNewProject : function( pdata) {
-    pdata.slugFolderName = currentFolder;
-    	socket.emit('addProject', pdata);
+  removeOneFolder : function(d) {
+    	socket.emit('removeOneFolder', d);
   },
-  editProject : function( pdata) {
-    pdata.slugFolderName = currentFolder;
-    	socket.emit('editProject', pdata);
+
+  createNewProject : function(d) {
+    d.slugFolderName = currentFolder;
+    	socket.emit('addProject', d);
+  },
+  editProject : function(d) {
+    d.slugFolderName = currentFolder;
+    	socket.emit('editProject', d);
+  },
+  removeOneProject : function(d) {
+    d.slugFolderName = currentFolder;
+    	socket.emit('removeOneProject', d);
   },
 
   createNewMedia : function( mediaData) {
