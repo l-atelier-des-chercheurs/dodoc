@@ -114,6 +114,8 @@ if( lang === 'fr') {
 
         "newMediaCreatedAtPath" : "Un nouveau média vient d’être créé dans le projet ",
         "newFolderCreatedWithName" : "Un nouveau dossier vient d’être créé avec pour nom ",
+        "newProjectCreatedWithName" : "Un nouveau projet vient d’être créé avec pour nom ",
+        "atPath" : " dans le chemin ",
 
       },
     }

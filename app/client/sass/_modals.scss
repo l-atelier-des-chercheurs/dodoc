@@ -1,69 +1,85 @@
-.m_modal {
-
+.m_modal,.m_modal-content {
   display: none;
-
 }
 
-.m_modal-content {
-
+.m_modal-bg {
   display: none;
-
-}
-
-
-
-.reveal-modal-bg {
-  background-color: transparentize( white, .2);
+  position: fixed;
+  left: 0; right: 0; top: 0; bottom: 0;
+  z-index: 1004;
+  background-color: transparentize( white, .1);
 }
 
 
 .m_modal {
+  position: fixed;
+  top:0; left: 0; right: 0; bottom: 0;
+  z-index: 1100;
 
-  border-radius: 2px;
-  box-shadow: 0 5px 20px $c-gris;
-  border: 2px solid white;
-  padding: $t-margin;
-
-  max-width: 32.5rem;
-  max-height: 80vh;
-
-  overflow-y: scroll;
+  pointer-events: none;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   &:focus {
     outline: none;
   }
 
+  .m_modal-content {
+    position: relative;
+    margin-top: 30vh;
+    margin-bottom: 20vh;
+    padding: $t-margin;
+    width: 100%;
+    max-width: 380px;
+
+    background-color: white;
+    box-shadow: 0 5px 20px $c-gris;
+    pointer-events: auto;
+
+    &.is--fullPage {
+      position: absolute;
+      margin: $t-margin*3;
+
+      top: 0;
+      left: 0;
+      right: 0;
+      width: auto;
+      max-width: none;
+
+      min-height: 90vh;
+      min-height: calc(100vh - #{$t-margin*6});
+
+      .button-wrapper {
+        margin: $t-margin/2 0px;
+        float: none;
+        span{
+          margin-left:10px;
+        }
+      }
+    }
+  }
+
   .button-wrapper_close {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: -$t-buttonSize/2;
+    right: -$t-buttonSize/2;
   }
 
   .button-wrapper_valider.button-wrapper_valider {
     float: right;
   }
 
-  .popoverTitle {
-    font-weight: bold;
-    font-size: 1.5em;
+  .modal_title {
     margin: 0;
-    margin-top: 3px;
-
-    width:  80%;
-
-    margin-bottom:  $t-margin;
+    margin-top: -$t-margin/2;
+    width:  90%;
+    margin-bottom:  $t-margin/2;
   }
 
   > p {
     width:  80%;
-  }
-
-  .button_submit {
-    float:right;
-  }
-
-  .button-wrapper_deleteFolder  {
-    float:left;
   }
 
   button {
@@ -72,21 +88,6 @@
 
   .legende {
     padding: $t-margin/2;
-  }
-
-
-  input[type="submit"] {
-    display: block;
-    border: none;
-    float: right;
-    background-color: $c-bleuvert;
-
-    padding: 4px 24px;
-    height: 42px;
-    border-radius: 22px;
-    cursor: pointer;
-
-    color: white;
   }
 
   .templateSelector {
@@ -153,64 +154,22 @@
 
   }
 
-  &#modal-statut-alert, &#modal-delete-alert {
-    button {
-      display: inline-block;
-      padding: 9px 22px;
-      margin-right: 16px;
-      border-radius: 2px;
 
-      &.annuler {
-        background-color: $c-rouge;
-      }
+  .big-mediaContent {
+    overflow: auto;
+    .row {
+      max-width: 100%;
     }
   }
 
-
-
-  & {
-
-    .button_submit {
-
-    }
-
-    .button-wrapper_deleteProject {
-      float: left;
-    }
+  .button-wrapper_highlightMedia{
+    color:$c-bleuvert;
+    background-color: transparent;
   }
-
-
-  &#modal-media-view{
-    max-width: 80%;
-    height: 80vh;
-    overflow: visible;
-
-    .big-mediaContent {
-      overflow: auto;
-      .button-wrapper {
-        margin: $t-margin/2 0px;
-        float: none;
-        span{
-          margin-left:10px;
-        }
-      }
-
-    }
-
-    .row{
-      max-width:100%;
-    }
-
-
+  .is--highlight{
     .button-wrapper_highlightMedia{
-      color:$c-bleuvert;
-      background-color: transparent;
-    }
-    .is--highlight{
-      .button-wrapper_highlightMedia{
-        color: white;
-        background-color: $c-bleuvert;
-      }
+      color: white;
+      background-color: $c-bleuvert;
     }
   }
 
@@ -268,7 +227,9 @@ select {
     width: 100%;
 
     .mediaContent {
-      height: 100%;
+      height: 1px;
+      min-height: 90vh;
+      min-height: calc(100vh - #{$t-margin*8});
       padding:0;
 
       img, video {

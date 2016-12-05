@@ -38,7 +38,7 @@ socket.on("*",function(event,d) {
   // todo: log folder created
   if(event === "folderCreated") {
       var log =
-        dodoc.lang.modal.newFolderCreatedWithName+d.name
+        dodoc.lang.modal.newFolderCreatedWithName+'<em>'+d.name+'</em>';
         ;
       alertify
         .closeLogOnClick(true)
@@ -47,7 +47,17 @@ socket.on("*",function(event,d) {
         ;
   }
 
-  // todo: log project created
+  if(event === "projectCreated") {
+    var pathToProject = '/'+d.slugFolderName+'/'+d.slugProjectName;
+    var log =
+        dodoc.lang.modal.newProjectCreatedWithName+'<em>'+d.name+'</em>'+dodoc.lang.modal.atPath+'<em>'+pathToProject+'</em>'
+        ;
+      alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .log(log)
+        ;
+  }
 
   // todo: log publication created
 
@@ -679,18 +689,20 @@ function listMontagePubliMedias( $publiContent, pdata) {
 
 var sendData = {
 
-
+  addFolder : function(d) {
+    socket.emit('addFolder', d);
+  },
   editFolder : function(d) {
-    socket.emit( 'editFolder',d);
+    socket.emit('editFolder',d);
   },
 
   createNewProject : function( pdata) {
     pdata.slugFolderName = currentFolder;
-    	socket.emit( 'newProject', pdata);
+    	socket.emit('addProject', pdata);
   },
   editProject : function( pdata) {
     pdata.slugFolderName = currentFolder;
-    	socket.emit( 'editProject', pdata);
+    	socket.emit('editProject', pdata);
   },
 
   createNewMedia : function( mediaData) {

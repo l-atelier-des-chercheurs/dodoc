@@ -38,13 +38,18 @@ var dodocFolder = (function() {
 
       // list all folders, check their name against the desired name
       listAllFolders().then(function(allFoldersData) {
-        function findFolderWithSameName(folder) {
-          return folder.name === d.name;
+
+        let foldersWithSameNameAlreadyExist = undefined;
+        if(allFoldersData !== undefined) {
+          function findFolderWithSameName(folder) {
+            return folder.name === d.name;
+          }
+          foldersWithSameNameAlreadyExist = allFoldersData.find(findFolderWithSameName) === undefined;
+          dev.logverbose('Found folders with same name : ' + foldersWithSameNameAlreadyExist);
+          // if no name is found, lets find a slug name not taken and create our folder
         }
-        const foldersWithSameNameAlreadyExist = allFoldersData.find(findFolderWithSameName) === undefined;
-        dev.logverbose('Found folders with same name : ' + foldersWithSameNameAlreadyExist);
-        // if no name is found, lets find a slug name not taken and create our folder
-        if(foldersWithSameNameAlreadyExist) {
+
+        if(allFoldersData === undefined || (allFoldersData !== undefined && foldersWithSameNameAlreadyExist)) {
           let slugFolderName = slugg(d.name);
           var foldersPath = dodocAPI.getFolderPath();
           slugFolderName = dodocAPI.findFirstFilenameNotTaken(slugFolderName, foldersPath, '');
@@ -60,6 +65,7 @@ var dodocFolder = (function() {
               "created" : currentDateString,
               "modified" : currentDateString,
               "statut" : "en cours",
+              "slugFolderName" : slugFolderName,
             };
           dodocAPI.storeData(getMetaFileOfFolder(slugFolderName), fmeta, "create").then(function(meta) {
             resolve( meta);
@@ -94,20 +100,23 @@ var dodocFolder = (function() {
         if (err) return console.log( 'Couldn\'t read content dir : ' + err);
 
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
-        dev.logverbose( "Number of folders in " + dodocAPI.getFolderPath() + " = " + folders.length + ". Folders are " + folders);
 
+        if(folders.length === 0) {
+          dev.logverbose('No folders found in ' + dodocAPI.getFolderPath());
+          resolve();
+        }
+
+        dev.logverbose('Number of folders in ' + dodocAPI.getFolderPath() + ' is ' + folders.length + '. Folders are ' + folders);
         var foldersProcessed = 0;
         var allFoldersData = [];
         folders.forEach( function( slugFolderName) {
           dev.logverbose('listAllFolders -- current folder to look into: ' + slugFolderName);
-
           if( new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName)
           && slugFolderName.indexOf( dodoc.deletedPrefix)){
             var fmeta = getFolderMeta( slugFolderName);
             fmeta.slugFolderName = slugFolderName;
             allFoldersData.push( fmeta);
           }
-
           foldersProcessed++;
           if( foldersProcessed === folders.length && allFoldersData.length > 0) {
             dev.logverbose( "- - - - all folders JSON have been processed.");

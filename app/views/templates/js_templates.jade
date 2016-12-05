@@ -1,11 +1,11 @@
-li.media.media_image(data-ratio data-title data-legende data-highlight=false)
+li.media.media_image.js--openModal_editMedia(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     img
     .mediaData
       p.mediaData--informations
   +button( 'flag', '', 'isCollapsed')
   +button('deleteMedia', '', 'isCollapsed')
-li.media.media_video(data-ratio data-title data-legende data-highlight=false)
+li.media.media_video.js--openModal_editMedia(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     video(preload="none" controls)
       source()
@@ -13,7 +13,7 @@ li.media.media_video(data-ratio data-title data-legende data-highlight=false)
       p.mediaData--informations
   +button( 'flag', '', '')
   +button('deleteMedia', '', 'isCollapsed')
-li.media.media_stopmotion(data-ratio data-title data-legende data-highlight=false)
+li.media.media_stopmotion.js--openModal_editMedia(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     video(preload="none" controls)
       source()
@@ -21,7 +21,7 @@ li.media.media_stopmotion(data-ratio data-title data-legende data-highlight=fals
       p.mediaData--informations
   +button( 'flag', '', '')
   +button('deleteMedia', '', 'isCollapsed')
-li.media.media_audio(data-ratio data-title data-legende data-highlight=false)
+li.media.media_audio.js--openModal_editMedia(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     img.poster
     audio(preload="none" controls)
@@ -30,7 +30,7 @@ li.media.media_audio(data-ratio data-title data-legende data-highlight=false)
       p.mediaData--informations
   +button( 'flag', '', '')
   +button('deleteMedia', '', 'isCollapsed')
-li.media.media_text(data-ratio data-title data-legende data-highlight=false)
+li.media.media_text.js--openModal_editMedia(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     .mediaContent--textOfTextmedia
   +button( 'flag', '', '')

@@ -8,36 +8,40 @@ var modals = (function() {
 
       console.log('Modals.init()');
 
-      modals.statusChangeAlertInit();
-      modals.removeProjectInit();
-
-      	$('body').on('click', '.js--add-folder', function(){
+      	$('body').on('click', '.js--openModal_addFolder', function(){
       		modals.createModal('addFolder');
       	});
-      	$('body').on('click', '.js--edit-folder', function(){
+      	$('body').on('click', '.js--openModal_editFolder', function(){
       		var d = $(this).closest(".dossier").data();
       		modals.createModal('editFolder',d);
       	});
-
-      	$('body').on('click', '.js--add-project', function(){
+      	$('body').on('click', '.js--openModal_addProject', function(){
       		modals.createModal('addProject');
       	});
-      	$('body').on('click', '.js--edit-project', function(){
+      	$('body').on('click', '.js--openModal_editProject', function(){
       		var pdata = $(this).closest(".project").data();
       		modals.createModal('editProject', pdata);
       	});
-
-      	$('body').on('click', '.js--createPublication', function(){
+      	$('body').on('click', '.js--openModal_createPublication', function(){
       		modals.createPubliPopup();
       	});
-      	$('body').on('click', '.js--editPubli', function(){
+      	$('body').on('click', '.js--openModal_editPubli', function(){
       		var pdata = $(this).closest("[data-publidata]").data();
       		modals.editPubliPopup(pdata);
+      	});
+      	$('body').on('click', '.js--openModal_editMedia', function(){
+      		var mdata = $(this).data();
+        mdata.nextm = $(this).next('.js--openModal_editMedia');
+        mdata.prevm = $(this).prev('.js--openModal_editMedia');
+      		modals.createModal('editMedia', mdata);
       	});
 
     },
 
     createModal : function(typeOfModal, d) {
+
+      console.log('Creating a new modal of type ' + typeOfModal + ' from data ');
+      console.log({d});
 
       var $modal = $('[data-modal-id="' + typeOfModal + '"]').empty();
       var $modalContent = $modal.next().clone(false);
@@ -51,6 +55,8 @@ var modals = (function() {
         $modalContent = _initAddProjectModal($modal);
       } else if(typeOfModal === 'editProject') {
         $modalContent = _initEditProjectModal($modal, d);
+      } else if(typeOfModal === 'editMedia') {
+        $modalContent = _initEditMediaModal($modal, d);
       }
 
       $modal.foundation('reveal', 'open');
@@ -66,7 +72,7 @@ var modals = (function() {
       $modal.append( $modalContent.show());
       $modal.foundation('reveal', 'open');
 
-      $modal.find(".js--modal_submit").on('click', function(){
+      $modal.find(".js--valider").on('click', function(){
 
         	var newPubliName = $modal.find('.js--modal_name').val();
         	var newPubliTemplate = $modal.find('.js--modal_template:checked').val();
@@ -82,7 +88,7 @@ var modals = (function() {
       });
     },
 
-    editPubliPopup : function(pdata) {
+    editPubliPopup : function(d) {
 
       var $modal = $("#modal-modify-publi").empty();
       var $modalContent = $modal.next().clone(false);
@@ -91,231 +97,38 @@ var modals = (function() {
 
       $modal
         .find(".js--modal_name")
-          .attr( "value", pdata.name)
+          .attr( "value", d.name)
         .end()
         .find(".js--modal_template")
           .prop("checked", false)
-          .filter("[value='" + pdata.template + "']")
+          .filter("[value='" + d.template + "']")
             .prop("checked", true)
           .end()
         .end()
         ;
 
-      $modal.find(".js--modal_submit").on('click', function(){
+      $modal.find(".js--valider").on('click', function(){
         	var newName = $modal.find('.js--modal_name').val();
         	var newTemplate = $modal.find('.js--modal_template:checked').val();
-      		var publiData =
-        {
+      		var publiData = {
           "name" : newName,
-          "slugPubliName" : pdata.publishown,
+          "slugPubliName" : d.publishown,
           "template" : newTemplate,
-          "slugProjectName" : pdata.slugProjectName
+          "slugProjectName" : d.slugProjectName
       		}
     		  sendData.editPubliMeta( publiData);
         $modal.foundation('reveal', 'close');
       });
     },
 
-    bigMedia : function( $m) {
-
-      var $modal = $('#modal-media-view');
-      var $modalContent = $modal.find('.big-mediaContent');
-      var mdata = $m.data();
-
-      var $nextm = $m.next('.media');
-      var $prevm = $m.prev('.media');
-
-      var $navNextMedia = $modal.find('.js--big-mediaNav-next');
-      var $navPrevMedia = $modal.find('.js--big-mediaNav-prev');
-
-      // arrow logic
-      _setBigmediaArrow($modalContent, $nextm, $navNextMedia);
-      _setBigmediaArrow($modalContent, $prevm, $navPrevMedia);
-
-      var mtype = mdata.type;
-      var minfos = mdata.informations;
-      var mname = mdata.medianame;
-      var mfullsizeimagesrc = mdata.imagesrc_fullsize;
-
-      	$modal.foundation('reveal', 'open');
-
-      switch( mtype){
-      		case dodoc.projectPhotosFoldername:
-    				var $mediaItem = $(".js--templates .media-big_image").clone(false);
-          var mfullpath = app.contentDir+'/'+mfullsizeimagesrc;
-
-    				$mediaItem
-    					.find( 'img')
-    					  .attr('src', mfullsizeimagesrc)
-    					.end()
-    					;
-    				break;
-    			case dodoc.projectVideosFoldername:
-
-    				var videoPath = $m.find("source").attr("src");
-    				var $mediaItem = $(".js--templates .media-big_video").clone(false);
-          var mfullpath = app.contentDir+'/'+videoPath;
-
-    				$mediaItem
-    			    .find( 'video')
-    			      .attr( 'poster', mfullsizeimagesrc)
-    			      .attr( 'preload', 'auto')
-      			    .find( 'source')
-      			      .attr( 'src', videoPath)
-    					;
-
-    				break;
-    			case dodoc.projectAnimationsFoldername:
-
-    				var videoPath = $m.find("source").attr("src");
-    				var $mediaItem = $(".js--templates .media-big_stopmotion").clone(false);
-          var mfullpath = app.contentDir+'/'+videoPath;
-
-    				$mediaItem
-    			    .find( 'video')
-    			      .attr( 'poster', mfullsizeimagesrc)
-    			      .attr( 'preload', 'auto')
-      			    .find( 'source')
-      			      .attr( 'src', videoPath)
-    					;
-    				break;
-    			case dodoc.projectAudiosFoldername:
-
-    				var audioPath = $m.find("source").attr("src");
-    				var $mediaItem = $(".js--templates .media-big_audio").clone(false);
-          var mfullpath = app.contentDir+'/'+audioPath;
-
-    				$mediaItem
-    					.find( 'img')
-    					  .attr('src', mfullsizeimagesrc)
-    					.end()
-    			    .find( 'source')
-    			      .attr( 'src', audioPath)
-    			    .end()
-    					;
-    				break;
-    			case dodoc.projectTextsFoldername:
-    				//console.log($(this).find('h3').html());
-    				var $mediaItem = $(".js--templates .media-big_text").clone(false);
-          var mfullpath = app.contentDir+'/'+mdata.textFilePath;
-
-      				$mediaItem
-      					.find('.js--submit-new-text_text')
-      					  .val( mdata.originalText)
-      					.end()
-      					;
-      				break;
-      	}
-
-    		if( $m.hasClass('is--highlight')){
-    			$mediaItem.addClass('is--highlight');
-    		}
-
-      mfullpath = mfullpath.replace(/\//g, '\u200B\/');
-
-      	$mediaItem
-      	  .attr( 'data-medianame', mname)
-      	  .attr( 'data-mediatype', mtype)
-      	  .find('.js--mediaInformations')
-      	    .val( minfos)
-        .end()
-        .find('.js--mediaFullPath')
-          .text(mfullpath)
-        .end()
-        ;
-
-      // animate the inside : set $modalContent to opacity 0
-      $modalContent.css('opacity',0);
-
-      setTimeout(function() { $modalContent.html( $mediaItem); $modalContent.css('opacity',1); }, 125);
-
-      //Envoie les titres et légendes au serveur
-      $mediaItem.find('.js--submit-add-media-data').on( 'click', function(){
-        var editMediaData =
-        {
-          "mediaName" : mname,
-          "mediaFolderPath" : mtype,
-        };
-      		var informations = $modal.find( '.js--mediaInformations').val();
-        if(informations !== undefined)
-          editMediaData.informations = informations;
-        sendData.editMedia( editMediaData);
-      		$modal.foundation('reveal', 'close');
-      		$modalContent.empty();
-      });
-
-      // Ajoute ou enlève un highlight quand on clique sur "Highlight" dans la fenêtre modal
-      $mediaItem.find('.js--highlightMedia').on( 'click', function(){
-    		// trigger a click on its js--flagMedia
-        var editMediaData =
-        {
-          "mediaName" : mname,
-          "mediaFolderPath" : mtype,
-          "switchFav" : true
-        };
-        sendData.editMedia( editMediaData);
-        $mediaItem.toggleClass( 'is--highlight');
-      });
-
-      // text modal only
-      $mediaItem.find('.js--submit-view-text-modify').on( 'click', function(){
-
-        var editMediaData =
-        {
-          "mediaName" : mname,
-          "mediaFolderPath" : mtype,
-        };
-
-        	var textOfTextmedia =  $modal.find('.js--submit-new-text_text').val();
-
-        if( textOfTextmedia !== undefined)
-          editMediaData.textOfTextmedia = textOfTextmedia;
-
-        sendData.editMedia( editMediaData);
-
-        $modal.foundation('reveal', 'close');
-      		$modalContent.empty();
-
-      });
-
-
-      $mediaItem.find('.js--delete-media-bibli').on( 'click', function(){
-
-        $alertModal = $('#modal-delete-alert-media');
-
-        	$modal.foundation('reveal', 'close');
-        	$alertModal.foundation('reveal', 'open');
-
-        $alertModal.find('button.oui').on('click', function(){
-          var mediaToDelete =
-          {
-            "mediaName" : mname,
-            "mediaFolderPath" : mtype,
-          }
-          sendData.deleteMedia( mediaToDelete);
-        		$alertModal.foundation('reveal', 'close');
-          $modalContent.empty();
-        	});
-        	$alertModal.find('button.annuler').on('click', function(){
-        		$alertModal.foundation('reveal', 'close');
-        		$modal.foundation('reveal', 'open');
-        	});
-      });
-
-    },
-
-
     createTextMedia : function() {
 
       var $modal = $('#modal-add-text');
       var $textf = $modal.find('.js--submit-new-text_text');
 
-      $('.js--submit-new-text').on('click',function(){
-
-      	var textContent = $textf.val();
-
-        var mediaData =
-        {
+      $modal.find('.js--valider').on('click',function(){
+        	var textContent = $textf.val();
+        var mediaData = {
           "mediaType" : "text",
           "mediaFolderPath" : dodoc.projectTextsFoldername,
           "text" : textContent,
@@ -360,40 +173,40 @@ var modals = (function() {
       		}
       	});
 
-      $modal.find('.js--modal_submit').on('click',function(){
-      	var fileName = $filePicker.data( 'fileName');
-      	var fileData = $filePicker.data( 'fileData');
-      	//Images changed
+      $modal.find('.js--valider').on('click',function(){
+        	var fileName = $filePicker.data( 'fileName');
+        	var fileData = $filePicker.data( 'fileData');
+        	//Images changed
 
-      	if( fileData !== undefined && fileData !== null){
-      		console.log('An image has been imported');
-      		var f = fileData[0];
-      		var reader = new FileReader();
-      		reader.onload = function(evt){
-        		// check type of content
-        		console.log( fileName);
-        		fileName = fileName.toLowerCase();
+        	if( fileData !== undefined && fileData !== null){
+        		console.log('An image has been imported');
+        		var f = fileData[0];
+        		var reader = new FileReader();
+        		reader.onload = function(evt){
+          		// check type of content
+          		console.log( fileName);
+          		fileName = fileName.toLowerCase();
 
-            if( fileName.indexOf( ".jpg") !== -1 || fileName.indexOf( ".jpeg") !== -1 || fileName.indexOf( ".png") !== -1) {
-        			var mediaData =
-        			{
-                "mediaType" : "photo",
-        				"mediaData" : evt.target.result
-        		  }
-        		} else if( fileName.indexOf( ".mp4") !== -1 ||  fileName.indexOf( ".webm")) {
-        			var mediaData =
-        			{
-                "mediaType" : "video",
-        				"mediaData" : evt.target.result
-        		  }
-        		}
+              if( fileName.indexOf( ".jpg") !== -1 || fileName.indexOf( ".jpeg") !== -1 || fileName.indexOf( ".png") !== -1) {
+          			var mediaData =
+          			{
+                  "mediaType" : "photo",
+          				"mediaData" : evt.target.result
+          		  }
+          		} else if( fileName.indexOf( ".mp4") !== -1 ||  fileName.indexOf( ".webm")) {
+          			var mediaData =
+          			{
+                  "mediaType" : "video",
+          				"mediaData" : evt.target.result
+          		  }
+          		}
 
-        		if( mediaData !== undefined)
-        		  sendData.createNewMedia( mediaData);
+          		if( mediaData !== undefined)
+          		  sendData.createNewMedia( mediaData);
 
-      		};
-      		reader.readAsDataURL(f);
-      	}
+        		};
+        		reader.readAsDataURL(f);
+        	}
 
         // then remove $filePicker data fileName and fileData, and label
         $filePicker
@@ -405,57 +218,79 @@ var modals = (function() {
       });
     },
 
-    statusChangeAlertInit : function() {
 
-      $statusPopup = $('#modal-deletefolder-alert');
-      	$('#modal-modify-project .modify-statut').bind('change', function(){
-      		if($(this).val() == "terminé"){
-      			$('#modal-statut-alert').foundation('reveal', 'open');
-      			$('#modal-statut-alert button.oui').on('click', function(){
-      				console.log('oui ');
-      				$('#modal-statut-alert').foundation('reveal', 'close');
-      				$("#modal-modify-project").foundation('reveal', 'open');
-      			});
-      			$('#modal-statut-alert button.annuler').on('click', function(){
-      				console.log('non');
-      				$('#modal-modify-project .modify-statut').val('en cours');
-      				$('#modal-statut-alert').foundation('reveal', 'close');
-      				$("#modal-modify-project").foundation('reveal', 'open');
-      			});
-      			$(document).on('closed.fndtn.reveal', '#modal-statut-alert[data-reveal]', function () {
-      	  		$(".js--modal_editProject").foundation('reveal', 'open');
-      			});
-      		}
-      	});
-    },
-
-    removeProjectInit : function() {
-      	var $deleteModal = $('#modal-deleteproject-alert');
-      	$deleteModal.find('button.oui').on('click', function(){
-        	var slugProjectName = $deleteModal.data('slugProjectName');
-        	var slugFolderName = currentFolder;
-      		socket.emit('removeOneProject',
-      		{
-        		"slugFolderName" : slugFolderName,
-        		"slugProjectName" : slugProjectName
-          });
-      		$deleteModal.foundation('reveal', 'close');
-      	});
-      	$deleteModal.find('button.annuler').on('click', function(){
-      		console.log('annuler');
-      		$deleteModal.foundation('reveal', 'close');
-      		$(document).on('close.fndtn.reveal', '#modal-delete-alert[data-reveal]', function () {
-        	  	$('#modal-modify-project').foundation('reveal', 'open');
-      		});
-      	});
-    },
   }
+
+/*
+  function _statusChangeAlertInit() {
+    	$('#modal-modify-project .modify-statut').bind('change', function(){
+    		if($(this).val() == "terminé"){
+    			$('#modal-statut-alert').foundation('reveal', 'open');
+    			$('#modal-statut-alert button.oui').on('click', function(){
+    				console.log('oui ');
+    				$('#modal-statut-alert').foundation('reveal', 'close');
+    				$("#modal-modify-project").foundation('reveal', 'open');
+    			});
+    			$('#modal-statut-alert button.annuler').on('click', function(){
+    				console.log('non');
+    				$('#modal-modify-project .modify-statut').val('en cours');
+    				$('#modal-statut-alert').foundation('reveal', 'close');
+    				$("#modal-modify-project").foundation('reveal', 'open');
+    			});
+    			$(document).on('closed.fndtn.reveal', '#modal-statut-alert[data-reveal]', function () {
+    	  		$(".js--modal_editProject").foundation('reveal', 'open');
+    			});
+    		}
+    	});
+  }
+  function _removeProjectInit() {
+    	var $deleteModal = $('#modal-deleteproject-alert');
+    	$deleteModal.find('button.oui').on('click', function(){
+      	var slugProjectName = $deleteModal.data('slugProjectName');
+      	var slugFolderName = currentFolder;
+    		socket.emit('removeOneProject',
+    		{
+      		"slugFolderName" : slugFolderName,
+      		"slugProjectName" : slugProjectName
+        });
+    		$deleteModal.foundation('reveal', 'close');
+    	});
+    	$deleteModal.find('button.annuler').on('click', function(){
+    		console.log('annuler');
+    		$deleteModal.foundation('reveal', 'close');
+    		$(document).on('close.fndtn.reveal', '#modal-deleteFolder-alert[data-reveal]', function () {
+      	  	$('#modal-modify-project').foundation('reveal', 'open');
+    		});
+    	});
+  }
+
+  function _removeFolderInit() {
+    	var $deleteModal = $('#modal-deleteproject-alert');
+    	$deleteModal.find('button.oui').on('click', function(){
+      	var slugProjectName = $deleteModal.data('slugProjectName');
+      	var slugFolderName = currentFolder;
+    		socket.emit('removeOneProject',
+    		{
+      		"slugFolderName" : slugFolderName,
+      		"slugProjectName" : slugProjectName
+        });
+    		$deleteModal.foundation('reveal', 'close');
+    	});
+    	$deleteModal.find('button.annuler').on('click', function(){
+    		console.log('annuler');
+    		$deleteModal.foundation('reveal', 'close');
+    		$(document).on('close.fndtn.reveal', '#modal-delete-alert[data-reveal]', function () {
+      	  	$('#modal-modify-project').foundation('reveal', 'open');
+    		});
+    	});
+  }
+*/
 
   function _initAddFolderModal($m) {
     $m.find(".js--valider").on('click', function() {
       if(_checkAndHighlightEmptyRequiredFields($m)) return;
-      var newFolderName = $m.find('input.new-folder').val();
-      socket.emit( 'newFolder', { "name" : newFolderName });
+      var newFolderName = $m.find('input.js--data_folderName').val();
+      sendData.addFolder({ "name" : newFolderName });
       $m.foundation('reveal', 'close');
     });
   }
@@ -491,8 +326,9 @@ var modals = (function() {
       $m.foundation('reveal', 'close');
     });
 
-    // 	$("#container.row #modal-modify-folder").append(newContentToAdd);
-    _modifyStatut();
+    $m.find(".button-wrapper_deleteFolder").on("click", function() {
+
+    });
 
     return $m;
   }
@@ -527,7 +363,8 @@ var modals = (function() {
     	});
 
 
-    $m.find(".js--modal_submit").on('click', function(){
+    $m.find(".js--valider").on('click', function(){
+      if(_checkAndHighlightEmptyRequiredFields($m)) return;
       	var newProjectName = $m.find('.js--modal_name').val();
       	var fileData = $filePicker.data( "fileData");
       	//Images changed
@@ -606,86 +443,213 @@ var modals = (function() {
     		$deleteModal.foundation('reveal', 'open');
     	});
 
-    	$m.find('.modify-project-statut').bind('change', function(){
-      	$alertModal = $('#modal-statut-alert');
-      	$statutField = $(this);
-    		if( $statutField.val() === "terminé"){
-    			$alertModal.foundation('reveal', 'open');
-    			$alertModal.find('button.oui').on('click', function(){
-    				$alertModal.foundation('reveal', 'close');
-    				$m.foundation('reveal', 'open');
-    			});
-    			$alertModal.find('button.annuler').on('click', function(){
-    				console.log('non');
-    				$statutField.val('en cours');
-    				$alertModal.foundation('reveal', 'close');
-    				$m.foundation('reveal', 'open');
-    			});
-    		}
-    	});
+    // remettre le statut
 
-    $m.find(".js--modal_submit").on('click', function(){
+    $m.find(".js--valider").on('click', function(){
+      if(_checkAndHighlightEmptyRequiredFields($m)) return;
       	var newProjectName = $m.find('.js--modal_name').val();
       	var newStatut = $m.find('.modify-project-statut').val();
-      	var fileData = $filePicker.data( "fileData");
-      	//Images changed
 
+    		var projectData = {
+ 				"name" : newProjectName,
+        "slugProjectName" : pdata.slugProjectName,
+  				"statut" : newStatut,
+    		}
+
+      	var fileData = $filePicker.data( "fileData");
       	if( fileData !== undefined && fileData !== null){
       		console.log('Une image a été ajoutée');
       		var f = fileData[0];
       		var reader = new FileReader();
       		reader.onload = function(evt){
-        		var projectData =
-      			{
-       				"name" : newProjectName,
-              "slugProjectName" : pdata.slugProjectName,
-      				"statut" : newStatut,
-      				"imageData" : evt.target.result
-      		  }
+        		projectData.imageData = evt.target.result;
       		  sendData.editProject( projectData);
       		};
       		reader.readAsDataURL(f);
-      	}
-      	else{
-      		console.log("Pas d'image chargé");
-      		var projectData =
-          {
-       				"name" : newProjectName,
-              "slugProjectName" : pdata.slugProjectName,
-      				"statut" : newStatut,
-      		}
+      	} else {
     		  sendData.editProject( projectData);
-      	}
+    		}
       $m.foundation('reveal', 'close');
     });
     return $m;
   }
 
-  function _modifyStatut(){
-    	$('#modal-modify-folder .modify-statut').bind('change', function(){
-    		if($(this).val() === "terminé"){
-    			$('#modal-statut-alert').foundation('reveal', 'open');
-    			$('#modal-statut-alert button.oui').on('click', function(){
-    				console.log('oui ');
-    				$('#modal-statut-alert').foundation('reveal', 'close');
-    			});
-    			$('#modal-statut-alert button.annuler').on('click', function(){
-    				$('#modal-modify-folder .modify-statut').val('en cours');
-    				$('#modal-statut-alert').foundation('reveal', 'close');
-    			});
-    		}
-    	});
+  function _initEditMediaModal($m, mdata) {
+
+    var $navNextMedia = $m.find('.js--big-mediaNav-next');
+    var $navPrevMedia = $m.find('.js--big-mediaNav-prev');
+
+    var $modalContent = $m.find('.big-mediaContent');
+
+    // arrow logic
+    _setBigmediaArrow($m, mdata.nextm, $navNextMedia);
+    _setBigmediaArrow($m, mdata.prevm, $navPrevMedia);
+
+    var mtype = mdata.type;
+    var minfos = mdata.informations;
+    var mname = mdata.medianame;
+    var mfullsizeimagesrc = mdata.imagesrc_fullsize;
+
+    switch( mtype){
+    		case dodoc.projectPhotosFoldername:
+  				var $mediaItem = $(".js--templates .media-big_image").clone(false);
+        var mfullpath = app.contentDir+'/'+mfullsizeimagesrc;
+
+  				$mediaItem
+  					.find( 'img')
+  					  .attr('src', mfullsizeimagesrc)
+  					.end()
+  					;
+  				break;
+  			case dodoc.projectVideosFoldername:
+
+  				var videoPath = $m.find("source").attr("src");
+  				var $mediaItem = $(".js--templates .media-big_video").clone(false);
+        var mfullpath = app.contentDir+'/'+videoPath;
+
+  				$mediaItem
+  			    .find( 'video')
+  			      .attr( 'poster', mfullsizeimagesrc)
+  			      .attr( 'preload', 'auto')
+    			    .find( 'source')
+    			      .attr( 'src', videoPath)
+  					;
+
+  				break;
+  			case dodoc.projectAnimationsFoldername:
+
+  				var videoPath = $m.find("source").attr("src");
+  				var $mediaItem = $(".js--templates .media-big_stopmotion").clone(false);
+        var mfullpath = app.contentDir+'/'+videoPath;
+
+  				$mediaItem
+  			    .find( 'video')
+  			      .attr( 'poster', mfullsizeimagesrc)
+  			      .attr( 'preload', 'auto')
+    			    .find( 'source')
+    			      .attr( 'src', videoPath)
+  					;
+  				break;
+  			case dodoc.projectAudiosFoldername:
+
+  				var audioPath = $m.find("source").attr("src");
+  				var $mediaItem = $(".js--templates .media-big_audio").clone(false);
+        var mfullpath = app.contentDir+'/'+audioPath;
+
+  				$mediaItem
+  					.find( 'img')
+  					  .attr('src', mfullsizeimagesrc)
+  					.end()
+  			    .find( 'source')
+  			      .attr( 'src', audioPath)
+  			    .end()
+  					;
+  				break;
+  			case dodoc.projectTextsFoldername:
+  				//console.log($(this).find('h3').html());
+  				var $mediaItem = $(".js--templates .media-big_text").clone(false);
+        var mfullpath = app.contentDir+'/'+mdata.textFilePath;
+
+    				$mediaItem
+    					.find('.js--submit-new-text_text')
+    					  .val( mdata.originalText)
+    					.end()
+    					;
+    				break;
+    	}
+
+  		if( $m.hasClass('is--highlight')){
+  			$mediaItem.addClass('is--highlight');
+  		}
+
+    mfullpath = mfullpath.replace(/\//g, '\u200B\/');
+
+    	$mediaItem
+    	  .attr( 'data-medianame', mname)
+    	  .attr( 'data-mediatype', mtype)
+    	  .find('.js--mediaInformations')
+    	    .val( minfos)
+      .end()
+      .find('.js--mediaFullPath')
+        .text(mfullpath)
+      .end()
+      ;
+
+    //Envoie les titres et légendes au serveur
+    $mediaItem.find('.js--valider').on( 'click', function(){
+      var editMediaData =
+      {
+        "mediaName" : mname,
+        "mediaFolderPath" : mtype,
+      };
+    		var informations = $m.find( '.js--mediaInformations').val();
+      if(informations !== undefined)
+        editMediaData.informations = informations;
+      sendData.editMedia( editMediaData);
+    		$m.foundation('reveal', 'close');
+    		$m.empty();
+    });
+
+    // Ajoute ou enlève un highlight quand on clique sur "Highlight" dans la fenêtre modal
+    $mediaItem.find('.js--highlightMedia').on( 'click', function(){
+  		// trigger a click on its js--flagMedia
+      var editMediaData =
+      {
+        "mediaName" : mname,
+        "mediaFolderPath" : mtype,
+        "switchFav" : true
+      };
+      sendData.editMedia( editMediaData);
+      $mediaItem.toggleClass( 'is--highlight');
+    });
+
+    // text modal only
+    $mediaItem.find('.js--submit-view-text-modify').on( 'click', function(){
+      var editMediaData = {
+        "mediaName" : mname,
+        "mediaFolderPath" : mtype,
+      };
+      	var textOfTextmedia =  $m.find('.js--submit-new-text_text').val();
+      if( textOfTextmedia !== undefined)
+        editMediaData.textOfTextmedia = textOfTextmedia;
+
+      sendData.editMedia( editMediaData);
+
+      $m.foundation('reveal', 'close');
+    		$m.empty();
+
+    });
+
+
+    $mediaItem.find('.js--delete-media-bibli').on( 'click', function(){
+
+      $alertModal = $('#modal-delete-alert-media');
+
+      	$m.foundation('reveal', 'close');
+
+      var mediaToDelete = {
+        "mediaName" : mname,
+        "mediaFolderPath" : mtype,
+      }
+      sendData.deleteMedia( mediaToDelete);
+    		$alertModal.foundation('reveal', 'close');
+      $m.empty();
+
+    });
+
+    $modalContent.html($mediaItem);
+    return $m;
   }
 
 
-  function _setBigmediaArrow($modalContent, $upcomingMedia, $navUpcomingMedia) {
+  function _setBigmediaArrow($m, $upcomingMedia, $navUpcomingMedia) {
     if($upcomingMedia.length) {
       $navUpcomingMedia
         .removeClass('is--disabled')
         .off()
         .on('click', function() {
-        		$modalContent.empty();
-          modals.bigMedia($upcomingMedia);
+        		$m.empty();
+          $upcomingMedia.click();
         })
         ;
     } else {
@@ -698,13 +662,8 @@ var modals = (function() {
 
   function _checkAndHighlightEmptyRequiredFields($m) {
     let emptyReqFields = _getEmptyRequiredFields($m);
-    emptyReqFields.forEach(function(el) {
-      if (el.classList)
-        el.classList.add(className);
-      else
-        el.className += ' ' + className;
-    });
     if(emptyReqFields.length > 0) {
+      emptyReqFields[0].focus();
       alertify.error(dodoc.lang.modal.someFieldsAreEmptyFillThem);
       return true;
     } else {
@@ -729,6 +688,7 @@ var modals = (function() {
       });
     return emptyReqFields;
   }
+
 
   return API;
 })();

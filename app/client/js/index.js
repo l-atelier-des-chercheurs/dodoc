@@ -55,6 +55,7 @@ function onListOneFolder( folderData){
 }
 
 function onListAllFolders( foldersData) {
+  if(!foldersData) return;
   $.each( foldersData, function( index, fdata) {
   	var $folderContent = makeFolderContent( fdata);
     return insertOrReplaceFolder( fdata.slugFolderName, $folderContent);
@@ -63,9 +64,9 @@ function onListAllFolders( foldersData) {
 
 function insertOrReplaceFolder( slugFolderName, $folderContent) {
   // folder slug
-  var $existingFolder = $(".dossier-list .dossier").filter( "[data-slugFolderName=" + slugFolderName + "]");
+  var $existingFolder = $(".dossier-list .dossier").filter(function() { return $(this).data('slugFolderName') === slugFolderName });
   if( $existingFolder.length == 1) {
-    $existingFolder.replaceWith( $folderContent);
+    $existingFolder.replaceWith($folderContent);
     return "updated";
   }
 
@@ -100,8 +101,7 @@ function onListAllProjectsOfOneFolder(fdata){
   $.each(fdata, function(index, pd) {
     $newSnippetProjet = $newSnippetProjet.add(loadProjectSnippet(pd));
   });
-  var $folder = $(".dossier-list .dossier[data-slugFolderName=" + fdata[0].slugFolderName + "]");
-//   $folder.find( '.nb-projets-count').html(function(i, val) { return +val+1 });
+  var $folder = $(".dossier-list .dossier").filter(function() { return $(this).data('slugFolderName') === fdata[0].slugFolderName });
   $folder.find(".projet-list").prepend($newSnippetProjet);
   return;
 }
@@ -143,8 +143,10 @@ function makeFolderContent( projectData){
   if( modified === null)
     newFolder.find('.modified').remove();
 
+/*
   if( statut == "terminé")
-    newFolder.find( '.js--edit-folder').remove();
+    newFolder.find( '.js--openModal_editFolder').remove();
+*/
 
   newFolder.data("mtimestamp", transformDatetoTimestamp( modified));
 
@@ -169,7 +171,7 @@ function removeFolder(){
 
 		$('#modal-delete-alert').foundation('reveal', 'close');
 		$("#modal-modify-folder").foundation('reveal', 'close');
-		$(".reveal-modal-bg").remove();
+		$(".m_modal-bg").remove();
 
 	});
 

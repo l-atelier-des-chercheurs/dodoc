@@ -743,25 +743,29 @@
     locked : false,
 
     settings : {
-      animation : 'fadeAndPop',
+      animation : 'fade',
       animation_speed : 250,
       close_on_background_click : true,
       close_on_esc : true,
       dismiss_modal_class : 'js--close',
       multiple_opened : true,
-      bg_class : 'reveal-modal-bg',
+      bg_class : 'm_modal-bg',
       root_element : 'body',
-      open : function(){},
+      open : function(){
+        $('body').addClass('has--modalOpened');
+      },
       opened : function(){},
-      close : function(){},
+      close : function(){
+        $('body').removeClass('has--modalOpened');
+      },
       closed : function(){},
       on_ajax_error: $.noop,
-      bg : $('.reveal-modal-bg'),
+      bg : $('.m_modal-bg'),
       css : {
         open : {
           'opacity' : 0,
           'visibility' : 'visible',
-          'display' : 'block'
+          'display' : 'flex'
         },
         close : {
           'opacity' : 1,
@@ -1074,6 +1078,7 @@
         if (!animData.animate) {
           this.locked = false;
         }
+
         if (animData.pop) {
           css.top = $(window).scrollTop() - el.data('offset') + 'px';
           var end_css = {
@@ -1093,7 +1098,7 @@
         }
 
         if (animData.fade) {
-          css.top = $(window).scrollTop() + el.data('css-top') + 'px';
+//           css.top = $(window).scrollTop() + el.data('css-top') + 'px';
           var end_css = {opacity: 1};
 
           return setTimeout(function () {

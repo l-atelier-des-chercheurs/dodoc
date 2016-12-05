@@ -1,22 +1,21 @@
 mixin modals(typeOfModal)
 
-  div(class="reveal-modal m_modal" data-reveal data-modal-id="#{typeOfModal}")
+  div(class="m_modal" data-reveal data-modal-id="#{typeOfModal}")
 
   if( typeOfModal === 'addFolder')
     //////////////////////////////////////////////   ADD FOLDER  //////////////////////////////////
     .m_modal-content
-      h2.popoverTitle
+      .modal_title.txt-large_title
         | !{dodoc.lang.modal.newFolder}
       form(onsubmit='return false;' class='add-folder-form lead')
-        input(type='text' class='new-folder' placeholder='Nom' required autofocus)
+        input(type='text' class='js--data_folderName' placeholder='Nom' required autofocus)
         +button( 'valider', '', 'isCollapsed')
       +button( 'close', '', 'isCollapsed')
 
   if( typeOfModal === 'editFolder')
     //////////////////////////////////////////////   EDIT FOLDER  //////////////////////////////////
-
     .m_modal-content
-      h3#modalTitle.popoverTitle
+      .modal_title.txt-large_title
         | !{dodoc.lang.modal.editFolder}
       form(onsubmit="return false;" class="modify-folder-form")
         input(type="text" class="modify-folder" required autofocus)
@@ -29,29 +28,10 @@ mixin modals(typeOfModal)
         +button('valider', '', 'isCollapsed')
       +button( 'close', '', 'isCollapsed')
 
-    div(id="modal-statut-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-      p
-        | !{dodoc.lang.modal.warningFinishedStatus}
-      button.oui
-        | !{dodoc.lang.ok}
-      button.annuler(autofocus)
-        | !{dodoc.lang.cancel}
-      +button( 'close', '', 'isCollapsed')
-
-    div(id="modal-delete-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-      p
-        | !{dodoc.lang.modal.sureToRemoveFolder}
-      hr
-      button.oui
-        | !{dodoc.lang.yes}
-      button.annuler(autofocus)
-        | !{dodoc.lang.cancel}
-      +button( 'close', '', 'isCollapsed')
-
   if( typeOfModal === 'addProject')
     //////////////////////////////////////////////   ADD PROJECT  //////////////////////////////////
-    .m_modal-content(style="display:none;")
-      h2.popoverTitle
+    .m_modal-content
+      .txt-large_title
         | !{dodoc.lang.modal.newProject}
       form(onsubmit='return false;')
         input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus required)
@@ -61,16 +41,16 @@ mixin modals(typeOfModal)
           span
             | !{dodoc.lang.modal.selectAnImage}
         hr
-        input(type='submit' class='button_submit js--modal_submit' value='Valider')
+        +button('valider', '', 'isCollapsed')
       +button( 'close', '', 'isCollapsed')
 
   if( typeOfModal === 'editProject')
     //////////////////////////////////////////////   EDIT PROJECT  //////////////////////////////////
-    .m_modal-content(style="display:none;")
-      h3#modalTitle.popoverTitle
+    .m_modal-content
+      .modal_title.txt-large_title
         | !{dodoc.lang.modal.editProject}
       form(onsubmit='return false;' class='modify-project-form')
-        input.js--modal_name(type='text' value='')
+        input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus required)
         select.modify-project-statut(name='statut')
           option(value='en cours')
             | !{dodoc.lang.modal.inprogress}
@@ -82,38 +62,14 @@ mixin modals(typeOfModal)
           span
             | !{dodoc.lang.modal.selectAnImage}
         hr
-        input(type='submit' class="button_submit js--modal_submit" value='Valider')
-        +button('deleteProject', '', '')
-      +button( 'close', '', 'isCollapsed')
-
-    //- ALERT CHANGE STATUT (IF STATUT FINISH)
-    div(id="modal-statut-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-      p
-        | !{dodoc.lang.modal.warningFinishedStatus}
-      hr
-      button.oui
-        | !{dodoc.lang.ok}
-      button.annuler(autofocus)
-        | !{dodoc.lang.cancel}
-      +button( 'close', '', 'isCollapsed')
-    //- ALERT SUPPRIMER UN DOSSIER
-    div(id="modal-deleteproject-alert" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-      p
-        | !{dodoc.lang.modal.sureToRemoveProject}
-      hr
-      button.oui
-        | !{dodoc.lang.yes}
-      button.annuler(autofocus)
-        | !{dodoc.lang.cancel}
+        +button('valider', '', 'isCollapsed')
+        +button('deleteProject', '', 'isCollapsed')
       +button( 'close', '', 'isCollapsed')
 
   if( typeOfModal === 'addPubli')
     //////////////////////////////////////////////   ADD PUBLI  //////////////////////////////////
-
-    div(id="modal-add-publi" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-
-    div(style="display:none;")
-      h2.popoverTitle
+    .m_modal-content
+      .modal_title.txt-large_title
         | !{dodoc.lang.modal.newPubli}
       form(onsubmit='return false;')
         input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus)
@@ -127,7 +83,7 @@ mixin modals(typeOfModal)
             span #{templates[i]}
           - }
         hr
-        input(type='submit' class='button_submit js--modal_submit' value='Valider')
+        +button('valider', '', 'isCollapsed')
       +button( 'close', '', 'isCollapsed')
 
 
@@ -135,7 +91,7 @@ mixin modals(typeOfModal)
     //////////////////////////////////////////////   EDIT PUBLI  //////////////////////////////////
 
     //- MODIFY PROJECT
-    div(id="modal-modify-publi" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+    div(id="modal-modify-publi" class="m_modal-content" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
 
     div(style="display:none;")
       h2.popoverTitle
@@ -159,7 +115,7 @@ mixin modals(typeOfModal)
   if( typeOfModal === 'importMedia')
     //////////////////////////////////////////////   IMPORT MEDIA  //////////////////////////////////
 
-    div(id="modal-add-local" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+    div(id="modal-add-local" class="m_modal-content" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
       h2#modalTitle.popoverTitle
         | !{dodoc.lang.modal.importAFile}
       form(onsubmit='return false;' class='add-media-form')
@@ -171,46 +127,33 @@ mixin modals(typeOfModal)
       small
         | !{dodoc.lang.modal.acceptedFormats}
       hr
-      input(type='submit' class="button_submit js--modal_submit" value='Valider')
+      +button('valider', '', 'isCollapsed')
       +button( 'close', '', 'isCollapsed')
 
   if( typeOfModal === 'addText')
     //////////////////////////////////////////////   ADD TEXT  //////////////////////////////////
 
-    div(id="modal-add-text" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+    div(id="modal-add-text" class="m_modal-content" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
       h2#modalTitle.popoverTitle
         | !{dodoc.lang.modal.addText}
       form(onsubmit='return false;' class='add-text-form')
         textarea.js--submit-new-text_text(placeholder="Ajouter du texte ici")
         hr
-        input(type='submit' class='js--submit-new-text' value='Valider')
+      +button('valider', '', 'isCollapsed')
       +button( 'close', '', 'isCollapsed')
 
 
-  if( typeOfModal === 'bigMedia')
+  if( typeOfModal === 'editMedia')
     //////////////////////////////////////////////   BIG MEDIA  //////////////////////////////////
-
-    div(id="modal-media-view" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+    .m_modal-content.is--fullPage
       .big-mediaContent
       .big-mediaNav
         button.big-mediaNav-arrow.big-mediaNav-arrow_left.js--big-mediaNav-prev
         button.big-mediaNav-arrow.big-mediaNav-arrow_right.js--big-mediaNav-next
       +button( 'close', '', 'isCollapsed')
 
-    //- ALERT SUPPRIMER UN Media
-    div(id="modal-delete-alert-media" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-      p
-        | !{dodoc.lang.modal.sureRemoveMedia}
-      button.oui.button_coteacote
-        | !{dodoc.lang.yes}
-      button.annuler.button_coteacote
-        | !{dodoc.lang.cancel}
-      +button( 'close', '', 'isCollapsed')
-
-
   if( typeOfModal === 'mediaForm')
     //////////////////////////////////////////////   MEDIA FORM (inside bigmedia)  //////////////////////////////////
-
     form(onsubmit='return false;' class='add-media-data lead')
       label
         | !{dodoc.lang.modal.informations}
@@ -221,7 +164,7 @@ mixin modals(typeOfModal)
     hr
     +button('favButton', '', '')
     +button('deleteMediaBibli', '', '')
-    input.js--submit-add-media-data(type='submit' value='Valider')
+    +button('valider', '', 'isCollapsed')
 
   if( typeOfModal === 'mediaForm_txt')
     //////////////////////////////////////////////   MEDIA FORM TEXT  //////////////////////////////////

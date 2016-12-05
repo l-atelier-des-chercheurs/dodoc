@@ -20,15 +20,27 @@ module.exports = function(app, io){
   console.log("Main module initialized");
 
   io.on("connection", function(socket){
+
+    var onevent = socket.onevent;
+    socket.onevent = function (packet) {
+        var args = packet.data || [];
+        onevent.call (this, packet);    // original call
+        packet.data = ["*"].concat(args);
+        onevent.call(this, packet);      // additional call to catch-all
+    };
+    socket.on("*",function(event,data) {
+      dev.log('RECEIVED EVENT : ' + event);
+    });
+
     // I N D E X    P A G E
     socket.on( 'listFolders', function (data){ onListFolders(socket); });
-    socket.on( 'newFolder', function (data){ onNewFolder(socket,data); });
-    socket.on("editFolder", onEditFolder);
-    socket.on("removeFolder", onRemoveFolder);
+    socket.on( 'addFolder', function (data){ onNewFolder(socket,data); });
+    socket.on( 'editFolder', onEditFolder);
+    socket.on( 'removeFolder', onRemoveFolder);
 
     // F O L D E R     P A G E
     socket.on("listProjects", function (data){ onListProjects( socket, data); });
-    socket.on("newProject", onNewProject);
+    socket.on("addProject", onNewProject);
     socket.on("editProject", onEditProject);
     socket.on("removeOneProject", onRemoveOneProject);
 
@@ -76,7 +88,7 @@ module.exports = function(app, io){
 
   // Create a new folder
   function onNewFolder(socket, folderData) {
-    dev.logfunction( "EVENT - onNewFolder");
+    dev.logfunction( "EVENT - onNewFolder with packet " + JSON.stringify( folderData, null, 4));
     dodocFolder.createNewFolder( folderData).then(function( newpdata) {
       dodocAPI.sendEventWithContent('folderCreated', newpdata, io);
     }, function(error) {
@@ -89,10 +101,12 @@ module.exports = function(app, io){
     dev.logfunction( "EVENT - onListFolders");
     dodocFolder.listAllFolders().then(function( allFoldersData) {
       dodocAPI.sendEventWithContent( 'listAllFolders', allFoldersData, io, socket);
-      // also list projects !
-      allFoldersData.forEach( function( fdata) {
-        onListProjects( socket, fdata);
-      });
+      // also list projects if there are folders
+      if(allFoldersData !== undefined) {
+        allFoldersData.forEach( function( fdata) {
+          onListProjects( socket, fdata);
+        });
+      }
     }, function(error) {
       dev.error("Failed to list folders! Error: " + error);
     });

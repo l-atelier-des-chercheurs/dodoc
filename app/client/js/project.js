@@ -38,12 +38,6 @@ socket.on('mediaRemoved', onMediaRemoved);
 jQuery(document).ready(function($) {
 	$(document).foundation();
 
-	// Au click sur un media
-	$('body').on('click', '.last-medias .media', function(){
-		$m = $(this);
-		modals.bigMedia($m);
-  });
-
 });
 
 function onListOneProject( projectData){

@@ -23,6 +23,7 @@ input:not([type]), input[type="text"], input[type="password"], input[type="date"
 
   &:focus {
     border-color: $c-images;
+    background-color: $c-creme;
     outline: none;
   }
 }
@@ -96,18 +97,26 @@ textarea {
   z-index: -1;
 
   + label {
-    max-width: 80%;
-    font-size: 1.25rem;
-    /* 20px */
+    display: flex;
+    width: 100%;
+    max-width: 380px;
+    font-size: 1.2rem;
     text-overflow: ellipsis;
+    text-align: center;
+    text-transform: lowercase;
+
     white-space: nowrap;
     cursor: pointer;
-    display: inline-block;
     overflow: hidden;
-    padding: 0.625rem 1.25rem;
 
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+
+    padding: $t-margin/2 $t-margin;
     margin-bottom:  10px;
-    /* 10px 20px */
+
+    min-height: 3.3125rem;
   }
 
   :focus + label,
@@ -117,18 +126,13 @@ textarea {
   }
 
   + label * {
-    /* pointer-events: none; */
-    /* in case of FastClick lib use */
+    display: block;
   }
 
   + label svg {
-    width: 1em;
-    height: 1em;
-    vertical-align: middle;
+    width: 1.5rem;
+    height: 1.5rem;
     fill: currentColor;
-    /* 4px */
-    margin: auto;
-    /* 4px */
   }
 
 

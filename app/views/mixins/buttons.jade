@@ -40,25 +40,25 @@ mixin button(typeOfButton, navOrButton, style)
       span #{projectName}
 
   if( typeOfButton === 'nouveauDossier')
-    a(href="#" class='button-wrapper_add js--add-folder #{defaultClasses}')
+    a(href="#" class='button-wrapper_add js--openModal_addFolder #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_add.svg
       span !{dodoc.lang.createFolder}
 
   if( typeOfButton === 'nouveauProjet')
-    a(href="#" class='button-wrapper_add js--add-project #{defaultClasses}')
+    a(href="#" class='button-wrapper_add js--openModal_addProject #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_add.svg
       span !{dodoc.lang.createProject}
 
   if( typeOfButton === 'editFolder')
-    a(href="#" class='button-wrapper_editFolder js--edit-folder #{defaultClasses}')
+    a(href="#" class='button-wrapper_editFolder js--openModal_editFolder #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_cog.svg
       span !{dodoc.lang.modal.editFolder}
 
   if( typeOfButton === 'editProjet')
-    a(href="#" class='button-wrapper_editProjet js--edit-project #{defaultClasses}')
+    a(href="#" class='button-wrapper_editProjet js--openModal_editProject #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_cog.svg
       span !{dodoc.lang.modal.editProject}
@@ -82,7 +82,7 @@ mixin button(typeOfButton, navOrButton, style)
       span !{dodoc.lang.publi}
 
   if( typeOfButton === 'createPublication')
-    a(href="#" title="#{dodoc.lang.createPublication}" class='button-wrapper_#{typeOfButton} js--createPublication #{defaultClasses}')
+    a(href="#" title="#{dodoc.lang.createPublication}" class='button-wrapper_#{typeOfButton} js--openModal_createPublication #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_add.svg
       span !{dodoc.lang.createPublication}
@@ -112,7 +112,7 @@ mixin button(typeOfButton, navOrButton, style)
       span !{dodoc.lang.uploadPubliToFtp}
 
   if( typeOfButton === 'editPubli')
-    a(href="#" title="Dodoc publi" class='button-wrapper_edit js--editPubli #{defaultClasses}')
+    a(href="#" title="Dodoc publi" class='button-wrapper_edit js--openModal_editPubli #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_cog.svg
       span !{dodoc.lang.editTitle}

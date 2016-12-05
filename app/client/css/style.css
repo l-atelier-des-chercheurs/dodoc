@@ -1590,58 +1590,75 @@ select {
       .navbar-container .navbar > .button-wrapper:nth-of-type(1) {
         margin-right: 15px; }
 
-.m_modal {
+.m_modal, .m_modal-content {
   display: none; }
 
-.m_modal-content {
-  display: none; }
-
-.reveal-modal-bg {
-  background-color: rgba(255, 255, 255, 0.8); }
+.m_modal-bg {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1004;
+  background-color: rgba(255, 255, 255, 0.9); }
 
 .m_modal {
-  border-radius: 2px;
-  box-shadow: 0 5px 20px #C3C3C3;
-  border: 2px solid white;
-  padding: 16px;
-  max-width: 32.5rem;
-  max-height: 80vh;
-  overflow-y: scroll; }
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1100;
+  pointer-events: none;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  overflow-y: auto; }
   .m_modal:focus {
     outline: none; }
+  .m_modal .m_modal-content {
+    position: relative;
+    margin-top: 30vh;
+    margin-bottom: 20vh;
+    padding: 16px;
+    width: 100%;
+    max-width: 380px;
+    background-color: white;
+    box-shadow: 0 5px 20px #C3C3C3;
+    pointer-events: auto; }
+    .m_modal .m_modal-content.is--fullPage {
+      position: absolute;
+      margin: 48px;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: auto;
+      max-width: none;
+      min-height: 90vh;
+      min-height: calc(100vh - 96px); }
+      .m_modal .m_modal-content.is--fullPage .button-wrapper {
+        margin: 8px 0px;
+        float: none; }
+        .m_modal .m_modal-content.is--fullPage .button-wrapper span {
+          margin-left: 10px; }
   .m_modal .button-wrapper_close {
     position: absolute;
-    top: 0;
-    right: 0; }
+    top: -20px;
+    right: -20px; }
   .m_modal .button-wrapper_valider.button-wrapper_valider {
     float: right; }
-  .m_modal .popoverTitle {
-    font-weight: bold;
-    font-size: 1.5em;
+  .m_modal .modal_title {
     margin: 0;
-    margin-top: 3px;
-    width: 80%;
-    margin-bottom: 16px; }
+    margin-top: -8px;
+    width: 90%;
+    margin-bottom: 8px; }
   .m_modal > p {
     width: 80%; }
-  .m_modal .button_submit {
-    float: right; }
-  .m_modal .button-wrapper_deleteFolder {
-    float: left; }
   .m_modal button {
     margin-bottom: 0; }
   .m_modal .legende {
     padding: 8px; }
-  .m_modal input[type="submit"] {
-    display: block;
-    border: none;
-    float: right;
-    background-color: #4BC0B4;
-    padding: 4px 24px;
-    height: 42px;
-    border-radius: 22px;
-    cursor: pointer;
-    color: white; }
   .m_modal .templateSelector {
     text-align: left;
     padding: 0;
@@ -1685,34 +1702,16 @@ select {
         position: relative; }
         .m_modal .templateSelector label svg #fond * {
           fill: #FFD892; }
-  .m_modal#modal-statut-alert button, .m_modal#modal-delete-alert button {
-    display: inline-block;
-    padding: 9px 22px;
-    margin-right: 16px;
-    border-radius: 2px; }
-    .m_modal#modal-statut-alert button.annuler, .m_modal#modal-delete-alert button.annuler {
-      background-color: #FF3E51; }
-  .m_modal .button-wrapper_deleteProject {
-    float: left; }
-  .m_modal#modal-media-view {
-    max-width: 80%;
-    height: 80vh;
-    overflow: visible; }
-    .m_modal#modal-media-view .big-mediaContent {
-      overflow: auto; }
-      .m_modal#modal-media-view .big-mediaContent .button-wrapper {
-        margin: 8px 0px;
-        float: none; }
-        .m_modal#modal-media-view .big-mediaContent .button-wrapper span {
-          margin-left: 10px; }
-    .m_modal#modal-media-view .row {
+  .m_modal .big-mediaContent {
+    overflow: auto; }
+    .m_modal .big-mediaContent .row {
       max-width: 100%; }
-    .m_modal#modal-media-view .button-wrapper_highlightMedia {
-      color: #4BC0B4;
-      background-color: transparent; }
-    .m_modal#modal-media-view .is--highlight .button-wrapper_highlightMedia {
-      color: white;
-      background-color: #4BC0B4; }
+  .m_modal .button-wrapper_highlightMedia {
+    color: #4BC0B4;
+    background-color: transparent; }
+  .m_modal .is--highlight .button-wrapper_highlightMedia {
+    color: white;
+    background-color: #4BC0B4; }
 
 ::-webkit-input-placeholder {
   color: #bbb; }
@@ -1751,7 +1750,9 @@ select {
     height: 100%;
     width: 100%; }
     .big-mediaContent .media-big .mediaContent {
-      height: 100%;
+      height: 1px;
+      min-height: 90vh;
+      min-height: calc(100vh - 128px);
       padding: 0; }
       .big-mediaContent .media-big .mediaContent img, .big-mediaContent .media-big .mediaContent video {
         min-width: 0;
@@ -1823,25 +1824,42 @@ body.publi {
   body.publi .media .button-wrapper_flagMedia {
     display: none; }
 
+/*
 @media only screen and (max-width: 40em) {
-  .button-wrapper {
+  .button-wrapper{
     background-color: transparent !important;
     width: 50px !important;
-    height: auto !important; }
-    .button-wrapper span {
-      display: none !important; }
-  .button-wrapper_collapsed {
-    overflow: visible !important; } }
+    height: auto !important;
+    span{
+      display:none !important;
+    }
+  }
+  .button-wrapper_collapsed{
+    overflow: visible !important;
+  }
+}
+*/
+/*
 
-@media only screen and (min-width: 40.0625em) and (max-width: 48em) {
-  .button-wrapper {
+@media only screen and (min-width:40.0625em) and (max-width:48em) {
+  .button-wrapper{
     background-color: transparent !important;
     width: 60px !important;
-    height: auto !important; }
-    .button-wrapper span {
-      display: none !important; }
-  .button-wrapper_collapsed {
-    overflow: visible !important; } }
+    height: auto !important;
+    span{
+      display:none !important;
+    }
+  }
+  .button-wrapper_collapsed{
+    overflow: visible !important;
+  }
+}
+*/
+html {
+  margin: 0; }
+
+body, html {
+  min-height: 100%; }
 
 input:not([type]), input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], input[type="color"], textarea, select {
   border: none;
@@ -1858,6 +1876,7 @@ input:not([type]), input[type="text"], input[type="password"], input[type="date"
   transition: border-color 0.50s linear, background 0.15s linear, border-width 0.15s; }
   input:not([type]):focus, input[type="text"]:focus, input[type="password"]:focus, input[type="date"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="month"]:focus, input[type="week"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="time"]:focus, input[type="url"]:focus, input[type="color"]:focus, textarea:focus, select:focus {
     border-color: #FFBE32;
+    background-color: #FCFCFA;
     outline: none; }
 
 input:required {
@@ -1911,32 +1930,32 @@ textarea {
   position: absolute;
   z-index: -1; }
   .inputfile + label {
-    max-width: 80%;
-    font-size: 1.25rem;
-    /* 20px */
+    display: flex;
+    width: 100%;
+    max-width: 380px;
+    font-size: 1.2rem;
     text-overflow: ellipsis;
+    text-align: center;
+    text-transform: lowercase;
     white-space: nowrap;
     cursor: pointer;
-    display: inline-block;
     overflow: hidden;
-    padding: 0.625rem 1.25rem;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 8px 16px;
     margin-bottom: 10px;
-    /* 10px 20px */ }
+    min-height: 3.3125rem; }
   .inputfile :focus + label,
   .inputfile.has-focus + label {
     outline: 1px dotted #353535;
     outline: -webkit-focus-ring-color auto 5px; }
   .inputfile + label * {
-    /* pointer-events: none; */
-    /* in case of FastClick lib use */ }
+    display: block; }
   .inputfile + label svg {
-    width: 1em;
-    height: 1em;
-    vertical-align: middle;
-    fill: currentColor;
-    /* 4px */
-    margin: auto;
-    /* 4px */ }
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: currentColor; }
   .inputfile.inputfile-2 + label {
     color: #d3394c;
     border: 2px solid currentColor; }
@@ -1945,11 +1964,11 @@ textarea {
   .inputfile.inputfile-2 + label:hover {
     color: #722040; }
 
-html {
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Fira Sans', sans-serif;
+  font-weight: inherit;
+  font-size: inherit;
   margin: 0; }
-
-body, html {
-  min-height: 100%; }
 
 p {
   font-size: 1em;
@@ -1964,10 +1983,32 @@ hr {
   border-bottom: 1px solid #EBEBEB;
   width: 100%; }
 
-h1, h2, h3, h4, h5, h6 {
-  margin: 0;
-  font-family: 'Fira Sans', sans-serif;
-  font-weight: inherit; }
+.txt-large_title {
+  font-size: 1.5rem;
+  font-weight: bold; }
+
+.txt-small_info {
+  color: #C3C3C3;
+  font-size: .8em;
+  line-height: 1.5; }
+
+.txt-mono {
+  font-family: 'Fira Mono', monospace; }
+
+.txt-wrap_long_lines {
+  /* These are technically the same, but use both */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  /* This is the dangerous one in WebKit, as it breaks things wherever */
+  word-break: break-all;
+  /* Instead use this non-standard one: */
+  word-break: break-word;
+  /* Adds a hyphen where the word breaks, if supported (No Blink) */
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto; }
 
 /******************
   Mixins
@@ -1978,6 +2019,8 @@ body {
   color: #353535;
   font-size: 1em;
   font-family: 'Fira Sans', sans-serif; }
+  body.has--modalOpened {
+    overflow: hidden; }
 
 a {
   color: inherit;
@@ -2060,10 +2103,10 @@ button {
     background-color: #4BC0B4;
     color: white; }
   .button-wrapper_close {
-    background-color: #EBEBEB;
-    color: #353535; }
+    background-color: #353535;
+    color: #EBEBEB; }
     .button-wrapper_close:hover, .button-wrapper_close:focus {
-      color: #353535; }
+      color: #EBEBEB; }
   .button-wrapper.button-wrapper_collapsed {
     overflow: hidden;
     float: left;
@@ -2120,29 +2163,6 @@ button {
   margin-top: 32px;
   color: #535353;
   text-align: center; }
-
-.txt-small_info {
-  color: #C3C3C3;
-  font-size: .8em;
-  line-height: 1.5; }
-
-.txt-mono {
-  font-family: 'Fira Mono', monospace; }
-
-.txt-wrap_long_lines {
-  /* These are technically the same, but use both */
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  -ms-word-break: break-all;
-  /* This is the dangerous one in WebKit, as it breaks things wherever */
-  word-break: break-all;
-  /* Instead use this non-standard one: */
-  word-break: break-word;
-  /* Adds a hyphen where the word breaks, if supported (No Blink) */
-  -ms-hyphens: auto;
-  -moz-hyphens: auto;
-  -webkit-hyphens: auto;
-  hyphens: auto; }
 
 body.index #container {
   padding: 50px 0px;
@@ -2511,11 +2531,11 @@ body.index #container {
     padding-bottom: 33.33333% !important; }
     .grille_de_medias .media .button-wrapper_flagMedia {
       display: none !important; }
-  .reveal-modal#modal-media-view {
+  .m_modal#modal-media-view {
     max-width: 100%;
     height: 100vh;
     overflow: hidden; }
-    .reveal-modal#modal-media-view .button-wrapper {
+    .m_modal#modal-media-view .button-wrapper {
       float: left; }
   .montage-list ul {
     margin-top: 50px; }
@@ -2558,8 +2578,6 @@ body.projets #container {
     color: #FFBE32; }
   .project-list .project[data-statut="en cours"] .statut-type {
     color: #FFBE32; }
-  .project-list .project[data-statut="terminé"] .button-wrapper_editProjet {
-    opacity: 0; }
   .project-list .project .project-inside {
     background-color: #fff; }
     .project-list .project .project-inside .project-link {

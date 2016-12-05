@@ -48,11 +48,6 @@ function init(){
   	e.preventDefault();
   	$('body').attr( "data-publicationpane", $('body').attr('data-publicationPane') === 'open' ? '' : 'open');
   });
-	// Au click sur un media
-	$('body').on('click', '.media', function(){
-		$m = $(this);
-		modals.bigMedia($m);
-  });
 
   // Au click sur le bouton "submit" d'un popup de texte
   modals.createTextMedia();
