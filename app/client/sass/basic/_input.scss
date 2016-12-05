@@ -23,7 +23,6 @@ input:not([type]), input[type="text"], input[type="password"], input[type="date"
 
   &:focus {
     border-color: $c-images;
-    background-color: $c-creme;
     outline: none;
   }
 }
@@ -76,17 +75,14 @@ input[type="number"] {
      opacity: 1;
   }
 }
-
-textarea {
-  height: 4rem;
-}
-
-
 // input items basic styles
 textarea {
   height: 6rem;
 }
 
+fieldset {
+  border:none;
+}
 
 // file picker
 .inputfile {

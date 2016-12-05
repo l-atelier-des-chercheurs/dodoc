@@ -202,6 +202,7 @@ function makeOneMedia( mediaKey, mdata) {
     .attr( 'data-mediatype', mdata.mediaFolderPath)
     .attr( 'data-type', mdata.mediaFolderPath)
     	.attr( 'data-informations', mdata.informations)
+    	.attr( 'data-fav', mdata.fav)
     	.addClass( mdata.fav ? 'is--highlight' : '')
     	.find( '.mediaData--informations')
     	  .html( mdata.informations.replace(/(\r\n|\n|\r)/gm, "<br>"))
@@ -243,12 +244,11 @@ function showImage( mediaDatas) {
 
 
 function showAnimation( mediaDatas) {
-
   var mediasFilesPath = getMediaFiles(mediaDatas);
-
 	var mediaItem = $(".js--templates .media_stopmotion").clone(false);
 	mediaItem
     .data('imagesrc_fullsize', mediasFilesPath.img_large)
+    .data('stopmotionsource', mediasFilesPath.video)
     .find( 'video')
       .attr( 'poster', mediasFilesPath.img_large)
     .end()
@@ -256,7 +256,6 @@ function showAnimation( mediaDatas) {
       .attr( 'src', mediasFilesPath.video)
     .end()
   ;
-
 	return mediaItem;
 }
 
@@ -265,6 +264,7 @@ function showVideo( mediaDatas) {
 	var mediaItem = $(".js--templates .media_video").clone(false);
 	mediaItem
     .data('imagesrc_fullsize', mediasFilesPath.img_large)
+    .data('videosource', mediasFilesPath.video)
     .find( 'video')
       .attr( 'poster', mediasFilesPath.img_large)
     .end()
@@ -283,6 +283,7 @@ function showAudio( mediaDatas) {
 
 	mediaItem
     .data('imagesrc_fullsize', mediasFilesPath.img_large)
+    .data('audiosource', mediasFilesPath.audio)
     .find('source')
       .attr( 'src', mediasFilesPath.audio)
     .end()

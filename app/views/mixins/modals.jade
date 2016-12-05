@@ -72,7 +72,7 @@ mixin modals(typeOfModal)
       .modal_title.txt-large_title
         | !{dodoc.lang.modal.newPubli}
       form(onsubmit='return false;')
-        input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus)
+        input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus required)
         fieldset.templateSelector
           .txt-small_info
             | !{dodoc.lang.selectTemplate}
@@ -89,15 +89,11 @@ mixin modals(typeOfModal)
 
   if( typeOfModal === 'editPubli')
     //////////////////////////////////////////////   EDIT PUBLI  //////////////////////////////////
-
-    //- MODIFY PROJECT
-    div(id="modal-modify-publi" class="m_modal-content" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
-
-    div(style="display:none;")
-      h2.popoverTitle
+    .m_modal-content
+      .modal_title.txt-large_title
         | !{dodoc.lang.modal.editPubli}
       form(onsubmit='return false;')
-        input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus)
+        input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus required)
         fieldset.templateSelector
           .txt-small_info
             | !{dodoc.lang.selectTemplate}
@@ -108,7 +104,7 @@ mixin modals(typeOfModal)
             span #{templates[i]}
           - }
         hr
-        input(type='submit' class='button_submit js--modal_submit' value='Valider')
+        +button('valider', '', 'isCollapsed')
       +button( 'close', '', 'isCollapsed')
 
 
@@ -157,25 +153,26 @@ mixin modals(typeOfModal)
     form(onsubmit='return false;' class='add-media-data lead')
       label
         | !{dodoc.lang.modal.informations}
-      textarea.mediaContent--textOfTextmedia.js--mediaInformations(type='text')
+      textarea.mediaContent--textOfTextmedia.js--mediaInformations(type='text' autofocus)
     h3.txt-small_info
       | !{dodoc.lang.modal.pathofmedia}
       .js--mediaFullPath
     hr
-    +button('favButton', '', '')
-    +button('deleteMediaBibli', '', '')
+    +button('favButton', '', 'isCollapsed')
+    +button('deleteMediaBibli', '', 'isCollapsed')
     +button('valider', '', 'isCollapsed')
 
   if( typeOfModal === 'mediaForm_txt')
     //////////////////////////////////////////////   MEDIA FORM TEXT  //////////////////////////////////
 
     form(onsubmit='return false;' class='add-media-text lead')
-      textarea.mediaContent--textOfTextmedia.js--submit-new-text_text(placeholder="Ajouter du texte ici")
+      textarea.mediaContent--textOfTextmedia.js--submit-new-text_text(placeholder="Ajouter du texte ici" autofocus)
     h3.txt-small_info
       | !{dodoc.lang.modal.pathofmedia}
       .js--mediaFullPath
     hr
-    +button('favButton', '', '')
-    +button('deleteMediaBibli', '', '')
-    input.js--submit-view-text-modify(type='submit' value='Valider')
+    +button('favButton', '', 'isCollapsed')
+    +button('deleteMediaBibli', '', 'isCollapsed')
+    +button('valider', '', 'isCollapsed')
+
 

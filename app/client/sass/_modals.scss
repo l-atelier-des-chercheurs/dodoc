@@ -7,7 +7,7 @@
   position: fixed;
   left: 0; right: 0; top: 0; bottom: 0;
   z-index: 1004;
-  background-color: transparentize( white, .1);
+  background-color: transparentize( white, .08);
 }
 
 
@@ -35,12 +35,13 @@
     max-width: 380px;
 
     background-color: white;
-    box-shadow: 0 5px 20px $c-gris;
+    box-shadow: 0 5px 15px $c-gris;
     pointer-events: auto;
 
     &.is--fullPage {
       position: absolute;
       margin: $t-margin*3;
+      padding: 0;
 
       top: 0;
       left: 0;
@@ -109,20 +110,22 @@
     label {
       position: relative;
       float: left;
-      width: 25%;
+      width: 33.333%;
       vertical-align: top;
       padding: 0;
       padding: $t-margin/2;
       color: $c-grisfonce;
 
-      &:nth-of-type(4n+1){
+      cursor: pointer;
+
+      &:nth-of-type(3n+1){
         clear: left;
       }
 
       span {
         display: block;
         width: 100%;
-        padding: $t-margin/2;
+        padding: $t-margin/4;
         background-color: $c-orange-clair;
         text-transform: lowercase;
         text-align: center;
@@ -160,13 +163,20 @@
     .row {
       max-width: 100%;
     }
+
+    .button-wrapper {
+      float: left;
+    }
+    .mediaDataForm {
+      padding: $t-margin;
+    }
   }
 
   .button-wrapper_highlightMedia{
     color:$c-bleuvert;
     background-color: transparent;
   }
-  .is--highlight{
+  .is--highlight {
     .button-wrapper_highlightMedia{
       color: white;
       background-color: $c-bleuvert;
@@ -227,9 +237,9 @@ select {
     width: 100%;
 
     .mediaContent {
-      height: 1px;
+      // needs to stretch to contain all things wihout inner scroll
       min-height: 90vh;
-      min-height: calc(100vh - #{$t-margin*8});
+      min-height: calc(100vh - #{$t-margin*6});
       padding:0;
 
       img, video {
@@ -238,13 +248,17 @@ select {
         height: 100%;
         object-fit: scale-down;
         background-color: $c-gris_clair;
+        height: calc(100vh - #{$t-margin*6});
       }
-
     }
 
 
     .button-wrapper_deleteMedia {
       display: block;
+    }
+
+    textarea {
+      max-width: 100%;
     }
 
     &.media-big_audio {
@@ -262,7 +276,6 @@ select {
       textarea {
         height: 45vh;
       }
-
     }
   }
 
