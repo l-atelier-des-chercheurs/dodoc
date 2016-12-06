@@ -13,7 +13,6 @@ body.bibli {
 .bibli-btn {
   @include clearfix();
   position: relative;
-  padding: $t-margin/2;
 
   background-color: transparent;
   border:none;
