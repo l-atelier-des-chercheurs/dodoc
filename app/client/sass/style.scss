@@ -328,7 +328,7 @@ button {
     flex: 1 100%;
   }
 
-  @media #{$large-only}{
+  @media #{$large}{
     > .flex_40 {
       flex: 1 40%;
     }

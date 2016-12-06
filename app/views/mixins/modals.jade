@@ -77,7 +77,7 @@ mixin modals(typeOfModal)
       form(onsubmit='return false;')
         input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus required)
         fieldset.templateSelector
-          .txt-small_info
+          .txt-small_info.margin-top_bottom
             | !{dodoc.lang.selectTemplate}
           - for (var i = 0; i < templates.length; i++) {
           label
@@ -97,7 +97,7 @@ mixin modals(typeOfModal)
       form(onsubmit='return false;')
         input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus required)
         fieldset.templateSelector
-          .txt-small_info
+          .txt-small_info.margin-top_bottom
             | !{dodoc.lang.selectTemplate}
           - for (var i = 0; i < templates.length; i++) {
           label

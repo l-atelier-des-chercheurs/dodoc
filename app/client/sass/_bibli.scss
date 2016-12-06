@@ -14,14 +14,18 @@ body.bibli {
   @include clearfix();
   position: relative;
   padding: $t-margin/2;
-  margin: 0 $t-margin/2;
 
   background-color: transparent;
   border:none;
   border-bottom: 1px solid $c-separator;
 
+  body.bibli[data-publicationpane="open"] & {
+    width: 50%;
+  }
+
   .button-wrapper {
     float: left;
+    margin: $t-margin/2;
   }
 }
 
@@ -297,11 +301,8 @@ body.bibli {
 .grille_de_medias {
 
   @include clearfix();
-
   width: 100%;
   padding: 0;
-  border-left: 1px solid $c-separator;
-  border-right: 1px solid $c-separator;
 
   body[data-publicationpane="open"] & {
     width: $pourcentageBuffer;

@@ -90,7 +90,7 @@ li.publi-folder(data-publi="")
     .project-content.flex_50.flex_structure
       a(href="" title="Dodoc").project-link
         h2.title
-      .meta-data.txt-small_info.txt-mono.flex_40
+      .meta-data.txt-small_info.txt-mono.flex_40.margin-top_bottom
         .statut
           span
             | !{dodoc.lang.status}
@@ -104,7 +104,7 @@ li.publi-folder(data-publi="")
             | !{dodoc.lang.modifiedOn}
           span.modify-date
       .button-to-pages.flex_60
-        h3.txt-small_info
+        h3.txt-small_info.margin-top_bottom
           | !{dodoc.lang.quickAccess}
         +button('capture', '', 'isCollapsed')
         +button('bibli', '', 'isCollapsed')

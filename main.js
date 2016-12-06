@@ -108,7 +108,6 @@ app.on('activate', () => {
 
 function copyAndRenameUserFolder() {
   return new Promise(function(resolve, reject) {
-
     let userDirPath = app.getPath(config.userDirpath);
     const sourcePathInApp = path.join(__dirname, 'app', dodoc.userDirname)
     const dodocPathInUser = path.join( userDirPath, config.userDirname);

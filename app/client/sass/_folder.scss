@@ -163,11 +163,10 @@ body.projets{
 
       @include clearfix();
       background-color: #fff;
+      padding: $t-margin/2 $t-margin/2;
 
       border-bottom:   1px solid $c-separator;
-      background-color: #f9f9f9;
       margin-bottom:  75px;
-      padding: $t-margin 0;
 
       height: 100%;
       overflow: scroll;
@@ -204,15 +203,5 @@ body.projet {
       cursor: default;
     }
 
-  }
-}
-
-@media #{$small-only}{
-  #container {
-    .folder-wrapper {
-      .folder-title{
-        font-size: 2rem !important;
-      }
-    }
   }
 }

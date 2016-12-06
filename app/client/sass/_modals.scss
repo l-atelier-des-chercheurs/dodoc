@@ -7,7 +7,6 @@
   position: fixed;
   left: 0; right: 0; top: 0; bottom: 0;
   z-index: 1004;
-  background-color: transparentize( $c-creme, .1);
 }
 
 
@@ -16,11 +15,11 @@
   top:0; left: 0; right: 0; bottom: 0;
   z-index: 1100;
 
-  pointer-events: none;
   flex-direction: column;
   align-items: center;
   overflow-x: hidden;
   overflow-y: auto;
+  background-color: transparentize( $c-creme, .1);
 
   &:focus {
     outline: none;

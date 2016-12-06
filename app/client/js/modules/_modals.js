@@ -77,6 +77,12 @@ var modals = (function() {
         $modal = _initAddLocalMedia($modal);
       }
 
+      $modal.on('click', function(e) {
+        if($(e.target).is($modal)) {
+          $modal.trigger('close_that_modal');
+        }
+      });
+
       $modal.on('close_that_modal', function() {
         $modal.foundation('reveal', 'close');
         setTimeout(function() {
@@ -537,6 +543,7 @@ var modals = (function() {
     	});
 
     $m.find('.js--valider').on('click',function(){
+      if(_isAnyRequiredInputFieldEmpty($m)) return;
       	var fileName = $filePicker.data( 'fileName');
       	var fileData = $filePicker.data( 'fileData');
       	//Images changed
@@ -560,10 +567,8 @@ var modals = (function() {
         				"mediaData" : evt.target.result
         		  }
         		}
-
         		if( mediaData !== undefined)
         		  sendData.createNewMedia( mediaData);
-
       		};
       		reader.readAsDataURL(f);
       	}
