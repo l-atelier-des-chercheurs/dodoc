@@ -1529,7 +1529,7 @@ module.exports = tick;
   	});
 
     var scroll = autoScroll([
-            document.querySelector('.montage')
+            document.querySelector('.montage_publi_container')
         ],{
         direction: 'vertical',
         margin: 60,

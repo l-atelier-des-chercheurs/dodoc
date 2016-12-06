@@ -294,6 +294,15 @@ button {
   margin-top:   $t-margin*2;
   color: $c-grisfonce;
   text-align: center;
+
+  // remove that div when in footer in bibli (it is placed in bibli-buffer instead)
+  body.bibli > & {
+    display: none;
+  }
+  // this is to make the info inside bibli-buffer fit the available width
+  body.bibli[data-publicationpane="open"] & {
+      width: 50%;
+  }
 }
 
 

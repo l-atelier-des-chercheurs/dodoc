@@ -1,10 +1,4 @@
-.module_infos
-  -for(var prop in localNetworkInfos)
-    -if(isHttps)
-      h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice} https://#{localNetworkInfos[prop]}:8080
-    -else
-      h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice} http://#{localNetworkInfos[prop]}:8080
-  h3.txt-small_info !{dodoc.lang.mediapublitemplatesarestoredint} <br>#{currentUserDirPath}
++snippets('moduleInfos')
 
 script
   | if (typeof module === 'object') {window.module = module; module = undefined;}

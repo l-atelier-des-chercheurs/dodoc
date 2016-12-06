@@ -49,8 +49,6 @@ function init(){
   	$('body').attr( "data-publicationpane", $('body').attr('data-publicationPane') === 'open' ? '' : 'open');
   });
 
-  modals.importNewMedia();
-
   // si en arrivant sur la page, il y a un hash dans l'url
   // alors ouvrir la publication qui a ce nom directement
   var urlHash = window.location.hash.substring(1);
@@ -109,7 +107,8 @@ function onMediaCreated( mediasData) {
     var $m = $(this);
     $m.attr('data-oninsert', 'slideFromTop');
     insertOrReplaceMedia( $m, $mediaContainer);
-  });}
+  });
+}
 
 function onMediaUpdated( mediasData) {
   console.log( "onMediaUpdated");

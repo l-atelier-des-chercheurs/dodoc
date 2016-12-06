@@ -267,6 +267,7 @@ body.bibli {
 
 // class ajoutée aux éléments draggés. En bas du dom
 .gu-mirror {
+  background-color: $c-gris_clair;
   .mediaContent {
     width: 100%;
     height: 100%;
@@ -275,7 +276,6 @@ body.bibli {
       object-fit:scale-down;
       width: 100%;
       height: 100%;
-
     }
     audio {
       display: none;
