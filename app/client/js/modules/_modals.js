@@ -54,40 +54,42 @@ var modals = (function() {
       $modal.append($modalContent.show());
 
       if(typeOfModal === 'addFolder') {
-        $modalContent = _initAddFolderModal($modal);
+        $modal = _initAddFolderModal($modal);
       } else if(typeOfModal === 'editFolder') {
-        $modalContent = _initEditFolderModal($modal, d);
+        $modal = _initEditFolderModal($modal, d);
       } else if(typeOfModal === 'addProject') {
-        $modalContent = _initAddProjectModal($modal);
+        $modal = _initAddProjectModal($modal);
       } else if(typeOfModal === 'editProject') {
-        $modalContent = _initEditProjectModal($modal, d);
+        $modal = _initEditProjectModal($modal, d);
       } else if(typeOfModal === 'addPubli') {
-        $modalContent = _initAddPubliModal($modal);
+        $modal = _initAddPubliModal($modal);
       } else if(typeOfModal === 'editPubli') {
-        $modalContent = _initEditPubliModal($modal, d);
+        $modal = _initEditPubliModal($modal, d);
       } else if(typeOfModal === 'editMedia') {
-        $modalContent = _initEditMediaModal($modal, d);
+        $modal = _initEditMediaModal($modal, d);
       } else if(typeOfModal === 'addText') {
-        $modalContent = _initAddTextModal($modal);
+        $modal = _initAddTextModal($modal);
       } else if(typeOfModal === 'addLocalMedia') {
-        $modalContent = _initAddLocalMedia($modal);
+        $modal = _initAddLocalMedia($modal);
       }
 
-      $modal
-        .on('close_that_modal', function() {
-          $modal.foundation('reveal', 'close');
-          setTimeout(function() {
-            $modal.empty();
-            $modal.off()
-          }, 500);
-        })
-        .keyup(function(e) {
+      $modal.on('close_that_modal', function() {
+        $modal.foundation('reveal', 'close');
+        setTimeout(function() {
+          $modal.empty();
+          $modal.off()
+        }, 500);
+      });
+      if($modalContent.attr('data-pressEnterToSubmit') !== undefined) {
+        $modal.keyup(function(e) {
           var key = e.which;
           if (key == 13) {
             $modal.find('.js--valider').click();
           }
-        })
-        ;
+        });
+      }
+
+
 
       $modal.foundation('reveal', 'open');
       setTimeout(function() { $modal.find('[autofocus]').eq(0).focus() }, 300);

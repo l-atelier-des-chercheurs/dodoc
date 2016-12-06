@@ -4,7 +4,7 @@ mixin modals(typeOfModal)
 
   if( typeOfModal === 'addFolder')
     //////////////////////////////////////////////   ADD FOLDER  //////////////////////////////////
-    .m_modal-content
+    .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
         | !{dodoc.lang.modal.newFolder}
@@ -15,7 +15,7 @@ mixin modals(typeOfModal)
 
   if( typeOfModal === 'editFolder')
     //////////////////////////////////////////////   EDIT FOLDER  //////////////////////////////////
-    .m_modal-content
+    .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
         | !{dodoc.lang.modal.editFolder}
@@ -32,7 +32,7 @@ mixin modals(typeOfModal)
 
   if( typeOfModal === 'addProject')
     //////////////////////////////////////////////   ADD PROJECT  //////////////////////////////////
-    .m_modal-content
+    .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .txt-large_title
         | !{dodoc.lang.modal.newProject}
@@ -48,7 +48,7 @@ mixin modals(typeOfModal)
 
   if( typeOfModal === 'editProject')
     //////////////////////////////////////////////   EDIT PROJECT  //////////////////////////////////
-    .m_modal-content
+    .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
         | !{dodoc.lang.modal.editProject}
@@ -70,7 +70,7 @@ mixin modals(typeOfModal)
 
   if( typeOfModal === 'addPubli')
     //////////////////////////////////////////////   ADD PUBLI  //////////////////////////////////
-    .m_modal-content
+    .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
         | !{dodoc.lang.modal.newPubli}
@@ -90,7 +90,7 @@ mixin modals(typeOfModal)
 
   if( typeOfModal === 'editPubli')
     //////////////////////////////////////////////   EDIT PUBLI  //////////////////////////////////
-    .m_modal-content
+    .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
         | !{dodoc.lang.modal.editPubli}
@@ -121,7 +121,7 @@ mixin modals(typeOfModal)
 
   if( typeOfModal === 'addLocalMedia')
     //////////////////////////////////////////////   IMPORT MEDIA  //////////////////////////////////
-    .m_modal-content
+    .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
         | !{dodoc.lang.modal.importAFile}

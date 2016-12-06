@@ -12,12 +12,12 @@
 	<g>
 		<circle style="fill:#1D327F;" cx="84" cy="84" r="84"/>
 		<g>
-			<polyline style="fill:none;stroke:#FCFCFA;stroke-width:12;stroke-miterlimit:10;" points="46.6,69.7 46.6,51.3 64.6,51.3 			"/>
-			<polyline style="fill:none;stroke:#FCFCFA;stroke-width:12;stroke-miterlimit:10;" points="46.6,98.6 46.6,116.7 64.6,116.7 			
+			<polyline style="fill:none;stroke:#FFFFFF;stroke-width:12;stroke-miterlimit:10;" points="46.6,69.7 46.6,51.3 64.6,51.3 			"/>
+			<polyline style="fill:none;stroke:#FFFFFF;stroke-width:12;stroke-miterlimit:10;" points="46.6,98.6 46.6,116.7 64.6,116.7 			
 				"/>
-			<polyline style="fill:none;stroke:#FCFCFA;stroke-width:12;stroke-miterlimit:10;" points="121.4,69.7 121.4,51.3 102.8,51.3 			
+			<polyline style="fill:none;stroke:#FFFFFF;stroke-width:12;stroke-miterlimit:10;" points="121.4,69.7 121.4,51.3 102.8,51.3 			
 				"/>
-			<polyline style="fill:none;stroke:#FCFCFA;stroke-width:12;stroke-miterlimit:10;" points="121.4,98.6 121.4,116.7 102.8,116.7 
+			<polyline style="fill:none;stroke:#FFFFFF;stroke-width:12;stroke-miterlimit:10;" points="121.4,98.6 121.4,116.7 102.8,116.7 
 							"/>
 		</g>
 	</g>
