@@ -292,8 +292,12 @@ button {
   float: none;
   padding: $t-margin;
   margin-top:   $t-margin*2;
-  color: $c-grisfonce;
+  color: $c-gris_fonce;
   text-align: center;
+
+  a {
+    color: $c-noir;
+  }
 
   // remove that div when in footer in bibli (it is placed in bibli-buffer instead)
   body.bibli > & {

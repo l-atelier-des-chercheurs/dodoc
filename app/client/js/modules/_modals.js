@@ -9,39 +9,43 @@ var modals = (function() {
       console.log('Modals.init()');
 
 
-      	$('body').on('click', '.js--openModal_addFolder', function(){
-      		modals.createModal('addFolder');
-      	});
-      	$('body').on('click', '.js--openModal_editFolder', function(){
-      		var d = $(this).closest(".dossier").data();
-      		modals.createModal('editFolder',d);
-      	});
-      	$('body').on('click', '.js--openModal_addProject', function(){
-      		modals.createModal('addProject');
-      	});
-      	$('body').on('click', '.js--openModal_editProject', function(){
-      		var pdata = $(this).closest(".project").data();
-      		modals.createModal('editProject', pdata);
-      	});
-      	$('body').on('click', '.js--openModal_createPublication', function(){
-      		modals.createModal('addPubli');
-      	});
-      	$('body').on('click', '.js--openModal_editPubli', function(){
-      		var pdata = $(this).closest("[data-publidata]").data();
-      		modals.createModal('editPubli', pdata);
-      	});
-      	$('body').on('click', '.js--openModal_editMedia', function(){
-      		var mdata = $(this).data();
-        mdata.nextm = $(this).next('.js--openModal_editMedia');
-        mdata.prevm = $(this).prev('.js--openModal_editMedia');
-      		modals.createModal('editMedia', mdata);
-      	});
-      	$('body').on('click', '.js--addText', function(){
-      		modals.createModal('addText');
-      });
-      	$('body').on('click', '.js--addLocalMedia', function(){
-      		modals.createModal('addLocalMedia');
-      });
+      	$('body')
+      	  .on('click', '.js--openModal_addFolder', function(){
+      		  modals.createModal('addFolder');
+      	  })
+        	.on('click', '.js--openModal_editFolder', function(){
+        		var d = $(this).closest(".dossier").data();
+        		modals.createModal('editFolder',d);
+        	})
+        	.on('click', '.js--openModal_addProject', function(){
+        		modals.createModal('addProject');
+        	})
+        	.on('click', '.js--openModal_editProject', function(){
+        		var pdata = $(this).closest(".project").data();
+        		modals.createModal('editProject', pdata);
+        	})
+        	.on('click', '.js--openModal_createPublication', function(){
+        		modals.createModal('addPubli');
+        	})
+        	.on('click', '.js--openModal_editPubli', function(){
+        		var pdata = $(this).closest("[data-publidata]").data();
+        		modals.createModal('editPubli', pdata);
+        	})
+        	.on('click', '.js--openModal_editMedia', function(){
+        		var mdata = $(this).data();
+          mdata.nextm = $(this).next('.js--openModal_editMedia');
+          mdata.prevm = $(this).prev('.js--openModal_editMedia');
+        		modals.createModal('editMedia', mdata);
+        	})
+        	.on('click', '.js--addText', function(){
+        		modals.createModal('addText');
+        })
+        .on('click', '.js--addLocalMedia', function(){
+        		modals.createModal('addLocalMedia');
+        })
+        .on('click', '.js--moveContentFolder', function() {
+        		modals.createModal('moveContentFolder');
+        });
     },
 
     createModal : function(typeOfModal, d) {

@@ -111,14 +111,13 @@ var dodocFolder = (function() {
         var allFoldersData = [];
         folders.forEach( function( slugFolderName) {
           dev.logverbose('listAllFolders -- current folder to look into: ' + slugFolderName);
-          if( new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName)
-          && slugFolderName.indexOf( dodoc.deletedPrefix)){
+          if( new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName) && slugFolderName.indexOf( dodoc.deletedPrefix)){
             var fmeta = getFolderMeta( slugFolderName);
             fmeta.slugFolderName = slugFolderName;
             allFoldersData.push( fmeta);
           }
           foldersProcessed++;
-          if( foldersProcessed === folders.length && allFoldersData.length > 0) {
+          if(foldersProcessed === folders.length) {
             dev.logverbose( "- - - - all folders JSON have been processed.");
             resolve( allFoldersData);
           }

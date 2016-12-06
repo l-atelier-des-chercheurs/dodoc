@@ -85,6 +85,8 @@ if( lang === 'fr') {
 
       "mediapublitemplatesarestoredint" : "Les données chargées sur cette page sont stockées dans le dossier suivant&nbsp;: ",
       "toconnectwithanotherdevice" : "Pour vous connecter avec un autre appareil connecté au même réseau wifi, naviguez vers l’adresse suivante (et ignorez l’avertissement qui s’affiche)&nbsp;:",
+      "clickHereToMoveContentFolder" : "Cliquez ici pour déplacer le dossier des contenus utilisateurs",
+
 
       "modal" : {
         "sureRemoveMedia" : "Êtes-vous sûr de vouloir supprimer ce média ?",
@@ -119,6 +121,8 @@ if( lang === 'fr') {
         "newFolderCreatedWithName" : "Un nouveau dossier vient d’être créé avec pour nom ",
         "newProjectCreatedWithName" : "Un nouveau projet vient d’être créé avec pour nom ",
         "atPath" : " dans le chemin ",
+
+        "moveContentFolder" : "Déplacer le dossier <em>dodoc</em> sur votre disque dur",
 
       },
     }

@@ -28,7 +28,7 @@ mixin snippets(typeOfSnippet)
     +button('valider', '', 'isCollapsed')
 
 
-  if(typeOfSnippet === 'moduleInfos')
+  if(typeOfSnippet === 'moduleInfos' && process.versions.electron)
     .module_infos
       -for(var prop in localNetworkInfos)
         -if(isHttps)
@@ -36,4 +36,4 @@ mixin snippets(typeOfSnippet)
         -else
           h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice} http://#{localNetworkInfos[prop]}:8080
       h3.txt-small_info !{dodoc.lang.mediapublitemplatesarestoredint} <br>#{currentUserDirPath}
-
+      a.txt-small_info.js--moveContentFolder !{dodoc.lang.clickHereToMoveContentFolder}

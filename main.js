@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const flags = require('flags');
 const devLog = require('./app/bin/dev-log');
+const {dialog} = require('electron')
 
 const config = require('./config.json');
 const dodoc = require('./app/dodoc');
@@ -17,6 +18,7 @@ app.commandLine.appendSwitch('--ignore-certificate-errors');
 
 
 function createWindow () {
+
 
   // check if content folder exists
   copyAndRenameUserFolder().then(function(dodocPath) {
@@ -107,8 +109,9 @@ app.on('activate', () => {
 function copyAndRenameUserFolder() {
   return new Promise(function(resolve, reject) {
 
+    let userDirPath = app.getPath(config.userDirpath);
     const sourcePathInApp = path.join(__dirname, 'app', dodoc.userDirname)
-    const dodocPathInUser = path.join( app.getPath(config.userDirpath), config.userDirname);
+    const dodocPathInUser = path.join( userDirPath, config.userDirname);
 
     // if dodoc folder doesn't exist yet at destination
     fs.access(dodocPathInUser, fs.F_OK, function(err) {
