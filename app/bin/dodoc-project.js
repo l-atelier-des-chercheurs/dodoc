@@ -152,12 +152,14 @@ var dodocProject = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON - onRemoveProject _ slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName);
 
-      var projectPath = dodocAPI.getProjectPath( slugFolderName, slugProjectName);
-      var projectPathToDeleted = dodocAPI.getProjectPath( slugFolderName, dodoc.deletedPrefix + slugProjectName);
-      fs.rename( projectPath, projectPathToDeleted, function(err) {
+      var projectPath = dodocAPI.getProjectPath(slugFolderName, slugProjectName);
+      var deletedProjectName = dodoc.deletedPrefix + slugProjectName;
+      deletedProjectName = dodocAPI.findFirstFilenameNotTaken(deletedProjectName, dodocAPI.getFolderPath(slugFolderName), '');
+      var deletedProjectPath = dodocAPI.getProjectPath(slugFolderName, deletedProjectName);
+
+      fs.rename( projectPath, deletedProjectPath, function(err) {
         if (err) reject(err);
-        var projectData =
-        {
+        var projectData = {
           "slugFolderName" : slugFolderName,
           "slugProjectName" : slugProjectName,
         }

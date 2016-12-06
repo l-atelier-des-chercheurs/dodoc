@@ -26,7 +26,7 @@ mixin modals(typeOfModal)
             | !{dodoc.lang.modal.inprogress}
           option(value='terminé')
             | !{dodoc.lang.modal.finished}
-        +button('deleteFolder', '', 'isCollapsed')
+        +button('deleteFolder', '', '')
         hr
         +button('valider', '', 'isCollapsed')
 
@@ -118,7 +118,6 @@ mixin modals(typeOfModal)
         textarea.mediaContent--textOfTextmedia.js--textField(placeholder="Ajouter du texte ici" autofocus required)
         hr
         +button('valider', '', 'isCollapsed')
-      +button( 'close', '', 'isCollapsed')
 
   if( typeOfModal === 'addLocalMedia')
     //////////////////////////////////////////////   IMPORT MEDIA  //////////////////////////////////
@@ -136,7 +135,6 @@ mixin modals(typeOfModal)
           | !{dodoc.lang.modal.acceptedFormats}
         hr
         +button('valider', '', 'isCollapsed')
-      +button( 'close', '', 'isCollapsed')
 
   if( typeOfModal === 'editMedia')
     //////////////////////////////////////////////   BIG MEDIA  //////////////////////////////////

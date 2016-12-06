@@ -131,8 +131,10 @@ var dodocFolder = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — removeFolderNamed : " + JSON.stringify(slugFolderName, null, 4));
 
-      var folderPath = dodocAPI.getFolderPath( slugFolderName);
-      var deletedFolderPath = dodocAPI.getFolderPath( dodoc.deletedPrefix + slugFolderName);
+      var folderPath = dodocAPI.getFolderPath(slugFolderName);
+      var deletedFolderName = dodoc.deletedPrefix + slugFolderName;
+      deletedFolderName = dodocAPI.findFirstFilenameNotTaken(deletedFolderName, dodocAPI.getFolderPath(), '');
+      var deletedFolderPath = dodocAPI.getFolderPath(deletedFolderName);
 
       fs.rename( folderPath, deletedFolderPath, function(err) {
         if (err) reject( err);
