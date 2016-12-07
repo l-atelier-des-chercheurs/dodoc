@@ -5,6 +5,9 @@ var fs = require('fs');
 var io = require('socket.io');
 var path = require('path');
 
+// var localtunnel = require('localtunnel');
+var ngrok = require('ngrok');
+
 try {
   // root config.json is specific to electron
   var config = require('../config.json');
@@ -17,6 +20,31 @@ try {
 
 module.exports = function() {
   var app = express();
+
+
+/*
+  var tunnel = localtunnel('8080', {'local_host': 'https://localhost'}, function(err, tunnel) {
+    if (err) dev.error('Localtunnel error: ' + err);
+    dev.log('Tunnel URL: ' + tunnel.url);
+  });
+
+  tunnel.on('close', function() {
+  });
+*/
+/*
+  config.protocol = 'http';
+  ngrok.connect({
+    proto: 'http', // http|tcp|tls
+    addr: 8080, // port or network address
+    region: 'eu' // one of ngrok regions (us, eu, au, ap), defaults to us
+  }, function (err, url) {
+    if(err) {
+      dev.error('NGROK error: ');
+      console.log(err);
+    }
+    dev.log('NGROK url : ' + url);
+  });
+*/
 
 /*
   // not working: asks for a certificate on smartphones

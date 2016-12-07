@@ -56,6 +56,7 @@
     "gulp-sass": "^2.1.1",
     "gulp-sourcemaps": "^1.9.1",
     "gulp-uglify": "^2.0.0",
-    "jshint": "^2.9.3"
+    "jshint": "^2.9.3",
+    "ngrok": "^2.2.4"
   }
 }
