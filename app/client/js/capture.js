@@ -728,13 +728,17 @@ function saveFeedback(icone){
   var $iconeFeedback = $("<div class='icone-feedback'><img src='"+icone+"'></div>");
   $("body").append( $iconeFeedback );
   setTimeout(function(){
-    $iconeFeedback.fadeIn('slow').velocity({"top":"25px", "left":$(window).width() - 50, "width":"20px"},1000, "ease", function(){
-      $(this).fadeOut('slow', function(){
-        $(this).remove();
-        $(".count-add-media.plus-media").fadeIn('slow', function(){
-          $(this).fadeOut('slow');
+    $iconeFeedback.fadeIn('slow').animate({"top":"25px", "left":$(window).width() - 50, "width":"20px"},
+    {
+      duration: 1000,
+      complete: function() {
+        $(this).fadeOut('slow', function(){
+          $(this).remove();
+          $(".count-add-media.plus-media").fadeIn('slow', function(){
+            $(this).fadeOut('slow');
+          });
         });
-      });
+      }
     });
   }, 500);
 }

@@ -9,12 +9,14 @@ var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var jshint = require('gulp-jshint');
 var sourcemaps = require('gulp-sourcemaps');
+var uglify = require('gulp-uglify');
 var dodoc  = require('./dodoc.js');
 
 var pluginsScripts = [
   'client/bower_components/jquery/dist/jquery.min.js',
-  'client/bower_components/velocity/velocity.min.js',
-  'client/bower_components/moment/min/moment-with-locales.js',
+  'node_modules/socket.io-client/dist/socket.io.min.js',
+  'client/bower_components/moment/min/moment.min.js',
+  'client/bower_components/moment/locale/fr.js',
   'client/bower_components/store-js/store.min.js',
   'client/bower_components/alertifyjs/dist/js/alertify.js',
 ];
@@ -47,6 +49,8 @@ gulp.task('sass', function() {
     .pipe(sass())
     .pipe(sourcemaps.write())
     .pipe(concat('style.css'))
+    .pipe(minifyCss())
+    .pipe(rename('style.min.css'))
     .pipe(gulp.dest('client/css'));
 });
 
@@ -88,6 +92,8 @@ gulp.task('lint', function() {
 gulp.task('script-plugins', function() {
   return gulp.src(pluginsScripts)
     .pipe(concat('plugins.js'))
+    .pipe(rename('plugins.min.js'))
+//     .pipe(uglify())
     .pipe(gulp.dest('client/js/production'));
 });
 
