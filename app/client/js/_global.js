@@ -154,7 +154,7 @@ function mediaInit( $m) {
 
   var $v = $m.find('video');
   $m.hover(function() {
-    if( $v.length > 0) {
+    if( $v.length > 0 && $v.get(0).paused) {
       $v
         .attr('loop', true)
         .removeAttr('controls')
@@ -163,7 +163,7 @@ function mediaInit( $m) {
         ;
     }
   }, function() {
-    if( $v.length > 0) {
+    if( $v.length > 0 && !$v.get(0).paused) {
       $v
         .removeAttr('loop')
         .attr('controls', true)

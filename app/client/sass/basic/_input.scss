@@ -2,6 +2,10 @@
 
 input:not([type]), input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], input[type="color"], textarea, select {
 
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+
   border:none;
 
   display: block;
@@ -26,6 +30,7 @@ input:not([type]), input[type="text"], input[type="password"], input[type="date"
     outline: none;
   }
 }
+
 input:required {
   background-image: radial-gradient($c-rouge 20%, transparent 25%);
   background-size: 16px 16px;
@@ -51,7 +56,7 @@ input:required {
 input[type=range] {
   & {
     -webkit-appearance: none;
-    margin: 18px 0;
+    padding: $t-margin 0;
     width: 100%;
   }
   &:focus {
@@ -59,16 +64,18 @@ input[type=range] {
   }
   &::-webkit-slider-runnable-track  {
     width: 100%;
-    height: 4px;
+    height: 8px;
     cursor: pointer;
     animate: 0.2s;
-    background: $c-bleuvert-clair;
+    background: $c-gris;
+    border:2px solid white;
   }
   &::-webkit-slider-thumb {
     height: 18px;
     width: 18px;
     border-radius: 50%;
     background: $c-bleuvert;
+    border:2px solid white;
     cursor: pointer;
     -webkit-appearance: none;
     margin-top: -7px;
@@ -92,6 +99,12 @@ textarea {
 
 fieldset {
   border:none;
+}
+
+select {
+
+  	background: $c-gris_clair url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDIwLjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCA0LjkgMTAiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQuOSAxMDsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOiM0NDQ0NDQ7fQo8L3N0eWxlPgo8dGl0bGU+YXJyb3dzPC90aXRsZT4KPHBvbHlnb24gY2xhc3M9InN0MCIgcG9pbnRzPSIxLjQsNC43IDIuNSwzLjIgMy41LDQuNyAiLz4KPHBvbHlnb24gY2xhc3M9InN0MCIgcG9pbnRzPSIzLjUsNS4zIDIuNSw2LjggMS40LDUuMyAiLz4KPC9zdmc+Cg==) no-repeat 95% 50%;
+
 }
 
 // file picker
@@ -161,3 +174,51 @@ fieldset {
 
 }
 
+
+
+/* Cachons la case à cocher */
+[type="checkbox"]:not(:checked),
+[type="checkbox"]:checked {
+  position: absolute;
+  left: -9999px;
+}
+
+/* on prépare le label */
+[type="checkbox"]:not(:checked) + label,
+[type="checkbox"]:checked + label {
+  position: relative; /* permet de positionner les pseudo-éléments */
+  padding-left: 25px; /* fait un peu d'espace pour notre case à venir */
+  cursor: pointer;    /* affiche un curseur adapté */
+}
+
+[type="checkbox"]:not(:checked) + label:before,
+[type="checkbox"]:checked + label:before {
+  content: '';
+  position: absolute;
+  left:0; top: -2px;
+  width: 17px; height: 17px;
+  border: none;
+  background: $c-gris_clair;
+  box-shadow: none;
+}
+
+/* Aspect général de la coche */
+[type="checkbox"]:not(:checked) + label:after,
+[type="checkbox"]:checked + label:after {
+  content: '✔';
+  position: absolute;
+  top: -5px; left: 1px;
+  font-size: 16px;
+  color: $c-bleuvert;
+  transition: all .2s; /* on prévoit une animation */
+}
+/* Aspect si "pas cochée" */
+[type="checkbox"]:not(:checked) + label:after {
+  opacity: 0; /* coche invisible */
+  transform: scale(0); /* mise à l'échelle à 0 */
+}
+/* Aspect si "cochée" */
+[type="checkbox"]:checked + label:after {
+  opacity: 1; /* coche opaque */
+  transform: scale(1); /* mise à l'échelle 1:1 */
+}

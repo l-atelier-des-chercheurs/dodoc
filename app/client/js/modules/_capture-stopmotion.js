@@ -28,8 +28,8 @@ var stopMotionMode = (function() {
       $previzsm.off().on('click', _previzStopMotion);
       $finishsm.off().on('click', _finishStopmotion);
       $preview.show();
-      $preview.find('video').attr('src', '');
-      $previewOutput.hide();
+
+      _clearPreview();
 
       $lastStopmotionImageSlider.bind("change", function() {
         $lastStopmotionImage.css("opacity", $lastStopmotionImageSlider.val().replace(/\,/g,'.'));
@@ -38,11 +38,12 @@ var stopMotionMode = (function() {
       if(isRecording) {
         animateWindows();
       }
+
     },
 
     stop : function() {
+      _clearPreview();
       isRunning = false;
-      $preview.find('.js--output').attr('src', '');
     },
 
     onNewStopmotionImage : function( smdata) {
@@ -114,13 +115,15 @@ var stopMotionMode = (function() {
           "mediaFolderPath" : $(document).data('lastCapturedMediaFolderPath'),
         }
         sendData.deleteStopmotion( mediaToDelete);
-        $previewOutput.hide();
-        $preview.find('video.js--output').attr('src', '');
+        _clearVideoPreview();
       });
     },
 
     isRunning: function() {
       return isRunning;
+    },
+    isRecording: function() {
+      return isRecording;
     },
     captureButtonPress: function() {
       if(!isRunning) return;
@@ -134,6 +137,8 @@ var stopMotionMode = (function() {
     if( mediaJustCaptured())
       return;
 
+    _clearPreview();
+
     // try to get a first image to send with project data. If feed is not available, let’s alert the user
     currentStream.getStaticImageFromVideo().then(function(imageData) {
 
@@ -141,14 +146,6 @@ var stopMotionMode = (function() {
 
       $startsm.hide();
       $capturesm.show();
-
-      $preview.find('.preview_stopmotion--container').empty();
-      $preview.find('.preview_stopmotion--timeline').empty();
-      $lastStopmotionImage.attr('src', '');
-      $("body").data("smCacheName", "");
-      $("body").data("smCachePath", "");
-      $preview.find('.js--output').attr('src', '');
-      $previewOutput.hide();
 
       justCaptured();
       animateWindows();
@@ -225,6 +222,22 @@ var stopMotionMode = (function() {
     backAnimation();
     stopMotionMode.init();
     saveFeedback("/images/i_icone-dodoc_anim.svg");
+  }
+
+  function _clearPreview() {
+    $preview.find('.preview_stopmotion--container').empty();
+    $preview.find('.preview_stopmotion--timeline').empty();
+    $lastStopmotionImage.attr('src', '');
+    $("body").data("smCacheName", "");
+    $("body").data("smCachePath", "");
+    $previewOutput.hide();
+
+    _clearVideoPreview();
+  }
+
+  function _clearVideoPreview() {
+    $previewOutput.hide();
+    $preview.find('video.js--output').attr('src', '');
   }
 
   return API;

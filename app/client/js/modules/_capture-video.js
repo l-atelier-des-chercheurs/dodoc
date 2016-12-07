@@ -8,24 +8,38 @@ var videoMode = (function() {
   // Function qui enregistre de la vidéo
   var $startVideoRecording = $('#start-record-btn');
   var $stopVideoRecording = $('#stop-record-btn');
+  var $enableAudioInVideo = $(".video-capture .js--enableAudioInVideo");
+  var $btn_deleteLastMedia = $preview.find(".js--delete-media-capture");
+
 
   // public functions
   var API = {
     init : function() {
       isRunning = true;
-      $preview.find('.js--delete-media-capture').hide();
+      _clearPreview();
       $startVideoRecording.off().on('click', this.startRecord);
       $stopVideoRecording.off().on('click', this.stopRecord);
+
+      $btn_deleteLastMedia.hide().off().click(function(){
+        var mediaToDelete = {
+          "mediaName" : $(document).data('lastCapturedMediaName'),
+          "mediaFolderPath" : $(document).data('lastCapturedMediaFolderPath'),
+        }
+        sendData.deleteMedia(mediaToDelete);
+        backAnimation();
+        _clearPreview();
+      });
     },
 
     startRecord : function() {
-      startVideo();
+      _startRecordVideo();
     },
     stopRecord: function() {
-      stopRecordVideo();
+      _stopRecordVideo();
     },
 
     stop : function() {
+      _clearPreview();
       isRunning = false;
     },
 
@@ -37,19 +51,26 @@ var videoMode = (function() {
     isRunning: function() {
       return isRunning;
     },
+    isRecording: function() {
+      return isRecording;
+    },
     captureButtonPress: function() {
       if(!isRunning) return;
-      if(isRecording) stopRecordVideo();
-      else startVideo();
+      if(isRecording) _stopRecordVideo();
+      else _startRecordVideo();
     }
   }
 
-  function startVideo(){
+  function _startRecordVideo(){
 
     if( mediaJustCaptured())
       return;
 
-    currentStream.startRecordCameraFeed()
+    _clearPreview();
+
+    var withAudio = $enableAudioInVideo.is(':checked')
+
+    currentStream.startRecordCameraFeed(withAudio)
     .then(function() {
       backAnimation();
       recordingFeedback();
@@ -93,7 +114,7 @@ var videoMode = (function() {
     }
   }
 
-  function stopRecordVideo(){
+  function _stopRecordVideo(){
 
     $startVideoRecording.attr('disabled', false).show();
     $stopVideoRecording.attr('disabled', true).hide();
@@ -112,7 +133,6 @@ var videoMode = (function() {
       // send instruction to record video
       sendData.createNewMedia( mediaData);
       $preview.find('video').src = '';
-      $preview.find('video').poster = 'https://localhost:8080/loading.gif';
       saveFeedback("/images/i_icone-dodoc_video.svg");
     }, function() {
       console.log("Failed stopping the recording of a video.");
@@ -120,6 +140,11 @@ var videoMode = (function() {
 
     justCaptured();
 
+  }
+
+  function _clearPreview() {
+    $preview.find('video').attr('src', '');
+    $preview.find('.js--delete-media-capture').hide();
   }
 
 

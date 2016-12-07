@@ -73,10 +73,14 @@ if( lang === 'fr') {
       "imageCount" : "Image ",
       "frameRate" : "Vitesse de lecture&nbsp;: ",
 
+      "aStopmotionIsRecordingFinishItFirst" : "Une animation est en cours, terminez là pour changer de mode.",
+      "aVideoIsRecordingFinishItFirst" : "Une vidéo est en cours d’enregistrement, terminez là pour changer de mode.",
+
       "audioInputSource" : "source audio&nbsp;:",
       "audioOutputDestination" : "destination audio&nbsp;:",
       "videoInputSource" : "source video:",
       "lastImageOpacity" : "Afficher la dernière image en transparence",
+      "enableAudioInVideo" : "Enregistrer le son",
 
       "currentVideoResolutionIs" : "Résolution actuelle&nbsp;: ",
       "videoStreamCouldntBeStartedTryChangingRes" : "Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la résolution dans le panneau de droite.",

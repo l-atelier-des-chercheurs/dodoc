@@ -13,25 +13,35 @@ var audioMode = (function() {
   //Variables
   var $startAudioRecording = $('#start-recording-btn');
   var $stopAudioRecording = $('#stop-recording-btn');
+  var $btn_deleteLastMedia = $preview.find(".js--delete-media-capture");
 
   var API = {
     init: function( stream) {
       isRunning = true;
-      equalizer.start( $('#canvas-audio'), stream);
-      $preview.find('.js--delete-media-capture').hide();
-      //click events
+      equalizer.start($('#canvas-audio'), stream);
 
-      $startAudioRecording.off().on('click', this.startRecord);
-      $stopAudioRecording.off().on('click', this.stopRecord);
+      $startAudioRecording.off().on('click', audioMode.startRecord);
+      $stopAudioRecording.off().on('click', audioMode.stopRecord);
+
+      $btn_deleteLastMedia.hide().off().click(function(){
+        var mediaToDelete = {
+          "mediaName" : $(document).data('lastCapturedMediaName'),
+          "mediaFolderPath" : $(document).data('lastCapturedMediaFolderPath'),
+        }
+        sendData.deleteMedia(mediaToDelete);
+        backAnimation();
+        _clearPreview();
+      });
+
     },
 
     startRecord: function() {
-      equalizer.clearCanvas();
-      startRecordAudio();
+      _clearPreview();
+      _startRecordAudio();
     },
     stopRecord: function() {
-      stopRecordAudio();
-      equalizer.clearCanvas();
+      _stopRecordAudio();
+      _clearPreview();
     },
 
     stop: function() {
@@ -50,13 +60,13 @@ var audioMode = (function() {
     },
     captureButtonPress: function() {
       if(!isRunning) return;
-      if(isRecording) this.stopRecord();
-      else this.startRecord();
+      if(isRecording) audioMode.stopRecord();
+      else audioMode.startRecord();
     },
 
   }
 
-  function startRecordAudio(){
+  function _startRecordAudio(){
 
     if( mediaJustCaptured())
       return;
@@ -73,7 +83,7 @@ var audioMode = (function() {
     sarahCouleur = 'red';
   }
 
-  function stopRecordAudio(){
+  function _stopRecordAudio(){
 
     $startAudioRecording.attr('disabled', false).show();
     $stopAudioRecording.attr('disabled', true).hide();
@@ -81,11 +91,11 @@ var audioMode = (function() {
 
     var imageData = $("#canvas-audio")[0].toDataURL('image/png');
     photo.setAttribute('src', imageData);
+
     $('body').attr('data-audiorecording', '');
 
     // stop audio recorder
     currentStream.stopRecordAudioFeed().then(function(audioDataURL) {
-
       var mediaData =
       {
         "mediaType" : "audio",
@@ -100,6 +110,10 @@ var audioMode = (function() {
     sarahCouleur = 'gray';
     justCaptured();
 
+  }
+
+  function _clearPreview() {
+    equalizer.clearCanvas();
   }
 
   return API;

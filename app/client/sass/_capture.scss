@@ -354,7 +354,7 @@ $t-decalageDuCentre: 2%;
     }
   }
 
-  .slider--lastImageOpacity {
+  .slider--captureModesOptions {
     position: absolute;
     top: 0;
     right: 0;
@@ -368,11 +368,6 @@ $t-decalageDuCentre: 2%;
     background-color: transparentize( #fff, .4);
     border-left: 1px solid $c-gris_clair;
     height: 100%;
-
-    input {
-      margin-top:   $t-margin;
-      width: 100%;
-    }
   }
 
   // pas d'image, pas de slider
@@ -535,6 +530,8 @@ $t-decalageDuCentre: 2%;
       margin: 0 auto;
 
       z-index: 0;
+      object-fit: scale-down;
+
     }
 
     .currentStreamResolution {

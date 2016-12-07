@@ -80,7 +80,7 @@ html
               .videoContainer.js--videoContainer
                 //- display last stopmotion image (if needed)
                 img.captureLeft-lastStopmotionImage.js--lastStopmotionImage(src)
-                video.videoFeed.js--videoFeed(autoplay)
+                video.videoFeed.js--videoFeed(autoplay muted)
                 .currentStreamResolution.txt-small_info.txt-mono.js--currentStreamResolution
               //- display audio vizualizer
               canvas(id="canvas-audio" width="720" height="360")
@@ -96,13 +96,18 @@ html
                     button(id='stop-record-btn' class="btn icon" disabled)
                       include ../client/images/i_stop.svg
                   span#elasped-time
+                  .slider--captureModesOptions
+                    input.js--enableAudioInVideo(type="checkbox" checked id="enableAudioInVideo")
+                    label.checkbox--enableAudioInVideo(for="enableAudioInVideo")
+                      | !{dodoc.lang.enableAudioInVideo}
                 .stopmotion-capture
                   button#start-sm-btn.btn.icon
                     include ../client/images/i_record.svg
                   button#capture-sm-btn.btn.icon
                     include ../client/images/i_record.svg
-                  label#lastImageOpacity.slider--lastImageOpacity
-                    | !{dodoc.lang.lastImageOpacity}
+                  .slider--captureModesOptions
+                    label.slider--lastImageOpacity(for="lastImageOpacity")
+                      | !{dodoc.lang.lastImageOpacity}
                     input.js--lastImageOpacity(type="range" value="0" min="0" max="1" step="0.1" id="lastImageOpacity")
 
                 .audio-capture
