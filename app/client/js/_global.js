@@ -150,13 +150,12 @@ function listMedia( mediaData) {
 // fonction qui réunit les fonctionnalités d'un média (que ce soit une vidéo, une image, un son, etc.
 // pas de fichier .js sur la page publi, ne s'applique pas
 function mediaInit( $m) {
-  if( $('body').hasClass('publi')) return;
+  if( $('body').hasClass('publi') || Modernizr.touch) return;
 
   var $v = $m.find('video');
   $m.hover(function() {
     if( $v.length > 0 && $v.get(0).paused) {
       $v
-        .attr('loop', true)
         .removeAttr('controls')
         .get(0)
           .play()
@@ -165,7 +164,6 @@ function mediaInit( $m) {
   }, function() {
     if( $v.length > 0 && !$v.get(0).paused) {
       $v
-        .removeAttr('loop')
         .attr('controls', true)
         .get(0)
           .pause()

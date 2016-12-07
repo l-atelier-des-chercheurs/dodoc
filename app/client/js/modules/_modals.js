@@ -102,7 +102,10 @@ var modals = (function() {
 
 
       $modal.foundation('reveal', 'open');
-      setTimeout(function() { $modal.find('[autofocus]').eq(0).focus() }, 300);
+      setTimeout(function() {
+        if(!Modernizr.touch)
+          $modal.find('[autofocus]').eq(0).focus()
+      }, 300);
 
     },
 
