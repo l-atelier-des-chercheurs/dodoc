@@ -25,6 +25,9 @@ socket.on('publiMediasUpdated', onPubliMediasUpdated);
 socket.on('pdfIsGenerated', onPdfIsGenerated);
 socket.on('noConnection', onNoConnection);
 socket.on('webConnectionFound', onWebConnection);
+socket.on('pubiTransferred', onPubiTransferred);
+socket.on('cannotConnectFtp', onCannotConnectFtp);
+
 
 
 jQuery(document).ready(function($) {
@@ -112,7 +115,7 @@ function uploadPubliToFTP(publiTemplate){
       .replaceAll('/'+currentFolder+'/'+currentProject+'/05-textes', 'medias');
 
     var cssFile = '<link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./template.css">';
-    var head = '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="apple-mobile-web-app-capable" content="yes"><title>Publication | '+currentPubli+'</title>'+cssFile+'</head>';
+    var head = '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta charset="utf-8"><meta name="apple-mobile-web-app-capable" content="yes"><title>Publication | '+currentPubli+'</title>'+cssFile+'</head>';
     var body = '<body class="publi"><div class="publi_container">';
     var footer = '</div><script src="../jquery.min.js"></script><script src="./script.js"></script></body></html>'
 
@@ -131,12 +134,46 @@ function onNoConnection(path){
   });
 }
 
-function onWebConnection(){
+function onWebConnection(webPubliFolderPath, arrayImages, date){
+  console.log('web connect');
   $('body').removeClass('generating');
+  // fill the form with previous settings
+  if(store.getAll().ftp != undefined){
+    $('input.host').val(store.getAll().ftp.host);
+    $('input.port').val(store.getAll().ftp.port);
+    $('input.user').val(store.getAll().ftp.user);
+    $('input.pass').val(store.getAll().ftp.pass);
+    $('input.url').val(store.getAll().ftp.domain);
+    $('input.folder').val(store.getAll().ftp.dossierFtp);
+  }
+  
   $('#modal-connexion').foundation('reveal', 'open');
+  
   $('body').on('click', '.js--submit-ftp-settings', function(){
-    // var newFolderName = $('input.new-folder').val();
-    // socket.emit( 'newFolder', { "name" : newFolderName });
+    var host = $('input.host').val();
+    var port = $('input.port').val();
+    var user = $('input.user').val();
+    var pass = $('input.pass').val();
+    var url = $('input.url').val();
+    var dossierFtp = $('input.folder').val();
+    store.set('ftp', { 'host': host, 'port': port, 'user': user, 'pass': pass, 'domain': url, 'dossierFtp': dossierFtp});
+    socket.emit('ftpSettings', {'host': host, 'port': port, 'user': user, 'pass': pass, 'domain': url, 'dossierFtp': dossierFtp, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli, 'webPubliFolderPath': webPubliFolderPath, "images": arrayImages, "currentDate": date});
+    $('#modal-connexion').foundation('reveal', 'close');
+    $('body').addClass('generating');
+  });
+}
+
+function onPubiTransferred(){
+  console.log('publi transferred');
+  $('body').removeClass('generating');
+  location.reload();
+}
+
+function onCannotConnectFtp(){
+  $('body').removeClass('generating');
+  $('#modal-bad-ftp').foundation('reveal', 'open');
+  $(document).on('close.fndtn.reveal', '#modal-bad-ftp[data-reveal]', function () {
+    $('#modal-connexion').foundation('reveal', 'open');
   });
 }
 

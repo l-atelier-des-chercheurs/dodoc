@@ -59,6 +59,7 @@ module.exports = function(app, io){
 		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 
     socket.on( 'exportPubliToFtp', function (data){ onExportPubliToFtp( socket, data); });
+    socket.on( 'ftpSettings', function (data){ onFtpSettings( socket, data); });
     socket.on( 'generatePDF', function (data){ onGeneratePDF( socket, data, io); });
 	});
 
@@ -419,6 +420,11 @@ module.exports = function(app, io){
   function onExportPubliToFtp(socket, publiData) {
     exportPubliToFtp.exportPubliToFtp( socket, publiData);
   }
+
+  function onFtpSettings(socket, data) {
+    exportPubliToFtp.sendFileToServer( socket, data);
+  }
+  
 
   function onGeneratePDF(socket, data, io) {
     fs.writeFile('app/index.html', data.html, function(err) {
