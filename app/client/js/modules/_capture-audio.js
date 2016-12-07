@@ -234,12 +234,8 @@ var equalizer = (function() {
 
       ctx.fillStyle = sarahCouleur;
       ctx.fillRect(column,y_lo, 1, y_hi - y_lo);
-
       // loop around the canvas when we reach the end
       column += 1;
-
-      console.log( 'equalizer is running');
-
       if(column >= canvasWidth) {
           column = 0;
           clearCanvas();

@@ -85,7 +85,7 @@ var dodocFolder = (function() {
         }
 
       }, function(error) {
-        dev.error("Failed to list all folders to create a folder! Error: ", error);
+        dev.error("Failed to list all folders to create a folder! Error: " + error);
         reject();
       });
 

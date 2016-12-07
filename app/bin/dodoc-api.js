@@ -20,7 +20,7 @@ var dodocAPI = (function() {
     eventAndContent     : function(sendEvent, objectJson) { return eventAndContent(sendEvent, objectJson); },
     sendEventWithContent: function(sendEvent, objectContent, io, socket) { return sendEventWithContent(sendEvent, objectContent, io, socket); },
     decodeBase64Image   : function(dataString) { return decodeBase64Image(dataString); },
-    writeVideoToDisk    : function(pathToFile, fileExtension, dataURL) { return writeVideoToDisk(pathToFile, fileExtension, dataURL); },
+    writeMediaDataToDisk    : function(pathToFile, fileExtension, dataURL) { return writeMediaDataToDisk(pathToFile, fileExtension, dataURL); },
     listAllTemplates    : function() { return listAllTemplates(); },
   };
 
@@ -130,17 +130,20 @@ var dodocAPI = (function() {
     return response;
   }
 
-  function writeVideoToDisk(pathToFile, fileExtension, dataURL) {
+  function writeMediaDataToDisk(pathToFile, fileExtension, dataURL) {
     return new Promise(function(resolve, reject) {
-
+      if(dataURL === undefined) {
+        dev.log('No media data content gotten for '+pathToFile+fileExtension);
+        reject('No media sent');
+      }
       dataURL = dataURL.split(',').pop();
       dev.logverbose( 'Will save the video at path : ' + pathToFile + fileExtension);
 
       var fileBuffer = new Buffer(dataURL, 'base64');
-        fs.writeFile( pathToFile + fileExtension, fileBuffer, function(err) {
-          if (err) reject( err);
-          resolve();
-        });
+      fs.writeFile( pathToFile + fileExtension, fileBuffer, function(err) {
+        if (err) reject( err);
+        resolve();
+      });
     });
   }
 

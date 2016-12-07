@@ -52,6 +52,7 @@ function createWindow () {
     win = new BrowserWindow({
       width: 1180,
       height: 700,
+      backgroundColor: '#EBEBEB',
       webPreferences: {
         allowDisplayingInsecureContent: true,
         allowRunningInsecureContent: true,

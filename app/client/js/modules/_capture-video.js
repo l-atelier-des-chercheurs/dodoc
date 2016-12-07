@@ -102,11 +102,12 @@ var videoMode = (function() {
     isRecording = false;
     $(".recording-feedback").remove();
 
-    currentStream.stopRecordCameraFeed().then(function( videoDataURL) {
-      var mediaData =
-      {
+    currentStream.stopRecordCameraFeed().then(function(videoDataURL) {
+      var mediaData = {
         "mediaType" : "video",
-        "mediaData" : videoDataURL
+        "mediaData" : {
+          "videoData" : videoDataURL,
+        }
       };
       // send instruction to record video
       sendData.createNewMedia( mediaData);

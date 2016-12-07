@@ -52,11 +52,11 @@ var dodocPubli = (function() {
           folderPubliMeta[slugPubliName] = publiContent;
           resolve( folderPubliMeta);
         }, function(error) {
-          dev.error("Failed to filter medias for a publi! Error: ", error);
+          dev.error("Failed to filter medias for a publi! Error: " + error);
           reject( 'fail');
         });
       }, function(error) {
-        dev.error("Failed to list one media! Error: ", error);
+        dev.error("Failed to list one media! Error: " + error);
         reject( 'fail');
       });
     });

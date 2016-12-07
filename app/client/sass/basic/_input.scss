@@ -35,6 +35,16 @@ input:required {
   &.is--empty {
     border-color: $c-rouge;
   }
+
+  + label {
+    background-image: radial-gradient(#fff 20%, transparent 25%);
+    background-size: 16px 16px;
+    background-position: top right;
+    background-repeat: no-repeat;
+  }
+  &.is--empty + label {
+
+  }
 }
 
 

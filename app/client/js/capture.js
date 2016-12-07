@@ -338,7 +338,7 @@ var currentStream = (function(context) {
       invisibleCtx.drawImage( videoElement, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
       var imageData = invisibleCanvas.toDataURL('image/png');
       if(imageData === "data:,")
-        reject('Video feed not yet available');
+        reject(dodoc.videoStreamNotAvailable);
       resolve(imageData);
     });
   }

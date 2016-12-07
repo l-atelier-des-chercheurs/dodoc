@@ -111,25 +111,25 @@ var dodocMedia = (function() {
           makeImageFromData(imageBuffer.data, pathToFile)
           .then(function(imagePath) {
             var thumbPath = pathToFile + '-' + dodoc.thumbSuffix + '.jpeg';
-            _makeImageThumb(imagePath, thumbPath)
-            .then(function(err) {
-              if( err) { dev.error('--> Failed to make a thumbnail for a photo! Error: ', err); }
-              _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
-                mdata.slugFolderName = slugFolderName;
-                mdata['slugProjectName'] = slugProjectName;
-                mdata['mediaFolderPath'] = mediaFolder;
-                console.log('Just created a photo, its meta is ' + JSON.stringify( mdata, null, 4));
-                resolve( mdata);
-              }, function(error) {
-                dev.error('Failed to create meta for photo! Error: ', error);
-                reject( 'failed to create meta for photo');
-              });
-            });
+            return _makeImageThumb(imagePath, thumbPath);
           }, function(error) {
-            dev.error("Failed to save image! Error: ", error);
+            dev.error("Failed to save image! Error: " + error);
             reject();
+          })
+          .then(function(err) {
+            if( err) { dev.error('--> Failed to make a thumbnail for a photo! Error: ', err); }
+            return _createMediaMeta( newMediaType, pathToFile, newFileName);
+          })
+          .then( function( mdata) {
+            mdata.slugFolderName = slugFolderName;
+            mdata['slugProjectName'] = slugProjectName;
+            mdata['mediaFolderPath'] = mediaFolder;
+            console.log('Just created a photo, its meta is ' + JSON.stringify( mdata, null, 4));
+            resolve(mdata);
+          }, function(error) {
+            dev.error('Failed to create meta for photo! Error: ' + error);
+            reject( 'failed to create meta for photo');
           });
-
 
           break;
         case 'video':
@@ -138,30 +138,53 @@ var dodocMedia = (function() {
           newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath);
           pathToFile = path.join( mediaPath, newFileName);
 
-          fileExtension = dodoc.videoext;
-
-          dodocAPI.writeVideoToDisk( pathToFile, fileExtension, newMediaData.mediaData)
+          dodocAPI.writeMediaDataToDisk( pathToFile, dodoc.videoext, newMediaData.mediaData.videoData)
+/*
           .then(function() {
-            dev.error("Saved a video.");
-            _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
-              mdata.slugFolderName = slugFolderName;
-              mdata.slugProjectName = slugProjectName;
-              mdata.mediaFolderPath = mediaFolder;
+            return dodocAPI.writeMediaDataToDisk( pathToFile, dodoc.audioext, newMediaData.mediaData.audioData)
+          }, function(error) { reject('Failed to save video: ' + error); })
+*/
+          .then(function() {
+            return _createMediaMeta(newMediaType, pathToFile, newFileName)
+          }, function(error) { reject('Failed to save audio: ' + error); })
+          .then( function(mdata) {
+            mdata.slugFolderName = slugFolderName;
+            mdata.slugProjectName = slugProjectName;
+            mdata.mediaFolderPath = mediaFolder;
 
-              createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
-                resolve( mdata);
-              }, function(error) {
-                dev.error('--> Failed to make a thumbnail for a video! Error: ', error);
-                resolve( mdata);
-              });
-            }, function() {
-              reject( 'failed to create meta for video');
+            createThumbnails(pathToFile + dodoc.videoext, newFileName, mediaPath)
+            .then(function(mediaFolderContent) {
+
+              if(newMediaData.mediaData.audioData === undefined) {
+                resolve(mdata);
+              }
+
+/*
+              var audioFile = pathToFile + dodoc.audioext;
+              var videoFile = pathToFile + dodoc.videoext;
+
+              var proc = new ffmpeg()
+                .addOptions(['-vb 8000k', '-i '+audioFile, '-itsoffset -00:00:01', '-i '+videoFile, '-map 0:0', '-map 1:0'])
+// var command = "ffmpeg -i " + audioFile + " -itsoffset -00:00:01 -i " + videoFile + " -map 0:0 -map 1:0 " + mergedFile;
+                // setup event handlers
+                .on('end', function() {
+                  dev.log('Successful merge of video+audio track.');
+                  resolve(mdata);
+                })
+                .on('error', function(err) {
+                  console.log('an error happened: ' + err.message);
+                  resolve('couldn\'t create a video animation');
+                })
+                // save to file
+                .save( pathToFile + '_merged' + dodoc.videoext);
+*/
+
+            }, function(error) {
+              dev.error('--> Failed to make a thumbnail for a video! Error: ' + error);
+              resolve(mdata);
             });
 
-          }, function(error) {
-            dev.error("Failed to save video! Error: ", error);
-            reject();
-          });
+          }, function(error) { reject('Failed to make video meta: ' + error); })
 
           break;
         case 'animation':
@@ -193,7 +216,7 @@ var dodocMedia = (function() {
                 createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
                   resolve( mdata);
                 }, function(error) {
-                  dev.error("Failed to make a thumbnail for a stopmotion! Error: ", error);
+                  dev.error("Failed to make a thumbnail for a stopmotion! Error: " + error);
                   resolve( mdata);
                 });
               }, function() {
@@ -213,22 +236,24 @@ var dodocMedia = (function() {
           newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath, dodoc.metaFileext);
           pathToFile = path.join( mediaPath, newFileName);
 
-          fileExtension = '.wav';
-          var dataMedia = newMediaData.mediaData.split(',').pop();
-          var audioBuffer = new Buffer( dataMedia, 'base64');
-          fs.writeFileSync( pathToFile + fileExtension, audioBuffer);
+          dodocAPI.writeMediaDataToDisk( pathToFile, dodoc.audioext, newMediaData.mediaData)
+          .then(function() {
+            var imgExtension = '.png';
+            var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.audioScreenshot);
+            fs.writeFileSync( pathToFile + imgExtension, imageBuffer.data);
 
-          var imgExtension = '.png';
-          var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.audioScreenshot);
-          fs.writeFileSync( pathToFile + imgExtension, imageBuffer.data);
+            _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
+              mdata.slugFolderName = slugFolderName;
+              mdata.slugProjectName = slugProjectName;
+              mdata.mediaFolderPath = mediaFolder;
+              resolve( mdata);
+            }, function() {
+              reject( 'failed to create meta for audio');
+            });
 
-          _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
-            mdata.slugFolderName = slugFolderName;
-            mdata.slugProjectName = slugProjectName;
-            mdata.mediaFolderPath = mediaFolder;
-            resolve( mdata);
-          }, function() {
-            reject( 'failed to create meta for audio');
+          }, function(error) {
+            dev.error("Failed to save audio! Error: " + error);
+            reject();
           });
 
           break;

@@ -543,7 +543,7 @@ var modals = (function() {
     	});
 
     $m.find('.js--valider').on('click',function(){
-      if(_isAnyRequiredInputFieldEmpty($m)) return;
+      if(_checkAndHighlightEmptyRequiredFields($m)) return;
       	var fileName = $filePicker.data( 'fileName');
       	var fileData = $filePicker.data( 'fileData');
       	//Images changed

@@ -71,8 +71,7 @@ function init(){
 		var $thisMedia = $(this).closest(".media");
 		var medianame = $thisMedia.attr("data-medianame");
 		var mediaFolderPath = $thisMedia.attr("data-mediatype");
-    var editMediaData =
-    {
+    var editMediaData = {
       "mediaName" : medianame,
       "mediaFolderPath" : mediaFolderPath,
       "switchFav" : true

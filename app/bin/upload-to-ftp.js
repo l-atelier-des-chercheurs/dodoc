@@ -73,7 +73,7 @@ var exportPubliToFtp = module.exports = {
       //   }
       // });
     }, function(error) {
-      dev.error("Failed to list one media! Error: ", error);
+      dev.error("Failed to list one media! Error: " + error);
     });
   },
 

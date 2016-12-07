@@ -159,6 +159,7 @@ var settings = {
   "metaFileext" : ".txt",
   "videoext" : ".webm",
   "stopMotionext" : ".webm",
+  "audioext" : ".wav",
   "folderMetafilename" : "dossier",
   "projectMetafilename" : "projet",
 
