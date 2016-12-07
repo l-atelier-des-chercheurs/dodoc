@@ -9,13 +9,13 @@ var exportPubliToFtp = (function() {
 
   const API = {
     exportPubliToFtp     : function(socket, d) { return exportPubliToFtp(socket, d); },
-    createFolders        : function() { return createFolders(); },
+    createFolders        : function(socket, d) { return createFolders(socket, d); },
   };
 
   function exportPubliToFtp(socket, d){
     dev.logfunction( "EVENT - exportPubliToFtp");
 
-    createFolders(d);
+    createFolders(socket, d);
 
 
     // var currentDateString = dodocAPI.getCurrentDate();
@@ -47,7 +47,7 @@ var exportPubliToFtp = (function() {
     // });
   }
 
-  function createFolders(d){
+  function createFolders(socket, d){
     var folderName = d.slugFolderName;
     var projectName = d.slugProjectName;
     var publiName = d.slugPubliName;
@@ -78,7 +78,11 @@ var exportPubliToFtp = (function() {
               copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate, 'style.css'), path.join(webPubliFolderPath, 'template.css'));
               fs.writeFile(path.join(webPubliFolderPath, "index.html"), d.html);
               createExportPubliFolder(webMediasFolderName, webPubliFolderPath).then(function(webMediasFolderPath){
-                saveImagesLocal(webMediasFolderPath, d.slugFolderName, d.slugProjectName, d.slugPubliName);
+                saveImagesLocal(webMediasFolderPath, d.slugFolderName, d.slugProjectName, d.slugPubliName).then(function(){
+                  checkInternetConnection(webPubliFolderPath, socket).then(function(){
+                    // sendFileToServer(arrayImages, folderPath, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket);
+                  });
+                });
               });
             });
           });
@@ -91,114 +95,108 @@ var exportPubliToFtp = (function() {
 
   function saveImagesLocal(webMediasFolderPath, slugFolderName, slugProjectName, slugPubliName){
     var arrayImages = [];
-    dodocPubli.listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function(publi) {
-      for (var prop in publi) {
-        var medias = publi[prop].medias;
-        for(var index in medias){
-          var media = medias[index];
-          for(var fichiers in media){
-            var eachFiles = media[fichiers].files;
-            var mediaFolder = media[fichiers].mediaFolderPath;
-            for(var fileToCopy in eachFiles){
-              var fileName = eachFiles[fileToCopy];
-              var oldPath = path.join( dodocAPI.getProjectPath(slugFolderName, slugProjectName), mediaFolder, fileName);
-              var newPath = path.join( webMediasFolderPath, fileName);
-              arrayImages.push(fileName);
-              try {
-                fs.copySync(oldPath, newPath);
-                console.log("success!");
-              } catch (err) {
-                console.log.error(err)
+    return new Promise(function(resolve, reject) {
+      dev.logfunction( "UploadToFTP — saveImagesLocal");
+      dodocPubli.listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function(publi) {
+        for (var prop in publi) {
+          var medias = publi[prop].medias;
+          for(var index in medias){
+            var media = medias[index];
+            for(var fichiers in media){
+              var eachFiles = media[fichiers].files;
+              var mediaFolder = media[fichiers].mediaFolderPath;
+              for(var fileToCopy in eachFiles){
+                var fileName = eachFiles[fileToCopy];
+                var oldPath = path.join( dodocAPI.getProjectPath(slugFolderName, slugProjectName), mediaFolder, fileName);
+                var newPath = path.join( webMediasFolderPath, fileName);
+                arrayImages.push(fileName);
+                try {
+                  fs.copySync(oldPath, newPath);
+                  resolve();
+                  console.log("success!");
+                } catch (err) {
+                  console.log.error(err);
+                  reject();
+                }
               }
             }
+
           }
-
         }
-        // for(var index in medias){
-        //   var media = medias[index];
-        //   for(var fichiers in media){
-        //     var eachFiles = media[fichiers].files;
-        //     var mediaFolder = media[fichiers].mediaFolderPath;
-        //     for(var fileToCopy in eachFiles){
-
-        //       var fileName = eachFiles[fileToCopy];
-        //       var oldPath = path.join( dodocAPI.getProjectPath, mediaFolder, fileName);
-        //       var newPath = path.join( webMediasFolderPath, fileName);
-        //       console.log('oooollld', oldPath, 'neeeew', newPath )
-        //       arrayImages.push(fileName);
-        //       try {
-        //         fs.copySync(oldPath, newPath);
-        //         console.log("success!");
-        //       } catch (err) {
-        //         console.log.error(err)
-        //       }
-        //     }
-        //   }
-        // }
-      }
-      // check internet connection
-      // require('dns').resolve('www.google.com', function(err) {
-      //   if (err) {
-      //     console.log("No connection");
-      //     socket.emit('noConnection');
-      //   } else {
-      //     sendFileToServer(arrayImages, folderPath, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket);
-      //   }
-      // });
-    }, function(error) {
-      console.log("Failed to list one media! Error: ", error);
+      }, function(error) {
+        console.log("Failed to list one media! Error: ", error);
+        reject();
+      });
     });
   };
 
+  function checkInternetConnection(webPubliFolderPath, socket){
+    // check internet connection
+    return new Promise(function(resolve, reject) {
+      dev.logfunction( "UploadToFTP — checkInternetConnection");
+      require('dns').resolve('www.google.com', function(err) {
+        console.log('DNS - ' + err);
+        if(err) {
+          console.log("No connection");
+          socket.emit('noConnection', webPubliFolderPath);
+          reject();
+        }else{
+          console.log("you are connected to internet you can send your file!");
+          socket.emit('webConnectionFound');
+          resolve();
+        }
+      });
+    });
+  }
 
-  // sendFileToServer : function(arrayImages, folderPath, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket){
-  //   // config ftp in ftp-config.js
-  //   if(exportConfig !== undefined) {
-  //     var domain = exportConfig.domaineName;
-  //     var domainFolder = exportConfig.subFolder
-  //     // instance for FTP Client
-  //     var c = new Client();
+  function sendFileToServer(arrayImages, folderPath, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket){
+    // config ftp in ftp-config.js
+    if(exportConfig !== undefined) {
+      var domain = exportConfig.domaineName;
+      var domainFolder = exportConfig.subFolder
+      // instance for FTP Client
+      var c = new Client();
 
-  //     c.on('ready', function() {
-  //       c.mkdir( path.join( domainFolder, slugPubliName), function(err) {
-  //         if (err) console.log(slugPubliName+ ' not transferred:' + err);
-  //         else {
-  //           console.log("Folder create on server transferred successfully!");
-  //         }
-  //         c.put(folderPath + '/index.html', domainFolder+'/'+ slugPubliName+'/index.html', function(err) {
-  //           if (err) console.log('not transferred:' + err);
-  //           else console.log("HTML File transferred successfully!");
-  //         });
-  //         c.put(folderPath + '/style.css', domainFolder+'/'+ slugPubliName+'/style.css', function(err) {
-  //           if (err) console.log('not transferred:' + err);
-  //           else console.log("CSS File transferred successfully!");
-  //         });
-  //         c.put(folderPath + '/script.min.js', domainFolder+'/'+ slugPubliName+'/script.min.js', function(err) {
-  //           if (err) console.log('not transferred:' + err);
-  //           else console.log("JS File transferred successfully!");
-  //         });
+      c.on('ready', function() {
+        c.mkdir( path.join( domainFolder, slugPubliName), function(err) {
+          if (err) console.log(slugPubliName+ ' not transferred:' + err);
+          else {
+            console.log("Folder create on server transferred successfully!");
+          }
+          c.put(folderPath + '/index.html', domainFolder+'/'+ slugPubliName+'/index.html', function(err) {
+            if (err) console.log('not transferred:' + err);
+            else console.log("HTML File transferred successfully!");
+          });
+          c.put(folderPath + '/style.css', domainFolder+'/'+ slugPubliName+'/style.css', function(err) {
+            if (err) console.log('not transferred:' + err);
+            else console.log("CSS File transferred successfully!");
+          });
+          c.put(folderPath + '/script.min.js', domainFolder+'/'+ slugPubliName+'/script.min.js', function(err) {
+            if (err) console.log('not transferred:' + err);
+            else console.log("JS File transferred successfully!");
+          });
 
-  //         c.mkdir(domainFolder+'/'+ slugPubliName+'/medias', function(err) {
-  //           if (err) console.log('medias: not transferred:' + err);
-  //           else console.log("File transferred successfully!");
-  //           exportPubliToFtp.sendImageToServer(arrayImages, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, c, domainFolder, domain, socket);
-  //         });
-  //       });
-  //     });
+          c.mkdir(domainFolder+'/'+ slugPubliName+'/medias', function(err) {
+            if (err) console.log('medias: not transferred:' + err);
+            else console.log("File transferred successfully!");
+            exportPubliToFtp.sendImageToServer(arrayImages, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, c, domainFolder, domain, socket);
+          });
+        });
+      });
 
 
-  //     c.connect({
-  //       host: exportConfig.host,
-  //       port: exportConfig.port,
-  //       user: exportConfig.user,
-  //       password: exportConfig.password
-  //     });
-  //     console.log("Connected");
+      c.connect({
+        host: exportConfig.host,
+        port: exportConfig.port,
+        user: exportConfig.user,
+        password: exportConfig.password
+      });
+      console.log("Connected");
 
-  //   } else {
-  //     dev.error("Couldn't find a ftp-config.js with FTP information to use.");
-  //   }
-  // },
+    } else {
+      dev.error("Couldn't find a ftp-config.js with FTP information to use.");
+    }
+  }
 
   // sendImageToServer : function(arrayImages, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, c, domainFolder, domain, socket) {
   //   for(var fileName in arrayImages){
@@ -212,7 +210,7 @@ var exportPubliToFtp = (function() {
   //   console.log("Publication was transferred at: "+domain+domainFolder+'/'+slugPubliName);
   //   socket.emit('pubiTransferred', domain+domainFolder+'/'+slugPubliName);
   //   c.end();
-  // },
+  // }
 
 
   function copyFiles(sourceFile, destFile){

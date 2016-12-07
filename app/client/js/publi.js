@@ -23,6 +23,9 @@ socket.on('publiMetaUpdated', onPubliMetaUpdated);
 socket.on('publiMediasUpdated', onPubliMediasUpdated);
 
 socket.on('pdfIsGenerated', onPdfIsGenerated);
+socket.on('noConnection', onNoConnection);
+socket.on('webConnectionFound', onWebConnection);
+
 
 jQuery(document).ready(function($) {
   init();
@@ -115,7 +118,25 @@ function uploadPubliToFTP(publiTemplate){
 
     var html = head +body + publiClean + footer;
     socket.emit('exportPubliToFtp', {"html": html, "currentTemplate": publiTemplate, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
+    $('body').addClass('generating');
+  });
+}
 
+function onNoConnection(path){
+  $('body').removeClass('generating');
+  $('#modal-no-connexion .path').html(path);
+  $('#modal-no-connexion').foundation('reveal', 'open');
+  $(document).on('close.fndtn.reveal', '#modal-no-connexion[data-reveal]', function () {
+    location.reload();
+  });
+}
+
+function onWebConnection(){
+  $('body').removeClass('generating');
+  $('#modal-connexion').foundation('reveal', 'open');
+  $('body').on('click', '.js--submit-ftp-settings', function(){
+    // var newFolderName = $('input.new-folder').val();
+    // socket.emit( 'newFolder', { "name" : newFolderName });
   });
 }
 

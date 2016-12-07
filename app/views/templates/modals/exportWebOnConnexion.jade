@@ -1,0 +1,11 @@
+div(id="modal-connexion" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+  h2.popoverTitle Envoyer les fichiers vers un serveur
+  form(onsubmit='return false;' class='ftp-settings-form lead')
+    input(type='text' class='host' placeholder='Host')
+    input(type='text' class='port' placeholder='Port' default=21)
+    input(type='text' class='user' placeholder='User')
+    input(type='password' class='pass' placeholder='Password')
+    input(type='url' class='url' placeholder='Url du site')
+    input(type='text' class='folder' placeholder='Dossier')
+    input(type='submit' class='submit-ftp-settings js--submit-ftp-settings' value='Valider')
+  a(class="close-reveal-modal" aria-label="Close") &#215;

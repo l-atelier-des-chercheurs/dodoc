@@ -99,7 +99,7 @@ mixin button(typeOfButton, navOrButton, style)
       span !{dodoc.lang.accept}
 
   if( typeOfButton === 'uploadPubliToFtp')
-    a(href="#" title="Dodoc upload publi" class='button-wrapper_upload js--uploadPubliToFtp #{defaultClasses}')
+    button(title="Dodoc upload publi" class='button-wrapper_upload js--uploadPubliToFtp #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_enregistre.svg
       span !{dodoc.lang.uploadPubliToFtp}
