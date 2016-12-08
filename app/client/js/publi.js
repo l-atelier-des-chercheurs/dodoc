@@ -29,46 +29,6 @@ socket.on('pubiTransferred', onPubiTransferred);
 socket.on('cannotConnectFtp', onCannotConnectFtp);
 
 
-
-jQuery(document).ready(function($) {
-  init();
-});
-
-function init(){
-
-  //Generate pdf
-  $('.js--generatePDF').on('click', function(){
-    var currentUrl = window.location.href;
-    var htmlNoScript =
-    $('html')
-    .find('script').remove()
-    .end()
-    .find('.js--generatePDF').remove()
-    .end()
-    .find('.js--uploadPubliToFtp').remove()
-    .end()
-    .find('.js--editPubli').remove()
-    .end()
-    .find('.button-wrapper').remove();
-
-    var html = $('html').html();
-    socket.emit('generatePDF', {html: html, url: currentUrl ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
-    // animation on wait
-    $('body').addClass('generating');
-  });
-
-}
-
-function onPdfIsGenerated(file){
-  $('body').removeClass('generating');
-  $('#modal-confirm-pdf .pdfPath').html(file);
-  $('#modal-confirm-pdf').foundation('reveal', 'open');
-  $(document).on('close.fndtn.reveal', '#modal-confirm-pdf[data-reveal]', function () {
-    location.reload();
-  });
-
-}
-
 function onListOnePubliMetaAndMedias( psdata) {
   console.log( "onListOnePubliMetaAndMedias");
   $.each( psdata, function( slugPubliName, pdata) {
@@ -91,6 +51,23 @@ function onPubliMediasUpdated( psdata) {
   console.log( "onPubliMediasUpdated");
   // update medias of montage if necessary
   updateMontagePubliMedias( psdata);
+}
+
+
+
+
+
+
+
+
+
+function onPdfIsGenerated(file){
+  $('body').removeClass('generating');
+  $('#modal-confirm-pdf .pdfPath').html(file);
+  $('#modal-confirm-pdf').foundation('reveal', 'open');
+  $(document).on('close.fndtn.reveal', '#modal-confirm-pdf[data-reveal]', function () {
+    location.reload();
+  });
 }
 
 function uploadPubliToFTP(publiTemplate){

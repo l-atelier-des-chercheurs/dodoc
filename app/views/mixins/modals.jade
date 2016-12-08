@@ -154,7 +154,8 @@ mixin modals(typeOfModal)
         +button('moveContentFolder', '', '')
 
 
-  if( typeOfModal === 'confirmPDF') //- modal-confirm-pdf
+  if( typeOfModal === 'confirmPDF')
+    //- modal-confirm-pdf
     //////////////////////////////////////////////   CONFIRM PDF  //////////////////////////////////
     .m_modal-content
       +button( 'close', '', 'isCollapsed')
@@ -162,7 +163,8 @@ mixin modals(typeOfModal)
         | !{dodoc.lang.modal.pdfPublicationHasBeenSaved}
       p.pdfPath
 
-  if( typeOfModal === 'exportWebBadFTP') //- modal-bad-ftp
+  if( typeOfModal === 'exportWebBadFTP')
+    //- modal-bad-ftp
     //////////////////////////////////////////////   BAD PDF  //////////////////////////////////
     .m_modal-content
       +button( 'close', '', 'isCollapsed')
@@ -171,7 +173,8 @@ mixin modals(typeOfModal)
       p
         | !{dodoc.lang.modal.loginOrPassIsWrong}
 
-  if( typeOfModal === 'exportWebNoConnexion') //- modal-no-connexion
+  if( typeOfModal === 'exportWebNoConnexion')
+    //- modal-no-connexion
     //////////////////////////////////////////////   NO CONNEXION  //////////////////////////////////
     .m_modal-content
       +button( 'close', '', 'isCollapsed')
@@ -183,7 +186,8 @@ mixin modals(typeOfModal)
         | !{dodoc.lang.modal.yourFilesHaveBeenSaved}
       p.path
 
-  if( typeOfModal === 'exportWebNoConnexion') //- modal-connexion
+  if( typeOfModal === 'exportWebNoConnexion')
+    //- modal-connexion
     //////////////////////////////////////////////   CONNEXION  //////////////////////////////////
     .m_modal-content
       +button( 'close', '', 'isCollapsed')
@@ -197,6 +201,3 @@ mixin modals(typeOfModal)
         input(type='url' class='url' placeholder='Url du site')
         input(type='text' class='folder' placeholder='Dossier')
         input(type='submit' class='submit-ftp-settings js--submit-ftp-settings' value='Valider')
-
-
-

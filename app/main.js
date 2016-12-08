@@ -10,7 +10,7 @@ var dodocProject = require('./bin/dodoc-project');
 var dodocMedia = require('./bin/dodoc-media');
 var dodocPubli = require('./bin/dodoc-publi');
 
-var exportPubliToFtp = require('./bin/upload-to-ftp.js');
+var uploadToFtp = require('./bin/upload-to-ftp.js');
 var exportPubliToPDF= require('./bin/export-to-pdf.js');
 
 try { var exportConfig  = require('./ftp-config.js'); }
@@ -432,19 +432,19 @@ module.exports = function(app, io){
   }
 
   function onExportPubliToFtp(socket, publiData) {
-    exportPubliToFtp.exportPubliToFtp( socket, publiData);
+    uploadToFtp.exportPubliToFtp( socket, publiData);
   }
 
   function onFtpSettings(socket, data) {
-    exportPubliToFtp.sendFileToServer( socket, data);
+    uploadToFtp.sendFileToServer( socket, data);
   }
-  
+
 
   function onGeneratePDF(socket, data, io) {
     fs.writeFile('app/index.html', data.html, function(err) {
       if (err) return( err);
       else{console.log('html print file has been writen')}
-    });    
+    });
     exportPubliToPDF.exportPubliToPDF( socket, data, io);
   }
 

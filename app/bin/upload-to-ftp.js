@@ -6,7 +6,7 @@ var dodoc  = require('../dodoc');
 var dodocAPI = require('./dodoc-api');
 var dodocPubli = require('./dodoc-publi');
 
-var exportPubliToFtp = (function() {
+var uploadToFtp = (function() {
 
   const API = {
     exportPubliToFtp     : function(socket, d) { return exportPubliToFtp(socket, d); },
@@ -23,7 +23,7 @@ var exportPubliToFtp = (function() {
     var webFolderName = "web";
     var webMediasFolderName = "medias";
     var currentDate = dodocAPI.getCurrentDate();
-    
+
     createExportPubliFolder(folderName, publicationsFolder).then(function(exportFolderPath){
       createExportPubliFolder(projectName,exportFolderPath).then(function(exportProjectPath){
         createExportPubliFolder(publiName, exportProjectPath).then(function(exportPubliPath){
@@ -44,54 +44,10 @@ var exportPubliToFtp = (function() {
         });
       });
     });
-<<<<<<< HEAD
-  },
-
-  saveImagesLocal : function(projectPath, folderPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket){
-    var arrayImages = [];
-    dodocPubli.listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function(publi) {
-      for (var prop in publi) {
-        var medias = publi[prop].medias;
-        for(var index in medias){
-          var media = medias[index];
-          for(var fichiers in media){
-            var eachFiles = media[fichiers].files;
-            var mediaFolder = media[fichiers].mediaFolderPath;
-            for(var fileToCopy in eachFiles){
-              var fileName = eachFiles[fileToCopy];
-              var oldPath = path.join( projectPath, mediaFolder, fileName);
-              var newPath = path.join( mediasPath, fileName);
-              arrayImages.push(fileName);
-              try {
-                fs.copySync(oldPath, newPath);
-                console.log("success!");
-              } catch (err) {
-                dev.error(err)
-              }
-            }
-          }
-        }
-      }
-      // check internet connection
-      // require('dns').resolve('www.google.com', function(err) {
-      //   if (err) {
-      //     console.log("No connection");
-      //     socket.emit('noConnection');
-      //   } else {
-      //     sendFileToServer(arrayImages, folderPath, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, socket);
-      //   }
-      // });
-    }, function(error) {
-      dev.error("Failed to list one media! Error: " + error);
-    });
-  },
-
-=======
   }
->>>>>>> export
 
   function sendFileToServer(socket, data){
-  
+
       var domain = data.domain;
       var domainFolder = data.dossierFtp
       var webPubliFolderPath = data.webPubliFolderPath
@@ -139,16 +95,16 @@ var exportPubliToFtp = (function() {
             console.log("Publication was transferred at: "+domain+'/'+domainFolder+'/'+data.slugPubliName);
             socket.emit('pubiTransferred');
             c.end();
-            
+
           });
-          
+
         });
       });
 
       c.on('error', function(err){
         console.log("can't connect to the server : "+ err);
         socket.emit('cannotConnectFtp');
-      }); 
+      });
 
       c.connect({
         host: data.host,
@@ -243,7 +199,7 @@ var exportPubliToFtp = (function() {
                 console.log("Copy files from " + sourceFile + " into " + destFile);
                 resolve(destFile);
               }
-            });   
+            });
           } else {
             console.log("No " + sourceFile + " file in this template");
           }
@@ -274,8 +230,8 @@ var exportPubliToFtp = (function() {
 
     });
   }
-  
+
   return API;
 })();
 
-module.exports = exportPubliToFtp;
+module.exports = uploadToFtp;
