@@ -106,10 +106,16 @@ mixin button(typeOfButton, navOrButton, style)
       span !{dodoc.lang.accept}
 
   if( typeOfButton === 'uploadPubliToFtp')
-    a(href="#" title="Dodoc upload publi" class='button-wrapper_upload js--uploadPubliToFtp #{defaultClasses}')
+    button(title="Dodoc upload publi" class='button-wrapper_upload js--uploadPubliToFtp #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_enregistre.svg
       span !{dodoc.lang.uploadPubliToFtp}
+
+  if( typeOfButton === 'generatePDF')
+    button(title="Dodoc pdf publi" class='button-wrapper_upload js--generatePDF #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_enregistre.svg
+      span !{dodoc.lang.generatePDF}
 
   if( typeOfButton === 'editPubli')
     a(href="#" title="Dodoc publi" class='button-wrapper_edit js--openModal_editPubli #{defaultClasses}')

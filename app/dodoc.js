@@ -28,6 +28,7 @@ if( lang === 'fr') {
       "edit" : "Modifier",
       "accept" : "Valider",
       "uploadPubliToFtp" : "Envoyer la publication vers un FTP",
+      "generatePDF" : "Exporter la publication en PDF",
 
       "lastMediasAdded" : "Derniers médias ajoutés",
       "listOfPublications" : "Liste des publications",
@@ -113,6 +114,13 @@ if( lang === 'fr') {
         "sureToRemoveFolder" : "Êtes-vous sûr de vouloir supprimer le dossier ?",
 
         "editProject" : "Modifier le projet",
+        "pdfPublicationHasBeenSaved" : "La publication a bien été sauvegardée en pdf&nbsp;:",
+        "impossibleToConnectToServer" : "Impossible de se connecter au serveur",
+        "loginOrPassIsWrong" : "Mauvais login ou mot de passe",
+        "noInternetConnection" : "Pas de connexion internet",
+        "noInternetCantSendPublicationOverFtp" : "Vous n'êtes pas connecté à internet, vous ne pouvez donc pas envoyer votre publication en FTP.",
+        "yourFilesHaveBeenSaved" : "Vos fichiers web ont été sauvegardé&nbsp;:",
+        "sendFilesToAServer" : "Envoyer les fichiers vers un serveur",
 
         "selectAnImage" : "Sélectionnez une image",
         "sureToRemoveProject" : "Êtes-vous sûr de vouloir supprimer le projet ?",
@@ -151,6 +159,7 @@ if( lang === 'fr') {
       "mediapublitemplatesarestoredint" : "Medias, publications and templates are currently stored in ",
       "toconnectwithanotherdevice" : "To connect with another device, use the following URL (and ignore the warning that’s shown):",
 
+      "generatePDF" : "Export the publication in FTP",
     }
   };
 }
