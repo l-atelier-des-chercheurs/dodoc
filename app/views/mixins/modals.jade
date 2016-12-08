@@ -146,7 +146,7 @@ mixin modals(typeOfModal)
         button.big-mediaNav-arrow.big-mediaNav-arrow_right.js--big-mediaNav-next
 
   if( typeOfModal === 'moveContentFolder')
-    //////////////////////////////////////////////   BIG MEDIA  //////////////////////////////////
+    //////////////////////////////////////////   MOVE CONTENT FOLDER  //////////////////////////////
     .m_modal-content
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
@@ -186,7 +186,7 @@ mixin modals(typeOfModal)
         | !{dodoc.lang.modal.yourFilesHaveBeenSaved}
       p.path
 
-  if( typeOfModal === 'exportWebNoConnexion')
+  if( typeOfModal === 'exportWebOnConnexion')
     //- modal-connexion
     //////////////////////////////////////////////   CONNEXION  //////////////////////////////////
     .m_modal-content
@@ -200,4 +200,4 @@ mixin modals(typeOfModal)
         input(type='password' class='pass' placeholder='Password')
         input(type='url' class='url' placeholder='Url du site')
         input(type='text' class='folder' placeholder='Dossier')
-        input(type='submit' class='submit-ftp-settings js--submit-ftp-settings' value='Valider')
+        +button('valider', '', 'isCollapsed')

@@ -74,7 +74,11 @@ var modals = (function() {
       } else if(typeOfModal === 'addText') {
         $modal = _initAddTextModal($modal);
       } else if(typeOfModal === 'addLocalMedia') {
-        $modal = _initAddLocalMedia($modal);
+        $modal = _initAddLocalMediaModal($modal);
+      } else if(typeOfModal === 'noConnection') {
+        $modal = _initNoConnexionModal($modal, d);
+      } else if(typeOfModal === 'exportWebOnConnexion') {
+        $modal = _initExportWebOnConnexionModal($modal, d);
       }
 
       $modal.on('click', function(e) {
@@ -108,7 +112,6 @@ var modals = (function() {
       }, 300);
 
     },
-
   }
 
   function _initAddFolderModal($m) {
@@ -517,7 +520,7 @@ var modals = (function() {
     return $m;
   }
 
-  function _initAddLocalMedia($m) {
+  function _initAddLocalMediaModal($m) {
     	var $filePicker = $m.find('.js--modal_inputfile');
     	var $label = $filePicker.next().find('span');
     	var labelVal = $label.text();
@@ -579,6 +582,41 @@ var modals = (function() {
       $m.trigger('close_that_modal');
     });
     return $m;
+  }
+
+  function _initNoConnexionModal($m,d) {
+    $('#modal-no-connexion .path').html(d.path);
+
+    $modal.on('close_that_modal', function() {
+      location.reload();
+    });
+
+  }
+
+  function _initExportWebOnConnexionModal($m,d) {
+
+    $m.find('input.host').val(d.host);
+    $m.find('input.port').val(d.port);
+    $m.find('input.user').val(d.user);
+    $m.find('input.pass').val(d.pass);
+    $m.find('input.url').val(d.domain);
+    $m.find('input.folder').val(d.dossierFtp);
+
+    $m.find('.js--valider').on('click', function(){
+      var host = $m.find('input.host').val();
+      var port = $m.find('input.port').val();
+      var user = $m.find('input.user').val();
+      var pass = $m.find('input.pass').val();
+      var url = $m.find('input.url').val();
+      var dossierFtp = $m.find('input.folder').val();
+
+      store.set('ftp', { 'host': host, 'port': port, 'user': user, 'pass': pass, 'domain': url, 'dossierFtp': dossierFtp});
+      socket.emit('ftpSettings', {'host': host, 'port': port, 'user': user, 'pass': pass, 'domain': url, 'dossierFtp': dossierFtp, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli, 'webPubliFolderPath': d.webPubliFolderPath, "images": d.arrayImages, "currentDate": d.date});
+
+      $('body').addClass('is--generating');
+    });
+
+
   }
 
   function _setBigmediaArrow($m, $upcomingMedia, $navUpcomingMedia) {
