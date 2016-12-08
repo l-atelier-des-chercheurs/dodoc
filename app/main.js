@@ -124,10 +124,10 @@ module.exports = function(app, io){
   }
 
   // Supprimer un dossier
-  function onRemoveOneFolder( fdata){
+  function onRemoveOneFolder(fdata){
     dev.logfunction( "EVENT - onRemoveOneFolder");
-    dodocFolder.removeFolderNamed( fdata.slugFolderName).then(function( removedFolderData) {
-      dodocAPI.sendEventWithContent( 'folderRemoved', removedFolderData, io);
+    dodocFolder.removeOneFolder(fdata).then(function(d) {
+      dodocAPI.sendEventWithContent( 'folderRemoved', d, io);
     }, function(error) {
       dev.error("Failed to remove a folder! Error: " + error);
     });

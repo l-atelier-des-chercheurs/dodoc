@@ -1,3 +1,4 @@
+/*********************************************************** FIRA ***********************************************************/
 @font-face {
   font-family: 'Fira Sans';
   font-style: normal;
@@ -12,6 +13,7 @@
   src: local('Fira Sans Italic'), local('FiraSans-Italic'), url(QURAmFz4b80g324-oF-Uj4gp9Q8gbYrhqGlRav_IXfk.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
+
 @font-face {
   font-family: 'Fira Sans';
   font-style: normal;
@@ -21,12 +23,29 @@
 }
 @font-face {
   font-family: 'Fira Sans';
+  font-style: italic;
+  font-weight: 500;
+  src: local('Fira Sans Medium Italic'), local('FiraSans-MediumItalic'), url(6s0YCA9oCTF6hM60YM-qTXJuJo8UJJfpGKt7pXjBv4s.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+@font-face {
+  font-family: 'Fira Sans';
   font-style: normal;
   font-weight: 700;
   src: local('Fira Sans Bold'), local('FiraSans-Bold'), url(DugPdSljmOTocZOR2CItOhampu5_7CjHW5spxoeN3Vs.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
+@font-face {
+  font-family: 'Fira Sans';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Fira Sans Bold Italic'), local('FiraSans-BoldItalic'), url(https://fonts.gstatic.com/s/firasans/v6/6s0YCA9oCTF6hM60YM-qTf79_ZuUxCigM2DespTnFaw.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
 
+
+/********************************************************** FIRA MONO **********************************************************/
 @font-face {
   font-family: 'Fira Mono';
   font-style: normal;
@@ -34,6 +53,7 @@
   src: local('Fira Mono'), local('FiraMono'), url(https://fonts.gstatic.com/s/firamono/v4/SlRWfq1zeqXiYWAN-lnG-pBw1xU1rKptJj_0jans920.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
+
 @font-face {
   font-family: 'Fira Mono';
   font-style: normal;
@@ -41,3 +61,5 @@
   src: local('Fira Mono Bold'), local('FiraMono-Bold'), url(https://fonts.gstatic.com/s/firamono/v4/l24Wph3FsyKAbJ8dfExTZxampu5_7CjHW5spxoeN3Vs.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
+
+

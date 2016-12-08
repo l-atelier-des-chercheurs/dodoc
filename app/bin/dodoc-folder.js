@@ -11,7 +11,7 @@ var dodocFolder = (function() {
     getMetaFileOfFolder     : function(slugFolderName) { return getMetaFileOfFolder(slugFolderName); },
     createNewFolder         : function(folderData) { return createNewFolder(folderData); },
     listAllFolders          : function() { return listAllFolders(); },
-    removeFolderNamed       : function(slugFolderName) { return removeFolderNamed(slugFolderName); },
+    removeOneFolder       : function(folderData) { return removeOneFolder(folderData); },
     updateFolderMeta        : function(folderData) { return updateFolderMeta(folderData); },
     listAllProjectsOfOneFolder: function(slugFolderName) { return listAllProjectsOfOneFolder(slugFolderName); },
   };
@@ -126,19 +126,18 @@ var dodocFolder = (function() {
     });
   }
 
-  function removeFolderNamed(slugFolderName) {
+  function removeOneFolder(d) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction( "COMMON — removeFolderNamed : " + JSON.stringify(slugFolderName, null, 4));
+      dev.logfunction( "COMMON — removeOneFolder: " + JSON.stringify(d, null, 4));
 
-      var folderPath = dodocAPI.getFolderPath(slugFolderName);
-      var deletedFolderName = dodoc.deletedPrefix + slugFolderName;
+      var folderPath = dodocAPI.getFolderPath(d.slugFolderName);
+      var deletedFolderName = dodoc.deletedPrefix + d.slugFolderName;
       deletedFolderName = dodocAPI.findFirstFilenameNotTaken(deletedFolderName, dodocAPI.getFolderPath(), '');
       var deletedFolderPath = dodocAPI.getFolderPath(deletedFolderName);
 
-      fs.rename( folderPath, deletedFolderPath, function(err) {
+      fs.rename(folderPath, deletedFolderPath, function(err) {
         if (err) reject( err);
-        var removedFolderData = { "slugFolderName" : slugFolderName };
-        resolve( removedFolderData);
+        resolve(d);
       });
     });
   }

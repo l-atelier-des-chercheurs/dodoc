@@ -53,7 +53,7 @@ if( lang === 'fr') {
 
       "selectTemplate" : "Sélection de gabarit",
 
-      "thisFolderNameIsAlreadyTaken" : "Le nom de dossier suivant existe déjà : ",
+      "thisFolderNameIsAlreadyTaken" : "Le nom de dossier suivant existe déjà&nbsp;: ",
       "pleaseUseAnother" : "Veuillez en utiliser un autre.",
 
       "browserCantUserWebRTC" : "Attention ! Votre navigateur ne permet pas de capturer des photos et du son (Safari ou appareils Apple).\nUtilisez l’option d’import  de la page Bibliothèque (croix jaune) pour ajouter des photos, des vidéos et du son.",
@@ -123,7 +123,9 @@ if( lang === 'fr') {
 
         "newMediaCreatedAtPath" : "Un nouveau média vient d’être créé dans le projet ",
         "newFolderCreatedWithName" : "Un nouveau dossier vient d’être créé avec pour nom ",
+        "folderRemovedWithName" : "Le dossier suivant vient d’être supprimé&nbsp;: ",
         "newProjectCreatedWithName" : "Un nouveau projet vient d’être créé avec pour nom ",
+        "projectRemovedWithName" : "Le projet suivant vient d’être supprimé&nbsp;: ",
         "atPath" : " dans le chemin ",
 
         "moveContentFolder" : "Déplacer le dossier <em>dodoc</em> sur votre disque dur",

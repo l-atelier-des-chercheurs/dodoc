@@ -154,6 +154,7 @@ var modals = (function() {
       if(window.confirm(dodoc.lang.modal.sureToRemoveFolder)) {
     		  sendData.removeOneFolder({
           "slugFolderName" : d.slugFolderName,
+          "folderName" : d.nom,
         });
         $m.trigger('close_that_modal');
       }

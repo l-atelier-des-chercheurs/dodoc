@@ -18,52 +18,44 @@ socket.onevent = function (packet) {
 };
 socket.on("*",function(event,d) {
   // only log the following events
-  if(event === "mediaCreated") {
-    for(md in d) {
-      var thisMedia = d[md];
-      var pathToProjectWhoGotANewMedia = '/'+thisMedia.slugFolderName+'/'+thisMedia.slugProjectName;
-      var logMediaCreated =
-        dodoc.lang.modal.newMediaCreatedAtPath+
-          '<a href="'+pathToProjectWhoGotANewMedia+'">'+
-            pathToProjectWhoGotANewMedia+
-          '</a>'
-        ;
-      alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .log(logMediaCreated)
-        ;
-    }
-  }
-  // todo: log folder created
-  if(event === "folderCreated") {
-    var log = dodoc.lang.modal.newFolderCreatedWithName+'<em>'+d.name+'</em>';
-    alertify
-      .closeLogOnClick(true)
-      .delay(4000)
-      .log(log)
-      ;
-  }
-  if(event === "folderRemoved") {
-    var log = dodoc.lang.modal.newFolderCreatedWithName+'<em>'+d.name+'</em>';
-    alertify
-      .closeLogOnClick(true)
-      .delay(4000)
-      .log(log)
-      ;
+
+  var logs = [];
+
+  switch(event) {
+    case "mediaCreated":
+      for(md in d) {
+        var thisMedia = d[md];
+        var pathToProjectWhoGotANewMedia = '/'+thisMedia.slugFolderName+'/'+thisMedia.slugProjectName;
+        logs.push(
+          dodoc.lang.modal.newMediaCreatedAtPath+
+            '<a href="'+pathToProjectWhoGotANewMedia+'">'+
+              pathToProjectWhoGotANewMedia+
+            '</a>'
+          );
+      }
+      break;
+    case "folderCreated":
+      var pathToFolder = '/'+d.slugFolderName;
+      logs.push(dodoc.lang.modal.newFolderCreatedWithName+'<em>'+d.name+'</em>'+dodoc.lang.modal.atPath+'<em>'+pathToFolder+'</em>');
+      break;
+    case "folderRemoved":
+      logs.push(dodoc.lang.modal.folderRemovedWithName+'<em>'+d.folderName+'</em>');
+      break;
+    case "projectCreated":
+      var pathToProject = '/'+d.slugFolderName+'/'+d.slugProjectName;
+      logs.push(dodoc.lang.modal.newProjectCreatedWithName+'<em>'+d.name+'</em>'+dodoc.lang.modal.atPath+'<em>'+pathToProject+'</em>');
+    case "projectRemoved":
+      var pathToProject = '/'+d.slugFolderName+'/'+d.slugProjectName;
+      logs.push(dodoc.lang.modal.projectRemovedWithName+'<em>'+d.name+'</em>');
   }
 
-  if(event === "projectCreated") {
-    var pathToProject = '/'+d.slugFolderName+'/'+d.slugProjectName;
-    var log = dodoc.lang.modal.newProjectCreatedWithName+'<em>'+d.name+'</em>'+dodoc.lang.modal.atPath+'<em>'+pathToProject+'</em>';
+  for(log in logs) {
     alertify
       .closeLogOnClick(true)
       .delay(4000)
-      .log(log)
+      .log(logs[log])
       ;
   }
-
-  // todo: log publication created
 
 });
 
