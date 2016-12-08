@@ -115,7 +115,7 @@ function loadProject(pd) {
 
 
 function listAllMedias( mediasData) {
-  console.log( 'listAllMedias');
+//   console.log( 'listAllMedias');
 
   var $allMedias = $();
   var lastMedias = mediasData;
@@ -167,7 +167,7 @@ function mediaInit( $m) {
 
 
 function makeOneMedia( mediaKey, mdata) {
-  console.log( "makeOneMedia");
+//   console.log( "makeOneMedia");
 
   if( mdata.slugFolderName !== currentFolder || mdata.slugProjectName !== currentProject)
     return;

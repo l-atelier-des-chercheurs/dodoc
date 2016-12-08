@@ -14,7 +14,6 @@ var uploadToFtp = (function() {
   };
 
   function exportPubliToFtp(socket, d){
-    dev.logfunction( "EVENT - exportPubliToFtp");
 
     var folderName = d.slugFolderName;
     var projectName = d.slugProjectName;

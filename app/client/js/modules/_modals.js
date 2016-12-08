@@ -79,6 +79,8 @@ var modals = (function() {
         $modal = _initNoConnexionModal($modal, d);
       } else if(typeOfModal === 'exportWebOnConnexion') {
         $modal = _initExportWebOnConnexionModal($modal, d);
+      } else if(typeOfModal === 'exportWebBadFTP') {
+        $modal = _initExportWebBadFTPModal($modal);
       }
 
       $modal.on('click', function(e) {
@@ -585,12 +587,10 @@ var modals = (function() {
   }
 
   function _initNoConnexionModal($m,d) {
-    $('#modal-no-connexion .path').html(d.path);
-
-    $modal.on('close_that_modal', function() {
+    $m.find('.js--publiFilesSavedAtPath').html(d.path);
+    $m.on('close_that_modal', function() {
       location.reload();
     });
-
   }
 
   function _initExportWebOnConnexionModal($m,d) {
@@ -615,7 +615,12 @@ var modals = (function() {
 
       $('body').addClass('is--generating');
     });
+  }
 
+  function _initExportWebBadFTPModal($m) {
+    $m.on('close_that_modal', function() {
+      $('#modal-connexion').foundation('reveal', 'open');
+    });
 
   }
 

@@ -432,6 +432,7 @@ module.exports = function(app, io){
   }
 
   function onExportPubliToFtp(socket, publiData) {
+    dev.logfunction( "EVENT - exportPubliToFtp : " + JSON.stringify( publiData, null, 4));
     uploadToFtp.exportPubliToFtp( socket, publiData);
   }
 

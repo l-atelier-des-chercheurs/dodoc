@@ -164,7 +164,6 @@ mixin modals(typeOfModal)
       p.pdfPath
 
   if( typeOfModal === 'exportWebBadFTP')
-    //- modal-bad-ftp
     //////////////////////////////////////////////   BAD PDF  //////////////////////////////////
     .m_modal-content
       +button( 'close', '', 'isCollapsed')
@@ -184,7 +183,7 @@ mixin modals(typeOfModal)
         | !{dodoc.lang.modal.noInternetCantSendPublicationOverFtp}
       p
         | !{dodoc.lang.modal.yourFilesHaveBeenSaved}
-      p.path
+      p.js--publiFilesSavedAtPath
 
   if( typeOfModal === 'exportWebOnConnexion')
     //- modal-connexion

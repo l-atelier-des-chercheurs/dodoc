@@ -1,4 +1,4 @@
-var uploadPubliToFtp = (function(publiTemplate) {
+var uploadPubliToFtp = (function() {
   var $uploadBtn = $('.js--uploadPubliToFtp');
 
   var API = {
@@ -6,7 +6,7 @@ var uploadPubliToFtp = (function(publiTemplate) {
       uploadThisPubliToFTP();
     },
     onPdfIsGenerated : function(file) { onPdfIsGenerated(file); },
-    uploadThisPubliToFTP : function(publiTemplate) { uploadThisPubliToFTP(publiTemplate); },
+    uploadThisPubliToFTP : function() { uploadThisPubliToFTP(); },
     onNoConnection : function() { onNoConnection(); },
     onWebConnection : function(webPubliFolderPath, arrayImages, date) { onWebConnection(webPubliFolderPath, arrayImages, date); },
     onPubiTransferred : function() { onPubiTransferred(); },
@@ -32,6 +32,10 @@ var uploadPubliToFtp = (function(publiTemplate) {
         .find('.publi-btn').remove().end()
         ;
 
+      String.prototype.replaceAll = function(target, replacement) {
+        return this.split(target).join(replacement);
+      };
+
       var publiHtml = $('body').html();
       var publiClean = publiHtml
         .replaceAll('/'+currentFolder+'/'+currentProject+'/01-photos', 'medias')
@@ -46,7 +50,7 @@ var uploadPubliToFtp = (function(publiTemplate) {
       var footer = '</div><script src="../jquery.min.js"></script><script src="./script.js"></script></body></html>'
 
       var html = head + body + publiClean + footer;
-      socket.emit('exportPubliToFtp', {"html": html, "currentTemplate": publiTemplate, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
+      socket.emit('exportPubliToFtp', {"html": html, "currentTemplate": currentTemplate, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
       $('body').addClass('is--generating');
     });
   }
@@ -79,20 +83,15 @@ var uploadPubliToFtp = (function(publiTemplate) {
   }
 
   function onPubiTransferred(){
-    console.log('publi transferred');
+    alertify.log('publi transferred');
     $('body').removeClass('is--generating');
     location.reload();
   }
 
   function onCannotConnectFtp(){
     $('body').removeClass('is--generating');
-    $('#modal-bad-ftp').foundation('reveal', 'open');
-    $(document).on('close.fndtn.reveal', '#modal-bad-ftp[data-reveal]', function () {
-      $('#modal-connexion').foundation('reveal', 'open');
-    });
+    modals.createModal('exportWebBadFTP');
   }
-
-
 
   return API;
 })();

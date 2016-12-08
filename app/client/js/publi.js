@@ -1,6 +1,6 @@
 /* VARIABLES */
 var socket = io.connect();
-var publiTemplate;
+var currentTemplate;
 
 /* sockets */
 function onSocketConnect() {
@@ -32,7 +32,7 @@ socket.on('cannotConnectFtp', onCannotConnectFtp);
 function onListOnePubliMetaAndMedias( psdata) {
   console.log( "onListOnePubliMetaAndMedias");
   $.each( psdata, function( slugPubliName, pdata) {
-    publiTemplate = pdata.template;
+    currentTemplate = pdata.template;
   });
   updateMontagePubliMeta( psdata);
   updateMontagePubliMedias( psdata);
@@ -40,7 +40,7 @@ function onListOnePubliMetaAndMedias( psdata) {
 function onPubliMetaUpdated( psdata) {
   console.log( "onPubliMetaUpdated");
   $.each( psdata, function( slugPubliName, pdata) {
-    publiTemplate = pdata.template;
+    currentTemplate = pdata.template;
   });
   // update meta of montage
   updateMontagePubliMeta( psdata);
@@ -52,6 +52,9 @@ function onPubliMediasUpdated( psdata) {
 }
 function onPdfIsGenerated(d) {
   uploadPubliToFtp.onPdfIsGenerated(d);
+}
+function onPubiTransferred() {
+  uploadPubliToFtp.onPubiTransferred();
 }
 function onNoConnection(d) {
   uploadPubliToFtp.onNoConnection();
