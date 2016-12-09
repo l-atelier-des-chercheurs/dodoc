@@ -173,7 +173,7 @@ button {
     background-color: $c-rouge;
     color: white;
   }
-  &_capture, &_view, &_deleteFolder, &_deleteMedia, &_deleteMediaCapture, &_deleteProject, &_deleteLastMedia, &_deleteMediaCaptureStopmotion {
+  &_capture, &_view, &_deleteFolder, &_deleteMedia, &_deleteMediaCapture, &_deleteProject, &_deleteLastMedia, &_deleteMediaCaptureStopmotion, &_removeAndStopStopmotion {
     background-color: $c-images;
     color: white;
   }

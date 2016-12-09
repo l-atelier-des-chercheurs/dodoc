@@ -7,8 +7,6 @@ var modals = (function() {
     init : function() {
 
       console.log('Modals.init()');
-
-
       	$('body')
       	  .on('click', '.js--openModal_addFolder', function(){
       		  modals.createModal('addFolder');

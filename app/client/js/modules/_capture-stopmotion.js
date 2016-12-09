@@ -10,6 +10,7 @@ var stopMotionMode = (function() {
   var $capturesm = $("#capture-sm-btn");
   var $previzsm = $preview.find(".js--previz-stopmotion");
   var $finishsm = $preview.find(".js--finish-stopmotion");
+  var $removeAndStopsm = $preview.find(".js--remove-stop-stopmotion");
   var $backToAnimation = $preview.find(".js--delete-media-capture-stopmotion");
 
   var $lastStopmotionImage = $(".js--lastStopmotionImage");
@@ -27,6 +28,7 @@ var stopMotionMode = (function() {
       $capturesm.off().on('click', _takeStopMotionPic);
       $previzsm.off().on('click', _previzStopMotion);
       $finishsm.off().on('click', _finishStopmotion);
+      $removeAndStopsm.off().on('click', _removeAndStopStopMotion);
       $preview.show();
 
       _clearPreview();
@@ -109,11 +111,10 @@ var stopMotionMode = (function() {
       $preview.find('video.js--output').attr( 'src', pathToMediaFile + '?' + moment().format('x'));
 
       $backToAnimation.off().on('click', function() {
-        var mediaToDelete =
-        {
+        var mediaToDelete = {
           "mediaName" : $(document).data('lastCapturedMediaName'),
           "mediaFolderPath" : $(document).data('lastCapturedMediaFolderPath'),
-        }
+        };
         sendData.deleteStopmotion( mediaToDelete);
         _clearVideoPreview();
       });
@@ -195,14 +196,14 @@ var stopMotionMode = (function() {
     });
 
   }
-  function _removeImageFromStopMotion( relativeImagePath) {
+  function _removeImageFromStopMotion(relativeImagePath) {
     var mediaToDelete =
     {
       "pathToStopmotionImage" : relativeImagePath,
     }
     socket.emit( 'deleteLastImageOfStopMotion', mediaToDelete);
   }
-  function _previzStopMotion( ) {
+  function _previzStopMotion() {
     var smCacheName = $("body").data( "smCacheName");
     var frameRate = $preview.find('.js--stopmotion_frameRate').val();
     var mediaData =
@@ -214,7 +215,7 @@ var stopMotionMode = (function() {
     sendData.createNewMedia( mediaData);
     $previewOutput.show();
   }
-  function _finishStopmotion( ) {
+  function _finishStopmotion() {
     isRecording = false;
     $startsm.show();
     $capturesm.hide();
@@ -222,6 +223,20 @@ var stopMotionMode = (function() {
     backAnimation();
     stopMotionMode.init();
     saveFeedback("/images/i_icone-dodoc_anim.svg");
+  }
+  function _removeAndStopStopMotion() {
+    isRecording = false;
+    $startsm.show();
+    $capturesm.hide();
+
+    var mediaToDelete = {
+      "mediaName" : $(document).data('lastCapturedMediaName'),
+      "mediaFolderPath" : $(document).data('lastCapturedMediaFolderPath'),
+    };
+    sendData.deleteStopmotion( mediaToDelete);
+    backAnimation();
+    stopMotionMode.init();
+
   }
 
   function _clearPreview() {
