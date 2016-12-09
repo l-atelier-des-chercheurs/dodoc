@@ -154,14 +154,14 @@ mixin modals(typeOfModal)
         +button('moveContentFolder', '', '')
 
 
-  if( typeOfModal === 'confirmPDF')
+  if( typeOfModal === 'confirmPdfExported')
     //- modal-confirm-pdf
     //////////////////////////////////////////////   CONFIRM PDF  //////////////////////////////////
     .m_modal-content
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
         | !{dodoc.lang.modal.pdfPublicationHasBeenSaved}
-      p.pdfPath
+      p.pdfPath.txt-wrap_long_lines
 
   if( typeOfModal === 'exportWebBadFTP')
     //////////////////////////////////////////////   BAD PDF  //////////////////////////////////

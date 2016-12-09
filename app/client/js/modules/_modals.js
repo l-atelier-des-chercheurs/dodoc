@@ -81,6 +81,8 @@ var modals = (function() {
         $modal = _initExportWebOnConnexionModal($modal, d);
       } else if(typeOfModal === 'exportWebBadFTP') {
         $modal = _initExportWebBadFTPModal($modal);
+      } else if(typeOfModal === 'confirmPdfExported') {
+        $modal = _initConfirmPDFModal($modal,d);
       }
 
       $modal.on('click', function(e) {
@@ -591,6 +593,7 @@ var modals = (function() {
     $m.on('close_that_modal', function() {
       location.reload();
     });
+    return $m;
   }
 
   function _initExportWebOnConnexionModal($m,d) {
@@ -615,13 +618,21 @@ var modals = (function() {
 
       $('body').addClass('is--generating');
     });
+    return $m;
   }
 
   function _initExportWebBadFTPModal($m) {
     $m.on('close_that_modal', function() {
       $('#modal-connexion').foundation('reveal', 'open');
     });
-
+    return $m;
+  }
+  function _initConfirmPDFModal($m, d) {
+    $m.find('.pdfPath').html(d.path);
+    $m.on('close_that_modal', function() {
+      location.reload();
+    });
+    return $m;
   }
 
   function _setBigmediaArrow($m, $upcomingMedia, $navUpcomingMedia) {

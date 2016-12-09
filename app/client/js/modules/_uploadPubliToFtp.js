@@ -1,9 +1,11 @@
 var uploadPubliToFtp = (function() {
   var $uploadBtn = $('.js--uploadPubliToFtp');
+  var $generatePDF = $('.js--generatePDF');
 
   var API = {
     init : function() {
       uploadThisPubliToFTP();
+      sendThisPubliToPDF();
     },
     onPdfIsGenerated : function(file) { onPdfIsGenerated(file); },
     uploadThisPubliToFTP : function() { uploadThisPubliToFTP(); },
@@ -14,14 +16,25 @@ var uploadPubliToFtp = (function() {
 
   }
 
+  function sendThisPubliToPDF() {
+    //Generate pdf
+    $generatePDF.on('click', function(){
+      var currentUrl = window.location.href;
+      var htmlNoScript =
+      $('html')
+        .find('script').remove().end()
+        .find('.js--generatePDF').remove().end()
+        .find('.js--uploadPubliToFtp').remove().end()
+        .find('.js--editPubli').remove().end()
+        .find('.button-wrapper').remove()
+        ;
 
-  function onPdfIsGenerated(file){
-    $('body').removeClass('is--generating');
-    $('#modal-confirm-pdf .pdfPath').html(file);
-    $('#modal-confirm-pdf').foundation('reveal', 'open');
-    $(document).on('close.fndtn.reveal', '#modal-confirm-pdf[data-reveal]', function () {
-      location.reload();
+      var html = $('html').html();
+      socket.emit('generatePDF', {html: html, url: currentUrl ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
+      // animation on wait
+      $('body').addClass('is--generating');
     });
+
   }
 
   function uploadThisPubliToFTP(){
@@ -53,6 +66,15 @@ var uploadPubliToFtp = (function() {
       socket.emit('exportPubliToFtp', {"html": html, "currentTemplate": currentTemplate, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
       $('body').addClass('is--generating');
     });
+  }
+
+
+  function onPdfIsGenerated(path){
+    $('body').removeClass('is--generating');
+    var modalData = {
+      "path" : path,
+    }
+    modals.createModal('confirmPdfExported',modalData);
   }
 
   function onNoConnection(path){
