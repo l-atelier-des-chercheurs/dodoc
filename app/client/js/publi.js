@@ -1,5 +1,6 @@
 /* VARIABLES */
 var socket = io.connect();
+var currentTemplate;
 
 /* sockets */
 function onSocketConnect() {
@@ -21,18 +22,26 @@ socket.on('listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 socket.on('publiMetaUpdated', onPubliMetaUpdated);
 socket.on('publiMediasUpdated', onPubliMediasUpdated);
 
+socket.on('pdfIsGenerated', onPdfIsGenerated);
+socket.on('noConnection', onNoConnection);
+socket.on('webConnectionFound', onWebConnection);
+socket.on('pubiTransferred', onPubiTransferred);
+socket.on('cannotConnectFtp', onCannotConnectFtp);
 
-jQuery(document).ready(function($) {
-  uploadPubliToFtp.init();
-});
 
 function onListOnePubliMetaAndMedias( psdata) {
   console.log( "onListOnePubliMetaAndMedias");
+  $.each( psdata, function( slugPubliName, pdata) {
+    currentTemplate = pdata.template;
+  });
   updateMontagePubliMeta( psdata);
   updateMontagePubliMedias( psdata);
 }
 function onPubliMetaUpdated( psdata) {
   console.log( "onPubliMetaUpdated");
+  $.each( psdata, function( slugPubliName, pdata) {
+    currentTemplate = pdata.template;
+  });
   // update meta of montage
   updateMontagePubliMeta( psdata);
 }
@@ -41,6 +50,20 @@ function onPubliMediasUpdated( psdata) {
   // update medias of montage if necessary
   updateMontagePubliMedias( psdata);
 }
-
+function onPdfIsGenerated(d) {
+  uploadPubliToFtp.onPdfIsGenerated(d);
+}
+function onPubiTransferred() {
+  uploadPubliToFtp.onPubiTransferred();
+}
+function onNoConnection(d) {
+  uploadPubliToFtp.onNoConnection();
+}
+function onWebConnection(webPubliFolderPath, arrayImages, date) {
+  uploadPubliToFtp.onWebConnection(webPubliFolderPath, arrayImages, date);
+}
+function onCannotConnectFtp() {
+  uploadPubliToFtp.onCannotConnectFtp();
+}
 
 

@@ -11,7 +11,7 @@ var dodocFolder = (function() {
     getMetaFileOfFolder     : function(slugFolderName) { return getMetaFileOfFolder(slugFolderName); },
     createNewFolder         : function(folderData) { return createNewFolder(folderData); },
     listAllFolders          : function() { return listAllFolders(); },
-    removeFolderNamed       : function(slugFolderName) { return removeFolderNamed(slugFolderName); },
+    removeOneFolder       : function(folderData) { return removeOneFolder(folderData); },
     updateFolderMeta        : function(folderData) { return updateFolderMeta(folderData); },
     listAllProjectsOfOneFolder: function(slugFolderName) { return listAllProjectsOfOneFolder(slugFolderName); },
   };
@@ -32,40 +32,61 @@ var dodocFolder = (function() {
     return folderMetadata;
   }
 
-  function createNewFolder( folderData) {
+  function createNewFolder(d) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — createNewFolder");
 
-      var folderName = folderData.name;
-      var slugFolderName = slugg(folderName);
-      var folderPath = dodocAPI.getFolderPath( slugFolderName);
-      var currentDateString = dodocAPI.getCurrentDate();
+      // list all folders, check their name against the desired name
+      listAllFolders().then(function(allFoldersData) {
 
-      fs.access( folderPath, fs.F_OK, function( err) {
-        // if there's nothing at path
-        if(err) {
-          console.log("New folder created with name " + folderName + " and path " + folderPath);
-          fs.ensureDirSync(folderPath);//write new folder in folders
+        let foldersWithSameNameAlreadyExist = undefined;
+        if(allFoldersData !== undefined) {
+          function findFolderWithSameName(folder) {
+            return folder.name === d.name;
+          }
+          foldersWithSameNameAlreadyExist = allFoldersData.find(findFolderWithSameName) === undefined;
+          dev.logverbose('Found folders with same name : ' + foldersWithSameNameAlreadyExist);
+          // if no name is found, lets find a slug name not taken and create our folder
+        }
+
+        if(allFoldersData === undefined || (allFoldersData !== undefined && foldersWithSameNameAlreadyExist)) {
+          let slugFolderName = slugg(d.name);
+          var foldersPath = dodocAPI.getFolderPath();
+          slugFolderName = dodocAPI.findFirstFilenameNotTaken(slugFolderName, foldersPath, '');
+          console.log("New folder created with name " + d.name + " and slug (folder name) " + slugFolderName);
+
+          var folderPath = dodocAPI.getFolderPath(slugFolderName);
+          fs.ensureDirSync(folderPath);
+
+          var currentDateString = dodocAPI.getCurrentDate();
           var fmeta =
             {
-              "name" : folderName,
+              "name" : d.name,
               "created" : currentDateString,
               "modified" : currentDateString,
               "statut" : "en cours",
+              "slugFolderName" : slugFolderName,
             };
-          dodocAPI.storeData( getMetaFileOfFolder( slugFolderName), fmeta, "create").then(function( meta) {
+          dodocAPI.storeData(getMetaFileOfFolder(slugFolderName), fmeta, "create").then(function(meta) {
             resolve( meta);
+          }, function(error) {
+            dev.error("Failed to create new folder meta! Error: " + error);
+            reject();
           });
 
         } else {
-          // if there's already something at path
-          console.log("WARNING - the following folder name already exists: " + slugFolderName);
+          // otherwise, lets fail with a message to the user
+          dev.error("WARNING - the following folder name already exists: " + d.name);
           var objectJson = {
-            "name": folderName,
+            "name": d.name,
             "timestamp": currentDateString
           };
-          reject( objectJson);
+          reject(objectJson);
         }
+
+      }, function(error) {
+        dev.error("Failed to list all folders to create a folder! Error: " + error);
+        reject();
       });
 
     });
@@ -79,22 +100,24 @@ var dodocFolder = (function() {
         if (err) return console.log( 'Couldn\'t read content dir : ' + err);
 
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
-        dev.logverbose( "Number of folders in " + dodocAPI.getFolderPath() + " = " + folders.length + ". Folders are " + folders);
 
+        if(folders.length === 0) {
+          dev.logverbose('No folders found in ' + dodocAPI.getFolderPath());
+          resolve();
+        }
+
+        dev.logverbose('Number of folders in ' + dodocAPI.getFolderPath() + ' is ' + folders.length + '. Folders are ' + folders);
         var foldersProcessed = 0;
         var allFoldersData = [];
         folders.forEach( function( slugFolderName) {
           dev.logverbose('listAllFolders -- current folder to look into: ' + slugFolderName);
-
-          if( new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName)
-          && slugFolderName.indexOf( dodoc.deletedPrefix)){
+          if( new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName) && slugFolderName.indexOf( dodoc.deletedPrefix)){
             var fmeta = getFolderMeta( slugFolderName);
             fmeta.slugFolderName = slugFolderName;
             allFoldersData.push( fmeta);
           }
-
           foldersProcessed++;
-          if( foldersProcessed === folders.length && allFoldersData.length > 0) {
+          if(foldersProcessed === folders.length) {
             dev.logverbose( "- - - - all folders JSON have been processed.");
             resolve( allFoldersData);
           }
@@ -103,17 +126,18 @@ var dodocFolder = (function() {
     });
   }
 
-  function removeFolderNamed(slugFolderName) {
+  function removeOneFolder(d) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction( "COMMON — removeFolderNamed : " + JSON.stringify(slugFolderName, null, 4));
+      dev.logfunction( "COMMON — removeOneFolder: " + JSON.stringify(d, null, 4));
 
-      var folderPath = dodocAPI.getFolderPath( slugFolderName);
-      var deletedFolderPath = dodocAPI.getFolderPath( dodoc.deletedPrefix + slugFolderName);
+      var folderPath = dodocAPI.getFolderPath(d.slugFolderName);
+      var deletedFolderName = dodoc.deletedPrefix + d.slugFolderName;
+      deletedFolderName = dodocAPI.findFirstFilenameNotTaken(deletedFolderName, dodocAPI.getFolderPath(), '');
+      var deletedFolderPath = dodocAPI.getFolderPath(deletedFolderName);
 
-      fs.rename( folderPath, deletedFolderPath, function(err) {
+      fs.rename(folderPath, deletedFolderPath, function(err) {
         if (err) reject( err);
-        var removedFolderData = { "slugFolderName" : slugFolderName };
-        resolve( removedFolderData);
+        resolve(d);
       });
     });
   }
@@ -124,11 +148,12 @@ var dodocFolder = (function() {
       dev.logfunction( "COMMON — updateFolderMeta");
 
       var isNameChanged = folderData.newName !== undefined;
-      var slugFolderName = folderData.slugFolderName;
       var currentDateString = dodocAPI.getCurrentDate();
       var newStatut = folderData.statut;
+      var slugFolderName = folderData.slugFolderName;
+
       // récupérer les infos sur le folder
-      var fmeta = getFolderMeta( slugFolderName);
+      var fmeta = getFolderMeta(folderData.slugFolderName);
       // éditer les métas récupéré
       if( isNameChanged)
         fmeta.name = folderData.newName;
@@ -136,9 +161,12 @@ var dodocFolder = (function() {
         fmeta.statut = newStatut;
       fmeta.modified = currentDateString;
       // envoyer les changements dans le JSON du folder
-      dodocAPI.storeData( getMetaFileOfFolder( slugFolderName), fmeta, "update").then(function( ufmeta) {
+      dodocAPI.storeData(getMetaFileOfFolder(slugFolderName), fmeta, "update").then(function( ufmeta) {
         ufmeta.slugFolderName = slugFolderName;
         resolve( ufmeta);
+      }, function(error) {
+        dev.error("Failed to store data ! Error: " + error);
+        reject();
       });
     });
   }

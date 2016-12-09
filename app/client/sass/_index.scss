@@ -13,7 +13,7 @@ body.index{
 }
 
 .dossier {
-  margin-bottom: $margin * 2;
+  margin-bottom: $t-margin * 2;
 
   &:nth-child(3n+1) {
     clear: left;
@@ -61,7 +61,6 @@ body.index{
 
 
       li {
-
         margin-bottom:  10px;
         background-color: #fff;
 
@@ -96,7 +95,7 @@ body.index{
         .vignette-visuel {
 
           overflow: hidden;
-          background-color: $gristresclair;
+          background-color: $c-gris_clair;
 
           position: relative;
 
@@ -133,8 +132,8 @@ body.index{
     span:nth-of-type(1) {
       margin-right: 5px;
     }
-
     .nb-projets{
+      display: none;
       .nb-projets-count{
         font-weight:bold;
      }
@@ -162,10 +161,10 @@ body.index{
 .dossier {
 
   .content a:hover h2 {
-    color: $bleuvert;
+    color: $c-bleuvert;
   }
   .statut-type {
-    color: $bleuvert;
+    color: $c-bleuvert;
   }
 
 

@@ -20,7 +20,7 @@ var dodocAPI = (function() {
     eventAndContent     : function(sendEvent, objectJson) { return eventAndContent(sendEvent, objectJson); },
     sendEventWithContent: function(sendEvent, objectContent, io, socket) { return sendEventWithContent(sendEvent, objectContent, io, socket); },
     decodeBase64Image   : function(dataString) { return decodeBase64Image(dataString); },
-    writeVideoToDisk    : function(pathToFile, fileExtension, dataURL) { return writeVideoToDisk(pathToFile, fileExtension, dataURL); },
+    writeMediaDataToDisk    : function(pathToFile, fileExtension, dataURL) { return writeMediaDataToDisk(pathToFile, fileExtension, dataURL); },
     listAllTemplates    : function() { return listAllTemplates(); },
   };
 
@@ -34,6 +34,9 @@ var dodocAPI = (function() {
   function getProjectPath( slugFolderName, slugProjectName) {
     dev.logverbose( "COMMON — getProjectPath, slugFolderName:" + slugFolderName + " slugProjectName: " + slugProjectName);
     return path.join(getFolderPath(slugFolderName), slugProjectName);
+  }
+  function getUserPath() {
+    return global.userDirname;
   }
 
   function parseData(d) {
@@ -50,13 +53,19 @@ var dodocAPI = (function() {
       var textd = parsedown.textify(d);
       if( e === "create") {
         fs.appendFile( mpath, textd, function(err) {
-        if (err) reject( err);
+          if (err) {
+            dev.error('Couldn’t update file: ' + err);
+            reject( err);
+          }
           resolve(parseData(textd));
         });
       }
       if( e === "update") {
         fs.writeFile( mpath, textd, function(err) {
-        if (err) reject( err);
+          if (err) {
+            dev.error('Couldn’t update file: ' + err);
+            reject( err);
+          }
           resolve(parseData(textd));
         });
       }
@@ -67,10 +76,6 @@ var dodocAPI = (function() {
     var metaFileContent = fs.readFileSync( metaFile, 'utf8');
     var metaFileContentParsed = parseData( metaFileContent);
     return metaFileContentParsed;
-  }
-
-  function getUserPath() {
-    return global.userDirname;
   }
 
   function findFirstFilenameNotTaken( fileName, currentPath, fileext) {
@@ -104,10 +109,10 @@ var dodocAPI = (function() {
   function sendEventWithContent(sendEvent, objectContent, io, socket) {
     var eventAndContentJson = eventAndContent( sendEvent, objectContent);
     dev.logpackets("eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
-    if(socket === undefined)
-      io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
-    else
+    if(socket)
       socket.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+    else
+      io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
     dev.logpackets("packet sent");
   }
 
@@ -125,17 +130,20 @@ var dodocAPI = (function() {
     return response;
   }
 
-  function writeVideoToDisk(pathToFile, fileExtension, dataURL) {
+  function writeMediaDataToDisk(pathToFile, fileExtension, dataURL) {
     return new Promise(function(resolve, reject) {
-
+      if(dataURL === undefined) {
+        dev.log('No media data content gotten for '+pathToFile+fileExtension);
+        reject('No media sent');
+      }
       dataURL = dataURL.split(',').pop();
       dev.logverbose( 'Will save the video at path : ' + pathToFile + fileExtension);
 
       var fileBuffer = new Buffer(dataURL, 'base64');
-        fs.writeFile( pathToFile + fileExtension, fileBuffer, function(err) {
-          if (err) reject( err);
-          resolve();
-        });
+      fs.writeFile( pathToFile + fileExtension, fileBuffer, function(err) {
+        if (err) reject( err);
+        resolve();
+      });
     });
   }
 

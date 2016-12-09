@@ -1,0 +1,39 @@
+mixin snippets(typeOfSnippet)
+
+  if(typeOfSnippet === 'mediaForm')
+    //////////////////////////////////////////////   MEDIA FORM (inside bigmedia)  //////////////////////////////////
+    form(onsubmit='return false;' class='add-media-data lead')
+      label
+        | !{dodoc.lang.modal.informations}
+      textarea.mediaContent--textOfTextmedia.js--mediaInformations(type='text' autofocus)
+    h3.txt-small_info.margin-top_bottom
+      | !{dodoc.lang.modal.pathofmedia}
+      .js--mediaFullPath
+    hr
+    +button('favButton', '', '')
+    +button('deleteMediaBibli', '', '')
+    +button('valider', '', 'isCollapsed')
+
+  if(typeOfSnippet === 'mediaForm_txt')
+    //////////////////////////////////////////////   MEDIA FORM TEXT  //////////////////////////////////
+
+    form(onsubmit='return false;' class='add-media-text lead')
+      textarea.mediaContent--textOfTextmedia.js--textField(placeholder="Ajouter du texte ici" autofocus required)
+    h3.txt-small_info
+      | !{dodoc.lang.modal.pathofmedia}
+      .js--mediaFullPath
+    hr
+    +button('favButton', '', '')
+    +button('deleteMediaBibli', '', '')
+    +button('valider', '', 'isCollapsed')
+
+
+  if(typeOfSnippet === 'moduleInfos' && process.versions.electron)
+    .module_infos
+      -for(var prop in localNetworkInfos)
+        -if(isHttps)
+          h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice} https://#{localNetworkInfos[prop]}:8080
+        -else
+          h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice} http://#{localNetworkInfos[prop]}:8080
+      h3.txt-small_info !{dodoc.lang.mediapublitemplatesarestoredint} <br>#{currentUserDirPath}
+      //- a.txt-small_info.js--moveContentFolder !{dodoc.lang.clickHereToMoveContentFolder}

@@ -38,12 +38,6 @@ socket.on('mediaRemoved', onMediaRemoved);
 jQuery(document).ready(function($) {
 	$(document).foundation();
 
-	// Au click sur un media
-	$('body').on('click', '.last-medias .media', function(){
-		$m = $(this);
-		modals.bigMedia($m);
-  });
-
 });
 
 function onListOneProject( projectData){
@@ -106,12 +100,27 @@ function onMediaRemoved( mediaData){
 // returns when a text content has been added
 function onMediaCreated( mediasData) {
   console.log( "onMediaCreated");
-  onListAllMedias( mediasData);
+  var $getAllMediasFormatted = listAllMedias(mediasData);
+  var $mediaContainer = $(".mainContent .last-medias");
+
+  $getAllMediasFormatted.each( function() {
+    var $m = $(this);
+    $m.attr('data-oninsert', 'slideFromTop');
+    insertOrReplaceMedia( $m, $mediaContainer);
+  });
 }
 
+
 function onMediaUpdated( mediasData) {
-  console.log( "onMediaUpdated");
-  onListAllMedias( mediasData);
+  var $getAllMediasFormatted = listAllMedias( mediasData);
+  var $mediaContainer = $(".mainContent .last-medias");
+
+  $getAllMediasFormatted.each( function() {
+    var $m = $(this);
+    $m.attr('data-oninsert', 'blink');
+    insertOrReplaceMedia( $m, $mediaContainer);
+  });
+
 }
 
 function onListAllMedias( mediasData) {

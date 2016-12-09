@@ -10,7 +10,7 @@ function devLog( d, v) {
     logverbose  : function(term) { if( isDebugMode && isVerbose) console.log(gutil.colors.gray('- ' + term)); },
     logpackets  : function(term) { if( isDebugMode) console.log(gutil.colors.green('- ' + term)); },
     logfunction : function(term) { if( isDebugMode) console.info(gutil.colors.magenta('~ ' + term)); },
-    error : function(term) { console.info(gutil.colors.red('! -->  ' + term)); },
+    error : function(term) { console.info(gutil.colors.red('ERROR! ' + term)); },
     isDebug : function() { return isDebugMode; },
   };
 

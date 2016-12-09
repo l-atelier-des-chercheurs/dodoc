@@ -1,15 +1,12 @@
+
+
 // if there’s not webrtc here (thanks Apple)
 if(typeof navigator.getUserMedia !== 'function') {
   alert(dodoc.lang.browserCantUserWebRTC);
 }
 
-
-
-
 /* VARIABLES */
 var socket = io.connect();
-
-
 
 /* sockets */
 function onSocketConnect() {
@@ -47,7 +44,7 @@ function init(){
   // au click
   $('.js--modeSelector').on('click', function(){
     var newMode = $(this).attr('data-mediatype');
-    changeMediaMode( newMode);
+    changeMediaMode(newMode);
   });
 
   /******************************************************/
@@ -63,27 +60,31 @@ function init(){
     }, function(err) {
       console.log("failed to init : " + err);
     });
-
-  // delete file
-  $('body').on('click', '.js--delete-media-capture', function(){
-    var mediaToDelete =
-    {
-      "mediaName" : $(document).data('lastCapturedMediaName'),
-      "mediaFolderPath" : $(document).data('lastCapturedMediaFolderPath'),
-    }
-    sendData.deleteMedia( mediaToDelete);
-    backAnimation();
-
-  });
-
   fullscreen();
-
 }
 
 function changeMediaMode( newMode) {
 
-  if( mediaJustCaptured())
+  if(mediaJustCaptured())
     return;
+
+  if(stopMotionMode.isRecording()) {
+    alertify
+      .closeLogOnClick(true)
+      .delay(4000)
+      .error(dodoc.lang.aStopmotionIsRecordingFinishItFirst)
+      ;
+    return;
+  }
+  // check if a video is recording
+  if(videoMode.isRecording()) {
+    alertify
+      .closeLogOnClick(true)
+      .delay(4000)
+      .error(dodoc.lang.aVideoIsRecordingFinishItFirst)
+      ;
+    return;
+  }
 
   $('.js--modeSelector')
     .removeClass('is--active')
@@ -92,7 +93,7 @@ function changeMediaMode( newMode) {
     })
       .addClass('is--active')
     .end()
-  ;
+    ;
 
   backAnimation();
 
@@ -142,7 +143,7 @@ function photoDisplay(){
     imageMode.init();
 
   }, function(err) {
-    console.log( "Failed to start camera feed for photo : " + err);
+    alertify.error("Failed to start camera feed for photo mode: " + err);
   });
 }
 function videoDisplay(){
@@ -165,12 +166,10 @@ function videoDisplay(){
   $("body").attr("data-mode", "video");
 
   currentStream.startCameraFeed().then( function() {
-
     $(".video-choice").fadeOut('slow');
     videoMode.init();
-
-  }, function() {
-    console.log( "Failed to start camera feed for video");
+  }, function(err) {
+    alertify.error( "Failed to start camera feed for video mode: " + err);
   });
 
 }
@@ -195,12 +194,10 @@ function stopMotionDisplay(){
 
 
   currentStream.startCameraFeed().then( function() {
-
     $(".stopmotion-choice").fadeOut('slow');
     stopMotionMode.init();
-
-  }, function() {
-    console.log( "Failed to start camera feed for stop-motion");
+  }, function(err) {
+    alertify.error( "Failed to start camera feed for stopmotion mode: " + err);
   });
 }
 function audioDisplay(){
@@ -229,7 +226,7 @@ function audioDisplay(){
     audioMode.init( stream);
 
   }, function(err) {
-    console.log( "Failed to start audio feed for audio : " + err);
+    alertify.error( "Failed to start audio feed for audio mode: " + err);
   });
 }
 
@@ -266,9 +263,8 @@ var currentStream = (function(context) {
   var API = {
     init                    : function() { return init(); },
     getStaticImageFromVideo : function() { return getStaticImageFromVideo(); },
-    stopAllFeeds            : function() { return stopAllFeeds(); },
     startCameraFeed         : function() { return startCameraFeed(); },
-    startRecordCameraFeed   : function() { return startRecordCameraFeed(); },
+    startRecordCameraFeed   : function(withAudio = true) { return startRecordCameraFeed(withAudio); },
     stopRecordCameraFeed    : function() { return stopRecordCameraFeed(); },
     startAudioFeed          : function() { return startAudioFeed(); },
     startRecordAudioFeed    : function() { return startRecordAudioFeed(); },
@@ -338,11 +334,11 @@ var currentStream = (function(context) {
       invisibleCtx.drawImage( videoElement, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
       var imageData = invisibleCanvas.toDataURL('image/png');
       if(imageData === "data:,")
-        reject('Video feed not yet available');
+        reject(dodoc.videoStreamNotAvailable);
       resolve(imageData);
     });
   }
-  function stopAllFeeds() {
+  function _stopAllFeeds() {
     if( !videoElement.paused)
       videoElement.pause();
 
@@ -360,7 +356,7 @@ var currentStream = (function(context) {
   }
   function startCameraFeed() {
     return new Promise(function(resolve, reject) {
-      currentStream.stopAllFeeds();
+      _stopAllFeeds();
       _getCameraFeed()
         .then( function( stream) {
           videoStream = stream;
@@ -374,24 +370,25 @@ var currentStream = (function(context) {
           videoElement.play();
           resolve();
         }, function(err) {
-          console.log( " failed to start camera feed: " + err);
+          alertify.error( "Failed to start camera feed: " + err);
           reject();
         });
     });
   }
-  function startRecordCameraFeed() {
+  function startRecordCameraFeed(withAudio) {
     return new Promise(function(resolve, reject) {
-      _getCameraFeed()
+      _getCameraFeed(withAudio)
       .then(function(stream) {
         var requestedVideoRes = _getVideoResFromRadio();
         recordVideoFeed = RecordRTC(stream, {
+          recorderType: MediaStreamRecorder,
           type: 'video',
           canvas: { width: requestedVideoRes.width, height: requestedVideoRes.height },
         });
         recordVideoFeed.startRecording();
         resolve();
       }, function(err) {
-        console.log( " failed to start camera feed: " + err);
+        alertify.error( "Failed to record camera feed: " + err);
         reject();
       });
       ;
@@ -410,7 +407,7 @@ var currentStream = (function(context) {
   }
   function startAudioFeed() {
     return new Promise(function(resolve, reject) {
-      currentStream.stopAllFeeds();
+      _stopAllFeeds();
       _getAudioFeed()
       .then( function( stream) {
         audioStream = stream;
@@ -431,8 +428,8 @@ var currentStream = (function(context) {
           });
           recordAudioFeed.startRecording();
           resolve();
-        }, function() {
-          console.log( " failed to start audio recording");
+        }, function(err) {
+          alertify.error( "Failed to start camera feed for audio: " + err);
           reject();
         })
         ;
@@ -597,7 +594,7 @@ var currentStream = (function(context) {
 
   }
 
-  function _getCameraFeed() {
+  function _getCameraFeed(withAudio) {
     return new Promise(function(resolve, reject) {
       console.log( "Getting camera feed");
       if( currentFeedsSource === undefined || currentFeedsSource.video === undefined) {
@@ -606,7 +603,7 @@ var currentStream = (function(context) {
       navigator.getUserMedia(
         {
           video: currentFeedsSource.video,
-          audio: false
+          audio: withAudio
         },
         function (stream) {
           resolve(stream);
@@ -616,7 +613,7 @@ var currentStream = (function(context) {
           for (index=0; index < videoResSwitches.length; index++) {
             videoResSwitches[index].checked = false;
           }
-          alertify.log(dodoc.lang.videoStreamCouldntBeStartedTryChangingRes);
+          alertify.error(dodoc.lang.videoStreamCouldntBeStartedTryChangingRes);
         }
       );
     });
@@ -634,9 +631,7 @@ var currentStream = (function(context) {
       if( currentFeedsSource === undefined || currentFeedsSource.audio === undefined) {
         reject("audio devices not yet ready");
       }
-
       console.log( "Getting audio feed");
-
       navigator.getUserMedia(
         {
           video: false,
@@ -733,13 +728,17 @@ function saveFeedback(icone){
   var $iconeFeedback = $("<div class='icone-feedback'><img src='"+icone+"'></div>");
   $("body").append( $iconeFeedback );
   setTimeout(function(){
-    $iconeFeedback.fadeIn('slow').velocity({"top":"25px", "left":$(window).width() - 50, "width":"20px"},1000, "ease", function(){
-      $(this).fadeOut('slow', function(){
-        $(this).remove();
-        $(".count-add-media.plus-media").fadeIn('slow', function(){
-          $(this).fadeOut('slow');
+    $iconeFeedback.fadeIn('slow').animate({"top":"25px", "left":$(window).width() - 50, "width":"20px"},
+    {
+      duration: 1000,
+      complete: function() {
+        $(this).fadeOut('slow', function(){
+          $(this).remove();
+          $(".count-add-media.plus-media").fadeIn('slow', function(){
+            $(this).fadeOut('slow');
+          });
         });
-      });
+      }
     });
   }, 500);
 }

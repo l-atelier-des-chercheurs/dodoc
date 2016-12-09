@@ -11,7 +11,7 @@ var boitierExterne = (function() {
         // next/prev
         if( key === 'w' || key == 's' || key === 'z') {
           var direction = key === 's' ? 'next' : 'prev';
-          switchMediaMode(direction);
+          _switchMediaMode(direction);
         } else
         // capture
         if( key === 'a' || key === 'q' || key === ' ' || key === 'Enter') {
@@ -24,7 +24,7 @@ var boitierExterne = (function() {
     },
   }
 
-  function switchMediaMode( direction) {
+  function _switchMediaMode( direction) {
     // current active button
     var $currentActiveButton = $modeButtons.filter('.is--active');
     var $getRequestedButton = $();

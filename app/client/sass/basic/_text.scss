@@ -1,0 +1,63 @@
+h1,h2,h3,h4,h5,h6{
+  font-family: 'Fira Sans', sans-serif;
+  font-weight: inherit;
+  font-size: inherit;
+  margin: 0;
+}
+
+p {
+  font-size: 1em;
+  margin-bottom: .5em;
+  line-height:  1.4;
+}
+
+li {
+  list-style: none;
+}
+
+hr {
+  border:none;
+  border-bottom: 1px solid $c-gris_clair;
+  width: 100%;
+  margin: $t-margin 0;
+}
+
+
+.txt-large_title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.txt-small_info {
+  color: $c-gris;
+  font-size: .8em;
+  line-height:  1.5;
+}
+
+.txt-mono {
+  font-family:  'Fira Mono', monospace;
+}
+
+.txt-wrap_long_lines {
+  /* These are technically the same, but use both */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  -ms-word-break: break-all;
+  /* This is the dangerous one in WebKit, as it breaks things wherever */
+  word-break: break-all;
+  /* Instead use this non-standard one: */
+  word-break: break-word;
+
+  /* Adds a hyphen where the word breaks, if supported (No Blink) */
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+
+
+.margin-top_bottom {
+  margin: $t-margin/2 0;
+}

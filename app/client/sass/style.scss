@@ -1,33 +1,29 @@
 // I M P O R T
 @import "../bower_components/foundation/scss/normalize";
-@import "../bower_components/foundation/scss/foundation";
+// @import "../bower_components/foundation/scss/foundation";
+@import '../bower_components/foundation/scss/foundation/components/reveal';
 
 
 
 @import "_variables.scss";
 @import "_fonts.scss";
 @import "_navbar.scss";
-@import "_popover.scss";
+@import "_modals.scss";
 @import "_publi.scss";
 @import "_responsive.scss";
+
 
 html {
   margin:0;
 }
 
 body,html {
-  height:100%;
+  min-height:100%;
 }
 
-p {
-  font-size: 1em;
-  margin-bottom: .5em;
-  line-height:  1.4;
-}
+@import "basic/_input.scss";
+@import "basic/_text.scss";
 
-li{list-style: none;}
-
-h1,h2,h3,h4,h5,h6{font-family: 'Fira Sans', sans-serif;}
 
 
 /******************
@@ -54,50 +50,29 @@ h1,h2,h3,h4,h5,h6{font-family: 'Fira Sans', sans-serif;}
 
 body {
   margin: 0;
-  background-color: rgb(239, 239, 239);
-  color: #000;
+  background-color: $c-gris_clair;
+  color: $c-noir;
   font-size: 1em;
   font-family: 'Fira Sans', sans-serif;
 
-  &:after {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1100;
-    visibility: hidden;
-    width: 100%;
-    height: 100%;
-    background: rgba( 0, 0, 0, 0.8);
-    content: '';
-    opacity: 0;
-
-    -webkit-transition: opacity .3s 0s, visibility 0s .3s;
-    -moz-transition: opacity .3s 0s, visibility 0s .3s;
-    transition: opacity .3s;
-  }
-
-  &.is-overlaid:after {
-    visibility: visible;
-    opacity: 1;
-    cursor: pointer;
-    -webkit-transition: opacity .3s 0s, visibility 0s 0s;
-    -moz-transition: opacity .3s 0s, visibility 0s 0s;
-    transition: opacity .3s 0s, visibility 0s 0s;
+  &.has--modalOpened {
+    overflow: hidden;
   }
 }
 
 a{
-  color: #000;
+  color: inherit;
   text-decoration: none;
 }
 
 a:hover {
-  color: #000;
+  color: inherit;
   text-decoration: none;
 }
 
 ul {
   margin: 0;
+  padding: 0;
 }
 
 img, video, audio, svg {
@@ -114,9 +89,9 @@ button {
   color: #fff;
   margin: 0;
   font-size: 1.1rem;
-  padding: 11px $margin;
+  padding: 11px $t-margin;
   border-radius: 4px;
-  background: $bleuvert;
+  background: $c-bleuvert;
 
   &.is--active, &:hover {
 
@@ -124,7 +99,7 @@ button {
 
   &.button_coteacote {
     display: inline-block;
-    margin-right:   $margin/2;
+    margin-right:   $t-margin/2;
   }
 
 }
@@ -147,8 +122,8 @@ button {
   display: block;
   position: relative;
   width:  245px;
-  height: 40px;
-  background-color: $gris;
+  height: $t-buttonSize;
+  background-color: $c-gris;
 
   text-align: left;
 
@@ -176,7 +151,7 @@ button {
   &.button-wrapper_without-bg {
     background-color: transparent;
     &.button-wrapper_add {
-      color: $rouge;
+      color: $c-rouge;
       &:hover {
         color: inherit;
       }
@@ -195,7 +170,7 @@ button {
   }
 
   &_add, &_edit, &_publi, &_editProjet, &_addMedia, &_backButton, &_editFolder, &_settings, &_createPublication {
-    background-color: $rouge;
+    background-color: $c-rouge;
     color: white;
   }
   &_capture, &_view, &_deleteFolder, &_deleteMedia, &_deleteMediaCapture, &_deleteProject, &_deleteLastMedia, &_deleteMediaCaptureStopmotion {
@@ -206,9 +181,16 @@ button {
     background-color: $c-bibli;
     color: white;
   }
-  &_accept, &_addText, &_highlightMedia, &_finishStopmotion, &_previzStopmotion, &_upload {
-    background-color: $bleuvert;
+  &_valider, &_addText, &_highlightMedia, &_finishStopmotion, &_previzStopmotion, &_upload {
+    background-color: $c-bleuvert;
     color: white;
+  }
+  &_close {
+    background-color: $c-noir;
+    color: $c-gris_clair;
+    &:hover, &:focus {
+      color: $c-gris_clair;
+    }
   }
 
 
@@ -227,7 +209,7 @@ button {
     transition: border-radius .4s, width .8s, background-color .6s, color .6s ease-out;
 
     &:not(:hover) {
-      width:  40px;
+      width:  $t-buttonSize;
       color: transparent;
       background-color: transparent;
     }
@@ -304,158 +286,27 @@ button {
 }
 
 
-#modal-modify-project {
-
-  .button_submit {
-
-  }
-
-  .button-wrapper_deleteProject {
-    float: left;
-  }
-}
-
-
-.big-mediaContent {
-  height: 100%;
-  width: 100%;
-  // to animate the fade in of elements
-  transition: opacity .1s;
-
-  .media-big {
-    height: 100%;
-    width: 100%;
-
-    .mediaContent {
-      height: 100%;
-      padding:0;
-
-      img, video {
-        min-width: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: scale-down;
-        background-color: $gristresclair;
-      }
-
-    }
-    .button-wrapper_deleteMedia {
-      display: block;
-    }
-
-    &.media-big_audio {
-      img {
-        height: 100%;
-      }
-      audio {
-        width: 100%;
-        position: absolute;
-        z-index: 1;
-        bottom: 0;
-      }
-    }
-  }
-
-  textarea {
-    height: 60vh;
-  }
-}
-
-.big-mediaNav {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  pointer-events: none;
-
-  .big-mediaNav-arrow {
-    position: absolute;
-    top:45%;
-    pointer-events: auto;
-    padding: 0;
-
-    color: $gris;
-    background-color: white;
-    box-shadow: 0 5px 20px $gris;
-
-    transform-origin: center center;
-
-    opacity: 1;
-    transition: transform .4s, border-color .5s, opacity .4s;
-
-    &::before {
-      content:'';
-      font-family: 'Fira Mono';
-      font-size: 3em;
-    }
-
-    &.is--disabled {
-      opacity: 0;
-      pointer-events: none;
-      transform: rotate(0deg);
-    }
-    &:hover {
-      color: $bleuvert;
-    }
-  }
-
-  .big-mediaNav-arrow_left {
-    right: 101%;
-    &::before {
-      content:'<';
-    }
-  }
-  .big-mediaNav-arrow_right {
-    left: 101%;
-    &::before {
-      content:'>';
-    }
-  }
-
-}
-
-
-
-
 .module_infos {
   position: relative;
 
   float: none;
-  padding: $margin;
-  margin-top:   $margin*2;
-  color: $grisfonce;
+  padding: $t-margin;
+  margin-top:   $t-margin*2;
+  color: $c-gris_fonce;
   text-align: center;
-}
 
+  a {
+    color: $c-noir;
+  }
 
-.txt-small_info {
-  color: $gris;
-  font-size: .8em;
-  line-height:  1.5;
-  margin-bottom: $margin;
-}
-
-.txt-mono {
-  font-family:  'Fira Mono', monospace;
-}
-
-.txt-wrap_long_lines {
-  /* These are technically the same, but use both */
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-
-  -ms-word-break: break-all;
-  /* This is the dangerous one in WebKit, as it breaks things wherever */
-  word-break: break-all;
-  /* Instead use this non-standard one: */
-  word-break: break-word;
-
-  /* Adds a hyphen where the word breaks, if supported (No Blink) */
-  -ms-hyphens: auto;
-  -moz-hyphens: auto;
-  -webkit-hyphens: auto;
-  hyphens: auto;
+  // remove that div when in footer in bibli (it is placed in bibli-buffer instead)
+  body.bibli > & {
+    display: none;
+  }
+  // this is to make the info inside bibli-buffer fit the available width
+  body.bibli[data-publicationpane="open"] & {
+      width: 50%;
+  }
 }
 
 
@@ -477,14 +328,16 @@ button {
     flex: 1 100%;
   }
 
-  > .flex_40 {
-    flex: 1 40%;
-  }
-  > .flex_50 {
-    flex: 1 50%;
-  }
-  > .flex_60 {
-    flex: 1 60%;
+  @media #{$large}{
+    > .flex_40 {
+      flex: 1 40%;
+    }
+    > .flex_50 {
+      flex: 1 50%;
+    }
+    > .flex_60 {
+      flex: 1 60%;
+    }
   }
 }
 
@@ -504,6 +357,7 @@ button {
     width: $mediasWidthHeight;
     padding-bottom: $mediasWidthHeight;
 
+    background-color: $c-gris_clair;
     overflow: hidden;
 
     z-index: 1;
@@ -513,8 +367,6 @@ button {
       top: 0; left: 0;  right: 0; bottom: 0;
 
       overflow: hidden;
-      background-color: $gristresclair;
-
       border-width: 1px;
       border-style: solid;
       border-color: $c-separator;
@@ -531,14 +383,8 @@ button {
         min-width: 0;
         width: 100%;
         object-fit: scale-down;
-
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
         flex: 7;
-
         overflow: auto;
-
       }
     }
 
@@ -554,9 +400,9 @@ button {
     }
 
     &.media_text {
+      background-color: $c-creme;
       .mediaContent {
-        background-color: $gristrestresclair;
-        padding:  $margin/2;
+        padding:  $t-margin/2;
       }
     }
 
@@ -570,14 +416,14 @@ button {
       background-color: #fff;
 
       .mediaData--informations {
-        padding: 0 $margin/2;
+        padding: 0 $t-margin/2;
         margin: 0;
         font-size: 80%;
         background-color: #fff;
 
         overflow: hidden;
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 1;
         -webkit-box-orient: vertical;
 
         &:empty {
@@ -628,7 +474,7 @@ button {
       width: 100px;
       height: 100px;
       z-index: 0;
-      background-color: $bleuvert;
+      background-color: $c-bleuvert;
       transform: rotate(45deg) translate3d(50px, 0, 0px);
 
       transition: transform .35s;
@@ -643,9 +489,9 @@ button {
       }
 
       .mediaContent {
-  //       box-shadow: 0 1px 8px $bleuvert;
-  //       background-color: $bleuvert;
-  //       background-color: $bleuvert;
+  //       box-shadow: 0 1px 8px $c-bleuvert;
+  //       background-color: $c-bleuvert;
+  //       background-color: $c-bleuvert;
 
         img, video {
         }
@@ -769,69 +615,16 @@ button {
 
 @keyframes blink {
    0% {
-    opacity: 0;
     background-color: $c-images;
   }
   100% {
-    opacity: 1;
     background-color: transparent;
   }
 }
 [data-oninsert="blink"] {
-  -webkit-animation: blink 1.4s ease-out 1;
-  animation: blink 1.4s ease-out 1;
+  -webkit-animation: blink 1.4s ease-in 1;
+  animation: blink 1.4s ease-in 1;
 }
-
-input[type=range] {
-  & {
-    -webkit-appearance: none;
-    margin: 18px 0;
-    width: 100%;
-  }
-  &:focus {
-    outline: none;
-  }
-  &::-webkit-slider-runnable-track  {
-    width: 100%;
-    height: 4px;
-    cursor: pointer;
-    animate: 0.2s;
-    background: $bleuvert-clair;
-  }
-  &::-webkit-slider-thumb {
-    height: 18px;
-    width: 18px;
-    border-radius: 50%;
-    background: $bleuvert;
-    cursor: pointer;
-    -webkit-appearance: none;
-    margin-top: -7px;
-  }
-}
-
-input[type="number"] {
-  height: 2em;
-  width: 3em;
-
-  padding: $margin/2;
-  margin: $margin/2 0;
-
-  border:none;
-  border-bottom: 2px solid $gris;
-  background-color: $gristrestresclair;
-
-  box-shadow: none;
-  text-align: center;
-  font-weight: 500;
-
-  color: currentcolor;
-
-  &::-webkit-inner-spin-button,
-  &::-webkit-outer-spin-button {
-     opacity: 1;
-  }
-}
-
 
 .js--templates {
   display: none;
@@ -844,7 +637,7 @@ input[type="number"] {
 
 // text medias style
 .mediaContent--textOfTextmedia {
-  font-size:1em;
+  font-size:1rem;
 
   >*:first-child {
     margin-top: 0;
@@ -858,12 +651,7 @@ input[type="number"] {
   }
 
   strong, b {
-    color:$rouge;
-  }
-
-  hr {
-    border-width: 1px 0 0;
-    border-color: $gris;
+    color:$c-rouge;
   }
 
   h1,h2,h3,h4,h5,h6 {
@@ -875,12 +663,12 @@ input[type="number"] {
   h1 {
     padding-bottom: 0.3em;
     font-size: 2em;
-    border-bottom: 1px solid $gris;
+    border-bottom: 1px solid $c-gris;
   }
   h2 {
     padding-bottom: 0.3em;
     font-size: 1.5em;
-    border-bottom: 1px solid $gris;
+    border-bottom: 1px solid $c-gris;
   }
   h3 {
     font-size: 1.25em;
@@ -901,7 +689,7 @@ input[type="number"] {
     float: left;
     width: calc(100% - 60px);
 
-    padding: $margin;
+    padding: $t-margin;
 
     font-weight: bold;
     font-size: 1.5em;
@@ -916,7 +704,7 @@ input[type="number"] {
     position: relative;
     width: 60px;
     float: left;
-    padding: $margin 10px 0;
+    padding: $t-margin 10px 0;
 
     .button-wrapper {
       float: right;
@@ -925,7 +713,7 @@ input[type="number"] {
 
   .media {
     position: relative;
-    margin-bottom:  $margin;
+    margin-bottom:  $t-margin;
 
     .button-wrapper_deleteMedia {
       position: absolute;

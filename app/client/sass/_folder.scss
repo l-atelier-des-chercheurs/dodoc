@@ -47,7 +47,7 @@ body.projets{
     }
 
     .statut-type {
-      color: $bleuvert;
+      color: $c-bleuvert;
     }
     &[data-statut="en cours"] {
       .title.title:hover {
@@ -59,7 +59,7 @@ body.projets{
     }
     &[data-statut="terminé"] {
       .button-wrapper_editProjet {
-        opacity: 0;
+//         opacity: 0;
       }
     }
     .project-inside {
@@ -68,7 +68,7 @@ body.projets{
 
       .project-link {
         display: block;
-        padding: $margin/2 0px;
+        padding: $t-margin/2 0px;
 
         .title {
           @extend .insidePadding;
@@ -85,7 +85,7 @@ body.projets{
 
     .project-content {
       border-right: none;
-      padding: $margin/2 0px ;
+      padding: $t-margin/2 0px ;
 
       .title {
         display: block;
@@ -95,7 +95,7 @@ body.projets{
         line-height: 1.4;
 
         &:hover {
-          color: $bleuvert;
+          color: $c-bleuvert;
         }
       }
       .meta-data{
@@ -123,7 +123,6 @@ body.projets{
       }
     }
     .image-wrapper{
-
       position: relative;
       background-color: $c-separator;
 
@@ -131,40 +130,21 @@ body.projets{
       background-size: cover;
       background-position: center center;
 
-      &::after {
-        content: '';
-        display: block;
-        position: absolute;
-
-        width: 100%;
-        height: 100%;
-
-        background-image: linear-gradient(30deg, transparentize( #fff, .9), transparentize( #fff, 0.6));
-
-        opacity: 1;
-        transition: opacity .6s ease-out;
-      }
-
-      &:hover::after {
-        opacity: 0;
-      }
+      min-height: 160px;
     }
 
 
     .last-medias {
       @include clearfix();
       background-color: #fff;
-
-      border-bottom:   1px solid $c-separator;
-      background-color: #f9f9f9;
-      padding: $margin/2 $margin/2;
+      padding: $t-margin/2 $t-margin/2;
 
       body.projets & {
         display: none;
       }
 
       .legende {
-        padding: 0 $margin/4;
+        padding: 0 $t-margin/4;
       }
 
       .media {
@@ -183,23 +163,21 @@ body.projets{
 
       @include clearfix();
       background-color: #fff;
+      padding: $t-margin/2 $t-margin/2;
 
       border-bottom:   1px solid $c-separator;
-      background-color: #f9f9f9;
       margin-bottom:  75px;
-      padding: $margin 0;
 
       height: 100%;
       overflow: scroll;
 
       .legende {
-        padding: 0 $margin;
+        padding: 0 $t-margin;
       }
 
       .list-publi {
-
         .publi-folder {
-          margin: 10px 16px;
+          margin: $t-margin/2 0;
         }
       }
 
@@ -224,15 +202,5 @@ body.projet {
       cursor: default;
     }
 
-  }
-}
-
-@media #{$small-only}{
-  #container {
-    .folder-wrapper {
-      .folder-title{
-        font-size: 2rem !important;
-      }
-    }
   }
 }

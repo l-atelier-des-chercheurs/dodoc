@@ -7,15 +7,16 @@ var minifyCss = require('gulp-minify-css');
 var plumber = require('gulp-plumber');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
-var jshint       = require('gulp-jshint');
+var jshint = require('gulp-jshint');
+var sourcemaps = require('gulp-sourcemaps');
+var uglify = require('gulp-uglify');
 var dodoc  = require('./dodoc.js');
 
 var pluginsScripts = [
   'client/bower_components/jquery/dist/jquery.min.js',
-  'client/bower_components/velocity/velocity.min.js',
-  'client/bower_components/moment/min/moment-with-locales.js',
-  'client/bower_components/foundation/js/foundation.min.js',
-  'client/bower_components/foundation/js/foundation/foundation.reveal.js',
+  'node_modules/socket.io-client/dist/socket.io.min.js',
+  'client/bower_components/moment/min/moment.min.js',
+  'client/bower_components/moment/locale/fr.js',
   'client/bower_components/store-js/store.min.js',
   'client/bower_components/alertifyjs/dist/js/alertify.js',
 ];
@@ -44,8 +45,12 @@ gulp.task('sass', function() {
             this.emit('end');
         }
     }))
+    .pipe(sourcemaps.init())
     .pipe(sass())
+    .pipe(sourcemaps.write())
     .pipe(concat('style.css'))
+    .pipe(minifyCss())
+    .pipe(rename('style.min.css'))
     .pipe(gulp.dest('client/css'));
 });
 
@@ -87,6 +92,8 @@ gulp.task('lint', function() {
 gulp.task('script-plugins', function() {
   return gulp.src(pluginsScripts)
     .pipe(concat('plugins.js'))
+    .pipe(rename('plugins.min.js'))
+//     .pipe(uglify())
     .pipe(gulp.dest('client/js/production'));
 });
 
@@ -94,7 +101,7 @@ gulp.task('script-plugins', function() {
 // Watch Files For Changes
 gulp.task('watch', function() {
 //   gulp.watch(['client/js/*.js', 'client/js/libs/*.js','client/js/capture/*.js',], ['lint']);
-  gulp.watch( ['client/sass/*.scss'].concat(templateCss).concat(userCss), ['sass', 'templatesSass', 'css']);
+  gulp.watch( ['client/sass/*.scss', 'client/sass/basic/*.scss'].concat(templateCss).concat(userCss), ['sass', 'templatesSass', 'css']);
 });
 
 // Default Task

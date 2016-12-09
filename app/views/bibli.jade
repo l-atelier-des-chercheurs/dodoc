@@ -1,5 +1,3 @@
-include templates/buttons.jade
-
 doctype html
 html
   head
@@ -18,31 +16,32 @@ html
         +button( 'dossier', 'isNav')
         +button( 'projet', 'isNav')
         +button( 'bibli', 'isNav')
-        div.shortcut-button
+        .shortcut-button
           +button('capture', '', 'isCollapsed')
 
     .biblimontage-container.mainContent
       .bibli-buffer
         .bibli-btn
-          +button( 'ajoutText', '', 'isCollapsed')
-          +button( 'ajoutMedia', '', 'isCollapsed')
+          +button( 'addText', '', '')
+          +button( 'addLocalMedia', '', '')
         ul.medias-list.grille_de_medias
+        +snippets('moduleInfos')
 
       .montage
         +button( 'publications', '', 'isCollapsed')
         .montage-list
-          h1.txt-small_info
+          h1.txt-small_info.margin-top_bottom
             | !{dodoc.lang.listOfPublications}
           +button( 'createPublication', '', '')
 
           ul
         .montage_publi_container(data-publidata)
 
-    include templates/modals/addPubli
-    include templates/modals/importMedia
-    include templates/modals/addText
-    include templates/modals/bigMedia
-    include templates/modals/editPubli
+    +modals('addPubli')
+    +modals('editPubli')
+    +modals('addLocalMedia')
+    +modals('addText')
+    +modals('editMedia')
 
     .js--templates
       include templates/js_templates

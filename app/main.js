@@ -10,7 +10,8 @@ var dodocProject = require('./bin/dodoc-project');
 var dodocMedia = require('./bin/dodoc-media');
 var dodocPubli = require('./bin/dodoc-publi');
 
-var exportPubliToFtp = require('./bin/upload-to-ftp.js');
+var uploadToFtp = require('./bin/upload-to-ftp.js');
+var exportPubliToPDF= require('./bin/export-to-pdf.js');
 
 try { var exportConfig  = require('./ftp-config.js'); }
 catch( err) { console.log('No ftp config files have been found'); }
@@ -20,15 +21,27 @@ module.exports = function(app, io){
   console.log("Main module initialized");
 
   io.on("connection", function(socket){
+
+    var onevent = socket.onevent;
+    socket.onevent = function (packet) {
+        var args = packet.data || [];
+        onevent.call (this, packet);    // original call
+        packet.data = ["*"].concat(args);
+        onevent.call(this, packet);      // additional call to catch-all
+    };
+    socket.on("*",function(event,data) {
+      dev.log('RECEIVED EVENT : ' + event);
+    });
+
     // I N D E X    P A G E
     socket.on( 'listFolders', function (data){ onListFolders(socket); });
-    socket.on("newFolder", onNewFolder);
-    socket.on("editFolder", onEditFolder);
-    socket.on("removeFolder", onRemoveFolder);
+    socket.on( 'addFolder', function (data){ onNewFolder(socket,data); });
+    socket.on( 'editFolder', onEditFolder);
+    socket.on( 'removeOneFolder', onRemoveOneFolder);
 
     // F O L D E R     P A G E
     socket.on("listProjects", function (data){ onListProjects( socket, data); });
-    socket.on("newProject", onNewProject);
+    socket.on("addProject", onNewProject);
     socket.on("editProject", onEditProject);
     socket.on("removeOneProject", onRemoveOneProject);
 
@@ -58,6 +71,8 @@ module.exports = function(app, io){
 		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 
     socket.on( 'exportPubliToFtp', function (data){ onExportPubliToFtp( socket, data); });
+    socket.on( 'ftpSettings', function (data){ onFtpSettings( socket, data); });
+    socket.on( 'generatePDF', function (data){ onGeneratePDF( socket, data, io); });
 	});
 
   /***************************************************************************
@@ -75,13 +90,13 @@ module.exports = function(app, io){
 // I N D E X     P A G E
 
   // Create a new folder
-  function onNewFolder( folderData) {
-    dev.logfunction( "EVENT - onNewFolder");
-    dodocFolder.createNewFolder( folderData).then( function( newpdata) {
-      dodocAPI.sendEventWithContent( 'folderCreated', newpdata, io);
+  function onNewFolder(socket, folderData) {
+    dev.logfunction( "EVENT - onNewFolder with packet " + JSON.stringify( folderData, null, 4));
+    dodocFolder.createNewFolder( folderData).then(function( newpdata) {
+      dodocAPI.sendEventWithContent('folderCreated', newpdata, io);
     }, function(error) {
       dev.error("Failed to create a new folder! Error: " + error);
-      dodocAPI.sendEventWithContent( 'folderAlreadyExist', io, errorpdata);
+      dodocAPI.sendEventWithContent( 'folderAlreadyExist', error, io, socket);
     });
   }
 
@@ -89,30 +104,33 @@ module.exports = function(app, io){
     dev.logfunction( "EVENT - onListFolders");
     dodocFolder.listAllFolders().then(function( allFoldersData) {
       dodocAPI.sendEventWithContent( 'listAllFolders', allFoldersData, io, socket);
-      // also list projects !
-      allFoldersData.forEach( function( fdata) {
-        onListProjects( socket, fdata);
-      });
+      // also list projects if there are folders
+      if(allFoldersData !== undefined) {
+        allFoldersData.forEach( function( fdata) {
+          onListProjects(socket, fdata);
+        });
+      }
     }, function(error) {
       dev.error("Failed to list folders! Error: " + error);
     });
   }
 
   // Modifier un dossier
-  function onEditFolder( updatedFolderData){
+  function onEditFolder(updatedFolderData){
     dev.logfunction( "EVENT - onEditFolder with packet " + JSON.stringify( updatedFolderData, null, 4));
-    dodocFolder.updateFolderMeta( updatedFolderData).then(function( currentDataJSON) {
-      dodocAPI.sendEventWithContent( 'folderModified', currentDataJSON, io);
+    dodocFolder.updateFolderMeta( updatedFolderData).then(function(fdata) {
+      dodocAPI.sendEventWithContent( 'folderModified', fdata, io);
+      onListProjects('', fdata);
     }, function(error) {
       dev.error("Failed to update a folder! Error: " + error);
     });
   }
 
   // Supprimer un dossier
-  function onRemoveFolder( fdata){
-    dev.logfunction( "EVENT - onRemoveFolder");
-    dodocFolder.removeFolderNamed( fdata.slugFolderName).then(function( removedFolderData) {
-      dodocAPI.sendEventWithContent( 'folderRemoved', removedFolderData, io);
+  function onRemoveOneFolder(fdata){
+    dev.logfunction( "EVENT - onRemoveOneFolder");
+    dodocFolder.removeOneFolder(fdata).then(function(d) {
+      dodocAPI.sendEventWithContent( 'folderRemoved', d, io);
     }, function(error) {
       dev.error("Failed to remove a folder! Error: " + error);
     });
@@ -131,9 +149,9 @@ module.exports = function(app, io){
     });
   }
 
-  function onNewProject( projectData) {
+  function onNewProject(projectData) {
     dev.logfunction( "EVENT - onNewProject");
-    dodocProject.createNewProject( projectData).then( function( newpdata) {
+    dodocProject.createNewProject(projectData).then( function( newpdata) {
       dodocAPI.sendEventWithContent( 'projectCreated', newpdata, io);
     }, function(error) {
       dev.error("Failed to create a new project! Error: " + error);
@@ -264,7 +282,6 @@ module.exports = function(app, io){
 
     dodocMedia.makeImageFromData(imageBuffer.data, pathToFile)
     .then(function(imagePath) {
-      dev.log('passed');
     		var mediaData = {};
     		mediaData.newImageName = newFileName+'.jpeg';
       dodocAPI.sendEventWithContent('newStopmotionImage', mediaData, io, socket);
@@ -415,7 +432,21 @@ module.exports = function(app, io){
   }
 
   function onExportPubliToFtp(socket, publiData) {
-    exportPubliToFtp.exportPubliToFtp( socket, publiData);
+    dev.logfunction( "EVENT - exportPubliToFtp : " + JSON.stringify( publiData, null, 4));
+    uploadToFtp.exportPubliToFtp( socket, publiData);
+  }
+
+  function onFtpSettings(socket, data) {
+    uploadToFtp.sendFileToServer( socket, data);
+  }
+
+
+  function onGeneratePDF(socket, data, io) {
+    fs.writeFile('app/index.html', data.html, function(err) {
+      if (err) return( err);
+      else{console.log('html print file has been writen')}
+    });
+    exportPubliToPDF.exportPubliToPDF( socket, data, io);
   }
 
 // F I N     P U B L I     P A G E

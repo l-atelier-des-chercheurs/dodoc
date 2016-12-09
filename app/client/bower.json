@@ -21,7 +21,6 @@
   ],
   "devDependencies": {
     "foundation": "~5.5.3",
-    "velocity": "~1.2.3",
     "jquery-ui": "~1.11.4",
     "alertifyjs": "^1.0.11"
   },

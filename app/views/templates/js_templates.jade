@@ -1,11 +1,11 @@
-li.media.media_image(data-ratio data-title data-legende data-highlight=false)
+li.media.media_image.js--openModal_editMedia(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     img
     .mediaData
       p.mediaData--informations
   +button( 'flag', '', 'isCollapsed')
   +button('deleteMedia', '', 'isCollapsed')
-li.media.media_video(data-ratio data-title data-legende data-highlight=false)
+li.media.media_video.js--openModal_editMedia(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     video(preload="none" controls)
       source()
@@ -13,7 +13,7 @@ li.media.media_video(data-ratio data-title data-legende data-highlight=false)
       p.mediaData--informations
   +button( 'flag', '', '')
   +button('deleteMedia', '', 'isCollapsed')
-li.media.media_stopmotion(data-ratio data-title data-legende data-highlight=false)
+li.media.media_stopmotion.js--openModal_editMedia(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     video(preload="none" controls)
       source()
@@ -21,7 +21,7 @@ li.media.media_stopmotion(data-ratio data-title data-legende data-highlight=fals
       p.mediaData--informations
   +button( 'flag', '', '')
   +button('deleteMedia', '', 'isCollapsed')
-li.media.media_audio(data-ratio data-title data-legende data-highlight=false)
+li.media.media_audio.js--openModal_editMedia(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     img.poster
     audio(preload="none" controls)
@@ -30,7 +30,7 @@ li.media.media_audio(data-ratio data-title data-legende data-highlight=false)
       p.mediaData--informations
   +button( 'flag', '', '')
   +button('deleteMedia', '', 'isCollapsed')
-li.media.media_text(data-ratio data-title data-legende data-highlight=false)
+li.media.media_text.js--openModal_editMedia(data-ratio data-title data-legende data-highlight=false)
   .mediaContent
     .mediaContent--textOfTextmedia
   +button( 'flag', '', '')
@@ -55,21 +55,21 @@ li.publi-folder(data-publi="")
   .mediaContent.small-12.large-8.columns
     img
   .mediaDataForm.small-12.large-4.columns
-    include modals/mediaForm.jade
+    +snippets('mediaForm')
 
 .media-big_video.media-big(data-type="video")
   .mediaContent.small-12.large-8.columns
     video(preload="none" controls)
       source()
   .mediaDataForm.small-12.large-4.columns
-    include modals/mediaForm.jade
+    +snippets('mediaForm')
 
 .media-big_stopmotion.media-big(data-type="stopmotion")
   .mediaContent.small-12.large-8.columns
     video(preload="none" controls)
       source()
   .mediaDataForm.small-12.large-4.columns
-    include modals/mediaForm.jade
+    +snippets('mediaForm')
 
 .media-big_audio.media-big(data-type="audio")
   .mediaContent.small-12.large-8.columns
@@ -77,11 +77,11 @@ li.publi-folder(data-publi="")
     audio(preload="none" controls)
       source()
   .mediaDataForm.small-12.large-4.columns
-    include modals/mediaForm.jade
+    +snippets('mediaForm')
 
 .media-big_text.media-big(data-type="text" data-id)
   .mediaDataForm
-    include modals/mediaForm_txt.jade
+    +snippets('mediaForm_txt')
 
 
 .project(data-statut)
@@ -90,7 +90,7 @@ li.publi-folder(data-publi="")
     .project-content.flex_50.flex_structure
       a(href="" title="Dodoc").project-link
         h2.title
-      .meta-data.txt-small_info.txt-mono.flex_40
+      .meta-data.txt-small_info.flex_40.margin-top_bottom
         .statut
           span
             | !{dodoc.lang.status}
@@ -104,7 +104,7 @@ li.publi-folder(data-publi="")
             | !{dodoc.lang.modifiedOn}
           span.modify-date
       .button-to-pages.flex_60
-        h3.txt-small_info
+        h3.txt-small_info.margin-top_bottom
           | !{dodoc.lang.quickAccess}
         +button('capture', '', 'isCollapsed')
         +button('bibli', '', 'isCollapsed')
@@ -128,7 +128,7 @@ li.dossier.small-12.medium-12.large-4.columns(data-statut data-name data-nom)
       a.folder-link(href title)
         h2.title
       .projet-list
-    .meta-data.txt-small_info.txt-mono.row
+    .meta-data.txt-small_info.row
       .nb-projets.small-6.columns
         span.nb-projets-intitule
           | !{dodoc.lang.projects}

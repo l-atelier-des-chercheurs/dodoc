@@ -13,15 +13,18 @@ body.bibli {
 .bibli-btn {
   @include clearfix();
   position: relative;
-  padding: $margin/2;
-  margin: 0 $margin/2;
 
   background-color: transparent;
   border:none;
   border-bottom: 1px solid $c-separator;
 
+  body.bibli[data-publicationpane="open"] & {
+    width: 50%;
+  }
+
   .button-wrapper {
     float: left;
+    margin: $t-margin/2;
   }
 }
 
@@ -49,7 +52,7 @@ body.bibli {
 
     body[data-publicationpane="open"] & {
       right: 100 - $pourcentageBuffer;
-      background-color: $rouge;
+      background-color: $c-rouge;
     }
 
     &:hover {
@@ -63,7 +66,7 @@ body.bibli {
 
       .button-wrapper {
         &_add, &_edit, &_publi, &_editProjet, &_addMedia, &_backButton, &_editFolder {
-          background-color: $rouge;
+          background-color: $c-rouge;
           color: white;
         }
         &_capture, &_view, &_deleteFolder, &_deleteMedia {
@@ -74,8 +77,8 @@ body.bibli {
           background-color: $c-bibli;
           color: white;
         }
-        &_accept, &_addText {
-          background-color: $bleuvert;
+        &_valider, &_addText {
+          background-color: $c-bleuvert;
           color: white;
         }
 
@@ -101,9 +104,9 @@ body.bibli {
   left: $pourcentageBuffer;
   right: 0;
 
-  background: $rouge;
-  border-left: 4px solid darken($rouge, 8%);
-
+  background: $c-rouge;
+  border-left: 4px solid darken($c-rouge, 12%);
+  border-bottom: 4px solid darken($c-rouge, 12%);
 
   padding-left: 0.9375rem * 2;
   padding-right: 0.9375rem * 2;
@@ -119,8 +122,8 @@ body.bibli {
 
   .button-wrapper_publi {
     position: absolute;
-    top: $margin/2;
-    background-color: $rouge !important;
+    top: $t-margin/2;
+    background-color: $c-rouge !important;
     border-radius: 4px 0 0 4px;
     right: 100%;
     z-index: 1900;
@@ -148,12 +151,12 @@ body.bibli {
     left:0;
     display: block;
     min-height: 100vh;
-    background-color: $rouge;
+    background-color: $c-rouge;
 
     .montage-btn {
       @include clearfix();
       padding: 15px;
-      background-color: $rouge;
+      background-color: $c-rouge;
 
       .button-wrapper_backButton {
         float: left;
@@ -213,7 +216,7 @@ body.bibli {
 
       &:hover {
         .mediaContent {
-          outline: 4px dashed $orange;
+          outline: 4px dashed $c-orange;
         }
         .button-wrapper_deleteMedia {
           opacity:1;
@@ -267,6 +270,7 @@ body.bibli {
 
 // class ajoutée aux éléments draggés. En bas du dom
 .gu-mirror {
+  background-color: $c-gris_clair;
   .mediaContent {
     width: 100%;
     height: 100%;
@@ -275,7 +279,6 @@ body.bibli {
       object-fit:scale-down;
       width: 100%;
       height: 100%;
-
     }
     audio {
       display: none;
@@ -297,11 +300,8 @@ body.bibli {
 .grille_de_medias {
 
   @include clearfix();
-
   width: 100%;
   padding: 0;
-  border-left: 1px solid $c-separator;
-  border-right: 1px solid $c-separator;
 
   body[data-publicationpane="open"] & {
     width: $pourcentageBuffer;
@@ -385,7 +385,7 @@ body.bibli {
         cursor: pointer;
 
         &:hover {
-          color: $rouge;
+          color: $c-rouge;
         }
       }
     }
@@ -417,19 +417,6 @@ body.bibli {
         display:none !important;
       }
     }
-  }
-
-  .reveal-modal#modal-media-view{
-    max-width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    .button-wrapper{
-      float: left;
-    }
-  }
-
-  .montage-list ul{
-    margin-top: 50px;
   }
 
   .montage_publi {

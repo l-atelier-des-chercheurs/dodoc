@@ -23,10 +23,12 @@ if( lang === 'fr') {
       "ok" : "ok",
       "cancel" : "annuler",
       "name" : "Nom",
+      "close" : "Fermer",
       "remove" : "Supprimer",
       "edit" : "Modifier",
       "accept" : "Valider",
       "uploadPubliToFtp" : "Envoyer la publication vers un FTP",
+      "generatePDF" : "Exporter la publication en PDF",
 
       "lastMediasAdded" : "Derniers médias ajoutés",
       "listOfPublications" : "Liste des publications",
@@ -40,7 +42,7 @@ if( lang === 'fr') {
 
       "editTitle" : "Éditer le titre",
       "createText" : "Créer du texte",
-      "importMedia" : "Importer un média",
+      "addLocalMedia" : "Importer un média",
       "back" : "retour",
       "fullscreen" : "Plein écran",
       "quitFullscreen" : "Quitter le plein écran",
@@ -51,6 +53,9 @@ if( lang === 'fr') {
       "addToFav" : "Mettre en favoris",
 
       "selectTemplate" : "Sélection de gabarit",
+
+      "thisFolderNameIsAlreadyTaken" : "Le nom de dossier suivant existe déjà&nbsp;: ",
+      "pleaseUseAnother" : "Veuillez en utiliser un autre.",
 
       "browserCantUserWebRTC" : "Attention ! Votre navigateur ne permet pas de capturer des photos et du son (Safari ou appareils Apple).\nUtilisez l’option d’import  de la page Bibliothèque (croix jaune) pour ajouter des photos, des vidéos et du son.",
       "chooseCameraResolution" : "Sélectionnez la résolution de votre caméra",
@@ -69,10 +74,14 @@ if( lang === 'fr') {
       "imageCount" : "Image ",
       "frameRate" : "Vitesse de lecture&nbsp;: ",
 
+      "aStopmotionIsRecordingFinishItFirst" : "Une animation est en cours, terminez là pour changer de mode.",
+      "aVideoIsRecordingFinishItFirst" : "Une vidéo est en cours d’enregistrement, terminez là pour changer de mode.",
+
       "audioInputSource" : "source audio&nbsp;:",
       "audioOutputDestination" : "destination audio&nbsp;:",
       "videoInputSource" : "source video:",
       "lastImageOpacity" : "Afficher la dernière image en transparence",
+      "enableAudioInVideo" : "Enregistrer le son",
 
       "currentVideoResolutionIs" : "Résolution actuelle&nbsp;: ",
       "videoStreamCouldntBeStartedTryChangingRes" : "Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la résolution dans le panneau de droite.",
@@ -81,9 +90,12 @@ if( lang === 'fr') {
 
       "mediapublitemplatesarestoredint" : "Les données chargées sur cette page sont stockées dans le dossier suivant&nbsp;: ",
       "toconnectwithanotherdevice" : "Pour vous connecter avec un autre appareil connecté au même réseau wifi, naviguez vers l’adresse suivante (et ignorez l’avertissement qui s’affiche)&nbsp;:",
+      "clickHereToMoveContentFolder" : "Cliquez ici pour déplacer le dossier des contenus utilisateurs",
+
 
       "modal" : {
         "sureRemoveMedia" : "Êtes-vous sûr de vouloir supprimer ce média ?",
+        "someFieldsAreEmptyFillThem" : "Tous les champs obligatoires ne sont pas remplis.",
 
         "addText" : "Ajouter du texte",
 
@@ -99,18 +111,32 @@ if( lang === 'fr') {
         "inprogress" : "En cours",
         "finished" : "Terminé",
         "warningFinishedStatus" : "Attention&nbsp;! Le statut terminé ne vous permettra plus d'éditer.",
-        "sureToRemoveFolder" : "Êtes-vous sûr de vouloir supprimer le dossier&nbsp;?",
+        "sureToRemoveFolder" : "Êtes-vous sûr de vouloir supprimer le dossier ?",
 
         "editProject" : "Modifier le projet",
+        "pdfPublicationHasBeenSaved" : "La publication a bien été sauvegardée en pdf&nbsp;:",
+        "impossibleToConnectToServer" : "Impossible de se connecter au serveur",
+        "loginOrPassIsWrong" : "Mauvais login ou mot de passe",
+        "noInternetConnection" : "Pas de connexion internet",
+        "noInternetCantSendPublicationOverFtp" : "Vous n'êtes pas connecté à internet, vous ne pouvez donc pas envoyer votre publication en FTP.",
+        "yourFilesHaveBeenSaved" : "Vos fichiers web ont été sauvegardé&nbsp;:",
+        "sendFilesToAServer" : "Envoyer les fichiers vers un serveur",
 
         "selectAnImage" : "Sélectionnez une image",
-        "sureToRemoveProject" : "Êtes-vous sûr de vouloir supprimer le projet&nbsp;?",
+        "sureToRemoveProject" : "Êtes-vous sûr de vouloir supprimer le projet ?",
 
         "newProject" : "Nouveau projet",
         "newPubli" : "Nouvelle publication",
         "editPubli" : "Éditer la publication",
 
-        "newMediaCreatedAtPath" : "Un nouveau média vient d’être créé dans le projet "
+        "newMediaCreatedAtPath" : "Un nouveau média vient d’être créé dans le projet ",
+        "newFolderCreatedWithName" : "Un nouveau dossier vient d’être créé avec pour nom ",
+        "folderRemovedWithName" : "Le dossier suivant vient d’être supprimé&nbsp;: ",
+        "newProjectCreatedWithName" : "Un nouveau projet vient d’être créé avec pour nom ",
+        "projectRemovedWithName" : "Le projet suivant vient d’être supprimé&nbsp;: ",
+        "atPath" : " dans le chemin ",
+
+        "moveContentFolder" : "Déplacer le dossier <em>dodoc</em> sur votre disque dur",
 
       },
     }
@@ -133,6 +159,7 @@ if( lang === 'fr') {
       "mediapublitemplatesarestoredint" : "Medias, publications and templates are currently stored in ",
       "toconnectwithanotherdevice" : "To connect with another device, use the following URL (and ignore the warning that’s shown):",
 
+      "generatePDF" : "Export the publication in FTP",
     }
   };
 }
@@ -147,6 +174,7 @@ var settings = {
   "metaFileext" : ".txt",
   "videoext" : ".webm",
   "stopMotionext" : ".webm",
+  "audioext" : ".wav",
   "folderMetafilename" : "dossier",
   "projectMetafilename" : "projet",
 

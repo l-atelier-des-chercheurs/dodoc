@@ -1,5 +1,3 @@
-include templates/buttons.jade
-
 doctype html
 html
   head
@@ -11,7 +9,7 @@ html
         +logo()
         +button( 'dossier', 'isNav')
         +button( 'projet', 'isNav')
-        div.shortcut-button
+        .shortcut-button
           +button('capture', '', 'isCollapsed')
           +button('bibli', '', 'isCollapsed')
           +button('publications', '', 'isCollapsed')
@@ -19,12 +17,11 @@ html
     #container.row.mainContent
 
       ul.project-list
-        .txt-small_info
+        .txt-small_info.margin-top_bottom
           | !{dodoc.lang.project}
 
-    //- MODAL WINDOWS
-    include templates/modals/editProject
-    include templates/modals/bigMedia
+    +modals('editProject')
+    +modals('editMedia')
 
     .js--templates
       include templates/js_templates

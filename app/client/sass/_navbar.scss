@@ -89,7 +89,7 @@
   min-height:  $t-navbarheight;
 
   font-size:  1.1rem;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.02em;
 
   z-index: 100;
@@ -109,6 +109,7 @@
         .logo {
           width:  100%;
           height:   22vh;
+          min-height: 160px;
 
           // &::after {
           //   opacity: 0;
@@ -125,7 +126,7 @@
 
     .button-wrapper_add {
       float: left;
-      margin-top: $margin * 2;
+      margin-top: $t-margin * 2;
     }
   }
 
@@ -186,6 +187,7 @@
       float:left;
       height: 50px;
       position: relative;
+      font-style: italic;
 
       .button-wrapper {
         display: block;
@@ -224,13 +226,13 @@
           -webkit-transition: all .1s;
           transition: all .1s;
           z-index: -1;
-          -webkit-transform: skewX(-20deg) skewY(0);
-          -ms-transform: skewX(-20deg) skewY(0);
-          -o-transform: skewX(-20deg) skewY(0);
-          transform: skewX(-20deg) skewY(0);
+          -webkit-transform: skewX(-16deg) skewY(0);
+          -ms-transform: skewX(-16deg) skewY(0);
+          -o-transform: skewX(-16deg) skewY(0);
+          transform: skewX(-16deg) skewY(0);
 
-           border-radius: 4px;
           background-color: transparentize( $c-projet, $transparentize);
+          border-radius: 4px;
 
           transition: background-color .2s;
         }

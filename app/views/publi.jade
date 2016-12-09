@@ -1,9 +1,6 @@
-include templates/buttons.jade
-
 doctype html
 html
   head
-    link(rel='stylesheet', href='/bower_components/dragula.js/dist/dragula.min.css')
     include templates/head.jade
   body(class="publi")
 
@@ -11,11 +8,17 @@ html
       header.navbar
         +logo()
         +button( 'uploadPubliToFtp', '')
+        +button( 'generatePDF', '')
 
     .publi_container(data-publidata data-publishown="#{slugPubliName}")
       include templates/publiTemplate.jade
 
-    include templates/modals/editPubli
+    .div_is_loading
+    +modals('editPubli')
+    +modals('confirmPdfExported')
+    +modals('exportWebNoConnexion')
+    +modals('exportWebOnConnexion')
+    +modals('exportWebBadFTP')
     .js--templates
       include templates/js_templates
 

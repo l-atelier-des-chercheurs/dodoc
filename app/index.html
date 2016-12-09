@@ -1,0 +1,204 @@
+<head><meta class="foundation-mq-small"><meta class="foundation-mq-small-only"><meta class="foundation-mq-medium"><meta class="foundation-mq-medium-only"><meta class="foundation-mq-large"><meta class="foundation-mq-large-only"><meta class="foundation-mq-xlarge"><meta class="foundation-mq-xlarge-only"><meta class="foundation-mq-xxlarge"><meta class="foundation-data-attribute-namespace"><style type="text/css" id="alertifyCSS">.alertify-logs>*{padding:12px 24px;color:#fff;box-shadow:0 2px 5px 0 rgba(0,0,0,.2);border-radius:1px}.alertify-logs>*,.alertify-logs>.default{background:rgba(0,0,0,.8)}.alertify-logs>.error{background:rgba(244,67,54,.8)}.alertify-logs>.success{background:rgba(76,175,80,.9)}.alertify{position:fixed;background-color:rgba(0,0,0,.3);left:0;right:0;top:0;bottom:0;width:100%;height:100%;z-index:1}.alertify.hide{opacity:0;pointer-events:none}.alertify,.alertify.show{box-sizing:border-box;transition:all .33s cubic-bezier(.25,.8,.25,1)}.alertify,.alertify *{box-sizing:border-box}.alertify .dialog{padding:12px}.alertify .alert,.alertify .dialog{width:100%;margin:0 auto;position:relative;top:50%;transform:translateY(-50%)}.alertify .alert>*,.alertify .dialog>*{width:400px;max-width:95%;margin:0 auto;text-align:center;padding:12px;background:#fff;box-shadow:0 2px 4px -1px rgba(0,0,0,.14),0 4px 5px 0 rgba(0,0,0,.098),0 1px 10px 0 rgba(0,0,0,.084)}.alertify .alert .msg,.alertify .dialog .msg{padding:12px;margin-bottom:12px;margin:0;text-align:left}.alertify .alert input:not(.form-control),.alertify .dialog input:not(.form-control){margin-bottom:15px;width:100%;font-size:100%;padding:12px}.alertify .alert input:not(.form-control):focus,.alertify .dialog input:not(.form-control):focus{outline-offset:-2px}.alertify .alert nav,.alertify .dialog nav{text-align:right}.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button),.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button){background:transparent;box-sizing:border-box;color:rgba(0,0,0,.87);position:relative;outline:0;border:0;display:inline-block;-ms-flex-align:center;-ms-grid-row-align:center;align-items:center;padding:0 6px;margin:6px 8px;line-height:36px;min-height:36px;white-space:nowrap;min-width:88px;text-align:center;text-transform:uppercase;font-size:14px;text-decoration:none;cursor:pointer;border:1px solid transparent;border-radius:2px}.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):active,.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):hover,.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):active,.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):hover{background-color:rgba(0,0,0,.05)}.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus,.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus{border:1px solid rgba(0,0,0,.1)}.alertify .alert nav button.btn,.alertify .dialog nav button.btn{margin:6px 4px}.alertify-logs{position:fixed;z-index:1}.alertify-logs.bottom,.alertify-logs:not(.top){bottom:16px}.alertify-logs.left,.alertify-logs:not(.right){left:16px}.alertify-logs.left>*,.alertify-logs:not(.right)>*{float:left;transform:translateZ(0);height:auto}.alertify-logs.left>.show,.alertify-logs:not(.right)>.show{left:0}.alertify-logs.left>*,.alertify-logs.left>.hide,.alertify-logs:not(.right)>*,.alertify-logs:not(.right)>.hide{left:-110%}.alertify-logs.right{right:16px}.alertify-logs.right>*{float:right;transform:translateZ(0)}.alertify-logs.right>.show{right:0;opacity:1}.alertify-logs.right>*,.alertify-logs.right>.hide{right:-110%;opacity:0}.alertify-logs.top{top:0}.alertify-logs>*{box-sizing:border-box;transition:all .4s cubic-bezier(.25,.8,.25,1);position:relative;clear:both;backface-visibility:hidden;perspective:1000;max-height:0;margin:0;padding:0;overflow:hidden;opacity:0;pointer-events:none}.alertify-logs>.show{margin-top:12px;opacity:1;max-height:1000px;padding:12px;pointer-events:auto}</style><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="apple-mobile-web-app-capable" content="yes"><link rel="stylesheet" href="/css/style.min.css"><title>Publication | Une deuxième publi</title><link href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC2ElEQVRYR81XP0wTYRT/vfuTijGRDl0aCWWQARJhd+gV42Bqk3ZwlslVjE4ulMHRpI460dmhxEJchPsYjGtrggMMNMGwNBFcENK7+8x3R+0fevfdlRK55Ybv/fl9v/fe994jhPwMszJOXE1zjjyIUgBPAeIvPt4AqAHOG0RY42Rvs0zhOIxpkgkZ5ucUnNYyiBZlsj3nnK9C0VdY5lEjSM8XgLgxHFU4XorkuF+YUASsd36MDATgOueaCWD+Us47yjWQlRkE4gIAw9yYB7dNgMZH5PzcDD8GqRmWyda67fYA8G6u7o/eedulAGFPdTPxD8AV0O5HYE84OgA2qyUQno+Wdh9rHCvsQa4oTl0Abqlxaz+M8zvOEe7Zh7hrNzHBvVI/oHHsqQl8V5P4qcTDmAFImxIl6gHYqq4CeCrTzLR28aRV9xU7IR3r2gyYPi0zJc7LbCG3SOexP5JpPDv7inn7UCbmntfVJN7H7stlyYqTYVbz4KgESctuPkj3oz4HU8YEoUAy+kXMX59+kd+mT0KEoxRLy3KiTMbWJwZQ2s9DtrWDbOtHZABCYUOfwYY+G6DLt8nYrDZAmPSTWjpjmLabQwHYVRMoxYwg3ZoIAQ+SeHtSwRisoQCIMLwaywfqXimAP9Dw8mZBAuD/hqB+DZJQ8gqKMnxxyiLngaD/zY2H+KXcCgpB+Ro8RN70M9KnuKYm8SHEU8wWchS5GT1u7fiGQ9C+rs/Kn2AvKF4zcrthxHY8J9qx08SE7RF3oMaxpyTwTZ2UxbyTD93t2AWxWS2CsDzUixNVqX8g8Vhwc4EBmItqL6J8HWQZ7bnw4lDqaKI33I5oNJw4x28oVmrgUNq24I7ljsNGDsJ1rhiBY3kHxMjD0UN7N12S1UxbunRicqxAsUqRVrNuhOclKkZo6dDalwhlkFYcejntzyq3SqAZEOu5t5qL1a1dMXVAzOgkEngNsFjY9fwvnNhH1RL5OH0AAAAASUVORK5CYII=" id="favicon" rel="icon" type="image/x-icon"><style></style></head><body class="publi"><div class="navbar-container"><header class="navbar"><div class="logo"><a href="/" title="Dodoc"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 515 168" style="enable-background:new 0 0 515 168;" xml:space="preserve">
+<g id="archive">
+</g>
+<g id="fond_1_">
+</g>
+<g id="contenu">
+	<g>
+		<rect x="288.3" y="29" style="fill:#5AC5B9;" width="37.6" height="108.7"></rect>
+		<circle style="fill:#5AC5B9;" cx="375.1" cy="101.1" r="37.6"></circle>
+		<path style="fill:#5AC5B9;" d="M488.3,74.5c-14.7-14.7-38.5-14.7-53.2,0c-14.7,14.7-14.7,38.5,0,53.2L488.3,74.5z"></path>
+		<rect x="52" y="29" style="fill:#5AC5B9;" width="37.6" height="108.7"></rect>
+		<circle style="fill:#5AC5B9;" cx="145.3" cy="101.1" r="37.6"></circle>
+		<path style="fill:#5AC5B9;" d="M435.1,74.5c-14.7,14.7-14.7,38.5,0,53.2c14.7,14.7,38.5,14.7,53.2,0L435.1,74.5z"></path>
+	</g>
+	<g style="opacity:0.9;">
+		<circle style="fill:#FFBE32;" cx="288.3" cy="100.6" r="37.6"></circle>
+		<circle style="fill:#FFBE32;" cx="52" cy="100.6" r="37.6"></circle>
+		<circle style="fill:#FFBE32;" cx="375.1" cy="100.6" r="18.7"></circle>
+		<circle style="fill:#FFBE32;" cx="145.3" cy="100.6" r="18.7"></circle>
+		<circle style="fill:#FFBE32;" cx="215.9" cy="101.7" r="18.7"></circle>
+		<circle style="fill:#FFBE32;" cx="461.2" cy="100.6" r="18.7"></circle>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+<g id="Calque_5">
+</g>
+</svg>
+</a></div></header></div><div data-publidata="" data-publishown="une-deuxieme-publi" class="publi_container"><link id="templateCss" rel="stylesheet" href="/templates/unecolonne/style.css"><div data-template="unecolonne" class="template_container"><h2 class="publi-title js--publiTitle">Une deuxième publi</h2><div class="publi-btn"></div><hr><div class="publi_medias"><li data-ratio="" data-title="" data-legende="" class="media media_text js--openModal_editMedia" data-mediakey="05-textes/20161207_104642.txt" data-medianame="20161207_104642" data-mediatype="05-textes" data-type="05-textes" data-informations="" data-fav="false"><div class="mediaContent"><div class="mediaContent--textOfTextmedia"><p>Du texte
+Oui, beaucoup de texte</p></div></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--highlightMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<g id="archive">
+</g>
+<g id="fond_1_">
+</g>
+<g id="contenu">
+	<g>
+		<circle style="fill:#5AC5B9;" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon style="fill:#1D327F;" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon style="fill:#1D327F;" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+<g id="Calque_5">
+</g>
+</svg>
+</div></a></li><li data-ratio="" data-title="" data-legende="" class="media media_image js--openModal_editMedia is--highlight" data-mediakey="01-photos/20161206_151047.txt" data-medianame="20161206_151047" data-mediatype="01-photos" data-type="01-photos" data-informations="COUCOU !" data-fav="true"><div class="mediaContent"><img src="/les-alphabets/cp-helene/01-photos/20161206_151047-thumb.jpeg"><div class="mediaData"><p class="mediaData--informations">COUCOU !</p></div></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--highlightMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<g id="archive">
+</g>
+<g id="fond_1_">
+</g>
+<g id="contenu">
+	<g>
+		<circle style="fill:#5AC5B9;" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon style="fill:#1D327F;" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon style="fill:#1D327F;" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+<g id="Calque_5">
+</g>
+</svg>
+</div></a></li><li data-ratio="" data-title="" data-legende="" class="media media_image js--openModal_editMedia is--highlight" data-mediakey="01-photos/20161206_151059.txt" data-medianame="20161206_151059" data-mediatype="01-photos" data-type="01-photos" data-informations="COUCOU !
+" data-fav="true"><div class="mediaContent"><img src="/les-alphabets/cp-helene/01-photos/20161206_151059-thumb.jpeg"><div class="mediaData"><p class="mediaData--informations">COUCOU !<br></p></div></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--highlightMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<g id="archive">
+</g>
+<g id="fond_1_">
+</g>
+<g id="contenu">
+	<g>
+		<circle style="fill:#5AC5B9;" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon style="fill:#1D327F;" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon style="fill:#1D327F;" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+<g id="Calque_5">
+</g>
+</svg>
+</div></a></li></div></div></div><div class="div_is_loading"></div><div data-reveal="" data-modal-id="editPubli" class="m_modal"></div><!--////////////////////////////////////////////   EDIT PUBLI  //////////////////////////////////--><div data-pressentertosubmit="" class="m_modal-content"><div class="modal_title txt-large_title">Éditer la publication</div><form onsubmit="return false;"><input type="text" placeholder="Nom" autofocus="" required="" class="js--modal_name"><fieldset class="templateSelector"><div class="txt-small_info margin-top_bottom">Sélection de gabarit</div><label><input type="radio" name="publiTemplate" value="grille" checked="" class="js--modal_template"><img src="/templates/grille/icone.svg"><span>grille</span></label><label><input type="radio" name="publiTemplate" value="marseille" checked="" class="js--modal_template"><img src="/templates/marseille/icone.svg"><span>marseille</span></label><label><input type="radio" name="publiTemplate" value="numok" checked="" class="js--modal_template"><img src="/templates/numok/icone.svg"><span>numok</span></label><label><input type="radio" name="publiTemplate" value="unecolonne" checked="" class="js--modal_template"><img src="/templates/unecolonne/icone.svg"><span>unecolonne</span></label></fieldset><hr></form></div><div data-reveal="" data-modal-id="confirmPdfExported" class="m_modal"></div><!--////////////////////////////////////////////   CONFIRM PDF  //////////////////////////////////--><div class="m_modal-content"><div class="modal_title txt-large_title">La publication a bien été sauvegardée en pdf&nbsp;:</div><p class="pdfPath"></p></div><div data-reveal="" data-modal-id="exportWebNoConnexion" class="m_modal"></div><!--////////////////////////////////////////////   NO CONNEXION  //////////////////////////////////--><div class="m_modal-content"><div class="modal_title txt-large_title">Pas de connexion internet</div><p>Vous n'êtes pas connecté à internet, vous ne pouvez donc pas envoyer votre publication en FTP.</p><p>Vos fichiers web ont été sauvegardé&nbsp;:</p><p class="js--publiFilesSavedAtPath"></p></div><div data-reveal="" data-modal-id="exportWebOnConnexion" class="m_modal"></div><!--////////////////////////////////////////////   CONNEXION  //////////////////////////////////--><div class="m_modal-content"><div class="modal_title txt-large_title">Envoyer les fichiers vers un serveur</div><form onsubmit="return false;" class="ftp-settings-form lead"><input type="text" placeholder="Host" class="host"><input type="text" placeholder="Port" default="21" class="port"><input type="text" placeholder="User" class="user"><input type="password" placeholder="Password" class="pass"><input type="url" placeholder="Url du site" class="url"><input type="text" placeholder="Dossier" class="folder"></form></div><div data-reveal="" data-modal-id="exportWebBadFTP" class="m_modal"></div><!--////////////////////////////////////////////   BAD PDF  //////////////////////////////////--><div class="m_modal-content"><div class="modal_title txt-large_title">Impossible de se connecter au serveur</div><p>Mauvais login ou mot de passe</p></div><div class="js--templates"><li data-ratio="" data-title="" data-legende="" class="media media_image js--openModal_editMedia"><div class="mediaContent"><img><div class="mediaData"><p class="mediaData--informations"></p></div></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--highlightMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<g id="archive">
+</g>
+<g id="fond_1_">
+</g>
+<g id="contenu">
+	<g>
+		<circle style="fill:#5AC5B9;" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon style="fill:#1D327F;" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon style="fill:#1D327F;" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+<g id="Calque_5">
+</g>
+</svg>
+</div></a></li><li data-ratio="" data-title="" data-legende="" class="media media_video js--openModal_editMedia"><div class="mediaContent"><video preload="none" controls=""><source></video><div class="mediaData"><p class="mediaData--informations"></p></div></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--highlightMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<g id="archive">
+</g>
+<g id="fond_1_">
+</g>
+<g id="contenu">
+	<g>
+		<circle style="fill:#5AC5B9;" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon style="fill:#1D327F;" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon style="fill:#1D327F;" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+<g id="Calque_5">
+</g>
+</svg>
+</div></a></li><li data-ratio="" data-title="" data-legende="" class="media media_stopmotion js--openModal_editMedia"><div class="mediaContent"><video preload="none" controls=""><source></video><div class="mediaData"><p class="mediaData--informations"></p></div></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--highlightMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<g id="archive">
+</g>
+<g id="fond_1_">
+</g>
+<g id="contenu">
+	<g>
+		<circle style="fill:#5AC5B9;" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon style="fill:#1D327F;" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon style="fill:#1D327F;" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+<g id="Calque_5">
+</g>
+</svg>
+</div></a></li><li data-ratio="" data-title="" data-legende="" class="media media_audio js--openModal_editMedia"><div class="mediaContent"><img class="poster"><audio preload="none" controls=""><source></audio><div class="mediaData"><p class="mediaData--informations"></p></div></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--highlightMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<g id="archive">
+</g>
+<g id="fond_1_">
+</g>
+<g id="contenu">
+	<g>
+		<circle style="fill:#5AC5B9;" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon style="fill:#1D327F;" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon style="fill:#1D327F;" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+<g id="Calque_5">
+</g>
+</svg>
+</div></a></li><li data-ratio="" data-title="" data-legende="" class="media media_text js--openModal_editMedia"><div class="mediaContent"><div class="mediaContent--textOfTextmedia"></div></div><a href="#" title="Favoris" class="button-wrapper_flagMedia js--highlightMedia"><div class="btn icon"><!--?xml version="1.0" encoding="utf-8"?-->
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+<g id="archive">
+</g>
+<g id="fond_1_">
+</g>
+<g id="contenu">
+	<g>
+		<circle style="fill:#5AC5B9;" cx="84" cy="84" r="84"></circle>
+		<g>
+			<polygon style="fill:#1D327F;" points="113.8,59.7 131.9,37.4 131.9,37.4 66.1,37.4 66.1,82.1 131.9,82.1 131.9,82.1 			"></polygon>
+		</g>
+		<polygon style="fill:#1D327F;" points="63,136.5 53.4,136.5 53.4,32.1 63,30.1 		"></polygon>
+	</g>
+</g>
+<g id="Calque_3">
+</g>
+<g id="Calque_5">
+</g>
+</svg>
+</div></a></li><li data-publi="" class="publi-folder"><div class="content"><a class="js--edit_view"><h2 class="title"></h2></a></div><div class="publi-btn"></div></li><div class="montage_publi"><div class="montage-btn"></div><link id="templateCss" rel="stylesheet" href=""><div data-template="unecolonne" class="template_container"><h2 class="publi-title js--publiTitle"></h2><div class="publi-btn"></div><hr><div class="publi_medias"></div></div></div><div data-type="image" class="media-big_image media-big row"><div class="mediaContent small-12 large-8 columns"><img></div><div class="mediaDataForm small-12 large-4 columns"><!--////////////////////////////////////////////   MEDIA FORM (inside bigmedia)  //////////////////////////////////--><form onsubmit="return false;" class="add-media-data lead"><label>Informations</label><textarea type="text" autofocus="" class="mediaContent--textOfTextmedia js--mediaInformations"></textarea></form><h3 class="txt-small_info margin-top_bottom">Emplacement du média sur le disque dur&nbsp;:<div class="js--mediaFullPath"></div></h3><hr></div></div><div data-type="video" class="media-big_video media-big"><div class="mediaContent small-12 large-8 columns"><video preload="none" controls=""><source></video></div><div class="mediaDataForm small-12 large-4 columns"><!--////////////////////////////////////////////   MEDIA FORM (inside bigmedia)  //////////////////////////////////--><form onsubmit="return false;" class="add-media-data lead"><label>Informations</label><textarea type="text" autofocus="" class="mediaContent--textOfTextmedia js--mediaInformations"></textarea></form><h3 class="txt-small_info margin-top_bottom">Emplacement du média sur le disque dur&nbsp;:<div class="js--mediaFullPath"></div></h3><hr></div></div><div data-type="stopmotion" class="media-big_stopmotion media-big"><div class="mediaContent small-12 large-8 columns"><video preload="none" controls=""><source></video></div><div class="mediaDataForm small-12 large-4 columns"><!--////////////////////////////////////////////   MEDIA FORM (inside bigmedia)  //////////////////////////////////--><form onsubmit="return false;" class="add-media-data lead"><label>Informations</label><textarea type="text" autofocus="" class="mediaContent--textOfTextmedia js--mediaInformations"></textarea></form><h3 class="txt-small_info margin-top_bottom">Emplacement du média sur le disque dur&nbsp;:<div class="js--mediaFullPath"></div></h3><hr></div></div><div data-type="audio" class="media-big_audio media-big"><div class="mediaContent small-12 large-8 columns"><img><audio preload="none" controls=""><source></audio></div><div class="mediaDataForm small-12 large-4 columns"><!--////////////////////////////////////////////   MEDIA FORM (inside bigmedia)  //////////////////////////////////--><form onsubmit="return false;" class="add-media-data lead"><label>Informations</label><textarea type="text" autofocus="" class="mediaContent--textOfTextmedia js--mediaInformations"></textarea></form><h3 class="txt-small_info margin-top_bottom">Emplacement du média sur le disque dur&nbsp;:<div class="js--mediaFullPath"></div></h3><hr></div></div><div data-type="text" data-id="" class="media-big_text media-big"><div class="mediaDataForm"><!--////////////////////////////////////////////   MEDIA FORM TEXT  //////////////////////////////////--><form onsubmit="return false;" class="add-media-text lead"><textarea placeholder="Ajouter du texte ici" autofocus="" required="" class="mediaContent--textOfTextmedia js--textField"></textarea></form><h3 class="txt-small_info">Emplacement du média sur le disque dur&nbsp;:<div class="js--mediaFullPath"></div></h3><hr></div></div><div data-statut="" class="project"><div class="project-inside flex_structure"><div class="project-content flex_50 flex_structure"><a href="" title="Dodoc" class="project-link"><h2 class="title"></h2></a><div class="meta-data txt-small_info flex_40 margin-top_bottom"><div class="statut"><span>état</span><span class="statut-type"></span></div><div class="created"><span>créé le</span><span class="create-date"></span></div><div class="modified"><span>modifié le</span><span class="modify-date"></span></div></div><div class="button-to-pages flex_60"><h3 class="txt-small_info margin-top_bottom">Accès rapide</h3></div></div><div class="image-wrapper flex_50"><img></div></div><ul class="last-medias grille_de_medias"><h3 class="txt-small_info">Derniers médias ajoutés</h3></ul><div class="montage-list"><h1 class="txt-small_info">Liste des publications</h1><ul class="list-publi"></ul></div></div><li data-statut="" data-name="" data-nom="" class="dossier small-12 medium-12 large-4 columns"><div class="dossier-inside"><div class="content"><a href="" title="" class="folder-link"><h2 class="title"></h2></a><div class="projet-list"></div></div><div class="meta-data txt-small_info row"><div class="nb-projets small-6 columns"><span class="nb-projets-intitule">Projets</span><span class="nb-projets-count">0</span></div><div class="statut small-6 columns"><span>état</span><span class="statut-type"></span></div><div class="created small-6 columns"><span>créé le</span><span class="create-date"></span></div><div class="modified small-6 columns"><span>modifié le</span><span class="modify-date"></span></div></div></div></li><li class="projetSnippet"><a href="" class="project-link"><h3 class="title"></h3><div class="vignette-visuel"><img src=""></div></a></li></div><div class="module_infos"><h3 class="txt-small_info">Pour vous connecter avec un autre appareil connecté au même réseau wifi, naviguez vers l’adresse suivante (et ignorez l’avertissement qui s’affiche)&nbsp;: https://192.168.0.104:8080</h3><h3 class="txt-small_info">Les données chargées sur cette page sont stockées dans le dossier suivant&nbsp;:  <br>/Users/louis/Documents/dodoc/contenus/les-alphabets/cp-helene/publications/une-deuxieme-publi.txt</h3></div></body>

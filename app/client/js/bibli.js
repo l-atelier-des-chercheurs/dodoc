@@ -48,16 +48,6 @@ function init(){
   	e.preventDefault();
   	$('body').attr( "data-publicationpane", $('body').attr('data-publicationPane') === 'open' ? '' : 'open');
   });
-	// Au click sur un media
-	$('body').on('click', '.media', function(){
-		$m = $(this);
-		modals.bigMedia($m);
-  });
-
-  // Au click sur le bouton "submit" d'un popup de texte
-  modals.createTextMedia();
-
-  modals.importNewMedia();
 
   // si en arrivant sur la page, il y a un hash dans l'url
   // alors ouvrir la publication qui a ce nom directement
@@ -76,13 +66,12 @@ function init(){
   }
 
  // Ajoute ou enlève un highlight quand on clique sur le drapeau dans les médias
-  $('body').on('click', '.js--flagMedia', function(e){
-  	e.stopPropagation();
+  $('body').on('click', '.js--highlightMedia', function(e){
+    	e.stopPropagation();
 		var $thisMedia = $(this).closest(".media");
 		var medianame = $thisMedia.attr("data-medianame");
 		var mediaFolderPath = $thisMedia.attr("data-mediatype");
-    var editMediaData =
-    {
+    var editMediaData = {
       "mediaName" : medianame,
       "mediaFolderPath" : mediaFolderPath,
       "switchFav" : true
@@ -117,7 +106,8 @@ function onMediaCreated( mediasData) {
     var $m = $(this);
     $m.attr('data-oninsert', 'slideFromTop');
     insertOrReplaceMedia( $m, $mediaContainer);
-  });}
+  });
+}
 
 function onMediaUpdated( mediasData) {
   console.log( "onMediaUpdated");

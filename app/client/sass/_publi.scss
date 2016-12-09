@@ -1,13 +1,23 @@
 // page publi mais pas "encart publi" donc pas de style !
 body.publi{
   background-color: #fff;
+  &.is--generating{
+    background: #FFF;
+    opacity: 0.7;
+    .div_is_loading{
+      display:block;
+    }
+  }
   header{
 
   }
 
-  .button-wrapper_upload {
 
-    margin: $margin;
+  .button-wrapper_upload {
+    margin: $t-margin;
+    &:hover{
+      background-color: $c-bleuvert;
+    }
   }
 
 

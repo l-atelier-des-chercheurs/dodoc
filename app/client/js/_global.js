@@ -16,30 +16,46 @@ socket.onevent = function (packet) {
   packet.data = ["*"].concat(args);
   onevent.call(this, packet);      // additional call to catch-all
 };
-socket.on("*",function(event,data) {
+socket.on("*",function(event,d) {
   // only log the following events
-  if(event === "mediaCreated") {
-    for(mdata in data) {
-      var thisMedia = data[mdata];
-      var pathToProjectWhoGotANewMedia = '/'+thisMedia.slugFolderName+'/'+thisMedia.slugProjectName;
-      var logMediaCreated =
-        dodoc.lang.modal.newMediaCreatedAtPath+
-        '<a href="' + pathToProjectWhoGotANewMedia + '">'+
-          pathToProjectWhoGotANewMedia+
-        '</a>'
-        ;
-      alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .log(logMediaCreated)
-        ;
-    }
+
+  var logs = [];
+
+  switch(event) {
+    case "mediaCreated":
+      for(md in d) {
+        var thisMedia = d[md];
+        var pathToProjectWhoGotANewMedia = '/'+thisMedia.slugFolderName+'/'+thisMedia.slugProjectName;
+        logs.push(
+          dodoc.lang.modal.newMediaCreatedAtPath+
+            '<a href="'+pathToProjectWhoGotANewMedia+'">'+
+              pathToProjectWhoGotANewMedia+
+            '</a>'
+          );
+      }
+      break;
+    case "folderCreated":
+      var pathToFolder = '/'+d.slugFolderName;
+      logs.push(dodoc.lang.modal.newFolderCreatedWithName+'<em>'+d.name+'</em>'+dodoc.lang.modal.atPath+'<em>'+pathToFolder+'</em>');
+      break;
+    case "folderRemoved":
+      logs.push(dodoc.lang.modal.folderRemovedWithName+'<em>'+d.folderName+'</em>');
+      break;
+    case "projectCreated":
+      var pathToProject = '/'+d.slugFolderName+'/'+d.slugProjectName;
+      logs.push(dodoc.lang.modal.newProjectCreatedWithName+'<em>'+d.name+'</em>'+dodoc.lang.modal.atPath+'<em>'+pathToProject+'</em>');
+    case "projectRemoved":
+      var pathToProject = '/'+d.slugFolderName+'/'+d.slugProjectName;
+      logs.push(dodoc.lang.modal.projectRemovedWithName+'<em>'+d.name+'</em>');
   }
-  // todo: log folder created
 
-  // todo: log project created
-
-  // todo: log publication created
+  for(log in logs) {
+    alertify
+      .closeLogOnClick(true)
+      .delay(4000)
+      .log(logs[log])
+      ;
+  }
 
 });
 
@@ -72,7 +88,6 @@ function loadProject(pd) {
   if( pd.modified === null)
     $newProject.find('.modify-date').remove();
 
-
   // customisation du projet
 	$newProject
 	  .attr( 'data-projectname', pd.slugProjectName)
@@ -100,7 +115,7 @@ function loadProject(pd) {
 
 
 function listAllMedias( mediasData) {
-  console.log( 'listAllMedias');
+//   console.log( 'listAllMedias');
 
   var $allMedias = $();
   var lastMedias = mediasData;
@@ -127,22 +142,20 @@ function listMedia( mediaData) {
 // fonction qui réunit les fonctionnalités d'un média (que ce soit une vidéo, une image, un son, etc.
 // pas de fichier .js sur la page publi, ne s'applique pas
 function mediaInit( $m) {
-  if( $('body').hasClass('publi')) return;
+  if( $('body').hasClass('publi') || Modernizr.touch) return;
 
   var $v = $m.find('video');
   $m.hover(function() {
-    if( $v.length > 0) {
+    if( $v.length > 0 && $v.get(0).paused) {
       $v
-        .attr('loop', true)
         .removeAttr('controls')
         .get(0)
           .play()
         ;
     }
   }, function() {
-    if( $v.length > 0) {
+    if( $v.length > 0 && !$v.get(0).paused) {
       $v
-        .removeAttr('loop')
         .attr('controls', true)
         .get(0)
           .pause()
@@ -154,7 +167,7 @@ function mediaInit( $m) {
 
 
 function makeOneMedia( mediaKey, mdata) {
-  console.log( "makeOneMedia");
+//   console.log( "makeOneMedia");
 
   if( mdata.slugFolderName !== currentFolder || mdata.slugProjectName !== currentProject)
     return;
@@ -182,6 +195,7 @@ function makeOneMedia( mediaKey, mdata) {
     .attr( 'data-mediatype', mdata.mediaFolderPath)
     .attr( 'data-type', mdata.mediaFolderPath)
     	.attr( 'data-informations', mdata.informations)
+    	.attr( 'data-fav', mdata.fav)
     	.addClass( mdata.fav ? 'is--highlight' : '')
     	.find( '.mediaData--informations')
     	  .html( mdata.informations.replace(/(\r\n|\n|\r)/gm, "<br>"))
@@ -223,12 +237,11 @@ function showImage( mediaDatas) {
 
 
 function showAnimation( mediaDatas) {
-
   var mediasFilesPath = getMediaFiles(mediaDatas);
-
 	var mediaItem = $(".js--templates .media_stopmotion").clone(false);
 	mediaItem
     .data('imagesrc_fullsize', mediasFilesPath.img_large)
+    .data('stopmotionsource', mediasFilesPath.video)
     .find( 'video')
       .attr( 'poster', mediasFilesPath.img_large)
     .end()
@@ -236,7 +249,6 @@ function showAnimation( mediaDatas) {
       .attr( 'src', mediasFilesPath.video)
     .end()
   ;
-
 	return mediaItem;
 }
 
@@ -245,6 +257,7 @@ function showVideo( mediaDatas) {
 	var mediaItem = $(".js--templates .media_video").clone(false);
 	mediaItem
     .data('imagesrc_fullsize', mediasFilesPath.img_large)
+    .data('videosource', mediasFilesPath.video)
     .find( 'video')
       .attr( 'poster', mediasFilesPath.img_large)
     .end()
@@ -263,6 +276,7 @@ function showAudio( mediaDatas) {
 
 	mediaItem
     .data('imagesrc_fullsize', mediasFilesPath.img_large)
+    .data('audiosource', mediasFilesPath.audio)
     .find('source')
       .attr( 'src', mediasFilesPath.audio)
     .end()
@@ -380,8 +394,9 @@ function removeThisFolder( $container, slugFolderName) {
   var $items = $container.find(".dossier");
 
   var $itemToRemove = $items
-    .filter("[data-slugfoldername='" + slugFolderName + "']")
+    .filter(function() { return $(this).data('slugFolderName') === slugFolderName })
     ;
+
   $itemToRemove
     .fadeOut( 400, function() {
       $(this).remove();
@@ -669,14 +684,27 @@ function listMontagePubliMedias( $publiContent, pdata) {
 
 var sendData = {
 
-
-  createNewProject : function( pdata) {
-    pdata.slugFolderName = currentFolder;
-    	socket.emit( 'newProject', pdata);
+  addFolder : function(d) {
+    socket.emit('addFolder', d);
   },
-  editProject : function( pdata) {
-    pdata.slugFolderName = currentFolder;
-    	socket.emit( 'editProject', pdata);
+  editFolder : function(d) {
+    socket.emit('editFolder',d);
+  },
+  removeOneFolder : function(d) {
+    	socket.emit('removeOneFolder', d);
+  },
+
+  createNewProject : function(d) {
+    d.slugFolderName = currentFolder;
+    	socket.emit('addProject', d);
+  },
+  editProject : function(d) {
+    d.slugFolderName = currentFolder;
+    	socket.emit('editProject', d);
+  },
+  removeOneProject : function(d) {
+    d.slugFolderName = currentFolder;
+    	socket.emit('removeOneProject', d);
   },
 
   createNewMedia : function( mediaData) {

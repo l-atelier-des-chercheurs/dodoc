@@ -4,39 +4,39 @@ $titlePopUpFont: 1.5em;
 $h2Size: 1.8em;
 
 // T A I L L E S
-$margin: 16px;
+$t-margin: 16px;
 $t-navbarheight: 70px;
-
+$t-buttonSize: 40px;
 // C O L O R S
 
 
-$bleumarine: #1d327f;
-$bleuvert: #4BC0B4;
-$orange: #FFBE32;
-$rouge: #FF3E51;
+$c-bleumarine: #1d327f;
+$c-bleuvert: #4BC0B4;
+$c-orange: #FFBE32;
+$c-rouge: #FF3E51;
 
-$bleumarine-clair: #BEC6E5;
-$bleuvert-clair: #A5E5DA;
-$orange-clair: #FFD892;
-$rouge-clair: #FF808C;
+$c-bleumarine-clair: #BEC6E5;
+$c-bleuvert-clair: #5AC5B8;
+$c-orange-clair: #FFD892;
+$c-rouge-clair: #FF808C;
 
-$gristrestresclair: #F9F9F9;
-$gristresclair: #e5e5e5;
-$gris: #C3C3C3;
-$grisfonce: #535353;
-
+$c-creme: #FCFCFA;
+$c-gris: #C3C3C3;
+$c-gris_clair: #EBEBEB;
+$c-gris_fonce: #535353;
+$c-noir: #353535;
 
 // new colors
-$c-images: $orange;
-$c-videos: $rouge;
-$c-sons: $bleumarine;
-$c-anim: $bleuvert;
+$c-images: $c-orange;
+$c-videos: $c-rouge;
+$c-sons: $c-bleumarine;
+$c-anim: $c-bleuvert;
 
-$c-dossier: $rouge; // #F56A4B
-$c-projet: $bleuvert;
-$c-bibli: $bleumarine;
-$c-capture: $orange;
-$c-publi: $rouge;
+$c-dossier: $c-rouge; // #F56A4B
+$c-projet: $c-bleuvert;
+$c-bibli: $c-bleumarine;
+$c-capture: $c-orange;
+$c-publi: $c-rouge;
 
 $c-separator: #DFDFDF;
 
