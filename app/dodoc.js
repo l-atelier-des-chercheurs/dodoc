@@ -50,6 +50,7 @@ if( lang === 'fr') {
       "removeThisMedia" : "Supprimer ce média",
       "previzStopMotion" : "Prévisualiser",
       "finishStopmotion" : "Finaliser l’animation",
+      "removeAndStopStopmotion" : "Arrêter et supprimer l’animation",
       "addToFav" : "Mettre en favoris",
 
       "selectTemplate" : "Sélection de gabarit",

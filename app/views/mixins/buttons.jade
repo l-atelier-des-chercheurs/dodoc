@@ -190,6 +190,12 @@ mixin button(typeOfButton, navOrButton, style)
         include ../../client/images/i_enregistre.svg
       span !{dodoc.lang.finishStopmotion}
 
+  if( typeOfButton === 'removeAndStopStopmotion')
+    a(href="#" title="Dodoc publi" class='button-wrapper_removeAndStopStopmotion js--remove-stop-stopmotion #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_clear.svg
+      span !{dodoc.lang.removeAndStopStopmotion}
+
   if( typeOfButton === 'flag')
     a(href="#" title="Favoris" class='button-wrapper_flagMedia js--highlightMedia')
       .btn.icon

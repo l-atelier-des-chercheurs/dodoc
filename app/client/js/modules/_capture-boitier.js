@@ -4,9 +4,10 @@ var boitierExterne = (function() {
 
   var API = {
     init : function() {
+      console.log('Boitier.init()');
   	  // switch mode if code == 115 (next mode, Z) or 122 (prev mode, S)
   	  // can't overflow past first or last mode buttons
-      $("body").keypress(function(e){
+      $("body").keyup(function(e){
         var key = e.key;
         // next/prev
         if( key === 'w' || key == 's' || key === 'z') {
