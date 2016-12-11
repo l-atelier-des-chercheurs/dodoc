@@ -40,7 +40,6 @@
     "phantom": "^3.2.0",
     "recordrtc": "^5.4.0",
     "serve-favicon": "^2.3.0",
-    "sharp": "^0.16.2",
     "slugg": "^1.0.0",
     "socket.io": "^1.3.5",
     "socketio-file-upload": "^0.4.4",
@@ -48,7 +47,6 @@
     "video-recorder": "*"
   },
   "devDependencies": {
-    "electron-rebuild": "^1.4.0",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
     "gulp-jshint": "^2.0.1",

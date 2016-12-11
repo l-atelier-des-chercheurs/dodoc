@@ -9,7 +9,6 @@ var ffmpegstatic = require('ffmpeg-static');
 var ffmpeg = require('fluent-ffmpeg');
 
 // only load sharp if not in electron (need to find how to make it work eventually)
-var sharp = require('sharp');
 
 var dodoc  = require('../dodoc');
 var dodocAPI = require('./dodoc-api');
