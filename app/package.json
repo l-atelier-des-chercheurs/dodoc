@@ -9,7 +9,7 @@
   "author": "L’Atelier des Chercheurs",
   "repository": {
     "type": "git",
-    "url": "git://github.com/sarahgarcin/opendoc-tangible.git"
+    "url": "git://github.com/l-atelier-des-chercheurs/dodoc"
   },
   "dependencies": {
     "body-parser": "^1.15.0",
@@ -48,7 +48,6 @@
     "video-recorder": "*"
   },
   "devDependencies": {
-    "electron-prebuilt": "^1.4.8",
     "electron-rebuild": "^1.4.0",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",

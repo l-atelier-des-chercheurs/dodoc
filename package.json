@@ -31,8 +31,6 @@
       "iconUrl": "(windows-only) https link to icon"
     }
   },
-  "postinstall": "install-app-deps",
-
 
   "dependencies": {
     "electron-context-menu": "^0.8.0",
