@@ -43,8 +43,13 @@ function createWindow () {
       });
     }
 
-    // Instantiate Express App
-    app.server = require(path.join(__dirname, 'app', 'server'))();
+    try {
+      app.server = require(path.join(__dirname, 'app', 'server'))();
+    }
+    catch (e) {
+     console.log('Couldn’t load app:')
+     console.log(e)
+    }
 
     // const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
 
