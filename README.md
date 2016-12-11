@@ -24,7 +24,7 @@ Download the following app, unzip and launch _dodoc.app_ : https://github.com/l-
 
 # Method 2 - All OS
 
-_You need [node.js](https://nodejs.org/) to install DoDoc with this method._
+_You need [node.js](https://nodejs.org/) and [python 2.7](https://www.python.org/) to install DoDoc with this method._
 
 ### 1. Download this repository
 
