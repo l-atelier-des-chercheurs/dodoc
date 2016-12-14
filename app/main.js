@@ -13,9 +13,6 @@ var dodocPubli = require('./bin/dodoc-publi');
 var uploadToFtp = require('./bin/upload-to-ftp.js');
 var exportPubliToPDF= require('./bin/export-to-pdf.js');
 
-try { var exportConfig  = require('./ftp-config.js'); }
-catch( err) { console.log('No ftp config files have been found'); }
-
 module.exports = function(app, io){
 
   console.log("Main module initialized");

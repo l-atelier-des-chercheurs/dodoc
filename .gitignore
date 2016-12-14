@@ -2,25 +2,17 @@
 # dodoc customs #
 ######################
 
-app/client/fonts/Fira/source/
-app/client/fonts/Fira/technical reports/
-
 .com.apple.timemachine.supported
 
 node_modules
 dist
-build
+build/config.gypi
 
 app/user/contenus/*
 !app/user/contenus/readme.txt
 
 app/user/publications/*
 !app/user/publications/readme.txt
-
-
-# FTP Config file #
-###################
-ftp-config.js
 
 # Compiled source #
 ###################
