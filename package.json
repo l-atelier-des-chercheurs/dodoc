@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron main",
     "debug": "nodemon  -e js,json --ignore app/client/ --ignore app/views/ --exec 'electron main --debug --verbose'",
-    "package": "electron-packager ./ dodoc --out ~/Desktop/dodoc --overwrite --icon=./build/icon.icns",
+    "package": "electron-packager ./ dodoc --out=dist --overwrite --icon=./build/icon.icns",
     "pack": "build --dir",
     "dist": "build --w"
   },
