@@ -89,15 +89,15 @@ module.exports = function(app, io){
 
   function onRemoveUserDirPath() {
     dev.logfunction( "EVENT - onRemoveUserDirPath");
-    let config = require('../config.json');
+    var config = require('../config.json');
     config.userDirpath = '';
-    fs.writeFile( '../config.json', JSON.stringify(config, null, 2), function(err) {
-      if (err) dev.error('Couldn’t update file: ' + err);
+    console.log('config ? ' + JSON.stringify(config));
+    fs.writeFile('config.json', JSON.stringify(config, null, 2), function() {
       dev.logverbose('. saved config data to config.json');
-    }, function() {
-      dev.error('--> Couldn’t save config.json data.');
+      app.quit();
+    }, function(err) {
+      dev.error('--> Couldn’t save config.json data: ' + err);
     });
-    app.quit();
   }
 
 // I N D E X     P A G E
