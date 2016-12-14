@@ -30,6 +30,8 @@ module.exports = function(app, io){
       dev.log('RECEIVED EVENT : ' + event);
     });
 
+    socket.on( 'removeUserDirPath', onRemoveUserDirPath);
+
     // I N D E X    P A G E
     socket.on( 'listFolders', function (data){ onListFolders(socket); });
     socket.on( 'addFolder', function (data){ onNewFolder(socket,data); });
@@ -83,6 +85,20 @@ module.exports = function(app, io){
                                   These functions should be as concise as possible.
 
   ****************************************************************************/
+
+
+  function onRemoveUserDirPath() {
+    dev.logfunction( "EVENT - onRemoveUserDirPath");
+    let config = require('../config.json');
+    config.userDirpath = '';
+    fs.writeFile( '../config.json', JSON.stringify(config, null, 2), function(err) {
+      if (err) dev.error('Couldn’t update file: ' + err);
+      dev.logverbose('. saved config data to config.json');
+    }, function() {
+      dev.error('--> Couldn’t save config.json data.');
+    });
+    app.quit();
+  }
 
 // I N D E X     P A G E
 

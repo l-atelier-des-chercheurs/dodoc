@@ -19,6 +19,7 @@ html {
 
 body,html {
   min-height:100%;
+  height: auto;
 }
 
 @import "basic/_input.scss";
@@ -306,6 +307,13 @@ button {
   // this is to make the info inside bibli-buffer fit the available width
   body.bibli[data-publicationpane="open"] & {
       width: 50%;
+  }
+
+  .moveDodocContentFolder {
+    display: none;
+    html.is--electronBrowser & {
+      display: block;
+    }
   }
 }
 

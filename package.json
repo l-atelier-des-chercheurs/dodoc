@@ -10,9 +10,8 @@
     "pack": "build --dir",
     "dist": "build --w",
 
-    "pack:osx": "electron-packager . $npm_package_productName --out=dist/osx --platform=darwin --arch=x64 --icon=build/icon.icns",
-    "pack:win32": "electron-packager . $npm_package_productName --out=dist/win --platform=win32 --arch=ia32",
-    "pack:win64": "electron-packager . $npm_package_productName --out=dist/win --platform=win32 --arch=x64 --version=0.36.2 app-version=1.0 --icon=build/icon.ico",
+    "pack:osx": "electron-packager . dodoc --out=dist/osx --platform=darwin --arch=x64 --icon=build/icon.icns",
+    "pack:win64": "electron-packager . dodoc --out=dist/win --platform=win32 --arch=x64 --icon=build/icon.ico",
     "package": "npm run pack:osx && npm run pack:win64"
 
   },

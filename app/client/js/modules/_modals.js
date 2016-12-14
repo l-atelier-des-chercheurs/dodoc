@@ -41,17 +41,17 @@ var modals = (function() {
         .on('click', '.js--addLocalMedia', function(){
         		modals.createModal('addLocalMedia');
         })
-        .on('click', '.js--moveContentFolder', function() {
+        .on('click', '.js--openModal_moveContentFolder', function() {
         		modals.createModal('moveContentFolder');
         });
     },
 
     createModal : function(typeOfModal, d) {
 
-      console.log('Creating a new modal of type ' + typeOfModal + ' from data ');
-      console.log({d});
+      console.log('Creating a new modal of type ' + typeOfModal + ' from data ', {d});
 
       var $modal = $('[data-modal-id="' + typeOfModal + '"]').empty().off();
+      if($modal.length === 0) alertify.error('ERROR: modal is missing');
       var $modalContent = $modal.next().clone(false);
       $modal.append($modalContent.show());
 
@@ -81,6 +81,8 @@ var modals = (function() {
         $modal = _initExportWebBadFTPModal($modal);
       } else if(typeOfModal === 'confirmPdfExported') {
         $modal = _initConfirmPDFModal($modal,d);
+      } else if(typeOfModal === 'moveContentFolder') {
+        $modal = _initMoveContentFolder($modal);
       }
 
       $modal.on('click', function(e) {
@@ -629,6 +631,12 @@ var modals = (function() {
     $m.find('.pdfPath').html(d.path);
     $m.on('close_that_modal', function() {
       location.reload();
+    });
+    return $m;
+  }
+  function _initMoveContentFolder($m) {
+    $m.find('.js--valider').on('click', function(){
+      socket.emit('removeUserDirPath');
     });
     return $m;
   }
