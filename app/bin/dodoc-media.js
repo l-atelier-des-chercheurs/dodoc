@@ -416,6 +416,20 @@ var dodocMedia = (function() {
           });
         });
     });
+
+/*
+      // equivalent in sharp (but sharp needs native deps, which is annoying)
+      sharp(imageBufferData)
+        .rotate()
+        .withMetadata()
+        .toFormat(sharp.format.jpeg)
+        .quality(90)
+        .toFile(imagePath, function(err, info) {
+          dev.logverbose('Image has been saved, resolving its path.');
+          resolve(imagePath);
+        });
+*/
+
   }
 
 
@@ -580,6 +594,20 @@ var dodocMedia = (function() {
             resolve();
           });
       });
+/*
+      sharp(imagePath)
+        .rotate()
+        .resize(dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
+        .max()
+        .withoutEnlargement()
+        .withMetadata()
+        .toFormat('jpeg')
+        .quality(dodoc.mediaThumbQuality)
+        .toFile(thumbPath)
+        .then(function() {
+          resolve();
+        });
+*/
     });
   }
 
