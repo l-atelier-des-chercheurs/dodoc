@@ -537,10 +537,10 @@ $t-decalageDuCentre: 2%;
 
     .currentStreamResolution {
       position: absolute;
-      top: 100%;
+      bottom: 0;
       left: 0;
-      width: 50%;
-      padding: $t-margin/4 0;
+      width: 100%;
+      padding: $t-margin/4;
     }
   }
 

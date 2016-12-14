@@ -8,7 +8,7 @@ var mm = require('marky-mark');
 var ffmpegstatic = require('ffmpeg-static');
 var ffmpeg = require('fluent-ffmpeg');
 
-// only load sharp if not in electron (need to find how to make it work eventually)
+var Jimp = require("jimp");
 
 var dodoc  = require('../dodoc');
 var dodocAPI = require('./dodoc-api');
@@ -396,7 +396,7 @@ var dodocMedia = (function() {
         reject(err.message);
       })
       // take 2 screenshots at predefined timemarks
-      .takeScreenshots({ count: 1, timemarks: [ '00:00:00'], "filename" : videoFilename + ".jpg", "-q:v": 5}, pathToMediaFolder);
+      .takeScreenshots({ count: 1, timemarks: [ '00:00:00'], "filename" : videoFilename + ".jpeg", "-q:v": 5}, pathToMediaFolder);
     });
   }
 
@@ -404,15 +404,16 @@ var dodocMedia = (function() {
   function makeImageFromData(imageBufferData, pathToFile) {
     return new Promise(function(resolve, reject) {
       var imagePath = pathToFile + '.jpeg';
-      dev.logverbose('Now using sharp to store new image.');
-      sharp(imageBufferData)
-        .rotate()
-        .withMetadata()
-        .toFormat(sharp.format.jpeg)
-        .quality(90)
-        .toFile(imagePath, function(err, info) {
-          dev.logverbose('Image has been saved, resolving its path.');
-          resolve(imagePath);
+      dev.logverbose('Now using image processore to optimize new image.');
+      Jimp.read(imageBufferData, function(err, image) {
+        if (err) reject(err);
+        image
+          .quality(90)
+          .write(imagePath, function(err, info) {
+            if (err) reject(err);
+            dev.logverbose('Image has been saved, resolving its path.');
+            resolve(imagePath);
+          });
         });
     });
   }
@@ -567,21 +568,18 @@ var dodocMedia = (function() {
   function _makeImageThumb(imagePath, thumbPath) {
     return new Promise(function(resolve, reject) {
       dev.logverbose("Making a thumb at thumbPath: " + thumbPath);
-      if(typeof sharp === 'undefined') {
-        resolve(imagePath);
-      }
-      sharp(imagePath)
-        .rotate()
-        .resize(dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
-        .max()
-        .withoutEnlargement()
-        .withMetadata()
-        .toFormat('jpeg')
-        .quality(dodoc.mediaThumbQuality)
-        .toFile(thumbPath)
-        .then(function() {
-          resolve();
-        });
+      Jimp.read(imagePath, function(err, image) {
+        if (err) reject(err);
+        image
+          .clone()
+          .quality(dodoc.mediaThumbQuality)
+          .scaleToFit(dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
+          .write(thumbPath, function(err, info) {
+            if (err) reject(err);
+            dev.logverbose('Image has been saved, resolving its path.');
+            resolve();
+          });
+      });
     });
   }
 
