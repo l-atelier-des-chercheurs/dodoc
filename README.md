@@ -24,7 +24,7 @@ Download the following app, unzip and launch _dodoc.app_ : https://github.com/l-
 
 # Method 2 - All OS
 
-_You need [node.js](https://nodejs.org/) and [python 2.7](https://www.python.org/) to install DoDoc with this method._
+_You need [node.js](https://nodejs.org/) to install DoDoc with this method._
 
 ### 1. Download this repository
 
@@ -58,11 +58,6 @@ cd app
 Install dependencies:
 ```
 npm install
-```
-
-Finally run the following command to make sure native dependencies are installed (may take 1-2 minutes):
-```
-./node_modules/.bin/electron-rebuild
 ```
 
 ### 4. Run dodoc
