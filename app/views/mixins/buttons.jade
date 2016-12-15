@@ -219,12 +219,5 @@ mixin button(typeOfButton, navOrButton, style)
         include ../../client/images/i_cog.svg
       span !{dodoc.lang.settings}
 
-  if( typeOfButton === 'moveContentFolder')
-    a(href="#" title="Dodoc media" class='button-wrapper_moveContentFolder js--moveContentFolder #{defaultClasses}')
-      .btn.icon
-        include ../../client/images/i_cog.svg
-      span !{dodoc.lang.moveContentFolder}
-
-
   if( navOrButton === 'isNav')
     | </div>

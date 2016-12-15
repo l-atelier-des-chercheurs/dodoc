@@ -8,13 +8,7 @@ var path = require('path');
 // var localtunnel = require('localtunnel');
 // var ngrok = require('ngrok');
 
-try {
-  // root config.json is specific to electron
-  var config = require('../config.json');
-} catch( err) {
-  // local config.json is for node
-  var config = require('./config.json');
-}
+var config = require('../config.json');
 
 
 

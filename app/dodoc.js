@@ -93,7 +93,6 @@ if( lang === 'fr') {
       "toconnectwithanotherdevice" : "Pour vous connecter avec un autre appareil connecté au même réseau wifi, naviguez vers l’adresse suivante (et ignorez l’avertissement qui s’affiche)&nbsp;:",
       "clickHereToMoveContentFolder" : "Cliquez ici pour déplacer le dossier des contenus utilisateurs",
 
-
       "modal" : {
         "sureRemoveMedia" : "Êtes-vous sûr de vouloir supprimer ce média ?",
         "someFieldsAreEmptyFillThem" : "Tous les champs obligatoires ne sont pas remplis.",
@@ -138,6 +137,7 @@ if( lang === 'fr') {
         "atPath" : " dans le chemin ",
 
         "moveContentFolder" : "Déplacer le dossier <em>dodoc</em> sur votre disque dur",
+        "instructionsToMoveContentFolder" : "En cliquant sur le bouton ci-dessous, cette fenêtre fermera et au prochain lancement vous serez invité à sélectionner un nouvel emplacement pour stocker les médias, les publications exportées et les templates. Si un dossier nommé <em>dodoc</em> ne s'y trouve pas déjà, il sera créé."
 
       },
     }

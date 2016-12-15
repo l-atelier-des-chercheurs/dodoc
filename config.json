@@ -4,5 +4,5 @@
   "port": 8080,
   "templateEngine": "jade",
   "userDirpath": "documents",
-  "userDirname" : "dodoc"
+  "userDirname": "dodoc"
 }

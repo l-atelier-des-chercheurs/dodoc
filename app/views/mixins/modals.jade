@@ -151,7 +151,10 @@ mixin modals(typeOfModal)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
         | !{dodoc.lang.modal.moveContentFolder}
-        +button('moveContentFolder', '', '')
+      p
+        | !{dodoc.lang.modal.instructionsToMoveContentFolder}
+      hr
+      +button('valider', '', 'isCollapsed')
 
 
   if( typeOfModal === 'confirmPdfExported')
