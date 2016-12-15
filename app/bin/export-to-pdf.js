@@ -17,7 +17,7 @@ var exportPubliToPDF = (function() {
 
   function exportPubliToPDF(socket, d, io){
     dev.logfunction( "EVENT - exportPubliToPDF");
-    createFolders(d, io); 
+    createFolders(d, io);
   }
 
   function createFolders(d, io){
@@ -26,11 +26,11 @@ var exportPubliToPDF = (function() {
     var publiName = d.slugPubliName;
     var publicationsFolder = path.join(dodocAPI.getUserPath(), dodoc.exportedPubliDir);
     var printFolderName = "print";
-    
-    createExportPubliFolder(folderName, publicationsFolder).then(function(exportFolderPath){
-      createExportPubliFolder(projectName,exportFolderPath).then(function(exportProjectPath){
-        createExportPubliFolder(publiName, exportProjectPath).then(function(exportPubliPath){
-          createExportPubliFolder(printFolderName, exportPubliPath).then(function(printFolderPath){
+
+    dodocAPI.makeFolderAtPath(folderName, publicationsFolder).then(function(exportFolderPath){
+      dodocAPI.makeFolderAtPath(projectName, exportFolderPath).then(function(exportProjectPath){
+        dodocAPI.makeFolderAtPath(publiName, exportProjectPath).then(function(exportPubliPath){
+          dodocAPI.makeFolderAtPath(printFolderName, exportPubliPath).then(function(printFolderPath){
             console.log(printFolderPath);
             generatePDF(printFolderPath, d, io);
           });
@@ -40,12 +40,12 @@ var exportPubliToPDF = (function() {
   }
 
   function generatePDF(printFolderPath, d, io){
-    var currentUrl = d.url; 
+    var currentUrl = d.url;
     var pdfPath = path.join(printFolderPath, dodocAPI.getCurrentDate()+'.pdf');
 
     phantom.create([
     '--ignore-ssl-errors=yes',
-    '--ssl-protocol=any', 
+    '--ssl-protocol=any',
     '--load-images=yes',
     '--local-to-remote-url-access=yes',
     ]).then(function(ph) {
@@ -66,29 +66,6 @@ var exportPubliToPDF = (function() {
           });
         });
       });
-    });
-  }
-
-  function createExportPubliFolder(name, path) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction( "COMMON — createNewFolder");
-
-      var folderName = name;
-      var folderPath = path+'/'+name;
-
-      fs.access( folderPath, fs.F_OK, function( err) {
-        // if there's nothing at path
-        if(err) {
-          console.log("New folder created with name " + folderName + " and path " + path);
-          fs.ensureDirSync(folderPath);//write new folder in folders
-          resolve(folderPath);
-        } else {
-          console.log("Folder already exist");
-          // reject();
-          resolve(folderPath);
-        }
-      });
-
     });
   }
 

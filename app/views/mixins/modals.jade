@@ -164,7 +164,7 @@ mixin modals(typeOfModal)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
         | !{dodoc.lang.modal.pdfPublicationHasBeenSaved}
-      p.pdfPath.txt-wrap_long_lines
+      a.exportedPDFPath.txt-wrap_long_lines.js--exportedPDFPath(href)
 
   if( typeOfModal === 'exportWebBadFTP')
     //////////////////////////////////////////////   BAD PDF  //////////////////////////////////

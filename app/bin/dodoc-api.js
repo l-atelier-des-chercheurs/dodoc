@@ -22,6 +22,7 @@ var dodocAPI = (function() {
     decodeBase64Image   : function(dataString) { return decodeBase64Image(dataString); },
     writeMediaDataToDisk    : function(pathToFile, fileExtension, dataURL) { return writeMediaDataToDisk(pathToFile, fileExtension, dataURL); },
     listAllTemplates    : function() { return listAllTemplates(); },
+    makeFolderAtPath    : function(fname,fpath) { return makeFolderAtPath(fname,fpath); },
   };
 
   function getCurrentDate(f) {
@@ -159,6 +160,29 @@ var dodocAPI = (function() {
         });
         dev.log('Found ' + folders.length + ' templates in ' + templateFolderPath);
         resolve(folders);
+      });
+    });
+  }
+
+  function makeFolderAtPath(fname,fpath) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction("COMMON — makeFolderAtPath with name: " + fname + " and path " + fpath);
+      if(fname === undefined || fpath === undefined) {
+        dev.error('makeFolderAtPath : one argument is missing');
+        reject('one argument is missing');
+      }
+
+      var folderPath = path.join(fpath,fname);
+      fs.access(folderPath, fs.F_OK, function( err) {
+        // if there's nothing at path
+        if(err) {
+          dev.logverbose("New folder created with name " + fname + " and path " + path);
+          fs.ensureDirSync(folderPath);//write new folder in folders
+          resolve(folderPath);
+        } else {
+          dev.logverbose("Folder already exist");
+          resolve(folderPath);
+        }
       });
     });
   }

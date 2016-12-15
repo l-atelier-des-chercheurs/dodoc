@@ -13,7 +13,6 @@ var uploadPubliToFtp = (function() {
     onWebConnection : function(webPubliFolderPath, arrayImages, date) { onWebConnection(webPubliFolderPath, arrayImages, date); },
     onPubiTransferred : function() { onPubiTransferred(); },
     onCannotConnectFtp : function() { onCannotConnectFtp(); },
-
   }
 
   function sendThisPubliToPDF() {

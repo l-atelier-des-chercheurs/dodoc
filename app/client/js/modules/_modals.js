@@ -628,7 +628,11 @@ var modals = (function() {
     return $m;
   }
   function _initConfirmPDFModal($m, d) {
-    $m.find('.pdfPath').html(d.path);
+    $m
+      .find('.js--exportedPDFPath')
+        .html(d.path)
+        .attr('href', d.path)
+      ;
     $m.on('close_that_modal', function() {
       location.reload();
     });
