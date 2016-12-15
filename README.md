@@ -60,11 +60,6 @@ Install dependencies:
 npm install
 ```
 
-Finally run the following command to make sure native dependencies are installed (may take 1-2 minutes):
-```
-./node_modules/.bin/electron-rebuild
-```
-
 ### 4. Run dodoc
 
 Go back to the dodoc folder with the following command:

@@ -622,7 +622,7 @@ var currentStream = (function(context) {
   function updateVideoSize() {
     if( videoElement === undefined)
       return;
-    videoResolutionIndicator.innerHTML = dodoc.lang.currentVideoResolutionIs+'<br>'+videoElement.videoWidth + '×' + videoElement.videoHeight;
+    videoResolutionIndicator.innerHTML = dodoc.lang.currentVideoResolutionIs+' '+videoElement.videoWidth + '×' + videoElement.videoHeight;
   }
 
   function _getAudioFeed() {
