@@ -170,7 +170,7 @@ function onPubliMediasUpdated( psdata) {
 
 function askToUpdateCurrentPubli() {
   var $publiContent = $('[data-publidata]');
-  // if publi pane isn't visible with a pubi inside
+  // if publi pane isn't visible with a publi inside
   if( $publiContent.length === 0) return;
 
   var publiShown = $publiContent.data('publishown');
@@ -191,7 +191,7 @@ function onListOnePubliMetaAndMedias( psdata) {
 
   var $publiContent = $('[data-publidata]');
 
-  // if publi pane isn't visible with a pubi inside
+  // if publi pane isn't visible with a publi inside
   if( $publiContent.length === 0) return;
 
   updateMontagePubliMeta( psdata);

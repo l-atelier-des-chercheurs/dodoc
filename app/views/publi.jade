@@ -2,7 +2,7 @@ doctype html
 html
   head
     include templates/head.jade
-  body(class="publi")
+  body.publi
 
     .navbar-container
       header.navbar
@@ -19,6 +19,7 @@ html
     +modals('exportWebNoConnexion')
     +modals('exportWebOnConnexion')
     +modals('exportWebBadFTP')
+    +modals('publiHasBeenSentToFtp')
     .js--templates
       include templates/js_templates
 

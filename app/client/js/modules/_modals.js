@@ -30,6 +30,7 @@ var modals = (function() {
         		modals.createModal('editPubli', pdata);
         	})
         	.on('click', '.js--openModal_editMedia', function(){
+          	if($('body').hasClass('publi')) return;
         		var mdata = $(this).data();
           mdata.nextm = $(this).next('.js--openModal_editMedia');
           mdata.prevm = $(this).prev('.js--openModal_editMedia');
@@ -82,7 +83,9 @@ var modals = (function() {
       } else if(typeOfModal === 'confirmPdfExported') {
         $modal = _initConfirmPDFModal($modal,d);
       } else if(typeOfModal === 'moveContentFolder') {
-        $modal = _initMoveContentFolder($modal);
+        $modal = _initMoveContentFolderModal($modal);
+      } else if(typeOfModal === 'publiHasBeenSentToFtp') {
+        $modal = _initPubliHasBeenSentToFTPModal($modal, d);
       }
 
       $modal.on('click', function(e) {
@@ -90,7 +93,6 @@ var modals = (function() {
           $modal.trigger('close_that_modal');
         }
       });
-
       $modal.on('close_that_modal', function() {
         $modal.foundation('reveal', 'close');
         setTimeout(function() {
@@ -106,9 +108,6 @@ var modals = (function() {
           }
         });
       }
-
-
-
       $modal.foundation('reveal', 'open');
       setTimeout(function() {
         if(!Modernizr.touch)
@@ -602,7 +601,7 @@ var modals = (function() {
     $m.find('input.port').val(d.port);
     $m.find('input.user').val(d.user);
     $m.find('input.pass').val(d.pass);
-    $m.find('input.url').val(d.domain);
+    $m.find('input.baseURL').val( d.baseURL);
     $m.find('input.folder').val(d.dossierFtp);
 
     $m.find('.js--valider').on('click', function(){
@@ -610,12 +609,13 @@ var modals = (function() {
       var port = $m.find('input.port').val();
       var user = $m.find('input.user').val();
       var pass = $m.find('input.pass').val();
-      var url = $m.find('input.url').val();
+      var baseURL = $m.find('input.baseURL').val();
       var dossierFtp = $m.find('input.folder').val();
 
-      store.set('ftp', { 'host': host, 'port': port, 'user': user, 'pass': pass, 'domain': url, 'dossierFtp': dossierFtp});
-      socket.emit('ftpSettings', {'host': host, 'port': port, 'user': user, 'pass': pass, 'domain': url, 'dossierFtp': dossierFtp, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli, 'webPubliFolderPath': d.webPubliFolderPath, "images": d.arrayImages, "currentDate": d.date});
+      store.set('ftp', {host,port,user,pass,baseURL,dossierFtp});
+      socket.emit('ftpSettings', {host,port,user,pass,baseURL,dossierFtp, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli, 'webPubliFolderPath': d.webPubliFolderPath, "images": d.arrayImages, "currentDate": d.date});
 
+      $m.trigger('close_that_modal');
       $('body').addClass('is--generating');
     });
     return $m;
@@ -623,25 +623,40 @@ var modals = (function() {
 
   function _initExportWebBadFTPModal($m) {
     $m.on('close_that_modal', function() {
-      $('#modal-connexion').foundation('reveal', 'open');
+//       $('#modal-connexion').foundation('reveal', 'open');
     });
     return $m;
   }
   function _initConfirmPDFModal($m, d) {
     $m
       .find('.js--exportedPDFPath')
-        .html(d.path)
-        .attr('href', d.path)
+        .html(d.pdfPath)
+      .end()
+      .find('.js--exportedPDFURL')
+        .html(d.pdfURL)
+        .attr('href', d.pdfURL)
+      .end()
       ;
     $m.on('close_that_modal', function() {
-      location.reload();
+//       location.reload();
     });
     return $m;
   }
-  function _initMoveContentFolder($m) {
+  function _initMoveContentFolderModal($m) {
     $m.find('.js--valider').on('click', function(){
       socket.emit('removeUserDirPath');
     });
+    return $m;
+  }
+  function _initPubliHasBeenSentToFTPModal($m, d) {
+    $m
+      .find('.js--urlToPubli')
+        .html(d.urlToPubli)
+        .attr('href', d.urlToPubli)
+        ;
+    // only if electron browser, make link open native browser
+
+
     return $m;
   }
 

@@ -10,8 +10,8 @@ var dodocProject = require('./bin/dodoc-project');
 var dodocMedia = require('./bin/dodoc-media');
 var dodocPubli = require('./bin/dodoc-publi');
 
-var uploadToFtp = require('./bin/upload-to-ftp.js');
-var exportPubliToPDF= require('./bin/export-to-pdf.js');
+var publiFTP = require('./bin/publi-ftp.js');
+var publiPDF = require('./bin/publi-pdf.js');
 
 module.exports = function(app, io){
 
@@ -446,20 +446,27 @@ module.exports = function(app, io){
 
   function onExportPubliToFtp(socket, publiData) {
     dev.logfunction( "EVENT - exportPubliToFtp : " + JSON.stringify( publiData, null, 4));
-    uploadToFtp.exportPubliToFtp( socket, publiData);
+    publiFTP.exportPubliToFtp( socket, publiData);
   }
 
   function onFtpSettings(socket, data) {
-    uploadToFtp.sendFileToServer( socket, data);
+    publiFTP.sendFileToServer( socket, data).then(function(urlToPubli) {
+      dodocAPI.sendEventWithContent( 'publiTransferred', {urlToPubli}, io, socket);
+    }, function(error) {
+      dodocAPI.sendEventWithContent( 'cannotConnectFtp', error, io, socket);
+    });;
   }
 
-
-  function onGeneratePDF(socket, data, io) {
-    fs.writeFile('app/index.html', data.html, function(err) {
+  function onGeneratePDF(socket, d, io) {
+    fs.writeFile('app/index.html', d.html, function(err) {
       if (err) return( err);
       else{console.log('html print file has been writen')}
     });
-    exportPubliToPDF.exportPubliToPDF( socket, data, io);
+    publiPDF.exportPubliToPDF(d).then(function(pdfInfos) {
+      dodocAPI.sendEventWithContent( 'publiPDFIsGenerated', pdfInfos, io, socket);
+    }, function(error) {
+      dodocAPI.sendEventWithContent( 'cannotGeneratePDF', error, io, socket);
+    });;
   }
 
 // F I N     P U B L I     P A G E

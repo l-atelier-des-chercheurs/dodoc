@@ -156,16 +156,6 @@ mixin modals(typeOfModal)
       hr
       +button('valider', '', 'isCollapsed')
 
-
-  if( typeOfModal === 'confirmPdfExported')
-    //- modal-confirm-pdf
-    //////////////////////////////////////////////   CONFIRM PDF  //////////////////////////////////
-    .m_modal-content
-      +button( 'close', '', 'isCollapsed')
-      .modal_title.txt-large_title
-        | !{dodoc.lang.modal.pdfPublicationHasBeenSaved}
-      a.exportedPDFPath.txt-wrap_long_lines.js--exportedPDFPath(href)
-
   if( typeOfModal === 'exportWebBadFTP')
     //////////////////////////////////////////////   BAD PDF  //////////////////////////////////
     .m_modal-content
@@ -196,10 +186,31 @@ mixin modals(typeOfModal)
       .modal_title.txt-large_title
         | !{dodoc.lang.modal.sendFilesToAServer}
       form(onsubmit='return false;' class='ftp-settings-form lead')
-        input(type='text' class='host' placeholder='Host')
-        input(type='text' class='port' placeholder='Port' default=21)
-        input(type='text' class='user' placeholder='User')
-        input(type='password' class='pass' placeholder='Password')
-        input(type='url' class='url' placeholder='Url du site')
+        input(type='text' class='host' placeholder='Host' autofocus required)
+        input(type='text' class='port' placeholder='Port')
+        input(type='text' class='user' placeholder='User' required)
+        input(type='password' class='pass' placeholder='Password' required)
+        input(type='url' class='baseURL' placeholder='Url du site')
         input(type='text' class='folder' placeholder='Dossier')
+        hr
         +button('valider', '', 'isCollapsed')
+
+  if( typeOfModal === 'publiHasBeenSentToFtp')
+    //////////////////////////////////////   PUBLI HAS BEEN SENT TO FTP  //////////////////////////////////
+    .m_modal-content
+      +button( 'close', '', 'isCollapsed')
+      .modal_title.txt-large_title
+        | !{dodoc.lang.modal.publiHasBeenSentToServer}
+      a.urlToPubli.txt-wrap_long_lines.js--urlToPubli.js--openInBrowser(href target="_blank")
+
+  if( typeOfModal === 'confirmPdfExported')
+    //- modal-confirm-pdf
+    //////////////////////////////////////////////   CONFIRM PDF  //////////////////////////////////
+    .m_modal-content
+      +button( 'close', '', 'isCollapsed')
+      .modal_title.txt-large_title
+        | !{dodoc.lang.modal.pdfPublicationHasBeenSaved}
+      .txt-small_info
+        | !{dodoc.lang.modal.downloadThePDF}
+      a.exportedPDFPath.txt-wrap_long_lines.js--exportedPDFURL.js--openInBrowser(href target="_blank")
+

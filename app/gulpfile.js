@@ -71,7 +71,7 @@ gulp.task('templatesSass', function() {
 
 // Concatenate & Minify CSS
 gulp.task('css', function() {
-  return gulp.src('pubic/css/*.css')
+  return gulp.src('public/css/*.css')
     .pipe(concat('all.css'))
     .pipe(gulp.dest('client/css'))
     .pipe(minifyCss({compatibility: 'ie9'}))

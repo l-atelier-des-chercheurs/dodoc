@@ -56,7 +56,14 @@ socket.on("*",function(event,d) {
       .log(logs[log])
       ;
   }
+});
 
+$('body').on('click', '.js--openInBrowser', function() {
+  if(require('electron') !== undefined) {
+    var shell = require('electron').shell;
+    event.preventDefault();
+    shell.openExternal(event.target.href);
+  }
 });
 
 
