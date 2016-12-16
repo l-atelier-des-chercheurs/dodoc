@@ -8,7 +8,7 @@ var path = require('path');
 // var localtunnel = require('localtunnel');
 // var ngrok = require('ngrok');
 
-var config = require('../config.json');
+var config = require('./config.json');
 
 
 

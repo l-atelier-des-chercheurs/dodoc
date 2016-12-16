@@ -6,7 +6,7 @@ const flags = require('flags');
 const devLog = require('./app/bin/dev-log');
 const {dialog} = require('electron')
 
-const config = require('./config.json');
+const config = require('./app/config.json');
 const dodoc = require('./app/dodoc');
 const dodocAPI = require('./app/bin/dodoc-api');
 
@@ -126,7 +126,7 @@ function copyAndRenameUserFolder() {
       })[0];
       console.log('A path was picked: ' + config.userDirpath);
 
-      fs.writeFile( './config.json', JSON.stringify(config, null, 2), function(err) {
+      fs.writeFile( './app/config.json', JSON.stringify(config, null, 2), function(err) {
         if (err) dev.error('Couldn’t update file: ' + err);
         dev.logverbose('. saved config data to config.json');
       }, function() {

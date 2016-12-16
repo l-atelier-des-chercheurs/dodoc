@@ -89,7 +89,7 @@ module.exports = function(app, io){
 
   function onRemoveUserDirPath() {
     dev.logfunction( "EVENT - onRemoveUserDirPath");
-    var config = require('../config.json');
+    var config = require('./config.json');
     config.userDirpath = '';
     console.log('config ? ' + JSON.stringify(config));
     fs.writeFile('config.json', JSON.stringify(config, null, 2), function() {
