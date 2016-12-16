@@ -17,7 +17,6 @@ let win;
 
 app.commandLine.appendSwitch('--ignore-certificate-errors');
 
-
 function createWindow () {
 
   flags.defineBoolean('debug');
@@ -46,7 +45,7 @@ function createWindow () {
     }
 
     try {
-      app.server = require(path.join(__dirname, 'app', 'server'))();
+      app.server = require(path.join(__dirname, 'app', 'server'))(app);
     }
     catch (e) {
       console.log('Couldn’t load app:', e);
@@ -132,7 +131,8 @@ function copyAndRenameUserFolder() {
       }, function() {
         dev.error('--> Couldn’t save config.json data.');
       });
-
+    } else {
+      console.log('Path to dodoc folder defined in config.json as: ' + config.userDirpath);
     }
 
     let userDirPath = config.userDirpath === "documents" ? app.getPath(config.userDirpath) : config.userDirpath;

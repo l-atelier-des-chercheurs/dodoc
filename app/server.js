@@ -12,9 +12,8 @@ var config = require('./config.json');
 
 
 
-module.exports = function() {
+module.exports = function(electronApp) {
   var app = express();
-
 
 /*
   var tunnel = localtunnel('8080', {'local_host': 'https://localhost'}, function(err, tunnel) {
@@ -68,7 +67,7 @@ module.exports = function() {
   var expressSettings = require('./express-settings');
   var router = require('./router');
 
-  var m = new main(app, io);
+  var m = new main(app, io, electronApp);
 
   /*
   * Server config
