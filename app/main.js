@@ -95,10 +95,10 @@ module.exports = function(app, io, electronApp){
     fs.writeFile('./app/config.json', JSON.stringify(config, null, 2), (err) => {
       if (err) {
         dev.error('--> Couldn’t save config.json data: ' + err);
-        electronApp.quit();
+        electronApp.relaunch();
       }
       dev.logverbose('. saved config data to config.json');
-      electronApp.quit();
+      electronApp.relaunch();
     });
   }
 
