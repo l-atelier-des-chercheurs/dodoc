@@ -1,1 +1,0 @@
-This folder contains all medias and texts captured or sent to dodoc.
