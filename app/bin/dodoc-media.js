@@ -363,7 +363,7 @@ var dodocMedia = (function() {
             var filePath = path.join( pathToMediaFolder, filename);
             var deletedFilePath = path.join( pathToMediaFolder, dodoc.deletedPrefix + filename);
             fs.renameSync( filePath, deletedFilePath);
-            console.log( "A file will be deleted (renamed but hidden from dodoc) : \n - " + filePath + "\n - " + deletedFilePath);
+            console.log( "A file will be deleted (renamed and hidden from dodoc) : \n - " + filePath + "\n - " + deletedFilePath);
           }
         });
         var mediaMetaData =
