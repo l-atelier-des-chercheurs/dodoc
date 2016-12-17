@@ -31,7 +31,6 @@
     "html-pdf": "^2.1.0",
     "i18n": "^0.8.3",
     "jade": "*",
-    "jimp": "^0.2.27",
     "jsftp": "^1.5.4",
     "markdown-it": "^8.2.2",
     "markdown-parse": "^0.2.1",
