@@ -47,7 +47,7 @@ module.exports = function(app,io,m){
       pageDataJSON.contentDir = dodocAPI.getFolderPath();
       pageDataJSON.currentUserDirPath = dodocAPI.getFolderPath();
 
-      var slugFolderName = req.param('folder');
+      var slugFolderName = req.params.folder;
       if( slugFolderName !== undefined) {
         var jsonFileOfFolder = dodocFolder.getMetaFileOfFolder( slugFolderName);
         var folderData = dodocAPI.readMetaFile(jsonFileOfFolder);
@@ -57,7 +57,7 @@ module.exports = function(app,io,m){
         pageDataJSON.statut = folderData.statut;
         pageDataJSON.currentUserDirPath = dodocAPI.getFolderPath(slugFolderName);
 
-        var slugProjectName = req.param('project');
+        var slugProjectName = req.params.project;
         if( slugProjectName !== undefined) {
           var jsonFileOfProject = dodocProject.getMetaFileOfProject(slugFolderName, slugProjectName);
           var projectData = dodocAPI.readMetaFile( jsonFileOfProject);
@@ -66,7 +66,7 @@ module.exports = function(app,io,m){
           pageDataJSON.projectName = projectData.name;
           pageDataJSON.currentUserDirPath = dodocAPI.getProjectPath(slugFolderName, slugProjectName);
 
-          var slugPubliName = req.param('publi');
+          var slugPubliName = req.params.publi;
           if( slugPubliName !== undefined) {
             var jsonFileOfPubli = dodocPubli.getPubliPath( slugFolderName, slugProjectName, slugPubliName) + dodoc.metaFileext;
             var publiData = dodocAPI.readMetaFile( jsonFileOfPubli);
