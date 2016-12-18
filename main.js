@@ -67,7 +67,7 @@ function createWindow () {
     });
     // win.maximize();
 
-    // and load the index.html of the app.
+    // and load the base url of the app.
     win.loadURL(`${config.protocol}://${config.host}:${config.port}`);
 
     // Open the DevTools.

@@ -62,8 +62,8 @@ var publiPDF = (function() {
         '--load-images=yes',
         '--local-to-remote-url-access=yes',
       ]).then((ph) => {
-        ph.createPage().then((page) => {
-
+        ph.createPage()
+        .then((page) => {
           page.open(currentUrl+"/print")
           .then(() => {
             return page.property('paperSize', { format: "A4", orientation: 'portrait', margin: '1cm' })

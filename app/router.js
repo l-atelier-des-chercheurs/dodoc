@@ -174,7 +174,7 @@ module.exports = function(app,io,m){
   };
 
   function getPrint(req, res){
-    var htmlPrint = fs.readFileSync('app/index.html');
+    var htmlPrint = fs.readFileSync('index.html');
     res.render("print", {title: 'Print', htmlp: htmlPrint});
   };
 

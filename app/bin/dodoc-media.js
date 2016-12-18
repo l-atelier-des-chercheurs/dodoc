@@ -437,7 +437,6 @@ var dodocMedia = (function() {
   /******************************************** private functions ************************************/
   /***************************************************************************************************/
 
-
   function _getMediaPath( slugFolderName, slugProjectName, mediaFolder) {
     dev.logverbose('_getMediaPath with slugFolderName:' + slugFolderName + ' slugProjectName: ' + slugProjectName + ' mediaFolder: ' + mediaFolder);
     return path.join( dodocAPI.getProjectPath(slugFolderName, slugProjectName), mediaFolder);
