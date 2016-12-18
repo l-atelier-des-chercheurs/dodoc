@@ -1,1 +1,0 @@
-This is the folder that contains all available publications’ templates. Each folder is a template.

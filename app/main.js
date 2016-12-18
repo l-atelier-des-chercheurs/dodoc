@@ -13,7 +13,7 @@ var dodocPubli = require('./bin/dodoc-publi');
 var publiFTP = require('./bin/publi-ftp.js');
 var publiPDF = require('./bin/publi-pdf.js');
 
-module.exports = function(app, io){
+module.exports = function(app, io, electronApp){
 
   console.log("Main module initialized");
 
@@ -89,14 +89,16 @@ module.exports = function(app, io){
 
   function onRemoveUserDirPath() {
     dev.logfunction( "EVENT - onRemoveUserDirPath");
-    var config = require('../config.json');
+    var config = require('./config.json');
     config.userDirpath = '';
-    console.log('config ? ' + JSON.stringify(config));
-    fs.writeFile('config.json', JSON.stringify(config, null, 2), function() {
+    console.log('Existing config file: ' + JSON.stringify(config));
+    fs.writeFile('./app/config.json', JSON.stringify(config, null, 2), (err) => {
+      if (err) {
+        dev.error('--> Couldn’t save config.json data: ' + err);
+        electronApp.relaunch();
+      }
       dev.logverbose('. saved config data to config.json');
-      app.quit();
-    }, function(err) {
-      dev.error('--> Couldn’t save config.json data: ' + err);
+      electronApp.relaunch();
     });
   }
 
@@ -458,10 +460,6 @@ module.exports = function(app, io){
   }
 
   function onGeneratePDF(socket, d, io) {
-    fs.writeFile('app/index.html', d.html, function(err) {
-      if (err) return( err);
-      else{console.log('html print file has been writen')}
-    });
     publiPDF.exportPubliToPDF(d).then(function(pdfInfos) {
       dodocAPI.sendEventWithContent( 'publiPDFIsGenerated', pdfInfos, io, socket);
     }, function(error) {

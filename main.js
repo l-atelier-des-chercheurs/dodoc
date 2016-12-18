@@ -6,7 +6,7 @@ const flags = require('flags');
 const devLog = require('./app/bin/dev-log');
 const {dialog} = require('electron')
 
-const config = require('./config.json');
+const config = require('./app/config.json');
 const dodoc = require('./app/dodoc');
 const dodocAPI = require('./app/bin/dodoc-api');
 
@@ -17,7 +17,6 @@ let win;
 
 app.commandLine.appendSwitch('--ignore-certificate-errors');
 
-
 function createWindow () {
 
   flags.defineBoolean('debug');
@@ -26,6 +25,10 @@ function createWindow () {
   var isDebugMode = flags.get('debug');
   var isVerbose = flags.get('verbose');
   global.dev = devLog(isDebugMode, isVerbose);
+
+  if( global.dodoc === undefined)
+    global.dodoc = {};
+  global.dodoc.homeURL = `${config.protocol}://${config.host}:${config.port}`;
 
   // check if content folder exists
   copyAndRenameUserFolder().then(function(dodocPath) {
@@ -46,7 +49,7 @@ function createWindow () {
     }
 
     try {
-      app.server = require(path.join(__dirname, 'app', 'server'))();
+      app.server = require(path.join(__dirname, 'app', 'server'))(app);
     }
     catch (e) {
       console.log('Couldn’t load app:', e);
@@ -68,8 +71,8 @@ function createWindow () {
     });
     // win.maximize();
 
-    // and load the index.html of the app.
-    win.loadURL(`${config.protocol}://${config.host}:${config.port}`);
+    // and load the base url of the app.
+    win.loadURL(global.dodoc.homeURL);
 
     // Open the DevTools.
     if(dev.isDebug())
@@ -126,13 +129,14 @@ function copyAndRenameUserFolder() {
       })[0];
       console.log('A path was picked: ' + config.userDirpath);
 
-      fs.writeFile( './config.json', JSON.stringify(config, null, 2), function(err) {
+      fs.writeFile( './app/config.json', JSON.stringify(config, null, 2), function(err) {
         if (err) dev.error('Couldn’t update file: ' + err);
         dev.logverbose('. saved config data to config.json');
       }, function() {
         dev.error('--> Couldn’t save config.json data.');
       });
-
+    } else {
+      console.log('Path to dodoc folder defined in config.json as: ' + config.userDirpath);
     }
 
     let userDirPath = config.userDirpath === "documents" ? app.getPath(config.userDirpath) : config.userDirpath;
