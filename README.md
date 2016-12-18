@@ -1,6 +1,6 @@
 DoDoc
 ==========
-![DoDoc](http://www.lopendoc.org/dodoc/wp-content/uploads/sites/23/2016/05/Capture-d%E2%80%99e%CC%81cran-2016-05-05-a%CC%80-18.29.52.png)
+![DoDoc](http://latelier-des-chercheurs.fr/github/i_logo.svg)
 
 # Presentation
 
@@ -13,7 +13,7 @@ You can find more documentation and contribute to the project [here](http://www.
 
 ![DoDoc](http://latelier-des-chercheurs.fr/github/schema_recap_dodoc-04.png)
 
-## User interface in the app
+## Screenshots of the app
 
 ![DoDoc](http://latelier-des-chercheurs.fr/github/interfaceecran-accueil.jpg)
 
@@ -45,27 +45,29 @@ You can find more documentation and contribute to the project [here](http://www.
  
 ![DoDoc](http://latelier-des-chercheurs.fr/github/_1060285.jpg)
 
+---
+
 # Install DoDoc
 
-## Method 1 - macOS only
-### Download the app
+### Method 1 - macOS only
+#### Download the app
 
 Download the following app, unzip and launch _dodoc.app_ : https://github.com/l-atelier-des-chercheurs/dodoc/releases/download/4.0.0/dodoc.app.zip
 
-## Method 2 - All OS
+### Method 2 - All OS
 
 _You need [node.js](https://nodejs.org/) and [python 2.7](https://www.python.org/) to install DoDoc with this method. On Windows, you also need to install Microsoft’s Windows Build Tools by following the instructions [here](https://github.com/Microsoft/nodejs-guidelines/blob/master/windows-environment.md#prerequisites)._
 
-### 1. Download this repository
+#### 1. Download this repository
 
 Click on *Clone or Download* in the top right corner of this page, then *Download ZIP*. Unpack this folder.
 
-### 2. Open a terminal window
+#### 2. Open a terminal window
 
 Open a terminal window to execute commands and install DoDoc.
 
-- Windows: use [this tutorial](http://wikistrea.fr/Comment_ouvrir_la_console_de_commande_Windows_en_mode_administrateur_%3F) to open a terminal on Windows: 
-- macOS: go to Applications->Utilities->Terminal
+- Windows: (XP) use [this tutorial](http://wikistrea.fr/Comment_ouvrir_la_console_de_commande_Windows_en_mode_administrateur_%3F) to open a terminal on Windows or open Command Prompt in the start menu 
+- macOS: go to Applications -> Utilities -> Terminal
 - Linux: use a terminal app such as Terminal or Konsole
 
 In your terminal, navigate to the dodoc-master folder with your terminal using the `cd` command:
