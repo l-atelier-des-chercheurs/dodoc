@@ -4,7 +4,8 @@
   "description": "Dodoc is a documentation tool.",
   "scripts": {
     "start": "node index.js",
-    "debug": "node --inspect index.js --debug --verbose"
+    "debug": "node --inspect index.js --debug --verbose",
+    "rebuild": "electron-rebuild -f -w sharp"
   },
   "author": "L’Atelier des Chercheurs",
   "repository": {
@@ -49,6 +50,7 @@
     "video-recorder": "*"
   },
   "devDependencies": {
+    "electron-rebuild": "^1.4.0",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
     "gulp-jshint": "^2.0.1",
