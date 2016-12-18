@@ -92,10 +92,17 @@ npm install
 ```
 
 Finally run the following command to make sure native dependencies are installed (may take 1-2 minutes):		
+ 
+- on Linux and Mac
  ```		
  ./node_modules/.bin/electron-rebuild		
  ```
-
+ 
+- on Windows
+ ```
+ .\node_modules\.bin\electron-rebuild.cmd
+ ```
+ 
 ### 4. Run DoDoc
 
 Go back to the DoDoc folder with the following command:
