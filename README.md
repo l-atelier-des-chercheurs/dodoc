@@ -1,6 +1,4 @@
-DoDoc
-==========
-![DoDoc](http://latelier-des-chercheurs.fr/github/i_logo.svg)
+![DoDoc logo](http://latelier-des-chercheurs.fr/github/i_logo.svg)
 
 # Presentation
 
