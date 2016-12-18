@@ -7,30 +7,29 @@ var uploadPubliToFtp = (function() {
       uploadThisPubliToFTP();
       sendThisPubliToPDF();
     },
-    onPdfIsGenerated : function(file) { onPdfIsGenerated(file); },
-    uploadThisPubliToFTP : function() { uploadThisPubliToFTP(); },
-    onNoConnection : function() { onNoConnection(); },
-    onWebConnection : function(webPubliFolderPath, arrayImages, date) { onWebConnection(webPubliFolderPath, arrayImages, date); },
-    onPubiTransferred : function() { onPubiTransferred(); },
-    onCannotConnectFtp : function() { onCannotConnectFtp(); },
-
+    onPubliPDFIsGenerated   : function(pdfInfos) { onPubliPDFIsGenerated(pdfInfos); },
+    uploadThisPubliToFTP    : function() { uploadThisPubliToFTP(); },
+    onNoConnection          : function() { onNoConnection(); },
+    onWebConnection         : function(webPubliFolderPath, arrayImages, date) { onWebConnection(webPubliFolderPath, arrayImages, date); },
+    onPubliTransferred      : function(d) { onPubliTransferred(d); },
+    onCannotConnectFtp      : function() { onCannotConnectFtp(); },
   }
 
   function sendThisPubliToPDF() {
     //Generate pdf
     $generatePDF.on('click', function(){
       var currentUrl = window.location.href;
-      var htmlNoScript =
-      $('html')
+      var htmlNoScript = $('html')
+        .clone()
         .find('script').remove().end()
         .find('.js--generatePDF').remove().end()
         .find('.js--uploadPubliToFtp').remove().end()
         .find('.js--editPubli').remove().end()
-        .find('.button-wrapper').remove()
+        .find('.button-wrapper').remove().end()
+        .html()
         ;
 
-      var html = $('html').html();
-      socket.emit('generatePDF', {html: html, url: currentUrl ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
+      socket.emit('generatePDF', {html: htmlNoScript, url: currentUrl ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
       // animation on wait
       $('body').addClass('is--generating');
     });
@@ -40,17 +39,23 @@ var uploadPubliToFtp = (function() {
   function uploadThisPubliToFTP(){
     $uploadBtn.on('click', function (){
       $('body')
-        .find('.js--uploadPubliToFtp').remove().end()
-        .find('.js--generatePDF').remove().end()
-        .find('.publi-btn').remove().end()
         ;
 
       String.prototype.replaceAll = function(target, replacement) {
         return this.split(target).join(replacement);
       };
 
-      var publiHtml = $('body').html();
-      var publiClean = publiHtml
+      var publiHtml = $('body')
+        .clone()
+        .find('.js--uploadPubliToFtp').remove().end()
+        .find('.js--generatePDF').remove().end()
+        .find('.publi-btn').remove().end()
+        .find('.module_infos').remove().end()
+        .find('script').remove().end()
+        .html()
+        ;
+
+      var newPubliContent = publiHtml
         .replaceAll('/'+currentFolder+'/'+currentProject+'/01-photos', 'medias')
         .replaceAll('/'+currentFolder+'/'+currentProject+'/02-animations', 'medias')
         .replaceAll('/'+currentFolder+'/'+currentProject+'/03-videos', 'medias')
@@ -62,19 +67,16 @@ var uploadPubliToFtp = (function() {
       var body = '<body class="publi"><div class="publi_container">';
       var footer = '</div><script src="../jquery.min.js"></script><script src="./script.js"></script></body></html>'
 
-      var html = head + body + publiClean + footer;
+      var html = head + body + newPubliContent + footer;
       socket.emit('exportPubliToFtp', {"html": html, "currentTemplate": currentTemplate, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
       $('body').addClass('is--generating');
     });
   }
 
 
-  function onPdfIsGenerated(path){
+  function onPubliPDFIsGenerated(pdfInfos){
     $('body').removeClass('is--generating');
-    var modalData = {
-      "path" : path,
-    }
-    modals.createModal('confirmPdfExported',modalData);
+    modals.createModal('confirmPdfExported',pdfInfos);
   }
 
   function onNoConnection(path){
@@ -104,10 +106,9 @@ var uploadPubliToFtp = (function() {
 	  modals.createModal('exportWebOnConnexion',modalData);
   }
 
-  function onPubiTransferred(){
-    alertify.log('publi transferred');
+  function onPubliTransferred(d){
+    modals.createModal('publiHasBeenSentToFtp', d);
     $('body').removeClass('is--generating');
-    location.reload();
   }
 
   function onCannotConnectFtp(){

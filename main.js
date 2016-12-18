@@ -8,6 +8,7 @@ const {dialog} = require('electron')
 
 const config = require('./config.json');
 const dodoc = require('./app/dodoc');
+const dodocAPI = require('./app/bin/dodoc-api');
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -19,6 +20,12 @@ app.commandLine.appendSwitch('--ignore-certificate-errors');
 
 function createWindow () {
 
+  flags.defineBoolean('debug');
+  flags.defineBoolean('verbose');
+  flags.parse();
+  var isDebugMode = flags.get('debug');
+  var isVerbose = flags.get('verbose');
+  global.dev = devLog(isDebugMode, isVerbose);
 
   // check if content folder exists
   copyAndRenameUserFolder().then(function(dodocPath) {
@@ -26,20 +33,15 @@ function createWindow () {
     global.userDirname = dodocPath;
     console.log('Will store contents in: ' + global.userDirname);
 
-    flags.defineBoolean('debug');
-    flags.defineBoolean('verbose');
-    flags.parse();
-    var isDebugMode = flags.get('debug');
-    var isVerbose = flags.get('verbose');
-    global.dev = devLog(isDebugMode, isVerbose);
-
     if(dev.isDebug()) {
       const contextMenu = require('electron-context-menu')({
+/*
         prepend: (params, browserWindow) => [{
           label: 'Rainbow',
           // only show it when right-clicking images
           visible: params.mediaType === 'image'
         }]
+*/
       });
     }
 
@@ -47,8 +49,7 @@ function createWindow () {
       app.server = require(path.join(__dirname, 'app', 'server'))();
     }
     catch (e) {
-     console.log('Couldn’t load app:')
-     console.log(e)
+      console.log('Couldn’t load app:', e);
     }
 
     // const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
@@ -115,8 +116,26 @@ app.on('activate', () => {
 
 function copyAndRenameUserFolder() {
   return new Promise(function(resolve, reject) {
-    let userDirPath = app.getPath(config.userDirpath);
-    const sourcePathInApp = path.join(__dirname, 'app', dodoc.userDirname)
+
+    if(!config.userDirpath) {
+      console.log('Missing path to dodoc parent folder');
+      config.userDirpath = dialog.showOpenDialog({
+        title: 'Sélectionnez le dossier qui contiendra le contenu de dodoc',
+        defaultPath: app.getPath("documents"),
+        properties: ['openDirectory']
+      })[0];
+      console.log('A path was picked: ' + config.userDirpath);
+
+      fs.writeFile( './config.json', JSON.stringify(config, null, 2), function(err) {
+        if (err) dev.error('Couldn’t update file: ' + err);
+        dev.logverbose('. saved config data to config.json');
+      }, function() {
+        dev.error('--> Couldn’t save config.json data.');
+      });
+
+    }
+
+    let userDirPath = config.userDirpath === "documents" ? app.getPath(config.userDirpath) : config.userDirpath;
     const dodocPathInUser = path.join( userDirPath, config.userDirname);
 
     // if dodoc folder doesn't exist yet at destination
@@ -125,7 +144,11 @@ function copyAndRenameUserFolder() {
         console.log('Content folder ' + config.userDirname + ' already exists in ' + config.userDirpath);
         console.log('->not creating a new one');
         resolve(dodocPathInUser);
+        return;
       }
+      console.log('Content folder ' + config.userDirname + ' does not already exists in ' + config.userDirpath);
+      console.log('->duplicating /user to create a new one');
+      const sourcePathInApp = path.join(__dirname, 'app', dodoc.userDirname)
       fs.copy(sourcePathInApp, dodocPathInUser, {clobber: false}, function (err) {
         if(err) reject(err);
         resolve(dodocPathInUser);
@@ -133,6 +156,3 @@ function copyAndRenameUserFolder() {
     });
   });
 }
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.

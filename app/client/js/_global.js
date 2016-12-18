@@ -18,9 +18,7 @@ socket.onevent = function (packet) {
 };
 socket.on("*",function(event,d) {
   // only log the following events
-
   var logs = [];
-
   switch(event) {
     case "mediaCreated":
       for(md in d) {
@@ -44,9 +42,11 @@ socket.on("*",function(event,d) {
     case "projectCreated":
       var pathToProject = '/'+d.slugFolderName+'/'+d.slugProjectName;
       logs.push(dodoc.lang.modal.newProjectCreatedWithName+'<em>'+d.name+'</em>'+dodoc.lang.modal.atPath+'<em>'+pathToProject+'</em>');
+      break;
     case "projectRemoved":
       var pathToProject = '/'+d.slugFolderName+'/'+d.slugProjectName;
       logs.push(dodoc.lang.modal.projectRemovedWithName+'<em>'+d.name+'</em>');
+      break;
   }
 
   for(log in logs) {
@@ -56,7 +56,14 @@ socket.on("*",function(event,d) {
       .log(logs[log])
       ;
   }
+});
 
+$('body').on('click', '.js--openInBrowser', function() {
+  if(require('electron') !== undefined) {
+    var shell = require('electron').shell;
+    event.preventDefault();
+    shell.openExternal(event.target.href);
+  }
 });
 
 

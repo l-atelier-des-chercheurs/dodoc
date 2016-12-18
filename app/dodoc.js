@@ -90,9 +90,8 @@ if( lang === 'fr') {
       "audioStreamCouldntBeStarted" : "Le flux audio n’a pas pu être démarré.",
 
       "mediapublitemplatesarestoredint" : "Les données chargées sur cette page sont stockées dans le dossier suivant&nbsp;: ",
-      "toconnectwithanotherdevice" : "Pour vous connecter avec un autre appareil connecté au même réseau wifi, naviguez vers l’adresse suivante (et ignorez l’avertissement qui s’affiche)&nbsp;:",
+      "toconnectwithanotherdevice" : "Pour vous connecter depuis un autre appareil qui se trouve sur le même réseau wifi, naviguez vers l’adresse suivante (et ignorez l’avertissement qui s’affiche)&nbsp;:",
       "clickHereToMoveContentFolder" : "Cliquez ici pour déplacer le dossier des contenus utilisateurs",
-
 
       "modal" : {
         "sureRemoveMedia" : "Êtes-vous sûr de vouloir supprimer ce média ?",
@@ -107,6 +106,7 @@ if( lang === 'fr') {
         "newFolder" : "Nouveau dossier",
         "informations" : "Informations",
         "pathofmedia" : "Emplacement du média sur le disque dur&nbsp;:",
+        "downloadThePDF" : "Téléchargez le PDF&nbsp;:",
 
         "editFolder" : "Modifier le dossier",
         "inprogress" : "En cours",
@@ -115,13 +115,15 @@ if( lang === 'fr') {
         "sureToRemoveFolder" : "Êtes-vous sûr de vouloir supprimer le dossier ?",
 
         "editProject" : "Modifier le projet",
-        "pdfPublicationHasBeenSaved" : "La publication a bien été sauvegardée en pdf&nbsp;:",
+        "pdfPublicationHasBeenSaved" : "La publication a bien été sauvegardée en PDF",
         "impossibleToConnectToServer" : "Impossible de se connecter au serveur",
         "loginOrPassIsWrong" : "Mauvais login ou mot de passe",
         "noInternetConnection" : "Pas de connexion internet",
         "noInternetCantSendPublicationOverFtp" : "Vous n'êtes pas connecté à internet, vous ne pouvez donc pas envoyer votre publication en FTP.",
         "yourFilesHaveBeenSaved" : "Vos fichiers web ont été sauvegardé&nbsp;:",
         "sendFilesToAServer" : "Envoyer les fichiers vers un serveur",
+        "publiHasBeenSentToServer" : "La publication a bien été transferrée au server",
+        "clickHereToOpenPubliInAWebBrowser" : "Cliquez ici sur ce lien pour ouvrir la publication dans un navigateur web.",
 
         "selectAnImage" : "Sélectionnez une image",
         "sureToRemoveProject" : "Êtes-vous sûr de vouloir supprimer le projet ?",
@@ -138,6 +140,7 @@ if( lang === 'fr') {
         "atPath" : " dans le chemin ",
 
         "moveContentFolder" : "Déplacer le dossier <em>dodoc</em> sur votre disque dur",
+        "instructionsToMoveContentFolder" : "En cliquant sur le bouton ci-dessous, cette fenêtre fermera et au prochain lancement vous serez invité à sélectionner un nouvel emplacement pour stocker les médias, les publications exportées et les templates. Si un dossier nommé <em>dodoc</em> ne s'y trouve pas déjà, il sera créé."
 
       },
     }

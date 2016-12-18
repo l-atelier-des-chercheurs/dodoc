@@ -6,7 +6,7 @@ var dodoc  = require('../dodoc');
 var dodocAPI = require('./dodoc-api');
 var dodocPubli = require('./dodoc-publi');
 
-var uploadToFtp = (function() {
+var publiFTP = (function() {
 
   const API = {
     exportPubliToFtp     : function(socket, d) { return exportPubliToFtp(socket, d); },
@@ -15,48 +15,53 @@ var uploadToFtp = (function() {
 
   function exportPubliToFtp(socket, d){
 
-    var folderName = d.slugFolderName;
-    var projectName = d.slugProjectName;
-    var publiName = d.slugPubliName;
     var publicationsFolder = path.join(dodocAPI.getUserPath(), dodoc.exportedPubliDir);
-    var webFolderName = "web";
-    var webMediasFolderName = "medias";
     var currentDate = dodocAPI.getCurrentDate();
 
-    createExportPubliFolder(folderName, publicationsFolder).then(function(exportFolderPath){
-      createExportPubliFolder(projectName,exportFolderPath).then(function(exportProjectPath){
-        createExportPubliFolder(publiName, exportProjectPath).then(function(exportPubliPath){
-          createExportPubliFolder(webFolderName, exportPubliPath).then(function(webFolderPath){
-            createExportPubliFolder(currentDate, webFolderPath).then(function(webPubliFolderPath){
-              copyFiles(path.join('app', 'client', 'css', 'style.css'), path.join(webPubliFolderPath, 'style.css'));
-              copyFiles(path.join('app', 'client', 'bower_components', 'jquery', 'dist', 'jquery.min.js'), path.join(webPubliFolderPath, 'jquery.min.js'));
-              copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate, 'script.js'), path.join(webPubliFolderPath, 'script.js'));
-              copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate, 'style.css'), path.join(webPubliFolderPath, 'template.css'));
-              fs.writeFile(path.join(webPubliFolderPath, "index.html"), d.html);
-              createExportPubliFolder(webMediasFolderName, webPubliFolderPath).then(function(webMediasFolderPath){
-                saveImagesLocal(webMediasFolderPath, d.slugFolderName, d.slugProjectName, d.slugPubliName).then(function(arrayImages){
-                  checkInternetConnection(webPubliFolderPath, arrayImages, currentDate, socket);
-                });
-              });
-            });
-          });
-        });
+    dodocAPI.makeFolderAtPath(d.slugFolderName, publicationsFolder)
+    .then((exportFolderPath) => {
+      return dodocAPI.makeFolderAtPath(d.slugProjectName,exportFolderPath);
+    })
+    .then((exportProjectPath) => {
+      return dodocAPI.makeFolderAtPath(d.slugPubliName,exportProjectPath);
+    })
+    .then((exportPubliPath) => {
+      return dodocAPI.makeFolderAtPath("web", exportPubliPath)
+    })
+    .then((webFolderPath) => {
+      return dodocAPI.makeFolderAtPath(currentDate, webFolderPath)
+    })
+    .then((webPubliFolderPath) => {
+      copyFiles(path.join('app', 'client', 'css', 'style.css'), path.join(webPubliFolderPath, 'style.css'));
+      copyFiles(path.join('app', 'client', 'bower_components', 'jquery', 'dist', 'jquery.min.js'), path.join(webPubliFolderPath, 'jquery.min.js'));
+      copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate, 'script.js'), path.join(webPubliFolderPath, 'script.js'));
+      copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate, 'style.css'), path.join(webPubliFolderPath, 'template.css'));
+
+      fs.writeFile(path.join(webPubliFolderPath, "index.html"), d.html);
+
+      dodocAPI.makeFolderAtPath("medias", webPubliFolderPath)
+      .then((webMediasFolderPath) => {
+        return saveImagesLocal(webMediasFolderPath, d.slugFolderName, d.slugProjectName, d.slugPubliName);
+      })
+      .then((arrayImages) => {
+        _checkInternetConnection(webPubliFolderPath, arrayImages, currentDate, socket);
       });
     });
   }
 
-  function sendFileToServer(socket, data){
+  function sendFileToServer(socket, d){
+    return new Promise(function(resolve, reject) {
+      dev.logfunction( "EVENT - sendFileToServer : " + JSON.stringify(d, null, 4));
 
-      var domain = data.domain;
-      var domainFolder = data.dossierFtp
-      var webPubliFolderPath = data.webPubliFolderPath
+      var webPubliFolderPath = d.webPubliFolderPath
       // instance for FTP Client
       var c = new Client();
-      var serverFolder = path.join( domainFolder, data.slugPubliName, data.currentDate);
+      var serverFolder = path.join(d.dossierFtp, d.slugPubliName, d.currentDate);
+      console.log('Attempting creation of folder on server at path: ' + serverFolder);
 
       c.on('ready', function() {
-        c.mkdir(serverFolder,  function(err) {
-          if (err) console.log(data.slugPubliName+ ' already exist' + err);
+        c.mkdir(serverFolder, true,  function(err) {
+          if (err) console.log('Folder already exists. Err: ' + err);
           else {
             console.log("Folder create on server transferred successfully!");
           }
@@ -83,18 +88,18 @@ var uploadToFtp = (function() {
           c.mkdir(path.join(serverFolder, 'medias'), function(err) {
             if (err) console.log('medias: not transferred:' + err);
             else console.log("Medias folder created successfully!");
-            for(var fileName in data.images){
-              c.append(path.join(webPubliFolderPath, 'medias', data.images[fileName]), path.join(serverFolder,'medias', data.images[fileName]), function(err) {
+            for(var fileName in d.images){
+              c.append(path.join(webPubliFolderPath, 'medias', d.images[fileName]), path.join(serverFolder,'medias', d.images[fileName]), function(err) {
                 if (err) console.log('not transferred:' + err);
                 else {
-                  console.log("media transferred " + data.images[fileName]);
+                  console.log("media transferred " + d.images[fileName]);
                 }
               });
             }
-            console.log("Publication was transferred at: "+domain+'/'+domainFolder+'/'+data.slugPubliName);
-            socket.emit('pubiTransferred');
             c.end();
-
+            const urlToPubli = path.join(d.baseURL, serverFolder);
+            console.log("Publication was transferred and is now at: " + urlToPubli);
+            resolve(urlToPubli);
           });
 
         });
@@ -102,21 +107,22 @@ var uploadToFtp = (function() {
 
       c.on('error', function(err){
         console.log("can't connect to the server : "+ err);
-        socket.emit('cannotConnectFtp');
+        reject();
       });
 
       c.connect({
-        host: data.host,
-        port: data.port,
-        user: data.user,
-        password: data.pass
+        host: d.host,
+        port: d.port,
+        user: d.user,
+        password: d.pass
       });
+    });
   }
 
   function saveImagesLocal(webMediasFolderPath, slugFolderName, slugProjectName, slugPubliName){
     var arrayImages = [];
     return new Promise(function(resolve, reject) {
-      dev.logfunction( "UploadToFTP — saveImagesLocal");
+      dev.logfunction( "publiFTP — saveImagesLocal");
       dodocPubli.listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function(publi) {
         for (var prop in publi) {
           var medias = publi[prop].medias;
@@ -150,12 +156,11 @@ var uploadToFtp = (function() {
     });
   };
 
-  function checkInternetConnection(webPubliFolderPath, arrayImages, currentDate, socket){
+  function _checkInternetConnection(webPubliFolderPath, arrayImages, currentDate, socket){
     // check internet connection
     return new Promise(function(resolve, reject) {
-      dev.logfunction( "UploadToFTP — checkInternetConnection");
+      dev.logfunction( "publiFTP — _checkInternetConnection");
       require('dns').resolve('www.google.com', function(err) {
-        console.log('DNS - ' + err);
         if(err) {
           console.log("No connection");
           socket.emit('noConnection', webPubliFolderPath);
@@ -168,21 +173,6 @@ var uploadToFtp = (function() {
       });
     });
   }
-
-  function sendImageToServer(arrayImages, projectPath, mediasPath, slugFolderName, slugProjectName, slugPubliName, c, domainFolder, domain, socket) {
-    for(var fileName in arrayImages){
-      c.append(mediasPath + '/' + arrayImages[fileName], domainFolder+'/'+ slugPubliName+'/medias/'+arrayImages[fileName], function(err) {
-        if (err) console.log('not transferred:' + err);
-        else {
-          console.log("media transferred");
-        }
-      });
-    }
-    console.log("Publication was transferred at: "+domain+domainFolder+'/'+slugPubliName);
-    socket.emit('pubiTransferred', domain+domainFolder+'/'+slugPubliName);
-    c.end();
-  }
-
 
   function copyFiles(sourceFile, destFile){
     return new Promise(function(resolve, reject) {
@@ -207,30 +197,7 @@ var uploadToFtp = (function() {
     });
   };
 
-  function createExportPubliFolder(name, path) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction( "COMMON — createExportPubliFolder");
-
-      var folderName = name;
-      var folderPath = path+'/'+name;
-
-      fs.access( folderPath, fs.F_OK, function( err) {
-        // if there's nothing at path
-        if(err) {
-          console.log("New folder created with name " + folderName + " and path " + path);
-          fs.ensureDirSync(folderPath);//write new folder in folders
-          resolve(folderPath);
-        } else {
-          console.log("Folder already exist");
-          // reject();
-          resolve(folderPath);
-        }
-      });
-
-    });
-  }
-
   return API;
 })();
 
-module.exports = uploadToFtp;
+module.exports = publiFTP;
