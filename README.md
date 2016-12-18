@@ -91,17 +91,11 @@ Install dependencies:
 npm install
 ```
 
-Finally run the following command to make sure native dependencies are installed (may take 1-2 minutes):		
+Finally run the following command to make sure native dependencies are installed for Sharp — the image processor used to create image thumbs (may take 1-2 minutes):		
  
-- on Linux and Mac
- ```		
- ./node_modules/.bin/electron-rebuild		
- ```
- 
-- on Windows
- ```
- .\node_modules\.bin\electron-rebuild.cmd
- ```
+```		
+npm run rebuild
+```
  
 ### 4. Run DoDoc
 
