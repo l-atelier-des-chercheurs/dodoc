@@ -142,21 +142,21 @@ function copyAndRenameUserFolder() {
     let userDirPath = config.userDirpath === "documents" ? app.getPath(config.userDirpath) : config.userDirpath;
     const dodocPathInUser = path.join( userDirPath, config.userDirname);
 
-    // if dodoc folder doesn't exist yet at destination
     fs.access(dodocPathInUser, fs.F_OK, function(err) {
-      if(!err) {
+      // if dodoc folder doesn't exist yet at destination
+      if(err) {
+        console.log('Content folder ' + config.userDirname + ' does not already exists in ' + config.userDirpath);
+        console.log('->duplicating /user to create a new one');
+        const sourcePathInApp = path.join(__dirname, 'app', dodoc.userDirname)
+        fs.copy(sourcePathInApp, dodocPathInUser, {clobber: false}, function (err) {
+          if(err) reject(err);
+          resolve(dodocPathInUser);
+        });
+      } else {
         console.log('Content folder ' + config.userDirname + ' already exists in ' + config.userDirpath);
         console.log('->not creating a new one');
         resolve(dodocPathInUser);
-        return;
       }
-      console.log('Content folder ' + config.userDirname + ' does not already exists in ' + config.userDirpath);
-      console.log('->duplicating /user to create a new one');
-      const sourcePathInApp = path.join(__dirname, 'app', dodoc.userDirname)
-      fs.copy(sourcePathInApp, dodocPathInUser, {clobber: false}, function (err) {
-        if(err) reject(err);
-        resolve(dodocPathInUser);
-      });
     });
   });
 }

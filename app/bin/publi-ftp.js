@@ -1,6 +1,6 @@
 var path = require('path');
 var fs = require('fs-extra');
-var Client = require('ftp');
+var clientFTP = require('ftp');
 
 var dodoc  = require('../dodoc');
 var dodocAPI = require('./dodoc-api');
@@ -19,19 +19,19 @@ var publiFTP = (function() {
     var currentDate = dodocAPI.getCurrentDate();
 
     dodocAPI.makeFolderAtPath(d.slugFolderName, publicationsFolder)
-    .then((exportFolderPath) => {
+    .then(exportFolderPath => {
       return dodocAPI.makeFolderAtPath(d.slugProjectName,exportFolderPath);
     })
-    .then((exportProjectPath) => {
+    .then(exportProjectPath => {
       return dodocAPI.makeFolderAtPath(d.slugPubliName,exportProjectPath);
     })
-    .then((exportPubliPath) => {
+    .then(exportPubliPath => {
       return dodocAPI.makeFolderAtPath("web", exportPubliPath)
     })
-    .then((webFolderPath) => {
+    .then(webFolderPath => {
       return dodocAPI.makeFolderAtPath(currentDate, webFolderPath)
     })
-    .then((webPubliFolderPath) => {
+    .then(webPubliFolderPath => {
       copyFiles(path.join('app', 'client', 'css', 'style.css'), path.join(webPubliFolderPath, 'style.css'));
       copyFiles(path.join('app', 'client', 'bower_components', 'jquery', 'dist', 'jquery.min.js'), path.join(webPubliFolderPath, 'jquery.min.js'));
       copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate, 'script.js'), path.join(webPubliFolderPath, 'script.js'));
@@ -40,10 +40,10 @@ var publiFTP = (function() {
       fs.writeFile(path.join(webPubliFolderPath, "index.html"), d.html);
 
       dodocAPI.makeFolderAtPath("medias", webPubliFolderPath)
-      .then((webMediasFolderPath) => {
+      .then(webMediasFolderPath => {
         return saveImagesLocal(webMediasFolderPath, d.slugFolderName, d.slugProjectName, d.slugPubliName);
       })
-      .then((arrayImages) => {
+      .then(arrayImages => {
         _checkInternetConnection(webPubliFolderPath, arrayImages, currentDate, socket);
       });
     });
@@ -54,14 +54,14 @@ var publiFTP = (function() {
       dev.logfunction( "EVENT - sendFileToServer : " + JSON.stringify(d, null, 4));
 
       var webPubliFolderPath = d.webPubliFolderPath
-      // instance for FTP Client
-      var c = new Client();
+      // instance for FTP client
+      var c = new clientFTP();
       var serverFolder = path.join(d.dossierFtp, d.slugPubliName, d.currentDate);
       console.log('Attempting creation of folder on server at path: ' + serverFolder);
 
       c.on('ready', function() {
         c.mkdir(serverFolder, true,  function(err) {
-          if (err) console.log('Folder already exists. Err: ' + err);
+          if (err) console.log('Couldn\'t create folder on server. Err: ' + err);
           else {
             console.log("Folder create on server transferred successfully!");
           }
