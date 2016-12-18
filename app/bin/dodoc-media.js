@@ -8,7 +8,7 @@ var mm = require('marky-mark');
 var ffmpegstatic = require('ffmpeg-static');
 var ffmpeg = require('fluent-ffmpeg');
 
-var Jimp = require("jimp");
+var sharp = require('sharp');
 
 var dodoc  = require('../dodoc');
 var dodocAPI = require('./dodoc-api');
@@ -363,7 +363,7 @@ var dodocMedia = (function() {
             var filePath = path.join( pathToMediaFolder, filename);
             var deletedFilePath = path.join( pathToMediaFolder, dodoc.deletedPrefix + filename);
             fs.renameSync( filePath, deletedFilePath);
-            console.log( "A file will be deleted (renamed but hidden from dodoc) : \n - " + filePath + "\n - " + deletedFilePath);
+            console.log( "A file will be deleted (renamed and hidden from dodoc) : \n - " + filePath + "\n - " + deletedFilePath);
           }
         });
         var mediaMetaData =
@@ -405,6 +405,7 @@ var dodocMedia = (function() {
     return new Promise(function(resolve, reject) {
       var imagePath = pathToFile + '.jpeg';
       dev.logverbose('Now using image processore to optimize new image.');
+/*
       Jimp.read(imageBufferData, function(err, image) {
         if (err) reject(err);
         image
@@ -415,9 +416,8 @@ var dodocMedia = (function() {
             resolve(imagePath);
           });
         });
-    });
+*/
 
-/*
       // equivalent in sharp (but sharp needs native deps, which is annoying)
       sharp(imageBufferData)
         .rotate()
@@ -428,15 +428,14 @@ var dodocMedia = (function() {
           dev.logverbose('Image has been saved, resolving its path.');
           resolve(imagePath);
         });
-*/
 
+    });
   }
 
 
   /***************************************************************************************************/
   /******************************************** private functions ************************************/
   /***************************************************************************************************/
-
 
   function _getMediaPath( slugFolderName, slugProjectName, mediaFolder) {
     dev.logverbose('_getMediaPath with slugFolderName:' + slugFolderName + ' slugProjectName: ' + slugProjectName + ' mediaFolder: ' + mediaFolder);
@@ -582,6 +581,8 @@ var dodocMedia = (function() {
   function _makeImageThumb(imagePath, thumbPath) {
     return new Promise(function(resolve, reject) {
       dev.logverbose("Making a thumb at thumbPath: " + thumbPath);
+
+/*
       Jimp.read(imagePath, function(err, image) {
         if (err) reject(err);
         image
@@ -594,7 +595,7 @@ var dodocMedia = (function() {
             resolve();
           });
       });
-/*
+*/
       sharp(imagePath)
         .rotate()
         .resize(dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
@@ -607,7 +608,6 @@ var dodocMedia = (function() {
         .then(function() {
           resolve();
         });
-*/
     });
   }
 

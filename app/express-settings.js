@@ -3,7 +3,7 @@ var bodyParser = require('body-parser');
 var path = require('path');
 
 var dodoc  = require('./dodoc');
-var config = require('../config.json');
+var config = require('./config.json');
 
 module.exports = function(app, express) {
   app.set("port", config.port); //Server's port number

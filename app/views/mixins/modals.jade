@@ -181,7 +181,7 @@ mixin modals(typeOfModal)
   if( typeOfModal === 'exportWebOnConnexion')
     //- modal-connexion
     //////////////////////////////////////////////   CONNEXION  //////////////////////////////////
-    .m_modal-content
+    .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
         | !{dodoc.lang.modal.sendFilesToAServer}
