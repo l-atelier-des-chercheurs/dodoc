@@ -93,12 +93,13 @@ module.exports = function(app, io, electronApp){
     config.userDirpath = '';
     console.log('Existing config file: ' + JSON.stringify(config));
     fs.writeFile('./app/config.json', JSON.stringify(config, null, 2), (err) => {
-      if (err) {
-        dev.error('--> Couldn’t save config.json data: ' + err);
-        electronApp.relaunch();
+      console.log('plip');
+      if(err) {
+        console.log('--> Couldn’t save config.json data: ' + err);
+        electronApp.quit();
       }
-      dev.logverbose('. saved config data to config.json');
-      electronApp.relaunch();
+      console.log('. saved config data to config.json');
+      electronApp.quit();
     });
   }
 
