@@ -26,6 +26,10 @@ function createWindow () {
   var isVerbose = flags.get('verbose');
   global.dev = devLog(isDebugMode, isVerbose);
 
+  if( global.dodoc === undefined)
+    global.dodoc = {};
+  global.dodoc.homeURL = `${config.protocol}://${config.host}:${config.port}`;
+
   // check if content folder exists
   copyAndRenameUserFolder().then(function(dodocPath) {
 
@@ -68,7 +72,7 @@ function createWindow () {
     // win.maximize();
 
     // and load the base url of the app.
-    win.loadURL(`${config.protocol}://${config.host}:${config.port}`);
+    win.loadURL(global.dodoc.homeURL);
 
     // Open the DevTools.
     if(dev.isDebug())

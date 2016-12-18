@@ -51,35 +51,37 @@ var publiPDF = (function() {
   function _generatePDF(d){
     return new Promise(function(resolve, reject) {
 
-      var currentUrl = d.url;
       var pdfName = dodocAPI.getCurrentDate()+'.pdf';
       var pdfPath = path.join(d.printFolderPath, pdfName);
       var pdfURL = path.join('/', d.relativePrintFolder, pdfName)
+      console.log('Will make phantom pdf');
+
 
       phantom.create([
         '--ignore-ssl-errors=yes',
         '--ssl-protocol=any',
         '--load-images=yes',
         '--local-to-remote-url-access=yes',
-      ]).then((ph) => {
-        ph.createPage()
-        .then((page) => {
-          page.open(currentUrl+"/print")
-          .then(() => {
-            return page.property('paperSize', { format: "A4", orientation: 'portrait', margin: '1cm' })
-          })
-          .then(() => {
-            setTimeout(function(){
-              page.render(pdfPath)
-              .then(() => {
-                dev.logverbose('PDF successfully generated');
-                page.close();
-                ph.exit();
-                resolve({ pdfURL, pdfPath });
-              });
-            }, 2000);
+      ]).then(ph => {
+        ph.createPage().then(page => {
+          page.property('paperSize', { format: "A4", orientation: 'portrait', margin: '1cm' });
+          page.on('onLoadFinished', function(success) {
+            if(success === success) {
+              page.render(pdfPath);
+              ph.exit();
+              console.log(">> Render complete")
+              resolve({ pdfURL, pdfPath });
+            } else {
+              console.log('fail');
+              reject();
+            }
           });
-        });
+          page.setContent(d.html, global.dodoc.homeURL);
+        })
+      })
+      .catch(error => {
+        console.log(error);
+        reject();
       });
     });
   }

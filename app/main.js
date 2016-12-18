@@ -460,16 +460,11 @@ module.exports = function(app, io, electronApp){
   }
 
   function onGeneratePDF(socket, d, io) {
-    fs.writeFile('index.html', d.html, function(err) {
-      if (err) return( err);
-      console.log('html print file has been writen');
-
-      publiPDF.exportPubliToPDF(d).then(function(pdfInfos) {
-        dodocAPI.sendEventWithContent( 'publiPDFIsGenerated', pdfInfos, io, socket);
-      }, function(error) {
-        dodocAPI.sendEventWithContent( 'cannotGeneratePDF', error, io, socket);
-      });;
-    });
+    publiPDF.exportPubliToPDF(d).then(function(pdfInfos) {
+      dodocAPI.sendEventWithContent( 'publiPDFIsGenerated', pdfInfos, io, socket);
+    }, function(error) {
+      dodocAPI.sendEventWithContent( 'cannotGeneratePDF', error, io, socket);
+    });;
   }
 
 // F I N     P U B L I     P A G E
