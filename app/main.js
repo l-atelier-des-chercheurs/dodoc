@@ -33,13 +33,13 @@ module.exports = function(app, io, electronApp){
     socket.on( 'removeUserDirPath', onRemoveUserDirPath);
 
     // I N D E X    P A G E
-    socket.on( 'listFolders', function (data){ onListFolders(socket); });
-    socket.on( 'addFolder', function (data){ onNewFolder(socket,data); });
+    socket.on( 'listFolders', data => { onListFolders(socket); });
+    socket.on( 'addFolder', data => { onNewFolder(socket,data); });
     socket.on( 'editFolder', onEditFolder);
     socket.on( 'removeOneFolder', onRemoveOneFolder);
 
     // F O L D E R     P A G E
-    socket.on("listProjects", function (data){ onListProjects( socket, data); });
+    socket.on("listProjects", data => { onListProjects( socket, data); });
     socket.on("addProject", onNewProject);
     socket.on("editProject", onEditProject);
     socket.on("removeOneProject", onRemoveOneProject);
@@ -51,9 +51,9 @@ module.exports = function(app, io, electronApp){
     socket.on("newMedia", onNewMedia);
 
     //STOP MOTION
-    socket.on( "startStopMotion", function (data){ onStartStopMotion( socket, data); });
-    socket.on( "addImageToStopMotion", function (data){ onAddImageToStopMotion( socket, data); });
-    socket.on( 'deleteLastImageOfStopMotion', function (data){ onDeleteLastImageOfStopMotion(socket, data); });
+    socket.on( "startStopMotion", data => { onStartStopMotion( socket, data); });
+    socket.on( "addImageToStopMotion", data => { onAddImageToStopMotion( socket, data); });
+    socket.on( 'deleteLastImageOfStopMotion', data => { onDeleteLastImageOfStopMotion(socket, data); });
 
     // B I B L I        P A G E
     socket.on( 'listOneProjectMedias', onListOneProjectMedias);
@@ -69,9 +69,9 @@ module.exports = function(app, io, electronApp){
 
 		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 
-    socket.on( 'exportPubliToFtp', function (data){ onExportPubliToFtp( socket, data); });
-    socket.on( 'ftpSettings', function (data){ onFtpSettings( socket, data); });
-    socket.on( 'generatePDF', function (data){ onGeneratePDF( socket, data, io); });
+    socket.on( 'exportPubliToFtp', data => { onExportPubliToFtp(socket, data); });
+    socket.on( 'ftpSettings', data => { onFtpSettings(socket, data); });
+    socket.on( 'generatePDF', data => { onGeneratePDF(socket, data); });
 	});
 
   /***************************************************************************
@@ -143,10 +143,10 @@ module.exports = function(app, io, electronApp){
   }
 
   // Supprimer un dossier
-  function onRemoveOneFolder(fdata){
+  function onRemoveOneFolder(d){
     dev.logfunction( "EVENT - onRemoveOneFolder");
-    dodocFolder.removeOneFolder(fdata).then(function(d) {
-      dodocAPI.sendEventWithContent( 'folderRemoved', d, io);
+    dodocFolder.removeOneFolder(d).then(function(fdata) {
+      dodocAPI.sendEventWithContent( 'folderRemoved', fdata, io);
     }, function(error) {
       dev.error("Failed to remove a folder! Error: " + error);
     });
@@ -156,7 +156,7 @@ module.exports = function(app, io, electronApp){
 // P R O J E T S     P A G E
 // Liste les projets existants
 
-  function onListProjects( socket, dataFolder) {
+  function onListProjects(socket, dataFolder) {
     dev.logfunction( "EVENT - onListProjects");
     dodocFolder.listAllProjectsOfOneFolder(dataFolder.slugFolderName).then(function( allProjectsData) {
       dodocAPI.sendEventWithContent( 'listAllProjectsOfOneFolder', allProjectsData, io, socket);
@@ -434,33 +434,29 @@ module.exports = function(app, io, electronApp){
 // F I N    B I B L I    P A G E
 
 // P U B L I     P A G E
-  function onListOnePubliMetaAndMedias( publiData) {
-    dev.logfunction( "EVENT - onListOnePubliMetaAndMedias : " + JSON.stringify( publiData, null, 4));
-    var slugFolderName = publiData.slugFolderName;
-    var slugProjectName = publiData.slugProjectName;
-    var slugPubliName = publiData.slugPubliName;
-
-    dodocPubli.listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function( publiMedias) {
+  function onListOnePubliMetaAndMedias(d) {
+    dev.logfunction( "EVENT - onListOnePubliMetaAndMedias : " + JSON.stringify(d, null, 4));
+    dodocPubli.listMediaAndMetaFromOnePubli( d.slugFolderName, d.slugProjectName, d.slugPubliName).then(publiMedias => {
       dodocAPI.sendEventWithContent( 'listOnePubliMetaAndMedias', publiMedias, io);
     }, function(error) {
       dev.error("Failed to list one media! Error: " + error);
     });
   }
 
-  function onExportPubliToFtp(socket, publiData) {
-    dev.logfunction( "EVENT - exportPubliToFtp : " + JSON.stringify( publiData, null, 4));
-    publiFTP.exportPubliToFtp( socket, publiData);
+  function onExportPubliToFtp(socket, d) {
+    dev.logfunction( "EVENT - exportPubliToFtp : " + JSON.stringify( d, null, 4));
+    publiFTP.exportPubliToFtp(socket, d);
   }
 
-  function onFtpSettings(socket, data) {
-    publiFTP.sendFileToServer( socket, data).then(function(urlToPubli) {
-      dodocAPI.sendEventWithContent( 'publiTransferred', {urlToPubli}, io, socket);
+  function onFtpSettings(socket, d) {
+    publiFTP.sendFileToServer(d).then(function(urlToPubli) {
+      dodocAPI.sendEventWithContent('publiTransferred', {urlToPubli}, io, socket);
     }, function(error) {
-      dodocAPI.sendEventWithContent( 'cannotConnectFtp', error, io, socket);
+      dodocAPI.sendEventWithContent('cannotConnectFtp', error, io, socket);
     });;
   }
 
-  function onGeneratePDF(socket, d, io) {
+  function onGeneratePDF(socket, d) {
     publiPDF.exportPubliToPDF(d).then(function(pdfInfos) {
       dodocAPI.sendEventWithContent( 'publiPDFIsGenerated', pdfInfos, io, socket);
     }, function(error) {

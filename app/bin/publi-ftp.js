@@ -10,7 +10,7 @@ var publiFTP = (function() {
 
   const API = {
     exportPubliToFtp     : function(socket, d) { return exportPubliToFtp(socket, d); },
-    sendFileToServer     : function(socket, d) { return sendFileToServer(socket, d); },
+    sendFileToServer     : function(d) { return sendFileToServer(d); },
   };
 
   function exportPubliToFtp(socket, d){
@@ -32,10 +32,10 @@ var publiFTP = (function() {
       return dodocAPI.makeFolderAtPath(currentDate, webFolderPath)
     })
     .then(webPubliFolderPath => {
-      copyFiles(path.join('app', 'client', 'css', 'style.css'), path.join(webPubliFolderPath, 'style.css'));
-      copyFiles(path.join('app', 'client', 'bower_components', 'jquery', 'dist', 'jquery.min.js'), path.join(webPubliFolderPath, 'jquery.min.js'));
-      copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate, 'script.js'), path.join(webPubliFolderPath, 'script.js'));
-      copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate, 'style.css'), path.join(webPubliFolderPath, 'template.css'));
+      _copyFiles(path.join('app', 'client', 'css', 'style.css'), path.join(webPubliFolderPath, 'style.css'));
+      _copyFiles(path.join('app', 'client', 'bower_components', 'jquery', 'dist', 'jquery.min.js'), path.join(webPubliFolderPath, 'jquery.min.js'));
+      _copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate, 'script.js'), path.join(webPubliFolderPath, 'script.js'));
+      _copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate, 'style.css'), path.join(webPubliFolderPath, 'template.css'));
 
       fs.writeFile(path.join(webPubliFolderPath, "index.html"), d.html);
 
@@ -49,7 +49,7 @@ var publiFTP = (function() {
     });
   }
 
-  function sendFileToServer(socket, d){
+  function sendFileToServer(d){
     return new Promise(function(resolve, reject) {
       dev.logfunction( "EVENT - sendFileToServer : " + JSON.stringify(d, null, 4));
 
@@ -112,7 +112,6 @@ var publiFTP = (function() {
 
       c.connect({
         host: d.host,
-        port: d.port,
         user: d.user,
         password: d.pass
       });
@@ -174,9 +173,9 @@ var publiFTP = (function() {
     });
   }
 
-  function copyFiles(sourceFile, destFile){
+  function _copyFiles(sourceFile, destFile){
     return new Promise(function(resolve, reject) {
-      dev.logfunction( "COMMON — copyFiles");
+      dev.logfunction( "COMMON — _copyFiles");
       fs.unlink(destFile, function(err){
         fs.access(sourceFile, fs.F_OK, function(err) {
           if (!err) {

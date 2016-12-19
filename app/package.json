@@ -3,8 +3,6 @@
   "version": "1.0.0",
   "description": "Dodoc is a documentation tool.",
   "scripts": {
-    "start": "node index.js",
-    "debug": "node --inspect index.js --debug --verbose",
     "rebuild": "electron-rebuild -f -w sharp"
   },
   "author": "L’Atelier des Chercheurs",

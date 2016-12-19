@@ -111,8 +111,10 @@ var dodocAPI = (function() {
     var eventAndContentJson = eventAndContent( sendEvent, objectContent);
     dev.logpackets("eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
     if(socket)
+      // content sent only to one user
       socket.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
     else
+      // content broadcasted to all connected users
       io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
     dev.logpackets("packet sent");
   }

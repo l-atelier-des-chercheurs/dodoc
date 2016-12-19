@@ -187,11 +187,10 @@ mixin modals(typeOfModal)
         | !{dodoc.lang.modal.sendFilesToAServer}
       form(onsubmit='return false;' class='ftp-settings-form lead')
         input(type='text' class='host' placeholder='Host' autofocus required)
-        input(type='text' class='port' placeholder='Port')
         input(type='text' class='user' placeholder='User' required)
         input(type='password' class='pass' placeholder='Password' required)
-        input(type='url' class='baseURL' placeholder='Url du site')
-        input(type='text' class='folder' placeholder='Dossier')
+        input(type='url' class='baseURL' placeholder='Url du site' required)
+        input(type='text' class='folder' placeholder='Sous-dossier')
         hr
         +button('valider', '', 'isCollapsed')
 
@@ -201,6 +200,8 @@ mixin modals(typeOfModal)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
         | !{dodoc.lang.modal.publiHasBeenSentToServer}
+      .txt-small_info
+        | !{dodoc.lang.modal.clickHereToOpenPubliInAWebBrowser}
       a.urlToPubli.txt-wrap_long_lines.js--urlToPubli.js--openInBrowser(href target="_blank")
 
   if( typeOfModal === 'confirmPdfExported')

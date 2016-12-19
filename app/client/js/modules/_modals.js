@@ -178,12 +178,12 @@ var modals = (function() {
     	$filePicker.on( 'change', function( e )
     	{
     		var fileName = '';
-  			fileName = e.target.value.split( '\\' ).pop();
+  			fileName = e.target.value.split('\\').pop();
 
   			var fileData = e.originalEvent.target.files;
 
-    		if( fileName ) {
-    			$(this)
+    		if(fileName) {
+    			$filePicker
     			  .data('fileName', fileName)
     			  .data('fileData', fileData)
     			  ;
@@ -191,7 +191,7 @@ var modals = (function() {
   			    .html( fileName)
             ;
     		} else
-    			$(this)
+    			$filePicker
     			  .data('fileName', '')
     			  .data('fileData', '')
     			  ;
@@ -246,12 +246,12 @@ var modals = (function() {
 
     	$filePicker.on( 'change', function(e) {
     		var fileName = '';
-  			fileName = e.target.value.split( '\\' ).pop();
+  			fileName = e.target.value.split('\\').pop();
 
   			var fileData = e.originalEvent.target.files;
 
-    		if( fileName ) {
-    			$(this)
+    		if(fileName) {
+    			$filePicker
     			  .data('fileName', fileName)
     			  .data('fileData', fileData)
     			  ;
@@ -259,7 +259,7 @@ var modals = (function() {
   			    .html( fileName)
             ;
     		} else
-    			$(this)
+    			$filePicker
     			  .data('fileName', '')
     			  .data('fileData', '')
     			  ;
@@ -373,7 +373,6 @@ var modals = (function() {
   					;
   				break;
   			case dodoc.projectTextsFoldername:
-  				//console.log($(this).find('h3').html());
   				var $mediaItem = $(".js--templates .media-big_text").clone(false);
         var mfullpath = app.contentDir+'/'+mdata.textFilePath;
 
@@ -528,15 +527,13 @@ var modals = (function() {
     	var $label = $filePicker.next().find('span');
     	var labelVal = $label.text();
 
-    	$filePicker.on( 'change', function( e )
+    	$filePicker.on( 'change', function(e)
     	{
     		var fileName = '';
-  			fileName = e.target.value.split( '\\' ).pop();
-
+  			fileName = e.target.value.split('\\').pop();
   			var fileData = e.originalEvent.target.files;
-
-    		if( fileName ) {
-    			$(this)
+    		if(fileName) {
+        $filePicker
     			  .data('fileName', fileName)
     			  .data('fileData', fileData)
     			  ;
@@ -544,7 +541,7 @@ var modals = (function() {
   			    .html( fileName)
             ;
     		} else {
-    			$(this)
+    			$filePicker
     			  .data('fileName', '')
     			  .data('fileData', '')
     			  ;
@@ -598,22 +595,21 @@ var modals = (function() {
   function _initExportWebOnConnexionModal($m,d) {
 
     $m.find('input.host').val(d.host);
-    $m.find('input.port').val(d.port);
     $m.find('input.user').val(d.user);
     $m.find('input.pass').val(d.pass);
     $m.find('input.baseURL').val( d.baseURL);
     $m.find('input.folder').val(d.dossierFtp);
 
     $m.find('.js--valider').on('click', function(){
+      if(_checkAndHighlightEmptyRequiredFields($m)) return;
       var host = $m.find('input.host').val();
-      var port = $m.find('input.port').val();
       var user = $m.find('input.user').val();
       var pass = $m.find('input.pass').val();
       var baseURL = $m.find('input.baseURL').val();
       var dossierFtp = $m.find('input.folder').val();
 
-      store.set('ftp', {host,port,user,pass,baseURL,dossierFtp});
-      socket.emit('ftpSettings', {host,port,user,pass,baseURL,dossierFtp, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli, 'webPubliFolderPath': d.webPubliFolderPath, "images": d.arrayImages, "currentDate": d.date});
+      store.set('ftp', {host,user,pass,baseURL,dossierFtp});
+      socket.emit('ftpSettings', {host,user,pass,baseURL,dossierFtp, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli, 'webPubliFolderPath': d.webPubliFolderPath, "images": d.arrayImages, "currentDate": d.date});
 
       $m.trigger('close_that_modal');
       $('body').addClass('is--generating');
@@ -654,9 +650,6 @@ var modals = (function() {
         .html(d.urlToPubli)
         .attr('href', d.urlToPubli)
         ;
-    // only if electron browser, make link open native browser
-
-
     return $m;
   }
 
