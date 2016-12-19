@@ -3,6 +3,6 @@
   "host": "localhost",
   "port": 8080,
   "templateEngine": "jade",
-  "userDirpath": "userData",
+  "userDirpath": "documents",
   "userDirname": "dodoc"
 }
