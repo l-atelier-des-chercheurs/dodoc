@@ -5,7 +5,6 @@
   "author": "L’Atelier des Chercheurs",
   "license": "CC-BY-NC-SA-4.0",
   "private": true,
-
   "main": "main.js",
   "scripts": {
     "rebuild": "electron-rebuild -f -w sharp",

@@ -124,7 +124,7 @@ function copyAndRenameUserFolder() {
       console.log('Missing path to dodoc parent folder');
       config.userDirpath = dialog.showOpenDialog({
         title: 'Sélectionnez le dossier qui contiendra le contenu de dodoc',
-        defaultPath: app.getPath("documents"),
+        defaultPath: app.getPath("userData"),
         properties: ['openDirectory']
       })[0];
       console.log('A path was picked: ' + config.userDirpath);
@@ -139,7 +139,7 @@ function copyAndRenameUserFolder() {
       console.log('Path to dodoc folder defined in config.json as: ' + config.userDirpath);
     }
 
-    let userDirPath = config.userDirpath === "documents" ? app.getPath("documents") : config.userDirpath;
+    let userDirPath = config.userDirpath === "userData" ? app.getPath("userData") : config.userDirpath;
     const dodocPathInUser = path.join( userDirPath, config.userDirname);
 
     fs.access(dodocPathInUser, fs.F_OK, function(err) {
