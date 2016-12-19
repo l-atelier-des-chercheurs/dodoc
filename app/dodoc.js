@@ -123,7 +123,7 @@ if( lang === 'fr') {
         "yourFilesHaveBeenSaved" : "Vos fichiers web ont été sauvegardé&nbsp;:",
         "sendFilesToAServer" : "Envoyer les fichiers vers un serveur",
         "publiHasBeenSentToServer" : "La publication a bien été transferrée au server",
-        "clickHereToOpenPubliInAWebBrowser" : "Cliquez ici sur ce lien pour ouvrir la publication dans un navigateur web.",
+        "clickHereToOpenPubliInAWebBrowser" : "Lien vers votre publication&nbsp;:",
 
         "selectAnImage" : "Sélectionnez une image",
         "sureToRemoveProject" : "Êtes-vous sûr de vouloir supprimer le projet ?",
