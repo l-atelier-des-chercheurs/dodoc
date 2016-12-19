@@ -32,8 +32,8 @@ var publiFTP = (function() {
       return dodocAPI.makeFolderAtPath(currentDate, webFolderPath)
     })
     .then(webPubliFolderPath => {
-      _copyFiles(path.join('app', 'client', 'css', 'style.css'), path.join(webPubliFolderPath, 'style.css'));
-      _copyFiles(path.join('app', 'client', 'bower_components', 'jquery', 'dist', 'jquery.min.js'), path.join(webPubliFolderPath, 'jquery.min.js'));
+      _copyFiles(path.join('client', 'css', 'style.css'), path.join(webPubliFolderPath, 'style.css'));
+      _copyFiles(path.join('client', 'bower_components', 'jquery', 'dist', 'jquery.min.js'), path.join(webPubliFolderPath, 'jquery.min.js'));
       _copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate, 'script.js'), path.join(webPubliFolderPath, 'script.js'));
       _copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate, 'style.css'), path.join(webPubliFolderPath, 'template.css'));
 

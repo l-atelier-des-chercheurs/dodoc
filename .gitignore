@@ -8,11 +8,11 @@ node_modules
 dist
 build/config.gypi
 
-app/user/contenus/*
-!app/user/contenus/readme.txt
+user/contenus/*
+!user/contenus/readme.txt
 
-app/user/publications/*
-!app/user/publications/readme.txt
+user/publications/*
+!user/publications/readme.txt
 
 # Compiled source #
 ###################

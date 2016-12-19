@@ -15,7 +15,7 @@ var publiPDF = require('./bin/publi-pdf.js');
 
 module.exports = function(app, io, electronApp){
 
-  console.log("Main module initialized");
+  console.log("Initializing socket module");
 
   io.on("connection", function(socket){
 
@@ -92,7 +92,7 @@ module.exports = function(app, io, electronApp){
     var config = require('./config.json');
     config.userDirpath = '';
     console.log('Existing config file: ' + JSON.stringify(config));
-    fs.writeFile('./app/config.json', JSON.stringify(config, null, 2), (err) => {
+    fs.writeFile('./config.json', JSON.stringify(config, null, 2), (err) => {
       console.log('plip');
       if(err) {
         console.log('--> Couldn’t save config.json data: ' + err);

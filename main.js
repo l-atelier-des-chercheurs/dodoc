@@ -3,12 +3,12 @@ const {app, BrowserWindow} = electron;
 const path = require('path');
 const fs = require('fs-extra');
 const flags = require('flags');
-const devLog = require('./app/bin/dev-log');
+const devLog = require('./bin/dev-log');
 const {dialog} = require('electron')
 
-const config = require('./app/config.json');
-const dodoc = require('./app/dodoc');
-const dodocAPI = require('./app/bin/dodoc-api');
+const config = require('./config.json');
+const dodoc = require('./dodoc');
+const dodocAPI = require('./bin/dodoc-api');
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -49,7 +49,7 @@ function createWindow () {
     }
 
     try {
-      app.server = require(path.join(__dirname, 'app', 'server'))(app);
+      app.server = require('./server')(app);
     }
     catch (e) {
       console.log('Couldn’t load app:', e);
@@ -129,7 +129,7 @@ function copyAndRenameUserFolder() {
       })[0];
       console.log('A path was picked: ' + config.userDirpath);
 
-      fs.writeFile( './app/config.json', JSON.stringify(config, null, 2), function(err) {
+      fs.writeFile( './config.json', JSON.stringify(config, null, 2), function(err) {
         if (err) dev.error('Couldn’t update file: ' + err);
         dev.logverbose('. saved config data to config.json');
       }, function() {
@@ -147,7 +147,7 @@ function copyAndRenameUserFolder() {
       if(err) {
         console.log('Content folder ' + config.userDirname + ' does not already exists in ' + config.userDirpath);
         console.log('->duplicating /user to create a new one');
-        const sourcePathInApp = path.join(__dirname, 'app', dodoc.userDirname)
+        const sourcePathInApp = path.join(__dirname, dodoc.userDirname)
         fs.copy(sourcePathInApp, dodocPathInUser, {clobber: false}, function (err) {
           if(err) reject(err);
           resolve(dodocPathInUser);

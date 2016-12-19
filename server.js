@@ -63,11 +63,11 @@ module.exports = function(electronApp) {
 
   var io = require("socket.io").listen(server);
 
-  var main = require('./main');
+  var sockets = require('./sockets');
   var expressSettings = require('./express-settings');
   var router = require('./router');
 
-  var m = new main(app, io, electronApp);
+  var m = new sockets(app, io, electronApp);
 
   /*
   * Server config
