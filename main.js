@@ -139,7 +139,6 @@ function copyAndRenameUserFolder() {
       console.log('Path to dodoc folder defined in config.json as: ' + config.userDirpath);
     }
 
-    let userDirPath = config.userDirpath === "documents" ? app.getPath("documents") : config.userDirpath;
     const dodocPathInUser = path.join( userDirPath, config.userDirname);
 
     fs.access(dodocPathInUser, fs.F_OK, function(err) {

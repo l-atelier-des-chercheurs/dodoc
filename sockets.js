@@ -89,18 +89,9 @@ module.exports = function(app, io, electronApp){
 
   function onRemoveUserDirPath() {
     dev.logfunction( "EVENT - onRemoveUserDirPath");
-    var config = require('./config.json');
-    config.userDirpath = '';
-    console.log('Existing config file: ' + JSON.stringify(config));
-    fs.writeFile('./config.json', JSON.stringify(config, null, 2), (err) => {
-      console.log('plip');
-      if(err) {
-        console.log('--> Couldn’t save config.json data: ' + err);
-        electronApp.quit();
-      }
-      console.log('. saved config data to config.json');
-      electronApp.quit();
-    });
+    global.nodeStorage.setItem('userDirpath', '');
+    electronApp.relaunch();
+    electronApp.exit(0)
   }
 
 // I N D E X     P A G E
