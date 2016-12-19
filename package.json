@@ -19,7 +19,8 @@
     "url": "git+https://github.com/l-atelier-des-chercheurs/dodoc.git"
   },
   "author": "L’Atelier des Chercheurs",
-  "license": "ISC",
+  "license": "CC-BY-NC-SA-4.0",
+  "private": true,
   "bugs": {
     "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
   },
