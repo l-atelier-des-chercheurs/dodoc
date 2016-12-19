@@ -1,5 +1,6 @@
 const electron = require('electron');
 const {app, BrowserWindow} = electron;
+
 const path = require('path');
 const fs = require('fs-extra');
 const flags = require('flags');
@@ -30,23 +31,31 @@ function createWindow () {
     global.dodoc = {};
   global.dodoc.homeURL = `${config.protocol}://${config.host}:${config.port}`;
 
+  var JSONStorage = require('node-localstorage').JSONStorage;
+  var storageLocation = app.getPath('userData');
+  global.nodeStorage = new JSONStorage(storageLocation);
+
   // check if content folder exists
+  console.log('Will store contents in: ' + global.userDirname);
+
+  // Create the browser window.
+  win = new BrowserWindow({
+    width: 1180,
+    height: 700,
+    backgroundColor: '#EBEBEB',
+    webPreferences: {
+      allowDisplayingInsecureContent: true,
+      allowRunningInsecureContent: true,
+      nodeIntegration: true
+    }
+  });
+  // win.maximize();
+
+  win.focus();
+
   copyAndRenameUserFolder().then(function(dodocPath) {
 
     global.userDirname = dodocPath;
-    console.log('Will store contents in: ' + global.userDirname);
-
-    if(dev.isDebug()) {
-      const contextMenu = require('electron-context-menu')({
-/*
-        prepend: (params, browserWindow) => [{
-          label: 'Rainbow',
-          // only show it when right-clicking images
-          visible: params.mediaType === 'image'
-        }]
-*/
-      });
-    }
 
     try {
       app.server = require('./server')(app);
@@ -55,22 +64,6 @@ function createWindow () {
       console.log('Couldn’t load app:', e);
     }
 
-    // const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
-
-
-    // Create the browser window.
-    win = new BrowserWindow({
-      width: 1180,
-      height: 700,
-      backgroundColor: '#EBEBEB',
-      webPreferences: {
-        allowDisplayingInsecureContent: true,
-        allowRunningInsecureContent: true,
-        nodeIntegration: true
-      }
-    });
-    // win.maximize();
-
     // and load the base url of the app.
     win.loadURL(global.dodoc.homeURL);
 
@@ -78,7 +71,6 @@ function createWindow () {
     if(dev.isDebug())
       win.webContents.openDevTools();
 
-    win.focus();
 
     // Emitted when the window is closed.
     win.on('closed', () => {
@@ -120,31 +112,45 @@ app.on('activate', () => {
 function copyAndRenameUserFolder() {
   return new Promise(function(resolve, reject) {
 
-    if(!config.userDirpath) {
+    // check if nodeStorage has a userDirpath field
+    let userDirpath = '';
+    try {
+      userDirpath = global.nodeStorage.getItem('userDirpath');
+      console.log('global.nodeStorage.getItem("userDirpath") : ' + global.nodeStorage.getItem('userDirpath'));
+    } catch (err) {
+      console.log('Fail loading node storage for userDirpath');
+      // the file is there, but corrupt. Handle appropriately.
+    }
+
+    // if it has an empty userDirpath
+    if(userDirpath === '') {
       console.log('Missing path to dodoc parent folder');
-      config.userDirpath = dialog.showOpenDialog({
+      userDirpath = dialog.showOpenDialog({
         title: 'Sélectionnez le dossier qui contiendra le contenu de dodoc',
         defaultPath: app.getPath("documents"),
         properties: ['openDirectory']
       })[0];
-      console.log('A path was picked: ' + config.userDirpath);
+      console.log('A path was picked: ' + userDirpath);
+      global.nodeStorage.setItem('userDirpath', userDirpath);
+    } else
 
-      fs.writeFile( './config.json', JSON.stringify(config, null, 2), function(err) {
-        if (err) dev.error('Couldn’t update file: ' + err);
-        dev.logverbose('. saved config data to config.json');
-      }, function() {
-        dev.error('--> Couldn’t save config.json data.');
-      });
-    } else {
-      console.log('Path to dodoc folder defined in config.json as: ' + config.userDirpath);
+    // if it has a non-empty userDirpath, lets use it
+    if(userDirpath !== null && userDirpath.length > 0) {
+      console.log('Found usable userDirpath:' + userDirpath);
     }
 
-    const dodocPathInUser = path.join( userDirPath, config.userDirname);
+    // if it doens't have a userDirPath
+    else {
+      console.log('No usable userDirpath, using default');
+      userDirpath = app.getPath(config.userDirpath);
+    }
+
+    const dodocPathInUser = path.join(userDirpath, config.userDirname);
 
     fs.access(dodocPathInUser, fs.F_OK, function(err) {
       // if dodoc folder doesn't exist yet at destination
       if(err) {
-        console.log('Content folder ' + config.userDirname + ' does not already exists in ' + config.userDirpath);
+        console.log('Content folder ' + config.userDirname + ' does not already exists in ' + userDirpath);
         console.log('->duplicating /user to create a new one');
         const sourcePathInApp = path.join(__dirname, dodoc.userDirname)
         fs.copy(sourcePathInApp, dodocPathInUser, {clobber: false}, function (err) {
