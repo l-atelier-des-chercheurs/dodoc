@@ -14,6 +14,7 @@
     "dist": "build",
     "postinstall": "install-app-deps",
     "pack:osx": "electron-packager . dodoc --out=dist/osx --platform=darwin --arch=x64 --icon=build/icon.icns",
+    "pack:linux": "electron-packager . dodoc --out=dist/linux --platform=linux --arch=x64 --icon=build/icon.icns",
     "pack:win64": "electron-packager . dodoc --out=dist/win --platform=win32 --arch=x64 --icon=build/icon.ico",
     "package": "npm run pack:osx && npm run pack:win64"
   },
