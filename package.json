@@ -2,7 +2,7 @@
   "name": "dodoc",
   "version": "4.0.1",
   "description": "Dodoc is a documentation tool for creativity.",
-  "author": "L’Atelier des Chercheurs",
+  "author": "L’Atelier des Chercheurs <http://latelier-des-chercheurs.fr/>",
   "license": "CC-BY-NC-SA-4.0",
   "private": true,
   "main": "main.js",
@@ -32,7 +32,7 @@
       "category": "public.app-category.education"
     },
     "win": {
-      "iconUrl": "(windows-only) https link to icon"
+      "iconUrl": "http://latelier-des-chercheurs.fr/icon.ico"
     }
   },
   "dependencies": {
