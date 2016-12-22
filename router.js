@@ -13,15 +13,6 @@ var dodocPubli = require('./bin/dodoc-publi');
 
 module.exports = function(app,io,m){
 
-  if(typeof global.dev === "undefined") {
-    flags.defineBoolean('debug');
-    flags.defineBoolean('verbose');
-    flags.parse();
-    var isDebugMode = flags.get('debug');
-    var isVerbose = flags.get('verbose');
-    global.dev = devLog( isDebugMode, isVerbose);
-  }
-
   /**
   * routing event
   */
@@ -96,8 +87,8 @@ module.exports = function(app,io,m){
       getLocalIP().then(function(localNetworkInfos) {
         pageDataJSON.localNetworkInfos = localNetworkInfos;
         resolve(pageDataJSON);
-      }, function(err) {
-        console.log('err ' + err);
+      }, function(err, p) {
+        dev.error('Err ' + err);
         reject(err);
       });
     });
@@ -110,7 +101,7 @@ module.exports = function(app,io,m){
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("index", generatePageDataJSON);
     }, function(err) {
-      console.log('Err ' + err);
+      dev.error('Err while getting index data: ' + err);
     });
   };
 
@@ -119,7 +110,7 @@ module.exports = function(app,io,m){
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("folder", generatePageDataJSON);
     }, function(err) {
-      console.log('Err while getting folder data : ' + err);
+      dev.error('Err while getting folder data: ' + err);
     });
   };
 
@@ -128,7 +119,7 @@ module.exports = function(app,io,m){
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("project", generatePageDataJSON);
     }, function(err) {
-      console.log('err ' + err);
+      dev.error('Err while getting project data: ' + err);
     });
   };
 
@@ -137,7 +128,7 @@ module.exports = function(app,io,m){
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("capture", generatePageDataJSON);
     }, function(err) {
-      console.log('err ' + err);
+      dev.error('Err while getting capture data: ' + err);
     });
   };
 
@@ -148,10 +139,10 @@ module.exports = function(app,io,m){
         generatePageDataJSON["templates"] = allTemplates;
         res.render("bibli", generatePageDataJSON);
       }, function(err) {
-        console.log('err ' + err);
+      dev.error('Err while listing templates for bibli: ' + err);
       });
     }, function(err) {
-      console.log('err ' + err);
+      dev.error('Err while getting bibli data: ' + err);
     });
   };
 
@@ -166,10 +157,10 @@ module.exports = function(app,io,m){
         generatePageDataJSON["templates"] = allTemplates;
         res.render("publi", generatePageDataJSON);
       }, function(err) {
-        console.log('err ' + err);
+      dev.error('Err while listing templates for publi: ' + err);
       });
     }, function(err) {
-      console.log('err ' + err);
+      dev.error('Err while getting publi data: ' + err);
     });
   };
 

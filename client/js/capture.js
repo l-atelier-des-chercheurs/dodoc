@@ -535,12 +535,12 @@ var currentStream = (function(context) {
           errorMessage = 'You need to use HTTPS for selecting audio output ' +
               'device: ' + error;
         }
-        console.error(errorMessage);
+        alertify.error(errorMessage);
         // Jump back to first output device in the list as it's the default.
         audioOutputSelect.selectedIndex = 0;
       });
     } else {
-      console.warn('Your browser does not support output device selection.');
+      alertify.error('Your browser does not support output device selection.');
     }
   }
 
@@ -641,7 +641,7 @@ var currentStream = (function(context) {
           resolve(stream);
         },
         function(err) {
-          alertify.log( dodoc.lang.audioStreamCouldntBeStarted + '\n\n error: ' + JSON.stringify(err));
+          alertify.error( dodoc.lang.audioStreamCouldntBeStarted + '\n\n error: ' + JSON.stringify(err));
         }
       );
     });

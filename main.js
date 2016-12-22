@@ -36,7 +36,7 @@ function createWindow () {
   global.nodeStorage = new JSONStorage(storageLocation);
 
   // check if content folder exists
-  console.log('Will store contents in: ' + global.userDirname);
+  console.log('Will store contents in: ' + global.userDirPath);
 
   // Create the browser window.
   win = new BrowserWindow({
@@ -53,9 +53,9 @@ function createWindow () {
 
   win.focus();
 
-  copyAndRenameUserFolder().then(function(dodocPath) {
+  copyAndRenameUserFolder().then(function(pathToUserContent) {
 
-    global.userDirname = dodocPath;
+    global.pathToUserContent = pathToUserContent;
 
     try {
       app.server = require('./server')(app);
@@ -112,55 +112,55 @@ app.on('activate', () => {
 function copyAndRenameUserFolder() {
   return new Promise(function(resolve, reject) {
 
-    // check if nodeStorage has a userDirpath field
-    let userDirpath = '';
+    // check if nodeStorage has a userDirPath field
+    let userDirPath = '';
     try {
-      userDirpath = global.nodeStorage.getItem('userDirpath');
-      console.log('global.nodeStorage.getItem("userDirpath") : ' + global.nodeStorage.getItem('userDirpath'));
+      userDirPath = global.nodeStorage.getItem('userDirPath');
+      console.log('global.nodeStorage.getItem("userDirPath") : ' + global.nodeStorage.getItem('userDirPath'));
     } catch (err) {
-      console.log('Fail loading node storage for userDirpath');
+      console.log('Fail loading node storage for userDirPath');
       // the file is there, but corrupt. Handle appropriately.
     }
 
-    // if it has an empty userDirpath
-    if(userDirpath === '') {
+    // if it has an empty userDirPath
+    if(userDirPath === '') {
       console.log('Missing path to dodoc parent folder');
-      userDirpath = dialog.showOpenDialog({
+      userDirPath = dialog.showOpenDialog({
         title: 'Sélectionnez le dossier qui contiendra le contenu de dodoc',
         defaultPath: app.getPath("documents"),
         properties: ['openDirectory']
       })[0];
-      console.log('A path was picked: ' + userDirpath);
-      global.nodeStorage.setItem('userDirpath', userDirpath);
+      console.log('A path was picked: ' + userDirPath);
+      global.nodeStorage.setItem('userDirPath', userDirPath);
     } else
 
-    // if it has a non-empty userDirpath, lets use it
-    if(userDirpath !== null && userDirpath.length > 0) {
-      console.log('Found usable userDirpath:' + userDirpath);
+    // if it has a non-empty userDirPath, lets use it
+    if(userDirPath !== null && userDirPath.length > 0) {
+      console.log('Found usable userDirPath:' + userDirPath);
     }
 
     // if it doens't have a userDirPath
     else {
-      console.log('No usable userDirpath, using default');
-      userDirpath = app.getPath(config.userDirpath);
+      console.log('No usable userDirPath, using default');
+      userDirPath = app.getPath(config.userDirPath);
     }
 
-    const dodocPathInUser = path.join(userDirpath, config.userDirname);
+    const pathToUserContent = path.join(userDirPath, config.userDirname);
 
-    fs.access(dodocPathInUser, fs.F_OK, function(err) {
+    fs.access(pathToUserContent, fs.F_OK, function(err) {
       // if dodoc folder doesn't exist yet at destination
       if(err) {
-        console.log('Content folder ' + config.userDirname + ' does not already exists in ' + userDirpath);
+        console.log('Content folder ' + config.userDirname + ' does not already exists in ' + userDirPath);
         console.log('->duplicating /user to create a new one');
         const sourcePathInApp = path.join(__dirname, dodoc.userDirname)
-        fs.copy(sourcePathInApp, dodocPathInUser, {clobber: false}, function (err) {
+        fs.copy(sourcePathInApp, pathToUserContent, {clobber: false}, function (err) {
           if(err) reject(err);
-          resolve(dodocPathInUser);
+          resolve(pathToUserContent);
         });
       } else {
-        console.log('Content folder ' + config.userDirname + ' already exists in ' + config.userDirpath);
+        console.log('Content folder ' + config.userDirname + ' already exists in ' + userDirPath);
         console.log('->not creating a new one');
-        resolve(dodocPathInUser);
+        resolve(pathToUserContent);
       }
     });
   });

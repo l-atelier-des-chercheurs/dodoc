@@ -37,7 +37,7 @@ var dodocAPI = (function() {
     return path.join(getFolderPath(slugFolderName), slugProjectName);
   }
   function getUserPath() {
-    return global.userDirname;
+    return global.pathToUserContent;
   }
 
   function parseData(d) {

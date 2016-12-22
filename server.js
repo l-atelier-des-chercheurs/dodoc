@@ -13,6 +13,8 @@ var config = require('./config.json');
 
 
 module.exports = function(electronApp) {
+  dev.logverbose('Starting server');
+
   var app = express();
 
 /*
@@ -90,7 +92,7 @@ module.exports = function(electronApp) {
       console.log(' ');
 
       process.on('unhandledRejection', function(reason, p) {
-        console.error("Unhandled Rejection at: Promise ", p, " reason: ", reason);
+        dev.error("Unhandled Rejection at: Promise ", p, " reason: ", reason);
           // application specific logging, throwing an error, or other logic here
       });
     }
