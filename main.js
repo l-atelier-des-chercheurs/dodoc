@@ -40,6 +40,7 @@ function createWindow () {
     width: 1180,
     height: 700,
     backgroundColor: '#EBEBEB',
+    icon: __dirname + '/build/icon.ico',
     webPreferences: {
       allowDisplayingInsecureContent: true,
       allowRunningInsecureContent: true,

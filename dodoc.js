@@ -112,7 +112,8 @@ if( lang === 'fr') {
         "inprogress" : "En cours",
         "finished" : "Terminé",
         "warningFinishedStatus" : "Attention&nbsp;! Le statut terminé ne vous permettra plus d'éditer.",
-        "sureToRemoveFolder" : "Êtes-vous sûr de vouloir supprimer le dossier ?",
+        "sureToRemoveFolder" : "Êtes-vous sûr de vouloir supprimer ce dossier ?",
+        "sureToRemoveMedia" : "Êtes-vous sûr de vouloir supprimer ce média ?",
 
         "editProject" : "Modifier le projet",
         "pdfPublicationHasBeenSaved" : "La publication a bien été sauvegardée en PDF",

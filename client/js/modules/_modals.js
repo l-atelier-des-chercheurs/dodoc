@@ -446,16 +446,14 @@ var modals = (function() {
 
 
     $mediaItem.find('.js--delete-media-bibli').on( 'click', function(){
-
-      $alertModal = $('#modal-delete-alert-media');
-      	$m.trigger('close_that_modal');
-      var mediaToDelete = {
-        "mediaName" : mname,
-        "mediaFolderPath" : mtype,
+      if(window.confirm(dodoc.lang.modal.sureToRemoveMedia)) {
+        var mediaToDelete = {
+          "mediaName" : mname,
+          "mediaFolderPath" : mtype,
+        }
+        sendData.deleteMedia( mediaToDelete);
+        	$m.trigger('close_that_modal');
       }
-      sendData.deleteMedia( mediaToDelete);
-    		$alertModal.foundation('reveal', 'close');
-      $m.empty();
     });
 
     $modalContent.html($mediaItem);
@@ -467,12 +465,10 @@ var modals = (function() {
       if(_checkAndHighlightEmptyRequiredFields($m)) return;
       	var newPubliName = $m.find('.js--modal_name').val();
       	var newPubliTemplate = $m.find('.js--modal_template:checked').val();
-    		if( newPubliName.length > 0) {
-    		  sendData.createNewPubli({
-        		"publiName" : newPubliName,
-        		"template" : newPubliTemplate
-      		});
-      }
+  		  sendData.createNewPubli({
+      		"publiName" : newPubliName,
+      		"template" : newPubliTemplate
+    		});
       $m.trigger('close_that_modal');
     });
     return $m;
@@ -499,7 +495,7 @@ var modals = (function() {
         "slugPubliName" : d.publishown,
         "template" : newTemplate,
         "slugProjectName" : d.slugProjectName
-    		}
+    		};
   		  sendData.editPubliMeta( publiData);
       $m.trigger('close_that_modal');
     });
@@ -516,7 +512,6 @@ var modals = (function() {
         "text" : textContent,
       };
       sendData.createNewMedia(mediaData);
-
       $m.trigger('close_that_modal');
     });
     return $m;
@@ -611,8 +606,8 @@ var modals = (function() {
       store.set('ftp', {host,user,pass,baseURL,dossierFtp});
       socket.emit('ftpSettings', {host,user,pass,baseURL,dossierFtp, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli, 'webPubliFolderPath': d.webPubliFolderPath, "images": d.arrayImages, "currentDate": d.date});
 
-      $m.trigger('close_that_modal');
       $('body').addClass('is--generating');
+      $m.trigger('close_that_modal');
     });
     return $m;
   }
@@ -633,9 +628,6 @@ var modals = (function() {
         .attr('href', d.pdfURL)
       .end()
       ;
-    $m.on('close_that_modal', function() {
-//       location.reload();
-    });
     return $m;
   }
   function _initMoveContentFolderModal($m) {
