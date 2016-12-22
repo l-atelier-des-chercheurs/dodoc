@@ -6,11 +6,12 @@ var dodoc  = require('../dodoc');
 
 var dodocAPI = require('./dodoc-api.js');
 var dodocPubli = require('./dodoc-publi.js');
+var dev = require('./dev-log');
 
 var publiPDF = (function() {
 
   const API = {
-    exportPubliToPDF     : function(d) { return exportPubliToPDF(d); },
+    exportPubliToPDF     : (d) => { return exportPubliToPDF(d); },
   };
 
   function exportPubliToPDF(d){

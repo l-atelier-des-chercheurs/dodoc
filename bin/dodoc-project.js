@@ -7,17 +7,18 @@ var dodoc  = require('../dodoc');
 
 var dodocAPI = require('./dodoc-api');
 var dodocPubli = require('./dodoc-publi');
+var dev = require('./dev-log');
 
 var dodocProject = (function() {
 
   const API = {
-    getMetaFileOfProject     : function(slugFolderName, slugProjectName) { return getMetaFileOfProject(slugFolderName, slugProjectName); },
-    getProjectMeta           : function(slugFolderName, slugProjectName) { return getProjectMeta(slugFolderName, slugProjectName); },
-    createNewProject         : function(projectData) { return createNewProject(projectData); },
-    getProjectPreview        : function(projectPath) { return getProjectPreview(projectPath); },
-    updateProjectMeta        : function(pdata) { return updateProjectMeta(pdata); },
-    listOneProject           : function(slugFolderName, slugProjectName) { return listOneProject(slugFolderName, slugProjectName); },
-    removeOneProject         : function(slugFolderName, slugProjectName) { return removeOneProject(slugFolderName, slugProjectName); },
+    getMetaFileOfProject     : (slugFolderName, slugProjectName) => { return getMetaFileOfProject(slugFolderName, slugProjectName); },
+    getProjectMeta           : (slugFolderName, slugProjectName) => { return getProjectMeta(slugFolderName, slugProjectName); },
+    createNewProject         : (projectData) => { return createNewProject(projectData); },
+    getProjectPreview        : (projectPath) => { return getProjectPreview(projectPath); },
+    updateProjectMeta        : (pdata) => { return updateProjectMeta(pdata); },
+    listOneProject           : (slugFolderName, slugProjectName) => { return listOneProject(slugFolderName, slugProjectName); },
+    removeOneProject         : (slugFolderName, slugProjectName) => { return removeOneProject(slugFolderName, slugProjectName); },
   };
 
   /***************************************************************************************************/

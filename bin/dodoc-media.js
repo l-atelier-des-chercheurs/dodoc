@@ -12,21 +12,22 @@ var sharp = require('sharp');
 
 var dodoc  = require('../dodoc');
 var dodocAPI = require('./dodoc-api');
+var dev = require('./dev-log');
 
 ffmpeg.setFfmpegPath(ffmpegstatic.path);
 
 var dodocMedia = (function() {
 
   const API = {
-    getMediaFolderPathByType  : function(mediaType) { return getMediaFolderPathByType(mediaType); },
-    getAnimationPathOfProject : function() { return getAnimationPathOfProject(); },
-    getAllMediasFoldersPathAsArray : function() { return getAllMediasFoldersPathAsArray(); },
-    listAllMedias             : function(slugFolderName, slugProjectName) { return listAllMedias(slugFolderName, slugProjectName); },
-    listOneMedia              : function(slugFolderName, slugProjectName, singleMediaFolderPath, mediaName) { return listOneMedia(slugFolderName, slugProjectName, singleMediaFolderPath, mediaName); },
-    createNewMedia            : function(newMediaData) { return createNewMedia(newMediaData); },
-    editMediaMeta             : function(editMediaData) { return editMediaMeta(editMediaData); },
-    deleteOneMedia            : function(slugFolderName, slugProjectName, mediaFolder, mediaName) { return deleteOneMedia(slugFolderName, slugProjectName, mediaFolder, mediaName); },
-    makeImageFromData         : function(imageBufferData, pathToFile) { return makeImageFromData(imageBufferData, pathToFile); },
+    getMediaFolderPathByType  : (mediaType) => { return getMediaFolderPathByType(mediaType); },
+    getAnimationPathOfProject : () => { return getAnimationPathOfProject(); },
+    getAllMediasFoldersPathAsArray : () => { return getAllMediasFoldersPathAsArray(); },
+    listAllMedias             : (slugFolderName, slugProjectName) => { return listAllMedias(slugFolderName, slugProjectName); },
+    listOneMedia              : (slugFolderName, slugProjectName, singleMediaFolderPath, mediaName) => { return listOneMedia(slugFolderName, slugProjectName, singleMediaFolderPath, mediaName); },
+    createNewMedia            : (newMediaData) => { return createNewMedia(newMediaData); },
+    editMediaMeta             : (editMediaData) => { return editMediaMeta(editMediaData); },
+    deleteOneMedia            : (slugFolderName, slugProjectName, mediaFolder, mediaName) => { return deleteOneMedia(slugFolderName, slugProjectName, mediaFolder, mediaName); },
+    makeImageFromData         : (imageBufferData, pathToFile) => { return makeImageFromData(imageBufferData, pathToFile); },
   };
 
   /***************************************************************************************************/

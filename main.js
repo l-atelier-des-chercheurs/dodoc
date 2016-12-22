@@ -4,13 +4,12 @@ const {app, BrowserWindow} = electron;
 const path = require('path');
 const fs = require('fs-extra');
 const flags = require('flags');
-const devLog = require('./bin/dev-log');
+var dev = require('./bin/dev-log');
 const {dialog} = require('electron')
 
 const config = require('./config.json');
 const dodoc = require('./dodoc');
 const dodocAPI = require('./bin/dodoc-api');
-
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -23,9 +22,10 @@ function createWindow () {
   flags.defineBoolean('debug');
   flags.defineBoolean('verbose');
   flags.parse();
-  var isDebugMode = flags.get('debug');
-  var isVerbose = flags.get('verbose');
-  global.dev = devLog(isDebugMode, isVerbose);
+
+  const debug = flags.get('debug');
+  const verbose = flags.get('verbose');
+  dev.init(debug, verbose);
 
   if( global.dodoc === undefined)
     global.dodoc = {};
@@ -37,6 +37,7 @@ function createWindow () {
 
   // check if content folder exists
   console.log('Will store contents in: ' + global.userDirPath);
+  dev.logverbose('log verbose active');
 
   // Create the browser window.
   win = new BrowserWindow({

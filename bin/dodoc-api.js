@@ -5,24 +5,25 @@ var moment = require('moment');
 var parsedown = require('dodoc-parsedown');
 
 var dodoc  = require('../dodoc');
+var dev = require('./dev-log');
 
 var dodocAPI = (function() {
 
   const API = {
-    getCurrentDate      : function(f = dodoc.metaDateFormat) { return getCurrentDate(f); },
-    getFolderPath       : function(slugFolderName = '') { return getFolderPath(slugFolderName); },
-    getProjectPath      : function(slugFolderName, slugProjectName) { return getProjectPath(slugFolderName, slugProjectName); },
-    parseData           : function(d) { return parseData(d); },
-    storeData           : function(mpath, d, e) { return storeData(mpath, d, e); },
-    readMetaFile        : function(metaFile) { return readMetaFile(metaFile); },
-    getUserPath         : function() { return getUserPath(); },
-    findFirstFilenameNotTaken : function(fileName, currentPath, fileext = '') { return findFirstFilenameNotTaken(fileName, currentPath, fileext); },
-    eventAndContent     : function(sendEvent, objectJson) { return eventAndContent(sendEvent, objectJson); },
-    sendEventWithContent: function(sendEvent, objectContent, io, socket) { return sendEventWithContent(sendEvent, objectContent, io, socket); },
-    decodeBase64Image   : function(dataString) { return decodeBase64Image(dataString); },
-    writeMediaDataToDisk    : function(pathToFile, fileExtension, dataURL) { return writeMediaDataToDisk(pathToFile, fileExtension, dataURL); },
-    listAllTemplates    : function() { return listAllTemplates(); },
-    makeFolderAtPath    : function(fname,fpath) { return makeFolderAtPath(fname,fpath); },
+    getCurrentDate      : (f = dodoc.metaDateFormat)  => { return getCurrentDate(f) },
+    getFolderPath       : (slugFolderName = '')       => { return getFolderPath(slugFolderName) },
+    getProjectPath      : (slugFolderName, slugProjectName) => { return getProjectPath(slugFolderName, slugProjectName) },
+    parseData           : (d)                         => { return parseData(d) },
+    storeData           : (mpath, d, e)               => { return storeData(mpath, d, e) },
+    readMetaFile        : (metaFile)                  => { return readMetaFile(metaFile) },
+    getUserPath         : ()                          => { return getUserPath() },
+    findFirstFilenameNotTaken: (fileName, currentPath, fileext = '') => { return findFirstFilenameNotTaken(fileName, currentPath, fileext) },
+    eventAndContent     : (sendEvent, objectJson) => { return eventAndContent(sendEvent, objectJson) },
+    sendEventWithContent: (sendEvent, objectContent, io, socket) => { return sendEventWithContent(sendEvent, objectContent, io, socket) },
+    decodeBase64Image   : (dataString) =>   { return decodeBase64Image(dataString) },
+    writeMediaDataToDisk: (pathToFile, fileExtension, dataURL) => { return writeMediaDataToDisk(pathToFile, fileExtension, dataURL) },
+    listAllTemplates    : () =>             { return listAllTemplates() },
+    makeFolderAtPath    : (fname,fpath) =>  { return makeFolderAtPath(fname,fpath) },
   };
 
   function getCurrentDate(f) {

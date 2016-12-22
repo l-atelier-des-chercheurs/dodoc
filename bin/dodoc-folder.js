@@ -4,16 +4,16 @@ var slugg = require('slugg');
 
 var dodoc  = require('../dodoc');
 var dodocAPI = require('./dodoc-api');
+var dev = require('./dev-log');
 
 var dodocFolder = (function() {
-
   const API = {
-    getMetaFileOfFolder     : function(slugFolderName) { return getMetaFileOfFolder(slugFolderName); },
-    createNewFolder         : function(folderData) { return createNewFolder(folderData); },
-    listAllFolders          : function() { return listAllFolders(); },
-    removeOneFolder       : function(folderData) { return removeOneFolder(folderData); },
-    updateFolderMeta        : function(folderData) { return updateFolderMeta(folderData); },
-    listAllProjectsOfOneFolder: function(slugFolderName) { return listAllProjectsOfOneFolder(slugFolderName); },
+    getMetaFileOfFolder     : (slugFolderName) => { return getMetaFileOfFolder(slugFolderName); },
+    createNewFolder         : (folderData)     => { return createNewFolder(folderData); },
+    listAllFolders          : ()               => { return listAllFolders(); },
+    removeOneFolder         : (folderData)     => { return removeOneFolder(folderData); },
+    updateFolderMeta        : (folderData)     => { return updateFolderMeta(folderData); },
+    listAllProjectsOfOneFolder: (slugFolderName) => { return listAllProjectsOfOneFolder(slugFolderName); },
   };
 
   /********************************************* SHORT FUNCTIONS *********************************************/

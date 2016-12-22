@@ -9,7 +9,7 @@ var dodocFolder = require('./bin/dodoc-folder');
 var dodocProject = require('./bin/dodoc-project');
 var dodocMedia = require('./bin/dodoc-media');
 var dodocPubli = require('./bin/dodoc-publi');
-
+var dev = require('./bin/dev-log');
 
 module.exports = function(app,io,m){
 

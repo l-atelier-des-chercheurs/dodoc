@@ -9,6 +9,7 @@ var dodocFolder = require('./bin/dodoc-folder');
 var dodocProject = require('./bin/dodoc-project');
 var dodocMedia = require('./bin/dodoc-media');
 var dodocPubli = require('./bin/dodoc-publi');
+var dev = require('./bin/dev-log');
 
 var publiFTP = require('./bin/publi-ftp.js');
 var publiPDF = require('./bin/publi-pdf.js');

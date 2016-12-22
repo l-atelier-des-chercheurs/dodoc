@@ -1,33 +1,55 @@
 var gutil = require('gulp-util');
 
-function devLog( d, v) {
-  const isDebugMode = d;
-  const isVerbose = v;
+var dev = (function() {
+  let isDebugMode = 'false';
+  let isVerboseMode = 'false';
 
   const API = {
-    init        : function() { return initModule() },
-    log         : function(term) { if( isDebugMode) console.log(gutil.colors.blue('- ' + term)); },
-    logverbose  : function(term) { if( isDebugMode && isVerbose) console.log(gutil.colors.gray('- ' + term)); },
-    logpackets  : function(term) { if( isDebugMode) console.log(gutil.colors.green('- ' + term)); },
-    logfunction : function(term) { if( isDebugMode) console.info(gutil.colors.magenta('~ ' + term)); },
-    error : function(term) { console.info(gutil.colors.red('ERROR! ' + term)); },
-    isDebug : function() { return isDebugMode; },
+    init        : (isDebug, isVerbose)   => { return initModule(isDebug, isVerbose) },
+    log         : log,
+    logverbose  : logverbose,
+    logpackets  : logpackets,
+    logfunction : logfunction,
+    error       : error,
+    isDebug     : ()   => { return isDebugMode; },
   };
 
-  function initModule() {
+  function initModule(d, v) {
+    isDebugMode = d;
+    isVerboseMode = v
     if(isDebugMode) {
       console.log('Debug mode is Enabled');
       console.log('---');
       dev.log('all functions are prepended with ~ ');
       dev.logpackets('(dev mode) green for sent packets');
-      if(isVerbose) {
+      if(isVerboseMode) {
         dev.logverbose('(dev and verbose) gray for regular parsing data');
       }
     }
     return;
   }
+
+  function log(term) {
+    if(isDebugMode)
+      console.log(gutil.colors.blue('- ' + term));
+  }
+  function logverbose(term) {
+    if(isDebugMode && isVerboseMode)
+      console.log(gutil.colors.gray('- ' + term));
+  }
+  function logpackets(term) {
+    if(isDebugMode)
+      console.log(gutil.colors.green('- ' + term));
+  }
+  function logfunction(term) {
+    if(isDebugMode)
+      console.info(gutil.colors.magenta('~ ' + term));
+  }
+  function error(term) {
+    console.error(gutil.colors.red('ERROR! ' + term));
+  }
+
   return API;
-}
+})();
 
-module.exports = devLog;
-
+module.exports = dev;

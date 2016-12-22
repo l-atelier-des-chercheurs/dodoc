@@ -8,16 +8,17 @@ var dodocAPI = require('./dodoc-api');
 var dodocFolder = require('./dodoc-folder');
 var dodocProject = require('./dodoc-project');
 var dodocMedia = require('./dodoc-media');
+var dev = require('./dev-log');
 
 var dodocPubli = (function() {
 
   const API = {
-    getPubliPath             : function(slugFolderName, slugProjectName, pslug) { return getPubliPath(slugFolderName, slugProjectName, pslug); },
-    listMediaAndMetaFromOnePubli : function(slugFolderName, slugProjectName, slugPubliName) { return listMediaAndMetaFromOnePubli(slugFolderName, slugProjectName, slugPubliName); },
-    filterMediasFromPubliList  : function(publiContent, mediaFolderContent) { return filterMediasFromPubliList(publiContent, mediaFolderContent); },
-    createPubli                : function(publiData) { return createPubli(publiData); },
-    editThisPubli              : function(pdata) { return editThisPubli(pdata); },
-    listPublis                 : function(slugFolderName, slugProjectName, thisPubliName) { return listPublis(slugFolderName, slugProjectName, thisPubliName); },
+    getPubliPath             : (slugFolderName, slugProjectName, pslug) => { return getPubliPath(slugFolderName, slugProjectName, pslug); },
+    listMediaAndMetaFromOnePubli : (slugFolderName, slugProjectName, slugPubliName) => { return listMediaAndMetaFromOnePubli(slugFolderName, slugProjectName, slugPubliName); },
+    filterMediasFromPubliList  : (publiContent, mediaFolderContent) => { return filterMediasFromPubliList(publiContent, mediaFolderContent); },
+    createPubli                : (publiData) => { return createPubli(publiData); },
+    editThisPubli              : (pdata) => { return editThisPubli(pdata); },
+    listPublis                 : (slugFolderName, slugProjectName, thisPubliName) => { return listPublis(slugFolderName, slugProjectName, thisPubliName); },
   };
 
   /***************************************************************************************************/

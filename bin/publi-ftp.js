@@ -5,12 +5,13 @@ var clientFTP = require('ftp');
 var dodoc  = require('../dodoc');
 var dodocAPI = require('./dodoc-api');
 var dodocPubli = require('./dodoc-publi');
+var dev = require('./dev-log');
 
 var publiFTP = (function() {
 
   const API = {
-    exportPubliToFtp     : function(socket, d) { return exportPubliToFtp(socket, d); },
-    sendFileToServer     : function(d) { return sendFileToServer(d); },
+    exportPubliToFtp     : (socket, d) => { return exportPubliToFtp(socket, d); },
+    sendFileToServer     : (d)         => { return sendFileToServer(d); },
   };
 
   function exportPubliToFtp(socket, d){

@@ -4,15 +4,15 @@ var https = require('https');
 var fs = require('fs');
 var io = require('socket.io');
 var path = require('path');
+var dev = require('./bin/dev-log');
 
 // var localtunnel = require('localtunnel');
 // var ngrok = require('ngrok');
 
 var config = require('./config.json');
 
-
-
 module.exports = function(electronApp) {
+  dev.logverbose('Is debug ? ' + dev.isDebug);
   dev.logverbose('Starting server');
 
   var app = express();
