@@ -83,6 +83,7 @@ if( lang === 'fr') {
       "videoInputSource" : "source video:",
       "lastImageOpacity" : "Afficher la dernière image en transparence",
       "enableAudioInVideo" : "Enregistrer le son",
+      "enableLogToFile" : "mode debug",
 
       "currentVideoResolutionIs" : "Résolution actuelle&nbsp;: ",
       "videoStreamCouldntBeStartedTryChangingRes" : "Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la résolution dans le panneau de droite.",

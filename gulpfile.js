@@ -45,9 +45,9 @@ gulp.task('sass', function() {
             this.emit('end');
         }
     }))
-    .pipe(sourcemaps.init())
+//     .pipe(sourcemaps.init())
     .pipe(sass())
-    .pipe(sourcemaps.write())
+//     .pipe(sourcemaps.write())
     .pipe(concat('style.css'))
     .pipe(minifyCss())
     .pipe(rename('style.min.css'))
