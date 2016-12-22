@@ -60,6 +60,7 @@ var dev = (function() {
     _sendToLog(logString, gutil.colors.magenta);
   }
   function error() { // red
+    var args = Array.prototype.slice.call(arguments);
     var logString = 'ERROR! '.concat(args);
     _sendToLog(logString, gutil.colors.red);
   }
