@@ -264,7 +264,7 @@ var currentStream = (function(context) {
     init                    : function() { return init(); },
     getStaticImageFromVideo : function() { return getStaticImageFromVideo(); },
     startCameraFeed         : function() { return startCameraFeed(); },
-    startRecordCameraFeed   : function(withAudio = true) { return startRecordCameraFeed(withAudio); },
+    startRecordCameraFeed   : function(withAudio) { return startRecordCameraFeed(withAudio); },
     stopRecordCameraFeed    : function() { return stopRecordCameraFeed(); },
     startAudioFeed          : function() { return startAudioFeed(); },
     startRecordAudioFeed    : function() { return startRecordAudioFeed(); },
@@ -377,6 +377,7 @@ var currentStream = (function(context) {
   }
   function startRecordCameraFeed(withAudio) {
     return new Promise(function(resolve, reject) {
+      withAudio = withAudio !== undefined ? withAudio : false;
       _getCameraFeed(withAudio)
       .then(function(stream) {
         var requestedVideoRes = _getVideoResFromRadio();
