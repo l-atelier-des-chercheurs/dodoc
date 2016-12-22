@@ -39,7 +39,7 @@ var publiPDF = (function() {
         return dodocAPI.makeFolderAtPath(printFolderName, exportPubliPath)
       })
       .then((printFolderPath) => {
-        console.log({ printFolderPath });
+        dev.logverbose({ printFolderPath });
         d.printFolderPath = printFolderPath;
         d.relativePrintFolder = path.join(dodoc.exportedPubliDir, d.slugFolderName, d.slugProjectName, d.slugPubliName, printFolderName);
         _generatePDF(d).then((pdfInfos) => {
@@ -55,7 +55,7 @@ var publiPDF = (function() {
       var pdfName = dodocAPI.getCurrentDate()+'.pdf';
       var pdfPath = path.join(d.printFolderPath, pdfName);
       var pdfURL = path.join('/', d.relativePrintFolder, pdfName)
-      console.log('Will make phantom pdf');
+      dev.logverbose('Will make phantom pdf');
 
 
       phantom.create([
@@ -70,10 +70,10 @@ var publiPDF = (function() {
             if(success === success) {
               page.render(pdfPath);
               ph.exit();
-              console.log(">> Render complete")
+              dev.logverbose(">> Render complete")
               resolve({ pdfURL, pdfPath });
             } else {
-              console.log('fail');
+              dev.logverbose('fail');
               reject();
             }
           });
@@ -81,7 +81,7 @@ var publiPDF = (function() {
         })
       })
       .catch(error => {
-        console.log(error);
+        dev.logverbose(error);
         reject();
       });
     });

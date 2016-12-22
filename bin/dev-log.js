@@ -1,8 +1,11 @@
 var gutil = require('gulp-util');
+var logger = require('electron-log');
 
 var dev = (function() {
   let isDebugMode = 'false';
   let isVerboseMode = 'false';
+
+  logger.transports.console = false;
 
   const API = {
     init        : (isDebug, isVerbose)   => { return initModule(isDebug, isVerbose) },
@@ -32,37 +35,38 @@ var dev = (function() {
 
   function log() {
     var args = Array.prototype.slice.call(arguments);
-    var logString = gutil.colors.white(args);
-    _sendToLog(logString);
+    var logString = args;
+    _sendToLog(logString, gutil.colors.white);
   }
-  function logverbose() {
+  function logverbose() { // gray
     if(!(isDebugMode && isVerboseMode))
       return;
     var args = Array.prototype.slice.call(arguments);
-    var logString = gutil.colors.gray('- '.concat(args));
-    _sendToLog(logString);
+    var logString = '- '.concat(args);
+    _sendToLog(logString, gutil.colors.gray);
   }
-  function logpackets() {
+  function logpackets() { // green
     if(!isDebugMode)
       return;
     var args = Array.prototype.slice.call(arguments);
-    var logString = gutil.colors.green('* '.concat(args));
-    _sendToLog(logString);
+    var logString = '* '.concat(args);
+    _sendToLog(logString, gutil.colors.green);
   }
-  function logfunction() {
+  function logfunction() { // magenta
     if(!isDebugMode)
       return;
     var args = Array.prototype.slice.call(arguments);
-    var logString = gutil.colors.magenta('~ '.concat(args));
-    _sendToLog(logString);
+    var logString = '~ '.concat(args);
+    _sendToLog(logString, gutil.colors.magenta);
   }
-  function error() {
-    var logString = gutil.colors.red('ERROR! '.concat(args));
-    _sendToLog(logString);
+  function error() { // red
+    var logString = 'ERROR! '.concat(args);
+    _sendToLog(logString, gutil.colors.red);
   }
 
-  function _sendToLog(logString) {
-    gutil.log(logString);
+  function _sendToLog(logString, color = gutil.colors.white) {
+    gutil.log(color(logString));
+    logger.info(logString.toString());
   }
 
   return API;

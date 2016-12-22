@@ -35,7 +35,7 @@ module.exports = function(electronApp) {
   }, function (err, url) {
     if(err) {
       dev.error('NGROK error: ');
-      console.log(err);
+      dev.log(err);
     }
     dev.log('NGROK url : ' + url);
   });
@@ -88,8 +88,8 @@ module.exports = function(electronApp) {
 
   server.listen(
     app.get("port"), function() {
-      console.log(`Server up and running. Go to ${config.protocol}://${config.host}:${config.port}`);
-      console.log(' ');
+      dev.log(`Server up and running. Go to ${config.protocol}://${config.host}:${config.port}`);
+      dev.log(' ');
 
       process.on('unhandledRejection', function(reason, p) {
         dev.error("Unhandled Rejection at: Promise ", p, " reason: ", reason);

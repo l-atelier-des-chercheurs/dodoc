@@ -27,9 +27,6 @@ function createWindow () {
   const verbose = flags.get('verbose');
   dev.init(debug, verbose);
 
-  console.log('coucouconsole', 'coucoubis');
-  dev.log('coucoudev', 'coucoubis');
-
   if( global.dodoc === undefined)
     global.dodoc = {};
   global.dodoc.homeURL = `${config.protocol}://${config.host}:${config.port}`;
@@ -37,10 +34,6 @@ function createWindow () {
   var JSONStorage = require('node-localstorage').JSONStorage;
   var storageLocation = app.getPath('userData');
   global.nodeStorage = new JSONStorage(storageLocation);
-
-  // check if content folder exists
-  dev.log('Will store contents in: ' + global.userDirPath);
-  dev.logverbose('log verbose active');
 
   // Create the browser window.
   win = new BrowserWindow({
@@ -60,6 +53,7 @@ function createWindow () {
   copyAndRenameUserFolder().then(function(pathToUserContent) {
 
     global.pathToUserContent = pathToUserContent;
+    dev.log('Will store contents in: ' + global.pathToUserContent);
 
     try {
       app.server = require('./server')(app);

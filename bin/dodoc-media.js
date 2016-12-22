@@ -123,7 +123,7 @@ var dodocMedia = (function() {
             mdata.slugFolderName = slugFolderName;
             mdata['slugProjectName'] = slugProjectName;
             mdata['mediaFolderPath'] = mediaFolder;
-            console.log('Just created a photo, its meta is ' + JSON.stringify( mdata, null, 4));
+            dev.log('Just created a photo, its meta is ' + JSON.stringify( mdata, null, 4));
             resolve(mdata);
           }, function(error) {
             dev.error('Failed to create meta for photo! Error: ' + error);
@@ -171,7 +171,7 @@ var dodocMedia = (function() {
                   resolve(mdata);
                 })
                 .on('error', function(err) {
-                  console.log('an error happened: ' + err.message);
+                  dev.log('an error happened: ' + err.message);
                   resolve('couldn\'t create a video animation');
                 })
                 // save to file
@@ -206,7 +206,7 @@ var dodocMedia = (function() {
             .addOptions(['-vb 8000k', '-f webm'])
             // setup event handlers
             .on('end', function() {
-              console.log('file has been converted succesfully');
+              dev.log('file has been converted succesfully');
 
               _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
                 mdata.slugFolderName = slugFolderName;
@@ -224,7 +224,7 @@ var dodocMedia = (function() {
 
             })
             .on('error', function(err) {
-              console.log('an error happened: ' + err.message);
+              dev.log('an error happened: ' + err.message);
               reject( "couldn't create a stopmotion animation");
             })
             // save to file
@@ -263,7 +263,7 @@ var dodocMedia = (function() {
 
           fileExtension = '.md';
           var dataText = newMediaData.text;
-          console.log( "Creating a new text media at path " + pathToFile + fileExtension + " with text : " + dataText);
+          dev.log( "Creating a new text media at path " + pathToFile + fileExtension + " with text : " + dataText);
 
           var mediaData = {
             "text" : dataText
@@ -364,7 +364,7 @@ var dodocMedia = (function() {
             var filePath = path.join( pathToMediaFolder, filename);
             var deletedFilePath = path.join( pathToMediaFolder, dodoc.deletedPrefix + filename);
             fs.renameSync( filePath, deletedFilePath);
-            console.log( "A file will be deleted (renamed and hidden from dodoc) : \n - " + filePath + "\n - " + deletedFilePath);
+            dev.log( "A file will be deleted (renamed and hidden from dodoc) : \n - " + filePath + "\n - " + deletedFilePath);
           }
         });
         var mediaMetaData =
@@ -389,11 +389,11 @@ var dodocMedia = (function() {
       var proc = ffmpeg( videoPath)
       // setup event handlers
       .on('end', function(files) {
-        console.log('screenshot was saved');
+        dev.log('screenshot was saved');
         resolve();
       })
       .on('error', function(err) {
-        console.log('an error happened: ' + err.message);
+        dev.log('an error happened: ' + err.message);
         reject(err.message);
       })
       // take 2 screenshots at predefined timemarks
@@ -558,7 +558,7 @@ var dodocMedia = (function() {
         };
       dodocAPI.storeData( pathToFile + dodoc.metaFileext, mdata, 'update').then(function( meta) {
         meta.mediaName = fileName;
-        console.log( "New media meta file created at path " + pathToFile + dodoc.metaFileext);
+        dev.log( "New media meta file created at path " + pathToFile + dodoc.metaFileext);
         resolve( meta);
       }, function() {
         dev.error('--> Couldn\'t create media meta.');

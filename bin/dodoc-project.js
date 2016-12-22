@@ -52,7 +52,7 @@ var dodocProject = (function() {
       slugProjectName = dodocAPI.findFirstFilenameNotTaken( slugProjectName, pathToFolder, '');
       var projectPath = dodocAPI.getProjectPath( slugFolderName, slugProjectName);
 
-      console.log("New project created with name " + projectName + " and path " + projectPath);
+      dev.log("New project created with name " + projectName + " and path " + projectPath);
       fs.ensureDirSync(projectPath);//new project
 
       if( projectData.imageData !== undefined) {

@@ -16,7 +16,7 @@ var publiPDF = require('./bin/publi-pdf.js');
 
 module.exports = function(app, io, electronApp){
 
-  console.log("Initializing socket module");
+  dev.log("Initializing socket module");
 
   io.on("connection", function(socket){
 
@@ -90,7 +90,7 @@ module.exports = function(app, io, electronApp){
 
   function onRemoveUserDirPath() {
     dev.logfunction( "EVENT - onRemoveUserDirPath");
-    global.nodeStorage.setItem('userDirpath', '');
+    global.nodeStorage.setItem('userDirPath', '');
     electronApp.relaunch();
     electronApp.exit(0)
   }
@@ -302,7 +302,7 @@ module.exports = function(app, io, electronApp){
     var fullPathToStopmotionImage = dodocAPI.getFolderPath(idata.pathToStopmotionImage);
     fs.exists( fullPathToStopmotionImage, function(exists) {
       if(exists) {
-        console.log( '--> Will remove last stop-motion image.');
+        dev.logverbose( '--> Will remove last stop-motion image.');
         fs.unlink(fullPathToStopmotionImage);
       } else {
         dev.error('--> Couldn\'t find the last stop-motion image, so couldn\'t delete it.');

@@ -98,7 +98,7 @@ var dodocPubli = (function() {
 
       var pathToThisPubli = getPubliPath(slugFolderName, slugProjectName, pslug) + dodoc.metaFileext;
 
-      console.log("New publi created with name " + pname + " and path " + pathToThisPubli);
+      dev.log("New publi created with name " + pname + " and path " + pathToThisPubli);
 
       var newPubliData =
       {
@@ -187,7 +187,7 @@ var dodocPubli = (function() {
 
 
       var folderPubliMeta = new Object();
-      console.log( "- foldersPublisMeta : " + JSON.stringify( foldersPublisMeta, null, 4));
+      dev.log( "- foldersPublisMeta : " + JSON.stringify( foldersPublisMeta, null, 4));
       for (var i=0; i<foldersPublisMeta.length; i++) {
         var publiFilename = foldersPublisMeta[i];
         var slugPubliName = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( publiFilename)[1];

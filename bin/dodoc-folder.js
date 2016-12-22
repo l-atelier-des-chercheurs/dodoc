@@ -53,7 +53,7 @@ var dodocFolder = (function() {
           let slugFolderName = slugg(d.name);
           var foldersPath = dodocAPI.getFolderPath();
           slugFolderName = dodocAPI.findFirstFilenameNotTaken(slugFolderName, foldersPath, '');
-          console.log("New folder created with name " + d.name + " and slug (folder name) " + slugFolderName);
+          dev.log("New folder created with name " + d.name + " and slug (folder name) " + slugFolderName);
 
           var folderPath = dodocAPI.getFolderPath(slugFolderName);
           fs.ensureDirSync(folderPath);
@@ -97,7 +97,7 @@ var dodocFolder = (function() {
       dev.logfunction( "COMMON — listAllFolders");
 
       fs.readdir( dodocAPI.getFolderPath(), function (err, filenames) {
-        if (err) return console.log( 'Couldn\'t read content dir : ' + err);
+        if (err) return dev.log( 'Couldn\'t read content dir : ' + err);
 
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
 

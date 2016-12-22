@@ -32,7 +32,7 @@ module.exports = function(app,io,m){
     return new Promise(function(resolve, reject) {
 
       var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-      console.log('—> the following page has been requested : ' + fullUrl);
+      dev.log('—> the following page has been requested : ' + fullUrl);
 
       var pageDataJSON = [];
       pageDataJSON.contentDir = dodocAPI.getFolderPath();

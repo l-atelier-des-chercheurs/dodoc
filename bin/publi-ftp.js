@@ -58,48 +58,48 @@ var publiFTP = (function() {
       // instance for FTP client
       var c = new clientFTP();
       var serverFolder = path.join(d.dossierFtp, d.slugPubliName, d.currentDate);
-      console.log('Attempting creation of folder on server at path: ' + serverFolder);
+      dev.logverbose('Attempting creation of folder on server at path: ' + serverFolder);
 
       c.on('ready', function() {
         c.mkdir(serverFolder, true,  function(err) {
-          if (err) console.log('Couldn\'t create folder on server. Err: ' + err);
+          if (err) dev.logverbose('Couldn\'t create folder on server. Err: ' + err);
           else {
-            console.log("Folder create on server transferred successfully!");
+            dev.log("Folder create on server transferred successfully!");
           }
           c.put(path.join(webPubliFolderPath, 'index.html'), path.join(serverFolder,'index.html'), function(err) {
-            if (err) console.log('not transferred:' + err);
-            else console.log("HTML File transferred successfully!");
+            if (err) dev.error('not transferred:' + err);
+            else dev.logverbose("HTML File transferred successfully!");
           });
           c.put(path.join(webPubliFolderPath, 'jquery.min.js'), path.join(serverFolder,'jquery.min.js'), function(err) {
-            if (err) console.log('not transferred:' + err);
-            else console.log("Jquery File transferred successfully!");
+            if (err) dev.error('not transferred:' + err);
+            else dev.logverbose("Jquery File transferred successfully!");
           });
           c.put(path.join(webPubliFolderPath, 'script.js'), path.join(serverFolder, 'script.js'), function(err) {
-            if (err) console.log('not transferred:' + err);
-            else console.log("JS File transferred successfully!");
+            if (err) dev.error('not transferred:' + err);
+            else dev.logverbose("JS File transferred successfully!");
           });
           c.put(path.join(webPubliFolderPath, 'style.css'), path.join(serverFolder,'style.css'), function(err) {
-            if (err) console.log('not transferred:' + err);
-            else console.log("CSS File transferred successfully!");
+            if (err) dev.error('not transferred:' + err);
+            else dev.logverbose("CSS File transferred successfully!");
           });
           c.put(path.join(webPubliFolderPath, 'template.css'), path.join(serverFolder,'template.css'), function(err) {
-            if (err) console.log('not transferred:' + err);
-            else console.log("CSS File transferred successfully!");
+            if (err) dev.error('not transferred:' + err);
+            else dev.logverbose("CSS File transferred successfully!");
           });
           c.mkdir(path.join(serverFolder, 'medias'), function(err) {
-            if (err) console.log('medias: not transferred:' + err);
-            else console.log("Medias folder created successfully!");
+            if (err) dev.error('medias not transferred:' + err);
+            else dev.logverbose("Medias folder created successfully!");
             for(var fileName in d.images){
               c.append(path.join(webPubliFolderPath, 'medias', d.images[fileName]), path.join(serverFolder,'medias', d.images[fileName]), function(err) {
-                if (err) console.log('not transferred:' + err);
+                if (err) dev.error('not transferred:' + err);
                 else {
-                  console.log("media transferred " + d.images[fileName]);
+                  dev.logverbose("media transferred " + d.images[fileName]);
                 }
               });
             }
             c.end();
             const urlToPubli = path.join(d.baseURL, serverFolder);
-            console.log("Publication was transferred and is now at: " + urlToPubli);
+            dev.log("Publication was transferred and is now at: " + urlToPubli);
             resolve(urlToPubli);
           });
 
@@ -107,7 +107,7 @@ var publiFTP = (function() {
       });
 
       c.on('error', function(err){
-        console.log("can't connect to the server : "+ err);
+        dev.error("can't connect to the server : "+ err);
         reject();
       });
 
@@ -139,9 +139,9 @@ var publiFTP = (function() {
                 try {
                   fs.copySync(oldPath, newPath);
                   resolve(arrayImages);
-                  console.log("success!");
+                  dev.log("success!");
                 } catch (err) {
-                  console.log.error(err);
+                  dev.error(err);
                   reject();
                 }
               }
@@ -150,7 +150,7 @@ var publiFTP = (function() {
           }
         }
       }, function(error) {
-        console.log("Failed to list one media! Error: ", error);
+        dev.error("Failed to list one media! Error: ", error);
         reject();
       });
     });
@@ -162,11 +162,11 @@ var publiFTP = (function() {
       dev.logfunction( "publiFTP — _checkInternetConnection");
       require('dns').resolve('www.google.com', function(err) {
         if(err) {
-          console.log("No connection");
+          dev.log("No connection");
           socket.emit('noConnection', webPubliFolderPath);
           reject();
         }else{
-          console.log("you are connected to internet you can send your file!");
+          dev.log("you are connected to internet you can send your file!");
           socket.emit('webConnectionFound', webPubliFolderPath, arrayImages, currentDate);
           resolve();
         }
@@ -182,15 +182,15 @@ var publiFTP = (function() {
           if (!err) {
             fs.copy(sourceFile, destFile, function(err){
               if(err) {
-                console.log(err);
+                dev.error(err);
                 reject();
               } else {
-                console.log("Copy files from " + sourceFile + " into " + destFile);
+                dev.log("Copy files from " + sourceFile + " into " + destFile);
                 resolve(destFile);
               }
             });
           } else {
-            console.log("No " + sourceFile + " file in this template");
+            dev.log("No " + sourceFile + " file in this template");
           }
         });
       });
