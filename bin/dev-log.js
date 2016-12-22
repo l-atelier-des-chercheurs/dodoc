@@ -35,39 +35,47 @@ var dev = (function() {
 
   function log() {
     var args = Array.prototype.slice.call(arguments);
-    var logString = args;
-    _sendToLog(logString, gutil.colors.white);
+    var logArgs = args;
+    _sendToLogFile(logArgs);
+    _sendToConsole(logArgs, gutil.colors.white);
   }
   function logverbose() { // gray
-    if(!(isDebugMode && isVerboseMode))
-      return;
     var args = Array.prototype.slice.call(arguments);
-    var logString = '- '.concat(args);
-    _sendToLog(logString, gutil.colors.gray);
+    var logArgs = '- '.concat(args);
+
+    _sendToLogFile(logArgs);
+    if(isDebugMode && isVerboseMode)
+      _sendToConsole(logArgs, gutil.colors.gray);
   }
   function logpackets() { // green
-    if(!isDebugMode)
-      return;
     var args = Array.prototype.slice.call(arguments);
-    var logString = '* '.concat(args);
-    _sendToLog(logString, gutil.colors.green);
+    var logArgs = '* '.concat(args);
+
+    _sendToLogFile(logArgs);
+    if(isDebugMode)
+      _sendToConsole(logArgs, gutil.colors.green);
   }
   function logfunction() { // magenta
-    if(!isDebugMode)
-      return;
     var args = Array.prototype.slice.call(arguments);
-    var logString = '~ '.concat(args);
-    _sendToLog(logString, gutil.colors.magenta);
+    var logArgs = '~ '.concat(args);
+
+    _sendToLogFile(logArgs);
+    if(isDebugMode)
+      _sendToConsole(logArgs, gutil.colors.magenta);
   }
   function error() { // red
     var args = Array.prototype.slice.call(arguments);
-    var logString = 'ERROR! '.concat(args);
-    _sendToLog(logString, gutil.colors.red);
+    var logArgs = 'ERROR! '.concat(args);
+
+    _sendToLogFile(logArgs);
+    _sendToConsole(logArgs, gutil.colors.red);
   }
 
-  function _sendToLog(logString, color = gutil.colors.white) {
-    gutil.log(color(logString));
-    logger.info(logString.toString());
+  function _sendToLogFile(logArgs) {
+    logger.info(logArgs.toString());
+  }
+  function _sendToConsole(logArgs, color = gutil.colors.white) {
+    gutil.log(color(logArgs));
   }
 
   return API;
