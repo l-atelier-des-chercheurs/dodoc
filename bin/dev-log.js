@@ -20,7 +20,9 @@ var dev = (function() {
 
   function initModule(d, v) {
     isDebugMode = d;
-    isVerboseMode = v
+    isVerboseMode = v;
+    logToFile = global.nodeStorage.getItem('logToFile');
+
     if(isDebugMode) {
       console.log('Debug mode is Enabled');
       console.log('---');
@@ -30,6 +32,11 @@ var dev = (function() {
       if(isVerboseMode) {
         dev.logverbose('(dev and verbose) gray for regular parsing data');
       }
+    }
+    if(logToFile) {
+      console.log('Logging to file');
+    } else {
+      console.log('Not logging to a file');
     }
     return;
   }

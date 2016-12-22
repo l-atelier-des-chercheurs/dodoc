@@ -19,6 +19,10 @@ app.commandLine.appendSwitch('--ignore-certificate-errors');
 
 function createWindow () {
 
+  var JSONStorage = require('node-localstorage').JSONStorage;
+  var storageLocation = app.getPath('userData');
+  global.nodeStorage = new JSONStorage(storageLocation);
+
   flags.defineBoolean('debug');
   flags.defineBoolean('verbose');
   flags.parse();
@@ -30,10 +34,6 @@ function createWindow () {
   if( global.dodoc === undefined)
     global.dodoc = {};
   global.dodoc.homeURL = `${config.protocol}://${config.host}:${config.port}`;
-
-  var JSONStorage = require('node-localstorage').JSONStorage;
-  var storageLocation = app.getPath('userData');
-  global.nodeStorage = new JSONStorage(storageLocation);
 
   // Create the browser window.
   win = new BrowserWindow({

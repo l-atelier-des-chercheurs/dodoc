@@ -66,7 +66,7 @@ $('body').on('click', '.js--openInBrowser', function() {
   }
 });
 $('body').on('click', '.js--enableLogToFile', function() {
-  global.nodeStorage.setItem('logToFile', true);
+	socket.emit('enableLogToFile');
 });
 
 

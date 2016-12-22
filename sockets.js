@@ -73,6 +73,8 @@ module.exports = function(app, io, electronApp){
     socket.on( 'exportPubliToFtp', data => { onExportPubliToFtp(socket, data); });
     socket.on( 'ftpSettings', data => { onFtpSettings(socket, data); });
     socket.on( 'generatePDF', data => { onGeneratePDF(socket, data); });
+
+    socket.on( 'enableLogToFile', onEnableLogToFile);
 	});
 
   /***************************************************************************
@@ -456,5 +458,13 @@ module.exports = function(app, io, electronApp){
     });;
   }
 
+
+  function onEnableLogToFile() {
+    var loggingToFile = !(global.nodeStorage.getItem('logToFile'));
+    global.nodeStorage.setItem('logToFile', loggingToFile);
+    dev.logToFile = loggingToFile;
+  }
+
 // F I N     P U B L I     P A G E
 }
+
