@@ -1,25 +1,27 @@
 {
   "name": "dodoc",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "description": "Dodoc is a documentation tool for creativity.",
+  "author": "L’Atelier des Chercheurs <http://latelier-des-chercheurs.fr/>",
+  "license": "CC-BY-NC-SA-4.0",
+  "private": true,
   "main": "main.js",
   "scripts": {
+    "rebuild": "electron-rebuild -f -w sharp",
     "start": "electron main",
-    "debug": "nodemon  -e js,json --ignore app/client/ --ignore app/views/ --exec \"electron main --debug --verbose\"",
+    "debug": "nodemon  -e js,json --ignore client/ --ignore views/ --exec \"electron main --debug --verbose\"",
     "pack": "build --dir",
     "dist": "build",
     "postinstall": "install-app-deps",
-
     "pack:osx": "electron-packager . dodoc --out=dist/osx --platform=darwin --arch=x64 --icon=build/icon.icns",
+    "pack:linux": "electron-packager . dodoc --out=dist/linux --platform=linux --arch=x64 --icon=build/icon.icns",
     "pack:win64": "electron-packager . dodoc --out=dist/win --platform=win32 --arch=x64 --icon=build/icon.ico",
     "package": "npm run pack:osx && npm run pack:win64"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/l-atelier-des-chercheurs/dodoc.git"
+    "url": "https://github.com/l-atelier-des-chercheurs/dodoc.git"
   },
-  "author": "L’Atelier des Chercheurs",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
   },
@@ -30,19 +32,64 @@
       "category": "public.app-category.education"
     },
     "win": {
-      "iconUrl": "(windows-only) https link to icon"
+      "iconUrl": "http://latelier-des-chercheurs.fr/icon.ico"
     }
   },
   "dependencies": {
+    "body-parser": "^1.15.0",
+    "connect-multiparty": "^2.0.0",
+    "dodoc-parsedown": "git+https://github.com/louis-ev/dodoc-parsedown.git",
+    "download": "^5.0.2",
     "electron-context-menu": "^0.8.0",
+    "electron-log": "^1.2.2",
+    "electron-rebuild": "^1.4.0",
+    "express": "4.14.0",
+    "ffmpeg-static": "^2.0.0",
     "flags": "^0.1.3",
+    "fluent-ffmpeg": "^2.1.0",
     "fs-extra": "^1.0.0",
-    "gulp-util": "^3.0.7"
+    "ftp": "^0.3.10",
+    "ftp-deploy": "^1.1.0",
+    "glob": "*",
+    "gm": "^1.22.0",
+    "gulp-uglify": "^2.0.0",
+    "gulp-util": "^3.0.7",
+    "html-pdf": "^2.1.0",
+    "i18n": "^0.8.3",
+    "jade": "*",
+    "jsftp": "^1.5.4",
+    "markdown-it": "^8.2.2",
+    "markdown-parse": "^0.2.1",
+    "marky-mark": "^1.2.1",
+    "merge": "^1.2.0",
+    "moment": "^2.12.0",
+    "node-localstorage": "^1.3.0",
+    "path": "^0.12.7",
+    "phantom": "^3.2.0",
+    "recordrtc": "^5.4.0",
+    "serve-favicon": "^2.3.0",
+    "sharp": "^0.17.0",
+    "slugg": "^1.0.0",
+    "socket.io": "^1.3.5",
+    "socketio-file-upload": "^0.5.2",
+    "underscore": "*",
+    "video-recorder": "*"
   },
   "devDependencies": {
     "electron": "^1.4.8",
     "electron-builder": "^10.8.1",
     "electron-packager": "^8.4.0",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "electron-rebuild": "^1.4.0",
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-jshint": "^2.0.1",
+    "gulp-minify-css": "^1.2.3",
+    "gulp-plumber": "^1.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.0.0",
+    "gulp-sourcemaps": "^1.9.1",
+    "gulp-uglify": "^2.0.0",
+    "jshint": "^2.9.3"
   }
 }
