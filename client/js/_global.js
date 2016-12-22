@@ -65,6 +65,9 @@ $('body').on('click', '.js--openInBrowser', function() {
     shell.openExternal(event.target.href);
   }
 });
+$('body').on('click', '.js--enableLogToFile', function() {
+	socket.emit('enableLogToFile');
+});
 
 
 function loadProjectSnippet(pd) {

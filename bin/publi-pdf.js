@@ -17,8 +17,14 @@ var publiPDF = (function() {
   function exportPubliToPDF(d){
     return new Promise(function(resolve, reject) {
       dev.logfunction( "EVENT - exportPubliToPDF");
-      createFolders(d).then((pdfInfos) => {
+      createFolders(d).then(d => {
+        return _generatePDF(d)
+      })
+      .then(pdfInfos => {
         resolve(pdfInfos);
+      })
+      .catch(err => {
+        dev.error("Failed to create a new folder! Error: " + err);
       });
     });
   }
@@ -42,9 +48,7 @@ var publiPDF = (function() {
         dev.logverbose({ printFolderPath });
         d.printFolderPath = printFolderPath;
         d.relativePrintFolder = path.join(dodoc.exportedPubliDir, d.slugFolderName, d.slugProjectName, d.slugPubliName, printFolderName);
-        _generatePDF(d).then((pdfInfos) => {
-          resolve(pdfInfos);
-        });
+        resolve(d);
       });
     });
   }
@@ -78,10 +82,13 @@ var publiPDF = (function() {
             }
           });
           page.setContent(d.html, global.dodoc.homeURL);
-        })
+        }).catch(error => {
+          dev.logverbose('Fail to createpage: ' + error);
+          reject();
+        });
       })
       .catch(error => {
-        dev.logverbose(error);
+        dev.logverbose('Fail to start phantomjs: ' + error);
         reject();
       });
     });

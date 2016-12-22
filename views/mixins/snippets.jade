@@ -37,3 +37,9 @@ mixin snippets(typeOfSnippet)
           h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice} http://#{localNetworkInfos[prop]}:8080
       h3.txt-small_info !{dodoc.lang.mediapublitemplatesarestoredint} <br>#{currentUserDirPath}
       a.txt-small_info.moveDodocContentFolder.js--openModal_moveContentFolder !{dodoc.lang.clickHereToMoveContentFolder}
+      - if(logToFile)
+        input.js--enableLogToFile(type="checkbox" id="enableLogToFile" checked)
+      - else
+        input.js--enableLogToFile(type="checkbox" id="enableLogToFile")
+      label.txt-small_info.checkbox--enableLogToFile(for="enableLogToFile")
+        | !{dodoc.lang.enableLogToFile}

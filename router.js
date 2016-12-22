@@ -83,6 +83,7 @@ module.exports = function(app,io,m){
       pageDataJSON.url = req.path;
       pageDataJSON.isHttps = req.connection.encrypted;
       pageDataJSON.dodoc = dodoc;
+      pageDataJSON.logToFile = global.nodeStorage.getItem('logToFile');
 
       getLocalIP().then(function(localNetworkInfos) {
         pageDataJSON.localNetworkInfos = localNetworkInfos;

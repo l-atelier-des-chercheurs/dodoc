@@ -2,8 +2,9 @@ var gutil = require('gulp-util');
 var logger = require('electron-log');
 
 var dev = (function() {
-  let isDebugMode = 'false';
-  let isVerboseMode = 'false';
+  let isDebugMode = false;
+  let isVerboseMode = false;
+  let logToFile = false;
 
   logger.transports.console = false;
 
@@ -19,7 +20,9 @@ var dev = (function() {
 
   function initModule(d, v) {
     isDebugMode = d;
-    isVerboseMode = v
+    isVerboseMode = v;
+    logToFile = global.nodeStorage.getItem('logToFile');
+
     if(isDebugMode) {
       console.log('Debug mode is Enabled');
       console.log('---');
@@ -30,44 +33,59 @@ var dev = (function() {
         dev.logverbose('(dev and verbose) gray for regular parsing data');
       }
     }
+    if(logToFile) {
+      console.log('Logging to file');
+    } else {
+      console.log('Not logging to a file');
+    }
     return;
   }
 
   function log() {
     var args = Array.prototype.slice.call(arguments);
-    var logString = args;
-    _sendToLog(logString, gutil.colors.white);
+    var logArgs = args;
+    _sendToLogFile(logArgs);
+    _sendToConsole(logArgs, gutil.colors.white);
   }
   function logverbose() { // gray
-    if(!(isDebugMode && isVerboseMode))
-      return;
     var args = Array.prototype.slice.call(arguments);
-    var logString = '- '.concat(args);
-    _sendToLog(logString, gutil.colors.gray);
+    var logArgs = '- '.concat(args);
+
+    _sendToLogFile(logArgs);
+    if(isDebugMode && isVerboseMode)
+      _sendToConsole(logArgs, gutil.colors.gray);
   }
   function logpackets() { // green
-    if(!isDebugMode)
-      return;
     var args = Array.prototype.slice.call(arguments);
-    var logString = '* '.concat(args);
-    _sendToLog(logString, gutil.colors.green);
+    var logArgs = '* '.concat(args);
+
+    _sendToLogFile(logArgs);
+    if(isDebugMode)
+      _sendToConsole(logArgs, gutil.colors.green);
   }
   function logfunction() { // magenta
-    if(!isDebugMode)
-      return;
     var args = Array.prototype.slice.call(arguments);
-    var logString = '~ '.concat(args);
-    _sendToLog(logString, gutil.colors.magenta);
+    var logArgs = '~ '.concat(args);
+
+    _sendToLogFile(logArgs);
+    if(isDebugMode)
+      _sendToConsole(logArgs, gutil.colors.magenta);
   }
   function error() { // red
     var args = Array.prototype.slice.call(arguments);
-    var logString = 'ERROR! '.concat(args);
-    _sendToLog(logString, gutil.colors.red);
+    var logArgs = 'ERROR! '.concat(args);
+
+    _sendToLogFile(logArgs);
+    _sendToConsole(logArgs, gutil.colors.red);
   }
 
-  function _sendToLog(logString, color = gutil.colors.white) {
-    gutil.log(color(logString));
-    logger.info(logString.toString());
+  function _sendToLogFile(logArgs) {
+    if(!logToFile)
+      return;
+    logger.info(logArgs.toString());
+  }
+  function _sendToConsole(logArgs, color = gutil.colors.white) {
+    gutil.log(color(logArgs));
   }
 
   return API;

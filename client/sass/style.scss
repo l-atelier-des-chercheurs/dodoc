@@ -315,6 +315,13 @@ button {
       display: block;
     }
   }
+
+  .checkbox--enableLogToFile {
+    &::before {
+      background-color: #fff !important;
+    }
+
+  }
 }
 
 
