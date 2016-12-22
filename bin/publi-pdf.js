@@ -68,7 +68,9 @@ var publiPDF = (function() {
         '--load-images=yes',
         '--local-to-remote-url-access=yes',
       ]).then(ph => {
+        dev.logverbose('phantom is created');
         ph.createPage().then(page => {
+          dev.logverbose('page is created');
           page.property('paperSize', { format: "A4", orientation: 'portrait', margin: '1cm' });
           page.on('onLoadFinished', function(success) {
             if(success === success) {
@@ -83,12 +85,12 @@ var publiPDF = (function() {
           });
           page.setContent(d.html, global.dodoc.homeURL);
         }).catch(error => {
-          dev.logverbose('Fail to createpage: ' + error);
+          dev.error('Fail to createpage: ' + error);
           reject();
         });
       })
       .catch(error => {
-        dev.logverbose('Fail to start phantomjs: ' + error);
+        dev.error('Fail to start phantomjs: ' + error);
         reject();
       });
     });
