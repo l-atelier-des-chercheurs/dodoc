@@ -30,11 +30,11 @@ var dodocAPI = (function() {
     return moment().format(f);
   }
   function getFolderPath(slugFolderName) {
-    dev.logverbose( "COMMON — getFolderPath : " + slugFolderName);
+    dev.logfunction( "COMMON — getFolderPath : " + slugFolderName);
     return path.join(getUserPath(), dodoc.contentDirname, slugFolderName);
   }
   function getProjectPath( slugFolderName, slugProjectName) {
-    dev.logverbose( "COMMON — getProjectPath, slugFolderName:" + slugFolderName + " slugProjectName: " + slugProjectName);
+    dev.logfunction( "COMMON — getProjectPath, slugFolderName:" + slugFolderName + " slugProjectName: " + slugProjectName);
     return path.join(getFolderPath(slugFolderName), slugProjectName);
   }
   function getUserPath() {
@@ -51,7 +51,7 @@ var dodocAPI = (function() {
 
   function storeData(mpath, d, e) {
     return new Promise(function(resolve, reject) {
-      dev.logverbose('Will store data');
+      dev.logfunction('COMMON — storeData');
       var textd = parsedown.textify(d);
       if( e === "create") {
         fs.appendFile( mpath, textd, function(err) {
@@ -110,7 +110,7 @@ var dodocAPI = (function() {
 
   function sendEventWithContent(sendEvent, objectContent, io, socket) {
     var eventAndContentJson = eventAndContent( sendEvent, objectContent);
-    dev.logpackets("eventAndContentJson " + JSON.stringify( eventAndContentJson, null, 4));
+    dev.logpackets("eventAndContentJson ", JSON.stringify(eventAndContentJson, null, 4));
     if(socket)
       // content sent only to one user
       socket.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
@@ -123,10 +123,11 @@ var dodocAPI = (function() {
   // Décode les images en base64
   // http://stackoverflow.com/a/20272545
   function decodeBase64Image(dataString) {
-    dev.logverbose("Decoding base 64 image");
+    dev.logfunction("COMMON — decodeBase64Image");
     var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
     response = {};
     if (matches.length !== 3) {
+      dev.error('error parsing base64 image');
       return new Error('Invalid input string');
     }
     response.type = matches[1];
@@ -136,8 +137,9 @@ var dodocAPI = (function() {
 
   function writeMediaDataToDisk(pathToFile, fileExtension, dataURL) {
     return new Promise(function(resolve, reject) {
+      dev.logfunction( "COMMON — writeMediaDataToDisk");
       if(dataURL === undefined) {
-        dev.log('No media data content gotten for '+pathToFile+fileExtension);
+        dev.error('No media data content gotten for '+pathToFile+fileExtension);
         reject('No media sent');
       }
       dataURL = dataURL.split(',').pop();
@@ -161,7 +163,7 @@ var dodocAPI = (function() {
           // only get folders that don't start with "_"
           return new RegExp(dodoc.regexpMatchFolderNames, 'i').test(slugPubliName) && slugPubliName.substr(0,1) !== '_';
         });
-        dev.log('Found ' + folders.length + ' templates in ' + templateFolderPath);
+        dev.logverbose('Found ' + folders.length + ' templates in ' + templateFolderPath);
         resolve(folders);
       });
     });

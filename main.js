@@ -27,6 +27,9 @@ function createWindow () {
   const verbose = flags.get('verbose');
   dev.init(debug, verbose);
 
+  console.log('coucouconsole', 'coucoubis');
+  dev.log('coucoudev', 'coucoubis');
+
   if( global.dodoc === undefined)
     global.dodoc = {};
   global.dodoc.homeURL = `${config.protocol}://${config.host}:${config.port}`;
@@ -36,7 +39,7 @@ function createWindow () {
   global.nodeStorage = new JSONStorage(storageLocation);
 
   // check if content folder exists
-  console.log('Will store contents in: ' + global.userDirPath);
+  dev.log('Will store contents in: ' + global.userDirPath);
   dev.logverbose('log verbose active');
 
   // Create the browser window.
@@ -62,7 +65,7 @@ function createWindow () {
       app.server = require('./server')(app);
     }
     catch (e) {
-      console.log('Couldn’t load app:', e);
+      dev.error('Couldn’t load app:', e);
     }
 
     // and load the base url of the app.
@@ -81,7 +84,7 @@ function createWindow () {
       win = null
     });
   }, function(err) {
-    console.log( 'Failed to check existing content folder : ' + err);
+    dev.error( 'Failed to check existing content folder : ' + err);
   });
 
 
@@ -117,32 +120,32 @@ function copyAndRenameUserFolder() {
     let userDirPath = '';
     try {
       userDirPath = global.nodeStorage.getItem('userDirPath');
-      console.log('global.nodeStorage.getItem("userDirPath") : ' + global.nodeStorage.getItem('userDirPath'));
+      dev.log('global.nodeStorage.getItem("userDirPath") : ' + global.nodeStorage.getItem('userDirPath'));
     } catch (err) {
-      console.log('Fail loading node storage for userDirPath');
+      dev.log('Fail loading node storage for userDirPath');
       // the file is there, but corrupt. Handle appropriately.
     }
 
     // if it has an empty userDirPath
     if(userDirPath === '') {
-      console.log('Missing path to dodoc parent folder');
+      dev.log('Missing path to dodoc parent folder');
       userDirPath = dialog.showOpenDialog({
         title: 'Sélectionnez le dossier qui contiendra le contenu de dodoc',
         defaultPath: app.getPath("documents"),
         properties: ['openDirectory']
       })[0];
-      console.log('A path was picked: ' + userDirPath);
+      dev.log('A path was picked: ' + userDirPath);
       global.nodeStorage.setItem('userDirPath', userDirPath);
     } else
 
     // if it has a non-empty userDirPath, lets use it
     if(userDirPath !== null && userDirPath.length > 0) {
-      console.log('Found usable userDirPath:' + userDirPath);
+      dev.log('Found usable userDirPath:' + userDirPath);
     }
 
     // if it doens't have a userDirPath
     else {
-      console.log('No usable userDirPath, using default');
+      dev.log('No usable userDirPath, using default');
       userDirPath = app.getPath(config.userDirPath);
     }
 
@@ -151,16 +154,16 @@ function copyAndRenameUserFolder() {
     fs.access(pathToUserContent, fs.F_OK, function(err) {
       // if dodoc folder doesn't exist yet at destination
       if(err) {
-        console.log('Content folder ' + config.userDirname + ' does not already exists in ' + userDirPath);
-        console.log('->duplicating /user to create a new one');
+        dev.log('Content folder ' + config.userDirname + ' does not already exists in ' + userDirPath);
+        dev.log('->duplicating /user to create a new one');
         const sourcePathInApp = path.join(__dirname, dodoc.userDirname)
         fs.copy(sourcePathInApp, pathToUserContent, {clobber: false}, function (err) {
           if(err) reject(err);
           resolve(pathToUserContent);
         });
       } else {
-        console.log('Content folder ' + config.userDirname + ' already exists in ' + userDirPath);
-        console.log('->not creating a new one');
+        dev.log('Content folder ' + config.userDirname + ' already exists in ' + userDirPath);
+        dev.log('->not creating a new one');
         resolve(pathToUserContent);
       }
     });

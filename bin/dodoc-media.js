@@ -314,7 +314,7 @@ var dodocMedia = (function() {
       mediaMetaData.modified = dodocAPI.getCurrentDate();
 
       dodocAPI.storeData( mediaFilepath + dodoc.metaFileext, mediaMetaData, 'update').then(function( mdata) {
-        dev.log('stored meta');
+        dev.logverbose('Just stored meta for media');
         // if media is a text, let's add the text content to the obj for convenience client-side
         if( mediaFolderPath === dodoc.projectTextsFoldername && editMediaData.textOfTextmedia) {
 
@@ -322,9 +322,9 @@ var dodocMedia = (function() {
           var mediaData = {
             "text" : editMediaData.textOfTextmedia
           };
-          dev.log('now storing text media');
+          dev.logverbose('now storing text media');
           dodocAPI.storeData( mediaFilepathWithExt, mediaData, 'update').then(function(mediaData) {
-            dev.log('just stored text media');
+            dev.logverbose('just stored text media');
             var textMediaData = _readTextMedia(mediaFilepathWithExt);
             mdata.textMediaContent = textMediaData;
             mdata.mediaName = mediaName;
@@ -337,7 +337,7 @@ var dodocMedia = (function() {
             reject( 'Couldn\'t update text media');
           });
         } else {
-          dev.log('not a text media');
+          dev.logverbose('not a text media');
           // for updating the result
           mdata.mediaName = mediaName;
           mdata.mediaFolderPath = mediaFolderPath;

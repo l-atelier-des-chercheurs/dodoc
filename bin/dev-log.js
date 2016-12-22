@@ -20,8 +20,9 @@ var dev = (function() {
     if(isDebugMode) {
       console.log('Debug mode is Enabled');
       console.log('---');
-      dev.log('all functions are prepended with ~ ');
-      dev.logpackets('(dev mode) green for sent packets');
+      dev.logfunction('(log) magenta is for functions');
+      dev.logpackets('(log) green is for packets');
+      dev.logpackets('(log) green is for packets');
       if(isVerboseMode) {
         dev.logverbose('(dev and verbose) gray for regular parsing data');
       }
@@ -29,24 +30,39 @@ var dev = (function() {
     return;
   }
 
-  function log(term) {
-    if(isDebugMode)
-      console.log(gutil.colors.blue('- ' + term));
+  function log() {
+    var args = Array.prototype.slice.call(arguments);
+    var logString = gutil.colors.white(args);
+    _sendToLog(logString);
   }
-  function logverbose(term) {
-    if(isDebugMode && isVerboseMode)
-      console.log(gutil.colors.gray('- ' + term));
+  function logverbose() {
+    if(!(isDebugMode && isVerboseMode))
+      return;
+    var args = Array.prototype.slice.call(arguments);
+    var logString = gutil.colors.gray('- '.concat(args));
+    _sendToLog(logString);
   }
-  function logpackets(term) {
-    if(isDebugMode)
-      console.log(gutil.colors.green('- ' + term));
+  function logpackets() {
+    if(!isDebugMode)
+      return;
+    var args = Array.prototype.slice.call(arguments);
+    var logString = gutil.colors.green('* '.concat(args));
+    _sendToLog(logString);
   }
-  function logfunction(term) {
-    if(isDebugMode)
-      console.info(gutil.colors.magenta('~ ' + term));
+  function logfunction() {
+    if(!isDebugMode)
+      return;
+    var args = Array.prototype.slice.call(arguments);
+    var logString = gutil.colors.magenta('~ '.concat(args));
+    _sendToLog(logString);
   }
-  function error(term) {
-    console.error(gutil.colors.red('ERROR! ' + term));
+  function error() {
+    var logString = gutil.colors.red('ERROR! '.concat(args));
+    _sendToLog(logString);
+  }
+
+  function _sendToLog(logString) {
+    gutil.log(logString);
   }
 
   return API;

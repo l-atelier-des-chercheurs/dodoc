@@ -170,7 +170,6 @@ var dodocPubli = (function() {
       var lookingForSpecificJson = thisPubliName !== undefined ? true : false;
       var filesInPubliFolder = fs.readdirSync( pathToPubliFolder);
 
-  //     dev.log( "- looking for files in " + publisPath);
       var foldersPublisMeta = [];
       filesInPubliFolder.forEach( function( filename) {
         if( !new RegExp( dodoc.regexpMatchFolderNames, 'i').test( filename) && filename !== ".DS_Store") {
