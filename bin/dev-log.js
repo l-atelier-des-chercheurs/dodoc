@@ -4,7 +4,7 @@ var logger = require('electron-log');
 var dev = (function() {
   let isDebugMode = false;
   let isVerboseMode = false;
-  let logToFile = true;
+  let logToFile = false;
 
   logger.transports.console = false;
 
@@ -21,7 +21,7 @@ var dev = (function() {
   function initModule(d, v) {
     isDebugMode = d;
     isVerboseMode = v;
-//     logToFile = global.nodeStorage.getItem('logToFile');
+    logToFile = global.nodeStorage.getItem('logToFile');
 
     if(isDebugMode) {
       console.log('Debug mode is Enabled');
