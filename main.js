@@ -40,7 +40,6 @@ function createWindow () {
     width: 1180,
     height: 700,
     backgroundColor: '#EBEBEB',
-    icon: __dirname + '/build/icon.ico',
     webPreferences: {
       allowDisplayingInsecureContent: true,
       allowRunningInsecureContent: true,
@@ -136,11 +135,10 @@ function copyAndRenameUserFolder() {
         userDirPath = app.getPath(config.userDirPath);
       }
       global.nodeStorage.setItem('userDirPath', userDirPath);
-
-    } else
+    }
 
     // if it has a non-empty userDirPath, lets use it
-    if(userDirPath !== null && userDirPath.length > 0) {
+    else if(userDirPath !== null && userDirPath.length > 0) {
       dev.log('Found usable userDirPath:' + userDirPath);
     }
 
@@ -157,7 +155,8 @@ function copyAndRenameUserFolder() {
       if(err) {
         dev.log('Content folder ' + config.userDirname + ' does not already exists in ' + userDirPath);
         dev.log('->duplicating /user to create a new one');
-        const sourcePathInApp = path.join(__dirname, dodoc.userDirname)
+        const sourcePathInApp = `${__dirname.replace(`${path.sep}app.asar`, '')}/user`;
+//         './' + dodoc.userDirname;
         fs.copy(sourcePathInApp, pathToUserContent, function (err) {
           if(err) {
             dev.error('failed to copy: ' + err);

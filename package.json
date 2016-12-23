@@ -28,6 +28,7 @@
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
   "build": {
     "appId": "dodoc",
+    "extraResources" : "user",
     "mac": {
       "category": "public.app-category.education"
     },
