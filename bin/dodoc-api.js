@@ -178,14 +178,15 @@ var dodocAPI = (function() {
       }
 
       var folderPath = path.join(fpath,fname);
-      fs.access(folderPath, fs.F_OK, function( err) {
+      fs.access(folderPath, fs.F_OK, function(err) {
         // if there's nothing at path
         if(err) {
+          dev.logverbose("Folder doesn't exist yet: " + err);
           dev.logverbose("New folder created with name " + fname + " and path " + path);
           fs.ensureDirSync(folderPath);//write new folder in folders
           resolve(folderPath);
         } else {
-          dev.logverbose("Folder already exist");
+          dev.logverbose(`Failed to make a folder at path ${folderPath}. Already exists.`);
           resolve(folderPath);
         }
       });
