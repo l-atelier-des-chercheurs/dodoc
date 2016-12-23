@@ -40,7 +40,6 @@ function createWindow () {
     width: 1180,
     height: 700,
     backgroundColor: '#EBEBEB',
-    icon: __dirname + '/build/icon.ico',
     webPreferences: {
       allowDisplayingInsecureContent: true,
       allowRunningInsecureContent: true,
@@ -124,17 +123,22 @@ function copyAndRenameUserFolder() {
     // if it has an empty userDirPath
     if(userDirPath === '') {
       dev.log('Missing path to dodoc parent folder');
-      userDirPath = dialog.showOpenDialog({
-        title: 'Sélectionnez le dossier qui contiendra le contenu de dodoc',
-        defaultPath: app.getPath("documents"),
-        properties: ['openDirectory']
-      })[0];
-      dev.log('A path was picked: ' + userDirPath);
+      try {
+        userDirPath = dialog.showOpenDialog({
+          title: 'Sélectionnez le dossier qui contiendra le contenu de dodoc',
+          defaultPath: app.getPath("documents"),
+          properties: ['openDirectory']
+        })[0];
+        dev.log('A path was picked: ' + userDirPath);
+      } catch(err){
+        dev.log('Cancel was click, not path selected. Settings userDirPath back to default.');
+        userDirPath = app.getPath(config.userDirPath);
+      }
       global.nodeStorage.setItem('userDirPath', userDirPath);
-    } else
+    }
 
     // if it has a non-empty userDirPath, lets use it
-    if(userDirPath !== null && userDirPath.length > 0) {
+    else if(userDirPath !== null && userDirPath.length > 0) {
       dev.log('Found usable userDirPath:' + userDirPath);
     }
 
@@ -151,9 +155,12 @@ function copyAndRenameUserFolder() {
       if(err) {
         dev.log('Content folder ' + config.userDirname + ' does not already exists in ' + userDirPath);
         dev.log('->duplicating /user to create a new one');
-        const sourcePathInApp = path.join(__dirname, dodoc.userDirname)
-        fs.copy(sourcePathInApp, pathToUserContent, {clobber: false}, function (err) {
-          if(err) reject(err);
+        const sourcePathInApp = `${__dirname.replace(`${path.sep}app.asar`, '')}/user`;
+        fs.copy(sourcePathInApp, pathToUserContent, function (err) {
+          if(err) {
+            dev.error('failed to copy: ' + err);
+            reject(err);
+          }
           resolve(pathToUserContent);
         });
       } else {
