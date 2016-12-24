@@ -61,7 +61,6 @@ var publiPDF = (function() {
       var pdfURL = path.join('/', d.relativePrintFolder, pdfName)
       dev.logverbose('Will make phantom pdf');
 
-
       phantom.create([
         '--ignore-ssl-errors=yes',
         '--ssl-protocol=any',
