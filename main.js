@@ -4,12 +4,13 @@ const {app, BrowserWindow} = electron;
 const path = require('path');
 const fs = require('fs-extra');
 const flags = require('flags');
-var dev = require('./bin/dev-log');
 const {dialog} = require('electron')
 
-const config = require('./config.json');
-const dodoc = require('./dodoc');
-const dodocAPI = require('./bin/dodoc-api');
+var dev = require('./app/bin/dev-log');
+const config = require('./app/config.json');
+const dodoc = require('./app/dodoc');
+const dodocAPI = require('./app/bin/dodoc-api');
+const server = require('./app/server');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -88,7 +89,7 @@ function createWindow () {
     dev.log('Will store contents in: ' + global.pathToUserContent);
 
     try {
-      app.server = require('./server')(app);
+      app.server = server(app);
     }
     catch (e) {
       dev.error('Couldn’t load app:', e);
@@ -112,7 +113,6 @@ function createWindow () {
   }, function(err) {
     dev.error( 'Failed to check existing content folder : ' + err);
   });
-
 
 }
 
@@ -187,7 +187,7 @@ function copyAndRenameUserFolder() {
       if(err) {
         dev.log('Content folder ' + config.userDirname + ' does not already exists in ' + userDirPath);
         dev.log('->duplicating /user to create a new one');
-        const sourcePathInApp = `${__dirname.replace(`${path.sep}app.asar`, '')}/user`;
+        const sourcePathInApp = `${__dirname.replace(`${path.sep}app.asar`, '')}/app/user`;
         fs.copy(sourcePathInApp, pathToUserContent, function (err) {
           if(err) {
             dev.error('failed to copy: ' + err);
