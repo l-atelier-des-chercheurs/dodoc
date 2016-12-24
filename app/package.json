@@ -5,6 +5,7 @@
   "author": "L’Atelier des Chercheurs <http://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
   "license": "CC-BY-NC-SA-4.0",
+  "main": "main.js",
   "scripts": {
     "rebuild": "electron-rebuild -f -w sharp"
   },
