@@ -1,6 +1,9 @@
 {
-  "private": true,
+  "name": "dodoc",
+  "version": "4.0.1",
+  "description": "Dodoc is a documentation tool for creativity.",
   "main": "main.js",
+  "private": true,
   "scripts": {
     "start": "electron main",
     "debug": "nodemon  -e js,json --ignore app/client/ --ignore app/views/ --exec \"electron main --debug --verbose\"",
