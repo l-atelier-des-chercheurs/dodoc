@@ -62,9 +62,9 @@ function createWindow () {
     }
   });
 
-  if (windowState.isMaximized) {
-    win.maximize();
-  }
+  if (windowState.isMaximized) {
+    win.maximize();
+  }
 
   var storeWindowState = function() {
     windowState.isMaximized = win.isMaximized();
@@ -76,10 +76,10 @@ function createWindow () {
   };
 
   ['resize', 'move', 'close'].forEach(function(e) {
-    win.on(e, function() {
-      storeWindowState();
-    });
-  });
+    win.on(e, function() {
+      storeWindowState();
+    });
+  });
 
   win.focus();
 

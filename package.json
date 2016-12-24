@@ -4,7 +4,7 @@
   "description": "Dodoc is a documentation tool for creativity.",
   "private": true,
   "scripts": {
-    "start": "electron main",
+    "start": "electron ./app",
     "debug": "nodemon  -e js,json --ignore app/client/ --ignore app/views/ --exec \"electron ./app --debug --verbose\"",
     "pack": "build --dir",
     "dist": "build",
@@ -23,19 +23,5 @@
     "win": {
       "iconUrl": "http://latelier-des-chercheurs.fr/icon.ico"
     }
-  },
-  "dependencies": {
-    "electron-context-menu": "^0.8.0",
-    "electron-log": "^1.2.2",
-    "flags": "^0.1.3",
-    "fs-extra": "^1.0.0",
-    "gulp-util": "^3.0.7",
-    "node-localstorage": "^1.3.0"
-  },
-  "devDependencies": {
-    "electron": "^1.4.8",
-    "electron-builder": "^10.8.1",
-    "electron-packager": "^8.4.0",
-    "nodemon": "^1.11.0"
   }
 }
