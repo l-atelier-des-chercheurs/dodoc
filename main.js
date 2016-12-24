@@ -35,19 +35,50 @@ function createWindow () {
     global.dodoc = {};
   global.dodoc.homeURL = `${config.protocol}://${config.host}:${config.port}`;
 
+  var windowState = {};
+  try {
+    windowState = global.nodeStorage.getItem('windowstate') ? global.nodeStorage.getItem('windowstate') : {};
+    dev.log('Found defaults for windowState: ', windowState);
+  } catch (err) {
+    dev.log('No default for windowState');
+  }
+
   // Create the browser window.
   win = new BrowserWindow({
-    width: 1180,
-    height: 700,
+
+    x: windowState.bounds && windowState.bounds.x || undefined,
+    y: windowState.bounds && windowState.bounds.y || undefined,
+    width: windowState.bounds && windowState.bounds.width || 1200,
+    height: windowState.bounds && windowState.bounds.height || 800,
+
     backgroundColor: '#EBEBEB',
-    icon: __dirname + '/build/icons/512x512.png',
+    icon: __dirname + '/build/icons/512x512.png',
+
     webPreferences: {
       allowDisplayingInsecureContent: true,
       allowRunningInsecureContent: true,
       nodeIntegration: true
     }
   });
-  // win.maximize();
+
+  if (windowState.isMaximized) {
+    win.maximize();
+  }
+
+  var storeWindowState = function() {
+    windowState.isMaximized = win.isMaximized();
+    if (!windowState.isMaximized) {
+      // only update bounds if the window isn't currently maximized
+      windowState.bounds = win.getBounds();
+    }
+    global.nodeStorage.setItem('windowstate', windowState);
+  };
+
+  ['resize', 'move', 'close'].forEach(function(e) {
+    win.on(e, function() {
+      storeWindowState();
+    });
+  });
 
   win.focus();
 
