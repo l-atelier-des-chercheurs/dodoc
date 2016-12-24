@@ -13421,13 +13421,13 @@ var imageMode = (function() {
     if( mediaJustCaptured())
       return;
 
-    currentStream.getStaticImageFromVideo().then(function(imageData) {  
+    currentStream.getStaticImageFromVideo().then(function(imageData) {
       $(".captureRight .flash").fadeIn(0, function(){
         $(this).fadeOut(500);
       });
       console.log("Yeah you take a picture");
-  
-  
+
+
       var mediaData =
       {
         "mediaType" : "photo",
@@ -13435,11 +13435,11 @@ var imageMode = (function() {
       }
       // send instruction to record photo
       sendData.createNewMedia( mediaData);
-  
+
       $preview.find('.output').attr('src', '');
-  
+
       justCaptured();
-      saveFeedback("/images/icone-dodoc_image.png");      
+      saveFeedback("/images/icone-dodoc_image.png");
     }, function(err) {
       console.log('err ' + err);
     });
@@ -13520,7 +13520,7 @@ var stopMotionMode = (function() {
     mediaData.slugProjectName = currentProject;
 
     // get a first image to send with project data
-    currentStream.getStaticImageFromVideo().then(function(imageData) {  
+    currentStream.getStaticImageFromVideo().then(function(imageData) {
       mediaData.imageContent = imageData;
       socket.emit( 'startStopMotion', mediaData);
     }, function(err) {
@@ -13539,7 +13539,7 @@ var stopMotionMode = (function() {
     var smCachePath = $("body").data("smCachePath");
     var imageData = currentStream.getStaticImageFromVideo();
 
-    currentStream.getStaticImageFromVideo().then(function(imageData) {  
+    currentStream.getStaticImageFromVideo().then(function(imageData) {
 
       var smImage =
       {
@@ -13547,17 +13547,17 @@ var stopMotionMode = (function() {
         "folderCacheName" : smCacheName,
         "folderCachePath" : smCachePath
       };
-  
+
       socket.emit( 'addImageToStopMotion', smImage);
-  
+
       $('body').addClass('takingstopmotion');
       $(".captureRight .flash").fadeIn(0, function(){
         $(this).fadeOut(500);
       });
-  
+
       justCaptured();
       animateWindows();
-  
+
     }, function(err) {
       console.log('err ' + err);
     });
@@ -14438,7 +14438,7 @@ function updateMontagePubliMeta( psdata) {
 // update montage content with new meta (title and link)
 function listMontagePubliMeta( whichPubli, pdata, $publiContent) {
   console.log('listMontagePubliMeta');
-  
+
   // make sure that publi is requested
   if( pdata.slugFolderName !== currentFolder || pdata.slugProjectName !== currentProject || pdata.slugPubliName !== whichPubli)
     return;
@@ -14455,7 +14455,7 @@ function listMontagePubliMeta( whichPubli, pdata, $publiContent) {
     .data("name", pdata.name)
     .data("template", pdata.template)
     ;
-    
+
   debugger;
   $publiContent.find('.template_container').attr("data-template", pdata.template);
 }
@@ -14486,7 +14486,7 @@ var sendData = {
     pdata.slugFolderName = currentFolder;
   	socket.emit( 'editProject', pdata);
   },
-  
+
   createNewMedia : function( mediaData) {
     mediaData.slugFolderName = currentFolder;
     mediaData.slugProjectName = currentProject;
@@ -14520,7 +14520,7 @@ var sendData = {
     publiData.slugProjectName = currentProject;
   	socket.emit( 'editPubli', publiData);
   },
-  
+
   listOnePubliMetaAndMedias : function( publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
@@ -15338,13 +15338,13 @@ var currentStream = (function(context) {
     getStaticImageFromVideo : function() {
       return new Promise(function(resolve, reject) {
         var videoFrame = currentStream.getVideoFrame();
-  
+
         var invisibleCanvas = document.createElement('canvas');
         invisibleCanvas.width = videoFrame.videoWidth;
         invisibleCanvas.height = videoFrame.videoHeight;
         var invisibleCtx = invisibleCanvas.getContext('2d');
         invisibleCtx.drawImage( videoFrame, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
-  
+
         Caman( invisibleCtx.canvas, function () {
 //           this.brightness(10);
           this.render(function () {
@@ -17782,7 +17782,7 @@ function onListOnePubliMetaAndMedias( psdata) {
   console.log( "onListOnePubliMetaAndMedias");
   $('[data-publidata]').data('publishown', getFirstMediaFromObj( psdata).slugPubliName);
   updateMontagePubliMeta( psdata);
-  updateMontagePubliMedias( psdata);  
+  updateMontagePubliMedias( psdata);
 }
 function onPubliMetaUpdated( psdata) {
   console.log( "onPubliMetaUpdated");

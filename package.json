@@ -15,6 +15,7 @@
     "package": "npm run pack:osx && npm run pack:win64"
   },
   "build": {
+    "electronVersion": "1.4.8",
     "appId": "dodoc",
     "asar" : false,
     "mac": {
@@ -23,5 +24,11 @@
     "win": {
       "iconUrl": "http://latelier-des-chercheurs.fr/icon.ico"
     }
+  },
+  "devDependencies": {
+    "electron": "^1.4.8",
+    "electron-builder": "^10.8.1",
+    "electron-packager": "^8.4.0",
+    "nodemon": "^1.11.0"
   }
 }
