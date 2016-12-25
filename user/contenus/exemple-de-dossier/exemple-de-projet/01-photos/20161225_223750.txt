@@ -1,0 +1,24 @@
+created: 20161225_223750
+
+----
+
+content: 
+
+----
+
+modified: 20161225_224229
+
+----
+
+informations: (en class) Visionnage et validation d’une vidéo qui vient d’être capturée.
+
+----
+
+type: photo
+
+----
+
+fav: false
+
+----
+

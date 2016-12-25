@@ -1,0 +1,24 @@
+created: 20161225_223758
+
+----
+
+content: 
+
+----
+
+modified: 20161225_224100
+
+----
+
+informations: Utilisation de do•doc pour un atelier d’initiation à l’animation image par image.
+
+----
+
+type: photo
+
+----
+
+fav: false
+
+----
+

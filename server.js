@@ -12,7 +12,6 @@ var dev = require('./bin/dev-log');
 var config = require('./config.json');
 
 module.exports = function(electronApp) {
-  dev.logverbose('Is debug ? ' + dev.isDebug);
   dev.logverbose('Starting server');
 
   var app = express();

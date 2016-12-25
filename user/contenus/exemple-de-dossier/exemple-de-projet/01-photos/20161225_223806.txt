@@ -1,0 +1,24 @@
+created: 20161225_223806
+
+----
+
+content: 
+
+----
+
+modified: 20161225_224014
+
+----
+
+informations: Kit mobile v1 de do•doc.
+
+----
+
+type: photo
+
+----
+
+fav: false
+
+----
+

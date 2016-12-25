@@ -4,12 +4,13 @@ const {app, BrowserWindow} = electron;
 const path = require('path');
 const fs = require('fs-extra');
 const flags = require('flags');
-var dev = require('./bin/dev-log');
 const {dialog} = require('electron')
 
+const dev = require('./bin/dev-log');
 const config = require('./config.json');
 const dodoc = require('./dodoc');
 const dodocAPI = require('./bin/dodoc-api');
+const server = require('./server');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -52,7 +53,7 @@ function createWindow () {
     height: windowState.bounds && windowState.bounds.height || 800,
 
     backgroundColor: '#EBEBEB',
-    icon: __dirname + '/build/icons/512x512.png',
+    icon: __dirname + '/build/icons/512x512.png',
 
     webPreferences: {
       allowDisplayingInsecureContent: true,
@@ -61,9 +62,9 @@ function createWindow () {
     }
   });
 
-  if (windowState.isMaximized) {
-    win.maximize();
-  }
+  if (windowState.isMaximized) {
+    win.maximize();
+  }
 
   var storeWindowState = function() {
     windowState.isMaximized = win.isMaximized();
@@ -75,10 +76,10 @@ function createWindow () {
   };
 
   ['resize', 'move', 'close'].forEach(function(e) {
-    win.on(e, function() {
-      storeWindowState();
-    });
-  });
+    win.on(e, function() {
+      storeWindowState();
+    });
+  });
 
   win.focus();
 
@@ -88,7 +89,7 @@ function createWindow () {
     dev.log('Will store contents in: ' + global.pathToUserContent);
 
     try {
-      app.server = require('./server')(app);
+      app.server = server(app);
     }
     catch (e) {
       dev.error('Couldn’t load app:', e);
@@ -144,13 +145,13 @@ function copyAndRenameUserFolder() {
 
     // check if nodeStorage has a userDirPath field
     let userDirPath = '';
-    try {
-      userDirPath = global.nodeStorage.getItem('userDirPath');
+    try {
+      userDirPath = global.nodeStorage.getItem('userDirPath');
       dev.log('global.nodeStorage.getItem("userDirPath") : ' + global.nodeStorage.getItem('userDirPath'));
-    } catch (err) {
+    } catch (err) {
       dev.log('Fail loading node storage for userDirPath');
-      // the file is there, but corrupt. Handle appropriately.
-    }
+      // the file is there, but corrupt. Handle appropriately.
+    }
 
     // if it has an empty userDirPath
     if(userDirPath === '') {
