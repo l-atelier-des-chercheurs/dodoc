@@ -27,10 +27,6 @@ jQuery(document).ready(function($) {
 	init();
 });
 
-function init(){
-	removeProject();
-}
-
 // Affiche le projet dès qu'il est crée
 function onProjectCreated( projectData){
   if( projectData.slugFolderName !== currentFolder)
@@ -59,29 +55,6 @@ function onProjectModified(projectData){
 
   var $project = loadProject( projectData);
   insertOrReplaceProject( $project, $(".mainContent .project-list"));
-}
-
-//Suppression du dossier
-function removeProject(){
-	$('#modal-delete-alert button.oui').on('click', function(){
-		console.log('oui ' + thisProjectName);
-		console.log(thisProject);
-		var projectToRemove =
-		{
-  		"name" : thisProjectName,
-  		"folder" : currentFolder
-		}
-		socket.emit('removeProject', projectToRemove);
-
-		$('#modal-delete-alert').foundation('reveal', 'close');
-	});
-	$('#modal-delete-alert button.annuler').on('click', function(){
-		console.log('annuler');
-		$('#modal-delete-alert').foundation('reveal', 'close');
-		$(document).on('close.fndtn.reveal', '#modal-delete-alert[data-reveal]', function () {
-	  	$('#modal-modify-folder').foundation('reveal', 'open');
-		});
-	});
 }
 
 //Remove the folder from list

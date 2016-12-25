@@ -34,6 +34,7 @@ var publiPDF = (function() {
       var publicationsFolder = path.join(dodocAPI.getUserPath(), dodoc.exportedPubliDir);
       var printFolderName = "print";
 
+      // todo: simplify with a simple call that recursively creates structure
       dodocAPI.makeFolderAtPath(d.slugFolderName, publicationsFolder)
       .then((exportFolderPath) => {
         return dodocAPI.makeFolderAtPath(d.slugProjectName, exportFolderPath)
