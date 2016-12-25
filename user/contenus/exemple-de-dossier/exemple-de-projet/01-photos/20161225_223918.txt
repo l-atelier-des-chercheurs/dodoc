@@ -1,0 +1,24 @@
+created: 20161225_223919
+
+----
+
+content: 
+
+----
+
+modified: 20161225_223959
+
+----
+
+informations: Utilisation de do•doc sur un smartphone connecté à un ordinateur par un réseau wi-fi.
+
+----
+
+type: photo
+
+----
+
+fav: false
+
+----
+

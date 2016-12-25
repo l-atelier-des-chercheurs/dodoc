@@ -1,0 +1,20 @@
+name: Exemple de dossier
+
+----
+
+created: 20161225_223500
+
+----
+
+modified: 20161225_223500
+
+----
+
+statut: en cours
+
+----
+
+slugFolderName: exemple-de-dossier
+
+----
+

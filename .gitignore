@@ -8,9 +8,6 @@ node_modules
 dist
 build/config.gypi
 
-user/contenus/*
-!user/contenus/readme.txt
-
 user/publications/*
 !user/publications/readme.txt
 
