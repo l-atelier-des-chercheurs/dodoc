@@ -85,6 +85,9 @@ if( lang === 'fr') {
       "enableAudioInVideo" : "Enregistrer le son",
       "enableLogToFile" : "mode debug",
 
+      "creditADC" : "do•doc est un projet développé par l’Atelier des Chercheurs",
+      "websiteofADC" : "Site de l’Atelier des Chercheurs",
+
       "currentVideoResolutionIs" : "Résolution actuelle&nbsp;: ",
       "videoStreamCouldntBeStartedTryChangingRes" : "Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la résolution dans le panneau de droite.",
       "videoStreamNotAvailable" : "Erreur : le flux vidéo n’est pas disponible.",
