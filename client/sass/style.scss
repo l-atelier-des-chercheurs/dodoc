@@ -317,6 +317,10 @@ button {
   }
 
   .checkbox--enableLogToFile {
+    display: none;
+    html.is--electronBrowser & {
+      display: inline;
+    }
     &::before {
       background-color: #fff !important;
     }

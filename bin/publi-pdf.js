@@ -48,7 +48,7 @@ var publiPDF = (function() {
       .then((printFolderPath) => {
         dev.logverbose('printFolderPath: ', printFolderPath);
         d.printFolderPath = printFolderPath;
-        d.relativePrintFolder = path.join(publicationsFolder, d.slugFolderName, d.slugProjectName, d.slugPubliName, printFolderName);
+        d.relativePrintFolder = path.join(dodoc.exportedPubliDir, d.slugFolderName, d.slugProjectName, d.slugPubliName, printFolderName);
         resolve(d);
       });
     });
