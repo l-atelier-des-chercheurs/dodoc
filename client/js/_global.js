@@ -182,22 +182,31 @@ function makeOneMedia( mediaKey, mdata) {
   if( mdata.slugFolderName !== currentFolder || mdata.slugProjectName !== currentProject)
     return;
 
+  var pathOfMedia;
+
   var $currentMedia = '';
-  if( mdata.mediaFolderPath === dodoc.projectPhotosFoldername)
-    $currentMedia = showImage( mdata);
-
-  if( mdata.mediaFolderPath === dodoc.projectAnimationsFoldername)
-    $currentMedia = showAnimation( mdata);
-
-  if( mdata.mediaFolderPath === dodoc.projectVideosFoldername)
-    $currentMedia = showVideo( mdata);
-
-  if( mdata.mediaFolderPath === dodoc.projectAudiosFoldername)
-    $currentMedia = showAudio( mdata);
-
-  if( mdata.mediaFolderPath === dodoc.projectTextsFoldername)
-    $currentMedia = showText( mdata);
-
+  switch(mdata.mediaFolderPath) {
+    case dodoc.projectPhotosFoldername:
+      $currentMedia = showImage(mdata);
+      pathOfMedia = app.contentDir+getMediaFiles(mdata).img_large;
+      break;
+    case dodoc.projectAnimationsFoldername:
+      $currentMedia = showAnimation(mdata);
+      pathOfMedia = app.contentDir+getMediaFiles(mdata).video;
+      break;
+    case dodoc.projectVideosFoldername:
+      $currentMedia = showVideo(mdata);
+      pathOfMedia = app.contentDir+getMediaFiles(mdata).video;
+      break;
+    case dodoc.projectAudiosFoldername:
+      $currentMedia = showAudio(mdata);
+      pathOfMedia = app.contentDir+getMediaFiles(mdata).audio;
+      break;
+    case dodoc.projectTextsFoldername:
+      $currentMedia = showText( mdata);
+      pathOfMedia = app.contentDir+getMediaFiles(mdata).md;
+      break;
+  }
 
   $currentMedia
     .attr( 'data-mediakey', mediaKey)
@@ -205,6 +214,7 @@ function makeOneMedia( mediaKey, mdata) {
     .attr( 'data-mediatype', mdata.mediaFolderPath)
     .attr( 'data-type', mdata.mediaFolderPath)
     	.attr( 'data-informations', mdata.informations)
+    	.attr( 'data-pathOfMedia', pathOfMedia)
     	.attr( 'data-fav', mdata.fav)
     	.addClass( mdata.fav ? 'is--highlight' : '')
     	.find( '.mediaData--informations')
@@ -232,7 +242,6 @@ function makeFullPathForProject( path) {
 function showImage( mediaDatas) {
 
   var mediasFilesPath = getMediaFiles(mediaDatas);
-
 	var mediaItem = $(".js--templates .media_image").clone(false);
 
   	mediaItem

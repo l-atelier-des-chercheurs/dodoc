@@ -319,12 +319,11 @@ var modals = (function() {
     var minfos = mdata.informations;
     var mname = mdata.medianame;
     var mfullsizeimagesrc = mdata.imagesrc_fullsize;
+    var mpathOfMedia = mdata.pathofmedia;
 
     switch( mtype){
     		case dodoc.projectPhotosFoldername:
   				var $mediaItem = $(".js--templates .media-big_image").clone(false);
-        var mfullpath = app.contentDir+'/'+mfullsizeimagesrc;
-
   				$mediaItem
   					.find('img')
   					  .attr('src', mfullsizeimagesrc)
@@ -334,8 +333,6 @@ var modals = (function() {
   			case dodoc.projectVideosFoldername:
   				var videoPath = mdata.videosource;
   				var $mediaItem = $(".js--templates .media-big_video").clone(false);
-        var mfullpath = app.contentDir+'/'+videoPath;
-
   				$mediaItem
   			    .find('video')
   			      .attr('poster', mfullsizeimagesrc)
@@ -343,13 +340,10 @@ var modals = (function() {
     			    .find('source')
     			      .attr('src', videoPath)
   					;
-
   				break;
   			case dodoc.projectAnimationsFoldername:
   				var videoPath = mdata.stopmotionsource;
   				var $mediaItem = $(".js--templates .media-big_stopmotion").clone(false);
-        var mfullpath = app.contentDir+'/'+videoPath;
-
   				$mediaItem
   			    .find('video')
   			      .attr('poster', mfullsizeimagesrc)
@@ -361,8 +355,6 @@ var modals = (function() {
   			case dodoc.projectAudiosFoldername:
   				var audioPath = mdata.audiosource;
   				var $mediaItem = $(".js--templates .media-big_audio").clone(false);
-        var mfullpath = app.contentDir+'/'+audioPath;
-
   				$mediaItem
   					.find('img')
   					  .attr('src', mfullsizeimagesrc)
@@ -374,20 +366,18 @@ var modals = (function() {
   				break;
   			case dodoc.projectTextsFoldername:
   				var $mediaItem = $(".js--templates .media-big_text").clone(false);
-        var mfullpath = app.contentDir+'/'+mdata.textFilePath;
-
-    				$mediaItem
-    					.find('.js--textField')
-    					  .val( mdata.originalText)
-    					.end()
-    					;
-    				break;
+  				$mediaItem
+  					.find('.js--textField')
+  					  .val( mdata.originalText)
+  					.end()
+  					;
+  				break;
     	}
 
   		if(mdata.fav)
   			$mediaItem.addClass('is--highlight');
 
-    mfullpath = mfullpath.replace(/\//g, '\u200B\/');
+//     mpathOfMedia = mpathOfMedia.replace(/\//g, '\u200B\/');
 
     	$mediaItem
     	  .attr( 'data-medianame', mname)
@@ -396,7 +386,7 @@ var modals = (function() {
     	    .val( minfos)
       .end()
       .find('.js--mediaFullPath')
-        .text(mfullpath)
+        .text(mpathOfMedia)
       .end()
       ;
 

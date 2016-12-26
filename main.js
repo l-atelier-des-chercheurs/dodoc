@@ -39,7 +39,8 @@ function createWindow () {
   var windowState = {};
   try {
     windowState = global.nodeStorage.getItem('windowstate') ? global.nodeStorage.getItem('windowstate') : {};
-    dev.log('Found defaults for windowState: ', windowState);
+    dev.log('Found defaults for windowState: ');
+    dev.log(windowState);
   } catch (err) {
     dev.log('No default for windowState');
   }
