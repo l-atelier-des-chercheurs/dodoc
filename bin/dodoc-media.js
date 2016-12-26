@@ -145,7 +145,7 @@ var dodocMedia = (function() {
 */
           .then(function() {
             return _createMediaMeta(newMediaType, pathToFile, newFileName)
-          }, function(error) { reject('Failed to save audio: ' + error); })
+          }, function(error) { reject('Failed to save video: ' + error); })
           .then( function(mdata) {
             mdata.slugFolderName = slugFolderName;
             mdata.slugProjectName = slugProjectName;

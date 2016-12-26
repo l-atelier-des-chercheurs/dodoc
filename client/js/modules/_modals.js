@@ -556,7 +556,9 @@ var modals = (function() {
         		} else if( fileName.indexOf( ".mp4") !== -1 ||  fileName.indexOf( ".webm")) {
         			var mediaData = {
               "mediaType" : "video",
-        				"mediaData" : evt.target.result
+              "mediaData" : {
+                "videoData" : evt.target.result,
+              }
         		  }
         		}
         		if( mediaData !== undefined)
