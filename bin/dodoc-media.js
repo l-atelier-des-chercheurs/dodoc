@@ -8,8 +8,6 @@ var mm = require('marky-mark');
 var ffmpegstatic = require('ffmpeg-static');
 var ffmpeg = require('fluent-ffmpeg');
 
-var sharp = require('sharp');
-
 var dodoc  = require('../dodoc');
 var dodocAPI = require('./dodoc-api');
 var dev = require('./dev-log');
@@ -27,7 +25,6 @@ var dodocMedia = (function() {
     createNewMedia            : (newMediaData) => { return createNewMedia(newMediaData); },
     editMediaMeta             : (editMediaData) => { return editMediaMeta(editMediaData); },
     deleteOneMedia            : (slugFolderName, slugProjectName, mediaFolder, mediaName) => { return deleteOneMedia(slugFolderName, slugProjectName, mediaFolder, mediaName); },
-    makeImageFromData         : (imageBufferData, pathToFile) => { return makeImageFromData(imageBufferData, pathToFile); },
   };
 
   /***************************************************************************************************/
@@ -107,10 +104,10 @@ var dodocMedia = (function() {
           var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.mediaData);
           dev.logverbose('Will store this photo at path: ' + pathToFile);
 
-          makeImageFromData(imageBuffer.data, pathToFile)
+          dodocAPI.makeImageFromData(imageBuffer.data, pathToFile)
           .then(function(imagePath) {
             var thumbPath = pathToFile + '-' + dodoc.thumbSuffix + '.jpeg';
-            return _makeImageThumb(imagePath, thumbPath);
+            return dodocAPI.makeImageThumb(imagePath, thumbPath);
           }, function(error) {
             dev.error("Failed to save image! Error: " + error);
             reject();
@@ -401,38 +398,6 @@ var dodocMedia = (function() {
     });
   }
 
-  // receives base64data and a path to filename (without ext)
-  function makeImageFromData(imageBufferData, pathToFile) {
-    return new Promise(function(resolve, reject) {
-      var imagePath = pathToFile + '.jpeg';
-      dev.logverbose('Now using image processore to optimize new image.');
-/*
-      Jimp.read(imageBufferData, function(err, image) {
-        if (err) reject(err);
-        image
-          .quality(90)
-          .write(imagePath, function(err, info) {
-            if (err) reject(err);
-            dev.logverbose('Image has been saved, resolving its path.');
-            resolve(imagePath);
-          });
-        });
-*/
-
-      // equivalent in sharp (but sharp needs native deps, which is annoying)
-      sharp(imageBufferData)
-        .rotate()
-        .withMetadata()
-        .toFormat(sharp.format.jpeg)
-        .quality(90)
-        .toFile(imagePath, function(err, info) {
-          dev.logverbose('Image has been saved, resolving its path.');
-          resolve(imagePath);
-        });
-
-    });
-  }
-
 
   /***************************************************************************************************/
   /******************************************** private functions ************************************/
@@ -570,46 +535,13 @@ var dodocMedia = (function() {
   // a mediaFileName starts at the beginning of a filename and end at the first dash
   // i.e. the following filenames have the same mediaFileName "20161121_164329_1" :
   // --> 20161121_164329_1.txt
-  // --> 20161121_164329_1-thumb.png
+  // --> 20161121_164329_1-thumb.jpeg
   // --> 20161121_164329_1-any-option.webm
   function _getMediaFileNameFromFileName(filename) {
     var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec(filename)[1];
     // get the "name" part of this filename
     var cleanMediaName = new RegExp( dodoc.regexpGetMediaName, 'i').exec(fileNameWithoutExtension)[0];
     return cleanMediaName;
-  }
-
-  function _makeImageThumb(imagePath, thumbPath) {
-    return new Promise(function(resolve, reject) {
-      dev.logverbose("Making a thumb at thumbPath: " + thumbPath);
-
-/*
-      Jimp.read(imagePath, function(err, image) {
-        if (err) reject(err);
-        image
-          .clone()
-          .quality(dodoc.mediaThumbQuality)
-          .scaleToFit(dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
-          .write(thumbPath, function(err, info) {
-            if (err) reject(err);
-            dev.logverbose('Image has been saved, resolving its path.');
-            resolve();
-          });
-      });
-*/
-      sharp(imagePath)
-        .rotate()
-        .resize(dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
-        .max()
-        .withoutEnlargement()
-        .withMetadata()
-        .toFormat('jpeg')
-        .quality(dodoc.mediaThumbQuality)
-        .toFile(thumbPath)
-        .then(function() {
-          resolve();
-        });
-    });
   }
 
   return API;

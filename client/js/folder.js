@@ -24,7 +24,6 @@ socket.on('projectRemoved', onProjectRemoved); // Quand le dossier a été suppr
 
 jQuery(document).ready(function($) {
 	$(document).foundation();
-	init();
 });
 
 // Affiche le projet dès qu'il est crée

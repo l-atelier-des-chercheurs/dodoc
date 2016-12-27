@@ -290,7 +290,7 @@ module.exports = function(app, io, electronApp){
     var imageBuffer = dodocAPI.decodeBase64Image( imageData.imageContent);
     dev.logverbose('Will store this photo at path: ' + pathToFile);
 
-    dodocMedia.makeImageFromData(imageBuffer.data, pathToFile)
+    dodocAPI.makeImageFromData(imageBuffer.data, pathToFile)
     .then(function(imagePath) {
     		var mediaData = {};
     		mediaData.newImageName = newFileName+'.jpeg';

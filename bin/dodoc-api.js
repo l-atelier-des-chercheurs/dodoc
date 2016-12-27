@@ -3,6 +3,7 @@ var fs = require('fs-extra');
 var slugg = require('slugg');
 var moment = require('moment');
 var parsedown = require('dodoc-parsedown');
+var sharp = require('sharp');
 
 var dodoc  = require('../dodoc');
 var dev = require('./dev-log');
@@ -18,12 +19,14 @@ var dodocAPI = (function() {
     readMetaFile        : (metaFile)                  => { return readMetaFile(metaFile) },
     getUserPath         : ()                          => { return getUserPath() },
     findFirstFilenameNotTaken: (fileName, currentPath, fileext = '') => { return findFirstFilenameNotTaken(fileName, currentPath, fileext) },
-    eventAndContent     : (sendEvent, objectJson) => { return eventAndContent(sendEvent, objectJson) },
+    eventAndContent     : (sendEvent, objectJson) =>     { return eventAndContent(sendEvent, objectJson) },
     sendEventWithContent: (sendEvent, objectContent, io, socket) => { return sendEventWithContent(sendEvent, objectContent, io, socket) },
-    decodeBase64Image   : (dataString) =>   { return decodeBase64Image(dataString) },
+    decodeBase64Image   : (dataString) =>                { return decodeBase64Image(dataString) },
     writeMediaDataToDisk: (pathToFile, fileExtension, dataURL) => { return writeMediaDataToDisk(pathToFile, fileExtension, dataURL) },
-    listAllTemplates    : () =>             { return listAllTemplates() },
-    makeFolderAtPath    : (fname,fpath) =>  { return makeFolderAtPath(fname,fpath) },
+    listAllTemplates    : () =>                          { return listAllTemplates() },
+    makeFolderAtPath    : (fname,fpath) =>               { return makeFolderAtPath(fname,fpath) },
+    makeImageFromData   : (imageBufferData, pathToFile) => { return makeImageFromData(imageBufferData, pathToFile); },
+    makeImageThumb      : (source, dest) =>              { return makeImageThumb(source, dest); },
   };
 
   function getCurrentDate(f) {
@@ -190,6 +193,75 @@ var dodocAPI = (function() {
           resolve(folderPath);
         }
       });
+    });
+  }
+
+  // receives base64data and a path to filename (without ext)
+  function makeImageFromData(imageBufferData, imagePath) {
+    return new Promise(function(resolve, reject) {
+      dev.logverbose(`Now using sharp to create image from buffer to ${imagePath}`);
+      imagePath += '.jpeg';
+
+      // remove image at path if it exists
+
+/*
+      Jimp.read(imageBufferData, function(err, image) {
+        if (err) reject(err);
+        image
+          .quality(90)
+          .write(imagePath, function(err, info) {
+            if (err) reject(err);
+            dev.logverbose('Image has been saved, resolving its path.');
+            resolve(imagePath);
+          });
+        });
+*/
+
+      // equivalent in sharp (but sharp needs native deps, which is annoying)
+      sharp(imageBufferData)
+        .rotate()
+        .withMetadata()
+        .toFormat(sharp.format.jpeg)
+        .quality(100)
+        .toFile(imagePath, function(err, info) {
+          dev.logverbose('Image has been saved, resolving its path.');
+          resolve(imagePath);
+        });
+
+    });
+  }
+
+
+  function makeImageThumb(source, dest) {
+    return new Promise(function(resolve, reject) {
+      dev.logverbose(`Making a thumb for ${source} at dest ${dest}`);
+
+/*
+      Jimp.read(source, function(err, image) {
+        if (err) reject(err);
+        image
+          .clone()
+          .quality(dodoc.mediaThumbQuality)
+          .scaleToFit(dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
+          .write(dest, function(err, info) {
+            if (err) reject(err);
+            dev.logverbose('Image has been saved, resolving its path.');
+            resolve();
+          });
+      });
+*/
+      sharp(source)
+        .rotate()
+        .resize(dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
+        .max()
+        .withoutEnlargement()
+        .withMetadata()
+        .toFormat('jpeg')
+        .quality(dodoc.mediaThumbQuality)
+        .toFile(dest)
+        .then(function() {
+          resolve();
+        });
     });
   }
 
