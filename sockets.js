@@ -214,8 +214,8 @@ module.exports = function(app, io, electronApp){
 
 // C A P T U R E      P A G E
 
-  function onNewMedia( mediaData) {
-    dev.logfunction( "EVENT - onNewMedia : " + JSON.stringify( mediaData, null, 4));
+  function onNewMedia(mediaData) {
+    dev.logfunction(`EVENT - onNewMedia : slugFolderName = ${mediaData.slugFolderName} slugProjectName = ${mediaData.slugProjectName} mediaType = ${mediaData.mediaType}`);
     dodocMedia.createNewMedia(mediaData).then(function( mediaMetaData) {
       dodocMedia.listOneMedia(mediaMetaData.slugFolderName, mediaMetaData.slugProjectName, mediaMetaData.mediaFolderPath, mediaMetaData.mediaName).then(function( oneMediaData) {
         for(var prop in oneMediaData) {
