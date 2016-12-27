@@ -13,7 +13,7 @@ script
   | app.currentUserDirPath = "!{currentUserDirPath}";
   | app.url = "!{url}";
   | var dodoc = !{JSON.stringify(dodoc)};
-script( src='/js/production/plugins.min.js')
+script( src='/js/production/plugins.js')
 script moment.locale("#{dodoc.codelang}");
 
 script( src='/js/common.js')

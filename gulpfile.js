@@ -92,8 +92,6 @@ gulp.task('lint', function() {
 gulp.task('script-plugins', function() {
   return gulp.src(pluginsScripts)
     .pipe(concat('plugins.js'))
-    .pipe(rename('plugins.min.js'))
-//     .pipe(uglify())
     .pipe(gulp.dest('client/js/production'));
 });
 
