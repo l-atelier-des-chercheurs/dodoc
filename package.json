@@ -9,15 +9,17 @@
   "private": true,
   "scripts": {
     "start": "electron main",
-    "debug": "nodemon  -e js,json --ignore client/ --ignore views/ --exec \"electron main --debug --verbose\"",
-    "pack": "build --dir",
-    "dist": "build",
+    "debug": "electron main --debug --verbose",
+    "debug-watch": "nodemon  -e js,json --ignore client/ --ignore views/ --exec \"electron --debug=5858 main --debug --verbose\"",
+    "inspect-main": "electron-inspector",
     "postinstall": "install-app-deps",
     "rebuild": "electron-rebuild -f -w sharp",
     "pack:osx": "electron-packager . dodoc --out=dist/osx --platform=darwin --arch=x64 --icon=build/icon.icns",
     "pack:linux": "electron-packager . dodoc --out=dist/linux --platform=linux --arch=x64 --icon=build/icon.icns",
     "pack:win64": "electron-packager . dodoc --out=dist/win --platform=win32 --arch=x64 --icon=build/icon.ico",
-    "package": "npm run pack:osx && npm run pack:win64"
+    "package": "npm run pack:osx && npm run pack:win64",
+    "pack": "build --dir",
+    "dist": "build"
   },
   "repository": {
     "type": "git",
@@ -29,7 +31,7 @@
   "build": {
     "electronVersion": "1.4.8",
     "appId": "dodoc",
-    "asar" : false,
+    "asar": false,
     "mac": {
       "category": "public.app-category.education"
     },
@@ -70,6 +72,8 @@
     "socket.io": "^1.3.5"
   },
   "devDependencies": {
+    "electron-builder": "^10.8.1",
+    "electron-packager": "^8.4.0",
     "electron-prebuilt": "^1.4.8",
     "electron-rebuild": "^1.4.0",
     "gulp": "^3.9.0",
@@ -82,8 +86,6 @@
     "gulp-sourcemaps": "^1.9.1",
     "gulp-uglify": "^2.0.0",
     "jshint": "^2.9.3",
-    "electron-builder": "^10.8.1",
-    "electron-packager": "^8.4.0",
     "nodemon": "^1.11.0"
   }
 }
