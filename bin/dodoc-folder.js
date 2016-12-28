@@ -97,7 +97,7 @@ var dodocFolder = (function() {
       dev.logfunction( "COMMON — listAllFolders");
 
       fs.readdir( dodocAPI.getFolderPath(), function (err, filenames) {
-        if (err) return dev.log( 'Couldn\'t read content dir : ' + err);
+        if (err) return dev.error(`Couldn't read content dir: ${err}`);
 
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.regexpMatchFolderNames, 'i').test( slugFolderName); });
 

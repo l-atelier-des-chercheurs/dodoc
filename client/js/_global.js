@@ -20,6 +20,15 @@ socket.on("*",function(event,d) {
   // only log the following events
   var logs = [];
   switch(event) {
+    case "alertUsers":
+      let msgContent = typeof d === 'object' && d.hasOwnProperty('content') ? d.content : msg;
+      let author = typeof d === 'object' && d.hasOwnProperty('author') ? d.author : false;
+      if(author !== false && author === window.sessionId) {
+        logs.push(msgContent);
+      } else if(author === false) {
+        logs.push(msgContent);
+      }
+      break;
     case "mediaCreated":
       for(md in d) {
         var thisMedia = d[md];

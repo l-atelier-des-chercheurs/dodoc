@@ -195,6 +195,9 @@ var dodocMedia = (function() {
 
           var frameRate = newMediaData.frameRate || 4;
 
+          var numberOfImagesToProcess = fs.readdirSync(pathToFile).length;
+          dev.logverbose(`Number of images in to process in ${pathToFile} is ${numberOfImagesToProcess}`);
+
           // ask ffmpeg to make a video from the cache images
           var proc = new ffmpeg({ "source" : pathToFile + '/%*.jpeg'})
             // using 12 fps
@@ -202,25 +205,32 @@ var dodocMedia = (function() {
             .withVideoCodec('libvpx')
             .addOptions(['-vb 8000k', '-f webm'])
             // setup event handlers
-            .on('end', function() {
+            .on('progress', progress => {
+              var msg = {
+                "author" : newMediaData.author,
+                "content" : `${dodoc.lang.stopMotionCompilationProgress} ${progress.frames}/${numberOfImagesToProcess} ${dodoc.lang.imagesAdded}`
+              };
+              require('../sockets').notifyUser(msg);
+              dev.logverbose(`Processing new stopmotion: image ${progress.frames}/${numberOfImagesToProcess}`);
+            })
+            .on('end', () => {
               dev.log('file has been converted succesfully');
-
               _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
                 mdata.slugFolderName = slugFolderName;
                 mdata.slugProjectName = slugProjectName;
                 mdata.mediaFolderPath = mediaFolder;
                 _createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
                   resolve( mdata);
-                }, function(error) {
+                }, error => {
                   dev.error("Failed to make a thumbnail for a stopmotion! Error: " + error);
                   resolve( mdata);
                 });
-              }, function() {
+              }, () => {
                 reject( 'failed to create meta for stopmotion');
               });
 
             })
-            .on('error', function(err) {
+            .on('error', err => {
               dev.log('an error happened: ' + err.message);
               reject( "couldn't create a stopmotion animation");
             })

@@ -68,7 +68,7 @@ module.exports = function(electronApp) {
   var expressSettings = require('./express-settings');
   var router = require('./router');
 
-  var m = new sockets(app, io, electronApp);
+  var m = sockets.init(app, io, electronApp);
 
   /*
   * Server config

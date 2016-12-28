@@ -14,81 +14,94 @@ var dev = require('./bin/dev-log');
 var publiFTP = require('./bin/publi-ftp.js');
 var publiPDF = require('./bin/publi-pdf.js');
 
-module.exports = function(app, io, electronApp){
+var sockets = (function() {
 
-  dev.log("Initializing socket module");
+  let app;
+  let io;
+  let electronApp;
 
-  io.on("connection", function(socket){
+  const API = {
+    init          : (app, io, electronApp)   => { return init(app, io, electronApp) },
+    notifyUser    : notifyUser,
+  };
 
-    var onevent = socket.onevent;
-    socket.onevent = function (packet) {
-        var args = packet.data || [];
-        onevent.call (this, packet);    // original call
-        packet.data = ["*"].concat(args);
-        onevent.call(this, packet);      // additional call to catch-all
-    };
-    socket.on("*",function(event,data) {
-      dev.log('RECEIVED EVENT : ' + event);
-    });
+  function init(thisApp, thisIO, thisElectronApp) {
+    dev.log("Initializing socket module");
 
-    socket.on( 'removeUserDirPath', onRemoveUserDirPath);
+    app = app;
+    io = thisIO;
+    electronApp = thisElectronApp;
 
-    // I N D E X    P A G E
-    socket.on( 'listFolders', data => { onListFolders(socket); });
-    socket.on( 'addFolder', data => { onNewFolder(socket,data); });
-    socket.on( 'editFolder', onEditFolder);
-    socket.on( 'removeOneFolder', onRemoveOneFolder);
+    io.on("connection", function(socket){
+      var onevent = socket.onevent;
+      socket.onevent = function (packet) {
+          var args = packet.data || [];
+          onevent.call (this, packet);    // original call
+          packet.data = ["*"].concat(args);
+          onevent.call(this, packet);      // additional call to catch-all
+      };
+      socket.on("*",function(event,data) {
+        dev.log('RECEIVED EVENT : ' + event);
+      });
 
-    // F O L D E R     P A G E
-    socket.on("listProjects", data => { onListProjects( socket, data); });
-    socket.on("addProject", onNewProject);
-    socket.on("editProject", onEditProject);
-    socket.on("removeOneProject", onRemoveOneProject);
+      socket.on( 'removeUserDirPath', onRemoveUserDirPath);
 
-    // P R O J E T      P A G E
-    socket.on("listProject", onListProject);
+      // I N D E X    P A G E
+      socket.on( 'listFolders', data => { onListFolders(socket); });
+      socket.on( 'addFolder', data => { onNewFolder(socket,data); });
+      socket.on( 'editFolder', onEditFolder);
+      socket.on( 'removeOneFolder', onRemoveOneFolder);
 
-    // C A P T U R E     P A G E
-    socket.on("newMedia", onNewMedia);
+      // F O L D E R     P A G E
+      socket.on("listProjects", data => { onListProjects( socket, data); });
+      socket.on("addProject", onNewProject);
+      socket.on("editProject", onEditProject);
+      socket.on("removeOneProject", onRemoveOneProject);
 
-    //STOP MOTION
-    socket.on( "startStopMotion", data => { onStartStopMotion( socket, data); });
-    socket.on( "addImageToStopMotion", data => { onAddImageToStopMotion( socket, data); });
-    socket.on( 'deleteLastImageOfStopMotion', data => { onDeleteLastImageOfStopMotion(socket, data); });
+      // P R O J E T      P A G E
+      socket.on("listProject", onListProject);
 
-    // B I B L I        P A G E
-    socket.on( 'listOneProjectMedias', onListOneProjectMedias);
-    socket.on( 'listOneProjectPublis', onListOneProjectPublis);
+      // C A P T U R E     P A G E
+      socket.on("newMedia", onNewMedia);
 
-    socket.on( 'createPubli', onCreatePubli);
-    socket.on( 'editMetaPubli', onEditMetaPubli);
-    socket.on( 'editMediasPubli', onEditMediasPubli);
+      //STOP MOTION
+      socket.on( "startStopMotion", data => { onStartStopMotion( socket, data); });
+      socket.on( "addImageToStopMotion", data => { onAddImageToStopMotion( socket, data); });
+      socket.on( 'deleteLastImageOfStopMotion', data => { onDeleteLastImageOfStopMotion(socket, data); });
 
-    socket.on("editMediaMeta", onEditMediaMeta);
-    socket.on("deleteMedia", onDeleteMedia);
-    socket.on("deleteStopmotion", onDeleteStopmotion);
+      // B I B L I        P A G E
+      socket.on( 'listOneProjectMedias', onListOneProjectMedias);
+      socket.on( 'listOneProjectPublis', onListOneProjectPublis);
 
-		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
+      socket.on( 'createPubli', onCreatePubli);
+      socket.on( 'editMetaPubli', onEditMetaPubli);
+      socket.on( 'editMediasPubli', onEditMediasPubli);
 
-    socket.on( 'exportPubliToFtp', data => { onExportPubliToFtp(socket, data); });
-    socket.on( 'ftpSettings', data => { onFtpSettings(socket, data); });
-    socket.on( 'generatePDF', data => { onGeneratePDF(socket, data); });
+      socket.on("editMediaMeta", onEditMediaMeta);
+      socket.on("deleteMedia", onDeleteMedia);
+      socket.on("deleteStopmotion", onDeleteStopmotion);
 
-    socket.on( 'enableLogToFile', onEnableLogToFile);
-	});
+  		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
+
+      socket.on( 'exportPubliToFtp', data => { onExportPubliToFtp(socket, data); });
+      socket.on( 'ftpSettings', data => { onFtpSettings(socket, data); });
+      socket.on( 'generatePDF', data => { onGeneratePDF(socket, data); });
+
+      socket.on( 'enableLogToFile', onEnableLogToFile);
+  	});
+
+  }
 
   /***************************************************************************
 
                                                 E V E N T S
 
                                   All those functions are triggered by events.
-                                  They send their content over to COMMON functions
-                                  and then use io.sockets.emit to send content
-                                  to the client. The content transits by json objects
-                                  These functions should be as concise as possible.
+                                  They send their content over to API functions
+                                  and then use socketio to answer the requested
+                                  content to clients.
 
   ****************************************************************************/
-
 
   function onRemoveUserDirPath() {
     dev.logfunction( "EVENT - onRemoveUserDirPath");
@@ -247,7 +260,7 @@ module.exports = function(app, io, electronApp){
 
 
   function onStartStopMotion( socket, mediaData) {
-    dev.logfunction( "EVENT - onStartStopMotion");
+    dev.logfunction("EVENT - onStartStopMotion");
 
     var folderCacheName = dodocAPI.getCurrentDate();
 
@@ -279,7 +292,7 @@ module.exports = function(app, io, electronApp){
   }
 
   function onAddImageToStopMotion( socket, imageData) {
-    dev.logfunction( "EVENT - onAddImageToStopMotion : " + JSON.stringify( imageData, null, 4));
+    dev.logfunction("EVENT - onAddImageToStopMotion");
 
     var newFileName = dodocAPI.getCurrentDate('x');
     newFileName = dodocAPI.findFirstFilenameNotTaken(newFileName, imageData.folderCachePath, '.jpeg');
@@ -447,7 +460,7 @@ module.exports = function(app, io, electronApp){
       dodocAPI.sendEventWithContent('publiTransferred', {urlToPubli}, io, socket);
     }, function(error) {
       dodocAPI.sendEventWithContent('cannotConnectFtp', error, io, socket);
-    });;
+    });
   }
 
   function onGeneratePDF(socket, d) {
@@ -455,7 +468,7 @@ module.exports = function(app, io, electronApp){
       dodocAPI.sendEventWithContent( 'publiPDFIsGenerated', pdfInfos, io, socket);
     }, function(error) {
       dodocAPI.sendEventWithContent( 'cannotGeneratePDF', error, io, socket);
-    });;
+    });
   }
 
 
@@ -465,6 +478,11 @@ module.exports = function(app, io, electronApp){
     dev.logToFile = loggingToFile;
   }
 
-// F I N     P U B L I     P A G E
-}
+  function notifyUser(msg) {
+    dodocAPI.sendEventWithContent( 'alertUsers', msg, io);
+  }
 
+  return API;
+})();
+
+module.exports = sockets;

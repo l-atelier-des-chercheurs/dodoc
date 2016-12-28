@@ -51,6 +51,8 @@ if( lang === 'fr') {
       "previzStopMotion" : "Prévisualiser",
       "finishStopmotion" : "Finaliser l’animation",
       "removeAndStopStopmotion" : "Arrêter et supprimer l’animation",
+      "stopMotionCompilationProgress" : "Compilation d’une animation en cours&nbsp;:",
+      "imagesAdded" : "images ajoutées",
       "addToFav" : "Mettre en favoris",
 
       "selectTemplate" : "Sélection de gabarit",
