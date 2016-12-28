@@ -48,11 +48,11 @@ You can find more documentation and contribute to the project [here](http://www.
 
 # Install DoDoc
 
-### Method 1 - macOS only
+### Method 1 - macOS and windows
 
 #### Download the app
 
-Download the following app, unzip and launch _dodoc.app_ : https://github.com/l-atelier-des-chercheurs/dodoc/releases/download/4.0.0/dodoc.app.zip
+Download the app from the release page: https://github.com/l-atelier-des-chercheurs/dodoc/releases
 
 ### Method 2 - All OS
 
