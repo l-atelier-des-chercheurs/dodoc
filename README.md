@@ -48,13 +48,13 @@ You can find more documentation and contribute to the project [here](http://www.
 
 # Install DoDoc
 
-### Method 1 - macOS and windows
+### Method 1 - the easy way
 
 #### Download the app
 
 Download the app from the release page: https://github.com/l-atelier-des-chercheurs/dodoc/releases
 
-### Method 2 - All OS
+### Method 2 - the long way (for development and editing the source code)
 
 _You need [node.js](https://nodejs.org/) and [python 2.7](https://www.python.org/) to install DoDoc with this method. On Windows, you also need to install Microsoft’s Windows Build Tools by following the instructions [here](https://github.com/Microsoft/nodejs-guidelines/blob/master/windows-environment.md#prerequisites)._
 
