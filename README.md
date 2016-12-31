@@ -123,9 +123,9 @@ npm run debug
 
 If submitting bugs, please enable "debug" mode in the footer and restart the app. Navigate to the place with the bug, close the app and go to the following path to get a log text file:
 
-- on Linux: `~/.config/<app name>/log.log`
-- on OS X: `~/Library/Logs/<app name>/log.log`
-- on Windows: `%USERPROFILE%/AppData/Roaming/<app name>/log.log`
+- on Linux: `~/.config/dodoc/log.log`
+- on OS X: `~/Library/Logs/dodoc/log.log`
+- on Windows: `%USERPROFILE%/AppData/Roaming/dodoc/log.log`
 
 To edit the SCSS (css) files, you’ll need to run a gulp task on the app folder.
 ```
