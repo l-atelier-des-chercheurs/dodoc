@@ -100,10 +100,8 @@ function createWindow() {
     // and load the base url of the app.
     win.loadURL(global.dodoc.homeURL);
 
-    // Open the DevTools.
-    if(dev.isDebug())
+    if(dev.isDebug() || global.nodeStorage.getItem('logToFile'))
       win.webContents.openDevTools();
-
 
     // Emitted when the window is closed.
     win.on('closed', () => {

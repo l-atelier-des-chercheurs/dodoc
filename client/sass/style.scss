@@ -12,6 +12,8 @@
 @import "_publi.scss";
 @import "_responsive.scss";
 
+@import "basic/_input.scss";
+@import "basic/_text.scss";
 
 html {
   margin:0;
@@ -22,8 +24,6 @@ body,html {
   height: auto;
 }
 
-@import "basic/_input.scss";
-@import "basic/_text.scss";
 
 
 
