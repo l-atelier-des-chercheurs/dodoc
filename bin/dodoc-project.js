@@ -80,7 +80,7 @@ var dodocProject = (function() {
         _addProjectPreview(projectPath, pdata.imageData)
         .then(err => {
           updatedpmeta.projectPreviewName = getProjectPreview(projectPath);
-          resolve( updatedpmeta);
+          resolve(updatedpmeta);
         });
       });
     });
@@ -184,6 +184,9 @@ var dodocProject = (function() {
   function _addProjectPreview(parentPath, imageData){
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON - _addProjectPreview with parentPath = ${parentPath}`);
+
+      if(imageData === undefined)
+        resolve();
 
       var pathToFile = parentPath + "/" + "apercu";
       var imageBuffer = dodocAPI.decodeBase64Image(imageData);
