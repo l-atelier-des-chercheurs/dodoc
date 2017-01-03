@@ -116,16 +116,16 @@ Also, some documentations on DoDoc:
 -->  1 blog : http://www.lopendoc.org/dodoc/
 
 ## Debug and edit DoDoc
-To debug DoDoc, you can enable extra-logging with the following command:
-```
-npm run debug
-```
-
 If submitting bugs, please enable "debug" mode in the footer and restart the app. Navigate to the place with the bug, close the app and go to the following path to get a log text file:
 
 - on Linux: `~/.config/dodoc/log.log`
 - on OS X: `~/Library/Logs/dodoc/log.log`
 - on Windows: `%USERPROFILE%/AppData/Roaming/dodoc/log.log`
+
+To debug DoDoc when it is installed with method 2, you can enable extra-logging with the following command:
+```
+npm run debug
+```
 
 To edit the SCSS (css) files, you’ll need to run a gulp task on the app folder.
 ```
