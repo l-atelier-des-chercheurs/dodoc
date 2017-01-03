@@ -4,6 +4,8 @@ var slugg = require('slugg');
 var merge = require('merge');
 
 var mm = require('marky-mark');
+var glob = require('glob')
+var pad = require('pad-left');
 
 var ffmpegstatic = require('ffmpeg-static');
 var ffmpeg = require('fluent-ffmpeg');
@@ -150,31 +152,9 @@ var dodocMedia = (function() {
 
             _createThumbnails(pathToFile + dodoc.videoext, newFileName, mediaPath)
             .then(function(mediaFolderContent) {
-
               if(newMediaData.mediaData.audioData === undefined) {
                 resolve(mdata);
               }
-
-/*
-              var audioFile = pathToFile + dodoc.audioext;
-              var videoFile = pathToFile + dodoc.videoext;
-
-              var proc = new ffmpeg()
-                .addOptions(['-vb 8000k', '-i '+audioFile, '-itsoffset -00:00:01', '-i '+videoFile, '-map 0:0', '-map 1:0'])
-// var command = "ffmpeg -i " + audioFile + " -itsoffset -00:00:01 -i " + videoFile + " -map 0:0 -map 1:0 " + mergedFile;
-                // setup event handlers
-                .on('end', function() {
-                  dev.log('Successful merge of video+audio track.');
-                  resolve(mdata);
-                })
-                .on('error', function(err) {
-                  dev.log('an error happened: ' + err.message);
-                  resolve('couldn\'t create a video animation');
-                })
-                // save to file
-                .save( pathToFile + '_merged' + dodoc.videoext);
-*/
-
             }, function(error) {
               dev.error('--> Failed to make a thumbnail for a video! Error: ' + error);
               resolve(mdata);
@@ -196,46 +176,59 @@ var dodocMedia = (function() {
           var frameRate = newMediaData.frameRate || 4;
 
           var numberOfImagesToProcess = fs.readdirSync(pathToFile).length;
-          dev.logverbose(`Number of images in to process in ${pathToFile} is ${numberOfImagesToProcess}`);
+          dev.logverbose(`Number of images to process in ${pathToFile} is ${numberOfImagesToProcess}`);
 
-          // ask ffmpeg to make a video from the cache images
-          var proc = new ffmpeg({ "source" : path.join(pathToFile, '%*.jpeg') })
-            // using 12 fps
-            .withFpsInput(frameRate)
-            .withVideoCodec('libvpx')
-            .addOptions(['-vb 8000k', '-f webm'])
-            // setup event handlers
-            .on('progress', progress => {
-              var msg = {
-                "author" : newMediaData.author,
-                "content" : `${dodoc.lang.stopMotionCompilationProgress} ${progress.frames}/${numberOfImagesToProcess} ${dodoc.lang.imagesAdded}`
-              };
-              require('../sockets').notifyUser(msg);
-              dev.logverbose(`Processing new stopmotion: image ${progress.frames}/${numberOfImagesToProcess}`);
-            })
-            .on('end', () => {
-              dev.log('file has been converted succesfully');
-              _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
-                mdata.slugFolderName = slugFolderName;
-                mdata.slugProjectName = slugProjectName;
-                mdata.mediaFolderPath = mediaFolder;
-                _createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
-                  resolve( mdata);
-                }, error => {
-                  dev.error("Failed to make a thumbnail for a stopmotion! Error: " + error);
-                  resolve( mdata);
+          _batchCopyToNewFolder(pathToFile)
+          .then(stopmotionImageSequenceFolderPath => {
+            // ask ffmpeg to make a video from the cache images
+            var proc = new ffmpeg()
+              .input(path.join(stopmotionImageSequenceFolderPath, 'img-%04d.jpeg'))
+              // using 12 fps
+              .withFpsInput(frameRate)
+              .withVideoCodec('libvpx')
+              .addOptions(['-vb 8000k', '-f webm'])
+              .output(pathToFile + fileExtension)
+              // setup event handlers
+              .on('progress', progress => {
+                var msg = {
+                  "author" : newMediaData.author,
+                  "content" : `${dodoc.lang.stopMotionCompilationProgress} ${progress.frames}/${numberOfImagesToProcess} ${dodoc.lang.imagesAdded}`
+                };
+                require('../sockets').notifyUser(msg);
+                dev.logverbose(`Processing new stopmotion: image ${progress.frames}/${numberOfImagesToProcess}`);
+              })
+              .on('end', () => {
+                dev.log('file has been converted succesfully');
+                // remove temp folder with seq images
+                fs.remove(stopmotionImageSequenceFolderPath);
+
+                _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
+                  mdata.slugFolderName = slugFolderName;
+                  mdata.slugProjectName = slugProjectName;
+                  mdata.mediaFolderPath = mediaFolder;
+                  _createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
+                    resolve( mdata);
+                  }, error => {
+                    dev.error("Failed to make a thumbnail for a stopmotion! Error: " + error);
+                    resolve( mdata);
+                  });
+                }, () => {
+                  reject( 'failed to create meta for stopmotion');
                 });
-              }, () => {
-                reject( 'failed to create meta for stopmotion');
-              });
 
-            })
-            .on('error', err => {
-              dev.log('an error happened: ' + err.message);
-              reject( "couldn't create a stopmotion animation");
-            })
-            // save to file
-            .save( pathToFile + fileExtension);
+              })
+
+              .on('error', function(err, stdout, stderr) {
+                dev.error('An error happened: ' + err.message);
+                dev.error('ffmpeg standard output:\n' + stdout);
+                dev.error('ffmpeg standard error:\n' + stderr);
+                reject( "couldn't create a stopmotion animation");
+              })
+
+              // save to file
+              .run();
+          });
+
           break;
         case 'audio':
           var mediaPath = _getMediaPath( slugFolderName, slugProjectName, mediaFolder);
@@ -552,6 +545,40 @@ var dodocMedia = (function() {
     // get the "name" part of this filename
     var cleanMediaName = new RegExp( dodoc.regexpGetMediaName, 'i').exec(fileNameWithoutExtension)[0];
     return cleanMediaName;
+  }
+
+  function _batchCopyToNewFolder(pathToFile) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction("COMMON — _batchCopyToNewFolder");
+      // create a folder at pathToFile
+      var seqImageFolder = path.join(pathToFile, 'seq');
+      fs.ensureDirSync(seqImageFolder);
+
+      // copy each images there with a name following img-%04d.jpeg
+      glob(pathToFile + '/*.jpeg', [], function (er, files) {
+
+        	let processed = 0, index = 0;
+        	files.forEach(function(file) {
+        		// todo : passer en async et check à la fin
+
+        		fs.copy(file, path.join(seqImageFolder, 'img-' + pad(index, 4, '0') + '.jpeg'), function (err) {
+            if(err) {
+              dev.error('failed to copy: ' + err);
+              reject(err);
+            }
+            processed++;
+            if(processed === files.length) {
+              // resolve path to this new folder
+              resolve(seqImageFolder);
+              dev.log("Stopmotion - renaming step : " + processed + " files processed out of " + files.length);
+            }
+          });
+
+          index++;
+
+        	});
+      });
+    });
   }
 
   return API;
