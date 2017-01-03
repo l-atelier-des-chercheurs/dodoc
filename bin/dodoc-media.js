@@ -199,7 +199,7 @@ var dodocMedia = (function() {
           dev.logverbose(`Number of images in to process in ${pathToFile} is ${numberOfImagesToProcess}`);
 
           // ask ffmpeg to make a video from the cache images
-          var proc = new ffmpeg({ "source" : pathToFile + '/%*.jpeg'})
+          var proc = new ffmpeg({ "source" : path.join(pathToFile, '%*.jpeg') })
             // using 12 fps
             .withFpsInput(frameRate)
             .withVideoCodec('libvpx')

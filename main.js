@@ -54,7 +54,7 @@ function createWindow() {
     height: windowState.bounds && windowState.bounds.height || 800,
 
     backgroundColor: '#EBEBEB',
-    icon: __dirname + '/build/icons/512x512.png',
+    icon: path.join(__dirname, 'build', 'icons', '512x512.png'),
     show: false,
 
     webPreferences: {
