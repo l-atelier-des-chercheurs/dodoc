@@ -4,7 +4,7 @@ const {app, BrowserWindow, Menu} = electron;
 const path = require('path');
 const fs = require('fs-extra');
 const flags = require('flags');
-const {dialog} = require('electron')
+const {dialog} = require('electron');
 
 const dev = require('./bin/dev-log');
 const config = require('./config.json');
@@ -54,7 +54,6 @@ function createWindow() {
     height: windowState.bounds && windowState.bounds.height || 800,
 
     backgroundColor: '#EBEBEB',
-    icon: path.join(__dirname, 'build', 'icons', '512x512.png'),
     show: false,
 
     webPreferences: {
