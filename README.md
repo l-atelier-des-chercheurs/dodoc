@@ -127,8 +127,7 @@ To debug DoDoc when it is installed with method 2, you can enable extra-logging 
 npm run debug
 ```
 
-To edit the SCSS (css) files, you’ll need to run a gulp task on the app folder.
+To edit the SCSS (css) files, you’ll need to run gulp:
 ```
-cd app
 gulp
 ```
