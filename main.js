@@ -32,6 +32,8 @@ function createWindow() {
   const verbose = flags.get('verbose');
   dev.init(debug, verbose);
 
+  dev.log('——— Starting dodoc app v' + process.env.npm_package_version);
+
   if( global.dodoc === undefined)
     global.dodoc = {};
   global.dodoc.homeURL = `${config.protocol}://${config.host}:${config.port}`;
@@ -54,6 +56,7 @@ function createWindow() {
     height: windowState.bounds && windowState.bounds.height || 800,
 
     backgroundColor: '#EBEBEB',
+    icon: path.join(__dirname, 'build', 'icons', '512x512.png'),
     show: false,
 
     webPreferences: {

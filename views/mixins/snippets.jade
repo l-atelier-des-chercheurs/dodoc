@@ -28,21 +28,28 @@ mixin snippets(typeOfSnippet)
     +button('valider', '', 'isCollapsed')
 
 
-  if(typeOfSnippet === 'moduleInfos' && process.versions.electron)
+  if(typeOfSnippet === 'moduleInfos')
     .module_infos
-      -for(var prop in localNetworkInfos)
-        -if(isHttps)
-          h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice} https://#{localNetworkInfos[prop]}:8080
-        -else
-          h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice} http://#{localNetworkInfos[prop]}:8080
-      h3.txt-small_info !{dodoc.lang.mediapublitemplatesarestoredint} <br>#{currentUserDirPath}
-      a.txt-small_info.moveDodocContentFolder.js--openModal_moveContentFolder !{dodoc.lang.clickHereToMoveContentFolder}
-      - if(logToFile)
-        input.js--enableLogToFile(type="checkbox" id="enableLogToFile" checked)
-      - else
-        input.js--enableLogToFile(type="checkbox" id="enableLogToFile")
-      label.txt-small_info.checkbox--enableLogToFile(for="enableLogToFile")
-        | !{dodoc.lang.enableLogToFile}
-      hr
-      a.txt-small_info.creditADC.js--openInBrowser(href="http://latelier-des-chercheurs.fr/" target="_blank")
-        | !{dodoc.lang.creditADC}
+      .module_infos-blocs
+        -for(var prop in localNetworkInfos)
+          -if(isHttps)
+            h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice} https://#{localNetworkInfos[prop]}:8080
+          -else
+            h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice} http://#{localNetworkInfos[prop]}:8080
+      .module_infos-blocs
+        h3.txt-small_info !{dodoc.lang.mediapublitemplatesarestoredint} <br>#{currentUserDirPath}
+      .module_infos-blocs
+        a.txt-small_info.moveDodocContentFolder.js--openModal_moveContentFolder !{dodoc.lang.clickHereToMoveContentFolder}
+      .module_infos-blocs
+        - if(logToFile)
+          input.js--enableLogToFile(type="checkbox" id="enableLogToFile" checked)
+        - else
+          input.js--enableLogToFile(type="checkbox" id="enableLogToFile")
+        label.txt-small_info.checkbox--enableLogToFile(for="enableLogToFile")
+          | !{dodoc.lang.enableLogToFile}
+      .module_infos-blocs
+        a.txt-small_info.creditADC.js--openInBrowser(href="http://latelier-des-chercheurs.fr/" target="_blank")
+          | !{dodoc.lang.creditADC}
+      .module_infos-blocs
+        .txt-small_info
+          | do•doc v#{process.env.npm_package_version}
