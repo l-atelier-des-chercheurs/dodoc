@@ -1,15 +1,16 @@
 const electron = require('electron');
-const {app, BrowserWindow} = electron;
+const {app, BrowserWindow, Menu} = electron;
 
 const path = require('path');
 const fs = require('fs-extra');
 const flags = require('flags');
-var dev = require('./bin/dev-log');
-const {dialog} = require('electron')
+const {dialog} = require('electron');
 
+const dev = require('./bin/dev-log');
 const config = require('./config.json');
 const dodoc = require('./dodoc');
 const dodocAPI = require('./bin/dodoc-api');
+const server = require('./server');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -17,7 +18,7 @@ let win;
 
 app.commandLine.appendSwitch('--ignore-certificate-errors');
 
-function createWindow () {
+function createWindow() {
 
   var JSONStorage = require('node-localstorage').JSONStorage;
   var storageLocation = app.getPath('userData');
@@ -31,24 +32,60 @@ function createWindow () {
   const verbose = flags.get('verbose');
   dev.init(debug, verbose);
 
+  dev.log('——— Starting dodoc app v' + process.env.npm_package_version);
+
   if( global.dodoc === undefined)
     global.dodoc = {};
   global.dodoc.homeURL = `${config.protocol}://${config.host}:${config.port}`;
 
+  var windowState = {};
+  try {
+    windowState = global.nodeStorage.getItem('windowstate') ? global.nodeStorage.getItem('windowstate') : {};
+    dev.log('Found defaults for windowState: ');
+    dev.log(windowState);
+  } catch (err) {
+    dev.log('No default for windowState');
+  }
+
   // Create the browser window.
   win = new BrowserWindow({
-    width: 1180,
-    height: 700,
+
+    x: windowState.bounds && windowState.bounds.x || undefined,
+    y: windowState.bounds && windowState.bounds.y || undefined,
+    width: windowState.bounds && windowState.bounds.width || 1200,
+    height: windowState.bounds && windowState.bounds.height || 800,
+
     backgroundColor: '#EBEBEB',
+    icon: path.join(__dirname, 'build', 'icons', '512x512.png'),
+    show: false,
+
     webPreferences: {
       allowDisplayingInsecureContent: true,
       allowRunningInsecureContent: true,
       nodeIntegration: true
     }
   });
-  // win.maximize();
 
-  win.focus();
+  if (windowState.isMaximized) {
+    win.maximize();
+  }
+
+  var storeWindowState = function() {
+    windowState.isMaximized = win.isMaximized();
+    if (!windowState.isMaximized) {
+      // only update bounds if the window isn't currently maximized
+      windowState.bounds = win.getBounds();
+    }
+    global.nodeStorage.setItem('windowstate', windowState);
+  };
+
+  ['resize', 'move', 'close'].forEach(function(e) {
+    win.on(e, function() {
+      storeWindowState();
+    });
+  });
+
+  setApplicationMenu();
 
   copyAndRenameUserFolder().then(function(pathToUserContent) {
 
@@ -56,7 +93,7 @@ function createWindow () {
     dev.log('Will store contents in: ' + global.pathToUserContent);
 
     try {
-      app.server = require('./server')(app);
+      app.server = server(app);
     }
     catch (e) {
       dev.error('Couldn’t load app:', e);
@@ -65,10 +102,8 @@ function createWindow () {
     // and load the base url of the app.
     win.loadURL(global.dodoc.homeURL);
 
-    // Open the DevTools.
-    if(dev.isDebug())
+    if(dev.isDebug() || global.nodeStorage.getItem('logToFile'))
       win.webContents.openDevTools();
-
 
     // Emitted when the window is closed.
     win.on('closed', () => {
@@ -77,6 +112,12 @@ function createWindow () {
       // when you should delete the corresponding element.
       win = null
     });
+
+    win.on('ready-to-show', function() {
+      win.show();
+      win.focus();
+    });
+
   }, function(err) {
     dev.error( 'Failed to check existing content folder : ' + err);
   });
@@ -96,7 +137,7 @@ app.on('window-all-closed', () => {
   // if (process.platform !== 'darwin') {
     app.quit();
   // }
-})
+});
 
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
@@ -104,21 +145,147 @@ app.on('activate', () => {
   if (win === null) {
     createWindow();
   }
-})
+});
 
+function setApplicationMenu() {
+  // Create the Application's main menu
+  var template = [{
+    label: 'Electron',
+    submenu: [
+      {
+        label: 'About Electron',
+        selector: 'orderFrontStandardAboutPanel:'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'Services',
+        submenu: []
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'Hide Electron',
+        accelerator: 'Command+H',
+        selector: 'hide:'
+      },
+      {
+        label: 'Hide Others',
+        accelerator: 'Command+Shift+H',
+        selector: 'hideOtherApplications:'
+      },
+      {
+        label: 'Show All',
+        selector: 'unhideAllApplications:'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'Quit',
+        accelerator: 'Command+Q',
+        click: function() { app.quit(); }
+      },
+    ]
+  },
+  {
+    label: 'Edit',
+    submenu: [
+      {
+        label: 'Undo',
+        accelerator: 'Command+Z',
+        selector: 'undo:'
+      },
+      {
+        label: 'Redo',
+        accelerator: 'Shift+Command+Z',
+        selector: 'redo:'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'Cut',
+        accelerator: 'Command+X',
+        selector: 'cut:'
+      },
+      {
+        label: 'Copy',
+        accelerator: 'Command+C',
+        selector: 'copy:'
+      },
+      {
+        label: 'Paste',
+        accelerator: 'Command+V',
+        selector: 'paste:'
+      },
+      {
+        label: 'Select All',
+        accelerator: 'Command+A',
+        selector: 'selectAll:'
+      },
+    ]
+  },
+  {
+    label: 'View',
+    submenu: [
+      {
+        label: 'Reload',
+        accelerator: 'Command+R',
+        click: function() { BrowserWindow.getFocusedWindow().reloadIgnoringCache(); }
+      },
+      {
+        label: 'Toggle DevTools',
+        accelerator: 'Alt+Command+I',
+        click: function() { BrowserWindow.getFocusedWindow().toggleDevTools(); }
+      },
+    ]
+  },
+  {
+    label: 'Window',
+    submenu: [
+      {
+        label: 'Minimize',
+        accelerator: 'Command+M',
+        selector: 'performMiniaturize:'
+      },
+      {
+        label: 'Close',
+        accelerator: 'Command+W',
+        selector: 'performClose:'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'Bring All to Front',
+        selector: 'arrangeInFront:'
+      },
+    ]
+  },
+  {
+    label: 'Help',
+    submenu: []
+  }];
+
+  menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
+}
 
 function copyAndRenameUserFolder() {
   return new Promise(function(resolve, reject) {
 
     // check if nodeStorage has a userDirPath field
     let userDirPath = '';
-    try {
-      userDirPath = global.nodeStorage.getItem('userDirPath');
+    try {
+      userDirPath = global.nodeStorage.getItem('userDirPath');
       dev.log('global.nodeStorage.getItem("userDirPath") : ' + global.nodeStorage.getItem('userDirPath'));
-    } catch (err) {
+    } catch (err) {
       dev.log('Fail loading node storage for userDirPath');
-      // the file is there, but corrupt. Handle appropriately.
-    }
+      // the file is there, but corrupt. Handle appropriately.
+    }
 
     // if it has an empty userDirPath
     if(userDirPath === '') {

@@ -189,12 +189,14 @@ select {
 .alertify-logs {
   font-weight: 500;
   z-index:  15000;
+  pointer-events: none;
 
   >.show {
     margin-right:   16px;
     background-color: white;
     color: $c-bleuvert;
     border: 3px solid currentColor;
+    pointer-events: auto;
   }
 
   >.error {

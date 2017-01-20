@@ -34,6 +34,7 @@ var publiPDF = (function() {
       var publicationsFolder = path.join(dodocAPI.getUserPath(), dodoc.exportedPubliDir);
       var printFolderName = "print";
 
+      // todo: simplify with a simple call that recursively creates structure
       dodocAPI.makeFolderAtPath(d.slugFolderName, publicationsFolder)
       .then((exportFolderPath) => {
         return dodocAPI.makeFolderAtPath(d.slugProjectName, exportFolderPath)
@@ -47,7 +48,7 @@ var publiPDF = (function() {
       .then((printFolderPath) => {
         dev.logverbose('printFolderPath: ', printFolderPath);
         d.printFolderPath = printFolderPath;
-        d.relativePrintFolder = path.join(publicationsFolder, d.slugFolderName, d.slugProjectName, d.slugPubliName, printFolderName);
+        d.relativePrintFolder = path.join(dodoc.exportedPubliDir, d.slugFolderName, d.slugProjectName, d.slugPubliName, printFolderName);
         resolve(d);
       });
     });
@@ -60,7 +61,6 @@ var publiPDF = (function() {
       var pdfPath = path.join(d.printFolderPath, pdfName);
       var pdfURL = path.join('/', d.relativePrintFolder, pdfName)
       dev.logverbose('Will make phantom pdf');
-
 
       phantom.create([
         '--ignore-ssl-errors=yes',

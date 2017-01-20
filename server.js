@@ -12,7 +12,6 @@ var dev = require('./bin/dev-log');
 var config = require('./config.json');
 
 module.exports = function(electronApp) {
-  dev.logverbose('Is debug ? ' + dev.isDebug);
   dev.logverbose('Starting server');
 
   var app = express();
@@ -69,7 +68,7 @@ module.exports = function(electronApp) {
   var expressSettings = require('./express-settings');
   var router = require('./router');
 
-  var m = new sockets(app, io, electronApp);
+  var m = sockets.init(app, io, electronApp);
 
   /*
   * Server config

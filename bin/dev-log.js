@@ -51,7 +51,8 @@ var dev = (function() {
     var args = Array.prototype.slice.call(arguments);
     var logArgs = '- '.concat(args);
 
-    _sendToLogFile(logArgs);
+    if(logToFile)
+      _sendToLogFile(logArgs);
     if(isDebugMode && isVerboseMode)
       _sendToConsole(logArgs, gutil.colors.gray);
   }
@@ -59,7 +60,8 @@ var dev = (function() {
     var args = Array.prototype.slice.call(arguments);
     var logArgs = '* '.concat(args);
 
-    _sendToLogFile(logArgs);
+    if(logToFile)
+      _sendToLogFile(logArgs);
     if(isDebugMode)
       _sendToConsole(logArgs, gutil.colors.green);
   }
@@ -67,7 +69,8 @@ var dev = (function() {
     var args = Array.prototype.slice.call(arguments);
     var logArgs = '~ '.concat(args);
 
-    _sendToLogFile(logArgs);
+    if(logToFile)
+      _sendToLogFile(logArgs);
     if(isDebugMode)
       _sendToConsole(logArgs, gutil.colors.magenta);
   }
@@ -80,8 +83,6 @@ var dev = (function() {
   }
 
   function _sendToLogFile(logArgs) {
-    if(!logToFile)
-      return;
     logger.info(logArgs.toString());
   }
   function _sendToConsole(logArgs, color = gutil.colors.white) {

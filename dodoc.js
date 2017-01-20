@@ -51,6 +51,8 @@ if( lang === 'fr') {
       "previzStopMotion" : "Prévisualiser",
       "finishStopmotion" : "Finaliser l’animation",
       "removeAndStopStopmotion" : "Arrêter et supprimer l’animation",
+      "stopMotionCompilationProgress" : "Compilation d’une animation en cours&nbsp;:",
+      "imagesAdded" : "images ajoutées",
       "addToFav" : "Mettre en favoris",
 
       "selectTemplate" : "Sélection de gabarit",
@@ -84,6 +86,8 @@ if( lang === 'fr') {
       "lastImageOpacity" : "Afficher la dernière image en transparence",
       "enableAudioInVideo" : "Enregistrer le son",
       "enableLogToFile" : "mode debug",
+
+      "creditADC" : "do•doc est un projet développé par l’Atelier des Chercheurs",
 
       "currentVideoResolutionIs" : "Résolution actuelle&nbsp;: ",
       "videoStreamCouldntBeStartedTryChangingRes" : "Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la résolution dans le panneau de droite.",

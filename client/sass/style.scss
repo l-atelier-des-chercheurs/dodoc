@@ -12,6 +12,8 @@
 @import "_publi.scss";
 @import "_responsive.scss";
 
+@import "basic/_input.scss";
+@import "basic/_text.scss";
 
 html {
   margin:0;
@@ -22,8 +24,6 @@ body,html {
   height: auto;
 }
 
-@import "basic/_input.scss";
-@import "basic/_text.scss";
 
 
 
@@ -309,6 +309,14 @@ button {
       width: 50%;
   }
 
+  .module_infos-blocs {
+    max-width: 500px;
+    width: 80%;
+    margin: 0 auto;
+    padding: $t-margin/4 0;
+    border-top: 1px solid #fff;
+  }
+
   .moveDodocContentFolder {
     display: none;
     html.is--electronBrowser & {
@@ -317,6 +325,10 @@ button {
   }
 
   .checkbox--enableLogToFile {
+    display: none;
+    html.is--electronBrowser & {
+      display: inline;
+    }
     &::before {
       background-color: #fff !important;
     }

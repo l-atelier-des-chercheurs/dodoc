@@ -14,7 +14,7 @@ var dodocProject = (function() {
   const API = {
     getMetaFileOfProject     : (slugFolderName, slugProjectName) => { return getMetaFileOfProject(slugFolderName, slugProjectName); },
     getProjectMeta           : (slugFolderName, slugProjectName) => { return getProjectMeta(slugFolderName, slugProjectName); },
-    createNewProject         : (projectData) => { return createNewProject(projectData); },
+    createNewProject         : (pdata) => { return createNewProject(pdata); },
     getProjectPreview        : (projectPath) => { return getProjectPreview(projectPath); },
     updateProjectMeta        : (pdata) => { return updateProjectMeta(pdata); },
     listOneProject           : (slugFolderName, slugProjectName) => { return listOneProject(slugFolderName, slugProjectName); },
@@ -31,18 +31,18 @@ var dodocProject = (function() {
   function getProjectMeta(slugFolderName, slugProjectName) {
 //    dev.log( "getProjectMeta with slugFolderName : " + slugFolderName + " slugProjectName : " + slugProjectName);
     var projectJSONFile = getMetaFileOfProject( slugFolderName, slugProjectName);
-    var projectData = fs.readFileSync( projectJSONFile, dodoc.textEncoding);
-    var projectJSONdata = dodocAPI.parseData(projectData);
+    var pdata = fs.readFileSync( projectJSONFile, dodoc.textEncoding);
+    var projectJSONdata = dodocAPI.parseData(pdata);
 
     return projectJSONdata;
   }
-  function createNewProject( projectData) {
+  function createNewProject( pdata) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — createNewProject");
 
-      var projectName = projectData.projectName;
+      var projectName = pdata.projectName;
       var slugProjectName = slugg( projectName);
-      var slugFolderName = projectData.slugFolderName;
+      var slugFolderName = pdata.slugFolderName;
 
       var currentDateString = dodocAPI.getCurrentDate();
       var dodocFolder = require('./dodoc-folder.js');
@@ -55,16 +55,12 @@ var dodocProject = (function() {
       dev.log("New project created with name " + projectName + " and path " + projectPath);
       fs.ensureDirSync(projectPath);//new project
 
-      if( projectData.imageData !== undefined) {
-        _addProjectPreview( "apercu", projectPath, projectData.imageData);
-      }
-
       var dodocMedia = require('./dodoc-media.js');
       var mediaFolders = dodocMedia.getAllMediasFoldersPathAsArray();
-      mediaFolders.forEach( function( mediaFolder) {
-        fs.ensureDirSync( path.join( projectPath, mediaFolder));//write new medias folder in folders
+      mediaFolders.forEach( function(mediaFolder) {
+        fs.ensureDirSync(path.join( projectPath, mediaFolder));//write new medias folder in folders
       });
-      fs.ensureDirSync( path.join(projectPath, dodoc.projectPublisFoldername));//write new publi folder in folders
+      fs.ensureDirSync(path.join(projectPath, dodoc.projectPublisFoldername));//write new publi folder in folders
 
       var pmeta =
         {
@@ -80,26 +76,16 @@ var dodocProject = (function() {
         var updatedpmeta = getProjectMeta( slugFolderName, slugProjectName);
         updatedpmeta.slugFolderName = slugFolderName;
         updatedpmeta.slugProjectName = slugProjectName;
-        updatedpmeta.projectPreviewName = getProjectPreview( projectPath);
-        resolve( updatedpmeta);
+
+        _addProjectPreview(projectPath, pdata.imageData)
+        .then(err => {
+          updatedpmeta.projectPreviewName = getProjectPreview(projectPath);
+          resolve(updatedpmeta);
+        });
       });
     });
   }
-  function getProjectPreview(projectPath) {
-    dev.logverbose( "COMMON — detecting preview for project path : " + projectPath);
-    // looking for an image whose name starts with apercu or preview in the project folder
-    var filesInProjectFolder = fs.readdirSync( projectPath);
-    var previewName = false;
-    dev.logverbose( "- match apercu/preview in array : " + filesInProjectFolder);
-    filesInProjectFolder.forEach( function( filename) {
-      if( new RegExp( dodoc.regexpMatchProjectPreviewNames, 'i').test(filename)) {
-        previewName = filename;
-        dev.logverbose( "- - match preview called " + previewName);
-      }
-    });
-    dev.logverbose( "- final filename ? " + previewName);
-    return previewName;
-  }
+
   // accepts a folderData with at least a "foldername", a "slugFolderName", a "projectname" and a "slugProjectName"
   function updateProjectMeta(pdata) {
     return new Promise(function(resolve, reject) {
@@ -114,7 +100,7 @@ var dodocProject = (function() {
       var currentDateString = dodocAPI.getCurrentDate();
 
       if( pdata.imageData !== undefined) {
-        _addProjectPreview( "apercu", projectPath, pdata.imageData);
+        _addProjectPreview(projectPath, pdata.imageData);
       }
 
       // récupérer les infos sur le project
@@ -130,14 +116,36 @@ var dodocProject = (function() {
         var updatedpmeta = getProjectMeta( slugFolderName, slugProjectName);
         updatedpmeta.slugFolderName = slugFolderName;
         updatedpmeta.slugProjectName = slugProjectName;
-        updatedpmeta.projectPreviewName = getProjectPreview( projectPath);
-        resolve( updatedpmeta);
+
+        _addProjectPreview(projectPath, pdata.imageData)
+        .then(err => {
+          updatedpmeta.projectPreviewName = getProjectPreview(projectPath);
+          resolve( updatedpmeta);
+        });
+
       }, function() {
         dev.error('--> Couldn\'t update project meta.');
         reject( 'Couldn\'t update project meta');
       });
     });
   }
+
+  function getProjectPreview(projectPath) {
+    dev.logverbose( "COMMON — detecting preview for project path : " + projectPath);
+    // looking for an image whose name starts with apercu or preview in the project folder
+    var filesInProjectFolder = fs.readdirSync( projectPath);
+    var previewName = false;
+    dev.logverbose( "- match apercu/preview in array : " + filesInProjectFolder);
+    filesInProjectFolder.forEach( function( filename) {
+      if( new RegExp( dodoc.regexpMatchProjectPreviewNames, 'i').test(filename)) {
+        previewName = filename;
+        dev.logverbose( "- - match preview called " + previewName);
+      }
+    });
+    dev.logverbose( "- final filename ? " + previewName);
+    return previewName;
+  }
+
   function listOneProject(slugFolderName, slugProjectName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON - listOneProject slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName);
@@ -160,11 +168,11 @@ var dodocProject = (function() {
 
       fs.rename( projectPath, deletedProjectPath, function(err) {
         if (err) reject(err);
-        var projectData = {
+        var pdata = {
           "slugFolderName" : slugFolderName,
           "slugProjectName" : slugProjectName,
         }
-        resolve( projectData);
+        resolve( pdata);
       });
     });
   }
@@ -173,17 +181,26 @@ var dodocProject = (function() {
   /******************************************** private functions ************************************/
   /***************************************************************************************************/
 
-  function _addProjectPreview(imageNameSlug, parentPath, imageData){
-    var filePath = parentPath + "/" + imageNameSlug + ".png";
-    var imageBuffer = dodocAPI.decodeBase64Image( imageData);
-    fs.writeFileSync(filePath, imageBuffer.data);
-    console.info("write new file to " + filePath);
+  function _addProjectPreview(parentPath, imageData){
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(`COMMON - _addProjectPreview with parentPath = ${parentPath}`);
+
+      if(imageData === undefined)
+        resolve();
+
+      var pathToFile = parentPath + "/" + "apercu";
+      var imageBuffer = dodocAPI.decodeBase64Image(imageData);
+
+      dodocAPI.makeImageFromData(imageBuffer.data, pathToFile)
+      .then(() => {
+        resolve();
+      })
+      .catch(err => {
+        dev.error(`Failed creating thumb for project at path ${parentPath}: ${err}`);
+        reject();
+      });
+    });
   }
-
-
-
-
-
 
   return API;
 })();

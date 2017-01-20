@@ -18,7 +18,7 @@ var pluginsScripts = [
   'client/bower_components/moment/min/moment.min.js',
   'client/bower_components/moment/locale/fr.js',
   'client/bower_components/store-js/store.min.js',
-  'client/bower_components/alertifyjs/dist/js/alertify.js',
+  'client/bower_components/alertifyjs/dist/js/alertify.js'
 ];
 var userScripts = [
   'dodoc.js',
@@ -92,8 +92,6 @@ gulp.task('lint', function() {
 gulp.task('script-plugins', function() {
   return gulp.src(pluginsScripts)
     .pipe(concat('plugins.js'))
-    .pipe(rename('plugins.min.js'))
-//     .pipe(uglify())
     .pipe(gulp.dest('client/js/production'));
 });
 

@@ -4,11 +4,11 @@ var slugg = require('slugg');
 var merge = require('merge');
 
 var mm = require('marky-mark');
+var glob = require('glob')
+var pad = require('pad-left');
 
 var ffmpegstatic = require('ffmpeg-static');
 var ffmpeg = require('fluent-ffmpeg');
-
-var sharp = require('sharp');
 
 var dodoc  = require('../dodoc');
 var dodocAPI = require('./dodoc-api');
@@ -27,7 +27,6 @@ var dodocMedia = (function() {
     createNewMedia            : (newMediaData) => { return createNewMedia(newMediaData); },
     editMediaMeta             : (editMediaData) => { return editMediaMeta(editMediaData); },
     deleteOneMedia            : (slugFolderName, slugProjectName, mediaFolder, mediaName) => { return deleteOneMedia(slugFolderName, slugProjectName, mediaFolder, mediaName); },
-    makeImageFromData         : (imageBufferData, pathToFile) => { return makeImageFromData(imageBufferData, pathToFile); },
   };
 
   /***************************************************************************************************/
@@ -107,10 +106,10 @@ var dodocMedia = (function() {
           var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.mediaData);
           dev.logverbose('Will store this photo at path: ' + pathToFile);
 
-          makeImageFromData(imageBuffer.data, pathToFile)
+          dodocAPI.makeImageFromData(imageBuffer.data, pathToFile)
           .then(function(imagePath) {
             var thumbPath = pathToFile + '-' + dodoc.thumbSuffix + '.jpeg';
-            return _makeImageThumb(imagePath, thumbPath);
+            return dodocAPI.makeImageThumb(imagePath, thumbPath);
           }, function(error) {
             dev.error("Failed to save image! Error: " + error);
             reject();
@@ -145,7 +144,7 @@ var dodocMedia = (function() {
 */
           .then(function() {
             return _createMediaMeta(newMediaType, pathToFile, newFileName)
-          }, function(error) { reject('Failed to save audio: ' + error); })
+          }, function(error) { reject('Failed to save video: ' + error); })
           .then( function(mdata) {
             mdata.slugFolderName = slugFolderName;
             mdata.slugProjectName = slugProjectName;
@@ -153,31 +152,9 @@ var dodocMedia = (function() {
 
             _createThumbnails(pathToFile + dodoc.videoext, newFileName, mediaPath)
             .then(function(mediaFolderContent) {
-
               if(newMediaData.mediaData.audioData === undefined) {
                 resolve(mdata);
               }
-
-/*
-              var audioFile = pathToFile + dodoc.audioext;
-              var videoFile = pathToFile + dodoc.videoext;
-
-              var proc = new ffmpeg()
-                .addOptions(['-vb 8000k', '-i '+audioFile, '-itsoffset -00:00:01', '-i '+videoFile, '-map 0:0', '-map 1:0'])
-// var command = "ffmpeg -i " + audioFile + " -itsoffset -00:00:01 -i " + videoFile + " -map 0:0 -map 1:0 " + mergedFile;
-                // setup event handlers
-                .on('end', function() {
-                  dev.log('Successful merge of video+audio track.');
-                  resolve(mdata);
-                })
-                .on('error', function(err) {
-                  dev.log('an error happened: ' + err.message);
-                  resolve('couldn\'t create a video animation');
-                })
-                // save to file
-                .save( pathToFile + '_merged' + dodoc.videoext);
-*/
-
             }, function(error) {
               dev.error('--> Failed to make a thumbnail for a video! Error: ' + error);
               resolve(mdata);
@@ -198,37 +175,60 @@ var dodocMedia = (function() {
 
           var frameRate = newMediaData.frameRate || 4;
 
-          // ask ffmpeg to make a video from the cache images
-          var proc = new ffmpeg({ "source" : pathToFile + '/%*.jpeg'})
-            // using 12 fps
-            .withFpsInput(frameRate)
-            .withVideoCodec('libvpx')
-            .addOptions(['-vb 8000k', '-f webm'])
-            // setup event handlers
-            .on('end', function() {
-              dev.log('file has been converted succesfully');
+          var numberOfImagesToProcess = fs.readdirSync(pathToFile).length;
+          dev.logverbose(`Number of images to process in ${pathToFile} is ${numberOfImagesToProcess}`);
 
-              _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
-                mdata.slugFolderName = slugFolderName;
-                mdata.slugProjectName = slugProjectName;
-                mdata.mediaFolderPath = mediaFolder;
-                _createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
-                  resolve( mdata);
-                }, function(error) {
-                  dev.error("Failed to make a thumbnail for a stopmotion! Error: " + error);
-                  resolve( mdata);
+          _batchCopyToNewFolder(pathToFile)
+          .then(stopmotionImageSequenceFolderPath => {
+            // ask ffmpeg to make a video from the cache images
+            var proc = new ffmpeg()
+              .input(path.join(stopmotionImageSequenceFolderPath, 'img-%04d.jpeg'))
+              // using 12 fps
+              .withFpsInput(frameRate)
+              .withVideoCodec('libvpx')
+              .addOptions(['-vb 8000k', '-f webm'])
+              .output(pathToFile + fileExtension)
+              // setup event handlers
+              .on('progress', progress => {
+                var msg = {
+                  "author" : newMediaData.author,
+                  "content" : `${dodoc.lang.stopMotionCompilationProgress} ${progress.frames}/${numberOfImagesToProcess} ${dodoc.lang.imagesAdded}`
+                };
+                require('../sockets').notifyUser(msg);
+                dev.logverbose(`Processing new stopmotion: image ${progress.frames}/${numberOfImagesToProcess}`);
+              })
+              .on('end', () => {
+                dev.log('file has been converted succesfully');
+                // remove temp folder with seq images
+                fs.remove(stopmotionImageSequenceFolderPath);
+
+                _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
+                  mdata.slugFolderName = slugFolderName;
+                  mdata.slugProjectName = slugProjectName;
+                  mdata.mediaFolderPath = mediaFolder;
+                  _createThumbnails( pathToFile + fileExtension, newFileName, mediaPath).then(function( mediaFolderContent) {
+                    resolve( mdata);
+                  }, error => {
+                    dev.error("Failed to make a thumbnail for a stopmotion! Error: " + error);
+                    resolve( mdata);
+                  });
+                }, () => {
+                  reject( 'failed to create meta for stopmotion');
                 });
-              }, function() {
-                reject( 'failed to create meta for stopmotion');
-              });
 
-            })
-            .on('error', function(err) {
-              dev.log('an error happened: ' + err.message);
-              reject( "couldn't create a stopmotion animation");
-            })
-            // save to file
-            .save( pathToFile + fileExtension);
+              })
+
+              .on('error', function(err, stdout, stderr) {
+                dev.error('An error happened: ' + err.message);
+                dev.error('ffmpeg standard output:\n' + stdout);
+                dev.error('ffmpeg standard error:\n' + stderr);
+                reject( "couldn't create a stopmotion animation");
+              })
+
+              // save to file
+              .run();
+          });
+
           break;
         case 'audio':
           var mediaPath = _getMediaPath( slugFolderName, slugProjectName, mediaFolder);
@@ -401,38 +401,6 @@ var dodocMedia = (function() {
     });
   }
 
-  // receives base64data and a path to filename (without ext)
-  function makeImageFromData(imageBufferData, pathToFile) {
-    return new Promise(function(resolve, reject) {
-      var imagePath = pathToFile + '.jpeg';
-      dev.logverbose('Now using image processore to optimize new image.');
-/*
-      Jimp.read(imageBufferData, function(err, image) {
-        if (err) reject(err);
-        image
-          .quality(90)
-          .write(imagePath, function(err, info) {
-            if (err) reject(err);
-            dev.logverbose('Image has been saved, resolving its path.');
-            resolve(imagePath);
-          });
-        });
-*/
-
-      // equivalent in sharp (but sharp needs native deps, which is annoying)
-      sharp(imageBufferData)
-        .rotate()
-        .withMetadata()
-        .toFormat(sharp.format.jpeg)
-        .quality(90)
-        .toFile(imagePath, function(err, info) {
-          dev.logverbose('Image has been saved, resolving its path.');
-          resolve(imagePath);
-        });
-
-    });
-  }
-
 
   /***************************************************************************************************/
   /******************************************** private functions ************************************/
@@ -570,7 +538,7 @@ var dodocMedia = (function() {
   // a mediaFileName starts at the beginning of a filename and end at the first dash
   // i.e. the following filenames have the same mediaFileName "20161121_164329_1" :
   // --> 20161121_164329_1.txt
-  // --> 20161121_164329_1-thumb.png
+  // --> 20161121_164329_1-thumb.jpeg
   // --> 20161121_164329_1-any-option.webm
   function _getMediaFileNameFromFileName(filename) {
     var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec(filename)[1];
@@ -579,36 +547,37 @@ var dodocMedia = (function() {
     return cleanMediaName;
   }
 
-  function _makeImageThumb(imagePath, thumbPath) {
+  function _batchCopyToNewFolder(pathToFile) {
     return new Promise(function(resolve, reject) {
-      dev.logverbose("Making a thumb at thumbPath: " + thumbPath);
+      dev.logfunction("COMMON — _batchCopyToNewFolder");
+      // create a folder at pathToFile
+      var seqImageFolder = path.join(pathToFile, 'seq');
+      fs.ensureDirSync(seqImageFolder);
 
-/*
-      Jimp.read(imagePath, function(err, image) {
-        if (err) reject(err);
-        image
-          .clone()
-          .quality(dodoc.mediaThumbQuality)
-          .scaleToFit(dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
-          .write(thumbPath, function(err, info) {
-            if (err) reject(err);
-            dev.logverbose('Image has been saved, resolving its path.');
-            resolve();
+      // copy each images there with a name following img-%04d.jpeg
+      glob(pathToFile + '/*.jpeg', [], function (er, files) {
+
+        	let processed = 0, index = 0;
+        	files.forEach(function(file) {
+        		// todo : passer en async et check à la fin
+
+        		fs.copy(file, path.join(seqImageFolder, 'img-' + pad(index, 4, '0') + '.jpeg'), function (err) {
+            if(err) {
+              dev.error('failed to copy: ' + err);
+              reject(err);
+            }
+            processed++;
+            if(processed === files.length) {
+              // resolve path to this new folder
+              resolve(seqImageFolder);
+              dev.log("Stopmotion - renaming step : " + processed + " files processed out of " + files.length);
+            }
           });
+
+          index++;
+
+        	});
       });
-*/
-      sharp(imagePath)
-        .rotate()
-        .resize(dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
-        .max()
-        .withoutEnlargement()
-        .withMetadata()
-        .toFormat('jpeg')
-        .quality(dodoc.mediaThumbQuality)
-        .toFile(thumbPath)
-        .then(function() {
-          resolve();
-        });
     });
   }
 

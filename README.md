@@ -48,12 +48,13 @@ You can find more documentation and contribute to the project [here](http://www.
 
 # Install DoDoc
 
-### Method 1 - macOS only
+### Method 1 - the easy way
+
 #### Download the app
 
-Download the following app, unzip and launch _dodoc.app_ : https://github.com/l-atelier-des-chercheurs/dodoc/releases/download/4.0.0/dodoc.app.zip
+Download the app from the release page: https://github.com/l-atelier-des-chercheurs/dodoc/releases
 
-### Method 2 - All OS
+### Method 2 - the long way (for development and editing the source code)
 
 _You need [node.js](https://nodejs.org/) and [python 2.7](https://www.python.org/) to install DoDoc with this method. On Windows, you also need to install Microsoft’s Windows Build Tools by following the instructions [here](https://github.com/Microsoft/nodejs-guidelines/blob/master/windows-environment.md#prerequisites)._
 
@@ -74,38 +75,16 @@ In your terminal, navigate to the dodoc-master folder with your terminal using t
 cd path/to/dodoc-master
 ```
 
-### 3. Install dependencies
+#### 3. Install dependencies
 
-Install electron dependencies (may take up to 5 minutes):
+Install dependencies (may take up to 5 minutes):
 ```
 npm install
 ```  
-
-Then install DoDoc dependencies that are in the app folder.
-Go to app folder:
-```
-cd app
-```
-
-Install dependencies:
-```
-npm install
-```
-
-Finally run the following command to make sure native dependencies are installed for Sharp — the image processor used to create image thumbs (may take 1-2 minutes):		
  
-```		
-npm run rebuild
-```
- 
-### 4. Run DoDoc
+#### 4. Run DoDoc
 
-Go back to the DoDoc folder with the following command:
-```
-cd ../
-```
-
-and start:
+Start DoDoc folder with the following command:
 ```
 npm start
 ```
@@ -137,13 +116,18 @@ Also, some documentations on DoDoc:
 -->  1 blog : http://www.lopendoc.org/dodoc/
 
 ## Debug and edit DoDoc
-To debug DoDoc, you can enable extra-logging with the following command:
+If submitting bugs, please enable "debug" mode in the footer and restart the app. Navigate to the place with the bug, close the app and go to the following path to get a log text file:
+
+- on Linux: `~/.config/dodoc/log.log`
+- on OS X: `~/Library/Logs/dodoc/log.log`
+- on Windows: `%USERPROFILE%/AppData/Roaming/dodoc/log.log`
+
+To debug DoDoc when it is installed with method 2, you can enable extra-logging with the following command:
 ```
 npm run debug
 ```
 
-To edit the SCSS (css) files, you’ll need to run a gulp task on the app folder.
+To edit the SCSS (css) files, you’ll need to run gulp:
 ```
-cd app
 gulp
 ```

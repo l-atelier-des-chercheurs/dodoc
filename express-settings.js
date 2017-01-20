@@ -1,4 +1,3 @@
-var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
 var path = require('path');
 
