@@ -328,6 +328,9 @@ var modals = (function() {
   					.find('img')
   					  .attr('src', mfullsizeimagesrc)
   					.end()
+          .find('.js--downloadThisMedia')
+            .attr('href', mfullsizeimagesrc)
+          .end()
   					;
   				break;
   			case dodoc.projectVideosFoldername:
@@ -339,6 +342,11 @@ var modals = (function() {
   			      .attr('preload', 'auto')
     			    .find('source')
     			      .attr('src', videoPath)
+    			    .end()
+    			  .end()
+          .find('.js--downloadThisMedia')
+            .attr('href', videoPath)
+          .end()
   					;
   				break;
   			case dodoc.projectAnimationsFoldername:
@@ -350,6 +358,11 @@ var modals = (function() {
   			      .attr('preload', 'auto')
     			    .find('source')
     			      .attr('src', videoPath)
+            .end()
+          .end()
+          .find('.js--downloadThisMedia')
+            .attr('href', videoPath)
+          .end()
   					;
   				break;
   			case dodoc.projectAudiosFoldername:
@@ -362,6 +375,9 @@ var modals = (function() {
   			    .find('source')
   			      .attr('src', audioPath)
   			    .end()
+          .find('.js--downloadThisMedia')
+            .attr('href', audioPath)
+          .end()
   					;
   				break;
   			case dodoc.projectTextsFoldername:
@@ -377,7 +393,7 @@ var modals = (function() {
   		if(mdata.fav)
   			$mediaItem.addClass('is--highlight');
 
-//     mpathOfMedia = mpathOfMedia.replace(/\//g, '\u200B\/');
+    var mediaFilenameWhenDownload = mpathOfMedia.split("/").pop();;
 
     	$mediaItem
     	  .attr( 'data-medianame', mname)
@@ -387,6 +403,9 @@ var modals = (function() {
       .end()
       .find('.js--mediaFullPath')
         .text(mpathOfMedia)
+      .end()
+      .find('.js--downloadThisMedia')
+        .attr('download', mediaFilenameWhenDownload)
       .end()
       ;
 

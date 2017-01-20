@@ -7,8 +7,8 @@ mixin snippets(typeOfSnippet)
         | !{dodoc.lang.modal.informations}
       textarea.mediaContent--textOfTextmedia.js--mediaInformations(type='text' autofocus)
     h3.txt-small_info.margin-top_bottom
-      | !{dodoc.lang.modal.pathofmedia}
-      .js--mediaFullPath
+      span(style='display:none;') !{dodoc.lang.modal.pathofmedia}
+      .js--mediaFullPath(style='display:none;')
       a.js--downloadThisMedia(download="plop")
         | !{dodoc.lang.modal.downloadThisMedia}
     hr
