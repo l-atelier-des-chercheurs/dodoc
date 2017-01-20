@@ -1,0 +1,24 @@
+created: 20170120_205739
+
+----
+
+content: 
+
+----
+
+modified: 20170120_205814
+
+----
+
+informations: Création d’animations image par image sur le meuble du Carrefour Numérique.
+
+----
+
+type: photo
+
+----
+
+fav: false
+
+----
+
