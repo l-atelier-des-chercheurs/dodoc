@@ -11,6 +11,7 @@ const config = require('./config.json');
 const dodoc = require('./dodoc');
 const dodocAPI = require('./bin/dodoc-api');
 const server = require('./server');
+const JSONStorage = require('node-localstorage').JSONStorage;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -20,7 +21,6 @@ app.commandLine.appendSwitch('--ignore-certificate-errors');
 
 function createWindow() {
 
-  var JSONStorage = require('node-localstorage').JSONStorage;
   var storageLocation = app.getPath('userData');
   global.nodeStorage = new JSONStorage(storageLocation);
 
