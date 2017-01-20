@@ -9,6 +9,8 @@ mixin snippets(typeOfSnippet)
     h3.txt-small_info.margin-top_bottom
       | !{dodoc.lang.modal.pathofmedia}
       .js--mediaFullPath
+      a.js--downloadThisMedia(download="plop")
+        | !{dodoc.lang.modal.downloadThisMedia}
     hr
     +button('favButton', '', '')
     +button('deleteMediaBibli', '', '')
@@ -22,6 +24,7 @@ mixin snippets(typeOfSnippet)
     h3.txt-small_info
       | !{dodoc.lang.modal.pathofmedia}
       .js--mediaFullPath
+      a.js--downloadThisMedia.js--openInBrowser
     hr
     +button('favButton', '', '')
     +button('deleteMediaBibli', '', '')
