@@ -81,7 +81,11 @@ function createWindow() {
 
   ['resize', 'move', 'close'].forEach(function(e) {
     win.on(e, function() {
-      storeWindowState();
+      try {
+        storeWindowState();
+      } catch(e) {
+        dev.error('Couldn’t update local settings with window position: ' + e);
+      }
     });
   });
 
