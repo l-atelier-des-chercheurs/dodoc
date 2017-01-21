@@ -1,6 +1,6 @@
 {
   "name": "dodoc",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "description": "Dodoc is a documentation tool for creativity.",
   "author": "L’Atelier des Chercheurs <http://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
@@ -14,10 +14,6 @@
     "inspect-main": "electron-inspector",
     "postinstall": "install-app-deps",
     "rebuild": "electron-rebuild -f -w sharp",
-    "pack:osx": "electron-packager . dodoc --out=dist/osx --platform=darwin --arch=x64 --icon=build/icon.icns",
-    "pack:linux": "electron-packager . dodoc --out=dist/linux --platform=linux --arch=x64 --icon=build/icon.icns",
-    "pack:win64": "electron-packager . dodoc --out=dist/win --platform=win32 --arch=x64 --icon=build/icon.ico",
-    "package": "npm run pack:osx && npm run pack:win64",
     "pack": "build --dir",
     "dist": "build"
   },
