@@ -47,38 +47,6 @@
       height: 150px !important;
     }
   }
-
-  .navbar {
-    padding: 15px 30px 0px 30px !important;
-    .logo{
-      float: none !important;
-      svg{margin:0 !important;}
-    }
-
-    .item{
-      display:block !important;
-      .button-wrapper{
-        min-width: 25vw !important;
-        .btn.icon{display:none !important;}
-        span{
-          overflow:hidden !important;
-          white-space: nowrap !important;
-          text-overflow: ellipsis !important;
-          position:relative !important;
-          display:block !important;
-          top: 0 !important;
-          left:0 !important;
-          width: 100% !important;
-          transform: none;
-        }
-      }
-    }
-    .shortcut-button{
-      position: absolute;
-      right:10px;
-      top:20px;
-    }
-  }
 }
 
 // ---------- DESKTOP ----------

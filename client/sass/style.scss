@@ -11,6 +11,7 @@
 @import "_modals.scss";
 @import "_publi.scss";
 @import "_responsive.scss";
+@import "_print.scss";
 
 @import "basic/_input.scss";
 @import "basic/_text.scss";
@@ -310,7 +311,7 @@ button {
   }
 
   .module_infos-blocs {
-    max-width: 500px;
+    max-width: 700px;
     width: 80%;
     margin: 0 auto;
     padding: $t-margin/4 0;

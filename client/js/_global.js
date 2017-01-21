@@ -150,18 +150,11 @@ function listAllMedias( mediasData) {
   return $allMedias;
 }
 
-function listMedia( mediaData) {
-  var $newMedia = makeOneMedia( mediaKey, mediaData);
-  if( $newMedia !== undefined)
-    return $newMedia;
-  return false;
-}
-
 
 // fonction qui réunit les fonctionnalités d'un média (que ce soit une vidéo, une image, un son, etc.
 // pas de fichier .js sur la page publi, ne s'applique pas
 function mediaInit( $m) {
-  if( $('body').hasClass('publi') || Modernizr.touch) return;
+  if( $('body').hasClass('publi') || Modernizr.touchevents) return;
 
   var $v = $m.find('video');
   $m.hover(function() {

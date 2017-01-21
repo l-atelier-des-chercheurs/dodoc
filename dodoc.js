@@ -111,6 +111,7 @@ if( lang === 'fr') {
         "newFolder" : "Nouveau dossier",
         "informations" : "Informations",
         "pathofmedia" : "Emplacement du média sur le disque dur&nbsp;:",
+        "downloadThisMedia" : "Télécharger ce média",
         "downloadThePDF" : "Téléchargez le PDF&nbsp;:",
 
         "editFolder" : "Modifier le dossier",

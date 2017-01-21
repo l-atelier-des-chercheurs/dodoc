@@ -11,6 +11,7 @@ const config = require('./config.json');
 const dodoc = require('./dodoc');
 const dodocAPI = require('./bin/dodoc-api');
 const server = require('./server');
+const JSONStorage = require('node-localstorage').JSONStorage;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -20,7 +21,6 @@ app.commandLine.appendSwitch('--ignore-certificate-errors');
 
 function createWindow() {
 
-  var JSONStorage = require('node-localstorage').JSONStorage;
   var storageLocation = app.getPath('userData');
   global.nodeStorage = new JSONStorage(storageLocation);
 
@@ -81,7 +81,11 @@ function createWindow() {
 
   ['resize', 'move', 'close'].forEach(function(e) {
     win.on(e, function() {
-      storeWindowState();
+      try {
+        storeWindowState();
+      } catch(e) {
+        dev.error('Couldn’t update local settings with window position: ' + e);
+      }
     });
   });
 
@@ -234,7 +238,7 @@ function setApplicationMenu() {
       {
         label: 'Reload',
         accelerator: 'Command+R',
-        click: function() { BrowserWindow.getFocusedWindow().reloadIgnoringCache(); }
+        click: function() { BrowserWindow.getFocusedWindow().reload(); }
       },
       {
         label: 'Toggle DevTools',

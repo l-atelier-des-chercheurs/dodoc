@@ -93,6 +93,16 @@ var modals = (function() {
           $modal.trigger('close_that_modal');
         }
       });
+
+      $modal.on('keyup', function(e) {
+        if(event.which === 27) {
+          $modal.trigger('close_that_modal');
+        }
+      });
+
+      $modal.find('.js--close').on('click', function(e) {
+        $modal.trigger('close_that_modal');
+      });
       $modal.on('close_that_modal', function() {
         $modal.foundation('reveal', 'close');
         setTimeout(function() {
@@ -110,7 +120,7 @@ var modals = (function() {
       }
       $modal.foundation('reveal', 'open');
       setTimeout(function() {
-        if(!Modernizr.touch)
+        if(!Modernizr.touchevents)
           $modal.find('[autofocus]').eq(0).focus()
       }, 300);
 
@@ -328,6 +338,9 @@ var modals = (function() {
   					.find('img')
   					  .attr('src', mfullsizeimagesrc)
   					.end()
+          .find('.js--downloadThisMedia')
+            .attr('href', mfullsizeimagesrc)
+          .end()
   					;
   				break;
   			case dodoc.projectVideosFoldername:
@@ -339,6 +352,11 @@ var modals = (function() {
   			      .attr('preload', 'auto')
     			    .find('source')
     			      .attr('src', videoPath)
+    			    .end()
+    			  .end()
+          .find('.js--downloadThisMedia')
+            .attr('href', videoPath)
+          .end()
   					;
   				break;
   			case dodoc.projectAnimationsFoldername:
@@ -350,6 +368,11 @@ var modals = (function() {
   			      .attr('preload', 'auto')
     			    .find('source')
     			      .attr('src', videoPath)
+            .end()
+          .end()
+          .find('.js--downloadThisMedia')
+            .attr('href', videoPath)
+          .end()
   					;
   				break;
   			case dodoc.projectAudiosFoldername:
@@ -362,6 +385,9 @@ var modals = (function() {
   			    .find('source')
   			      .attr('src', audioPath)
   			    .end()
+          .find('.js--downloadThisMedia')
+            .attr('href', audioPath)
+          .end()
   					;
   				break;
   			case dodoc.projectTextsFoldername:
@@ -377,7 +403,7 @@ var modals = (function() {
   		if(mdata.fav)
   			$mediaItem.addClass('is--highlight');
 
-//     mpathOfMedia = mpathOfMedia.replace(/\//g, '\u200B\/');
+    var mediaFilenameWhenDownload = mpathOfMedia.split("/").pop();;
 
     	$mediaItem
     	  .attr( 'data-medianame', mname)
@@ -387,6 +413,10 @@ var modals = (function() {
       .end()
       .find('.js--mediaFullPath')
         .text(mpathOfMedia)
+      .end()
+      .find('.js--downloadThisMedia')
+        .attr('title', mpathOfMedia)
+        .attr('download', mediaFilenameWhenDownload)
       .end()
       ;
 
@@ -524,7 +554,7 @@ var modals = (function() {
     			  ;
     			$label
   			    .html( fileName)
-            ;
+          ;
     		} else {
     			$filePicker
     			  .data('fileName', '')
@@ -541,26 +571,34 @@ var modals = (function() {
       	//Images changed
 
       	if( fileData !== undefined && fileData !== null){
-      		console.log('An image has been imported');
+      		console.log('A file has been loaded');
       		var f = fileData[0];
       		var reader = new FileReader();
       		reader.onload = function(evt){
         		// check type of content
         		console.log( fileName);
         		fileName = fileName.toLowerCase();
-          if( fileName.indexOf( ".jpg") !== -1 || fileName.indexOf( ".jpeg") !== -1 || fileName.indexOf( ".png") !== -1) {
+        		debugger;
+          if(fileName.indexOf( ".jpg") !== -1 || fileName.indexOf( ".jpeg") !== -1 || fileName.indexOf( ".png") !== -1) {
         			var mediaData = {
               "mediaType" : "photo",
         				"mediaData" : evt.target.result
         		  };
-        		} else if( fileName.indexOf( ".mp4") !== -1 ||  fileName.indexOf( ".webm")) {
+        		} else if(fileName.indexOf( ".mp4") !== -1 ||  fileName.indexOf( ".webm") !== -1) {
         			var mediaData = {
               "mediaType" : "video",
               "mediaData" : {
                 "videoData" : evt.target.result,
               }
         		  }
-        		}
+        		} else if(fileName.indexOf( ".mp3") !== -1 ||  fileName.indexOf( ".m4a") !== -1) {
+        			var mediaData = {
+              "mediaType" : "audio",
+              "mediaData" : {
+                "audioData" : evt.target.result,
+              }
+        		  }
+          }
         		if( mediaData !== undefined)
         		  sendData.createNewMedia( mediaData);
       		};

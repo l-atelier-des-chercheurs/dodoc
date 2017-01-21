@@ -99,7 +99,9 @@ var audioMode = (function() {
       var mediaData =
       {
         "mediaType" : "audio",
-        "mediaData" : audioDataURL,
+        "mediaData" : {
+          "audioData" : audioDataURL,
+        },
         "audioScreenshot" : imageData
       };
       sendData.createNewMedia( mediaData);

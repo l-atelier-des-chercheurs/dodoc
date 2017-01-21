@@ -28,6 +28,7 @@
     "dragula.js": "dragula#^3.6.6",
     "moment": "^2.12.0",
     "store-js": "store.js#^1.3.20",
-    "jquery": "2.1.4"
+    "jquery": "2.1.4",
+    "promise-polyfill": "^6.0.2"
   }
 }
