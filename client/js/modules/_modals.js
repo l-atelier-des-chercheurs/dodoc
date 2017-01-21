@@ -560,26 +560,34 @@ var modals = (function() {
       	//Images changed
 
       	if( fileData !== undefined && fileData !== null){
-      		console.log('An image has been imported');
+      		console.log('A file has been loaded');
       		var f = fileData[0];
       		var reader = new FileReader();
       		reader.onload = function(evt){
         		// check type of content
         		console.log( fileName);
         		fileName = fileName.toLowerCase();
-          if( fileName.indexOf( ".jpg") !== -1 || fileName.indexOf( ".jpeg") !== -1 || fileName.indexOf( ".png") !== -1) {
+        		debugger;
+          if(fileName.indexOf( ".jpg") !== -1 || fileName.indexOf( ".jpeg") !== -1 || fileName.indexOf( ".png") !== -1) {
         			var mediaData = {
               "mediaType" : "photo",
         				"mediaData" : evt.target.result
         		  };
-        		} else if( fileName.indexOf( ".mp4") !== -1 ||  fileName.indexOf( ".webm")) {
+        		} else if(fileName.indexOf( ".mp4") !== -1 ||  fileName.indexOf( ".webm") !== -1) {
         			var mediaData = {
               "mediaType" : "video",
               "mediaData" : {
                 "videoData" : evt.target.result,
               }
         		  }
-        		}
+        		} else if(fileName.indexOf( ".mp3") !== -1 ||  fileName.indexOf( ".m4a") !== -1) {
+        			var mediaData = {
+              "mediaType" : "audio",
+              "mediaData" : {
+                "audioData" : evt.target.result,
+              }
+        		  }
+          }
         		if( mediaData !== undefined)
         		  sendData.createNewMedia( mediaData);
       		};

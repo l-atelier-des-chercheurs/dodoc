@@ -235,11 +235,14 @@ var dodocMedia = (function() {
           newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath, dodoc.metaFileext);
           pathToFile = path.join( mediaPath, newFileName);
 
-          dodocAPI.writeMediaDataToDisk( pathToFile, dodoc.audioext, newMediaData.mediaData)
+          dodocAPI.writeMediaDataToDisk( pathToFile, dodoc.audioext, newMediaData.mediaData.audioData)
           .then(function() {
-            var imgExtension = '.png';
-            var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.audioScreenshot);
-            fs.writeFileSync( pathToFile + imgExtension, imageBuffer.data);
+
+            if(newMediaData.audioScreenshot !== undefined) {
+              var imgExtension = '.png';
+              var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.audioScreenshot);
+              fs.writeFileSync( pathToFile + imgExtension, imageBuffer.data);
+            }
 
             _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
               mdata.slugFolderName = slugFolderName;
