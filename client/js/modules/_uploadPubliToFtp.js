@@ -25,7 +25,6 @@ var uploadPubliToFtp = (function() {
         .find('.js--generatePDF').remove().end()
         .find('.js--uploadPubliToFtp').remove().end()
         .find('.js--editPubli').remove().end()
-        .find('.button-wrapper').remove().end()
         .html()
         ;
 
