@@ -747,7 +747,7 @@
       animation_speed : 250,
       close_on_background_click : true,
       close_on_esc : true,
-      dismiss_modal_class : 'js--close',
+      dismiss_modal_class : 'js--',
       multiple_opened : true,
       bg_class : 'm_modal-bg',
       root_element : 'body',

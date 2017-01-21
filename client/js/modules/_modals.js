@@ -93,6 +93,16 @@ var modals = (function() {
           $modal.trigger('close_that_modal');
         }
       });
+
+      $modal.on('keyup', function(e) {
+        if(event.which === 27) {
+          $modal.trigger('close_that_modal');
+        }
+      });
+
+      $modal.find('.js--close').on('click', function(e) {
+        $modal.trigger('close_that_modal');
+      });
       $modal.on('close_that_modal', function() {
         $modal.foundation('reveal', 'close');
         setTimeout(function() {
@@ -405,6 +415,7 @@ var modals = (function() {
         .text(mpathOfMedia)
       .end()
       .find('.js--downloadThisMedia')
+        .attr('title', mpathOfMedia)
         .attr('download', mediaFilenameWhenDownload)
       .end()
       ;
@@ -543,7 +554,7 @@ var modals = (function() {
     			  ;
     			$label
   			    .html( fileName)
-            ;
+          ;
     		} else {
     			$filePicker
     			  .data('fileName', '')
