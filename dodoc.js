@@ -158,19 +158,146 @@ if( lang === 'fr') {
       "folder" : "Folder",
       "project" : "Project",
       "projects" : "Projects",
-      "capture" : "Media capture",
-      "bibli" : "Media library",
+      "capture" : "Capture",
+      "bibli" : "Media Library",
       "publi" : "Publication",
 
+      "photo" : "picture",
+      "video" : "video",
+      "stopmotion" : "stop-motion",
+      "audio" : "sound",
+
+      "yes" : "yes",
+      "ok" : "ok",
+      "cancel" : "cancel",
+      "name" : "Name",
+      "close" : "Close",
       "remove" : "Remove",
+      "edit" : "Edit",
+      "accept" : "Accept",
+      "uploadPubliToFtp" : "Upload online",
+      "generatePDF" : "Create PDF",
 
-      "lastMediasAdded" : "Last medias added",
-      "listOfPublications" : "List of publications",
+      "lastMediasAdded" : "Latest Media",
+      "listOfPublications" : "Publications",
+      "createPublication" : "Create new publication",
 
-      "mediapublitemplatesarestoredint" : "Medias, publications and templates are currently stored in ",
-      "toconnectwithanotherdevice" : "To connect with another device, use the following URL (and ignore the warning that’s shown):",
+      "quickAccess" : " ",
+      "createdOn" : "created",
+      "modifiedOn" : "edited",
+      "status" : "status",
+      "settings" : "settings",
 
-      "generatePDF" : "Export the publication in FTP",
+      "editTitle" : "Edit Title",
+      "createText" : "Write Text",
+      "addLocalMedia" : "Import Media",
+      "back" : "back",
+      "fullscreen" : "Full screen",
+      "quitFullscreen" : "Exit Fullscreen Mode",
+      "removeThisImage" : "Delete picture",
+      "removeThisMedia" : "Delete media",
+      "previzStopMotion" : "Preview",
+      "finishStopmotion" : "Save stop-motion",
+      "removeAndStopStopmotion" : "Quit stop-motion",
+      "stopMotionCompilationProgress" : "Rendering...",
+      "imagesAdded" : "pictures saved",
+      "addToFav" : "Bookmark",
+
+      "selectTemplate" : "Template selection",
+
+      "thisFolderNameIsAlreadyTaken" : "This name already exist&nbsp;: ",
+      "pleaseUseAnother" : "Please use another name.",
+
+      "browserCantUserWebRTC" : "Alert! Your browser does not allow you to capture media (Safari, Apple devices).\nClick the Import Media button in the Media Library to add pictures, video or sounds.",
+      "chooseCameraResolution" : "Sélectionnez la résolution de votre caméra",
+      "customCameraResolution" : "Choississez une résolution",
+      "backToAnimation" : "Retour à l’animation",
+
+      "width" : "largeur",
+      "height" : "hauteur",
+      "apply" : "appliquer",
+
+      "removeProject" : "Supprimer le projet",
+      "createFolder" : "Créer un dossier",
+      "createProject" : "Créer un projet",
+      "show" : "afficher",
+
+      "imageCount" : "Image ",
+      "frameRate" : "Vitesse de lecture&nbsp;: ",
+
+      "aStopmotionIsRecordingFinishItFirst" : "Une animation est en cours, terminez là pour changer de mode.",
+      "aVideoIsRecordingFinishItFirst" : "Une vidéo est en cours d’enregistrement, terminez là pour changer de mode.",
+
+      "audioInputSource" : "source audio&nbsp;:",
+      "audioOutputDestination" : "destination audio&nbsp;:",
+      "videoInputSource" : "source video:",
+      "lastImageOpacity" : "Afficher la dernière image en transparence",
+      "enableAudioInVideo" : "Enregistrer le son",
+      "enableLogToFile" : "mode debug",
+
+      "creditADC" : "do•doc est un projet développé par l’Atelier des Chercheurs",
+
+      "currentVideoResolutionIs" : "Résolution actuelle&nbsp;: ",
+      "videoStreamCouldntBeStartedTryChangingRes" : "Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la résolution dans le panneau de droite.",
+      "videoStreamNotAvailable" : "Erreur : le flux vidéo n’est pas disponible.",
+      "audioStreamCouldntBeStarted" : "Le flux audio n’a pas pu être démarré.",
+
+      "mediapublitemplatesarestoredint" : "Les données chargées sur cette page sont stockées dans le dossier suivant&nbsp;: ",
+      "toconnectwithanotherdevice" : "Pour vous connecter depuis un autre appareil qui se trouve sur le même réseau wifi, naviguez vers l’adresse suivante (et ignorez l’avertissement qui s’affiche)&nbsp;:",
+      "clickHereToMoveContentFolder" : "Cliquez ici pour déplacer le dossier des contenus utilisateurs",
+
+      "modal" : {
+        "sureRemoveMedia" : "Êtes-vous sûr de vouloir supprimer ce média ?",
+        "someFieldsAreEmptyFillThem" : "Tous les champs obligatoires ne sont pas remplis.",
+
+        "addText" : "Ajouter du texte",
+
+        "importAMedia" : "Importer un média",
+        "importAFile" : "Importer un fichier depuis l'ordinateur",
+        "acceptedFormats" : "Les formats acceptés sont le .jpeg, .png et le .mp4.",
+
+        "newFolder" : "Nouveau dossier",
+        "informations" : "Informations",
+        "pathofmedia" : "Emplacement du média sur le disque dur&nbsp;:",
+        "downloadThisMedia" : "Télécharger ce média",
+        "downloadThePDF" : "Téléchargez le PDF&nbsp;:",
+
+        "editFolder" : "Edit Folder",
+        "inprogress" : "in progress",
+        "finished" : "Done",
+        "warningFinishedStatus" : "Alert&nbsp;! This status will lock your project.",
+        "sureToRemoveFolder" : "Êtes-vous sûr de vouloir supprimer ce dossier ?",
+        "sureToRemoveMedia" : "Êtes-vous sûr de vouloir supprimer ce média ?",
+
+        "editProject" : "Edit project",
+        "pdfPublicationHasBeenSaved" : "Your publication has been exported and saved as PDF",
+        "impossibleToConnectToServer" : "Connexion to server impossible",
+        "loginOrPassIsWrong" : "Login or Password incorrect",
+        "noInternetConnection" : "No Internet Connexion",
+        "noInternetCantSendPublicationOverFtp" : "Vous n'êtes pas connecté à internet, vous ne pouvez donc pas envoyer votre publication en FTP.",
+        "yourFilesHaveBeenSaved" : "Your files have been saved&nbsp;:",
+        "sendFilesToAServer" : "Send files to server",
+        "publiHasBeenSentToServer" : "Your publication has been sent to server",
+        "clickHereToOpenPubliInAWebBrowser" : "Link to your publication&nbsp;:",
+
+        "selectAnImage" : "Select picture",
+        "sureToRemoveProject" : "Do you really want to delete this project?",
+
+        "newProject" : "New project",
+        "newPubli" : "New publication",
+        "editPubli" : "Edit publication",
+
+        "newMediaCreatedAtPath" : "Un nouveau média vient d’être créé dans le projet ",
+        "newFolderCreatedWithName" : "Un nouveau dossier vient d’être créé avec pour nom ",
+        "folderRemovedWithName" : "Le dossier suivant vient d’être supprimé&nbsp;: ",
+        "newProjectCreatedWithName" : "Un nouveau projet vient d’être créé avec pour nom ",
+        "projectRemovedWithName" : "Le projet suivant vient d’être supprimé&nbsp;: ",
+        "atPath" : " dans le chemin ",
+
+        "moveContentFolder" : "Déplacer le dossier <em>dodoc</em> sur votre disque dur",
+        "instructionsToMoveContentFolder" : "En cliquant sur le bouton ci-dessous, cette fenêtre fermera et au prochain lancement vous serez invité à sélectionner un nouvel emplacement pour stocker les médias, les publications exportées et les templates. Si un dossier nommé <em>dodoc</em> ne s'y trouve pas déjà, il sera créé."
+
+      },
     }
   };
 }
