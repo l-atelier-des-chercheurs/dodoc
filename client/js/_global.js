@@ -344,7 +344,7 @@ function getMediaFiles(mediaDatas) {
       }
     } else if(mediaFilename.toLowerCase().match(".mp4") ||  mediaFilename.toLowerCase().match(".webm")) {
       mediaImages.video = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
-    } else if(mediaFilename.toLowerCase().match(".wav")) {
+    } else if(mediaFilename.toLowerCase().match(".wav") || mediaFilename.toLowerCase().match(".mp3")) {
       mediaImages.audio = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
     } else if(mediaFilename.toLowerCase().match(".md")) {
       mediaImages.md = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
