@@ -28,6 +28,21 @@ module.exports = function(electronApp) {
   tunnel.on('close', function() {
   });
 */
+/*
+  config.protocol = 'http';
+  ngrok.connect({
+    proto: 'http', // http|tcp|tls
+    addr: 8080, // port or network address
+    region: 'eu' // one of ngrok regions (us, eu, au, ap), defaults to us
+  }, function (err, url) {
+    if(err) {
+      dev.error('NGROK error: ');
+      dev.log(err);
+    }
+    dev.log('NGROK url : ' + url);
+  });
+*/
+
 
   if( config.protocol === 'http')
     var server = http.createServer(app);
