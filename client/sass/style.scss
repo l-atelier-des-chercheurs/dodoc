@@ -291,14 +291,21 @@ button {
 .module_infos {
   position: relative;
 
+  color: $c-noir;
   float: none;
   padding: $t-margin;
   margin-top:   $t-margin*2;
-  color: $c-gris_fonce;
   text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-around;
 
   a {
-    color: $c-noir;
+    border-bottom: .1em solid currentcolor;
+    &:hover {
+      color: $c-rouge;
+    }
   }
 
   // remove that div when in footer in bibli (it is placed in bibli-buffer instead)
@@ -311,17 +318,18 @@ button {
   }
 
   .module_infos-blocs {
-    max-width: 700px;
-    width: 80%;
-    margin: 0 auto;
-    padding: $t-margin/4 0;
-    border-top: 1px solid #fff;
+    width: 250px;
+    margin: $t-margin/2;
+    padding: $t-margin/2;
+
+    background-color: rgba(217, 217, 217, 0.38);
+    flex-shrink: 0;
   }
 
   .moveDodocContentFolder {
     display: none;
     html.is--electronBrowser & {
-      display: block;
+      display: initial;
     }
   }
 

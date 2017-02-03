@@ -15,47 +15,19 @@ module.exports = function(electronApp) {
   dev.logverbose('Starting server');
 
   var app = express();
-
-/*
-  var tunnel = localtunnel('8080', {'local_host': 'https://localhost'}, function(err, tunnel) {
-    if (err) dev.error('Localtunnel error: ' + err);
-    dev.log('Tunnel URL: ' + tunnel.url);
-  });
-
-  tunnel.on('close', function() {
-  });
-*/
-/*
-  config.protocol = 'http';
-  ngrok.connect({
-    proto: 'http', // http|tcp|tls
-    addr: 8080, // port or network address
-    region: 'eu' // one of ngrok regions (us, eu, au, ap), defaults to us
-  }, function (err, url) {
-    if(err) {
-      dev.error('NGROK error: ');
-      dev.log(err);
-    }
-    dev.log('NGROK url : ' + url);
-  });
-*/
-
-/*
-  // not working: asks for a certificate on smartphones
-  const options = {
-    key:  fs.readFileSync( path.join(__dirname, 'ssl', 'server.key')),
-    cert: fs.readFileSync( path.join(__dirname, 'ssl', 'server.crt')),
-    ca:   fs.readFileSync( path.join(__dirname, 'ssl', 'rootCA.crt')),
-    password: 'dodoc',
-    requestCert:        true,
-    rejectUnauthorized: false
-  };
-*/
-
   // works without asking for a certificate
   const privateKey  = fs.readFileSync(path.join(__dirname, 'ssl', 'file.pem'), 'utf8');
   const certificate = fs.readFileSync(path.join(__dirname, 'ssl', 'file.crt'), 'utf8');
   const options = { key: privateKey, cert: certificate };
+
+/*
+  var tunnel = localtunnel('8080', {'local_host': 'http://localhost'}, function(err, tunnel) {
+  if (err) dev.error('Localtunnel error: ' + err);
+    dev.log('Tunnel URL: ' + tunnel.url);
+  });
+  tunnel.on('close', function() {
+  });
+*/
 
   if( config.protocol === 'http')
     var server = http.createServer(app);

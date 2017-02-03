@@ -49,7 +49,6 @@ function createWindow() {
 
   // Create the browser window.
   win = new BrowserWindow({
-
     x: windowState.bounds && windowState.bounds.x || undefined,
     y: windowState.bounds && windowState.bounds.y || undefined,
     width: windowState.bounds && windowState.bounds.width || 1200,
@@ -92,10 +91,8 @@ function createWindow() {
   setApplicationMenu();
 
   copyAndRenameUserFolder().then(function(pathToUserContent) {
-
     global.pathToUserContent = pathToUserContent;
     dev.log('Will store contents in: ' + global.pathToUserContent);
-
     try {
       app.server = server(app);
     }
@@ -125,8 +122,6 @@ function createWindow() {
   }, function(err) {
     dev.error( 'Failed to check existing content folder : ' + err);
   });
-
-
 }
 
 // This method will be called when Electron has finished

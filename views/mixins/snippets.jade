@@ -36,9 +36,13 @@ mixin snippets(typeOfSnippet)
       .module_infos-blocs
         -for(var prop in localNetworkInfos)
           -if(isHttps)
-            h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice} https://#{localNetworkInfos[prop]}:8080
+            h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice}
+              a.js--openInBrowser(href="https://#{localNetworkInfos[prop]}:8080" target="_blank")
+                | https://#{localNetworkInfos[prop]}:8080
           -else
-            h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice} http://#{localNetworkInfos[prop]}:8080
+            h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice}
+              a.js--openInBrowser(href="http://#{localNetworkInfos[prop]}:8080" target="_blank")
+                | http://#{localNetworkInfos[prop]}:8080
       .module_infos-blocs
         h3.txt-small_info !{dodoc.lang.mediapublitemplatesarestoredint} <br>#{currentUserDirPath}
       .module_infos-blocs
@@ -55,4 +59,4 @@ mixin snippets(typeOfSnippet)
           | !{dodoc.lang.creditADC}
       .module_infos-blocs
         .txt-small_info
-          | do•doc v#{process.env.npm_package_version}
+          | do•doc v#{global.dodocVersion}

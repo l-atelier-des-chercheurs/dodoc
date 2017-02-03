@@ -230,7 +230,7 @@ function makeOneMedia( mediaKey, mdata) {
     $currentMedia.find('.mediaData').remove();
   }
 
-  if( mdata.fav === "true") {
+  if(mdata.fav === "true") {
     $currentMedia.addClass('is--highlight');
   }
 

@@ -382,7 +382,7 @@ var modals = (function() {
   					.find('img')
   					  .attr('src', mfullsizeimagesrc)
   					.end()
-  			    .find('source')
+  			    .find('audio')
   			      .attr('src', audioPath)
   			    .end()
           .find('.js--downloadThisMedia')

@@ -28,7 +28,7 @@ var sockets = (function() {
   function init(thisApp, thisIO, thisElectronApp) {
     dev.log("Initializing socket module");
 
-    app = app;
+    app = thisApp;
     io = thisIO;
     electronApp = thisElectronApp;
 
@@ -81,14 +81,14 @@ var sockets = (function() {
       socket.on("deleteMedia", onDeleteMedia);
       socket.on("deleteStopmotion", onDeleteStopmotion);
 
-  		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
+  		  socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 
       socket.on( 'exportPubliToFtp', data => { onExportPubliToFtp(socket, data); });
       socket.on( 'ftpSettings', data => { onFtpSettings(socket, data); });
       socket.on( 'generatePDF', data => { onGeneratePDF(socket, data); });
 
       socket.on( 'enableLogToFile', onEnableLogToFile);
-  	});
+  	  });
 
   }
 
