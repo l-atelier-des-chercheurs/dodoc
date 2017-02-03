@@ -158,19 +158,146 @@ if( lang === 'fr') {
       "folder" : "Folder",
       "project" : "Project",
       "projects" : "Projects",
-      "capture" : "Media capture",
-      "bibli" : "Media library",
+      "capture" : "Capture",
+      "bibli" : "Media Library",
       "publi" : "Publication",
 
+      "photo" : "picture",
+      "video" : "video",
+      "stopmotion" : "stop-motion",
+      "audio" : "sound",
+
+      "yes" : "yes",
+      "ok" : "ok",
+      "cancel" : "cancel",
+      "name" : "Name",
+      "close" : "Close",
       "remove" : "Remove",
+      "edit" : "Edit",
+      "accept" : "Confirm",
+      "uploadPubliToFtp" : "Upload online",
+      "generatePDF" : "Create PDF",
 
-      "lastMediasAdded" : "Last medias added",
-      "listOfPublications" : "List of publications",
+      "lastMediasAdded" : "Latest Media",
+      "listOfPublications" : "Publications",
+      "createPublication" : "Create new publication",
 
-      "mediapublitemplatesarestoredint" : "Medias, publications and templates are currently stored in ",
-      "toconnectwithanotherdevice" : "To connect with another device, use the following URL (and ignore the warning that’s shown):",
+      "quickAccess" : " ",
+      "createdOn" : "created",
+      "modifiedOn" : "edited",
+      "status" : "status",
+      "settings" : "settings",
 
-      "generatePDF" : "Export the publication in FTP",
+      "editTitle" : "Edit Title",
+      "createText" : "Write Text",
+      "addLocalMedia" : "Import Media",
+      "back" : "back",
+      "fullscreen" : "Full screen",
+      "quitFullscreen" : "Exit Fullscreen Mode",
+      "removeThisImage" : "Delete picture",
+      "removeThisMedia" : "Delete media",
+      "previzStopMotion" : "Preview",
+      "finishStopmotion" : "Save stop-motion",
+      "removeAndStopStopmotion" : "Quit stop-motion",
+      "stopMotionCompilationProgress" : "Rendering...",
+      "imagesAdded" : "pictures saved",
+      "addToFav" : "Bookmark",
+
+      "selectTemplate" : "Template selection",
+
+      "thisFolderNameIsAlreadyTaken" : "This name already exist&nbsp;: ",
+      "pleaseUseAnother" : "Please use another name.",
+
+      "browserCantUserWebRTC" : "Alert! Your browser does not allow you to capture media (Safari, Apple devices).\nClick the Import Media button in the Media Library to add pictures, video or sounds.",
+      "chooseCameraResolution" : "Customize video resolution",
+      "customCameraResolution" : "Select video resolution",
+      "backToAnimation" : "Back to stop-motion",
+
+      "width" : "width",
+      "height" : "height",
+      "apply" : "apply",
+
+      "removeProject" : "Delete project",
+      "createFolder" : "Create new folder",
+      "createProject" : "Create new project",
+      "show" : "display",
+
+      "imageCount" : "Picture ",
+      "frameRate" : "Frame Rate&nbsp;: ",
+
+      "aStopmotionIsRecordingFinishItFirst" : "Terminate stop-motion before switching mode.",
+      "aVideoIsRecordingFinishItFirst" : "Save video before switching mode.",
+
+      "audioInputSource" : "Audio source&nbsp;:",
+      "audioOutputDestination" : "Audio output &nbsp;:",
+      "videoInputSource" : "Video source:",
+      "lastImageOpacity" : "Onion skin",
+      "enableAudioInVideo" : "Record sound",
+      "enableLogToFile" : "debug mode",
+
+      "creditADC" : "do•doc — a project by l’Atelier des Chercheurs",
+
+      "currentVideoResolutionIs" : "current resolution&nbsp;: ",
+      "videoStreamCouldntBeStartedTryChangingRes" : "Video stream not available.\nChange resolution preferences in the settings panels.",
+      "videoStreamNotAvailable" : "Error: Video stream not available.",
+      "audioStreamCouldntBeStarted" : "Audio stream not available.",
+
+      "mediapublitemplatesarestoredint" : "Data are stored in &nbsp;: ",
+      "toconnectwithanotherdevice" : "To access do•doc with another device, please connect it to the same wifi network, then type this adress in your browser (and ignore security message)&nbsp;:",
+      "clickHereToMoveContentFolder" : "Click here to change repository",
+
+      "modal" : {
+        "sureRemoveMedia" : "Do you want to delete this media?",
+        "someFieldsAreEmptyFillThem" : "Please fill required fields",
+
+        "addText" : "Add Text",
+
+        "importAMedia" : "Import media",
+        "importAFile" : "Import file",
+        "acceptedFormats" : "Available formats: .jpeg, .png et le .mp4.",
+
+        "newFolder" : "New Folder",
+        "informations" : "Information",
+        "pathofmedia" : "Path to media on drive&nbsp;:",
+        "downloadThisMedia" : "Download media",
+        "downloadThePDF" : "Download PDF&nbsp;:",
+
+        "editFolder" : "Edit Folder",
+        "inprogress" : "in progress",
+        "finished" : "Done",
+        "warningFinishedStatus" : "Alert&nbsp;! This status will lock your project.",
+        "sureToRemoveFolder" : "Do you want to delete this folder?",
+        "sureToRemoveMedia" : "Do you want to delete this media?",
+
+        "editProject" : "Edit project",
+        "pdfPublicationHasBeenSaved" : "Your publication has been exported and saved as PDF",
+        "impossibleToConnectToServer" : "Connexion to server failed.",
+        "loginOrPassIsWrong" : "Login or Password incorrect",
+        "noInternetConnection" : "No Internet Connexion",
+        "noInternetCantSendPublicationOverFtp" : "To send your publication via FTP, please enable Internet connexion.",
+        "yourFilesHaveBeenSaved" : "Your files have been saved&nbsp;:",
+        "sendFilesToAServer" : "Send files to server",
+        "publiHasBeenSentToServer" : "Your publication has been sent to server",
+        "clickHereToOpenPubliInAWebBrowser" : "Link to your publication&nbsp;:",
+
+        "selectAnImage" : "Select picture",
+        "sureToRemoveProject" : "Do you want to delete this project?",
+
+        "newProject" : "New project",
+        "newPubli" : "New publication",
+        "editPubli" : "Edit publication",
+
+        "newMediaCreatedAtPath" : "New media saved ",
+        "newFolderCreatedWithName" : "New folder saved ",
+        "folderRemovedWithName" : "The folder has been deleted with success&nbsp;: ",
+        "newProjectCreatedWithName" : "New project saved ",
+        "projectRemovedWithName" : "The project has been deleted with success &nbsp;: ",
+        "atPath" : " to ",
+
+        "moveContentFolder" : "Move the folder <em>dodoc</em> on your drive",
+        "instructionsToMoveContentFolder" : "By pressing confirm, do.doc will restart and ask you to select a new folder to store your media and publications. If there is no existing <em>dodoc</em> repository, one will be created."
+
+      },
     }
   };
 }
