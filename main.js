@@ -35,6 +35,15 @@ function createWindow() {
   global.dodocVersion = app.getVersion();
   dev.log('——— Starting dodoc app v' + global.dodocVersion);
 
+  // checkout which langage to load
+  var envLang = app.getLocale();
+//   envLang = 'en_US';
+  dodoc.setCurrentLang(envLang);
+  dev.log('Environment lang is ' + dodoc.getCurrentLang());
+  dodoc.init();
+
+  console.log('test string ' + dodoc.lang().stopMotionCompilationProgress);
+
   if( global.dodoc === undefined)
     global.dodoc = {};
   global.dodoc.homeURL = `${config.protocol}://${config.host}:${config.port}`;
@@ -43,7 +52,6 @@ function createWindow() {
   try {
     windowState = global.nodeStorage.getItem('windowstate') ? global.nodeStorage.getItem('windowstate') : {};
     dev.log('Found defaults for windowState: ');
-    dev.log(windowState);
     dev.log(JSON.stringify(windowState, null, 4));
   } catch (err) {
     dev.log('No default for windowState');
