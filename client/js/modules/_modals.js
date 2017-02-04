@@ -578,7 +578,6 @@ var modals = (function() {
         		// check type of content
         		console.log( fileName);
         		fileName = fileName.toLowerCase();
-        		debugger;
           if(fileName.indexOf( ".jpg") !== -1 || fileName.indexOf( ".jpeg") !== -1 || fileName.indexOf( ".png") !== -1) {
         			var mediaData = {
               "mediaType" : "photo",
