@@ -353,9 +353,9 @@ var sockets = (function() {
     try {
       var filesInMediaFolder = fs.readdirSync( pathToMediaFolder);
       filesInMediaFolder.forEach( function( filename) {
-        var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( filename)[1];
+        var fileNameWithoutExtension = new RegExp( dodoc.settings.regexpRemoveFileExtension, 'i').exec( filename)[1];
         // only remove files with extension, not folder (in case a user wants to continue her stopmotion)
-        if( new RegExp( dodoc.regexpGetFileExtension, 'i').exec( filename) === null) {
+        if( new RegExp( dodoc.settings.regexpGetFileExtension, 'i').exec( filename) === null) {
           return;
         }
 

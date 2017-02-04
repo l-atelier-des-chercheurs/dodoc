@@ -14,7 +14,7 @@ script
   | app.url = "!{url}";
   | var dodoc = !{JSON.stringify(dodoc)};
 script( src='/js/production/plugins.js')
-script moment.locale("#{dodoc.codelang}");
+script moment.locale("#{dodoc.settings.codelang}");
 
 script( src='/js/common.js')
 script( src='/js/modules/_modals.js')

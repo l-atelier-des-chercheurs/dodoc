@@ -332,7 +332,7 @@ var modals = (function() {
     var mpathOfMedia = mdata.pathofmedia;
 
     switch( mtype){
-    		case dodoc.projectPhotosFoldername:
+    		case dodoc.settings.projectPhotosFoldername:
   				var $mediaItem = $(".js--templates .media-big_image").clone(false);
   				$mediaItem
   					.find('img')
@@ -343,7 +343,7 @@ var modals = (function() {
           .end()
   					;
   				break;
-  			case dodoc.projectVideosFoldername:
+  			case dodoc.settings.projectVideosFoldername:
   				var videoPath = mdata.videosource;
   				var $mediaItem = $(".js--templates .media-big_video").clone(false);
   				$mediaItem
@@ -359,7 +359,7 @@ var modals = (function() {
           .end()
   					;
   				break;
-  			case dodoc.projectAnimationsFoldername:
+  			case dodoc.settings.projectAnimationsFoldername:
   				var videoPath = mdata.stopmotionsource;
   				var $mediaItem = $(".js--templates .media-big_stopmotion").clone(false);
   				$mediaItem
@@ -375,7 +375,7 @@ var modals = (function() {
           .end()
   					;
   				break;
-  			case dodoc.projectAudiosFoldername:
+  			case dodoc.settings.projectAudiosFoldername:
   				var audioPath = mdata.audiosource;
   				var $mediaItem = $(".js--templates .media-big_audio").clone(false);
   				$mediaItem
@@ -390,7 +390,7 @@ var modals = (function() {
           .end()
   					;
   				break;
-  			case dodoc.projectTextsFoldername:
+  			case dodoc.settings.projectTextsFoldername:
   				var $mediaItem = $(".js--templates .media-big_text").clone(false);
   				$mediaItem
   					.find('.js--textField')
@@ -425,7 +425,7 @@ var modals = (function() {
       if(_checkAndHighlightEmptyRequiredFields($m)) return;
 
       // if its not a text media
-      if(mtype !== dodoc.projectTextsFoldername) {
+      if(mtype !== dodoc.settings.projectTextsFoldername) {
         var editMediaData = {
           "mediaName" : mname,
           "mediaFolderPath" : mtype,
@@ -528,7 +528,7 @@ var modals = (function() {
       	var textContent = $m.find('.js--textField').val();
       var mediaData = {
         "mediaType" : "text",
-        "mediaFolderPath" : dodoc.projectTextsFoldername,
+        "mediaFolderPath" : dodoc.settings.projectTextsFoldername,
         "text" : textContent,
       };
       sendData.createNewMedia(mediaData);

@@ -82,7 +82,7 @@ mixin modals(typeOfModal)
           - for (var i = 0; i < templates.length; i++) {
           label
             input.js--modal_template(type="radio" name="publiTemplate" value="#{templates[i]}" checked)
-            img(src="/#{dodoc.publicationTemplateDirname}/#{templates[i]}/icone.svg")
+            img(src="/#{dodoc.settings.publicationTemplateDirname}/#{templates[i]}/icone.svg")
             span #{templates[i]}
           - }
         hr

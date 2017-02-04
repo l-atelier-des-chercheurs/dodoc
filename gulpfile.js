@@ -29,7 +29,7 @@ var userScripts = [
 ];
 
 var templateCss = [
-  dodoc.userDirname + '/templates/**/*.scss'
+  dodoc.settings.userDirname + '/templates/**/*.scss'
 ];
 
 var userCss = [
@@ -66,7 +66,7 @@ gulp.task('templatesSass', function() {
     .pipe(sass({
       outputStyle: 'expanded',
     }))
-    .pipe(gulp.dest(dodoc.userDirname + '/templates'))
+    .pipe(gulp.dest(dodoc.settings.userDirname + '/templates'))
 })
 
 

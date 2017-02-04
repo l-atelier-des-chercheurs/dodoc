@@ -16,7 +16,7 @@ var publiFTP = (function() {
 
   function exportPubliToFtp(socket, d){
 
-    var publicationsFolder = path.join(dodocAPI.getUserPath(), dodoc.exportedPubliDir);
+    var publicationsFolder = path.join(dodocAPI.getUserPath(), dodoc.settings.exportedPubliDir);
     var currentDate = dodocAPI.getCurrentDate();
 
     dodocAPI.makeFolderAtPath(d.slugFolderName, publicationsFolder)

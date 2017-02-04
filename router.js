@@ -58,7 +58,7 @@ module.exports = function(app,io,m){
 
           var slugPubliName = req.params.publi;
           if( slugPubliName !== undefined) {
-            var jsonFileOfPubli = dodocPubli.getPubliPath( slugFolderName, slugProjectName, slugPubliName) + dodoc.metaFileext;
+            var jsonFileOfPubli = dodocPubli.getPubliPath( slugFolderName, slugProjectName, slugPubliName) + dodoc.settings.metaFileext;
             var publiData = dodocAPI.readMetaFile( jsonFileOfPubli);
 
             pageDataJSON.slugPubliName = slugPubliName;

@@ -11,7 +11,7 @@ var dev = require('./dev-log');
 var dodocAPI = (function() {
 
   const API = {
-    getCurrentDate      : (f = dodoc.metaDateFormat)  => { return getCurrentDate(f) },
+    getCurrentDate      : (f = dodoc.settings.metaDateFormat)  => { return getCurrentDate(f) },
     getFolderPath       : (slugFolderName = '')       => { return getFolderPath(slugFolderName) },
     getProjectPath      : (slugFolderName, slugProjectName) => { return getProjectPath(slugFolderName, slugProjectName) },
     parseData           : (d)                         => { return parseData(d) },
@@ -34,7 +34,7 @@ var dodocAPI = (function() {
   }
   function getFolderPath(slugFolderName) {
     dev.logfunction( "COMMON — getFolderPath : " + slugFolderName);
-    return path.join(getUserPath(), dodoc.contentDirname, slugFolderName);
+    return path.join(getUserPath(), dodoc.settings.contentDirname, slugFolderName);
   }
   function getProjectPath( slugFolderName, slugProjectName) {
     dev.logfunction( "COMMON — getProjectPath, slugFolderName:" + slugFolderName + " slugProjectName: " + slugProjectName);
@@ -159,12 +159,12 @@ var dodocAPI = (function() {
   function listAllTemplates() {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — listAllTemplates");
-      var templateFolderPath = path.join( getUserPath(), dodoc.publicationTemplateDirname);
+      var templateFolderPath = path.join( getUserPath(), dodoc.settings.publicationTemplateDirname);
       fs.readdir( templateFolderPath, function (err, filenames) {
         if (err) reject( dev.error('Couldn\'t read content dir : ' + err));
         var folders = filenames.filter(function(slugPubliName){
           // only get folders that don't start with "_"
-          return new RegExp(dodoc.regexpMatchFolderNames, 'i').test(slugPubliName) && slugPubliName.substr(0,1) !== '_';
+          return new RegExp(dodoc.settings.regexpMatchFolderNames, 'i').test(slugPubliName) && slugPubliName.substr(0,1) !== '_';
         });
         dev.logverbose('Found ' + folders.length + ' templates in ' + templateFolderPath);
         resolve(folders);
@@ -241,8 +241,8 @@ var dodocAPI = (function() {
         if (err) reject(err);
         image
           .clone()
-          .quality(dodoc.mediaThumbQuality)
-          .scaleToFit(dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
+          .quality(dodoc.settings.mediaThumbQuality)
+          .scaleToFit(dodoc.settings.mediaThumbWidth, dodoc.settings.mediaThumbHeight)
           .write(dest, function(err, info) {
             if (err) reject(err);
             dev.logverbose('Image has been saved, resolving its path.');
@@ -252,12 +252,12 @@ var dodocAPI = (function() {
 */
       sharp(source)
         .rotate()
-        .resize(dodoc.mediaThumbWidth, dodoc.mediaThumbHeight)
+        .resize(dodoc.settings.mediaThumbWidth, dodoc.settings.mediaThumbHeight)
         .max()
         .withoutEnlargement()
         .withMetadata()
         .toFormat('jpeg')
-        .quality(dodoc.mediaThumbQuality)
+        .quality(dodoc.settings.mediaThumbQuality)
         .toFile(dest)
         .then(function() {
           resolve();

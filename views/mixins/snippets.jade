@@ -47,7 +47,7 @@ mixin snippets(typeOfSnippet)
       .module_infos-blocs
         h3.txt-small_info
           | !{dodoc.lang.mediapublitemplatesarestoredint}
-          span.txt-wrap_long_lines
+          div.txt-wrap_long_lines
             a.js--openThisPathInFinder(href="#{currentUserDirPath}") #{ currentUserDirPath.replace(/\//g, '\/\u200B') }
         a.txt-small_info.moveDodocContentFolder.do--hide_on_clients.js--openModal_moveContentFolder
           | !{dodoc.lang.clickHereToMoveContentFolder}

@@ -29,7 +29,7 @@ var dodocPubli = (function() {
   // if three args, then get path to one publi
   function getPubliPath(slugFolderName, slugProjectName, pslug) {
     var projectPath = dodocAPI.getProjectPath( slugFolderName, slugProjectName);
-    var pathToPubli = path.join(projectPath, dodoc.projectPublisFoldername);
+    var pathToPubli = path.join(projectPath, dodoc.settings.projectPublisFoldername);
     if( pslug !== undefined)
       pathToPubli = path.join(pathToPubli, pslug);
     return pathToPubli;
@@ -94,9 +94,9 @@ var dodocPubli = (function() {
       var slugProjectName = publiData.slugProjectName;
 
       var pathToThisPubliFolder = getPubliPath(slugFolderName, slugProjectName);
-      pslug = dodocAPI.findFirstFilenameNotTaken( pslug, pathToThisPubliFolder, dodoc.metaFileext);
+      pslug = dodocAPI.findFirstFilenameNotTaken( pslug, pathToThisPubliFolder, dodoc.settings.metaFileext);
 
-      var pathToThisPubli = getPubliPath(slugFolderName, slugProjectName, pslug) + dodoc.metaFileext;
+      var pathToThisPubli = getPubliPath(slugFolderName, slugProjectName, pslug) + dodoc.settings.metaFileext;
 
       dev.log("New publi created with name " + pname + " and path " + pathToThisPubli);
 
@@ -127,7 +127,7 @@ var dodocPubli = (function() {
       dev.logfunction( "COMMON — editThisPubli : publiData = " + JSON.stringify( pdata, null, 4));
 
       var pathToPubli = getPubliPath(pdata.slugFolderName, pdata.slugProjectName, pdata.slugPubliName);
-      var publiMetaFilepath = pathToPubli + dodoc.metaFileext;
+      var publiMetaFilepath = pathToPubli + dodoc.settings.metaFileext;
 
       // get and parse publi json data
       var publiMetaData = _getPubliMeta( pdata.slugFolderName, pdata.slugProjectName, pdata.slugPubliName);
@@ -172,12 +172,12 @@ var dodocPubli = (function() {
 
       var foldersPublisMeta = [];
       filesInPubliFolder.forEach( function( filename) {
-        if( !new RegExp( dodoc.regexpMatchFolderNames, 'i').test( filename) && filename !== ".DS_Store") {
-          var fileExtension = new RegExp( dodoc.regexpGetFileExtension, 'i').exec( filename);
-          if( fileExtension == dodoc.metaFileext && !new RegExp( '^' + dodoc.deletedPrefix).test( filename)) {
+        if( !new RegExp( dodoc.settings.regexpMatchFolderNames, 'i').test( filename) && filename !== ".DS_Store") {
+          var fileExtension = new RegExp( dodoc.settings.regexpGetFileExtension, 'i').exec( filename);
+          if( fileExtension == dodoc.settings.metaFileext && !new RegExp( '^' + dodoc.settings.deletedPrefix).test( filename)) {
             if( !lookingForSpecificJson)
               foldersPublisMeta.push( filename);
-            else if( filename == thisPubliName + dodoc.metaFileext) {
+            else if( filename == thisPubliName + dodoc.settings.metaFileext) {
               foldersPublisMeta.push( filename);
               return;
             }
@@ -190,7 +190,7 @@ var dodocPubli = (function() {
       dev.log( "- foldersPublisMeta : " + JSON.stringify( foldersPublisMeta, null, 4));
       for (var i=0; i<foldersPublisMeta.length; i++) {
         var publiFilename = foldersPublisMeta[i];
-        var slugPubliName = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( publiFilename)[1];
+        var slugPubliName = new RegExp( dodoc.settings.regexpRemoveFileExtension, 'i').exec( publiFilename)[1];
 
         if( !folderPubliMeta.hasOwnProperty( slugPubliName)) {
           folderPubliMeta[slugPubliName] = new Object();
@@ -215,8 +215,8 @@ var dodocPubli = (function() {
 
   function _getPubliMeta(slugFolderName, slugProjectName, pslug) {
     var pathToPubli = getPubliPath(slugFolderName, slugProjectName, pslug);
-    var publiJSONFilepath = pathToPubli + dodoc.metaFileext;
-    var publiData = fs.readFileSync( publiJSONFilepath, dodoc.textEncoding);
+    var publiJSONFilepath = pathToPubli + dodoc.settings.metaFileext;
+    var publiData = fs.readFileSync( publiJSONFilepath, dodoc.settings.textEncoding);
     var publiMetaData = dodocAPI.parseData( publiData);
     return publiMetaData;
   }
