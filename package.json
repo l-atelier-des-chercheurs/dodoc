@@ -1,6 +1,6 @@
 {
   "name": "dodoc",
-  "version": "5.1.1",
+  "version": "5.2.0",
   "description": "Dodoc is a documentation tool for creativity.",
   "author": "L’Atelier des Chercheurs <http://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
@@ -8,8 +8,8 @@
   "main": "main.js",
   "private": true,
   "scripts": {
-    "start": "electron main",
-    "debug": "electron main --debug --verbose",
+    "start": "electron .",
+    "debug": "electron . --debug --verbose",
     "debug-watch": "nodemon  -e js,json --ignore client/ --ignore views/ --exec \"electron --debug=5858 main --debug --verbose\"",
     "inspect-main": "electron-inspector",
     "postinstall": "install-app-deps",

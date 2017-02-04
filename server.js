@@ -15,13 +15,16 @@ module.exports = function(electronApp) {
   dev.logverbose('Starting server');
 
   var app = express();
+  // works without asking for a certificate
+  const privateKey  = fs.readFileSync(path.join(__dirname, 'ssl', 'file.pem'), 'utf8');
+  const certificate = fs.readFileSync(path.join(__dirname, 'ssl', 'file.crt'), 'utf8');
+  const options = { key: privateKey, cert: certificate };
 
 /*
-  var tunnel = localtunnel('8080', {'local_host': 'https://localhost'}, function(err, tunnel) {
-    if (err) dev.error('Localtunnel error: ' + err);
+  var tunnel = localtunnel('8080', {'local_host': 'http://localhost'}, function(err, tunnel) {
+  if (err) dev.error('Localtunnel error: ' + err);
     dev.log('Tunnel URL: ' + tunnel.url);
   });
-
   tunnel.on('close', function() {
   });
 */
@@ -40,22 +43,6 @@ module.exports = function(electronApp) {
   });
 */
 
-/*
-  // not working: asks for a certificate on smartphones
-  const options = {
-    key:  fs.readFileSync( path.join(__dirname, 'ssl', 'server.key')),
-    cert: fs.readFileSync( path.join(__dirname, 'ssl', 'server.crt')),
-    ca:   fs.readFileSync( path.join(__dirname, 'ssl', 'rootCA.crt')),
-    password: 'dodoc',
-    requestCert:        true,
-    rejectUnauthorized: false
-  };
-*/
-
-  // works without asking for a certificate
-  const privateKey  = fs.readFileSync(path.join(__dirname, 'ssl', 'file.pem'), 'utf8');
-  const certificate = fs.readFileSync(path.join(__dirname, 'ssl', 'file.crt'), 'utf8');
-  const options = { key: privateKey, cert: certificate };
 
   if( config.protocol === 'http')
     var server = http.createServer(app);

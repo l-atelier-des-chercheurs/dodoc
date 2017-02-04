@@ -39,7 +39,7 @@
 
     &.is--fullPage {
       position: absolute;
-      margin: $t-margin*3;
+      margin: 3vw;
       padding: 0;
 
       top: 0;
@@ -54,6 +54,7 @@
       .button-wrapper {
         float: none;
         margin-left: 0;
+        z-index: 1000;
         span {
           margin-left:10px;
         }

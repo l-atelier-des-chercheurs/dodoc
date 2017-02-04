@@ -19,6 +19,7 @@ var dodocProject = (function() {
     updateProjectMeta        : (pdata) => { return updateProjectMeta(pdata); },
     listOneProject           : (slugFolderName, slugProjectName) => { return listOneProject(slugFolderName, slugProjectName); },
     removeOneProject         : (slugFolderName, slugProjectName) => { return removeOneProject(slugFolderName, slugProjectName); },
+    addProjectPreview        : (projectPath, imageData) => { return addProjectPreview(projectPath, imageData); },
   };
 
   /***************************************************************************************************/
@@ -26,12 +27,12 @@ var dodocProject = (function() {
   /***************************************************************************************************/
 
   function getMetaFileOfProject( slugFolderName, slugProjectName) {
-    return path.join( dodocAPI.getProjectPath( slugFolderName, slugProjectName), dodoc.projectMetafilename + dodoc.metaFileext);
+    return path.join( dodocAPI.getProjectPath( slugFolderName, slugProjectName), dodoc.settings().projectMetafilename + dodoc.settings().metaFileext);
   }
   function getProjectMeta(slugFolderName, slugProjectName) {
 //    dev.log( "getProjectMeta with slugFolderName : " + slugFolderName + " slugProjectName : " + slugProjectName);
     var projectJSONFile = getMetaFileOfProject( slugFolderName, slugProjectName);
-    var pdata = fs.readFileSync( projectJSONFile, dodoc.textEncoding);
+    var pdata = fs.readFileSync( projectJSONFile, dodoc.settings().textEncoding);
     var projectJSONdata = dodocAPI.parseData(pdata);
 
     return projectJSONdata;
@@ -60,7 +61,7 @@ var dodocProject = (function() {
       mediaFolders.forEach( function(mediaFolder) {
         fs.ensureDirSync(path.join( projectPath, mediaFolder));//write new medias folder in folders
       });
-      fs.ensureDirSync(path.join(projectPath, dodoc.projectPublisFoldername));//write new publi folder in folders
+      fs.ensureDirSync(path.join(projectPath, dodoc.settings().projectPublisFoldername));//write new publi folder in folders
 
       var pmeta =
         {
@@ -77,7 +78,7 @@ var dodocProject = (function() {
         updatedpmeta.slugFolderName = slugFolderName;
         updatedpmeta.slugProjectName = slugProjectName;
 
-        _addProjectPreview(projectPath, pdata.imageData)
+        addProjectPreview(projectPath, pdata.imageData)
         .then(err => {
           updatedpmeta.projectPreviewName = getProjectPreview(projectPath);
           resolve(updatedpmeta);
@@ -99,9 +100,11 @@ var dodocProject = (function() {
 
       var currentDateString = dodocAPI.getCurrentDate();
 
+/*
       if( pdata.imageData !== undefined) {
-        _addProjectPreview(projectPath, pdata.imageData);
+        addProjectPreview(projectPath, pdata.imageData);
       }
+*/
 
       // récupérer les infos sur le project
       var currentpdata = getProjectMeta( slugFolderName, slugProjectName);
@@ -117,7 +120,7 @@ var dodocProject = (function() {
         updatedpmeta.slugFolderName = slugFolderName;
         updatedpmeta.slugProjectName = slugProjectName;
 
-        _addProjectPreview(projectPath, pdata.imageData)
+        addProjectPreview(projectPath, pdata.imageData)
         .then(err => {
           updatedpmeta.projectPreviewName = getProjectPreview(projectPath);
           resolve( updatedpmeta);
@@ -137,7 +140,7 @@ var dodocProject = (function() {
     var previewName = false;
     dev.logverbose( "- match apercu/preview in array : " + filesInProjectFolder);
     filesInProjectFolder.forEach( function( filename) {
-      if( new RegExp( dodoc.regexpMatchProjectPreviewNames, 'i').test(filename)) {
+      if( new RegExp( dodoc.settings().regexpMatchProjectPreviewNames, 'i').test(filename)) {
         previewName = filename;
         dev.logverbose( "- - match preview called " + previewName);
       }
@@ -162,7 +165,7 @@ var dodocProject = (function() {
       dev.logfunction( "COMMON - onRemoveProject _ slugFolderName = " + slugFolderName + " slugProjectName = " + slugProjectName);
 
       var projectPath = dodocAPI.getProjectPath(slugFolderName, slugProjectName);
-      var deletedProjectName = dodoc.deletedPrefix + slugProjectName;
+      var deletedProjectName = dodoc.settings().deletedPrefix + slugProjectName;
       deletedProjectName = dodocAPI.findFirstFilenameNotTaken(deletedProjectName, dodocAPI.getFolderPath(slugFolderName), '');
       var deletedProjectPath = dodocAPI.getProjectPath(slugFolderName, deletedProjectName);
 
@@ -181,14 +184,14 @@ var dodocProject = (function() {
   /******************************************** private functions ************************************/
   /***************************************************************************************************/
 
-  function _addProjectPreview(parentPath, imageData){
+  function addProjectPreview(projectPath, imageData){
     return new Promise(function(resolve, reject) {
-      dev.logfunction(`COMMON - _addProjectPreview with parentPath = ${parentPath}`);
+      dev.logfunction(`COMMON - addProjectPreview with projectPath = ${projectPath}`);
 
       if(imageData === undefined)
         resolve();
 
-      var pathToFile = parentPath + "/" + "apercu";
+      var pathToFile = projectPath + "/" + "apercu";
       var imageBuffer = dodocAPI.decodeBase64Image(imageData);
 
       dodocAPI.makeImageFromData(imageBuffer.data, pathToFile)
@@ -196,7 +199,7 @@ var dodocProject = (function() {
         resolve();
       })
       .catch(err => {
-        dev.error(`Failed creating thumb for project at path ${parentPath}: ${err}`);
+        dev.error(`Failed creating thumb for project at path ${projectPath}: ${err}`);
         reject();
       });
     });

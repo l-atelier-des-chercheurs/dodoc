@@ -34,7 +34,7 @@ socket.on("*",function(event,d) {
         var thisMedia = d[md];
         var pathToProjectWhoGotANewMedia = '/'+thisMedia.slugFolderName+'/'+thisMedia.slugProjectName;
         logs.push(
-          dodoc.lang.modal.newMediaCreatedAtPath+
+          dodoc.lang().modal.newMediaCreatedAtPath+
             '<a href="'+pathToProjectWhoGotANewMedia+'">'+
               pathToProjectWhoGotANewMedia+
             '</a>'
@@ -43,18 +43,18 @@ socket.on("*",function(event,d) {
       break;
     case "folderCreated":
       var pathToFolder = '/'+d.slugFolderName;
-      logs.push(dodoc.lang.modal.newFolderCreatedWithName+'<em>'+d.name+'</em>'+dodoc.lang.modal.atPath+'<em>'+pathToFolder+'</em>');
+      logs.push(dodoc.lang().modal.newFolderCreatedWithName+'<em>'+d.name+'</em>'+dodoc.lang().modal.atPath+'<em>'+pathToFolder+'</em>');
       break;
     case "folderRemoved":
-      logs.push(dodoc.lang.modal.folderRemovedWithName+'<em>'+d.folderName+'</em>');
+      logs.push(dodoc.lang().modal.folderRemovedWithName+'<em>'+d.folderName+'</em>');
       break;
     case "projectCreated":
       var pathToProject = '/'+d.slugFolderName+'/'+d.slugProjectName;
-      logs.push(dodoc.lang.modal.newProjectCreatedWithName+'<em>'+d.name+'</em>'+dodoc.lang.modal.atPath+'<em>'+pathToProject+'</em>');
+      logs.push(dodoc.lang().modal.newProjectCreatedWithName+'<em>'+d.name+'</em>'+dodoc.lang().modal.atPath+'<em>'+pathToProject+'</em>');
       break;
     case "projectRemoved":
       var pathToProject = '/'+d.slugFolderName+'/'+d.slugProjectName;
-      logs.push(dodoc.lang.modal.projectRemovedWithName+'<em>'+d.name+'</em>');
+      logs.push(dodoc.lang().modal.projectRemovedWithName+'<em>'+d.name+'</em>');
       break;
   }
 
@@ -77,7 +77,14 @@ $('body').on('click', '.js--openInBrowser', function() {
 $('body').on('click', '.js--enableLogToFile', function() {
 	socket.emit('enableLogToFile');
 });
-
+$('body').on('click', '.js--openThisPathInFinder', function() {
+  if(require('electron') !== undefined) {
+    var shell = require('electron').shell;
+    event.preventDefault();
+    var thisPath = $(this).attr('href');
+    shell.showItemInFolder(thisPath);
+  }
+});
 
 function loadProjectSnippet(pd) {
 	var pathToProject = '/' + pd.slugFolderName + '/' + pd.slugProjectName;
@@ -188,23 +195,23 @@ function makeOneMedia( mediaKey, mdata) {
 
   var $currentMedia = '';
   switch(mdata.mediaFolderPath) {
-    case dodoc.projectPhotosFoldername:
+    case dodoc.settings().projectPhotosFoldername:
       $currentMedia = showImage(mdata);
       pathOfMedia = app.contentDir+getMediaFiles(mdata).img_large;
       break;
-    case dodoc.projectAnimationsFoldername:
+    case dodoc.settings().projectAnimationsFoldername:
       $currentMedia = showAnimation(mdata);
       pathOfMedia = app.contentDir+getMediaFiles(mdata).video;
       break;
-    case dodoc.projectVideosFoldername:
+    case dodoc.settings().projectVideosFoldername:
       $currentMedia = showVideo(mdata);
       pathOfMedia = app.contentDir+getMediaFiles(mdata).video;
       break;
-    case dodoc.projectAudiosFoldername:
+    case dodoc.settings().projectAudiosFoldername:
       $currentMedia = showAudio(mdata);
       pathOfMedia = app.contentDir+getMediaFiles(mdata).audio;
       break;
-    case dodoc.projectTextsFoldername:
+    case dodoc.settings().projectTextsFoldername:
       $currentMedia = showText( mdata);
       pathOfMedia = app.contentDir+getMediaFiles(mdata).md;
       break;
@@ -230,7 +237,7 @@ function makeOneMedia( mediaKey, mdata) {
     $currentMedia.find('.mediaData').remove();
   }
 
-  if( mdata.fav === "true") {
+  if(mdata.fav === "true") {
     $currentMedia.addClass('is--highlight');
   }
 
@@ -336,7 +343,7 @@ function getMediaFiles(mediaDatas) {
     // if media is either a jpg or a png
     if(mediaFilename.toLowerCase().match(".jpg") || mediaFilename.toLowerCase().match(".jpeg") || mediaFilename.toLowerCase().match(".png")) {
       // if its name is made of the thumb suffix, its a thumb
-      if(mediaFilename.toLowerCase().match(dodoc.thumbSuffix)) {
+      if(mediaFilename.toLowerCase().match(dodoc.settings().thumbSuffix)) {
         mediaImages.img_thumb = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
       } else {
       // otherwise its probably the large image (original or optimized version)
@@ -344,7 +351,7 @@ function getMediaFiles(mediaDatas) {
       }
     } else if(mediaFilename.toLowerCase().match(".mp4") ||  mediaFilename.toLowerCase().match(".webm")) {
       mediaImages.video = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
-    } else if(mediaFilename.toLowerCase().match(".wav")) {
+    } else if(mediaFilename.toLowerCase().match(".wav") || mediaFilename.toLowerCase().match(".mp3")) {
       mediaImages.audio = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
     } else if(mediaFilename.toLowerCase().match(".md")) {
       mediaImages.md = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
@@ -480,7 +487,7 @@ function makeOnePubli( publiData) {
     return;
 
 	var $publiItem = $(".js--templates .publi-folder").clone(false);
-  var publiPath = makeFullPathForProject( dodoc.projectPublisFoldername + '/' + publiData.slugPubliName);
+  var publiPath = makeFullPathForProject( dodoc.settings().projectPublisFoldername + '/' + publiData.slugPubliName);
   var editPubliPath = makeFullPathForProject( 'bibliotheque/panneau-de-publications#' + publiData.slugPubliName);
 
 	$publiItem
@@ -671,7 +678,7 @@ function updateMontagePubliMedias( psdata) {
 function listMontagePubliMeta( $publiContent, pdata) {
   console.log('listMontagePubliMeta');
 
-  var publiPath = makeFullPathForProject( dodoc.projectPublisFoldername + '/' + pdata.slugPubliName);
+  var publiPath = makeFullPathForProject( dodoc.settings().projectPublisFoldername + '/' + pdata.slugPubliName);
 
   $publiContent
     .find(".js--publiTitle")
@@ -685,7 +692,7 @@ function listMontagePubliMeta( $publiContent, pdata) {
     ;
 
   // load the css file corresponding to this
-  var publiTemplateCSSPath = '/' + dodoc.publicationTemplateDirname + '/' + pdata.template + '/' + 'style.css';
+  var publiTemplateCSSPath = '/' + dodoc.settings().publicationTemplateDirname + '/' + pdata.template + '/' + 'style.css';
   $('.publi_container,.montage_publi_container').find('#templateCss').attr('href', publiTemplateCSSPath);
 
   $publiContent.find('.template_container').attr("data-template", pdata.template);
@@ -797,19 +804,19 @@ function getMediaFolderPathByType( mediaType) {
     return getTextPathOfProject();
 }
 function getPhotoPathOfProject() {
-  return dodoc.projectPhotosFoldername;
+  return dodoc.settings().projectPhotosFoldername;
 }
 function getAnimationPathOfProject() {
-  return dodoc.projectAnimationsFoldername;
+  return dodoc.settings().projectAnimationsFoldername;
 }
 function getVideoPathOfProject() {
-  return dodoc.projectVideosFoldername;
+  return dodoc.settings().projectVideosFoldername;
 }
 function getAudioPathOfProject() {
-  return dodoc.projectAudiosFoldername;
+  return dodoc.settings().projectAudiosFoldername;
 }
 function getTextPathOfProject() {
-  return dodoc.projectTextsFoldername;
+  return dodoc.settings().projectTextsFoldername;
 }
 
 function getPathToMediaFile( projectPath, mediasFolderPath, mediaName) {

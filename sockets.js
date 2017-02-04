@@ -28,7 +28,7 @@ var sockets = (function() {
   function init(thisApp, thisIO, thisElectronApp) {
     dev.log("Initializing socket module");
 
-    app = app;
+    app = thisApp;
     io = thisIO;
     electronApp = thisElectronApp;
 
@@ -81,14 +81,14 @@ var sockets = (function() {
       socket.on("deleteMedia", onDeleteMedia);
       socket.on("deleteStopmotion", onDeleteStopmotion);
 
-  		socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
+  		  socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 
       socket.on( 'exportPubliToFtp', data => { onExportPubliToFtp(socket, data); });
       socket.on( 'ftpSettings', data => { onFtpSettings(socket, data); });
       socket.on( 'generatePDF', data => { onGeneratePDF(socket, data); });
 
       socket.on( 'enableLogToFile', onEnableLogToFile);
-  	});
+  	  });
 
   }
 
@@ -353,9 +353,9 @@ var sockets = (function() {
     try {
       var filesInMediaFolder = fs.readdirSync( pathToMediaFolder);
       filesInMediaFolder.forEach( function( filename) {
-        var fileNameWithoutExtension = new RegExp( dodoc.regexpRemoveFileExtension, 'i').exec( filename)[1];
+        var fileNameWithoutExtension = new RegExp( dodoc.settings().regexpRemoveFileExtension, 'i').exec( filename)[1];
         // only remove files with extension, not folder (in case a user wants to continue her stopmotion)
-        if( new RegExp( dodoc.regexpGetFileExtension, 'i').exec( filename) === null) {
+        if( new RegExp( dodoc.settings().regexpGetFileExtension, 'i').exec( filename) === null) {
           return;
         }
 
@@ -465,6 +465,7 @@ var sockets = (function() {
 
   function onGeneratePDF(socket, d) {
     publiPDF.exportPubliToPDF(d).then(function(pdfInfos) {
+      pdfInfos.slugPubliName = d.slugPubliName;
       dodocAPI.sendEventWithContent( 'publiPDFIsGenerated', pdfInfos, io, socket);
     }, function(error) {
       dodocAPI.sendEventWithContent( 'cannotGeneratePDF', error, io, socket);

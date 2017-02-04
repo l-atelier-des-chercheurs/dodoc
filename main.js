@@ -32,7 +32,15 @@ function createWindow() {
   const verbose = flags.get('verbose');
   dev.init(debug, verbose);
 
-  dev.log('——— Starting dodoc app v' + process.env.npm_package_version);
+  global.dodocVersion = app.getVersion();
+  dev.log('——— Starting dodoc app v' + global.dodocVersion);
+
+  // checkout which langage to load
+  var envLang = app.getLocale();
+//   envLang = 'en';
+  dodoc.setCurrentCodeLang(envLang);
+  dev.log('Environment lang is ' + dodoc.getCurrentCodeLang());
+  dodoc.init();
 
   if( global.dodoc === undefined)
     global.dodoc = {};
@@ -42,14 +50,13 @@ function createWindow() {
   try {
     windowState = global.nodeStorage.getItem('windowstate') ? global.nodeStorage.getItem('windowstate') : {};
     dev.log('Found defaults for windowState: ');
-    dev.log(windowState);
+    dev.log(JSON.stringify(windowState, null, 4));
   } catch (err) {
     dev.log('No default for windowState');
   }
 
   // Create the browser window.
   win = new BrowserWindow({
-
     x: windowState.bounds && windowState.bounds.x || undefined,
     y: windowState.bounds && windowState.bounds.y || undefined,
     width: windowState.bounds && windowState.bounds.width || 1200,
@@ -92,10 +99,8 @@ function createWindow() {
   setApplicationMenu();
 
   copyAndRenameUserFolder().then(function(pathToUserContent) {
-
     global.pathToUserContent = pathToUserContent;
     dev.log('Will store contents in: ' + global.pathToUserContent);
-
     try {
       app.server = server(app);
     }
@@ -125,8 +130,6 @@ function createWindow() {
   }, function(err) {
     dev.error( 'Failed to check existing content folder : ' + err);
   });
-
-
 }
 
 // This method will be called when Electron has finished

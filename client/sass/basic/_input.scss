@@ -121,13 +121,11 @@ select {
     width: 100%;
     max-width: 380px;
     font-size: 1.2rem;
-    text-overflow: ellipsis;
     text-align: center;
-    text-transform: lowercase;
 
-    white-space: nowrap;
     cursor: pointer;
     overflow: hidden;
+    word-break: break-word;
 
     flex-direction: row;
     align-items: center;
@@ -155,7 +153,9 @@ select {
   + label svg {
     width: 1.5rem;
     height: 1.5rem;
+    flex-shrink: 0;
     fill: currentColor;
+    margin-right: $t-margin;
   }
 
 

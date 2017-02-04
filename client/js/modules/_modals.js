@@ -167,7 +167,7 @@ var modals = (function() {
     });
 
     $m.find(".js--deleteFolder").on("click", function() {
-      if(window.confirm(dodoc.lang.modal.sureToRemoveFolder)) {
+      if(window.confirm(dodoc.lang().modal.sureToRemoveFolder)) {
     		  sendData.removeOneFolder({
           "slugFolderName" : d.slugFolderName,
           "folderName" : d.nom,
@@ -277,7 +277,7 @@ var modals = (function() {
     	});
 
     	$m.find('.js--deleteProject').on('click', function(){
-      if(window.confirm(dodoc.lang.modal.sureToRemoveProject)) {
+      if(window.confirm(dodoc.lang().modal.sureToRemoveProject)) {
     		  sendData.removeOneProject({
         		"slugProjectName" : pdata.slugProjectName
         });
@@ -332,7 +332,7 @@ var modals = (function() {
     var mpathOfMedia = mdata.pathofmedia;
 
     switch( mtype){
-    		case dodoc.projectPhotosFoldername:
+    		case dodoc.settings().projectPhotosFoldername:
   				var $mediaItem = $(".js--templates .media-big_image").clone(false);
   				$mediaItem
   					.find('img')
@@ -343,7 +343,7 @@ var modals = (function() {
           .end()
   					;
   				break;
-  			case dodoc.projectVideosFoldername:
+  			case dodoc.settings().projectVideosFoldername:
   				var videoPath = mdata.videosource;
   				var $mediaItem = $(".js--templates .media-big_video").clone(false);
   				$mediaItem
@@ -359,7 +359,7 @@ var modals = (function() {
           .end()
   					;
   				break;
-  			case dodoc.projectAnimationsFoldername:
+  			case dodoc.settings().projectAnimationsFoldername:
   				var videoPath = mdata.stopmotionsource;
   				var $mediaItem = $(".js--templates .media-big_stopmotion").clone(false);
   				$mediaItem
@@ -375,14 +375,14 @@ var modals = (function() {
           .end()
   					;
   				break;
-  			case dodoc.projectAudiosFoldername:
+  			case dodoc.settings().projectAudiosFoldername:
   				var audioPath = mdata.audiosource;
   				var $mediaItem = $(".js--templates .media-big_audio").clone(false);
   				$mediaItem
   					.find('img')
   					  .attr('src', mfullsizeimagesrc)
   					.end()
-  			    .find('source')
+  			    .find('audio')
   			      .attr('src', audioPath)
   			    .end()
           .find('.js--downloadThisMedia')
@@ -390,7 +390,7 @@ var modals = (function() {
           .end()
   					;
   				break;
-  			case dodoc.projectTextsFoldername:
+  			case dodoc.settings().projectTextsFoldername:
   				var $mediaItem = $(".js--templates .media-big_text").clone(false);
   				$mediaItem
   					.find('.js--textField')
@@ -425,7 +425,7 @@ var modals = (function() {
       if(_checkAndHighlightEmptyRequiredFields($m)) return;
 
       // if its not a text media
-      if(mtype !== dodoc.projectTextsFoldername) {
+      if(mtype !== dodoc.settings().projectTextsFoldername) {
         var editMediaData = {
           "mediaName" : mname,
           "mediaFolderPath" : mtype,
@@ -466,7 +466,7 @@ var modals = (function() {
 
 
     $mediaItem.find('.js--delete-media-bibli').on( 'click', function(){
-      if(window.confirm(dodoc.lang.modal.sureToRemoveMedia)) {
+      if(window.confirm(dodoc.lang().modal.sureToRemoveMedia)) {
         var mediaToDelete = {
           "mediaName" : mname,
           "mediaFolderPath" : mtype,
@@ -528,7 +528,7 @@ var modals = (function() {
       	var textContent = $m.find('.js--textField').val();
       var mediaData = {
         "mediaType" : "text",
-        "mediaFolderPath" : dodoc.projectTextsFoldername,
+        "mediaFolderPath" : dodoc.settings().projectTextsFoldername,
         "text" : textContent,
       };
       sendData.createNewMedia(mediaData);
@@ -578,7 +578,6 @@ var modals = (function() {
         		// check type of content
         		console.log( fileName);
         		fileName = fileName.toLowerCase();
-        		debugger;
           if(fileName.indexOf( ".jpg") !== -1 || fileName.indexOf( ".jpeg") !== -1 || fileName.indexOf( ".png") !== -1) {
         			var mediaData = {
               "mediaType" : "photo",
@@ -656,6 +655,7 @@ var modals = (function() {
       .find('.js--exportedPDFURL')
         .html(d.pdfURL)
         .attr('href', d.pdfURL)
+        .attr('download', d.slugPubliName)
       .end()
       ;
     return $m;
@@ -696,7 +696,7 @@ var modals = (function() {
     let emptyReqFields = _getEmptyRequiredFields($m);
     if(emptyReqFields.length > 0) {
       emptyReqFields[0].focus();
-      alertify.error(dodoc.lang.modal.someFieldsAreEmptyFillThem);
+      alertify.error(dodoc.lang().modal.someFieldsAreEmptyFillThem);
       return true;
     } else {
       return false;

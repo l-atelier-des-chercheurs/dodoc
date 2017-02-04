@@ -93,19 +93,19 @@ li.publi-folder(data-publi="")
       .meta-data.txt-small_info.flex_40.margin-top_bottom
         .statut
           span
-            | !{dodoc.lang.status}
+            | !{dodoc.lang().status}
           span.statut-type
         .created
           span
-            | !{dodoc.lang.createdOn}
+            | !{dodoc.lang().createdOn}
           span.create-date
         .modified
           span
-            | !{dodoc.lang.modifiedOn}
+            | !{dodoc.lang().modifiedOn}
           span.modify-date
       .button-to-pages.flex_60
         h3.txt-small_info.margin-top_bottom
-          | !{dodoc.lang.quickAccess}
+          | !{dodoc.lang().quickAccess}
         +button('capture', '', 'isCollapsed')
         +button('bibli', '', 'isCollapsed')
         +button('publications', '', 'isCollapsed')
@@ -113,11 +113,11 @@ li.publi-folder(data-publi="")
       img
   ul.last-medias.grille_de_medias
     h3.txt-small_info
-      | !{dodoc.lang.lastMediasAdded}
+      | !{dodoc.lang().lastMediasAdded}
 
   .montage-list
     h1.txt-small_info
-      | !{dodoc.lang.listOfPublications}
+      | !{dodoc.lang().listOfPublications}
     ul.list-publi
 
 
@@ -131,19 +131,19 @@ li.dossier.small-12.medium-12.large-4.columns(data-statut data-name data-nom)
     .meta-data.txt-small_info.row
       .nb-projets.small-6.columns
         span.nb-projets-intitule
-          | !{dodoc.lang.projects}
+          | !{dodoc.lang().projects}
         span.nb-projets-count 0
       .statut.small-6.columns
         span
-          | !{dodoc.lang.status}
+          | !{dodoc.lang().status}
         span.statut-type
       .created.small-6.columns
         span
-          | !{dodoc.lang.createdOn}
+          | !{dodoc.lang().createdOn}
         span.create-date
       .modified.small-6.columns
         span
-          | !{dodoc.lang.modifiedOn}
+          | !{dodoc.lang().modifiedOn}
         span.modify-date
 
     li.projetSnippet

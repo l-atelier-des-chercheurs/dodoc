@@ -7,7 +7,7 @@ mixin modals(typeOfModal)
     .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
-        | !{dodoc.lang.modal.newFolder}
+        | !{dodoc.lang().modal.newFolder}
       form(onsubmit='return false;')
         input(type='text' class='js--data_folderName' placeholder='Nom' required autofocus)
         hr
@@ -18,14 +18,14 @@ mixin modals(typeOfModal)
     .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
-        | !{dodoc.lang.modal.editFolder}
+        | !{dodoc.lang().modal.editFolder}
       form(onsubmit="return false;")
         input(type="text" class="modify-folder" required autofocus)
         select.modify-statut(name="statut")
           option(value='en cours')
-            | !{dodoc.lang.modal.inprogress}
+            | !{dodoc.lang().modal.inprogress}
           option(value='terminé')
-            | !{dodoc.lang.modal.finished}
+            | !{dodoc.lang().modal.finished}
         +button('deleteFolder', '', '')
         hr
         +button('valider', '', 'isCollapsed')
@@ -35,14 +35,14 @@ mixin modals(typeOfModal)
     .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .txt-large_title
-        | !{dodoc.lang.modal.newProject}
+        | !{dodoc.lang().modal.newProject}
       form(onsubmit='return false;')
-        input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus required)
+        input(type='text' class='js--modal_name' placeholder=dodoc.lang().name autofocus required)
         input#addImageProject(type="file" class="inputfile js--modal_inputfile inputfile-2" accept="image/*")
         label(for="addImageProject")
           | <svg xmlns="" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"></path></svg>
           span
-            | !{dodoc.lang.modal.selectAnImage}
+            | !{dodoc.lang().modal.selectAnImage}
         hr
         +button('valider', '', 'isCollapsed')
 
@@ -51,19 +51,19 @@ mixin modals(typeOfModal)
     .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
-        | !{dodoc.lang.modal.editProject}
+        | !{dodoc.lang().modal.editProject}
       form(onsubmit='return false;' class='modify-project-form')
-        input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus required)
+        input(type='text' class='js--modal_name' placeholder=dodoc.lang().name autofocus required)
         select.modify-project-statut(name='statut')
           option(value='en cours')
-            | !{dodoc.lang.modal.inprogress}
+            | !{dodoc.lang().modal.inprogress}
           option(value='terminé')
-            | !{dodoc.lang.modal.finished}
+            | !{dodoc.lang().modal.finished}
         input#editImageProject(type="file" class="inputfile js--modal_inputfile inputfile-2" accept="image/*")
         label(for="editImageProject")
           | <svg xmlns="" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"></path></svg>
           span
-            | !{dodoc.lang.modal.selectAnImage}
+            | !{dodoc.lang().modal.selectAnImage}
         +button('deleteProject', '', '')
         hr
         +button('valider', '', 'isCollapsed')
@@ -73,16 +73,16 @@ mixin modals(typeOfModal)
     .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
-        | !{dodoc.lang.modal.newPubli}
+        | !{dodoc.lang().modal.newPubli}
       form(onsubmit='return false;')
-        input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus required)
+        input(type='text' class='js--modal_name' placeholder=dodoc.lang().name autofocus required)
         fieldset.templateSelector
           .txt-small_info.margin-top_bottom
-            | !{dodoc.lang.selectTemplate}
+            | !{dodoc.lang().selectTemplate}
           - for (var i = 0; i < templates.length; i++) {
           label
             input.js--modal_template(type="radio" name="publiTemplate" value="#{templates[i]}" checked)
-            img(src="/#{dodoc.publicationTemplateDirname}/#{templates[i]}/icone.svg")
+            img(src="/#{dodoc.settings().publicationTemplateDirname}/#{templates[i]}/icone.svg")
             span #{templates[i]}
           - }
         hr
@@ -93,12 +93,12 @@ mixin modals(typeOfModal)
     .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
-        | !{dodoc.lang.modal.editPubli}
+        | !{dodoc.lang().modal.editPubli}
       form(onsubmit='return false;')
-        input(type='text' class='js--modal_name' placeholder=dodoc.lang.name autofocus required)
+        input(type='text' class='js--modal_name' placeholder=dodoc.lang().name autofocus required)
         fieldset.templateSelector
           .txt-small_info.margin-top_bottom
-            | !{dodoc.lang.selectTemplate}
+            | !{dodoc.lang().selectTemplate}
           - for (var i = 0; i < templates.length; i++) {
           label
             input.js--modal_template(type="radio" name="publiTemplate" value="#{templates[i]}" checked)
@@ -113,7 +113,7 @@ mixin modals(typeOfModal)
     .m_modal-content
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
-        | !{dodoc.lang.modal.addText}
+        | !{dodoc.lang().modal.addText}
       form(onsubmit='return false;' class='add-text-form')
         textarea.mediaContent--textOfTextmedia.js--textField(placeholder="Ajouter du texte ici" autofocus required)
         hr
@@ -124,15 +124,15 @@ mixin modals(typeOfModal)
     .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
-        | !{dodoc.lang.modal.importAFile}
+        | !{dodoc.lang().modal.importAFile}
       form(onsubmit='return false;')
-        input(id="addLocalMediaInputFile" type="file" class="inputfile js--modal_inputfile inputfile-2" autofocus required accept="image/jpg, image/jpeg, image/png, video/mp4, video/webm, audio/x-m4a, audio/mp3")
+        input(id="addLocalMediaInputFile" type="file" class="inputfile js--modal_inputfile inputfile-2" autofocus required)
         label(for="addLocalMediaInputFile")
           | <svg xmlns="" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"></path></svg>
           span
-            | !{dodoc.lang.modal.importAMedia}
+            | !{dodoc.lang().modal.importAMedia}
         small
-          | !{dodoc.lang.modal.acceptedFormats}
+          | !{dodoc.lang().modal.acceptedFormats}
         hr
         +button('valider', '', 'isCollapsed')
 
@@ -150,9 +150,9 @@ mixin modals(typeOfModal)
     .m_modal-content
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
-        | !{dodoc.lang.modal.moveContentFolder}
+        | !{dodoc.lang().modal.moveContentFolder}
       p
-        | !{dodoc.lang.modal.instructionsToMoveContentFolder}
+        | !{dodoc.lang().modal.instructionsToMoveContentFolder}
       hr
       +button('valider', '', 'isCollapsed')
 
@@ -161,9 +161,9 @@ mixin modals(typeOfModal)
     .m_modal-content
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
-        | !{dodoc.lang.modal.impossibleToConnectToServer}
+        | !{dodoc.lang().modal.impossibleToConnectToServer}
       p
-        | !{dodoc.lang.modal.loginOrPassIsWrong}
+        | !{dodoc.lang().modal.loginOrPassIsWrong}
 
   if( typeOfModal === 'exportWebNoConnexion')
     //- modal-no-connexion
@@ -171,11 +171,11 @@ mixin modals(typeOfModal)
     .m_modal-content
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
-        | !{dodoc.lang.modal.noInternetConnection}
+        | !{dodoc.lang().modal.noInternetConnection}
       p
-        | !{dodoc.lang.modal.noInternetCantSendPublicationOverFtp}
+        | !{dodoc.lang().modal.noInternetCantSendPublicationOverFtp}
       p
-        | !{dodoc.lang.modal.yourFilesHaveBeenSaved}
+        | !{dodoc.lang().modal.yourFilesHaveBeenSaved}
       p.js--publiFilesSavedAtPath
 
   if( typeOfModal === 'exportWebOnConnexion')
@@ -184,7 +184,7 @@ mixin modals(typeOfModal)
     .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
-        | !{dodoc.lang.modal.sendFilesToAServer}
+        | !{dodoc.lang().modal.sendFilesToAServer}
       form(onsubmit='return false;' class='ftp-settings-form lead')
         input(type='text' class='host' placeholder='Host' autofocus required)
         input(type='text' class='user' placeholder='User' required)
@@ -199,9 +199,9 @@ mixin modals(typeOfModal)
     .m_modal-content
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
-        | !{dodoc.lang.modal.publiHasBeenSentToServer}
+        | !{dodoc.lang().modal.publiHasBeenSentToServer}
       .txt-small_info
-        | !{dodoc.lang.modal.clickHereToOpenPubliInAWebBrowser}
+        | !{dodoc.lang().modal.clickHereToOpenPubliInAWebBrowser}
       a.urlToPubli.txt-wrap_long_lines.js--urlToPubli.js--openInBrowser(href target="_blank")
 
   if( typeOfModal === 'confirmPdfExported')
@@ -210,8 +210,8 @@ mixin modals(typeOfModal)
     .m_modal-content
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
-        | !{dodoc.lang.modal.pdfPublicationHasBeenSaved}
+        | !{dodoc.lang().modal.pdfPublicationHasBeenSaved}
       .txt-small_info
-        | !{dodoc.lang.modal.downloadThePDF}
+        | !{dodoc.lang().modal.downloadThePDF}
       a.exportedPDFPath.txt-wrap_long_lines.js--exportedPDFURL(href target="_blank" download="publication.pdf")
 

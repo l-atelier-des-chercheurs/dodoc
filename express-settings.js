@@ -13,7 +13,7 @@ module.exports = function(app, express) {
   app.set("view engine", config.templateEngine); //View engine is Jade
 
   app.use(express.static(global.pathToUserContent));
-  app.use(express.static(path.join(global.pathToUserContent, dodoc.contentDirname)));
+  app.use(express.static(path.join(global.pathToUserContent, dodoc.settings().contentDirname)));
   app.use(express.static(path.join(__dirname, "client")));
 
   app.use(bodyParser.urlencoded({ extended: true }));
