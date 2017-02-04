@@ -34,7 +34,7 @@ socket.on("*",function(event,d) {
         var thisMedia = d[md];
         var pathToProjectWhoGotANewMedia = '/'+thisMedia.slugFolderName+'/'+thisMedia.slugProjectName;
         logs.push(
-          dodoc.lang.modal.newMediaCreatedAtPath+
+          dodoc.lang().modal.newMediaCreatedAtPath+
             '<a href="'+pathToProjectWhoGotANewMedia+'">'+
               pathToProjectWhoGotANewMedia+
             '</a>'
@@ -43,18 +43,18 @@ socket.on("*",function(event,d) {
       break;
     case "folderCreated":
       var pathToFolder = '/'+d.slugFolderName;
-      logs.push(dodoc.lang.modal.newFolderCreatedWithName+'<em>'+d.name+'</em>'+dodoc.lang.modal.atPath+'<em>'+pathToFolder+'</em>');
+      logs.push(dodoc.lang().modal.newFolderCreatedWithName+'<em>'+d.name+'</em>'+dodoc.lang().modal.atPath+'<em>'+pathToFolder+'</em>');
       break;
     case "folderRemoved":
-      logs.push(dodoc.lang.modal.folderRemovedWithName+'<em>'+d.folderName+'</em>');
+      logs.push(dodoc.lang().modal.folderRemovedWithName+'<em>'+d.folderName+'</em>');
       break;
     case "projectCreated":
       var pathToProject = '/'+d.slugFolderName+'/'+d.slugProjectName;
-      logs.push(dodoc.lang.modal.newProjectCreatedWithName+'<em>'+d.name+'</em>'+dodoc.lang.modal.atPath+'<em>'+pathToProject+'</em>');
+      logs.push(dodoc.lang().modal.newProjectCreatedWithName+'<em>'+d.name+'</em>'+dodoc.lang().modal.atPath+'<em>'+pathToProject+'</em>');
       break;
     case "projectRemoved":
       var pathToProject = '/'+d.slugFolderName+'/'+d.slugProjectName;
-      logs.push(dodoc.lang.modal.projectRemovedWithName+'<em>'+d.name+'</em>');
+      logs.push(dodoc.lang().modal.projectRemovedWithName+'<em>'+d.name+'</em>');
       break;
   }
 
@@ -195,23 +195,23 @@ function makeOneMedia( mediaKey, mdata) {
 
   var $currentMedia = '';
   switch(mdata.mediaFolderPath) {
-    case dodoc.settings.projectPhotosFoldername:
+    case dodoc.settings().projectPhotosFoldername:
       $currentMedia = showImage(mdata);
       pathOfMedia = app.contentDir+getMediaFiles(mdata).img_large;
       break;
-    case dodoc.settings.projectAnimationsFoldername:
+    case dodoc.settings().projectAnimationsFoldername:
       $currentMedia = showAnimation(mdata);
       pathOfMedia = app.contentDir+getMediaFiles(mdata).video;
       break;
-    case dodoc.settings.projectVideosFoldername:
+    case dodoc.settings().projectVideosFoldername:
       $currentMedia = showVideo(mdata);
       pathOfMedia = app.contentDir+getMediaFiles(mdata).video;
       break;
-    case dodoc.settings.projectAudiosFoldername:
+    case dodoc.settings().projectAudiosFoldername:
       $currentMedia = showAudio(mdata);
       pathOfMedia = app.contentDir+getMediaFiles(mdata).audio;
       break;
-    case dodoc.settings.projectTextsFoldername:
+    case dodoc.settings().projectTextsFoldername:
       $currentMedia = showText( mdata);
       pathOfMedia = app.contentDir+getMediaFiles(mdata).md;
       break;
@@ -343,7 +343,7 @@ function getMediaFiles(mediaDatas) {
     // if media is either a jpg or a png
     if(mediaFilename.toLowerCase().match(".jpg") || mediaFilename.toLowerCase().match(".jpeg") || mediaFilename.toLowerCase().match(".png")) {
       // if its name is made of the thumb suffix, its a thumb
-      if(mediaFilename.toLowerCase().match(dodoc.settings.thumbSuffix)) {
+      if(mediaFilename.toLowerCase().match(dodoc.settings().thumbSuffix)) {
         mediaImages.img_thumb = makeFullPathForProject( mediaFolderPath + '/' + mediaFilename);
       } else {
       // otherwise its probably the large image (original or optimized version)
@@ -487,7 +487,7 @@ function makeOnePubli( publiData) {
     return;
 
 	var $publiItem = $(".js--templates .publi-folder").clone(false);
-  var publiPath = makeFullPathForProject( dodoc.settings.projectPublisFoldername + '/' + publiData.slugPubliName);
+  var publiPath = makeFullPathForProject( dodoc.settings().projectPublisFoldername + '/' + publiData.slugPubliName);
   var editPubliPath = makeFullPathForProject( 'bibliotheque/panneau-de-publications#' + publiData.slugPubliName);
 
 	$publiItem
@@ -678,7 +678,7 @@ function updateMontagePubliMedias( psdata) {
 function listMontagePubliMeta( $publiContent, pdata) {
   console.log('listMontagePubliMeta');
 
-  var publiPath = makeFullPathForProject( dodoc.settings.projectPublisFoldername + '/' + pdata.slugPubliName);
+  var publiPath = makeFullPathForProject( dodoc.settings().projectPublisFoldername + '/' + pdata.slugPubliName);
 
   $publiContent
     .find(".js--publiTitle")
@@ -692,7 +692,7 @@ function listMontagePubliMeta( $publiContent, pdata) {
     ;
 
   // load the css file corresponding to this
-  var publiTemplateCSSPath = '/' + dodoc.settings.publicationTemplateDirname + '/' + pdata.template + '/' + 'style.css';
+  var publiTemplateCSSPath = '/' + dodoc.settings().publicationTemplateDirname + '/' + pdata.template + '/' + 'style.css';
   $('.publi_container,.montage_publi_container').find('#templateCss').attr('href', publiTemplateCSSPath);
 
   $publiContent.find('.template_container').attr("data-template", pdata.template);
@@ -804,19 +804,19 @@ function getMediaFolderPathByType( mediaType) {
     return getTextPathOfProject();
 }
 function getPhotoPathOfProject() {
-  return dodoc.settings.projectPhotosFoldername;
+  return dodoc.settings().projectPhotosFoldername;
 }
 function getAnimationPathOfProject() {
-  return dodoc.settings.projectAnimationsFoldername;
+  return dodoc.settings().projectAnimationsFoldername;
 }
 function getVideoPathOfProject() {
-  return dodoc.settings.projectVideosFoldername;
+  return dodoc.settings().projectVideosFoldername;
 }
 function getAudioPathOfProject() {
-  return dodoc.settings.projectAudiosFoldername;
+  return dodoc.settings().projectAudiosFoldername;
 }
 function getTextPathOfProject() {
-  return dodoc.settings.projectTextsFoldername;
+  return dodoc.settings().projectTextsFoldername;
 }
 
 function getPathToMediaFile( projectPath, mediasFolderPath, mediaName) {

@@ -21,13 +21,13 @@ html
           .btn-choice
             div
               button#photo.js--modeSelector(data-mediatype="photo")
-                span !{dodoc.lang.photo}
+                span !{dodoc.lang().photo}
               button#video-btn.js--modeSelector(data-mediatype="video")
-                span !{dodoc.lang.video}
+                span !{dodoc.lang().video}
               button#stopmotion.js--modeSelector(data-mediatype="stopmotion")
-                span !{dodoc.lang.stopmotion}
+                span !{dodoc.lang().stopmotion}
               button#audio.js--modeSelector(data-mediatype="audio")
-                span !{dodoc.lang.audio}
+                span !{dodoc.lang().audio}
 
         .feedSettings
           .openCloseSettings
@@ -36,18 +36,18 @@ html
             form.sourceSelector
               .selectField.audioSource
                 label(for="audioSource")
-                  | !{dodoc.lang.audioInputSource}
+                  | !{dodoc.lang().audioInputSource}
                 select#audioSource.js--audioSource
               .selectField.audioOutput
                 label(for="audioOutput")
-                  | !{dodoc.lang.audioOutputDestination}
+                  | !{dodoc.lang().audioOutputDestination}
                 select#audioOutput.js--audioOutput
               .selectField.videoSource
                 label(for="videoSource")
-                  | !{dodoc.lang.videoInputSource}
+                  | !{dodoc.lang().videoInputSource}
                 select#videoSource.js--videoSource
             form.resolutionSelector.js--resolutionSelector
-              | !{dodoc.lang.chooseCameraResolution}
+              | !{dodoc.lang().chooseCameraResolution}
               label(for="qvga")
                 input(type="radio" name="videoRes" id="qvga" value="qvga" data-width="320" data-height="240")
                 span 320×240
@@ -62,16 +62,16 @@ html
                 span 1920×1080
               label(for="custom")
                 input.js--customVideoResInput(type="radio" name="videoRes" id="custom" value="" disabled)
-                | !{dodoc.lang.customCameraResolution}
+                | !{dodoc.lang().customCameraResolution}
                 hr
                 label(for="data-width")
-                  | !{dodoc.lang.width}
+                  | !{dodoc.lang().width}
                   input.setCustomRes.js--inputCustomVideoRes(type='number' name="data-width" step='1' value='' min='1' max='3000')
                 label(for="data-height")
-                  | !{dodoc.lang.height}
+                  | !{dodoc.lang().height}
                   input.setCustomRes.js--inputCustomVideoRes(type='number' name="data-height" step='1' value='' min='1' max='3000')
                 button.js--setCustomVideoRes
-                  | !{dodoc.lang.apply}
+                  | !{dodoc.lang().apply}
 
         .content-wrapper
           .captureLeft
@@ -99,7 +99,7 @@ html
                   .slider--captureModesOptions
                     input.js--enableAudioInVideo(type="checkbox" checked id="enableAudioInVideo")
                     label.checkbox--enableAudioInVideo(for="enableAudioInVideo")
-                      | !{dodoc.lang.enableAudioInVideo}
+                      | !{dodoc.lang().enableAudioInVideo}
                 .stopmotion-capture
                   button#start-sm-btn.btn.icon
                     include ../client/images/i_record.svg
@@ -107,7 +107,7 @@ html
                     include ../client/images/i_record.svg
                   .slider--captureModesOptions
                     label.slider--lastImageOpacity(for="lastImageOpacity")
-                      | !{dodoc.lang.lastImageOpacity}
+                      | !{dodoc.lang().lastImageOpacity}
                     input.js--lastImageOpacity(type="range" value="0" min="0" max="1" step="0.1" id="lastImageOpacity")
 
                 .audio-capture
@@ -119,16 +119,16 @@ html
               .display-choice
                 .choices.image-choice
                   .caption
-                    | !{dodoc.lang.photo}
+                    | !{dodoc.lang().photo}
                 .choices.video-choice
                   .caption
-                    | !{dodoc.lang.video}
+                    | !{dodoc.lang().video}
                 .choices.stopmotion-choice
                   .caption
-                    | !{dodoc.lang.stopmotion}
+                    | !{dodoc.lang().stopmotion}
                 .choices.audio-choice
                   .caption
-                    | !{dodoc.lang.audio}
+                    | !{dodoc.lang().audio}
 
             .full-screen-wrapper
               +button( 'fullscreen', '', 'isCollapsed')
@@ -149,7 +149,7 @@ html
               .preview_stopmotion--container
               .preview_stopmotion--timeline
               .preview_stopmotion--frameRate.txt-small_info
-                span !{dodoc.lang.frameRate}
+                span !{dodoc.lang().frameRate}
                 input.js--stopmotion_frameRate(type='number' step='1' value='4' min='1' max='25')
               +button( 'previzStopmotion', '', '')
               .output_container
@@ -169,7 +169,7 @@ html
         img.output
         .meta-stopmotion
           .image_count
-            | !{dodoc.lang.imageCount}
+            | !{dodoc.lang().imageCount}
           +button( 'deleteLastMedia', '', 'isCollapsed')
       .stopmotion_lastImageSmallPreview
         img

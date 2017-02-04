@@ -2,7 +2,7 @@
 
 // if there’s not webrtc here (thanks Apple)
 if(typeof navigator.getUserMedia !== 'function') {
-  alert(dodoc.lang.browserCantUserWebRTC);
+  alert(dodoc.lang().browserCantUserWebRTC);
 }
 
 /* VARIABLES */
@@ -72,7 +72,7 @@ function changeMediaMode( newMode) {
     alertify
       .closeLogOnClick(true)
       .delay(4000)
-      .error(dodoc.lang.aStopmotionIsRecordingFinishItFirst)
+      .error(dodoc.lang().aStopmotionIsRecordingFinishItFirst)
       ;
     return;
   }
@@ -81,7 +81,7 @@ function changeMediaMode( newMode) {
     alertify
       .closeLogOnClick(true)
       .delay(4000)
-      .error(dodoc.lang.aVideoIsRecordingFinishItFirst)
+      .error(dodoc.lang().aVideoIsRecordingFinishItFirst)
       ;
     return;
   }
@@ -614,7 +614,7 @@ var currentStream = (function(context) {
           for (index=0; index < videoResSwitches.length; index++) {
             videoResSwitches[index].checked = false;
           }
-          alertify.error(dodoc.lang.videoStreamCouldntBeStartedTryChangingRes);
+          alertify.error(dodoc.lang().videoStreamCouldntBeStartedTryChangingRes);
         }
       );
     });
@@ -623,7 +623,7 @@ var currentStream = (function(context) {
   function updateVideoSize() {
     if( videoElement === undefined)
       return;
-    videoResolutionIndicator.innerHTML = dodoc.lang.currentVideoResolutionIs+' '+videoElement.videoWidth + '×' + videoElement.videoHeight;
+    videoResolutionIndicator.innerHTML = dodoc.lang().currentVideoResolutionIs+' '+videoElement.videoWidth + '×' + videoElement.videoHeight;
   }
 
   function _getAudioFeed() {
@@ -642,7 +642,7 @@ var currentStream = (function(context) {
           resolve(stream);
         },
         function(err) {
-          alertify.error( dodoc.lang.audioStreamCouldntBeStarted + '\n\n error: ' + JSON.stringify(err));
+          alertify.error( dodoc.lang().audioStreamCouldntBeStarted + '\n\n error: ' + JSON.stringify(err));
         }
       );
     });

@@ -1,0 +1,35 @@
+{
+  "userDirname": "user",
+  "contentDirname" : "contenus",
+  "publicationTemplateDirname" : "templates",
+  "exportedPubliDir" : "publications",
+  "metaFileext" : ".txt",
+  "videoext" : ".webm",
+  "stopMotionext" : ".webm",
+  "audioext" : ".wav",
+  "folderMetafilename" : "dossier",
+  "projectMetafilename" : "projet",
+
+  "projectPublisFoldername" : "publications",
+  "projectPhotosFoldername" : "01-photos",
+  "projectAnimationsFoldername" : "02-animations",
+  "projectVideosFoldername" : "03-videos",
+  "projectAudiosFoldername" : "04-sons",
+  "projectTextsFoldername" : "05-textes",
+
+  "metaDateFormat" : "YYYYMMDD_HHmmss",
+  "textEncoding" : "UTF-8",
+  "deletedPrefix" : "x_",
+  "thumbSuffix" : "thumb",
+
+  "mediaThumbWidth" : 720,
+  "mediaThumbHeight" : 720,
+  "mediaThumbQuality" : 60,
+
+  "_comment" : "// see http://regexr.com/3d4t8",
+  "regexpMatchFolderNames" : "^([^.]+)$",
+  "regexpMatchProjectPreviewNames" : "^(apercu|preview)",
+  "regexpGetFileExtension" : "\\.[^.]*$",
+  "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)",
+  "regexpGetMediaName" : "^[^%5C-]*"
+}

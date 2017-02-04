@@ -37,12 +37,10 @@ function createWindow() {
 
   // checkout which langage to load
   var envLang = app.getLocale();
-//   envLang = 'en_US';
-  dodoc.setCurrentLang(envLang);
-  dev.log('Environment lang is ' + dodoc.getCurrentLang());
+//   envLang = 'en';
+  dodoc.setCurrentCodeLang(envLang);
+  dev.log('Environment lang is ' + dodoc.getCurrentCodeLang());
   dodoc.init();
-
-  console.log('test string ' + dodoc.lang().stopMotionCompilationProgress);
 
   if( global.dodoc === undefined)
     global.dodoc = {};

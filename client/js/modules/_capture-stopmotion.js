@@ -162,7 +162,7 @@ var stopMotionMode = (function() {
       $captureflash.fadeIn(0);
     }, function(err) {
       console.log('err ' + err);
-      alertify.error( dodoc.lang.videoStreamNotAvailable + '<br><em>' + JSON.stringify(err) + '</em>');
+      alertify.error( dodoc.lang().videoStreamNotAvailable + '<br><em>' + JSON.stringify(err) + '</em>');
     });
   }
   function _takeStopMotionPic() {
@@ -192,7 +192,7 @@ var stopMotionMode = (function() {
 
     }, function(err) {
       console.log('err ' + err);
-      alertify.error( dodoc.lang.videoStreamNotAvailable + '<br><em>' + JSON.stringify(err) + '</em>');
+      alertify.error( dodoc.lang().videoStreamNotAvailable + '<br><em>' + JSON.stringify(err) + '</em>');
     });
 
   }

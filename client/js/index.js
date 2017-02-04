@@ -35,7 +35,7 @@ function onFolderCreated(d){
 
 // Si un fichier existe déjà, affiche un message d'alerte
 function onFolderAlreadyExist(data){
-	alertify.error(dodoc.lang.thisFolderNameIsAlreadyTaken+'<em>'+data.name+'</em>'+'<br>'+dodoc.lang.pleaseUseAnother);
+	alertify.error(dodoc.lang().thisFolderNameIsAlreadyTaken+'<em>'+data.name+'</em>'+'<br>'+dodoc.lang().pleaseUseAnother);
 }
 
 // Liste les dossiers
@@ -126,7 +126,7 @@ function makeFolderContent( projectData){
 	  .find( '.create-date').text( transformDatetoString( created)).end()
 	  .find( '.modify-date').text( modified !== false ? transformDatetoString( modified) : '').end()
 	  .find( '.nb-projets')
-	    .find( '.nb-projets-intitule').text( dodoc.lang.projects).end()
+	    .find( '.nb-projets-intitule').text( dodoc.lang().projects).end()
     .end()
   ;
 

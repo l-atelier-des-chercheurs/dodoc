@@ -58,7 +58,7 @@ module.exports = function(app,io,m){
 
           var slugPubliName = req.params.publi;
           if( slugPubliName !== undefined) {
-            var jsonFileOfPubli = dodocPubli.getPubliPath( slugFolderName, slugProjectName, slugPubliName) + dodoc.settings.metaFileext;
+            var jsonFileOfPubli = dodocPubli.getPubliPath( slugFolderName, slugProjectName, slugPubliName) + dodoc.settings().metaFileext;
             var publiData = dodocAPI.readMetaFile( jsonFileOfPubli);
 
             pageDataJSON.slugPubliName = slugPubliName;
@@ -106,7 +106,7 @@ module.exports = function(app,io,m){
   };
 
   function getFolder(req, res) {
-    var pageTitle = dodoc.lang.folder;
+    var pageTitle = dodoc.lang().folder;
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("folder", generatePageDataJSON);
     }, function(err) {
@@ -115,7 +115,7 @@ module.exports = function(app,io,m){
   };
 
   function getProject(req, res) {
-    var pageTitle = dodoc.lang.project;
+    var pageTitle = dodoc.lang().project;
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("project", generatePageDataJSON);
     }, function(err) {
@@ -124,7 +124,7 @@ module.exports = function(app,io,m){
   };
 
   function getCapture(req, res) {
-    var pageTitle = dodoc.lang.capture;
+    var pageTitle = dodoc.lang().capture;
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("capture", generatePageDataJSON);
     }, function(err) {
@@ -133,7 +133,7 @@ module.exports = function(app,io,m){
   };
 
   function getBibli(req, res) {
-    var pageTitle = dodoc.lang.bibli;
+    var pageTitle = dodoc.lang().bibli;
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       dodocAPI.listAllTemplates().then(function(allTemplates) {
         generatePageDataJSON["templates"] = allTemplates;
@@ -151,7 +151,7 @@ module.exports = function(app,io,m){
   };
 
   function getPubli(req, res) {
-    var pageTitle = dodoc.lang.publi;
+    var pageTitle = dodoc.lang().publi;
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       dodocAPI.listAllTemplates().then(function(allTemplates) {
         generatePageDataJSON["templates"] = allTemplates;

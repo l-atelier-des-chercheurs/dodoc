@@ -4,13 +4,13 @@ mixin snippets(typeOfSnippet)
     //////////////////////////////////////////////   MEDIA FORM (inside bigmedia)  //////////////////////////////////
     form(onsubmit='return false;' class='add-media-data lead')
       label
-        | !{dodoc.lang.modal.informations}
+        | !{dodoc.lang().modal.informations}
       textarea.mediaContent--textOfTextmedia.js--mediaInformations(type='text' autofocus)
     h3.txt-small_info.margin-top_bottom
-      span(style='display:none;') !{dodoc.lang.modal.pathofmedia}
+      span(style='display:none;') !{dodoc.lang().modal.pathofmedia}
       .js--mediaFullPath(style='display:none;')
       a.js--downloadThisMedia(download)
-        | !{dodoc.lang.modal.downloadThisMedia}
+        | !{dodoc.lang().modal.downloadThisMedia}
     hr
     +button('favButton', '', '')
     +button('deleteMediaBibli', '', '')
@@ -22,7 +22,7 @@ mixin snippets(typeOfSnippet)
     form(onsubmit='return false;' class='add-media-text lead')
       textarea.mediaContent--textOfTextmedia.js--textField(placeholder="Ajouter du texte ici" autofocus required)
     h3.txt-small_info
-      | !{dodoc.lang.modal.pathofmedia}
+      | !{dodoc.lang().modal.pathofmedia}
       .js--mediaFullPath
       a.js--downloadThisMedia(download)
     hr
@@ -37,30 +37,30 @@ mixin snippets(typeOfSnippet)
         -for(var prop in localNetworkInfos)
           -if(isHttps)
             h3.txt-small_info
-              | !{dodoc.lang.toconnectwithanotherdevice}
+              | !{dodoc.lang().toconnectwithanotherdevice}
               a.js--openInBrowser(href="https://#{localNetworkInfos[prop]}:8080" target="_blank")
                 | https://#{localNetworkInfos[prop]}:8080
           -else
-            h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice}
+            h3.txt-small_info !{dodoc.lang().toconnectwithanotherdevice}
               a.js--openInBrowser(href="http://#{localNetworkInfos[prop]}:8080" target="_blank")
                 | http://#{localNetworkInfos[prop]}:8080
       .module_infos-blocs
         h3.txt-small_info
-          | !{dodoc.lang.mediapublitemplatesarestoredint}
+          | !{dodoc.lang().mediapublitemplatesarestoredint}
           div.txt-wrap_long_lines
             a.js--openThisPathInFinder(href="#{currentUserDirPath}") #{ currentUserDirPath.replace(/\//g, '\/\u200B') }
         a.txt-small_info.moveDodocContentFolder.do--hide_on_clients.js--openModal_moveContentFolder
-          | !{dodoc.lang.clickHereToMoveContentFolder}
+          | !{dodoc.lang().clickHereToMoveContentFolder}
       .module_infos-blocs
         - if(logToFile)
           input.js--enableLogToFile(type="checkbox" id="enableLogToFile" checked)
         - else
           input.js--enableLogToFile(type="checkbox" id="enableLogToFile")
         label.txt-small_info.checkbox--enableLogToFile.do--hide_on_clients(for="enableLogToFile")
-          | !{dodoc.lang.enableLogToFile}
+          | !{dodoc.lang().enableLogToFile}
       .module_infos-blocs
         a.txt-small_info.creditADC.js--openInBrowser(href="http://latelier-des-chercheurs.fr/" target="_blank")
-          | !{dodoc.lang.creditADC}
+          | !{dodoc.lang().creditADC}
       .module_infos-blocs
         .txt-small_info
           | do•doc v#{global.dodocVersion}

@@ -12,9 +12,11 @@ script
   | app.contentDir = "!{contentDir}";
   | app.currentUserDirPath = "!{currentUserDirPath}";
   | app.url = "!{url}";
-  | var dodoc = !{JSON.stringify(dodoc)};
+  | dodoc = {};
+  | dodoc.lang = function() { return !{JSON.stringify(dodoc.lang())} };
+  | dodoc.settings = function() { return !{JSON.stringify(dodoc.settings())} };
 script( src='/js/production/plugins.js')
-script moment.locale("#{dodoc.settings.codelang}");
+script moment.locale("#{dodoc.getCurrentCodeLang()}");
 
 script( src='/js/common.js')
 script( src='/js/modules/_modals.js')

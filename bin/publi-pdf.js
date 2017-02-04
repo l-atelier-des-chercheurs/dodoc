@@ -31,7 +31,7 @@ var publiPDF = (function() {
 
   function createFolders(d){
     return new Promise(function(resolve, reject) {
-      var publicationsFolder = path.join(dodocAPI.getUserPath(), dodoc.settings.exportedPubliDir);
+      var publicationsFolder = path.join(dodocAPI.getUserPath(), dodoc.settings().exportedPubliDir);
       var printFolderName = "print";
 
       // todo: simplify with a simple call that recursively creates structure
@@ -48,7 +48,7 @@ var publiPDF = (function() {
       .then((printFolderPath) => {
         dev.logverbose('printFolderPath: ', printFolderPath);
         d.printFolderPath = printFolderPath;
-        d.relativePrintFolder = path.join(dodoc.settings.exportedPubliDir, d.slugFolderName, d.slugProjectName, d.slugPubliName, printFolderName);
+        d.relativePrintFolder = path.join(dodoc.settings().exportedPubliDir, d.slugFolderName, d.slugProjectName, d.slugPubliName, printFolderName);
         resolve(d);
       });
     });

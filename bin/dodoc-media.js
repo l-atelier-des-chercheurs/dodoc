@@ -46,7 +46,7 @@ var dodocMedia = (function() {
       return _getTextPathOfProject();
   }
   function getAnimationPathOfProject() {
-    return dodoc.settings.projectAnimationsFoldername;
+    return dodoc.settings().projectAnimationsFoldername;
   }
   function getAllMediasFoldersPathAsArray() {
     var mediasFolders = [];
@@ -100,7 +100,7 @@ var dodocMedia = (function() {
       switch (newMediaType) {
         case 'photo':
           var mediaPath = _getMediaPath(slugFolderName, slugProjectName, mediaFolder);
-          newFileName = dodocAPI.findFirstFilenameNotTaken(newFileName, mediaPath, dodoc.settings.metaFileext);
+          newFileName = dodocAPI.findFirstFilenameNotTaken(newFileName, mediaPath, dodoc.settings().metaFileext);
           pathToFile = path.join(mediaPath, newFileName);
 
           var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.mediaData);
@@ -108,7 +108,7 @@ var dodocMedia = (function() {
 
           dodocAPI.makeImageFromData(imageBuffer.data, pathToFile)
           .then(function(imagePath) {
-            var thumbPath = pathToFile + '-' + dodoc.settings.thumbSuffix + '.jpeg';
+            var thumbPath = pathToFile + '-' + dodoc.settings().thumbSuffix + '.jpeg';
             return dodocAPI.makeImageThumb(imagePath, thumbPath);
           }, function(error) {
             dev.error("Failed to save image! Error: " + error);
@@ -136,10 +136,10 @@ var dodocMedia = (function() {
           newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath);
           pathToFile = path.join( mediaPath, newFileName);
 
-          dodocAPI.writeMediaDataToDisk( pathToFile, dodoc.settings.videoext, newMediaData.mediaData.videoData)
+          dodocAPI.writeMediaDataToDisk( pathToFile, dodoc.settings().videoext, newMediaData.mediaData.videoData)
 /*
           .then(function() {
-            return dodocAPI.writeMediaDataToDisk( pathToFile, dodoc.settings.audioext, newMediaData.mediaData.audioData)
+            return dodocAPI.writeMediaDataToDisk( pathToFile, dodoc.settings().audioext, newMediaData.mediaData.audioData)
           }, function(error) { reject('Failed to save video: ' + error); })
 */
           .then(function() {
@@ -150,7 +150,7 @@ var dodocMedia = (function() {
             mdata.slugProjectName = slugProjectName;
             mdata.mediaFolderPath = mediaFolder;
 
-            _createThumbnails(pathToFile + dodoc.settings.videoext, newFileName, mediaPath)
+            _createThumbnails(pathToFile + dodoc.settings().videoext, newFileName, mediaPath)
             .then(function(mediaFolderContent) {
               if(newMediaData.mediaData.audioData === undefined) {
                 resolve(mdata);
@@ -171,7 +171,7 @@ var dodocMedia = (function() {
           // WARNING : animation doesn't use newFileName, it already has a filename to use (generated at the beginning of a stopmotion capture)
           newFileName = newMediaData.stopMotionCacheFolder;
           pathToFile = path.join( mediaPath, newFileName);
-          fileExtension = dodoc.settings.stopMotionext;
+          fileExtension = dodoc.settings().stopMotionext;
 
           var frameRate = newMediaData.frameRate || 4;
 
@@ -192,7 +192,7 @@ var dodocMedia = (function() {
               .on('progress', progress => {
                 var msg = {
                   "author" : newMediaData.author,
-                  "content" : `${dodoc.lang.stopMotionCompilationProgress} ${progress.frames}/${numberOfImagesToProcess} ${dodoc.lang.imagesAdded}`
+                  "content" : `${dodoc.lang().stopMotionCompilationProgress} ${progress.frames}/${numberOfImagesToProcess} ${dodoc.lang().imagesAdded}`
                 };
                 require('../sockets').notifyUser(msg);
                 dev.logverbose(`Processing new stopmotion: image ${progress.frames}/${numberOfImagesToProcess}`);
@@ -232,10 +232,10 @@ var dodocMedia = (function() {
           break;
         case 'audio':
           var mediaPath = _getMediaPath( slugFolderName, slugProjectName, mediaFolder);
-          newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath, dodoc.settings.metaFileext);
+          newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath, dodoc.settings().metaFileext);
           pathToFile = path.join( mediaPath, newFileName);
 
-          dodocAPI.writeMediaDataToDisk( pathToFile, dodoc.settings.audioext, newMediaData.mediaData.audioData)
+          dodocAPI.writeMediaDataToDisk( pathToFile, dodoc.settings().audioext, newMediaData.mediaData.audioData)
           .then(function() {
 
             if(newMediaData.audioScreenshot !== undefined) {
@@ -261,7 +261,7 @@ var dodocMedia = (function() {
           break;
         case 'text':
           var mediaPath = _getMediaPath( slugFolderName, slugProjectName, mediaFolder);
-          newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath, dodoc.settings.metaFileext);
+          newFileName = dodocAPI.findFirstFilenameNotTaken( newFileName, mediaPath, dodoc.settings().metaFileext);
           pathToFile = path.join( mediaPath, newFileName);
 
           fileExtension = '.md';
@@ -316,10 +316,10 @@ var dodocMedia = (function() {
       // if this is a text media, also update its content
       mediaMetaData.modified = dodocAPI.getCurrentDate();
 
-      dodocAPI.storeData( mediaFilepath + dodoc.settings.metaFileext, mediaMetaData, 'update').then(function( mdata) {
+      dodocAPI.storeData( mediaFilepath + dodoc.settings().metaFileext, mediaMetaData, 'update').then(function( mdata) {
         dev.logverbose('Just stored meta for media');
         // if media is a text, let's add the text content to the obj for convenience client-side
-        if( mediaFolderPath === dodoc.settings.projectTextsFoldername && editMediaData.textOfTextmedia) {
+        if( mediaFolderPath === dodoc.settings().projectTextsFoldername && editMediaData.textOfTextmedia) {
 
           var mediaFilepathWithExt = mediaFilepath + '.md';
           var mediaData = {
@@ -365,7 +365,7 @@ var dodocMedia = (function() {
           var cleanMediaName = _getMediaFileNameFromFileName(filename);
           if( cleanMediaName === mediaName) {
             var filePath = path.join( pathToMediaFolder, filename);
-            var deletedFilePath = path.join( pathToMediaFolder, dodoc.settings.deletedPrefix + filename);
+            var deletedFilePath = path.join( pathToMediaFolder, dodoc.settings().deletedPrefix + filename);
             fs.renameSync( filePath, deletedFilePath);
             dev.log( "A file will be deleted (renamed and hidden from dodoc) : \n - " + filePath + "\n - " + deletedFilePath);
           }
@@ -376,7 +376,7 @@ var dodocMedia = (function() {
           "slugProjectName" : slugProjectName,
           "mediaFolder" : mediaFolder,
           "mediaName" : mediaName,
-          "mediaKey" : path.join( mediaFolder, mediaName + dodoc.settings.metaFileext)
+          "mediaKey" : path.join( mediaFolder, mediaName + dodoc.settings().metaFileext)
         }
         resolve( mediaMetaData);
       } catch( err) {
@@ -415,23 +415,23 @@ var dodocMedia = (function() {
   }
 
   function _getPhotoPathOfProject() {
-    return dodoc.settings.projectPhotosFoldername;
+    return dodoc.settings().projectPhotosFoldername;
   }
   function _getVideoPathOfProject() {
-    return dodoc.settings.projectVideosFoldername;
+    return dodoc.settings().projectVideosFoldername;
   }
   function _getAudioPathOfProject() {
-    return dodoc.settings.projectAudiosFoldername;
+    return dodoc.settings().projectAudiosFoldername;
   }
 
 
   function _getTextPathOfProject() {
-    return dodoc.settings.projectTextsFoldername;
+    return dodoc.settings().projectTextsFoldername;
   }
   function _getMediaMeta(projectPath, mediaFolderPath, mediaName) {
     dev.logfunction( "COMMON — _getMediaMeta : projectPath = " + projectPath + " mediaFolderPath = " + mediaFolderPath + " mediaName = " + mediaName);
-    var mediaJSONFilepath = _getPathToMedia(projectPath, mediaFolderPath, mediaName) + dodoc.settings.metaFileext;
-    var mediaData = fs.readFileSync(mediaJSONFilepath, dodoc.settings.textEncoding);
+    var mediaJSONFilepath = _getPathToMedia(projectPath, mediaFolderPath, mediaName) + dodoc.settings().metaFileext;
+    var mediaData = fs.readFileSync(mediaJSONFilepath, dodoc.settings().textEncoding);
     var mediaMetaData = dodocAPI.parseData(mediaData);
     return mediaMetaData;
   }
@@ -439,7 +439,7 @@ var dodocMedia = (function() {
     return path.join( projectPath, mediasFolderPath, mediaName);
   }
   function _readTextMedia(textMediaPath) {
-    var textMediaData = fs.readFileSync(textMediaPath, dodoc.settings.textEncoding);
+    var textMediaData = fs.readFileSync(textMediaPath, dodoc.settings().textEncoding);
     textMediaData = dodocAPI.parseData(textMediaData);
     textMediaData.text_md = mm.parse(textMediaData.text).content;
     return textMediaData;
@@ -457,13 +457,13 @@ var dodocMedia = (function() {
 //     dev.log( "- looking for files in " + mediasPath);
     filesInMediaFolder.forEach( function( filename) {
       // if file is not a folder and not .DS_STORE
-      if( !new RegExp( dodoc.settings.regexpMatchFolderNames, 'i').test( filename) && filename !== ".DS_Store") {
-        var fileExtension = new RegExp( dodoc.settings.regexpGetFileExtension, 'i').exec( filename)[0];
+      if( !new RegExp( dodoc.settings().regexpMatchFolderNames, 'i').test( filename) && filename !== ".DS_Store") {
+        var fileExtension = new RegExp( dodoc.settings().regexpGetFileExtension, 'i').exec( filename)[0];
         // match only meta files that are not deleted (prefixed with a custom prefix
-        if( fileExtension === dodoc.settings.metaFileext && !new RegExp( '^' + dodoc.settings.deletedPrefix).test( filename)) {
+        if( fileExtension === dodoc.settings().metaFileext && !new RegExp( '^' + dodoc.settings().deletedPrefix).test( filename)) {
           if( !lookingForSpecificJson)
             foldersMediasMeta.push( filename);
-          else if( filename === mediaName + dodoc.settings.metaFileext) {
+          else if( filename === mediaName + dodoc.settings().metaFileext) {
             foldersMediasMeta.push( filename);
             return;
           }
@@ -480,7 +480,7 @@ var dodocMedia = (function() {
     dev.logverbose( "- foldersMediasMeta : " + JSON.stringify( foldersMediasMeta, null, 4));
 
     for( var mediaMetaFilename of foldersMediasMeta) {
-      var metaFileNameWithoutExtension = new RegExp( dodoc.settings.regexpRemoveFileExtension, 'i').exec( mediaMetaFilename)[1];
+      var metaFileNameWithoutExtension = new RegExp( dodoc.settings().regexpRemoveFileExtension, 'i').exec( mediaMetaFilename)[1];
 //       dev.log( "- looking for medias filenames that start with " + metaFileNameWithoutExtension);
       for( var mediaFilename of foldersMediasFiles) {
         // if this media filename corresponds to the meta filename
@@ -498,7 +498,7 @@ var dodocMedia = (function() {
             mdata.slugProjectName = slugProjectName;
 
             // if the file is a text, then also add the content of the TXT in the answer
-            if( new RegExp( dodoc.settings.regexpGetFileExtension, 'i').exec( mediaFilename)[0] === '.md') {
+            if( new RegExp( dodoc.settings().regexpGetFileExtension, 'i').exec( mediaFilename)[0] === '.md') {
               var textMediaData = _readTextMedia( path.join( projectPath, mediasFolderPath, mediaFilename));
               mdata.textMediaContent = textMediaData;
             }
@@ -527,9 +527,9 @@ var dodocMedia = (function() {
           "type" : newMediaType,
           "fav" : false
         };
-      dodocAPI.storeData( pathToFile + dodoc.settings.metaFileext, mdata, 'update').then(function( meta) {
+      dodocAPI.storeData( pathToFile + dodoc.settings().metaFileext, mdata, 'update').then(function( meta) {
         meta.mediaName = fileName;
-        dev.log( "New media meta file created at path " + pathToFile + dodoc.settings.metaFileext);
+        dev.log( "New media meta file created at path " + pathToFile + dodoc.settings().metaFileext);
         resolve( meta);
       }, function() {
         dev.error('--> Couldn\'t create media meta.');
@@ -544,9 +544,9 @@ var dodocMedia = (function() {
   // --> 20161121_164329_1-thumb.jpeg
   // --> 20161121_164329_1-any-option.webm
   function _getMediaFileNameFromFileName(filename) {
-    var fileNameWithoutExtension = new RegExp( dodoc.settings.regexpRemoveFileExtension, 'i').exec(filename)[1];
+    var fileNameWithoutExtension = new RegExp( dodoc.settings().regexpRemoveFileExtension, 'i').exec(filename)[1];
     // get the "name" part of this filename
-    var cleanMediaName = new RegExp( dodoc.settings.regexpGetMediaName, 'i').exec(fileNameWithoutExtension)[0];
+    var cleanMediaName = new RegExp( dodoc.settings().regexpGetMediaName, 'i').exec(fileNameWithoutExtension)[0];
     return cleanMediaName;
   }
 
