@@ -465,6 +465,7 @@ var sockets = (function() {
 
   function onGeneratePDF(socket, d) {
     publiPDF.exportPubliToPDF(d).then(function(pdfInfos) {
+      pdfInfos.slugPubliName = d.slugPubliName;
       dodocAPI.sendEventWithContent( 'publiPDFIsGenerated', pdfInfos, io, socket);
     }, function(error) {
       dodocAPI.sendEventWithContent( 'cannotGeneratePDF', error, io, socket);

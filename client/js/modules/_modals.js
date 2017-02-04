@@ -656,6 +656,7 @@ var modals = (function() {
       .find('.js--exportedPDFURL')
         .html(d.pdfURL)
         .attr('href', d.pdfURL)
+        .attr('download', d.slugPubliName)
       .end()
       ;
     return $m;
