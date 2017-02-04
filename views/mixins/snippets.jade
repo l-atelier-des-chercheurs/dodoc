@@ -36,7 +36,8 @@ mixin snippets(typeOfSnippet)
       .module_infos-blocs
         -for(var prop in localNetworkInfos)
           -if(isHttps)
-            h3.txt-small_info !{dodoc.lang.toconnectwithanotherdevice}
+            h3.txt-small_info
+              | !{dodoc.lang.toconnectwithanotherdevice}
               a.js--openInBrowser(href="https://#{localNetworkInfos[prop]}:8080" target="_blank")
                 | https://#{localNetworkInfos[prop]}:8080
           -else
@@ -44,15 +45,18 @@ mixin snippets(typeOfSnippet)
               a.js--openInBrowser(href="http://#{localNetworkInfos[prop]}:8080" target="_blank")
                 | http://#{localNetworkInfos[prop]}:8080
       .module_infos-blocs
-        h3.txt-small_info !{dodoc.lang.mediapublitemplatesarestoredint} <br>#{currentUserDirPath}
-      .module_infos-blocs
-        a.txt-small_info.moveDodocContentFolder.js--openModal_moveContentFolder !{dodoc.lang.clickHereToMoveContentFolder}
+        h3.txt-small_info
+          | !{dodoc.lang.mediapublitemplatesarestoredint}
+          span.txt-wrap_long_lines
+            a.js--openThisPathInFinder(href="#{currentUserDirPath}") #{ currentUserDirPath.replace(/\//g, '\/\u200B') }
+        a.txt-small_info.moveDodocContentFolder.do--hide_on_clients.js--openModal_moveContentFolder
+          | !{dodoc.lang.clickHereToMoveContentFolder}
       .module_infos-blocs
         - if(logToFile)
           input.js--enableLogToFile(type="checkbox" id="enableLogToFile" checked)
         - else
           input.js--enableLogToFile(type="checkbox" id="enableLogToFile")
-        label.txt-small_info.checkbox--enableLogToFile(for="enableLogToFile")
+        label.txt-small_info.checkbox--enableLogToFile.do--hide_on_clients(for="enableLogToFile")
           | !{dodoc.lang.enableLogToFile}
       .module_infos-blocs
         a.txt-small_info.creditADC.js--openInBrowser(href="http://latelier-des-chercheurs.fr/" target="_blank")

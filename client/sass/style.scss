@@ -48,6 +48,11 @@ body,html {
   &:after { clear: both; }
 }
 
+html:not(.is--electronBrowser) {
+  .do--hide_on_clients {
+    display: none;
+  }
+}
 
 
 body {
@@ -327,21 +332,13 @@ button {
   }
 
   .moveDodocContentFolder {
-    display: none;
-    html.is--electronBrowser & {
-      display: initial;
-    }
   }
 
   .checkbox--enableLogToFile {
-    display: none;
-    html.is--electronBrowser & {
-      display: inline;
-    }
+    display: inline;
     &::before {
       background-color: #fff !important;
     }
-
   }
 }
 

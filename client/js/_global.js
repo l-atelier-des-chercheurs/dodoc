@@ -77,7 +77,14 @@ $('body').on('click', '.js--openInBrowser', function() {
 $('body').on('click', '.js--enableLogToFile', function() {
 	socket.emit('enableLogToFile');
 });
-
+$('body').on('click', '.js--openThisPathInFinder', function() {
+  if(require('electron') !== undefined) {
+    var shell = require('electron').shell;
+    event.preventDefault();
+    var thisPath = $(this).attr('href');
+    shell.showItemInFolder(thisPath);
+  }
+});
 
 function loadProjectSnippet(pd) {
 	var pathToProject = '/' + pd.slugFolderName + '/' + pd.slugProjectName;
