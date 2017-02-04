@@ -103,6 +103,14 @@ var dodocMedia = (function() {
           newFileName = dodocAPI.findFirstFilenameNotTaken(newFileName, mediaPath, dodoc.settings().metaFileext);
           pathToFile = path.join(mediaPath, newFileName);
 
+          var projectPath = dodocAPI.getProjectPath(slugFolderName, slugProjectName);
+          // check if it already has a preview
+          var dodocProject = require('./dodoc-project');
+          if(!dodocProject.getProjectPreview(projectPath)) {
+            // if it doesn't let's set that image to be one
+            dodocProject.addProjectPreview(projectPath, newMediaData.mediaData);
+          }
+
           var imageBuffer = dodocAPI.decodeBase64Image( newMediaData.mediaData);
           dev.logverbose('Will store this photo at path: ' + pathToFile);
 

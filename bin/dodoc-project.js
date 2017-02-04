@@ -19,6 +19,7 @@ var dodocProject = (function() {
     updateProjectMeta        : (pdata) => { return updateProjectMeta(pdata); },
     listOneProject           : (slugFolderName, slugProjectName) => { return listOneProject(slugFolderName, slugProjectName); },
     removeOneProject         : (slugFolderName, slugProjectName) => { return removeOneProject(slugFolderName, slugProjectName); },
+    addProjectPreview        : (projectPath, imageData) => { return addProjectPreview(projectPath, imageData); },
   };
 
   /***************************************************************************************************/
@@ -77,7 +78,7 @@ var dodocProject = (function() {
         updatedpmeta.slugFolderName = slugFolderName;
         updatedpmeta.slugProjectName = slugProjectName;
 
-        _addProjectPreview(projectPath, pdata.imageData)
+        addProjectPreview(projectPath, pdata.imageData)
         .then(err => {
           updatedpmeta.projectPreviewName = getProjectPreview(projectPath);
           resolve(updatedpmeta);
@@ -99,9 +100,11 @@ var dodocProject = (function() {
 
       var currentDateString = dodocAPI.getCurrentDate();
 
+/*
       if( pdata.imageData !== undefined) {
-        _addProjectPreview(projectPath, pdata.imageData);
+        addProjectPreview(projectPath, pdata.imageData);
       }
+*/
 
       // récupérer les infos sur le project
       var currentpdata = getProjectMeta( slugFolderName, slugProjectName);
@@ -117,7 +120,7 @@ var dodocProject = (function() {
         updatedpmeta.slugFolderName = slugFolderName;
         updatedpmeta.slugProjectName = slugProjectName;
 
-        _addProjectPreview(projectPath, pdata.imageData)
+        addProjectPreview(projectPath, pdata.imageData)
         .then(err => {
           updatedpmeta.projectPreviewName = getProjectPreview(projectPath);
           resolve( updatedpmeta);
@@ -181,14 +184,14 @@ var dodocProject = (function() {
   /******************************************** private functions ************************************/
   /***************************************************************************************************/
 
-  function _addProjectPreview(parentPath, imageData){
+  function addProjectPreview(projectPath, imageData){
     return new Promise(function(resolve, reject) {
-      dev.logfunction(`COMMON - _addProjectPreview with parentPath = ${parentPath}`);
+      dev.logfunction(`COMMON - addProjectPreview with projectPath = ${projectPath}`);
 
       if(imageData === undefined)
         resolve();
 
-      var pathToFile = parentPath + "/" + "apercu";
+      var pathToFile = projectPath + "/" + "apercu";
       var imageBuffer = dodocAPI.decodeBase64Image(imageData);
 
       dodocAPI.makeImageFromData(imageBuffer.data, pathToFile)
@@ -196,7 +199,7 @@ var dodocProject = (function() {
         resolve();
       })
       .catch(err => {
-        dev.error(`Failed creating thumb for project at path ${parentPath}: ${err}`);
+        dev.error(`Failed creating thumb for project at path ${projectPath}: ${err}`);
         reject();
       });
     });
