@@ -32,7 +32,8 @@ function createWindow() {
   const verbose = flags.get('verbose');
   dev.init(debug, verbose);
 
-  dev.log('——— Starting dodoc app v' + process.env.npm_package_version);
+  global.dodocVersion = app.getVersion();
+  dev.log('——— Starting dodoc app v' + global.dodocVersion);
 
   if( global.dodoc === undefined)
     global.dodoc = {};
@@ -43,6 +44,7 @@ function createWindow() {
     windowState = global.nodeStorage.getItem('windowstate') ? global.nodeStorage.getItem('windowstate') : {};
     dev.log('Found defaults for windowState: ');
     dev.log(windowState);
+    dev.log(JSON.stringify(windowState, null, 4));
   } catch (err) {
     dev.log('No default for windowState');
   }
