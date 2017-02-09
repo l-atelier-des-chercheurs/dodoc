@@ -2,7 +2,7 @@
   "name": "dodoc",
   "version": "5.2.0",
   "description": "Dodoc is a documentation tool for creativity.",
-  "author": "L’Atelier des Chercheurs <http://latelier-des-chercheurs.fr/>",
+  "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
   "license": "CC-BY-NC-SA-4.0",
   "main": "main.js",
