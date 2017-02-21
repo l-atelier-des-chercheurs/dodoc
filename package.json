@@ -12,7 +12,6 @@
     "debug": "electron . --debug --verbose",
     "debug-watch": "nodemon  -e js,json --ignore client/ --ignore views/ --exec \"electron --debug=5858 main --debug --verbose\"",
     "inspect-main": "electron-inspector",
-    "postinstall": "install-app-deps",
     "rebuild": "electron-rebuild -f -w sharp",
     "pack": "build --dir",
     "dist": "build"
