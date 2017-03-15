@@ -82,6 +82,11 @@ Install dependencies (may take up to 5 minutes):
 npm install
 ```  
  
+On ARM devices (such as a Raspberry Pi, or an Orange Pi), the PDF creation library (Phantom) is not available so it can't be installed. For those devices, run the following command instead:
+```
+npm install --no-optional
+``` 
+ 
 #### 4. Run DoDoc
 
 Start DoDoc folder with the following command:
