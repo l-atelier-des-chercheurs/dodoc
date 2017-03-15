@@ -31,7 +31,7 @@
       "category": "public.app-category.education"
     },
     "win": {
-      "iconUrl": "http://latelier-des-chercheurs.fr/icon.ico"
+      "iconUrl": "https://github.com/l-atelier-des-chercheurs/dodoc/blob/master/build/icon.ico?raw=true"
     }
   },
   "dependencies": {
