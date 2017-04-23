@@ -202,25 +202,11 @@ var dodocAPI = (function() {
       dev.logverbose(`Now using sharp to create image from buffer to ${imagePath}`);
       imagePath += '.jpeg';
 
-      // remove image at path if it exists
-
-/*
-      Jimp.read(imageBufferData, function(err, image) {
-        if (err) reject(err);
-        image
-          .quality(90)
-          .write(imagePath, function(err, info) {
-            if (err) reject(err);
-            dev.logverbose('Image has been saved, resolving its path.');
-            resolve(imagePath);
-          });
-        });
-*/
-
-      // equivalent in sharp (but sharp needs native deps, which is annoying)
       sharp(imageBufferData)
         .rotate()
         .withMetadata()
+        .background({r: 255, g: 255, b: 255})
+        .flatten()
         .toFormat(sharp.format.jpeg)
         .quality(100)
         .toFile(imagePath, function(err, info) {
@@ -236,20 +222,6 @@ var dodocAPI = (function() {
     return new Promise(function(resolve, reject) {
       dev.logverbose(`Making a thumb for ${source} at dest ${dest}`);
 
-/*
-      Jimp.read(source, function(err, image) {
-        if (err) reject(err);
-        image
-          .clone()
-          .quality(dodoc.settings().mediaThumbQuality)
-          .scaleToFit(dodoc.settings().mediaThumbWidth, dodoc.settings().mediaThumbHeight)
-          .write(dest, function(err, info) {
-            if (err) reject(err);
-            dev.logverbose('Image has been saved, resolving its path.');
-            resolve();
-          });
-      });
-*/
       sharp(source)
         .rotate()
         .resize(dodoc.settings().mediaThumbWidth, dodoc.settings().mediaThumbHeight)
