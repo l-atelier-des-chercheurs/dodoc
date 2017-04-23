@@ -136,7 +136,7 @@ body.projets{
 
     .last-medias {
       @include clearfix();
-      background-color: #fff;
+      border: 2px solid white;
       padding: $t-margin/2 $t-margin/2;
 
       body.projets & {
