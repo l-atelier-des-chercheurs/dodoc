@@ -1,7 +1,6 @@
 var path = require('path');
 var fs = require('fs-extra');
-
-var PDFDocument = require 'pdfkit'
+var phantom = require('phantom');
 
 var dodoc  = require('../dodoc');
 
@@ -61,8 +60,7 @@ var publiPDF = (function() {
       var pdfName = dodocAPI.getCurrentDate()+'.pdf';
       var pdfPath = path.join(d.printFolderPath, pdfName);
       var pdfURL = path.join('/', d.relativePrintFolder, pdfName)
-      dev.logverbose('Will make pdf');
-
+      dev.logverbose('Will make phantom pdf');
 
       phantom.create([
         '--ignore-ssl-errors=yes',
@@ -102,4 +100,3 @@ var publiPDF = (function() {
 })();
 
 module.exports = publiPDF;
-
