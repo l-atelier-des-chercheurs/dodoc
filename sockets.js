@@ -456,6 +456,7 @@ var sockets = (function() {
   }
 
   function onFtpSettings(socket, d) {
+    dev.logfunction( "EVENT - onFtpSettings : " + JSON.stringify( d, null, 4));
     publiFTP.sendFileToServer(d).then(function(urlToPubli) {
       dodocAPI.sendEventWithContent('publiTransferred', {urlToPubli}, io, socket);
     }, function(error) {

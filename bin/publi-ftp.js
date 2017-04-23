@@ -62,8 +62,11 @@ var publiFTP = (function() {
 
       c.on('ready', function() {
         c.mkdir(serverFolder, true,  function(err) {
-          if (err) dev.logverbose('Couldn\'t create folder on server. Err: ' + err);
-          else {
+          if (err) {
+            dev.logverbose('Couldn\'t create folder on server. ' + err);
+            require('../sockets').notifyUser();
+            reject(err);
+          } else {
             dev.log("Folder create on server transferred successfully!");
           }
           c.put(path.join(webPubliFolderPath, 'index.html'), path.join(serverFolder,'index.html'), function(err) {
@@ -98,7 +101,10 @@ var publiFTP = (function() {
               });
             }
             c.end();
-            const urlToPubli = path.join(d.baseURL, serverFolder);
+
+            const urlToPubli = d.baseURL.endsWith('/') ? d.baseURL + serverFolder : d.baseURL + '/' + serverFolder;
+
+            // otherwise just concatenate strings
             dev.log("Publication was transferred and is now at: " + urlToPubli);
             resolve(urlToPubli);
           });

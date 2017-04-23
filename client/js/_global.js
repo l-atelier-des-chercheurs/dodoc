@@ -21,7 +21,7 @@ socket.on("*",function(event,d) {
   var logs = [];
   switch(event) {
     case "alertUsers":
-      let msgContent = typeof d === 'object' && d.hasOwnProperty('content') ? d.content : msg;
+      let msgContent = typeof d === 'object' && d.hasOwnProperty('content') ? d.content : d;
       let author = typeof d === 'object' && d.hasOwnProperty('author') ? d.author : false;
       if(author !== false && author === window.sessionId) {
         logs.push(msgContent);
