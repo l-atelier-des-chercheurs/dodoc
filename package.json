@@ -39,8 +39,8 @@
     "connect-multiparty": "^2.0.0",
     "dodoc-parsedown": "git+https://github.com/louis-ev/dodoc-parsedown.git",
     "download": "^5.0.2",
-    "electron-log": "^1.2.2",
-    "express": "4.14.1",
+    "electron-log": "^2.2.2",
+    "express": "4.15.2",
     "ffmpeg-static": "^2.0.0",
     "flags": "^0.1.3",
     "fluent-ffmpeg": "^2.1.0",
@@ -63,7 +63,7 @@
     "socket.io": "^1.3.5"
   },
   "devDependencies": {
-    "electron-builder": "^13.9.0",
+    "electron-builder": "^17.0.3",
     "electron-packager": "^8.4.0",
     "electron-prebuilt": "^1.4.8",
     "electron-rebuild": "^1.4.0",
