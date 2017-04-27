@@ -1,6 +1,6 @@
 {
   "name": "recordrtc",
-  "version": "5.4.0",
+  "version": "5.4.1",
   "authors": [
     {
       "name": "Muaz Khan",
@@ -30,11 +30,11 @@
     "test",
     "tests"
   ],
-  "_release": "5.4.0",
+  "_release": "5.4.1",
   "_resolution": {
     "type": "version",
-    "tag": "5.4.0",
-    "commit": "d8e78703365aa6f999b494fb0b0d165953cf9156"
+    "tag": "5.4.1",
+    "commit": "0be5b89f622caa50df999b863a6b6fc891f36d89"
   },
   "_source": "https://github.com/muaz-khan/RecordRTC.git",
   "_target": "^5.2.7",

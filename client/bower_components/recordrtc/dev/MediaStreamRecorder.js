@@ -1,9 +1,6 @@
 // ______________________
 // MediaStreamRecorder.js
 
-// todo: need to show alert boxes for incompatible cases
-// encoder only supports 48k/16k mono audio channel
-
 /*
  * Implementation of https://dvcs.w3.org/hg/dap/raw-file/default/media-stream-capture/MediaRecorder.html
  * The MediaRecorder accepts a mediaStream as input source passed from UA. When recorder starts,
@@ -24,11 +21,11 @@
  * @class
  * @example
  * var options = {
- *     mimeType: 'video/mp4', // audio/ogg or video/webm
+ *     mimeType: 'video/webm',
  *     audioBitsPerSecond : 256 * 8 * 1024,
  *     videoBitsPerSecond : 256 * 8 * 1024,
  *     bitsPerSecond: 256 * 8 * 1024,  // if this is provided, skip above two
- *     getNativeBlob: true // by default it is false
+ *     getNativeBlob: true // by default: it is false
  * }
  * var recorder = new MediaStreamRecorder(MediaStream, options);
  * recorder.record();
@@ -64,8 +61,13 @@ function MediaStreamRecorder(mediaStream, config) {
             mediaStream = stream;
         }
 
-        if (!config.mimeType || config.mimeType.indexOf('audio') === -1) {
+        if (!config.mimeType || config.mimeType.toString().toLowerCase().indexOf('audio') === -1) {
             config.mimeType = isChrome ? 'audio/webm' : 'audio/ogg';
+        }
+
+        if (config.mimeType && config.mimeType.toString().toLowerCase() !== 'audio/ogg' && !!navigator.mozGetUserMedia) {
+            // forcing better codecs on Firefox (via #166)
+            config.mimeType = 'audio/ogg';
         }
     }
 
@@ -95,6 +97,16 @@ function MediaStreamRecorder(mediaStream, config) {
             recorderHints = 'video/vp8';
         }
 
+        if (typeof MediaRecorder.isTypeSupported === 'function' && recorderHints.mimeType) {
+            if (!MediaRecorder.isTypeSupported(recorderHints.mimeType)) {
+                if (!config.disableLogs) {
+                    console.warn('MediaRecorder API seems unable to record mimeType:', recorderHints.mimeType);
+                }
+
+                recorderHints.mimeType = config.type === 'audio' ? 'audio/webm' : 'video/webm';
+            }
+        }
+
         // http://dxr.mozilla.org/mozilla-central/source/content/media/MediaRecorder.cpp
         // https://wiki.mozilla.org/Gecko:MediaRecorder
         // https://dvcs.w3.org/hg/dap/raw-file/default/media-stream-capture/MediaRecorder.html
@@ -107,7 +119,7 @@ function MediaStreamRecorder(mediaStream, config) {
             mediaRecorder = new MediaRecorder(mediaStream);
         }
 
-        if ('canRecordMimeType' in mediaRecorder && mediaRecorder.canRecordMimeType(config.mimeType) === false) {
+        if (!MediaRecorder.isTypeSupported && 'canRecordMimeType' in mediaRecorder && mediaRecorder.canRecordMimeType(config.mimeType) === false) {
             if (!config.disableLogs) {
                 console.warn('MediaRecorder API seems unable to record mimeType:', config.mimeType);
             }
@@ -124,6 +136,14 @@ function MediaStreamRecorder(mediaStream, config) {
             }
 
             if (!e.data || !e.data.size || e.data.size < 100 || self.blob) {
+                // make sure that stopRecording always getting fired
+                // even if there is invalid data
+                if (self.recordingCallback) {
+                    self.recordingCallback(new Blob([], {
+                        type: recorderHints.mimeType || 'video/webm'
+                    }));
+                    self.recordingCallback = null;
+                }
                 return;
             }
 
@@ -136,7 +156,7 @@ function MediaStreamRecorder(mediaStream, config) {
              * });
              */
             self.blob = config.getNativeBlob ? e.data : new Blob([e.data], {
-                type: config.mimeType || 'video/webm'
+                type: recorderHints.mimeType || 'video/webm'
             });
 
             if (self.recordingCallback) {
