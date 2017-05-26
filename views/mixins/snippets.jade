@@ -36,31 +36,37 @@ mixin snippets(typeOfSnippet)
       .module_infos-blocs
         -for(var prop in localNetworkInfos)
           -if(isHttps)
-            h3.txt-small_info
+            p.txt-small_info
               | !{dodoc.lang().toconnectwithanotherdevice}
               a.js--openInBrowser(href="https://#{localNetworkInfos[prop]}:8080" target="_blank")
                 | https://#{localNetworkInfos[prop]}:8080
           -else
-            h3.txt-small_info !{dodoc.lang().toconnectwithanotherdevice}
+            p.txt-small_info !{dodoc.lang().toconnectwithanotherdevice}
               a.js--openInBrowser(href="http://#{localNetworkInfos[prop]}:8080" target="_blank")
                 | http://#{localNetworkInfos[prop]}:8080
       .module_infos-blocs
-        h3.txt-small_info
-          | !{dodoc.lang().mediapublitemplatesarestoredint}
-          div.txt-wrap_long_lines
-            a.js--openThisPathInFinder(href="#{currentUserDirPath}") #{ currentUserDirPath.replace(/\//g, '\/\u200B') }
-        a.txt-small_info.moveDodocContentFolder.do--hide_on_clients.js--openModal_moveContentFolder
-          | !{dodoc.lang().clickHereToMoveContentFolder}
+        p.txt-small_info
+          | !{dodoc.lang().mediapublitemplatesarestoredint}<br>
+          a.txt-wrap_long_lines.js--openThisPathInFinder(href="#{currentUserDirPath}") #{ currentUserDirPath.replace(/\//g, '\/\u200B') }
+        p.txt-small_info
+          a.moveDodocContentFolder.do--hide_on_clients.js--openModal_moveContentFolder
+            | !{dodoc.lang().clickHereToMoveContentFolder}
       .module_infos-blocs
-        - if(logToFile)
-          input.js--enableLogToFile(type="checkbox" id="enableLogToFile" checked)
-        - else
-          input.js--enableLogToFile(type="checkbox" id="enableLogToFile")
-        label.txt-small_info.checkbox--enableLogToFile.do--hide_on_clients(for="enableLogToFile")
-          | !{dodoc.lang().enableLogToFile}
+        p.txt-small_info
+          | !{dodoc.lang().toSuggestFeatures}
+          a.js--openInBrowser(href="https://github.com/l-atelier-des-chercheurs/dodoc/issues" target="_blank")
+            | github.com/l-atelier-des-chercheurs/dodoc/issues
+        p.txt-small_info
+          - if(logToFile)
+            input.js--enableLogToFile(type="checkbox" id="enableLogToFile" checked)
+          - else
+            input.js--enableLogToFile(type="checkbox" id="enableLogToFile")
+          label.checkbox--enableLogToFile.do--hide_on_clients(for="enableLogToFile")
+            | !{dodoc.lang().enableLogToFile}
       .module_infos-blocs
-        a.txt-small_info.creditADC.js--openInBrowser(href="http://latelier-des-chercheurs.fr/" target="_blank")
-          | !{dodoc.lang().creditADC}
+        p.txt-small_info
+          a.js--openInBrowser(href="http://latelier-des-chercheurs.fr/" target="_blank")
+            | !{dodoc.lang().creditADC}
       .module_infos-blocs
-        .txt-small_info
+        p.txt-small_info
           | do•doc v#{global.dodocVersion}

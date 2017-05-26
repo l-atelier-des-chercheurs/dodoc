@@ -303,6 +303,10 @@ button {
   align-items: baseline;
   justify-content: space-around;
 
+  p {
+    margin: .5em 0;
+  }
+
   a {
     border-bottom: .1em solid currentcolor;
     &:hover {
