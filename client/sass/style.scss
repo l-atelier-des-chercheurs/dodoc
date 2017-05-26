@@ -308,7 +308,7 @@ button {
   }
 
   a {
-    border-bottom: .1em solid currentcolor;
+    text-decoration: underline;
     &:hover {
       color: $c-rouge;
     }
