@@ -5,7 +5,7 @@ mixin snippets(typeOfSnippet)
     form(onsubmit='return false;' class='add-media-data lead')
       label
         | !{dodoc.lang().modal.informations}
-      textarea.mediaContent--textOfTextmedia.js--mediaInformations(type='text' autofocus)
+      textarea.mediaContent--textOfTextmedia.js--mediaInformations(type='text')
     h3.txt-small_info.margin-top_bottom
       span(style='display:none;') !{dodoc.lang().modal.pathofmedia}
       .js--mediaFullPath(style='display:none;')
