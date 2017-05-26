@@ -29,9 +29,6 @@
     "asar": false,
     "mac": {
       "category": "public.app-category.education"
-    },
-    "win": {
-      "iconUrl": "https://github.com/l-atelier-des-chercheurs/dodoc/blob/master/build/icon.ico?raw=true"
     }
   },
   "dependencies": {
