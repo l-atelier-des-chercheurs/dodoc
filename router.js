@@ -157,7 +157,7 @@ module.exports = function(app,io,m){
         generatePageDataJSON["templates"] = allTemplates;
         res.render("publi", generatePageDataJSON);
       }, function(err) {
-      dev.error('Err while listing templates for publi: ' + err);
+        dev.error('Err while listing templates for publi: ' + err);
       });
     }, function(err) {
       dev.error('Err while getting publi data: ' + err);

@@ -9,7 +9,7 @@ function transformDatetoString( date){
 	return formatDate;
 }
 
-function transformDatetoTimestamp( date) {
+function transformDatetoTimestamp(date) {
   if( date == undefined)
     return false;
   var getMomentObject = moment( date, 'YYYYMMDD_HH:mm:ss');
