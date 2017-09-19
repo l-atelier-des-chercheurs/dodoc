@@ -1,12 +1,12 @@
 {
   "name": "dodoc",
-  "description": "Dodoc is a documentation tool for children",
+  "description": "Dodoc is an open-source documentation tool.",
   "main": "",
   "authors": [
-    "sarah garcin <sarah@g-u-i.me>"
+    "L’Atelier des Chercheurs <info@latelier-des-chercheurs.fr>"
   ],
-  "license": "MIT",
-  "homepage": "https://github.com/sarahgarcin/dodoc",
+  "license": "",
+  "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc/",
   "moduleType": [
     "amd",
     "globals",
