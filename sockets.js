@@ -334,8 +334,13 @@ var sockets = (function() {
     var mediaFolder = mediaData.mediaFolderPath;
     var mediaName = mediaData.mediaName;
 
-    dodocMedia.deleteOneMedia( slugFolderName, slugProjectName, mediaFolder, mediaName).then(function( mediaMetaData) {
+    dodocMedia.deleteOneMedia(slugFolderName, slugProjectName, mediaFolder, mediaName).then(function( mediaMetaData) {
       dodocAPI.sendEventWithContent( 'mediaRemoved', mediaMetaData, io);
+      var fullPathToMedia = path.join( dodocAPI.getProjectPath( slugFolderName, slugProjectName), mediaFolder);
+      var fullPathToMedia = fullPathToMedia + "/" + mediaName
+      fs.unlink(fullPathToMedia + ".jpeg");
+      fs.unlink(fullPathToMedia + "-thumb.jpeg" );
+      fs.unlink(fullPathToMedia + ".txt" );
     }, function(error) {
       dev.error("Failed to remove one media! Error: " + error);
     });
