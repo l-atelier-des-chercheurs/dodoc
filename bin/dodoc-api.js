@@ -78,7 +78,7 @@ var dodocAPI = (function() {
   }
 
   function readMetaFile(metaFile){
-    var metaFileContent = fs.readFileSync( metaFile, 'utf8');
+    var metaFileContent = fs.readFileSync( metaFile, dodoc.settings().textEncoding);
     var metaFileContentParsed = parseData( metaFileContent);
     return metaFileContentParsed;
   }
