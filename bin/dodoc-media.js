@@ -366,11 +366,14 @@ var dodocMedia = (function() {
 
   function deleteOneMedia(slugFolderName, slugProjectName, mediaFolder, mediaName) {
     return new Promise(function(resolve, reject) {
+      dev.logfunction( "COMMON - deleteOneMedia : " + JSON.stringify({slugFolderName, slugProjectName, mediaFolder, mediaName}, null, 4));
       var pathToMediaFolder = _getMediaPath( slugFolderName, slugProjectName, mediaFolder);
       try {
         var filesInMediaFolder = fs.readdirSync( pathToMediaFolder);
+        dev.logverbose(`Looking for all files that start with ${mediaName}.`);
         filesInMediaFolder.forEach(function(filename) {
           var cleanMediaName = _getMediaFileNameFromFileName(filename);
+          dev.logverbose(`Current filename = ${filename} with cleanMediaName = ${cleanMediaName} `);
           if( cleanMediaName === mediaName) {
             var filePath = path.join( pathToMediaFolder, filename);
             var deletedFilePath = path.join( pathToMediaFolder, dodoc.settings().deletedPrefix + filename);
@@ -388,11 +391,11 @@ var dodocMedia = (function() {
         }
         resolve( mediaMetaData);
       } catch( err) {
+        dev.error(`Failed to read dir ${pathToMediaFolder}`);
         reject( err);
       }
     });
   }
-
 
   function _createThumbnails(videoPath, videoFilename, pathToMediaFolder){
     return new Promise(function(resolve, reject) {

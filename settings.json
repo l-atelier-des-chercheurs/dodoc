@@ -31,5 +31,5 @@
   "regexpMatchProjectPreviewNames" : "^(apercu|preview)",
   "regexpGetFileExtension" : "\\.[^.]*$",
   "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)",
-  "regexpGetMediaName" : "^[^%5C-]*"
+  "regexpGetMediaName" : "^[^-]*"
 }
