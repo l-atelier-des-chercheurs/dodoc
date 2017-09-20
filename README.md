@@ -77,7 +77,10 @@ cd path/to/dodoc-master
 
 #### 3. Install dependencies
 
-Install dependencies (may take up to 5 minutes):
+If you haven’t already, install the tool that will enable native modules to be used (DoDoc requires [sharp](https://github.com/lovell/sharp), a very fast native library to generate images). 
+To do this, follow the instructions here: https://github.com/nodejs/node-gyp
+
+Then, install DoDoc’s dependencies (may take up to 5 minutes):
 ```
 npm install
 ```  
