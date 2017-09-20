@@ -84,6 +84,12 @@ Then, install DoDoc’s dependencies (may take up to 5 minutes):
 ```
 npm install
 ```  
+
+Before running dodoc, make sure to build native dependencies by running:
+
+```
+npm run rebuild
+```
  
 #### 4. Run DoDoc
 
