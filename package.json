@@ -30,9 +30,6 @@
     "asar": false,
     "mac": {
       "category": "public.app-category.education"
-    },
-    "win": {
-      "iconUrl": "http://latelier-des-chercheurs.fr/icon.ico"
     }
   },
   "dependencies": {
