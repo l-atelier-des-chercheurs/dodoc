@@ -1,6 +1,12 @@
 
 window.sessionId = '';
-window.socket = io.connect();
+
+if (window.navigator.userAgent.indexOf('Chrome') > -1) {
+  window.socket = io.connect({ transports: ['websocket','polling'] });
+} else {
+  // non-chrome browser are not very good at websocket so far (mid 2017), we better use polling
+  window.socket = io.connect({ transports: ['polling','websocket'] });
+}
 
 // context vars sent by Node via router.js to footer.jade namespaced with app
 var currentFolder = app.currentFolder;
