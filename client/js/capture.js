@@ -5,9 +5,6 @@ if(typeof navigator.getUserMedia !== 'function') {
   alert(dodoc.lang().browserCantUserWebRTC);
 }
 
-/* VARIABLES */
-var socket = io.connect();
-
 /* sockets */
 function onSocketConnect() {
 	sessionId = socket.io.engine.id;

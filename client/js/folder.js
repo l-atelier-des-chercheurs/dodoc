@@ -1,5 +1,3 @@
-/* VARIABLES */
-var socket = io.connect();
 
 /* sockets */
 function onSocketConnect() {

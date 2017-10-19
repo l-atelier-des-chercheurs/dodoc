@@ -1,7 +1,4 @@
 
-/* VARIABLES */
-var socket = io.connect();
-
 /* sockets */
 function onSocketConnect() {
 	sessionId = socket.io.engine.id;
