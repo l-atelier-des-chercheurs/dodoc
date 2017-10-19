@@ -22,9 +22,6 @@ var uploadPubliToFtp = (function() {
       var htmlNoScript = $('html')
         .clone()
         .find('script').remove().end()
-        .find('.js--generatePDF').remove().end()
-        .find('.js--uploadPubliToFtp').remove().end()
-        .find('.js--editPubli').remove().end()
         .html()
         ;
 

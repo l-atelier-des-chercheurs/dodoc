@@ -71,7 +71,15 @@ var publiPDF = (function() {
         dev.logverbose('phantom is created');
         ph.createPage().then(page => {
           dev.logverbose('page is created');
-          page.property('paperSize', { format: 'A4', orientation: 'portrait', margin: '0', dpi: 150});
+          page.property('paperSize', {
+            format: 'A4',
+            orientation: 'portrait',
+            margin: {
+              top: '1cm',
+              bottom: '1cm'
+            },
+            dpi: 150
+          });
           page.on('onLoadFinished', function(success) {
             if(success === success) {
               page.render(pdfPath);

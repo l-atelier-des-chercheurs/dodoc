@@ -379,6 +379,7 @@ button {
   padding: 0 16px;
 }
 
+
 // MEDIA only in lists (project page, bibli but not publi)
 .grille_de_medias {
   .media {
@@ -450,10 +451,8 @@ button {
       background-color: #fff;
 
       .mediaData--informations {
-        padding: 0 $t-margin/2;
-        margin: 0;
-        font-size: 80%;
-        background-color: #fff;
+        padding-left: $t-margin/2;
+        padding-right: $t-margin/2;
 
         overflow: hidden;
         display: -webkit-box;
@@ -702,7 +701,9 @@ button {
   h2 {
     padding-bottom: 0.3em;
     font-size: 1.5em;
-    border-bottom: 1px solid $c-gris;
+    font-style: italic;
+    border-bottom: 0;
+//     border-bottom: 1px solid $c-gris;
   }
   h3 {
     font-size: 1.25em;
@@ -747,13 +748,26 @@ button {
 
   .media {
     position: relative;
-    margin-bottom:  $t-margin;
+    margin-bottom:$t-margin;
+
+    &.media_image {
+      margin-top: $t-margin*2;
+      margin-top: $t-margin*2;
+    }
 
     .button-wrapper_deleteMedia {
       position: absolute;
       display: block;
       top:0;
       right: 0;
+    }
+
+    .mediaData--informations {
+      padding: 0;
+      margin: 0;
+      margin-top: $t-margin/2;
+      font-size: 90%;
+      background-color: #fff;
     }
 
   }

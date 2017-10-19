@@ -1,7 +1,107 @@
 
 @media print {
+  @page {
+    margin: 1cm 0.5cm;
+    size: 21.0cm 29.7cm;
+  }
   body.publi {
     zoom: 0.68;
+
+    .js--generatePDF, .js--uploadPubliToFtp, .js--openModal_editPubli, .publi-btn {
+      display: none !important;
+    }
+
+    .navbar-container {
+      min-height: 50px;
+      .navbar {
+        padding: 0px;
+        margin: 0cm 0;
+        box-shadow: none;
+
+        > * {
+          display: inline-block;
+          vertical-align: bottom;
+          float:none;
+        }
+
+        .item {
+          height: 20px;
+          margin: 10px;
+        }
+
+        .logo {
+          margin:0;
+          width: 6cm;
+        }
+
+        .button-wrapper{
+          font-size:0.8em;
+          width:auto;
+          padding:0;
+          padding-bottom: 5px;
+
+          span {
+            position: relative;
+            top: auto;
+            left: auto;
+            transform: none;
+
+          }
+
+          &::after {
+            border-radius: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+          }
+        }
+
+        .button-wrapper_dossier {
+          color: $c-dossier;
+          &::after {
+            border-bottom: 2px solid currentColor;
+            background-color: transparent;
+          }
+        }
+        .button-wrapper_projet {
+          color: $c-projet;
+          &::after {
+            border-bottom: 2px solid currentColor;
+            background-color: transparent;
+          }
+        }
+      }
+    }
+
+    .template_container {
+      width: 15cm;
+      margin-left:6cm;
+      box-shadow: none;
+
+      .publi-title {
+        float: none;
+      }
+
+      // premier HR, juste sous le titre
+      > hr {
+        display: none;
+      }
+
+      .publi_medias {
+        h2 {
+        }
+
+        .mediaData {
+          position: absolute;
+          right: 100%;
+          width: 5cm;
+          top: 0;
+        }
+
+      }
+
+    }
+
 /*
     .navbar-container{display:none;}
     .publi-container {
@@ -21,5 +121,6 @@
     }
 */
   }
+
 
 }
