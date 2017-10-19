@@ -78,16 +78,16 @@
   "lastImageOpacity" : "Afficher la dernière image en transparence",
   "enableAudioInVideo" : "Enregistrer le son",
   "enableLogToFile" : "mode debug",
-  "toSuggestFeatures" : "Pour signaler des bugs ou suggérer des fonctionnalités, rendez-vous sur&nbsp;:",
+  "toSuggestFeatures" : "Pour signaler des bugs ou suggérer des fonctionnalités, rendez-vous sur&nbsp;: ",
 
-  "creditADC" : "do•doc est un projet développé par l’Atelier des Chercheurs",
+  "creditADC" : "do•doc est un projet créé par l’Atelier des Chercheurs",
 
   "currentVideoResolutionIs" : "Résolution actuelle&nbsp;: ",
   "videoStreamCouldntBeStartedTryChangingRes" : "Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la résolution dans le panneau de droite.",
   "videoStreamNotAvailable" : "Erreur : le flux vidéo n’est pas disponible.",
   "audioStreamCouldntBeStarted" : "Le flux audio n’a pas pu être démarré.",
 
-  "mediapublitemplatesarestoredint" : "Les données chargées sur cette page sont stockées dans le dossier suivant&nbsp;: ",
+  "mediaPubliTemplatesAreStoredIn" : "Les données chargées sur cette page sont stockées dans le dossier suivant&nbsp;: ",
   "toconnectwithanotherdevice" : "Pour vous connecter depuis un autre appareil qui se trouve sur le même réseau (Wifi ou Ethernet), naviguez vers l’adresse suivante et ignorez l’avertissement qui s’affiche&nbsp;: ",
   "clickHereToMoveContentFolder" : "Cliquez ici pour déplacer le dossier des contenus utilisateurs",
 

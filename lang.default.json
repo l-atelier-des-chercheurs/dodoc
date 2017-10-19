@@ -79,17 +79,17 @@
   "enableAudioInVideo" : "Record sound",
   "enableLogToFile" : "debug mode",
 
-  "creditADC" : "do•doc — a project by l’Atelier des Chercheurs",
+  "creditADC" : "do•doc is a project created by l’Atelier des Chercheurs",
 
   "currentVideoResolutionIs" : "current resolution: ",
   "videoStreamCouldntBeStartedTryChangingRes" : "Video stream not available.\nChange resolution preferences in the settings panels.",
   "videoStreamNotAvailable" : "Error: Video stream not available.",
   "audioStreamCouldntBeStarted" : "Audio stream not available.",
 
-  "mediapublitemplatesarestoredint" : "Contents are stored in: ",
+  "mediaPubliTemplatesAreStoredIn" : "Contents are stored in: ",
   "toconnectwithanotherdevice" : "To access do•doc with another device, please connect it to the same wifi network, then type this adress in your browser (and ignore security message): ",
   "clickHereToMoveContentFolder" : "Click here to change repository",
-  "toSuggestFeatures" : "To report bugs or suggest features, go to:",
+  "toSuggestFeatures" : "To report bugs or suggest features, go to: ",
 
   "modal" : {
     "sureRemoveMedia" : "Do you want to delete this media?",
