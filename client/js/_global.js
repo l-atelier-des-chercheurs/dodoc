@@ -169,25 +169,27 @@ function listAllMedias( mediasData) {
 function mediaInit( $m) {
   if( $('body').hasClass('publi') || Modernizr.touchevents) return;
 
-  var $v = $m.find('video');
-  $m.hover(function() {
-    if( $v.length > 0 && $v.get(0).paused) {
-      $v
-        .removeAttr('controls')
-        .get(0)
-          .play()
-        ;
-    }
-  }, function() {
-    if( $v.length > 0 && !$v.get(0).paused) {
-      $v
-        .attr('controls', true)
-        .get(0)
-          .pause()
-        ;
-      $v.get(0).currentTime = 0;
-    }
-  });
+  if($m.find('video').length > 0) {
+    var $v = $m.find('video');
+    $m.hover(function() {
+      if( $v.length > 0 && $v.get(0).paused) {
+        $v
+          .removeAttr('controls')
+          .get(0)
+            .play()
+          ;
+      }
+    }, function() {
+      if( $v.length > 0 && !$v.get(0).paused) {
+        $v
+          .attr('controls', true)
+          .get(0)
+            .pause()
+          ;
+        $v.get(0).currentTime = 0;
+      }
+    });
+  }
 }
 
 
