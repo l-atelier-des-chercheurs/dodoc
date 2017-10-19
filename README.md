@@ -77,10 +77,19 @@ cd path/to/dodoc-master
 
 #### 3. Install dependencies
 
-Install dependencies (may take up to 5 minutes):
+If you haven’t already, install the tool that will enable native modules to be used (DoDoc requires [sharp](https://github.com/lovell/sharp), a very fast native library to generate images). 
+To do this, follow the instructions here: https://github.com/nodejs/node-gyp
+
+Then, install DoDoc’s dependencies (may take up to 5 minutes):
 ```
 npm install
 ```  
+
+Before running dodoc, make sure to build native dependencies by running:
+
+```
+npm run rebuild
+```
  
 On ARM devices (such as a Raspberry Pi, or an Orange Pi), the PDF creation library (Phantom) is not available so it can't be installed. For those devices, run the following command instead:
 ```
