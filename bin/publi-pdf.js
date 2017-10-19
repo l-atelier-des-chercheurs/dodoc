@@ -76,7 +76,13 @@ var publiPDF = (function() {
             orientation: 'portrait',
             margin: {
               top: '1cm',
-              bottom: '1cm'
+              bottom: '.5cm'
+            },
+            footer: {
+              height: '1cm',
+              contents: ph.callback(function(pageNum, numPages) {
+                return "<div><span style='float:right; color: #333; font-family: sans-serif; font-size:70%; margin-right: 0.2cm;'>" + pageNum + " / " + numPages + "</span></div>";
+              })
             },
             dpi: 150
           });

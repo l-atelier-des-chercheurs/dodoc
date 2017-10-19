@@ -1,7 +1,7 @@
 
 @media print {
   @page {
-    margin: 1cm 0.5cm;
+    margin: .5cm 0.5cm;
     size: 21.0cm 29.7cm;
   }
   body.publi {
@@ -12,10 +12,11 @@
     }
 
     .navbar-container {
-      min-height: 50px;
+      min-height: 40px;
       .navbar {
         padding: 0px;
         margin: 0cm 0;
+        min-height: 40px;
         box-shadow: none;
 
         > * {
@@ -26,12 +27,21 @@
 
         .item {
           height: 20px;
-          margin: 10px;
+          margin: 10px 17px;
         }
 
         .logo {
           margin:0;
-          width: 6cm;
+          width: 7cm;
+          padding: 5px;
+          padding-right: 0;
+
+          text-align: right;
+
+          svg {
+            margin-right: 0;
+            margin-left: auto;
+          }
         }
 
         .button-wrapper{
@@ -53,6 +63,7 @@
             left: 0;
             right: 0;
             bottom: 0;
+            transform: none;
           }
         }
 
@@ -74,8 +85,8 @@
     }
 
     .template_container {
-      width: 15cm;
-      margin-left:6cm;
+      width: 14cm;
+      margin-left:7cm;
       box-shadow: none;
 
       .publi-title {
@@ -94,9 +105,18 @@
         .mediaData {
           position: absolute;
           right: 100%;
-          width: 5cm;
+          width: 6cm;
+          padding-right: .5cm;
           top: 0;
+
+          .mediaData--informations {
+            font-size: 70%;
+            text-align: right;
+            background-color: transparent;
+          }
         }
+
+
 
       }
 
