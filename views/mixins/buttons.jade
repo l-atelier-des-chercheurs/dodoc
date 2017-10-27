@@ -39,6 +39,12 @@ mixin button(typeOfButton, navOrButton, style)
     a(href="/#{slugFolderName}/#{slugProjectName}" title="Dodoc" class='button-wrapper_projet #{defaultClasses}')
       span #{projectName}
 
+  if( typeOfButton === 'help')
+    a(href="https://paper.dropbox.com/doc/dodoc-EDcv4v8zqnwws7J9ygJ7d" class='button-wrapper_help js--openInBrowser #{defaultClasses}' target='_blank')
+      .btn.icon
+        include ../../client/images/i_help.svg
+      span !{dodoc.lang().help}
+
   if( typeOfButton === 'nouveauDossier')
     a(href="#" class='button-wrapper_add js--openModal_addFolder #{defaultClasses}')
       .btn.icon

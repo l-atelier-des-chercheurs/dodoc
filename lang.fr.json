@@ -61,6 +61,7 @@
   "height" : "hauteur",
   "apply" : "appliquer",
 
+  "help" : "Aide",
   "removeProject" : "Supprimer le projet",
   "createFolder" : "Créer un dossier",
   "createProject" : "Créer un projet",

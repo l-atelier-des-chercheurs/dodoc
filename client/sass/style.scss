@@ -189,7 +189,7 @@ button {
     background-color: $c-bleuvert;
     color: white;
   }
-  &_close {
+  &_close, &_help {
     background-color: $c-noir;
     color: $c-gris_clair;
     &:hover, &:focus {
