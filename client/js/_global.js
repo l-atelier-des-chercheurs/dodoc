@@ -73,17 +73,23 @@ socket.on("*",function(event,d) {
   }
 });
 
-$('body').on('click', '.js--openInBrowser', function() {
-  if(require('electron') !== undefined) {
+$('body').on('click', '.js--openInBrowser', function(e) {
+
+  var $target = $(e.target);
+  var thisHREF = $target.attr('href');
+
+  if(thisHREF !== undefined && require('electron') !== undefined) {
     var shell = require('electron').shell;
     event.preventDefault();
-    shell.openExternal(event.target.href);
+    shell.openExternal(thisHREF);
   }
 });
-$('body').on('click', '.js--enableLogToFile', function() {
+
+$('document').on('click', '.js--enableLogToFile', function() {
 	socket.emit('enableLogToFile');
 });
-$('body').on('click', '.js--openThisPathInFinder', function() {
+
+$('document').on('click', '.js--openThisPathInFinder', function() {
   if(require('electron') !== undefined) {
     var shell = require('electron').shell;
     event.preventDefault();

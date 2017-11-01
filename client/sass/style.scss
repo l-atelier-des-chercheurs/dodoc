@@ -230,6 +230,7 @@ button {
 
   .btn {
     float:left;
+    pointer-events: none;
   }
 
   .btn.icon {
@@ -239,7 +240,6 @@ button {
   .btn.icon + span {
     left: 54px;
     width:  185px;
-
   }
 
 
@@ -253,8 +253,9 @@ button {
     -o-transform: translate(0,-50%);
     transform: translate(0,-50%);
 
+    // to make sur click is registered to button
+    pointer-events: none;
   }
-
 }
 
 
