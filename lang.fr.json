@@ -19,8 +19,8 @@
   "remove" : "Supprimer",
   "edit" : "Modifier",
   "accept" : "Valider",
-  "uploadPubliToFtp" : "Envoyer la publication vers un FTP",
-  "generatePDF" : "Exporter la publication en PDF",
+  "makeWebsite" : "Exporter en site web",
+  "makePDF" : "Exporter en PDF",
 
   "lastMediasAdded" : "Derniers médias ajoutés",
   "listOfPublications" : "Liste des publications",

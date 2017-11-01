@@ -111,17 +111,17 @@ mixin button(typeOfButton, navOrButton, style)
         include ../../client/images/i_enregistre.svg
       span !{dodoc.lang().accept}
 
-  if( typeOfButton === 'uploadPubliToFtp')
-    button(title="Dodoc upload publi" class='button-wrapper_upload js--uploadPubliToFtp #{defaultClasses}')
+  if( typeOfButton === 'makeWebsite')
+    button(title="Dodoc upload publi" class='button-wrapper_upload js--makeWebsite #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_enregistre.svg
-      span !{dodoc.lang().uploadPubliToFtp}
+      span !{dodoc.lang().makeWebsite}
 
-  if( typeOfButton === 'generatePDF')
-    button(title="Dodoc pdf publi" class='button-wrapper_upload js--generatePDF #{defaultClasses}')
+  if( typeOfButton === 'makePDF')
+    button(title="Dodoc pdf publi" class='button-wrapper_upload js--makePDF #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_enregistre.svg
-      span !{dodoc.lang().generatePDF}
+      span !{dodoc.lang().makePDF}
 
   if( typeOfButton === 'editPubli')
     a(href="#" title="Dodoc publi" class='button-wrapper_edit js--openModal_editPubli #{defaultClasses}')

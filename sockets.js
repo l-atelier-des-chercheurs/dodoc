@@ -11,7 +11,7 @@ var dodocMedia = require('./bin/dodoc-media');
 var dodocPubli = require('./bin/dodoc-publi');
 var dev = require('./bin/dev-log');
 
-var publiFTP = require('./bin/publi-ftp.js');
+var publiWebsite = require('./bin/publi-website.js');
 var publiPDF = require('./bin/publi-pdf.js');
 
 var sockets = (function() {
@@ -83,9 +83,9 @@ var sockets = (function() {
 
   		  socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 
-      socket.on( 'exportPubliToFtp', data => { onExportPubliToFtp(socket, data); });
+      socket.on( 'makeWebsite', data => { onMakeWebsiteFromPubli(socket, data); });
       socket.on( 'ftpSettings', data => { onFtpSettings(socket, data); });
-      socket.on( 'generatePDF', data => { onGeneratePDF(socket, data); });
+      socket.on( 'makePDF', data => { onMakePDF(socket, data); });
 
       socket.on( 'enableLogToFile', onEnableLogToFile);
   	  });
@@ -450,27 +450,27 @@ var sockets = (function() {
     });
   }
 
-  function onExportPubliToFtp(socket, d) {
-    dev.logfunction( "EVENT - exportPubliToFtp : " + JSON.stringify( d, null, 4));
-    publiFTP.exportPubliToFtp(socket, d);
+  function onMakeWebsiteFromPubli(socket, d) {
+    dev.logfunction( "EVENT - makeWebsite : " + JSON.stringify( d, null, 4));
+    publiWebsite.makeWebsite(socket, d);
   }
 
   function onFtpSettings(socket, d) {
     dev.logfunction( "EVENT - onFtpSettings : " + JSON.stringify( d, null, 4));
-    publiFTP.sendFileToServer(d).then(function(urlToPubli) {
+    publiWebsite.sendFileToServer(d).then(function(urlToPubli) {
       dodocAPI.sendEventWithContent('publiTransferred', {urlToPubli}, io, socket);
     }, function(error) {
       dodocAPI.sendEventWithContent('cannotConnectFtp', error, io, socket);
     });
   }
 
-  function onGeneratePDF(socket, d) {
-    dev.logfunction( "EVENT - onGeneratePDF : " + JSON.stringify( d, null, 4));
+  function onMakePDF(socket, d) {
+    dev.logfunction( "EVENT - onMakePDF : " + JSON.stringify( d, null, 4));
     publiPDF.exportPubliToPDF(d).then(function(pdfInfos) {
       pdfInfos.slugPubliName = d.slugPubliName;
       dodocAPI.sendEventWithContent( 'publiPDFIsGenerated', pdfInfos, io, socket);
     }, function(error) {
-      dodocAPI.sendEventWithContent( 'cannotGeneratePDF', error, io, socket);
+      dodocAPI.sendEventWithContent( 'cannotmakePDF', error, io, socket);
     });
   }
 

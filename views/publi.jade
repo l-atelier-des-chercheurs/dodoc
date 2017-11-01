@@ -9,8 +9,8 @@ html
         +logo()
         +button( 'dossier', 'isNav')
         +button( 'projet', 'isNav')
-        +button( 'uploadPubliToFtp', '')
-        +button( 'generatePDF', '')
+        +button( 'makeWebsite', '')
+        +button( 'makePDF', '')
 
     .publi_container(data-publidata data-publishown="#{slugPubliName}")
       include templates/publiTemplate.jade
@@ -27,5 +27,5 @@ html
 
     //- //footer
     include templates/footer.jade
-    script(src='/js/modules/_uploadPubliToFtp.js')
+    script(src='/js/modules/_exportPubli.js')
     script(src='/js/publi.js')

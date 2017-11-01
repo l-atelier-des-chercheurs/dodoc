@@ -1,55 +1,54 @@
-var uploadPubliToFtp = (function() {
-  var $uploadBtn = $('.js--uploadPubliToFtp');
-  var $generatePDF = $('.js--generatePDF');
+var exportPubli = (function() {
+  var $makeWebsite = $('.js--makeWebsite');
+  var $makePDF = $('.js--makePDF');
 
   var API = {
     init : function() {
-      uploadThisPubliToFTP();
-      sendThisPubliToPDF();
+      makeWebsiteFromThisPubli();
+      makePDFFromThisPubli();
     },
+
     onPubliPDFIsGenerated   : function(pdfInfos) { onPubliPDFIsGenerated(pdfInfos); },
-    uploadThisPubliToFTP    : function() { uploadThisPubliToFTP(); },
     onNoConnection          : function() { onNoConnection(); },
     onWebConnection         : function(webPubliFolderPath, arrayImages, date) { onWebConnection(webPubliFolderPath, arrayImages, date); },
     onPubliTransferred      : function(d) { onPubliTransferred(d); },
     onCannotConnectFtp      : function() { onCannotConnectFtp(); },
   }
 
-  function sendThisPubliToPDF() {
-    //Generate pdf
-    $generatePDF.on('click', function(){
-      var currentUrl = window.location.href;
-      var htmlNoScript = $('html')
-        .clone()
-        .find('script').remove().end()
-        .html()
-        ;
+  function _cleanUpPubli($content) {
+    return $content
+      .find('.js--makeWebsite').remove().end()
+      .find('.js--makePDF').remove().end()
+      .find('.publi-btn').remove().end()
+      .find('.module_infos').remove().end()
+      .find('script').remove().end()
+      .html()
+      ;
+  }
 
-      socket.emit('generatePDF', {html: htmlNoScript, url: currentUrl ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
+  function makePDFFromThisPubli() {
+    //Generate pdf
+    $makePDF.on('click', function(){
+
+      var currentUrl = window.location.href;
+
+      var publiHtml = _cleanUpPubli($('html').clone());
+
+      socket.emit('makePDF', {html: publiHtml, url: currentUrl ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
       // animation on wait
       $('body').addClass('is--generating');
+
     });
 
   }
 
-  function uploadThisPubliToFTP(){
-    $uploadBtn.on('click', function (){
-      $('body')
-        ;
-
+  function makeWebsiteFromThisPubli(){
+    $makeWebsite.on('click', function () {
       String.prototype.replaceAll = function(target, replacement) {
         return this.split(target).join(replacement);
       };
 
-      var publiHtml = $('body')
-        .clone()
-        .find('.js--uploadPubliToFtp').remove().end()
-        .find('.js--generatePDF').remove().end()
-        .find('.publi-btn').remove().end()
-        .find('.module_infos').remove().end()
-        .find('script').remove().end()
-        .html()
-        ;
+      var publiHtml = _cleanUpPubli($('body').clone());
 
       var newPubliContent = publiHtml
         .replaceAll('/'+currentFolder+'/'+currentProject+'/01-photos', 'medias')
@@ -64,7 +63,9 @@ var uploadPubliToFtp = (function() {
       var footer = '</div><script src="../jquery.min.js"></script><script src="./script.js"></script></body></html>'
 
       var html = head + body + newPubliContent + footer;
-      socket.emit('exportPubliToFtp', {"html": html, "currentTemplate": currentTemplate, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
+
+      socket.emit('makeWebsite', {"html": html, "currentTemplate": currentTemplate, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
+
       $('body').addClass('is--generating');
     });
   }
@@ -113,6 +114,6 @@ var uploadPubliToFtp = (function() {
   }
 
   return API;
-})();
+})()
 
-uploadPubliToFtp.init();
+exportPubli.init();

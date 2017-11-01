@@ -19,8 +19,8 @@
   "remove" : "Remove",
   "edit" : "Edit",
   "accept" : "Confirm",
-  "uploadPubliToFtp" : "Upload online",
-  "generatePDF" : "Create PDF",
+  "makeWebsite" : "Export as a website",
+  "makePDF" : "Export as a PDF",
 
   "lastMediasAdded" : "Latest Media",
   "listOfPublications" : "Publications",

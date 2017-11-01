@@ -50,19 +50,19 @@ function onPubliMediasUpdated( psdata) {
   updateMontagePubliMedias( psdata);
 }
 function onPubliPDFIsGenerated(d) {
-  uploadPubliToFtp.onPubliPDFIsGenerated(d);
+  exportPubli.onPubliPDFIsGenerated(d);
 }
 function onPubliTransferred(d) {
-  uploadPubliToFtp.onPubliTransferred(d);
+  exportPubli.onPubliTransferred(d);
 }
 function onNoConnection(d) {
-  uploadPubliToFtp.onNoConnection(d);
+  exportPubli.onNoConnection(d);
 }
 function onWebConnection(webPubliFolderPath, arrayImages, date) {
-  uploadPubliToFtp.onWebConnection(webPubliFolderPath, arrayImages, date);
+  exportPubli.onWebConnection(webPubliFolderPath, arrayImages, date);
 }
 function onCannotConnectFtp() {
-  uploadPubliToFtp.onCannotConnectFtp();
+  exportPubli.onCannotConnectFtp();
 }
 
 

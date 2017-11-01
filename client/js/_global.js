@@ -74,10 +74,8 @@ socket.on("*",function(event,d) {
 });
 
 $('body').on('click', '.js--openInBrowser', function(e) {
-
   var $target = $(e.target);
   var thisHREF = $target.attr('href');
-
   if(thisHREF !== undefined && require('electron') !== undefined) {
     var shell = require('electron').shell;
     event.preventDefault();

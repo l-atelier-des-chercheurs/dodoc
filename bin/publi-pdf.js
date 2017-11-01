@@ -18,7 +18,7 @@ var publiPDF = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "EVENT - exportPubliToPDF");
       createFolders(d).then(d => {
-        return _generatePDF(d)
+        return _makePDF(d)
       })
       .then(pdfInfos => {
         resolve(pdfInfos);
@@ -54,7 +54,7 @@ var publiPDF = (function() {
     });
   }
 
-  function _generatePDF(d){
+  function _makePDF(d){
     return new Promise(function(resolve, reject) {
 
       var pdfName = dodocAPI.getCurrentDate()+'.pdf';
