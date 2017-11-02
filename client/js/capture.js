@@ -355,16 +355,9 @@ var currentStream = (function(context) {
     return new Promise(function(resolve, reject) {
       _stopAllFeeds();
       _getCameraFeed()
-        .then( function( stream) {
+        .then(function(stream) {
           videoStream = stream;
-
-          if (navigator.mozGetUserMedia) {
-            videoElement.mozSrcObject = stream;
-          } else {
-            var vendorURL = window.URL || window.webkitURL;
-            videoElement.src = vendorURL.createObjectURL(stream);
-          }
-          videoElement.play();
+          videoElement.srcObject = stream;
           resolve();
         }, function(err) {
           alertify.error( "Failed to start camera feed: " + err);
