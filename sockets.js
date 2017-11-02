@@ -463,9 +463,9 @@ var sockets = (function() {
   function onUploadViaFTP(socket, d) {
     dev.logfunction( "EVENT - onUploadViaFTP : " + JSON.stringify( d, null, 4));
     publiWebsite.sendFilesToServerViaFTP(d).then(function(urlToPubli) {
-      dodocAPI.sendEventWithContent('publiTransferred', {urlToPubli}, io, socket);
+      dodocAPI.sendEventWithContent('publiTransferred', { urlToPubli }, io, socket);
     }, function(error) {
-      dodocAPI.sendEventWithContent('cannotConnectFtp', error, io, socket);
+      dodocAPI.sendEventWithContent('failedToTransferPubli', { reason: error }, io, socket);
     });
   }
 

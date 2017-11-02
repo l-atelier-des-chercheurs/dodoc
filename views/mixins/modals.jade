@@ -199,6 +199,13 @@ mixin modals(typeOfModal)
         | !{dodoc.lang().modal.clickHereToOpenPubliInAWebBrowser}
       a.urlToPubli.txt-wrap_long_lines.js--urlToPubli.js--openInBrowser(href target="_blank")
 
+  if( typeOfModal === 'publiFailedToUpload')
+    //////////////////////////////////////   PUBLI FAILED TO UPLOAD VIA FTP  //////////////////////////////////
+    .m_modal-content
+      +button( 'close', '', 'isCollapsed')
+      .modal_title.txt-large_title
+        | !{dodoc.lang().modal.publiFailedToUpload}
+      pre.js--ftpFailReason
 
 
 

@@ -12,7 +12,7 @@ var exportPubli = (function() {
     onNoConnection          : function() { onNoConnection(); },
     onWebsiteReady          : function(d) { onWebsiteReady(d); },
     onPubliTransferred      : function(d) { onPubliTransferred(d); },
-    onCannotConnectFtp      : function() { onCannotConnectFtp(); },
+    onFailedToTransferPubli : function() { onFailedToTransferPubli(); },
   }
 
   function _cleanUpPubli($content) {
@@ -22,6 +22,8 @@ var exportPubli = (function() {
       .find('.publi-btn').remove().end()
       .find('.module_infos').remove().end()
       .find('script').remove().end()
+      .find('.m_modal-content').remove().end()
+      .find('.m_modal').remove().end()
       .html()
       ;
   }
@@ -83,6 +85,11 @@ var exportPubli = (function() {
 
   function onPubliTransferred(d){
     modals.createModal('publiHasBeenSentToFtp', d);
+    $('body').removeClass('is--generating');
+  }
+
+  function onFailedToTransferPubli(d) {
+    modals.createModal('publiFailedToUpload', d);
     $('body').removeClass('is--generating');
   }
 

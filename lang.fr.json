@@ -127,6 +127,8 @@
     "publiHasBeenSentToServer" : "La publication a bien été transferrée au server",
     "clickHereToOpenPubliInAWebBrowser" : "Lien vers votre publication&nbsp;:",
 
+    "publiFailedToUpload": "L’envoi de la publication a échoué pour la raison suivante&nbsp;:",
+
     "noInternetCantSendOverFtp": "Aucune connection à Internet n’a pu être trouvée, l’envoi en ligne n’est donc pas disponible.",
     "hasInternetCanSendOverFtp": "Une connection à Internet a été détectée, voulez-vous envoyer cette publication en ligne par FTP&nbsp;?",
 

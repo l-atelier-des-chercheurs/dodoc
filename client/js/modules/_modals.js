@@ -84,6 +84,8 @@ var modals = (function() {
         $modal = _initMoveContentFolderModal($modal);
       } else if(typeOfModal === 'publiHasBeenSentToFtp') {
         $modal = _initPubliHasBeenSentToFTPModal($modal, d);
+      } else if(typeOfModal === 'publiFailedToUpload') {
+        $modal = _initPubliFailedToUpload($modal, d);
       }
 
       $modal.on('click', function(e) {
@@ -628,7 +630,11 @@ var modals = (function() {
         }
         modalData.pathToWebsiteFolder = d.pathToWebsiteFolder;
         modalData.dateOfExport = d.dateOfExport;
+        modalData.slugPubliName = d.slugPubliName;
       	  modals.createModal('uploadWebsiteViaFTP',modalData);
+
+        $m.trigger('close_that_modal');
+
       });
     }
 
@@ -667,10 +673,11 @@ var modals = (function() {
           host: host,
           user: user,
           pass: pass,
-          baseURL: baseURL,
-          sousDossierFtp: sousDossierFtp
+          baseURL: baseURL
         },
+        sousDossierFtp: sousDossierFtp,
         pathToWebsiteFolder: d.pathToWebsiteFolder,
+        slugPubliName: d.slugPubliName,
         dateOfExport: d.dateOfExport
       });
 
@@ -684,6 +691,14 @@ var modals = (function() {
       .find('.js--urlToPubli')
         .html(d.urlToPubli)
         .attr('href', d.urlToPubli)
+        ;
+    return $m;
+  }
+
+  function _initPubliFailedToUpload($m, d) {
+    $m
+      .find('.js--ftpFailReason')
+        .html(d.reason)
         ;
     return $m;
   }

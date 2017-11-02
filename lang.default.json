@@ -125,6 +125,8 @@
     "publiHasBeenSentToServer" : "Your publication has been sent to server",
     "clickHereToOpenPubliInAWebBrowser" : "Link to your publication:",
 
+    "publiFailedToUpload": "The upload of that publication failed for the following reason:",
+
     "noInternetCantSendOverFtp": "No internet connection has been detected so uploading your publication online not available.",
 
     "selectAnImage" : "Select picture",

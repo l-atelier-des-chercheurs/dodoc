@@ -23,7 +23,7 @@ socket.on('publiMediasUpdated', onPubliMediasUpdated);
 socket.on('publiPDFIsGenerated', onPubliPDFIsGenerated);
 socket.on('websiteReady', onWebsiteReady);
 socket.on('publiTransferred', onPubliTransferred);
-socket.on('cannotConnectFtp', onCannotConnectFtp);
+socket.on('failedToTransferPubli', onFailedToTransferPubli);
 
 
 
@@ -57,8 +57,8 @@ function onWebsiteReady(d) {
 function onPubliTransferred(d) {
   exportPubli.onPubliTransferred(d);
 }
-function onCannotConnectFtp() {
-  exportPubli.onCannotConnectFtp();
+function onFailedToTransferPubli() {
+  exportPubli.onFailedToTransferPubli();
 }
 
 

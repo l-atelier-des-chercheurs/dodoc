@@ -1,7 +1,7 @@
 var path = require('path');
 var fs = require('fs-extra');
 var clientFTP = require('ftp');
-var ftpSync = require('ftpsync');
+var FtpDeploy = require('ftp-deploy');
 
 var dodoc  = require('../dodoc');
 var dodocAPI = require('./dodoc-api');
@@ -12,7 +12,7 @@ var publiWebsite = (function() {
 
   const API = {
     makeWebsite                : (d) => makeWebsite(d),
-    sendFilesToServerViaFTP    : (d)         => sendFilesToServerViaFTP(d),
+    sendFilesToServerViaFTP    : (d) => sendFilesToServerViaFTP(d)
   };
 
   function makeWebsite(d){
@@ -61,7 +61,8 @@ var publiWebsite = (function() {
 
             let returnData = {
               pathToWebsiteFolder: webPubliFolderPath,
-              dateOfExport: currentDate
+              dateOfExport: currentDate,
+              slugPubliName: d.slugPubliName
             };
 
             _checkInternetConnection(webPubliFolderPath, arrayImages, currentDate).then((status) => {
@@ -87,37 +88,74 @@ var publiWebsite = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction( 'EVENT - sendFilesToServerViaFTP : ' + JSON.stringify(d, null, 4));
 
-      // this is pretty stupid : we just need to upload the folder’s content and be done with it
-      // or, at least, iterate with its content and upload that
+      var remote = '/' + path.join(d.sousDossierFtp, d.slugPubliName, d.dateOfExport);
+      dev.logverbose(`Attempting creation of folder on server at path: ${remote}`);
 
-      var remote = path.join(d.sousDossierFtp, d.slugPubliName, d.dateOfExport);
-      dev.logverbose('Attempting creation of folder on server at path: ' + serverFolder);
-
-      var options = {
+      var config = {
         host: d.FTPsettings.host,
-        user: d.FTPsettings.user,
-        pass: d.FTPsettings.pass,
-        local: d.pathToWebsiteFolder,
-        remote: remote
+        username: d.FTPsettings.user,
+        password: d.FTPsettings.pass,
+        port: 21,
+        localRoot: d.pathToWebsiteFolder,
+        remoteRoot: remote,
+        continueOnError: true
       };
 
-      ftpSunc.settings = options;
-      ftpSync.run(function(err, result) {
+      // can’t create folders with FTP deploy
+      var c = new clientFTP();
 
-      };
+      c.on('error', function(err){
+        dev.error('can’t connect to the server : '+ err);
+        reject(err);
+      });
+      c.on('ready', function() {
+        c.mkdir(remote, true,  function(err) {
+          if (err) {
+            dev.error(`Couldn’t create folder on server: ${err}`);
+            reject(err);
+          } else {
+
+            var ftpDeploy = new FtpDeploy();
+
+            dev.logverbose('Folder created on server successfully.');
+            ftpDeploy.on('uploading', function(data) {
+              dev.logverbose(`Uploading files to ${remote} --> file ${data.filename} at ${data.percentComplete}%`);
+            });
+
+            ftpDeploy.on('upload-error', function (data) {
+              dev.error(data.err); // data will also include filename, relativePath, and other goodies
+            });
+
+            ftpDeploy.deploy(config, function(err) {
+              if(err) {
+                dev.error(err);
+                reject(err);
+              } else {
+                dev.log('sendFilesToServerViaFTP / ftpDeploy finished sending content');
+                const urlToPubli =  d.FTPsettings.baseURL + remote;
+                dev.log('Publication was transferred and is now at: ' + urlToPubli);
+                resolve(urlToPubli);
+              }
+            });
+
+          }
+        });
+      });
+
+      c.connect({
+        host: config.host,
+        user: config.username,
+        password: config.password
+      });
 
 
 
-            const urlToPubli = d.baseURL.endsWith('/') ? d.baseURL + serverFolder : d.baseURL + '/' + serverFolder;
-
-            // otherwise just concatenate strings
-            dev.log('Publication was transferred and is now at: ' + urlToPubli);
-            resolve(urlToPubli);
+/*
+*/
 
 /*
       var webPubliFolderPath = d.webPubliFolderPath
       // instance for FTP client
-      var c = new clientFTP();
       var serverFolder = path.join(d.sousDossierFtp, d.slugPubliName, d.currentDate);
       dev.logverbose('Attempting creation of folder on server at path: ' + serverFolder);
 
@@ -174,16 +212,6 @@ var publiWebsite = (function() {
         });
       });
 
-      c.on('error', function(err){
-        dev.error('can’t connect to the server : '+ err);
-        reject();
-      });
-
-      c.connect({
-        host: d.host,
-        user: d.user,
-        password: d.pass
-      });
 */
     });
   }

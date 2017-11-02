@@ -44,7 +44,7 @@
     "fluent-ffmpeg": "^2.1.0",
     "fs-extra": "^2.0.0",
     "ftp": "^0.3.10",
-    "ftpsync": "^0.2.0",
+    "ftp-deploy": "^1.2.2",
     "glob": "^7.1.2",
     "glob-electron": "^0.1.0",
     "gm": "^1.22.0",
