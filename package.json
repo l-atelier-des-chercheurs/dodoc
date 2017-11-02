@@ -33,6 +33,7 @@
     }
   },
   "dependencies": {
+    "archiver": "^2.1.0",
     "body-parser": "^1.18.2",
     "connect-multiparty": "^2.0.0",
     "dodoc-parsedown": "git+https://github.com/louis-ev/dodoc-parsedown.git",

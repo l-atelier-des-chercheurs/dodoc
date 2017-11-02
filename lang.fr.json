@@ -121,7 +121,8 @@
     "pdfPublicationHasBeenSaved" : "La publication a bien été sauvegardée en PDF",
     "loginOrPassIsWrong" : "Mauvais login ou mot de passe",
 
-    "yourFilesHaveBeenSavedInFolder" : "Vos fichiers web ont été sauvegardés dans le dossier suivant&nbsp;:",
+    "yourWebsiteHasBeenSaved" : "Votre site a été exporté",
+    "downloadAZIP" : "Télécharger une archive ZIP.",
     "noInternetConnection" : "<em>dodoc</em> n’a pas détecté de connexion internet, il n’est donc pas possible de partager cette publication par internet directement.",
     "sendFilesToAServer" : "Envoyer les fichiers vers un serveur",
     "publiHasBeenSentToServer" : "La publication a bien été transferrée au server",

@@ -120,7 +120,8 @@
     "pdfPublicationHasBeenSaved" : "Your publication has been exported and saved as PDF",
     "loginOrPassIsWrong" : "Login or Password incorrect",
 
-    "yourFilesHaveBeenSavedInFolder" : "Your files have been saved in the following folder:",
+    "yourWebsiteHasBeenSaved" : "Your files have been saved in the following folder:",
+    "downloadAZIP" : "Download a ZIP archive.",
     "sendFilesToAServer" : "Send files to server",
     "publiHasBeenSentToServer" : "Your publication has been sent to server",
     "clickHereToOpenPubliInAWebBrowser" : "Link to your publication:",

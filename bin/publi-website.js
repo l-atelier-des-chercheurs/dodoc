@@ -2,6 +2,7 @@ var path = require('path');
 var fs = require('fs-extra');
 var clientFTP = require('ftp');
 var FtpDeploy = require('ftp-deploy');
+var archiver = require('archiver');
 
 var dodoc  = require('../dodoc');
 var dodocAPI = require('./dodoc-api');
@@ -21,6 +22,8 @@ var publiWebsite = (function() {
 
       var publicationsFolder = path.join(dodocAPI.getUserPath(), dodoc.settings().exportedPubliDir);
       var currentDate = dodocAPI.getCurrentDate();
+
+      var publicationsFolderRelativePath = path.join('/', dodoc.settings().exportedPubliDir, d.slugFolderName, d.slugProjectName, d.slugPubliName, 'web', currentDate);
 
       dodocAPI.makeFolderAtPath(d.slugFolderName, publicationsFolder)
       .then(exportFolderPath => {
@@ -63,6 +66,7 @@ var publiWebsite = (function() {
         });
         tasks.push(copyFontFiles);
 
+        // JS will be implemented later
 /*
         tasks.push(_copyFiles(path.join('client', 'bower_components', 'jquery', 'dist'), webPubliFolderPath, 'jquery.min.js') );
         tasks.push(_copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate), webPubliFolderPath, 'script.js') );
@@ -82,27 +86,35 @@ var publiWebsite = (function() {
 
         Promise.all(tasks).then(() => {
           dodocAPI.makeFolderAtPath('medias', webPubliFolderPath).then(webMediasFolderPath => {
-
             return saveImagesLocal(webMediasFolderPath, d.slugFolderName, d.slugProjectName, d.slugPubliName);
           }).then(() => {
 
             let returnData = {
               pathToWebsiteFolder: webPubliFolderPath,
               dateOfExport: currentDate,
-              slugPubliName: d.slugPubliName
+              slugPubliName: d.slugPubliName,
+              publicationsFolderRelativePath
             };
 
-            _checkInternetConnection().then((status) => {
-              dev.log(`Has internet`);
-              returnData.is_internetConnected = true;
-              resolve(returnData);
-            }, function(reason) {
-              dev.error(`No internet`);
-              returnData.is_internetConnected = false;
-              resolve(returnData);
+            _makeZIPFromFolder(webPubliFolderPath).then(function() {
+              dev.logverbose(`Now checking internet connection.`);
+
+              _checkInternetConnection().then((status) => {
+                dev.log(`Has internet`);
+                returnData.is_internetConnected = true;
+                resolve(returnData);
+              }, function(reason) {
+                dev.error(`No internet`);
+                returnData.is_internetConnected = false;
+                resolve(returnData);
+              });
+            }, function(error) {
+              dev.error(`Failed to ZIP folder: ${error}`);
+              reject();
             });
-          }).catch(reason => {
-            dev.error(`Failed to copy images.`);
+
+          }, function(reason) {
+            dev.error(`Failed to copy images: ${reason}`);
             reject();
           });
         });
@@ -163,7 +175,7 @@ var publiWebsite = (function() {
                 reject(err);
               } else {
                 dev.log('sendFilesToServerViaFTP / ftpDeploy finished sending content');
-                const urlToPubli =  d.FTPsettings.baseURL + remote;
+                const urlToPubli =  d.FTPsettings.baseURL + config.remoteRoot;
                 dev.log('Publication was transferred and is now at: ' + urlToPubli);
                 resolve(urlToPubli);
               }
@@ -179,71 +191,6 @@ var publiWebsite = (function() {
         password: config.password
       });
 
-
-
-/*
-*/
-
-/*
-      var webPubliFolderPath = d.webPubliFolderPath
-      // instance for FTP client
-      var serverFolder = path.join(d.sousDossierFtp, d.slugPubliName, d.currentDate);
-      dev.logverbose('Attempting creation of folder on server at path: ' + serverFolder);
-
-      c.on('ready', function() {
-        c.mkdir(serverFolder, true,  function(err) {
-          if (err) {
-            dev.logverbose('Couldn\'t create folder on server. ' + err);
-            require('../sockets').notifyUser();
-            reject(err);
-          } else {
-            dev.log('Folder create on server transferred successfully!');
-          }
-
-          c.put(path.join(webPubliFolderPath, 'index.html'), path.join(serverFolder,'index.html'), function(err) {
-            if (err) dev.error('not transferred:' + err);
-            else dev.logverbose('HTML File transferred successfully!');
-          });
-          c.put(path.join(webPubliFolderPath, 'jquery.min.js'), path.join(serverFolder,'jquery.min.js'), function(err) {
-            if (err) dev.error('not transferred:' + err);
-            else dev.logverbose('Jquery File transferred successfully!');
-          });
-          c.put(path.join(webPubliFolderPath, 'script.js'), path.join(serverFolder, 'script.js'), function(err) {
-            if (err) dev.error('not transferred:' + err);
-            else dev.logverbose('JS File transferred successfully!');
-          });
-          c.put(path.join(webPubliFolderPath, 'style.css'), path.join(serverFolder,'style.css'), function(err) {
-            if (err) dev.error('not transferred:' + err);
-            else dev.logverbose('CSS File transferred successfully!');
-          });
-          c.put(path.join(webPubliFolderPath, 'template.css'), path.join(serverFolder,'template.css'), function(err) {
-            if (err) dev.error('not transferred:' + err);
-            else dev.logverbose('CSS File transferred successfully!');
-          });
-          c.mkdir(path.join(serverFolder, 'medias'), function(err) {
-            if (err) dev.error('medias not transferred:' + err);
-            else dev.logverbose('Medias folder created successfully!');
-            for(var fileName in d.images){
-              c.append(path.join(webPubliFolderPath, 'medias', d.images[fileName]), path.join(serverFolder,'medias', d.images[fileName]), function(err) {
-                if (err) dev.error('not transferred:' + err);
-                else {
-                  dev.logverbose('media transferred ' + d.images[fileName]);
-                }
-              });
-            }
-            c.end();
-
-            const urlToPubli = d.baseURL.endsWith('/') ? d.baseURL + serverFolder : d.baseURL + '/' + serverFolder;
-
-            // otherwise just concatenate strings
-            dev.log('Publication was transferred and is now at: ' + urlToPubli);
-            resolve(urlToPubli);
-          });
-
-        });
-      });
-
-*/
     });
   }
 
@@ -265,7 +212,7 @@ var publiWebsite = (function() {
                 try {
                   fs.copySync(oldPath, newPath);
                   resolve();
-                  dev.log('success!');
+                  dev.logverbose(`Saved image successful for ${fileName}`);
                 } catch (err) {
                   dev.error(err);
                   reject();
@@ -282,7 +229,7 @@ var publiWebsite = (function() {
     });
   };
 
-  function _checkInternetConnection(){
+  function _checkInternetConnection() {
     return new Promise(function(resolve, reject) {
       dev.logfunction('publiWebsite — _checkInternetConnection');
       require('dns').resolve('www.wikipedia.org', function(err) {
@@ -294,6 +241,48 @@ var publiWebsite = (function() {
           resolve(`Internet is available`);
         }
       });
+    });
+  }
+
+  function _makeZIPFromFolder(folderPath) {
+    return new Promise((resolve, reject) => {
+      dev.logfunction(`_makeZIPFromFolder — ${folderPath}`);
+      	// creating archives
+      	let zipPath = folderPath + '.zip';
+
+      var output = fs.createWriteStream(zipPath);
+      var archive = archiver('zip', {
+        zlib: { level: 9 } // Sets the compression level.
+      });
+
+      output.on('close', function() {
+        console.log(archive.pointer() + ' total bytes');
+        console.log('archiver has been finalized and the output file descriptor has closed.');
+        dev.logverbose(`Successfully made a ZIP`);
+        resolve();
+
+      });
+
+      // good practice to catch warnings (ie stat failures and other non-blocking errors)
+      archive.on('warning', function(err) {
+        if (err.code === 'ENOENT') {
+          // log warning
+          dev.error(err);
+        } else {
+          // throw error
+          dev.error(err);
+        }
+      });
+      // good practice to catch this error explicitly
+      archive.on('error', function(err) {
+        dev.error(err);
+      });
+
+      archive.pipe(output);
+
+      archive.directory(folderPath, false);
+
+      archive.finalize();
     });
   }
 

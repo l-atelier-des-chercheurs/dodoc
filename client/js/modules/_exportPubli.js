@@ -56,7 +56,6 @@ var exportPubli = (function() {
         .end();
 
       var publiHtml = _cleanUpPubli(bodyHTML);
-      debugger;
 
       var newPubliContent = publiHtml
         .replaceAll('/'+currentFolder+'/'+currentProject+'/01-photos', 'medias')

@@ -164,8 +164,11 @@ mixin modals(typeOfModal)
     .m_modal-content
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
-        | !{dodoc.lang().modal.yourFilesHaveBeenSavedInFolder}
-      a.txt-wrap_long_lines.js--publiFilesSavedAtPath.js--openThisPathInFinder(target="_blank" href)
+        | !{dodoc.lang().modal.yourWebsiteHasBeenSaved}
+      a.txt-wrap_long_lines.js--exportedWebsiteZIPURL(href target="_blank" download="publication.zip")
+        | !{dodoc.lang().modal.downloadAZIP}
+
+      hr
 
       p.js--has_noInternet
         | !{dodoc.lang().modal.noInternetCantSendOverFtp}

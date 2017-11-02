@@ -609,9 +609,20 @@ var modals = (function() {
   }
 
   function _initExportWebIsReady($m,d) {
-    $m.find('.js--publiFilesSavedAtPath')
-      .attr('href', d.pathToWebsiteFolder)
-      .html(d.pathToWebsiteFolder);
+    debugger;
+    var zipURL = d.publicationsFolderRelativePath + '.zip';
+    $m
+      .find('.js--exportedWebsiteZIPURL')
+        .attr('href', zipURL)
+        .attr('download', d.slugPubliName)
+      .end()
+      ;
+
+/*
+      .find('.js--publiFilesSavedAtPath')
+        .attr('href', d.pathToWebsiteFolder)
+        .html(d.pathToWebsiteFolder);
+*/
 
     if(d.is_internetConnected) {
       $m.find('.js--has_noInternet').remove();
@@ -705,9 +716,6 @@ var modals = (function() {
 
   function _initConfirmPDFModal($m, d) {
     $m
-      .find('.js--exportedPDFPath')
-        .html(d.pdfPath)
-      .end()
       .find('.js--exportedPDFURL')
         .html(d.pdfURL)
         .attr('href', d.pdfURL)
