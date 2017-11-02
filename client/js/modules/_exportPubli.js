@@ -50,23 +50,43 @@ var exportPubli = (function() {
         return this.split(target).join(replacement);
       };
 
-      var publiHtml = _cleanUpPubli($('body').clone());
+      var bodyHTML = $('body').clone()
+        .find('#tempateCss')
+          .remove()
+        .end();
+
+      var publiHtml = _cleanUpPubli(bodyHTML);
+      debugger;
 
       var newPubliContent = publiHtml
         .replaceAll('/'+currentFolder+'/'+currentProject+'/01-photos', 'medias')
         .replaceAll('/'+currentFolder+'/'+currentProject+'/02-animations', 'medias')
         .replaceAll('/'+currentFolder+'/'+currentProject+'/03-videos', 'medias')
         .replaceAll('/'+currentFolder+'/'+currentProject+'/04-sons', 'medias')
-        .replaceAll('/'+currentFolder+'/'+currentProject+'/05-textes', 'medias');
+        .replaceAll('/'+currentFolder+'/'+currentProject+'/05-textes', 'medias')
 
-      var cssFile = '<link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./template.css">';
-      var head = '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta charset="utf-8"><meta name="apple-mobile-web-app-capable" content="yes"><title>Publication | '+currentPubli+'</title>'+cssFile+'</head>';
-      var body = '<body class="publi"><div class="publi_container">';
-      var footer = '</div><script src="../jquery.min.js"></script><script src="./script.js"></script></body></html>'
+        ;
 
-      var html = head + body + newPubliContent + footer;
+      var cssFile = '';
+      var html = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta name="viewport" content="width=device-width,initial-scale=1.0">
+            <meta charset="utf-8">
+            <meta name="apple-mobile-web-app-capable" content="yes">
+            <title>Publication | ${currentPubli}</title>
+            <link rel="stylesheet" href="./style.min.css">
+            <link rel="stylesheet" href="./template.css">
+          </head>
+          <body class="publi">
+            <div class="publi_container">
+              ${newPubliContent}
+            </div>
+          </body>
+        </html>`;
 
-      socket.emit('makeWebsite', {"html": html, "currentTemplate": currentTemplate, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
+      socket.emit('makeWebsite', { "html": html, "currentTemplate": currentTemplate, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
 
       $('body').addClass('is--generating');
     });

@@ -38,9 +38,35 @@ var publiWebsite = (function() {
       .then(webPubliFolderPath => {
         let tasks = [];
 
-        tasks.push(_copyFiles(path.join('client', 'css'), webPubliFolderPath, 'style.css') );
+        tasks.push(_copyFiles(path.join('client', 'css'), webPubliFolderPath, 'style.min.css'));
+
+        // copy font files
+        let copyFontFiles = new Promise((resolve, reject) => {
+          fs.readdir(path.join('client', 'fonts', 'Fira'), (err, filenames) => {
+            if(err) {
+              dev.error(`Couldn’t read font dir : ${err}`);
+              resolve();
+            };
+
+            var files = filenames.filter((filename) => {
+              return !new RegExp( dodoc.settings().regexpMatchFolderNames, 'i').test(filename) && filename !== ".DS_Store";
+            });
+
+            let tasks = [];
+            files.map((name) => {
+              tasks.push(_copyFiles(path.join('client', 'fonts', 'Fira'), path.join(webPubliFolderPath, 'fonts'), name));
+            });
+            Promise.all(tasks).then(() => {
+              resolve();
+            });
+          });
+        });
+        tasks.push(copyFontFiles);
+
+/*
         tasks.push(_copyFiles(path.join('client', 'bower_components', 'jquery', 'dist'), webPubliFolderPath, 'jquery.min.js') );
         tasks.push(_copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate), webPubliFolderPath, 'script.js') );
+*/
         tasks.push(_copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate), webPubliFolderPath, 'template.css') );
 
         let createIndexHTMLFile = new Promise((resolve, reject) => {
@@ -56,8 +82,9 @@ var publiWebsite = (function() {
 
         Promise.all(tasks).then(() => {
           dodocAPI.makeFolderAtPath('medias', webPubliFolderPath).then(webMediasFolderPath => {
+
             return saveImagesLocal(webMediasFolderPath, d.slugFolderName, d.slugProjectName, d.slugPubliName);
-          }).then(arrayImages => {
+          }).then(() => {
 
             let returnData = {
               pathToWebsiteFolder: webPubliFolderPath,
@@ -65,7 +92,7 @@ var publiWebsite = (function() {
               slugPubliName: d.slugPubliName
             };
 
-            _checkInternetConnection(webPubliFolderPath, arrayImages, currentDate).then((status) => {
+            _checkInternetConnection().then((status) => {
               dev.log(`Has internet`);
               returnData.is_internetConnected = true;
               resolve(returnData);
@@ -88,7 +115,7 @@ var publiWebsite = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction( 'EVENT - sendFilesToServerViaFTP : ' + JSON.stringify(d, null, 4));
 
-      var remote = '/' + path.join(d.sousDossierFtp, d.slugPubliName, d.dateOfExport);
+      var remote = path.join(d.sousDossierFtp, d.slugPubliName, d.dateOfExport);
       dev.logverbose(`Attempting creation of folder on server at path: ${remote}`);
 
       var config = {
@@ -117,9 +144,13 @@ var publiWebsite = (function() {
 
             var ftpDeploy = new FtpDeploy();
 
+            // FtpDeploy doesn’t like when
+            config.remoteRoot = '/' + remote;
+
             dev.logverbose('Folder created on server successfully.');
             ftpDeploy.on('uploading', function(data) {
-              dev.logverbose(`Uploading files to ${remote} --> file ${data.filename} at ${data.percentComplete}%`);
+              dev.logverbose(`Uploading files to ${config.remoteRoot} --> file ${data.filename} at ${data.percentComplete}%`);
+              require('../sockets').notifyUser(`Uploading file <em>${data.filename}</em>: ${data.percentComplete}%`);
             });
 
             ftpDeploy.on('upload-error', function (data) {
@@ -218,7 +249,6 @@ var publiWebsite = (function() {
 
   function saveImagesLocal(webMediasFolderPath, slugFolderName, slugProjectName, slugPubliName){
     return new Promise(function(resolve, reject) {
-      var arrayImages = [];
       dev.logfunction( 'publiWebsite — saveImagesLocal');
       dodocPubli.listMediaAndMetaFromOnePubli( slugFolderName, slugProjectName, slugPubliName).then(function(publi) {
         for (var prop in publi) {
@@ -232,10 +262,9 @@ var publiWebsite = (function() {
                 var fileName = eachFiles[fileToCopy];
                 var oldPath = path.join( dodocAPI.getProjectPath(slugFolderName, slugProjectName), mediaFolder, fileName);
                 var newPath = path.join( webMediasFolderPath, fileName);
-                arrayImages.push(fileName);
                 try {
                   fs.copySync(oldPath, newPath);
-                  resolve(arrayImages);
+                  resolve();
                   dev.log('success!');
                 } catch (err) {
                   dev.error(err);
@@ -253,7 +282,7 @@ var publiWebsite = (function() {
     });
   };
 
-  function _checkInternetConnection(webPubliFolderPath, arrayImages, currentDate){
+  function _checkInternetConnection(){
     return new Promise(function(resolve, reject) {
       dev.logfunction('publiWebsite — _checkInternetConnection');
       require('dns').resolve('www.wikipedia.org', function(err) {
@@ -281,7 +310,7 @@ var publiWebsite = (function() {
           if (!err) {
             fs.copy(sourceFile, destFile, function(err){
               if(err) {
-                dev.error(err);
+                dev.error(`Failed to copy ${filename} from ${sourceFile} into ${destFile}: ${err}`);
                 reject();
               } else {
                 dev.log(`Copy files from ${sourceFile} into ${destFile}`);
@@ -289,7 +318,7 @@ var publiWebsite = (function() {
               }
             });
           } else {
-            dev.log(`No ${sourceFile} file in this template`);
+            dev.log(`No ${sourceFile} file found.`);
             resolve();
           }
         });
