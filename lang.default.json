@@ -21,6 +21,7 @@
   "accept" : "Confirm",
   "makeWebsite" : "Export as a website",
   "makePDF" : "Export as a PDF",
+  "uploadViaFTP": "Send via FTP",
 
   "lastMediasAdded" : "Latest Media",
   "listOfPublications" : "Publications",
@@ -117,14 +118,14 @@
 
     "editProject" : "Edit project",
     "pdfPublicationHasBeenSaved" : "Your publication has been exported and saved as PDF",
-    "impossibleToConnectToServer" : "Connexion to server failed.",
     "loginOrPassIsWrong" : "Login or Password incorrect",
-    "noInternetConnection" : "No Internet Connexion",
-    "noInternetCantSendPublicationOverFtp" : "To send your publication via FTP, please enable Internet connexion.",
-    "yourFilesHaveBeenSaved" : "Your files have been saved:",
+
+    "yourFilesHaveBeenSavedInFolder" : "Your files have been saved in the following folder:",
     "sendFilesToAServer" : "Send files to server",
     "publiHasBeenSentToServer" : "Your publication has been sent to server",
     "clickHereToOpenPubliInAWebBrowser" : "Link to your publication:",
+
+    "noInternetCantSendOverFtp": "No internet connection has been detected so uploading your publication online not available.",
 
     "selectAnImage" : "Select picture",
     "sureToRemoveProject" : "Do you want to delete this project?",

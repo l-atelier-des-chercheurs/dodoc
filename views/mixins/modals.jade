@@ -156,31 +156,26 @@ mixin modals(typeOfModal)
       hr
       +button('valider', '', 'isCollapsed')
 
-  if( typeOfModal === 'exportWebBadFTP')
-    //////////////////////////////////////////////   BAD PDF  //////////////////////////////////
+
+
+
+  if( typeOfModal === 'exportWebIsReady')
+    //////////////////////////////////////////////   WEBSITE READY  //////////////////////////////////
     .m_modal-content
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
-        | !{dodoc.lang().modal.impossibleToConnectToServer}
-      p
-        | !{dodoc.lang().modal.loginOrPassIsWrong}
+        | !{dodoc.lang().modal.yourFilesHaveBeenSavedInFolder}
+      a.txt-wrap_long_lines.js--publiFilesSavedAtPath.js--openThisPathInFinder(target="_blank" href)
 
-  if( typeOfModal === 'exportWebNoConnexion')
-    //- modal-no-connexion
-    //////////////////////////////////////////////   NO CONNEXION  //////////////////////////////////
-    .m_modal-content
-      +button( 'close', '', 'isCollapsed')
-      .modal_title.txt-large_title
-        | !{dodoc.lang().modal.noInternetConnection}
-      p
-        | !{dodoc.lang().modal.noInternetCantSendPublicationOverFtp}
-      p
-        | !{dodoc.lang().modal.yourFilesHaveBeenSaved}
-      p.js--publiFilesSavedAtPath
+      p.js--has_noInternet
+        | !{dodoc.lang().modal.noInternetCantSendOverFtp}
+      p.js--has_internet
+        | !{dodoc.lang().modal.hasInternetCanSendOverFtp}
+      +button('uploadViaFTP', '', '')
 
-  if( typeOfModal === 'exportWebOnConnexion')
+  if( typeOfModal === 'uploadWebsiteViaFTP')
     //- modal-connexion
-    //////////////////////////////////////////////   CONNEXION  //////////////////////////////////
+    //////////////////////////////////////////////   UPLOAD TO FTP  //////////////////////////////////
     .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
@@ -203,6 +198,9 @@ mixin modals(typeOfModal)
       .txt-small_info
         | !{dodoc.lang().modal.clickHereToOpenPubliInAWebBrowser}
       a.urlToPubli.txt-wrap_long_lines.js--urlToPubli.js--openInBrowser(href target="_blank")
+
+
+
 
   if( typeOfModal === 'confirmPdfExported')
     //- modal-confirm-pdf

@@ -1,6 +1,7 @@
 var path = require('path');
 var fs = require('fs-extra');
 var clientFTP = require('ftp');
+var ftpSync = require('ftpsync');
 
 var dodoc  = require('../dodoc');
 var dodocAPI = require('./dodoc-api');
@@ -10,74 +11,114 @@ var dev = require('./dev-log');
 var publiWebsite = (function() {
 
   const API = {
-    makeWebsite          : (socket, d) => makeWebsite(socket, d),
-    sendFileToServer     : (d)         => sendFileToServer(d),
+    makeWebsite                : (d) => makeWebsite(d),
+    sendFilesToServerViaFTP    : (d)         => sendFilesToServerViaFTP(d),
   };
 
-  function makeWebsite(socket, d){
+  function makeWebsite(d){
+    return new Promise(function(resolve, reject) {
+      dev.logfunction( `EVENT - makeWebsite: ${JSON.stringify(d, null, 4)}`);
 
-    var publicationsFolder = path.join(dodocAPI.getUserPath(), dodoc.settings().exportedPubliDir);
-    var currentDate = dodocAPI.getCurrentDate();
+      var publicationsFolder = path.join(dodocAPI.getUserPath(), dodoc.settings().exportedPubliDir);
+      var currentDate = dodocAPI.getCurrentDate();
 
-    dodocAPI.makeFolderAtPath(d.slugFolderName, publicationsFolder)
-    .then(exportFolderPath => {
-      return dodocAPI.makeFolderAtPath(d.slugProjectName,exportFolderPath);
-    })
-    .then(exportProjectPath => {
-      return dodocAPI.makeFolderAtPath(d.slugPubliName,exportProjectPath);
-    })
-    .then(exportPubliPath => {
-      return dodocAPI.makeFolderAtPath('web', exportPubliPath)
-    })
-    .then(webFolderPath => {
-      return dodocAPI.makeFolderAtPath(currentDate, webFolderPath)
-    })
-    .then(webPubliFolderPath => {
-      let tasks = [];
+      dodocAPI.makeFolderAtPath(d.slugFolderName, publicationsFolder)
+      .then(exportFolderPath => {
+        return dodocAPI.makeFolderAtPath(d.slugProjectName,exportFolderPath);
+      })
+      .then(exportProjectPath => {
+        return dodocAPI.makeFolderAtPath(d.slugPubliName,exportProjectPath);
+      })
+      .then(exportPubliPath => {
+        return dodocAPI.makeFolderAtPath('web', exportPubliPath)
+      })
+      .then(webFolderPath => {
+        return dodocAPI.makeFolderAtPath(currentDate, webFolderPath)
+      })
+      .then(webPubliFolderPath => {
+        let tasks = [];
 
-      tasks.push(_copyFiles(path.join('client', 'css'), webPubliFolderPath, 'style.css') );
-      tasks.push(_copyFiles(path.join('client', 'bower_components', 'jquery', 'dist'), webPubliFolderPath, 'jquery.min.js') );
-      tasks.push(_copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate), webPubliFolderPath, 'script.js') );
-      tasks.push(_copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate), webPubliFolderPath, 'script.js') );
-      tasks.push(_copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate), webPubliFolderPath, 'style.css') );
+        tasks.push(_copyFiles(path.join('client', 'css'), webPubliFolderPath, 'style.css') );
+        tasks.push(_copyFiles(path.join('client', 'bower_components', 'jquery', 'dist'), webPubliFolderPath, 'jquery.min.js') );
+        tasks.push(_copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate), webPubliFolderPath, 'script.js') );
+        tasks.push(_copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate), webPubliFolderPath, 'template.css') );
 
-      let createIndexHTMLFile = new Promise((resolve, reject) => {
-        dodocAPI.storeData(path.join(webPubliFolderPath, 'index.html'), d.html, 'update').then((newPubliData) => {
-          resolve();
-        }, function() {
-          dev.error(`--> Couldn\'t create index.html for publi file.`);
-          reject(`Failed to create publi`);
+        let createIndexHTMLFile = new Promise((resolve, reject) => {
+          dodocAPI.storeData(path.join(webPubliFolderPath, 'index.html'), d.html, 'update').then((newPubliData) => {
+            resolve();
+          }, function() {
+            dev.error(`--> Couldn\'t create index.html for publi file.`);
+            reject(`Failed to create publi`);
+          });
         });
+
+        tasks.push(createIndexHTMLFile);
+
+        Promise.all(tasks).then(() => {
+          dodocAPI.makeFolderAtPath('medias', webPubliFolderPath).then(webMediasFolderPath => {
+            return saveImagesLocal(webMediasFolderPath, d.slugFolderName, d.slugProjectName, d.slugPubliName);
+          }).then(arrayImages => {
+
+            let returnData = {
+              pathToWebsiteFolder: webPubliFolderPath,
+              dateOfExport: currentDate
+            };
+
+            _checkInternetConnection(webPubliFolderPath, arrayImages, currentDate).then((status) => {
+              dev.log(`Has internet`);
+              returnData.is_internetConnected = true;
+              resolve(returnData);
+            }, function(reason) {
+              dev.error(`No internet`);
+              returnData.is_internetConnected = false;
+              resolve(returnData);
+            });
+          }).catch(reason => {
+            dev.error(`Failed to copy images.`);
+            reject();
+          });
+        });
+
       });
-
-      tasks.push(createIndexHTMLFile);
-
-      Promise.all(tasks).then(() => {
-        dodocAPI.makeFolderAtPath('medias', webPubliFolderPath).then(webMediasFolderPath => {
-          return saveImagesLocal(webMediasFolderPath, d.slugFolderName, d.slugProjectName, d.slugPubliName);
-        })
-        .then(arrayImages => {
-          return _checkInternetConnection(webPubliFolderPath, arrayImages, currentDate, socket);
-        })
-        .then(status => {
-          resolve(status);
-        })
-        .catch(reason => {
-          reject(reason);
-        })
-      });
-
     });
   }
 
-  function sendFileToServer(d){
+  function sendFilesToServerViaFTP(d){
     return new Promise(function(resolve, reject) {
-      dev.logfunction( 'EVENT - sendFileToServer : ' + JSON.stringify(d, null, 4));
+      dev.logfunction( 'EVENT - sendFilesToServerViaFTP : ' + JSON.stringify(d, null, 4));
 
+      // this is pretty stupid : we just need to upload the folder’s content and be done with it
+      // or, at least, iterate with its content and upload that
+
+      var remote = path.join(d.sousDossierFtp, d.slugPubliName, d.dateOfExport);
+      dev.logverbose('Attempting creation of folder on server at path: ' + serverFolder);
+
+      var options = {
+        host: d.FTPsettings.host,
+        user: d.FTPsettings.user,
+        pass: d.FTPsettings.pass,
+        local: d.pathToWebsiteFolder,
+        remote: remote
+      };
+
+      ftpSunc.settings = options;
+      ftpSync.run(function(err, result) {
+
+      };
+
+
+
+            const urlToPubli = d.baseURL.endsWith('/') ? d.baseURL + serverFolder : d.baseURL + '/' + serverFolder;
+
+            // otherwise just concatenate strings
+            dev.log('Publication was transferred and is now at: ' + urlToPubli);
+            resolve(urlToPubli);
+
+/*
       var webPubliFolderPath = d.webPubliFolderPath
       // instance for FTP client
       var c = new clientFTP();
-      var serverFolder = path.join(d.dossierFtp, d.slugPubliName, d.currentDate);
+      var serverFolder = path.join(d.sousDossierFtp, d.slugPubliName, d.currentDate);
       dev.logverbose('Attempting creation of folder on server at path: ' + serverFolder);
 
       c.on('ready', function() {
@@ -89,6 +130,7 @@ var publiWebsite = (function() {
           } else {
             dev.log('Folder create on server transferred successfully!');
           }
+
           c.put(path.join(webPubliFolderPath, 'index.html'), path.join(serverFolder,'index.html'), function(err) {
             if (err) dev.error('not transferred:' + err);
             else dev.logverbose('HTML File transferred successfully!');
@@ -142,6 +184,7 @@ var publiWebsite = (function() {
         user: d.user,
         password: d.pass
       });
+*/
     });
   }
 
@@ -182,14 +225,14 @@ var publiWebsite = (function() {
     });
   };
 
-  function _checkInternetConnection(webPubliFolderPath, arrayImages, currentDate, socket){
+  function _checkInternetConnection(webPubliFolderPath, arrayImages, currentDate){
     return new Promise(function(resolve, reject) {
       dev.logfunction('publiWebsite — _checkInternetConnection');
-      require('dns').resolve('https://www.wikipedia.org/', function(err) {
+      require('dns').resolve('www.wikipedia.org', function(err) {
         if(err) {
-          dev.log('No connection');
-          reject(`No internet connection`);
-        }else{
+          dev.error(`No connection: ${err}`);
+          reject(`No internet connection.`);
+        } else {
           dev.log('Connected to Internet');
           resolve(`Internet is available`);
         }
@@ -213,12 +256,13 @@ var publiWebsite = (function() {
                 dev.error(err);
                 reject();
               } else {
-                dev.log('Copy files from ' + sourceFile + ' into ' + destFile);
+                dev.log(`Copy files from ${sourceFile} into ${destFile}`);
                 resolve(destFile);
               }
             });
           } else {
-            dev.log('No ' + sourceFile + ' file in this template');
+            dev.log(`No ${sourceFile} file in this template`);
+            resolve();
           }
         });
       });

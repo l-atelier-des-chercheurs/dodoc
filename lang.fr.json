@@ -22,6 +22,8 @@
   "makeWebsite" : "Exporter en site web",
   "makePDF" : "Exporter en PDF",
 
+  "uploadViaFTP": "Envoyer par FTP",
+
   "lastMediasAdded" : "Derniers médias ajoutés",
   "listOfPublications" : "Liste des publications",
   "createPublication" : "Créer une nouvelle publication",
@@ -117,14 +119,16 @@
 
     "editProject" : "Modifier le projet",
     "pdfPublicationHasBeenSaved" : "La publication a bien été sauvegardée en PDF",
-    "impossibleToConnectToServer" : "Impossible de se connecter au serveur",
     "loginOrPassIsWrong" : "Mauvais login ou mot de passe",
-    "noInternetConnection" : "Pas de connexion internet",
-    "noInternetCantSendPublicationOverFtp" : "Vous n'êtes pas connecté à internet, vous ne pouvez donc pas envoyer votre publication en FTP.",
-    "yourFilesHaveBeenSaved" : "Vos fichiers web ont été sauvegardé&nbsp;:",
+
+    "yourFilesHaveBeenSavedInFolder" : "Vos fichiers web ont été sauvegardés dans le dossier suivant&nbsp;:",
+    "noInternetConnection" : "<em>dodoc</em> n’a pas détecté de connexion internet, il n’est donc pas possible de partager cette publication par internet directement.",
     "sendFilesToAServer" : "Envoyer les fichiers vers un serveur",
     "publiHasBeenSentToServer" : "La publication a bien été transferrée au server",
     "clickHereToOpenPubliInAWebBrowser" : "Lien vers votre publication&nbsp;:",
+
+    "noInternetCantSendOverFtp": "Aucune connection à Internet n’a pu être trouvée, l’envoi en ligne n’est donc pas disponible.",
+    "hasInternetCanSendOverFtp": "Une connection à Internet a été détectée, voulez-vous envoyer cette publication en ligne par FTP&nbsp;?",
 
     "selectAnImage" : "Sélectionnez une image",
     "sureToRemoveProject" : "Êtes-vous sûr de vouloir supprimer le projet ?",

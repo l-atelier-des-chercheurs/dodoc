@@ -123,6 +123,12 @@ mixin button(typeOfButton, navOrButton, style)
         include ../../client/images/i_enregistre.svg
       span !{dodoc.lang().makePDF}
 
+  if( typeOfButton === 'uploadViaFTP')
+    button(title="Dodoc ftp upload" class='button-wrapper_upload js--uploadViaFTP js--has_internet #{defaultClasses}')
+      .btn.icon
+        include ../../client/images/i_enregistre.svg
+      span !{dodoc.lang().uploadViaFTP}
+
   if( typeOfButton === 'editPubli')
     a(href="#" title="Dodoc publi" class='button-wrapper_edit js--openModal_editPubli #{defaultClasses}')
       .btn.icon

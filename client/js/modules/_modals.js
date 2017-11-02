@@ -74,12 +74,10 @@ var modals = (function() {
         $modal = _initAddTextModal($modal);
       } else if(typeOfModal === 'addLocalMedia') {
         $modal = _initAddLocalMediaModal($modal);
-      } else if(typeOfModal === 'noConnection') {
-        $modal = _initNoConnexionModal($modal, d);
-      } else if(typeOfModal === 'exportWebOnConnexion') {
-        $modal = _initExportWebOnConnexionModal($modal, d);
-      } else if(typeOfModal === 'exportWebBadFTP') {
-        $modal = _initExportWebBadFTPModal($modal);
+      } else if(typeOfModal === 'exportWebIsReady') {
+        $modal = _initExportWebIsReady($modal, d);
+      } else if(typeOfModal === 'uploadWebsiteViaFTP') {
+        $modal = _initUploadWebsiteViaFTP($modal, d);
       } else if(typeOfModal === 'confirmPdfExported') {
         $modal = _initConfirmPDFModal($modal,d);
       } else if(typeOfModal === 'moveContentFolder') {
@@ -608,21 +606,42 @@ var modals = (function() {
     return $m;
   }
 
-  function _initNoConnexionModal($m,d) {
-    $m.find('.js--publiFilesSavedAtPath').html(d.path);
-    $m.on('close_that_modal', function() {
-      location.reload();
-    });
+  function _initExportWebIsReady($m,d) {
+    $m.find('.js--publiFilesSavedAtPath')
+      .attr('href', d.pathToWebsiteFolder)
+      .html(d.pathToWebsiteFolder);
+
+    if(d.is_internetConnected) {
+      $m.find('.js--has_noInternet').remove();
+    } else {
+      $m.find('.js--has_internet').remove();
+    }
+
+    if($m.find('.js--uploadViaFTP').length > 0) {
+      $m.find('.js--uploadViaFTP').on('click', function(){
+
+        var modalData = {};
+
+        if(store.get('ftp') !== undefined){
+          var ftpInfo = store.get('ftp');
+          modalData = ftpInfo;
+        }
+        modalData.pathToWebsiteFolder = d.pathToWebsiteFolder;
+        modalData.dateOfExport = d.dateOfExport;
+      	  modals.createModal('uploadWebsiteViaFTP',modalData);
+      });
+    }
+
     return $m;
   }
 
-  function _initExportWebOnConnexionModal($m,d) {
+  function _initUploadWebsiteViaFTP($m,d) {
 
     $m.find('input.host').val(d.host);
     $m.find('input.user').val(d.user);
     $m.find('input.pass').val(d.pass);
     $m.find('input.baseURL').val( d.baseURL);
-    $m.find('input.folder').val(d.dossierFtp);
+    $m.find('input.folder').val(d.sousDossierFtp);
 
     $m.find('.js--valider').on('click', function(){
       if(_checkAndHighlightEmptyRequiredFields($m)) return;
@@ -630,23 +649,45 @@ var modals = (function() {
       var user = $m.find('input.user').val();
       var pass = $m.find('input.pass').val();
       var baseURL = $m.find('input.baseURL').val();
-      var dossierFtp = $m.find('input.folder').val();
+      var sousDossierFtp = $m.find('input.folder').val();
 
-      store.set('ftp', {host,user,pass,baseURL,dossierFtp});
-      socket.emit('ftpSettings', {host,user,pass,baseURL,dossierFtp, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli, 'webPubliFolderPath': d.webPubliFolderPath, "images": d.arrayImages, "currentDate": d.date});
+      store.set('ftp', {
+        host: host,
+        user: user,
+        pass: pass,
+        baseURL: baseURL,
+        sousDossierFtp: sousDossierFtp
+      });
+
+//       socket.emit('ftpSettings', {host,user,pass,baseURL,sousDossierFtp, "slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli, 'webPubliFolderPath': d.webPubliFolderPath });
+
+      socket.emit('uploadViaFTP', {
+        FTPsettings:
+        {
+          host: host,
+          user: user,
+          pass: pass,
+          baseURL: baseURL,
+          sousDossierFtp: sousDossierFtp
+        },
+        pathToWebsiteFolder: d.pathToWebsiteFolder,
+        dateOfExport: d.dateOfExport
+      });
 
       $('body').addClass('is--generating');
       $m.trigger('close_that_modal');
     });
     return $m;
   }
-
-  function _initExportWebBadFTPModal($m) {
-    $m.on('close_that_modal', function() {
-//       $('#modal-connexion').foundation('reveal', 'open');
-    });
+  function _initPubliHasBeenSentToFTPModal($m, d) {
+    $m
+      .find('.js--urlToPubli')
+        .html(d.urlToPubli)
+        .attr('href', d.urlToPubli)
+        ;
     return $m;
   }
+
   function _initConfirmPDFModal($m, d) {
     $m
       .find('.js--exportedPDFPath')
@@ -664,14 +705,6 @@ var modals = (function() {
     $m.find('.js--valider').on('click', function(){
       socket.emit('removeUserDirPath');
     });
-    return $m;
-  }
-  function _initPubliHasBeenSentToFTPModal($m, d) {
-    $m
-      .find('.js--urlToPubli')
-        .html(d.urlToPubli)
-        .attr('href', d.urlToPubli)
-        ;
     return $m;
   }
 

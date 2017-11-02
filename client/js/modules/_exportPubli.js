@@ -10,7 +10,7 @@ var exportPubli = (function() {
 
     onPubliPDFIsGenerated   : function(pdfInfos) { onPubliPDFIsGenerated(pdfInfos); },
     onNoConnection          : function() { onNoConnection(); },
-    onWebConnection         : function(webPubliFolderPath, arrayImages, date) { onWebConnection(webPubliFolderPath, arrayImages, date); },
+    onWebsiteReady          : function(d) { onWebsiteReady(d); },
     onPubliTransferred      : function(d) { onPubliTransferred(d); },
     onCannotConnectFtp      : function() { onCannotConnectFtp(); },
   }
@@ -76,31 +76,9 @@ var exportPubli = (function() {
     modals.createModal('confirmPdfExported',pdfInfos);
   }
 
-  function onNoConnection(path){
+  function onWebsiteReady(d){
     $('body').removeClass('is--generating');
-    var modalData = {
-      "path" : path,
-    };
-	  modals.createModal('exportWebNoConnexion',modalData);
-  }
-
-  function onWebConnection(webPubliFolderPath, arrayImages, date){
-    console.log('web connect');
-    $('body').removeClass('is--generating');
-    // fill the form with previous settings
-
-    var modalData = {};
-
-    if(store.get('ftp') !== undefined){
-      var ftpInfo = store.get('ftp');
-      modalData = ftpInfo;
-    }
-
-    modalData.webPubliFolderPath = webPubliFolderPath;
-    modalData.arrayImages = arrayImages;
-    modalData.date = date;
-
-	  modals.createModal('exportWebOnConnexion',modalData);
+	  modals.createModal('exportWebIsReady', d);
   }
 
   function onPubliTransferred(d){
@@ -108,10 +86,6 @@ var exportPubli = (function() {
     $('body').removeClass('is--generating');
   }
 
-  function onCannotConnectFtp(){
-    $('body').removeClass('is--generating');
-    modals.createModal('exportWebBadFTP');
-  }
 
   return API;
 })()

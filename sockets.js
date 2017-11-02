@@ -84,7 +84,7 @@ var sockets = (function() {
   		  socket.on( 'listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 
       socket.on( 'makeWebsite', data => { onMakeWebsiteFromPubli(socket, data); });
-      socket.on( 'ftpSettings', data => { onFtpSettings(socket, data); });
+      socket.on( 'uploadViaFTP', data => { onUploadViaFTP(socket, data); });
       socket.on( 'makePDF', data => { onMakePDF(socket, data); });
 
       socket.on( 'enableLogToFile', onEnableLogToFile);
@@ -452,12 +452,17 @@ var sockets = (function() {
 
   function onMakeWebsiteFromPubli(socket, d) {
     dev.logfunction( "EVENT - makeWebsite : " + JSON.stringify( d, null, 4));
-    publiWebsite.makeWebsite(socket, d);
+    publiWebsite.makeWebsite(d).then(additionalInfos => {
+      // additionalInfos contains is_internetConnected, pathToWebsiteFolder and dateOfExport
+      dodocAPI.sendEventWithContent( 'websiteReady', additionalInfos, io, socket);
+    }, function(error) {
+      dev.error(`Failed to export publi as website! Error: ${error}`);
+    });
   }
 
-  function onFtpSettings(socket, d) {
-    dev.logfunction( "EVENT - onFtpSettings : " + JSON.stringify( d, null, 4));
-    publiWebsite.sendFileToServer(d).then(function(urlToPubli) {
+  function onUploadViaFTP(socket, d) {
+    dev.logfunction( "EVENT - onUploadViaFTP : " + JSON.stringify( d, null, 4));
+    publiWebsite.sendFilesToServerViaFTP(d).then(function(urlToPubli) {
       dodocAPI.sendEventWithContent('publiTransferred', {urlToPubli}, io, socket);
     }, function(error) {
       dodocAPI.sendEventWithContent('cannotConnectFtp', error, io, socket);

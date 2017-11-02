@@ -21,8 +21,7 @@ socket.on('publiMetaUpdated', onPubliMetaUpdated);
 socket.on('publiMediasUpdated', onPubliMediasUpdated);
 
 socket.on('publiPDFIsGenerated', onPubliPDFIsGenerated);
-socket.on('noConnection', onNoConnection);
-socket.on('webConnectionFound', onWebConnection);
+socket.on('websiteReady', onWebsiteReady);
 socket.on('publiTransferred', onPubliTransferred);
 socket.on('cannotConnectFtp', onCannotConnectFtp);
 
@@ -52,14 +51,11 @@ function onPubliMediasUpdated( psdata) {
 function onPubliPDFIsGenerated(d) {
   exportPubli.onPubliPDFIsGenerated(d);
 }
+function onWebsiteReady(d) {
+  exportPubli.onWebsiteReady(d);
+}
 function onPubliTransferred(d) {
   exportPubli.onPubliTransferred(d);
-}
-function onNoConnection(d) {
-  exportPubli.onNoConnection(d);
-}
-function onWebConnection(webPubliFolderPath, arrayImages, date) {
-  exportPubli.onWebConnection(webPubliFolderPath, arrayImages, date);
 }
 function onCannotConnectFtp() {
   exportPubli.onCannotConnectFtp();

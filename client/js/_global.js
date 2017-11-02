@@ -83,11 +83,11 @@ $('body').on('click', '.js--openInBrowser', function(e) {
   }
 });
 
-$('document').on('click', '.js--enableLogToFile', function() {
+$('body').on('click', '.js--enableLogToFile', function() {
 	socket.emit('enableLogToFile');
 });
 
-$('document').on('click', '.js--openThisPathInFinder', function() {
+$('body').on('click', '.js--openThisPathInFinder', function() {
   if(require('electron') !== undefined) {
     var shell = require('electron').shell;
     event.preventDefault();
@@ -704,7 +704,7 @@ function listMontagePubliMeta( $publiContent, pdata) {
     ;
 
   // load the css file corresponding to this
-  var publiTemplateCSSPath = '/' + dodoc.settings().publicationTemplateDirname + '/' + pdata.template + '/' + 'style.css';
+  var publiTemplateCSSPath = '/' + dodoc.settings().publicationTemplateDirname + '/' + pdata.template + '/' + 'template.css';
   $('.publi_container,.montage_publi_container').find('#templateCss').attr('href', publiTemplateCSSPath);
 
   $publiContent.find('.template_container').attr("data-template", pdata.template);
