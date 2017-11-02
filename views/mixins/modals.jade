@@ -219,7 +219,6 @@ mixin modals(typeOfModal)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
         | !{dodoc.lang().modal.pdfPublicationHasBeenSaved}
-      .txt-small_info
-        | !{dodoc.lang().modal.downloadThePDF}
       a.exportedPDFPath.txt-wrap_long_lines.js--exportedPDFURL(href target="_blank" download="publication.pdf")
+        | !{dodoc.lang().modal.downloadThePDF}
 

@@ -717,7 +717,6 @@ var modals = (function() {
   function _initConfirmPDFModal($m, d) {
     $m
       .find('.js--exportedPDFURL')
-        .html(d.pdfURL)
         .attr('href', d.pdfURL)
         .attr('download', d.slugPubliName)
       .end()
