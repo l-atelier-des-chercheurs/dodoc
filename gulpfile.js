@@ -14,7 +14,7 @@ var dodoc  = require('./dodoc.js');
 
 var pluginsScripts = [
   'client/bower_components/jquery/dist/jquery.min.js',
-  'node_modules/socket.io-client/dist/socket.io.min.js',
+  'node_modules/socket.io-client/dist/socket.io.js',
   'client/bower_components/moment/min/moment.min.js',
   'client/bower_components/moment/locale/fr.js',
   'client/bower_components/store-js/store.min.js',

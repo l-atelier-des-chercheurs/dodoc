@@ -210,8 +210,9 @@ var dodocAPI = (function() {
         .withMetadata()
         .background({r: 255, g: 255, b: 255})
         .flatten()
-        .toFormat(sharp.format.jpeg)
-        .quality(100)
+        .jpeg({
+          quality: 100
+        })
         .toFile(imagePath, function(err, info) {
           dev.logverbose('Image has been saved, resolving its path.');
           resolve(imagePath);
@@ -231,8 +232,9 @@ var dodocAPI = (function() {
         .max()
         .withoutEnlargement()
         .withMetadata()
-        .toFormat('jpeg')
-        .quality(dodoc.settings().mediaThumbQuality)
+        .jpeg({
+          quality: dodoc.settings().mediaThumbQuality
+        })
         .toFile(dest)
         .then(function() {
           resolve();
