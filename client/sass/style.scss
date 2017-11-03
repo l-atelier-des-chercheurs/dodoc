@@ -23,6 +23,14 @@ body,html {
 }
 
 
+  -webkit-appearance: none;
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color:   $c-gris;
+  -webkit-box-shadow: $c-gris_fonce;
+}
 
 
 /******************
@@ -58,6 +66,8 @@ body {
   color: $c-noir;
   font-size: 1em;
   font-family: 'Fira Sans', sans-serif;
+
+  min-width: 800px;
 
   &.has--modalOpened {
     overflow: hidden;
@@ -321,7 +331,7 @@ button {
   }
   // this is to make the info inside bibli-buffer fit the available width
   body.bibli[data-publicationpane="open"] & {
-      width: 50%;
+    width: 50%;
   }
 
   .module_infos-blocs {

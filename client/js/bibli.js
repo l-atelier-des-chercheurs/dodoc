@@ -42,8 +42,8 @@ function init(){
   publi.init();
 
 	$(".js--open_publicationspane").on( 'click', function(e) {
-  	e.preventDefault();
-  	$('body').attr( "data-publicationpane", $('body').attr('data-publicationPane') === 'open' ? '' : 'open');
+    	e.preventDefault();
+    	$('body').attr( "data-publicationpane", $('body').attr('data-publicationPane') === 'open' ? '' : 'open');
   });
 
   // si en arrivant sur la page, il y a un hash dans l'url

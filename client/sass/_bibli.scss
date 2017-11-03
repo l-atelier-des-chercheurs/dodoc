@@ -7,7 +7,7 @@ body.bibli {
 
 .biblimontage-container {
   position: relative;
-
+  overflow-x: hidden;
 }
 
 .bibli-btn {
@@ -117,7 +117,8 @@ body.bibli {
   transition: transform .7s ease-out;
 
   body[data-publicationpane="open"] & {
-    transform: translate( 0, 0);
+    transform: translate(0, 0);
+    display: block;
   }
 
   .button-wrapper_publi {
