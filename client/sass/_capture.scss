@@ -282,7 +282,7 @@ $t-decalageDuCentre: 2%;
 
   margin: auto;
   position: absolute;
-  background-color: #FFF;
+  background-color: $c-noir;
   z-index:2;
   margin-bottom:  25px;
 
@@ -541,6 +541,9 @@ $t-decalageDuCentre: 2%;
       left: 0;
       width: 100%;
       padding: $t-margin/4;
+      color: white;
+      text-shadow: 0px 0px 10px $c-noir;
+
     }
   }
 
