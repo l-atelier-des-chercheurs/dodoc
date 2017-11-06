@@ -54,7 +54,7 @@ var dodocAPI = (function() {
 
   function storeData(mpath, d, e) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction('COMMON — storeData');
+      dev.logfunction(`COMMON — storeData in ${mpath}`);
       let textd;
       if(typeof d === 'object') { textd = parsedown.textify(d); }
       else { textd = d; }

@@ -275,7 +275,6 @@ function showImage( mediaDatas) {
 	return mediaItem;
 }
 
-
 function showAnimation( mediaDatas) {
   var mediasFilesPath = getMediaFiles(mediaDatas);
 	var mediaItem = $(".js--templates .media_stopmotion").clone(false);
@@ -430,6 +429,7 @@ function removeThisProject( $container, slugProjectName) {
     })
     ;
 }
+
 function removeThisFolder( $container, slugFolderName) {
   var $items = $container.find(".dossier");
 
@@ -475,7 +475,6 @@ function insertOrReplaceMedia( $mediaItem, $mediaContainer) {
   }
   return "inserted";
 }
-
 
 function listPublis( publisData) {
   console.log( "listPublis");
@@ -523,7 +522,6 @@ function makeOnePubli( publiData) {
   return $publiItem;
 }
 
-
 function insertOrReplacePubli( $publiItem, $publiContainer) {
 
   var $publiItems = $publiContainer.find(".publi-folder");
@@ -559,108 +557,6 @@ function insertOrReplacePubli( $publiItem, $publiContainer) {
   return "inserted";
 }
 
-
-var publi = {
-  init : function( mediaData) {
-  	$('body')
-    	.on('click', '.js--edit_view', function(e){
-      	e.preventDefault();
-    		var $thisPubli = $(this).closest('.publi-folder');
-      publi.openPubli( $thisPubli);
-    	})
-
-    	.on('click', '.js--backButton', function(){
-  		  $('[data-publidata]')
-  		    .empty()
-  		    .hide()
-  		    ;
-  	  })
-    .on('click', '.js--delete-media-montage', function(e){
-      e.preventDefault();
-      	var $elementToDel = $(this).parent("li.media");
-      	// check if media is in the montage
-      	if( $elementToDel.closest('[data-publidata]').length > 0) {
-        	$elementToDel.fadeOut( 600,function(){
-        		$elementToDel.remove();
-            $(document).trigger( 'update_media_montage');
-        	});
-      }
-      return false;
-    })
-    ;
-
-    // a drag and drop has succeeded, let's scan publi_medias to parse all medias
-    // and send it to the right json
-    $(document).on( 'update_media_montage', function() {
-
-      var $montage = $('[data-publidata]');
-      var slugPubliName = $montage.data('publishown');
-      var $montageMedias = $montage.find('.media');
-
-      // listMediasPaths is a list of all the medias referenced by their json meta-file
-      var listMediasItems = [];
-      $montageMedias.each(function() {
-        $mma = $(this);
-        var mediakey = $mma.data('mediakey');
-        var mediaJson = {
-          "name" : mediakey
-        };
-        listMediasItems.push( mediaJson);
-      });
-
-      var publiJson = new Object();
-      publiJson.slugPubliName = slugPubliName;
-      publiJson.medias = listMediasItems;
-
-      // let's send it over to node so it is saved in the publication jsonfile
-      sendData.editPubliMedias( publiJson);
-    });
-
-  },
-
-  openPubli : function( $thisPubli) {
-
-    var $montageContainer = $('[data-publidata]');
-
-    // cloner un .montage-edit
-    var $montage = $(".js--templates .montage_publi").clone(false);
-    var pdata = $thisPubli.data();
-
-    $montageContainer
-      .attr("data-publishown", pdata.slugPubliName)
-      .data("publishown", pdata.slugPubliName)
-      ;
-
-    var publiData =
-    {
-      "slugPubliName" : pdata.slugPubliName
-    };
-
-    // le placer dans .montage-edit-container
-    $montageContainer
-      .html( $montage)
-      .show()
-      ;
-
-    // demander à récupérer les médias en full de la publi
-    sendData.listOnePubliMetaAndMedias( publiData);
-
-    $(document).trigger('restart_dragula');
-  },
-
-  makePubliMedias : function( listOfMediasToAdd) {
-    // publi medias are listed in an array (to respect order and make sure that 2 medias with same keys aren't removed)
-    // so we need to listAllMedias one by one
-    var $medias = $();
-    for( media of listOfMediasToAdd.medias) {
-      $medias = $medias.add( listAllMedias(media));
-    }
-    return $medias;
-  }
-
-}
-
-
 function updateMontagePubliMeta( psdata) {
 
   $.each( psdata, function( slugPubliName, pdata) {
@@ -684,7 +580,6 @@ function updateMontagePubliMedias( psdata) {
     listMontagePubliMedias( $publiContent, pdata);
   });
 }
-
 
 // update montage content with new meta (title and link)
 function listMontagePubliMeta( $publiContent, pdata) {

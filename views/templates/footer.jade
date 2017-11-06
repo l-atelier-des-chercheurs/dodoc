@@ -15,12 +15,12 @@ script
   | dodoc = {};
   | dodoc.lang = function() { return !{JSON.stringify(dodoc.lang())} };
   | dodoc.settings = function() { return !{JSON.stringify(dodoc.settings())} };
-script( src='/js/production/plugins.js')
+script( src='/js/production/plugins.min.js')
 script moment.locale("#{dodoc.getCurrentCodeLang()}");
 
 script( src='/js/common.js')
 script( src='/js/modules/_modals.js')
-script( src='/js/_global.js')
+script( src='/js/_global.js' defer)
 script( src='/js/libs/foundation.js')
 
 script

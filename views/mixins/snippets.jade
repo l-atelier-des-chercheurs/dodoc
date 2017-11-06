@@ -21,9 +21,10 @@ mixin snippets(typeOfSnippet)
     form(onsubmit='return false;' class='add-media-text')
       textarea.mediaContent--textOfTextmedia.js--textField(placeholder="Ajouter du texte ici" required)
     h3.txt-small_info
-      | !{dodoc.lang().modal.pathofmedia}
-      .js--mediaFullPath
+      span(style='display:none;') !{dodoc.lang().modal.pathofmedia}
+      .js--mediaFullPath(style='display:none;')
       a.js--downloadThisMedia(download)
+        | !{dodoc.lang().modal.downloadThisMedia}
     hr
     +button('favButton', '', '')
     +button('deleteMediaBibli', '', '')

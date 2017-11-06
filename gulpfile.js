@@ -92,7 +92,8 @@ gulp.task('lint', function() {
 // Concatenate JS plugin
 gulp.task('script-plugins', function() {
   return gulp.src(pluginsScripts)
-    .pipe(concat('plugins.js'))
+    .pipe(concat('plugins.min.js'))
+    .pipe(uglify())
     .pipe(gulp.dest('client/js/production'));
 });
 

@@ -274,12 +274,9 @@ var dodocMedia = (function() {
 
           fileExtension = '.md';
           var dataText = newMediaData.text;
-          dev.log( "Creating a new text media at path " + pathToFile + fileExtension + " with text : " + dataText);
+          dev.log(`Creating a new text media at path ${pathToFile}${fileExtension} with text : ${dataText}`);
 
-          var mediaData = {
-            "text" : dataText
-          };
-          dodocAPI.storeData(pathToFile + fileExtension, mediaData, "create").then(function( meta) {
+          dodocAPI.storeData(pathToFile + fileExtension, dataText, "create").then(function( meta) {
             _createMediaMeta( newMediaType, pathToFile, newFileName).then( function( mdata) {
               var textMediaData = _readTextMedia(pathToFile + fileExtension);
               mdata.textMediaContent = textMediaData;
@@ -450,10 +447,17 @@ var dodocMedia = (function() {
     return path.join( projectPath, mediasFolderPath, mediaName);
   }
   function _readTextMedia(textMediaPath) {
+    dev.logfunction(`COMMON — _readTextMedia for ${textMediaPath}`);
     var textMediaData = fs.readFileSync(textMediaPath, dodoc.settings().textEncoding);
     textMediaData = dodocAPI.parseData(textMediaData);
-    textMediaData.text_md = mm.parse(textMediaData.text).content;
-    return textMediaData;
+    dev.logverbose(`textMediaData = ${JSON.stringify(textMediaData, null, 4)}`);
+    let textContentToParse = textMediaData.hasOwnProperty('text') ? textMediaData.text : textMediaData.content;
+
+    let textInfos = {
+      text_md: mm.parse(textContentToParse).content,
+      text: textContentToParse
+    }
+    return textInfos;
   }
   function _listMediasOfOneType(slugFolderName, slugProjectName, mediasFolderPath, mediaName) {
     dev.logfunction( "COMMON — _listMediasOfOneType with " + JSON.stringify({slugFolderName, slugProjectName, mediasFolderPath, mediaName}));

@@ -392,10 +392,14 @@ var modals = (function() {
   				break;
   			case dodoc.settings().projectTextsFoldername:
   				var $mediaItem = $(".js--templates .media-big_text").clone(false);
+
   				$mediaItem
   					.find('.js--textField')
   					  .val( mdata.originalText)
   					.end()
+          .find('.js--downloadThisMedia')
+            .attr('href', mdata.textFilePath)
+          .end()
   					;
   				break;
     	}
