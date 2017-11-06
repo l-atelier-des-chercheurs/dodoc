@@ -1,11 +1,11 @@
 mixin snippets(typeOfSnippet)
 
   if(typeOfSnippet === 'mediaForm')
-    //////////////////////////////////////////////   MEDIA FORM (inside bigmedia)  //////////////////////////////////
-    form(onsubmit='return false;' class='add-media-data lead')
+    ///////////////////////////////  MEDIA FORM (for all medias, inside bigmedia)  ///////////////////////
+    form(onsubmit='return false;' class='add-media-data')
       label
         | !{dodoc.lang().modal.informations}
-      textarea.mediaContent--textOfTextmedia.js--mediaInformations(type='text')
+      textarea.mediaContent--textOfMedia.js--mediaInformations(type='text')
     h3.txt-small_info.margin-top_bottom
       span(style='display:none;') !{dodoc.lang().modal.pathofmedia}
       .js--mediaFullPath(style='display:none;')
@@ -18,8 +18,7 @@ mixin snippets(typeOfSnippet)
 
   if(typeOfSnippet === 'mediaForm_txt')
     //////////////////////////////////////////////   MEDIA FORM TEXT  //////////////////////////////////
-
-    form(onsubmit='return false;' class='add-media-text lead')
+    form(onsubmit='return false;' class='add-media-text')
       textarea.mediaContent--textOfTextmedia.js--textField(placeholder="Ajouter du texte ici" required)
     h3.txt-small_info
       | !{dodoc.lang().modal.pathofmedia}

@@ -93,8 +93,25 @@ input[type="number"] {
   }
 }
 // input items basic styles
+
+$t-skipline: 1.4em;
+
 textarea {
-  height: 6rem;
+  resize:vertical;
+
+  min-height: 6rem;
+  font-size:1.4em;
+  line-height: $t-skipline;
+
+  background: linear-gradient(transparent, transparent 28px, #91D1D3 28px);
+  background-size: 30px 30px;
+  background-attachment: local;
+
+  background: linear-gradient(transparent, transparent calc(#{$t-skipline} - 2px), rgba(0,0,0,.05) calc(#{$t-skipline} - 2px));
+  background-size: $t-skipline $t-skipline;
+  background-attachment: local;
+  background-position-y: calc(#{$t-skipline} * 1.1);
+
 }
 
 fieldset {

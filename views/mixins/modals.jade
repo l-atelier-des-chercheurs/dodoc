@@ -110,13 +110,12 @@ mixin modals(typeOfModal)
 
   if( typeOfModal === 'addText')
     //////////////////////////////////////////////   ADD TEXT  //////////////////////////////////
-    .m_modal-content
+    .m_modal-content.is--limitedWidth
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
         | !{dodoc.lang().modal.addText}
-      form(onsubmit='return false;' class='add-text-form')
+      form(onsubmit='return false;' class='modal_addTextForm')
         textarea.mediaContent--textOfTextmedia.js--textField(placeholder="Ajouter du texte ici" autofocus required)
-        hr
         +button('valider', '', 'isCollapsed')
 
   if( typeOfModal === 'addLocalMedia')
