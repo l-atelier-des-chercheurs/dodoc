@@ -34,16 +34,13 @@ mixin snippets(typeOfSnippet)
   if(typeOfSnippet === 'moduleInfos')
     .module_infos
       .module_infos-blocs
-        -for(var prop in localNetworkInfos)
-          -if(isHttps)
-            p.txt-small_info
-              | !{dodoc.lang().toconnectwithanotherdevice}
-              a.js--openInBrowser(href="https://#{localNetworkInfos[prop]}:8080" target="_blank")
-                | https://#{localNetworkInfos[prop]}:8080
-          -else
-            p.txt-small_info !{dodoc.lang().toconnectwithanotherdevice}
-              a.js--openInBrowser(href="http://#{localNetworkInfos[prop]}:8080" target="_blank")
-                | http://#{localNetworkInfos[prop]}:8080
+        p.txt-small_info
+          | !{dodoc.lang().toconnectwithanotherdevice}
+          each ip in localNetworkInfos.ip
+            - var completeURL = `https://${ip}:${localNetworkInfos.port}`
+            a.js--openInBrowser(href="#{completeURL}" target="_blank")
+              | #{completeURL}
+            br
       .module_infos-blocs
         p.txt-small_info
           | !{dodoc.lang().mediaPubliTemplatesAreStoredIn}<br>
@@ -69,4 +66,4 @@ mixin snippets(typeOfSnippet)
             | !{dodoc.lang().creditADC}
       .module_infos-blocs
         p.txt-small_info
-          | do•doc v#{global.dodocVersion}
+          | do•doc v#{global.dodoc.version}

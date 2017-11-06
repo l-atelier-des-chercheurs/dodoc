@@ -12,6 +12,7 @@ const dodoc = require('./dodoc');
 const dodocAPI = require('./bin/dodoc-api');
 const server = require('./server');
 const JSONStorage = require('node-localstorage').JSONStorage;
+var portscanner = require('portscanner')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -32,8 +33,11 @@ function createWindow() {
   const verbose = flags.get('verbose');
   dev.init(debug, verbose);
 
-  global.dodocVersion = app.getVersion();
-  dev.log('——— Starting dodoc app v' + global.dodocVersion);
+  if( global.dodoc === undefined)
+    global.dodoc = {};
+
+  global.dodoc.version = app.getVersion();
+  dev.log('——— Starting dodoc app v' + global.dodoc.version);
 
   // checkout which langage to load
   var envLang = app.getLocale();
@@ -41,10 +45,6 @@ function createWindow() {
   dodoc.setCurrentCodeLang(envLang);
   dev.log('Environment lang is ' + dodoc.getCurrentCodeLang());
   dodoc.init();
-
-  if( global.dodoc === undefined)
-    global.dodoc = {};
-  global.dodoc.homeURL = `${config.protocol}://${config.host}:${config.port}`;
 
   var windowState = {};
   try {
@@ -100,19 +100,31 @@ function createWindow() {
 
   copyAndRenameUserFolder().then(function(pathToUserContent) {
     global.pathToUserContent = pathToUserContent;
-    dev.log('Will store contents in: ' + global.pathToUserContent);
+    dev.log(`main.js - Will store contents in: ${global.pathToUserContent}`);
+
     try {
-      app.server = server(app);
-    }
-    catch (e) {
+      dev.log(`main.js - Will try to start dodoc at port: ${config.port}`);
+      portscanner.findAPortNotInUse(config.port, config.port + 20).then((port) => {
+
+        dev.log(`main.js - Found available port: ${port}`);
+        app.port = port;
+        global.dodoc.homeURL = `${config.protocol}://${config.host}:${app.port}`;
+        global.dodoc.port = app.port;
+
+        app.server = server(app);
+
+        // and load the base url of the app.
+        win.loadURL(global.dodoc.homeURL);
+
+        if(dev.isDebug() || global.nodeStorage.getItem('logToFile')) {
+          win.webContents.openDevTools();
+        }
+
+      })
+    } catch (e) {
       dev.error('Couldn’t load app:', e);
     }
 
-    // and load the base url of the app.
-    win.loadURL(global.dodoc.homeURL);
-
-    if(dev.isDebug() || global.nodeStorage.getItem('logToFile'))
-      win.webContents.openDevTools();
 
     // Emitted when the window is closed.
     win.on('closed', () => {
