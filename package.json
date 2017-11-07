@@ -80,8 +80,5 @@
     "gulp-uglify": "^3.0.0",
     "jshint": "^2.9.5",
     "nodemon": "^1.12.1"
-  },
-  "optionalDependencies": {
-    "phantom": "^4.0.5"
   }
 }

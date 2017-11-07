@@ -34,9 +34,13 @@ var exportPubli = (function() {
 
       var currentUrl = window.location.href;
 
-      var publiHtml = _cleanUpPubli($('html').clone());
+      socket.emit('makePDF', {
+        url: currentUrl ,
+        slugFolderName: currentFolder,
+        slugProjectName: currentProject,
+        slugPubliName: currentPubli
+      });
 
-      socket.emit('makePDF', {html: publiHtml, url: currentUrl ,"slugFolderName": currentFolder, "slugProjectName": currentProject, "slugPubliName": currentPubli});
       // animation on wait
       $('body').addClass('is--generating');
 
