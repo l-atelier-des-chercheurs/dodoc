@@ -726,8 +726,8 @@ button {
 
 .template_container {
   position: relative;
-  max-width: 35rem;
-  margin: 0 auto;
+  max-width: 45rem;
+  margin: $t-margin*4 auto;
   background:   white;
 
   .publi-title{
@@ -760,11 +760,11 @@ button {
 
   .media {
     position: relative;
+    margin-top: $t-margin;
     margin-bottom:$t-margin;
 
-    &.media_image {
-      margin-top: $t-margin*2;
-      margin-top: $t-margin*2;
+    &:first-child {
+      margin-top: 0;
     }
 
     .button-wrapper_deleteMedia {
