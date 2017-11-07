@@ -66,7 +66,7 @@ var publiPDF = (function() {
         '--ignore-ssl-errors=yes',
         '--ssl-protocol=any',
         '--load-images=yes',
-        '--local-to-remote-url-access=yes',
+        '--local-to-remote-url-access=yes'
       ]).then(ph => {
         dev.logverbose('phantom is created');
         ph.createPage().then(page => {
