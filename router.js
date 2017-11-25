@@ -87,7 +87,7 @@ module.exports = function(app,io,m){
       getLocalIP().then((localNetworkInfos) => {
         pageDataJSON.localNetworkInfos = {
           ip: [],
-          port: global.dodoc.port
+          port: global.appInfos.port
         };
         pageDataJSON.localNetworkInfos.ip = Object.values(localNetworkInfos);
         resolve(pageDataJSON);

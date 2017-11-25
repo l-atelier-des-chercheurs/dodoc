@@ -12,7 +12,7 @@ const dodoc = require('./dodoc');
 const dodocAPI = require('./bin/dodoc-api');
 const server = require('./server');
 const JSONStorage = require('node-localstorage').JSONStorage;
-var portscanner = require('portscanner')
+var portscanner = require('portscanner');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -33,11 +33,11 @@ function createWindow() {
   const verbose = flags.get('verbose');
   dev.init(debug, verbose);
 
-  if( global.dodoc === undefined)
-    global.dodoc = {};
+  if( global.appInfos === undefined)
+    global.appInfos = {};
 
-  global.dodoc.version = app.getVersion();
-  dev.log('——— Starting dodoc app v' + global.dodoc.version);
+  global.appInfos.version = app.getVersion();
+  dev.log('——— Starting dodoc app v' + global.appInfos.version);
 
   // checkout which langage to load
   var envLang = app.getLocale();
@@ -45,6 +45,11 @@ function createWindow() {
   dodoc.setCurrentCodeLang(envLang);
   dev.log('Environment lang is ' + dodoc.getCurrentCodeLang());
   dodoc.init();
+
+  process.on('unhandledRejection', function(reason, p) {
+    dev.error("Unhandled Rejection at: Promise ", p, " reason: ", reason);
+      // application specific logging, throwing an error, or other logic here
+  });
 
   var windowState = {};
   try {
@@ -108,13 +113,13 @@ function createWindow() {
 
         dev.log(`main.js - Found available port: ${port}`);
         app.port = port;
-        global.dodoc.homeURL = `${config.protocol}://${config.host}:${app.port}`;
-        global.dodoc.port = app.port;
+        global.appInfos.homeURL = `${config.protocol}://${config.host}:${app.port}`;
+        global.appInfos.port = app.port;
 
         app.server = server(app);
 
         // and load the base url of the app.
-        win.loadURL(global.dodoc.homeURL);
+        win.loadURL(global.appInfos.homeURL);
 
         if(dev.isDebug() || global.nodeStorage.getItem('logToFile')) {
           win.webContents.openDevTools();

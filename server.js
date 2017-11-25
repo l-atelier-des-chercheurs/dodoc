@@ -89,8 +89,4 @@ module.exports = function(electronApp) {
     dev.log(`Server up and running. Go to ${config.protocol}://${config.host}:${electronApp.port}`);
     dev.log(' ');
   });
-  process.on('unhandledRejection', function(reason, p) {
-    dev.error("Unhandled Rejection at: Promise ", p, " reason: ", reason);
-      // application specific logging, throwing an error, or other logic here
-  });
 }
