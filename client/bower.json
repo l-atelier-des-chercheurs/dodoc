@@ -29,6 +29,7 @@
     "moment": "^2.12.0",
     "store-js": "store.js#^1.3.20",
     "jquery": "2.1.4",
-    "promise-polyfill": "^6.0.2"
+    "promise-polyfill": "^6.0.2",
+    "qrious": "^4.0.2"
   }
 }

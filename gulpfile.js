@@ -19,7 +19,8 @@ var pluginsScripts = [
   'client/bower_components/moment/locale/fr.js',
   'client/bower_components/store-js/store.min.js',
   'client/bower_components/alertifyjs/dist/js/alertify.js',
-  'client/bower_components/promise-polyfill/promise.min.js'
+  'client/bower_components/promise-polyfill/promise.min.js',
+  'client/bower_components/qrious/dist/qrious.min.js'
 ];
 var userScripts = [
   'dodoc.js',

@@ -104,6 +104,13 @@
     padding: $t-margin/2;
   }
 
+  .modal--QR {
+    width: 100%;
+    background-color: $c-gris_clair;
+    object-fit: contain;
+    padding: 25px;
+  }
+
   .templateSelector {
 
     @include clearfix();

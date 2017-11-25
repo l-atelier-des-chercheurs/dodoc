@@ -145,7 +145,10 @@
     "atPath" : " to ",
 
     "moveContentFolder" : "Move the folder <em>dodoc</em> on your drive",
-    "instructionsToMoveContentFolder" : "By pressing confirm, do.doc will restart and ask you to select a new folder to store your media and publications. If there is no existing <em>dodoc</em> repository, one will be created."
+    "instructionsToMoveContentFolder" : "By pressing confirm, do.doc will restart and ask you to select a new folder to store your media and publications. If there is no existing <em>dodoc</em> repository, one will be created.",
+
+    "qrcode" : "QR code to flash",
+    "qrcodeinstructions" : "Flash this to connect to this page with another device."
 
   }
 }

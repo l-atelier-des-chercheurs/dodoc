@@ -44,7 +44,12 @@ var modals = (function() {
         })
         .on('click', '.js--openModal_moveContentFolder', function() {
         		modals.createModal('moveContentFolder');
-        });
+        })
+      	  .on('click', '.js--openModal_showQR', function(){
+        		var completeURL = $(this).data('completeurl');
+      		  modals.createModal('showQR', completeURL);
+      	  })
+        ;
     },
 
     createModal : function(typeOfModal, d) {
@@ -86,6 +91,8 @@ var modals = (function() {
         $modal = _initPubliHasBeenSentToFTPModal($modal, d);
       } else if(typeOfModal === 'publiFailedToUpload') {
         $modal = _initPubliFailedToUpload($modal, d);
+      } else if(typeOfModal === 'showQR') {
+        $modal = _initShowQR($modal, d);
       }
 
       $modal.on('click', function(e) {
@@ -311,6 +318,20 @@ var modals = (function() {
     		}
       $m.trigger('close_that_modal');
     });
+    return $m;
+  }
+
+  function _initShowQR($m, url) {
+    var canvas = $m
+      .find('.js--qr')[0];
+
+    var qr = new QRious({
+      element: canvas,
+      value: url,
+      background: 'transparent',
+      size: 500
+    });
+
     return $m;
   }
 

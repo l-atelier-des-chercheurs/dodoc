@@ -1,6 +1,7 @@
 
 window.sessionId = '';
 
+
 if (window.navigator.userAgent.indexOf('Chrome') > -1) {
   window.socket = io.connect({ transports: ['websocket','polling'] });
 } else {

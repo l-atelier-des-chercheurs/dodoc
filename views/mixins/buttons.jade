@@ -94,13 +94,13 @@ mixin button(typeOfButton, navOrButton, style)
       span !{dodoc.lang().createPublication}
 
   if( typeOfButton === 'view_publication')
-    a(href="/#{slugFolderName}/#{slugProjectName}/publication" title="Dodoc publi" class='button-wrapper_view js--publiLink #{defaultClasses}' target="_blank")
+    a(href="/#{slugFolderName}/#{slugProjectName}/publication" title="View publication" class='button-wrapper_view js--publiLink #{defaultClasses}' target="_blank")
       .btn.icon
         include ../../client/images/i_view.svg
       span !{dodoc.lang().show}
 
   if( typeOfButton === 'edit_publication')
-    a(href="/#{slugFolderName}/#{slugProjectName}/publication" title="Dodoc publi" class='button-wrapper_edit js--edit_view #{defaultClasses}')
+    a(href="/#{slugFolderName}/#{slugProjectName}/publication" title="Edit publication" class='button-wrapper_edit js--edit_view #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_pen.svg
       span !{dodoc.lang().edit}

@@ -156,6 +156,15 @@ mixin modals(typeOfModal)
       +button('valider', '', 'isCollapsed')
 
 
+  if( typeOfModal === 'showQR')
+    //////////////////////////////////////////   SHOW QR  //////////////////////////////
+    .m_modal-content
+      +button( 'close', '', 'isCollapsed')
+      .modal_title.txt-large_title
+        | !{dodoc.lang().modal.qrcode}
+      p
+        | !{dodoc.lang().modal.qrcodeinstructions}
+      img.js--qr.modal--QR
 
 
   if( typeOfModal === 'exportWebIsReady')
