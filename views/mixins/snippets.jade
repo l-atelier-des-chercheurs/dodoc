@@ -37,7 +37,7 @@ mixin snippets(typeOfSnippet)
         p.txt-small_info
           | !{dodoc.lang().toconnectwithanotherdevice}
           each ip in localNetworkInfos.ip
-            - var completeURL = `https://${ip}:${localNetworkInfos.port}`
+            - var completeURL = `https://${ip}:${localNetworkInfos.port}${url}`
             a.js--openInBrowser(href="#{completeURL}" target="_blank")
               | #{completeURL}
             br
