@@ -131,14 +131,16 @@
     "noInternetCantSendOverFtp": "No internet connection has been detected so uploading your publication online not available.",
 
     "selectAnImage" : "Select picture",
-    "sureToRemoveProject" : "Do you want to delete this project?",
+    "sureToRemoveProject" : "Do you really want to delete this project?",
+    "sureToRemovePubli" : "Do you really want to delete this publication?",
 
     "newProject" : "New project",
     "newPubli" : "New publication",
 
     "newMediaCreatedAtPath" : "New media saved ",
     "newFolderCreatedWithName" : "New folder saved ",
-    "folderRemovedWithName" : "The folder has been deleted with success: ",
+    "folderRemovedWithName" : "This folder has been deleted with success: ",
+    "publiRemovedWithName" : "This publi has been deleted with success: ",
     "newProjectCreatedWithName" : "New project saved ",
     "projectRemovedWithName" : "The project has been deleted with success : ",
     "atPath" : " to ",

@@ -135,6 +135,7 @@
 
     "selectAnImage" : "Sélectionnez une image",
     "sureToRemoveProject" : "Êtes-vous sûr de vouloir supprimer le projet ?",
+    "sureToRemovePubli" : "Êtes-vous sûr de vouloir supprimer la publication ?",
 
     "newProject" : "Nouveau projet",
     "newPubli" : "Nouvelle publication",
@@ -142,6 +143,7 @@
     "newMediaCreatedAtPath" : "Un nouveau média vient d’être créé dans le projet ",
     "newFolderCreatedWithName" : "Un nouveau dossier vient d’être créé avec pour nom ",
     "folderRemovedWithName" : "Le dossier suivant vient d’être supprimé&nbsp;: ",
+    "publiRemovedWithName" : "La publication suivante vient d’être supprimée&nbsp;: ",
     "newProjectCreatedWithName" : "Un nouveau projet vient d’être créé avec pour nom ",
     "projectRemovedWithName" : "Le projet suivant vient d’être supprimé&nbsp;: ",
     "atPath" : " dans le chemin ",

@@ -105,6 +105,12 @@ mixin button(typeOfButton, navOrButton, style)
         include ../../client/images/i_pen.svg
       span !{dodoc.lang().edit}
 
+  if( typeOfButton === 'remove_publication')
+    a(href="#" title="Remove publication" class='button-wrapper_view js--removePubli #{defaultClasses}' target="_blank")
+      .btn.icon
+        include ../../client/images/i_clear.svg
+      span !{dodoc.lang().remove}
+
   if( typeOfButton === 'valider')
     a(href="#" title="Dodoc publi" class='button-wrapper_valider js--valider #{defaultClasses}')
       .btn.icon

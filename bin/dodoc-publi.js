@@ -17,6 +17,7 @@ var dodocPubli = (function() {
     listMediaAndMetaFromOnePubli : (slugFolderName, slugProjectName, slugPubliName) => { return listMediaAndMetaFromOnePubli(slugFolderName, slugProjectName, slugPubliName); },
     filterMediasFromPubliList  : (publiContent, mediaFolderContent) => { return filterMediasFromPubliList(publiContent, mediaFolderContent); },
     createPubli                : (publiData) => { return createPubli(publiData); },
+    removeOnePubli             : (publiData)     => { return removeOnePubli(publiData); },
     editThisPubli              : (pdata) => { return editThisPubli(pdata); },
     listPublis                 : (slugFolderName, slugProjectName, thisPubliName) => { return listPublis(slugFolderName, slugProjectName, thisPubliName); },
   };
@@ -122,6 +123,21 @@ var dodocPubli = (function() {
 
     });
   }
+
+  function removeOnePubli(pdata) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction( "COMMON — removeOnePubli: " + JSON.stringify(pdata, null, 4));
+
+      var pathToPubli = getPubliPath(pdata.slugFolderName, pdata.slugProjectName, pdata.slugPubliName);
+      var publiMetaFilepath = pathToPubli + dodoc.settings().metaFileext;
+
+      fs.unlink(publiMetaFilepath, function(err){
+        if(err) reject(err);
+        resolve(pdata);
+      });
+    });
+  }
+
   function editThisPubli(pdata) {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — editThisPubli : publiData = " + JSON.stringify( pdata, null, 4));

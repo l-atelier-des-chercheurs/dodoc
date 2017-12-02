@@ -76,6 +76,7 @@ var sockets = (function() {
       socket.on( 'createPubli', onCreatePubli);
       socket.on( 'editMetaPubli', onEditMetaPubli);
       socket.on( 'editMediasPubli', onEditMediasPubli);
+      socket.on( 'removeOnePubli', onRemoveOnePubli);
 
       socket.on("editMediaMeta", onEditMediaMeta);
       socket.on("deleteMedia", onDeleteMedia);
@@ -397,6 +398,16 @@ var sockets = (function() {
 
     }, function(error) {
       dev.error("Failed to create New Publi! Error: " + error);
+    });
+  }
+
+  function onRemoveOnePubli( publiData) {
+    dev.logfunction( "EVENT - onRemoveOnePubli");
+
+    dodocPubli.removeOnePubli(publiData).then(function(publiMetaData) {
+      dodocAPI.sendEventWithContent( 'publiRemoved', publiMetaData, io);
+    }, function(error) {
+      dev.error("Failed to remove a publi! Error: " + error);
     });
   }
 

@@ -340,6 +340,10 @@ button {
 
     background-color: rgba(217, 217, 217, 0.38);
     flex-shrink: 0;
+
+    a {
+      @extend .txt-wrap_long_lines;
+    }
   }
 
   .moveDodocContentFolder {

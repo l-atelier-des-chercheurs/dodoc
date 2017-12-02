@@ -63,6 +63,9 @@ socket.on("*",function(event,d) {
       var pathToProject = '/'+d.slugFolderName+'/'+d.slugProjectName;
       logs.push(dodoc.lang().modal.projectRemovedWithName+'<em>'+d.name+'</em>');
       break;
+    case "publiRemoved":
+      logs.push(dodoc.lang().modal.publiRemovedWithName+'<em>'+d.slugPubliName+'</em>');
+      break;
   }
 
   for(log in logs) {
@@ -445,6 +448,20 @@ function removeThisFolder( $container, slugFolderName) {
     ;
 }
 
+function removeThisPubli( $container, slugPubliName) {
+  var $items = $container.find(".publi-folder");
+
+  var $itemToRemove = $items
+    .filter(function() { return $(this).data('slugPubliName') === slugPubliName })
+    ;
+
+  $itemToRemove
+    .fadeOut( 400, function() {
+      $(this).remove();
+    })
+    ;
+}
+
 function insertOrReplaceMedia( $mediaItem, $mediaContainer) {
 
   var $mediaItems = $mediaContainer.find(".media");
@@ -484,7 +501,6 @@ function listPublis( publisData) {
   var lastPublis = publisData;
 
   $.each( lastPublis, function( publiSlug, publiContent) {
-
     var newPubli = makeOnePubli( publiContent);
     if( newPubli !== undefined)
       $allPublis = $allPublis.add( newPubli);
@@ -518,6 +534,16 @@ function makeOnePubli( publiData) {
 		.find('.js--edit_view')
 		  .attr('href', editPubliPath)
 		.end()
+    .find(".js--removePubli")
+      .on('click', function() {
+        if(window.confirm(dodoc.lang().modal.sureToRemovePubli)) {
+      		  sendData.removeOnePubli({
+          		"slugPubliName" : publiData.slugPubliName
+          });
+        }
+        return false;
+      })
+    .end()
     ;
 
   return $publiItem;
@@ -671,10 +697,15 @@ var sendData = {
     publiData.slugProjectName = currentProject;
     	socket.emit( 'createPubli', publiData);
   },
-  editPubli : function( publiData) {
+  editPubli : function(publiData) {
     publiData.slugFolderName = currentFolder;
     publiData.slugProjectName = currentProject;
     	socket.emit( 'editPubli', publiData);
+  },
+  removeOnePubli : function(publiData) {
+    publiData.slugFolderName = currentFolder;
+    publiData.slugProjectName = currentProject;
+    	socket.emit('removeOnePubli', publiData);
   },
 
   listOnePubliMetaAndMedias : function( publiData) {

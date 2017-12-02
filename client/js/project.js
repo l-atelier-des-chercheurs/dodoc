@@ -27,6 +27,9 @@ socket.on('listOneProjectPublis', onListOneProjectPublis);
 socket.on('projectModified', onProjectModified); //Quand on reçoit les modification du projet
 socket.on('projectRemoved', onProjectRemoved);
 
+socket.on('publiCreated', onPubliCreated);
+socket.on('publiRemoved', onPubliRemoved);
+
 socket.on('mediaCreated', onMediaCreated);
 socket.on('mediaUpdated', onMediaUpdated);
 socket.on('mediaRemoved', onMediaRemoved);
@@ -59,6 +62,18 @@ function onListAllMedias( mediasData) {
   });
 }
 
+
+function onPubliCreated(publisData){
+  console.log( "onPubliCreated");
+  onListOneProjectPublis( publisData);
+}
+
+function onPubliRemoved(publisData) {
+  console.log( "onPubliRemoved");
+  onRemoveOnePublis( publisData);
+}
+
+
 function onListOneProjectPublis( publisData) {
   // get the data
   var $getAllPublisFormatted = listPublis( publisData);
@@ -70,7 +85,9 @@ function onListOneProjectPublis( publisData) {
   });
 }
 
-
+function onRemoveOnePublis(publisData) {
+  removeThisPubli( $(".mainContent .montage-list ul"), publisData.slugPubliName);
+}
 
 // Envoie les données du projet au serveur
 

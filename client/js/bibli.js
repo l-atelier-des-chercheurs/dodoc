@@ -24,6 +24,7 @@ socket.on('mediaUpdated', onMediaUpdated);
 socket.on('mediaRemoved', onMediaRemoved);
 
 socket.on('publiCreated', onPubliCreated);
+socket.on('publiRemoved', onPubliRemoved);
 
 socket.on('listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 socket.on('publiMetaUpdated', onPubliMetaUpdated);
@@ -150,6 +151,15 @@ function onListOneProjectPublis( publisData) {
 function onPubliCreated(publisData){
   console.log( "onPubliCreated");
   onListOneProjectPublis( publisData);
+}
+
+function onRemoveOnePublis(publisData) {
+  removeThisPubli( $(".mainContent .montage-list ul"), publisData.slugPubliName);
+}
+
+function onPubliRemoved(publisData) {
+  console.log( "onPubliRemoved");
+  onRemoveOnePublis( publisData);
 }
 
 function onPubliMetaUpdated( psdata) {
