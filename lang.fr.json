@@ -150,6 +150,6 @@
     "moveContentFolder" : "Déplacer le dossier <em>dodoc</em> sur votre disque dur",
     "instructionsToMoveContentFolder" : "En cliquant sur le bouton ci-dessous, cette fenêtre fermera et au prochain lancement vous serez invité à sélectionner un nouvel emplacement pour stocker les médias, les publications exportées et les templates. Si un dossier nommé <em>dodoc</em> ne s'y trouve pas déjà, il sera créé.",
     "qrcode" : "QR code",
-    "qrcodeinstructions" : "Flashez le avec un smartphone ou une tablette pour vous y connecter à distance."
+    "qrcodeinstructions" : "Flashez le avec un smartphone ou une tablette pour vous connecter à cette page depuis un appareil connecté au même réseau."
   }
 }
