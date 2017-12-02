@@ -33,7 +33,6 @@
   "status" : "status",
   "settings" : "settings",
 
-  "editTitle" : "Edit Title",
   "createText" : "Write Text",
   "addLocalMedia" : "Import Media",
   "back" : "back",
@@ -67,6 +66,7 @@
   "createFolder" : "Create new folder",
   "createProject" : "Create new project",
   "show" : "display",
+  "editPubli" : "Edit publication",
 
   "imageCount" : "Picture ",
   "frameRate" : "Frame Rate: ",
@@ -135,7 +135,6 @@
 
     "newProject" : "New project",
     "newPubli" : "New publication",
-    "editPubli" : "Edit publication",
 
     "newMediaCreatedAtPath" : "New media saved ",
     "newFolderCreatedWithName" : "New folder saved ",

@@ -133,7 +133,7 @@ mixin button(typeOfButton, navOrButton, style)
     a(href="#" title="Dodoc publi" class='button-wrapper_edit js--openModal_editPubli #{defaultClasses}')
       .btn.icon
         include ../../client/images/i_cog.svg
-      span !{dodoc.lang().editTitle}
+      span !{dodoc.lang().editPubli}
 
   if( typeOfButton === 'addText')
     a(href="#" title="Dodoc texte" class='button-wrapper_addText js--addText #{defaultClasses}')

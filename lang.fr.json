@@ -34,7 +34,6 @@
   "status" : "état",
   "settings" : "Paramètres",
 
-  "editTitle" : "Éditer le titre",
   "createText" : "Créer du texte",
   "addLocalMedia" : "Importer un média",
   "back" : "retour",
@@ -67,7 +66,8 @@
   "removeProject" : "Supprimer le projet",
   "createFolder" : "Créer un dossier",
   "createProject" : "Créer un projet",
-  "show" : "afficher",
+  "show" : "Ouvrir",
+  "editPubli" : "Éditer la publication",
 
   "imageCount" : "Image ",
   "frameRate" : "Vitesse de lecture&nbsp;: ",
@@ -138,7 +138,6 @@
 
     "newProject" : "Nouveau projet",
     "newPubli" : "Nouvelle publication",
-    "editPubli" : "Éditer la publication",
 
     "newMediaCreatedAtPath" : "Un nouveau média vient d’être créé dans le projet ",
     "newFolderCreatedWithName" : "Un nouveau dossier vient d’être créé avec pour nom ",

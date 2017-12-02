@@ -170,6 +170,7 @@ body.bibli {
 
     .template_container{
       width: calc(100% - 2em) !important;
+      margin-top: 0;
       margin-bottom: 1em;
       &:empty {
         &:before{

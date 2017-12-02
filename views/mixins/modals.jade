@@ -93,7 +93,7 @@ mixin modals(typeOfModal)
     .m_modal-content(data-pressEnterToSubmit)
       +button( 'close', '', 'isCollapsed')
       .modal_title.txt-large_title
-        | !{dodoc.lang().modal.editPubli}
+        | !{dodoc.lang().editPubli}
       form(onsubmit='return false;')
         input(type='text' class='js--modal_name' placeholder=dodoc.lang().name autofocus required)
         fieldset.templateSelector
