@@ -566,76 +566,80 @@ var modals = (function() {
     	var $filePicker = $m.find('.js--modal_inputfile');
     	var $label = $filePicker.next().find('span');
     	var labelVal = $label.text();
+    	var files;
 
-    	$filePicker.on( 'change', function(e)
-    	{
-    		var fileName = '';
-  			fileName = e.target.value.split('\\').pop();
-  			var fileData = e.originalEvent.target.files;
-    		if(fileName) {
-        $filePicker
-    			  .data('fileName', fileName)
-    			  .data('fileData', fileData)
-    			  ;
-    			$label
-  			    .html( fileName)
-          ;
+    	$filePicker.on( 'change', function(e) {
+  			files = e.originalEvent.target.files;
+
+      var fileNames = [];
+      for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        fileNames.push(file.name);
+      }
+
+    		if(fileNames.length > 0) {
+    			$label.html(fileNames.join(', '));
     		} else {
-    			$filePicker
-    			  .data('fileName', '')
-    			  .data('fileData', '')
-    			  ;
-    			$label.html( labelVal);
+    			$label.innerHTML = labelVal;
     		}
     	});
 
     $m.find('.js--valider').on('click',function(){
       if(_checkAndHighlightEmptyRequiredFields($m)) return;
-      	var fileName = $filePicker.data( 'fileName');
-      	var fileData = $filePicker.data( 'fileData');
-      	//Images changed
 
-      	if( fileData !== undefined && fileData !== null){
-      		console.log('A file has been loaded');
-      		var f = fileData[0];
-      		var reader = new FileReader();
-      		reader.onload = function(evt){
-        		// check type of content
-        		console.log( fileName);
-        		fileName = fileName.toLowerCase();
-        		debugger;
-          if(fileName.indexOf( ".jpg") !== -1 || fileName.indexOf( ".jpeg") !== -1 || fileName.indexOf( ".png") !== -1) {
-        			var mediaData = {
-              "mediaType" : "photo",
-        				"mediaData" : evt.target.result
-        		  };
-        		} else if(fileName.indexOf( ".mp4") !== -1 ||  fileName.indexOf( ".webm") !== -1) {
-        			var mediaData = {
-              "mediaType" : "video",
-              "mediaData" : {
-                "videoData" : evt.target.result,
-              }
-        		  }
-        		} else if(fileName.indexOf( ".mp3") !== -1 ||  fileName.indexOf( ".m4a") !== -1 ||  fileName.indexOf( ".wav") !== -1) {
-        			var mediaData = {
-              "mediaType" : "audio",
-              "mediaData" : {
-                "audioData" : evt.target.result,
-              }
-        		  }
-          }
-        		if( mediaData !== undefined)
-        		  sendData.createNewMedia( mediaData);
-      		};
-      		reader.readAsDataURL(f);
-      	}
+      function readAndPreview(file) {
+        // Make sure `file.name` matches our extensions criteria
+        if ( /\.(jpe?g|png|gif)$/i.test(file.name) ) {
+          var reader = new FileReader();
+
+          reader.addEventListener("load", function () {
+            console.log('file.name ' + file.name);
+            var fileName = file.name;
+
+          		fileName = fileName.toLowerCase();
+          		var mediaData;
+            if(fileName.indexOf( ".jpg") !== -1 || fileName.indexOf( ".jpeg") !== -1 || fileName.indexOf( ".png") !== -1) {
+          			mediaData = {
+                "mediaType" : "photo",
+          				"mediaData" : this.result
+          		  };
+          		} else if(fileName.indexOf( ".mp4") !== -1 ||  fileName.indexOf( ".webm") !== -1) {
+          			mediaData = {
+                "mediaType" : "video",
+                "mediaData" : {
+                  "videoData" : this.result,
+                }
+          		  }
+          		} else if(fileName.indexOf( ".mp3") !== -1 ||  fileName.indexOf( ".m4a") !== -1 ||  fileName.indexOf( ".wav") !== -1) {
+          			mediaData = {
+                "mediaType" : "audio",
+                "mediaData" : {
+                  "audioData" : this.result,
+                }
+          		  }
+            }
+          		if(mediaData !== undefined) {
+            		debugger;
+          		  sendData.createNewMedia(mediaData);
+            }
+
+          }, false);
+
+          reader.readAsDataURL(file);
+        }
+      }
+
+
+      if (files) {
+        [].forEach.call(files, readAndPreview);
+      }
+
       $m.trigger('close_that_modal');
-    });
+    	});
     return $m;
   }
 
   function _initExportWebIsReady($m,d) {
-    debugger;
     var zipURL = d.publicationsFolderRelativePath + '.zip';
     $m
       .find('.js--exportedWebsiteZIPURL')
@@ -741,7 +745,6 @@ var modals = (function() {
   }
 
   function _initConfirmPDFModal($m, d) {
-    debugger;
     $m
       .find('[data-set_href_as_PDF_URL]')
         .attr('href', d.pdfURL)

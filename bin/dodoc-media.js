@@ -87,7 +87,11 @@ var dodocMedia = (function() {
 
       var slugFolderName = newMediaData.slugFolderName;
       var slugProjectName = newMediaData.slugProjectName;
-      var newFileName = dodocAPI.getCurrentDate();
+
+      // adding a random string characters at the end, in case two medias get sent at the precise same moment
+      var randomCharacters = (Math.random().toString(36)+'00000000000000000').slice(2, 3 + 2);
+      var newFileName = dodocAPI.getCurrentDate() + randomCharacters;
+
       var newMediaType = newMediaData.mediaType;
 
       var mediaFolder = '';
