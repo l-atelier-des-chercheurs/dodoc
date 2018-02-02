@@ -589,46 +589,43 @@ var modals = (function() {
 
       function readAndPreview(file) {
         // Make sure `file.name` matches our extensions criteria
-        if ( /\.(jpe?g|png|gif)$/i.test(file.name) ) {
-          var reader = new FileReader();
+        var reader = new FileReader();
 
-          reader.addEventListener("load", function () {
-            console.log('file.name ' + file.name);
-            var fileName = file.name;
+        reader.addEventListener("load", function () {
+          console.log('file.name ' + file.name);
+          var fileName = file.name;
 
-          		fileName = fileName.toLowerCase();
-          		var mediaData;
-            if(fileName.indexOf( ".jpg") !== -1 || fileName.indexOf( ".jpeg") !== -1 || fileName.indexOf( ".png") !== -1) {
-          			mediaData = {
-                "mediaType" : "photo",
-          				"mediaData" : this.result
-          		  };
-          		} else if(fileName.indexOf( ".mp4") !== -1 ||  fileName.indexOf( ".webm") !== -1) {
-          			mediaData = {
-                "mediaType" : "video",
-                "mediaData" : {
-                  "videoData" : this.result,
-                }
-          		  }
-          		} else if(fileName.indexOf( ".mp3") !== -1 ||  fileName.indexOf( ".m4a") !== -1 ||  fileName.indexOf( ".wav") !== -1) {
-          			mediaData = {
-                "mediaType" : "audio",
-                "mediaData" : {
-                  "audioData" : this.result,
-                }
-          		  }
-            }
-          		if(mediaData !== undefined) {
-            		debugger;
-          		  sendData.createNewMedia(mediaData);
-            }
+        		fileName = fileName.toLowerCase();
+        		var mediaData;
+          if(fileName.indexOf( ".jpg") !== -1 || fileName.indexOf( ".jpeg") !== -1 || fileName.indexOf( ".png") !== -1) {
+        			mediaData = {
+              "mediaType" : "photo",
+        				"mediaData" : this.result
+        		  };
+        		} else if(fileName.indexOf( ".mp4") !== -1 ||  fileName.indexOf( ".webm") !== -1) {
+        			mediaData = {
+              "mediaType" : "video",
+              "mediaData" : {
+                "videoData" : this.result,
+              }
+        		  }
+        		} else if(fileName.indexOf( ".mp3") !== -1 ||  fileName.indexOf( ".m4a") !== -1 ||  fileName.indexOf( ".wav") !== -1) {
+        			mediaData = {
+              "mediaType" : "audio",
+              "mediaData" : {
+                "audioData" : this.result,
+              }
+        		  }
+          }
+        		if(mediaData !== undefined) {
+          		console.log('Now sending file calle ' + fileName + ' with type ' + mediaData.mediaType);
+        		  sendData.createNewMedia(mediaData);
+          }
 
-          }, false);
+        }, false);
 
-          reader.readAsDataURL(file);
-        }
+        reader.readAsDataURL(file);
       }
-
 
       if (files) {
         [].forEach.call(files, readAndPreview);
