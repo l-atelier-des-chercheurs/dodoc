@@ -5,4 +5,4 @@ Dodoc is an open-source project made by L’Atelier des Chercheurs info@latelier
 
 - publications/ contains publications exported through the Dodoc interface (web pages, pdf files, etc.). This folder is managed by Dodoc, but feel free to copy its content somewhere else.
 
-- templates/ contains the files necessary for publications. New publications templates can be installed just by dragging their folder inside this folder. A template has to have at least one .css  file inside.
+- templates/ contains the files necessary for publications. New publications templates can be installed just by dragging their folder inside this folder. For more information, take a look at templates/_exemple/readme.txt
