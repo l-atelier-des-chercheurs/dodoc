@@ -740,10 +740,16 @@ var modals = (function() {
   }
 
   function _initConfirmPDFModal($m, d) {
+    debugger;
     $m
-      .find('.js--exportedPDFURL')
+      .find('[data-set_href_as_PDF_URL]')
         .attr('href', d.pdfURL)
+      .end()
+      .find('[data-set_download_as_publication_name]')
         .attr('download', d.slugPubliName)
+      .end()
+      .find('[data-open_in_native_app]')
+        .attr('data-fullPath', d.pdfPath)
       .end()
       ;
     return $m;

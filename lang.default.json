@@ -107,7 +107,7 @@
     "informations" : "Information",
     "pathofmedia" : "Path to media on drive:",
     "downloadThisMedia" : "Download media",
-    "downloadThePDF" : "Download the PDF.",
+    "openThePDF" : "Open the PDF.",
 
     "editFolder" : "Edit Folder",
     "inprogress" : "in progress",

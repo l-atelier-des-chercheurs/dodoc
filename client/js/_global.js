@@ -78,12 +78,24 @@ socket.on("*",function(event,d) {
 });
 
 $('body').on('click', '.js--openInBrowser', function(e) {
+  console.log('Opening new link in browser');
   var $target = $(e.target);
   var thisHREF = $target.attr('href');
   if(thisHREF !== undefined && require('electron') !== undefined) {
     var shell = require('electron').shell;
     event.preventDefault();
     shell.openExternal(thisHREF);
+  }
+});
+
+$('body').on('click', '[data-open_in_native_app]', function(e) {
+  console.log('Opening in native app if available');
+  var $target = $(e.target);
+  var thisHREF = $target.attr('data-fullPath');
+  if(thisHREF !== undefined && require('electron') !== undefined) {
+    var shell = require('electron').shell;
+    event.preventDefault();
+    shell.openItem(thisHREF);
   }
 });
 

@@ -16,6 +16,7 @@ var exportPubli = (function() {
   }
 
   function _cleanUpPubli($content) {
+    debugger;
     return $content
       .find('.js--makeWebsite').remove().end()
       .find('.js--makePDF').remove().end()
