@@ -60,7 +60,7 @@ body.index{
       background-color: #f9f9f9;
 
 
-      li {
+      .projetSnippet {
         margin-bottom:  10px;
         background-color: #fff;
 
@@ -73,9 +73,12 @@ body.index{
         -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
+        > a {
+          display: flex;
+          flex-flow: row wrap;
+        }
 
         h3 {
-
           display: block;
           padding:5px;
           padding-top:  8px;
@@ -118,10 +121,12 @@ body.index{
 
   }
   .meta-data{
+    position: relative;
 
     margin: 0;
     padding-top: 4px;
     padding-bottom: 8px;
+    box-shadow: 0 -1px 4px rgba(0,0,0,.1);
 
     background-color: #fff;
     color: #8d8d8d;

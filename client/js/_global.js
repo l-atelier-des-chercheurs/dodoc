@@ -107,7 +107,7 @@ function loadProjectSnippet(pd) {
     	$newSnippetProjet.find('.vignette-visuel img').remove();
 	}
 	$newSnippetProjet
-    .find( '.project-link').attr('href', pathToProject).end()
+    .find('[data-link_to_project]').attr('href', pathToProject).end()
     .find( 'h3').text( pd.name).end()
     .find( '.vignette-visuel img')
       .attr( 'src', pathToProject + "/" + pd.projectPreviewName)
