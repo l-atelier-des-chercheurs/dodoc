@@ -340,13 +340,13 @@ function copyAndRenameUserFolder() {
     }
 
     const pathToUserContent = path.join(userDirPath, config.userDirname);
+    const sourcePathInApp = `${__dirname.replace(`${path.sep}app.asar`, '')}/user`;
 
     fs.access(pathToUserContent, fs.F_OK, function(err) {
       // if dodoc folder doesn't exist yet at destination
       if(err) {
         dev.log('Content folder ' + config.userDirname + ' does not already exists in ' + userDirPath);
         dev.log('->duplicating /user to create a new one');
-        const sourcePathInApp = `${__dirname.replace(`${path.sep}app.asar`, '')}/user`;
         fs.copy(sourcePathInApp, pathToUserContent, function (err) {
           if(err) {
             dev.error('failed to copy: ' + err);
@@ -357,7 +357,48 @@ function copyAndRenameUserFolder() {
       } else {
         dev.log('Content folder ' + config.userDirname + ' already exists in ' + userDirPath);
         dev.log('->not creating a new one');
-        resolve(pathToUserContent);
+
+        // now we’ll check if that content folder contains the same folders
+        // this is done to simplify installation of dodoc v6 (where the templates folder has changed)
+        // but it’ll make it easier down the line to correct a corrupted installation
+
+        // list all folders and files in sourcePathInApp
+        fs.readdir(sourcePathInApp, function (err, filenames) {
+          if (err) return dev.error(`Couldn't read sourcePathInApp: ${err}`);
+
+          var sourceFolders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.settings().regexpMatchFolderNames, 'i').test( slugFolderName); });
+
+          // list all folders and files in pathToUserContent
+          fs.readdir(pathToUserContent, function (err, filenames) {
+            if (err) return dev.error(`Couldn't read pathToUserContent: ${err}`);
+
+            var userFolders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.settings().regexpMatchFolderNames, 'i').test( slugFolderName); });
+
+            // now, find what’s missing
+            let tasks = [];
+
+            sourceFolders.forEach(function(sourceFolder) {
+              if(!userFolders.includes(sourceFolder)) {
+                dev.log(`One user folder is missing from ${pathToUserContent}: ${sourceFolder}. Will attempt to copy it.`);
+                let copyFolderToUserPath = new Promise((resolve, reject) => {
+                  fs.copy(path.join(sourcePathInApp, sourceFolder), path.join(pathToUserContent, sourceFolder), function (err) {
+                    if(err) {
+                      dev.error('failed to copy: ' + err);
+                      reject(err);
+                    }
+                    resolve();
+                  });
+                });
+                // if missing in user folders, copy over
+                tasks.push(copyFolderToUserPath);
+              }
+            });
+
+            Promise.all(tasks).then(() => {
+              resolve(pathToUserContent);
+            });
+          });
+        });
       }
     });
   });
