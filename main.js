@@ -174,10 +174,10 @@ app.on('activate', () => {
 function setApplicationMenu() {
   // Create the Application's main menu
   var template = [{
-    label: 'Electron',
+    label: 'do•doc',
     submenu: [
       {
-        label: 'About Electron',
+        label: 'About do•doc',
         selector: 'orderFrontStandardAboutPanel:'
       },
       {
@@ -191,7 +191,7 @@ function setApplicationMenu() {
         type: 'separator'
       },
       {
-        label: 'Hide Electron',
+        label: 'Hide do•doc',
         accelerator: 'Command+H',
         selector: 'hide:'
       },

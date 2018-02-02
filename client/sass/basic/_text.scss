@@ -38,6 +38,13 @@ hr {
   font-family:  'Fira Mono', monospace;
 }
 
+.txt-one_line_ellipsis {
+  display: block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .txt-wrap_long_lines {
   /* These are technically the same, but use both */
   overflow-wrap: break-word;

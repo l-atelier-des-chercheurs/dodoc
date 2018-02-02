@@ -99,18 +99,24 @@ $t-skipline: 1.4em;
 textarea {
   resize:vertical;
 
-  min-height: 6rem;
+  min-height: 8em;
   font-size:1.4em;
   line-height: $t-skipline;
+
+  padding-left: $t-margin;
+  padding-right:  $t-margin;
 
   background: linear-gradient(transparent, transparent 28px, #91D1D3 28px);
   background-size: 30px 30px;
   background-attachment: local;
 
-  background: linear-gradient(transparent, transparent calc(#{$t-skipline} - 2px), rgba(0,0,0,.05) calc(#{$t-skipline} - 2px));
+  $c-color_bg: rgba(0,0,0,.05);
+  $c-color_lines: rgba(0,0,0,.1);
+
+  background: linear-gradient($c-color_bg, $c-color_bg calc(#{$t-skipline} - 2px), $c-color_lines calc(#{$t-skipline} - 2px));
   background-size: $t-skipline $t-skipline;
   background-attachment: local;
-  background-position-y: calc(#{$t-skipline} * 1.1);
+  background-position-y: calc(#{$t-skipline} * 1.01);
 
 }
 
