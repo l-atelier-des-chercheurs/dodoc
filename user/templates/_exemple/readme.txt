@@ -9,4 +9,4 @@ To be complete, a template needs:
 - (optional, not enabled as of dodoc v6) a script.js file used to load custom behaviors (only on the publication’s page). You can use jQuery’s $ to manipulate the DOM.
 
 The simplest way to create a new template is to duplicate this folder and to rename it to something else (without underscore in the name or it will be hidden from the templates selector in dodoc).
-You can then edit style.css, script.js and replace icone.svg according to your template.
+You can then edit style.css and replace icone.svg according to your template.
