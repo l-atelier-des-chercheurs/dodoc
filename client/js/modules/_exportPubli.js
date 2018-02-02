@@ -24,6 +24,7 @@ var exportPubli = (function() {
       .find('script').remove().end()
       .find('.m_modal-content').remove().end()
       .find('.m_modal').remove().end()
+      .find('#templateCss').remove().end()
       .html()
       ;
   }
