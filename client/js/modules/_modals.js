@@ -603,6 +603,7 @@ var modals = (function() {
         		// check type of content
         		console.log( fileName);
         		fileName = fileName.toLowerCase();
+        		debugger;
           if(fileName.indexOf( ".jpg") !== -1 || fileName.indexOf( ".jpeg") !== -1 || fileName.indexOf( ".png") !== -1) {
         			var mediaData = {
               "mediaType" : "photo",
@@ -615,7 +616,7 @@ var modals = (function() {
                 "videoData" : evt.target.result,
               }
         		  }
-        		} else if(fileName.indexOf( ".mp3") !== -1 ||  fileName.indexOf( ".m4a") !== -1) {
+        		} else if(fileName.indexOf( ".mp3") !== -1 ||  fileName.indexOf( ".m4a") !== -1 ||  fileName.indexOf( ".wav") !== -1) {
         			var mediaData = {
               "mediaType" : "audio",
               "mediaData" : {
