@@ -746,7 +746,6 @@ button {
     line-height: 1.6;
     margin: 0;
     z-index: 1;
-
   }
 
   .publi-btn {
@@ -759,6 +758,10 @@ button {
     .button-wrapper {
       float: right;
     }
+  }
+
+  .publi_medias {
+    padding: 0 $t-margin;
   }
 
   .media {
