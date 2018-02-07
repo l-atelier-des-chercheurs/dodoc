@@ -64,8 +64,8 @@
   },
   "devDependencies": {
     "electron": "^1.8.2",
+    "electron-builder": "^19.56.2",
     "electron-log": "^2.2.14",
-    "electron-builder": "^19.56.0",
     "electron-packager": "^11.0.0",
     "electron-prebuilt": "^1.4.13",
     "electron-rebuild": "^1.7.3",
