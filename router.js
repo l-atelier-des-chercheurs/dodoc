@@ -101,7 +101,7 @@ module.exports = function(app,io,m){
 
   // GET
   function getIndex(req, res) {
-    var pageTitle = "Do.Doc";
+    var pageTitle = "do•doc";
     generatePageData(req, pageTitle).then(function(generatePageDataJSON) {
       res.render("index", generatePageDataJSON);
     }, function(err) {
