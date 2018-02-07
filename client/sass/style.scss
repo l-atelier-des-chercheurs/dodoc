@@ -788,10 +788,19 @@ button {
       background-color: #fff;
     }
 
+    &.media_audio {
+      .poster {
+        display: none;
+      }
+    }
   }
 
   img, video, audio, svg {
     max-width: 100%;
+  }
+
+  audio {
+    width: 100%;
   }
 
 }
