@@ -38,6 +38,7 @@ function createWindow() {
 
   global.appInfos.version = app.getVersion();
   dev.log('——— Starting dodoc app v' + global.appInfos.version);
+  dev.log(`version: ${JSON.stringify(process.versions, null, 4)}`);
 
   // checkout which langage to load
   var envLang = app.getLocale();
