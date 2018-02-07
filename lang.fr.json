@@ -23,6 +23,7 @@
   "makePDF" : "Exporter en PDF",
 
   "uploadViaFTP": "Envoyer par FTP",
+  "uploadingFiles": "Envoi des fichiers&nbsp;:",
 
   "lastMediasAdded" : "Derniers médias ajoutés",
   "listOfPublications" : "Liste des publications",

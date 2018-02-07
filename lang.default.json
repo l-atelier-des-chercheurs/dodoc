@@ -22,6 +22,7 @@
   "makeWebsite" : "Export as a website",
   "makePDF" : "Export as a PDF",
   "uploadViaFTP": "Send via FTP",
+  "uploadingFiles": "Uploading files:",
 
   "lastMediasAdded" : "Latest Media",
   "listOfPublications" : "Publications",

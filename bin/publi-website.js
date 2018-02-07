@@ -162,7 +162,8 @@ var publiWebsite = (function() {
             dev.logverbose('Folder created on server successfully.');
             ftpDeploy.on('uploading', function(data) {
               dev.logverbose(`Uploading files to ${config.remoteRoot} --> file ${data.filename} at ${data.percentComplete}%`);
-              require('../sockets').notifyUser(`Uploading file <em>${data.filename}</em>: ${data.percentComplete}%`);
+              // <em>${data.filename}</em> —
+              require('../sockets').notifyUser(dodoc.lang().uploadingFiles + ' ' + data.percentComplete + '%');
             });
 
             ftpDeploy.on('upload-error', function (data) {
