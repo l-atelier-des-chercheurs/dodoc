@@ -1,10 +1,8 @@
-const electron = require('electron');
-const {app, BrowserWindow, Menu} = electron;
+const {app, BrowserWindow, Menu, dialog} = require('electron');
 
 const path = require('path');
 const fs = require('fs-extra');
 const flags = require('flags');
-const {dialog} = require('electron');
 
 const dev = require('./bin/dev-log');
 const config = require('./config.json');
@@ -318,7 +316,7 @@ function copyAndRenameUserFolder() {
       try {
         userDirPath = dialog.showOpenDialog({
           title: 'Sélectionnez le dossier qui contiendra le contenu de dodoc',
-          defaultPath: app.getPath("documents"),
+          defaultPath: app.getPath('documents'),
           properties: ['openDirectory']
         })[0];
         dev.log('A path was picked: ' + userDirPath);
@@ -341,7 +339,7 @@ function copyAndRenameUserFolder() {
     }
 
     const pathToUserContent = path.join(userDirPath, config.userDirname);
-    const sourcePathInApp = `${__dirname.replace(`${path.sep}app.asar`, '')}/user`;
+    const sourcePathInApp = path.join(app.getAppPath(), `user`);
 
     fs.access(pathToUserContent, fs.F_OK, function(err) {
       // if dodoc folder doesn't exist yet at destination

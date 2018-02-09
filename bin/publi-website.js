@@ -40,12 +40,13 @@ var publiWebsite = (function() {
       })
       .then(webPubliFolderPath => {
         let tasks = [];
+        const clientPath = path.join(require('electron').app.getAppPath(), `client`);
 
-        tasks.push(_copyFiles(path.join('client', 'css'), webPubliFolderPath, 'style.min.css'));
+        tasks.push(_copyFiles(path.join(clientPath, 'css'), webPubliFolderPath, 'style.min.css'));
 
         // copy font files
         let copyFontFiles = new Promise((resolve, reject) => {
-          fs.readdir(path.join('client', 'fonts', 'Fira'), (err, filenames) => {
+          fs.readdir(path.join(clientPath, 'fonts', 'Fira'), (err, filenames) => {
             if(err) {
               dev.error(`Couldn’t read font dir : ${err}`);
               resolve();
@@ -57,7 +58,7 @@ var publiWebsite = (function() {
 
             let tasks = [];
             files.map((name) => {
-              tasks.push(_copyFiles(path.join('client', 'fonts', 'Fira'), path.join(webPubliFolderPath, 'fonts'), name));
+              tasks.push(_copyFiles(path.join(clientPath, 'fonts', 'Fira'), path.join(webPubliFolderPath, 'fonts'), name));
             });
             Promise.all(tasks).then(() => {
               resolve();
@@ -68,7 +69,7 @@ var publiWebsite = (function() {
 
         // JS will be implemented later
 /*
-        tasks.push(_copyFiles(path.join('client', 'bower_components', 'jquery', 'dist'), webPubliFolderPath, 'jquery.min.js') );
+        tasks.push(_copyFiles(path.join(clientPath, 'bower_components', 'jquery', 'dist'), webPubliFolderPath, 'jquery.min.js') );
         tasks.push(_copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate), webPubliFolderPath, 'script.js') );
 */
         tasks.push(_copyFiles(path.join(dodocAPI.getUserPath(), 'templates' , d.currentTemplate), webPubliFolderPath, 'template.css') );
@@ -290,7 +291,7 @@ var publiWebsite = (function() {
   function _copyFiles(sourceFolder, destFolder, filename) {
     //sourceFile, destFile
     return new Promise(function(resolve, reject) {
-      dev.logfunction('COMMON — _copyFiles');
+      dev.logfunction(`COMMON — _copyFiles: ${filename} from ${sourceFolder} to ${destFolder}`);
 
       let sourceFile = path.join(sourceFolder, filename);
       let destFile = path.join(destFolder, filename);
