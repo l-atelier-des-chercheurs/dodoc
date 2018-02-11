@@ -378,19 +378,22 @@ var dodocMedia = (function() {
           if( cleanMediaName === mediaName) {
             var filePath = path.join( pathToMediaFolder, filename);
             var deletedFilePath = path.join( pathToMediaFolder, dodoc.settings().deletedPrefix + filename);
-            fs.renameSync( filePath, deletedFilePath);
-            dev.log( "A file will be deleted (renamed and hidden from dodoc) : \n - " + filePath + "\n - " + deletedFilePath);
+            setTimeout(() => {
+              fs.renameSync( filePath, deletedFilePath);
+              dev.log( "A file will be deleted (renamed and hidden from dodoc) : \n - " + filePath + "\n - " + deletedFilePath);
+
+              var mediaMetaData =
+              {
+                "slugFolderName" : slugFolderName,
+                "slugProjectName" : slugProjectName,
+                "mediaFolder" : mediaFolder,
+                "mediaName" : mediaName,
+                "mediaKey" : path.join( mediaFolder, mediaName + dodoc.settings().metaFileext)
+              }
+              resolve( mediaMetaData);
+            }, 100);
           }
         });
-        var mediaMetaData =
-        {
-          "slugFolderName" : slugFolderName,
-          "slugProjectName" : slugProjectName,
-          "mediaFolder" : mediaFolder,
-          "mediaName" : mediaName,
-          "mediaKey" : path.join( mediaFolder, mediaName + dodoc.settings().metaFileext)
-        }
-        resolve( mediaMetaData);
       } catch( err) {
         dev.error(`Failed to read dir ${pathToMediaFolder}`);
         reject( err);
