@@ -20,6 +20,8 @@ var pluginsScripts = [
   'client/bower_components/store-js/store.min.js',
   'client/bower_components/alertifyjs/dist/js/alertify.js',
   'client/bower_components/promise-polyfill/promise.min.js',
+  'client/bower_components/recordrtc/RecordRTC.min.js',
+  'client/bower_components/dragula.js/dist/dragula.min.js',
   'client/bower_components/qrious/dist/qrious.min.js'
 ];
 var userScripts = [

@@ -1,7 +1,6 @@
 doctype html
 html
   head
-    link(rel='stylesheet', href='/bower_components/dragula.js/dist/dragula.min.css')
     include templates/head.jade
 
 - if( url.indexOf( 'panneau-de-publications') > 0) {
@@ -50,7 +49,6 @@ html
     //- //footer
     include templates/footer.jade
 
-    script(src="/bower_components/dragula.js/dist/dragula.min.js")
     script(src='/js/dom_autoscroller.js')
     script(src='/js/bibli.js' defer)
 
