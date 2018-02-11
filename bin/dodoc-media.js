@@ -378,6 +378,8 @@ var dodocMedia = (function() {
           if( cleanMediaName === mediaName) {
             var filePath = path.join( pathToMediaFolder, filename);
             var deletedFilePath = path.join( pathToMediaFolder, dodoc.settings().deletedPrefix + filename);
+
+            // ugly fix but windows locks files right after readdirSync, so we need to add a small delay before renaming files
             setTimeout(() => {
               fs.renameSync( filePath, deletedFilePath);
               dev.log( "A file will be deleted (renamed and hidden from dodoc) : \n - " + filePath + "\n - " + deletedFilePath);
@@ -391,7 +393,7 @@ var dodocMedia = (function() {
                 "mediaKey" : path.join( mediaFolder, mediaName + dodoc.settings().metaFileext)
               }
               resolve( mediaMetaData);
-            }, 100);
+            }, 200);
           }
         });
       } catch( err) {
