@@ -423,7 +423,7 @@ function insertOrReplaceProject( $item, $container) {
 function removeMedia( $medias, mediaData) {
 
   var $mediaToRemove = $medias
-    .filter("[data-mediakey='" + mediaData.mediaKey + "']")
+    .filter("[data-medianame='" + mediaData.mediaName + "']")
     ;
 
   $mediaToRemove
