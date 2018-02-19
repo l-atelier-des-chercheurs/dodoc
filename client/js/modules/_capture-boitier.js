@@ -12,7 +12,7 @@ var boitierExterne = (function() {
         // next/prev
         if( key === 'w' || key == 's' || key === 'z') {
           var direction = key === 's' ? 'next' : 'prev';
-          _switchMediaMode(direction);
+          this.switchMediaMode(direction);
         } else
         // capture
         if( key === 'a' || key === 'q' || key === ' ' || key === 'Enter') {
@@ -23,21 +23,20 @@ var boitierExterne = (function() {
         }
       });
     },
-  }
+    switchMediaMode: function(direction) {
+      // current active button
+      var $currentActiveButton = $modeButtons.filter('.is--active');
+      var $getRequestedButton = $();
 
-  function _switchMediaMode( direction) {
-    // current active button
-    var $currentActiveButton = $modeButtons.filter('.is--active');
-    var $getRequestedButton = $();
+      if(direction === 'prev')
+        $getRequestedButton = $currentActiveButton.prev().length > 0 ? $currentActiveButton.prev() : $currentActiveButton;
 
-    if(direction === 'prev')
-      $getRequestedButton = $currentActiveButton.prev().length > 0 ? $currentActiveButton.prev() : $currentActiveButton;
+      if(direction === 'next')
+        $getRequestedButton = $currentActiveButton.next().length > 0 ? $currentActiveButton.next() : $currentActiveButton;
 
-    if(direction === 'next')
-      $getRequestedButton = $currentActiveButton.next().length > 0 ? $currentActiveButton.next() : $currentActiveButton;
-
-    // get its 'data-mediatype' and send it to changeMediaMode
-    changeMediaMode( $getRequestedButton.attr('data-mediatype'));
+      // get its 'data-mediatype' and send it to changeMediaMode
+      changeMediaMode( $getRequestedButton.attr('data-mediatype'));
+    }
   }
 
   return API;

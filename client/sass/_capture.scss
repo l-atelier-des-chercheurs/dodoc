@@ -6,20 +6,6 @@
     overflow-x: visible !important;
     // height: auto !important;
   }
-
-  .media-choice{
-    .btn-choice{
-      button{
-        &:before{
-          margin:0 !important;
-        }
-        span{
-          display:none;
-        }
-      }
-    }
-  }
-
   .captureLeft{
     position:relative !important;
     width: 80% !important;
@@ -87,85 +73,83 @@ body.capture{
   }
 }
 
-.media-choice {
-
+.captureButtonRow {
   padding: $t-margin*2 0;
+  text-align: center;
 
-  .btn-choice{
+  button {
+    color:#333;
+    margin: 0;
+    outline: none;
 
-    text-align: center;
+    font-size: 1.1rem;
+    padding: 11px $t-margin;
+    border-radius: 4px;
 
-    button {
+    margin: 0 $t-margin/2;
 
-      color:#333;
-      margin: 0;
-      outline: none;
-
-      font-size: 1.1rem;
-      padding: 11px $t-margin;
-      border-radius: 4px;
-
-      margin: 0 $t-margin/2;
-
-      &:last-of-type {
-        margin-right: 0;
-      }
-
-      &:not(.is--active):not(:hover) {
-        background-color: #fff;
-      }
-
-      &.is--active, &:hover {
-        color: #fff;
-        outline: none;
-      }
-
-      // vignette media
-      &[data-mediatype] {
-        // type de media (anciennement icone-media)
-        &::before {
-          content:"";
-          position: relative;
-
-          display: inline-block;
-          vertical-align: middle;
-
-          width: 28px;
-          height: 28px;
-          margin-right: 14px;
-          z-index:  100;
-
-          background-size: cover;
-        }
-      }
-
-      // page bibli, page capture, page projet
-      &[data-mediatype="photo"] {
-        background-color: $c-images;
-        &::before {
-          background-image: url("/images/i_icone-dodoc_image.svg");
-        }
-      }
-      &[data-mediatype="video"] {
-        background-color: $c-videos;
-        &::before {
-          background-image: url("/images/i_icone-dodoc_video.svg");
-        }
-      }
-      &[data-mediatype="stopmotion"] {
-        background-color: $c-anim;
-        &::before {
-          background-image: url("/images/i_icone-dodoc_anim.svg");
-        }
-      }
-      &[data-mediatype="audio"] {
-        background-color: $c-sons;
-        &::before {
-          background-image: url("/images/i_icone-dodoc_audio.svg");
-        }
-      }
-
+    &:not(.is--active):not(:hover) {
+      background-color: #fff;
     }
+
+    &.is--active, &:hover {
+      color: #fff;
+      outline: none;
+    }
+
+    &.modeNavButtons {
+      background-color: transparent !important;
+      color: $c-images;
+      vertical-align: baseline;
+    }
+
+    // vignette media
+    &[data-mediatype] {
+
+
+      // type de media (anciennement icone-media)
+      &::before {
+        content:"";
+        position: relative;
+
+        display: inline-block;
+        vertical-align: middle;
+
+        width: 28px;
+        height: 28px;
+        margin-right: 14px;
+        z-index:  100;
+
+        background-size: cover;
+      }
+    }
+
+    // page bibli, page capture, page projet
+    &[data-mediatype="photo"] {
+      background-color: $c-images;
+      &::before {
+        background-image: url("/images/i_icone-dodoc_image.svg");
+      }
+    }
+    &[data-mediatype="video"] {
+      background-color: $c-videos;
+      &::before {
+        background-image: url("/images/i_icone-dodoc_video.svg");
+      }
+    }
+    &[data-mediatype="stopmotion"] {
+      background-color: $c-anim;
+      &::before {
+        background-image: url("/images/i_icone-dodoc_anim.svg");
+      }
+    }
+    &[data-mediatype="audio"] {
+      background-color: $c-sons;
+      &::before {
+        background-image: url("/images/i_icone-dodoc_audio.svg");
+      }
+    }
+
   }
 }
 

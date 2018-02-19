@@ -17,17 +17,20 @@ html
 
     div#container.row.mainContent
       .container-inner
-        .media-choice
-          .btn-choice
-            div
-              button#photo.js--modeSelector(data-mediatype="photo")
-                span !{dodoc.lang().photo}
-              button#video-btn.js--modeSelector(data-mediatype="video")
-                span !{dodoc.lang().video}
-              button#stopmotion.js--modeSelector(data-mediatype="stopmotion")
-                span !{dodoc.lang().stopmotion}
-              button#audio.js--modeSelector(data-mediatype="audio")
-                span !{dodoc.lang().audio}
+        .captureButtonRow
+          button.modeNavButtons.js--modeSwitch(data-direction="prev")
+            | ◀
+          span
+            button#photo.js--modeSelector(data-mediatype="photo")
+              span !{dodoc.lang().photo}
+            button#video-btn.js--modeSelector(data-mediatype="video")
+              span !{dodoc.lang().video}
+            button#stopmotion.js--modeSelector(data-mediatype="stopmotion")
+              span !{dodoc.lang().stopmotion}
+            button#audio.js--modeSelector(data-mediatype="audio")
+              span !{dodoc.lang().audio}
+          button.modeNavButtons.js--modeSwitch(data-direction="next")
+            | ▶
 
         .feedSettings
           .openCloseSettings
