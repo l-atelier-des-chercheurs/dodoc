@@ -50,7 +50,6 @@ function init(){
   });
 
 
-  /******************************************************/
   boitierExterne.init();
 
   currentStream.init()

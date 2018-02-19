@@ -12,14 +12,28 @@ var boitierExterne = (function() {
         // next/prev
         if( key === 'w' || key == 's' || key === 'z') {
           var direction = key === 's' ? 'next' : 'prev';
-          this.switchMediaMode(direction);
+
+          if($('body').data('currentpage') === 'bibli') {
+            debugger;
+            if(direction === 'next') {
+              $('.js--big-mediaNav-next').click();
+            } else
+            if(direction === 'prev') {
+              $('.js--big-mediaNav-prev').click();
+            }
+          } else if($('body').data('currentpage') === 'capture') {
+            boitierExterne.switchMediaMode(direction);
+          }
         } else
         // capture
         if( key === 'a' || key === 'q' || key === ' ' || key === 'Enter') {
-          if( imageMode.isRunning())      imageMode.captureButtonPress();
-          else if( videoMode.isRunning())       videoMode.captureButtonPress();
-          else if( stopMotionMode.isRunning()) stopMotionMode.captureButtonPress();
-          else if( audioMode.isRunning())      audioMode.captureButtonPress();
+
+          if($('body').data('currentpage') === 'capture') {
+            if( imageMode.isRunning())      imageMode.captureButtonPress();
+            else if( videoMode.isRunning())       videoMode.captureButtonPress();
+            else if( stopMotionMode.isRunning()) stopMotionMode.captureButtonPress();
+            else if( audioMode.isRunning())      audioMode.captureButtonPress();
+          }
         }
       });
     },

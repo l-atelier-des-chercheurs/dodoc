@@ -30,7 +30,6 @@ socket.on('listOnePubliMetaAndMedias', onListOnePubliMetaAndMedias);
 socket.on('publiMetaUpdated', onPubliMetaUpdated);
 socket.on('publiMediasUpdated', onPubliMediasUpdated);
 
-
 jQuery(document).ready(function($) {
 	$(document).foundation();
 	init();
@@ -46,6 +45,8 @@ function init(){
     	e.preventDefault();
     	$('body').attr( "data-publicationpane", $('body').attr('data-publicationPane') === 'open' ? '' : 'open');
   });
+
+  boitierExterne.init();
 
   // si en arrivant sur la page, il y a un hash dans l'url
   // alors ouvrir la publication qui a ce nom directement
