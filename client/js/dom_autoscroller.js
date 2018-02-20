@@ -1495,25 +1495,23 @@ module.exports = tick;
     var left = document.querySelector('.medias-list');
     var right = document.querySelector('.publi_medias');
 
-  	drake = dragula([left, right], {
-  	  copy: function (el, source) {
-  	    return source === left;
-  	  },
-  	  accepts: function (el, target) {
-        return target === right;
-  	  },
+    	drake = dragula([left, right], {
+    	  copy: function (el, source) {
+    	    return source === left;
+    	  },
+    	  accepts: function (el, target) {
+//           return target === right;
+    	  },
       invalid: function (el, handle) {
-        return $("body").attr("data-publicationpane") !== "open";
+//         return $("body").attr("data-publicationpane") !== "open";
       }
-  	})
-  	.on('drop', function(el, target, source, sibling){
-    	// si le drop a bien réussi
+    	})
+    	.on('drop', function(el, target, source, sibling){
+      	// si le drop a bien réussi
       if( target !== null) {
-
 /*
         $el = $(el);
         var deleteMediaButton = $(".js--templates .js--delete-media-montage").clone(false);
-
         $el
           .removeClass("gu-transit")
           .append( deleteMediaButton)
@@ -1522,11 +1520,9 @@ module.exports = tick;
           .end()
           ;
 */
-
-        $(document).trigger( 'update_media_montage');
-
+        $(document).trigger('update_media_montage');
       }
-  	});
+    	});
 
     var scroll = autoScroll([
             document.querySelector('.montage_publi_container')
