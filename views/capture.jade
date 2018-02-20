@@ -2,7 +2,7 @@ doctype html
 html
   head
     include templates/head.jade
-  body.capture(data-currentpage="capture")
+  body.capture(data-currentpage="capture" data-boitiermode="capturemode_nav")
     .navbar-container
 
       header.navbar
@@ -182,7 +182,7 @@ html
     include templates/footer.jade
 
     script(src="/js/libs/screenfull.min.js")
-    script(src='/js/modules/_capture-boitier.js')
+    script(src='/js/modules/_boitier.js')
     script(src='/js/modules/_capture-audio.js')
     script(src='/js/modules/_capture-photo.js')
     script(src='/js/modules/_capture-video.js')

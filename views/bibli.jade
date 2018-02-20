@@ -6,7 +6,7 @@ html
 - if( url.indexOf( 'panneau-de-publications') > 0) {
   body.bibli(data-publicationPane="open" data-currentpage="bibli")
 - } else {
-  body.bibli(data-publicationPane data-currentpage="bibli")
+  body.bibli(data-publicationPane data-currentpage="bibli" data-boitiermode="media_nav")
 - }
 
     .navbar-container
@@ -50,7 +50,7 @@ html
     include templates/footer.jade
 
     script(src='/js/dom_autoscroller.js')
-    script(src='/js/modules/_capture-boitier.js')
+    script(src='/js/modules/_boitier.js')
     script(src='/js/bibli.js' defer)
 
 

@@ -37,6 +37,7 @@ socket.on('mediaRemoved', onMediaRemoved);
 
 jQuery(document).ready(function($) {
 	$(document).foundation();
+  boitierExterne.init();
 
 });
 

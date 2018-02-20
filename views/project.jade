@@ -2,7 +2,7 @@ doctype html
 html
   head
     include templates/head.jade
-  body.projet
+  body.projet(data-boitiermode="media_nav")
 
     .navbar-container
       header.navbar
@@ -28,4 +28,5 @@ html
 
     //- //footer
     include templates/footer.jade
+    script(src='/js/modules/_boitier.js')
     script(src='/js/project.js' defer)

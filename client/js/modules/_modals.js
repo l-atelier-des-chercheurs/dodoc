@@ -768,8 +768,12 @@ var modals = (function() {
         .removeClass('is--disabled')
         .off()
         .on('click', function() {
-        		$m.empty();
-          $upcomingMedia.click();
+          $(this).addClass('is--active');
+        		$m.find('.big-mediaContent').fadeOut(150, function() {
+          		$m.empty();
+          		debugger;
+            $upcomingMedia.click();
+          });
         })
         ;
     } else {
