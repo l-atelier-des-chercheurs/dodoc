@@ -771,7 +771,6 @@ var modals = (function() {
           $(this).addClass('is--active');
         		$m.find('.big-mediaContent').fadeOut(150, function() {
           		$m.empty();
-          		debugger;
             $upcomingMedia.click();
           });
         })
