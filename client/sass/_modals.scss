@@ -310,9 +310,11 @@ select {
     position: absolute;
     top:45%;
     pointer-events: auto;
-    padding: 0;
+    padding: $t-margin $t-margin;
+    vertical-align: baseline;
 
-    color: $c-gris;
+    font-size: 1em;
+    color: $c-orange;
     background-color: white;
     box-shadow: 0 5px 20px $c-gris;
 
@@ -321,33 +323,20 @@ select {
     opacity: 1;
     transition: transform .4s, border-color .5s, opacity .4s;
 
-    &::before {
-      content:'';
-//       font-family: 'Fira Mono';
-      font-size: 3em;
-    }
-
     &.is--disabled {
       opacity: 0;
       pointer-events: none;
       transform: rotate(0deg);
     }
     &:hover {
-      color: $c-bleuvert;
     }
   }
 
   .big-mediaNav-arrow_left {
     left: 0;
-    &::before {
-      content:'<';
-    }
   }
   .big-mediaNav-arrow_right {
     right: 0;
-    &::before {
-      content:'>';
-    }
   }
 
 }
