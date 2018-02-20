@@ -7,8 +7,17 @@ var boitierExterne = (function() {
       console.log('Boitier.init()');
   	  // switch mode if code == 115 (next mode, Z) or 122 (prev mode, S)
   	  // can't overflow past first or last mode buttons
-      $("body").keyup(function(e){
+      $('body').keyup(function(e){
         var key = e.key;
+
+        let checkIfAnyFieldIsFocus = false;
+        $('textarea').each(function() {
+          	if($(this).is(':focus')) {
+          		checkIfAnyFieldIsFocus = true;
+          }
+        });
+        if(checkIfAnyFieldIsFocus) { return; }
+
         // next/prev
         if( key === 'w' || key == 's' || key === 'z') {
           var direction = key === 's' ? 'next' : 'prev';
@@ -26,7 +35,6 @@ var boitierExterne = (function() {
         } else
         // capture
         if( key === 'a' || key === 'q' || key === ' ' || key === 'Enter') {
-
           if($('body').data('boitiermode') === 'capturemode_nav') {
             if( imageMode.isRunning())      imageMode.captureButtonPress();
             else if( videoMode.isRunning())       videoMode.captureButtonPress();
