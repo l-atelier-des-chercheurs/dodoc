@@ -350,7 +350,7 @@ var modals = (function() {
     var minfos = mdata.informations;
     var mname = mdata.medianame;
     var mfullsizeimagesrc = mdata.imagesrc_fullsize;
-    var mpathOfMedia = mdata.pathofmedia;
+    var mediaFilename = mdata.mediafilename;
 
     switch( mtype){
     		case dodoc.settings().projectPhotosFoldername:
@@ -428,20 +428,14 @@ var modals = (function() {
   		if(mdata.fav)
   			$mediaItem.addClass('is--highlight');
 
-    var mediaFilenameWhenDownload = mpathOfMedia.split("/").pop();;
-
     	$mediaItem
     	  .attr( 'data-medianame', mname)
     	  .attr( 'data-mediatype', mtype)
     	  .find('.js--mediaInformations')
     	    .val( minfos)
       .end()
-      .find('.js--mediaFullPath')
-        .text(mpathOfMedia)
-      .end()
       .find('.js--downloadThisMedia')
-        .attr('title', mpathOfMedia)
-        .attr('download', mediaFilenameWhenDownload)
+        .attr('download', mediaFilename)
       .end()
       ;
 

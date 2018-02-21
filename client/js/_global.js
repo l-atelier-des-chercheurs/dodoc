@@ -219,29 +219,29 @@ function makeOneMedia( mediaKey, mdata) {
   if( mdata.slugFolderName !== currentFolder || mdata.slugProjectName !== currentProject)
     return;
 
-  var pathOfMedia;
+  var mediaFilename;
 
   var $currentMedia = '';
   switch(mdata.mediaFolderPath) {
     case dodoc.settings().projectPhotosFoldername:
       $currentMedia = showImage(mdata);
-      pathOfMedia = app.contentDir+getMediaFiles(mdata).img_large;
+      mediaFilename = getMediaFiles(mdata).img_large;
       break;
     case dodoc.settings().projectAnimationsFoldername:
       $currentMedia = showAnimation(mdata);
-      pathOfMedia = app.contentDir+getMediaFiles(mdata).video;
+      mediaFilename = getMediaFiles(mdata).video;
       break;
     case dodoc.settings().projectVideosFoldername:
       $currentMedia = showVideo(mdata);
-      pathOfMedia = app.contentDir+getMediaFiles(mdata).video;
+      mediaFilename = getMediaFiles(mdata).video;
       break;
     case dodoc.settings().projectAudiosFoldername:
       $currentMedia = showAudio(mdata);
-      pathOfMedia = app.contentDir+getMediaFiles(mdata).audio;
+      mediaFilename = getMediaFiles(mdata).audio;
       break;
     case dodoc.settings().projectTextsFoldername:
       $currentMedia = showText( mdata);
-      pathOfMedia = app.contentDir+getMediaFiles(mdata).md;
+      mediaFilename = getMediaFiles(mdata).md;
       break;
   }
 
@@ -251,7 +251,7 @@ function makeOneMedia( mediaKey, mdata) {
     .attr( 'data-mediatype', mdata.mediaFolderPath)
     .attr( 'data-type', mdata.mediaFolderPath)
     	.attr( 'data-informations', mdata.informations)
-    	.attr( 'data-pathOfMedia', pathOfMedia)
+    	.attr( 'data-mediafilename', mediaFilename)
     	.attr( 'data-fav', mdata.fav)
     	.addClass( mdata.fav ? 'is--highlight' : '')
     	.find( '.mediaData--informations')

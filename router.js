@@ -34,7 +34,6 @@ module.exports = function(app,io,m){
       dev.log(`—> the following page has been requested : ${fullUrl}`);
 
       var pageDataJSON = [];
-      pageDataJSON.contentDir = dodocAPI.getFolderPath();
       pageDataJSON.currentUserDirPath = dodocAPI.getFolderPath();
 
       var slugFolderName = req.params.folder;

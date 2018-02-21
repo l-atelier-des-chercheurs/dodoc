@@ -7,8 +7,6 @@ mixin snippets(typeOfSnippet)
         | !{dodoc.lang().modal.informations}
       textarea.mediaContent--textOfMedia.js--mediaInformations(type='text')
     h3.txt-small_info.margin-top_bottom
-      span(style='display:none;') !{dodoc.lang().modal.pathofmedia}
-      .js--mediaFullPath(style='display:none;')
       a.js--downloadThisMedia(download)
         | !{dodoc.lang().modal.downloadThisMedia}
     hr
@@ -21,8 +19,6 @@ mixin snippets(typeOfSnippet)
     form(onsubmit='return false;' class='add-media-text')
       textarea.mediaContent--textOfTextmedia.js--textField(placeholder="Ajouter du texte ici" required)
     h3.txt-small_info
-      span(style='display:none;') !{dodoc.lang().modal.pathofmedia}
-      .js--mediaFullPath(style='display:none;')
       a.js--downloadThisMedia(download)
         | !{dodoc.lang().modal.downloadThisMedia}
     hr
