@@ -1500,10 +1500,10 @@ module.exports = tick;
     	    return source === left;
     	  },
     	  accepts: function (el, target) {
-//           return target === right;
+        return target === right;
     	  },
       invalid: function (el, handle) {
-//         return $("body").attr("data-publicationpane") !== "open";
+        return $("body").attr("data-publicationpane") !== "open";
       }
     	})
     	.on('drop', function(el, target, source, sibling){
