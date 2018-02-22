@@ -9,6 +9,7 @@ var boitierExterne = (function() {
   	  // can't overflow past first or last mode buttons
       $('body').keyup(function(e){
         var key = e.key;
+        console.log('key pressed : ' + key);
 
         let checkIfAnyFieldIsFocus = false;
         $('textarea').each(function() {
@@ -16,31 +17,60 @@ var boitierExterne = (function() {
           		checkIfAnyFieldIsFocus = true;
           }
         });
-        if(checkIfAnyFieldIsFocus) { return; }
+        if(checkIfAnyFieldIsFocus) {
+          console.log('an input field is selected, not using boitier commands');
+          return;
+        }
 
-        // next/prev
-        if( key === 'w' || key == 's' || key === 'z') {
-          var direction = key === 's' ? 'next' : 'prev';
-
+        function bouton_direction_pressed(direction) {
           if($('body').data('boitiermode') === 'media_nav') {
-            if(direction === 'next') {
-              $('.js--big-mediaNav-next').click();
+            if(direction === 'left') {
+              $('.m_modal .js--big-mediaNav-prev').click();
             } else
-            if(direction === 'prev') {
-              $('.js--big-mediaNav-prev').click();
+            if(direction === 'right') {
+              $('.m_modal .js--big-mediaNav-next').click();
             }
-          } else if($('body').data('boitiermode') === 'capturemode_nav') {
+          } else
+          if($('body').data('boitiermode') === 'capturemode_nav') {
             boitierExterne.switchMediaMode(direction);
           }
-        } else
-        // capture
-        if( key === 'a' || key === 'q' || key === ' ' || key === 'Enter') {
+        }
+        function bouton_capture_pressed() {
+          if($('body').data('boitiermode') === 'media_nav') {
+            var $video_audio = $('.m_modal .mediaContent').find('video, audio');
+            if($video_audio.length > 0) {
+              var $v = $video_audio.eq(0);
+              if($v.get(0).paused) {
+                $video_audio.get(0).play();
+              } else {
+                $video_audio.get(0).pause();
+              }
+            }
+          } else
           if($('body').data('boitiermode') === 'capturemode_nav') {
             if( imageMode.isRunning())      imageMode.captureButtonPress();
             else if( videoMode.isRunning())       videoMode.captureButtonPress();
             else if( stopMotionMode.isRunning()) stopMotionMode.captureButtonPress();
             else if( audioMode.isRunning())      audioMode.captureButtonPress();
           }
+        }
+
+        switch(key) {
+          case 'w':
+          case 'z':
+          case 'ArrowLeft':
+            bouton_direction_pressed('left');
+            break;
+          case 's':
+          case 'ArrowRight':
+            bouton_direction_pressed('right');
+            break;
+          case 'a':
+          case 'q':
+          case ' ':
+          case 'Enter':
+            bouton_capture_pressed();
+            break;
         }
       });
     },
