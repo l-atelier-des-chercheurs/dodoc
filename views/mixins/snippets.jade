@@ -10,8 +10,8 @@ mixin snippets(typeOfSnippet)
       a.js--downloadThisMedia(download)
         | !{dodoc.lang().modal.downloadThisMedia}
     hr
-    +button('favButton', '', '')
-    +button('deleteMediaBibli', '', '')
+    +button('favButton', '', 'isCollapsed')
+    +button('deleteMediaBibli', '', 'isCollapsed')
     +button('valider', '', 'isCollapsed')
 
   if(typeOfSnippet === 'mediaForm_txt')

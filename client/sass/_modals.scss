@@ -57,11 +57,8 @@
       min-height: calc(100vh - #{$t-margin*6});
 
       .button-wrapper {
-        float: none;
-        margin-left: 0;
         z-index: 1000;
         span {
-          margin-left:10px;
         }
       }
     }
