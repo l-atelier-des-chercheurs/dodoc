@@ -318,7 +318,7 @@ select {
     transform-origin: center center;
 
     opacity: 1;
-    transition: transform .4s, border-color .5s, opacity .4s, background-color .4s;
+    transition: transform .4s, border-color .5s, opacity .4s, background-color .1s;
 
     &.is--disabled {
       opacity: 0;
