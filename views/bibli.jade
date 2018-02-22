@@ -4,7 +4,7 @@ html
     include templates/head.jade
 
 - if( url.indexOf( 'panneau-de-publications') > 0) {
-  body.bibli(data-publicationPane="open" data-currentpage="bibli")
+  body.bibli(data-publicationPane="open" data-currentpage="bibli" data-boitiermode="media_nav")
 - } else {
   body.bibli(data-publicationPane data-currentpage="bibli" data-boitiermode="media_nav")
 - }
