@@ -32,7 +32,8 @@ var boitierExterne = (function() {
             }
           } else
           if($('body').data('boitiermode') === 'capturemode_nav') {
-            boitierExterne.switchMediaMode(direction);
+            var prev_or_next = direction === 'left' ? 'prev' : 'next';
+            boitierExterne.switchMediaMode(prev_or_next);
           }
         }
         function bouton_capture_pressed() {
