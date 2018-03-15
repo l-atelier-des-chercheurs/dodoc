@@ -3,7 +3,7 @@ var fs = require('fs-extra');
 var slugg = require('slugg');
 var merge = require('merge');
 
-var mm = require('marky-mark');
+var md = require('markdown-it')();
 var glob = require('glob')
 var pad = require('pad-left');
 
@@ -463,7 +463,7 @@ var dodocMedia = (function() {
     let textContentToParse = textMediaData.hasOwnProperty('text') ? textMediaData.text : textMediaData.content;
 
     let textInfos = {
-      text_md: mm.parse(textContentToParse).content,
+      text_md: md.render(textContentToParse),
       text: textContentToParse
     }
     return textInfos;
