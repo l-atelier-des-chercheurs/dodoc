@@ -126,9 +126,10 @@ var publiWebsite = (function() {
 
   function sendFilesToServerViaFTP(d){
     return new Promise(function(resolve, reject) {
-      dev.logfunction( 'EVENT - sendFilesToServerViaFTP : ' + JSON.stringify(d, null, 4));
+      dev.logfunction('EVENT - sendFilesToServerViaFTP : ' + JSON.stringify(d, null, 4));
 
-      var remote = path.join(d.sousDossierFtp, d.slugPubliName, d.dateOfExport);
+      var remote = `${d.slugPubliName}/${d.dateOfExport}`;
+      remote += d.sousDossierFtp !== '' ? `${d.sousDossierFtp}/` : '';
       dev.logverbose(`Attempting creation of folder on server at path: ${remote}`);
 
       var config = {
