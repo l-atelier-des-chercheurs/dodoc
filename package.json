@@ -1,22 +1,19 @@
 {
-  "name": "les-cahiers-du-studio",
-  "productName": "Les Cahiers du Studio",
-  "version": "1.4.0-dev",
-  "description":
-    "A time-based documentation tool to collaboratively keep notes and capture media from live experiences.",
+  "name": "dodoc2",
+  "productName": "do•doc",
+  "version": "7.0.0-dev",
+  "description": "Dodoc is a documentation tool for creativity.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
-  "homepage":
-    "https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio",
+  "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
   "license": "CC-BY-NC-SA-4.0",
   "main": "main.js",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio"
+    "url": "https://github.com/l-atelier-des-chercheurs/dodoc.git"
   },
   "bugs": {
-    "url":
-      "https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio/issues"
+    "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
   },
   "scripts": {
     "start": "electron .",
@@ -27,8 +24,8 @@
   },
   "build": {
     "electronVersion": "1.8.2",
-    "appId": "les-cahiers-du-studio",
-    "productName": "Les Cahiers du Studio",
+    "appId": "dodoc2",
+    "productName": "do•doc",
     "asar": false,
     "mac": {
       "category": "public.app-category.education"
