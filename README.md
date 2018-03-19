@@ -1,38 +1,57 @@
-# Les Cahiers du Studio
+![do•doc logo](http://latelier-des-chercheurs.fr/github/i_logo.svg)
 
-A time-based documentation tool to collaboratively keep notes and capture media from live experiences.
+# do•doc
 
-![dmk4q_fxkae_i70](https://user-images.githubusercontent.com/1948417/32667094-f8f3b43e-c639-11e7-98e2-22de0502fa96.png)
+do•doc (or dodoc) is a documentation tool, first designed for use in classrooms with children. It is a platform connected to a physical device that operates a camera and a microphone, and enables one to capture traces from an on-going experience for later reflections, reconstructions and creation of narratives.<br> 
+do•doc is made by [l'atelier des chercheurs](http://latelier-des-chercheurs.fr/) (Sarah Garcin, Pauline Gourlet & Louis Eveillard).<br>
 
-The documentation for this app can be found [here (in french)](https://latelier-des-chercheurs.fr/docs/manuel-les-cahiers-du-studio).
+The documentation for this app can be found [here (in french)](https://latelier-des-chercheurs.fr/docs/manuel-dodoc).
 
 # License
 
 This app is under a [Creative Commons BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/) license. It can be used, modified and shared freely as long as no commercial use is made and the attribution and link to [L’Atelier des Chercheurs](https://latelier-des-chercheurs.fr/) are kept.
 
-The typeface embedded in this tool, _STVitry_, was created specifically for the Studio-Théâtre of Vitry. Its use is expressly restricted to this tool, and it cannot be used anywhere else without prior authorisation by the Studio-Théâtre or Maxime Fittes, the creator of this font.
+## DoDoc design principles
 
-# Credits and origin
+![DoDoc](http://latelier-des-chercheurs.fr/github/schema_recap_dodoc-04.png)
 
-This tool was made for and in collaboration with the [Studio-Théâtre of Vitry](http://www.studiotheatre.fr/), a place for theatrical creation and research that welcomes and hosts theatre companies. It is installed on a computer inside the Studio-Théâtre and allows companies to keep track of their time and process inside the walls of the Studio-Théâtre. Studio-Théâtre of Vitry is supported by la ville de Vitry-sur-Seine, le Département du Val-de-Marne, la Région île-de-France et la DRAC île-de-France.
+## Screenshots of the app
 
-The creation, design and code for this app was done by [L’Atelier des Chercheurs](https://latelier-des-chercheurs.fr/) following a series of workshops and field studies at the Studio-Théâtre, and meetings with persons in charge there (specifically Bérangère Vantusso, Florence Kremper and Ella Gouet).
+![DoDoc](http://latelier-des-chercheurs.fr/github/interfaceecran-accueil.jpg)
 
-Furthermore, it was developed with the precious help from the following persons:
+![DoDoc](http://latelier-des-chercheurs.fr/github/interfaceecran-projet.jpg)
 
-* Vincent Desclaux (who participated in the creation of the user interface)
+![DoDoc](http://latelier-des-chercheurs.fr/github/interfaceecran-capture.jpg)
 
-* Maxime Fittes (who created the typeface _STVitry_)
+![DoDoc](http://latelier-des-chercheurs.fr/github/interfaceecran-publication.jpg)
 
-* Nolwenn Maudet, Benoît Verjat, Émilie Coquard, Nicolas Taffin, Julien Taquet, Thibéry Maillard, Anthony Masure, Mike Sabbagh, and others who gave feedbacks and helped refine the concept and use cases of this app.
+## Two examples of stations made for the app
 
-Finally, we should mention that this app wouldn’t be the same if it weren’t for two other, older free and open-source apps: [Rekall](http://www.rekall.fr/) and [Ligne de Temps](http://www.iri.centrepompidou.fr/outils/lignes-de-temps/). Both had very interesting ideas and use cases that we drew inspiration from to make Les Cahiers du Studio.
+![DoDoc](http://latelier-des-chercheurs.fr/github/dodoctei.jpg)
 
-# Install Les Cahiers du Studio
+![DoDoc](http://latelier-des-chercheurs.fr/github/IMG_9332.jpg)
+
+## App and stations being used with children 
+
+![DoDoc](http://latelier-des-chercheurs.fr/github/_1040646.jpg)
+
+![DoDoc](http://latelier-des-chercheurs.fr/github/_1040649.jpg)
+
+![DoDoc](http://latelier-des-chercheurs.fr/github/_1040651.jpg)
+
+### The app running on a smartphone
+
+![DoDoc](http://latelier-des-chercheurs.fr/github/_1060226.jpg)
+
+### A station made for teaching the principles of stop-motion animation
+ 
+![DoDoc](http://latelier-des-chercheurs.fr/github/_1060285.jpg)
+
+# Install do•doc
 
 ### Method 1 — the easy way
 
-Download the latest release from the [release page](https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio/releases).
+Download the latest release from the [release page](https://github.com/l-atelier-des-chercheurs/dodoc/releases).
 
 ### Method 2 — the long way
 
@@ -50,23 +69,23 @@ Open a terminal window:
 * macOS: go to Applications -> Utilities -> Terminal
 * Linux: use a terminal app such as Terminal or Konsole
 
-In your terminal, navigate to the Les-Cahiers-du-Studio-master folder with your terminal using the `cd` command:
+In your terminal, navigate to the dodoc-master folder with your terminal using the `cd` command:
 
 ```
-cd path/to/Les-Cahiers-du-Studio-master
+cd path/to/dodoc-master
 ```
 
 #### 3. Install dependencies
 
 If you haven’t already, install the tool that will enable native modules to be used. To do this, follow the instructions here: https://github.com/nodejs/node-gyp
 
-Then, install _les Cahiers_’s dependencies (may take up to 5 minutes):
+Then, install _do•doc_’s dependencies (may take up to 5 minutes):
 
 ```
 npm install
 ```
 
-#### 4. Run Les Cahiers du Studio
+#### 4. Run do•doc
 
 Start from the folder in a terminal window with the following command:
 

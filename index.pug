@@ -6,22 +6,8 @@ html
 
     title #{pageTitle}
     style.
-      @font-face {
-        font-family: 'STVitry';
-        font-style: normal;
-        font-weight: 400;
-        src: local('•'), local('•'),
-            url('/fonts/STVitry-20170707/STVitry-Regular-web.woff2') format('woff2'),
-            url('/fonts/STVitry-20170707/STVitry-Regular-web.woff') format('woff');
-      }
-      @font-face {
-        font-family: 'STVitry';
-        font-style: italic;
-        font-weight: 400;
-        src: local('•'), local('•'),
-             url('/fonts/STVitry-20170707/STVitry-Italic-web.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-             url('/fonts/STVitry-20170707/STVitry-Italic-web.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-      }
+      @import "/fonts/Fira/fira.css"
+    
     script.
       /***********
         MODERNIZR
