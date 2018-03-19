@@ -1,0 +1,245 @@
+.m_timeline:not(.is--animated) {
+  .mediaPreview {
+    transition: none !important;
+  }
+}
+
+.mediaContainer {
+  &.type-text {
+    align-self: flex-start;
+  }
+  &.type-other {
+    padding:10px;
+    align-self: flex-start;
+  }
+}
+
+.mediaPreview {
+  position: absolute;
+  width: 1px; height: 1px;
+  text-rendering: optimizeSpeed;
+
+  will-change: transform;
+  transition: transform .7s ease-in-out;
+
+  .media {
+    position: absolute;
+    right:0;
+    top: 0;
+    pointer-events: none;
+
+    @t-anchor: 20px;
+    .mediaScrubber {
+      position: absolute;
+      height: @t-anchor;
+      right: 0;
+      text-align: right;
+      top: -@t-anchor/2;
+
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .accroche {
+      position: absolute;
+      width: @t-anchor;
+      height: @t-anchor;
+      top: 0;
+      z-index: 10;
+      border-radius: 50%;
+
+      background-color: white;
+      border: 2px solid @c-noir;
+      padding: 0;
+      min-height: 0;
+      display: block;
+      pointer-events: auto;
+
+      transition: all .2s ease-out;
+//       font-size:0;
+
+      &:focus {
+        outline: none;
+      }
+
+      &_droite {
+        right: -@t-anchor/2;
+      }
+      &_gauche {
+        left: -@t-anchor/2;
+      }
+    }
+
+    .type-marker& {
+      @t-marker_anchor: 10px;
+
+      .mediaScrubber {
+      }
+      .accroche {
+        transform-origin: center center;
+        transform: scale(0.7);
+        background-color: white;
+//         border-color: @c-noir_light;
+      }
+
+      .timelineMediaContent {
+//         background-color: transparent;
+        height: 2em !important;
+        margin-right: -90px;
+
+        input {
+          background-color: transparent;
+          border: none;
+        }
+      }
+
+  // TODO: repère vertical
+      &::after {
+        content: '';
+        position: absolute;
+        width: 2px;
+        right: 0;
+        top: 0;
+        height: 100vh;
+        background-color: #fff;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+    }
+
+    .color-red& {
+      .timelineMediaContent, .accroche, &::after {
+        background-color: @c-rouge;
+      }
+    }
+    .color-blue& {
+      .timelineMediaContent, .accroche, &::after {
+        background-color: @c-bleu;
+      }
+    }
+    .color-green& {
+      .timelineMediaContent, .accroche, &::after {
+        background-color: @c-vert;
+      }
+    }
+    .color-yellow& {
+      .timelineMediaContent, .accroche, &::after {
+        background-color: @c-jaune;
+      }
+    }
+    .color-orange& {
+      .timelineMediaContent, .accroche, &::after {
+        background-color: @c-orange;
+      }
+    }
+    .color-purple& {
+      .timelineMediaContent, .accroche, &::after {
+        background-color: @c-violet;
+      }
+    }
+
+    .accrocheDurationLine {
+      height: 4px;
+      width: 100%;
+      background-color: @c-bleu_vif;
+      z-index: 9;
+    }
+
+    .button_openmedia {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      z-index: 1;
+      border-radius: @t-buttonradius 0px 0px 0px;
+
+
+      transition: opacity 0.3s ease-out;
+    }
+  }
+
+
+  &.is--hovered, &.is--dragged, &.is--highlighted {
+    z-index: 1000;
+    .accroche {
+      background-color: @c-noir;
+    }
+  }
+
+  .timelineMediaContent {
+    position: relative;
+    width:100%;
+    height:100%;
+    background-color: white;
+
+    overflow: hidden;
+    transform-origin: top right;
+    pointer-events: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+
+    border-radius: 4px;
+
+    transition: transform .2s ease-out;
+
+    .mediaContainer {
+      pointer-events: none;
+
+      > * {
+        width: 100%;
+      }
+
+      &.type-image {
+        img {
+          position: absolute;
+          top: 0;
+          right: 0;
+        }
+      }
+
+      &.type-audio {
+        width: 100%;
+      }
+
+      &.type-text > * {
+        p {
+          margin: 0;
+        }
+      }
+    }
+
+    .mediaContour {
+      position: absolute;
+      top: 0; left: 0;  right: 0; bottom: 0;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+  }
+
+
+  &.is--collapsed:not(.is--highlighted) .timelineMediaContent {
+    transform: scale(0);
+  }
+  &.has--duration.is--collapsed:not(.is--highlighted) .timelineMediaContent {
+    transform: scaleY(0);
+  }
+  &.is--dragged {
+    transition: none !important;
+
+    .timelineMediaContent {
+      cursor: -webkit-grabbing;
+      cursor: -moz-grabbing;
+    }
+    .mediaContour {
+      border-color: @c-noir_light;
+    }
+  }
+
+}
+
+

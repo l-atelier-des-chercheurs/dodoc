@@ -1,0 +1,114 @@
+{
+  "protocol": "http",
+  "host": "localhost",
+  "port": 8080,
+  "userDirPath": "documents",
+  "userDirname": "les-cahiers",
+
+  "contentDirname" : "user",
+  "cacheDirname" : "cache",
+  "metaFileext" : ".txt",
+  "folderMetafilename" : "meta",
+
+  "metaDateFormat" : "YYYYMMDD_HHmmss",
+  "textEncoding" : "UTF-8",
+  "deletedPrefix" : "x_",
+  "thumbFolderName" : "_thumbs",
+  "deletedFolderName" : "_bin",
+
+  "mediaThumbQuality" : 70,
+
+  "_comment" : "// see http://regexr.com/3d4t8",
+  "regexpMatchFolderNames" : "^([^.]+)$",
+  "regexpGetFileExtension" : "\\.[^.]*$",
+  "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)",
+
+  "structure" : {
+    "folder": {
+      "name": {
+        "type": "string"
+      },
+      "created": {
+        "type": "date",
+        "default": "current",
+        "read_only": true
+      },
+      "start": {
+        "type": "date",
+        "default": "current"
+      },
+      "end": {
+        "type": "date"
+      },
+      "password": {
+        "type": "string",
+        "read_only": true        
+      },
+      "authors": {
+        "type": "string"
+      }
+    },
+    "media": {
+      "date_timeline": {
+        "type": "date",
+        "default": "current"
+      },
+      "date_created": {
+        "type": "date",
+        "default": "current",
+        "read_only": true
+      },
+      "date_upload": {
+        "type": "date",
+        "default": "current",
+        "read_only": true
+      },
+      "date_modified" : {
+        "type": "date",
+        "default": "current",
+        "override": true
+      },
+      "public": {
+        "type": "boolean",
+        "default": false
+      },
+      "color": {
+        "type": "string",
+        "options": ["white", "red", "blue", "green", "purple", "orange", "yellow"],
+        "default": "white"
+      },
+      "type": {
+        "type": "string",
+        "options": ["image", "video", "audio", "text", "marker", "other"],
+        "default": "other"
+      },
+      "collapsed": {
+        "type": "boolean",
+        "default": false
+      },
+      "ratio" : {
+        "type": "number"
+      },
+      "duration" : {
+        "type": "number"
+      },
+      "authors": {
+        "type": "string"
+      },
+      "keywords": {
+        "type": "string"
+      },
+      "y": {
+        "type": "number",
+        "default": "random",
+        "clip": {
+          "min": 0,
+          "max": 1
+        }
+      },
+      "caption": {
+        "type": "string"
+      }
+    }
+  }
+}
