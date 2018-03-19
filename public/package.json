@@ -1,8 +1,6 @@
 {
-  "name": "les-cahiers-du-studio",
+  "name": "dodoc2",
   "version": "0.1.0",
-  "description": "A time-based documentation tool to collaboratively keep notes and capture media from live experiences.",
-  "author": "Louis Eveillard <barlou15+github@gmail.com>",
   "private": true,
   "scripts": {
     "watchify": "watchify -vd -p browserify-hmr -e src/main.js -o dist/build.js",
