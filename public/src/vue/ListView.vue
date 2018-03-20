@@ -9,7 +9,7 @@
     </header>
 
     <section class="">
-      <div class="m-filter_bar">
+      <div class="m_filter_bar">
         <i>Barre de filtre</i>
 
         <div class="bg-blanc">
@@ -42,22 +42,6 @@
                 :class="{ 'is--active' : sort.field === 'created' }"
                 >
                   {{ $t('created_date') }}
-                </button>
-                <button 
-                type="button" 
-                class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
-                @click="sort.type = 'date', sort.field = 'start'"
-                :class="{ 'is--active' : sort.field === 'start' }"
-                >
-                  {{ $t('start_date') }}
-                </button>
-                <button 
-                type="button" 
-                class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
-                @click="sort.type = 'date', sort.field = 'end'"
-                :class="{ 'is--active' : sort.field === 'end' }"
-                >
-                  {{ $t('end_date') }}
                 </button>
               </div>
             </div>
@@ -101,7 +85,7 @@
         </div>
       </div>
 
-      <div class="m-leftbar">
+      <div class="m_leftbar">
         <div>
         AFFICHAGE
         </div>

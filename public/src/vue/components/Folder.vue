@@ -20,18 +20,6 @@
           <br>
           {{ formatDateToHuman(folder.created) }}
         </template>
-        <template v-else-if="sort_field === 'name'">
-        </template>
-        <template v-else-if="sort_field === 'start'">
-          <i>{{ $t('start_date') }}</i>
-          <br>
-          {{ formatDateToHuman(folder.start) }}
-        </template>
-        <template v-else-if="sort_field === 'end'">
-          <i>{{ $t('end_date') }}</i>
-          <br>
-          {{ formatDateToHuman(folder.end) }}
-        </template>
         <template v-else>
           <i>{{ $t('created_date') }}</i>
           <br>
