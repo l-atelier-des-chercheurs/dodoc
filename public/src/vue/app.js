@@ -483,7 +483,6 @@ let vm = new Vue({
       this.settings.current_slugFolderName = '';
       history.pushState({ slugFolderName: '' }, '', '/');
     },
-
     listMediasForFolder: function(e) {
       if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: listMediasForFolder');
@@ -492,30 +491,6 @@ let vm = new Vue({
         this.settings.is_loading_medias_for_folder = '';
       }
     },
-    updateProjectScale: function(slugFolderName, timelineViewport_scale) {
-      if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: updateProjectScale');
-      }
-
-      let viewportScale = localstore.get('viewport_scale') || {};
-      viewportScale[slugFolderName] = timelineViewport_scale;
-
-      localstore.set('viewport_scale', viewportScale);
-    },
-    getProjectScale: function(slugFolderName) {
-      if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: getProjectScale');
-      }
-      let viewportScale = localstore.get('viewport_scale') || {};
-      if (
-        viewportScale !== undefined &&
-        viewportScale[slugFolderName] !== undefined
-      ) {
-        return viewportScale[slugFolderName];
-      }
-      return 20;
-    },
-
     updateLocalLang: function(newLangCode) {
       if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: updateLocalLang');
@@ -527,33 +502,6 @@ let vm = new Vue({
       html.setAttribute('lang', newLangCode);
 
       localstore.set('language', newLangCode);
-    },
-
-    updateProjectScrollLeft: function(
-      slugFolderName,
-      timelineViewport_scrollLeft
-    ) {
-      if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: updateProjectScrollLeft');
-      }
-
-      let viewportScrollLeft = localstore.get('viewport_scrollLeft') || {};
-      viewportScrollLeft[slugFolderName] = timelineViewport_scrollLeft;
-
-      localstore.set('viewport_scrollLeft', viewportScrollLeft);
-    },
-    getScrollLeft: function(slugFolderName) {
-      if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: getScrollLeft');
-      }
-      let viewportScrollLeft = localstore.get('viewport_scrollLeft') || {};
-      if (
-        viewportScrollLeft !== undefined &&
-        viewportScrollLeft[slugFolderName] !== undefined
-      ) {
-        return viewportScrollLeft[slugFolderName];
-      }
-      return 0;
     }
   },
   watch: {

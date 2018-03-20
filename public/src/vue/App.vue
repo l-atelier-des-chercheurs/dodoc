@@ -3,7 +3,6 @@
 
     <SystemBar
       v-if="$root.settings.enable_system_bar"
-      :view="view"
     >
     </SystemBar>
 
@@ -40,7 +39,6 @@ export default {
   components: {
     SystemBar,
     ListView,
-    TimeLineView,
     BottomFooter
   },
   props: ['current_slugFolderName', 'currentFolder'],
@@ -48,12 +46,6 @@ export default {
     return {};
   },
   computed: {
-    view: function() {
-      if (this.current_slugFolderName !== '') {
-        return 'TimeLineView';
-      }
-      return 'ListView';
-    }
   },
   watch: {},
   methods: {}
