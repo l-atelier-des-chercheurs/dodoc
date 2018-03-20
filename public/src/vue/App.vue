@@ -22,7 +22,7 @@
     <div class="container">
       <div class="row">
         <template>
-          <BottomFooter v-if="current_slugFolderName === ''">
+          <BottomFooter>
           </BottomFooter>
         </template>
       </div>

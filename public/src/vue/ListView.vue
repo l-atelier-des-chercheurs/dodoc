@@ -2,25 +2,23 @@
   <main class="m_home">
 
     <header class="container">
-      <img class="m_logo" src="/images/i_logo.svg"/>
-      <vue-markdown
-        :html=true
-        :source="presentationText"
-      ></vue-markdown>
+      <div class="margin-vert-medium">
+        <img class="m_logo" src="/images/i_logo.svg"/>
+        <vue-markdown
+          :html=true
+          :source="presentationText"
+        ></vue-markdown>
+      </div>
     </header>
 
     <section class="container">
-      <div class="m_filterBar bg-gris">
-        <i>Barre de filtre</i>
-
-        <div class="bg-blanc">
+      <div class="m_filterBar margin-vert-medium">
+        <div>
           RECHERCHE
           <input type="text" placeholder="nom du projet"/>
         </div>
 
-        <hr>
-
-        <div class="bg-blanc">
+        <div>
           ORDRE
           <div class="border border-top-dashed">
             <div class="margin-vert-medium">
@@ -73,15 +71,11 @@
           </div>
         </div>
 
-        <hr>
-
-        <div class="bg-blanc">
+        <div>
           MOT-CLÉ
         </div>
 
-        <hr>
-
-        <div class="bg-blanc">
+        <div>
           AUTEUR
         </div>
       </div>
@@ -116,7 +110,7 @@
         class="flex-size-4/5 flex-collapse-on-mobile m_folders"
         >
           <button
-          class="margin-vert-small button-inline bg-gris_clair"
+          class="margin-vert-medium button-inline bg-gris_tresclair"
           @click="showCreateFolderModal = true"
           :disabled="read_only"
           :key="'createButton'"
@@ -136,7 +130,7 @@
             v-for="(sortedFolder, index) in sortedFoldersSlug"
           >
             <div
-              class=""
+              class="margin-vert-medium"
               :key="sortedFolder.slugFolderName"
             >
               <Folder

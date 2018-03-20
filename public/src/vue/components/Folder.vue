@@ -4,26 +4,29 @@
     <div class="m_folder">
       <img src="" class=""/>
 
-      <h2 
-      class="margin-none margin-sides-medium margin-vert-small font-folder_title"
-      @click="$root.openFolder(slugFolderName)"
-      >
-        {{ folder.name }}
-      </h2>
+      <div>
+        <h2 
+        class="margin-none margin-sides-medium margin-vert-small font-folder_title"
+        @click="$root.openFolder(slugFolderName)"
+        >
+          {{ folder.name }}
+        </h2>
 
-      <div class="font-small">
-        <div class="margin-sides-medium margin-vert-small">
-          <mark class="" v-if="folder.password === 'has_pass'">
-            {{ $t('protected_by_pass') }}
-          </mark>
-        </div>
+        <div class="font-small">
+          <div class="margin-sides-medium margin-vert-small">
+            <mark class="" v-if="folder.password === 'has_pass'">
+              {{ $t('protected_by_pass') }}
+            </mark>
+          </div>
 
-        <div class="margin-medium">
-          <i>{{ $t('created_date') }}</i>
-          <br>
-          {{ formatDateToHuman(folder.created) }}
+          <div class="margin-medium">
+            <i>{{ $t('created_date') }}</i>
+            <br>
+            {{ formatDateToHuman(folder.created) }}
+          </div>
         </div>
       </div>
+
       <div class="margin-small flex-wrap flex-vertically-start flex-horizontally-start">
         <button 
         v-if="folder.authorized"

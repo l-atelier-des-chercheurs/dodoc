@@ -133,8 +133,29 @@ body {
   margin: 0 auto; 
 }
 
-.m_home {
 
+.m_filterBar {
+  @t-borderWidth: 2px;
+
+  max-height: 4em;
+  overflow: hidden;
+
+  color: @c-bleuvert;
+  border: @t-borderWidth solid currentColor;
+  border-radius: @t-borderWidth*2;
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: stretch;
+
+  > * {
+    flex: 1 1 0;
+    border-right: @t-borderWidth solid currentColor;
+
+    &:last-child {
+      border-right: 0;
+    }
+  }
 }
 
 .m_folders {
@@ -143,9 +164,14 @@ body {
 
 .m_folder {
   .flex-wrap;
+  .bg-gris_tresclair;
+  
+  border-radius: @t-buttonradius;
+  overflow: hidden;
+
   img {
-    width: 300px;
-    height: 150px;
+    flex: 0 0 200px;
+    height: 133.34px;
     background-color: @c-gris;
   }
 }
