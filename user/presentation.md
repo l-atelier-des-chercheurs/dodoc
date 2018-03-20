@@ -1,13 +1,11 @@
 fr:
 ## Presentation
 
-Les Cahiers du Studio est une application de capture, d’annotation et de publication de médias (photos, textes, vidéos, sons) conçu en particulier pour les temps de résidence dans un lieu de création théâtrale, le studio-théâtre de Vitry.
+Conçu pour documenter et créer des récits à partir d'activités pratiques, do•doc (prononcer doudoc) est un outil ouvert et modulaire qui permet de capturer des médias (photos, vidéos, sons et stop-motion), de les éditer, de les mettre en page et de les publier.
 
 ----
 
 en: 
 ## Presentation
 
-Les Cahiers du Studio is a time-based documentation tool to collaboratively keep notes and capture media from live experiences. It was initially created for and with the Studio-Théâtre de Vitry, a place for theatrical creation and research that welcomes and hosts theatre companies.
-
-
+do•doc is a composite and modular software that supports reflection-in and on-action during learning activities. This tool enables you to capture traces of activities, edit them, and publish narratives made out of these traces (as PDF or as websites).

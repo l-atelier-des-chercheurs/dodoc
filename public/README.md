@@ -1,6 +1,6 @@
-# les-cahiers-du-studio
+# dodoc2
 
-> A time-based documentation tool to collaboratively keep notes and capture media from live experiences.
+> do•doc is a documentation tool for creativity.
 
 ## Build Setup
 
