@@ -18,7 +18,7 @@
             >
 
             <form v-if="!!this.$slots['sidebar']"
-              class="m_modal--sidebar bg-noir_light c-blanc"
+              class="m_modal--sidebar bg-gris_fonce c-blanc"
               v-on:submit.prevent="$emit('submit')"
               >
 
@@ -37,7 +37,7 @@
               </div>
 
               <button
-                class="m_modal--save bg-vert_vif button-rectangle button-allwide button-inline margin-none padding-small"
+                class="m_modal--save bg-bleuvert button-rectangle button-allwide button-inline margin-none padding-small"
                 type="submit"
                 :disabled="read_only"
                 >

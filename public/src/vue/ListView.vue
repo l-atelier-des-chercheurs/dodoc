@@ -2,6 +2,8 @@
   <main class="m_home">
 
     <header>
+
+      <img src="/images/i_logo.svg"/>
       <vue-markdown
         :html=true
         :source="presentationText"
