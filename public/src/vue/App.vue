@@ -7,32 +7,14 @@
     >
     </SystemBar>
 
-    <template v-if="view === 'ListView'">
-      <div class="container">
-        <div class="row">
+    <div class="container">
+      <div class="row">
+        <ListView>
 
-          <ListView
-            v-if="view === 'ListView'"
-            :presentationMD="$root.store.presentationMD"
-            :read_only="!$root.state.connected"
-            :folders="$root.store.folders"
-          >
-          </ListView>
+        </ListView>
 
-        </div>
       </div>
-    </template>
-    <template v-else-if="view === 'TimeLineView' && currentFolder.hasOwnProperty('name')">
-
-      <TimeLineView
-        :slugFolderName="current_slugFolderName"
-        :folder="currentFolder"
-        :medias="currentFolder.medias"
-        :read_only="!$root.state.connected"
-      >
-      </TimeLineView>
-
-    </template>
+    </div>
 
     <div class="container">
       <div class="row">
@@ -51,7 +33,6 @@
 <script>
 import SystemBar from './SystemBar.vue';
 import ListView from './ListView.vue';
-import TimeLineView from './TimeLineView.vue';
 import BottomFooter from './components/BottomFooter.vue';
 
 export default {

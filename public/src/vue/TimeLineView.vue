@@ -1,15 +1,6 @@
 <template>
   <div>
 
-    <NavbarTop
-      :folder="folder"
-      :slugFolderName="slugFolderName"
-      :visibleDay="timelineViewport.visibleDay"
-      @toggleSidebar="toggleSidebar()"
-      :timelineViewport_scale="timelineViewport.scale"
-    >
-    </NavbarTop>
-
     <transition name="fade" :duration="350">
       <div
         v-if="$root.settings.is_loading_medias_for_folder"
@@ -54,162 +45,33 @@
     >
     </EditFolder>
 
-    <div class="m_timeline"
-      ref="timeline"
-      @scroll="onScroll"
-      :class="{
-        'with--sidebar_opened' : $root.settings.has_sidebar_opened,
-        'is--animated': isAnimated,
-        'is--realtime': isRealtime
-      }"
+    <template v-if="Object.keys(medias).length > 0">
+    </template>
+
+    <FileUpload
+      v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
+      :slugFolderName="slugFolderName"
+      :disabled="read_only"
     >
-      <div class="m_timeline-container"
-        :style="{
-          width: `${timelineViewport.width}px`,
-          height: `${timelineViewport.height}px`
-        }"
-      >
-        <div class="timeline_track">
-        </div>
+    </FileUpload>
 
-        <!-- GRID -->
-        <div class="grid_overlay">
-          <div class="grid_overlay--wrapper">
+    <EditMedia
+      v-if="showMediaModalFor !== ''"
+      :slugFolderName="slugFolderName"
+      :slugMediaName="showMediaModalFor"
+      :media="medias[showMediaModalFor]"
+      :isRealtime="isRealtime"
+      :currentTime="currentTime"
+      @close="showMediaModalFor = ''"
+      :read_only="read_only"
+    >
+    </EditMedia>
 
-            <div
-              v-if="overallGrid.days.length > 0"
-              v-for="item in overallGrid.days"
-              class="gridItem font-small gridItem_isday"
-              :class="{ 'has--caption' : (item.caption !== undefined) }"
-              :style="`transform: translate(${item.xPos}px, 0px)`"
-              :key="item.caption"
-            >
-              <div v-if="item.caption !== undefined" class="gridItem--caption">
-                {{ item.caption }}
-              </div>
-            </div>
-
-            <div
-              v-if="overallGrid.hours.length > 0"
-              v-for="(item, index) in overallGrid.hours"
-              class="gridItem font-small gridItem_ishour"
-              :class="{ 'has--caption' : (item.caption !== undefined) }"
-              :style="`transform: translate(${item.xPos}px, 0px)`"
-              :key="`hrs-${index}-${item.xPos}`"
-            >
-              <div v-if="item.caption !== undefined" class="gridItem--caption">
-                {{ item.caption }}
-              </div>
-            </div>
-
-            <div
-              v-if="overallGrid.minutes.length > 0"
-              v-for="(item, index) in overallGrid.minutes"
-              class="gridItem font-small gridItem_isminute"
-              :class="{ 'has--caption' : (item.caption !== undefined) }"
-              :style="`transform: translate(${item.xPos}px, 0px)`"
-              :key="`min-${index}-${item.xPos}`"
-            >
-              <div v-if="item.caption !== undefined" class="gridItem--caption">
-                {{ item.caption }}
-              </div>
-            </div>
-
-            <div
-              v-if="isRealtime"
-              class="gridItem font-small gridItem_isrealtimerule"
-              :style="`transform: translate(${todaysRule.xPos}px, 0px)`"
-            >
-              <div class="gridItem--caption">
-                {{ todaysRule.caption }}
-              </div>
-              <button type="button" class="gridItem_isrealtimerule--autoscroll_checkbox button-small bg-rouge_vif border-circled button-thin button-wide padding-verysmall margin-none" >
-                <small>
-                  <label for="autoScroll" class="margin-none">
-                    <input
-                      type="checkbox"
-                      v-model="timelineViewport.autoscroll"
-                      id="autoScroll"
-                    ><span v-html="$t('auto_scroll')"></span>
-                  </label>
-                </small>
-              </button>
-            </div>
-
-            <transition name="fade" :duration="250">
-              <div
-                v-if="zoomZone.display"
-                class="gridItem gridItem_zoomZone"
-                :style="zoomZoneStyle()"
-              >
-              </div>
-            </transition>
-          </div>
-        </div>
-
-        <template v-if="Object.keys(medias).length > 0">
-          <TimelineMedia v-for="(media, index) in medias"
-            :key="index"
-            :ref="`media_${index}`"
-            :slugFolderName="slugFolderName"
-            :slugMediaName="index"
-            :is_placeholder="!mediaIsClose(index,media)"
-            :media="media"
-            :timelineScale="timelineViewport.scale"
-            :timelineHeight="timelineHeight"
-            :posX="getMediaPosX(index)"
-            :class="{ 'is--highlighted' : highlightedMedia === index }"
-            @open="openMediaModal(index)"
-            :read_only="read_only"
-          >
-          </TimelineMedia>
-        </template>
-
-        <template v-else>
-          <div class="nomediainfo">
-            <code>
-              <template v-if="folder.authorized">
-                {{ $t('no_media_in_folder') }}
-              </template>
-              <template v-else>
-                {{ $t('no_public_media_in_folder') }}
-              </template>
-            </code>
-          </div>
-        </template>
-
-      </div>
-
-      <AddMediaButton
-        v-if="
-          ((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
-        :slugFolderName="slugFolderName"
-        :read_only="read_only"
-      >
-      </AddMediaButton>
-
-      <EditMedia
-        v-if="showMediaModalFor !== ''"
-        :slugFolderName="slugFolderName"
-        :slugMediaName="showMediaModalFor"
-        :media="medias[showMediaModalFor]"
-        :isRealtime="isRealtime"
-        :currentTime="currentTime"
-        @close="showMediaModalFor = ''"
-        :read_only="read_only"
-      >
-      </EditMedia>
-
-    </div>
   </div>
 </template>
 <script>
-import NavbarTop from './components/NavbarTop.vue';
-import Sidebar from './components/Sidebar.vue';
-import AddMediaButton from './components/AddMediaButton.vue';
 import EditFolder from './components/modals/EditFolder.vue';
 
-import TimelineMedia from './components/TimelineMedia.vue';
 import EditMedia from './components/modals/EditMedia.vue';
 import DateTime from './components/subcomponents/DateTime.vue';
 
@@ -227,12 +89,8 @@ export default {
     read_only: Boolean
   },
   components: {
-    TimelineMedia,
     EditMedia,
     EditFolder,
-    NavbarTop,
-    Sidebar,
-    AddMediaButton,
     DateTime
   },
   data() {
