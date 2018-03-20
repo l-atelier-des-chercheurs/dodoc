@@ -1,7 +1,7 @@
 <template>
   <main class="m_home">
 
-    <header>
+    <header class="container">
       <img class="m_logo" src="/images/i_logo.svg"/>
       <vue-markdown
         :html=true
@@ -9,8 +9,8 @@
       ></vue-markdown>
     </header>
 
-    <section class="">
-      <div class="m_filter_bar">
+    <section class="container">
+      <div class="m_filterBar bg-gris">
         <i>Barre de filtre</i>
 
         <div class="bg-blanc">
@@ -86,70 +86,71 @@
         </div>
       </div>
 
-      <div class="m_leftbar">
-        <div>
-        AFFICHAGE
+      <div class="flex-wrap">
+        <div class="m_leftbar flex-size-1/5">
+          <div>
+          AFFICHAGE
+          </div>
+
+          <div class="margin-vert-medium" style="max-width: 200px">
+            <label v-html="$t('lang:')"></label>
+            <select v-model="currentLang">
+              <option v-for="(name, code) in $root.lang.available" :value="code" :key="code">
+                {{ name }}
+              </option>
+            </select>
+          </div>
         </div>
 
-        <div class="margin-vert-medium" style="max-width: 200px">
-          <label v-html="$t('lang:')"></label>
-          <select v-model="currentLang">
-            <option v-for="(name, code) in $root.lang.available" :value="code" :key="code">
-              {{ name }}
-            </option>
-          </select>
-        </div>
+        <!-- modal -->
+        <CreateFolder
+          v-if="showCreateFolderModal"
+          @close="showCreateFolderModal = false"
+          :read_only="read_only"
+        >
+        </CreateFolder>
 
-      </div>
-
-      <CreateFolder
-        v-if="showCreateFolderModal"
-        @close="showCreateFolderModal = false"
-        :read_only="read_only"
-      >
-      </CreateFolder>
-
-      <transition-group 
-      tag="div"
-      name="list-complete"
-      class="m_home--folders flex-size-3/5 flex-collapse-on-mobile margin-vert-large flex-wrap flex-vertically-start"
-      >
-        <button
-          class="m_home--folders--card m_home--folders--card_createButton margin-small button-inline"
+        <transition-group 
+        tag="div"
+        name="list-complete"
+        class="flex-size-4/5 flex-collapse-on-mobile m_folders"
+        >
+          <button
+          class="margin-vert-small button-inline bg-gris_clair"
           @click="showCreateFolderModal = true"
           :disabled="read_only"
           :key="'createButton'"
-        >
-
-          <span class="margin-medium">
-            {{ $t('create_a_folder') }}
-          </span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
-            <circle cx="23.5" cy="23.5" r="23" transform="translate(-9.73 23.5) rotate(-45)" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-            <line x1="23.5" y1="8.86" x2="23.5" y2="38.13" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-            <line x1="8.86" y1="23.5" x2="38.13" y2="23.5" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-          </svg>
-        </button>
-
-        <template
-          v-if="sortedFoldersSlug !== 'no-folders'"
-          v-for="sortedFolder in sortedFoldersSlug"
-        >
-          <div
-            class="m_home--folders--card margin-small"
-            :key="sortedFolder.slugFolderName"
           >
-            <Folder
-              :slugFolderName="sortedFolder.slugFolderName"
-              :folder="folders[sortedFolder.slugFolderName]"
-              :read_only="read_only"
-              :sort_field="sort.field"
-            >
-            </Folder>
-          </div>
-        </template>
-      </transition-group>
+            <span class="margin-medium">
+              {{ $t('create_a_folder') }}
+            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
+              <circle cx="23.5" cy="23.5" r="23" transform="translate(-9.73 23.5) rotate(-45)" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+              <line x1="23.5" y1="8.86" x2="23.5" y2="38.13" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+              <line x1="8.86" y1="23.5" x2="38.13" y2="23.5" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+            </svg>
+          </button>
 
+          <template
+            v-if="sortedFoldersSlug !== 'no-folders'"
+            v-for="(sortedFolder, index) in sortedFoldersSlug"
+          >
+            <div
+              class=""
+              :key="sortedFolder.slugFolderName"
+            >
+              <Folder
+                :slugFolderName="sortedFolder.slugFolderName"
+                :folder="folders[sortedFolder.slugFolderName]"
+                :read_only="read_only"
+                :sort_field="sort.field"
+                :index="index"
+              >
+              </Folder>
+            </div>
+          </template>
+        </transition-group>
+      </div>
     </section>
 
   </main>

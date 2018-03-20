@@ -98,6 +98,12 @@ strong,b {
 .bg-gris_fonce {
   background-color: @c-gris_fonce;
 }
+.bg-gris_clair {
+  background-color: @c-gris_clair;
+}
+.bg-gris {
+  background-color: @c-gris;
+}
 .bg-bleuvert {
   background-color: @c-bleuvert;
 }
@@ -174,6 +180,12 @@ strong,b {
 .font-verylarge {
   font-size:1.3em;
 }
+.font-folder_title {
+  font-size: 3em;
+  font-family: 'Fira Sans';
+}
+
+
 .text-centered {
   text-align: center;
 }
@@ -462,8 +474,8 @@ code {
 
 img, video, audio, svg {
 	display: block;
-	min-width: 100%;
-	width:100%;
+	max-width: 100%;
+	height: auto;
 }
 
 input:required {
@@ -551,6 +563,9 @@ th {
 }
 .flex-size-3\/5 {
   flex: 1 1 60%;
+}
+.flex-size-4\/5 {
+  flex: 1 1 80%;
 }
 
 

@@ -1,15 +1,15 @@
 // I M P O R T
-@import (inline) "shoelace/variables.css";
-@import (inline) "shoelace/forms.css";
-@import (inline) "shoelace/tables.css";
+@import (inline) "less/shoelace/variables.css";
+@import (inline) "less/shoelace/forms.css";
+@import (inline) "less/shoelace/tables.css";
 @import "../../node_modules/vue2-animate/src/vue2-animate.less";
 
-@import "_normalize";
-@import "_variables";
-@import "_globals";
-@import "_fileupload";
-@import "_media";
-@import "_modal";
+@import "less/_normalize";
+@import "less/_variables";
+@import "less/_globals";
+@import "less/_fileupload";
+@import "less/_media";
+@import "less/_modal";
 
 ::-moz-selection {
     background: rgba(151, 151, 151,0.25);
@@ -17,7 +17,6 @@
 ::selection {
     background: rgba(151, 151, 151,0.25);
 }
-
 
 * {
   box-sizing: border-box;
@@ -82,20 +81,11 @@ body {
   z-index: 20000;
 }
 
-.scroll-handle {
-  position: absolute;
-  bottom: 0px;
-  width: 100px;
-  height: 20px;
-  background: #ff0000;
-  z-index: 10000;
-  cursor: -webkit-grab;
-  cursor: -moz-grab;
-
-  .grabbed {
-    cursor: -webkit-grabbing;
-    cursor: -moz-grabbing;
-  }
+.container {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 @t-skipline;
 }
 
 /************************************************************************
@@ -109,9 +99,8 @@ body {
   margin: 0 auto;
 }
 
-@t-systemBarHeight: 22px;
-
 #systemBar {
+  @t-systemBarHeight: 22px;
   height: @t-systemBarHeight - 6px;
 
   > .fixedBand {
@@ -137,28 +126,30 @@ body {
   }
 }
 
-.m_home {
-
-
-}
-
 .m_logo {
-  max-width: 235px;
+  display: block;
+  max-width: 480px;
+  width: 100%;
   margin: 0 auto; 
 }
 
-.m_home--filtres {
+.m_home {
 
 }
 
-.m_home--folders {
-  .m_home--folders--card {
-    width: 100%;
-    min-height: 200px;
-    background-color: white;
-    flex-grow: 0;
+.m_folders {
+  
+}
+
+.m_folder {
+  .flex-wrap;
+  img {
+    width: 300px;
+    height: 150px;
+    background-color: @c-gris;
   }
 }
+
 
 .alertify-logs>*, .alertify-logs>.default {
   background-color: @c-gris;
@@ -221,18 +212,6 @@ body {
 .mediareveal-enter, .mediareveal-leave-to {
   opacity: 0;
   transition: none;
-}
-
-/* Enter and leave animations can use different */
-/* durations and timing functions.              */
-.sidebar-animation-enter-active, .sidebar-animation-leave-active {
-  transform: translateX(0);
-  transition: transform .35s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
-}
-.sidebar-animation-enter, .sidebar-animation-leave-to {
-  transform: translateX(-@t-sidebarWidth);
-  transition: transform .35s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
-//   opacity: 0;
 }
 
 

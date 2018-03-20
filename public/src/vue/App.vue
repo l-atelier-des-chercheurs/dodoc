@@ -55,3 +55,5 @@ export default {
   methods: {}
 };
 </script>
+
+<style lang="less" src="style.less"></style>
