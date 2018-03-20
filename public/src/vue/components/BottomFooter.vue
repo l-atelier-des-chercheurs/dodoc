@@ -1,7 +1,7 @@
 <template>
   <footer class="m_footer limited-width">
     <div class="padding-vert-medium padding-sides-medium">
-      <p><em>Les Cahiers du Studio</em> version {{ $root.state.appVersion }}</p>
+      <p>do•doc version {{ $root.state.appVersion }}</p>
       <p class="text-center centered font-small">
         <span v-html="$t('toconnectwithanotherdevice')">
         </span>

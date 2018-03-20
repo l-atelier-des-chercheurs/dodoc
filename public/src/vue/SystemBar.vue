@@ -6,13 +6,13 @@
         :duration="850"
         >
         <div
-          v-if="view === 'TimeLineView'"
+          v-if="withTitleBar"
           class="titleText font-small text-centered c-blanc"
           @mousedown="mousedown"
           @mousemove="mousemove"
           @mouseup="mouseup"
           >
-          <i>Les Cahiers du Studio</i>
+          <i>do•doc</i>
         </div>
       </transition>
     </div>
@@ -20,7 +20,12 @@
 </template>
 <script>
 export default {
-  props: ['view'],
+  props: {
+    withTitleBar: {
+      type: Boolean,
+      default: true
+    }
+  },
   components: {},
   data() {
     return {

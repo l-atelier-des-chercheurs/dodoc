@@ -3,13 +3,17 @@
 
     <SystemBar
       v-if="$root.settings.enable_system_bar"
+      :withTitleBar="true"
     >
     </SystemBar>
 
     <div class="container">
       <div class="row">
-        <ListView>
-
+        <ListView
+          :presentationMD="$root.store.presentationMD"
+          :read_only="!$root.state.connected"
+          :folders="$root.store.folders"
+        >
         </ListView>
 
       </div>

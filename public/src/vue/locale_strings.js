@@ -1,4 +1,4 @@
-module.exports = (function () {
+module.exports = (function() {
   // Ready translated locale messages
   const messages = {
     fr: {
@@ -44,7 +44,7 @@ module.exports = (function () {
         'Un projet libre et open-source réalisé par l’<a href="https://latelier-des-chercheurs.fr" class="js--openInBrowser" target="_blank">Atelier des Chercheurs</a> avec et pour le <a href="https://www.studiotheatre.fr/" class="js--openInBrowser" target="_blank">Studio-Théâtre de Vitry-sur-Seine</a>.',
 
       toconnectwithanotherdevice:
-        'Pour accéder aux Cahiers avec un autre appareil, connectez-vous au même réseau wifi puis entrez l’url suivante dans un navigateur web&nbsp;: ',
+        'Pour accéder à do•doc avec un autre appareil, connectez-vous au même réseau wifi puis entrez l’url suivante dans un navigateur web&nbsp;: ',
       toconnectwithanotherdevicetothisfolder:
         'Pour accéder à ce dossier avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web&nbsp;: ',
       sureToRemoveFolder: 'Êtes-vous sûr de vouloir supprimer ce dossier ?',
@@ -54,12 +54,10 @@ module.exports = (function () {
       edit_the_media: 'Éditer le média',
       edit_folder: 'Éditer le dossier',
 
-      capture_start: 'Début de la capture',
-      capture_end: 'Fin de la capture',
       currently: 'Actuellement',
 
       more_information:
-        'Pour plus d’information, consultez la <a href="https://latelier-des-chercheurs.fr/docs/manuel-les-cahiers-du-studio" class="js--openInBrowser" target="_blank">documentation</a> ou <a href="mailto:info@latelier-des-chercheurs.fr?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">contactez</a> les auteurs de ce logiciel.',
+        'Pour plus d’information, consultez la <a href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc" class="js--openInBrowser" target="_blank">documentation</a> ou <a href="mailto:info@latelier-des-chercheurs.fr?subject=do•doc" class="js--openInBrowser" target="_blank">contactez</a> les auteurs de ce logiciel.',
       no_media_in_folder: 'Aucun média dans ce dossier.',
       no_public_media_in_folder: 'Aucun média public dans ce dossier.',
       auto_scroll: 'défilement<br>automatique',
@@ -148,9 +146,9 @@ module.exports = (function () {
         'A free and open-source app made by l’<a href="https://latelier-des-chercheurs.fr" class="js--openInBrowser" target="_blank">Atelier des Chercheurs</a> with and for the <a href="https://www.studiotheatre.fr/" class="js--openInBrowser" target="_blank">Studio-Théâtre de Vitry-sur-Seine</a>.',
 
       toconnectwithanotherdevice:
-        'To access Les Cahiers with another device, connect to the same wifi network and type this adress in your browser:',
+        'To access do•doc with another device, connect to the same wifi network and type this adress in your browser:',
       toconnectwithanotherdevicetothisfolder:
-        'To access this folder in Les Cahiers with another device, connect to the same wifi network and type this adress in your browser:',
+        'To access this folder in do•doc with another device, connect to the same wifi network and type this adress in your browser:',
       sureToRemoveFolder: 'Do you really want to delete this folder?',
       sureToRemoveMedia: 'Do you really want to delete this media?',
 
@@ -163,7 +161,7 @@ module.exports = (function () {
       currently: 'Now',
 
       more_information:
-        'For more informations, read the <a href="https://latelier-des-chercheurs.fr/docs/manuel-les-cahiers-du-studio" class="js--openInBrowser" target="_blank">documentation (in french)</a> or <a href="mailto:info@latelier-des-chercheurs.fr?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">contact</a> the creators of this app.',
+        'For more informations, read the <a href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc" class="js--openInBrowser" target="_blank">documentation (in french)</a> or <a href="mailto:info@latelier-des-chercheurs.fr?subject=do•doc" class="js--openInBrowser" target="_blank">contact</a> the creators of this app.',
 
       no_media_in_folder: 'No media in this folder.',
       no_public_media_in_folder: 'No public media in this folder.',
@@ -207,7 +205,7 @@ module.exports = (function () {
         'failed_to_get_folder:': 'Failed to get the requested folder:'
       }
     }
-  }
+  };
 
-  return messages
-})()
+  return messages;
+})();

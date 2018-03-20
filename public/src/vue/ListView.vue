@@ -1,117 +1,120 @@
 <template>
   <main class="m_home">
 
-    <header class="bg-noir c-blanc font-large padding-vert-medium">
-      <div class="flex-wrap flex-vertically-centered limited-width">
-        <div class="flex-size-2/5 flex-collapse-on-mobile padding-sides-medium padding-vert-medium flex-wrap flex-vertically-centered">
-          <svg class="stvlogo margin-right-medium" version="1.1"
-          	 x="0px" y="0px" width="40.5px" height="26.1px" viewBox="0 0 40.5 26.1" style="enable-background:new 0 0 40.5 26.1;"
-          	 xml:space="preserve"
-          	 >
-            <g>
-              	<path class="st0" d="M37.2,7.1c-0.7,6.7-7,16-13.2,16c-1.9,0-3.2-2.5-3.2-6c0-7.8,5.5-11.8,5.5-15.4c0-1-0.7-1.7-1.7-1.7
-            		c-1.3,0-2.4,0.5-5,1.9L15,4.3l1.1,2.3L23.1,3c-4,5.7-5.5,10.4-5.5,14.3c0,3.2,1.2,8.8,5.8,8.8c8.4,0,17.1-12.1,17.1-21.3
-            		c0-3.3-1.5-4.8-3.6-4.8c-2,0-3.5,1.5-3.5,3.5C33.4,5.8,35.2,7.1,37.2,7.1 M0,21.4c0,2.8,2,4.7,4.6,4.7c2.6,0,4.8-1.9,4.8-4.7
-            		c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4" style="fill:#FFFFFF"/>
-            </g>
-          </svg>
-
-          <div>
-            › <i>Les Cahiers du Studio</i>
-          </div>
-        </div>
-        <div class="text-formatting flex-size-3/5 flex-collapse-on-mobile padding-small padding-vert-medium">
-          <vue-markdown
-            :html=true
-            :source="presentationText"
-          ></vue-markdown>
-        </div>
-      </div>
+    <header>
+      <vue-markdown
+        :html=true
+        :source="presentationText"
+      ></vue-markdown>
     </header>
 
+    <section class="">
+      <div class="m-filter_bar">
+        <i>Barre de filtre</i>
 
-    <section class="flex-wrap flex-vertically-start limited-width padding-vert-medium">
-      <div class="m_home--filtres flex-size-2/5 flex-collapse-on-mobile padding-sides-medium margin-vert-large">
-        <div class="border border-top-dashed">
-          <p class="margin-vert-medium" v-html="$t('more_information')">
-          </p>
+        <div class="bg-blanc">
+          RECHERCHE
+          <input type="text" placeholder="nom du projet"/>
         </div>
 
-        <div class="border border-top-dashed">
-          <div class="margin-vert-medium">
-            <label class="margin-none text-cap with-bullet">
-              {{ $t('sort_by') }}
-            </label>
-            <div class="margin-sides-negative-small">
-              <button 
-              type="button" 
-              class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
-              @click="sort.type = 'alph', sort.field = 'name'"
-              :class="{ 'is--active' : sort.field === 'name' }"
-              >
-                {{ $t('name') }}
-              </button>
-              <button 
-              type="button" 
-              class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
-              @click="sort.type = 'date', sort.field = 'created'"
-              :class="{ 'is--active' : sort.field === 'created' }"
-              >
-                {{ $t('created_date') }}
-              </button>
-              <button 
-              type="button" 
-              class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
-              @click="sort.type = 'date', sort.field = 'start'"
-              :class="{ 'is--active' : sort.field === 'start' }"
-              >
-                {{ $t('start_date') }}
-              </button>
-              <button 
-              type="button" 
-              class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
-              @click="sort.type = 'date', sort.field = 'end'"
-              :class="{ 'is--active' : sort.field === 'end' }"
-              >
-                {{ $t('end_date') }}
-              </button>
+        <hr>
+
+        <div class="bg-blanc">
+          ORDRE
+          <div class="border border-top-dashed">
+            <div class="margin-vert-medium">
+              <label class="margin-none text-cap with-bullet">
+                {{ $t('sort_by') }}
+              </label>
+              <div class="margin-sides-negative-small">
+                <button 
+                type="button" 
+                class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
+                @click="sort.type = 'alph', sort.field = 'name'"
+                :class="{ 'is--active' : sort.field === 'name' }"
+                >
+                  {{ $t('name') }}
+                </button>
+                <button 
+                type="button" 
+                class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
+                @click="sort.type = 'date', sort.field = 'created'"
+                :class="{ 'is--active' : sort.field === 'created' }"
+                >
+                  {{ $t('created_date') }}
+                </button>
+                <button 
+                type="button" 
+                class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
+                @click="sort.type = 'date', sort.field = 'start'"
+                :class="{ 'is--active' : sort.field === 'start' }"
+                >
+                  {{ $t('start_date') }}
+                </button>
+                <button 
+                type="button" 
+                class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
+                @click="sort.type = 'date', sort.field = 'end'"
+                :class="{ 'is--active' : sort.field === 'end' }"
+                >
+                  {{ $t('end_date') }}
+                </button>
+              </div>
+            </div>
+
+            <div class="margin-vert-small">
+              <label class="margin-none text-cap with-bullet">
+                {{ $t('in_the_order') }}
+              </label>
+              <div class="margin-sides-negative-small">
+                <button 
+                type="button" 
+                class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
+                @click="sort.order = 'ascending'"
+                :class="{ 'is--active' : sort.order === 'ascending' }"
+                >
+                  {{ $t('ascending') }}
+                </button>
+                <button 
+                type="button" 
+                class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
+                @click="sort.order = 'descending'"
+                :class="{ 'is--active' : sort.order === 'descending' }"
+                >
+                  {{ $t('descending') }}
+                </button>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div class="margin-vert-small">
-            <label class="margin-none text-cap with-bullet">
-              {{ $t('in_the_order') }}
-            </label>
-            <div class="margin-sides-negative-small">
-              <button 
-              type="button" 
-              class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
-              @click="sort.order = 'ascending'"
-              :class="{ 'is--active' : sort.order === 'ascending' }"
-              >
-                {{ $t('ascending') }}
-              </button>
-              <button 
-              type="button" 
-              class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
-              @click="sort.order = 'descending'"
-              :class="{ 'is--active' : sort.order === 'descending' }"
-              >
-                {{ $t('descending') }}
-              </button>
-            </div>
-          </div>
+        <hr>
+
+        <div class="bg-blanc">
+          MOT-CLÉ
         </div>
-        <div class="border border-top-dashed">
-          <div class="margin-vert-medium" style="max-width: 200px">
-            <label v-html="$t('lang:')"></label>
-            <select v-model="currentLang">
-              <option v-for="(name, code) in $root.lang.available" :value="code" :key="code">
-                {{ name }}
-              </option>
-            </select>
-          </div>
+
+        <hr>
+
+        <div class="bg-blanc">
+          AUTEUR
         </div>
+      </div>
+
+      <div class="m-leftbar">
+        <div>
+        AFFICHAGE
+        </div>
+
+        <div class="margin-vert-medium" style="max-width: 200px">
+          <label v-html="$t('lang:')"></label>
+          <select v-model="currentLang">
+            <option v-for="(name, code) in $root.lang.available" :value="code" :key="code">
+              {{ name }}
+            </option>
+          </select>
+        </div>
+
       </div>
 
       <CreateFolder
