@@ -65,7 +65,7 @@ function createWindow() {
     settings.textEncoding
   );
 
-  dev.log(`——— Starting les-cahiers app version ${global.appInfos.version}`);
+  dev.log(`——— Starting dodoc2 app version ${global.appInfos.version}`);
 
   var windowState = {};
   try {
