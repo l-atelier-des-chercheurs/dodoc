@@ -29,7 +29,7 @@ module.exports = function(electronApp) {
   );
   const options = { key: privateKey, cert: certificate };
 
-  let server = http.createServer(app);
+  let server = https.createServer(options, app);
   var io = require('socket.io').listen(server);
   dev.logverbose('Starting server 2');
 
