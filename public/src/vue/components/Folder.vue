@@ -61,6 +61,13 @@
         </div>
       </div>
 
+      <FileUpload
+        v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
+        :slugFolderName="slugFolderName"
+        :disabled="read_only"
+      >
+      </FileUpload>
+
       <EditFolder
         v-if="showEditFolderModal"
         :folder="folder"
@@ -69,11 +76,60 @@
         :read_only="read_only"
       >
       </EditFolder>
+
+      <select v-model="sort.current">
+        <option v-for="option in sort.available" :value="option" :key="option.name">
+          {{ option.name }}
+        </option>
+      </select>
+
+      <div class="font-small padding-medium">
+        {{ $t('filter') }}
+      </div>
+      <div>
+        <input type="text" v-model="filter">
+      </div>
+
+      {{ this.showMediaModalFor }}
+
+      <div class="m_folder--library">
+        <div
+        v-for="media in sortedMedias"
+        v-if="media.hasOwnProperty(sort.current.field) && media[sort.current.field] !== ''"
+        :key="media.slugMediaName"
+        :title="media.slugMediaName"
+        >
+          <MediaContent
+          v-model="media.content"
+          :context="'Library'"
+          :slugMediaName="media.slugMediaName"
+          :slugFolderName="slugFolderName"
+          :media="media"
+          ></MediaContent>
+          <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
+            @click.stop="openMediaModal(media.slugMediaName)"
+            >
+            {{ $t('open') }}
+          </button>
+        </div>
+        <EditMedia
+        v-if="showMediaModalFor !== ''"
+        :slugFolderName="slugFolderName"
+        :slugMediaName="showMediaModalFor"
+        :media="folder.medias[showMediaModalFor]"
+        @close="showMediaModalFor = ''"
+        :read_only="read_only"
+        >
+        </EditMedia>        
+      </div>
     </div>
   </div>
 </template>
 <script>
 import EditFolder from './modals/EditFolder.vue';
+import EditMedia from './modals/EditMedia.vue';
+import FileUpload from './FileUpload.vue';
+import MediaContent from './subcomponents/MediaContent.vue';
 
 export default {
   props: {
@@ -84,14 +140,140 @@ export default {
     index: Number
   },
   components: {
-    EditFolder
+    EditFolder,
+    EditMedia,
+    FileUpload,
+    MediaContent
   },
   data() {
     return {
       debugFolderContent: false,
       showEditFolderModal: false,
-      showInputPasswordField: false
+      showInputPasswordField: false,
+      showMediaModalFor: '',
+
+      filter: '',
+      sort: {
+        current: {
+          field: 'date_created',
+          name: this.$t('date'),
+          type: 'date',
+          order: 'descending'
+        },
+
+        available: [
+          {
+            field: 'date_created',
+            name: this.$t('date'),
+            type: 'date',
+            order: 'ascending'
+          },
+          {
+            field: 'date_modified',
+            name: this.$t('last_modified'),
+            type: 'date',
+            order: 'descending'
+          },
+          {
+            field: 'caption',
+            name: this.$t('caption'),
+            type: 'alph',
+            order: 'ascending'
+          },
+          {
+            field: 'type',
+            name: this.$t('type'),
+            type: 'alph',
+            order: 'ascending'
+          },
+          {
+            field: 'keywords',
+            name: this.$t('keywords'),
+            type: 'alph',
+            order: 'ascending'
+          },
+          {
+            field: 'authors',
+            name: this.$t('author'),
+            type: 'alph',
+            order: 'ascending'
+          },
+          {
+            field: 'content',
+            name: this.$t('content'),
+            type: 'alph',
+            order: 'ascending'
+          }
+        ]
+      }
     };
+  },
+  computed: {
+    sortedMedias() {
+      var sortable = [];
+      for (let slugMediaName in this.folder.medias) {
+        let mediaDataToOrderBy;
+
+        if (this.sort.current.type === 'date') {
+          mediaDataToOrderBy = +this.$moment(
+            this.folder.medias[slugMediaName][this.sort.current.field],
+            'YYYY-MM-DD HH:mm:ss'
+          );
+        } else if (this.sort.current.type === 'alph') {
+          mediaDataToOrderBy = this.folder.medias[slugMediaName][
+            this.sort.current.field
+          ];
+        }
+
+        sortable.push({
+          slugMediaName: slugMediaName,
+          mediaDataToOrderBy: mediaDataToOrderBy
+        });
+      }
+      let sortedSortable = sortable.sort(function(a, b) {
+        let valA = a.mediaDataToOrderBy;
+        let valB = b.mediaDataToOrderBy;
+        if (
+          typeof a.mediaDataToOrderBy === 'string' &&
+          typeof b.mediaDataToOrderBy === 'string'
+        ) {
+          valA = valA.toLowerCase();
+          valB = valB.toLowerCase();
+        }
+        if (valA < valB) {
+          return -1;
+        }
+        if (valA > valB) {
+          return 1;
+        }
+        return 0;
+      });
+
+      if (this.sort.current.order === 'descending') {
+        sortedSortable.reverse();
+      }
+
+      // array order is garanteed while objects properties aren’t,
+      // that’s why we use an array here
+      let sortedMedias = sortedSortable.reduce((result, d) => {
+        let sortedMediaObj = this.folder.medias[d.slugMediaName];
+        sortedMediaObj.slugMediaName = d.slugMediaName;
+
+        if (this.filter.length > 0) {
+          // if there is a filter set, let’s only return medias whose mediaDataToOrderBy contain that string
+          let originalContentFromMedia =
+            sortedMediaObj[this.sort.current.field] + '';
+          if (originalContentFromMedia.indexOf(this.filter) !== -1) {
+            result.push(sortedMediaObj);
+          }
+        } else {
+          result.push(sortedMediaObj);
+        }
+
+        return result;
+      }, []);
+      return sortedMedias;
+    }    
   },
   methods: {
     formatDateToHuman(date) {
@@ -115,6 +297,12 @@ export default {
       });
       this.$socketio.sendAuth();
       this.showInputPasswordField = false;
+    },
+    openMediaModal(slugMediaName) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log('METHODS • TimelineMedia: openMedia');
+      }
+      this.showMediaModalFor = slugMediaName;
     }
   },
   watch: {}

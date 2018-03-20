@@ -22,51 +22,8 @@
       </div>
 
       <div class="margin-bottom-small">
-        <label>{{ $t('date') }} <small>{{ $t('for_the_placement_on_timeline') }}</small></label>
-        <DateTime v-model="mediadata.date_timeline" :twowaybinding=true :read_only="read_only">
-        </DateTime>
-
-        <template v-if="!read_only">
-          <div class="margin-bottom-small" v-if="media.date_created !== undefined">
-            <small>
-              {{ $t('created_date') }}
-              <button
-                type="button"
-                class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-                @click="setMediaDateTimeline(media.date_created)"
-                >
-                {{ date_created_human }}
-              </button>
-            </small>
-          </div>
-
-          <div class="margin-bottom-small" v-if="media.date_upload !== undefined">
-            <small>
-              {{ $t('sent_date') }}
-              <button
-                type="button"
-                class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-                @click="setMediaDateTimeline(media.date_upload)"
-                >
-                {{ date_uploaded_human }}
-              </button>
-            </small>
-          </div>
-
-          <div class="margin-bottom-small" v-if="isRealtime">
-            <small>
-              {{ $t('currently') }}
-              <button
-                type="button"
-                class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-                @click="setMediaDateTimeline(currentTime)"
-                >
-                {{ currentTime_human }}
-              </button>
-            </small>
-          </div>
-        </template>
-
+        {{ $t('created_date') }}<br>
+        {{ date_created_human }}
       </div>
 
 <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
@@ -79,17 +36,6 @@
           </option>
         </select>
         <input type="text" v-else :value="mediadata.type" readonly>
-      </div>
-
-<!-- Color -->
-      <div class="margin-bottom-small">
-        <label>{{ $t('color') }}</label>
-        <select v-if="!read_only" ref="type" v-model="mediadata.color">
-          <option v-for="mediaColor in $root.state.structure.media.color.options" :key="mediaColor">
-            {{ mediaColor }}
-          </option>
-        </select>
-        <input type="text" v-else :value="mediadata.color" readonly>
       </div>
 
 <!-- Keywords -->
@@ -263,8 +209,6 @@ export default {
     slugFolderName: String,
     slugMediaName: String,
     media: Object,
-    isRealtime: Boolean,
-    currentTime: Object,
     read_only: {
       type: Boolean,
       default: true
@@ -278,13 +222,10 @@ export default {
   data() {
     return {
       mediadata: {
-        date_timeline: this.media.date_timeline,
         type: this.media.type,
-        color: this.media.color,
         authors: this.media.authors,
         caption: this.media.caption,
         keywords: this.media.keywords,
-        public: this.media.public == 'true',
         content: this.media.content
       },
       mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`
@@ -296,9 +237,6 @@ export default {
     },
     date_uploaded_human() {
       return this.$moment(this.media.date_upload).format('l LTS');
-    },
-    currentTime_human() {
-      return this.$moment(this.currentTime).format('l LTS');
     }
   },
   methods: {
@@ -312,9 +250,6 @@ export default {
         // then close that popover
         this.$emit('close', '');
       }
-    },
-    setMediaDateTimeline: function(newDate) {
-      this.mediadata.date_timeline = newDate;
     },
     editThisMedia: function(event) {
       console.log('editThisMedia');
