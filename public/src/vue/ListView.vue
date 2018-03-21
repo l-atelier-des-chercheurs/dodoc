@@ -1,158 +1,103 @@
 <template>
-  <main class="m_home">
+  <div class="container">
+    <div class="row">
+      <main class="m_home">
 
-    <header class="container">
-      <div class="margin-vert-medium">
-        <img class="m_logo" src="/images/i_logo.svg"/>
-        <vue-markdown
-          :html=true
-          :source="presentationText"
-        ></vue-markdown>
-      </div>
-    </header>
+        <header class="container">
+          <div class="margin-vert-medium">
+            <img class="m_logo" src="/images/i_logo.svg"/>
+            <vue-markdown
+              :html=true
+              :source="presentationText"
+            ></vue-markdown>
+          </div>
+        </header>
 
-    <section class="container">
-      <div class="m_filterBar margin-vert-medium">
-        <div>
-          RECHERCHE
-          <input type="text" placeholder="nom du projet"/>
-        </div>
+        <section class="container">
+          <FilterBar
+            :filter="filter"
+            :sort="sort"
+            @setSort=""
+            @setFilter=""
+          >
+          </FilterBar>
 
-        <div>
-          ORDRE
-          <div class="border border-top-dashed">
-            <div class="margin-vert-medium">
-              <label class="margin-none text-cap with-bullet">
-                {{ $t('sort_by') }}
-              </label>
-              <div class="margin-sides-negative-small">
-                <button 
-                type="button" 
-                class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
-                @click="sort.type = 'alph', sort.field = 'name'"
-                :class="{ 'is--active' : sort.field === 'name' }"
-                >
-                  {{ $t('name') }}
-                </button>
-                <button 
-                type="button" 
-                class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
-                @click="sort.type = 'date', sort.field = 'created'"
-                :class="{ 'is--active' : sort.field === 'created' }"
-                >
-                  {{ $t('created_date') }}
-                </button>
+          <div class="flex-wrap">
+            <div class="m_leftbar flex-size-1/5">
+              <div>
+              AFFICHAGE
+              </div>
+
+              <div class="margin-vert-medium" style="max-width: 200px">
+                <label v-html="$t('lang:')"></label>
+                <select v-model="currentLang">
+                  <option v-for="(name, code) in $root.lang.available" :value="code" :key="code">
+                    {{ name }}
+                  </option>
+                </select>
               </div>
             </div>
 
-            <div class="margin-vert-small">
-              <label class="margin-none text-cap with-bullet">
-                {{ $t('in_the_order') }}
-              </label>
-              <div class="margin-sides-negative-small">
-                <button 
-                type="button" 
-                class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
-                @click="sort.order = 'ascending'"
-                :class="{ 'is--active' : sort.order === 'ascending' }"
-                >
-                  {{ $t('ascending') }}
-                </button>
-                <button 
-                type="button" 
-                class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
-                @click="sort.order = 'descending'"
-                :class="{ 'is--active' : sort.order === 'descending' }"
-                >
-                  {{ $t('descending') }}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          MOT-CLÉ
-        </div>
-
-        <div>
-          AUTEUR
-        </div>
-      </div>
-
-      <div class="flex-wrap">
-        <div class="m_leftbar flex-size-1/5">
-          <div>
-          AFFICHAGE
-          </div>
-
-          <div class="margin-vert-medium" style="max-width: 200px">
-            <label v-html="$t('lang:')"></label>
-            <select v-model="currentLang">
-              <option v-for="(name, code) in $root.lang.available" :value="code" :key="code">
-                {{ name }}
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <!-- modal -->
-        <CreateFolder
-          v-if="showCreateFolderModal"
-          @close="showCreateFolderModal = false"
-          :read_only="read_only"
-        >
-        </CreateFolder>
-
-        <transition-group 
-        tag="div"
-        name="list-complete"
-        class="flex-size-4/5 flex-collapse-on-mobile m_folders"
-        >
-          <button
-          class="margin-vert-medium button-inline bg-gris_tresclair"
-          @click="showCreateFolderModal = true"
-          :disabled="read_only"
-          :key="'createButton'"
-          >
-            <span class="margin-medium">
-              {{ $t('create_a_folder') }}
-            </span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
-              <circle cx="23.5" cy="23.5" r="23" transform="translate(-9.73 23.5) rotate(-45)" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-              <line x1="23.5" y1="8.86" x2="23.5" y2="38.13" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-              <line x1="8.86" y1="23.5" x2="38.13" y2="23.5" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-            </svg>
-          </button>
-
-          <template
-            v-if="sortedFoldersSlug !== 'no-folders'"
-            v-for="(sortedFolder, index) in sortedFoldersSlug"
-          >
-            <div
-              class="margin-vert-medium"
-              :key="sortedFolder.slugFolderName"
+            <!-- modal -->
+            <CreateFolder
+              v-if="showCreateFolderModal"
+              @close="showCreateFolderModal = false"
+              :read_only="read_only"
             >
-              <Folder
-                :slugFolderName="sortedFolder.slugFolderName"
-                :folder="folders[sortedFolder.slugFolderName]"
-                :read_only="read_only"
-                :sort_field="sort.field"
-                :index="index"
-              >
-              </Folder>
-            </div>
-          </template>
-        </transition-group>
-      </div>
-    </section>
+            </CreateFolder>
 
-  </main>
+            <transition-group 
+            tag="div"
+            name="list-complete"
+            class="flex-size-4/5 flex-collapse-on-mobile m_folders"
+            >
+              <button
+              class="margin-vert-medium button-inline bg-gris_tresclair"
+              @click="showCreateFolderModal = true"
+              :disabled="read_only"
+              :key="'createButton'"
+              >
+                <span class="margin-medium">
+                  {{ $t('create_a_folder') }}
+                </span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
+                  <circle cx="23.5" cy="23.5" r="23" transform="translate(-9.73 23.5) rotate(-45)" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+                  <line x1="23.5" y1="8.86" x2="23.5" y2="38.13" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+                  <line x1="8.86" y1="23.5" x2="38.13" y2="23.5" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+                </svg>
+              </button>
+
+              <template
+                v-if="sortedFoldersSlug !== 'no-folders'"
+                v-for="(sortedFolder, index) in sortedFoldersSlug"
+              >
+                <div
+                  class="margin-vert-medium"
+                  :key="sortedFolder.slugFolderName"
+                >
+                  <Folder
+                    :slugFolderName="sortedFolder.slugFolderName"
+                    :folder="folders[sortedFolder.slugFolderName]"
+                    :read_only="read_only"
+                    :sort_field="sort.field"
+                    :index="index"
+                  >
+                  </Folder>
+                </div>
+              </template>
+            </transition-group>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
 </template>
 <script>
 import Folder from './components/Folder.vue';
 import CreateFolder from './components/modals/CreateFolder.vue';
 import VueMarkdown from 'vue-markdown';
+import FilterBar from './components/FilterBar.vue'
 
 export default {
   props: {
@@ -168,12 +113,67 @@ export default {
   data() {
     return {
       showCreateFolderModal: false,
-      sort: {
+      sort_folder: {
         type: 'date',
         field: 'created',
         order: 'descending'
       },
-      currentLang: this.$root.lang.current
+      currentLang: this.$root.lang.current,
+
+      filter: '',      
+      sort: {
+        current: {
+          field: 'date_created',
+          name: this.$t('date'),
+          type: 'date',
+          order: 'descending'
+        },
+
+        available: [
+          {
+            field: 'date_created',
+            name: this.$t('date'),
+            type: 'date',
+            order: 'ascending'
+          },
+          {
+            field: 'date_modified',
+            name: this.$t('last_modified'),
+            type: 'date',
+            order: 'descending'
+          },
+          {
+            field: 'caption',
+            name: this.$t('caption'),
+            type: 'alph',
+            order: 'ascending'
+          },
+          {
+            field: 'type',
+            name: this.$t('type'),
+            type: 'alph',
+            order: 'ascending'
+          },
+          {
+            field: 'keywords',
+            name: this.$t('keywords'),
+            type: 'alph',
+            order: 'ascending'
+          },
+          {
+            field: 'authors',
+            name: this.$t('author'),
+            type: 'alph',
+            order: 'ascending'
+          },
+          {
+            field: 'content',
+            name: this.$t('content'),
+            type: 'alph',
+            order: 'ascending'
+          }
+        ]
+      }
     };
   },
   watch: {

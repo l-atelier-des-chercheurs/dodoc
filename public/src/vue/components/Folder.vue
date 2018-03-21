@@ -99,18 +99,20 @@
         :key="media.slugMediaName"
         :title="media.slugMediaName"
         >
-          <MediaContent
-          v-model="media.content"
-          :context="'Library'"
-          :slugMediaName="media.slugMediaName"
-          :slugFolderName="slugFolderName"
-          :media="media"
-          ></MediaContent>
-          <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
-            @click.stop="openMediaModal(media.slugMediaName)"
-            >
-            {{ $t('open') }}
-          </button>
+          <div class="m_media">
+            <MediaContent
+            v-model="media.content"
+            :context="'Library'"
+            :slugMediaName="media.slugMediaName"
+            :slugFolderName="slugFolderName"
+            :media="media"
+            ></MediaContent>
+            <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
+              @click.stop="openMediaModal(media.slugMediaName)"
+              >
+              {{ $t('open') }}
+            </button>
+          </div>
         </div>
         <EditMedia
         v-if="showMediaModalFor !== ''"
@@ -136,7 +138,6 @@ export default {
     folder: Object,
     slugFolderName: String,
     read_only: Boolean,
-    sort_field: String,
     index: Number
   },
   components: {
@@ -153,59 +154,6 @@ export default {
       showMediaModalFor: '',
 
       filter: '',
-      sort: {
-        current: {
-          field: 'date_created',
-          name: this.$t('date'),
-          type: 'date',
-          order: 'descending'
-        },
-
-        available: [
-          {
-            field: 'date_created',
-            name: this.$t('date'),
-            type: 'date',
-            order: 'ascending'
-          },
-          {
-            field: 'date_modified',
-            name: this.$t('last_modified'),
-            type: 'date',
-            order: 'descending'
-          },
-          {
-            field: 'caption',
-            name: this.$t('caption'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'type',
-            name: this.$t('type'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'keywords',
-            name: this.$t('keywords'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'authors',
-            name: this.$t('author'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'content',
-            name: this.$t('content'),
-            type: 'alph',
-            order: 'ascending'
-          }
-        ]
-      }
     };
   },
   computed: {
