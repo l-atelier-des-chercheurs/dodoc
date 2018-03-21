@@ -14,13 +14,11 @@
         </header>
 
         <section class="container">
-          <FilterBar
-            :filter="filter"
-            :sort="sort"
-            @setSort=""
-            @setFilter=""
+          <FolderFilterBar
+            :currentSort="currentSort"
+            :currentFilter="currentFilter"
           >
-          </FilterBar>
+          </FolderFilterBar>
 
           <div class="flex-wrap">
             <div class="m_leftbar flex-size-1/5">
@@ -79,7 +77,7 @@
                     :slugFolderName="sortedFolder.slugFolderName"
                     :folder="folders[sortedFolder.slugFolderName]"
                     :read_only="read_only"
-                    :sort_field="sort.field"
+                    :currentSort="currentSort"
                     :index="index"
                   >
                   </Folder>
@@ -97,7 +95,7 @@
 import Folder from './components/Folder.vue';
 import CreateFolder from './components/modals/CreateFolder.vue';
 import VueMarkdown from 'vue-markdown';
-import FilterBar from './components/FilterBar.vue'
+import FolderFilterBar from './components/FolderFilterBar.vue'
 
 export default {
   props: {
@@ -108,71 +106,19 @@ export default {
   components: {
     CreateFolder,
     Folder,
+    FolderFilterBar,
     VueMarkdown
   },
   data() {
     return {
       showCreateFolderModal: false,
-      sort_folder: {
-        type: 'date',
-        field: 'created',
-        order: 'descending'
-      },
       currentLang: this.$root.lang.current,
 
-      filter: '',      
-      sort: {
-        current: {
-          field: 'date_created',
-          name: this.$t('date'),
-          type: 'date',
-          order: 'descending'
-        },
-
-        available: [
-          {
-            field: 'date_created',
-            name: this.$t('date'),
-            type: 'date',
-            order: 'ascending'
-          },
-          {
-            field: 'date_modified',
-            name: this.$t('last_modified'),
-            type: 'date',
-            order: 'descending'
-          },
-          {
-            field: 'caption',
-            name: this.$t('caption'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'type',
-            name: this.$t('type'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'keywords',
-            name: this.$t('keywords'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'authors',
-            name: this.$t('author'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'content',
-            name: this.$t('content'),
-            type: 'alph',
-            order: 'ascending'
-          }
-        ]
+      currentFilter: '',      
+      currentSort: {
+        field: 'date_created',
+        type: 'date',
+        order: 'descending'
       }
     };
   },
@@ -209,13 +155,13 @@ export default {
       for (let slugFolderName in this.folders) {
         let orderBy;
 
-        if (this.sort.type === 'date') {
+        if (this.currentSort.type === 'date') {
           orderBy = +this.$moment(
-            this.folders[slugFolderName][this.sort.field],
+            this.folders[slugFolderName][this.currentSort.field],
             'YYYY-MM-DD HH:mm:ss'
           );
-        } else if (this.sort.type === 'alph') {
-          orderBy = this.folders[slugFolderName][this.sort.field];
+        } else if (this.currentSort.type === 'alph') {
+          orderBy = this.folders[slugFolderName][this.currentSort.field];
         }
         sortable.push({ slugFolderName: slugFolderName, orderBy: orderBy });
       }
@@ -235,7 +181,7 @@ export default {
         return 0;
       });
 
-      if (this.sort.order === 'descending') {
+      if (this.currentSort.order === 'descending') {
         sortedSortable.reverse();
       }
 
@@ -249,6 +195,14 @@ export default {
       }
 
       return this.presentationMD;
+    }
+  },
+  methods: {
+    setSort(newSort) {
+      this.currentSort = newSort;
+    },
+    setFilter(newFilter) {
+      this.currentFilter = newFilter;
     }
   }
 };

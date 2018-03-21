@@ -7,6 +7,7 @@
       :slugFolderName="slugFolderName"
       :folder="folder"
       :read_only="read_only"
+      :context="'full'"
     >
     </Folder>
   </div>

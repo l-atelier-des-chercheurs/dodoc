@@ -28,12 +28,12 @@
       "name": {
         "type": "string"
       },
-      "created": {
+      "date_created": {
         "type": "date",
         "default": "current",
         "read_only": true
       },
-      "modified": {
+      "date_modified": {
         "type": "date",
         "default": "current"
       },

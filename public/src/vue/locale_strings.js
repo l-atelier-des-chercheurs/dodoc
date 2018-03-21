@@ -52,6 +52,7 @@ module.exports = (function() {
       edit_the_media: 'Éditer le média',
       edit_folder: 'Éditer le dossier',
 
+      capture: 'Capture',
       currently: 'Actuellement',
 
       more_information:
@@ -152,8 +153,7 @@ module.exports = (function() {
       edit_the_media: 'Edit media',
       edit_folder: 'Edit folder',
 
-      capture_start: 'Start of the capture',
-      capture_end: 'End of the capture',
+      capture: 'Capture',
       currently: 'Now',
 
       more_information:
