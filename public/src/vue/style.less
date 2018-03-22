@@ -63,7 +63,7 @@ body {
 
   font-size: @t-fontsize;
   line-height: @t-lineheight;
-  color: black;
+  color: @c-noir;
   background-color: @c-body_bg;
 }
 
@@ -140,11 +140,12 @@ body {
 .m_filterBar {
   @t-borderWidth: 2px;
 
-  max-height: 40em;
+  max-height: @t-skipline*3.5;
   overflow: hidden;
 
-  color: @c-bleuvert;
-  border: @t-borderWidth solid currentColor;
+  color: #fff;
+  background-color: @c-bleuvert;
+  // border: @t-borderWidth solid currentColor;
   border-radius: @t-borderWidth*2;
 
   display: flex;
@@ -153,6 +154,7 @@ body {
 
   > * {
     flex: 1 1 0;
+    padding: @t-skipline/2;
     border-right: @t-borderWidth solid currentColor;
 
     &:last-child {
@@ -161,13 +163,17 @@ body {
   }
 }
 
+.m_leftbar {
+  .bg-blanc;
+}
+
 .m_folders {
   
 }
 
 .m_folder {
 
-  .bg-gris_tresclair;
+  .bg-blanc;
   border-radius: @t-buttonradius;
   overflow: hidden;
 

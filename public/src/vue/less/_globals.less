@@ -7,9 +7,10 @@ button, .button {
   font-family: inherit;
   background-color: #fff;
   display: inline-block;
-  text-transform: lowercase;
+
   text-decoration: none;
   text-align: center;
+  .text-cap;
 
   margin: 0;
   cursor: pointer;
@@ -39,6 +40,9 @@ button, .button {
     color: @c-noir;
   }
 
+  &.bg-rouge {
+    color: #fff;
+  }
 
   &:focus {
     outline:0;
@@ -48,7 +52,7 @@ button, .button {
     text-decoration: none;
   }
 
-  svg {
+  img, svg {
     min-width: 0;
     width: 48px;
     height: 48px;
@@ -148,10 +152,6 @@ strong,b {
   flex-flow: row wrap;
   align-items: center;
   justify-content: center;
-
-  svg {
-    margin:0;
-  }
 }
 .button-rectangle {
   border-radius: 0;
@@ -185,6 +185,8 @@ strong,b {
 .font-folder_title {
   font-size: 2em;
   font-family: 'Fira Sans';
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 
@@ -374,6 +376,7 @@ input[readonly], textarea[readonly] {
 
 .text-cap {
   text-transform: uppercase;
+  font-weight: 500;
   letter-spacing: 0.1em;
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div class="m_filterBar margin-vert-medium">
     <div>
-      RECHERCHE
+      <label>RECHERCHE</label>
       <input type="text" placeholder="nom du projet"/>
     </div>
 

@@ -1,7 +1,6 @@
 <template>
   <Modal
     @close="$emit('close')"
-    @submit=""
     :read_only="read_only"
     >
     <template slot="header">
@@ -9,6 +8,10 @@
     </template>
 
     <template slot="sidebar">
+      
+    </template>    
+
+    <template slot="preview">
       Hello !
     </template>
 

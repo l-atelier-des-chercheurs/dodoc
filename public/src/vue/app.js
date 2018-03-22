@@ -460,6 +460,7 @@ let vm = new Vue({
       }
       if (!this.store.folders.hasOwnProperty(slugFolderName)) {
         console.log('Missing folder key on the page, aborting.');
+        this.closeFolder();
         return false;
       }
       this.settings.current_slugFolderName = slugFolderName;

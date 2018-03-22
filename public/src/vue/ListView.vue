@@ -4,12 +4,12 @@
       <main class="m_home">
 
         <header class="container">
-          <div class="margin-vert-medium">
+          <div class="margin-vert-large">
             <img class="m_logo" src="/images/i_logo.svg"/>
-            <vue-markdown
+            <!-- <vue-markdown
               :html=true
               :source="presentationText"
-            ></vue-markdown>
+            ></vue-markdown> -->
           </div>
         </header>
 
@@ -50,19 +50,15 @@
             class="flex-size-4/5 flex-collapse-on-mobile m_folders"
             >
               <button
-              class="margin-vert-medium button-inline bg-gris_tresclair"
+              class="margin-vert-medium button-inline bg-rouge"
               @click="showCreateFolderModal = true"
               :disabled="read_only"
               :key="'createButton'"
               >
+                <img src="images/i_add.svg" width="48" height="48" />
                 <span class="margin-medium">
                   {{ $t('create_a_folder') }}
                 </span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
-                  <circle cx="23.5" cy="23.5" r="23" transform="translate(-9.73 23.5) rotate(-45)" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-                  <line x1="23.5" y1="8.86" x2="23.5" y2="38.13" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-                  <line x1="8.86" y1="23.5" x2="38.13" y2="23.5" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-                </svg>
               </button>
 
               <template

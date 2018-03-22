@@ -262,6 +262,7 @@ export default {
       if (window.confirm(this.$t('sureToRemoveFolder'))) {
         this.$root.removeFolder(this.slugFolderName);
       }
+      this.closeFolder();
     },
     submitPassword() {
       console.log('METHODS • Folder: submitPassword');
