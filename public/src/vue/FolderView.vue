@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="m_folderview">
     <button @click.prevent="$root.closeFolder()">
       Close
     </button>

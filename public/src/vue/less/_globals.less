@@ -1,64 +1,4 @@
 
-button, .button {
-  text-decoration: none;
-  background-color: transparent;
-  border:none;
-  font-size: inherit;
-  font-family: inherit;
-  background-color: #fff;
-  display: inline-block;
-
-  text-decoration: none;
-  text-align: center;
-  .text-cap;
-
-  margin: 0;
-  cursor: pointer;
-
-  min-height: @t-skipline*2;
-
-  padding: 0 @t-skipline/2;
-  border-radius: @t-buttonradius;
-
-  transition: color .25s ease-out, opacity 0.5s;
-
-  &[disabled] {
-    opacity: 0.4;
-    cursor: not-allowed;
-
-    &[class*="bg-"]:not(.bg-transparent) {
-      background-color: gray;
-    }
-  }
-
-  &.is--active {
-    background-color: @c-noir;
-    color: #fff;
-  }
-  &.bg-noir.is--active {
-    background-color: white;
-    color: @c-noir;
-  }
-
-  &.bg-rouge {
-    color: #fff;
-  }
-
-  &:focus {
-    outline:0;
-  }
-
-  a {
-    text-decoration: none;
-  }
-
-  img, svg {
-    min-width: 0;
-    width: 48px;
-    height: 48px;
-    margin: auto;
-  }
-}
 
 
 strong,b {
@@ -94,6 +34,9 @@ strong,b {
 }
 .bg-blanc {
   background-color: #fff;
+}
+.bg-creme {
+  background-color: @c-creme;
 }
 .bg-rouge {
   background-color: @c-rouge;
@@ -135,6 +78,10 @@ strong,b {
   border-top-width: 1px;
   border-image: repeating-linear-gradient(to right, currentColor, currentColor 1ch, transparent 1ch, transparent ~"calc(1ch + 2px)") 1;
   border-image-repeat: round;
+}
+
+.border-bottom {
+  border-bottom: 1px solid @c-gris_clair;
 }
 
 .button-thin {
@@ -183,10 +130,10 @@ strong,b {
   font-size:1.3em;
 }
 .font-folder_title {
-  font-size: 2em;
+  .font-verylarge;
   font-family: 'Fira Sans';
   font-weight: 600;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.03em;
 }
 
 
@@ -517,6 +464,12 @@ th {
   }
 }
 
+.flex-no-grow {
+  > * {
+    flex-grow: 0;
+  }
+}
+
 .flex-vertically-centered {
   align-content: center;
   align-items: center;
@@ -580,3 +533,77 @@ th {
   }
 }
 
+
+
+button, .button {
+  text-decoration: none;
+  background-color: transparent;
+  border:none;
+  font-size: inherit;
+  font-family: inherit;
+  background-color: #fff;
+  display: inline-block;
+
+  text-decoration: none;
+  text-align: center;
+  .text-cap;
+
+  margin: 0;
+  cursor: pointer;
+
+  min-height: @t-skipline*2;
+
+  padding: 0 @t-skipline/2;
+  border-radius: @t-buttonradius;
+
+  transition: color .25s ease-out, opacity 0.5s;
+
+  &[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+
+    &[class*="bg-"]:not(.bg-transparent) {
+      background-color: gray;
+    }
+  }
+
+  &.is--active {
+    background-color: @c-noir;
+    color: #fff;
+  }
+  &.bg-noir.is--active {
+    background-color: white;
+    color: @c-noir;
+  }
+
+  &.bg-rouge {
+    color: #fff;
+  }
+
+  &:focus {
+    outline:0;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  &.button-redthin {
+    .button-thin;
+    .margin-verysmall;
+    .padding-vert-small;
+    .padding-sides-medium;
+    .text-cap;
+    .font-verysmall;    
+    background-color: @c-rouge;
+    border-radius: @t-skipline;
+    color: white;
+  }
+
+  img, svg {
+    min-width: 0;
+    width: 48px;
+    height: 48px;
+    margin: auto;
+  }
+}

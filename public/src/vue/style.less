@@ -65,6 +65,11 @@ body {
   line-height: @t-lineheight;
   color: @c-noir;
   background-color: @c-body_bg;
+
+  margin-top: @t-hauteur_topbar;
+  &.has_systembar {
+    margin-top: @t-systemBarHeight + @t-hauteur_topbar;
+  }
 }
 
 
@@ -88,7 +93,9 @@ body {
   max-width: 1280px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 @t-skipline/2;
+  padding-left: @t-skipline;
+  padding-right: @t-skipline;
+
 }
 
 /************************************************************************
@@ -103,17 +110,21 @@ body {
 }
 
 #systemBar {
-  @t-systemBarHeight: 22px;
   height: @t-systemBarHeight - 6px;
+  .font-small;
+  .text-centered;
+  position: fixed;
+  top: 0;
+  width: 100%;
 
   > .fixedBand {
     -webkit-user-select: none;
     -webkit-app-region: drag;
+    .border-bottom;
 
-    position: fixed;
-    width: 100%;
     height: @t-systemBarHeight;
-    background-color: transparent;
+    .bg-blanc;
+    color: transparent;
     padding: 4px;
     z-index: 15000;
     overflow: hidden;
@@ -121,7 +132,7 @@ body {
     transition: background-color .2s ease-out;
 
     &:hover {
-      background-color: @c-gris;
+      color: #333;
     }
   }
 
@@ -129,21 +140,53 @@ body {
   }
 }
 
-.m_logo {
-  display: block;
-  width: 100%; 
-  min-width: 200px;
-  max-width: 245px;
-  width: 100%;
-  margin: @t-skipline 0; 
-}
-
-.m_home_largeband {
+.m_topbar {
+  height: @t-hauteur_topbar;
+  overflow: hidden;
   .bg-blanc;
-  border-top: 1px solid @c-gris_clair;
-  border-bottom: 1px solid @c-gris_clair;
-}
+  margin-top: 0;
+  .border-bottom;
+  position: fixed;
+  width: 100%;
+  top: 0;
 
+  body.has_systembar & {
+    top: @t-systemBarHeight;
+  }
+
+  .flex-wrap;
+  .flex-space-between;
+
+  .m_logo {
+    display: block;
+    height: 100%;
+    width: auto;
+    padding: @t-skipline/2 @t-skipline; 
+    margin-left: 0;
+
+    img {
+      width: auto;
+      height: 100%;
+    }
+  }    
+
+  .m_topbar--pictos {
+    .flex-wrap;
+    justify-content: flex-end;
+    align-items: center;
+    .c-gris;
+
+    > * {
+      flex: 0 0 48px;
+      height: 48px;
+      padding: @t-skipline/2 @t-skipline;
+      path {
+        fill: @c-gris;
+      }
+    }
+    
+  }
+}
 
 .m_filterBar {
   max-height: @t-skipline*3;
@@ -176,25 +219,103 @@ body {
 
 }
 
-.m_folders {
+
+.createButton {
+  @t-button_size: 4em;
+
+  position: fixed;
+  bottom: 8vmin;
+  left: 8vmin;
+  min-height: @t-button_size;
+  border-radius: @t-button_size;
+  .bg-rouge;
+  // background: linear-gradient( 310deg, @c-rouge, @c-orange);
+
+  &::after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: inherit;
+    top: 0.3rem;
+    filter: blur(0.3rem);
+    opacity: 0.7;
+    border-radius: @t-button_size;
+    z-index: -1;
+  }  
+}
+
+
+@t-folderwidth: 360px;
+
+.m_listview {
+  .bg-creme;
+  overflow-y: auto;
+
+  max-height: ~"calc(100vh - @{t-hauteur_topbar})";
+  body.has_systembar & {
+    max-height: ~"calc(100vh - @{t-systemBarHeight} - @{t-hauteur_topbar})";
+  }
+
+  @scrollbar-height: 8px;
+  @scrollbar-padding: 5px;
+  @scrollbar-border: 6px;
+
+  &::-webkit-scrollbar {
+    height: ((@scrollbar-padding * 2) + @scrollbar-height);
+    width: ((@scrollbar-padding * 2) + @scrollbar-height);
+    background-color: @c-gris_clair;
+  }
+
+  &::-webkit-scrollbar-track,
+  &::-webkit-scrollbar-thumb {
+    border: @scrollbar-border solid rgba(255,255,255,0);
+    border-radius: @scrollbar-border*4;
+    background-clip: padding-box;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: @c-bleuvert;
+    &:hover {
+      background-color: @c-bleumarine;
+      border: @scrollbar-border solid rgba(255,255,255,0);
+    }
+  }
   
+}
+
+.m_folders {
+  .flex-wrap;
+  // .flex-horizontally-start;
+  .flex-space-between;
+
+  > * {
+    .margin-right-medium;
+    flex: 0 1 @t-folderwidth;
+  }
+
 }
 
 .m_folder {
 
   .bg-blanc;
+  width: @t-folderwidth;
   border-radius: @t-buttonradius;
   overflow: hidden;
-
+  .margin-bottom-medium;
 
   .m_folder--presentation {
-    .flex-wrap;
 
     img {
-        flex: 0 0 200px;
-        height: 133.34px;
-        background-color: @c-gris;
-      }
+      width:100%;
+      padding-bottom: 50%;
+      height: 0;
+      background-color: @c-gris;
+    }
   }
   
 

@@ -7,15 +7,15 @@
     >
     </SystemBar>
 
-    <transition name="fade" duration="350">
-      <ListView
-        v-if="view === 'ListView'"
-        :presentationMD="$root.store.presentationMD"
-        :read_only="!$root.state.connected"
-        :folders="$root.store.folders"
-      >
-      </ListView>
-    </transition>
+    <TopBar>
+    </TopBar>
+
+    <ListView
+      :presentationMD="$root.store.presentationMD"
+      :read_only="!$root.state.connected"
+      :folders="$root.store.folders"
+    >
+    </ListView>
 
     <transition name="fade" duration="350">
       <FolderView
@@ -27,9 +27,6 @@
       </FolderView>
     </transition>
 
-    <BottomFooter>
-    </BottomFooter>
-
     <portal-target name="modal_container" />
 
   </div>
@@ -37,17 +34,17 @@
 
 <script>
 import SystemBar from './SystemBar.vue';
+import TopBar from './TopBar.vue';
 import ListView from './ListView.vue';
 import FolderView from './FolderView.vue';
-import BottomFooter from './components/BottomFooter.vue';
 
 export default {
   name: 'app',
   components: {
     SystemBar,
+    TopBar,
     ListView,
-    FolderView,
-    BottomFooter
+    FolderView
   },
   props: {
     current_slugFolderName: String,

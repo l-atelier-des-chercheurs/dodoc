@@ -7,7 +7,7 @@
         >
         <div
           v-if="withTitleBar"
-          class="titleText font-small text-centered c-blanc"
+          class="titleText"
           @mousedown="mousedown"
           @mousemove="mousemove"
           @mouseup="mouseup"

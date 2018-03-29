@@ -1,74 +1,24 @@
 <template>
-  <main class="m_home">
-    <div class="container">
-      <img class="m_logo" src="/images/i_logo.svg"/>
-      <!-- <vue-markdown
-        :html=true
-        :source="presentationText"
-      ></vue-markdown> -->
-    </div>
-
-    <section class="">
-      <div class="m_home_largeband">
-        <div class="container">
-          <FolderFilterBar
-            :currentSort="currentSort"
-            :currentFilter="currentFilter"
-          >
-          </FolderFilterBar>
-        </div>
-      </div>
-
-      <div class="container flex-wrap">
-        <div class="m_leftbar flex-size-1/5">
-          <div>
-          AFFICHAGE
+  <div class="m_listview">
+    <main>
+      <section class="container container_scroll padding-vert-medium">
+        <template
+          v-if="sortedFoldersSlug !== 'no-folders'"
+        >
+          <div class="padding-bottom-medium text-cap c-gris font-verysmall">
+            Affichage de 12 projets sur 36
           </div>
 
-          <div class="margin-vert-medium" style="max-width: 200px">
-            <label v-html="$t('lang:')"></label>
-            <select v-model="currentLang">
-              <option v-for="(name, code) in $root.lang.available" :value="code" :key="code">
-                {{ name }}
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <!-- modal -->
-        <CreateFolder
-          v-if="showCreateFolderModal"
-          @close="showCreateFolderModal = false"
-          :read_only="read_only"
-        >
-        </CreateFolder>
-
-        <transition-group 
-        tag="div"
-        name="list-complete"
-        class="flex-size-4/5 flex-collapse-on-mobile m_folders"
-        >
-          <button
-          class="margin-vert-medium button-inline bg-rouge"
-          @click="showCreateFolderModal = true"
-          :disabled="read_only"
-          :key="'createButton'"
+          <transition-group 
+          tag="div"
+          name="list-complete"
+          class="m_folders"
           >
-            <img src="images/i_add.svg" width="48" height="48" />
-            <span class="margin-medium">
-              {{ $t('create_a_folder') }}
-            </span>
-          </button>
-
-          <template
-            v-if="sortedFoldersSlug !== 'no-folders'"
-            v-for="(sortedFolder, index) in sortedFoldersSlug"
-          >
-            <div
-              class="margin-vert-medium"
-              :key="sortedFolder.slugFolderName"
-            >
+            <template        
+              v-for="(sortedFolder, index) in sortedFoldersSlug"
+            > 
               <Folder
+                :key="sortedFolder.slugFolderName"
                 :slugFolderName="sortedFolder.slugFolderName"
                 :folder="folders[sortedFolder.slugFolderName]"
                 :read_only="read_only"
@@ -76,14 +26,39 @@
                 :index="index"
               >
               </Folder>
-            </div>
-          </template>
-        </transition-group>
-      </div>
-    </section>
-  </main>
+            </template>
+          </transition-group>
+        </template>
+      </section>
+
+      <!-- modal -->
+      <CreateFolder
+        v-if="showCreateFolderModal"
+        @close="showCreateFolderModal = false"
+        :read_only="read_only"
+      >
+      </CreateFolder>
+
+      <button
+      class="button-inline bg-rouge createButton"
+      @click="showCreateFolderModal = true"
+      :disabled="read_only"
+      :key="'createButton'"
+      >
+        <img src="images/i_add.svg" width="48" height="48" />
+        <span class="margin-small">
+          {{ $t('create_a_folder') }}
+        </span>
+      </button>
+      
+    </main>
+
+    <BottomFooter>
+    </BottomFooter>
+  </div>
 </template>
 <script>
+import BottomFooter from './components/BottomFooter.vue';
 import Folder from './components/Folder.vue';
 import CreateFolder from './components/modals/CreateFolder.vue';
 import VueMarkdown from 'vue-markdown';
@@ -99,7 +74,8 @@ export default {
     CreateFolder,
     Folder,
     FolderFilterBar,
-    VueMarkdown
+    VueMarkdown,
+    BottomFooter
   },
   data() {
     return {
