@@ -17,7 +17,7 @@
     >
     </ListView>
 
-    <transition name="fade" duration="350">
+    <transition name="">
       <FolderView
         v-if="view === 'FolderView' && currentFolder.hasOwnProperty('name')"
         :slugFolderName="current_slugFolderName"

@@ -1,8 +1,5 @@
 <template>
   <div class="m_folderview">
-    <button @click.prevent="$root.closeFolder()">
-      Close
-    </button>
     <Folder
       :slugFolderName="slugFolderName"
       :folder="folder"
@@ -10,6 +7,9 @@
       :context="'full'"
     >
     </Folder>
+    <button @click.prevent="$root.closeFolder()">
+      Close
+    </button>
   </div>
 </template>
 <script>

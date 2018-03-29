@@ -59,12 +59,14 @@ html {
 body {
   font-family: 'Fira Sans', sans-serif;
   font-weight: 400;
-  margin: 0;
-
   font-size: @t-fontsize;
   line-height: @t-lineheight;
+
+  position: relative;
+  margin: 0;
   color: @c-noir;
   background-color: @c-body_bg;
+
 
   margin-top: @t-hauteur_topbar;
   &.has_systembar {
@@ -110,12 +112,13 @@ body {
 }
 
 #systemBar {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  width: 100%;
   height: @t-systemBarHeight - 6px;
   .font-small;
   .text-centered;
-  position: fixed;
-  top: 0;
-  width: 100%;
 
   > .fixedBand {
     -webkit-user-select: none;
@@ -141,14 +144,15 @@ body {
 }
 
 .m_topbar {
+  position: fixed;
+  z-index: 10;
+  width: 100%;
+  top: 0;
   height: @t-hauteur_topbar;
   overflow: hidden;
   .bg-blanc;
   margin-top: 0;
   .border-bottom;
-  position: fixed;
-  width: 100%;
-  top: 0;
 
   body.has_systembar & {
     top: @t-systemBarHeight;
@@ -177,9 +181,17 @@ body {
     .c-gris;
 
     > * {
-      flex: 0 0 48px;
-      height: 48px;
-      padding: @t-skipline/2 @t-skipline;
+      flex: 0 0 auto;
+      width: auto;
+      height: auto;
+      padding: @t-skipline/2 @t-skipline @t-skipline/2 0;
+      cursor: pointer;
+
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+
       path {
         fill: @c-gris;
       }
@@ -248,13 +260,17 @@ body {
 
 @t-folderwidth: 360px;
 
-.m_listview {
+.m_listview, .m_folderview {
+  position: absolute;
+  top:0;
+  bottom: 0;
   .bg-creme;
   overflow-y: auto;
 
-  max-height: ~"calc(100vh - @{t-hauteur_topbar})";
+  width: 100%;
+  height: ~"calc(100vh - @{t-hauteur_topbar})";
   body.has_systembar & {
-    max-height: ~"calc(100vh - @{t-systemBarHeight} - @{t-hauteur_topbar})";
+    height: ~"calc(100vh - @{t-systemBarHeight} - @{t-hauteur_topbar})";
   }
 
   @scrollbar-height: 8px;
@@ -264,7 +280,7 @@ body {
   &::-webkit-scrollbar {
     height: ((@scrollbar-padding * 2) + @scrollbar-height);
     width: ((@scrollbar-padding * 2) + @scrollbar-height);
-    background-color: @c-gris_clair;
+    background-color: @c-creme;
   }
 
   &::-webkit-scrollbar-track,
@@ -279,13 +295,12 @@ body {
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: @c-bleuvert;
+    background-color: @c-noir;
     &:hover {
-      background-color: @c-bleumarine;
+      background-color: @c-bleuvert;
       border: @scrollbar-border solid rgba(255,255,255,0);
     }
   }
-  
 }
 
 .m_folders {
@@ -295,27 +310,44 @@ body {
 
   > * {
     .margin-right-medium;
-    flex: 0 1 @t-folderwidth;
+    flex: 0 1 auto;
   }
 
 }
 
 .m_folder {
-
   .bg-blanc;
-  width: @t-folderwidth;
   border-radius: @t-buttonradius;
   overflow: hidden;
   .margin-bottom-medium;
+  .flex-wrap;
+  .flex-space-between;
+  border: 1px solid @c-gris_clair;
 
   .m_folder--presentation {
-
+    flex: 0 1 @t-folderwidth;
+    width: @t-folderwidth;
+    
     img {
       width:100%;
       padding-bottom: 50%;
       height: 0;
       background-color: @c-gris;
     }
+
+    // à l’intérieur d’une vue projet
+    .m_folderview & {
+      margin: @t-skipline;
+      border: 1px solid @c-gris_clair;
+    }  
+
+  }
+
+  .m_folder--description {
+    flex: 1 1 44ch;
+    padding:  @t-skipline;
+    border-left: 1px solid @c-gris;
+    border-bottom: 1px solid @c-gris;
   }
   
 
@@ -329,6 +361,7 @@ body {
       flex: 0 0 100/6%;
     }
   }
+
 }
 
 .m_media {

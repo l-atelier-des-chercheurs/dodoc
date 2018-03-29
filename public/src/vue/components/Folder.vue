@@ -29,7 +29,7 @@
 
       <div class="margin-small flex-wrap flex-no-grow flex-horizontally-centered">
         <button 
-        v-if="folder.authorized"
+        v-if="folder.authorized && context !== 'full'"
         type="button" 
         class="button-redthin" 
         @click="$root.openFolder(slugFolderName)"
@@ -39,37 +39,45 @@
           </span>
         </button>
 
-        <!-- <button v-if="!folder.authorized" type="button" class="button-round margin-verysmall padding-verysmall" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
+        <button v-if="!folder.authorized" type="button" class="button-round margin-verysmall padding-verysmall" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
           <span class="text-cap font-verysmall">
             {{ $t('password') }}
           </span>
         </button>
-          <button v-if="folder.authorized" type="button" class="button-round margin-verysmall padding-verysmall" @click="showEditFolderModal = true" :disabled="read_only">
+          <button v-if="folder.authorized && context === 'full'" type="button" class="button-round margin-verysmall padding-verysmall" @click="showEditFolderModal = true" :disabled="read_only">
           <span class="text-cap font-verysmall">
             {{ $t('edit') }}
           </span>
         </button>
-        <button v-if="folder.authorized" type="button" class="button-round margin-verysmall padding-verysmall" @click="removeFolder()" :disabled="read_only">
+        <button v-if="folder.authorized && context === 'full'" type="button" class="button-round margin-verysmall padding-verysmall" @click="removeFolder()" :disabled="read_only">
           <span class="text-cap font-verysmall">
             {{ $t('remove') }}
           </span>
-        </button> -->
+        </button>
 
         <div v-if="showInputPasswordField" class="margin-bottom-small">
           <input type="password" ref="passwordField" @keyup.enter="submitPassword" autofocus placeholder="…">
           <button type="button" class="border-circled button-thin padding-verysmall" @click="submitPassword">Envoyer</button>
         </div>
       </div>
+
+      <EditFolder
+        v-if="showEditFolderModal"
+        :folder="folder"
+        :slugFolderName="slugFolderName"
+        @close="showEditFolderModal = false"
+        :read_only="read_only"
+      >
+      </EditFolder>
     </div>
 
-    <EditFolder
-      v-if="showEditFolderModal"
-      :folder="folder"
-      :slugFolderName="slugFolderName"
-      @close="showEditFolderModal = false"
-      :read_only="read_only"
+    <div class="m_folder--description"
+      v-if="context === 'full'"
     >
-    </EditFolder>
+      <p>
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+      </p>
+    </div>
 
     <MediaLibrary
       v-if="context === 'full'"
