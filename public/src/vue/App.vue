@@ -27,12 +27,8 @@
       </FolderView>
     </transition>
 
-    <div class="container">
-      <div class="row">
-        <BottomFooter>
-        </BottomFooter>
-      </div>
-    </div>
+    <BottomFooter>
+    </BottomFooter>
 
     <portal-target name="modal_container" />
 

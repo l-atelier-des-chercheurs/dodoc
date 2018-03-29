@@ -2,8 +2,8 @@
   <div class="m_filterBar margin-vert-medium">
     <div>
       ORDRE
-      <div class="border border-top-dashed">
-        <div class="margin-vert-medium">
+      <div class="">
+        <div class="">
           <label class="margin-none text-cap with-bullet">
             {{ $t('sort_by') }}
           </label>

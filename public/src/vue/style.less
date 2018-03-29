@@ -88,7 +88,7 @@ body {
   max-width: 1280px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 @t-skipline;
+  padding: 0 @t-skipline/2;
 }
 
 /************************************************************************
@@ -131,40 +131,49 @@ body {
 
 .m_logo {
   display: block;
-  max-width: 480px;
+  width: 100%; 
+  min-width: 200px;
+  max-width: 245px;
   width: 100%;
-  margin: 0 auto; 
+  margin: @t-skipline 0; 
+}
+
+.m_home_largeband {
+  .bg-blanc;
+  border-top: 1px solid @c-gris_clair;
+  border-bottom: 1px solid @c-gris_clair;
 }
 
 
 .m_filterBar {
-  @t-borderWidth: 2px;
-
-  max-height: @t-skipline*3.5;
+  max-height: @t-skipline*3;
   overflow: hidden;
 
-  color: #fff;
-  background-color: @c-bleuvert;
-  // border: @t-borderWidth solid currentColor;
-  border-radius: @t-borderWidth*2;
+  font-weight: 500;
+  font-size: 1.5em;
 
   display: flex;
   flex-flow: row nowrap;
   justify-content: stretch;
+  align-items: center;
 
   > * {
     flex: 1 1 0;
     padding: @t-skipline/2;
-    border-right: @t-borderWidth solid currentColor;
+  }
 
-    &:last-child {
-      border-right: 0;
+  .m_filterBar--header {
+    display: flex;
+    align-items: center;
+    svg {
+      margin: @t-skipline/2;
     }
   }
 }
 
 .m_leftbar {
-  .bg-blanc;
+
+
 }
 
 .m_folders {

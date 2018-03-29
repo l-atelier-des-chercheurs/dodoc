@@ -1,15 +1,25 @@
 <template>
-  <div class="m_filterBar margin-vert-medium">
+  <div class="m_filterBar">
     <div>
-      <label>RECHERCHE</label>
-      <input type="text" placeholder="nom du projet"/>
+      <div class="m_filterBar--header">
+        <svg version="1.1"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+          x="0px" y="0px" width="23.9px" height="24px" viewBox="0 0 23.9 24" style="enable-background:new 0 0 23.9 24;"
+          xml:space="preserve">
+          <path d="M2.8,16.3c3.2,3.2,8.3,3.4,12,1.1l6.5,6.5l2.7-2.7l-6.5-6.5c2.2-3.7,2-8.8-1.1-12c-3.7-3.7-9.8-3.7-13.5,0
+          C-0.9,6.5-0.9,12.6,2.8,16.3z M13.8,5.3c2.3,2.3,2.3,6.2,0,8.5s-6.2,2.4-8.5,0c-2.3-2.3-2.3-6.2,0-8.5S11.5,2.9,13.8,5.3z"/>
+        </svg>
+        Chercher
+      </div>
+
+      <!-- <input type="text" placeholder="nom du projet"/> -->
     </div>
 
     <div>
-      ORDRE
-      <div class="border border-top-dashed">
-        <div class="margin-vert-medium">
-          <label class="margin-none text-cap with-bullet">
+      <label>Organiser</label>
+      <div class="">
+        <div class="">
+          <label class="">
             {{ $t('sort_by') }}
           </label>
           <div class="margin-sides-negative-small">

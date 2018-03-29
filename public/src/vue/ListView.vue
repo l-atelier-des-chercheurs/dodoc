@@ -1,91 +1,87 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <main class="m_home">
+  <main class="m_home">
+    <div class="container">
+      <img class="m_logo" src="/images/i_logo.svg"/>
+      <!-- <vue-markdown
+        :html=true
+        :source="presentationText"
+      ></vue-markdown> -->
+    </div>
 
-        <header class="container">
-          <div class="margin-vert-large">
-            <img class="m_logo" src="/images/i_logo.svg"/>
-            <!-- <vue-markdown
-              :html=true
-              :source="presentationText"
-            ></vue-markdown> -->
-          </div>
-        </header>
-
-        <section class="container">
+    <section class="">
+      <div class="m_home_largeband">
+        <div class="container">
           <FolderFilterBar
             :currentSort="currentSort"
             :currentFilter="currentFilter"
           >
           </FolderFilterBar>
+        </div>
+      </div>
 
-          <div class="flex-wrap">
-            <div class="m_leftbar flex-size-1/5">
-              <div>
-              AFFICHAGE
-              </div>
-
-              <div class="margin-vert-medium" style="max-width: 200px">
-                <label v-html="$t('lang:')"></label>
-                <select v-model="currentLang">
-                  <option v-for="(name, code) in $root.lang.available" :value="code" :key="code">
-                    {{ name }}
-                  </option>
-                </select>
-              </div>
-            </div>
-
-            <!-- modal -->
-            <CreateFolder
-              v-if="showCreateFolderModal"
-              @close="showCreateFolderModal = false"
-              :read_only="read_only"
-            >
-            </CreateFolder>
-
-            <transition-group 
-            tag="div"
-            name="list-complete"
-            class="flex-size-4/5 flex-collapse-on-mobile m_folders"
-            >
-              <button
-              class="margin-vert-medium button-inline bg-rouge"
-              @click="showCreateFolderModal = true"
-              :disabled="read_only"
-              :key="'createButton'"
-              >
-                <img src="images/i_add.svg" width="48" height="48" />
-                <span class="margin-medium">
-                  {{ $t('create_a_folder') }}
-                </span>
-              </button>
-
-              <template
-                v-if="sortedFoldersSlug !== 'no-folders'"
-                v-for="(sortedFolder, index) in sortedFoldersSlug"
-              >
-                <div
-                  class="margin-vert-medium"
-                  :key="sortedFolder.slugFolderName"
-                >
-                  <Folder
-                    :slugFolderName="sortedFolder.slugFolderName"
-                    :folder="folders[sortedFolder.slugFolderName]"
-                    :read_only="read_only"
-                    :currentSort="currentSort"
-                    :index="index"
-                  >
-                  </Folder>
-                </div>
-              </template>
-            </transition-group>
+      <div class="container flex-wrap">
+        <div class="m_leftbar flex-size-1/5">
+          <div>
+          AFFICHAGE
           </div>
-        </section>
 
-      </main>
-    </div>
-  </div>
+          <div class="margin-vert-medium" style="max-width: 200px">
+            <label v-html="$t('lang:')"></label>
+            <select v-model="currentLang">
+              <option v-for="(name, code) in $root.lang.available" :value="code" :key="code">
+                {{ name }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- modal -->
+        <CreateFolder
+          v-if="showCreateFolderModal"
+          @close="showCreateFolderModal = false"
+          :read_only="read_only"
+        >
+        </CreateFolder>
+
+        <transition-group 
+        tag="div"
+        name="list-complete"
+        class="flex-size-4/5 flex-collapse-on-mobile m_folders"
+        >
+          <button
+          class="margin-vert-medium button-inline bg-rouge"
+          @click="showCreateFolderModal = true"
+          :disabled="read_only"
+          :key="'createButton'"
+          >
+            <img src="images/i_add.svg" width="48" height="48" />
+            <span class="margin-medium">
+              {{ $t('create_a_folder') }}
+            </span>
+          </button>
+
+          <template
+            v-if="sortedFoldersSlug !== 'no-folders'"
+            v-for="(sortedFolder, index) in sortedFoldersSlug"
+          >
+            <div
+              class="margin-vert-medium"
+              :key="sortedFolder.slugFolderName"
+            >
+              <Folder
+                :slugFolderName="sortedFolder.slugFolderName"
+                :folder="folders[sortedFolder.slugFolderName]"
+                :read_only="read_only"
+                :currentSort="currentSort"
+                :index="index"
+              >
+              </Folder>
+            </div>
+          </template>
+        </transition-group>
+      </div>
+    </section>
+  </main>
 </template>
 <script>
 import Folder from './components/Folder.vue';
