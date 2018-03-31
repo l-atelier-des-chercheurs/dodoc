@@ -38,19 +38,6 @@
         :disabled="read_only"
       >
       </FileUpload>
-      <button type="button" class="m_folder--captureBtn"
-        @click="showCaptureModal = true"
-        :disabled="read_only" 
-      >
-        Capture
-      </button>
-
-      <Capture
-        v-if="showCaptureModal && !read_only"
-        :folder="folder"
-        @close="showCaptureModal = false"
-      >
-      </Capture>
 
       <EditMedia
         v-if="showMediaModalFor !== ''"
@@ -68,7 +55,6 @@ import MediaFilterBar from './MediaFilterBar.vue';
 import EditMedia from './modals/EditMedia.vue';
 import FileUpload from './FileUpload.vue';
 import MediaContent from './subcomponents/MediaContent.vue';
-import Capture from './modals/Capture.vue';
 
 export default {
   props: {
@@ -79,7 +65,6 @@ export default {
   components: {
     MediaFilterBar,
     EditMedia,
-    Capture,
     FileUpload,
     MediaContent
   },

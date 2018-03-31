@@ -40,12 +40,12 @@
       </CreateFolder>
 
       <button
-      class="button-inline bg-rouge createButton"
-      @click="showCreateFolderModal = true"
-      :disabled="read_only"
-      :key="'createButton'"
+        class="button-inline bg-rouge createButton"
+        @click="showCreateFolderModal = true"
+        :disabled="read_only"
+        :key="'createButton'"
       >
-        <img src="images/i_add.svg" width="48" height="48" />
+        <img src="/images/i_add.svg" width="48" height="48" />
         <span class="margin-small">
           {{ $t('create_a_folder') }}
         </span>

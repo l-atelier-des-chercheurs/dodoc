@@ -1,14 +1,16 @@
 <template>
   <div class="m_folderview">
-    <Folder
-      :slugFolderName="slugFolderName"
-      :folder="folder"
-      :read_only="read_only"
-      :context="'full'"
-    >
-    </Folder>
+    <div class="container">
+      <Folder
+        :slugFolderName="slugFolderName"
+        :folder="folder"
+        :read_only="read_only"
+        :context="'full'"
+      >
+      </Folder>
+    </div>
     <button @click.prevent="$root.closeFolder()">
-      Close
+      Fermer
     </button>
   </div>
 </template>

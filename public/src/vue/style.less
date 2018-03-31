@@ -232,7 +232,7 @@ body {
 }
 
 
-.createButton {
+.createButton, .captureButton {
   @t-button_size: 4em;
 
   position: fixed;
@@ -255,6 +255,10 @@ body {
     border-radius: @t-button_size;
     z-index: -1;
   }  
+}
+
+.captureButton {
+  .bg-orange;
 }
 
 

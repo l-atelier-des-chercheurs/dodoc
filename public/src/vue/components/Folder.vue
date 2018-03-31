@@ -77,6 +77,8 @@
       <p>
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
       </p>
+
+    {{ showCaptureModal }}
     </div>
 
     <MediaLibrary
@@ -87,11 +89,34 @@
     >
     </MediaLibrary>
 
+    <transition name="fadeUp">
+      <button 
+        type="button" 
+        class="button-inline bg-rouge captureButton"
+        v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
+        @click="showCaptureModal = true"
+        :disabled="read_only" 
+      >
+        <img src="/images/i_record.svg" width="48" height="48" />
+        <span>    
+            {{ $t('capture') }}
+        </span>
+      </button>
+    </transition>
+
+    <Capture
+      v-if="showCaptureModal && !read_only"
+      :folder="folder"
+      @close="showCaptureModal = false"
+    >
+    </Capture>
+
   </div>
 </template>
 <script>
 import EditFolder from './modals/EditFolder.vue';
 import MediaLibrary from './MediaLibrary.vue';
+import Capture from './modals/Capture.vue';
 
 export default {
   props: {
@@ -103,6 +128,7 @@ export default {
   },
   components: {
     EditFolder,
+    Capture,
     MediaLibrary
   },
   data() {
@@ -110,7 +136,7 @@ export default {
       debugFolderContent: false,
       showEditFolderModal: false,
       showInputPasswordField: false,
-      showCaptureModal: false,
+      showCaptureModal: false
     };
   },
   computed: {
