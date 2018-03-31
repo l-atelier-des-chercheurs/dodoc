@@ -160,7 +160,7 @@ export default {
     openMediaModal(slugMediaName) {
       debugger;
       if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • TimelineMedia: openMedia');
+        console.log('METHODS • MediaLibrary: openMedia');
       }
       this.showMediaModalFor = slugMediaName;
     }
