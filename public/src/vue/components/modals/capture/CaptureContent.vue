@@ -2,16 +2,23 @@
   <div>
     Hello !
     {{ folder.name }}
+
+    <fieldset>
+      <legend>Mode</legend>
+      {{ selected_mode }}
+      <div v-for="mode in available_modes">
+        <input type="radio" id="mode.key" value="mode.key" v-model="selected_mode">
+        <label for="mode.key">{{ mode.name }}</label>
+      </div>
+    </fieldset>
+
     <div v-for="(currentId, kind) in selected_devicesId">
-      {{ kind }} {{ currentId }}
       <select v-if="sorted_available_devices.hasOwnProperty(kind)" v-model="selected_devicesId[kind]">
         <option v-for="(device, index) in sorted_available_devices[kind]" :value="device.deviceId">
           {{ device.label }}
         </option>        
       </select>
     </div>
-
-    <pre>{{ selected_devicesId }}</pre>
 
     <video ref="videoElement" autoplay muted />     
   </div>
@@ -32,9 +39,27 @@ export default {
   },
   data() {
     return {
+      selected_mode: '',
+      available_modes: [
+        { 
+          name: this.$t('photo'),
+          key: 'photo'
+        },
+        {
+          name: this.$t('video'),
+          key: 'video'
+        },
+        {
+          name: this.$t('stopmotion'),
+          key: 'stopmotion'
+        },
+        {
+          name: this.$t('audio'),
+          key: 'audio'
+        }
+      ],
       videoStream: '',
       audioStream: '',
-      currentFeedsSource: {},
       available_devices: {},
       selected_devicesId: {
         audioinput: '',
@@ -52,6 +77,12 @@ export default {
   },
 
   watch: {
+    'selected_devicesId.audioinput': function() {
+      this.$refs.videoElement.setSinkId(this.selected_devicesId.audioinput);      
+    },
+    'selected_devicesId.videoinput': function() {
+      this.startCameraFeed();
+    }
   },
   computed: {
     sorted_available_devices() {
@@ -63,6 +94,9 @@ export default {
       navigator.mediaDevices.enumerateDevices()
       .then((deviceInfos) => {
         this.available_devices = deviceInfos;
+
+        // get from localstorage and put in selected_devicesId.audioinput, selected_devicesId.videoinput and selected_devicesId.audiooutput 
+
         // set initial value
         Object.keys(this.selected_devicesId).map((kind) => {
           if(this.selected_devicesId[kind] === '') {
@@ -71,52 +105,17 @@ export default {
             }
           }
         });
+
+        // get last mode from localstorage
+
+        // otherwise start first mode
+        if(this.selected_mode === '') {
+          this.selected_mode = this.available_modes[0].key;
+        }
+
+        this.startCameraFeed();
       });
-
     },
-    // _gotDevices(deviceInfos) {
-      // // Handles being called several times to update labels. Preserve values.
-      // var values = selectors.map(function(select) {
-      //   return select.value;
-      // });
-      // selectors.forEach(function(select) {
-      //   while (select.firstChild) {
-      //     select.removeChild(select.firstChild);
-      //   }
-      // });
-      // var previousVideoDeviceId = store.get(userSelectedVideoDevice);
-      // var previousAudioDeviceId = store.get(userSelectedAudioDevice);
-
-      // for (var i = 0; i !== deviceInfos.length; ++i) {
-
-      //   if(available_devices)
-      //   var deviceInfo = deviceInfos[i]; 
-      //   var deviceId = deviceInfo.deviceId;
-        // var option = document.createElement('option');
-        // option.value = deviceId;
-        // if( deviceId === previousVideoDeviceId || deviceId === previousAudioDeviceId)
-        //   option.selected = true;
-        // if (deviceInfo.kind === 'audioinput') {
-        //   option.text = deviceInfo.label || 'microphone ' + (audioInputSelect.length + 1);
-        //   audioInputSelect.appendChild(option);
-        // } else if (deviceInfo.kind === 'audiooutput') {
-        //   option.text = deviceInfo.label || 'speaker ' + (audioOutputSelect.length + 1);
-        //   audioOutputSelect.appendChild(option);
-        // } else if (deviceInfo.kind === 'videoinput') {
-        //   option.text = deviceInfo.label || 'camera ' + (videoSelect.length + 1);
-        //   videoSelect.appendChild(option);
-        // } else {
-        //   console.log('Some other kind of source/device: ', deviceInfo);
-        // }
-      // }
-      // selectors.forEach(function(select, selectorIndex) {
-      //   if (Array.prototype.slice.call(select.childNodes).some(function(n) {
-      //     return n.value === values[selectorIndex];
-      //   })) {
-      //     select.value = values[selectorIndex];
-      //   }
-      // });
-    // },
 
     startCameraFeed() {
       return new Promise((resolve, reject) => {
@@ -131,12 +130,14 @@ export default {
             this.videoStream = stream;
             this.$refs.videoElement.srcObject = stream;
             resolve();
-          }, (err) => {
-            alertify.error( "Failed to start camera feed: " + err);
+          })
+          .catch((err) => {
+            alertify.error(err);
             reject();
           });
       });
     },
+
     stopAllFeeds() {
       console.log('METHODS • Capture: stopAllFeeds');
       if( !this.$refs.videoElement.paused)
@@ -150,30 +151,26 @@ export default {
       // stopMotionMode.stop();
       // audioMode.stop();
     },
-    getCameraFeed(withAudio) {
+    getCameraFeed(withAudio = false) {
       return new Promise((resolve, reject) => {
         console.log('METHODS • Capture: getCameraFeed');
 
-        if( currentFeedsSource === undefined || currentFeedsSource.video === undefined) {
-          reject("Camera not yet ready");
+        if(this.selected_devicesId.videoinput === '') {
+          reject(this.$t('notifications.video_source_not_set'));
         }
-
-        navigator.getUserMedia(
-          {
-            video: currentFeedsSource.video,
-            audio: withAudio
+        const constraints = {
+          video: {
+            optional: [{sourceId: this.selected_devicesId.videoinput}]
           },
-          function (stream) {
+          audio: withAudio
+        };
+        navigator.mediaDevices.getUserMedia(constraints)
+          .then((stream) => {
             resolve(stream);
-          },
-          function(err) {
-            $(document).trigger('open_settings_pane');
-            for (index=0; index < videoResSwitches.length; index++) {
-              videoResSwitches[index].checked = false;
-            }
-            alertify.error(dodoc.lang().videoStreamCouldntBeStartedTryChangingRes);
-          }
-        );
+          })
+          .catch((err) => {
+            reject(this.$t('notifications.failed_to_start_video_change_source_or_res'));
+          });
       });
     }
     

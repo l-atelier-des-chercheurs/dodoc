@@ -99,7 +99,10 @@ module.exports = (function() {
           'Ce nom de dossier existe déjà, utilisez-en un autre.',
         folder_name_needs_alphanumeric_characters:
           'Les noms de dossier doivent contenir au moins un caractère alphanumérique.',
-        'failed_to_get_folder:': 'Le dossier suivant n’a pas été trouvé:'
+        'failed_to_get_folder:': 'Le dossier suivant n’a pas été trouvé:',
+        failed_to_start_video_change_source_or_res:
+          'Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la source ou la résolution dans les réglages.',
+        video_source_not_set: 'La source vidéo n’a pas été trouvée.'
       }
     },
     en: {
@@ -198,7 +201,10 @@ module.exports = (function() {
         folder_name_exists: 'Folder name already exists. Please use another.',
         folder_name_needs_alphanumeric_characters:
           'Folder names need to contain at least one alphanumeric character.',
-        'failed_to_get_folder:': 'Failed to get the requested folder:'
+        'failed_to_get_folder:': 'Failed to get the requested folder:',
+        failed_to_start_video_change_source_or_res:
+          'Failed to start camera feed. Try changing the source or the resolution.',
+        video_source_not_set: 'The source video has not been set.'
       }
     }
   };

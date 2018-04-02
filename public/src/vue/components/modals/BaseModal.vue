@@ -22,7 +22,7 @@
               v-on:submit.prevent="$emit('submit')"
               >
 
-              <div class="m_modal--header padding-medium bg-noir c-blanc">
+              <div class="m_modal--header padding-medium bg-orange c-blanc">
                 <h3 class="margin-none with-bullet">
                   <slot name="header">
                       default header
@@ -59,7 +59,7 @@
 
               <!-- if there is no sidebar, output header here -->
               <template v-if="!this.$slots['sidebar']">
-                <div class="m_modal--header padding-medium bg-noir c-blanc">
+                <div class="m_modal--header padding-medium bg-orange c-blanc">
                   <h3 class="margin-none with-bullet">
                     <slot name="header">
                         default header
