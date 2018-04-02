@@ -2,16 +2,16 @@
   <div>
     Hello !
     {{ folder.name }}
-    <div v-for="(currentId, kind) in selected_devices">
-      {{ kind }}
-      <select v-if="sorted_available_devices.hasOwnProperty(kind)" v-model="selected_devices[kind]">
-        <option v-for="(device, index) in sorted_available_devices[kind]" :key="device.deviceId" :value="device">
+    <div v-for="(currentId, kind) in selected_devicesId">
+      {{ kind }} {{ currentId }}
+      <select v-if="sorted_available_devices.hasOwnProperty(kind)" v-model="selected_devicesId[kind]">
+        <option v-for="(device, index) in sorted_available_devices[kind]" :value="device.deviceId">
           {{ device.label }}
         </option>        
       </select>
     </div>
 
-    <pre>{{ selected_devices }}</pre>
+    <pre>{{ selected_devicesId }}</pre>
 
     <video ref="videoElement" autoplay muted />     
   </div>
@@ -36,7 +36,7 @@ export default {
       audioStream: '',
       currentFeedsSource: {},
       available_devices: {},
-      selected_devices: {
+      selected_devicesId: {
         audioinput: '',
         videoinput: '',
         audiooutput: ''
@@ -64,12 +64,10 @@ export default {
       .then((deviceInfos) => {
         this.available_devices = deviceInfos;
         // set initial value
-        debugger;
-        Object.keys(this.selected_devices).map((kind) => {
-          debugger;
-          if(this.selected_devices[kind] === '') {
+        Object.keys(this.selected_devicesId).map((kind) => {
+          if(this.selected_devicesId[kind] === '') {
             if(this.sorted_available_devices.hasOwnProperty(kind)) {
-              this.selected_devices[kind] = this.sorted_available_devices[kind][0];
+              this.selected_devicesId[kind] = this.sorted_available_devices[kind][0].deviceId;
             }
           }
         });
