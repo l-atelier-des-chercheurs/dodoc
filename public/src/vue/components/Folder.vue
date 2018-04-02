@@ -6,10 +6,10 @@
 
       <div>
         <h2 
-        class="margin-none margin-sides-medium margin-vert-small font-folder_title"
-        @click="$root.openFolder(slugFolderName)"
+          class="margin-none margin-sides-medium margin-vert-small font-folder_title"
+          @click="$root.openFolder(slugFolderName)"
         >
-          {{ folder.name }}
+          {{ folder.name }}    
         </h2>
 
         <div class="font-small">
@@ -29,10 +29,10 @@
 
       <div class="margin-small flex-wrap flex-no-grow flex-horizontally-centered">
         <button 
-        v-if="folder.authorized && context !== 'full'"
-        type="button" 
-        class="button-redthin" 
-        @click="$root.openFolder(slugFolderName)"
+          v-if="folder.authorized && context !== 'full'"
+          type="button" 
+          class="button-redthin" 
+          @click="$root.openFolder(slugFolderName)"
         >
           <span class="">
             {{ $t('open') }}
@@ -77,8 +77,6 @@
       <p>
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
       </p>
-
-    {{ showCaptureModal }}
     </div>
 
     <MediaLibrary
@@ -93,7 +91,7 @@
       <button 
         type="button" 
         class="button-inline bg-rouge captureButton"
-        v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
+        v-if="context === 'full' && ((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
         @click="showCaptureModal = true"
         :disabled="read_only" 
       >
