@@ -11,38 +11,30 @@
     </template>    
 
     <template slot="preview">
-      Hello !
-      <video ref="videoElement" autoplay muted /> 
-
+      <CaptureContent
+        :folder="folder"
+      >
+      </CaptureContent>
     </template>
 
   </Modal>
 </template>
 <script>
 import Modal from './BaseModal.vue';
-
-import RecordRTC from 'recordrtc';
-
+import CaptureContent from './capture/CaptureContent.vue';
 
 export default {
   props: {
     folder: Object
   },
   components: {
-    Modal
-  },
-  data() {
-    return {
-      videoStream: '',
-      audioStream: '',
-      currentFeedsSource: {}
-    }
-  },
-  
+    Modal,
+    CaptureContent
+  },  
   created() {
   },
   mounted() {
-    this.startCameraFeed();
+    // this.startCameraFeed();
   },
   beforeDestroy() {
   },
@@ -51,65 +43,6 @@ export default {
   },
   computed: {
   },
-  methods: {
-    startCameraFeed() {
-      return new Promise((resolve, reject) => {
-        console.log('METHODS • Capture: startCameraFeed');
-        
-        this.stopAllFeeds();
-        this.getCameraFeed()
-          .then((stream) => {
-            this.videoStream = stream;
-            this.$refs.videoElement.srcObject = stream;
-            resolve();
-          }, (err) => {
-            alertify.error( "Failed to start camera feed: " + err);
-            reject();
-          });
-      });
-    },
-    stopAllFeeds() {
-      console.log('METHODS • Capture: stopAllFeeds');
-      if( !this.$refs.videoElement.paused)
-        this.$refs.videoElement.pause();
-
-      if(this.videoStream) this.videoStream.getTracks().forEach((track) => track.stop());
-      if(this.audioStream) this.audioStream.getTracks().forEach((track) => track.stop());
-
-      // imageMode.stop();
-      // videoMode.stop();
-      // stopMotionMode.stop();
-      // audioMode.stop();
-    },
-    getCameraFeed(withAudio) {
-      return new Promise((resolve, reject) => {
-        console.log('METHODS • Capture: getCameraFeed');
-
-        if( currentFeedsSource === undefined || currentFeedsSource.video === undefined) {
-          reject("Camera not yet ready");
-        }
-
-        navigator.getUserMedia(
-          {
-            video: currentFeedsSource.video,
-            audio: withAudio
-          },
-          function (stream) {
-            resolve(stream);
-          },
-          function(err) {
-            $(document).trigger('open_settings_pane');
-            for (index=0; index < videoResSwitches.length; index++) {
-              videoResSwitches[index].checked = false;
-            }
-            alertify.error(dodoc.lang().videoStreamCouldntBeStartedTryChangingRes);
-          }
-        );
-      });
-    }
-    
-
-  }
 }
 </script>
 <style>
