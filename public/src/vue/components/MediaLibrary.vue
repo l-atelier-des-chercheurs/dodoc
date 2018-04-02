@@ -158,7 +158,6 @@ export default {
   },
   methods: {
     openMediaModal(slugMediaName) {
-      debugger;
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaLibrary: openMedia');
       }

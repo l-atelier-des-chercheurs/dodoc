@@ -42,9 +42,7 @@ export default {
   created() {
   },
   mounted() {
-    debugger;
     this.startCameraFeed();
-
   },
   beforeDestroy() {
   },
@@ -72,7 +70,6 @@ export default {
     },
     stopAllFeeds() {
       console.log('METHODS • Capture: stopAllFeeds');
-      debugger;
       if( !this.$refs.videoElement.paused)
         this.$refs.videoElement.pause();
 
