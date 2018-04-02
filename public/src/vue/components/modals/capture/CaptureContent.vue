@@ -13,7 +13,7 @@
     <div class="m_capture--panel m_capture--panel_left"
       :class="{ 'is--movedLeft' : justCaptured }"
     >
-      <div class="encartTop">
+      <div class="m_capture--panel--previewCard">
         <video 
           v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
           ref="videoElement" 
@@ -25,6 +25,8 @@
           ref="equalizerElement" width="720" height="360" 
         />
       </div>
+      <div class="m_capture--panel--captureButton"></div>
+
     </div>
 
     <div class="m_capture--panel m_capture--panel_right">
@@ -105,7 +107,9 @@ export default {
   created() {
   },
   mounted() {
-    this.init();
+    this.$nextTick(() => {
+      this.init();
+    });
   },
   beforeDestroy() {
   },
