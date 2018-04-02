@@ -1,6 +1,6 @@
 <template>
   <div class="m_folderview">
-    <div class="container">
+    <div class="">
       <Folder
         :slugFolderName="slugFolderName"
         :folder="folder"

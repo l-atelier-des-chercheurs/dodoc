@@ -1,8 +1,8 @@
 <template>
-  <div class="m_filterBar margin-vert-medium">
+  <div class="m_filterBar">
     <div>
       ORDRE
-      <div class="">
+      <!-- <div class="">
         <div class="">
           <label class="margin-none text-cap with-bullet">
             {{ $t('sort_by') }}
@@ -50,7 +50,7 @@
             </button>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <div>

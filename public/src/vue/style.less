@@ -162,11 +162,16 @@ body {
   .flex-space-between;
 
   .m_logo {
-    display: block;
+    display: flex;
     height: 100%;
     width: auto;
     padding: @t-skipline/2 @t-skipline; 
     margin-left: 0;
+
+    button {
+      padding: 0 @t-skipline/2;
+      color: @c-orange;
+    }
 
     img {
       width: auto;
@@ -211,6 +216,9 @@ body {
   flex-flow: row nowrap;
   justify-content: stretch;
   align-items: center;
+
+  .bg-gris_fonce;
+  .c-blanc;
 
   > * {
     flex: 1 1 0;
@@ -354,10 +362,12 @@ body {
     border-bottom: 1px solid @c-gris;
   }
   
-
   .m_folder--library {
     width: 100%;
+  }
 
+  .m_folder--library--medias {
+    width: 100%;
     display: flex;
     flex-flow: row wrap;
 
@@ -371,6 +381,7 @@ body {
 .m_media {
   position: relative;
   width: 100%;
+  min-width: 160px;
 
   .bg-gris_clair;
   border: 1px solid white;
@@ -401,8 +412,72 @@ body {
     right: 0;
   }
 
-  
+}
 
+.m_capture {
+
+  .bg-blanc;
+
+  .m_capture--modeSelector {
+    display: flex;
+    width: 100%;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    padding: @t-skipline 0;
+
+    > * {
+      flex: 0 0 auto;
+      display: flex;
+      flex-flow: row wrap
+    }
+
+    input {
+      width: 0px; height: 0;
+      visibility: hidden;
+    }
+
+    input:checked + label {
+      .bg-orange;
+      .c-blanc;
+    }
+
+    label { 
+      .button;
+      .bg-gris_tresclair;
+      .button-inline;
+      padding: @t-skipline/2;
+      margin: 1vw 1vw;
+      text-align: center;
+
+      img {
+        display: block;
+        margin: auto;
+        width: 48px;
+        height: 48px;
+      }
+      span {
+        display: block;
+        margin: @t-skipline/2;
+      }
+    }
+  }
+
+  .m_capture--panel {
+    position: relative;
+    .bg-gris;
+  }
+
+  .m_capture--panel_left {
+    width: 75%;
+    // margin-left: 25/2%;
+    transform: translate3d(100 - 75%, 0, 0);
+    border:1px solid @c-gris;
+  }
+
+  .m_capture--panel--previewCard {
+
+  }
 
 }
 

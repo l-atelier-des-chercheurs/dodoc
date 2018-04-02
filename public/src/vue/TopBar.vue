@@ -1,6 +1,9 @@
 <template>
   <div class="m_topbar">
     <div class="m_logo" @click="$root.closeFolder()">
+      <button v-if="has_back_button" class="">
+        ‹
+      </button>
       <img src="/images/i_logo.svg"/>
     </div>
     
@@ -46,6 +49,7 @@
 
 export default {
   props: {
+    has_back_button: Boolean
   },
   components: {
   },

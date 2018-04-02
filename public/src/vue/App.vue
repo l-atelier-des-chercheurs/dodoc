@@ -7,7 +7,9 @@
     >
     </SystemBar>
 
-    <TopBar>
+    <TopBar
+      :has_back_button="view === 'FolderView'"
+    >
     </TopBar>
 
     <ListView

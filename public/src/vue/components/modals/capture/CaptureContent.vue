@@ -1,44 +1,52 @@
 <template>
-  <div>
-    Hello !
-    {{ folder.name }}
-    <fieldset>
-      <legend>Mode</legend>
+  <div class="m_capture">
+    <div class="m_capture--modeSelector">
       <div v-for="mode in available_modes">
         <input type="radio" :id="mode.key" :value="mode.key" v-model="selected_mode">
-        <label :for="mode.key">{{ mode.name }}</label>
+        <label :for="mode.key">
+          <img :src="mode.picto">
+          <span>{{ mode.name }}</span>
+        </label>
       </div>
-    </fieldset>
+    </div>
 
-    <fieldset>
+    <div class="m_capture--panel m_capture--panel_left"
+      :class="{ 'is--movedLeft' : justCaptured }"
+    >
+      <div class="encartTop">
+        <video 
+          v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
+          ref="videoElement" 
+          autoplay 
+          muted 
+        /> 
+        <canvas 
+          v-if="selected_mode === 'audio'"
+          ref="equalizerElement" width="720" height="360" 
+        />
+      </div>
+    </div>
+
+    <div class="m_capture--panel m_capture--panel_right">
+
+
+    </div>
+
+    <fieldset v-show="false">
       <legend>Sources</legend>
-      <div v-for="(currentId, kind) in selected_devicesId">
+      <div v-for="(currentId, kind) in selected_devicesId" :key="kind">
         {{ kind }}
         <select v-if="sorted_available_devices.hasOwnProperty(kind)" v-model="selected_devicesId[kind]">
-          <option v-for="(device, index) in sorted_available_devices[kind]" :value="device.deviceId">
+          <option 
+            v-for="(device, index) in sorted_available_devices[kind]" 
+            :value="device.deviceId" 
+            :key="device.deviceId"
+          >
             {{ device.label }}
           </option>        
         </select>
       </div>
     </fieldset>
-
-    <div class="left_panel">
-      <video 
-        v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
-        ref="videoElement" 
-        autoplay 
-        muted 
-      /> 
-      <canvas 
-        v-if="selected_mode === 'audio'"
-        ref="equalizerElement" width="720" height="360" 
-      />
-    </div>
-
-    <div class="right_panel">
-
-
-    </div>
 
 
   </div>
@@ -63,18 +71,22 @@ export default {
       available_modes: [
         { 
           name: this.$t('photo'),
+          picto: '/images/i_icone-dodoc_image.svg',
           key: 'photo'
         },
         {
           name: this.$t('video'),
+          picto: '/images/i_icone-dodoc_video.svg',
           key: 'video'
         },
         {
           name: this.$t('stopmotion'),
+          picto: '/images/i_icone-dodoc_anim.svg',
           key: 'stopmotion'
         },
         {
           name: this.$t('audio'),
+          picto: '/images/i_icone-dodoc_audio.svg',
           key: 'audio'
         }
       ],
@@ -85,7 +97,9 @@ export default {
         audioinput: '',
         videoinput: '',
         audiooutput: ''
-      }
+      },
+
+      justCaptured: false
     }
   },
   created() {
@@ -146,9 +160,7 @@ export default {
         // get last mode from localstorage
 
         // otherwise start first mode
-        if(this.selected_mode === '') {
-          this.selected_mode = this.available_modes[0].key;
-        }
+        this.selected_mode = this.available_modes[0].key;
       });
     },
 
@@ -285,7 +297,6 @@ var equalizer = (function() {
 
   var API = {
     start : function(canvasEl, stream) {
-      debugger;
       ctx = canvasEl.getContext("2d");
 
       window.AudioContext = (function(){
@@ -401,6 +412,5 @@ var equalizer = (function() {
 })();
 
 </script>
-<style>
-
+<style lang="less">
 </style>

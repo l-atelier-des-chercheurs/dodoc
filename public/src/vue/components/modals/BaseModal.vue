@@ -78,13 +78,10 @@
         </div>
 
         <button
-          class="button-round bg-transparent m_modal--close_button padding-verysmall"
+          class="button-round bg-transparent m_modal--close_button padding-medium"
           @click="closeModal"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-            <line x1="13.33" y1="13.33" x2="34.67" y2="34.67"/>
-            <line x1="13.33" y1="34.67" x2="34.67" y2="13.33"/>
-          </svg>
+          <img src="/images/i_close.svg">
         </button>
       </div>
     </transition>

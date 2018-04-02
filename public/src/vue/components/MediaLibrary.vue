@@ -1,54 +1,55 @@
 <template>
-    <div class="m_folder--library"
+  <div class="m_folder--library"
+  >
+
+    <MediaFilterBar
+      :currentSort="mediaSort"
+      :currentFilter="mediaFilter"
     >
+    </MediaFilterBar>
 
-      <MediaFilterBar
-        :currentSort="mediaSort"
-        :currentFilter="mediaFilter"
-      >
-      </MediaFilterBar>
-
-      <div
+    <div class="m_folder--library--medias">
+      <div 
+        class="m_media"
         v-for="media in sortedMedias"
         v-if="media.hasOwnProperty(mediaSort.field) && media[mediaSort.field] !== ''"
         :key="media.slugMediaName"
         :title="media.slugMediaName"
       >
-        <div class="m_media">
-          <MediaContent
-            v-model="media.content"
-            :context="'Library'"
-            :slugMediaName="media.slugMediaName"
-            :slugFolderName="slugFolderName"
-            :media="media"
-          ></MediaContent>
-          <button 
-            type="button" 
-            class="m_media--open border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
-            @click.stop="openMediaModal(media.slugMediaName)"
-          >
-            {{ $t('open') }}
-          </button>
-        </div>
+        <MediaContent
+          v-model="media.content"
+          :context="'Library'"
+          :slugMediaName="media.slugMediaName"
+          :slugFolderName="slugFolderName"
+          :media="media"
+        ></MediaContent>
+        <button 
+          type="button" 
+          class="m_media--open border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
+          @click.stop="openMediaModal(media.slugMediaName)"
+        >
+          {{ $t('open') }}
+        </button>
       </div>
+    </div>
 
-      <FileUpload
-        v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
-        :slugFolderName="slugFolderName"
-        :disabled="read_only"
-      >
-      </FileUpload>
+    <FileUpload
+      v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
+      :slugFolderName="slugFolderName"
+      :disabled="read_only"
+    >
+    </FileUpload>
 
-      <EditMedia
-        v-if="showMediaModalFor !== ''"
-        :slugFolderName="slugFolderName"
-        :slugMediaName="showMediaModalFor"
-        :media="folder.medias[showMediaModalFor]"
-        @close="showMediaModalFor = ''"
-        :read_only="read_only"
-      >
-      </EditMedia>        
-    </div>    
+    <EditMedia
+      v-if="showMediaModalFor !== ''"
+      :slugFolderName="slugFolderName"
+      :slugMediaName="showMediaModalFor"
+      :media="folder.medias[showMediaModalFor]"
+      @close="showMediaModalFor = ''"
+      :read_only="read_only"
+    >
+    </EditMedia>        
+  </div>    
 </template>
 <script>
 import MediaFilterBar from './MediaFilterBar.vue';

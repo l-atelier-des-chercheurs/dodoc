@@ -6,10 +6,10 @@
   right: 0;
   bottom: 0;
 
-  background-color: rgba(255,255,255, .9);
+  background-color: fade(@c-creme, 95%);
   cursor: pointer;
   overflow: auto;
-
+  
   display: flex;
   align-items: center;
   justify-content: center;
@@ -43,14 +43,14 @@
   cursor: auto;
 
   max-width: @t-panelWidth;
-  margin: 5vh 5vw;
+  margin: 5vmin 5vmin;
 
   @media screen and (max-width: 50rem) {
     margin: 50px 0;
   }
 
   &.is--large {
-    max-width: @t-panelWidth * 3;
+    max-width: @t-panelWidth * 4;
   }
 
   .m_modal--container--content {
