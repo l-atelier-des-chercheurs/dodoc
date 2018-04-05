@@ -74,7 +74,7 @@
           </div>
 
         <button
-          class="button-round bg-transparent m_modal--close_button padding-medium"
+          class="button-round bg-transparent m_modal--close_button padding-verysmall"
           @click="closeModal"
         >
           <img src="/images/i_close.svg">

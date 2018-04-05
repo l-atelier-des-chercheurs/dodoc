@@ -10,29 +10,34 @@
       </div>
     </div>
 
-    <div class="m_capture--panel m_capture--panel_left"
-      :class="{ 'is--movedLeft' : justCaptured }"
+    <div class="m_capture--panel"
+      :class="{ 'is--justCaptured' : justCaptured }"
     >
-      <div class="m_capture--panel--previewCard">
-        <video 
-          v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
-          ref="videoElement" 
-          autoplay 
-          muted 
-        /> 
-        <canvas 
-          v-if="selected_mode === 'audio'"
-          ref="equalizerElement" width="720" height="360" 
-        />
+      <div class="m_capture--panel--left">
+        <div class="m_capture--panel--left--previewCard">
+          <video 
+            v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
+            ref="videoElement" 
+            autoplay 
+            muted 
+          /> 
+          <canvas 
+            v-if="selected_mode === 'audio'"
+            ref="equalizerElement" width="720" height="360" 
+          />
+        </div>
+        <div class="m_capture--panel--left--captureButton">
+          <button type="button" class="button-thin button-wide padding-verysmall margin-verysmall">
+            <img src="/images/i_record.svg">
+          </button>
+        </div>
       </div>
-      <div class="m_capture--panel--captureButton"></div>
+
+      <div class="m_capture--panel--right">
+      </div>
 
     </div>
 
-    <div class="m_capture--panel m_capture--panel_right">
-
-
-    </div>
 
     <fieldset v-show="false">
       <legend>Sources</legend>

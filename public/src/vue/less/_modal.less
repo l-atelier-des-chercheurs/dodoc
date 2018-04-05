@@ -43,16 +43,21 @@
   cursor: auto;
 
   max-width: @t-panelWidth;
-  margin: 5vh 5vw;
+  margin: 5vmin 5vmin;
 
   @media screen and (max-width: 50rem) {
     margin: 50px 0;
   }
 
   &.typeOfModal-Capture {
-    max-width: @t-panelWidth * 3;
+    max-width: @t-panelWidth * 4;
     // if it is medium, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
     align-self: flex-start;
+
+    .m_modal--preview {
+      display: flex;
+      flex-flow: column nowrap;
+    }
   }
 
   &.typeOfModal-EditMedia {
@@ -224,22 +229,6 @@
     stroke-miterlimit: 10;
     stroke-width: 3px;
   }
-
-  &::before {
-      content: '';
-      display: block;
-      position: absolute;
-      z-index: -1;
-      width: 0;
-      height: 0;
-      left:50%;
-      top:50%;
-      box-shadow:
-        0 0 60px 30px #fff,  /* inner white */
-        0 0 100px 60px transparent; /* middle magenta */
-//         0 0 140px 90px #0ff; /* outer cyan */
-  }
-
 
   @media screen and (max-width: 50rem) {
     top: 0;

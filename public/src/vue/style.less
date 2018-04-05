@@ -417,14 +417,19 @@ body {
 .m_capture {
 
   .bg-blanc;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
 
   .m_capture--modeSelector {
+    flex: 0 0 auto;
+
     display: flex;
     width: 100%;
     flex-flow: row wrap;
     justify-content: center;
     align-items: center;
-    padding: @t-skipline 0;
+    padding: @t-skipline/2 0;
 
     > * {
       flex: 0 0 auto;
@@ -446,40 +451,78 @@ body {
       .button;
       .bg-gris_tresclair;
       .button-inline;
-      padding: @t-skipline/2;
+      padding: 0;
       margin: 1vw 1vw;
       text-align: center;
 
+      > * {
+        margin: 0 @t-skipline/4;        
+      }
+
       img {
         display: block;
-        margin: auto;
-        width: 48px;
-        height: 48px;
+        width: 36px;
+        height: 36px;
+        margin: @t-skipline/4 @t-skipline/4;        
       }
       span {
         display: block;
-        margin: @t-skipline/2;
+        font-weight: 400;
+        text-transform: lowercase;
+        margin: @t-skipline/4 @t-skipline/4;        
       }
     }
   }
 
   .m_capture--panel {
     position: relative;
-    .bg-gris;
+    height: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+
+    > * {
+      flex: 1 1 auto;
+      transition: all 1s;
+    }
+
+    .m_capture--panel--left {
+      flex-basis: 100%;
+    }
+    .m_capture--panel--right {
+      flex-basis: 0;
+      width: 0;
+    }
   }
 
-  .m_capture--panel_left {
-    width: 75%;
-    // margin-left: 25/2%;
-    transform: translate3d(100 - 75%, 0, 0);
-    border:1px solid @c-gris;
+  .m_capture--panel--left {
+    display: flex;
+    flex-flow: column nowrap;
   }
 
-  .m_capture--panel--previewCard {
+  .m_capture--panel--left--previewCard {
+    position: relative;
+    width: 100%;
+    height: 100%;
 
+    > video {
+      position: absolute;
+      object-fit: contain;
+      .bg-gris_clair;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
   }
-  .m_capture--panel--captureButton {
-    
+  .m_capture--panel--left--captureButton {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+
+    img {
+      width: 48px;
+      height: 48px;
+    }
   }
 
 }
