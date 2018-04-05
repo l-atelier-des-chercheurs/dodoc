@@ -8,9 +8,6 @@
 import Vue from 'vue';
 
 import localstore from 'store';
-import VueScrollTo from 'vue-scrollto';
-import PortalVue from 'portal-vue';
-import VueI18n from 'vue-i18n';
 import alertify from 'alertify.js';
 
 import locale_strings from './locale_strings.js';
@@ -20,8 +17,16 @@ Vue.config.devtools = true;
 
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
+import Transitions from 'vue2-transitions';
+Vue.use(Transitions);
+
+import VueScrollTo from 'vue-scrollto';
 Vue.use(VueScrollTo);
+
+import PortalVue from 'portal-vue';
 Vue.use(PortalVue);
+
+import VueI18n from 'vue-i18n';
 Vue.use(VueI18n);
 
 let lang_settings = {
