@@ -4,6 +4,7 @@
     @close="$emit('close')"
     @submit="editThisMedia"
     :read_only="read_only"
+    :typeOfModal="'EditMedia'"
     >
     <template slot="header">
       <span class="text-cap"> {{ $t('edit_the_media') }}</span> <i>{{ slugMediaName }}</i>

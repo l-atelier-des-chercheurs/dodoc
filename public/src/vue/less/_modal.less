@@ -43,14 +43,26 @@
   cursor: auto;
 
   max-width: @t-panelWidth;
-  margin: 5vmin 5vmin;
+  margin: 5vh 5vw;
 
   @media screen and (max-width: 50rem) {
     margin: 50px 0;
   }
 
-  &.is--large {
-    max-width: @t-panelWidth * 4;
+  &.typeOfModal-Capture {
+    max-width: @t-panelWidth * 3;
+    // if it is medium, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
+    align-self: flex-start;
+  }
+
+  &.typeOfModal-EditMedia {
+    max-width: @t-panelWidth * 3;
+    // if it is large, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
+    align-self: flex-start;
+
+    .m_modal--preview {
+      height: 90vh;
+    }    
   }
 
   .m_modal--container--content {

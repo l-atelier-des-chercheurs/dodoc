@@ -4,6 +4,7 @@
     @close="$emit('close')"
     @submit="editThisFolder"
     :read_only="read_only"
+    :typeOfModal="'EditMeta'"
     >
     <template slot="header">
       <span class="text-cap"> {{ $t('edit_folder') }}</span> <i>{{ folder.name }}</i>

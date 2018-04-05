@@ -2,6 +2,7 @@
   <Modal
     @close="$emit('close')"
     :read_only="read_only"
+    :typeOfModal="'Capture'"
     >
     <template slot="header">
       <span class="text-cap"> {{ $t('capture') }}</span> <i>{{ folder.name }}</i>
