@@ -92,8 +92,8 @@ export default {
           key: 'audio'
         }
       ],
-      videoStream: '',
-      audioStream: '',
+      videoStream: undefined,
+      audioStream: undefined,
       available_devices: {},
       selected_devicesId: {
         audioinput: '',
@@ -119,7 +119,9 @@ export default {
   watch: {
     'selected_devicesId.audioinput': function() {
       console.log(`WATCH • Capture: selected_devicesId.audioinput = ${this.selected_devicesId.audioinput}`);
-      this.$refs.videoElement.setSinkId(this.selected_devicesId.audioinput);      
+      if(this.$refs.hasOwnProperty('videoElement') && this.$refs.videoElement !== undefined) {       
+        this.$refs.videoElement.setSinkId(this.selected_devicesId.audioinput);      
+      }
     },
     'selected_devicesId.videoinput': function() {
       console.log(`WATCH • Capture: selected_devicesId.videoinput = ${this.selected_devicesId.videoinput}`);
@@ -127,13 +129,14 @@ export default {
     },
     'selected_mode': function() {
       console.log('WATCH • Capture: selected_mode');
-      this.stopAllFeeds();
 
       if(this.selected_mode === 'photo') {
-        this.startCameraFeed()
+        this.stopAudioFeed();
+        this.startCameraFeed();
       }
 
       else if(this.selected_mode === 'audio') {
+        this.stopVideoFeed();
         equalizer.clearCanvas();
         this.getAudioFeed()
         .then(stream => {
@@ -174,15 +177,27 @@ export default {
       });
     },
 
-
-    stopAllFeeds() {
-      console.log('METHODS • Capture: stopAllFeeds');
-      if(this.$refs.hasOwnProperty('videoElement') && !this.$refs.videoElement.paused)
-        this.$refs.videoElement.pause();
-
-      if(this.videoStream) this.videoStream.getTracks().forEach((track) => track.stop());
-      if(this.audioStream) this.audioStream.getTracks().forEach((track) => track.stop());
+    stopAudioFeed() {
+      console.log('METHODS • Capture: stopAudioFeed');
+      if(this.audioStream) {
+        this.audioStream.getTracks().forEach((track) => track.stop());
+        this.audioStream = undefined;
+      }
       equalizer.stop();
+    },
+    stopVideoFeed() {
+      console.log('METHODS • Capture: stopVideoFeed');
+      if(this.videoStream !== undefined) {
+        this.videoStream.getTracks().forEach((track) => track.stop());
+        debugger;
+        if(this.$refs.videoElement !== null) {
+          this.$refs.videoElement.srcObject = null;
+        }
+      }
+    },
+    stopAllFeeds() {
+      this.stopAudioFeed();
+      this.stopVideoFeed();
     },
 
     startCameraFeed() {

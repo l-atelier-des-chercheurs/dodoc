@@ -1,13 +1,10 @@
 <template>
   <div>
-    <transition name="fade">
       <div class="m_modal--mask"
         @click.self="closeModal"
-        v-if="showModal"
+        v-show="showModal"
       >
-        <transition name="fade">
           <div class="m_modal--container"
-            v-if="showModal"
             :class="['typeOfModal-' + typeOfModal, 'color-' + backgroundColor]"
             @keyup.ctrl.enter="$emit('submit')"
             >
@@ -76,15 +73,13 @@
 
           </div>
 
-          <button
-            class="button-round bg-transparent m_modal--close_button padding-medium"
-            @click="closeModal"
-          >
-            <img src="/images/i_close.svg">
-          </button>
-        </transition>
+        <button
+          class="button-round bg-transparent m_modal--close_button padding-medium"
+          @click="closeModal"
+        >
+          <img src="/images/i_close.svg">
+        </button>
       </div>
-    </transition>
   </div>
 </template>
 
@@ -111,13 +106,11 @@ export default {
     };
   },
   mounted: function() {
-    this.$nextTick(() => {
-      this.showModal = true;
-    });
+    this.showModal = true;
   },
   methods: {
     modalKeyListener: function(evt) {
-      console.log('METHODS • BaseModal: modalKeyListener');
+      // console.log('METHODS • BaseModal: modalKeyListener');
       if (evt.keyCode === 27) {
         this.closeModal();
       }
