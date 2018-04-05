@@ -1,6 +1,6 @@
 <template>
   <Modal
-    @close="$emit('close')"
+    @close="closeModal()"
     :read_only="read_only"
     :typeOfModal="'Capture'"
     >
@@ -14,6 +14,7 @@
     <template slot="preview">
       <CaptureContent
         :folder="folder"
+        ref="CaptureContent"
       >
       </CaptureContent>
     </template>
@@ -44,6 +45,11 @@ export default {
   },
   computed: {
   },
+  methods: {
+    closeModal() {
+      this.$emit('close');
+    }
+  }
 }
 </script>
 <style>

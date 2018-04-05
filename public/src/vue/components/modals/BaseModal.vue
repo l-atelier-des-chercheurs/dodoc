@@ -1,11 +1,10 @@
 <template>
   <portal to="modal_container">
-    <transition name="modal">
+    <transition name="fade">
       <div class="m_modal--mask"
         v-if="showModal"
         @click.self="closeModal"
       >
-
         <div class="m_modal--container"
           :class="['typeOfModal-' + typeOfModal, 'color-' + backgroundColor]"
           @keyup.ctrl.enter="$emit('submit')"
@@ -108,6 +107,11 @@ export default {
       showModal: false
     };
   },
+  mounted: function() {
+    this.$nextTick(() => {
+      this.showModal = true;
+    });
+  },
   methods: {
     modalKeyListener: function(evt) {
       console.log('METHODS • BaseModal: modalKeyListener');
@@ -126,9 +130,6 @@ export default {
     window.addEventListener('keyup', this.modalKeyListener);
     document.body.classList.add('is_unscrollable');
     this.$root.settings.has_modal_opened = true;
-  },
-  mounted: function() {
-    this.showModal = true;
   },
   destroyed: function() {
     document.removeEventListener('keyup', this.modalKeyListener);
