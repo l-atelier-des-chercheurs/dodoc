@@ -1,7 +1,10 @@
 <template>
   <div class="m_capture">
     <div class="m_capture--modeSelector">
-      <div v-for="mode in available_modes">
+      <div 
+        v-for="mode in available_modes"
+        :key="mode.key"
+      >
         <input type="radio" :id="mode.key" :value="mode.key" v-model="selected_mode">
         <label :for="mode.key">
           <img :src="mode.picto">
@@ -27,7 +30,11 @@
           />
         </div>
         <div class="m_capture--panel--left--captureButton">
-          <button type="button" class="button-thin button-wide padding-verysmall margin-verysmall">
+          <button 
+            type="button" 
+            class="button-thin button-wide padding-verysmall margin-verysmall"
+            @click="capture()"
+          >
             <img src="/images/i_record.svg">
           </button>
         </div>
@@ -45,7 +52,7 @@
         {{ kind }}
         <select v-if="sorted_available_devices.hasOwnProperty(kind)" v-model="selected_devicesId[kind]">
           <option 
-            v-for="(device, index) in sorted_available_devices[kind]" 
+            v-for="device in sorted_available_devices[kind]" 
             :value="device.deviceId" 
             :key="device.deviceId"
           >
@@ -69,6 +76,7 @@ export default {
       type: Object,
       default: ''
     },
+    slugFolderName: String
   },
   components: {
   },
@@ -291,6 +299,34 @@ export default {
           });
       });
     },
+
+    getStaticImageFromVideoElement(videoElement) {
+      return new Promise(function(resolve, reject) {
+        let invisibleCanvas = document.createElement('canvas');
+        invisibleCanvas.width = videoElement.videoWidth;
+        invisibleCanvas.height = videoElement.videoHeight;
+        let invisibleCtx = invisibleCanvas.getContext('2d');
+        invisibleCtx.drawImage( videoElement, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
+        var imageData = invisibleCanvas.toDataURL('image/png');
+        if(imageData === "data:,") {
+          reject(this.$t('notifications.video_stream_not_available'));
+        }
+        resolve(imageData);
+      });
+    },   
+
+    capture() {
+      if(this.selected_mode === 'photo') {        
+        this.getStaticImageFromVideoElement(this.$refs.videoElement).then(imageData => {
+          this.$root.createMediaFromCapture({
+            slugFolderName: this.slugFolderName,
+            type: 'image',
+            rawData: imageData
+          });
+        });
+      }
+    }
+
 
 
   }

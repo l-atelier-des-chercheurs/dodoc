@@ -279,6 +279,9 @@ Vue.prototype.$socketio = new Vue({
     createTextMedia(mdata) {
       this.socket.emit('createTextMedia', mdata);
     },
+    createMediaFromCapture(mdata) {
+      this.socket.emit('createMediaFromCapture', mdata);
+    },
     editMedia(mdata) {
       this.socket.emit('editMedia', mdata);
     },
@@ -444,6 +447,24 @@ let vm = new Vue({
 
       this.$socketio.createTextMedia(mdata);
     },
+
+    createMediaFromCapture: function(mdata) {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`ROOT EVENT: createMediaFromCapture`);
+      }
+
+      mdata.mediaID =
+        Math.random()
+          .toString(36)
+          .substring(2, 15) +
+        Math.random()
+          .toString(36)
+          .substring(2, 15);
+      this.justCreatedCapturedMediaID = mdata.mediaID;
+      debugger;
+      this.$socketio.createMediaFromCapture(mdata);
+    },
+
     removeMedia: function(slugFolderName, slugMediaName) {
       if (window.state.dev_mode === 'debug') {
         console.log(

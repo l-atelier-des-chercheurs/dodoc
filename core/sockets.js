@@ -59,6 +59,9 @@ module.exports = (function() {
       socket.on('createTextMedia', function(data) {
         onCreateTextMedia(socket, data);
       });
+      socket.on('createMediaFromCapture', function(data) {
+        onCreateMediaFromCapture(socket, data);
+      });
       socket.on('editMedia', function(data) {
         onEditMedia(socket, data);
       });
@@ -190,6 +193,39 @@ module.exports = (function() {
       })
       .catch(err => {
         dev.error(`Couldn’t create text media: ${err}`);
+        reject(err);
+      });
+  }
+
+  function onCreateMediaFromCapture(socket, d) {
+    dev.logfunction(
+      `EVENT - onCreateMediaFromCapture : slugFolderName = ${
+        d.slugFolderName
+      } and type = ${d.type} and rawData.length = ${d.rawData.length}`
+    );
+    file
+      .createMediaFromCapture(d)
+      .then(mediaMeta => {
+        file
+          .createMediaMeta(
+            d.slugFolderName,
+            mediaMeta.slugMediaName,
+            mediaMeta.additionalMeta
+          )
+          .then(() =>
+            sendMedias({
+              slugFolderName: d.slugFolderName,
+              slugMediaName: mediaMeta.slugMediaName,
+              mediaID: d.mediaID
+            })
+          )
+          .catch(err => {
+            dev.error(`Couldn’t create captured media meta: ${err}`);
+            reject(err);
+          });
+      })
+      .catch(err => {
+        dev.error(`Couldn’t create captured media: ${err}`);
         reject(err);
       });
   }

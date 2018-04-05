@@ -14,6 +14,7 @@
     <template slot="preview">
       <CaptureContent
         :folder="folder"
+        :slugFolderName="slugFolderName"
         ref="CaptureContent"
       >
       </CaptureContent>
@@ -27,7 +28,8 @@ import CaptureContent from './capture/CaptureContent.vue';
 
 export default {
   props: {
-    folder: Object
+    folder: Object,
+    slugFolderName: String
   },
   components: {
     Modal,

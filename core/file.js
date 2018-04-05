@@ -1,6 +1,7 @@
 const path = require('path'),
   fs = require('fs-extra'),
-  validator = require('validator');
+  validator = require('validator'),
+  sharp = require('sharp');
 
 const settings = require('../settings.json'),
   dev = require('./dev-log'),
@@ -27,7 +28,8 @@ module.exports = (function() {
     removeMedia: (slugFolderName, slugMediaName) =>
       removeMedia(slugFolderName, slugMediaName),
 
-    createTextMedia: mdata => createTextMedia(mdata)
+    createTextMedia: mdata => createTextMedia(mdata),
+    createMediaFromCapture: mdata => createMediaFromCapture(mdata)
   };
 
   function getPresentation() {
@@ -938,18 +940,18 @@ module.exports = (function() {
   function createTextMedia(mdata) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `COMMON — createTextMedia : will create text media at path: ${
+        `COMMON — createTextMedia : will create text media in: ${
           mdata.slugFolderName
         }`
       );
 
       let slugFolderName = mdata.slugFolderName;
       let timeCreated = api.getCurrentDate();
-      let textMediaName = timeCreated + '.md';
+      let randomString = (
+        Math.random().toString(36) + '00000000000000000'
+      ).slice(2, 3 + 2);
+      let textMediaName = `${mdata.type}-${timeCreated}-${randomString}.md`;
 
-      if (mdata.hasOwnProperty('type')) {
-        textMediaName = mdata.type + '-' + textMediaName;
-      }
       let pathToTextMedia = path.join(
         api.getFolderPath(slugFolderName),
         textMediaName
@@ -981,6 +983,75 @@ module.exports = (function() {
           reject(`${err}`);
         }
       );
+    });
+  }
+
+  function createMediaFromCapture(mdata) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(
+        `COMMON — createMediaFromCapture : will create media in: ${
+          mdata.slugFolderName
+        }`
+      );
+
+      let slugFolderName = mdata.slugFolderName;
+      let timeCreated = api.getCurrentDate();
+      let randomString = (
+        Math.random().toString(36) + '00000000000000000'
+      ).slice(2, 3 + 2);
+      let mediaName = `${mdata.type}-${timeCreated}-${randomString}`;
+
+      // Depending on the type of media we will create, we will need to act differently:
+      // - 'image' -> use sharp and create a .jpeg from the buffer
+      // - 'video' -> store the content to a file with writeMediaDataToDisk
+      // - 'stopmotion' -> assemble all images to a video
+      // - 'audio' -> store content with writeMediaDataToDisk
+
+      let tasks = [];
+
+      if (mdata.type === 'image') {
+        tasks.push(
+          new Promise((resolve, reject) => {
+            mediaName += '.jpeg';
+            let pathToMedia = path.join(
+              api.getFolderPath(slugFolderName),
+              mediaName
+            );
+
+            let imageBuffer = api.decodeBase64Image(mdata.rawData);
+            sharp(imageBuffer)
+              .rotate()
+              .withMetadata()
+              .background({ r: 255, g: 255, b: 255 })
+              .flatten()
+              .jpeg({
+                quality: 100
+              })
+              .toFile(pathToMedia, function(err, info) {
+                if (err) reject(err);
+                resolve();
+              });
+          })
+        );
+      } else if (mdata.type === 'video') {
+      } else {
+      }
+
+      Promise.all(tasks)
+        .then(() => {
+          let newMediaInfos = {
+            slugMediaName: mediaName,
+            additionalMeta: {
+              type: mdata.type,
+              fileCreationDate: api.parseDate(timeCreated)
+            }
+          };
+          resolve(newMediaInfos);
+        })
+        .catch(err => {
+          dev.error(`Failed to store captured media as file: ${err}`);
+          reject(`${err}`);
+        });
     });
   }
 

@@ -29,7 +29,8 @@ module.exports = (function() {
       sendEventWithContent(sendEvent, objectContent, io, socket),
     getLocalIP: () => getLocalIP(),
     slug: term => slug(term),
-    clip: (value, min, max) => clip(value, min, max)
+    clip: (value, min, max) => clip(value, min, max),
+    decodeBase64Image: dataString => decodeBase64Image(dataString)
   };
 
   function _getUserPath() {
@@ -192,6 +193,23 @@ module.exports = (function() {
 
   function clip(value, min, max) {
     return Math.max(min, Math.min(value, max));
+  }
+
+  // http://stackoverflow.com/a/20272545
+  function decodeBase64Image(dataString) {
+    dev.logfunction(
+      `COMMON — decodeBase64Image for dataString.length ${dataString.length}`
+    );
+    var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    if (matches.length !== 3) {
+      dev.error('error parsing base64 image');
+      return new Error('Invalid input string');
+    }
+    // let response = {};
+    // response.type = matches[1];
+    // response.data = new Buffer(matches[2], 'base64');
+    let response = new Buffer(matches[2], 'base64');
+    return response;
   }
 
   return API;

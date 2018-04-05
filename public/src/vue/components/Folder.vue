@@ -105,6 +105,7 @@
     <Capture
       v-if="showCaptureModal && !read_only"
       :folder="folder"
+      :slugFolderName="slugFolderName"
       @close="showCaptureModal = false"
     >
     </Capture>

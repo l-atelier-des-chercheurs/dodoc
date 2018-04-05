@@ -105,7 +105,9 @@ module.exports = (function() {
         video_source_not_set: 'La source vidéo n’a pas été trouvée.',
         failed_to_start_audio_change_source:
           'Le flux audio n’a pas pu être démarré.\nEssayez de modifier la source dans les réglages.',
-        audio_source_not_set: 'La source audio n’a pas été trouvée.'
+        audio_source_not_set: 'La source audio n’a pas été trouvée.',
+        video_stream_not_available:
+          'Erreur : le flux vidéo n’est pas disponible.'
       }
     },
     en: {
@@ -210,7 +212,8 @@ module.exports = (function() {
         video_source_not_set: 'The source video has not been set.',
         failed_to_start_audio_change_source:
           'Failed to start audio feed. Try changing the source.',
-        audio_source_not_set: 'The source audio has not been set.'
+        audio_source_not_set: 'The source audio has not been set.',
+        video_stream_not_available: 'Error: Video stream not available.'
       }
     }
   };
