@@ -124,6 +124,7 @@ export default {
     },
     closeModal: function() {
       this.showModal = false;
+      this.$eventHub.$emit('modal.close');
       setTimeout(() => {
         this.$emit('close');
       }, 500);

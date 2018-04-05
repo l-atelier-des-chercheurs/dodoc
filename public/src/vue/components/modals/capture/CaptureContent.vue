@@ -107,21 +107,26 @@ export default {
   created() {
   },
   mounted() {
+    this.$eventHub.$on('modal.close', this.stopAllFeeds);
     this.$nextTick(() => {
       this.init();
     });
   },
   beforeDestroy() {
+    this.$eventHub.$off('closing', this.stopAllFeeds);
   },
 
   watch: {
     'selected_devicesId.audioinput': function() {
+      console.log(`WATCH • Capture: selected_devicesId.audioinput = ${this.selected_devicesId.audioinput}`);
       this.$refs.videoElement.setSinkId(this.selected_devicesId.audioinput);      
     },
     'selected_devicesId.videoinput': function() {
+      console.log(`WATCH • Capture: selected_devicesId.videoinput = ${this.selected_devicesId.videoinput}`);
       this.startCameraFeed();
     },
-    selected_mode: function() {
+    'selected_mode': function() {
+      console.log('WATCH • Capture: selected_mode');
       this.stopAllFeeds();
 
       if(this.selected_mode === 'photo') {
@@ -146,6 +151,7 @@ export default {
   },
   methods: {
     init() {
+      console.log('METHODS • Capture: init');
       navigator.mediaDevices.enumerateDevices()
       .then((deviceInfos) => {
         this.available_devices = deviceInfos;
