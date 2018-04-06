@@ -1,10 +1,15 @@
 <template>
   <div class="m_topbar">
     <div class="m_logo" @click="$root.closeFolder()">
-      <button v-if="has_back_button" class="">
-        ‹
-      </button>
-      <img src="/images/i_logo.svg"/>
+      <template v-if="has_back_button">
+        <button type="button">
+          ‹
+        </button>
+        <img src="/images/i_logo.svg"/>
+      </template>
+      <template v-else>
+        <img src="/images/i_logo.svg"/>
+      </template>
     </div>
     
     <div class="m_topbar--pictos">
