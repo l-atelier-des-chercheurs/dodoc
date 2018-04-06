@@ -49,27 +49,6 @@
     margin: 50px 0;
   }
 
-  &.typeOfModal-Capture {
-    max-width: @t-panelWidth * 4;
-    // if it is medium, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
-    align-self: flex-start;
-
-    .m_modal--preview {
-      display: flex;
-      flex-flow: column nowrap;
-    }
-  }
-
-  &.typeOfModal-EditMedia {
-    max-width: @t-panelWidth * 3;
-    // if it is large, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
-    align-self: flex-start;
-
-    .m_modal--preview {
-      height: 90vh;
-    }    
-  }
-
   .m_modal--container--content {
     height: auto;
 
@@ -114,6 +93,28 @@
 
   }
 
+  &.typeOfModal-Capture {
+    margin: 0;
+    max-width: @t-panelWidth * 4;
+    // if it is medium, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
+    align-self: flex-start;
+
+    .m_modal--preview {
+      display: flex;
+      flex-flow: column nowrap;
+      height: 100vh;
+    }
+  }
+
+  &.typeOfModal-EditMedia {
+    max-width: @t-panelWidth * 3;
+    // if it is large, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
+    align-self: flex-start;
+
+    .m_modal--preview {
+      height: 100vh;
+    }    
+  }
 }
 
 

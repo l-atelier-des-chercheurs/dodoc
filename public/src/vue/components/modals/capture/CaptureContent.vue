@@ -19,11 +19,11 @@
       </button>
     </div>
 
-    <div class="m_capture--panel"
+    <div class="m_capture--panels"
       :class="{ 'is--justCaptured' : justCapturedMediaData.hasOwnProperty('type') }"
     >
-      <div class="m_capture--panel--left">
-        <div class="m_capture--panel--left--previewCard">
+      <div class="m_panel">
+        <div class="m_panel--previewCard">
           <video 
             v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
             ref="videoElement" 
@@ -35,10 +35,10 @@
             ref="equalizerElement" width="720" height="360" 
           />
         </div>
-        <div class="m_capture--panel--left--captureButton">
+        <div class="m_panel--buttons">
           <button 
             type="button" 
-            class="button-thin button-wide padding-verysmall margin-verysmall"
+            class="padding-verysmall"
             @click="capture()"
           >
             <img src="/images/i_record.svg">
@@ -46,20 +46,24 @@
         </div>
       </div>
 
-      <div class="m_capture--panel--right">
-        <template v-if="justCapturedMediaData.hasOwnProperty('type')">
+      <div class="m_panel">
+        <div class="m_panel--previewCard">
+          <template v-if="justCapturedMediaData.hasOwnProperty('type')">
+            <MediaContent
+              :context="'edit'"
+              :slugMediaName="justCapturedMediaData.slugMediaName"
+              :slugFolderName="slugFolderName"
+              :media="justCapturedMediaData"
+              :mediaURL="mediaURL"
+            >
+            </MediaContent>          
+          </template>
+        </div>
+        <div class="m_panel--buttons">
           <button type="button" @click="justCapturedMediaData = {}">
             FERMER
           </button>
-          <MediaContent
-            :context="'edit'"
-            :slugMediaName="justCapturedMediaData.slugMediaName"
-            :slugFolderName="slugFolderName"
-            :media="justCapturedMediaData"
-            :mediaURL="mediaURL"
-          >
-          </MediaContent>          
-        </template>
+        </div>        
       </div>
 
     </div>
@@ -169,9 +173,16 @@ export default {
       if(this.selected_mode === 'photo') {
         this.stopAudioFeed();
         this.startCameraFeed();
-      }
-
-      else if(this.selected_mode === 'audio') {
+      } else 
+      if(this.selected_mode === 'video') {
+        this.stopAudioFeed();
+        this.startCameraFeed();
+      } else 
+      if(this.selected_mode === 'stopmotion') {
+        this.stopAudioFeed();
+        this.startCameraFeed();
+      } else 
+      if(this.selected_mode === 'audio') {
         this.stopVideoFeed();
         equalizer.clearCanvas();
         this.getAudioFeed()
