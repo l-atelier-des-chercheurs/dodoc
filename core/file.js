@@ -1034,6 +1034,24 @@ module.exports = (function() {
           })
         );
       } else if (mdata.type === 'video') {
+        tasks.push(
+          new Promise((resolve, reject) => {
+            mediaName += '.webm';
+            let pathToMedia = path.join(
+              api.getFolderPath(slugFolderName),
+              mediaName
+            );
+
+            let imageBuffer = api
+              .writeMediaDataToDisk(pathToMedia, mdata.rawData)
+              .then(() => {
+                resolve();
+              })
+              .catch(err => {
+                reject(err);
+              });
+          })
+        );
       } else {
       }
 

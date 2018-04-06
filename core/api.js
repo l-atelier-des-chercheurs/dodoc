@@ -30,7 +30,9 @@ module.exports = (function() {
     getLocalIP: () => getLocalIP(),
     slug: term => slug(term),
     clip: (value, min, max) => clip(value, min, max),
-    decodeBase64Image: dataString => decodeBase64Image(dataString)
+    decodeBase64Image: dataString => decodeBase64Image(dataString),
+    writeMediaDataToDisk: (pathToFile, dataURL) =>
+      writeMediaDataToDisk(pathToFile, dataURL)
   };
 
   function _getUserPath() {
@@ -210,6 +212,24 @@ module.exports = (function() {
     // response.data = new Buffer(matches[2], 'base64');
     let response = new Buffer(matches[2], 'base64');
     return response;
+  }
+
+  function writeMediaDataToDisk(pathToFile, dataURL) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction('COMMON — writeMediaDataToDisk');
+      if (dataURL === undefined) {
+        dev.error('No media data content gotten for ' + pathToFile);
+        reject('No media sent');
+      }
+      dataURL = dataURL.split(',').pop();
+      dev.logverbose('Will save the video at path : ' + pathToFile);
+
+      var fileBuffer = new Buffer(dataURL, 'base64');
+      fs.writeFile(pathToFile, fileBuffer, function(err) {
+        if (err) reject(err);
+        resolve();
+      });
+    });
   }
 
   return API;

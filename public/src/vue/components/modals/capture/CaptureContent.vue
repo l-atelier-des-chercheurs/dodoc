@@ -36,12 +36,19 @@
           />
         </div>
         <div class="m_panel--buttons">
-          <button 
-            type="button" 
+          <button type="button" 
+            v-if="!isRecording"
             class="padding-verysmall"
             @click="capture()"
           >
             <img src="/images/i_record.svg">
+          </button>
+          <button type="button" 
+            v-if="isRecording"
+            class="padding-verysmall"
+            @click="$eventHub.$emit('capture.stopVideoRecording')"
+          >
+            <img src="/images/i_stop.svg">
           </button>
         </div>
       </div>
@@ -131,6 +138,10 @@ export default {
           key: 'audio'
         }
       ],
+
+      isRecording: false,
+      recordVideoFeed: undefined,
+
       justCapturedMediaData: {},
       videoStream: undefined,
       audioStream: undefined,
@@ -145,15 +156,14 @@ export default {
   created() {
   },
   mounted() {
-    this.$eventHub.$on('modal.close', this.stopAllFeeds);
     this.$eventHub.$on('socketio.new_media_captured', this.newMediaCaptured);
     this.$nextTick(() => {
       this.init();
     });
   },
   beforeDestroy() {
-    this.$eventHub.$off('modal.close', this.stopAllFeeds);
     this.$eventHub.$off('socketio.new_media_captured', this.newMediaCaptured);
+    this.stopAllFeeds();
   },
 
   watch: {
@@ -257,9 +267,8 @@ export default {
     stopVideoFeed() {
       console.log('METHODS • Capture: stopVideoFeed');
       if(this.videoStream !== undefined) {
-        debugger;
         this.videoStream.getTracks().forEach((track) => track.stop());
-        this.videoStream = null;
+        this.videoStream = undefined;
         if(!!this.$refs.videoElement) {
           this.$refs.videoElement.srcObject = null;
         }
@@ -273,16 +282,15 @@ export default {
     startCameraFeed() {
       return new Promise((resolve, reject) => {
         console.log('METHODS • Capture: startCameraFeed');
-        alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .log('METHODS • Capture: startCameraFeed');
+        if(this.videoStream !== undefined) {
+          return;
+        }
 
         this.getCameraFeed()
           .then((stream) => {
             this.videoStream = stream;
             this.$refs.videoElement.srcObject = stream;
-            resolve(stream);
+            resolve();
           })
           .catch((err) => {
             alertify.error(err);
@@ -358,7 +366,7 @@ export default {
     },
 
     getStaticImageFromVideoElement(videoElement) {
-      return new Promise(function(resolve, reject) {
+      return new Promise((resolve, reject) => {
         let invisibleCanvas = document.createElement('canvas');
         invisibleCanvas.width = videoElement.videoWidth;
         invisibleCanvas.height = videoElement.videoHeight;
@@ -372,6 +380,33 @@ export default {
       });
     },   
 
+    startRecordCameraFeed(withAudio = false) {
+      return new Promise((resolve, reject) => {
+        if(!!this.videoStream) {
+
+          let recordVideoFeed = RecordRTC(this.videoStream);
+
+          const options = {
+            recorderType: RecordRTC.MediaStreamRecorder,
+            // mimeType: 'video/webm\;codecs=h264',
+            type: 'video'
+          }
+          recordVideoFeed.startRecording(options);   
+
+          this.isRecording = true;
+
+          this.$eventHub.$on('capture.stopVideoRecording', () => {
+            recordVideoFeed.stopRecording(() => {
+              this.isRecording = false;
+              recordVideoFeed.getDataURL(videoDataURL => {
+                resolve(videoDataURL);
+              })
+            });
+          });
+        }
+      });
+    },
+
     capture() {
       if(this.selected_mode === 'photo') {        
         this.getStaticImageFromVideoElement(this.$refs.videoElement).then(imageData => {
@@ -381,6 +416,17 @@ export default {
             rawData: imageData
           });
         });
+      } else 
+      if(this.selected_mode === 'video') {        
+        this.startRecordCameraFeed(true).then(videoDataURL => {
+          this.$root.createMediaFromCapture({
+            slugFolderName: this.slugFolderName,
+            type: 'video',
+            rawData: videoDataURL
+          });
+        });
+
+
       }
     },
 
