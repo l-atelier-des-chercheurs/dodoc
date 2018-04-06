@@ -138,6 +138,8 @@ export default {
       showCaptureModal: false
     };
   },
+  watch: {
+  },
   computed: {
 
   },
@@ -166,7 +168,6 @@ export default {
       this.showInputPasswordField = false;
     },
   },
-  watch: {}
 };
 </script>
 <style scoped>

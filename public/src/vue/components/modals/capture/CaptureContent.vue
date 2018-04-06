@@ -1,6 +1,9 @@
 <template>
   <div class="m_capture">
     <div class="m_capture--modeSelector">
+      <button type="button" class="bg-transparent" @click="previousMode()">
+        ◀
+      </button>
       <div 
         v-for="mode in available_modes"
         :key="mode.key"
@@ -11,10 +14,13 @@
           <span>{{ mode.name }}</span>
         </label>
       </div>
+      <button type="button" class="bg-transparent" @click="nextMode()">
+        ▶
+      </button>
     </div>
 
     <div class="m_capture--panel"
-      :class="{ 'is--justCaptured' : justCaptured }"
+      :class="{ 'is--justCaptured' : justCapturedMediaData.hasOwnProperty('type') }"
     >
       <div class="m_capture--panel--left">
         <div class="m_capture--panel--left--previewCard">
@@ -41,6 +47,19 @@
       </div>
 
       <div class="m_capture--panel--right">
+        <template v-if="justCapturedMediaData.hasOwnProperty('type')">
+          <button type="button" @click="justCapturedMediaData = {}">
+            FERMER
+          </button>
+          <MediaContent
+            :context="'edit'"
+            :slugMediaName="justCapturedMediaData.slugMediaName"
+            :slugFolderName="slugFolderName"
+            :media="justCapturedMediaData"
+            :mediaURL="mediaURL"
+          >
+          </MediaContent>          
+        </template>
       </div>
 
     </div>
@@ -66,6 +85,8 @@
   </div>
 </template>
 <script>
+import MediaContent from '../../subcomponents/MediaContent.vue';
+
 import alertify from 'alertify.js';
 import RecordRTC from 'recordrtc';
 import _ from 'underscore';
@@ -79,6 +100,7 @@ export default {
     slugFolderName: String
   },
   components: {
+    MediaContent
   },
   data() {
     return {
@@ -105,6 +127,7 @@ export default {
           key: 'audio'
         }
       ],
+      justCapturedMediaData: {},
       videoStream: undefined,
       audioStream: undefined,
       available_devices: {},
@@ -112,21 +135,21 @@ export default {
         audioinput: '',
         videoinput: '',
         audiooutput: ''
-      },
-
-      justCaptured: false
+      }
     }
   },
   created() {
   },
   mounted() {
     this.$eventHub.$on('modal.close', this.stopAllFeeds);
+    this.$eventHub.$on('socketio.new_media_captured', this.newMediaCaptured);
     this.$nextTick(() => {
       this.init();
     });
   },
   beforeDestroy() {
-    this.$eventHub.$off('closing', this.stopAllFeeds);
+    this.$eventHub.$off('modal.close', this.stopAllFeeds);
+    this.$eventHub.$off('socketio.new_media_captured', this.newMediaCaptured);
   },
 
   watch: {
@@ -190,6 +213,28 @@ export default {
       });
     },
 
+    previousMode() {
+      console.log('METHODS • Capture: previousMode');
+      let currentModeIndex = this.available_modes.findIndex((d) => {
+        return d.key === this.selected_mode;
+      });
+
+      if(currentModeIndex > 0) {
+        this.selected_mode = this.available_modes[currentModeIndex-1].key;
+      }
+    },
+    nextMode() {
+      console.log('METHODS • Capture: nextMode');
+      let currentModeIndex = this.available_modes.findIndex((d) => {
+        return d.key === this.selected_mode;
+      });
+
+      if(currentModeIndex < this.available_modes.length-1) {
+        this.selected_mode = this.available_modes[currentModeIndex+1].key;
+      }
+      
+    },
+
     stopAudioFeed() {
       console.log('METHODS • Capture: stopAudioFeed');
       if(this.audioStream) {
@@ -201,9 +246,10 @@ export default {
     stopVideoFeed() {
       console.log('METHODS • Capture: stopVideoFeed');
       if(this.videoStream !== undefined) {
-        this.videoStream.getTracks().forEach((track) => track.stop());
         debugger;
-        if(this.$refs.videoElement !== null) {
+        this.videoStream.getTracks().forEach((track) => track.stop());
+        this.videoStream = null;
+        if(!!this.$refs.videoElement) {
           this.$refs.videoElement.srcObject = null;
         }
       }
@@ -325,7 +371,13 @@ export default {
           });
         });
       }
-    }
+    },
+
+    newMediaCaptured(mdata) {
+      if (this.$root.justCreatedCapturedMediaID && this.$root.justCreatedCapturedMediaID === mdata.mediaID) {
+        this.justCapturedMediaData = mdata;
+      }
+    },
 
 
 

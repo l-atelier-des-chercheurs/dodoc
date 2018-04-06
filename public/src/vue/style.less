@@ -452,7 +452,7 @@ body {
 
 .m_capture {
 
-  .bg-blanc;
+  .bg-gris_tresclair;
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
@@ -470,7 +470,7 @@ body {
     > * {
       flex: 0 0 auto;
       display: flex;
-      flex-flow: row wrap
+      flex-flow: row wrap;
     }
 
     input {
@@ -485,14 +485,14 @@ body {
 
     label { 
       .button;
-      .bg-gris_tresclair;
       .button-inline;
-      padding: 0;
+      .bg-blanc;
+      letter-spacing: 0;
+      padding: 0 @t-skipline/4;        
       margin: 1vw 1vw;
       text-align: center;
 
       > * {
-        margin: 0 @t-skipline/4;        
       }
 
       img {
@@ -513,22 +513,35 @@ body {
   .m_capture--panel {
     position: relative;
     height: 100%;
+    margin-bottom: @t-skipline;
     display: flex;
     flex-flow: row wrap;
-    justify-content: center;
+    justify-content: space-around;
 
     > * {
-      flex: 1 1 auto;
+      flex: 0 1 auto;
       transition: all 1s;
+      overflow: auto;
+      .boxs-card-1;
     }
 
     .m_capture--panel--left {
-      flex-basis: 100%;
+      flex-basis: 90%;
     }
     .m_capture--panel--right {
       flex-basis: 0;
-      width: 0;
     }
+
+    &.is--justCaptured {
+      .m_capture--panel--left {
+        flex-basis: 50%;
+      }
+      .m_capture--panel--right {
+        flex-basis: 40%;
+        width: 0;
+      }      
+    }
+
   }
 
   .m_capture--panel--left {
@@ -544,7 +557,7 @@ body {
     > video {
       position: absolute;
       object-fit: contain;
-      .bg-gris_clair;
+      .bg-noir;
       width: 100%;
       height: 100%;
       margin: 0;

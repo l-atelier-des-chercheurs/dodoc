@@ -192,8 +192,8 @@ Vue.prototype.$socketio = new Vue({
       let slugFolderName = Object.keys(mdata)[0];
       console.log(`Media data is for ${slugFolderName}.`);
 
-      //     let mediaData = Object.values(mdata[slugFolderName].medias)[0];
-      //     let mediaName = Object.keys(mdata[slugFolderName].medias)[0];
+      let mediaData = Object.values(mdata[slugFolderName].medias)[0];
+
       alertify
         .closeLogOnClick(true)
         .delay(4000)
@@ -208,6 +208,11 @@ Vue.prototype.$socketio = new Vue({
         window.store.folders[slugFolderName].medias,
         mdata[slugFolderName].medias
       );
+
+      // check if mediaData has a mediaID (which would mean a user just created it)
+      if (mediaData.hasOwnProperty('mediaID')) {
+        this.$eventHub.$emit('socketio.new_media_captured', mediaData);
+      }
     },
 
     _onListMedias(mdata) {
@@ -310,6 +315,7 @@ let vm = new Vue({
 
     justCreatedTextmediaID: false,
     justCreatedFolderID: false,
+    justCreatedCapturedMediaID: false,
 
     settings: {
       has_modal_opened: false,
@@ -461,7 +467,6 @@ let vm = new Vue({
           .toString(36)
           .substring(2, 15);
       this.justCreatedCapturedMediaID = mdata.mediaID;
-      debugger;
       this.$socketio.createMediaFromCapture(mdata);
     },
 

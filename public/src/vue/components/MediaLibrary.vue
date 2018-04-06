@@ -16,20 +16,43 @@
         :key="media.slugMediaName"
         :title="media.slugMediaName"
       >
-        <MediaContent
-          v-model="media.content"
-          :context="'Library'"
-          :slugMediaName="media.slugMediaName"
-          :slugFolderName="slugFolderName"
-          :media="media"
-        ></MediaContent>
-        <button 
-          type="button" 
-          class="m_media--open border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
-          @click.stop="openMediaModal(media.slugMediaName)"
-        >
-          {{ $t('open') }}
-        </button>
+        <figure>
+          <div @click.stop="openMediaModal(media.slugMediaName)">
+            <MediaContent
+              v-model="media.content"
+              :context="'Library'"
+              :slugMediaName="media.slugMediaName"
+              :slugFolderName="slugFolderName"
+              :media="media"
+            ></MediaContent>
+          </div>
+          <figcaption>
+            <a>
+              <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" />
+              <span>
+                {{ media.date_created }}
+              </span>
+            </a>
+          </figcaption>
+          <nav>
+            <button 
+              type="button" 
+              class="m_media--open border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
+              @click.stop="openMediaModal(media.slugMediaName)"
+            >
+              {{ $t('open') }}
+            </button>
+            <button 
+              type="button" 
+              class="m_media--open border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
+              @click.stop="removeMedia(media.slugMediaName)"
+            >
+              {{ $t('remove') }}
+            </button>
+          </nav>
+        </figure>
+
+
       </div>
     </div>
 
@@ -77,6 +100,12 @@ export default {
         field: 'date_created',
         type: 'date',
         order: 'descending'
+      },
+      mediaTypeIcon: {
+        image: '/images/i_icone-dodoc_image.svg',
+        video: '/images/i_icone-dodoc_video.svg',
+        stopmotion: '/images/i_icone-dodoc_anim.svg',
+        audio: '/images/i_icone-dodoc_audio.svg'
       }
     }
   },
@@ -163,6 +192,14 @@ export default {
         console.log('METHODS • MediaLibrary: openMedia');
       }
       this.showMediaModalFor = slugMediaName;
+    },
+    removeMedia(slugMediaName) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log('METHODS • MediaLibrary: removeMedia');
+      }
+      if (window.confirm(this.$t('sureToRemoveMedia'))) {
+        this.$root.removeMedia(this.slugFolderName, slugMediaName);
+      }
     }
   }
 }

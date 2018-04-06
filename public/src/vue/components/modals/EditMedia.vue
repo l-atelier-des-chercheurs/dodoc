@@ -190,7 +190,6 @@
         :slugMediaName="slugMediaName"
         :slugFolderName="slugFolderName"
         :media="media"
-        :mediaURL="mediaURL"
         :read_only="read_only"
         v-model="mediadata.content"
       >
