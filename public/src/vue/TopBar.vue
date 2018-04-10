@@ -71,14 +71,15 @@
   </div>
 </template>
 <script>
-import ShowQRCode from './components/modals/ShowQRCode.vue';
+import QRCode from './components/modals/QRCode.vue';
 
 export default {
   props: {
-    has_back_button: Boolean
+    has_back_button: Boolean,
+    slugFolderName: String
   },
   components: {
-    ShowQRCode
+    QRCode
   },
   data() {
     return {

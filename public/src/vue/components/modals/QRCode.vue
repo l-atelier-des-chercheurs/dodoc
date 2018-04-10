@@ -8,28 +8,29 @@
     </template>
 
     <template slot="preview">
-      <span v-html="$t('toconnectwithanotherdevicetothisfolder')"></span>
+      <div class="margin-medium font-small">
+        <span v-html="$t('toconnectwithanotherdevicetothisfolder')"></span>
 
-      <a v-for="(ip, index) in $root.state.localNetworkInfos.ip"
-        :href="getURLToApp(ip, $root.state.localNetworkInfos.port)"
-        class="js--openInBrowser qrSnippet button button-circled margin-vert-medium border-circled button-inline padding-small"
-        target="_blank"
-        :key="index"
-        >
-        <div class="qrSnippet--text">
-          {{ getURLToApp(ip, $root.state.localNetworkInfos.port) }}
-        </div>
-        <div class="qrSnippet--motif">
-          <qrcode :value="getURLToApp(ip, $root.state.localNetworkInfos.port)" :options="{ size: 100 }"></qrcode>
-        </div>
-      </a>
+        <a v-for="(ip, index) in $root.state.localNetworkInfos.ip"
+          :href="getURLToApp(ip, $root.state.localNetworkInfos.port)"
+          class="js--openInBrowser qrSnippet button button-circled margin-vert-medium border-circled button-inline padding-small"
+          target="_blank"
+          :key="index"
+          >
+          <div class="qrSnippet--text">
+            {{ getURLToApp(ip, $root.state.localNetworkInfos.port) }}
+          </div>
+          <div class="qrSnippet--motif">
+            <qrcode :value="getURLToApp(ip, $root.state.localNetworkInfos.port)" :options="{ size: 100 }"></qrcode>
+          </div>
+        </a>
+      </div>
 
-      Scanner un code QR
-      <ScanQRCode>
-      </ScanQRCode>
-
-      <ScanQR>
-      </ScanQR>
+      <div class="margin-medium font-small">
+        Scanner un code QR
+        <ScanQRCode>
+        </ScanQRCode>
+      </div>
       
     </template>
 

@@ -9,6 +9,7 @@
 
     <TopBar
       :has_back_button="view === 'FolderView'"
+      :slugFolderName="current_slugFolderName"
     >
     </TopBar>
 

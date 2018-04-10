@@ -12,31 +12,46 @@ export default {
   },
   components: {
     Instascan
-    
   },
   data() {
     return {
+      scanner: undefined
     }
   },
-  
   created() {
   },
   mounted() {
-    let scanner = new Instascan.Scanner({ video: this.$refs.preview });
-    scanner.addListener('scan', function (content) {
-      console.log(content);
+    debugger;
+    this.scanner = new Instascan.Scanner({ 
+      video: this.$refs.preview,
+      mirror: false,
+      scanPeriod: 25
     });
-    Instascan.Camera.getCameras().then(function (cameras) {
+    this.scanner.addListener('scan',(content) => {
+      window.location.assign(content);
+    });
+    Instascan.Camera.getCameras().then((cameras) => {
       if (cameras.length > 0) {
-        scanner.start(cameras[0]);
+        var selectedCam = cameras[0];
+        $.each(cameras, (i, c) => {
+            if (c.name.indexOf('back') != -1) {
+                selectedCam = c;
+                return false;
+            }
+        });
+        this.scanner.start(selectedCam);
       } else {
         console.error('No cameras found.');
       }
-    }).catch(function (e) {
+    }).catch((e) => {
       console.error(e);
     });
   },
   beforeDestroy() {
+    if(this.scanner !== undefined) {
+      this.scanner.stop();
+    }
+
   },
 
   watch: {
