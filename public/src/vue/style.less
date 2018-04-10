@@ -366,7 +366,7 @@ body {
 
   }
 
-  .m_folder--description {
+  .m_folder--description, .m_folder--favMedias {
     flex: 1 1 44ch;
     padding:  @t-skipline;
     border-left: 1px solid @c-gris_clair;
@@ -376,6 +376,18 @@ body {
   .m_folder--library {
     width: 100%;
     .bg-gris_clair;
+  }
+
+  .m_folder--favMedias {
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    padding: 0 @t-skipline/2;
+
+    > * {
+      flex: 0 0 100/5%;
+    }
+    
   }
 
   .m_folder--library--medias {
@@ -416,22 +428,24 @@ body {
     @t-stripesWidth: 6px;
     @c-stripesCol: fade(@c-gris, 15%);
 
-    background: 
-    /* On "top" */
-    repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent @t-stripesWidth,
-      @c-stripesCol @t-stripesWidth,
-      @c-stripesCol @t-stripesWidth*2
-    ),
-    repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent @t-stripesWidth,
-      @c-stripesCol @t-stripesWidth,
-      @c-stripesCol @t-stripesWidth*2
-    );
+    background-color: @c-gris;
+
+    // background: 
+    // /* On "top" */
+    // repeating-linear-gradient(
+    //   45deg,
+    //   transparent,
+    //   transparent @t-stripesWidth,
+    //   @c-stripesCol @t-stripesWidth,
+    //   @c-stripesCol @t-stripesWidth*2
+    // ),
+    // repeating-linear-gradient(
+    //   -45deg,
+    //   transparent,
+    //   transparent @t-stripesWidth,
+    //   @c-stripesCol @t-stripesWidth,
+    //   @c-stripesCol @t-stripesWidth*2
+    // );
 
     &::after {
       content: '';

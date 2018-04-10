@@ -6,7 +6,7 @@
           v-if="sortedFoldersSlug !== 'no-folders'"
         >
           <div class="padding-bottom-medium text-cap c-gris font-verysmall">
-            Affichage de 12 projets sur 36
+            Affichage de {{ sortedFoldersSlug.length }} projets sur {{ Object.keys(folders).length }}
           </div>
 
           <transition-group 

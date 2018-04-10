@@ -9,51 +9,15 @@
     </MediaFilterBar>
 
     <div class="m_folder--library--medias">
-      <div 
-        class="m_media"
+
+      <MediaCard
         v-for="media in sortedMedias"
         v-if="media.hasOwnProperty(mediaSort.field) && media[mediaSort.field] !== ''"
         :key="media.slugMediaName"
-        :title="media.slugMediaName"
+        :media="media"
+        :slugFolderName="slugFolderName"
       >
-        <figure>
-          <div @click.stop="openMediaModal(media.slugMediaName)">
-            <MediaContent
-              v-model="media.content"
-              :context="'Library'"
-              :slugMediaName="media.slugMediaName"
-              :slugFolderName="slugFolderName"
-              :media="media"
-            ></MediaContent>
-          </div>
-          <figcaption>
-            <a>
-              <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" />
-              <span>
-                {{ media.date_created }}
-              </span>
-            </a>
-          </figcaption>
-          <nav>
-            <button 
-              type="button" 
-              class="m_media--open border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
-              @click.stop="openMediaModal(media.slugMediaName)"
-            >
-              {{ $t('open') }}
-            </button>
-            <button 
-              type="button" 
-              class="m_media--open border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
-              @click.stop="removeMedia(media.slugMediaName)"
-            >
-              {{ $t('remove') }}
-            </button>
-          </nav>
-        </figure>
-
-
-      </div>
+      </MediaCard>
     </div>
 
     <FileUpload
@@ -64,21 +28,22 @@
     </FileUpload>
 
     <EditMedia
-      v-if="showMediaModalFor !== ''"
+      v-if="showMediaModalFor !== false"
       :slugFolderName="slugFolderName"
       :slugMediaName="showMediaModalFor"
       :media="folder.medias[showMediaModalFor]"
-      @close="showMediaModalFor = ''"
+      @close="showMediaModalFor = false"
       :read_only="read_only"
     >
     </EditMedia>        
+    
   </div>    
 </template>
 <script>
 import MediaFilterBar from './MediaFilterBar.vue';
-import EditMedia from './modals/EditMedia.vue';
 import FileUpload from './FileUpload.vue';
-import MediaContent from './subcomponents/MediaContent.vue';
+import MediaCard from './subcomponents/MediaCard.vue';
+import EditMedia from './modals/EditMedia.vue';
 
 export default {
   props: {
@@ -88,24 +53,18 @@ export default {
   },
   components: {
     MediaFilterBar,
-    EditMedia,
     FileUpload,
-    MediaContent
+    EditMedia,
+    MediaCard
   },
   data() {
     return {
-      showMediaModalFor: '',
+      showMediaModalFor: false,
       mediaFilter: '',
       mediaSort: {
         field: 'date_created',
         type: 'date',
         order: 'descending'
-      },
-      mediaTypeIcon: {
-        image: '/images/i_icone-dodoc_image.svg',
-        video: '/images/i_icone-dodoc_video.svg',
-        stopmotion: '/images/i_icone-dodoc_anim.svg',
-        audio: '/images/i_icone-dodoc_audio.svg'
       }
     }
   },
@@ -113,8 +72,10 @@ export default {
   created() {
   },
   mounted() {
+    this.$eventHub.$on('modal.openMedia', this.openMediaModal);
   },
   beforeDestroy() {
+    this.$eventHub.$off('modal.openMedia', this.openMediaModal);
   },
 
   watch: {
@@ -192,14 +153,6 @@ export default {
         console.log('METHODS • MediaLibrary: openMedia');
       }
       this.showMediaModalFor = slugMediaName;
-    },
-    removeMedia(slugMediaName) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • MediaLibrary: removeMedia');
-      }
-      if (window.confirm(this.$t('sureToRemoveMedia'))) {
-        this.$root.removeMedia(this.slugFolderName, slugMediaName);
-      }
     }
   }
 }

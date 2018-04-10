@@ -71,12 +71,25 @@
       </EditFolder>
     </div>
 
-    <div class="m_folder--description"
+    <!-- <div class="m_folder--description"
       v-if="context === 'full'"
     >
       <p>
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
       </p>
+    </div> -->
+
+    <div class="m_folder--favMedias"
+      v-if="context === 'full'"
+    >
+      <MediaCard
+        v-if="favMedias !== undefined"
+        v-for="media in favMedias"
+        :key="media.slugMediaName"
+        :media="media"
+        :slugFolderName="slugFolderName"
+      >
+      </MediaCard>
     </div>
 
     <MediaLibrary
@@ -115,7 +128,9 @@
 <script>
 import EditFolder from './modals/EditFolder.vue';
 import MediaLibrary from './MediaLibrary.vue';
+import MediaCard from './subcomponents/MediaCard.vue';
 import Capture from './modals/Capture.vue';
+import _ from 'underscore';
 
 export default {
   props: {
@@ -128,7 +143,8 @@ export default {
   components: {
     EditFolder,
     Capture,
-    MediaLibrary
+    MediaLibrary,
+    MediaCard
   },
   data() {
     return {
@@ -140,8 +156,24 @@ export default {
   },
   watch: {
   },
-  computed: {
+  mounted() {
+  },
+  beforeDestroy() {
+  },
 
+  computed: {
+    favMedias() {
+      if(Object.keys(this.folder.medias).length === 0) {
+        return [];
+      }
+      const favMedias = {};
+      Object.keys(this.folder.medias).map((m) => {
+        if(this.folder.medias[m].fav === true) {
+          favMedias[m] = this.folder.medias[m];
+        }
+      });
+      return favMedias;
+    }
   },
   methods: {
     formatDateToHuman(date) {

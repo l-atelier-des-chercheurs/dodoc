@@ -33,6 +33,7 @@ module.exports = (function() {
       sort_by: 'Organiser par',
       in_the_order: 'Dans l’ordre',
       public: 'Public',
+      fav: 'Favoris',
       content: 'Contenu',
 
       'lang:': 'Changer la langue&nbsp;:',
@@ -147,6 +148,7 @@ module.exports = (function() {
       sort_by: 'Sort by',
       in_the_order: 'In the order',
       public: 'Public',
+      fav: 'Favourite',
       content: 'Content',
 
       'lang:': 'Select lang:',

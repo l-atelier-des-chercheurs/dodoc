@@ -53,11 +53,11 @@
         </textarea>
       </div>
 
-<!-- Public or private -->
-      <div v-if="!read_only" class="margin-bottom-small">
+<!-- Fav or not -->
+      <div class="margin-bottom-small">
         <span class="switch">
-          <input type="checkbox" class="switch" id="publicswitch" v-model="mediadata.public" :readonly="read_only">
-          <label for="publicswitch">{{ $t('public') }}</label>
+          <input type="checkbox" class="switch" id="favswitch" v-model="mediadata.fav" :readonly="read_only">
+          <label for="favswitch">{{ $t('fav') }}</label>
         </span>
       </div>
 
@@ -226,6 +226,7 @@ export default {
         authors: this.media.authors,
         caption: this.media.caption,
         keywords: this.media.keywords,
+        fav: this.media.fav,
         content: this.media.content
       },
       mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`

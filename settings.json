@@ -64,6 +64,10 @@
         "options": ["image", "video", "audio", "text", "marker", "other"],
         "default": "other"
       },
+      "fav": {
+        "type": "boolean",
+        "default": false
+      },
       "ratio" : {
         "type": "number"
       },
