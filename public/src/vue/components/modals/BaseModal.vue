@@ -15,7 +15,7 @@
                 >
 
                 <form v-if="!!this.$slots['sidebar']"
-                  class="m_modal--sidebar bg-gris_fonce c-blanc"
+                  class="m_modal--sidebar"
                   v-on:submit.prevent="$emit('submit')"
                   >
 

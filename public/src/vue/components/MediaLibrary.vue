@@ -2,11 +2,11 @@
   <div class="m_folder--library"
   >
 
-    <MediaFilterBar
+    <!-- <MediaFilterBar
       :currentSort="mediaSort"
       :currentFilter="mediaFilter"
     >
-    </MediaFilterBar>
+    </MediaFilterBar> -->
 
     <div class="m_folder--library--medias">
 

@@ -19,25 +19,15 @@
           <span>
             {{ media.date_created }}
           </span>
-          <span>
-            {{ media.fav }}
-          </span>
         </a>
       </figcaption>
       <nav>
         <button 
           type="button" 
-          class="m_media--open border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
+          class="button-redthin"
           @click.stop="openMediaModal(media.slugMediaName)"
         >
           {{ $t('open') }}
-        </button>
-        <button 
-          type="button" 
-          class="m_media--open border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
-          @click.stop="removeMedia(media.slugMediaName)"
-        >
-          {{ $t('remove') }}
         </button>
       </nav>
     </figure>
