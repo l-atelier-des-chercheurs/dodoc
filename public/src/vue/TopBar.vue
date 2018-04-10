@@ -24,12 +24,12 @@
         </svg>
       </button>
 
-      <ShowQRCode
+      <QRCode
         v-if="showQRModal"
         :slugFolderName="slugFolderName"
         @close="showQRModal = false"
       >
-      </ShowQRCode>
+      </QRCode>
       
 
 

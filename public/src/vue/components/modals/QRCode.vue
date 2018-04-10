@@ -26,7 +26,6 @@
 
       Scanner un code QR
       <ScanQRCode>
-
       </ScanQRCode>
 
       <ScanQR>

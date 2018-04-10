@@ -22,7 +22,7 @@ export default {
   created() {
   },
   mounted() {
-    let scanner = new Instascan.Scanner({ video: this.$refs.previe) });
+    let scanner = new Instascan.Scanner({ video: this.$refs.preview });
     scanner.addListener('scan', function (content) {
       console.log(content);
     });
