@@ -315,11 +315,11 @@ let vm = new Vue({
     settings: {
       has_modal_opened: false,
       current_slugFolderName: '',
+      current_author: false,
       has_sidebar_opened: false,
       highlightMedia: '',
       is_loading_medias_for_folder: '',
-      enable_system_bar: window.state.is_electron && window.state.is_darwin,
-      perf_mode: 'low'
+      enable_system_bar: window.state.is_electron && window.state.is_darwin
     },
 
     lang: {
@@ -529,6 +529,9 @@ let vm = new Vue({
       html.setAttribute('lang', newLangCode);
 
       localstore.set('language', newLangCode);
+    },
+    setAuthor: function(name) {
+      this.settings.current_author = name;
     }
   },
   watch: {

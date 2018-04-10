@@ -11,6 +11,7 @@ const settings = require('../settings.json'),
 module.exports = (function() {
   const API = {
     getPresentation: () => getPresentation(),
+    getAuthors: () => getAuthors(),
 
     getFolder: slugFolderName => getFolder(slugFolderName),
     getMetaFileOfFolder: slugFolderName => getMetaFileOfFolder(slugFolderName),
@@ -45,6 +46,26 @@ module.exports = (function() {
           presentationContent = api.parseData(presentationContent);
           resolve(presentationContent);
         }
+      });
+    });
+  }
+
+  function getAuthors() {
+    return new Promise(function(resolve, reject) {
+      let authorsFile = path.join(
+        api.getFolderPath(),
+        settings.authorsFolderName,
+        settings.folderMetafilename + settings.metaFileext
+      );
+      fs.access(authorsFile, fs.F_OK, function(err) {
+        if (err) {
+          dev.logverbose(`No meta for authors: ${err}`);
+          return resolve({});
+        }
+        readMetaFile(authorsFile).then(authorsData => {
+          dev.logverbose(`Found meta for authors with: ${authorsData}`);
+          return resolve(authorsData);
+        });
       });
     });
   }

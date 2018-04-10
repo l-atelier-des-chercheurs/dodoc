@@ -20,7 +20,23 @@
     </div>
 
     <div class="m_topbar--center">
+      <div class="m_topbar--authors">
+        <button type="button" @click="showAuthorsListModal = true">
+          <template v-if="$root.settings.current_author !== false">
+            {{ $root.settings.current_author }}
+          </template>
+          <template v-else>
+            Auteur
+          </template>
+        </button>
 
+        <AuthorsList
+          v-if="showAuthorsListModal"
+          :slugFolderName="slugFolderName"
+          @close="showAuthorsListModal = false"
+        >
+        </AuthorsList>
+      </div>
     </div>
 
     <div class="m_topbar--right">
@@ -42,7 +58,6 @@
           @close="showQRModal = false"
         >
         </QRCode>
-        
 
 
         <button type="button">
@@ -85,6 +100,7 @@
 </template>
 <script>
 import QRCode from './components/modals/QRCode.vue';
+import AuthorsList from './components/modals/AuthorsList.vue';
 
 export default {
   props: {
@@ -92,11 +108,13 @@ export default {
     slugFolderName: String
   },
   components: {
-    QRCode
+    QRCode,
+    AuthorsList
   },
   data() {
     return {
-      showQRModal: false
+      showQRModal: false,
+      showAuthorsListModal: false
     }
   },
   

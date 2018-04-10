@@ -8,9 +8,6 @@
       <span class="text-cap"> {{ $t('capture') }}</span> <i>{{ folder.name }}</i>
     </template>
 
-    <template slot="sidebar">
-    </template>    
-
     <template slot="preview">
       <CaptureContent
         :folder="folder"

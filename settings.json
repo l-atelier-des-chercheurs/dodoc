@@ -15,6 +15,7 @@
   "deletedPrefix" : "x_",
   "thumbFolderName" : "_thumbs",
   "deletedFolderName" : "_bin",
+  "authorsFolderName" : "_authors",
 
   "mediaThumbQuality" : 70,
 
