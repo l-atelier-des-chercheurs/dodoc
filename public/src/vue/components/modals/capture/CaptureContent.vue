@@ -101,6 +101,7 @@ import MediaContent from '../../subcomponents/MediaContent.vue';
 import alertify from 'alertify.js';
 import RecordRTC from 'recordrtc';
 import _ from 'underscore';
+import { setTimeout } from 'timers';
 
 export default {
   props: {
@@ -169,38 +170,46 @@ export default {
   watch: {
     'selected_devicesId.audioinput': function() {
       console.log(`WATCH • Capture: selected_devicesId.audioinput = ${this.selected_devicesId.audioinput}`);
-      if(this.$refs.hasOwnProperty('videoElement') && this.$refs.videoElement !== undefined) {       
-        this.$refs.videoElement.setSinkId(this.selected_devicesId.audioinput);      
-      }
+      this.stopAllFeeds().then(() => {
+        if(this.$refs.hasOwnProperty('videoElement') && this.$refs.videoElement !== undefined) {       
+          this.$refs.videoElement.setSinkId(this.selected_devicesId.audioinput);      
+        }
+      });
     },
     'selected_devicesId.videoinput': function() {
       console.log(`WATCH • Capture: selected_devicesId.videoinput = ${this.selected_devicesId.videoinput}`);
-      this.startCameraFeed();
+      this.stopAllFeeds().then(() => {
+        this.startCameraFeed();
+      });
     },
     'selected_mode': function() {
       console.log('WATCH • Capture: selected_mode');
 
       if(this.selected_mode === 'photo') {
-        this.stopAudioFeed();
-        this.startCameraFeed();
+        this.stopAllFeeds().then(() => {
+          this.startCameraFeed();
+        });
       } else 
       if(this.selected_mode === 'video') {
-        this.stopAudioFeed();
-        this.startCameraFeed();
+        this.stopAllFeeds().then(() => {
+          this.startCameraFeed();
+        });
       } else 
       if(this.selected_mode === 'stopmotion') {
-        this.stopAudioFeed();
-        this.startCameraFeed();
+        this.stopAllFeeds().then(() => {
+          this.startCameraFeed();
+        });
       } else 
       if(this.selected_mode === 'audio') {
-        this.stopVideoFeed();
-        equalizer.clearCanvas();
-        this.getAudioFeed()
-        .then(stream => {
-          equalizer.start(this.$refs.equalizerElement, stream);
-        })
-        .catch(err => {
-        })      
+        this.stopAllFeeds().then(() => {
+          equalizer.clearCanvas();
+          this.getAudioFeed()
+          .then(stream => {
+            equalizer.start(this.$refs.equalizerElement, stream);
+          })
+          .catch(err => {
+          })      
+        });
       }
     }
   },
@@ -275,8 +284,12 @@ export default {
       }
     },
     stopAllFeeds() {
-      this.stopAudioFeed();
-      this.stopVideoFeed();
+      return new Promise((resolve, reject) => {
+        console.log('METHODS • Capture: stopAllFeeds');
+        this.stopAudioFeed();
+        this.stopVideoFeed();
+        setTimeout(() => resolve(), 1000);
+      });
     },
 
     startCameraFeed() {
