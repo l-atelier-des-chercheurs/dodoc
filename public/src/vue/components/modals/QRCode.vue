@@ -11,19 +11,24 @@
       <div class="margin-medium font-small">
         <span v-html="$t('toconnectwithanotherdevicetothisfolder')"></span>
 
-        <a v-for="(ip, index) in $root.state.localNetworkInfos.ip"
-          :href="getURLToApp(ip, $root.state.localNetworkInfos.port)"
+        <div v-for="(ip, index) in $root.state.localNetworkInfos.ip"
           class="js--openInBrowser qrSnippet button button-circled margin-vert-medium border-circled button-inline padding-small"
-          target="_blank"
           :key="index"
           >
-          <div class="qrSnippet--text">
+          <a 
+            class="qrSnippet--text"
+            :href="getURLToApp(ip, $root.state.localNetworkInfos.port)"
+            target="_blank"
+          >
             {{ getURLToApp(ip, $root.state.localNetworkInfos.port) }}
-          </div>
+          </a>
           <div class="qrSnippet--motif">
-            <qrcode :value="getURLToApp(ip, $root.state.localNetworkInfos.port)" :options="{ size: 100 }"></qrcode>
+            <CreateQRCode
+              :urlToApp="getURLToApp(ip, $root.state.localNetworkInfos.port)"
+            >
+            </CreateQRCode>
           </div>
-        </a>
+        </div>
       </div>
 
       <div class="margin-medium font-small">
@@ -31,6 +36,7 @@
         <ScanQRCode>
         </ScanQRCode>
       </div>
+
       
     </template>
 
@@ -39,8 +45,8 @@
 <script>
 import Modal from './BaseModal.vue';
 import alertify from 'alertify.js';
-import qrcode from '@xkeshi/vue-qrcode';
 import ScanQRCode from './qr/ScanQRCode.vue';
+import CreateQRCode from './qr/CreateQRCode.vue';
 
 export default {
   props: {
@@ -49,7 +55,7 @@ export default {
   },
   components: {
     Modal,
-    qrcode,
+    CreateQRCode,
     ScanQRCode
   },
   data() {
@@ -62,7 +68,7 @@ export default {
       return `${this.$root.state.protocol}://${ip}:${port}/${
         this.slugFolderName !== undefined ? this.slugFolderName : ''
       }`;
-    },
+    }
   }
 };
 </script>
