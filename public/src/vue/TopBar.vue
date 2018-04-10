@@ -1,10 +1,12 @@
 <template>
   <div class="m_topbar">
-    <div class="m_topbar--left" @click="$root.closeFolder()">
-      <div class="m_topbar--left--logo">
-        <button type="button" v-if="has_back_button">
-          ‹
-        </button>
+    <div class="m_topbar--left" >
+      <div class="m_topbar--left--logo" @click="$root.closeFolder()">
+        <transition name="fade">
+          <button type="button" v-if="has_back_button">
+            ‹
+          </button>
+        </transition>
         <img src="/images/i_logo.svg"/>
       </div>
 

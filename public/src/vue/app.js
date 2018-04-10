@@ -17,9 +17,6 @@ Vue.config.devtools = true;
 
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
-import Transitions from 'vue2-transitions';
-Vue.use(Transitions);
-
 import VueScrollTo from 'vue-scrollto';
 Vue.use(VueScrollTo);
 

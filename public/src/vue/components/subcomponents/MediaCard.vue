@@ -3,8 +3,8 @@
     class="m_media"
     :title="media.slugMediaName"
   >
-    <figure>
-      <div @click.stop="openMediaModal(media.slugMediaName)">
+    <figure @click.stop="openMediaModal(media.slugMediaName)">
+      <div>
         <MediaContent
           v-model="media.content"
           :context="'Library'"
@@ -16,15 +16,12 @@
       <figcaption>
         <a>
           <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" />
-          <span>
-            {{ media.date_created }}
-          </span>
         </a>
       </figcaption>
       <nav>
         <button 
           type="button" 
-          class="button-redthin"
+          class="button-redthin "
           @click.stop="openMediaModal(media.slugMediaName)"
         >
           {{ $t('open') }}

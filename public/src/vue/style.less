@@ -177,7 +177,8 @@ body {
       width: auto;
       padding: @t-skipline/2 @t-skipline; 
       margin-left: 0;
-      height: @t-hauteur_topbar;      
+      height: @t-hauteur_topbar;  
+      cursor: pointer;    
 
       button {
         padding: 0 @t-skipline/2;
@@ -211,6 +212,7 @@ body {
         transition: border-radius .4s;
         font-size: 1rem;
         line-height: 1.1;
+        cursor:normal;
   
         background-color: transparent;
         color: #fff;
@@ -487,6 +489,7 @@ body {
     flex-flow: column nowrap;
     .boxs-card-2;
     .bg-blanc;
+    cursor: pointer;
     transition: all 0.3s cubic-bezier(.25,.8,.25,1);  
 
     &:hover {
@@ -538,12 +541,18 @@ body {
   }
 
   figcaption {
-    .padding-medium;
+    .padding-small;
     .mediaTypeIcon {
       width: 24px;
       height: 24px;
     }
+  }
 
+  nav {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    .padding-small;
   }
 
 }
