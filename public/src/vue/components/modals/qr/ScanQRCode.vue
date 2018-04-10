@@ -21,7 +21,6 @@ export default {
   created() {
   },
   mounted() {
-    debugger;
     this.scanner = new Instascan.Scanner({ 
       video: this.$refs.preview,
       mirror: false,
