@@ -1,3 +1,75 @@
+button, .button {
+  text-decoration: none;
+  background-color: transparent;
+  border:none;
+  font-size: inherit;
+  font-family: inherit;
+  background-color: #fff;
+  display: inline-block;
+
+  text-decoration: none;
+  text-align: center;
+  .text-cap;
+
+  margin: 0;
+  cursor: pointer;
+
+  min-height: @t-skipline*2;
+
+  padding: 0 @t-skipline/2;
+  border-radius: @t-buttonradius;
+
+  transition: color .25s ease-out, opacity 0.5s;
+
+  &[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+
+    &[class*="bg-"]:not(.bg-transparent) {
+      background-color: gray;
+    }
+  }
+
+  &.is--active {
+    background-color: @c-noir;
+    color: #fff;
+  }
+  &.bg-noir.is--active {
+    background-color: white;
+    color: @c-noir;
+  }
+
+  &.bg-rouge {
+    color: #fff;
+  }
+
+  &:focus {
+    outline:0;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  &.button-redthin {
+    .button-thin;
+    .margin-verysmall;
+    .padding-vert-small;
+    .padding-sides-medium;
+    .text-cap;
+    .font-verysmall;    
+    background-color: @c-rouge;
+    border-radius: @t-skipline;
+    color: white;
+  }
+
+  img, svg {
+    min-width: 0;
+    width: 48px;
+    height: 48px;
+    margin: auto;
+  }
+}
 
 
 
@@ -571,75 +643,3 @@ th {
 
 
 
-button, .button {
-  text-decoration: none;
-  background-color: transparent;
-  border:none;
-  font-size: inherit;
-  font-family: inherit;
-  background-color: #fff;
-  display: inline-block;
-
-  text-decoration: none;
-  text-align: center;
-  .text-cap;
-
-  margin: 0;
-  cursor: pointer;
-
-  min-height: @t-skipline*2;
-
-  padding: 0 @t-skipline/2;
-  border-radius: @t-buttonradius;
-
-  transition: color .25s ease-out, opacity 0.5s;
-
-  &[disabled] {
-    opacity: 0.4;
-    cursor: not-allowed;
-
-    &[class*="bg-"]:not(.bg-transparent) {
-      background-color: gray;
-    }
-  }
-
-  &.is--active {
-    background-color: @c-noir;
-    color: #fff;
-  }
-  &.bg-noir.is--active {
-    background-color: white;
-    color: @c-noir;
-  }
-
-  &.bg-rouge {
-    color: #fff;
-  }
-
-  &:focus {
-    outline:0;
-  }
-
-  a {
-    text-decoration: none;
-  }
-
-  &.button-redthin {
-    .button-thin;
-    .margin-verysmall;
-    .padding-vert-small;
-    .padding-sides-medium;
-    .text-cap;
-    .font-verysmall;    
-    background-color: @c-rouge;
-    border-radius: @t-skipline;
-    color: white;
-  }
-
-  img, svg {
-    min-width: 0;
-    width: 48px;
-    height: 48px;
-    margin: auto;
-  }
-}

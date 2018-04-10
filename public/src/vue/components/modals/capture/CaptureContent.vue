@@ -76,7 +76,7 @@
     </div>
 
 
-    <fieldset v-show="false">
+    <fieldset v-show="true">
       <legend>Sources</legend>
       <div v-for="(currentId, kind) in selected_devicesId" :key="kind">
         {{ kind }}

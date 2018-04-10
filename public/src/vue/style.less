@@ -464,16 +464,12 @@ body {
 .m_capture {
 
   .bg-gris_tresclair;
-  height: 100%;
-  display: flex;
-  flex-flow: column nowrap;
+  height: auto;
 
   .m_capture--modeSelector {
-    flex: 0 0 auto;
-
     display: flex;
     width: 100%;
-    flex-flow: row wrap;
+    flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
     padding: @t-skipline/2 0;
@@ -486,6 +482,7 @@ body {
       flex: 0 0 auto;
       display: flex;
       flex-flow: row wrap;
+      font-family: inherit;
     }
 
     input {
@@ -507,7 +504,9 @@ body {
       margin: 1vw 1vw;
       text-align: center;
 
+
       > * {
+
       }
 
       img {
@@ -521,13 +520,17 @@ body {
         font-weight: 400;
         text-transform: lowercase;
         margin: @t-skipline/4 @t-skipline/4;        
+
+        @media screen and (max-width: 1024px) {
+          display: none;
+        }
       }
     }
   }
 
   .m_capture--panels {
     position: relative;
-    height: 100%;
+    height: auto;
     margin-bottom: @t-skipline*2;
     display: flex;
     flex-flow: row wrap;
@@ -542,12 +545,14 @@ body {
     }
 
     .m_panel {
+      min-width: 300px;
       &:nth-child(1) {
         flex-basis: 70%;
       }
       &:nth-child(2) {
         flex-basis: 0;
         width: 0;
+        min-width: 0;
       }
     }
 
@@ -557,6 +562,7 @@ body {
           flex-basis: 50%;
         }
         &:nth-child(2) {
+          min-width: 300px;
           flex-basis: 40%;
           width: 0;
           margin-left: @t-skipline*2;
@@ -569,6 +575,7 @@ body {
   .m_panel {
     display: flex;
     flex-flow: column nowrap;
+    min-height: 80vh;
   }
 
   .m_panel--previewCard {
@@ -587,7 +594,8 @@ body {
   }
   .m_panel--buttons {
     flex-shrink: 0;
-    min-height: 100px;
+    min-height: 80px;
+    min-height: 10vh;
     display: flex;
     justify-content: center;
 
