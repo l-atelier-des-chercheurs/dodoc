@@ -102,6 +102,7 @@ import alertify from 'alertify.js';
 import RecordRTC from 'recordrtc';
 import _ from 'underscore';
 import { setTimeout } from 'timers';
+import 'webrtc-adapter';
 
 export default {
   props: {
@@ -228,6 +229,7 @@ export default {
         // get from localstorage and put in selected_devicesId.audioinput, selected_devicesId.videoinput and selected_devicesId.audiooutput 
 
         // set initial value
+
         Object.keys(this.selected_devicesId).map((kind) => {
           if(this.selected_devicesId[kind] === '') {
             if(this.sorted_available_devices.hasOwnProperty(kind)) {
