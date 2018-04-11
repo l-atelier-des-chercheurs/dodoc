@@ -14,21 +14,27 @@
     </TopBar>
 
     <ListView
+      v-if="view === 'ListView'"
       :presentationMD="$root.store.presentationMD"
       :read_only="!$root.state.connected"
       :folders="$root.store.folders"
     >
     </ListView>
 
-    <transition name="">
-      <FolderView
-        v-if="view === 'FolderView' && currentFolder.hasOwnProperty('name')"
-        :slugFolderName="current_slugFolderName"
-        :folder="currentFolder"
-        :read_only="!$root.state.connected"
-      >
-      </FolderView>
-    </transition>
+    <FolderView
+      v-if="view === 'FolderView' && currentFolder.hasOwnProperty('name')"
+      :slugFolderName="current_slugFolderName"
+      :folder="currentFolder"
+      :read_only="!$root.state.connected"
+    >
+    </FolderView>
+
+    <CaptureContent
+      :folder="folder"
+      :slugFolderName="slugFolderName"
+      ref="CaptureContent"
+    >
+    </CaptureContent>
 
     <portal-target name="modal_container" />
 
