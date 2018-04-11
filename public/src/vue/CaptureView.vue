@@ -28,7 +28,7 @@
             v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
             ref="videoElement" 
             autoplay 
-            muted 
+            playsinline
           /> 
           <canvas 
             v-if="selected_mode === 'audio'"
