@@ -8,13 +8,16 @@
     </template>
 
     <template slot="preview">
-      <div v-for="author in $root.store.authorsList.list" :key="author.name">
-        <button type="button" @click="setAuthor(author.name)"
-          :class="{ 'is--active' : author.name === $root.settings.current_author }"
-        >
-          {{ author.name }}
-        </button>
-      </div>        
+      <div  class="margin-medium">
+        Liste des auteurs
+        <div v-for="author in $root.store.authorsList.list" :key="author.name">
+          <button type="button bg-noir" @click="setAuthor(author.name)"
+            :class="{ 'bg-rouge' : author.name === $root.settings.current_author }"
+          >
+            {{ author.name }}
+          </button>
+        </div>        
+      </div>
     </template>    
   </Modal>
 </template>

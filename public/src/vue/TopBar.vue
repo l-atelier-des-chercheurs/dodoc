@@ -21,7 +21,7 @@
 
     <div class="m_topbar--center">
       <div class="m_topbar--authors">
-        <button type="button" @click="showAuthorsListModal = true">
+        <button type="button" class=" bg-rouge" @click="showAuthorsListModal = true">
           <template v-if="$root.settings.current_author !== false">
             {{ $root.settings.current_author }}
           </template>
