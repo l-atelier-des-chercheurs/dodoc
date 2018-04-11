@@ -20,9 +20,9 @@
           </div>
 
           <div class="margin-medium">
-            <i>{{ $t('created_date') }}</i>
+            {{ $t('created_date') }}
             <br>
-            {{ formatDateToHuman(folder.created) }}
+            {{ formatDateToHuman(folder.date_created) }}
           </div>
         </div>
       </div>

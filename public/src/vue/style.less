@@ -71,6 +71,10 @@ body {
   margin-top: @t-hauteur_topbar;
   &.has_systembar {
     margin-top: @t-systemBarHeight + @t-hauteur_topbar;
+
+    @media screen and (max-width: 50rem) {
+      margin-top: 0;
+    }
   }
 }
 
@@ -159,12 +163,19 @@ body {
     top: @t-systemBarHeight;
   }
 
+  @media screen and (max-width: 50rem) {
+    position: relative;
+
+  }
+
   .flex-wrap;
 
   > * {
+    min-width: 320px;
     flex: 1 1 0;
 
     &.m_topbar--center {
+      min-width: 200px;
       max-width: 200px;
     }
   }  
@@ -285,6 +296,7 @@ body {
       justify-content: flex-end;
       align-items: center;
       .c-gris;
+      height: 100%;
 
       > * {
         flex: 0 0 auto;

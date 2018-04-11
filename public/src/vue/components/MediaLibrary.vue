@@ -8,6 +8,9 @@
     >
     </MediaFilterBar> -->
 
+    <div class="text-cap font-verysmall margin-sides-medium margin-bottom-none c-noir">
+      Tous les médias
+    </div>
     <div class="m_folder--library--medias">
 
       <MediaCard
