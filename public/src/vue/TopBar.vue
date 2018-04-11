@@ -3,17 +3,22 @@
     <div class="m_topbar--left" >
       <div class="m_topbar--left--logo" @click="$root.closeFolder()">
         <transition name="fade">
-          <button type="button" v-if="has_back_button">
+          <!-- <button type="button" v-if="has_back_button">
             ‹
-          </button>
+          </button> -->
         </transition>
         <img src="/images/i_logo.svg"/>
       </div>
 
-      <div v-if="!!slugFolderName" class="m_topbar--left--breadcrumb">
+      <div v-if="!!slugFolderName" class="m_topbar--left--breadcrumb" @click="$root.settings.view = 'FolderView'">
         <button type="button">
           <span>
             {{ $root.store.folders[slugFolderName].name }}
+          </span>
+        </button>
+        <button type="button" v-if="$root.settings.view === 'CaptureView'">
+          <span>
+            Capture
           </span>
         </button>
       </div>
@@ -130,6 +135,14 @@ export default {
   computed: {
   },
   methods: {
+    goBack() {
+      if(this.$root.settings.view === 'CaptureView') {
+        this.$root.settings.view = 'FolderView';
+      } else 
+      if(this.$root.settings.view === 'FolderView') {
+        this.$root.closeFolder();
+      }
+    }
   }
 }
 </script>

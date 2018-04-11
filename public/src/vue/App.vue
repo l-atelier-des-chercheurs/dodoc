@@ -8,7 +8,7 @@
     </SystemBar>
 
     <TopBar
-      :has_back_button="$root.settings.view === 'FolderView'"
+      :has_back_button="$root.settings.view !== 'ListView'"
       :slugFolderName="current_slugFolderName"
     >
     </TopBar>
