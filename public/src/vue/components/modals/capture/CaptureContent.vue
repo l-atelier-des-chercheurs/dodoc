@@ -148,6 +148,24 @@ export default {
       videoStream: undefined,
       audioStream: undefined,
       available_devices: {},
+      available_camera_resolutions: [
+        {
+          width: 320,
+          height: 240
+        },
+        {
+          width: 640,
+          height: 480
+        },
+        {
+          width: 1280,
+          height: 720
+        },
+        {
+          width: 1920,
+          height: 1080
+        }
+      ],
       selected_devicesId: {
         audioinput: '',
         videoinput: '',
