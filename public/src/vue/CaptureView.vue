@@ -251,7 +251,19 @@ export default {
         Object.keys(this.selected_devicesId).map((kind) => {
           if(this.selected_devicesId[kind] === '') {
             if(this.sorted_available_devices.hasOwnProperty(kind)) {
+
               this.selected_devicesId[kind] = this.sorted_available_devices[kind][0].deviceId;
+
+              if(kind === 'videoinput') {
+                const camera_back = this.sorted_available_devices[kind].filter(x => {
+                  return x.label.includes('back')
+                });              
+                if(camera_back.length > 0) {
+                  this.selected_devicesId[kind] = camera_back[0].deviceId;
+                }
+
+              }
+
             }
           }
         });
