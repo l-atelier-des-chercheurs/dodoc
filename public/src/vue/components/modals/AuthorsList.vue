@@ -8,10 +8,10 @@
     </template>
 
     <template slot="preview">
-      {{ $root.settings.current_author }}
-      <hr>
       <div v-for="author in $root.store.authorsList.list" :key="author.name">
-        <button type="button" @click="setAuthor(author.name)">
+        <button type="button" @click="setAuthor(author.name)"
+          :class="{ 'is--active' : author.name === $root.settings.current_author }"
+        >
           {{ author.name }}
         </button>
       </div>        
@@ -46,6 +46,7 @@ export default {
   methods: {
     setAuthor(name) {
       this.$root.setAuthor(name);
+      this.$emit('close');
     }
   }
 }
