@@ -160,7 +160,7 @@ body {
   .boxs-card-0;
   
   body.has_systembar & {
-    top: @t-systemBarHeight;
+    margin-top: @t-systemBarHeight;
   }
 
   @media screen and (max-width: 50rem) {
@@ -374,7 +374,7 @@ body {
     background: inherit;
     top: 0.3rem;
     filter: blur(0.5rem);
-    opacity: .5;
+    opacity: .8;
     border-radius: @t-button_size;
     z-index: -1;
   }  
@@ -395,17 +395,24 @@ body {
 
 @t-folderwidth: 360px;
 
-.m_listview, .m_folderview {
+.m_listview, .m_folderview, .m_captureview {
   position: absolute;
   top:0;
   bottom: 0;
   .bg-creme;
-  overflow-y: auto;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
 
   width: 100%;
+
   height: ~"calc(100vh - @{t-hauteur_topbar})";
+
   body.has_systembar & {
     height: ~"calc(100vh - @{t-systemBarHeight} - @{t-hauteur_topbar})";
+  }
+
+  @media screen and (max-width: 50rem) {
+    position: relative;
   }
 
   @scrollbar-height: 8px;
@@ -601,12 +608,9 @@ body {
 
 }
 
-.m_capture {
+.m_captureview {
 
-  .bg-gris_tresclair;
-  height: auto;
-
-  .m_capture--modeSelector {
+  .m_captureview--modeSelector {
     display: flex;
     width: 100%;
     flex-flow: row nowrap;
@@ -668,7 +672,7 @@ body {
     }
   }
 
-  .m_capture--panels {
+  .m_captureview--panels {
     position: relative;
     height: auto;
     margin-bottom: @t-skipline*2;

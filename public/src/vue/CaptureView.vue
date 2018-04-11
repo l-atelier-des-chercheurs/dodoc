@@ -1,6 +1,6 @@
 <template>
-  <div class="m_capture">
-    <div class="m_capture--modeSelector">
+  <div class="m_captureview">
+    <div class="m_captureview--modeSelector">
       <button type="button" class="bg-transparent" @click="previousMode()">
         ◀
       </button>
@@ -19,7 +19,7 @@
       </button>
     </div>
 
-    <div class="m_capture--panels"
+    <div class="m_captureview--panels"
       :class="{ 'is--justCaptured' : justCapturedMediaData.hasOwnProperty('type') }"
     >
       <div class="m_panel">
@@ -96,7 +96,7 @@
   </div>
 </template>
 <script>
-import MediaContent from '../../subcomponents/MediaContent.vue';
+import MediaContent from './components/subcomponents/MediaContent.vue';
 
 import alertify from 'alertify.js';
 import RecordRTC from 'recordrtc';
@@ -341,7 +341,10 @@ export default {
         }
         const constraints = {
           video: {
-            optional: [{ sourceId: this.selected_devicesId.videoinput }]
+            optional: [{ sourceId: this.selected_devicesId.videoinput }],
+            mandatory: {
+              minWidth:"320","maxWidth":"320","minHeight":"240","maxHeight":"240"
+            }
           },
           audio: withAudio
         };

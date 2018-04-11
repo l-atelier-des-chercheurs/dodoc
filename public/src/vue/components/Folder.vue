@@ -106,28 +106,18 @@
     >
     </MediaLibrary>
 
-    <transition name="fadeUp">
-      <button 
-        type="button" 
-        class="button-inline bg-rouge captureButton"
-        v-if="context === 'full' && ((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
-        @click="showCaptureModal = true"
-        :disabled="read_only" 
-      >
-        <img src="/images/i_record.svg" width="48" height="48" />
-        <span>    
-            {{ $t('capture') }}
-        </span>
-      </button>
-    </transition>
-
-    <Capture
-      v-if="showCaptureModal && !read_only"
-      :folder="folder"
-      :slugFolderName="slugFolderName"
-      @close="showCaptureModal = false"
+    <button 
+      type="button" 
+      class="button-inline bg-rouge captureButton"
+      v-if="context === 'full' && ((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
+      @click="$root.settings.view = 'CaptureView'"
+      :disabled="read_only" 
     >
-    </Capture>
+      <img src="/images/i_record.svg" width="48" height="48" />
+      <span>    
+          {{ $t('capture') }}
+      </span>
+    </button>
 
   </div>
 </template>
@@ -135,7 +125,6 @@
 import EditFolder from './modals/EditFolder.vue';
 import MediaLibrary from './MediaLibrary.vue';
 import MediaCard from './subcomponents/MediaCard.vue';
-import Capture from './modals/Capture.vue';
 import _ from 'underscore';
 
 export default {
@@ -148,7 +137,6 @@ export default {
   },
   components: {
     EditFolder,
-    Capture,
     MediaLibrary,
     MediaCard
   },
@@ -156,8 +144,7 @@ export default {
     return {
       debugFolderContent: false,
       showEditFolderModal: false,
-      showInputPasswordField: false,
-      showCaptureModal: false
+      showInputPasswordField: false
     };
   },
   watch: {

@@ -315,6 +315,7 @@ let vm = new Vue({
     settings: {
       has_modal_opened: false,
       current_slugFolderName: '',
+      view: 'ListView',
       current_author: false,
       has_sidebar_opened: false,
       highlightMedia: '',
@@ -489,6 +490,8 @@ let vm = new Vue({
         this.closeFolder();
         return false;
       }
+
+      this.settings.view = 'FolderView';
       this.settings.current_slugFolderName = slugFolderName;
       this.settings.is_loading_medias_for_folder = slugFolderName;
       this.$socketio.listMedias(slugFolderName);
@@ -507,7 +510,10 @@ let vm = new Vue({
       if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: closeFolder');
       }
+
       this.settings.current_slugFolderName = '';
+      this.settings.view = 'ListView';
+
       history.pushState({ slugFolderName: '' }, '', '/');
     },
     listMediasForFolder: function(e) {
