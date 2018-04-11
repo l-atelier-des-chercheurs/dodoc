@@ -63,7 +63,7 @@
     "http-server": "^0.9.0",
     "npm-run-all": "^2.3.0",
     "proxyquireify": "^3.0.1",
-    "uglify-js": "^2.5.0",
+    "uglify-es": "^3.3.9",
     "vueify": "^9.0.0",
     "watchify": "^3.4.0"
   }
