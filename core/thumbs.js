@@ -90,8 +90,8 @@ module.exports = (function() {
                 .then(({ screenshotPath, screenshotName }) => {
                   // make screenshot, then make thumbs out of each screenshot and push this to thumbs
                   // naming :
-                  // - mediaName.0.200.jpg, mediaName.0.400.jpg, etc.
-                  // - mediaName.5.200.jpg, mediaName.10.400.jpg, etc.
+                  // - mediaName.0.200.jpeg, mediaName.0.400.jpeg, etc.
+                  // - mediaName.5.200.jpeg, mediaName.10.400.jpeg, etc.
 
                   let makeThumbsFromScreenshot = [];
 

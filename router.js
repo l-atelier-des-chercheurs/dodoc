@@ -37,6 +37,7 @@ module.exports = function(app, io, m) {
       pageData.url = req.path;
       pageData.protocol = req.protocol;
       pageData.structure = settings.structure;
+      pageData.authorsFolder = settings.authorsFolderName;
       pageData.logToFile = global.nodeStorage.getItem('logToFile');
       pageData.isDebug = dev.isDebug();
 

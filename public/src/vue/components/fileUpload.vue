@@ -85,7 +85,6 @@ export default {
         .log(this.$t('notifications.file_was_sent'));
     },
     addMeta: function(file, xhr, formData) {
-      // Testing for 'function' is more specific and correct, but doesn't work with Safari 6.x
       if (
         typeof window.FileReader !== 'function' &&
         typeof window.FileReader !== 'object'
@@ -98,9 +97,11 @@ export default {
       }
 
       let fileCreationDate = file.lastModified;
+      let authors = this.$root.settings.current_author !== false ? this.$root.settings.current_author : '';
       let fileName = file.name;
       let objToSend = {
-        fileCreationDate
+        fileCreationDate,
+        authors
       };
       formData.append(fileName, JSON.stringify(objToSend));
     },

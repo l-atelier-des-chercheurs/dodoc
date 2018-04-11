@@ -54,17 +54,111 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       let authorsFile = path.join(
         api.getFolderPath(),
-        settings.authorsFolderName,
-        settings.folderMetafilename + settings.metaFileext
+        settings.authorsFolderName
       );
-      fs.access(authorsFile, fs.F_OK, function(err) {
+
+      fs.access(authorsFile, fs.F_OK, err => {
         if (err) {
-          dev.logverbose(`No meta for authors: ${err}`);
+          dev.logverbose(`No authors info: ${err}`);
           return resolve({});
         }
-        readMetaFile(authorsFile).then(authorsData => {
-          dev.logverbose(`Found meta for authors with: ${authorsData}`);
-          return resolve(authorsData);
+
+        fs.readdir(authorsFile, function(err, filenames) {
+          // read all meta files,
+          if (err) {
+            dev.error(`Couldn't read content dir: ${err}`);
+            return reject(err);
+          }
+          if (filenames === undefined) {
+            dev.error(`No files for folder found: ${err}`);
+            return resolve();
+          }
+
+          let metaFiles = filenames.filter(slug => {
+            // not a folder
+            return (
+              !new RegExp(settings.regexpMatchFolderNames, 'i').test(slug) &&
+              // is a text file
+              new RegExp(settings.regexpGetFileExtension, 'i').exec(slug)[0] ===
+                '.txt' &&
+              // not deleted
+              slug.indexOf(settings.deletedPrefix) &&
+              // not a dotfile
+              slug.indexOf('.') !== 0
+            );
+          });
+          dev.logverbose(
+            `Number of authors files that match in ${
+              settings.authorsFolderName
+            } = ${metaFiles.length}. Meta file(s) is(are) ${metaFiles}`
+          );
+
+          if (metaFiles.length === 0) {
+            dev.logverbose(
+              `Since no authors meta is in this folder, let’s abort right there.`
+            );
+            return resolve({});
+          }
+
+          var allAuthorsMeta = [];
+          metaFiles.forEach(filename => {
+            let fmeta = new Promise((resolve, reject) => {
+              dev.log(filename);
+              const pathToAuthorMeta = path.join(authorsFile, filename);
+              // todo : resolve meta file
+              readMetaFile(pathToAuthorMeta).then(authorsData => {
+                resolve({ [filename]: authorsData });
+              });
+            });
+            allAuthorsMeta.push(fmeta);
+
+            let portrait = new Promise((resolve, reject) => {
+              // find if a file named "name.jpeg" exist in the same folder
+              const fileNameWithoutExtension = new RegExp(
+                settings.regexpRemoveFileExtension,
+                'i'
+              ).exec(filename)[1];
+
+              const potentialPortraitFilename =
+                fileNameWithoutExtension + '.jpeg';
+
+              const pathToPotentialPortrait = path.join(
+                authorsFile,
+                potentialPortraitFilename
+              );
+              fs.access(pathToPotentialPortrait, fs.F_OK, err => {
+                if (err) {
+                  dev.logverbose(`Missing portrait for ${filename}: ${err}`);
+                  return resolve();
+                }
+                resolve({
+                  [filename]: { portrait: potentialPortraitFilename }
+                });
+              });
+            });
+            allAuthorsMeta.push(portrait);
+          });
+
+          Promise.all(allAuthorsMeta).then(parsedAuthorsData => {
+            // reunite array items as a single big object
+            dev.logverbose(
+              `All authors meta have been processed`,
+              JSON.stringify(parsedAuthorsData, null, 4)
+            );
+
+            const authorsObj = {};
+            parsedAuthorsData.map(d => {
+              let filename = Object.keys(d)[0];
+              if (!authorsObj.hasOwnProperty(filename)) {
+                authorsObj[filename] = {};
+              }
+              authorsObj[filename] = Object.assign(
+                authorsObj[filename],
+                d[filename]
+              );
+            });
+            resolve(authorsObj);
+          });
         });
       });
     });
@@ -1086,7 +1180,8 @@ module.exports = (function() {
             }
           };
           if (mdata.hasOwnProperty('authors')) {
-            newMediaInfos.authors = mdata.authors;
+            console.log('HAS AUTHOR');
+            newMediaInfos.additionalMeta.authors = mdata.authors;
           }
           resolve(newMediaInfos);
         })

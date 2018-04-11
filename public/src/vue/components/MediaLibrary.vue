@@ -8,11 +8,17 @@
     >
     </MediaFilterBar> -->
 
+    <FileUpload
+      v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
+      :slugFolderName="slugFolderName"
+      :disabled="read_only"
+    >
+    </FileUpload>
+
     <div class="text-cap font-verysmall margin-sides-medium margin-bottom-none c-noir">
       Tous les médias
     </div>
     <div class="m_folder--library--medias">
-
       <MediaCard
         v-for="media in sortedMedias"
         v-if="media.hasOwnProperty(mediaSort.field) && media[mediaSort.field] !== ''"
@@ -22,13 +28,6 @@
       >
       </MediaCard>
     </div>
-
-    <FileUpload
-      v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
-      :slugFolderName="slugFolderName"
-      :disabled="read_only"
-    >
-    </FileUpload>
 
     <EditMedia
       v-if="showMediaModalFor !== false"
