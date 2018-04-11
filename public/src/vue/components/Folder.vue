@@ -82,14 +82,20 @@
     <div class="m_folder--favMedias"
       v-if="context === 'full'"
     >
-      <MediaCard
-        v-if="favMedias !== undefined"
-        v-for="media in favMedias"
-        :key="media.slugMediaName"
-        :media="media"
-        :slugFolderName="slugFolderName"
-      >
-      </MediaCard>
+      <div class="text-cap font-verysmall margin-small margin-bottom-none c-noir">
+        Média favoris
+      </div>
+
+      <div class="m_folder--favMedias--list">
+        <MediaCard
+          v-if="favMedias !== undefined"
+          v-for="media in favMedias"
+          :key="media.slugMediaName"
+          :media="media"
+          :slugFolderName="slugFolderName"
+        >
+        </MediaCard>
+      </div>
     </div>
 
     <MediaLibrary

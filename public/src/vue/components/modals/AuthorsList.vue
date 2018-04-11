@@ -11,7 +11,7 @@
       <div  class="margin-medium">
         Liste des auteurs
         <div v-for="author in $root.store.authorsList.list" :key="author.name">
-          <button type="button bg-noir" @click="setAuthor(author.name)"
+          <button type="button" @click="setAuthor(author.name)"
             :class="{ 'bg-rouge' : author.name === $root.settings.current_author }"
           >
             {{ author.name }}

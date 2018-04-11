@@ -250,7 +250,33 @@ body {
     }  
   }    
   .m_topbar--center {
+    display: flex;
+    align-items: center;
+    .m_topbar--center--authors {
 
+      button {
+        position: relative;
+        font-size: 2em;
+        font-weight: 200;
+        text-transform: none;
+        padding-left:0;
+
+        &::before {
+          content: '';
+          display: block;
+          width: 30px;
+          height: 30px;
+          margin-right: 10px;
+          position: absolute;
+          top: 8px;
+          right:100%;
+          border-radius: 50%;
+          border: 2px solid @c-rouge;
+        }
+
+      }
+
+    }
 
   }
   .m_topbar--right {
@@ -449,19 +475,23 @@ body {
   
   .m_folder--library {
     width: 100%;
+    .padding-vert-small;
     .bg-gris_clair;
   }
 
   .m_folder--favMedias {
     width: 100%;
-    display: flex;
-    flex-flow: row wrap;
     padding: 0 @t-skipline/2;
     .bg-bleuvert;
 
-    > * {
-      flex: 0 0 100/5%;
+    .m_folder--favMedias--list {
+      display: flex;
+      flex-flow: row wrap;        
+      > * {
+        flex: 0 0 100/5%;
+      }
     }
+
     
   }
 
@@ -489,6 +519,8 @@ body {
     flex-flow: column nowrap;
     .boxs-card-2;
     .bg-blanc;
+    margin: 0;
+    .margin-vert-small;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(.25,.8,.25,1);  
 

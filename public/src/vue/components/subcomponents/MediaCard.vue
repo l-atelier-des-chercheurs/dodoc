@@ -17,6 +17,9 @@
         <a>
           <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" />
         </a>
+        <div class="text-small" v-if="!!media.authors">
+          Média de {{ media.authors }}
+        </div>
       </figcaption>
       <nav>
         <button 

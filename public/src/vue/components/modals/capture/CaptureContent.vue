@@ -425,11 +425,18 @@ export default {
     capture() {
       if(this.selected_mode === 'photo') {        
         this.getStaticImageFromVideoElement(this.$refs.videoElement).then(imageData => {
-          this.$root.createMediaFromCapture({
+
+          const mediaMeta = {
             slugFolderName: this.slugFolderName,
             type: 'image',
             rawData: imageData
-          });
+          };
+
+          if(this.$root.settings.current_author !== false) {
+            mediaMeta.authors = this.$root.settings.current_author;
+          }
+
+          this.$root.createMediaFromCapture(mediaMeta);
         });
       } else 
       if(this.selected_mode === 'video') {        

@@ -1085,6 +1085,9 @@ module.exports = (function() {
               fileCreationDate: api.parseDate(timeCreated)
             }
           };
+          if (mdata.hasOwnProperty('authors')) {
+            newMediaInfos.authors = mdata.authors;
+          }
           resolve(newMediaInfos);
         })
         .catch(err => {
