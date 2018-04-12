@@ -58,6 +58,9 @@ export default {
       this.$emit('close');
     },
     urlToPortrait(filename) {
+      if(filename === undefined) {
+        return '';
+      }
       return `${this.$root.state.authorsFolder}/${filename}`;
     }
   }
