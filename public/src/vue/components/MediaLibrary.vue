@@ -8,12 +8,14 @@
     >
     </MediaFilterBar> -->
 
-    <FileUpload
-      v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
-      :slugFolderName="slugFolderName"
-      :disabled="read_only"
-    >
-    </FileUpload>
+    <div class="bg-blanc border-vert margin-bottom-small">
+      <FileUpload
+        v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
+        :slugFolderName="slugFolderName"
+        :disabled="read_only"
+      >
+      </FileUpload>
+    </div>
 
     <div class="text-cap font-verysmall margin-sides-medium margin-bottom-none c-noir">
       Tous les médias

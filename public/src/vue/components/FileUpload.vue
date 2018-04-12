@@ -38,7 +38,7 @@ export default {
     return {
       customOptionsObject: {
         language: {
-          dictDefaultMessage: '+',
+          dictDefaultMessage: 'Importer',
           dictCancelUpload: 'Annuler l’upload',
           dictRemoveFile: 'Masquer'
         }
@@ -109,7 +109,7 @@ export default {
       return `
           <div class="dz-preview dz-file-preview">
               <div class="dz-image" style="width: 50px;height: 50px">
-                  <img data-dz-thumbnail /></div>
+                <img data-dz-thumbnail /></div>
               <div class="dz-details">
                 <div class="dz-filename"><span data-dz-name></span></div>
                 <div class="dz-size"><span data-dz-size></span></div>

@@ -1154,7 +1154,7 @@ module.exports = (function() {
               mediaName
             );
 
-            let imageBuffer = api
+            api
               .writeMediaDataToDisk(pathToMedia, mdata.rawData)
               .then(() => {
                 resolve();
@@ -1164,7 +1164,25 @@ module.exports = (function() {
               });
           })
         );
-      } else {
+      } else if (mdata.type === 'audio') {
+        tasks.push(
+          new Promise((resolve, reject) => {
+            mediaName += '.wav';
+            let pathToMedia = path.join(
+              api.getFolderPath(slugFolderName),
+              mediaName
+            );
+
+            api
+              .writeMediaDataToDisk(pathToMedia, mdata.rawData)
+              .then(() => {
+                resolve();
+              })
+              .catch(err => {
+                reject(err);
+              });
+          })
+        );
       }
 
       Promise.all(tasks)

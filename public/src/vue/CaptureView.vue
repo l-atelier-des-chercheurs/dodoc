@@ -46,7 +46,7 @@
           <button type="button" 
             v-if="isRecording"
             class="padding-verysmall"
-            @click="$eventHub.$emit('capture.stopVideoRecording')"
+            @click="$eventHub.$emit('capture.stopRecording')"
           >
             <img src="/images/i_stop.svg">
           </button>
@@ -203,6 +203,7 @@ export default {
     },
     'selected_mode': function() {
       console.log('WATCH • Capture: selected_mode');
+      this.justCapturedMediaData = {};
 
       if(this.selected_mode === 'photo') {
         this.stopAllFeeds().then(() => {
@@ -222,7 +223,7 @@ export default {
       if(this.selected_mode === 'audio') {
         this.stopAllFeeds().then(() => {
           equalizer.clearCanvas();
-          this.getAudioFeed()
+          this.startAudioFeed()
           .then(stream => {
             equalizer.start(this.$refs.equalizerElement, stream);
           })
@@ -230,6 +231,9 @@ export default {
           })      
         });
       }
+    },
+    'isRecording': function() {
+      equalizer.setSarahCouleur(this.isRecording);
     }
   },
   computed: {
@@ -355,7 +359,7 @@ export default {
           video: {
             optional: [{ sourceId: this.selected_devicesId.videoinput }],
             mandatory: {
-              minWidth:"320","maxWidth":"320","minHeight":"240","maxHeight":"240"
+              minWidth:"640","maxWidth":"640","minHeight":"480","maxHeight":"480"
             }
           },
           audio: withAudio
@@ -443,7 +447,9 @@ export default {
 
           this.isRecording = true;
 
-          this.$eventHub.$on('capture.stopVideoRecording', () => {
+          this.$eventHub.$on('capture.stopRecording', () => {
+            this.$eventHub.$off('capture.stopRecording');
+
             recordVideoFeed.stopRecording(() => {
               this.isRecording = false;
               recordVideoFeed.getDataURL(videoDataURL => {
@@ -454,8 +460,34 @@ export default {
         }
       });
     },
+    startRecordAudioFeed() {
+      return new Promise((resolve, reject) => {
+        if(!!this.audioStream) {
+          debugger;
+          let recordAudioFeed = RecordRTC(this.audioStream, {
+            type: 'audio'
+          });
+          recordAudioFeed.startRecording();
 
+          this.isRecording = true;
+
+          this.$eventHub.$on('capture.stopRecording', () => {
+            this.$eventHub.$off('capture.stopRecording');
+
+            recordAudioFeed.stopRecording(() => {
+              this.isRecording = false;
+              recordAudioFeed.getDataURL(audioDataURL => {
+                resolve(audioDataURL);
+              })
+            });
+          });
+        }
+      });
+    },
     capture() {
+
+      this.justCapturedMediaData = {};
+
       if(this.selected_mode === 'photo') {        
         this.getStaticImageFromVideoElement(this.$refs.videoElement).then(imageData => {
 
@@ -473,7 +505,7 @@ export default {
         });
       } else 
       if(this.selected_mode === 'video') {        
-        this.startRecordCameraFeed(true).then(videoDataURL => {
+        this.startRecordCameraFeed().then(videoDataURL => {
           this.$root.createMediaFromCapture({
             slugFolderName: this.slugFolderName,
             type: 'video',
@@ -481,7 +513,17 @@ export default {
           });
         });
 
-
+      } else
+      if(this.selected_mode === 'audio') { 
+        equalizer.clearCanvas();
+        this.startRecordAudioFeed().then(audioDataURL => {
+          this.$root.createMediaFromCapture({
+            slugFolderName: this.slugFolderName,
+            type: 'audio',
+            rawData: audioDataURL
+          });
+        });
+        
       }
     },
 
@@ -543,6 +585,14 @@ var equalizer = (function() {
     },
     stop : function() {
       stopEqualizer();
+    },
+    setSarahCouleur : function(isCurrentlyRecording) {
+      if(isCurrentlyRecording) {
+        sarahCouleur = 'red';
+      } else {
+        sarahCouleur = 'gray';
+      }
+
     },
     clearCanvas : function() {
       clearCanvas();
