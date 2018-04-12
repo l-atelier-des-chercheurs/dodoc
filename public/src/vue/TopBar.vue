@@ -27,9 +27,11 @@
     <div class="m_topbar--center">
       <div class="m_topbar--center--authors">
         <button type="button" @click="showAuthorsListModal = true">
-          <template v-if="$root.settings.current_author !== {}">
+          <template v-if="$root.settings.current_author !== false">
             <div class="m_topbar--center--authors--portrait">
-              <img :src="urlToPortrait($root.settings.current_author.portrait)" width="100" height="100">              
+              <img :src="urlToPortrait($root.settings.current_author.portrait)" width="100" height="100"
+               v-if="$root.settings.current_author.hasOwnProperty('portrait')"
+              >              
             </div>
             <div class="m_topbar--center--authors--name">
               {{ $root.settings.current_author.name }}

@@ -340,11 +340,12 @@ body {
 .m_authorsList {
   display: flex;
   flex-flow: row wrap;
+
   button {
     .margin-medium;
-    .bg-gris_clair;
-    width: 200px;
-    height: 200px;
+    .bg-gris_tresclair;
+    width: 140px;
+    height: 140px;
     text-align: center;
     text-transform: uppercase;
     font-weight:200;
@@ -360,7 +361,7 @@ body {
     }
     span {
       display: block;
-      .padding-small;
+      .padding-sides-small;
     }
   }
 
@@ -771,8 +772,8 @@ body {
   .m_panel {
     display: flex;
     flex-flow: column nowrap;
-    min-height: 80vh;
-    min-height: ~"calc(100vh - 105px - 80px - 40px)";
+    height: ~"calc(100vh - 105px - 80px - 40px)";
+    min-height: 300px;
   }
 
   .m_panel--previewCard {
