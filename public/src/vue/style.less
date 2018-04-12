@@ -69,12 +69,12 @@ body {
 
 
   margin-top: @t-hauteur_topbar;
+
   &.has_systembar {
     margin-top: @t-systemBarHeight + @t-hauteur_topbar;
-
-    @media screen and (max-width: 50rem) {
-      margin-top: 0;
-    }
+  }
+  @media screen and (max-width: 50rem) {
+    margin-top: 0 !important;
   }
 }
 
@@ -165,7 +165,7 @@ body {
 
   @media screen and (max-width: 50rem) {
     position: relative;
-
+    
   }
 
   .flex-wrap;
@@ -182,6 +182,7 @@ body {
 
   .m_topbar--left {
     display: flex;
+    align-items: center;
 
     .m_topbar--left--logo {
       display: flex;
@@ -263,24 +264,29 @@ body {
   .m_topbar--center {
     display: flex;
     align-items: center;
+
     .m_topbar--center--authors {
 
+      .padding-small;
       button {
         position: relative;
-        font-size: 2em;
+        font-size: 1.5em;
         font-weight: 200;
         text-transform: none;
         padding-left:0;
 
+        @media screen and (max-width: 50rem) {
+
+        }
+
         &::before {
           content: '';
-          display: block;
+          display: inline-block;
           width: 30px;
           height: 30px;
           margin-right: 10px;
-          position: absolute;
+          position: relative;
           top: 8px;
-          right:100%;
           border-radius: 50%;
           border: 2px solid @c-rouge;
         }
@@ -441,6 +447,7 @@ body {
 
   @media screen and (max-width: 50rem) {
     position: relative;
+    height:auto !important;
   }
 
   @scrollbar-height: 8px;
@@ -609,12 +616,15 @@ body {
       padding-bottom: 66%;
     }
 
-    img, video{
+    img, video, audio{
       position: absolute;
       width: 100%;
       height: 100%;
       margin: 0;
       object-fit: contain;
+    }
+    audio {
+      height: 50px;
     }
   }
 
