@@ -513,8 +513,8 @@ let vm = new Vue({
         console.log('ROOT EVENT: closeFolder');
       }
 
-      this.settings.current_slugFolderName = '';
       this.settings.view = 'ListView';
+      this.settings.current_slugFolderName = '';
 
       history.pushState({ slugFolderName: '' }, '', '/');
     },
