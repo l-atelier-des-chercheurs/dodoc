@@ -5,6 +5,8 @@
   "userDirPath": "documents",
   "userDirname": "dodoc2",
 
+  "enable_nfc" : true,
+
   "contentDirname" : "user",
   "cacheDirname" : "cache",
   "metaFileext" : ".txt",

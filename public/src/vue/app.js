@@ -103,6 +103,7 @@ Vue.prototype.$socketio = new Vue({
       this.socket.on('listFolder', this._onListFolder);
       this.socket.on('listFolders', this._onListFolders);
       this.socket.on('notify', this._onNotify);
+      this.socket.on('gotTagUID', this._gotTagUID);
     },
     _onSocketConnect() {
       let sessionId = this.socket.io.engine.id;
@@ -261,6 +262,10 @@ Vue.prototype.$socketio = new Vue({
         .delay(4000)
         .error(this.$t(`notifications[${msg}]`));
     },
+    _gotTagUID(tag) {
+      console.log('Received _gotTagUID packet.');
+      this.$eventHub.$emit('socketio.got_tag', tag);
+    },
 
     listFolders() {
       this.socket.emit('listFolders');
@@ -342,6 +347,8 @@ let vm = new Vue({
       console.log('ROOT EVENT: created / checking for errors');
     }
 
+    this.$eventHub.$on('socketio.got_tag', this.handle_new_tag);
+
     if (this.store.noticeOfError) {
       if (this.store.noticeOfError === 'failed_to_find_folder') {
         alertify
@@ -396,6 +403,9 @@ let vm = new Vue({
       console.log('ROOT EVENT: created / now connecting with socketio');
       this.$socketio.connect();
     }
+  },
+  beforeDestroy() {
+    this.$eventHub.$off('socketio.got_tag', this.handle_new_tag);
   },
   methods: {
     createFolder: function(fdata) {
@@ -481,6 +491,20 @@ let vm = new Vue({
         console.log(`ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`);
       }
       this.$socketio.editMedia(mdata);
+    },
+
+    handle_new_tag: function(tag) {
+      if (window.state.is_electron) {
+        const tagged_author_key = Object.keys(
+          this.$root.store.authorsList
+        ).filter(a => {
+          let author_info = this.$root.store.authorsList[a];
+          return author_info.tag === tag;
+        });
+        const author_info = this.$root.store.authorsList[tagged_author_key];
+        this.setAuthor(author_info);
+        debugger;
+      }
     },
 
     openFolder: function(slugFolderName) {

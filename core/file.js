@@ -101,7 +101,6 @@ module.exports = (function() {
           var allAuthorsMeta = [];
           metaFiles.forEach(filename => {
             let fmeta = new Promise((resolve, reject) => {
-              dev.log(filename);
               const pathToAuthorMeta = path.join(authorsFile, filename);
               // todo : resolve meta file
               readMetaFile(pathToAuthorMeta).then(authorsData => {
@@ -1205,7 +1204,6 @@ module.exports = (function() {
             }
           };
           if (mdata.hasOwnProperty('authors')) {
-            console.log('HAS AUTHOR');
             newMediaInfos.additionalMeta.authors = mdata.authors;
           }
           resolve(newMediaInfos);

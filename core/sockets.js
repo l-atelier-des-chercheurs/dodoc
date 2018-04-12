@@ -14,7 +14,8 @@ module.exports = (function() {
     init: (app, io, electronApp) => init(app, io, electronApp),
     createMediaMeta: (slugFolderName, slugMediaName, additionalMeta) =>
       createMediaMeta(slugFolderName, slugMediaName, additionalMeta),
-    pushMessage: msg => pushMessage(msg)
+    pushMessage: msg => pushMessage(msg),
+    sendTagUID: tag => sendTagUID(tag)
   };
 
   function init(thisApp, thisIO, thisElectronApp) {
@@ -383,6 +384,10 @@ module.exports = (function() {
       .catch(err => {
         dev.error('No folder found');
       });
+  }
+
+  function sendTagUID(tag) {
+    api.sendEventWithContent('gotTagUID', tag, io);
   }
 
   return API;
