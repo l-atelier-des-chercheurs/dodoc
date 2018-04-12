@@ -1148,7 +1148,7 @@ module.exports = (function() {
       } else if (mdata.type === 'video') {
         tasks.push(
           new Promise((resolve, reject) => {
-            mediaName += '.webm';
+            mediaName += '.mp4';
             let pathToMedia = path.join(
               api.getFolderPath(slugFolderName),
               mediaName
