@@ -12,55 +12,6 @@
 
     <template slot="sidebar">
 
-<!-- Caption -->
-      <div 
-      v-if="(!read_only || !!mediadata.caption) && mediadata.type !== 'marker' && mediadata.type !== 'text'"
-      class="margin-bottom-small" 
-      >
-        <label>{{ $t('caption') }}</label><br>
-        <textarea v-model="mediadata.caption" :readonly="read_only">
-        </textarea>
-      </div>
-
-      <div class="margin-bottom-small">
-        {{ $t('created_date') }}<br>
-        {{ date_created_human }}
-      </div>
-
-<!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
-<!-- Disabled for now: if an image or video is tagged as "text" or marked, a folder becomes unreadable -->
-      <div class="margin-bottom-small">
-        <label>{{ $t('type') }}</label>
-        <select v-if="!read_only" ref="type" v-model="mediadata.type">
-          <option v-for="mediaType in $root.state.structure.media.type.options" :key="mediaType">
-            {{ mediaType }}
-          </option>
-        </select>
-        <input type="text" v-else :value="mediadata.type" readonly>
-      </div>
-
-<!-- Keywords -->
-      <div v-if="!read_only || !!mediadata.keywords" class="margin-bottom-small">
-        <label>{{ $t('keywords') }}</label>
-        <textarea v-model="mediadata.keywords" :readonly="read_only">
-        </textarea>
-      </div>
-
-<!-- Author(s) -->
-      <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
-        <label>{{ $t('author') }}</label>
-        <textarea v-model="mediadata.authors" :readonly="read_only">
-        </textarea>
-      </div>
-
-<!-- Fav or not -->
-      <div class="margin-bottom-small">
-        <span class="switch">
-          <input type="checkbox" class="switch" id="favswitch" v-model="mediadata.fav" :readonly="read_only">
-          <label for="favswitch">{{ $t('fav') }}</label>
-        </span>
-      </div>
-
       <div v-if="!read_only" class="m_modal--buttonrow flex-wrap flex-vertically-start flex-space-between flex-same-basis">
         <button type="button"
           class="bg-transparent button-round margin-verysmall padding-verysmall"
@@ -176,6 +127,55 @@
             {{ $t('download') }}
           </span>
         </a>
+      </div>
+
+<!-- Caption -->
+      <div 
+      v-if="(!read_only || !!mediadata.caption) && mediadata.type !== 'marker' && mediadata.type !== 'text'"
+      class="margin-bottom-small" 
+      >
+        <label>{{ $t('caption') }}</label><br>
+        <textarea v-model="mediadata.caption" :readonly="read_only">
+        </textarea>
+      </div>
+
+      <div class="margin-bottom-small">
+        {{ $t('created_date') }}<br>
+        {{ date_created_human }}
+      </div>
+
+<!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
+<!-- Disabled for now: if an image or video is tagged as "text" or marked, a folder becomes unreadable -->
+      <!-- <div class="margin-bottom-small">
+        <label>{{ $t('type') }}</label>
+        <select v-if="!read_only" ref="type" v-model="mediadata.type">
+          <option v-for="mediaType in $root.state.structure.media.type.options" :key="mediaType">
+            {{ mediaType }}
+          </option>
+        </select>
+        <input type="text" v-else :value="mediadata.type" readonly>
+      </div> -->
+
+<!-- Keywords -->
+      <div v-if="!read_only || !!mediadata.keywords" class="margin-bottom-small">
+        <label>{{ $t('keywords') }}</label>
+        <textarea v-model="mediadata.keywords" :readonly="read_only">
+        </textarea>
+      </div>
+
+<!-- Author(s) -->
+      <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
+        <label>{{ $t('author') }}</label>
+        <textarea v-model="mediadata.authors" :readonly="read_only">
+        </textarea>
+      </div>
+
+<!-- Fav or not -->
+      <div class="margin-bottom-small">
+        <span class="switch">
+          <input type="checkbox" class="switch" id="favswitch" v-model="mediadata.fav" :readonly="read_only">
+          <label for="favswitch">{{ $t('fav') }}</label>
+        </span>
       </div>
 
     </template>
