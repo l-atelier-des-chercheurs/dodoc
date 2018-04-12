@@ -49,6 +49,10 @@
           >
             <img src="/images/i_stop.svg">
           </button>
+          <span class="switch" v-if="selected_mode === 'video'">
+            <input type="checkbox" class="switch" id="recordVideoWithAudio" v-model="recordVideoWithAudio">
+            <label for="recordVideoWithAudio">Enregistrer le son</label>
+          </span>
         </div>
       </div>
 
