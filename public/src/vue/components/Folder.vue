@@ -1,13 +1,13 @@
 <template>
   <div class="m_folder">
 
-    <div class="m_folder--presentation">
+    <div class="m_folder--presentation" @click="$root.openFolder(slugFolderName)">
       <img src="" class=""/>
 
       <div>
         <h2 
           class="margin-none margin-sides-medium margin-vert-small font-folder_title"
-          @click="$root.openFolder(slugFolderName)"
+          
         >
           {{ folder.name }}    
         </h2>
