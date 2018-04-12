@@ -117,8 +117,9 @@ module.exports = (function() {
     }
 
     // check if allowed
-    file.getFolder(d.slugFolderName).then(
-      foldersData => {
+    file
+      .getFolder(d.slugFolderName)
+      .then(foldersData => {
         if (!auth.hasFolderAuth(socket.id, foldersData)) {
           return;
         }
@@ -127,18 +128,17 @@ module.exports = (function() {
           .then(slugFolderName => {
             sendFolders({ slugFolderName });
           });
-      },
-      function(err, p) {
-        dev.error(`Failed to edit folder: ${err}`);
-        reject(err);
-      }
-    );
+      })
+      .catch(err => {
+        dev.error('No folder found');
+      });
   }
   function onRemoveFolder(socket, slugFolderName) {
     dev.logfunction(`EVENT - onRemoveFolder for ${slugFolderName}`);
     // check if allowed
-    file.getFolder(slugFolderName).then(
-      foldersData => {
+    file
+      .getFolder(slugFolderName)
+      .then(foldersData => {
         if (!auth.hasFolderAuth(socket.id, foldersData)) {
           return;
         }
@@ -151,12 +151,10 @@ module.exports = (function() {
             reject(err);
           }
         );
-      },
-      function(err, p) {
-        dev.error(`Failed to remove folder: ${err}`);
-        reject(err);
-      }
-    );
+      })
+      .catch(err => {
+        dev.error('No folder found');
+      });
   }
 
   /**************************************************************** MEDIA ********************************/
@@ -283,8 +281,9 @@ module.exports = (function() {
   function sendFolders({ slugFolderName, socket, folderID } = {}) {
     dev.logfunction(`COMMON - sendFolders for ${slugFolderName}`);
 
-    file.getFolder(slugFolderName).then(
-      foldersData => {
+    file
+      .getFolder(slugFolderName)
+      .then(foldersData => {
         // if folder creation, we get an ID to open the folder straight away
         if (foldersData !== undefined && slugFolderName && folderID) {
           foldersData[slugFolderName].folderID = folderID;
@@ -330,12 +329,10 @@ module.exports = (function() {
             );
           }
         });
-      },
-      function(err, p) {
-        dev.error(`Failed to get folders data: ${err}`);
-        reject(err);
-      }
-    );
+      })
+      .catch(err => {
+        dev.error('No folder found');
+      });
   }
 
   function sendMedias({ slugFolderName, slugMediaName, socket, mediaID }) {
@@ -343,8 +340,12 @@ module.exports = (function() {
       `COMMON - sendMedias for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName} and mediaID = ${mediaID}`
     );
 
-    file.getFolder(slugFolderName).then(
-      foldersData => {
+    file
+      .getFolder(slugFolderName)
+      .then(foldersData => {
+        if (foldersData === undefined) {
+          return;
+        }
         file
           .gatherAllMedias(slugFolderName, slugMediaName, mediaID)
           .then(mediasData => {
@@ -378,12 +379,10 @@ module.exports = (function() {
               );
             });
           });
-      },
-      function(err, p) {
-        dev.error(`Failed to get folders data: ${err}`);
-        reject(err);
-      }
-    );
+      })
+      .catch(err => {
+        dev.error('No folder found');
+      });
   }
 
   return API;

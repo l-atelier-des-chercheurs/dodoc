@@ -25,8 +25,9 @@ module.exports = (function() {
         reject();
       } else {
         // get all folders slugs and passwords
-        file.getFolder().then(
-          foldersData => {
+        file
+          .getFolder()
+          .then(foldersData => {
             // compare with data we received
             for (let slugFolderName in foldersData) {
               if (admin_access[slugFolderName]) {
@@ -48,24 +49,17 @@ module.exports = (function() {
               }`
             );
             resolve(users_auth[sessionId]);
-          },
-          function(err, p) {
+          })
+          .catch(err => {
             dev.error(`Failed to get folder data: ${err}`);
             reject(err);
-          }
-        );
+          });
       }
     });
   }
 
   function hasFolderAuth(sessionId, foldersData) {
-    dev.logfunction(
-      `AUTH — hasFolderAuth: ${JSON.stringify(
-        users_auth,
-        null,
-        4
-      )} & ${JSON.stringify(foldersData, null, 4)}`
-    );
+    dev.logfunction(`AUTH — hasFolderAuth`);
     let slugFolderName = Object.keys(foldersData)[0];
 
     if (

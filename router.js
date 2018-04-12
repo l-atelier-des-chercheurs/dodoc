@@ -112,16 +112,21 @@ module.exports = function(app, io, m) {
       pageData => {
         pageData.slugFolderName = slugFolderName;
         // let’s make sure that folder exists first and return some meta
-        file.getFolder(slugFolderName).then(
-          foldersData => {
-            res.render('index', pageData);
-          },
-          (err, p) => {
-            dev.error(`Failed to get folder: ${err}`);
-            pageData.noticeOfError = 'failed_to_find_folder';
-            res.render('index', pageData);
-          }
-        );
+        file
+          .getFolder(slugFolderName)
+          .then(
+            foldersData => {
+              res.render('index', pageData);
+            },
+            (err, p) => {
+              dev.error(`Failed to get folder: ${err}`);
+              pageData.noticeOfError = 'failed_to_find_folder';
+              res.render('index', pageData);
+            }
+          )
+          .catch(err => {
+            dev.error('No folder found');
+          });
       },
       err => {
         dev.error(`Err while getting index data: ${err}`);
@@ -133,58 +138,63 @@ module.exports = function(app, io, m) {
     let slugFolderName = req.param('folder');
     generatePageData(req).then(pageData => {
       // get medias for a folder
-      file.getFolder(slugFolderName).then(
-        foldersData => {
-          file.gatherAllMedias(slugFolderName).then(
-            mediasData => {
-              // recreate full object
-              foldersData[slugFolderName].medias = mediasData;
-              pageData.folderAndMediaData = foldersData;
-              pageData.mode = 'export';
+      file
+        .getFolder(slugFolderName)
+        .then(
+          foldersData => {
+            file.gatherAllMedias(slugFolderName).then(
+              mediasData => {
+                // recreate full object
+                foldersData[slugFolderName].medias = mediasData;
+                pageData.folderAndMediaData = foldersData;
+                pageData.mode = 'export';
 
-              res.render('index', pageData, (err, html) => {
-                exporter.copyWebsiteContent({ html, slugFolderName }).then(
-                  cachePath => {
-                    var archive = archiver('zip');
+                res.render('index', pageData, (err, html) => {
+                  exporter.copyWebsiteContent({ html, slugFolderName }).then(
+                    cachePath => {
+                      var archive = archiver('zip');
 
-                    archive.on('error', function(err) {
-                      res.status(500).send({ error: err.message });
-                    });
+                      archive.on('error', function(err) {
+                        res.status(500).send({ error: err.message });
+                      });
 
-                    //on stream closed we can end the request
-                    archive.on('end', function() {
-                      dev.log('Archive wrote %d bytes', archive.pointer());
-                    });
+                      //on stream closed we can end the request
+                      archive.on('end', function() {
+                        dev.log('Archive wrote %d bytes', archive.pointer());
+                      });
 
-                    //set the archive name
-                    res.attachment(slugFolderName + '.zip');
+                      //set the archive name
+                      res.attachment(slugFolderName + '.zip');
 
-                    //this is the streaming magic
-                    archive.pipe(res);
+                      //this is the streaming magic
+                      archive.pipe(res);
 
-                    archive.directory(cachePath, false);
+                      archive.directory(cachePath, false);
 
-                    archive.finalize();
-                  },
-                  (err, p) => {
-                    dev.error('Failed while preparing/making a web export');
-                  }
-                );
-              });
-            },
-            (err, p) => {
-              dev.error(`Failed to gather medias: ${err}`);
-              pageData.noticeOfError = 'failed_to_find_folder';
-              res.render('index', pageData);
-            }
-          );
-        },
-        (err, p) => {
-          dev.error(`Failed to get folder: ${err}`);
-          pageData.noticeOfError = 'failed_to_find_folder';
-          res.render('index', pageData);
-        }
-      );
+                      archive.finalize();
+                    },
+                    (err, p) => {
+                      dev.error('Failed while preparing/making a web export');
+                    }
+                  );
+                });
+              },
+              (err, p) => {
+                dev.error(`Failed to gather medias: ${err}`);
+                pageData.noticeOfError = 'failed_to_find_folder';
+                res.render('index', pageData);
+              }
+            );
+          },
+          (err, p) => {
+            dev.error(`Failed to get folder: ${err}`);
+            pageData.noticeOfError = 'failed_to_find_folder';
+            res.render('index', pageData);
+          }
+        )
+        .catch(err => {
+          dev.error('No folder found');
+        });
     });
   }
 
