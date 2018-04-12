@@ -127,9 +127,9 @@ module.exports = (function() {
               fs.access(pathToPotentialPortrait, fs.F_OK, err => {
                 if (err) {
                   dev.logverbose(`Missing portrait for ${filename}: ${err}`);
-                  return resolve();
+                  return resolve({});
                 }
-                resolve({
+                return resolve({
                   [filename]: { portrait: potentialPortraitFilename }
                 });
               });
@@ -147,6 +147,10 @@ module.exports = (function() {
             const authorsObj = {};
             parsedAuthorsData.map(d => {
               let filename = Object.keys(d)[0];
+              if (typeof d === 'object' && Object.keys(d).length === 0) {
+                return;
+              }
+
               if (!authorsObj.hasOwnProperty(filename)) {
                 authorsObj[filename] = {};
               }

@@ -28,7 +28,6 @@
             v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
             ref="videoElement" 
             autoplay 
-            playsinline
           /> 
           <canvas 
             v-if="selected_mode === 'audio'"
@@ -143,6 +142,7 @@ export default {
 
       isRecording: false,
       recordVideoFeed: undefined,
+      recordVideoWithAudio: true,
 
       justCapturedMediaData: {},
       videoStream: undefined,
@@ -328,17 +328,18 @@ export default {
       });
     },
 
-    startCameraFeed() {
+    startCameraFeed(withAudio = false) {
       return new Promise((resolve, reject) => {
         console.log('METHODS • Capture: startCameraFeed');
-        if(this.videoStream !== undefined) {
-          return;
+        if(this.selected_devicesId.videoinput === '') {
+          return reject(this.$t('notifications.video_source_not_set'));
         }
 
-        this.getCameraFeed()
+        this.getCameraFeed(withAudio)
           .then((stream) => {
             this.videoStream = stream;
             this.$refs.videoElement.srcObject = stream;
+            this.$refs.videoElement.volume = 0;
             resolve();
           })
           .catch((err) => {
@@ -352,9 +353,6 @@ export default {
       return new Promise((resolve, reject) => {
         console.log('METHODS • Capture: getCameraFeed');
 
-        if(this.selected_devicesId.videoinput === '') {
-          reject(this.$t('notifications.video_source_not_set'));
-        }
         const constraints = {
           video: {
             optional: [{ sourceId: this.selected_devicesId.videoinput }],
@@ -434,8 +432,7 @@ export default {
 
     startRecordCameraFeed(withAudio = false) {
       return new Promise((resolve, reject) => {
-        if(!!this.videoStream) {
-
+        this.startCameraFeed(withAudio).then(() => {
           let recordVideoFeed = RecordRTC(this.videoStream);
 
           const options = {
@@ -457,13 +454,12 @@ export default {
               })
             });
           });
-        }
+        });
       });
     },
     startRecordAudioFeed() {
       return new Promise((resolve, reject) => {
         if(!!this.audioStream) {
-          debugger;
           let recordAudioFeed = RecordRTC(this.audioStream, {
             type: 'audio'
           });
@@ -498,14 +494,14 @@ export default {
           };
 
           if(this.$root.settings.current_author !== false) {
-            mediaMeta.authors = this.$root.settings.current_author;
+            mediaMeta.authors = this.$root.settings.current_author.name;
           }
 
           this.$root.createMediaFromCapture(mediaMeta);
         });
       } else 
       if(this.selected_mode === 'video') {        
-        this.startRecordCameraFeed().then(videoDataURL => {
+        this.startRecordCameraFeed(this.recordVideoWithAudio).then(videoDataURL => {
           this.$root.createMediaFromCapture({
             slugFolderName: this.slugFolderName,
             type: 'video',

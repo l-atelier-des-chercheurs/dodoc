@@ -15,8 +15,8 @@
 
         <div class="m_authorsList">
           <div v-for="author in $root.store.authorsList" :key="author.name" class="">
-            <button type="button" class="button-allwide" @click="setAuthor(author.name)"
-              :class="{ 'is--selected' : author.name === $root.settings.current_author }"
+            <button type="button" class="button-allwide" @click="setAuthor(author)"
+              :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"
             >
               <img :src="urlToPortrait(author.portrait)" width="100" height="100">
               <span>{{ author.name }}</span>

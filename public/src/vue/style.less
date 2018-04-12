@@ -175,8 +175,8 @@ body {
     flex: 1 1 0;
 
     &.m_topbar--center {
-      min-width: 200px;
-      max-width: 200px;
+      min-width: 320px;
+      max-width: 320px;
     }
   }  
 
@@ -263,34 +263,45 @@ body {
   }    
   .m_topbar--center {
     display: flex;
+    justify-content: center;
     align-items: center;
 
     .m_topbar--center--authors {
-
       .padding-small;
+
       button {
         position: relative;
-        font-size: 1.5em;
-        font-weight: 200;
-        text-transform: none;
+        padding: 0;
         padding-left:0;
+        min-height: 0;
+        display: flex;
+        align-items: center;
 
         @media screen and (max-width: 50rem) {
 
         }
 
-        &::before {
-          content: '';
-          display: inline-block;
-          width: 30px;
-          height: 30px;
+        .m_topbar--center--authors--portrait {
+          width: 40px;
+          height: 40px;
           margin-right: 10px;
           position: relative;
-          top: 8px;
           border-radius: 50%;
-          border: 2px solid @c-rouge;
-        }
+          background-color: red;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
 
+
+          img {
+            object-fit: cover;
+          }
+        }
+        .m_topbar--center--authors--name {
+          font-size: 1.5em;
+          font-weight: 200;
+          text-transform: uppercase;
+        } 
       }
 
     }
@@ -302,13 +313,15 @@ body {
       justify-content: flex-end;
       align-items: center;
       .c-gris;
+      padding-left: @t-skipline/2;
+      padding-right: @t-skipline/2;
       height: 100%;
 
       > * {
         flex: 0 0 auto;
         width: auto;
         height: auto;
-        padding: @t-skipline/2 @t-skipline @t-skipline/2 0;
+        padding: @t-skipline/2 @t-skipline/2;
         cursor: pointer;
 
         svg {
@@ -333,7 +346,7 @@ body {
     width: 200px;
     height: 200px;
     text-align: center;
-    text-transform: none;
+    text-transform: uppercase;
     font-weight:200;
 
     &.is--selected {
@@ -343,6 +356,7 @@ body {
     img {
       width: 100px;
       height: 100px;
+      object-fit: contain;
     }
     span {
       display: block;
@@ -448,6 +462,7 @@ body {
   @media screen and (max-width: 50rem) {
     position: relative;
     height:auto !important;
+    overflow: auto;
   }
 
   @scrollbar-height: 8px;
@@ -564,7 +579,7 @@ body {
 .m_media {
   position: relative;
   width: 100%;
-  min-width: 200px;
+  min-width: 160px;
   padding: 0 @t-skipline/2;
 
   figure {
@@ -719,7 +734,7 @@ body {
 
     > * {
       flex: 0 1 auto;
-      transition: all .6s ease-out;
+      transition: all .15s ease-out;
       overflow: auto;
       .boxs-card-0;
       .bg-blanc;
@@ -757,6 +772,7 @@ body {
     display: flex;
     flex-flow: column nowrap;
     min-height: 80vh;
+    min-height: ~"calc(100vh - 105px - 80px - 40px)";
   }
 
   .m_panel--previewCard {

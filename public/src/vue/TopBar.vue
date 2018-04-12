@@ -28,10 +28,15 @@
       <div class="m_topbar--center--authors">
         <button type="button" @click="showAuthorsListModal = true">
           <template v-if="$root.settings.current_author !== false">
-            {{ $root.settings.current_author }}
+            <div class="m_topbar--center--authors--portrait">
+              <img :src="urlToPortrait($root.settings.current_author.portrait)" width="100" height="100">              
+            </div>
+            <div class="m_topbar--center--authors--name">
+              {{ $root.settings.current_author.name }}
+            </div>
           </template>
           <template v-else>
-            Auteur
+            ?
           </template>
         </button>
 
@@ -142,6 +147,9 @@ export default {
       if(this.$root.settings.view === 'FolderView') {
         this.$root.closeFolder();
       }
+    },
+    urlToPortrait(filename) {
+      return `${this.$root.state.authorsFolder}/${filename}`;
     }
   }
 }

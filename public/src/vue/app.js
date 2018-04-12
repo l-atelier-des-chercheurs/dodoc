@@ -538,8 +538,8 @@ let vm = new Vue({
 
       localstore.set('language', newLangCode);
     },
-    setAuthor: function(name) {
-      this.settings.current_author = name;
+    setAuthor: function(author) {
+      this.settings.current_author = author;
     }
   },
   watch: {
