@@ -359,7 +359,7 @@ export default {
           video: {
             optional: [{ sourceId: this.selected_devicesId.videoinput }],
             mandatory: {
-              minWidth:"640","maxWidth":"640","minHeight":"480","maxHeight":"480"
+              minWidth:"1280","maxWidth":"1280","minHeight":"720","maxHeight":"720"
             }
           },
           audio: withAudio
