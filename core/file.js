@@ -19,8 +19,6 @@ module.exports = (function() {
     editFolder: (foldersData, fdata) => editFolder(foldersData, fdata),
     removeFolder: slugFolderName => removeFolder(slugFolderName),
 
-    getMedia: (slugFolderName, slugMediaName) =>
-      getMedia(slugFolderName, slugMediaName),
     gatherAllMedias: (slugFolderName, slugMediaName, mediaID) =>
       gatherAllMedias(slugFolderName, slugMediaName, mediaID),
     createMediaMeta: (slugFolderName, slugMediaName, additionalMeta) =>
@@ -535,9 +533,9 @@ module.exports = (function() {
     });
   }
 
-  function getMedia(slugFolderName, slugMediaName = '') {
+  function _getMedia(slugFolderName, slugMediaName = '') {
     return new Promise(function(resolve, reject) {
-      dev.logfunction(`COMMON — getMedia`);
+      dev.logfunction(`COMMON — _getMedia`);
       if (slugFolderName === undefined) {
         dev.error(`Missing slugFolderName to read medias from.`);
         reject();
@@ -548,7 +546,7 @@ module.exports = (function() {
         );
       }
       dev.logverbose(
-        `COMMON — getMedia — slugFolderName: ${slugFolderName} — slugMediaName: ${slugMediaName}`
+        `COMMON — _getMedia — slugFolderName: ${slugFolderName} — slugMediaName: ${slugMediaName}`
       );
 
       let slugFolderPath = api.getFolderPath(slugFolderName);
@@ -634,7 +632,7 @@ module.exports = (function() {
         `COMMON — gatherAllMedias : will gather medias for folder ${slugFolderName} with opt slugMediaName = ${slugMediaName}`
       );
 
-      getMedia(slugFolderName, slugMediaName).then(
+      _getMedia(slugFolderName, slugMediaName).then(
         mediasData => {
           for (let slugMediaName in mediasData) {
             let mediaData = mediasData[slugMediaName];
