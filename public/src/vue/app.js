@@ -188,6 +188,8 @@ Vue.prototype.$socketio = new Vue({
       console.log(`Media data is for ${slugFolderName}.`);
 
       let mediaData = Object.values(mdata[slugFolderName].medias)[0];
+      let slugMediaName = Object.keys(mdata[slugFolderName].medias)[0];
+      mediaData.slugMediaName = slugMediaName;
 
       alertify
         .closeLogOnClick(true)
