@@ -16,6 +16,13 @@
         <input type="text" v-model="folderdata.name" required autofocus>
       </div>
 
+<!-- Preview -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('preview') }}</label><br>
+        <ImageSelect>
+        </ImageSelect>
+      </div>
+
 <!-- Password -->
       <div class="margin-bottom-small">
         <label>{{ $t('password') }}</label>
@@ -40,7 +47,7 @@
 </template>
 <script>
 import Modal from './BaseModal.vue';
-import DateTime from '../subcomponents/DateTime.vue';
+import ImageSelect from '../subcomponents/ImageSelect.vue';
 import alertify from 'alertify.js';
 
 export default {
@@ -49,7 +56,7 @@ export default {
   },
   components: {
     Modal,
-    DateTime
+    ImageSelect
   },
   data() {
     return {

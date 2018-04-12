@@ -47,6 +47,9 @@
       },
       "description": {
         "type": "string"
+      },
+      "preview": {
+        "type": "string"
       }
     },
     "media": {

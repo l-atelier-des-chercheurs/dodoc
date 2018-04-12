@@ -475,6 +475,12 @@ module.exports = (function() {
       // remove slugFolderKey
       let slugFolderName = foldersData.slugFolderName;
 
+      if (foldersData.hasOwnProperty('preview_rawdata')) {
+        dev.logverbose('Folders updated with new preview');
+        // store preview with sharp
+        foldersData.preview_rawdata;
+      }
+
       // cleaning up stored meta
       foldersData = _makeDefaultMetaFromStructure({
         type: 'folder',

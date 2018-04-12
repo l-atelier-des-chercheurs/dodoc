@@ -18,6 +18,13 @@
         <input type="text" v-model="folderdata.name" required :readonly="read_only">
       </div>
 
+<!-- Preview -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('preview') }}</label><br>
+        <ImageSelect @newPreview="value => { folder_preview = value }">
+        </ImageSelect>
+      </div>
+
 <!-- Password -->
 <!--
       <div class="margin-bottom-small">
@@ -47,6 +54,7 @@ import Modal from './BaseModal.vue';
 import DateTime from '../subcomponents/DateTime.vue';
 import alertify from 'alertify.js';
 import slug from 'slugg';
+import ImageSelect from '../subcomponents/ImageSelect.vue';
 
 export default {
   props: {
@@ -56,7 +64,8 @@ export default {
   },
   components: {
     Modal,
-    DateTime
+    DateTime,
+    ImageSelect
   },
   data() {
     return {
@@ -67,7 +76,8 @@ export default {
           : '',
         end: this.$moment(this.folder.end).isValid() ? this.folder.end : '',
         authors: this.folder.authors
-      }
+      },
+      folder_preview: ''
     };
   },
   computed: {},
@@ -105,6 +115,10 @@ export default {
               this.$t('notifications.folder_name_needs_alphanumeric_characters')
             );
         }
+      }
+
+      if(!!this.folder_preview) {
+        this.folderdata.preview_rawdata = this.folder_preview;
       }
 
       // copy all values
