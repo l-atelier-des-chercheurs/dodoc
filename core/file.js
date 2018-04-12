@@ -864,10 +864,9 @@ module.exports = (function() {
           ***************************************************************************/
           if (mdata.type === 'image') {
             let getFullEXIF = new Promise((resolve, reject) => {
-              dev.logverbose(`Will attempt to get media duration.`);
               thumbs.getEXIFData(mediaPath).then(exifdata => {
                 if (exifdata) {
-                  mdata.exif = validator.escape(JSON.stringify(exifdata));
+                  // mdata.exif = validator.escape(JSON.stringify(exifdata));
                 }
                 resolve();
               });
