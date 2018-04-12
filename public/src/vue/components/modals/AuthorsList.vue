@@ -8,17 +8,21 @@
     </template>
 
     <template slot="preview">
-      <div  class="margin-medium">
-        Liste des auteurs
+      <div  class="">
+        <div class="margin-medium">
+          Liste des auteurs
+        </div>
 
-        <div v-for="author in $root.store.authorsList" :key="author.name" class="margin-vert-small">
-          <button type="button" class="button-inline bg-noir button-allwide c-blanc" @click="setAuthor(author.name)"
-            :class="{ 'bg-rouge' : author.name === $root.settings.current_author }"
-          >
-            <img :src="urlToPortrait(author.portrait)">
-            {{ author.name }}
-          </button>
-        </div>        
+        <div class="m_authorsList">
+          <div v-for="author in $root.store.authorsList" :key="author.name" class="">
+            <button type="button" class="button-allwide" @click="setAuthor(author.name)"
+              :class="{ 'is--selected' : author.name === $root.settings.current_author }"
+            >
+              <img :src="urlToPortrait(author.portrait)" width="100" height="100">
+              <span>{{ author.name }}</span>
+            </button>
+          </div>        
+        </div>
       </div>
     </template>    
   </Modal>

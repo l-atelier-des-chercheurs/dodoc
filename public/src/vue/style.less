@@ -318,6 +318,34 @@ body {
   }
 }
 
+.m_authorsList {
+  display: flex;
+  flex-flow: row wrap;
+  button {
+    .margin-medium;
+    .bg-gris_clair;
+    width: 200px;
+    height: 200px;
+    text-align: center;
+    text-transform: none;
+    font-weight:200;
+
+    &.is--selected {
+      .bg-rouge;
+    }
+
+    img {
+      width: 100px;
+      height: 100px;
+    }
+    span {
+      display: block;
+      .padding-small;
+    }
+  }
+
+}
+
 .m_filterBar {
   max-height: @t-skipline*3;
   overflow: hidden;
