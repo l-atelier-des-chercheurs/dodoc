@@ -64,7 +64,10 @@ export default {
   data() {
     return {
       showMediaModalFor: false,
-      mediaFilter: '',
+
+      mediaFilter: {
+        fav: false
+      },
       mediaSort: {
         field: 'date_created',
         type: 'date',
@@ -135,13 +138,18 @@ export default {
         let sortedMediaObj = this.folder.medias[d.slugMediaName];
         sortedMediaObj.slugMediaName = d.slugMediaName;
 
-        if (this.mediaFilter.length > 0) {
-          // if there is a mediaFilter set, let’s only return medias whose mediaDataToOrderBy contain that string
-          let originalContentFromMedia =
-            sortedMediaObj[this.mediaSort.field] + '';
-          if (originalContentFromMedia.indexOf(this.mediaFilter) !== -1) {
+        if (Object.keys(this.mediaFilter).length > 0) {
+          // filter those that contain props
+          // TODO for multiple filters
+
+          if(sortedMediaObj.fav === this.mediaFilter.fav) {
             result.push(sortedMediaObj);
           }
+
+          // let originalContentFromMedia =
+          //   sortedMediaObj[this.mediaSort.field] + '';
+          // if (originalContentFromMedia.indexOf(this.mediaFilter) !== -1) {
+          // }
         } else {
           result.push(sortedMediaObj);
         }
