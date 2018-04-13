@@ -38,7 +38,7 @@
             </div>
           </template>
           <template v-else>
-            <div class="font-verylarge padding-small">
+            <div class="font-large padding-small">
               …
             </div>
           </template>

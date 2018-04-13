@@ -66,15 +66,16 @@ body {
   margin: 0;
   color: @c-noir;
   background-color: @c-body_bg;
+  overflow-y: hidden;
 
-
-  margin-top: @t-hauteur_topbar;
+  // margin-top: @t-hauteur_topbar;
 
   &.has_systembar {
-    margin-top: @t-systemBarHeight + @t-hauteur_topbar;
+    margin-top: @t-systemBarHeight;
   }
   @media screen and (max-width: 50rem) {
     margin-top: 0 !important;
+    overflow-y: auto;
   }
 }
 
@@ -148,7 +149,7 @@ body {
 }
 
 .m_topbar {
-  position: fixed;
+  position: relative;
   z-index: 10;
   width: 100%;
   top: 0;
@@ -158,7 +159,8 @@ body {
   margin-top: 0;
   .border-bottom;
   .boxs-card-0;
-  
+  .flex-wrap;
+
   body.has_systembar & {
     margin-top: @t-systemBarHeight;
   }
@@ -168,7 +170,6 @@ body {
     
   }
 
-  .flex-wrap;
 
   > * {
     min-width: 320px;
@@ -267,7 +268,6 @@ body {
     align-items: center;
 
     .m_topbar--center--authors {
-      .padding-small;
 
       button {
         position: relative;
@@ -403,15 +403,15 @@ body {
 
 
 .createButton, .captureButton {
-  @t-button_size: 4em;
+  @t-button_size: 3em;
 
   position: fixed;
-  bottom: 8vmin;
-  left: 8vmin;
+  bottom: 5vmin;
+  left: 5vmin;
   min-height: @t-button_size;
   border-radius: @t-button_size;
   .bg-rouge;
-  font-weight: 400;
+  font-weight: 600;
 
   transition: transform .2s ease-out;
 
@@ -445,19 +445,18 @@ body {
 @t-folderwidth: 360px;
 
 .m_listview, .m_folderview, .m_captureview {
-  position: absolute;
-  top:0;
-  bottom: 0;
+  position: relative;
   .bg-creme;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
 
   width: 100%;
 
-  height: ~"calc(100vh - @{t-hauteur_topbar})";
+  // 1px is border-top on topbar
+  height: ~"calc(100vh - @{t-hauteur_topbar} - 1px)";
 
   body.has_systembar & {
-    height: ~"calc(100vh - @{t-systemBarHeight} - @{t-hauteur_topbar})";
+    height: ~"calc(100vh - @{t-systemBarHeight} - @{t-hauteur_topbar} - 1px)";
   }
 
   @media screen and (max-width: 50rem) {

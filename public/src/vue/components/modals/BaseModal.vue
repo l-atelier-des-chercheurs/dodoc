@@ -14,6 +14,25 @@
                 class="m_modal--container--content"
                 >
 
+                <div v-if="!!this.$slots['preview']" class="m_modal--preview"
+                >
+
+                  <!-- if there is no sidebar, output header here -->
+                  <template v-if="!this.$slots['sidebar']">
+                    <div class="m_modal--header padding-medium bg-orange c-blanc">
+                      <h3 class="margin-none with-bullet">
+                        <slot name="header">
+                            default header
+                        </slot>
+                      </h3>
+                    </div>
+                  </template>
+
+                  <slot name="preview">
+                    default preview
+                  </slot>
+                </div>
+
                 <form v-if="!!this.$slots['sidebar']"
                   class="m_modal--sidebar"
                   v-on:submit.prevent="$emit('submit')"
@@ -50,25 +69,6 @@
                     </span>
                   </button>
                 </form>
-
-                <div v-if="!!this.$slots['preview']" class="m_modal--preview"
-                >
-
-                  <!-- if there is no sidebar, output header here -->
-                  <template v-if="!this.$slots['sidebar']">
-                    <div class="m_modal--header padding-medium bg-orange c-blanc">
-                      <h3 class="margin-none with-bullet">
-                        <slot name="header">
-                            default header
-                        </slot>
-                      </h3>
-                    </div>
-                  </template>
-
-                  <slot name="preview">
-                    default preview
-                  </slot>
-                </div>
 
               </div>
 
