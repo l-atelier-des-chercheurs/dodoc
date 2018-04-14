@@ -537,16 +537,7 @@ module.exports = (function() {
         dev.logverbose('Updating folders preview');
         let preview_rawdata = newFoldersData.preview_rawdata;
         // store preview with sharp
-        let updateFoldersPreview = new Promise((resolve, reject) => {
-          _storeFoldersPreview(slugFolderName, preview_rawdata)
-            .then(() => {
-              console.log(`_storeFoldersPreview just returned`);
-            })
-            .catch(err => {
-              dev.error(`Error : ${err}`);
-            });
-        });
-        tasks.push(updateFoldersPreview);
+        tasks.push(_storeFoldersPreview(slugFolderName, preview_rawdata));
       }
 
       let updateFoldersMeta = new Promise((resolve, reject) => {
@@ -595,7 +586,7 @@ module.exports = (function() {
   }
 
   function _storeFoldersPreview(slugFolderName, preview_rawdata) {
-    new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       dev.logfunction(
         `COMMON — _storeFoldersPreview : will store preview for folder: ${slugFolderName}`
       );
