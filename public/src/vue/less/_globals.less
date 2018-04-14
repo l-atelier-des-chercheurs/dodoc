@@ -412,7 +412,7 @@ input[readonly], textarea[readonly] {
 .text-cap {
   text-transform: uppercase;
   font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
 }
 
 .text-ital {
@@ -484,6 +484,81 @@ input[type=range] {
   line-height: 2.25rem;
   vertical-align: middle;
 }
+
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 2.25rem;
+  line-height: 2.25rem;
+  vertical-align: middle;
+}
+
+// file picker
+input[type="file"] {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+
+  + label {
+    display: flex;
+    width: 100%;
+    max-width: 380px;
+    font-size: 1.2rem;
+    text-align: center;
+
+    cursor: pointer;
+    overflow: hidden;
+    word-break: break-word;
+
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+
+    padding: @t-skipline/2 @t-skipline;
+    margin-bottom:  @t-skipline;
+
+    border-radius: 5px;
+    min-height: 3.3125rem;
+
+    transition: color 1s;
+  }
+
+  :focus + label,
+  &.has-focus + label {
+    outline: 1px dotted @c-rouge;
+    outline: -webkit-focus-ring-color auto 5px;
+  }
+
+  + label * {
+    display: block;
+  }
+
+  + label svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    fill: currentColor;
+    margin-right: @t-skipline;
+  }
+
+
+  &.inputfile-2 + label {
+    background-color: @c-rouge;
+    color: white;
+    border: 0px solid currentColor;
+  }
+
+  // &.inputfile-2:focus + label,
+  // &.inputfile-2.has-focus + label,
+  // &.inputfile-2 + label:hover {
+
+  // }
+}
+
+
 
 .input-group {
   width: 100%;

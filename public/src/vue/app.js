@@ -503,7 +503,6 @@ let vm = new Vue({
         });
         const author_info = this.$root.store.authorsList[tagged_author_key];
         this.setAuthor(author_info);
-        debugger;
       }
     },
 

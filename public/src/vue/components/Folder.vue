@@ -2,9 +2,13 @@
   <div class="m_folder">
 
     <div class="m_folder--presentation">
-      <img src="" class="" @click="$root.openFolder(slugFolderName)" />
+      <div class="m_folder--presentation--vignette" @click="$root.openFolder(slugFolderName)">
+        <img v-if="previewURL"
+          :src="previewURL" class=""
+        />
+      </div>
 
-      <div>
+      <div class="m_folder--presentation--title">
         <h2 
           class="margin-none margin-sides-medium margin-vert-small font-folder_title"
            @click="$root.openFolder(slugFolderName)"
@@ -166,6 +170,12 @@ export default {
         }
       });
       return favMedias;
+    },
+    previewURL() {
+      if(this.folder.preview === '') {
+        return false;
+      }
+      return `/${this.slugFolderName}/${this.folder.preview}?${(new Date()).getTime()}`;
     }
   },
   methods: {

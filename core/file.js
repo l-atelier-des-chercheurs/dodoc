@@ -169,7 +169,7 @@ module.exports = (function() {
     let folderPath = api.getFolderPath(slugFolderName);
     let metaPath = path.join(
       folderPath,
-      settings.folderMetafilename + settings.metaFileext
+      settings.folderMetaFilename + settings.metaFileext
     );
     return metaPath;
   }
@@ -327,56 +327,99 @@ module.exports = (function() {
 
         var allFoldersData = [];
         folders.forEach(slugFolderName => {
-          let fmeta = new Promise((resolve, reject) => {
-            let prepareFolderMetaForClient = (slugFolderName, meta) => {
-              meta = _sanitizeMetaFromFile({ type: 'folder', meta });
-              meta.slugFolderName = slugFolderName;
-              meta.medias = {};
-              meta.fullFolderPath = api.getFolderPath(slugFolderName);
-              return meta;
-            };
+          // For each folder, read their meta file
+          allFoldersData.push(
+            new Promise((resolve, reject) => {
+              let prepareFolderMetaForClient = (slugFolderName, meta) => {
+                meta = _sanitizeMetaFromFile({ type: 'folder', meta });
+                meta.slugFolderName = slugFolderName;
+                meta.medias = {};
+                meta.fullFolderPath = api.getFolderPath(slugFolderName);
+                return meta;
+              };
+              readFolderMeta(slugFolderName)
+                .then(meta => {
+                  let preparedMeta = prepareFolderMetaForClient(
+                    slugFolderName,
+                    meta
+                  );
+                  resolve({ [slugFolderName]: preparedMeta });
+                })
+                .catch(err => {
+                  dev.error(
+                    `Couldn’t read folder meta, most probably because it doesn’t exist: ${err}`
+                  );
+                  // edge case : creating folders in user dir
+                  // createFolder(
+                  //   { name: slugFolderName },
+                  //   (folderAlreadyCreated = true)
+                  // )
+                  //   .then(meta => {
+                  //     let preparedMeta = prepareFolderMetaForClient(
+                  //       slugFolderName,
+                  //       meta
+                  //     );
+                  //     resolve(preparedMeta);
+                  //   })
+                  //   .catch(err => {
+                  //     reject(err);
+                  //   });
+                });
+            })
+          );
 
-            // read meta
-            readFolderMeta(slugFolderName)
-              .then(meta => {
-                let preparedMeta = prepareFolderMetaForClient(
-                  slugFolderName,
-                  meta
-                );
-                resolve(preparedMeta);
-              })
-              .catch(err => {
-                dev.error(
-                  `Couldn’t read folder meta, most probably because it doesn’t exist: ${err}`
-                );
-                // edge case : creating folders in user dir
-                // createFolder(
-                //   { name: slugFolderName },
-                //   (folderAlreadyCreated = true)
-                // )
-                //   .then(meta => {
-                //     let preparedMeta = prepareFolderMetaForClient(
-                //       slugFolderName,
-                //       meta
-                //     );
-                //     resolve(preparedMeta);
-                //   })
-                //   .catch(err => {
-                //     reject(err);
-                //   });
+          // For each folder, find a preview (if it exists)
+          allFoldersData.push(
+            new Promise((resolve, reject) => {
+              let pathToPreview = api.getFolderPreviewPath(slugFolderName);
+              fs.access(pathToPreview, fs.F_OK, err => {
+                let preview_name = '';
+                if (!err) {
+                  preview_name =
+                    settings.folderPreviewFilename + settings.thumbExt;
+                }
+                resolve({
+                  [slugFolderName]: {
+                    preview: preview_name
+                  }
+                });
               });
-          });
-          allFoldersData.push(fmeta);
+            })
+          );
         });
         Promise.all(allFoldersData).then(parsedFoldersData => {
           dev.logverbose(
             `All folders meta have been processed`,
             JSON.stringify(parsedFoldersData, null, 4)
           );
-          // reunite array items as a single big object
+
+          // on se balade dans l’array, on attrappe la key
+          // et on merge tout ça dans un nouvel objet du type :
+          /*
+            { 
+              mon-dossier: {
+                name: "Mon Dossier",
+                preview: "meta_preview.jpeg"
+              },
+              mon-deuxième-dossier: { 
+
+              }
+            }
+          */
+
+          // Reunite array items as a single big object
           let flatObjFoldersData = {};
           parsedFoldersData.forEach(fmeta => {
-            flatObjFoldersData[fmeta.slugFolderName] = fmeta;
+            if (Object.keys(fmeta).length > 0) {
+              let slugFolderName = Object.keys(fmeta)[0];
+              if (!flatObjFoldersData.hasOwnProperty(slugFolderName)) {
+                flatObjFoldersData[slugFolderName] = {};
+              }
+              Object.assign(
+                flatObjFoldersData[slugFolderName],
+                fmeta[slugFolderName]
+              );
+            }
           });
           resolve(flatObjFoldersData);
         });
@@ -404,7 +447,6 @@ module.exports = (function() {
         foldersData => {
           if (foldersData !== undefined) {
             let allFoldersSlug = Object.keys(foldersData);
-
             if (allFoldersSlug.length > 0) {
               let index = 0;
               let newSlugFolderName = slugFolderName;
@@ -425,28 +467,44 @@ module.exports = (function() {
           fs.mkdirp(
             api.getFolderPath(slugFolderName),
             function() {
-              fdata = _makeDefaultMetaFromStructure({
-                type: 'folder',
-                method: 'create',
-                existing: fdata
-              });
-              let folderMetaPath = getMetaFileOfFolder(slugFolderName);
+              let tasks = [];
 
-              api
-                .storeData(folderMetaPath, fdata, 'create')
-                .then(function(meta) {
-                  dev.logverbose(
-                    `New folder meta file created at path: ${folderMetaPath} with meta: ${JSON.stringify(
-                      meta,
-                      null,
-                      4
-                    )}`
-                  );
-                  resolve(slugFolderName);
+              if (fdata.hasOwnProperty('preview_rawdata')) {
+                tasks.push(
+                  _storeFoldersPreview(slugFolderName, fdata.preview_rawdata)
+                );
+              }
+
+              tasks.push(
+                new Promise(function(resolve, reject) {
+                  fdata = _makeDefaultMetaFromStructure({
+                    type: 'folder',
+                    method: 'create',
+                    existing: fdata
+                  });
+                  let folderMetaPath = getMetaFileOfFolder(slugFolderName);
+
+                  api
+                    .storeData(folderMetaPath, fdata, 'create')
+                    .then(function(meta) {
+                      dev.logverbose(
+                        `New folder meta file created at path: ${folderMetaPath} with meta: ${JSON.stringify(
+                          meta,
+                          null,
+                          4
+                        )}`
+                      );
+                      resolve();
+                    })
+                    .catch(err => {
+                      reject(err);
+                    });
                 })
-                .catch(err => {
-                  reject(err);
-                });
+              );
+
+              Promise.all(tasks).then(() => {
+                resolve(slugFolderName);
+              });
             },
             function(err, p) {
               dev.error(`Failed to create folder ${slugFolderName}: ${err}`);
@@ -473,45 +531,118 @@ module.exports = (function() {
       );
       // remove slugFolderKey
       let slugFolderName = foldersData.slugFolderName;
+      let tasks = [];
 
-      if (foldersData.hasOwnProperty('preview_rawdata')) {
-        dev.logverbose('Folders updated with new preview');
+      if (newFoldersData.hasOwnProperty('preview_rawdata')) {
+        dev.logverbose('Updating folders preview');
+        let preview_rawdata = newFoldersData.preview_rawdata;
         // store preview with sharp
-        foldersData.preview_rawdata;
+        let updateFoldersPreview = new Promise((resolve, reject) => {
+          _storeFoldersPreview(slugFolderName, preview_rawdata)
+            .then(() => {
+              console.log(`_storeFoldersPreview just returned`);
+            })
+            .catch(err => {
+              dev.error(`Error : ${err}`);
+            });
+        });
+        tasks.push(updateFoldersPreview);
       }
 
-      // cleaning up stored meta
-      foldersData = _makeDefaultMetaFromStructure({
-        type: 'folder',
-        method: 'create',
-        existing: foldersData
+      let updateFoldersMeta = new Promise((resolve, reject) => {
+        dev.logverbose('Updating folders meta');
+        // cleaning up stored meta
+        foldersData = _makeDefaultMetaFromStructure({
+          type: 'folder',
+          method: 'create',
+          existing: foldersData
+        });
+
+        newFoldersData = _makeDefaultMetaFromStructure({
+          type: 'folder',
+          method: 'update',
+          existing: newFoldersData
+        });
+
+        // overwrite stored obj with new informations
+        Object.assign(foldersData, newFoldersData);
+
+        let folderMetaPath = getMetaFileOfFolder(slugFolderName);
+
+        api.storeData(folderMetaPath, foldersData, 'update').then(
+          function(meta) {
+            dev.logverbose(
+              `Update folder meta file at path: ${folderMetaPath} with meta: ${JSON.stringify(
+                meta,
+                null,
+                4
+              )}`
+            );
+            resolve();
+          },
+          function(err) {
+            reject(`Couldn't update folder meta: ${err}`);
+          }
+        );
       });
+      tasks.push(updateFoldersMeta);
 
-      newFoldersData = _makeDefaultMetaFromStructure({
-        type: 'folder',
-        method: 'update',
-        existing: newFoldersData
+      Promise.all(tasks).then(() => {
+        dev.logverbose(`COMMON — editFolder : now resolving`);
+        resolve(slugFolderName);
       });
+    });
+  }
 
-      // overwrite stored obj with new informations
-      Object.assign(foldersData, newFoldersData);
-
-      let folderMetaPath = getMetaFileOfFolder(slugFolderName);
-      api.storeData(folderMetaPath, foldersData, 'update').then(
-        function(meta) {
-          dev.logverbose(
-            `Update folder meta file at path: ${folderMetaPath} with meta: ${JSON.stringify(
-              meta,
-              null,
-              4
-            )}`
-          );
-          resolve(slugFolderName);
-        },
-        function(err) {
-          reject(`Couldn't update folder meta: ${err}`);
-        }
+  function _storeFoldersPreview(slugFolderName, preview_rawdata) {
+    new Promise((resolve, reject) => {
+      dev.logfunction(
+        `COMMON — _storeFoldersPreview : will store preview for folder: ${slugFolderName}`
       );
+      let pathToPreview = api.getFolderPreviewPath(slugFolderName);
+
+      dev.logverbose(
+        `COMMON — _storeFoldersPreview : Removing existing preview at ${pathToPreview}`
+      );
+      fs
+        .remove(pathToPreview)
+        .then(() => {
+          if (preview_rawdata === '') {
+            dev.logverbose(
+              `COMMON — _storeFoldersPreview : No new preview data found, returning.`
+            );
+            return resolve();
+          }
+          dev.logverbose(
+            `COMMON — _storeFoldersPreview : Now making a folder preview at path ${pathToPreview}`
+          );
+          let imageBuffer = api.decodeBase64Image(preview_rawdata);
+          sharp(imageBuffer)
+            .rotate()
+            .resize(600, 600)
+            .max()
+            .withoutEnlargement()
+            .background({ r: 255, g: 255, b: 255 })
+            .withMetadata()
+            .toFormat(settings.thumbFormat, {
+              quality: settings.mediaThumbQuality
+            })
+            .toFile(pathToPreview)
+            .then(function() {
+              dev.logverbose(
+                `COMMON — _storeFoldersPreview : Finished making a folder preview for ${slugFolderName}`
+              );
+              resolve();
+            })
+            .catch(err => {
+              console.error(err);
+              reject(err);
+            });
+        })
+        .catch(err => {
+          console.error(err);
+          reject(err);
+        });
     });
   }
 
@@ -580,7 +711,10 @@ module.exports = (function() {
             ) &&
             // not meta.txt
             thisSlugMediaName !==
-              settings.folderMetafilename + settings.metaFileext &&
+              settings.folderMetaFilename + settings.metaFileext &&
+            // not a folder preview
+            thisSlugMediaName !==
+              settings.folderPreviewFilename + settings.thumbExt &&
             // not a text file
             new RegExp(settings.regexpGetFileExtension, 'i').exec(
               thisSlugMediaName
@@ -1146,7 +1280,7 @@ module.exports = (function() {
               .background({ r: 255, g: 255, b: 255 })
               .flatten()
               .jpeg({
-                quality: 100
+                quality: 90
               })
               .toFile(pathToMedia, function(err, info) {
                 if (err) reject(err);
@@ -1221,11 +1355,7 @@ module.exports = (function() {
     existing = {}
   }) {
     dev.logfunction(
-      `COMMON — _makeDefaultMetaFromStructure : will '${method}' a new default meta object for type ${type} with existing = ${JSON.stringify(
-        existing,
-        null,
-        4
-      )}`
+      `COMMON — _makeDefaultMetaFromStructure : will '${method}' a new default meta object for type ${type}.`
     );
     if (!settings.structure.hasOwnProperty(type)) {
       dev.error(`Missing type ${type} in settings.json`);

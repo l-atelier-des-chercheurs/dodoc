@@ -19,7 +19,7 @@
 <!-- Preview -->
       <div class="margin-bottom-small">
         <label>{{ $t('preview') }}</label><br>
-        <ImageSelect>
+        <ImageSelect @newPreview="value => { folder_preview = value }">
         </ImageSelect>
       </div>
 
@@ -93,6 +93,10 @@ export default {
           .error(this.$t('notifications.folder_name_exists'));
 
         return false;
+      }
+
+      if(!!this.folder_preview) {
+        this.folderdata.preview_rawdata = this.folder_preview;
       }
 
       // copy all values

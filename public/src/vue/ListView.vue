@@ -63,6 +63,7 @@ import Folder from './components/Folder.vue';
 import CreateFolder from './components/modals/CreateFolder.vue';
 import VueMarkdown from 'vue-markdown';
 import FolderFilterBar from './components/FolderFilterBar.vue'
+import { setTimeout } from 'timers';
 
 export default {
   props: {
@@ -106,7 +107,9 @@ export default {
             folder.folderID === this.$root.justCreatedFolderID
           ) {
             this.$root.justCreatedFolderID = false;
-            this.$root.openFolder(slugFolderName);
+            setTimeout(() => {
+              this.$root.openFolder(slugFolderName);
+            },100);
           }
         });
       }

@@ -10,7 +10,10 @@
   "contentDirname" : "user",
   "cacheDirname" : "cache",
   "metaFileext" : ".txt",
-  "folderMetafilename" : "meta",
+  "thumbExt" : ".jpeg",
+  "thumbFormat": "jpeg",
+  "folderMetaFilename" : "meta",
+  "folderPreviewFilename" : "meta_preview",
 
   "metaDateFormat" : "YYYYMMDD_HHmmss",
   "textEncoding" : "UTF-8",

@@ -21,7 +21,10 @@
 <!-- Preview -->
       <div class="margin-bottom-small">
         <label>{{ $t('preview') }}</label><br>
-        <ImageSelect @newPreview="value => { folder_preview = value }">
+        <ImageSelect 
+          :previewURL="previewURL"
+          @newPreview="value => { folder_preview = value }"
+        >
         </ImageSelect>
       </div>
 
@@ -77,10 +80,17 @@ export default {
         end: this.$moment(this.folder.end).isValid() ? this.folder.end : '',
         authors: this.folder.authors
       },
-      folder_preview: ''
+      folder_preview: undefined
     };
   },
-  computed: {},
+  computed: {
+    previewURL() {
+      if(!this.folder.preview) {
+        return '';
+      }
+      return `/${this.slugFolderName}/${this.folder.preview}`;
+    }    
+  },
   methods: {
     editThisFolder: function(event) {
       console.log('editThisFolder');
@@ -117,13 +127,12 @@ export default {
         }
       }
 
-      if(!!this.folder_preview) {
+      if(typeof this.folder_preview !== 'undefined') {
         this.folderdata.preview_rawdata = this.folder_preview;
       }
 
       // copy all values
       let values = this.folderdata;
-
       values.slugFolderName = this.slugFolderName;
 
       this.$root.editFolder(values);
