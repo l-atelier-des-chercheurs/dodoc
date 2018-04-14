@@ -143,7 +143,7 @@ function createWindow() {
                 settings.hasOwnProperty('enable_nfc') &&
                 settings.enable_nfc === true
               ) {
-                nfc();
+                // nfc();
               }
 
               // and load the base url of the app.
