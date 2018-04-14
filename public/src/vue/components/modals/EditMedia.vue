@@ -200,7 +200,6 @@
 </template>
 <script>
 import Modal from './BaseModal.vue';
-import alertify from 'alertify.js';
 import MediaContent from '../subcomponents/MediaContent.vue';
 import DateTime from '../subcomponents/DateTime.vue';
 

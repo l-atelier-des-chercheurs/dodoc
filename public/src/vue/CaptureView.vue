@@ -101,7 +101,6 @@
 <script>
 import MediaContent from './components/subcomponents/MediaContent.vue';
 
-import alertify from 'alertify.js';
 import RecordRTC from 'recordrtc';
 import _ from 'underscore';
 import { setTimeout } from 'timers';
@@ -347,7 +346,7 @@ export default {
             resolve();
           })
           .catch((err) => {
-            alertify.error(err);
+            this.$alertify.error(err);
             reject();
           });
       });
@@ -379,7 +378,7 @@ export default {
     startAudioFeed() {
       return new Promise((resolve, reject) => {
         console.log('METHODS • Capture: startAudioFeed');
-        alertify
+        this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
           .log('METHODS • Capture: startAudioFeed');
@@ -390,7 +389,7 @@ export default {
             resolve(stream);
           })
           .catch((err) => {
-            alertify.error(err);
+            this.$alertify.error(err);
             reject();
           });
       });

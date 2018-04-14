@@ -48,7 +48,6 @@
 <script>
 import Modal from './BaseModal.vue';
 import ImageSelect from '../subcomponents/ImageSelect.vue';
-import alertify from 'alertify.js';
 
 export default {
   props: {
@@ -87,7 +86,7 @@ export default {
       // check if folder name (not slug) already exists
       if (allFoldersName.indexOf(this.folderdata.name) >= 0) {
         // invalidate if it does
-        alertify
+        this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
           .error(this.$t('notifications.folder_name_exists'));

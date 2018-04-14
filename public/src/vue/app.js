@@ -9,6 +9,7 @@ import Vue from 'vue';
 
 import localstore from 'store';
 import alertify from 'alertify.js';
+Vue.prototype.$alertify = alertify;
 
 import locale_strings from './locale_strings.js';
 
@@ -113,7 +114,7 @@ Vue.prototype.$socketio = new Vue({
 
       // only for non-electron (since obviously in electron we have to be connected)
       if (!window.state.is_electron) {
-        alertify
+        this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
           .success(this.$t('notifications.connection_active'));
@@ -132,7 +133,7 @@ Vue.prototype.$socketio = new Vue({
     _onSocketError(reason) {
       console.log(`Unable to connect to server: ${reason}`);
       window.state.connected = false;
-      alertify
+      this.$alertify
         .closeLogOnClick(true)
         .error(this.$t('notifications.connection_error') + ' ' + reason);
     },
@@ -140,7 +141,7 @@ Vue.prototype.$socketio = new Vue({
     _onConnectError(reason) {
       console.log(`Lost connection to server: ${reason}`);
       window.state.connected = false;
-      alertify
+      this.$alertify
         .closeLogOnClick(true)
         .error(
           this.$t('notifications.connection_lost') +
@@ -163,7 +164,7 @@ Vue.prototype.$socketio = new Vue({
             list_admin_folders === undefined ||
             list_admin_folders.indexOf(slugFolderName) === -1
           ) {
-            alertify
+            this.$alertify
               .closeLogOnClick(true)
               .delay(4000)
               .error(
@@ -192,7 +193,7 @@ Vue.prototype.$socketio = new Vue({
       let slugMediaName = Object.keys(mdata[slugFolderName].medias)[0];
       mediaData.slugMediaName = slugMediaName;
 
-      alertify
+      this.$alertify
         .closeLogOnClick(true)
         .delay(4000)
         .log(
@@ -257,7 +258,7 @@ Vue.prototype.$socketio = new Vue({
     _onNotify(msg) {
       console.log('Received _onNotify packet.');
 
-      alertify
+      this.$alertify
         .closeLogOnClick(true)
         .delay(4000)
         .error(this.$t(`notifications[${msg}]`));
@@ -351,7 +352,7 @@ let vm = new Vue({
 
     if (this.store.noticeOfError) {
       if (this.store.noticeOfError === 'failed_to_find_folder') {
-        alertify
+        this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
           .error(

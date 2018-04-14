@@ -55,7 +55,6 @@
 <script>
 import Modal from './BaseModal.vue';
 import DateTime from '../subcomponents/DateTime.vue';
-import alertify from 'alertify.js';
 import slug from 'slugg';
 import ImageSelect from '../subcomponents/ImageSelect.vue';
 
@@ -110,7 +109,7 @@ export default {
         // check if folder name (not slug) already exists
         if (allFoldersName.indexOf(this.folderdata.name) >= 0) {
           // invalidate if it does
-          alertify
+          this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
             .error(this.$t('notifications.folder_name_exists'));
@@ -118,7 +117,7 @@ export default {
         }
 
         if (slug(this.folderdata.name).length === 0) {
-          alertify
+          this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
             .error(

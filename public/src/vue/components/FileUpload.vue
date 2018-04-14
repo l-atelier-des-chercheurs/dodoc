@@ -25,7 +25,6 @@
 </template>
 <script>
 import Dropzone from 'vue2-dropzone';
-import alertify from 'alertify.js';
 
 export default {
   props: {
@@ -78,8 +77,8 @@ export default {
     showSuccess: function(file) {
       setTimeout(() => {
         this.$refs.dropzone.removeFile(file);
-      }, 1000);
-      alertify
+      }, 1500);
+      this.$alertify
         .closeLogOnClick(true)
         .delay(4000)
         .log(this.$t('notifications.file_was_sent'));
@@ -89,7 +88,7 @@ export default {
         typeof window.FileReader !== 'function' &&
         typeof window.FileReader !== 'object'
       ) {
-        alertify
+        this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
           .error(this.$t('notifications.file_upload_not_allowed'));
