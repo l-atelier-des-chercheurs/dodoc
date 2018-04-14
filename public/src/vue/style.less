@@ -423,7 +423,7 @@ body {
   }  
 
   &:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
 
   span {
@@ -499,6 +499,15 @@ body {
     flex: 0 1 auto;
   }
 
+  .m_folder--presentation--vignette {
+    cursor: pointer;
+  }
+  .m_folder--presentation--title {
+    h2 {
+      cursor: pointer;
+    }
+  }
+
 }
 
 .m_folder {
@@ -523,16 +532,13 @@ body {
       background-color: @c-gris;
       overflow: hidden;
       max-height: 60vh;
-      cursor: pointer;
 
       // img {
       // }
     }
 
-    .m_folder--presentation--title {
-      cursor: pointer;
-
-    }
+    // .m_folder--presentation--title {
+    // }
 
     // à l’intérieur d’une vue projet
     // .m_folderview & {
@@ -869,14 +875,14 @@ body {
 
 
 
-// .fade-enter-active, .fade-leave-active {
-//   opacity: 1;
-//   transition: opacity .2s ease-out;
-// }
-// .fade-enter, .fade-leave-to {
-//   opacity: 0;
-//   transition: opacity .2s ease-out;
-// }
+.fade-enter-active, .fade-leave-active {
+  opacity: 1;
+  transition: opacity .2s ease-out;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+  transition: opacity .2s ease-out;
+}
 
 
 .mediareveal-enter-active, .mediareveal-leave-active {

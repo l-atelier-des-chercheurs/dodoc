@@ -3,7 +3,6 @@
     <div class="fixedBand">
       <transition
         name="fade"
-        :duration="850"
         >
         <div
           v-if="withTitleBar"

@@ -13,28 +13,32 @@
     >
     </TopBar>
 
-    <ListView
-      v-if="$root.settings.view === 'ListView'"
-      :presentationMD="$root.store.presentationMD"
-      :read_only="!$root.state.connected"
-      :folders="$root.store.folders"
-    >
-    </ListView>
-
-    <FolderView
-      v-if="$root.settings.view === 'FolderView' && currentFolder.hasOwnProperty('name')"
-      :slugFolderName="current_slugFolderName"
-      :folder="currentFolder"
-      :read_only="!$root.state.connected"
-    >
-    </FolderView>
-
-    <CaptureView
-      v-if="$root.settings.view === 'CaptureView'"
-      :slugFolderName="current_slugFolderName"
-      :folder="currentFolder"
-    >
-    </CaptureView>
+    <transition name="fade">
+      <ListView
+        v-if="$root.settings.view === 'ListView'"
+        :presentationMD="$root.store.presentationMD"
+        :read_only="!$root.state.connected"
+        :folders="$root.store.folders"
+      >
+      </ListView>
+    </transition>
+    <transition name="fade">
+      <FolderView
+        v-if="$root.settings.view === 'FolderView' && currentFolder.hasOwnProperty('name')"
+        :slugFolderName="current_slugFolderName"
+        :folder="currentFolder"
+        :read_only="!$root.state.connected"
+      >
+      </FolderView>
+    </transition>
+    <transition name="fade">
+      <CaptureView
+        v-if="$root.settings.view === 'CaptureView'"
+        :slugFolderName="current_slugFolderName"
+        :folder="currentFolder"
+      >
+      </CaptureView>
+    </transition>
 
     <portal-target name="modal_container" />
 
@@ -64,6 +68,8 @@ export default {
   data() {
     return {
     };
+  },
+  created() { 
   },
   computed: {
   },

@@ -107,9 +107,7 @@ export default {
             folder.folderID === this.$root.justCreatedFolderID
           ) {
             this.$root.justCreatedFolderID = false;
-            setTimeout(() => {
-              this.$root.openFolder(slugFolderName);
-            },100);
+            this.$root.openFolder(slugFolderName);
           }
         });
       }

@@ -327,7 +327,7 @@ export default {
         console.log('METHODS • Capture: stopAllFeeds');
         this.stopAudioFeed();
         this.stopVideoFeed();
-        setTimeout(() => resolve(), 1000);
+        setTimeout(() => resolve(), 500);
       });
     },
 

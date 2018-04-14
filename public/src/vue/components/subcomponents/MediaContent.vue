@@ -9,8 +9,7 @@
       <img :src="linkToImageThumb">
       <transition
         name="fade"
-        :duration="850"
-        >
+      >
         <img v-if="is_hovered && $root.state.is_electron" :src="linkToHoveredThumb">
       </transition>
     </template>
