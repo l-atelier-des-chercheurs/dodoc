@@ -13,16 +13,17 @@
     >
     </TopBar>
 
-    <transition name="fade" :duration="100">
+    <!-- v-show="$root.settings.view === 'ListView'" -->
+    <transition name="ListView" :duration="500">
       <ListView
-        v-if="$root.settings.view === 'ListView'"
+        v-show="$root.settings.view === 'ListView'"
         :presentationMD="$root.store.presentationMD"
         :read_only="!$root.state.connected"
         :folders="$root.store.folders"
       >
       </ListView>
     </transition>
-    <transition name="fade" :duration="100">
+    <transition name="FolderView" :duration="500">
       <FolderView
         v-if="$root.settings.view === 'FolderView' && currentFolder.hasOwnProperty('name')"
         :slugFolderName="current_slugFolderName"
@@ -31,7 +32,8 @@
       >
       </FolderView>
     </transition>
-    <transition name="fade" duration="300">
+
+    <transition name="CaptureView">
       <CaptureView
         v-if="$root.settings.view === 'CaptureView'"
         :slugFolderName="current_slugFolderName"
@@ -75,7 +77,8 @@ export default {
   },
   watch: {
   },
-  methods: {}
+  methods: {
+  }
 };
 </script>
 

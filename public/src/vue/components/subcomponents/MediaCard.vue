@@ -7,7 +7,7 @@
       <div>
         <MediaContent
           v-model="media.content"
-          :context="'Library'"
+          :context="'preview'"
           :slugMediaName="media.slugMediaName"
           :slugFolderName="slugFolderName"
           :media="media"

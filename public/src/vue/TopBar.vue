@@ -3,9 +3,9 @@
     <div class="m_topbar--left" >
       <div class="m_topbar--left--logo" @click="$root.closeFolder()">
         <transition name="fade">
-          <!-- <button type="button" v-if="has_back_button">
+          <button class="backButton" type="button" v-if="has_back_button">
             ‹
-          </button> -->
+          </button>
         </transition>
         <img src="/images/i_logo.svg"/>
       </div>

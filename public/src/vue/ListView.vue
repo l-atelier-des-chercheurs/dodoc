@@ -1,11 +1,12 @@
 <template>
-  <div class="m_listview">
+  <div class="m_listview"
+  >
     <main>
-      <section class="container container_scroll padding-vert-medium">
+      <section class="container">
         <template
           v-if="sortedFoldersSlug !== 'no-folders'"
         >
-          <div class="padding-bottom-medium text-cap c-gris font-verysmall">
+          <div class="padding-bottom-medium margin-left-small text-cap c-gris font-verysmall">
             Affichage de {{ sortedFoldersSlug.length }} projets sur {{ Object.keys(folders).length }}
           </div>
 
@@ -88,9 +89,16 @@ export default {
         field: 'date_created',
         type: 'date',
         order: 'descending'
-      }
+      },
     };
   },
+  mounted() {
+
+  },
+  beforeDestroy() {
+
+  },
+
   watch: {
     currentLang: function() {
       this.$root.updateLocalLang(this.currentLang);
@@ -172,7 +180,7 @@ export default {
     },
     setFilter(newFilter) {
       this.currentFilter = newFilter;
-    }
+    },
   }
 };
 </script>

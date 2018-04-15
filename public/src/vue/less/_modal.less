@@ -8,12 +8,18 @@
 
   background-color: fade(#fff, 90%);
   cursor: pointer;
-  overflow-y: scroll;
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   
   display: flex;
   align-items: center;
   justify-content: center;
+
+  transition: background-color .5s ease-out;
+
+  &.is_transparent {
+    background-color: transparent;
+  }
 
   @media screen and (max-width: 50rem) {
     display: block;
@@ -45,6 +51,13 @@
 
   max-width: @t-panelWidth;
   margin: 5vmin 5vmin;
+
+  transition: all .35s ease-out;
+
+  &.is_transparent {
+    opacity: 0;
+    transform: translate3d(0,15px,0);
+  }
 
   @media screen and (max-width: 50rem) {
     margin: 50px 0;
@@ -106,7 +119,6 @@
     }
 
   }
-
   &.typeOfModal-Capture {
     // margin: 0;
     max-width: @t-panelWidth * 4;
