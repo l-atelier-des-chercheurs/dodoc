@@ -106,26 +106,9 @@
       color: @c-noir;
     }
   }
-
-  &.typeOfModal-AuthorsList {
+  &.typeOfModal-LargeAndScroll {
     max-width: @t-panelWidth * 2;
     align-self: flex-start;
-
-    .m_modal--preview {
-      display: flex;
-      flex-flow: column nowrap;
-      min-height: 100vh;
-      height: auto;
-
-    }
-
-  }
-  &.typeOfModal-Capture {
-    // margin: 0;
-    max-width: @t-panelWidth * 4;
-    // if it is medium, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
-    align-self: flex-start;
-
     .m_modal--preview {
       display: flex;
       flex-flow: column nowrap;
@@ -133,14 +116,22 @@
       height: auto;
     }
   }
-
-  &.typeOfModal-EditMedia {
+  &.typeOfModal-LargeAndNoScroll {
     max-width: @t-panelWidth * 3;
     // if it is large, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
     align-self: flex-start;
-
     .m_modal--preview {
       min-height: 70vh;
+    }    
+  }
+  &.typeOfModal-SmallAndScroll {
+    // if it is large, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
+    align-self: flex-start;
+    .m_modal--preview {
+      display: flex;
+      flex-flow: column nowrap;
+      min-height: 100vh;
+      height: auto;
     }    
   }
 }
@@ -155,35 +146,9 @@
   }
 
   .m_modal--metaOptions {
-    overflow-y: auto;
     flex: 1 1 auto;
-
-    @scrollbar-height: 4px;
-    @scrollbar-padding: 6px;
-
-    &::-webkit-scrollbar {
-      height: ((@scrollbar-padding * 2) + @scrollbar-height);
-      width: ((@scrollbar-padding * 2) + @scrollbar-height);
-      background-color: rgba(255,255,255,0);
-    }
-
-    &::-webkit-scrollbar-track,
-    &::-webkit-scrollbar-thumb {
-      border: 10px solid rgba(255,255,255,0);
-      background-clip: padding-box;
-    }
-
-    &::-webkit-scrollbar-track {
-      background-color: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: #eee;
-      &:hover {
-        border: @scrollbar-padding solid rgba(255,255,255,0);
-      }
-    }
-
+    .padding-medium;
+    overflow-y: auto;
 
   }
 }
@@ -279,7 +244,11 @@
 
 .m_modal--save {
   .padding-medium;
+  .padding-vert-small;
   border-top: 2px solid @c-gris_clair;
+
+  display: flex;
+  justify-content: flex-end;
 
   button[type="submit"] {
     .bg-bleuvert; 

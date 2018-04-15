@@ -378,11 +378,6 @@ strong,b {
   min-height: 0;
 }
 
-
-.with-bullet::before {
-  content: '●';
-}
-
 h1,h2,h3,h4 {
   font-weight: 400;
   font-size: 1em;
@@ -390,6 +385,35 @@ h1,h2,h3,h4 {
 }
 
 
+.custom_scrollbar(@scrollbar-height, @scrollbar-padding, @scrollbar-border) {
+  
+  &::-webkit-scrollbar {
+    height: ((@scrollbar-padding * 2) + @scrollbar-height);
+    width: ((@scrollbar-padding * 2) + @scrollbar-height);
+    background-color: @c-creme;
+  }
+
+  &::-webkit-scrollbar-track,
+  &::-webkit-scrollbar-thumb {
+    border: @scrollbar-border solid rgba(255,255,255,0);
+    border-radius: @scrollbar-border*4;
+    background-clip: padding-box;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: @c-noir;
+    &:hover {
+      background-color: @c-bleuvert;
+      border: @scrollbar-border solid rgba(255,255,255,0);
+    }
+  }
+  
+}
+ 
 
 .text-formatting {
   h2 {

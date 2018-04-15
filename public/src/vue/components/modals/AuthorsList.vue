@@ -1,7 +1,7 @@
 <template>
   <Modal
     @close="$emit('close')"
-    :typeOfModal="'AuthorsList'"
+    :typeOfModal="'LargeAndScroll'"
     >
     <template slot="header">
       <span class="text-cap"> Liste des auteurs</span>

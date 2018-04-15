@@ -28,31 +28,7 @@ html {
   @scrollbar-padding: 5px;
   @scrollbar-border: 6px;
 
-  &::-webkit-scrollbar {
-    height: ((@scrollbar-padding * 2) + @scrollbar-height);
-    width: ((@scrollbar-padding * 2) + @scrollbar-height);
-    background-color: @c-gris_clair;
-  }
-
-  &::-webkit-scrollbar-track,
-  &::-webkit-scrollbar-thumb {
-    border: @scrollbar-border solid rgba(255,255,255,0);
-    border-radius: @scrollbar-border*4;
-    background-clip: padding-box;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: @c-bleuvert;
-    &:hover {
-      background-color: @c-bleumarine;
-      border: @scrollbar-border solid rgba(255,255,255,0);
-    }
-  }
-
+  .custom_scrollbar(8px, 5px, 6px);
 }
 
 body {
@@ -84,11 +60,11 @@ body {
   ********************/
 
 
-// body {
-//   // &.is_unscrollable {
-//     // overflow: hidden;
-//   // }
-// }
+body {
+  &.is_unscrollable {
+    overflow: hidden;
+  }
+}
 
 
 .alertify-logs {
@@ -174,12 +150,12 @@ body {
 
 
   > * {
-    min-width: 320px;
+    min-width: 180px;
     flex: 1 1 0;
 
     &.m_topbar--center {
-      min-width: 320px;
-      max-width: 320px;
+      min-width: 240px;
+      max-width: 240px;
     }
   }  
 
@@ -495,34 +471,8 @@ body {
     overflow: auto;
   }
 
-  @scrollbar-height: 8px;
-  @scrollbar-padding: 5px;
-  @scrollbar-border: 6px;
+  .custom_scrollbar(8px, 5px, 6px);
 
-  &::-webkit-scrollbar {
-    height: ((@scrollbar-padding * 2) + @scrollbar-height);
-    width: ((@scrollbar-padding * 2) + @scrollbar-height);
-    background-color: @c-creme;
-  }
-
-  &::-webkit-scrollbar-track,
-  &::-webkit-scrollbar-thumb {
-    border: @scrollbar-border solid rgba(255,255,255,0);
-    border-radius: @scrollbar-border*4;
-    background-clip: padding-box;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: @c-noir;
-    &:hover {
-      background-color: @c-bleuvert;
-      border: @scrollbar-border solid rgba(255,255,255,0);
-    }
-  }
 }
 
 .m_folders {
@@ -539,6 +489,7 @@ body {
   .m_folder {
     border-bottom: 2px solid @c-gris;   
     // border-bottom-style: dashed;
+    border-radius: @t-buttonradius;
   }
 
   .m_folder--presentation--vignette {
@@ -554,7 +505,7 @@ body {
 
 .m_folder {
   .bg-blanc;
-  border-radius: @t-buttonradius;
+  border-radius: 0px;
   overflow: hidden;
   .flex-wrap;
   .flex-space-between;
@@ -605,10 +556,10 @@ body {
   
   .m_folder--library {
     width: 100%;
-    .bg-gris_clair;
+    .bg-creme;
 
     .m_folder--library--actionbar {
-      .margin-medium;
+      .margin-small;
       margin-top: 0;
       border-bottom: 2px solid #fff;
       display: flex;
@@ -617,7 +568,7 @@ body {
         margin: 0;
         .margin-vert-small;
 
-        background-color: transparent;
+        background-color: #fff;
         color: @c-rouge;
 
         border-radius: 4px;
@@ -682,6 +633,8 @@ body {
     margin: 0;
     .margin-vert-small;
     cursor: pointer;
+    border-bottom: 2px solid @c-gris;   
+
     transition: all 0.3s cubic-bezier(.25,.8,.25,1);  
     transition-delay: 0.2s;
 

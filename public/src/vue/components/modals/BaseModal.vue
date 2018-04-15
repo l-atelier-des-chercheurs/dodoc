@@ -45,7 +45,7 @@
               </h3>
             </div>
 
-            <div class="m_modal--metaOptions padding-medium">
+            <div class="m_modal--metaOptions">
               <slot name="sidebar">
                 default sidebar
               </slot>

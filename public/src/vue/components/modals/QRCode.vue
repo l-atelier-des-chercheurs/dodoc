@@ -2,6 +2,7 @@
   <Modal
     @close="$emit('close')"
     :read_only="read_only"
+    :typeOfModal="'SmallAndScroll'"
     >
     <template slot="header">
       <span class="">{{ $t('remote_access') }}</span>

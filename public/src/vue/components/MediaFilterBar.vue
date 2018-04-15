@@ -4,7 +4,7 @@
       ORDRE
       <!-- <div class="">
         <div class="">
-          <label class="margin-none text-cap with-bullet">
+          <label class="margin-none text-cap">
             {{ $t('sort_by') }}
           </label>
           <div class="margin-sides-negative-small">
@@ -28,7 +28,7 @@
         </div>
 
         <div class="margin-vert-small">
-          <label class="margin-none text-cap with-bullet">
+          <label class="margin-none text-cap">
             {{ $t('in_the_order') }}
           </label>
           <div class="margin-sides-negative-small">
