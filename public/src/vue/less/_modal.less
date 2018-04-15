@@ -8,8 +8,9 @@
 
   background-color: fade(#fff, 90%);
   cursor: pointer;
-  overflow-y: auto;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
+  .custom_scrollbar(8px, 5px, 6px);
   
   display: flex;
   align-items: center;
@@ -106,35 +107,48 @@
       color: @c-noir;
     }
   }
+}
+
+.m_modal--mask {
   &.typeOfModal-LargeAndScroll {
-    max-width: @t-panelWidth * 2;
-    align-self: flex-start;
-    .m_modal--preview {
-      display: flex;
-      flex-flow: column nowrap;
-      min-height: 100vh;
-      height: auto;
+    overflow-y: auto;
+    .m_modal--container {   
+      max-width: @t-panelWidth * 2;
+      align-self: flex-start;
+      .m_modal--preview {
+        display: flex;
+        flex-flow: column nowrap;
+        min-height: 100vh;
+        height: auto;
+      }
     }
   }
   &.typeOfModal-LargeAndNoScroll {
-    max-width: @t-panelWidth * 3;
-    // if it is large, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
-    align-self: flex-start;
-    .m_modal--preview {
-      min-height: 70vh;
-    }    
+    overflow: hidden;
+    .m_modal--container {   
+      max-width: @t-panelWidth * 3;
+      // if it is large, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
+      align-self: flex-start;
+      .m_modal--preview {
+        min-height: 70vh;
+      }    
+    }
   }
   &.typeOfModal-SmallAndScroll {
+    overflow: hidden;
+
     // if it is large, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
-    align-self: flex-start;
-    .m_modal--preview {
-      display: flex;
-      flex-flow: column nowrap;
-      min-height: 100vh;
-      height: auto;
-    }    
+    .m_modal--container {   
+      align-self: flex-start;
+      .m_modal--preview {
+        display: flex;
+        flex-flow: column nowrap;
+        min-height: 100vh;
+        height: auto;
+      }    
+    }
   }
-}
+} 
 
 
 .m_modal--sidebar {
@@ -149,6 +163,11 @@
     flex: 1 1 auto;
     .padding-medium;
     overflow-y: auto;
+    .custom_scrollbar(8px, 5px, 6px);
+      
+    > *:last-child {
+      margin-bottom: 0;
+    }
 
   }
 }
@@ -248,11 +267,13 @@
   border-top: 2px solid @c-gris_clair;
 
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 
   button[type="submit"] {
     .bg-bleuvert; 
     .button-inline;
+    color: @c-bleumarine;
+    color: white;
   }
 }
 

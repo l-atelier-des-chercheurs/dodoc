@@ -89,7 +89,7 @@
     <div class="m_folder--favMedias"
       v-if="context === 'full'"
     >
-      <div class="text-cap font-verysmall  c-noir">
+      <div class="text-cap font-verysmall margin-sides-medium margin-bottom-none c-noir">
         Média favoris
       </div>
 

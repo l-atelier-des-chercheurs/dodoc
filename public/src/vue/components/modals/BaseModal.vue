@@ -1,11 +1,12 @@
 <template>
   <portal to="modal_container">
-    <div class="m_modal--mask"
-      :class="{ 'is_invisible' : !showModal }"
+    <div 
+      class="m_modal--mask"
+      :class="['typeOfModal-' + typeOfModal, { 'is_invisible' : !showModal }]"
       @click.self="closeModal"
     >
       <div class="m_modal--container"
-        :class="['typeOfModal-' + typeOfModal, 'color-' + backgroundColor, { 'is_invisible' : !showModal }]"
+        :class="['color-' + backgroundColor, { 'is_invisible' : !showModal }]"
         @keyup.ctrl.enter="$emit('submit')"
         >
 
@@ -57,7 +58,6 @@
                 :disabled="read_only"
                 >
                 <img src="/images/i_enregistre.svg"/>
-
                 <span class="text-cap font-verysmall">
                   <slot name="submit_button">
                     {{ $t('save') }}

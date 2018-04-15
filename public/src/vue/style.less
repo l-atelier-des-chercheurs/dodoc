@@ -593,12 +593,14 @@ body {
 
   .m_folder--favMedias {
     width: 100%;
-    padding: @t-skipline/2;
     .bg-bleuvert;
-
+    padding: 0;
+    .padding-vert-small;
+    
     .m_folder--favMedias--list {
       display: flex;
-      flex-flow: row wrap;        
+      flex-flow: row wrap;   
+      .padding-sides-small;
       > * {
         flex: 0 0 100/5%;
       }
