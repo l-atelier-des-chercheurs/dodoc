@@ -1,7 +1,7 @@
 <template>
   <div class="m_topbar">
     <div class="m_topbar--left" >
-      <div class="m_topbar--left--logo" @click="$root.closeFolder()">
+      <div class="m_topbar--left--logo" @click="goBack()">
         <transition name="fade">
           <button class="backButton" type="button" v-if="has_back_button">
             ‹
