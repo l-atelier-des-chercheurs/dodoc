@@ -16,7 +16,7 @@
           {{ folder.name }}    
         </h2>
 
-        <div class="font-small">
+        <div class="">
           <div class="margin-sides-medium margin-vert-small">
             <mark class="" v-if="folder.password === 'has_pass'">
               {{ $t('protected_by_pass') }}
@@ -44,19 +44,13 @@
         </button>
 
         <button v-if="!folder.authorized" type="button" class="button-round margin-verysmall padding-verysmall" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
-          <span class="text-cap font-verysmall">
-            {{ $t('password') }}
-          </span>
+          {{ $t('password') }}
         </button>
         <button v-if="folder.authorized && context === 'full'" type="button" class="button-round margin-verysmall padding-verysmall" @click="showEditFolderModal = true" :disabled="read_only">
-          <span class="text-cap font-verysmall">
-            {{ $t('edit') }}
-          </span>
+          {{ $t('edit') }}
         </button>
         <button v-if="folder.authorized && context === 'full'" type="button" class="button-round margin-verysmall padding-verysmall" @click="removeFolder()" :disabled="read_only">
-          <span class="text-cap font-verysmall">
-            {{ $t('remove') }}
-          </span>
+          {{ $t('remove') }}
         </button>
 
         <div v-if="showInputPasswordField" class="margin-bottom-small">

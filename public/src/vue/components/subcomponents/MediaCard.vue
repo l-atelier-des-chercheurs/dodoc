@@ -22,13 +22,13 @@
         </div>
       </figcaption>
       <nav>
-        <button 
+        <!-- <button 
           type="button" 
           class="button-redthin "
           @click.stop="openMediaModal(media.slugMediaName)"
         >
           {{ $t('open') }}
-        </button>
+        </button> -->
       </nav>
     </figure>
   </div>

@@ -23,7 +23,6 @@
 }
 
 html {
-  font-size: 100%;
 
   @scrollbar-height: 8px;
   @scrollbar-padding: 5px;
@@ -59,6 +58,8 @@ html {
 body {
   font-family: 'Fira Sans', sans-serif;
   font-weight: 400;
+  font-size: var(--font-size);
+  line-height: var(--line-height);
 
   .bg-creme;
   color: @c-gris_fonce;
@@ -531,6 +532,7 @@ body {
   > * {
     .margin-sides-small;
     flex: 0 1 auto;
+    .margin-bottom-medium;
   }
 
   .m_folder--presentation--vignette {
@@ -548,7 +550,6 @@ body {
   .bg-blanc;
   border-radius: @t-buttonradius;
   overflow: hidden;
-  .margin-bottom-medium;
   .flex-wrap;
   .flex-space-between;
   border: 1px solid @c-gris_clair;
@@ -649,8 +650,8 @@ body {
 
   .mediaContainer {
     position: relative;
-    background-color: @c-gris_fonce;
-
+    background-color: @c-gris_clair;
+    .margin-small;
     
     // @t-stripesWidth: 6px;
     // @c-stripesCol: fade(@c-noir, 15%);

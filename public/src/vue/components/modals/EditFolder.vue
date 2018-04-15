@@ -15,7 +15,7 @@
 <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('name') }}</label>
-        <input type="text" v-model="folderdata.name" required :readonly="read_only">
+        <input class="input-big" type="text" v-model="folderdata.name" required :readonly="read_only">
       </div>
 
 <!-- Preview -->

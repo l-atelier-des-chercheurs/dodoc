@@ -1,6 +1,6 @@
-@t-fontsize: 1.2rem;
-@t-lineheight: 1.35;
-@t-skipline: @t-fontsize * @t-lineheight;
+// @t-fontsize: 1.2rem;
+// @t-lineheight: 1.35;
+@t-skipline: 1.62rem;
 @t-buttonradius: 6px;
 
 @t-systemBarHeight: 22px;
@@ -31,13 +31,17 @@
 @c-body_bg: @c-creme;
 
 
+
 :root {
   --body-color: black;
   --body-bg-color: #fff;
   --table-stripe-bg-color: #eee;
-  --color-primary: #666;
+  --color-primary: @c-bleuvert;
   --font-family: 'Fira';
-  --font-size: 1rem; /* Most browsers use a default font size of 16px */
-  --input-font-size: 1rem;
+  --font-size: 1.1rem; /* Most browsers use a default font size of 16px */
+  --line-height: 1.35;
   --input-box-shadow: none;
+  --input-border-width: 2px;
+  --input-border-color: @c-gris;
+  --input-border-color-focus: @c-orange;
 }

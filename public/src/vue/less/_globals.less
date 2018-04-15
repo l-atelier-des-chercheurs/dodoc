@@ -206,19 +206,13 @@ strong,b {
   line-height: 1.25;
 }
 .font-verysmall {
-  font-size: 0.7em;
-}
-.font-veryverysmall {
-  font-size: 0.5em;
+  font-size: 0.8em;
 }
 .font-large {
-  font-size:1.1em;
-}
-.font-verylarge {
-  font-size:1.3em;
+  font-size:1.2em;
 }
 .font-folder_title {
-  .font-verylarge;
+  .font-large;
   font-family: 'Fira Sans';
   font-weight: 600;
   letter-spacing: 0.03em;
@@ -412,12 +406,15 @@ textarea {
 input[type="color"], input[type="date"], input[type="datetime-local"], input[type="email"], input[type="month"], input[type="number"], input[type="password"], input[type="search"], input[type="tel"], input[type="text"], input[type="time"], input[type="url"], input[type="week"], select, textarea {
   background-color: @c-gris_clair;
   .padding-vert-small;
-  .font-large;
+  border-top-width: 0px;
+  border-left-width: 0px;
+  border-right-width: 0px;
 }
 
 input[readonly], textarea[readonly] {
   background-color: var(--input-readonly-bg-color);
 }
+
 
 .text-cap {
   text-transform: uppercase;
@@ -485,7 +482,6 @@ hr {
 table {
   border:2px solid white;
 }
-
 
 input[type=range] {
   -webkit-appearance: none;
