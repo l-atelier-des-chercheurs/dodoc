@@ -59,14 +59,12 @@ html {
 body {
   font-family: 'Fira Sans', sans-serif;
   font-weight: 400;
-  font-size: @t-fontsize;
-  line-height: @t-lineheight;
 
   .bg-creme;
+  color: @c-gris_fonce;
 
   position: relative;
   margin: 0;
-  color: @c-noir;
   overflow-x: hidden;
   overflow-y: hidden;
 
@@ -438,37 +436,36 @@ body {
   left: 5vmin;
   min-height: @t-button_size;
   border-radius: @t-button_size;
+
   .bg-rouge;
-  font-weight: 600;
-  box-shadow: 0px 5px 15px 1px white;
+  box-shadow: 0 6px 0 @c-rouge_fonce;
 
-  transition: transform .2s ease-out;
+  font-weight: 400;
 
-  &::before {
-    content: '';
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    background: inherit;
-    top: 0.3rem;
-    filter: blur(0.3rem);
-    opacity: .3;
-    border-radius: @t-button_size;
-    z-index: -1;
+  // background-image: radial-gradient(ellipse at center,@c-rouge 45%,@c-rouge_fonce 46%,@c-rouge_fonce 100%);
+  // background-size: 1% 1%;
+  // background-position: 50%;
+  // background-color: #cd3047;
+  background-repeat: no-repeat;
 
-  }  
+  transition: all .2s ease-out;
 
   &:hover {
-    transform: scale(1.05);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 0 @c-rouge_fonce;
   }
 
   span {
-    padding: 0 @t-skipline/2;    
+    padding: 0 @t-skipline/4;    
   }
 }
 
 .captureButton {
   .bg-orange;
+  box-shadow: 0 6px 0 @c-orange_fonce;
+  &:hover {
+    box-shadow: 0 10px 0 @c-orange_fonce;
+  }
 }
 
 
@@ -478,6 +475,8 @@ body {
   position: absolute;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
+
+  background-color: @c-creme;
 
   width: 100%;
 
@@ -633,6 +632,8 @@ body {
     display: flex;
     flex-flow: column nowrap;
     .bg-blanc;
+    border-radius: 4px;
+    overflow: hidden;
     margin: 0;
     .margin-vert-small;
     cursor: pointer;
@@ -651,28 +652,28 @@ body {
     background-color: @c-gris_fonce;
 
     
-    @t-stripesWidth: 6px;
-    @c-stripesCol: fade(@c-noir, 15%);
-    @c-nonstripesCol: @c-gris_fonce;
+    // @t-stripesWidth: 6px;
+    // @c-stripesCol: fade(@c-noir, 15%);
+    // @c-nonstripesCol: @c-gris_fonce;
 
-    background: 
-    /* On "top" */
-    repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent @t-stripesWidth,
-      @c-stripesCol @t-stripesWidth,
-      @c-stripesCol @t-stripesWidth*2
-    ),
-    repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent @t-stripesWidth,
-      @c-stripesCol @t-stripesWidth,
-      @c-stripesCol @t-stripesWidth*2
-    ),    
-    @c-nonstripesCol,
-    ;
+    // background: 
+    // /* On "top" */
+    // repeating-linear-gradient(
+    //   45deg,
+    //   transparent,
+    //   transparent @t-stripesWidth,
+    //   @c-stripesCol @t-stripesWidth,
+    //   @c-stripesCol @t-stripesWidth*2
+    // ),
+    // repeating-linear-gradient(
+    //   -45deg,
+    //   transparent,
+    //   transparent @t-stripesWidth,
+    //   @c-stripesCol @t-stripesWidth,
+    //   @c-stripesCol @t-stripesWidth*2
+    // ),    
+    // @c-nonstripesCol,
+    // ;
 
     &::after {
       content: '';
@@ -933,16 +934,6 @@ body {
   position: absolute;
 }
 
-
-.FolderView-enter-active, .FolderView-leave-active {
-  transform: translateX(0);
-  transition: transform .5s cubic-bezier(.25,.8,.25,1);
-}
-.FolderView-enter, .FolderView-leave-to {
-  transform: translateX(100vw);
-  transition: transform .5s cubic-bezier(.25,.2,.25,1);
-}
-
 .ListView-enter-active, .ListView-leave-active {
   opacity: 1;
   transform: scale(1);
@@ -953,3 +944,22 @@ body {
   transform: scale(0.95);
   transition: all .5s linear;
 }
+
+.FolderView-enter-active, .FolderView-leave-active {
+  transform: translateX(0);
+  transition: transform .5s cubic-bezier(.25,.8,.25,1);
+}
+.FolderView-enter, .FolderView-leave-to {
+  transform: translateX(100vw);
+  transition: transform .5s cubic-bezier(.25,.2,.25,1);
+}
+
+.CaptureView-enter-active, .CaptureView-leave-active {
+  transform: translateX(0);
+  transition: transform .5s cubic-bezier(.25,.8,.25,1);
+}
+.CaptureView-enter, .CaptureView-leave-to {
+  transform: translateX(100vw);
+  transition: transform .5s cubic-bezier(.25,.2,.25,1);
+}
+
