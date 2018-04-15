@@ -4,7 +4,7 @@
     :read_only="read_only"
     >
     <template slot="header">
-      <span class="text-cap"> {{ $t('create_a_folder') }}</span>
+      <span class="">{{ $t('remote_access') }}</span>
     </template>
 
     <template slot="preview">

@@ -87,6 +87,7 @@ module.exports = (function() {
       export: 'Exporter',
 
       last_modified: 'Dernière modification',
+      remote_access: 'Accès depuis d’autres appareils',
 
       notifications: {
         file_was_sent: 'Le fichier a été envoyé.',
@@ -203,6 +204,7 @@ module.exports = (function() {
       export: 'Export',
 
       last_modified: 'Last modified',
+      remote_access: 'Acces from other devices',
 
       notifications: {
         file_was_sent: 'The file was sent.',
