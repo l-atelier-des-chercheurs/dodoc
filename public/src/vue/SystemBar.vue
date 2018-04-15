@@ -11,7 +11,7 @@
           @mousemove="mousemove"
           @mouseup="mouseup"
           >
-          <i>do•doc</i>
+          do•doc
         </div>
       </transition>
     </div>

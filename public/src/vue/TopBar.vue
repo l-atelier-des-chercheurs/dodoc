@@ -74,7 +74,7 @@
         </QRCode>
 
 
-        <button type="button">
+        <a class="js--openInBrowser" href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc">
           <svg version="1.1"
             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
             x="0px" y="0px" width="12px" height="20.3px" viewBox="0 0 12 20.3" style="enable-background:new 0 0 12 20.3;"
@@ -86,7 +86,7 @@
               c-0.5,0.5-1,0.7-1.6,0.7c-0.6,0-1.1-0.2-1.6-0.7c-0.4-0.5-0.7-1-0.7-1.6c0-0.6,0.2-1.2,0.6-1.6c0.4-0.4,1-0.7,1.6-0.7
               S6.5,16,7,16.4z"/>
           </svg>
-        </button>
+        </a>
 
         <button type="button">
           <svg version="1.1"

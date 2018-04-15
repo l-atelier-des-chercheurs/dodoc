@@ -65,10 +65,7 @@ body {
   position: relative;
   margin: 0;
   color: @c-noir;
-  background-color: @c-body_bg;
   overflow-y: hidden;
-
-  // margin-top: @t-hauteur_topbar;
 
   &.has_systembar {
     margin-top: @t-systemBarHeight;
@@ -129,11 +126,14 @@ body {
     -webkit-user-select: none;
     -webkit-app-region: drag;
     .border-bottom;
+    font-style: italic;
 
     height: @t-systemBarHeight;
     .bg-blanc;
-    color: transparent;
-    padding: 4px;
+    font-weight: 300;
+    color: @c-noir;
+    // color: transparent;
+    padding: 2px;
     z-index: 15000;
     overflow: hidden;
 
@@ -245,21 +245,31 @@ body {
           -ms-transform: skewX(-16deg) skewY(0);
           -o-transform: skewX(-16deg) skewY(0);
           transform: skewX(-16deg) skewY(0);
-          background-color: @c-orange;
+          background-color: @c-rouge;
           border-radius: 4px;
           transition: background-color .2s;
         }
   
         span {
           display: block;
-          padding-left:10px;
+          padding-left: 10px;
+          padding-right: 5px;
           pointer-events: none;   
           text-transform: initial;
           letter-spacing: 0.02em;
           font-style: italic;
           font-weight:400;   
         }
+
+        &:nth-child(2) {
+          &::after {
+            background-color: @c-orange;
+          }
+        
+        }
+  
       }
+
     }  
   }    
   .m_topbar--center {
@@ -436,7 +446,7 @@ body {
 }
 
 
-@t-folderwidth: 360px;
+@t-folderwidth: 260px;
 
 .m_listview, .m_folderview, .m_captureview {
   position: relative;
@@ -519,7 +529,6 @@ body {
   .flex-space-between;
   border: 1px solid @c-gris_clair;
   
-
   .m_folder--presentation {
     position: relative;
     z-index: 0;
@@ -562,7 +571,7 @@ body {
 
   .m_folder--favMedias {
     width: 100%;
-    padding: 0 @t-skipline/2;
+    padding: @t-skipline/2;
     .bg-bleuvert;
 
     .m_folder--favMedias--list {
@@ -603,9 +612,11 @@ body {
     .margin-vert-small;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(.25,.8,.25,1);  
+    transition-delay: 0.2s;
 
     &:hover {
       transform: translateY(-5px);
+      transition-delay: 0s;
       .boxs-card-4;
     }
   }
@@ -877,11 +888,11 @@ body {
 
 .fade-enter-active, .fade-leave-active {
   opacity: 1;
-  transition: opacity .2s ease-out;
+  transition: opacity .3s linear;
 }
 .fade-enter, .fade-leave-to {
   opacity: 0;
-  transition: opacity .2s ease-out;
+  transition: opacity .3s linear;
 }
 
 
