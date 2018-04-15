@@ -13,7 +13,7 @@
     >
     </TopBar>
 
-    <transition name="fade">
+    <transition name="fade" :duration="100">
       <ListView
         v-if="$root.settings.view === 'ListView'"
         :presentationMD="$root.store.presentationMD"
@@ -22,7 +22,7 @@
       >
       </ListView>
     </transition>
-    <transition name="fade">
+    <transition name="fade" :duration="100">
       <FolderView
         v-if="$root.settings.view === 'FolderView' && currentFolder.hasOwnProperty('name')"
         :slugFolderName="current_slugFolderName"
@@ -31,7 +31,7 @@
       >
       </FolderView>
     </transition>
-    <transition name="fade">
+    <transition name="fade" duration="300">
       <CaptureView
         v-if="$root.settings.view === 'CaptureView'"
         :slugFolderName="current_slugFolderName"
