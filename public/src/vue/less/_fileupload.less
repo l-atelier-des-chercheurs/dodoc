@@ -24,7 +24,6 @@
     box-shadow: 2px 4px 13px #bbb;
     pointer-events: auto;
   }
-
   > *[disabled] {
     cursor: not-allowed !important;
     .vue-dropzone.vue-dropzone .dz-message {
@@ -47,16 +46,13 @@
 .vue-dropzone.vue-dropzone {
   font-family: inherit;
 
-  width: 100vw;
-  min-width: 150px;
+  width: auto;
+  min-width: 0;
   max-width: 300px;
   // min-height: 100px;
-  max-height: 40vh;
 
   margin:0;
   padding: 0;
-  // padding-bottom: 2.5em;
-  // padding-right: @t-skipline*2;
 
   background-color: transparent;
   border: none !important;
@@ -65,7 +61,7 @@
   transition: all .4s ease-out;
 
   // &.is--bigger {
-//     overflow: visible;
+    // overflow: visible;
     // .dz-message {}
   // }
 
@@ -82,6 +78,8 @@
     // margin-bottom: 1em;
     // padding: 25px;
     // padding-top: 28px;
+
+    display: block;
     border: none;
     // border-radius: 50%;
     // width: 60px;
@@ -91,18 +89,20 @@
 
     // background-color: @c-noir;
     // color: white;
-    .button;
-    .button-inline;
-    background-color: @c-rouge !important;
-    .c-blanc;
-    .margin-small;
+    .text-cap;
+    .c-noir;
+    width: auto;
+    .margin-sides-medium;
+    .margin-vert-medium;
+    .padding-sides-small;
+    border-radius: 4px;
 
-    // > * {
-      // font-size: 50px;
-    // }
+    > * {
+      display: block;
+      .padding-vert-small;
+      // border-bottom: 2px solid @c-rouge;      
+    }
   }
-  // &.is--bigger .dz-message {
-  // }
 
   .dz-preview {
     width: 100%;
