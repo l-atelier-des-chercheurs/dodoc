@@ -48,7 +48,7 @@
             {{ $t('password') }}
           </span>
         </button>
-          <button v-if="folder.authorized && context === 'full'" type="button" class="button-round margin-verysmall padding-verysmall" @click="showEditFolderModal = true" :disabled="read_only">
+        <button v-if="folder.authorized && context === 'full'" type="button" class="button-round margin-verysmall padding-verysmall" @click="showEditFolderModal = true" :disabled="read_only">
           <span class="text-cap font-verysmall">
             {{ $t('edit') }}
           </span>
@@ -86,7 +86,7 @@
     <div class="m_folder--favMedias"
       v-if="context === 'full'"
     >
-      <div class="text-cap font-verysmall margin-small margin-bottom-none c-noir">
+      <div class="text-cap font-verysmall  c-noir">
         Média favoris
       </div>
 
