@@ -8,25 +8,34 @@
         />
       </div>
 
-      <div class="m_folder--presentation--title">
+      <div class="m_folder--presentation--text">
         <h2 
-          class="margin-none margin-sides-medium margin-vert-small font-folder_title"
+          class="m_folder--presentation--text--title"
            @click="$root.openFolder(slugFolderName)"
         >
           {{ folder.name }}    
         </h2>
 
-        <div class="">
-          <div class="margin-sides-medium margin-vert-small">
-            <mark class="" v-if="folder.password === 'has_pass'">
-              {{ $t('protected_by_pass') }}
-            </mark>
-          </div>
+        <div class="m_folder--presentation--text--infos">
+          <mark class="" v-if="folder.password === 'has_pass'">
+            {{ $t('protected_by_pass') }}
+          </mark>
 
-          <div class="margin-medium">
-            {{ $t('created_date') }}
-            <br>
-            {{ formatDateToHuman(folder.date_created) }}
+          <div class="">
+            <div class="label">
+              {{ $t('created') }}
+            </div>
+            <div class="">
+              {{ formatDateToHuman(folder.date_created) }}
+            </div>
+          </div>
+          <div>
+            <div class="label">
+              {{ $t('edited') }}
+            </div>
+            <div class="">
+              {{ formatDateToHuman(folder.date_modified) }}
+            </div>
           </div>
         </div>
       </div>
@@ -173,7 +182,7 @@ export default {
   },
   methods: {
     formatDateToHuman(date) {
-      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LLL');
+      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').calendar();
     },
     openFolder() {
       this.$root.openFolder(this.slugFolderName);

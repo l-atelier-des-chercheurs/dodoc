@@ -209,7 +209,7 @@ strong,b {
   font-size: 0.8em;
 }
 .font-large {
-  font-size:1.2em;
+  font-size:1.5em;
 }
 .font-folder_title {
   .font-large;
@@ -483,6 +483,13 @@ table {
   border:2px solid white;
 }
 
+label, .label {
+  .font-small;
+  font-weight: 400;
+  .text-cap;
+}
+
+
 input[type=range] {
   -webkit-appearance: none;
   width: 100%;
@@ -524,7 +531,7 @@ input[type="file"] {
     justify-content: space-around;
 
     padding: @t-skipline/2 @t-skipline;
-    margin-bottom:  @t-skipline;
+    margin-bottom: @t-skipline/2;
 
     border-radius: 5px;
     min-height: 3.3125rem;

@@ -38,11 +38,9 @@ export default {
   created() {
   },
   mounted() {
-    debugger;
     loadScript("/libs/instascan.min.js")
       .then(() => {
         // Script is loaded, do something
-        debugger;
 
         let scanner = new Instascan.Scanner({ 
           video: this.$refs.preview,

@@ -538,7 +538,7 @@ body {
   .m_folder--presentation--vignette {
     cursor: pointer;
   }
-  .m_folder--presentation--title {
+  .m_folder--presentation--text {
     h2 {
       cursor: pointer;
     }
@@ -571,14 +571,23 @@ body {
       // }
     }
 
-    // .m_folder--presentation--title {
-    // }
+    .m_folder--presentation--text {
+      .m_folder--presentation--text--title {
+        .margin-sides-small;
+        .margin-vert-small;
+        .font-folder_title;
+      }
+
+      .m_folder--presentation--text--infos {
+        > * {
+          .margin-sides-small;
+        }
+
+      }
+
+    }
 
     // à l’intérieur d’une vue projet
-    // .m_folderview & {
-      // margin: @t-skipline;
-      // border: 1px solid @c-gris_clair;
-    // }  
 
   }
 
@@ -869,6 +878,29 @@ body {
     }
   }
 
+}
+
+
+.m_imageselect {
+  width: 100%;
+
+  .m_imageselect--input {
+    
+  }
+  .m_imageselect--image {
+    .bg-gris_fonce;
+    border-radius: 6px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      // margin-bottom: @t-skipline;
+    }
+
+    button {
+      .margin-small;
+    }
+  }
 }
 
 .alertify-logs>*, .alertify-logs>.default {

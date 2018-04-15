@@ -47,7 +47,7 @@
   --body-bg-color: var(--color-white);
   --body-color: var(--color-black);
   --font-family: var(--font-system);
-  --font-size: 1.5rem; /* Most browsers use a default font size of 16px */
+  --font-size: 1rem; /* Most browsers use a default font size of 16px */
   --font-size-big: 1.25rem;
   --font-size-small: .875rem;
   --font-weight-light: 300;
