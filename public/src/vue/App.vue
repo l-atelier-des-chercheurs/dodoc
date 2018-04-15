@@ -16,7 +16,7 @@
     <!-- v-show="$root.settings.view === 'ListView'" -->
     <transition name="ListView" :duration="500">
       <ListView
-        v-show="$root.settings.view === 'ListView'"
+        v-if="$root.settings.view === 'ListView'"
         :presentationMD="$root.store.presentationMD"
         :read_only="!$root.state.connected"
         :folders="$root.store.folders"
@@ -33,7 +33,7 @@
       </FolderView>
     </transition>
 
-    <transition name="CaptureView">
+    <transition name="CaptureView" :duration="500">
       <CaptureView
         v-if="$root.settings.view === 'CaptureView'"
         :slugFolderName="current_slugFolderName"
