@@ -8,7 +8,7 @@
     >
     </MediaFilterBar> -->
 
-    <div class="bg-blanc border-vert margin-bottom-small">
+    <div class="m_folder--library--actionbar">
       <FileUpload
         v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
         :slugFolderName="slugFolderName"
@@ -87,6 +87,7 @@ export default {
 
   watch: {
   },
+
   computed: {
     sortedMedias() {
       var sortable = [];
