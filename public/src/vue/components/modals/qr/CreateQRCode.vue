@@ -3,7 +3,8 @@
     <qrcode 
       ref="qr_canvas"
       :value="urlToApp" 
-      :options="{ size: 300 }"
+      :options="{ size: 300, foreground: '#1d327f' }"
+      
     ></qrcode>
   </a>
 </template>

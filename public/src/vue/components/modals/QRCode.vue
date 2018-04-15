@@ -33,8 +33,8 @@
 
       <div class="margin-medium font-small">
         Scanner un code QR
-        <!-- <ScanQRCode>
-        </ScanQRCode> -->
+        <ScanQRCode>
+        </ScanQRCode>
       </div>
 
       
@@ -44,8 +44,7 @@
 </template>
 <script>
 import Modal from './BaseModal.vue';
-import alertify from 'alertify.js';
-// import ScanQRCode from './qr/ScanQRCode.vue';
+import ScanQRCode from './qr/ScanQRCode.vue';
 import CreateQRCode from './qr/CreateQRCode.vue';
 
 export default {
@@ -55,8 +54,8 @@ export default {
   },
   components: {
     Modal,
-    CreateQRCode
-    // ScanQRCode
+    CreateQRCode,
+    ScanQRCode
   },
   data() {
     return {
