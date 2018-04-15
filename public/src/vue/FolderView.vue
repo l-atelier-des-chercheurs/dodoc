@@ -9,9 +9,6 @@
       >
       </Folder>
     </div>
-    <button @click.prevent="$root.closeFolder()">
-      Fermer
-    </button>
   </div>
 </template>
 <script>

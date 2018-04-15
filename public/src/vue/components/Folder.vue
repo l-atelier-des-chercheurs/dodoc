@@ -122,7 +122,6 @@
           {{ $t('capture') }}
       </span>
     </button>
-
   </div>
 </template>
 <script>

@@ -1,11 +1,11 @@
 <template>
   <portal to="modal_container">
     <div class="m_modal--mask"
-      :class="{ 'is_transparent' : !showModal }"
+      :class="{ 'is_invisible' : !showModal }"
       @click.self="closeModal"
     >
       <div class="m_modal--container"
-        :class="['typeOfModal-' + typeOfModal, 'color-' + backgroundColor, { 'is_transparent' : !showModal }]"
+        :class="['typeOfModal-' + typeOfModal, 'color-' + backgroundColor, { 'is_invisible' : !showModal }]"
         @keyup.ctrl.enter="$emit('submit')"
         >
 
@@ -18,8 +18,8 @@
 
             <!-- if there is no sidebar, output header here -->
             <template v-if="!this.$slots['sidebar']">
-              <div class="m_modal--header padding-medium bg-orange c-blanc">
-                <h3 class="margin-none with-bullet">
+              <div class="m_modal--header">
+                <h3 class="margin-none">
                   <slot name="header">
                       default header
                   </slot>
@@ -37,8 +37,8 @@
             v-on:submit.prevent="$emit('submit')"
             >
 
-            <div class="m_modal--header padding-medium bg-orange c-blanc">
-              <h3 class="margin-none with-bullet">
+            <div class="m_modal--header">
+              <h3 class="margin-none">
                 <slot name="header">
                     default header
                 </slot>
@@ -51,22 +51,23 @@
               </slot>
             </div>
 
-            <button
-              class="m_modal--save bg-bleuvert button-rectangle button-allwide button-inline margin-none padding-small"
-              type="submit"
-              :disabled="read_only"
-              >
-              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-                <circle cx="24" cy="24" r="24" style="fill: transparent"/>
-                <polyline points="35.48 13.74 22.2 36.41 12.81 25.55" style="fill: none;stroke: #fff;stroke-miterlimit: 10;stroke-width: 2px"/>
-              </svg>
+            <div class="m_modal--save">
+              <button
+                type="submit"
+                :disabled="read_only"
+                >
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+                  <circle cx="24" cy="24" r="24" style="fill: transparent"/>
+                  <polyline points="35.48 13.74 22.2 36.41 12.81 25.55" style="fill: none;stroke: #fff;stroke-miterlimit: 10;stroke-width: 2px"/>
+                </svg>
 
-              <span class="text-cap font-verysmall">
-                <slot name="submit_button">
-                  {{ $t('save') }}
-                </slot>
-              </span>
-            </button>
+                <span class="text-cap font-verysmall">
+                  <slot name="submit_button">
+                    {{ $t('save') }}
+                  </slot>
+                </span>
+              </button>
+            </div>
           </form>
 
         </div>
@@ -106,9 +107,9 @@ export default {
     };
   },
   mounted: function() {
-    this.$nextTick(() => {
+    setTimeout(() => {
       this.showModal = true;
-    });
+    },100);
 
   },
   methods: {

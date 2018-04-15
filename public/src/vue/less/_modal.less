@@ -17,7 +17,7 @@
 
   transition: background-color .5s ease-out;
 
-  &.is_transparent {
+  &.is_invisible {
     background-color: transparent;
   }
 
@@ -54,7 +54,7 @@
 
   transition: all .35s ease-out;
 
-  &.is_transparent {
+  &.is_invisible {
     opacity: 0;
     transform: translate3d(0,15px,0);
   }
@@ -68,7 +68,7 @@
 
     background-color: #fff;
     border-radius: 2px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+    box-shadow: 0 5px 15px @c-gris;
 
     display: flex;
     flex-flow: row wrap;
@@ -84,6 +84,7 @@
       }
 
       &.m_modal--preview {
+        width: 100%;
         height: 90vh;
       }
     }
@@ -183,6 +184,13 @@
       }
     }
 
+    label {
+      .font-small;
+      font-weight: 400;
+      .text-cap;
+    }
+
+
   }
 }
 // if no preview, then sidebar takes the whole width
@@ -192,6 +200,7 @@
     height: 100%;
     overflow: hidden;
     position: relative;
+    .bg-gris_fonce;
 
     &[data-context="edit"] {
       > * {
@@ -265,6 +274,23 @@
 }
 
 .m_modal--header {
+  border-bottom: 2px solid @c-gris_clair;
+
+  h3 {
+    .padding-medium;
+    font-weight: 700;
+    .font-verylarge;
+  }
+}
+
+.m_modal--save {
+  .padding-medium;
+  border-top: 2px solid @c-gris_clair;
+
+  button[type="submit"] {
+    .bg-bleuvert; 
+    .button-inline;
+  }
 }
 
 

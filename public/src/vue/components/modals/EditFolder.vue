@@ -7,7 +7,7 @@
     :typeOfModal="'EditMeta'"
     >
     <template slot="header">
-      <span class="text-cap"> {{ $t('edit_folder') }}</span> <i>{{ folder.name }}</i>
+      <div class="">{{ $t('edit_folder') }}</div>
     </template>
 
     <template slot="sidebar">
