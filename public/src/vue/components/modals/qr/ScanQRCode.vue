@@ -42,12 +42,12 @@ export default {
       .then(() => {
         // Script is loaded, do something
 
-        let scanner = new Instascan.Scanner({ 
+        this.scanner = new Instascan.Scanner({ 
           video: this.$refs.preview,
           mirror: false,
           scanPeriod: 4
         });
-        scanner.addListener('scan',(content) => {
+        this.scanner.addListener('scan',(content) => {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
@@ -64,7 +64,7 @@ export default {
                     return false;
                 }
             });
-            scanner.start(selectedCam);
+            this.scanner.start(selectedCam);
           } else {
             console.error('No cameras found.');
           }
@@ -79,6 +79,7 @@ export default {
 
   },
   beforeDestroy() {
+    this.scanner.stop();
   },
 
   watch: {
