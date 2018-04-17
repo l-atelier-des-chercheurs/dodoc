@@ -72,7 +72,7 @@ body {
 }
 
 .container {
-  max-width: 1330px;
+  max-width: 1490px;
   width: 100%;
   margin: 0 auto;
   .padding-sides-small;
@@ -298,6 +298,12 @@ body {
         display: flex;
         align-items: center;
 
+        // .bg-gris_tresclair;
+        // border: 2px solid @c-bleumarine;
+        background-color: @c-bleumarine_clair;
+        color: @c-bleumarine;
+        .padding-verysmall;
+
         @media screen and (max-width: 50rem) {
 
         }
@@ -319,7 +325,7 @@ body {
           }
         }
         .m_topbar--center--authors--name {
-          font-size: 1.5em;
+          font-size: 1.7em;
           font-weight: 200;
           text-transform: uppercase;
         } 
@@ -344,6 +350,7 @@ body {
         height: auto;
         padding: @t-skipline/2 @t-skipline/2;
         cursor: pointer;
+        .bg-blanc;
 
         svg {
           width: 100%;
@@ -365,14 +372,15 @@ body {
   button {
     .margin-medium;
     .bg-gris_tresclair;
-    width: 140px;
-    height: 140px;
+    width: 200px;
+    height: 200px;
     text-align: center;
     text-transform: uppercase;
     font-weight:200;
 
     &.is--selected {
-      .bg-rouge;
+      background-color: @c-bleumarine_clair;
+      color: @c-bleumarine;
     }
 
     img {
@@ -383,6 +391,7 @@ body {
     span {
       display: block;
       .padding-sides-small;
+      .font-large;
     }
   }
 
@@ -459,7 +468,6 @@ body {
 }
 
 
-@t-folderwidth: 300px;
 
 .m_listview, .m_folderview, .m_captureview {
   position: absolute;
@@ -521,6 +529,8 @@ body {
   .flex-wrap;
   .flex-space-between;
   
+  @t-folderwidth: 340px;
+  
   .m_folder--presentation {
     position: relative;
     z-index: 0;
@@ -540,16 +550,13 @@ body {
 
     .m_folder--presentation--text {
       .m_folder--presentation--text--title {
-        .margin-sides-small;
+        .margin-sides-medium;
         .margin-vert-small;
         .font-folder_title;
       }
 
       .m_folder--presentation--text--infos {
-        > * {
-          .margin-sides-small;
-          .margin-vert-small;
-        }
+        .margin-sides-medium;
       }
 
     }
@@ -558,11 +565,8 @@ body {
 
   }
 
-  .m_folder--description, .m_folder--favMedias {
+  .m_folder--favMedias {
     flex: 1 1 44ch;
-    padding:  @t-skipline;
-    // border-left: 1px solid @c-gris_clair;
-    // border-bottom: 1px solid @c-gris_clair;
   }
   
   .m_folder--library {
@@ -604,7 +608,7 @@ body {
 
   .m_folder--favMedias {
     width: 100%;
-    .bg-bleuvert;
+    background-color: @c-bleuvert;
     padding: 0;
     .padding-vert-small;
     
@@ -647,7 +651,7 @@ body {
     .margin-small;
     canvas {
       .button;
-      .bg-creme;
+      .bg-gris_tresclair;
       .padding-verysmall;
       .bg-blanc;
       width: 100%;
@@ -691,7 +695,6 @@ body {
 
     .mediaContainer {
       position: relative;
-      background-color: @c-gris_clair;
       .margin-small;
 
       .bg-gris_tresclair;
@@ -745,17 +748,18 @@ body {
   align-items: flex-end;
 
   color: @c-noir;
-  border-bottom: 1px dashed currentColor;  
+  border-bottom: 1px dashed @c-gris; 
+  border-radius: 2px; 
 
   .margin-bottom-small;
 
   > *:first-child {
     .label;
-    font-weight: 600;
   }
 
   > *:nth-child(2) {
     .label;
+    text-transform: initial;
     font-weight: 400;
   }
 

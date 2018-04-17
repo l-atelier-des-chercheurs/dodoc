@@ -76,18 +76,20 @@ button, .button {
   position: relative;
 
   background-color: inherit;
-  color: @c-bleuvert;
 
   .font-small;
-  .padding-verysmall;
+  .padding-small;
   .margin-verysmall;
+
+  .label;
+  font-weight: 400;
   min-height: 0;
 
   &::after {
     content: '';
     display: block;
     width: 100%;
-    border-bottom: 2px solid currentColor;
+    border-bottom: 1px solid currentColor;
   }
 }
 
@@ -531,11 +533,14 @@ table {
 }
 
 label, .label {
-  font-family: 'Fira Mono';
   .font-verysmall;
-  .text-cap;
-  font-weight: 600;
+  font-family: 'Fira Mono';
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: @c-gris_fonce;
 }
+
 
 .break-long-lines {
   word-break: break-word;

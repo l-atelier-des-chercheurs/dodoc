@@ -31,7 +31,7 @@
           </div>
           <div class="m_metaField" v-if="!!media.authors">
             <div>
-              {{ $t('authors') }}
+              {{ $t('author') }}
             </div>
             <div>
               {{ media.authors }}

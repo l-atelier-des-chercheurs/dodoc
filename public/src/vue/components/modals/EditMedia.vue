@@ -12,6 +12,40 @@
 
     <template slot="sidebar">
 
+      <div class="m_metaField" v-if="!!media.type">
+        <div>
+          {{ $t('type') }}
+        </div>
+        <div>
+          {{ media.type }}
+          <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
+        </div>
+      </div>
+      <div class="m_metaField" v-if="!!media.authors">
+        <div>
+          {{ $t('author') }}
+        </div>
+        <div>
+          {{ media.authors }}
+        </div>
+      </div>
+      <div class="m_metaField">
+        <div>
+          {{ $t('created') }}
+        </div>
+        <div>
+          {{ formatDateToHuman(media.date_created) }}
+        </div>
+      </div>
+      <div class="m_metaField">
+        <div>
+          {{ $t('edited') }}
+        </div>
+        <div>
+          {{ formatDateToHuman(media.date_modified) }}
+        </div>
+      </div>
+
       <div v-if="!read_only" class="m_modal--buttonrow flex-wrap flex-vertically-start flex-space-between flex-same-basis">
         <button type="button"
           class="bg-transparent button-round margin-verysmall padding-verysmall"
@@ -139,11 +173,6 @@
         </textarea>
       </div>
 
-      <div class="margin-bottom-small">
-        {{ $t('created_date') }}<br>
-        {{ date_created_human }}
-      </div>
-
 <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
 <!-- Disabled for now: if an image or video is tagged as "text" or marked, a folder becomes unreadable -->
       <!-- <div class="margin-bottom-small">
@@ -232,9 +261,6 @@ export default {
     };
   },
   computed: {
-    date_created_human() {
-      return this.$moment(this.media.date_created).format('l LTS');
-    },
     date_uploaded_human() {
       return this.$moment(this.media.date_upload).format('l LTS');
     }
@@ -242,6 +268,9 @@ export default {
   methods: {
     printMedia: function() {
       window.print();
+    },
+    formatDateToHuman(date) {
+      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LLL');
     },
     openMediaNewWindow: function() {},
     removeMedia: function() {
