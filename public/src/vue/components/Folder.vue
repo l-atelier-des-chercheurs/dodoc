@@ -55,10 +55,10 @@
         <button v-if="!folder.authorized" type="button" class="button-round margin-verysmall padding-verysmall" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
           {{ $t('password') }}
         </button>
-        <button v-if="folder.authorized && context === 'full'" type="button" class="button-round margin-verysmall padding-verysmall" @click="showEditFolderModal = true" :disabled="read_only">
+        <button v-if="folder.authorized && context === 'full'" type="button" class="buttonLink" @click="showEditFolderModal = true" :disabled="read_only">
           {{ $t('edit') }}
         </button>
-        <button v-if="folder.authorized && context === 'full'" type="button" class="button-round margin-verysmall padding-verysmall" @click="removeFolder()" :disabled="read_only">
+        <button v-if="folder.authorized && context === 'full'" type="button" class="buttonLink" @click="removeFolder()" :disabled="read_only">
           {{ $t('remove') }}
         </button>
 
@@ -89,7 +89,7 @@
     <div class="m_folder--favMedias"
       v-if="context === 'full'"
     >
-      <div class="text-cap font-verysmall margin-sides-medium margin-bottom-none c-noir">
+      <div class="sectionTitle_small margin-sides-medium">
         Média favoris
       </div>
 

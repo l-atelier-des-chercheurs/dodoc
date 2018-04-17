@@ -5,6 +5,7 @@ button, .button {
   font-size: inherit;
   font-family: inherit;
   background-color: #fff;
+  .bg-gris_clair;
   display: inline-block;
 
   text-decoration: none;
@@ -71,7 +72,29 @@ button, .button {
   }
 }
 
+.buttonLink {
+  position: relative;
 
+  background-color: inherit;
+  color: @c-bleuvert;
+
+  .font-small;
+  .padding-verysmall;
+  .margin-verysmall;
+  min-height: 0;
+
+  &::after {
+    content: '';
+    display: block;
+    width: 100%;
+    border-bottom: 2px solid currentColor;
+  }
+}
+
+.sectionTitle_small {
+  .text-cap;
+  .font-verysmall;
+}
 
 strong,b {
   font-weight: inherit;
@@ -510,8 +533,8 @@ table {
 label, .label {
   font-family: 'Fira Mono';
   .font-verysmall;
-  font-weight: 400;
   .text-cap;
+  font-weight: 600;
 }
 
 .break-long-lines {

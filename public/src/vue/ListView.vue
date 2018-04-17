@@ -6,7 +6,7 @@
         <template
           v-if="sortedFoldersSlug !== 'no-folders'"
         >
-          <div class="padding-bottom-medium margin-left-small text-cap c-gris font-verysmall">
+          <div class="sectionTitle_small padding-bottom-medium margin-left-small">
             Affichage de {{ sortedFoldersSlug.length }} projets sur {{ Object.keys(folders).length }}
           </div>
 

@@ -26,7 +26,7 @@ module.exports = (function() {
       edit: 'Éditer',
       print: 'Imprimer',
       create: 'Créer',
-      remove: 'Suppr.',
+      remove: 'Supprimer',
       password: 'Mot de passe',
       protected_by_pass: 'protégé par mot de passe',
       password_instructions:

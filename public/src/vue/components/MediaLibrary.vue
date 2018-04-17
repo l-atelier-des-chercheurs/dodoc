@@ -17,7 +17,7 @@
       </FileUpload>
     </div>
 
-    <div class="text-cap font-verysmall margin-sides-medium margin-bottom-none c-noir">
+    <div class="sectionTitle_small margin-sides-medium">
       Tous les médias
     </div>
     <div class="m_folder--library--medias">
