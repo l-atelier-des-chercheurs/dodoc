@@ -21,19 +21,19 @@
             {{ $t('protected_by_pass') }}
           </mark>
 
-          <div class="">
-            <div class="label">
+          <div class="m_metaField">
+            <div>
               {{ $t('created') }}
             </div>
-            <div class="">
+            <div>
               {{ formatDateToHuman(folder.date_created) }}
             </div>
           </div>
-          <div>
-            <div class="label">
+          <div class="m_metaField">
+            <div>
               {{ $t('edited') }}
             </div>
-            <div class="">
+            <div>
               {{ formatDateToHuman(folder.date_modified) }}
             </div>
           </div>
@@ -182,7 +182,7 @@ export default {
   },
   methods: {
     formatDateToHuman(date) {
-      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').calendar();
+      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LLL');
     },
     openFolder() {
       this.$root.openFolder(this.slugFolderName);

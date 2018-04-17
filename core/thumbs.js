@@ -49,7 +49,7 @@ module.exports = (function() {
         // regroup all thumbs promises so they can happen as fast as possible
         let makeThumbs = [];
 
-        let thumbResolutions = [50, 180, 360, 1600];
+        let thumbResolutions = [50, 180, 360, 600, 1600];
         if (mediaType === 'image') {
           thumbResolutions.forEach(thumbRes => {
             let makeThumb = new Promise((resolve, reject) => {

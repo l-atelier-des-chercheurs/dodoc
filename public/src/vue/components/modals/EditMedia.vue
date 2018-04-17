@@ -7,7 +7,7 @@
     :typeOfModal="'LargeAndNoScroll'"
     >
     <template slot="header">
-      <span class="text-cap"> {{ $t('edit_the_media') }}</span> <i>{{ slugMediaName }}</i>
+      <div class="">{{ $t('edit_the_media') }}</div>
     </template>
 
     <template slot="sidebar">

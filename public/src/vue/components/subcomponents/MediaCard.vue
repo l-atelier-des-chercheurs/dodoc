@@ -3,8 +3,13 @@
     class="m_media"
     :title="media.slugMediaName"
   >
-    <figure @click.stop="openMediaModal(media.slugMediaName)">
-      <div>
+    <div>
+      <figure 
+        @click.stop="openMediaModal(media.slugMediaName)" 
+        @mouseover="is_hovered = true"
+        @mouseleave="is_hovered = false"
+        :class="{ 'is--hovered' : is_hovered }"
+      >
         <MediaContent
           v-model="media.content"
           :context="'preview'"
@@ -12,25 +17,54 @@
           :slugFolderName="slugFolderName"
           :media="media"
         ></MediaContent>
-      </div>
-      <figcaption>
-        <a>
-          <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" />
-        </a>
-        <div class="text-small" v-if="!!media.authors">
-          Média de {{ media.authors }}
-        </div>
-      </figcaption>
-      <nav>
-        <!-- <button 
-          type="button" 
-          class="button-redthin "
-          @click.stop="openMediaModal(media.slugMediaName)"
+        <figcaption
+          v-if="is_hovered"
         >
-          {{ $t('open') }}
-        </button> -->
-      </nav>
-    </figure>
+          <div class="m_metaField" v-if="!!media.type">
+            <div>
+              {{ $t('type') }}
+            </div>
+            <div>
+              {{ media.type }}
+              <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
+            </div>
+          </div>
+          <div class="m_metaField" v-if="!!media.authors">
+            <div>
+              {{ $t('authors') }}
+            </div>
+            <div>
+              {{ media.authors }}
+            </div>
+          </div>
+          <div class="m_metaField">
+            <div>
+              {{ $t('created') }}
+            </div>
+            <div>
+              {{ formatDateToHuman(media.date_created) }}
+            </div>
+          </div>
+          <div class="m_metaField">
+            <div>
+              {{ $t('edited') }}
+            </div>
+            <div>
+              {{ formatDateToHuman(media.date_modified) }}
+            </div>
+          </div>
+        </figcaption>
+        <!-- <nav>
+          <button 
+            type="button" 
+            class="button-redthin "
+            @click.stop="openMediaModal(media.slugMediaName)"
+          >
+            {{ $t('open') }}
+          </button>
+        </nav> -->
+      </figure>
+    </div>
   </div>
 </template>
 <script>
@@ -47,6 +81,7 @@ export default {
   },
   data() {
     return {
+      is_hovered: false,
       mediaTypeIcon: {
         image: '/images/i_icone-dodoc_image.svg',
         video: '/images/i_icone-dodoc_video.svg',
@@ -68,6 +103,9 @@ export default {
   computed: {
   },
   methods: {
+    formatDateToHuman(date) {
+      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LLL');
+    },
     openMediaModal(slugMediaName) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaCard: openMedia = ${slugMediaName}`);

@@ -13,17 +13,19 @@
         <span v-html="$t('toconnectwithanotherdevicetothisfolder')"></span>
 
         <div v-for="(ip, index) in $root.state.localNetworkInfos.ip"
-          class="js--openInBrowser qrSnippet button button-circled margin-vert-medium border-circled button-inline padding-small"
+          class="m_qrSnippet padding-none margin-vert-medium button-inline bg-creme"
           :key="index"
           >
-          <a 
-            class="qrSnippet--text"
-            :href="getURLToApp(ip, $root.state.localNetworkInfos.port)"
-            target="_blank"
-          >
-            {{ getURLToApp(ip, $root.state.localNetworkInfos.port) }}
-          </a>
-          <div class="qrSnippet--motif">
+          <div class="m_qrSnippet--text">
+            <a 
+              class="break-long-lines js--openInBrowser"
+              :href="getURLToApp(ip, $root.state.localNetworkInfos.port)"
+              target="_blank"
+            >
+              {{ getURLToApp(ip, $root.state.localNetworkInfos.port) }}
+            </a>
+          </div>
+          <div class="m_qrSnippet--motif">
             <CreateQRCode
               :urlToApp="getURLToApp(ip, $root.state.localNetworkInfos.port)"
             >
