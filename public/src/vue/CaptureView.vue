@@ -148,8 +148,8 @@ export default {
       recordVideoWithAudio: true,
 
       justCapturedMediaData: {},
-      videoStream: undefined,
-      audioStream: undefined,
+      videoStream: null,
+      audioStream: null,
       available_devices: {},
       available_camera_resolutions: [
         {
@@ -314,9 +314,11 @@ export default {
     },
     stopVideoFeed() {
       console.log('METHODS • Capture: stopVideoFeed');
-      if(this.videoStream !== undefined) {
-        this.videoStream.getTracks().forEach((track) => track.stop());
-        this.videoStream = undefined;
+      if(!!this.videoStream) {
+        for (let stream of this.videoStream.getVideoTracks()) {
+          stream.stop();
+        }        
+        this.videoStream = null;
         if(!!this.$refs.videoElement) {
           this.$refs.videoElement.srcObject = null;
         }
