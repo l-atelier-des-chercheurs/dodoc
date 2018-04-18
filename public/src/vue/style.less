@@ -477,6 +477,37 @@ body {
 }
 
 
+/**********************************************************************
+                              MAIN VIEWS
+**********************************************************************/
+
+.m_activitiesPanel {
+  position: relative;
+  width: 100%;
+  height: ~"calc(100vh - @{t-hauteur_topbar} - 1px)";
+
+  display: flex;
+  flex-flow: row nowrap;
+
+  > * {
+    flex: 1 1 auto;
+  }
+
+  .m_activitiesPanel--do {
+    flex-basis: 50%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .m_activitiesPanel--doc {
+    flex-basis: 50%;
+    background-color: @c-rouge;
+
+  }
+
+}
+
+
 .m_listview, .m_folderview, .m_captureview {
   position: absolute;
   overflow-y: auto;
@@ -484,9 +515,7 @@ body {
 
   .bg-creme;
   width: 100%;
-
-  // 1px is border-top on topbar
-  height: ~"calc(100vh - @{t-hauteur_topbar} - 1px)";
+  height: 100%;
 
   body.has_systembar & {
     height: ~"calc(100vh - @{t-systemBarHeight} - @{t-hauteur_topbar} - 1px)";
@@ -671,7 +700,7 @@ body {
   position: relative;
 
   width: 100%;
-  min-width: 160px;
+  min-width: 180px;
   padding: 0 @t-skipline/2;
 
   > * {

@@ -566,11 +566,11 @@ let vm = new Vue({
     setAuthor: function(author) {
       this.settings.current_author = author;
     },
-    openPubliPanel: function() {
+    togglePubliPanel: function() {
       if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: openPubliPanel`);
+        console.log(`ROOT EVENT: togglePubliPanel`);
       }
-      this.settings.show_publi_panel = slugFolderName;
+      this.settings.show_publi_panel = !this.settings.show_publi_panel;
     }
   },
   watch: {

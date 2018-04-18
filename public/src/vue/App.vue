@@ -13,8 +13,8 @@
     >
     </TopBar>
 
-    <div class="m_activities">
-      <div class="m_activities--do">
+    <div class="m_activitiesPanel">
+      <div class="m_activitiesPanel--do">
         <!-- v-show="$root.settings.view === 'ListView'" -->
         <transition name="ListView" :duration="500">
           <ListView
@@ -44,14 +44,21 @@
           </CaptureView>
         </transition>
       </div>
-      <div class="m_activities--doc">
+      <div class="m_activitiesPanel--doc" v-if="$root.settings.show_publi_panel">
+        <button type="button">
+          Créer une publication
+        </button>
+
+        // modale de création de publications
+
+        // liste des publications
 
       </div>
     </div>
 
     <button
       class="publiButton"
-      @click="$root.openPubliPanel"
+      @click="$root.togglePubliPanel"
       :key="'openPubli'"
     >
       <img src="/images/i_publi.svg" width="48" height="48" />
