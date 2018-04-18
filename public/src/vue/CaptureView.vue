@@ -37,14 +37,14 @@
         <div class="m_panel--buttons">
           <button type="button" 
             v-if="!isRecording"
-            class="padding-verysmall"
+            class="padding-verysmall bg-blanc"
             @click="capture()"
           >
             <img src="/images/i_record.svg">
           </button>
           <button type="button" 
             v-if="isRecording"
-            class="padding-verysmall"
+            class="padding-verysmall bg-blanc"
             @click="$eventHub.$emit('capture.stopRecording')"
           >
             <img src="/images/i_stop.svg">

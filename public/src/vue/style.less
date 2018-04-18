@@ -428,7 +428,7 @@ body {
   }
 }
 
-.createButton, .captureButton {
+.createButton, .captureButton, .publiButton {
   @t-button_size: 3em;
 
   position: fixed;
@@ -438,16 +438,12 @@ body {
   min-height: @t-button_size;
   border-radius: @t-button_size;
 
+  .button-inline;
+
   .bg-rouge;
+  .c-blanc;
   box-shadow: 0 6px 0 @c-rouge_fonce;
-
   font-weight: 400;
-
-  // background-image: radial-gradient(ellipse at center,@c-rouge 45%,@c-rouge_fonce 46%,@c-rouge_fonce 100%);
-  // background-size: 1% 1%;
-  // background-position: 50%;
-  // background-color: #cd3047;
-  background-repeat: no-repeat;
 
   transition: all .2s ease-out;
 
@@ -457,7 +453,7 @@ body {
   }
 
   span {
-    padding: 0 @t-skipline/4;    
+    padding: @t-skipline/4;    
   }
 }
 
@@ -469,6 +465,16 @@ body {
   }
 }
 
+.publiButton {
+  left: auto;
+  right: 5vmin;  
+  .bg-bleuvert;
+
+  box-shadow: 0 6px 0 @c-bleuvert_fonce;
+  &:hover {
+    box-shadow: 0 10px 0 @c-bleuvert_fonce;
+  }
+}
 
 
 .m_listview, .m_folderview, .m_captureview {

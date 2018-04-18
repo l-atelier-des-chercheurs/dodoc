@@ -5,6 +5,7 @@ module.exports = (function() {
       ascending: 'Croissant',
       descending: 'Décroissant',
       create_a_folder: 'Créer un dossier',
+      publication: 'Publication',
       name: 'Nom',
       created_date: 'Date de création',
       created: 'Création',
@@ -15,7 +16,6 @@ module.exports = (function() {
       color: 'Couleur',
       keywords: 'Mot-clés',
       author: 'Auteur(s)',
-      zoom: 'Zoom',
       download: 'Télécharger',
       caption: 'Légende',
       date: 'Date',
@@ -133,7 +133,6 @@ module.exports = (function() {
       color: 'Color',
       keywords: 'Keywords',
       author: 'Author(s)',
-      zoom: 'Zoom',
       download: 'Download',
       caption: 'Caption',
       date: 'Date',
@@ -175,6 +174,7 @@ module.exports = (function() {
       sureToRemoveMedia: 'Do you really want to delete this media?',
 
       create_a_folder: 'Create a folder',
+      publication: 'Publication',
       edit_the_media: 'Edit media',
       edit_folder: 'Edit folder',
 

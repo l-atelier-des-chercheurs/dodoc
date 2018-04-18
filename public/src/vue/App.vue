@@ -13,34 +13,52 @@
     >
     </TopBar>
 
-    <!-- v-show="$root.settings.view === 'ListView'" -->
-    <transition name="ListView" :duration="500">
-      <ListView
-        v-if="$root.settings.view === 'ListView'"
-        :presentationMD="$root.store.presentationMD"
-        :read_only="!$root.state.connected"
-        :folders="$root.store.folders"
-      >
-      </ListView>
-    </transition>
-    <transition name="FolderView" :duration="500">
-      <FolderView
-        v-if="$root.settings.view === 'FolderView' && currentFolder.hasOwnProperty('name')"
-        :slugFolderName="current_slugFolderName"
-        :folder="currentFolder"
-        :read_only="!$root.state.connected"
-      >
-      </FolderView>
-    </transition>
+    <div class="m_activities">
+      <div class="m_activities--do">
+        <!-- v-show="$root.settings.view === 'ListView'" -->
+        <transition name="ListView" :duration="500">
+          <ListView
+            v-if="$root.settings.view === 'ListView'"
+            :presentationMD="$root.store.presentationMD"
+            :read_only="!$root.state.connected"
+            :folders="$root.store.folders"
+          >
+          </ListView>
+        </transition>
+        <transition name="FolderView" :duration="500">
+          <FolderView
+            v-if="$root.settings.view === 'FolderView' && currentFolder.hasOwnProperty('name')"
+            :slugFolderName="current_slugFolderName"
+            :folder="currentFolder"
+            :read_only="!$root.state.connected"
+          >
+          </FolderView>
+        </transition>
 
-    <transition name="CaptureView" :duration="500">
-      <CaptureView
-        v-if="$root.settings.view === 'CaptureView'"
-        :slugFolderName="current_slugFolderName"
-        :folder="currentFolder"
-      >
-      </CaptureView>
-    </transition>
+        <transition name="CaptureView" :duration="500">
+          <CaptureView
+            v-if="$root.settings.view === 'CaptureView'"
+            :slugFolderName="current_slugFolderName"
+            :folder="currentFolder"
+          >
+          </CaptureView>
+        </transition>
+      </div>
+      <div class="m_activities--doc">
+
+      </div>
+    </div>
+
+    <button
+      class="publiButton"
+      @click="$root.openPubliPanel"
+      :key="'openPubli'"
+    >
+      <img src="/images/i_publi.svg" width="48" height="48" />
+      <span class="margin-small">
+        {{ $t('publication') }}
+      </span>
+    </button>
 
     <portal-target name="modal_container" />
 

@@ -41,7 +41,7 @@
       </CreateFolder>
 
       <button
-        class="button-inline bg-rouge createButton"
+        class="createButton"
         @click="showCreateFolderModal = true"
         :disabled="read_only"
         :key="'createButton'"

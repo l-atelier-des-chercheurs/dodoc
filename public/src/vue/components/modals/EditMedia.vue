@@ -109,33 +109,6 @@
           </span>
         </button>
 
-        <a :href="mediaURL" :title="slugMediaName" target="_blank"
-          class="button bg-transparent button-round margin-verysmall padding-verysmall"
-          v-if="mediadata.type === 'image'"
-          :disabled="read_only"
-          >
-          <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
-            <g id="Calque_2" data-name="Calque 2">
-              <g id="Editeur_txt" data-name="Editeur txt">
-                <g>
-                  <g>
-                    <circle cx="24.5" cy="24.5" r="24" style="fill: #4d4d4d"/>
-                    <circle cx="24.5" cy="24.5" r="24" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                  </g>
-                  <circle cx="28.41" cy="20.96" r="8.75" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                  <circle cx="28.41" cy="20.96" r="8.75" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                  <rect x="12.37" y="30.04" width="11.71" height="2.65" transform="translate(-16.84 22.08) rotate(-45)" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                  <line x1="28.64" y1="16.82" x2="28.64" y2="25.21" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                  <line x1="24.45" y1="21.02" x2="32.84" y2="21.02" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                </g>
-              </g>
-            </g>
-          </svg>
-          <span class="text-cap font-verysmall">
-            {{ $t('zoom') }}
-          </span>
-        </a>
-
         <a :download="slugMediaName" :href="mediaURL" :title="slugMediaName" target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
           :disabled="read_only"

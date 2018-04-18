@@ -56,6 +56,7 @@
     <div class="m_topbar--right">
 
       <div class="m_topbar--right--pictos">
+
         <button type="button" @click="showQRModal = !showQRModal">
           <svg version="1.1"
             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
@@ -88,7 +89,7 @@
           </svg>
         </a>
 
-        <button type="button">
+        <!-- <button type="button">
           <svg version="1.1"
             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
             x="0px" y="0px" width="18.4px" height="18.1px" viewBox="0 0 18.4 18.1" style="enable-background:new 0 0 18.4 18.1;"
@@ -96,7 +97,7 @@
             <path class="st0" d="M11.9,0c1.4,1.4,2.2,3.4,2.2,5.5c0,4.4-3.5,7.9-7.9,7.9c-2.5,0-4.8-1.2-6.2-3.1c0.7,4.4,4.5,7.8,9.1,7.8
               c5.1,0,9.3-4.1,9.3-9.3C18.4,4.7,15.7,1.2,11.9,0z"/>
           </svg>
-        </button>
+        </button> -->
         
         <button type="button">
           <svg version="1.1"

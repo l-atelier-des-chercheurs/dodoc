@@ -323,6 +323,7 @@ let vm = new Vue({
     settings: {
       has_modal_opened: false,
       current_slugFolderName: '',
+      show_publi_panel: false,
       view: 'ListView',
       current_author: false,
       has_sidebar_opened: false,
@@ -564,6 +565,12 @@ let vm = new Vue({
     },
     setAuthor: function(author) {
       this.settings.current_author = author;
+    },
+    openPubliPanel: function() {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`ROOT EVENT: openPubliPanel`);
+      }
+      this.settings.show_publi_panel = slugFolderName;
     }
   },
   watch: {

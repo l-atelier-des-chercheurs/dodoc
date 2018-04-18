@@ -115,7 +115,7 @@
 
     <button 
       type="button" 
-      class="button-inline bg-rouge captureButton"
+      class="captureButton"
       v-if="context === 'full' && ((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
       @click="$root.settings.view = 'CaptureView'"
       :disabled="read_only" 
