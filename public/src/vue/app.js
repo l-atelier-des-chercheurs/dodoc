@@ -462,9 +462,10 @@ let vm = new Vue({
     removeFolder: function({ type, slugFolderName }) {
       if (window.state.dev_mode === 'debug') {
         console.log(
-          `ROOT EVENT: removeFolder: ${slugFolderName} of type = ${type}`
+          `ROOT EVENT: removeFolder: slugFolderName = ${slugFolderName} of type = ${type}`
         );
       }
+
       this.$socketio.removeFolder({ type, slugFolderName });
     },
 
@@ -558,9 +559,9 @@ let vm = new Vue({
         this.listMediasForProject
       );
     },
-    closeFolder: function() {
+    closeProject: function() {
       if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: closeFolder');
+        console.log('ROOT EVENT: closeProject');
       }
 
       this.settings.view = 'ListView';

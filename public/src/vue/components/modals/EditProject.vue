@@ -93,28 +93,31 @@ export default {
     editThisProject: function(event) {
       console.log('editThisProject');
 
-      function getAllProjectNames() {
-        let allProjectsName = [];
-        for (let slugProjectName in window.store.projects) {
-          let projectName = window.store.projects[slugProjectName].name;
-          allProjectsName.push(projectName);
+      // only if user changed the name of this folder
+      if (this.projectdata.name !== this.project.name) {
+        function getAllProjectNames() {
+          let allProjectsName = [];
+          for (let slugProjectName in window.store.projects) {
+            let projectName = window.store.projects[slugProjectName].name;
+            allProjectsName.push(projectName);
+          }
+          return allProjectsName;
         }
-        return allProjectsName;
+        let allProjectsName = getAllProjectNames();
+
+        // check if project name (not slug) already exists
+        if (allProjectsName.indexOf(this.projectdata.name) >= 0) {
+          // invalidate if it does
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t('notifications.project_name_exists'));
+
+          return false;
+        }
       }
-      let allProjectsName = getAllProjectNames();
 
-      // check if project name (not slug) already exists
-      if (allProjectsName.indexOf(this.projectdata.name) >= 0) {
-        // invalidate if it does
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t('notifications.project_name_exists'));
-
-        return false;
-      }
-
-      if(!!this.preview) {
+      if(typeof this.preview !== 'undefined') {
         this.projectdata.preview_rawdata = this.preview;
       }
 

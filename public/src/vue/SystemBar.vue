@@ -52,7 +52,7 @@ export default {
       console.log(`METHODS • SystemBar: mouseup`);
       console.log(`with is_dragged = ${this.is_dragged}`);
       if (!this.is_dragged) {
-        this.$root.closeFolder();
+        this.$root.closeProject();
       }
       this.is_dragged = false;
     }

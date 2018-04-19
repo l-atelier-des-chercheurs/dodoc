@@ -190,7 +190,10 @@ export default {
     },
     removeProject() {
       if (window.confirm(this.$t('sureToRemoveProject'))) {
-        this.$root.removeProject(this.slugProjectName);
+        this.$root.removeFolder({ 
+          type: 'projects', 
+          slugFolderName: this.slugProjectName
+        });
         this.closeProject();
       }
     },

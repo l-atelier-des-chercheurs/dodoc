@@ -47,11 +47,11 @@ module.exports = (function() {
       socket.on('createFolder', function(data) {
         onCreateFolder(socket, data);
       });
-      socket.on('removeFolder', function(data) {
-        onRemoveFolder(socket, data);
-      });
       socket.on('editFolder', function(data) {
         onEditFolder(socket, data);
+      });
+      socket.on('removeFolder', function(data) {
+        onRemoveFolder(socket, data);
       });
 
       socket.on('listMedias', function(data) {
@@ -143,28 +143,29 @@ module.exports = (function() {
         dev.error('No folder found');
       });
   }
-  function onRemoveFolder(socket, d) {
+
+  function onRemoveFolder(socket, { type, slugFolderName }) {
     dev.logfunction(`EVENT - onRemoveFolder for ${slugFolderName}`);
-    if (!d.hasOwnProperty('slugFolderName')) {
-      dev.error(`Missing slugFoldername for remove event.`);
-      return;
-    }
-    // check if allowed
     file
-      .getFolder({ type: d.type, slugFolderName: d.slugFolderName })
+      .getFolder({ type, slugFolderName })
       .then(foldersData => {
         if (!auth.hasFolderAuth(socket.id, foldersData)) {
           return;
         }
-        file.removeFolder(slugFolderName).then(
-          () => {
-            sendFolders({ type: d.type });
-          },
-          function(err, p) {
-            dev.error(`Failed to remove folder: ${err}`);
-            reject(err);
-          }
-        );
+        file
+          .removeFolder({
+            type,
+            slugFolderName
+          })
+          .then(
+            () => {
+              sendFolders({ type });
+            },
+            function(err, p) {
+              dev.error(`Failed to remove folder: ${err}`);
+              reject(err);
+            }
+          );
       })
       .catch(err => {
         dev.error('No folder found');

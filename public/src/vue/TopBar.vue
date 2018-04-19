@@ -149,7 +149,7 @@ export default {
         this.$root.settings.view = 'ProjectView';
       } else 
       if(this.$root.settings.view === 'ProjectView') {
-        this.$root.closeFolder();
+        this.$root.closeProject();
       }
     },
     urlToPortrait(filename) {

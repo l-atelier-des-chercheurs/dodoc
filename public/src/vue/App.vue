@@ -19,7 +19,7 @@
         <!-- v-show="$root.settings.view === 'ListView'" -->
         <transition name="ListView" :duration="500">
           <ListView
-            v-if="$root.settings.view === 'ListView'"
+            v-show="$root.settings.view === 'ListView'"
             :presentationMD="$root.store.presentationMD"
             :read_only="!$root.state.connected"
             :projects="$root.store.projects"
@@ -28,7 +28,7 @@
         </transition>
         <transition name="ProjectView" :duration="500">
           <ProjectView
-            v-if="$root.settings.view === 'ProjectView' && currentProject.hasOwnProperty('name')"
+            v-show="$root.settings.view === 'ProjectView' && currentProject.hasOwnProperty('name')"
             :slugProjectName="current_slugProjectName"
             :project="currentProject"
             :read_only="!$root.state.connected"

@@ -18,7 +18,11 @@ module.exports = (function() {
     createFolder: ({ type, data }) => createFolder({ type, data }),
     editFolder: ({ type, foldersData, newFoldersData }) =>
       editFolder({ type, foldersData, newFoldersData }),
-    removeFolder: slugFolderName => removeFolder(slugFolderName),
+    removeFolder: ({ type, slugFolderName }) =>
+      removeFolder({
+        type,
+        slugFolderName
+      }),
 
     gatherAllMedias: (slugFolderName, slugMediaName, mediaID) =>
       gatherAllMedias(slugFolderName, slugMediaName, mediaID),
@@ -531,7 +535,7 @@ module.exports = (function() {
     });
   }
 
-  function removeFolder(slugFolderName) {
+  function removeFolder({ type, slugFolderName }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
         `COMMON — removeFolder : will remove folder: ${slugFolderName}`
