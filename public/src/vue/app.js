@@ -307,8 +307,8 @@ Vue.prototype.$socketio = new Vue({
       this.socket.emit('removeFolder', fdata);
     },
 
-    listMedias(slugProjectName) {
-      this.socket.emit('listMedias', { slugProjectName });
+    listMedias(mdata) {
+      this.socket.emit('listMedias', mdata);
     },
     createTextMedia(mdata) {
       this.socket.emit('createTextMedia', mdata);
@@ -319,8 +319,8 @@ Vue.prototype.$socketio = new Vue({
     editMedia(mdata) {
       this.socket.emit('editMedia', mdata);
     },
-    removeMedia(slugProjectName, slugMediaName) {
-      this.socket.emit('removeMedia', { slugProjectName, slugMediaName });
+    removeMedia(mdata) {
+      this.socket.emit('removeMedia', mdata);
     }
   }
 });
@@ -436,12 +436,14 @@ let vm = new Vue({
     this.$eventHub.$off('socketio.got_tag', this.handle_new_tag);
   },
   methods: {
-    createFolder: function(d) {
+    createFolder: function(fdata) {
       if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: createfolder: ${JSON.stringify(d, null, 4)}`);
+        console.log(
+          `ROOT EVENT: createfolder: ${JSON.stringify(fdata, null, 4)}`
+        );
       }
 
-      this.id = d.id =
+      this.id = fdata.id =
         Math.random()
           .toString(36)
           .substring(2, 15) +
@@ -449,7 +451,7 @@ let vm = new Vue({
           .toString(36)
           .substring(2, 15);
 
-      this.$socketio.createFolder(d);
+      this.$socketio.createFolder(fdata);
     },
     editFolder: function(fdata) {
       if (window.state.dev_mode === 'debug') {
@@ -465,7 +467,6 @@ let vm = new Vue({
           `ROOT EVENT: removeFolder: slugFolderName = ${slugFolderName} of type = ${type}`
         );
       }
-
       this.$socketio.removeFolder({ type, slugFolderName });
     },
 
@@ -506,13 +507,13 @@ let vm = new Vue({
       this.$socketio.createMediaFromCapture(mdata);
     },
 
-    removeMedia: function(slugProjectName, slugMediaName) {
+    removeMedia: function({ slugFolderName, slugMediaName }) {
       if (window.state.dev_mode === 'debug') {
         console.log(
-          `ROOT EVENT: removeMedia: ${slugProjectName}/${slugMediaName}`
+          `ROOT EVENT: removeMedia: ${slugFolderName}/${slugMediaName}`
         );
       }
-      this.$socketio.removeMedia(slugProjectName, slugMediaName);
+      this.$socketio.removeMedia({ slugFolderName, slugMediaName });
     },
     editMedia: function(mdata) {
       if (window.state.dev_mode === 'debug') {
@@ -547,7 +548,7 @@ let vm = new Vue({
       this.settings.view = 'ProjectView';
       this.settings.current_slugProjectName = slugProjectName;
       this.settings.is_loading_medias_for_project = slugProjectName;
-      this.$socketio.listMedias(slugProjectName);
+      this.$socketio.listMedias({ slugFolderName: slugProjectName });
 
       history.pushState(
         { slugProjectName },

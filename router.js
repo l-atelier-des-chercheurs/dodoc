@@ -33,7 +33,7 @@ module.exports = function(app, io, m) {
       pageData.pageTitle = 'do•doc 2';
       // full path on the storage space, as displayed in the footer
       pageData.folderPath = api.getFolderPath();
-      pageData.slugFolderName = '';
+      pageData.slugProjectName = '';
       pageData.url = req.path;
       pageData.protocol = req.protocol;
       pageData.structure = settings.structure;
@@ -107,13 +107,13 @@ module.exports = function(app, io, m) {
   }
 
   function loadFolder(req, res) {
-    let slugFolderName = req.param('project');
+    let slugProjectName = req.param('project');
     generatePageData(req).then(
       pageData => {
-        pageData.slugFolderName = slugFolderName;
+        pageData.slugProjectName = slugProjectName;
         // let’s make sure that folder exists first and return some meta
         file
-          .getFolder({ type: 'projects', slugFolderName })
+          .getFolder({ type: 'projects', slugFolderName: slugProjectName })
           .then(
             foldersData => {
               res.render('index', pageData);
@@ -135,22 +135,22 @@ module.exports = function(app, io, m) {
   }
 
   function exportFolder(req, res) {
-    let slugFolderName = req.param('project');
+    let slugProjectName = req.param('project');
     generatePageData(req).then(pageData => {
       // get medias for a folder
       file
-        .getFolder({ type: 'projects', slugFolderName })
+        .getFolder({ type: 'projects', slugFolderName: slugProjectName })
         .then(
           foldersData => {
-            file.gatherAllMedias(slugFolderName).then(
+            file.gatherAllMedias(slugProjectName).then(
               mediasData => {
                 // recreate full object
-                foldersData[slugFolderName].medias = mediasData;
+                foldersData[slugProjectName].medias = mediasData;
                 pageData.folderAndMediaData = foldersData;
                 pageData.mode = 'export';
 
                 res.render('index', pageData, (err, html) => {
-                  exporter.copyWebsiteContent({ html, slugFolderName }).then(
+                  exporter.copyWebsiteContent({ html, slugProjectName }).then(
                     cachePath => {
                       var archive = archiver('zip');
 
@@ -164,7 +164,7 @@ module.exports = function(app, io, m) {
                       });
 
                       //set the archive name
-                      res.attachment(slugFolderName + '.zip');
+                      res.attachment(slugProjectName + '.zip');
 
                       //this is the streaming magic
                       archive.pipe(res);
@@ -199,8 +199,8 @@ module.exports = function(app, io, m) {
   }
 
   function postFile2(req, res) {
-    let slugFolderName = req.param('project');
-    dev.logverbose(`Will add new media for folder ${slugFolderName}`);
+    let slugProjectName = req.param('project');
+    dev.logverbose(`Will add new media for folder ${slugProjectName}`);
 
     // create an incoming form object
     var form = new formidable.IncomingForm();
@@ -210,7 +210,7 @@ module.exports = function(app, io, m) {
     form.maxFileSize = 1024 * 1024 * 1024;
 
     // store all uploads in the folder directory
-    form.uploadDir = api.getFolderPath(slugFolderName);
+    form.uploadDir = api.getFolderPath(slugProjectName);
 
     let allFilesMeta = [];
 
@@ -259,7 +259,7 @@ module.exports = function(app, io, m) {
           m.push(
             renameMediaAndCreateMeta(
               form.uploadDir,
-              slugFolderName,
+              slugProjectName,
               allFilesMeta[i]
             )
           );
@@ -277,7 +277,7 @@ module.exports = function(app, io, m) {
     form.parse(req);
   }
 
-  function renameMediaAndCreateMeta(uploadDir, slugFolderName, fileMeta) {
+  function renameMediaAndCreateMeta(uploadDir, slugProjectName, fileMeta) {
     return new Promise(function(resolve, reject) {
       api.findFirstFilenameNotTaken(uploadDir, fileMeta.name).then(
         function(newFileName) {
@@ -292,7 +292,7 @@ module.exports = function(app, io, m) {
           let newPathToNewFileName = path.join(uploadDir, newFileName);
           fs.renameSync(fileMeta.path, newPathToNewFileName);
           sockets.createMediaMeta(
-            slugFolderName,
+            slugProjectName,
             newFileName,
             fileMeta.additionalMeta
           );

@@ -248,7 +248,10 @@ export default {
     openMediaNewWindow: function() {},
     removeMedia: function() {
       if (window.confirm(this.$t('sureToRemoveMedia'))) {
-        this.$root.removeMedia(this.slugFolderName, this.slugMediaName);
+        this.$root.removeMedia({
+          slugFolderName: this.slugProjectName, 
+          slugMediaName: this.slugMediaName
+        });
         // then close that popover
         this.$emit('close', '');
       }
@@ -256,9 +259,9 @@ export default {
     editThisMedia: function(event) {
       console.log('editThisMedia');
       this.$root.editMedia({ 
-        slugProjectName: this.slugProjectName, 
+        slugFolderName: this.slugProjectName, 
         slugMediaName: this.slugMediaName,
-        content: this.mediadata 
+        data: this.mediadata
       });
 
       // then close that popover

@@ -29,8 +29,8 @@ module.exports = (function() {
     createMediaMeta: (slugFolderName, slugMediaName, additionalMeta) =>
       createMediaMeta(slugFolderName, slugMediaName, additionalMeta),
     editMediaMeta: mdata => editMediaMeta(mdata),
-    removeMedia: (slugFolderName, slugMediaName) =>
-      removeMedia(slugFolderName, slugMediaName),
+    removeMedia: ({ slugFolderName, slugMediaName }) =>
+      removeMedia({ slugFolderName, slugMediaName }),
 
     createTextMedia: mdata => createTextMedia(mdata),
     createMediaFromCapture: mdata => createMediaFromCapture(mdata)
@@ -939,18 +939,15 @@ module.exports = (function() {
     });
   }
 
-  function editMediaMeta(mdata) {
+  function editMediaMeta({ slugFolderName, slugMediaName, data }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
         `COMMON — editMediaMeta : will edit media with ${JSON.stringify(
-          mdata,
+          data,
           null,
           4
         )}`
       );
-
-      let slugFolderName = mdata.slugFolderName;
-      let slugMediaName = mdata.slugMediaName;
 
       readOrCreateMediaMeta(slugFolderName, slugMediaName).then(meta => {
         dev.logverbose(
@@ -971,7 +968,7 @@ module.exports = (function() {
         let newMediaData = _makeDefaultMetaFromStructure({
           type: 'media',
           method: 'update',
-          existing: mdata
+          existing: data
         });
 
         dev.logverbose(
@@ -1043,7 +1040,7 @@ module.exports = (function() {
     });
   }
 
-  function removeMedia(slugFolderName, slugMediaName) {
+  function removeMedia({ slugFolderName, slugMediaName }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
         `COMMON — removeMedia : will remove media at path: ${slugFolderName}/${slugMediaName}`

@@ -174,9 +174,15 @@ module.exports = (function() {
 
   /**************************************************************** MEDIA ********************************/
 
-  function onListMedias(socket, d) {
-    dev.logfunction(`EVENT - onListMedias : ${JSON.stringify(d, null, 4)}`);
-    sendMedias({ slugFolderName: d.slugFolderName, socket });
+  function onListMedias(socket, { slugFolderName }) {
+    dev.logfunction(
+      `EVENT - onListMedias : slugProjectName = ${JSON.stringify(
+        slugFolderName,
+        null,
+        4
+      )}`
+    );
+    sendMedias({ slugFolderName, socket });
   }
 
   function onCreateTextMedia(socket, d) {
@@ -274,13 +280,11 @@ module.exports = (function() {
     );
   }
 
-  function onRemoveMedia(socket, d) {
+  function onRemoveMedia(socket, { slugFolderName, slugMediaName }) {
     dev.logfunction(
-      `EVENT - onRemoveMedia for ${d.slugFolderName}/${d.slugMediaName}`
+      `EVENT - onRemoveMedia for slugFolderName = ${slugFolderName} and slugMediaName = ${slugMediaName}`
     );
-    let slugFolderName = d.slugFolderName;
-    let slugMediaName = d.slugMediaName;
-    file.removeMedia(slugFolderName, slugMediaName).then(
+    file.removeMedia({ slugFolderName, slugMediaName }).then(
       () => {
         sendMedias({ slugFolderName });
       },
