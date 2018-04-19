@@ -25,7 +25,8 @@ html
       window.store = {
         presentationMD: !{JSON.stringify(presentationMD)},
         slugProjectName: "!{slugProjectName}",
-        projects: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" }
+        projects: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" },
+        authors: "{}"
       };
 
       /* state contains settings data, time and client specific data */

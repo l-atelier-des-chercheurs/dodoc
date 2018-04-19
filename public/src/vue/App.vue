@@ -14,7 +14,8 @@
     </TopBar>
 
     <div class="m_activitiesPanel">
-    <!-- <pre>{{ $root.store }}</pre> -->
+      <!-- <pre>{{ $root.store }}</pre> -->
+      <!-- <pre>{{ $root.store }}</pre> -->
       <div class="m_activitiesPanel--do">
         <!-- v-show="$root.settings.view === 'ListView'" -->
         <transition name="ListView" :duration="500">

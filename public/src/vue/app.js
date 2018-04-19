@@ -121,6 +121,7 @@ Vue.prototype.$socketio = new Vue({
       }
       // TODO : reenable auth for folders and publications
       this.listFolders({ type: 'projects' });
+      this.listFolders({ type: 'authors' });
       // this.sendAuth();
     },
 

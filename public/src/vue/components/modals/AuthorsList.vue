@@ -10,11 +10,11 @@
     <template slot="preview">
       <div  class="">
         <div class="m_authorsList">
-          <div v-for="author in $root.store.authors" :key="author.name" class="">
+          <div v-for="(author, slug) in $root.store.authors" :key="author.name" class="">
             <button type="button" class="button-allwide" @click="setAuthor(author)"
               :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"
             >
-              <img :src="urlToPortrait(author.portrait)" width="100" height="100">
+              <img :src="urlToPortrait(slug, author.preview)" width="100" height="100">
               <span>{{ author.name }}</span>
             </button>
           </div>        
@@ -53,11 +53,11 @@ export default {
       this.$root.setAuthor(name);
       this.$emit('close');
     },
-    urlToPortrait(filename) {
+    urlToPortrait(slug, filename) {
       if(filename === undefined) {
         return '';
       }
-      return `${this.$root.state.authorsFolder}/${filename}`;
+      return `${this.$root.state.authorsFolder}/${slug}/${filename}`;
     }
   }
 }
