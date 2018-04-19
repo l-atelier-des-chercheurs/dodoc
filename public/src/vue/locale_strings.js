@@ -4,7 +4,7 @@ module.exports = (function() {
     fr: {
       ascending: 'Croissant',
       descending: 'Décroissant',
-      create_a_folder: 'Créer un dossier',
+      create_a_project: 'Créer un projet',
       publication: 'Publication',
       name: 'Nom',
       created_date: 'Date de création',
@@ -53,12 +53,11 @@ module.exports = (function() {
         'Pour accéder à do•doc avec un autre appareil, connectez-vous au même réseau wifi puis entrez l’url suivante dans un navigateur web&nbsp;: ',
       toconnectwithanotherdevicetothisfolder:
         'Pour accéder à ce dossier avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web&nbsp;: ',
-      sureToRemoveFolder: 'Êtes-vous sûr de vouloir supprimer ce dossier ?',
+      sureToRemoveProject: 'Êtes-vous sûr de vouloir supprimer ce projet ?',
       sureToRemoveMedia: 'Êtes-vous sûr de vouloir supprimer ce média ?',
 
-      create_a_folder: 'Créer un dossier',
       edit_the_media: 'Éditer le média',
-      edit_folder: 'Éditer le dossier',
+      edit_project: 'Éditer le projet',
 
       capture: 'Capture',
       currently: 'Actuellement',
@@ -104,8 +103,8 @@ module.exports = (function() {
           'Le password n’est pas le bon pour le dossier&nbsp;:',
         'created_edited_media:':
           'Création ou édition d’un média pour le dossier&nbsp;:',
-        folder_name_exists:
-          'Ce nom de dossier existe déjà, utilisez-en un autre.',
+        project_name_exists:
+          'Ce nom de projet existe déjà, utilisez-en un autre.',
         folder_name_needs_alphanumeric_characters:
           'Les noms de dossier doivent contenir au moins un caractère alphanumérique.',
         'failed_to_get_folder:': 'Le dossier suivant n’a pas été trouvé:',
@@ -122,7 +121,7 @@ module.exports = (function() {
     en: {
       ascending: 'Ascending',
       descending: 'Descending',
-      create_a_folder: 'Create a folder',
+      create_a_project: 'Create a project',
       name: 'Name',
       created_date: 'Created date',
       created: 'Created',
@@ -170,13 +169,12 @@ module.exports = (function() {
         'To access do•doc with another device, connect to the same wifi network and type this adress in your browser:',
       toconnectwithanotherdevicetothisfolder:
         'To access this folder in do•doc with another device, connect to the same wifi network and type this adress in your browser:',
-      sureToRemoveFolder: 'Do you really want to delete this folder?',
+      sureToRemoveProject: 'Do you really want to delete this project?',
       sureToRemoveMedia: 'Do you really want to delete this media?',
 
-      create_a_folder: 'Create a folder',
       publication: 'Publication',
       edit_the_media: 'Edit media',
-      edit_folder: 'Edit folder',
+      edit_project: 'Edit project',
 
       capture: 'Capture',
       currently: 'Now',
@@ -221,7 +219,7 @@ module.exports = (function() {
         'wrong_password_for_folder:': 'Wrong password or folder missing for:',
         'created_edited_media:':
           'A media has been created or edited in folder:',
-        folder_name_exists: 'Folder name already exists. Please use another.',
+        project_name_exists: 'Project name already exists. Please use another.',
         folder_name_needs_alphanumeric_characters:
           'Folder names need to contain at least one alphanumeric character.',
         'failed_to_get_folder:': 'Failed to get the requested folder:',

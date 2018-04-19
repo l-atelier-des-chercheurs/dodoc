@@ -4,13 +4,13 @@
     :typeOfModal="'LargeAndScroll'"
     >
     <template slot="header">
-      <span class="text-cap"> Liste des auteurs</span>
+      <span class="">Liste des auteurs</span>
     </template>
 
     <template slot="preview">
       <div  class="">
         <div class="m_authorsList">
-          <div v-for="author in $root.store.authorsList" :key="author.name" class="">
+          <div v-for="author in $root.store.authors" :key="author.name" class="">
             <button type="button" class="button-allwide" @click="setAuthor(author)"
               :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"
             >

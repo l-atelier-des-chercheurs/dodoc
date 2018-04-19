@@ -29,7 +29,7 @@
   "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)",
 
   "structure" : {
-    "project": {
+    "projects": {
       "path": "",
       "fields": {
         "name": {
@@ -59,7 +59,7 @@
         }
       }
     },
-    "author": {
+    "authors": {
       "path": "_authors",
       "fields": {
         "name": {
@@ -77,7 +77,7 @@
         }
       }
     },
-    "publication": {
+    "publications": {
       "path": "_publications",
       "fields": {
         "name": {
@@ -86,6 +86,15 @@
         "password": {
           "type": "string",
           "read_only": true        
+        },
+        "date_created": {
+          "type": "date",
+          "default": "current",
+          "read_only": true
+        },
+        "date_modified": {
+          "type": "date",
+          "default": "current"
         },
         "description": {
           "type": "string"

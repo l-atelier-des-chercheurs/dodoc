@@ -26,7 +26,7 @@ module.exports = (function() {
       } else {
         // get all folders slugs and passwords
         file
-          .getFolder()
+          .getFolder({ type: 'projects' })
           .then(foldersData => {
             // compare with data we received
             for (let slugFolderName in foldersData) {

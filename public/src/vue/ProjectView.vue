@@ -1,27 +1,26 @@
 <template>
-  <div class="m_folderview">
+  <div class="m_projectview">
     <div class="">
-      <Folder
-        :slugFolderName="slugFolderName"
-        :folder="folder"
+      <Project
+        :slugProjectName="slugProjectName"
+        :project="project"
         :read_only="read_only"
         :context="'full'"
-      >
-      </Folder>
+      />
     </div>
   </div>
 </template>
 <script>
-import Folder from './components/Folder.vue';
+import Project from './components/Project.vue';
 
 export default {
   props: {
-    slugFolderName: String,
-    folder: Object,
+    slugProjectName: String,
+    project: Object,
     read_only: Boolean
   },
   components: {
-    Folder
+    Project
   },
   data() {
     return {

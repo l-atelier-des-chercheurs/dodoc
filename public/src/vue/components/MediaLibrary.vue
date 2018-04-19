@@ -1,5 +1,5 @@
 <template>
-  <div class="m_folder--library"
+  <div class="m_project--library"
   >
 
     <!-- <MediaFilterBar
@@ -8,10 +8,10 @@
     >
     </MediaFilterBar> -->
 
-    <div class="m_folder--library--actionbar">
+    <div class="m_project--library--actionbar">
       <FileUpload
-        v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
-        :slugFolderName="slugFolderName"
+        v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
+        :slugProjectName="slugProjectName"
         :disabled="read_only"
       >
       </FileUpload>
@@ -20,22 +20,22 @@
     <div class="sectionTitle_small margin-sides-medium">
       Tous les médias
     </div>
-    <div class="m_folder--library--medias">
+    <div class="m_project--library--medias">
       <MediaCard
         v-for="media in sortedMedias"
         v-if="media.hasOwnProperty(mediaSort.field) && media[mediaSort.field] !== ''"
         :key="media.slugMediaName"
         :media="media"
-        :slugFolderName="slugFolderName"
+        :slugProjectName="slugProjectName"
       >
       </MediaCard>
     </div>
 
     <EditMedia
       v-if="showMediaModalFor !== false"
-      :slugFolderName="slugFolderName"
+      :slugProjectName="slugProjectName"
       :slugMediaName="showMediaModalFor"
-      :media="folder.medias[showMediaModalFor]"
+      :media="project.medias[showMediaModalFor]"
       @close="showMediaModalFor = false"
       :read_only="read_only"
     >
@@ -51,8 +51,8 @@ import EditMedia from './modals/EditMedia.vue';
 
 export default {
   props: {
-    folder: Object,
-    slugFolderName: String,
+    project: Object,
+    slugProjectName: String,
     read_only: Boolean
   },
   components: {
@@ -91,16 +91,16 @@ export default {
   computed: {
     sortedMedias() {
       var sortable = [];
-      for (let slugMediaName in this.folder.medias) {
+      for (let slugMediaName in this.project.medias) {
         let mediaDataToOrderBy;
 
         if (this.mediaSort.type === 'date') {
           mediaDataToOrderBy = +this.$moment(
-            this.folder.medias[slugMediaName][this.mediaSort.field],
+            this.project.medias[slugMediaName][this.mediaSort.field],
             'YYYY-MM-DD HH:mm:ss'
           );
         } else if (this.mediaSort.type === 'alph') {
-          mediaDataToOrderBy = this.folder.medias[slugMediaName][
+          mediaDataToOrderBy = this.project.medias[slugMediaName][
             this.mediaSort.field
           ];
         }
@@ -136,7 +136,7 @@ export default {
       // array order is garanteed while objects properties aren’t,
       // that’s why we use an array here
       let sortedMedias = sortedSortable.reduce((result, d) => {
-        let sortedMediaObj = this.folder.medias[d.slugMediaName];
+        let sortedMediaObj = this.project.medias[d.slugMediaName];
         sortedMediaObj.slugMediaName = d.slugMediaName;
 
         if (Object.keys(this.mediaFilter).length > 0) {

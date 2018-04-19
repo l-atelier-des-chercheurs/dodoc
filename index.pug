@@ -24,18 +24,17 @@ html
       /* store contains content data */
       window.store = {
         presentationMD: !{JSON.stringify(presentationMD)},
-        authorsList: !{JSON.stringify(authorsList)},
-        slugFolderName: "!{slugFolderName}",
-        folders: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" }
+        slugProjectName: "!{slugProjectName}",
+        projects: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" }
       };
 
       /* state contains settings data, time and client specific data */
       window.state = {
         appVersion: "!{global.appInfos.version}",
+        authorsFolder: "!{authorsFolder}",
         protocol: "!{protocol}",
         connected: false,
         structure: !{JSON.stringify(structure, null, 4)},
-        authorsFolder: "!{authorsFolder}",
         localNetworkInfos: !{JSON.stringify(localNetworkInfos, null, 4)},
         mode: "!{mode}",
         dev_mode: "!{ isDebug ? "debug" : "production" }",

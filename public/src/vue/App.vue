@@ -9,11 +9,12 @@
 
     <TopBar
       :has_back_button="$root.settings.view !== 'ListView'"
-      :slugFolderName="current_slugFolderName"
+      :slugProjectName="current_slugProjectName"
     >
     </TopBar>
 
     <div class="m_activitiesPanel">
+    <!-- <pre>{{ $root.store }}</pre> -->
       <div class="m_activitiesPanel--do">
         <!-- v-show="$root.settings.view === 'ListView'" -->
         <transition name="ListView" :duration="500">
@@ -21,25 +22,24 @@
             v-if="$root.settings.view === 'ListView'"
             :presentationMD="$root.store.presentationMD"
             :read_only="!$root.state.connected"
-            :folders="$root.store.folders"
+            :projects="$root.store.projects"
           >
           </ListView>
         </transition>
-        <transition name="FolderView" :duration="500">
-          <FolderView
-            v-if="$root.settings.view === 'FolderView' && currentFolder.hasOwnProperty('name')"
-            :slugFolderName="current_slugFolderName"
-            :folder="currentFolder"
+        <transition name="ProjectView" :duration="500">
+          <ProjectView
+            v-if="$root.settings.view === 'ProjectView' && currentProject.hasOwnProperty('name')"
+            :slugProjectName="current_slugProjectName"
+            :project="currentProject"
             :read_only="!$root.state.connected"
-          >
-          </FolderView>
+          />
         </transition>
 
         <transition name="CaptureView" :duration="500">
           <CaptureView
             v-if="$root.settings.view === 'CaptureView'"
-            :slugFolderName="current_slugFolderName"
-            :folder="currentFolder"
+            :slugProjectName="current_slugProjectName"
+            :project="currentProject"
           >
           </CaptureView>
         </transition>
@@ -76,7 +76,7 @@
 import SystemBar from './SystemBar.vue';
 import TopBar from './TopBar.vue';
 import ListView from './ListView.vue';
-import FolderView from './FolderView.vue';
+import ProjectView from './ProjectView.vue';
 import CaptureView from './CaptureView.vue';
 
 export default {
@@ -85,12 +85,12 @@ export default {
     SystemBar,
     TopBar,
     ListView,
-    FolderView,
+    ProjectView,
     CaptureView
   },
   props: {
-    current_slugFolderName: String,
-    currentFolder: Object
+    current_slugProjectName: String,
+    currentProject: Object
   },
   data() {
     return {

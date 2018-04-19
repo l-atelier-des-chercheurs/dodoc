@@ -14,7 +14,7 @@
           v-model="media.content"
           :context="'preview'"
           :slugMediaName="media.slugMediaName"
-          :slugFolderName="slugFolderName"
+          :slugProjectName="slugProjectName"
           :media="media"
         ></MediaContent>
         <figcaption
@@ -74,7 +74,7 @@ import MediaContent from './MediaContent.vue';
 export default {
   props: {
     media: Object,
-    slugFolderName: String,
+    slugProjectName: String,
   },
   components: {
     MediaContent
@@ -117,7 +117,7 @@ export default {
         console.log('METHODS • MediaCard: removeMedia');
       }
       if (window.confirm(this.$t('sureToRemoveMedia'))) {
-        this.$root.removeMedia(this.slugFolderName, slugMediaName);
+        this.$root.removeMedia(this.slugProjectName, slugMediaName);
       }
     }
   }

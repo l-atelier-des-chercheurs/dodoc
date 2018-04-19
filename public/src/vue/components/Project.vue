@@ -1,23 +1,22 @@
 <template>
-  <div class="m_folder">
+  <div class="m_project">
 
-    <div class="m_folder--presentation">
-      <div class="m_folder--presentation--vignette" @click="$root.openFolder(slugFolderName)">
+    <div class="m_project--presentation">
+      <div class="m_project--presentation--vignette" @click="$root.openProject(slugProjectName)">
         <img v-if="previewURL"
           :src="previewURL" class=""
         />
       </div>
-
-      <div class="m_folder--presentation--text">
+      <div class="m_project--presentation--text">
         <h2 
-          class="m_folder--presentation--text--title"
-           @click="$root.openFolder(slugFolderName)"
+          class="m_project--presentation--text--title"
+           @click="$root.openProject(slugProjectName)"
         >
-          {{ folder.name }}    
+          {{ project.name }}    
         </h2>
 
-        <div class="m_folder--presentation--text--infos">
-          <mark class="" v-if="folder.password === 'has_pass'">
+        <div class="m_project--presentation--text--infos">
+          <mark class="" v-if="project.password === 'has_pass'">
             {{ $t('protected_by_pass') }}
           </mark>
 
@@ -26,7 +25,7 @@
               {{ $t('created') }}
             </div>
             <div>
-              {{ formatDateToHuman(folder.date_created) }}
+              {{ formatDateToHuman(project.date_created) }}
             </div>
           </div>
           <div class="m_metaField">
@@ -34,7 +33,7 @@
               {{ $t('edited') }}
             </div>
             <div>
-              {{ formatDateToHuman(folder.date_modified) }}
+              {{ formatDateToHuman(project.date_modified) }}
             </div>
           </div>
         </div>
@@ -42,23 +41,23 @@
 
       <div class="margin-small flex-wrap flex-no-grow flex-horizontally-centered">
         <button 
-          v-if="folder.authorized && context !== 'full'"
+          v-if="project.authorized && context !== 'full'"
           type="button" 
           class="button-redthin" 
-          @click="$root.openFolder(slugFolderName)"
+          @click="$root.openProject(slugProjectName)"
         >
           <span class="">
             {{ $t('open') }}
           </span>
         </button>
 
-        <button v-if="!folder.authorized" type="button" class="button-round margin-verysmall padding-verysmall" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
+        <button v-if="!project.authorized" type="button" class="button-round margin-verysmall padding-verysmall" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
           {{ $t('password') }}
         </button>
-        <button v-if="folder.authorized && context === 'full'" type="button" class="buttonLink" @click="showEditFolderModal = true" :disabled="read_only">
+        <button v-if="project.authorized && context === 'full'" type="button" class="buttonLink" @click="showEditProjectModal = true" :disabled="read_only">
           {{ $t('edit') }}
         </button>
-        <button v-if="folder.authorized && context === 'full'" type="button" class="buttonLink" @click="removeFolder()" :disabled="read_only">
+        <button v-if="project.authorized && context === 'full'" type="button" class="buttonLink" @click="removeProject()" :disabled="read_only">
           {{ $t('remove') }}
         </button>
 
@@ -68,17 +67,16 @@
         </div>
       </div>
 
-      <EditFolder
-        v-if="showEditFolderModal"
-        :folder="folder"
-        :slugFolderName="slugFolderName"
-        @close="showEditFolderModal = false"
+      <EditProject
+        v-if="showEditProjectModal"
+        :project="project"
+        :slugProjectName="slugProjectName"
+        @close="showEditProjectModal = false"
         :read_only="read_only"
-      >
-      </EditFolder>
+      />
     </div>
 
-    <!-- <div class="m_folder--description"
+    <!-- <div class="m_project--description"
       v-if="context === 'full'"
     >
       <p>
@@ -86,20 +84,20 @@
       </p>
     </div> -->
 
-    <div class="m_folder--favMedias"
+    <div class="m_project--favMedias"
       v-if="context === 'full'"
     >
       <div class="sectionTitle_small margin-sides-medium">
         Média favoris
       </div>
 
-      <div class="m_folder--favMedias--list">
+      <div class="m_project--favMedias--list">
         <MediaCard
           v-if="favMedias !== undefined"
           v-for="media in favMedias"
           :key="media.slugMediaName"
           :media="media"
-          :slugFolderName="slugFolderName"
+          :slugProjectName="slugProjectName"
         >
         </MediaCard>
       </div>
@@ -107,8 +105,8 @@
 
     <MediaLibrary
       v-if="context === 'full'"
-      :slugFolderName="slugFolderName"
-      :folder="folder"
+      :slugProjectName="slugProjectName"
+      :project="project"
       :read_only="read_only"
     >
     </MediaLibrary>
@@ -116,7 +114,7 @@
     <button 
       type="button" 
       class="captureButton"
-      v-if="context === 'full' && ((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
+      v-if="context === 'full' && ((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
       @click="$root.settings.view = 'CaptureView'"
       :disabled="read_only" 
     >
@@ -128,28 +126,28 @@
   </div>
 </template>
 <script>
-import EditFolder from './modals/EditFolder.vue';
+import EditProject from './modals/EditProject.vue';
 import MediaLibrary from './MediaLibrary.vue';
 import MediaCard from './subcomponents/MediaCard.vue';
 import _ from 'underscore';
 
 export default {
   props: {
-    folder: Object,
-    slugFolderName: String,
+    project: Object,
+    slugProjectName: String,
     read_only: Boolean,
     index: Number,
     context: String
   },
   components: {
-    EditFolder,
+    EditProject,
     MediaLibrary,
     MediaCard
   },
   data() {
     return {
-      debugFolderContent: false,
-      showEditFolderModal: false,
+      debugProjectContent: false,
+      showEditProjectModal: false,
       showInputPasswordField: false
     };
   },
@@ -162,44 +160,44 @@ export default {
 
   computed: {
     favMedias() {
-      if(Object.keys(this.folder.medias).length === 0) {
+      if(Object.keys(this.project.medias).length === 0) {
         return [];
       }
       const favMedias = {};
-      Object.keys(this.folder.medias).map((m) => {
-        if(this.folder.medias[m].fav === true) {
-          favMedias[m] = this.folder.medias[m];
+      Object.keys(this.project.medias).map((m) => {
+        if(this.project.medias[m].fav === true) {
+          favMedias[m] = this.project.medias[m];
         }
       });
       return favMedias;
     },
     previewURL() {
-      if(this.folder.preview === '') {
+      if(this.project.preview === '') {
         return false;
       }
-      return `/${this.slugFolderName}/${this.folder.preview}?${(new Date()).getTime()}`;
+      return `/${this.slugProjectName}/${this.project.preview}?${(new Date()).getTime()}`;
     }
   },
   methods: {
     formatDateToHuman(date) {
       return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LLL');
     },
-    openFolder() {
-      this.$root.openFolder(this.slugFolderName);
+    openProject() {
+      this.$root.openProject(this.slugProjectName);
     },
-    closeFolder() {
-      this.$root.closeFolder();
+    closeProject() {
+      this.$root.closeProject();
     },
-    removeFolder() {
-      if (window.confirm(this.$t('sureToRemoveFolder'))) {
-        this.$root.removeFolder(this.slugFolderName);
-        this.closeFolder();
+    removeProject() {
+      if (window.confirm(this.$t('sureToRemoveProject'))) {
+        this.$root.removeProject(this.slugProjectName);
+        this.closeProject();
       }
     },
     submitPassword() {
-      console.log('METHODS • Folder: submitPassword');
+      console.log('METHODS • Project: submitPassword');
       auth.updateAdminAccess({
-        [this.slugFolderName]: this.$refs.passwordField.value
+        [this.slugProjectName]: this.$refs.passwordField.value
       });
       this.$socketio.sendAuth();
       this.showInputPasswordField = false;

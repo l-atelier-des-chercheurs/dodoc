@@ -4,51 +4,50 @@
     <main>
       <section class="container">
         <template
-          v-if="sortedFoldersSlug !== 'no-folders'"
+          v-if="sortedProjectsSlug !== 'has-no-projects'"
         >
+
           <div class="sectionTitle_small padding-bottom-medium margin-left-small">
-            Affichage de {{ sortedFoldersSlug.length }} projets sur {{ Object.keys(folders).length }}
+            Affichage de {{ sortedProjectsSlug.length }} projets sur {{ Object.keys(projects).length }}
           </div>
 
           <transition-group 
           tag="div"
           name="list-complete"
-          class="m_folders"
+          class="m_projects"
           >
             <template        
-              v-for="(sortedFolder, index) in sortedFoldersSlug"
+              v-for="(sortedProject, index) in sortedProjectsSlug"
             > 
-              <Folder
-                :key="sortedFolder.slugFolderName"
-                :slugFolderName="sortedFolder.slugFolderName"
-                :folder="folders[sortedFolder.slugFolderName]"
+              <Project
+                :key="sortedProject.slugProjectName"
+                :slugProjectName="sortedProject.slugProjectName"
+                :project="projects[sortedProject.slugProjectName]"
                 :read_only="read_only"
                 :currentSort="currentSort"
                 :index="index"
-              >
-              </Folder>
+              />
             </template>
           </transition-group>
         </template>
       </section>
 
       <!-- modal -->
-      <CreateFolder
-        v-if="showCreateFolderModal"
-        @close="showCreateFolderModal = false"
+      <CreateProject
+        v-if="showCreateProjectModal"
+        @close="showCreateProjectModal = false"
         :read_only="read_only"
-      >
-      </CreateFolder>
+      />
 
       <button
         class="createButton"
-        @click="showCreateFolderModal = true"
+        @click="showCreateProjectModal = true"
         :disabled="read_only"
         :key="'createButton'"
       >
         <img src="/images/i_add.svg" width="48" height="48" />
         <span class="margin-small">
-          {{ $t('create_a_folder') }}
+          {{ $t('create_a_project') }}
         </span>
       </button>
       
@@ -60,28 +59,28 @@
 </template>
 <script>
 import BottomFooter from './components/BottomFooter.vue';
-import Folder from './components/Folder.vue';
-import CreateFolder from './components/modals/CreateFolder.vue';
+import Project from './components/Project.vue';
+import CreateProject from './components/modals/CreateProject.vue';
 import VueMarkdown from 'vue-markdown';
-import FolderFilterBar from './components/FolderFilterBar.vue'
+// import FolderFilterBar from './components/FolderFilterBar.vue'
 import { setTimeout } from 'timers';
 
 export default {
   props: {
     presentationMD: Object,
     read_only: Boolean,
-    folders: Object
+    projects: Object
   },
   components: {
-    CreateFolder,
-    Folder,
-    FolderFilterBar,
+    CreateProject,
+    Project,
+    // FolderFilterBar,
     VueMarkdown,
     BottomFooter
   },
   data() {
     return {
-      showCreateFolderModal: false,
+      showCreateProjectModal: false,
       currentLang: this.$root.lang.current,
 
       currentFilter: '',      
@@ -103,44 +102,43 @@ export default {
     currentLang: function() {
       this.$root.updateLocalLang(this.currentLang);
     },
-    folders: function() {
+    projects: function() {
       // check if there is a justCreatedFolderID val
-
       if (this.$root.justCreatedFolderID) {
-        Object.keys(this.folders).map(slugFolderName => {
-          let folder = this.folders[slugFolderName];
+        Object.keys(this.projects).map(slugProjectName => {
+          let folder = this.projects[slugProjectName];
           // if there is, try to match it with folderID
           if (
             folder.folderID &&
             folder.folderID === this.$root.justCreatedFolderID
           ) {
             this.$root.justCreatedFolderID = false;
-            this.$root.openFolder(slugFolderName);
+            this.$root.openProject(slugProjectName);
           }
         });
       }
     }
   },
   computed: {
-    sortedFoldersSlug: function() {
-      if(this.folders.message === 'no-folders') {
-        return 'has-no-folders';
+    sortedProjectsSlug: function() {
+      if(this.projects.message === 'no-folders') {
+        return 'has-no-projects';
       }
 
       var sortable = [];
 
-      for (let slugFolderName in this.folders) {
+      for (let slugProjectName in this.projects) {
         let orderBy;
 
         if (this.currentSort.type === 'date') {
           orderBy = +this.$moment(
-            this.folders[slugFolderName][this.currentSort.field],
+            this.projects[slugProjectName][this.currentSort.field],
             'YYYY-MM-DD HH:mm:ss'
           );
         } else if (this.currentSort.type === 'alph') {
-          orderBy = this.folders[slugFolderName][this.currentSort.field];
+          orderBy = this.projects[slugProjectName][this.currentSort.field];
         }
-        sortable.push({ slugFolderName: slugFolderName, orderBy: orderBy });
+        sortable.push({ slugProjectName, orderBy });
       }
       let sortedSortable = sortable.sort(function(a, b) {
         let valA = a.orderBy;

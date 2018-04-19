@@ -16,9 +16,9 @@ module.exports = function(app, io, m) {
    * routing event
    */
   app.get('/', showIndex);
-  app.get('/:folder', loadFolder);
-  app.get('/:folder/export', exportFolder);
-  app.post('/:folder/file-upload', postFile2);
+  app.get('/:project', loadFolder);
+  app.get('/:project/export', exportFolder);
+  app.post('/:project/file-upload', postFile2);
 
   /**
    * routing functions
@@ -53,18 +53,18 @@ module.exports = function(app, io, m) {
       });
       tasks.push(getPresentation);
 
-      let getAuthors = new Promise((resolve, reject) => {
-        file
-          .getAuthors()
-          .then(authorsList => {
-            pageData.authorsList = authorsList;
-            resolve();
-          })
-          .catch(err => {
-            resolve();
-          });
-      });
-      tasks.push(getAuthors);
+      // let getAuthors = new Promise((resolve, reject) => {
+      //   file
+      //     .getAuthors()
+      //     .then(authorsList => {
+      //       pageData.authorsList = authorsList;
+      //       resolve();
+      //     })
+      //     .catch(err => {
+      //       resolve();
+      //     });
+      // });
+      // tasks.push(getAuthors);
 
       let getLocalIP = new Promise((resolve, reject) => {
         api.getLocalIP().then(
@@ -107,13 +107,13 @@ module.exports = function(app, io, m) {
   }
 
   function loadFolder(req, res) {
-    let slugFolderName = req.param('folder');
+    let slugFolderName = req.param('project');
     generatePageData(req).then(
       pageData => {
         pageData.slugFolderName = slugFolderName;
         // let’s make sure that folder exists first and return some meta
         file
-          .getFolder(slugFolderName)
+          .getFolder({ type: 'projects', slugFolderName })
           .then(
             foldersData => {
               res.render('index', pageData);
@@ -135,11 +135,11 @@ module.exports = function(app, io, m) {
   }
 
   function exportFolder(req, res) {
-    let slugFolderName = req.param('folder');
+    let slugFolderName = req.param('project');
     generatePageData(req).then(pageData => {
       // get medias for a folder
       file
-        .getFolder(slugFolderName)
+        .getFolder({ type: 'projects', slugFolderName })
         .then(
           foldersData => {
             file.gatherAllMedias(slugFolderName).then(
@@ -199,7 +199,7 @@ module.exports = function(app, io, m) {
   }
 
   function postFile2(req, res) {
-    let slugFolderName = req.param('folder');
+    let slugFolderName = req.param('project');
     dev.logverbose(`Will add new media for folder ${slugFolderName}`);
 
     // create an incoming form object

@@ -10,10 +10,10 @@
         <img src="/images/i_logo.svg"/>
       </div>
 
-      <div v-if="!!slugFolderName" class="m_topbar--left--breadcrumb" @click="$root.settings.view = 'FolderView'">
+      <div v-if="!!slugProjectName" class="m_topbar--left--breadcrumb" @click="$root.settings.view = 'ProjectView'">
         <button type="button">
           <span>
-            {{ $root.store.folders[slugFolderName].name }}
+            {{ $root.store.projects[slugProjectName].name }}
           </span>
         </button>
         <button type="button" v-if="$root.settings.view === 'CaptureView'">
@@ -46,7 +46,6 @@
 
         <AuthorsList
           v-if="showAuthorsListModal"
-          :slugFolderName="slugFolderName"
           @close="showAuthorsListModal = false"
         >
         </AuthorsList>
@@ -69,7 +68,7 @@
 
         <QRCode
           v-if="showQRModal"
-          :slugFolderName="slugFolderName"
+          :slugProjectName="slugProjectName"
           @close="showQRModal = false"
         >
         </QRCode>
@@ -120,7 +119,7 @@ import AuthorsList from './components/modals/AuthorsList.vue';
 export default {
   props: {
     has_back_button: Boolean,
-    slugFolderName: String
+    slugProjectName: String
   },
   components: {
     QRCode,
@@ -147,9 +146,9 @@ export default {
   methods: {
     goBack() {
       if(this.$root.settings.view === 'CaptureView') {
-        this.$root.settings.view = 'FolderView';
+        this.$root.settings.view = 'ProjectView';
       } else 
-      if(this.$root.settings.view === 'FolderView') {
+      if(this.$root.settings.view === 'ProjectView') {
         this.$root.closeFolder();
       }
     },

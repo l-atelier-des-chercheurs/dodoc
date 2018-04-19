@@ -53,7 +53,7 @@ import CreateQRCode from './qr/CreateQRCode.vue';
 export default {
   props: {
     read_only: Boolean,
-    slugFolderName: String
+    slugProjectName: String
   },
   components: {
     Modal,
@@ -68,7 +68,7 @@ export default {
   methods: {
     getURLToApp(ip, port) {
       return `${this.$root.state.protocol}://${ip}:${port}/${
-        this.slugFolderName !== undefined ? this.slugFolderName : ''
+        this.slugProjectName !== undefined ? this.slugProjectName : ''
       }`;
     }
   }

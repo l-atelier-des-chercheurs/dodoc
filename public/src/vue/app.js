@@ -119,7 +119,9 @@ Vue.prototype.$socketio = new Vue({
           .delay(4000)
           .success(this.$t('notifications.connection_active'));
       }
-      this.sendAuth();
+      // TODO : reenable auth for folders and publications
+      this.listFolders({ type: 'projects' });
+      // this.sendAuth();
     },
 
     sendAuth() {
@@ -150,47 +152,49 @@ Vue.prototype.$socketio = new Vue({
         );
     },
 
-    _authentificated(list_admin_folders) {
-      console.log(
-        `Admin for projects ${JSON.stringify(list_admin_folders, null, 4)}`
-      );
+    // _authentificated(list_admin_folders) {
+    //   console.log(
+    //     `Admin for projects ${JSON.stringify(list_admin_folders, null, 4)}`
+    //   );
 
-      // compare local store and answer from server
-      // for each key that is not in the answer, let’s send and alert to notify that the password is most likely wrong or the folder name has changed
-      if (auth.getAdminAccess() !== undefined) {
-        let admin_access = Object.keys(auth.getAdminAccess());
-        admin_access.forEach(slugFolderName => {
-          if (
-            list_admin_folders === undefined ||
-            list_admin_folders.indexOf(slugFolderName) === -1
-          ) {
-            this.$alertify
-              .closeLogOnClick(true)
-              .delay(4000)
-              .error(
-                this.$t('notifications["wrong_password_for_folder:"]') +
-                  ' ' +
-                  slugFolderName
-              );
-            auth.removeKey(slugFolderName);
-          } else {
-          }
-        });
-      }
+    //   // compare local store and answer from server
+    //   // for each key that is not in the answer, let’s send and alert to notify that the password is most likely wrong or the folder name has changed
+    //   if (auth.getAdminAccess() !== undefined) {
+    //     let admin_access = Object.keys(auth.getAdminAccess());
+    //     admin_access.forEach(slugFolderName => {
+    //       if (
+    //         list_admin_folders === undefined ||
+    //         list_admin_folders.indexOf(slugFolderName) === -1
+    //       ) {
+    //         this.$alertify
+    //           .closeLogOnClick(true)
+    //           .delay(4000)
+    //           .error(
+    //             this.$t('notifications["wrong_password_for_folder:"]') +
+    //               ' ' +
+    //               slugFolderName
+    //           );
+    //         auth.removeKey(slugFolderName);
+    //       } else {
+    //       }
+    //     });
+    //   }
 
-      window.dispatchEvent(
-        new CustomEvent('socketio.connected_and_authentified')
-      );
-      this.listFolders();
-    },
+    //   window.dispatchEvent(
+    //     new CustomEvent('socketio.connected_and_authentified')
+    //   );
+    //   this.listFolders();
+    // },
 
     _onListMedia(mdata) {
       console.log('Received _onListMedia packet.');
-      let slugFolderName = Object.keys(mdata)[0];
-      console.log(`Media data is for ${slugFolderName}.`);
+      let slugProjectName = Object.keys(mdata)[0];
+      console.log(`Media data is for ${slugProjectName}.`);
 
-      let mediaData = Object.values(mdata[slugFolderName].medias)[0];
-      let slugMediaName = Object.keys(mdata[slugFolderName].medias)[0];
+      debugger;
+
+      let mediaData = Object.values(mdata[slugProjectName].medias)[0];
+      let slugMediaName = Object.keys(mdata[slugProjectName].medias)[0];
       mediaData.slugMediaName = slugMediaName;
 
       this.$alertify
@@ -199,13 +203,13 @@ Vue.prototype.$socketio = new Vue({
         .log(
           this.$t('notifications["created_edited_media:"]') +
             ' ' +
-            window.store.folders[slugFolderName].name
+            window.store.projects[slugProjectName].name
         );
 
-      window.store.folders[slugFolderName].medias = Object.assign(
+      window.store.projects[slugProjectName].medias = Object.assign(
         {},
-        window.store.folders[slugFolderName].medias,
-        mdata[slugFolderName].medias
+        window.store.projects[slugProjectName].medias,
+        mdata[slugProjectName].medias
       );
 
       // check if mediaData has a mediaID (which would mean a user just created it)
@@ -216,43 +220,58 @@ Vue.prototype.$socketio = new Vue({
 
     _onListMedias(mdata) {
       console.log('Received _onListMedias packet.');
-      let slugFolderName = Object.keys(mdata)[0];
-      console.log(`Media data is for ${slugFolderName}.`);
+      let slugProjectName = Object.keys(mdata)[0];
+      console.log(`Media data is for ${slugProjectName}.`);
 
-      window.store.folders[slugFolderName].medias =
-        mdata[slugFolderName].medias;
+      window.store.projects[slugProjectName].medias =
+        mdata[slugProjectName].medias;
 
       window.dispatchEvent(
-        new CustomEvent('timeline.listMediasForFolder', {
-          detail: slugFolderName
+        new CustomEvent('timeline.listMediasForProject', {
+          detail: slugProjectName
         })
       );
     },
 
+    // for projects, authors and publications
     _onListFolder(fdata) {
       console.log('Received _onListFolder packet.');
+      debugger;
 
       // to prevent override of fully formed medias, we copy back the ones we have already
       for (let slugFolderName in fdata) {
-        if (window.store.folders.hasOwnProperty(slugFolderName)) {
+        if (window.store.projects.hasOwnProperty(slugFolderName)) {
           fdata[slugFolderName].medias =
-            window.store.folders[slugFolderName].medias;
+            window.store.projects[slugFolderName].medias;
         }
       }
-      window.store.folders = Object.assign({}, window.store.folders, fdata);
+      window.store.projects = Object.assign({}, window.store.projects, fdata);
     },
 
+    // for projects, authors and publications
     _onListFolders(fdata) {
       console.log('Received _onListFolders packet.');
 
+      if (typeof fdata !== 'object') {
+        return;
+      }
+
+      let type = Object.keys(fdata)[0];
+      let content = Object.values(fdata)[0];
+
+      console.log(`Type is ${type}`);
+
       // to prevent override of fully formed medias in folders, we copy back the ones we have already
-      for (let slugFolderName in fdata) {
-        if (window.store.folders.hasOwnProperty(slugFolderName)) {
-          fdata[slugFolderName].medias =
-            window.store.folders[slugFolderName].medias;
+      for (let slugFolderName in content) {
+        if (
+          window.store[type].hasOwnProperty(slugFolderName) &&
+          window.store[type][slugFolderName].hasOwnProperty('medias')
+        ) {
+          content[slugFolderName].medias =
+            window.store[type][slugFolderName].medias;
         }
       }
-      window.store.folders = Object.assign({}, fdata);
+      window.store[type] = Object.assign({}, content);
       window.dispatchEvent(new CustomEvent('socketio.folders_listed'));
     },
     _onNotify(msg) {
@@ -268,8 +287,8 @@ Vue.prototype.$socketio = new Vue({
       this.$eventHub.$emit('socketio.got_tag', tag);
     },
 
-    listFolders() {
-      this.socket.emit('listFolders');
+    listFolders(fdata) {
+      this.socket.emit('listFolders', fdata);
     },
     createFolder(fdata) {
       this.socket.emit('createFolder', fdata);
@@ -277,12 +296,12 @@ Vue.prototype.$socketio = new Vue({
     editFolder(fdata) {
       this.socket.emit('editFolder', fdata);
     },
-    removeFolder(slugFolderName) {
-      this.socket.emit('removeFolder', slugFolderName);
+    removeFolder(fdata) {
+      this.socket.emit('removeFolder', fdata);
     },
 
-    listMedias(slugFolderName) {
-      this.socket.emit('listMedias', { slugFolderName });
+    listMedias(slugProjectName) {
+      this.socket.emit('listMedias', { slugProjectName });
     },
     createTextMedia(mdata) {
       this.socket.emit('createTextMedia', mdata);
@@ -293,8 +312,8 @@ Vue.prototype.$socketio = new Vue({
     editMedia(mdata) {
       this.socket.emit('editMedia', mdata);
     },
-    removeMedia(slugFolderName, slugMediaName) {
-      this.socket.emit('removeMedia', { slugFolderName, slugMediaName });
+    removeMedia(slugProjectName, slugMediaName) {
+      this.socket.emit('removeMedia', { slugProjectName, slugMediaName });
     }
   }
 });
@@ -308,8 +327,8 @@ let vm = new Vue({
   components: { App },
   template: `
     <App
-      :current_slugFolderName="settings.current_slugFolderName"
-      :currentFolder="currentFolder"
+      :current_slugProjectName="settings.current_slugProjectName"
+      :currentProject="currentProject"
     />
   `,
   data: {
@@ -317,18 +336,18 @@ let vm = new Vue({
     state: window.state,
 
     justCreatedTextmediaID: false,
-    justCreatedFolderID: false,
+    justCreatedProjectID: false,
     justCreatedCapturedMediaID: false,
 
     settings: {
       has_modal_opened: false,
-      current_slugFolderName: '',
+      current_slugProjectName: '',
       show_publi_panel: false,
       view: 'ListView',
       current_author: false,
       has_sidebar_opened: false,
       highlightMedia: '',
-      is_loading_medias_for_folder: '',
+      is_loading_medias_for_project: '',
       enable_system_bar: window.state.is_electron && window.state.is_darwin
     },
 
@@ -359,32 +378,32 @@ let vm = new Vue({
           .error(
             this.$t('notifications["failed_to_get_folder:"]') +
               ' ' +
-              this.store.slugFolderName
+              this.store.slugProjectName
           );
       }
     } else {
       if (window.state.dev_mode === 'debug') {
         console.log(
-          'ROOT EVENT: created / no erros, checking for content to load'
+          'ROOT EVENT: created / no errors, checking for content to load'
         );
       }
 
       // if no error and if we have some content already loaded, let’s open it directly
       // (we are probably in an exported timeline)
-      if (Object.keys(this.store.folders).length > 0) {
-        this.settings.current_slugFolderName = Object.keys(
-          this.store.folders
+      if (Object.keys(this.store.projects).length > 0) {
+        this.settings.current_slugProjectName = Object.keys(
+          this.store.projects
         )[0];
       } else {
-        // if a slugfoldername is requested, load the content of that folder rightaway
+        // if a slugProjectName is requested, load the content of that folder rightaway
         // we are probably in a webbrowser that accesses a subfolder
-        if (this.store.slugFolderName) {
-          this.settings.current_slugFolderName = this.store.slugFolderName;
-          this.settings.is_loading_medias_for_folder = this.store.slugFolderName;
+        if (this.store.slugProjectName) {
+          this.settings.current_slugProjectName = this.store.slugProjectName;
+          this.settings.is_loading_medias_for_project = this.store.slugProjectName;
           window.addEventListener(
             'socketio.folders_listed',
             () => {
-              this.openFolder(this.store.slugFolderName);
+              this.openProject(this.store.slugProjectName);
             },
             { once: true }
           );
@@ -394,11 +413,11 @@ let vm = new Vue({
 
     window.onpopstate = event => {
       console.log(
-        `ROOT EVENT: popstate with event.state.slugFolderName = ${
-          event.state.slugFolderName
+        `ROOT EVENT: popstate with event.state.slugProjectName = ${
+          event.state.slugProjectName
         }`
       );
-      this.settings.current_slugFolderName = event.state.slugFolderName;
+      this.settings.current_slugProjectName = event.state.slugProjectName;
     };
 
     if (this.state.mode === 'live') {
@@ -436,11 +455,13 @@ let vm = new Vue({
       }
       this.$socketio.editFolder(fdata);
     },
-    removeFolder: function(slugFolderName) {
+    removeFolder: function({ type, slugFolderName }) {
       if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: removeFolder: ${slugFolderName}`);
+        console.log(
+          `ROOT EVENT: removeFolder: ${slugFolderName} of type = ${type}`
+        );
       }
-      this.$socketio.removeFolder(slugFolderName);
+      this.$socketio.removeFolder({ type, slugFolderName });
     },
 
     createTextMedia: function(mdata) {
@@ -480,13 +501,13 @@ let vm = new Vue({
       this.$socketio.createMediaFromCapture(mdata);
     },
 
-    removeMedia: function(slugFolderName, slugMediaName) {
+    removeMedia: function(slugProjectName, slugMediaName) {
       if (window.state.dev_mode === 'debug') {
         console.log(
-          `ROOT EVENT: removeMedia: ${slugFolderName}/${slugMediaName}`
+          `ROOT EVENT: removeMedia: ${slugProjectName}/${slugMediaName}`
         );
       }
-      this.$socketio.removeMedia(slugFolderName, slugMediaName);
+      this.$socketio.removeMedia(slugProjectName, slugMediaName);
     },
     editMedia: function(mdata) {
       if (window.state.dev_mode === 'debug') {
@@ -497,40 +518,40 @@ let vm = new Vue({
 
     handle_new_tag: function(tag) {
       if (window.state.is_electron) {
-        const tagged_author_key = Object.keys(
-          this.$root.store.authorsList
-        ).filter(a => {
-          let author_info = this.$root.store.authorsList[a];
-          return author_info.tag === tag;
-        });
-        const author_info = this.$root.store.authorsList[tagged_author_key];
+        const tagged_author_key = Object.keys(this.$root.store.authors).filter(
+          a => {
+            let author_info = this.$root.store.authors[a];
+            return author_info.tag === tag;
+          }
+        );
+        const author_info = this.$root.store.authors[tagged_author_key];
         this.setAuthor(author_info);
       }
     },
 
-    openFolder: function(slugFolderName) {
+    openProject: function(slugProjectName) {
       if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: openFolder: ${slugFolderName}`);
+        console.log(`ROOT EVENT: openProject: ${slugProjectName}`);
       }
-      if (!this.store.folders.hasOwnProperty(slugFolderName)) {
+      if (!this.store.projects.hasOwnProperty(slugProjectName)) {
         console.log('Missing folder key on the page, aborting.');
-        this.closeFolder();
+        this.closeProject();
         return false;
       }
 
-      this.settings.view = 'FolderView';
-      this.settings.current_slugFolderName = slugFolderName;
-      this.settings.is_loading_medias_for_folder = slugFolderName;
-      this.$socketio.listMedias(slugFolderName);
+      this.settings.view = 'ProjectView';
+      this.settings.current_slugProjectName = slugProjectName;
+      this.settings.is_loading_medias_for_project = slugProjectName;
+      this.$socketio.listMedias(slugProjectName);
 
       history.pushState(
-        { slugFolderName },
-        this.store.folders[slugFolderName].name,
-        '/' + slugFolderName
+        { slugProjectName },
+        this.store.projects[slugProjectName].name,
+        '/' + slugProjectName
       );
       window.addEventListener(
-        'timeline.listMediasForFolder',
-        this.listMediasForFolder
+        'timeline.listMediasForProject',
+        this.listMediasForProject
       );
     },
     closeFolder: function() {
@@ -539,16 +560,16 @@ let vm = new Vue({
       }
 
       this.settings.view = 'ListView';
-      this.settings.current_slugFolderName = '';
+      this.settings.current_slugProjectName = '';
 
-      history.pushState({ slugFolderName: '' }, '', '/');
+      history.pushState({ slugProjectName: '' }, '', '/');
     },
-    listMediasForFolder: function(e) {
+    listMediasForProject: function(e) {
       if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: listMediasForFolder');
+        console.log('ROOT EVENT: listMediasForProject');
       }
-      if (e.detail === this.settings.is_loading_medias_for_folder) {
-        this.settings.is_loading_medias_for_folder = '';
+      if (e.detail === this.settings.is_loading_medias_for_project) {
+        this.settings.is_loading_medias_for_project = '';
       }
     },
     updateLocalLang: function(newLangCode) {
@@ -590,12 +611,14 @@ let vm = new Vue({
     }
   },
   computed: {
-    currentFolder: function() {
+    currentProject: function() {
       if (
-        this.store.hasOwnProperty('folders') &&
-        this.store.folders.hasOwnProperty(this.settings.current_slugFolderName)
+        this.store.hasOwnProperty('projects') &&
+        this.store.projects.hasOwnProperty(
+          this.settings.current_slugProjectName
+        )
       ) {
-        return this.store.folders[this.settings.current_slugFolderName];
+        return this.store.projects[this.settings.current_slugProjectName];
       }
       return {};
     }

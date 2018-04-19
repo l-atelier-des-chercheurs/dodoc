@@ -41,8 +41,8 @@ module.exports = (function() {
         onAuthenticate(socket, data);
       });
 
-      socket.on('listFolders', function() {
-        onListFolders(socket);
+      socket.on('listFolders', function(data) {
+        onListFolders(socket, data);
       });
       socket.on('createFolder', function(data) {
         onCreateFolder(socket, data);
@@ -96,9 +96,13 @@ module.exports = (function() {
   }
 
   /**************************************************************** FOLDER ********************************/
-  function onListFolders(socket) {
+  function onListFolders(socket, d) {
     dev.logfunction(`EVENT - onListFolders`);
-    sendFolders({ socket });
+    if (!d.hasOwnProperty('type')) {
+      dev.error(`Missing type field`);
+    }
+    const type = d.type;
+    sendFolders({ type, socket });
   }
   function onCreateFolder(socket, d) {
     dev.logfunction(`EVENT - onCreateFolder for ${d.name}`);
@@ -112,14 +116,19 @@ module.exports = (function() {
     );
   }
   function onEditFolder(socket, d) {
-    dev.logfunction(`EVENT - onEditFolder for ${d.slugFolderName}`);
+    dev.logfunction(
+      `EVENT - onEditFolder for type = ${d.type}, slugFolderName = ${
+        d.slugFolderName
+      }, content = ${d.content}`
+    );
     if (!d.hasOwnProperty('slugFolderName')) {
       dev.error(`Missing slugFoldername for edit event.`);
+      return;
     }
 
     // check if allowed
     file
-      .getFolder(d.slugFolderName)
+      .getFolder({ type: d.type, slugFolderName: d.slugFolderName })
       .then(foldersData => {
         if (!auth.hasFolderAuth(socket.id, foldersData)) {
           return;
@@ -134,18 +143,22 @@ module.exports = (function() {
         dev.error('No folder found');
       });
   }
-  function onRemoveFolder(socket, slugFolderName) {
+  function onRemoveFolder(socket, d) {
     dev.logfunction(`EVENT - onRemoveFolder for ${slugFolderName}`);
+    if (!d.hasOwnProperty('slugFolderName')) {
+      dev.error(`Missing slugFoldername for remove event.`);
+      return;
+    }
     // check if allowed
     file
-      .getFolder(slugFolderName)
+      .getFolder({ type: d.type, slugFolderName: d.slugFolderName })
       .then(foldersData => {
         if (!auth.hasFolderAuth(socket.id, foldersData)) {
           return;
         }
         file.removeFolder(slugFolderName).then(
           () => {
-            sendFolders();
+            sendFolders({ type: d.type });
           },
           function(err, p) {
             dev.error(`Failed to remove folder: ${err}`);
@@ -280,11 +293,13 @@ module.exports = (function() {
   /**************************************************************** GENERAL ********************************/
 
   // send projects, authors and publications
-  function sendFolders({ slugFolderName, socket, folderID } = {}) {
-    dev.logfunction(`COMMON - sendFolders for ${slugFolderName}`);
+  function sendFolders({ type, slugFolderName, socket, folderID } = {}) {
+    dev.logfunction(
+      `COMMON - sendFolders for type = ${type} and slugFolderName = ${slugFolderName}`
+    );
 
     file
-      .getFolder(slugFolderName)
+      .getFolder({ type, slugFolderName })
       .then(foldersData => {
         // if folder creation, we get an ID to open the folder straight away
         if (foldersData !== undefined && slugFolderName && folderID) {
@@ -318,14 +333,14 @@ module.exports = (function() {
           if (slugFolderName) {
             api.sendEventWithContent(
               'listFolder',
-              filteredFoldersData,
+              { [type]: filteredFoldersData },
               io,
               thisSocket
             );
           } else {
             api.sendEventWithContent(
               'listFolders',
-              filteredFoldersData,
+              { [type]: filteredFoldersData },
               io,
               thisSocket
             );
@@ -343,7 +358,7 @@ module.exports = (function() {
     );
 
     file
-      .getFolder(slugFolderName)
+      .getFolder({ type: 'projects', slugFolderName })
       .then(foldersData => {
         if (foldersData === undefined) {
           return;
@@ -356,8 +371,6 @@ module.exports = (function() {
               if (!!socket && socket.id !== sid) {
                 return;
               }
-
-              // bug return object
 
               let filteredMediasData = {};
               if (auth.hasFolderAuth(sid, foldersData)) {

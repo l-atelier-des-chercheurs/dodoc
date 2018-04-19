@@ -1,12 +1,12 @@
 <template>
   <Modal
     @close="$emit('close')"
-    @submit="newFolder"
+    @submit="newProject"
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
     >
     <template slot="header">
-      <span class="">{{ $t('create_a_folder') }}</span>
+      <span class="">{{ $t('create_a_project') }}</span>
     </template>
 
     <template slot="sidebar">
@@ -14,27 +14,27 @@
 <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('name') }}</label>
-        <input type="text" v-model="folderdata.name" required autofocus>
+        <input type="text" v-model="projectdata.name" required autofocus>
       </div>
 
 <!-- Preview -->
       <div class="margin-bottom-small">
         <label>{{ $t('preview') }}</label><br>
-        <ImageSelect @newPreview="value => { folder_preview = value }">
+        <ImageSelect @newPreview="value => { preview = value }">
         </ImageSelect>
       </div>
 
 <!-- Password -->
       <div class="margin-bottom-small">
         <label>{{ $t('password') }}</label>
-        <input type="password" v-model="folderdata.password">
+        <input type="password" v-model="projectdata.password">
         <small>{{ $t('password_instructions') }}</small>
       </div>
 
 <!-- Author(s) -->
       <div class="margin-bottom-small">
         <label>{{ $t('author') }}</label><br>
-        <textarea v-model="folderdata.authors">
+        <textarea v-model="projectdata.authors">
         </textarea>
       </div>
 
@@ -60,48 +60,49 @@ export default {
   },
   data() {
     return {
-      folderdata: {
+      projectdata: {
         name: '',
         start: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         end: '',
         password: '',
         authors: ''
-      }
+      },
+      preview: undefined
     };
   },
   computed: {},
   methods: {
-    newFolder: function(event) {
-      console.log('newFolder');
+    newProject: function(event) {
+      console.log('newProject');
 
-      function getAllFolderNames() {
-        let allFoldersName = [];
-        for (let slugFolderName in window.store.folders) {
-          let foldersName = window.store.folders[slugFolderName].name;
-          allFoldersName.push(foldersName);
+      function getAllProjectNames() {
+        let allProjectsName = [];
+        for (let slugProjectName in window.store.projects) {
+          let projectName = window.store.projects[slugProjectName].name;
+          allProjectsName.push(projectName);
         }
-        return allFoldersName;
+        return allProjectsName;
       }
-      let allFoldersName = getAllFolderNames();
+      let allProjectsName = getAllProjectNames();
 
-      // check if folder name (not slug) already exists
-      if (allFoldersName.indexOf(this.folderdata.name) >= 0) {
+      // check if project name (not slug) already exists
+      if (allProjectsName.indexOf(this.projectdata.name) >= 0) {
         // invalidate if it does
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t('notifications.folder_name_exists'));
+          .error(this.$t('notifications.project_name_exists'));
 
         return false;
       }
 
-      if(!!this.folder_preview) {
-        this.folderdata.preview_rawdata = this.folder_preview;
+      if(!!this.preview) {
+        this.projectdata.preview_rawdata = this.preview;
       }
 
       // copy all values
-      let values = this.folderdata;
-      values.slugFolderName = this.slugFolderName;
+      let values = this.projectdata;
+      values.slugProjectName = this.slugProjectName;
 
       this.$root.createFolder(values);
 

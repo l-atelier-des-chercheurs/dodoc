@@ -508,7 +508,7 @@ body {
 }
 
 
-.m_listview, .m_folderview, .m_captureview {
+.m_listview, .m_projectview, .m_captureview {
   position: absolute;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -531,7 +531,7 @@ body {
 
 }
 
-.m_folders {
+.m_projects {
   .flex-wrap;
   .flex-horizontally-start;
   align-items: flex-start;
@@ -542,16 +542,16 @@ body {
     .margin-bottom-medium;
   }
 
-  .m_folder {
+  .m_project {
     border-bottom: 2px solid @c-gris;   
     // border-bottom-style: dashed;
     border-radius: @t-buttonradius;
   }
 
-  .m_folder--presentation--vignette {
+  .m_project--presentation--vignette {
     cursor: pointer;
   }
-  .m_folder--presentation--text {
+  .m_project--presentation--text {
     h2 {
       cursor: pointer;
     }
@@ -559,7 +559,7 @@ body {
 
 }
 
-.m_folder {
+.m_project {
   .bg-blanc;
   border-radius: 0px;
   overflow: hidden;
@@ -568,13 +568,13 @@ body {
   
   @t-folderwidth: 340px;
   
-  .m_folder--presentation {
+  .m_project--presentation {
     position: relative;
     z-index: 0;
     flex: 0 1 @t-folderwidth;
     width: @t-folderwidth;
     
-    .m_folder--presentation--vignette {
+    .m_project--presentation--vignette {
       position: relative;
       width:100%;
       background-color: @c-gris;
@@ -585,14 +585,14 @@ body {
       // }
     }
 
-    .m_folder--presentation--text {
-      .m_folder--presentation--text--title {
+    .m_project--presentation--text {
+      .m_project--presentation--text--title {
         .margin-sides-medium;
         .margin-vert-small;
         .font-folder_title;
       }
 
-      .m_folder--presentation--text--infos {
+      .m_project--presentation--text--infos {
         .margin-sides-medium;
       }
 
@@ -602,15 +602,15 @@ body {
 
   }
 
-  .m_folder--favMedias {
+  .m_project--favMedias {
     flex: 1 1 44ch;
   }
   
-  .m_folder--library {
+  .m_project--library {
     width: 100%;
     .bg-gris_tresclair;
 
-    .m_folder--library--actionbar {
+    .m_project--library--actionbar {
       .margin-small;
       margin-top: 0;
       border-bottom: 2px solid #fff;
@@ -643,13 +643,13 @@ body {
     }
   }
 
-  .m_folder--favMedias {
+  .m_project--favMedias {
     width: 100%;
     background-color: @c-bleuvert;
     padding: 0;
     .padding-vert-small;
     
-    .m_folder--favMedias--list {
+    .m_project--favMedias--list {
       display: flex;
       flex-flow: row wrap;   
       .padding-sides-small;
@@ -660,7 +660,7 @@ body {
     }
   }
 
-  .m_folder--library--medias {
+  .m_project--library--medias {
     width: 100%;
     display: flex;
     flex-flow: row wrap;
@@ -1064,11 +1064,11 @@ body {
   transition: all .5s linear;
 }
 
-.FolderView-enter-active, .FolderView-leave-active {
+.ProjectView-enter-active, .ProjectView-leave-active {
   transform: translateX(0);
   transition: transform .5s cubic-bezier(.25,.8,.25,1);
 }
-.FolderView-enter, .FolderView-leave-to {
+.ProjectView-enter, .ProjectView-leave-to {
   transform: translateX(100vw);
   transition: transform .5s cubic-bezier(.25,.2,.25,1);
 }

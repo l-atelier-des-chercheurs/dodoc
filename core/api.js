@@ -12,8 +12,6 @@ const settings = require('../settings.json'),
 module.exports = (function() {
   const API = {
     getFolderPath: (slugFolderName = '') => getFolderPath(slugFolderName),
-    getFolderPreviewPath: slugFolderName =>
-      getFolderPreviewPath(slugFolderName),
     findFirstFilenameNotTaken: (thisPath, fileName) =>
       findFirstFilenameNotTaken(thisPath, fileName),
     getCurrentDate: (format = settings.metaDateFormat) =>
@@ -43,13 +41,6 @@ module.exports = (function() {
 
   function getFolderPath(slugFolderName = '') {
     return path.join(_getUserPath(), slugFolderName);
-  }
-
-  function getFolderPreviewPath(slugFolderName) {
-    return path.join(
-      getFolderPath(slugFolderName),
-      settings.folderPreviewFilename + settings.thumbExt
-    );
   }
 
   function getCurrentDate(f) {

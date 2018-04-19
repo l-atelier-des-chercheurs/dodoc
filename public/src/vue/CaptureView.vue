@@ -62,7 +62,7 @@
             <MediaContent
               :context="'edit'"
               :slugMediaName="justCapturedMediaData.slugMediaName"
-              :slugFolderName="slugFolderName"
+              :slugProjectName="slugProjectName"
               :media="justCapturedMediaData"
               :mediaURL="mediaURL"
             >
@@ -112,7 +112,7 @@ export default {
       type: Object,
       default: ''
     },
-    slugFolderName: String
+    slugProjectName: String
   },
   components: {
     MediaContent
@@ -493,7 +493,7 @@ export default {
         this.getStaticImageFromVideoElement(this.$refs.videoElement).then(imageData => {
 
           const mediaMeta = {
-            slugFolderName: this.slugFolderName,
+            slugProjectName: this.slugProjectName,
             type: 'image',
             rawData: imageData
           };
@@ -508,7 +508,7 @@ export default {
       if(this.selected_mode === 'video') {        
         this.startRecordCameraFeed(this.recordVideoWithAudio).then(videoDataURL => {
           this.$root.createMediaFromCapture({
-            slugFolderName: this.slugFolderName,
+            slugProjectName: this.slugProjectName,
             type: 'video',
             rawData: videoDataURL
           });
@@ -519,7 +519,7 @@ export default {
         equalizer.clearCanvas();
         this.startRecordAudioFeed().then(audioDataURL => {
           this.$root.createMediaFromCapture({
-            slugFolderName: this.slugFolderName,
+            slugProjectName: this.slugProjectName,
             type: 'audio',
             rawData: audioDataURL
           });

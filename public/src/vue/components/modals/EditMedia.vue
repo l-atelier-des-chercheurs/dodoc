@@ -190,7 +190,7 @@
       <MediaContent
         :context="'edit'"
         :slugMediaName="slugMediaName"
-        :slugFolderName="slugFolderName"
+        :slugProjectName="slugProjectName"
         :media="media"
         :read_only="read_only"
         v-model="mediadata.content"
@@ -207,7 +207,7 @@ import DateTime from '../subcomponents/DateTime.vue';
 
 export default {
   props: {
-    slugFolderName: String,
+    slugProjectName: String,
     slugMediaName: String,
     media: Object,
     read_only: {
@@ -230,7 +230,7 @@ export default {
         fav: this.media.fav,
         content: this.media.content
       },
-      mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`
+      mediaURL: `/${this.slugProjectName}/${this.slugMediaName}`
     };
   },
   computed: {
@@ -255,13 +255,11 @@ export default {
     },
     editThisMedia: function(event) {
       console.log('editThisMedia');
-
-      // copy all values
-      let values = this.mediadata;
-      values.slugFolderName = this.slugFolderName;
-      values.slugMediaName = this.slugMediaName;
-
-      this.$root.editMedia(values);
+      this.$root.editMedia({ 
+        slugProjectName: this.slugProjectName, 
+        slugMediaName: this.slugMediaName,
+        content: this.mediadata 
+      });
 
       // then close that popover
       this.$emit('close', '');

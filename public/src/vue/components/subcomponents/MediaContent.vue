@@ -85,7 +85,7 @@ import _ from 'underscore';
 export default {
   props: {
     slugMediaName: String,
-    slugFolderName: String,
+    slugProjectName: String,
     media: Object,
     context: {
       type: String,
@@ -109,7 +109,7 @@ export default {
         preview_hovered: 600,
         default: 1600
       },
-      mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`
+      mediaURL: `/${this.slugProjectName}/${this.slugMediaName}`
     };
   },
   mounted() {
