@@ -20,7 +20,6 @@
   "deletedPrefix" : "x_",
   "thumbFolderName" : "_thumbs",
   "deletedFolderName" : "_bin",
-  "authorsFolderName" : "_authors",
 
   "mediaThumbQuality" : 70,
 
@@ -30,67 +29,113 @@
   "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)",
 
   "structure" : {
-    "folder": {
-      "name": {
-        "type": "string"
-      },
-      "date_created": {
-        "type": "date",
-        "default": "current",
-        "read_only": true
-      },
-      "date_modified": {
-        "type": "date",
-        "default": "current"
-      },
-      "password": {
-        "type": "string",
-        "read_only": true        
-      },
-      "authors": {
-        "type": "string"
-      },
-      "description": {
-        "type": "string"
-      },
-      "preview": {
-        "type": "string"
+    "project": {
+      "path": "",
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "date_created": {
+          "type": "date",
+          "default": "current",
+          "read_only": true
+        },
+        "date_modified": {
+          "type": "date",
+          "default": "current"
+        },
+        "password": {
+          "type": "string",
+          "read_only": true        
+        },
+        "authors": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "preview": {
+          "type": "string"
+        }
       }
     },
+    "author": {
+      "path": "_authors",
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string",
+          "read_only": true        
+        },
+        "description": {
+          "type": "string"
+        },
+        "preview": {
+          "type": "string"
+        }
+      }
+    },
+    "publication": {
+      "path": "_publications",
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string",
+          "read_only": true        
+        },
+        "description": {
+          "type": "string"
+        },
+        "preview": {
+          "type": "string"
+        },
+        "medias": {
+          "type": "string"
+        }
+      }
+    },
+
+
     "media": {
-      "date_created": {
-        "type": "date",
-        "default": "current",
-        "read_only": true
-      },
-      "date_modified" : {
-        "type": "date",
-        "default": "current",
-        "override": true
-      },
-      "type": {
-        "type": "string",
-        "options": ["image", "video", "audio", "text", "marker", "other"],
-        "default": "other"
-      },
-      "fav": {
-        "type": "boolean",
-        "default": false
-      },
-      "ratio" : {
-        "type": "number"
-      },
-      "duration" : {
-        "type": "number"
-      },
-      "authors": {
-        "type": "string"
-      },
-      "keywords": {
-        "type": "string"
-      },
-      "caption": {
-        "type": "string"
+      "fields": {
+        "date_created": {
+          "type": "date",
+          "default": "current",
+          "read_only": true
+        },
+        "date_modified" : {
+          "type": "date",
+          "default": "current",
+          "override": true
+        },
+        "type": {
+          "type": "string",
+          "options": ["image", "video", "audio", "text", "marker", "other"],
+          "default": "other"
+        },
+        "fav": {
+          "type": "boolean",
+          "default": false
+        },
+        "ratio" : {
+          "type": "number"
+        },
+        "duration" : {
+          "type": "number"
+        },
+        "authors": {
+          "type": "string"
+        },
+        "keywords": {
+          "type": "string"
+        },
+        "caption": {
+          "type": "string"
+        }  
       }
     }
   }

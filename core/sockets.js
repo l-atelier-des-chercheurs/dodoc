@@ -279,6 +279,7 @@ module.exports = (function() {
 
   /**************************************************************** GENERAL ********************************/
 
+  // send projects, authors and publications
   function sendFolders({ slugFolderName, socket, folderID } = {}) {
     dev.logfunction(`COMMON - sendFolders for ${slugFolderName}`);
 
@@ -293,7 +294,7 @@ module.exports = (function() {
         // check if single socket or multiple sockets
         Object.keys(io.sockets.connected).forEach(sid => {
           if (socket) {
-            if (socket.id !== sid) {
+            if (!!socket && socket.id !== sid) {
               return;
             }
           }

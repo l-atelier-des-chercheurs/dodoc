@@ -11,7 +11,7 @@ const settings = require('../settings.json'),
 module.exports = (function() {
   const API = {
     getPresentation: () => getPresentation(),
-    getAuthors: () => getAuthors(),
+    // getAuthors: () => getAuthors(),
 
     getFolder: slugFolderName => getFolder(slugFolderName),
     getMetaFileOfFolder: slugFolderName => getMetaFileOfFolder(slugFolderName),
@@ -48,122 +48,122 @@ module.exports = (function() {
     });
   }
 
-  function getAuthors() {
-    return new Promise(function(resolve, reject) {
-      let authorsFile = path.join(
-        api.getFolderPath(),
-        settings.authorsFolderName
-      );
+  // function getAuthors() {
+  //   return new Promise(function(resolve, reject) {
+  //     let authorsFolderPath = path.join(
+  //       api.getFolderPath(),
+  //       settings.authorsFolderName
+  //     );
 
-      fs.access(authorsFile, fs.F_OK, err => {
-        if (err) {
-          dev.logverbose(`No authors info: ${err}`);
-          return resolve({});
-        }
+  //     fs.access(authorsFolderPath, fs.F_OK, err => {
+  //       if (err) {
+  //         dev.logverbose(`No authors info: ${err}`);
+  //         return resolve({});
+  //       }
 
-        fs.readdir(authorsFile, function(err, filenames) {
-          // read all meta files,
-          if (err) {
-            dev.error(`Couldn't read content dir: ${err}`);
-            return reject(err);
-          }
-          if (filenames === undefined) {
-            dev.error(`No files for folder found: ${err}`);
-            return resolve();
-          }
+  //       fs.readdir(authorsFolderPath, function(err, filenames) {
+  //         // read all meta files,
+  //         if (err) {
+  //           dev.error(`Couldn't read content dir: ${err}`);
+  //           return reject(err);
+  //         }
+  //         if (filenames === undefined) {
+  //           dev.error(`No files for folder found: ${err}`);
+  //           return resolve();
+  //         }
 
-          let metaFiles = filenames.filter(slug => {
-            // not a folder
-            return (
-              !new RegExp(settings.regexpMatchFolderNames, 'i').test(slug) &&
-              // is a text file
-              new RegExp(settings.regexpGetFileExtension, 'i').exec(slug)[0] ===
-                '.txt' &&
-              // not deleted
-              slug.indexOf(settings.deletedPrefix) &&
-              // not a dotfile
-              slug.indexOf('.') !== 0
-            );
-          });
-          dev.logverbose(
-            `Number of authors files that match in ${
-              settings.authorsFolderName
-            } = ${metaFiles.length}. Meta file(s) is(are) ${metaFiles}`
-          );
+  //         let metaFiles = filenames.filter(slug => {
+  //           // not a folder
+  //           return (
+  //             !new RegExp(settings.regexpMatchFolderNames, 'i').test(slug) &&
+  //             // is a text file
+  //             new RegExp(settings.regexpGetFileExtension, 'i').exec(slug)[0] ===
+  //               '.txt' &&
+  //             // not deleted
+  //             slug.indexOf(settings.deletedPrefix) &&
+  //             // not a dotfile
+  //             slug.indexOf('.') !== 0
+  //           );
+  //         });
+  //         dev.logverbose(
+  //           `Number of authors files that match in ${
+  //             settings.authorsFolderName
+  //           } = ${metaFiles.length}. Meta file(s) is(are) ${metaFiles}`
+  //         );
 
-          if (metaFiles.length === 0) {
-            dev.logverbose(
-              `Since no authors meta is in this folder, let’s abort right there.`
-            );
-            return resolve({});
-          }
+  //         if (metaFiles.length === 0) {
+  //           dev.logverbose(
+  //             `Since no authors meta is in this folder, let’s abort right there.`
+  //           );
+  //           return resolve({});
+  //         }
 
-          var allAuthorsMeta = [];
-          metaFiles.forEach(filename => {
-            let fmeta = new Promise((resolve, reject) => {
-              const pathToAuthorMeta = path.join(authorsFile, filename);
-              // todo : resolve meta file
-              readMetaFile(pathToAuthorMeta).then(authorsData => {
-                resolve({ [filename]: authorsData });
-              });
-            });
-            allAuthorsMeta.push(fmeta);
+  //         var allAuthorsMeta = [];
+  //         metaFiles.forEach(filename => {
+  //           let fmeta = new Promise((resolve, reject) => {
+  //             const pathToAuthorMeta = path.join(authorsFolderPath, filename);
+  //             // todo : resolve meta file
+  //             readMetaFile(pathToAuthorMeta).then(authorsData => {
+  //               resolve({ [filename]: authorsData });
+  //             });
+  //           });
+  //           allAuthorsMeta.push(fmeta);
 
-            let portrait = new Promise((resolve, reject) => {
-              // find if a file named "name.jpeg" exist in the same folder
-              const fileNameWithoutExtension = new RegExp(
-                settings.regexpRemoveFileExtension,
-                'i'
-              ).exec(filename)[1];
+  //           let portrait = new Promise((resolve, reject) => {
+  //             // find if a file named "name.jpeg" exist in the same folder
+  //             const fileNameWithoutExtension = new RegExp(
+  //               settings.regexpRemoveFileExtension,
+  //               'i'
+  //             ).exec(filename)[1];
 
-              const potentialPortraitFilename =
-                fileNameWithoutExtension + '.jpeg';
+  //             const potentialPortraitFilename =
+  //               fileNameWithoutExtension + '.jpeg';
 
-              const pathToPotentialPortrait = path.join(
-                authorsFile,
-                potentialPortraitFilename
-              );
-              fs.access(pathToPotentialPortrait, fs.F_OK, err => {
-                if (err) {
-                  dev.logverbose(`Missing portrait for ${filename}: ${err}`);
-                  return resolve({});
-                }
-                return resolve({
-                  [filename]: { portrait: potentialPortraitFilename }
-                });
-              });
-            });
-            allAuthorsMeta.push(portrait);
-          });
+  //             const pathToPotentialPortrait = path.join(
+  //               authorsFolderPath,
+  //               potentialPortraitFilename
+  //             );
+  //             fs.access(pathToPotentialPortrait, fs.F_OK, err => {
+  //               if (err) {
+  //                 dev.logverbose(`Missing portrait for ${filename}: ${err}`);
+  //                 return resolve({});
+  //               }
+  //               return resolve({
+  //                 [filename]: { portrait: potentialPortraitFilename }
+  //               });
+  //             });
+  //           });
+  //           allAuthorsMeta.push(portrait);
+  //         });
 
-          Promise.all(allAuthorsMeta).then(parsedAuthorsData => {
-            // reunite array items as a single big object
-            dev.logverbose(
-              `All authors meta have been processed`,
-              JSON.stringify(parsedAuthorsData, null, 4)
-            );
+  //         Promise.all(allAuthorsMeta).then(parsedAuthorsData => {
+  //           // reunite array items as a single big object
+  //           dev.logverbose(
+  //             `All authors meta have been processed`,
+  //             JSON.stringify(parsedAuthorsData, null, 4)
+  //           );
 
-            const authorsObj = {};
-            parsedAuthorsData.map(d => {
-              let filename = Object.keys(d)[0];
-              if (typeof d === 'object' && Object.keys(d).length === 0) {
-                return;
-              }
+  //           const authorsObj = {};
+  //           parsedAuthorsData.map(d => {
+  //             let filename = Object.keys(d)[0];
+  //             if (typeof d === 'object' && Object.keys(d).length === 0) {
+  //               return;
+  //             }
 
-              if (!authorsObj.hasOwnProperty(filename)) {
-                authorsObj[filename] = {};
-              }
-              authorsObj[filename] = Object.assign(
-                authorsObj[filename],
-                d[filename]
-              );
-            });
-            resolve(authorsObj);
-          });
-        });
-      });
-    });
-  }
+  //             if (!authorsObj.hasOwnProperty(filename)) {
+  //               authorsObj[filename] = {};
+  //             }
+  //             authorsObj[filename] = Object.assign(
+  //               authorsObj[filename],
+  //               d[filename]
+  //             );
+  //           });
+  //           resolve(authorsObj);
+  //         });
+  //       });
+  //     });
+  //   });
+  // }
 
   function getMetaFileOfFolder(slugFolderName) {
     let folderPath = api.getFolderPath(slugFolderName);
@@ -1352,10 +1352,10 @@ module.exports = (function() {
       dev.error(`Missing type ${type} in settings.json`);
     }
 
-    let struct = settings.structure[type];
+    let fields = settings.structure[type].fields;
     let output_obj = {};
 
-    Object.entries(struct).forEach(([key, val]) => {
+    Object.entries(fields).forEach(([key, val]) => {
       // dev.logverbose(`Iterating through struct entries, at key ${key}`);
       if (!val.hasOwnProperty('type')) {
         dev.error(
@@ -1466,21 +1466,20 @@ module.exports = (function() {
     let new_meta = {};
     Object.keys(meta).forEach(key => {
       if (
-        settings.structure[type].hasOwnProperty(key) &&
-        settings.structure[type][key].hasOwnProperty('type')
+        settings.structure[type].fields.hasOwnProperty(key) &&
+        settings.structure[type].fields[key].hasOwnProperty('type')
       ) {
-        if (settings.structure[type][key].type === 'date') {
+        const fieldType = settings.structure[type].fields[key].type;
+        if (fieldType === 'date') {
           new_meta[key] = api.parseDate(meta[key]);
-        } else if (settings.structure[type][key].type === 'string') {
+        } else if (fieldType === 'string') {
           new_meta[key] = validator.unescape(meta[key]);
-        } else if (settings.structure[type][key].type === 'number') {
+        } else if (fieldType === 'number') {
           new_meta[key] = validator.toFloat(meta[key]);
-        } else if (settings.structure[type][key].type === 'boolean') {
+        } else if (fieldType === 'boolean') {
           new_meta[key] = validator.toBoolean(meta[key]);
         } else {
-          dev.error(
-            `Unexpected field type ${settings.structure[type][key].type}.`
-          );
+          dev.error(`Unexpected field type ${fieldType}.`);
         }
       }
     });
