@@ -121,10 +121,9 @@ export default {
       this.$root.editFolder({ 
         type: 'projects', 
         slugFolderName: this.slugProjectName, 
-        content: this.projectdata 
+        data: this.projectdata 
       });
 
-      // then close that popover
       this.$emit('close', '');
     }
   },

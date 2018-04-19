@@ -15,8 +15,9 @@ module.exports = (function() {
 
     getFolder: ({ type, slugFolderName }) =>
       getFolder({ type, slugFolderName }),
-    createFolder: fdata => createFolder(fdata),
-    editFolder: (foldersData, fdata) => editFolder(foldersData, fdata),
+    createFolder: ({ type, data }) => createFolder({ type, data }),
+    editFolder: ({ type, foldersData, newFoldersData }) =>
+      editFolder({ type, foldersData, newFoldersData }),
     removeFolder: slugFolderName => removeFolder(slugFolderName),
 
     gatherAllMedias: (slugFolderName, slugMediaName, mediaID) =>
@@ -293,18 +294,18 @@ module.exports = (function() {
     });
   }
 
-  function createFolder({ type, fdata }) {
+  function createFolder({ type, data }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `COMMON — createFolder : will create a new folder type = ${type} with: ${JSON.stringify(
-          fdata,
+        `COMMON — createFolder : will create a new folder for type = ${type} with: ${JSON.stringify(
+          data,
           null,
           4
         )}`
       );
 
-      if (!fdata.hasOwnProperty('name')) {
-        fdata.name = 'Untitled Folder';
+      if (!data.hasOwnProperty('name')) {
+        data.name = 'Untitled Folder';
       }
 
       if (!settings.structure.hasOwnProperty(type)) {
@@ -312,7 +313,7 @@ module.exports = (function() {
       }
       const baseFolderPath = settings.structure[type].path;
       const mainFolderPath = api.getFolderPath(baseFolderPath);
-      const slugFolderName = api.slug(fdata.name);
+      let slugFolderName = api.slug(data.name);
 
       getFolder({ type }).then(
         foldersData => {
@@ -339,18 +340,18 @@ module.exports = (function() {
             () => {
               let tasks = [];
 
-              if (fdata.hasOwnProperty('preview_rawdata')) {
+              if (data.hasOwnProperty('preview_rawdata')) {
                 tasks.push(
-                  _storeFoldersPreview(thisFolderPath, fdata.preview_rawdata)
+                  _storeFoldersPreview(thisFolderPath, data.preview_rawdata)
                 );
               }
 
               tasks.push(
                 new Promise(function(resolve, reject) {
-                  fdata = _makeDefaultMetaFromStructure({
+                  data = _makeDefaultMetaFromStructure({
                     type,
                     method: 'create',
-                    existing: fdata
+                    existing: data
                   });
 
                   const metaFolderPath = path.join(
@@ -359,7 +360,7 @@ module.exports = (function() {
                   );
 
                   api
-                    .storeData(metaFolderPath, fdata, 'create')
+                    .storeData(metaFolderPath, data, 'create')
                     .then(function(meta) {
                       dev.logverbose(
                         `New folder meta file created at path: ${metaFolderPath} with meta: ${JSON.stringify(
@@ -397,11 +398,9 @@ module.exports = (function() {
   function editFolder({ type, foldersData, newFoldersData }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `COMMON — editFolder : will edit folder with type = ${type} with ${JSON.stringify(
-          newFoldersData,
-          null,
-          4
-        )} with existing data ${JSON.stringify(foldersData, null, 4)}`
+        `COMMON — editFolder : will edit folder with type = ${type} 
+        with ${JSON.stringify(newFoldersData, null, 4)} 
+        with existing data ${JSON.stringify(foldersData, null, 4)}`
       );
 
       if (!settings.structure.hasOwnProperty(type)) {
@@ -463,17 +462,24 @@ module.exports = (function() {
       });
       tasks.push(updateFoldersMeta);
 
-      Promise.all(tasks).then(() => {
-        dev.logverbose(`COMMON — editFolder : now resolving`);
-        resolve(slugFolderName);
-      });
+      Promise.all(tasks)
+        .then(() => {
+          dev.logverbose(`COMMON — editFolder : now resolving`);
+          resolve(slugFolderName);
+        })
+        .catch(err => {
+          dev.error(
+            `Failed to edit folder slugFolderName = ${slugFolderName}: ${err}`
+          );
+          reject(err);
+        });
     });
   }
 
   function _storeFoldersPreview(thisFolderPath, preview_rawdata) {
     return new Promise((resolve, reject) => {
       dev.logfunction(
-        `COMMON — _storeFoldersPreview : will store preview for folder: ${slugFolderName}`
+        `COMMON — _storeFoldersPreview : will store preview for folder at path: ${thisFolderPath}`
       );
       const pathToPreview = path.join(
         thisFolderPath,

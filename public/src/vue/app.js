@@ -234,30 +234,37 @@ Vue.prototype.$socketio = new Vue({
     },
 
     // for projects, authors and publications
-    _onListFolder(fdata) {
+    _onListFolder(data) {
       console.log('Received _onListFolder packet.');
       debugger;
 
-      // to prevent override of fully formed medias, we copy back the ones we have already
-      for (let slugFolderName in fdata) {
-        if (window.store.projects.hasOwnProperty(slugFolderName)) {
-          fdata[slugFolderName].medias =
-            window.store.projects[slugFolderName].medias;
+      let type = Object.keys(data)[0];
+      let content = Object.values(data)[0];
+
+      // to prevent override of fully formed medias in folders, we copy back the ones we have already
+      for (let slugFolderName in content) {
+        if (
+          window.store[type].hasOwnProperty(slugFolderName) &&
+          window.store[type][slugFolderName].hasOwnProperty('medias')
+        ) {
+          content[slugFolderName].medias =
+            window.store[type][slugFolderName].medias;
         }
       }
-      window.store.projects = Object.assign({}, window.store.projects, fdata);
+
+      window.store[type] = Object.assign({}, window.store.projects, content);
     },
 
     // for projects, authors and publications
-    _onListFolders(fdata) {
+    _onListFolders(data) {
       console.log('Received _onListFolders packet.');
 
-      if (typeof fdata !== 'object') {
+      if (typeof data !== 'object') {
         return;
       }
 
-      let type = Object.keys(fdata)[0];
-      let content = Object.values(fdata)[0];
+      let type = Object.keys(data)[0];
+      let content = Object.values(data)[0];
 
       console.log(`Type is ${type}`);
 
@@ -429,23 +436,20 @@ let vm = new Vue({
     this.$eventHub.$off('socketio.got_tag', this.handle_new_tag);
   },
   methods: {
-    createFolder: function(fdata) {
+    createFolder: function(d) {
       if (window.state.dev_mode === 'debug') {
-        console.log(
-          `ROOT EVENT: createfolder: ${JSON.stringify(fdata, null, 4)}`
-        );
+        console.log(`ROOT EVENT: createfolder: ${JSON.stringify(d, null, 4)}`);
       }
 
-      fdata.folderID =
+      this.id = d.id =
         Math.random()
           .toString(36)
           .substring(2, 15) +
         Math.random()
           .toString(36)
           .substring(2, 15);
-      this.justCreatedFolderID = fdata.folderID;
 
-      this.$socketio.createFolder(fdata);
+      this.$socketio.createFolder(d);
     },
     editFolder: function(fdata) {
       if (window.state.dev_mode === 'debug') {

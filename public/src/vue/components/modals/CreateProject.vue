@@ -100,13 +100,8 @@ export default {
         this.projectdata.preview_rawdata = this.preview;
       }
 
-      // copy all values
-      let values = this.projectdata;
-      values.slugProjectName = this.slugProjectName;
+      this.$root.createFolder({ type: 'projects', data: this.projectdata });
 
-      this.$root.createFolder(values);
-
-      // then close that popover
       this.$emit('close', '');
     }
   }

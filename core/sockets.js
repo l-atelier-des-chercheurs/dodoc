@@ -96,47 +96,47 @@ module.exports = (function() {
   }
 
   /**************************************************************** FOLDER ********************************/
-  function onListFolders(socket, d) {
+  function onListFolders(socket, data) {
     dev.logfunction(`EVENT - onListFolders`);
-    if (!d.hasOwnProperty('type')) {
+    if (!data.hasOwnProperty('type')) {
       dev.error(`Missing type field`);
     }
-    const type = d.type;
+    const type = data.type;
     sendFolders({ type, socket });
   }
-  function onCreateFolder(socket, d) {
-    dev.logfunction(`EVENT - onCreateFolder for ${d.name}`);
-    file.createFolder(d).then(
+
+  function onCreateFolder(socket, { type, data, id }) {
+    dev.logfunction(`EVENT - onCreateFolder for ${data.name}`);
+    file.createFolder({ type, data }).then(
       slugFolderName => {
-        sendFolders({ slugFolderName, folderID: d.folderID });
+        sendFolders({ type, slugFolderName, id: id });
       },
       function(err) {
         dev.error(`Failed to list folders! Error: ${err}`);
       }
     );
   }
-  function onEditFolder(socket, d) {
+  function onEditFolder(socket, { type, slugFolderName, data }) {
     dev.logfunction(
-      `EVENT - onEditFolder for type = ${d.type}, slugFolderName = ${
-        d.slugFolderName
-      }, content = ${d.content}`
+      `EVENT - onEditFolder for type = ${type}, slugFolderName = ${slugFolderName}, data = ${JSON.stringify(
+        data
+      )}`
     );
-    if (!d.hasOwnProperty('slugFolderName')) {
-      dev.error(`Missing slugFoldername for edit event.`);
-      return;
-    }
 
-    // check if allowed
     file
-      .getFolder({ type: d.type, slugFolderName: d.slugFolderName })
+      .getFolder({ type, slugFolderName })
       .then(foldersData => {
         if (!auth.hasFolderAuth(socket.id, foldersData)) {
           return;
         }
         file
-          .editFolder(foldersData[d.slugFolderName], d)
+          .editFolder({
+            type,
+            foldersData: Object.values(foldersData)[0],
+            newFoldersData: data
+          })
           .then(slugFolderName => {
-            sendFolders({ slugFolderName });
+            sendFolders({ type, slugFolderName });
           });
       })
       .catch(err => {
@@ -275,7 +275,7 @@ module.exports = (function() {
 
   function onRemoveMedia(socket, d) {
     dev.logfunction(
-      `EVENT - onRemoveMedia for ${d.slugFoldername}/${d.slugMediaName}`
+      `EVENT - onRemoveMedia for ${d.slugFolderName}/${d.slugMediaName}`
     );
     let slugFolderName = d.slugFolderName;
     let slugMediaName = d.slugMediaName;
