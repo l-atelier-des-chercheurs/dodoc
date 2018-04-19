@@ -15,7 +15,7 @@
         :disabled="read_only"
       >
       </FileUpload>
-      <button type="button" class="textButton" @click="createTextMedia">
+      <button type="button" class="barButton barButton_text" @click="createTextMedia">
         Créer du texte
       </button>
     </div>

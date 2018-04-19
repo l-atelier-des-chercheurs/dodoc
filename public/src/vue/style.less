@@ -616,7 +616,7 @@ body {
       border-bottom: 2px solid #fff;
       display: flex;
 
-      .textButton {
+      .barButton {
         margin: 0;
         .margin-small;
         margin-left: 0;
@@ -638,13 +638,21 @@ body {
           width:  28px;
           height: 28px;
           padding-right: 4px;
-          background-image: url("/images/i_importer.svg");
         }
 
+        &.barButton_text {
+          color: @c-bleumarine;
+          &::before {
+            background-image: url("/images/i_text.svg");          
+          }
+        }
       }
 
       .dz-message {
-        .textButton;
+        .barButton;
+        &::before {
+          background-image: url("/images/i_importer.svg");          
+        }
       }
 
     }
@@ -671,7 +679,8 @@ body {
     width: 100%;
     display: flex;
     flex-flow: row wrap;
-    padding: 0 @t-skipline/2;
+    .padding-sides-small;
+    padding-bottom: 250px;
 
     > * {
       flex: 0 0 100/5%;
@@ -751,7 +760,7 @@ body {
         padding-bottom: 100%;
       }
 
-      img, video, audio{
+      > * {
         position: absolute;
         width: 100%;
         height: 100%;

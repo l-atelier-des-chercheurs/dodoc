@@ -1,7 +1,6 @@
 <template>
   <div 
     class="m_media"
-    :title="media.slugMediaName"
   >
     <div>
       <figure 
