@@ -1127,20 +1127,25 @@ module.exports = (function() {
     });
   }
 
-  function createMediaFromCapture(mdata) {
+  function createMediaFromCapture({
+    type,
+    rawData,
+    slugProjectName,
+    additionalMeta
+  }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `COMMON — createMediaFromCapture : will create media in: ${
-          mdata.slugFolderName
-        }`
+        `COMMON — createMediaFromCapture with type = ${type}, 
+        slugProjectName = ${slugProjectName} 
+        and additionalMeta = ${additionalMeta}`
       );
 
-      let slugFolderName = mdata.slugFolderName;
       let timeCreated = api.getCurrentDate();
       let randomString = (
         Math.random().toString(36) + '00000000000000000'
       ).slice(2, 3 + 2);
-      let mediaName = `${mdata.type}-${timeCreated}-${randomString}`;
+
+      let mediaName = `${type}-${timeCreated}-${randomString}`;
 
       // Depending on the type of media we will create, we will need to act differently:
       // - 'image' -> use sharp and create a .jpeg from the buffer
@@ -1150,16 +1155,16 @@ module.exports = (function() {
 
       let tasks = [];
 
-      if (mdata.type === 'image') {
+      if (type === 'image') {
         tasks.push(
           new Promise((resolve, reject) => {
             mediaName += '.jpeg';
             let pathToMedia = path.join(
-              api.getFolderPath(slugFolderName),
+              api.getFolderPath(slugProjectName),
               mediaName
             );
 
-            let imageBuffer = api.decodeBase64Image(mdata.rawData);
+            let imageBuffer = api.decodeBase64Image(rawData);
             sharp(imageBuffer)
               .rotate()
               .withMetadata()
@@ -1169,22 +1174,26 @@ module.exports = (function() {
                 quality: 90
               })
               .toFile(pathToMedia, function(err, info) {
-                if (err) reject(err);
+                if (err) {
+                  dev.error(err);
+                  reject(err);
+                }
+                dev.logverbose(`Stored captured image to ${pathToMedia}`);
                 resolve();
               });
           })
         );
-      } else if (mdata.type === 'video') {
+      } else if (type === 'video') {
         tasks.push(
           new Promise((resolve, reject) => {
             mediaName += '.mp4';
             let pathToMedia = path.join(
-              api.getFolderPath(slugFolderName),
+              api.getFolderPath(slugProjectName),
               mediaName
             );
 
             api
-              .writeMediaDataToDisk(pathToMedia, mdata.rawData)
+              .writeMediaDataToDisk(pathToMedia, rawData)
               .then(() => {
                 resolve();
               })
@@ -1193,17 +1202,17 @@ module.exports = (function() {
               });
           })
         );
-      } else if (mdata.type === 'audio') {
+      } else if (type === 'audio') {
         tasks.push(
           new Promise((resolve, reject) => {
             mediaName += '.wav';
             let pathToMedia = path.join(
-              api.getFolderPath(slugFolderName),
+              api.getFolderPath(slugProjectName),
               mediaName
             );
 
             api
-              .writeMediaDataToDisk(pathToMedia, mdata.rawData)
+              .writeMediaDataToDisk(pathToMedia, rawData)
               .then(() => {
                 resolve();
               })
@@ -1216,15 +1225,20 @@ module.exports = (function() {
 
       Promise.all(tasks)
         .then(() => {
+          dev.logverbose(`Passed all tasks for captured medias`);
           let newMediaInfos = {
             slugMediaName: mediaName,
             additionalMeta: {
-              type: mdata.type,
+              type: type,
               fileCreationDate: api.parseDate(timeCreated)
             }
           };
-          if (mdata.hasOwnProperty('authors')) {
-            newMediaInfos.additionalMeta.authors = mdata.authors;
+          if (typeof additionalMeta !== 'undefined') {
+            newMediaInfos.additionalMeta = Object.assign(
+              {},
+              newMediaInfos.additionalMeta,
+              additionalMeta
+            );
           }
           resolve(newMediaInfos);
         })

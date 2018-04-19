@@ -108,7 +108,7 @@ import 'webrtc-adapter';
 
 export default {
   props: {
-    folder: {
+    project: {
       type: Object,
       default: ''
     },
@@ -495,11 +495,12 @@ export default {
           const mediaMeta = {
             slugProjectName: this.slugProjectName,
             type: 'image',
-            rawData: imageData
+            rawData: imageData,
+            additionalMeta: ''
           };
 
           if(this.$root.settings.current_author !== false) {
-            mediaMeta.authors = this.$root.settings.current_author.name;
+            mediaMeta.additionalMeta.authors = this.$root.settings.current_author.name;
           }
 
           this.$root.createMediaFromCapture(mediaMeta);

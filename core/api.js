@@ -204,13 +204,14 @@ module.exports = (function() {
     );
     var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
     if (matches.length !== 3) {
-      dev.error('error parsing base64 image');
+      dev.error('Error parsing base64 image');
       return new Error('Invalid input string');
     }
     // let response = {};
     // response.type = matches[1];
     // response.data = new Buffer(matches[2], 'base64');
     let response = new Buffer(matches[2], 'base64');
+    dev.logverbose(`Just parsed string to bugger`);
     return response;
   }
 

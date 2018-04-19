@@ -216,28 +216,36 @@ module.exports = (function() {
       });
   }
 
-  function onCreateMediaFromCapture(socket, d) {
+  function onCreateMediaFromCapture(
+    socket,
+    { type, mediaID, rawData, slugProjectName, additionalMeta }
+  ) {
     dev.logfunction(
-      `EVENT - onCreateMediaFromCapture : slugFolderName = ${
-        d.slugFolderName
-      } and type = ${d.type} and rawData.length = ${d.rawData.length}`
+      `EVENT - onCreateMediaFromCapture : slugProjectName = ${slugProjectName} and type = ${type} and rawData.length = ${
+        rawData.length
+      }`
     );
     file
-      .createMediaFromCapture(d)
+      .createMediaFromCapture({
+        type,
+        rawData,
+        slugProjectName,
+        additionalMeta
+      })
       .then(mediaMeta => {
         file
           .createMediaMeta(
-            d.slugFolderName,
+            slugProjectName,
             mediaMeta.slugMediaName,
             mediaMeta.additionalMeta
           )
-          .then(() =>
+          .then(() => {
             sendMedias({
-              slugFolderName: d.slugFolderName,
+              slugFolderName: slugProjectName,
               slugMediaName: mediaMeta.slugMediaName,
-              mediaID: d.mediaID
-            })
-          )
+              mediaID
+            });
+          })
           .catch(err => {
             dev.error(`Couldn’t create captured media meta: ${err}`);
             reject(err);
