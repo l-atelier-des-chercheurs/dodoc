@@ -15,6 +15,9 @@
         :disabled="read_only"
       >
       </FileUpload>
+      <button type="button" class="textButton" @click="createTextMedia">
+        Créer du texte
+      </button>
     </div>
 
     <div class="sectionTitle_small margin-sides-medium">
@@ -166,6 +169,17 @@ export default {
         console.log('METHODS • MediaLibrary: openMedia');
       }
       this.showMediaModalFor = slugMediaName;
+    },
+    createTextMedia() {
+      const mediaMeta = {
+        slugProjectName: this.slugProjectName,
+        type: 'text',
+        additionalMeta: ''
+      };
+      if(this.$root.settings.current_author !== false) {
+        mediaMeta.additionalMeta.authors = this.$root.settings.current_author.name;
+      }
+      this.$root.createTextMedia(mediaMeta);      
     }
   }
 }

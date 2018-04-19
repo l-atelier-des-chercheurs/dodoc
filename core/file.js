@@ -980,16 +980,16 @@ module.exports = (function() {
 
         if (
           (meta.type === 'text' || meta.type === 'marker') &&
-          mdata.hasOwnProperty('content')
+          data.hasOwnProperty('content')
         ) {
           dev.logverbose(`Is text or marker and need to update content.`);
-          dev.logverbose(`New content: ${mdata.content}`);
+          dev.logverbose(`New content: ${data.content}`);
           let updateTextMedia = new Promise((resolve, reject) => {
             let mediaPath = path.join(
               api.getFolderPath(slugFolderName),
               slugMediaName
             );
-            let content = validator.escape(mdata.content + '');
+            let content = validator.escape(data.content + '');
             api
               .storeData(mediaPath, content, 'update')
               .then(content => {
@@ -1050,23 +1050,20 @@ module.exports = (function() {
     });
   }
 
-  function createTextMedia(mdata) {
+  function createTextMedia({ slugProjectName, type, additionalMeta }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `COMMON — createTextMedia : will create text media in: ${
-          mdata.slugFolderName
-        }`
+        `COMMON — createTextMedia : will create text media in: ${slugProjectName}`
       );
 
-      let slugFolderName = mdata.slugFolderName;
       let timeCreated = api.getCurrentDate();
       let randomString = (
         Math.random().toString(36) + '00000000000000000'
       ).slice(2, 3 + 2);
-      let textMediaName = `${mdata.type}-${timeCreated}-${randomString}.md`;
+      let textMediaName = `${type}-${timeCreated}-${randomString}.md`;
 
       let pathToTextMedia = path.join(
-        api.getFolderPath(slugFolderName),
+        api.getFolderPath(slugProjectName),
         textMediaName
       );
 
@@ -1075,25 +1072,22 @@ module.exports = (function() {
           let newMediaInfos = {
             slugMediaName: textMediaName,
             additionalMeta: {
-              fileCreationDate: api.parseDate(timeCreated)
+              fileCreationDate: api.parseDate(timeCreated),
+              type
             }
           };
 
-          // will be sanitized later in createMediaMeta
-          if (mdata.hasOwnProperty('type')) {
-            newMediaInfos.additionalMeta['type'] = mdata.type;
+          if (additionalMeta.hasOwnProperty('color')) {
+            newMediaInfos.additionalMeta.color = additionalMeta.color;
           }
-          if (mdata.hasOwnProperty('color')) {
-            newMediaInfos.additionalMeta['color'] = mdata.color;
-          }
-          if (mdata.hasOwnProperty('collapsed')) {
-            newMediaInfos.additionalMeta['collapsed'] = mdata.collapsed;
+          if (additionalMeta.hasOwnProperty('collapsed')) {
+            newMediaInfos.additionalMeta.collapsed = additionalMeta.collapsed;
           }
           resolve(newMediaInfos);
         },
         function(err) {
-          dev.error(`Failed to storeData for textmedia`);
-          reject(`${err}`);
+          dev.error(`Failed to storeData for textmedia: ${err}`);
+          reject(err);
         }
       );
     });
@@ -1116,7 +1110,6 @@ module.exports = (function() {
       let randomString = (
         Math.random().toString(36) + '00000000000000000'
       ).slice(2, 3 + 2);
-
       let mediaName = `${type}-${timeCreated}-${randomString}`;
 
       // Depending on the type of media we will create, we will need to act differently:

@@ -131,14 +131,12 @@ export default {
       showAuthorsListModal: false
     }
   },
-  
   created() {
   },
   mounted() {
   },
   beforeDestroy() {
   },
-
   watch: {
   },
   computed: {

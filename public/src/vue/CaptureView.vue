@@ -486,23 +486,18 @@ export default {
       });
     },
     capture() {
-
       this.justCapturedMediaData = {};
-
       if(this.selected_mode === 'photo') {        
         this.getStaticImageFromVideoElement(this.$refs.videoElement).then(imageData => {
-
           const mediaMeta = {
             slugProjectName: this.slugProjectName,
             type: 'image',
             rawData: imageData,
             additionalMeta: ''
           };
-
           if(this.$root.settings.current_author !== false) {
             mediaMeta.additionalMeta.authors = this.$root.settings.current_author.name;
           }
-
           this.$root.createMediaFromCapture(mediaMeta);
         });
       } else 

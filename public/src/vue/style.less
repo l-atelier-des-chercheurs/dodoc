@@ -616,9 +616,11 @@ body {
       border-bottom: 2px solid #fff;
       display: flex;
 
-      .dz-message {
+      .textButton {
         margin: 0;
-        .margin-vert-small;
+        .margin-small;
+        margin-left: 0;
+        min-height: 0;
 
         background-color: #fff;
         color: @c-rouge;
@@ -638,6 +640,11 @@ body {
           padding-right: 4px;
           background-image: url("/images/i_importer.svg");
         }
+
+      }
+
+      .dz-message {
+        .textButton;
       }
 
     }

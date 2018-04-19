@@ -185,26 +185,30 @@ module.exports = (function() {
     sendMedias({ slugFolderName, socket });
   }
 
-  function onCreateTextMedia(socket, d) {
+  function onCreateTextMedia(
+    socket,
+    { type, mediaID, slugProjectName, additionalMeta }
+  ) {
     dev.logfunction(
-      `EVENT - onCreateTextMedia : ${JSON.stringify(d, null, 4)}`
+      `EVENT - onCreateTextMedia : slugProjectName = ${slugProjectName} and type = ${type}`
     );
+
     file
-      .createTextMedia(d)
+      .createTextMedia({ slugProjectName, type, additionalMeta })
       .then(textMediaMeta => {
         file
           .createMediaMeta(
-            d.slugFolderName,
+            slugProjectName,
             textMediaMeta.slugMediaName,
             textMediaMeta.additionalMeta
           )
-          .then(() =>
+          .then(() => {
             sendMedias({
-              slugFolderName: d.slugFolderName,
+              slugFolderName: slugProjectName,
               slugMediaName: textMediaMeta.slugMediaName,
-              mediaID: d.mediaID
-            })
-          )
+              mediaID
+            });
+          })
           .catch(err => {
             dev.error(`Couldn’t create text media meta: ${err}`);
             reject(err);
