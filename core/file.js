@@ -669,30 +669,6 @@ module.exports = (function() {
           for (let slugMediaName in mediasData) {
             let mediaData = mediasData[slugMediaName];
 
-            /*******************************************************
-            PRE 1.0.0 beta 3 legacy
-            ******************************************************/
-            // LEGACY : rename 'created' to 'date_created', and set date_timeline
-            {
-              if (mediaData.hasOwnProperty('created')) {
-                mediaData.date_created = mediaData.created;
-                if (!mediaData.hasOwnProperty('date_timeline')) {
-                  mediaData.date_timeline = mediaData.created;
-                }
-                delete mediaData.created;
-              }
-              if (
-                mediaData.hasOwnProperty('modified') &&
-                !mediaData.hasOwnProperty('date_modified')
-              ) {
-                mediaData.date_modified = mediaData.modified;
-                delete mediaData.modified;
-              }
-            }
-            /*******************************************************
-            END
-            ******************************************************/
-
             if (mediaID) {
               mediaData.mediaID = mediaID;
             }
@@ -910,10 +886,6 @@ module.exports = (function() {
               DO IT ALL
           ***************************************************************************/
           Promise.all(tasks).then(() => {
-            if (mdata.hasOwnProperty('date_created')) {
-              // if there is a created date, the timeline date should match this one in priority
-              mdata.date_timeline = mdata.date_created;
-            }
             api.storeData(potentialMetaFile, mdata, 'create').then(
               function(meta) {
                 dev.logverbose(
