@@ -10,7 +10,11 @@
         <img src="/images/i_logo.svg"/>
       </div>
 
-      <div v-if="!!slugProjectName" class="m_topbar--left--breadcrumb" @click="$root.settings.view = 'ProjectView'">
+      <div 
+        v-if="!!slugProjectName && $root.store.projects.hasOwnProperty(slugProjectName)" 
+        class="m_topbar--left--breadcrumb" 
+        @click="$root.settings.view = 'ProjectView'"
+      >
         <button type="button">
           <span>
             {{ $root.store.projects[slugProjectName].name }}

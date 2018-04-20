@@ -24,8 +24,7 @@
             :presentationMD="$root.store.presentationMD"
             :read_only="!$root.state.connected"
             :projects="$root.store.projects"
-          >
-          </ListView>
+          />
         </transition>
         <transition name="ProjectView" :duration="500">
           <ProjectView
@@ -41,15 +40,13 @@
             v-if="$root.settings.view === 'CaptureView'"
             :slugProjectName="current_slugProjectName"
             :project="currentProject"
-          >
-          </CaptureView>
+          />
         </transition>
       </div>
       <div class="m_activitiesPanel--doc" v-if="$root.settings.show_publi_panel">
         <button type="button">
           Créer une publication
         </button>
-
         // modale de création de publications
 
         // liste des publications
