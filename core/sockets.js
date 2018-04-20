@@ -109,7 +109,7 @@ module.exports = (function() {
     dev.logfunction(`EVENT - onCreateFolder for ${data.name}`);
     file.createFolder({ type, data }).then(
       slugFolderName => {
-        sendFolders({ type, slugFolderName, id: id });
+        sendFolders({ type, slugFolderName, id });
       },
       function(err) {
         dev.error(`Failed to list folders! Error: ${err}`);
@@ -310,7 +310,7 @@ module.exports = (function() {
   /**************************************************************** GENERAL ********************************/
 
   // send projects, authors and publications
-  function sendFolders({ type, slugFolderName, socket, folderID } = {}) {
+  function sendFolders({ type, slugFolderName, socket, id } = {}) {
     dev.logfunction(
       `COMMON - sendFolders for type = ${type} and slugFolderName = ${slugFolderName}`
     );
@@ -319,8 +319,8 @@ module.exports = (function() {
       .getFolder({ type, slugFolderName })
       .then(foldersData => {
         // if folder creation, we get an ID to open the folder straight away
-        if (foldersData !== undefined && slugFolderName && folderID) {
-          foldersData[slugFolderName].folderID = folderID;
+        if (foldersData !== undefined && slugFolderName && id) {
+          foldersData[slugFolderName].id = id;
         }
 
         // check if single socket or multiple sockets

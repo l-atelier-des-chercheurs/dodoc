@@ -109,8 +109,8 @@ export default {
           let folder = this.projects[slugProjectName];
           // if there is, try to match it with folderID
           if (
-            folder.folderID &&
-            folder.folderID === this.$root.justCreatedFolderID
+            folder.id &&
+            folder.id === this.$root.justCreatedFolderID
           ) {
             this.$root.justCreatedFolderID = false;
             this.$root.openProject(slugProjectName);

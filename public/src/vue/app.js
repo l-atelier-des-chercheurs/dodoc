@@ -344,7 +344,7 @@ let vm = new Vue({
     state: window.state,
 
     justCreatedTextmediaID: false,
-    justCreatedProjectID: false,
+    justCreatedFolderID: false,
     justCreatedCapturedMediaID: false,
 
     settings: {
@@ -444,7 +444,7 @@ let vm = new Vue({
         );
       }
 
-      this.id = fdata.id =
+      this.justCreatedFolderID = fdata.id =
         Math.random()
           .toString(36)
           .substring(2, 15) +
