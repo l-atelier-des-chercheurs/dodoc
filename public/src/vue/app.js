@@ -331,8 +331,6 @@ let vm = new Vue({
   components: { App },
   template: `
     <App
-      :current_slugProjectName="settings.current_slugProjectName"
-      :currentProject="currentProject"
     />
   `,
   data: {
@@ -345,10 +343,13 @@ let vm = new Vue({
 
     settings: {
       has_modal_opened: false,
-      current_slugProjectName: '',
+
+      current_slugProjectName: false,
+      current_slugPubliName: false,
+      current_author: false,
+
       show_publi_panel: false,
       view: 'ListView',
-      current_author: false,
       has_sidebar_opened: false,
       highlightMedia: '',
       is_loading_medias_for_project: '',
@@ -489,7 +490,6 @@ let vm = new Vue({
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: createMediaFromCapture`);
       }
-
       this.justCreatedCapturedMediaID = mdata.id =
         Math.random()
           .toString(36)

@@ -11,13 +11,13 @@
       </div>
 
       <div 
-        v-if="!!slugProjectName && $root.store.projects.hasOwnProperty(slugProjectName)" 
+        v-if="project.hasOwnProperty('name')" 
         class="m_topbar--left--breadcrumb" 
         @click="$root.settings.view = 'ProjectView'"
       >
         <button type="button">
           <span>
-            {{ $root.store.projects[slugProjectName].name }}
+            {{ project.name }}
           </span>
         </button>
         <button type="button" v-if="$root.settings.view === 'CaptureView'">
@@ -50,6 +50,7 @@
 
         <AuthorsList
           v-if="showAuthorsListModal"
+          :authors="authors"
           @close="showAuthorsListModal = false"
         >
         </AuthorsList>
@@ -121,10 +122,7 @@ import QRCode from './components/modals/QRCode.vue';
 import AuthorsList from './components/modals/AuthorsList.vue';
 
 export default {
-  props: {
-    has_back_button: Boolean,
-    slugProjectName: String
-  },
+  props: [ 'has_back_button', 'slugProjectName', 'authors', 'project' ],
   components: {
     QRCode,
     AuthorsList

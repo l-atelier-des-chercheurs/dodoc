@@ -118,6 +118,12 @@ export default {
       if (window.confirm(this.$t('sureToRemoveMedia'))) {
         this.$root.removeMedia(this.slugProjectName, slugMediaName);
       }
+    },
+    addToCurrentPubli(slugMediaName) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log('METHODS • MediaCard: addToPubli');
+      }
+      
     }
   }
 }

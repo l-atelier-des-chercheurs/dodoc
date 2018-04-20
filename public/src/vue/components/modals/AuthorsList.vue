@@ -10,7 +10,7 @@
     <template slot="preview">
       <div  class="">
         <div class="m_authorsList">
-          <div v-for="(author, slug) in $root.store.authors" :key="author.name" class="">
+          <div v-for="(author, slug) in authors" :key="author.name" class="">
             <button type="button" class="button-allwide" @click="setAuthor(author)"
               :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"
             >
@@ -27,8 +27,7 @@
 import Modal from './BaseModal.vue';
 
 export default {
-  props: {
-  },
+  props: ['authors'],
   components: {
     Modal
   },

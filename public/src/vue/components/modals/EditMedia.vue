@@ -184,7 +184,6 @@ export default {
     formatDateToHuman(date) {
       return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LLL');
     },
-    openMediaNewWindow: function() {},
     removeMedia: function() {
       if (window.confirm(this.$t('sureToRemoveMedia'))) {
         this.$root.removeMedia({

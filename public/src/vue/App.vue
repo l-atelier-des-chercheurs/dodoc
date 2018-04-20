@@ -9,7 +9,9 @@
 
     <TopBar
       :has_back_button="$root.settings.view !== 'ListView'"
-      :slugProjectName="current_slugProjectName"
+      :slugProjectName="$root.settings.current_slugProjectName"
+      :project="$root.currentProject"
+      :authors="$root.store.authors"
     >
     </TopBar>
 
@@ -27,9 +29,9 @@
         </transition>
         <transition name="ProjectView" :duration="500">
           <ProjectView
-            v-if="$root.settings.view === 'ProjectView' && currentProject.hasOwnProperty('name')"
-            :slugProjectName="current_slugProjectName"
-            :project="currentProject"
+            v-if="$root.settings.view === 'ProjectView' && $root.currentProject.hasOwnProperty('name')"
+            :slugProjectName="$root.settings.current_slugProjectName"
+            :project="$root.currentProject"
             :read_only="!$root.state.connected"
           />
         </transition>
@@ -37,8 +39,8 @@
         <transition name="CaptureView" :duration="500">
           <CaptureView
             v-if="$root.settings.view === 'CaptureView'"
-            :slugProjectName="current_slugProjectName"
-            :project="currentProject"
+            :slugProjectName="$root.settings.current_slugProjectName"
+            :project="$root.currentProject"
           />
         </transition>
       </div>
@@ -84,8 +86,6 @@ export default {
     Publications
   },
   props: {
-    current_slugProjectName: String,
-    currentProject: Object
   },
   data() {
     return {

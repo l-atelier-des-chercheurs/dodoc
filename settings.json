@@ -100,7 +100,7 @@
         "preview": {
           "type": "string"
         },
-        "medias": {
+        "medias_list": {
           "type": "string"
         }
       }
