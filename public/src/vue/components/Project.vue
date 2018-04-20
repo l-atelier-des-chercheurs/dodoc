@@ -39,7 +39,9 @@
         </div>
       </div>
 
-      <div class="margin-small flex-wrap flex-no-grow flex-horizontally-centered">
+      <div 
+        class="m_project--presentation--buttons"
+      >
         <button 
           v-if="project.authorized && context !== 'full'"
           type="button" 
@@ -50,8 +52,7 @@
             {{ $t('open') }}
           </span>
         </button>
-
-        <button v-if="!project.authorized" type="button" class="button-round margin-verysmall padding-verysmall" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
+        <button v-if="!project.authorized" type="button" class="buttonLink" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
           {{ $t('password') }}
         </button>
         <button v-if="project.authorized && context === 'full'" type="button" class="buttonLink" @click="showEditProjectModal = true" :disabled="read_only">

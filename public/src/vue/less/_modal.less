@@ -161,9 +161,18 @@
 
   .m_modal--metaOptions {
     flex: 1 1 auto;
-    .padding-medium;
+    .padding-vert-medium;
     overflow-y: auto;
     .custom_scrollbar(8px, 5px, 6px);
+
+    > * {
+      .margin-sides-medium;  
+      
+      &.m_modal--buttonrow {
+        margin: 0;
+        .margin-sides-small;
+      }
+    }
       
     > *:last-child {
       margin-bottom: 0;

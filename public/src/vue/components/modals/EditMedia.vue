@@ -46,93 +46,31 @@
         </div>
       </div>
 
-      <div v-if="!read_only" class="m_modal--buttonrow flex-wrap flex-vertically-start flex-space-between flex-same-basis">
+      <div v-if="!read_only" class="m_modal--buttonrow">
         <button type="button"
-          class="bg-transparent button-round margin-verysmall padding-verysmall"
+          class="buttonLink"
           @click="removeMedia()"
           :disabled="read_only"
           >
-          <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
-            <g id="Calque_2" data-name="Calque 2">
-              <g id="Editeur_txt" data-name="Editeur txt">
-                <g>
-                  <g>
-                    <circle cx="24.5" cy="24.5" r="24" style="fill: #4d4d4d"/>
-                    <circle cx="24.5" cy="24.5" r="24" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                  </g>
-                  <g>
-                    <path d="M16.79,35.19l-.72-16.86H33l-.72,16.86a1.42,1.42,0,0,1-1.46,1.31H18.25A1.42,1.42,0,0,1,16.79,35.19Z" style="fill: #4d4d4d;stroke: #fff;stroke-miterlimit: 10"/>
-                    <path d="M20.83,15.41v-2a.89.89,0,0,1,.92-.86h5.52a.89.89,0,0,1,.92.86v2Z" style="fill: #4d4d4d;stroke: #fff;stroke-miterlimit: 10"/>
-                    <line x1="20.75" y1="34.18" x2="20.75" y2="21.01" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                    <line x1="24.66" y1="34.18" x2="24.66" y2="21.01" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                    <line x1="28.58" y1="34.18" x2="28.58" y2="21.01" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                    <line x1="14" y1="15.41" x2="35" y2="15.41" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                  </g>
-                </g>
-              </g>
-            </g>
-          </svg>
-
-          <span class="text-cap font-verysmall">
-            {{ $t('remove') }}
-          </span>
+          {{ $t('remove') }}
         </button>
 
         <button type="button"
-          class="bg-transparent button-round margin-verysmall padding-verysmall"
+          class="buttonLink"
           @click.prevent="printMedia()"
           >
-          <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
-            <g id="Calque_2" data-name="Calque 2">
-              <g id="Editeur_txt" data-name="Editeur txt">
-                <g>
-                  <g>
-                    <circle cx="24.5" cy="24.5" r="24" style="fill: #4d4d4d"/>
-                    <circle cx="24.5" cy="24.5" r="24" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                  </g>
-                  <g>
-                    <rect x="12.5" y="18.57" width="24" height="12.78" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                    <polyline points="16.83 18.57 16.83 15.54 20.38 12.03 32.17 12.03 32.17 18.57" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                    <rect x="16.83" y="25.95" width="15.33" height="10.08" style="fill: #4d4d4d;stroke: #fff;stroke-miterlimit: 10"/>
-                    <line x1="19.12" y1="29.29" x2="29.53" y2="29.29" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                    <line x1="19.12" y1="32.17" x2="29.53" y2="32.17" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                    <line x1="14.11" y1="25.95" x2="34.86" y2="25.95" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                    <ellipse cx="32.37" cy="22.15" rx="0.75" ry="0.74" style="fill: #fff;stroke: #fff;stroke-miterlimit: 10"/>
-                    <polyline points="20.02 11.99 20.02 15.49 16.52 15.49" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                  </g>
-                </g>
-              </g>
-            </g>
-          </svg>
-          <span class="text-cap font-verysmall">
-            {{ $t('print') }}
-          </span>
+          {{ $t('print') }}
         </button>
 
-        <a :download="slugMediaName" :href="mediaURL" :title="slugMediaName" target="_blank"
-          class="button bg-transparent button-round margin-verysmall padding-verysmall"
+        <a 
+          :download="slugMediaName" 
+          :href="mediaURL" 
+          :title="slugMediaName" 
+          target="_blank"
+          class="buttonLink"
           :disabled="read_only"
           >
-          <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
-            <g id="Calque_2" data-name="Calque 2">
-              <g id="Editeur_txt" data-name="Editeur txt">
-                <g>
-                  <g>
-                    <circle cx="24.5" cy="24.5" r="24" style="fill: #4d4d4d"/>
-                    <circle cx="24.5" cy="24.5" r="24" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                  </g>
-                  <g>
-                    <polyline points="33.12 20.63 24.5 28.82 15.88 20.63" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                    <line x1="24.5" y1="28.82" x2="24.5" y2="12.53" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                  </g>
-                  <line x1="13.26" y1="34.05" x2="35.74" y2="34.05" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-                </g>
-              </g>
-            </g>
-          </svg>
-          <span class="text-cap font-verysmall">
-            {{ $t('download') }}
-          </span>
+          {{ $t('download') }}
         </a>
       </div>
 
