@@ -14,7 +14,6 @@ const JSONStorage = require('node-localstorage').JSONStorage;
 const portscanner = require('portscanner');
 
 const server = require('./server');
-const nfc = require('./nfc');
 
 const settings = require('./settings.json'),
   dev = require('./core/dev-log');
@@ -138,13 +137,6 @@ function createWindow() {
               }:${global.appInfos.port}`;
 
               app.server = server(app);
-
-              if (
-                settings.hasOwnProperty('enable_nfc') &&
-                settings.enable_nfc === true
-              ) {
-                // nfc();
-              }
 
               // and load the base url of the app.
               win.loadURL(global.appInfos.homeURL);
