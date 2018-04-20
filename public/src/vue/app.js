@@ -192,8 +192,6 @@ Vue.prototype.$socketio = new Vue({
       let slugProjectName = Object.keys(mdata)[0];
       console.log(`Media data is for ${slugProjectName}.`);
 
-      debugger;
-
       let mediaData = Object.values(mdata[slugProjectName].medias)[0];
       let slugMediaName = Object.keys(mdata[slugProjectName].medias)[0];
       mediaData.slugMediaName = slugMediaName;
@@ -237,8 +235,6 @@ Vue.prototype.$socketio = new Vue({
     // for projects, authors and publications
     _onListFolder(data) {
       console.log('Received _onListFolder packet.');
-      debugger;
-
       let type = Object.keys(data)[0];
       let content = Object.values(data)[0];
 
@@ -478,16 +474,13 @@ let vm = new Vue({
         );
       }
 
-      if (mdata.type === 'text') {
-        mdata.mediaID =
-          Math.random()
-            .toString(36)
-            .substring(2, 15) +
-          Math.random()
-            .toString(36)
-            .substring(2, 15);
-        this.justCreatedTextmediaID = mdata.mediaID;
-      }
+      this.justCreatedTextmediaID = mdata.id =
+        Math.random()
+          .toString(36)
+          .substring(2, 15) +
+        Math.random()
+          .toString(36)
+          .substring(2, 15);
 
       this.$socketio.createTextMedia(mdata);
     },
@@ -497,14 +490,13 @@ let vm = new Vue({
         console.log(`ROOT EVENT: createMediaFromCapture`);
       }
 
-      mdata.mediaID =
+      this.justCreatedCapturedMediaID = mdata.id =
         Math.random()
           .toString(36)
           .substring(2, 15) +
         Math.random()
           .toString(36)
           .substring(2, 15);
-      this.justCreatedCapturedMediaID = mdata.mediaID;
       this.$socketio.createMediaFromCapture(mdata);
     },
 

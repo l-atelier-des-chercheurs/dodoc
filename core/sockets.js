@@ -187,10 +187,13 @@ module.exports = (function() {
 
   function onCreateTextMedia(
     socket,
-    { type, mediaID, slugProjectName, additionalMeta }
+    { type, id, slugProjectName, additionalMeta }
   ) {
     dev.logfunction(
-      `EVENT - onCreateTextMedia : slugProjectName = ${slugProjectName} and type = ${type}`
+      `EVENT - onCreateTextMedia : slugProjectName = ${slugProjectName}, 
+      type = ${type}, 
+      additionalMeta = ${JSON.stringify(additionalMeta, null, 4)} 
+      and id = ${id}`
     );
 
     file
@@ -206,7 +209,7 @@ module.exports = (function() {
             sendMedias({
               slugFolderName: slugProjectName,
               slugMediaName: textMediaMeta.slugMediaName,
-              mediaID
+              id
             });
           })
           .catch(err => {
@@ -222,7 +225,7 @@ module.exports = (function() {
 
   function onCreateMediaFromCapture(
     socket,
-    { type, mediaID, rawData, slugProjectName, additionalMeta }
+    { type, id, rawData, slugProjectName, additionalMeta }
   ) {
     dev.logfunction(
       `EVENT - onCreateMediaFromCapture : slugProjectName = ${slugProjectName} and type = ${type} and rawData.length = ${
@@ -247,7 +250,7 @@ module.exports = (function() {
             sendMedias({
               slugFolderName: slugProjectName,
               slugMediaName: mediaMeta.slugMediaName,
-              mediaID
+              id
             });
           })
           .catch(err => {
@@ -369,9 +372,9 @@ module.exports = (function() {
       });
   }
 
-  function sendMedias({ slugFolderName, slugMediaName, socket, mediaID }) {
+  function sendMedias({ slugFolderName, slugMediaName, socket, id }) {
     dev.logfunction(
-      `COMMON - sendMedias for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName} and mediaID = ${mediaID}`
+      `COMMON - sendMedias for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName} and id = ${id}`
     );
 
     file
@@ -380,37 +383,40 @@ module.exports = (function() {
         if (foldersData === undefined) {
           return;
         }
-        file
-          .gatherAllMedias(slugFolderName, slugMediaName, mediaID)
-          .then(mediasData => {
-            dev.logverbose(`Got medias, now sending to the right clients`);
-            Object.keys(io.sockets.connected).forEach(sid => {
-              if (!!socket && socket.id !== sid) {
-                return;
+        file.gatherAllMedias(slugFolderName, slugMediaName).then(mediasData => {
+          dev.logverbose(`Got medias, now sending to the right clients`);
+
+          if (mediasData !== undefined && slugMediaName && id) {
+            mediasData[slugMediaName].id = id;
+          }
+
+          Object.keys(io.sockets.connected).forEach(sid => {
+            if (!!socket && socket.id !== sid) {
+              return;
+            }
+
+            let filteredMediasData = {};
+            if (auth.hasFolderAuth(sid, foldersData)) {
+              // let filteredMediasData = auth.filterMedias(mediasData);
+              filteredMediasData = JSON.parse(JSON.stringify(mediasData));
+            }
+
+            let folder_and_medias = {
+              [slugFolderName]: {
+                medias: filteredMediasData
               }
+            };
 
-              let filteredMediasData = {};
-              if (auth.hasFolderAuth(sid, foldersData)) {
-                // let filteredMediasData = auth.filterMedias(mediasData);
-                filteredMediasData = JSON.parse(JSON.stringify(mediasData));
-              }
+            dev.logverbose(`${JSON.stringify(folder_and_medias, null, 4)}`);
 
-              let folder_and_medias = {
-                [slugFolderName]: {
-                  medias: filteredMediasData
-                }
-              };
-
-              dev.logverbose(`${JSON.stringify(folder_and_medias, null, 4)}`);
-
-              api.sendEventWithContent(
-                !!slugMediaName ? 'listMedia' : 'listMedias',
-                folder_and_medias,
-                io,
-                socket || io.sockets.connected[sid]
-              );
-            });
+            api.sendEventWithContent(
+              !!slugMediaName ? 'listMedia' : 'listMedias',
+              folder_and_medias,
+              io,
+              socket || io.sockets.connected[sid]
+            );
           });
+        });
       })
       .catch(err => {
         dev.error('No folder found');

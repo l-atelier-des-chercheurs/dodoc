@@ -89,6 +89,16 @@ export default {
   },
 
   watch: {
+    'project.medias': function() {
+      let justCreatedTextMedia = Object.keys(this.project.medias).filter((m) => {
+        let data = this.project.medias[m];
+        return data.hasOwnProperty('id') && data.id === this.$root.justCreatedTextmediaID;
+      });      
+      if(justCreatedTextMedia.length > 0) {
+        this.openMediaModal(justCreatedTextMedia[0]);
+      }
+    }
+
   },
 
   computed: {

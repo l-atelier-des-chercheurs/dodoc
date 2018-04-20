@@ -658,7 +658,7 @@ module.exports = (function() {
     });
   }
 
-  function gatherAllMedias(slugFolderName, slugMediaName, mediaID) {
+  function gatherAllMedias(slugFolderName, slugMediaName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
         `COMMON — gatherAllMedias : will gather medias for folder ${slugFolderName} with opt slugMediaName = ${slugMediaName}`
@@ -668,10 +668,6 @@ module.exports = (function() {
         mediasData => {
           for (let slugMediaName in mediasData) {
             let mediaData = mediasData[slugMediaName];
-
-            if (mediaID) {
-              mediaData.mediaID = mediaID;
-            }
 
             mediasData[slugMediaName] = mediaData;
           }

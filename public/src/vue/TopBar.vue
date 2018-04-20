@@ -151,7 +151,6 @@ export default {
       }
     },
     urlToPortrait(slug, filename) {
-      debugger;
       if(filename === undefined) {
         return '';
       }
