@@ -36,18 +36,13 @@
         </div>
         <div class="m_panel--buttons">
           <button type="button" 
-            v-if="!isRecording"
             class="padding-verysmall bg-blanc"
-            @click="capture()"
+            @click="captureOrStop()"
           >
-            <img src="/images/i_record.svg">
+            <img 
+              :src="recordButtonSrc"
+            />
           </button>
-          <button type="button" 
-            v-if="isRecording"
-            class="padding-verysmall bg-blanc"
-            @click="$eventHub.$emit('capture.stopRecording')"
-          >
-            <img src="/images/i_stop.svg">
           </button>
           <span class="switch" v-if="selected_mode === 'video'">
             <input type="checkbox" class="switch" id="recordVideoWithAudio" v-model="recordVideoWithAudio">
@@ -131,11 +126,11 @@ export default {
           picto: '/images/i_icone-dodoc_video.svg',
           key: 'video'
         },
-        {
-          name: this.$t('stopmotion'),
-          picto: '/images/i_icone-dodoc_anim.svg',
-          key: 'stopmotion'
-        },
+        // {
+        //   name: this.$t('stopmotion'),
+        //   picto: '/images/i_icone-dodoc_anim.svg',
+        //   key: 'stopmotion'
+        // },
         {
           name: this.$t('audio'),
           picto: '/images/i_icone-dodoc_audio.svg',
@@ -180,12 +175,14 @@ export default {
   },
   mounted() {
     this.$eventHub.$on('socketio.new_media_captured', this.newMediaCaptured);
+    document.addEventListener('keyup', this.captureKeyListener);
     this.$nextTick(() => {
       this.init();
     });
   },
   beforeDestroy() {
     this.$eventHub.$off('socketio.new_media_captured', this.newMediaCaptured);
+    document.removeEventListener('keyup', this.captureKeyListener);
     this.stopAllFeeds();
   },
 
@@ -242,11 +239,14 @@ export default {
   computed: {
     sorted_available_devices() {
       return _.groupBy(this.available_devices, 'kind');
+    },
+    recordButtonSrc() {
+      return !this.isRecording ? '/images/i_record.svg':'/images/i_stop.svg';
     }
   },
   methods: {
     init() {
-      console.log('METHODS • Capture: init');
+      console.log('METHODS • CaptureView: init');
       navigator.mediaDevices.enumerateDevices()
       .then((deviceInfos) => {
         this.available_devices = deviceInfos;
@@ -283,7 +283,7 @@ export default {
     },
 
     previousMode() {
-      console.log('METHODS • Capture: previousMode');
+      console.log('METHODS • CaptureView: previousMode');
       let currentModeIndex = this.available_modes.findIndex((d) => {
         return d.key === this.selected_mode;
       });
@@ -293,7 +293,7 @@ export default {
       }
     },
     nextMode() {
-      console.log('METHODS • Capture: nextMode');
+      console.log('METHODS • CaptureView: nextMode');
       let currentModeIndex = this.available_modes.findIndex((d) => {
         return d.key === this.selected_mode;
       });
@@ -301,11 +301,30 @@ export default {
       if(currentModeIndex < this.available_modes.length-1) {
         this.selected_mode = this.available_modes[currentModeIndex+1].key;
       }
-      
     },
+    captureKeyListener(evt) {
+      console.log('METHODS • CaptureView: captureKeyListener');
+      switch(evt.key) {
+        case 'w':
+        case 'z':
+        case 'ArrowLeft':
+          this.previousMode();
+          break;
+        case 's':
+        case 'ArrowRight':
+          this.nextMode();
+          break;
+        case 'a':
+        case 'q':
+        case ' ':
+        case 'Enter':
+          this.captureOrStop();
+          break;
+      }
 
+    },
     stopAudioFeed() {
-      console.log('METHODS • Capture: stopAudioFeed');
+      console.log('METHODS • CaptureView: stopAudioFeed');
       if(this.audioStream) {
         this.audioStream.getTracks().forEach((track) => track.stop());
         this.audioStream = undefined;
@@ -313,7 +332,7 @@ export default {
       equalizer.stop();
     },
     stopVideoFeed() {
-      console.log('METHODS • Capture: stopVideoFeed');
+      console.log('METHODS • CaptureView: stopVideoFeed');
       if(!!this.videoStream) {
         for (let stream of this.videoStream.getVideoTracks()) {
           stream.stop();
@@ -326,7 +345,7 @@ export default {
     },
     stopAllFeeds() {
       return new Promise((resolve, reject) => {
-        console.log('METHODS • Capture: stopAllFeeds');
+        console.log('METHODS • CaptureView: stopAllFeeds');
         this.stopAudioFeed();
         this.stopVideoFeed();
         setTimeout(() => resolve(), 500);
@@ -335,7 +354,7 @@ export default {
 
     startCameraFeed(withAudio = false) {
       return new Promise((resolve, reject) => {
-        console.log('METHODS • Capture: startCameraFeed');
+        console.log('METHODS • CaptureView: startCameraFeed');
         if(this.selected_devicesId.videoinput === '') {
           return reject(this.$t('notifications.video_source_not_set'));
         }
@@ -356,7 +375,7 @@ export default {
 
     getCameraFeed(withAudio = false) {
       return new Promise((resolve, reject) => {
-        console.log('METHODS • Capture: getCameraFeed');
+        console.log('METHODS • CaptureView: getCameraFeed');
 
         const constraints = {
           video: {
@@ -379,11 +398,11 @@ export default {
 
     startAudioFeed() {
       return new Promise((resolve, reject) => {
-        console.log('METHODS • Capture: startAudioFeed');
+        console.log('METHODS • CaptureView: startAudioFeed');
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .log('METHODS • Capture: startAudioFeed');
+          .log('METHODS • CaptureView: startAudioFeed');
           
         this.getAudioFeed()
           .then((stream) => {
@@ -399,7 +418,7 @@ export default {
 
     getAudioFeed() {
       return new Promise((resolve, reject) => {
-        console.log('METHODS • Capture: getAudioFeed');
+        console.log('METHODS • CaptureView: getAudioFeed');
 
         if(this.selected_devicesId.audioinput === '') {
           reject(this.$t('notifications.audio_source_not_set'));
@@ -485,8 +504,14 @@ export default {
         }
       });
     },
-    capture() {
+    captureOrStop() {
       this.justCapturedMediaData = {};
+
+      if(this.isRecording) {
+        this.$eventHub.$emit('capture.stopRecording');
+        return;
+      }
+
       if(this.selected_mode === 'photo') {        
         this.getStaticImageFromVideoElement(this.$refs.videoElement).then(imageData => {
           const mediaMeta = {
@@ -525,7 +550,7 @@ export default {
     },
 
     newMediaCaptured(mdata) {
-      if (this.$root.justCreatedCapturedMediaID && this.$root.justCreatedCapturedMediaID === mdata.mediaID) {
+      if (this.$root.justCreatedCapturedMediaID && this.$root.justCreatedCapturedMediaID === mdata.id) {
         this.justCapturedMediaData = mdata;
       }
     },

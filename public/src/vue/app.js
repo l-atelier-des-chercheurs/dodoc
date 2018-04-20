@@ -212,7 +212,7 @@ Vue.prototype.$socketio = new Vue({
       );
 
       // check if mediaData has a mediaID (which would mean a user just created it)
-      if (mediaData.hasOwnProperty('mediaID')) {
+      if (mediaData.hasOwnProperty('id')) {
         this.$eventHub.$emit('socketio.new_media_captured', mediaData);
       }
     },
