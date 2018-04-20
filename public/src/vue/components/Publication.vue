@@ -1,7 +1,7 @@
 <template>
   <div>
-    {{ publication }}
-    <button type="button" @click="$emit('close')">
+    <pre>{{ publication }}</pre>
+    <button type="button" @click="closePublication()">
       Fermer
     </button>
   </div>
@@ -11,7 +11,7 @@
 
 export default {
   props: {
-    slugFolderName: String,
+    slugPubliName: String,
     publication: Object,
     read_only: Boolean
   },
@@ -39,18 +39,32 @@ export default {
   },
   methods: {
     addMedia(slugMediaName) {
-      let publidata = this.publication;
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: addMedia / slugMediaName = ${slugMediaName}`);
+      }
 
-      publidata.medias_list.push({
+      debugger;
+
+      let medias_list = [];
+      if(this.publication.hasOwnProperty('medias_list')) {
+        medias_list = this.publication.medias_list.slice();
+      }
+      medias_list.push({
         filename: slugMediaName,
         page: 1
       });
 
       this.$root.editFolder({ 
         type: 'publications', 
-        slugFolderName: this.slugFolderName, 
-        data: publidata 
+        slugFolderName: this.slugPubliName, 
+        data: { medias_list } 
       });
+    },
+    closePublication() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: closePublication`);
+      }
+      this.$root.closePublication();
     }
   }
 }

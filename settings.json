@@ -101,7 +101,7 @@
           "type": "string"
         },
         "medias_list": {
-          "type": "string"
+          "type": "array"
         }
       }
     },

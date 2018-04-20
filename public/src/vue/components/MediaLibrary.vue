@@ -29,6 +29,7 @@
         v-if="media.hasOwnProperty(mediaSort.field) && media[mediaSort.field] !== ''"
         :key="media.slugMediaName"
         :media="media"
+        :slugMediaName="media.slugMediaName"
         :slugProjectName="slugProjectName"
       >
       </MediaCard>

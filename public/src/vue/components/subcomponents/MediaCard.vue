@@ -2,9 +2,8 @@
   <div 
     class="m_media"
   >
-    <div>
       <figure 
-        @click.stop="openMediaModal(media.slugMediaName)" 
+        @click.stop="openMediaModal()" 
         @mouseover="is_hovered = true"
         @mouseleave="is_hovered = false"
         :class="{ 'is--hovered' : is_hovered }"
@@ -12,13 +11,17 @@
         <MediaContent
           v-model="media.content"
           :context="'preview'"
-          :slugMediaName="media.slugMediaName"
+          :slugMediaName="slugMediaName"
           :slugProjectName="slugProjectName"
           :media="media"
         ></MediaContent>
         <figcaption
           v-if="is_hovered"
         >
+          <!-- <button type="button" @click="addToCurrentPubli()">
+            Add to publi 
+          </button> -->
+        
           <div class="m_metaField" v-if="!!media.type">
             <div>
               {{ $t('type') }}
@@ -57,7 +60,7 @@
           <button 
             type="button" 
             class="button-redthin "
-            @click.stop="openMediaModal(media.slugMediaName)"
+            @click.stop="openMediaModal()"
           >
             {{ $t('open') }}
           </button>
@@ -74,6 +77,7 @@ export default {
   props: {
     media: Object,
     slugProjectName: String,
+    slugMediaName: String
   },
   components: {
     MediaContent
@@ -105,25 +109,25 @@ export default {
     formatDateToHuman(date) {
       return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LLL');
     },
-    openMediaModal(slugMediaName) {
+    openMediaModal() {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaCard: openMedia = ${slugMediaName}`);
+        console.log(`METHODS • MediaCard: openMedia = ${this.slugMediaName}`);
       }
-      this.$eventHub.$emit('modal.openMedia', slugMediaName);
+      this.$eventHub.$emit('modal.openMedia', this.slugMediaName);
     },
-    removeMedia(slugMediaName) {
+    removeMedia() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaCard: removeMedia');
       }
       if (window.confirm(this.$t('sureToRemoveMedia'))) {
-        this.$root.removeMedia(this.slugProjectName, slugMediaName);
+        this.$root.removeMedia(this.slugProjectName, this.slugMediaName);
       }
     },
-    addToCurrentPubli(slugMediaName) {
+    addToCurrentPubli() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaCard: addToPubli');
       }
-      
+      this.$eventHub.$emit('publication.addMedia', this.slugMediaName);
     }
   }
 }

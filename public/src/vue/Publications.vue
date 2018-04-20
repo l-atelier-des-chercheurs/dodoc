@@ -17,35 +17,16 @@
         {{ publication.name }}
       </button>
     </div>
-
-    <hr>
-
-    <Publication
-      v-if="!!current_slugFolderName"
-      :slugFolderName="current_slugFolderName"
-      :publication="publications[current_slugFolderName]"
-      :read_only="!$root.state.connected"
-      @close="current_slugFolderName = false"
-    />
-
   </div>
 </template>
 <script>
-import Publication from './components/Publication.vue';
 
 export default {
-  props: {
-    publications: {
-      type: Object,
-      default: {}
-    }
-  },
+  props: ['publications'],
   components: {
-    Publication
   },
   data() {
     return {
-      current_slugFolderName: false
     }
   },
   
@@ -72,15 +53,11 @@ export default {
       }
       this.$root.createFolder({ type: 'publications', data: publidata });      
     },
-    openPublication(slugFolderName) {
+    openPublication(slugPubliName) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • Publications: openPublication');
+        console.log(`METHODS • Publications: openPublication / slugPubliName = ${slugPubliName}`);
       }
-      this.current_slugFolderName = slugFolderName;
-
-      // ask for a copy of media inside this publication
-      // this.$socketio.listMedias({ slugFolderName: slugProjectName });
-
+      this.$root.openPublication(slugPubliName);
     },
   }
 }

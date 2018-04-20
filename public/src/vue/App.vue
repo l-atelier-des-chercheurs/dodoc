@@ -45,9 +45,20 @@
         </transition>
       </div>
       <div class="m_activitiesPanel--doc" v-if="$root.settings.show_publi_panel">
-        <Publications
-          :publications="$root.store.publications"
-        />
+        <transition name="ListView" :duration="500">
+          <Publications
+            v-if="!$root.settings.current_slugPubliName"
+            :publications="$root.store.publications"
+          />
+        </transition>
+        <transition name="ProjectView" :duration="500">
+          <Publication
+            v-if="$root.settings.current_slugPubliName !== false"
+            :slugPubliName="$root.settings.current_slugPubliName"
+            :publication="$root.store.publications[$root.settings.current_slugPubliName]"
+            :read_only="!$root.state.connected"
+          />
+        </transition>
       </div>
     </div>
 
@@ -74,6 +85,7 @@ import ListView from './ListView.vue';
 import ProjectView from './ProjectView.vue';
 import CaptureView from './CaptureView.vue';
 import Publications from './Publications.vue';
+import Publication from './components/Publication.vue';
 
 export default {
   name: 'app',
@@ -83,7 +95,8 @@ export default {
     ListView,
     ProjectView,
     CaptureView,
-    Publications
+    Publications,
+    Publication
   },
   props: {
   },

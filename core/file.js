@@ -221,7 +221,11 @@ module.exports = (function() {
                 .then(meta => {
                   meta = _sanitizeMetaFromFile({ type, meta });
                   meta.slugFolderName = slugFolderName;
-                  meta.medias = {};
+
+                  if (type === 'projects') {
+                    meta.medias = {};
+                  }
+
                   meta.fullFolderPath = thisFolderPath;
 
                   resolve({ [slugFolderName]: meta });
@@ -565,9 +569,9 @@ module.exports = (function() {
     });
   }
 
-  function _getMedia(slugFolderName, slugMediaName = '') {
+  function _getSlugMediaNames(slugFolderName, slugMediaName = '') {
     return new Promise(function(resolve, reject) {
-      dev.logfunction(`COMMON — _getMedia`);
+      dev.logfunction(`COMMON — _getSlugMediaNames`);
       if (slugFolderName === undefined) {
         dev.error(`Missing slugFolderName to read medias from.`);
         reject();
@@ -578,7 +582,7 @@ module.exports = (function() {
         );
       }
       dev.logverbose(
-        `COMMON — _getMedia — slugFolderName: ${slugFolderName} — slugMediaName: ${slugMediaName}`
+        `COMMON — _getSlugMediaNames — slugFolderName: ${slugFolderName} — slugMediaName: ${slugMediaName}`
       );
 
       let slugFolderPath = api.getFolderPath(slugFolderName);
@@ -595,8 +599,8 @@ module.exports = (function() {
         dev.logverbose(
           `Found this many (${filenames.length}) filenames: ${filenames}`
         );
-        let medias = filenames.filter(function(thisSlugMediaName) {
-          // not a folder
+
+        let list_slugMediaName = filenames.filter(function(thisSlugMediaName) {
           return (
             !new RegExp(settings.regexpMatchFolderNames, 'i').test(
               thisSlugMediaName
@@ -621,42 +625,52 @@ module.exports = (function() {
         });
         dev.logverbose(
           `Number of medias that match in ${slugFolderPath} = ${
-            medias.length
-          }. Media(s) is(are) ${medias}`
+            list_slugMediaName.length
+          }. Media(s) is(are) ${list_slugMediaName}`
         );
 
-        if (medias.length === 0) {
+        if (list_slugMediaName.length === 0) {
           dev.logverbose(
             `Since no medias is in this folder, let’s abort right there.`
           );
-          resolve({});
+          resolve([]);
         } else {
-          var allMediasData = [];
-          medias.forEach(function(slugMediaName) {
-            let fmeta = new Promise((resolve, reject) => {
-              readMediaAndThumbs(slugFolderName, slugMediaName).then(meta => {
-                meta.slugMediaName = slugMediaName;
-                resolve(meta);
-              });
-            });
-            allMediasData.push(fmeta);
-          });
-
-          Promise.all(allMediasData).then(parsedMediasData => {
-            // reunite array items as a single big object
-            let flatObjMediasData = {};
-            parsedMediasData.forEach(fmeta => {
-              let slugMediaName = fmeta.slugMediaName;
-              delete fmeta.slugMediaName;
-              flatObjMediasData[slugMediaName] = fmeta;
-            });
-            dev.logverbose(
-              `All medias meta have been processed`,
-              JSON.stringify(flatObjMediasData, null, 4)
-            );
-            resolve(flatObjMediasData);
-          });
+          resolve(list_slugMediaName);
         }
+      });
+    });
+  }
+
+  function _readMediaList({ slugFolderName, list_slugMediaName }) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(
+        `COMMON — _readMediaList: slugFolderName = ${slugFolderName} and list_slugMediaName = ${list_slugMediaName}`
+      );
+
+      var allMediasData = [];
+      list_slugMediaName.forEach(slugMediaName => {
+        let fmeta = new Promise((resolve, reject) => {
+          readMediaAndThumbs(slugFolderName, slugMediaName).then(meta => {
+            meta.slugMediaName = slugMediaName;
+            resolve(meta);
+          });
+        });
+        allMediasData.push(fmeta);
+      });
+
+      Promise.all(allMediasData).then(parsedMediasData => {
+        // reunite array items as a single big object
+        let flatObjMediasData = {};
+        parsedMediasData.forEach(fmeta => {
+          let slugMediaName = fmeta.slugMediaName;
+          delete fmeta.slugMediaName;
+          flatObjMediasData[slugMediaName] = fmeta;
+        });
+        dev.logverbose(
+          `All medias meta have been processed`,
+          JSON.stringify(flatObjMediasData, null, 4)
+        );
+        resolve(flatObjMediasData);
       });
     });
   }
@@ -667,20 +681,32 @@ module.exports = (function() {
         `COMMON — gatherAllMedias : will gather medias for folder ${slugFolderName} with opt slugMediaName = ${slugMediaName}`
       );
 
-      _getMedia(slugFolderName, slugMediaName).then(
-        mediasData => {
-          for (let slugMediaName in mediasData) {
-            let mediaData = mediasData[slugMediaName];
-
-            mediasData[slugMediaName] = mediaData;
+      _getSlugMediaNames(slugFolderName, slugMediaName)
+        .then(list_slugMediaName => {
+          if (list_slugMediaName.length === 0) {
+            return resolve();
           }
-          resolve(mediasData);
-        },
-        function(err) {
+          _readMediaList({ slugFolderName, list_slugMediaName }).then(
+            mediasData => resolve(mediasData)
+          );
+        })
+        .catch(err => {
           dev.error(`Failed to list medias! Error: ${err}`);
           reject(err);
-        }
+        });
+    });
+  }
+
+  function getMediasFromPubli(publiMeta) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(
+        `COMMON — getMediasFromPubli : will gather medias for publi name = ${
+          publiMeta.name
+        } 
+        with media = ${publiMeta.medias}`
       );
+
+      // for each items in publiMeta.medias, get the slugFolderName (part before the /) and the slugMediaName
     });
   }
 
@@ -1318,6 +1344,18 @@ module.exports = (function() {
           output_obj[key] =
             val.default === 'random' ? Math.random() * 0.5 : val.default;
         }
+      } else if (type === 'array') {
+        if (
+          (!val.hasOwnProperty('override') || val.override === false) &&
+          existing.hasOwnProperty(key)
+        ) {
+          if (!Array.isArray(existing[key])) {
+            return;
+          }
+          output_obj[key] = existing[key];
+        } else if (val.hasOwnProperty('default')) {
+          output_obj[key] = val.default;
+        }
       }
     });
 
@@ -1351,6 +1389,8 @@ module.exports = (function() {
           new_meta[key] = validator.toFloat(meta[key]);
         } else if (fieldType === 'boolean') {
           new_meta[key] = validator.toBoolean(meta[key]);
+        } else if (fieldType === 'array') {
+          new_meta[key] = meta[key];
         } else {
           dev.error(`Unexpected field type ${fieldType}.`);
         }

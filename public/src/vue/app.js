@@ -352,7 +352,6 @@ let vm = new Vue({
       view: 'ListView',
       has_sidebar_opened: false,
       highlightMedia: '',
-      is_loading_medias_for_project: '',
       enable_system_bar: window.state.is_electron && window.state.is_darwin
     },
 
@@ -404,7 +403,6 @@ let vm = new Vue({
         // we are probably in a webbrowser that accesses a subfolder
         if (this.store.slugProjectName) {
           this.settings.current_slugProjectName = this.store.slugProjectName;
-          this.settings.is_loading_medias_for_project = this.store.slugProjectName;
           window.addEventListener(
             'socketio.folders_listed',
             () => {
@@ -540,7 +538,6 @@ let vm = new Vue({
 
       this.settings.view = 'ProjectView';
       this.settings.current_slugProjectName = slugProjectName;
-      this.settings.is_loading_medias_for_project = slugProjectName;
       this.$socketio.listMedias({ slugFolderName: slugProjectName });
 
       history.pushState(
@@ -562,14 +559,6 @@ let vm = new Vue({
       this.settings.current_slugProjectName = '';
 
       history.pushState({ slugProjectName: '' }, '', '/');
-    },
-    listMediasForProject: function(e) {
-      if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: listMediasForProject');
-      }
-      if (e.detail === this.settings.is_loading_medias_for_project) {
-        this.settings.is_loading_medias_for_project = '';
-      }
     },
     updateLocalLang: function(newLangCode) {
       if (window.state.dev_mode === 'debug') {
@@ -595,6 +584,21 @@ let vm = new Vue({
       if (this.settings.show_publi_panel) {
         this.$socketio.listFolders({ type: 'publications' });
       }
+    },
+    openPublication(slugPubliName) {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`ROOT EVENT: openPublication: ${slugPubliName}`);
+      }
+      this.settings.current_slugPubliName = slugPubliName;
+
+      // TODO : ask for a copy of media inside this publication
+      // this.$socketio.listMedias({ slugFolderName: slugProjectName });
+    },
+    closePublication() {
+      if (window.state.dev_mode === 'debug') {
+        console.log('ROOT EVENT: closePublication');
+      }
+      this.settings.current_slugPubliName = false;
     }
   },
   watch: {

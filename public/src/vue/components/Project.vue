@@ -98,6 +98,7 @@
           v-for="media in favMedias"
           :key="media.slugMediaName"
           :media="media"
+          :slugMediaName="media.slugMediaName"
           :slugProjectName="slugProjectName"
         >
         </MediaCard>

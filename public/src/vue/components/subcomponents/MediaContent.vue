@@ -1,10 +1,10 @@
 <template>
   <div
-    class="mediaContainer flex-wrap flex-vertically-centered"
+    class="mediaContainer"
     :class="`type-${media.type}`"
     :data-context="context"
   >
-
+  
     <template v-if="media.type === 'image'">
       <img :src="linkToImageThumb">
       <transition
@@ -73,7 +73,7 @@
       >
     </template>
     <template v-else-if="media.type === 'other'">
-      {{ this.slugMediaName }}
+      {{ slugMediaName }}
     </template>
   </div>
 </template>

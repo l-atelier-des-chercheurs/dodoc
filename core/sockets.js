@@ -69,6 +69,10 @@ module.exports = (function() {
       socket.on('removeMedia', function(data) {
         onRemoveMedia(socket, data);
       });
+
+      // socket.on('getMediasFromPubli', function(data) {
+      //   onRemoveMedia(socket, data);
+      // });
     });
   }
 
