@@ -155,7 +155,7 @@ export default {
         : this.mediaURL;
     },
     linkToVideoThumb: function() {
-      if (this.media.thumbs.length === 0) {
+      if (typeof this.media.thumbs === 'null' || this.media.thumbs.length === 0) {
         return;
       }
 
