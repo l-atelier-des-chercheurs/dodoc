@@ -684,7 +684,7 @@ module.exports = (function() {
       _getSlugMediaNames(slugFolderName, slugMediaName)
         .then(list_slugMediaName => {
           if (list_slugMediaName.length === 0) {
-            return resolve();
+            return resolve({});
           }
           _readMediaList({ slugFolderName, list_slugMediaName }).then(
             mediasData => resolve(mediasData)

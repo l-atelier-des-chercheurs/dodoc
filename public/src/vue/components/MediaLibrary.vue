@@ -171,6 +171,7 @@ export default {
 
         return result;
       }, []);
+      
       return sortedMedias;
     }    
   },

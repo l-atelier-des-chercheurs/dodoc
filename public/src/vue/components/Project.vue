@@ -169,6 +169,7 @@ export default {
       Object.keys(this.project.medias).map((m) => {
         if(this.project.medias[m].fav === true) {
           favMedias[m] = this.project.medias[m];
+          favMedias[m].slugMediaName = m;
         }
       });
       return favMedias;

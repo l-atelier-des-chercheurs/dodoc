@@ -38,19 +38,17 @@ export default {
   computed: {
   },
   methods: {
-    addMedia(slugMediaName) {
+    addMedia(slugMediaPath) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: addMedia / slugMediaName = ${slugMediaName}`);
+        console.log(`METHODS • Publication: addMedia / slugMediaPath = ${slugMediaPath}`);
       }
-
-      debugger;
 
       let medias_list = [];
       if(this.publication.hasOwnProperty('medias_list')) {
         medias_list = this.publication.medias_list.slice();
       }
       medias_list.push({
-        filename: slugMediaName,
+        filename: slugMediaPath,
         page: 1
       });
 

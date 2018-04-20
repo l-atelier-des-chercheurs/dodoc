@@ -2,6 +2,7 @@
   <div 
     class="m_media"
   >
+    <div>
       <figure 
         @click.stop="openMediaModal()" 
         @mouseover="is_hovered = true"
@@ -18,9 +19,9 @@
         <figcaption
           v-if="is_hovered"
         >
-          <!-- <button type="button" @click="addToCurrentPubli()">
+          <button type="button" @click.stop="addToCurrentPubli()">
             Add to publi 
-          </button> -->
+          </button>
         
           <div class="m_metaField" v-if="!!media.type">
             <div>
@@ -127,7 +128,7 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaCard: addToPubli');
       }
-      this.$eventHub.$emit('publication.addMedia', this.slugMediaName);
+      this.$eventHub.$emit('publication.addMedia', `${this.slugProjectName}/${this.slugMediaName}`);
     }
   }
 }
