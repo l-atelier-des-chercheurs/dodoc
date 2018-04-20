@@ -334,8 +334,8 @@ module.exports = (function() {
             }
           }
           let thisSocket = socket || io.sockets.connected[sid];
-          let filteredFoldersData = auth.filterFolders(sid, foldersData);
 
+          let filteredFoldersData = auth.filterFolders(sid, foldersData);
           if (filteredFoldersData === undefined) {
             filteredFoldersData = '';
           } else {

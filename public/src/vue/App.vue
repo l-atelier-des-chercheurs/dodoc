@@ -15,7 +15,6 @@
 
     <div class="m_activitiesPanel">
       <!-- <pre>{{ $root.store }}</pre> -->
-      <!-- <pre>{{ $root.store }}</pre> -->
       <div class="m_activitiesPanel--do">
         <!-- v-show="$root.settings.view === 'ListView'" -->
         <transition name="ListView" :duration="500">
@@ -44,13 +43,9 @@
         </transition>
       </div>
       <div class="m_activitiesPanel--doc" v-if="$root.settings.show_publi_panel">
-        <button type="button">
-          Créer une publication
-        </button>
-        // modale de création de publications
-
-        // liste des publications
-
+        <Publications
+          :publications="$root.store.publications"
+        />
       </div>
     </div>
 
@@ -76,6 +71,7 @@ import TopBar from './TopBar.vue';
 import ListView from './ListView.vue';
 import ProjectView from './ProjectView.vue';
 import CaptureView from './CaptureView.vue';
+import Publications from './Publications.vue';
 
 export default {
   name: 'app',
@@ -84,7 +80,8 @@ export default {
     TopBar,
     ListView,
     ProjectView,
-    CaptureView
+    CaptureView,
+    Publications
   },
   props: {
     current_slugProjectName: String,

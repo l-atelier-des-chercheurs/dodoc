@@ -46,34 +46,6 @@
         </div>
       </div>
 
-      <div v-if="!read_only" class="m_modal--buttonrow">
-        <button type="button"
-          class="buttonLink"
-          @click="removeMedia()"
-          :disabled="read_only"
-          >
-          {{ $t('remove') }}
-        </button>
-
-        <button type="button"
-          class="buttonLink"
-          @click.prevent="printMedia()"
-          >
-          {{ $t('print') }}
-        </button>
-
-        <a 
-          :download="slugMediaName" 
-          :href="mediaURL" 
-          :title="slugMediaName" 
-          target="_blank"
-          class="buttonLink"
-          :disabled="read_only"
-          >
-          {{ $t('download') }}
-        </a>
-      </div>
-
 <!-- Caption -->
       <div 
       v-if="(!read_only || !!mediadata.caption) && mediadata.type !== 'marker' && mediadata.type !== 'text'"
@@ -116,6 +88,35 @@
           <input type="checkbox" class="switch" id="favswitch" v-model="mediadata.fav" :readonly="read_only">
           <label for="favswitch">{{ $t('fav') }}</label>
         </span>
+      </div>
+
+      <div v-if="!read_only" class="m_modal--buttonrow">
+        <hr>
+        <button type="button"
+          class="buttonLink"
+          @click.prevent="printMedia()"
+          >
+          {{ $t('print') }}
+        </button>
+
+        <a 
+          :download="slugMediaName" 
+          :href="mediaURL" 
+          :title="slugMediaName" 
+          target="_blank"
+          class="buttonLink"
+          :disabled="read_only"
+          >
+          {{ $t('download') }}
+        </a>
+        
+        <button type="button"
+          class="buttonLink"
+          @click="removeMedia()"
+          :disabled="read_only"
+          >
+          {{ $t('remove') }}
+        </button>
       </div>
 
     </template>

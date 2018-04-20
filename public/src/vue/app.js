@@ -249,7 +249,7 @@ Vue.prototype.$socketio = new Vue({
         }
       }
 
-      window.store[type] = Object.assign({}, window.store.projects, content);
+      window.store[type] = Object.assign({}, window.store[type], content);
     },
 
     // for projects, authors and publications
@@ -591,6 +591,10 @@ let vm = new Vue({
         console.log(`ROOT EVENT: togglePubliPanel`);
       }
       this.settings.show_publi_panel = !this.settings.show_publi_panel;
+
+      if (this.settings.show_publi_panel) {
+        this.$socketio.listFolders({ type: 'publications' });
+      }
     }
   },
   watch: {

@@ -62,6 +62,9 @@ module.exports = (function() {
     dev.logfunction(`AUTH — hasFolderAuth`);
     let slugFolderName = Object.keys(foldersData)[0];
 
+    // disabling for now
+    return true;
+
     if (
       (users_auth[sessionId] !== undefined &&
         users_auth[sessionId].indexOf(slugFolderName) >= 0) ||
