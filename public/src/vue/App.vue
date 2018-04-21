@@ -51,6 +51,7 @@
           />
         </transition>
         <transition name="ProjectView" :duration="500">
+          {{ $root.settings.current_slugPubliName }}
           <Publication
             v-if="$root.settings.current_slugPubliName !== false"
             :slugPubliName="$root.settings.current_slugPubliName"

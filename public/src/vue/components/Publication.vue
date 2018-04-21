@@ -7,12 +7,17 @@
 
     <div class="m_publication--pages">
       <div 
-        v-for="(page, index) in publication.pages" 
+        v-for="(page, pageNumber) in publication.pages" 
         class="m_publication--pages--page"
         :class="`m_publication--pages--page_format-${page.format}`"
-        :key="index"
+        :key="pageNumber"
       >
-        <div v-for="media in publication_medias[(index+1) + '']">
+        <div 
+          v-for="(media, mediaIndex) in publication_medias[(pageNumber+1) + '']" 
+          :key="mediaIndex"
+          class="m_publication--pages--page--media"
+          :style="mediaStyle(mediaIndex)"
+        >
           <MediaContent
             :context="'full'"
             :slugMediaName="media.slugMediaName"
@@ -20,16 +25,15 @@
             :media="media"
             :read_only="read_only"
             v-model="media.content"
-          >
-          </MediaContent>
+          />
         </div>
       </div>
     </div>
 
-    <button type="button" @click="addOnePage()">
+    <button type="button" @click="addPage()">
       Ajouter une page
     </button>
-    <button type="button" @click="removeOnePage()">
+    <button type="button" @click="removeLastPage()">
       Supprimer une page
     </button>
   </div>
@@ -173,9 +177,9 @@ export default {
 
       this.publication_medias = medias_paginated;        
     },
-    addOnePage() {
+    addPage() {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: addOnePage`);
+        console.log(`METHODS • Publication: addPage`);
       }
 
       let pages = [];
@@ -193,8 +197,25 @@ export default {
         data: { pages } 
       });
     },
-    removeOnePage() {
+    removeLastPage() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: removeLastPage`);
+      }
 
+      let pages = [];
+      if(this.publication.hasOwnProperty('pages')) {
+        pages = this.publication.pages.slice();
+      }
+      pages.pop();      
+
+      this.$root.editFolder({ 
+        type: 'publications', 
+        slugFolderName: this.slugPubliName, 
+        data: { pages } 
+      });
+    },
+    mediaStyle(index) {
+      return `left: ${index * 40}px; top: ${index * 40}px`;
     }
 
   }
