@@ -549,7 +549,6 @@ body {
   .custom_scrollbar(8px, 5px, 6px);
 }
 
-
 .m_projects {
   .flex-wrap;
   .flex-horizontally-start;
@@ -1028,6 +1027,41 @@ body {
     }
   }
 }
+
+.m_publication {
+
+  .m_publication--pages {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    
+    > * {
+      flex: 0 0 auto;
+    }
+  }
+
+  .m_publication--pages--page {
+    position: relative;
+    .margin-medium;
+    .bg-blanc;
+    box-shadow: 0px 2px 16px 0px rgba(0,0,0,.2);
+
+    &.m_publication--pages--page_format-A4 {
+      width: 21cm;
+      height: 29.7cm;
+    }
+  }
+  
+}
+
+
+
+
+
+
+
+
+
 
 .alertify-logs>*, .alertify-logs>.default {
   background-color: @c-gris;

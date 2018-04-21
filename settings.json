@@ -102,6 +102,9 @@
         },
         "medias_list": {
           "type": "array"
+        },
+        "pages": {
+          "type": "array"
         }
       }
     },

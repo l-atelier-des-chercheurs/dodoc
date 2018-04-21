@@ -3,26 +3,40 @@
     <button type="button" @click="closePublication()">
       Fermer
     </button>
-    <div>
-      <ul>
-      <li v-for="(media, index) in publication_medias" :key="index">
-        <button type="button" class="buttonLink" @click="removeMedia(index)">supprimer</button>
-        <MediaContent
-          :context="'full'"
-          :slugMediaName="media.slugMediaName"
-          :slugProjectName="media.slugProjectName"
-          :media="media"
-          :read_only="read_only"
-          v-model="media.content"
-        >
-        </MediaContent>
-      </li>
-      </ul>
+
+
+    <div class="m_publication--pages">
+      <div 
+        v-for="(page, index) in publication.pages" 
+        class="m_publication--pages--page"
+        :class="`m_publication--pages--page_format-${page.format}`"
+        :key="index"
+      >
+        <div v-for="media in publication_medias[(index+1) + '']">
+          <MediaContent
+            :context="'full'"
+            :slugMediaName="media.slugMediaName"
+            :slugProjectName="media.slugProjectName"
+            :media="media"
+            :read_only="read_only"
+            v-model="media.content"
+          >
+          </MediaContent>
+        </div>
+      </div>
     </div>
+
+    <button type="button" @click="addOnePage()">
+      Ajouter une page
+    </button>
+    <button type="button" @click="removeOnePage()">
+      Supprimer une page
+    </button>
   </div>
 </template>
 <script>
 import MediaContent from './subcomponents/MediaContent.vue';
+import _ from 'underscore';
 
 export default {
   props: {
@@ -108,9 +122,13 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: updateMediasPubli`);
       }
+
+      if(!this.publication.hasOwnProperty('medias_list') || this.publication.medias_list.length === 0) {
+        return;
+      }
       
       // get list of publications items
-      let fullyFormedMedias = [];
+      let medias_paginated = {};
       let missingMedias = [];
 
       this.publication.medias_list.forEach(m => {
@@ -134,9 +152,16 @@ export default {
           console.log(`Some medias missing from client`);
           missingMedias.push({ slugFolderName: slugProjectName, slugMediaName });
         } else {
+          
           let meta = project_medias[slugMediaName];
           meta.slugProjectName = slugProjectName;
-          fullyFormedMedias.push(meta);
+          meta.publi_meta = m;
+
+          let expected_page = m.hasOwnProperty('page') ? Number.parseInt(m.page) : this.publication.pages.length - 1;
+          if(!medias_paginated.hasOwnProperty(expected_page)) {
+            medias_paginated[expected_page] = [];
+          }
+          medias_paginated[expected_page].push(meta);
           return;
         }
       });
@@ -146,8 +171,30 @@ export default {
         this.$root.listSpecificMedias(missingMedias);
       }
 
-      this.publication_medias = fullyFormedMedias;  
-      
+      this.publication_medias = medias_paginated;        
+    },
+    addOnePage() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: addOnePage`);
+      }
+
+      let pages = [];
+      if(this.publication.hasOwnProperty('pages')) {
+        pages = this.publication.pages.slice();
+      }
+      pages.push({ 
+        template: 'journal',
+        format: 'A4'
+      });      
+
+      this.$root.editFolder({ 
+        type: 'publications', 
+        slugFolderName: this.slugPubliName, 
+        data: { pages } 
+      });
+    },
+    removeOnePage() {
+
     }
 
   }

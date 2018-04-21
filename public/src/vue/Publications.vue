@@ -49,7 +49,11 @@ export default {
       let name = this.$refs.publiName.value !== '' ? this.$refs.publiName.value : 'Publication sans nom';
 
       let publidata = {
-        name
+        name,
+        pages: [{
+          template: 'journal',
+          format: 'A4'          
+        }]
       }
       this.$root.createFolder({ type: 'publications', data: publidata });      
     },

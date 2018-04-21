@@ -603,6 +603,7 @@ let vm = new Vue({
         console.log(`ROOT EVENT: togglePubliPanel`);
       }
       this.settings.show_publi_panel = !this.settings.show_publi_panel;
+      this.settings.current_slugPubliName = false;
 
       if (this.settings.show_publi_panel) {
         this.$socketio.listFolders({ type: 'publications' });
