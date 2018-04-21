@@ -2,6 +2,10 @@
   <div class="m_publication" @scroll="onScroll"
     ref="panel"
   >
+    <h2>
+      {{ publication.name }}
+    </h2>
+
     <button type="button" @click="closePublication()">
       Fermer
     </button>
@@ -14,21 +18,14 @@
         :class="[`m_publication--pages--page_format-${page.format}`, { 'is--active' : pageNumber === page_currently_active-1 }]"
         :key="pageNumber"
       >
-        <div 
+        <MediaPublication
           v-for="(media, mediaIndex) in publication_medias[(pageNumber+1) + '']" 
           :key="mediaIndex"
-          class="m_publication--pages--page--media"
-          :style="mediaStyle(mediaIndex)"
-        >
-          <MediaContent
-            :context="'full'"
-            :slugMediaName="media.slugMediaName"
-            :slugProjectName="media.slugProjectName"
-            :media="media"
-            :read_only="read_only"
-            v-model="media.content"
-          />
-        </div>
+          :media="media"
+          :read_only="read_only"
+          @removeMedia="values => { removeMedia(values) }"
+          @editPubliMedia="values => { editPubliMedia(values) }"
+        />
       </div>
     </div>
 
@@ -42,7 +39,7 @@
   </div>
 </template>
 <script>
-import MediaContent from './subcomponents/MediaContent.vue';
+import MediaPublication from './subcomponents/MediaPublication.vue';
 import _ from 'underscore';
 
 export default {
@@ -52,7 +49,7 @@ export default {
     read_only: Boolean
   },
   components: {
-    MediaContent
+    MediaPublication
   },
   data() {
     return {
@@ -72,6 +69,7 @@ export default {
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
     this.$eventHub.$off('publication.listSpecificMedias', this.updateMediasPubli);
+    window.removeEventListener('mouseup', this.mouseup);
   },
 
   watch: {
@@ -109,17 +107,36 @@ export default {
         data: { medias_list } 
       });
     },
-
-    removeMedia(index) {
+    removeMedia({ reference_index }) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: removeMedia / index = ${index}`);
+        console.log(`METHODS • Publication: removeMedia / reference_index = ${reference_index}`);
       }
 
       let medias_list = [];
       if(this.publication.hasOwnProperty('medias_list')) {
         medias_list = this.publication.medias_list.slice();
       }
-      medias_list.splice(index, 1);
+      medias_list.splice(reference_index, 1);
+
+      this.$root.editFolder({ 
+        type: 'publications', 
+        slugFolderName: this.slugPubliName, 
+        data: { medias_list } 
+      });
+    },
+  
+    // function to update property of a media inside medias_list
+    editPubliMedia({ reference_index, x, y }) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: removeMedia / reference_index = ${reference_index}`);
+      }
+
+      let medias_list = [];
+      if(this.publication.hasOwnProperty('medias_list')) {
+        medias_list = this.publication.medias_list.slice();
+      }
+      medias_list[reference_index].x = x;
+      medias_list[reference_index].y = y;
 
       this.$root.editFolder({ 
         type: 'publications', 
@@ -147,9 +164,11 @@ export default {
       let medias_paginated = {};
       let missingMedias = [];
 
-      this.publication.medias_list.forEach(m => {
+      let medias_list = this.publication.medias_list.slice();
+
+      medias_list.forEach((m, index) => {
         // for each, get slugFolderName and slugMediaName
-        if(!m.filename.includes('/')) {
+        if(!m.hasOwnProperty('filename') || !m.filename.includes('/')) {
           return;
         }
 
@@ -169,9 +188,10 @@ export default {
           missingMedias.push({ slugFolderName: slugProjectName, slugMediaName });
         } else {
           
-          let meta = project_medias[slugMediaName];
+          let meta = JSON.parse(JSON.stringify(project_medias[slugMediaName]));
           meta.slugProjectName = slugProjectName;
           meta.publi_meta = m;
+          meta.publi_meta.reference_index = index;
 
           let expected_page = m.hasOwnProperty('page') ? Number.parseInt(m.page) : this.publication.pages.length - 1;
           if(!medias_paginated.hasOwnProperty(expected_page)) {
@@ -225,9 +245,6 @@ export default {
         slugFolderName: this.slugPubliName, 
         data: { pages } 
       });
-    },
-    mediaStyle(index) {
-      return `left: ${index * 40}px; top: ${index * 40}px`;
     },
 
     onScroll() {
