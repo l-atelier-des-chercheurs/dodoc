@@ -101,10 +101,14 @@ Vue.prototype.$socketio = new Vue({
       this.socket.on('authentificated', this._authentificated);
       this.socket.on('listMedia', this._onListMedia);
       this.socket.on('listMedias', this._onListMedias);
+      // used in publications
+      this.socket.on('listSomeMedias', this._onListSomeMedias);
       this.socket.on('listFolder', this._onListFolder);
       this.socket.on('listFolders', this._onListFolders);
+
+      this.socket.on('listSpecificMedias', this._onListSpecificMedias);
+
       this.socket.on('notify', this._onNotify);
-      this.socket.on('gotTagUID', this._gotTagUID);
     },
     _onSocketConnect() {
       let sessionId = this.socket.io.engine.id;
@@ -219,17 +223,38 @@ Vue.prototype.$socketio = new Vue({
 
     _onListMedias(mdata) {
       console.log('Received _onListMedias packet.');
-      let slugProjectName = Object.keys(mdata)[0];
-      console.log(`Media data is for ${slugProjectName}.`);
 
-      window.store.projects[slugProjectName].medias =
-        mdata[slugProjectName].medias;
+      Object.keys(mdata).map(m => {
+        let slugProjectName = Object.keys(mdata)[0];
+        console.log(`Media data is for ${slugProjectName}.`);
 
-      window.dispatchEvent(
-        new CustomEvent('timeline.listMediasForProject', {
-          detail: slugProjectName
-        })
-      );
+        window.store.projects[slugProjectName].medias =
+          mdata[slugProjectName].medias;
+
+        window.dispatchEvent(
+          new CustomEvent('timeline.listMediasForProject', {
+            detail: slugProjectName
+          })
+        );
+      });
+    },
+
+    _onListSpecificMedias(mdata) {
+      console.log('Received _onListSomeMedias packet.');
+
+      Object.keys(mdata).map(slugProjectName => {
+        window.store.projects[slugProjectName].medias = Object.assign(
+          {},
+          window.store.projects[slugProjectName].medias,
+          mdata[slugProjectName].medias
+        );
+
+        // Object.keys(mdata[slugProjectName].medias).map(m => {
+        //   const meta = mdata[slugProjectName].medias[m];
+        //   window.store.projects[slugProjectName].medias[m] = meta;
+        // });
+        this.$eventHub.$emit('publication.listSpecificMedias');
+      });
     },
 
     // for projects, authors and publications
@@ -286,11 +311,6 @@ Vue.prototype.$socketio = new Vue({
         .delay(4000)
         .error(this.$t(`notifications[${msg}]`));
     },
-    _gotTagUID(tag) {
-      console.log('Received _gotTagUID packet.');
-      this.$eventHub.$emit('socketio.got_tag', tag);
-    },
-
     listFolders(fdata) {
       this.socket.emit('listFolders', fdata);
     },
@@ -318,6 +338,9 @@ Vue.prototype.$socketio = new Vue({
     },
     removeMedia(mdata) {
       this.socket.emit('removeMedia', mdata);
+    },
+    listSpecificMedias(media_list) {
+      this.socket.emit('listSpecificMedias', media_list);
     }
   }
 });
@@ -599,6 +622,19 @@ let vm = new Vue({
         console.log('ROOT EVENT: closePublication');
       }
       this.settings.current_slugPubliName = false;
+    },
+
+    listSpecificMedias(medias_list) {
+      if (window.state.dev_mode === 'debug') {
+        console.log(
+          `ROOT EVENT: listSpecificMedias with medias_list = ${JSON.stringify(
+            medias_list,
+            null,
+            4
+          )}`
+        );
+      }
+      this.$socketio.listSpecificMedias(medias_list);
     }
   },
   watch: {

@@ -70,9 +70,9 @@ module.exports = (function() {
         onRemoveMedia(socket, data);
       });
 
-      // socket.on('getMediasFromPubli', function(data) {
-      //   onRemoveMedia(socket, data);
-      // });
+      socket.on('listSpecificMedias', function(data) {
+        onListSpecificMedias(socket, data);
+      });
     });
   }
 
@@ -314,6 +314,17 @@ module.exports = (function() {
     );
   }
 
+  function onListSpecificMedias(socket, medias_list) {
+    dev.logfunction(
+      `EVENT - onListSpecificMedias with medias_list = ${JSON.stringify(
+        medias_list,
+        null,
+        4
+      )}`
+    );
+    sendSpecificMedias({ medias_list, socket });
+  }
+
   /**************************************************************** GENERAL ********************************/
 
   // send projects, authors and publications
@@ -387,48 +398,68 @@ module.exports = (function() {
         if (foldersData === undefined) {
           return;
         }
-        file.gatherAllMedias(slugFolderName, slugMediaName).then(mediasData => {
-          dev.logverbose(`Got medias, now sending to the right clients`);
-
-          if (mediasData !== undefined && slugMediaName && id) {
-            mediasData[slugMediaName].id = id;
-          }
-
-          Object.keys(io.sockets.connected).forEach(sid => {
-            if (!!socket && socket.id !== sid) {
-              return;
+        file
+          .getSlugMediaNames(slugFolderName, slugMediaName)
+          .then(list_slugMediaName => {
+            if (list_slugMediaName.length === 0) {
+              return resolve({});
             }
+            let medias_list = list_slugMediaName.map(slugMediaName => {
+              return {
+                slugFolderName,
+                slugMediaName
+              };
+            });
+            file.readMediaList({ medias_list }).then(folders_and_medias => {
+              dev.logverbose(`Got medias, now sending to the right clients`);
 
-            let filteredMediasData = {};
-            if (auth.hasFolderAuth(sid, foldersData)) {
-              // let filteredMediasData = auth.filterMedias(mediasData);
-              filteredMediasData = JSON.parse(JSON.stringify(mediasData));
-            }
-
-            let folder_and_medias = {
-              [slugFolderName]: {
-                medias: filteredMediasData
+              if (folders_and_medias !== undefined && slugMediaName && id) {
+                folders_and_medias[slugFolderName].medias[
+                  slugMediaName
+                ].id = id;
               }
-            };
 
-            dev.logverbose(`${JSON.stringify(folder_and_medias, null, 4)}`);
+              Object.keys(io.sockets.connected).forEach(sid => {
+                if (!!socket && socket.id !== sid) {
+                  return;
+                }
 
-            api.sendEventWithContent(
-              !!slugMediaName ? 'listMedia' : 'listMedias',
-              folder_and_medias,
-              io,
-              socket || io.sockets.connected[sid]
-            );
+                // let filteredMediasData = {};
+                // if (auth.hasFolderAuth(sid, foldersData)) {
+                //   // let filteredMediasData = auth.filterMedias(mediasData);
+                //   filteredMediasData = JSON.parse(JSON.stringify(mediasData));
+                // }
+
+                api.sendEventWithContent(
+                  !!slugMediaName ? 'listMedia' : 'listMedias',
+                  folders_and_medias,
+                  io,
+                  socket || io.sockets.connected[sid]
+                );
+              });
+            });
+          })
+          .catch(err => {
+            dev.error(`Failed to list medias! Error: ${err}`);
+            reject(err);
           });
-        });
       })
       .catch(err => {
         dev.error('No folder found');
       });
   }
 
-  function sendTagUID(tag) {
-    api.sendEventWithContent('gotTagUID', tag, io);
+  // only for one user at a time
+  function sendSpecificMedias({ medias_list, socket }) {
+    dev.logfunction(`COMMON - sendSpecificMedias`);
+    file.readMediaList({ medias_list }).then(folders_and_medias => {
+      api.sendEventWithContent(
+        'listSpecificMedias',
+        folders_and_medias,
+        io,
+        socket
+      );
+    });
   }
 
   return API;

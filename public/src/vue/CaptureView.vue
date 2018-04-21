@@ -43,7 +43,6 @@
               :src="recordButtonSrc"
             />
           </button>
-          </button>
           <span class="switch" v-if="selected_mode === 'video'">
             <input type="checkbox" class="switch" id="recordVideoWithAudio" v-model="recordVideoWithAudio">
             <label for="recordVideoWithAudio">Enregistrer le son</label>

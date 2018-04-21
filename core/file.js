@@ -24,8 +24,9 @@ module.exports = (function() {
         slugFolderName
       }),
 
-    gatherAllMedias: (slugFolderName, slugMediaName, mediaID) =>
-      gatherAllMedias(slugFolderName, slugMediaName, mediaID),
+    getSlugMediaNames: (slugFolderName, slugMediaName = '') =>
+      getSlugMediaNames(slugFolderName, (slugMediaName = '')),
+    readMediaList: ({ medias_list }) => readMediaList({ medias_list }),
     createMediaMeta: (slugFolderName, slugMediaName, additionalMeta) =>
       createMediaMeta(slugFolderName, slugMediaName, additionalMeta),
     editMediaMeta: mdata => editMediaMeta(mdata),
@@ -569,7 +570,7 @@ module.exports = (function() {
     });
   }
 
-  function _getSlugMediaNames(slugFolderName, slugMediaName = '') {
+  function getSlugMediaNames(slugFolderName, slugMediaName = '') {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — _getSlugMediaNames`);
       if (slugFolderName === undefined) {
@@ -600,7 +601,7 @@ module.exports = (function() {
           `Found this many (${filenames.length}) filenames: ${filenames}`
         );
 
-        let list_slugMediaName = filenames.filter(function(thisSlugMediaName) {
+        let list_slugMediaName = filenames.filter(thisSlugMediaName => {
           return (
             !new RegExp(settings.regexpMatchFolderNames, 'i').test(
               thisSlugMediaName
@@ -626,7 +627,7 @@ module.exports = (function() {
         dev.logverbose(
           `Number of medias that match in ${slugFolderPath} = ${
             list_slugMediaName.length
-          }. Media(s) is(are) ${list_slugMediaName}`
+          }. Media(s) is(are) ${list_slugMediaName.join()}`
         );
 
         if (list_slugMediaName.length === 0) {
@@ -641,58 +642,77 @@ module.exports = (function() {
     });
   }
 
-  function _readMediaList({ slugFolderName, list_slugMediaName }) {
+  function readMediaList({ medias_list }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `COMMON — _readMediaList: slugFolderName = ${slugFolderName} and list_slugMediaName = ${list_slugMediaName}`
+        `COMMON — readMediaList: medias_list = ${JSON.stringify(
+          medias_list,
+          null,
+          4
+        )}}`
       );
 
       var allMediasData = [];
-      list_slugMediaName.forEach(slugMediaName => {
+      medias_list.forEach(m => {
+        if (m.slugFolderName === undefined || m.slugMediaName === undefined) {
+          return;
+        }
+
         let fmeta = new Promise((resolve, reject) => {
-          readMediaAndThumbs(slugFolderName, slugMediaName).then(meta => {
-            meta.slugMediaName = slugMediaName;
-            resolve(meta);
+          readMediaAndThumbs(m.slugFolderName, m.slugMediaName).then(meta => {
+            meta.slugMediaName = m.slugMediaName;
+            resolve({
+              slugFolderName: m.slugFolderName,
+              mediaMeta: meta
+            });
           });
         });
         allMediasData.push(fmeta);
       });
 
-      Promise.all(allMediasData).then(parsedMediasData => {
-        // reunite array items as a single big object
-        let flatObjMediasData = {};
-        parsedMediasData.forEach(fmeta => {
-          let slugMediaName = fmeta.slugMediaName;
-          delete fmeta.slugMediaName;
-          flatObjMediasData[slugMediaName] = fmeta;
-        });
-        dev.logverbose(
-          `All medias meta have been processed`,
-          JSON.stringify(flatObjMediasData, null, 4)
-        );
-        resolve(flatObjMediasData);
-      });
-    });
-  }
-
-  function gatherAllMedias(slugFolderName, slugMediaName) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction(
-        `COMMON — gatherAllMedias : will gather medias for folder ${slugFolderName} with opt slugMediaName = ${slugMediaName}`
-      );
-
-      _getSlugMediaNames(slugFolderName, slugMediaName)
-        .then(list_slugMediaName => {
-          if (list_slugMediaName.length === 0) {
-            return resolve({});
-          }
-          _readMediaList({ slugFolderName, list_slugMediaName }).then(
-            mediasData => resolve(mediasData)
+      Promise.all(allMediasData)
+        .then(mediasMeta => {
+          dev.logverbose(
+            `readMediaList: gathered all metas, now processing : ${JSON.stringify(
+              mediasMeta,
+              null,
+              4
+            )}`
           );
+
+          // reunite array items as a single big object
+          let folders_and_medias = {};
+
+          mediasMeta.map(d => {
+            if (d === null) {
+              return;
+            }
+
+            const slugFolderName = d.slugFolderName;
+            const mediaMeta = d.mediaMeta;
+            const slugMediaName = mediaMeta.slugMediaName;
+
+            if (!folders_and_medias.hasOwnProperty(slugFolderName)) {
+              folders_and_medias[slugFolderName] = {
+                medias: {}
+              };
+            }
+
+            folders_and_medias[slugFolderName].medias[
+              slugMediaName
+            ] = mediaMeta;
+            return;
+          });
+
+          dev.logverbose(
+            `All medias meta have been processed`,
+            JSON.stringify(folders_and_medias, null, 4)
+          );
+          resolve(folders_and_medias);
         })
         .catch(err => {
-          dev.error(`Failed to list medias! Error: ${err}`);
-          reject(err);
+          dev.error(`Failed readMediaList with ${err}`);
+          reject();
         });
     });
   }

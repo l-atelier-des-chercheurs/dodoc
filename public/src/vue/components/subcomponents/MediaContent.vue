@@ -51,27 +51,6 @@
       </textarea>
     </template>
 
-    <template v-else-if="media.type === 'marker'">
-      <div v-if="context !== 'edit'" class="padding-small">
-        <template v-if="value.length > 0">
-          {{ value }}
-        </template>
-        <template v-else>
-          …
-        </template>
-      </div>
-      <input
-        v-else
-        type="text"
-        class="border-none bg-transparent"
-        placeholder="Étiquette"
-        name="label"
-        :value="value"
-        @input="$emit('input', $event.target.value)"
-        ref="textField"
-        :readonly="read_only"
-      >
-    </template>
     <template v-else-if="media.type === 'other'">
       {{ slugMediaName }}
     </template>
@@ -90,7 +69,7 @@ export default {
     context: {
       type: String,
       default: 'preview'
-      // preview, edit, ou autre (hi-res, pas de input text)
+      // preview, edit, full
     },
     value: {
       type: String,

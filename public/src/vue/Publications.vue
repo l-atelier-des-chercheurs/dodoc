@@ -1,5 +1,5 @@
 <template>
-  <div class="margin-medium">
+  <div class="m_publications">
     <div class="margin-medium">
       <input type="text" placeholder="nom" ref="publiName">
       <button type="button" @click="createPublication">

@@ -19,7 +19,7 @@
         <figcaption
           v-if="is_hovered"
         >
-          <button type="button" @click.stop="addToCurrentPubli()">
+          <button type="button" v-if="$root.settings.current_slugPubliName" @click.stop="addToCurrentPubli()">
             Add to publi 
           </button>
         
