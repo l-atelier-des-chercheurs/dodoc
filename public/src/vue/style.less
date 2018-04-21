@@ -1046,9 +1046,32 @@ body {
     .bg-blanc;
     box-shadow: 0px 2px 16px 0px rgba(0,0,0,.2);
 
+    &.is--active {
+
+      &::before {
+        content: '>';
+        
+        display: block;
+        position: absolute;
+        right: calc(100% + 5px);
+        height: 100%;
+        width: 40px;
+        color: @c-rouge;
+        border-right: 5px solid currentColor;
+
+        font-family: 'Fira Mono';
+        font-weight: 500;
+
+        font-size: 4em;
+
+        display: flex;
+        align-items: center;
+      }
+    }
+
     &.m_publication--pages--page_format-A4 {
-      width: 21cm;
-      height: 29.7cm;
+      width: 14.9cm;
+      height: 21cm;
     }
 
     .m_publication--pages--page--media {

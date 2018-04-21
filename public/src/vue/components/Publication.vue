@@ -1,15 +1,17 @@
 <template>
-  <div class="m_publication">
+  <div class="m_publication" @scroll="onScroll"
+    ref="panel"
+  >
     <button type="button" @click="closePublication()">
       Fermer
     </button>
 
 
-    <div class="m_publication--pages">
+    <div class="m_publication--pages" ref="pages">
       <div 
         v-for="(page, pageNumber) in publication.pages" 
         class="m_publication--pages--page"
-        :class="`m_publication--pages--page_format-${page.format}`"
+        :class="[`m_publication--pages--page_format-${page.format}`, { 'is--active' : pageNumber === page_currently_active-1 }]"
         :key="pageNumber"
       >
         <div 
@@ -29,6 +31,7 @@
         </div>
       </div>
     </div>
+
 
     <button type="button" @click="addPage()">
       Ajouter une page
@@ -53,7 +56,8 @@ export default {
   },
   data() {
     return {
-      publication_medias: {}
+      publication_medias: {},
+      page_currently_active: 1
     }
   },
   created() {
@@ -63,6 +67,7 @@ export default {
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('publication.listSpecificMedias', this.updateMediasPubli);
     this.updateMediasPubli();  
+
   },
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
@@ -86,9 +91,16 @@ export default {
       if(this.publication.hasOwnProperty('medias_list')) {
         medias_list = this.publication.medias_list.slice();
       }
+
+      const lastPageNumber = this.publication.pages.length + 1;
+      let addToPage = lastPageNumber;
+      if(this.page_currently_active > 0 && this.page_currently_active < lastPageNumber) {
+        addToPage = this.page_currently_active;
+      }
+
       medias_list.push({
         filename: slugMediaPath,
-        page: 1
+        page: addToPage
       });
 
       this.$root.editFolder({ 
@@ -216,6 +228,30 @@ export default {
     },
     mediaStyle(index) {
       return `left: ${index * 40}px; top: ${index * 40}px`;
+    },
+
+    onScroll() {
+      if (this.$root.state.dev_mode === 'debug') {
+        // console.log(`METHODS • Publication: onScroll`);
+      }
+
+      if(!this.$refs.hasOwnProperty('pages') || this.$refs.pages.children.length === 0) {
+        return;
+      }
+
+      const currentScroll = event.target.scrollTop;
+      const middleOfScreen = this.$refs.panel.offsetHeight / 2;
+      let pages = this.$refs.pages.children;
+
+      let index = 1;
+      for(let page of pages) {
+        if(page.offsetTop + page.offsetHeight > currentScroll + middleOfScreen) {
+          break;
+        }
+        index++;
+      }
+
+      this.page_currently_active = index;
     }
 
   }
