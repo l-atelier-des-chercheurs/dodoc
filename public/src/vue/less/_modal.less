@@ -23,7 +23,8 @@
   }
 
   @media screen and (max-width: 50rem) {
-    display: block;
+    overflow: auto !important;
+    align-items: flex-start;
     .m_modal--container {
       .m_modal--container--content {
         display: block;
@@ -31,7 +32,8 @@
     }
   }
   html.touchevents & {
-    display: block;
+    overflow: auto !important;
+    align-items: flex-start;
     .m_modal--container {
       .m_modal--container--content {
         display: block;
@@ -92,6 +94,13 @@
       &.m_modal--sidebar {
         flex: 0 0 @t-panelWidth;
         max-height: 90vh;
+
+        @media screen and (max-width: 50rem) {
+          max-height: none;
+        }
+        html.touchevents & { 
+        max-height: none;
+        }
       }
 
       &.m_modal--preview {

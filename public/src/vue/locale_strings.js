@@ -46,6 +46,7 @@ module.exports = (function() {
       video: 'vidéo',
       stopmotion: 'animation',
       audio: 'son',
+      vecto: 'formes',
 
       credits:
         'Un projet libre et open-source réalisé par l’<a href="https://latelier-des-chercheurs.fr" class="js--openInBrowser" target="_blank">Atelier des Chercheurs</a> avec et pour le <a href="https://www.studiotheatre.fr/" class="js--openInBrowser" target="_blank">Studio-Théâtre de Vitry-sur-Seine</a>.',
@@ -163,6 +164,7 @@ module.exports = (function() {
       video: 'video',
       stopmotion: 'stop motion',
       audio: 'sound',
+      vecto: 'shapes',
 
       credits:
         'A free and open-source app made by l’<a href="https://latelier-des-chercheurs.fr" class="js--openInBrowser" target="_blank">Atelier des Chercheurs</a> with and for the <a href="https://www.studiotheatre.fr/" class="js--openInBrowser" target="_blank">Studio-Théâtre de Vitry-sur-Seine</a>.',

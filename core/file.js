@@ -770,6 +770,7 @@ module.exports = (function() {
               case '.tiff':
               case '.tif':
               case '.dng':
+              case '.svg':
                 additionalMeta.type = 'image';
                 break;
               case '.mp4':
@@ -1231,6 +1232,23 @@ module.exports = (function() {
               .catch(err => {
                 reject(err);
               });
+          })
+        );
+      } else if (type === 'svg') {
+        tasks.push(
+          new Promise((resolve, reject) => {
+            mediaName += '.svg';
+            type = 'image';
+            let pathToMedia = path.join(
+              api.getFolderPath(slugProjectName),
+              mediaName
+            );
+
+            var fileBuffer = new Buffer(rawData, 'base64');
+            fs.writeFile(pathToMedia, fileBuffer, function(err) {
+              if (err) reject(err);
+              resolve();
+            });
           })
         );
       }

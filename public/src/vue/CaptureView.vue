@@ -33,16 +33,28 @@
             v-if="selected_mode === 'audio'"
             ref="equalizerElement" width="720" height="360" 
           />
+          <div id="vectoContainer" v-if="selected_mode === 'vecto'" v-html="vecto.svgstr">
+          </div>
         </div>
         <div class="m_panel--buttons">
           <button type="button" 
             class="padding-verysmall bg-blanc"
             @click="captureOrStop()"
           >
+            <a
+              v-if="selected_mode === 'vecto'"
+              ref="downloadVecto"
+            >
+              <img 
+                :src="recordButtonSrc"
+              />
+            </a>
             <img 
+              v-else
               :src="recordButtonSrc"
             />
           </button>
+
           <span class="switch" v-if="selected_mode === 'video'">
             <input type="checkbox" class="switch" id="recordVideoWithAudio" v-model="recordVideoWithAudio">
             <label for="recordVideoWithAudio">Enregistrer le son</label>
@@ -71,24 +83,36 @@
 
     </div>
 
+    <div class="m_captureview--options">
+      <fieldset v-show="true">
+        <legend>Sources</legend>
+        <div v-for="(currentId, kind) in selected_devicesId" :key="kind">
+          {{ kind }}
+          <select v-if="sorted_available_devices.hasOwnProperty(kind)" v-model="selected_devicesId[kind]">
+            <option 
+              v-for="device in sorted_available_devices[kind]" 
+              :value="device.deviceId" 
+              :key="device.deviceId"
+            >
+              {{ device.label }}
+            </option>        
+          </select>
+        </div>
+      </fieldset>
 
-    <fieldset v-show="true">
-      <legend>Sources</legend>
-      <div v-for="(currentId, kind) in selected_devicesId" :key="kind">
-        {{ kind }}
-        <select v-if="sorted_available_devices.hasOwnProperty(kind)" v-model="selected_devicesId[kind]">
-          <option 
-            v-for="device in sorted_available_devices[kind]" 
-            :value="device.deviceId" 
-            :key="device.deviceId"
-          >
-            {{ device.label }}
-          </option>        
-        </select>
-      </div>
-    </fieldset>
-
-
+      <fieldset v-show="true">
+        <legend>Resolution</legend>
+        <div 
+          v-for="res in available_camera_resolutions"
+          :key="res.name"
+        >
+          <input type="radio" :id="res.name" :value="res" v-model="current_camera_resolution">
+          <label :for="res.name">
+            <span>{{ res.name }}</span>
+          </label>
+        </div>
+      </fieldset>
+    </div>
   </div>
 </template>
 <script>
@@ -96,8 +120,9 @@ import MediaContent from './components/subcomponents/MediaContent.vue';
 
 import RecordRTC from 'recordrtc';
 import _ from 'underscore';
-import { setTimeout } from 'timers';
+import { setTimeout, setInterval } from 'timers';
 import 'webrtc-adapter';
+import ImageTracer from 'imagetracerjs';
 
 export default {
   props: {
@@ -133,6 +158,11 @@ export default {
           name: this.$t('audio'),
           picto: '/images/i_icone-dodoc_audio.svg',
           key: 'audio'
+        },
+        {
+          name: this.$t('vecto'),
+          picto: '/images/i_icone-dodoc_vecto.svg',
+          key: 'vecto'
         }
       ],
 
@@ -144,20 +174,30 @@ export default {
       videoStream: null,
       audioStream: null,
       available_devices: {},
+
+      current_camera_resolution: {
+        name: 'hd',
+        width: 1280,
+        height: 720
+      },
       available_camera_resolutions: [
         {
+          name: 'qvga',
           width: 320,
           height: 240
         },
         {
+          name: 'vga',
           width: 640,
           height: 480
         },
         {
+          name: 'hd',
           width: 1280,
           height: 720
         },
         {
+          name: 'full hd',
           width: 1920,
           height: 1080
         }
@@ -166,6 +206,9 @@ export default {
         audioinput: '',
         videoinput: '',
         audiooutput: ''
+      },
+      vecto: {
+        svgstr: ''
       }
     }
   },
@@ -228,10 +271,21 @@ export default {
           .catch(err => {
           })      
         });
+      } else 
+      if(this.selected_mode === 'vecto') {
+        this.stopAllFeeds().then(() => {
+          this.startVectoFeed();
+        });
       }
     },
     'isRecording': function() {
       equalizer.setSarahCouleur(this.isRecording);
+    },
+    'current_camera_resolution': function() {
+      console.log(`WATCH • Capture: current_camera_resolution = ${this.current_camera_resolution}`);
+      this.stopAllFeeds().then(() => {
+        this.startCameraFeed();
+      });      
     }
   },
   computed: {
@@ -257,18 +311,17 @@ export default {
           if(this.selected_devicesId[kind] === '') {
             if(this.sorted_available_devices.hasOwnProperty(kind)) {
 
-              this.selected_devicesId[kind] = this.sorted_available_devices[kind][0].deviceId;
+              let selected_devicesId = this.sorted_available_devices[kind][0].deviceId;
 
               if(kind === 'videoinput') {
                 const camera_back = this.sorted_available_devices[kind].filter(x => {
                   return x.label.includes('back')
                 });              
                 if(camera_back.length > 0) {
-                  this.selected_devicesId[kind] = camera_back[0].deviceId;
+                  selected_devicesId = this.selected_devicesId[kind] = camera_back[0].deviceId;
                 }
-
               }
-
+              this.selected_devicesId[kind] = selected_devicesId;              
             }
           }
         });
@@ -332,6 +385,9 @@ export default {
     stopVideoFeed() {
       console.log('METHODS • CaptureView: stopVideoFeed');
       if(!!this.videoStream) {
+        if(!this.$refs.videoElement.paused)
+          this.$refs.videoElement.pause();
+        
         for (let stream of this.videoStream.getVideoTracks()) {
           stream.stop();
         }        
@@ -344,6 +400,7 @@ export default {
     stopAllFeeds() {
       return new Promise((resolve, reject) => {
         console.log('METHODS • CaptureView: stopAllFeeds');
+        
         this.stopAudioFeed();
         this.stopVideoFeed();
         setTimeout(() => resolve(), 500);
@@ -359,10 +416,15 @@ export default {
 
         this.getCameraFeed(withAudio)
           .then((stream) => {
-            this.videoStream = stream;
-            this.$refs.videoElement.srcObject = stream;
-            this.$refs.videoElement.volume = 0;
-            resolve();
+            console.log('METHODS • CaptureView: startCameraFeed / got camera stream');
+            setTimeout(() => {
+              if(this.videoStream !== stream) {
+                this.videoStream = stream;
+                this.$refs.videoElement.srcObject = stream;
+                this.$refs.videoElement.volume = 0;
+              }
+              return resolve();
+            },1000);
           })
           .catch((err) => {
             this.$alertify.error(err);
@@ -379,17 +441,22 @@ export default {
           video: {
             optional: [{ sourceId: this.selected_devicesId.videoinput }],
             mandatory: {
-              minWidth:"1280","maxWidth":"1280","minHeight":"720","maxHeight":"720"
+              // minWidth:"1280","maxWidth":"1280","minHeight":"720","maxHeight":"720"
+              // minWidth:"640","maxWidth":"640","minHeight":"480","maxHeight":"480"
+              minWidth: this.current_camera_resolution.width,
+              maxWidth: this.current_camera_resolution.width,
+              minHeight: this.current_camera_resolution.height,
+              maxHeight: this.current_camera_resolution.height
             }
           },
           audio: withAudio
         };
         navigator.mediaDevices.getUserMedia(constraints)
           .then((stream) => {
-            resolve(stream);
+            return resolve(stream);
           })
           .catch((err) => {
-            reject(this.$t('notifications.failed_to_start_video_change_source_or_res'));
+            return reject(this.$t('notifications.failed_to_start_video_change_source_or_res'));
           });
       });
     },
@@ -427,28 +494,28 @@ export default {
             optional: [{ sourceId: this.selected_devicesId.audioinput }]
           }
         };
-        navigator.mediaDevices.getUserMedia(constraints)
-          .then((stream) => {
-            resolve(stream);
-          })
-          .catch((err) => {
-            reject(this.$t('notifications.failed_to_start_audio_change_source'));
+        navigator.getUserMedia(constraints,
+          (stream) => {
+            return resolve(stream);
+          },
+          (err) => {
+            return reject(this.$t('notifications.failed_to_start_video_change_source_or_res'));
           });
       });
     },
 
-    getStaticImageFromVideoElement(videoElement) {
+    getStaticImageFromVideoElement() {
       return new Promise((resolve, reject) => {
         let invisibleCanvas = document.createElement('canvas');
-        invisibleCanvas.width = videoElement.videoWidth;
-        invisibleCanvas.height = videoElement.videoHeight;
+        invisibleCanvas.width = this.$refs.videoElement.videoWidth;
+        invisibleCanvas.height = this.$refs.videoElement.videoHeight;
         let invisibleCtx = invisibleCanvas.getContext('2d');
-        invisibleCtx.drawImage( videoElement, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
+        invisibleCtx.drawImage( this.$refs.videoElement, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
         var imageData = invisibleCanvas.toDataURL('image/png');
         if(imageData === "data:,") {
-          reject(this.$t('notifications.video_stream_not_available'));
+          return reject(this.$t('notifications.video_stream_not_available'));
         }
-        resolve(imageData);
+        return resolve(imageData);
       });
     },   
 
@@ -468,17 +535,18 @@ export default {
 
           this.$eventHub.$on('capture.stopRecording', () => {
             this.$eventHub.$off('capture.stopRecording');
-
             recordVideoFeed.stopRecording(() => {
               this.isRecording = false;
               recordVideoFeed.getDataURL(videoDataURL => {
-                resolve(videoDataURL);
+                recordVideoFeed = null;
+                return resolve(videoDataURL);
               })
             });
           });
         });
       });
     },
+
     startRecordAudioFeed() {
       return new Promise((resolve, reject) => {
         if(!!this.audioStream) {
@@ -502,6 +570,7 @@ export default {
         }
       });
     },
+
     captureOrStop() {
       this.justCapturedMediaData = {};
 
@@ -511,7 +580,7 @@ export default {
       }
 
       if(this.selected_mode === 'photo') {        
-        this.getStaticImageFromVideoElement(this.$refs.videoElement).then(imageData => {
+        this.getStaticImageFromVideoElement().then(imageData => {
           const mediaMeta = {
             slugProjectName: this.slugProjectName,
             type: 'image',
@@ -544,6 +613,13 @@ export default {
           });
         });
         
+      } else
+      if(this.selected_mode === 'vecto') { 
+        this.$root.createMediaFromCapture({
+          slugProjectName: this.slugProjectName,
+          type: 'svg',
+          rawData: btoa(this.vecto.svgstr)
+        });
       }
     },
 
@@ -553,7 +629,49 @@ export default {
       }
     },
 
+    startVectoFeed() {
+      return new Promise((resolve, reject) => {
+        console.log('METHODS • CaptureView: startVectoFeed');
+        if(this.selected_devicesId.videoinput === '') {
+          return reject(this.$t('notifications.video_source_not_set'));
+        }
 
+        this.current_camera_resolution = this.available_camera_resolutions[1];
+
+        this.startCameraFeed()
+          .then(() => {
+            let scanToVecto = () => {
+              if(this.selected_mode !== 'vecto' || !this.videoStream) {
+                return;
+              }
+              this.getStaticImageFromVideoElement().then(imageData => {
+                ImageTracer.imageToSVG(
+                  imageData,
+                  (svgstr) => {
+                    this.vecto.svgstr = svgstr;
+                    setTimeout(scanToVecto, 500);
+                  },
+                  { 
+                    colorsampling:false,
+                    numberofcolors: 2, 
+                    colorquantcycles:1,
+                    scale: 1,
+                    strokewidth:5 
+                  }
+                );
+              });
+            };
+            setTimeout(scanToVecto, 500);
+
+            resolve();
+          })
+          .catch((err) => {
+            this.$alertify.error(err);
+            reject();
+          });
+
+      });
+    }
 
   }
 }
