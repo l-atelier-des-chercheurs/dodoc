@@ -174,11 +174,11 @@ module.exports = (function() {
       fs.readdir(mainFolderPath, function(err, filenames) {
         if (err) {
           dev.error(`Couldn't read content dir: ${err}`);
-          reject(err);
+          return reject(err);
         }
         if (filenames === undefined) {
           dev.error(`No folder found: ${err}`);
-          reject(err);
+          return reject(err);
         }
 
         var folders = filenames.filter(function(thisSlugFolderName) {
@@ -327,83 +327,77 @@ module.exports = (function() {
         slugFolderName = 'untitled';
       }
 
-      getFolder({ type }).then(
-        foldersData => {
-          if (foldersData !== undefined) {
-            let allFoldersSlug = Object.keys(foldersData);
-            if (allFoldersSlug.length > 0) {
-              let index = 0;
-              let newSlugFolderName = slugFolderName;
-              while (allFoldersSlug.indexOf(newSlugFolderName) !== -1) {
-                index++;
-                newSlugFolderName = `${newSlugFolderName}-${index}`;
-              }
-              slugFolderName = newSlugFolderName;
-              dev.logverbose(`All slugs: ${allFoldersSlug.join()}`);
+      getFolder({ type }).then(foldersData => {
+        if (foldersData !== undefined) {
+          let allFoldersSlug = Object.keys(foldersData);
+          if (allFoldersSlug.length > 0) {
+            let index = 0;
+            let newSlugFolderName = slugFolderName;
+            while (allFoldersSlug.indexOf(newSlugFolderName) !== -1) {
+              index++;
+              newSlugFolderName = `${newSlugFolderName}-${index}`;
             }
-            dev.logverbose(`Proposed slug: ${slugFolderName}`);
+            slugFolderName = newSlugFolderName;
+            dev.logverbose(`All slugs: ${allFoldersSlug.join()}`);
           }
-
-          const thisFolderPath = path.join(mainFolderPath, slugFolderName);
-          dev.logverbose(`Making a new folder at path ${thisFolderPath}`);
-
-          fs.mkdirp(
-            thisFolderPath,
-            () => {
-              let tasks = [];
-
-              if (data.hasOwnProperty('preview_rawdata')) {
-                tasks.push(
-                  _storeFoldersPreview(thisFolderPath, data.preview_rawdata)
-                );
-              }
-
-              tasks.push(
-                new Promise(function(resolve, reject) {
-                  data = _makeDefaultMetaFromStructure({
-                    type,
-                    method: 'create',
-                    existing: data
-                  });
-
-                  const metaFolderPath = path.join(
-                    thisFolderPath,
-                    settings.folderMetaFilename + settings.metaFileext
-                  );
-
-                  api
-                    .storeData(metaFolderPath, data, 'create')
-                    .then(function(meta) {
-                      dev.logverbose(
-                        `New folder meta file created at path: ${metaFolderPath} with meta: ${JSON.stringify(
-                          meta,
-                          null,
-                          4
-                        )}`
-                      );
-                      resolve();
-                    })
-                    .catch(err => {
-                      reject(err);
-                    });
-                })
-              );
-
-              Promise.all(tasks).then(() => {
-                resolve(slugFolderName);
-              });
-            },
-            function(err, p) {
-              dev.error(`Failed to create folder ${slugFolderName}: ${err}`);
-              reject(err);
-            }
-          );
-        },
-        function(err, p) {
-          dev.error(`Failed to get folders data: ${err}`);
-          reject(err);
+          dev.logverbose(`Proposed slug: ${slugFolderName}`);
         }
-      );
+
+        const thisFolderPath = path.join(mainFolderPath, slugFolderName);
+        dev.logverbose(`Making a new folder at path ${thisFolderPath}`);
+
+        fs.mkdirp(
+          thisFolderPath,
+          () => {
+            let tasks = [];
+
+            if (data.hasOwnProperty('preview_rawdata')) {
+              tasks.push(
+                _storeFoldersPreview(thisFolderPath, data.preview_rawdata)
+              );
+            }
+
+            tasks.push(
+              new Promise(function(resolve, reject) {
+                data = _makeDefaultMetaFromStructure({
+                  type,
+                  method: 'create',
+                  existing: data
+                });
+
+                const metaFolderPath = path.join(
+                  thisFolderPath,
+                  settings.folderMetaFilename + settings.metaFileext
+                );
+
+                api
+                  .storeData(metaFolderPath, data, 'create')
+                  .then(function(meta) {
+                    dev.logverbose(
+                      `New folder meta file created at path: ${metaFolderPath} with meta: ${JSON.stringify(
+                        meta,
+                        null,
+                        4
+                      )}`
+                    );
+                    resolve();
+                  })
+                  .catch(err => {
+                    reject(err);
+                  });
+              })
+            );
+
+            Promise.all(tasks).then(() => {
+              resolve(slugFolderName);
+            });
+          },
+          function(err, p) {
+            dev.error(`Failed to create folder ${slugFolderName}: ${err}`);
+            reject(err);
+          }
+        );
+      });
     });
   }
 

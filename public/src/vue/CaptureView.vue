@@ -41,16 +41,7 @@
             class="padding-verysmall bg-blanc"
             @click="captureOrStop()"
           >
-            <a
-              v-if="selected_mode === 'vecto'"
-              ref="downloadVecto"
-            >
-              <img 
-                :src="recordButtonSrc"
-              />
-            </a>
             <img 
-              v-else
               :src="recordButtonSrc"
             />
           </button>
@@ -652,11 +643,12 @@ export default {
                     setTimeout(scanToVecto, 500);
                   },
                   { 
-                    colorsampling:false,
+                    colorsampling: false,
                     numberofcolors: 2, 
-                    colorquantcycles:1,
+                    colorquantcycles: 1,
                     scale: 1,
-                    strokewidth:5 
+                    strokewidth: 1,
+                    pal : [{r:255,g:255,b:255,a:255}, {r:214,g:0,b:103,a:255}]
                   }
                 );
               });

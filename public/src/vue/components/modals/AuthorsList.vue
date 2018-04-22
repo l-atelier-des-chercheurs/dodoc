@@ -8,16 +8,27 @@
     </template>
 
     <template slot="preview">
-      <div  class="">
+      <div class="">        
         <div class="m_authorsList">
-          <div v-for="(author, slug) in authors" :key="author.name" class="">
-            <button type="button" class="button-allwide" @click="setAuthor(author)"
-              :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"
+          <template v-if="typeof authors === 'object'">
+          <div 
+              v-for="(author, slug) in authors" 
+              :key="author.name" 
+              class=""
             >
-              <img :src="urlToPortrait(slug, author.preview)" width="100" height="100">
-              <span>{{ author.name }}</span>
-            </button>
-          </div>        
+              <button type="button" class="button-allwide" @click="setAuthor(author)"
+                :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"
+              >
+                <img :src="urlToPortrait(slug, author.preview)" width="100" height="100">
+                <span>{{ author.name }}</span>
+              </button>
+            </div>
+          </template>
+          <template v-else>
+            <div class="margin-medium">
+            <i>à venir</i>
+            </div>
+          </template>        
         </div>
       </div>
     </template>    
@@ -27,7 +38,12 @@
 import Modal from './BaseModal.vue';
 
 export default {
-  props: ['authors'],
+  props: {
+    authors: {
+      type: Object,
+      default: {}
+    }
+  },
   components: {
     Modal
   },
