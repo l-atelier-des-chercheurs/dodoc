@@ -37,6 +37,17 @@
           {{ formatDateToHuman(media.date_created) }}
         </div>
       </div>
+      <div 
+        class="m_metaField"
+        v-if="media.hasOwnProperty('date_uploaded') && formatDateToHuman(media.date_created) !== formatDateToHuman(media.date_uploaded)"
+      >
+        <div>
+          {{ $t('uploaded') }}
+        </div>
+        <div>
+          {{ formatDateToHuman(media.date_uploaded) }}
+        </div>
+      </div>
       <div class="m_metaField">
         <div>
           {{ $t('edited') }}
@@ -173,9 +184,6 @@ export default {
     };
   },
   computed: {
-    date_uploaded_human() {
-      return this.$moment(this.media.date_upload).format('l LTS');
-    }
   },
   methods: {
     printMedia: function() {

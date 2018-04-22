@@ -16,7 +16,9 @@
       >
       </FileUpload>
       <button type="button" class="barButton barButton_text" @click="createTextMedia">
-        Créer du texte
+        <span>
+          Créer du texte
+        </span>
       </button>
     </div>
 
@@ -26,7 +28,6 @@
     <div class="m_project--library--medias">
       <MediaCard
         v-for="media in sortedMedias"
-        v-if="media.hasOwnProperty(mediaSort.field) && media[mediaSort.field] !== ''"
         :key="media.slugMediaName"
         :media="media"
         :slugMediaName="media.slugMediaName"
@@ -73,7 +74,7 @@ export default {
         fav: false
       },
       mediaSort: {
-        field: 'date_created',
+        field: 'date_uploaded',
         type: 'date',
         order: 'descending'
       }
@@ -113,17 +114,24 @@ export default {
             this.project.medias[slugMediaName][this.mediaSort.field],
             'YYYY-MM-DD HH:mm:ss'
           );
+          if(!mediaDataToOrderBy) {
+            mediaDataToOrderBy = 1000;
+          }
         } else if (this.mediaSort.type === 'alph') {
           mediaDataToOrderBy = this.project.medias[slugMediaName][
             this.mediaSort.field
           ];
+          if(!mediaDataToOrderBy) {
+            mediaDataToOrderBy = 'z';
+          }          
         }
-
         sortable.push({
           slugMediaName: slugMediaName,
           mediaDataToOrderBy: mediaDataToOrderBy
         });
       }
+
+
       let sortedSortable = sortable.sort(function(a, b) {
         let valA = a.mediaDataToOrderBy;
         let valB = b.mediaDataToOrderBy;
@@ -149,7 +157,7 @@ export default {
 
       // array order is garanteed while objects properties aren’t,
       // that’s why we use an array here
-      let sortedMedias = sortedSortable.reduce((result, d) => {
+      let sortedMedias = sortedSortable.reduce((accumulator, d) => {
         let sortedMediaObj = this.project.medias[d.slugMediaName];
         sortedMediaObj.slugMediaName = d.slugMediaName;
 
@@ -158,7 +166,7 @@ export default {
           // TODO for multiple filters
 
           if(sortedMediaObj.fav === this.mediaFilter.fav) {
-            result.push(sortedMediaObj);
+            accumulator.push(sortedMediaObj);
           }
 
           // let originalContentFromMedia =
@@ -166,10 +174,9 @@ export default {
           // if (originalContentFromMedia.indexOf(this.mediaFilter) !== -1) {
           // }
         } else {
-          result.push(sortedMediaObj);
+          accumulator.push(sortedMediaObj);
         }
-
-        return result;
+        return accumulator;
       }, []);
       
       return sortedMedias;

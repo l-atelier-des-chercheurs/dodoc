@@ -16,9 +16,6 @@
           :slugProjectName="slugProjectName"
           :media="media"
         ></MediaContent>
-        <figcaption
-          v-if="is_hovered"
-        >
           <button 
             type="button" 
             v-if="$root.settings.current_slugPubliName" 
@@ -27,7 +24,10 @@
           >
             Add to publi 
           </button>
-        
+
+        <figcaption
+          v-if="is_hovered"
+        >        
           <div class="m_metaField" v-if="!!media.type">
             <div>
               {{ $t('type') }}

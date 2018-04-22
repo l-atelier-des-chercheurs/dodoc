@@ -52,19 +52,18 @@
 
       <div class="m_panel">
         <div class="m_panel--previewCard">
-          <template v-if="justCapturedMediaData.hasOwnProperty('type')">
-            <MediaContent
-              :context="'edit'"
-              :slugMediaName="justCapturedMediaData.slugMediaName"
-              :slugProjectName="slugProjectName"
-              :media="justCapturedMediaData"
-              :mediaURL="mediaURL"
-            >
-            </MediaContent>          
-          </template>
+          <MediaContent
+            v-if="justCapturedMediaData.hasOwnProperty('type')"
+            :context="'edit'"
+            :slugMediaName="justCapturedMediaData.slugMediaName"
+            :slugProjectName="slugProjectName"
+            :media="justCapturedMediaData"
+            :mediaURL="mediaURL"
+          >
+          </MediaContent>          
         </div>
         <div class="m_panel--buttons">
-          <button type="button" @click="justCapturedMediaData = {}">
+          <button type="button" class="buttonLink" @click="justCapturedMediaData = {}">
             FERMER
           </button>
         </div>        

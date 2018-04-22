@@ -24,8 +24,8 @@ module.exports = (function() {
         slugFolderName
       }),
 
-    getSlugMediaNames: (slugFolderName, slugMediaName = '') =>
-      getSlugMediaNames(slugFolderName, (slugMediaName = '')),
+    getSlugMediaNames: ({ slugFolderName, slugMediaName }) =>
+      getSlugMediaNames({ slugFolderName, slugMediaName }),
     readMediaList: ({ medias_list }) => readMediaList({ medias_list }),
     createMediaMeta: (slugFolderName, slugMediaName, additionalMeta) =>
       createMediaMeta(slugFolderName, slugMediaName, additionalMeta),
@@ -570,14 +570,16 @@ module.exports = (function() {
     });
   }
 
-  function getSlugMediaNames(slugFolderName, slugMediaName = '') {
+  function getSlugMediaNames({ slugFolderName, slugMediaName }) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction(`COMMON — _getSlugMediaNames`);
+      dev.logfunction(
+        `COMMON — _getSlugMediaNames with slugFolderName = ${slugFolderName} and slugMediaName = ${slugMediaName}`
+      );
       if (slugFolderName === undefined) {
         dev.error(`Missing slugFolderName to read medias from.`);
         reject();
       }
-      if (slugMediaName === '') {
+      if (slugMediaName === undefined) {
         dev.logverbose(
           `Missing slugMediaName to read medias from ${slugFolderName}. Reading all medias instead.`
         );
@@ -590,11 +592,11 @@ module.exports = (function() {
       fs.readdir(slugFolderPath, function(err, filenames) {
         if (err) {
           dev.error(`Couldn't read content dir: ${err}`);
-          reject(err);
+          return reject(err);
         }
         if (filenames === undefined) {
           dev.error(`No medias for folder found: ${err}`);
-          resolve();
+          return resolve();
         }
 
         dev.logverbose(
@@ -634,9 +636,9 @@ module.exports = (function() {
           dev.logverbose(
             `Since no medias is in this folder, let’s abort right there.`
           );
-          resolve([]);
+          return resolve([]);
         } else {
-          resolve(list_slugMediaName);
+          return resolve(list_slugMediaName);
         }
       });
     });

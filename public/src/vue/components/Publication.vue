@@ -1,5 +1,5 @@
 <template>
-  <div class="m_publication" @scroll="onScroll"
+  <div class="m_publicationview" @scroll="onScroll"
     ref="panel"
   >
     <h2>
@@ -11,11 +11,11 @@
     </button>
 
 
-    <div class="m_publication--pages" ref="pages">
+    <div class="m_publicationview--pages" ref="pages">
       <div 
         v-for="(page, pageNumber) in publication.pages" 
-        class="m_publication--pages--page"
-        :class="[`m_publication--pages--page_format-${page.format}`, { 'is--active' : pageNumber === page_currently_active-1 }]"
+        class="m_publicationview--pages--page"
+        :class="[`m_publicationview--pages--page_format-${page.format}`, { 'is--active' : pageNumber === page_currently_active-1 }]"
         :key="pageNumber"
       >
         <MediaPublication

@@ -24,7 +24,14 @@
 
   @media screen and (max-width: 50rem) {
     display: block;
-
+    .m_modal--container {
+      .m_modal--container--content {
+        display: block;
+      }
+    }
+  }
+  html.touchevents & {
+    display: block;
     .m_modal--container {
       .m_modal--container--content {
         display: block;
@@ -61,6 +68,9 @@
   }
 
   @media screen and (max-width: 50rem) {
+    margin: 50px 0;
+  }
+  html.touchevents & {
     margin: 50px 0;
   }
 
@@ -263,6 +273,10 @@
   }
 
   @media screen and (max-width: 50rem) {
+    top: 0;
+    right: 0;
+  }
+  html.touchevents & {
     top: 0;
     right: 0;
   }

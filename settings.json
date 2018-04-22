@@ -122,6 +122,11 @@
           "default": "current",
           "override": true
         },
+        "date_uploaded" : {
+          "type": "date",
+          "default": "current",
+          "read_only": true
+        },
         "type": {
           "type": "string",
           "options": ["image", "video", "audio", "text", "marker", "other"],

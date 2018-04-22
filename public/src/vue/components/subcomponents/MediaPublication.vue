@@ -73,7 +73,6 @@ export default {
     },
     updateMediaPosition({ x, y }) {
       console.log('editThisMedia');
-      debugger;
       this.$emit('editPubliMedia', { reference_index: this.media.publi_meta.reference_index, x, y });
     },
     limitMediaYPos(yPos) {
