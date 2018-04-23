@@ -68,7 +68,7 @@ export default {
   methods: {
     getURLToApp(ip, port) {
       return `${this.$root.state.protocol}://${ip}:${port}/${
-        this.slugProjectName !== undefined ? this.slugProjectName : ''
+        this.slugProjectName !== false ? this.slugProjectName : ''
       }`;
     }
   }
