@@ -1,13 +1,13 @@
 <template>
   <div class="m_topbar">
     <div class="m_topbar--left" >
-      <div class="m_topbar--left--logo" @click="goBack()">
+      <div class="m_topbar--left--logo" >
         <transition name="fade">
-          <button class="backButton" type="button" v-if="has_back_button">
+          <button class="backButton" type="button" v-if="has_back_button" @click="goBack()">
             ‹
           </button>
         </transition>
-        <img src="/images/i_logo.svg"/>
+        <img src="/images/i_logo.svg" @click="goHome()" />
       </div>
 
       <div 
@@ -151,6 +151,9 @@ export default {
       if(this.$root.settings.view === 'ProjectView') {
         this.$root.closeProject();
       }
+    },
+    goHome() {
+      this.$root.closeProject();
     },
     urlToPortrait(slug, filename) {
       if(filename === undefined) {
