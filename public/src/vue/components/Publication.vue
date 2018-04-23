@@ -2,13 +2,16 @@
   <div class="m_publicationview" @scroll="onScroll"
     ref="panel"
   >
-    <h2>
-      {{ publication.name }}
-    </h2>
+    <div class="margin-medium">
+      {{ slugPubliName }}
+      <h2>
+        {{ publication.name }}
+      </h2>
 
-    <button type="button" @click="closePublication()">
-      Fermer
-    </button>
+      <button type="button" class="buttonLink" @click="closePublication()">
+        Fermer
+      </button>
+    </div>
 
 
     <div class="m_publicationview--pages" ref="pages">
@@ -29,13 +32,14 @@
       </div>
     </div>
 
-
-    <button type="button" @click="addPage()">
-      Ajouter une page
-    </button>
-    <button type="button" @click="removeLastPage()">
-      Supprimer une page
-    </button>
+    <div class="margin-medium">
+      <button type="button" class="buttonLink" @click="addPage()">
+        Ajouter une page
+      </button>
+      <button type="button" class="buttonLink" @click="removeLastPage()">
+        Supprimer une page
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -126,17 +130,16 @@ export default {
     },
   
     // function to update property of a media inside medias_list
-    editPubliMedia({ reference_index, x, y }) {
+    editPubliMedia({ reference_index, val }) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: removeMedia / reference_index = ${reference_index}`);
+        console.log(`METHODS • Publication: removeMedia / reference_index = ${JSON.stringify(arguments, null, 4)}`);
       }
 
       let medias_list = [];
       if(this.publication.hasOwnProperty('medias_list')) {
         medias_list = this.publication.medias_list.slice();
       }
-      medias_list[reference_index].x = x;
-      medias_list[reference_index].y = y;
+      medias_list[reference_index] = Object.assign({}, medias_list[reference_index], val);
 
       this.$root.editFolder({ 
         type: 'publications', 

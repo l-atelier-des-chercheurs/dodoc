@@ -3,8 +3,9 @@
     class="m_mediaPublication"
     :style="`transform: translate(${mediaStyles.x}mm, ${mediaStyles.y}mm)`"
     :class="{ 'is--dragged' : is_dragged }"
-    @click="updateMediaPosition({ x: Math.random() * 100, y: Math.random() * 100 })"
+    @mousedown.prevent="mousedown"
   >
+    <!-- @click="updateMediaPosition({ x: Math.random() * 100, y: Math.random() * 100 })" -->
     <MediaContent
       :context="'full'"
       :slugMediaName="media.slugMediaName"
@@ -49,6 +50,7 @@ export default {
   },
   
   created() {
+        this.updateMediaStyles();
   },
   mounted() {
 
@@ -57,12 +59,12 @@ export default {
   },
 
   watch: {
-    'media.publi_meta.x': function() {
-      this.updateMediaStyles();
+    'media.publi_meta': { 
+      handler: function() {
+        this.updateMediaStyles();
+      },
+      deep: true
     },
-    'media.publi_meta.y': function() {
-      this.updateMediaStyles();
-    }
   },
   computed: {
   },
@@ -71,22 +73,25 @@ export default {
       this.mediaStyles.x = this.media.publi_meta.hasOwnProperty('x') ? this.media.publi_meta.x : 5;
       this.mediaStyles.y = this.media.publi_meta.hasOwnProperty('y') ? this.media.publi_meta.y : 5;
     },
-    updateMediaPosition({ x, y }) {
-      console.log('editThisMedia');
-      this.$emit('editPubliMedia', { reference_index: this.media.publi_meta.reference_index, x, y });
+    updateMediaPubliMeta(val) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • TimelineMedia: updateMediaPubliMeta`);
+      }
+      this.$emit('editPubliMedia', { reference_index: this.media.publi_meta.reference_index, val });
     },
     limitMediaYPos(yPos) {
-      if (window.state.dev_mode === 'debug') {
-        console.log(`METHODS • TimelineMedia: limitMediaYPos`);
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • TimelineMedia: limitMediaYPos / yPos = ${yPos}`);
       }
-      return Math.max(100, Math.min(0, yPos));
+      return yPos;
+      // return Math.max(100, Math.min(0, yPos));
     },
     removeMedia() {
       this.$emit('removeMedia', { reference_index: this.media.publi_meta.reference_index });
     },
 
     mousedown(event) {
-      if (window.state.dev_mode === 'debug') {
+      if (this.$root.state.dev_mode === 'debug') {
         console.log(
           `METHODS • Publication: mousedown with is_dragged = ${
             this.is_dragged
@@ -99,7 +104,7 @@ export default {
       }
     },
     mousemove(event) {
-      if (window.state.dev_mode === 'debug') {
+      if (this.$root.state.dev_mode === 'debug') {
         console.log(
           `METHODS • Publication: mousemove with is_dragged = ${
             this.is_dragged
@@ -126,22 +131,16 @@ export default {
     //   this.$emit('open');
     // },
     mouseup(event) {
-      if (window.state.dev_mode === 'debug') {
+      if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: mouseup`);
         console.log(`with is_dragged = ${this.is_dragged}`);
       }
       if (this.is_dragged) {
         let newY = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
         this.mediaStyles.y = this.limitMediaYPos(newY);
-        let getHeightInPercent = this.mediaStyles.y / this.timelineHeight;
 
-        let values = {
-          y: getHeightInPercent,
-          slugFolderName: this.slugFolderName,
-          slugMediaName: this.slugMediaName
-        };
+        this.updateMediaPubliMeta(this.mediaStyles);
 
-        this.$root.editMedia(values);
         this.is_dragged = false;
       }
 
