@@ -1156,9 +1156,9 @@ module.exports = (function() {
 
       // Depending on the type of media we will create, we will need to act differently:
       // - 'image' -> use sharp and create a .jpeg from the buffer
-      // - 'video' -> store the content to a file with writeMediaDataToDisk
+      // - 'video' -> store the content to a file with storeMediaToDisk
       // - 'stopmotion' -> assemble all images to a video
-      // - 'audio' -> store content with writeMediaDataToDisk
+      // - 'audio' -> store content with storeMediaToDisk
 
       let tasks = [];
 
@@ -1194,13 +1194,8 @@ module.exports = (function() {
         tasks.push(
           new Promise((resolve, reject) => {
             mediaName += '.mp4';
-            let pathToMedia = path.join(
-              api.getFolderPath(slugProjectName),
-              mediaName
-            );
-
             api
-              .writeMediaDataToDisk(pathToMedia, rawData)
+              .writeVideoToDisk(slugProjectName, mediaName, rawData)
               .then(() => {
                 resolve();
               })
@@ -1212,14 +1207,9 @@ module.exports = (function() {
       } else if (type === 'audio') {
         tasks.push(
           new Promise((resolve, reject) => {
-            mediaName += '.wav';
-            let pathToMedia = path.join(
-              api.getFolderPath(slugProjectName),
-              mediaName
-            );
-
+            mediaName += '.mp3';
             api
-              .writeMediaDataToDisk(pathToMedia, rawData)
+              .writeAudioToDisk(slugProjectName, mediaName, rawData)
               .then(() => {
                 resolve();
               })

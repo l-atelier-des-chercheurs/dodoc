@@ -4,10 +4,14 @@ const path = require('path'),
   fs = require('fs-extra'),
   slugg = require('slugg'),
   os = require('os'),
-  writeFileAtomic = require('write-file-atomic');
+  writeFileAtomic = require('write-file-atomic'),
+  ffmpegstatic = require('ffmpeg-static'),
+  ffmpeg = require('fluent-ffmpeg');
 
 const settings = require('../settings.json'),
   dev = require('./dev-log');
+
+ffmpeg.setFfmpegPath(ffmpegstatic.path);
 
 module.exports = (function() {
   const API = {
@@ -31,8 +35,10 @@ module.exports = (function() {
     slug: term => slug(term),
     clip: (value, min, max) => clip(value, min, max),
     decodeBase64Image: dataString => decodeBase64Image(dataString),
-    writeMediaDataToDisk: (pathToFile, dataURL) =>
-      writeMediaDataToDisk(pathToFile, dataURL)
+    writeAudioToDisk: (slugProjectName, mediaName, dataURL) =>
+      writeAudioToDisk(slugProjectName, mediaName, dataURL),
+    writeVideoToDisk: (slugProjectName, mediaName, dataURL) =>
+      writeVideoToDisk(slugProjectName, mediaName, dataURL)
   };
 
   function _getUserPath() {
@@ -215,20 +221,78 @@ module.exports = (function() {
     return response;
   }
 
-  function writeMediaDataToDisk(pathToFile, dataURL) {
+  function writeAudioToDisk(slugProjectName, mediaName, dataURL) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction('COMMON — writeMediaDataToDisk');
+      dev.logfunction('COMMON — writeAudioToDisk');
       if (dataURL === undefined) {
-        dev.error('No media data content gotten for ' + pathToFile);
+        dev.error('No media data content gotten for ' + mediaName);
         reject('No media sent');
       }
       dataURL = dataURL.split(',').pop();
-      dev.logverbose('Will save the video at path : ' + pathToFile);
-
       var fileBuffer = new Buffer(dataURL, 'base64');
-      fs.writeFile(pathToFile, fileBuffer, function(err) {
-        if (err) reject(err);
-        resolve();
+
+      let cachePath = path.join(
+        global.appRoot,
+        settings.cacheDirname,
+        'medias'
+      );
+      fs.mkdirp(cachePath, function() {
+        let pathToTempMedia = path.join(cachePath, mediaName);
+
+        fs.writeFile(pathToTempMedia, fileBuffer, function(err) {
+          if (err) reject(err);
+
+          let pathToMedia = path.join(
+            getFolderPath(slugProjectName),
+            mediaName
+          );
+          ffmpeg(pathToTempMedia)
+            .audioCodec('libmp3lame')
+            .save(pathToMedia)
+            .on('end', function() {
+              console.log('Processing finished !');
+              resolve();
+            });
+        });
+      });
+    });
+  }
+
+  function writeVideoToDisk(slugProjectName, mediaName, dataURL) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction('COMMON — writeVideoToDisk');
+      if (dataURL === undefined) {
+        dev.error('No media data content gotten for ' + mediaName);
+        reject('No media sent');
+      }
+      dataURL = dataURL.split(',').pop();
+      var fileBuffer = new Buffer(dataURL, 'base64');
+
+      let cachePath = path.join(
+        global.appRoot,
+        settings.cacheDirname,
+        'medias'
+      );
+      fs.mkdirp(cachePath, function() {
+        let pathToTempMedia = path.join(cachePath, mediaName);
+
+        fs.writeFile(pathToTempMedia, fileBuffer, function(err) {
+          if (err) reject(err);
+
+          let pathToMedia = path.join(
+            getFolderPath(slugProjectName),
+            mediaName
+          );
+          ffmpeg(pathToTempMedia)
+            .audioCodec('aac')
+            .videoCodec('libx264')
+            .format('mp4')
+            .save(pathToMedia)
+            .on('end', function() {
+              console.log('Processing finished !');
+              resolve();
+            });
+        });
       });
     });
   }
