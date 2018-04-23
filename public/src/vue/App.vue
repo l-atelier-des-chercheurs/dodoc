@@ -62,17 +62,20 @@
       </div>
     </div>
 
-    <button
-      class="publiButton"
-      @click="$root.togglePubliPanel"
-      :key="'openPubli'"
-    >
-      <img src="/images/i_publi.svg" width="48" height="48" />
-      <span class="margin-small">
-        {{ $t('publication') }}
-      </span>
-    </button>
-
+    <transition name="popUp">
+      <button
+        class="publiButton"
+        @click="$root.togglePubliPanel"
+        :key="'openPubli'"
+        v-if="$root.settings.view !== 'CaptureView'"
+      >
+        <img src="/images/i_publi.svg" width="48" height="48" />
+        <span class="margin-small">
+          {{ $t('publication') }}
+        </span>
+      </button>
+    </transition>
+    
     <portal-target name="modal_container" />
 
   </div>

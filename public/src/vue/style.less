@@ -66,7 +66,6 @@ body {
   }
 }
 
-
 .alertify-logs {
   z-index: 20000;
 }
@@ -1190,3 +1189,11 @@ body {
   transition: transform .5s cubic-bezier(.25,.2,.25,1);
 }
 
+.popUp-enter-active, .popUp-leave-active {
+  transform: translate3d(0, 0, 0);
+  transition: transform 1s cubic-bezier(.25,.2,.25,1);
+}
+.popUp-enter, .popUp-leave-to {
+  transform: translate3d(0, 150px, 0);
+  transition: transform 1s cubic-bezier(.25,.2,.25,1);
+}
