@@ -255,6 +255,7 @@ export default {
       // this.stopAllFeeds().then(() => {
       //   this.startCameraFeed();
       // });      
+      this.startMode();
     }
   },
   computed: {
