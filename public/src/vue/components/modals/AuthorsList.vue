@@ -11,10 +11,10 @@
       <div class="">        
         <div class="m_authorsList">
           <template v-if="typeof authors === 'object'">
-          <div 
-              v-for="(author, slug) in authors" 
-              :key="author.name" 
-              class=""
+            <div 
+                v-for="(author, slug) in authors" 
+                :key="author.name" 
+                class=""
             >
               <button type="button" class="button-allwide" @click="setAuthor(author)"
                 :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"

@@ -36,7 +36,7 @@
           <div id="vectoContainer" v-if="selected_mode === 'vecto'" v-html="vecto.svgstr">
           </div>
         </div>
-        <div class="m_panel--buttons">
+        <div class="m_panel--buttons" :class="{ 'bg-rouge' : isRecording }">
           <button type="button" 
             class="padding-verysmall bg-blanc"
             @click="captureOrStop()"
@@ -216,13 +216,11 @@ export default {
     }
   },
   created() {
+    this.init();
   },
   mounted() {
     this.$eventHub.$on('socketio.new_media_captured', this.newMediaCaptured);
     document.addEventListener('keyup', this.captureKeyListener);
-    this.$nextTick(() => {
-      this.init();
-    });
   },
   beforeDestroy() {
     this.$eventHub.$off('socketio.new_media_captured', this.newMediaCaptured);
@@ -236,18 +234,71 @@ export default {
       this.stopAllFeeds().then(() => {
         if(this.$refs.hasOwnProperty('videoElement') && this.$refs.videoElement !== undefined) {       
           this.$refs.videoElement.setSinkId(this.selected_devicesId.audioinput);      
+          this.startMode();
         }
       });
     },
     'selected_devicesId.videoinput': function() {
       console.log(`WATCH • Capture: selected_devicesId.videoinput = ${this.selected_devicesId.videoinput}`);
-      this.stopAllFeeds().then(() => {
-        this.startCameraFeed();
-      });
+      this.startMode();
     },
     'selected_mode': function() {
       console.log('WATCH • Capture: selected_mode');
       this.justCapturedMediaData = {};
+      this.startMode();
+    },
+    'isRecording': function() {
+      equalizer.setSarahCouleur(this.isRecording);
+    },
+    'current_camera_resolution': function() {
+      console.log(`WATCH • Capture: current_camera_resolution = ${this.current_camera_resolution}`);
+      // this.stopAllFeeds().then(() => {
+      //   this.startCameraFeed();
+      // });      
+    }
+  },
+  computed: {
+    sorted_available_devices() {
+      return _.groupBy(this.available_devices, 'kind');
+    },
+    recordButtonSrc() {
+      return !this.isRecording ? '/images/i_record.svg':'/images/i_stop.svg';
+    }
+  },
+  methods: {
+    init() {
+      console.log('METHODS • CaptureView: init');
+      navigator.mediaDevices.enumerateDevices()
+      .then((deviceInfos) => {
+        this.available_devices = deviceInfos;
+
+        // get from localstorage and put in selected_devicesId.audioinput, selected_devicesId.videoinput and selected_devicesId.audiooutput 
+        // set initial value
+
+        Object.keys(this.selected_devicesId).map((kind) => {
+          if(this.selected_devicesId[kind] === '') {
+            if(this.sorted_available_devices.hasOwnProperty(kind)) {
+              let selected_devicesId = this.sorted_available_devices[kind][0].deviceId;
+              if(kind === 'videoinput') {
+                const camera_back = this.sorted_available_devices[kind].filter(x => {
+                  return x.label.includes('back')
+                });              
+                if(camera_back.length > 0) {
+                  selected_devicesId = this.selected_devicesId[kind] = camera_back[0].deviceId;
+                }
+              }
+              this.selected_devicesId[kind] = selected_devicesId;              
+            }
+          }
+        });
+
+        // get last mode from localstorage
+        // otherwise start first mode
+        this.selected_mode = this.available_modes[0].key;
+      });
+    },
+    startMode() {
+      console.log('METHODS • CaptureView: startMode');
 
       if(this.selected_mode === 'photo') {
         this.stopAllFeeds().then(() => {
@@ -279,63 +330,8 @@ export default {
         this.stopAllFeeds().then(() => {
           this.startVectoFeed();
         });
-      }
+      }      
     },
-    'isRecording': function() {
-      equalizer.setSarahCouleur(this.isRecording);
-    },
-    'current_camera_resolution': function() {
-      console.log(`WATCH • Capture: current_camera_resolution = ${this.current_camera_resolution}`);
-      this.stopAllFeeds().then(() => {
-        this.startCameraFeed();
-      });      
-    }
-  },
-  computed: {
-    sorted_available_devices() {
-      return _.groupBy(this.available_devices, 'kind');
-    },
-    recordButtonSrc() {
-      return !this.isRecording ? '/images/i_record.svg':'/images/i_stop.svg';
-    }
-  },
-  methods: {
-    init() {
-      console.log('METHODS • CaptureView: init');
-      navigator.mediaDevices.enumerateDevices()
-      .then((deviceInfos) => {
-        this.available_devices = deviceInfos;
-
-        // get from localstorage and put in selected_devicesId.audioinput, selected_devicesId.videoinput and selected_devicesId.audiooutput 
-
-        // set initial value
-
-        Object.keys(this.selected_devicesId).map((kind) => {
-          if(this.selected_devicesId[kind] === '') {
-            if(this.sorted_available_devices.hasOwnProperty(kind)) {
-
-              let selected_devicesId = this.sorted_available_devices[kind][0].deviceId;
-
-              if(kind === 'videoinput') {
-                const camera_back = this.sorted_available_devices[kind].filter(x => {
-                  return x.label.includes('back')
-                });              
-                if(camera_back.length > 0) {
-                  selected_devicesId = this.selected_devicesId[kind] = camera_back[0].deviceId;
-                }
-              }
-              this.selected_devicesId[kind] = selected_devicesId;              
-            }
-          }
-        });
-
-        // get last mode from localstorage
-
-        // otherwise start first mode
-        this.selected_mode = this.available_modes[0].key;
-      });
-    },
-
     previousMode() {
       console.log('METHODS • CaptureView: previousMode');
       let currentModeIndex = this.available_modes.findIndex((d) => {
@@ -387,18 +383,17 @@ export default {
     },
     stopVideoFeed() {
       console.log('METHODS • CaptureView: stopVideoFeed');
-      if(!!this.videoStream) {
-        if(!this.$refs.videoElement.paused)
-          this.$refs.videoElement.pause();
-        
-        for (let stream of this.videoStream.getVideoTracks()) {
-          stream.stop();
-        }        
-        this.videoStream = null;
-        if(!!this.$refs.videoElement) {
-          this.$refs.videoElement.srcObject = null;
-        }
+      if(!this.$refs.videoElement.paused) {
+        this.$refs.videoElement.pause();
       }
+        
+      if(this.videoStream) this.videoStream.getTracks().forEach(function(track) {
+        track.stop();
+      });
+      if(this.audioStream) this.audioStream.getTracks().forEach(function(track) {
+        track.stop();
+      });
+          
     },
     stopAllFeeds() {
       return new Promise((resolve, reject) => {
@@ -454,13 +449,14 @@ export default {
           },
           audio: withAudio
         };
-        navigator.mediaDevices.getUserMedia(constraints)
-          .then((stream) => {
-            return resolve(stream);
-          })
-          .catch((err) => {
+        navigator.getUserMedia(constraints,
+          (stream) => {
+            resolve(stream);
+          },
+          (err) => {
             return reject(this.$t('notifications.failed_to_start_video_change_source_or_res'));
-          });
+          }
+        );
       });
     },
 
@@ -588,9 +584,10 @@ export default {
             slugProjectName: this.slugProjectName,
             type: 'image',
             rawData: imageData,
-            additionalMeta: ''
+            additionalMeta: {}
           };
-          if(this.$root.settings.current_author !== false) {
+
+          if(this.$root.settings.current_author.hasOwnProperty('name')) {
             mediaMeta.additionalMeta.authors = this.$root.settings.current_author.name;
           }
           this.$root.createMediaFromCapture(mediaMeta);
