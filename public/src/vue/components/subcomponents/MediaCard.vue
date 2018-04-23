@@ -9,21 +9,23 @@
         @mouseleave="is_hovered = false"
         :class="{ 'is--hovered' : is_hovered }"
       >
-        <MediaContent
-          v-model="media.content"
-          :context="'preview'"
-          :slugMediaName="slugMediaName"
-          :slugProjectName="slugProjectName"
-          :media="media"
-        ></MediaContent>
+        <div>
+          <MediaContent
+            v-model="media.content"
+            :context="'preview'"
+            :slugMediaName="slugMediaName"
+            :slugProjectName="slugProjectName"
+            :media="media"
+          ></MediaContent>
           <button 
             type="button" 
             v-if="$root.settings.current_slugPubliName" 
             class="buttonLink margin-bottom-small"
             @click.stop="addToCurrentPubli()"
           >
-            Add to publi 
+            Ajouter à la publication 
           </button>
+        </div>          
 
         <figcaption
           v-if="is_hovered"

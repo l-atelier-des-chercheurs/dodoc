@@ -739,15 +739,15 @@ body {
   padding: 0 @t-skipline/2;
 
   > * {
-    height: 0;
-    padding-bottom: 100%; 
+    // height: 0;
+    // padding-bottom: 100%; 
     .margin-vert-small;
   }
 
   figure {
     position: relative;
     margin: 0;
-    overflow: hidden;
+    overflow: visible;
     min-height: 100px;
 
     display: flex;
@@ -792,9 +792,12 @@ body {
     }
 
     figcaption {
-      position: relative;
-      top: 100%;
+      position: absolute;
+      top: 95%;
+      width: 100%;
       .padding-small;
+      .bg-blanc;
+      .boxs-card-4;
 
       .mediaTypeIcon {
         width: 24px;
