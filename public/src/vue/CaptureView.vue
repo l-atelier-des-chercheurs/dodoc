@@ -46,6 +46,17 @@
             />
           </button>
 
+          <div v-if="selected_mode === 'vecto'">
+            <div class="m_metaField">
+              <div>
+                Lissage
+              </div>
+              <div>
+                <input type="range" v-model="vecto.blurradius" min="0" max="20">
+              </div>
+            </div>
+          </div>
+
           <span class="switch" v-if="selected_mode === 'video'">
             <input type="checkbox" class="switch" id="recordVideoWithAudio" v-model="recordVideoWithAudio">
             <label for="recordVideoWithAudio">Enregistrer le son</label>
@@ -199,7 +210,8 @@ export default {
         audiooutput: ''
       },
       vecto: {
-        svgstr: ''
+        svgstr: '',
+        blurradius: 0
       }
     }
   },
@@ -628,7 +640,7 @@ export default {
         }
 
         this.current_camera_resolution = this.available_camera_resolutions[1];
-
+  
         this.startCameraFeed()
           .then(() => {
             let scanToVecto = () => {
@@ -648,7 +660,9 @@ export default {
                     colorquantcycles: 1,
                     scale: 1,
                     strokewidth: 1,
-                    pal : [{r:255,g:255,b:255,a:255}, {r:214,g:0,b:103,a:255}]
+                    blurradius: this.vecto.blurradius,
+                    pal : [{r:255,g:255,b:255,a:255}, {r:0,g:0,b:0,a:255}]
+                    // pal : [{r:255,g:255,b:255,a:255}, {r:214,g:0,b:103,a:255}]
                   }
                 );
               });

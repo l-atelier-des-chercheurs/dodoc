@@ -9,13 +9,18 @@
     
     <hr>
     
-    <div>
-      Liste des publications
-    </div>
-    <div v-for="publication in publications" :key="publication.name">
-      <button type="button" @click="openPublication(publication.slugFolderName)">
-        {{ publication.name }}
-      </button>
+    <div class="margin-medium">
+      <div>
+        Liste des publications
+      </div>
+      <div 
+        v-if="typeof publications === 'object'"
+        v-for="publication in publications" :key="publication.name"
+      >
+        <button type="button" @click="openPublication(publication.slugFolderName)">
+          {{ publication.name }}
+        </button>
+      </div>
     </div>
   </div>
 </template>

@@ -37,6 +37,10 @@ let lang_settings = {
   init: function() {
     let localstore_lang = localstore.get('language');
 
+    // force lang to french
+    this.current = 'fr';
+    return;
+
     // has lang set
     if (localstore_lang !== undefined) {
       // exists in available
@@ -56,7 +60,7 @@ let lang_settings = {
     }
 
     if (this.current === '') {
-      this.current = 'en';
+      this.current = this.default;
     }
   }
 };
