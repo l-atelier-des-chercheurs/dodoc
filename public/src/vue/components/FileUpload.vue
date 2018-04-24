@@ -6,6 +6,7 @@
       :url="uriToUploadMedia"
       @vdropzone-success="showSuccess"
       @vdropzone-sending="addMeta"
+      @vdropzone-error="reportError"
       :preview-template="template"
       :use-custom-dropzone-options=true
       :dropzone-options="customOptionsObject"
@@ -62,6 +63,9 @@ export default {
     document.removeEventListener('dragover', this.enhanceDropzone);
   },
   methods: {
+    reportError: function(err) {
+      alert(`Failed to upload: ${JSON.stringify(err)}`);
+    },
     enhanceDropzone: function(evt) {
       $(this.$refs.dropzone.$el).addClass('is--bigger');
       evt.preventDefault();

@@ -207,7 +207,7 @@ module.exports = function(app, io, m) {
 
     // specify that we want to allow the user to upload multiple files in a single request
     form.multiples = false;
-    form.maxFileSize = 1024 * 1024 * 1024;
+    form.maxFileSize = 1000 * 1024 * 1024;
 
     // store all uploads in the folder directory
     form.uploadDir = api.getFolderPath(slugProjectName);
@@ -249,6 +249,9 @@ module.exports = function(app, io, m) {
     // log any errors that occur
     form.on('error', function(err) {
       console.log(`An error has happened: ${err}`);
+    });
+    form.on('aborted', function(err) {
+      console.log(`File upload aborted: ${err}`);
     });
 
     // once all the files have been uploaded

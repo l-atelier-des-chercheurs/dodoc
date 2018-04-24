@@ -402,7 +402,7 @@ export default {
         
         this.stopAudioFeed();
         this.stopVideoFeed();
-        setTimeout(() => resolve(), 500);
+        resolve();
       });
     },
 
@@ -416,14 +416,12 @@ export default {
         this.getCameraFeed(withAudio)
           .then((stream) => {
             console.log('METHODS • CaptureView: startCameraFeed / got camera stream');
-            setTimeout(() => {
-              if(this.videoStream !== stream) {
-                this.videoStream = stream;
-                this.$refs.videoElement.srcObject = stream;
-                this.$refs.videoElement.volume = 0;
-              }
-              return resolve();
-            },1000);
+            if(this.videoStream !== stream) {
+              this.videoStream = stream;
+              this.$refs.videoElement.srcObject = stream;
+              this.$refs.videoElement.volume = 0;
+            }
+            return resolve();
           })
           .catch((err) => {
             this.$alertify.error(err);

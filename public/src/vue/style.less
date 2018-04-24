@@ -547,7 +547,7 @@ body {
   > * {
     .margin-sides-small;
     flex: 0 1 auto;
-    .margin-bottom-medium;
+    .margin-bottom-large;
   }
 
   .m_project {
@@ -681,7 +681,7 @@ body {
     width: 100%;
     background-color: @c-gris_tresclair;
     padding: 0;
-    .padding-vert-small;
+    .padding-vert-medium;
     
     .m_project--favMedias--list {
       display: flex;
@@ -770,6 +770,7 @@ body {
       position: relative;
       .margin-small;
       .bg-gris_tresclair;
+      overflow: hidden;
 
       &::after {
         content: '';
@@ -788,6 +789,12 @@ body {
       }
       audio {
         height: 50px;
+      }
+      p {
+        white-space: pre;
+        &:first-child {
+          margin-top: 0;
+        }        
       }
     }
 
@@ -995,6 +1002,7 @@ body {
 
     // right panel
     .mediaContainer {
+      overflow: hidden;
       audio {
         height: 50%;
       }
@@ -1093,12 +1101,10 @@ body {
 
 .m_mediaPublication {
   position: absolute;
+  .bg-gris_clair;
+
+  cursor: -webkit-grab;
 }
-
-
-
-
-
 
 
 

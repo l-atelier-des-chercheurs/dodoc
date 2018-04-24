@@ -1,7 +1,7 @@
 <template>
   <div 
     class="m_mediaPublication"
-    :style="`transform: translate(${mediaStyles.x}mm, ${mediaStyles.y}mm)`"
+    :style="`transform: translate(${mediaPos.x}px, ${mediaPos.y}px)`"
     :class="{ 'is--dragged' : is_dragged }"
     @mousedown.prevent="mousedown"
   >
@@ -37,14 +37,12 @@ export default {
         x: '',
         y: ''
       },
-      mediaStylesOld: {
-        x: '',
-        y: ''
-      },
-      mediaStyles: {
+
+      mediaPos: {
         x: 0,
-        y: 0
-        // y: this.limitMediaYPos(parseFloat(this.media.y !== undefined ? this.media.y : 1)),
+        y: 0,
+        px: 0,
+        py: 0
       }
     }
   },
@@ -70,14 +68,21 @@ export default {
   },
   methods: {
     updateMediaStyles() {
-      this.mediaStyles.x = this.media.publi_meta.hasOwnProperty('x') ? this.media.publi_meta.x : 5;
-      this.mediaStyles.y = this.media.publi_meta.hasOwnProperty('y') ? this.media.publi_meta.y : 5;
+      this.mediaPos.x = this.media.publi_meta.hasOwnProperty('x') ? this.media.publi_meta.x : 5;
+      this.mediaPos.y = this.media.publi_meta.hasOwnProperty('y') ? this.media.publi_meta.y : 5;
     },
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • TimelineMedia: updateMediaPubliMeta`);
       }
       this.$emit('editPubliMedia', { reference_index: this.media.publi_meta.reference_index, val });
+    },
+    limitMediaXPos(xPos) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • TimelineMedia: limitMediaXPos / xPos = ${xPos}`);
+      }
+      return xPos;
+      // return Math.max(100, Math.min(0, yPos));
     },
     limitMediaYPos(yPos) {
       if (this.$root.state.dev_mode === 'debug') {
@@ -113,34 +118,31 @@ export default {
       }
       if (!this.is_dragged) {
         this.is_dragged = true;
-
+        this.dragOffset.x = event.pageX;
         this.dragOffset.y = event.pageY;
-        this.mediaStylesOld.y = this.mediaStyles.y;
+
+        this.mediaPos.px = Number.parseInt(this.mediaPos.x);
+        this.mediaPos.py = Number.parseInt(this.mediaPos.y);
       } else {
-        let newY = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
-        this.mediaStyles.y = this.limitMediaYPos(newY);
+        const deltaX = (event.pageX - this.dragOffset.x);
+        let newX = this.mediaPos.px + deltaX;
+        this.mediaPos.x = this.limitMediaXPos(newX);
+
+        const deltaY = (event.pageY - this.dragOffset.y);
+        let newY = this.mediaPos.py + deltaY;
+        this.mediaPos.y = this.limitMediaYPos(newY);
       }
     },
-    // openMedia() {
-    //   if (this.is_dragged) {
-    //     return;
-    //   }
-    //   if (this.$root.state.dev_mode === 'debug') {
-    //     console.log('METHODS • Publication: openMedia');
-    //   }
-    //   this.$emit('open');
-    // },
     mouseup(event) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: mouseup`);
         console.log(`with is_dragged = ${this.is_dragged}`);
       }
       if (this.is_dragged) {
-        let newY = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
-        this.mediaStyles.y = this.limitMediaYPos(newY);
-
-        this.updateMediaPubliMeta(this.mediaStyles);
-
+        this.updateMediaPubliMeta({ 
+          x: this.mediaPos.x,
+          y: this.mediaPos.y 
+        });
         this.is_dragged = false;
       }
 

@@ -180,7 +180,7 @@ export default {
 
         // find in store if slugFolderName exists
         if(!this.$root.store.projects.hasOwnProperty(slugProjectName)) {
-          console.err(`Missing project in store — not expected`);
+          console.log(`Missing project in store — not expected : ${slugProjectName}`);
           return;
         }
 
