@@ -1107,6 +1107,23 @@ body {
   cursor: -webkit-grab;
   user-select: none;
 
+  h1,h2 {
+    font-family: 'Nanook';
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 0em;
+  }
+  h1 {
+    font-size: 50pt;    
+  }
+  h2 {
+    font-size: 20pt;
+  }
+
+  h1 + :not(h2) {
+    margin-top: 1em;
+  }
+
   p:first-child {
     margin-top: 0;
   }
