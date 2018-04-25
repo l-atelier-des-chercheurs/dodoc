@@ -14,9 +14,11 @@
       :read_only="read_only"
       v-model="media.content"
     />
-    <button type="button" @click.stop="removeMedia()">
-      retirer
-    </button>
+    <div class="m_mediaPublication--buttons">
+      <button type="button" class="buttonLink" @click.stop="removeMedia()">
+        Retirer
+      </button>
+    </div>
   </div>
 </template>
 <script>
