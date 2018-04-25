@@ -1317,6 +1317,25 @@ body {
 
 
 @media print {
-  
+  .m_topbar,
+  .m_activitiesPanel--do,
+  .m_publicationMeta,
+  .m_publicationFooter,
+  .resizeFrame,
+  .publiButton {
+    display: none !important;
+  }
 
+  .m_activitiesPanel {
+    height: auto !important; 
+  }
+
+  .m_publicationview {
+    position: relative;
+    height: auto;
+  }
+
+  .m_publicationview--pages--page {
+    margin: 0 !important;
+  }
 }
