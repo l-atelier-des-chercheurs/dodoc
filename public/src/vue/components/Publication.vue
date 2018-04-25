@@ -98,6 +98,15 @@ export default {
         console.log(`METHODS • Publication: watch / publication.medias_list`);
       }
       this.updateMediasPubli();
+    },
+    '$root.store.projects': {
+      handler() {
+        if (this.$root.state.dev_mode === 'debug') {
+          console.log(`METHODS • Publication: watch / $root.store.projects`);
+        }
+        this.updateMediasPubli();
+      },
+      deep: true
     }
   },
   computed: {
