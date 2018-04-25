@@ -3,7 +3,7 @@
     <div 
       class="m_modal--mask"
       :class="['typeOfModal-' + typeOfModal, { 'is_invisible' : !showModal }]"
-      @click.self="closeModal"
+      @mousedown.self="closeModal"
     >
       <div class="m_modal--container"
         :class="['color-' + backgroundColor, { 'is_invisible' : !showModal }]"
