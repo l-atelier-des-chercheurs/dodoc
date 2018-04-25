@@ -2,24 +2,15 @@
   <div class="m_publicationview" @scroll="onScroll"
     ref="panel"
   >
-    <div class="margin-medium">
+    <div class="m_publicationMeta">
       <div class="m_metaField">
-        <div>
-          Titre
-        </div>
         <div>
           {{ publication.name }}
         </div>
       </div>
-
-      <div class="m_metaField">
-        <div>
-          Aperçu
-        </div>
-        <div>
-          {{ preview_mode }}
-          <input type="checkbox" v-model="preview_mode">
-        </div>
+      <div>
+        Aperçu
+        <input type="checkbox" v-model="preview_mode">
       </div>
 
       <button type="button" class="buttonLink" @click="closePublication()">
@@ -47,7 +38,7 @@
       </div>
     </div>
 
-    <div class="margin-medium">
+    <div class="m_publicationFooter">
       <button type="button" class="buttonLink" @click="addPage()">
         Ajouter une page
       </button>

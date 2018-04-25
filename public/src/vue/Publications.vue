@@ -15,11 +15,19 @@
       </div>
       <div 
         v-if="typeof publications === 'object'"
+        class="m_publicationMeta"
         v-for="publication in publications" :key="publication.name"
+         @click="openPublication(publication.slugFolderName)"
       >
-        <button type="button" @click="openPublication(publication.slugFolderName)">
-          {{ publication.name }}
-        </button>
+        <div class="m_metaField">
+          <div class="">
+            {{ publication.name }}
+          </div>
+          <div>
+            Ouvrir
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
