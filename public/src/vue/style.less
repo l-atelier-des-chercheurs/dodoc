@@ -499,7 +499,7 @@ body {
   }
 
   .m_activitiesPanel--doc {
-    flex-basis: 32cm;
+    flex-basis: 50%;
     position: relative;
     overflow: hidden;
     background-color: @c-bleuvert_fonce;
@@ -537,6 +537,14 @@ body {
 
 .m_publicationsview, .m_publicationview {
   .bg-bleuvert;
+}
+
+.m_publicationsview {
+  
+  .m_publicationsview--create {
+    width: 250px;
+    .margin-medium;
+  }
 }
 
 .m_projects {
@@ -1054,9 +1062,8 @@ body {
 
 
 .m_publicationMeta {
-  width: 320px;
+  width: 100%;
   .bg-blanc;
-  .margin-medium;
   .padding-medium;
 }
 .m_publicationFooter {
@@ -1082,6 +1089,8 @@ body {
     .margin-vert-medium;
     .bg-blanc;
     box-shadow: 0px 2px 16px 0px rgba(0,0,0,.2);
+
+    transform-origin: top center;
 
     &.is--active {
 
@@ -1143,6 +1152,8 @@ body {
   position: absolute;
   cursor: -webkit-grab;
   user-select: none;
+  min-width: 150px;
+  min-height: 150px;
 
   transition: transform .4s ease-out;
 
@@ -1173,7 +1184,7 @@ body {
 
   .resizeFrame {
     @t-borderSize: 4px;
-    @t-handleSize: 24px;
+    @t-handleSize: 28px;
 
     position: absolute;
     top: -@t-borderSize/2;
@@ -1350,7 +1361,9 @@ body {
   .m_publicationMeta,
   .m_publicationFooter,
   .resizeFrame,
-  .publiButton {
+  .publiButton,
+  .m_mediaPublication--buttons,
+  .m_publicationview--pages--page--margins_rule {
     display: none !important;
   }
 
@@ -1365,5 +1378,6 @@ body {
 
   .m_publicationview--pages--page {
     margin: 0 !important;
+    transform: none !important;
   }
 }

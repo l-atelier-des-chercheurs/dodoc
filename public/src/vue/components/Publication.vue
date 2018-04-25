@@ -9,12 +9,20 @@
         <div>
           {{ publication.name }}
         </div>
+        <div class="">
+          <input id="preview" type="checkbox" v-model="preview_mode">
+          <label for="preview">
+            Aperçu(p)
+          </label>
+        </div>
       </div>
-      <div class="padding-none">
-        <input id="preview" type="checkbox" v-model="preview_mode">
-        <label for="preview">
-          Aperçu
-        </label>
+      <div class="m_metaField">
+        <div>
+          Zoom
+        </div>
+        <div class="">
+          <input type="range" min=".2" max="2" step="0.05" v-model="zoom">
+        </div>
       </div>
 
       <button type="button" class="buttonLink" @click="closePublication()">
@@ -31,6 +39,7 @@
         :style="setPageProperties(page)"
       > 
         <div 
+          v-if="!preview_mode"
           v-for="item in [0,1,2,3]"
           class="m_publicationview--pages--page--margins_rule"
           :style="`--margin_x: ${10}mm; --margin_y: ${10}mm`"
@@ -76,7 +85,8 @@ export default {
     return {
       publication_medias: {},
       page_currently_active: 1,
-      preview_mode: false
+      preview_mode: false,
+      zoom: 1
     }
   },
   created() {
@@ -85,12 +95,14 @@ export default {
   mounted() {
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('publication.listSpecificMedias', this.updateMediasPubli);
+    document.addEventListener('keyup', this.publicationKeyListener);
     this.updateMediasPubli();  
 
   },
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
     this.$eventHub.$off('publication.listSpecificMedias', this.updateMediasPubli);
+    document.removeEventListener('keyup', this.publicationKeyListener);
     window.removeEventListener('mouseup', this.mouseup);
   },
 
@@ -109,6 +121,9 @@ export default {
         this.updateMediasPubli();
       },
       deep: true
+    },
+    'zoom': function() {
+      this.$root.setPublicationZoom(this.zoom);
     }
   },
   computed: {
@@ -282,7 +297,7 @@ export default {
       });
     },
 
-    onScroll() {
+    onScroll(event) {
       if (this.$root.state.dev_mode === 'debug') {
         // console.log(`METHODS • Publication: onScroll`);
       }
@@ -310,7 +325,16 @@ export default {
       return `
         width: ${Number.parseInt(page.width)}mm; 
         height: ${Number.parseInt(page.height)}mm;
+        transform: scale(${this.$root.settings.publi_zoom});
       `;
+    },
+
+    publicationKeyListener(evt) {
+      switch(evt.key) {
+        case 'p':
+          this.preview_mode = !this.preview_mode;
+
+      }
     }
 
   }

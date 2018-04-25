@@ -9,7 +9,8 @@
       'is--waitingForServerResponse' : is_waitingForServer,
       'is--hovered' : is_hovered
     }"
-    @mousedown.prevent="dragMedia"
+    @mousedown.stop.prevent="dragMedia('mouse')"
+    @touchstart.stop.prevent="dragMedia('touch')"
   >
     <MediaContent
       :context="'full'"
@@ -26,7 +27,8 @@
       class="resizeFrame"
     >
       <div class="handle handle_bottomright"
-        @mousedown.stop="resizeMedia('bottomright')"
+        @mousedown.stop="resizeMedia('mouse', 'bottomright')"
+        @touchstart.stop.prevent="resizeMedia('touch', 'bottomright')"
       >
       </div>
     </div>
@@ -39,10 +41,16 @@
         type="button" 
         class="buttonLink" 
         @click.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.slugMediaName })"
+        @touchstart.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.slugMediaName })"
       >
-        Ouvrir
+        Modifier
       </button>
-      <button type="button" class="buttonLink" @click.stop="removeMedia()">
+      <button 
+        type="button" 
+        class="buttonLink" 
+        @click.stop="removeMedia()"
+        @touchend.stop="removeMedia()"
+      >
         Enlever
       </button>
     </div>
@@ -166,13 +174,18 @@ export default {
     removeMedia() {
       this.$emit('removeMedia', { reference_index: this.media.publi_meta.reference_index });
     },
-    resizeMedia(origin) {
+    resizeMedia(type, origin) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: resizeMedia with is_resized = ${this.is_resized}`);
       }
       if (!this.read_only) {
-        window.addEventListener('mousemove', this.resizeMove);
-        window.addEventListener('mouseup', this.resizeUp);
+        if(type === 'mouse') {
+          window.addEventListener('mousemove', this.resizeMove);
+          window.addEventListener('mouseup', this.resizeUp);
+        } else if(type === 'touch') {
+          window.addEventListener('touchmove', this.resizeMove);
+          window.addEventListener('touchend', this.resizeUp);
+        }
       }
     },
     resizeMove(event) {
@@ -211,20 +224,27 @@ export default {
       event.stopPropagation();
       window.removeEventListener('mousemove', this.resizeMove);
       window.removeEventListener('mouseup', this.resizeUp);
+      window.removeEventListener('touchmove', this.resizeMove);
+      window.removeEventListener('touchend', this.resizeUp);
 
       return false;
     },
 
-    dragMedia(event) {
+    dragMedia(type) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: dragMedia with is_dragged = ${this.is_dragged}`);
       }
       if (!this.read_only) {
-        window.addEventListener('mousemove', this.dragMove);
-        window.addEventListener('mouseup', this.dragUp);
+        if(type === 'mouse') {
+          window.addEventListener('mousemove', this.dragMove);
+          window.addEventListener('mouseup', this.dragUp);
+        } else if(type === 'touch') {
+          window.addEventListener('touchmove', this.dragMove);
+          window.addEventListener('touchend', this.dragUp);
+        }
       }
     },
-    dragMove(event) {
+    dragMove() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: dragMove with is_dragged = ${this.is_dragged}`);
       }
@@ -245,7 +265,7 @@ export default {
         this.mediaPos.y = this.limitMediaYPos(newY);
       }
     },
-    dragUp(event) {
+    dragUp() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: dragUp with is_dragged = ${this.is_dragged}`);
       }
@@ -260,6 +280,8 @@ export default {
       event.stopPropagation();
       window.removeEventListener('mousemove', this.dragMove);
       window.removeEventListener('mouseup', this.dragUp);
+      window.removeEventListener('touchmove', this.dragMove);
+      window.removeEventListener('touchend', this.dragUp);
 
       return false;
     },

@@ -5,6 +5,7 @@
     <div>
       <figure 
         @click.stop="openMediaModal()" 
+        @touchstart.stop="openMediaModal()" 
         @mouseover="is_hovered = true"
         @mouseleave="is_hovered = false"
         :class="{ 'is--hovered' : is_hovered }"
@@ -22,6 +23,7 @@
             v-if="$root.settings.current_slugPubliName" 
             class="buttonLink margin-bottom-small"
             @click.stop="addToCurrentPubli()"
+            @touchstart.stop="addToCurrentPubli()"
           >
             Ajouter à la publication 
           </button>

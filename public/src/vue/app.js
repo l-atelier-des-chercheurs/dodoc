@@ -376,6 +376,8 @@ let vm = new Vue({
       current_author: false,
       showMediaModalFor: false,
 
+      publi_zoom: 1,
+
       show_publi_panel: false,
       view: 'ListView',
       has_sidebar_opened: false,
@@ -649,10 +651,16 @@ let vm = new Vue({
           `ROOT EVENT: showMediaModalFor with slugProjectName = ${slugProjectName} and slugMediaName = ${slugMediaName}`
         );
       }
-      this.$root.settings.showMediaModalFor = {
+      this.settings.showMediaModalFor = {
         slugProjectName,
         slugMediaName
       };
+    },
+    setPublicationZoom(val) {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`ROOT EVENT: setPublicationZoom`);
+      }
+      this.settings.publi_zoom = val;
     }
   },
   watch: {

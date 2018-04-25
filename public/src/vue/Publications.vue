@@ -1,10 +1,17 @@
 <template>
   <div class="m_publicationsview">
-    <div class="margin-medium">
-      <input type="text" placeholder="nom" ref="publiName">
-      <button type="button" @click="createPublication">
-        Créer une publication
-      </button>
+    <div class="m_publicationsview--create">
+      <div class="m_metaField">
+        <div class="div">
+          Créer une publication
+        </div>
+        <div>
+          <input type="text" placeholder="nom" ref="publiName">
+          <button type="button" @click="createPublication">
+            Valider
+          </button>
+        </div>
+      </div>
     </div>
     
     <hr>
