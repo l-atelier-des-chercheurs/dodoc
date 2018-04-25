@@ -1,5 +1,7 @@
 <template>
-  <div class="m_publicationview" @scroll="onScroll"
+  <div 
+    class="m_publicationview" 
+    @scroll="onScroll"
     ref="panel"
   >
     <div class="m_publicationMeta">
@@ -8,9 +10,11 @@
           {{ publication.name }}
         </div>
       </div>
-      <div>
-        Aperçu
-        <input type="checkbox" v-model="preview_mode">
+      <div class="padding-none">
+        <input id="preview" type="checkbox" v-model="preview_mode">
+        <label for="preview">
+          Aperçu
+        </label>
       </div>
 
       <button type="button" class="buttonLink" @click="closePublication()">
@@ -24,11 +28,18 @@
         class="m_publicationview--pages--page"
         :class="{ 'is--active' : pageNumber === page_currently_active-1 }"
         :key="pageNumber"
-        :style="setPageSize(page)"
-      >
+        :style="setPageProperties(page)"
+      > 
+        <div 
+          v-for="item in [0,1,2,3]"
+          class="m_publicationview--pages--page--margins_rule"
+          :style="`--margin_x: ${10}mm; --margin_y: ${10}mm`"
+        >
+        </div>
         <MediaPublication
           v-for="(media, mediaIndex) in publication_medias[(pageNumber+1) + '']" 
           :key="mediaIndex"
+          :page="page"
           :media="media"
           :preview_mode="preview_mode"
           :read_only="read_only"
@@ -242,7 +253,9 @@ export default {
       pages.push({ 
         template: 'journal',
         width: 210,
-        height: 297
+        height: 297,
+        xMargin: 38,
+        yMargin: 38 
       });      
 
       this.$root.editFolder({ 
@@ -293,8 +306,11 @@ export default {
       this.page_currently_active = index;
     },
 
-    setPageSize(page) {
-      return `width: ${Number.parseInt(page.width)}mm; height: ${Number.parseInt(page.height)}mm;`;
+    setPageProperties(page) {
+      return `
+        width: ${Number.parseInt(page.width)}mm; 
+        height: ${Number.parseInt(page.height)}mm;
+      `;
     }
 
   }

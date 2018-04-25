@@ -19,6 +19,7 @@
       :read_only="read_only"
       v-model="media.content"
     />
+    <p class="m_mediaPublication--caption">{{ media.caption }}</p>
 
     <div 
       v-if="preview_mode === false" 
@@ -53,6 +54,7 @@ import MediaContent from './MediaContent.vue';
 export default {
   props: {
     media: Object,
+    page: Object,
     read_only: Boolean,
     preview_mode: Boolean
   },
@@ -66,11 +68,9 @@ export default {
       is_waitingForServer: false,
       is_hovered: false,
 
-      pageMargin: {
-        x: 38,
-        y: 38
-      },
-      pageSize: {
+      pageProperties: {
+        x_margin: 38,
+        y_margin: 38,
         w: 794,
         h: 1122
       },
@@ -100,10 +100,9 @@ export default {
   },
   
   created() {
-    this.updateMediaStyles();
   },
   mounted() {
-
+    this.updateMediaStyles();
   },
   beforeDestroy() {
   },
@@ -128,8 +127,8 @@ export default {
   },
   methods: {
     updateMediaStyles() {
-      this.mediaPos.x = this.media.publi_meta.hasOwnProperty('x') ? this.limitMediaXPos(this.media.publi_meta.x) : this.pageMargin.x;
-      this.mediaPos.y = this.media.publi_meta.hasOwnProperty('y') ? this.limitMediaYPos(this.media.publi_meta.y) : this.pageMargin.y;
+      this.mediaPos.x = this.media.publi_meta.hasOwnProperty('x') ? this.limitMediaXPos(this.media.publi_meta.x) : this.pageProperties.x_margin;
+      this.mediaPos.y = this.media.publi_meta.hasOwnProperty('y') ? this.limitMediaYPos(this.media.publi_meta.y) : this.pageProperties.y_margin;
       this.mediaSize.width = this.media.publi_meta.hasOwnProperty('width') ? this.media.publi_meta.width : 300;
       this.mediaSize.height = this.media.publi_meta.hasOwnProperty('height') ? this.media.publi_meta.height : 300;
     },
@@ -143,25 +142,25 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: limitMediaXPos / xPos = ${xPos}`);
       }
-      return Math.max(this.pageMargin.x, Math.min(this.pageSize.w - this.pageMargin.x - this.mediaSize.width, xPos));
+      return Math.max(this.pageProperties.x_margin, Math.min(this.pageProperties.w - this.pageProperties.x_margin - this.mediaSize.width, xPos));
     },
     limitMediaYPos(yPos) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: limitMediaYPos / yPos = ${yPos}`);
       }
-      return Math.max(this.pageMargin.y, Math.min(this.pageSize.h - this.pageMargin.y - this.mediaSize.height, yPos));
+      return Math.max(this.pageProperties.y_margin, Math.min(this.pageProperties.h - this.pageProperties.y_margin - this.mediaSize.height, yPos));
     },
     limitMediaWidth(w) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: limitMediaWidth / w = ${w}`);
       }
-      return Math.max(0, Math.min(this.pageSize.w - this.pageMargin.x - this.mediaPos.x, w));
+      return Math.max(0, Math.min(this.pageProperties.w - this.pageProperties.x_margin - this.mediaPos.x, w));
     },
     limitMediaHeight(h) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: limitMediaHeight / h = ${h}`);
       }
-      return Math.max(0, Math.min(this.pageSize.h - this.pageMargin.y - this.mediaPos.y, h));
+      return Math.max(0, Math.min(this.pageProperties.h - this.pageProperties.y_margin - this.mediaPos.y, h));
     },
     
     removeMedia() {
