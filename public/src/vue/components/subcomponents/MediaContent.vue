@@ -48,7 +48,12 @@
     </template>
 
     <template v-else-if="media.type === 'other'">
-      {{ slugMediaName }}
+      <div class="padding-small font-small">
+        <pre>
+Fichier&nbsp;:
+{{ slugMediaName }}
+        </pre>
+      </div>
     </template>
   </div>
 </template>

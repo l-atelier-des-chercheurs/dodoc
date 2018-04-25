@@ -1,11 +1,16 @@
 <template>
   <div 
     class="m_mediaPublication"
-    :style="`transform: translate(${mediaPos.x}px, ${mediaPos.y}px)`"
-    :class="{ 'is--dragged' : is_dragged }"
-    @mousedown.prevent="mousedown"
+    :style="mediaStyles"
+    @mouseover="is_hovered = true"
+    @mouseleave="is_hovered = false"
+    :class="{ 
+      'is--dragged' : is_dragged, 
+      'is--waitingForServerResponse' : is_waitingForServer,
+      'is--hovered' : is_hovered
+    }"
+    @mousedown.prevent="dragMedia"
   >
-    <!-- @click="updateMediaPosition({ x: Math.random() * 100, y: Math.random() * 100 })" -->
     <MediaContent
       :context="'full'"
       :slugMediaName="media.slugMediaName"
@@ -14,9 +19,17 @@
       :read_only="read_only"
       v-model="media.content"
     />
-    <div class="m_mediaPublication--buttons">
+
+    <div class="resizeFrame" v-if="preview_mode === false">
+      <div class="handle handle_bottomright"
+        @mousedown.stop="resizeMedia('bottomright')"
+      >
+      </div>
+    </div>
+
+    <div class="m_mediaPublication--buttons" >
       <button type="button" class="buttonLink" @click.stop="removeMedia()">
-        Retirer
+        Enlever
       </button>
     </div>
   </div>
@@ -27,7 +40,8 @@ import MediaContent from './MediaContent.vue';
 export default {
   props: {
     media: Object,
-    read_only: Boolean
+    read_only: Boolean,
+    preview_mode: Boolean
   },
   components: {
     MediaContent
@@ -35,22 +49,45 @@ export default {
   data() {
     return {
       is_dragged: false,
-      dragOffset: {
-        x: '',
-        y: ''
+      is_resized: false,
+      is_waitingForServer: false,
+      is_hovered: false,
+
+      pageMargin: {
+        x: 38,
+        y: 38
+      },
+      pageSize: {
+        w: 794,
+        h: 1122
       },
 
+      dragOffset: {
+        x: 0,
+        y: 0
+      },
       mediaPos: {
         x: 0,
         y: 0,
         px: 0,
         py: 0
-      }
+      },
+
+      resizeOffset: {
+        x: 0,
+        y: 0
+      },
+      mediaSize: {
+        width: 0,
+        height: 0,
+        pwidth: 0,
+        pheight: 0
+      },
     }
   },
   
   created() {
-        this.updateMediaStyles();
+    this.updateMediaStyles();
   },
   mounted() {
 
@@ -67,56 +104,117 @@ export default {
     },
   },
   computed: {
+    mediaStyles() {
+      return `
+        transform: translate(${this.mediaPos.x}px, ${this.mediaPos.y}px);
+        width: ${this.mediaSize.width}px;
+        height: ${this.mediaSize.height}px;
+      `
+      ;
+    },
   },
   methods: {
     updateMediaStyles() {
-      this.mediaPos.x = this.media.publi_meta.hasOwnProperty('x') ? this.media.publi_meta.x : 5;
-      this.mediaPos.y = this.media.publi_meta.hasOwnProperty('y') ? this.media.publi_meta.y : 5;
+      this.mediaPos.x = this.media.publi_meta.hasOwnProperty('x') ? this.limitMediaXPos(this.media.publi_meta.x) : this.pageMargin.x;
+      this.mediaPos.y = this.media.publi_meta.hasOwnProperty('y') ? this.limitMediaYPos(this.media.publi_meta.y) : this.pageMargin.y;
+      this.mediaSize.width = this.media.publi_meta.hasOwnProperty('width') ? this.media.publi_meta.width : 300;
+      this.mediaSize.height = this.media.publi_meta.hasOwnProperty('height') ? this.media.publi_meta.height : 300;
     },
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • TimelineMedia: updateMediaPubliMeta`);
+        console.log(`METHODS • MediaPublication: updateMediaPubliMeta`);
       }
       this.$emit('editPubliMedia', { reference_index: this.media.publi_meta.reference_index, val });
     },
     limitMediaXPos(xPos) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • TimelineMedia: limitMediaXPos / xPos = ${xPos}`);
+        console.log(`METHODS • MediaPublication: limitMediaXPos / xPos = ${xPos}`);
       }
-      return xPos;
-      // return Math.max(100, Math.min(0, yPos));
+      return Math.max(this.pageMargin.x, Math.min(this.pageSize.w - this.pageMargin.x - this.mediaSize.width, xPos));
     },
     limitMediaYPos(yPos) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • TimelineMedia: limitMediaYPos / yPos = ${yPos}`);
+        console.log(`METHODS • MediaPublication: limitMediaYPos / yPos = ${yPos}`);
       }
-      return yPos;
-      // return Math.max(100, Math.min(0, yPos));
+      return Math.max(this.pageMargin.y, Math.min(this.pageSize.h - this.pageMargin.y - this.mediaSize.height, yPos));
     },
+    limitMediaWidth(w) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • MediaPublication: limitMediaWidth / w = ${w}`);
+      }
+      return Math.max(0, Math.min(this.pageSize.w - this.pageMargin.x - this.mediaPos.x, w));
+    },
+    limitMediaHeight(h) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • MediaPublication: limitMediaHeight / h = ${h}`);
+      }
+      return Math.max(0, Math.min(this.pageSize.h - this.pageMargin.y - this.mediaPos.y, h));
+    },
+    
     removeMedia() {
       this.$emit('removeMedia', { reference_index: this.media.publi_meta.reference_index });
     },
-
-    mousedown(event) {
+    resizeMedia(origin) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(
-          `METHODS • Publication: mousedown with is_dragged = ${
-            this.is_dragged
-          }`
-        );
+        console.log(`METHODS • MediaPublication: resizeMedia with is_resized = ${this.is_resized}`);
       }
       if (!this.read_only) {
-        window.addEventListener('mousemove', this.mousemove);
-        window.addEventListener('mouseup', this.mouseup);
+        window.addEventListener('mousemove', this.resizeMove);
+        window.addEventListener('mouseup', this.resizeUp);
       }
     },
-    mousemove(event) {
+    resizeMove(event) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(
-          `METHODS • Publication: mousemove with is_dragged = ${
-            this.is_dragged
-          }`
-        );
+        console.log(`METHODS • MediaPublication: resizeMove with is_resized = ${this.is_resized}`);
+      }
+      if (!this.is_resized) {
+        this.is_resized = true;
+        this.resizeOffset.x = event.pageX;
+        this.resizeOffset.y = event.pageY;
+
+        this.mediaSize.pwidth = Number.parseInt(this.mediaSize.width);
+        this.mediaSize.pheight = Number.parseInt(this.mediaSize.height);
+      } else {
+        const deltaX = (event.pageX - this.resizeOffset.x);
+        let newWidth = this.mediaSize.pwidth + deltaX;
+        this.mediaSize.width = this.limitMediaWidth(newWidth);
+
+        const deltaY = (event.pageY - this.resizeOffset.y);
+        let newHeight = this.mediaSize.pheight + deltaY;
+        this.mediaSize.height = this.limitMediaHeight(newHeight);
+      }
+    },
+    resizeUp(event) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • MediaPublication: resizeUp with is_resized = ${this.is_resized}`);
+      }
+      if (this.is_resized) {
+        this.updateMediaPubliMeta({ 
+          width: this.mediaSize.width,
+          height: this.mediaSize.height 
+        });
+        this.is_resized = false;
+      }
+
+      event.stopPropagation();
+      window.removeEventListener('mousemove', this.resizeMove);
+      window.removeEventListener('mouseup', this.resizeUp);
+
+      return false;
+    },
+
+    dragMedia(event) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • MediaPublication: dragMedia with is_dragged = ${this.is_dragged}`);
+      }
+      if (!this.read_only) {
+        window.addEventListener('mousemove', this.dragMove);
+        window.addEventListener('mouseup', this.dragUp);
+      }
+    },
+    dragMove(event) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • MediaPublication: dragMove with is_dragged = ${this.is_dragged}`);
       }
       if (!this.is_dragged) {
         this.is_dragged = true;
@@ -135,10 +233,9 @@ export default {
         this.mediaPos.y = this.limitMediaYPos(newY);
       }
     },
-    mouseup(event) {
+    dragUp(event) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: mouseup`);
-        console.log(`with is_dragged = ${this.is_dragged}`);
+        console.log(`METHODS • MediaPublication: dragUp with is_dragged = ${this.is_dragged}`);
       }
       if (this.is_dragged) {
         this.updateMediaPubliMeta({ 
@@ -149,8 +246,8 @@ export default {
       }
 
       event.stopPropagation();
-      window.removeEventListener('mousemove', this.mousemove);
-      window.removeEventListener('mouseup', this.mouseup);
+      window.removeEventListener('mousemove', this.dragMove);
+      window.removeEventListener('mouseup', this.dragUp);
 
       return false;
     },

@@ -57,7 +57,8 @@ export default {
         name,
         pages: [{
           template: 'journal',
-          format: 'A4'          
+          width: 210,
+          height: 297
         }]
       }
       this.$root.createFolder({ type: 'publications', data: publidata });      

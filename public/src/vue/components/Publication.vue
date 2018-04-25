@@ -3,28 +3,43 @@
     ref="panel"
   >
     <div class="margin-medium">
-      {{ slugPubliName }}
-      <h2>
-        {{ publication.name }}
-      </h2>
+      <div class="m_metaField">
+        <div>
+          Titre
+        </div>
+        <div>
+          {{ publication.name }}
+        </div>
+      </div>
+
+      <div class="m_metaField">
+        <div>
+          Aperçu
+        </div>
+        <div>
+          {{ preview_mode }}
+          <input type="checkbox" v-model="preview_mode">
+        </div>
+      </div>
 
       <button type="button" class="buttonLink" @click="closePublication()">
         Fermer
       </button>
     </div>
 
-
     <div class="m_publicationview--pages" ref="pages">
       <div 
         v-for="(page, pageNumber) in publication.pages" 
         class="m_publicationview--pages--page"
-        :class="[`m_publicationview--pages--page_format-${page.format}`, { 'is--active' : pageNumber === page_currently_active-1 }]"
+        :class="{ 'is--active' : pageNumber === page_currently_active-1 }"
         :key="pageNumber"
+        :style="setPageSize(page)"
       >
         <MediaPublication
           v-for="(media, mediaIndex) in publication_medias[(pageNumber+1) + '']" 
           :key="mediaIndex"
           :media="media"
+          :preview_mode="preview_mode"
           :read_only="read_only"
           @removeMedia="values => { removeMedia(values) }"
           @editPubliMedia="values => { editPubliMedia(values) }"
@@ -58,7 +73,8 @@ export default {
   data() {
     return {
       publication_medias: {},
-      page_currently_active: 1
+      page_currently_active: 1,
+      preview_mode: false
     }
   },
   created() {
@@ -78,6 +94,9 @@ export default {
 
   watch: {
     'publication.medias_list': function() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: watch / publication.medias_list`);
+      }
       this.updateMediasPubli();
     }
   },
@@ -90,7 +109,7 @@ export default {
       }
 
       let medias_list = [];
-      if(this.publication.hasOwnProperty('medias_list')) {
+      if(this.publication.hasOwnProperty('medias_list') && typeof this.publication.medias_list === 'object' && this.publication.medias_list.length > 0) {
         medias_list = this.publication.medias_list.slice();
       }
 
@@ -128,11 +147,10 @@ export default {
         data: { medias_list } 
       });
     },
-  
     // function to update property of a media inside medias_list
     editPubliMedia({ reference_index, val }) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: removeMedia / reference_index = ${JSON.stringify(arguments, null, 4)}`);
+        console.log(`METHODS • Publication: editPubliMedia / args = ${JSON.stringify(arguments, null, 4)}`);
       }
 
       let medias_list = [];
@@ -147,7 +165,6 @@ export default {
         data: { medias_list } 
       });
     },
-
     closePublication() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: closePublication`);
@@ -160,6 +177,7 @@ export default {
       }
 
       if(!this.publication.hasOwnProperty('medias_list') || this.publication.medias_list.length === 0) {
+        this.publication_medias = [];        
         return;
       }
       
@@ -223,7 +241,8 @@ export default {
       }
       pages.push({ 
         template: 'journal',
-        format: 'A4'
+        width: 210,
+        height: 297
       });      
 
       this.$root.editFolder({ 
@@ -272,6 +291,10 @@ export default {
       }
 
       this.page_currently_active = index;
+    },
+
+    setPageSize(page) {
+      return `width: ${Number.parseInt(page.width)}mm; height: ${Number.parseInt(page.height)}mm;`;
     }
 
   }

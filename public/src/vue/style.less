@@ -787,10 +787,11 @@ body {
         margin: 0;
         object-fit: contain;
       }
+      
       audio {
         height: 50px;
       }
-      p {
+      p, pre {
         white-space: pre;
         &:first-child {
           margin-top: 0;
@@ -1065,10 +1066,9 @@ body {
 
   .m_publicationview--pages--page {
     position: relative;
-    .margin-medium;
+    .margin-vert-medium;
     .bg-blanc;
     box-shadow: 0px 2px 16px 0px rgba(0,0,0,.2);
-    overflow: hidden;
 
     &.is--active {
 
@@ -1077,7 +1077,7 @@ body {
         
         display: block;
         position: absolute;
-        right: calc(100% + 5px);
+        right: ~"calc(100% + 4px)";
         height: 100%;
         width: 40px;
         color: @c-rouge;
@@ -1104,16 +1104,92 @@ body {
 
 .m_mediaPublication {
   position: absolute;
-  border: 1px solid @c-gris;
-
   cursor: -webkit-grab;
+  user-select: none;
+
+  p:first-child {
+    margin-top: 0;
+  }
+
+
+  .mediaContainer {
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    .bg-blanc;
+
+    p {
+      width: 100%;   
+      white-space: pre-wrap;   
+    }
+
+    img {
+      height: 100%;
+      object-position: center;
+      object-fit: cover;
+    }
+  }
+
+  .resizeFrame {
+    @t-borderSize: 4px;
+    @t-handleSize: 24px;
+
+    position: absolute;
+    top: -@t-borderSize/2;
+    left: -@t-borderSize/2;
+    right: -@t-borderSize/2;
+    bottom: -@t-borderSize/2;
+    z-index: 1;
+
+    color: @c-noir;
+    border: @t-borderSize dashed currentColor;
+    transition: border .2s;
+  
+    .is--hovered& {
+      color: @c-gris_fonce;
+    }
+    .is--dragged& {
+      color: @c-rouge;
+    }
+    .is--waitingForServerResponse& {
+      color: @c-gris;
+    }
+  
+    .handle {
+      position: absolute;
+      z-index: 1;
+      width: @t-handleSize;
+      height: @t-handleSize;
+
+      border: @t-borderSize dashed currentColor;
+      background-color: white;
+      border-radius: 50%;
+      cursor: nwse-resize;
+    }
+    .handle_bottomright {
+      bottom: -@t-handleSize/2;
+      right: -@t-handleSize/2;
+      cursor: nwse-resize;
+    }  
+
+  }
 
   .m_mediaPublication--buttons {
     position: absolute;
-    bottom: 0;
+    top: 0;
     right: 0;
-    mix-blend-mode: difference;
+    width: 100%;
+    z-index: 2;
+
+    display: flex;
+    justify-content: flex-end;
+
+    > * {
+      color: inherit;
+      .bg-blanc;
+    }
   }
+
 }
 
 

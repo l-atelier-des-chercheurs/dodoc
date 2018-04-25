@@ -98,6 +98,7 @@ export default {
       });      
       if(justCreatedTextMedia.length > 0) {
         this.openMediaModal(justCreatedTextMedia[0]);
+        this.$root.justCreatedTextmediaID = false;
       }
     }
 
