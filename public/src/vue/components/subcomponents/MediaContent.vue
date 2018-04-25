@@ -39,6 +39,7 @@
         v-model="htmlForEditor"
         ref="textField"
         autocorrect="on"
+        :editorToolbar="customToolbar"
       />
       <!-- <textarea
         placeholder="…"
@@ -98,7 +99,11 @@ export default {
         default: 1600
       },
       htmlForEditor: this.value,
-      mediaURL: `/${this.slugProjectName}/${this.slugMediaName}`
+      mediaURL: `/${this.slugProjectName}/${this.slugMediaName}`,
+      customToolbar: [
+        [{ 'header': [false, 1, 2, 3, 4, 5, 6, ] }],
+        ['bold', 'italic', 'underline', 'heading']
+      ]
     };
   },
   mounted() {
@@ -125,7 +130,6 @@ export default {
       return this.available_resolutions.preview_hovered;
     },
     linkToImageThumb: function() {
-      debugger;
       let pathToSmallestThumb = _.findWhere(this.media.thumbs, {
         size: this.thumbRes
       }).path;

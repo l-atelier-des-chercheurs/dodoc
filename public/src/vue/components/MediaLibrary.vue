@@ -35,16 +35,6 @@
       >
       </MediaCard>
     </div>
-
-    <EditMedia
-      v-if="showMediaModalFor !== false"
-      :slugProjectName="slugProjectName"
-      :slugMediaName="showMediaModalFor"
-      :media="project.medias[showMediaModalFor]"
-      @close="showMediaModalFor = false"
-      :read_only="read_only"
-    >
-    </EditMedia>        
     
   </div>    
 </template>
@@ -52,7 +42,6 @@
 import MediaFilterBar from './MediaFilterBar.vue';
 import FileUpload from './FileUpload.vue';
 import MediaCard from './subcomponents/MediaCard.vue';
-import EditMedia from './modals/EditMedia.vue';
 
 export default {
   props: {
@@ -63,13 +52,10 @@ export default {
   components: {
     MediaFilterBar,
     FileUpload,
-    EditMedia,
     MediaCard
   },
   data() {
     return {
-      showMediaModalFor: false,
-
       mediaFilter: {
         fav: false
       },
@@ -83,13 +69,6 @@ export default {
   
   created() {
   },
-  mounted() {
-    this.$eventHub.$on('modal.openMedia', this.openMediaModal);
-  },
-  beforeDestroy() {
-    this.$eventHub.$off('modal.openMedia', this.openMediaModal);
-  },
-
   watch: {
     'project.medias': function() {
       let justCreatedTextMedia = Object.keys(this.project.medias).filter((m) => {
@@ -188,7 +167,7 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaLibrary: openMedia');
       }
-      this.showMediaModalFor = slugMediaName;
+      this.$root.showMediaModalFor({ slugProjectName: this.slugProjectName, slugMediaName: this.slugMediaName });      
     },
     createTextMedia() {
       const mediaMeta = {

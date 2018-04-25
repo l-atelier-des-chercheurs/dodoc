@@ -34,6 +34,13 @@
       v-if="preview_mode === false" 
       class="m_mediaPublication--buttons"
     >
+      <button 
+        type="button" 
+        class="buttonLink" 
+        @click.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.slugMediaName })"
+      >
+        Ouvrir
+      </button>
       <button type="button" class="buttonLink" @click.stop="removeMedia()">
         Enlever
       </button>
@@ -164,7 +171,7 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: resizeMedia with is_resized = ${this.is_resized}`);
       }
-      if (!this.read_only && !this.preview_mode) {
+      if (!this.read_only) {
         window.addEventListener('mousemove', this.resizeMove);
         window.addEventListener('mouseup', this.resizeUp);
       }
@@ -213,7 +220,7 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: dragMedia with is_dragged = ${this.is_dragged}`);
       }
-      if (!this.read_only && !this.preview_mode) {
+      if (!this.read_only) {
         window.addEventListener('mousemove', this.dragMove);
         window.addEventListener('mouseup', this.dragUp);
       }

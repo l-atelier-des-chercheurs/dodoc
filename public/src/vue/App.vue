@@ -76,6 +76,16 @@
       </button>
     </transition>
     
+    <EditMedia
+      v-if="$root.settings.showMediaModalFor !== false"
+      :slugMediaName="$root.settings.showMediaModalFor.slugMediaName"
+      :slugProjectName="$root.settings.showMediaModalFor.slugProjectName"
+      :media="$root.store.projects[$root.settings.showMediaModalFor.slugProjectName].medias[$root.settings.showMediaModalFor.slugMediaName]"
+      @close="$root.settings.showMediaModalFor = false"
+      :read_only="!$root.state.connected"
+    >
+    </EditMedia>        
+    
     <portal-target name="modal_container" />
 
   </div>
@@ -89,6 +99,7 @@ import ProjectView from './ProjectView.vue';
 import CaptureView from './CaptureView.vue';
 import Publications from './Publications.vue';
 import Publication from './components/Publication.vue';
+import EditMedia from './components/modals/EditMedia.vue';
 
 export default {
   name: 'app',
@@ -99,7 +110,8 @@ export default {
     ProjectView,
     CaptureView,
     Publications,
-    Publication
+    Publication,
+    EditMedia
   },
   props: {
   },

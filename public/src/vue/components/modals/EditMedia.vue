@@ -59,8 +59,8 @@
 
 <!-- Caption -->
       <div 
-      v-if="(!read_only || !!mediadata.caption) && mediadata.type !== 'marker' && mediadata.type !== 'text'"
-      class="margin-bottom-small" 
+        v-if="(!read_only || !!mediadata.caption) && mediadata.type !== 'marker' && mediadata.type !== 'text'"
+        class="margin-bottom-small" 
       >
         <label>{{ $t('caption') }}</label><br>
         <textarea v-model="mediadata.caption" :readonly="read_only">

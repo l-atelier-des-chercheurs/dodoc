@@ -1102,32 +1102,20 @@ body {
   }  
 }
 
+.ql-toolbar button {
+  min-height: 0;
+}
+.ql-toolbar.ql-snow {
+  .bg-blanc;
+}
+
 .m_mediaPublication {
   position: absolute;
   cursor: -webkit-grab;
   user-select: none;
 
-  h1,h2 {
-    font-family: 'Nanook';
-    font-weight: bold;
-    text-transform: uppercase;
-    margin: 0em;
-  }
-  h1 {
-    font-size: 50pt;    
-  }
-  h2 {
-    font-size: 20pt;
-  }
-
-  h1 + :not(h2) {
-    margin-top: 1em;
-  }
-
-  p:first-child {
-    margin-top: 0;
-  }
-
+  // PUBLI STYLE !
+  @import "less/_publi-journal";
 
   .mediaContainer {
     overflow: hidden;
@@ -1312,4 +1300,10 @@ body {
 .popUp-enter, .popUp-leave-to {
   transform: translate3d(0, 150px, 0);
   transition: transform 1s cubic-bezier(.25,.2,.25,1);
+}
+
+
+@media print {
+  
+
 }

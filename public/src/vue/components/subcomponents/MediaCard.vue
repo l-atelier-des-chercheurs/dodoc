@@ -119,9 +119,9 @@ export default {
     },
     openMediaModal() {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaCard: openMedia = ${this.slugMediaName}`);
+        console.log(`METHODS • MediaCard: openMediaModal = ${this.slugMediaName}`);
       }
-      this.$eventHub.$emit('modal.openMedia', this.slugMediaName);
+      this.$root.showMediaModalFor({ slugProjectName: this.slugProjectName, slugMediaName: this.slugMediaName });
     },
     removeMedia() {
       if (this.$root.state.dev_mode === 'debug') {

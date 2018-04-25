@@ -374,6 +374,7 @@ let vm = new Vue({
       current_slugProjectName: false,
       current_slugPubliName: false,
       current_author: false,
+      showMediaModalFor: false,
 
       show_publi_panel: false,
       view: 'ListView',
@@ -640,6 +641,18 @@ let vm = new Vue({
         );
       }
       this.$socketio.listSpecificMedias(medias_list);
+    },
+
+    showMediaModalFor({ slugProjectName, slugMediaName }) {
+      if (window.state.dev_mode === 'debug') {
+        console.log(
+          `ROOT EVENT: showMediaModalFor with slugProjectName = ${slugProjectName} and slugMediaName = ${slugMediaName}`
+        );
+      }
+      this.$root.settings.showMediaModalFor = {
+        slugProjectName,
+        slugMediaName
+      };
     }
   },
   watch: {
