@@ -31,11 +31,16 @@
 
     <template v-else-if="media.type === 'text'">
       <div v-if="context !== 'edit'" class="padding-small font-small">
-        <p v-if="value.length !== 0" v-html="value" />
-        <p v-else v-html="'…'"></p>
+        <div v-if="value.length !== 0" v-html="value" />
+        <p v-else v-html="'…'" />
       </div>
-      <textarea
+      <vue-editor 
         v-else
+        v-model="htmlForEditor"
+        ref="textField"
+        autocorrect="on"
+      />
+      <!-- <textarea
         placeholder="…"
         class="mediaTextContent border-none bg-transparent"
         :value="value"
@@ -43,8 +48,7 @@
         ref="textField"
         autocorrect="on"
         :readonly="read_only"
-      >
-      </textarea>
+      /> -->
     </template>
 
     <template v-else-if="media.type === 'other'">
@@ -59,6 +63,7 @@ Fichier&nbsp;:
 </template>
 <script>
 import _ from 'underscore';
+import { VueEditor } from 'vue2-editor'
 
 // is loaded by Media and by EditMedia
 
@@ -82,6 +87,9 @@ export default {
       default: true
     }
   },
+  components: {
+    VueEditor
+  },
   data() {
     return {
       available_resolutions: {
@@ -89,6 +97,7 @@ export default {
         preview_hovered: 600,
         default: 1600
       },
+      htmlForEditor: this.value,
       mediaURL: `/${this.slugProjectName}/${this.slugMediaName}`
     };
   },
@@ -101,6 +110,11 @@ export default {
       }
     }
   },
+  watch: {
+    'htmlForEditor': function() {
+      this.$emit('input', this.htmlForEditor);
+    }
+  },
   computed: {
     thumbRes: function() {
       return this.context === 'preview'
@@ -111,13 +125,16 @@ export default {
       return this.available_resolutions.preview_hovered;
     },
     linkToImageThumb: function() {
+      debugger;
       let pathToSmallestThumb = _.findWhere(this.media.thumbs, {
         size: this.thumbRes
       }).path;
-      // if image is gif and context is not 'preview', let’s show the original gif
       if (
-        this.context !== 'preview' &&
-        this.mediaURL.toLowerCase().endsWith('.gif')
+      // if image is gif and context is not 'preview', let’s show the original gif
+        (this.context !== 'preview' &&
+        this.mediaURL.toLowerCase().endsWith('.gif'))
+        ||
+        pathToSmallestThumb !== undefined
       ) {
         return this.mediaURL;
       }
