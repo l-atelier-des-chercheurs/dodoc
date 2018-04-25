@@ -74,8 +74,8 @@ export default {
           template: 'journal',
           width: 210,
           height: 297,
-          xMargin: 38,
-          yMargin: 38 
+          xMargin: 10,
+          yMargin: 20 
         }]
       }
       this.$root.createFolder({ type: 'publications', data: publidata });      

@@ -78,7 +78,7 @@ export default {
 
       pageProperties: {
         x_margin: 38,
-        y_margin: 38,
+        y_margin: 38*2,
         w: 794,
         h: 1122
       },

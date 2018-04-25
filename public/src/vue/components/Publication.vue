@@ -40,11 +40,23 @@
       > 
         <div 
           v-if="!preview_mode"
-          v-for="item in [0,1,2,3]"
+          v-for="(item, index) in [0,1,2,3]"
           class="m_publicationview--pages--page--margins_rule"
-          :style="`--margin_x: ${10}mm; --margin_y: ${10}mm`"
+          :style="`--margin_x: ${10}mm; --margin_y: ${20}mm`"
+          :key="index"
         >
         </div>
+
+        <div class="m_publicationview--pages--page--header">
+          <div>
+            <span>FEUILLE DE CHOUX</span>— №1 — Cobonne (avec Allison et Lise)
+          </div>
+          <div>
+            samedi 28 avril
+          </div>
+        </div>
+        
+
         <MediaPublication
           v-for="(media, mediaIndex) in publication_medias[(pageNumber+1) + '']" 
           :key="mediaIndex"
@@ -269,8 +281,8 @@ export default {
         template: 'journal',
         width: 210,
         height: 297,
-        xMargin: 38,
-        yMargin: 38 
+        xMargin: 10,
+        yMargin: 20 
       });      
 
       this.$root.editFolder({ 

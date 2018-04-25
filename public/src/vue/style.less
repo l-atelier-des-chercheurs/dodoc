@@ -493,13 +493,13 @@ body {
   }
 
   .m_activitiesPanel--do {
-    flex-basis: 50%;
+    flex-basis: 40%;
     position: relative;
     overflow: hidden;
   }
 
   .m_activitiesPanel--doc {
-    flex-basis: 50%;
+    flex-basis: 60%;
     position: relative;
     overflow: hidden;
     background-color: @c-bleuvert_fonce;
@@ -805,6 +805,22 @@ body {
           margin-top: 0;
         }        
       }
+
+      h1,h2,h3, p {
+        margin: 0;
+      }
+      h1,h2,h3 {
+        font-weight: 500;
+      }
+      h1 {
+        font-size:1.5em;
+      }
+      h2 {
+        font-size: 1.25em;
+      }
+      h3 {
+        font-size: 1.15em;
+      }
     }
 
     figcaption {
@@ -1093,7 +1109,6 @@ body {
     transform-origin: top center;
 
     &.is--active {
-
       &::before {
         content: '>';
         
@@ -1115,6 +1130,28 @@ body {
       }
     }
 
+    .m_publicationview--pages--page--header {
+      position: absolute;
+      bottom: ~"calc(100% - 1.4cm)";
+      margin: 0 1cm;
+      width: ~"calc(100% - 2cm)";
+      border-bottom: 1px solid #000;
+
+      display: flex;
+      justify-content: space-between;
+      font-size: 10pt;
+      font-weight: 500;
+
+      text-transform: uppercase;
+
+      > * {
+        span {
+          font-family: 'Nanook';font-weight: bold;
+          font-size: 9pt;
+        }
+      }
+    }
+
     .m_publicationview--pages--page--margins_rule {
       position: absolute;
       width: 1px;
@@ -1128,12 +1165,12 @@ body {
         right: var(--margin_x);
       }
       &:nth-child(3) {
-        top: var(--margin_x);
+        top: var(--margin_y);
         width: 100%;
         height: 1px;
       }
       &:nth-child(4) {
-        bottom: var(--margin_x);
+        bottom: var(--margin_y);
         width: 100%;
         height: 1px;
       }
@@ -1141,11 +1178,16 @@ body {
   }  
 }
 
+.ql-container {
+  font-family: inherit;
+}
+
 .ql-toolbar button {
   min-height: 0;
 }
 .ql-toolbar.ql-snow {
   .bg-blanc;
+  font-family: inherit;
 }
 
 .m_mediaPublication {
@@ -1379,5 +1421,6 @@ body {
   .m_publicationview--pages--page {
     margin: 0 !important;
     transform: none !important;
+    box-shadow: none;
   }
 }
