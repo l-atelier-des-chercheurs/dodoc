@@ -42,6 +42,7 @@
     "vue2-animate": "^1.0.4",
     "vue2-dropzone": "2.3.6",
     "vue2-editor": "^2.4.3",
+    "vue2-touch-events": "^1.0.0",
     "webrtc-adapter": "^6.1.5"
   },
   "devDependencies": {

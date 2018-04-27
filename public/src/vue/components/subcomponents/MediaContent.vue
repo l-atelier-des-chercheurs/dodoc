@@ -110,7 +110,7 @@ export default {
     if (this.context === 'edit') {
       if (Modernizr !== undefined && !Modernizr.touchevents) {
         if (this.$refs.textField !== undefined) {
-          this.$refs.textField.focus();
+          // this.$refs.textField.focus();
         }
       }
     }

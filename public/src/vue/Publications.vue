@@ -23,8 +23,9 @@
       <div 
         v-if="typeof publications === 'object'"
         class="m_publicationMeta"
-        v-for="publication in publications" :key="publication.name"
-         @click="openPublication(publication.slugFolderName)"
+        v-for="publication in publications"
+        @click="openPublication(publication.slugFolderName)"
+        :key="publication.slugFolderName"
       >
         <div class="m_metaField">
           <div class="">
@@ -32,6 +33,14 @@
           </div>
           <div>
             Ouvrir
+          </div>
+        </div>
+        <div class="m_metaField">
+          <div class="">
+            Nombre de médias
+          </div>
+          <div>
+            {{ typeof publication.medias_list === 'object' ? publication.medias_list.length : '' }}
           </div>
         </div>
 

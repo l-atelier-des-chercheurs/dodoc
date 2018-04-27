@@ -52,14 +52,14 @@
             <span>FEUILLE DE CHOUX</span>— №1 — Cobonne (avec Allison et Lise)
           </div>
           <div>
-            samedi 28 avril
+            samedi 28 avril 2018
           </div>
         </div>
         
 
         <MediaPublication
-          v-for="(media, mediaIndex) in publication_medias[(pageNumber+1) + '']" 
-          :key="mediaIndex"
+          v-for="media in publication_medias[(pageNumber+1) + '']" 
+          :key="media.slugMediaName"
           :page="page"
           :media="media"
           :preview_mode="preview_mode"

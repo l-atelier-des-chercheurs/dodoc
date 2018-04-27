@@ -112,19 +112,6 @@
       :read_only="read_only"
     >
     </MediaLibrary>
-
-    <button 
-      type="button" 
-      class="captureButton"
-      v-if="context === 'full' && ((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
-      @click="$root.settings.view = 'CaptureView'"
-      :disabled="read_only" 
-    >
-      <img src="/images/i_record.svg" width="48" height="48" />
-      <span>    
-          {{ $t('capture') }}
-      </span>
-    </button>
   </div>
 </template>
 <script>

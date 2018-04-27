@@ -376,7 +376,7 @@ let vm = new Vue({
       current_author: false,
       showMediaModalFor: false,
 
-      publi_zoom: 1,
+      publi_zoom: 0.8,
 
       show_publi_panel: false,
       view: 'ListView',

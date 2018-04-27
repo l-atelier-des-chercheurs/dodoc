@@ -293,7 +293,7 @@ body {
         .bg-blanc;
         // border: 2px solid @c-bleumarine;
         // color: @c-bleumarine;
-        background-color: @c-bleumarine;
+        background-color: @c-bleumarine_clair;
         color: #fff;
         .padding-verysmall;
 
@@ -493,7 +493,7 @@ body {
   }
 
   .m_activitiesPanel--do {
-    flex-basis: 40%;
+    flex-basis: 100px;
     position: relative;
     overflow: hidden;
   }
@@ -544,6 +544,9 @@ body {
   .m_publicationsview--create {
     width: 250px;
     .margin-medium;
+  }
+  .m_publicationMeta {
+    cursor: pointer;
   }
 }
 
@@ -624,7 +627,7 @@ body {
   }
 
   .m_project--favMedias {
-    flex: 1 1 0;
+    flex: 1 1 340px;
   }
   
   .m_project--library {
@@ -665,12 +668,19 @@ body {
           width:  28px;
           height: 28px;
           padding-right: 4px;
+          background-repeat: no-repeat;
         }
 
         &.barButton_text {
           color: @c-bleumarine;
           &::before {
             background-image: url("/images/i_text.svg");          
+          }
+        }
+        &.barButton_capture {
+          color: @c-orange;
+          &::before {
+            background-image: url("/images/i_record.svg");          
           }
         }
       }
@@ -1025,13 +1035,12 @@ body {
       justify-content: center;      
     }
 
-    // right panel
+    // left panel
     .mediaContainer {
       overflow: hidden;
       audio {
         height: 50%;
       }
-
     }
   }
   .m_panel--buttons {
@@ -1105,6 +1114,11 @@ body {
     .margin-vert-medium;
     .bg-blanc;
     box-shadow: 0px 2px 16px 0px rgba(0,0,0,.2);
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
 
     transform-origin: top center;
 
@@ -1194,6 +1208,12 @@ body {
   position: absolute;
   cursor: -webkit-grab;
   user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+
   min-width: 150px;
   min-height: 150px;
 
@@ -1226,7 +1246,7 @@ body {
 
   .resizeFrame {
     @t-borderSize: 4px;
-    @t-handleSize: 28px;
+    @t-handleSize: 48px;
 
     position: absolute;
     top: -@t-borderSize/2;
@@ -1422,5 +1442,9 @@ body {
     margin: 0 !important;
     transform: none !important;
     box-shadow: none;
+  }
+
+  .m_mediaPublication {
+    filter: none !important;
   }
 }

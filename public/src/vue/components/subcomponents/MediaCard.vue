@@ -5,7 +5,6 @@
     <div>
       <figure 
         @click.stop="openMediaModal()" 
-        @touchstart.stop="openMediaModal()" 
         @mouseover="is_hovered = true"
         @mouseleave="is_hovered = false"
         :class="{ 'is--hovered' : is_hovered }"

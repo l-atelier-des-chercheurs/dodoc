@@ -1,10 +1,43 @@
+& {
+  .mediaContainer {
+    .padding-small {
+      padding: @t-skipline/8;
+    }
 
+    > * > * > *:first-child {
+      margin-top: 0;
+    }
+  }
+}
 
-h1,h2 {
+& {
+  color: #000;
+  filter: grayscale(100%);
+  font-size: 14pt;
+}
+
+.font-small {
+  font-size: inherit;
+}
+
+h1,h2,h3,h4,p,ul,ol,table, figure, blockquote {
+  margin: @t-skipline/2 0;
+}
+
+ul, ol {
+  padding-left: @t-skipline;
+}
+
+p, ul, ol {
+  + ul {
+    margin-top: -@t-skipline/2;
+  }
+}
+
+h1,h2,h3,h4 {
   font-family: 'Nanook';
   font-weight: bold;
   text-transform: uppercase;
-  margin: 0em;
 }
 h1 {
   font-size: 50pt;    
@@ -12,24 +45,21 @@ h1 {
 h2 {
   font-size: 20pt;
 }
+// h1 + :not(h2) {
+//   margin-top: @t-skipline/2;
+// }
 
-h1 + :not(h2) {
-  margin-top: 1em;
-}
-
-p:first-child {
-  margin-top: 0;
-}
+// p:first-child {
+//   margin-top: 0;
+// }
 
 
 p {
   font-size: 14pt;
-  margin-bottom: 1em;
 }
 
 h2,h3,h4 {
   & + p {
-    margin-top: 0.3em;	 
   }
 }
 
@@ -39,30 +69,14 @@ h2{
 
 h3{
   font-size: 20pt;
-    font-family: "Nanook";
-    text-transform: uppercase;
-    font-weight: bold;
-    margin-bottom: 0;
 }
 
 h4{
   font-size: 14pt;
-  font-family: "Nanook";
-  text-transform: uppercase;
-  font-weight: bold;
-  margin-bottom: 0;
 }
 
-h5{
-  font-size: 18pt;
-  font-weight:normal;	
-  margin-top:0.3em;
-  margin-bottom: 1em;
-}
-
-h6{
-  font-size: 16pt;
-  font-weight:normal;	
-  margin-top:0.3em;
-  margin-bottom: 1em;
+h5,h6,h7 {
+  font-size: inherit;
+  font-weight:normal;
+  margin: 0;
 }

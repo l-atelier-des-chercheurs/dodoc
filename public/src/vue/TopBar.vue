@@ -42,8 +42,8 @@
             </div>
           </template>
           <template v-else>
-            <div class="font-large">
-              …
+            <div class="font-medium">
+              (auteurs)
             </div>
           </template>
         </button>

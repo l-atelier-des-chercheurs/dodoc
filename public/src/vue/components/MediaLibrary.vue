@@ -9,13 +9,24 @@
     </MediaFilterBar> -->
 
     <div class="m_project--library--actionbar">
+      <button type="button" class="barButton barButton_capture" 
+        v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
+        @click="$root.settings.view = 'CaptureView'"
+        :disabled="read_only" 
+      >
+        <span>    
+            {{ $t('capture') }}
+        </span>
+      </button>      
       <FileUpload
         v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
         :slugProjectName="slugProjectName"
         :disabled="read_only"
       >
       </FileUpload>
-      <button type="button" class="barButton barButton_text" @click="createTextMedia">
+      <button type="button" class="barButton barButton_text" 
+        @click="createTextMedia"
+      >
         <span>
           Créer du texte
         </span>
@@ -167,7 +178,7 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaLibrary: openMedia');
       }
-      this.$root.showMediaModalFor({ slugProjectName: this.slugProjectName, slugMediaName: this.slugMediaName });      
+      this.$root.showMediaModalFor({ slugProjectName: this.slugProjectName, slugMediaName: slugMediaName });      
     },
     createTextMedia() {
       const mediaMeta = {
