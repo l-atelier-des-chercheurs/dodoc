@@ -58,8 +58,8 @@
         
 
         <MediaPublication
-          v-for="media in publication_medias[(pageNumber+1) + '']" 
-          :key="media.slugMediaName"
+          v-for="(media, index) in publication_medias[(pageNumber+1) + '']" 
+          :key="media.slugMediaName + '-' + index"
           :page="page"
           :media="media"
           :preview_mode="preview_mode"
@@ -195,6 +195,7 @@ export default {
       if(this.publication.hasOwnProperty('medias_list')) {
         medias_list = this.publication.medias_list.slice();
       }
+
       medias_list[reference_index] = Object.assign({}, medias_list[reference_index], val);
 
       this.$root.editFolder({ 
@@ -249,7 +250,7 @@ export default {
           
           let meta = JSON.parse(JSON.stringify(project_medias[slugMediaName]));
           meta.slugProjectName = slugProjectName;
-          meta.publi_meta = m;
+          meta.publi_meta = JSON.parse(JSON.stringify(m));
           meta.publi_meta.reference_index = index;
 
           let expected_page = m.hasOwnProperty('page') ? Number.parseInt(m.page) : this.publication.pages.length - 1;
@@ -260,6 +261,8 @@ export default {
           return;
         }
       });
+
+      debugger;
 
       // send list of medias to get
       if(missingMedias.length > 0) {
