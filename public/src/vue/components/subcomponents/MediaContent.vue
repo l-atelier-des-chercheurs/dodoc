@@ -76,7 +76,7 @@ export default {
     context: {
       type: String,
       default: 'preview'
-      // preview, edit, full
+      // preview, edit, publication
     },
     value: {
       type: String,
@@ -133,15 +133,17 @@ export default {
       let pathToSmallestThumb = _.findWhere(this.media.thumbs, {
         size: this.thumbRes
       }).path;
+
       if (
       // if image is gif and context is not 'preview', let’s show the original gif
         (this.context !== 'preview' &&
         this.mediaURL.toLowerCase().endsWith('.gif'))
         ||
-        pathToSmallestThumb !== undefined
+        pathToSmallestThumb === undefined
       ) {
         return this.mediaURL;
       }
+
 
       return pathToSmallestThumb !== undefined
         ? '/' + pathToSmallestThumb
