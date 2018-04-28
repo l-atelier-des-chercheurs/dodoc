@@ -522,6 +522,7 @@ module.exports = (function() {
             .max()
             .withoutEnlargement()
             .background({ r: 255, g: 255, b: 255 })
+            .flatten()
             .withMetadata()
             .toFormat(settings.thumbFormat, {
               quality: settings.mediaThumbQuality

@@ -298,11 +298,12 @@ module.exports = (function() {
             .resize(thumbRes, thumbRes)
             .max()
             .withoutEnlargement()
-            .background({ r: 255, g: 255, b: 255 })
             .withMetadata()
             .toFormat(settings.thumbFormat, {
               quality: settings.mediaThumbQuality
             })
+            .background({ r: 255, g: 255, b: 255 })
+            .flatten()
             .toFile(fullThumbPath)
             .then(function() {
               resolve(thumbPath);
