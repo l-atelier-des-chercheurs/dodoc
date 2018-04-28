@@ -262,8 +262,6 @@ export default {
         }
       });
 
-      debugger;
-
       // send list of medias to get
       if(missingMedias.length > 0) {
         this.$root.listSpecificMedias(missingMedias);

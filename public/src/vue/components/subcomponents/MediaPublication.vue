@@ -13,7 +13,7 @@
     @touchstart.stop.prevent="dragMedia('touch')"
   >
     <MediaContent
-      :context="'full'"
+      :context="'publication'"
       :slugMediaName="media.slugMediaName"
       :slugProjectName="media.slugProjectName"
       :media="media"
@@ -147,27 +147,27 @@ export default {
       this.$emit('editPubliMedia', { reference_index: this.media.publi_meta.reference_index, val });
     },
     limitMediaXPos(xPos) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaPublication: limitMediaXPos / xPos = ${xPos}`);
-      }
+      // if (this.$root.state.dev_mode === 'debug') {
+      //   console.log(`METHODS • MediaPublication: limitMediaXPos / xPos = ${xPos}`);
+      // }
       return Math.max(this.pageProperties.x_margin, Math.min(this.pageProperties.w - this.pageProperties.x_margin - this.mediaSize.width, xPos));
     },
     limitMediaYPos(yPos) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaPublication: limitMediaYPos / yPos = ${yPos}`);
-      }
+      // if (this.$root.state.dev_mode === 'debug') {
+      //   console.log(`METHODS • MediaPublication: limitMediaYPos / yPos = ${yPos}`);
+      // }
       return Math.max(this.pageProperties.y_margin, Math.min(this.pageProperties.h - this.pageProperties.y_margin - this.mediaSize.height, yPos));
     },
     limitMediaWidth(w) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaPublication: limitMediaWidth / w = ${w}`);
-      }
+      // if (this.$root.state.dev_mode === 'debug') {
+      //   console.log(`METHODS • MediaPublication: limitMediaWidth / w = ${w}`);
+      // }
       return Math.max(0, Math.min(this.pageProperties.w - this.pageProperties.x_margin - this.mediaPos.x, w));
     },
     limitMediaHeight(h) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaPublication: limitMediaHeight / h = ${h}`);
-      }
+      // if (this.$root.state.dev_mode === 'debug') {
+      //   console.log(`METHODS • MediaPublication: limitMediaHeight / h = ${h}`);
+      // }
       return Math.max(0, Math.min(this.pageProperties.h - this.pageProperties.y_margin - this.mediaPos.y, h));
     },
     
