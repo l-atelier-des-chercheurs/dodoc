@@ -402,8 +402,6 @@ let vm = new Vue({
       console.log('ROOT EVENT: created / checking for errors');
     }
 
-    this.$eventHub.$on('socketio.got_tag', this.handle_new_tag);
-
     if (this.store.noticeOfError) {
       if (this.store.noticeOfError === 'failed_to_find_folder') {
         this.$alertify
@@ -458,9 +456,7 @@ let vm = new Vue({
       this.$socketio.connect();
     }
   },
-  beforeDestroy() {
-    this.$eventHub.$off('socketio.got_tag', this.handle_new_tag);
-  },
+  beforeDestroy() {},
   methods: {
     createFolder: function(fdata) {
       if (window.state.dev_mode === 'debug') {
@@ -543,19 +539,6 @@ let vm = new Vue({
       this.$socketio.editMedia(mdata);
     },
 
-    handle_new_tag: function(tag) {
-      if (window.state.is_electron) {
-        const tagged_author_key = Object.keys(this.$root.store.authors).filter(
-          a => {
-            let author_info = this.$root.store.authors[a];
-            return author_info.tag === tag;
-          }
-        );
-        const author_info = this.$root.store.authors[tagged_author_key];
-        this.setAuthor(author_info);
-      }
-    },
-
     openProject: function(slugProjectName) {
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: openProject: ${slugProjectName}`);
@@ -604,6 +587,9 @@ let vm = new Vue({
     },
     setAuthor: function(author) {
       this.settings.current_author = author;
+    },
+    unsetAuthor: function() {
+      this.settings.current_author = false;
     },
     togglePubliPanel: function() {
       if (window.state.dev_mode === 'debug') {

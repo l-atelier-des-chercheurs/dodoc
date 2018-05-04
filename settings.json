@@ -72,6 +72,9 @@
         },
         "preview": {
           "type": "string"
+        },
+        "nfc_tag": {
+          "type": "string"
         }
       }
     },

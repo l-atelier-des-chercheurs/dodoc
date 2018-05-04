@@ -32,7 +32,7 @@
 <!-- NFC tag(s) -->
     <div class="margin-bottom-small">
       <label>{{ $t('nfc_tag') }}</label><br>
-      <input type="text" v-model="authordata.nfc_id">
+      <input type="text" v-model="authordata.nfc_tag">
     </div>
 
     <button type="button" @click="$emit('close')">
@@ -59,7 +59,7 @@ export default {
       authordata: {
         name: '',
         password: '',
-        nfc_id: ''
+        nfc_tag: ''
       },
       preview: undefined
     };

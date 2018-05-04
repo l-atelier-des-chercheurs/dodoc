@@ -35,7 +35,7 @@
 
           <button type="button" 
             v-if="typeof authors === 'object'"
-            v-for="(author, slug) in authors" 
+            v-for="(author, slug) in sortedAuthors" 
             :key="author.name" 
             class="m_authorsList--author"
             :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"
@@ -46,6 +46,9 @@
               width="100" height="100"
               :src="urlToPortrait(slug, author.preview)" >
             <span>{{ author.name }}</span>
+            <button type="button" class="buttonLink" @click.stop="unsetAuthor()" v-if="author.name === $root.settings.current_author.name">
+              {{ $t('unselect') }}
+            </button>
             <button type="button" class="buttonLink" @click.stop="removeAuthor(author)">
               {{ $t('remove') }}
             </button>
@@ -89,6 +92,9 @@ export default {
   watch: {
   },
   computed: {
+    sortedAuthors: function() {
+      return this.authors;
+    }
   },
   methods: {
     createAuthor() {
@@ -109,6 +115,9 @@ export default {
     setAuthor(name) {
       this.$root.setAuthor(name);
       this.$emit('close');
+    },
+    unsetAuthor() {
+      this.$root.unsetAuthor();
     },
     urlToPortrait(slug, filename) {
       if(filename === undefined) {
