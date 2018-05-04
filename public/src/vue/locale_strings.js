@@ -111,6 +111,8 @@ module.exports = (function() {
           'Création ou édition d’un média pour le dossier&nbsp;:',
         project_name_exists:
           'Ce nom de projet existe déjà, utilisez-en un autre.',
+        author_name_exists:
+          'Ce nom d’auteur existe déjà, utilisez-en un autre.',
         folder_name_needs_alphanumeric_characters:
           'Les noms de dossier doivent contenir au moins un caractère alphanumérique.',
         'failed_to_get_folder:': 'Le dossier suivant n’a pas été trouvé:',
@@ -231,7 +233,10 @@ module.exports = (function() {
         'wrong_password_for_folder:': 'Wrong password or folder missing for:',
         'created_edited_media:':
           'A media has been created or edited in folder:',
-        project_name_exists: 'Project name already exists. Please use another.',
+        project_name_exists:
+          'This project name already exists. Please use another.',
+        author_name_exists:
+          'This author name already exists. Please use another.',
         folder_name_needs_alphanumeric_characters:
           'Folder names need to contain at least one alphanumeric character.',
         'failed_to_get_folder:': 'Failed to get the requested folder:',
