@@ -552,15 +552,22 @@ module.exports = (function() {
         `COMMON — removeFolder : will remove folder: ${slugFolderName}`
       );
 
-      let folderPath = api.getFolderPath(slugFolderName);
-      let movedFolderPath = path.join(
-        api.getFolderPath(),
+      if (!settings.structure.hasOwnProperty(type)) {
+        reject(`Missing type ${type} in settings.json`);
+      }
+      const baseFolderPath = settings.structure[type].path;
+      const mainFolderPath = api.getFolderPath(baseFolderPath);
+
+      // remove slugFolderKey
+      const thisFolderPath = path.join(mainFolderPath, slugFolderName);
+      const movedFolderPath = path.join(
+        mainFolderPath,
         settings.deletedFolderName,
         slugFolderName
       );
 
       fs
-        .move(folderPath, movedFolderPath, { overwrite: true })
+        .move(thisFolderPath, movedFolderPath, { overwrite: true })
         .then(() => {
           dev.logfunction(
             `COMMON — removeFolder : folder ${slugFolderName} has been moved to ${movedFolderPath}`
