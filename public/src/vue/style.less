@@ -299,7 +299,7 @@ body {
         // border: 2px solid @c-bleumarine;
         // color: @c-bleumarine;
         background-color: @c-bleumarine_clair;
-        color: #fff;
+        color: @c-bleumarine;
         .padding-verysmall;
 
         .m_topbar--center--authors--portrait {
@@ -363,13 +363,30 @@ body {
 .m_authorsList {
   display: flex;
   flex-flow: row wrap;
+  align-items: flex-start;
+  .margin-small;
 
-  button {
-    .margin-medium;
+  > * {
+    .padding-small;
+    .margin-small;
+    width: 24%;
+    min-height: 200px;
+  }
+
+  .m_authorsList--createAuthor {
+    border: 4px solid @c-gris_tresclair;
+    border: 4px solid @c-gris_clair;
+    border-radius: @t-buttonradius;
+    width: 40%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .m_authorsList--author {
     .bg-gris_tresclair;
-    width: 200px;
-    height: 200px;
-    text-align: center;
+    border: 4px solid @c-gris_clair;
     text-transform: uppercase;
     font-weight:200;
 
@@ -381,7 +398,9 @@ body {
     img {
       width: 100px;
       height: 100px;
-      object-fit: contain;
+      border-radius:50%;
+      object-fit: cover;
+      .margin-vert-small;
     }
     span {
       display: block;
@@ -389,6 +408,7 @@ body {
       .font-large;
     }
   }
+  
 
 }
 
@@ -1094,7 +1114,7 @@ body {
   .m_imageselect--input {    
   }
   .m_imageselect--image {
-    .bg-gris_clair;
+    .bg-gris_tresclair;
     border-radius: 6px;
     overflow: hidden;
     border-bottom: solid var(--input-border-width) var(--input-border-color);
@@ -1105,7 +1125,6 @@ body {
     }
 
     button {
-      .margin-small;
     }
   }
 }
