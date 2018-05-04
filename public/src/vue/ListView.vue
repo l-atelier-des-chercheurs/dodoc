@@ -12,9 +12,9 @@
           </div>
 
           <transition-group 
-          tag="div"
-          name="list-complete"
-          class="m_projects"
+            tag="div"
+            name="list-complete"
+            class="m_projects"
           >
             <template        
               v-for="(sortedProject, index) in sortedProjectsSlug"

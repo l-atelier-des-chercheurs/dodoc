@@ -184,7 +184,7 @@ export default {
       const mediaMeta = {
         slugProjectName: this.slugProjectName,
         type: 'text',
-        additionalMeta: ''
+        additionalMeta: {}
       };
       if(this.$root.settings.current_author !== false) {
         mediaMeta.additionalMeta.authors = this.$root.settings.current_author.name;

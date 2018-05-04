@@ -9,33 +9,57 @@
 
     <template slot="preview">
       <div class="">        
-        <div class="m_authorsList">
-          <template v-if="typeof authors === 'object'">
-            <div 
-                v-for="(author, slug) in authors" 
-                :key="author.name" 
-                class=""
+        <transition-group 
+          tag="div" 
+          class="m_authorsList"
+          name="list-complete"        
+        >
+          
+          <div 
+            class="m_authorsList--createAuthor"
+            :key="'createAuthor'"
+          >
+            <button type="button" 
+              @click="openCreateAuthorPanel = true"
+              v-if="openCreateAuthorPanel == false"
             >
-              <button type="button" class="button-allwide" @click="setAuthor(author)"
-                :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"
-              >
-                <img :src="urlToPortrait(slug, author.preview)" width="100" height="100">
-                <span>{{ author.name }}</span>
-              </button>
-            </div>
-          </template>
-          <template v-else>
-            <div class="margin-medium">
-            <i>à venir</i>
-            </div>
-          </template>        
-        </div>
+              Créer un auteur
+            </button>
+
+            <CreateAuthor
+              v-else
+              @close="openCreateAuthorPanel = false"
+              :read_only="read_only"
+            />
+          </div>
+
+          <button type="button" 
+            v-if="typeof authors === 'object'"
+            v-for="(author, slug) in authors" 
+            :key="author.name" 
+            class="m_authorsList--author"
+            :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"
+            @click="setAuthor(author)"
+          >
+            <img 
+              v-if="!!author.preview"
+              width="100" height="100"
+              :src="urlToPortrait(slug, author.preview)" >
+            <span>{{ author.name }}</span>
+            <button type="button" class="buttonLink" @click.stop="removeAuthor(author)">
+              {{ $t('remove') }}
+            </button>
+          </button>
+
+        </transition-group>
       </div>
     </template>    
   </Modal>
 </template>
 <script>
 import Modal from './BaseModal.vue';
+import ImageSelect from './../subcomponents/ImageSelect.vue';
+import CreateAuthor from './../subcomponents/CreateAuthor.vue';
 
 export default {
   props: {
@@ -45,10 +69,13 @@ export default {
     }
   },
   components: {
-    Modal
+    Modal,
+    CreateAuthor
   },
   data() {
     return {
+      
+      openCreateAuthorPanel: false
     }
   },
   
@@ -64,6 +91,21 @@ export default {
   computed: {
   },
   methods: {
+    createAuthor() {
+      let authordata = {
+        name
+      }
+      this.$root.createFolder({ type: 'authors', data: authordata });          
+    },
+    removeAuthor(author) {
+      if (window.confirm(this.$t('sureToRemoveAuthor'))) {
+        this.$root.removeFolder({ 
+          type: 'authors', 
+          slugFolderName: author.slugFolderName
+        });
+      }
+    },
+
     setAuthor(name) {
       this.$root.setAuthor(name);
       this.$emit('close');

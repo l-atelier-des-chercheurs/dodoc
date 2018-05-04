@@ -20,6 +20,10 @@ module.exports = (function() {
       download: 'Télécharger',
       caption: 'Légende',
       date: 'Date',
+      portrait: 'Portrait',
+      nfc_tag: 'Tag NFC',
+      cancel: 'Annuler',
+      sureToRemoveAuthor: 'Êtes-vous sûr de vouloir supprimer cet auteur ?',
 
       loading: 'chargement',
       open: 'Ouvrir',
@@ -138,6 +142,10 @@ module.exports = (function() {
       download: 'Download',
       caption: 'Caption',
       date: 'Date',
+      portrait: 'Portrait',
+      nfc_tag: 'Tag NFC',
+      cancel: 'Cancel',
+      sureToRemoveAuthor: 'Do you really want to delete this author?',
 
       loading: 'loading',
       open: 'Open',
