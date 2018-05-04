@@ -368,7 +368,6 @@ export default {
         case 'a':
         case 'q':
         case ' ':
-        case 'Enter':
           this.captureOrStop();
           break;
       }

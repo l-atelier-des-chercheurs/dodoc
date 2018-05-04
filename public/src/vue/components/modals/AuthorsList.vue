@@ -97,12 +97,6 @@ export default {
     }
   },
   methods: {
-    createAuthor() {
-      let authordata = {
-        name
-      }
-      this.$root.createFolder({ type: 'authors', data: authordata });          
-    },
     removeAuthor(author) {
       if (window.confirm(this.$t('sureToRemoveAuthor'))) {
         this.$root.removeFolder({ 

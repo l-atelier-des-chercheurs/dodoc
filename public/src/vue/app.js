@@ -8,6 +8,7 @@
 import Vue from 'vue';
 
 import localstore from 'store';
+import _ from 'underscore';
 import alertify from 'alertify.js';
 Vue.prototype.$alertify = alertify;
 
@@ -236,7 +237,7 @@ Vue.prototype.$socketio = new Vue({
           mdata[slugProjectName].medias;
 
         window.dispatchEvent(
-          new CustomEvent('timeline.listMediasForProject', {
+          new CustomEvent('project.listMediasForProject', {
             detail: slugProjectName
           })
         );
@@ -451,12 +452,43 @@ let vm = new Vue({
       this.settings.current_slugProjectName = event.state.slugProjectName;
     };
 
+    window.addEventListener('tag.newTagDetected', this.newTagDetected);
+
     if (this.state.mode === 'live') {
       console.log('ROOT EVENT: created / now connecting with socketio');
       this.$socketio.connect();
     }
   },
   beforeDestroy() {},
+  watch: {
+    'settings.has_modal_opened': function() {
+      if (window.state.dev_mode === 'debug') {
+        console.log(
+          `ROOT EVENT: var has changed: has_modal_opened: ${
+            this.settings.has_modal_opened
+          }`
+        );
+      }
+      if (this.has_modal_opened) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    }
+  },
+  computed: {
+    currentProject: function() {
+      if (
+        this.store.hasOwnProperty('projects') &&
+        this.store.projects.hasOwnProperty(
+          this.settings.current_slugProjectName
+        )
+      ) {
+        return this.store.projects[this.settings.current_slugProjectName];
+      }
+      return {};
+    }
+  },
   methods: {
     createFolder: function(fdata) {
       if (window.state.dev_mode === 'debug') {
@@ -559,7 +591,7 @@ let vm = new Vue({
         '/' + slugProjectName
       );
       window.addEventListener(
-        'timeline.listMediasForProject',
+        'project.listMediasForProject',
         this.listMediasForProject
       );
     },
@@ -647,35 +679,16 @@ let vm = new Vue({
         console.log(`ROOT EVENT: setPublicationZoom`);
       }
       this.settings.publi_zoom = val;
-    }
-  },
-  watch: {
-    'settings.has_modal_opened': function() {
+    },
+
+    newTagDetected(e) {
       if (window.state.dev_mode === 'debug') {
-        console.log(
-          `ROOT EVENT: var has changed: has_modal_opened: ${
-            this.settings.has_modal_opened
-          }`
-        );
+        console.log(`ROOT EVENT: newTagDetected with e.detail = ${e.detail}`);
       }
-      if (this.has_modal_opened) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = '';
-      }
-    }
-  },
-  computed: {
-    currentProject: function() {
-      if (
-        this.store.hasOwnProperty('projects') &&
-        this.store.projects.hasOwnProperty(
-          this.settings.current_slugProjectName
-        )
-      ) {
-        return this.store.projects[this.settings.current_slugProjectName];
-      }
-      return {};
+      const author = _.findWhere(this.store.authors, {
+        nfc_tag: e.detail
+      });
+      this.setAuthor(author);
     }
   }
 });
