@@ -105,7 +105,7 @@ body {
 
     height: @t-systemBarHeight;
     .bg-blanc;
-    border-bottom: 1px solid @c-gris_tresclair;
+    border-bottom: 1px solid @c-gris;
 
     // font-weight: 300;
     color: @c-gris;
@@ -227,6 +227,7 @@ body {
         margin: 0;
         padding: 0;
         min-height: 0;
+        margin-bottom: -3px;
   
         pointer-events: auto;
         transition: border-radius .4s;
@@ -248,6 +249,16 @@ body {
           overflow: hidden;
           white-space: nowrap;              
           text-overflow: ellipsis;
+
+          @c-outerText: #fff;
+            
+          text-shadow: 1px 1px @c-outerText, -1px 1px @c-outerText, -1px -1px @c-outerText, 1px -1px @c-outerText;
+          background-image: linear-gradient(90deg, currentColor 100%, transparent 100%);
+          background-position: bottom 0.12em left;
+          background-repeat: no-repeat;
+          background-size: 0% 2px;   
+          
+          transition: all .4s ease-out;
         }
 
         &:not(:first-child)::before {
@@ -256,16 +267,8 @@ body {
         }
 
         &:not(:last-child) {
-
           span {
-            @c-outerText: #fff;
-            @t-textShadowSize: 1px;
-            
-            text-shadow: @t-textShadowSize @t-textShadowSize @c-outerText, -@t-textShadowSize @t-textShadowSize @c-outerText, -@t-textShadowSize -@t-textShadowSize @c-outerText, @t-textShadowSize -@t-textShadowSize @c-outerText;
-            background-image: linear-gradient(90deg, currentColor 100%, transparent 100%);
-            background-position: bottom 0.1em center;
-            background-repeat: no-repeat;
-            background-size: 100% 2px;        
+            background-size: 100% 2px;   
           }
         }
 
@@ -622,18 +625,24 @@ body {
     .m_project--presentation--vignette {
       position: relative;
       width:100%;
-      background-color: @c-gris;
+      background-color: @c-gris_clair;
       overflow: hidden;
-      max-height: 60vh;
+      height: 0;
+      padding-bottom: 66%;
 
-      // img {
-      // }
+      img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
     }
 
     .m_project--presentation--text {
       .m_project--presentation--text--title {
-        .margin-sides-medium;
-        .margin-vert-small;
+        .margin-none;
+        .padding-sides-medium;
+        .padding-vert-small;
         .font-folder_title;
       }
 
