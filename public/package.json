@@ -36,6 +36,7 @@
     "socket.io": "^2.0.4",
     "store": "^2.0.12",
     "underscore": "^1.8.3",
+    "unit-to-px": "^1.0.2",
     "vue": "^2.5.2",
     "vue-markdown": "^2.2.4",
     "vue-scrollto": "^2.8.0",

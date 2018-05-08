@@ -1220,17 +1220,21 @@ body {
 
       &:nth-child(1) {
         left: var(--margin_x);
+        top: 0;
       }
       &:nth-child(2) {
         right: var(--margin_x);
+        top: 0;
       }
       &:nth-child(3) {
         top: var(--margin_y);
+        left:0;
         width: 100%;
         height: 1px;
       }
       &:nth-child(4) {
         bottom: var(--margin_y);
+        left:0;
         width: 100%;
         height: 1px;
       }
@@ -1258,9 +1262,12 @@ body {
   min-width: 100px;
   min-height: 100px;
 
-  transition: transform .4s ease-out;
+  transition: all .4s ease-out;
 
   &.is--dragged {
+    transition: none;
+  }
+  &.is--resized {
     transition: none;
   }
 

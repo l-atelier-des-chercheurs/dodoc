@@ -6,6 +6,7 @@
     @mouseleave="is_hovered = false"
     :class="{ 
       'is--dragged' : is_dragged, 
+      'is--resized' : is_resized, 
       'is--waitingForServerResponse' : is_waitingForServer,
       'is--hovered' : is_hovered
     }"
@@ -58,13 +59,15 @@
 </template>
 <script>
 import MediaContent from './MediaContent.vue';
+import toPx from 'unit-to-px';
 
 export default {
   props: {
     media: Object,
     page: Object,
     read_only: Boolean,
-    preview_mode: Boolean
+    preview_mode: Boolean,
+    pixelsPerMillimeters: Number
   },
   components: {
     MediaContent
@@ -75,13 +78,6 @@ export default {
       is_resized: false,
       is_waitingForServer: false,
       is_hovered: false,
-
-      pageProperties: {
-        x_margin: 38,
-        y_margin: 38*2,
-        w: 794,
-        h: 1122
-      },
 
       dragOffset: {
         x: 0,
@@ -126,19 +122,19 @@ export default {
   computed: {
     mediaStyles() {
       return `
-        transform: translate(${this.mediaPos.x}px, ${this.mediaPos.y}px);
-        width: ${this.mediaSize.width}px;
-        height: ${this.mediaSize.height}px;
+        transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm);
+        width: ${this.mediaSize.width}mm;
+        height: ${this.mediaSize.height}mm;
       `
       ;
     },
   },
   methods: {
     updateMediaStyles() {
-      this.mediaPos.x = this.media.publi_meta.hasOwnProperty('x') ? this.limitMediaXPos(this.media.publi_meta.x) : this.pageProperties.x_margin;
-      this.mediaPos.y = this.media.publi_meta.hasOwnProperty('y') ? this.limitMediaYPos(this.media.publi_meta.y) : this.pageProperties.y_margin;
-      this.mediaSize.width = this.media.publi_meta.hasOwnProperty('width') ? this.media.publi_meta.width : 300;
-      this.mediaSize.height = this.media.publi_meta.hasOwnProperty('height') ? this.media.publi_meta.height : 300;
+      this.mediaPos.x = this.media.publi_meta.hasOwnProperty('x') && !!Number.parseInt(this.media.publi_meta.x) ? this.limitMediaXPos(Number.parseInt(this.media.publi_meta.x)) : this.page.xMargin;
+      this.mediaPos.y = this.media.publi_meta.hasOwnProperty('y') && !!Number.parseInt(this.media.publi_meta.y) ? this.limitMediaYPos(Number.parseInt(this.media.publi_meta.y)) : this.page.yMargin;
+      this.mediaSize.width = this.media.publi_meta.hasOwnProperty('width') && !!Number.parseInt(this.media.publi_meta.width) ? this.limitMediaWidth(Number.parseInt(this.media.publi_meta.width)) : 100;
+      this.mediaSize.height = this.media.publi_meta.hasOwnProperty('height') && !!Number.parseInt(this.media.publi_meta.height) ? this.limitMediaHeight(Number.parseInt(this.media.publi_meta.height)) : 100;
     },
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === 'debug') {
@@ -150,25 +146,32 @@ export default {
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaXPos / xPos = ${xPos}`);
       // }
-      return Math.max(this.pageProperties.x_margin, Math.min(this.pageProperties.w - this.pageProperties.x_margin - this.mediaSize.width, xPos));
+      return Math.max(this.page.xMargin, Math.min(this.page.width - this.page.xMargin - this.mediaSize.width, xPos));
     },
+    roundMediaVal(val) {
+      return Math.round(val / this.page.gridStep) * this.page.gridStep;
+    },
+
     limitMediaYPos(yPos) {
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaYPos / yPos = ${yPos}`);
       // }
-      return Math.max(this.pageProperties.y_margin, Math.min(this.pageProperties.h - this.pageProperties.y_margin - this.mediaSize.height, yPos));
+      yPos = Math.max(this.page.yMargin, Math.min(this.page.height - this.page.yMargin - this.mediaSize.height, yPos));
+      return yPos;
     },
+    
     limitMediaWidth(w) {
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaWidth / w = ${w}`);
       // }
-      return Math.max(0, Math.min(this.pageProperties.w - this.pageProperties.x_margin - this.mediaPos.x, w));
+      return Math.max(0, Math.min(this.page.width - this.page.xMargin - this.mediaPos.x, w));
     },
     limitMediaHeight(h) {
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaHeight / h = ${h}`);
       // }
-      return Math.max(0, Math.min(this.pageProperties.h - this.pageProperties.y_margin - this.mediaPos.y, h));
+      return Math.max(0, Math.min(this.page.height - this.page.yMargin - this.mediaPos.y, h));
+;
     },
     
     removeMedia() {
@@ -192,19 +195,21 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: resizeMove with is_resized = ${this.is_resized}`);
       }
+      const pageX_mm = event.pageX / this.pixelsPerMillimeters;
+      const pageY_mm = event.pageY / this.pixelsPerMillimeters;
+
       if (!this.is_resized) {
         this.is_resized = true;
-        this.resizeOffset.x = event.pageX;
-        this.resizeOffset.y = event.pageY;
-
+        this.resizeOffset.x = pageX_mm;
+        this.resizeOffset.y = pageY_mm;
         this.mediaSize.pwidth = Number.parseInt(this.mediaSize.width);
         this.mediaSize.pheight = Number.parseInt(this.mediaSize.height);
       } else {
-        const deltaX = (event.pageX - this.resizeOffset.x);
+        const deltaX = (pageX_mm - this.resizeOffset.x);
         let newWidth = this.mediaSize.pwidth + deltaX;
         this.mediaSize.width = this.limitMediaWidth(newWidth);
 
-        const deltaY = (event.pageY - this.resizeOffset.y);
+        const deltaY = (pageY_mm - this.resizeOffset.y);
         let newHeight = this.mediaSize.pheight + deltaY;
         this.mediaSize.height = this.limitMediaHeight(newHeight);
       }
@@ -214,6 +219,9 @@ export default {
         console.log(`METHODS • MediaPublication: resizeUp with is_resized = ${this.is_resized}`);
       }
       if (this.is_resized) {
+        this.mediaSize.width = this.roundMediaVal(this.mediaSize.width);
+        this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
+
         this.updateMediaPubliMeta({ 
           width: this.mediaSize.width,
           height: this.mediaSize.height 
@@ -248,21 +256,26 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: dragMove with is_dragged = ${this.is_dragged}`);
       }
+
+      const pageX_mm = event.pageX / this.pixelsPerMillimeters;
+      const pageY_mm = event.pageY / this.pixelsPerMillimeters;
+
       if (!this.is_dragged) {
         this.is_dragged = true;
-        this.dragOffset.x = event.pageX;
-        this.dragOffset.y = event.pageY;
+
+        this.dragOffset.x = pageX_mm;
+        this.dragOffset.y = pageY_mm;
 
         this.mediaPos.px = Number.parseInt(this.mediaPos.x);
         this.mediaPos.py = Number.parseInt(this.mediaPos.y);
       } else {
-        const deltaX = (event.pageX - this.dragOffset.x);
+        const deltaX = (pageX_mm - this.dragOffset.x);
         let newX = this.mediaPos.px + deltaX;
         this.mediaPos.x = this.limitMediaXPos(newX);
 
-        const deltaY = (event.pageY - this.dragOffset.y);
+        const deltaY = (pageY_mm - this.dragOffset.y);
         let newY = this.mediaPos.py + deltaY;
-        this.mediaPos.y = this.limitMediaYPos(newY);
+        this.mediaPos.y = this.limitMediaYPos(newY);        
       }
     },
     dragUp() {
@@ -270,6 +283,9 @@ export default {
         console.log(`METHODS • MediaPublication: dragUp with is_dragged = ${this.is_dragged}`);
       }
       if (this.is_dragged) {
+        this.mediaPos.x = this.roundMediaVal(this.mediaPos.x);
+        this.mediaPos.y = this.roundMediaVal(this.mediaPos.y);
+        
         this.updateMediaPubliMeta({ 
           x: this.mediaPos.x,
           y: this.mediaPos.y 

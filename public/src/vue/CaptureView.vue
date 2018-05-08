@@ -387,7 +387,6 @@ export default {
       console.log('METHODS • CaptureView: stopVideoFeed');        
       if(this.videoStream) {
         this.videoStream.getVideoTracks().forEach(function(track) {
-          debugger;
           track.stop();
         });
         this.$refs.videoElement.srcObject = null;

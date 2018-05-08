@@ -32,7 +32,7 @@
 
     <div class="m_publicationview--pages" ref="pages">
       <div 
-        v-for="(page, pageNumber) in publication.pages" 
+        v-for="(page, pageNumber) in pagesWithDefault" 
         class="m_publicationview--pages--page"
         :class="{ 'is--active' : pageNumber === page_currently_active-1 }"
         :key="pageNumber"
@@ -42,10 +42,9 @@
           v-if="!preview_mode"
           v-for="(item, index) in [0,1,2,3]"
           class="m_publicationview--pages--page--margins_rule"
-          :style="`--margin_x: ${10}mm; --margin_y: ${20}mm`"
+          :style="`--margin_x: ${page.xMargin}mm; --margin_y: ${page.yMargin}mm`"
           :key="index"
-        >
-        </div>
+        />
 
         <div class="m_publicationview--pages--page--header">
           <div>
@@ -64,6 +63,7 @@
           :media="media"
           :preview_mode="preview_mode"
           :read_only="read_only"
+          :pixelsPerMillimeters="pixelsPerMillimeters"
           @removeMedia="values => { removeMedia(values) }"
           @editPubliMedia="values => { editPubliMedia(values) }"
         />
@@ -77,6 +77,10 @@
       <button type="button" class="buttonLink" @click="removeLastPage()">
         Supprimer une page
       </button>
+      <div 
+        ref="mmMeasurer" 
+        style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%;"
+      />
     </div>
   </div>
 </template>
@@ -98,7 +102,8 @@ export default {
       publication_medias: {},
       page_currently_active: 1,
       preview_mode: false,
-      zoom: 1
+      zoom: 1,
+      pixelsPerMillimeters: 0
     }
   },
   created() {
@@ -109,7 +114,7 @@ export default {
     this.$eventHub.$on('publication.listSpecificMedias', this.updateMediasPubli);
     document.addEventListener('keyup', this.publicationKeyListener);
     this.updateMediasPubli();  
-
+    this.pixelsPerMillimeters = this.$refs.mmMeasurer.offsetWidth / 10;
   },
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
@@ -139,6 +144,28 @@ export default {
     }
   },
   computed: {
+    pagesWithDefault() {
+      let defaultPages = [];
+      for(let page of this.publication.pages) {
+        if(!page.hasOwnProperty('xMargin')) {
+          page.xMargin = 10;
+        }
+        if(!page.hasOwnProperty('yMargin')) {
+          page.yMargin = 20;
+        }
+        if(!page.hasOwnProperty('gridStep')) {
+          page.gridStep = 10;
+        }
+        page.xMargin = Number.parseInt(page.xMargin);
+        page.yMargin = Number.parseInt(page.yMargin);
+        page.width = Number.parseInt(page.width);
+        page.height = Number.parseInt(page.height);
+        page.gridStep = Number.parseInt(page.gridStep);
+
+        defaultPages.push(page);
+      }
+      return defaultPages;
+    }
   },
   methods: {
     addMedia(slugMediaPath) {
@@ -275,7 +302,7 @@ export default {
       }
 
       let pages = [];
-      if(this.publication.hasOwnProperty('pages')) {
+      if(this.publication.hasOwnProperty('pages') && this.publication.pages.length > 0) {
         pages = this.publication.pages.slice();
       }
       pages.push({ 
@@ -283,7 +310,8 @@ export default {
         width: 210,
         height: 297,
         xMargin: 10,
-        yMargin: 20 
+        yMargin: 20,
+        gridStep: 10
       });      
 
       this.$root.editFolder({ 

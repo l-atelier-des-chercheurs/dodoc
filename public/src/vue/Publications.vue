@@ -84,7 +84,8 @@ export default {
           width: 210,
           height: 297,
           xMargin: 10,
-          yMargin: 20 
+          yMargin: 20,
+          grid: 20
         }]
       }
       this.$root.createFolder({ type: 'publications', data: publidata });      
