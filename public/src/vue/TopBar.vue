@@ -2,25 +2,37 @@
   <div class="m_topbar">
     <div class="m_topbar--left" >
       <div class="m_topbar--left--logo" >
-        <transition name="fade">
+        <!-- <transition name="fade">
           <button class="backButton" type="button" v-if="has_back_button" @click="goBack()">
-            ‹
+            ‹ accueil
           </button>
-        </transition>
+        </transition> -->
         <img src="/images/i_logo.svg" @click="goHome()" />
       </div>
 
+
       <div 
-        v-if="project.hasOwnProperty('name')" 
         class="m_topbar--left--breadcrumb" 
-        @click="$root.settings.view = 'ProjectView'"
       >
-        <button type="button">
+        <button type="button"
+          @click="$root.closeProject"        
+        >
+          <span>
+            Projets
+          </span>
+        </button>
+        
+        <button type="button"
+          v-if="project.hasOwnProperty('name')" 
+          @click="$root.settings.view = 'ProjectView'"
+        >
           <span>
             {{ project.name }}
           </span>
         </button>
-        <button type="button" v-if="$root.settings.view === 'CaptureView'">
+        <button type="button" 
+          v-if="project.hasOwnProperty('name') && $root.settings.view === 'CaptureView'"
+        >
           <span>
             Capture
           </span>
