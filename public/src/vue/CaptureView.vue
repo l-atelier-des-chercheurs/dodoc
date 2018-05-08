@@ -376,24 +376,23 @@ export default {
     stopAudioFeed() {
       console.log('METHODS • CaptureView: stopAudioFeed');
       if(this.audioStream) {
-        this.audioStream.getTracks().forEach((track) => track.stop());
-        this.audioStream = undefined;
+        this.audioStream.getAudioFeed().forEach(function(track) {
+          track.stop();
+        });
+        this.audioStream = null;
       }
       equalizer.stop();
     },
     stopVideoFeed() {
-      console.log('METHODS • CaptureView: stopVideoFeed');
-      if(!this.$refs.videoElement.paused) {
-        this.$refs.videoElement.pause();
+      console.log('METHODS • CaptureView: stopVideoFeed');        
+      if(this.videoStream) {
+        this.videoStream.getVideoTracks().forEach(function(track) {
+          debugger;
+          track.stop();
+        });
+        this.$refs.videoElement.srcObject = null;
+        this.videoStream = null;
       }
-        
-      if(this.videoStream) this.videoStream.getTracks().forEach(function(track) {
-        track.stop();
-      });
-      if(this.audioStream) this.audioStream.getTracks().forEach(function(track) {
-        track.stop();
-      });
-          
     },
     stopAllFeeds() {
       return new Promise((resolve, reject) => {
