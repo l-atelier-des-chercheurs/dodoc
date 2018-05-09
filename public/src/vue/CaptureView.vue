@@ -376,7 +376,7 @@ export default {
     stopAudioFeed() {
       console.log('METHODS • CaptureView: stopAudioFeed');
       if(this.audioStream) {
-        this.audioStream.getAudioFeed().forEach(function(track) {
+        this.audioStream.getAudioTracks().forEach(function(track) {
           track.stop();
         });
         this.audioStream = null;
