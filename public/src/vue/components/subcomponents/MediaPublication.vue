@@ -131,8 +131,8 @@ export default {
   },
   methods: {
     updateMediaStyles() {
-      this.mediaPos.x = this.media.publi_meta.hasOwnProperty('x') && !!Number.parseInt(this.media.publi_meta.x) ? this.limitMediaXPos(Number.parseInt(this.media.publi_meta.x)) : this.page.xMargin;
-      this.mediaPos.y = this.media.publi_meta.hasOwnProperty('y') && !!Number.parseInt(this.media.publi_meta.y) ? this.limitMediaYPos(Number.parseInt(this.media.publi_meta.y)) : this.page.yMargin;
+      this.mediaPos.x = this.media.publi_meta.hasOwnProperty('x') && !!Number.parseInt(this.media.publi_meta.x) ? this.limitMediaXPos(Number.parseInt(this.media.publi_meta.x)) : this.page.margin_left;
+      this.mediaPos.y = this.media.publi_meta.hasOwnProperty('y') && !!Number.parseInt(this.media.publi_meta.y) ? this.limitMediaYPos(Number.parseInt(this.media.publi_meta.y)) : this.page.margin_top;
       this.mediaSize.width = this.media.publi_meta.hasOwnProperty('width') && !!Number.parseInt(this.media.publi_meta.width) ? this.limitMediaWidth(Number.parseInt(this.media.publi_meta.width)) : 100;
       this.mediaSize.height = this.media.publi_meta.hasOwnProperty('height') && !!Number.parseInt(this.media.publi_meta.height) ? this.limitMediaHeight(Number.parseInt(this.media.publi_meta.height)) : 100;
     },
@@ -146,17 +146,17 @@ export default {
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaXPos / xPos = ${xPos}`);
       // }
-      return Math.max(this.page.xMargin, Math.min(this.page.width - this.page.xMargin - this.mediaSize.width, xPos));
+      return Math.max(this.page.margin_left, Math.min(this.page.width - this.page.margin_right - this.mediaSize.width, xPos));
     },
     roundMediaVal(val) {
-      return Math.round(val / this.page.gridStep) * this.page.gridStep;
+      return Math.round(val / this.page.gridstep) * this.page.gridstep;
     },
 
     limitMediaYPos(yPos) {
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaYPos / yPos = ${yPos}`);
       // }
-      yPos = Math.max(this.page.yMargin, Math.min(this.page.height - this.page.yMargin - this.mediaSize.height, yPos));
+      yPos = Math.max(this.page.margin_top, Math.min(this.page.height - this.page.margin_bottom - this.mediaSize.height, yPos));
       return yPos;
     },
     
@@ -164,13 +164,13 @@ export default {
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaWidth / w = ${w}`);
       // }
-      return Math.max(0, Math.min(this.page.width - this.page.xMargin - this.mediaPos.x, w));
+      return Math.max(20, Math.min(this.page.width - this.page.margin_right - this.mediaPos.x, w));
     },
     limitMediaHeight(h) {
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaHeight / h = ${h}`);
       // }
-      return Math.max(0, Math.min(this.page.height - this.page.yMargin - this.mediaPos.y, h));
+      return Math.max(20, Math.min(this.page.height - this.page.margin_bottom - this.mediaPos.y, h));
 ;
     },
     
@@ -283,8 +283,8 @@ export default {
         console.log(`METHODS • MediaPublication: dragUp with is_dragged = ${this.is_dragged}`);
       }
       if (this.is_dragged) {
-        this.mediaPos.x = this.roundMediaVal(this.mediaPos.x);
-        this.mediaPos.y = this.roundMediaVal(this.mediaPos.y);
+        this.mediaPos.x = this.roundMediaVal(this.mediaPos.x - this.page.margin_left) + this.page.margin_left;
+        this.mediaPos.y = this.roundMediaVal(this.mediaPos.y - this.page.margin_top) + this.page.margin_top;
         
         this.updateMediaPubliMeta({ 
           x: this.mediaPos.x,

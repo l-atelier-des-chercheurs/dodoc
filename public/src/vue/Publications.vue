@@ -79,14 +79,8 @@ export default {
 
       let publidata = {
         name,
-        pages: [{
-          template: 'journal',
-          width: 210,
-          height: 297,
-          xMargin: 10,
-          yMargin: 20,
-          grid: 20
-        }]
+        template: 'journal',
+        pages: [{}]
       }
       this.$root.createFolder({ type: 'publications', data: publidata });      
     },

@@ -103,6 +103,32 @@
         "preview": {
           "type": "string"
         },
+        "template": {
+          "type": "string",
+          "options": ["journal"],
+          "default": "journal"          
+        },
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        },
+        "margin_left": {
+          "type": "number"
+        },
+        "margin_right": {
+          "type": "number"
+        },
+        "margin_top": {
+          "type": "number"
+        },
+        "margin_bottom": {
+          "type": "number"
+        },
+        "gridstep": {
+          "type": "number"
+        },
         "medias_list": {
           "type": "array"
         },

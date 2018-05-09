@@ -24,6 +24,22 @@
           <input type="range" min=".2" max="2" step="0.05" v-model="zoom">
         </div>
       </div>
+      <div class="m_metaField">
+        <div>
+          Pas de la grille
+        </div>
+        <div class="">
+          <input type="range" min="2" max="100" step="1" v-model.lazy="new_gridstep" @change="updateGridStep">
+        </div>
+      </div>
+      <div class="m_metaField">
+        <div>
+          Zoom
+        </div>
+        <div class="">
+          <input type="range" min=".2" max="2" step="0.05" v-model="zoom">
+        </div>
+      </div>
 
       <button type="button" class="buttonLink" @click="closePublication()">
         Fermer
@@ -42,8 +58,13 @@
           v-if="!preview_mode"
           v-for="(item, index) in [0,1,2,3]"
           class="m_publicationview--pages--page--margins_rule"
-          :style="`--margin_x: ${page.xMargin}mm; --margin_y: ${page.yMargin}mm`"
+          :style="`--margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
           :key="index"
+        />
+        <div 
+          v-if="!preview_mode"
+          class="m_publicationview--pages--page--grid"
+          :style="`--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
         />
 
         <div class="m_publicationview--pages--page--header">
@@ -53,8 +74,7 @@
           <div>
             samedi 28 avril 2018
           </div>
-        </div>
-        
+        </div>        
 
         <MediaPublication
           v-for="(media, index) in publication_medias[(pageNumber+1) + '']" 
@@ -67,6 +87,7 @@
           @removeMedia="values => { removeMedia(values) }"
           @editPubliMedia="values => { editPubliMedia(values) }"
         />
+          <pre>{{ page }}</pre>
       </div>
     </div>
 
@@ -100,10 +121,23 @@ export default {
   data() {
     return {
       publication_medias: {},
+      publication_defaults: {
+        'journal': {
+          width: 210,
+          height: 297,        
+          margin_left: 10,
+          margin_right: 10,
+          margin_top: 20,
+          margin_bottom: 20,
+          gridstep: 10        
+        }
+      },
+      new_gridstep: 0,
+
       page_currently_active: 1,
       preview_mode: false,
       zoom: 1,
-      pixelsPerMillimeters: 0
+      pixelsPerMillimeters: 0,
     }
   },
   created() {
@@ -114,7 +148,8 @@ export default {
     this.$eventHub.$on('publication.listSpecificMedias', this.updateMediasPubli);
     document.addEventListener('keyup', this.publicationKeyListener);
     this.updateMediasPubli();  
-    this.pixelsPerMillimeters = this.$refs.mmMeasurer.offsetWidth / 10;
+    this.pixelsPerMillimeters = this.$refs.hasOwnProperty('mmMeasurer') ? this.$refs.mmMeasurer.offsetWidth / 10 : 38;
+    this.new_gridstep = this.publications_options.gridstep;
   },
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
@@ -126,14 +161,14 @@ export default {
   watch: {
     'publication.medias_list': function() {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: watch / publication.medias_list`);
+        console.log(`WATCH • Publication: publication.medias_list`);
       }
       this.updateMediasPubli();
     },
     '$root.store.projects': {
       handler() {
         if (this.$root.state.dev_mode === 'debug') {
-          console.log(`METHODS • Publication: watch / $root.store.projects`);
+          console.log(`WATCH • Publication: $root.store.projects`);
         }
         this.updateMediasPubli();
       },
@@ -144,24 +179,48 @@ export default {
     }
   },
   computed: {
-    pagesWithDefault() {
-      let defaultPages = [];
-      for(let page of this.publication.pages) {
-        if(!page.hasOwnProperty('xMargin')) {
-          page.xMargin = 10;
-        }
-        if(!page.hasOwnProperty('yMargin')) {
-          page.yMargin = 20;
-        }
-        if(!page.hasOwnProperty('gridStep')) {
-          page.gridStep = 10;
-        }
-        page.xMargin = Number.parseInt(page.xMargin);
-        page.yMargin = Number.parseInt(page.yMargin);
-        page.width = Number.parseInt(page.width);
-        page.height = Number.parseInt(page.height);
-        page.gridStep = Number.parseInt(page.gridStep);
+    publications_options() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`COMPUTED • publications_options`);
+      }
+      // set default values to options
+      if(!this.publication.hasOwnProperty('template')) {
+        alert('Missing template in publication');
+      }
+      if(!this.publication_defaults.hasOwnProperty(this.publication.template)) {
+        console.log('No defaults for this template. Returning original publication object.');
+        return this.publication;
+      }
 
+      let publication_options = this.publication_defaults[this.publication.template];
+      for (let k of Object.keys(publication_options)) {        
+        if(this.publication.hasOwnProperty(k)) {
+          publication_options[k] = this.publication[k];
+        }
+      }
+
+      return publication_options;
+    },
+    pagesWithDefault() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`COMPUTED • pagesWithDefault`);
+      }
+      let defaultPages = [];
+      // we need to clone this object to prevent it from being changed
+      let pagesClone = JSON.parse(JSON.stringify(this.publication.pages));
+      debugger;
+
+      for(let page of pagesClone) {
+        for(let k of Object.keys(this.publications_options)) {
+          const option = this.publications_options[k];
+          if(typeof option === "number") {
+            if(page.hasOwnProperty(k) && !Number.isNaN(page[k])) {
+              page[k] = Number.parseInt(page[k]);
+            } else {
+              page[k] = option;
+            }
+          }
+        }
         defaultPages.push(page);
       }
       return defaultPages;
@@ -305,14 +364,7 @@ export default {
       if(this.publication.hasOwnProperty('pages') && this.publication.pages.length > 0) {
         pages = this.publication.pages.slice();
       }
-      pages.push({ 
-        template: 'journal',
-        width: 210,
-        height: 297,
-        xMargin: 10,
-        yMargin: 20,
-        gridStep: 10
-      });      
+      pages.push({});      
 
       this.$root.editFolder({ 
         type: 'publications', 
@@ -376,8 +428,19 @@ export default {
           this.preview_mode = !this.preview_mode;
 
       }
-    }
-
+    },
+    updateGridStep() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: updateGridStep`);
+      }
+      this.$root.editFolder({ 
+        type: 'publications', 
+        slugFolderName: this.slugPubliName, 
+        data: { 
+          gridstep: event.target.value
+        } 
+      });
+    },
   }
 }
 </script>

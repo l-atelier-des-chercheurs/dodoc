@@ -1219,25 +1219,53 @@ body {
       background-color: @c-gris;
 
       &:nth-child(1) {
-        left: var(--margin_x);
+        left: var(--margin_left);
         top: 0;
       }
       &:nth-child(2) {
-        right: var(--margin_x);
+        right: var(--margin_right);
         top: 0;
       }
       &:nth-child(3) {
-        top: var(--margin_y);
+        top: var(--margin_top);
         left:0;
         width: 100%;
         height: 1px;
       }
       &:nth-child(4) {
-        bottom: var(--margin_y);
+        bottom: var(--margin_bottom);
         left:0;
         width: 100%;
         height: 1px;
       }
+    }
+
+    .m_publicationview--pages--page--grid {
+      // Configuration
+      --gridstep: 10mm;
+
+      --gridstep_before:~"calc(var(--gridstep) - 1px)";
+      --gridstep_after: var(--gridstep);
+
+      @c-gridColor: @c-gris;
+      @s-gridOpacity: 0.5;
+
+      background-image: 
+        repeating-linear-gradient(to right, transparent, transparent var(--gridstep_before), @c-gridColor var(--gridstep_before), @c-gridColor var(--gridstep_after)), 
+        repeating-linear-gradient(to bottom, transparent, transparent var(--gridstep_before), @c-gridColor var(--gridstep_before), @c-gridColor var(--gridstep_after));
+      background-position: 50% 100%;
+      background-repeat: no-repeat;
+
+      position: absolute;
+      opacity: @s-gridOpacity;
+      left: var(--margin_left);
+      right: var(--margin_right);
+      top: var(--margin_top);
+      bottom: var(--margin_bottom);
+
+      display: block;
+
+      pointer-events: none;
     }
   }  
 }
