@@ -5,81 +5,70 @@
     ref="panel"
   >
     <div class="m_publicationMeta">
-      <div class="m_metaField">
-        <div>
-          {{ publication.name }}
-        </div>
-        <div class="">
-          <input id="preview" type="checkbox" v-model="preview_mode">
-          <label for="preview">
-            Aperçu(p)
-          </label>
-        </div>
-      </div>
-      <div class="m_metaField">
-        <div>
-          Largeur (mm)
-        </div>
-        <div class="">
-          <input type="number" min="2" max="100" step="1" v-model="new_width" @input="updatePublicationOption('width')">
-        </div>
-      </div>
-      <div class="m_metaField">
-        <div>
-          Hauteur (mm)
-        </div>
-        <div class="">
-          <input type="number" min="2" max="100" step="1" v-model="new_height" @input="updatePublicationOption('height')">
-        </div>
+
+      <div class="margin-bottom-small">
+        <label>{{ $t('name') }}</label>
+        <input class="input-big" type="text" v-model="new_publiname" @change="updatePublicationOption('name')" required :readonly="read_only">
       </div>
 
-      <div class="m_metaField">
-        <div>
-          Pas de la grille (mm)
-        </div>
-        <div class="">
-          <input type="number" min="2" max="100" step="1" v-model="new_gridstep" @input="updatePublicationOption('gridstep')">
-        </div>
+      <div class="margin-bottom-small">
+        <label>{{ $t('preview') }}</label>
+        <input id="preview" type="checkbox" v-model="preview_mode">
       </div>
-      <div class="m_metaField">
-        <div>
-          Marge haute
-        </div>
-        <div class="">
-          <input type="number" min="0" max="100" step="1" v-model="new_margin_top" @input="updatePublicationOption('margin_top')">
-        </div>
+
+      <hr>
+
+      <div class="margin-bottom-small">
+        <label>{{ $t('header_left') }}</label>
+        <input class="" type="text" v-model="new_header_left" @change="updatePublicationOption('header_left')" :readonly="read_only">
       </div>
-      <div class="m_metaField">
-        <div>
-          Marge basse
-        </div>
-        <div class="">
-          <input type="number" min="0" max="100" step="1" v-model="new_margin_bottom" @input="updatePublicationOption('margin_bottom')">
-        </div>
+
+      <div class="margin-bottom-small">
+        <label>{{ $t('header_right') }}</label>
+        <input class="" type="text" v-model="new_header_right" @change="updatePublicationOption('header_right')" :readonly="read_only">
       </div>
-      <div class="m_metaField">
-        <div>
-          Marge gauche
-        </div>
-        <div class="">
-          <input type="number" min="0" max="100" step="1" v-model="new_margin_left" @input="updatePublicationOption('margin_left')">
-        </div>
+
+      <hr>
+
+      <div class="margin-bottom-small">
+        <label>{{ $t('width') }}(mm)</label>
+        <input type="number" min="1" max="1000" step="1" v-model="new_width" @input="updatePublicationOption('width')">
       </div>
-      <div class="m_metaField">
-        <div>
-          Marge droite
-        </div>
-        <div class="">
-          <input type="number" min="0" max="100" step="1" v-model="new_margin_right" @input="updatePublicationOption('margin_right')">
-        </div>
+
+      <div class="margin-bottom-small">
+        <label>{{ $t('height') }}(mm)</label>
+        <input type="number" min="1" max="1000" step="1" v-model="new_height" @input="updatePublicationOption('height')">
       </div>
-      <div class="m_metaField">
-        <div>
-          Zoom
-        </div>
-        <div class="">
-          <input type="range" min=".2" max="2" step="0.05" v-model="zoom">
-        </div>
+
+      <div class="margin-bottom-small">
+        <label>{{ $t('gridstep') }}(mm)</label>
+        <input type="number" min="2" max="100" step="1" v-model="new_gridstep" @input="updatePublicationOption('gridstep')">
+      </div>
+
+      <hr>
+
+      <div class="margin-bottom-small">
+        <label>{{ $t('margin_top') }}(mm)</label>
+        <input type="number" min="0" max="100" step="1" v-model="new_margin_top" @input="updatePublicationOption('margin_top')">
+      </div>
+      <div class="margin-bottom-small">
+        <label>{{ $t('margin_bottom') }}(mm)</label>
+        <input type="number" min="0" max="100" step="1" v-model="new_margin_bottom" @input="updatePublicationOption('margin_bottom')">
+      </div>
+      <div class="margin-bottom-small">
+        <label>{{ $t('margin_left') }}(mm)</label>
+        <input type="number" min="0" max="100" step="1" v-model="new_margin_left" @input="updatePublicationOption('margin_left')">
+      </div>
+      <div class="margin-bottom-small">
+        <label>{{ $t('margin_right') }}(mm)</label>
+        <input type="number" min="0" max="100" step="1" v-model="new_margin_right" @input="updatePublicationOption('margin_right')">
+      </div>
+
+      <hr>
+
+      <div class="margin-bottom-small">
+        <label>{{ $t('zoom') }}</label>
+        <input type="range" min=".2" max="2" step="0.05" v-model="zoom">
       </div>
 
       <button type="button" class="buttonLink" @click="closePublication()">
@@ -110,10 +99,10 @@
 
         <div class="m_publicationview--pages--page--header">
           <div>
-            <span>FEUILLE DE CHOUX</span>— №1 — Cobonne (avec Allison et Lise)
+            {{ page.header_left }}
           </div>
           <div>
-            samedi 28 avril 2018
+            {{ page.header_right }}
           </div>
         </div>        
 
@@ -169,9 +158,14 @@ export default {
           margin_right: 10,
           margin_top: 20,
           margin_bottom: 20,
-          gridstep: 10        
+          gridstep: 10,
+          header_left: '',
+          header_right: ''     
         }
       },
+
+      new_publiname: this.publication.name,
+
       new_width: 0,
       new_height: 0,
       new_gridstep: 0,
@@ -179,6 +173,8 @@ export default {
       new_margin_top: 0,
       new_margin_right: 0,
       new_margin_bottom: 0,
+      new_header_left: '',
+      new_header_right: '',
 
       page_currently_active: 1,
       preview_mode: false,
@@ -231,7 +227,11 @@ export default {
     },
     'zoom': function() {
       this.$root.setPublicationZoom(this.zoom);
+    },
+    'publication.name': function() {
+      this.new_publiname = this.publication.name
     }
+
   },
   computed: {
     publications_options() {
@@ -272,7 +272,15 @@ export default {
             } else {
               page[k] = option;
             }
-          }
+          } else 
+          if(typeof option === "string") {
+            if(page.hasOwnProperty(k) && typeof page[k] === "string") {
+              // page[k] = page[k];
+            } else {
+              page[k] = option;
+            }
+
+          } 
         }
         defaultPages.push(page);
       }
@@ -451,6 +459,8 @@ export default {
       this.new_margin_right = this.publications_options.margin_right;
       this.new_margin_top = this.publications_options.margin_top;
       this.new_margin_bottom = this.publications_options.margin_bottom;
+      this.new_header_left = this.publications_options.header_left;
+      this.new_header_right = this.publications_options.header_right;
     },
     onScroll(event) {
       if (this.$root.state.dev_mode === 'debug') {

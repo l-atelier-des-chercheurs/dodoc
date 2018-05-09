@@ -114,6 +114,12 @@
         "height": {
           "type": "number"
         },
+        "header_left": {
+          "type": "string"
+        },
+        "header_right": {
+          "type": "string"
+        },
         "margin_left": {
           "type": "number"
         },

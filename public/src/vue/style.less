@@ -575,7 +575,6 @@ body {
     .margin-medium;
   }
   .m_publicationMeta {
-    cursor: pointer;
   }
 }
 
@@ -1142,7 +1141,21 @@ body {
   width: 100%;
   .bg-blanc;
   .padding-medium;
+
+  display: flex;
+  flex-flow: row wrap;
+
+  > * {
+    flex: 1 1 120px;
+    .margin-small;
+  }
+  > hr {
+    flex: 1 0 100%;
+    opacity: 0;
+    margin: 0;
+  }
 }
+
 .m_publicationFooter {
   width: 100%;
   display: flex;
