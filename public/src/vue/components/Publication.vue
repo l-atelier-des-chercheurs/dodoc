@@ -8,7 +8,7 @@
 
       <div class="margin-bottom-small">
         <label>{{ $t('name') }}</label>
-        <input class="input-big" type="text" v-model="new_publiname" @change="updatePublicationOption('name')" required :readonly="read_only">
+        <input class="input-large input-big" type="text" v-model="new_publiname" @change="updatePublicationOption('name')" required :readonly="read_only">
       </div>
 
       <div class="margin-bottom-small">
@@ -20,12 +20,12 @@
 
       <div class="margin-bottom-small">
         <label>{{ $t('header_left') }}</label>
-        <input class="" type="text" v-model="new_header_left" @change="updatePublicationOption('header_left')" :readonly="read_only">
+        <input class="input-large" type="text" v-model="new_header_left" @change="updatePublicationOption('header_left')" :readonly="read_only">
       </div>
 
       <div class="margin-bottom-small">
         <label>{{ $t('header_right') }}</label>
-        <input class="" type="text" v-model="new_header_right" @change="updatePublicationOption('header_right')" :readonly="read_only">
+        <input class="input-large" type="text" v-model="new_header_right" @change="updatePublicationOption('header_right')" :readonly="read_only">
       </div>
 
       <hr>

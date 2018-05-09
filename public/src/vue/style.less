@@ -1138,21 +1138,37 @@ body {
 
 
 .m_publicationMeta {
-  width: 100%;
+  .margin-small;
   .bg-blanc;
   .padding-medium;
 
   display: flex;
   flex-flow: row wrap;
+  justify-content: space-evenly;
+  align-content: flex-start;
   align-items: baseline;
-  > * {
+
+  > *:not(hr) {
     flex: 1 1 120px;
     .margin-small;
+
+    input:not(.input-large) {
+      // max-width: 220px;      
+    }
+    input.input-large {
+    }
+    input[type="range"] {
+      max-width: 320px;      
+    }
   }
   > hr {
     flex: 1 0 100%;
     opacity: 0;
     margin: 0;
+  }
+
+  > .buttonLink {
+    flex: 0 0 0;
   }
 }
 
