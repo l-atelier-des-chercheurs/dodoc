@@ -18,18 +18,59 @@
       </div>
       <div class="m_metaField">
         <div>
-          Zoom
+          Largeur (mm)
         </div>
         <div class="">
-          <input type="range" min=".2" max="2" step="0.05" v-model="zoom">
+          <input type="number" min="2" max="100" step="1" v-model="new_width" @input="updatePublicationOption('width')">
         </div>
       </div>
       <div class="m_metaField">
         <div>
-          Pas de la grille
+          Hauteur (mm)
         </div>
         <div class="">
-          <input type="range" min="2" max="100" step="1" v-model.lazy="new_gridstep" @change="updateGridStep">
+          <input type="number" min="2" max="100" step="1" v-model="new_height" @input="updatePublicationOption('height')">
+        </div>
+      </div>
+
+      <div class="m_metaField">
+        <div>
+          Pas de la grille (mm)
+        </div>
+        <div class="">
+          <input type="number" min="2" max="100" step="1" v-model="new_gridstep" @input="updatePublicationOption('gridstep')">
+        </div>
+      </div>
+      <div class="m_metaField">
+        <div>
+          Marge haute
+        </div>
+        <div class="">
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_top" @input="updatePublicationOption('margin_top')">
+        </div>
+      </div>
+      <div class="m_metaField">
+        <div>
+          Marge basse
+        </div>
+        <div class="">
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_bottom" @input="updatePublicationOption('margin_bottom')">
+        </div>
+      </div>
+      <div class="m_metaField">
+        <div>
+          Marge gauche
+        </div>
+        <div class="">
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_left" @input="updatePublicationOption('margin_left')">
+        </div>
+      </div>
+      <div class="m_metaField">
+        <div>
+          Marge droite
+        </div>
+        <div class="">
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_right" @input="updatePublicationOption('margin_right')">
         </div>
       </div>
       <div class="m_metaField">
@@ -87,7 +128,6 @@
           @removeMedia="values => { removeMedia(values) }"
           @editPubliMedia="values => { editPubliMedia(values) }"
         />
-          <pre>{{ page }}</pre>
       </div>
     </div>
 
@@ -132,7 +172,13 @@ export default {
           gridstep: 10        
         }
       },
+      new_width: 0,
+      new_height: 0,
       new_gridstep: 0,
+      new_margin_left: 0,
+      new_margin_top: 0,
+      new_margin_right: 0,
+      new_margin_bottom: 0,
 
       page_currently_active: 1,
       preview_mode: false,
@@ -149,7 +195,7 @@ export default {
     document.addEventListener('keyup', this.publicationKeyListener);
     this.updateMediasPubli();  
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty('mmMeasurer') ? this.$refs.mmMeasurer.offsetWidth / 10 : 38;
-    this.new_gridstep = this.publications_options.gridstep;
+    this.updatePubliOptionsInFields();
   },
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
@@ -164,6 +210,15 @@ export default {
         console.log(`WATCH • Publication: publication.medias_list`);
       }
       this.updateMediasPubli();
+    },
+    'publications_options': {
+      handler() {
+        if (this.$root.state.dev_mode === 'debug') {
+          console.log(`WATCH • Publication: publications_options`);
+        }
+        this.updatePubliOptionsInFields();
+      },
+      deep: true
     },
     '$root.store.projects': {
       handler() {
@@ -208,8 +263,6 @@ export default {
       let defaultPages = [];
       // we need to clone this object to prevent it from being changed
       let pagesClone = JSON.parse(JSON.stringify(this.publication.pages));
-      debugger;
-
       for(let page of pagesClone) {
         for(let k of Object.keys(this.publications_options)) {
           const option = this.publications_options[k];
@@ -389,7 +442,16 @@ export default {
         data: { pages } 
       });
     },
+    updatePubliOptionsInFields() {
+      this.new_width = this.publications_options.width;
+      this.new_height = this.publications_options.height;
 
+      this.new_gridstep = this.publications_options.gridstep;
+      this.new_margin_left = this.publications_options.margin_left;
+      this.new_margin_right = this.publications_options.margin_right;
+      this.new_margin_top = this.publications_options.margin_top;
+      this.new_margin_bottom = this.publications_options.margin_bottom;
+    },
     onScroll(event) {
       if (this.$root.state.dev_mode === 'debug') {
         // console.log(`METHODS • Publication: onScroll`);
@@ -429,18 +491,18 @@ export default {
 
       }
     },
-    updateGridStep() {
+    updatePublicationOption(type) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: updateGridStep`);
+        console.log(`METHODS • Publication: updateMargin with type = ${type}`);
       }
       this.$root.editFolder({ 
         type: 'publications', 
         slugFolderName: this.slugPubliName, 
         data: { 
-          gridstep: event.target.value
+          [type]: event.target.value
         } 
       });
-    },
+    }
   }
 }
 </script>

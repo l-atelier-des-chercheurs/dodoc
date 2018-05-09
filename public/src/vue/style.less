@@ -1247,8 +1247,8 @@ body {
       --gridstep_before:~"calc(var(--gridstep) - 1px)";
       --gridstep_after: var(--gridstep);
 
-      @c-gridColor: @c-gris;
-      @s-gridOpacity: 0.5;
+      @c-gridColor: @c-gris_clair;
+      @s-gridOpacity: 1;
 
       background-image: 
         repeating-linear-gradient(to right, transparent, transparent var(--gridstep_before), @c-gridColor var(--gridstep_before), @c-gridColor var(--gridstep_after)), 
@@ -1332,8 +1332,8 @@ body {
   }
 
   .resizeFrame {
-    @t-borderSize: 4px;
-    @t-handleSize: 48px;
+    @t-borderSize: 2px;
+    @t-handleSize: 28px;
 
     position: absolute;
     top: -@t-borderSize/2;
@@ -1353,7 +1353,7 @@ body {
     user-drag: none;
 
     .is--hovered& {
-      color: @c-gris_fonce;
+      color: @c-rouge;
     }
     .is--dragged& {
       color: @c-rouge;
@@ -1369,7 +1369,6 @@ body {
       height: @t-handleSize;
 
       border: @t-borderSize dashed currentColor;
-      background-color: white;
       border-radius: 50%;
       cursor: nwse-resize;
     }
