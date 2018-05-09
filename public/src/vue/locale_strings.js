@@ -5,6 +5,7 @@ module.exports = (function() {
       ascending: 'Croissant',
       descending: 'Décroissant',
       create_a_project: 'Créer un projet',
+      create_a_publication: 'Créer une publication',
       publication: 'Publication',
       name: 'Nom',
       created_date: 'Date de création',
@@ -96,9 +97,11 @@ module.exports = (function() {
       margin_left: 'Marge: gauche',
       margin_right: 'Marge: droite',
       margin_bottom: 'Marge: bas',
+      number_of_medias: 'Nombre de médias',
 
       export_folder: 'Exporter en format WEB',
       export: 'Exporter',
+      publication_list: 'Liste des publications',
 
       last_modified: 'Dernière modification',
       remote_access: 'Accès depuis d’autres appareils',
@@ -118,6 +121,8 @@ module.exports = (function() {
           'Création ou édition d’un média pour le dossier&nbsp;:',
         project_name_exists:
           'Ce nom de projet existe déjà, utilisez-en un autre.',
+        publi_name_exists:
+          'Ce nom de publication existe déjà, utilisez-en un autre.',
         author_name_exists:
           'Ce nom d’auteur existe déjà, utilisez-en un autre.',
         folder_name_needs_alphanumeric_characters:
@@ -137,6 +142,7 @@ module.exports = (function() {
       ascending: 'Ascending',
       descending: 'Descending',
       create_a_project: 'Create a project',
+      create_a_publication: 'Create a publication',
       name: 'Name',
       created_date: 'Created date',
       uploaded: 'Uploaded',
@@ -229,9 +235,11 @@ module.exports = (function() {
       margin_left: 'Margin: left',
       margin_right: 'Margin: right',
       margin_bottom: 'Margin: bottom',
+      number_of_medias: 'Number of medias',
 
       export_folder: 'Export as a webpage',
       export: 'Export',
+      publication_list: 'Publications list',
 
       last_modified: 'Last modified',
       remote_access: 'Acces from other devices',
@@ -249,6 +257,8 @@ module.exports = (function() {
           'A media has been created or edited in folder:',
         project_name_exists:
           'This project name already exists. Please use another.',
+        publi_name_exists:
+          'This publication name already exists. Please use another.',
         author_name_exists:
           'This author name already exists. Please use another.',
         folder_name_needs_alphanumeric_characters:

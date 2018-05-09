@@ -48,6 +48,7 @@
           <Publications
             v-if="!$root.settings.current_slugPubliName"
             :publications="$root.store.publications"
+            :read_only="!$root.state.connected"
           />
         </transition>
         <transition name="ProjectView" :duration="500">

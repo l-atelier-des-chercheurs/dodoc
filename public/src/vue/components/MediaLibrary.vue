@@ -8,7 +8,7 @@
     >
     </MediaFilterBar> -->
 
-    <div class="m_project--library--actionbar">
+    <div class="m_actionbar">
       <button type="button" class="barButton barButton_capture" 
         v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
         @click="$root.settings.view = 'CaptureView'"

@@ -531,7 +531,7 @@ body {
     position: relative;
     overflow: hidden;
     background-color: @c-bleuvert_fonce;
-
+    border-left: 10px solid @c-bleuvert_fonce;
   }
 
 }
@@ -566,16 +566,12 @@ body {
 
 .m_publicationsview, .m_publicationview {
   .bg-bleuvert;
+  .sectionTitle_small {
+    color: #fff;
+  }
 }
 
 .m_publicationsview {
-  
-  .m_publicationsview--create {
-    width: 250px;
-    .margin-medium;
-  }
-  .m_publicationMeta {
-  }
 }
 
 .m_projects {
@@ -667,65 +663,6 @@ body {
   .m_project--library {
     width: 100%;
     .bg-gris_clair;
-
-    .m_project--library--actionbar {
-      .margin-bottom-small;
-      .margin-sides-medium;
-      border-bottom: 4px solid @c-gris_tresclair;
-      display: flex;
-      flex-flow: row wrap;
-
-      .barButton {
-        margin: 0;
-        .margin-small;
-        margin-left: 0;
-        min-height: 0;
-
-        background-color: #fff;
-        color: @c-rouge;
-
-        border-radius: 4px;
-
-        display: flex;
-        flex-flow: row wrap;
-        align-items: center;
-
-        > span {
-          .padding-vert-small;
-        }
-        
-
-        &::before {
-          content:'';
-          display: block;
-          width:  28px;
-          height: 28px;
-          padding-right: 4px;
-          background-repeat: no-repeat;
-        }
-
-        &.barButton_text {
-          color: @c-bleumarine;
-          &::before {
-            background-image: url("/images/i_text.svg");          
-          }
-        }
-        &.barButton_capture {
-          color: @c-orange;
-          &::before {
-            background-image: url("/images/i_record.svg");          
-          }
-        }
-      }
-
-      .dz-message {
-        .barButton;
-        &::before {
-          background-image: url("/images/i_importer.svg");          
-        }
-      }
-
-    }
   }
 
   .m_project--favMedias {
@@ -758,6 +695,69 @@ body {
   }
 
 }
+
+.m_actionbar {
+  .margin-bottom-small;
+  .margin-sides-medium;
+  border-bottom: 4px solid @c-gris_tresclair;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+
+  > .barButton {
+    margin: 0;
+    .margin-small;
+    margin-left: 0;
+    min-height: 0;
+
+    background-color: #fff;
+    color: @c-rouge;
+
+    border-radius: 4px;
+
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+
+    > span {
+      .padding-vert-small;
+    }
+    
+
+    &::before {
+      content:'';
+      display: block;
+      width:  28px;
+      height: 28px;
+      padding-right: 4px;
+      background-repeat: no-repeat;
+    }
+
+    &.barButton_text {
+      color: @c-bleumarine;
+      &::before {
+        background-image: url("/images/i_text.svg");          
+      }
+    }
+    &.barButton_capture {
+      color: @c-orange;
+      &::before {
+        background-image: url("/images/i_record.svg");          
+      }
+    }
+    &.barButton_createPubli {
+      color: @c-bleuvert;
+    }
+  }
+
+  .dz-message.dz-message {
+    .barButton;
+    &::before {
+      background-image: url("/images/i_importer.svg");          
+    }
+  }
+}
+
 
 .m_qrSnippet {
 
@@ -1136,11 +1136,29 @@ body {
   }
 }
 
+.m_publicationItems {
+  .margin-small;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.m_publicationItems--item {
+  width: 320px;
+  .margin-small; 
+  .bg-blanc;
+  .padding-small;
+
+  .m_publicationItems--item--title {
+    margin: 0;
+    .font-folder_title;   
+    .padding-bottom-small; 
+  }
+}
 
 .m_publicationMeta {
-  .margin-small;
+  .margin-medium;
   .bg-blanc;
-  .padding-medium;
+  .padding-small;
 
   display: flex;
   flex-flow: row wrap;
@@ -1171,6 +1189,7 @@ body {
     flex: 0 0 0;
   }
 }
+
 
 .m_publicationFooter {
   width: 100%;
