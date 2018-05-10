@@ -73,6 +73,10 @@
 
       <div class="m_topbar--right--pictos">
 
+        <button type="button" @click="$root.switchLang">
+          {{ this.$root.lang.current }}
+        </button>
+
         <button type="button" @click="showQRModal = !showQRModal">
           <svg version="1.1"
             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"

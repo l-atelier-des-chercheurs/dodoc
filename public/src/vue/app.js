@@ -38,9 +38,9 @@ let lang_settings = {
   init: function() {
     let localstore_lang = localstore.get('language');
 
-    // force lang to french
-    this.current = 'fr';
-    return;
+    // // force lang to french
+    // this.current = 'fr';
+    // return;
 
     // has lang set
     if (localstore_lang !== undefined) {
@@ -611,6 +611,7 @@ let vm = new Vue({
       }
       i18n.locale = newLangCode;
       moment.locale(newLangCode);
+      this.lang.current = newLangCode;
 
       const html = document.documentElement; // returns the html tag
       html.setAttribute('lang', newLangCode);
@@ -689,6 +690,17 @@ let vm = new Vue({
         nfc_tag: e.detail
       });
       this.setAuthor(author);
+    },
+
+    switchLang() {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`ROOT EVENT: switchLang`);
+      }
+      if (this.lang.current === 'fr') {
+        this.updateLocalLang('en');
+      } else {
+        this.updateLocalLang('fr');
+      }
     }
   }
 });
