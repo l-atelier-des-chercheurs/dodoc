@@ -68,8 +68,8 @@
         class="publiButton"
         @click="$root.togglePubliPanel"
         :key="'openPubli'"
-        v-if="$root.settings.view !== 'CaptureView'"
       >
+        <!-- v-if="$root.settings.view !== 'CaptureView'" -->
         <img src="/images/i_publi.svg" width="48" height="48" />
         <span class="margin-small">
           {{ $t('publication') }}

@@ -59,6 +59,7 @@ module.exports = (function() {
       public: 'Public',
       fav: 'Favoris',
       content: 'Contenu',
+      edit: 'Modifier',
 
       'lang:': 'Changer la langue&nbsp;:',
       lang: 'Changer la langue',
@@ -209,6 +210,7 @@ module.exports = (function() {
       public: 'Public',
       fav: 'Favourite',
       content: 'Content',
+      edit: 'Edit',
 
       'lang:': 'Select lang:',
       lang: 'Select lang',

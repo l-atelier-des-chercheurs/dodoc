@@ -44,7 +44,7 @@
         @click.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.slugMediaName })"
         @touchend.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.slugMediaName })"
       >
-        Modifier
+        {{ $t('edit') }}
       </button>
       <button 
         type="button" 
@@ -52,7 +52,7 @@
         @click.stop="removeMedia()"
         @touchend.stop="removeMedia()"
       >
-        Enlever
+        {{ $t('remove') }}
       </button>
     </div>
   </div>

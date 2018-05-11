@@ -11,7 +11,7 @@
         <input type="radio" :id="mode.key" :value="mode.key" v-model="selected_mode">
         <label :for="mode.key">
           <img :src="mode.picto">
-          <span>{{ mode.name }}</span>
+          <span>{{ $t(mode.name) }}</span>
         </label>
       </div>
       <button type="button" class="bg-transparent" @click="nextMode()">
@@ -142,12 +142,12 @@ export default {
       selected_mode: '',
       available_modes: [
         { 
-          name: this.$t('photo'),
+          name: 'photo',
           picto: '/images/i_icone-dodoc_image.svg',
           key: 'photo'
         },
         {
-          name: this.$t('video'),
+          name: 'video',
           picto: '/images/i_icone-dodoc_video.svg',
           key: 'video'
         },
@@ -157,12 +157,12 @@ export default {
         //   key: 'stopmotion'
         // },
         {
-          name: this.$t('audio'),
+          name: 'audio',
           picto: '/images/i_icone-dodoc_audio.svg',
           key: 'audio'
         },
         {
-          name: this.$t('vecto'),
+          name: 'vecto',
           picto: '/images/i_icone-dodoc_vecto.svg',
           key: 'vecto'
         }
