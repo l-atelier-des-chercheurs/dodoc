@@ -89,7 +89,8 @@
       v-if="context === 'full'"
     >
       <div class="sectionTitle_small margin-sides-medium">
-        Média favoris
+        
+        {{ $t('favorite_medias') }}
       </div>
 
       <div class="m_project--favMedias--list">

@@ -122,10 +122,10 @@
 
     <div class="m_publicationFooter">
       <button type="button" class="buttonLink" @click="addPage()">
-        Ajouter une page
+        {{ $t('add_a_page') }}
       </button>
       <button type="button" class="buttonLink" @click="removeLastPage()">
-        Supprimer une page
+        {{ $t('remove_this_page') }}
       </button>
       <div 
         ref="mmMeasurer" 

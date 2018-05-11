@@ -10,7 +10,7 @@
 
     <template slot="preview">
       <div class="margin-medium font-small">
-        <span v-html="$t('toconnectwithanotherdevicetothisfolder')"></span>
+        <span v-html="$t('toconnectwithanotherdevice')"></span>
 
         <div v-for="(ip, index) in $root.state.localNetworkInfos.ip"
           class="m_qrSnippet padding-none margin-vert-medium button-inline bg-creme"

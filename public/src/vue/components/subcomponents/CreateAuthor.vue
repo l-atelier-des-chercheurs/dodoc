@@ -11,7 +11,7 @@
       <label>{{ $t('portrait') }}</label><br>
       <ImageSelect 
         @newPreview="value => { preview = value }"
-        :instructions="'Sélectionnez une image de portrait'"  
+        :instructions="$t('select_portrait_image')"  
       >
       </ImageSelect>
     </div>

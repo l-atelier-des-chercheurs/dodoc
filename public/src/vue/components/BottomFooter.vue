@@ -2,7 +2,7 @@
   <footer class="m_footer limited-width">
     <div class="padding-vert-medium padding-sides-medium">
       <p>do•doc version {{ $root.state.appVersion }}</p>
-      <p class="text-center centered font-small">
+      <!-- <p class="text-center centered font-small">
         <span v-html="$t('toconnectwithanotherdevice')">
         </span>
         <template v-for="(ip, index) in $root.state.localNetworkInfos.ip">
@@ -16,7 +16,7 @@
           </a>
           <span :key="index"> </span>
         </template>
-      </p>
+      </p> -->
     </div>
   </footer>
 </template>

@@ -15,7 +15,7 @@
         :disabled="read_only" 
       >
         <span>    
-            {{ $t('capture') }}
+          {{ $t('capture') }}
         </span>
       </button>      
       <FileUpload
@@ -28,13 +28,13 @@
         @click="createTextMedia"
       >
         <span>
-          Créer du texte
+          {{ $t('create_text') }}
         </span>
       </button>
     </div>
 
     <div class="sectionTitle_small margin-sides-medium">
-      Tous les médias
+      {{ $t('all_medias') }}
     </div>
     <div class="m_project--library--medias">
       <MediaCard

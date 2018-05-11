@@ -24,7 +24,7 @@
             @click.stop="addToCurrentPubli()"
             @touchstart.stop="addToCurrentPubli()"
           >
-            Ajouter à la publication 
+            {{ $t('add_to_publication') }}
           </button>
         </div>          
 

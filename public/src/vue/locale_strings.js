@@ -26,6 +26,22 @@ module.exports = (function() {
       cancel: 'Annuler',
       sureToRemoveAuthor: 'Êtes-vous sûr de vouloir supprimer cet auteur ?',
 
+      showing: 'Affichage de',
+      projects_of: 'projets sur',
+      projects: 'Projets',
+      authors: 'Auteurs',
+      authors_list: 'Liste des auteurs',
+      create_an_author: 'Créer un auteur',
+      favorite_medias: 'Média favoris',
+      all_medias: 'Tous les médias',
+      create_text: 'Écrire du texte',
+      import: 'Importer',
+      select_cover_image: 'Sélectionnez une image de couverture',
+      select_portrait_image: 'Sélectionnez une image de portrait',
+      add_to_publication: 'Ajouter à la publication',
+      add_a_page: 'Ajouter une page',
+      remove_this_page: 'Supprimer cette page',
+
       loading: 'chargement',
       open: 'Ouvrir',
       save: 'Enregistrer',
@@ -57,9 +73,7 @@ module.exports = (function() {
         'Un projet libre et open-source réalisé par l’<a href="https://latelier-des-chercheurs.fr" class="js--openInBrowser" target="_blank">Atelier des Chercheurs</a> avec et pour le <a href="https://www.studiotheatre.fr/" class="js--openInBrowser" target="_blank">Studio-Théâtre de Vitry-sur-Seine</a>.',
 
       toconnectwithanotherdevice:
-        'Pour accéder à do•doc avec un autre appareil, connectez-vous au même réseau wifi puis entrez l’url suivante dans un navigateur web&nbsp;: ',
-      toconnectwithanotherdevicetothisfolder:
-        'Pour accéder à ce dossier avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web&nbsp;: ',
+        'Pour accéder à cet élément avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web, ou bien scannez le code QR&nbsp;: ',
       sureToRemoveProject: 'Êtes-vous sûr de vouloir supprimer ce projet ?',
       sureToRemoveMedia: 'Êtes-vous sûr de vouloir supprimer ce média ?',
 
@@ -162,6 +176,22 @@ module.exports = (function() {
       cancel: 'Cancel',
       sureToRemoveAuthor: 'Do you really want to delete this author?',
 
+      showing: 'Showing',
+      projects_of: 'projects of',
+      projects: 'Projects',
+      authors: 'Authors',
+      authors_list: 'List of authors',
+      create_an_author: 'Create an author',
+      favorite_medias: 'Favorite medias',
+      all_medias: 'All medias',
+      create_text: 'Write text',
+      import: 'Import',
+      select_cover_image: 'Select a cover image',
+      select_portrait_image: 'Select a portrait',
+      add_to_publication: 'Add to publication',
+      add_a_page: 'Add a page',
+      remove_this_page: 'Remove this page',
+
       loading: 'loading',
       open: 'Open',
       save: 'Save',
@@ -193,9 +223,7 @@ module.exports = (function() {
         'A free and open-source app made by l’<a href="https://latelier-des-chercheurs.fr" class="js--openInBrowser" target="_blank">Atelier des Chercheurs</a> with and for the <a href="https://www.studiotheatre.fr/" class="js--openInBrowser" target="_blank">Studio-Théâtre de Vitry-sur-Seine</a>.',
 
       toconnectwithanotherdevice:
-        'To access do•doc with another device, connect to the same wifi network and type this adress in your browser:',
-      toconnectwithanotherdevicetothisfolder:
-        'To access this folder in do•doc with another device, connect to the same wifi network and type this adress in your browser:',
+        'To access this do•doc element with another device, first connect it to the same wifi network, then type this adress in your browser or scan this QR code:',
       sureToRemoveProject: 'Do you really want to delete this project?',
       sureToRemoveMedia: 'Do you really want to delete this media?',
 

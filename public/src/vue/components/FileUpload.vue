@@ -38,7 +38,7 @@ export default {
     return {
       customOptionsObject: {
         language: {
-          dictDefaultMessage: 'Importer',
+          dictDefaultMessage: this.$t('import'),
           dictCancelUpload: 'Annuler l’upload',
           dictRemoveFile: 'Masquer'
         }

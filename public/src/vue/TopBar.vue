@@ -18,7 +18,7 @@
           @click="$root.closeProject"        
         >
           <span>
-            Projets
+            {{ $t('projects') }}
           </span>
         </button>
         
@@ -55,7 +55,7 @@
           </template>
           <template v-else>
             <div class="font-medium">
-              (auteurs)
+              ({{ $t('authors') }})
             </div>
           </template>
         </button>

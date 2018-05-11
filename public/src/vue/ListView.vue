@@ -8,7 +8,7 @@
         >
 
           <div class="sectionTitle_small padding-bottom-medium margin-left-small">
-            Affichage de {{ sortedProjectsSlug.length }} projets sur {{ Object.keys(projects).length }}
+            {{ $t('showing') }} {{ sortedProjectsSlug.length }} {{ $t('projects_of') }} {{ Object.keys(projects).length }}
           </div>
 
           <transition-group 

@@ -4,7 +4,9 @@
     :typeOfModal="'LargeAndScroll'"
     >
     <template slot="header">
-      <span class="">Liste des auteurs</span>
+      <span class="">
+            {{ $t('authors_list') }}        
+      </span>
     </template>
 
     <template slot="preview">
@@ -23,7 +25,7 @@
               @click="openCreateAuthorPanel = true"
               v-if="openCreateAuthorPanel == false"
             >
-              Créer un auteur
+              {{ $t('create_an_author') }}
             </button>
 
             <CreateAuthor
