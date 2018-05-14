@@ -715,18 +715,17 @@ body {
 
     border-radius: 4px;
 
-    display: flex;
-    flex-flow: row wrap;
-    align-items: center;
-
     > span {
+      display: inline-block;
+      vertical-align: middle;
       .padding-vert-small;
     }
     
 
     &::before {
       content:'';
-      display: block;
+      display: inline-block;
+      vertical-align: middle;
       width:  28px;
       height: 28px;
       padding-right: 4px;
@@ -912,8 +911,6 @@ body {
     text-transform: initial;
     font-weight: 400;
   }
-
-
   &:last-child {
     margin-bottom: 0;
   }
