@@ -915,7 +915,24 @@ body {
     margin-bottom: 0;
   }
 
+.quillWrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  
+  > * {
+    flex: 0 0 auto;
+
+    &.ql-container {
+      flex: 1 1 auto;
+      height: auto;
+      overflow: scroll;
+
+      .custom_scrollbar(8px, 5px, 6px);      
+    }
+  }
+  
 }
+
 
 .m_captureview {
 
