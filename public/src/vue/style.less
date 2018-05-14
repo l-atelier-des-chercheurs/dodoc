@@ -22,7 +22,6 @@
   box-sizing: border-box;
 }
 
-
 html {
 
   @scrollbar-height: 8px;
@@ -43,26 +42,22 @@ body {
 
   position: relative;
   margin: 0;
-  overflow-x: hidden;
-  overflow-y: hidden;
-
-  &.has_systembar {
-    margin-top: @t-systemBarHeight;
-  }
+  // overflow-x: hidden;
+  // overflow-y: hidden;
 
   @media screen and (max-width: 50rem) {
     margin-top: 0 !important;
     overflow-y: auto;
   }
-  html.touchevents & {
-    margin-top: 0 !important;
-    overflow-y: auto;
-  }
+  // html.touchevents & {
+  //   margin-top: 0 !important;
+  //   overflow-y: auto;
+  // }
 }
 
 body {
-  &.is_unscrollable {
-    overflow: hidden !important;
+  &.has_modal_opened {
+    overflow-y: auto;
   }
 }
 
@@ -139,7 +134,7 @@ body {
   .flex-wrap;
 
   body.has_systembar & {
-    margin-top: @t-systemBarHeight;
+    padding-top: @t-systemBarHeight/2;
   }
 
   > * {
@@ -503,14 +498,14 @@ body {
   height: ~"calc(100vh - @{t-hauteur_topbar} - 1px)";
 
   body.has_systembar & {
-    height: ~"calc(100vh - @{t-systemBarHeight} - @{t-hauteur_topbar} - 1px)";
+    height: ~"calc(100vh - @{t-systemBarHeight}/2 - @{t-hauteur_topbar} - 1px)";
   }
 
   @media screen and (max-width: 50rem) {
     height: auto !important;
   }
   html.touchevents & {
-    height: 100%;
+    // height: 100%;
   }
 
   display: flex;
@@ -555,9 +550,9 @@ body {
     overflow: auto;
   }
   html.touchevents & {
-    position: relative;
-    height:auto !important;
-    overflow: auto;
+    // position: relative;
+    // height:auto !important;
+    // overflow: auto;
   }
   
 
@@ -914,6 +909,7 @@ body {
   &:last-child {
     margin-bottom: 0;
   }
+}
 
 .quillWrapper {
   display: flex;

@@ -1,15 +1,13 @@
 .m_modal--mask {
-  position: fixed;
+  position: absolute;
   z-index: 20000;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  min-height: 100vh;
 
   background-color: fade(#fff, 95%);
   cursor: pointer;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
   .custom_scrollbar(8px, 5px, 6px);
   
   display: flex;
@@ -41,9 +39,6 @@
   //   }
   // }
 
-  body.has_systembar & {
-//     padding-top: 22px;
-  }
 }
 
 .m_modal--wrapper {
@@ -137,12 +132,9 @@
   &.typeOfModal-LargeAndScroll {
     overflow-y: auto;
     .m_modal--container {   
-      max-width: @t-panelWidth * 2;
+      max-width: @t-panelWidth * 3;
       align-self: flex-start;
       .m_modal--preview {
-        display: flex;
-        flex-flow: column nowrap;
-        min-height: 100vh;
         height: auto;
       }
     }

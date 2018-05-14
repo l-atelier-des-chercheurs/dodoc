@@ -4,6 +4,7 @@
       class="m_modal--mask"
       :class="['typeOfModal-' + typeOfModal, { 'is_invisible' : !showModal }]"
       @mousedown.self="closeModal"
+      :style="`min-height: ${window_innerHeight}px`"
     >
       <div class="m_modal--container"
         :class="['color-' + backgroundColor, { 'is_invisible' : !showModal }]"
@@ -109,6 +110,17 @@ export default {
     },100);
 
   },
+  computed: {
+    window_innerHeight() { 
+      let wHeight = window.innerHeight;
+      if(this.$root.settings.enable_system_bar) {
+        wHeight -= 22;
+      }
+      console.log(window.innerHeight);
+      console.log(wHeight);
+      return wHeight; 
+    }
+  },
   methods: {
     modalKeyListener: function(evt) {
       // console.log('METHODS • BaseModal: modalKeyListener');
@@ -125,12 +137,12 @@ export default {
   },
   created: function() {
     document.addEventListener('keyup', this.modalKeyListener);
-    document.body.classList.add('is_unscrollable');
+    document.body.classList.add('has_modal_opened');
     this.$root.settings.has_modal_opened = true;
   },
   destroyed: function() {
     document.removeEventListener('keyup', this.modalKeyListener);
-    document.body.classList.remove('is_unscrollable');
+    document.body.classList.remove('has_modal_opened');
     this.$root.settings.has_modal_opened = false;
   }
 };

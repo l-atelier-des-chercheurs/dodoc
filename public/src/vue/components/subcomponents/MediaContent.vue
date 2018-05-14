@@ -38,7 +38,7 @@
         v-else
         v-model="htmlForEditor"
         ref="textField"
-        autocorrect="on"
+        autocorrect="off"
         :editorToolbar="customToolbar"
       />
       <!-- <textarea
