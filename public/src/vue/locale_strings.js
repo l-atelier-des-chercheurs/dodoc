@@ -72,6 +72,7 @@ module.exports = (function() {
 
       credits:
         'Un projet libre et open-source réalisé par l’<a href="https://latelier-des-chercheurs.fr" class="js--openInBrowser" target="_blank">Atelier des Chercheurs</a> avec et pour le <a href="https://www.studiotheatre.fr/" class="js--openInBrowser" target="_blank">Studio-Théâtre de Vitry-sur-Seine</a>.',
+      unselect: 'Dé-sélectionner',
 
       toconnectwithanotherdevice:
         'Pour accéder à cet élément avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web, ou bien scannez le code QR&nbsp;: ',
@@ -223,7 +224,7 @@ module.exports = (function() {
 
       credits:
         'A free and open-source app made by l’<a href="https://latelier-des-chercheurs.fr" class="js--openInBrowser" target="_blank">Atelier des Chercheurs</a> with and for the <a href="https://www.studiotheatre.fr/" class="js--openInBrowser" target="_blank">Studio-Théâtre de Vitry-sur-Seine</a>.',
-
+      unselect: 'Un-select',
       toconnectwithanotherdevice:
         'To access this do•doc element with another device, first connect it to the same wifi network, then type this adress in your browser or scan this QR code:',
       sureToRemoveProject: 'Do you really want to delete this project?',
