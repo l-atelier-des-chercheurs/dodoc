@@ -4,6 +4,7 @@
     @submit="newProject"
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
+    :askBeforeClosingModal="askBeforeClosingModal"
     >
     <template slot="header">
       <span class="">{{ $t('create_a_project') }}</span>
@@ -62,15 +63,30 @@ export default {
     return {
       projectdata: {
         name: '',
-        start: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        end: '',
         password: '',
         authors: ''
       },
-      preview: undefined
+      preview: undefined,
+      askBeforeClosingModal: false
     };
   },
   computed: {},
+  watch: {
+    'projectdata.name': function() {
+      if(this.projectdata.name.length > 0) {
+        this.askBeforeClosingModal = true;
+      } else {
+        this.askBeforeClosingModal = false;
+      }
+    },
+    'preview': function() {
+      if(!!this.preview) {
+        this.askBeforeClosingModal = true;
+      } else {
+        this.askBeforeClosingModal = false;
+      }
+    }
+  },
   methods: {
     newProject: function(event) {
       console.log('newProject');
@@ -99,9 +115,7 @@ export default {
       if(!!this.preview) {
         this.projectdata.preview_rawdata = this.preview;
       }
-
       this.$root.createFolder({ type: 'projects', data: this.projectdata });
-
       this.$emit('close', '');
     }
   }
