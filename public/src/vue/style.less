@@ -849,10 +849,12 @@ body {
         height: 50px;
       }
       p, pre {
-        white-space: pre;
         &:first-child {
           margin-top: 0;
         }        
+      }
+      pre {
+        white-space: pre;
       }
 
       h1,h2,h3, p {
@@ -1326,6 +1328,8 @@ body {
 .m_mediaPublication {
   position: absolute;
   cursor: -webkit-grab;
+
+  -moz-user-select: none;
   user-select: none;
 
   min-width: 100px;
@@ -1386,6 +1390,8 @@ body {
     color: @c-noir;
     border: @t-borderSize dashed currentColor;
     transition: border .2s;
+
+    pointer-events: none;
   
     -webkit-user-drag: none;
     -khtml-user-drag: none;
@@ -1412,6 +1418,7 @@ body {
       border: @t-borderSize dashed currentColor;
       border-radius: 50%;
       cursor: nwse-resize;
+      pointer-events: auto;
     }
     .handle_bottomright {
       bottom: -@t-handleSize/2;

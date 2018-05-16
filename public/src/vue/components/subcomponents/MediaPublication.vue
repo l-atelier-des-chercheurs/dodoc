@@ -252,7 +252,7 @@ export default {
         }
       }
     },
-    dragMove() {
+    dragMove(event) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: dragMove with is_dragged = ${this.is_dragged}`);
       }
@@ -278,7 +278,7 @@ export default {
         this.mediaPos.y = this.limitMediaYPos(newY);        
       }
     },
-    dragUp() {
+    dragUp(event) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: dragUp with is_dragged = ${this.is_dragged}`);
       }
