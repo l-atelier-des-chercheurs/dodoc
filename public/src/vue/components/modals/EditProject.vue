@@ -5,6 +5,7 @@
     @submit="editThisProject"
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
+    :askBeforeClosingModal="askBeforeClosingModal"
     >
     <template slot="header">
       <div class="">{{ $t('edit_project') }}</div>
@@ -72,14 +73,19 @@ export default {
     return {
       projectdata: {
         name: this.project.name,
-        start: this.$moment(this.project.start).isValid()
-          ? this.project.start
-          : '',
-        end: this.$moment(this.project.end).isValid() ? this.project.end : '',
         authors: this.project.authors
       },
-      preview: undefined
+      preview: undefined,
+      askBeforeClosingModal: false
     };
+  },
+  watch: {
+    'projectdata.name': function() {
+      this.askBeforeClosingModal = true;
+    },
+    'preview': function() {
+      this.askBeforeClosingModal = true;
+    }
   },
   computed: {
     previewURL() {

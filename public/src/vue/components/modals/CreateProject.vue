@@ -70,7 +70,6 @@ export default {
       askBeforeClosingModal: false
     };
   },
-  computed: {},
   watch: {
     'projectdata.name': function() {
       if(this.projectdata.name.length > 0) {
@@ -87,6 +86,7 @@ export default {
       }
     }
   },
+  computed: {},
   methods: {
     newProject: function(event) {
       console.log('newProject');

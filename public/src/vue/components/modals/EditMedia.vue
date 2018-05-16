@@ -5,6 +5,7 @@
     @submit="editThisMedia"
     :read_only="read_only"
     :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndScroll'"
+    :askBeforeClosingModal="askBeforeClosingModal"
     >
     <template slot="header">
       <div class="">{{ $t('edit_the_media') }}</div>
@@ -180,9 +181,18 @@ export default {
         fav: this.media.fav,
         content: this.media.content
       },
-      mediaURL: `/${this.slugProjectName}/${this.slugMediaName}`
+      mediaURL: `/${this.slugProjectName}/${this.slugMediaName}`,
+      askBeforeClosingModal: false
     };
   },
+  watch: {
+    'mediadata': {
+      handler() {
+        this.askBeforeClosingModal = true;
+      },
+      deep: true
+    }
+  },  
   computed: {
   },
   methods: {
