@@ -1298,10 +1298,10 @@ body {
       // Configuration
       --gridstep: 10mm;
 
-      --gridstep_before:~"calc(var(--gridstep) - 1px)";
+      --gridstep_before:~"calc(var(--gridstep) - 2px)";
       --gridstep_after: var(--gridstep);
 
-      @c-gridColor: @c-gris_clair;
+      @c-gridColor: @c-gris_tresclair;
       @s-gridOpacity: 1;
 
       background-image: 
@@ -1331,20 +1331,21 @@ body {
   -moz-user-select: none;
   user-select: none;
 
-  min-width: 100px;
-  min-height: 100px;
+  min-width: 80px;
+  min-height: 80px;
+  cursor: pointer;
 
-  transition: all .4s ease-out;
+  transition: all .2s ease-out;
 
   &.is--hovered {
+  }
+  &.is--dragged {
+    transition: none ease-out;
     z-index: 2;
   }
-
-  &.is--dragged {
-    // transition: none;
-  }
   &.is--resized {
-    transition: none;
+    transition: none ease-out;
+    z-index: 2;
   }
 
   // PUBLI STYLE !
@@ -1354,7 +1355,7 @@ body {
     overflow: hidden;
     height: 100%;
     width: 100%;
-    .bg-blanc;
+    // .bg-blanc;
 
     p {
       width: 100%;   
@@ -1380,7 +1381,7 @@ body {
   }
 
   .controlFrame {
-    @t-borderSize: 4px;
+    @t-borderSize: 3px;
     @t-handleSize: 48px;
 
     position: absolute;
@@ -1393,8 +1394,6 @@ body {
     color: @c-noir;
     border: @t-borderSize dashed currentColor;
     transition: border .2s;
-
-    pointer-events: none;
   
     -webkit-user-drag: none;
     -khtml-user-drag: none;
@@ -1422,6 +1421,15 @@ body {
       border-radius: 50%;
       cursor: nwse-resize;
       pointer-events: auto;
+      
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
     }
     .handle_resizeMedia {
       bottom: -@t-handleSize/2;

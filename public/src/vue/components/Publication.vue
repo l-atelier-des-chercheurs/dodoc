@@ -68,7 +68,7 @@
 
       <div class="margin-bottom-small">
         <label>{{ $t('zoom') }}</label>
-        <input type="range" min=".2" max="2" step="0.05" v-model="zoom">
+        {{ zoom }}
       </div>
 
       <button type="button" class="buttonLink" @click="closePublication()">
@@ -108,7 +108,7 @@
 
         <MediaPublication
           v-for="(media, index) in publication_medias[(pageNumber+1) + '']" 
-          :key="media.slugMediaName + '-' + index"
+          :key="media.slugMediaName"
           :page="page"
           :media="media"
           :preview_mode="preview_mode"
@@ -116,6 +116,8 @@
           :pixelsPerMillimeters="pixelsPerMillimeters"
           @removeMedia="values => { removeMedia(values) }"
           @editPubliMedia="values => { editPubliMedia(values) }"
+          @selected="newSelection"
+          @unselected="noSelection"
         />
       </div>
     </div>
@@ -178,12 +180,14 @@ export default {
 
       page_currently_active: 1,
       preview_mode: false,
-      zoom: 1,
+      zoom: window.innerWidth <= 1024 ? 0.8 : 1,
       pixelsPerMillimeters: 0,
+      has_media_selected: false
     }
   },
   created() {
     // when opening a publi, we’ll need to use the medias field to request some actual content
+    this.$root.setPublicationZoom(this.zoom);
   },
   mounted() {
     this.$eventHub.$on('publication.addMedia', this.addMedia);
@@ -343,7 +347,14 @@ export default {
         medias_list = this.publication.medias_list.slice();
       }
 
-      medias_list[reference_index] = Object.assign({}, medias_list[reference_index], val);
+      // get media
+      const m = Object.assign({}, medias_list[reference_index], val);
+      
+      // remove that media from index
+      medias_list.splice(reference_index, 1);
+
+      // and add it to the end of the array
+      medias_list.push(m);
 
       this.$root.editFolder({ 
         type: 'publications', 
@@ -461,6 +472,13 @@ export default {
       this.new_margin_bottom = this.publications_options.margin_bottom;
       this.new_header_left = this.publications_options.header_left;
       this.new_header_right = this.publications_options.header_right;
+    },
+    newSelection(mediaID) {
+      this.has_media_selected = true;
+      this.$emit('newMediaSelected', mediaID);
+    },
+    noSelection() {
+      this.has_media_selected = false;
     },
     onScroll(event) {
       if (this.$root.state.dev_mode === 'debug') {

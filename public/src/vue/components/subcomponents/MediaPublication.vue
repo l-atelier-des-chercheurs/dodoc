@@ -4,8 +4,7 @@
     :style="mediaStyles"
     @mouseover="is_hovered = true"
     @mouseleave="is_hovered = false"
-    @mousedown.stop.prevent="dragMedia('mouse')"
-    @touchstart.stop.prevent="dragMedia('touch')"    
+    @mousedown.prevent.stop="is_selected = true"
     :class="{ 
       'is--dragged' : is_dragged, 
       'is--resized' : is_resized, 
@@ -26,9 +25,11 @@
     <div 
       v-if="is_selected" 
       class="controlFrame"
+      @mousedown.stop.prevent="dragMedia('mouse')"
+      @touchstart.stop.prevent="dragMedia('touch')"   
     >
       <div class="handle handle_resizeMedia"
-        @mousedown.stop="resizeMedia('mouse', 'bottomright')"
+        @mousedown.stop.prevent="resizeMedia('mouse', 'bottomright')"
         @touchstart.stop.prevent="resizeMedia('touch', 'bottomright')"
       >
         <svg version="1.1"
@@ -46,20 +47,6 @@
         </g>
         </svg>
       </div>
-      <!-- <div class="handle handle_moveMedia"
-        @mousedown.stop.prevent="dragMedia('mouse')"
-        @touchstart.stop.prevent="dragMedia('touch')"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-          version="1.1" 
-          id="Layer_1" 
-          x="0px" y="0px" width="100px" height="100px" viewBox="5.0 -10.0 100.0 135.0" 
-          enable-background="new 0 0 100 100" xml:space="preserve"> 
-          <path d="M19.333,93.828c-3.866,0-7-3.135-7-7V13.172c0-3.866,3.134-7,7-7s7,3.134,7,7v73.656 C26.333,90.693,23.199,93.828,19.333,93.828z"></path> 
-          <path d="M50,93.828c-3.866,0-7-3.135-7-7V13.172c0-3.866,3.134-7,7-7s7,3.134,7,7v73.656C57,90.693,53.866,93.828,50,93.828z"></path>
-          <path d="M80.667,93.828c-3.866,0-7-3.135-7-7V13.172c0-3.866,3.134-7,7-7s7,3.134,7,7v73.656  C87.667,90.693,84.533,93.828,80.667,93.828z"></path>
-        </svg>
-      </div> -->
     </div>
 
     <div 
@@ -69,16 +56,16 @@
       <button 
         type="button" 
         class="buttonLink" 
-        @click.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.slugMediaName })"
-        @touchend.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.slugMediaName })"
+        @mousedown.prevent.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.slugMediaName })"
+        @touchstart.prevent.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.slugMediaName })"
       >
         {{ $t('edit') }}
       </button>
       <button 
         type="button" 
         class="buttonLink" 
-        @click.stop="removeMedia()"
-        @touchend.stop="removeMedia()"
+        @mousedown.prevent.stop="removeMedia()"
+        @touchstart.prevent.stop="removeMedia()"
       >
         {{ $t('remove') }}
       </button>
@@ -108,6 +95,8 @@ export default {
       is_hovered: false,
       is_selected: false,
 
+      mediaID: `${(Math.random().toString(36) + '00000000000000000').slice(2, 3 + 5)}`,
+
       dragOffset: {
         x: 0,
         y: 0
@@ -136,6 +125,11 @@ export default {
   },
   mounted() {
     this.updateMediaStyles();
+    this.$parent.$on('newMediaSelected', (mediaID) => {
+      if(mediaID !== this.mediaID) {
+        this.is_selected = false;   
+      }      
+    });
   },
   beforeDestroy() {
   },
@@ -147,6 +141,19 @@ export default {
       },
       deep: true
     },
+    'is_selected': function() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`WATCH • MediaPublication: is_selected`);
+      }
+      if(this.is_selected) {
+        window.addEventListener('mousedown', this.deselectMedia);      
+        window.addEventListener('touchstart', this.deselectMedia); 
+        this.$emit('selected', this.mediaID);  
+      } else {
+        window.removeEventListener('mousedown', this.deselectMedia);      
+        window.removeEventListener('touchstart', this.deselectMedia);              
+      }
+    }
   },
   computed: {
     mediaStyles() {
@@ -241,9 +248,6 @@ export default {
         const deltaY = (pageY_mm - this.resizeOffset.y);
         let newHeight = this.mediaSize.pheight + deltaY;
         this.mediaSize.height = this.limitMediaHeight(newHeight);
-
-        this.mediaSize.width = this.roundMediaVal(this.mediaSize.width);
-        this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
       }
     },
     resizeUp(event) {
@@ -251,6 +255,9 @@ export default {
         console.log(`METHODS • MediaPublication: resizeUp with is_resized = ${this.is_resized}`);
       }
       if (this.is_resized) {
+        this.mediaSize.width = this.roundMediaVal(this.mediaSize.width);
+        this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
+
         this.updateMediaPubliMeta({ 
           width: this.mediaSize.width,
           height: this.mediaSize.height 
@@ -277,11 +284,8 @@ export default {
           window.addEventListener('mousemove', this.dragMove);
           window.addEventListener('mouseup', this.dragUp);
         } else if(type === 'touch') {
-          
-          if(is_selected) {
-            window.addEventListener('touchmove', this.dragMove);
-            window.addEventListener('touchend', this.dragUp);
-          }
+          window.addEventListener('touchmove', this.dragMove);
+          window.addEventListener('touchend', this.dragUp);
         }
       }
     },
@@ -309,21 +313,25 @@ export default {
         const deltaY = (pageY_mm - this.dragOffset.y);
         let newY = this.mediaPos.py + deltaY;
         this.mediaPos.y = this.limitMediaYPos(newY);        
-
-        this.mediaPos.x = this.roundMediaVal(this.mediaPos.x - this.page.margin_left) + this.page.margin_left;
-        this.mediaPos.y = this.roundMediaVal(this.mediaPos.y - this.page.margin_top) + this.page.margin_top;
       }
     },
     dragUp(event) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: dragUp with is_dragged = ${this.is_dragged}`);
       }
-      if (this.is_dragged) {        
+      if (this.is_dragged) {
+        this.mediaPos.x = this.roundMediaVal(this.mediaPos.x - this.page.margin_left) + this.page.margin_left;
+        this.mediaPos.y = this.roundMediaVal(this.mediaPos.y - this.page.margin_top) + this.page.margin_top;
+
         this.updateMediaPubliMeta({ 
           x: this.mediaPos.x,
           y: this.mediaPos.y 
         });
         this.is_dragged = false;
+
+        event.stopPropagation();
+        return false;
+
       }
 
       event.stopPropagation();
@@ -334,6 +342,13 @@ export default {
 
       return false;
     },
+    deselectMedia(event) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • MediaPublication: deselectMedia`);
+      }      
+      this.is_selected = false;
+      this.$emit('unselected');
+    }
   }
 }
 </script>
