@@ -439,51 +439,31 @@ body {
   }
 }
 
-.createButton, .captureButton, .publiButton {
+.publiButton {
+  position: absolute;
+  top: 130px;
+  right:0;
+
   @t-button_size: 3em;
 
-  position: fixed;
-  z-index: 1000;
-  bottom: 5vmin;
-  left: 5vmin;
   min-height: @t-button_size;
-  border-radius: @t-button_size;
+  border-radius: @t-button_size 0 0 @t-button_size;
+
+  .padding-verysmall;
 
   .button-inline;
 
-  .bg-rouge;
   .c-blanc;
-  box-shadow: 0 6px 0 @c-rouge_fonce;
   font-weight: 400;
-
-  transition: all .2s ease-out;
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 0 @c-rouge_fonce;
-  }
-
-  span {
-    padding: @t-skipline/4;    
-  }
-}
-
-.captureButton {
-  .bg-orange;
-  box-shadow: 0 6px 0 @c-orange_fonce;
-  &:hover {
-    box-shadow: 0 10px 0 @c-orange_fonce;
-  }
-}
-
-.publiButton {
-  left: auto;
-  right: 5vmin;  
   .bg-bleuvert;
 
-  box-shadow: 0 6px 0 @c-bleuvert_fonce;
-  &:hover {
-    box-shadow: 0 10px 0 @c-bleuvert_fonce;
+  span {
+    padding: @t-skipline/4; 
+    display: none;   
+  }
+
+  &.is--open {
+    right: 800px;
   }
 }
 
@@ -522,11 +502,22 @@ body {
   }
 
   .m_activitiesPanel--doc {
-    flex-basis: 60%;
+    flex-basis:0;
+    flex-grow: 0;
+
     position: relative;
     overflow: hidden;
     background-color: @c-bleuvert_fonce;
-    border-left: 10px solid @c-bleuvert_fonce;
+
+    &.is--open {
+      flex-basis: 900px;
+      flex-grow: 0;
+      border-left: 10px solid @c-bleuvert_fonce;
+
+      @media screen and (max-width: 1024px) {
+        flex-basis: 800px;
+      }
+    }
   }
 
 }
@@ -1155,11 +1146,16 @@ body {
   .margin-small; 
   .bg-blanc;
   .padding-small;
+  text-align: center;
 
   .m_publicationItems--item--title {
     margin: 0;
     .font-folder_title;   
     .padding-bottom-small; 
+    text-align: left;
+  }
+
+  button {
   }
 }
 
@@ -1226,6 +1222,22 @@ body {
 }
 
 .m_publicationview {
+
+  .m_publicationSettings {
+    position: fixed;
+    bottom: 0px; right: 0px;
+    z-index: 1000;
+    background-color: white;
+    border: 2px solid @c-gris_clair;
+    border-radius: 4px;
+    .padding-small;
+    padding-bottom: 0;
+
+    button {
+      min-height: 2em;
+    }
+  }
+
   .m_publicationview--pages {
     display: flex;
     flex-flow: column wrap;
@@ -1319,7 +1331,7 @@ body {
       // Configuration
       --gridstep: 10mm;
 
-      --gridstep_before:~"calc(var(--gridstep) - 1mm)";
+      --gridstep_before:~"calc(var(--gridstep) - 2px)";
 
       @c-gridColor: @c-gris_tresclair;
       @s-gridOpacity: 1;
@@ -1329,6 +1341,8 @@ body {
         repeating-linear-gradient(to bottom, transparent, transparent var(--gridstep_before), @c-gridColor var(--gridstep_before), @c-gridColor var(--gridstep));
       background-position: 50% 100%;
       background-repeat: no-repeat;
+
+
 
       position: absolute;
       opacity: @s-gridOpacity;

@@ -43,16 +43,17 @@
           />
         </transition>
       </div>
-      <div class="m_activitiesPanel--doc" v-if="$root.settings.show_publi_panel">
+      <div class="m_activitiesPanel--doc"
+        :class="{ 'is--open' : $root.settings.show_publi_panel }"
+      >
         <transition name="ListView" :duration="500">
           <Publications
-            v-if="!$root.settings.current_slugPubliName"
+            v-if="$root.settings.show_publi_panel && !$root.settings.current_slugPubliName"
             :publications="$root.store.publications"
             :read_only="!$root.state.connected"
           />
         </transition>
         <transition name="ProjectView" :duration="500">
-          {{ $root.settings.current_slugPubliName }}
           <Publication
             v-if="$root.settings.current_slugPubliName !== false"
             :slugPubliName="$root.settings.current_slugPubliName"
@@ -63,19 +64,18 @@
       </div>
     </div>
 
-    <transition name="popUp">
-      <button
-        class="publiButton"
-        @click="$root.togglePubliPanel"
-        :key="'openPubli'"
-      >
-        <!-- v-if="$root.settings.view !== 'CaptureView'" -->
-        <img src="/images/i_publi.svg" width="48" height="48" />
-        <span class="margin-small">
-          {{ $t('publication') }}
-        </span>
-      </button>
-    </transition>
+        <button
+          class="publiButton"
+          :class="{ 'is--open' : $root.settings.show_publi_panel }"
+          @click="$root.togglePubliPanel"
+          :key="'openPubli'"
+        >
+          <!-- v-if="$root.settings.view !== 'CaptureView'" -->
+          <img src="/images/i_publi.svg" width="48" height="48" />
+          <span class="margin-small">
+            {{ $t('publication') }}
+          </span>
+        </button>
     
     <EditMedia
       v-if="$root.settings.showMediaModalFor !== false"

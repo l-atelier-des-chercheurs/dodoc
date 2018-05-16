@@ -5,7 +5,6 @@
     ref="panel"
   >
     <div class="m_publicationMeta">
-
       <div class="m_publicationMeta--topbar">
         <button type="button" class="" @click="closePublication()">
           ←
@@ -19,15 +18,7 @@
           <label>{{ $t('settings') }}</label>
           <input type="checkbox" v-model="advanced_options" />
         </div>
-
-
-        <div class="">
-          <label>{{ $t('preview') }}</label>
-          <input id="preview" type="checkbox" v-model="preview_mode">
-        </div>
       </div>
-
-
       <template v-if="advanced_options">
         <hr>
 
@@ -84,8 +75,19 @@
           <input type="number" min="0" max="100" step="1" v-model="new_margin_right" @input="updatePublicationOption('margin_right')">
         </div>
       </template>
-
     </div>
+
+    <div class="m_publicationSettings">
+      <div class="margin-bottom-small">
+        <label for="preview">{{ $t('preview') }}</label>
+        <input id="preview" type="checkbox" v-model="preview_mode">
+      </div>
+      <div class="margin-bottom-small">
+        <label for="zoom">{{ $t('zoom') }}</label>
+        <button class="" @click="zoom += 0.1">+</button>
+        <button class="" @click="zoom -= 0.1">-</button>
+      </div>
+    </div>  
 
     <div class="m_publicationview--pages" ref="pages">
       <div 
@@ -110,7 +112,7 @@
 
         <div class="m_publicationview--pages--page--header">
           <div>
-            N°2 — COBONNE (AVEC MICKAËL ET LISE)
+            N°2 — COBONNE (AVEC MICHAËL ET LISE)
             <!-- {{ page.header_left }} -->
           </div>
           <div>
