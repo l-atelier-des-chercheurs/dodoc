@@ -51,9 +51,11 @@ let lang_settings = {
     }
 
     if (this.current === '') {
-      // set current lang from
+      // set current lang from window.navigator.language
+      // window.navigator.language can be 'fr', 'en', or 'fr-FR'
+
       let browserLangIsAvailable = Object.keys(this.available).filter(x => {
-        return x === window.navigator.language;
+        return window.navigator.language.includes(x);
       });
       if (browserLangIsAvailable.length > 0) {
         this.current = browserLangIsAvailable[0];
