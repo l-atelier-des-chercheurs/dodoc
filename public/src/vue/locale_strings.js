@@ -25,6 +25,7 @@ module.exports = (function() {
       nfc_tag: 'Tag NFC',
       cancel: 'Annuler',
       sureToRemoveAuthor: 'Êtes-vous sûr de vouloir supprimer cet auteur ?',
+      sureToCloseModal: 'Êtes-vous sûr de vouloir fermer cette fenêtre ?',
 
       showing: 'Affichage de',
       projects_of: 'projets sur',
@@ -82,7 +83,7 @@ module.exports = (function() {
       edit_the_media: 'Éditer le média',
       edit_project: 'Éditer le projet',
 
-      capture: 'Capture',
+      capture: 'Enregistrer',
       currently: 'Actuellement',
 
       more_information:
@@ -177,8 +178,10 @@ module.exports = (function() {
       nfc_tag: 'Tag NFC',
       cancel: 'Cancel',
       sureToRemoveAuthor: 'Do you really want to delete this author?',
-
+      sureToCloseModal: 'Do you really want to close this window?',
       showing: 'Showing',
+      no_projects_yet:
+        'No projects created yet. Create one to add captures and import content.',
       projects_of: 'projects of',
       projects: 'Projects',
       authors: 'Authors',

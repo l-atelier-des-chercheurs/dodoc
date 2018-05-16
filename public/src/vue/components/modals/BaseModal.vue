@@ -97,6 +97,10 @@ export default {
     typeOfModal: {
       type: String,
       default: 'EditMeta'
+    },
+    askBeforeClosingModal: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -105,6 +109,7 @@ export default {
     };
   },
   mounted: function() {
+    console.log(`MOUNTED • BaseModal`)
     setTimeout(() => {
       this.showModal = true;
     },100);
@@ -116,8 +121,6 @@ export default {
       if(this.$root.settings.enable_system_bar) {
         wHeight -= 22;
       }
-      console.log(window.innerHeight);
-      console.log(wHeight);
       return wHeight; 
     }
   },
@@ -129,6 +132,13 @@ export default {
       }
     },
     closeModal: function() {
+      console.log(`METHODS • BaseModal: closeModal with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
+      if(this.askBeforeClosingModal) {
+        if (!window.confirm(this.$t('sureToCloseModal'))) {
+          console.log(`METHODS • BaseModal: closeModal refused`)
+          return;
+        }
+      }
       this.showModal = false;
       setTimeout(() => {
         this.$emit('close');

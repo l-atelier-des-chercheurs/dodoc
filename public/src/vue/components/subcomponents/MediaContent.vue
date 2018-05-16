@@ -40,6 +40,7 @@
         ref="textField"
         autocorrect="off"
         :editorToolbar="customToolbar"
+        class="mediaTextContent"
       />
       <!-- <textarea
         placeholder="…"
@@ -101,8 +102,10 @@ export default {
       htmlForEditor: this.value,
       mediaURL: `/${this.slugProjectName}/${this.slugMediaName}`,
       customToolbar: [
-        [{ 'header': [false, 1, 2, 3, 4, 5, 6, ] }],
-        ['bold', 'italic', 'underline', 'heading']
+        [{ 'header': [false, 1, 2, 3, 4] }],
+        // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
+        ['bold', 'italic', 'underline'],
+        ['clean']  
       ]
     };
   },

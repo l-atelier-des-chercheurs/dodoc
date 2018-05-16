@@ -3,53 +3,56 @@
   >
     <main>
       <section class="container">
-        <template
-          v-if="sortedProjectsSlug !== 'has-no-projects'"
-        >
-
-          <div class="sectionTitle_small padding-bottom-medium margin-left-small">
-            {{ $t('showing') }} {{ sortedProjectsSlug.length }} {{ $t('projects_of') }} {{ Object.keys(projects).length }}
+        <div class="m_listview--topbar">
+          <div class="sectionTitle_small ">
+            <template v-if="sortedProjectsSlug !== 'has-no-projects'">
+              {{ $t('showing') }} {{ sortedProjectsSlug.length }} {{ $t('projects_of') }} {{ Object.keys(projects).length }}
+            </template>
+            <template v-else>
+              {{ $t('no_projects_yet') }}
+            </template>          
           </div>
 
-          <transition-group 
-            tag="div"
-            name="list-complete"
-            class="m_projects"
+          <!-- modal -->
+          <CreateProject
+            v-if="showCreateProjectModal"
+            @close="showCreateProjectModal = false"
+            :read_only="read_only"
+          />
+          <button
+            class="button-inline bg-rouge"
+            @click="showCreateProjectModal = true"
+            :disabled="read_only"
+            :key="'createButton'"
           >
-            <template        
-              v-for="(sortedProject, index) in sortedProjectsSlug"
-            > 
-              <Project
-                :key="sortedProject.slugProjectName"
-                :slugProjectName="sortedProject.slugProjectName"
-                :project="projects[sortedProject.slugProjectName]"
-                :read_only="read_only"
-                :currentSort="currentSort"
-                :index="index"
-              />
-            </template>
-          </transition-group>
-        </template>
+            <img src="/images/i_add.svg" width="48" height="48" />
+            <span class="margin-small">
+              {{ $t('create_a_project') }}
+            </span>
+          </button>
+
+        </div>
+
+        <transition-group 
+          v-if="sortedProjectsSlug !== 'has-no-projects'"
+          tag="div"
+          name="list-complete"
+          class="m_projects"
+        >
+          <template        
+            v-for="(sortedProject, index) in sortedProjectsSlug"
+          > 
+            <Project
+              :key="sortedProject.slugProjectName"
+              :slugProjectName="sortedProject.slugProjectName"
+              :project="projects[sortedProject.slugProjectName]"
+              :read_only="read_only"
+              :currentSort="currentSort"
+              :index="index"
+            />
+          </template>
+        </transition-group>
       </section>
-
-      <!-- modal -->
-      <CreateProject
-        v-if="showCreateProjectModal"
-        @close="showCreateProjectModal = false"
-        :read_only="read_only"
-      />
-
-      <button
-        class="createButton"
-        @click="showCreateProjectModal = true"
-        :disabled="read_only"
-        :key="'createButton'"
-      >
-        <img src="/images/i_add.svg" width="48" height="48" />
-        <span class="margin-small">
-          {{ $t('create_a_project') }}
-        </span>
-      </button>
       
     </main>
 

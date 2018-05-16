@@ -122,7 +122,7 @@
       background-color: @c-orange;
     }
 
-    textarea, input, select {
+    textarea, .textarea, input, select {
       color: @c-noir;
     }
   }
@@ -211,7 +211,7 @@
     height: 100%;
     overflow: hidden;
     position: relative;
-    .bg-gris_tresclair;
+    // .bg-gris_tresclair;
 
     &[data-context="edit"] {
       > * {
@@ -242,24 +242,55 @@
   input[type="text"] {
   }
 
-  textarea.mediaTextContent {
-    min-height: 60vh;
-    height: 100%;
-    border: none;
-//     width: ~"calc(100% - @{t-skipline}*2)";
-    .padding-none;
+  .mediaTextContent {
 
-    background: linear-gradient(transparent, transparent 28px, #91D1D3 28px);
-    background-size: 30px 30px;
-    background-attachment: local;
+    &.quillWrapper {
+      display: flex;
+      flex-flow: column nowrap;
 
-    background: linear-gradient(transparent, transparent ~"calc(@{t-skipline} - 2px)", rgba(0,0,0,.15) ~"calc(@{t-skipline} - 2px)");
-    background-size: @t-skipline @t-skipline;
-    background-attachment: local;
-    background-position-y: ~"calc(@{t-skipline} * 0.85)";
+      .ql-container {
+        font-family: inherit;
+      }
+      .ql-toolbar button {
+        min-height: 0;
+      }
+      .ql-toolbar.ql-snow {
+        .bg-blanc;
+        font-family: inherit;
+      }
+    
+      > * {
+        flex: 0 0 auto;
+      
+        &.ql-container {
+          flex: 1 1 auto;
+          height: auto;
+        }
+        .ql-editor {
+          .textarea;
 
-    &:focus {
-
+          border-left: 2px solid transparent;
+          min-height: 60vh;
+          height: 100%;
+          border-left: solid var(--input-border-width) var(--input-border-color);
+          border-radius: var(--input-border-radius);
+          border-radius: 0;
+      
+          // background: linear-gradient(transparent, transparent 28px, #91D1D3 28px);
+          // background-size: 30px 30px;
+          // background-attachment: local;
+      
+          // background: linear-gradient(transparent, transparent ~"calc(@{t-skipline} - 2px)", rgba(0,0,0,.15) ~"calc(@{t-skipline} - 2px)");
+          // background-size: @t-skipline @t-skipline;
+          // background-attachment: local;
+          // background-position-y: ~"calc(@{t-skipline} * 0.85)";
+      
+          &:focus {
+            border-left-color: @c-orange;
+          }
+        }
+      }
+      
     }
   }
 }

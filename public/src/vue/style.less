@@ -569,6 +569,18 @@ body {
 .m_publicationsview {
 }
 
+.m_listview--topbar {
+  .padding-bottom-medium;
+  // display: flex;
+  // flex-flow: column wrap;
+  // justify-content: space-between;
+  // align-items: center;
+
+  > * {
+    .margin-small;
+  }
+}
+
 .m_projects {
   .flex-wrap;
   .flex-horizontally-start;
@@ -814,7 +826,7 @@ body {
     .mediaContainer {
       position: relative;
       .margin-small;
-      .bg-gris_tresclair;
+      // .bg-gris_tresclair;
       overflow: hidden;
 
       &::after {
@@ -909,24 +921,6 @@ body {
   &:last-child {
     margin-bottom: 0;
   }
-}
-
-.quillWrapper {
-  display: flex;
-  flex-flow: column nowrap;
-  
-  > * {
-    flex: 0 0 auto;
-
-    &.ql-container {
-      flex: 1 1 auto;
-      height: auto;
-      overflow: scroll;
-
-      .custom_scrollbar(8px, 5px, 6px);      
-    }
-  }
-  
 }
 
 
@@ -1328,17 +1322,6 @@ body {
   }  
 }
 
-.ql-container {
-  font-family: inherit;
-}
-
-.ql-toolbar button {
-  min-height: 0;
-}
-.ql-toolbar.ql-snow {
-  .bg-blanc;
-  font-family: inherit;
-}
 
 .m_mediaPublication {
   position: absolute;
@@ -1434,6 +1417,7 @@ body {
       bottom: -@t-handleSize/2;
       right: -@t-handleSize/2;
       cursor: nwse-resize;
+      background-color: white;
     }  
   }
 
@@ -1588,12 +1572,14 @@ body {
   .resizeFrame,
   .publiButton,
   .m_mediaPublication--buttons,
-  .m_publicationview--pages--page--margins_rule {
+  .m_publicationview--pages--page--margins_rule,
+  .m_publicationview--pages--page--grid {
     display: none !important;
   }
 
   .m_activitiesPanel--doc {
-    border: none;
+    border: none !important;
+    background-color: transparent !important;
   }
 
   .m_activitiesPanel {
@@ -1603,6 +1589,7 @@ body {
   .m_publicationview {
     position: relative;
     height: auto;
+    background-color: transparent !important;
   }
 
   .m_publicationview--pages--page {
