@@ -119,7 +119,7 @@ export default {
     window_innerHeight() { 
       let wHeight = window.innerHeight;
       if(this.$root.settings.enable_system_bar) {
-        wHeight -= 22;
+        // wHeight -= 22;
       }
       return wHeight; 
     }
