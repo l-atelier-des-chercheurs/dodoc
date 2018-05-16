@@ -4,14 +4,14 @@
     :style="mediaStyles"
     @mouseover="is_hovered = true"
     @mouseleave="is_hovered = false"
+    @mousedown.stop.prevent="dragMedia('mouse')"
+    @touchstart.stop.prevent="dragMedia('touch')"    
     :class="{ 
       'is--dragged' : is_dragged, 
       'is--resized' : is_resized, 
       'is--waitingForServerResponse' : is_waitingForServer,
       'is--hovered' : is_hovered
     }"
-    @mousedown.stop.prevent="dragMedia('mouse')"
-    @touchstart.stop.prevent="dragMedia('touch')"
   >
     <MediaContent
       :context="'publication'"
@@ -24,18 +24,46 @@
     <p class="m_mediaPublication--caption">{{ media.caption }}</p>
 
     <div 
-      v-if="preview_mode === false" 
-      class="resizeFrame"
+      v-if="is_selected" 
+      class="controlFrame"
     >
-      <div class="handle handle_bottomright"
+      <div class="handle handle_resizeMedia"
         @mousedown.stop="resizeMedia('mouse', 'bottomright')"
         @touchstart.stop.prevent="resizeMedia('touch', 'bottomright')"
       >
+        <svg version="1.1"
+          xmlns="http://www.w3.org/2000/svg" 
+          xmlns:xlink="http://www.w3.org/1999/xlink" 
+          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+          x="0px" y="0px" width="77.5px" height="77.5px" viewBox="0 0 77.5 77.5" style="enable-background:new 0 0 77.5 77.5;"
+          xml:space="preserve">
+        <defs>
+        </defs>
+        <g>
+          <path d="M42.5,0l0.4,12.6l-9.3,0.1c-2.8,0-5.1,0-6.9-0.2c-1.8-0.2-3.6-0.6-5.7-1.2l45.3,45.3c-0.6-2-1-3.9-1.2-5.7
+            c-0.2-1.8-0.3-4-0.2-6.9v-9.4l12.6,0.4l-1.3,41.2l-41.2,1.3l-0.4-12.6l9.5,0c2.9,0,5.2,0.1,7,0.3c1.8,0.2,3.6,0.5,5.4,1.1
+           L11.3,21.1c0.5,1.8,0.9,3.6,1.1,5.4c0.2,1.8,0.3,4.1,0.3,7l-0.1,9.4L0,42.5L1.3,1.3L42.5,0z"/>
+        </g>
+        </svg>
       </div>
+      <!-- <div class="handle handle_moveMedia"
+        @mousedown.stop.prevent="dragMedia('mouse')"
+        @touchstart.stop.prevent="dragMedia('touch')"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+          version="1.1" 
+          id="Layer_1" 
+          x="0px" y="0px" width="100px" height="100px" viewBox="5.0 -10.0 100.0 135.0" 
+          enable-background="new 0 0 100 100" xml:space="preserve"> 
+          <path d="M19.333,93.828c-3.866,0-7-3.135-7-7V13.172c0-3.866,3.134-7,7-7s7,3.134,7,7v73.656 C26.333,90.693,23.199,93.828,19.333,93.828z"></path> 
+          <path d="M50,93.828c-3.866,0-7-3.135-7-7V13.172c0-3.866,3.134-7,7-7s7,3.134,7,7v73.656C57,90.693,53.866,93.828,50,93.828z"></path>
+          <path d="M80.667,93.828c-3.866,0-7-3.135-7-7V13.172c0-3.866,3.134-7,7-7s7,3.134,7,7v73.656  C87.667,90.693,84.533,93.828,80.667,93.828z"></path>
+        </svg>
+      </div> -->
     </div>
 
     <div 
-      v-if="preview_mode === false" 
+      v-if="is_selected" 
       class="m_mediaPublication--buttons"
     >
       <button 
@@ -67,7 +95,7 @@ export default {
     page: Object,
     read_only: Boolean,
     preview_mode: Boolean,
-    pixelsPerMillimeters: Number
+    pixelsPerMillimeters: Number,
   },
   components: {
     MediaContent
@@ -78,6 +106,7 @@ export default {
       is_resized: false,
       is_waitingForServer: false,
       is_hovered: false,
+      is_selected: false,
 
       dragOffset: {
         x: 0,
@@ -212,6 +241,9 @@ export default {
         const deltaY = (pageY_mm - this.resizeOffset.y);
         let newHeight = this.mediaSize.pheight + deltaY;
         this.mediaSize.height = this.limitMediaHeight(newHeight);
+
+        this.mediaSize.width = this.roundMediaVal(this.mediaSize.width);
+        this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
       }
     },
     resizeUp(event) {
@@ -219,9 +251,6 @@ export default {
         console.log(`METHODS • MediaPublication: resizeUp with is_resized = ${this.is_resized}`);
       }
       if (this.is_resized) {
-        this.mediaSize.width = this.roundMediaVal(this.mediaSize.width);
-        this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
-
         this.updateMediaPubliMeta({ 
           width: this.mediaSize.width,
           height: this.mediaSize.height 
@@ -244,11 +273,15 @@ export default {
       }
       if (!this.read_only) {
         if(type === 'mouse') {
+          this.is_selected = true;
           window.addEventListener('mousemove', this.dragMove);
           window.addEventListener('mouseup', this.dragUp);
         } else if(type === 'touch') {
-          window.addEventListener('touchmove', this.dragMove);
-          window.addEventListener('touchend', this.dragUp);
+          
+          if(is_selected) {
+            window.addEventListener('touchmove', this.dragMove);
+            window.addEventListener('touchend', this.dragUp);
+          }
         }
       }
     },
@@ -276,16 +309,16 @@ export default {
         const deltaY = (pageY_mm - this.dragOffset.y);
         let newY = this.mediaPos.py + deltaY;
         this.mediaPos.y = this.limitMediaYPos(newY);        
+
+        this.mediaPos.x = this.roundMediaVal(this.mediaPos.x - this.page.margin_left) + this.page.margin_left;
+        this.mediaPos.y = this.roundMediaVal(this.mediaPos.y - this.page.margin_top) + this.page.margin_top;
       }
     },
     dragUp(event) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: dragUp with is_dragged = ${this.is_dragged}`);
       }
-      if (this.is_dragged) {
-        this.mediaPos.x = this.roundMediaVal(this.mediaPos.x - this.page.margin_left) + this.page.margin_left;
-        this.mediaPos.y = this.roundMediaVal(this.mediaPos.y - this.page.margin_top) + this.page.margin_top;
-        
+      if (this.is_dragged) {        
         this.updateMediaPubliMeta({ 
           x: this.mediaPos.x,
           y: this.mediaPos.y 

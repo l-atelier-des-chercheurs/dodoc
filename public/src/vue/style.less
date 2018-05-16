@@ -1327,7 +1327,6 @@ body {
 
 .m_mediaPublication {
   position: absolute;
-  cursor: -webkit-grab;
 
   -moz-user-select: none;
   user-select: none;
@@ -1337,8 +1336,12 @@ body {
 
   transition: all .4s ease-out;
 
+  &.is--hovered {
+    z-index: 2;
+  }
+
   &.is--dragged {
-    transition: none;
+    // transition: none;
   }
   &.is--resized {
     transition: none;
@@ -1376,9 +1379,9 @@ body {
     }
   }
 
-  .resizeFrame {
-    @t-borderSize: 2px;
-    @t-handleSize: 28px;
+  .controlFrame {
+    @t-borderSize: 4px;
+    @t-handleSize: 48px;
 
     position: absolute;
     top: -@t-borderSize/2;
@@ -1420,12 +1423,20 @@ body {
       cursor: nwse-resize;
       pointer-events: auto;
     }
-    .handle_bottomright {
+    .handle_resizeMedia {
       bottom: -@t-handleSize/2;
       right: -@t-handleSize/2;
       cursor: nwse-resize;
       background-color: white;
     }  
+    .handle_moveMedia {
+      top: -@t-handleSize/2;
+      left: -@t-handleSize/2;
+      cursor: pointer;
+      cursor: -webkit-grab;
+      cursor: drag;
+      background-color: white;
+    }
   }
 
   .m_mediaPublication--caption {
@@ -1576,7 +1587,7 @@ body {
   .m_activitiesPanel--do,
   .m_publicationMeta,
   .m_publicationFooter,
-  .resizeFrame,
+  .controlFrame,
   .publiButton,
   .m_mediaPublication--buttons,
   .m_publicationview--pages--page--margins_rule,
