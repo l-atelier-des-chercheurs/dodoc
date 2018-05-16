@@ -50,6 +50,7 @@ module.exports = (function() {
       width: 'Largeur',
       height: 'Hauteur',
       zoom: 'Zoom',
+      settings: 'Règlages',
       print: 'Imprimer',
       create: 'Créer',
       remove: 'Supprimer',
@@ -221,6 +222,7 @@ module.exports = (function() {
       width: 'Width',
       height: 'Height',
       zoom: 'Zoom',
+      settings: 'Settings',
 
       'lang:': 'Select lang:',
       lang: 'Select lang',

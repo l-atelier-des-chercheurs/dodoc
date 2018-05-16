@@ -6,74 +6,85 @@
   >
     <div class="m_publicationMeta">
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('name') }}</label>
-        <input class="input-large input-big" type="text" v-model="new_publiname" @change="updatePublicationOption('name')" required :readonly="read_only">
+      <div class="m_publicationMeta--topbar">
+        <button type="button" class="" @click="closePublication()">
+          ←
+        </button>
+
+        <div class="m_publicationMeta--topbar--title">
+          {{ this.publication.name }}
+        </div>
+
+        <div class="margin-small">
+          <label>{{ $t('settings') }}</label>
+          <input type="checkbox" v-model="advanced_options" />
+        </div>
+
+
+        <div class="">
+          <label>{{ $t('preview') }}</label>
+          <input id="preview" type="checkbox" v-model="preview_mode">
+        </div>
       </div>
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('preview') }}</label>
-        <input id="preview" type="checkbox" v-model="preview_mode">
-      </div>
 
-      <hr>
+      <template v-if="advanced_options">
+        <hr>
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('header_left') }}</label>
-        <input class="input-large" type="text" v-model="new_header_left" @change="updatePublicationOption('header_left')" :readonly="read_only">
-      </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('name') }}</label>
+          <input class="input-large input-big" type="text" v-model="new_publiname" @change="updatePublicationOption('name')" required :readonly="read_only">
+        </div>
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('header_right') }}</label>
-        <input class="input-large" type="text" v-model="new_header_right" @change="updatePublicationOption('header_right')" :readonly="read_only">
-      </div>
+        <hr>
 
-      <hr>
+        <div class="margin-bottom-small">
+          <label>{{ $t('header_left') }}</label>
+          <input class="input-large" type="text" v-model="new_header_left" @change="updatePublicationOption('header_left')" :readonly="read_only">
+        </div>
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('width') }}(mm)</label>
-        <input type="number" min="1" max="1000" step="1" v-model="new_width" @input="updatePublicationOption('width')">
-      </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('header_right') }}</label>
+          <input class="input-large" type="text" v-model="new_header_right" @change="updatePublicationOption('header_right')" :readonly="read_only">
+        </div>
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('height') }}(mm)</label>
-        <input type="number" min="1" max="1000" step="1" v-model="new_height" @input="updatePublicationOption('height')">
-      </div>
+        <hr>
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('gridstep') }}(mm)</label>
-        <input type="number" min="2" max="100" step="1" v-model="new_gridstep" @input="updatePublicationOption('gridstep')">
-      </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('width') }}(mm)</label>
+          <input type="number" min="1" max="1000" step="1" v-model="new_width" @input="updatePublicationOption('width')">
+        </div>
 
-      <hr>
+        <div class="margin-bottom-small">
+          <label>{{ $t('height') }}(mm)</label>
+          <input type="number" min="1" max="1000" step="1" v-model="new_height" @input="updatePublicationOption('height')">
+        </div>
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('margin_top') }}(mm)</label>
-        <input type="number" min="0" max="100" step="1" v-model="new_margin_top" @input="updatePublicationOption('margin_top')">
-      </div>
-      <div class="margin-bottom-small">
-        <label>{{ $t('margin_bottom') }}(mm)</label>
-        <input type="number" min="0" max="100" step="1" v-model="new_margin_bottom" @input="updatePublicationOption('margin_bottom')">
-      </div>
-      <div class="margin-bottom-small">
-        <label>{{ $t('margin_left') }}(mm)</label>
-        <input type="number" min="0" max="100" step="1" v-model="new_margin_left" @input="updatePublicationOption('margin_left')">
-      </div>
-      <div class="margin-bottom-small">
-        <label>{{ $t('margin_right') }}(mm)</label>
-        <input type="number" min="0" max="100" step="1" v-model="new_margin_right" @input="updatePublicationOption('margin_right')">
-      </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('gridstep') }}(mm)</label>
+          <input type="number" min="2" max="100" step="1" v-model="new_gridstep" @input="updatePublicationOption('gridstep')">
+        </div>
 
-      <hr>
+        <hr>
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('zoom') }}</label>
-        {{ zoom }}
-      </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('margin_top') }}(mm)</label>
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_top" @input="updatePublicationOption('margin_top')">
+        </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('margin_bottom') }}(mm)</label>
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_bottom" @input="updatePublicationOption('margin_bottom')">
+        </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('margin_left') }}(mm)</label>
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_left" @input="updatePublicationOption('margin_left')">
+        </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('margin_right') }}(mm)</label>
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_right" @input="updatePublicationOption('margin_right')">
+        </div>
+      </template>
 
-      <button type="button" class="buttonLink" @click="closePublication()">
-        Fermer
-      </button>
     </div>
 
     <div class="m_publicationview--pages" ref="pages">
@@ -99,10 +110,12 @@
 
         <div class="m_publicationview--pages--page--header">
           <div>
-            {{ page.header_left }}
+            N°2 — COBONNE (AVEC MICKAËL ET LISE)
+            <!-- {{ page.header_left }} -->
           </div>
           <div>
-            {{ page.header_right }}
+            SAMEDI 19 MAI 2018
+            <!-- {{ page.header_right }} -->
           </div>
         </div>        
 
@@ -166,6 +179,8 @@ export default {
         }
       },
 
+      advanced_options: false,
+
       new_publiname: this.publication.name,
 
       new_width: 0,
@@ -201,7 +216,6 @@ export default {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
     this.$eventHub.$off('publication.listSpecificMedias', this.updateMediasPubli);
     document.removeEventListener('keyup', this.publicationKeyListener);
-    window.removeEventListener('mouseup', this.mouseup);
   },
 
   watch: {

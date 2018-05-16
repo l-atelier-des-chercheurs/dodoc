@@ -2,8 +2,8 @@
   <div 
     class="m_mediaPublication"
     :style="mediaStyles"
-    @mouseover="is_hovered = true"
-    @mouseleave="is_hovered = false"
+    @mouseover="mouseOver"
+    @mouseleave="mouseLeave"
     @mousedown.prevent.stop="is_selected = true"
     :class="{ 
       'is--dragged' : is_dragged, 
@@ -23,7 +23,7 @@
     <p class="m_mediaPublication--caption">{{ media.caption }}</p>
 
     <div 
-      v-if="is_selected" 
+      v-if="is_selected || is_hovered" 
       class="controlFrame"
       @mousedown.stop.prevent="dragMedia('mouse')"
       @touchstart.stop.prevent="dragMedia('touch')"   
@@ -50,7 +50,7 @@
     </div>
 
     <div 
-      v-if="is_selected" 
+      v-if="is_selected || is_hovered" 
       class="m_mediaPublication--buttons"
     >
       <button 
@@ -328,13 +328,8 @@ export default {
           y: this.mediaPos.y 
         });
         this.is_dragged = false;
-
-        event.stopPropagation();
-        return false;
-
       }
 
-      event.stopPropagation();
       window.removeEventListener('mousemove', this.dragMove);
       window.removeEventListener('mouseup', this.dragUp);
       window.removeEventListener('touchmove', this.dragMove);
@@ -348,6 +343,16 @@ export default {
       }      
       this.is_selected = false;
       this.$emit('unselected');
+    },
+    mouseOver() {
+      if(!Modernizr.touchevents) {
+        this.is_hovered = true;
+      }      
+    },
+    mouseLeave() {
+      if(!Modernizr.touchevents) {
+        this.is_hovered = false;
+      }
     }
   }
 }

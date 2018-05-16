@@ -257,7 +257,7 @@ body {
         }
 
         &:not(:first-child)::before {
-          content: '•';
+          content: '/';
           font-weight: 200;
         }
 
@@ -704,6 +704,8 @@ body {
 }
 
 .m_actionbar {
+  .margin-top-small;
+  .padding-bottom-small;
   .margin-bottom-small;
   .margin-sides-medium;
   border-bottom: 4px solid @c-gris_tresclair;
@@ -713,7 +715,7 @@ body {
 
   > .barButton {
     margin: 0;
-    .margin-small;
+    .margin-verysmall;
     margin-left: 0;
     min-height: 0;
 
@@ -1194,6 +1196,25 @@ body {
   > .buttonLink {
     flex: 0 0 0;
   }
+
+  .m_publicationMeta--topbar {
+    margin: 0;
+    display: flex;
+    flex-flow: row nowrap;
+    align-content: flex-start;
+    align-items: center;
+
+    > * {
+      .margin-small;
+    }
+
+    .m_publicationMeta--topbar--title {
+      .font-publi_title;
+    }
+
+
+
+  }
 }
 
 
@@ -1298,15 +1319,14 @@ body {
       // Configuration
       --gridstep: 10mm;
 
-      --gridstep_before:~"calc(var(--gridstep) - 2px)";
-      --gridstep_after: var(--gridstep);
+      --gridstep_before:~"calc(var(--gridstep) - 1mm)";
 
       @c-gridColor: @c-gris_tresclair;
       @s-gridOpacity: 1;
 
       background-image: 
-        repeating-linear-gradient(to right, transparent, transparent var(--gridstep_before), @c-gridColor var(--gridstep_before), @c-gridColor var(--gridstep_after)), 
-        repeating-linear-gradient(to bottom, transparent, transparent var(--gridstep_before), @c-gridColor var(--gridstep_before), @c-gridColor var(--gridstep_after));
+        repeating-linear-gradient(to right, transparent, transparent var(--gridstep_before), @c-gridColor var(--gridstep_before), @c-gridColor var(--gridstep)), 
+        repeating-linear-gradient(to bottom, transparent, transparent var(--gridstep_before), @c-gridColor var(--gridstep_before), @c-gridColor var(--gridstep));
       background-position: 50% 100%;
       background-repeat: no-repeat;
 
