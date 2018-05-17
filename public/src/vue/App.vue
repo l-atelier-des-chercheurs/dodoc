@@ -64,19 +64,19 @@
       </div>
     </div>
 
-        <button
-          class="publiButton"
-          :class="{ 'is--open' : $root.settings.show_publi_panel }"
-          @click="$root.togglePubliPanel"
-          :key="'openPubli'"
-        >
-          <!-- v-if="$root.settings.view !== 'CaptureView'" -->
-          <img src="/images/i_publi.svg" width="48" height="48" />
-          <span class="margin-small">
-            {{ $t('publication') }}
-          </span>
-        </button>
-    
+    <button
+      class="publiButton"
+      :class="{ 'is--open' : $root.settings.show_publi_panel }"
+      @click="$root.togglePubliPanel"
+      :key="'openPubli'"
+    >
+      <!-- v-if="$root.settings.view !== 'CaptureView'" -->
+      <img src="/images/i_publi.svg" width="48" height="48" />
+      <span class="margin-small">
+        {{ $t('publication') }}
+      </span>
+    </button>
+
     <EditMedia
       v-if="$root.settings.showMediaModalFor !== false"
       :slugMediaName="$root.settings.showMediaModalFor.slugMediaName"
