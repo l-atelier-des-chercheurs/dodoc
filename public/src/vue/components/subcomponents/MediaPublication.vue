@@ -56,7 +56,7 @@
       <button 
         type="button" 
         class="buttonLink" 
-        @mousedown.prevent.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.slugMediaName })"
+        @click.prevent.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.slugMediaName })"
         @touchstart.prevent.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.slugMediaName })"
       >
         {{ $t('edit') }}
@@ -64,7 +64,7 @@
       <button 
         type="button" 
         class="buttonLink" 
-        @mousedown.prevent.stop="removeMedia()"
+        @click.prevent.stop="removeMedia()"
         @touchstart.prevent.stop="removeMedia()"
       >
         {{ $t('remove') }}
