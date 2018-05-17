@@ -207,14 +207,14 @@ Vue.prototype.$socketio = new Vue({
       let slugMediaName = Object.keys(mdata[slugProjectName].medias)[0];
       mediaData.slugMediaName = slugMediaName;
 
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .log(
-          this.$t('notifications["created_edited_media:"]') +
-            ' ' +
-            window.store.projects[slugProjectName].name
-        );
+      // this.$alertify
+      //   .closeLogOnClick(true)
+      //   .delay(4000)
+      //   .log(
+      //     this.$t('notifications["created_edited_media:"]') +
+      //       ' ' +
+      //       window.store.projects[slugProjectName].name
+      //   );
 
       window.store.projects[slugProjectName].medias = Object.assign(
         {},
