@@ -15,8 +15,8 @@
         </div>
 
         <div class="margin-small">
-          <label>{{ $t('settings') }}</label>
-          <input type="checkbox" v-model="advanced_options" />
+          <label for="settings">{{ $t('settings') }}</label>
+          <input id="settings" type="checkbox" v-model="advanced_options" />
         </div>
       </div>
       <template v-if="advanced_options">
@@ -111,6 +111,7 @@
         />
 
         <div class="m_publicationview--pages--page--header">
+          PAGE {{ pageNumber }}
           <div>
             N°2 — COBONNE (AVEC MICHAËL ET LISE)
             <!-- {{ page.header_left }} -->
@@ -364,13 +365,13 @@ export default {
       }
 
       // get media
-      const m = Object.assign({}, medias_list[reference_index], val);
-      
-      // remove that media from index
-      medias_list.splice(reference_index, 1);
+      const m = Object.assign({}, medias_list[reference_index], val);      
+      // // remove that media from index
+      // medias_list.splice(reference_index, 1);
+      // // and add it to the end of the array
+      // medias_list.push(m);
 
-      // and add it to the end of the array
-      medias_list.push(m);
+      medias_list[reference_index] = m;
 
       this.$root.editFolder({ 
         type: 'publications', 
