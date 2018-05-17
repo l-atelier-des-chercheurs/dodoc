@@ -53,19 +53,6 @@ module.exports = function(app, io, m) {
       });
       tasks.push(getPresentation);
 
-      // let getAuthors = new Promise((resolve, reject) => {
-      //   file
-      //     .getAuthors()
-      //     .then(authorsList => {
-      //       pageData.authorsList = authorsList;
-      //       resolve();
-      //     })
-      //     .catch(err => {
-      //       resolve();
-      //     });
-      // });
-      // tasks.push(getAuthors);
-
       let getLocalIP = new Promise((resolve, reject) => {
         api.getLocalIP().then(
           localNetworkInfos => {
