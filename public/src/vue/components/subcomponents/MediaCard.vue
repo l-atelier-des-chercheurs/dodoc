@@ -22,14 +22,13 @@
             v-if="$root.settings.current_slugPubliName" 
             class="buttonLink margin-bottom-small"
             @click.stop="addToCurrentPubli()"
-            @touchstart.stop="addToCurrentPubli()"
           >
             {{ $t('add_to_publication') }}
           </button>
         </div>          
 
         <figcaption
-          v-if="is_hovered"
+          v-if="is_hovered && false"
         >        
           <div class="m_metaField" v-if="!!media.type">
             <div>
@@ -37,7 +36,6 @@
             </div>
             <div>
               {{ media.type }}
-              <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
             </div>
           </div>
           <div class="m_metaField" v-if="!!media.authors">
