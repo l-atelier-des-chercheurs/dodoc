@@ -124,7 +124,7 @@
         
         <button type="button"
           class="buttonLink"
-          @click="removeMedia()"
+          @click.prevent="removeMedia()"
           :disabled="read_only"
           >
           {{ $t('remove') }}
@@ -219,7 +219,6 @@ export default {
         slugMediaName: this.slugMediaName,
         data: this.mediadata
       });
-
       // then close that popover
       this.$emit('close', '');
     }
