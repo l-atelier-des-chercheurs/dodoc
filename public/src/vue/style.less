@@ -175,7 +175,8 @@ body {
         // background-color: @c-gris_fonce;
         .bg-bleuvert;
         .bg-creme;
-        .c-bleuvert;
+        // .c-bleuvert;
+        .bg-noir;
         border-radius: 0 6px 6px 0;
 
         width: 86px;
@@ -1368,8 +1369,8 @@ body {
   -moz-user-select: none;
   user-select: none;
 
-  min-width: 80px;
-  min-height: 80px;
+  min-width: 20mm;
+  min-height: 20mm;
   cursor: pointer;
 
   transition: all .2s ease-out;
@@ -1392,7 +1393,6 @@ body {
     overflow: hidden;
     height: 100%;
     width: 100%;
-    // .bg-blanc;
 
     p {
       width: 100%;   
@@ -1419,7 +1419,7 @@ body {
 
   .controlFrame {
     @t-borderSize: 3px;
-    @t-handleSize: 48px;
+    @t-handleSize: 60px;
 
     position: absolute;
     top: -@t-borderSize/2;
@@ -1438,6 +1438,9 @@ body {
     -o-user-drag: none;
     user-drag: none;
 
+    cursor: -webkit-grab;
+    cursor: drag;
+  
     .is--hovered& {
       color: @c-rouge;
     }
@@ -1453,10 +1456,6 @@ body {
       z-index: 1;
       width: @t-handleSize;
       height: @t-handleSize;
-
-      border: @t-borderSize dashed currentColor;
-      border-radius: 50%;
-      cursor: nwse-resize;
       pointer-events: auto;
       
       display: flex;
@@ -1466,23 +1465,21 @@ body {
       svg {
         width: 20px;
         height: 20px;
+        width: 40px;
+        height: 40px;
+        padding: 8px;
+        border: @t-borderSize dashed currentColor;
+        background-color: white;
+        border-radius: 50%;
+        overflow: visible;
       }
     }
     .handle_resizeMedia {
       bottom: -@t-handleSize/2;
       right: -@t-handleSize/2;
       cursor: nwse-resize;
-      background-color: white;
     }  
-    .handle_moveMedia {
-      top: -@t-handleSize/2;
-      left: -@t-handleSize/2;
-      cursor: pointer;
-      cursor: -webkit-grab;
-      cursor: drag;
-      background-color: white;
-    }
-  }
+}
 
   .m_mediaPublication--caption {
     font-family: 'Fira Mono';
@@ -1498,6 +1495,7 @@ body {
     width: 100%;
     z-index: 2;
     overflow: hidden;
+    pointer-events: none;
 
     display: flex;
     justify-content: flex-end;
@@ -1506,6 +1504,7 @@ body {
     > * {
       color: inherit;
       .bg-blanc;
+      pointer-events: auto;
     }
   }
 
