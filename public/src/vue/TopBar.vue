@@ -2,11 +2,11 @@
   <div class="m_topbar">
     <div class="m_topbar--left" >
       <div class="m_topbar--left--logo" >
-        <!-- <transition name="fade">
+        <transition name="CaptureView">
           <button class="backButton" type="button" v-if="has_back_button" @click="goBack()">
-            ‹ accueil
+            ‹ retour
           </button>
-        </transition> -->
+        </transition>
         <img src="/images/i_logo.svg" @click="goHome()" />
       </div>
 
