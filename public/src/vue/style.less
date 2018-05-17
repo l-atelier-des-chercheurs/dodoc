@@ -792,6 +792,30 @@ body {
   min-width: 180px;
   padding: 0 @t-skipline/2;
 
+  transition: opacity .4s;
+
+  &.is--inPubli {
+    animation-duration: 0.6s;
+    animation-name: nudgeright;    
+    animation-timing-function: ease-out;  
+
+    @keyframes nudgeright {
+      0% {
+        left: 0px;
+      }
+      40% {
+        left: 20px;
+      }
+      100% {
+        left: 0px;
+      }
+    }    
+
+    .buttonLink {
+      color: @c-gris !important;
+    }
+  }
+
   > * {
     // height: 0;
     // padding-bottom: 100%; 
@@ -1437,7 +1461,7 @@ body {
     bottom: -@t-borderSize/2;
     z-index: 1;
 
-    color: @c-noir;
+    color: #000;
     border: @t-borderSize dashed currentColor;
     transition: border .2s;
   
@@ -1487,6 +1511,11 @@ body {
       bottom: -@t-handleSize/2;
       right: -@t-handleSize/2;
       cursor: nwse-resize;
+
+      transition: transform .2s;
+      &:hover {
+        transform: scale(1.2); 
+      }      
     }  
 }
 

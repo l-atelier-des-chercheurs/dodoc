@@ -129,7 +129,7 @@
 
         <MediaPublication
           v-for="(media, index) in publication_medias[(pageNumber+1) + '']" 
-          :key="media.slugMediaName"
+          :key="media.slugMediaName + '-' + index"
           :page="page"
           :media="media"
           :preview_mode="preview_mode"
@@ -219,6 +219,7 @@ export default {
     this.updateMediasPubli();  
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty('mmMeasurer') ? this.$refs.mmMeasurer.offsetWidth / 10 : 38;
     this.updatePubliOptionsInFields();
+    this.$eventHub.$emit('publication_medias_updated');      
   },
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
@@ -232,6 +233,7 @@ export default {
         console.log(`WATCH • Publication: publication.medias_list`);
       }
       this.updateMediasPubli();
+      this.$eventHub.$emit('publication_medias_updated');      
     },
     'publications_options': {
       handler() {
