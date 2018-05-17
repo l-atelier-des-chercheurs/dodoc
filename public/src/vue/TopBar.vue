@@ -4,7 +4,7 @@
       <div class="m_topbar--left--logo" >
         <transition name="CaptureView">
           <button class="backButton" type="button" v-if="has_back_button" @click="goBack()">
-            ‹ retour
+            ‹ {{ $t('back') }}
           </button>
         </transition>
         <img src="/images/i_logo.svg" @click="goHome()" />

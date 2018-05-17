@@ -24,6 +24,7 @@ module.exports = (function() {
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',
       cancel: 'Annuler',
+      back: 'Retour',
       sureToRemoveAuthor: 'Êtes-vous sûr de vouloir supprimer cet auteur ?',
       sureToCloseModal: 'Êtes-vous sûr de vouloir fermer cette fenêtre ?',
 
@@ -181,6 +182,7 @@ module.exports = (function() {
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',
       cancel: 'Cancel',
+      back: 'Back',
       sureToRemoveAuthor: 'Do you really want to delete this author?',
       sureToCloseModal: 'Do you really want to close this window?',
       showing: 'Showing',
