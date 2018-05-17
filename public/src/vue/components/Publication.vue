@@ -111,7 +111,6 @@
         />
 
         <div class="m_publicationview--pages--page--header">
-          PAGE {{ pageNumber }}
           <div>
             N°2 — COBONNE (AVEC MICHAËL ET LISE)
             <!-- {{ page.header_left }} -->
@@ -121,6 +120,12 @@
             <!-- {{ page.header_right }} -->
           </div>
         </div>        
+        <div v-if="pageNumber !== 0"
+          class="m_publicationview--pages--page--pageNumber"
+          :class="{ 'toRight' : pageNumber%2 === 0 }"
+        >
+          {{ pageNumber }}
+        </div>
 
         <MediaPublication
           v-for="(media, index) in publication_medias[(pageNumber+1) + '']" 
