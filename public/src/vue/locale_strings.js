@@ -42,7 +42,8 @@ module.exports = (function() {
       select_portrait_image: 'Sélectionnez une image de portrait',
       add_to_publication: 'Ajouter à la publication',
       add_a_page: 'Ajouter une page',
-      remove_this_page: 'Supprimer cette page',
+      insert_a_page_here: 'Insérer une page ici',
+      remove_this_page: '↑ Supprimer cette page ↑',
 
       loading: 'chargement',
       open: 'Ouvrir',
@@ -201,7 +202,8 @@ module.exports = (function() {
       select_portrait_image: 'Select a portrait',
       add_to_publication: 'Add to publication',
       add_a_page: 'Add a page',
-      remove_this_page: 'Remove this page',
+      insert_a_page_here: 'Insert a page here',
+      remove_this_page: '↑ Remove this page ↑',
 
       loading: 'loading',
       open: 'Open',

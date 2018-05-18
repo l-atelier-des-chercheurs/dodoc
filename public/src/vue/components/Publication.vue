@@ -92,64 +92,73 @@
     <div class="m_publicationview--pages" ref="pages">
       <div 
         v-for="(page, pageNumber) in pagesWithDefault" 
-        class="m_publicationview--pages--page"
-        :class="{ 'is--active' : pageNumber === page_currently_active-1 }"
         :key="pageNumber"
-        :style="setPageProperties(page)"
       > 
-        <div 
-          v-if="!preview_mode"
-          v-for="(item, index) in [0,1,2,3]"
-          class="m_publicationview--pages--page--margins_rule"
-          :style="`--margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
-          :key="index"
-        />
-        <div 
-          v-if="!preview_mode"
-          class="m_publicationview--pages--page--grid"
-          :style="`--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
-        />
+        <div
+          class="m_publicationview--pages--page"
+          :class="{ 'is--active' : pageNumber === page_currently_active-1 }"
+          :style="setPageProperties(page)"
+        >        
+          <div 
+            v-if="!preview_mode"
+            v-for="(item, index) in [0,1,2,3]"
+            class="m_publicationview--pages--page--margins_rule"
+            :style="`--margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
+            :key="index"
+          />
+          <div 
+            v-if="!preview_mode"
+            class="m_publicationview--pages--page--grid"
+            :style="`--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
+          />
 
-        <div class="m_publicationview--pages--page--header">
-          <div>
-            N°2 — COBONNE (AVEC MICHAËL ET LISE)
-            <!-- {{ page.header_left }} -->
+          <div class="m_publicationview--pages--page--header">
+            <div>
+              N°2 — COBONNE (AVEC MICHAËL ET LISE)
+              <!-- {{ page.header_left }} -->
+            </div>
+            <div>
+              SAMEDI 19 MAI 2018
+              <!-- {{ page.header_right }} -->
+            </div>
+          </div>        
+          <div v-if="pageNumber !== 0"
+            class="m_publicationview--pages--page--pageNumber"
+            :class="{ 'toRight' : pageNumber%2 === 0 }"
+          >
+            {{ pageNumber }}
           </div>
-          <div>
-            SAMEDI 19 MAI 2018
-            <!-- {{ page.header_right }} -->
-          </div>
-        </div>        
-        <div v-if="pageNumber !== 0"
-          class="m_publicationview--pages--page--pageNumber"
-          :class="{ 'toRight' : pageNumber%2 === 0 }"
-        >
-          {{ pageNumber }}
+
+          <MediaPublication
+            v-for="(media, index) in publication_medias[(pageNumber+1) + '']" 
+            :key="media.slugMediaName + '-' + index"
+            :page="page"
+            :media="media"
+            :preview_mode="preview_mode"
+            :read_only="read_only"
+            :pixelsPerMillimeters="pixelsPerMillimeters"
+            @removeMedia="values => { removeMedia(values) }"
+            @editPubliMedia="values => { editPubliMedia(values) }"
+            @selected="newSelection"
+            @unselected="noSelection"
+          />
         </div>
 
-        <MediaPublication
-          v-for="(media, index) in publication_medias[(pageNumber+1) + '']" 
-          :key="media.slugMediaName + '-' + index"
-          :page="page"
-          :media="media"
-          :preview_mode="preview_mode"
-          :read_only="read_only"
-          :pixelsPerMillimeters="pixelsPerMillimeters"
-          @removeMedia="values => { removeMedia(values) }"
-          @editPubliMedia="values => { editPubliMedia(values) }"
-          @selected="newSelection"
-          @unselected="noSelection"
-        />
+        <div class="m_publicationFooter">
+          <button type="button" class="buttonLink" @click="insertPageAfterIndex(pageNumber)">
+            {{ $t('insert_a_page_here') }}
+          </button>
+          <button type="button" class="buttonLink" @click="removePageAtIndex(pageNumber)">
+            {{ $t('remove_this_page') }}
+          </button>
+        </div>
+
       </div>
+    
+
     </div>
 
     <div class="m_publicationFooter">
-      <button type="button" class="buttonLink" @click="addPage()">
-        {{ $t('add_a_page') }}
-      </button>
-      <button type="button" class="buttonLink" @click="removeLastPage()">
-        {{ $t('remove_this_page') }}
-      </button>
       <div 
         ref="mmMeasurer" 
         style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%;"
@@ -451,39 +460,69 @@ export default {
 
       this.publication_medias = medias_paginated;        
     },
-    addPage() {
+    insertPageAfterIndex(index) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: addPage`);
+        console.log(`METHODS • Publication: insertPageAfterIndex ${index}`);
       }
 
+      // insert page in page array
       let pages = [];
       if(this.publication.hasOwnProperty('pages') && this.publication.pages.length > 0) {
         pages = this.publication.pages.slice();
       }
-      pages.push({});      
+      pages.splice(index, 0, {});
+
+      let medias_list = [];
+      if(this.publication.hasOwnProperty('medias_list')) {
+        medias_list = this.publication.medias_list.slice();
+      }
+
+      // loop over all medias, if index > media.page - 1
+      medias_list = medias_list.map((m) => {
+        if(m.hasOwnProperty('page') && Number.parseInt(m.page) - 1 > index) {
+          m.page = Number.parseInt(m.page) + 1;
+        }
+        return m;
+      });
 
       this.$root.editFolder({ 
         type: 'publications', 
         slugFolderName: this.slugPubliName, 
-        data: { pages } 
+        data: { 
+          pages, 
+          medias_list 
+        } 
       });
     },
-    removeLastPage() {
+    removePageAtIndex(index) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: removeLastPage`);
+        console.log(`METHODS • Publication: removePageAtIndex`);
       }
-
       let pages = [];
       if(this.publication.hasOwnProperty('pages')) {
         pages = this.publication.pages.slice();
       }
-      pages.pop();      
+      pages.splice(index, 1);
+
+      let medias_list = [];
+      if(this.publication.hasOwnProperty('medias_list')) {
+        medias_list = this.publication.medias_list.slice();
+      }
+
+      medias_list = medias_list.filter((m) => {
+        if(m.hasOwnProperty('page') && Number.parseInt(m.page) - 1 !== index) {
+          return true;
+        }
+      });
 
       this.$root.editFolder({ 
         type: 'publications', 
         slugFolderName: this.slugPubliName, 
-        data: { pages } 
-      });
+        data: { 
+          pages, 
+          medias_list 
+        } 
+      });      
     },
     updatePubliOptionsInFields() {
       this.new_width = this.publications_options.width;
