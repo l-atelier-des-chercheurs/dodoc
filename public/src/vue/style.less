@@ -1692,11 +1692,24 @@ body {
     height: auto;
     background-color: transparent !important;
   }
+  .m_publicationview--pages {
+    display: block !important;
+    -webkit-print-color-adjust: exact;
+    > * {
+      page-break-before: always;
+      page-break-inside: avoid;  
+    }
+  }
 
   .m_publicationview--pages--page {
     margin: 0 !important;
     transform: none !important;
     box-shadow: none;
+    page-break-before: always;    
+    page-break-after: always;
+    page-break-inside: avoid;
+    -webkit-region-break-inside: avoid;
+    
     &::before {
       display: none !important;
     } 

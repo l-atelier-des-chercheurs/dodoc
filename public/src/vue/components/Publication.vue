@@ -185,7 +185,7 @@ export default {
       publication_defaults: {
         'journal': {
           width: 210,
-          height: 297,        
+          height: 296,        
           margin_left: 10,
           margin_right: 10,
           margin_top: 20,
