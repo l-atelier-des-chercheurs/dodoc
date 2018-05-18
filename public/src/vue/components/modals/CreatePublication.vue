@@ -6,7 +6,7 @@
     :typeOfModal="'EditMeta'"
     >
     <template slot="header">
-      <span class="">{{ $t('create_a_project') }}</span>
+      <span class="">{{ $t('create_a_publication') }}</span>
     </template>
 
     <template slot="sidebar">
