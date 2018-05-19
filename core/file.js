@@ -15,8 +15,7 @@ module.exports = (function() {
 
     getFolder: ({ type, slugFolderName }) =>
       getFolder({ type, slugFolderName }),
-    createFolder: ({ type, subfolder, data }) =>
-      createFolder({ type, subfolder, data }),
+    createFolder: ({ type, data }) => createFolder({ type, data }),
     editFolder: ({ type, foldersData, newFoldersData }) =>
       editFolder({ type, foldersData, newFoldersData }),
     removeFolder: ({ type, slugFolderName }) =>
@@ -298,7 +297,7 @@ module.exports = (function() {
     });
   }
 
-  function createFolder({ type, subfolder, data }) {
+  function createFolder({ type, data }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
         `COMMON — createFolder : will create a new folder for type = ${type} with: ${JSON.stringify(
@@ -316,10 +315,7 @@ module.exports = (function() {
         reject(`Missing type ${type} in settings.json`);
       }
 
-      let baseFolderPath = settings.structure[type].path;
-      if (subfolder !== undefined && subfolder.length > 0) {
-        baseFolderPath = path.join(baseFolderPath, subfolder);
-      }
+      const baseFolderPath = settings.structure[type].path;
       const mainFolderPath = api.getFolderPath(baseFolderPath);
 
       _getFolderSlugs(mainFolderPath).then(folders => {
