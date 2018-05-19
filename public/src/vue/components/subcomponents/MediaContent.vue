@@ -19,7 +19,7 @@
         <img :src="linkToVideoThumb">
       </template>
       <template v-else>
-        <video controls :src="mediaURL" :poster="linkToVideoThumb">
+        <video controls preload="none" :src="mediaURL" :poster="linkToVideoThumb">
         </video>
       </template>
     </template>
