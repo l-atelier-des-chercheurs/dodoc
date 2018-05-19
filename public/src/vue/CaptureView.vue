@@ -586,12 +586,12 @@ export default {
           if(this.$root.settings.current_author.hasOwnProperty('name')) {
             mediaMeta.additionalMeta.authors = this.$root.settings.current_author.name;
           }
-          this.$root.createMediaFromCapture(mediaMeta);
+          this.$root.createMedia(mediaMeta);
         });
       } else 
       if(this.selected_mode === 'video') {        
         this.startRecordCameraFeed(this.recordVideoWithAudio).then(videoDataURL => {
-          this.$root.createMediaFromCapture({
+          this.$root.createMedia({
             slugProjectName: this.slugProjectName,
             type: 'video',
             rawData: videoDataURL
@@ -602,16 +602,15 @@ export default {
       if(this.selected_mode === 'audio') { 
         equalizer.clearCanvas();
         this.startRecordAudioFeed().then(audioDataURL => {
-          this.$root.createMediaFromCapture({
+          this.$root.createMedia({
             slugProjectName: this.slugProjectName,
             type: 'audio',
             rawData: audioDataURL
           });
         });
-        
       } else
       if(this.selected_mode === 'vecto') { 
-        this.$root.createMediaFromCapture({
+        this.$root.createMedia({
           slugProjectName: this.slugProjectName,
           type: 'svg',
           rawData: btoa(this.vecto.svgstr)

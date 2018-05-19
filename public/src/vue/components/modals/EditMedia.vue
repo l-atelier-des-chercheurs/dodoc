@@ -60,7 +60,7 @@
 
 <!-- Caption -->
       <div 
-        v-if="(!read_only || !!mediadata.caption) && mediadata.type !== 'marker' && mediadata.type !== 'text'"
+        v-if="(!read_only || !!mediadata.caption) && mediadata.type !== 'text'"
         class="margin-bottom-small" 
       >
         <label>{{ $t('caption') }}</label><br>

@@ -34,8 +34,7 @@ module.exports = (function() {
     removeMedia: ({ slugFolderName, slugMediaName }) =>
       removeMedia({ slugFolderName, slugMediaName }),
 
-    createTextMedia: mdata => createTextMedia(mdata),
-    createMediaFromCapture: mdata => createMediaFromCapture(mdata)
+    createMedia: mdata => createMedia(mdata)
   };
 
   function getPresentation() {
@@ -76,10 +75,10 @@ module.exports = (function() {
         readMetaFile(potentialMetaFile)
           .then(mediaData => {
             mediaData = _sanitizeMetaFromFile({
-              type: 'media',
+              type: 'medias',
               meta: mediaData
             });
-            if (mediaData.type === 'text' || mediaData.type === 'marker') {
+            if (mediaData.type === 'text') {
               // get text content
               let mediaPath = path.join(
                 api.getFolderPath(slugFolderName),
@@ -152,6 +151,7 @@ module.exports = (function() {
       if (!settings.structure.hasOwnProperty(type)) {
         reject(`Missing type ${type} in settings.json`);
       }
+
       const baseFolderPath = settings.structure[type].path;
       const mainFolderPath = api.getFolderPath(baseFolderPath);
 
@@ -784,7 +784,7 @@ module.exports = (function() {
           }
 
           let mdata = _makeDefaultMetaFromStructure({
-            type: 'media',
+            type: 'medias',
             method: 'create',
             existing: additionalMeta
           });
@@ -973,13 +973,13 @@ module.exports = (function() {
 
           // cleaning up stored meta
           meta = _makeDefaultMetaFromStructure({
-            type: 'media',
+            type: 'medias',
             method: 'create',
             existing: meta
           });
 
           let newMediaData = _makeDefaultMetaFromStructure({
-            type: 'media',
+            type: 'medias',
             method: 'update',
             existing: data
           });
@@ -1019,11 +1019,8 @@ module.exports = (function() {
           });
           tasks.push(updateMediaMeta);
 
-          if (
-            (meta.type === 'text' || meta.type === 'marker') &&
-            data.hasOwnProperty('content')
-          ) {
-            dev.logverbose(`Is text or marker and need to update content.`);
+          if (meta.type === 'text' && data.hasOwnProperty('content')) {
+            dev.logverbose(`Is text and need to update content.`);
             dev.logverbose(`New content: ${data.content}`);
             let updateTextMedia = new Promise((resolve, reject) => {
               let mediaPath = path.join(
@@ -1094,58 +1091,10 @@ module.exports = (function() {
     });
   }
 
-  function createTextMedia({ slugProjectName, type, additionalMeta }) {
+  function createMedia({ type, slugProjectName, additionalMeta, rawData }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `COMMON — createTextMedia : will create text media in: ${slugProjectName}`
-      );
-
-      let timeCreated = api.getCurrentDate();
-      let randomString = (
-        Math.random().toString(36) + '00000000000000000'
-      ).slice(2, 3 + 2);
-      let textMediaName = `${type}-${timeCreated}-${randomString}.md`;
-
-      let pathToTextMedia = path.join(
-        api.getFolderPath(slugProjectName),
-        textMediaName
-      );
-
-      api.storeData(pathToTextMedia, '', 'create').then(
-        () => {
-          let newMediaInfos = {
-            slugMediaName: textMediaName,
-            additionalMeta: {
-              fileCreationDate: api.parseDate(timeCreated),
-              type
-            }
-          };
-
-          if (additionalMeta.hasOwnProperty('color')) {
-            newMediaInfos.additionalMeta.color = additionalMeta.color;
-          }
-          if (additionalMeta.hasOwnProperty('collapsed')) {
-            newMediaInfos.additionalMeta.collapsed = additionalMeta.collapsed;
-          }
-          resolve(newMediaInfos);
-        },
-        function(err) {
-          dev.error(`Failed to storeData for textmedia: ${err}`);
-          reject(err);
-        }
-      );
-    });
-  }
-
-  function createMediaFromCapture({
-    type,
-    rawData,
-    slugProjectName,
-    additionalMeta
-  }) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction(
-        `COMMON — createMediaFromCapture with type = ${type}, 
+        `COMMON — createMedia with type = ${type}, 
         slugProjectName = ${slugProjectName} 
         and additionalMeta = ${additionalMeta}`
       );
@@ -1161,6 +1110,7 @@ module.exports = (function() {
       // - 'video' -> store the content to a file with storeMediaToDisk
       // - 'stopmotion' -> assemble all images to a video
       // - 'audio' -> store content with storeMediaToDisk
+      // - 'text' -> store content with storeData
 
       let tasks = [];
 
@@ -1234,6 +1184,21 @@ module.exports = (function() {
             fs.writeFile(pathToMedia, fileBuffer, function(err) {
               if (err) reject(err);
               resolve();
+            });
+          })
+        );
+      } else if (type === 'text') {
+        tasks.push(
+          new Promise((resolve, reject) => {
+            mediaName += '.md';
+            let pathToMedia = path.join(
+              api.getFolderPath(slugProjectName),
+              mediaName
+            );
+
+            api.storeData(pathToMedia, rawData, 'create').then(function(err) {
+              dev.error(`Failed to storeData for textmedia: ${err}`);
+              reject(err);
             });
           })
         );

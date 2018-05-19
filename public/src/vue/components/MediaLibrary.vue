@@ -189,7 +189,7 @@ export default {
       if(this.$root.settings.current_author !== false) {
         mediaMeta.additionalMeta.authors = this.$root.settings.current_author.name;
       }
-      this.$root.createTextMedia(mediaMeta);      
+      this.$root.createMedia(mediaMeta);      
     }
   }
 }

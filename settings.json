@@ -140,7 +140,8 @@
         }
       }
     },
-    "media": {
+    "medias": {
+      "children_of": "projects",
       "fields": {
         "date_created": {
           "type": "date",
@@ -159,7 +160,7 @@
         },
         "type": {
           "type": "string",
-          "options": ["image", "video", "audio", "text", "marker", "other"],
+          "options": ["image", "video", "audio", "text", "other"],
           "default": "other"
         },
         "fav": {
@@ -183,8 +184,8 @@
         }  
       }
     },
-    "publication_media": {
-      "path": "_publications",
+    "publication_medias": {
+      "children_of": "projects",
       "fields": {
         "name": {
           "type": "string"

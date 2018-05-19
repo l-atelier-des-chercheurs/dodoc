@@ -57,11 +57,8 @@ module.exports = (function() {
       socket.on('listMedias', function(data) {
         onListMedias(socket, data);
       });
-      socket.on('createTextMedia', function(data) {
-        onCreateTextMedia(socket, data);
-      });
-      socket.on('createMediaFromCapture', function(data) {
-        onCreateMediaFromCapture(socket, data);
+      socket.on('createMedia', function(data) {
+        onCreateMedia(socket, data);
       });
       socket.on('editMedia', function(data) {
         onEditMedia(socket, data);
@@ -109,9 +106,9 @@ module.exports = (function() {
     sendFolders({ type, socket });
   }
 
-  function onCreateFolder(socket, { type, data, subfolder, id }) {
+  function onCreateFolder(socket, { type, data, id }) {
     dev.logfunction(`EVENT - onCreateFolder for ${data.name}`);
-    file.createFolder({ type, subfolder, data }).then(
+    file.createFolder({ type, data }).then(
       slugFolderName => {
         sendFolders({ type, slugFolderName, id });
       },
@@ -189,55 +186,17 @@ module.exports = (function() {
     sendMedias({ slugFolderName, socket });
   }
 
-  function onCreateTextMedia(
+  function onCreateMedia(
     socket,
-    { type, id, slugProjectName, additionalMeta }
+    { type, id, slugProjectName, additionalMeta, rawData }
   ) {
     dev.logfunction(
-      `EVENT - onCreateTextMedia : slugProjectName = ${slugProjectName}, 
-      type = ${type}, 
-      additionalMeta = ${JSON.stringify(additionalMeta, null, 4)} 
-      and id = ${id}`
-    );
-
-    file
-      .createTextMedia({ slugProjectName, type, additionalMeta })
-      .then(textMediaMeta => {
-        file
-          .createMediaMeta(
-            slugProjectName,
-            textMediaMeta.slugMediaName,
-            textMediaMeta.additionalMeta
-          )
-          .then(() => {
-            sendMedias({
-              slugFolderName: slugProjectName,
-              slugMediaName: textMediaMeta.slugMediaName,
-              id
-            });
-          })
-          .catch(err => {
-            dev.error(`Couldn’t create text media meta: ${err}`);
-            reject(err);
-          });
-      })
-      .catch(err => {
-        dev.error(`Couldn’t create text media: ${err}`);
-        reject(err);
-      });
-  }
-
-  function onCreateMediaFromCapture(
-    socket,
-    { type, id, rawData, slugProjectName, additionalMeta }
-  ) {
-    dev.logfunction(
-      `EVENT - onCreateMediaFromCapture : slugProjectName = ${slugProjectName} and type = ${type} and rawData.length = ${
+      `EVENT - onCreateMedia : slugProjectName = ${slugProjectName} and type = ${type} and rawData.length = ${
         rawData.length
       }`
     );
     file
-      .createMediaFromCapture({
+      .createMedia({
         type,
         rawData,
         slugProjectName,

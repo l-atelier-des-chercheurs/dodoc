@@ -334,11 +334,8 @@ Vue.prototype.$socketio = new Vue({
     listMedias(mdata) {
       this.socket.emit('listMedias', mdata);
     },
-    createTextMedia(mdata) {
-      this.socket.emit('createTextMedia', mdata);
-    },
-    createMediaFromCapture(mdata) {
-      this.socket.emit('createMediaFromCapture', mdata);
+    createMedia(mdata) {
+      this.socket.emit('createMedia', mdata);
     },
     editMedia(mdata) {
       this.socket.emit('editMedia', mdata);
@@ -526,27 +523,9 @@ let vm = new Vue({
       this.$socketio.removeFolder({ type, slugFolderName });
     },
 
-    createTextMedia: function(mdata) {
+    createMedia: function(mdata) {
       if (window.state.dev_mode === 'debug') {
-        console.log(
-          `ROOT EVENT: createTextMedia: ${JSON.stringify(mdata, null, 4)}`
-        );
-      }
-
-      this.justCreatedTextmediaID = mdata.id =
-        Math.random()
-          .toString(36)
-          .substring(2, 15) +
-        Math.random()
-          .toString(36)
-          .substring(2, 15);
-
-      this.$socketio.createTextMedia(mdata);
-    },
-
-    createMediaFromCapture: function(mdata) {
-      if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: createMediaFromCapture`);
+        console.log(`ROOT EVENT: createMedia`);
       }
       this.justCreatedCapturedMediaID = mdata.id =
         Math.random()
@@ -555,7 +534,7 @@ let vm = new Vue({
         Math.random()
           .toString(36)
           .substring(2, 15);
-      this.$socketio.createMediaFromCapture(mdata);
+      this.$socketio.createMedia(mdata);
     },
 
     removeMedia: function({ slugFolderName, slugMediaName }) {
@@ -642,9 +621,6 @@ let vm = new Vue({
         console.log(`ROOT EVENT: openPublication: ${slugPubliName}`);
       }
       this.settings.current_slugPubliName = slugPubliName;
-
-      // TODO : ask for a copy of media inside this publication
-      // this.$socketio.listMedias({ slugFolderName: slugProjectName });
     },
     closePublication() {
       if (window.state.dev_mode === 'debug') {
