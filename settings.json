@@ -137,6 +137,9 @@
         },
         "pages": {
           "type": "array"
+        },
+        "medias_list": {
+          "type": "array"          
         }
       }
     },

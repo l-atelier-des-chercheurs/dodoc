@@ -453,6 +453,8 @@ export default {
         }
       });
 
+      console.log(`Finished building media list. Missing medias: ${missingMedias.length}`);
+
       // send list of medias to get
       if(missingMedias.length > 0) {
         this.$root.listSpecificMedias(missingMedias);
