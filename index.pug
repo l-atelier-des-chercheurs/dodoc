@@ -38,7 +38,6 @@ html
         authorsFolder: "!{authorsFolder}",
         protocol: "!{protocol}",
         connected: false,
-        structure: !{JSON.stringify(structure, null, 4)},
         localNetworkInfos: !{JSON.stringify(localNetworkInfos, null, 4)},
         mode: "!{mode}",
         dev_mode: "!{ isDebug ? "debug" : "production" }",
@@ -47,6 +46,8 @@ html
         is_darwin: !!(window && window.process && window.process.platform === 'darwin') && !{ mode === "export" ? false : true }
       };
 
+    //-
+      structure: !{JSON.stringify(structure, null, 4)},
 
   body  
     #app

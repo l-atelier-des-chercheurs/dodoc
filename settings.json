@@ -184,66 +184,31 @@
       }
     },
     "publication_media": {
+      "path": "_publications",
       "fields": {
         "name": {
           "type": "string"
-        },
-        "password": {
-          "type": "string",
-          "read_only": true        
-        },
-        "date_created": {
-          "type": "date",
-          "default": "current",
-          "read_only": true
         },
         "date_modified": {
           "type": "date",
           "default": "current"
         },
-        "description": {
+        "page": {
           "type": "string"
         },
-        "preview": {
-          "type": "string"
+        "x": {
+          "type": "number"
         },
-        "template": {
-          "type": "string",
-          "options": ["journal"],
-          "default": "journal"          
+        "y": {
+          "type": "number"
         },
         "width": {
           "type": "number"
         },
         "height": {
           "type": "number"
-        },
-        "header_left": {
-          "type": "string"
-        },
-        "header_right": {
-          "type": "string"
-        },
-        "margin_left": {
-          "type": "number"
-        },
-        "margin_right": {
-          "type": "number"
-        },
-        "margin_top": {
-          "type": "number"
-        },
-        "margin_bottom": {
-          "type": "number"
-        },
-        "gridstep": {
-          "type": "number"
-        },
-        "pages": {
-          "type": "array"
         }
       }
-    }
-    
+    } 
   }
 }

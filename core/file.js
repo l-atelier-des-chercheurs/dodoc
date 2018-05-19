@@ -315,7 +315,11 @@ module.exports = (function() {
       if (!settings.structure.hasOwnProperty(type)) {
         reject(`Missing type ${type} in settings.json`);
       }
-      const baseFolderPath = settings.structure[type].path;
+
+      let baseFolderPath = settings.structure[type].path;
+      if (subfolder !== undefined && subfolder.length > 0) {
+        baseFolderPath = path.join(baseFolderPath, subfolder);
+      }
       const mainFolderPath = api.getFolderPath(baseFolderPath);
 
       _getFolderSlugs(mainFolderPath).then(folders => {
@@ -717,19 +721,6 @@ module.exports = (function() {
           dev.error(`Failed readMediaList with ${err}`);
           reject();
         });
-    });
-  }
-
-  function getMediasFromPubli(publiMeta) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction(
-        `COMMON — getMediasFromPubli : will gather medias for publi name = ${
-          publiMeta.name
-        } 
-        with media = ${publiMeta.medias}`
-      );
-
-      // for each items in publiMeta.medias, get the slugFolderName (part before the /) and the slugMediaName
     });
   }
 

@@ -109,9 +109,9 @@ module.exports = (function() {
     sendFolders({ type, socket });
   }
 
-  function onCreateFolder(socket, { type, data, id }) {
+  function onCreateFolder(socket, { type, data, subfolder, id }) {
     dev.logfunction(`EVENT - onCreateFolder for ${data.name}`);
-    file.createFolder({ type, data }).then(
+    file.createFolder({ type, subfolder, data }).then(
       slugFolderName => {
         sendFolders({ type, slugFolderName, id });
       },
