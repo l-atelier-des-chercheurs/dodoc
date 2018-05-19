@@ -9,11 +9,12 @@
       'is--dragged' : is_dragged, 
       'is--resized' : is_resized, 
       'is--waitingForServerResponse' : is_waitingForServer,
-      'is--hovered' : is_hovered
+      'is--hovered' : is_hovered,
+      'is--previewed' :  preview_mode
     }"
   >
     <MediaContent
-      :context="'publication'"
+      :context="preview_mode ? 'publication' : 'preview'"
       :slugMediaName="media.slugMediaName"
       :slugProjectName="media.slugProjectName"
       :media="media"
@@ -23,7 +24,7 @@
     <p class="m_mediaPublication--caption">{{ media.caption }}</p>
 
     <div 
-      v-if="is_selected || is_hovered" 
+      v-if="!preview_mode" 
       class="controlFrame"
       @mousedown.stop.prevent="dragMedia('mouse')"
       @touchstart.stop.prevent="dragMedia('touch')"   
@@ -50,7 +51,7 @@
     </div>
 
     <div 
-      v-if="is_selected || is_hovered" 
+      v-if="(is_selected || is_hovered) && !preview_mode" 
       class="m_mediaPublication--buttons"
     >
       <button 

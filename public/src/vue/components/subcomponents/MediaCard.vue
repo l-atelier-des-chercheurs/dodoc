@@ -18,6 +18,11 @@
             :slugProjectName="slugProjectName"
             :media="media"
           ></MediaContent>
+          <div class="m_metaField padding-sides-small" v-if="!!media.type">
+            <div>
+              {{ media.type }}
+            </div>
+          </div>
           <button 
             type="button" 
             v-if="$root.settings.current_slugPubliName" 
