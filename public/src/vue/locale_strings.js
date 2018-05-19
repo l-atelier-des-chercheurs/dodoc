@@ -80,9 +80,8 @@ module.exports = (function() {
       video: 'video',
       audio: 'son',
       text: 'texte',
+      other: 'autre',
 
-      credits:
-        'Un projet libre et open-source réalisé par l’<a href="https://latelier-des-chercheurs.fr" class="js--openInBrowser" target="_blank">Atelier des Chercheurs</a> avec et pour le <a href="https://www.studiotheatre.fr/" class="js--openInBrowser" target="_blank">Studio-Théâtre de Vitry-sur-Seine</a>.',
       unselect: 'Dé-sélectionner',
 
       toconnectwithanotherdevice:
@@ -244,9 +243,8 @@ module.exports = (function() {
       video: 'video',
       audio: 'audio',
       text: 'text',
+      other: 'other',
 
-      credits:
-        'A free and open-source app made by l’<a href="https://latelier-des-chercheurs.fr" class="js--openInBrowser" target="_blank">Atelier des Chercheurs</a> with and for the <a href="https://www.studiotheatre.fr/" class="js--openInBrowser" target="_blank">Studio-Théâtre de Vitry-sur-Seine</a>.',
       unselect: 'Un-select',
       toconnectwithanotherdevice:
         'To access this do•doc element with another device, first connect it to the same wifi network, then type this adress in your browser or scan this QR code:',

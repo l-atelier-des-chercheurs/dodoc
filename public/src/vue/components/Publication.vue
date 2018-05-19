@@ -325,29 +325,32 @@ export default {
     }
   },
   methods: {
-    addMedia({ slugProjectName, slugMediaName }) {
+    addMedia(slugMediaPath) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: addMedia / slugProjectName = ${slugProjectName} & slugMediaName = ${slugMediaName}`);
+        console.log(`METHODS • Publication: addMedia / slugMediaPath = ${slugMediaPath}`);
+      }
+
+      let medias_list = [];
+      if(this.publication.hasOwnProperty('medias_list') && typeof this.publication.medias_list === 'object' && this.publication.medias_list.length > 0) {
+        medias_list = this.publication.medias_list.slice();
       }
 
       const lastPageNumber = this.publication.pages.length + 1;
       let addToPage = lastPageNumber;
       if(this.page_currently_active > 0 && this.page_currently_active < lastPageNumber) {
-        // todo : retrieve page id
         addToPage = this.page_currently_active;
       }
 
-      let mediaMeta = {
-        name: slugMediaName,  
-        slugProjectName,
+      medias_list.push({
+        filename: slugMediaPath,
         page: addToPage
-      };
+      });
 
-      this.$root.createFolder({ 
-        type: 'publication_media', 
-        subfolder: this.slugPubliName,
-        data: mediaMeta
-      });      
+      this.$root.editFolder({ 
+        type: 'publications', 
+        slugFolderName: this.slugPubliName, 
+        data: { medias_list } 
+      });
     },
     removeMedia({ reference_index }) {
       if (this.$root.state.dev_mode === 'debug') {

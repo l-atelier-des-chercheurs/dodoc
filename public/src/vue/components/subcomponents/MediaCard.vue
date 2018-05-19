@@ -170,10 +170,11 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaCard: addToPubli');
       }
-      this.$eventHub.$emit('publication.addMedia', { 
-        slugProjectName: this.slugProjectName, 
-        slugMediaName: this.slugMediaName 
-      });
+      this.$eventHub.$emit('publication.addMedia', `${this.slugProjectName}/${this.slugMediaName}`);
+      // this.$eventHub.$emit('publication.addMedia', { 
+      //   slugProjectName: this.slugProjectName, 
+      //   slugMediaName: this.slugMediaName 
+      // });
     }
   }
 }
