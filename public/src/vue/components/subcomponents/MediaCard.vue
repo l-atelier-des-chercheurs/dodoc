@@ -11,6 +11,11 @@
         :class="{ 'is--hovered' : is_hovered }"
       >
         <div>
+          <div class="m_metaField padding-sides-small" v-if="!!media.type">
+            <div>
+              {{ $t(media.type) }}
+            </div>
+          </div>
           <MediaContent
             v-model="media.content"
             :context="'preview'"

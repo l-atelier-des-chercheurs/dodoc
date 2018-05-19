@@ -1253,7 +1253,7 @@ body {
 
   .m_publicationSettings {
     position: fixed;
-    bottom: 0px; right: 0px;
+    bottom: 0px; right: 20px;
     z-index: 1000;
     background-color: white;
     border: 2px solid @c-gris_clair;
@@ -1404,7 +1404,6 @@ body {
 
   min-width: 20mm;
   min-height: 20mm;
-  cursor: pointer;
 
   transition: all .2s ease-out;
 
@@ -1448,6 +1447,12 @@ body {
       height: 90px;
       width: 100%;
     }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
 
   .controlFrame {
@@ -1463,6 +1468,7 @@ body {
 
     color: #000;
     border: @t-borderSize dashed currentColor;
+    cursor: pointer;
     transition: border .2s;
   
     -webkit-user-drag: none;
