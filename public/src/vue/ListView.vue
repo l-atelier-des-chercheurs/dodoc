@@ -64,7 +64,6 @@
 import BottomFooter from './components/BottomFooter.vue';
 import Project from './components/Project.vue';
 import CreateProject from './components/modals/CreateProject.vue';
-import VueMarkdown from 'vue-markdown';
 // import FolderFilterBar from './components/FolderFilterBar.vue'
 import { setTimeout } from 'timers';
 
@@ -78,7 +77,6 @@ export default {
     CreateProject,
     Project,
     // FolderFilterBar,
-    VueMarkdown,
     BottomFooter
   },
   data() {
