@@ -135,16 +135,11 @@
         "gridstep": {
           "type": "number"
         },
-        "medias_list": {
-          "type": "array"
-        },
         "pages": {
           "type": "array"
         }
       }
     },
-
-
     "media": {
       "fields": {
         "date_created": {
@@ -187,6 +182,68 @@
           "type": "string"
         }  
       }
+    },
+    "publication_media": {
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string",
+          "read_only": true        
+        },
+        "date_created": {
+          "type": "date",
+          "default": "current",
+          "read_only": true
+        },
+        "date_modified": {
+          "type": "date",
+          "default": "current"
+        },
+        "description": {
+          "type": "string"
+        },
+        "preview": {
+          "type": "string"
+        },
+        "template": {
+          "type": "string",
+          "options": ["journal"],
+          "default": "journal"          
+        },
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        },
+        "header_left": {
+          "type": "string"
+        },
+        "header_right": {
+          "type": "string"
+        },
+        "margin_left": {
+          "type": "number"
+        },
+        "margin_right": {
+          "type": "number"
+        },
+        "margin_top": {
+          "type": "number"
+        },
+        "margin_bottom": {
+          "type": "number"
+        },
+        "gridstep": {
+          "type": "number"
+        },
+        "pages": {
+          "type": "array"
+        }
+      }
     }
+    
   }
 }

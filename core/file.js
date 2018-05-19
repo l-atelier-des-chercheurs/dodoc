@@ -15,7 +15,8 @@ module.exports = (function() {
 
     getFolder: ({ type, slugFolderName }) =>
       getFolder({ type, slugFolderName }),
-    createFolder: ({ type, data }) => createFolder({ type, data }),
+    createFolder: ({ type, subfolder, data }) =>
+      createFolder({ type, subfolder, data }),
     editFolder: ({ type, foldersData, newFoldersData }) =>
       editFolder({ type, foldersData, newFoldersData }),
     removeFolder: ({ type, slugFolderName }) =>
@@ -297,7 +298,7 @@ module.exports = (function() {
     });
   }
 
-  function createFolder({ type, data }) {
+  function createFolder({ type, subfolder, data }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
         `COMMON — createFolder : will create a new folder for type = ${type} with: ${JSON.stringify(
