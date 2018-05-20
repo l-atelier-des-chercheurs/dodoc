@@ -1043,24 +1043,25 @@ module.exports = (function() {
             dev.logverbose(`New content: ${data.content}`);
 
             let updateTextMedia = new Promise((resolve, reject) => {
-              let mediaFileName;
-
               // Legacy : if no filename in meta file when it is expected in blueprint
               // then it means its in the name of the text file
-              if (
-                settings.structure['project_medias'].fields.hasOwnProperty(
-                  'media_filename'
-                )
-              ) {
-                if (meta.hasOwnProperty('media_filename')) {
-                  mediaFileName = meta.media_filename;
-                } else {
-                  mediaFileName = new RegExp(
-                    settings.regexpRemoveFileExtension,
-                    'i'
-                  ).exec(slugMediaName)[1];
+              function getMediaFilename(meta, metaFilename) {
+                if (
+                  settings.structure['project_medias'].fields.hasOwnProperty(
+                    'media_filename'
+                  )
+                ) {
+                  if (meta.hasOwnProperty('media_filename')) {
+                    return meta.media_filename;
+                  } else {
+                    return new RegExp(
+                      settings.regexpRemoveFileExtension,
+                      'i'
+                    ).exec(metaFilename)[1];
+                  }
                 }
               }
+              let mediaFileName = getMediaFilename(meta, slugMediaName);
 
               let mediaPath = path.join(
                 api.getFolderPath(slugFolderName),
@@ -1099,35 +1100,59 @@ module.exports = (function() {
         `COMMON — removeMedia : will remove media at path: ${slugFolderName}/${slugMediaName}`
       );
 
-      let mediaPath = path.join(
-        api.getFolderPath(slugFolderName),
-        slugMediaName
-      );
-      let movedMediaPath = path.join(
-        api.getFolderPath(slugFolderName),
-        settings.deletedFolderName,
-        slugMediaName
-      );
+      readMediaMeta(slugFolderName, slugMediaName).then(meta => {
+        // Legacy : if no filename in meta file when it is expected in blueprint
+        // then it means its in the name of the text file
+        function getMediaFilename(meta, metaFilename) {
+          if (
+            settings.structure['project_medias'].fields.hasOwnProperty(
+              'media_filename'
+            )
+          ) {
+            if (meta.hasOwnProperty('media_filename')) {
+              return meta.media_filename;
+            } else {
+              return new RegExp(settings.regexpRemoveFileExtension, 'i').exec(
+                metaFilename
+              )[1];
+            }
+          }
+        }
+        let mediaFileName = getMediaFilename(meta, slugMediaName);
 
-      let mediaMetaPath = mediaPath + settings.metaFileext;
-      let movedMediaMetaPath = movedMediaPath + settings.metaFileext;
+        let pathToFolder = api.getFolderPath(slugFolderName);
 
-      fs
-        .move(mediaPath, movedMediaPath, { overwrite: true })
-        .then(() => {
-          return fs.move(mediaMetaPath, movedMediaMetaPath, {
-            overwrite: true
+        let mediaMetaPath = path.join(pathToFolder, slugMediaName);
+        let movedMediaMetaPath = path.join(
+          pathToFolder,
+          settings.deletedFolderName,
+          slugMediaName
+        );
+
+        let mediaPath = path.join(pathToFolder, mediaFileName);
+        let movedMediaPath = path.join(
+          pathToFolder,
+          settings.deletedFolderName,
+          mediaFileName
+        );
+
+        fs
+          .move(mediaPath, movedMediaPath, { overwrite: true })
+          .then(() => {
+            return fs.move(mediaMetaPath, movedMediaMetaPath, {
+              overwrite: true
+            });
+          })
+          .then(() => {
+            return thumbs.removeMediaThumbs(slugFolderName, slugMediaName);
+          })
+          .then(() => {
+            resolve();
+          })
+          .catch(err => {
+            reject(err);
           });
-        })
-        .then(() => {
-          return thumbs.removeMediaThumbs(slugFolderName, slugMediaName);
-        })
-        .then(() => {
-          resolve();
-        })
-        .catch(err => {
-          reject(err);
-        });
+      });
     });
   }
 
