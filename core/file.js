@@ -53,12 +53,6 @@ module.exports = (function() {
     });
   }
 
-  function getMetaFileOfMedia(slugFolderName, slugMediaName) {
-    let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
-    let mediaMetaPath = mediaPath + settings.metaFileext;
-    return mediaMetaPath;
-  }
-
   function readMediaMeta(slugFolderName, slugMediaName) {
     return new Promise(function(resolve, reject) {
       // pour chaque item, on regarde s’il contient un fichier méta (même nom + .txt)
@@ -760,10 +754,11 @@ module.exports = (function() {
       }
 
       const metaFilename = mediaName + settings.metaFileext;
-      let metaFilePath = path.join(
+      const metaFilePath = path.join(
         api.getFolderPath(slugFolderName),
         metaFilename
       );
+      const mediaPath = path.join(api.getFolderPath(slugFolderName), mediaName);
 
       // check that a meta with this name doesn't exist already
       fs.access(metaFilePath, fs.F_OK, function(err) {
@@ -1020,14 +1015,15 @@ module.exports = (function() {
           let tasks = [];
 
           let updateMediaMeta = new Promise((resolve, reject) => {
-            let potentialMetaFile = getMetaFileOfMedia(
-              slugFolderName,
+            let mediaMetaPath = path.join(
+              api.getFolderPath(slugFolderName),
               slugMediaName
             );
-            api.storeData(potentialMetaFile, meta, 'update').then(
+
+            api.storeData(mediaMetaPath, meta, 'update').then(
               meta => {
                 dev.logverbose(
-                  `Updated media meta file at path: ${potentialMetaFile} with meta: ${JSON.stringify(
+                  `Updated media meta file at path: ${mediaMetaPath} with meta: ${JSON.stringify(
                     meta,
                     null,
                     4
@@ -1045,11 +1041,32 @@ module.exports = (function() {
           if (meta.type === 'text' && data.hasOwnProperty('content')) {
             dev.logverbose(`Is text and need to update content.`);
             dev.logverbose(`New content: ${data.content}`);
+
             let updateTextMedia = new Promise((resolve, reject) => {
+              let mediaFileName;
+
+              // Legacy : if no filename in meta file when it is expected in blueprint
+              // then it means its in the name of the text file
+              if (
+                settings.structure['project_medias'].fields.hasOwnProperty(
+                  'media_filename'
+                )
+              ) {
+                if (meta.hasOwnProperty('media_filename')) {
+                  mediaFileName = meta.media_filename;
+                } else {
+                  mediaFileName = new RegExp(
+                    settings.regexpRemoveFileExtension,
+                    'i'
+                  ).exec(slugMediaName)[1];
+                }
+              }
+
               let mediaPath = path.join(
                 api.getFolderPath(slugFolderName),
-                slugMediaName
+                mediaFileName
               );
+
               let content = validator.escape(data.content + '');
               api
                 .storeData(mediaPath, content, 'update')
