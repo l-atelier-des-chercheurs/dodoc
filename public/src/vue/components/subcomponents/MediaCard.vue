@@ -19,7 +19,6 @@
           <MediaContent
             v-model="media.content"
             :context="'preview'"
-            :slugMediaName="slugMediaName"
             :slugProjectName="slugProjectName"
             :media="media"
           ></MediaContent>

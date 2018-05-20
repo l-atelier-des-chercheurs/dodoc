@@ -69,7 +69,6 @@
           <MediaContent
             v-if="justCapturedMediaData.hasOwnProperty('type')"
             :context="'edit'"
-            :slugMediaName="justCapturedMediaData.slugMediaName"
             :slugProjectName="slugProjectName"
             :media="justCapturedMediaData"
             :mediaURL="mediaURL"

@@ -57,7 +57,7 @@
       <div class="padding-small font-small">
         <pre>
 Fichier&nbsp;:
-{{ slugMediaName }}
+{{ media.media_filename }}
         </pre>
       </div>
     </template>
@@ -71,7 +71,6 @@ import { VueEditor } from 'vue2-editor'
 
 export default {
   props: {
-    slugMediaName: String,
     slugProjectName: String,
     media: Object,
     context: {
@@ -100,7 +99,7 @@ export default {
         default: 1600
       },
       htmlForEditor: this.value,
-      mediaURL: `/${this.slugProjectName}/${this.slugMediaName}`,
+      mediaURL: `/${this.slugProjectName}/${this.media.media_filename}`,
       customToolbar: [
         [{ 'header': [false, 1, 2, 3, 4] }],
         // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],

@@ -112,9 +112,9 @@
         </button>
 
         <a 
-          :download="slugMediaName" 
+          :download="media.media_filename" 
           :href="mediaURL" 
-          :title="slugMediaName" 
+          :title="media.media_filename" 
           target="_blank"
           class="buttonLink"
           :disabled="read_only"
@@ -140,7 +140,6 @@
     <template slot="preview">
       <MediaContent
         :context="'edit'"
-        :slugMediaName="slugMediaName"
         :slugProjectName="slugProjectName"
         :media="media"
         :read_only="read_only"
@@ -181,7 +180,7 @@ export default {
         fav: this.media.fav,
         content: this.media.content
       },
-      mediaURL: `/${this.slugProjectName}/${this.slugMediaName}`,
+      mediaURL: `/${this.slugProjectName}/${this.media.media_filename}`,
       askBeforeClosingModal: false
     };
   },
@@ -193,6 +192,8 @@ export default {
       deep: true
     }
   },  
+  mounted() {
+  },
   computed: {
   },
   methods: {
@@ -223,7 +224,6 @@ export default {
       this.$emit('close', '');
     }
   },
-  mounted() {}
 };
 </script>
 <style>

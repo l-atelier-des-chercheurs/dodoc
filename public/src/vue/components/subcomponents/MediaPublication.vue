@@ -15,7 +15,6 @@
   >
     <MediaContent
       :context="preview_mode ? 'publication' : 'preview'"
-      :slugMediaName="media.slugMediaName"
       :slugProjectName="media.slugProjectName"
       :media="media"
       :read_only="read_only"
