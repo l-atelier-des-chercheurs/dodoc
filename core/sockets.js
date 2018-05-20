@@ -226,16 +226,17 @@ module.exports = (function() {
       });
   }
 
-  function createMediaMeta(slugFolderName, slugMediaName, additionalMeta) {
-    dev.logfunction(
-      `EVENT - createMediaMeta for ${slugFolderName}/${slugMediaName}`
-    );
+  function createMediaMeta({ slugFolderName, additionalMeta }) {
+    dev.logfunction(`EVENT - createMediaMeta for ${slugFolderName}`);
     dev.logverbose(
       `Has additional meta: ${JSON.stringify(additionalMeta, null, 4)}`
     );
     file.createMediaMeta({ slugFolderName, additionalMeta }).then(
-      () => {
-        sendMedias({ slugFolderName, slugMediaName });
+      metaFileName => {
+        sendMedias({
+          slugFolderName,
+          metaFileName
+        });
       },
       function(err) {
         dev.error(`Failed to list medias! Error: ${err}`);

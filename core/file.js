@@ -769,7 +769,7 @@ module.exports = (function() {
             let mediaFileExtension = new RegExp(
               settings.regexpGetFileExtension,
               'i'
-            ).exec(slugMediaName)[0];
+            ).exec(mediaName)[0];
             dev.logverbose(
               `Trying to guess filetype from extension: ${mediaFileExtension}`
             );

@@ -279,13 +279,15 @@ module.exports = function(app, io, m) {
               4
             )}`
           );
+
           let newPathToNewFileName = path.join(uploadDir, newFileName);
           fs.renameSync(fileMeta.path, newPathToNewFileName);
-          sockets.createMediaMeta(
-            slugProjectName,
-            newFileName,
-            fileMeta.additionalMeta
-          );
+
+          fileMeta.additionalMeta.media_filename = newFileName;
+          sockets.createMediaMeta({
+            slugFolderName: slugProjectName,
+            additionalMeta: fileMeta.additionalMeta
+          });
           resolve();
         },
         function(err) {
