@@ -15,10 +15,10 @@ ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function() {
   const API = {
-    makeMediaThumbs: (slugFolderName, slugMediaName, mediaType) =>
-      makeMediaThumbs(slugFolderName, slugMediaName, mediaType),
-    removeMediaThumbs: (slugFolderName, slugMediaName) =>
-      removeMediaThumbs(slugFolderName, slugMediaName),
+    makeMediaThumbs: (slugFolderName, filename, mediaType) =>
+      makeMediaThumbs(slugFolderName, filename, mediaType),
+    removeMediaThumbs: (slugFolderName, filename) =>
+      removeMediaThumbs(slugFolderName, filename),
 
     getEXIFData: mediaPath => getEXIFData(mediaPath),
     getRatioFromEXIF: mediaPath => getRatioFromEXIF(mediaPath),
@@ -28,17 +28,22 @@ module.exports = (function() {
     getMediaRatio: mediaPath => getMediaRatio(mediaPath)
   };
 
-  // this function is used both when creating a media and everything media are listed.
+  // this function is used both when creating a media and when all medias are listed.
   // this way, if thumbs are deleted or moved while the app is running, they will be recreated next time they are required
-  function makeMediaThumbs(slugFolderName, slugMediaName, mediaType) {
+  function makeMediaThumbs(slugFolderName, filename, mediaType) {
     return new Promise(function(resolve, reject) {
-      //       dev.logfunction(`THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName} and mediaType: ${mediaType}`);
+      dev.logfunction(
+        `THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, filename = ${filename} and mediaType: ${mediaType}`
+      );
+      if (!['image', 'video'].includes(mediaType)) {
+        dev.logverbose(
+          `THUMBS — makeMediaThumbs — media is not of type image or video`
+        );
+        return resolve();
+      }
 
       let thumbFolderPath = path.join(settings.thumbFolderName, slugFolderName);
-      let mediaPath = path.join(
-        api.getFolderPath(slugFolderName),
-        slugMediaName
-      );
+      let mediaPath = path.join(api.getFolderPath(slugFolderName), filename);
 
       // let’s make sure that our thumb folder exists first
       fs.mkdirp(api.getFolderPath(thumbFolderPath), function(err) {
@@ -53,12 +58,7 @@ module.exports = (function() {
         if (mediaType === 'image') {
           thumbResolutions.forEach(thumbRes => {
             let makeThumb = new Promise((resolve, reject) => {
-              _makeImageThumb(
-                mediaPath,
-                thumbFolderPath,
-                slugMediaName,
-                thumbRes
-              )
+              _makeImageThumb(mediaPath, thumbFolderPath, filename, thumbRes)
                 .then(thumbPath => {
                   let thumbMeta = {
                     path: thumbPath,
@@ -77,14 +77,13 @@ module.exports = (function() {
 
         if (mediaType === 'video') {
           // make screenshot
-          // TODO : take screenshot every 5 seconds
           let screenshotsTimemarks = [0];
           screenshotsTimemarks.forEach(timeMark => {
             let makeScreenshot = new Promise((resolve, reject) => {
               _makeVideoScreenshot(
                 mediaPath,
                 thumbFolderPath,
-                slugMediaName,
+                filename,
                 timeMark
               )
                 .then(({ screenshotPath, screenshotName }) => {
@@ -189,10 +188,10 @@ module.exports = (function() {
     });
   }
 
-  function removeMediaThumbs(slugFolderName, slugMediaName) {
+  function removeMediaThumbs(slugFolderName, filename) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `THUMBS — removeMediaThumbs — for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName}`
+        `THUMBS — removeMediaThumbs — for slugFolderName = ${slugFolderName}, filename = ${filename}`
       );
 
       let thumbFolderPath = path.join(settings.thumbFolderName, slugFolderName);
@@ -216,7 +215,7 @@ module.exports = (function() {
           }
 
           var thumbs = filenames.filter(name => {
-            return name.indexOf(slugMediaName) === 0;
+            return name.indexOf(filename) === 0;
           });
 
           let tasks = [];
@@ -271,18 +270,13 @@ module.exports = (function() {
     return timestamp !== undefined ? timestamp : false;
   }
 
-  function _makeImageThumb(
-    mediaPath,
-    thumbFolderPath,
-    slugMediaName,
-    thumbRes
-  ) {
+  function _makeImageThumb(mediaPath, thumbFolderPath, filename, thumbRes) {
     return new Promise(function(resolve, reject) {
       dev.logverbose(
         `Looking/Making an image thumb for ${mediaPath} and resolution = ${thumbRes}`
       );
 
-      let thumbName = `${slugMediaName}.${thumbRes}${settings.thumbExt}`;
+      let thumbName = `${filename}.${thumbRes}${settings.thumbExt}`;
       let thumbPath = path.join(thumbFolderPath, thumbName);
       let fullThumbPath = api.getFolderPath(thumbPath);
 
@@ -318,7 +312,7 @@ module.exports = (function() {
   function _makeVideoScreenshot(
     mediaPath,
     thumbFolderPath,
-    slugMediaName,
+    filename,
     timeMark
   ) {
     return new Promise(function(resolve, reject) {
@@ -326,7 +320,7 @@ module.exports = (function() {
         `Looking to make a video screenshot for ${mediaPath} and timeMark = ${timeMark}`
       );
 
-      let screenshotName = `${slugMediaName}.${timeMark}.jpeg`;
+      let screenshotName = `${filename}.${timeMark}.jpeg`;
       let screenshotPath = path.join(thumbFolderPath, screenshotName);
       let fullScreenshotPath = api.getFolderPath(screenshotPath);
 
