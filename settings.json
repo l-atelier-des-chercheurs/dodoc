@@ -15,7 +15,6 @@
 
   "metaDateFormat" : "YYYYMMDD_HHmmss",
   "textEncoding" : "UTF-8",
-  "deletedPrefix" : "x_",
   "thumbFolderName" : "_thumbs",
   "deletedFolderName" : "_bin",
 
@@ -143,7 +142,7 @@
         }
       }
     },
-    "medias": {
+    "project_medias": {
       "children_of": "projects",
       "fields": {
         "date_created": {
@@ -160,6 +159,9 @@
           "type": "date",
           "default": "current",
           "read_only": true
+        },
+        "media_filename": {
+          "type": "string"
         },
         "type": {
           "type": "string",
