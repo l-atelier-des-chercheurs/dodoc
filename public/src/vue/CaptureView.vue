@@ -619,7 +619,7 @@ export default {
     },
 
     newMediaCaptured(mdata) {
-      if (this.$root.justCreatedCapturedMediaID && this.$root.justCreatedCapturedMediaID === mdata.id) {
+      if (this.$root.justCreatedMediaID && this.$root.justCreatedMediaID === mdata.id) {
         this.justCapturedMediaData = mdata;
       }
     },

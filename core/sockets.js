@@ -188,7 +188,7 @@ module.exports = (function() {
 
   function onCreateMedia(
     socket,
-    { type, id, slugProjectName, additionalMeta, rawData }
+    { type, id, slugProjectName, additionalMeta, rawData = '' }
   ) {
     dev.logfunction(
       `EVENT - onCreateMedia : slugProjectName = ${slugProjectName} and type = ${type} and rawData.length = ${

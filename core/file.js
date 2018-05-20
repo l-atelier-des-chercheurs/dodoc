@@ -74,7 +74,7 @@ module.exports = (function() {
         readMetaFile(potentialMetaFile)
           .then(mediaData => {
             mediaData = _sanitizeMetaFromFile({
-              type: 'medias',
+              type: 'project_medias',
               meta: mediaData
             });
             if (mediaData.type === 'text') {
@@ -87,10 +87,9 @@ module.exports = (function() {
                 fs.readFileSync(mediaPath, settings.textEncoding)
               );
               dev.logverbose(`Got mediaData.content : ${mediaData.content}`);
-              resolve(mediaData);
+              return resolve(mediaData);
             }
-
-            resolve(mediaData);
+            return resolve(mediaData);
           })
           .catch(err => {
             return reject(err);
@@ -683,9 +682,9 @@ module.exports = (function() {
           let folders_and_medias = {};
 
           mediasMeta.map(d => {
-            dev.logverbose(
-              `readMediaList: analyzing ${JSON.stringify(d, null, 4)}`
-            );
+            // dev.logverbose(
+            //   `readMediaList: analyzing ${JSON.stringify(d, null, 4)}`
+            // );
 
             if (Object.keys(d).length === 0 && d.constructor === Object) {
               return;
@@ -780,7 +779,7 @@ module.exports = (function() {
           }
 
           let mdata = _makeDefaultMetaFromStructure({
-            type: 'medias',
+            type: 'project_medias',
             method: 'create',
             existing: additionalMeta
           });
@@ -969,13 +968,13 @@ module.exports = (function() {
 
           // cleaning up stored meta
           meta = _makeDefaultMetaFromStructure({
-            type: 'medias',
+            type: 'project_medias',
             method: 'create',
             existing: meta
           });
 
           let newMediaData = _makeDefaultMetaFromStructure({
-            type: 'medias',
+            type: 'project_medias',
             method: 'update',
             existing: data
           });
@@ -1192,10 +1191,15 @@ module.exports = (function() {
               mediaName
             );
 
-            api.storeData(pathToMedia, rawData, 'create').then(function(err) {
-              dev.error(`Failed to storeData for textmedia: ${err}`);
-              reject(err);
-            });
+            api.storeData(pathToMedia, rawData, 'create').then(
+              function(meta) {
+                resolve();
+              },
+              function(err) {
+                dev.error(`Failed to storeData for textmedia: ${err}`);
+                reject(err);
+              }
+            );
           })
         );
       }

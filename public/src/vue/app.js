@@ -364,9 +364,8 @@ let vm = new Vue({
     store: window.store,
     state: window.state,
 
-    justCreatedTextmediaID: false,
     justCreatedFolderID: false,
-    justCreatedCapturedMediaID: false,
+    justCreatedMediaID: false,
 
     settings: {
       has_modal_opened: false,
@@ -527,7 +526,7 @@ let vm = new Vue({
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: createMedia`);
       }
-      this.justCreatedCapturedMediaID = mdata.id =
+      this.justCreatedMediaID = mdata.id =
         Math.random()
           .toString(36)
           .substring(2, 15) +
