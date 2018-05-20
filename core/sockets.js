@@ -12,8 +12,8 @@ module.exports = (function() {
 
   const API = {
     init: (app, io, electronApp) => init(app, io, electronApp),
-    createMediaMeta: (slugFolderName, slugMediaName, additionalMeta) =>
-      createMediaMeta(slugFolderName, slugMediaName, additionalMeta),
+    createMediaMeta: ({ slugFolderName, additionalMeta }) =>
+      createMediaMeta({ slugFolderName, additionalMeta }),
     pushMessage: msg => pushMessage(msg),
     sendTagUID: tag => sendTagUID(tag)
   };
@@ -188,10 +188,10 @@ module.exports = (function() {
 
   function onCreateMedia(
     socket,
-    { type, id, slugProjectName, additionalMeta, rawData = '' }
+    { type, id, slugFolderName, additionalMeta, rawData = '' }
   ) {
     dev.logfunction(
-      `EVENT - onCreateMedia : slugProjectName = ${slugProjectName} and type = ${type} and rawData.length = ${
+      `EVENT - onCreateMedia : slugFolderName = ${slugFolderName} and type = ${type} and rawData.length = ${
         rawData.length
       }`
     );
@@ -199,20 +199,19 @@ module.exports = (function() {
       .createMedia({
         type,
         rawData,
-        slugProjectName,
+        slugFolderName,
         additionalMeta
       })
-      .then(mediaMeta => {
+      .then(mediaData => {
         file
-          .createMediaMeta(
-            slugProjectName,
-            mediaMeta.slugMediaName,
-            mediaMeta.additionalMeta
-          )
-          .then(() => {
+          .createMediaMeta({
+            slugFolderName,
+            additionalMeta: mediaData.additionalMeta
+          })
+          .then(metaFileName => {
             sendMedias({
-              slugFolderName: slugProjectName,
-              slugMediaName: mediaMeta.slugMediaName,
+              slugFolderName,
+              metaFileName,
               id
             });
           })
@@ -234,7 +233,7 @@ module.exports = (function() {
     dev.logverbose(
       `Has additional meta: ${JSON.stringify(additionalMeta, null, 4)}`
     );
-    file.createMediaMeta(slugFolderName, slugMediaName, additionalMeta).then(
+    file.createMediaMeta({ slugFolderName, additionalMeta }).then(
       () => {
         sendMedias({ slugFolderName, slugMediaName });
       },
@@ -346,9 +345,9 @@ module.exports = (function() {
       });
   }
 
-  function sendMedias({ slugFolderName, slugMediaName, socket, id }) {
+  function sendMedias({ slugFolderName, metaFileName, socket, id }) {
     dev.logfunction(
-      `COMMON - sendMedias for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName} and id = ${id}`
+      `COMMON - sendMedias for slugFolderName = ${slugFolderName}, metaFileName = ${metaFileName} and id = ${id}`
     );
 
     file
@@ -358,24 +357,22 @@ module.exports = (function() {
           return;
         }
         file
-          .getMediaMetaNames({ slugFolderName, slugMediaName })
-          .then(list_slugMediaName => {
-            if (list_slugMediaName.length === 0) {
+          .getMediaMetaNames({ slugFolderName, metaFileName })
+          .then(list_metaFileName => {
+            if (list_metaFileName.length === 0) {
               return resolve({});
             }
-            let medias_list = list_slugMediaName.map(slugMediaName => {
+            let medias_list = list_metaFileName.map(_metaFileName => {
               return {
                 slugFolderName,
-                slugMediaName
+                metaFileName: _metaFileName
               };
             });
             file.readMediaList({ medias_list }).then(folders_and_medias => {
               dev.logverbose(`Got medias, now sending to the right clients`);
 
-              if (folders_and_medias !== undefined && slugMediaName && id) {
-                folders_and_medias[slugFolderName].medias[
-                  slugMediaName
-                ].id = id;
+              if (folders_and_medias !== undefined && metaFileName && id) {
+                folders_and_medias[slugFolderName].medias[metaFileName].id = id;
               }
 
               Object.keys(io.sockets.connected).forEach(sid => {
@@ -390,7 +387,7 @@ module.exports = (function() {
                 // }
 
                 api.sendEventWithContent(
-                  !!slugMediaName ? 'listMedia' : 'listMedias',
+                  !!metaFileName ? 'listMedia' : 'listMedias',
                   folders_and_medias,
                   io,
                   socket || io.sockets.connected[sid]

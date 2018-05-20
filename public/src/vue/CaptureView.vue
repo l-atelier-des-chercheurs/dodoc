@@ -577,7 +577,7 @@ export default {
       if(this.selected_mode === 'photo') {        
         this.getStaticImageFromVideoElement().then(imageData => {
           const mediaMeta = {
-            slugProjectName: this.slugProjectName,
+            slugFolderName: this.slugProjectName,
             type: 'image',
             rawData: imageData,
             additionalMeta: {}
@@ -592,7 +592,7 @@ export default {
       if(this.selected_mode === 'video') {        
         this.startRecordCameraFeed(this.recordVideoWithAudio).then(videoDataURL => {
           this.$root.createMedia({
-            slugProjectName: this.slugProjectName,
+            slugFolderName: this.slugProjectName,
             type: 'video',
             rawData: videoDataURL
           });
@@ -603,7 +603,7 @@ export default {
         equalizer.clearCanvas();
         this.startRecordAudioFeed().then(audioDataURL => {
           this.$root.createMedia({
-            slugProjectName: this.slugProjectName,
+            slugFolderName: this.slugProjectName,
             type: 'audio',
             rawData: audioDataURL
           });
@@ -611,7 +611,7 @@ export default {
       } else
       if(this.selected_mode === 'vecto') { 
         this.$root.createMedia({
-          slugProjectName: this.slugProjectName,
+          slugFolderName: this.slugProjectName,
           type: 'svg',
           rawData: btoa(this.vecto.svgstr)
         });

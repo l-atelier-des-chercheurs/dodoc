@@ -182,7 +182,7 @@ export default {
     },
     createTextMedia() {
       const mediaMeta = {
-        slugProjectName: this.slugProjectName,
+        slugFolderName: this.slugProjectName,
         type: 'text',
         additionalMeta: {}
       };
