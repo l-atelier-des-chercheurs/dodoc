@@ -24,8 +24,8 @@ module.exports = (function() {
         slugFolderName
       }),
 
-    getSlugMediaNames: ({ slugFolderName, slugMediaName }) =>
-      getSlugMediaNames({ slugFolderName, slugMediaName }),
+    getMediaMetaNames: ({ slugFolderName, slugMediaName }) =>
+      getMediaMetaNames({ slugFolderName, slugMediaName }),
     readMediaList: ({ medias_list }) => readMediaList({ medias_list }),
     createMediaMeta: (slugFolderName, slugMediaName, additionalMeta) =>
       createMediaMeta(slugFolderName, slugMediaName, additionalMeta),
@@ -59,29 +59,50 @@ module.exports = (function() {
     return mediaMetaPath;
   }
 
-  function readOrCreateMediaMeta(slugFolderName, slugMediaName) {
+  function readMediaMeta(slugFolderName, slugMediaName) {
     return new Promise(function(resolve, reject) {
       // pour chaque item, on regarde s’il contient un fichier méta (même nom + .txt)
-      let potentialMetaFile = getMetaFileOfMedia(slugFolderName, slugMediaName);
-      fs.access(potentialMetaFile, fs.F_OK, err => {
+      let metaFile = path.join(
+        api.getFolderPath(slugFolderName),
+        slugMediaName
+      );
+      fs.access(metaFile, fs.F_OK, err => {
         // if there's no META file at path
         if (err) {
           dev.logverbose(`No meta for this media: ${err}`);
           return reject(`Meta is missing for ${slugMediaName}`);
         }
 
-        dev.logverbose(`Found meta there: ${potentialMetaFile}`);
-        readMetaFile(potentialMetaFile)
+        dev.logverbose(`Found meta there: ${metaFile}`);
+        readMetaFile(metaFile)
           .then(mediaData => {
             mediaData = _sanitizeMetaFromFile({
               type: 'project_medias',
               meta: mediaData
             });
-            if (mediaData.type === 'text') {
+
+            // Legacy : if no filename in meta file when it is expected in blueprint
+            // then it means its in the name of the text file
+            if (
+              !mediaData.hasOwnProperty('media_filename') &&
+              settings.structure['project_medias'].fields.hasOwnProperty(
+                'media_filename'
+              )
+            ) {
+              mediaData.media_filename = new RegExp(
+                settings.regexpRemoveFileExtension,
+                'i'
+              ).exec(slugMediaName)[1];
+            }
+
+            if (
+              mediaData.type === 'text' &&
+              mediaData.hasOwnProperty('media_filename')
+            ) {
               // get text content
               let mediaPath = path.join(
                 api.getFolderPath(slugFolderName),
-                slugMediaName
+                mediaData.media_filename
               );
               mediaData.content = validator.unescape(
                 fs.readFileSync(mediaPath, settings.textEncoding)
@@ -103,7 +124,7 @@ module.exports = (function() {
         `COMMON — readMediaAndThumbs: slugFolderName = ${slugFolderName} & slugMediaName = ${slugMediaName}`
       );
 
-      readOrCreateMediaMeta(slugFolderName, slugMediaName)
+      readMediaMeta(slugFolderName, slugMediaName)
         .then(mediaData => {
           dev.logverbose(
             `Read Meta, now getting thumbs for ${JSON.stringify(
@@ -113,16 +134,22 @@ module.exports = (function() {
             )}`
           );
 
-          // let’s find or create thumbs
-          thumbs
-            .makeMediaThumbs(slugFolderName, slugMediaName, mediaData.type)
-            .then(thumbData => {
-              mediaData.thumbs = thumbData;
-              resolve(mediaData);
-            })
-            .catch(err => {
-              resolve();
-            });
+          if (mediaData.hasOwnProperty('media_filename')) {
+            // let’s find or create thumbs
+            thumbs
+              .makeMediaThumbs(
+                slugFolderName,
+                mediaData.media_filename,
+                mediaData.type
+              )
+              .then(thumbData => {
+                mediaData.thumbs = thumbData;
+                resolve(mediaData);
+              })
+              .catch(err => {
+                resolve();
+              });
+          }
         })
         .catch(err => {
           resolve();
@@ -563,10 +590,10 @@ module.exports = (function() {
     });
   }
 
-  function getSlugMediaNames({ slugFolderName, slugMediaName }) {
+  function getMediaMetaNames({ slugFolderName, slugMediaName }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `COMMON — _getSlugMediaNames with slugFolderName = ${slugFolderName} and slugMediaName = ${slugMediaName}`
+        `COMMON — _getMediaMetaNames with slugFolderName = ${slugFolderName} and slugMediaName = ${slugMediaName}`
       );
       if (slugFolderName === undefined) {
         dev.error(`Missing slugFolderName to read medias from.`);
@@ -578,7 +605,7 @@ module.exports = (function() {
         );
       }
       dev.logverbose(
-        `COMMON — _getSlugMediaNames — slugFolderName: ${slugFolderName} — slugMediaName: ${slugMediaName}`
+        `COMMON — _getMediaMetaNames — slugFolderName: ${slugFolderName} — slugMediaName: ${slugMediaName}`
       );
 
       let slugFolderPath = api.getFolderPath(slugFolderName);
@@ -601,16 +628,14 @@ module.exports = (function() {
             !new RegExp(settings.regexpMatchFolderNames, 'i').test(
               thisSlugMediaName
             ) &&
+            // endswith settings.metaFileext
+            thisSlugMediaName.endsWith(settings.metaFileext) &&
             // not meta.txt
             thisSlugMediaName !==
               settings.folderMetaFilename + settings.metaFileext &&
             // not a folder preview
             thisSlugMediaName !==
               settings.folderPreviewFilename + settings.thumbExt &&
-            // not a text file
-            new RegExp(settings.regexpGetFileExtension, 'i').exec(
-              thisSlugMediaName
-            )[0] !== '.txt' &&
             // not deleted
             thisSlugMediaName.indexOf(settings.deletedPrefix) &&
             // not a dotfile
@@ -956,7 +981,7 @@ module.exports = (function() {
         )}`
       );
 
-      readOrCreateMediaMeta(slugFolderName, slugMediaName)
+      readMediaMeta(slugFolderName, slugMediaName)
         .then(meta => {
           dev.logverbose(
             `Got meta, now updating for ${slugMediaName} with ${JSON.stringify(

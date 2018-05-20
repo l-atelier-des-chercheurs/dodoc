@@ -358,7 +358,7 @@ module.exports = (function() {
           return;
         }
         file
-          .getSlugMediaNames({ slugFolderName, slugMediaName })
+          .getMediaMetaNames({ slugFolderName, slugMediaName })
           .then(list_slugMediaName => {
             if (list_slugMediaName.length === 0) {
               return resolve({});
