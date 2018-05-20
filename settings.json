@@ -54,7 +54,54 @@
         "preview": {
           "type": "string"
         }
-      }
+      },
+      "child_media": {
+        "fields": {
+          "date_created": {
+            "type": "date",
+            "default": "current",
+            "read_only": true
+          },
+          "date_modified" : {
+            "type": "date",
+            "default": "current",
+            "override": true
+          },
+          "date_uploaded" : {
+            "type": "date",
+            "default": "current",
+            "read_only": true
+          },
+          "media_filename": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "options": ["image", "video", "audio", "text", "other"],
+            "default": "other"
+          },
+          "fav": {
+            "type": "boolean",
+            "default": false
+          },
+          "ratio" : {
+            "type": "number"
+          },
+          "duration" : {
+            "type": "number"
+          },
+          "authors": {
+            "type": "string"
+          },
+          "keywords": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          }  
+        }
+      },
+        
     },
     "authors": {
       "path": "_authors",
@@ -142,55 +189,7 @@
         }
       }
     },
-    "project_medias": {
-      "children_of": "projects",
-      "fields": {
-        "date_created": {
-          "type": "date",
-          "default": "current",
-          "read_only": true
-        },
-        "date_modified" : {
-          "type": "date",
-          "default": "current",
-          "override": true
-        },
-        "date_uploaded" : {
-          "type": "date",
-          "default": "current",
-          "read_only": true
-        },
-        "media_filename": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string",
-          "options": ["image", "video", "audio", "text", "other"],
-          "default": "other"
-        },
-        "fav": {
-          "type": "boolean",
-          "default": false
-        },
-        "ratio" : {
-          "type": "number"
-        },
-        "duration" : {
-          "type": "number"
-        },
-        "authors": {
-          "type": "string"
-        },
-        "keywords": {
-          "type": "string"
-        },
-        "caption": {
-          "type": "string"
-        }  
-      }
-    },
     "publication_medias": {
-      "children_of": "projects",
       "fields": {
         "name": {
           "type": "string"

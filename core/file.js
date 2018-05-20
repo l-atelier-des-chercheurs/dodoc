@@ -24,8 +24,8 @@ module.exports = (function() {
         slugFolderName
       }),
 
-    getMediaMetaNames: ({ slugFolderName, metaFileName }) =>
-      getMediaMetaNames({ slugFolderName, metaFileName }),
+    getMediaMetaNames: ({ type, slugFolderName, metaFileName }) =>
+      getMediaMetaNames({ type, slugFolderName, metaFileName }),
     readMediaList: ({ medias_list }) => readMediaList({ medias_list }),
     createMediaMeta: ({ slugFolderName, additionalMeta }) =>
       createMediaMeta({ slugFolderName, additionalMeta }),
@@ -582,10 +582,10 @@ module.exports = (function() {
     });
   }
 
-  function getMediaMetaNames({ slugFolderName, metaFileName }) {
+  function getMediaMetaNames({ type, slugFolderName, metaFileName }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `COMMON — getMediaMetaNames with slugFolderName = ${slugFolderName} and metaFileName = ${metaFileName}`
+        `COMMON — getMediaMetaNames in type = ${type}, with slugFolderName = ${slugFolderName} and metaFileName = ${metaFileName}`
       );
       if (slugFolderName === undefined) {
         dev.error(`Missing slugFolderName to read medias from.`);
@@ -600,7 +600,10 @@ module.exports = (function() {
         `COMMON — getMediaMetaNames — slugFolderName: ${slugFolderName} — metaFileName: ${metaFileName}`
       );
 
-      let slugFolderPath = api.getFolderPath(slugFolderName);
+      let slugFolderPath = api.getFolderPath(
+        path.join(settings.structure[type].path, slugFolderName)
+      );
+
       fs.readdir(slugFolderPath, function(err, filenames) {
         if (err) {
           dev.error(`Couldn't read content dir: ${err}`);

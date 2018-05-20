@@ -3,6 +3,7 @@ const dev = require('./dev-log'),
   auth = require('./auth');
 
 const file = require('./file');
+const settings = require('../settings.json');
 
 module.exports = (function() {
   dev.log(`Main module initialized at ${api.getCurrentDate()}`);
@@ -175,7 +176,7 @@ module.exports = (function() {
 
   /**************************************************************** MEDIA ********************************/
 
-  function onListMedias(socket, { slugFolderName }) {
+  function onListMedias(socket, { type, slugFolderName }) {
     dev.logfunction(
       `EVENT - onListMedias : slugProjectName = ${JSON.stringify(
         slugFolderName,
@@ -183,7 +184,7 @@ module.exports = (function() {
         4
       )}`
     );
-    sendMedias({ slugFolderName, socket });
+    sendMedias({ type, slugFolderName, socket });
   }
 
   function onCreateMedia(
@@ -346,19 +347,23 @@ module.exports = (function() {
       });
   }
 
-  function sendMedias({ slugFolderName, metaFileName, socket, id }) {
+  function sendMedias({ type, slugFolderName, metaFileName, socket, id }) {
     dev.logfunction(
-      `COMMON - sendMedias for slugFolderName = ${slugFolderName}, metaFileName = ${metaFileName} and id = ${id}`
+      `COMMON - sendMedias for type = ${type}, slugFolderName = ${slugFolderName}, metaFileName = ${metaFileName} and id = ${id}`
     );
 
     file
-      .getFolder({ type: 'projects', slugFolderName })
+      .getFolder({ type, slugFolderName })
       .then(foldersData => {
         if (foldersData === undefined) {
           return;
         }
         file
-          .getMediaMetaNames({ slugFolderName, metaFileName })
+          .getMediaMetaNames({
+            type,
+            slugFolderName,
+            metaFileName
+          })
           .then(list_metaFileName => {
             if (list_metaFileName.length === 0) {
               return resolve({});
@@ -389,7 +394,7 @@ module.exports = (function() {
 
                 api.sendEventWithContent(
                   !!metaFileName ? 'listMedia' : 'listMedias',
-                  folders_and_medias,
+                  { [parent_type]: folders_and_medias },
                   io,
                   socket || io.sockets.connected[sid]
                 );

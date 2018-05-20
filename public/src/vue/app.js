@@ -228,32 +228,39 @@ Vue.prototype.$socketio = new Vue({
       }
     },
 
-    _onListMedias(mdata) {
+    _onListMedias(data) {
       console.log('Received _onListMedias packet.');
 
-      Object.keys(mdata).map(m => {
-        let slugProjectName = Object.keys(mdata)[0];
-        console.log(`Media data is for ${slugProjectName}.`);
+      let parent_type = Object.keys(data)[0];
+      let content = Object.values(data)[0];
 
-        window.store.projects[slugProjectName].medias =
-          mdata[slugProjectName].medias;
+      console.log(`Type is ${parent_type}`);
 
-        window.dispatchEvent(
-          new CustomEvent('project.listMediasForProject', {
-            detail: slugProjectName
-          })
-        );
-      });
+      for (let slugFolderName in content) {
+        console.log(`Media data is for ${slugFolderName}.`);
+        if (
+          window.store[parent_type].hasOwnProperty(slugFolderName) &&
+          window.store[parent_type][slugFolderName].hasOwnProperty('medias')
+        ) {
+          window.store[parent_type][slugFolderName].medias =
+            content[slugFolderName].medias;
+          window.dispatchEvent(
+            new CustomEvent('project.listMediasForProject', {
+              detail: slugFolderName
+            })
+          );
+        }
+      }
     },
 
-    _onListSpecificMedias(mdata) {
+    _onListSpecificMedias(data) {
       console.log('Received _onListSomeMedias packet.');
 
-      Object.keys(mdata).map(slugProjectName => {
+      Object.keys(data).map(slugProjectName => {
         window.store.projects[slugProjectName].medias = Object.assign(
           {},
           window.store.projects[slugProjectName].medias,
-          mdata[slugProjectName].medias
+          data[slugProjectName].medias
         );
 
         // Object.keys(mdata[slugProjectName].medias).map(m => {
@@ -563,7 +570,10 @@ let vm = new Vue({
 
       this.settings.view = 'ProjectView';
       this.settings.current_slugProjectName = slugProjectName;
-      this.$socketio.listMedias({ slugFolderName: slugProjectName });
+      this.$socketio.listMedias({
+        type: 'project_medias',
+        slugFolderName: slugProjectName
+      });
 
       history.pushState(
         { slugProjectName },
