@@ -328,7 +328,7 @@ export default {
 
       const lastPageNumber = this.publication.pages.length - 1;
       let page = lastPageNumber;
-      if(this.page_currently_active > 0 && this.page_currently_active < lastPageNumber) {
+      if(this.page_currently_active !== false) {
         page = this.page_currently_active;
       }
       debugger;

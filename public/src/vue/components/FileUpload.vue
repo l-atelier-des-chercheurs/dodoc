@@ -99,13 +99,17 @@ export default {
         return;
       }
 
-      let fileCreationDate = file.lastModified;
-      let authors = this.$root.settings.current_author !== false ? this.$root.settings.current_author.name : '';
+      let objToSend = {};
+
+      objToSend.fileCreationDate = file.lastModified;
+
+      if (
+        this.$root.settings.current_author.hasOwnProperty('name')
+      ) {
+        objToSend.authors = this.$root.settings.current_author.name;
+      }
+
       let fileName = file.name;
-      let objToSend = {
-        fileCreationDate,
-        authors
-      };
       formData.append(fileName, JSON.stringify(objToSend));
     },
     template: function() {

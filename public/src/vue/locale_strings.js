@@ -82,6 +82,7 @@ module.exports = (function() {
       text: 'texte',
       other: 'autre',
 
+      select: 'Sélectionner',
       unselect: 'Dé-sélectionner',
 
       toconnectwithanotherdevice:
@@ -245,7 +246,9 @@ module.exports = (function() {
       text: 'text',
       other: 'other',
 
+      select: 'Select',
       unselect: 'Un-select',
+
       toconnectwithanotherdevice:
         'To access this do•doc element with another device, first connect it to the same wifi network, then type this adress in your browser or scan this QR code:',
       sureToRemoveProject: 'Do you really want to delete this project?',

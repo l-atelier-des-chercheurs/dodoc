@@ -607,6 +607,7 @@ body {
 .m_project {
   .bg-blanc;
   border-radius: 0px;
+  min-height: 100%;
   overflow: hidden;
   .flex-wrap;
   .flex-space-between;
@@ -1246,7 +1247,7 @@ body {
   width: 100%;
   display: flex;
   justify-content: center;
-  .padding-bottom-medium;
+  .padding-vert-small;
 }
 
 .m_publicationview {
@@ -1266,22 +1267,19 @@ body {
     }
   }
 
-  .m_publicationview--pages {
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center;
-    
-    > * {
-      flex: 0 0 auto;
-    }
+  .m_publicationview--pages { 
   }
 
   .m_publicationview--pages--page {
     position: relative;
     .margin-vert-medium;
+    margin-left: auto;
+    margin-right: auto;
     .bg-blanc;
     box-shadow: 0px 2px 16px 0px rgba(0,0,0,.2);
-    transform-origin: top center;
+    transform-origin: top left;
+
+    transition: all .2s;
 
     &.is--active {
       &::before {
@@ -1340,23 +1338,24 @@ body {
       position: absolute;
       width: 1px;
       height: 100%;
+      z-index: -9;
       background-color: @c-gris;
 
-      &:nth-child(1) {
+      &:nth-of-type(1) {
         left: var(--margin_left);
         top: 0;
       }
-      &:nth-child(2) {
+      &:nth-of-type(2) {
         right: var(--margin_right);
         top: 0;
       }
-      &:nth-child(3) {
+      &:nth-of-type(3) {
         top: var(--margin_top);
         left:0;
         width: 100%;
         height: 1px;
       }
-      &:nth-child(4) {
+      &:nth-of-type(4) {
         bottom: var(--margin_bottom);
         left:0;
         width: 100%;
@@ -1379,14 +1378,14 @@ body {
       background-position: 50% 100%;
       background-repeat: no-repeat;
 
-
-
       position: absolute;
       opacity: @s-gridOpacity;
       left: var(--margin_left);
       right: var(--margin_right);
       top: var(--margin_top);
       bottom: var(--margin_bottom);
+
+      z-index: -10;
 
       display: block;
 

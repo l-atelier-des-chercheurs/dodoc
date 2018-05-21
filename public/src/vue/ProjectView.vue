@@ -1,13 +1,11 @@
 <template>
   <div class="m_projectview">
-    <div class="">
-      <Project
-        :slugProjectName="slugProjectName"
-        :project="project"
-        :read_only="read_only"
-        :context="'full'"
-      />
-    </div>
+    <Project
+      :slugProjectName="slugProjectName"
+      :project="project"
+      :read_only="read_only"
+      :context="'full'"
+    />
   </div>
 </template>
 <script>

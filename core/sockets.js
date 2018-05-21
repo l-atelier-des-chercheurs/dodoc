@@ -13,8 +13,8 @@ module.exports = (function() {
 
   const API = {
     init: (app, io, electronApp) => init(app, io, electronApp),
-    createMediaMeta: ({ slugFolderName, additionalMeta }) =>
-      createMediaMeta({ slugFolderName, additionalMeta }),
+    createMediaMeta: ({ type, slugFolderName, additionalMeta }) =>
+      createMediaMeta({ type, slugFolderName, additionalMeta }),
     pushMessage: msg => pushMessage(msg),
     sendTagUID: tag => sendTagUID(tag)
   };
@@ -178,11 +178,7 @@ module.exports = (function() {
 
   function onListMedias(socket, { type, slugFolderName }) {
     dev.logfunction(
-      `EVENT - onListMedias : slugProjectName = ${JSON.stringify(
-        slugFolderName,
-        null,
-        4
-      )}`
+      `EVENT - onListMedias : type = ${type}, slugProjectName = ${slugFolderName}`
     );
     sendMedias({ type, slugFolderName, socket });
   }
@@ -229,22 +225,24 @@ module.exports = (function() {
       });
   }
 
-  function createMediaMeta({ slugFolderName, additionalMeta }) {
+  function createMediaMeta({ type, slugFolderName, additionalMeta }) {
     dev.logfunction(`EVENT - createMediaMeta for ${slugFolderName}`);
     dev.logverbose(
       `Has additional meta: ${JSON.stringify(additionalMeta, null, 4)}`
     );
-    file.createMediaMeta({ slugFolderName, additionalMeta }).then(
-      metaFileName => {
+    file
+      .createMediaMeta({ type, slugFolderName, additionalMeta })
+      .then(metaFileName => {
         sendMedias({
+          type,
           slugFolderName,
           metaFileName
         });
-      },
-      function(err) {
-        dev.error(`Failed to list medias! Error: ${err}`);
-      }
-    );
+      })
+      .catch(err => {
+        dev.error(`Couldn’t create imported media meta: ${err}`);
+        reject(err);
+      });
   }
 
   function onEditMedia(socket, { type, slugFolderName, slugMediaName, data }) {

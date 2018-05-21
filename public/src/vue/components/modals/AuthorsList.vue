@@ -47,7 +47,11 @@
               v-if="!!author.preview"
               width="100" height="100"
               :src="urlToPortrait(slug, author.preview)" >
-            <span>{{ author.name }}</span>
+            <div>{{ author.name }}</div>
+            <hr>
+            <button type="button" class="buttonLink" @click.stop="setAuthor(author)" v-if="author.name !== $root.settings.current_author.name">
+              {{ $t('select') }}
+            </button>
             <button type="button" class="buttonLink" @click.stop="unsetAuthor()" v-if="author.name === $root.settings.current_author.name">
               {{ $t('unselect') }}
             </button>
