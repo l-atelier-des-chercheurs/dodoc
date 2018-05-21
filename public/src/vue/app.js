@@ -198,34 +198,45 @@ Vue.prototype.$socketio = new Vue({
     //   this.listFolders();
     // },
 
-    _onListMedia(mdata) {
+    _onListMedia(data) {
       console.log('Received _onListMedia packet.');
-      let slugProjectName = Object.keys(mdata)[0];
-      console.log(`Media data is for ${slugProjectName}.`);
+      debugger;
+      let type = Object.keys(data)[0];
+      let content = Object.values(data)[0];
 
-      let mediaData = Object.values(mdata[slugProjectName].medias)[0];
-      let slugMediaName = Object.keys(mdata[slugProjectName].medias)[0];
-      mediaData.slugMediaName = slugMediaName;
+      console.log(`Type is ${type}`);
 
-      // this.$alertify
-      //   .closeLogOnClick(true)
-      //   .delay(4000)
-      //   .log(
-      //     this.$t('notifications["created_edited_media:"]') +
-      //       ' ' +
-      //       window.store.projects[slugProjectName].name
-      //   );
+      for (let slugFolderName in content) {
+        console.log(`Media data is for ${slugFolderName}.`);
+        if (
+          window.store[type].hasOwnProperty(slugFolderName) &&
+          window.store[type][slugFolderName].hasOwnProperty('medias')
+        ) {
+          // window.store[type][slugFolderName].medias =
+          //   content[slugFolderName].medias;
+          window.store[type][slugFolderName].medias = Object.assign(
+            {},
+            window.store[type][slugFolderName].medias,
+            content[slugFolderName].medias
+          );
 
-      window.store.projects[slugProjectName].medias = Object.assign(
-        {},
-        window.store.projects[slugProjectName].medias,
-        mdata[slugProjectName].medias
-      );
+          debugger;
+
+          const mediaData = Object.values(content[slugFolderName].medias)[0];
+
+          if (mediaData.hasOwnProperty('id')) {
+            this.$eventHub.$emit('socketio.new_media_captured', mediaData);
+          }
+
+          window.dispatchEvent(
+            new CustomEvent(`${type}.listMedia`, {
+              detail: slugFolderName
+            })
+          );
+        }
+      }
 
       // check if mediaData has a mediaID (which would mean a user just created it)
-      if (mediaData.hasOwnProperty('id')) {
-        this.$eventHub.$emit('socketio.new_media_captured', mediaData);
-      }
     },
 
     _onListMedias(data) {
@@ -244,13 +255,8 @@ Vue.prototype.$socketio = new Vue({
         ) {
           // window.store[type][slugFolderName].medias =
           //   content[slugFolderName].medias;
-          debugger;
-
-          window.store[type][slugFolderName].medias = Object.assign(
-            {},
-            window.store[type][slugFolderName].medias,
-            content[slugFolderName].medias
-          );
+          window.store[type][slugFolderName].medias =
+            content[slugFolderName].medias;
 
           window.dispatchEvent(
             new CustomEvent(`${type}.listMedias`, {
@@ -551,13 +557,13 @@ let vm = new Vue({
       this.$socketio.createMedia(mdata);
     },
 
-    removeMedia: function({ slugFolderName, slugMediaName }) {
+    removeMedia: function(mdata) {
       if (window.state.dev_mode === 'debug') {
         console.log(
-          `ROOT EVENT: removeMedia: ${slugFolderName}/${slugMediaName}`
+          `ROOT EVENT: removeMedia: ${JSON.stringify(mdata, null, 4)}`
         );
       }
-      this.$socketio.removeMedia({ slugFolderName, slugMediaName });
+      this.$socketio.removeMedia(mdata);
     },
     editMedia: function(mdata) {
       if (window.state.dev_mode === 'debug') {

@@ -285,6 +285,7 @@ module.exports = function(app, io, m) {
 
           fileMeta.additionalMeta.media_filename = newFileName;
           sockets.createMediaMeta({
+            type: 'projects',
             slugFolderName: slugProjectName,
             additionalMeta: fileMeta.additionalMeta
           });

@@ -206,11 +206,13 @@ module.exports = (function() {
       .then(mediaData => {
         file
           .createMediaMeta({
+            type,
             slugFolderName,
             additionalMeta: mediaData.additionalMeta
           })
           .then(metaFileName => {
             sendMedias({
+              type,
               slugFolderName,
               metaFileName,
               id
@@ -245,33 +247,42 @@ module.exports = (function() {
     );
   }
 
-  function onEditMedia(socket, { slugFolderName, slugMediaName, data }) {
+  function onEditMedia(socket, { type, slugFolderName, slugMediaName, data }) {
     dev.logfunction(
-      `EVENT - onEditMedia for ${slugFolderName}/${slugMediaName}`
+      `EVENT - onEditMedia for type ${type}, slugFolderName = ${slugFolderName} and slugMediaName = ${slugMediaName}`
     );
-    file.editMediaMeta({ slugFolderName, slugMediaName, data }).then(
-      slugFolderName => {
-        sendMedias({ slugFolderName, metaFileName: slugMediaName });
-      },
-      function(err) {
-        dev.error(`Failed to edit media! Error: ${err}`);
-      }
-    );
+    file
+      .editMediaMeta({
+        type,
+        slugFolderName,
+        metaFileName: slugMediaName,
+        data
+      })
+      .then(
+        slugFolderName => {
+          sendMedias({ type, slugFolderName, metaFileName: slugMediaName });
+        },
+        function(err) {
+          dev.error(`Failed to edit media! Error: ${err}`);
+        }
+      );
   }
 
-  function onRemoveMedia(socket, { slugFolderName, slugMediaName }) {
+  function onRemoveMedia(socket, { type, slugFolderName, slugMediaName }) {
     dev.logfunction(
-      `EVENT - onRemoveMedia for slugFolderName = ${slugFolderName} and slugMediaName = ${slugMediaName}`
+      `EVENT - onRemoveMedia for type = ${type}, slugFolderName = ${slugFolderName}, and slugMediaName = ${slugMediaName}`
     );
-    file.removeMedia({ slugFolderName, metaFileName: slugMediaName }).then(
-      () => {
-        sendMedias({ slugFolderName });
-      },
-      function(err, p) {
-        dev.error(`Failed to remove media: ${err}`);
-        reject(err);
-      }
-    );
+    file
+      .removeMedia({ type, slugFolderName, metaFileName: slugMediaName })
+      .then(
+        () => {
+          sendMedias({ type, slugFolderName });
+        },
+        function(err, p) {
+          dev.error(`Failed to remove media: ${err}`);
+          reject(err);
+        }
+      );
   }
 
   function onListSpecificMedias(socket, medias_list) {

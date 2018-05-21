@@ -84,11 +84,11 @@ export default {
     'project.medias': function() {
       let justCreatedTextMedia = Object.keys(this.project.medias).filter((m) => {
         let data = this.project.medias[m];
-        return data.hasOwnProperty('id') && data.id === this.$root.justCreatedMediaID;
+        return data.hasOwnProperty('id') && data.id === this.$root.justCreatedTextmediaID;
       });      
       if(justCreatedTextMedia.length > 0) {
         this.openMediaModal(justCreatedTextMedia[0]);
-        this.$root.justCreatedMediaID = false;
+        this.$root.justCreatedTextmediaID = false;
       }
     }
 
@@ -97,22 +97,28 @@ export default {
   computed: {
     sortedMedias() {
       var sortable = [];
+
       for (let slugMediaName in this.project.medias) {
         let mediaDataToOrderBy;
 
         if (this.mediaSort.type === 'date') {
-          mediaDataToOrderBy = +this.$moment(
-            this.project.medias[slugMediaName][this.mediaSort.field],
-            'YYYY-MM-DD HH:mm:ss'
-          );
-          if(!mediaDataToOrderBy) {
+          if(this.project.medias[slugMediaName].hasOwnProperty(this.mediaSort.field)) {
+            mediaDataToOrderBy = +this.$moment(
+              this.project.medias[slugMediaName][this.mediaSort.field],
+              'YYYY-MM-DD HH:mm:ss'
+            );
+          }
+          if(mediaDataToOrderBy === undefined || Number.isNaN(mediaDataToOrderBy)) {
             mediaDataToOrderBy = 1000;
           }
         } else if (this.mediaSort.type === 'alph') {
           mediaDataToOrderBy = this.project.medias[slugMediaName][
             this.mediaSort.field
           ];
-          if(!mediaDataToOrderBy) {
+          if(mediaDataToOrderBy === undefined || Number.isNaN(mediaDataToOrderBy)) {
+            mediaDataToOrderBy = 1000;
+          }
+          if(mediaDataToOrderBy === undefined) {
             mediaDataToOrderBy = 'z';
           }          
         }
@@ -121,7 +127,6 @@ export default {
           mediaDataToOrderBy: mediaDataToOrderBy
         });
       }
-
 
       let sortedSortable = sortable.sort(function(a, b) {
         let valA = a.mediaDataToOrderBy;
@@ -182,16 +187,14 @@ export default {
     },
     createTextMedia() {
       const mediaMeta = {
-        slugFolderName: this.slugProjectName,
-        type: 'projects',
-        additionalMeta: {
-          type: 'text'          
-        }
+        slugProjectName: this.slugProjectName,
+        type: 'text',
+        additionalMeta: {}
       };
       if(this.$root.settings.current_author !== false) {
         mediaMeta.additionalMeta.authors = this.$root.settings.current_author.name;
       }
-      this.$root.createMedia(mediaMeta);      
+      this.$root.createTextMedia(mediaMeta);      
     }
   }
 }

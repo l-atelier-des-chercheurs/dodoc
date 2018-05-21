@@ -504,7 +504,7 @@ module.exports = (function() {
           });
       });
     },
-    createMediaMeta: ({ slugFolderName, additionalMeta }) => {
+    createMediaMeta: ({ type, slugFolderName, additionalMeta }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
           `COMMON — createMediaMeta : will create a new meta file in folder ${slugFolderName}`
@@ -746,10 +746,10 @@ module.exports = (function() {
         });
       });
     },
-    editMediaMeta: ({ type, slugFolderName, slugMediaName, data }) => {
+    editMediaMeta: ({ type, slugFolderName, metaFileName, data }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
-          `COMMON — editMediaMeta : will edit media with ${JSON.stringify(
+          `COMMON — editMediaMeta : will edit media for ${slugFolderName} at ${metaFileName} with ${JSON.stringify(
             data,
             null,
             4
@@ -872,7 +872,7 @@ module.exports = (function() {
           });
       });
     },
-    removeMedia: ({ slugFolderName, metaFileName }) => {
+    removeMedia: ({ type, slugFolderName, metaFileName }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
           `COMMON — removeMedia : will remove media at path: ${slugFolderName}/${metaFileName}`
@@ -898,18 +898,20 @@ module.exports = (function() {
           }
           let mediaFileName = getMediaFilename(meta, metaFileName);
 
-          let pathToFolder = api.getFolderPath(slugFolderName);
+          let slugFolderPath = api.getFolderPath(
+            path.join(settings.structure[type].path, slugFolderName)
+          );
 
-          let mediaMetaPath = path.join(pathToFolder, metaFileName);
+          let mediaMetaPath = path.join(slugFolderPath, metaFileName);
           let movedMediaMetaPath = path.join(
-            pathToFolder,
+            slugFolderPath,
             settings.deletedFolderName,
             metaFileName
           );
 
-          let mediaPath = path.join(pathToFolder, mediaFileName);
+          let mediaPath = path.join(slugFolderPath, mediaFileName);
           let movedMediaPath = path.join(
-            pathToFolder,
+            slugFolderPath,
             settings.deletedFolderName,
             mediaFileName
           );
@@ -933,7 +935,7 @@ module.exports = (function() {
         });
       });
     },
-    createMedia: mdata => {
+    createMedia: ({ type, rawData, slugFolderName, additionalMeta = '' }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
           `COMMON — createMedia with type = ${type}, 
@@ -945,7 +947,10 @@ module.exports = (function() {
         let randomString = (
           Math.random().toString(36) + '00000000000000000'
         ).slice(2, 3 + 2);
-        let mediaName = `${type}-${timeCreated}-${randomString}`;
+
+        let mediaName = additionalMeta.hasOwnProperty('type')
+          ? `${additionalMeta.type}-${timeCreated}-${randomString}`
+          : `${timeCreated}-${randomString}`;
 
         // Depending on the type of media we will create, we will need to act differently:
         // - 'image' -> use sharp and create a .jpeg from the buffer
@@ -955,15 +960,15 @@ module.exports = (function() {
         // - 'text' -> store content with storeData
 
         let tasks = [];
+        let slugFolderPath = api.getFolderPath(
+          path.join(settings.structure[type].path, slugFolderName)
+        );
 
-        if (type === 'image') {
+        if (additionalMeta.type === 'image') {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += '.jpeg';
-              let pathToMedia = path.join(
-                api.getFolderPath(slugFolderName),
-                mediaName
-              );
+              let pathToMedia = path.join(slugFolderPath, mediaName);
 
               let imageBuffer = api.decodeBase64Image(rawData);
               sharp(imageBuffer)
@@ -984,10 +989,13 @@ module.exports = (function() {
                 });
             })
           );
-        } else if (type === 'video') {
+        } else if (additionalMeta.type === 'video') {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += '.mp4';
+              let pathToMedia = path.join(slugFolderPath, mediaName);
+
+              // only works for projects media (root) for now
               api
                 .writeVideoToDisk(slugFolderName, mediaName, rawData)
                 .then(() => {
@@ -998,10 +1006,12 @@ module.exports = (function() {
                 });
             })
           );
-        } else if (type === 'audio') {
+        } else if (additionalMeta.type === 'audio') {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += '.mp3';
+
+              // only works for projects media (root) for now
               api
                 .writeAudioToDisk(slugFolderName, mediaName, rawData)
                 .then(() => {
@@ -1012,15 +1022,12 @@ module.exports = (function() {
                 });
             })
           );
-        } else if (type === 'svg') {
+        } else if (additionalMeta.type === 'svg') {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += '.svg';
-              type = 'image';
-              let pathToMedia = path.join(
-                api.getFolderPath(slugFolderName),
-                mediaName
-              );
+              additionalMeta.type = 'image';
+              let pathToMedia = path.join(slugFolderPath, mediaName);
 
               var fileBuffer = new Buffer(rawData, 'base64');
               fs.writeFile(pathToMedia, fileBuffer, function(err) {
@@ -1029,14 +1036,11 @@ module.exports = (function() {
               });
             })
           );
-        } else if (type === 'text') {
+        } else if (additionalMeta.type === 'text') {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += '.md';
-              let pathToMedia = path.join(
-                api.getFolderPath(slugFolderName),
-                mediaName
-              );
+              let pathToMedia = path.join(slugFolderPath, mediaName);
 
               api.storeData(pathToMedia, rawData, 'create').then(
                 function(meta) {
@@ -1057,7 +1061,6 @@ module.exports = (function() {
             let newMediaInfos = {
               additionalMeta: {
                 media_filename: mediaName,
-                type: type,
                 fileCreationDate: api.parseDate(timeCreated)
               }
             };
@@ -1289,7 +1292,7 @@ module.exports = (function() {
 
   function _makeDefaultMetaFromStructure({
     type,
-    type_two = '',
+    type_two,
     method = 'create',
     existing = {}
   }) {
@@ -1301,7 +1304,7 @@ module.exports = (function() {
     }
 
     let fields =
-      type_two === ''
+      type_two === undefined
         ? settings.structure[type].fields
         : settings.structure[type][type_two].fields;
     let output_obj = {};
@@ -1419,21 +1422,25 @@ module.exports = (function() {
     return output_obj;
   }
 
-  function _sanitizeMetaFromFile({ type, meta }) {
+  function _sanitizeMetaFromFile({ type, type_two, meta }) {
     dev.logverbose(
       `COMMON — _sanitizeMetaFromFile : 
       will sanitize a new default meta object 
       for type ${type} 
+      and type_two ${type_two} 
       with existing = ${JSON.stringify(meta)}
       `
     );
     let new_meta = {};
+
+    const fields =
+      type_two === undefined
+        ? settings.structure[type].fields
+        : settings.structure[type][type_two].fields;
+
     Object.keys(meta).forEach(key => {
-      if (
-        settings.structure[type].fields.hasOwnProperty(key) &&
-        settings.structure[type].fields[key].hasOwnProperty('type')
-      ) {
-        const fieldType = settings.structure[type].fields[key].type;
+      if (fields.hasOwnProperty(key) && fields[key].hasOwnProperty('type')) {
+        const fieldType = fields[key].type;
         if (fieldType === 'date') {
           new_meta[key] = api.parseDate(meta[key]);
         } else if (fieldType === 'string') {
