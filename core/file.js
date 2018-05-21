@@ -68,6 +68,7 @@ module.exports = (function() {
                     dev.error(
                       `Couldn’t read folder meta, most probably because it doesn’t exist: ${err}`
                     );
+                    resolve({});
                   });
               })
             );
@@ -83,11 +84,9 @@ module.exports = (function() {
                   settings.folderPreviewFilename + settings.thumbExt
                 );
                 fs.access(pathToPreview, fs.F_OK, err => {
-                  let preview_name = '';
-                  if (!err) {
-                    preview_name =
-                      settings.folderPreviewFilename + settings.thumbExt;
-                  }
+                  preview_name = !err
+                    ? settings.folderPreviewFilename + settings.thumbExt
+                    : '';
                   resolve({
                     [slugFolderName]: {
                       preview: preview_name
@@ -428,6 +427,10 @@ module.exports = (function() {
             4
           )}}`
         );
+
+        if (medias_list.length === 0) {
+          return resolve({});
+        }
 
         var allMediasData = [];
         medias_list.forEach(({ slugFolderName, metaFileName }) => {
@@ -805,10 +808,10 @@ module.exports = (function() {
             let tasks = [];
 
             let updateMediaMeta = new Promise((resolve, reject) => {
-              let mediaMetaPath = path.join(
-                api.getFolderPath(slugFolderName),
-                metaFileName
+              let slugFolderPath = api.getFolderPath(
+                path.join(settings.structure[type].path, slugFolderName)
               );
+              let mediaMetaPath = path.join(slugFolderPath, metaFileName);
 
               api.storeData(mediaMetaPath, meta, 'update').then(
                 meta => {
@@ -853,10 +856,10 @@ module.exports = (function() {
                 }
                 let mediaFileName = getMediaFilename(meta, metaFileName);
 
-                let mediaPath = path.join(
-                  api.getFolderPath(slugFolderName),
-                  mediaFileName
+                let slugFolderPath = api.getFolderPath(
+                  path.join(settings.structure[type].path, slugFolderName)
                 );
+                let mediaPath = path.join(slugFolderPath, mediaFileName);
 
                 let content = validator.escape(data.content + '');
                 api
@@ -905,6 +908,8 @@ module.exports = (function() {
                   metaFileName
                 )[1];
               }
+            } else {
+              return '';
             }
           }
           let mediaFileName = getMediaFilename(meta, metaFileName);
@@ -920,17 +925,19 @@ module.exports = (function() {
             metaFileName
           );
 
-          let mediaPath = path.join(slugFolderPath, mediaFileName);
-          let movedMediaPath = path.join(
-            slugFolderPath,
-            settings.deletedFolderName,
-            mediaFileName
-          );
-
           fs
-            .move(mediaPath, movedMediaPath, { overwrite: true })
+            .move(mediaMetaPath, movedMediaMetaPath, { overwrite: true })
             .then(() => {
-              return fs.move(mediaMetaPath, movedMediaMetaPath, {
+              if (mediaFileName === '') {
+                return resolve();
+              }
+              let mediaPath = path.join(slugFolderPath, mediaFileName);
+              let movedMediaPath = path.join(
+                slugFolderPath,
+                settings.deletedFolderName,
+                mediaFileName
+              );
+              return fs.move(mediaPath, movedMediaPath, {
                 overwrite: true
               });
             })

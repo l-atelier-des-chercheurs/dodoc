@@ -285,15 +285,13 @@ module.exports = (function() {
       );
   }
 
-  function onListSpecificMedias(socket, medias_list) {
+  function onListSpecificMedias(socket, { type, medias_list }) {
     dev.logfunction(
-      `EVENT - onListSpecificMedias with medias_list = ${JSON.stringify(
-        medias_list,
-        null,
-        4
-      )}`
+      `EVENT - onListSpecificMedias with 
+      type = ${type} 
+      medias_list = ${JSON.stringify(medias_list, null, 4)}`
     );
-    sendSpecificMedias({ medias_list, socket });
+    sendSpecificMedias({ type, medias_list, socket });
   }
 
   /**************************************************************** GENERAL ********************************/
@@ -376,9 +374,6 @@ module.exports = (function() {
             metaFileName
           })
           .then(list_metaFileName => {
-            if (list_metaFileName.length === 0) {
-              return resolve({});
-            }
             let medias_list = list_metaFileName.map(_metaFileName => {
               return {
                 slugFolderName,
@@ -407,6 +402,14 @@ module.exports = (function() {
                   //   filteredMediasData = JSON.parse(JSON.stringify(mediasData));
                   // }
 
+                  if (Object.keys(folders_and_medias).length === 0) {
+                    folders_and_medias = {
+                      [slugFolderName]: {
+                        medias: {}
+                      }
+                    };
+                  }
+
                   api.sendEventWithContent(
                     !!metaFileName ? 'listMedia' : 'listMedias',
                     { [type]: folders_and_medias },
@@ -427,12 +430,12 @@ module.exports = (function() {
   }
 
   // only for one user at a time
-  function sendSpecificMedias({ medias_list, socket }) {
+  function sendSpecificMedias({ type, medias_list, socket }) {
     dev.logfunction(`COMMON - sendSpecificMedias`);
-    file.readMediaList({ medias_list }).then(folders_and_medias => {
+    file.readMediaList({ type, medias_list }).then(folders_and_medias => {
       api.sendEventWithContent(
         'listSpecificMedias',
-        folders_and_medias,
+        { [type]: folders_and_medias },
         io,
         socket
       );

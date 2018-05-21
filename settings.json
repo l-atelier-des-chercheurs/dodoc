@@ -189,15 +189,18 @@
           "slugProjectName": {
             "type": "string"
           },
-          "metaFileName": {
+          "slugMediaName": {
             "type": "string"
           },
           "date_modified": {
             "type": "date",
             "default": "current"
           },
-          "page": {
+          "authors": {
             "type": "string"
+          },
+          "page": {
+            "type": "number"
           },
           "x": {
             "type": "number"

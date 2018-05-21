@@ -575,19 +575,14 @@ export default {
 
       if(this.selected_mode === 'photo') {        
         this.getStaticImageFromVideoElement().then(imageData => {
-          const mediaMeta = {
+          this.$root.createMedia({
             slugFolderName: this.slugProjectName,
             type: 'projects',
             rawData: imageData,
             additionalMeta: {
               type: 'image'          
             }
-          };
-
-          if(this.$root.settings.current_author.hasOwnProperty('name')) {
-            mediaMeta.additionalMeta.authors = this.$root.settings.current_author.name;
-          }
-          this.$root.createMedia(mediaMeta);
+          });
         });
       } else 
       if(this.selected_mode === 'video') {        

@@ -186,15 +186,13 @@ export default {
       this.$root.showMediaModalFor({ slugProjectName: this.slugProjectName, slugMediaName: slugMediaName });      
     },
     createTextMedia() {
-      const mediaMeta = {
-        slugProjectName: this.slugProjectName,
-        type: 'text',
-        additionalMeta: {}
-      };
-      if(this.$root.settings.current_author !== false) {
-        mediaMeta.additionalMeta.authors = this.$root.settings.current_author.name;
-      }
-      this.$root.createTextMedia(mediaMeta);      
+      this.$root.createMedia({
+        slugFolderName: this.slugProjectName,
+        type: 'projects',
+        additionalMeta: {
+          type: 'text'          
+        }
+      });
     }
   }
 }

@@ -64,8 +64,8 @@
       <button 
         type="button" 
         class="buttonLink" 
-        @click.prevent.stop="removeMedia()"
-        @touchstart.prevent.stop="removeMedia()"
+        @click.prevent.stop="removePubliMedia()"
+        @touchstart.prevent.stop="removePubliMedia()"
       >
         {{ $t('remove') }}
       </button>
@@ -176,7 +176,7 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: updateMediaPubliMeta`);
       }
-      this.$emit('editPubliMedia', { reference_index: this.media.publi_meta.reference_index, val });
+      this.$emit('editPubliMedia', { slugMediaName: this.media.publi_meta.metaFileName, val });
     },
     limitMediaXPos(xPos) {
       // if (this.$root.state.dev_mode === 'debug') {
@@ -210,8 +210,8 @@ export default {
 ;
     },
     
-    removeMedia() {
-      this.$emit('removeMedia', { reference_index: this.media.publi_meta.reference_index });
+    removePubliMedia() {
+      this.$emit('removePubliMedia', { slugMediaName: this.media.publi_meta.metaFileName });
     },
     resizeMedia(type, origin) {
       if (this.$root.state.dev_mode === 'debug') {
