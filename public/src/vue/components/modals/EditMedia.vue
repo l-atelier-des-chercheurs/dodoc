@@ -206,6 +206,7 @@ export default {
     removeMedia: function() {
       if (window.confirm(this.$t('sureToRemoveMedia'))) {
         this.$root.removeMedia({
+          type: 'projects',
           slugFolderName: this.slugProjectName, 
           slugMediaName: this.slugMediaName
         });
@@ -216,6 +217,7 @@ export default {
     editThisMedia: function(event) {
       console.log('editThisMedia');
       this.$root.editMedia({ 
+        type: 'projects',
         slugFolderName: this.slugProjectName, 
         slugMediaName: this.slugMediaName,
         data: this.mediadata

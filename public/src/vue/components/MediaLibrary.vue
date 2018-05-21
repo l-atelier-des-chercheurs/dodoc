@@ -183,8 +183,10 @@ export default {
     createTextMedia() {
       const mediaMeta = {
         slugFolderName: this.slugProjectName,
-        type: 'text',
-        additionalMeta: {}
+        type: 'projects',
+        additionalMeta: {
+          type: 'text'          
+        }
       };
       if(this.$root.settings.current_author !== false) {
         mediaMeta.additionalMeta.authors = this.$root.settings.current_author.name;

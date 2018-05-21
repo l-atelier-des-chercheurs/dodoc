@@ -55,7 +55,7 @@
           "type": "string"
         }
       },
-      "child_media": {
+      "medias": {
         "fields": {
           "date_created": {
             "type": "date",
@@ -100,8 +100,7 @@
             "type": "string"
           }  
         }
-      },
-        
+      } 
     },
     "authors": {
       "path": "_authors",

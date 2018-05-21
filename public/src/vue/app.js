@@ -231,21 +231,29 @@ Vue.prototype.$socketio = new Vue({
     _onListMedias(data) {
       console.log('Received _onListMedias packet.');
 
-      let parent_type = Object.keys(data)[0];
+      let type = Object.keys(data)[0];
       let content = Object.values(data)[0];
 
-      console.log(`Type is ${parent_type}`);
+      console.log(`Type is ${type}`);
 
       for (let slugFolderName in content) {
         console.log(`Media data is for ${slugFolderName}.`);
         if (
-          window.store[parent_type].hasOwnProperty(slugFolderName) &&
-          window.store[parent_type][slugFolderName].hasOwnProperty('medias')
+          window.store[type].hasOwnProperty(slugFolderName) &&
+          window.store[type][slugFolderName].hasOwnProperty('medias')
         ) {
-          window.store[parent_type][slugFolderName].medias =
-            content[slugFolderName].medias;
+          // window.store[type][slugFolderName].medias =
+          //   content[slugFolderName].medias;
+          debugger;
+
+          window.store[type][slugFolderName].medias = Object.assign(
+            {},
+            window.store[type][slugFolderName].medias,
+            content[slugFolderName].medias
+          );
+
           window.dispatchEvent(
-            new CustomEvent('project.listMediasForProject', {
+            new CustomEvent(`${type}.listMedias`, {
               detail: slugFolderName
             })
           );
@@ -571,7 +579,7 @@ let vm = new Vue({
       this.settings.view = 'ProjectView';
       this.settings.current_slugProjectName = slugProjectName;
       this.$socketio.listMedias({
-        type: 'project_medias',
+        type: 'projects',
         slugFolderName: slugProjectName
       });
 
@@ -580,10 +588,7 @@ let vm = new Vue({
         this.store.projects[slugProjectName].name,
         '/' + slugProjectName
       );
-      window.addEventListener(
-        'project.listMediasForProject',
-        this.listMediasForProject
-      );
+      // window.addEventListener('project.listMedias', this.listMediasForProject);
     },
     closeProject: function() {
       if (window.state.dev_mode === 'debug') {

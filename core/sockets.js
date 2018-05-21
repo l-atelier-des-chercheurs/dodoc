@@ -245,13 +245,13 @@ module.exports = (function() {
     );
   }
 
-  function onEditMedia(socket, d) {
+  function onEditMedia(socket, { slugFolderName, slugMediaName, data }) {
     dev.logfunction(
-      `EVENT - onEditMedia for ${d.slugFolderName}/${d.slugMediaName}`
+      `EVENT - onEditMedia for ${slugFolderName}/${slugMediaName}`
     );
-    file.editMediaMeta(d).then(
+    file.editMediaMeta({ slugFolderName, slugMediaName, data }).then(
       slugFolderName => {
-        sendMedias({ slugFolderName, slugMediaName: d.slugMediaName });
+        sendMedias({ slugFolderName, metaFileName: slugMediaName });
       },
       function(err) {
         dev.error(`Failed to edit media! Error: ${err}`);
@@ -263,7 +263,7 @@ module.exports = (function() {
     dev.logfunction(
       `EVENT - onRemoveMedia for slugFolderName = ${slugFolderName} and slugMediaName = ${slugMediaName}`
     );
-    file.removeMedia({ slugFolderName, slugMediaName }).then(
+    file.removeMedia({ slugFolderName, metaFileName: slugMediaName }).then(
       () => {
         sendMedias({ slugFolderName });
       },
@@ -374,32 +374,36 @@ module.exports = (function() {
                 metaFileName: _metaFileName
               };
             });
-            file.readMediaList({ medias_list }).then(folders_and_medias => {
-              dev.logverbose(`Got medias, now sending to the right clients`);
+            file
+              .readMediaList({ type, medias_list })
+              .then(folders_and_medias => {
+                dev.logverbose(`Got medias, now sending to the right clients`);
 
-              if (folders_and_medias !== undefined && metaFileName && id) {
-                folders_and_medias[slugFolderName].medias[metaFileName].id = id;
-              }
-
-              Object.keys(io.sockets.connected).forEach(sid => {
-                if (!!socket && socket.id !== sid) {
-                  return;
+                if (folders_and_medias !== undefined && metaFileName && id) {
+                  folders_and_medias[slugFolderName].medias[
+                    metaFileName
+                  ].id = id;
                 }
 
-                // let filteredMediasData = {};
-                // if (auth.hasFolderAuth(sid, foldersData)) {
-                //   // let filteredMediasData = auth.filterMedias(mediasData);
-                //   filteredMediasData = JSON.parse(JSON.stringify(mediasData));
-                // }
+                Object.keys(io.sockets.connected).forEach(sid => {
+                  if (!!socket && socket.id !== sid) {
+                    return;
+                  }
 
-                api.sendEventWithContent(
-                  !!metaFileName ? 'listMedia' : 'listMedias',
-                  { [parent_type]: folders_and_medias },
-                  io,
-                  socket || io.sockets.connected[sid]
-                );
+                  // let filteredMediasData = {};
+                  // if (auth.hasFolderAuth(sid, foldersData)) {
+                  //   // let filteredMediasData = auth.filterMedias(mediasData);
+                  //   filteredMediasData = JSON.parse(JSON.stringify(mediasData));
+                  // }
+
+                  api.sendEventWithContent(
+                    !!metaFileName ? 'listMedia' : 'listMedias',
+                    { [type]: folders_and_medias },
+                    io,
+                    socket || io.sockets.connected[sid]
+                  );
+                });
               });
-            });
           })
           .catch(err => {
             dev.error(`Failed to list medias! Error: ${err}`);

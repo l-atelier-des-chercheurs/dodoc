@@ -577,9 +577,11 @@ export default {
         this.getStaticImageFromVideoElement().then(imageData => {
           const mediaMeta = {
             slugFolderName: this.slugProjectName,
-            type: 'image',
+            type: 'projects',
             rawData: imageData,
-            additionalMeta: {}
+            additionalMeta: {
+              type: 'image'          
+            }
           };
 
           if(this.$root.settings.current_author.hasOwnProperty('name')) {
@@ -592,8 +594,11 @@ export default {
         this.startRecordCameraFeed(this.recordVideoWithAudio).then(videoDataURL => {
           this.$root.createMedia({
             slugFolderName: this.slugProjectName,
-            type: 'video',
-            rawData: videoDataURL
+            type: 'projects',
+            rawData: videoDataURL,
+            additionalMeta: {
+              type: 'video'          
+            }
           });
         });
 
@@ -603,16 +608,22 @@ export default {
         this.startRecordAudioFeed().then(audioDataURL => {
           this.$root.createMedia({
             slugFolderName: this.slugProjectName,
-            type: 'audio',
-            rawData: audioDataURL
+            type: 'projects',
+            rawData: audioDataURL,
+            additionalMeta: {
+              type: 'audio'          
+            }
           });
         });
       } else
       if(this.selected_mode === 'vecto') { 
         this.$root.createMedia({
           slugFolderName: this.slugProjectName,
-          type: 'svg',
-          rawData: btoa(this.vecto.svgstr)
+          type: 'projects',
+          rawData: btoa(this.vecto.svgstr),
+          additionalMeta: {
+            type: 'svg'          
+          }
         });
       }
     },
