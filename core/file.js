@@ -10,9 +10,6 @@ const settings = require('../settings.json'),
 
 module.exports = (function() {
   const API = {
-    // getPresentation: () => getPresentation(),
-    // getAuthors: () => getAuthors(),
-
     getFolder: ({ type, slugFolderName }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
@@ -1099,23 +1096,6 @@ module.exports = (function() {
       });
     }
   };
-
-  // function getPresentation() {
-  //   return new Promise(function(resolve, reject) {
-  //     let presentationMd = path.join(api.getFolderPath(), 'presentation.md');
-  //     fs.access(presentationMd, fs.F_OK, function(err) {
-  //       if (err) {
-  //         resolve(validator.unescape(global.appInfos.presentationMd));
-  //       } else {
-  //         let presentationContent = validator.unescape(
-  //           fs.readFileSync(presentationMd, settings.textEncoding)
-  //         );
-  //         presentationContent = api.parseData(presentationContent);
-  //         resolve(presentationContent);
-  //       }
-  //     });
-  //   });
-  // }
 
   function readMediaMeta({ type, slugFolderName, metaFileName }) {
     return new Promise(function(resolve, reject) {

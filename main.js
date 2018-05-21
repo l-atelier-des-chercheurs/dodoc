@@ -55,15 +55,6 @@ function createWindow() {
 
   global.appRoot = path.resolve(__dirname);
   global.appInfos.version = app.getVersion();
-  let pathToPresentationMd = path.join(
-    `${__dirname.replace(`${path.sep}app.asar`, '')}`,
-    `${settings.contentDirname}`,
-    `presentation.md`
-  );
-  global.appInfos.presentationMd = fs.readFileSync(
-    pathToPresentationMd,
-    settings.textEncoding
-  );
 
   dev.log(`——— Starting dodoc2 app version ${global.appInfos.version}`);
 

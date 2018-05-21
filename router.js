@@ -45,14 +45,6 @@ module.exports = function(app, io, m) {
 
       let tasks = [];
 
-      // let getPresentation = new Promise((resolve, reject) => {
-      //   file.getPresentation().then(presentationMD => {
-      //     pageData.presentationMD = presentationMD;
-      //     resolve();
-      //   });
-      // });
-      // tasks.push(getPresentation);
-
       let getLocalIP = new Promise((resolve, reject) => {
         api.getLocalIP().then(
           localNetworkInfos => {
