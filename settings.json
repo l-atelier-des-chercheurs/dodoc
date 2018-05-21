@@ -186,33 +186,32 @@
         "medias_list": {
           "type": "array"          
         }
-      }
-    },
-    "publication_medias": {
-      "fields": {
-        "name": {
-          "type": "string"
-        },
-        "date_modified": {
-          "type": "date",
-          "default": "current"
-        },
-        "page": {
-          "type": "string"
-        },
-        "x": {
-          "type": "number"
-        },
-        "y": {
-          "type": "number"
-        },
-        "width": {
-          "type": "number"
-        },
-        "height": {
-          "type": "number"
+      },
+      "medias": {
+        "fields": {
+          "name": {
+            "type": "string"
+          },
+          "date_modified": {
+            "type": "date",
+            "default": "current"
+          },
+          "page": {
+            "type": "string"
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          }
         }
-      }
-    } 
+        },
   }
 }
