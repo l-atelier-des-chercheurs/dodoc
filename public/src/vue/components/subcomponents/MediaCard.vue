@@ -30,6 +30,9 @@
           >
             {{ $t('add_to_publication') }}
           </button>
+          <figcaption class="m_media--caption" v-if="!!media.caption">
+            {{ media.caption }}
+          </figcaption>
         </div>          
 
         <figcaption
