@@ -77,6 +77,8 @@
       </template>
     </div>
 
+    {{ publication.medias }}
+
     <div class="m_publicationSettings">
       <div class="margin-bottom-small">
         <label for="preview">{{ $t('preview') }}</label>
@@ -237,9 +239,9 @@ export default {
   },
 
   watch: {
-    'publication.medias_list': function() {
+    'publication.medias': function() {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`WATCH • Publication: publication.medias_list`);
+        console.log(`WATCH • Publication: publication.medias`);
       }
       this.updateMediasPubli();
       this.$eventHub.$emit('publication_medias_updated');      
@@ -325,14 +327,9 @@ export default {
     }
   },
   methods: {
-    addMedia(slugMediaPath) {
+    addMedia({ slugProjectName, slugMediaName }) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: addMedia / slugMediaPath = ${slugMediaPath}`);
-      }
-
-      let medias_list = [];
-      if(this.publication.hasOwnProperty('medias_list') && typeof this.publication.medias_list === 'object' && this.publication.medias_list.length > 0) {
-        medias_list = this.publication.medias_list.slice();
+        console.log(`METHODS • Publication: addMedia with slugProjectName = ${slugProjectName} and slugMediaName = ${slugMediaName}`);
       }
 
       const lastPageNumber = this.publication.pages.length + 1;
@@ -341,15 +338,18 @@ export default {
         addToPage = this.page_currently_active;
       }
 
-      medias_list.push({
-        filename: slugMediaPath,
-        page: addToPage
-      });
+      const newMediaMeta = {
+        slugProjectName: slugProjectName,
+        metaFileName: slugMediaName,
+        page: addToPage,
+        x: this.publications_options.margin_left,
+        y: this.publications_options.margin_top
+      };
 
-      this.$root.editFolder({ 
-        type: 'publications', 
+      this.$root.createMedia({ 
         slugFolderName: this.slugPubliName, 
-        data: { medias_list } 
+        type: 'publications', 
+        additionalMeta: newMediaMeta
       });
     },
     removeMedia({ reference_index }) {
@@ -357,17 +357,17 @@ export default {
         console.log(`METHODS • Publication: removeMedia / reference_index = ${reference_index}`);
       }
 
-      let medias_list = [];
-      if(this.publication.hasOwnProperty('medias_list')) {
-        medias_list = this.publication.medias_list.slice();
-      }
-      medias_list.splice(reference_index, 1);
+      // let medias_list = [];
+      // if(this.publication.hasOwnProperty('medias')) {
+      //   medias_list = this.publication.medias_list.slice();
+      // }
+      // medias_list.splice(reference_index, 1);
 
-      this.$root.editFolder({ 
-        type: 'publications', 
-        slugFolderName: this.slugPubliName, 
-        data: { medias_list } 
-      });
+      // this.$root.editFolder({ 
+      //   type: 'publications', 
+      //   slugFolderName: this.slugPubliName, 
+      //   data: { medias_list } 
+      // });
     },
     // function to update property of a media inside medias_list
     editPubliMedia({ reference_index, val }) {
@@ -406,7 +406,7 @@ export default {
         console.log(`METHODS • Publication: updateMediasPubli`);
       }
 
-      if(!this.publication.hasOwnProperty('medias_list') || this.publication.medias_list.length === 0) {
+      if(!this.publication.hasOwnProperty('medias') || this.publication.medias.length === 0) {
         this.publication_medias = [];        
         return;
       }
@@ -415,7 +415,7 @@ export default {
       let medias_paginated = {};
       let missingMedias = [];
 
-      let medias_list = this.publication.medias_list.slice();
+      let medias_list = this.publication.medias.slice();
 
       medias_list.forEach((m, index) => {
         // for each, get slugFolderName and slugMediaName
@@ -423,6 +423,7 @@ export default {
           return;
         }
 
+        debugger;
         const slugProjectName = m.filename.split('/')[0];
         const slugMediaName = m.filename.split('/')[1];
 
@@ -474,25 +475,24 @@ export default {
       }
       pages.splice(index, 0, {});
 
-      let medias_list = [];
-      if(this.publication.hasOwnProperty('medias_list')) {
-        medias_list = this.publication.medias_list.slice();
-      }
+      // let medias_list = [];
+      // if(this.publication.hasOwnProperty('medias_list')) {
+      //   medias_list = this.publication.medias_list.slice();
+      // }
 
-      // loop over all medias, if index > media.page - 1
-      medias_list = medias_list.map((m) => {
-        if(m.hasOwnProperty('page') && Number.parseInt(m.page) - 1 > index) {
-          m.page = Number.parseInt(m.page) + 1;
-        }
-        return m;
-      });
+      // // loop over all medias, if index > media.page - 1
+      // medias_list = medias_list.map((m) => {
+      //   if(m.hasOwnProperty('page') && Number.parseInt(m.page) - 1 > index) {
+      //     m.page = Number.parseInt(m.page) + 1;
+      //   }
+      //   return m;
+      // });
 
       this.$root.editFolder({ 
         type: 'publications', 
         slugFolderName: this.slugPubliName, 
         data: { 
-          pages, 
-          medias_list 
+          pages
         } 
       });
     },
@@ -506,23 +506,22 @@ export default {
       }
       pages.splice(index, 1);
 
-      let medias_list = [];
-      if(this.publication.hasOwnProperty('medias_list')) {
-        medias_list = this.publication.medias_list.slice();
-      }
+      // let medias_list = [];
+      // if(this.publication.hasOwnProperty('medias_list')) {
+      //   medias_list = this.publication.medias_list.slice();
+      // }
 
-      medias_list = medias_list.filter((m) => {
-        if(m.hasOwnProperty('page') && Number.parseInt(m.page) - 1 !== index) {
-          return true;
-        }
-      });
+      // medias_list = medias_list.filter((m) => {
+      //   if(m.hasOwnProperty('page') && Number.parseInt(m.page) - 1 !== index) {
+      //     return true;
+      //   }
+      // });
 
       this.$root.editFolder({ 
         type: 'publications', 
         slugFolderName: this.slugPubliName, 
         data: { 
-          pages, 
-          medias_list 
+          pages 
         } 
       });      
     },

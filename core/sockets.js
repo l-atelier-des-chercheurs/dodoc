@@ -203,12 +203,12 @@ module.exports = (function() {
         slugFolderName,
         additionalMeta
       })
-      .then(mediaData => {
+      .then(_additionalMeta => {
         file
           .createMediaMeta({
             type,
             slugFolderName,
-            additionalMeta: mediaData.additionalMeta
+            additionalMeta: _additionalMeta
           })
           .then(metaFileName => {
             sendMedias({

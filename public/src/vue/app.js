@@ -640,6 +640,10 @@ let vm = new Vue({
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: openPublication: ${slugPubliName}`);
       }
+      this.$socketio.listMedias({
+        type: 'publications',
+        slugFolderName: slugPubliName
+      });
       this.settings.current_slugPubliName = slugPubliName;
     },
     closePublication() {

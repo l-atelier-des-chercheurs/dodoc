@@ -58,7 +58,7 @@
               {{ $t('number_of_medias') }}
             </div>
             <div>
-              {{ typeof publication.medias_list === 'object' ? publication.medias_list.length : '' }}
+              {{ typeof publication.medias === 'object' ? publication.medias.length : '' }}
             </div>
           </div>
 

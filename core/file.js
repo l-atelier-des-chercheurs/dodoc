@@ -56,7 +56,7 @@ module.exports = (function() {
                     meta = _sanitizeMetaFromFile({ type, meta });
                     meta.slugFolderName = slugFolderName;
 
-                    if (type === 'projects') {
+                    if (settings.structure[type].hasOwnProperty('medias')) {
                       meta.medias = {};
                     }
 
@@ -507,7 +507,9 @@ module.exports = (function() {
     createMediaMeta: ({ type, slugFolderName, additionalMeta }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
-          `COMMON — createMediaMeta : will create a new meta file in folder ${slugFolderName}`
+          `COMMON — createMediaMeta : will create a new meta file 
+          in folder ${slugFolderName}
+          `
         );
         if (Object.keys(additionalMeta).length > 0) {
           dev.logverbose(
@@ -515,32 +517,39 @@ module.exports = (function() {
           );
         }
 
-        let timeCreated = api.getCurrentDate();
-        let randomString = (
-          Math.random().toString(36) + '00000000000000000'
-        ).slice(2, 3 + 2);
-        let mediaName = `${timeCreated}-${randomString}`;
-
+        let mediaName;
+        let mediaPath;
+        let metaFileName;
         if (additionalMeta.hasOwnProperty('media_filename')) {
           mediaName = additionalMeta.media_filename;
+          mediaPath = path.join(api.getFolderPath(slugFolderName), mediaName);
+          metaFileName = mediaName + settings.metaFileext;
+        } else {
+          let timeCreated = api.getCurrentDate();
+          let randomString = (
+            Math.random().toString(36) + '00000000000000000'
+          ).slice(2, 3 + 2);
+          metaFileName = `${timeCreated}-${randomString}${
+            settings.metaFileext
+          }`;
         }
 
-        const metaFileName = mediaName + settings.metaFileext;
-        const metaFilePath = path.join(
-          api.getFolderPath(slugFolderName),
-          metaFileName
+        let slugFolderPath = api.getFolderPath(
+          path.join(settings.structure[type].path, slugFolderName)
         );
-        const mediaPath = path.join(
-          api.getFolderPath(slugFolderName),
-          mediaName
-        );
+
+        const metaFilePath = path.join(slugFolderPath, metaFileName);
 
         // check that a meta with this name doesn't exist already
         fs.access(metaFilePath, fs.F_OK, function(err) {
           // if there's nothing at path, we’re all good
           if (err) {
             // guess file type from filename
-            if (!additionalMeta.hasOwnProperty('type')) {
+            if (
+              !additionalMeta.hasOwnProperty('type') &&
+              additionalMeta.hasOwnProperty('media_filename') &&
+              mediaName !== undefined
+            ) {
               let mediaFileExtension = new RegExp(
                 settings.regexpGetFileExtension,
                 'i'
@@ -598,19 +607,21 @@ module.exports = (function() {
                 additionalMeta.fileCreationDate
               );
             } else {
-              dev.logverbose(`Setting created from file birthtime`);
-              let getFileCreationDate = new Promise((resolve, reject) => {
-                fs.stat(mediaPath, function(err, stats) {
-                  if (err) {
+              if (mediaName !== undefined) {
+                dev.logverbose(`Setting created from file birthtime`);
+                let getFileCreationDate = new Promise((resolve, reject) => {
+                  fs.stat(mediaPath, function(err, stats) {
+                    if (err) {
+                      resolve();
+                    }
+                    mdata.date_created = api.convertDate(
+                      new Date(stats.birthtime)
+                    );
                     resolve();
-                  }
-                  mdata.date_created = api.convertDate(
-                    new Date(stats.birthtime)
-                  );
-                  resolve();
+                  });
                 });
-              });
-              tasks.push(getFileCreationDate);
+                tasks.push(getFileCreationDate);
+              }
             }
 
             if (mdata.type === 'image') {
@@ -940,8 +951,15 @@ module.exports = (function() {
         dev.logfunction(
           `COMMON — createMedia with type = ${type}, 
           slugFolderName = ${slugFolderName} 
-          and additionalMeta = ${additionalMeta}`
+          and additionalMeta = ${JSON.stringify(additionalMeta, null, 4)}`
         );
+
+        if (!additionalMeta.hasOwnProperty('type')) {
+          dev.logverbose(
+            'Missing type field, so this media doesn’t have an associated file'
+          );
+          return resolve(additionalMeta);
+        }
 
         let timeCreated = api.getCurrentDate();
         let randomString = (
@@ -1059,17 +1077,11 @@ module.exports = (function() {
           .then(() => {
             dev.logverbose(`Passed all tasks for captured medias`);
             let newMediaInfos = {
-              additionalMeta: {
-                media_filename: mediaName,
-                fileCreationDate: api.parseDate(timeCreated)
-              }
+              media_filename: mediaName,
+              fileCreationDate: api.parseDate(timeCreated)
             };
             if (typeof additionalMeta !== 'undefined') {
-              newMediaInfos.additionalMeta = Object.assign(
-                {},
-                newMediaInfos.additionalMeta,
-                additionalMeta
-              );
+              newMediaInfos = Object.assign({}, newMediaInfos, additionalMeta);
             }
             resolve(newMediaInfos);
           })
@@ -1101,7 +1113,11 @@ module.exports = (function() {
   function readMediaMeta({ type, slugFolderName, metaFileName }) {
     return new Promise(function(resolve, reject) {
       // pour chaque item, on regarde s’il contient un fichier méta (même nom + .txt)
-      let metaFile = path.join(api.getFolderPath(slugFolderName), metaFileName);
+      let slugFolderPath = api.getFolderPath(
+        path.join(settings.structure[type].path, slugFolderName)
+      );
+      let metaFile = path.join(slugFolderPath, metaFileName);
+
       fs.access(metaFile, fs.F_OK, err => {
         // if there's no META file at path
         if (err) {
@@ -1186,6 +1202,8 @@ module.exports = (function() {
               .catch(err => {
                 resolve();
               });
+          } else {
+            resolve(mediaData);
           }
         })
         .catch(err => {

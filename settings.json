@@ -182,14 +182,14 @@
         },
         "pages": {
           "type": "array"
-        },
-        "medias_list": {
-          "type": "array"          
         }
       },
       "medias": {
         "fields": {
-          "name": {
+          "slugProjectName": {
+            "type": "string"
+          },
+          "metaFileName": {
             "type": "string"
           },
           "date_modified": {
@@ -212,6 +212,7 @@
             "type": "number"
           }
         }
-        },
+      }
+    }
   }
 }
