@@ -74,7 +74,9 @@ export default {
       let publidata = {
         name,
         template: 'journal',
-        pages: [{}]
+        pages: [{
+          id: +new Date() + '_' + (Math.random().toString(36) + '00000000000000000').slice(2, 3)
+        }]
       }
       this.$root.createFolder({ type: 'publications', data: publidata });      
       

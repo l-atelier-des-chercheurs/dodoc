@@ -199,8 +199,8 @@
           "authors": {
             "type": "string"
           },
-          "page": {
-            "type": "number"
+          "page_id": {
+            "type": "string"
           },
           "x": {
             "type": "number"

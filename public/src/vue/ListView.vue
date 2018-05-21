@@ -39,18 +39,15 @@
           name="list-complete"
           class="m_projects"
         >
-          <template        
+          <Project
             v-for="(sortedProject, index) in sortedProjectsSlug"
-          > 
-            <Project
-              :key="sortedProject.slugProjectName"
-              :slugProjectName="sortedProject.slugProjectName"
-              :project="projects[sortedProject.slugProjectName]"
-              :read_only="read_only"
-              :currentSort="currentSort"
-              :index="index"
-            />
-          </template>
+            :key="sortedProject.slugProjectName"
+            :slugProjectName="sortedProject.slugProjectName"
+            :project="projects[sortedProject.slugProjectName]"
+            :read_only="read_only"
+            :currentSort="currentSort"
+            :index="index"
+          />
         </transition-group>
       </section>
       
