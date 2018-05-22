@@ -444,7 +444,7 @@ let vm = new Vue({
       }
 
       // if no error and if we have some content already loaded, let’s open it directly
-      // (we are probably in an exported timeline)
+      // (we are probably in an exported folder)
       if (Object.keys(this.store.projects).length > 0) {
         this.settings.current_slugProjectName = Object.keys(
           this.store.projects

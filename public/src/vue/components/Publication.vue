@@ -15,8 +15,14 @@
         </div>
 
         <div class="margin-small">
-          <label for="settings">{{ $t('settings') }}</label>
           <input id="settings" type="checkbox" v-model="advanced_options" />
+          <label for="settings">{{ $t('settings') }}</label>
+        </div>
+        <div class="padding-verysmall border">
+          <label>{{ $t('export') }}</label>
+          <button type="button" class="buttonLink" @click="askForPDF">
+            PDF
+          </button>            
         </div>
       </div>
       <template v-if="advanced_options">
@@ -79,8 +85,8 @@
 
     <div class="m_publicationSettings">
       <div class="margin-bottom-small">
-        <label for="preview">{{ $t('preview') }}</label>
         <input id="preview" type="checkbox" v-model="preview_mode">
+        <label for="preview">{{ $t('preview') }}</label>
       </div>
       <div class="margin-bottom-small">
         <label for="zoom">{{ $t('zoom') }}</label>
@@ -541,7 +547,9 @@ export default {
 
       this.page_currently_active = index;
     },
+    askForPDF() {
 
+    },
     setPageProperties(page) {
       return `
         width: ${Number.parseInt(page.width)}mm; 

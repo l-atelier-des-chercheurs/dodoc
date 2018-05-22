@@ -246,6 +246,8 @@ module.exports = (function() {
       text: 'text',
       other: 'other',
 
+      export: 'Export',
+
       select: 'Select',
       unselect: 'Un-select',
 

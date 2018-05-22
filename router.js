@@ -18,6 +18,7 @@ module.exports = function(app, io, m) {
   app.get('/', showIndex);
   app.get('/:project', loadFolder);
   app.get('/:project/export', exportFolder);
+  app.get('/publication/:publication', loadPublication);
   app.post('/:project/file-upload', postFile2);
 
   /**
@@ -171,6 +172,36 @@ module.exports = function(app, io, m) {
             res.render('index', pageData);
           }
         )
+        .catch(err => {
+          dev.error('No folder found');
+        });
+    });
+  }
+
+  function loadPublication(req, res) {
+    let slugPubliName = req.param('publication');
+
+    generatePageData(req).then(pageData => {
+      // get publication
+      file
+        .getFolder({ type: 'publication', slugFolderName: slugPubliName })
+        .then(foldersData => {
+          // get medias
+          // file.readMediaList({ type, medias_list }).then(folders_and_medias => {
+          // });
+          //     // recreate full object
+          //     foldersData[slugProjectName].medias = mediasData;
+          //     pageData.folderAndMediaData = foldersData;
+          //     pageData.mode = 'export';
+          //     res.render('index', pageData)
+          // );
+          // },
+          // (err, p) => {
+          //   dev.error(`Failed to get publication: ${err}`);
+          //   pageData.noticeOfError = 'failed_to_find_publication';
+          //   res.render('index', pageData);
+          // }
+        })
         .catch(err => {
           dev.error('No folder found');
         });
