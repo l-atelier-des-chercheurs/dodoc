@@ -443,9 +443,10 @@ body {
 .publiButton {
   position: absolute;
   top: 130px;
-  right:0;
+  right:100%;
 
   @t-button_size: 3em;
+  width: 3em;
 
   min-height: @t-button_size;
   border-radius: @t-button_size 0 0 @t-button_size;
@@ -464,10 +465,6 @@ body {
   }
 
   &.is--open {
-    right: 900px;
-    @media screen and (max-width: 1024px) {
-      right: 800px;
-    }
   }
 }
 
@@ -500,7 +497,8 @@ body {
   }
 
   .m_activitiesPanel--do {
-    flex-basis: 100px;
+    flex-basis: 200px;
+    min-width: 320px;
     position: relative;
     overflow: hidden;
   }
@@ -510,12 +508,14 @@ body {
     flex-grow: 0;
 
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     background-color: @c-bleuvert_fonce;
+
+    transition: all .4s;
 
     &.is--open {
       flex-basis: 900px;
-      flex-grow: 0;
+      flex-grow: 1;
       border-left: 10px solid @c-bleuvert_fonce;
 
       @media screen and (max-width: 1024px) {

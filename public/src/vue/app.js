@@ -399,6 +399,8 @@ let vm = new Vue({
       current_author: false,
       showMediaModalFor: false,
 
+      show_only_publication: false,
+
       publi_zoom: 1,
 
       show_publi_panel: false,
@@ -476,8 +478,7 @@ let vm = new Vue({
           this.settings.current_slugPubliName = slugPubliName;
           this.settings.show_publi_panel = true;
 
-          // this.togglePubliPanel();
-          // this.openPublication(slugPubliName);
+          this.settings.show_only_publication = true;
         }
       }
     }
