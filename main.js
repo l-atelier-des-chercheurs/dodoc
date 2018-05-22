@@ -41,7 +41,6 @@ function createWindow() {
   const verbose =
     process.argv.length >= 5 ? process.argv[4] === '--verbose' : false;
 
-  debugger;
   dev.init(debug, verbose);
 
   if (dev.isDebug()) {

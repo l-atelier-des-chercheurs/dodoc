@@ -29,7 +29,7 @@ html
         slugProjectName: "!{slugProjectName}",
         projects: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" },
         authors: {},
-        publications: {}
+        publications: !{ !!publiAndMediaData ? JSON.stringify(publiAndMediaData) : "{}" },
       };
 
       /* state contains settings data, time and client specific data */

@@ -82,7 +82,6 @@ export default {
   },
   watch: {
     'project.medias': function() {
-      debugger;
       let justCreatedTextMedia = Object.keys(this.project.medias).filter((m) => {
         let data = this.project.medias[m];
         return data.hasOwnProperty('id') && data.id === this.$root.justCreatedMediaID;

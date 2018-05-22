@@ -337,7 +337,6 @@ export default {
       if(this.page_currently_active !== false) {
         page = this.page_currently_active;
       }
-      debugger;
 
       const newMediaMeta = {
         slugProjectName,
@@ -542,8 +541,6 @@ export default {
         }
         index++;
       }
-
-      debugger;
 
       this.page_currently_active = index;
     },

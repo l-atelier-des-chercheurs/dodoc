@@ -446,9 +446,16 @@ let vm = new Vue({
       // if no error and if we have some content already loaded, let’s open it directly
       // (we are probably in an exported folder)
       if (Object.keys(this.store.projects).length > 0) {
-        this.settings.current_slugProjectName = Object.keys(
-          this.store.projects
-        )[0];
+        // this.settings.current_slugProjectName = Object.keys(
+        //   this.store.projects
+        // )[0];
+        // window.addEventListener(
+        //   'socketio.folders_listed',
+        //   () => {
+        //     this.openProject(this.settings.current_slugProjectName);
+        //   },
+        //   { once: true }
+        // );
       } else {
         // if a slugProjectName is requested, load the content of that folder rightaway
         // we are probably in a webbrowser that accesses a subfolder
@@ -457,10 +464,20 @@ let vm = new Vue({
           window.addEventListener(
             'socketio.folders_listed',
             () => {
-              this.openProject(this.store.slugProjectName);
+              this.openProject(this.settings.current_slugProjectName);
             },
             { once: true }
           );
+        }
+
+        if (Object.keys(this.store.publications).length > 0) {
+          const slugPubliName = Object.keys(this.store.publications)[0];
+
+          this.settings.current_slugPubliName = slugPubliName;
+          this.settings.show_publi_panel = true;
+
+          // this.togglePubliPanel();
+          // this.openPublication(slugPubliName);
         }
       }
     }

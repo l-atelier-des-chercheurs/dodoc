@@ -18,7 +18,7 @@ module.exports = function(app, io, m) {
   app.get('/', showIndex);
   app.get('/:project', loadFolder);
   app.get('/:project/export', exportFolder);
-  // app.get('/publication/:publication', loadPublication);
+  app.get('/publication/:publication', loadPublication);
   app.post('/:project/file-upload', postFile2);
 
   /**
@@ -90,12 +90,12 @@ module.exports = function(app, io, m) {
     let slugProjectName = req.param('project');
     generatePageData(req).then(
       pageData => {
-        pageData.slugProjectName = slugProjectName;
         // let’s make sure that folder exists first and return some meta
         file
           .getFolder({ type: 'projects', slugFolderName: slugProjectName })
           .then(
             foldersData => {
+              pageData.folderAndMediaData = foldersData;
               res.render('index', pageData);
             },
             (err, p) => {
@@ -180,32 +180,49 @@ module.exports = function(app, io, m) {
 
   function loadPublication(req, res) {
     let slugPubliName = req.param('publication');
+    let slugFolderName = slugPubliName;
+    let type = 'publications';
 
-    debugger;
+    let publi_and_medias = {};
+
     generatePageData(req).then(pageData => {
       // get publication
-      // file
-      //   .getFolder({ type: 'publication', slugFolderName: slugPubliName })
-      //   .then(foldersData => {
-      //     // get medias
-      //     // file.readMediaList({ type, medias_list }).then(folders_and_medias => {
-      //     // });
-      //     //     // recreate full object
-      //     //     foldersData[slugProjectName].medias = mediasData;
-      //     //     pageData.folderAndMediaData = foldersData;
-      //     //     pageData.mode = 'export';
-      //     //     res.render('index', pageData)
-      //     // );
-      //     // },
-      //     // (err, p) => {
-      //     //   dev.error(`Failed to get publication: ${err}`);
-      //     //   pageData.noticeOfError = 'failed_to_find_publication';
-      //     //   res.render('index', pageData);
-      //     // }
-      //   })
-      //   .catch(err => {
-      //     dev.error('No folder found');
-      //   });
+      file
+        .getFolder({
+          type,
+          slugFolderName
+        })
+        .then(foldersData => {
+          publi_and_medias = foldersData;
+          // get all medias in that publication
+          file
+            .getMediaMetaNames({
+              type,
+              slugFolderName
+            })
+            .then(list_metaFileName => {
+              let medias_list = list_metaFileName.map(metaFileName => {
+                return {
+                  slugFolderName,
+                  metaFileName
+                };
+              });
+              file
+                .readMediaList({
+                  type,
+                  medias_list
+                })
+                .then(publi_medias => {
+                  dev.logverbose(
+                    `Got medias, now sending to the right clients`
+                  );
+                  publi_and_medias[slugFolderName].medias =
+                    publi_medias[slugFolderName].medias;
+                  pageData.publiAndMediaData = publi_and_medias;
+                  res.render('index', pageData);
+                });
+            });
+        });
     });
   }
 
