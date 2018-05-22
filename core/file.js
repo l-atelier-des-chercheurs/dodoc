@@ -308,7 +308,6 @@ module.exports = (function() {
           });
       });
     },
-
     removeFolder: ({ type, slugFolderName }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(

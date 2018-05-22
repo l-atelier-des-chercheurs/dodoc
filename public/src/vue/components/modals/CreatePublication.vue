@@ -74,6 +74,8 @@ export default {
       let publidata = {
         name,
         template: 'journal',
+        width: 210,
+        height: 297,
         pages: [{
           id: +new Date() + '_' + (Math.random().toString(36) + '00000000000000000').slice(2, 3)
         }]

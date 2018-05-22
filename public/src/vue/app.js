@@ -369,6 +369,9 @@ Vue.prototype.$socketio = new Vue({
     },
     listSpecificMedias(mdata) {
       this.socket.emit('listSpecificMedias', mdata);
+    },
+    downloadPubliPDF(pdata) {
+      this.socket.emit('downloadPubliPDF', pdata);
     }
   }
 });
@@ -681,7 +684,14 @@ let vm = new Vue({
       }
       this.settings.current_slugPubliName = false;
     },
-
+    downloadPubliPDF({ slugPubliName }) {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`ROOT EVENT: downloadPubliPDF: ${slugPubliName}`);
+      }
+      this.$socketio.downloadPubliPDF({
+        slugPubliName
+      });
+    },
     listSpecificMedias(mdata) {
       if (window.state.dev_mode === 'debug') {
         console.log(

@@ -1,6 +1,7 @@
 const dev = require('./dev-log'),
   api = require('./api'),
-  auth = require('./auth');
+  auth = require('./auth'),
+  exporter = require('./exporter');
 
 const file = require('./file');
 const settings = require('../settings.json');
@@ -70,6 +71,9 @@ module.exports = (function() {
 
       socket.on('listSpecificMedias', function(data) {
         onListSpecificMedias(socket, data);
+      });
+      socket.on('downloadPubliPDF', function(data) {
+        onDownloadPubliPDF(socket, data);
       });
     });
   }
@@ -290,6 +294,16 @@ module.exports = (function() {
       medias_list = ${JSON.stringify(medias_list, null, 4)}`
     );
     sendSpecificMedias({ type, medias_list, socket });
+  }
+
+  function onDownloadPubliPDF(socket, { slugPubliName }) {
+    dev.logfunction(
+      `EVENT - onDownloadPubliPDF with 
+      slugPubliName = ${slugPubliName}`
+    );
+    exporter.makePDFForPubli({ slugPubliName }).then(({ pdfPath, pdfURL }) => {
+      api.sendEventWithContent('publiPDF', { pdfPath, pdfURL }, io, socket);
+    });
   }
 
   /**************************************************************** GENERAL ********************************/

@@ -234,7 +234,7 @@ module.exports = (function() {
       let cachePath = path.join(
         global.appRoot,
         settings.cacheDirname,
-        'medias'
+        '_medias'
       );
       fs.mkdirp(cachePath, function() {
         let pathToTempMedia = path.join(cachePath, mediaName);
@@ -271,7 +271,7 @@ module.exports = (function() {
       let cachePath = path.join(
         global.appRoot,
         settings.cacheDirname,
-        'medias'
+        '_medias'
       );
       fs.mkdirp(cachePath, function() {
         let pathToTempMedia = path.join(cachePath, mediaName);

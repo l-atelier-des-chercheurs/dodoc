@@ -18,12 +18,12 @@
           <input id="settings" type="checkbox" v-model="advanced_options" />
           <label for="settings">{{ $t('settings') }}</label>
         </div>
-        <div class="padding-verysmall border">
-          <label>{{ $t('export') }}</label>
-          <button type="button" class="buttonLink" @click="askForPDF">
-            PDF
-          </button>            
-        </div>
+        <button type="button" class="buttonLink" @click="downloadPDF">
+          {{ $t('export_as_pdf') }}
+        </button>            
+        <a :href="url_to_publication" target="_blank" class="buttonLink js--openInBrowser">
+          {{ $t('new_window') }}
+        </a>            
       </div>
       <template v-if="advanced_options">
         <hr>
@@ -118,7 +118,9 @@
               :style="`--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
             />
 
-            <div class="m_publicationview--pages--page--header">
+            <div class="m_publicationview--pages--page--header"
+              v-if="!!page.header_left || !!page.header_right"
+            >
               <div>
                 {{ page.header_left }}
               </div>
@@ -213,7 +215,7 @@ export default {
       new_header_right: '',
 
       page_currently_active: 0,
-      preview_mode: false,
+      preview_mode: true,
       zoom: window.innerWidth <= 1024 ? 0.8 : 1,
       pixelsPerMillimeters: 0,
       has_media_selected: false
@@ -324,6 +326,9 @@ export default {
         defaultPages.push(page);
       }
       return defaultPages;
+    },
+    url_to_publication() {
+      return `/publication/${this.slugPubliName}`;
     }
   },
   methods: {
@@ -544,8 +549,14 @@ export default {
 
       this.page_currently_active = index;
     },
-    askForPDF() {
-
+    downloadPDF() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: downloadPDF`);
+      }
+      debugger;
+      this.$root.downloadPubliPDF({ 
+        slugPubliName: this.slugPubliName, 
+      });
     },
     setPageProperties(page) {
       return `

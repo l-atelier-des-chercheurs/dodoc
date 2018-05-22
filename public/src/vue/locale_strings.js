@@ -128,6 +128,9 @@ module.exports = (function() {
 
       export_folder: 'Exporter en format WEB',
       export: 'Exporter',
+      export_as_pdf: 'Export PDF',
+      new_window: 'Nouvelle fenêtre',
+
       publication_list: 'Liste des publications',
 
       last_modified: 'Dernière modification',
@@ -247,6 +250,8 @@ module.exports = (function() {
       other: 'other',
 
       export: 'Export',
+      export_as_pdf: 'Export as PDF',
+      new_window: 'New Window',
 
       select: 'Select',
       unselect: 'Un-select',

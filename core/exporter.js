@@ -3,11 +3,12 @@ const path = require('path'),
 
 const settings = require('../settings.json'),
   dev = require('./dev-log'),
-  api = require('./api');
+  api = require('./api'),
+  file = require('./file');
 
 module.exports = (function() {
   return {
-    copyWebsiteContent: function({ html, slugFolderName }) {
+    copyWebsiteContent: ({ html, slugFolderName }) => {
       return new Promise(function(resolve, reject) {
         // create cache folder that we will need to copy the content
         let cacheFolderName =
@@ -119,6 +120,75 @@ module.exports = (function() {
             reject(err);
           }
         );
+      });
+    },
+    makePDFForPubli: ({ slugPubliName }) => {
+      return new Promise(function(resolve, reject) {
+        const pdfName =
+          slugPubliName +
+          '-' +
+          api.getCurrentDate() +
+          '-' +
+          (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2) +
+          '.pdf';
+
+        const cachePath = path.join(
+          global.appRoot,
+          settings.cacheDirname,
+          '_publications'
+        );
+
+        const pdfPath = path.join(cachePath, pdfName);
+
+        const urlToPubli = `${
+          global.appInfos.homeURL
+        }/publication/${slugPubliName}`;
+
+        file
+          .getFolder({
+            type: 'publications',
+            slugFolderName: slugPubliName
+          })
+          .then(publiData => {
+            publiData = Object.values(publiData)[0];
+            fs.mkdirp(cachePath, () => {
+              const { BrowserWindow } = require('electron');
+              let win = new BrowserWindow({
+                width: 800,
+                height: 600,
+                show: false
+              });
+              win.loadURL(urlToPubli);
+
+              win.webContents.on('did-finish-load', () => {
+                // Use default printing options
+                setTimeout(() => {
+                  debugger;
+                  win.webContents.printToPDF(
+                    {
+                      marginsType: 1,
+                      pageSize: {
+                        width: publiData.width * 1000,
+                        height: publiData.height * 1000 + 100
+                      }
+                    },
+                    (error, data) => {
+                      if (error) throw error;
+
+                      fs.writeFile(pdfPath, data, error => {
+                        if (error) throw error;
+                        console.log('Write PDF successful');
+                        resolve({
+                          pdfPath,
+                          pdfURL: `_publications/${pdfName}`
+                        });
+                      });
+                    }
+                  );
+                }, 500);
+              });
+            });
+          });
       });
     }
   };
