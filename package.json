@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "electron .",
-    "debug": "electron . --debug --verbose",
+    "debug": "electron --inspect=5858 . --debug --verbose",
     "pack": "build --dir",
     "dist": "build",
     "postinstall": "electron-builder install-app-deps"
@@ -42,7 +42,6 @@
     "express": "^4.16.3",
     "ffmpeg-static": "^2.2.0",
     "ffprobe-static": "^2.0.0",
-    "flags": "^0.1.3",
     "fluent-ffmpeg": "^2.1.2",
     "formidable": "^1.2.0",
     "fs-extra": "^5.0.0",

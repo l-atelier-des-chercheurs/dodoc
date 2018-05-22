@@ -24,6 +24,7 @@ module.exports = dev = (function() {
     isDebugMode = d;
     isVerboseMode = v;
     logToFile = global.nodeStorage.getItem('logToFile');
+    console.log(`Init module with debug = ${d} and verbose = ${v}`);
 
     if (isDebugMode) {
       console.log('Debug mode is Enabled');

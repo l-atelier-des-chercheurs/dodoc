@@ -8,7 +8,6 @@ const {
 
 const path = require('path');
 const fs = require('fs-extra');
-const flags = require('flags');
 const { dialog } = require('electron');
 const JSONStorage = require('node-localstorage').JSONStorage;
 const portscanner = require('portscanner');
@@ -37,12 +36,12 @@ function createWindow() {
   var storageLocation = app.getPath('userData');
   global.nodeStorage = new JSONStorage(storageLocation);
 
-  flags.defineBoolean('debug');
-  flags.defineBoolean('verbose');
-  flags.parse();
+  const debug =
+    process.argv.length >= 4 ? process.argv[3] === '--debug' : false;
+  const verbose =
+    process.argv.length >= 5 ? process.argv[4] === '--verbose' : false;
 
-  const debug = flags.get('debug');
-  const verbose = flags.get('verbose');
+  debugger;
   dev.init(debug, verbose);
 
   if (dev.isDebug()) {
