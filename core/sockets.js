@@ -302,7 +302,12 @@ module.exports = (function() {
       slugPubliName = ${slugPubliName}`
     );
     exporter.makePDFForPubli({ slugPubliName }).then(({ pdfPath, pdfURL }) => {
-      api.sendEventWithContent('publiPDF', { pdfPath, pdfURL }, io, socket);
+      api.sendEventWithContent(
+        'publiPDFGenerated',
+        { pdfPath, pdfURL },
+        io,
+        socket
+      );
     });
   }
 

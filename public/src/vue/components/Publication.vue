@@ -18,9 +18,18 @@
           <input id="settings" type="checkbox" v-model="advanced_options" />
           <label for="settings">{{ $t('settings') }}</label>
         </div>
-        <button type="button" class="buttonLink" @click="downloadPDF">
-          {{ $t('export_as_pdf') }}
-        </button>            
+
+        <button type="button" class="buttonLink" @click="showExportModal = true">
+          {{ $t('export') }}
+        </button>     
+
+        <ExportModal
+          v-if="showExportModal"
+          @close="showExportModal = false"
+          :slugPubliName="slugPubliName"
+        >
+        </ExportModal>
+
         <a :href="url_to_publication" target="_blank" class="buttonLink js--openInBrowser">
           {{ $t('new_window') }}
         </a>            
@@ -173,6 +182,7 @@
 <script>
 import MediaPublication from './subcomponents/MediaPublication.vue';
 import _ from 'underscore';
+import ExportModal from './modals/Export.vue';
 
 export default {
   props: {
@@ -181,7 +191,8 @@ export default {
     read_only: Boolean
   },
   components: {
-    MediaPublication
+    MediaPublication,
+    ExportModal
   },
   data() {
     return {
@@ -218,7 +229,8 @@ export default {
       preview_mode: true,
       zoom: window.innerWidth <= 1024 ? 0.8 : 1,
       pixelsPerMillimeters: 0,
-      has_media_selected: false
+      has_media_selected: false,
+      showExportModal: false
     }
   },
   created() {
@@ -548,15 +560,6 @@ export default {
       }
 
       this.page_currently_active = index;
-    },
-    downloadPDF() {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: downloadPDF`);
-      }
-      debugger;
-      this.$root.downloadPubliPDF({ 
-        slugPubliName: this.slugPubliName, 
-      });
     },
     setPageProperties(page) {
       return `

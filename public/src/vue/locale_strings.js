@@ -132,6 +132,12 @@ module.exports = (function() {
       new_window: 'Nouvelle fenêtre',
 
       publication_list: 'Liste des publications',
+      export_publication: 'Exportation d’une publication',
+      get_pdf:
+        'Pour récupérer un PDF de cette publication, cliquez sur le bouton ci-dessous&nbsp;:',
+      download_pdf: 'Télécharger un PDF',
+      pdf_creation_in_progress: 'En cours de création…',
+      pdf_created: 'Le PDF a été créé',
 
       last_modified: 'Dernière modification',
       remote_access: 'Accès depuis d’autres appareils',
@@ -301,7 +307,14 @@ module.exports = (function() {
 
       export_folder: 'Export as a webpage',
       export: 'Export',
+
       publication_list: 'Publications list',
+      export_publication: 'Export a publication',
+      get_pdf:
+        'To download a PDF of this publication (for example, to print it), click here:',
+      download_pdf: 'Download PDF',
+      pdf_creation_in_progress: 'PDF creation in progress…',
+      pdf_created: 'PDF created',
 
       last_modified: 'Last modified',
       remote_access: 'Acces from other devices',

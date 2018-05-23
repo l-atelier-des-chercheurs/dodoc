@@ -2,7 +2,7 @@
   <Modal
     @close="$emit('close')"
     :typeOfModal="'LargeAndScroll'"
-    >
+  >
     <template slot="header">
       <span class="">
             {{ $t('authors_list') }}        
