@@ -163,7 +163,6 @@ module.exports = (function() {
               win.webContents.on('did-finish-load', () => {
                 // Use default printing options
                 setTimeout(() => {
-                  debugger;
                   win.webContents.printToPDF(
                     {
                       marginsType: 1,

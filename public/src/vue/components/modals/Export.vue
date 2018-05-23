@@ -109,8 +109,6 @@ export default {
       this.pdf_request_status = 'generated';
       this.link_to_pdf = '../' + pdfURL;
       this.path_to_pdf = pdfPath;
-
-      debugger;
     }
   }
 }
