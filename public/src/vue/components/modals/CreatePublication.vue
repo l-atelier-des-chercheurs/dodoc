@@ -17,6 +17,17 @@
         <input type="text" v-model="publidata.name" required autofocus>
       </div>
 
+<!-- Human name -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('template') }}</label>
+        <select v-model="publidata.template">
+          <option value="print">
+            {{ $t('print') }}
+          </option>
+        </select>
+      </div>
+      
+
     </template>
 
     <template slot="submit_button">
@@ -39,6 +50,7 @@ export default {
     return {
       publidata: {
         name: '',
+        template: 'print'
       }
     };
   },
@@ -73,7 +85,7 @@ export default {
 
       let publidata = {
         name,
-        template: 'journal',
+        template: 'print',
         width: 210,
         height: 297,
         pages: [{

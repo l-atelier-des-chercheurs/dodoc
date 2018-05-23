@@ -150,8 +150,8 @@
         },
         "template": {
           "type": "string",
-          "options": ["journal"],
-          "default": "journal"          
+          "options": ["print"],
+          "default": "print"          
         },
         "width": {
           "type": "number"

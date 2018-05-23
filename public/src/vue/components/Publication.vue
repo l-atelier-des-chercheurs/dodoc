@@ -198,7 +198,7 @@ export default {
     return {
       publication_medias: {},
       publication_defaults: {
-        'journal': {
+        'print': {
           width: 210,
           height: 296,        
           margin_left: 10,

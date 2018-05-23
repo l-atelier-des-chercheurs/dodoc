@@ -41,6 +41,7 @@
         autocorrect="off"
         :editorToolbar="customToolbar"
         class="mediaTextContent"
+        autofocus
       />
       <!-- <textarea
         placeholder="…"

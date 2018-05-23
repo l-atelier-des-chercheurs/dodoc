@@ -139,6 +139,8 @@ module.exports = (function() {
       pdf_creation_in_progress: 'En cours de création…',
       pdf_created: 'Le PDF a été créé',
       open_in_app: 'Afficher',
+      template: 'Gabarit',
+      print: 'Document imprimé',
 
       last_modified: 'Dernière modification',
       remote_access: 'Accès depuis d’autres appareils',
@@ -317,6 +319,8 @@ module.exports = (function() {
       pdf_creation_in_progress: 'PDF creation in progress…',
       pdf_created: 'PDF created',
       open_in_app: 'Open',
+      template: 'Template',
+      print: 'Printed document',
 
       last_modified: 'Last modified',
       remote_access: 'Acces from other devices',

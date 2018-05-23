@@ -65,6 +65,12 @@ export default {
     };
   },
   computed: {},
+  mounted() {
+    if (Modernizr !== undefined && !Modernizr.touchevents) {
+      const el = this.$el.querySelector('[autofocus]');
+      el.focus();
+    }
+  },
   methods: {
     newAuthor: function(event) {
       console.log('newAuthor');

@@ -13,6 +13,7 @@
 
         <div
           class="m_modal--container--content"
+          ref="modalContent"
           >
 
           <div v-if="!!this.$slots['preview']" class="m_modal--preview"
@@ -37,7 +38,7 @@
           <form v-if="!!this.$slots['sidebar']"
             class="m_modal--sidebar"
             v-on:submit.prevent="$emit('submit')"
-            >
+          >
 
             <div class="m_modal--header">
               <h3 class="margin-none">
@@ -115,8 +116,18 @@ export default {
     console.log(`MOUNTED • BaseModal`)
     setTimeout(() => {
       this.showModal = true;
-    },100);
 
+      if (Modernizr !== undefined && !Modernizr.touchevents) {
+        const el = this.$refs.modalContent.querySelector('[autofocus]');
+        debugger;
+
+        if(el.classList.contains('quillWrapper')) {
+          el.querySelector('.ql-editor').focus();
+        }  else {
+          el.focus();
+        }
+      }
+    },100);
   },
   computed: {
     window_innerHeight() { 
