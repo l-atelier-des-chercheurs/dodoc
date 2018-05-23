@@ -12,7 +12,8 @@
       <div class="margin-sides-medium">
         <div class="">
           <div v-html="$t('get_pdf')" />
-          <button type="button" class="margin-small margin-left-none bg-bleuvert c-blanc" 
+          <button type="button" 
+            class="margin-small margin-left-none bg-bleuvert c-blanc button-allwide" 
             :disabled="pdf_request_status !== false"
             @click="downloadPDF"
           >
@@ -31,12 +32,14 @@
           <div v-if="pdf_request_status === 'generated'">
             <a 
               v-if="link_to_pdf !== false"
+              class="buttonLink margin-left-none"
               :href="link_to_pdf" target="_blank" download="">
               {{ $t('download') }}
             </a>
             <a 
               v-if="path_to_pdf !== false && $root.state.is_electron"
-              :href="path_to_pdf" target="_blank" class="js--openInNativeApp"
+              :href="path_to_pdf" target="_blank" 
+              class="buttonLink margin-left-none js--openInNativeApp"
             >
               {{ $t('open_in_app') }}
             </a>            
@@ -104,7 +107,7 @@ export default {
       this.$eventHub.$off('publication.pdfIsGenerated', this.publiIsGenerated);
 
       this.pdf_request_status = 'generated';
-      this.link_to_pdf = pdfURL;
+      this.link_to_pdf = '../' + pdfURL;
       this.path_to_pdf = pdfPath;
 
       debugger;
