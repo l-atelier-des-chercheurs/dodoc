@@ -464,9 +464,6 @@ body {
     padding: @t-skipline/4; 
     display: none;   
   }
-
-  &.is--open {
-  }
 }
 
 
@@ -486,42 +483,28 @@ body {
   @media screen and (max-width: 50rem) {
     height: auto !important;
   }
+
   html.touchevents & {
     // height: 100%;
   }
 
-  display: flex;
-  flex-flow: row nowrap;
-
-  > * {
-    flex: 1 1 auto;
-  }
-
   .m_activitiesPanel--do {
-    flex-basis: 200px;
-    min-width: 320px;
     position: relative;
-    overflow: hidden;
+    height: 100%;
+    min-width: 320px;
   }
 
   .m_activitiesPanel--doc {
-    flex-basis:0;
-    flex-grow: 0;
-
     position: relative;
-    overflow: visible;
+    height: 100%;
+    min-width: 320px;
     background-color: @c-bleuvert_fonce;
 
     transition: all .4s;
 
     &.is--open {
-      flex-basis: 900px;
       flex-grow: 1;
       border-left: 10px solid @c-bleuvert_fonce;
-
-      @media screen and (max-width: 1024px) {
-        flex-basis: 800px;
-      }
     }
   }
 
@@ -1574,10 +1557,7 @@ body {
       pointer-events: auto;
     }
   }
-
 }
-
-
 
 
 .alertify-logs>*, .alertify-logs>.default {

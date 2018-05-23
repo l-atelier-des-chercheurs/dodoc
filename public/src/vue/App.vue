@@ -16,71 +16,76 @@
     </TopBar>
 
     <div class="m_activitiesPanel">
-      <div 
-        class="m_activitiesPanel--do"
-        v-if="!$root.settings.show_only_publication"
-      >
-        <!-- v-show="$root.settings.view === 'ListView'" -->
-        <transition name="ListView" :duration="500">
-          <ListView
-            v-if="$root.settings.view === 'ListView'"
-            :presentationMD="$root.store.presentationMD"
-            :read_only="!$root.state.connected"
-            :projects="$root.store.projects"
-          />
-        </transition>
-        <transition name="ProjectView" :duration="500">
-          <ProjectView
-            v-if="$root.settings.view === 'ProjectView' && $root.currentProject.hasOwnProperty('name')"
-            :slugProjectName="$root.settings.current_slugProjectName"
-            :project="$root.currentProject"
-            :read_only="!$root.state.connected"
-          />
-        </transition>
-
-        <transition name="CaptureView" :duration="500">
-          <CaptureView
-            v-if="$root.settings.view === 'CaptureView'"
-            :slugProjectName="$root.settings.current_slugProjectName"
-            :project="$root.currentProject"
-          />
-        </transition>
-      </div>
-      <div class="m_activitiesPanel--doc"
-        :class="{ 'is--open' : $root.settings.show_publi_panel }"
-      >
-        <button
+      <SplitPane v-on:resize="resize" :min-percent='0' :default-percent='100' split="vertical">
+        <div 
+          slot="paneL"
+          class="m_activitiesPanel--do"
           v-if="!$root.settings.show_only_publication"
-          class="publiButton"
-          :class="{ 'is--open' : $root.settings.show_publi_panel }"
-          @click="$root.togglePubliPanel"
-          :key="'openPubli'"
         >
-          <!-- v-if="$root.settings.view !== 'CaptureView'" -->
-          <img src="/images/i_publi.svg" width="48" height="48" />
-          <span class="margin-small">
-            {{ $t('publication') }}
-          </span>
-        </button>
-
-        <div style="position: relative; height: 100%; overflow: hidden">
+          <!-- v-show="$root.settings.view === 'ListView'" -->
           <transition name="ListView" :duration="500">
-            <Publications
-              v-if="$root.settings.show_publi_panel && !$root.settings.current_slugPubliName"
-              :publications="$root.store.publications"
+            <ListView
+              v-if="$root.settings.view === 'ListView'"
+              :presentationMD="$root.store.presentationMD"
               :read_only="!$root.state.connected"
+              :projects="$root.store.projects"
             />
           </transition>
           <transition name="ProjectView" :duration="500">
-            <Publication
-              v-if="$root.settings.current_slugPubliName !== false"
-              :slugPubliName="$root.settings.current_slugPubliName"
-              :publication="$root.store.publications[$root.settings.current_slugPubliName]"
+            <ProjectView
+              v-if="$root.settings.view === 'ProjectView' && $root.currentProject.hasOwnProperty('name')"
+              :slugProjectName="$root.settings.current_slugProjectName"
+              :project="$root.currentProject"
               :read_only="!$root.state.connected"
             />
           </transition>
+
+          <transition name="CaptureView" :duration="500">
+            <CaptureView
+              v-if="$root.settings.view === 'CaptureView'"
+              :slugProjectName="$root.settings.current_slugProjectName"
+              :project="$root.currentProject"
+            />
+          </transition>
         </div>
-      </div>
+        <div 
+          slot="paneR"
+          class="m_activitiesPanel--doc"
+          :class="{ 'is--open' : $root.settings.show_publi_panel }"
+        >
+          <button
+            v-if="!$root.settings.show_only_publication"
+            class="publiButton"
+            :class="{ 'is--open' : $root.settings.show_publi_panel }"
+            @click="$root.togglePubliPanel"
+            :key="'openPubli'"
+          >
+            <!-- v-if="$root.settings.view !== 'CaptureView'" -->
+            <img src="/images/i_publi.svg" width="48" height="48" />
+            <span class="margin-small">
+              {{ $t('publication') }}
+            </span>
+          </button>
+
+          <div style="position: relative; height: 100%; overflow: hidden">
+            <transition name="ListView" :duration="500">
+              <Publications
+                v-if="$root.settings.show_publi_panel && !$root.settings.current_slugPubliName"
+                :publications="$root.store.publications"
+                :read_only="!$root.state.connected"
+              />
+            </transition>
+            <transition name="ProjectView" :duration="500">
+              <Publication
+                v-if="$root.settings.current_slugPubliName !== false"
+                :slugPubliName="$root.settings.current_slugPubliName"
+                :publication="$root.store.publications[$root.settings.current_slugPubliName]"
+                :read_only="!$root.state.connected"
+              />
+            </transition>
+          </div>
+        </div>
+      </SplitPane>
     </div>
 
     <EditMedia
@@ -108,6 +113,8 @@ import Publications from './Publications.vue';
 import Publication from './components/Publication.vue';
 import EditMedia from './components/modals/EditMedia.vue';
 
+import SplitPane from './components/splitpane/SplitPane.vue';
+
 export default {
   name: 'app',
   components: {
@@ -118,7 +125,8 @@ export default {
     CaptureView,
     Publications,
     Publication,
-    EditMedia
+    EditMedia,
+    SplitPane
   },
   props: {
   },
