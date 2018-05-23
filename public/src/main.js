@@ -44,25 +44,39 @@ window.$ = window.jQuery = jQuery;
 ***********/
 
 // If click on a link with a specific class, open in the browser and not in electron.
-document.body.addEventListener('click', openInNativeBrowser);
+if (window && window.process && window.process.type) {
+  document.body.addEventListener('click', electronSpecificOpenLink);
+}
 
-function openInNativeBrowser(event) {
+function electronSpecificOpenLink(event) {
   event.path.every(item => {
-    if (
-      item.classList !== undefined &&
-      item.classList.length > 0 &&
-      item.classList.contains('js--openInBrowser')
-    ) {
-      if (window && window.process && window.process.type) {
+    if (item.classList !== undefined && item.classList.length > 0) {
+      if (item.classList.contains('js--openInBrowser')) {
         const shell = window.require('electron').shell;
         event.preventDefault();
         shell.openExternal(item.href);
+        return false;
+      } else if (item.classList.contains('js--openInNativeApp')) {
+        const shell = window.require('electron').shell;
+        event.preventDefault();
+        shell.openItem(item.getAttribute('href'));
+        return false;
       }
-      return false;
     }
     return true;
   });
 }
+
+$('body').on('click', '[data-open_in_native_app]', function(e) {
+  console.log('Opening in native app if available');
+  var $target = $(e.target);
+  var thisHREF = $target.attr('data-fullPath');
+  if (thisHREF !== undefined && require('electron') !== undefined) {
+    var shell = require('electron').shell;
+    event.preventDefault();
+    shell.openItem(thisHREF);
+  }
+});
 
 document.addEventListener(
   'dragover',

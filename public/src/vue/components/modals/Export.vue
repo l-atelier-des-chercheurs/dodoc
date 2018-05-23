@@ -2,15 +2,15 @@
   <Modal
     @close="$emit('close')"
     class="m_exportModal"
-    :typeOfModal="'SmallAndScroll'"
+    :typeOfModal="'EditMeta'"
   >
     <template slot="header">
       <span class="">{{ $t('export_publication') }}</span>
     </template>
 
-    <template slot="preview">
+    <template slot="sidebar">
       <div class="margin-sides-medium">
-        <div class="padding-vert-medium">
+        <div class="">
           <div v-html="$t('get_pdf')" />
           <button type="button" class="margin-small margin-left-none bg-bleuvert c-blanc" 
             :disabled="pdf_request_status !== false"
@@ -29,9 +29,17 @@
           </button>
 
           <div v-if="pdf_request_status === 'generated'">
-            <a :href="link_to_pdf" target="_blank" download="">
+            <a 
+              v-if="link_to_pdf !== false"
+              :href="link_to_pdf" target="_blank" download="">
               {{ $t('download') }}
             </a>
+            <a 
+              v-if="path_to_pdf !== false && $root.state.is_electron"
+              :href="path_to_pdf" target="_blank" class="js--openInNativeApp"
+            >
+              {{ $t('open_in_app') }}
+            </a>            
           </div>
         </div>    
         <!-- <hr> -->
@@ -58,7 +66,8 @@ export default {
   data() {
     return {
       pdf_request_status: false,
-      link_to_pdf: ''
+      link_to_pdf: false,
+      path_to_pdf: false
     }
   },
   created() {
@@ -78,6 +87,9 @@ export default {
         console.log(`METHODS • Publication: downloadPDF`);
       }
 
+      this.link_to_pdf = false;
+      this.path_to_pdf = false;
+
       this.$eventHub.$on('publication.pdfIsGenerated', this.publiIsGenerated);
 
       this.$root.downloadPubliPDF({ 
@@ -93,6 +105,7 @@ export default {
 
       this.pdf_request_status = 'generated';
       this.link_to_pdf = pdfURL;
+      this.path_to_pdf = pdfPath;
 
       debugger;
     }

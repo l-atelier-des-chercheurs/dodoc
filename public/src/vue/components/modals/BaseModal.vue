@@ -53,7 +53,10 @@
               </slot>
             </div>
 
-            <div class="m_modal--save">
+            <div 
+              v-if="!!this.$slots['submit_button']"
+              class="m_modal--save"
+            >
               <button
                 type="submit"
                 :disabled="read_only"
