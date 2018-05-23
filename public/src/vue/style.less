@@ -503,6 +503,7 @@ body {
     height: 100%;
     min-width: 320px;
     background-color: @c-bleuvert_fonce;
+    padding-left: @t-skipline/4;
 
     transition: all .4s;
 
@@ -737,7 +738,7 @@ body {
       }
     }
     &.barButton_createPubli {
-      color: @c-bleuvert;
+      color: @c-bleuvert_fonce;
     }
   }
 
@@ -1585,7 +1586,7 @@ body {
 }
 
 .splitter-pane-resizer.vertical {
-  width: 15px;
+  width: @t-skipline/2;
 	height: 100%;
   // margin-left: -5px;
   
@@ -1607,14 +1608,14 @@ body {
   position: absolute;
   left: 0px;
   height: 100%;
-  padding-right: 3px;
+  // padding-right: 3px;
 }
 
 .splitter-pane.vertical.splitter-paneR {
   position: absolute;
   right: 0px;
   height: 100%;
-  padding-left: 3px;
+  // padding-left: 3px;
 }
 
 .splitter-pane.horizontal.splitter-paneL {
