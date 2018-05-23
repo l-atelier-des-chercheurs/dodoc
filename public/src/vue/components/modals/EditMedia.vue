@@ -201,7 +201,7 @@ export default {
       window.print();
     },
     formatDateToHuman(date) {
-      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LLL');
+      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LL');
     },
     removeMedia: function() {
       if (window.confirm(this.$t('sureToRemoveMedia'))) {

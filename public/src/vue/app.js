@@ -667,13 +667,29 @@ let vm = new Vue({
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: togglePubliPanel`);
       }
-      this.settings.show_publi_panel = !this.settings.show_publi_panel;
-      this.settings.current_slugPubliName = false;
-
       if (this.settings.show_publi_panel) {
-        this.$socketio.listFolders({ type: 'publications' });
+        this.closePubliPanel();
+      } else {
+        this.openPubliPanel();
       }
     },
+    openPubliPanel: function() {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`ROOT EVENT: openPubliPanel`);
+      }
+      this.settings.show_publi_panel = true;
+      this.settings.current_slugPubliName = false;
+
+      this.$socketio.listFolders({ type: 'publications' });
+    },
+    closePubliPanel: function() {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`ROOT EVENT: closePubliPanel`);
+      }
+      this.settings.show_publi_panel = false;
+      this.settings.current_slugPubliName = false;
+    },
+
     openPublication(slugPubliName) {
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: openPublication: ${slugPubliName}`);

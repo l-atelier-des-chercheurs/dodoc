@@ -104,7 +104,7 @@ export default {
   },
   methods: {
     formatDateToHuman(date) {
-      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LLL');
+      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LL');
     },
     openPublication(slugPubliName) {
       if (this.$root.state.dev_mode === 'debug') {

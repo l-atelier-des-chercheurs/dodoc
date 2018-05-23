@@ -171,7 +171,7 @@ export default {
   },
   methods: {
     formatDateToHuman(date) {
-      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LLL');
+      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LL');
     },
     openProject() {
       this.$root.openProject(this.slugProjectName);

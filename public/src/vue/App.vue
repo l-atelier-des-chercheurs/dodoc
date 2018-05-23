@@ -16,76 +16,104 @@
     </TopBar>
 
     <div class="m_activitiesPanel">
-      <SplitPane v-on:resize="resize" :min-percent='0' :default-percent='100' split="vertical">
-        <div 
-          slot="paneL"
-          class="m_activitiesPanel--do"
-          v-if="!$root.settings.show_only_publication"
-        >
-          <!-- v-show="$root.settings.view === 'ListView'" -->
-          <transition name="ListView" :duration="500">
-            <ListView
-              v-if="$root.settings.view === 'ListView'"
-              :presentationMD="$root.store.presentationMD"
-              :read_only="!$root.state.connected"
-              :projects="$root.store.projects"
-            />
-          </transition>
-          <transition name="ProjectView" :duration="500">
-            <ProjectView
-              v-if="$root.settings.view === 'ProjectView' && $root.currentProject.hasOwnProperty('name')"
-              :slugProjectName="$root.settings.current_slugProjectName"
-              :project="$root.currentProject"
-              :read_only="!$root.state.connected"
-            />
-          </transition>
-
-          <transition name="CaptureView" :duration="500">
-            <CaptureView
-              v-if="$root.settings.view === 'CaptureView'"
-              :slugProjectName="$root.settings.current_slugProjectName"
-              :project="$root.currentProject"
-            />
-          </transition>
-        </div>
-        <div 
-          slot="paneR"
-          class="m_activitiesPanel--doc"
-          :class="{ 'is--open' : $root.settings.show_publi_panel }"
-        >
-          <button
+      <div 
+        :style="{ cursor, userSelect}" 
+        class="vue-splitter-container clearfix" 
+        @mouseup="onMouseUp" 
+        @mousemove="onMouseMove"
+      >
+        <pane 
+          class="splitter-pane splitter-paneL" 
+          :class="{ 'is--dragged' : is_dragged }"
+          :split="split" :style="{ [type]: percent+'%'}">
+          <div 
+            class="m_activitiesPanel--do"
             v-if="!$root.settings.show_only_publication"
-            class="publiButton"
-            :class="{ 'is--open' : $root.settings.show_publi_panel }"
-            @click="$root.togglePubliPanel"
-            :key="'openPubli'"
           >
-            <!-- v-if="$root.settings.view !== 'CaptureView'" -->
-            <img src="/images/i_publi.svg" width="48" height="48" />
-            <span class="margin-small">
-              {{ $t('publication') }}
-            </span>
-          </button>
-
-          <div style="position: relative; height: 100%; overflow: hidden">
+            <!-- v-show="$root.settings.view === 'ListView'" -->
             <transition name="ListView" :duration="500">
-              <Publications
-                v-if="$root.settings.show_publi_panel && !$root.settings.current_slugPubliName"
-                :publications="$root.store.publications"
+              <ListView
+                v-if="$root.settings.view === 'ListView'"
+                :presentationMD="$root.store.presentationMD"
                 :read_only="!$root.state.connected"
+                :projects="$root.store.projects"
               />
             </transition>
             <transition name="ProjectView" :duration="500">
-              <Publication
-                v-if="$root.settings.current_slugPubliName !== false"
-                :slugPubliName="$root.settings.current_slugPubliName"
-                :publication="$root.store.publications[$root.settings.current_slugPubliName]"
+              <ProjectView
+                v-if="$root.settings.view === 'ProjectView' && $root.currentProject.hasOwnProperty('name')"
+                :slugProjectName="$root.settings.current_slugProjectName"
+                :project="$root.currentProject"
                 :read_only="!$root.state.connected"
               />
             </transition>
+
+            <transition name="CaptureView" :duration="500">
+              <CaptureView
+                v-if="$root.settings.view === 'CaptureView'"
+                :slugProjectName="$root.settings.current_slugProjectName"
+                :project="$root.currentProject"
+              />
+            </transition>
           </div>
-        </div>
-      </SplitPane>
+
+        </pane>
+
+        <resizer 
+          :class="{ 'is--dragged' : is_dragged }"
+          :className="className" 
+          :style="{ [resizeType]: percent+'%'}" 
+          :split="split" 
+          @mousedown.native="onMouseDown" 
+          @click.native="onClick">
+        </resizer>
+
+        <pane 
+          class="splitter-pane splitter-paneR" 
+          :class="{ 'is--dragged' : is_dragged }"
+          :split="split" 
+          :style="{ [type]: 100-percent+'%'}">
+          <div 
+            class="m_activitiesPanel--doc"
+            :class="{ 'is--open' : $root.settings.show_publi_panel }"
+          >
+            <button
+              v-if="!$root.settings.show_only_publication"
+              class="publiButton"
+              :class="{ 'is--open' : $root.settings.show_publi_panel }"
+              @click="stopDragtogglePubli"
+              @mousedown="onMouseDown" 
+              @mouseup.stop
+              :key="'openPubli'"
+            >
+              <!-- v-if="$root.settings.view !== 'CaptureView'" -->
+              <img src="/images/i_publi.svg" width="48" height="48" />
+              <span class="margin-small">
+                {{ $t('publication') }}
+              </span>
+            </button>
+
+            <div style="position: relative; height: 100%; overflow: hidden">
+              <transition name="ListView" :duration="500">
+                <Publications
+                  v-if="$root.settings.show_publi_panel && !$root.settings.current_slugPubliName"
+                  :publications="$root.store.publications"
+                  :read_only="!$root.state.connected"
+                />
+              </transition>
+              <transition name="ProjectView" :duration="500">
+                <Publication
+                  v-if="$root.settings.current_slugPubliName !== false"
+                  :slugPubliName="$root.settings.current_slugPubliName"
+                  :publication="$root.store.publications[$root.settings.current_slugPubliName]"
+                  :read_only="!$root.state.connected"
+                />
+              </transition>
+            </div>
+          </div>
+        </pane>
+      
+      </div>
     </div>
 
     <EditMedia
@@ -113,7 +141,8 @@ import Publications from './Publications.vue';
 import Publication from './components/Publication.vue';
 import EditMedia from './components/modals/EditMedia.vue';
 
-import SplitPane from './components/splitpane/SplitPane.vue';
+import Resizer from './components/splitpane/resizer.vue'
+import Pane from './components/splitpane/pane.vue'
 
 export default {
   name: 'app',
@@ -126,23 +155,125 @@ export default {
     Publications,
     Publication,
     EditMedia,
-    SplitPane
+    Resizer, 
+    Pane
   },
   props: {
   },
   data() {
     return {
+      minPercent: 0,
+      split: 'vertical',
+      is_dragged: false,
+      hasMoved: false,
+      height: null,
+      percent: 100,
+      type: 'width',
+      resizeType: 'left'
     };
+  },
+  watch: {
   },
   created() { 
   },
   computed: {
-  },
-  watch: {
+    userSelect() {
+      return this.is_dragged ? 'none' : ''
+    },
+    cursor() {
+      return this.is_dragged ? 'col-resize' : ''
+    }
   },
   methods: {
+    stopDragtogglePubli() {
+      this.is_dragged = false;
+      if(!this.$root.settings.show_publi_panel) {
+        this.percent = 50;
+        this.$root.openPubliPanel();
+      } else {
+        this.percent = 100;
+        this.$root.closePubliPanel();
+      }
+    },
+    onClick() {
+      // if (!this.hasMoved) {
+      //   this.$root.togglePubliPanel();
+        // this.percent = 50
+        // this.$emit('resize')
+      // }
+    },
+    onMouseDown() {
+      this.is_dragged = true
+      this.hasMoved = false
+    },
+    onMouseUp() {
+      this.is_dragged = false;
+
+      if(this.percent >= 90) {
+        this.percent = 100;
+        this.$root.closePubliPanel();
+        return;
+      } 
+      
+      if(this.$root.settings.show_publi_panel === false) {
+        this.$root.openPubliPanel();
+      }      
+      if(this.percent <= 10) {
+        this.percent = 0;
+      }
+    },
+    onMouseMove(e) {
+      if (e.buttons === 0 || e.which === 0) {
+        this.is_dragged = false
+      }
+
+      if (this.is_dragged) {
+        let offset = 0
+        let target = e.currentTarget
+        if (this.split === 'vertical') {
+          while (target) {
+            offset += target.offsetLeft
+            target = target.offsetParent
+          }
+        } else {
+          while (target) {
+            offset += target.offsetTop
+            target = target.offsetParent
+          }
+        }
+
+        const currentPage = this.split === 'vertical' ? e.pageX : e.pageY
+        const targetOffset = this.split === 'vertical' ? e.currentTarget.offsetWidth : e.currentTarget.offsetHeight
+        const percent = Math.floor(((currentPage - offset) / targetOffset) * 10000) / 100
+
+        if (percent > this.minPercent && percent < 100 - this.minPercent) {
+          this.percent = percent
+        }
+
+        this.$emit('resize')
+        this.hasMoved = true
+      }
+    }
   }
 };
 </script>
 
 <style lang="less" src="style.less"></style>
+
+<style scoped>
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+
+.vue-splitter-container {
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+</style>

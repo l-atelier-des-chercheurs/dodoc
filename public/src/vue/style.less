@@ -460,6 +460,10 @@ body {
   font-weight: 400;
   .bg-bleuvert;
 
+  > * {
+    pointer-events: none;
+  }
+
   span {
     padding: @t-skipline/4; 
     display: none;   
@@ -503,8 +507,7 @@ body {
     transition: all .4s;
 
     &.is--open {
-      flex-grow: 1;
-      border-left: 10px solid @c-bleuvert_fonce;
+      // border-left: 10px solid @c-bleuvert_fonce;
     }
   }
 
@@ -1277,6 +1280,7 @@ body {
     .bg-blanc;
     box-shadow: 0px 2px 16px 0px rgba(0,0,0,.2);
     transform-origin: top left;
+    transform-origin: center center;
 
     transition: all .2s;
 
@@ -1558,6 +1562,75 @@ body {
     }
   }
 }
+
+.splitter-pane, .splitter-pane-resizer {
+  transition: all .4s ease-out;
+
+  &.is--dragged {
+    transition: none;
+  }
+}
+
+.splitter-pane-resizer {
+  -moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	background: #000;
+	position: absolute;
+	// opacity: .2;
+	z-index: 1;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding;
+	background-clip: padding-box;
+}
+
+.splitter-pane-resizer.vertical {
+  width: 15px;
+	height: 100%;
+  // margin-left: -5px;
+  
+	cursor: col-resize;
+  
+  opacity: 1;
+  
+  background-color: @c-bleuvert_fonce;
+  background-image: url("/images/grip_vertical.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.splitter-pane {
+  // overflow: hidden;
+}
+
+.splitter-pane.vertical.splitter-paneL {
+  position: absolute;
+  left: 0px;
+  height: 100%;
+  padding-right: 3px;
+}
+
+.splitter-pane.vertical.splitter-paneR {
+  position: absolute;
+  right: 0px;
+  height: 100%;
+  padding-left: 3px;
+}
+
+.splitter-pane.horizontal.splitter-paneL {
+  position: absolute;
+  top: 0px;
+  width: 100%;
+}
+
+.splitter-pane.horizontal.splitter-paneR {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  padding-top: 3px;
+}
+
+
 
 
 .alertify-logs>*, .alertify-logs>.default {

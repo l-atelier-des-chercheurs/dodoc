@@ -152,7 +152,7 @@ export default {
       }
     },
     formatDateToHuman(date) {
-      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LLL');
+      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LL');
     },
     openMediaModal() {
       if (this.$root.state.dev_mode === 'debug') {
