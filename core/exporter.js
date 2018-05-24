@@ -168,7 +168,7 @@ module.exports = (function() {
                       marginsType: 1,
                       pageSize: {
                         width: publiData.width * 1000,
-                        height: publiData.height * 1000 + 100
+                        height: publiData.height * 1000
                       }
                     },
                     (error, data) => {
@@ -184,7 +184,7 @@ module.exports = (function() {
                       });
                     }
                   );
-                }, 500);
+                }, 1000);
               });
             });
           });

@@ -1765,10 +1765,24 @@ body {
   .m_activitiesPanel--doc {
     border: none !important;
     background-color: transparent !important;
+    padding: 0 !important;
   }
 
   .m_activitiesPanel {
     height: auto !important; 
+  }
+  .vue-splitter-container {
+    position: relative !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .splitter-pane.splitter-pane {
+    position: relative !important;
+    height: auto !important;
+    width: auto !important;
+  }
+  .splitter-pane-resizer {
+    display: none !important;
   }
 
   .m_publicationview {
@@ -1793,6 +1807,8 @@ body {
     page-break-after: always;
     page-break-inside: avoid;
     -webkit-region-break-inside: avoid;
+
+    box-shadow: none !important;
     
     &::before {
       display: none !important;

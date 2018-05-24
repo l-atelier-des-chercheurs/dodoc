@@ -408,7 +408,7 @@ let vm = new Vue({
       current_author: false,
       showMediaModalFor: false,
 
-      show_only_publication: false,
+      export_publication: false,
 
       publi_zoom: 1,
 
@@ -487,7 +487,7 @@ let vm = new Vue({
           this.settings.current_slugPubliName = slugPubliName;
           this.settings.show_publi_panel = true;
 
-          this.settings.show_only_publication = true;
+          this.settings.export_publication = true;
         }
       }
     }

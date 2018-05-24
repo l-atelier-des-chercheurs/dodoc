@@ -30,9 +30,9 @@
         >
         </ExportModal>
 
-        <a :href="url_to_publication" target="_blank" class="buttonLink js--openInBrowser">
+        <!-- <a :href="url_to_publication" target="_blank" class="buttonLink js--openInBrowser">
           {{ $t('new_window') }}
-        </a>            
+        </a>             -->
       </div>
       <template v-if="advanced_options">
         <hr>
@@ -137,11 +137,11 @@
                 {{ page.header_right }}
               </div>
             </div>        
-            <div v-if="pageNumber !== 0"
+            <div 
               class="m_publicationview--pages--page--pageNumber"
-              :class="{ 'toRight' : pageNumber%2 === 0 }"
+              :class="{ 'toRight' : true }"
             >
-              {{ pageNumber }}
+              {{ pageNumber + 1 }}
             </div>
 
             <MediaPublication
@@ -226,7 +226,7 @@ export default {
       new_header_right: '',
 
       page_currently_active: 0,
-      preview_mode: true,
+      preview_mode: false,
       zoom: window.innerWidth <= 1024 ? 0.8 : 1,
       pixelsPerMillimeters: 0,
       has_media_selected: false,
@@ -245,6 +245,12 @@ export default {
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty('mmMeasurer') ? this.$refs.mmMeasurer.offsetWidth / 10 : 38;
     this.updatePubliOptionsInFields();
     this.$eventHub.$emit('publication_medias_updated');      
+
+    if(this.$root.settings.export_publication) {
+      this.preview_mode = true;
+      document.getElementsByTagName('body')[0].style.width = `${this.publications_options.width}mm`;
+      document.getElementsByTagName('body')[0].style.height = `${this.publications_options.height}mm`;
+    }
   },
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
@@ -562,11 +568,19 @@ export default {
       this.page_currently_active = index;
     },
     setPageProperties(page) {
-      return `
-        width: ${Number.parseInt(page.width)}mm; 
-        height: ${Number.parseInt(page.height)}mm;
-        transform: scale(${this.$root.settings.publi_zoom});
-      `;
+      if(this.$root.settings.export_publication) {
+        return `
+          width: ${page.width}mm; 
+          height: ${page.height - 1}mm;
+          transform: scale(${this.$root.settings.publi_zoom});
+        `;
+      } else {
+        return `
+          width: ${page.width}mm; 
+          height: ${page.height}mm;
+          transform: scale(${this.$root.settings.publi_zoom});
+        `;
+      }
     },
 
     publicationKeyListener(evt) {

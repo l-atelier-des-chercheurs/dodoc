@@ -28,7 +28,7 @@
           :split="split" :style="{ [type]: percent+'%'}">
           <div 
             class="m_activitiesPanel--do"
-            v-if="!$root.settings.show_only_publication"
+            v-if="!$root.settings.export_publication"
           >
             <!-- v-show="$root.settings.view === 'ListView'" -->
             <transition name="ListView" :duration="500">
@@ -78,7 +78,7 @@
             :class="{ 'is--open' : $root.settings.show_publi_panel }"
           >
             <button
-              v-if="!$root.settings.show_only_publication"
+              v-if="!$root.settings.export_publication"
               class="publiButton"
               :class="{ 'is--open' : $root.settings.show_publi_panel }"
               @click="stopDragtogglePubli"
@@ -167,7 +167,7 @@ export default {
       is_dragged: false,
       hasMoved: false,
       height: null,
-      percent: 100,
+      percent: this.$root.settings.export_publication ? 0:100,
       type: 'width',
       resizeType: 'left'
     };
