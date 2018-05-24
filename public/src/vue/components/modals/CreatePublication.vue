@@ -19,14 +19,16 @@
 
 <!-- Human name -->
       <div class="margin-bottom-small">
-        <label>{{ $t('template') }}</label>
+        <label>{{ $t('format') }}</label>
         <select v-model="publidata.template">
           <option value="print">
-            {{ $t('print') }}
+            {{ $t('page_by_page') }}
+          </option>
+          <option value="web" disabled>
+            {{ $t('web') }}
           </option>
         </select>
       </div>
-      
 
     </template>
 

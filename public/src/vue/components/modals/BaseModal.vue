@@ -119,8 +119,6 @@ export default {
 
       if (Modernizr !== undefined && !Modernizr.touchevents) {
         const el = this.$refs.modalContent.querySelector('[autofocus]');
-        debugger;
-
         if(el.classList.contains('quillWrapper')) {
           el.querySelector('.ql-editor').focus();
         }  else {
