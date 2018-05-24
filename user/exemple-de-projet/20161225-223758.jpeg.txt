@@ -1,0 +1,32 @@
+date_created: 20161026_164713
+
+----
+
+date_modified: 20180524_232603
+
+----
+
+date_uploaded: 20180524_232425
+
+----
+
+media_filename: 20161225-223758.jpeg
+
+----
+
+type: image
+
+----
+
+fav: false
+
+----
+
+ratio: 1.4987510407993339
+
+----
+
+caption: Utilisation de do•doc pour un atelier d’initiation à l’animation image par image.
+
+----
+

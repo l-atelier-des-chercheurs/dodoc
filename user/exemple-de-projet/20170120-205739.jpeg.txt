@@ -1,0 +1,32 @@
+date_created: 20161220_180306
+
+----
+
+date_modified: 20180524_232504
+
+----
+
+date_uploaded: 20180524_232427
+
+----
+
+media_filename: 20170120-205739.jpeg
+
+----
+
+type: image
+
+----
+
+fav: false
+
+----
+
+ratio: 0.6672222222222223
+
+----
+
+caption: Création d’animations image par image sur le meuble du Carrefour Numérique.
+
+----
+

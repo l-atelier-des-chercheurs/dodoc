@@ -1,0 +1,32 @@
+date_created: 20131119_180650
+
+----
+
+date_modified: 20180524_232526
+
+----
+
+date_uploaded: 20180524_232426
+
+----
+
+media_filename: 20161225-224023.jpeg
+
+----
+
+type: image
+
+----
+
+fav: false
+
+----
+
+ratio: 0.6666666666666666
+
+----
+
+caption: Kit mobile v2 de do•doc
+
+----
+

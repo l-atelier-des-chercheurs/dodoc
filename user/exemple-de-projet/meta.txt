@@ -1,0 +1,24 @@
+name: Exemple de projet
+
+----
+
+date_created: 20180524_132345
+
+----
+
+date_modified: 20180524_132345
+
+----
+
+password: 
+
+----
+
+authors: 
+
+----
+
+preview: meta_preview.jpeg
+
+----
+

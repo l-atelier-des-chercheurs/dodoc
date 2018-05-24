@@ -1,0 +1,32 @@
+date_created: 20161220_170150
+
+----
+
+date_modified: 20180524_232520
+
+----
+
+date_uploaded: 20180524_232426
+
+----
+
+media_filename: 20170120-205701.jpeg
+
+----
+
+type: image
+
+----
+
+fav: false
+
+----
+
+ratio: 0.6672222222222223
+
+----
+
+caption: Meuble de documentation créé par l’Atelier des Chercheurs pour le Carrefour Numérique de la Cité des Sciences.
+
+----
+
