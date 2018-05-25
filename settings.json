@@ -150,8 +150,8 @@
         },
         "template": {
           "type": "string",
-          "options": ["print"],
-          "default": "print"          
+          "options": ["page_by_page"],
+          "default": "page_by_page"          
         },
         "width": {
           "type": "number"

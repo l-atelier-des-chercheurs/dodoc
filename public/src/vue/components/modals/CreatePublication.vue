@@ -21,7 +21,7 @@
       <div class="margin-bottom-small">
         <label>{{ $t('format') }}</label>
         <select v-model="publidata.template">
-          <option value="print">
+          <option value="page_by_page">
             {{ $t('page_by_page') }}
           </option>
           <option value="web" disabled>
@@ -52,7 +52,7 @@ export default {
     return {
       publidata: {
         name: '',
-        template: 'print'
+        template: 'page_by_page'
       }
     };
   },
@@ -87,7 +87,7 @@ export default {
 
       let publidata = {
         name,
-        template: 'print',
+        template: this.publidata.template,
         width: 210,
         height: 297,
         pages: [{

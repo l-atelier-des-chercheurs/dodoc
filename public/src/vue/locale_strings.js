@@ -142,7 +142,7 @@ module.exports = (function() {
       format: 'Format',
       template: 'Gabarit',
       page_by_page: 'Document page à page',
-      print: 'Document imprimé',
+      print: 'Print',
       web: 'Page web',
 
       last_modified: 'Dernière modification',
@@ -325,7 +325,6 @@ module.exports = (function() {
       format: 'Format',
       template: 'Template',
       page_by_page: 'Paged document',
-      print: 'Printed document',
       web: 'Webpage',
 
       last_modified: 'Last modified',

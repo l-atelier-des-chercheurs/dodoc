@@ -11,7 +11,7 @@
         </button>
 
         <div class="m_publicationMeta--topbar--title">
-          {{ this.publication.name }}
+          {{ publication.name }}
         </div>
 
         <div class="margin-small">
@@ -198,7 +198,7 @@ export default {
     return {
       publication_medias: {},
       publication_defaults: {
-        'print': {
+        'page_by_page': {
           width: 210,
           height: 296,        
           margin_left: 10,
