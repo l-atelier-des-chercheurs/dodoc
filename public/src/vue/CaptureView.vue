@@ -520,7 +520,6 @@ export default {
 
           const options = {
             recorderType: RecordRTC.MediaStreamRecorder,
-            mimeType: 'video/webm\;codecs=h264',
             type: 'video'
           }
           recordVideoFeed.startRecording(options);   
