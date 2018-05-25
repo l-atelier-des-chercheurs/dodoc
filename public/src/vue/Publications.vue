@@ -37,14 +37,14 @@
             {{ publication.name }}
           </h2>
 
-          <div class="m_metaField">
+          <!-- <div class="m_metaField">
             <div>
               {{ $t('created') }}
             </div>
             <div>
               {{ formatDateToHuman(publication.date_created) }}
             </div>
-          </div>
+          </div> -->
           <div class="m_metaField">
             <div>
               {{ $t('edited') }}
@@ -53,14 +53,14 @@
               {{ formatDateToHuman(publication.date_modified) }}
             </div>
           </div>
-          <div class="m_metaField">
+          <!-- <div class="m_metaField">
             <div class="">
               {{ $t('number_of_medias') }}
             </div>
             <div>
-              {{ typeof publication.medias === 'object' ? publication.medias.length : '' }}
+              {{ typeof publication.medias === 'object' ? Object.keys(publication.medias).length : '' }}
             </div>
-          </div>
+          </div> -->
 
           <button 
             type="button" 

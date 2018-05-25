@@ -98,7 +98,7 @@
         <label for="preview">{{ $t('preview') }}</label>
       </div>
       <div class="margin-bottom-small">
-        <label for="zoom">{{ $t('zoom') }}</label>
+        <label for="zoom">{{ $t('zoom') }}({{ zoom }})</label>
         <button class="" @click="zoom += 0.1">+</button>
         <button class="" @click="zoom -= 0.1">-</button>
       </div>

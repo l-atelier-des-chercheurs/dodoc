@@ -119,10 +119,12 @@ export default {
 
       if (Modernizr !== undefined && !Modernizr.touchevents) {
         const el = this.$refs.modalContent.querySelector('[autofocus]');
-        if(el.classList.contains('quillWrapper')) {
-          el.querySelector('.ql-editor').focus();
-        }  else {
-          el.focus();
+        if(!!el) {
+          if(el.classList.contains('quillWrapper')) {
+            el.querySelector('.ql-editor').focus();
+          }  else {
+            el.focus();
+          }
         }
       }
     },100);

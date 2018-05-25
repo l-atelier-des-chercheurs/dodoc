@@ -44,9 +44,10 @@
       <div class="m_topbar--center--authors">
         <button type="button" @click="showAuthorsListModal = true">
           <template v-if="!!$root.settings.current_author">
-            <div class="m_topbar--center--authors--portrait">
+            <div class="m_topbar--center--authors--portrait"
+              v-if="$root.settings.current_author.preview !== ''"
+            >
               <img :src="urlToPortrait($root.settings.current_author.slugFolderName, $root.settings.current_author.preview)" width="100" height="100"
-               v-if="$root.settings.current_author.preview !== ''"
               >              
             </div>
             <div class="m_topbar--center--authors--name">
@@ -175,7 +176,7 @@ export default {
       if(filename === undefined) {
         return '';
       }
-      return `${this.$root.state.authorsFolder}/${slug}/${filename}`;
+      return `/${this.$root.state.authorsFolder}/${slug}/${filename}`;
     }
   }
 }

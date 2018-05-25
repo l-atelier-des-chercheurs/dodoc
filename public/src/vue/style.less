@@ -298,8 +298,8 @@ body {
         .bg-blanc;
         // border: 2px solid @c-bleumarine;
         // color: @c-bleumarine;
-        background-color: @c-bleumarine_clair;
-        color: @c-bleumarine;
+        background-color: @c-bleumarine;
+        color: white;
         .padding-verysmall;
 
         .m_topbar--center--authors--portrait {
@@ -323,6 +323,11 @@ body {
           font-size: 1.7em;
           font-weight: 200;
           text-transform: uppercase;
+
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        
         } 
       }
 
@@ -391,8 +396,20 @@ body {
     font-weight:200;
 
     &.is--selected {
-      background-color: @c-bleumarine_clair;
-      color: @c-bleumarine;
+      color: white;
+      border-color: @c-bleumarine;
+      background-color: @c-bleumarine;
+
+      hr {
+        border-color: white;
+      }
+      .buttonLink {
+        color: white;
+      }
+    }
+
+    .m_authorsList--author--name {
+      .font-large;
     }
 
     img {
@@ -1174,17 +1191,32 @@ body {
 }
 
 .m_publicationItems--item {
-  width: 320px;
-  .margin-small; 
+  width: 100%;
   .bg-blanc;
-  .padding-small;
+  .margin-sides-small; 
+  .padding-sides-medium;
+  margin-bottom: 1px;
   text-align: center;
+
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-between;
+  align-content: center;
 
   .m_publicationItems--item--title {
     margin: 0;
     .font-folder_title;   
-    .padding-bottom-small; 
     text-align: left;
+    flex-basis: 100px;
+    .padding-vert-small;
+  }
+
+  .m_metaField {
+    min-width: 220px;
+    padding: 0;
+    margin: 0;
+    // .margin-sides-medium;
   }
 
   button {
@@ -1602,6 +1634,9 @@ body {
 
 .splitter-pane {
   // overflow: hidden;
+  @media screen and (max-width: 50rem) {
+    position: relative !important;
+  }
 }
 
 .splitter-pane.vertical.splitter-paneL {
@@ -1609,6 +1644,7 @@ body {
   left: 0px;
   height: 100%;
   // padding-right: 3px;
+
 }
 
 .splitter-pane.vertical.splitter-paneR {

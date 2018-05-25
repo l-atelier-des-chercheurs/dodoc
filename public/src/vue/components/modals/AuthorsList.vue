@@ -1,5 +1,6 @@
 <template>
   <Modal
+    ref="modal"
     @close="$emit('close')"
     :typeOfModal="'LargeAndScroll'"
   >
@@ -47,7 +48,7 @@
               v-if="!!author.preview"
               width="100" height="100"
               :src="urlToPortrait(slug, author.preview)" >
-            <div>{{ author.name }}</div>
+            <div class="m_authorsList--author--name">{{ author.name }}</div>
             <hr>
             <button type="button" class="buttonLink" @click.stop="setAuthor(author)" v-if="author.name !== $root.settings.current_author.name">
               {{ $t('select') }}
@@ -114,7 +115,7 @@ export default {
 
     setAuthor(name) {
       this.$root.setAuthor(name);
-      this.$emit('close');
+      this.$refs.modal.closeModal()
     },
     unsetAuthor() {
       this.$root.unsetAuthor();
@@ -123,7 +124,7 @@ export default {
       if(filename === undefined) {
         return '';
       }
-      return `${this.$root.state.authorsFolder}/${slug}/${filename}`;
+      return `/${this.$root.state.authorsFolder}/${slug}/${filename}`;
     }
   }
 }
