@@ -141,8 +141,8 @@ import Publications from './Publications.vue';
 import Publication from './components/Publication.vue';
 import EditMedia from './components/modals/EditMedia.vue';
 
-import Resizer from './components/splitpane/resizer.vue'
-import Pane from './components/splitpane/pane.vue'
+import Resizer from './components/splitpane/Resizer.vue'
+import Pane from './components/splitpane/Pane.vue'
 
 export default {
   name: 'app',
