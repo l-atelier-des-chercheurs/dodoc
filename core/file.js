@@ -523,6 +523,13 @@ module.exports = (function() {
           mediaName = additionalMeta.media_filename;
           mediaPath = path.join(api.getFolderPath(slugFolderName), mediaName);
           metaFileName = mediaName + settings.metaFileext;
+        } else if (additionalMeta.hasOwnProperty('desired_filename')) {
+          let randomString = (
+            Math.random().toString(36) + '00000000000000000'
+          ).slice(2, 3 + 2);
+          metaFileName = `${api.slug(
+            additionalMeta.desired_filename
+          )}-${randomString}${settings.metaFileext}`;
         } else {
           let timeCreated = api.getCurrentDate();
           let randomString = (

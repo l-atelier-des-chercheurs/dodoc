@@ -364,6 +364,7 @@ export default {
       const newMediaMeta = {
         slugProjectName,
         slugMediaName,
+        desired_filename: slugMediaName,
         page_id: this.publication.pages[page].id,
         x: this.publications_options.margin_left,
         y: this.publications_options.margin_top
@@ -389,7 +390,7 @@ export default {
     // function to update property of a media inside medias_list
     editPubliMedia({ slugMediaName, val }) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: editPubliMedia / args = ${JSON.stringify(arguments, null, 4)}`);
+        console.log(`METHODS • Publication: editPubliMedia / args = ${JSON.stringify(arguments[0], null, 4)}`);
       }
 
       this.$root.editMedia({ 
