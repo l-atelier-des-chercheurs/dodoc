@@ -96,7 +96,7 @@
         </QRCode>
 
 
-        <a class="js--openInBrowser" href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc">
+        <a class="js--openInBrowser" target="_blank" href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc">
           <svg version="1.1"
             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
             x="0px" y="0px" width="12px" height="20.3px" viewBox="0 0 12 20.3" style="enable-background:new 0 0 12 20.3;"
