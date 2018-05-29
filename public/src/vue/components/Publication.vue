@@ -195,7 +195,7 @@
     </div>
 
     <div class="m_publicationFooter">
-      <a class="js--openInBrowser" target="_blank" href="https://latelier-des-chercheurs.fr/">
+      <a class="js--openInBrowser" target="_blank" href="https://latelier-des-chercheurs.fr/outils/dodoc">
         {{ $t('made_with_dodoc') }}
         <img 
           :src="this.$root.state.mode === 'export_publication' ? './_images/i_logo.svg' : '/images/i_logo.svg'" 
