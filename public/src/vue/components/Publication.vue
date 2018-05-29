@@ -295,10 +295,10 @@ export default {
     this.updatePubliOptionsInFields();
     this.$eventHub.$emit('publication_medias_updated');      
 
-    if(this.$root.state.mode === 'export_publication') {
+    if(this.$root.state.mode === 'print_publication') {
       this.preview_mode = true;
-      // document.getElementsByTagName('body')[0].style.width = `${this.publications_options.width}mm`;
-      // document.getElementsByTagName('body')[0].style.height = `${this.publications_options.height}mm`;
+      document.getElementsByTagName('body')[0].style.width = `${this.publications_options.width}mm`;
+      document.getElementsByTagName('body')[0].style.height = `${this.publications_options.height}mm`;
     }
   },
   beforeDestroy() {
@@ -650,7 +650,7 @@ export default {
       `;      
     },
     setPageProperties(page) {
-      if(this.$root.state.mode === 'export_publication') {
+      if(this.$root.state.mode === 'print_publication') {
         return `
           width: ${page.width}mm; 
           height: ${page.height - 1}mm;

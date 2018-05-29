@@ -2,7 +2,7 @@
   <div id="app">
 
     <template 
-      v-if="$root.state.mode === 'live' || $root.state.mode === 'print_publication'"
+      v-if="$root.state.mode === 'live'"
     >    
 
       <SystemBar
@@ -140,6 +140,18 @@
         :read_only="!$root.state.connected"
       />
     </template>    
+
+    <template 
+      v-else-if="$root.state.mode === 'print_publication'"
+    >    
+      <Publication
+        v-if="$root.settings.current_slugPubliName !== false"
+        :slugPubliName="$root.settings.current_slugPubliName"
+        :publication="$root.store.publications[$root.settings.current_slugPubliName]"
+        :read_only="!$root.state.connected"
+      />
+    </template>    
+
     <portal-target name="modal_container" />
 
   </div>
