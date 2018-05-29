@@ -101,7 +101,7 @@ export default {
       },
       htmlForEditor: this.value,
       mediaURL: this.$root.state.mode === 'export_publication' ? 
-        `/${this.slugProjectName}/${this.media.media_filename}` : `./${this.slugProjectName}/${this.media.media_filename}`,
+        `./${this.slugProjectName}/${this.media.media_filename}` : `/${this.slugProjectName}/${this.media.media_filename}`,
       customToolbar: [
         [{ 'header': [false, 1, 2, 3, 4] }],
         // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],

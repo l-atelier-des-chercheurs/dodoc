@@ -240,7 +240,32 @@ module.exports = (function() {
                           );
                           debugger;
                         } else if (t.hasOwnProperty('thumbsData')) {
-                          // t.map()
+                          t.thumbsData.map(t => {
+                            debugger;
+                            tasks.push(
+                              new Promise((resolve, reject) => {
+                                const fullPathToThumb = api.getFolderPath(
+                                  t.path
+                                );
+                                const fullPathToThumb_cache = path.join(
+                                  cachePath,
+                                  t.path
+                                );
+
+                                fs
+                                  .copy(fullPathToThumb, fullPathToThumb_cache)
+                                  .then(() => {
+                                    resolve();
+                                  })
+                                  .catch(err => {
+                                    dev.error(
+                                      `Failed to copy thumb files: ${err}`
+                                    );
+                                    reject(err);
+                                  });
+                              })
+                            );
+                          });
                         }
                       });
                     }
