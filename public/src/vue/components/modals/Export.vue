@@ -9,7 +9,7 @@
     </template>
 
     <template slot="sidebar">
-      <div class="margin-sides-medium">
+      <div class="margin-sides-medium font-small">
         <div class="">
           <div v-html="$t('get_pdf')" />
           <button type="button" 
@@ -45,13 +45,13 @@
             </a>            
           </div>
         </div>    
-        <!-- <hr> -->
-        <!-- <div class="padding-vert-medium">
-          <div>Pour récupérer un PDF de cette publication, cliquez sur le bouton ci-dessous&nbsp;:</div>
-          <button type="button" class="margin-small margin-left-none">
+        <hr>
+        <div class="">
+          <div v-html="$t('get_website')" />
+          <button type="button" class="margin-small margin-left-none" @click="downloadWeb">
             Exporter en PDF
           </button>
-        </div>     -->
+        </div>    
       </div>
     </template>    
   </Modal>
@@ -109,6 +109,9 @@ export default {
       this.pdf_request_status = 'generated';
       this.link_to_pdf = '../' + pdfURL;
       this.path_to_pdf = pdfPath;
+    },
+    downloadWeb() {
+      window.location.replace(window.location.origin + '/publication/' + this.slugPubliName);
     }
   }
 }

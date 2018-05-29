@@ -298,7 +298,6 @@ body {
         // color: @c-bleumarine;
         background-color: @c-bleumarine_clair;
         color: @c-bleumarine;
-        font-weight: 400;
         .padding-verysmall;
 
         .m_topbar--center--authors--portrait {
@@ -558,7 +557,6 @@ body {
 
   .custom_scrollbar(8px, 5px, 6px);
 }
-
 .m_publicationsview, .m_publicationview {
   .bg-bleuvert;
   .sectionTitle_small {
@@ -1226,7 +1224,7 @@ body {
 .m_publicationMeta {
   .margin-medium;
   .bg-blanc;
-  .padding-small;
+  // .padding-small;
 
   display: flex;
   flex-flow: row wrap;
@@ -1235,7 +1233,7 @@ body {
   align-items: baseline;
 
   > *:not(hr) {
-    flex: 1 1 120px;
+    flex: 1 0 120px;
     .margin-small;
 
     input:not(.input-large) {
@@ -1260,17 +1258,21 @@ body {
   .m_publicationMeta--topbar {
     margin: 0;
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: row wrap;
     align-content: flex-start;
     align-items: center;
 
     > * {
       .margin-small;
+      &:last-child {
+        justify-self: flex-end;
+      }
     }
 
     .m_publicationMeta--topbar--title {
       .font-publi_title;
     }
+
 
 
 
@@ -1282,10 +1284,30 @@ body {
   width: 100%;
   display: flex;
   justify-content: center;
-  .padding-vert-small;
+  .padding-vert-medium;
+  .font-verysmall;
+  .c-gris;
+  
+  
+  a {
+    text-decoration: none;
+    text-align: center;
+  
+    > * {
+
+    }
+  }
+
+  img {
+    width: 80px;
+    padding: 5px;
+    margin: 0 auto;
+  }
 }
 
 .m_publicationview {
+  // padding-left: @t-skipline/2;
+  .padding-sides-small;
 
   .m_publicationSettings {
     position: fixed;
@@ -1339,7 +1361,7 @@ body {
 
   .m_page {
     position: relative;
-    .margin-medium;
+    .margin-vert-medium;
     .bg-blanc;
     box-shadow: 0px 2px 16px 0px rgba(0,0,0,.2);
     z-index: 0;
@@ -1791,6 +1813,29 @@ body {
   transition: transform 1s cubic-bezier(.25,.2,.25,1);
 }
 
+/**********************************************************
+              
+                          SPECIAL MODES
+
+**********************************************************/
+
+body[data-mode="export_publication"] {
+
+  .m_publicationMeta {
+    max-width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+
+    .m_publicationMeta--topbar {
+      justify-content: center;
+    }
+  }
+  .m_publicationview {
+    height: auto;
+    background-color: transparent;
+  }    
+}
 
 @media print {
   #systemBar,

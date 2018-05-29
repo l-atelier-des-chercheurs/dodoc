@@ -6,7 +6,10 @@
   >
     <div class="m_publicationMeta">
       <div class="m_publicationMeta--topbar">
-        <button type="button" class="" @click="closePublication()">
+        <button type="button" class=""
+          v-if="$root.state.mode !== 'export_publication'"        
+          @click="closePublication()"
+        >
           ←
         </button>
 
@@ -14,29 +17,30 @@
           {{ publication.name }}
         </div>
 
-        <div class="margin-small">
-          <input id="settings" type="checkbox" v-model="advanced_options" />
-          <label for="settings">{{ $t('settings') }}</label>
-        </div>
-
-        <button type="button" class="buttonLink" @click="showExportModal = true">
-          {{ $t('export') }}
-        </button>     
-
-        <ExportModal
-          v-if="showExportModal"
-          @close="showExportModal = false"
-          :slugPubliName="slugPubliName"
+        <template 
+          v-if="$root.state.mode !== 'export_publication'"
         >
-        </ExportModal>
+          <div class="margin-small">
+            <input id="settings" type="checkbox" v-model="advanced_options" />
+            <label for="settings">{{ $t('settings') }}</label>
+          </div>
 
-        <button type="button" class="buttonLink" @click="removePublication">
-          {{ $t('remove') }}
-        </button>     
+          <button type="button" class="buttonLink" @click="showExportModal = true">
+            {{ $t('export') }}
+          </button>     
 
-        <!-- <a :href="url_to_publication" target="_blank" class="buttonLink js--openInBrowser">
-          {{ $t('new_window') }}
-        </a>             -->
+          <ExportModal
+            v-if="showExportModal"
+            @close="showExportModal = false"
+            :slugPubliName="slugPubliName"
+          >
+          </ExportModal>
+
+          <button type="button" class="buttonLink" @click="removePublication">
+            {{ $t('remove') }}
+          </button>     
+        </template>
+
       </div>
       <template v-if="advanced_options">
         <hr>
@@ -96,7 +100,9 @@
       </template>
     </div>
 
-    <div class="m_publicationSettings">
+    <div class="m_publicationSettings"
+      v-if="$root.state.mode !== 'export_publication'"        
+    >
       <div class="margin-bottom-small">
         <input id="preview" type="checkbox" v-model="preview_mode">
         <label for="preview">{{ $t('preview') }}</label>
@@ -122,7 +128,7 @@
         <div 
           class="m_publicationview--pages--pageContainer"
           :style="setPageContainerProperties(page)"
-          :class="{ 'is--active' : pageNumber === page_currently_active }"
+          :class="{ 'is--active' : (pageNumber === page_currently_active && $root.state.mode !== 'export_publication') }"
         >
           <div
             class="m_page"
@@ -174,7 +180,9 @@
           </div>
         </div>
 
-        <div class="m_publicationFooter">
+        <div class="m_publicationFooter"
+          v-if="$root.state.mode !== 'export_publication'"        
+        >
           <button type="button" class="buttonLink" @click="insertPageAfterIndex(pageNumber)">
             {{ $t('insert_a_page_here') }}
           </button>
@@ -182,16 +190,24 @@
             {{ $t('remove_this_page') }}
           </button>
         </div>
-
+        
       </div>
     </div>
 
     <div class="m_publicationFooter">
-      <div 
-        ref="mmMeasurer" 
-        style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%;"
-      />
+      <a class="js--openInBrowser" target="_blank" href="https://latelier-des-chercheurs.fr/">
+        {{ $t('made_with_dodoc') }}
+        <img 
+          :src="this.$root.state.mode === 'export_publication' ? './_images/i_logo.svg' : '/images/i_logo.svg'" 
+          @click="goHome()" 
+        />          
+      </a>
     </div>
+
+    <div 
+      ref="mmMeasurer" 
+      style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%;"
+    />
   </div>
 </template>
 <script>
@@ -264,10 +280,10 @@ export default {
     this.updatePubliOptionsInFields();
     this.$eventHub.$emit('publication_medias_updated');      
 
-    if(this.$root.settings.export_publication) {
+    if(this.$root.state.mode === 'export_publication') {
       this.preview_mode = true;
-      document.getElementsByTagName('body')[0].style.width = `${this.publications_options.width}mm`;
-      document.getElementsByTagName('body')[0].style.height = `${this.publications_options.height}mm`;
+      // document.getElementsByTagName('body')[0].style.width = `${this.publications_options.width}mm`;
+      // document.getElementsByTagName('body')[0].style.height = `${this.publications_options.height}mm`;
     }
   },
   beforeDestroy() {
@@ -619,7 +635,7 @@ export default {
       `;      
     },
     setPageProperties(page) {
-      if(this.$root.settings.export_publication) {
+      if(this.$root.state.mode === 'export_publication') {
         return `
           width: ${page.width}mm; 
           height: ${page.height - 1}mm;

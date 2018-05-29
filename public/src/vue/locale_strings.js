@@ -47,6 +47,9 @@ module.exports = (function() {
       insert_a_page_here: 'Insérer une page ici',
       remove_this_page: '↑ Supprimer cette page ↑',
 
+      made_with_dodoc:
+        'Page web réalisée avec l’application libre et gratuite do•doc',
+
       loading: 'chargement',
       open: 'Ouvrir',
       save: 'Enregistrer',
@@ -136,7 +139,9 @@ module.exports = (function() {
       publication_list: 'Liste des publications',
       export_publication: 'Exportation d’une publication',
       get_pdf:
-        'Pour récupérer un PDF de cette publication, cliquez sur le bouton ci-dessous&nbsp;:',
+        'Pour récupérer un PDF de cette publication (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:',
+      get_website:
+        'Pour télécharger un site web contenant cette publication (par exemple pour la diffuser en ligne), cliquez sur le bouton ci-dessous&nbsp;:',
       download_pdf: 'Télécharger un PDF',
       pdf_creation_in_progress: 'En cours de création…',
       pdf_created: 'Le PDF a été créé',
@@ -227,6 +232,8 @@ module.exports = (function() {
       add_a_page: 'Add a page',
       insert_a_page_here: 'Insert a page here',
       remove_this_page: '↑ Remove this page ↑',
+
+      made_with_dodoc: 'Webpage made with do•doc, a free and open-source app',
 
       loading: 'loading',
       open: 'Open',
@@ -322,6 +329,8 @@ module.exports = (function() {
       export_publication: 'Export a publication',
       get_pdf:
         'To download a PDF of this publication (for example, to print it), click here:',
+      get_website:
+        'To download a website version of this publication (for example, to publish online), click here:',
       download_pdf: 'Download PDF',
       pdf_creation_in_progress: 'PDF creation in progress…',
       pdf_created: 'PDF created',

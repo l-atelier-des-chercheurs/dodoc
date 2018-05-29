@@ -100,7 +100,8 @@ export default {
         default: 1600
       },
       htmlForEditor: this.value,
-      mediaURL: `/${this.slugProjectName}/${this.media.media_filename}`,
+      mediaURL: this.$root.state.mode === 'export_publication' ? 
+        `/${this.slugProjectName}/${this.media.media_filename}` : `./${this.slugProjectName}/${this.media.media_filename}`,
       customToolbar: [
         [{ 'header': [false, 1, 2, 3, 4] }],
         // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
@@ -147,17 +148,19 @@ export default {
         return this.mediaURL;
       }
 
-
+      const url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined
-        ? '/' + pathToSmallestThumb
+        ? url
         : this.mediaURL;
     },
     linkToHoveredThumb: function() {
       let pathToSmallestThumb = _.findWhere(this.media.thumbs, {
         size: this.thumbResHovered
       }).path;
+
+      const url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined
-        ? '/' + pathToSmallestThumb
+        ? url
         : this.mediaURL;
     },
     linkToVideoThumb: function() {
@@ -175,8 +178,10 @@ export default {
       let pathToSmallestThumb = _.findWhere(timeMarkThumbs.thumbsData, {
         size: this.thumbRes
       }).path;
+
+      const url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined
-        ? '/' + pathToSmallestThumb
+        ? url
         : this.mediaURL;
     }
   }

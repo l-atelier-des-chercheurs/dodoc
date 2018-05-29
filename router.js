@@ -17,7 +17,6 @@ module.exports = function(app, io, m) {
    */
   app.get('/', showIndex);
   app.get('/:project', loadFolder);
-  app.get('/:project/export', exportFolder);
   app.get('/publication/:publication', loadPublication);
   app.post('/:project/file-upload', postFile2);
 
@@ -192,9 +191,8 @@ module.exports = function(app, io, m) {
           type,
           slugFolderName
         })
-        .then(foldersData => {
-          publi_and_medias = foldersData;
-          // get all medias in that publication
+        .then(publiData => {
+          publi_and_medias = publiData;
           file
             .getMediaMetaNames({
               type,
@@ -219,7 +217,69 @@ module.exports = function(app, io, m) {
                   publi_and_medias[slugFolderName].medias =
                     publi_medias[slugFolderName].medias;
                   pageData.publiAndMediaData = publi_and_medias;
-                  res.render('index', pageData);
+
+                  // we need to get the list of original medias in the publi
+                  var list_of_linked_medias = [];
+
+                  Object.entries(publi_medias[slugFolderName].medias).forEach(
+                    ([key, value]) => {
+                      list_of_linked_medias.push({
+                        slugFolderName: value.slugProjectName,
+                        metaFileName: value.slugMediaName
+                      });
+                    }
+                  );
+
+                  file
+                    .readMediaList({
+                      type: 'projects',
+                      medias_list: list_of_linked_medias
+                    })
+                    .then(folders_and_medias => {
+                      pageData.folderAndMediaData = folders_and_medias;
+                      pageData.mode = 'export_publication';
+
+                      res.render('index', pageData, (err, html) => {
+                        exporter
+                          .copyPubliContent({
+                            html,
+                            folders_and_medias,
+                            slugPubliName
+                          })
+                          .then(
+                            cachePath => {
+                              var archive = archiver('zip');
+
+                              archive.on('error', function(err) {
+                                res.status(500).send({ error: err.message });
+                              });
+
+                              //on stream closed we can end the request
+                              archive.on('end', function() {
+                                dev.log(
+                                  'Archive wrote %d bytes',
+                                  archive.pointer()
+                                );
+                              });
+
+                              //set the archive name
+                              res.attachment(slugPubliName + '.zip');
+
+                              //this is the streaming magic
+                              archive.pipe(res);
+
+                              archive.directory(cachePath, false);
+
+                              archive.finalize();
+                            },
+                            (err, p) => {
+                              dev.error(
+                                'Failed while preparing/making a web export'
+                              );
+                            }
+                          );
+                      });
+                    });
                 });
             });
         });

@@ -408,8 +408,6 @@ let vm = new Vue({
       current_author: false,
       showMediaModalFor: false,
 
-      export_publication: false,
-
       publi_zoom: 1,
 
       show_publi_panel: false,
@@ -454,41 +452,25 @@ let vm = new Vue({
         );
       }
 
-      // if no error and if we have some content already loaded, let’s open it directly
-      // (we are probably in an exported folder)
-      if (Object.keys(this.store.projects).length > 0) {
-        // this.settings.current_slugProjectName = Object.keys(
-        //   this.store.projects
-        // )[0];
-        // window.addEventListener(
-        //   'socketio.folders_listed',
-        //   () => {
-        //     this.openProject(this.settings.current_slugProjectName);
-        //   },
-        //   { once: true }
-        // );
-      } else {
-        // if a slugProjectName is requested, load the content of that folder rightaway
-        // we are probably in a webbrowser that accesses a subfolder
-        if (this.store.slugProjectName) {
-          this.settings.current_slugProjectName = this.store.slugProjectName;
-          window.addEventListener(
-            'socketio.folders_listed',
-            () => {
-              this.openProject(this.settings.current_slugProjectName);
-            },
-            { once: true }
-          );
-        }
+      // if a slugProjectName is requested, load the content of that folder rightaway
+      // we are probably in a webbrowser that accesses a subfolder
+      if (this.store.slugProjectName) {
+        this.settings.current_slugProjectName = this.store.slugProjectName;
+        window.addEventListener(
+          'socketio.folders_listed',
+          () => {
+            this.openProject(this.settings.current_slugProjectName);
+          },
+          { once: true }
+        );
+      }
 
-        if (Object.keys(this.store.publications).length > 0) {
-          const slugPubliName = Object.keys(this.store.publications)[0];
-
-          this.settings.current_slugPubliName = slugPubliName;
-          this.settings.show_publi_panel = true;
-
-          this.settings.export_publication = true;
-        }
+      if (
+        this.state.mode === 'export_publication' &&
+        Object.keys(this.store.publications).length > 0
+      ) {
+        const slugPubliName = Object.keys(this.store.publications)[0];
+        this.settings.current_slugPubliName = slugPubliName;
       }
     }
 

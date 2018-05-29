@@ -1,131 +1,145 @@
 <template>
   <div id="app">
 
-    <SystemBar
-      v-if="$root.settings.enable_system_bar"
-      :withTitleBar="true"
-    >
-    </SystemBar>
+    <template 
+      v-if="$root.state.mode === 'live'"
+    >    
 
-    <TopBar
-      :has_back_button="$root.settings.view !== 'ListView'"
-      :slugProjectName="$root.settings.current_slugProjectName"
-      :project="$root.currentProject"
-      :authors="$root.store.authors"
-    >
-    </TopBar>
-
-    <div class="m_activitiesPanel">
-      <div 
-        :style="{ cursor, userSelect}" 
-        class="vue-splitter-container clearfix" 
-        @mouseup="onMouseUp" 
-        @mousemove="onMouseMove"
+      <SystemBar
+        v-if="$root.settings.enable_system_bar"
+        :withTitleBar="true"
       >
-        <pane 
-          class="splitter-pane splitter-paneL" 
-          :class="{ 'is--dragged' : is_dragged }"
-          :split="split" :style="{ [type]: percent+'%'}">
-          <div 
-            class="m_activitiesPanel--do"
-            v-if="!$root.settings.export_publication"
-          >
-            <!-- v-show="$root.settings.view === 'ListView'" -->
-            <transition name="ListView" :duration="500">
-              <ListView
-                v-if="$root.settings.view === 'ListView'"
-                :presentationMD="$root.store.presentationMD"
-                :read_only="!$root.state.connected"
-                :projects="$root.store.projects"
-              />
-            </transition>
-            <transition name="ProjectView" :duration="500">
-              <ProjectView
-                v-if="$root.settings.view === 'ProjectView' && $root.currentProject.hasOwnProperty('name')"
-                :slugProjectName="$root.settings.current_slugProjectName"
-                :project="$root.currentProject"
-                :read_only="!$root.state.connected"
-              />
-            </transition>
+      </SystemBar>
 
-            <transition name="CaptureView" :duration="500">
-              <CaptureView
-                v-if="$root.settings.view === 'CaptureView'"
-                :slugProjectName="$root.settings.current_slugProjectName"
-                :project="$root.currentProject"
-              />
-            </transition>
-          </div>
+      <TopBar
+        :has_back_button="$root.settings.view !== 'ListView'"
+        :slugProjectName="$root.settings.current_slugProjectName"
+        :project="$root.currentProject"
+        :authors="$root.store.authors"
+      >
+      </TopBar>
 
-        </pane>
 
-        <resizer 
-          :class="{ 'is--dragged' : is_dragged }"
-          :className="className" 
-          :style="{ [resizeType]: percent+'%'}" 
-          :split="split" 
-          @mousedown.native="onMouseDown" 
-          @click.native="onClick">
-        </resizer>
-
-        <pane 
-          class="splitter-pane splitter-paneR" 
-          :class="{ 'is--dragged' : is_dragged }"
-          :split="split" 
-          :style="{ [type]: 100-percent+'%'}">
-          <div 
-            class="m_activitiesPanel--doc"
-            :class="{ 'is--open' : $root.settings.show_publi_panel }"
-          >
-            <button
-              v-if="!$root.settings.export_publication"
-              class="publiButton"
-              :class="{ 'is--open' : $root.settings.show_publi_panel }"
-              @click="stopDragtogglePubli"
-              @mousedown="onMouseDown" 
-              @mouseup.stop
-              :key="'openPubli'"
+      <div class="m_activitiesPanel">
+        <div 
+          :style="{ cursor, userSelect}" 
+          class="vue-splitter-container clearfix" 
+          @mouseup="onMouseUp" 
+          @mousemove="onMouseMove"
+        >
+          <pane 
+            class="splitter-pane splitter-paneL" 
+            :class="{ 'is--dragged' : is_dragged }"
+            :split="split" :style="{ [type]: percent+'%'}">
+            <div 
+              class="m_activitiesPanel--do"
             >
-              <!-- v-if="$root.settings.view !== 'CaptureView'" -->
-              <img src="/images/i_publi.svg" width="48" height="48" />
-              <span class="margin-small">
-                {{ $t('publication') }}
-              </span>
-            </button>
-
-            <div style="position: relative; height: 100%; overflow: hidden">
+              <!-- v-show="$root.settings.view === 'ListView'" -->
               <transition name="ListView" :duration="500">
-                <Publications
-                  v-if="$root.settings.show_publi_panel && !$root.settings.current_slugPubliName"
-                  :publications="$root.store.publications"
+                <ListView
+                  v-if="$root.settings.view === 'ListView'"
+                  :presentationMD="$root.store.presentationMD"
                   :read_only="!$root.state.connected"
+                  :projects="$root.store.projects"
                 />
               </transition>
               <transition name="ProjectView" :duration="500">
-                <Publication
-                  v-if="$root.settings.current_slugPubliName !== false"
-                  :slugPubliName="$root.settings.current_slugPubliName"
-                  :publication="$root.store.publications[$root.settings.current_slugPubliName]"
+                <ProjectView
+                  v-if="$root.settings.view === 'ProjectView' && $root.currentProject.hasOwnProperty('name')"
+                  :slugProjectName="$root.settings.current_slugProjectName"
+                  :project="$root.currentProject"
                   :read_only="!$root.state.connected"
                 />
               </transition>
-            </div>
-          </div>
-        </pane>
-      
-      </div>
-    </div>
 
-    <EditMedia
-      v-if="$root.settings.showMediaModalFor !== false"
-      :slugMediaName="$root.settings.showMediaModalFor.slugMediaName"
-      :slugProjectName="$root.settings.showMediaModalFor.slugProjectName"
-      :media="$root.store.projects[$root.settings.showMediaModalFor.slugProjectName].medias[$root.settings.showMediaModalFor.slugMediaName]"
-      @close="$root.settings.showMediaModalFor = false"
-      :read_only="!$root.state.connected"
-    >
-    </EditMedia>        
-    
+              <transition name="CaptureView" :duration="500">
+                <CaptureView
+                  v-if="$root.settings.view === 'CaptureView'"
+                  :slugProjectName="$root.settings.current_slugProjectName"
+                  :project="$root.currentProject"
+                />
+              </transition>
+            </div>
+
+          </pane>
+
+          <resizer 
+            :class="{ 'is--dragged' : is_dragged }"
+            :className="className" 
+            :style="{ [resizeType]: percent+'%'}" 
+            :split="split" 
+            @mousedown.native="onMouseDown" 
+            @click.native="onClick">
+          </resizer>
+
+          <pane 
+            class="splitter-pane splitter-paneR" 
+            :class="{ 'is--dragged' : is_dragged }"
+            :split="split" 
+            :style="{ [type]: 100-percent+'%'}">
+            <div 
+              class="m_activitiesPanel--doc"
+              :class="{ 'is--open' : $root.settings.show_publi_panel }"
+            >
+              <button
+                class="publiButton"
+                :class="{ 'is--open' : $root.settings.show_publi_panel }"
+                @click="stopDragtogglePubli"
+                @mousedown="onMouseDown" 
+                @mouseup.stop
+                :key="'openPubli'"
+              >
+                <!-- v-if="$root.settings.view !== 'CaptureView'" -->
+                <img src="/images/i_publi.svg" width="48" height="48" />
+                <span class="margin-small">
+                  {{ $t('publication') }}
+                </span>
+              </button>
+
+              <div style="position: relative; height: 100%; overflow: hidden">
+                <transition name="ListView" :duration="500">
+                  <Publications
+                    v-if="$root.settings.show_publi_panel && !$root.settings.current_slugPubliName"
+                    :publications="$root.store.publications"
+                    :read_only="!$root.state.connected"
+                  />
+                </transition>
+                <transition name="ProjectView" :duration="500">
+                  <Publication
+                    v-if="$root.settings.current_slugPubliName !== false"
+                    :slugPubliName="$root.settings.current_slugPubliName"
+                    :publication="$root.store.publications[$root.settings.current_slugPubliName]"
+                    :read_only="!$root.state.connected"
+                  />
+                </transition>
+              </div>
+            </div>
+          </pane>
+        
+        </div>
+      </div>
+
+      <EditMedia
+        v-if="$root.settings.showMediaModalFor !== false"
+        :slugMediaName="$root.settings.showMediaModalFor.slugMediaName"
+        :slugProjectName="$root.settings.showMediaModalFor.slugProjectName"
+        :media="$root.store.projects[$root.settings.showMediaModalFor.slugProjectName].medias[$root.settings.showMediaModalFor.slugMediaName]"
+        @close="$root.settings.showMediaModalFor = false"
+        :read_only="!$root.state.connected"
+      >
+      </EditMedia>      
+
+    </template>  
+    <template 
+      v-else-if="$root.state.mode === 'export_publication'"
+    >    
+      <Publication
+        v-if="$root.settings.current_slugPubliName !== false"
+        :slugPubliName="$root.settings.current_slugPubliName"
+        :publication="$root.store.publications[$root.settings.current_slugPubliName]"
+        :read_only="!$root.state.connected"
+      />
+    </template>    
     <portal-target name="modal_container" />
 
   </div>
@@ -167,7 +181,7 @@ export default {
       is_dragged: false,
       hasMoved: false,
       height: null,
-      percent: this.$root.settings.export_publication ? 0:100,
+      percent: this.$root.state.mode === 'export_publication' ? 0:100,
       type: 'width',
       resizeType: 'left'
     };

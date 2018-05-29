@@ -64,7 +64,6 @@ module.exports = (function() {
               })
             );
 
-            // Copie le dossier _thumbs/slugFolderName vers cache/_thumbs/slugFolderName
             tasks.push(
               new Promise((resolve, reject) => {
                 const relativePathToThumbFolder = path.join(
@@ -114,6 +113,151 @@ module.exports = (function() {
               dev.log('Created complete archive of site.');
               resolve(cachePath);
             });
+          },
+          function(err, p) {
+            dev.error(`Failed to create cache folder: ${err}`);
+            reject(err);
+          }
+        );
+      });
+    },
+    copyPubliContent: ({ html, folders_and_medias, slugPubliName }) => {
+      return new Promise(function(resolve, reject) {
+        // create cache folder that we will need to copy the content
+        let cacheFolderName =
+          api.getCurrentDate() +
+          '-' +
+          slugPubliName +
+          '-' +
+          (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2);
+
+        let cachePath = path.join(
+          global.appRoot,
+          settings.cacheDirname,
+          cacheFolderName
+        );
+
+        fs.mkdirp(
+          cachePath,
+          function() {
+            let tasks = [];
+
+            const storeHTMLInIndexFile = new Promise((resolve, reject) => {
+              let indexCacheFilepath = path.join(cachePath, 'index.html');
+              api
+                .storeData(indexCacheFilepath, html, 'create')
+                .then(function(meta) {
+                  resolve();
+                })
+                .catch(err => {
+                  dev.error(`Failed to store HTML for export.`);
+                  reject(err);
+                });
+            });
+            tasks.push(storeHTMLInIndexFile);
+
+            ['dist', 'fonts', 'images'].forEach(f => {
+              const copyFrontEndFiles = new Promise((resolve, reject) => {
+                let productionFolder = path.join(global.appRoot, 'public', f);
+                let productionFolderInCache = path.join(cachePath, '_' + f);
+                fs
+                  .copy(productionFolder, productionFolderInCache)
+                  .then(() => {
+                    resolve();
+                  })
+                  .catch(err => {
+                    dev.error(`Failed to copy front-end files.`);
+                    reject(err);
+                  });
+              });
+              tasks.push(copyFrontEndFiles);
+            });
+
+            Object.entries(folders_and_medias).forEach(
+              ([slugFolderName, folderMeta]) => {
+                const fullSlugFolderPath = api.getFolderPath(slugFolderName);
+                const slugFolderInCache = path.join(cachePath, slugFolderName);
+
+                const fullSlugFolderPath_inThumbs = api.getFolderPath(
+                  path.join(settings.thumbFolderName, slugFolderName)
+                );
+                const slugFolderInCache_thumbs = path.join(
+                  cachePath,
+                  settings.thumbFolderName,
+                  slugFolderName
+                );
+
+                Object.entries(folderMeta.medias).forEach(
+                  ([metaFileName, mediaMeta]) => {
+                    if (mediaMeta.hasOwnProperty('media_filename')) {
+                      const media_filename = mediaMeta.media_filename;
+
+                      tasks.push(
+                        new Promise((resolve, reject) => {
+                          const fullPathToMedia = path.join(
+                            fullSlugFolderPath,
+                            media_filename
+                          );
+                          const fullPathToMedia_cache = path.join(
+                            slugFolderInCache,
+                            media_filename
+                          );
+                          fs
+                            .copy(fullPathToMedia, fullPathToMedia_cache)
+                            .then(() => {
+                              resolve();
+                            })
+                            .catch(err => {
+                              dev.error(`Failed to copy medias files: ${err}`);
+                              reject(err);
+                            });
+                        })
+                      );
+                    }
+                    if (mediaMeta.hasOwnProperty('thumbs')) {
+                      mediaMeta.thumbs.map(t => {
+                        if (t.hasOwnProperty('path')) {
+                          tasks.push(
+                            new Promise((resolve, reject) => {
+                              const fullPathToThumb = api.getFolderPath(t.path);
+                              const fullPathToThumb_cache = path.join(
+                                cachePath,
+                                t.path
+                              );
+
+                              fs
+                                .copy(fullPathToThumb, fullPathToThumb_cache)
+                                .then(() => {
+                                  resolve();
+                                })
+                                .catch(err => {
+                                  dev.error(
+                                    `Failed to copy thumb files: ${err}`
+                                  );
+                                  reject(err);
+                                });
+                            })
+                          );
+                          debugger;
+                        } else if (t.hasOwnProperty('thumbsData')) {
+                          // t.map()
+                        }
+                      });
+                    }
+                  }
+                );
+              }
+            );
+
+            Promise.all(tasks)
+              .then(d_array => {
+                dev.log('Created complete archive of site.');
+                resolve(cachePath);
+              })
+              .catch(err => {
+                dev.error(`Failed to create cache folder: ${err}`);
+                reject(err);
+              });
           },
           function(err, p) {
             dev.error(`Failed to create cache folder: ${err}`);

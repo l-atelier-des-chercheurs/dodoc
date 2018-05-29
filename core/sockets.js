@@ -450,7 +450,6 @@ module.exports = (function() {
   function sendSpecificMedias({ type, medias_list, socket }) {
     dev.logfunction(`COMMON - sendSpecificMedias`);
     file.readMediaList({ type, medias_list }).then(folders_and_medias => {
-      debugger;
       api.sendEventWithContent(
         'listSpecificMedias',
         { [type]: folders_and_medias },
