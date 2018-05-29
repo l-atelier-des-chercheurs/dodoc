@@ -463,14 +463,20 @@ let vm = new Vue({
           },
           { once: true }
         );
-      }
-
-      if (
+      } else if (
         this.state.mode === 'export_publication' &&
         Object.keys(this.store.publications).length > 0
       ) {
         const slugPubliName = Object.keys(this.store.publications)[0];
         this.settings.current_slugPubliName = slugPubliName;
+      } else if (
+        this.state.mode === 'print_publication' &&
+        Object.keys(this.store.publications).length > 0
+      ) {
+        const slugPubliName = Object.keys(this.store.publications)[0];
+        debugger;
+        this.settings.current_slugPubliName = slugPubliName;
+        this.settings.show_publi_panel = true;
       }
     }
 

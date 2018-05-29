@@ -2,7 +2,7 @@
   <div id="app">
 
     <template 
-      v-if="$root.state.mode === 'live'"
+      v-if="$root.state.mode === 'live' || $root.state.mode === 'print_publication'"
     >    
 
       <SystemBar
@@ -181,7 +181,7 @@ export default {
       is_dragged: false,
       hasMoved: false,
       height: null,
-      percent: this.$root.state.mode === 'export_publication' ? 0:100,
+      percent: this.$root.state.mode === 'print_publication' ? 0:100,
       type: 'width',
       resizeType: 'left'
     };

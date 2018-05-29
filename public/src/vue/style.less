@@ -1775,6 +1775,7 @@ body {
   position: absolute;
 }
 
+
 .ListView-enter-active, .ListView-leave-active {
   opacity: 1;
   transform: scale(1);
@@ -1818,8 +1819,22 @@ body {
                           SPECIAL MODES
 
 **********************************************************/
+body[data-mode="print_publication"] {
+  .m_publicationview--pages--pageContainer {
+    &::before {
+      display: none !important;
+    }
+  }
+
+}
 
 body[data-mode="export_publication"] {
+
+  .m_publicationview--pages--pageContainer {
+    &::before {
+      display: none !important;
+    }
+  }
 
   .m_publicationMeta {
     max-width: 200px;

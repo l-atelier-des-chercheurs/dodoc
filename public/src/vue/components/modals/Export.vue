@@ -48,8 +48,11 @@
         <hr>
         <div class="">
           <div v-html="$t('get_website')" />
-          <button type="button" class="margin-small margin-left-none" @click="downloadWeb">
-            Exporter en PDF
+          <button type="button" 
+            class="margin-small margin-left-none bg-bleumarine c-blanc button-allwide" 
+            @click="downloadWeb"
+          >
+            {{ $t('download_website') }}
           </button>
         </div>    
       </div>
@@ -111,7 +114,10 @@ export default {
       this.path_to_pdf = pdfPath;
     },
     downloadWeb() {
-      window.location.replace(window.location.origin + '/publication/' + this.slugPubliName);
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: downloadWeb`);
+      }
+      window.location.replace(window.location.origin + '/publication/web/' + this.slugPubliName);
     }
   }
 }

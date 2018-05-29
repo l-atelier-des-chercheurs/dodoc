@@ -121,77 +121,92 @@
     </div>  
 
     <div class="m_publicationview--pages" ref="pages">
-      <div 
-        v-for="(page, pageNumber) in pagesWithDefault" 
-        :key="pageNumber"
-      > 
+      
+      <transition-group 
+          tag="div"
+          name="publication"
+      >
         <div 
-          class="m_publicationview--pages--pageContainer"
-          :style="setPageContainerProperties(page)"
-          :class="{ 'is--active' : (pageNumber === page_currently_active && $root.state.mode !== 'export_publication') }"
-        >
-          <div
-            class="m_page"
-            :style="setPageProperties(page)"
-          >        
-            <div 
-              v-if="!preview_mode"
-              v-for="(item, index) in [0,1,2,3]"
-              class="m_page--margins_rule"
-              :style="`--margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
-              :key="index"
-            />
-            <div 
-              v-if="!preview_mode"
-              class="m_page--grid"
-              :style="`--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
-            />
+          v-for="(page, pageNumber) in pagesWithDefault" 
+          :key="pageNumber"
+        > 
+          <div 
+            class="m_publicationview--pages--pageContainer"
+            :style="setPageContainerProperties(page)"
+            :class="{ 'is--active' : (pageNumber === page_currently_active && $root.state.mode !== 'export_publication') }"
+          >
+            <div
+              class="m_page"
+              :style="setPageProperties(page)"
+            >        
+              <div 
+                v-if="!preview_mode"
+                v-for="(item, index) in [0,1,2,3]"
+                class="m_page--margins_rule"
+                :style="`--margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
+                :key="index"
+              />
+              <div 
+                v-if="!preview_mode"
+                class="m_page--grid"
+                :style="`--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
+              />
 
-            <div class="m_page--header"
-              v-if="!!page.header_left || !!page.header_right"
-            >
-              <div>
-                {{ page.header_left }}
+              <div class="m_page--header"
+                v-if="!!page.header_left || !!page.header_right"
+              >
+                <div>
+                  {{ page.header_left }}
+                </div>
+                <div>
+                  {{ page.header_right }}
+                </div>
+              </div>        
+              <div 
+                class="m_page--pageNumber"
+                :class="{ 'toRight' : true }"
+              >
+                {{ pageNumber + 1 }}
               </div>
-              <div>
-                {{ page.header_right }}
-              </div>
-            </div>        
-            <div 
-              class="m_page--pageNumber"
-              :class="{ 'toRight' : true }"
-            >
-              {{ pageNumber + 1 }}
+
+              <MediaPublication
+                v-for="(media, index) in publication_medias[(pageNumber) + '']" 
+                :key="media.slugMediaName + '-' + index"
+                :page="page"
+                :media="media"
+                :preview_mode="preview_mode"
+                :read_only="read_only"
+                :pixelsPerMillimeters="pixelsPerMillimeters"
+                @removePubliMedia="values => { removePubliMedia(values) }"
+                @editPubliMedia="values => { editPubliMedia(values) }"
+                @selected="newSelection"
+                @unselected="noSelection"
+              />
             </div>
-
-            <MediaPublication
-              v-for="(media, index) in publication_medias[(pageNumber) + '']" 
-              :key="media.slugMediaName + '-' + index"
-              :page="page"
-              :media="media"
-              :preview_mode="preview_mode"
-              :read_only="read_only"
-              :pixelsPerMillimeters="pixelsPerMillimeters"
-              @removePubliMedia="values => { removePubliMedia(values) }"
-              @editPubliMedia="values => { editPubliMedia(values) }"
-              @selected="newSelection"
-              @unselected="noSelection"
-            />
           </div>
-        </div>
 
-        <div class="m_publicationFooter"
-          v-if="$root.state.mode !== 'export_publication'"        
-        >
-          <button type="button" class="buttonLink" @click="insertPageAfterIndex(pageNumber)">
-            {{ $t('insert_a_page_here') }}
-          </button>
-          <button type="button" class="buttonLink" @click="removePageAtIndex(pageNumber)">
-            {{ $t('remove_this_page') }}
-          </button>
+          <div class="m_publicationFooter"
+            v-if="$root.state.mode !== 'export_publication'"        
+          >
+            <button type="button" class="buttonLink" @click="insertPageAfterIndex(pageNumber)">
+              {{ $t('insert_a_page_here') }}
+            </button>
+            <button type="button" class="buttonLink" @click="removePageAtIndex(pageNumber)">
+              {{ $t('remove_this_page') }}
+            </button>
+          </div>
+          
         </div>
-        
+      </transition-group>
+
+      <div class="m_publicationFooter"
+        v-if="$root.state.mode !== 'export_publication' && pagesWithDefault.length === 0"        
+      >
+        <button type="button" class="buttonLink" @click="insertPageAfterIndex(pageNumber)">
+          {{ $t('add_a_page') }}
+        </button>
       </div>
+
     </div>
 
     <div class="m_publicationFooter">

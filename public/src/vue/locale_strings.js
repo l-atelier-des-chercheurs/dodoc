@@ -140,9 +140,10 @@ module.exports = (function() {
       export_publication: 'Exportation d’une publication',
       get_pdf:
         'Pour récupérer un PDF de cette publication (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:',
-      get_website:
-        'Pour télécharger un site web contenant cette publication (par exemple pour la diffuser en ligne), cliquez sur le bouton ci-dessous&nbsp;:',
       download_pdf: 'Télécharger un PDF',
+      get_website:
+        'Pour récupérer un site web contenant cette publication (par exemple pour la diffuser en ligne), cliquez sur le bouton ci-dessous&nbsp;:',
+      download_website: 'Télécharger une version web',
       pdf_creation_in_progress: 'En cours de création…',
       pdf_created: 'Le PDF a été créé',
       open_in_app: 'Afficher',
@@ -329,9 +330,10 @@ module.exports = (function() {
       export_publication: 'Export a publication',
       get_pdf:
         'To download a PDF of this publication (for example, to print it), click here:',
+      download_pdf: 'Download PDF',
       get_website:
         'To download a website version of this publication (for example, to publish online), click here:',
-      download_pdf: 'Download PDF',
+      download_website: 'Download a website',
       pdf_creation_in_progress: 'PDF creation in progress…',
       pdf_created: 'PDF created',
       open_in_app: 'Open',

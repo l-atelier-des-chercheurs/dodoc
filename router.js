@@ -17,7 +17,8 @@ module.exports = function(app, io, m) {
    */
   app.get('/', showIndex);
   app.get('/:project', loadFolder);
-  app.get('/publication/:publication', loadPublication);
+  app.get('/publication/:publication', printPublication);
+  app.get('/publication/web/:publication', exportPublication);
   app.post('/:project/file-upload', postFile2);
 
   /**
@@ -177,112 +178,123 @@ module.exports = function(app, io, m) {
     });
   }
 
-  function loadPublication(req, res) {
+  function printPublication(req, res) {
+    loadPublication(req, res).then(pageData => {
+      pageData.mode = 'print_publication';
+      res.render('index', pageData);
+    });
+  }
+
+  function exportPublication(req, res) {
     let slugPubliName = req.param('publication');
-    let slugFolderName = slugPubliName;
-    let type = 'publications';
 
-    let publi_and_medias = {};
+    loadPublication(req, res).then(pageData => {
+      pageData.mode = 'export_publication';
+      res.render('index', pageData, (err, html) => {
+        exporter
+          .copyPubliContent({
+            html,
+            folders_and_medias: pageData.folderAndMediaData,
+            slugPubliName
+          })
+          .then(
+            cachePath => {
+              var archive = archiver('zip');
 
-    generatePageData(req).then(pageData => {
-      // get publication
-      file
-        .getFolder({
-          type,
-          slugFolderName
-        })
-        .then(publiData => {
-          publi_and_medias = publiData;
-          file
-            .getMediaMetaNames({
-              type,
-              slugFolderName
-            })
-            .then(list_metaFileName => {
-              let medias_list = list_metaFileName.map(metaFileName => {
-                return {
-                  slugFolderName,
-                  metaFileName
-                };
+              archive.on('error', function(err) {
+                res.status(500).send({ error: err.message });
               });
-              file
-                .readMediaList({
-                  type,
-                  medias_list
-                })
-                .then(publi_medias => {
-                  dev.logverbose(
-                    `Got medias, now sending to the right clients`
-                  );
-                  publi_and_medias[slugFolderName].medias =
-                    publi_medias[slugFolderName].medias;
-                  pageData.publiAndMediaData = publi_and_medias;
 
-                  // we need to get the list of original medias in the publi
-                  var list_of_linked_medias = [];
+              //on stream closed we can end the request
+              archive.on('end', function() {
+                dev.log('Archive wrote %d bytes', archive.pointer());
+              });
 
-                  Object.entries(publi_medias[slugFolderName].medias).forEach(
-                    ([key, value]) => {
-                      list_of_linked_medias.push({
-                        slugFolderName: value.slugProjectName,
-                        metaFileName: value.slugMediaName
-                      });
-                    }
-                  );
+              //set the archive name
+              res.attachment(slugPubliName + '.zip');
 
-                  file
-                    .readMediaList({
-                      type: 'projects',
-                      medias_list: list_of_linked_medias
-                    })
-                    .then(folders_and_medias => {
-                      pageData.folderAndMediaData = folders_and_medias;
-                      pageData.mode = 'export_publication';
+              //this is the streaming magic
+              archive.pipe(res);
 
-                      res.render('index', pageData, (err, html) => {
-                        exporter
-                          .copyPubliContent({
-                            html,
-                            folders_and_medias,
-                            slugPubliName
-                          })
-                          .then(
-                            cachePath => {
-                              var archive = archiver('zip');
+              archive.directory(cachePath, false);
 
-                              archive.on('error', function(err) {
-                                res.status(500).send({ error: err.message });
-                              });
+              archive.finalize();
+            },
+            (err, p) => {
+              dev.error('Failed while preparing/making a web export');
+            }
+          );
+      });
+    });
+  }
 
-                              //on stream closed we can end the request
-                              archive.on('end', function() {
-                                dev.log(
-                                  'Archive wrote %d bytes',
-                                  archive.pointer()
-                                );
-                              });
+  function loadPublication(req, res) {
+    return new Promise((resolve, reject) => {
+      let slugPubliName = req.param('publication');
+      let slugFolderName = slugPubliName;
+      let type = 'publications';
 
-                              //set the archive name
-                              res.attachment(slugPubliName + '.zip');
+      let publi_and_medias = {};
 
-                              //this is the streaming magic
-                              archive.pipe(res);
-
-                              archive.directory(cachePath, false);
-
-                              archive.finalize();
-                            },
-                            (err, p) => {
-                              dev.error(
-                                'Failed while preparing/making a web export'
-                              );
-                            }
-                          );
-                      });
-                    });
+      generatePageData(req).then(pageData => {
+        // get publication
+        file
+          .getFolder({
+            type,
+            slugFolderName
+          })
+          .then(publiData => {
+            publi_and_medias = publiData;
+            file
+              .getMediaMetaNames({
+                type,
+                slugFolderName
+              })
+              .then(list_metaFileName => {
+                let medias_list = list_metaFileName.map(metaFileName => {
+                  return {
+                    slugFolderName,
+                    metaFileName
+                  };
                 });
-            });
-        });
+                file
+                  .readMediaList({
+                    type,
+                    medias_list
+                  })
+                  .then(publi_medias => {
+                    dev.logverbose(
+                      `Got medias, now sending to the right clients`
+                    );
+                    publi_and_medias[slugFolderName].medias =
+                      publi_medias[slugFolderName].medias;
+                    pageData.publiAndMediaData = publi_and_medias;
+
+                    // we need to get the list of original medias in the publi
+                    var list_of_linked_medias = [];
+
+                    Object.entries(publi_medias[slugFolderName].medias).forEach(
+                      ([key, value]) => {
+                        list_of_linked_medias.push({
+                          slugFolderName: value.slugProjectName,
+                          metaFileName: value.slugMediaName
+                        });
+                      }
+                    );
+
+                    file
+                      .readMediaList({
+                        type: 'projects',
+                        medias_list: list_of_linked_medias
+                      })
+                      .then(folders_and_medias => {
+                        pageData.folderAndMediaData = folders_and_medias;
+                        resolve(pageData);
+                      });
+                  });
+              });
+          });
+      });
     });
   }
 
