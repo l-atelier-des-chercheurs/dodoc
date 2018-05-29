@@ -740,7 +740,7 @@ let vm = new Vue({
     },
     setPublicationZoom(val) {
       if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: setPublicationZoom`);
+        console.log(`ROOT EVENT: setPublicationZoom with val = ${val}`);
       }
       this.settings.publi_zoom = val;
     },

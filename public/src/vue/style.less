@@ -286,7 +286,6 @@ body {
     align-items: center;
 
     .m_topbar--center--authors {
-
       button {
         position: relative;
         padding: 0;
@@ -294,12 +293,12 @@ body {
         min-height: 0;
         display: flex;
         align-items: center;
-
         .bg-blanc;
         // border: 2px solid @c-bleumarine;
         // color: @c-bleumarine;
-        background-color: @c-bleumarine;
-        color: white;
+        background-color: @c-bleumarine_clair;
+        color: @c-bleumarine;
+        font-weight: 400;
         .padding-verysmall;
 
         .m_topbar--center--authors--portrait {
@@ -1304,20 +1303,16 @@ body {
   }
 
   .m_publicationview--pages { 
+    > * {
+      // .margin-sides-medium;
+    }
   }
 
-  .m_publicationview--pages--page {
+  .m_publicationview--pages--pageContainer {
     position: relative;
-    .margin-vert-medium;
-    margin-left: auto;
-    margin-right: auto;
-    .bg-blanc;
-    box-shadow: 0px 2px 16px 0px rgba(0,0,0,.2);
-    transform-origin: top left;
-    transform-origin: center center;
-
+    margin: 0 auto;
     transition: all .2s;
-
+  
     &.is--active {
       &::before {
         content: '>';
@@ -1339,8 +1334,21 @@ body {
         align-items: center;
       }
     }
+  
+  }
 
-    .m_publicationview--pages--page--header {
+  .m_page {
+    position: relative;
+    .margin-medium;
+    .bg-blanc;
+    box-shadow: 0px 2px 16px 0px rgba(0,0,0,.2);
+    z-index: 0;
+    transform-origin: top left;
+    // transform-origin: center center;
+
+    transition: all .2s;
+
+    .m_page--header {
       position: absolute;
       bottom: ~"calc(100% - 1.4cm)";
       margin: 0 1cm;
@@ -1357,7 +1365,7 @@ body {
       > * {
       }
     }
-    .m_publicationview--pages--page--pageNumber {
+    .m_page--pageNumber {
       position: absolute;
       bottom: 0;
       left: 0;
@@ -1371,7 +1379,7 @@ body {
       }
     }
 
-    .m_publicationview--pages--page--margins_rule {
+    .m_page--margins_rule {
       position: absolute;
       width: 1px;
       height: 100%;
@@ -1400,7 +1408,7 @@ body {
       }
     }
 
-    .m_publicationview--pages--page--grid {
+    .m_page--grid {
       // Configuration
       --gridstep: 10mm;
 
@@ -1793,8 +1801,8 @@ body {
   .controlFrame,
   .publiButton,
   .m_mediaPublication--buttons,
-  .m_publicationview--pages--page--margins_rule,
-  .m_publicationview--pages--page--grid,
+  .m_page--margins_rule,
+  .m_page--grid,
   .m_publicationSettings {
     display: none !important;
   }
@@ -1836,7 +1844,7 @@ body {
     }
   }
 
-  .m_publicationview--pages--page {
+  .m_page {
     margin: 0 !important;
     transform: none !important;
     box-shadow: none;

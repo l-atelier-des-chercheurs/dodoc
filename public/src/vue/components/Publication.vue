@@ -98,36 +98,46 @@
         <label for="preview">{{ $t('preview') }}</label>
       </div>
       <div class="margin-bottom-small">
-        <label for="zoom">{{ $t('zoom') }}({{ zoom }})</label>
-        <button class="" @click="zoom += 0.1">+</button>
-        <button class="" @click="zoom -= 0.1">-</button>
+        <label for="zoom">{{ $t('zoom') }}</label>
+        <br>
+        <button class="margin-vert-verysmall font-verysmall" 
+          :disabled="zoom === zoom_max"
+          @click="zoom += 0.1">+</button>
+        <button class="margin-vert-verysmall font-verysmall" 
+          :disabled="zoom === zoom_min"
+          @click="zoom -= 0.1">-</button>
+        <button class="margin-vert-verysmall font-verysmall" @click="zoom = 1">RESET</button>
       </div>
     </div>  
 
     <div class="m_publicationview--pages" ref="pages">
+      <div 
+        v-for="(page, pageNumber) in pagesWithDefault" 
+        :key="pageNumber"
+      > 
         <div 
-          v-for="(page, pageNumber) in pagesWithDefault" 
-          :key="pageNumber"
-        > 
+          class="m_publicationview--pages--pageContainer"
+          :style="setPageContainerProperties(page)"
+          :class="{ 'is--active' : pageNumber === page_currently_active }"
+        >
           <div
-            class="m_publicationview--pages--page"
-            :class="{ 'is--active' : pageNumber === page_currently_active }"
+            class="m_page"
             :style="setPageProperties(page)"
           >        
             <div 
               v-if="!preview_mode"
               v-for="(item, index) in [0,1,2,3]"
-              class="m_publicationview--pages--page--margins_rule"
+              class="m_page--margins_rule"
               :style="`--margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
               :key="index"
             />
             <div 
               v-if="!preview_mode"
-              class="m_publicationview--pages--page--grid"
+              class="m_page--grid"
               :style="`--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
             />
 
-            <div class="m_publicationview--pages--page--header"
+            <div class="m_page--header"
               v-if="!!page.header_left || !!page.header_right"
             >
               <div>
@@ -138,7 +148,7 @@
               </div>
             </div>        
             <div 
-              class="m_publicationview--pages--page--pageNumber"
+              class="m_page--pageNumber"
               :class="{ 'toRight' : true }"
             >
               {{ pageNumber + 1 }}
@@ -158,17 +168,18 @@
               @unselected="noSelection"
             />
           </div>
-
-          <div class="m_publicationFooter">
-            <button type="button" class="buttonLink" @click="insertPageAfterIndex(pageNumber)">
-              {{ $t('insert_a_page_here') }}
-            </button>
-            <button type="button" class="buttonLink" @click="removePageAtIndex(pageNumber)">
-              {{ $t('remove_this_page') }}
-            </button>
-          </div>
-
         </div>
+
+        <div class="m_publicationFooter">
+          <button type="button" class="buttonLink" @click="insertPageAfterIndex(pageNumber)">
+            {{ $t('insert_a_page_here') }}
+          </button>
+          <button type="button" class="buttonLink" @click="removePageAtIndex(pageNumber)">
+            {{ $t('remove_this_page') }}
+          </button>
+        </div>
+
+      </div>
     </div>
 
     <div class="m_publicationFooter">
@@ -228,6 +239,9 @@ export default {
       page_currently_active: 0,
       preview_mode: false,
       zoom: window.innerWidth <= 1024 ? 0.8 : 1,
+      zoom_min: 0.4,
+      zoom_max: 1.4,
+
       pixelsPerMillimeters: 0,
       has_media_selected: false,
       showExportModal: false
@@ -285,7 +299,11 @@ export default {
       deep: true
     },
     'zoom': function() {
+      this.zoom = Math.min(this.zoom_max, Math.max(this.zoom_min, this.zoom));
       this.$root.setPublicationZoom(this.zoom);
+    },
+    '$root.settings.publi_zoom': function() {
+      this.zoom = this.$root.settings.publi_zoom;
     },
     'publication.name': function() {
       this.new_publiname = this.publication.name
@@ -496,6 +514,13 @@ export default {
           pages
         } 
       });
+      
+      $(this.$refs.panel).animate({
+          scrollTop: '+=400'
+        },
+        600,
+        $.easing.easeInOutQuint
+      );
     },
     removePageAtIndex(index) {
       if (this.$root.state.dev_mode === 'debug') {
@@ -568,12 +593,19 @@ export default {
 
       this.page_currently_active = index;
     },
+    setPageContainerProperties(page) {
+        // width: ${page.width * this.$root.settings.publi_zoom}mm; 
+        // height: ${page.height * this.$root.settings.publi_zoom - 1}mm;
+      return `
+        width: ${page.width * this.$root.settings.publi_zoom}mm; 
+        height: ${page.height * this.$root.settings.publi_zoom}mm;      
+      `;      
+    },
     setPageProperties(page) {
       if(this.$root.settings.export_publication) {
         return `
           width: ${page.width}mm; 
           height: ${page.height - 1}mm;
-          transform: scale(${this.$root.settings.publi_zoom});
         `;
       } else {
         return `
