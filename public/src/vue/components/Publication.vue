@@ -30,6 +30,10 @@
         >
         </ExportModal>
 
+        <button type="button" class="buttonLink" @click="removePublication">
+          {{ $t('remove') }}
+        </button>     
+
         <!-- <a :href="url_to_publication" target="_blank" class="buttonLink js--openInBrowser">
           {{ $t('new_window') }}
         </a>             -->
@@ -423,6 +427,19 @@ export default {
         console.log(`METHODS • Publication: closePublication`);
       }
       this.$root.closePublication();
+    },
+    removePublication() {
+      if (window.confirm(this.$t('sureToRemovePubli'))) {
+        if (this.$root.state.dev_mode === 'debug') {
+          console.log(`METHODS • Publication: removePublication`);
+        }
+        this.$root.removeFolder({ 
+          type: 'publications', 
+          slugFolderName: this.slugPubliName, 
+        });
+        
+        this.closePublication();
+      }
     },
     updateMediasPubli() {
       if (this.$root.state.dev_mode === 'debug') {

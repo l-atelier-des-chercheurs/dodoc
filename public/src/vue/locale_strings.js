@@ -27,6 +27,8 @@ module.exports = (function() {
       back: 'Retour',
       sureToRemoveAuthor: 'Êtes-vous sûr de vouloir supprimer cet auteur ?',
       sureToCloseModal: 'Êtes-vous sûr de vouloir fermer cette fenêtre ?',
+      sureToRemovePubli:
+        'Êtes-vous sûr de vouloir supprimer cette publication ?',
 
       showing: 'Affichage de',
       projects_of: 'projets sur',
@@ -205,6 +207,8 @@ module.exports = (function() {
       back: 'Back',
       sureToRemoveAuthor: 'Do you really want to delete this author?',
       sureToCloseModal: 'Do you really want to close this window?',
+      sureToRemovePubli: 'Do you really want to delete this publication?',
+
       showing: 'Showing',
       no_projects_yet:
         'No projects created yet. Create one to add captures and import content.',
