@@ -232,7 +232,7 @@ module.exports = (function() {
       var fileBuffer = new Buffer(dataURL, 'base64');
 
       let cachePath = path.join(
-        global.appRoot,
+        global.tempStorage,
         settings.cacheDirname,
         '_medias'
       );
@@ -269,7 +269,7 @@ module.exports = (function() {
       var fileBuffer = new Buffer(dataURL, 'base64');
 
       let cachePath = path.join(
-        global.appRoot,
+        global.tempStorage,
         settings.cacheDirname,
         '_medias'
       );
