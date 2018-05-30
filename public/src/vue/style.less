@@ -980,11 +980,6 @@ body {
       .c-orange;      
     }
 
-    img {
-      border-radius: 50%;
-      overflow: hidden;      
-    }
-
     > * {
       flex: 0 0 auto;
       display: flex;
@@ -1011,15 +1006,20 @@ body {
       margin: 1vw 1vw;
       text-align: center;
 
-
-      // > * {
-      // }
-
-      img {
+      .picto {
+        border-radius: 50%;
+        overflow: hidden;      
         display: block;
         width: 36px;
         height: 36px;
-        margin: @t-skipline/4 @t-skipline/4;        
+        margin: @t-skipline/4 @t-skipline/4;    
+        padding: 4px;   
+        .bg-orange;
+         
+        img {
+          width: 100%;
+          height: 100%;
+        }
       }
       span {
         display: block;

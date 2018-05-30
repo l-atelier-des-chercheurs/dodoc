@@ -10,7 +10,9 @@
       >
         <input type="radio" :id="mode.key" :value="mode.key" v-model="selected_mode">
         <label :for="mode.key">
-          <img :src="mode.picto">
+          <div class="picto">
+            <img :src="mode.picto">
+          </div>
           <span>{{ $t(mode.name) }}</span>
         </label>
       </div>
@@ -150,11 +152,11 @@ export default {
           picto: '/images/i_icone-dodoc_video.svg',
           key: 'video'
         },
-        // {
-        //   name: this.$t('stopmotion'),
-        //   picto: '/images/i_icone-dodoc_anim.svg',
-        //   key: 'stopmotion'
-        // },
+        {
+          name: this.$t('stopmotion'),
+          picto: '/images/i_icone-dodoc_anim.svg',
+          key: 'stopmotion'
+        },
         {
           name: 'audio',
           picto: '/images/i_icone-dodoc_audio.svg',
