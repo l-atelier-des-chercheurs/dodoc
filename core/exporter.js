@@ -342,7 +342,6 @@ module.exports = (function() {
                     },
                     (error, data) => {
                       if (error) throw error;
-
                       fs.writeFile(pdfPath, data, error => {
                         if (error) throw error;
                         console.log('Write PDF successful');

@@ -51,7 +51,12 @@
           <button type="button" 
             class="margin-small margin-left-none bg-bleumarine c-blanc button-allwide" 
             @click="downloadWeb"
+            :disabled="web_export_started"
           >
+            <template v-if="web_export_started"> 
+              <span class="loader loader-xs" />
+            </template>
+          
             {{ $t('download_website') }}
           </button>
         </div>    
@@ -61,6 +66,7 @@
 </template>
 <script>
 import Modal from './BaseModal.vue';
+import { setTimeout } from 'timers';
 
 export default {
   props: {
@@ -73,7 +79,8 @@ export default {
     return {
       pdf_request_status: false,
       link_to_pdf: false,
-      path_to_pdf: false
+      path_to_pdf: false,
+      web_export_started: false
     }
   },
   created() {
@@ -117,6 +124,10 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: downloadWeb`);
       }
+      this.web_export_started = true;
+      setTimeout(() => {
+        this.web_export_started = false;
+      }, 2000);
       window.location.replace(window.location.origin + '/publication/web/' + this.slugPubliName);
     }
   }
