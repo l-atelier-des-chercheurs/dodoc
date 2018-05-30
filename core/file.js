@@ -577,6 +577,7 @@ module.exports = (function() {
                 case '.mp4':
                 case '.mov':
                 case '.webm':
+                case '.avi':
                   additionalMeta.type = 'video';
                   break;
                 case '.mp3':
@@ -1020,7 +1021,7 @@ module.exports = (function() {
         } else if (additionalMeta.type === 'video') {
           tasks.push(
             new Promise((resolve, reject) => {
-              mediaName += '.mp4';
+              mediaName += '.webm';
               let pathToMedia = path.join(slugFolderPath, mediaName);
 
               // only works for projects media (root) for now

@@ -274,25 +274,29 @@ module.exports = (function() {
         '_medias'
       );
       fs.mkdirp(cachePath, function() {
-        let pathToTempMedia = path.join(cachePath, mediaName);
-
-        fs.writeFile(pathToTempMedia, fileBuffer, function(err) {
+        let pathToMedia = path.join(getFolderPath(slugProjectName), mediaName);
+        fs.writeFile(pathToMedia, fileBuffer, function(err) {
           if (err) reject(err);
-
-          let pathToMedia = path.join(
-            getFolderPath(slugProjectName),
-            mediaName
-          );
-          ffmpeg(pathToTempMedia)
-            .audioCodec('aac')
-            .videoCodec('libx264')
-            .format('mp4')
-            .save(pathToMedia)
-            .on('end', function() {
-              console.log('Processing finished !');
-              resolve();
-            });
+          resolve();
         });
+
+        // fs.writeFile(pathToTempMedia, fileBuffer, function(err) {
+        //   if (err) reject(err);
+
+        //   let pathToMedia = path.join(
+        //     getFolderPath(slugProjectName),
+        //     mediaName
+        //   );
+        //   ffmpeg(pathToTempMedia)
+        //     .audioCodec('aac')
+        //     .videoCodec('libx264')
+        //     .format('mp4')
+        //     .save(pathToMedia)
+        //     .on('end', function() {
+        //       console.log('Processing finished !');
+        //       resolve();
+        //     });
+        // });
       });
     });
   }

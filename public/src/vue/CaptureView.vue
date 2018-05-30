@@ -10,7 +10,9 @@
       >
         <input type="radio" :id="mode.key" :value="mode.key" v-model="selected_mode">
         <label :for="mode.key">
-          <img :src="mode.picto">
+          <div class="picto">
+            <img :src="mode.picto">
+          </div>
           <span>{{ $t(mode.name) }}</span>
         </label>
       </div>
@@ -609,6 +611,28 @@ export default {
             }
           });
         });
+      } else
+      if(this.selected_mode === 'stopmotion') { 
+        debugger;
+        const smdata = {
+          authors: this.$root.settings.current_author.name
+        };
+
+        // if (this.$root.justCreatedFolderID) {
+        //   Object.keys(this.stopmotions).map(slugProjectName => {
+        //     let folder = this.projects[slugProjectName];
+        //     // if there is, try to match it with folderID
+        //     if (
+        //       folder.id &&
+        //       folder.id === this.$root.justCreatedFolderID
+        //     ) {
+        //       this.$root.justCreatedFolderID = false;
+        //       this.$root.openProject(slugProjectName);
+        //     }
+        //   });
+        // }
+        
+        this.$root.createFolder({ type: 'stopmotions', data: smdata });      
       } else
       if(this.selected_mode === 'vecto') { 
         this.$root.createMedia({

@@ -216,6 +216,40 @@
           }
         }
       }
+    },
+    "stopmotions": {
+      "path": "_stopmotions",
+      "fields": {
+        "date_created": {
+          "type": "date",
+          "default": "current",
+          "read_only": true
+        },
+        "date_modified": {
+          "type": "date",
+          "default": "current"
+        },
+        "authors": {
+          "type": "string"
+        }
+      },
+      "medias": {
+        "fields": {
+          "date_uploaded" : {
+            "type": "date",
+            "default": "current",
+            "read_only": true
+          },
+          "media_filename": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "options": ["image"],
+            "default": "other"
+          }
+        }
+      } 
     }
   }
 }
