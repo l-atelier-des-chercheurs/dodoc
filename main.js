@@ -52,6 +52,7 @@ function createWindow() {
   }
 
   global.appRoot = path.resolve(__dirname);
+  global.tempStorage = app.getPath('temp');
   global.appInfos.version = app.getVersion();
 
   dev.log(`——— Starting dodoc2 app version ${global.appInfos.version}`);
@@ -344,7 +345,7 @@ function copyAndRenameUserFolder() {
 
 function cleanCacheFolder() {
   return new Promise(function(resolve, reject) {
-    let cachePath = path.join(global.appRoot, settings.cacheDirname);
+    let cachePath = path.join(global.tempStorage, settings.cacheDirname);
     fs.emptyDir(cachePath).then(() => {
       resolve();
     });

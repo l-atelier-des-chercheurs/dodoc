@@ -18,7 +18,7 @@ module.exports = (function() {
           (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2);
 
         let cachePath = path.join(
-          global.appRoot,
+          global.tempStorage,
           settings.cacheDirname,
           cacheFolderName
         );
@@ -132,7 +132,7 @@ module.exports = (function() {
           (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2);
 
         let cachePath = path.join(
-          global.appRoot,
+          global.tempStorage,
           settings.cacheDirname,
           cacheFolderName
         );
@@ -302,7 +302,7 @@ module.exports = (function() {
           '.pdf';
 
         const cachePath = path.join(
-          global.appRoot,
+          global.tempStorage,
           settings.cacheDirname,
           '_publications'
         );

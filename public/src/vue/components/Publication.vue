@@ -121,11 +121,8 @@
     </div>  
 
     <div class="m_publicationview--pages" ref="pages">
-      
-      <transition-group 
-          tag="div"
-          name="publication"
-      >
+      <!-- si transition, attention à ref -->
+      <!-- <transition-group> -->
         <div 
           v-for="(page, pageNumber) in pagesWithDefault" 
           :key="pageNumber"
@@ -197,7 +194,7 @@
           </div>
           
         </div>
-      </transition-group>
+      <!-- </transition-group> -->
 
       <div class="m_publicationFooter"
         v-if="$root.state.mode !== 'export_publication' && pagesWithDefault.length === 0"        
@@ -209,7 +206,9 @@
 
     </div>
 
-    <div class="m_publicationFooter">
+    <div class="m_publicationFooter"
+      v-if="this.$root.state.mode === 'export_publication'"
+    >
       <a class="js--openInBrowser" target="_blank" href="https://latelier-des-chercheurs.fr/outils/dodoc">
         {{ $t('made_with_dodoc') }}
         <img 
@@ -272,7 +271,7 @@ export default {
       new_header_right: '',
 
       page_currently_active: 0,
-      preview_mode: false,
+      preview_mode: this.$root.state.mode !== 'live',
       zoom: window.innerWidth <= 1024 ? 0.8 : 1,
       zoom_min: 0.4,
       zoom_max: 1.4,
@@ -620,7 +619,7 @@ export default {
     },
     onScroll(event) {
       if (this.$root.state.dev_mode === 'debug') {
-        // console.log(`METHODS • Publication: onScroll`);
+        console.log(`METHODS • Publication: onScroll`);
       }
 
       if(!this.$refs.hasOwnProperty('pages') || this.$refs.pages.children.length === 0) {
