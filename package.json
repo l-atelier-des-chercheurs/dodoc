@@ -52,7 +52,7 @@
     "path": "^0.12.7",
     "portscanner": "^2.1.1",
     "pug": "^2.0.2",
-    "sharp": "0.17.3",
+    "sharp": "^0.19.3",
     "slugg": "^1.2.1",
     "socket.io": "^2.0.4",
     "validator": "^9.4.1",
