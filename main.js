@@ -350,7 +350,7 @@ function cleanCacheFolder() {
     fs.emptyDir(cachePath).then(() => {
       if (err) {
         dev.error(err);
-        return reject(err);
+        return resolve();
       }
       resolve();
     });
