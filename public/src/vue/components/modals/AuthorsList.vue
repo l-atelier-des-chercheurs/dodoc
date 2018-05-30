@@ -37,7 +37,7 @@
           </div>
 
           <button type="button" 
-            v-if="typeof authors === 'object'"
+            v-if="Object.keys(sortedAuthors).length > 0"
             v-for="(author, slug) in sortedAuthors" 
             :key="author.name" 
             class="m_authorsList--author"
