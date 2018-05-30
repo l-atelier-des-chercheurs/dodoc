@@ -312,6 +312,7 @@ Vue.prototype.$socketio = new Vue({
       }
 
       window.store[type] = Object.assign({}, window.store[type], content);
+      this.$eventHub.$emit(`${type}.listFolder`);
     },
 
     // for projects, authors and publications
