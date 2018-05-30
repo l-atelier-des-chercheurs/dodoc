@@ -152,11 +152,11 @@ export default {
           picto: '/images/i_icone-dodoc_video.svg',
           key: 'video'
         },
-        {
-          name: this.$t('stopmotion'),
-          picto: '/images/i_icone-dodoc_anim.svg',
-          key: 'stopmotion'
-        },
+        // {
+        //   name: this.$t('stopmotion'),
+        //   picto: '/images/i_icone-dodoc_anim.svg',
+        //   key: 'stopmotion'
+        // },
         {
           name: 'audio',
           picto: '/images/i_icone-dodoc_audio.svg',
@@ -611,6 +611,28 @@ export default {
             }
           });
         });
+      } else
+      if(this.selected_mode === 'stopmotion') { 
+        debugger;
+        const smdata = {
+          authors: this.$root.settings.current_author.name
+        };
+
+        // if (this.$root.justCreatedFolderID) {
+        //   Object.keys(this.stopmotions).map(slugProjectName => {
+        //     let folder = this.projects[slugProjectName];
+        //     // if there is, try to match it with folderID
+        //     if (
+        //       folder.id &&
+        //       folder.id === this.$root.justCreatedFolderID
+        //     ) {
+        //       this.$root.justCreatedFolderID = false;
+        //       this.$root.openProject(slugProjectName);
+        //     }
+        //   });
+        // }
+        
+        this.$root.createFolder({ type: 'stopmotions', data: smdata });      
       } else
       if(this.selected_mode === 'vecto') { 
         this.$root.createMedia({
