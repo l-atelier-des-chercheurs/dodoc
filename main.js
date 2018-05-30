@@ -40,8 +40,9 @@ function createWindow() {
     process.argv.length >= 4 ? process.argv[3] === '--debug' : false;
   const verbose =
     process.argv.length >= 5 ? process.argv[4] === '--verbose' : false;
+  const logToFile = true;
 
-  dev.init(debug, verbose);
+  dev.init(debug, verbose, logToFile);
 
   if (dev.isDebug()) {
     process.traceDeprecation = true;
@@ -347,6 +348,10 @@ function cleanCacheFolder() {
   return new Promise(function(resolve, reject) {
     let cachePath = path.join(global.tempStorage, settings.cacheDirname);
     fs.emptyDir(cachePath).then(() => {
+      if (err) {
+        dev.error(err);
+        return reject(err);
+      }
       resolve();
     });
   });
