@@ -6,7 +6,8 @@ module.exports = dev = (function() {
   let isVerboseMode = false;
   let logToFile = false;
 
-  logger.transports.console.level = 'info';
+  logger.transports.file.level = 'info';
+  logger.transports.console.level = false;
 
   const API = {
     init: (isDebug, isVerbose) => {

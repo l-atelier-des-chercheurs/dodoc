@@ -347,13 +347,14 @@ function copyAndRenameUserFolder() {
 function cleanCacheFolder() {
   return new Promise(function(resolve, reject) {
     let cachePath = path.join(global.tempStorage, settings.cacheDirname);
-    fs.emptyDir(cachePath).then(() => {
-      if (err) {
+    fs.emptyDir(cachePath)
+      .then(()) => {
+        resolve();
+      })
+      .catch(err => {
         dev.error(err);
-        return resolve();
-      }
-      resolve();
-    });
+        return reject(err);
+      });
   });
 }
 
