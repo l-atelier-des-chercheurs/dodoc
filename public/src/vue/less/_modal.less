@@ -295,8 +295,28 @@
             border-left-color: @c-orange;
           }
 
+          .ql-toolbar::before {
+            content: 'options :';
+            position: relative;
+            display: inline-block;
+            font-size:1rem;
+            vertical-align: middle;
+            font-weight: 400;
+            /* background-color: #333; */
+            /* left: -8px; */
+            margin:0;
+            /* padding: 11px; */
+            margin-bottom: 10px;
+            /* text-decoration: underline; */
+            font-size: .8rem;
+            /* text-transform: uppercase; */
+            margin-right: 15px;
+            /* font-style: italic; */
+          }        
+          
           @import (multiple) "publications_styles/standard.less";  
         }
+
       }
       
     }

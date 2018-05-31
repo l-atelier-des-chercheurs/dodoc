@@ -166,11 +166,11 @@ export default {
           picto: '/images/i_icone-dodoc_video.svg',
           key: 'video'
         },
-        // {
-        //   name: this.$t('stopmotion'),
-        //   picto: '/images/i_icone-dodoc_anim.svg',
-        //   key: 'stopmotion'
-        // },
+        {
+          name: this.$t('stopmotion'),
+          picto: '/images/i_icone-dodoc_anim.svg',
+          key: 'stopmotion'
+        },
         {
           name: 'audio',
           picto: '/images/i_icone-dodoc_audio.svg',
