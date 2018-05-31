@@ -1422,9 +1422,6 @@ body {
       font-weight: 500;
 
       text-transform: uppercase;
-
-      > * {
-      }
     }
     .m_page--pageNumber {
       position: absolute;
@@ -1843,6 +1840,22 @@ body {
 .mediaCapture-enter, .mediaCapture-leave-to {
   opacity: 0;
   transition: all 1s linear;
+}
+
+.scaleIn-enter-active, .scaleIn-leave-active {
+  // max-width: 1000px;
+  opacity: 1;
+  transform: scale(1);
+  transform-origin: center center !important;
+  transition: all .3s ease-out;
+}
+.scaleIn-enter, .scaleIn-leave-to /* .list-leave-active below version 2.1.8 */ {
+  // max-width: 0;
+  // padding: 0;
+  // min-width: 0;
+  // min-height: 0;
+  transform: scale(.7);
+  opacity: 0;
 }
 
 // .enableMode-enter-active, .enableMode-leave-active {

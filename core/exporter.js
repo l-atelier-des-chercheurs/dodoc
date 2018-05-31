@@ -243,7 +243,6 @@ module.exports = (function() {
                           );
                         } else if (t.hasOwnProperty('thumbsData')) {
                           t.thumbsData.map(t => {
-                            debugger;
                             tasks.push(
                               new Promise((resolve, reject) => {
                                 const fullPathToThumb = api.getFolderPath(

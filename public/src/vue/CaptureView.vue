@@ -642,7 +642,6 @@ export default {
         });
       } else
       if(this.selected_mode === 'stopmotion') { 
-        debugger;
         const smdata = {
           authors: this.$root.settings.current_author.name
         };

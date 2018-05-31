@@ -193,19 +193,24 @@
                 {{ pageNumber + 1 }}
               </div>
 
-              <MediaPublication
-                v-for="(media, index) in publication_medias[(pageNumber) + '']" 
-                :key="media.metaFileName"
-                :page="page"
-                :media="media"
-                :preview_mode="preview_mode"
-                :read_only="read_only"
-                :pixelsPerMillimeters="pixelsPerMillimeters"
-                @removePubliMedia="values => { removePubliMedia(values) }"
-                @editPubliMedia="values => { editPubliMedia(values) }"
-                @selected="newSelection"
-                @unselected="noSelection"
-              />
+              <transition-group name="scaleIn" :duration="300" tag="div">
+                <div
+                  v-for="(media, index) in publication_medias[(pageNumber) + '']" 
+                  :key="media.publi_meta.metaFileName"
+                >
+                  <MediaPublication
+                    :page="page"
+                    :media="media"
+                    :preview_mode="preview_mode"
+                    :read_only="read_only"
+                    :pixelsPerMillimeters="pixelsPerMillimeters"
+                    @removePubliMedia="values => { removePubliMedia(values) }"
+                    @editPubliMedia="values => { editPubliMedia(values) }"
+                    @selected="newSelection"
+                    @unselected="noSelection"
+                  />
+                </div>
+              </transition-group>
             </div>
           </div>
 
@@ -443,13 +448,17 @@ export default {
         page = this.page_currently_active;
       }
 
+      const page_id = this.publication.pages[page].id;
+      const x = this.publications_options.margin_left;
+      const y = this.publications_options.margin_top;
+
       const newMediaMeta = {
         slugProjectName,
         slugMediaName,
         desired_filename: slugMediaName,
-        page_id: this.publication.pages[page].id,
-        x: this.publications_options.margin_left,
-        y: this.publications_options.margin_top
+        page_id,
+        x,
+        y
       };
 
       this.$root.createMedia({ 
