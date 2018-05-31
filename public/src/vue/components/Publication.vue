@@ -129,21 +129,52 @@
     <div class="m_publicationSettings"
       v-if="$root.state.mode !== 'export_publication'"        
     >
-      <div class="margin-bottom-small">
-        <input id="preview" type="checkbox" v-model="preview_mode">
-        <label for="preview">{{ $t('preview') }}</label>
-      </div>
-      <div class="margin-bottom-small">
-        <label for="zoom">{{ $t('zoom') }}</label>
-        <br>
-        <button class="margin-vert-verysmall font-verysmall" 
-          :disabled="zoom === zoom_max"
-          @click="zoom += 0.1">+</button>
-        <button class="margin-vert-verysmall font-verysmall" 
-          :disabled="zoom === zoom_min"
-          @click="zoom -= 0.1">-</button>
-        <button class="margin-vert-verysmall font-verysmall" @click="zoom = 1">RESET</button>
-      </div>
+      <button 
+        class="margin-vert-verysmall font-verysmall" 
+        :class="{ 'is--active' : !preview_mode }"
+        @click="preview_mode = !preview_mode"
+      >
+        <!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In  -->
+        <svg version="1.1"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+          x="0px" y="0px" width="144px" height="84px" viewBox="0 0 144 84" style="enable-background:new 0 0 144 84;"
+          xml:space="preserve">
+        <defs>
+        </defs>
+        <g>
+          <path d="M72,0C32.2,0,0,42,0,42s32.2,42,72,42s72-42,72-42S111.8,0,72,0z M72,71.3c-16.5,0-30-13.2-30-29.6
+            c0-16.3,13.4-29.6,30-29.6c16.5,0,30,13.3,30,29.6C102,58,88.5,71.3,72,71.3z"/>
+        </g>
+        </svg>
+      </button>
+      <button class="margin-vert-verysmall font-verysmall" 
+        :disabled="zoom === zoom_max"
+        @click="zoom += 0.1"
+      >
+        <!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In  -->
+        <svg version="1.1"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+          x="0px" y="0px" width="182.5px" height="188.1px" viewBox="0 0 182.5 188.1" style="enable-background:new 0 0 182.5 188.1;"
+          xml:space="preserve">
+        <defs>
+        </defs>
+        <path d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z"/>
+        </svg>
+      </button>
+      <button class="margin-vert-verysmall font-verysmall" 
+        :disabled="zoom === zoom_min"
+        @click="zoom -= 0.1"
+      >
+        <!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In  -->
+        <svg version="1.1"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+          x="0px" y="0px" width="155.6px" height="21.2px" viewBox="0 0 155.6 21.2" style="enable-background:new 0 0 155.6 21.2;"
+          xml:space="preserve">
+        <defs>
+        </defs>
+        <path d="M155.6,0v21.2H0V0H155.6z"/>
+        </svg>      
+      </button>
     </div>  
 
     <div class="m_publicationview--pages" ref="pages">
