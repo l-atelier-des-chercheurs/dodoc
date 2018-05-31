@@ -153,6 +153,11 @@
           "options": ["page_by_page"],
           "default": "page_by_page"          
         },
+        "style": {
+          "type": "string",
+          "options": ["standard", "feuille de choux"],
+          "default": "standard"          
+        },
         "width": {
           "type": "number"
         },

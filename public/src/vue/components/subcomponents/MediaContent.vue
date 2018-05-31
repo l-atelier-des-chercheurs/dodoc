@@ -30,7 +30,7 @@
     </template>
 
     <template v-else-if="media.type === 'text'">
-      <div v-if="context !== 'edit'" class="padding-small font-small">
+      <div v-if="context !== 'edit'" class="">
         <div v-if="value.length !== 0" v-html="value" />
         <p v-else v-html="'…'" />
       </div>
@@ -62,6 +62,7 @@ Fichier&nbsp;:
         </pre>
       </div>
     </template>
+
   </div>
 </template>
 <script>
@@ -105,7 +106,8 @@ export default {
       customToolbar: [
         [{ 'header': [false, 1, 2, 3, 4] }],
         // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
-        ['bold', 'italic', 'underline'],
+        ['bold', 'italic', 'underline', 'link', 'blockquote'],
+        [{ list: 'ordered' }, { list: 'bullet'} ],
         ['clean']  
       ]
     };

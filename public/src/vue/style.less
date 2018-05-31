@@ -850,7 +850,7 @@ body {
 
     .mediaContainer {
       position: relative;
-      .margin-small;
+      .margin-verysmall;
       // .bg-gris_tresclair;
       overflow: hidden;
 
@@ -867,6 +867,7 @@ body {
         width: 100%;
         height: 100%;
         margin: 0;
+        padding: 0;
         object-fit: contain;
       }
       
@@ -882,21 +883,23 @@ body {
         white-space: pre;
       }
 
-      h1,h2,h3, p {
+      h1,h2,h3,h4,h5, p {
         margin: 0;
+        margin-bottom: @t-skipline/2;
+        font-size: inherit;
       }
-      h1,h2,h3 {
-        font-weight: 500;
-      }
-      h1 {
-        font-size:1.5em;
-      }
-      h2 {
-        font-size: 1.25em;
-      }
-      h3 {
-        font-size: 1.15em;
-      }
+      // h1,h2,h3 {
+      //   font-weight: 500;
+      // }
+      // h1 {
+      //   font-size:1.5em;
+      // }
+      // h2 {
+      //   font-size: 1.25em;
+      // }
+      // h3 {
+      //   font-size: 1.15em;
+      // }
     }
 
     .m_media--caption {
@@ -1052,6 +1055,7 @@ body {
 
     .m_panel {
       min-width: 300px;
+
       &:nth-child(1) {
         flex-basis: 70%;
       }
@@ -1087,10 +1091,30 @@ body {
   }
 
   .m_panel {
+    position: relative;
     display: flex;
     flex-flow: column nowrap;
     height: ~"calc(100vh - 105px - 80px - 40px)";
     min-height: 300px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .m_panel--modeOverlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    .bg-orange;
+    z-index: 1;
+
+    color: white;
+    .font-verylarge;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .m_panel--previewCard {
@@ -1098,6 +1122,7 @@ body {
     width: 100%;
     height: 100%;
     .bg-noir;
+    border-radius: 10px 10px 0 0;
 
     // left panel
     video, canvas, img, #vectoContainer, .mediaContainer, audio {
@@ -1139,6 +1164,16 @@ body {
         // border-radius: 50%;
         // overflow: hidden;        
       }
+    }
+
+    .m_panel--previewCard--captureOverlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      .bg-rouge;
+      // z-index: 1;
     }
   }
   .m_panel--buttons {
@@ -1232,7 +1267,7 @@ body {
   align-content: flex-start;
   align-items: baseline;
 
-  > *:not(hr) {
+  > *:not(hr):not(h4) {
     flex: 1 0 120px;
     .margin-small;
 
@@ -1245,10 +1280,14 @@ body {
       max-width: 320px;      
     }
   }
-  > hr {
+  > hr, > h4 {
     flex: 1 0 100%;
+    .margin-sides-small;
+  }
+
+  hr {
     opacity: 0;
-    margin: 0;
+    margin: 0; padding: 0;
   }
 
   > .buttonLink {
@@ -1311,16 +1350,44 @@ body {
 
   .m_publicationSettings {
     position: fixed;
-    bottom: 0px; right: 20px;
+    bottom: 20px; right: 40px;
+    pointer-events: none;
     z-index: 1000;
-    background-color: white;
-    border: 2px solid @c-gris_clair;
-    border-radius: 4px;
-    .padding-small;
-    padding-bottom: 0;
 
-    button {
-      min-height: 2em;
+    > button {
+      display: block;
+      pointer-events: auto;
+      height: 44px;
+      width: 44px;
+      padding: 14px;
+      .margin-vert-small;
+      min-height: 0;
+
+      text-align: center;
+      
+      line-height: 0;
+      font-weight: 300;
+
+      border-radius: 50%;
+      background-color: white;
+      box-shadow: 0px 2px 16px 0px rgba(0,0,0,.4);
+
+      &.is--active {
+        // border: 3px solid black;
+        .bg-orange;
+        path {
+          // fill: @c-orange;
+        }
+      }
+
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      &:first-child {
+        padding: 9px;
+      }
     }
   }
 
@@ -1383,9 +1450,6 @@ body {
       font-weight: 500;
 
       text-transform: uppercase;
-
-      > * {
-      }
     }
     .m_page--pageNumber {
       position: absolute;
@@ -1484,41 +1548,11 @@ body {
     z-index: 2;
   }
 
-  // PUBLI STYLE !
-  @import "less/_publi-print";
-
   .mediaContainer {
     overflow: hidden;
     height: 100%;
     width: 100%;
-
-    p {
-      width: 100%;   
-      white-space: pre-wrap;   
-    }
-
-    img {
-      height: 100%;
-      object-position: center;
-      object-fit: cover;
-
-      -webkit-user-drag: none;
-      -khtml-user-drag: none;
-      -moz-user-drag: none;
-      -o-user-drag: none;
-      user-drag: none;
-    }
-
-    audio {
-      height: 90px;
-      width: 100%;
-    }
-
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    background-color: white;
   }
 
   .controlFrame {
@@ -1538,12 +1572,6 @@ body {
     cursor: pointer;
     transition: border .2s;
   
-    -webkit-user-drag: none;
-    -khtml-user-drag: none;
-    -moz-user-drag: none;
-    -o-user-drag: none;
-    user-drag: none;
-
     cursor: -webkit-grab;
     cursor: drag;
   
@@ -1597,7 +1625,7 @@ body {
         // transform: scale(1.2); 
       }      
     }  
-}
+  }
 
   .m_mediaPublication--caption {
     font-family: 'Fira Mono';
@@ -1626,6 +1654,25 @@ body {
     }
   }
 }
+
+/******************************************************************
+      CUSTOM TEMPLATES
+******************************************************************/
+.m_page {
+
+  // always load standard
+  .mediaContainer {
+    @import "less/publications_styles/standard.less";    
+  }
+
+  // override with customs
+  &[data-style="feuille de choux"] {
+    .mediaContainer {
+      @import "less/publications_styles/feuille-de-choux.less";    
+    }
+  }
+}
+
 
 .splitter-pane, .splitter-pane-resizer {
   transition: all .4s ease-out;
@@ -1814,19 +1861,48 @@ body {
   transition: transform 1s cubic-bezier(.25,.2,.25,1);
 }
 
+.mediaCapture-enter-active, .mediaCapture-leave-active {
+  opacity: 1;
+  transition: all 1s linear;
+}
+.mediaCapture-enter, .mediaCapture-leave-to {
+  opacity: 0;
+  transition: all 1s linear;
+}
+
+.scaleIn-enter-active, .scaleIn-leave-active {
+  // max-width: 1000px;
+  opacity: 1;
+  transform: scale(1);
+  transform-origin: center center !important;
+  transition: all .3s ease-out;
+}
+.scaleIn-enter, .scaleIn-leave-to /* .list-leave-active below version 2.1.8 */ {
+  // max-width: 0;
+  // padding: 0;
+  // min-width: 0;
+  // min-height: 0;
+  transform: scale(.7);
+  opacity: 0;
+}
+
+// .enableMode-enter-active, .enableMode-leave-active {
+//   opacity: 1;
+//   transition: all .1s ease-out;
+// }
+// .enableMode-enter {
+//   opacity: 0;
+// }
+// .enableMode-leave-to {
+//   opacity: 0;
+//   transition: all .3s ease-out;
+// }
+
 /**********************************************************
               
                           SPECIAL MODES
 
 **********************************************************/
-body[data-mode="print_publication"] {
-  .m_publicationview--pages--pageContainer {
-    &::before {
-      display: none !important;
-    }
-  }
-
-}
 
 body[data-mode="export_publication"] {
 
@@ -1860,6 +1936,7 @@ body[data-mode="export_publication"] {
   .m_publicationFooter,
   .controlFrame,
   .publiButton,
+  .m_publicationview--pages--pageContainer::before,
   .m_mediaPublication--buttons,
   .m_page--margins_rule,
   .m_page--grid,
@@ -1893,6 +1970,7 @@ body[data-mode="export_publication"] {
   .m_publicationview {
     position: relative;
     height: auto;
+    padding: 0;
     background-color: transparent !important;
   }
   .m_publicationview--pages {

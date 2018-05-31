@@ -53,6 +53,32 @@
         <hr>
 
         <div class="margin-bottom-small">
+          <label>{{ $t('format') }}</label>
+          <select v-model="new_template">
+            <option value="page_by_page">
+              {{ $t('page_by_page') }}
+            </option>
+            <option value="web" disabled>
+              {{ $t('web') }}
+            </option>
+          </select>
+        </div>
+
+        <div class="margin-bottom-small">
+          <label>{{ $t('template') }}</label>
+          <select v-model="new_style" @change="updatePublicationOption('style')">
+            <option value="standard">
+              {{ $t('standard') }}
+            </option>
+            <option value="feuille de choux">
+              {{ $t('feuille de choux') }}
+            </option>
+          </select>
+        </div>
+
+        <hr>        
+
+        <div class="margin-bottom-small">
           <label>{{ $t('header_left') }}</label>
           <input class="input-large" type="text" v-model="new_header_left" @change="updatePublicationOption('header_left')" :readonly="read_only">
         </div>
@@ -103,21 +129,52 @@
     <div class="m_publicationSettings"
       v-if="$root.state.mode !== 'export_publication'"        
     >
-      <div class="margin-bottom-small">
-        <input id="preview" type="checkbox" v-model="preview_mode">
-        <label for="preview">{{ $t('preview') }}</label>
-      </div>
-      <div class="margin-bottom-small">
-        <label for="zoom">{{ $t('zoom') }}</label>
-        <br>
-        <button class="margin-vert-verysmall font-verysmall" 
-          :disabled="zoom === zoom_max"
-          @click="zoom += 0.1">+</button>
-        <button class="margin-vert-verysmall font-verysmall" 
-          :disabled="zoom === zoom_min"
-          @click="zoom -= 0.1">-</button>
-        <button class="margin-vert-verysmall font-verysmall" @click="zoom = 1">RESET</button>
-      </div>
+      <button 
+        class="margin-vert-verysmall font-verysmall" 
+        :class="{ 'is--active' : !preview_mode }"
+        @click="preview_mode = !preview_mode"
+      >
+        <!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In  -->
+        <svg version="1.1"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+          x="0px" y="0px" width="144px" height="84px" viewBox="0 0 144 84" style="enable-background:new 0 0 144 84;"
+          xml:space="preserve">
+        <defs>
+        </defs>
+        <g>
+          <path d="M72,0C32.2,0,0,42,0,42s32.2,42,72,42s72-42,72-42S111.8,0,72,0z M72,71.3c-16.5,0-30-13.2-30-29.6
+            c0-16.3,13.4-29.6,30-29.6c16.5,0,30,13.3,30,29.6C102,58,88.5,71.3,72,71.3z"/>
+        </g>
+        </svg>
+      </button>
+      <button class="margin-vert-verysmall font-verysmall" 
+        :disabled="zoom === zoom_max"
+        @click="zoom += 0.1"
+      >
+        <!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In  -->
+        <svg version="1.1"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+          x="0px" y="0px" width="182.5px" height="188.1px" viewBox="0 0 182.5 188.1" style="enable-background:new 0 0 182.5 188.1;"
+          xml:space="preserve">
+        <defs>
+        </defs>
+        <path d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z"/>
+        </svg>
+      </button>
+      <button class="margin-vert-verysmall font-verysmall" 
+        :disabled="zoom === zoom_min"
+        @click="zoom -= 0.1"
+      >
+        <!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In  -->
+        <svg version="1.1"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+          x="0px" y="0px" width="155.6px" height="21.2px" viewBox="0 0 155.6 21.2" style="enable-background:new 0 0 155.6 21.2;"
+          xml:space="preserve">
+        <defs>
+        </defs>
+        <path d="M155.6,0v21.2H0V0H155.6z"/>
+        </svg>      
+      </button>
     </div>  
 
     <div class="m_publicationview--pages" ref="pages">
@@ -125,8 +182,8 @@
       <!-- <transition-group> -->
         <div 
           v-for="(page, pageNumber) in pagesWithDefault" 
-          :key="pageNumber"
-        > 
+          :key="page.id"
+        >
           <div 
             class="m_publicationview--pages--pageContainer"
             :style="setPageContainerProperties(page)"
@@ -135,6 +192,7 @@
             <div
               class="m_page"
               :style="setPageProperties(page)"
+              :data-style="publication.style"
             >        
               <div 
                 v-if="!preview_mode"
@@ -166,19 +224,24 @@
                 {{ pageNumber + 1 }}
               </div>
 
-              <MediaPublication
-                v-for="(media, index) in publication_medias[(pageNumber) + '']" 
-                :key="media.slugMediaName + '-' + index"
-                :page="page"
-                :media="media"
-                :preview_mode="preview_mode"
-                :read_only="read_only"
-                :pixelsPerMillimeters="pixelsPerMillimeters"
-                @removePubliMedia="values => { removePubliMedia(values) }"
-                @editPubliMedia="values => { editPubliMedia(values) }"
-                @selected="newSelection"
-                @unselected="noSelection"
-              />
+              <transition-group name="scaleIn" :duration="300" tag="div">
+                <div
+                  v-for="(media, index) in publication_medias[(pageNumber) + '']" 
+                  :key="media.publi_meta.metaFileName"
+                >
+                  <MediaPublication
+                    :page="page"
+                    :media="media"
+                    :preview_mode="preview_mode"
+                    :read_only="read_only"
+                    :pixelsPerMillimeters="pixelsPerMillimeters"
+                    @removePubliMedia="values => { removePubliMedia(values) }"
+                    @editPubliMedia="values => { editPubliMedia(values) }"
+                    @selected="newSelection"
+                    @unselected="noSelection"
+                  />
+                </div>
+              </transition-group>
             </div>
           </div>
 
@@ -245,7 +308,8 @@ export default {
       publication_defaults: {
         'page_by_page': {
           width: 210,
-          height: 296,        
+          height: 296,      
+          style: 'standard',
           margin_left: 10,
           margin_right: 10,
           margin_top: 20,
@@ -262,6 +326,8 @@ export default {
 
       new_width: 0,
       new_height: 0,
+      new_template: '',
+      new_style: '',
       new_gridstep: 0,
       new_margin_left: 0,
       new_margin_top: 0,
@@ -272,7 +338,7 @@ export default {
 
       page_currently_active: 0,
       preview_mode: this.$root.state.mode !== 'live',
-      zoom: window.innerWidth <= 1024 ? 0.8 : 1,
+      zoom: 1,
       zoom_min: 0.4,
       zoom_max: 1.4,
 
@@ -297,7 +363,7 @@ export default {
     if(this.$root.state.mode === 'print_publication') {
       this.preview_mode = true;
       document.getElementsByTagName('body')[0].style.width = `${this.publications_options.width}mm`;
-      document.getElementsByTagName('body')[0].style.height = `${this.publications_options.height}mm`;
+      document.getElementsByTagName('body')[0].style.height = `${this.publications_options.height - 2}mm`;
     }
   },
   beforeDestroy() {
@@ -413,13 +479,17 @@ export default {
         page = this.page_currently_active;
       }
 
+      const page_id = this.publication.pages[page].id;
+      const x = this.publications_options.margin_left;
+      const y = this.publications_options.margin_top;
+
       const newMediaMeta = {
         slugProjectName,
         slugMediaName,
         desired_filename: slugMediaName,
-        page_id: this.publication.pages[page].id,
-        x: this.publications_options.margin_left,
-        y: this.publications_options.margin_top
+        page_id,
+        x,
+        y
       };
 
       this.$root.createMedia({ 
@@ -602,6 +672,9 @@ export default {
       this.new_width = this.publications_options.width;
       this.new_height = this.publications_options.height;
 
+      this.new_template = this.publication.template;
+      this.new_style = this.publications_options.style;
+
       this.new_gridstep = this.publications_options.gridstep;
       this.new_margin_left = this.publications_options.margin_left;
       this.new_margin_right = this.publications_options.margin_right;
@@ -652,7 +725,7 @@ export default {
       if(this.$root.state.mode === 'print_publication') {
         return `
           width: ${page.width}mm; 
-          height: ${page.height - 1}mm;
+          height: ${page.height - 2}mm;
         `;
       } else {
         return `

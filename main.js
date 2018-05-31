@@ -40,7 +40,7 @@ function createWindow() {
     process.argv.length >= 4 ? process.argv[3] === '--debug' : false;
   const verbose =
     process.argv.length >= 5 ? process.argv[4] === '--verbose' : false;
-  const logToFile = true;
+  const logToFile = false;
 
   dev.init(debug, verbose, logToFile);
 
@@ -132,7 +132,7 @@ function createWindow() {
               // and load the base url of the app.
               win.loadURL(global.appInfos.homeURL);
 
-              if (dev.isDebug() || global.nodeStorage.getItem('logToFile')) {
+              if (dev.isDebug()) {
                 // win.webContents.openDevTools({mode: 'detach'});
                 installExtension(VUEJS_DEVTOOLS)
                   .then(name => console.log(`Added Extension:  ${name}`))

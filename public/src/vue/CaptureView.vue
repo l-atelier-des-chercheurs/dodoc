@@ -25,7 +25,21 @@
       :class="{ 'is--justCaptured' : justCapturedMediaData.hasOwnProperty('type') }"
     >
       <div class="m_panel">
+
+        <!-- <transition name="enableMode" :duration="100"> -->
+          <div class="m_panel--modeOverlay"
+            v-if="mode_just_changed"
+          >
+            {{ selected_mode }}
+          </div>
+        <!-- </transition> -->
+        
         <div class="m_panel--previewCard">
+          <transition name="mediaCapture" :duration="100">
+            <div class="m_panel--previewCard--captureOverlay"
+              v-if="capture_button_pressed"
+            />
+          </transition>
           <video 
             v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
             ref="videoElement" 
@@ -42,11 +56,15 @@
           <button type="button" 
             class="padding-verysmall bg-blanc"
             @click="captureOrStop()"
+            v-if="selected_mode !== 'stopmotion'"
           >
             <img 
               :src="recordButtonSrc"
             />
           </button>
+          <div v-else class="padding-large c-bleuvert">
+            <i>mode stopmotion en cours de réintégration</i>
+          </div>
 
           <div v-if="selected_mode === 'vecto'">
             <div class="m_metaField">
@@ -152,11 +170,11 @@ export default {
           picto: '/images/i_icone-dodoc_video.svg',
           key: 'video'
         },
-        // {
-        //   name: this.$t('stopmotion'),
-        //   picto: '/images/i_icone-dodoc_anim.svg',
-        //   key: 'stopmotion'
-        // },
+        {
+          name: this.$t('stopmotion'),
+          picto: '/images/i_icone-dodoc_anim.svg',
+          key: 'stopmotion'
+        },
         {
           name: 'audio',
           picto: '/images/i_icone-dodoc_audio.svg',
@@ -173,10 +191,13 @@ export default {
       recordVideoFeed: undefined,
       recordVideoWithAudio: true,
 
+      capture_button_pressed: false,
+
       justCapturedMediaData: {},
       videoStream: null,
       audioStream: null,
       available_devices: {},
+      mode_just_changed: false,
 
       current_camera_resolution: {
         name: 'hd',
@@ -245,8 +266,15 @@ export default {
     },
     'selected_mode': function() {
       console.log('WATCH • Capture: selected_mode');
+
+      this.mode_just_changed = true;
+      setTimeout(()=> {
+        this.mode_just_changed = false;
+      }, 1000);
+      this.$nextTick(() => {
+        this.startMode();
+      });
       this.justCapturedMediaData = {};
-      this.startMode();
     },
     'isRecording': function() {
       equalizer.setSarahCouleur(this.isRecording);
@@ -460,10 +488,10 @@ export default {
     startAudioFeed() {
       return new Promise((resolve, reject) => {
         console.log('METHODS • CaptureView: startAudioFeed');
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .log('METHODS • CaptureView: startAudioFeed');
+        // this.$alertify
+        //   .closeLogOnClick(true)
+        //   .delay(4000)
+        //   .log('METHODS • CaptureView: startAudioFeed');
           
         this.getAudioFeed()
           .then((stream) => {
@@ -569,6 +597,11 @@ export default {
     captureOrStop() {
       this.justCapturedMediaData = {};
 
+      this.capture_button_pressed = true;
+      setTimeout(() => {
+        this.capture_button_pressed = false
+      }, 400);
+
       if(this.isRecording) {
         this.$eventHub.$emit('capture.stopRecording');
         return;
@@ -613,7 +646,6 @@ export default {
         });
       } else
       if(this.selected_mode === 'stopmotion') { 
-        debugger;
         const smdata = {
           authors: this.$root.settings.current_author.name
         };
