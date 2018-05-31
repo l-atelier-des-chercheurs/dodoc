@@ -56,11 +56,15 @@
           <button type="button" 
             class="padding-verysmall bg-blanc"
             @click="captureOrStop()"
+            v-if="selected_mode !== 'stopmotion'"
           >
             <img 
               :src="recordButtonSrc"
             />
           </button>
+          <div v-else class="padding-large c-bleuvert">
+            <i>mode stopmotion en cours de réintégration</i>
+          </div>
 
           <div v-if="selected_mode === 'vecto'">
             <div class="m_metaField">
