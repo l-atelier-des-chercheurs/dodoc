@@ -12,7 +12,7 @@
       'is--hovered' : is_hovered,
       'is--previewed' :  preview_mode
     }"
-  >
+  > 
     <MediaContent
       :context="preview_mode ? 'publication' : 'preview'"
       :slugProjectName="media.slugProjectName"
@@ -20,7 +20,7 @@
       :read_only="read_only"
       v-model="media.content"
     />
-    <p class="m_mediaPublication--caption">{{ media.caption }}</p>
+    <p class="mediaCaption">{{ media.caption }}</p>
 
     <div 
       v-if="!preview_mode" 
@@ -56,8 +56,8 @@
       <button 
         type="button" 
         class="buttonLink" 
-        @click.prevent.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.slugMediaName })"
-        @touchstart.prevent.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.slugMediaName })"
+        @click.prevent.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.metaFileName })"
+        @touchstart.prevent.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.metaFileName })"
       >
         {{ $t('edit') }}
       </button>

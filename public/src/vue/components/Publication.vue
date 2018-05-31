@@ -53,6 +53,32 @@
         <hr>
 
         <div class="margin-bottom-small">
+          <label>{{ $t('format') }}</label>
+          <select v-model="new_template">
+            <option value="page_by_page">
+              {{ $t('page_by_page') }}
+            </option>
+            <option value="web" disabled>
+              {{ $t('web') }}
+            </option>
+          </select>
+        </div>
+
+        <div class="margin-bottom-small">
+          <label>{{ $t('template') }}</label>
+          <select v-model="new_style" @change="updatePublicationOption('style')">
+            <option value="standard">
+              {{ $t('standard') }}
+            </option>
+            <option value="feuille de choux">
+              {{ $t('feuille de choux') }}
+            </option>
+          </select>
+        </div>
+
+        <hr>        
+
+        <div class="margin-bottom-small">
           <label>{{ $t('header_left') }}</label>
           <input class="input-large" type="text" v-model="new_header_left" @change="updatePublicationOption('header_left')" :readonly="read_only">
         </div>
@@ -125,8 +151,8 @@
       <!-- <transition-group> -->
         <div 
           v-for="(page, pageNumber) in pagesWithDefault" 
-          :key="pageNumber"
-        > 
+          :key="page.id"
+        >
           <div 
             class="m_publicationview--pages--pageContainer"
             :style="setPageContainerProperties(page)"
@@ -135,6 +161,7 @@
             <div
               class="m_page"
               :style="setPageProperties(page)"
+              :data-style="publication.style"
             >        
               <div 
                 v-if="!preview_mode"
@@ -168,7 +195,7 @@
 
               <MediaPublication
                 v-for="(media, index) in publication_medias[(pageNumber) + '']" 
-                :key="media.slugMediaName + '-' + index"
+                :key="media.metaFileName"
                 :page="page"
                 :media="media"
                 :preview_mode="preview_mode"
@@ -245,7 +272,8 @@ export default {
       publication_defaults: {
         'page_by_page': {
           width: 210,
-          height: 296,        
+          height: 296,      
+          style: 'standard',
           margin_left: 10,
           margin_right: 10,
           margin_top: 20,
@@ -256,12 +284,14 @@ export default {
         }
       },
 
-      advanced_options: false,
+      advanced_options: true,
 
       new_publiname: this.publication.name,
 
       new_width: 0,
       new_height: 0,
+      new_template: '',
+      new_style: '',
       new_gridstep: 0,
       new_margin_left: 0,
       new_margin_top: 0,
@@ -601,6 +631,9 @@ export default {
     updatePubliOptionsInFields() {
       this.new_width = this.publications_options.width;
       this.new_height = this.publications_options.height;
+
+      this.new_template = this.publication.template;
+      this.new_style = this.publications_options.style;
 
       this.new_gridstep = this.publications_options.gridstep;
       this.new_margin_left = this.publications_options.margin_left;

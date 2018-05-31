@@ -149,6 +149,8 @@ module.exports = (function() {
       open_in_app: 'Afficher',
       format: 'Format',
       template: 'Gabarit',
+      standard: 'Standard',
+      'feuille de choux': 'Feuille de Choux',
       page_by_page: 'Document page à page',
       print: 'Print',
       web: 'Page web',
