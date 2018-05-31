@@ -214,7 +214,10 @@ module.exports = (function() {
                         })
                       );
                     }
-                    if (mediaMeta.hasOwnProperty('thumbs')) {
+                    if (
+                      mediaMeta.hasOwnProperty('thumbs') &&
+                      typeof mediaMeta.thumbs !== 'undefined'
+                    ) {
                       mediaMeta.thumbs.map(t => {
                         if (t.hasOwnProperty('path')) {
                           tasks.push(
@@ -238,7 +241,6 @@ module.exports = (function() {
                                 });
                             })
                           );
-                          debugger;
                         } else if (t.hasOwnProperty('thumbsData')) {
                           t.thumbsData.map(t => {
                             debugger;
