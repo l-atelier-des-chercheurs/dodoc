@@ -1903,14 +1903,6 @@ body {
                           SPECIAL MODES
 
 **********************************************************/
-body[data-mode="print_publication"] {
-  .m_publicationview--pages--pageContainer {
-    &::before {
-      display: none !important;
-    }
-  }
-
-}
 
 body[data-mode="export_publication"] {
 
@@ -1944,6 +1936,7 @@ body[data-mode="export_publication"] {
   .m_publicationFooter,
   .controlFrame,
   .publiButton,
+  .m_publicationview--pages--pageContainer::before,
   .m_mediaPublication--buttons,
   .m_page--margins_rule,
   .m_page--grid,
@@ -1977,6 +1970,7 @@ body[data-mode="export_publication"] {
   .m_publicationview {
     position: relative;
     height: auto;
+    padding: 0;
     background-color: transparent !important;
   }
   .m_publicationview--pages {

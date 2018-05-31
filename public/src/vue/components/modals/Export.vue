@@ -30,12 +30,12 @@
           </button>
 
           <div v-if="pdf_request_status === 'generated'">
-            <a 
+            <!-- <a 
               v-if="link_to_pdf !== false"
               class="buttonLink margin-left-none"
               :href="link_to_pdf" target="_blank" download="">
               {{ $t('download') }}
-            </a>
+            </a> -->
             <a 
               v-if="path_to_pdf !== false && $root.state.is_electron"
               :href="path_to_pdf" target="_blank" 

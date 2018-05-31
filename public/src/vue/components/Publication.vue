@@ -320,7 +320,7 @@ export default {
         }
       },
 
-      advanced_options: true,
+      advanced_options: false,
 
       new_publiname: this.publication.name,
 
@@ -338,7 +338,7 @@ export default {
 
       page_currently_active: 0,
       preview_mode: this.$root.state.mode !== 'live',
-      zoom: window.innerWidth <= 1024 ? 0.8 : 1,
+      zoom: 1,
       zoom_min: 0.4,
       zoom_max: 1.4,
 
@@ -363,7 +363,7 @@ export default {
     if(this.$root.state.mode === 'print_publication') {
       this.preview_mode = true;
       document.getElementsByTagName('body')[0].style.width = `${this.publications_options.width}mm`;
-      document.getElementsByTagName('body')[0].style.height = `${this.publications_options.height}mm`;
+      document.getElementsByTagName('body')[0].style.height = `${this.publications_options.height - 2}mm`;
     }
   },
   beforeDestroy() {
@@ -725,7 +725,7 @@ export default {
       if(this.$root.state.mode === 'print_publication') {
         return `
           width: ${page.width}mm; 
-          height: ${page.height - 1}mm;
+          height: ${page.height - 2}mm;
         `;
       } else {
         return `
