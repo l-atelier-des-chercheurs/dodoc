@@ -132,7 +132,7 @@ function createWindow() {
               // and load the base url of the app.
               win.loadURL(global.appInfos.homeURL);
 
-              if (dev.isDebug() || global.nodeStorage.getItem('logToFile')) {
+              if (dev.isDebug()) {
                 // win.webContents.openDevTools({mode: 'detach'});
                 installExtension(VUEJS_DEVTOOLS)
                   .then(name => console.log(`Added Extension:  ${name}`))

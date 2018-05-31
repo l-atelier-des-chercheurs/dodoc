@@ -10,8 +10,8 @@ module.exports = dev = (function() {
   logger.transports.console.level = false;
 
   const API = {
-    init: (isDebug, isVerbose) => {
-      return initModule(isDebug, isVerbose);
+    init: (isDebug, isVerbose, logToFile) => {
+      return initModule(isDebug, isVerbose, logToFile);
     },
     log: log,
     logverbose: logverbose,
