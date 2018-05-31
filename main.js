@@ -40,7 +40,7 @@ function createWindow() {
     process.argv.length >= 4 ? process.argv[3] === '--debug' : false;
   const verbose =
     process.argv.length >= 5 ? process.argv[4] === '--verbose' : false;
-  const logToFile = true;
+  const logToFile = false;
 
   dev.init(debug, verbose, logToFile);
 
