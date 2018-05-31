@@ -1052,6 +1052,7 @@ body {
 
     .m_panel {
       min-width: 300px;
+
       &:nth-child(1) {
         flex-basis: 70%;
       }
@@ -1087,10 +1088,30 @@ body {
   }
 
   .m_panel {
+    position: relative;
     display: flex;
     flex-flow: column nowrap;
     height: ~"calc(100vh - 105px - 80px - 40px)";
     min-height: 300px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .m_panel--modeOverlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    .bg-orange;
+    z-index: 1;
+
+    color: white;
+    .font-verylarge;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .m_panel--previewCard {
@@ -1098,6 +1119,7 @@ body {
     width: 100%;
     height: 100%;
     .bg-noir;
+    border-radius: 10px 10px 0 0;
 
     // left panel
     video, canvas, img, #vectoContainer, .mediaContainer, audio {
@@ -1139,6 +1161,16 @@ body {
         // border-radius: 50%;
         // overflow: hidden;        
       }
+    }
+
+    .m_panel--previewCard--captureOverlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      .bg-rouge;
+      // z-index: 1;
     }
   }
   .m_panel--buttons {
@@ -1813,6 +1845,27 @@ body {
   transform: translate3d(0, 150px, 0);
   transition: transform 1s cubic-bezier(.25,.2,.25,1);
 }
+
+.mediaCapture-enter-active, .mediaCapture-leave-active {
+  opacity: 1;
+  transition: all 1s linear;
+}
+.mediaCapture-enter, .mediaCapture-leave-to {
+  opacity: 0;
+  transition: all 1s linear;
+}
+
+// .enableMode-enter-active, .enableMode-leave-active {
+//   opacity: 1;
+//   transition: all .1s ease-out;
+// }
+// .enableMode-enter {
+//   opacity: 0;
+// }
+// .enableMode-leave-to {
+//   opacity: 0;
+//   transition: all .3s ease-out;
+// }
 
 /**********************************************************
               
