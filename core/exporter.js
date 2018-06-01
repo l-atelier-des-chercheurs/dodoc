@@ -347,8 +347,8 @@ module.exports = (function() {
                         if (error) throw error;
                         console.log('Write PDF successful');
                         resolve({
-                          pdfPath,
-                          pdfURL: `_publications/${pdfName}`
+                          pdfName,
+                          pdfPath
                         });
                       });
                     }

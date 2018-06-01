@@ -301,10 +301,10 @@ module.exports = (function() {
       `EVENT - onDownloadPubliPDF with 
       slugPubliName = ${slugPubliName}`
     );
-    exporter.makePDFForPubli({ slugPubliName }).then(({ pdfPath, pdfURL }) => {
+    exporter.makePDFForPubli({ slugPubliName }).then(({ pdfName, pdfPath }) => {
       api.sendEventWithContent(
         'publiPDFGenerated',
-        { pdfPath, pdfURL },
+        { pdfName, pdfPath },
         io,
         socket
       );

@@ -362,8 +362,9 @@ export default {
 
     if(this.$root.state.mode === 'print_publication') {
       this.preview_mode = true;
+      // this trick prevents webkit/electron from adding a blank page at the end of the pdf
       document.getElementsByTagName('body')[0].style.width = `${this.publications_options.width}mm`;
-      document.getElementsByTagName('body')[0].style.height = `${this.publications_options.height - 2}mm`;
+      document.getElementsByTagName('body')[0].style.height = `${this.publications_options.height}mm`;
     }
   },
   beforeDestroy() {
@@ -714,8 +715,10 @@ export default {
       this.page_currently_active = index;
     },
     setPageContainerProperties(page) {
-        // width: ${page.width * this.$root.settings.publi_zoom}mm; 
-        // height: ${page.height * this.$root.settings.publi_zoom - 1}mm;
+      if(this.$root.state.mode === 'print_publication') {
+        return;
+      }
+
       return `
         width: ${page.width * this.$root.settings.publi_zoom}mm; 
         height: ${page.height * this.$root.settings.publi_zoom}mm;      
@@ -723,9 +726,10 @@ export default {
     },
     setPageProperties(page) {
       if(this.$root.state.mode === 'print_publication') {
+        // reducing page height by 1mm is necessary to prevent blank pages in-between
         return `
           width: ${page.width}mm; 
-          height: ${page.height - 2}mm;
+          height: ${page.height - 1}mm;
         `;
       } else {
         return `
