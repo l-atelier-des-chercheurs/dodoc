@@ -19,6 +19,7 @@ module.exports = function(app, io, m) {
   app.get('/:project', loadFolder);
   app.get('/publication/:publication', printPublication);
   app.get('/publication/web/:publication', exportPublication);
+  app.get('/publication/print/:pdfName', showPDF);
   app.post('/:project/file-upload', postFile2);
 
   /**
@@ -224,6 +225,22 @@ module.exports = function(app, io, m) {
             }
           );
       });
+    });
+  }
+
+  function showPDF(req, res) {
+    let pdfName = req.param('pdfName');
+    const cachePath = path.join(
+      global.tempStorage,
+      settings.cacheDirname,
+      '_publications'
+    );
+    const pdfPath = path.join(cachePath, pdfName);
+
+    fs.readFile(pdfPath, function(err, data) {
+      debugger;
+      res.contentType('application/pdf');
+      res.send(data);
     });
   }
 
