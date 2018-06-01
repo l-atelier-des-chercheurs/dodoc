@@ -34,7 +34,7 @@
   "dependencies": {
     "archiver": "^2.1.1",
     "body-parser": "^1.18.2",
-    "dodoc-parsedown": "git://github.com/louis-ev/dodoc-parsedown.git#master",
+    "dodoc-parsedown": "git+https://github.com/louis-ev/dodoc-parsedown.git#develop",
     "electron-context-menu": "^0.9.1",
     "electron-devtools-installer": "^2.2.3",
     "electron-log": "^2.2.14",
