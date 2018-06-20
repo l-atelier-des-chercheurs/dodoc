@@ -207,6 +207,7 @@ $('body')
         detail: code
       })
     );
+    e.preventDefault();
   });
 
 import main from './vue/app.js';
