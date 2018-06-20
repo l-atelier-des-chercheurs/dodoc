@@ -152,7 +152,6 @@ module.exports = (function() {
       standard: 'Standard',
       'feuille de choux': 'Feuille de Choux',
       page_by_page: 'Document page à page',
-      print: 'Print',
       web: 'Page web',
 
       last_modified: 'Dernière modification',
