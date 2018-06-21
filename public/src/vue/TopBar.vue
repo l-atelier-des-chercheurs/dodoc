@@ -74,7 +74,7 @@
 
       <div class="m_topbar--right--pictos">
 
-        <button type="button" @click="$root.switchLang">
+        <button type="button" @click="$root.switchLang()">
           {{ this.$root.lang.current }}
         </button>
 
@@ -119,7 +119,9 @@
           </svg>
         </button> -->
         
-        <button type="button">
+        <button type="button" @click="$root.toggleSearchSidebar"
+          :class="{ 'is--active' : $root.settings.show_search_sidebar }"
+        >
           <svg version="1.1"
             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
             x="0px" y="0px" width="19.2px" height="19.2px" viewBox="0 0 19.2 19.2" style="enable-background:new 0 0 19.2 19.2;"

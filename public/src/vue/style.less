@@ -349,7 +349,6 @@ body {
         height: auto;
         padding: @t-skipline/2 @t-skipline/2;
         cursor: pointer;
-        .bg-blanc;
 
         svg {
           width: 100%;
@@ -464,6 +463,7 @@ body {
 
   @t-button_size: 3em;
   width: 3em;
+  z-index: 1000;
 
   min-height: @t-button_size;
   border-radius: @t-button_size 0 0 @t-button_size;
@@ -576,6 +576,10 @@ body {
 
   > * {
     .margin-small;
+
+    &:first-child {
+      margin-top: 0;
+    }
   }
 }
 
@@ -1348,6 +1352,12 @@ body {
   // padding-left: @t-skipline/2;
   .padding-sides-small;
 
+  transition: background-color .4s ease-out;
+
+  &.is--preview {
+    .bg-creme;
+  }
+
   .m_publicationSettings {
     position: fixed;
     bottom: 20px; right: 40px;
@@ -1525,6 +1535,70 @@ body {
   }  
 }
 
+.m_searchsidebar {
+  position: relative;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 300px;
+
+  overflow-y: auto;
+  .padding-vert-small;
+  .padding-sides-small;
+  margin: 0;
+  
+  .bg-rouge;
+  border-bottom: @t-skipline/2 solid @c-rouge_fonce;
+  color: white;
+
+  .sectionTitle_small {
+    color: inherit;
+    margin: 0;
+    .padding-small;
+  }  
+
+  .m_searchsidebar--author {
+    background-color: transparent;
+    flex-basis: 250px;
+    max-width:  250px;
+    flex-shrink: 0;
+    .margin-sides-small;
+    .margin-bottom-small;
+    font-weight: 500;
+
+    background-color: @c-rouge_fonce;
+    font-weight: 300;
+
+    img {
+      border-radius: 50%;
+      flex-grow: 0;
+      width:  40px;
+      height: 40px;
+      object-fit: cover;
+    }
+
+    .m_searchsidebar--author--name {
+    }
+
+  }
+}
+
+.m_mediafilterindicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;right: 0;
+  .font-small;
+
+  > * {
+    max-width: 250px;
+    min-height: 3em;
+    margin: @t-skipline auto;
+    .bg-rouge;
+    border-radius: 2em;
+
+  }
+}
 
 .m_mediaPublication {
   position: absolute;
@@ -1729,6 +1803,7 @@ body {
   position: absolute;
   right: 0px;
   height: 100%;
+  z-index: 1;
   // padding-left: 3px;
 }
 
@@ -1885,6 +1960,18 @@ body {
   transform: scale(.7);
   opacity: 0;
 }
+
+.SearchSidebar-enter-active, .SearchSidebar-leave-active {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+  transition: all .5s cubic-bezier(.25,.2,.25,1);
+}
+.SearchSidebar-enter, .SearchSidebar-leave-to {
+  transform: translate3d(0, -50px, 0);
+  opacity: 0;
+  transition: all .5s cubic-bezier(.25,.2,.25,1);
+}
+
 
 // .enableMode-enter-active, .enableMode-leave-active {
 //   opacity: 1;

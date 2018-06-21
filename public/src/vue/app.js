@@ -412,10 +412,11 @@ let vm = new Vue({
       publi_zoom: 1,
 
       show_publi_panel: false,
+      show_search_sidebar: false,
       view: 'ListView',
-      has_sidebar_opened: false,
-      highlightMedia: '',
-      enable_system_bar: window.state.is_electron && window.state.is_darwin
+      enable_system_bar: window.state.is_electron && window.state.is_darwin,
+
+      media_filter: {}
     },
 
     lang: {
@@ -752,6 +753,27 @@ let vm = new Vue({
       } else {
         this.updateLocalLang('fr');
       }
+    },
+
+    toggleSearchSidebar() {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`ROOT EVENT: toggleSearchSidebar`);
+      }
+      this.settings.show_search_sidebar = !this.settings.show_search_sidebar;
+    },
+
+    setMediaFilter(filter) {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`ROOT EVENT: setMediaFilter`);
+      }
+
+      this.settings.media_filter = filter;
+    },
+    unsetMediaFilter() {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`ROOT EVENT: unsetMediaFilter`);
+      }
+      this.settings.media_filter = {};
     }
   }
 });

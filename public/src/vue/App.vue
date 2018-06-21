@@ -19,7 +19,6 @@
       >
       </TopBar>
 
-
       <div class="m_activitiesPanel">
         <div 
           :style="{ cursor, userSelect}" 
@@ -31,9 +30,18 @@
             class="splitter-pane splitter-paneL" 
             :class="{ 'is--dragged' : is_dragged }"
             :split="split" :style="{ [type]: percent+'%'}">
+
             <div 
               class="m_activitiesPanel--do"
             >
+
+              <transition name="SearchSidebar" :duration="500">
+                <SearchSidebar
+                  v-if="$root.settings.show_search_sidebar"
+                >
+                </SearchSidebar>
+              </transition>
+
               <!-- v-show="$root.settings.view === 'ListView'" -->
               <transition name="ListView" :duration="500">
                 <ListView
@@ -59,6 +67,12 @@
                   :project="$root.currentProject"
                 />
               </transition>
+
+              <MediaFilterIndicator
+                v-if="Object.keys($root.settings.media_filter).length > 0"
+                :media_filter="$root.settings.media_filter"
+              >
+              </MediaFilterIndicator>
             </div>
 
           </pane>
@@ -163,8 +177,12 @@ import TopBar from './TopBar.vue';
 import ListView from './ListView.vue';
 import ProjectView from './ProjectView.vue';
 import CaptureView from './CaptureView.vue';
+import SearchSidebar from './components/SearchSidebar.vue';
+import MediaFilterIndicator from './components/MediaFilterIndicator.vue';
+
 import Publications from './Publications.vue';
 import Publication from './components/Publication.vue';
+
 import EditMedia from './components/modals/EditMedia.vue';
 
 import Resizer from './components/splitpane/Resizer.vue'
@@ -182,7 +200,9 @@ export default {
     Publication,
     EditMedia,
     Resizer, 
-    Pane
+    Pane,
+    SearchSidebar,
+    MediaFilterIndicator
   },
   props: {
   },

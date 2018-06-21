@@ -6,7 +6,7 @@
   >
     <template slot="header">
       <span class="">
-            {{ $t('authors_list') }}        
+        {{ $t('authors_list') }}        
       </span>
     </template>
 

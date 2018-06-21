@@ -5,12 +5,13 @@ button, .button {
   font-size: inherit;
   font-family: inherit;
   background-color: #fff;
-  .bg-gris_clair;
+  // .bg-gris_clair;
   display: inline-block;
 
   text-decoration: none;
   text-align: center;
   .text-cap;
+  flex-shrink: 0;
 
   margin: 0;
   cursor: pointer;
@@ -69,6 +70,12 @@ button, .button {
     width: 48px;
     height: 48px;
     margin: auto;
+  }
+  &.is--small {
+    img, svg {
+      width:  36px;
+      height: 36px;
+    }
   }
 }
 

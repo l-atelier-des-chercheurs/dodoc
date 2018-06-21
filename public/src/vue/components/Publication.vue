@@ -1,6 +1,7 @@
 <template>
   <div 
     class="m_publicationview" 
+    :class="{ 'is--preview' : preview_mode }"
     @scroll="onScroll"
     ref="panel"
   >
@@ -226,7 +227,7 @@
 
               <transition-group name="scaleIn" :duration="300" tag="div">
                 <div
-                  v-for="(media, index) in publication_medias[(pageNumber) + '']" 
+                  v-for="media in publication_medias[(pageNumber) + '']" 
                   :key="media.publi_meta.metaFileName"
                 >
                   <MediaPublication
