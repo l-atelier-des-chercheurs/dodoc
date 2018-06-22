@@ -145,9 +145,7 @@ export default {
   mounted() {
   },
   beforeDestroy() {
-
   },
-
   watch: {
     currentLang: function() {
       this.$root.updateLocalLang(this.currentLang);
@@ -235,6 +233,9 @@ export default {
       }
       Object.keys(this.projects).map(slugProjectName => {
         const folder = this.projects[slugProjectName];
+        if(!folder.hasOwnProperty('medias')) {
+          return;
+        }
         const folder_medias = folder.medias;
 
         Object.keys(folder_medias).map(slugMediaName => {
