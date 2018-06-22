@@ -1793,7 +1793,19 @@ body {
   }
 }
 
-
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+.vue-splitter-container {
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
 .splitter-pane, .splitter-pane-resizer {
   transition: all .4s ease-out;
 

@@ -310,21 +310,3 @@ export default {
 </script>
 
 <style lang="less" src="style.less"></style>
-
-<style scoped>
-.clearfix:after {
-  visibility: hidden;
-  display: block;
-  font-size: 0;
-  content: " ";
-  clear: both;
-  height: 0;
-}
-
-.vue-splitter-container {
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-}
-
-</style>
