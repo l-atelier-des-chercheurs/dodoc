@@ -3,6 +3,7 @@ var https = require('https');
 var fs = require('fs');
 var path = require('path');
 var bodyParser = require('body-parser');
+const compression = require('compression');
 
 var dev = require('./core/dev-log');
 
@@ -17,6 +18,7 @@ module.exports = function(electronApp) {
   dev.logverbose('Starting server 1');
 
   var app = express();
+  app.use(compression());
 
   // only for HTTPS, works without asking for a certificate
   const privateKey = fs.readFileSync(

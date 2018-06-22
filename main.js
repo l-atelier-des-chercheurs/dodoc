@@ -347,8 +347,7 @@ function copyAndRenameUserFolder() {
 function cleanCacheFolder() {
   return new Promise(function(resolve, reject) {
     let cachePath = path.join(global.tempStorage, settings.cacheDirname);
-    fs
-      .emptyDir(cachePath)
+    fs.emptyDir(cachePath)
       .then(() => {
         resolve();
       })

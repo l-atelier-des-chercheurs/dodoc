@@ -10,7 +10,6 @@
         <img src="/images/i_logo.svg" @click="goHome()" />
       </div>
 
-
       <div 
         class="m_topbar--left--breadcrumb" 
       >

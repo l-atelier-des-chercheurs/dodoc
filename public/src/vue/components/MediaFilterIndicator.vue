@@ -10,11 +10,11 @@
 
       <div class="padding-vert-verysmall text-ellipsis">
         <div class="text-ellipsis font-small c-noir">
-          Filtre de médias
+          {{ $t('media_filter') }}
         </div>
         <div 
           v-for="(name, key) in media_filter" 
-          :key="f"
+          :key="key"
           class="text-ellipsis"
         >
           {{ $t(key) }} = {{ name }}

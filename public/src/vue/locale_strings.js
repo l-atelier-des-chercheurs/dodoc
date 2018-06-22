@@ -31,6 +31,7 @@ module.exports = (function() {
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
 
       showing: 'Affichage de',
+      media_filter: 'Filtre de médias',
       projects_of: 'projets sur',
       projects: 'Projets',
       authors: 'Auteurs',
@@ -217,6 +218,7 @@ module.exports = (function() {
       sureToRemovePubli: 'Do you really want to delete this publication?',
 
       showing: 'Showing',
+      media_filter: 'Medias filter',
       no_projects_yet:
         'No projects created yet. Create one to add captures and import content.',
       projects_of: 'projects of',
