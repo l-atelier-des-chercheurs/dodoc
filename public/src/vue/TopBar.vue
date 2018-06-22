@@ -2,8 +2,8 @@
   <div class="m_topbar">
     <div class="m_topbar--left" >
       <div class="m_topbar--left--logo" >
-        <transition name="CaptureView">
-          <button class="backButton" type="button" v-if="has_back_button" @click="goBack()">
+        <transition name="BackButton" :duration="500">
+          <button class="backButton text-ellipsis" type="button" v-if="has_back_button" @click="goBack()">
             ‹ {{ $t('back') }}
           </button>
         </transition>

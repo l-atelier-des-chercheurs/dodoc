@@ -89,7 +89,6 @@
       v-if="context === 'full'"
     >
       <div class="sectionTitle_small margin-sides-medium">
-        
         {{ $t('favorite_medias') }}
       </div>
 

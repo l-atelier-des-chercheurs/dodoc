@@ -90,7 +90,7 @@ body {
   z-index: 10;
   top: 0;
   width: 100%;
-  height: @t-systemBarHeight - 6px;
+  height: @t-systemBarHeight;
   .font-small;
   .text-centered;
 
@@ -135,7 +135,7 @@ body {
   .flex-wrap;
 
   body.has_systembar & {
-    padding-top: @t-systemBarHeight/2;
+    padding-top: @t-systemBarHeight * 0.666;
   }
 
   > * {
@@ -143,8 +143,8 @@ body {
     flex: 1 1 0;
     
     &.m_topbar--center {
-      min-width: 240px;
-      max-width: 240px;
+      min-width: 200px;
+      max-width: 200px;
     }
   }  
 
@@ -243,9 +243,8 @@ body {
           text-transform: initial;
           width: 100%;
           margin: 15px 5px;
-          overflow: hidden;
-          white-space: nowrap;              
-          text-overflow: ellipsis;
+
+          .text-ellipsis;
 
           @c-outerText: #fff;
             
@@ -497,7 +496,7 @@ body {
   height: ~"calc(100vh - @{t-hauteur_topbar} - 1px)";
 
   body.has_systembar & {
-    height: ~"calc(100vh - @{t-systemBarHeight}/2 - @{t-hauteur_topbar} - 1px)";
+    height: ~"calc(100vh - @{t-systemBarHeight}*0.666 - @{t-hauteur_topbar} - 1px)";
   }
 
   @media screen and (max-width: 50rem) {
@@ -512,6 +511,12 @@ body {
     position: relative;
     height: 100%;
     min-width: 320px;
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    > * {
+    }
   }
 
   .m_activitiesPanel--doc {
@@ -1543,6 +1548,8 @@ body {
   right: 0;
   height: 300px;
 
+  flex-grow: 0;
+
   overflow-y: auto;
   .padding-vert-small;
   .padding-sides-small;
@@ -1551,6 +1558,8 @@ body {
   .bg-rouge;
   border-bottom: @t-skipline/2 solid @c-rouge_fonce;
   color: white;
+
+  .custom_scrollbar(8px, 5px, 6px);
 
   .sectionTitle_small {
     color: inherit;
@@ -1570,6 +1579,8 @@ body {
     background-color: @c-rouge_fonce;
     font-weight: 300;
 
+    transition: all .15s ease-out;
+
     img {
       border-radius: 50%;
       flex-grow: 0;
@@ -1579,6 +1590,11 @@ body {
     }
 
     .m_searchsidebar--author--name {
+    }
+
+    &.is--selected {
+      background-color: white;
+      color: @c-rouge;
     }
 
   }
@@ -1591,12 +1607,41 @@ body {
   .font-small;
 
   > * {
+    position: relative;
+    background-color: @c-rouge;
+    z-index: 1;
+
     max-width: 250px;
     min-height: 3em;
     margin: @t-skipline auto;
+    .padding-sides-verysmall;
     .bg-rouge;
-    border-radius: 2em;
+    // color: white;
 
+    // font-weight: 300;
+
+    border-radius: 2em;
+    border-bottom: 4px solid @c-rouge_fonce;
+
+    &::after {
+      content: '';
+      position: absolute;
+      background-color: @c-rouge;
+
+      width: 100%;
+      height: 100%;
+      top: 0.5rem;
+      filter: blur(0.4rem);
+      opacity: 0.7;
+      z-index: -1;
+      border-radius: 2em;
+    }
+
+    button {
+      flex-shrink: 0;
+    }
+
+    
   }
 }
 
@@ -1972,6 +2017,18 @@ body {
   transition: all .5s cubic-bezier(.25,.2,.25,1);
 }
 
+.BackButton-enter-active, .BackButton-leave-active {
+  // transform: translate3d(0, 0, 0);
+  max-width: 100px;
+  opacity: 1;
+  transition: all .5s cubic-bezier(.25,.2,.25,1);
+}
+.BackButton-enter, .BackButton-leave-to {
+  // transform: translate3d(-120px, 0, 0);
+  max-width: 0;
+  opacity: 0;
+  transition: all .5s cubic-bezier(.25,.2,.25,1);
+}
 
 // .enableMode-enter-active, .enableMode-leave-active {
 //   opacity: 1;

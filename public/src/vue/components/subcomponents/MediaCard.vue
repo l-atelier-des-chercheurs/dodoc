@@ -1,6 +1,7 @@
 <template>
   <div 
     class="m_media"
+    v-if="isFilteredByMediaFilter()" 
     :class="{ 'is--inPubli' : media_is_in_current_publi }"
   >
     <div>
@@ -173,6 +174,24 @@ export default {
         console.log('METHODS • MediaCard: addToPubli');
       }
       this.$eventHub.$emit('publication.addMedia', { slugProjectName: this.slugProjectName, slugMediaName: this.slugMediaName});
+    },
+    isFilteredByMediaFilter() {
+      // if some filter is active
+      const mf = this.$root.settings.media_filter;
+
+      if(Object.keys(mf).length === 0) {
+        return true;
+      }
+
+
+      for(const [key, value] of Object.entries(mf)) {
+        if(this.media.hasOwnProperty(key) && this.media[key] === value) {
+          return true;
+        }
+      }
+
+      // hide
+      return false;
     }
   }
 }

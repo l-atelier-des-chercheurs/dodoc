@@ -1,21 +1,24 @@
 <template>
   <div class="m_mediafilterindicator">
-    <div class="flex-nowrap flex-vertically-centered">
+    <div class="flex-nowrap flex-horizontally-start flex-vertically-centered flex-no-grow">
       <button
-        class="button-round bg-transparent padding-sides-verysmall is--small"
+        class="button-round bg-transparent padding-sides-small is--small"
         @click="$root.unsetMediaFilter()"
       >
         <img src="/images/i_close_sansfond.svg">
       </button>
 
-      <div class="padding-vert-verysmall">
-        Filtre&nbsp;: 
-        <span 
+      <div class="padding-vert-verysmall text-ellipsis">
+        <div class="text-ellipsis font-small c-noir">
+          Filtre de médias
+        </div>
+        <div 
           v-for="(name, key) in media_filter" 
           :key="f"
+          class="text-ellipsis"
         >
-          {{ key }} = {{ name }}
-        </span>
+          {{ $t(key) }} = {{ name }}
+        </div>
       </div>
     </div>
   </div>

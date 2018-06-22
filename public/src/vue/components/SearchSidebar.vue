@@ -1,7 +1,7 @@
 <template>
   <aside class="m_searchsidebar">
     <h2 class="sectionTitle_small">
-      Recherche
+      Filtrer les médias par auteur
     </h2>
 
     <div class="flex-wrap flex-vertically-centered">

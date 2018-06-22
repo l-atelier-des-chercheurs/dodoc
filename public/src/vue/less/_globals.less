@@ -156,6 +156,9 @@ strong,b {
 .bg-rouge {
   background-color: @c-rouge;
 }
+.bg-rouge_fonce {
+  background-color: @c-rouge_fonce;
+}
 .bg-orange {
   background-color: @c-orange;
 }
@@ -448,12 +451,12 @@ h1,h2,h3,h4 {
 }
 
 
-.custom_scrollbar(@scrollbar-height, @scrollbar-padding, @scrollbar-border) {
+.custom_scrollbar(@scrollbar-height, @scrollbar-padding, @scrollbar-border, @c-barbgcolor: transparent) {
   
   &::-webkit-scrollbar {
     height: ((@scrollbar-padding * 2) + @scrollbar-height);
     width: ((@scrollbar-padding * 2) + @scrollbar-height);
-    background-color: @c-creme;
+    background-color: @c-barbgcolor;
   }
 
   &::-webkit-scrollbar-track,
@@ -461,6 +464,8 @@ h1,h2,h3,h4 {
     border: @scrollbar-border solid rgba(255,255,255,0);
     border-radius: @scrollbar-border*4;
     background-clip: padding-box;
+
+    transition: all .4s;
   }
 
   &::-webkit-scrollbar-track {
@@ -470,7 +475,7 @@ h1,h2,h3,h4 {
   &::-webkit-scrollbar-thumb {
     background-color: @c-noir;
     &:hover {
-      background-color: @c-bleuvert;
+      background-color: @c-gris;
       border: @scrollbar-border solid rgba(255,255,255,0);
     }
   }
@@ -523,6 +528,13 @@ input[readonly], textarea[readonly], .textarea[readonly] {
   &::after {
       content: '\A';
   }
+}
+
+.text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;              
+  text-overflow: ellipsis;
+
 }
 
 :focus {
