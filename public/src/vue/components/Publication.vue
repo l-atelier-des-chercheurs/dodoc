@@ -290,7 +290,6 @@
 </template>
 <script>
 import MediaPublication from './subcomponents/MediaPublication.vue';
-import _ from 'underscore';
 import ExportModal from './modals/Export.vue';
 
 export default {

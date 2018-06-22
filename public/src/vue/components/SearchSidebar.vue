@@ -11,7 +11,7 @@
         :key="author.name" 
         class="m_searchsidebar--author flex-wrap padding-small flex-vertically-centered"
         :class="{ 'is--selected' : author.name === $root.settings.media_filter.authors }"
-        @click="$root.setMediaFilter({ authors: author.name })"
+        @click="setAuthorFilter(author)"
       >
         <img 
           v-if="!!author.preview"
@@ -58,8 +58,12 @@ export default {
       }
       return `/${this.$root.state.authorsFolder}/${slug}/${filename}`;
     },
-    setFilter(filter) {
-      this.$root.setFilter(filter);      
+    setAuthorFilter(author) {
+      if(author.name !== this.$root.settings.media_filter.authors) {
+        this.$root.setMediaFilter({ authors: author.name });
+      } else {
+        this.$root.unsetMediaFilter();
+      }
     }
   }
 }

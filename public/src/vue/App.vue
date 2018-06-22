@@ -70,11 +70,13 @@
                 </transition>
               </div>
 
-              <MediaFilterIndicator
-                v-if="Object.keys($root.settings.media_filter).length > 0"
-                :media_filter="$root.settings.media_filter"
-              >
-              </MediaFilterIndicator>
+              <transition name="MediaFilterIndicator" :duration="500">
+                <MediaFilterIndicator
+                  v-if="Object.keys($root.settings.media_filter).length > 0"
+                  :media_filter="$root.settings.media_filter"
+                >
+                </MediaFilterIndicator>
+              </transition>
             </div>
 
           </pane>
@@ -137,9 +139,9 @@
 
       <EditMedia
         v-if="$root.settings.showMediaModalFor !== false"
-        :slugMediaName="$root.settings.showMediaModalFor.slugMediaName"
+        :slugMediaName="$root.settings.showMediaModalFor.metaFileName"
         :slugProjectName="$root.settings.showMediaModalFor.slugProjectName"
-        :media="$root.store.projects[$root.settings.showMediaModalFor.slugProjectName].medias[$root.settings.showMediaModalFor.slugMediaName]"
+        :media="$root.store.projects[$root.settings.showMediaModalFor.slugProjectName].medias[$root.settings.showMediaModalFor.metaFileName]"
         @close="$root.settings.showMediaModalFor = false"
         :read_only="!$root.state.connected"
       >

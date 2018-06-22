@@ -1,7 +1,6 @@
 <template>
   <div 
     class="m_media"
-    v-if="isFilteredByMediaFilter()" 
     :class="{ 'is--inPubli' : media_is_in_current_publi }"
   >
     <div>
@@ -94,7 +93,7 @@ export default {
   props: {
     media: Object,
     slugProjectName: String,
-    slugMediaName: String
+    metaFileName: String
   },
   components: {
     MediaContent
@@ -134,7 +133,7 @@ export default {
             const m_slugProjectName = m.filename.split('/')[0];
             const m_slugMediaName = m.filename.split('/')[1];
             const current_media_slugProjectName = this.slugProjectName;
-            const current_media_slugMediaName = this.slugMediaName;
+            const current_media_slugMediaName = this.metaFileName;
 
             if(m_slugProjectName === current_media_slugProjectName &&
               m_slugMediaName === current_media_slugMediaName
@@ -152,46 +151,25 @@ export default {
         }
       }
     },
-    formatDateToHuman(date) {
-      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LL');
-    },
     openMediaModal() {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaCard: openMediaModal = ${this.slugMediaName}`);
+        console.log(`METHODS • MediaCard: openMediaModal = ${this.metaFileName}`);
       }
-      this.$root.showMediaModalFor({ slugProjectName: this.slugProjectName, slugMediaName: this.slugMediaName });
+      this.$root.showMediaModalFor({ slugProjectName: this.slugProjectName, metaFileName: this.metaFileName });
     },
     removeMedia() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaCard: removeMedia');
       }
       if (window.confirm(this.$t('sureToRemoveMedia'))) {
-        this.$root.removeMedia(this.slugProjectName, this.slugMediaName);
+        this.$root.removeMedia(this.slugProjectName, this.metaFileName);
       }
     },
     addToCurrentPubli() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaCard: addToPubli');
       }
-      this.$eventHub.$emit('publication.addMedia', { slugProjectName: this.slugProjectName, slugMediaName: this.slugMediaName});
-    },
-    isFilteredByMediaFilter() {
-      // if some filter is active
-      const mf = this.$root.settings.media_filter;
-
-      if(Object.keys(mf).length === 0) {
-        return true;
-      }
-
-
-      for(const [key, value] of Object.entries(mf)) {
-        if(this.media.hasOwnProperty(key) && this.media[key] === value) {
-          return true;
-        }
-      }
-
-      // hide
-      return false;
+      this.$eventHub.$emit('publication.addMedia', { slugProjectName: this.slugProjectName, metaFileName: this.metaFileName});
     }
   }
 }

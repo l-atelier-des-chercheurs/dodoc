@@ -140,7 +140,6 @@
 import MediaContent from './components/subcomponents/MediaContent.vue';
 
 import RecordRTC from 'recordrtc';
-import _ from 'underscore';
 import { setTimeout, setInterval } from 'timers';
 import 'webrtc-adapter';
 import ImageTracer from 'imagetracerjs';
@@ -289,7 +288,7 @@ export default {
   },
   computed: {
     sorted_available_devices() {
-      return _.groupBy(this.available_devices, 'kind');
+      return this.$_.groupBy(this.available_devices, 'kind');
     },
     recordButtonSrc() {
       return !this.isRecording ? '/images/i_record.svg':'/images/i_stop.svg';

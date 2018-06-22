@@ -9,6 +9,8 @@ import Vue from 'vue';
 
 import localstore from 'store';
 import _ from 'underscore';
+Object.defineProperty(Vue.prototype, '$_', { value: _ });
+
 import alertify from 'alertify.js';
 Vue.prototype.$alertify = alertify;
 
@@ -212,8 +214,6 @@ Vue.prototype.$socketio = new Vue({
           window.store[type].hasOwnProperty(slugFolderName) &&
           window.store[type][slugFolderName].hasOwnProperty('medias')
         ) {
-          // window.store[type][slugFolderName].medias =
-          //   content[slugFolderName].medias;
           window.store[type][slugFolderName].medias = Object.assign(
             {},
             window.store[type][slugFolderName].medias,
@@ -247,14 +247,17 @@ Vue.prototype.$socketio = new Vue({
 
       for (let slugFolderName in content) {
         console.log(`Media data is for ${slugFolderName}.`);
-        if (
-          window.store[type].hasOwnProperty(slugFolderName) &&
-          window.store[type][slugFolderName].hasOwnProperty('medias')
-        ) {
-          // window.store[type][slugFolderName].medias =
-          //   content[slugFolderName].medias;
-          window.store[type][slugFolderName].medias =
-            content[slugFolderName].medias;
+        if (window.store[type].hasOwnProperty(slugFolderName)) {
+          if (window.store[type][slugFolderName].hasOwnProperty('medias')) {
+            window.store[type][slugFolderName].medias =
+              content[slugFolderName].medias;
+          } else {
+            window.store[type][slugFolderName] = Object.assign(
+              {},
+              window.store[type][slugFolderName],
+              content[slugFolderName]
+            );
+          }
 
           window.dispatchEvent(
             new CustomEvent(`${type}.listMedias`, {
@@ -279,8 +282,6 @@ Vue.prototype.$socketio = new Vue({
           window.store[type].hasOwnProperty(slugFolderName) &&
           window.store[type][slugFolderName].hasOwnProperty('medias')
         ) {
-          // window.store[type][slugFolderName].medias =
-          //   content[slugFolderName].medias;
           window.store[type][slugFolderName].medias =
             content[slugFolderName].medias;
 
@@ -716,15 +717,15 @@ let vm = new Vue({
       this.$socketio.listSpecificMedias(mdata);
     },
 
-    showMediaModalFor({ slugProjectName, slugMediaName }) {
+    showMediaModalFor({ slugProjectName, metaFileName }) {
       if (window.state.dev_mode === 'debug') {
         console.log(
-          `ROOT EVENT: showMediaModalFor with slugProjectName = ${slugProjectName} and slugMediaName = ${slugMediaName}`
+          `ROOT EVENT: showMediaModalFor with slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`
         );
       }
       this.settings.showMediaModalFor = {
         slugProjectName,
-        slugMediaName
+        metaFileName
       };
     },
     setPublicationZoom(val) {
@@ -738,7 +739,7 @@ let vm = new Vue({
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: newTagDetected with e.detail = ${e.detail}`);
       }
-      const author = _.findWhere(this.store.authors, {
+      const author = this.$_.findWhere(this.store.authors, {
         nfc_tag: e.detail
       });
       this.setAuthor(author);
@@ -774,6 +775,40 @@ let vm = new Vue({
         console.log(`ROOT EVENT: unsetMediaFilter`);
       }
       this.settings.media_filter = {};
+    },
+    loadAllProjectsMedias() {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`ROOT EVENT: loadAllProjectsMedias`);
+      }
+
+      // in this.store.projects, find those that don’t have medias prop and
+      // request their medias
+      Object.keys(this.store.projects).forEach(slugProjectName => {
+        const project_meta = this.store.projects[slugProjectName];
+        if (!project_meta.hasOwnProperty('medias')) {
+          this.$socketio.listMedias({
+            type: 'projects',
+            slugFolderName: slugProjectName
+          });
+        }
+      });
+    },
+    isShownAfterMediaFilter(media) {
+      // if some filter is active
+      const mf = this.settings.media_filter;
+      if (Object.keys(mf).length === 0) {
+        return true;
+      }
+      for (const [key, value] of Object.entries(mf)) {
+        if (media.hasOwnProperty(key) && media[key] === value) {
+          return true;
+        }
+      }
+      // hide
+      return false;
+    },
+    formatDateToHuman(date) {
+      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LL');
     }
   }
 });

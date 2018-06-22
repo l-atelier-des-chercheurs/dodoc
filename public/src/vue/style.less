@@ -690,12 +690,12 @@ body {
     width: 100%;
     background-color: @c-gris_tresclair;
     padding: 0;
+    .padding-sides-small;
     .padding-vert-medium;
-    
+
     .m_project--favMedias--list {
       display: flex;
       flex-flow: row wrap;   
-      .padding-sides-small;
 
       > * {
         flex: 0 0 100/3%;
@@ -1973,11 +1973,12 @@ body {
 .ListView-enter-active, .ListView-leave-active {
   opacity: 1;
   transform: scale(1);
+  transform-origin: center center;
   transition: all .5s linear;
 }
 .ListView-enter, .ListView-leave-to {
-  opacity: .4;
-  transform: scale(0.95);
+  opacity: 0;
+  transform: scale(0.96);
   transition: all .5s linear;
 }
 
@@ -2055,6 +2056,14 @@ body {
   max-width: 0;
   opacity: 0;
   transition: all .5s cubic-bezier(.25,.2,.25,1);
+}
+
+.MediaFilterIndicator-enter-active, .MediaFilterIndicator-leave-active {
+  transform: translate3d(0, 0, 0);
+  transition: all .5s cubic-bezier(.25,.2,.25,1);
+}
+.MediaFilterIndicator-enter, .MediaFilterIndicator-leave-to {
+  transform: translate3d(0, 100px, 0);
 }
 
 // .enableMode-enter-active, .enableMode-leave-active {

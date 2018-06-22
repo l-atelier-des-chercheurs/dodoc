@@ -66,7 +66,6 @@ Fichier&nbsp;:
   </div>
 </template>
 <script>
-import _ from 'underscore';
 import { VueEditor } from 'vue2-editor'
 
 // is loaded by Media and by EditMedia
@@ -136,7 +135,7 @@ export default {
       return this.available_resolutions.preview_hovered;
     },
     linkToImageThumb: function() {
-      let pathToSmallestThumb = _.findWhere(this.media.thumbs, {
+      let pathToSmallestThumb = this.$_.findWhere(this.media.thumbs, {
         size: this.thumbRes
       }).path;
 
@@ -156,7 +155,7 @@ export default {
         : this.mediaURL;
     },
     linkToHoveredThumb: function() {
-      let pathToSmallestThumb = _.findWhere(this.media.thumbs, {
+      let pathToSmallestThumb = this.$_.findWhere(this.media.thumbs, {
         size: this.thumbResHovered
       }).path;
 
@@ -171,13 +170,13 @@ export default {
       }
 
       let timeMark = 0;
-      let timeMarkThumbs = _.findWhere(this.media.thumbs, { timeMark });
+      let timeMarkThumbs = this.$_.findWhere(this.media.thumbs, { timeMark });
 
       if (timeMarkThumbs.length === 0) {
         return;
       }
 
-      let pathToSmallestThumb = _.findWhere(timeMarkThumbs.thumbsData, {
+      let pathToSmallestThumb = this.$_.findWhere(timeMarkThumbs.thumbsData, {
         size: this.thumbRes
       }).path;
 

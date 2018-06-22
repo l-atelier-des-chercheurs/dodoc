@@ -41,7 +41,7 @@
         v-for="media in sortedMedias"
         :key="media.slugMediaName"
         :media="media"
-        :slugMediaName="media.slugMediaName"
+        :metaFileName="media.metaFileName"
         :slugProjectName="slugProjectName"
       >
       </MediaCard>
@@ -91,7 +91,6 @@ export default {
         this.$root.justCreatedTextmediaID = false;
       }
     }
-
   },
 
   computed: {
@@ -100,11 +99,16 @@ export default {
 
       for (let slugMediaName in this.project.medias) {
         let mediaDataToOrderBy;
+        const media = this.project.medias[slugMediaName];
+
+        if(this.$root.isShownAfterMediaFilter(media) === false) {
+          continue;
+        } 
 
         if (this.mediaSort.type === 'date') {
-          if(this.project.medias[slugMediaName].hasOwnProperty(this.mediaSort.field)) {
+          if(media.hasOwnProperty(this.mediaSort.field)) {
             mediaDataToOrderBy = +this.$moment(
-              this.project.medias[slugMediaName][this.mediaSort.field],
+              media[this.mediaSort.field],
               'YYYY-MM-DD HH:mm:ss'
             );
           }
@@ -112,9 +116,7 @@ export default {
             mediaDataToOrderBy = 1000;
           }
         } else if (this.mediaSort.type === 'alph') {
-          mediaDataToOrderBy = this.project.medias[slugMediaName][
-            this.mediaSort.field
-          ];
+          mediaDataToOrderBy = media[this.mediaSort.field];
           if(mediaDataToOrderBy === undefined || Number.isNaN(mediaDataToOrderBy)) {
             mediaDataToOrderBy = 1000;
           }
@@ -179,11 +181,11 @@ export default {
     }    
   },
   methods: {
-    openMediaModal(slugMediaName) {
+    openMediaModal(metaFileName) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaLibrary: openMedia');
       }
-      this.$root.showMediaModalFor({ slugProjectName: this.slugProjectName, slugMediaName: slugMediaName });      
+      this.$root.showMediaModalFor({ slugProjectName: this.slugProjectName, metaFileName });      
     },
     createTextMedia() {
       this.$root.createMedia({

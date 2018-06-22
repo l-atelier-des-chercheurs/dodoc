@@ -42,7 +42,7 @@
               {{ $t('created') }}
             </div>
             <div>
-              {{ formatDateToHuman(publication.date_created) }}
+              {{ $root.formatDateToHuman(publication.date_created) }}
             </div>
           </div> -->
           <div class="m_metaField">
@@ -50,7 +50,7 @@
               {{ $t('edited') }}
             </div>
             <div>
-              {{ formatDateToHuman(publication.date_modified) }}
+              {{ $root.formatDateToHuman(publication.date_modified) }}
             </div>
           </div>
           <!-- <div class="m_metaField">
@@ -103,9 +103,6 @@ export default {
   computed: {
   },
   methods: {
-    formatDateToHuman(date) {
-      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LL');
-    },
     openPublication(slugPubliName) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publications: openPublication / slugPubliName = ${slugPubliName}`);

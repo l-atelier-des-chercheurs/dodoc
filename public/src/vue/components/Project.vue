@@ -25,7 +25,7 @@
               {{ $t('created') }}
             </div>
             <div>
-              {{ formatDateToHuman(project.date_created) }}
+              {{ $root.formatDateToHuman(project.date_created) }}
             </div>
           </div>
           <div class="m_metaField">
@@ -33,7 +33,7 @@
               {{ $t('edited') }}
             </div>
             <div>
-              {{ formatDateToHuman(project.date_modified) }}
+              {{ $root.formatDateToHuman(project.date_modified) }}
             </div>
           </div>
         </div>
@@ -88,7 +88,7 @@
     <div class="m_project--favMedias"
       v-if="context === 'full'"
     >
-      <div class="sectionTitle_small margin-sides-medium">
+      <div class="sectionTitle_small margin-sides-small margin-bottom-small">
         {{ $t('favorite_medias') }}
       </div>
 
@@ -98,7 +98,7 @@
           v-for="media in favMedias"
           :key="media.slugMediaName"
           :media="media"
-          :slugMediaName="media.slugMediaName"
+          :metaFileName="media.metaFileName"
           :slugProjectName="slugProjectName"
         >
         </MediaCard>
@@ -118,7 +118,6 @@
 import EditProject from './modals/EditProject.vue';
 import MediaLibrary from './MediaLibrary.vue';
 import MediaCard from './subcomponents/MediaCard.vue';
-import _ from 'underscore';
 
 export default {
   props: {
@@ -149,13 +148,15 @@ export default {
 
   computed: {
     favMedias() {
-      if(Object.keys(this.project.medias).length === 0) {
+      if(!this.project.hasOwnProperty('medias') || Object.keys(this.project.medias).length === 0) {
         return [];
       }
       const favMedias = {};
-      Object.keys(this.project.medias).map((m) => {
-        if(this.project.medias[m].fav === true) {
-          favMedias[m] = this.project.medias[m];
+      Object.keys(this.project.medias).map((m) => {    
+        const media = this.project.medias[m];
+
+        if(this.$root.isShownAfterMediaFilter(media) && media.fav === true) {
+          favMedias[m] = media;
           favMedias[m].slugMediaName = m;
         }
       });
@@ -169,9 +170,6 @@ export default {
     }
   },
   methods: {
-    formatDateToHuman(date) {
-      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LL');
-    },
     openProject() {
       this.$root.openProject(this.slugProjectName);
     },

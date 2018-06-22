@@ -238,7 +238,6 @@ module.exports = function(app, io, m) {
     const pdfPath = path.join(cachePath, pdfName);
 
     fs.readFile(pdfPath, function(err, data) {
-      debugger;
       res.contentType('application/pdf');
       res.send(data);
     });

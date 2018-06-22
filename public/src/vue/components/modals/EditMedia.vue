@@ -35,18 +35,18 @@
           {{ $t('created') }}
         </div>
         <div>
-          {{ formatDateToHuman(media.date_created) }}
+          {{ $root.formatDateToHuman(media.date_created) }}
         </div>
       </div>
       <div 
         class="m_metaField"
-        v-if="media.hasOwnProperty('date_uploaded') && formatDateToHuman(media.date_created) !== formatDateToHuman(media.date_uploaded)"
+        v-if="media.hasOwnProperty('date_uploaded') && $root.formatDateToHuman(media.date_created) !== $root.formatDateToHuman(media.date_uploaded)"
       >
         <div>
           {{ $t('uploaded') }}
         </div>
         <div>
-          {{ formatDateToHuman(media.date_uploaded) }}
+          {{ $root.formatDateToHuman(media.date_uploaded) }}
         </div>
       </div>
       <div class="m_metaField">
@@ -54,7 +54,7 @@
           {{ $t('edited') }}
         </div>
         <div>
-          {{ formatDateToHuman(media.date_modified) }}
+          {{ $root.formatDateToHuman(media.date_modified) }}
         </div>
       </div>
 
@@ -199,9 +199,6 @@ export default {
   methods: {
     printMedia: function() {
       window.print();
-    },
-    formatDateToHuman(date) {
-      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LL');
     },
     removeMedia: function() {
       if (window.confirm(this.$t('sureToRemoveMedia'))) {

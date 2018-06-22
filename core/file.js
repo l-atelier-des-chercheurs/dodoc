@@ -54,7 +54,7 @@ module.exports = (function() {
                     meta.slugFolderName = slugFolderName;
 
                     if (settings.structure[type].hasOwnProperty('medias')) {
-                      meta.medias = {};
+                      // meta.medias = {};
                     }
 
                     meta.fullFolderPath = thisFolderPath;
@@ -328,8 +328,7 @@ module.exports = (function() {
           slugFolderName
         );
 
-        fs
-          .move(thisFolderPath, movedFolderPath, { overwrite: true })
+        fs.move(thisFolderPath, movedFolderPath, { overwrite: true })
           .then(() => {
             dev.logfunction(
               `COMMON — removeFolder : folder ${slugFolderName} has been moved to ${movedFolderPath}`
@@ -929,8 +928,7 @@ module.exports = (function() {
             metaFileName
           );
 
-          fs
-            .move(mediaMetaPath, movedMediaMetaPath, { overwrite: true })
+          fs.move(mediaMetaPath, movedMediaMetaPath, { overwrite: true })
             .then(() => {
               if (mediaFileName === '') {
                 return resolve();
@@ -1259,8 +1257,7 @@ module.exports = (function() {
       dev.logverbose(
         `COMMON — _storeFoldersPreview : Removing existing preview at ${pathToPreview}`
       );
-      fs
-        .remove(pathToPreview)
+      fs.remove(pathToPreview)
         .then(() => {
           if (preview_rawdata === '') {
             dev.logverbose(
