@@ -33,7 +33,7 @@
       </button>
     </div>
 
-    <div class="sectionTitle_small margin-sides-medium">
+    <div class="sectionTitle_small margin-sides-medium margin-vert-small">
       {{ $t('all_medias') }}
     </div>
     <div class="m_project--library--medias">

@@ -33,6 +33,7 @@ module.exports = (function() {
       showing: 'Affichage de',
       media_filter: 'Filtre de médias',
       projects_of: 'projets sur',
+      medias_of: 'médias sur',
       projects: 'Projets',
       authors: 'Auteurs',
       authors_list: 'Liste des auteurs',
@@ -222,6 +223,7 @@ module.exports = (function() {
       no_projects_yet:
         'No projects created yet. Create one to add captures and import content.',
       projects_of: 'projects of',
+      medias_of: 'medias of',
       projects: 'Projects',
       authors: 'Authors',
       authors_list: 'List of authors',

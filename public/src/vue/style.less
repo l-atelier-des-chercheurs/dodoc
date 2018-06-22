@@ -3,6 +3,9 @@
 @import (inline) "less/shoelace/forms.css";
 @import (inline) "less/shoelace/tables.css";
 @import (inline) "less/shoelace/loaders.css";
+@import (inline) "less/shoelace/switches.css";
+
+
 @import "../../node_modules/vue2-animate/src/vue2-animate.less";
 
 @import "less/_normalize";
@@ -72,6 +75,9 @@ body {
   margin: 0 auto;
   .padding-sides-small;
   .padding-vert-medium;
+}
+.switch-xs {
+  --switch-size: 0.9rem;
 }
 
 /************************************************************************
@@ -614,7 +620,6 @@ body {
       cursor: pointer;
     }
   }
-
 }
 
 .m_project {
@@ -775,6 +780,15 @@ body {
   }
 }
 
+.m_mediaShowAll {
+  display: flex;
+  flex-flow: row wrap;   
+
+  > * {
+    flex: 0 0 100/6%;
+  }
+
+}
 
 .m_qrSnippet {
 
@@ -833,7 +847,7 @@ body {
   > * {
     // height: 0;
     // padding-bottom: 100%; 
-    .margin-vert-small;
+    .margin-bottom-medium;
   }
 
   figure {

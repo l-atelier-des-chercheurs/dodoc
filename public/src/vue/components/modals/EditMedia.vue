@@ -96,7 +96,7 @@
 
 <!-- Fav or not -->
       <div class="margin-bottom-small">
-        <span class="switch">
+        <span class="switch switch-xs">
           <input type="checkbox" class="switch" id="favswitch" v-model="mediadata.fav" :readonly="read_only">
           <label for="favswitch">{{ $t('fav') }}</label>
         </span>

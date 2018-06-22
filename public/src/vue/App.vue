@@ -190,8 +190,6 @@ import EditMedia from './components/modals/EditMedia.vue';
 import Resizer from './components/splitpane/Resizer.vue'
 import Pane from './components/splitpane/Pane.vue'
 
-import MediaCard from './components/subcomponents/MediaCard.vue';
-
 export default {
   name: 'app',
   components: {
@@ -206,8 +204,7 @@ export default {
     Resizer, 
     Pane,
     SearchSidebar,
-    MediaFilterIndicator,
-    MediaCard
+    MediaFilterIndicator
   },
   props: {
   },
