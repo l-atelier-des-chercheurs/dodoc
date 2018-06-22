@@ -469,9 +469,10 @@ export default {
     }
   },
   methods: {
-    addMedia({ slugProjectName, slugMediaName }) {
+    addMedia({ slugProjectName, metaFileName }) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: addMedia with slugProjectName = ${slugProjectName} and slugMediaName = ${slugMediaName}`);
+        console.log(`METHODS • Publication: addMedia with 
+        slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
       }
 
       const lastPageNumber = this.publication.pages.length - 1;
@@ -486,8 +487,8 @@ export default {
 
       const newMediaMeta = {
         slugProjectName,
-        slugMediaName,
-        desired_filename: slugMediaName,
+        desired_filename: metaFileName,
+        slugMediaName: metaFileName,
         page_id,
         x,
         y

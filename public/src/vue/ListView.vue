@@ -80,11 +80,9 @@
         </template>
         <template v-else>
 
-          <!-- <pre>{{ groupedMedias }}</pre> -->
-
           <div v-for="item in groupedMedias" :key="date">
-            <h3 class="font-folder_title margin-sides-small">
-              {{ item[0] }}
+            <h3 class="font-folder_title margin-sides-small margin-none margin-bottom-small">
+              {{ $root.formatDateToHuman(item[0]) }}
             </h3>
 
             <div class="m_mediaShowAll"> 
@@ -145,7 +143,6 @@ export default {
     };
   },
   mounted() {
-    this.show_medias_instead_of_projects = true;
   },
   beforeDestroy() {
 
@@ -173,7 +170,9 @@ export default {
     },
     show_medias_instead_of_projects: function() {
       // load all projects’ medias if it isn’t there
-      this.$root.loadAllProjectsMedias();
+      if(this.show_medias_instead_of_projects) {
+        this.$root.loadAllProjectsMedias();
+      }
     }
   },
   computed: {
@@ -230,6 +229,10 @@ export default {
     },
     allMedias: function() {
       let allMedias = [];
+      debugger;
+      if(this.projects === undefined || Object.keys(this.projects).length === 0) {
+        return [];
+      }
       Object.keys(this.projects).map(slugProjectName => {
         const folder = this.projects[slugProjectName];
         const folder_medias = folder.medias;

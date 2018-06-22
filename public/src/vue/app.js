@@ -800,8 +800,13 @@ let vm = new Vue({
         return true;
       }
       for (const [key, value] of Object.entries(mf)) {
-        if (media.hasOwnProperty(key) && media[key] === value) {
-          return true;
+        if (media.hasOwnProperty(key)) {
+          if (key === 'authors') {
+            const authorThatFitsFilter = media[key].split(',').some(name => {
+              return name.trim() === value;
+            });
+            return authorThatFitsFilter;
+          }
         }
       }
       // hide

@@ -59,7 +59,7 @@
               {{ $t('created') }}
             </div>
             <div>
-              {{ formatDateToHuman(media.date_created) }}
+              {{ $root.formatDateToHuman(media.date_created) }}
             </div>
           </div>
           <div class="m_metaField">
@@ -67,7 +67,7 @@
               {{ $t('edited') }}
             </div>
             <div>
-              {{ formatDateToHuman(media.date_modified) }}
+              {{ $root.formatDateToHuman(media.date_modified) }}
             </div>
           </div>
         </figcaption>
@@ -169,7 +169,8 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaCard: addToPubli');
       }
-      this.$eventHub.$emit('publication.addMedia', { slugProjectName: this.slugProjectName, metaFileName: this.metaFileName});
+      debugger;
+      this.$eventHub.$emit('publication.addMedia', { slugProjectName: this.slugProjectName, metaFileName: this.metaFileName });
     }
   }
 }
