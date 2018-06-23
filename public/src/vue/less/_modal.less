@@ -380,8 +380,16 @@
 
 
 @media print {
-  .m_timeline-container {
-    display: none;
+  .m_modal--container {
+    max-width: none !important;
+  }  
+  .m_modal--container--content {
+    box-shadow: none !important;
+    border: none !important;
+  }
+  .m_modal--preview {
+    height: 100vh !important;
+    border: none !important;
   }
   .m_modal--header {
     display: none;

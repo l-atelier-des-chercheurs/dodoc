@@ -791,13 +791,24 @@ body {
 }
 
 .m_qrSnippet {
+  .padding-none;
+  .margin-vert-medium;
+  .button-inline;
+  .bg-creme;
 
   .m_qrSnippet--text {
     .button;
     .margin-small;
-    margin-bottom: 0;
-    .padding-small;
-    .bg-blanc;
+    margin-top: 0;
+    background-color: transparent;
+    width: 100%;
+    a {
+      display: block;
+      background-color: transparent;
+    }
+    img {
+      width: 150px;
+    }
   }
 
   .m_qrSnippet--motif {
@@ -2108,6 +2119,11 @@ body[data-mode="export_publication"] {
     background-color: transparent;
   }    
 }
+@media screen {
+  .hide_on_screen {
+    display: none;
+  }
+}
 
 @media print {
   #systemBar,
@@ -2121,7 +2137,10 @@ body[data-mode="export_publication"] {
   .m_mediaPublication--buttons,
   .m_page--margins_rule,
   .m_page--grid,
-  .m_publicationSettings {
+  .m_publicationSettings,
+  .m_modal--close_button,
+  .m_scanQR,
+  .hide_on_print {
     display: none !important;
   }
 
@@ -2129,6 +2148,15 @@ body[data-mode="export_publication"] {
     border: none !important;
     background-color: transparent !important;
     padding: 0 !important;
+  }
+
+  .m_qrSnippet {
+    background-color: transparent !important;
+  }
+
+  .m_qrSnippet--motif {
+    width: 8cm !important;
+    height: 8cm !important;
   }
 
   .m_activitiesPanel {

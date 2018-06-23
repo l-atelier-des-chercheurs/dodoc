@@ -803,7 +803,7 @@ let vm = new Vue({
         if (media.hasOwnProperty(key)) {
           if (key === 'authors') {
             const authorThatFitsFilter = media[key].split(',').some(name => {
-              return name.trim() === value;
+              return name.trim().toLowerCase() === value.toLowerCase();
             });
             return authorThatFitsFilter;
           }
