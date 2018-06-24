@@ -54,7 +54,7 @@ module.exports = (function() {
                     meta.slugFolderName = slugFolderName;
 
                     if (settings.structure[type].hasOwnProperty('medias')) {
-                      // meta.medias = {};
+                      meta.medias = {};
                     }
 
                     meta.fullFolderPath = thisFolderPath;

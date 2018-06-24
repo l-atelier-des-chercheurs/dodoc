@@ -222,7 +222,6 @@ export default {
       } else if (this.presentationMD.hasOwnProperty('content')) {
         return this.presentationMD['content'];
       }
-
       return this.presentationMD;
     },
     allMedias: function() {

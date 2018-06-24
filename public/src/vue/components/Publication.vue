@@ -395,7 +395,7 @@ export default {
         if (this.$root.state.dev_mode === 'debug') {
           console.log(`WATCH • Publication: $root.store.projects`);
         }
-        this.updateMediasPubli();
+        // this.updateMediasPubli();
       },
       deep: true
     },

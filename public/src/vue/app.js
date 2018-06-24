@@ -212,10 +212,7 @@ Vue.prototype.$socketio = new Vue({
 
       for (let slugFolderName in content) {
         console.log(`Media data is for ${slugFolderName}.`);
-        if (
-          window.store[type].hasOwnProperty(slugFolderName) &&
-          window.store[type][slugFolderName].hasOwnProperty('medias')
-        ) {
+        if (window.store[type].hasOwnProperty(slugFolderName)) {
           window.store[type][slugFolderName].medias = Object.assign(
             {},
             window.store[type][slugFolderName].medias,
@@ -250,16 +247,8 @@ Vue.prototype.$socketio = new Vue({
       for (let slugFolderName in content) {
         console.log(`Media data is for ${slugFolderName}.`);
         if (window.store[type].hasOwnProperty(slugFolderName)) {
-          if (window.store[type][slugFolderName].hasOwnProperty('medias')) {
-            window.store[type][slugFolderName].medias =
-              content[slugFolderName].medias;
-          } else {
-            window.store[type][slugFolderName] = Object.assign(
-              {},
-              window.store[type][slugFolderName],
-              content[slugFolderName]
-            );
-          }
+          window.store[type][slugFolderName].medias =
+            content[slugFolderName].medias;
 
           window.dispatchEvent(
             new CustomEvent(`${type}.listMedias`, {
@@ -284,12 +273,14 @@ Vue.prototype.$socketio = new Vue({
           window.store[type].hasOwnProperty(slugFolderName) &&
           window.store[type][slugFolderName].hasOwnProperty('medias')
         ) {
-          window.store[type][slugFolderName].medias =
-            content[slugFolderName].medias;
-
-          this.$eventHub.$emit('project.listSpecificMedias');
+          window.store[type][slugFolderName].medias = Object.assign(
+            {},
+            window.store[type][slugFolderName].medias,
+            content[slugFolderName].medias
+          );
         }
       }
+      this.$eventHub.$emit('project.listSpecificMedias');
     },
 
     _onPubliPDFGenerated(data) {
@@ -794,12 +785,12 @@ let vm = new Vue({
       // request their medias
       Object.keys(this.store.projects).forEach(slugProjectName => {
         const project_meta = this.store.projects[slugProjectName];
-        if (!project_meta.hasOwnProperty('medias')) {
-          this.$socketio.listMedias({
-            type: 'projects',
-            slugFolderName: slugProjectName
-          });
-        }
+
+        // TODO : create a "tracked medias projects" list and only load medias of untracked projects
+        this.$socketio.listMedias({
+          type: 'projects',
+          slugFolderName: slugProjectName
+        });
       });
     },
     isShownAfterMediaFilter(media) {
