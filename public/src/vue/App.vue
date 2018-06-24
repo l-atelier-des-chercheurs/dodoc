@@ -18,8 +18,6 @@
         :authors="$root.store.authors"
       >
       </TopBar>
-      {{ $root.state.list_of_projects_whose_medias_are_tracked }}
-
       <div class="m_activitiesPanel">
         <div 
           :style="{ cursor, userSelect}" 

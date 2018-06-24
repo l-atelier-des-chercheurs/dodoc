@@ -255,6 +255,12 @@ Vue.prototype.$socketio = new Vue({
               detail: slugFolderName
             })
           );
+
+          if (type === 'projects') {
+            window.state.list_of_projects_whose_medias_are_tracked.push(
+              slugFolderName
+            );
+          }
         }
       }
     },
@@ -612,10 +618,17 @@ let vm = new Vue({
 
       this.settings.view = 'ProjectView';
       this.settings.current_slugProjectName = slugProjectName;
-      this.$socketio.listMedias({
-        type: 'projects',
-        slugFolderName: slugProjectName
-      });
+
+      if (
+        !this.$root.state.list_of_projects_whose_medias_are_tracked.includes(
+          slugProjectName
+        )
+      ) {
+        this.$socketio.listMedias({
+          type: 'projects',
+          slugFolderName: slugProjectName
+        });
+      }
 
       history.pushState(
         { slugProjectName },
