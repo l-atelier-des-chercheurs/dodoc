@@ -31,7 +31,7 @@ module.exports = (function() {
       eventAndContent(sendEvent, objectJson),
     sendEventWithContent: (sendEvent, objectContent, io, socket) =>
       sendEventWithContent(sendEvent, objectContent, io, socket),
-    getLocalIP: () => getLocalIP(),
+    getNetworkInfos: () => getNetworkInfos(),
     slug: term => slug(term),
     clip: (value, min, max) => clip(value, min, max),
     decodeBase64Image: dataString => decodeBase64Image(dataString),
@@ -182,16 +182,27 @@ module.exports = (function() {
   // from http://stackoverflow.com/a/8440736
   function getLocalIP() {
     return new Promise(function(resolve, reject) {
-      var ifaces = os.networkInterfaces();
-      var networkInfo = {};
+      const ifaces = os.networkInterfaces();
+      let ip_adresses = {};
       Object.keys(ifaces).forEach(function(ifname) {
         ifaces[ifname].forEach(function(iface) {
           if ('IPv4' === iface.family && iface.internal === false) {
-            networkInfo[ifname] = iface.address;
+            ip_adresses[ifname] = iface.address;
           }
         });
       });
-      resolve(networkInfo);
+      resolve(ip_adresses);
+    });
+  }
+
+  function getNetworkInfos() {
+    return new Promise(function(resolve, reject) {
+      getLocalIP().then(ip_adresses => {
+        resolve({
+          ip: Object.values(ip_adresses),
+          port: global.appInfos.port
+        });
+      });
     });
   }
 

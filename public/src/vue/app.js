@@ -117,6 +117,8 @@ Vue.prototype.$socketio = new Vue({
       this.socket.on('listSpecificMedias', this._onListSpecificMedias);
       this.socket.on('publiPDFGenerated', this._onPubliPDFGenerated);
 
+      this.socket.on('newNetworkInfos', this._onNewNetworkInfos);
+
       this.socket.on('notify', this._onNotify);
     },
     _onSocketConnect() {
@@ -342,6 +344,10 @@ Vue.prototype.$socketio = new Vue({
       window.store[type] = Object.assign({}, content);
       window.dispatchEvent(new CustomEvent('socketio.folders_listed'));
     },
+    _onNewNetworkInfos(data) {
+      console.log('Received _onNewNetworkInfos packet.');
+      window.state.localNetworkInfos = data;
+    },
     _onNotify(msg) {
       console.log('Received _onNotify packet.');
 
@@ -380,6 +386,9 @@ Vue.prototype.$socketio = new Vue({
     },
     downloadPubliPDF(pdata) {
       this.socket.emit('downloadPubliPDF', pdata);
+    },
+    updateNetworkInfos() {
+      this.socket.emit('updateNetworkInfos');
     }
   }
 });
@@ -814,6 +823,9 @@ let vm = new Vue({
     },
     formatDateToHuman(date) {
       return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LL');
+    },
+    updateNetworkInfos() {
+      this.$socketio.updateNetworkInfos();
     }
   }
 });

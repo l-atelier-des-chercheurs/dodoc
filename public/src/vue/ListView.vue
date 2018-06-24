@@ -227,7 +227,6 @@ export default {
     },
     allMedias: function() {
       let allMedias = [];
-      debugger;
       if(this.projects === undefined || Object.keys(this.projects).length === 0) {
         return [];
       }

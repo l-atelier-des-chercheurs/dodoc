@@ -169,7 +169,6 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaCard: addToPubli');
       }
-      debugger;
       this.$eventHub.$emit('publication.addMedia', { slugProjectName: this.slugProjectName, metaFileName: this.metaFileName });
     }
   }

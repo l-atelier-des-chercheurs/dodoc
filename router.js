@@ -44,29 +44,7 @@ module.exports = function(app, io, m) {
 
       pageData.mode = 'live';
 
-      let tasks = [];
-
-      let getLocalIP = new Promise((resolve, reject) => {
-        api.getLocalIP().then(
-          localNetworkInfos => {
-            pageData.localNetworkInfos = {
-              ip: [],
-              port: global.appInfos.port
-            };
-            pageData.localNetworkInfos.ip = Object.values(localNetworkInfos);
-            resolve();
-          },
-          function(err, p) {
-            dev.error(`Err while getting local IP: ${err}`);
-            reject(err);
-          }
-        );
-      });
-      tasks.push(getLocalIP);
-
-      Promise.all(tasks).then(() => {
-        resolve(pageData);
-      });
+      resolve(pageData);
     });
   }
 

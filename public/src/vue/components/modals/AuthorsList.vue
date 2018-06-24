@@ -25,6 +25,7 @@
             <button type="button" 
               @click="openCreateAuthorPanel = true"
               v-if="openCreateAuthorPanel == false"
+              class="m_authorsList--createAuthor--createButton"
             >
               {{ $t('create_an_author') }}
             </button>

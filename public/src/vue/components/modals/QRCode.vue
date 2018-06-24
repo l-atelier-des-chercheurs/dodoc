@@ -69,9 +69,11 @@ export default {
     return {
     };
   },
+  mounted() {
+    this.$root.updateNetworkInfos();
+  },
   computed: {
     nameOfProject() {
-      debugger;
       if(!this.slugProjectName || !this.$root.store.projects[this.slugProjectName].hasOwnProperty('name')) {
         return false;
       }

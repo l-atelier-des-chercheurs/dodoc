@@ -75,6 +75,9 @@ module.exports = (function() {
       socket.on('downloadPubliPDF', function(data) {
         onDownloadPubliPDF(socket, data);
       });
+      socket.on('updateNetworkInfos', function(data) {
+        onUpdateNetworkInfos();
+      });
     });
   }
 
@@ -309,6 +312,19 @@ module.exports = (function() {
         socket
       );
     });
+  }
+
+  function onUpdateNetworkInfos() {
+    dev.logfunction(`EVENT - onUpdateNetworkInfos`);
+    api.getNetworkInfos().then(
+      localNetworkInfos => {
+        api.sendEventWithContent('newNetworkInfos', localNetworkInfos, io);
+      },
+      function(err, p) {
+        dev.error(`Err while getting local IP: ${err}`);
+        reject(err);
+      }
+    );
   }
 
   /**************************************************************** GENERAL ********************************/

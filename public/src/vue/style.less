@@ -383,6 +383,7 @@ body {
   }
 
   .m_authorsList--createAuthor {
+    position: relative;
     border: 4px solid @c-gris_tresclair;
     border: 4px solid @c-gris_clair;
     border-radius: @t-buttonradius;
@@ -391,6 +392,16 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+
+
+    .m_authorsList--createAuthor--createButton {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      .bg-gris_clair;
+      max-height: none;
+      display: block;
+    }
   }
 
   .m_authorsList--author {
