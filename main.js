@@ -110,6 +110,14 @@ function createWindow() {
     });
   });
 
+  if (process.platform == 'darwin') {
+    app.setAboutPanelOptions({
+      applicationName: app.getName(),
+      applicationVersion: app.getVersion(),
+      copyright: 'Released under the Creative Commons license.'
+    });
+  }
+
   setApplicationMenu();
 
   cleanCacheFolder().then(
@@ -180,7 +188,7 @@ function setApplicationMenu() {
       label: 'Electron',
       submenu: [
         {
-          label: 'About Electron',
+          label: 'About do•doc',
           selector: 'orderFrontStandardAboutPanel:'
         },
         {
