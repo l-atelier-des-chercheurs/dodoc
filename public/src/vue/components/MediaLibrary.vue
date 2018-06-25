@@ -85,10 +85,10 @@ export default {
       let justCreatedTextMedia = Object.keys(this.project.medias).filter((m) => {
         let data = this.project.medias[m];
         return data.hasOwnProperty('id') && data.id === this.$root.justCreatedMediaID;
-      });      
+      })[0];      
       if(justCreatedTextMedia.length > 0) {
-        this.openMediaModal(justCreatedTextMedia[0]);
-        this.$root.justCreatedTextmediaID = false;
+        this.openMediaModal(justCreatedTextMedia);
+        this.$root.justCreatedMediaID = false;
       }
     }
   },

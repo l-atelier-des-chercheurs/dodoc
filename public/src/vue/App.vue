@@ -18,6 +18,7 @@
         :authors="$root.store.authors"
       >
       </TopBar>
+
       <div class="m_activitiesPanel">
         <div 
           :style="{ cursor, userSelect}" 
