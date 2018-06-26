@@ -50,7 +50,7 @@
     </div>
 
     <div 
-      v-if="(is_selected || is_hovered) && !preview_mode" 
+      v-if="(is_selected || is_hovered || is_touch) && !preview_mode" 
       class="m_mediaPublication--buttons"
     >
       <button 
@@ -94,6 +94,7 @@ export default {
       is_waitingForServer: false,
       is_hovered: false,
       is_selected: false,
+      is_touch: Modernizr.touchevents,
 
       mediaID: `${(Math.random().toString(36) + '00000000000000000').slice(2, 3 + 5)}`,
 
@@ -125,9 +126,6 @@ export default {
   },
   mounted() {
     this.updateMediaStyles();
-    if(Modernizr.touchevents) {
-      this.is_hovered = true;
-    }
     this.$parent.$on('newMediaSelected', (mediaID) => {
       if(mediaID !== this.mediaID) {
         this.is_selected = false;   
@@ -348,12 +346,12 @@ export default {
       this.$emit('unselected');
     },
     mouseOver() {
-      if(!Modernizr.touchevents) {
+      if(!this.is_touch) {
         this.is_hovered = true;
       }      
     },
     mouseLeave() {
-      if(!Modernizr.touchevents) {
+      if(!this.is_touch) {
         this.is_hovered = false;
       }
     }
