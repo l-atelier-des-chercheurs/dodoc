@@ -256,11 +256,11 @@ Vue.prototype.$socketio = new Vue({
             })
           );
 
-          if (type === 'projects') {
-            window.state.list_of_projects_whose_medias_are_tracked.push(
-              slugFolderName
-            );
-          }
+          // if (type === 'projects') {
+          //   window.state.list_of_projects_whose_medias_are_tracked.push(
+          //     slugFolderName
+          //   );
+          // }
         }
       }
     },
@@ -619,16 +619,16 @@ let vm = new Vue({
       this.settings.view = 'ProjectView';
       this.settings.current_slugProjectName = slugProjectName;
 
-      if (
-        !this.$root.state.list_of_projects_whose_medias_are_tracked.includes(
-          slugProjectName
-        )
-      ) {
-        this.$socketio.listMedias({
-          type: 'projects',
-          slugFolderName: slugProjectName
-        });
-      }
+      // if (
+      //   !this.$root.state.list_of_projects_whose_medias_are_tracked.includes(
+      //     slugProjectName
+      //   )
+      // ) {
+      this.$socketio.listMedias({
+        type: 'projects',
+        slugFolderName: slugProjectName
+      });
+      // }
 
       history.pushState(
         { slugProjectName },
@@ -798,8 +798,6 @@ let vm = new Vue({
       // request their medias
       Object.keys(this.store.projects).forEach(slugProjectName => {
         const project_meta = this.store.projects[slugProjectName];
-
-        // TODO : create a "tracked medias projects" list and only load medias of untracked projects
         this.$socketio.listMedias({
           type: 'projects',
           slugFolderName: slugProjectName
