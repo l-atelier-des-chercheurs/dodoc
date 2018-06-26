@@ -125,6 +125,9 @@ export default {
   },
   mounted() {
     this.updateMediaStyles();
+    if(Modernizr.touchevents) {
+      this.is_hovered = true;
+    }
     this.$parent.$on('newMediaSelected', (mediaID) => {
       if(mediaID !== this.mediaID) {
         this.is_selected = false;   
