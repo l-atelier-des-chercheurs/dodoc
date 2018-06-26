@@ -1284,6 +1284,10 @@ body {
   align-items: center;
   justify-content: space-between;
   align-content: center;
+  
+  > * {
+    flex: 0 0 auto;
+  }
 
   .m_publicationItems--item--title {
     margin: 0;
@@ -1291,6 +1295,7 @@ body {
     text-align: left;
     flex-basis: 100px;
     .padding-vert-small;
+    flex-grow: 1;
   }
 
   .m_metaField {
