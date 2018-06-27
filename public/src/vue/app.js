@@ -656,6 +656,25 @@ let vm = new Vue({
 
       history.pushState({ slugProjectName: '' }, '', '/');
     },
+    openMedia({ slugProjectName, metaFileName }) {
+      if (window.state.dev_mode === 'debug') {
+        console.log(
+          `ROOT EVENT: openMedia with slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`
+        );
+      }
+
+      this.do_navigation.view = 'MediaView';
+      this.do_navigation.current_slugProjectName = slugProjectName;
+      this.do_navigation.current_metaFileName = metaFileName;
+    },
+    closeMedia: function() {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`ROOT EVENT: closeMedia`);
+      }
+      this.do_navigation.view = 'ProjectView';
+      this.do_navigation.current_metaFileName = false;
+    },
+
     updateLocalLang: function(newLangCode) {
       if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: updateLocalLang');
@@ -737,18 +756,6 @@ let vm = new Vue({
         );
       }
       this.$socketio.listSpecificMedias(mdata);
-    },
-
-    openMedia({ slugProjectName, metaFileName }) {
-      if (window.state.dev_mode === 'debug') {
-        console.log(
-          `ROOT EVENT: openMedia with slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`
-        );
-      }
-
-      this.do_navigation.view = 'MediaView';
-      this.do_navigation.current_slugProjectName = slugProjectName;
-      this.do_navigation.current_metaFileName = metaFileName;
     },
     setPublicationZoom(val) {
       if (window.state.dev_mode === 'debug') {

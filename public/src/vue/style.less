@@ -570,7 +570,7 @@ body {
 }
 
 
-.m_listview, .m_projectview, .m_captureview, .m_publicationsview, .m_publicationview, .m_editmediaview {
+.m_listview, .m_projectview, .m_captureview, .m_publicationsview, .m_publicationview, .m_mediaview {
   position: absolute;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -1254,6 +1254,40 @@ body {
       background-color: transparent;
     }
   }
+}
+
+.m_mediaview {
+  display: flex;
+  justify-content: center;
+  flex-flow: row wrap;
+
+  > .m_mediaview--sidebar {
+    flex: 0 1 400px;
+  }
+
+  > .m_mediaview--preview {
+    min-width: 400px;
+    flex: 1 1 600px;
+  }
+
+  .m_mediaview--sidebar {
+    .padding-sides-medium;
+    .bg-blanc;
+    border: 1px solid @c-gris_clair;
+    border-top: 0;
+    h1 {
+      .font-folder_title;   
+      .margin-vert-small;
+      .padding-vert-small;
+      border-bottom: 2px solid @c-gris_clair;
+    }
+  }
+
+  .m_mediaview--preview  {
+    .padding-medium;
+
+  }
+
 
 }
 
