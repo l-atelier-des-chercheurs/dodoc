@@ -73,6 +73,7 @@ module.exports = function(app, io, m) {
           .getFolder({ type: 'projects', slugFolderName: slugProjectName })
           .then(
             foldersData => {
+              pageData.slugProjectName = slugProjectName;
               pageData.folderAndMediaData = foldersData;
               res.render('index', pageData);
             },

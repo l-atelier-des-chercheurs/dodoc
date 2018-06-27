@@ -155,7 +155,7 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaCard: openMediaModal = ${this.metaFileName}`);
       }
-      this.$root.showMediaModalFor({ slugProjectName: this.slugProjectName, metaFileName: this.metaFileName });
+      this.$root.openMedia({ slugProjectName: this.slugProjectName, metaFileName: this.metaFileName });
     },
     removeMedia() {
       if (this.$root.state.dev_mode === 'debug') {

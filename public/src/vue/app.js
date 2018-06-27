@@ -408,19 +408,23 @@ let vm = new Vue({
     justCreatedFolderID: false,
     justCreatedMediaID: false,
 
+    do_navigation: {
+      view: 'ListView',
+      current_slugProjectName: false,
+      current_metaFileName: false
+    },
+    // navigation_history: [],
+
     settings: {
       has_modal_opened: false,
 
-      current_slugProjectName: false,
       current_slugPubliName: false,
       current_author: false,
-      showMediaModalFor: false,
 
       publi_zoom: 0.8,
 
       show_publi_panel: false,
       show_search_sidebar: false,
-      view: 'ListView',
       enable_system_bar: window.state.is_electron && window.state.is_darwin,
 
       media_filter: {}
@@ -464,11 +468,10 @@ let vm = new Vue({
       // if a slugProjectName is requested, load the content of that folder rightaway
       // we are probably in a webbrowser that accesses a subfolder
       if (this.store.slugProjectName) {
-        this.settings.current_slugProjectName = this.store.slugProjectName;
         window.addEventListener(
           'socketio.folders_listed',
           () => {
-            this.openProject(this.settings.current_slugProjectName);
+            this.openProject(this.store.slugProjectName);
           },
           { once: true }
         );
@@ -494,7 +497,7 @@ let vm = new Vue({
           event.state.slugProjectName
         }`
       );
-      this.settings.current_slugProjectName = event.state.slugProjectName;
+      this.do_navigation.current_slugProjectName = event.state.slugProjectName;
     };
 
     window.addEventListener('tag.newTagDetected', this.newTagDetected);
@@ -519,6 +522,12 @@ let vm = new Vue({
       } else {
         document.body.style.overflow = '';
       }
+    },
+    'do_navigation.view': function() {
+      // this.navigation_history.push({
+      //   view: this.do_navigation.view,
+      //   navigation: this.do_navigation
+      // });
     }
   },
   computed: {
@@ -526,10 +535,10 @@ let vm = new Vue({
       if (
         this.store.hasOwnProperty('projects') &&
         this.store.projects.hasOwnProperty(
-          this.settings.current_slugProjectName
+          this.do_navigation.current_slugProjectName
         )
       ) {
-        return this.store.projects[this.settings.current_slugProjectName];
+        return this.store.projects[this.do_navigation.current_slugProjectName];
       }
       return {};
     }
@@ -616,8 +625,8 @@ let vm = new Vue({
         return false;
       }
 
-      this.settings.view = 'ProjectView';
-      this.settings.current_slugProjectName = slugProjectName;
+      this.do_navigation.view = 'ProjectView';
+      this.do_navigation.current_slugProjectName = slugProjectName;
 
       // if (
       //   !this.$root.state.list_of_projects_whose_medias_are_tracked.includes(
@@ -642,8 +651,8 @@ let vm = new Vue({
         console.log('ROOT EVENT: closeProject');
       }
 
-      this.settings.view = 'ListView';
-      this.settings.current_slugProjectName = '';
+      this.do_navigation.view = 'ListView';
+      this.do_navigation.current_slugProjectName = '';
 
       history.pushState({ slugProjectName: '' }, '', '/');
     },
@@ -730,16 +739,16 @@ let vm = new Vue({
       this.$socketio.listSpecificMedias(mdata);
     },
 
-    showMediaModalFor({ slugProjectName, metaFileName }) {
+    openMedia({ slugProjectName, metaFileName }) {
       if (window.state.dev_mode === 'debug') {
         console.log(
-          `ROOT EVENT: showMediaModalFor with slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`
+          `ROOT EVENT: openMedia with slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`
         );
       }
-      this.settings.showMediaModalFor = {
-        slugProjectName,
-        metaFileName
-      };
+
+      this.do_navigation.view = 'MediaView';
+      this.do_navigation.current_slugProjectName = slugProjectName;
+      this.do_navigation.current_metaFileName = metaFileName;
     },
     setPublicationZoom(val) {
       if (window.state.dev_mode === 'debug') {
@@ -828,6 +837,15 @@ let vm = new Vue({
     },
     updateNetworkInfos() {
       this.$socketio.updateNetworkInfos();
+    },
+    navigation_back() {
+      if (this.$root.do_navigation.view === 'MediaView') {
+        this.$root.do_navigation.view = 'ProjectView';
+      } else if (this.$root.do_navigation.view === 'CaptureView') {
+        this.$root.do_navigation.view = 'ProjectView';
+      } else if (this.$root.do_navigation.view === 'ProjectView') {
+        this.$root.closeProject();
+      }
     }
   }
 });

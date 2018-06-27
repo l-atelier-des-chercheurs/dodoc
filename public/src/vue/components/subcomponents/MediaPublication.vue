@@ -56,8 +56,8 @@
       <button 
         type="button" 
         class="buttonLink" 
-        @click.prevent.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
-        @touchstart.prevent.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
+        @click.prevent.stop="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
+        @touchstart.prevent.stop="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
       >
         {{ $t('edit') }}
       </button>

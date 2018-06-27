@@ -23,17 +23,26 @@
         
         <button type="button"
           v-if="project.hasOwnProperty('name')" 
-          @click="$root.settings.view = 'ProjectView'"
+          @click="$root.do_navigation.view = 'ProjectView'"
         >
           <span>
             {{ project.name }}
           </span>
         </button>
+
         <button type="button" 
-          v-if="project.hasOwnProperty('name') && $root.settings.view === 'CaptureView'"
+          v-if="project.hasOwnProperty('name') && $root.do_navigation.view === 'CaptureView'"
         >
           <span>
             Capture
+          </span>
+        </button>
+
+        <button type="button"
+          v-if="project.hasOwnProperty('name') && $root.do_navigation.view === 'MediaView'"
+        >
+          <span>
+            {{ $t('media') }}
           </span>
         </button>
       </div>
@@ -162,12 +171,7 @@ export default {
   },
   methods: {
     goBack() {
-      if(this.$root.settings.view === 'CaptureView') {
-        this.$root.settings.view = 'ProjectView';
-      } else 
-      if(this.$root.settings.view === 'ProjectView') {
-        this.$root.closeProject();
-      }
+      this.$root.navigation_back();
     },
     goHome() {
       this.$root.closeProject();

@@ -80,13 +80,13 @@
         </template>
         <template v-else>
 
-          <div v-for="item in groupedMedias" :key="date">
+          <div v-for="item in groupedMedias" :key="item[0]">
             <h3 class="font-folder_title margin-sides-small margin-none margin-bottom-small">
               {{ $root.formatDateToHuman(item[0]) }}
             </h3>
 
             <div class="m_mediaShowAll"> 
-              <div v-for="media in item[1]">
+              <div v-for="media in item[1]" :key="media.slugMediaName">
                 <MediaCard
                   :key="media.slugMediaName"
                   :media="media"

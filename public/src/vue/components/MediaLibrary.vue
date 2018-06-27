@@ -11,7 +11,7 @@
     <div class="m_actionbar">
       <button type="button" class="barButton barButton_capture" 
         v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
-        @click="$root.settings.view = 'CaptureView'"
+        @click="$root.do_navigation.view = 'CaptureView'"
         :disabled="read_only" 
       >
         <span>    
@@ -85,9 +85,9 @@ export default {
       let justCreatedTextMedia = Object.keys(this.project.medias).filter((m) => {
         let data = this.project.medias[m];
         return data.hasOwnProperty('id') && data.id === this.$root.justCreatedMediaID;
-      })[0];      
+      });      
       if(justCreatedTextMedia.length > 0) {
-        this.openMediaModal(justCreatedTextMedia);
+        this.openMediaModal(justCreatedTextMedia[0]);
         this.$root.justCreatedMediaID = false;
       }
     }
@@ -96,6 +96,10 @@ export default {
   computed: {
     sortedMedias() {
       var sortable = [];
+
+      if(!this.project.hasOwnProperty('medias')) {
+        return sortable;
+      }
 
       for (let slugMediaName in this.project.medias) {
         let mediaDataToOrderBy;
@@ -185,7 +189,7 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaLibrary: openMedia');
       }
-      this.$root.showMediaModalFor({ slugProjectName: this.slugProjectName, metaFileName });      
+      this.$root.openMedia({ slugProjectName: this.slugProjectName, metaFileName });      
     },
     createTextMedia() {
       this.$root.createMedia({

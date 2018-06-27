@@ -4,7 +4,7 @@
       class="m_modal--mask"
       :class="['typeOfModal-' + typeOfModal, { 'is_invisible' : !showModal }]"
       @mousedown.self="closeModal"
-      :style="`min-height: ${window_innerHeight}px`"
+      :style="`height: ${window_innerHeight}px`"
     >
       <div class="m_modal--container"
         :class="['color-' + backgroundColor, { 'is_invisible' : !showModal }]"
@@ -135,9 +135,9 @@ export default {
   computed: {
     window_innerHeight() { 
       let wHeight = window.innerHeight;
-      if(this.$root.settings.enable_system_bar) {
-        // wHeight -= 22;
-      }
+      // if(this.$root.settings.enable_system_bar) {
+      //   // wHeight -= 22;
+      // }
       return wHeight; 
     }
   },
