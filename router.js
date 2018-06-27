@@ -215,9 +215,10 @@ module.exports = function(app, io, m) {
     );
     const pdfPath = path.join(cachePath, pdfName);
 
-    fs.readFile(pdfPath, function(err, data) {
-      res.contentType('application/pdf');
-      res.send(data);
+    res.download(pdfPath, pdfName, function(err) {
+      if (err) {
+      } else {
+      }
     });
   }
 
