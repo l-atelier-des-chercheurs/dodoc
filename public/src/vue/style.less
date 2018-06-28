@@ -2022,6 +2022,77 @@ body {
 }
 
 
+.quillWrapper {
+  display: flex;
+  flex-flow: column nowrap;
+
+  .ql-container {
+    font-family: inherit;
+  }
+  .ql-toolbar button {
+    min-height: 0;
+  }
+  .ql-toolbar.ql-snow {
+    .bg-blanc;
+    font-family: inherit;
+  }
+
+  > * {
+    flex: 0 0 auto;
+  
+    &.ql-container {
+      flex: 1 1 auto;
+      height: auto;
+    }
+    .ql-editor {
+      .textarea;
+      min-height: 60vh;
+
+      border-left: 2px solid transparent;
+      height: 100%;
+      border-left: solid var(--input-border-width) var(--input-border-color);
+      border-radius: var(--input-border-radius);
+      border-radius: 0;
+
+      font-size:14pt !important;
+  
+      // background: linear-gradient(transparent, transparent 28px, #91D1D3 28px);
+      // background-size: 30px 30px;
+      // background-attachment: local;
+  
+      // background: linear-gradient(transparent, transparent ~"calc(@{t-skipline} - 2px)", rgba(0,0,0,.15) ~"calc(@{t-skipline} - 2px)");
+      // background-size: @t-skipline @t-skipline;
+      // background-attachment: local;
+      // background-position-y: ~"calc(@{t-skipline} * 0.85)";
+
+      &:focus {
+        border-left-color: @c-orange;
+        background-color: white;
+      }
+
+      .ql-toolbar::before {
+        content: 'options :';
+        position: relative;
+        display: inline-block;
+        font-size:1rem;
+        vertical-align: middle;
+        font-weight: 400;
+        /* background-color: #333; */
+        /* left: -8px; */
+        margin:0;
+        /* padding: 11px; */
+        margin-bottom: 10px;
+        /* text-decoration: underline; */
+        font-size: .8rem;
+        /* text-transform: uppercase; */
+        margin-right: 15px;
+        /* font-style: italic; */
+      }         
+      @import (multiple) "less/publications_styles/standard.less";  
+    }
+  } 
+}
+
 
 .fade-enter-active, .fade-leave-active {
   opacity: 1;
