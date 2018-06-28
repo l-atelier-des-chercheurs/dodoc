@@ -380,13 +380,18 @@ module.exports = function(app, io, m) {
       api.findFirstFilenameNotTaken(uploadDir, fileMeta.name).then(
         function(newFileName) {
           dev.logverbose(`Following filename is available: ${newFileName}`);
-          dev.logverbose(
-            `Has additional meta: ${JSON.stringify(
-              fileMeta.additionalMeta,
-              null,
-              4
-            )}`
-          );
+
+          if (fileMeta.hasOwnProperty('additionalMeta')) {
+            dev.logverbose(
+              `Has additional meta: ${JSON.stringify(
+                fileMeta.additionalMeta,
+                null,
+                4
+              )}`
+            );
+          } else {
+            fileMeta.additionalMeta = {};
+          }
 
           let newPathToNewFileName = path.join(uploadDir, newFileName);
           fs.renameSync(fileMeta.path, newPathToNewFileName);
