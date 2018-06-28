@@ -572,7 +572,7 @@ body {
 
 .m_listview, .m_projectview, .m_captureview, .m_publicationsview, .m_publicationview, .m_mediaview {
   position: absolute;
-  overflow-y: auto;
+  overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
 
   .bg-creme;
@@ -1260,6 +1260,7 @@ body {
   display: flex;
   justify-content: center;
   flex-flow: row wrap;
+  // min-height: ~"calc(100vh - @{t-hauteur_topbar} - 1px)";
 
   > .m_mediaview--sidebar {
     flex: 0 1 400px;
@@ -1271,15 +1272,32 @@ body {
   }
 
   .m_mediaview--sidebar {
-    .padding-sides-medium;
-    .bg-blanc;
-    border: 1px solid @c-gris_clair;
-    border-top: 0;
+
+    > * {
+      .bg-blanc;
+      min-height: 101%;
+      .padding-sides-medium;
+      border: 1px solid @c-gris_clair;
+      border-top: 0;        
+    }
     h1 {
-      .font-folder_title;   
-      .margin-vert-small;
-      .padding-vert-small;
+      .font-folder_title; 
+      margin: 0;  
+      .margin-bottom-medium;
+      .padding-vert-medium;
       border-bottom: 2px solid @c-gris_clair;
+    }
+
+    .m_mediaview--sidebar--buttonrow{
+      margin: 0;
+      .margin-vert-medium;
+      padding: 0;
+      text-align: center;
+
+      hr {
+        margin: 0;
+        .margin-vert-small;          
+      }
     }
   }
 
@@ -2297,7 +2315,7 @@ body[data-mode="export_publication"] {
   .hide_on_print {
     display: none !important;
   }
-
+  
   .m_activitiesPanel--doc {
     border: none !important;
     background-color: transparent !important;
