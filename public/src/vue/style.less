@@ -1537,11 +1537,13 @@ body {
     position: relative;
     .margin-vert-medium;
     .bg-blanc;
-    color: #000;
     box-shadow: 0px 2px 16px 0px rgba(0,0,0,.2);
     z-index: 0;
     transform-origin: top left;
-    // transform-origin: center center;
+
+    // print only options 
+    font-variant-ligatures: none;
+    color: #000;
 
     transition: all .2s;
 
@@ -1854,15 +1856,20 @@ body {
     z-index: 2;
     overflow: hidden;
     pointer-events: none;
+    .padding-verysmall;
 
     display: flex;
-    justify-content: flex-end;
     flex-flow: row wrap;
+    justify-content: flex-end;
 
     > * {
+      display: block;
       color: inherit;
-      .bg-blanc;
+      .bg-orange;
+      color:@c-noir;
+      font-weight: bold;
       pointer-events: auto;
+      .margin-verysmall;
     }
   }
 }
