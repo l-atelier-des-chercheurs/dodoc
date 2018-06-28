@@ -73,7 +73,6 @@
               :slugProjectName="sortedProject.slugProjectName"
               :project="projects[sortedProject.slugProjectName]"
               :read_only="read_only"
-              :currentSort="currentSort"
               :index="index"
             />
           </transition-group>
