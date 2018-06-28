@@ -25,7 +25,7 @@
           <button 
             type="button" 
             v-if="$root.settings.current_slugPubliName" 
-            class="buttonLink margin-bottom-small"
+            class="button-greenthin"
             @click.stop="addToCurrentPubli()"
           >
             {{ $t('add_to_publication') }}

@@ -64,6 +64,17 @@ button, .button {
     border-radius: @t-skipline;
     color: white;
   }
+  &.button-greenthin {
+    .button-thin;
+    .margin-verysmall;
+    .padding-vert-small;
+    .padding-sides-small;
+    .text-cap;
+    .font-verysmall;    
+    background-color: @c-bleuvert;
+    border-radius: @t-skipline;
+    color: white;
+  }
 
   img, svg {
     min-width: 0;
@@ -509,6 +520,12 @@ input[type="color"], input[type="date"], input[type="datetime-local"], input[typ
   border-top-width: 0px;
   border-left-width: 0px;
   border-right-width: 0px;
+
+  transition: background-color .2s;
+
+  &:focus {
+    // background-color:@c-orange_clair;
+  }
 }
 
 input[readonly], textarea[readonly], .textarea[readonly] {
