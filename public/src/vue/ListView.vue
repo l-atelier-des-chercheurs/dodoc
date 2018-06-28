@@ -245,9 +245,11 @@ export default {
       return allMedias;
     },
     sortedMedias: function() {
-      return this.allMedias.filter(m => {
+      let sortedMedias = this.allMedias.filter(m => {
         return this.$root.isShownAfterMediaFilter(m)
       });
+      sortedMedias = this.$_.sortBy(sortedMedias, 'date_created');
+      return sortedMedias.reverse();
     },
     groupedMedias: function() {
       let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
