@@ -1,7 +1,7 @@
 .m_modal--mask {
   position: absolute;
   z-index: 20000;
-  height: 100vh;
+  min-height: 100%;
   top: 0;
   width: 100%;
 
@@ -59,7 +59,7 @@
   max-width: @t-panelWidth;
   margin: 5vmin 5vmin;
   pointer-events: all;
-  z-index: 1000;;
+  z-index: 1000;
 
   transition: all .15s ease-out;
 
@@ -140,7 +140,7 @@
 .m_modal--mask {
   
   &.typeOfModal-LargeAndScroll {
-    overflow-y: auto;
+    // overflow-y: auto;
     .m_modal--container {   
       max-width: @t-panelWidth * 3;
       align-self: flex-start;
@@ -263,7 +263,7 @@
   position: fixed;
   top: 0;
   right: 0;
-  mix-blend-mode: multiply;
+  z-index: 1500;
 
   line {
     fill: none;
