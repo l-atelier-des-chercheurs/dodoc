@@ -90,7 +90,6 @@ export default {
         template: this.publidata.template,
         width: 210,
         height: 297,
-        style: 'feuille de choux',
         pages: [{
           id: +new Date() + '_' + (Math.random().toString(36) + '00000000000000000').slice(2, 3)
         }]

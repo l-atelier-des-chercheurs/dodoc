@@ -70,14 +70,14 @@
                   />
                 </transition>
                 <transition name="MediaView" :duration="500">
-                  <MediaView
+                  <!-- <MediaView
                     v-if="$root.do_navigation.view === 'MediaView'"
                     :slugMediaName="$root.do_navigation.current_metaFileName"
                     :slugProjectName="$root.do_navigation.current_slugProjectName"
                     :media="$root.store.projects[$root.do_navigation.current_slugProjectName].medias[$root.do_navigation.current_metaFileName]"
                     :read_only="!$root.state.connected"
                   >
-                  </MediaView>      
+                  </MediaView>       -->
                 </transition>
               </div>
 
@@ -147,6 +147,15 @@
         
         </div>
       </div>
+      <EditMedia
+        v-if="$root.do_navigation.view === 'MediaView'"
+        :slugMediaName="$root.do_navigation.current_metaFileName"
+        :slugProjectName="$root.do_navigation.current_slugProjectName"
+        :media="$root.store.projects[$root.do_navigation.current_slugProjectName].medias[$root.do_navigation.current_metaFileName]"
+        @close="$root.closeMedia()"
+        :read_only="!$root.state.connected"
+      >
+      </EditMedia>      
 
     </template>  
     <template 
@@ -183,6 +192,7 @@ import ListView from './ListView.vue';
 import ProjectView from './ProjectView.vue';
 import CaptureView from './CaptureView.vue';
 import MediaView from './MediaView.vue';
+import EditMedia from './components/modals/EditMedia.vue';
 import SearchSidebar from './components/SearchSidebar.vue';
 import MediaFilterIndicator from './components/MediaFilterIndicator.vue';
 
@@ -201,6 +211,7 @@ export default {
     ProjectView,
     CaptureView,
     MediaView,
+    EditMedia,
     Publications,
     Publication,
     Resizer, 

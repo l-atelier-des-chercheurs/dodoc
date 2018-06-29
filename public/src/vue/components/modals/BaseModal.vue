@@ -4,7 +4,7 @@
       class="m_modal--mask"
       :class="['typeOfModal-' + typeOfModal, { 'is_invisible' : !showModal }]"
       @mousedown.self="closeModal"
-      :style="`height: ${window_innerHeight}px`"
+      :style="`min-height: ${window_innerHeight}px`"
     >
       <div class="m_modal--container"
         :class="['color-' + backgroundColor, { 'is_invisible' : !showModal }]"

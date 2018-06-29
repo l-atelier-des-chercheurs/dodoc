@@ -522,12 +522,6 @@ let vm = new Vue({
       } else {
         document.body.style.overflow = '';
       }
-    },
-    'do_navigation.view': function() {
-      // this.navigation_history.push({
-      //   view: this.do_navigation.view,
-      //   navigation: this.do_navigation
-      // });
     }
   },
   computed: {
