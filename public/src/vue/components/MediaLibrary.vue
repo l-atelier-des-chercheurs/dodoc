@@ -46,6 +46,16 @@
       >
       </MediaCard>
     </div>
+    <form :action="this.slugProjectName + '/file-upload'" enctype="multipart/form-data" method="post">
+      <label class="file-select">
+        <div class="select-button">
+          <span v-if="value">Selected File: {{value.name}}</span>
+          <span v-else>Select File</span>
+        </div>
+        <input type="file" name="upload" multiple="multiple"><br>
+      </label>
+      <input type="submit" value="Upload">
+    </form>
     
   </div>    
 </template>
