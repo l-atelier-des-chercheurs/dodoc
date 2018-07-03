@@ -4,7 +4,8 @@ const path = require('path'),
   ffmpegstatic = require('ffmpeg-static'),
   ffprobestatic = require('ffprobe-static'),
   ffmpeg = require('fluent-ffmpeg'),
-  exifReader = require('exif-reader');
+  exifReader = require('exif-reader'),
+  Jimp = require('jimp');
 
 const settings = require('../settings.json'),
   dev = require('./dev-log'),
@@ -146,45 +147,49 @@ module.exports = (function() {
 
   function getRatioFromEXIF(mediaPath) {
     return new Promise(function(resolve, reject) {
-      getEXIFData(mediaPath).then(exifdata => {
-        let mediaRatio;
-        mediaRatio = exifdata.height / exifdata.width;
-        if (
-          exifdata.orientation &&
-          (exifdata.orientation === 8 || exifdata.orientation === 6)
-        ) {
-          dev.log(`Media is portrait. Inverting ratio`);
-          mediaRatio = 1 / mediaRatio;
-        }
-        resolve(mediaRatio);
-      });
+      getEXIFData(mediaPath)
+        .then(exifdata => {
+          let mediaRatio;
+          mediaRatio = exifdata.height / exifdata.width;
+          if (
+            exifdata.orientation &&
+            (exifdata.orientation === 8 || exifdata.orientation === 6)
+          ) {
+            dev.log(`Media is portrait. Inverting ratio`);
+            mediaRatio = 1 / mediaRatio;
+          }
+          resolve(mediaRatio);
+        })
+        .catch(err => reject());
     });
   }
 
   function getTimestampFromEXIF(mediaPath) {
     return new Promise(function(resolve, reject) {
-      getEXIFData(mediaPath).then(exifdata => {
-        let ts = _extractImageTimestamp(exifdata);
-        dev.logverbose(`TS is ${ts}`);
-        resolve(ts);
-      });
+      getEXIFData(mediaPath)
+        .then(exifdata => {
+          let ts = _extractImageTimestamp(exifdata);
+          dev.logverbose(`TS is ${ts}`);
+          resolve(ts);
+        })
+        .catch(err => reject());
     });
   }
 
   function getEXIFData(mediaPath) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`THUMBS — readEXIFData — for: ${mediaPath}`);
-
-      sharp(mediaPath)
-        .metadata()
-        .then(exifdata => {
-          if (typeof exifdata === 'undefined') {
-            reject();
-          }
-          dev.logverbose(`Gotten metadata.`);
-          resolve(exifdata);
-        })
-        .catch(err => reject());
+      resolve();
+      // sharp(mediaPath)
+      //   .metadata()
+      //   .then(exifdata => {
+      //     if (typeof exifdata === 'undefined') {
+      //       reject();
+      //     }
+      //     dev.logverbose(`Gotten metadata.`);
+      //     resolve(exifdata);
+      //   })
+      //   .catch(err => reject());
     });
   }
 
@@ -287,22 +292,18 @@ module.exports = (function() {
           dev.log(
             `Missing thumb for ${mediaPath} and resolution = ${thumbRes}, about to create it`
           );
-          sharp(mediaPath)
-            .rotate()
-            .resize(thumbRes, thumbRes)
-            .max()
-            .withoutEnlargement()
-            .withMetadata()
-            .toFormat(settings.thumbFormat, {
-              quality: settings.mediaThumbQuality
-            })
-            .background({ r: 255, g: 255, b: 255 })
-            .flatten()
-            .toFile(fullThumbPath)
-            .then(function() {
-              resolve(thumbPath);
-            })
-            .catch(err => reject(err));
+
+          Jimp.read(mediaPath, function(err, image) {
+            if (err) reject(err);
+            image
+              .quality(settings.mediaThumbQuality)
+              .scaleToFit(thumbRes, thumbRes)
+              .write(fullThumbPath, function(err, info) {
+                if (err) reject(err);
+                dev.logverbose('Image has been saved, resolving its path.');
+                resolve(thumbPath);
+              });
+          });
         } else {
           resolve(thumbPath);
         }

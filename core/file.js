@@ -1,7 +1,8 @@
 const path = require('path'),
   fs = require('fs-extra'),
-  validator = require('validator');
-// sharp = require('sharp');
+  validator = require('validator'),
+  // sharp = require('sharp');
+  Jimp = require('jimp');
 
 const settings = require('../settings.json'),
   dev = require('./dev-log'),
@@ -998,22 +999,16 @@ module.exports = (function() {
               let pathToMedia = path.join(slugFolderPath, mediaName);
 
               let imageBuffer = api.decodeBase64Image(rawData);
-              sharp(imageBuffer)
-                .rotate()
-                .withMetadata()
-                .background({ r: 255, g: 255, b: 255 })
-                .flatten()
-                .jpeg({
-                  quality: 90
-                })
-                .toFile(pathToMedia, function(err, info) {
-                  if (err) {
-                    dev.error(err);
-                    reject(err);
-                  }
-                  dev.logverbose(`Stored captured image to ${pathToMedia}`);
-                  resolve();
-                });
+              Jimp.read(imageBuffer, function(err, image) {
+                if (err) reject(err);
+                image
+                  .quality(settings.mediaThumbQuality)
+                  .write(pathToMedia, function(err, info) {
+                    if (err) reject(err);
+                    dev.logverbose('Image has been saved.');
+                    resolve();
+                  });
+              });
             })
           );
         } else if (additionalMeta.type === 'video') {
