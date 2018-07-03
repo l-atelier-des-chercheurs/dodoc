@@ -53,7 +53,6 @@
     "path": "^0.12.7",
     "portscanner": "^2.2.0",
     "pug": "^2.0.2",
-    "sharp": "^0.20.5",
     "slugg": "^1.2.1",
     "socket.io": "^2.1.1",
     "source-map": "^0.7.3",

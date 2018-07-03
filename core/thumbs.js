@@ -1,5 +1,5 @@
-const sharp = require('sharp'),
-  path = require('path'),
+// const sharp = require('sharp'),
+const path = require('path'),
   fs = require('fs-extra'),
   ffmpegstatic = require('ffmpeg-static'),
   ffprobestatic = require('ffprobe-static'),

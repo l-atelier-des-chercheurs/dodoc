@@ -1,7 +1,7 @@
 const path = require('path'),
   fs = require('fs-extra'),
-  validator = require('validator'),
-  sharp = require('sharp');
+  validator = require('validator');
+// sharp = require('sharp');
 
 const settings = require('../settings.json'),
   dev = require('./dev-log'),
