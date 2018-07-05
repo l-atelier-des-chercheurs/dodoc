@@ -1256,23 +1256,39 @@ body {
   }
 }
 
-.m_stopmotionpanel.m_stopmotionpanel {
+.m_stopmotionpanel {
+  height: 100%;
   display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin: 0;
-  .margin-verysmall;
+  flex-flow: column nowrap;
+  
+  .m_stopmotionpanel--medias {
+    flex: 1 1 auto;
 
-  .mediaContainer {
-    position: relative;
-    background-color: #000;
-    .bg-bleuvert;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
     .margin-verysmall;
-    flex: 0 1 auto;
-    width: 100px;
-    height: 100px;
-    border-radius: 10px;
+
+    .mediaContainer {
+      position: relative;
+      overflow: hidden;
+      background-color: #000;
+      .bg-bleuvert;
+      .margin-verysmall;
+      flex: 0 1 auto;
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+    }
+  }
+
+  .m_stopmotionpanel--buttons {
+    flex: 0 0 auto;
+    width: 100%;
+    max-height: 50px;
+
   }
 }
 

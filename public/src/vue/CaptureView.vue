@@ -81,27 +81,23 @@
       </div>
 
       <div class="m_panel">
-        <div class="m_panel--previewCard">
+        <div class="m_panel--previewCard"
+          v-if="justCapturedMediaData.hasOwnProperty('type') && selected_mode !== 'stopmotion'"
+        >
           <MediaContent
-            v-if="justCapturedMediaData.hasOwnProperty('type') && selected_mode !== 'stopmotion'"
             :context="'edit'"
             :slugFolderName="justCapturedMediaData.slugFolderName"
             :media="justCapturedMediaData"
             :mediaURL="mediaURL"
           >
           </MediaContent>  
-          <StopmotionPanel 
-            v-else-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"
-            :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
-            :slugFolderName="current_stopmotion"
-          >
-          </StopmotionPanel>        
         </div>
-        <div class="m_panel--buttons">
-          <button type="button" class="buttonLink" @click="justCapturedMediaData = {}">
-            FERMER
-          </button>
-        </div>        
+        <StopmotionPanel 
+          v-else-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"        
+          :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
+          :slugProjectName="this.slugProjectName"
+        >
+        </StopmotionPanel>        
       </div>
 
     </div>

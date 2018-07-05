@@ -1,15 +1,20 @@
 <template>
   <div class="m_stopmotionpanel">
-    <MediaContent
-      v-for="media in medias"
-      :key="mediaURL"
-      :context="'edit'"
-      :slugFolderName="stopmotiondata.slugFolderName"
-      :media="media"
-      :subfolder="'_stopmotions/'"
-    >
-    </MediaContent>          
-
+    <div class="m_stopmotionpanel--medias">
+      <MediaContent
+        v-for="media in medias"
+        :key="media.metaFilename"
+        :context="'edit'"
+        :slugFolderName="stopmotiondata.slugFolderName"
+        :media="media"
+        :subfolder="'_stopmotions/'"
+      />
+    </div>
+    <div class="m_stopmotionpanel--buttons">
+      <button type="button" class="buttonLink" @click="assembleStopmotionMedias">
+        ASSEMBLER
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -18,6 +23,7 @@ import MediaContent from './MediaContent.vue';
 export default {
   props: {
     stopmotiondata: Object
+    slugProjectName: String
   },
   components: {
     MediaContent
@@ -46,6 +52,18 @@ export default {
     }
   },
   methods: {
+    assembleStopmotionMedias: function() {
+      this.$eventHub.$on('socketio.media_created_or_updated', this.newMediaCaptured);
+      debugger;
+      this.$root.createMedia({
+        slugFolderName: this.current_stopmotion,
+        type: 'projects',
+        rawData: imageData,
+        additionalMeta: {
+          type: 'stopmotion'          
+        }
+      });
+    }
   }
 }
 </script>
