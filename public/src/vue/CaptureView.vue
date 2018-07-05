@@ -83,13 +83,19 @@
       <div class="m_panel">
         <div class="m_panel--previewCard">
           <MediaContent
-            v-if="justCapturedMediaData.hasOwnProperty('type')"
+            v-if="justCapturedMediaData.hasOwnProperty('type') && selected_mode !== 'stopmotion'"
             :context="'edit'"
-            :slugProjectName="slugProjectName"
+            :slugFolderName="justCapturedMediaData.slugFolderName"
             :media="justCapturedMediaData"
             :mediaURL="mediaURL"
           >
-          </MediaContent>          
+          </MediaContent>  
+          <StopmotionPanel 
+            v-else-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"
+            :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
+            :slugFolderName="current_stopmotion"
+          >
+          </StopmotionPanel>        
         </div>
         <div class="m_panel--buttons">
           <button type="button" class="buttonLink" @click="justCapturedMediaData = {}">
@@ -101,7 +107,9 @@
     </div>
 
     {{ current_stopmotion }}
+    {{ justCapturedMediaData }}
     <pre>{{ $root.store.stopmotions }}  </pre>
+    
 
     <div class="m_captureview--options">
       <fieldset v-show="true">
@@ -137,6 +145,7 @@
 </template>
 <script>
 import MediaContent from './components/subcomponents/MediaContent.vue';
+import StopmotionPanel from './components/subcomponents/StopmotionPanel.vue';
 
 import RecordRTC from 'recordrtc';
 import { setTimeout, setInterval } from 'timers';
@@ -152,7 +161,8 @@ export default {
     slugProjectName: String
   },
   components: {
-    MediaContent
+    MediaContent,
+    StopmotionPanel
   },
   data() {
     return {

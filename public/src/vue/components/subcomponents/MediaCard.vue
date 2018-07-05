@@ -19,7 +19,7 @@
           <MediaContent
             v-model="media.content"
             :context="'preview'"
-            :slugProjectName="slugProjectName"
+            :slugFolderName="slugProjectName"
             :media="media"
           ></MediaContent>
           <button 

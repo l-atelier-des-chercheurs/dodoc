@@ -15,8 +15,8 @@ ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function() {
   const API = {
-    makeMediaThumbs: (slugFolderName, filename, mediaType) =>
-      makeMediaThumbs(slugFolderName, filename, mediaType),
+    makeMediaThumbs: (slugFolderName, filename, mediaType, resolutions) =>
+      makeMediaThumbs(slugFolderName, filename, mediaType, resolutions),
     removeMediaThumbs: (slugFolderName, filename) =>
       removeMediaThumbs(slugFolderName, filename),
 
@@ -30,10 +30,10 @@ module.exports = (function() {
 
   // this function is used both when creating a media and when all medias are listed.
   // this way, if thumbs are deleted or moved while the app is running, they will be recreated next time they are required
-  function makeMediaThumbs(slugFolderName, filename, mediaType) {
+  function makeMediaThumbs(slugFolderName, filename, mediaType, resolutions) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, filename = ${filename} and mediaType: ${mediaType}`
+        `THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, filename = ${filename}, mediaType: ${mediaType} and res: ${resolutions}`
       );
       if (!['image', 'video'].includes(mediaType)) {
         dev.logverbose(
@@ -54,7 +54,7 @@ module.exports = (function() {
         // regroup all thumbs promises so they can happen as fast as possible
         let makeThumbs = [];
 
-        let thumbResolutions = [50, 180, 360, 600, 1600];
+        let thumbResolutions = resolutions;
         if (mediaType === 'image') {
           thumbResolutions.forEach(thumbRes => {
             let makeThumb = new Promise((resolve, reject) => {
@@ -146,28 +146,32 @@ module.exports = (function() {
 
   function getRatioFromEXIF(mediaPath) {
     return new Promise(function(resolve, reject) {
-      getEXIFData(mediaPath).then(exifdata => {
-        let mediaRatio;
-        mediaRatio = exifdata.height / exifdata.width;
-        if (
-          exifdata.orientation &&
-          (exifdata.orientation === 8 || exifdata.orientation === 6)
-        ) {
-          dev.log(`Media is portrait. Inverting ratio`);
-          mediaRatio = 1 / mediaRatio;
-        }
-        resolve(mediaRatio);
-      });
+      getEXIFData(mediaPath)
+        .then(exifdata => {
+          let mediaRatio;
+          mediaRatio = exifdata.height / exifdata.width;
+          if (
+            exifdata.orientation &&
+            (exifdata.orientation === 8 || exifdata.orientation === 6)
+          ) {
+            dev.log(`Media is portrait. Inverting ratio`);
+            mediaRatio = 1 / mediaRatio;
+          }
+          resolve(mediaRatio);
+        })
+        .catch(err => reject());
     });
   }
 
   function getTimestampFromEXIF(mediaPath) {
     return new Promise(function(resolve, reject) {
-      getEXIFData(mediaPath).then(exifdata => {
-        let ts = _extractImageTimestamp(exifdata);
-        dev.logverbose(`TS is ${ts}`);
-        resolve(ts);
-      });
+      getEXIFData(mediaPath)
+        .then(exifdata => {
+          let ts = _extractImageTimestamp(exifdata);
+          dev.logverbose(`TS is ${ts}`);
+          resolve(ts);
+        })
+        .catch(err => reject(err));
     });
   }
 
@@ -184,7 +188,7 @@ module.exports = (function() {
           dev.logverbose(`Gotten metadata.`);
           resolve(exifdata);
         })
-        .catch(err => reject());
+        .catch(err => reject(err));
     });
   }
 

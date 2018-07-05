@@ -15,7 +15,7 @@
   > 
     <MediaContent
       :context="preview_mode ? 'publication' : 'preview'"
-      :slugProjectName="media.slugProjectName"
+      :slugFolderName="media.slugProjectName"
       :media="media"
       :read_only="read_only"
       v-model="media.content"

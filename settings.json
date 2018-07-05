@@ -56,6 +56,9 @@
         }
       },
       "medias": {
+        "thumbs": {
+          "resolutions": [50, 180, 360, 600, 1600]
+        },
         "fields": {
           "date_created": {
             "type": "date",

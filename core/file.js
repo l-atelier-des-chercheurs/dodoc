@@ -725,12 +725,15 @@ module.exports = (function() {
             ***************************************************************************/
             if (mdata.type === 'image') {
               let getFullEXIF = new Promise((resolve, reject) => {
-                thumbs.getEXIFData(mediaPath).then(exifdata => {
-                  if (exifdata) {
-                    // mdata.exif = validator.escape(JSON.stringify(exifdata));
-                  }
-                  resolve();
-                });
+                thumbs
+                  .getEXIFData(mediaPath)
+                  .then(exifdata => {
+                    if (exifdata) {
+                      // mdata.exif = validator.escape(JSON.stringify(exifdata));
+                    }
+                    resolve();
+                  })
+                  .catch(err => resolve());
               });
               tasks.push(getFullEXIF);
             }
@@ -1179,13 +1182,17 @@ module.exports = (function() {
             )}`
           );
 
-          if (mediaData.hasOwnProperty('media_filename')) {
+          if (
+            mediaData.hasOwnProperty('media_filename') &&
+            settings.structure[type].medias.thumbs
+          ) {
             // let’s find or create thumbs
             thumbs
               .makeMediaThumbs(
                 slugFolderName,
                 mediaData.media_filename,
-                mediaData.type
+                mediaData.type,
+                settings.structure[type].medias.thumbs.resolutions
               )
               .then(thumbData => {
                 mediaData.thumbs = thumbData;

@@ -66,14 +66,18 @@ Fichier&nbsp;:
   </div>
 </template>
 <script>
-import { VueEditor } from 'vue2-editor'
+import { VueEditor } from 'vue2-editor';
 
 // is loaded by Media and by EditMedia
 
 export default {
   props: {
-    slugProjectName: String,
+    slugFolderName: String,
     media: Object,
+    subfolder: {
+      type: String,
+      default: ''
+    },
     context: {
       type: String,
       default: 'preview'
@@ -101,7 +105,7 @@ export default {
       },
       htmlForEditor: this.value,
       mediaURL: this.$root.state.mode === 'export_publication' ? 
-        `./${this.slugProjectName}/${this.media.media_filename}` : `/${this.slugProjectName}/${this.media.media_filename}`,
+        `./${this.subfolder}${this.slugFolderName}/${this.media.media_filename}` : `/${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`,
       customToolbar: [
         [{ 'header': [false, 1, 2, 3, 4] }],
         // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
@@ -135,7 +139,11 @@ export default {
       return this.available_resolutions.preview_hovered;
     },
     linkToImageThumb: function() {
-      let pathToSmallestThumb = this.$_.findWhere(this.media.thumbs, {
+      if(!this.media.hasOwnProperty('thumbs')) {
+        return this.mediaURL;
+      }
+
+      let pathToSmallestThumb = this.subfolder + this.$_.findWhere(this.media.thumbs, {
         size: this.thumbRes
       }).path;
 

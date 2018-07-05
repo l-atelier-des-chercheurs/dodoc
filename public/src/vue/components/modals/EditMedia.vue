@@ -140,7 +140,7 @@
     <template slot="preview">
       <MediaContent
         :context="'edit'"
-        :slugProjectName="slugProjectName"
+        :slugFolderName="slugProjectName"
         :media="media"
         :read_only="read_only"
         v-model="mediadata.content"
