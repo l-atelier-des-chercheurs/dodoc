@@ -690,6 +690,7 @@ export default {
     },
 
     addImageToStopmotion(imageData) {
+      console.log('METHODS • CaptureView: addImageToStopmotion');
       this.$root.createMedia({
         slugFolderName: this.current_stopmotion,
         type: 'stopmotions',
@@ -700,9 +701,11 @@ export default {
       });
     },
     newStopmotionImageCaptured(mdata) {
+      console.log('METHODS • CaptureView: newStopmotionImageCaptured');
       if (this.$root.justCreatedMediaID === mdata.id) {
+        this.justCapturedMediaData = mdata;
+        this.$root.justCreatedMediaID = false;
         this.$eventHub.$off('socketio.media_created_or_updated', this.newStopmotionImageCaptured);
-        debugger;
       }
     },
 
