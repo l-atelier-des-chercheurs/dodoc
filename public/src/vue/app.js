@@ -599,7 +599,10 @@ let vm = new Vue({
         mdata.additionalMeta.authors = this.settings.current_author.name;
       }
 
-      this.$socketio.createMedia(mdata);
+      this.$nextTick(() => {
+        this.$socketio.createMedia(mdata);
+      });
+      
     },
 
     removeMedia: function(mdata) {

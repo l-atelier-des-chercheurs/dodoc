@@ -13,7 +13,7 @@
           <div class="picto">
             <img :src="mode.picto">
           </div>
-          <span>{{ $t(mode.name) }}</span>
+          <span>{{ $t(mode.key) }}</span>
         </label>
       </div>
       <button type="button" class="bg-transparent" @click="nextMode()">
@@ -56,15 +56,11 @@
           <button type="button" 
             class="padding-verysmall bg-blanc"
             @click="captureOrStop()"
-            v-if="selected_mode !== 'stopmotion'"
           >
             <img 
               :src="recordButtonSrc"
             />
           </button>
-          <div v-else class="padding-large c-bleuvert">
-            <i>mode stopmotion en cours de réintégration</i>
-          </div>
 
           <div v-if="selected_mode === 'vecto'">
             <div class="m_metaField">
@@ -103,6 +99,9 @@
       </div>
 
     </div>
+
+    {{ current_stopmotion }}
+    <pre>{{ $root.store.stopmotions }}  </pre>
 
     <div class="m_captureview--options">
       <fieldset v-show="true">
@@ -160,27 +159,22 @@ export default {
       selected_mode: '',
       available_modes: [
         { 
-          name: 'photo',
           picto: '/images/i_icone-dodoc_image.svg',
           key: 'photo'
         },
         {
-          name: 'video',
           picto: '/images/i_icone-dodoc_video.svg',
           key: 'video'
         },
         {
-          name: this.$t('stopmotion'),
           picto: '/images/i_icone-dodoc_anim.svg',
           key: 'stopmotion'
         },
         {
-          name: 'audio',
           picto: '/images/i_icone-dodoc_audio.svg',
           key: 'audio'
         },
         {
-          name: 'vecto',
           picto: '/images/i_icone-dodoc_vecto.svg',
           key: 'vecto'
         }
@@ -198,10 +192,12 @@ export default {
       available_devices: {},
       mode_just_changed: false,
 
+      current_stopmotion: false,
+
       current_camera_resolution: {
-        name: 'hd',
-        width: 1280,
-        height: 720
+        name: 'vga',
+        width: 640,
+        height: 480
       },
       available_camera_resolutions: [
         {
@@ -240,11 +236,9 @@ export default {
     this.init();
   },
   mounted() {
-    this.$eventHub.$on('socketio.new_media_captured', this.newMediaCaptured);
     document.addEventListener('keyup', this.captureKeyListener);
   },
   beforeDestroy() {
-    this.$eventHub.$off('socketio.new_media_captured', this.newMediaCaptured);
     document.removeEventListener('keyup', this.captureKeyListener);
     this.stopAllFeeds();
   },
@@ -608,6 +602,7 @@ export default {
 
       if(this.selected_mode === 'photo') {        
         this.getStaticImageFromVideoElement().then(imageData => {
+          this.$eventHub.$on('socketio.media_created_or_updated', this.newMediaCaptured);
           this.$root.createMedia({
             slugFolderName: this.slugProjectName,
             type: 'projects',
@@ -620,6 +615,7 @@ export default {
       } else 
       if(this.selected_mode === 'video') {        
         this.startRecordCameraFeed(this.recordVideoWithAudio).then(videoDataURL => {
+          this.$eventHub.$on('socketio.media_created_or_updated', this.newMediaCaptured);
           this.$root.createMedia({
             slugFolderName: this.slugProjectName,
             type: 'projects',
@@ -634,6 +630,7 @@ export default {
       if(this.selected_mode === 'audio') { 
         equalizer.clearCanvas();
         this.startRecordAudioFeed().then(audioDataURL => {
+          this.$eventHub.$on('socketio.media_created_or_updated', this.newMediaCaptured);
           this.$root.createMedia({
             slugFolderName: this.slugProjectName,
             type: 'projects',
@@ -646,26 +643,31 @@ export default {
       } else
       if(this.selected_mode === 'stopmotion') { 
         const smdata = {
+          name: this.slugProjectName + '-' + this.$moment().format('YYYYMMDD_HHmmss'),
           authors: this.$root.settings.current_author.name
         };
 
-        // if (this.$root.justCreatedFolderID) {
-        //   Object.keys(this.stopmotions).map(slugProjectName => {
-        //     let folder = this.projects[slugProjectName];
-        //     // if there is, try to match it with folderID
-        //     if (
-        //       folder.id &&
-        //       folder.id === this.$root.justCreatedFolderID
-        //     ) {
-        //       this.$root.justCreatedFolderID = false;
-        //       this.$root.openProject(slugProjectName);
-        //     }
-        //   });
-        // }
-        
-        this.$root.createFolder({ type: 'stopmotions', data: smdata });      
+        this.$eventHub.$on('socketio.media_created_or_updated', this.newStopmotionImageCaptured);
+        this.getStaticImageFromVideoElement().then(imageData => {
+          if(!this.current_stopmotion) {
+            this.$eventHub.$on('socketio.folder_created_or_updated', (fdata) => {
+              if(fdata.id === this.$root.justCreatedFolderID) {
+                this.$eventHub.$off('socketio.folder_created_or_updated');
+                this.current_stopmotion = fdata.slugFolderName;
+                this.addImageToStopmotion(imageData);
+              }
+            });
+            this.$root.createFolder({ 
+              type: 'stopmotions', 
+              data: smdata 
+            });      
+          } else {
+            this.addImageToStopmotion(imageData);
+          }
+        });
       } else
       if(this.selected_mode === 'vecto') { 
+        this.$eventHub.$on('socketio.media_created_or_updated', this.newMediaCaptured);
         this.$root.createMedia({
           slugFolderName: this.slugProjectName,
           type: 'projects',
@@ -678,9 +680,29 @@ export default {
     },
 
     newMediaCaptured(mdata) {
-      if (this.$root.justCreatedMediaID && this.$root.justCreatedMediaID === mdata.id) {
+      console.log('METHODS • CaptureView: newMediaCaptured');
+      debugger;
+      if (this.$root.justCreatedMediaID === mdata.id) {
         this.justCapturedMediaData = mdata;
         this.$root.justCreatedMediaID = false;
+        this.$eventHub.$off('socketio.media_created_or_updated', this.newMediaCaptured);
+      }
+    },
+
+    addImageToStopmotion(imageData) {
+      this.$root.createMedia({
+        slugFolderName: this.current_stopmotion,
+        type: 'stopmotions',
+        rawData: imageData,
+        additionalMeta: {
+          type: 'image'          
+        }
+      });
+    },
+    newStopmotionImageCaptured(mdata) {
+      if (this.$root.justCreatedMediaID === mdata.id) {
+        this.$eventHub.$off('socketio.media_created_or_updated', this.newStopmotionImageCaptured);
+        debugger;
       }
     },
 

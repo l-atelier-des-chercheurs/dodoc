@@ -86,9 +86,6 @@ module.exports = (function() {
       stopmotion: 'animation',
       audio: 'son',
       vecto: 'formes',
-      image: 'image',
-      video: 'video',
-      audio: 'son',
       text: 'texte',
       other: 'autre',
 
@@ -279,8 +276,6 @@ module.exports = (function() {
       audio: 'sound',
       vecto: 'shapes',
       image: 'image',
-      video: 'video',
-      audio: 'audio',
       text: 'text',
       other: 'other',
 
