@@ -142,28 +142,14 @@ export default {
     };
   },
   mounted() {
+    this.$eventHub.$on('socketio.folder_created_or_updated', this.newFolderCreated);
   },
   beforeDestroy() {
+    this.$eventHub.$off('socketio.folder_created_or_updated', this.newFolderCreated);
   },
   watch: {
     currentLang: function() {
       this.$root.updateLocalLang(this.currentLang);
-    },
-    projects: function() {
-      // check if there is a justCreatedFolderID val
-      if (this.$root.justCreatedFolderID) {
-        Object.keys(this.projects).map(slugProjectName => {
-          let folder = this.projects[slugProjectName];
-          // if there is, try to match it with folderID
-          if (
-            folder.id &&
-            folder.id === this.$root.justCreatedFolderID
-          ) {
-            this.$root.justCreatedFolderID = false;
-            this.$root.openProject(slugProjectName);
-          }
-        });
-      }
     },
     show_medias_instead_of_projects: function() {
       // load all projects’ medias if it isn’t there
@@ -270,6 +256,16 @@ export default {
     setFilter(newFilter) {
       this.currentFilter = newFilter;
     },
+    newFolderCreated: function(fdata) {
+      debugger;
+      if(fdata.id === this.$root.justCreatedFolderID) {
+        debugger;
+        this.$root.justCreatedFolderID = false;
+        this.$nextTick(() => {
+          this.$root.openProject(fdata.slugFolderName);
+        });
+      }
+    }
   }
 };
 </script>

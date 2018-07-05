@@ -46,7 +46,7 @@
       >
       </MediaCard>
     </div>
-    <form :action="this.slugProjectName + '/file-upload'" enctype="multipart/form-data" method="post">
+    <!-- <form :action="this.slugProjectName + '/file-upload'" enctype="multipart/form-data" method="post">
       <label class="file-select">
         <div class="select-button">
           <span v-if="value">Selected File: {{value.name}}</span>
@@ -56,7 +56,7 @@
       </label>
       <input type="submit" value="Upload">
     </form>
-    
+     -->
   </div>    
 </template>
 <script>

@@ -222,7 +222,10 @@ Vue.prototype.$socketio = new Vue({
           const mediaData = Object.values(content[slugFolderName].medias)[0];
 
           if (mediaData.hasOwnProperty('id')) {
-            this.$eventHub.$emit('socketio.new_media_captured', mediaData);
+            this.$eventHub.$emit(
+              'socketio.media_created_or_updated',
+              mediaData
+            );
           }
 
           window.dispatchEvent(
@@ -309,10 +312,15 @@ Vue.prototype.$socketio = new Vue({
           content[slugFolderName].medias =
             window.store[type][slugFolderName].medias;
         }
+        if (content[slugFolderName].hasOwnProperty('id')) {
+          this.$eventHub.$emit(
+            'socketio.folder_created_or_updated',
+            content[slugFolderName]
+          );
+        }
       }
 
       window.store[type] = Object.assign({}, window.store[type], content);
-      this.$eventHub.$emit(`${type}.listFolder`);
     },
 
     // for projects, authors and publications
