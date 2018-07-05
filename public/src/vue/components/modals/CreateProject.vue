@@ -115,8 +115,20 @@ export default {
       if(!!this.preview) {
         this.projectdata.preview_rawdata = this.preview;
       }
+
+      this.$eventHub.$on('socketio.folder_created_or_updated', this.newFolderCreated);
+
       this.$root.createFolder({ type: 'projects', data: this.projectdata });
-      this.$emit('close', '');
+    },
+    newFolderCreated: function(fdata) {
+      if(fdata.id === this.$root.justCreatedFolderID) {
+        this.$eventHub.$off('socketio.folder_created_or_updated', this.newFolderCreated);
+        this.$root.justCreatedFolderID = false;
+        this.$nextTick(() => {
+          this.$emit('close', '');
+          this.$root.openProject(fdata.slugFolderName);
+        });
+      }
     }
   }
 };

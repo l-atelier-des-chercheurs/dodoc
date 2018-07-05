@@ -142,10 +142,8 @@ export default {
     };
   },
   mounted() {
-    this.$eventHub.$on('socketio.folder_created_or_updated', this.newFolderCreated);
   },
   beforeDestroy() {
-    this.$eventHub.$off('socketio.folder_created_or_updated', this.newFolderCreated);
   },
   watch: {
     currentLang: function() {
@@ -256,16 +254,6 @@ export default {
     setFilter(newFilter) {
       this.currentFilter = newFilter;
     },
-    newFolderCreated: function(fdata) {
-      debugger;
-      if(fdata.id === this.$root.justCreatedFolderID) {
-        debugger;
-        this.$root.justCreatedFolderID = false;
-        this.$nextTick(() => {
-          this.$root.openProject(fdata.slugFolderName);
-        });
-      }
-    }
   }
 };
 </script>
