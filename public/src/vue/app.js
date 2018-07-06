@@ -220,19 +220,12 @@ Vue.prototype.$socketio = new Vue({
           );
 
           const mediaData = Object.values(content[slugFolderName].medias)[0];
-
           if (mediaData.hasOwnProperty('id')) {
             this.$eventHub.$emit(
               'socketio.media_created_or_updated',
               mediaData
             );
           }
-
-          window.dispatchEvent(
-            new CustomEvent(`${type}.listMedia`, {
-              detail: slugFolderName
-            })
-          );
         }
       }
 
@@ -252,12 +245,6 @@ Vue.prototype.$socketio = new Vue({
         if (window.store[type].hasOwnProperty(slugFolderName)) {
           window.store[type][slugFolderName].medias =
             content[slugFolderName].medias;
-
-          window.dispatchEvent(
-            new CustomEvent(`${type}.listMedias`, {
-              detail: slugFolderName
-            })
-          );
 
           // if (type === 'projects') {
           //   window.state.list_of_projects_whose_medias_are_tracked.push(
@@ -602,7 +589,6 @@ let vm = new Vue({
       this.$nextTick(() => {
         this.$socketio.createMedia(mdata);
       });
-      
     },
 
     removeMedia: function(mdata) {
@@ -649,7 +635,6 @@ let vm = new Vue({
         this.store.projects[slugProjectName].name,
         '/' + slugProjectName
       );
-      // window.addEventListener('project.listMedias', this.listMediasForProject);
     },
     closeProject: function() {
       if (window.state.dev_mode === 'debug') {

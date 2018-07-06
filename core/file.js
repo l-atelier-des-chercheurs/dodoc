@@ -1056,8 +1056,8 @@ module.exports = (function() {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += '.svg';
-              additionalMeta.type = 'image';
               let pathToMedia = path.join(slugFolderPath, mediaName);
+              additionalMeta.type = 'image';
 
               var fileBuffer = new Buffer(rawData, 'base64');
               fs.writeFile(pathToMedia, fileBuffer, function(err) {
@@ -1081,6 +1081,30 @@ module.exports = (function() {
                   reject(err);
                 }
               );
+            })
+          );
+        } else if (additionalMeta.type === 'stopmotion') {
+          tasks.push(
+            new Promise((resolve, reject) => {
+              mediaName += '.webm';
+              let pathToMedia = path.join(slugFolderPath, mediaName);
+              additionalMeta.type = 'video';
+
+              // only works for projects media (root) for now
+              api
+                .makeStopmotionFromImageSequence({
+                  slugFolderName,
+                  pathToMedia,
+                  images: rawData,
+                  slugStopmotionName: additionalMeta.slugStopmotionName,
+                  frameRate: additionalMeta.frameRate
+                })
+                .then(() => {
+                  resolve();
+                })
+                .catch(err => {
+                  reject(err);
+                });
             })
           );
         }

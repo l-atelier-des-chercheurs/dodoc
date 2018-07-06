@@ -12,7 +12,7 @@
     </div>
     <div class="m_stopmotionpanel--buttons">
       <button type="button" class="buttonLink" @click="assembleStopmotionMedias">
-        ASSEMBLER
+        {{ $t('create') }}
       </button>
     </div>
   </div>
@@ -22,7 +22,7 @@ import MediaContent from './MediaContent.vue';
 
 export default {
   props: {
-    stopmotiondata: Object
+    stopmotiondata: Object,
     slugProjectName: String
   },
   components: {
@@ -45,7 +45,7 @@ export default {
   computed: {
     medias: function() {
       if(this.stopmotiondata.hasOwnProperty('medias')) {
-        return this.stopmotiondata.medias;
+        return Object.values(this.stopmotiondata.medias);
       } else {
         return [];
       }
@@ -53,14 +53,16 @@ export default {
   },
   methods: {
     assembleStopmotionMedias: function() {
+      console.log('METHODS • StopmotionPanel: assembleStopmotionMedias');
       this.$eventHub.$on('socketio.media_created_or_updated', this.newMediaCaptured);
-      debugger;
       this.$root.createMedia({
-        slugFolderName: this.current_stopmotion,
+        slugFolderName: this.slugProjectName,
         type: 'projects',
-        rawData: imageData,
+        rawData: this.medias,
         additionalMeta: {
-          type: 'stopmotion'          
+          type: 'stopmotion',
+          slugStopmotionName: this.stopmotiondata.slugFolderName ,
+          frameRate: 4   
         }
       });
     }

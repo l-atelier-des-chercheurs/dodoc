@@ -6,7 +6,8 @@ const path = require('path'),
   os = require('os'),
   writeFileAtomic = require('write-file-atomic'),
   ffmpegstatic = require('ffmpeg-static'),
-  ffmpeg = require('fluent-ffmpeg');
+  ffmpeg = require('fluent-ffmpeg'),
+  glob = require('glob');
 
 const settings = require('../settings.json'),
   dev = require('./dev-log');
@@ -38,7 +39,8 @@ module.exports = (function() {
     writeAudioToDisk: (slugProjectName, mediaName, dataURL) =>
       writeAudioToDisk(slugProjectName, mediaName, dataURL),
     writeVideoToDisk: (slugProjectName, mediaName, dataURL) =>
-      writeVideoToDisk(slugProjectName, mediaName, dataURL)
+      writeVideoToDisk(slugProjectName, mediaName, dataURL),
+    makeStopmotionFromImageSequence: d => makeStopmotionFromImageSequence(d)
   };
 
   function _getUserPath() {
@@ -309,6 +311,65 @@ module.exports = (function() {
         //     });
         // });
       });
+    });
+  }
+
+  function makeStopmotionFromImageSequence({
+    slugFolderName,
+    pathToMedia,
+    images,
+    slugStopmotionName,
+    frameRate
+  }) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction('COMMON — makeStopmotionFromImageSequence');
+
+      let slugStopmotionPath = getFolderPath(
+        path.join(settings.structure['stopmotions'].path, slugStopmotionName)
+      );
+
+      const path_to_images = path.join(slugStopmotionPath, '*.jpeg');
+
+      debugger;
+      const numberOfImagesToProcess = glob.sync(path_to_images).length;
+
+      // ask ffmpeg to make a video from the cache images
+      var proc = new ffmpeg()
+        .input(path_to_images)
+        .inputOptions('-pattern_type glob')
+        // using 12 fps
+        .withFpsInput(frameRate)
+        .withVideoCodec('libvpx')
+        .addOptions(['-vb 8000k', '-f webm'])
+        .output(pathToMedia)
+        // setup event handlers
+        .on('progress', progress => {
+          debugger;
+          // var msg = {
+          //   author: newMediaData.author,
+          //   content: `${dodoc.lang().stopMotionCompilationProgress} ${
+          //     progress.frames
+          //   }/${numberOfImagesToProcess} ${dodoc.lang().imagesAdded}`
+          // };
+          // require('../sockets').notifyUser(msg);
+          dev.logverbose(
+            `Processing new stopmotion: image ${
+              progress.frames
+            }/${numberOfImagesToProcess}`
+          );
+        })
+        .on('end', () => {
+          debugger;
+          dev.logverbose(`Stopmotion has been completed`);
+          resolve();
+        })
+        .on('error', function(err, stdout, stderr) {
+          dev.error('An error happened: ' + err.message);
+          dev.error('ffmpeg standard output:\n' + stdout);
+          dev.error('ffmpeg standard error:\n' + stderr);
+          reject(`couldn't create a stopmotion animation`);
+        })
+        .run();
     });
   }
 
