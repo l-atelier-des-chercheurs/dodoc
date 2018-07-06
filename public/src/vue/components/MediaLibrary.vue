@@ -91,16 +91,6 @@ export default {
   created() {
   },
   watch: {
-    'project.medias': function() {
-      let justCreatedTextMedia = Object.keys(this.project.medias).filter((m) => {
-        let data = this.project.medias[m];
-        return data.hasOwnProperty('id') && data.id === this.$root.justCreatedMediaID;
-      });      
-      if(justCreatedTextMedia.length > 0) {
-        this.openMediaModal(justCreatedTextMedia[0]);
-        this.$root.justCreatedMediaID = false;
-      }
-    }
   },
 
   computed: {
@@ -197,11 +187,12 @@ export default {
   methods: {
     openMediaModal(metaFileName) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • MediaLibrary: openMedia');
+        console.log('METHODS • MediaLibrary: openMediaModal');
       }
       this.$root.openMedia({ slugProjectName: this.slugProjectName, metaFileName });      
     },
     createTextMedia() {
+      this.$eventHub.$on('socketio.media_created_or_updated', this.newTextMediaCreated);
       this.$root.createMedia({
         slugFolderName: this.slugProjectName,
         type: 'projects',
@@ -209,6 +200,13 @@ export default {
           type: 'text'          
         }
       });
+    },
+    newTextMediaCreated(mdata) {
+      if (this.$root.justCreatedMediaID === mdata.id) {
+        this.$root.justCreatedMediaID = false;
+        this.$eventHub.$off('socketio.media_created_or_updated', this.newTextMediaCreated);
+        this.openMediaModal(mdata.metaFileName);
+      }
     }
   }
 }

@@ -219,17 +219,14 @@ Vue.prototype.$socketio = new Vue({
             content[slugFolderName].medias
           );
 
-          const mediaData = Object.values(content[slugFolderName].medias)[0];
-          if (mediaData.hasOwnProperty('id')) {
-            this.$eventHub.$emit(
-              'socketio.media_created_or_updated',
-              mediaData
-            );
+          const mdata = Object.values(content[slugFolderName].medias)[0];
+          if (mdata.hasOwnProperty('id')) {
+            this.$eventHub.$emit('socketio.media_created_or_updated', mdata);
           }
         }
       }
 
-      // check if mediaData has a mediaID (which would mean a user just created it)
+      // check if mdata has a mediaID (which would mean a user just created it)
     },
 
     _onListMedias(data) {

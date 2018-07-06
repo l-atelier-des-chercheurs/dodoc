@@ -682,7 +682,6 @@ export default {
 
     newMediaCaptured(mdata) {
       console.log('METHODS • CaptureView: newMediaCaptured');
-      debugger;
       if (this.$root.justCreatedMediaID === mdata.id) {
         this.justCapturedMediaData = mdata;
         this.$root.justCreatedMediaID = false;

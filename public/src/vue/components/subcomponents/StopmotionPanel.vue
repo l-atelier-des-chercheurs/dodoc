@@ -56,7 +56,7 @@ export default {
   methods: {
     assembleStopmotionMedias: function() {
       console.log('METHODS • StopmotionPanel: assembleStopmotionMedias');
-      this.$eventHub.$on('socketio.media_created_or_updated', this.newMediaCaptured);
+      this.$eventHub.$on('socketio.media_created_or_updated', this.newStopmotionVideo);
       this.$root.createMedia({
         slugFolderName: this.slugProjectName,
         type: 'projects',
@@ -67,6 +67,10 @@ export default {
           frameRate: this.frameRate
         }
       });
+    },
+    newStopmotionVideo: function(mdata) {
+      this.$eventHub.$off('socketio.media_created_or_updated', this.newStopmotionVideo);
+      debugger;
     }
   }
 }
