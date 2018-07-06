@@ -243,7 +243,7 @@
       },
       "medias": {
         "thumbs": {
-          "resolutions": [180]
+          "resolutions": [360]
         },
         "fields": {
           "date_uploaded" : {

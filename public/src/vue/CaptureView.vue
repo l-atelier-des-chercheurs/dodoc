@@ -86,7 +86,7 @@
         >
           <MediaContent
             :context="'edit'"
-            :slugFolderName="justCapturedMediaData.slugFolderName"
+            :slugFolderName="slugProjectName"
             :media="justCapturedMediaData"
             :mediaURL="mediaURL"
           >
@@ -101,6 +101,8 @@
       </div>
 
     </div>
+
+    {{ justCapturedMediaData }}
 
     <div class="m_captureview--options">
       <fieldset v-show="true">

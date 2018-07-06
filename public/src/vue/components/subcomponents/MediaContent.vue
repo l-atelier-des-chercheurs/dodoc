@@ -99,8 +99,8 @@ export default {
   data() {
     return {
       available_resolutions: {
-        preview: 180,
-        preview_hovered: 360,
+        preview: 360,
+        preview_hovered: 600,
         default: 1600
       },
       htmlForEditor: this.value,
