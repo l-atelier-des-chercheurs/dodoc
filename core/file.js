@@ -1216,7 +1216,7 @@ module.exports = (function() {
                 slugFolderName,
                 mediaData.media_filename,
                 mediaData.type,
-                settings.structure[type].medias.thumbs.resolutions
+                type
               )
               .then(thumbData => {
                 mediaData.thumbs = thumbData;

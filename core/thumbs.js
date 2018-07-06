@@ -15,8 +15,8 @@ ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function() {
   const API = {
-    makeMediaThumbs: (slugFolderName, filename, mediaType, resolutions) =>
-      makeMediaThumbs(slugFolderName, filename, mediaType, resolutions),
+    makeMediaThumbs: (slugFolderName, filename, mediaType, type) =>
+      makeMediaThumbs(slugFolderName, filename, mediaType, type),
     removeMediaThumbs: (slugFolderName, filename) =>
       removeMediaThumbs(slugFolderName, filename),
 
@@ -30,10 +30,10 @@ module.exports = (function() {
 
   // this function is used both when creating a media and when all medias are listed.
   // this way, if thumbs are deleted or moved while the app is running, they will be recreated next time they are required
-  function makeMediaThumbs(slugFolderName, filename, mediaType, resolutions) {
+  function makeMediaThumbs(slugFolderName, filename, mediaType, type) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, filename = ${filename}, mediaType: ${mediaType} and res: ${resolutions}`
+        `THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, filename = ${filename}, mediaType: ${mediaType} and type: ${type}`
       );
       if (!['image', 'video'].includes(mediaType)) {
         dev.logverbose(
@@ -42,8 +42,17 @@ module.exports = (function() {
         return resolve();
       }
 
-      let thumbFolderPath = path.join(settings.thumbFolderName, slugFolderName);
-      let mediaPath = path.join(api.getFolderPath(slugFolderName), filename);
+      const thumbResolutions =
+        settings.structure[type].medias.thumbs.resolutions;
+      const baseFolderPath = settings.structure[type].path;
+      const mainFolderPath = api.getFolderPath(baseFolderPath);
+
+      let thumbFolderPath = path.join(
+        settings.thumbFolderName,
+        baseFolderPath,
+        slugFolderName
+      );
+      let mediaPath = path.join(mainFolderPath, slugFolderName, filename);
 
       // let’s make sure that our thumb folder exists first
       fs.mkdirp(api.getFolderPath(thumbFolderPath), function(err) {
@@ -54,7 +63,6 @@ module.exports = (function() {
         // regroup all thumbs promises so they can happen as fast as possible
         let makeThumbs = [];
 
-        let thumbResolutions = resolutions;
         if (mediaType === 'image') {
           thumbResolutions.forEach(thumbRes => {
             let makeThumb = new Promise((resolve, reject) => {

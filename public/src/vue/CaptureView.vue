@@ -102,11 +102,6 @@
 
     </div>
 
-    {{ current_stopmotion }}
-    {{ justCapturedMediaData }}
-    <pre>{{ $root.store.stopmotions }}  </pre>
-    
-
     <div class="m_captureview--options">
       <fieldset v-show="true">
         <legend>Sources</legend>
@@ -594,11 +589,11 @@ export default {
     },
 
     captureOrStop() {
-      this.justCapturedMediaData = {};
+      // this.justCapturedMediaData = {};
 
       this.capture_button_pressed = true;
       setTimeout(() => {
-        this.capture_button_pressed = false
+        this.capture_button_pressed = false;
       }, 400);
 
       if(this.isRecording) {
@@ -714,7 +709,6 @@ export default {
         this.$eventHub.$off('socketio.media_created_or_updated', this.newStopmotionImageCaptured);
       }
     },
-
     startVectoFeed() {
       return new Promise((resolve, reject) => {
         console.log('METHODS • CaptureView: startVectoFeed');

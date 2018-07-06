@@ -99,8 +99,8 @@ export default {
   data() {
     return {
       available_resolutions: {
-        preview: 360,
-        preview_hovered: 600,
+        preview: 180,
+        preview_hovered: 360,
         default: 1600
       },
       htmlForEditor: this.value,
@@ -143,9 +143,9 @@ export default {
         return this.mediaURL;
       }
 
-      let pathToSmallestThumb = this.subfolder + this.$_.findWhere(this.media.thumbs, {
+      let pathToSmallestThumb = this.$_.findWhere(this.media.thumbs, {
         size: this.thumbRes
-      }).path;
+      });
 
       if (
       // if image is gif and context is not 'preview', let’s show the original gif
@@ -157,10 +157,9 @@ export default {
         return this.mediaURL;
       }
 
-      const url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
-      return pathToSmallestThumb !== undefined
-        ? url
-        : this.mediaURL;
+      const fullPathToThumb = pathToSmallestThumb.path;
+      const url = this.$root.state.mode === 'export_publication' ? `./${fullPathToThumb}` : `/${fullPathToThumb}`;
+      return url;
     },
     linkToHoveredThumb: function() {
       let pathToSmallestThumb = this.$_.findWhere(this.media.thumbs, {

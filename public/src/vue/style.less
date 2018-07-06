@@ -1287,7 +1287,17 @@ body {
   .m_stopmotionpanel--buttons {
     flex: 0 0 auto;
     width: 100%;
-    max-height: 50px;
+    // min-height: 50px;
+    .padding-small;
+    .bg-noir;
+
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+
+    > input[type="number"] {
+      width: 50px;
+    }
 
   }
 }

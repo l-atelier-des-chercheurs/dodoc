@@ -4,13 +4,14 @@
       <MediaContent
         v-for="media in medias"
         :key="media.metaFilename"
-        :context="'edit'"
+        :context="'preview'"
         :slugFolderName="stopmotiondata.slugFolderName"
         :media="media"
         :subfolder="'_stopmotions/'"
       />
     </div>
     <div class="m_stopmotionpanel--buttons">
+      <input type="number" v-model="frameRate" />
       <button type="button" class="buttonLink" @click="assembleStopmotionMedias">
         {{ $t('create') }}
       </button>
@@ -30,6 +31,7 @@ export default {
   },
   data() {
     return {
+      frameRate: 4
     }
   },
   
@@ -62,7 +64,7 @@ export default {
         additionalMeta: {
           type: 'stopmotion',
           slugStopmotionName: this.stopmotiondata.slugFolderName ,
-          frameRate: 4   
+          frameRate: this.frameRate
         }
       });
     }
