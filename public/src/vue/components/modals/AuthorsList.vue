@@ -37,7 +37,7 @@
             />
           </div>
 
-          <button type="button" 
+          <div type="button" 
             v-if="Object.keys(sortedAuthors).length > 0"
             v-for="(author, slug) in sortedAuthors" 
             :key="author.name" 
@@ -60,7 +60,7 @@
             <button type="button" class="buttonLink" @click.stop="removeAuthor(author)">
               {{ $t('remove') }}
             </button>
-          </button>
+          </div>
 
         </transition-group>
       </div>

@@ -21,9 +21,7 @@
       </button>
     </div>
 
-    <div class="m_captureview--panels"
-      :class="{ 'is--justCaptured' : justCapturedMediaData.hasOwnProperty('type') }"
-    >
+    <div class="m_captureview--panels">
       <div class="m_panel">
 
         <!-- <transition name="enableMode" :duration="100"> -->
@@ -43,7 +41,7 @@
           <video 
             v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
             ref="videoElement" 
-            autoplay 
+            autoplay
           /> 
           <canvas 
             v-if="selected_mode === 'audio'"
@@ -81,29 +79,23 @@
       </div>
 
       <div class="m_panel">
-        <div class="m_panel--previewCard"
-          v-if="justCapturedMediaData.hasOwnProperty('type') && selected_mode !== 'stopmotion'"
-        >
-          <MediaContent
-            :context="'edit'"
-            :slugFolderName="slugProjectName"
-            :media="justCapturedMediaData"
-            :mediaURL="mediaURL"
-          >
-          </MediaContent>  
-        </div>
         <StopmotionPanel 
-          v-else-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"        
+          v-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"        
           :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
           :slugProjectName="this.slugProjectName"
         >
         </StopmotionPanel>        
       </div>
-
     </div>
 
-    {{ justCapturedMediaData }}
-
+    <ValidateMedia 
+      v-if="media_to_validate"
+      :slugProjectName="slugProjectName"
+      :media="media_to_validate"
+      :read_only="read_only"
+      @close="media_to_validate = false"
+    />
+    
     <div class="m_captureview--options">
       <fieldset v-show="true">
         <legend>Sources</legend>
@@ -134,11 +126,13 @@
         </div>
       </fieldset>
     </div>
+
   </div>
 </template>
 <script>
 import MediaContent from './components/subcomponents/MediaContent.vue';
 import StopmotionPanel from './components/subcomponents/StopmotionPanel.vue';
+import ValidateMedia from './components/modals/ValidateMedia.vue';
 
 import RecordRTC from 'recordrtc';
 import { setTimeout, setInterval } from 'timers';
@@ -151,11 +145,13 @@ export default {
       type: Object,
       default: ''
     },
-    slugProjectName: String
+    slugProjectName: String,
+    read_only: Boolean
   },
   components: {
     MediaContent,
-    StopmotionPanel
+    StopmotionPanel,
+    ValidateMedia
   },
   data() {
     return {
@@ -188,12 +184,12 @@ export default {
       recordVideoWithAudio: true,
 
       capture_button_pressed: false,
-
-      justCapturedMediaData: {},
       videoStream: null,
       audioStream: null,
       available_devices: {},
       mode_just_changed: false,
+
+      media_to_validate: false,
 
       current_stopmotion: false,
 
@@ -262,7 +258,6 @@ export default {
     },
     'selected_mode': function() {
       console.log('WATCH • Capture: selected_mode');
-
       this.mode_just_changed = true;
       setTimeout(()=> {
         this.mode_just_changed = false;
@@ -270,7 +265,6 @@ export default {
       this.$nextTick(() => {
         this.startMode();
       });
-      this.justCapturedMediaData = {};
     },
     'isRecording': function() {
       equalizer.setSarahCouleur(this.isRecording);
@@ -281,6 +275,14 @@ export default {
       //   this.startCameraFeed();
       // });      
       this.startMode();
+    },
+    'media_to_validate': function() {
+      console.log(`WATCH • Capture: media_to_validate = ${this.media_to_validate}`);
+      if(this.media_to_validate) {
+        this.$refs.videoElement.pause();
+      } else {
+        this.$refs.videoElement.play();
+      }
     }
   },
   computed: {
@@ -442,6 +444,7 @@ export default {
               this.videoStream = stream;
               this.$refs.videoElement.srcObject = stream;
               this.$refs.videoElement.volume = 0;
+              this.$refs.videoElement.play();
             }
             return resolve();
           })
@@ -591,8 +594,6 @@ export default {
     },
 
     captureOrStop() {
-      // this.justCapturedMediaData = {};
-
       this.capture_button_pressed = true;
       setTimeout(() => {
         this.capture_button_pressed = false;
@@ -604,44 +605,29 @@ export default {
       }
 
       if(this.selected_mode === 'photo') {        
-        this.getStaticImageFromVideoElement().then(imageData => {
-          this.$eventHub.$on('socketio.media_created_or_updated', this.newMediaCaptured);
-          this.$root.createMedia({
-            slugFolderName: this.slugProjectName,
-            type: 'projects',
-            rawData: imageData,
-            additionalMeta: {
-              type: 'image'          
-            }
-          });
+        this.getStaticImageFromVideoElement().then(rawData => {
+          this.media_to_validate = {
+            rawData,
+            type: 'image'
+          };
         });
       } else 
       if(this.selected_mode === 'video') {        
-        this.startRecordCameraFeed(this.recordVideoWithAudio).then(videoDataURL => {
-          this.$eventHub.$on('socketio.media_created_or_updated', this.newMediaCaptured);
-          this.$root.createMedia({
-            slugFolderName: this.slugProjectName,
-            type: 'projects',
-            rawData: videoDataURL,
-            additionalMeta: {
-              type: 'video'          
-            }
-          });
+        this.startRecordCameraFeed(this.recordVideoWithAudio).then(rawData => {
+          this.media_to_validate = {
+            rawData,
+            type: 'video'
+          };
         });
 
       } else
       if(this.selected_mode === 'audio') { 
         equalizer.clearCanvas();
-        this.startRecordAudioFeed().then(audioDataURL => {
-          this.$eventHub.$on('socketio.media_created_or_updated', this.newMediaCaptured);
-          this.$root.createMedia({
-            slugFolderName: this.slugProjectName,
-            type: 'projects',
-            rawData: audioDataURL,
-            additionalMeta: {
-              type: 'audio'          
-            }
-          });
+        this.startRecordAudioFeed().then(rawData => {
+          this.media_to_validate = {
+            rawData,
+            type: 'audio'
+          };
         });
       } else
       if(this.selected_mode === 'stopmotion') { 
@@ -650,9 +636,9 @@ export default {
           authors: this.$root.settings.current_author.name
         };
 
-        this.$eventHub.$on('socketio.media_created_or_updated', this.newStopmotionImageCaptured);
         this.getStaticImageFromVideoElement().then(imageData => {
           if(!this.current_stopmotion) {
+            // create stopmotion
             this.$eventHub.$on('socketio.folder_created_or_updated', (fdata) => {
               if(fdata.id === this.$root.justCreatedFolderID) {
                 this.$eventHub.$off('socketio.folder_created_or_updated');
@@ -665,32 +651,18 @@ export default {
               data: smdata 
             });      
           } else {
+            // append to stopmotion
             this.addImageToStopmotion(imageData);
           }
         });
       } else
       if(this.selected_mode === 'vecto') { 
-        this.$eventHub.$on('socketio.media_created_or_updated', this.newMediaCaptured);
-        this.$root.createMedia({
-          slugFolderName: this.slugProjectName,
-          type: 'projects',
+        this.media_to_validate = {
           rawData: btoa(this.vecto.svgstr),
-          additionalMeta: {
-            type: 'svg'          
-          }
-        });
+          type: 'svg'
+        };
       }
     },
-
-    newMediaCaptured(mdata) {
-      console.log('METHODS • CaptureView: newMediaCaptured');
-      if (this.$root.justCreatedMediaID === mdata.id) {
-        this.justCapturedMediaData = mdata;
-        this.$root.justCreatedMediaID = false;
-        this.$eventHub.$off('socketio.media_created_or_updated', this.newMediaCaptured);
-      }
-    },
-
     addImageToStopmotion(imageData) {
       console.log('METHODS • CaptureView: addImageToStopmotion');
       this.$root.createMedia({
@@ -701,14 +673,6 @@ export default {
           type: 'image'          
         }
       });
-    },
-    newStopmotionImageCaptured(mdata) {
-      console.log('METHODS • CaptureView: newStopmotionImageCaptured');
-      if (this.$root.justCreatedMediaID === mdata.id) {
-        this.justCapturedMediaData = mdata;
-        this.$root.justCreatedMediaID = false;
-        this.$eventHub.$off('socketio.media_created_or_updated', this.newStopmotionImageCaptured);
-      }
     },
     startVectoFeed() {
       return new Promise((resolve, reject) => {

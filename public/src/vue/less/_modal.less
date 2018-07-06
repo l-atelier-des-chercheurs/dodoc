@@ -8,7 +8,7 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 
-  background-color: fade(#fff, 95%);
+  background-color: fade(#fff, 90%);
   cursor: pointer;
   .custom_scrollbar(8px, 5px, 6px);
   
@@ -175,6 +175,44 @@
       }    
     }
   }
+  &.typeOfModal-LargeAndNoScrollWithButtons {
+    .m_modal--container {   
+      max-width: none;      
+      height: 80vmin;
+      width:  80vmin;
+
+      .m_modal--container--content {
+        flex-flow: column wrap;
+        // background-color: transparent;
+        // box-shadow: none;
+        // border: none;
+        height: 100%;
+
+        .m_modal--sidebar {
+          position: relative;
+          // .bg-noir;
+          flex-grow: 1;
+
+          .m_modal--metaOptions {
+            padding: 0;
+            display: flex;
+            flex-flow: column wrap;
+
+            > .m_modal--metaOptions--media {
+              flex: 1 1 auto;
+            }
+            > .m_modal--metaOptions--fav {
+              flex: 0 0 auto;
+            }
+
+          }
+        }    
+        .m_modal--buttons {
+          flex: 0 0 auto;
+        }              
+      }
+    }
+  }
 } 
 
 
@@ -257,6 +295,18 @@
 
   }
 
+  .m_modal--preview--media {
+    width: 100%;
+    height: 100%;
+
+    > * {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+    }
+  }
+
 }
 
 .m_modal--close_button {
@@ -292,24 +342,20 @@
   }
 }
 
-.m_modal--save {
-  .padding-medium;
-  .padding-vert-small;
+.m_modal--buttons {
+  .padding-verysmall;
   border-top: 2px solid @c-gris_clair;
 
   display: flex;
   justify-content: center;
 
-  button[type="submit"] {
-    .bg-bleuvert; 
-    color: @c-bleumarine;
-    color: white;
-
-    > * {
-      display: inline-block;
-      vertical-align: middle;
-    }
+  button {
+    .margin-verysmall;
   }
+
+  button[type="submit"] {
+  } 
+
 }
 
 

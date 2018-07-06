@@ -67,6 +67,7 @@
                     v-if="$root.do_navigation.view === 'CaptureView'"
                     :slugProjectName="$root.do_navigation.current_slugProjectName"
                     :project="$root.currentProject"
+                    :read_only="!$root.state.connected"
                   />
                 </transition>
                 <transition name="MediaView" :duration="500">

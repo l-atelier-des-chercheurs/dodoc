@@ -29,6 +29,7 @@ module.exports = (function() {
       sureToCloseModal: 'Êtes-vous sûr de vouloir fermer cette fenêtre ?',
       sureToRemovePubli:
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
+      validate_media: 'Valider le média',
 
       showing: 'Affichage de',
       media_filter: 'Filtre de médias',
@@ -86,6 +87,7 @@ module.exports = (function() {
       stopmotion: 'animation',
       audio: 'son',
       vecto: 'formes',
+      image: 'image',
       text: 'texte',
       other: 'autre',
 
@@ -160,6 +162,7 @@ module.exports = (function() {
       remote_access: 'Accès depuis d’autres appareils',
 
       notifications: {
+        media_was_sent: 'Le média a été envoyé.',
         file_was_sent: 'Le fichier a été envoyé.',
         file_upload_not_allowed:
           'Votre navigateur web ne prend pas en charge l’envoi de fichiers.',
@@ -217,6 +220,7 @@ module.exports = (function() {
       sureToRemoveAuthor: 'Do you really want to delete this author?',
       sureToCloseModal: 'Do you really want to close this window?',
       sureToRemovePubli: 'Do you really want to delete this publication?',
+      validate_media: 'Validate the media',
 
       showing: 'Showing',
       media_filter: 'Medias filter',
@@ -352,6 +356,7 @@ module.exports = (function() {
       remote_access: 'Acces from other devices',
 
       notifications: {
+        media_was_sent: 'The media was sent.',
         file_was_sent: 'The file was sent.',
         file_upload_not_allowed: 'File upload is not allowed by this browser.',
         connection_active: 'The connection to the server is active.',

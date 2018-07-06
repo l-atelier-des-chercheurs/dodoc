@@ -9,12 +9,12 @@
       <div class="m_modal--container"
         :class="['color-' + backgroundColor, { 'is_invisible' : !showModal }]"
         @keyup.ctrl.enter="$emit('submit')"
-        >
+      >
 
         <div
           class="m_modal--container--content"
           ref="modalContent"
-          >
+        >
 
           <div v-if="!!this.$slots['preview']" class="m_modal--preview"
           >
@@ -56,12 +56,13 @@
 
             <div 
               v-if="!!this.$slots['submit_button']"
-              class="m_modal--save"
+              class="m_modal--buttons"
             >
               <button
                 type="submit"
                 :disabled="read_only"
-                >
+                class="button button-bg_rounded bg-bleuvert"
+              >
                 <img src="/images/i_enregistre.svg"/>
                 <span class="text-cap font-verysmall">
                   <slot name="submit_button">
@@ -70,6 +71,40 @@
                 </span>
               </button>
             </div>
+          </form>
+
+          <form 
+            v-if="!!this.$slots['buttons']" 
+            class="m_modal--buttons"
+            v-on:submit.prevent="$emit('submit')"
+          >
+
+            <button
+              type="button"
+              @click="closeModal"
+              class="button button-bg_rounded bg-orange"
+            >
+              <img src="/images/i_clear.svg"/>
+              <span class="text-cap font-verysmall">
+                <slot name="cancel_button">
+                  {{ $t('cancel') }}
+                </slot>
+              </span>
+            </button>
+
+            <button
+              type="submit"
+              :disabled="read_only"
+              class="button button-bg_rounded bg-bleuvert"
+            >
+              <img src="/images/i_enregistre.svg"/>
+              <span class="text-cap font-verysmall">
+                <slot name="submit_button">
+                  {{ $t('save') }}
+                </slot>
+              </span>
+            </button>
+
           </form>
 
         </div>

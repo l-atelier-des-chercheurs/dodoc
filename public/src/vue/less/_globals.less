@@ -41,7 +41,7 @@ button, .button {
     color: @c-noir;
   }
 
-  &.bg-rouge {
+  &.bg-rouge, &.bg-orange, &.bg-bleuvert {
     color: #fff;
   }
 
@@ -74,6 +74,17 @@ button, .button {
     background-color: @c-bleuvert;
     border-radius: @t-skipline;
     color: white;
+  }
+
+  &.button-bg_rounded {
+    color: @c-bleumarine;
+    color: white;
+
+    > * {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
   }
 
   img, svg {
