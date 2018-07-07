@@ -38,6 +38,21 @@
               v-if="capture_button_pressed"
             />
           </transition>
+
+          <transition name="slideup" :duration="400">
+            <template v-if="media_to_validate">
+              <img 
+                v-if="media_to_validate.type === 'image'" 
+                :src="media_to_validate.rawData"
+              />
+              <video 
+                v-else-if="media_to_validate.type === 'video'" 
+                :src="media_to_validate.rawData"
+                controls
+              />
+            </template>
+          </transition>
+
           <video 
             v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
             ref="videoElement" 
@@ -51,31 +66,64 @@
           </div>
         </div>
         <div class="m_panel--buttons" :class="{ 'bg-rouge' : isRecording }">
-          <button type="button" 
-            class="padding-verysmall bg-blanc"
-            @click="captureOrStop()"
-          >
-            <img 
-              :src="recordButtonSrc"
-            />
-          </button>
+          <div class="m_panel--buttons--row">
+            <button type="button" 
+              class="padding-verysmall bg-blanc"
+              @click="captureOrStop()"
+            >
+              <img 
+                :src="recordButtonSrc"
+              />
+            </button>
 
-          <div v-if="selected_mode === 'vecto'">
-            <div class="m_metaField">
-              <div>
-                Lissage
-              </div>
-              <div>
-                <input type="range" v-model="vecto.blurradius" min="0" max="20">
+            <div v-if="selected_mode === 'vecto'">
+              <div class="m_metaField">
+                <div>
+                  Lissage
+                </div>
+                <div>
+                  <input type="range" v-model="vecto.blurradius" min="0" max="20">
+                </div>
               </div>
             </div>
-          </div>
 
-          <span class="switch" v-if="selected_mode === 'video'">
-            <input type="checkbox" class="switch" id="recordVideoWithAudio" v-model="recordVideoWithAudio">
-            <label for="recordVideoWithAudio">Enregistrer le son</label>
-          </span>
+            <span class="switch" v-if="selected_mode === 'video'">
+              <input type="checkbox" class="switch" id="recordVideoWithAudio" v-model="recordVideoWithAudio">
+              <label for="recordVideoWithAudio">Enregistrer le son</label>
+            </span>
+          </div>
+          <transition name="slideup" :duration="400">
+            <div class="m_panel--buttons--row m_panel--buttons--row_validate"
+              v-if="media_to_validate"
+            >
+              <button
+                type="button"
+                class="button button-bg_rounded bg-orange"
+                @click="media_to_validate = false"
+              >
+                <img src="/images/i_clear.svg"/>
+                <span class="text-cap font-verysmall">
+                  {{ $t('cancel') }}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                :disabled="read_only"
+                class="button button-bg_rounded bg-bleuvert"
+              >
+                <img src="/images/i_enregistre.svg"/>
+                <span class="text-cap font-verysmall">
+                  <template v-if="sending"> 
+                    <span class="loader loader-xs" />
+                  </template>
+                  {{ $t('save') }}
+                </span>
+              </button>
+            </div>
+          </transition>
         </div>
+
       </div>
 
       <div class="m_panel">
@@ -87,14 +135,6 @@
         </StopmotionPanel>        
       </div>
     </div>
-
-    <ValidateMedia 
-      v-if="media_to_validate"
-      :slugProjectName="slugProjectName"
-      :media="media_to_validate"
-      :read_only="read_only"
-      @close="media_to_validate = false"
-    />
     
     <div class="m_captureview--options">
       <fieldset v-show="true">
@@ -132,7 +172,6 @@
 <script>
 import MediaContent from './components/subcomponents/MediaContent.vue';
 import StopmotionPanel from './components/subcomponents/StopmotionPanel.vue';
-import ValidateMedia from './components/modals/ValidateMedia.vue';
 
 import RecordRTC from 'recordrtc';
 import { setTimeout, setInterval } from 'timers';
@@ -150,8 +189,7 @@ export default {
   },
   components: {
     MediaContent,
-    StopmotionPanel,
-    ValidateMedia
+    StopmotionPanel
   },
   data() {
     return {
