@@ -1188,12 +1188,17 @@ body {
 
   .m_panel--previewCard {
     position: relative;
-    width: 100%;
-    height: 100%;
-    .bg-noir;
+    overflow: hidden;
+    flex: 1 1 auto;
     border-radius: 10px 10px 0 0;
 
-    // left panel
+    > div {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      .bg-noir;
+    }
+
     video, canvas, img, #vectoContainer, .mediaContainer, audio {
       position: absolute;
       object-fit: contain;

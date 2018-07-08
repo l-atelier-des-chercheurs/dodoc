@@ -33,14 +33,23 @@
         <!-- </transition> -->
         
         <div class="m_panel--previewCard">
-          <transition name="mediaCapture" :duration="100">
-            <div class="m_panel--previewCard--captureOverlay"
-              v-if="capture_button_pressed"
-            />
-          </transition>
 
-          <transition name="slideup" :duration="400">
-            <template v-if="media_to_validate">
+          <div>
+            <video 
+              v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
+              ref="videoElement" 
+              autoplay
+            /> 
+            <canvas 
+              v-if="selected_mode === 'audio'"
+              ref="equalizerElement" width="720" height="360" 
+            />
+            <div id="vectoContainer" v-if="selected_mode === 'vecto'" v-html="vecto.svgstr">
+            </div>
+          </div>
+
+          <transition name="fade" :duration="400">
+            <div v-if="media_to_validate">
               <img 
                 v-if="media_to_validate.type === 'image'" 
                 :src="media_to_validate.rawData"
@@ -50,20 +59,15 @@
                 :src="media_to_validate.rawData"
                 controls
               />
-            </template>
+            </div>
           </transition>
 
-          <video 
-            v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
-            ref="videoElement" 
-            autoplay
-          /> 
-          <canvas 
-            v-if="selected_mode === 'audio'"
-            ref="equalizerElement" width="720" height="360" 
-          />
-          <div id="vectoContainer" v-if="selected_mode === 'vecto'" v-html="vecto.svgstr">
-          </div>
+          <transition name="mediaCapture" :duration="100">
+            <div class="m_panel--previewCard--captureOverlay"
+              v-show="capture_button_pressed"
+            />
+          </transition>
+
         </div>
         <div class="m_panel--buttons" :class="{ 'bg-rouge' : isRecording }">
           <div class="m_panel--buttons--row">
