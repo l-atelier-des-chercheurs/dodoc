@@ -72,11 +72,11 @@
             </div>
           </transition>
 
-          <!-- <transition name="mediaCapture" :duration="400">
+          <transition name="mediaCapture" :duration="400">
             <div class="m_panel--previewCard--captureOverlay"
               v-show="capture_button_pressed"
             />
-          </transition> -->
+          </transition>
 
         </div>
         <div class="m_panel--buttons">
@@ -186,6 +186,7 @@
         <StopmotionPanel 
           :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
           :slugProjectName="this.slugProjectName"
+          @close="current_stopmotion = false"
         >
         </StopmotionPanel>        
       </div>

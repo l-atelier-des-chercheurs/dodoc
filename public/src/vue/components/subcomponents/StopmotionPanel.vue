@@ -1,22 +1,37 @@
 <template>
   <div class="m_stopmotionpanel">
-    <div 
+    <div class="m_stopmotionpanel--medias"
       v-if="!videopreview"    
-      class="m_stopmotionpanel--medias"
     >
-      <MediaContent
-        v-for="media in medias"
-        :key="media.metaFilename"
-        :context="'preview'"
-        :slugFolderName="stopmotiondata.slugFolderName"
-        :media="media"
-        :subfolder="'_stopmotions/'"
-      />
+      <div class="m_stopmotionpanel--medias--single">
+        <MediaContent
+          v-if="current_single_media"
+          :context="'edit'"
+          :slugFolderName="stopmotiondata.slugFolderName"
+          :media="current_single_media"
+          :subfolder="'_stopmotions/'"
+        />
+      </div>
+      <div class="m_stopmotionpanel--medias--list">
+        <div
+          v-for="media in medias"
+          :key="media.metaFilename"
+          @click="current_single_media = media"
+        >
+          <MediaContent
+            :context="'preview'"
+            :slugFolderName="stopmotiondata.slugFolderName"
+            :media="media"
+            :subfolder="'_stopmotions/'"
+          />
+        </div>
+      </div>
     </div>
 
     <div 
       v-else
       class="m_stopmotionpanel--videopreview"
+      ref="videoPreview"
     >
       <MediaContent
         :context="'full'"
@@ -31,7 +46,7 @@
           type="button"
           v-if="videopreview"
           @click="backToStopmotion"
-          class="button button-bg_rounded button-outline c-blanc"
+          class="button button-bg_rounded button-outline"
         >
           <span class="text-cap font-verysmall">
             {{ $t('back') }}
@@ -39,7 +54,7 @@
         </button>
 
         <div class="">
-          <label class="c-blanc">{{ $t('img_per_second') }}</label>
+          <label class="">{{ $t('img_per_second') }}</label>
           <input type="number" min="0" max="100" step="1" v-model.number="frameRate" />
         </div>
 
@@ -59,6 +74,7 @@
         <button
           type="button"
           :disabled="read_only"
+          @click="$emit('close')"
           class="button button-bg_rounded button-outline c-rouge is--selected"
         >
           <svg version="1.1" class="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -72,6 +88,12 @@
         </button>
 
       </div>
+    </div>
+
+    <div class="m_stopmotionpanel--loader"
+      v-if="media_is_being_sent"
+    >
+      <span class="loader loader-xs" />
     </div>
   </div>
 </template>
@@ -90,7 +112,9 @@ export default {
     return {
       frameRate: 4,
       previousFrameRate: 4,
-      videopreview: false
+      videopreview: false,
+      current_single_media: false,
+      media_is_being_sent: false
     }
   },
   
@@ -102,6 +126,11 @@ export default {
   },
 
   watch: {
+    'medias': function() {
+      if(this.medias.length > 0) {
+        this.current_single_media = Object.values(this.stopmotiondata.medias).slice(-1)[0];
+      }
+    }
   },
   computed: {
     medias: function() {
@@ -128,14 +157,19 @@ export default {
       });
       this.previousFrameRate = this.frameRate;
       this.videopreview = false;
+      this.media_is_being_sent = true;
     },
     newStopmotionVideo: function(mdata) {
       console.log('METHODS • StopmotionPanel: newStopmotionVideo');
       this.$eventHub.$off('socketio.media_created_or_updated', this.newStopmotionVideo);
       this.videopreview = mdata;
+      this.media_is_being_sent = false;
+      this.$nextTick(() => {
+        this.$refs.videoPreview.getElementsByTagName('video')[0].play();
+      });
+
     },
     backToStopmotion: function() {
-      debugger;
       this.$root.removeMedia({
         type: 'projects',
         slugFolderName: this.slugProjectName,
