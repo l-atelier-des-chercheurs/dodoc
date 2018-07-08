@@ -98,7 +98,7 @@
 
               <span class="switch switch-xs" v-if="selected_mode === 'video'">
                 <input type="checkbox" class="switch" id="recordVideoWithAudio" v-model="recordVideoWithAudio">
-                <label for="recordVideoWithAudio">Enregistrer le son</label>
+                <label for="recordVideoWithAudio">{{ $t('with_sound') }}</label>
               </span>
             </div>
           </div>

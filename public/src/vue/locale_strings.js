@@ -91,6 +91,7 @@ module.exports = (function() {
       image: 'image',
       text: 'texte',
       other: 'autre',
+      with_sound: 'avec le son',
 
       select: 'Sélectionner',
       unselect: 'Dé-sélectionner',
@@ -284,6 +285,7 @@ module.exports = (function() {
       image: 'image',
       text: 'text',
       other: 'other',
+      with_sound: 'with sound',
 
       export: 'Export',
       export_as_pdf: 'Export as PDF',
