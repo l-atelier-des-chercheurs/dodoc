@@ -165,6 +165,8 @@ module.exports = (function() {
 
       notifications: {
         media_was_sent: 'Le média a été envoyé.',
+        media_couldnt_been_sent:
+          'Le média n’a pas pu être envoyé car la connexion à do•doc a été perdue.',
         file_was_sent: 'Le fichier a été envoyé.',
         file_upload_not_allowed:
           'Votre navigateur web ne prend pas en charge l’envoi de fichiers.',
@@ -361,6 +363,7 @@ module.exports = (function() {
 
       notifications: {
         media_was_sent: 'The media was sent.',
+        media_couldnt_been_sent: 'The media wasn’t received by do•doc.',
         file_was_sent: 'The file was sent.',
         file_upload_not_allowed: 'File upload is not allowed by this browser.',
         connection_active: 'The connection to the server is active.',

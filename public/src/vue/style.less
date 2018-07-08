@@ -1191,9 +1191,11 @@ body {
     }
     .m_panel--previewCard--validate {
       background-color: white;
-      .bg-noir;
-      .bg-orange;
-    }
+      // .bg-noir;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
 
     video, canvas, img, #vectoContainer, .mediaContainer, audio {
       position: absolute;
@@ -1214,10 +1216,9 @@ body {
       justify-content: center;      
 
       svg {
-        width: 512px;
-        height: 512px;
+        // width: 512px;
+        // height: 512px;
         // border-radius: 50%;
-        overflow: hidden;        
       }      
     }
 
@@ -1277,7 +1278,6 @@ body {
 
       &.m_panel--buttons--row_validate {
         .bg-noir;
-        .bg-orange;
       }
 
       .m_panel--buttons--row--captureButton {

@@ -59,6 +59,14 @@
                 :src="media_to_validate.rawData"
                 controls
               />
+              <img 
+                v-else-if="media_to_validate.type === 'audio'" 
+                :src="media_to_validate.preview"
+              />
+              <div 
+                v-else-if="media_to_validate.type === 'svg'" 
+                v-html="media_to_validate.preview"
+              />
             </div>
           </transition>
 
@@ -323,6 +331,7 @@ export default {
   beforeDestroy() {
     document.removeEventListener('keyup', this.captureKeyListener);
     this.stopAllFeeds();
+    // this.$refs.videoElement.srcObject = null;
   },
 
   watch: {
@@ -496,7 +505,6 @@ export default {
         this.videoStream.getVideoTracks().forEach(function(track) {
           track.stop();
         });
-        // this.$refs.videoElement.srcObject = null;
         this.videoStream = null;
       }
     },
@@ -524,7 +532,6 @@ export default {
               this.videoStream = stream;
               this.$refs.videoElement.srcObject = stream;
               this.$refs.videoElement.volume = 0;
-              this.$refs.videoElement.play();
             }
             return resolve();
           })
@@ -693,19 +700,23 @@ export default {
         });
       } else 
       if(this.selected_mode === 'video') {    
-        this.stopVideoFeed();            
-        this.startRecordCameraFeed(this.recordVideoWithAudio).then(rawData => {
-          this.media_to_validate = {
-            rawData,
-            type: 'video'
-          };
-        });
-
+        this.stopVideoFeed();   
+        setTimeout(() => {
+          this.startRecordCameraFeed(this.recordVideoWithAudio).then(rawData => {
+            this.media_to_validate = {
+              rawData,
+              type: 'video'
+            };
+          });
+        },500);       
       } else
       if(this.selected_mode === 'audio') { 
         equalizer.clearCanvas();
         this.startRecordAudioFeed().then(rawData => {
+          const preview = this.$refs.equalizerElement.toDataURL('image/png');
+          debugger;
           this.media_to_validate = {
+            preview,
             rawData,
             type: 'audio'
           };
@@ -739,6 +750,7 @@ export default {
       } else
       if(this.selected_mode === 'vecto') { 
         this.media_to_validate = {
+          preview: this.vecto.svgstr,
           rawData: btoa(this.vecto.svgstr),
           type: 'svg'
         };
@@ -769,13 +781,16 @@ export default {
             let scanToVecto = () => {
               if(this.selected_mode !== 'vecto' || !this.videoStream) {
                 return;
+              } else if(this.media_to_validate) {
+                setTimeout(scanToVecto, 500);
+                return;
               }
               this.getStaticImageFromVideoElement().then(imageData => {
                 ImageTracer.imageToSVG(
                   imageData,
                   (svgstr) => {
                     this.vecto.svgstr = svgstr;
-                    setTimeout(scanToVecto, 500);
+                    // setTimeout(scanToVecto, 500);
                   },
                   { 
                     colorsampling: false,
@@ -814,17 +829,29 @@ export default {
         }
       });
       this.media_is_being_sent = true;
+      this.media_send_timeout = setTimeout(() => {
+        this.media_is_being_sent = false;
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .success(this.$t('notifications.media_couldnt_been_sent'));
+      },5000);
     },
-    newMediaSent: function() {
+    newMediaSent(mdata) {
       console.log('METHODS • ValidateMedia: newMediaSent');
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .success(this.$t('notifications.media_was_sent'));
-      this.media_is_being_sent = false;
-      this.media_to_validate = false;
+      if (this.$root.justCreatedMediaID === mdata.id) {
+        this.$root.justCreatedMediaID = false;
+        this.$eventHub.$off('socketio.media_created_or_updated', this.newMediaSent);
+        this.media_send_timeout = false;
+        debugger;
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .success(this.$t('notifications.media_was_sent'));
+        this.media_is_being_sent = false;
+        this.media_to_validate = false;
+      }
     }
-
   }
 }
 
