@@ -17,6 +17,7 @@
           v-for="media in medias"
           :key="media.metaFilename"
           @click="current_single_media = media"
+          :class="{ 'is--current_single' : current_single_media.metaFileName === media.metaFileName }"
         >
           <MediaContent
             :context="'preview'"
@@ -44,12 +45,23 @@
       <div>
         <button
           type="button"
+          v-if="!videopreview"
+          @click="cancelStopmotion"
+          class="button button-bg_rounded button-outline"
+        >
+          <span class="text-cap font-verysmall">
+            {{ $t('cancel') }}
+          </span>
+        </button>
+
+        <button
+          type="button"
           v-if="videopreview"
           @click="backToStopmotion"
           class="button button-bg_rounded button-outline"
         >
           <span class="text-cap font-verysmall">
-            {{ $t('back') }}
+            ‹ {{ $t('back') }}
           </span>
         </button>
 
@@ -64,7 +76,9 @@
           @click="assembleStopmotionMedias"
           :disabled="videopreview && frameRate === previousFrameRate"
         >
-          {{ $t('generate') }}
+          <span class="text-cap font-verysmall">
+            {{ $t('generate') }}
+          </span>
         </button>
       </div>
 
@@ -176,6 +190,9 @@ export default {
         slugMediaName: this.videopreview.metaFileName
       });
       this.videopreview = false;    
+    },
+    cancelStopmotion: function() {
+      this.$emit('close');      
     }
   }
 }

@@ -1307,7 +1307,7 @@ body {
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: fade(@c-orange, 90%);
+        background-color: fade(@c-noir, 90%);
         --loader-bg-color: transparent;
         --loader-border-color: @c-rouge;  
       }
@@ -1345,15 +1345,36 @@ body {
       padding-bottom: 0;
       .custom_scrollbar(8px, 5px, 6px);
 
+      counter-reset: compteListe;
+
+      &::before, &::after {
+        content: '';
+        height: 100%;
+        .padding-left-verysmall;
+      }
+
       > * {
         position: relative;
         overflow: hidden;
-        background-color: @c-gris_clair;
-        .margin-sides-verysmall;
+        // background-color: @c-gris_clair;
         // border-radius: 10px;
         height: 100%;
         flex: 0 0 100px;
         cursor: pointer;
+
+        &::before {
+          counter-increment: compteListe 1;
+          content: counter(compteListe) " ";
+          position: absolute;
+          left: 0;top: 0;
+          .padding-sides-verysmall;
+          .font-verysmall;
+          .c-noir;
+        }
+
+        &.is--current_single::before {
+          .c-rouge;
+        }
       }
     }
   }
