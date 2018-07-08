@@ -77,13 +77,47 @@ button, .button {
   }
 
   &.button-bg_rounded {
-    color: @c-bleumarine;
-    color: white;
 
     > * {
       display: inline-block;
       vertical-align: middle;
     }
+
+    rect {
+      fill: currentColor;
+    }
+  }
+  &.button-outline {
+    background-color: transparent;
+    border: 2px solid currentColor;
+
+    svg {
+      > * {
+        fill: currentColor;
+      }
+    }
+
+    &.is--selected, &:hover, &:focus {
+      border: 2px solid transparent;
+      background-color: white;
+      color: @c-orange;
+
+      span {
+        color: inherit;
+      }
+
+      svg {
+        > * {
+          fill: currentColor;
+        }
+      }
+
+      &.c-rouge {
+        background-color: @c-rouge;
+        color: @c-orange;
+      }
+    }
+
 
   }
 
@@ -623,6 +657,17 @@ label, .label {
   font-weight: 500;
   letter-spacing: 0.05em;
   color: @c-gris_fonce;
+
+}
+
+svg.inline-svg {
+  display: inline-block;
+  width: 1.4em;
+  height: 1.4em;
+
+  > * {
+    fill: currentColor;
+  }
 }
 
 pre {

@@ -23,7 +23,7 @@
     <button
       type="button"
       :disabled="read_only"
-      class="button button-bg_rounded bg-bleuvert"
+      class="button button-bg_rounded bg-rouge"
     >
       <img src="/images/i_enregistre.svg"/>
       <span class="text-cap font-verysmall">
@@ -65,29 +65,6 @@ export default {
   computed: {
   },
   methods: {
-    sendMedia: function() {
-      console.log('METHODS • ValidateMedia: sendMedia');
-      this.$eventHub.$on('socketio.media_created_or_updated', this.newMediaSent);
-      this.$root.createMedia({
-        slugFolderName: this.slugProjectName,
-        type: 'projects',
-        rawData: this.media_to_validate.rawData,
-        additionalMeta: {
-          type: this.media_to_validate.type,
-          fav: this.fav
-        }
-      });
-      this.sending = true;
-    },
-    newMediaSent: function() {
-      console.log('METHODS • ValidateMedia: newMediaSent');
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .success(this.$t('notifications.media_was_sent'));
-      this.$emit('close');
-      this.sending = false;
-    }
   }
 }
 </script>

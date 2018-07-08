@@ -1,9 +1,7 @@
 <template>
   <div id="systemBar">
     <div class="fixedBand">
-      <transition
-        name="fade"
-        >
+      <transition name="fade" :duration="600">
         <div
           v-if="withTitleBar"
           class="titleText"

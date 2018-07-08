@@ -111,7 +111,7 @@
 
       </div>
 
-      <transition name="fade">
+      <transition name="fade" :duration="600">
         <button
           class="button-round bg-transparent m_modal--close_button padding-verysmall"
           @click="closeModal"

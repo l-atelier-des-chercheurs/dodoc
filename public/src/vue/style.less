@@ -1134,20 +1134,6 @@ body {
         min-width: 0;
       }
     }
-
-    &.is--justCaptured {
-      .m_panel {
-        &:nth-child(1) {
-          flex-basis: 50%;
-        }
-        &:nth-child(2) {
-          min-width: 300px;
-          flex-basis: 40%;
-          width: 0;
-          margin-left: @t-skipline*2;
-        }
-      }
-    }
   }
 
   .m_captureview--options {
@@ -1188,15 +1174,25 @@ body {
 
   .m_panel--previewCard {
     position: relative;
-    overflow: hidden;
     flex: 1 1 auto;
-    border-radius: 10px 10px 0 0;
 
     > div {
       position: absolute;
       width: 100%;
       height: 100%;
+      border-radius: 10px 10px 0 0;
+      overflow: hidden;
+    }
+
+    .m_panel--previewCard--live {
+      // border: 5px solid @c-gris_clair;
       .bg-noir;
+
+    }
+    .m_panel--previewCard--validate {
+      background-color: white;
+      .bg-noir;
+      .bg-orange;
     }
 
     video, canvas, img, #vectoContainer, .mediaContainer, audio {
@@ -1205,7 +1201,6 @@ body {
       width: 100%;
       height: 100%;
       margin: 0;
-      .bg-noir;
     }
 
     > canvas {
@@ -1248,7 +1243,7 @@ body {
       right: 0;
       bottom: 0;
       .bg-rouge;
-      z-index: 1;
+      z-index: 10;
     }
   }
   .m_panel--buttons {
@@ -1256,15 +1251,21 @@ body {
     flex-shrink: 0;
     min-height: 80px;
     min-height: 10vh;
+    overflow: hidden;
 
     .m_panel--buttons--row {
       position: absolute;
       width: 100%;
       height: 100%;
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
       background-color: white;
+      .padding-small;
+
+      > * {
+        flex: 0 1 180px;
+      }
   
       img {
         width: 48px;
@@ -1277,6 +1278,29 @@ body {
 
       &.m_panel--buttons--row_validate {
         .bg-noir;
+        .bg-orange;
+      }
+
+      .m_panel--buttons--row--captureButton {
+        &:hover {
+          transform: scale(1.2);
+          transition: transform .4s;
+        }
+
+        &.is--justCaptured {
+          transform: scale(0);
+          transition: transform .4s;
+        }
+      }
+      .m_panel--buttons--row--overlay {
+        position: absolute;
+        top: 0;left: 0;right: 0;bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: fade(@c-orange, 90%);
+        --loader-bg-color: transparent;
+        --loader-border-color: @c-rouge;  
       }
     }
   }
@@ -2188,15 +2212,14 @@ body {
 
 .fade-enter-active, .fade-leave-active {
   opacity: 1;
-  transition: opacity 1s linear;
+  transition: opacity .6s linear;
 }
 .fade-enter, .fade-leave-to {
   opacity: 0;
-  transition: opacity 1s linear;
+  transition: opacity .6s linear;
 }
 
 .slideup-enter-active, .slideup-leave-active {
-  opacity: 1;
   transform: translateY(0);
   transition: opacity .4s linear, transform .4s ease-out;
 }
@@ -2267,13 +2290,15 @@ body {
   transition: transform 1s cubic-bezier(.25,.2,.25,1);
 }
 
-.mediaCapture-enter-active, .mediaCapture-leave-active {
+.mediaCapture-enter-active {
+  // transform: translateY(-100%);
   opacity: 1;
-  transition: all 1s linear;
+  transition: all .4s linear;
 }
-.mediaCapture-enter, .mediaCapture-leave-to {
+.mediaCapture-enter {
+  // transform: translateY(100%);
   opacity: 0;
-  transition: all 1s linear;
+  transition: all .4s linear;
 }
 
 .scaleIn-enter-active, .scaleIn-leave-active {

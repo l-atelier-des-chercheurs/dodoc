@@ -24,17 +24,17 @@
     <div class="m_captureview--panels">
       <div class="m_panel">
 
-        <!-- <transition name="enableMode" :duration="100"> -->
+        <transition name="enableMode" :duration="1000">
           <div class="m_panel--modeOverlay"
             v-if="mode_just_changed"
           >
             {{ selected_mode }}
           </div>
-        <!-- </transition> -->
+        </transition>
         
         <div class="m_panel--previewCard">
 
-          <div>
+          <div class="m_panel--previewCard--live">
             <video 
               v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
               ref="videoElement" 
@@ -48,8 +48,8 @@
             </div>
           </div>
 
-          <transition name="fade" :duration="400">
-            <div v-if="media_to_validate">
+          <transition name="fade" :duration="600">
+            <div class="m_panel--previewCard--validate" v-if="media_to_validate">
               <img 
                 v-if="media_to_validate.type === 'image'" 
                 :src="media_to_validate.rawData"
@@ -62,17 +62,21 @@
             </div>
           </transition>
 
-          <transition name="mediaCapture" :duration="100">
+          <!-- <transition name="mediaCapture" :duration="400">
             <div class="m_panel--previewCard--captureOverlay"
               v-show="capture_button_pressed"
             />
-          </transition>
+          </transition> -->
 
         </div>
-        <div class="m_panel--buttons" :class="{ 'bg-rouge' : isRecording }">
-          <div class="m_panel--buttons--row">
+        <div class="m_panel--buttons">
+
+          <div class="m_panel--buttons--row" :class="{ 'bg-rouge' : isRecording }">
+            <div />
+  
             <button type="button" 
-              class="padding-verysmall bg-blanc"
+              class="padding-verysmall bg-transparent m_panel--buttons--row--captureButton"
+              :class="{ 'is--justCaptured' : capture_button_pressed }"
               @click="captureOrStop()"
             >
               <img 
@@ -80,21 +84,23 @@
               />
             </button>
 
-            <div v-if="selected_mode === 'vecto'">
-              <div class="m_metaField">
-                <div>
-                  Lissage
-                </div>
-                <div>
-                  <input type="range" v-model="vecto.blurradius" min="0" max="20">
+            <div class="m_panel--buttons--row--options">
+              <div v-if="selected_mode === 'vecto'">
+                <div class="m_metaField">
+                  <div>
+                    Lissage
+                  </div>
+                  <div>
+                    <input type="range" v-model="vecto.blurradius" min="0" max="20">
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <span class="switch" v-if="selected_mode === 'video'">
-              <input type="checkbox" class="switch" id="recordVideoWithAudio" v-model="recordVideoWithAudio">
-              <label for="recordVideoWithAudio">Enregistrer le son</label>
-            </span>
+              <span class="switch switch-xs" v-if="selected_mode === 'video'">
+                <input type="checkbox" class="switch" id="recordVideoWithAudio" v-model="recordVideoWithAudio">
+                <label for="recordVideoWithAudio">Enregistrer le son</label>
+              </span>
+            </div>
           </div>
           <transition name="slideup" :duration="400">
             <div class="m_panel--buttons--row m_panel--buttons--row_validate"
@@ -102,10 +108,15 @@
             >
               <button
                 type="button"
-                class="button button-bg_rounded bg-orange"
+                class="button button-bg_rounded button-outline c-blanc"
                 @click="media_to_validate = false"
               >
-                <img src="/images/i_clear.svg"/>
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                  viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+                <polygon  points="42.6,57.2 57.5,42.4 84.1,69 110.8,42.4 125.6,57.2 99,83.9 125.6,110.5 110.8,125.4 
+                84.1,98.7 57.5,125.4 42.6,110.5 69.3,83.9 			"/>
+
+                </svg>
                 <span class="text-cap font-verysmall">
                   {{ $t('cancel') }}
                 </span>
@@ -114,16 +125,46 @@
               <button
                 type="button"
                 :disabled="read_only"
-                class="button button-bg_rounded bg-bleuvert"
+                @click="sendMedia"
+                class="button button-bg_rounded button-outline c-rouge is--selected"
               >
-                <img src="/images/i_enregistre.svg"/>
+                <svg version="1.1" class="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                  viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+                  <rect x="51.4" y="73.1" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -53.857 72.9892)" width="19.5" height="56.8"/>
+                  <rect x="53.2" y="77.3" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -31.6875 97.6563)" width="97.6" height="19.5"/>
+                </svg>
+                <span class="text-cap font-verysmall c-rouge">
+                  {{ $t('save') }}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                :disabled="read_only"
+                @click="sendMedia({ fav: true })"
+                class="button button-bg_rounded button-outline c-rouge"
+              >
+                <svg version="1.1"
+                  class="inline-svg"
+                  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+                  x="0px" y="0px" width="78.5px" height="106.4px" viewBox="0 0 78.5 106.4" style="enable-background:new 0 0 78.5 106.4;"
+                  xml:space="preserve">
+                  <polygon class="st0" points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"/>
+                  <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 "/>
+                </svg>
                 <span class="text-cap font-verysmall">
                   <template v-if="sending"> 
                     <span class="loader loader-xs" />
                   </template>
-                  {{ $t('save') }}
+                  {{ $t('save') }}<br>{{ $t('as_favorite') }}
                 </span>
               </button>
+              <div class="m_panel--buttons--row--overlay c-orange"
+                v-if="media_is_being_sent"
+              >
+                <span class="loader loader-xs" />
+              </div>
+
             </div>
           </transition>
         </div>
@@ -232,6 +273,7 @@ export default {
       mode_just_changed: false,
 
       media_to_validate: false,
+      media_is_being_sent: false,
 
       current_stopmotion: false,
 
@@ -761,6 +803,29 @@ export default {
           });
 
       });
+    },
+    sendMedia: function({ fav = false }) {
+      console.log(`METHODS • ValidateMedia: sendMedia with fav=${fav}`);
+      this.$eventHub.$on('socketio.media_created_or_updated', this.newMediaSent);
+      this.$root.createMedia({
+        slugFolderName: this.slugProjectName,
+        type: 'projects',
+        rawData: this.media_to_validate.rawData,
+        additionalMeta: {
+          type: this.media_to_validate.type,
+          fav: fav
+        }
+      });
+      this.media_is_being_sent = true;
+    },
+    newMediaSent: function() {
+      console.log('METHODS • ValidateMedia: newMediaSent');
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .success(this.$t('notifications.media_was_sent'));
+      this.media_is_being_sent = false;
+      this.media_to_validate = false;
     }
 
   }
