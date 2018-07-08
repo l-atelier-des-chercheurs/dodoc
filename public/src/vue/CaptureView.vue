@@ -24,11 +24,11 @@
     <div class="m_captureview--panels">
       <div class="m_panel">
 
-        <transition name="enableMode" :duration="1000">
+        <transition name="enableMode" :duration="400">
           <div class="m_panel--modeOverlay"
             v-if="mode_just_changed"
           >
-            {{ selected_mode }}
+            {{ $t(selected_mode) }}
           </div>
         </transition>
         
@@ -71,7 +71,7 @@
         </div>
         <div class="m_panel--buttons">
 
-          <div class="m_panel--buttons--row" :class="{ 'bg-rouge' : isRecording }">
+          <div class="m_panel--buttons--row" :class="{ 'bg-orange' : is_recording }">
             <div />
   
             <button type="button" 
@@ -79,9 +79,8 @@
               :class="{ 'is--justCaptured' : capture_button_pressed }"
               @click="captureOrStop()"
             >
-              <img 
-                :src="recordButtonSrc"
-              />
+              <img v-if="!this.is_recording" src="/images/i_record.svg">
+              <img v-else src="/images/i_stop.svg">
             </button>
 
             <div class="m_panel--buttons--row--options">
@@ -96,7 +95,7 @@
                 </div>
               </div>
 
-              <span class="switch switch-xs" v-if="selected_mode === 'video'">
+              <span class="switch switch-xs" v-if="selected_mode === 'video' && !is_recording">
                 <input type="checkbox" class="switch" id="recordVideoWithAudio" v-model="recordVideoWithAudio">
                 <label for="recordVideoWithAudio">{{ $t('with_sound') }}</label>
               </span>
@@ -262,7 +261,6 @@ export default {
         }
       ],
 
-      isRecording: false,
       recordVideoFeed: undefined,
       recordVideoWithAudio: true,
 
@@ -271,6 +269,7 @@ export default {
       audioStream: null,
       available_devices: {},
       mode_just_changed: false,
+      is_recording: false,
 
       media_to_validate: false,
       media_is_being_sent: false,
@@ -350,8 +349,8 @@ export default {
         this.startMode();
       });
     },
-    'isRecording': function() {
-      equalizer.setSarahCouleur(this.isRecording);
+    'is_recording': function() {
+      equalizer.setSarahCouleur(this.is_recording);
     },
     'current_camera_resolution': function() {
       console.log(`WATCH • Capture: current_camera_resolution = ${this.current_camera_resolution}`);
@@ -372,9 +371,6 @@ export default {
   computed: {
     sorted_available_devices() {
       return this.$_.groupBy(this.available_devices, 'kind');
-    },
-    recordButtonSrc() {
-      return !this.isRecording ? '/images/i_record.svg':'/images/i_stop.svg';
     }
   },
   methods: {
@@ -500,7 +496,7 @@ export default {
         this.videoStream.getVideoTracks().forEach(function(track) {
           track.stop();
         });
-        this.$refs.videoElement.srcObject = null;
+        // this.$refs.videoElement.srcObject = null;
         this.videoStream = null;
       }
     },
@@ -637,12 +633,12 @@ export default {
           }
           recordVideoFeed.startRecording(options);   
 
-          this.isRecording = true;
+          this.is_recording = true;
 
           this.$eventHub.$on('capture.stopRecording', () => {
             this.$eventHub.$off('capture.stopRecording');
             recordVideoFeed.stopRecording(() => {
-              this.isRecording = false;
+              this.is_recording = false;
               recordVideoFeed.getDataURL(videoDataURL => {
                 recordVideoFeed = null;
                 return resolve(videoDataURL);
@@ -661,13 +657,13 @@ export default {
           });
           recordAudioFeed.startRecording();
 
-          this.isRecording = true;
+          this.is_recording = true;
 
           this.$eventHub.$on('capture.stopRecording', () => {
             this.$eventHub.$off('capture.stopRecording');
 
             recordAudioFeed.stopRecording(() => {
-              this.isRecording = false;
+              this.is_recording = false;
               recordAudioFeed.getDataURL(audioDataURL => {
                 resolve(audioDataURL);
               })
@@ -683,7 +679,7 @@ export default {
         this.capture_button_pressed = false;
       }, 400);
 
-      if(this.isRecording) {
+      if(this.is_recording) {
         this.$eventHub.$emit('capture.stopRecording');
         return;
       }
@@ -696,7 +692,8 @@ export default {
           };
         });
       } else 
-      if(this.selected_mode === 'video') {        
+      if(this.selected_mode === 'video') {    
+        this.stopVideoFeed();            
         this.startRecordCameraFeed(this.recordVideoWithAudio).then(rawData => {
           this.media_to_validate = {
             rawData,

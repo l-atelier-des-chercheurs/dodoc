@@ -1260,7 +1260,6 @@ body {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: white;
       .padding-small;
 
       > * {
@@ -1282,14 +1281,12 @@ body {
       }
 
       .m_panel--buttons--row--captureButton {
+        transition: transform .4s;
         &:hover {
           transform: scale(1.2);
-          transition: transform .4s;
         }
-
         &.is--justCaptured {
           transform: scale(0);
-          transition: transform .4s;
         }
       }
       .m_panel--buttons--row--overlay {
@@ -2349,17 +2346,17 @@ body {
   transform: translate3d(0, 100px, 0);
 }
 
-// .enableMode-enter-active, .enableMode-leave-active {
-//   opacity: 1;
-//   transition: all .1s ease-out;
-// }
-// .enableMode-enter {
-//   opacity: 0;
-// }
-// .enableMode-leave-to {
-//   opacity: 0;
-//   transition: all .3s ease-out;
-// }
+.enableMode-enter-active, .enableMode-leave-active {
+  opacity: 1;
+  transition: all .1s ease-out;
+}
+.enableMode-enter {
+  opacity: 0;
+}
+.enableMode-leave-to {
+  opacity: 0;
+  transition: all .3s ease-out;
+}
 
 /**********************************************************
               
