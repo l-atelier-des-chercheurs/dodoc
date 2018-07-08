@@ -92,6 +92,7 @@ module.exports = (function() {
       text: 'texte',
       other: 'autre',
       with_sound: 'avec le son',
+      generate: 'Générer',
 
       select: 'Sélectionner',
       unselect: 'Dé-sélectionner',
@@ -162,11 +163,12 @@ module.exports = (function() {
 
       last_modified: 'Dernière modification',
       remote_access: 'Accès depuis d’autres appareils',
+      img_per_second: 'Images par seconde',
 
       notifications: {
         media_was_sent: 'Le média a été envoyé.',
         media_couldnt_been_sent:
-          'Le média n’a pas pu être envoyé car la connexion à do•doc a été perdue.',
+          'Le média n’a pas pu être envoyé à cause d’une erreur de connexion.',
         file_was_sent: 'Le fichier a été envoyé.',
         file_upload_not_allowed:
           'Votre navigateur web ne prend pas en charge l’envoi de fichiers.',
@@ -288,6 +290,7 @@ module.exports = (function() {
       text: 'text',
       other: 'other',
       with_sound: 'with sound',
+      generate: 'Generate',
 
       export: 'Export',
       export_as_pdf: 'Export as PDF',
@@ -360,10 +363,12 @@ module.exports = (function() {
 
       last_modified: 'Last modified',
       remote_access: 'Acces from other devices',
+      img_per_second: 'Images per second',
 
       notifications: {
         media_was_sent: 'The media was sent.',
-        media_couldnt_been_sent: 'The media wasn’t received by do•doc.',
+        media_couldnt_been_sent:
+          'The media was not sent because of a connexion error.',
         file_was_sent: 'The file was sent.',
         file_upload_not_allowed: 'File upload is not allowed by this browser.',
         connection_active: 'The connection to the server is active.',

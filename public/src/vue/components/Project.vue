@@ -90,6 +90,14 @@
     >
       <div class="sectionTitle_small margin-sides-small margin-bottom-small">
         {{ $t('favorite_medias') }}
+        <svg version="1.1"
+          class="inline-svg"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+          x="0px" y="0px" width="78.5px" height="106.4px" viewBox="0 0 78.5 106.4" style="enable-background:new 0 0 78.5 106.4;"
+          xml:space="preserve">
+          <polygon class="st0" points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"/>
+          <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 "/>
+        </svg>
       </div>
 
       <div class="m_project--favMedias--list">

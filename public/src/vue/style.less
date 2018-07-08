@@ -1114,16 +1114,13 @@ body {
     flex-flow: row wrap;
     justify-content: center;
 
-    > * {
+    > .m_panel {
+      min-width: 300px;
       flex: 0 1 auto;
       transition: all .15s ease-out;
       overflow: auto;
       .boxs-card-0;
       .bg-blanc;
-    }
-
-    .m_panel {
-      min-width: 300px;
 
       &:nth-child(1) {
         flex-basis: 70%;
@@ -1134,8 +1131,23 @@ body {
         min-width: 0;
       }
     }
+
+    &.stopmotion_inprogress {
+      > .m_panel {
+        &:nth-child(1) {
+          flex-basis: 50%;
+        }
+        &:nth-child(2) {
+          min-width: 300px;
+          flex-basis: 40%;
+          width: 0;
+          margin-left: @t-skipline*2;
+        }
+      }      
+    }
   }
 
+  
   .m_captureview--options {
     display: flex;
     flex-flow: row wrap;
@@ -1304,9 +1316,14 @@ body {
 }
 
 .m_stopmotionpanel {
+  position: relative;
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
+
+  > * {
+    transition: all .4s;
+  }
   
   .m_stopmotionpanel--medias {
     flex: 1 1 auto;
@@ -1330,22 +1347,38 @@ body {
       border-radius: 10px;
     }
   }
+  .m_stopmotionpanel--videopreview {
+    flex: 1 1 auto;
+  }
 
   .m_stopmotionpanel--buttons {
     flex: 0 0 auto;
     width: 100%;
     // min-height: 50px;
-    .padding-small;
-    .bg-noir;
+    color: @c-noir;
 
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: flex-start;
-
-    > input[type="number"] {
+    > * {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: space-between;
+      align-items: center;
+      .padding-small;
+      .bg-noir;
+  
+      &:nth-child(1) {
+      }
+      &:nth-child(2) {
+        border-top: 2px solid white;
+        justify-content: center;
+      }
+    }
+    
+    label {
+      // color: white;
+    }
+    input[type="number"] {
       width: 50px;
     }
-
   }
 }
 

@@ -4,7 +4,6 @@
     :class="`type-${media.type}`"
     :data-context="context"
   >
-  
     <template v-if="media.type === 'image'">
       <img :src="linkToImageThumb">
       <transition name="fade" :duration="600">
@@ -102,8 +101,6 @@ export default {
         default: 1600
       },
       htmlForEditor: this.value,
-      mediaURL: this.$root.state.mode === 'export_publication' ? 
-        `./${this.subfolder}${this.slugFolderName}/${this.media.media_filename}` : `/${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`,
       customToolbar: [
         [{ 'header': [false, 1, 2, 3, 4] }],
         // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
@@ -128,6 +125,11 @@ export default {
     }
   },
   computed: {
+    mediaURL: function() {
+      return this.$root.state.mode === 'export_publication' 
+        ? `./${this.subfolder}${this.slugFolderName}/${this.media.media_filename}` 
+        : `/${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`;
+    },
     thumbRes: function() {
       return this.context === 'preview'
         ? this.available_resolutions.preview

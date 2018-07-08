@@ -21,7 +21,9 @@
       </button>
     </div>
 
-    <div class="m_captureview--panels">
+    <div class="m_captureview--panels"
+      :class="{ 'stopmotion_inprogress' : $root.store.stopmotions.hasOwnProperty(current_stopmotion) }"
+    >
       <div class="m_panel">
 
         <transition name="enableMode" :duration="400">
@@ -152,9 +154,9 @@
                 class="button button-bg_rounded button-outline c-rouge"
               >
                 <svg version="1.1"
-                  class="inline-svg"
+                  class="padding-verysmall"
                   xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-                  x="0px" y="0px" width="78.5px" height="106.4px" viewBox="0 0 78.5 106.4" style="enable-background:new 0 0 78.5 106.4;"
+                  x="0px" y="0px" width="68.5px" height="80.4px" viewBox="0 0 78.5 106.4" style="enable-background:new 0 0 78.5 106.4;"
                   xml:space="preserve">
                   <polygon class="st0" points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"/>
                   <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 "/>
@@ -178,9 +180,10 @@
 
       </div>
 
-      <div class="m_panel">
+      <div class="m_panel"
+        v-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"        
+      >
         <StopmotionPanel 
-          v-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"        
           :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
           :slugProjectName="this.slugProjectName"
         >
@@ -188,6 +191,7 @@
       </div>
     </div>
     
+
     <div class="m_captureview--options">
       <fieldset v-show="true">
         <legend>Sources</legend>
@@ -226,7 +230,6 @@ import MediaContent from './components/subcomponents/MediaContent.vue';
 import StopmotionPanel from './components/subcomponents/StopmotionPanel.vue';
 
 import RecordRTC from 'recordrtc';
-import { setTimeout, setInterval } from 'timers';
 import 'webrtc-adapter';
 import ImageTracer from 'imagetracerjs';
 
@@ -281,6 +284,8 @@ export default {
 
       media_to_validate: false,
       media_is_being_sent: false,
+      media_send_timeout: 10000,
+      media_send_timeout_timer: false,
 
       current_stopmotion: false,
 
@@ -351,7 +356,7 @@ export default {
     'selected_mode': function() {
       console.log('WATCH • Capture: selected_mode');
       this.mode_just_changed = true;
-      setTimeout(()=> {
+      window.setTimeout(()=> {
         this.mode_just_changed = false;
       }, 1000);
       this.$nextTick(() => {
@@ -682,7 +687,7 @@ export default {
 
     captureOrStop() {
       this.capture_button_pressed = true;
-      setTimeout(() => {
+      window.setTimeout(() => {
         this.capture_button_pressed = false;
       }, 400);
 
@@ -701,7 +706,7 @@ export default {
       } else 
       if(this.selected_mode === 'video') {    
         this.stopVideoFeed();   
-        setTimeout(() => {
+        window.setTimeout(() => {
           this.startRecordCameraFeed(this.recordVideoWithAudio).then(rawData => {
             this.media_to_validate = {
               rawData,
@@ -782,7 +787,7 @@ export default {
               if(this.selected_mode !== 'vecto' || !this.videoStream) {
                 return;
               } else if(this.media_to_validate) {
-                setTimeout(scanToVecto, 500);
+                window.setTimeout(scanToVecto, 500);
                 return;
               }
               this.getStaticImageFromVideoElement().then(imageData => {
@@ -790,7 +795,7 @@ export default {
                   imageData,
                   (svgstr) => {
                     this.vecto.svgstr = svgstr;
-                    // setTimeout(scanToVecto, 500);
+                    window.setTimeout(scanToVecto, 500);
                   },
                   { 
                     colorsampling: false,
@@ -805,7 +810,7 @@ export default {
                 );
               });
             };
-            setTimeout(scanToVecto, 500);
+            window.setTimeout(scanToVecto, 500);
 
             resolve();
           })
@@ -829,21 +834,25 @@ export default {
         }
       });
       this.media_is_being_sent = true;
-      this.media_send_timeout = setTimeout(() => {
+
+      this.media_send_timeout_timer = window.setTimeout(() => {
         this.media_is_being_sent = false;
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
           .success(this.$t('notifications.media_couldnt_been_sent'));
-      },5000);
+      }, this.media_send_timeout);
+
     },
     newMediaSent(mdata) {
       console.log('METHODS • ValidateMedia: newMediaSent');
       if (this.$root.justCreatedMediaID === mdata.id) {
         this.$root.justCreatedMediaID = false;
         this.$eventHub.$off('socketio.media_created_or_updated', this.newMediaSent);
-        this.media_send_timeout = false;
-        debugger;
+
+        window.clearTimeout(this.media_send_timeout_timer);
+        this.media_send_timeout_timer = undefined;        
+
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
