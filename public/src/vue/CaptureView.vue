@@ -427,6 +427,10 @@ export default {
       }
     },
     captureKeyListener(evt) {
+      if(this.$root.settings.media_is_being_validated) {
+        return;
+      }
+
       console.log('METHODS • CaptureView: captureKeyListener');
       switch(evt.key) {
         case 'w':
