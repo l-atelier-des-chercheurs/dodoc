@@ -1069,6 +1069,10 @@ body {
       .c-blanc;
     }
 
+    input[disabled] + label {
+      filter: grayscale(100%);
+    }
+
     label { 
       .button;
       .button-inline;
@@ -1077,6 +1081,7 @@ body {
       padding: 0 @t-skipline/4;        
       margin: 1vw 1vw;
       text-align: center;
+      transition: filter .4s;
 
       .picto {
         border-radius: 50%;
@@ -1288,10 +1293,6 @@ body {
         // background-color: transparent;
       }
 
-      &.m_panel--buttons--row_validate {
-        .bg-noir;
-      }
-
       .m_panel--buttons--row--captureButton {
         transition: transform .4s;
         &:hover {
@@ -1301,19 +1302,38 @@ body {
           transform: scale(0);
         }
       }
-      .m_panel--buttons--row--overlay {
-        position: absolute;
-        top: 0;left: 0;right: 0;bottom: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: fade(@c-noir, 90%);
-        --loader-bg-color: transparent;
-        --loader-border-color: @c-rouge;  
-      }
     }
   }
 }
+
+.m_mediaValidationButtons {
+  position: relative;
+  z-index: 105;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .padding-small;
+  flex: 0 0 auto;
+
+  .bg-noir;
+
+  > * {
+    flex: 0 1 180px;
+  }
+  
+  .m_mediaValidationButtons--overlay {
+    position: absolute;
+    top: 0;left: 0;right: 0;bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: fade(@c-noir, 90%);
+    --loader-bg-color: transparent;
+    --loader-border-color: @c-rouge;  
+  }
+
+}
+
 
 .m_stopmotionpanel {
   position: relative;
@@ -1380,6 +1400,7 @@ body {
   }
   .m_stopmotionpanel--videopreview {
     flex: 1 1 auto;
+    overflow: hidden;
   }
 
   .m_stopmotionpanel--buttons {
@@ -2364,12 +2385,12 @@ body {
 .mediaCapture-leave-active {
   // transform: translateY(-100%);
   opacity: 1;
-  transition: all .4s ease-out;
+  transition: all .3s ease-out;
 }
 .mediaCapture-leave-to {
   // transform: translateY(100%);
   opacity: 0;
-  transition: all .4s ease-out;
+  transition: all .3s ease-out;
 }
 
 .scaleIn-enter-active, .scaleIn-leave-active {

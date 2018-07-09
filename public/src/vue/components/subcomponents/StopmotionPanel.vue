@@ -54,7 +54,7 @@
           </span>
         </button>
 
-        <button
+        <!-- <button
           type="button"
           v-if="videopreview"
           @click="backToStopmotion"
@@ -63,7 +63,7 @@
           <span class="text-cap font-verysmall">
             ‹ {{ $t('back') }}
           </span>
-        </button>
+        </button> -->
 
         <div class="">
           <label class="">{{ $t('img_per_second') }}</label>
@@ -81,28 +81,14 @@
           </span>
         </button>
       </div>
-
-      <div
-        v-if="videopreview"
-      >
-        <button
-          type="button"
-          :disabled="read_only"
-          @click="$emit('close')"
-          class="button button-bg_rounded button-outline c-rouge is--selected"
-        >
-          <svg version="1.1" class="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-            viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
-            <rect x="51.4" y="73.1" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -53.857 72.9892)" width="19.5" height="56.8"/>
-            <rect x="53.2" y="77.3" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -31.6875 97.6563)" width="97.6" height="19.5"/>
-          </svg>
-          <span class="text-cap font-verysmall c-rouge">
-            {{ $t('save') }}
-          </span>
-        </button>
-
-      </div>
     </div>
+    <MediaValidationButtons
+      v-if="videopreview"
+      :read_only="read_only"
+      @cancel="backToStopmotion"
+      @save="$emit('close')"
+      @save_and_fav="saveAndFav()"
+    />
 
     <div class="m_stopmotionpanel--loader"
       v-if="media_is_being_sent"
@@ -113,6 +99,7 @@
 </template>
 <script>
 import MediaContent from './MediaContent.vue';
+import MediaValidationButtons from './MediaValidationButtons.vue';
 
 export default {
   props: {
@@ -120,7 +107,8 @@ export default {
     slugProjectName: String
   },
   components: {
-    MediaContent
+    MediaContent,
+    MediaValidationButtons
   },
   data() {
     return {
@@ -193,6 +181,17 @@ export default {
     },
     cancelStopmotion: function() {
       this.$emit('close');      
+    },
+    saveAndFav: function() {
+      this.$root.editMedia({
+        type: 'projects',
+        slugFolderName: this.slugProjectName,
+        slugMediaName: this.videopreview.metaFileName,
+        data: {
+          fav: true
+        }
+      });
+      this.$emit('close');            
     }
   }
 }

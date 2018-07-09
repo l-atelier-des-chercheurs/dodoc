@@ -1,14 +1,16 @@
 <template>
   <div class="m_captureview">
     <div class="m_captureview--modeSelector">
-      <button type="button" class="bg-transparent" @click="previousMode()">
+      <button type="button" class="bg-transparent" @click="previousMode()"
+        v-if="!$root.settings.media_is_being_validated"
+      >
         ◀
       </button>
       <div 
         v-for="mode in available_modes"
         :key="mode.key"
       >
-        <input type="radio" :id="mode.key" :value="mode.key" v-model="selected_mode">
+        <input type="radio" :id="mode.key" :value="mode.key" :disabled="$root.settings.media_is_being_validated" v-model="selected_mode">
         <label :for="mode.key">
           <div class="picto">
             <img :src="mode.picto">
@@ -16,7 +18,9 @@
           <span>{{ $t(mode.key) }}</span>
         </label>
       </div>
-      <button type="button" class="bg-transparent" @click="nextMode()">
+      <button type="button" class="bg-transparent" @click="nextMode()"
+        v-if="!$root.settings.media_is_being_validated"
+      >
         ▶
       </button>
     </div>
@@ -72,7 +76,7 @@
             </div>
           </transition>
 
-          <transition name="mediaCapture" :duration="400">
+          <transition name="mediaCapture" :duration="300">
             <div class="m_panel--previewCard--captureOverlay"
               v-show="capture_button_pressed"
             />
@@ -112,69 +116,13 @@
             </div>
           </div>
           <transition name="slideup" :duration="400">
-            <div class="m_panel--buttons--row m_panel--buttons--row_validate"
+            <MediaValidationButtons
               v-if="media_to_validate"
-            >
-              <button
-                type="button"
-                class="button button-bg_rounded button-outline c-blanc"
-                @click="media_to_validate = false"
-              >
-                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                  viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
-                <polygon  points="42.6,57.2 57.5,42.4 84.1,69 110.8,42.4 125.6,57.2 99,83.9 125.6,110.5 110.8,125.4 
-                84.1,98.7 57.5,125.4 42.6,110.5 69.3,83.9 			"/>
-
-                </svg>
-                <span class="text-cap font-verysmall">
-                  {{ $t('cancel') }}
-                </span>
-              </button>
-
-              <button
-                type="button"
-                :disabled="read_only"
-                @click="sendMedia"
-                class="button button-bg_rounded button-outline c-rouge is--selected"
-              >
-                <svg version="1.1" class="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                  viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
-                  <rect x="51.4" y="73.1" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -53.857 72.9892)" width="19.5" height="56.8"/>
-                  <rect x="53.2" y="77.3" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -31.6875 97.6563)" width="97.6" height="19.5"/>
-                </svg>
-                <span class="text-cap font-verysmall c-rouge">
-                  {{ $t('save') }}
-                </span>
-              </button>
-
-              <button
-                type="button"
-                :disabled="read_only"
-                @click="sendMedia({ fav: true })"
-                class="button button-bg_rounded button-outline c-rouge"
-              >
-                <svg version="1.1"
-                  class="padding-verysmall"
-                  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-                  x="0px" y="0px" width="68.5px" height="80.4px" viewBox="0 0 78.5 106.4" style="enable-background:new 0 0 78.5 106.4;"
-                  xml:space="preserve">
-                  <polygon class="st0" points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"/>
-                  <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 "/>
-                </svg>
-                <span class="text-cap font-verysmall">
-                  <template v-if="sending"> 
-                    <span class="loader loader-xs" />
-                  </template>
-                  {{ $t('save') }}<br>{{ $t('as_favorite') }}
-                </span>
-              </button>
-              <div class="m_panel--buttons--row--overlay c-orange"
-                v-if="media_is_being_sent"
-              >
-                <span class="loader loader-xs" />
-              </div>
-
-            </div>
+              :read_only="read_only"
+              @cancel="media_to_validate = false"
+              @save="sendMedia({})"
+              @save_and_fav="sendMedia({ fav: true })"
+            />
           </transition>
         </div>
 
@@ -186,6 +134,7 @@
         <StopmotionPanel 
           :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
           :slugProjectName="this.slugProjectName"
+          :read_only="read_only"
           @close="current_stopmotion = false"
         >
         </StopmotionPanel>        
@@ -229,6 +178,7 @@
 <script>
 import MediaContent from './components/subcomponents/MediaContent.vue';
 import StopmotionPanel from './components/subcomponents/StopmotionPanel.vue';
+import MediaValidationButtons from './components/subcomponents/MediaValidationButtons.vue';
 
 import RecordRTC from 'recordrtc';
 import 'webrtc-adapter';
@@ -245,7 +195,8 @@ export default {
   },
   components: {
     MediaContent,
-    StopmotionPanel
+    StopmotionPanel,
+    MediaValidationButtons
   },
   data() {
     return {
@@ -493,7 +444,6 @@ export default {
           this.captureOrStop();
           break;
       }
-
     },
     stopAudioFeed() {
       console.log('METHODS • CaptureView: stopAudioFeed');
@@ -841,18 +791,20 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .success(this.$t('notifications.media_couldnt_been_sent'));
+          .error(this.$t('notifications.media_couldnt_been_sent'));
       }, this.media_send_timeout);
 
     },
-    newMediaSent(mdata) {
+    newMediaSent: function(mdata) {
       console.log('METHODS • ValidateMedia: newMediaSent');
       if (this.$root.justCreatedMediaID === mdata.id) {
         this.$root.justCreatedMediaID = false;
         this.$eventHub.$off('socketio.media_created_or_updated', this.newMediaSent);
 
         window.clearTimeout(this.media_send_timeout_timer);
-        this.media_send_timeout_timer = undefined;        
+        this.media_send_timeout_timer = undefined;   
+        
+        debugger;
 
         this.$alertify
           .closeLogOnClick(true)
