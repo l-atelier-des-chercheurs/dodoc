@@ -409,7 +409,7 @@ let vm = new Vue({
 
     settings: {
       has_modal_opened: false,
-      media_is_being_validated: false,
+      capture_mode_cant_be_changed: false,
 
       current_slugPubliName: false,
       current_author: false,

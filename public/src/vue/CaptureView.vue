@@ -2,7 +2,7 @@
   <div class="m_captureview">
     <div class="m_captureview--modeSelector">
       <button type="button" class="bg-transparent" @click="previousMode()"
-        v-if="!$root.settings.media_is_being_validated"
+        v-if="!$root.settings.capture_mode_cant_be_changed"
       >
         ◀
       </button>
@@ -10,7 +10,7 @@
         v-for="mode in available_modes"
         :key="mode.key"
       >
-        <input type="radio" :id="mode.key" :value="mode.key" :disabled="$root.settings.media_is_being_validated" v-model="selected_mode">
+        <input type="radio" :id="mode.key" :value="mode.key" :disabled="$root.settings.capture_mode_cant_be_changed" v-model="selected_mode">
         <label :for="mode.key">
           <div class="picto">
             <img :src="mode.picto">
@@ -19,7 +19,7 @@
         </label>
       </div>
       <button type="button" class="bg-transparent" @click="nextMode()"
-        v-if="!$root.settings.media_is_being_validated"
+        v-if="!$root.settings.capture_mode_cant_be_changed"
       >
         ▶
       </button>
@@ -84,7 +84,6 @@
 
         </div>
         <div class="m_panel--buttons">
-
           <div class="m_panel--buttons--row" :class="{ 'bg-orange' : is_recording }">
             <div />
   
@@ -427,7 +426,7 @@ export default {
       }
     },
     captureKeyListener(evt) {
-      if(this.$root.settings.media_is_being_validated) {
+      if(this.$root.settings.capture_mode_cant_be_changed) {
         return;
       }
 
