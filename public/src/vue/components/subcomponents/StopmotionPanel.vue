@@ -85,6 +85,7 @@
     <MediaValidationButtons
       v-if="videopreview"
       :read_only="read_only"
+      :media_is_being_sent="media_is_being_sent"
       @cancel="backToStopmotion"
       @save="$emit('close')"
       @save_and_fav="saveAndFav()"

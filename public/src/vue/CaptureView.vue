@@ -118,6 +118,7 @@
             <MediaValidationButtons
               v-if="media_to_validate"
               :read_only="read_only"
+              :media_is_being_sent="media_is_being_sent"
               @cancel="media_to_validate = false"
               @save="sendMedia({})"
               @save_and_fav="sendMedia({ fav: true })"

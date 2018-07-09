@@ -80,7 +80,8 @@
 
 export default {
   props: {
-    read_only: Boolean
+    read_only: Boolean,
+    media_is_being_sent: Boolean
   },
   components: {
   },
