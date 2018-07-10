@@ -23,7 +23,9 @@
         </button>
 
       </div>
-      <div class="m_stopmotionpanel--medias--list">
+      <div class="m_stopmotionpanel--medias--list"
+        ref="mediaPreviews"
+      >
         <div
           v-for="media in medias"
           :key="media.metaFilename"
@@ -144,6 +146,10 @@ export default {
     'medias': function() {
       if(this.medias.length > 0) {
         this.current_single_media = Object.values(this.stopmotiondata.medias).slice(-1)[0];
+        // scroll to end of timebar
+        this.$nextTick(() => {
+          this.$refs.mediaPreviews.scrollLeft = 1000000;
+        });
       }
     }
   },
