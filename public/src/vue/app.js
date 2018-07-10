@@ -515,6 +515,21 @@ let vm = new Vue({
       } else {
         document.body.style.overflow = '';
       }
+    },
+    'store.authors': function() {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`ROOT EVENT: var has changed: store.authors`);
+      }
+      // check if, when store.authors refresh, the current_author is still there
+      // delog if not
+      if (
+        this.settings.current_author &&
+        !this.store.authors.hasOwnProperty(
+          this.settings.current_author.slugFolderName
+        )
+      ) {
+        this.unsetAuthor();
+      }
     }
   },
   computed: {
@@ -759,6 +774,24 @@ let vm = new Vue({
       const author = this.$_.findWhere(this.store.authors, {
         nfc_tag: e.detail
       });
+      if (!author) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t('notifications.no_author_found_with_nfc_tag'));
+        return;
+      }
+
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .success(
+          this.$t('notifications.author_found_with_nfc_tag') +
+            ' ' +
+            `<button class="bg-blanc padding-none c-bleumarine font-thin text-uc">${
+              author.name
+            }</button>`
+        );
       this.setAuthor(author);
     },
 

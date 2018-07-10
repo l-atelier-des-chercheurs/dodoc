@@ -188,7 +188,7 @@
           <div 
             class="m_publicationview--pages--pageContainer"
             :style="setPageContainerProperties(page)"
-            :class="{ 'is--active' : (pageNumber === page_currently_active && $root.state.mode !== 'export_publication') }"
+            :class="{ 'is--active' : !preview_mode && (pageNumber === page_currently_active && $root.state.mode !== 'export_publication') }"
           >
             <div
               class="m_page"

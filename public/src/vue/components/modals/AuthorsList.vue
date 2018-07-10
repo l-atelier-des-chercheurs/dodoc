@@ -113,7 +113,6 @@ export default {
         });
       }
     },
-
     setAuthor(name) {
       this.$root.setAuthor(name);
       this.$refs.modal.closeModal()

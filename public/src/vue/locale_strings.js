@@ -199,7 +199,11 @@ module.exports = (function() {
           'Le flux audio n’a pas pu être démarré.\nEssayez de modifier la source dans les réglages.',
         audio_source_not_set: 'La source audio n’a pas été trouvée.',
         video_stream_not_available:
-          'Erreur : le flux vidéo n’est pas disponible.'
+          'Erreur : le flux vidéo n’est pas disponible.',
+        no_author_found_with_nfc_tag:
+          'Scan d’un tag NFC réussi, néanmoins aucun auteur n’a été associé à ce tag.',
+        author_found_with_nfc_tag:
+          'Scan d’un tag NFC réussi, activation de l’auteur suivant&nbsp;:'
       }
     },
     en: {
@@ -398,7 +402,11 @@ module.exports = (function() {
         failed_to_start_audio_change_source:
           'Failed to start audio feed. Try changing the source.',
         audio_source_not_set: 'The source audio has not been set.',
-        video_stream_not_available: 'Error: Video stream not available.'
+        video_stream_not_available: 'Error: Video stream not available.',
+        no_author_found_with_nfc_tag:
+          'NFC tag detected, however no author was found. Create an author first',
+        author_found_with_nfc_tag:
+          'NFC tag detected, the following author will be logged-in:'
       }
     }
   };
