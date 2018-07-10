@@ -13,14 +13,21 @@
       :class="{ 'is--selected' : selected_button === 0 }"
       @mouseover="selected_button = 0"
     >
-      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-        viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
-      <polygon  points="42.6,57.2 57.5,42.4 84.1,69 110.8,42.4 125.6,57.2 99,83.9 125.6,110.5 110.8,125.4 
-      84.1,98.7 57.5,125.4 42.6,110.5 69.3,83.9 			"/>
-      </svg>
-      <span class="">
-        {{ $t('cancel') }}
-      </span>
+      <template v-if="cancelButtonIsBackButton">
+        <span class="">
+          ‹ {{ $t('back') }}
+        </span>
+      </template>
+      <template v-else>
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+          viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+        <polygon  points="42.6,57.2 57.5,42.4 84.1,69 110.8,42.4 125.6,57.2 99,83.9 125.6,110.5 110.8,125.4 
+        84.1,98.7 57.5,125.4 42.6,110.5 69.3,83.9 			"/>
+        </svg>
+        <span class="">
+          {{ $t('cancel') }}
+        </span>
+      </template>
     </button>
 
     <button
@@ -81,7 +88,11 @@
 export default {
   props: {
     read_only: Boolean,
-    media_is_being_sent: Boolean
+    media_is_being_sent: Boolean,
+    cancelButtonIsBackButton: {
+      type: Boolean,
+      default: false
+    }
   },
   components: {
   },

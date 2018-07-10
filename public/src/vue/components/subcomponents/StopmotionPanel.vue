@@ -11,6 +11,17 @@
           :media="current_single_media"
           :subfolder="'_stopmotions/'"
         />
+        <button
+          type="button"
+          :disabled="read_only"
+          @click="removeMedia(current_single_media.metaFileName)"
+          class="buttonLink bg-orange c-noir m_stopmotionpanel--medias--single--removeMedia"
+        >
+          <span class="">
+            {{ $t('remove') }}
+          </span>
+        </button>
+
       </div>
       <div class="m_stopmotionpanel--medias--list">
         <div
@@ -86,6 +97,7 @@
       v-if="videopreview"
       :read_only="read_only"
       :media_is_being_sent="media_is_being_sent"
+      :cancelButtonIsBackButton="true"
       @cancel="backToStopmotion"
       @save="$emit('close')"
       @save_and_fav="saveAndFav()"
@@ -154,7 +166,7 @@ export default {
         rawData: this.medias,
         additionalMeta: {
           type: 'stopmotion',
-          slugStopmotionName: this.stopmotiondata.slugFolderName ,
+          slugStopmotionName: this.stopmotiondata.slugFolderName,
           frameRate: this.frameRate
         }
       });
@@ -193,6 +205,14 @@ export default {
         }
       });
       this.$emit('close');            
+    },
+    removeMedia: function(slugMediaName) {
+      this.$root.removeMedia({
+        type: 'stopmotions',
+        slugFolderName: this.stopmotiondata.slugFolderName, 
+        slugMediaName
+      });
+
     }
   }
 }

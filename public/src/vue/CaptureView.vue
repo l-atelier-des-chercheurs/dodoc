@@ -126,10 +126,18 @@
                 :src="media_to_validate.rawData"
                 controls
               />
-              <img 
+              <div 
                 v-else-if="media_to_validate.type === 'audio'" 
-                :src="media_to_validate.preview"
-              />
+                class="m_panel--previewCard--validate--audio"
+              >
+                <img 
+                  :src="media_to_validate.preview"
+                >
+                <audio
+                  :src="media_to_validate.rawData"
+                  controls
+                />
+              </div>
               <div 
                 v-else-if="media_to_validate.type === 'svg'" 
                 v-html="media_to_validate.preview"
@@ -182,14 +190,10 @@
 
             <div class="m_panel--buttons--row--options">
               <div v-if="selected_mode === 'vecto'">
-                <div class="m_metaField">
-                  <div>
-                    Lissage
-                  </div>
-                  <div>
-                    <input type="range" v-model="vecto.blurradius" min="0" max="20">
-                  </div>
-                </div>
+                <label>
+                  Lissage
+                </label>
+                <input class="margin-none" type="range" v-model="vecto.blurradius" min="0" max="20">
               </div>
 
               <span class="switch switch-xs" v-if="selected_mode === 'video'">
@@ -341,6 +345,7 @@ export default {
   },
   mounted() {
     document.addEventListener('keyup', this.captureKeyListener);
+    this.$root.settings.capture_mode_cant_be_changed = false;
   },
   beforeDestroy() {
     document.removeEventListener('keyup', this.captureKeyListener);
@@ -388,6 +393,9 @@ export default {
       } else {
         this.$refs.videoElement.play();
       }
+    },
+    'current_stopmotion': function() {
+      this.$root.settings.capture_mode_cant_be_changed = this.current_stopmotion ? this.current_stopmotion : false;
     }
   },
   computed: {
@@ -464,6 +472,10 @@ export default {
     },
     previousMode() {
       console.log('METHODS • CaptureView: previousMode');
+      if(this.$root.settings.capture_mode_cant_be_changed) {
+        return;
+      }
+
       let currentModeIndex = this.available_modes.findIndex((d) => {
         return d.key === this.selected_mode;
       });
@@ -474,6 +486,10 @@ export default {
     },
     nextMode() {
       console.log('METHODS • CaptureView: nextMode');
+      if(this.$root.settings.capture_mode_cant_be_changed) {
+        return;
+      }
+
       let currentModeIndex = this.available_modes.findIndex((d) => {
         return d.key === this.selected_mode;
       });
@@ -483,11 +499,13 @@ export default {
       }
     },
     captureKeyListener(evt) {
-      if(this.$root.settings.capture_mode_cant_be_changed) {
-        return;
+      console.log('METHODS • CaptureView: captureKeyListener');
+
+      // don’t register if validating a media
+      if(this.media_to_validate) {
+        return false;
       }
 
-      console.log('METHODS • CaptureView: captureKeyListener');
       switch(evt.key) {
         case 'w':
         case 'z':
@@ -682,6 +700,7 @@ export default {
           recordVideoFeed.startRecording(options);   
 
           this.is_recording = true;
+          this.$root.settings.capture_mode_cant_be_changed = true;
 
           this.$eventHub.$on('capture.stopRecording', () => {
             this.$eventHub.$off('capture.stopRecording');
@@ -707,6 +726,7 @@ export default {
           recordAudioFeed.startRecording();
 
           this.is_recording = true;
+          this.$root.settings.capture_mode_cant_be_changed = true;
 
           this.$eventHub.$on('capture.stopRecording', () => {
             this.$eventHub.$off('capture.stopRecording');
