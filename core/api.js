@@ -330,7 +330,6 @@ module.exports = (function() {
 
       const path_to_images = path.join(slugStopmotionPath, '*.jpeg');
 
-      debugger;
       const numberOfImagesToProcess = glob.sync(path_to_images).length;
 
       // ask ffmpeg to make a video from the cache images
@@ -344,7 +343,6 @@ module.exports = (function() {
         .output(pathToMedia)
         // setup event handlers
         .on('progress', progress => {
-          debugger;
           // var msg = {
           //   author: newMediaData.author,
           //   content: `${dodoc.lang().stopMotionCompilationProgress} ${
@@ -359,7 +357,6 @@ module.exports = (function() {
           );
         })
         .on('end', () => {
-          debugger;
           dev.logverbose(`Stopmotion has been completed`);
           resolve();
         })

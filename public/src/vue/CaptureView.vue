@@ -41,17 +41,72 @@
         <div class="m_panel--previewCard">
 
           <div class="m_panel--previewCard--live">
+            <!-- OPTIONS -->
+            <transition name="slideleft" :duration="400">
+              <div class="m_panel--previewCard--live--options"
+                v-if="show_capture_options && !is_recording"
+              >
+
+                <label>Sources</label>
+                <div v-for="(currentId, kind) in selected_devicesId" :key="kind">
+                  {{ kind }}
+                  <select v-if="sorted_available_devices.hasOwnProperty(kind)" v-model="selected_devicesId[kind]">
+                    <option 
+                      v-for="device in sorted_available_devices[kind]" 
+                      :value="device.deviceId" 
+                      :key="device.deviceId"
+                    >
+                      {{ device.label }}
+                    </option>        
+                  </select>
+                </div>
+
+                <hr>
+
+                <div><label>Resolution</label></div>
+
+                <template v-if="actual_current_video_resolution">
+                  <span class>current: </span>{{ actual_current_video_resolution.width }} x {{ actual_current_video_resolution.height }}
+                </template>
+
+                <div 
+                  v-for="res in available_camera_resolutions"
+                  :key="res.name"
+                >
+                  <input type="radio" :id="res.name" :value="res" v-model="ideal_camera_resolution">
+                  <label :for="res.name">
+                    <span>{{ res.name }}</span>
+                  </label>
+                </div>
+
+                <hr>
+
+                <button
+                  type="button"
+                  @click="startMode"
+                  class="button button-bg_rounded button-outline c-rouge"
+                >
+                  <span class="">
+                    {{ $t('update') }}
+                  </span>
+                </button>
+                
+              </div>
+            </transition>
+
             <video 
               v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
               ref="videoElement" 
               autoplay
-            /> 
+            />
+
             <canvas 
               v-if="selected_mode === 'audio'"
               ref="equalizerElement" width="720" height="360" 
             />
             <div id="vectoContainer" v-if="selected_mode === 'vecto'" v-html="vecto.svgstr">
             </div>
+
           </div>
 
           <transition name="fade" :duration="600">
@@ -85,8 +140,31 @@
         </div>
         <div class="m_panel--buttons">
           <div class="m_panel--buttons--row" :class="{ 'bg-orange' : is_recording }">
-            <div />
-  
+            <button
+              type="button"
+              @click="show_capture_options = !show_capture_options"
+              class="button c-rouge font-small bg-transparent"
+              :disabled="is_recording"
+            >
+              <svg 
+                class="inline-svg inline-svg_larger"
+                version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                viewBox="0 0 140 140" xml:space="preserve"
+              >
+                <path style="fill: currentColor" d="M122.7,88.8v-10c0-1.1,0.6-2.1,1.6-2.6l9.6-4.9l-2-5.8l-11,1.6c-1.1,0.2-2.2-0.3-2.9-1.2l-6-8.1
+                  c-0.7-0.9-0.8-2.1-0.3-3l4.8-9.6l-5.2-3.6l-7.7,7.5c-0.8,0.8-2,1-3.1,0.7l-9.9-3c-1.1-0.3-1.9-1.3-2.1-2.4L86.8,34h-6.4l-1.7,10.4
+                  c-0.2,1.1-0.9,2-2,2.4L66.8,50c-1.1,0.3-2.2,0.1-3.1-0.7L55.9,42l-5.1,3.7l4.9,9.4c0.5,1,0.4,2.1-0.2,3l-6,8.2
+                  c-0.6,0.9-1.8,1.4-2.9,1.2L35.8,66L34,71.8l9.7,4.8c1,0.5,1.7,1.5,1.7,2.6v10c0,1.1-0.6,2.1-1.6,2.6l-9.6,4.9l2,5.9l10.9-1.6
+                  c1.1-0.2,2.2,0.3,2.9,1.2l6,8.1c0.7,0.9,0.8,2.1,0.3,3l-4.8,9.6l5.1,3.6l7.7-7.5c0.8-0.8,2-1,3.1-0.7l9.9,3
+                  c1.1,0.3,1.9,1.3,2.1,2.4l1.9,10.4h6.4l1.7-10.4c0.2-1.1,0.9-2,2-2.4l9.9-3.2c1.1-0.3,2.2-0.1,3.1,0.7l7.8,7.3l5.1-3.7l-4.9-9.4
+                  c-0.5-1-0.4-2.1,0.2-3l6-8.1c0.7-0.9,1.8-1.4,2.9-1.2l10.8,1.5l1.8-5.9l-9.7-4.8C123.3,90.9,122.7,89.9,122.7,88.8z M84,104.5
+                  c-11.7,0-21.1-9.2-21.1-20.5c0-11.3,9.5-20.5,21.1-20.5s21.1,9.2,21.1,20.5C105.1,95.3,95.7,104.5,84,104.5z"/>
+              </svg>
+              <span class="">
+                {{ $t('settings') }}
+              </span>
+            </button>
+
             <button type="button" 
               class="padding-verysmall bg-transparent m_panel--buttons--row--captureButton"
               :class="{ 'is--justCaptured' : capture_button_pressed }"
@@ -108,8 +186,14 @@
                 </div>
               </div>
 
-              <span class="switch switch-xs" v-if="selected_mode === 'video' && !is_recording">
-                <input type="checkbox" class="switch" id="recordVideoWithAudio" v-model="recordVideoWithAudio">
+              <span class="switch switch-xs" v-if="selected_mode === 'video'">
+                <input 
+                  class="switch" 
+                  id="recordVideoWithAudio" 
+                  type="checkbox" 
+                  v-model="recordVideoWithAudio"
+                  :disabled="is_recording"
+                />
                 <label for="recordVideoWithAudio">{{ $t('with_sound') }}</label>
               </span>
             </div>
@@ -141,37 +225,15 @@
       </div>
     </div>
     
+    <button type="button"
+      @click="startCameraFeed()"
+      v-html="'start'"
+    />
 
-    <div class="m_captureview--options">
-      <fieldset v-show="true">
-        <legend>Sources</legend>
-        <div v-for="(currentId, kind) in selected_devicesId" :key="kind">
-          {{ kind }}
-          <select v-if="sorted_available_devices.hasOwnProperty(kind)" v-model="selected_devicesId[kind]">
-            <option 
-              v-for="device in sorted_available_devices[kind]" 
-              :value="device.deviceId" 
-              :key="device.deviceId"
-            >
-              {{ device.label }}
-            </option>        
-          </select>
-        </div>
-      </fieldset>
-
-      <fieldset v-show="true">
-        <legend>Resolution</legend>
-        <div 
-          v-for="res in available_camera_resolutions"
-          :key="res.name"
-        >
-          <input type="radio" :id="res.name" :value="res" v-model="current_camera_resolution">
-          <label :for="res.name">
-            <span>{{ res.name }}</span>
-          </label>
-        </div>
-      </fieldset>
-    </div>
+    <button type="button"
+      @click="stopVideoFeed()"
+      v-html="'stop'"
+    />
 
   </div>
 </template>
@@ -181,8 +243,9 @@ import StopmotionPanel from './components/subcomponents/StopmotionPanel.vue';
 import MediaValidationButtons from './components/subcomponents/MediaValidationButtons.vue';
 
 import RecordRTC from 'recordrtc';
-import 'webrtc-adapter';
+// import 'webrtc-adapter';
 import ImageTracer from 'imagetracerjs';
+import { setTimeout } from 'timers';
 
 export default {
   props: {
@@ -227,12 +290,15 @@ export default {
       recordVideoFeed: undefined,
       recordVideoWithAudio: true,
 
+      show_capture_options: false,
+
       capture_button_pressed: false,
       videoStream: null,
       audioStream: null,
       available_devices: {},
       mode_just_changed: false,
       is_recording: false,
+      actual_current_video_resolution: false,
 
       media_to_validate: false,
       media_is_being_sent: false,
@@ -241,17 +307,12 @@ export default {
 
       current_stopmotion: false,
 
-      current_camera_resolution: {
+      ideal_camera_resolution: {
         name: 'vga',
         width: 640,
         height: 480
       },
       available_camera_resolutions: [
-        {
-          name: 'qvga',
-          width: 320,
-          height: 240
-        },
         {
           name: 'vga',
           width: 640,
@@ -297,13 +358,12 @@ export default {
       this.stopAllFeeds().then(() => {
         if(this.$refs.hasOwnProperty('videoElement') && this.$refs.videoElement !== undefined) {       
           this.$refs.videoElement.setSinkId(this.selected_devicesId.audioinput);      
-          this.startMode();
+          // this.startMode();
         }
       });
     },
     'selected_devicesId.videoinput': function() {
       console.log(`WATCH • Capture: selected_devicesId.videoinput = ${this.selected_devicesId.videoinput}`);
-      this.startMode();
     },
     'selected_mode': function() {
       console.log('WATCH • Capture: selected_mode');
@@ -318,12 +378,12 @@ export default {
     'is_recording': function() {
       equalizer.setSarahCouleur(this.is_recording);
     },
-    'current_camera_resolution': function() {
-      console.log(`WATCH • Capture: current_camera_resolution = ${this.current_camera_resolution}`);
+    'ideal_camera_resolution': function() {
+      console.log(`WATCH • Capture: ideal_camera_resolution = ${this.ideal_camera_resolution}`);
       // this.stopAllFeeds().then(() => {
       //   this.startCameraFeed();
       // });      
-      this.startMode();
+      // this.startMode();
     },
     'media_to_validate': function() {
       console.log(`WATCH • Capture: media_to_validate = ${this.media_to_validate}`);
@@ -462,9 +522,9 @@ export default {
     stopVideoFeed() {
       console.log('METHODS • CaptureView: stopVideoFeed');        
       if(this.videoStream) {
-        this.videoStream.getVideoTracks().forEach(function(track) {
-          track.stop();
-        });
+        for (let stream of this.videoStream.getVideoTracks()) {
+          stream.stop();
+        }
         this.videoStream = null;
       }
     },
@@ -472,8 +532,8 @@ export default {
       return new Promise((resolve, reject) => {
         console.log('METHODS • CaptureView: stopAllFeeds');
         
-        this.stopAudioFeed();
         this.stopVideoFeed();
+        this.stopAudioFeed();
         resolve();
       });
     },
@@ -492,6 +552,16 @@ export default {
               this.videoStream = stream;
               this.$refs.videoElement.srcObject = stream;
               this.$refs.videoElement.volume = 0;
+              this.$nextTick(() => {
+                setTimeout(() => {
+                  if(this.$refs.videoElement.videoWidth) {
+                    this.actual_current_video_resolution = {
+                      width: this.$refs.videoElement.videoWidth,
+                      height: this.$refs.videoElement.videoHeight
+                    }
+                  }
+                },200);
+              });
             }
             return resolve();
           })
@@ -508,14 +578,29 @@ export default {
 
         const constraints = {
           video: {
-            optional: [{ sourceId: this.selected_devicesId.videoinput }],
-            mandatory: {
-              // minWidth:"1280","maxWidth":"1280","minHeight":"720","maxHeight":"720"
-              // minWidth:"640","maxWidth":"640","minHeight":"480","maxHeight":"480"
-              minWidth: this.current_camera_resolution.width,
-              maxWidth: this.current_camera_resolution.width,
-              minHeight: this.current_camera_resolution.height,
-              maxHeight: this.current_camera_resolution.height
+
+            /* old syntax, with webrtc-adapter */
+            // optional: [{ sourceId: this.selected_devicesId.videoinput }],
+            // mandatory: {
+            //   // minWidth:"1280","maxWidth":"1280","minHeight":"720","maxHeight":"720"
+            //   // minWidth:"640","maxWidth":"640","minHeight":"480","maxHeight":"480"
+            //   minWidth: this.ideal_camera_resolution.width,
+            //   maxWidth: this.ideal_camera_resolution.width,
+            //   minHeight: this.ideal_camera_resolution.height,
+            //   maxHeight: this.ideal_camera_resolution.height
+            // }
+
+            deviceId: this.selected_devicesId.videoinput ? {exact: this.selected_devicesId.videoinput} : undefined,
+            // minHeight: this.ideal_camera_resolution.height
+            width: {
+              min: 640,
+              ideal: this.ideal_camera_resolution.width,
+              max: 1920
+            },
+            height: {
+              min: 480,
+              ideal: this.ideal_camera_resolution.height,
+              max: 1080
             }
           },
           audio: withAudio
@@ -611,6 +696,7 @@ export default {
                 return resolve(videoDataURL);
               })
             });
+
           });
         });
       });
@@ -674,7 +760,6 @@ export default {
         equalizer.clearCanvas();
         this.startRecordAudioFeed().then(rawData => {
           const preview = this.$refs.equalizerElement.toDataURL('image/png');
-          debugger;
           this.media_to_validate = {
             preview,
             rawData,
@@ -734,7 +819,7 @@ export default {
           return reject(this.$t('notifications.video_source_not_set'));
         }
 
-        this.current_camera_resolution = this.available_camera_resolutions[1];
+        this.ideal_camera_resolution = this.available_camera_resolutions[1];
   
         this.startCameraFeed()
           .then(() => {
@@ -808,8 +893,6 @@ export default {
         window.clearTimeout(this.media_send_timeout_timer);
         this.media_send_timeout_timer = undefined;   
         
-        debugger;
-
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)

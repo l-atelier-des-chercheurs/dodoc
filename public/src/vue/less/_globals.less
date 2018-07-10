@@ -571,7 +571,7 @@ textarea, .textarea {
 
 input[type="color"], input[type="date"], input[type="datetime-local"], input[type="email"], input[type="month"], input[type="number"], input[type="password"], input[type="search"], input[type="tel"], input[type="text"], input[type="time"], input[type="url"], input[type="week"], select, textarea, .textarea {
   background-color: @c-gris_tresclair;
-  .padding-vert-small;
+  // .padding-vert-small;
   border-top-width: 0px;
   border-left-width: 0px;
   border-right-width: 0px;
@@ -677,6 +677,13 @@ svg.inline-svg {
 
   > * {
     fill: currentColor;
+  }
+
+  &_larger {
+    width: 1.5em;
+    height: 1.5em;
+    margin-top: -.25em;
+    margin-bottom: -0.25em;
   }
 }
 

@@ -106,7 +106,9 @@ module.exports = (function() {
       edit_project: 'Éditer le projet',
 
       capture: 'Enregistrer',
+      current: 'Actuellement',
       currently: 'Actuellement',
+      update: 'Mettre à jour',
 
       more_information:
         'Pour plus d’information, consultez la <a href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc" class="js--openInBrowser" target="_blank">documentation</a> ou <a href="mailto:info@latelier-des-chercheurs.fr?subject=do•doc" class="js--openInBrowser" target="_blank">contactez</a> les auteurs de ce logiciel.',
@@ -309,7 +311,9 @@ module.exports = (function() {
       edit_project: 'Edit project',
 
       capture: 'Capture',
+      current: 'Current',
       currently: 'Now',
+      update: 'Update',
 
       more_information:
         'For more informations, read the <a href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc" class="js--openInBrowser" target="_blank">documentation (in french)</a> or <a href="mailto:info@latelier-des-chercheurs.fr?subject=do•doc" class="js--openInBrowser" target="_blank">contact</a> the creators of this app.',
