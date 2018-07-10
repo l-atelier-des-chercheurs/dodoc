@@ -225,16 +225,6 @@
       </div>
     </div>
     
-    <button type="button"
-      @click="startCameraFeed()"
-      v-html="'start'"
-    />
-
-    <button type="button"
-      @click="stopVideoFeed()"
-      v-html="'stop'"
-    />
-
   </div>
 </template>
 <script>

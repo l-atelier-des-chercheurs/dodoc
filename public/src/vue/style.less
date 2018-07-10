@@ -1383,18 +1383,34 @@ body {
   .m_stopmotionpanel--medias {
     flex: 1 1 auto;
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column nowrap;
+    justify-content: flex-end;
 
     .m_stopmotionpanel--medias--single {
+      position: relative;
       flex: 1 1 auto;
       .bg-noir;
+
+      .mediaContainer {
+        position: absolute;
+        height: 100%;
+        width: auto;
+        img {
+          height: 100%;
+          width: 100%;
+          margin: 0;
+          object-fit: contain;
+          object-position: center;
+        }
+      }
     }
 
     .m_stopmotionpanel--medias--list {
+      flex: 0 0 100px;
+      position: relative;
       display: flex;
       flex-flow: row nowrap;
       overflow-x: auto;
-      height: 100px;
 
       .padding-vert-verysmall;
       padding-bottom: 0;
@@ -1413,8 +1429,10 @@ body {
         overflow: hidden;
         // background-color: @c-gris_clair;
         // border-radius: 10px;
-        height: 100%;
+        height: 100;
+        width: auto;
         flex: 0 0 100px;
+        margin-right: @t-skipline/4;
         cursor: pointer;
 
         &::before {
@@ -1425,17 +1443,44 @@ body {
           .padding-sides-verysmall;
           .font-verysmall;
           .c-noir;
+          .text-cap;
+          .font-small;
+          background-color: White;
+          border-radius: 0 0 1em 0;
         }
 
         &.is--current_single::before {
           .c-rouge;
+          // .bg-rouge;
+        }
+
+        .mediaContainer {
+          height: 100%;
+          width: auto;
+          img {
+            width: auto;
+            height: 100%;
+            margin: 0;
+          }
         }
       }
     }
   }
   .m_stopmotionpanel--videopreview {
+    position: relative;
     flex: 1 1 auto;
     overflow: hidden;
+
+    .mediaContainer {
+      position: absolute;
+      height: 100%;
+
+      video {
+        height: 100%;
+        width: 100%;
+        .bg-noir;
+      }
+    }
   }
 
   .m_stopmotionpanel--buttons {
