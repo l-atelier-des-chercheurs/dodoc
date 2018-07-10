@@ -46,37 +46,43 @@
               <div class="m_panel--previewCard--live--options"
                 v-if="show_capture_options && !is_recording"
               >
-
-                <label>Sources</label>
-                <div v-for="(currentId, kind) in selected_devicesId" :key="kind">
-                  {{ kind }}
-                  <select v-if="sorted_available_devices.hasOwnProperty(kind)" v-model="selected_devicesId[kind]">
-                    <option 
-                      v-for="device in sorted_available_devices[kind]" 
-                      :value="device.deviceId" 
-                      :key="device.deviceId"
-                    >
-                      {{ device.label }}
-                    </option>        
-                  </select>
+                <div class="margin-bottom-small">
+                  <label>Sources</label>
+                  <div v-for="(currentId, kind) in selected_devicesId" :key="kind">
+                    <span class="font-verysmall">
+                      {{ kind }}
+                    </span>
+                    <select v-if="sorted_available_devices.hasOwnProperty(kind)" v-model="selected_devicesId[kind]">
+                      <option 
+                        v-for="device in sorted_available_devices[kind]" 
+                        :value="device.deviceId" 
+                        :key="device.deviceId"
+                      >
+                        {{ device.label }}
+                      </option>        
+                    </select>
+                  </div>
                 </div>
 
-                <hr>
+                <div class="margin-bottom-small">
+                  <div><label>Resolution</label></div>
 
-                <div><label>Resolution</label></div>
+                  <template v-if="actual_current_video_resolution">
+                    <span class="font-verysmall">
+                      • {{ $t('current') }}&nbsp;: {{ actual_current_video_resolution.width }} x {{ actual_current_video_resolution.height }}
+                    </span>
+                  </template>
 
-                <template v-if="actual_current_video_resolution">
-                  <span class>current: </span>{{ actual_current_video_resolution.width }} x {{ actual_current_video_resolution.height }}
-                </template>
 
-                <div 
-                  v-for="res in available_camera_resolutions"
-                  :key="res.name"
-                >
-                  <input type="radio" :id="res.name" :value="res" v-model="ideal_camera_resolution">
-                  <label :for="res.name">
-                    <span>{{ res.name }}</span>
-                  </label>
+                  <div 
+                    v-for="res in available_camera_resolutions"
+                    :key="res.name"
+                  >
+                    <input type="radio" :id="res.name" :value="res" v-model="ideal_camera_resolution">
+                    <label :for="res.name">
+                      <span>{{ res.name }}</span>
+                    </label>
+                  </div>
                 </div>
 
                 <hr>
