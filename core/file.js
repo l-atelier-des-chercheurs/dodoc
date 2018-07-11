@@ -429,7 +429,7 @@ module.exports = (function() {
 
         var allMediasData = [];
         medias_list.forEach(({ slugFolderName, metaFileName }) => {
-          if (slugFolderName === undefined || metaFileName === undefined) {
+          if (!slugFolderName || !metaFileName) {
             return;
           }
 
@@ -439,8 +439,16 @@ module.exports = (function() {
               slugFolderName,
               metaFileName
             }).then(meta => {
-              if (meta === undefined) {
-                resolve({});
+              if (!meta) {
+                // case of non-existent media
+                // we need to return the absence of meta for this media
+                return resolve({
+                  slugFolderName,
+                  mediaMeta: {
+                    metaFileName,
+                    _isAbsent: true
+                  }
+                });
               }
               meta.metaFileName = metaFileName;
               resolve({
@@ -484,6 +492,7 @@ module.exports = (function() {
                 };
               }
 
+              // if original media is absent (for example, a publication that lists medias that aren’t there anymore)
               folders_and_medias[slugFolderName].medias[
                 metaFileName
               ] = mediaMeta;

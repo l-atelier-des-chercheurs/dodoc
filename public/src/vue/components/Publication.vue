@@ -572,7 +572,8 @@ export default {
 
         // find in store if slugFolderName exists
         if(!this.$root.store.projects.hasOwnProperty(slugProjectName)) {
-          console.log(`Missing project in store — not expected : ${slugProjectName}`);
+          console.error(`Missing project in store — not expected : ${slugProjectName}`);
+          console.error(`Medias from project was probably added to the publication before it was removed altogether.`)
           return;
         }
 
@@ -583,6 +584,13 @@ export default {
           missingMedias.push({ slugFolderName: slugProjectName, metaFileName: slugMediaName });
         } else {
           let meta = JSON.parse(JSON.stringify(project_medias[slugMediaName]));
+
+          if(meta.hasOwnProperty('_isAbsent') && meta._isAbsent) {
+            console.error(`Missing media in store — not expected : ${slugProjectName} / ${slugMediaName}`);
+            console.error(`Media was probably added to the publication before it was removed.`);
+            return;
+          }
+
           meta.slugProjectName = slugProjectName;
           meta.publi_meta = JSON.parse(JSON.stringify(_media));
 
