@@ -33,7 +33,7 @@
             <a 
               v-if="link_to_pdf !== false"
               class="buttonLink margin-left-none"
-              :href="link_to_pdf" target="_blank" download="">
+              :href="link_to_pdf" target="_blank">
               {{ $t('download') }}
             </a>
             <!-- <a 
@@ -110,7 +110,7 @@ export default {
       this.link_to_pdf = false;
       this.path_to_pdf = false;
 
-      this.$eventHub.$on('publication.pdfIsGenerated', this.publiIsGenerated);
+      this.$eventHub.$on('socketio.publication.pdfIsGenerated', this.publiIsGenerated);
 
       this.$root.downloadPubliPDF({ 
         slugPubliName: this.slugPubliName, 
@@ -121,7 +121,7 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: downloadPDF`);
       }
-      this.$eventHub.$off('publication.pdfIsGenerated', this.publiIsGenerated);
+      this.$eventHub.$off('socketio.publication.pdfIsGenerated', this.publiIsGenerated);
 
       this.pdf_request_status = 'generated';
       this.link_to_pdf = window.location.origin + '/publication/print/' + pdfName;

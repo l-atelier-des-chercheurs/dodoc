@@ -353,7 +353,7 @@ export default {
   },
   mounted() {
     this.$eventHub.$on('publication.addMedia', this.addMedia);
-    this.$eventHub.$on('project.listSpecificMedias', this.updateMediasPubli);
+    this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
     document.addEventListener('keyup', this.publicationKeyListener);
     this.updateMediasPubli();  
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty('mmMeasurer') ? this.$refs.mmMeasurer.offsetWidth / 10 : 38;
@@ -369,7 +369,7 @@ export default {
   },
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
-    this.$eventHub.$off('project.listSpecificMedias', this.updateMediasPubli);
+    this.$eventHub.$off('socketio.projects.listSpecificMedias', this.updateMediasPubli);
     document.removeEventListener('keyup', this.publicationKeyListener);
   },
 

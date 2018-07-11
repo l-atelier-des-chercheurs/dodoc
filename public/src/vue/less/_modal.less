@@ -138,9 +138,9 @@
 }
 
 .m_modal--mask {
-  
+
   &.typeOfModal-LargeAndScroll {
-    // overflow-y: auto;
+    overflow-y: auto;
     .m_modal--container {   
       max-width: @t-panelWidth * 3;
       align-self: flex-start;
@@ -150,8 +150,8 @@
     }
   }
   &.typeOfModal-LargeAndNoScroll {
-    // overflow: hidden;
-    
+    overflow: hidden;
+
     .m_modal--container {   
       margin: 0;
       max-width: @t-panelWidth * 3;
@@ -235,18 +235,18 @@
 
       &.m_modal--buttonrow {
         margin: 0;
-        .margin-vert-medium;
+        // .margin-bottom-medium;
         .padding-sides-small;
         text-align: center;
 
-        hr {
-          margin: 0;
-          .margin-small;          
-        }
-
       }
     }
-      
+
+    hr {
+      margin: 0;
+      .margin-small;          
+    }
+
     > *:last-child {
       margin-bottom: 0;
     }
@@ -374,8 +374,19 @@
   .m_modal--header {
     display: none;
   }
-  .m_modal--sidebar {
+  // .m_modal--sidebar {
+  //   display: none;
+  // }
+
+  .m_modal--preview {
     display: none;
+  }
+  .m_modal--mask {
+    height: auto !important;
+  }
+  .m_modal--sidebar {
+    overflow: auto;
+    max-height: none !important;
   }
   .m_modal--footer {
     display: none;

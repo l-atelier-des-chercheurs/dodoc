@@ -226,6 +226,7 @@ Vue.prototype.$socketio = new Vue({
             content[slugFolderName].medias
           );
 
+          // check if mdata has a mediaID (which would mean a user just created it)
           const mdata = Object.values(content[slugFolderName].medias)[0];
           if (mdata.hasOwnProperty('id')) {
             this.$eventHub.$emit('socketio.media_created_or_updated', mdata);
@@ -233,7 +234,7 @@ Vue.prototype.$socketio = new Vue({
         }
       }
 
-      // check if mdata has a mediaID (which would mean a user just created it)
+      this.$eventHub.$emit(`socketio.${type}.listMedia`);
     },
 
     _onListMedias(data) {
@@ -257,6 +258,7 @@ Vue.prototype.$socketio = new Vue({
           // }
         }
       }
+      this.$eventHub.$emit(`socketio.${type}.listMedias`);
     },
 
     _onListSpecificMedias(data) {
@@ -280,12 +282,12 @@ Vue.prototype.$socketio = new Vue({
           );
         }
       }
-      this.$eventHub.$emit('project.listSpecificMedias');
+      this.$eventHub.$emit(`socketio.${type}.listSpecificMedias`);
     },
 
     _onPubliPDFGenerated(data) {
       console.log('Received _onPubliPDFGenerated packet.');
-      this.$eventHub.$emit('publication.pdfIsGenerated', data);
+      this.$eventHub.$emit('socketio.publication.pdfIsGenerated', data);
     },
 
     // for projects, authors and publications
@@ -312,6 +314,7 @@ Vue.prototype.$socketio = new Vue({
       }
 
       window.store[type] = Object.assign({}, window.store[type], content);
+      this.$eventHub.$emit(`socketio.${type}.folder_listed`);
     },
 
     // for projects, authors and publications
@@ -338,7 +341,8 @@ Vue.prototype.$socketio = new Vue({
         }
       }
       window.store[type] = Object.assign({}, content);
-      window.dispatchEvent(new CustomEvent('socketio.folders_listed'));
+
+      this.$eventHub.$emit(`socketio.${type}.folders_listed`);
     },
     _onNewNetworkInfos(data) {
       console.log('Received _onNewNetworkInfos packet.');
@@ -415,8 +419,6 @@ let vm = new Vue({
       current_slugProjectName: false,
       current_metaFileName: false
     },
-    // navigation_history: [],
-
     settings: {
       has_modal_opened: false,
       capture_mode_cant_be_changed: false,
@@ -432,7 +434,6 @@ let vm = new Vue({
 
       media_filter: {}
     },
-
     lang: {
       available: lang_settings.available,
       current: lang_settings.current
@@ -458,7 +459,7 @@ let vm = new Vue({
           .error(
             this.$t('notifications["failed_to_get_folder:"]') +
               ' ' +
-              this.store.slugProjectName
+              this.store.request.slugProjectName
           );
       }
     } else {
@@ -468,16 +469,21 @@ let vm = new Vue({
         );
       }
 
-      // if a slugProjectName is requested, load the content of that folder rightaway
-      // we are probably in a webbrowser that accesses a subfolder
-      if (this.store.slugProjectName) {
-        window.addEventListener(
-          'socketio.folders_listed',
-          () => {
-            this.openProject(this.store.slugProjectName);
-          },
-          { once: true }
-        );
+      // if a slugProjectName or a metaFileName is requested, load the content of that folder rightaway
+      // we are probably in a webbrowser that accesses a subfolder or a media
+      if (this.store.request.slugProjectName) {
+        this.$eventHub.$once('socketio.projects.folders_listed', () => {
+          this.openProject(this.store.request.slugProjectName);
+        });
+        // requesting edit of a media
+        if (this.store.request.metaFileName) {
+          this.$eventHub.$once('socketio.projects.listMedias', () => {
+            this.openMedia({
+              slugProjectName: this.store.request.slugProjectName,
+              metaFileName: this.store.request.metaFileName + '.txt'
+            });
+          });
+        }
       } else if (
         this.state.mode === 'export_publication' &&
         Object.keys(this.store.publications).length > 0

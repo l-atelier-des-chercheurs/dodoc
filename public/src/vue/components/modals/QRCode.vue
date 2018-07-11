@@ -10,40 +10,14 @@
 
     <template slot="preview">
       <div class="margin-medium font-small">
-        <div class="hide_on_print" v-html="$t('toconnectwithanotherdevice')" />
-
-        <div v-for="(ip, index) in $root.state.localNetworkInfos.ip"
-          class="m_qrSnippet"
-          :key="index"
-          >
-          <div class="m_qrSnippet--motif">
-            <CreateQRCode
-              :urlToApp="getURLToApp(ip, $root.state.localNetworkInfos.port)"
-            >
-            </CreateQRCode>
-          </div>
-          <div class="m_qrSnippet--text">
-            <a 
-              class="break-long-lines js--openInBrowser"
-              :href="getURLToApp(ip, $root.state.localNetworkInfos.port)"
-              target="_blank"
-            >
-              <img 
-                :src="'/images/i_logo.svg'" 
-                @click="goHome()" 
-              />          
-            
-              <template v-if="nameOfProject">
-                • {{ nameOfProject }} •<br><br>
-              </template>
-              {{ getURLToApp(ip, $root.state.localNetworkInfos.port) }}
-            </a>
-          </div>
-        </div>
+        <CreateQRCode
+          :slugProjectName="slugProjectName"
+        >
+        </CreateQRCode>
       </div>
 
       <div class="m_scanQR margin-medium font-small">
-        Scanner un code QR
+        <label>Scanner un code QR</label>
         <ScanQRCode>
         </ScanQRCode>
       </div>
@@ -70,22 +44,10 @@ export default {
     };
   },
   mounted() {
-    this.$root.updateNetworkInfos();
   },
   computed: {
-    nameOfProject() {
-      if(!this.slugProjectName || !this.$root.store.projects[this.slugProjectName].hasOwnProperty('name')) {
-        return false;
-      }
-      return this.$root.store.projects[this.slugProjectName].name;
-    }
   },
   methods: {
-    getURLToApp(ip, port) {
-      return `${this.$root.state.protocol}://${ip}:${port}/${
-        this.slugProjectName !== false ? this.slugProjectName : ''
-      }`;
-    }
   }
 };
 </script>

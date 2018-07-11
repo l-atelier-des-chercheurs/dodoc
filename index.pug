@@ -31,7 +31,10 @@ html
     script.
       /* store contains content data */
       window.store = {
-        slugProjectName: "!{slugProjectName}",
+        request: {
+          slugProjectName: "!{slugProjectName}",
+          metaFileName: "!{metaFileName}"
+        },
         projects: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" },
         authors: {},
         publications: !{ !!publiAndMediaData ? JSON.stringify(publiAndMediaData) : "{}" },
