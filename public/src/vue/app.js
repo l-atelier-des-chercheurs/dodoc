@@ -348,6 +348,9 @@ Vue.prototype.$socketio = new Vue({
     listFolders(fdata) {
       this.socket.emit('listFolders', fdata);
     },
+    listFolder(fdata) {
+      this.socket.emit('listFolder', fdata);
+    },
     createFolder(fdata) {
       this.socket.emit('createFolder', fdata);
     },
@@ -579,7 +582,6 @@ let vm = new Vue({
       }
       this.$socketio.removeFolder({ type, slugFolderName });
     },
-
     createMedia: function(mdata) {
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: createMedia`);
@@ -728,6 +730,10 @@ let vm = new Vue({
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: openPublication: ${slugPubliName}`);
       }
+      this.$socketio.listFolder({
+        type: 'publications',
+        slugFolderName: slugPubliName
+      });
       this.$socketio.listMedias({
         type: 'publications',
         slugFolderName: slugPubliName
