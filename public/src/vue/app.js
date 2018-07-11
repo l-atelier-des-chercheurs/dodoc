@@ -105,6 +105,7 @@ Vue.prototype.$socketio = new Vue({
         this.socket = io.connect({ transports: ['polling', 'websocket'] });
       }
       this.socket.on('connect', this._onSocketConnect);
+      this.socket.on('reconnect', this._onReconnect);
       this.socket.on('error', this._onSocketError);
       this.socket.on('connect_error', this._onConnectError);
       this.socket.on('authentificated', this._authentificated);
@@ -134,10 +135,16 @@ Vue.prototype.$socketio = new Vue({
           .delay(4000)
           .success(this.$t('notifications.connection_active'));
       }
+
       // TODO : reenable auth for folders and publications
       this.listFolders({ type: 'projects' });
       this.listFolders({ type: 'authors' });
       // this.sendAuth();
+    },
+
+    _onReconnect() {
+      this.$eventHub.$emit('socketio.reconnect');
+      console.log(`Reconnected`);
     },
 
     sendAuth() {
@@ -486,6 +493,31 @@ let vm = new Vue({
         this.settings.show_publi_panel = true;
       }
     }
+
+    /* à la connexion/reconnexion, détecter si un projet ou une publi sont ouverts 
+    et si c’est le cas, rafraichir leur contenu (meta, medias) */
+    this.$eventHub.$on('socketio.reconnect', () => {
+      if (this.settings.current_slugPubliName) {
+        this.$socketio.listFolder({
+          type: 'publications',
+          slugFolderName: this.settings.current_slugPubliName
+        });
+        this.$socketio.listMedias({
+          type: 'publications',
+          slugFolderName: this.settings.current_slugPubliName
+        });
+      }
+      if (this.do_navigation.current_slugProjectName) {
+        this.$socketio.listFolder({
+          type: 'projects',
+          slugFolderName: this.do_navigation.current_slugProjectName
+        });
+        this.$socketio.listMedias({
+          type: 'projects',
+          slugFolderName: this.do_navigation.current_slugProjectName
+        });
+      }
+    });
 
     window.onpopstate = event => {
       console.log(
