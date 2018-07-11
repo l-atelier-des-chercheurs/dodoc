@@ -1,5 +1,6 @@
 const electron = require('electron');
 const { app, BrowserWindow, Menu } = electron;
+const PDFWindow = require('electron-pdf-window');
 
 const {
   default: installExtension,
@@ -83,9 +84,12 @@ function createWindow() {
     webPreferences: {
       allowDisplayingInsecureContent: true,
       allowRunningInsecureContent: true,
-      nodeIntegration: true
+      nodeIntegration: true,
+      plugins: true
     }
   });
+
+  PDFWindow.addSupport(win);
 
   if (windowState.isMaximized) {
     win.maximize();

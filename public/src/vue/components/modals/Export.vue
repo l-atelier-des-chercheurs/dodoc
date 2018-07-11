@@ -36,10 +36,17 @@
               :href="link_to_pdf" target="_blank" download="">
               {{ $t('download') }}
             </a>
-            <a 
+            <!-- <a 
               v-if="path_to_pdf !== false && $root.state.is_electron"
               :href="path_to_pdf" target="_blank" 
               class="buttonLink margin-left-none js--openInNativeApp"
+            >
+              {{ $t('open_in_app') }}
+            </a>             -->
+            <a 
+              v-if="link_to_pdf !== false && $root.state.is_electron"
+              :href="link_to_pdf" target="_blank" 
+              class="buttonLink margin-left-none"
             >
               {{ $t('open_in_app') }}
             </a>            
