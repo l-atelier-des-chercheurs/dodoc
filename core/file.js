@@ -54,7 +54,7 @@ module.exports = (function() {
                     meta.slugFolderName = slugFolderName;
 
                     if (settings.structure[type].hasOwnProperty('medias')) {
-                      // meta.medias = {};
+                      meta.medias = {};
                     }
 
                     meta.fullFolderPath = thisFolderPath;
@@ -429,7 +429,7 @@ module.exports = (function() {
 
         var allMediasData = [];
         medias_list.forEach(({ slugFolderName, metaFileName }) => {
-          if (slugFolderName === undefined || metaFileName === undefined) {
+          if (!slugFolderName || !metaFileName) {
             return;
           }
 
@@ -439,8 +439,16 @@ module.exports = (function() {
               slugFolderName,
               metaFileName
             }).then(meta => {
-              if (meta === undefined) {
-                resolve({});
+              if (!meta) {
+                // case of non-existent media
+                // we need to return the absence of meta for this media
+                return resolve({
+                  slugFolderName,
+                  mediaMeta: {
+                    metaFileName,
+                    _isAbsent: true
+                  }
+                });
               }
               meta.metaFileName = metaFileName;
               resolve({
@@ -484,6 +492,7 @@ module.exports = (function() {
                 };
               }
 
+              // if original media is absent (for example, a publication that lists medias that aren’t there anymore)
               folders_and_medias[slugFolderName].medias[
                 metaFileName
               ] = mediaMeta;
@@ -725,12 +734,15 @@ module.exports = (function() {
             ***************************************************************************/
             if (mdata.type === 'image') {
               let getFullEXIF = new Promise((resolve, reject) => {
-                thumbs.getEXIFData(mediaPath).then(exifdata => {
-                  if (exifdata) {
-                    // mdata.exif = validator.escape(JSON.stringify(exifdata));
-                  }
-                  resolve();
-                });
+                thumbs
+                  .getEXIFData(mediaPath)
+                  .then(exifdata => {
+                    if (exifdata) {
+                      // mdata.exif = validator.escape(JSON.stringify(exifdata));
+                    }
+                    resolve();
+                  })
+                  .catch(err => resolve());
               });
               tasks.push(getFullEXIF);
             }
@@ -1053,8 +1065,8 @@ module.exports = (function() {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += '.svg';
-              additionalMeta.type = 'image';
               let pathToMedia = path.join(slugFolderPath, mediaName);
+              additionalMeta.type = 'image';
 
               var fileBuffer = new Buffer(rawData, 'base64');
               fs.writeFile(pathToMedia, fileBuffer, function(err) {
@@ -1078,6 +1090,30 @@ module.exports = (function() {
                   reject(err);
                 }
               );
+            })
+          );
+        } else if (additionalMeta.type === 'stopmotion') {
+          tasks.push(
+            new Promise((resolve, reject) => {
+              mediaName += '.webm';
+              let pathToMedia = path.join(slugFolderPath, mediaName);
+              additionalMeta.type = 'video';
+
+              // only works for projects media (root) for now
+              api
+                .makeStopmotionFromImageSequence({
+                  slugFolderName,
+                  pathToMedia,
+                  images: rawData,
+                  slugStopmotionName: additionalMeta.slugStopmotionName,
+                  frameRate: additionalMeta.frameRate
+                })
+                .then(() => {
+                  resolve();
+                })
+                .catch(err => {
+                  reject(err);
+                });
             })
           );
         }
@@ -1179,13 +1215,17 @@ module.exports = (function() {
             )}`
           );
 
-          if (mediaData.hasOwnProperty('media_filename')) {
+          if (
+            mediaData.hasOwnProperty('media_filename') &&
+            settings.structure[type].medias.thumbs
+          ) {
             // let’s find or create thumbs
             thumbs
               .makeMediaThumbs(
                 slugFolderName,
                 mediaData.media_filename,
-                mediaData.type
+                mediaData.type,
+                type
               )
               .then(thumbData => {
                 mediaData.thumbs = thumbData;

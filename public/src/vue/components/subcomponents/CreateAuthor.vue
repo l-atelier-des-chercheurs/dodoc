@@ -1,7 +1,7 @@
 <template>
-  <div
+  <form
     @close="$emit('close')"
-    @submit="newAuthor"
+    v-on:submit.prevent="newAuthor"
     :read_only="read_only"
     >
     <!-- <span class="">{{ $t('create_an_author') }}</span> -->
@@ -38,11 +38,11 @@
     <button type="button" @click="$emit('close')">
       {{ $t('cancel') }}
     </button>
-    <button type="button" @click="newAuthor">
+    <button type="submit">
       {{ $t('create') }}
     </button>
 
-  </div>
+  </form>
 </template>
 <script>
 import ImageSelect from '../subcomponents/ImageSelect.vue';

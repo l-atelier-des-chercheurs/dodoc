@@ -4,12 +4,9 @@
     :class="`type-${media.type}`"
     :data-context="context"
   >
-  
     <template v-if="media.type === 'image'">
       <img :src="linkToImageThumb">
-      <transition
-        name="fade"
-      >
+      <transition name="fade" :duration="600">
         <img v-if="is_hovered && $root.state.is_electron" :src="linkToHoveredThumb">
       </transition>
     </template>
@@ -66,14 +63,18 @@ Fichier&nbsp;:
   </div>
 </template>
 <script>
-import { VueEditor } from 'vue2-editor'
+import { VueEditor } from 'vue2-editor';
 
 // is loaded by Media and by EditMedia
 
 export default {
   props: {
-    slugProjectName: String,
+    slugFolderName: String,
     media: Object,
+    subfolder: {
+      type: String,
+      default: ''
+    },
     context: {
       type: String,
       default: 'preview'
@@ -100,8 +101,6 @@ export default {
         default: 1600
       },
       htmlForEditor: this.value,
-      mediaURL: this.$root.state.mode === 'export_publication' ? 
-        `./${this.slugProjectName}/${this.media.media_filename}` : `/${this.slugProjectName}/${this.media.media_filename}`,
       customToolbar: [
         [{ 'header': [false, 1, 2, 3, 4] }],
         // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
@@ -126,6 +125,11 @@ export default {
     }
   },
   computed: {
+    mediaURL: function() {
+      return this.$root.state.mode === 'export_publication' 
+        ? `./${this.subfolder}${this.slugFolderName}/${this.media.media_filename}` 
+        : `/${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`;
+    },
     thumbRes: function() {
       return this.context === 'preview'
         ? this.available_resolutions.preview
@@ -135,9 +139,13 @@ export default {
       return this.available_resolutions.preview_hovered;
     },
     linkToImageThumb: function() {
+      if(!this.media.hasOwnProperty('thumbs')) {
+        return this.mediaURL;
+      }
+
       let pathToSmallestThumb = this.$_.findWhere(this.media.thumbs, {
         size: this.thumbRes
-      }).path;
+      });
 
       if (
       // if image is gif and context is not 'preview', let’s show the original gif
@@ -149,10 +157,9 @@ export default {
         return this.mediaURL;
       }
 
-      const url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
-      return pathToSmallestThumb !== undefined
-        ? url
-        : this.mediaURL;
+      const fullPathToThumb = pathToSmallestThumb.path;
+      const url = this.$root.state.mode === 'export_publication' ? `./${fullPathToThumb}` : `/${fullPathToThumb}`;
+      return url;
     },
     linkToHoveredThumb: function() {
       let pathToSmallestThumb = this.$_.findWhere(this.media.thumbs, {

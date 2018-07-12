@@ -4,17 +4,17 @@
       class="m_modal--mask"
       :class="['typeOfModal-' + typeOfModal, { 'is_invisible' : !showModal }]"
       @mousedown.self="closeModal"
-      :style="`min-height: ${window_innerHeight}px`"
+      :style="`height: ${window_innerHeight}px`"
     >
       <div class="m_modal--container"
         :class="['color-' + backgroundColor, { 'is_invisible' : !showModal }]"
         @keyup.ctrl.enter="$emit('submit')"
-        >
+      >
 
         <div
           class="m_modal--container--content"
           ref="modalContent"
-          >
+        >
 
           <div v-if="!!this.$slots['preview']" class="m_modal--preview"
           >
@@ -56,12 +56,13 @@
 
             <div 
               v-if="!!this.$slots['submit_button']"
-              class="m_modal--save"
+              class="m_modal--buttons"
             >
               <button
                 type="submit"
                 :disabled="read_only"
-                >
+                class="button button-bg_rounded bg-bleuvert"
+              >
                 <img src="/images/i_enregistre.svg"/>
                 <span class="text-cap font-verysmall">
                   <slot name="submit_button">
@@ -72,11 +73,45 @@
             </div>
           </form>
 
+          <form 
+            v-if="!!this.$slots['buttons']" 
+            class="m_modal--buttons"
+            v-on:submit.prevent="$emit('submit')"
+          >
+
+            <button
+              type="button"
+              @click="closeModal"
+              class="button button-bg_rounded bg-orange"
+            >
+              <img src="/images/i_clear.svg"/>
+              <span class="text-cap font-verysmall">
+                <slot name="cancel_button">
+                  {{ $t('cancel') }}
+                </slot>
+              </span>
+            </button>
+
+            <button
+              type="submit"
+              :disabled="read_only"
+              class="button button-bg_rounded bg-bleuvert"
+            >
+              <img src="/images/i_enregistre.svg"/>
+              <span class="text-cap font-verysmall">
+                <slot name="submit_button">
+                  {{ $t('save') }}
+                </slot>
+              </span>
+            </button>
+
+          </form>
+
         </div>
 
       </div>
 
-      <transition name="fade">
+      <transition name="fade" :duration="600">
         <button
           class="button-round bg-transparent m_modal--close_button padding-verysmall"
           @click="closeModal"
@@ -135,9 +170,9 @@ export default {
   computed: {
     window_innerHeight() { 
       let wHeight = window.innerHeight;
-      if(this.$root.settings.enable_system_bar) {
-        // wHeight -= 22;
-      }
+      // if(this.$root.settings.enable_system_bar) {
+      //   // wHeight -= 22;
+      // }
       return wHeight; 
     }
   },

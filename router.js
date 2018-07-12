@@ -16,7 +16,8 @@ module.exports = function(app, io, m) {
    * routing event
    */
   app.get('/', showIndex);
-  app.get('/:project', loadFolder);
+  app.get('/:project', loadFolderOrMedia);
+  app.get('/:project/media/:metaFileName', loadFolderOrMedia);
   app.get('/publication/:publication', printPublication);
   app.get('/publication/web/:publication', exportPublication);
   app.get('/publication/print/:pdfName', showPDF);
@@ -44,29 +45,7 @@ module.exports = function(app, io, m) {
 
       pageData.mode = 'live';
 
-      let tasks = [];
-
-      let getLocalIP = new Promise((resolve, reject) => {
-        api.getLocalIP().then(
-          localNetworkInfos => {
-            pageData.localNetworkInfos = {
-              ip: [],
-              port: global.appInfos.port
-            };
-            pageData.localNetworkInfos.ip = Object.values(localNetworkInfos);
-            resolve();
-          },
-          function(err, p) {
-            dev.error(`Err while getting local IP: ${err}`);
-            reject(err);
-          }
-        );
-      });
-      tasks.push(getLocalIP);
-
-      Promise.all(tasks).then(() => {
-        resolve(pageData);
-      });
+      resolve(pageData);
     });
   }
 
@@ -86,8 +65,10 @@ module.exports = function(app, io, m) {
     );
   }
 
-  function loadFolder(req, res) {
+  function loadFolderOrMedia(req, res) {
     let slugProjectName = req.param('project');
+    let metaFileName = req.param('metaFileName');
+
     generatePageData(req).then(
       pageData => {
         // let’s make sure that folder exists first and return some meta
@@ -95,7 +76,11 @@ module.exports = function(app, io, m) {
           .getFolder({ type: 'projects', slugFolderName: slugProjectName })
           .then(
             foldersData => {
+              pageData.slugProjectName = slugProjectName;
               pageData.folderAndMediaData = foldersData;
+              if (metaFileName) {
+                pageData.metaFileName = metaFileName;
+              }
               res.render('index', pageData);
             },
             (err, p) => {
@@ -237,9 +222,10 @@ module.exports = function(app, io, m) {
     );
     const pdfPath = path.join(cachePath, pdfName);
 
-    fs.readFile(pdfPath, function(err, data) {
-      res.contentType('application/pdf');
-      res.send(data);
+    res.download(pdfPath, pdfName, function(err) {
+      if (err) {
+      } else {
+      }
     });
   }
 
@@ -400,13 +386,18 @@ module.exports = function(app, io, m) {
       api.findFirstFilenameNotTaken(uploadDir, fileMeta.name).then(
         function(newFileName) {
           dev.logverbose(`Following filename is available: ${newFileName}`);
-          dev.logverbose(
-            `Has additional meta: ${JSON.stringify(
-              fileMeta.additionalMeta,
-              null,
-              4
-            )}`
-          );
+
+          if (fileMeta.hasOwnProperty('additionalMeta')) {
+            dev.logverbose(
+              `Has additional meta: ${JSON.stringify(
+                fileMeta.additionalMeta,
+                null,
+                4
+              )}`
+            );
+          } else {
+            fileMeta.additionalMeta = {};
+          }
 
           let newPathToNewFileName = path.join(uploadDir, newFileName);
           fs.renameSync(fileMeta.path, newPathToNewFileName);

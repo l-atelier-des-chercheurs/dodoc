@@ -12,14 +12,15 @@
       </SystemBar>
 
       <TopBar
-        :has_back_button="$root.settings.view !== 'ListView'"
-        :slugProjectName="$root.settings.current_slugProjectName"
+        :has_back_button="$root.do_navigation.view !== 'ListView'"
+        :slugProjectName="$root.do_navigation.current_slugProjectName"
         :project="$root.currentProject"
         :authors="$root.store.authors"
       >
       </TopBar>
 
-      <div class="m_activitiesPanel">
+      <div class="m_activitiesPanel"
+      >
         <div 
           :style="{ cursor, userSelect}" 
           class="vue-splitter-container clearfix" 
@@ -43,10 +44,10 @@
               </transition>
 
               <div style="position: relative; height: 100%; overflow: hidden">
-                <!-- v-show="$root.settings.view === 'ListView'" -->
+                <!-- v-show="$root.do_navigation.view === 'ListView'" -->
                 <transition name="ListView" :duration="500">
                   <ListView
-                    v-if="$root.settings.view === 'ListView'"
+                    v-if="$root.do_navigation.view === 'ListView'"
                     :presentationMD="$root.store.presentationMD"
                     :read_only="!$root.state.connected"
                     :projects="$root.store.projects"
@@ -54,8 +55,8 @@
                 </transition>
                 <transition name="ProjectView" :duration="500">
                   <ProjectView
-                    v-if="$root.settings.view === 'ProjectView' && $root.currentProject.hasOwnProperty('name')"
-                    :slugProjectName="$root.settings.current_slugProjectName"
+                    v-if="['ProjectView', 'CaptureView', 'MediaView'].includes($root.do_navigation.view)"
+                    :slugProjectName="$root.do_navigation.current_slugProjectName"
                     :project="$root.currentProject"
                     :read_only="!$root.state.connected"
                   />
@@ -63,10 +64,21 @@
 
                 <transition name="CaptureView" :duration="500">
                   <CaptureView
-                    v-if="$root.settings.view === 'CaptureView'"
-                    :slugProjectName="$root.settings.current_slugProjectName"
+                    v-if="$root.do_navigation.view === 'CaptureView'"
+                    :slugProjectName="$root.do_navigation.current_slugProjectName"
                     :project="$root.currentProject"
+                    :read_only="!$root.state.connected"
                   />
+                </transition>
+                <transition name="MediaView" :duration="500">
+                  <!-- <MediaView
+                    v-if="$root.do_navigation.view === 'MediaView'"
+                    :slugMediaName="$root.do_navigation.current_metaFileName"
+                    :slugProjectName="$root.do_navigation.current_slugProjectName"
+                    :media="$root.store.projects[$root.do_navigation.current_slugProjectName].medias[$root.do_navigation.current_metaFileName]"
+                    :read_only="!$root.state.connected"
+                  >
+                  </MediaView>       -->
                 </transition>
               </div>
 
@@ -107,7 +119,7 @@
                 @mouseup.stop
                 :key="'openPubli'"
               >
-                <!-- v-if="$root.settings.view !== 'CaptureView'" -->
+                <!-- v-if="$root.do_navigation.view !== 'CaptureView'" -->
                 <img src="/images/i_publi.svg" width="48" height="48" />
                 <span class="margin-small">
                   {{ $t('publication') }}
@@ -136,13 +148,12 @@
         
         </div>
       </div>
-
       <EditMedia
-        v-if="$root.settings.showMediaModalFor !== false"
-        :slugMediaName="$root.settings.showMediaModalFor.metaFileName"
-        :slugProjectName="$root.settings.showMediaModalFor.slugProjectName"
-        :media="$root.store.projects[$root.settings.showMediaModalFor.slugProjectName].medias[$root.settings.showMediaModalFor.metaFileName]"
-        @close="$root.settings.showMediaModalFor = false"
+        v-if="$root.do_navigation.view === 'MediaView'"
+        :slugMediaName="$root.do_navigation.current_metaFileName"
+        :slugProjectName="$root.do_navigation.current_slugProjectName"
+        :media="$root.store.projects[$root.do_navigation.current_slugProjectName].medias[$root.do_navigation.current_metaFileName]"
+        @close="$root.closeMedia()"
         :read_only="!$root.state.connected"
       >
       </EditMedia>      
@@ -181,13 +192,13 @@ import TopBar from './TopBar.vue';
 import ListView from './ListView.vue';
 import ProjectView from './ProjectView.vue';
 import CaptureView from './CaptureView.vue';
+import MediaView from './MediaView.vue';
+import EditMedia from './components/modals/EditMedia.vue';
 import SearchSidebar from './components/SearchSidebar.vue';
 import MediaFilterIndicator from './components/MediaFilterIndicator.vue';
 
 import Publications from './Publications.vue';
 import Publication from './components/Publication.vue';
-
-import EditMedia from './components/modals/EditMedia.vue';
 
 import Resizer from './components/splitpane/Resizer.vue'
 import Pane from './components/splitpane/Pane.vue'
@@ -200,9 +211,10 @@ export default {
     ListView,
     ProjectView,
     CaptureView,
+    MediaView,
+    EditMedia,
     Publications,
     Publication,
-    EditMedia,
     Resizer, 
     Pane,
     SearchSidebar,
@@ -232,6 +244,10 @@ export default {
     },
     cursor() {
       return this.is_dragged ? 'col-resize' : ''
+    },
+    window_innerHeight() { 
+      let wHeight = window.innerHeight - 88;
+      return wHeight; 
     }
   },
   methods: {

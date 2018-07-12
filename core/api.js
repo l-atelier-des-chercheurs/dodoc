@@ -6,7 +6,8 @@ const path = require('path'),
   os = require('os'),
   writeFileAtomic = require('write-file-atomic'),
   ffmpegstatic = require('ffmpeg-static'),
-  ffmpeg = require('fluent-ffmpeg');
+  ffmpeg = require('fluent-ffmpeg'),
+  glob = require('glob');
 
 const settings = require('../settings.json'),
   dev = require('./dev-log');
@@ -31,14 +32,15 @@ module.exports = (function() {
       eventAndContent(sendEvent, objectJson),
     sendEventWithContent: (sendEvent, objectContent, io, socket) =>
       sendEventWithContent(sendEvent, objectContent, io, socket),
-    getLocalIP: () => getLocalIP(),
+    getNetworkInfos: () => getNetworkInfos(),
     slug: term => slug(term),
     clip: (value, min, max) => clip(value, min, max),
     decodeBase64Image: dataString => decodeBase64Image(dataString),
     writeAudioToDisk: (slugProjectName, mediaName, dataURL) =>
       writeAudioToDisk(slugProjectName, mediaName, dataURL),
     writeVideoToDisk: (slugProjectName, mediaName, dataURL) =>
-      writeVideoToDisk(slugProjectName, mediaName, dataURL)
+      writeVideoToDisk(slugProjectName, mediaName, dataURL),
+    makeStopmotionFromImageSequence: d => makeStopmotionFromImageSequence(d)
   };
 
   function _getUserPath() {
@@ -182,16 +184,27 @@ module.exports = (function() {
   // from http://stackoverflow.com/a/8440736
   function getLocalIP() {
     return new Promise(function(resolve, reject) {
-      var ifaces = os.networkInterfaces();
-      var networkInfo = {};
+      const ifaces = os.networkInterfaces();
+      let ip_adresses = {};
       Object.keys(ifaces).forEach(function(ifname) {
         ifaces[ifname].forEach(function(iface) {
           if ('IPv4' === iface.family && iface.internal === false) {
-            networkInfo[ifname] = iface.address;
+            ip_adresses[ifname] = iface.address;
           }
         });
       });
-      resolve(networkInfo);
+      resolve(ip_adresses);
+    });
+  }
+
+  function getNetworkInfos() {
+    return new Promise(function(resolve, reject) {
+      getLocalIP().then(ip_adresses => {
+        resolve({
+          ip: Object.values(ip_adresses),
+          port: global.appInfos.port
+        });
+      });
     });
   }
 
@@ -298,6 +311,62 @@ module.exports = (function() {
         //     });
         // });
       });
+    });
+  }
+
+  function makeStopmotionFromImageSequence({
+    slugFolderName,
+    pathToMedia,
+    images,
+    slugStopmotionName,
+    frameRate
+  }) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction('COMMON — makeStopmotionFromImageSequence');
+
+      let slugStopmotionPath = getFolderPath(
+        path.join(settings.structure['stopmotions'].path, slugStopmotionName)
+      );
+
+      const path_to_images = path.join(slugStopmotionPath, '*.jpeg');
+
+      const numberOfImagesToProcess = glob.sync(path_to_images).length;
+
+      // ask ffmpeg to make a video from the cache images
+      var proc = new ffmpeg()
+        .input(path_to_images)
+        .inputOptions('-pattern_type glob')
+        // using 12 fps
+        .withFpsInput(frameRate)
+        .withVideoCodec('libvpx')
+        .addOptions(['-vb 8000k', '-f webm'])
+        .output(pathToMedia)
+        // setup event handlers
+        .on('progress', progress => {
+          // var msg = {
+          //   author: newMediaData.author,
+          //   content: `${dodoc.lang().stopMotionCompilationProgress} ${
+          //     progress.frames
+          //   }/${numberOfImagesToProcess} ${dodoc.lang().imagesAdded}`
+          // };
+          // require('../sockets').notifyUser(msg);
+          dev.logverbose(
+            `Processing new stopmotion: image ${
+              progress.frames
+            }/${numberOfImagesToProcess}`
+          );
+        })
+        .on('end', () => {
+          dev.logverbose(`Stopmotion has been completed`);
+          resolve();
+        })
+        .on('error', function(err, stdout, stderr) {
+          dev.error('An error happened: ' + err.message);
+          dev.error('ffmpeg standard output:\n' + stdout);
+          dev.error('ffmpeg standard error:\n' + stderr);
+          reject(`couldn't create a stopmotion animation`);
+        })
+        .run();
     });
   }
 

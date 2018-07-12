@@ -11,7 +11,7 @@
     <div class="m_actionbar">
       <button type="button" class="barButton barButton_capture" 
         v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
-        @click="$root.settings.view = 'CaptureView'"
+        @click="$root.do_navigation.view = 'CaptureView'"
         :disabled="read_only" 
       >
         <span>    
@@ -46,7 +46,17 @@
       >
       </MediaCard>
     </div>
-    
+    <!-- <form :action="this.slugProjectName + '/file-upload'" enctype="multipart/form-data" method="post">
+      <label class="file-select">
+        <div class="select-button">
+          <span v-if="value">Selected File: {{value.name}}</span>
+          <span v-else>Select File</span>
+        </div>
+        <input type="file" name="upload" multiple="multiple"><br>
+      </label>
+      <input type="submit" value="Upload">
+    </form>
+     -->
   </div>    
 </template>
 <script>
@@ -81,21 +91,15 @@ export default {
   created() {
   },
   watch: {
-    'project.medias': function() {
-      let justCreatedTextMedia = Object.keys(this.project.medias).filter((m) => {
-        let data = this.project.medias[m];
-        return data.hasOwnProperty('id') && data.id === this.$root.justCreatedMediaID;
-      });      
-      if(justCreatedTextMedia.length > 0) {
-        this.openMediaModal(justCreatedTextMedia[0]);
-        this.$root.justCreatedTextmediaID = false;
-      }
-    }
   },
 
   computed: {
     sortedMedias() {
       var sortable = [];
+
+      if(!this.project.hasOwnProperty('medias')) {
+        return sortable;
+      }
 
       for (let slugMediaName in this.project.medias) {
         let mediaDataToOrderBy;
@@ -183,11 +187,12 @@ export default {
   methods: {
     openMediaModal(metaFileName) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • MediaLibrary: openMedia');
+        console.log('METHODS • MediaLibrary: openMediaModal');
       }
-      this.$root.showMediaModalFor({ slugProjectName: this.slugProjectName, metaFileName });      
+      this.$root.openMedia({ slugProjectName: this.slugProjectName, metaFileName });      
     },
     createTextMedia() {
+      this.$eventHub.$on('socketio.media_created_or_updated', this.newTextMediaCreated);
       this.$root.createMedia({
         slugFolderName: this.slugProjectName,
         type: 'projects',
@@ -195,6 +200,13 @@ export default {
           type: 'text'          
         }
       });
+    },
+    newTextMediaCreated(mdata) {
+      if (this.$root.justCreatedMediaID === mdata.id) {
+        this.$root.justCreatedMediaID = false;
+        this.$eventHub.$off('socketio.media_created_or_updated', this.newTextMediaCreated);
+        this.openMediaModal(mdata.metaFileName);
+      }
     }
   }
 }

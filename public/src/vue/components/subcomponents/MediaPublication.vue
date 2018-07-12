@@ -15,7 +15,7 @@
   > 
     <MediaContent
       :context="preview_mode ? 'publication' : 'preview'"
-      :slugProjectName="media.slugProjectName"
+      :slugFolderName="media.slugProjectName"
       :media="media"
       :read_only="read_only"
       v-model="media.content"
@@ -50,14 +50,14 @@
     </div>
 
     <div 
-      v-if="(is_selected || is_hovered) && !preview_mode" 
+      v-if="(is_selected || is_hovered || is_touch) && !preview_mode" 
       class="m_mediaPublication--buttons"
     >
       <button 
         type="button" 
         class="buttonLink" 
-        @click.prevent.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.metaFileName })"
-        @touchstart.prevent.stop="$root.showMediaModalFor({ slugProjectName: media.slugProjectName, slugMediaName: media.metaFileName })"
+        @click.prevent.stop="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
+        @touchstart.prevent.stop="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
       >
         {{ $t('edit') }}
       </button>
@@ -94,6 +94,7 @@ export default {
       is_waitingForServer: false,
       is_hovered: false,
       is_selected: false,
+      is_touch: Modernizr.touchevents,
 
       mediaID: `${(Math.random().toString(36) + '00000000000000000').slice(2, 3 + 5)}`,
 
@@ -345,12 +346,12 @@ export default {
       this.$emit('unselected');
     },
     mouseOver() {
-      if(!Modernizr.touchevents) {
+      if(!this.is_touch) {
         this.is_hovered = true;
       }      
     },
     mouseLeave() {
-      if(!Modernizr.touchevents) {
+      if(!this.is_touch) {
         this.is_hovered = false;
       }
     }

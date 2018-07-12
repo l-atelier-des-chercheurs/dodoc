@@ -29,6 +29,7 @@ module.exports = (function() {
       sureToCloseModal: 'Êtes-vous sûr de vouloir fermer cette fenêtre ?',
       sureToRemovePubli:
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
+      validate_media: 'Valider le média',
 
       showing: 'Affichage de',
       media_filter: 'Filtre de médias',
@@ -58,6 +59,7 @@ module.exports = (function() {
       loading: 'chargement',
       open: 'Ouvrir',
       save: 'Enregistrer',
+      as_favorite: '+ favoris',
       edit: 'Éditer',
       width: 'Largeur',
       height: 'Hauteur',
@@ -87,10 +89,10 @@ module.exports = (function() {
       audio: 'son',
       vecto: 'formes',
       image: 'image',
-      video: 'video',
-      audio: 'son',
       text: 'texte',
       other: 'autre',
+      with_sound: 'avec le son',
+      generate: 'Générer',
 
       select: 'Sélectionner',
       unselect: 'Dé-sélectionner',
@@ -104,7 +106,9 @@ module.exports = (function() {
       edit_project: 'Éditer le projet',
 
       capture: 'Enregistrer',
+      current: 'Actuellement',
       currently: 'Actuellement',
+      update: 'Mettre à jour',
 
       more_information:
         'Pour plus d’information, consultez la <a href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc" class="js--openInBrowser" target="_blank">documentation</a> ou <a href="mailto:info@latelier-des-chercheurs.fr?subject=do•doc" class="js--openInBrowser" target="_blank">contactez</a> les auteurs de ce logiciel.',
@@ -161,8 +165,12 @@ module.exports = (function() {
 
       last_modified: 'Dernière modification',
       remote_access: 'Accès depuis d’autres appareils',
+      img_per_second: 'Images par seconde',
 
       notifications: {
+        media_was_sent: 'Le média a été envoyé.',
+        media_couldnt_been_sent:
+          'Le média n’a pas pu être envoyé à cause d’une erreur de connexion.',
         file_was_sent: 'Le fichier a été envoyé.',
         file_upload_not_allowed:
           'Votre navigateur web ne prend pas en charge l’envoi de fichiers.',
@@ -191,7 +199,11 @@ module.exports = (function() {
           'Le flux audio n’a pas pu être démarré.\nEssayez de modifier la source dans les réglages.',
         audio_source_not_set: 'La source audio n’a pas été trouvée.',
         video_stream_not_available:
-          'Erreur : le flux vidéo n’est pas disponible.'
+          'Erreur : le flux vidéo n’est pas disponible.',
+        no_author_found_with_nfc_tag:
+          'Scan d’un tag NFC réussi, néanmoins aucun auteur n’a été associé à ce tag.',
+        author_found_with_nfc_tag:
+          'Scan d’un tag NFC réussi, activation de l’auteur suivant&nbsp;:'
       }
     },
     en: {
@@ -220,6 +232,7 @@ module.exports = (function() {
       sureToRemoveAuthor: 'Do you really want to delete this author?',
       sureToCloseModal: 'Do you really want to close this window?',
       sureToRemovePubli: 'Do you really want to delete this publication?',
+      validate_media: 'Validate the media',
 
       showing: 'Showing',
       media_filter: 'Medias filter',
@@ -250,6 +263,7 @@ module.exports = (function() {
       loading: 'loading',
       open: 'Open',
       save: 'Save',
+      as_favorite: '+ favourite',
       edit: 'Edit',
       print: 'Print',
       create: 'Create',
@@ -279,10 +293,10 @@ module.exports = (function() {
       audio: 'sound',
       vecto: 'shapes',
       image: 'image',
-      video: 'video',
-      audio: 'audio',
       text: 'text',
       other: 'other',
+      with_sound: 'with sound',
+      generate: 'Generate',
 
       export: 'Export',
       export_as_pdf: 'Export as PDF',
@@ -301,7 +315,9 @@ module.exports = (function() {
       edit_project: 'Edit project',
 
       capture: 'Capture',
+      current: 'Current',
       currently: 'Now',
+      update: 'Update',
 
       more_information:
         'For more informations, read the <a href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc" class="js--openInBrowser" target="_blank">documentation (in french)</a> or <a href="mailto:info@latelier-des-chercheurs.fr?subject=do•doc" class="js--openInBrowser" target="_blank">contact</a> the creators of this app.',
@@ -355,8 +371,12 @@ module.exports = (function() {
 
       last_modified: 'Last modified',
       remote_access: 'Acces from other devices',
+      img_per_second: 'Images per second',
 
       notifications: {
+        media_was_sent: 'The media was sent.',
+        media_couldnt_been_sent:
+          'The media was not sent because of a connexion error.',
         file_was_sent: 'The file was sent.',
         file_upload_not_allowed: 'File upload is not allowed by this browser.',
         connection_active: 'The connection to the server is active.',
@@ -382,7 +402,11 @@ module.exports = (function() {
         failed_to_start_audio_change_source:
           'Failed to start audio feed. Try changing the source.',
         audio_source_not_set: 'The source audio has not been set.',
-        video_stream_not_available: 'Error: Video stream not available.'
+        video_stream_not_available: 'Error: Video stream not available.',
+        no_author_found_with_nfc_tag:
+          'NFC tag detected, however no author was found. Create an author first',
+        author_found_with_nfc_tag:
+          'NFC tag detected, the following author will be logged-in:'
       }
     }
   };

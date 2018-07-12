@@ -1,5 +1,6 @@
 const electron = require('electron');
 const { app, BrowserWindow, Menu } = electron;
+const PDFWindow = require('electron-pdf-window');
 
 const {
   default: installExtension,
@@ -83,9 +84,12 @@ function createWindow() {
     webPreferences: {
       allowDisplayingInsecureContent: true,
       allowRunningInsecureContent: true,
-      nodeIntegration: true
+      nodeIntegration: true,
+      plugins: true
     }
   });
+
+  PDFWindow.addSupport(win);
 
   if (windowState.isMaximized) {
     win.maximize();
@@ -109,6 +113,14 @@ function createWindow() {
       }
     });
   });
+
+  if (process.platform == 'darwin') {
+    app.setAboutPanelOptions({
+      applicationName: app.getName(),
+      applicationVersion: app.getVersion(),
+      copyright: 'Released under the Creative Commons license.'
+    });
+  }
 
   setApplicationMenu();
 
@@ -180,7 +192,7 @@ function setApplicationMenu() {
       label: 'Electron',
       submenu: [
         {
-          label: 'About Electron',
+          label: 'About do•doc',
           selector: 'orderFrontStandardAboutPanel:'
         },
         {

@@ -54,7 +54,6 @@
 </template>
 <script>
 import Modal from './BaseModal.vue';
-import DateTime from '../subcomponents/DateTime.vue';
 import slug from 'slugg';
 import ImageSelect from '../subcomponents/ImageSelect.vue';
 
@@ -66,7 +65,6 @@ export default {
   },
   components: {
     Modal,
-    DateTime,
     ImageSelect
   },
   data() {

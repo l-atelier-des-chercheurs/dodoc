@@ -73,20 +73,19 @@
               :slugProjectName="sortedProject.slugProjectName"
               :project="projects[sortedProject.slugProjectName]"
               :read_only="read_only"
-              :currentSort="currentSort"
               :index="index"
             />
           </transition-group>
         </template>
         <template v-else>
 
-          <div v-for="item in groupedMedias" :key="date">
+          <div v-for="item in groupedMedias" :key="item[0]">
             <h3 class="font-folder_title margin-sides-small margin-none margin-bottom-small">
               {{ $root.formatDateToHuman(item[0]) }}
             </h3>
 
             <div class="m_mediaShowAll"> 
-              <div v-for="media in item[1]">
+              <div v-for="media in item[1]" :key="media.slugMediaName">
                 <MediaCard
                   :key="media.slugMediaName"
                   :media="media"
@@ -150,22 +149,6 @@ export default {
     currentLang: function() {
       this.$root.updateLocalLang(this.currentLang);
     },
-    projects: function() {
-      // check if there is a justCreatedFolderID val
-      if (this.$root.justCreatedFolderID) {
-        Object.keys(this.projects).map(slugProjectName => {
-          let folder = this.projects[slugProjectName];
-          // if there is, try to match it with folderID
-          if (
-            folder.id &&
-            folder.id === this.$root.justCreatedFolderID
-          ) {
-            this.$root.justCreatedFolderID = false;
-            this.$root.openProject(slugProjectName);
-          }
-        });
-      }
-    },
     show_medias_instead_of_projects: function() {
       // load all projects’ medias if it isn’t there
       if(this.show_medias_instead_of_projects) {
@@ -222,12 +205,10 @@ export default {
       } else if (this.presentationMD.hasOwnProperty('content')) {
         return this.presentationMD['content'];
       }
-
       return this.presentationMD;
     },
     allMedias: function() {
       let allMedias = [];
-      debugger;
       if(this.projects === undefined || Object.keys(this.projects).length === 0) {
         return [];
       }
@@ -247,9 +228,11 @@ export default {
       return allMedias;
     },
     sortedMedias: function() {
-      return this.allMedias.filter(m => {
+      let sortedMedias = this.allMedias.filter(m => {
         return this.$root.isShownAfterMediaFilter(m)
       });
+      sortedMedias = this.$_.sortBy(sortedMedias, 'date_created');
+      return sortedMedias.reverse();
     },
     groupedMedias: function() {
       let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {

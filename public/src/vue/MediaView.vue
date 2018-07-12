@@ -1,78 +1,15 @@
 <template>
-  <Modal
-    :backgroundColor="mediadata.color"
-    @close="$emit('close')"
-    @submit="editThisMedia"
-    :read_only="read_only"
-    :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndScroll'"
-    :askBeforeClosingModal="askBeforeClosingModal"
-    >
-    <template slot="header">
-      <div class="">{{ $t('edit_the_media') }}</div>
-    </template>
+  <div class="m_mediaview">
+    <div class="m_mediaview--sidebar">
+      <div>
+        <h1 class="">{{ $t('edit_the_media') }}</h1>
 
-    <template slot="sidebar">
-
-      <div v-if="!read_only" class="m_modal--buttonrow">
-        <!-- CONFLICT WITH QR PRINTING -->
-        <!-- <button type="button"
-          class="buttonLink"
-          @click.prevent="printMedia()"
-          >
-          {{ $t('print') }}
-        </button> -->
-
-        <a 
-          :download="media.media_filename" 
-          :href="mediaURL" 
-          :title="media.media_filename" 
-          target="_blank"
-          class="buttonLink hide_on_print"
-          :disabled="read_only"
-          >
-          {{ $t('download') }}
-        </a>
-        
-        <button type="button"
-          class="buttonLink hide_on_print"
-          @click.prevent="removeMedia()"
-          :disabled="read_only"
-          >
-          {{ $t('remove') }}
-        </button>
-
-        <template v-if="showQRModal">
-          <hr>
-          <CreateQRCode
-            :slugProjectName="slugProjectName"
-            :media_filename="media.media_filename"
-          />
-        </template>
-
-        <button type="button" class="buttonLink c-noir" @click="showQRModal = !showQRModal">
-          <svg version="1.1" class="inline-svg"
-            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-            x="0px" y="0px" width="20px" height="20px" viewBox="0 0 90 90" style="enable-background:new 0 0 90 90;" xml:space="preserve">
-            <path d="M48,0v42h42V0H48z M84,36H54V6h30V36z M13,77h16V61H13V77z M0,90h42V48H0V90z M6,54h30v30H6V54z M63,48H48v13h15V48z M69,54
-              h8v7h-8v12h-8v-8h-9v8h5v9h-9v8h21v-8h13v-9h-5v-8h13V48H69V54z M0,42h42V0H0V42z M6,6h30v30H6V6z M90,90v-8h-8v8H90z M13,29h16V13
-              H13V29z M77,13H61v16h16V13z"/>
-          </svg>
-          <span class>
-            Partage
-          </span>
-        </button>
-
-        <hr class="hide_on_print">
-      </div>
-
-      <div class="hide_on_print">
         <div class="m_metaField" v-if="!!media.type">
           <div>
             {{ $t('type') }}
           </div>
           <div>
             {{ media.type }}
-            <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
           </div>
         </div>
         <div class="m_metaField" v-if="!!media.authors">
@@ -87,7 +24,7 @@
           <div>
             {{ $t('created') }}
           </div>
-          <div :title="media.date_created">
+          <div>
             {{ $root.formatDateToHuman(media.date_created) }}
           </div>
         </div>
@@ -98,7 +35,7 @@
           <div>
             {{ $t('uploaded') }}
           </div>
-          <div :title="media.date_uploaded">
+          <div>
             {{ $root.formatDateToHuman(media.date_uploaded) }}
           </div>
         </div>
@@ -106,12 +43,12 @@
           <div>
             {{ $t('edited') }}
           </div>
-          <div :title="media.date_modified">
+          <div>
             {{ $root.formatDateToHuman(media.date_modified) }}
           </div>
         </div>
 
-  <!-- Caption -->
+    <!-- Caption -->
         <div 
           v-if="(!read_only || !!mediadata.caption) && mediadata.type !== 'text'"
           class="margin-bottom-small" 
@@ -121,8 +58,8 @@
           </textarea>
         </div>
 
-  <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
-  <!-- Disabled for now: if an image or video is tagged as "text" or marked, a folder becomes unreadable -->
+    <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
+    <!-- Disabled for now: if an image or video is tagged as "text" or marked, a folder becomes unreadable -->
         <!-- <div class="margin-bottom-small">
           <label>{{ $t('type') }}</label>
           <select v-if="!read_only" ref="type" v-model="mediadata.type">
@@ -133,46 +70,78 @@
           <input type="text" v-else :value="mediadata.type" readonly>
         </div> -->
 
-  <!-- Keywords -->
+    <!-- Keywords -->
         <div v-if="!read_only || !!mediadata.keywords" class="margin-bottom-small">
           <label>{{ $t('keywords') }}</label>
           <textarea v-model="mediadata.keywords" :readonly="read_only">
           </textarea>
         </div>
 
-  <!-- Author(s) -->
-        <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
+    <!-- Author(s) -->
+        <!-- <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
           <label>{{ $t('author') }}</label>
           <textarea v-model="mediadata.authors" :readonly="read_only">
           </textarea>
-        </div>
+        </div> -->
 
-  <!-- Fav or not -->
+    <!-- Fav or not -->
         <div class="margin-bottom-small">
           <span class="switch switch-xs">
             <input type="checkbox" class="switch" id="favswitch" v-model="mediadata.fav" :readonly="read_only">
-            <label for="favswitch">
-              {{ $t('fav') }}
-              <svg version="1.1"
-                class="inline-svg"
-                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-                x="0px" y="0px" width="78.5px" height="106.4px" viewBox="0 0 78.5 106.4" style="enable-background:new 0 0 78.5 106.4;"
-                xml:space="preserve">
-                <polygon class="st0" points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"/>
-                <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 "/>
-              </svg>
-            </label>
+            <label for="favswitch">{{ $t('fav') }}</label>
           </span>
         </div>
 
+        <div v-if="!read_only" class="m_mediaview--sidebar--buttonrow">
+          <hr>
+          <button type="button"
+            class="buttonLink"
+            @click.prevent="printMedia()"
+            >
+            {{ $t('print') }}
+          </button>
+
+          <a 
+            :download="media.media_filename" 
+            :href="mediaURL" 
+            :title="media.media_filename" 
+            target="_blank"
+            class="buttonLink"
+            :disabled="read_only"
+            >
+            {{ $t('download') }}
+          </a>
+          
+          <button type="button"
+            class="buttonLink"
+            @click.prevent="removeMedia()"
+            :disabled="read_only"
+            >
+            {{ $t('remove') }}
+          </button>
+        </div>
+
+        <div 
+          class="m_modal--save"
+        >
+          <button
+            @click="editThisMedia"
+            type="submit"
+            :disabled="read_only"
+            >
+            <img src="/images/i_enregistre.svg"/>
+            <span class="text-cap font-verysmall">
+              <slot name="submit_button">
+                {{ $t('save') }}
+              </slot>
+            </span>
+          </button>
+        </div>
       </div>
-    </template>
+    </div>
 
-    <template slot="submit_button">
-      {{ $t('save') }}
-    </template>
+    <div class="m_mediaview--preview">
 
-    <template slot="preview">
       <MediaContent
         :context="'edit'"
         :slugFolderName="slugProjectName"
@@ -181,15 +150,12 @@
         v-model="mediadata.content"
       >
       </MediaContent>
-    </template>
 
-  </Modal>
+    </div>
+  </div>
 </template>
 <script>
-import Modal from './BaseModal.vue';
-import MediaContent from '../subcomponents/MediaContent.vue';
-import DateTime from '../subcomponents/DateTime.vue';
-import CreateQRCode from './qr/CreateQRCode.vue';
+import MediaContent from './components/subcomponents/MediaContent.vue';
 
 export default {
   props: {
@@ -202,14 +168,10 @@ export default {
     }
   },
   components: {
-    Modal,
-    DateTime,
-    MediaContent,
-    CreateQRCode
+    MediaContent
   },
   data() {
     return {
-      showQRModal: false,
       mediadata: {
         type: this.media.type,
         authors: this.media.authors,
@@ -246,7 +208,7 @@ export default {
           slugMediaName: this.slugMediaName
         });
         // then close that popover
-        this.$emit('close', '');
+        this.$root.closeMedia();
       }
     },
     editThisMedia: function(event) {
@@ -258,7 +220,7 @@ export default {
         data: this.mediadata
       });
       // then close that popover
-      this.$emit('close', '');
+      this.$root.closeMedia();
     }
   },
 };
