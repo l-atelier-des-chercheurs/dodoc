@@ -101,7 +101,6 @@ export default {
       }
 
       let objToSend = {};
-
       objToSend.fileCreationDate = file.lastModified;
 
       if (
