@@ -46,6 +46,7 @@ module.exports = (function() {
       all_medias: 'Tous les médias',
       create_text: 'Écrire du texte',
       import: 'Importer',
+      import_medias: 'Importer des médias',
       select_cover_image: 'Sélectionnez une image de couverture',
       select_portrait_image: 'Sélectionnez une image de portrait',
       add_to_publication: 'Ajouter à la publication',
@@ -203,7 +204,10 @@ module.exports = (function() {
         no_author_found_with_nfc_tag:
           'Scan d’un tag NFC réussi, néanmoins aucun auteur n’a été associé à ce tag.',
         author_found_with_nfc_tag:
-          'Scan d’un tag NFC réussi, activation de l’auteur suivant&nbsp;:'
+          'Scan d’un tag NFC réussi, activation de l’auteur suivant&nbsp;:',
+        medias_uploaded: 'Tous les médias ont bien étés envoyés.',
+        medias_upload_failed:
+          'Erreur&nbsp;: certains médias n’ont pas pu être envoyés.'
       }
     },
     en: {
@@ -251,6 +255,7 @@ module.exports = (function() {
       all_medias: 'All medias',
       create_text: 'Write text',
       import: 'Import',
+      import_medias: 'Import medias',
       select_cover_image: 'Select a cover image',
       select_portrait_image: 'Select a portrait',
       add_to_publication: 'Add to publication',
@@ -406,7 +411,9 @@ module.exports = (function() {
         no_author_found_with_nfc_tag:
           'NFC tag detected, however no author was found. Create an author first',
         author_found_with_nfc_tag:
-          'NFC tag detected, the following author will be logged-in:'
+          'NFC tag detected, the following author will be logged-in:',
+        medias_uploaded: 'All medias were imported successfully.',
+        medias_upload_failed: 'Error: some medias failed to import.'
       }
     }
   };

@@ -24,6 +24,19 @@
         :disabled="read_only"
       >
       </FileUpload>
+      <button type="button" class="dz-default dz-message" 
+        v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
+        @click="showImportModal = true"
+      ><span>    
+        {{ $t('import') }} (debug)
+      </span></button>
+
+      <UploadFile
+        v-if="showImportModal"
+        @close="showImportModal = false"
+        :slugProjectName="slugProjectName"
+      />
+
       <button type="button" class="barButton barButton_text" 
         @click="createTextMedia"
       >
@@ -46,22 +59,12 @@
       >
       </MediaCard>
     </div>
-    <!-- <form :action="this.slugProjectName + '/file-upload'" enctype="multipart/form-data" method="post">
-      <label class="file-select">
-        <div class="select-button">
-          <span v-if="value">Selected File: {{value.name}}</span>
-          <span v-else>Select File</span>
-        </div>
-        <input type="file" name="upload" multiple="multiple"><br>
-      </label>
-      <input type="submit" value="Upload">
-    </form>
-     -->
   </div>    
 </template>
 <script>
 import MediaFilterBar from './MediaFilterBar.vue';
 import FileUpload from './FileUpload.vue';
+import UploadFile from './modals/UploadFile.vue';
 import MediaCard from './subcomponents/MediaCard.vue';
 
 export default {
@@ -73,7 +76,8 @@ export default {
   components: {
     MediaFilterBar,
     FileUpload,
-    MediaCard
+    MediaCard,
+    UploadFile
   },
   data() {
     return {
@@ -84,7 +88,8 @@ export default {
         field: 'date_uploaded',
         type: 'date',
         order: 'descending'
-      }
+      },
+      showImportModal: false
     }
   },
   

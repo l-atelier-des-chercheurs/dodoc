@@ -38,6 +38,7 @@
           <form v-if="!!this.$slots['sidebar']"
             class="m_modal--sidebar"
             v-on:submit.prevent="$emit('submit')"
+            ref="form"
           >
 
             <div class="m_modal--header">
@@ -77,6 +78,7 @@
             v-if="!!this.$slots['buttons']" 
             class="m_modal--buttons"
             v-on:submit.prevent="$emit('submit')"
+            ref="form"
           >
 
             <button
@@ -143,6 +145,10 @@ export default {
     askBeforeClosingModal: {
       type: Boolean,
       default: false
+    },
+    isFile: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -152,18 +158,24 @@ export default {
   },
   mounted: function() {
     console.log(`MOUNTED • BaseModal`)
+
     setTimeout(() => {
       this.showModal = true;
 
       if (Modernizr !== undefined && !Modernizr.touchevents) {
-        const el = this.$refs.modalContent.querySelector('[autofocus]');
-        if(!!el) {
+        if(this.$refs.modalContent && this.$refs.modalContent.querySelector('[autofocus]')) {
+          const el = this.$refs.modalContent.querySelector('[autofocus]');
           if(el.classList.contains('quillWrapper')) {
             el.querySelector('.ql-editor').focus();
           }  else {
             el.focus();
           }
         }
+
+        if (this.isFile && this.$refs.form){
+          this.$refs.form.setAttribute('enctype', 'multipart/form-data');
+        }
+
       }
     },100);
   },
