@@ -1,7 +1,7 @@
 <template>
   <Modal
     @close="$emit('close')"
-    @submit="sendFiles"
+    @submit="sendAllFiles"
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
     :askBeforeClosingModal="false"
@@ -18,46 +18,52 @@
         <label>{{ $t('import') }}</label><br>
         <input type="file" id="addMedia" multiple class="inputfile-2" 
           :name="uploadFieldName" 
-          :disabled="isSaving" 
-          @change="selected_files = $event.target.files"
+          @change="selected_files = $event.target.files; selected_files_meta = {};"
         >
         <label for="addMedia">
           <svg width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"></path></svg>
-          {{ $t('add') }}
+          {{ $t('select_files_to_import') }}
         </label>
       </div>
 
-      {{  selected_files }}
-      <div>
-        <template v-for="f in selected_files">
-          <img :src="getImgPreview(f)">
-        </template>
+      <div
+        v-for="(f, index) in selected_files" 
+        :key="index"
+        class="m_uploadFile"
+        :class="cssStatus(f)"
+        :style="`--progress-percent: ${selected_files_meta.hasOwnProperty(f.name) ? selected_files_meta[f.name].upload_percentages/100 : 0}`"
+      >
+        <img 
+          v-if="!!f.type && f.type.includes('image')" 
+          class="m_uploadFile--image"
+          :src="getImgPreview(f)"
+        >
+        <div :title="f.name" class="m_uploadFile--filename">
+          {{ f.name }}
+        </div>
+        {{ Number.parseInt(f.size/1024) }}
+        <div class="m_uploadFile--action">
+          <button type="button" class="buttonLink"
+            @click="sendThisFile(f)"
+            :disabled="read_only || (selected_files_meta.hasOwnProperty(f.name) && selected_files_meta[f.name].status === 'success')"
+          >
+            <template v-if="!selected_files_meta.hasOwnProperty(f.name)">
+              {{ $t('import') }}
+            </template>
+            <template v-else-if="selected_files_meta[f.name].status === 'success'">
+              {{ $t('sent') }}
+            </template>
+            <template v-else-if="selected_files_meta[f.name].status === 'failed'">
+              {{ $t('retry') }}
+            </template>
+          </button>
+        </div>
       </div>
-      plop
 
-      <p v-if="fileCount">
-        Medias selected: {{ selected_files.length }}
-      </p>
-
-      <p v-if="isSaving">
-        Uploading {{ fileCount }} files...
-      </p>
-
-      {{ currentStatus }}
-
-
-        <!-- <label class="file-select">
-          <div class="select-button">
-            <span v-if="value">Selected File: {{value.name}}</span>
-            <span v-else>Select File</span>
-          </div>
-          <input type="file" name="upload" multiple="multiple"><br>
-        </label>
-        <input type="submit" value="Upload"> -->
     </template>
 
-    <template slot="submit_button">
-      {{ $t('import') }}
+    <template slot="submit_button" v-if="selected_files.length > 0">
+      {{ $t('import_all_files') }}
     </template>
 
   </Modal>
@@ -65,9 +71,6 @@
 <script>
 import Modal from './BaseModal.vue';
 import * as axios from 'axios';
-
-const STATUS_INITIAL = 0, STATUS_SAVING = 1, STATUS_SUCCESS = 2, STATUS_FAILED = 3;
-
 
 export default {
   props: {
@@ -84,93 +87,68 @@ export default {
       currentStatus: null,
       uploadFieldName: 'medias',
       fileCount: false,
-      selected_files: false
+      selected_files: false,
+      selected_files_meta: {},
+      upload_percentages: 0
     };
   },
   watch: {
   },
   mounted() {
-    this.reset();
   },
   computed: {
-    isInitial() {
-      return this.currentStatus === STATUS_INITIAL;
-    },
-    isSaving() {
-      return this.currentStatus === STATUS_SAVING;
-    },
-    isSuccess() {
-      return this.currentStatus === STATUS_SUCCESS;
-    },
-    isFailed() {
-      return this.currentStatus === STATUS_FAILED;
-    },  
     uriToUploadMedia: function() {
       return this.slugProjectName + '/file-upload';
     }
   },
   methods: {
-    upload(formData) {
-      return new Promise((resolve, reject) => {
-        const url = this.uriToUploadMedia;
-        axios.post(url, formData)
-          // get data
-          .then(x => x.data)
-          // add url field
-          .then(x => {
-            resolve();
-            // resolve(x.map(img => Object.assign({}, img, { url: `${BASE_URL}/images/${img.id}` })));
-          })
-          .catch(err => reject(err));
+    sendThisFile(f) {
+      this.$set(this.selected_files_meta, f.name, {
+        upload_percentages: 0,
+        status: 'sending'
       });
-    },
-    reset() {
-      // reset form to initial state
-      this.currentStatus = STATUS_INITIAL;
-      this.uploadedFiles = [];
-      this.uploadError = null;
-    },
-    sendFiles() {
-      if(!this.selected_files) {
-        return;
-      }
 
       let formData = new FormData();
-      Array
-        .from(Array(selected_files.length).keys())
-        .map(x => {
-          formData.append(fieldName, selected_files[x], selected_files[x].name);
-          const meta = {
-            fileCreationDate: selected_files[x].lastModified,
-            authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:'' 
-          }
-          formData.append(selected_files[x].name, JSON.stringify(meta));
-        });
+      formData.append('files', f, f.name);
+      const meta = {
+        fileCreationDate: f.lastModified,
+        authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:'' 
+      }
+      formData.append(f.name, JSON.stringify(meta));
 
-      // upload data to the server
-      this.currentStatus = STATUS_SAVING;
-
-      this.upload(formData)
+      // TODO : possibilité de cancel
+      axios.post(this.uriToUploadMedia, formData,{
+          headers: { 'Content-Type': 'multipart/form-data' },
+          onUploadProgress: function( progressEvent ) {
+            this.selected_files_meta[f.name].upload_percentages = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
+          }.bind(this)            
+        })
+        .then(x => x.data)
         .then(x => {
-          this.uploadedFiles = [].concat(x);
-          this.currentStatus = STATUS_SUCCESS;
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .success(this.$t('notifications.medias_uploaded'));
-          this.$emit('close', '');
+          this.selected_files_meta[f.name].status = 'success';
+          this.selected_files_meta[f.name].upload_percentages = 100;         
+          // resolve(x.map(img => Object.assign({}, img, { url: `${BASE_URL}/images/${img.id}` })));
         })
         .catch(err => {
-          this.uploadError = err.response;
-          this.currentStatus = STATUS_FAILED;
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .success(this.$t('notifications.medias_upload_failed'));
+          this.selected_files_meta[f.name].status = 'failed'; 
+          this.selected_files_meta[f.name].upload_percentages = 0;         
+        });
+    },
+    sendAllFiles() {
+      // TODO : start 1 by 1
+      Array
+        .from(Array(this.selected_files.length).keys())
+        .map(x => {
+          this.sendThisFile(this.selected_files[x]);
         });
     },
     getImgPreview(file) {
       return URL.createObjectURL(file);
+    },
+    cssStatus(f) {
+      if(this.selected_files_meta.hasOwnProperty(f.name)) {
+        return 'is--' + this.selected_files_meta[f.name].status;
+      }
     }
   }
 };

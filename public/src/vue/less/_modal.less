@@ -94,8 +94,10 @@
       flex: 1 1 200px;
 
       &.m_modal--sidebar {
-        flex: 0 0 @t-panelWidth;
+        flex: 0 1 @t-panelWidth;
         max-height: 90vh;
+        width: 100%;
+
 
         // @media screen and (max-width: 50rem) {
         //   max-height: none;
@@ -238,13 +240,15 @@
         // .margin-bottom-medium;
         .padding-sides-small;
         text-align: center;
-
       }
     }
 
     hr {
       margin: 0;
       .margin-small;          
+    }
+    table {
+      margin: 0;
     }
 
     > *:last-child {

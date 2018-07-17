@@ -18,23 +18,24 @@
           {{ $t('capture') }}
         </span>
       </button>      
-      <FileUpload
+      <!-- <FileUpload
         v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
         :slugProjectName="slugProjectName"
         :disabled="read_only"
-      >
+      > -->
       </FileUpload>
       <button type="button" class="dz-default dz-message" 
         v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
         @click="showImportModal = true"
       ><span>    
-        {{ $t('import') }} (debug)
+        {{ $t('import') }}
       </span></button>
 
       <UploadFile
         v-if="showImportModal"
         @close="showImportModal = false"
         :slugProjectName="slugProjectName"
+        :read_only="read_only"
       />
 
       <button type="button" class="barButton barButton_text" 
