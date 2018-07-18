@@ -137,7 +137,7 @@ export default {
         axios.post(this.uriToUploadMedia, formData,{
             headers: { 'Content-Type': 'multipart/form-data' },
             onUploadProgress: function( progressEvent ) {
-              this.selected_files_meta[f.name].upload_percentages = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
+              this.selected_files_meta[f.name].upload_percentages = parseInt(Math.round((progressEvent.loaded * 100 ) / progressEvent.total ) );
             }.bind(this)            
           })
           .then(x => x.data)

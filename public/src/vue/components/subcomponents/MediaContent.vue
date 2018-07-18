@@ -4,6 +4,7 @@
     :class="`type-${media.type}`"
     :data-context="context"
   >
+
     <template v-if="media.type === 'image'">
       <img :src="linkToImageThumb">
       <transition name="fade" :duration="600">
@@ -22,7 +23,7 @@
     </template>
 
     <template v-else-if="media.type === 'audio'">
-      <audio controls :src="mediaURL">
+      <audio controls preload="none" :src="mediaURL">
       </audio>
     </template>
 
@@ -88,6 +89,10 @@ export default {
     read_only: {
       type: Boolean,
       default: true
+    },
+    preview_size: {
+      type: Number,
+      default: 360
     }
   },
   components: {
@@ -96,7 +101,6 @@ export default {
   data() {
     return {
       available_resolutions: {
-        preview: 360,
         preview_hovered: 600,
         default: 1600
       },
@@ -132,7 +136,7 @@ export default {
     },
     thumbRes: function() {
       return this.context === 'preview'
-        ? this.available_resolutions.preview
+        ? this.preview_size
         : this.available_resolutions.default;
     },
     thumbResHovered: function() {

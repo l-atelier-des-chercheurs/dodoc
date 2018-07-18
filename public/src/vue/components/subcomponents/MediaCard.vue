@@ -21,6 +21,7 @@
             :context="'preview'"
             :slugFolderName="slugProjectName"
             :media="media"
+            :preview_size="preview_size"
           ></MediaContent>
           <button 
             type="button" 
@@ -93,7 +94,8 @@ export default {
   props: {
     media: Object,
     slugProjectName: String,
-    metaFileName: String
+    metaFileName: String,
+    preview_size: Number
   },
   components: {
     MediaContent

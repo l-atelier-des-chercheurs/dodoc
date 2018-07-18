@@ -284,9 +284,13 @@ body {
           transition: all .4s ease-out;
         }
 
-        &:not(:first-child)::before {
-          content: '/';
-          font-weight: 200;
+        &:not(:first-child) {
+          padding-left: 0;
+          &::before {
+            content: '/';
+            .padding-sides-small;
+            font-weight: 200;
+          }
         }
 
         &:not(:last-child) {
@@ -961,7 +965,7 @@ body {
   position: relative;
 
   width: 100%;
-  min-width: 180px;
+  min-width: 120px;
   padding: 0 @t-skipline/2;
 
   transition: opacity .4s;

@@ -91,6 +91,7 @@
                   :media="media"
                   :metaFileName="media.metaFileName"
                   :slugProjectName="media.slugProjectName"
+                  :preview_size="180"
                 >
                 </MediaCard>
               </div>
