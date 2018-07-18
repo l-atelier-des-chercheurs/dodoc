@@ -2,7 +2,7 @@
   <div class="m_captureview">
     <div class="m_captureview--modeSelector">
       <button type="button" class="bg-transparent" @click="previousMode()"
-        v-if="!$root.settings.capture_mode_cant_be_changed"
+        v-show="!$root.settings.capture_mode_cant_be_changed"
       >
         ◀
       </button>
@@ -19,7 +19,7 @@
         </label>
       </div>
       <button type="button" class="bg-transparent" @click="nextMode()"
-        v-if="!$root.settings.capture_mode_cant_be_changed"
+        v-show="!$root.settings.capture_mode_cant_be_changed"
       >
         ▶
       </button>
@@ -110,6 +110,17 @@
               v-if="selected_mode === 'audio'"
               ref="equalizerElement" width="720" height="360" 
             />
+
+            <MediaContent
+              v-if="selected_mode === 'stopmotion' && stopmotion.onion_skin_img"
+              class="m_panel--previewCard--live--onionskin"
+              :context="'edit'"
+              :slugFolderName="current_stopmotion"
+              :media="stopmotion.onion_skin_img"
+              :subfolder="'_stopmotions/'"
+              :style="`--onionskin-opacity: ${stopmotion.onion_skin_opacity}`"
+            />
+
             <div id="vectoContainer" v-if="selected_mode === 'vecto'" v-html="vecto.svgstr">
             </div>
 
@@ -191,9 +202,18 @@
             <div class="m_panel--buttons--row--options">
               <div v-if="selected_mode === 'vecto'">
                 <label>
-                  Lissage
+                  {{ $t('smoothing') }}
                 </label>
                 <input class="margin-none" type="range" v-model="vecto.blurradius" min="0" max="20">
+              </div>
+
+              <div
+                v-if="selected_mode === 'stopmotion' && stopmotion.onion_skin_img"
+              >
+                <label>
+                  {{ $t('onion_skin') }}
+                </label>
+                <input class="margin-none" type="range" v-model="stopmotion.onion_skin_opacity" min="0" max="1" step="0.01">
               </div>
 
               <span class="switch switch-xs" v-if="selected_mode === 'video'">
@@ -227,9 +247,10 @@
       >
         <StopmotionPanel 
           :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
-          :slugProjectName="this.slugProjectName"
+          :slugProjectName="slugProjectName"
           :read_only="read_only"
           @close="current_stopmotion = false"
+          @new_single_image="updateSingleImage"
         >
         </StopmotionPanel>        
       </div>
@@ -337,11 +358,44 @@ export default {
       vecto: {
         svgstr: '',
         blurradius: 0
+      },
+      stopmotion: {
+        onion_skin_img: false,
+        onion_skin_opacity: 0
       }
     }
   },
   created() {
-    this.init();
+    console.log('METHODS • CaptureView: created');
+
+    navigator.mediaDevices.enumerateDevices()
+    .then((deviceInfos) => {
+      this.available_devices = deviceInfos;
+
+      // get from localstorage and put in selected_devicesId.audioinput, selected_devicesId.videoinput and selected_devicesId.audiooutput 
+      // set initial value
+
+      Object.keys(this.selected_devicesId).map((kind) => {
+        if(this.selected_devicesId[kind] === '') {
+          if(this.sorted_available_devices.hasOwnProperty(kind)) {
+            let selected_devicesId = this.sorted_available_devices[kind][0].deviceId;
+            if(kind === 'videoinput') {
+              const camera_back = this.sorted_available_devices[kind].filter(x => {
+                return x.label.includes('back')
+              });              
+              if(camera_back.length > 0) {
+                selected_devicesId = this.selected_devicesId[kind] = camera_back[0].deviceId;
+              }
+            }
+            this.selected_devicesId[kind] = selected_devicesId;              
+          }
+        }
+      });
+
+      // get last mode from localstorage
+      // otherwise start first mode
+      this.selected_mode = this.available_modes[0].key;
+    });
   },
   mounted() {
     document.addEventListener('keyup', this.captureKeyListener);
@@ -404,37 +458,6 @@ export default {
     }
   },
   methods: {
-    init() {
-      console.log('METHODS • CaptureView: init');
-      navigator.mediaDevices.enumerateDevices()
-      .then((deviceInfos) => {
-        this.available_devices = deviceInfos;
-
-        // get from localstorage and put in selected_devicesId.audioinput, selected_devicesId.videoinput and selected_devicesId.audiooutput 
-        // set initial value
-
-        Object.keys(this.selected_devicesId).map((kind) => {
-          if(this.selected_devicesId[kind] === '') {
-            if(this.sorted_available_devices.hasOwnProperty(kind)) {
-              let selected_devicesId = this.sorted_available_devices[kind][0].deviceId;
-              if(kind === 'videoinput') {
-                const camera_back = this.sorted_available_devices[kind].filter(x => {
-                  return x.label.includes('back')
-                });              
-                if(camera_back.length > 0) {
-                  selected_devicesId = this.selected_devicesId[kind] = camera_back[0].deviceId;
-                }
-              }
-              this.selected_devicesId[kind] = selected_devicesId;              
-            }
-          }
-        });
-
-        // get last mode from localstorage
-        // otherwise start first mode
-        this.selected_mode = this.available_modes[0].key;
-      });
-    },
     startMode() {
       console.log('METHODS • CaptureView: startMode');
 
@@ -916,6 +939,10 @@ export default {
         this.media_is_being_sent = false;
         this.media_to_validate = false;
       }
+    },
+    updateSingleImage($event) {
+      debugger;
+      this.stopmotion.onion_skin_img = $event;
     }
   }
 }

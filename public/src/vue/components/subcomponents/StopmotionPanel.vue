@@ -101,7 +101,7 @@
       :media_is_being_sent="media_is_being_sent"
       :cancelButtonIsBackButton="true"
       @cancel="backToStopmotion"
-      @save="$emit('close')"
+      @save="save()"
       @save_and_fav="saveAndFav()"
     />
 
@@ -151,6 +151,9 @@ export default {
           this.$refs.mediaPreviews.scrollLeft = 1000000;
         });
       }
+    },
+    'current_single_media': function() {
+      this.$emit('new_single_image', this.current_single_media); 
     }
   },
   computed: {
@@ -199,7 +202,16 @@ export default {
       this.videopreview = false;    
     },
     cancelStopmotion: function() {
-      this.$emit('close');      
+      this.current_single_media = false;
+      this.$nextTick(() => {
+        this.$emit('close');      
+      });
+    },
+    save: function() {
+      this.current_single_media = false;
+      this.$nextTick(() => {
+        this.$emit('close');      
+      });
     },
     saveAndFav: function() {
       this.$root.editMedia({
@@ -210,7 +222,10 @@ export default {
           fav: true
         }
       });
-      this.$emit('close');            
+      this.current_single_media = false;
+      this.$nextTick(() => {
+        this.$emit('close');      
+      });
     },
     removeMedia: function(slugMediaName) {
       this.$root.removeMedia({
@@ -218,7 +233,6 @@ export default {
         slugFolderName: this.stopmotiondata.slugFolderName, 
         slugMediaName
       });
-
     }
   }
 }

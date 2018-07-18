@@ -14,7 +14,7 @@
 
 <!-- Human name -->
       <div class="margin-bottom-small">
-        <label>{{ $t('name') }}</label>
+        <label>{{ $t('project_name') }}</label>
         <input type="text" v-model="projectdata.name" required autofocus>
       </div>
 

@@ -710,17 +710,16 @@ pre {
 input[type=range] {
   -webkit-appearance: none;
   width: 100%;
-  height: 2.25rem;
-  line-height: 2.25rem;
+  height: 1.6rem;
+  line-height: 1.6rem;
   vertical-align: middle;
-}
+  background: transparent;
 
-input[type=range] {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 2.25rem;
-  line-height: 2.25rem;
-  vertical-align: middle;
+  --input-range-track-box-shadow: none;
+
+  &::-webkit-slider-thumb {
+    border: .2rem solid currentColor !important;
+  }
 }
 
 // file picker

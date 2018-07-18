@@ -8,6 +8,7 @@ module.exports = (function() {
       create_a_publication: 'Créer une publication',
       publication: 'Publication',
       name: 'Nom',
+      project_name: 'Nom du projet',
       created_date: 'Date de création',
       uploaded: 'Importation',
       created: 'Création',
@@ -20,6 +21,14 @@ module.exports = (function() {
       author: 'Auteur(s)',
       download: 'Télécharger',
       caption: 'Légende',
+      smoothing: 'Lissage',
+      onion_skin: 'transparence de la dernière image',
+
+      bytes: 'octets',
+      kb: 'ko',
+      mb: 'Mo',
+      gb: 'Go',
+
       date: 'Date',
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',
@@ -46,6 +55,9 @@ module.exports = (function() {
       all_medias: 'Tous les médias',
       create_text: 'Écrire du texte',
       import: 'Importer',
+      import_all_files: 'Importer tous les fichiers',
+      import_medias: 'Importer des médias',
+      select_files_to_import: 'Sélectionnez les fichiers à importer',
       select_cover_image: 'Sélectionnez une image de couverture',
       select_portrait_image: 'Sélectionnez une image de portrait',
       add_to_publication: 'Ajouter à la publication',
@@ -166,8 +178,13 @@ module.exports = (function() {
       last_modified: 'Dernière modification',
       remote_access: 'Accès depuis d’autres appareils',
       img_per_second: 'Images par seconde',
+      sent: 'Envoyé',
 
       notifications: {
+        ios_not_compatible_with_capture:
+          'Les iPhones et les iPads ne sont pas compatibles avec la fonctionnalité de Capture.',
+        instead_import_with_this_button:
+          'Utilisez plutôt la fonctionnalité d’import ci-dessus pour prendre des photos et des vidéos ou en importer depuis votre appareil.',
         media_was_sent: 'Le média a été envoyé.',
         media_couldnt_been_sent:
           'Le média n’a pas pu être envoyé à cause d’une erreur de connexion.',
@@ -203,7 +220,10 @@ module.exports = (function() {
         no_author_found_with_nfc_tag:
           'Scan d’un tag NFC réussi, néanmoins aucun auteur n’a été associé à ce tag.',
         author_found_with_nfc_tag:
-          'Scan d’un tag NFC réussi, activation de l’auteur suivant&nbsp;:'
+          'Scan d’un tag NFC réussi, activation de l’auteur suivant&nbsp;:',
+        medias_uploaded: 'Tous les médias ont bien étés envoyés.',
+        medias_upload_failed:
+          'Erreur&nbsp;: certains médias n’ont pas pu être envoyés.'
       }
     },
     en: {
@@ -212,6 +232,7 @@ module.exports = (function() {
       create_a_project: 'Create a project',
       create_a_publication: 'Create a publication',
       name: 'Name',
+      project_name: 'Project name',
       created_date: 'Created date',
       uploaded: 'Uploaded',
       created: 'Created',
@@ -225,6 +246,14 @@ module.exports = (function() {
       download: 'Download',
       caption: 'Caption',
       date: 'Date',
+      smoothing: 'smoothing',
+      onion_skin: 'transparency of last image',
+
+      bytes: 'bytes',
+      kb: 'KB',
+      mb: 'MB',
+      gb: 'GB',
+
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',
       cancel: 'Cancel',
@@ -251,6 +280,9 @@ module.exports = (function() {
       all_medias: 'All medias',
       create_text: 'Write text',
       import: 'Import',
+      import_medias: 'Import medias',
+      import_all_files: 'Import all files',
+      select_files_to_import: 'Select files to import',
       select_cover_image: 'Select a cover image',
       select_portrait_image: 'Select a portrait',
       add_to_publication: 'Add to publication',
@@ -372,8 +404,13 @@ module.exports = (function() {
       last_modified: 'Last modified',
       remote_access: 'Acces from other devices',
       img_per_second: 'Images per second',
+      sent: 'Sent',
 
       notifications: {
+        ios_not_compatible_with_capture:
+          'iPhones and iPads are not currently compatible with the <i>capture</i> page.',
+        instead_import_with_this_button:
+          'Instead import or capture photos and videos here in the import modal.',
         media_was_sent: 'The media was sent.',
         media_couldnt_been_sent:
           'The media was not sent because of a connexion error.',
@@ -406,7 +443,9 @@ module.exports = (function() {
         no_author_found_with_nfc_tag:
           'NFC tag detected, however no author was found. Create an author first',
         author_found_with_nfc_tag:
-          'NFC tag detected, the following author will be logged-in:'
+          'NFC tag detected, the following author will be logged-in:',
+        medias_uploaded: 'All medias were imported successfully.',
+        medias_upload_failed: 'Error: some medias failed to import.'
       }
     }
   };

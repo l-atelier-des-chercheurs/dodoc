@@ -18,6 +18,11 @@
 
   transition: background-color .3s ease-out;
 
+  @media screen and (max-width: 50rem) {
+    align-items: flex-start;
+    height: auto !important;
+  }
+
   &.is_invisible {
     background-color: transparent;
   }
@@ -94,15 +99,14 @@
       flex: 1 1 200px;
 
       &.m_modal--sidebar {
-        flex: 0 0 @t-panelWidth;
+        flex: 0 1 @t-panelWidth;
         max-height: 90vh;
+        width: 100%;
 
-        // @media screen and (max-width: 50rem) {
-        //   max-height: none;
-        // }
-        // html.touchevents & { 
-        //   max-height: none;
-        // }
+
+        @media screen and (max-width: 50rem) {
+          max-height: none;
+        }
       }
 
       &.m_modal--preview {
@@ -111,9 +115,9 @@
         overflow: hidden;
         border-right: 1px solid @c-gris_clair;
         
-        // @media screen and (max-width: 50rem) {
-        //   height: 50vh;
-        // }         
+        @media screen and (max-width: 50rem) {
+          height: 50vh;          
+        }         
 
       }
     }
@@ -157,7 +161,9 @@
       max-width: @t-panelWidth * 3;
       // align-self: flex-start;
       .m_modal--preview {
-        min-height: 70vh;
+        @media screen and (min-width: 50rem) {
+          min-height: 70vh;
+        }
       }    
     }
   }
@@ -226,7 +232,7 @@
 
   .m_modal--metaOptions {
     flex: 1 1 auto;
-    .padding-vert-medium;
+    .margin-vert-small;
     overflow-y: auto;
     .custom_scrollbar(8px, 5px, 6px);
 
@@ -235,16 +241,22 @@
 
       &.m_modal--buttonrow {
         margin: 0;
-        // .margin-bottom-medium;
+        // .margin-vert-small;
         .padding-sides-small;
         text-align: center;
+      }
 
+      &:first-child {
+        margin-top: 0;
       }
     }
 
     hr {
       margin: 0;
       .margin-small;          
+    }
+    table {
+      margin: 0;
     }
 
     > *:last-child {
@@ -260,7 +272,7 @@
     height: 100%;
     overflow: hidden;
     position: relative;
-    // .bg-gris_tresclair;
+    .bg-gris_clair;
 
     &[data-context="edit"] {
       > * {
@@ -276,6 +288,7 @@
       width: auto;
       height: auto;
       object-fit: contain;
+      object-position: center;
     }
 
     &.type-text {

@@ -1,4 +1,5 @@
 <template>
+
   <div class="dropzone">
     <Dropzone
       :id="uniqueDropzoneID"
@@ -14,14 +15,13 @@
       :maxNumberOfFiles="100"
     >
       <input type="hidden">
+    </Dropzone>
 <!--
   ideal implementation: one button each
       <input name="imageCapture" type="file" accept="image/*" capture>
       <input name="videoCapture" type="file" accept="video/*" capture>
       <input name="audioCapture" type="file" accept="audio/*" capture>
 -->
-    </Dropzone>
-
   </div>
 </template>
 <script>
@@ -54,6 +54,7 @@ export default {
     }
   },
   mounted: function() {
+    this.$refs.dropzone.$el.setAttribute('enctype', 'multipart/form-data');
     document.addEventListener('dragover', this.enhanceDropzone);
     $(this.$refs.dropzoneoverlay)
       .on('dragleave', this.unenhanceDropzone)
@@ -64,7 +65,7 @@ export default {
   },
   methods: {
     reportError: function(err) {
-      alert(`Failed to upload: ${JSON.stringify(err)}`);
+      // alert(`Failed to upload: ${JSON.stringify(err)}`);
     },
     enhanceDropzone: function(evt) {
       $(this.$refs.dropzone.$el).addClass('is--bigger');
@@ -100,7 +101,6 @@ export default {
       }
 
       let objToSend = {};
-
       objToSend.fileCreationDate = file.lastModified;
 
       if (

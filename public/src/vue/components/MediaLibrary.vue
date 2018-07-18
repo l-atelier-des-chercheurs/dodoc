@@ -11,19 +11,27 @@
     <div class="m_actionbar">
       <button type="button" class="barButton barButton_capture" 
         v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
-        @click="$root.do_navigation.view = 'CaptureView'"
+        @click="openCapture"
         :disabled="read_only" 
       >
         <span>    
           {{ $t('capture') }}
         </span>
       </button>      
-      <FileUpload
+      <button type="button" class="dz-default dz-message" 
         v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
+        @click="showImportModal = true"
+      ><span>    
+        {{ $t('import') }}
+      </span></button>
+
+      <UploadFile
+        v-if="showImportModal"
+        @close="showImportModal = false"
         :slugProjectName="slugProjectName"
-        :disabled="read_only"
-      >
-      </FileUpload>
+        :read_only="read_only"
+      />
+
       <button type="button" class="barButton barButton_text" 
         @click="createTextMedia"
       >
@@ -46,23 +54,14 @@
       >
       </MediaCard>
     </div>
-    <!-- <form :action="this.slugProjectName + '/file-upload'" enctype="multipart/form-data" method="post">
-      <label class="file-select">
-        <div class="select-button">
-          <span v-if="value">Selected File: {{value.name}}</span>
-          <span v-else>Select File</span>
-        </div>
-        <input type="file" name="upload" multiple="multiple"><br>
-      </label>
-      <input type="submit" value="Upload">
-    </form>
-     -->
   </div>    
 </template>
 <script>
 import MediaFilterBar from './MediaFilterBar.vue';
 import FileUpload from './FileUpload.vue';
+import UploadFile from './modals/UploadFile.vue';
 import MediaCard from './subcomponents/MediaCard.vue';
+import { setTimeout } from 'timers';
 
 export default {
   props: {
@@ -73,7 +72,8 @@ export default {
   components: {
     MediaFilterBar,
     FileUpload,
-    MediaCard
+    MediaCard,
+    UploadFile
   },
   data() {
     return {
@@ -84,7 +84,8 @@ export default {
         field: 'date_uploaded',
         type: 'date',
         order: 'descending'
-      }
+      },
+      showImportModal: false
     }
   },
   
@@ -207,6 +208,27 @@ export default {
         this.$eventHub.$off('socketio.media_created_or_updated', this.newTextMediaCreated);
         this.openMediaModal(mdata.metaFileName);
       }
+    },
+    openCapture() {
+      const iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+      if(iOS) {
+        this.showImportModal = true;
+
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(8000)
+          .error(this.$t('notifications.ios_not_compatible_with_capture'));
+        setTimeout(() => {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(8000)
+            .log(this.$t('notifications.instead_import_with_this_button'));
+        },1500);
+
+        return;
+      }
+      
+      this.$root.do_navigation.view = 'CaptureView';
     }
   }
 }

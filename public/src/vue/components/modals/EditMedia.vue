@@ -134,11 +134,11 @@
         </div> -->
 
   <!-- Keywords -->
-        <div v-if="!read_only || !!mediadata.keywords" class="margin-bottom-small">
+        <!-- <div v-if="!read_only || !!mediadata.keywords" class="margin-bottom-small">
           <label>{{ $t('keywords') }}</label>
           <textarea v-model="mediadata.keywords" :readonly="read_only">
           </textarea>
-        </div>
+        </div> -->
 
   <!-- Author(s) -->
         <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">

@@ -69,10 +69,6 @@ body {
   }
 }
 
-.alertify-logs {
-  z-index: 20000;
-}
-
 .container {
   max-width: 1490px;
   width: 100%;
@@ -84,7 +80,8 @@ body {
   --switch-size: 0.9rem;
 }
 .range-xs {
-
+  --switch-size: 0.9rem;
+  
 }
 
 /************************************************************************
@@ -283,9 +280,13 @@ body {
           transition: all .4s ease-out;
         }
 
-        &:not(:first-child)::before {
-          content: '/';
-          font-weight: 200;
+        &:not(:first-child) {
+          padding-left: 0;
+          &::before {
+            content: '/';
+            .padding-sides-small;
+            font-weight: 200;
+          }
         }
 
         &:not(:last-child) {
@@ -392,12 +393,12 @@ body {
   display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-start;
   .margin-small;
 
   > * {
     .padding-small;
-    .margin-bottom-small;
+    .margin-small;
     // .margin-sides-small;
     // .margin-small;
     flex: 0 1 24%;
@@ -431,13 +432,19 @@ body {
   }
 
   .m_authorsList--author {
-    .button;
     .padding-sides-small;
-    .padding-vert-medium;
+    .padding-vert-small;
     .bg-gris_tresclair;
+    border-radius: @t-buttonradius;
+    text-align: center;
     text-transform: uppercase;
     font-weight:200;
-
+    
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+    
     &.is--selected {
       color: @c-bleumarine_fonce;
       background-color: @c-bleumarine_clair;
@@ -455,6 +462,7 @@ body {
     }
 
     img {
+      display: inline-block;
       width: 100px;
       height: 100px;
       border-radius:50%;
@@ -467,9 +475,93 @@ body {
       .font-large;
     }
   }
+}
+
+.m_uploadFile {
+  position: relative;
+
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
+
+  .c-noir;
+  .font-verysmall; 
+
+  height: 60px;
+
+  .margin-bottom-small;
+  .bg-gris_tresclair;
+  border-radius: @t-buttonradius;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    
+    transform: scale(var(--progress-percent), 1);
+    transform-origin: left center;
+    
+    transition: all .4s;
+    .bg-bleuvert;
+  }
+
+  > * {
+    flex: 1 1 auto;
+    position: relative;
+    z-index: 1;
+  }
   
+  &.is--success {
+  }
+  &.is--failed {
+    &::before {
+      .bg-rouge;
+    }
+  }
+
+  .m_uploadFile--image {
+    display: block;
+    flex: 0 0 60px;
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    object-position: center;
+    background-color: fade(white, 35%);
+  }
+
+  .m_uploadFile--filename {
+    .text-ellipsis;
+    .font-small; 
+    .c-noir;
+    .padding-verysmall;
+  }
+  .m_uploadFile--size {
+    flex: 0 0 70px;
+  }
+  .m_uploadFile--action {
+    flex: 0 0 70px;
+
+    button {
+      // .bg-bleuvert;
+      background-color: transparent;
+      color: inherit;
+    }
+  }
+
+
+
 
 }
+
+
+
+
+
+
+
 
 .m_filterBar {
   max-height: @t-skipline*3;
@@ -869,7 +961,7 @@ body {
   position: relative;
 
   width: 100%;
-  min-width: 180px;
+  min-width: 120px;
   padding: 0 @t-skipline/2;
 
   transition: opacity .4s;
@@ -1081,7 +1173,8 @@ body {
     }
 
     input[disabled] + label {
-      filter: grayscale(70%);
+      filter: grayscale(100%);
+      opacity: .3;
       cursor: not-allowed;
     }
     
@@ -1135,7 +1228,7 @@ body {
     > .m_panel {
       min-width: 300px;
       flex: 0 1 auto;
-      transition: all .15s ease-out;
+      // transition: all .15s ease-out;
       overflow: auto;
       .boxs-card-0;
       .bg-blanc;
@@ -1241,7 +1334,14 @@ body {
         border-bottom: 2px solid @c-gris;
 
         .custom_scrollbar(8px, 5px, 6px);
-        
+      }
+
+      .m_panel--previewCard--live--onionskin {
+        position: absolute;
+        top: 0;left: 0;right: 0;bottom: 0;
+        opacity: .2;
+        opacity: var(--onionskin-opacity);
+
       }
 
     }
@@ -2298,9 +2398,24 @@ body {
 
 
 
-.alertify-logs>*, .alertify-logs>.default {
-  background-color: @c-gris;
+.alertify-logs {
+  z-index: 20000;
+  right: 48px;
 }
+
+.alertify-logs > *, .alertify-logs > .default {
+  background-color: @c-gris_clair;
+  color: @c-noir;
+}
+.alertify-logs > .error {
+  .bg-rouge;
+  color: white;
+}
+.alertify-logs > .success {
+  .bg-bleuvert;
+  color: white;
+}
+
 
 .animated {
   animation-duration: 3s;
@@ -2450,6 +2565,17 @@ body {
 .list-complete-leave-active {
   position: absolute;
 }
+
+.fileupload_list-move {
+  transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.fileupload_list-complete-enter, .fileupload_list-complete-leave-to {
+  opacity: 0;
+  height: 0;
+}
+.fileupload_list-complete-leave-active {
+}
+
 
 
 .ListView-enter-active, .ListView-leave-active {
