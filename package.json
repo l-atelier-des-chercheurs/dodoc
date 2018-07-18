@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "archiver": "^2.1.1",
-    "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
     "dodoc-parsedown": "git://github.com/louis-ev/dodoc-parsedown.git#master",
