@@ -149,10 +149,6 @@ export default {
             this.selected_files_meta[f.name].status = 'success';
             this.selected_files_meta[f.name].upload_percentages = 100;     
 
-            setTimeout(() => {
-              this.selected_files = this.selected_files.filter(x => x.name !== f.name);
-              this.$delete(this.selected_files_meta, f.name);
-            }, 1500);
             resolve();    
             // resolve(x.map(img => Object.assign({}, img, { url: `${BASE_URL}/images/${img.id}` })));
           })
@@ -180,6 +176,13 @@ export default {
       }
 
       executeSequentially(Array.from(Array(this.selected_files.length).keys())).then(x => {
+        Object.keys(this.selected_files_meta).map(name => {
+          if(this.selected_files_meta[name].status === 'success') {
+            this.selected_files = this.selected_files.filter(x => x.name !== name);
+            this.$delete(this.selected_files_meta, name);
+          }
+        });
+
       });
 
       // const test = async () => {
