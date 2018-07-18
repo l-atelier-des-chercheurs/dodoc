@@ -21,6 +21,7 @@
   "dependencies": {
     "@xkeshi/vue-qrcode": "^0.3.0",
     "alertify.js": "^1.0.12",
+    "axios": "^0.18.0",
     "debounce": "^1.1.0",
     "i18n": "^0.8.3",
     "imagetracerjs": "^1.2.3",
