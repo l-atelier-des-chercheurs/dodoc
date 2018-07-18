@@ -1,7 +1,7 @@
 {
   "name": "dodoc",
   "productName": "do•doc",
-  "version": "7.3.1-dev",
+  "version": "7.3.2-dev",
   "description": "do•doc is a documentation tool for creativity.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
@@ -23,7 +23,7 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "build": {
-    "electronVersion": "1.8.2",
+    "electronVersion": "2.0.5",
     "appId": "dodoc2",
     "productName": "do•doc",
     "asar": false,
@@ -35,9 +35,9 @@
     "archiver": "^2.1.1",
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
-    "compression": "^1.7.2",
+    "compression": "^1.7.3",
     "dodoc-parsedown": "git://github.com/louis-ev/dodoc-parsedown.git#master",
-    "electron-context-menu": "^0.9.1",
+    "electron-context-menu": "^0.10.0",
     "electron-devtools-installer": "^2.2.3",
     "electron-log": "^2.2.16",
     "electron-pdf-window": "^1.0.12",
@@ -47,7 +47,7 @@
     "ffprobe-static": "^2.0.0",
     "fluent-ffmpeg": "^2.1.2",
     "formidable": "^1.2.0",
-    "fs-extra": "^5.0.0",
+    "fs-extra": "^7.0.0",
     "glob": "^7.1.2",
     "gulp-util": "^3.0.8",
     "moment": "^2.22.2",
@@ -60,17 +60,17 @@
     "slugg": "^1.2.1",
     "socket.io": "^2.1.1",
     "source-map": "^0.7.3",
-    "validator": "^9.4.1",
+    "validator": "^10.4.0",
     "vue": "^2.5.16",
-    "vue-i18n": "^7.8.1",
+    "vue-i18n": "^8.0.0",
     "write-file-atomic": "^2.3.0"
   },
   "devDependencies": {
-    "electron": "1.8.2",
-    "electron-builder": "^19.56.2",
-    "electron-packager": "^11.2.0",
+    "electron": "2.0.5",
+    "electron-builder": "^20.22.0",
+    "electron-packager": "^12.1.0",
     "electron-prebuilt": "^1.4.13",
-    "electron-rebuild": "^1.7.3",
+    "electron-rebuild": "^1.8.1",
     "node-gyp": "^3.7.0"
   }
 }
