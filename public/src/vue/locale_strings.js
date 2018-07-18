@@ -21,6 +21,8 @@ module.exports = (function() {
       author: 'Auteur(s)',
       download: 'Télécharger',
       caption: 'Légende',
+      smoothing: 'Lissage',
+      onion_skin: 'transparence de la dernière image',
 
       bytes: 'octets',
       kb: 'ko',
@@ -240,6 +242,8 @@ module.exports = (function() {
       download: 'Download',
       caption: 'Caption',
       date: 'Date',
+      smoothing: 'smoothing',
+      onion_skin: 'transparency of last image',
 
       bytes: 'bytes',
       kb: 'KB',

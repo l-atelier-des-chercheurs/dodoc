@@ -31,7 +31,7 @@
         name="fileupload_list"
       >
         <div
-          v-for="(f, index) in selected_files" 
+          v-for="f in selected_files" 
           :key="f.name"
           class="m_uploadFile"
           :class="cssStatus(f)"

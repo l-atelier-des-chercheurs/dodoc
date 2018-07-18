@@ -110,6 +110,17 @@
               v-if="selected_mode === 'audio'"
               ref="equalizerElement" width="720" height="360" 
             />
+
+            <MediaContent
+              v-if="selected_mode === 'stopmotion' && stopmotion.onion_skin_img"
+              class="m_panel--previewCard--live--onionskin"
+              :context="'edit'"
+              :slugFolderName="current_stopmotion"
+              :media="stopmotion.onion_skin_img"
+              :subfolder="'_stopmotions/'"
+              :style="`--onionskin-opacity: ${stopmotion.onion_skin_opacity}`"
+            />
+
             <div id="vectoContainer" v-if="selected_mode === 'vecto'" v-html="vecto.svgstr">
             </div>
 
@@ -191,9 +202,16 @@
             <div class="m_panel--buttons--row--options">
               <div v-if="selected_mode === 'vecto'">
                 <label>
-                  Lissage
+                  {{ $t('smoothing') }}
                 </label>
                 <input class="margin-none" type="range" v-model="vecto.blurradius" min="0" max="20">
+              </div>
+
+              <div v-if="selected_mode === 'stopmotion'">
+                <label>
+                  {{ $t('onion_skin') }}
+                </label>
+                <input class="margin-none" type="range" v-model="stopmotion.onion_skin_opacity" min="0" max="1" step="0.01">
               </div>
 
               <span class="switch switch-xs" v-if="selected_mode === 'video'">
@@ -227,9 +245,10 @@
       >
         <StopmotionPanel 
           :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
-          :slugProjectName="this.slugProjectName"
+          :slugProjectName="slugProjectName"
           :read_only="read_only"
           @close="current_stopmotion = false"
+          @new_single_image="updateSingleImage"
         >
         </StopmotionPanel>        
       </div>
@@ -337,6 +356,10 @@ export default {
       vecto: {
         svgstr: '',
         blurradius: 0
+      },
+      stopmotion: {
+        onion_skin_img: false,
+        onion_skin_opacity: 0
       }
     }
   },
@@ -916,6 +939,10 @@ export default {
         this.media_is_being_sent = false;
         this.media_to_validate = false;
       }
+    },
+    updateSingleImage($event) {
+      debugger;
+      this.stopmotion.onion_skin_img = $event;
     }
   }
 }
