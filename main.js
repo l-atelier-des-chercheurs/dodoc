@@ -104,7 +104,7 @@ function createWindow() {
     global.nodeStorage.setItem('windowstate', windowState);
   };
 
-  ['resize', 'move', 'close'].forEach(function(e) {
+  ['close'].forEach(function(e) {
     win.on(e, function() {
       try {
         storeWindowState();
