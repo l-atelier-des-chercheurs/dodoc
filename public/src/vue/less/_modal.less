@@ -18,6 +18,11 @@
 
   transition: background-color .3s ease-out;
 
+  @media screen and (max-width: 50rem) {
+    align-items: flex-start;
+    height: auto !important;
+  }
+
   &.is_invisible {
     background-color: transparent;
   }
@@ -99,12 +104,9 @@
         width: 100%;
 
 
-        // @media screen and (max-width: 50rem) {
-        //   max-height: none;
-        // }
-        // html.touchevents & { 
-        //   max-height: none;
-        // }
+        @media screen and (max-width: 50rem) {
+          max-height: none;
+        }
       }
 
       &.m_modal--preview {
@@ -113,9 +115,9 @@
         overflow: hidden;
         border-right: 1px solid @c-gris_clair;
         
-        // @media screen and (max-width: 50rem) {
-        //   height: 50vh;
-        // }         
+        @media screen and (max-width: 50rem) {
+          height: 50vh;          
+        }         
 
       }
     }
@@ -159,7 +161,9 @@
       max-width: @t-panelWidth * 3;
       // align-self: flex-start;
       .m_modal--preview {
-        min-height: 70vh;
+        @media screen and (min-width: 50rem) {
+          min-height: 70vh;
+        }
       }    
     }
   }
@@ -268,7 +272,7 @@
     height: 100%;
     overflow: hidden;
     position: relative;
-    // .bg-gris_tresclair;
+    .bg-gris_clair;
 
     &[data-context="edit"] {
       > * {
@@ -284,6 +288,7 @@
       width: auto;
       height: auto;
       object-fit: contain;
+      object-position: center;
     }
 
     &.type-text {

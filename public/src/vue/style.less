@@ -69,10 +69,6 @@ body {
   }
 }
 
-.alertify-logs {
-  z-index: 20000;
-}
-
 .container {
   max-width: 1490px;
   width: 100%;
@@ -1177,7 +1173,8 @@ body {
     }
 
     input[disabled] + label {
-      filter: grayscale(70%);
+      filter: grayscale(100%);
+      opacity: .3;
       cursor: not-allowed;
     }
     
@@ -2401,9 +2398,24 @@ body {
 
 
 
-.alertify-logs>*, .alertify-logs>.default {
-  background-color: @c-gris;
+.alertify-logs {
+  z-index: 20000;
+  right: 48px;
 }
+
+.alertify-logs > *, .alertify-logs > .default {
+  background-color: @c-gris_clair;
+  color: @c-noir;
+}
+.alertify-logs > .error {
+  .bg-rouge;
+  color: white;
+}
+.alertify-logs > .success {
+  .bg-bleuvert;
+  color: white;
+}
+
 
 .animated {
   animation-duration: 3s;

@@ -181,6 +181,10 @@ module.exports = (function() {
       sent: 'Envoyé',
 
       notifications: {
+        ios_not_compatible_with_capture:
+          'Les iPhones et les iPads ne sont pas compatibles avec la fonctionnalité de Capture.',
+        instead_import_with_this_button:
+          'Utilisez plutôt la fonctionnalité d’import ci-dessus pour prendre des photos et des vidéos ou en importer depuis votre appareil.',
         media_was_sent: 'Le média a été envoyé.',
         media_couldnt_been_sent:
           'Le média n’a pas pu être envoyé à cause d’une erreur de connexion.',
@@ -403,6 +407,10 @@ module.exports = (function() {
       sent: 'Sent',
 
       notifications: {
+        ios_not_compatible_with_capture:
+          'iPhones and iPads are not currently compatible with the <i>capture</i> page.',
+        instead_import_with_this_button:
+          'Instead import or capture photos and videos here in the import modal.',
         media_was_sent: 'The media was sent.',
         media_couldnt_been_sent:
           'The media was not sent because of a connexion error.',

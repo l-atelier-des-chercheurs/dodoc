@@ -2,7 +2,7 @@
   <div class="m_captureview">
     <div class="m_captureview--modeSelector">
       <button type="button" class="bg-transparent" @click="previousMode()"
-        v-if="!$root.settings.capture_mode_cant_be_changed"
+        v-show="!$root.settings.capture_mode_cant_be_changed"
       >
         ◀
       </button>
@@ -19,7 +19,7 @@
         </label>
       </div>
       <button type="button" class="bg-transparent" @click="nextMode()"
-        v-if="!$root.settings.capture_mode_cant_be_changed"
+        v-show="!$root.settings.capture_mode_cant_be_changed"
       >
         ▶
       </button>
@@ -207,7 +207,9 @@
                 <input class="margin-none" type="range" v-model="vecto.blurradius" min="0" max="20">
               </div>
 
-              <div v-if="selected_mode === 'stopmotion'">
+              <div
+                v-if="selected_mode === 'stopmotion' && stopmotion.onion_skin_img"
+              >
                 <label>
                   {{ $t('onion_skin') }}
                 </label>
@@ -262,6 +264,7 @@ import StopmotionPanel from './components/subcomponents/StopmotionPanel.vue';
 import MediaValidationButtons from './components/subcomponents/MediaValidationButtons.vue';
 
 import RecordRTC from 'recordrtc';
+import DetectRTC from 'detectrtc';
 // import 'webrtc-adapter';
 import ImageTracer from 'imagetracerjs';
 import { setTimeout } from 'timers';
@@ -364,7 +367,36 @@ export default {
     }
   },
   created() {
-    this.init();
+    console.log('METHODS • CaptureView: created');
+
+    navigator.mediaDevices.enumerateDevices()
+    .then((deviceInfos) => {
+      this.available_devices = deviceInfos;
+
+      // get from localstorage and put in selected_devicesId.audioinput, selected_devicesId.videoinput and selected_devicesId.audiooutput 
+      // set initial value
+
+      Object.keys(this.selected_devicesId).map((kind) => {
+        if(this.selected_devicesId[kind] === '') {
+          if(this.sorted_available_devices.hasOwnProperty(kind)) {
+            let selected_devicesId = this.sorted_available_devices[kind][0].deviceId;
+            if(kind === 'videoinput') {
+              const camera_back = this.sorted_available_devices[kind].filter(x => {
+                return x.label.includes('back')
+              });              
+              if(camera_back.length > 0) {
+                selected_devicesId = this.selected_devicesId[kind] = camera_back[0].deviceId;
+              }
+            }
+            this.selected_devicesId[kind] = selected_devicesId;              
+          }
+        }
+      });
+
+      // get last mode from localstorage
+      // otherwise start first mode
+      this.selected_mode = this.available_modes[0].key;
+    });
   },
   mounted() {
     document.addEventListener('keyup', this.captureKeyListener);
@@ -427,37 +459,6 @@ export default {
     }
   },
   methods: {
-    init() {
-      console.log('METHODS • CaptureView: init');
-      navigator.mediaDevices.enumerateDevices()
-      .then((deviceInfos) => {
-        this.available_devices = deviceInfos;
-
-        // get from localstorage and put in selected_devicesId.audioinput, selected_devicesId.videoinput and selected_devicesId.audiooutput 
-        // set initial value
-
-        Object.keys(this.selected_devicesId).map((kind) => {
-          if(this.selected_devicesId[kind] === '') {
-            if(this.sorted_available_devices.hasOwnProperty(kind)) {
-              let selected_devicesId = this.sorted_available_devices[kind][0].deviceId;
-              if(kind === 'videoinput') {
-                const camera_back = this.sorted_available_devices[kind].filter(x => {
-                  return x.label.includes('back')
-                });              
-                if(camera_back.length > 0) {
-                  selected_devicesId = this.selected_devicesId[kind] = camera_back[0].deviceId;
-                }
-              }
-              this.selected_devicesId[kind] = selected_devicesId;              
-            }
-          }
-        });
-
-        // get last mode from localstorage
-        // otherwise start first mode
-        this.selected_mode = this.available_modes[0].key;
-      });
-    },
     startMode() {
       console.log('METHODS • CaptureView: startMode');
 
