@@ -487,7 +487,7 @@ body {
   .c-noir;
   .font-verysmall; 
 
-  min-height: 60px;
+  height: 60px;
 
   .margin-bottom-small;
   .bg-gris_tresclair;
@@ -537,8 +537,11 @@ body {
     .c-noir;
     .padding-verysmall;
   }
+  .m_uploadFile--size {
+    flex: 0 0 70px;
+  }
   .m_uploadFile--action {
-    flex: 0 0 60px;
+    flex: 0 0 70px;
 
     button {
       // .bg-bleuvert;
@@ -2538,6 +2541,17 @@ body {
 .list-complete-leave-active {
   position: absolute;
 }
+
+.fileupload_list-move {
+  transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.fileupload_list-complete-enter, .fileupload_list-complete-leave-to {
+  opacity: 0;
+  height: 0;
+}
+.fileupload_list-complete-leave-active {
+}
+
 
 
 .ListView-enter-active, .ListView-leave-active {

@@ -21,6 +21,12 @@ module.exports = (function() {
       author: 'Auteur(s)',
       download: 'Télécharger',
       caption: 'Légende',
+
+      bytes: 'octets',
+      kb: 'ko',
+      mb: 'Mo',
+      go: 'Go',
+
       date: 'Date',
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',
@@ -170,6 +176,7 @@ module.exports = (function() {
       last_modified: 'Dernière modification',
       remote_access: 'Accès depuis d’autres appareils',
       img_per_second: 'Images par seconde',
+      sent: 'Envoyé',
 
       notifications: {
         media_was_sent: 'Le média a été envoyé.',
@@ -233,6 +240,12 @@ module.exports = (function() {
       download: 'Download',
       caption: 'Caption',
       date: 'Date',
+
+      bytes: 'bytes',
+      kb: 'KB',
+      mb: 'MB',
+      go: 'GB',
+
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',
       cancel: 'Cancel',
@@ -383,6 +396,7 @@ module.exports = (function() {
       last_modified: 'Last modified',
       remote_access: 'Acces from other devices',
       img_per_second: 'Images per second',
+      sent: 'Sent',
 
       notifications: {
         media_was_sent: 'The media was sent.',
