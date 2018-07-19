@@ -3,7 +3,8 @@
 
     <div class="m_actionbar">
       <button 
-        type="button" class="barButton barButton_createPubli" 
+        class="barButton barButton_createPubli"
+        type="button"  
         @click="showCreatePublicationModal = true"
         :disabled="read_only" 
       >
@@ -108,7 +109,7 @@ export default {
         console.log(`METHODS • Publications: openPublication / slugPubliName = ${slugPubliName}`);
       }
       this.$root.openPublication(slugPubliName);
-    },
+    }
   }
 }
 </script>

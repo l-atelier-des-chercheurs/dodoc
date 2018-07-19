@@ -225,7 +225,7 @@
                 {{ pageNumber + 1 }}
               </div>
 
-              <transition-group name="scaleIn" :duration="300" tag="div">
+              <transition-group name="slideFromTop" :duration="300" tag="div">
                 <div
                   v-for="media in publication_medias[(pageNumber) + '']" 
                   :key="media.publi_meta.metaFileName"
@@ -484,6 +484,9 @@ export default {
       const page_id = this.publication.pages[page].id;
       const x = this.publications_options.margin_left;
       const y = this.publications_options.margin_top;
+
+      // trouver dans les médias de la page si y en a sur x et y
+      // this.publication_medias[page]
 
       const newMediaMeta = {
         slugProjectName,

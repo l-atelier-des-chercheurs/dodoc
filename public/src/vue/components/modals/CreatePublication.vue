@@ -94,9 +94,18 @@ export default {
           id: +new Date() + '_' + (Math.random().toString(36) + '00000000000000000').slice(2, 3)
         }]
       }
+      this.$eventHub.$on('socketio.folder_created_or_updated', this.newPublicationCreated);
       this.$root.createFolder({ type: 'publications', data: publidata });      
-      
-      this.$emit('close', '');
+    },
+    newPublicationCreated: function(pdata) {
+      if(pdata.id === this.$root.justCreatedFolderID) {
+        this.$eventHub.$off('socketio.folder_created_or_updated', this.newPublicationCreated);
+        this.$root.justCreatedFolderID = false;
+        this.$nextTick(() => {
+          this.$emit('close', '');
+          this.$root.openPublication(pdata.slugFolderName);
+        });
+      }
     }
   }
 };

@@ -941,7 +941,6 @@ export default {
       }
     },
     updateSingleImage($event) {
-      debugger;
       this.stopmotion.onion_skin_img = $event;
     }
   }

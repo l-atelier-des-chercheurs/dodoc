@@ -111,13 +111,10 @@ export default {
 
         return false;
       }
-
       if(!!this.preview) {
         this.projectdata.preview_rawdata = this.preview;
       }
-
       this.$eventHub.$on('socketio.folder_created_or_updated', this.newFolderCreated);
-
       this.$root.createFolder({ type: 'projects', data: this.projectdata });
     },
     newFolderCreated: function(fdata) {

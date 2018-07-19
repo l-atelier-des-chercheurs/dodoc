@@ -907,6 +907,9 @@ body {
     }
     &.barButton_createPubli {
       color: @c-bleuvert;
+      &::before {
+        background-image: url("/images/i_add_publi.svg");          
+      }
     }
   }
 
@@ -2642,18 +2645,24 @@ body {
 }
 
 .scaleIn-enter-active, .scaleIn-leave-active {
-  // max-width: 1000px;
   opacity: 1;
   transform: scale(1);
   transform-origin: center center !important;
   transition: all .3s ease-out;
 }
 .scaleIn-enter, .scaleIn-leave-to /* .list-leave-active below version 2.1.8 */ {
-  // max-width: 0;
-  // padding: 0;
-  // min-width: 0;
-  // min-height: 0;
   transform: scale(.7);
+  opacity: 0;
+}
+
+.slideFromTop-enter-active, .slideFromTop-leave-active {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transform-origin: center center !important;
+  transition: all .3s ease-out;
+}
+.slideFromTop-enter, .slideFromTop-leave-to /* .list-leave-active below version 2.1.8 */ {
+  transform: translate3d(0, -15px, 0);
   opacity: 0;
 }
 
