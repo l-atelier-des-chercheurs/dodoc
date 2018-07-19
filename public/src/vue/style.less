@@ -504,7 +504,7 @@ body {
     transform: scale(var(--progress-percent), 1);
     transform-origin: left center;
     
-    transition: all .4s;
+    transition: all .1s;
     .bg-bleuvert;
   }
 
@@ -826,7 +826,7 @@ body {
     padding: 0;
     .padding-sides-small;
     .padding-vert-medium;
-
+    
     .m_project--favMedias--list {
       display: flex;
       flex-flow: row wrap;   
@@ -846,6 +846,10 @@ body {
 
     > * {
       flex: 0 0 100/5%;
+
+      @media screen and (min-width: 1500px) {
+        flex: 0 0 100/7%;
+      }
     }
   }
 
