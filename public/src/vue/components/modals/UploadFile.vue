@@ -13,7 +13,6 @@
     </template>
 
     <template slot="sidebar">
-
       <div class="margin-bottom-small">
         <label>{{ $t('import') }}</label><br>
         <input type="file" id="addMedia" multiple class="inputfile-2" 
@@ -100,6 +99,8 @@ export default {
   },
   mounted() {
   },
+  beforeDestroy() {
+  },
   computed: {
     uriToUploadMedia: function() {
       return this.slugProjectName + '/file-upload';
@@ -182,7 +183,6 @@ export default {
             index++;
           }
         });
-
       });
 
       // const test = async () => {

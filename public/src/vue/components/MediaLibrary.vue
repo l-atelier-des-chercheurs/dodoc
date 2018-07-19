@@ -1,13 +1,5 @@
 <template>
-  <div class="m_project--library"
-  >
-
-    <!-- <MediaFilterBar
-      :currentSort="mediaSort"
-      :currentFilter="mediaFilter"
-    >
-    </MediaFilterBar> -->
-
+  <div class="m_project--library">
     <div class="m_actionbar">
       <button type="button" class="barButton barButton_capture" 
         v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
@@ -90,6 +82,10 @@ export default {
   },
   
   created() {
+    document.addEventListener('dragover', this.fileDragover);
+  },
+  beforeDestroy() {
+    document.removeEventListener('dragover', this.fileDragover);
   },
   watch: {
   },
@@ -186,6 +182,9 @@ export default {
     }    
   },
   methods: {
+    fileDragover() {
+      this.showImportModal = true;
+    },
     openMediaModal(metaFileName) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaLibrary: openMediaModal');

@@ -154,7 +154,6 @@ export default {
   },
   beforeDestroy() {
   },
-
   computed: {
     favMedias() {
       if(!this.project.hasOwnProperty('medias') || Object.keys(this.project.medias).length === 0) {
