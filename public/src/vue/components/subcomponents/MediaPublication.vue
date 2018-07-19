@@ -18,6 +18,7 @@
       :slugFolderName="media.slugProjectName"
       :media="media"
       :read_only="read_only"
+      :preview_size="360"
       v-model="media.content"
     />
     <p class="mediaCaption">{{ media.caption }}</p>
