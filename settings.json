@@ -136,6 +136,9 @@
           "type": "string",
           "read_only": true        
         },
+        "authors": {
+          "type": "string"
+        },
         "date_created": {
           "type": "date",
           "default": "current",

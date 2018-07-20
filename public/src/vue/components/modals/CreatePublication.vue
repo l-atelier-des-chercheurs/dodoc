@@ -17,7 +17,14 @@
         <input type="text" v-model="publidata.name" required autofocus>
       </div>
 
-<!-- Human name -->
+<!-- Author(s) -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('author') }}</label><br>
+        <textarea v-model="publidata.authors">
+        </textarea>
+      </div>
+
+<!-- Template -->
       <div class="margin-bottom-small">
         <label>{{ $t('format') }}</label>
         <select v-model="publidata.template">
@@ -52,7 +59,8 @@ export default {
     return {
       publidata: {
         name: '',
-        template: 'page_by_page'
+        template: 'page_by_page',
+        authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:''
       }
     };
   },
@@ -87,6 +95,7 @@ export default {
 
       let publidata = {
         name,
+        authors: this.publidata.authors,
         template: this.publidata.template,
         width: 210,
         height: 297,
