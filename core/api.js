@@ -361,7 +361,7 @@ module.exports = (function() {
   function _copyToTempAndRenameImages({ slugStopmotionName, images }) {
     return new Promise(function(resolve, reject) {
       let cacheFolderName =
-        getCurrentDate() +
+        getCurrentDate(settings.metaDateFormat) +
         slugStopmotionName +
         '-' +
         (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2);
