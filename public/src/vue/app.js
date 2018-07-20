@@ -21,9 +21,6 @@ Vue.config.devtools = true;
 
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
-import VueScrollTo from 'vue-scrollto';
-Vue.use(VueScrollTo);
-
 import PortalVue from 'portal-vue';
 Vue.use(PortalVue);
 

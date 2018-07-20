@@ -75,7 +75,6 @@
 </template>
 <script>
 import MediaContent from './MediaContent.vue';
-import toPx from 'unit-to-px';
 
 export default {
   props: {

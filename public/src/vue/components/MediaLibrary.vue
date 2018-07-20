@@ -50,7 +50,6 @@
 </template>
 <script>
 import MediaFilterBar from './MediaFilterBar.vue';
-import FileUpload from './FileUpload.vue';
 import UploadFile from './modals/UploadFile.vue';
 import MediaCard from './subcomponents/MediaCard.vue';
 import { setTimeout } from 'timers';
@@ -63,7 +62,6 @@ export default {
   },
   components: {
     MediaFilterBar,
-    FileUpload,
     MediaCard,
     UploadFile
   },
