@@ -113,7 +113,11 @@
             >
               <button
                 class="publiButton"
-                :class="{ 'is--open' : $root.settings.show_publi_panel }"
+                :class="{ 
+                  'is--open' : $root.settings.show_publi_panel, 
+                  'is--dragged' : is_dragged,
+                  'is--allthewaytotheleft' : percent === 0 
+                }"
                 @click="stopDragtogglePubli"
                 @mousedown="onMouseDown" 
                 @mouseup.stop
