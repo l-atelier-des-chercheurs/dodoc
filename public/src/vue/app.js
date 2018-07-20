@@ -669,12 +669,10 @@ let vm = new Vue({
       this.do_navigation.view = 'ProjectView';
       this.do_navigation.current_slugProjectName = slugProjectName;
 
-      setTimeout(() => {
-        this.$socketio.listMedias({
-          type: 'projects',
-          slugFolderName: slugProjectName
-        });
-      }, 500);
+      this.$socketio.listMedias({
+        type: 'projects',
+        slugFolderName: slugProjectName
+      });
 
       history.pushState(
         { slugProjectName },
