@@ -64,7 +64,7 @@ export default {
       projectdata: {
         name: '',
         password: '',
-        authors: ''
+        authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:''
       },
       preview: undefined,
       askBeforeClosingModal: false
