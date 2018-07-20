@@ -80,7 +80,7 @@
           },
           "type": {
             "type": "string",
-            "options": ["image", "video", "audio", "text", "other"],
+            "options": ["image", "video", "audio", "text", "document", "other"],
             "default": "other"
           },
           "fav": {

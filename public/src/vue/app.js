@@ -672,16 +672,12 @@ let vm = new Vue({
       this.do_navigation.view = 'ProjectView';
       this.do_navigation.current_slugProjectName = slugProjectName;
 
-      // if (
-      //   !this.$root.state.list_of_projects_whose_medias_are_tracked.includes(
-      //     slugProjectName
-      //   )
-      // ) {
-      this.$socketio.listMedias({
-        type: 'projects',
-        slugFolderName: slugProjectName
-      });
-      // }
+      setTimeout(() => {
+        this.$socketio.listMedias({
+          type: 'projects',
+          slugFolderName: slugProjectName
+        });
+      }, 500);
 
       history.pushState(
         { slugProjectName },

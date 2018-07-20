@@ -23,6 +23,7 @@ module.exports = (function() {
       caption: 'Légende',
       smoothing: 'Lissage',
       onion_skin: 'transparence de la dernière image',
+      'file:': 'Fichier&nbsp;:',
 
       bytes: 'octets',
       kb: 'ko',
@@ -248,6 +249,7 @@ module.exports = (function() {
       date: 'Date',
       smoothing: 'smoothing',
       onion_skin: 'transparency of last image',
+      'file:': 'File&nbsp;:',
 
       bytes: 'bytes',
       kb: 'KB',
