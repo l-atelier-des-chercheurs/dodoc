@@ -718,8 +718,9 @@ export default {
 
           const options = {
             recorderType: RecordRTC.MediaStreamRecorder,
-            type: 'video'
-          }
+            type: 'video',
+            videoBitsPerSecond: 2056000
+          };
           recordVideoFeed.startRecording(options);   
 
           this.is_recording = true;
