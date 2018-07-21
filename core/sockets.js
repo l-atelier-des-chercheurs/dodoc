@@ -123,11 +123,15 @@ module.exports = (function() {
         file
           .editFolder({
             type,
+            slugFolderName,
             foldersData: Object.values(foldersData)[0],
             newFoldersData: data
           })
           .then(slugFolderName => {
             sendFolders({ type, slugFolderName });
+          })
+          .catch(err => {
+            dev.error(`Error on editFolder: ${err}`);
           });
       })
       .catch(err => {
@@ -159,7 +163,7 @@ module.exports = (function() {
           );
       })
       .catch(err => {
-        dev.error('No folder found');
+        dev.error(`No folder found: ${err}`);
       });
   }
 

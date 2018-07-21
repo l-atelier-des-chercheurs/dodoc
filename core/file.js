@@ -235,10 +235,10 @@ module.exports = (function() {
         });
       });
     },
-    editFolder: ({ type, foldersData, newFoldersData }) => {
+    editFolder: ({ type, slugFolderName, foldersData, newFoldersData }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
-          `COMMON — editFolder : will edit folder with type = ${type} 
+          `COMMON — editFolder : will edit folder with type = ${type} and slugFolderName = ${slugFolderName}
           with ${JSON.stringify(newFoldersData, null, 4)} 
           with existing data ${JSON.stringify(foldersData, null, 4)}`
         );
@@ -249,8 +249,6 @@ module.exports = (function() {
         const baseFolderPath = settings.structure[type].path;
         const mainFolderPath = api.getFolderPath(baseFolderPath);
 
-        // remove slugFolderKey
-        let slugFolderName = foldersData.slugFolderName;
         const thisFolderPath = path.join(mainFolderPath, slugFolderName);
         let tasks = [];
 
@@ -327,7 +325,6 @@ module.exports = (function() {
         const baseFolderPath = settings.structure[type].path;
         const mainFolderPath = api.getFolderPath(baseFolderPath);
 
-        // remove slugFolderKey
         const thisFolderPath = path.join(mainFolderPath, slugFolderName);
         const movedFolderPath = path.join(
           mainFolderPath,
