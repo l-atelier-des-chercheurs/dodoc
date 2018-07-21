@@ -23,7 +23,14 @@ module.exports = (function() {
 
         const cached = cache.get({ type, slugFolderName });
         if (cached) {
-          return resolve(cached);
+          dev.logverbose(
+            `COMMON — getFolder / returning cache instead of parsing files.`
+          );
+          if (slugFolderName) {
+            return resolve({ [slugFolderName]: cached });
+          } else {
+            return resolve(cached);
+          }
         }
 
         const baseFolderPath = settings.structure[type].path;
@@ -134,7 +141,14 @@ module.exports = (function() {
                 );
               }
             });
-            cache.put({ type, slugFolderName }, flatObjFoldersData);
+
+            Object.keys(flatObjFoldersData).forEach(slugFolderName => {
+              cache.put(
+                { type, slugFolderName },
+                flatObjFoldersData[slugFolderName]
+              );
+            });
+
             resolve(flatObjFoldersData);
           });
         });
@@ -303,6 +317,8 @@ module.exports = (function() {
         Promise.all(tasks)
           .then(() => {
             dev.logverbose(`COMMON — editFolder : now resolving`);
+            // only deleting from cache because a specific getFolder with slugFolderName is coming right after
+            cache.del({ type, slugFolderName });
             resolve(slugFolderName);
           })
           .catch(err => {
@@ -337,6 +353,7 @@ module.exports = (function() {
             dev.logfunction(
               `COMMON — removeFolder : folder ${slugFolderName} has been moved to ${movedFolderPath}`
             );
+            cache.del({ type, slugFolderName });
             resolve();
           })
           .catch(err => {
@@ -844,6 +861,10 @@ module.exports = (function() {
                       4
                     )}`
                   );
+                  cache.del({
+                    type: type + '/' + 'medias',
+                    slugFolderName: slugFolderName + '/' + metaFileName
+                  });
                   resolve();
                 },
                 function(err) {
@@ -963,6 +984,10 @@ module.exports = (function() {
               });
             })
             .then(() => {
+              cache.del({
+                type: type + '/' + 'medias',
+                slugFolderName: slugFolderName + '/' + metaFileName
+              });
               return thumbs.removeMediaThumbs(slugFolderName, metaFileName);
             })
             .then(() => {
@@ -1212,6 +1237,17 @@ module.exports = (function() {
         `COMMON — readMediaAndThumbs: slugFolderName = ${slugFolderName} & metaFileName = ${metaFileName}`
       );
 
+      const cached = cache.get({
+        type: type + '/' + 'medias',
+        slugFolderName: slugFolderName + '/' + metaFileName
+      });
+      if (cached) {
+        dev.logverbose(
+          `COMMON — readMediaAndThumbs / returning cache instead of parsing files.`
+        );
+        return resolve(cached);
+      }
+
       readMediaMeta({ type, slugFolderName, metaFileName })
         .then(mediaData => {
           dev.logverbose(
@@ -1236,6 +1272,13 @@ module.exports = (function() {
               )
               .then(thumbData => {
                 mediaData.thumbs = thumbData;
+                cache.put(
+                  {
+                    type: type + '/' + 'medias',
+                    slugFolderName: slugFolderName + '/' + metaFileName
+                  },
+                  mediaData
+                );
                 resolve(mediaData);
               })
               .catch(err => {
