@@ -1,9 +1,19 @@
+const cache = require('memory-cache');
+
 module.exports = cache = (function() {
-  let obj;
+  function makeKey({ type, slugFolderName }) {
+    return `${type}/${slugFolderName}`;
+  }
 
-  const API = {};
-
-  function initModule() {}
-
-  return API;
+  return {
+    get: ({ type, slugFolderName }) => {
+      const key = makeKey({ type, slugFolderName });
+      cache.get(key);
+    },
+    put: ({ type, slugFolderName }, value) => {
+      const key = makeKey({ type, slugFolderName });
+      cache.put(key, value);
+      debugger;
+    }
+  };
 })();

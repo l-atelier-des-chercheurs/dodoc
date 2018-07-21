@@ -6,7 +6,8 @@ const path = require('path'),
 const settings = require('../settings.json'),
   dev = require('./dev-log'),
   api = require('./api'),
-  thumbs = require('./thumbs');
+  thumbs = require('./thumbs'),
+  cache = require('./cache');
 
 module.exports = (function() {
   const API = {
@@ -18,6 +19,11 @@ module.exports = (function() {
 
         if (!settings.structure.hasOwnProperty(type)) {
           reject(`Missing type ${type} in settings.json`);
+        }
+
+        const cached = cache.get({ type, slugFolderName });
+        if (cached) {
+          return resolve(cached);
         }
 
         const baseFolderPath = settings.structure[type].path;
@@ -128,6 +134,7 @@ module.exports = (function() {
                 );
               }
             });
+            cache.put({ type, slugFolderName }, flatObjFoldersData);
             resolve(flatObjFoldersData);
           });
         });
