@@ -597,6 +597,9 @@ module.exports = (function() {
                 case '.rtf':
                   additionalMeta.type = 'text';
                   break;
+                case '.pdf':
+                  additionalMeta.type = 'document';
+                  break;
               }
               dev.logverbose(`Type determined to be: ${additionalMeta.type}`);
             }

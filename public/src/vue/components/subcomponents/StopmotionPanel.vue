@@ -169,10 +169,13 @@ export default {
     assembleStopmotionMedias: function() {
       console.log('METHODS • StopmotionPanel: assembleStopmotionMedias');
       this.$eventHub.$on('socketio.media_created_or_updated', this.newStopmotionVideo);
+
+      const list_media_names = this.medias.map(x => x.media_filename);
+
       this.$root.createMedia({
         slugFolderName: this.slugProjectName,
         type: 'projects',
-        rawData: this.medias,
+        rawData: list_media_names,
         additionalMeta: {
           type: 'stopmotion',
           slugStopmotionName: this.stopmotiondata.slugFolderName,

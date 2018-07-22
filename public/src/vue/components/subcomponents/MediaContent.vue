@@ -51,11 +51,20 @@
         :readonly="read_only"
       /> -->
     </template>
+    <template v-else-if="media.type === 'document'">
+      <div v-if="context !== 'edit'" class="">
+        <pre>
+  {{ media.media_filename }}
+        </pre>
+      </div>
+      <iframe v-else :src="mediaURL" />
+    </template>
 
     <template v-else-if="media.type === 'other'">
       <div class="padding-small font-small">
         <pre>
-Fichier&nbsp;:
+<span v-html="$t('file:')">
+</span>
 {{ media.media_filename }}
         </pre>
       </div>
@@ -92,7 +101,7 @@ export default {
     },
     preview_size: {
       type: Number,
-      default: 360
+      default: 180
     }
   },
   components: {

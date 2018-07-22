@@ -17,7 +17,14 @@
         <input type="text" v-model="publidata.name" required autofocus>
       </div>
 
-<!-- Human name -->
+<!-- Author(s) -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('author') }}</label><br>
+        <textarea v-model="publidata.authors">
+        </textarea>
+      </div>
+
+<!-- Template -->
       <div class="margin-bottom-small">
         <label>{{ $t('format') }}</label>
         <select v-model="publidata.template">
@@ -52,7 +59,8 @@ export default {
     return {
       publidata: {
         name: '',
-        template: 'page_by_page'
+        template: 'page_by_page',
+        authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:''
       }
     };
   },
@@ -87,6 +95,7 @@ export default {
 
       let publidata = {
         name,
+        authors: this.publidata.authors,
         template: this.publidata.template,
         width: 210,
         height: 297,
@@ -94,9 +103,18 @@ export default {
           id: +new Date() + '_' + (Math.random().toString(36) + '00000000000000000').slice(2, 3)
         }]
       }
+      this.$eventHub.$on('socketio.folder_created_or_updated', this.newPublicationCreated);
       this.$root.createFolder({ type: 'publications', data: publidata });      
-      
-      this.$emit('close', '');
+    },
+    newPublicationCreated: function(pdata) {
+      if(pdata.id === this.$root.justCreatedFolderID) {
+        this.$eventHub.$off('socketio.folder_created_or_updated', this.newPublicationCreated);
+        this.$root.justCreatedFolderID = false;
+        this.$nextTick(() => {
+          this.$emit('close', '');
+          this.$root.openPublication(pdata.slugFolderName);
+        });
+      }
     }
   }
 };

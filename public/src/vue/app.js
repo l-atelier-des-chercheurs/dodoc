@@ -21,9 +21,6 @@ Vue.config.devtools = true;
 
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
-import VueScrollTo from 'vue-scrollto';
-Vue.use(VueScrollTo);
-
 import PortalVue from 'portal-vue';
 Vue.use(PortalVue);
 
@@ -672,16 +669,10 @@ let vm = new Vue({
       this.do_navigation.view = 'ProjectView';
       this.do_navigation.current_slugProjectName = slugProjectName;
 
-      // if (
-      //   !this.$root.state.list_of_projects_whose_medias_are_tracked.includes(
-      //     slugProjectName
-      //   )
-      // ) {
       this.$socketio.listMedias({
         type: 'projects',
         slugFolderName: slugProjectName
       });
-      // }
 
       history.pushState(
         { slugProjectName },

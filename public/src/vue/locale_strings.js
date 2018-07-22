@@ -23,6 +23,7 @@ module.exports = (function() {
       caption: 'Légende',
       smoothing: 'Lissage',
       onion_skin: 'transparence de la dernière image',
+      'file:': 'Fichier&nbsp;:',
 
       bytes: 'octets',
       kb: 'ko',
@@ -102,6 +103,7 @@ module.exports = (function() {
       vecto: 'formes',
       image: 'image',
       text: 'texte',
+      document: 'document',
       other: 'autre',
       with_sound: 'avec le son',
       generate: 'Générer',
@@ -248,6 +250,7 @@ module.exports = (function() {
       date: 'Date',
       smoothing: 'smoothing',
       onion_skin: 'transparency of last image',
+      'file:': 'File&nbsp;:',
 
       bytes: 'bytes',
       kb: 'KB',
@@ -326,6 +329,7 @@ module.exports = (function() {
       vecto: 'shapes',
       image: 'image',
       text: 'text',
+      document: 'document',
       other: 'other',
       with_sound: 'with sound',
       generate: 'Generate',

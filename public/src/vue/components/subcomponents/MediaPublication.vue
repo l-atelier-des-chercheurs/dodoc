@@ -18,6 +18,7 @@
       :slugFolderName="media.slugProjectName"
       :media="media"
       :read_only="read_only"
+      :preview_size="360"
       v-model="media.content"
     />
     <p class="mediaCaption">{{ media.caption }}</p>
@@ -74,7 +75,6 @@
 </template>
 <script>
 import MediaContent from './MediaContent.vue';
-import toPx from 'unit-to-px';
 
 export default {
   props: {

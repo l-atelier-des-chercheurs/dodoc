@@ -77,12 +77,10 @@ button, .button {
   }
 
   &.button-bg_rounded {
-
     > * {
       display: inline-block;
       vertical-align: middle;
     }
-
     rect {
       fill: currentColor;
     }
@@ -90,7 +88,6 @@ button, .button {
   &.button-outline {
     background-color: transparent;
     border: 2px solid currentColor;
-
     svg {
       > * {
         fill: currentColor;
@@ -122,6 +119,8 @@ button, .button {
     max-width: 1em;
     padding: 0;
     .c-orange;
+  }
+  &.button-square {
   }
 
   img, svg {
@@ -243,6 +242,9 @@ strong,b {
 }
 .bg-bleuvert {
   background-color: @c-bleuvert;
+}
+.bg-bleuvert_fonce {
+  background-color: @c-bleuvert_fonce;
 }
 .bg-bleumarine {
   background-color: @c-bleumarine;

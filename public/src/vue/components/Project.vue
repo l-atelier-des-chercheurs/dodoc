@@ -108,6 +108,7 @@
           :media="media"
           :metaFileName="media.metaFileName"
           :slugProjectName="slugProjectName"
+          :preview_size="360"
         >
         </MediaCard>
       </div>
@@ -153,7 +154,6 @@ export default {
   },
   beforeDestroy() {
   },
-
   computed: {
     favMedias() {
       if(!this.project.hasOwnProperty('medias') || Object.keys(this.project.medias).length === 0) {
