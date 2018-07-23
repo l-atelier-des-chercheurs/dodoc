@@ -251,7 +251,7 @@ module.exports = (function() {
         if (newFoldersData.hasOwnProperty('preview_rawdata')) {
           dev.logverbose('Updating folders preview');
           let preview_rawdata = newFoldersData.preview_rawdata;
-          // store preview with sharp
+          // store preview
           tasks.push(_storeFoldersPreview(thisFolderPath, preview_rawdata));
         }
 
@@ -996,7 +996,7 @@ module.exports = (function() {
           : `${timeCreated}-${randomString}`;
 
         // Depending on the type of media we will create, we will need to act differently:
-        // - 'image' -> use sharp and create a .jpeg from the buffer
+        // - 'image' -> use jimp and create a .jpeg from the buffer
         // - 'video' -> store the content to a file with storeMediaToDisk
         // - 'stopmotion' -> assemble all images to a video
         // - 'audio' -> store content with storeMediaToDisk
@@ -1307,28 +1307,18 @@ module.exports = (function() {
             `COMMON — _storeFoldersPreview : Now making a folder preview at path ${pathToPreview}`
           );
           let imageBuffer = api.decodeBase64Image(preview_rawdata);
-          sharp(imageBuffer)
-            .rotate()
-            .resize(600, 600)
-            .max()
-            .withoutEnlargement()
-            .background({ r: 255, g: 255, b: 255 })
-            .flatten()
-            .withMetadata()
-            .toFormat(settings.thumbFormat, {
-              quality: settings.mediaThumbQuality
-            })
-            .toFile(pathToPreview)
-            .then(function() {
-              dev.logverbose(
-                `COMMON — _storeFoldersPreview : Finished making a folder preview at ${pathToPreview}`
-              );
-              resolve();
-            })
-            .catch(err => {
-              console.error(err);
-              reject(err);
-            });
+          Jimp.read(imageBuffer, function(err, image) {
+            if (err) reject(err);
+            image
+              .quality(settings.mediaThumbQuality)
+              .write(pathToPreview, function(err, info) {
+                if (err) reject(err);
+                dev.logverbose(
+                  `COMMON — _storeFoldersPreview : Finished making a folder preview at ${pathToPreview}`
+                );
+                resolve();
+              });
+          });
         })
         .catch(err => {
           console.error(err);

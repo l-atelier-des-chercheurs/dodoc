@@ -188,16 +188,6 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`THUMBS — readEXIFData — for: ${mediaPath}`);
       resolve();
-      // sharp(mediaPath)
-      //   .metadata()
-      //   .then(exifdata => {
-      //     if (typeof exifdata === 'undefined') {
-      //       reject();
-      //     }
-      //     dev.logverbose(`Gotten metadata.`);
-      //     resolve(exifdata);
-      //   })
-      //   .catch(err => reject());
     });
   }
 
