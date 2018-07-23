@@ -1,11 +1,11 @@
-// const sharp = require('sharp'),
 const path = require('path'),
   fs = require('fs-extra'),
   ffmpegstatic = require('ffmpeg-static'),
   ffprobestatic = require('ffprobe-static'),
   ffmpeg = require('fluent-ffmpeg'),
-  exifReader = require('exif-reader'),
-  Jimp = require('jimp');
+  exifReader = require('exif-reader');
+
+const Jimp = require('jimp');
 
 const settings = require('../settings.json'),
   dev = require('./dev-log'),

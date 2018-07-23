@@ -1,8 +1,8 @@
 const path = require('path'),
   fs = require('fs-extra'),
-  validator = require('validator'),
-  // sharp = require('sharp');
-  Jimp = require('jimp');
+  validator = require('validator');
+
+const Jimp = require('jimp');
 
 const settings = require('../settings.json'),
   dev = require('./dev-log'),
