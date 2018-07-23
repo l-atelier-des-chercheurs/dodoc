@@ -19,14 +19,16 @@
           <MediaContent
             v-model="media.content"
             :context="'preview'"
-            :slugProjectName="slugProjectName"
+            :slugFolderName="slugProjectName"
             :media="media"
+            :preview_size="preview_size"
           ></MediaContent>
           <button 
             type="button" 
             v-if="$root.settings.current_slugPubliName" 
-            class="button-greenthin"
+            class="button-greenthin button-square"
             @click.stop="addToCurrentPubli()"
+            :title="$t('add_to_publication')"
           >
             {{ $t('add_to_publication') }}
           </button>
@@ -93,7 +95,8 @@ export default {
   props: {
     media: Object,
     slugProjectName: String,
-    metaFileName: String
+    metaFileName: String,
+    preview_size: Number
   },
   components: {
     MediaContent
@@ -126,27 +129,19 @@ export default {
   },
   methods: {
     isMediaInPubli() {
-      if(this.$root.settings.current_slugPubliName !== false) {
-        if(this.$root.store.publications[this.$root.settings.current_slugPubliName].hasOwnProperty('medias_list')) {
-          const publi_medias_list = this.$root.store.publications[this.$root.settings.current_slugPubliName].medias_list;
-          const found_media_in_publi = publi_medias_list.filter((m) => {
-            const m_slugProjectName = m.filename.split('/')[0];
-            const m_slugMediaName = m.filename.split('/')[1];
-            const current_media_slugProjectName = this.slugProjectName;
-            const current_media_slugMediaName = this.metaFileName;
+      if(this.$root.settings.current_slugPubliName) {
+        if(this.$root.store.publications.hasOwnProperty(this.$root.settings.current_slugPubliName)) {
+          const currentPubli = this.$root.store.publications[this.$root.settings.current_slugPubliName];
+          if(currentPubli.hasOwnProperty('medias') && Object.keys(currentPubli.medias).length > 0) {
 
-            if(m_slugProjectName === current_media_slugProjectName &&
-              m_slugMediaName === current_media_slugMediaName
-            ) {
-              return true;
+            const media_in_publi = this.$_.findWhere(currentPubli.medias, {
+              slugMediaName: this.metaFileName 
+            });
+            if(media_in_publi) {
+              this.media_is_in_current_publi = true;
+            } else {
+              this.media_is_in_current_publi = false;
             }
-            return false;
-          });
-
-          if(found_media_in_publi.length > 0) {
-            this.media_is_in_current_publi = true;
-          } else {
-            this.media_is_in_current_publi = false;
           }
         }
       }

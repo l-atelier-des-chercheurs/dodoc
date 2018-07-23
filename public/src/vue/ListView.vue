@@ -91,6 +91,7 @@
                   :media="media"
                   :metaFileName="media.metaFileName"
                   :slugProjectName="media.slugProjectName"
+                  :preview_size="180"
                 >
                 </MediaCard>
               </div>
@@ -148,22 +149,6 @@ export default {
   watch: {
     currentLang: function() {
       this.$root.updateLocalLang(this.currentLang);
-    },
-    projects: function() {
-      // check if there is a justCreatedFolderID val
-      if (this.$root.justCreatedFolderID) {
-        Object.keys(this.projects).map(slugProjectName => {
-          let folder = this.projects[slugProjectName];
-          // if there is, try to match it with folderID
-          if (
-            folder.id &&
-            folder.id === this.$root.justCreatedFolderID
-          ) {
-            this.$root.justCreatedFolderID = false;
-            this.$root.openProject(slugProjectName);
-          }
-        });
-      }
     },
     show_medias_instead_of_projects: function() {
       // load all projects’ medias if it isn’t there

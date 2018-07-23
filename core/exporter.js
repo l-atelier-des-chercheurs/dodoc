@@ -52,8 +52,7 @@ module.exports = (function() {
                   'dist'
                 );
                 let productionFolderInCache = path.join(cachePath, 'dist');
-                fs
-                  .copy(productionFolder, productionFolderInCache)
+                fs.copy(productionFolder, productionFolderInCache)
                   .then(() => {
                     resolve();
                   })
@@ -79,8 +78,7 @@ module.exports = (function() {
                   relativePathToThumbFolder
                 );
 
-                fs
-                  .copy(fullThumbSlugFolderPath, thumbFolderInCache)
+                fs.copy(fullThumbSlugFolderPath, thumbFolderInCache)
                   .then(() => {
                     resolve();
                   })
@@ -97,8 +95,7 @@ module.exports = (function() {
                 let fullSlugFolderPath = api.getFolderPath(slugFolderName);
                 let slugFolderInCache = path.join(cachePath, slugFolderName);
 
-                fs
-                  .copy(fullSlugFolderPath, slugFolderInCache)
+                fs.copy(fullSlugFolderPath, slugFolderInCache)
                   .then(() => {
                     resolve();
                   })
@@ -160,8 +157,7 @@ module.exports = (function() {
               const copyFrontEndFiles = new Promise((resolve, reject) => {
                 let productionFolder = path.join(global.appRoot, 'public', f);
                 let productionFolderInCache = path.join(cachePath, '_' + f);
-                fs
-                  .copy(productionFolder, productionFolderInCache)
+                fs.copy(productionFolder, productionFolderInCache)
                   .then(() => {
                     resolve();
                   })
@@ -202,8 +198,7 @@ module.exports = (function() {
                             slugFolderInCache,
                             media_filename
                           );
-                          fs
-                            .copy(fullPathToMedia, fullPathToMedia_cache)
+                          fs.copy(fullPathToMedia, fullPathToMedia_cache)
                             .then(() => {
                               resolve();
                             })
@@ -228,8 +223,7 @@ module.exports = (function() {
                                 t.path
                               );
 
-                              fs
-                                .copy(fullPathToThumb, fullPathToThumb_cache)
+                              fs.copy(fullPathToThumb, fullPathToThumb_cache)
                                 .then(() => {
                                   resolve();
                                 })
@@ -253,8 +247,7 @@ module.exports = (function() {
                                   t.path
                                 );
 
-                                fs
-                                  .copy(fullPathToThumb, fullPathToThumb_cache)
+                                fs.copy(fullPathToThumb, fullPathToThumb_cache)
                                   .then(() => {
                                     resolve();
                                   })

@@ -9,12 +9,12 @@
       <div class="m_modal--container"
         :class="['color-' + backgroundColor, { 'is_invisible' : !showModal }]"
         @keyup.ctrl.enter="$emit('submit')"
-        >
+      >
 
         <div
           class="m_modal--container--content"
           ref="modalContent"
-          >
+        >
 
           <div v-if="!!this.$slots['preview']" class="m_modal--preview"
           >
@@ -38,6 +38,7 @@
           <form v-if="!!this.$slots['sidebar']"
             class="m_modal--sidebar"
             v-on:submit.prevent="$emit('submit')"
+            ref="form"
           >
 
             <div class="m_modal--header">
@@ -56,12 +57,13 @@
 
             <div 
               v-if="!!this.$slots['submit_button']"
-              class="m_modal--save"
+              class="m_modal--buttons"
             >
               <button
                 type="submit"
                 :disabled="read_only"
-                >
+                class="button button-bg_rounded bg-bleuvert"
+              >
                 <img src="/images/i_enregistre.svg"/>
                 <span class="text-cap font-verysmall">
                   <slot name="submit_button">
@@ -72,11 +74,46 @@
             </div>
           </form>
 
+          <form 
+            v-if="!!this.$slots['buttons']" 
+            class="m_modal--buttons"
+            v-on:submit.prevent="$emit('submit')"
+            ref="form"
+          >
+
+            <button
+              type="button"
+              @click="closeModal"
+              class="button button-bg_rounded bg-orange"
+            >
+              <img src="/images/i_clear.svg"/>
+              <span class="text-cap font-verysmall">
+                <slot name="cancel_button">
+                  {{ $t('cancel') }}
+                </slot>
+              </span>
+            </button>
+
+            <button
+              type="submit"
+              :disabled="read_only"
+              class="button button-bg_rounded bg-bleuvert"
+            >
+              <img src="/images/i_enregistre.svg"/>
+              <span class="text-cap font-verysmall">
+                <slot name="submit_button">
+                  {{ $t('save') }}
+                </slot>
+              </span>
+            </button>
+
+          </form>
+
         </div>
 
       </div>
 
-      <transition name="fade">
+      <transition name="fade" :duration="600">
         <button
           class="button-round bg-transparent m_modal--close_button padding-verysmall"
           @click="closeModal"
@@ -108,6 +145,10 @@ export default {
     askBeforeClosingModal: {
       type: Boolean,
       default: false
+    },
+    isFile: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -117,18 +158,24 @@ export default {
   },
   mounted: function() {
     console.log(`MOUNTED • BaseModal`)
+
     setTimeout(() => {
       this.showModal = true;
 
       if (Modernizr !== undefined && !Modernizr.touchevents) {
-        const el = this.$refs.modalContent.querySelector('[autofocus]');
-        if(!!el) {
+        if(this.$refs.modalContent && this.$refs.modalContent.querySelector('[autofocus]')) {
+          const el = this.$refs.modalContent.querySelector('[autofocus]');
           if(el.classList.contains('quillWrapper')) {
             el.querySelector('.ql-editor').focus();
           }  else {
             el.focus();
           }
         }
+
+        if (this.isFile && this.$refs.form){
+          this.$refs.form.setAttribute('enctype', 'multipart/form-data');
+        }
+
       }
     },100);
   },

@@ -188,7 +188,7 @@
           <div 
             class="m_publicationview--pages--pageContainer"
             :style="setPageContainerProperties(page)"
-            :class="{ 'is--active' : (pageNumber === page_currently_active && $root.state.mode !== 'export_publication') }"
+            :class="{ 'is--active' : !preview_mode && (pageNumber === page_currently_active && $root.state.mode !== 'export_publication') }"
           >
             <div
               class="m_page"
@@ -225,7 +225,7 @@
                 {{ pageNumber + 1 }}
               </div>
 
-              <transition-group name="scaleIn" :duration="300" tag="div">
+              <transition-group name="slideFromTop" :duration="300" tag="div">
                 <div
                   v-for="media in publication_medias[(pageNumber) + '']" 
                   :key="media.publi_meta.metaFileName"
@@ -353,7 +353,7 @@ export default {
   },
   mounted() {
     this.$eventHub.$on('publication.addMedia', this.addMedia);
-    this.$eventHub.$on('project.listSpecificMedias', this.updateMediasPubli);
+    this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
     document.addEventListener('keyup', this.publicationKeyListener);
     this.updateMediasPubli();  
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty('mmMeasurer') ? this.$refs.mmMeasurer.offsetWidth / 10 : 38;
@@ -369,7 +369,7 @@ export default {
   },
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
-    this.$eventHub.$off('project.listSpecificMedias', this.updateMediasPubli);
+    this.$eventHub.$off('socketio.projects.listSpecificMedias', this.updateMediasPubli);
     document.removeEventListener('keyup', this.publicationKeyListener);
   },
 
@@ -485,6 +485,9 @@ export default {
       const x = this.publications_options.margin_left;
       const y = this.publications_options.margin_top;
 
+      // trouver dans les médias de la page si y en a sur x et y
+      // this.publication_medias[page]
+
       const newMediaMeta = {
         slugProjectName,
         desired_filename: metaFileName,
@@ -572,7 +575,8 @@ export default {
 
         // find in store if slugFolderName exists
         if(!this.$root.store.projects.hasOwnProperty(slugProjectName)) {
-          console.log(`Missing project in store — not expected : ${slugProjectName}`);
+          console.error(`Missing project in store — not expected : ${slugProjectName}`);
+          console.error(`Medias from project was probably added to the publication before it was removed altogether.`)
           return;
         }
 
@@ -583,6 +587,13 @@ export default {
           missingMedias.push({ slugFolderName: slugProjectName, metaFileName: slugMediaName });
         } else {
           let meta = JSON.parse(JSON.stringify(project_medias[slugMediaName]));
+
+          if(meta.hasOwnProperty('_isAbsent') && meta._isAbsent) {
+            console.error(`Missing media in store — not expected : ${slugProjectName} / ${slugMediaName}`);
+            console.error(`Media was probably added to the publication before it was removed.`);
+            return;
+          }
+
           meta.slugProjectName = slugProjectName;
           meta.publi_meta = JSON.parse(JSON.stringify(_media));
 

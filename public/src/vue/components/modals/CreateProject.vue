@@ -14,7 +14,7 @@
 
 <!-- Human name -->
       <div class="margin-bottom-small">
-        <label>{{ $t('name') }}</label>
+        <label>{{ $t('project_name') }}</label>
         <input type="text" v-model="projectdata.name" required autofocus>
       </div>
 
@@ -64,7 +64,7 @@ export default {
       projectdata: {
         name: '',
         password: '',
-        authors: ''
+        authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:''
       },
       preview: undefined,
       askBeforeClosingModal: false
@@ -111,12 +111,21 @@ export default {
 
         return false;
       }
-
       if(!!this.preview) {
         this.projectdata.preview_rawdata = this.preview;
       }
+      this.$eventHub.$on('socketio.folder_created_or_updated', this.newFolderCreated);
       this.$root.createFolder({ type: 'projects', data: this.projectdata });
-      this.$emit('close', '');
+    },
+    newFolderCreated: function(fdata) {
+      if(fdata.id === this.$root.justCreatedFolderID) {
+        this.$eventHub.$off('socketio.folder_created_or_updated', this.newFolderCreated);
+        this.$root.justCreatedFolderID = false;
+        this.$nextTick(() => {
+          this.$emit('close', '');
+          this.$root.openProject(fdata.slugFolderName);
+        });
+      }
     }
   }
 };

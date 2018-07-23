@@ -8,7 +8,7 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 
-  background-color: fade(#fff, 95%);
+  background-color: fade(#fff, 92%);
   cursor: pointer;
   .custom_scrollbar(8px, 5px, 6px);
   
@@ -18,8 +18,14 @@
 
   transition: background-color .3s ease-out;
 
+  @media screen and (max-width: 50rem) {
+    align-items: flex-start;
+    height: auto !important;
+  }
+
   &.is_invisible {
     background-color: transparent;
+    pointer-events: none;
   }
 
   // @media screen and (max-width: 50rem) {
@@ -65,9 +71,7 @@
 
   &.is_invisible {
     opacity: 0;
-    // transform: translate3d(0,15px,0);
-    transform: scale(0.9);
-    pointer-events: none;
+    transform: translate3d(0,15px,0) scale(0.98);
   }
 
   // @media screen and (max-width: 50rem) {
@@ -82,7 +86,7 @@
 
     background-color: #fff;
     border-radius: 2px;
-    box-shadow: 0 5px 15px @c-gris_clair;
+    .boxs-card-0;
     border: 1px solid @c-gris_clair;
 
     display: flex;
@@ -94,15 +98,14 @@
       flex: 1 1 200px;
 
       &.m_modal--sidebar {
-        flex: 0 0 @t-panelWidth;
+        flex: 0 1 @t-panelWidth;
         max-height: 90vh;
+        width: 100%;
 
-        // @media screen and (max-width: 50rem) {
-        //   max-height: none;
-        // }
-        // html.touchevents & { 
-        //   max-height: none;
-        // }
+
+        @media screen and (max-width: 50rem) {
+          max-height: none;
+        }
       }
 
       &.m_modal--preview {
@@ -111,9 +114,9 @@
         overflow: hidden;
         border-right: 1px solid @c-gris_clair;
         
-        // @media screen and (max-width: 50rem) {
-        //   height: 50vh;
-        // }         
+        @media screen and (max-width: 50rem) {
+          height: 50vh;          
+        }         
 
       }
     }
@@ -138,9 +141,9 @@
 }
 
 .m_modal--mask {
-  
+
   &.typeOfModal-LargeAndScroll {
-    // overflow-y: auto;
+    overflow-y: auto;
     .m_modal--container {   
       max-width: @t-panelWidth * 3;
       align-self: flex-start;
@@ -150,14 +153,16 @@
     }
   }
   &.typeOfModal-LargeAndNoScroll {
-    // overflow: hidden;
-    
+    overflow: hidden;
+
     .m_modal--container {   
       margin: 0;
       max-width: @t-panelWidth * 3;
       // align-self: flex-start;
       .m_modal--preview {
-        min-height: 70vh;
+        @media screen and (min-width: 50rem) {
+          min-height: 70vh;
+        }
       }    
     }
   }
@@ -175,6 +180,44 @@
       }    
     }
   }
+  &.typeOfModal-LargeAndNoScrollWithButtons {
+    .m_modal--container {   
+      max-width: none;      
+      height: 80vmin;
+      width:  80vmin;
+
+      .m_modal--container--content {
+        flex-flow: column wrap;
+        // background-color: transparent;
+        // box-shadow: none;
+        // border: none;
+        height: 100%;
+
+        .m_modal--sidebar {
+          position: relative;
+          // .bg-noir;
+          flex-grow: 1;
+
+          .m_modal--metaOptions {
+            padding: 0;
+            display: flex;
+            flex-flow: column wrap;
+
+            > .m_modal--metaOptions--media {
+              flex: 1 1 auto;
+            }
+            > .m_modal--metaOptions--fav {
+              flex: 0 0 auto;
+            }
+
+          }
+        }    
+        .m_modal--buttons {
+          flex: 0 0 auto;
+        }              
+      }
+    }
+  }
 } 
 
 
@@ -188,7 +231,7 @@
 
   .m_modal--metaOptions {
     flex: 1 1 auto;
-    .padding-vert-medium;
+    .margin-vert-small;
     overflow-y: auto;
     .custom_scrollbar(8px, 5px, 6px);
 
@@ -197,18 +240,24 @@
 
       &.m_modal--buttonrow {
         margin: 0;
-        .margin-vert-medium;
+        // .margin-vert-small;
         .padding-sides-small;
         text-align: center;
+      }
 
-        hr {
-          margin: 0;
-          .margin-small;          
-        }
-
+      &:first-child {
+        margin-top: 0;
       }
     }
-      
+
+    hr {
+      margin: 0;
+      .margin-small;          
+    }
+    table {
+      margin: 0;
+    }
+
     > *:last-child {
       margin-bottom: 0;
     }
@@ -222,7 +271,7 @@
     height: 100%;
     overflow: hidden;
     position: relative;
-    // .bg-gris_tresclair;
+    .bg-gris_clair;
 
     &[data-context="edit"] {
       > * {
@@ -238,6 +287,7 @@
       width: auto;
       height: auto;
       object-fit: contain;
+      object-position: center;
     }
 
     &.type-text {
@@ -255,6 +305,18 @@
 
   .mediaTextContent {
 
+  }
+
+  .m_modal--preview--media {
+    width: 100%;
+    height: 100%;
+
+    > * {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+    }
   }
 
 }
@@ -292,24 +354,20 @@
   }
 }
 
-.m_modal--save {
-  .padding-medium;
-  .padding-vert-small;
+.m_modal--buttons {
+  .padding-verysmall;
   border-top: 2px solid @c-gris_clair;
 
   display: flex;
   justify-content: center;
 
-  button[type="submit"] {
-    .bg-bleuvert; 
-    color: @c-bleumarine;
-    color: white;
-
-    > * {
-      display: inline-block;
-      vertical-align: middle;
-    }
+  button {
+    .margin-verysmall;
   }
+
+  button[type="submit"] {
+  } 
+
 }
 
 
@@ -328,8 +386,19 @@
   .m_modal--header {
     display: none;
   }
-  .m_modal--sidebar {
+  // .m_modal--sidebar {
+  //   display: none;
+  // }
+
+  .m_modal--preview {
     display: none;
+  }
+  .m_modal--mask {
+    height: auto !important;
+  }
+  .m_modal--sidebar {
+    overflow: auto;
+    max-height: none !important;
   }
   .m_modal--footer {
     display: none;

@@ -16,7 +16,8 @@ module.exports = function(app, io, m) {
    * routing event
    */
   app.get('/', showIndex);
-  app.get('/:project', loadFolder);
+  app.get('/:project', loadFolderOrMedia);
+  app.get('/:project/media/:metaFileName', loadFolderOrMedia);
   app.get('/publication/:publication', printPublication);
   app.get('/publication/web/:publication', exportPublication);
   app.get('/publication/print/:pdfName', showPDF);
@@ -64,8 +65,10 @@ module.exports = function(app, io, m) {
     );
   }
 
-  function loadFolder(req, res) {
+  function loadFolderOrMedia(req, res) {
     let slugProjectName = req.param('project');
+    let metaFileName = req.param('metaFileName');
+
     generatePageData(req).then(
       pageData => {
         // let’s make sure that folder exists first and return some meta
@@ -75,6 +78,9 @@ module.exports = function(app, io, m) {
             foldersData => {
               pageData.slugProjectName = slugProjectName;
               pageData.folderAndMediaData = foldersData;
+              if (metaFileName) {
+                pageData.metaFileName = metaFileName;
+              }
               res.render('index', pageData);
             },
             (err, p) => {

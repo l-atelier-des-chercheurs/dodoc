@@ -41,7 +41,7 @@ button, .button {
     color: @c-noir;
   }
 
-  &.bg-rouge {
+  &.bg-rouge, &.bg-orange, &.bg-bleuvert {
     color: #fff;
   }
 
@@ -74,6 +74,53 @@ button, .button {
     background-color: @c-bleuvert;
     border-radius: @t-skipline;
     color: white;
+  }
+
+  &.button-bg_rounded {
+    > * {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    rect {
+      fill: currentColor;
+    }
+  }
+  &.button-outline {
+    background-color: transparent;
+    border: 2px solid currentColor;
+    svg {
+      > * {
+        fill: currentColor;
+      }
+    }
+
+    &.is--selected, &:hover, &:focus {
+      border: 2px solid transparent;
+      background-color: white;
+      color: @c-orange;
+
+      span {
+        color: inherit;
+      }
+
+      svg {
+        > * {
+          fill: currentColor;
+        }
+      }
+
+      &.c-rouge {
+        background-color: @c-rouge;
+        color: @c-orange;
+      }
+    }
+  }
+  &.button-arrow {
+    max-width: 1em;
+    padding: 0;
+    .c-orange;
+  }
+  &.button-square {
   }
 
   img, svg {
@@ -196,6 +243,9 @@ strong,b {
 .bg-bleuvert {
   background-color: @c-bleuvert;
 }
+.bg-bleuvert_fonce {
+  background-color: @c-bleuvert_fonce;
+}
 .bg-bleumarine {
   background-color: @c-bleumarine;
 }
@@ -290,6 +340,10 @@ strong,b {
   letter-spacing: 0.03em;
 }
 
+.font-thin {
+  font-weight: 200;  
+}
+
 
 .text-centered {
   text-align: center;
@@ -348,6 +402,10 @@ strong,b {
 .margin-sides-small {
   margin-left: @t-skipline/2;
   margin-right: @t-skipline/2;
+}
+.margin-sides-verysmall {
+  margin-left: @t-skipline/4;
+  margin-right: @t-skipline/4;
 }
 .margin-left-small {
   margin-left: @t-skipline/2;
@@ -417,6 +475,9 @@ strong,b {
 .padding-verysmall {
   padding: @t-skipline/4;
 }
+.padding-veryverysmall {
+  padding: @t-skipline/8;
+}
 .padding-sides-verysmall {
   padding-left: @t-skipline/4;
   padding-right: @t-skipline/4;
@@ -437,6 +498,9 @@ strong,b {
 }
 .padding-left-small {
   padding-left:   @t-skipline/2;
+}
+.padding-left-verysmall {
+  padding-left:   @t-skipline/4;
 }
 .padding-right-small {
   padding-left:   @t-skipline/2;
@@ -474,7 +538,7 @@ h1,h2,h3,h4 {
   
   &::-webkit-scrollbar {
     height: ((@scrollbar-padding * 2) + @scrollbar-height);
-    width: ((@scrollbar-padding * 2) + @scrollbar-height);
+    width:  ((@scrollbar-padding * 2) + @scrollbar-height);
     background-color: @c-barbgcolor;
   }
 
@@ -516,7 +580,7 @@ textarea, .textarea {
 
 input[type="color"], input[type="date"], input[type="datetime-local"], input[type="email"], input[type="month"], input[type="number"], input[type="password"], input[type="search"], input[type="tel"], input[type="text"], input[type="time"], input[type="url"], input[type="week"], select, textarea, .textarea {
   background-color: @c-gris_tresclair;
-  .padding-vert-small;
+  // .padding-vert-small;
   border-top-width: 0px;
   border-left-width: 0px;
   border-right-width: 0px;
@@ -532,6 +596,9 @@ input[readonly], textarea[readonly], .textarea[readonly] {
   background-color: var(--input-readonly-bg-color);
 }
 
+.text-uc {
+  text-transform: uppercase;
+}
 
 .text-cap {
   text-transform: uppercase;
@@ -612,6 +679,24 @@ label, .label {
   font-weight: 500;
   letter-spacing: 0.05em;
   color: @c-gris_fonce;
+
+}
+
+svg.inline-svg {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+
+  > * {
+    fill: currentColor;
+  }
+
+  &_larger {
+    width: 1.5em;
+    height: 1.5em;
+    margin-top: -.25em;
+    margin-bottom: -0.25em;
+  }
 }
 
 pre {
@@ -627,17 +712,16 @@ pre {
 input[type=range] {
   -webkit-appearance: none;
   width: 100%;
-  height: 2.25rem;
-  line-height: 2.25rem;
+  height: 1.6rem;
+  line-height: 1.6rem;
   vertical-align: middle;
-}
+  background: transparent;
 
-input[type=range] {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 2.25rem;
-  line-height: 2.25rem;
-  vertical-align: middle;
+  --input-range-track-box-shadow: none;
+
+  &::-webkit-slider-thumb {
+    border: .2rem solid currentColor !important;
+  }
 }
 
 // file picker

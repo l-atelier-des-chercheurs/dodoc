@@ -37,9 +37,9 @@
             />
           </div>
 
-          <button type="button" 
+          <div type="button" 
             v-if="Object.keys(sortedAuthors).length > 0"
-            v-for="(author, slug) in sortedAuthors" 
+            v-for="author in sortedAuthors" 
             :key="author.name" 
             class="m_authorsList--author"
             :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"
@@ -48,9 +48,8 @@
             <img 
               v-if="!!author.preview"
               width="100" height="100"
-              :src="urlToPortrait(slug, author.preview)" >
+              :src="urlToPortrait(author.slugFolderName, author.preview)" >
             <div class="m_authorsList--author--name">{{ author.name }}</div>
-            <hr>
             <button type="button" class="buttonLink" @click.stop="setAuthor(author)" v-if="author.name !== $root.settings.current_author.name">
               {{ $t('select') }}
             </button>
@@ -60,7 +59,7 @@
             <button type="button" class="buttonLink" @click.stop="removeAuthor(author)">
               {{ $t('remove') }}
             </button>
-          </button>
+          </div>
 
         </transition-group>
       </div>
@@ -101,7 +100,7 @@ export default {
   },
   computed: {
     sortedAuthors: function() {
-      return this.authors;
+      return Object.values(this.authors).sort((a, b) => a.name.localeCompare(b.name));
     }
   },
   methods: {
@@ -113,7 +112,6 @@ export default {
         });
       }
     },
-
     setAuthor(name) {
       this.$root.setAuthor(name);
       this.$refs.modal.closeModal()

@@ -56,6 +56,9 @@
         }
       },
       "medias": {
+        "thumbs": {
+          "resolutions": [50, 180, 360, 1600]
+        },
         "fields": {
           "date_created": {
             "type": "date",
@@ -77,7 +80,7 @@
           },
           "type": {
             "type": "string",
-            "options": ["image", "video", "audio", "text", "other"],
+            "options": ["image", "video", "audio", "text", "document", "other"],
             "default": "other"
           },
           "fav": {
@@ -132,6 +135,9 @@
         "password": {
           "type": "string",
           "read_only": true        
+        },
+        "authors": {
+          "type": "string"
         },
         "date_created": {
           "type": "date",
@@ -239,6 +245,9 @@
         }
       },
       "medias": {
+        "thumbs": {
+          "resolutions": [360]
+        },
         "fields": {
           "date_uploaded" : {
             "type": "date",

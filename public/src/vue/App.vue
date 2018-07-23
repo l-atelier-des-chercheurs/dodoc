@@ -67,6 +67,7 @@
                     v-if="$root.do_navigation.view === 'CaptureView'"
                     :slugProjectName="$root.do_navigation.current_slugProjectName"
                     :project="$root.currentProject"
+                    :read_only="!$root.state.connected"
                   />
                 </transition>
                 <transition name="MediaView" :duration="500">
@@ -112,7 +113,11 @@
             >
               <button
                 class="publiButton"
-                :class="{ 'is--open' : $root.settings.show_publi_panel }"
+                :class="{ 
+                  'is--open' : $root.settings.show_publi_panel, 
+                  'is--dragged' : is_dragged,
+                  'is--allthewaytotheleft' : percent === 0 
+                }"
                 @click="stopDragtogglePubli"
                 @mousedown="onMouseDown" 
                 @mouseup.stop

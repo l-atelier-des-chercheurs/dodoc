@@ -35,49 +35,25 @@ module.exports = (function() {
         packet.data = ['*'].concat(args);
         onevent.call(this, packet); // additional call to catch-all
       };
-      socket.on('*', function(event, data) {
-        dev.log(`RECEIVED EVENT: ${event}`);
-      });
 
-      socket.on('authenticate', function(data) {
-        onAuthenticate(socket, data);
-      });
+      socket.on('*', (event, data) => dev.log(`RECEIVED EVENT: ${event}`));
 
-      socket.on('listFolders', function(data) {
-        onListFolders(socket, data);
-      });
-      socket.on('createFolder', function(data) {
-        onCreateFolder(socket, data);
-      });
-      socket.on('editFolder', function(data) {
-        onEditFolder(socket, data);
-      });
-      socket.on('removeFolder', function(data) {
-        onRemoveFolder(socket, data);
-      });
+      socket.on('authenticate', d => onAuthenticate(socket, d));
 
-      socket.on('listMedias', function(data) {
-        onListMedias(socket, data);
-      });
-      socket.on('createMedia', function(data) {
-        onCreateMedia(socket, data);
-      });
-      socket.on('editMedia', function(data) {
-        onEditMedia(socket, data);
-      });
-      socket.on('removeMedia', function(data) {
-        onRemoveMedia(socket, data);
-      });
+      socket.on('listFolders', d => onListFolders(socket, d));
+      socket.on('listFolder', d => onListFolder(socket, d));
+      socket.on('createFolder', d => onCreateFolder(socket, d));
+      socket.on('editFolder', d => onEditFolder(socket, d));
+      socket.on('removeFolder', d => onRemoveFolder(socket, d));
 
-      socket.on('listSpecificMedias', function(data) {
-        onListSpecificMedias(socket, data);
-      });
-      socket.on('downloadPubliPDF', function(data) {
-        onDownloadPubliPDF(socket, data);
-      });
-      socket.on('updateNetworkInfos', function(data) {
-        onUpdateNetworkInfos();
-      });
+      socket.on('listMedias', d => onListMedias(socket, d));
+      socket.on('createMedia', d => onCreateMedia(socket, d));
+      socket.on('editMedia', d => onEditMedia(socket, d));
+      socket.on('removeMedia', d => onRemoveMedia(socket, d));
+      socket.on('listSpecificMedias', d => onListSpecificMedias(socket, d));
+
+      socket.on('downloadPubliPDF', d => onDownloadPubliPDF(socket, d));
+      socket.on('updateNetworkInfos', d => onUpdateNetworkInfos(socket, d));
     });
   }
 
@@ -112,6 +88,12 @@ module.exports = (function() {
     }
     const type = data.type;
     sendFolders({ type, socket });
+  }
+  function onListFolder(socket, { type, slugFolderName }) {
+    dev.logfunction(
+      `EVENT - onListFolder with slugFolderName = ${slugFolderName}`
+    );
+    sendFolders({ type, slugFolderName, socket });
   }
 
   function onCreateFolder(socket, { type, data, id }) {

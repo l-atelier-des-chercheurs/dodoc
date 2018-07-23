@@ -6,7 +6,8 @@ const path = require('path'),
   os = require('os'),
   writeFileAtomic = require('write-file-atomic'),
   ffmpegstatic = require('ffmpeg-static'),
-  ffmpeg = require('fluent-ffmpeg');
+  ffmpeg = require('fluent-ffmpeg'),
+  pad = require('pad-left');
 
 const settings = require('../settings.json'),
   dev = require('./dev-log');
@@ -38,7 +39,8 @@ module.exports = (function() {
     writeAudioToDisk: (slugProjectName, mediaName, dataURL) =>
       writeAudioToDisk(slugProjectName, mediaName, dataURL),
     writeVideoToDisk: (slugProjectName, mediaName, dataURL) =>
-      writeVideoToDisk(slugProjectName, mediaName, dataURL)
+      writeVideoToDisk(slugProjectName, mediaName, dataURL),
+    makeStopmotionFromImageSequence: d => makeStopmotionFromImageSequence(d)
   };
 
   function _getUserPath() {
@@ -309,6 +311,110 @@ module.exports = (function() {
         //     });
         // });
       });
+    });
+  }
+
+  function makeStopmotionFromImageSequence({
+    slugFolderName,
+    pathToMedia,
+    images,
+    slugStopmotionName,
+    frameRate
+  }) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction('COMMON — makeStopmotionFromImageSequence');
+
+      const numberOfImagesToProcess = images.length;
+
+      _copyToTempAndRenameImages({ slugStopmotionName, images })
+        .then(tempFolder => {
+          // ask ffmpeg to make a video from the cache images
+          var proc = new ffmpeg()
+            .input(path.join(tempFolder, 'img-%04d.jpeg'))
+            .withFpsInput(frameRate)
+            .withVideoCodec('libvpx')
+            .addOptions(['-vb 8000k', '-f webm'])
+            .output(pathToMedia)
+            .on('progress', progress => {
+              dev.logverbose(
+                `Processing new stopmotion: image ${
+                  progress.frames
+                }/${numberOfImagesToProcess}`
+              );
+            })
+            .on('end', () => {
+              dev.logverbose(`Stopmotion has been completed`);
+              resolve();
+            })
+            .on('error', function(err, stdout, stderr) {
+              dev.error('An error happened: ' + err.message);
+              dev.error('ffmpeg standard output:\n' + stdout);
+              dev.error('ffmpeg standard error:\n' + stderr);
+              reject(`couldn't create a stopmotion animation`);
+            })
+            .run();
+        })
+        .catch(err => reject(err));
+    });
+  }
+
+  function _copyToTempAndRenameImages({ slugStopmotionName, images }) {
+    return new Promise(function(resolve, reject) {
+      let cacheFolderName =
+        getCurrentDate(settings.metaDateFormat) +
+        slugStopmotionName +
+        '-' +
+        (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2);
+
+      let cachePath = path.join(
+        global.tempStorage,
+        settings.cacheDirname,
+        cacheFolderName
+      );
+
+      fs.mkdirp(
+        cachePath,
+        function() {
+          let slugStopmotionPath = getFolderPath(
+            path.join(
+              settings.structure['stopmotions'].path,
+              slugStopmotionName
+            )
+          );
+          let tasks = [];
+          images.forEach((image_filename, index) => {
+            tasks.push(
+              new Promise((resolve, reject) => {
+                const original_image_path = path.join(
+                  slugStopmotionPath,
+                  image_filename
+                );
+                const cache_image_path = path.join(
+                  cachePath,
+                  'img-' + pad(index, 4, '0') + '.jpeg'
+                );
+
+                fs.copy(original_image_path, cache_image_path)
+                  .then(() => {
+                    resolve();
+                  })
+                  .catch(err => {
+                    dev.error(`Failed to copy image to cache with seq name.`);
+                    reject(err);
+                  });
+              })
+            );
+
+            Promise.all(tasks)
+              .then(() => resolve(cachePath))
+              .catch(err => reject(err));
+          });
+        },
+        function(err, p) {
+          dev.error(`Failed to create cache folder: ${err}`);
+          reject(err);
+        }
+      );
     });
   }
 
