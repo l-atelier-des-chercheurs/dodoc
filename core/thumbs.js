@@ -1,10 +1,11 @@
-const sharp = require('sharp'),
-  path = require('path'),
+const path = require('path'),
   fs = require('fs-extra'),
   ffmpegstatic = require('ffmpeg-static'),
   ffprobestatic = require('ffprobe-static'),
   ffmpeg = require('fluent-ffmpeg'),
   exifReader = require('exif-reader');
+
+const sharp = require('sharp');
 
 const settings = require('../settings.json'),
   dev = require('./dev-log'),
