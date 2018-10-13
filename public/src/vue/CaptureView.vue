@@ -264,7 +264,7 @@ import StopmotionPanel from './components/subcomponents/StopmotionPanel.vue';
 import MediaValidationButtons from './components/subcomponents/MediaValidationButtons.vue';
 
 import RecordRTC from 'recordrtc';
-// import 'webrtc-adapter';
+import 'webrtc-adapter';
 import ImageTracer from 'imagetracerjs';
 import { setTimeout } from 'timers';
 
