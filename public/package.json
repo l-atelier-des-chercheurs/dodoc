@@ -19,6 +19,7 @@
     "vue": "vue/dist/vue.common.js"
   },
   "dependencies": {
+    "@johmun/vue-tags-input": "^1.5.9",
     "@xkeshi/vue-qrcode": "^1.0.0",
     "alertify.js": "^1.0.12",
     "axios": "^0.18.0",

@@ -37,6 +37,13 @@
       </div>
  -->
 
+<!-- Keywords -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('keywords') }}</label>
+        <textarea v-model="projectdata.keywords" :readonly="read_only">
+        </textarea>
+      </div>
+
 <!-- Author(s) -->
       <div class="margin-bottom-small">
         <label>{{ $t('author') }}</label><br>
@@ -56,6 +63,7 @@
 import Modal from './BaseModal.vue';
 import slug from 'slugg';
 import ImageSelect from '../subcomponents/ImageSelect.vue';
+import VueTagsInput from '@johmun/vue-tags-input';
 
 export default {
   props: {
@@ -65,13 +73,15 @@ export default {
   },
   components: {
     Modal,
-    ImageSelect
+    ImageSelect,
+    VueTagsInput
   },
   data() {
     return {
       projectdata: {
         name: this.project.name,
-        authors: this.project.authors
+        authors: this.project.authors,
+        keywords: this.project.keywords
       },
       preview: undefined,
       askBeforeClosingModal: false

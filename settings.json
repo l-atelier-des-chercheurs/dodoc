@@ -48,6 +48,9 @@
         "authors": {
           "type": "string"
         },
+        "keywords": {
+          "type": "string"
+        },      
         "description": {
           "type": "string"
         },
