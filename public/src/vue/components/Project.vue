@@ -20,6 +20,11 @@
             {{ $t('protected_by_pass') }}
           </mark>
 
+          <div class="m_keywordField">
+            <span v-for="keyword in project.keywords" :key="keyword.text">
+              {{ keyword.text }}
+            </span>
+          </div>
           <div class="m_metaField">
             <div>
               {{ $t('created') }}

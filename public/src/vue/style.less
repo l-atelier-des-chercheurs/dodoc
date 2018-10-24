@@ -1159,6 +1159,70 @@ body {
     margin-bottom: 0;
   }
 }
+.m_keywordField, .vue-tags-input {
+  position: relative;
+  .margin-bottom-small;
+  .font-verysmall;
+  letter-spacing: 0.04em;
+  display: flex;
+  flex-flow: row wrap;
+
+  > .input {
+    border: none !important;
+    padding: 0 !important;
+  }
+  .tags {
+    flex-flow: row wrap !important;
+
+    .new-tag-input-wrapper {
+      background-color: @c-gris_tresclair !important;
+
+      &::before {
+        display: none;
+      }
+
+      input {
+        font-size: inherit !important;
+        height: 1.2em;
+      }
+    }
+  }
+
+  > span, .tag, .new-tag-input-wrapper {
+    display: flex;
+    align-items: center;
+    border-radius: 4px !important; 
+    background-color: @c-bleumarine !important;
+    color: white !important;
+    font-size: inherit !important;
+    .padding-sides-verysmall !important;
+    .padding-vert-verysmall !important;
+
+    margin-right: @t-skipline/4 !important;
+    margin-bottom: @t-skipline/4 !important;
+
+    &::before {
+      content: '';
+      flex-shrink: 0;
+      .margin-sides-verysmall;
+      .margin-vert-verysmall;
+      background-color: white;
+      display: inline-block;
+      vertical-align: middle;
+      width: .3em;
+      height: .3em;
+      font-size:1.4em;
+      border-radius: 50%;
+      // margin-bottom: 0.1em;
+    }
+
+    .actions {
+      .margin-sides-verysmall;
+      margin-right: 0;
+
+    }
+  }
+}
 
 
 .m_captureview {

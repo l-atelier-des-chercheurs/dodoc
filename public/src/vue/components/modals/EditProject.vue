@@ -40,8 +40,12 @@
 <!-- Keywords -->
       <div class="margin-bottom-small">
         <label>{{ $t('keywords') }}</label>
-        <textarea v-model="projectdata.keywords" :readonly="read_only">
-        </textarea>
+        <vue-tags-input
+          v-model="tag"
+          :placeholder="$t('add_keyword')"
+          :tags="projectdata.keywords"
+          @tags-changed="newTags => projectdata.keywords = newTags"
+        />
       </div>
 
 <!-- Author(s) -->
@@ -81,8 +85,9 @@ export default {
       projectdata: {
         name: this.project.name,
         authors: this.project.authors,
-        keywords: this.project.keywords
+        keywords: !!this.project.keywords ? this.project.keywords : []
       },
+      tag: '',
       preview: undefined,
       askBeforeClosingModal: false
     };

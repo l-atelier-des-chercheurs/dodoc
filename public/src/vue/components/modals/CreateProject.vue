@@ -32,6 +32,17 @@
         <small>{{ $t('password_instructions') }}</small>
       </div> -->
 
+<!-- Keywords -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('keywords') }}</label>
+        <vue-tags-input
+          v-model="tag"
+          :placeholder="$t('add_keyword')"
+          :tags="projectdata.keywords"
+          @tags-changed="newTags => projectdata.keywords = newTags"
+        />
+      </div>
+
 <!-- Author(s) -->
       <div class="margin-bottom-small">
         <label>{{ $t('author') }}</label><br>
@@ -50,6 +61,7 @@
 <script>
 import Modal from './BaseModal.vue';
 import ImageSelect from '../subcomponents/ImageSelect.vue';
+import VueTagsInput from '@johmun/vue-tags-input';
 
 export default {
   props: {
@@ -57,15 +69,18 @@ export default {
   },
   components: {
     Modal,
-    ImageSelect
+    ImageSelect,
+    VueTagsInput
   },
   data() {
     return {
       projectdata: {
         name: '',
         password: '',
-        authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:''
+        authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:'',
+        keywords: []
       },
+      tag: '',
       preview: undefined,
       askBeforeClosingModal: false
     };

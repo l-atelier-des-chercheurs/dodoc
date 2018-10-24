@@ -40,6 +40,7 @@ module.exports = (function() {
       sureToRemovePubli:
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
       validate_media: 'Valider le média',
+      add_keyword: 'Ajouter un mot-clé',
 
       showing: 'Affichage de',
       media_filter: 'Filtre de médias',
@@ -265,6 +266,7 @@ module.exports = (function() {
       sureToCloseModal: 'Do you really want to close this window?',
       sureToRemovePubli: 'Do you really want to delete this publication?',
       validate_media: 'Validate the media',
+      add_keyword: 'Add a keyword',
 
       showing: 'Showing',
       media_filter: 'Medias filter',
