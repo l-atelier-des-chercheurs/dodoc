@@ -38,6 +38,7 @@
         <vue-tags-input
           v-model="tag"
           :placeholder="$t('add_keyword')"
+          :autocomplete-items="filteredKeyword"
           :tags="projectdata.keywords"
           @tags-changed="newTags => projectdata.keywords = newTags"
         />
@@ -101,7 +102,21 @@ export default {
       }
     }
   },
-  computed: {},
+  computed: {
+    allKeywords() {
+      let allKeywords = [];
+      for (let slugProjectName in window.store.projects) {
+        let projectKeywords = window.store.projects[slugProjectName].keywords;
+        if(!!projectKeywords) {
+          projectKeywords.map(k => allKeywords.push({ text: k.title }));
+        }
+      }
+      return allKeywords;
+    },
+    filteredKeyword() {
+      return this.allKeywords.filter(i => new RegExp(this.tag, 'i').test(i.text));
+    }
+  },
   methods: {
     newProject: function(event) {
       console.log('newProject');
