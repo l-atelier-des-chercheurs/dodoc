@@ -129,6 +129,13 @@ export default {
       if(!!this.preview) {
         this.projectdata.preview_rawdata = this.preview;
       }
+
+      if(this.projectdata.keywords.length > 0) {
+        this.projectdata.keywords = this.projectdata.keywords.map((val) => { 
+          return { title: val.text }
+        });
+      }
+
       this.$eventHub.$on('socketio.folder_created_or_updated', this.newFolderCreated);
       this.$root.createFolder({ type: 'projects', data: this.projectdata });
     },

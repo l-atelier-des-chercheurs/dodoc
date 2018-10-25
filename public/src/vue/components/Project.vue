@@ -21,8 +21,8 @@
           </mark>
 
           <div class="m_keywordField">
-            <span v-for="keyword in project.keywords" :key="keyword.text">
-              {{ keyword.text }}
+            <span v-for="keyword in project.keywords" :key="keyword.title">
+              {{ keyword.title }}
             </span>
           </div>
           <div class="m_metaField">

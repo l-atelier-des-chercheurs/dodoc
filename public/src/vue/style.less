@@ -1183,12 +1183,14 @@ body {
 
       input {
         font-size: inherit !important;
-        height: 1.2em;
+        height: auto;
+        // height: 1.2em;
       }
     }
   }
 
   > span, .tag, .new-tag-input-wrapper {
+    flex-basis: auto;
     display: flex;
     align-items: center;
     border-radius: 4px !important; 
@@ -1198,13 +1200,19 @@ body {
     .padding-sides-verysmall !important;
     .padding-vert-verysmall !important;
 
+    margin: 0 !important;
     margin-right: @t-skipline/4 !important;
     margin-bottom: @t-skipline/4 !important;
+
+    &.new-tag-input-wrapper {
+      min-width: 150px;
+    }
 
     &::before {
       content: '';
       flex-shrink: 0;
       .margin-sides-verysmall;
+      margin-left: @t-skipline/8;
       .margin-vert-verysmall;
       background-color: white;
       display: inline-block;

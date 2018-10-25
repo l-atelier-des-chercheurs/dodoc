@@ -67,7 +67,7 @@
 import Modal from './BaseModal.vue';
 import slug from 'slugg';
 import ImageSelect from '../subcomponents/ImageSelect.vue';
-import VueTagsInput from '@johmun/vue-tags-input';
+import { VueTagsInput, createTags } from '@johmun/vue-tags-input';
 
 export default {
   props: {
@@ -85,7 +85,7 @@ export default {
       projectdata: {
         name: this.project.name,
         authors: this.project.authors,
-        keywords: !!this.project.keywords ? this.project.keywords : []
+        keywords: !!this.project.keywords ? createTags(this.project.keywords.map(val => val.title)) : []
       },
       tag: '',
       preview: undefined,
@@ -138,6 +138,12 @@ export default {
 
       if(typeof this.preview !== 'undefined') {
         this.projectdata.preview_rawdata = this.preview;
+      }
+
+      if(this.projectdata.keywords.length > 0) {
+        this.projectdata.keywords = this.projectdata.keywords.map((val) => { 
+          return { title: val.text }
+        });
       }
 
       this.$root.editFolder({ 
