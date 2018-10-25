@@ -12,8 +12,6 @@
 
     <template slot="sidebar">
 
-      {{ projectdata.keywords }}
-
 <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('project_name') }}</label>
@@ -110,14 +108,26 @@ export default {
       for (let slugProjectName in window.store.projects) {
         let projectKeywords = window.store.projects[slugProjectName].keywords;
         if(!!projectKeywords) {
-          projectKeywords.map(k => allKeywords.push({ text: k.title }));
+          projectKeywords.map(val => {
+            allKeywords.push(val.title);
+          });
         }
       }
-      return allKeywords;
+
+      allKeywords = allKeywords.filter(function(item, pos) {
+        return allKeywords.indexOf(item) == pos;
+      });
+
+      return allKeywords.map(kw => {
+        return {
+          text: kw,
+          classes: "tagcolorid_" + parseInt(kw, 36)%4
+        }
+      });
     },
     filteredKeyword() {
       return this.allKeywords.filter(i => new RegExp(this.tag, 'i').test(i.text));
-    }
+    },
   },
   methods: {
     editTags: function(newTags) {

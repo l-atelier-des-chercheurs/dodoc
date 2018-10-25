@@ -17,7 +17,7 @@ module.exports = (function() {
       for_the_placement_on_timeline: '(pour le placement sur la timeline)',
       type: 'Type',
       color: 'Couleur',
-      keywords: 'Mot-clés',
+      keywords: 'Mots-clés',
       author: 'Auteur(s)',
       download: 'Télécharger',
       caption: 'Légende',

@@ -1162,7 +1162,8 @@ body {
 .m_keywordField, .vue-tags-input {
   position: relative;
   .margin-bottom-small;
-  .font-verysmall;
+  // .font-verysmall;
+  font-size: 0.7em;
   letter-spacing: 0.04em;
   display: flex;
   flex-flow: row wrap;
@@ -1177,10 +1178,17 @@ body {
   > .autocomplete {
     position: relative !important;
     background-color: transparent;
-    border:0;
-    border: 4px solid @c-gris_clair;
+    border: 4px solid @c-gris_clair !important;
     .padding-verysmall;
     padding-bottom: 0;
+
+    &::before {
+      content: 'suggestion';
+      margin-bottom: @t-skipline/8;
+      text-transform: uppercase;
+      .label;
+      display: block;
+    }
 
     > * {
       display: flex;
