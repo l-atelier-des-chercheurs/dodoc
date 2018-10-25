@@ -277,6 +277,10 @@ export default {
       this.hasMoved = false
     },
     onMouseUp() {
+      if(!this.is_dragged) {
+        return;
+      }
+
       this.is_dragged = false;
 
       if(this.percent >= 90) {
