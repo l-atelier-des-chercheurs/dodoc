@@ -46,7 +46,7 @@
           :placeholder="$t('add_keyword')"
           :autocomplete-items="filteredKeyword"
           :tags="projectdata.keywords"
-          @tags-changed="newTags => projectdata.keywords = newTags"
+          @tags-changed="newTags => editTags(newTags)"
         />
       </div>
 
@@ -87,7 +87,7 @@ export default {
       projectdata: {
         name: this.project.name,
         authors: this.project.authors,
-        keywords: !!this.project.keywords ? createTags(this.project.keywords.map(val => val.title)) : []
+        keywords: []
       },
       tag: '',
       preview: undefined,
@@ -102,16 +102,34 @@ export default {
       this.askBeforeClosingModal = true;
     }
   },
+  mounted() {
+    if(this.project.keywords.length > 0) {
+      this.projectdata.keywords = createTags(this.project.keywords.map(val => val.title))
+      this.editTags(this.projectdata.keywords);
+    }
+  },
   computed: {
     allKeywords() {
       let allKeywords = [];
       for (let slugProjectName in window.store.projects) {
         let projectKeywords = window.store.projects[slugProjectName].keywords;
         if(!!projectKeywords) {
-          projectKeywords.map(k => allKeywords.push({ text: k.title }));
+          projectKeywords.map(val => {
+            allKeywords.push(val.title);
+          });
         }
       }
-      return allKeywords;
+
+      allKeywords = allKeywords.filter(function(item, pos) {
+        return allKeywords.indexOf(item) == pos;
+      });
+
+      return allKeywords.map(kw => {
+        return {
+          text: kw,
+          classes: "tagcolorid_" + parseInt(kw, 36)%4
+        }
+      });
     },
     filteredKeyword() {
       return this.allKeywords.filter(i => new RegExp(this.tag, 'i').test(i.text));
@@ -124,6 +142,12 @@ export default {
     }    
   },
   methods: {
+    editTags: function(newTags) {
+      this.projectdata.keywords = newTags.map(val => {
+        val.classes = "tagcolorid_" + parseInt(val.text, 36)%4;
+        return val;
+      });
+    },
     editThisProject: function(event) {
       console.log('editThisProject');
 
@@ -169,8 +193,7 @@ export default {
 
       this.$emit('close', '');
     }
-  },
-  mounted() {}
+  }
 };
 </script>
 <style>

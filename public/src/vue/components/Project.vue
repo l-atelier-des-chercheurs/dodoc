@@ -21,9 +21,21 @@
           </mark>
 
           <div class="m_keywordField">
-            <span v-for="keyword in project.keywords" :key="keyword.title">
+            <span 
+              v-for="keyword in project.keywords" 
+              :key="keyword.title"
+              :class="'tagcolorid_' + parseInt(keyword.title, 36)%4"
+            >
               {{ keyword.title }}
             </span>
+          </div>
+          <div class="m_metaField" v-if="!!project.authors">
+            <div>
+              {{ $t('author') }}
+            </div>
+            <div>
+              {{ project.authors }}
+            </div>
           </div>
           <div class="m_metaField">
             <div>

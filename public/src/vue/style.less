@@ -1168,7 +1168,7 @@ body {
   flex-flow: row wrap;
 
   font-family: 'Fira Mono';
-
+  font-weight: 400;
 
   > .input {
     border: none !important;
@@ -1176,12 +1176,31 @@ body {
   }
   > .autocomplete {
     position: relative !important;
+    background-color: transparent;
+    border:0;
+    border: 4px solid @c-gris_clair;
+    .padding-verysmall;
+    padding-bottom: 0;
+
+    > * {
+      display: flex;
+      flex-flow: row wrap;
+    }
+  }
+
+  .item {
+    border-radius: 4px;
+
+    &.selected-item {
+      background-color: @c-bleuvert !important;  
+    }
   }
   .tags {
     flex-flow: row wrap !important;
 
     .new-tag-input-wrapper {
       background-color: @c-gris_tresclair !important;
+      margin-right: 0 !important;
 
       &::before {
         display: none;
@@ -1195,13 +1214,14 @@ body {
     }
   }
 
-  > span, .tag, .new-tag-input-wrapper {
+  > span, .tag, .new-tag-input-wrapper, .item {
     flex-basis: auto;
     display: flex;
     align-items: center;
     border-radius: 4px !important; 
-    background-color: @c-bleumarine !important;
-    color: white !important;
+    background-color: @c-bleuvert_clair !important;
+    // color: white !important;
+    color: black !important;
     font-size: inherit !important;
     .padding-sides-verysmall !important;
     .padding-vert-verysmall !important;
@@ -1212,6 +1232,21 @@ body {
 
     &.new-tag-input-wrapper {
       min-width: 150px;
+    }
+
+    &.tagcolorid_0 {
+    }
+    &.tagcolorid_1 {
+      background-color: @c-gris_clair !important;
+    }
+    &.tagcolorid_2 {
+      background-color: @c-orange_clair !important;
+    }
+    &.tagcolorid_3 {
+      background-color: @c-rouge_clair !important;
+    }
+    &.tagcolorid_4 {
+      background-color: @c-bleumarine_clair !important;
     }
 
     &::before {
@@ -1227,7 +1262,6 @@ body {
       height: .3em;
       font-size:1.4em;
       border-radius: 50%;
-      // margin-bottom: 0.1em;
     }
 
     .actions {

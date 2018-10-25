@@ -12,6 +12,8 @@
 
     <template slot="sidebar">
 
+      {{ projectdata.keywords }}
+
 <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('project_name') }}</label>
@@ -40,7 +42,7 @@
           :placeholder="$t('add_keyword')"
           :autocomplete-items="filteredKeyword"
           :tags="projectdata.keywords"
-          @tags-changed="newTags => projectdata.keywords = newTags"
+          @tags-changed="newTags => editTags(newTags)"
         />
       </div>
 
@@ -118,6 +120,12 @@ export default {
     }
   },
   methods: {
+    editTags: function(newTags) {
+      this.projectdata.keywords = newTags.map(val => {
+        val.classes = "tagcolorid_" + parseInt(val.text, 36)%4;
+        return val;
+      });
+    },
     newProject: function(event) {
       console.log('newProject');
 
