@@ -109,30 +109,8 @@ export default {
     }
   },
   computed: {
-    allKeywords() {
-      let allKeywords = [];
-      for (let slugProjectName in window.store.projects) {
-        let projectKeywords = window.store.projects[slugProjectName].keywords;
-        if(!!projectKeywords) {
-          projectKeywords.map(val => {
-            allKeywords.push(val.title);
-          });
-        }
-      }
-
-      allKeywords = allKeywords.filter(function(item, pos) {
-        return allKeywords.indexOf(item) == pos;
-      });
-
-      return allKeywords.map(kw => {
-        return {
-          text: kw,
-          classes: "tagcolorid_" + parseInt(kw, 36)%4
-        }
-      });
-    },
     filteredKeyword() {
-      return this.allKeywords.filter(i => new RegExp(this.tag, 'i').test(i.text));
+      return this.$root.allKeywords.filter(i => new RegExp(this.tag, 'i').test(i.text));
     },
     previewURL() {
       if(!this.project.preview) {

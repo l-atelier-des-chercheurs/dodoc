@@ -44,6 +44,8 @@ module.exports = (function() {
 
       showing: 'Affichage de',
       media_filter: 'Filtre de médias',
+      no_projects_yet:
+        'Il n’y a pas encore de projet, créez-en un pour commencer à utiliser do•doc!',
       projects_of: 'projets sur',
       medias_of: 'médias sur',
       projects: 'Projets',
@@ -146,6 +148,7 @@ module.exports = (function() {
       fullscreen: 'Plein écran',
       preview: 'Aperçu',
       filter: 'Filtre',
+      filters: 'Filtres',
       header_left: 'En-tête gauche',
       header_right: 'En-tête droite',
       gridstep: 'Pas de la grille d’alignement',
@@ -270,8 +273,7 @@ module.exports = (function() {
 
       showing: 'Showing',
       media_filter: 'Medias filter',
-      no_projects_yet:
-        'No projects created yet. Create one to add captures and import content.',
+      no_projects_yet: 'No projects yet, create one to start using do•doc!',
       projects_of: 'projects of',
       medias_of: 'medias of',
       projects: 'Projects',
@@ -379,6 +381,7 @@ module.exports = (function() {
       fullscreen: 'Fullscreen',
       preview: 'Preview',
       filter: 'Filter',
+      filters: 'Filters',
       header_left: 'Left header text',
       header_right: 'Right header text',
       gridstep: 'Step of alignment grid',

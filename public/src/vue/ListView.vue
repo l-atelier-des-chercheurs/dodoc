@@ -19,12 +19,21 @@
               </label>
             </div>
             <div>
-              <template v-if="sortedProjectsSlug !== 'has-no-projects'">
+              <template v-if="Object.keys(projects).length > 0">
                 <template v-if="!show_medias_instead_of_projects">
                   {{ $t('showing') }} 
-                  {{ sortedProjectsSlug.length }} 
-                  {{ $t('projects_of') }} 
-                  {{ Object.keys(projects).length }}
+                  <span :class="{ 'c-bleuvert' : Object.keys(sortedProjectsSlug).length !== Object.keys(projects).length }">
+                    {{ sortedProjectsSlug.length }} 
+                    {{ $t('projects_of') }} 
+                    {{ Object.keys(projects).length }}
+                  </span>
+                  <template v-if="$root.allKeywords.length > 0">
+                    — 
+                    <button type="button" class="button-nostyle text-uc button-triangle"
+                      :class="{ 'is--active' : show_filters }"
+                      @click="show_filters = !show_filters"
+                    >{{ $t('filters') }}</button>
+                  </template>
                 </template>
                 <template v-else>
                   {{ $t('showing') }} 
@@ -32,6 +41,41 @@
                   {{ $t('medias_of') }} 
                   {{ Object.keys(allMedias).length }}
                 </template>
+
+                <div v-if="show_filters" class="bg-blanc border-top margin-vert-verysmall">
+                  <div class="flex-wrap">
+                    <div v-if="$root.allKeywords.length > 0" class="padding-sides-small">
+                      <label>{{ $t('keywords') }}</label>
+                      <div class="m_keywordField margin-bottom-none font-large">
+                        <button
+                          v-for="keyword in $root.allKeywords" 
+                          :key="keyword.text"
+                          :class="[keyword.classes, { 'is--active' : $root.settings.project_filter.keyword === keyword.text }]"
+                          @click="setProjectKeyword(keyword.text)"
+                        >
+                          {{ keyword.text }}
+                        </button>
+                      </div>
+                    </div>
+                    <!-- <div v-if="Object.keys($root.store.authors).length > 0" class="padding-sides-small">
+                      <label>{{ $t('author') }}</label>
+                      <div class="m_authorField margin-bottom-none">
+                        <span
+                          type="button"
+                          v-for="(author, slug) in $root.store.authors" 
+                          :key="author.name" 
+                          :class="{ 'is--selected' : author.name === $root.settings.media_filter.authors }"
+                        >
+                          <img 
+                            v-if="!!author.preview"
+                            :src="urlToPortrait(slug, author.preview)"
+                          />
+                          <div class="m_searchsidebar--author--name">{{ author.name }}</div>
+                        </span>
+                      </div>
+                    </div> -->
+                  </div>
+                </div>
               </template>
               <template v-else>
                 {{ $t('no_projects_yet') }}
@@ -140,9 +184,14 @@ export default {
         type: 'date',
         order: 'descending'
       },
+
+      show_filters: false
     };
   },
   mounted() {
+    if(this.$root.settings.project_filter.keyword !== '') {
+      this.show_filters = true;
+    }
   },
   beforeDestroy() {
   },
@@ -159,10 +208,6 @@ export default {
   },
   computed: {
     sortedProjectsSlug: function() {
-      if(this.projects.message === 'no-folders') {
-        return 'has-no-projects';
-      }
-
       var sortable = [];
 
       for (let slugProjectName in this.projects) {
@@ -176,7 +221,17 @@ export default {
         } else if (this.currentSort.type === 'alph') {
           orderBy = this.projects[slugProjectName][this.currentSort.field];
         }
-        sortable.push({ slugProjectName, orderBy });
+
+        // if a project keyword filter is set
+        if(this.$root.settings.project_filter.keyword !== '') {
+          // only add to sorted array if project has this keyword
+          if(this.projects[slugProjectName].keywords.length > 0 && 
+          this.projects[slugProjectName].keywords.filter(k => k.title === this.$root.settings.project_filter.keyword).length > 0) {
+            sortable.push({ slugProjectName, orderBy });
+          }
+        } else {
+          sortable.push({ slugProjectName, orderBy });
+        }
       }
       let sortedSortable = sortable.sort(function(a, b) {
         let valA = a.orderBy;
@@ -255,6 +310,26 @@ export default {
     setFilter(newFilter) {
       this.currentFilter = newFilter;
     },
+    setProjectKeyword(newKeywordFilter) {
+      if(this.$root.settings.project_filter.keyword !== newKeywordFilter) {
+        this.$root.settings.project_filter.keyword = newKeywordFilter;
+      } else {
+        this.$root.settings.project_filter.keyword = ''; 
+      }
+    },
+    urlToPortrait(slug, filename) {
+      if(filename === undefined) {
+        return '';
+      }
+      return `/${this.$root.state.authorsFolder}/${slug}/${filename}`;
+    },
+    setAuthorFilter(author) {
+      if(author.name !== this.$root.settings.media_filter.authors) {
+        this.$root.setMediaFilter({ authors: author.name });
+      } else {
+        this.$root.unsetMediaFilter();
+      }
+    }
   }
 };
 </script>

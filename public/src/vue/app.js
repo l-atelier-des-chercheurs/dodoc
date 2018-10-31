@@ -429,7 +429,10 @@ let vm = new Vue({
       show_search_sidebar: false,
       enable_system_bar: window.state.is_electron && window.state.is_darwin,
 
-      media_filter: {}
+      media_filter: {},
+      project_filter: {
+        keyword: ''
+      }
     },
     lang: {
       available: lang_settings.available,
@@ -581,6 +584,28 @@ let vm = new Vue({
         return this.store.projects[this.do_navigation.current_slugProjectName];
       }
       return {};
+    },
+    allKeywords() {
+      let allKeywords = [];
+      for (let slugProjectName in this.store.projects) {
+        let projectKeywords = this.store.projects[slugProjectName].keywords;
+        if (!!projectKeywords) {
+          projectKeywords.map(val => {
+            allKeywords.push(val.title);
+          });
+        }
+      }
+
+      allKeywords = allKeywords.filter(function(item, pos) {
+        return allKeywords.indexOf(item) == pos;
+      });
+
+      return allKeywords.map(kw => {
+        return {
+          text: kw,
+          classes: 'tagcolorid_' + (parseInt(kw, 36) % 4)
+        };
+      });
     }
   },
   methods: {

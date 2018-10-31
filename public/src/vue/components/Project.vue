@@ -20,11 +20,12 @@
             {{ $t('protected_by_pass') }}
           </mark>
 
+
           <div class="m_keywordField">
             <span 
               v-for="keyword in project.keywords" 
               :key="keyword.title"
-              :class="'tagcolorid_' + parseInt(keyword.title, 36)%4"
+              :class="['tagcolorid_' + parseInt(keyword.title, 36)%4, { 'is--active' : $root.settings.project_filter.keyword === keyword.title }]"
             >
               {{ keyword.title }}
             </span>
