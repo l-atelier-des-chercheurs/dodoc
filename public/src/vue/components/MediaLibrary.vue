@@ -35,8 +35,6 @@
 
     <div class="sectionTitle_small margin-sides-medium margin-vert-small">
       {{ $t('all_medias') }}
-      —
-      <button type="button" class="buttonNoStyle">FILTRER ◄</button>
     </div>
     <div class="m_project--library--medias">
       <MediaCard
