@@ -113,49 +113,52 @@ export default {
           console.log(`METHODS • UploadFile / sendThisFile : name = ${f.name}`);
         }
 
-        this.$set(this.selected_files_meta, f.name, {
+        const filename = f.name;
+        const modified = f.lastModified;
+
+        this.$set(this.selected_files_meta, filename, {
           upload_percentages: 0,
           status: 'sending'
         });
 
         let formData = new FormData();
-        formData.append('files', f, f.name);
+        formData.append('files', f, filename);
         const meta = {
-          fileCreationDate: f.lastModified,
+          fileCreationDate: modified,
           authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:'' 
         }
-        formData.append(f.name, JSON.stringify(meta));
+        formData.append(filename, JSON.stringify(meta));
 
         if (this.$root.state.dev_mode === 'debug') {
-          console.log(`METHODS • sendThisFile: name = ${f.name} / formData is ready`);
+          console.log(`METHODS • sendThisFile: name = ${filename} / formData is ready`);
         }
 
         // TODO : possibilité de cancel
         axios.post(this.uriToUploadMedia, formData,{
             headers: { 'Content-Type': 'multipart/form-data' },
             onUploadProgress: function( progressEvent ) {
-              this.selected_files_meta[f.name].upload_percentages = parseInt(Math.round((progressEvent.loaded * 100 ) / progressEvent.total ) );
+              this.selected_files_meta[filename].upload_percentages = parseInt(Math.round((progressEvent.loaded * 100 ) / progressEvent.total ) );
             }.bind(this)            
           })
           .then(x => x.data)
           .then(x => {
             if (this.$root.state.dev_mode === 'debug') {
-              console.log(`METHODS • sendThisFile: name = ${f.name} / success uploading`);
+              console.log(`METHODS • sendThisFile: name = ${filename} / success uploading`);
             }
 
-            this.selected_files_meta[f.name].status = 'success';
-            this.selected_files_meta[f.name].upload_percentages = 100;     
+            this.selected_files_meta[filename].status = 'success';
+            this.selected_files_meta[filename].upload_percentages = 100;     
 
             resolve();    
             // resolve(x.map(img => Object.assign({}, img, { url: `${BASE_URL}/images/${img.id}` })));
           })
           .catch(err => {
             if (this.$root.state.dev_mode === 'debug') {
-              console.log(`METHODS • sendThisFile: name = ${f.name} / failed uploading`);
+              console.log(`METHODS • sendThisFile: name = ${filename} / failed uploading`);
             }
 
-            this.selected_files_meta[f.name].status = 'failed'; 
-            this.selected_files_meta[f.name].upload_percentages = 0;   
+            this.selected_files_meta[filename].status = 'failed'; 
+            this.selected_files_meta[filename].upload_percentages = 0;   
             reject();      
           });
       });
