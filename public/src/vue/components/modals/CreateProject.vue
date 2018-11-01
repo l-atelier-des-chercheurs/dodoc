@@ -44,7 +44,6 @@
         <textarea v-model="projectdata.authors">
         </textarea>
       </div>
-      {{ projectdata }}
 
     </template>
 
