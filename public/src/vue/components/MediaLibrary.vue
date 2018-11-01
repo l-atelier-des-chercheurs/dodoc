@@ -34,7 +34,10 @@
     </div>
 
     <div class="sectionTitle_small margin-sides-medium margin-vert-small">
-      {{ $t('all_medias') }}
+      {{ $t('showing') }} 
+      {{ sortedMedias.length }} 
+      {{ $t('medias_of') }} 
+      {{ sortedMedias.length }}
     </div>
     <div class="m_project--library--medias">
       <MediaCard
