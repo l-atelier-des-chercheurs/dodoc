@@ -35,13 +35,7 @@
 <!-- Keywords -->
       <div class="margin-bottom-small">
         <label>{{ $t('keywords') }}</label>
-        <vue-tags-input
-          v-model="tag"
-          :placeholder="$t('add_keyword')"
-          :autocomplete-items="filteredKeyword"
-          :tags="projectdata.keywords"
-          @tags-changed="newTags => editTags(newTags)"
-        />
+        <TagsInput @tagsChanged="newTags => projectdata.keywords = newTags"/>
       </div>
 
 <!-- Author(s) -->
@@ -50,6 +44,7 @@
         <textarea v-model="projectdata.authors">
         </textarea>
       </div>
+      {{ projectdata }}
 
     </template>
 
@@ -62,7 +57,7 @@
 <script>
 import Modal from './BaseModal.vue';
 import ImageSelect from '../subcomponents/ImageSelect.vue';
-import VueTagsInput from '@johmun/vue-tags-input';
+import TagsInput from '../subcomponents/TagsInput.vue';
 
 export default {
   props: {
@@ -71,7 +66,7 @@ export default {
   components: {
     Modal,
     ImageSelect,
-    VueTagsInput
+    TagsInput
   },
   data() {
     return {
@@ -81,7 +76,6 @@ export default {
         authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:'',
         keywords: []
       },
-      tag: '',
       preview: undefined,
       askBeforeClosingModal: false
     };
@@ -103,17 +97,8 @@ export default {
     }
   },
   computed: {
-    filteredKeyword() {
-      return this.$root.allKeywords.filter(i => new RegExp(this.tag, 'i').test(i.text));
-    },
   },
   methods: {
-    editTags: function(newTags) {
-      this.projectdata.keywords = newTags.map(val => {
-        val.classes = "tagcolorid_" + parseInt(val.text, 36)%4;
-        return val;
-      });
-    },
     newProject: function(event) {
       console.log('newProject');
 
@@ -139,12 +124,6 @@ export default {
       }
       if(!!this.preview) {
         this.projectdata.preview_rawdata = this.preview;
-      }
-
-      if(this.projectdata.keywords.length > 0) {
-        this.projectdata.keywords = this.projectdata.keywords.map((val) => { 
-          return { title: val.text }
-        });
       }
 
       this.$eventHub.$on('socketio.folder_created_or_updated', this.newFolderCreated);

@@ -42,7 +42,7 @@
                   {{ Object.keys(allMedias).length }}
                 </template>
 
-                <div v-if="show_filters" class="bg-blanc border-top margin-vert-verysmall">
+                <div v-if="!show_medias_instead_of_projects && show_filters" class="bg-blanc border-top margin-vert-verysmall">
                   <div class="flex-wrap">
                     <div v-if="$root.allKeywords.length > 0" class="padding-sides-small">
                       <label>{{ $t('keywords') }}</label>
@@ -233,6 +233,16 @@ export default {
           sortable.push({ slugProjectName, orderBy });
         }
       }
+
+      // if there is no project in sortable, it is probable that filters 
+      // were too restrictive
+      if(sortable.length === 0) {
+        // lets remove filters if there are any
+        this.$nextTick(() => {
+          this.$root.settings.project_filter.keyword = '';
+        });
+      }
+
       let sortedSortable = sortable.sort(function(a, b) {
         let valA = a.orderBy;
         let valB = b.orderBy;

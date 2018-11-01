@@ -41,12 +41,9 @@
 <!-- Keywords -->
       <div class="margin-bottom-small">
         <label>{{ $t('keywords') }}</label>
-        <vue-tags-input
-          v-model="tag"
-          :placeholder="$t('add_keyword')"
-          :autocomplete-items="filteredKeyword"
-          :tags="projectdata.keywords"
-          @tags-changed="newTags => editTags(newTags)"
+        <TagsInput 
+          :keywords="projectdata.keywords"
+          @tagsChanged="newTags => projectdata.keywords = newTags"
         />
       </div>
 
@@ -69,7 +66,7 @@
 import Modal from './BaseModal.vue';
 import slug from 'slugg';
 import ImageSelect from '../subcomponents/ImageSelect.vue';
-import { VueTagsInput, createTags } from '@johmun/vue-tags-input';
+import TagsInput from '../subcomponents/TagsInput.vue';
 
 export default {
   props: {
@@ -80,14 +77,14 @@ export default {
   components: {
     Modal,
     ImageSelect,
-    VueTagsInput
+    TagsInput
   },
   data() {
     return {
       projectdata: {
         name: this.project.name,
         authors: this.project.authors,
-        keywords: []
+        keywords: this.project.keywords
       },
       tag: '',
       preview: undefined,
@@ -103,15 +100,8 @@ export default {
     }
   },
   mounted() {
-    if(this.project.keywords.length > 0) {
-      this.projectdata.keywords = createTags(this.project.keywords.map(val => val.title))
-      this.editTags(this.projectdata.keywords);
-    }
   },
   computed: {
-    filteredKeyword() {
-      return this.$root.allKeywords.filter(i => new RegExp(this.tag, 'i').test(i.text));
-    },
     previewURL() {
       if(!this.project.preview) {
         return '';
@@ -120,12 +110,6 @@ export default {
     }    
   },
   methods: {
-    editTags: function(newTags) {
-      this.projectdata.keywords = newTags.map(val => {
-        val.classes = "tagcolorid_" + parseInt(val.text, 36)%4;
-        return val;
-      });
-    },
     editThisProject: function(event) {
       console.log('editThisProject');
 
@@ -155,12 +139,6 @@ export default {
 
       if(typeof this.preview !== 'undefined') {
         this.projectdata.preview_rawdata = this.preview;
-      }
-
-      if(this.projectdata.keywords.length > 0) {
-        this.projectdata.keywords = this.projectdata.keywords.map((val) => { 
-          return { title: val.text }
-        });
       }
 
       this.$root.editFolder({ 
