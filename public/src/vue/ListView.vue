@@ -22,7 +22,7 @@
               <template v-if="Object.keys(projects).length > 0">
                 <template v-if="!show_medias_instead_of_projects">
                   {{ $t('showing') }} 
-                  <span :class="{ 'c-bleuvert' : Object.keys(sortedProjectsSlug).length !== Object.keys(projects).length }">
+                  <span :class="{ 'c-rouge' : Object.keys(sortedProjectsSlug).length !== Object.keys(projects).length }">
                     {{ sortedProjectsSlug.length }} 
                     {{ $t('projects_of') }} 
                     {{ Object.keys(projects).length }}
@@ -203,6 +203,11 @@ export default {
       // load all projects’ medias if it isn’t there
       if(this.show_medias_instead_of_projects) {
         this.$root.loadAllProjectsMedias();
+      }
+    },
+    show_filters: function() {
+      if(!this.show_filters) {
+        this.$root.settings.project_filter.keyword = '';
       }
     }
   },
