@@ -47,7 +47,7 @@
                 <!-- v-show="$root.do_navigation.view === 'ListView'" -->
                 <transition name="ListView" :duration="500">
                   <ListView
-                    v-if="$root.do_navigation.view === 'ListView'"
+                    v-show="$root.do_navigation.view === 'ListView'"
                     :presentationMD="$root.store.presentationMD"
                     :read_only="!$root.state.connected"
                     :projects="$root.store.projects"
