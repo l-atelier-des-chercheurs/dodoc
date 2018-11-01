@@ -916,6 +916,7 @@ export default {
       this.media_is_being_sent = true;
 
       this.media_send_timeout_timer = window.setTimeout(() => {
+        this.$eventHub.$off('socketio.media_created_or_updated', this.newMediaSent);
         this.media_is_being_sent = false;
         this.$alertify
           .closeLogOnClick(true)
