@@ -924,7 +924,7 @@ export default {
         const extensions = {
           image: 'jpeg',
           video: 'webm',
-          audio: 'mp3',
+          audio: 'wav',
           svg: 'svg'
         };
         const filename = `${this.media_to_validate.type}-${timeCreated}-${randomString}.${extensions[this.media_to_validate.type]}`;

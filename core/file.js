@@ -837,6 +837,28 @@ module.exports = (function() {
               reject(`couldn't convert a video`);
             })
             .run();
+        } else if (newFileName.toLowerCase().endsWith('wav')) {
+          newFileName = newFileName.replace('wav', 'mp3');
+          let finalPath = path.join(uploadDir, newFileName);
+          ffmpeg(tempPath)
+            .withAudioCodec('libmp3lame')
+            .withAudioBitrate('192k')
+            .output(finalPath)
+            .on('progress', progress => {})
+            .on('end', () => {
+              dev.logverbose(`Video has been converted`);
+              fs.unlink(tempPath, err => {
+                dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
+              });
+              resolve(newFileName);
+            })
+            .on('error', function(err, stdout, stderr) {
+              dev.error('An error happened: ' + err.message);
+              dev.error('ffmpeg standard output:\n' + stdout);
+              dev.error('ffmpeg standard error:\n' + stderr);
+              reject(`couldn't convert an audio file`);
+            })
+            .run();
         } else {
           let finalPath = path.join(uploadDir, newFileName);
           fs.renameSync(tempPath, finalPath);
