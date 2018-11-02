@@ -233,6 +233,7 @@
               v-if="media_to_validate"
               :read_only="read_only"
               :media_is_being_sent="media_is_being_sent"
+              :media_being_sent_percent="media_being_sent_percent"
               @cancel="media_to_validate = false"
               @save="sendMedia({})"
               @save_and_fav="sendMedia({ fav: true })"
@@ -324,6 +325,7 @@ export default {
 
       media_to_validate: false,
       media_is_being_sent: false,
+      media_being_sent_percent: 0,
       media_send_timeout: 10000,
       media_send_timeout_timer: false,
 
@@ -948,11 +950,15 @@ export default {
           console.log(`METHODS • sendThisFile: name = ${filename} / formData is ready`);
         }
 
+        this.media_is_being_sent = true;
+        this.media_being_sent_percent = 0;
+
         // TODO : possibilité de cancel
         axios.post(this.uriToUploadMedia, formData,{
             headers: { 'Content-Type': 'multipart/form-data' },
             onUploadProgress: function( progressEvent ) {
               console.log(`METHODS • CaptureView: onUploadProgress for name = ${filename} / ${parseInt(Math.round((progressEvent.loaded * 100 ) / progressEvent.total ) )}% `);
+              this.media_being_sent_percent = parseInt(Math.round((progressEvent.loaded * 100 ) / progressEvent.total ) );
               // this.selected_files_meta[filename].upload_percentages = parseInt(Math.round((progressEvent.loaded * 100 ) / progressEvent.total ) );
             }.bind(this)            
           })
@@ -979,6 +985,7 @@ export default {
             }
 
             this.media_is_being_sent = false;
+            this.media_being_sent_percent = 0;
             this.$alertify
               .closeLogOnClick(true)
               .delay(4000)

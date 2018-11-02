@@ -79,6 +79,7 @@
       v-if="media_is_being_sent"
     >
       <span class="loader loader-xs" />
+      <span class="m_mediaValidationButtons--overlay--percent" v-html="media_being_sent_percent + '%'" />
     </div>
   </div>
 </template>
@@ -89,6 +90,7 @@ export default {
   props: {
     read_only: Boolean,
     media_is_being_sent: Boolean,
+    media_being_sent_percent: Number,
     cancelButtonIsBackButton: {
       type: Boolean,
       default: false
