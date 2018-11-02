@@ -1007,13 +1007,20 @@ module.exports = (function() {
           path.join(settings.structure[type].path, slugFolderName)
         );
 
+        // MOST OF THIS CODE ISN’T USED ANYMORE
+        // before, for the capture page, dodoc, used to send medias with socketio as base64 strings
+        // Now instead, it uses the same logic as when importing files :
+        // axios uploads a blob that gets stored directly as a file server side
+
+        // the only code that still uses this logic is for stopmotions
+
         if (additionalMeta.type === 'image') {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += '.jpeg';
               let pathToMedia = path.join(slugFolderPath, mediaName);
 
-              let imageBuffer = api.decodeBase64Image(rawData);
+              let imageBuffer = rawData;
               sharp(imageBuffer)
                 .rotate()
                 .withMetadata()

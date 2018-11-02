@@ -130,11 +130,11 @@
             <div class="m_panel--previewCard--validate" v-if="media_to_validate">
               <img 
                 v-if="media_to_validate.type === 'image'" 
-                :src="media_to_validate.rawData"
+                :src="media_to_validate.objectURL"
               />
               <video 
                 v-else-if="media_to_validate.type === 'video'" 
-                :src="media_to_validate.rawData"
+                :src="media_to_validate.objectURL"
                 controls
               />
               <div 
@@ -145,7 +145,7 @@
                   :src="media_to_validate.preview"
                 >
                 <audio
-                  :src="media_to_validate.rawData"
+                  :src="media_to_validate.objectURL"
                   controls
                 />
               </div>
@@ -267,6 +267,7 @@ import RecordRTC from 'recordrtc';
 import 'webrtc-adapter';
 import ImageTracer from 'imagetracerjs';
 import { setTimeout } from 'timers';
+import * as axios from 'axios';
 
 export default {
   props: {
@@ -455,6 +456,9 @@ export default {
   computed: {
     sorted_available_devices() {
       return this.$_.groupBy(this.available_devices, 'kind');
+    },
+    uriToUploadMedia: function() {
+      return this.slugProjectName + '/file-upload';
     }
   },
   methods: {
@@ -703,11 +707,12 @@ export default {
         invisibleCanvas.height = this.$refs.videoElement.videoHeight;
         let invisibleCtx = invisibleCanvas.getContext('2d');
         invisibleCtx.drawImage( this.$refs.videoElement, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
-        var imageData = invisibleCanvas.toDataURL('image/png');
-        if(imageData === "data:,") {
-          return reject(this.$t('notifications.video_stream_not_available'));
-        }
-        return resolve(imageData);
+        var imageData = invisibleCanvas.toBlob((imageBlob) => {
+          return resolve(imageBlob);
+        }, 'image/jpeg', 0.95);
+        // if(imageData === "data:,") {
+        //   return reject(this.$t('notifications.video_stream_not_available'));
+        // }
       });
     },   
 
@@ -730,10 +735,9 @@ export default {
             this.$eventHub.$off('capture.stopRecording');
             recordVideoFeed.stopRecording(() => {
               this.is_recording = false;
-              recordVideoFeed.getDataURL(videoDataURL => {
-                recordVideoFeed = null;
-                return resolve(videoDataURL);
-              })
+              const videoBlob = recordVideoFeed.getBlob();
+              recordVideoFeed = null;
+              return resolve(videoBlob);
             });
 
           });
@@ -757,9 +761,9 @@ export default {
 
             recordAudioFeed.stopRecording(() => {
               this.is_recording = false;
-              recordAudioFeed.getDataURL(audioDataURL => {
-                resolve(audioDataURL);
-              })
+              const audioBlob = recordAudioFeed.getBlob();
+              recordAudioFeed = null;
+              return resolve(audioBlob);
             });
           });
         }
@@ -781,20 +785,20 @@ export default {
         this.getStaticImageFromVideoElement().then(rawData => {
           this.media_to_validate = {
             rawData,
+            objectURL: URL.createObjectURL(rawData),
             type: 'image'
           };
         });
       } else 
       if(this.selected_mode === 'video') {    
         this.stopVideoFeed();   
-        window.setTimeout(() => {
-          this.startRecordCameraFeed(this.recordVideoWithAudio).then(rawData => {
-            this.media_to_validate = {
-              rawData,
-              type: 'video'
-            };
-          });
-        },500);       
+        this.startRecordCameraFeed(this.recordVideoWithAudio).then(rawData => {
+          this.media_to_validate = {
+            rawData,
+            objectURL: URL.createObjectURL(rawData),
+            type: 'video'
+          };
+        });
       } else
       if(this.selected_mode === 'audio') { 
         equalizer.clearCanvas();
@@ -803,6 +807,7 @@ export default {
           this.media_to_validate = {
             preview,
             rawData,
+            objectURL: URL.createObjectURL(rawData),
             type: 'audio'
           };
         });
@@ -836,7 +841,7 @@ export default {
       if(this.selected_mode === 'vecto') { 
         this.media_to_validate = {
           preview: this.vecto.svgstr,
-          rawData: btoa(this.vecto.svgstr),
+          rawData: new Blob([this.vecto.svgstr], { type: "text/xml"}),
           type: 'svg'
         };
       }
@@ -872,7 +877,7 @@ export default {
               }
               this.getStaticImageFromVideoElement().then(imageData => {
                 ImageTracer.imageToSVG(
-                  imageData,
+                  URL.createObjectURL(imageData),
                   (svgstr) => {
                     this.vecto.svgstr = svgstr;
                     window.setTimeout(scanToVecto, 500);
@@ -901,46 +906,90 @@ export default {
 
       });
     },
-    sendMedia: function({ fav = false }) {
-      console.log(`METHODS • ValidateMedia: sendMedia with fav=${fav}`);
-      this.$eventHub.$on('socketio.media_created_or_updated', this.newMediaSent);
-      this.$root.createMedia({
-        slugFolderName: this.slugProjectName,
-        type: 'projects',
-        rawData: this.media_to_validate.rawData,
-        additionalMeta: {
-          type: this.media_to_validate.type,
-          fav: fav
+    sendMedia({ fav = false }) {
+      return new Promise((resolve, reject) => {
+        console.log(`METHODS • ValidateMedia: sendMedia with fav=${fav}`);
+        if (this.$root.state.dev_mode === 'debug') {
+          console.log(`METHODS • CaptureView / sendMedia`);
         }
+
+        const timeCreated = this.$moment().format('YYYYMMDD_HHmmss');
+        const randomString = (
+          Math.random().toString(36) + '00000000000000000'
+        ).slice(2, 3 + 2);
+
+        const extensions = {
+          image: 'jpeg',
+          video: 'webm',
+          audio: 'mp3',
+          svg: 'svg'
+        };
+        const filename = `${this.media_to_validate.type}-${timeCreated}-${randomString}.${extensions[this.media_to_validate.type]}`;
+        const modified = new Date();
+
+        // this.$set(this.selected_files_meta, filename, {
+        //   upload_percentages: 0,
+        //   status: 'sending'
+        // });
+
+        const rawData = this.media_to_validate.rawData;
+
+        let formData = new FormData();
+        formData.append('files', rawData, filename);
+        const meta = {
+          fileCreationDate: modified,
+          fav,
+          authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:'' 
+        }
+        formData.append(filename, JSON.stringify(meta));
+
+        if (this.$root.state.dev_mode === 'debug') {
+          console.log(`METHODS • sendThisFile: name = ${filename} / formData is ready`);
+        }
+
+        // TODO : possibilité de cancel
+        axios.post(this.uriToUploadMedia, formData,{
+            headers: { 'Content-Type': 'multipart/form-data' },
+            onUploadProgress: function( progressEvent ) {
+              console.log(`METHODS • CaptureView: onUploadProgress for name = ${filename} / ${parseInt(Math.round((progressEvent.loaded * 100 ) / progressEvent.total ) )}% `);
+              // this.selected_files_meta[filename].upload_percentages = parseInt(Math.round((progressEvent.loaded * 100 ) / progressEvent.total ) );
+            }.bind(this)            
+          })
+          .then(x => x.data)
+          .then(x => {
+            debugger;
+            if (this.$root.state.dev_mode === 'debug') {
+              console.log(`METHODS • CaptureView: name = ${filename} / success uploading`);
+            }
+
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .success(this.$t('notifications.media_was_sent'));
+            this.media_is_being_sent = false;
+            this.media_to_validate = false;
+
+            // this.selected_files_meta[filename].status = 'success';
+            // this.selected_files_meta[filename].upload_percentages = 100;     
+            resolve();    
+          })
+          .catch(err => {
+            if (this.$root.state.dev_mode === 'debug') {
+              console.log(`METHODS • sendThisFile: name = ${filename} / failed uploading`);
+            }
+
+            this.media_is_being_sent = false;
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error(this.$t('notifications.media_couldnt_been_sent'));
+
+            // this.selected_files_meta[filename].status = 'failed'; 
+            // this.selected_files_meta[filename].upload_percentages = 0;   
+            reject();      
+          });
       });
-      this.media_is_being_sent = true;
-
-      this.media_send_timeout_timer = window.setTimeout(() => {
-        this.$eventHub.$off('socketio.media_created_or_updated', this.newMediaSent);
-        this.media_is_being_sent = false;
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t('notifications.media_couldnt_been_sent'));
-      }, this.media_send_timeout);
-
-    },
-    newMediaSent: function(mdata) {
-      console.log('METHODS • ValidateMedia: newMediaSent');
-      if (this.$root.justCreatedMediaID === mdata.id) {
-        this.$root.justCreatedMediaID = false;
-        this.$eventHub.$off('socketio.media_created_or_updated', this.newMediaSent);
-
-        window.clearTimeout(this.media_send_timeout_timer);
-        this.media_send_timeout_timer = undefined;   
-        
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .success(this.$t('notifications.media_was_sent'));
-        this.media_is_being_sent = false;
-        this.media_to_validate = false;
-      }
+      
     },
     updateSingleImage($event) {
       this.stopmotion.onion_skin_img = $event;

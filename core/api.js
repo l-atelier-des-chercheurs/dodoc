@@ -77,7 +77,9 @@ module.exports = (function() {
       // let's find the extension if it exists
       var fileExtension = new RegExp(settings.regexpGetFileExtension, 'i').exec(
         fileName
-      )[0];
+      );
+      fileExtension = fileExtension === null ? '' : fileExtension[0];
+
       // remove extension
       var fileNameWithoutExtension = new RegExp(
         settings.regexpRemoveFileExtension,

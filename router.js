@@ -383,6 +383,7 @@ module.exports = function(app, io, m) {
 
   function renameMediaAndCreateMeta(uploadDir, slugProjectName, fileMeta) {
     return new Promise(function(resolve, reject) {
+      dev.logfunction('ROUTER — renameMediaAndCreateMeta');
       api.findFirstFilenameNotTaken(uploadDir, fileMeta.name).then(
         function(newFileName) {
           dev.logverbose(`Following filename is available: ${newFileName}`);
