@@ -724,9 +724,10 @@ export default {
           const options = {
             recorderType: RecordRTC.MediaStreamRecorder,
             type: 'video',
-            videoBitsPerSecond: 2056000
+            videoBitsPerSecond: 4112000
           };
-          recordVideoFeed.startRecording(options);   
+
+          setTimeout(() => recordVideoFeed.startRecording(options), 500);
 
           this.is_recording = true;
           this.$root.settings.capture_mode_cant_be_changed = true;
@@ -957,7 +958,6 @@ export default {
           })
           .then(x => x.data)
           .then(x => {
-            debugger;
             if (this.$root.state.dev_mode === 'debug') {
               console.log(`METHODS • CaptureView: name = ${filename} / success uploading`);
             }

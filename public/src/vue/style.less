@@ -2582,11 +2582,13 @@ body {
 .alertify-logs {
   z-index: 20000;
   right: 48px;
+  pointer-events: none;
 }
 
 .alertify-logs > *, .alertify-logs > .default {
   background-color: @c-gris_clair;
   color: @c-noir;
+  pointer-events: auto;
 }
 .alertify-logs > .error {
   .bg-rouge;
