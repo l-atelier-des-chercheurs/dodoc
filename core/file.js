@@ -2,6 +2,7 @@ const path = require('path'),
   fs = require('fs-extra'),
   validator = require('validator'),
   ffmpegstatic = require('ffmpeg-static'),
+  ffprobestatic = require('ffprobe-static'),
   ffmpeg = require('fluent-ffmpeg');
 
 const sharp = require('sharp');
@@ -12,6 +13,7 @@ const settings = require('../settings.json'),
   thumbs = require('./thumbs');
 
 ffmpeg.setFfmpegPath(ffmpegstatic.path);
+ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function() {
   const API = {
@@ -783,13 +785,13 @@ module.exports = (function() {
         });
       });
     },
-    convertAndSaveMedia: ({ uploadDir, tempPath, newFileName }) => {
+    convertAndSaveMedia: ({ uploadDir, tempPath, newFileName, socketid }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(`COMMON — convertAndSaveMedia`);
 
         if (
-          newFileName.toLowerCase().endsWith('jpeg') ||
-          newFileName.toLowerCase().endsWith('jpg')
+          newFileName.toLowerCase().endsWith('.jpeg') ||
+          newFileName.toLowerCase().endsWith('.jpg')
         ) {
           let finalPath = path.join(uploadDir, newFileName);
           sharp(tempPath)
@@ -811,54 +813,101 @@ module.exports = (function() {
               dev.logverbose(`Stored captured image to ${finalPath}`);
               resolve(newFileName);
             });
-        } else if (newFileName.toLowerCase().endsWith('webm')) {
-          newFileName = newFileName.replace('webm', 'mp4');
+        } else if (
+          newFileName.toLowerCase().endsWith('.webm') ||
+          newFileName.toLowerCase().endsWith('.mov')
+        ) {
+          newFileName = newFileName.replace('.webm', '.mp4');
+          newFileName = newFileName.replace('.mov', '.mp4');
           let finalPath = path.join(uploadDir, newFileName);
-          var proc = new ffmpeg()
-            .input(tempPath)
-            .withVideoCodec('libx264')
-            .withVideoBitrate('5000k')
-            .withAudioCodec('libmp3lame')
-            .withAudioBitrate('128k')
-            .toFormat('mp4')
-            .output(finalPath)
-            .on('progress', progress => {})
-            .on('end', () => {
-              dev.logverbose(`Video has been converted`);
-              fs.unlink(tempPath, err => {
-                dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
-              });
-              resolve(newFileName);
-            })
-            .on('error', function(err, stdout, stderr) {
-              dev.error('An error happened: ' + err.message);
-              dev.error('ffmpeg standard output:\n' + stdout);
-              dev.error('ffmpeg standard error:\n' + stderr);
-              reject(`couldn't convert a video`);
-            })
-            .run();
-        } else if (newFileName.toLowerCase().endsWith('wav')) {
+
+          ffmpeg.ffprobe(tempPath, function(err, metadata) {
+            let duration = '?';
+            if (typeof metadata !== 'undefined') {
+              dev.logverbose(`Found duration: ${metadata.format.duration}`);
+              duration = metadata.format.duration;
+            }
+            let time_since_last_report = 0;
+            var proc = new ffmpeg()
+              .input(tempPath)
+              .withVideoCodec('libx264')
+              .withVideoBitrate('5000k')
+              .withAudioCodec('libmp3lame')
+              .withAudioBitrate('128k')
+              .toFormat('mp4')
+              .output(finalPath)
+              .on('progress', progress => {
+                if (+new Date() - time_since_last_report > 3000) {
+                  time_since_last_report = +new Date();
+                  require('./sockets').notify({
+                    socketid,
+                    not_localized_string: `Converting video for the web : ${
+                      progress.timemark
+                    } / ${duration}`
+                  });
+                }
+              })
+              .on('end', () => {
+                dev.logverbose(`Video has been converted`);
+                fs.unlink(tempPath, err => {
+                  dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
+                });
+                require('./sockets').notify({
+                  socketid,
+                  not_localized_string: `Video converted`
+                });
+                resolve(newFileName);
+              })
+              .on('error', function(err, stdout, stderr) {
+                dev.error('An error happened: ' + err.message);
+                dev.error('ffmpeg standard output:\n' + stdout);
+                dev.error('ffmpeg standard error:\n' + stderr);
+                reject(`couldn't convert a video`);
+              })
+              .run();
+          });
+        } else if (newFileName.toLowerCase().endsWith('.wav')) {
           newFileName = newFileName.replace('wav', 'mp3');
           let finalPath = path.join(uploadDir, newFileName);
-          ffmpeg(tempPath)
-            .withAudioCodec('libmp3lame')
-            .withAudioBitrate('192k')
-            .output(finalPath)
-            .on('progress', progress => {})
-            .on('end', () => {
-              dev.logverbose(`Video has been converted`);
-              fs.unlink(tempPath, err => {
-                dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
-              });
-              resolve(newFileName);
-            })
-            .on('error', function(err, stdout, stderr) {
-              dev.error('An error happened: ' + err.message);
-              dev.error('ffmpeg standard output:\n' + stdout);
-              dev.error('ffmpeg standard error:\n' + stderr);
-              reject(`couldn't convert an audio file`);
-            })
-            .run();
+
+          ffmpeg.ffprobe(tempPath, function(err, metadata) {
+            let duration = '?';
+            if (typeof metadata !== 'undefined') {
+              dev.logverbose(`Found duration: ${metadata.format.duration}`);
+              duration = metadata.format.duration;
+            }
+            let time_since_last_report = 0;
+
+            ffmpeg(tempPath)
+              .withAudioCodec('libmp3lame')
+              .withAudioBitrate('192k')
+              .output(finalPath)
+              .on('progress', progress => {
+                if (+new Date() - time_since_last_report > 3000) {
+                  time_since_last_report = +new Date();
+                  require('./sockets').notify({
+                    socketid,
+                    not_localized_string: `Converting audio for the web : ${
+                      progress.timemark
+                    } / ${duration}`
+                  });
+                }
+              })
+              .on('end', () => {
+                dev.logverbose(`Audio has been converted`);
+                fs.unlink(tempPath, err => {
+                  dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
+                });
+                resolve(newFileName);
+              })
+              .on('error', function(err, stdout, stderr) {
+                dev.error('An error happened: ' + err.message);
+                dev.error('ffmpeg standard output:\n' + stdout);
+                dev.error('ffmpeg standard error:\n' + stderr);
+                reject(`couldn't convert an audio file`);
+              })
+              .run();
+          });
         } else {
           let finalPath = path.join(uploadDir, newFileName);
           fs.renameSync(tempPath, finalPath);

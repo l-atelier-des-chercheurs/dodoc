@@ -345,13 +345,21 @@ Vue.prototype.$socketio = new Vue({
       console.log('Received _onNewNetworkInfos packet.');
       window.state.localNetworkInfos = data;
     },
-    _onNotify(msg) {
+    _onNotify({ localized_string, not_localized_string }) {
       console.log('Received _onNotify packet.');
 
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .error(this.$t(`notifications[${msg}]`));
+      if (not_localized_string) {
+        alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log(not_localized_string);
+      }
+      if (localized_string) {
+        alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log(this.$t(`notifications[${localized_string}]`));
+      }
     },
     listFolders(fdata) {
       this.socket.emit('listFolders', fdata);

@@ -945,6 +945,11 @@ export default {
           authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:'' 
         }
         formData.append(filename, JSON.stringify(meta));
+        
+        const socketid = this.$socketio.socket.id;
+        if(socketid !== undefined) {
+          formData.append('socketid', socketid);
+        }
 
         if (this.$root.state.dev_mode === 'debug') {
           console.log(`METHODS • sendThisFile: name = ${filename} / formData is ready`);

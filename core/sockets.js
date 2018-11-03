@@ -17,7 +17,7 @@ module.exports = (function() {
     createMediaMeta: ({ type, slugFolderName, additionalMeta }) =>
       createMediaMeta({ type, slugFolderName, additionalMeta }),
     pushMessage: msg => pushMessage(msg),
-    sendTagUID: tag => sendTagUID(tag)
+    notify: notify
   };
 
   function init(thisApp, thisIO, thisElectronApp) {
@@ -78,6 +78,26 @@ module.exports = (function() {
   function pushMessage(msg) {
     dev.logfunction(`EVENT - pushMessage ${msg}`);
     api.sendEventWithContent('authentificated', {}, io, socket);
+  }
+
+  function notify({
+    socket,
+    socketid,
+    not_localized_string,
+    localized_string
+  }) {
+    dev.logfunction(`EVENT - notify for socketid = ${socketid}`);
+    if (socketid || socket) {
+      if (!socket) {
+        socket = io.sockets.connected[socketid];
+      }
+      api.sendEventWithContent(
+        'notify',
+        { not_localized_string, localized_string },
+        io,
+        socket
+      );
+    }
   }
 
   /**************************************************************** FOLDER ********************************/

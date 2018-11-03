@@ -309,6 +309,7 @@ module.exports = function(app, io, m) {
     // specify that we want to allow the user to upload multiple files in a single request
     form.multiples = false;
     form.maxFileSize = 1000 * 1024 * 1024;
+    let socketid = '';
 
     // store all uploads in the folder directory
     form.uploadDir = api.getFolderPath(slugProjectName);
@@ -318,6 +319,10 @@ module.exports = function(app, io, m) {
     let fieldValues = {};
     form.on('field', function(name, value) {
       console.log(`Got field with name = ${name} and value = ${value}.`);
+      if (name === 'socketid') {
+        socketid = value;
+      }
+
       try {
         fieldValues[name] = JSON.parse(value);
       } catch (e) {
@@ -364,7 +369,8 @@ module.exports = function(app, io, m) {
             renameAndConvertMediaAndCreateMeta(
               form.uploadDir,
               slugProjectName,
-              allFilesMeta[i]
+              allFilesMeta[i],
+              socketid
             )
           );
         }
@@ -384,7 +390,8 @@ module.exports = function(app, io, m) {
   function renameAndConvertMediaAndCreateMeta(
     uploadDir,
     slugProjectName,
-    fileMeta
+    fileMeta,
+    socketid
   ) {
     return new Promise(function(resolve, reject) {
       dev.logfunction('ROUTER — renameAndConvertMediaAndCreateMeta');
@@ -408,7 +415,8 @@ module.exports = function(app, io, m) {
             .convertAndSaveMedia({
               uploadDir,
               tempPath: fileMeta.path,
-              newFileName
+              newFileName,
+              socketid
             })
             .then(newFileName => {
               fileMeta.additionalMeta.media_filename = newFileName;
