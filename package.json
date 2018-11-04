@@ -22,6 +22,10 @@
     "dist": "build",
     "postinstall": "electron-builder install-app-deps"
   },
+  "engines": {
+    "node": "8.2.1",
+    "npm": "*"
+  },
   "build": {
     "electronVersion": "2.0.5",
     "appId": "dodoc2",
