@@ -426,6 +426,7 @@ let vm = new Vue({
     },
     media_modal: {
       open: false,
+      minimized: false,
       current_slugProjectName: false,
       current_metaFileName: false
     },
@@ -737,6 +738,7 @@ let vm = new Vue({
       }
 
       this.media_modal.open = true;
+      this.media_modal.minimized = false;
       this.media_modal.current_slugProjectName = slugProjectName;
       this.media_modal.current_metaFileName = metaFileName;
     },

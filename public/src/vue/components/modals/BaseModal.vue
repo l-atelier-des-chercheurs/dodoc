@@ -42,7 +42,7 @@
               default preview
             </slot>
           </div>
-
+          
           <form v-if="!!this.$slots['sidebar'] && !hide_sidebar"
             class="m_modal--sidebar"
             v-on:submit.prevent="$emit('submit')"
@@ -174,7 +174,7 @@ export default {
       type: Boolean,
       default: false
     },
-    minimize: {
+    is_minimized: {
       type: Boolean,
       default: false
     }
@@ -182,7 +182,6 @@ export default {
   data() {
     return {
       showModal: false,
-      is_minimized: this.minimize
     };
   },
   mounted: function() {
@@ -239,7 +238,7 @@ export default {
     },
     minimizeModal: function() {
       console.log(`METHODS • BaseModal: minimizeModal`);
-      this.is_minimized = !this.is_minimized;
+      this.$root.media_modal.minimized = !this.$root.media_modal.minimized;
     }
   },
   created: function() {

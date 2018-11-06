@@ -7,7 +7,7 @@
     :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndScroll'"
     :askBeforeClosingModal="askBeforeClosingModal"
     :hide_sidebar="true"
-    :minimize="false"
+    :is_minimized="$root.media_modal.minimized"
     >
     <template slot="header">
       <div class="">{{ $t('edit_the_media') }}</div>
