@@ -55,7 +55,7 @@
                 </transition>
                 <transition name="ProjectView" :duration="500">
                   <ProjectView
-                    v-if="['ProjectView', 'CaptureView', 'MediaView'].includes($root.do_navigation.view)"
+                    v-if="['ProjectView', 'CaptureView'].includes($root.do_navigation.view)"
                     :slugProjectName="$root.do_navigation.current_slugProjectName"
                     :project="$root.currentProject"
                     :read_only="!$root.state.connected"
@@ -69,16 +69,6 @@
                     :project="$root.currentProject"
                     :read_only="!$root.state.connected"
                   />
-                </transition>
-                <transition name="MediaView" :duration="500">
-                  <!-- <MediaView
-                    v-if="$root.do_navigation.view === 'MediaView'"
-                    :slugMediaName="$root.do_navigation.current_metaFileName"
-                    :slugProjectName="$root.do_navigation.current_slugProjectName"
-                    :media="$root.store.projects[$root.do_navigation.current_slugProjectName].medias[$root.do_navigation.current_metaFileName]"
-                    :read_only="!$root.state.connected"
-                  >
-                  </MediaView>       -->
                 </transition>
               </div>
 
@@ -153,10 +143,10 @@
         </div>
       </div>
       <EditMedia
-        v-if="$root.do_navigation.view === 'MediaView'"
-        :slugMediaName="$root.do_navigation.current_metaFileName"
-        :slugProjectName="$root.do_navigation.current_slugProjectName"
-        :media="$root.store.projects[$root.do_navigation.current_slugProjectName].medias[$root.do_navigation.current_metaFileName]"
+        v-if="$root.media_modal.open"
+        :slugMediaName="$root.media_modal.current_metaFileName"
+        :slugProjectName="$root.media_modal.current_slugProjectName"
+        :media="$root.store.projects[$root.media_modal.current_slugProjectName].medias[$root.media_modal.current_metaFileName]"
         @close="$root.closeMedia()"
         :read_only="!$root.state.connected"
       >

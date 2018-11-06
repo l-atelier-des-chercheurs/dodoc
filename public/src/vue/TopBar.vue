@@ -39,7 +39,7 @@
         </button>
 
         <button type="button"
-          v-if="project.hasOwnProperty('name') && $root.do_navigation.view === 'MediaView'"
+          v-if="project.hasOwnProperty('name') && $root.media_modal.open"
         >
           <span>
             {{ $t('media') }}
