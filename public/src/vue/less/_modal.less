@@ -28,6 +28,12 @@
     pointer-events: none;
   }
 
+  &.is_minimized {
+    background: linear-gradient(45deg, fade(#fff, 92%) 150px, transparent 200px, transparent 100%);
+    pointer-events: none;
+    align-items: flex-end;
+  }
+
   // @media screen and (max-width: 50rem) {
   //   overflow: auto !important;
   //   align-items: flex-start;
@@ -72,6 +78,19 @@
   &.is_invisible {
     opacity: 0;
     transform: translate3d(0,15px,0) scale(0.98);
+  }
+
+  &.is_minimized {
+    transform: scale(0.3);
+    transform-origin: bottom left;
+    margin-left: 10px !important;
+    margin-bottom: 10px !important;
+    margin-right: auto !important;
+    
+    .m_modal--container--content {
+      border: 30px solid white;
+      border-radius: 20px;
+    }
   }
 
   // @media screen and (max-width: 50rem) {
@@ -145,7 +164,7 @@
   &.typeOfModal-LargeAndScroll {
     padding-top: @t-skipline;
     overflow-y: auto;
-    .m_modal--container {   
+    .m_modal--container {  
       max-width: @t-panelWidth * 3;
       align-self: flex-start;
       .m_modal--preview {
@@ -343,6 +362,23 @@
     top: 0;
     right: 0;
   }
+}
+
+.m_modal--minimize_button {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1500;
+
+  pointer-events: auto;
+
+  transition: transform .2s ease-out;
+
+  &.is_minimized {
+    // transform: rotate(-180deg);
+    transform: scale(-1);
+  }
+
 }
 
 .m_modal--header {

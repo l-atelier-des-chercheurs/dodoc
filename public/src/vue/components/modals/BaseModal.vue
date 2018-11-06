@@ -2,12 +2,20 @@
   <portal to="modal_container">
     <div 
       class="m_modal--mask"
-      :class="['typeOfModal-' + typeOfModal, { 'is_invisible' : !showModal }]"
+      :class="[ 
+        'typeOfModal-' + typeOfModal, 
+        { 'is_invisible' : !showModal },
+        { 'is_minimized' : is_minimized }
+      ]"
       @mousedown.self="closeModal"
       :style="`height: ${window_innerHeight}px`"
     >
       <div class="m_modal--container"
-        :class="['color-' + backgroundColor, { 'is_invisible' : !showModal }]"
+        :class="[
+          'color-' + backgroundColor, 
+          { 'is_invisible' : !showModal },
+          { 'is_minimized' : is_minimized }
+        ]"
         @keyup.ctrl.enter="$emit('submit')"
       >
 
@@ -35,7 +43,7 @@
             </slot>
           </div>
 
-          <form v-if="!!this.$slots['sidebar']"
+          <form v-if="!!this.$slots['sidebar'] && !hide_sidebar"
             class="m_modal--sidebar"
             v-on:submit.prevent="$emit('submit')"
             ref="form"
@@ -117,11 +125,23 @@
         <button
           class="button-round bg-transparent m_modal--close_button padding-verysmall"
           @click="closeModal"
-          v-if="showModal"
+          v-if="showModal && !is_minimized"
         >
           <img src="/images/i_close_sansfond.svg">
         </button>
       </transition>
+
+      <transition name="fade" :duration="600">
+        <button
+          class="button-round bg-transparent m_modal--minimize_button padding-verysmall"
+          @click="minimizeModal"
+          v-if="showModal"
+          :class="{ 'is_minimized' : is_minimized }"
+        >
+          <img src="/images/i_minimize.svg">
+        </button>
+      </transition>
+
     </div>
   </portal>
 </template>
@@ -149,11 +169,20 @@ export default {
     isFile: {
       type: Boolean,
       default: false
+    },
+    hide_sidebar: {
+      type: Boolean,
+      default: false
+    },
+    minimize: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      showModal: false
+      showModal: false,
+      is_minimized: this.minimize
     };
   },
   mounted: function() {
@@ -207,6 +236,10 @@ export default {
       setTimeout(() => {
         this.$emit('close');
       }, 400);
+    },
+    minimizeModal: function() {
+      console.log(`METHODS • BaseModal: minimizeModal`);
+      this.is_minimized = !this.is_minimized;
     }
   },
   created: function() {

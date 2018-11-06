@@ -38,13 +38,13 @@
           </span>
         </button>
 
-        <button type="button"
+        <!-- <button type="button"
           v-if="project.hasOwnProperty('name') && $root.media_modal.open"
         >
           <span>
             {{ $t('media') }}
           </span>
-        </button>
+        </button> -->
       </div>
     </div>
 

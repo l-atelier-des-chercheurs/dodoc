@@ -6,6 +6,8 @@
     :read_only="read_only"
     :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndScroll'"
     :askBeforeClosingModal="askBeforeClosingModal"
+    :hide_sidebar="true"
+    :minimize="false"
     >
     <template slot="header">
       <div class="">{{ $t('edit_the_media') }}</div>
@@ -190,6 +192,7 @@ import Modal from './BaseModal.vue';
 import MediaContent from '../subcomponents/MediaContent.vue';
 import DateTime from '../subcomponents/DateTime.vue';
 import CreateQRCode from './qr/CreateQRCode.vue';
+import { setTimeout } from 'timers';
 
 export default {
   props: {
@@ -210,6 +213,8 @@ export default {
   data() {
     return {
       showQRModal: false,
+      is_minimized: false,
+
       mediadata: {
         type: this.media.type,
         authors: this.media.authors,
