@@ -101,7 +101,7 @@ export default {
     },
     preview_size: {
       type: Number,
-      default: 180
+      default: 360
     }
   },
   components: {
