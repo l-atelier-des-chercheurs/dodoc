@@ -81,14 +81,14 @@
   }
 
   &.is_minimized {
-    transform: scale(0.3);
+    transform: scale(0.25);
     transform-origin: bottom left;
-    margin-left: 0px !important;
-    margin-bottom: 0px !important;
+    margin-left: 5px !important;
+    margin-bottom: 5px !important;
     margin-right: auto !important;
 
     .m_modal--container--content {
-      border: 30px solid @c-bleuvert;
+      border: 30px solid @c-noir;
       border-radius: 20px;
     }
   }
@@ -119,11 +119,16 @@
       &.m_modal--sidebar {
         flex: 0 1 @t-panelWidth;
         max-height: 90vh;
-        width: 100%;
+        width: 0px;
 
+        // transition: all .8s ease-out;
 
         @media screen and (max-width: 50rem) {
           max-height: none;
+        }
+
+        &.is_collapsed {
+          flex-basis: 0px;
         }
       }
 
@@ -242,6 +247,7 @@
 
 
 .m_modal--sidebar {
+  position: relative;
   display: flex;
   flex-flow: column nowrap;
 
@@ -249,6 +255,18 @@
     flex: 0 0 auto;
   }
 
+  .m_modal--sidebar--toggle {
+    position: absolute;
+    top: @t-skipline;
+    right: 100%;
+    .padding-medium;
+    font-weight: 700;
+    .font-large;
+  
+    border-radius: 50% 0 0 50%;
+    line-height: 1;
+  }
+  
   .m_modal--metaOptions {
     flex: 1 1 auto;
     .padding-vert-small;
@@ -375,8 +393,8 @@
   transition: transform .2s ease-out;
 
   &.is_minimized {
-    // transform: rotate(-180deg);
-    transform: scale(-1);
+    // transform: ;
+    transform: scale(-1) rotate(-360deg);
   }
 
 }

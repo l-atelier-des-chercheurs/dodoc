@@ -8,6 +8,7 @@
     :askBeforeClosingModal="askBeforeClosingModal"
     :show_sidebar="$root.media_modal.show_sidebar"
     :is_minimized="$root.media_modal.minimized"
+    :can_minimize="true"
     >
     <template slot="header">
       <div class="">{{ $t('edit_the_media') }}</div>

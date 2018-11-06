@@ -23,10 +23,7 @@
           class="m_modal--container--content"
           ref="modalContent"
         >
-
-          <div v-if="!!this.$slots['preview']" class="m_modal--preview"
-          >
-
+          <div v-if="!!this.$slots['preview']" class="m_modal--preview">
             <!-- if there is no sidebar, output header here -->
             <template v-if="!this.$slots['sidebar']">
               <div class="m_modal--header">
@@ -43,43 +40,53 @@
             </slot>
           </div>
           
-          <form v-if="!!this.$slots['sidebar'] && show_sidebar && !is_minimized"
+          <form
             class="m_modal--sidebar"
+            :class="{ 'is_collapsed' : !show_sidebar }"
             v-on:submit.prevent="$emit('submit')"
             ref="form"
           >
+            <button type="button" 
+              class="m_modal--sidebar--toggle"
+              @click="toggleSidebar"
+              v-if="!!this.$slots['sidebar'] && !is_minimized"
+            > 
+              &#x2630;
+            </button>
 
-            <div class="m_modal--header">
-              <h3 class="margin-none">
-                <slot name="header">
-                    default header
-                </slot>
-              </h3>
-            </div>
-
-            <div class="m_modal--metaOptions">
-              <slot name="sidebar">
-                default sidebar
-              </slot>
-            </div>
-
-            <div 
-              v-if="!!this.$slots['submit_button']"
-              class="m_modal--buttons"
-            >
-              <button
-                type="submit"
-                :disabled="read_only"
-                class="button button-bg_rounded bg-bleuvert"
-              >
-                <img src="/images/i_enregistre.svg"/>
-                <span class="text-cap font-verysmall">
-                  <slot name="submit_button">
-                    {{ $t('save') }}
+            <template v-if="!!this.$slots['sidebar'] && show_sidebar && !is_minimized">
+              <div class="m_modal--header">
+                <h3 class="margin-none">
+                  <slot name="header">
+                      default header
                   </slot>
-                </span>
-              </button>
-            </div>
+                </h3>
+              </div>
+
+              <div class="m_modal--metaOptions">
+                <slot name="sidebar">
+                  default sidebar
+                </slot>
+              </div>
+
+              <div 
+                v-if="!!this.$slots['submit_button']"
+                class="m_modal--buttons"
+              >
+                <button
+                  type="submit"
+                  :disabled="read_only"
+                  class="button button-bg_rounded bg-bleuvert"
+                >
+                  <img src="/images/i_enregistre.svg"/>
+                  <span class="text-cap font-verysmall">
+                    <slot name="submit_button">
+                      {{ $t('save') }}
+                    </slot>
+                  </span>
+                </button>
+              </div>
+            </template>
           </form>
 
           <form 
@@ -134,8 +141,8 @@
       <transition name="fade" :duration="600">
         <button
           class="button-round bg-transparent m_modal--minimize_button padding-verysmall"
-          @click="minimizeModal"
-          v-if="showModal && is_minimized !== undefined"
+          @click="toggleMinimize"
+          v-if="showModal && can_minimize"
           :class="{ 'is_minimized' : is_minimized }"
         >
           <img src="/images/i_minimize.svg">
@@ -172,11 +179,15 @@ export default {
     },
     show_sidebar: {
       type: Boolean,
+      default: true
+    },
+    can_minimize: {
+      type: Boolean,
       default: false
     },
     is_minimized: {
       type: Boolean,
-      default: undefined
+      default: false
     }
   },
   data() {
@@ -236,9 +247,13 @@ export default {
         this.$emit('close');
       }, 400);
     },
-    minimizeModal: function() {
-      console.log(`METHODS • BaseModal: minimizeModal`);
+    toggleMinimize: function() {
+      console.log(`METHODS • BaseModal: toggleMinimize`);
       this.$root.media_modal.minimized = !this.$root.media_modal.minimized;
+    },
+    toggleSidebar: function() {
+      console.log(`METHODS • BaseModal: toggleSidebar`);
+      this.$root.media_modal.show_sidebar = !this.$root.media_modal.show_sidebar;
     }
   },
   created: function() {
