@@ -223,8 +223,8 @@ module.exports = (function() {
         audio_source_not_set: 'La source audio n’a pas été trouvée.',
         video_stream_not_available:
           'Erreur : le flux vidéo n’est pas disponible.',
-        no_author_found_with_nfc_tag:
-          'Scan d’un tag NFC réussi, néanmoins aucun auteur n’a été associé à ce tag.',
+        no_content_found_with_nfc_tag:
+          'Scan d’un tag NFC réussi, associez-lui un auteur ou un média pour commencer.',
         author_found_with_nfc_tag:
           'Scan d’un tag NFC réussi, activation de l’auteur suivant&nbsp;:',
         medias_uploaded: 'Tous les médias ont bien étés envoyés.',
@@ -449,8 +449,8 @@ module.exports = (function() {
           'Failed to start audio feed. Try changing the source.',
         audio_source_not_set: 'The source audio has not been set.',
         video_stream_not_available: 'Error: Video stream not available.',
-        no_author_found_with_nfc_tag:
-          'NFC tag detected, however no author was found. Create an author first',
+        no_content_found_with_nfc_tag:
+          'NFC tag detected, bind it to an author or a media to start.',
         author_found_with_nfc_tag:
           'NFC tag detected, the following author will be logged-in:',
         medias_uploaded: 'All medias were imported successfully.',

@@ -846,7 +846,7 @@ let vm = new Vue({
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t('notifications.no_author_found_with_nfc_tag'));
+          .error(this.$t('notifications.no_content_found_with_nfc_tag'));
         return;
       }
 
