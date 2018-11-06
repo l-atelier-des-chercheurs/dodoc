@@ -427,6 +427,7 @@ let vm = new Vue({
     media_modal: {
       open: false,
       minimized: false,
+      show_sidebar: true,
       current_slugProjectName: false,
       current_metaFileName: false
     },

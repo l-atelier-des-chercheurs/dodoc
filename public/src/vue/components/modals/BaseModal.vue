@@ -43,7 +43,7 @@
             </slot>
           </div>
           
-          <form v-if="!!this.$slots['sidebar'] && !hide_sidebar"
+          <form v-if="!!this.$slots['sidebar'] && show_sidebar && !is_minimized"
             class="m_modal--sidebar"
             v-on:submit.prevent="$emit('submit')"
             ref="form"
@@ -135,7 +135,7 @@
         <button
           class="button-round bg-transparent m_modal--minimize_button padding-verysmall"
           @click="minimizeModal"
-          v-if="showModal"
+          v-if="showModal && is_minimized !== undefined"
           :class="{ 'is_minimized' : is_minimized }"
         >
           <img src="/images/i_minimize.svg">
@@ -170,13 +170,13 @@ export default {
       type: Boolean,
       default: false
     },
-    hide_sidebar: {
+    show_sidebar: {
       type: Boolean,
       default: false
     },
     is_minimized: {
       type: Boolean,
-      default: false
+      default: undefined
     }
   },
   data() {

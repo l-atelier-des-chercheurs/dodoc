@@ -6,7 +6,7 @@
     :read_only="read_only"
     :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndScroll'"
     :askBeforeClosingModal="askBeforeClosingModal"
-    :hide_sidebar="true"
+    :show_sidebar="$root.media_modal.show_sidebar"
     :is_minimized="$root.media_modal.minimized"
     >
     <template slot="header">
