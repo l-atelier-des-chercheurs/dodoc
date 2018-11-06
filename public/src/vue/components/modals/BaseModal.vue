@@ -7,7 +7,7 @@
         { 'is_invisible' : !showModal },
         { 'is_minimized' : is_minimized }
       ]"
-      @mousedown.self="closeModal"
+      @mousedown.self="/* closeModal */"
       :style="`height: ${window_innerHeight}px`"
     >
       <div class="m_modal--container"
