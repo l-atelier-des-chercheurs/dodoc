@@ -215,6 +215,10 @@ export default {
     sortedProjectsSlug: function() {
       var sortable = [];
 
+      if(!this.projects || this.projects.length === 0) {
+        return [];
+      }
+
       for (let slugProjectName in this.projects) {
         let orderBy;
 
@@ -230,7 +234,8 @@ export default {
         // if a project keyword filter is set
         if(this.$root.settings.project_filter.keyword !== '') {
           // only add to sorted array if project has this keyword
-          if(this.projects[slugProjectName].keywords.length > 0 && 
+          if(this.projects[slugProjectName].hasOwnProperty('keywords') && 
+          this.projects[slugProjectName].keywords.length > 0 && 
           this.projects[slugProjectName].keywords.filter(k => k.title === this.$root.settings.project_filter.keyword).length > 0) {
             sortable.push({ slugProjectName, orderBy });
           }

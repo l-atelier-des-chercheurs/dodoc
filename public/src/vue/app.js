@@ -424,6 +424,14 @@ let vm = new Vue({
       current_slugProjectName: false,
       current_metaFileName: false
     },
+    media_modal: {
+      open: false,
+      minimized: false,
+      show_sidebar: true,
+      current_slugProjectName: false,
+      current_metaFileName: false
+    },
+
     settings: {
       has_modal_opened: false,
       capture_mode_cant_be_changed: false,
@@ -730,16 +738,17 @@ let vm = new Vue({
         );
       }
 
-      this.do_navigation.view = 'MediaView';
-      this.do_navigation.current_slugProjectName = slugProjectName;
-      this.do_navigation.current_metaFileName = metaFileName;
+      this.media_modal.open = true;
+      this.media_modal.minimized = false;
+      this.media_modal.current_slugProjectName = slugProjectName;
+      this.media_modal.current_metaFileName = metaFileName;
     },
     closeMedia: function() {
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: closeMedia`);
       }
-      this.do_navigation.view = 'ProjectView';
-      this.do_navigation.current_metaFileName = false;
+
+      this.media_modal.open = false;
     },
 
     updateLocalLang: function(newLangCode) {
@@ -946,9 +955,7 @@ let vm = new Vue({
       this.$socketio.updateNetworkInfos();
     },
     navigation_back() {
-      if (this.$root.do_navigation.view === 'MediaView') {
-        this.$root.do_navigation.view = 'ProjectView';
-      } else if (this.$root.do_navigation.view === 'CaptureView') {
+      if (this.$root.do_navigation.view === 'CaptureView') {
         this.$root.do_navigation.view = 'ProjectView';
       } else if (this.$root.do_navigation.view === 'ProjectView') {
         this.$root.closeProject();
