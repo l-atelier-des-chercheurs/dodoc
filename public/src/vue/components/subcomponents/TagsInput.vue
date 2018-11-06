@@ -21,7 +21,7 @@ export default {
   },
   data() {
     return {
-      tags: this.keywords.length > 0 ? createTags(this.keywords.map(k => k.title)) : [],
+      tags: !!this.keywords && this.keywords.length > 0 ? createTags(this.keywords.map(k => k.title)) : [],
       tag: ''
     }
   },
