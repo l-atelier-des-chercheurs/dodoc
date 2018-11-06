@@ -839,6 +839,17 @@ let vm = new Vue({
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: newTagDetected with e.detail = ${e.detail}`);
       }
+
+      // EXPERIMENTAL : SPECIFIC TAGS OPEN MEDIA MODAL
+      // '3121284126' '3121310334' '3121063518' '3121370062'
+      if (e.detail === '3121284126') {
+        this.openMedia({
+          slugProjectName: 'exemple-de-projet',
+          metaFileName: '20161225-223739.jpeg.txt'
+        });
+        return;
+      }
+
       const author = this.$_.findWhere(this.store.authors, {
         nfc_tag: e.detail
       });
