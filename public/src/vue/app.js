@@ -848,6 +848,37 @@ let vm = new Vue({
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: newTagDetected with e.detail = ${e.detail}`);
       }
+
+      // EXPERIMENTAL : SPECIFIC TAGS OPEN MEDIA MODAL
+      // '3121284126' '3121310334' '3121063518' '3121370062'
+      if (e.detail === '3121284126') {
+        this.$root.media_modal.minimized = false;
+        this.$root.media_modal.show_sidebar = false;
+
+        this.openProject('110bis');
+
+        this.$socketio.listMedias({
+          type: 'projects',
+          slugFolderName: '110bis'
+        });
+
+        this.$eventHub.$once('socketio.projects.listMedias', () => {
+          this.openMedia({
+            slugProjectName: '110bis',
+            metaFileName: 'image-20181106-195824-gmf.jpeg.txt'
+          });
+          setTimeout(() => {
+            this.$root.do_navigation.view = 'CaptureView';
+          }, 1000);
+
+          setTimeout(() => {
+            this.$root.media_modal.minimized = true;
+          }, 4000);
+        });
+
+        return;
+      }
+
       const author = this.$_.findWhere(this.store.authors, {
         nfc_tag: e.detail
       });
