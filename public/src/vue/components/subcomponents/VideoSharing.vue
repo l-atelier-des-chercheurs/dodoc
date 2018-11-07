@@ -1,141 +1,40 @@
-// ......................................................
-// ..................RTCMultiConnection Code.............
-// ......................................................
+<template>
+  <div>
+    <section class="make-center">
+      <table>
+          <tr>
+              <td style="padding-bottom: 40px;">
+                  <label for="current-username">Your UserName:</label>
+                  <input type="text" id="current-username" value="you" autocorrect=off autocapitalize=off size=20>
+              </td>
 
-var RTCMultiConnection = require('RTCMultiConnection');
+              <td>
+                  <button id="change-your-own-username">Set Your UserName</button>
+              </td>
+          </tr>
 
-var connection = new RTCMultiConnection();
-// by default, socket.io server is assumed to be deployed on your own URL
-connection.socketURL = '/';
-// comment-out below line if you do not have your own socket.io server
-connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
-connection.socketMessageEvent = 'dodoc-demo';
-// do not shift room control to other users
-connection.autoCloseEntireSession = true;
-connection.session = {
-  audio: false,
-  video: true,
-  broadcast: true // if you remove this, then it becomes MANY-to-MANY
-};
+          <tr>
+              <td>
+                  <label for="callee-username">Callee UserName:</label>
+                  <input type="text" id="callee-username" value="he" autocorrect=off autocapitalize=off size=20>
+              </td>
+              <td>
+                  <button id="join-callee-using-his-username">Make a Video Call</button>
+              </td>
+          </tr>
 
-connection.sdpConstraints.mandatory = {
-  OfferToReceiveAudio: false,
-  OfferToReceiveVideo: true
-};
-connection.videosContainer = document.getElementById('videos-container');
-connection.onstream = function(event) {
-  console.log('videosharing onstream');
-  var existing = document.getElementById(event.streamid);
-  if (existing && existing.parentNode) {
-    existing.parentNode.removeChild(existing);
-  }
-  event.mediaElement.removeAttribute('src');
-  event.mediaElement.removeAttribute('srcObject');
-  event.mediaElement.muted = true;
-  event.mediaElement.volume = 0;
-  var video = document.createElement('video');
-  try {
-    video.setAttributeNode(document.createAttribute('autoplay'));
-    video.setAttributeNode(document.createAttribute('playsinline'));
-  } catch (e) {
-    video.setAttribute('autoplay', true);
-    video.setAttribute('playsinline', true);
-  }
-  if (event.type === 'local') {
-    video.volume = 0;
-    try {
-      video.setAttributeNode(document.createAttribute('muted'));
-    } catch (e) {
-      video.setAttribute('muted', true);
-    }
-    connection.dontCaptureUserMedia = true;
-  }
-  video.srcObject = event.stream;
-  var width = parseInt(connection.videosContainer.clientWidth / 3) - 20;
-  var mediaElement = getHTMLMediaElement(video, {
-    title: event.userid,
-    buttons: ['full-screen'],
-    width: width,
-    showOnMouseEnter: false
-  });
-  connection.videosContainer.appendChild(mediaElement);
-  setTimeout(function() {
-    mediaElement.media.play();
-  }, 5000);
-  mediaElement.id = event.streamid;
-};
-connection.onstreamended = function(event) {
-  console.log('videosharing onstreamended');
-  var mediaElement = document.getElementById(event.streamid);
-  if (mediaElement) {
-    mediaElement.parentNode.removeChild(mediaElement);
-  }
-};
-connection.onMediaError = function(e) {
-  console.log('videosharing onMediaError');
-  if (e.message === 'Concurrent mic process limit.') {
-    if (DetectRTC.audioInputDevices.length <= 1) {
-      alert(
-        'Please select external microphone. Check github issue number 483.'
-      );
-      return;
-    }
-    var secondaryMic = DetectRTC.audioInputDevices[1].deviceId;
-    connection.mediaConstraints.audio = {
-      deviceId: secondaryMic
-    };
-    connection.join(connection.sessionid);
-  }
-};
-// ..................................
-// ALL below scripts are redundant!!!
-// ..................................
-var joinCalleeUsingHisUsername = document.getElementById(
-  'join-callee-using-his-username'
-);
-joinCalleeUsingHisUsername.onclick = function() {
-  console.log('videosharing joinCalleeUsingHisUsername.click');
-  this.disabled = true;
-  connection.checkPresence(calleeUserName.value, function(isOnline, username) {
-    console.log('checkPresence wit isOnline=' + isOnline);
-    if (!isOnline) {
-      joinCalleeUsingHisUsername.disabled = false;
-      alert(username + ' is not online.');
-      return;
-    }
-    connection.join(username);
-  });
-  setTimeout(function() {
-    joinCalleeUsingHisUsername.disabled = false;
-  }, 1000);
-};
-// caller
-var currentUserName = document.getElementById('current-username');
-currentUserName.onkeyup = currentUserName.onpaste = currentUserName.oninput = function() {
-  localStorage.setItem(this.id, this.value);
-};
-currentUserName.value =
-  localStorage.getItem(currentUserName.id) || connection.token();
-connection.open(currentUserName.value);
-document.getElementById('change-your-own-username').onclick = function() {
-  this.disabled = true;
-  location.reload();
-};
-// callee
-var calleeUserName = document.getElementById('callee-username');
-calleeUserName.onkeyup = calleeUserName.onpaste = calleeUserName.oninput = function() {
-  localStorage.setItem(this.id, this.value);
-};
-calleeUserName.value =
-  localStorage.getItem(calleeUserName.id) || connection.token();
-// detect 2G
-if (
-  navigator.connection &&
-  navigator.connection.type === 'cellular' &&
-  navigator.connection.downlinkMax <= 0.115
-) {
-  alert('2G is not supported. Please use a better internet service.');
-}
+          <tr>
+              <td colspan="2">
+                  <div id="videos-container" style="margin: 20px 0;"></div>
+              </td>
+          </tr>
+      </table>
+    </section>    
+  </div>
+</template>
+<script>
+import RTCMultiConnection from 'RTCMultiConnection';
+
 
 function getHTMLMediaElement(mediaElement, config) {
   config = config || {};
@@ -557,10 +456,6 @@ function getHTMLMediaElement(mediaElement, config) {
 
   return mediaElementContainer;
 }
-
-// __________________
-// getAudioElement.js
-
 function getAudioElement(mediaElement, config) {
   config = config || {};
 
@@ -776,3 +671,170 @@ function getAudioElement(mediaElement, config) {
 
   return mediaElementContainer;
 }
+
+export default {
+  props: {
+  },
+  components: {
+  },
+  data() {
+    return {
+    }
+  },
+  
+  created() {
+  },
+  mounted() {
+    // ......................................................
+    // ..................RTCMultiConnection Code.............
+    // ......................................................
+
+    var connection = new RTCMultiConnection();
+    // by default, socket.io server is assumed to be deployed on your own URL
+    connection.socketURL = '/';
+    // comment-out below line if you do not have your own socket.io server
+    connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
+    connection.socketMessageEvent = 'dodoc-demo';
+    // do not shift room control to other users
+    connection.autoCloseEntireSession = true;
+    connection.session = {
+      audio: false,
+      video: true,
+      broadcast: true // if you remove this, then it becomes MANY-to-MANY
+    };
+
+    connection.sdpConstraints.mandatory = {
+      OfferToReceiveAudio: false,
+      OfferToReceiveVideo: true
+    };
+    connection.videosContainer = document.getElementById('videos-container');
+    connection.onstream = (event) => {
+      console.log('videosharing onstream');
+
+      var existing = document.getElementById(event.streamid);
+      if (existing && existing.parentNode) {
+        existing.parentNode.removeChild(existing);
+      }
+      event.mediaElement.removeAttribute('src');
+      event.mediaElement.removeAttribute('srcObject');
+      event.mediaElement.muted = true;
+      event.mediaElement.volume = 0;
+      var video = document.createElement('video');
+      try {
+        video.setAttributeNode(document.createAttribute('autoplay'));
+        video.setAttributeNode(document.createAttribute('playsinline'));
+      } catch (e) {
+        video.setAttribute('autoplay', true);
+        video.setAttribute('playsinline', true);
+      }
+      if (event.type === 'local') {
+        video.volume = 0;
+        try {
+          video.setAttributeNode(document.createAttribute('muted'));
+        } catch (e) {
+          video.setAttribute('muted', true);
+        }
+        connection.dontCaptureUserMedia = true;
+      }
+      video.srcObject = event.stream;
+      // var width = parseInt(connection.videosContainer.clientWidth / 3) - 20;
+      // var mediaElement = getHTMLMediaElement(video, {
+      //   title: event.userid,
+      //   buttons: ['full-screen'],
+      //   width: width,
+      //   showOnMouseEnter: false
+      // });
+      
+      this.$emit('changeStreamTo', event.stream);
+      return;
+
+      connection.videosContainer.appendChild(mediaElement);
+      setTimeout(function() {
+        mediaElement.media.play();
+      }, 5000);
+      mediaElement.id = event.streamid;
+    };
+    connection.onstreamended = function(event) {
+      console.log('videosharing onstreamended');
+      var mediaElement = document.getElementById(event.streamid);
+      if (mediaElement) {
+        mediaElement.parentNode.removeChild(mediaElement);
+      }
+    };
+    connection.onMediaError = function(e) {
+      console.log('videosharing onMediaError');
+      if (e.message === 'Concurrent mic process limit.') {
+        if (DetectRTC.audioInputDevices.length <= 1) {
+          alert(
+            'Please select external microphone. Check github issue number 483.'
+          );
+          return;
+        }
+        var secondaryMic = DetectRTC.audioInputDevices[1].deviceId;
+        connection.mediaConstraints.audio = {
+          deviceId: secondaryMic
+        };
+        connection.join(connection.sessionid);
+      }
+    };
+    // ..................................
+    // ALL below scripts are redundant!!!
+    // ..................................
+    var joinCalleeUsingHisUsername = document.getElementById(
+      'join-callee-using-his-username'
+    );
+    joinCalleeUsingHisUsername.onclick = function() {
+      console.log('videosharing joinCalleeUsingHisUsername.click');
+      this.disabled = true;
+      connection.checkPresence(calleeUserName.value, function(isOnline, username) {
+        console.log('checkPresence wit isOnline=' + isOnline);
+        if (!isOnline) {
+          joinCalleeUsingHisUsername.disabled = false;
+          alert(username + ' is not online.');
+          return;
+        }
+        connection.join(username);
+      });
+      setTimeout(function() {
+        joinCalleeUsingHisUsername.disabled = false;
+      }, 1000);
+    };
+    // caller
+    var currentUserName = document.getElementById('current-username');
+    currentUserName.onkeyup = currentUserName.onpaste = currentUserName.oninput = function() {
+      localStorage.setItem(this.id, this.value);
+    };
+    currentUserName.value =
+      localStorage.getItem(currentUserName.id) || connection.token();
+    connection.open(currentUserName.value);
+    document.getElementById('change-your-own-username').onclick = function() {
+      this.disabled = true;
+      location.reload();
+    };
+    // callee
+    var calleeUserName = document.getElementById('callee-username');
+    calleeUserName.onkeyup = calleeUserName.onpaste = calleeUserName.oninput = function() {
+      localStorage.setItem(this.id, this.value);
+    };
+    calleeUserName.value =
+      localStorage.getItem(calleeUserName.id) || connection.token();
+    // detect 2G
+    if (
+      navigator.connection &&
+      navigator.connection.type === 'cellular' &&
+      navigator.connection.downlinkMax <= 0.115
+    ) {
+      alert('2G is not supported. Please use a better internet service.');
+    }
+  },
+  beforeDestroy() {
+  },
+
+  watch: {
+  },
+  computed: {
+  },
+  methods: {
+  }
+}
+</script>

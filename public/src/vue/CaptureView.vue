@@ -240,7 +240,6 @@
             />
           </transition>
         </div>
-
       </div>
 
       <div class="m_panel"
@@ -256,13 +255,16 @@
         </StopmotionPanel>        
       </div>
     </div>
-    
+    <VideoSharing 
+      @changeStreamTo="new_stream => { changeStreamTo(new_stream) }"
+    />
   </div>
 </template>
 <script>
 import MediaContent from './components/subcomponents/MediaContent.vue';
 import StopmotionPanel from './components/subcomponents/StopmotionPanel.vue';
 import MediaValidationButtons from './components/subcomponents/MediaValidationButtons.vue';
+import VideoSharing from './components/subcomponents/VideoSharing.vue';
 
 import RecordRTC from 'recordrtc';
 import 'webrtc-adapter';
@@ -282,7 +284,8 @@ export default {
   components: {
     MediaContent,
     StopmotionPanel,
-    MediaValidationButtons
+    MediaValidationButtons,
+    VideoSharing
   },
   data() {
     return {
@@ -551,6 +554,10 @@ export default {
           this.captureOrStop();
           break;
       }
+    },
+    changeStreamTo(new_stream) {
+      console.log('METHODS • CaptureView: changeStreamTo');
+      this.$refs.videoElement.srcObject = new_stream;
     },
     stopAudioFeed() {
       console.log('METHODS • CaptureView: stopAudioFeed');

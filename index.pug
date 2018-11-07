@@ -64,29 +64,6 @@ html
 
     script(src='/socket.io.js')
 
-    section.make-center
-      table
-        tr
-          td(style="padding-bottom: 40px;")
-            label(for="current-username")
-              | Your UserName
-              input(type="text" id="current-username" value="you" autocorrect=off autocapitalize=off size=20)
-            
-          td
-            button(id="change-your-own-username")
-              | Set Your UserName
-
-        tr
-          td 
-            label(for="callee-username")
-              | Callee UserName:
-            input(type="text" id="callee-username" value="he" autocorrect=off autocapitalize=off size=20)
-          td
-            button(id="join-callee-using-his-username")
-              | Make a Video Call
-
-    div(id="videos-container" style="margin: 20px 0;")
-
     - if(mode === 'export_publication')
       script(src='./_dist/build.js')
     - else
