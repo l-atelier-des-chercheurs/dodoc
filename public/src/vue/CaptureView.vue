@@ -47,7 +47,7 @@
                 v-if="show_capture_options && !is_recording"
               >
                 <div class="margin-bottom-small">
-                  <label>Sources</label>
+                  <div><label>Sources</label></div>
                   <div v-for="(currentId, kind) in selected_devicesId" :key="kind">
                     <span class="font-verysmall">
                       {{ kind }}
@@ -67,13 +67,11 @@
                 <div class="margin-bottom-small">
                   <div><label>Resolution</label></div>
 
-                  <template v-if="actual_current_video_resolution">
+                  <div v-if="actual_current_video_resolution">
                     <span class="font-verysmall">
-                      • {{ $t('current') }}&nbsp;: {{ actual_current_video_resolution.width }} x {{ actual_current_video_resolution.height }}
+                      {{ $t('current') }}&nbsp;: {{ actual_current_video_resolution.width }} x {{ actual_current_video_resolution.height }}
                     </span>
-                  </template>
-
-
+                  </div>
                   <div 
                     v-for="res in available_camera_resolutions"
                     :key="res.name"
@@ -85,11 +83,39 @@
                   </div>
                 </div>
 
+
+                <div class="margin-bottom-small">
+                  <div><label>Accès à distance</label></div>
+
+                  <div class="margin-bottom-small">
+                    <span class="switch switch-xs">
+                      <input type="checkbox" class="switch" id="distantaccessswitch" v-model="$root.settings.capture_options.distant_flux.active">
+                      <label for="distantaccessswitch">Activer</label>
+                    </span>
+                  </div>
+                  
+                  <template v-if="this.$root.settings.capture_options.distant_flux.active">
+                    <div class="margin-bottom-small">
+                      <span class="font-verysmall">
+                        Partager les flux sous le nom&nbsp;:
+                      </span>
+                      <input type="text" v-model="current_username">
+                    </div>
+
+                    <div class="margin-bottom-small">
+                      <span class="font-verysmall">
+                        Accéder au flux qui a le nom&nbsp;:
+                      </span>
+                      <input type="text" v-model="callee_username">
+                    </div>
+                  </template>
+                </div>
+
                 <hr>
 
                 <button
                   type="button"
-                  @click="startMode"
+                  @click="updateSettings"
                   class="button button-bg_rounded button-outline c-rouge"
                 >
                   <span class="">
@@ -255,7 +281,9 @@
         </StopmotionPanel>        
       </div>
     </div>
-    <VideoSharing 
+    <DistantFlux 
+      v-if="this.$root.settings.capture_options.distant_flux.active"
+      :key="this.$root.settings.capture_options.distant_flux.username = this.current_username"
       @changeStreamTo="new_stream => { changeStreamTo(new_stream) }"
     />
   </div>
@@ -264,7 +292,7 @@
 import MediaContent from './components/subcomponents/MediaContent.vue';
 import StopmotionPanel from './components/subcomponents/StopmotionPanel.vue';
 import MediaValidationButtons from './components/subcomponents/MediaValidationButtons.vue';
-import VideoSharing from './components/subcomponents/VideoSharing.vue';
+import DistantFlux from './components/subcomponents/DistantFlux.vue';
 
 import RecordRTC from 'recordrtc';
 import 'webrtc-adapter';
@@ -285,7 +313,7 @@ export default {
     MediaContent,
     StopmotionPanel,
     MediaValidationButtons,
-    VideoSharing
+    DistantFlux
   },
   data() {
     return {
@@ -331,6 +359,10 @@ export default {
       media_being_sent_percent: 0,
       media_send_timeout: 10000,
       media_send_timeout_timer: false,
+
+      current_username: this.$root.settings.capture_options.distant_flux.username,
+      callee_username: this.$root.settings.capture_options.distant_flux.callee_username,
+      is_calling: false,
 
       current_stopmotion: false,
 
@@ -446,6 +478,9 @@ export default {
       // });      
       // this.startMode();
     },
+    '$root.settings.capture_options.distant_flux.active': function() {
+      this.startMode();
+    },
     'media_to_validate': function() {
       console.log(`WATCH • Capture: media_to_validate = ${this.media_to_validate}`);
       if(this.media_to_validate) {
@@ -528,6 +563,15 @@ export default {
 
       if(currentModeIndex < this.available_modes.length-1) {
         this.selected_mode = this.available_modes[currentModeIndex+1].key;
+      }
+    },
+
+    updateSettings() {
+      this.startMode();
+      this.$root.settings.capture_options.distant_flux.username = this.current_username;
+      this.$root.settings.capture_options.distant_flux.callee_username = this.callee_username;
+      if(this.$root.settings.capture_options.distant_flux.callee_username !== '') {
+        this.$eventHub.$emit('call_callee');
       }
     },
     captureKeyListener(evt) {

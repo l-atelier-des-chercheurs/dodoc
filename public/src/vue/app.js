@@ -432,9 +432,19 @@ let vm = new Vue({
       current_metaFileName: false
     },
 
+    // persistant, par device (dans le localstorage)
     settings: {
       has_modal_opened: false,
       capture_mode_cant_be_changed: false,
+      capture_options: {
+        distant_flux: {
+          active: false,
+          username: `dodoc-${(
+            Math.random().toString(36) + '00000000000000000'
+          ).slice(2, 3 + 2)}`,
+          callee_username: ''
+        }
+      },
 
       current_slugPubliName: false,
       current_author: false,
