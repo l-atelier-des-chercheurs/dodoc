@@ -211,3 +211,4 @@ $('body')
   });
 
 import main from './vue/app.js';
+import videosharing from './videosharing.js';
