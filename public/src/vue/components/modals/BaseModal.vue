@@ -44,12 +44,12 @@
             class="m_modal--sidebar"
             :class="{ 'is_collapsed' : !show_sidebar }"
             v-on:submit.prevent="$emit('submit')"
+            v-if="!!this.$slots['sidebar'] && !is_minimized"
             ref="form"
           >
             <button type="button" 
               class="m_modal--sidebar--toggle"
               @click="toggleSidebar"
-              v-if="!!this.$slots['sidebar'] && !is_minimized"
             > 
               &#x2630;
             </button>
