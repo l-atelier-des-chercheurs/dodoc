@@ -62,7 +62,40 @@ html
   body(data-mode=mode)
     #app
 
+    <script src="RTCMultiConnection.min.js"></script>    
+    <script src="/socket.io.js"></script>
+
     - if(mode === 'export_publication')
       script(src='./_dist/build.js')
     - else
       script(src='/dist/build.js')
+
+    <section class="make-center">
+      <table>
+          <tr>
+              <td style="padding-bottom: 40px;">
+                  <label for="current-username">Your UserName:</label>
+                  <input type="text" id="current-username" value="you" autocorrect=off autocapitalize=off size=20>
+              </td>
+
+              <td>
+                  <button id="change-your-own-username">Set Your UserName</button>
+              </td>
+          </tr>
+
+          <tr>
+              <td>
+                  <label for="callee-username">Callee UserName:</label>
+                  <input type="text" id="callee-username" value="he" autocorrect=off autocapitalize=off size=20>
+              </td>
+              <td>
+                  <button id="join-callee-using-his-username">Make a Video Call</button>
+              </td>
+          </tr>
+
+          <tr>
+              <td colspan="2">
+                  <div id="videos-container" style="margin: 20px 0;"></div>
+              </td>
+          </tr>
+      </table>
