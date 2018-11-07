@@ -437,6 +437,7 @@ let vm = new Vue({
       has_modal_opened: false,
       capture_mode_cant_be_changed: false,
       capture_options: {
+        selected_mode: '',
         distant_flux: {
           active: false,
           username: `dodoc-${(

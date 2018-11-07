@@ -432,7 +432,11 @@ export default {
 
       // get last mode from localstorage
       // otherwise start first mode
-      this.selected_mode = this.available_modes[0].key;
+      if(this.$root.settings.capture_options.selected_mode !== '') {
+        this.selected_mode = this.$root.settings.capture_options.selected_mode;
+      } else {
+        this.selected_mode = this.available_modes[0].key;
+      }
     });
   },
   mounted() {
@@ -461,6 +465,8 @@ export default {
     'selected_mode': function() {
       console.log('WATCH • Capture: selected_mode');
       this.mode_just_changed = true;
+
+      this.$root.settings.capture_options.selected_mode = this.selected_mode;
       window.setTimeout(()=> {
         this.mode_just_changed = false;
       }, 1000);
