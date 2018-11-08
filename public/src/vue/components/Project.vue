@@ -2,8 +2,8 @@
   <div class="m_project">
 
     <div class="m_project--presentation">
-      <div class="m_project--presentation--vignette" @click="$root.openProject(slugProjectName)">
-        <img v-if="previewURL"
+      <div v-if="previewURL" class="m_project--presentation--vignette" @click="$root.openProject(slugProjectName)">
+        <img
           :src="previewURL" class=""
         />
       </div>
