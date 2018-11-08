@@ -701,12 +701,7 @@ body {
     // height:auto !important;
     // overflow: auto;
   }
-  
-
   .custom_scrollbar(8px, 5px, 6px);
-}
-.m_projectview {
-  .custom_scrollbar(8px, 5px, 6px, @c-gris_clair);
 }
 
 .m_publicationsview, .m_publicationview {
@@ -719,17 +714,39 @@ body {
 .m_publicationsview {
 }
 
-.m_projects {
-  .margin-medium;
-  margin-top: 0;
+.m_projects {  
+  @media screen and (min-width: 50rem) and (min-height: 40rem) {
+    display: flex;
+    flex-flow: column nowrap;
+    align-content: stretch;
+    height: 100%;
+
+    > .m_actionbar {
+      flex: 0 0 auto;
+    }
+    > .m_projects--list {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      .custom_scrollbar(8px, 5px, 6px);
+    }
+  }
+}
+
+
+.m_projects--list {
   .margin-bottom-small;
+  .padding-sides-small;
+  .padding-bottom-small;
+  .padding-top-medium;
+  
   .flex-wrap;
   .flex-horizontally-start;
   align-items: flex-start;
 
-  > * {
-    .margin-right-small;
+  .m_project {
     flex: 0 1 auto;
+    .margin-sides-small;
     .margin-bottom-large;
   }
 
@@ -746,8 +763,30 @@ body {
     h2 {
       cursor: pointer;
     }
+  }  
+}
+
+.m_project--library {
+  flex: 1 1 340px;
+  .bg-gris_clair;
+  
+  @media screen and (min-width: 50rem) {
+    display: flex;
+    flex-flow: column nowrap;
+    align-content: stretch;
+
+    > .m_actionbar {
+      flex: 0 0 auto;
+    }
+    > .m_project--library--medias {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      .custom_scrollbar(8px, 5px, 6px);
+    }
   }
 }
+
 
 .m_project {
   .bg-blanc;
@@ -771,7 +810,6 @@ body {
     .m_project--presentation--vignette {
       position: relative;
       width:100%;
-      background-color: @c-gris_clair;
       overflow: hidden;
       height: 0;
       padding-bottom: 66%;
@@ -803,8 +841,6 @@ body {
       .flex-no-grow;
       .flex-horizontally-centered;     
     }
-
-
   }
   
   .m_project--library {
