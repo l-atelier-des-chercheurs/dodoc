@@ -29,7 +29,7 @@
           <button 
             type="button" 
             v-if="$root.settings.current_slugPubliName" 
-            class="button-greenthin button-square"
+            class="button_addToPubli button-greenthin button-square"
             @click.stop="addToCurrentPubli()"
             :title="$t('add_to_publication')"
           >
