@@ -1,7 +1,10 @@
 <template>
   <div 
     class="m_media"
-    :class="{ 'is--inPubli' : media_is_in_current_publi }"
+    :class=" { 
+      'is--inPubli' : media_is_in_current_publi, 
+      'is--fav' : media.fav
+    }"
   >
     <div>
       <figure 
