@@ -1,44 +1,48 @@
 <template>
   <div class="m_project--library">
     <div class="m_actionbar">
-      <button type="button" class="barButton barButton_capture" 
-        v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
-        @click="openCapture"
-        :disabled="read_only" 
-      >
-        <span>    
-          {{ $t('capture') }}
-        </span>
-      </button>      
-      <button type="button" class="barButton barButton_import" 
-        v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
-        @click="showImportModal = true"
-      ><span>    
-        {{ $t('import') }}
-      </span></button>
 
-      <UploadFile
-        v-if="showImportModal"
-        @close="showImportModal = false"
-        :slugProjectName="slugProjectName"
-        :read_only="read_only"
-      />
+      <div class="m_actionbar--buttonBar">
+        <button type="button" class="barButton barButton_capture" 
+          v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
+          @click="openCapture"
+          :disabled="read_only" 
+        >
+          <span>    
+            {{ $t('capture') }}
+          </span>
+        </button>      
+        <button type="button" class="barButton barButton_import" 
+          v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
+          @click="showImportModal = true"
+        ><span>    
+          {{ $t('import') }}
+        </span></button>
 
-      <button type="button" class="barButton barButton_text" 
-        @click="createTextMedia"
-      >
-        <span>
-          {{ $t('create_text') }}
-        </span>
-      </button>
+        <UploadFile
+          v-if="showImportModal"
+          @close="showImportModal = false"
+          :slugProjectName="slugProjectName"
+          :read_only="read_only"
+        />
+
+        <button type="button" class="barButton barButton_text" 
+          @click="createTextMedia"
+        >
+          <span>
+            {{ $t('create_text') }}
+          </span>
+        </button>
+      </div>
+
+      <div class="m_actionbar--text">
+        {{ $t('showing') }} 
+        {{ sortedMedias.length }} 
+        {{ $t('medias_of') }} 
+        {{ sortedMedias.length }}
+      </div>
     </div>
 
-    <div class="sectionTitle_small">
-      {{ $t('showing') }} 
-      {{ sortedMedias.length }} 
-      {{ $t('medias_of') }} 
-      {{ sortedMedias.length }}
-    </div>
     <div class="m_project--library--medias">
       <MediaCard
         v-for="media in sortedMedias"
@@ -49,6 +53,8 @@
       >
       </MediaCard>
     </div>
+  
+    
   </div>    
 </template>
 <script>
