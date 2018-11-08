@@ -861,6 +861,10 @@ body {
   flex-flow: row wrap;
   align-items: flex-start;
 
+  .m_listview & {
+    border-color: white;
+  }
+
   > .barButton {
     margin: 0;
     .margin-small;
@@ -868,8 +872,8 @@ body {
     margin-top: 0;
     min-height: 0;
 
-    background-color: #fff;
-    color: @c-rouge;
+    // background-color: #fff;
+    // color: @c-rouge;
 
     border-radius: 4px;
 
@@ -890,6 +894,13 @@ body {
       background-repeat: no-repeat;
     }
 
+    &.barButton_createProject {
+      color: white;
+      background-color: @c-rouge;
+      &::before {
+        background-image: url("/images/i_add.svg");          
+      }
+    }
     &.barButton_text {
       color: @c-bleumarine;
       &::before {
@@ -902,18 +913,17 @@ body {
         background-image: url("/images/i_record.svg");          
       }
     }
+    &.barButton_import {
+      color: @c-rouge;
+      &::before {
+        background-image: url("/images/i_importer.svg");          
+      }  
+    }
     &.barButton_createPubli {
       color: @c-bleuvert;
       &::before {
         background-image: url("/images/i_add_publi.svg");          
       }
-    }
-  }
-
-  .dz-message.dz-message {
-    .barButton;
-    &::before {
-      background-image: url("/images/i_importer.svg");          
     }
   }
 }

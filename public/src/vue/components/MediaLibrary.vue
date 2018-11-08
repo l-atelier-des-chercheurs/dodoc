@@ -10,7 +10,7 @@
           {{ $t('capture') }}
         </span>
       </button>      
-      <button type="button" class="dz-default dz-message" 
+      <button type="button" class="barButton barButton_import" 
         v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
         @click="showImportModal = true"
       ><span>    
@@ -33,7 +33,7 @@
       </button>
     </div>
 
-    <div class="sectionTitle_small margin-sides-medium margin-vert-small">
+    <div class="sectionTitle_small">
       {{ $t('showing') }} 
       {{ sortedMedias.length }} 
       {{ $t('medias_of') }} 

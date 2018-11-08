@@ -22,7 +22,7 @@
     </div>    
      
     <div class="">
-      <div class="sectionTitle_small margin-sides-medium">
+      <div class="sectionTitle_small">
         {{ $t('publication_list') }}
       </div>
       <div class="m_publicationItems">
