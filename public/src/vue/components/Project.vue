@@ -173,21 +173,21 @@ export default {
   beforeDestroy() {
   },
   computed: {
-    favMedias() {
-      if(!this.project.hasOwnProperty('medias') || Object.keys(this.project.medias).length === 0) {
-        return [];
-      }
-      const favMedias = {};
-      Object.keys(this.project.medias).map((m) => {    
-        const media = this.project.medias[m];
+    // favMedias() {
+    //   if(!this.project.hasOwnProperty('medias') || Object.keys(this.project.medias).length === 0) {
+    //     return [];
+    //   }
+    //   const favMedias = {};
+    //   Object.keys(this.project.medias).map((m) => {    
+    //     const media = this.project.medias[m];
 
-        if(this.$root.isShownAfterMediaFilter(media) && media.fav === true) {
-          favMedias[m] = media;
-          favMedias[m].slugMediaName = m;
-        }
-      });
-      return favMedias;
-    },
+    //     if(this.$root.isShownAfterMediaFilter(media) && media.fav === true) {
+    //       favMedias[m] = media;
+    //       favMedias[m].slugMediaName = m;
+    //     }
+    //   });
+    //   return favMedias;
+    // },
     previewURL() {
       if(this.project.preview === '') {
         return false;

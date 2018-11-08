@@ -167,18 +167,19 @@ export default {
         let sortedMediaObj = this.project.medias[d.slugMediaName];
         sortedMediaObj.slugMediaName = d.slugMediaName;
 
-        if (Object.keys(this.mediaFilter).length > 0) {
+        if (Object.keys(this.mediaFilter).length > 0 && false) {
           // filter those that contain props
           // TODO for multiple filters
 
-          if(sortedMediaObj.fav === this.mediaFilter.fav) {
-            accumulator.push(sortedMediaObj);
-          }
+          // if(sortedMediaObj.fav === this.mediaFilter.fav) {
+            // accumulator.push(sortedMediaObj);
+          // }
 
           // let originalContentFromMedia =
           //   sortedMediaObj[this.mediaSort.field] + '';
           // if (originalContentFromMedia.indexOf(this.mediaFilter) !== -1) {
           // }
+
         } else {
           accumulator.push(sortedMediaObj);
         }
