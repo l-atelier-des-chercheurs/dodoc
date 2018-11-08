@@ -103,7 +103,7 @@
       </p>
     </div> -->
 
-    <div class="m_project--favMedias"
+    <!-- <div class="m_project--favMedias"
       v-if="context === 'full'"
     >
       <div class="sectionTitle_small margin-sides-small margin-bottom-small">
@@ -130,7 +130,7 @@
         >
         </MediaCard>
       </div>
-    </div>
+    </div> -->
 
     <MediaLibrary
       v-if="context === 'full'"
