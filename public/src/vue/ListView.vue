@@ -59,7 +59,7 @@
                 {{ Object.keys(allMedias).length }}
               </template>
 
-              <div v-if="!show_medias_instead_of_projects && show_filters" class="bg-blanc border-top margin-vert-verysmall">
+              <div v-if="!show_medias_instead_of_projects && show_filters" class="bg-blanc margin-top-small">
                 <div class="flex-wrap">
                   <div v-if="$root.allKeywords.length > 0" class="padding-sides-small">
                     <label>{{ $t('keywords') }}</label>

@@ -766,27 +766,6 @@ body {
   }  
 }
 
-.m_project--library {
-  flex: 1 1 340px;
-  .bg-gris_clair;
-  
-  @media screen and (min-width: 50rem) {
-    display: flex;
-    flex-flow: column nowrap;
-    align-content: stretch;
-
-    > .m_actionbar {
-      flex: 0 0 auto;
-    }
-    > .m_project--library--medias {
-      flex: 1 1 auto;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      .custom_scrollbar(8px, 5px, 6px);
-    }
-  }
-}
-
 
 .m_project {
   .bg-blanc;
@@ -828,6 +807,7 @@ body {
         .margin-none;
         .padding-sides-medium;
         .padding-vert-small;
+        .padding-bottom-verysmall;
         .font-folder_title;
       }
 
@@ -847,7 +827,7 @@ body {
   .m_project--library {
     flex: 1 1 440px;
     .bg-gris_clair;
-    
+          
     @media screen and (min-width: 50rem) {
       display: flex;
       flex-flow: column nowrap;
@@ -1256,31 +1236,32 @@ body {
 
   .item {
     border-radius: 4px;
-
     &.selected-item {
       background-color: @c-bleuvert !important;  
     }
   }
   .tags {
     flex-flow: row wrap !important;
+  }
 
-    .new-tag-input-wrapper {
-      background-color: @c-gris_tresclair !important;
-      margin-right: 0 !important;
+  .new-tag-input-wrapper {
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
 
-      &::before {
-        display: none;
-      }
-
-      input {
-        font-size: inherit !important;
-        height: auto;
-        // height: 1.2em;
-      }
+    input {
+      .padding-verysmall;
+      margin-right: @t-skipline/4 !important;
+      margin-bottom: @t-skipline/4 !important;
+        border-radius: 4px !important; 
+      min-width: 25ch;
+      .bg-gris_clair;
+      font-size: inherit !important;
+      height: auto;
     }
   }
 
-  > span, > button, .tag, .new-tag-input-wrapper, .item {
+  > span, > button, .tag, .item {
     flex-basis: auto;
     display: flex;
     align-items: center;
@@ -1298,10 +1279,6 @@ body {
     margin: 0 !important;
     margin-right: @t-skipline/4 !important;
     margin-bottom: @t-skipline/4 !important;
-
-    &.new-tag-input-wrapper {
-      min-width: 150px;
-    }
 
     &.is--active {
       &::before {
@@ -1344,8 +1321,11 @@ body {
     .actions {
       .margin-sides-verysmall;
       margin-right: 0;
-
     }
+  }
+
+  .item>div {
+    margin: 0;
   }
 }
 
