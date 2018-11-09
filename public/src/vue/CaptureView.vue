@@ -932,7 +932,7 @@ export default {
               if(this.selected_mode !== 'vecto' || !this.videoStream) {
                 return;
               } else if(this.media_to_validate) {
-                window.setTimeout(scanToVecto, 500);
+                window.setTimeout(scanToVecto, 1000);
                 return;
               }
               this.getStaticImageFromVideoElement().then(imageData => {
@@ -940,7 +940,7 @@ export default {
                   URL.createObjectURL(imageData),
                   (svgstr) => {
                     this.vecto.svgstr = svgstr;
-                    window.setTimeout(scanToVecto, 500);
+                    window.setTimeout(scanToVecto, 1000);
                   },
                   { 
                     colorsampling: false,
