@@ -735,7 +735,6 @@ body {
 
 
 .m_projects--list {
-  .margin-bottom-small;
   .padding-sides-small;
   .padding-bottom-small;
   .padding-top-medium;
@@ -866,6 +865,7 @@ body {
     width: 100%;
     display: flex;
     flex-flow: row wrap;
+    align-content: flex-start;
     .padding-sides-small;
     .padding-bottom-small;
     .padding-top-medium;
@@ -2805,7 +2805,6 @@ body {
 .list-complete-move {
   transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
 }
-
 .list-complete-enter, .list-complete-leave-to {
   opacity: 0;
   transform: translateY(30px);
@@ -2819,9 +2818,10 @@ body {
 }
 .fileupload_list-complete-enter, .fileupload_list-complete-leave-to {
   opacity: 0;
-  height: 0;
+  transform: translateY(30px);
 }
 .fileupload_list-complete-leave-active {
+  position: absolute;
 }
 
 .ListView-enter-active, .ListView-leave-active {
