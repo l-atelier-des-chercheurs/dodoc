@@ -187,6 +187,11 @@ export default {
             setTimeout(() => {
               this.selected_files = this.selected_files.filter(x => x.name !== name);
               this.$delete(this.selected_files_meta, name);
+
+              // check if there are anymore files to upload 
+              if(Object.keys(this.selected_files_meta).length === 0) {
+                this.$emit('close');
+              }
             }, 500 * index);
             index++;
           }
