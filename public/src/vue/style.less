@@ -1245,19 +1245,23 @@ body {
   }
 
   .new-tag-input-wrapper {
-    padding: 0;
-    margin: 0;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
     background-color: transparent;
+    flex-grow: 0 !important;
 
     input {
-      .padding-verysmall;
+      padding: @t-skipline/4 !important;
+      margin: 0 !important;
       margin-right: @t-skipline/4 !important;
       margin-bottom: @t-skipline/4 !important;
-        border-radius: 4px !important; 
-      min-width: 25ch;
+      border-radius: 4px !important; 
+      min-width: 25ch !important;
       .bg-gris_clair;
       font-size: inherit !important;
-      height: auto;
+      height: auto !important;
+      border-bottom: 2px solid @c-gris !important;
     }
   }
 
