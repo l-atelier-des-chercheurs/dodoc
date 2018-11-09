@@ -127,10 +127,10 @@ Vue.prototype.$socketio = new Vue({
 
       // only for non-electron (since obviously in electron we have to be connected)
       if (!window.state.is_electron) {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .success(this.$t('notifications.connection_active'));
+        // this.$alertify
+        //   .closeLogOnClick(true)
+        //   .delay(4000)
+        //   .success(this.$t('notifications.connection_active'));
       }
 
       // TODO : reenable auth for folders and publications
@@ -155,21 +155,21 @@ Vue.prototype.$socketio = new Vue({
     _onSocketError(reason) {
       console.log(`Unable to connect to server: ${reason}`);
       window.state.connected = false;
-      this.$alertify
-        .closeLogOnClick(true)
-        .error(this.$t('notifications.connection_error') + ' ' + reason);
+      // this.$alertify
+      //   .closeLogOnClick(true)
+      //   .error(this.$t('notifications.connection_error') + ' ' + reason);
     },
 
     _onConnectError(reason) {
       console.log(`Lost connection to server: ${reason}`);
       window.state.connected = false;
-      this.$alertify
-        .closeLogOnClick(true)
-        .error(
-          this.$t('notifications.connection_lost') +
-            '<br>' +
-            this.$t('notifications.contents_wont_be_editable')
-        );
+      // this.$alertify
+      //   .closeLogOnClick(true)
+      //   .error(
+      //     this.$t('notifications.connection_lost') +
+      //       '<br>' +
+      //       this.$t('notifications.contents_wont_be_editable')
+      //   );
     },
 
     // _authentificated(list_admin_folders) {

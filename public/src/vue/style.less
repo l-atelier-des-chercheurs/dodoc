@@ -144,7 +144,6 @@ body {
   overflow: hidden;
   .bg-blanc;
   margin-top: 0;
-  .border-bottom;
   .boxs-card-0;
   .flex-wrap;
   user-select: none;
@@ -378,6 +377,15 @@ body {
         }
       }
     }
+  }
+  
+  .m_topbar--status {
+    width: 100%;
+    flex: 1 1 auto;
+    .bg-rouge;
+    .font-verysmall;
+    color: white;
+    .padding-sides-medium;
   }
 }
 
@@ -710,6 +718,9 @@ body {
     color: #fff;
   }
 }
+.m_projectview {
+  .bg-gris_clair;
+}
 
 .m_publicationsview {
 }
@@ -767,7 +778,7 @@ body {
 
 
 .m_project {
-  .bg-blanc;
+  .bg-gris_clair;
   border-radius: 0px;
   min-height: 100%;
   overflow: hidden;
@@ -775,7 +786,7 @@ body {
   
   @t-folderwidth: 300px;
 
-  @media screen and (min-width: 50rem) {
+  @media screen and (min-width: 50rem) and (min-height: 40rem) {
     height: 100%;
   }
 
@@ -784,6 +795,7 @@ body {
     z-index: 0;
     flex: 0 1 @t-folderwidth;
     width: @t-folderwidth;
+    .bg-blanc;
     
     .m_project--presentation--vignette {
       position: relative;
@@ -827,7 +839,7 @@ body {
     flex: 1 1 440px;
     .bg-gris_clair;
           
-    @media screen and (min-width: 50rem) {
+    @media screen and (min-width: 50rem) and (min-height: 40rem) {
       display: flex;
       flex-flow: column nowrap;
       align-content: stretch;

@@ -141,6 +141,9 @@
       </div>
 
     </div>
+    <div class="m_topbar--status" v-if="!$root.state.connected">
+      {{ $t('notifications.connection_lost') }} {{ $t('notifications.contents_wont_be_editable') }}      
+    </div>    
   </div>
 </template>
 <script>

@@ -1,24 +1,24 @@
 <template>
   <div class="m_project--library">
-    <div class="m_actionbar">
+    <div class="m_actionbar" v-show="$root.state.connected">
 
       <div class="m_actionbar--buttonBar">
         <button type="button" class="barButton barButton_capture" 
-          v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
+          v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass')"
           @click="openCapture"
-          :disabled="read_only" 
+          :disabled="read_only"
         >
           <span>    
             {{ $t('capture') }}
           </span>
-        </button>      
+        </button>
+
         <button type="button" class="barButton barButton_import" 
-          v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
+          v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass')"
           @click="showImportModal = true"
         ><span>    
           {{ $t('import') }}
         </span></button>
-
         <UploadFile
           v-if="showImportModal"
           @close="showImportModal = false"
