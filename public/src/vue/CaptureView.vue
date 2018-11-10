@@ -1,5 +1,6 @@
 <template>
   <div class="m_captureview">
+    <pre>{{ this.$root.settings.capture_options }}</pre>
     <div class="m_captureview--modeSelector">
       <button type="button" class="bg-transparent" @click="previousMode()"
         v-show="!$root.settings.capture_mode_cant_be_changed"
@@ -44,7 +45,7 @@
             <!-- OPTIONS -->
             <transition name="slideleft" :duration="400">
               <div class="m_panel--previewCard--live--options"
-                v-if="show_capture_options && !is_recording"
+                v-if="show_capture_settings && !is_recording"
               >
                 <div class="margin-bottom-small">
                   <div><label>Sources</label></div>
@@ -193,7 +194,7 @@
           <div class="m_panel--buttons--row" :class="{ 'bg-orange' : is_recording }">
             <button
               type="button"
-              @click="show_capture_options = !show_capture_options"
+              @click="show_capture_settings = !show_capture_settings"
               class="button c-rouge font-small bg-transparent"
               :disabled="is_recording"
             >
@@ -344,7 +345,7 @@ export default {
       recordVideoFeed: undefined,
       recordVideoWithAudio: true,
 
-      show_capture_options: false,
+      show_capture_settings: false,
 
       capture_button_pressed: false,
       videoStream: null,
@@ -367,9 +368,9 @@ export default {
       current_stopmotion: false,
 
       ideal_camera_resolution: {
-        name: 'vga',
-        width: 640,
-        height: 480
+        name: 'hd',
+        width: 1280,
+        height: 720
       },
       available_camera_resolutions: [
         {
@@ -410,22 +411,32 @@ export default {
     .then((deviceInfos) => {
       this.available_devices = deviceInfos;
 
-      // get from localstorage and put in selected_devicesId.audioinput, selected_devicesId.videoinput and selected_devicesId.audiooutput 
-      // set initial value
+      // get from localstorage and put in
+      // selected_devicesId.audioinput,
+      // selected_devicesId.videoinput,
+      //  selected_devicesId.audiooutput
+
+
+      debugger;
 
       Object.keys(this.selected_devicesId).map((kind) => {
-        if(this.selected_devicesId[kind] === '') {
-          if(this.sorted_available_devices.hasOwnProperty(kind)) {
-            let selected_devicesId = this.sorted_available_devices[kind][0].deviceId;
+        // check if $root ID already exist and match ones we just got
+        if(this.sorted_available_devices.hasOwnProperty(kind)) {
+          const matching_id = this.sorted_available_devices[kind].filter(m => m.deviceId === this.$root.settings.capture_options.selected_devicesId[kind]);
+          if(matching_id.length > 0) {
+            this.selected_devicesId[kind] = matching_id[0].deviceId;
+            return;
+          } else {
+            // override : set deviceId to back camera by default
             if(kind === 'videoinput') {
-              const camera_back = this.sorted_available_devices[kind].filter(x => {
-                return x.label.includes('back')
-              });              
+              const camera_back = this.sorted_available_devices[kind].filter(x => x.label.includes('back'));
               if(camera_back.length > 0) {
-                selected_devicesId = this.selected_devicesId[kind] = camera_back[0].deviceId;
+                this.selected_devicesId[kind] = camera_back[0].deviceId;
+                return;
               }
             }
-            this.selected_devicesId[kind] = selected_devicesId;              
+
+            this.selected_devicesId[kind] = this.sorted_available_devices[kind][0].deviceId;              
           }
         }
       });
@@ -452,15 +463,21 @@ export default {
   watch: {
     'selected_devicesId.audioinput': function() {
       console.log(`WATCH • Capture: selected_devicesId.audioinput = ${this.selected_devicesId.audioinput}`);
-      this.stopAllFeeds().then(() => {
-        if(this.$refs.hasOwnProperty('videoElement') && this.$refs.videoElement !== undefined) {       
-          this.$refs.videoElement.setSinkId(this.selected_devicesId.audioinput);      
-          // this.startMode();
-        }
-      });
+      // this.stopAllFeeds().then(() => {
+      //   if(this.$refs.hasOwnProperty('videoElement') && this.$refs.videoElement !== undefined) {       
+      //     this.$refs.videoElement.setSinkId(this.selected_devicesId.audioinput);      
+      //     // this.startMode();
+      //   }
+      // });
+      this.$root.settings.capture_options.selected_devicesId.audioinput = this.selected_devicesId.audioinput;
+    },
+    'selected_devicesId.audiooutput': function() {
+      console.log(`WATCH • Capture: selected_devicesId.audiooutput = ${this.selected_devicesId.audiooutput}`);
+      this.$root.settings.capture_options.selected_devicesId.audiooutput = this.selected_devicesId.audiooutput;
     },
     'selected_devicesId.videoinput': function() {
       console.log(`WATCH • Capture: selected_devicesId.videoinput = ${this.selected_devicesId.videoinput}`);
+      this.$root.settings.capture_options.selected_devicesId.videoinput = this.selected_devicesId.videoinput;
     },
     'selected_mode': function() {
       console.log('WATCH • Capture: selected_mode');

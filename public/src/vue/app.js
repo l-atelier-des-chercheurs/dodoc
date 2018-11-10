@@ -436,8 +436,15 @@ let vm = new Vue({
     settings: {
       has_modal_opened: false,
       capture_mode_cant_be_changed: false,
+
       capture_options: {
         selected_mode: '',
+        selected_devicesId: {
+          audioinput: '',
+          videoinput: '',
+          audiooutput: ''
+        },
+
         distant_flux: {
           active: false,
           username: `dodoc-${(
