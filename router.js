@@ -362,6 +362,11 @@ module.exports = function(app, io, m) {
 
     // once all the files have been uploaded
     form.on('end', function() {
+      let msg = {};
+      msg.msg = 'success';
+      //           msg.medias = JSON.stringify(allFilesMeta);
+      res.end(JSON.stringify(msg));
+
       if (allFilesMeta.length > 0) {
         var m = [];
         for (var i in allFilesMeta) {
@@ -374,12 +379,7 @@ module.exports = function(app, io, m) {
             )
           );
         }
-        Promise.all(m).then(() => {
-          let msg = {};
-          msg.msg = 'success';
-          //           msg.medias = JSON.stringify(allFilesMeta);
-          res.end(JSON.stringify(msg));
-        });
+        Promise.all(m).then(() => {});
       }
     });
 
