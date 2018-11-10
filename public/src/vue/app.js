@@ -347,7 +347,6 @@ Vue.prototype.$socketio = new Vue({
     },
     _onNotify({ localized_string, not_localized_string }) {
       console.log('Received _onNotify packet.');
-
       if (not_localized_string) {
         alertify
           .closeLogOnClick(true)
@@ -358,7 +357,7 @@ Vue.prototype.$socketio = new Vue({
         alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .log(this.$t(`notifications[${localized_string}]`));
+          .log(this.$t(`notifications['${localized_string}']`));
       }
     },
     listFolders(fdata) {

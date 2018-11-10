@@ -854,7 +854,7 @@ module.exports = (function() {
                 });
                 require('./sockets').notify({
                   socketid,
-                  not_localized_string: `Video converted`
+                  localized_string: `video_converted`
                 });
                 resolve(newFileName);
               })

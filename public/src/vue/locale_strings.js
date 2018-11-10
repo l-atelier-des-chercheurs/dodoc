@@ -229,7 +229,8 @@ module.exports = (function() {
           'Scan d’un tag NFC réussi, activation de l’auteur suivant&nbsp;:',
         medias_uploaded: 'Tous les médias ont bien étés envoyés.',
         medias_upload_failed:
-          'Erreur&nbsp;: certains médias n’ont pas pu être envoyés.'
+          'Erreur&nbsp;: certains médias n’ont pas pu être envoyés.',
+        video_converted: 'La vidéo a été convertie et ajoutée au projet.'
       }
     },
     en: {
@@ -454,7 +455,9 @@ module.exports = (function() {
         author_found_with_nfc_tag:
           'NFC tag detected, the following author will be logged-in:',
         medias_uploaded: 'All medias were imported successfully.',
-        medias_upload_failed: 'Error: some medias failed to import.'
+        medias_upload_failed: 'Error: some medias failed to import.',
+        video_converted:
+          'The video was converted successfully and added to the project.'
       }
     }
   };
