@@ -441,7 +441,7 @@ export default {
       }
 
       // RESOLUTION
-      if(this.$root.settings.capture_options.width !== '') {
+      if(this.$root.settings.capture_options.ideal_camera_resolution.width !== '') {
         this.ideal_camera_resolution = this.$root.settings.capture_options.ideal_camera_resolution;
       }
     });
@@ -491,8 +491,8 @@ export default {
       equalizer.setSarahCouleur(this.is_recording);
     },
     'ideal_camera_resolution': function() {
-      console.log(`WATCH • Capture: ideal_camera_resolution = ${this.ideal_camera_resolution.toString()}`);
-
+      debugger;
+      console.log(`WATCH • Capture: ideal_camera_resolution = ${Object.entries(this.ideal_camera_resolution)}`);
       this.$root.settings.capture_options.ideal_camera_resolution = this.ideal_camera_resolution;
     },
     '$root.settings.capture_options.distant_flux.active': function() {
