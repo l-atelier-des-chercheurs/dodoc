@@ -43,16 +43,19 @@
       </div>
     </div>
 
-    <div class="m_project--library--medias">
-      <MediaCard
-        v-for="media in sortedMedias"
-        :key="media.slugMediaName"
-        :media="media"
-        :metaFileName="media.metaFileName"
-        :slugProjectName="slugProjectName"
+      <transition-group
+        class="m_project--library--medias"
+        name="list-complete"
       >
-      </MediaCard>
-    </div>
+        <MediaCard
+          v-for="media in sortedMedias"
+          :key="media.slugMediaName"
+          :media="media"
+          :metaFileName="media.metaFileName"
+          :slugProjectName="slugProjectName"
+        >
+        </MediaCard>
+      </transition-group>
   
     
   </div>    
