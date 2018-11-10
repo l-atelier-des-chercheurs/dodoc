@@ -85,7 +85,7 @@
 
 
                 <div class="margin-bottom-small">
-                  <div><label>Accès à distance</label></div>
+                  <div><label>Accès à distance (experimental)</label></div>
 
                   <div class="margin-bottom-small">
                     <span class="switch switch-xs">
@@ -602,6 +602,10 @@ export default {
       if(this.media_to_validate) {
         return false;
       }
+
+      if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
+        return false;
+      }      
 
       switch(evt.key) {
         case 'w':

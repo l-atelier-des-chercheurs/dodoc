@@ -97,7 +97,7 @@ export default {
       console.log('METHODS • DistantFlux: call');
       this.is_calling = true;
       this.connection.checkPresence(this.$root.settings.capture_options.distant_flux.callee_username, (isOnline, username) => {
-        console.log(`METHODS • DistantFlux: call / checkPresence with is_calling = ${this.is_calling} and isOnline = ${isOnline}`);
+        console.log(`METHODS • DistantFlux: call / checkPresence with callee_username = ${this.$root.settings.capture_options.distant_flux.callee_username}, is_calling = ${this.is_calling} and isOnline = ${isOnline}`);
         if (!isOnline) {
           alert(username + ' is not online.');
           return;

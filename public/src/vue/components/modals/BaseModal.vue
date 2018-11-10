@@ -229,10 +229,27 @@ export default {
     }
   },
   methods: {
-    modalKeyListener: function(evt) {
-      // console.log('METHODS • BaseModal: modalKeyListener');
-      if (evt.keyCode === 27) {
+    modalKeyListener: function(event) {
+      if (window.state.dev_mode === 'debug') {
+        console.log('METHODS • BaseModal: modalKeyListener');
+      }
+      
+      if (event.key === 'Escape') {
         this.closeModal();
+        return
+      }
+
+      if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
+        return;
+      }      
+
+      if (event.key === 'ArrowRight') {
+        this.$emit('arrow_right');
+        return;
+      }
+      if (event.key === 'ArrowLeft') {
+        this.$emit('arrow_left');
+        return;
       }
     },
     closeModal: function() {
