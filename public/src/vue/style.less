@@ -1076,13 +1076,14 @@ body {
     cursor: pointer;
     .bg-blanc;
     border-radius: 4px;
-    border-bottom: 4px solid @c-gris;   
+    border-bottom: 4px solid; 
+    border-bottom-color: @c-blanc;  
 
     .is--fav& {
       border-color: @c-bleuvert;
     }
 
-    transition: all 0.3s cubic-bezier(.25,.8,.25,1);  
+    transition: all 1s cubic-bezier(.25,.8,.25,1);  
 
     &.is--hovered {
       transform: translateY(-5px);
@@ -2814,7 +2815,8 @@ body {
 }
 
 .list-complete-move {
-  transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+  position: relative;
+  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity .5s ease-out;
 }
 .list-complete-enter, .list-complete-leave-to {
   opacity: 0;
