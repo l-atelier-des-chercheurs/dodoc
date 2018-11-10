@@ -260,7 +260,7 @@
               :read_only="read_only"
               :media_is_being_sent="media_is_being_sent"
               :media_being_sent_percent="media_being_sent_percent"
-              @cancel="media_to_validate = false"
+              @cancel="cancelValidation()"
               @save="sendMedia({})"
               @save_and_fav="sendMedia({ fav: true })"
             />
@@ -404,7 +404,7 @@ export default {
     }
   },
   created() {
-    console.log('METHODS • CaptureView: created');
+    console.log('CREATED • CaptureView');
 
     navigator.mediaDevices.enumerateDevices()
     .then((deviceInfos) => {
@@ -507,6 +507,7 @@ export default {
       }
     },
     'current_stopmotion': function() {
+      debugger;
       this.$root.settings.capture_mode_cant_be_changed = this.current_stopmotion ? this.current_stopmotion : false;
     }
   },
@@ -987,6 +988,8 @@ export default {
           console.log(`METHODS • CaptureView / sendMedia`);
         }
 
+        this.$root.settings.capture_mode_cant_be_changed = false;
+
         const timeCreated = this.$moment().format('YYYYMMDD_HHmmss');
         const randomString = (
           Math.random().toString(36) + '00000000000000000'
@@ -1072,7 +1075,10 @@ export default {
             reject();      
           });
       });
-      
+    },
+    cancelValidation() {
+      this.media_to_validate = false;
+      this.$root.settings.capture_mode_cant_be_changed = false;
     },
     updateSingleImage($event) {
       this.stopmotion.onion_skin_img = $event;

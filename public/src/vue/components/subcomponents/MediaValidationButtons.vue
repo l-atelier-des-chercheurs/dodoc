@@ -111,7 +111,7 @@ export default {
     document.addEventListener('keyup', this.captureKeyListener);
   },
   beforeDestroy() {
-    this.$root.settings.capture_mode_cant_be_changed = false;
+    // this.$root.settings.capture_mode_cant_be_changed = false;
     document.removeEventListener('keyup', this.captureKeyListener);
   },
 
