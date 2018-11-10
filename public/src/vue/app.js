@@ -444,6 +444,11 @@ let vm = new Vue({
           videoinput: '',
           audiooutput: ''
         },
+        ideal_camera_resolution: {
+          name: '',
+          width: '',
+          height: ''
+        },
 
         distant_flux: {
           active: false,

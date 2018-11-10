@@ -1,6 +1,5 @@
 <template>
   <div class="m_captureview">
-    <pre>{{ this.$root.settings.capture_options }}</pre>
     <div class="m_captureview--modeSelector">
       <button type="button" class="bg-transparent" @click="previousMode()"
         v-show="!$root.settings.capture_mode_cant_be_changed"
@@ -411,14 +410,7 @@ export default {
     .then((deviceInfos) => {
       this.available_devices = deviceInfos;
 
-      // get from localstorage and put in
-      // selected_devicesId.audioinput,
-      // selected_devicesId.videoinput,
-      //  selected_devicesId.audiooutput
-
-
-      debugger;
-
+      // SOURCES (device_id)
       Object.keys(this.selected_devicesId).map((kind) => {
         // check if $root ID already exist and match ones we just got
         if(this.sorted_available_devices.hasOwnProperty(kind)) {
@@ -441,12 +433,16 @@ export default {
         }
       });
 
-      // get last mode from localstorage
-      // otherwise start first mode
+      // MODE
       if(this.$root.settings.capture_options.selected_mode !== '') {
         this.selected_mode = this.$root.settings.capture_options.selected_mode;
       } else {
         this.selected_mode = this.available_modes[0].key;
+      }
+
+      // RESOLUTION
+      if(this.$root.settings.capture_options.width !== '') {
+        this.ideal_camera_resolution = this.$root.settings.capture_options.ideal_camera_resolution;
       }
     });
   },
@@ -496,10 +492,7 @@ export default {
     },
     'ideal_camera_resolution': function() {
       console.log(`WATCH • Capture: ideal_camera_resolution = ${this.ideal_camera_resolution}`);
-      // this.stopAllFeeds().then(() => {
-      //   this.startCameraFeed();
-      // });      
-      // this.startMode();
+      this.$root.settings.capture_options.ideal_camera_resolution = this.ideal_camera_resolution;
     },
     '$root.settings.capture_options.distant_flux.active': function() {
       this.startMode();
@@ -941,7 +934,7 @@ export default {
           return reject(this.$t('notifications.video_source_not_set'));
         }
 
-        this.ideal_camera_resolution = this.available_camera_resolutions[1];
+        this.ideal_camera_resolution = this.available_camera_resolutions[0];
   
         this.startCameraFeed()
           .then(() => {
