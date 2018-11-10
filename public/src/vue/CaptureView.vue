@@ -94,7 +94,7 @@
                     </span>
                   </div>
                   
-                  <template v-if="this.$root.settings.capture_options.distant_flux.active">
+                  <template v-if="$root.settings.capture_options.distant_flux.active">
                     <div class="margin-bottom-small">
                       <span class="font-verysmall">
                         Partager les flux sous le nom&nbsp;:
@@ -491,7 +491,8 @@ export default {
       equalizer.setSarahCouleur(this.is_recording);
     },
     'ideal_camera_resolution': function() {
-      console.log(`WATCH • Capture: ideal_camera_resolution = ${this.ideal_camera_resolution}`);
+      console.log(`WATCH • Capture: ideal_camera_resolution = ${this.ideal_camera_resolution.toString()}`);
+
       this.$root.settings.capture_options.ideal_camera_resolution = this.ideal_camera_resolution;
     },
     '$root.settings.capture_options.distant_flux.active': function() {
@@ -584,10 +585,13 @@ export default {
 
     updateSettings() {
       this.startMode();
-      this.$root.settings.capture_options.distant_flux.username = this.current_username;
-      this.$root.settings.capture_options.distant_flux.callee_username = this.callee_username;
-      if(this.$root.settings.capture_options.distant_flux.callee_username !== '') {
-        this.$eventHub.$emit('call_callee');
+
+      if(this.$root.settings.capture_options.distant_flux.active) {
+        this.$root.settings.capture_options.distant_flux.username = this.current_username;
+        this.$root.settings.capture_options.distant_flux.callee_username = this.callee_username;
+        if(this.$root.settings.capture_options.distant_flux.callee_username !== '') {
+          this.$eventHub.$emit('call_callee');
+        }
       }
     },
     captureKeyListener(evt) {
