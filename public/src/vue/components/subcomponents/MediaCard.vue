@@ -137,7 +137,6 @@ export default {
       if(!this.$root.settings.current_author) {
         return false;
       }
-      debugger;
       return this.media.authors.filter(a => a.name === this.$root.settings.current_author.name).length > 0;
     }
   },

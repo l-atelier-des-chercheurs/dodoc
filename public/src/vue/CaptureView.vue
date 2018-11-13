@@ -491,7 +491,6 @@ export default {
       equalizer.setSarahCouleur(this.is_recording);
     },
     'ideal_camera_resolution': function() {
-      debugger;
       console.log(`WATCH • Capture: ideal_camera_resolution = ${Object.entries(this.ideal_camera_resolution)}`);
       this.$root.settings.capture_options.ideal_camera_resolution = this.ideal_camera_resolution;
     },
@@ -507,7 +506,6 @@ export default {
       }
     },
     'current_stopmotion': function() {
-      debugger;
       this.$root.settings.capture_mode_cant_be_changed = this.current_stopmotion ? this.current_stopmotion : false;
     }
   },

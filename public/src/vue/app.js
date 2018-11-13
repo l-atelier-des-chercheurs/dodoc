@@ -466,14 +466,14 @@ let vm = new Vue({
       show_publi_panel: false,
       enable_system_bar: window.state.is_electron && window.state.is_darwin,
 
-      media_filter: {},
       project_filter: {
         keyword: false,
         author: false
       },
       media_filter: {
         keyword: false,
-        author: false
+        author: false,
+        fav: false
       }
     },
     lang: {
@@ -814,8 +814,17 @@ let vm = new Vue({
         this.settings.media_filter.author = false;
       }
     },
+    setFavAuthorFilter(newFavFilter) {
+      this.settings.media_filter.fav = !this.settings.media_filter.fav;
+    },
 
     isMediaShown(media) {
+      if (this.settings.media_filter.fav === true) {
+        if (!media.fav) {
+          return false;
+        }
+      }
+
       if (
         this.settings.media_filter.keyword === false &&
         this.settings.media_filter.author === false

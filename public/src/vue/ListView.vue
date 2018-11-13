@@ -78,8 +78,10 @@
                   v-if="show_filters"
                   :keywordFilter="$root.settings.media_filter.keyword"
                   :authorFilter="$root.settings.media_filter.author"
+                  :favFilter="$root.settings.media_filter.fav"
                   @setKeywordFilter="a => $root.setMediaKeywordFilter(a)"
                   @setAuthorFilter="a => $root.setMediaAuthorFilter(a)"
+                  @setFavFilter="a => $root.setFavAuthorFilter(a)"
                 />
 
               </template>
@@ -228,7 +230,6 @@ export default {
             && typeof this.projects[slugProjectName].keywords === 'object' 
             && this.projects[slugProjectName].keywords.filter(k => k.title === this.$root.settings.project_filter.keyword).length > 0) {
             
-            debugger;
             if(this.projects[slugProjectName].hasOwnProperty('authors') 
               && typeof this.projects[slugProjectName].authors === 'object' 
               && this.projects[slugProjectName].authors.filter(k => k.name === this.$root.settings.project_filter.author).length > 0) {
