@@ -171,7 +171,6 @@ import TopBar from './TopBar.vue';
 import ListView from './ListView.vue';
 import ProjectView from './ProjectView.vue';
 import CaptureView from './CaptureView.vue';
-import MediaView from './MediaView.vue';
 import EditMedia from './components/modals/EditMedia.vue';
 
 import Publications from './Publications.vue';
@@ -188,7 +187,6 @@ export default {
     ListView,
     ProjectView,
     CaptureView,
-    MediaView,
     EditMedia,
     Publications,
     Publication,
