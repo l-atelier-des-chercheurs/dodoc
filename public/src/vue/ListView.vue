@@ -59,36 +59,14 @@
                 {{ Object.keys(allMedias).length }}
               </template>
 
-              <div v-if="!show_medias_instead_of_projects && show_filters" class="bg-blanc margin-top-small">
-                <div class="flex-wrap">
-                  <div v-if="$root.allKeywords.length > 0" class="padding-sides-small">
-                    <label>{{ $t('keywords') }}</label>
-                    <div class="m_keywordField margin-bottom-none font-large">
-                      <button
-                        v-for="keyword in $root.allKeywords" 
-                        :key="keyword.text"
-                        :class="[keyword.classes, { 'is--active' : $root.settings.project_filter.keyword === keyword.text }]"
-                        @click="setProjectKeywordFilter(keyword.text)"
-                      >
-                        {{ keyword.text }}
-                      </button>
-                    </div>
-                  </div>
-                  <div v-if="$root.allAuthors.length > 0" class="padding-sides-small">
-                    <label>{{ $t('authors') }}</label>
-                    <div class="m_authorField margin-bottom-none">
-                      <button
-                        v-for="author in $root.allAuthors" 
-                        :key="author.name"
-                        :class="{ 'is--active' : $root.settings.project_filter.author === author.name }"
-                        @click="setProjectAuthorFilter(author.name)"
-                      >
-                        {{ author.name }}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <template v-if="!show_medias_instead_of_projects && show_filters">
+                <TagsAndAuthorFilters
+                  :keywordFilter="$root.settings.project_filter.keyword"
+                  :authorFilter="$root.settings.project_filter.author"
+                  @setKeywordFilter="a => setProjectKeywordFilter(a)"
+                  @setAuthorFilter="a => setProjectAuthorFilter(a)"
+                />
+              </template>
             </template>
             <template v-else>
               {{ $t('no_projects_yet') }}
@@ -145,8 +123,7 @@ import BottomFooter from './components/BottomFooter.vue';
 import Project from './components/Project.vue';
 import CreateProject from './components/modals/CreateProject.vue';
 import MediaCard from './components/subcomponents/MediaCard.vue';
-
-// import FolderFilterBar from './components/FolderFilterBar.vue'
+import TagsAndAuthorFilters from './components/subcomponents/TagsAndAuthorFilters.vue';
 import { setTimeout } from 'timers';
 
 export default {
@@ -158,9 +135,9 @@ export default {
   components: {
     CreateProject,
     Project,
-    // FolderFilterBar,
     BottomFooter,
-    MediaCard
+    MediaCard,
+    TagsAndAuthorFilters
   },
   data() {
     return {

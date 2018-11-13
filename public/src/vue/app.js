@@ -464,11 +464,14 @@ let vm = new Vue({
       publi_zoom: 0.8,
 
       show_publi_panel: false,
-      show_search_sidebar: false,
       enable_system_bar: window.state.is_electron && window.state.is_darwin,
 
       media_filter: {},
       project_filter: {
+        keyword: false,
+        author: false
+      },
+      media_filter: {
         keyword: false,
         author: false
       }
@@ -947,13 +950,6 @@ let vm = new Vue({
       }
     },
 
-    toggleSearchSidebar() {
-      if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: toggleSearchSidebar`);
-      }
-      this.settings.show_search_sidebar = !this.settings.show_search_sidebar;
-    },
-
     setMediaFilter(filter) {
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: setMediaFilter`);
@@ -981,25 +977,6 @@ let vm = new Vue({
           slugFolderName: slugProjectName
         });
       });
-    },
-    isShownAfterMediaFilter(media) {
-      // if some filter is active
-      const mf = this.settings.media_filter;
-      if (Object.keys(mf).length === 0) {
-        return true;
-      }
-      for (const [key, value] of Object.entries(mf)) {
-        if (media.hasOwnProperty(key)) {
-          if (key === 'authors') {
-            const authorThatFitsFilter = media[key].split(',').some(name => {
-              return name.trim().toLowerCase() === value.toLowerCase();
-            });
-            return authorThatFitsFilter;
-          }
-        }
-      }
-      // hide
-      return false;
     },
     formatDateToHuman(date) {
       return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LL');

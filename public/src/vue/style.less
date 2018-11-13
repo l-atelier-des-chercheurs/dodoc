@@ -2339,65 +2339,6 @@ body {
   }  
 }
 
-.m_searchsidebar {
-  position: relative;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  right: 0;
-  height: 300px;
-
-  flex-grow: 0;
-
-  overflow-y: auto;
-  .padding-vert-small;
-  .padding-sides-small;
-  margin: 0;
-  
-  .bg-rouge;
-  border-bottom: @t-skipline/2 solid @c-rouge_fonce;
-  color: white;
-
-  .custom_scrollbar(8px, 5px, 6px);
-
-  .sectionTitle_small {
-    color: inherit;
-    margin: 0;
-    .padding-small;
-  }  
-
-  .m_searchsidebar--author {
-    background-color: transparent;
-    flex-basis: 250px;
-    max-width:  250px;
-    flex-shrink: 0;
-    .margin-sides-small;
-    .margin-bottom-small;
-    font-weight: 500;
-
-    background-color: @c-rouge_fonce;
-    font-weight: 300;
-
-    transition: all .15s ease-out;
-
-    img {
-      border-radius: 50%;
-      flex-grow: 0;
-      width:  40px;
-      height: 40px;
-      object-fit: cover;
-    }
-
-    .m_searchsidebar--author--name {
-    }
-
-    &.is--selected {
-      background-color: white;
-      color: @c-rouge;
-    }
-
-  }
-}
 
 .m_mediafilterindicator {
   position: absolute;
@@ -2972,17 +2913,6 @@ body {
 .slideFromTop-enter, .slideFromTop-leave-to /* .list-leave-active below version 2.1.8 */ {
   transform: translate3d(0, -15px, 0);
   opacity: 0;
-}
-
-.SearchSidebar-enter-active, .SearchSidebar-leave-active {
-  transform: translate3d(0, 0, 0);
-  opacity: 1;
-  transition: all .5s cubic-bezier(.25,.2,.25,1);
-}
-.SearchSidebar-enter, .SearchSidebar-leave-to {
-  transform: translate3d(0, -50px, 0);
-  opacity: 0;
-  transition: all .5s cubic-bezier(.25,.2,.25,1);
 }
 
 .BackButton-enter-active, .BackButton-leave-active {

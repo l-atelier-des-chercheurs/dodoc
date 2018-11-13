@@ -36,13 +36,6 @@
               class="m_activitiesPanel--do"
             >
 
-              <transition name="SearchSidebar" :duration="500">
-                <SearchSidebar
-                  v-if="$root.settings.show_search_sidebar"
-                >
-                </SearchSidebar>
-              </transition>
-
               <div style="position: relative; height: 100%; overflow: hidden">
                 <!-- v-show="$root.do_navigation.view === 'ListView'" -->
                 <transition name="ListView" :duration="500">
@@ -71,14 +64,6 @@
                   />
                 </transition>
               </div>
-
-              <transition name="MediaFilterIndicator" :duration="500">
-                <MediaFilterIndicator
-                  v-if="Object.keys($root.settings.media_filter).length > 0"
-                  :media_filter="$root.settings.media_filter"
-                >
-                </MediaFilterIndicator>
-              </transition>
             </div>
 
           </pane>
@@ -188,8 +173,6 @@ import ProjectView from './ProjectView.vue';
 import CaptureView from './CaptureView.vue';
 import MediaView from './MediaView.vue';
 import EditMedia from './components/modals/EditMedia.vue';
-import SearchSidebar from './components/SearchSidebar.vue';
-import MediaFilterIndicator from './components/MediaFilterIndicator.vue';
 
 import Publications from './Publications.vue';
 import Publication from './components/Publication.vue';
@@ -210,9 +193,7 @@ export default {
     Publications,
     Publication,
     Resizer, 
-    Pane,
-    SearchSidebar,
-    MediaFilterIndicator
+    Pane
   },
   props: {
   },

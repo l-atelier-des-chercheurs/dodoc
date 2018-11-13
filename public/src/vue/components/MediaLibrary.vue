@@ -1,7 +1,6 @@
 <template>
   <div class="m_project--library">
     <div class="m_actionbar" v-show="$root.state.connected">
-
       <div class="m_actionbar--buttonBar">
         <button type="button" class="barButton barButton_capture" 
           v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass')"
@@ -37,9 +36,27 @@
 
       <div class="m_actionbar--text">
         {{ $t('showing') }} 
-        {{ sortedMedias.length }} 
-        {{ $t('medias_of') }} 
-        {{ sortedMedias.length }}
+        <span :class="{ 'c-rouge' : sortedMedias.length !== numberOfMedias }">
+          {{ sortedMedias.length }} 
+          {{ $t('medias_of') }} 
+          {{ numberOfMedias }}
+        </span>
+        <template v-if="$root.allKeywords.length > 0">
+          — 
+          <button type="button" class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active' : show_filters }"
+            @click="show_filters = !show_filters"
+          >{{ $t('filters') }}</button>
+        </template>
+
+        <template v-if="!show_medias_instead_of_projects && show_filters">
+          <TagsAndAuthorFilters
+            :keywordFilter="$root.settings.media_filter.keyword"
+            :authorFilter="$root.settings.media_filter.author"
+            @setKeywordFilter="a => setMediaKeywordFilter(a)"
+            @setAuthorFilter="a => setMediaAuthorFilter(a)"
+          />
+        </template>
       </div>
     </div>
 
@@ -56,14 +73,13 @@
         >
         </MediaCard>
       </transition-group>
-  
     
   </div>    
 </template>
 <script>
-import MediaFilterBar from './MediaFilterBar.vue';
 import UploadFile from './modals/UploadFile.vue';
 import MediaCard from './subcomponents/MediaCard.vue';
+import TagsAndAuthorFilters from './subcomponents/TagsAndAuthorFilters.vue';
 import { setTimeout } from 'timers';
 
 export default {
@@ -73,21 +89,19 @@ export default {
     read_only: Boolean
   },
   components: {
-    MediaFilterBar,
     MediaCard,
-    UploadFile
+    UploadFile,
+    TagsAndAuthorFilters
   },
   data() {
     return {
-      mediaFilter: {
-        fav: false
-      },
       mediaSort: {
         field: 'date_uploaded',
         type: 'date',
         order: 'descending'
       },
-      showImportModal: false
+      showImportModal: false,
+      show_filters: false
     }
   },
   
@@ -101,6 +115,12 @@ export default {
   },
 
   computed: {
+    numberOfMedias() {
+      if(!this.project.hasOwnProperty('medias')) {
+        return 0;
+      }
+      return Object.keys(this.project.medias).length;
+    },
     sortedMedias() {
       var sortable = [];
 
@@ -109,44 +129,79 @@ export default {
       }
 
       for (let slugMediaName in this.project.medias) {
-        let mediaDataToOrderBy;
+        let orderBy;
         const media = this.project.medias[slugMediaName];
-
-        if(this.$root.isShownAfterMediaFilter(media) === false) {
-          continue;
-        } 
 
         if (this.mediaSort.type === 'date') {
           if(media.hasOwnProperty(this.mediaSort.field)) {
-            mediaDataToOrderBy = +this.$moment(
+            orderBy = +this.$moment(
               media[this.mediaSort.field],
               'YYYY-MM-DD HH:mm:ss'
             );
           }
-          if(mediaDataToOrderBy === undefined || Number.isNaN(mediaDataToOrderBy)) {
-            mediaDataToOrderBy = 1000;
+          if(orderBy === undefined || Number.isNaN(orderBy)) {
+            orderBy = 1000;
           }
         } else if (this.mediaSort.type === 'alph') {
-          mediaDataToOrderBy = media[this.mediaSort.field];
-          if(mediaDataToOrderBy === undefined || Number.isNaN(mediaDataToOrderBy)) {
-            mediaDataToOrderBy = 1000;
+          orderBy = media[this.mediaSort.field];
+          if(orderBy === undefined || Number.isNaN(orderBy)) {
+            orderBy = 1000;
           }
-          if(mediaDataToOrderBy === undefined) {
-            mediaDataToOrderBy = 'z';
+          if(orderBy === undefined) {
+            orderBy = 'z';
           }          
         }
-        sortable.push({
-          slugMediaName: slugMediaName,
-          mediaDataToOrderBy: mediaDataToOrderBy
-        });
+
+        // MEDIA FILTER LOGIC
+        if(this.$root.settings.media_filter.keyword === false && this.$root.settings.media_filter.author === false) {
+          sortable.push({ slugMediaName, orderBy });
+          continue;
+        }
+
+        if(this.$root.settings.media_filter.keyword !== false && this.$root.settings.media_filter.author !== false) {
+          // only add to sorted array if project has this keyword
+          if(media.hasOwnProperty('keywords') 
+            && typeof media.keywords === 'object' 
+            && media.keywords.filter(k => k.title === this.$root.settings.media_filter.keyword).length > 0) {
+            
+            debugger;
+            if(media.hasOwnProperty('authors') 
+              && typeof media.authors === 'object' 
+              && media.authors.filter(k => k.name === this.$root.settings.media_filter.author).length > 0) {            
+              sortable.push({ slugMediaName, orderBy });
+            }
+          }
+          continue;
+        }
+        // if a project keyword filter is set
+        if(this.$root.settings.media_filter.keyword !== false) {
+          // only add to sorted array if project has this keyword
+          if(media.hasOwnProperty('keywords') 
+            && typeof media.keywords === 'object' 
+            && media.keywords.filter(k => k.title === this.$root.settings.media_filter.keyword).length > 0) {
+            sortable.push({ slugMediaName, orderBy });
+          }
+          continue;
+        }
+
+        if(this.$root.settings.media_filter.author !== false) {
+          // only add to sorted array if project has this keyword
+          if(media.hasOwnProperty('authors') 
+            && typeof media.authors === 'object' 
+            && media.authors.filter(k => k.name === this.$root.settings.media_filter.author).length > 0) {
+            sortable.push({ slugMediaName, orderBy });
+          }
+          continue;
+        }
+        
       }
 
       let sortedSortable = sortable.sort(function(a, b) {
-        let valA = a.mediaDataToOrderBy;
-        let valB = b.mediaDataToOrderBy;
+        let valA = a.orderBy;
+        let valB = b.orderBy;
         if (
-          typeof a.mediaDataToOrderBy === 'string' &&
-          typeof b.mediaDataToOrderBy === 'string'
+          typeof a.orderBy === 'string' &&
+          typeof b.orderBy === 'string'
         ) {
           valA = valA.toLowerCase();
           valB = valB.toLowerCase();
@@ -169,23 +224,7 @@ export default {
       let sortedMedias = sortedSortable.reduce((accumulator, d) => {
         let sortedMediaObj = this.project.medias[d.slugMediaName];
         sortedMediaObj.slugMediaName = d.slugMediaName;
-
-        if (Object.keys(this.mediaFilter).length > 0 && false) {
-          // filter those that contain props
-          // TODO for multiple filters
-
-          // if(sortedMediaObj.fav === this.mediaFilter.fav) {
-            // accumulator.push(sortedMediaObj);
-          // }
-
-          // let originalContentFromMedia =
-          //   sortedMediaObj[this.mediaSort.field] + '';
-          // if (originalContentFromMedia.indexOf(this.mediaFilter) !== -1) {
-          // }
-
-        } else {
-          accumulator.push(sortedMediaObj);
-        }
+        accumulator.push(sortedMediaObj);
         return accumulator;
       }, []);
       
@@ -211,6 +250,20 @@ export default {
           type: 'text'          
         }
       });
+    },
+    setMediaKeywordFilter(newKeywordFilter) {
+      if(this.$root.settings.media_filter.keyword !== newKeywordFilter) {
+        this.$root.settings.media_filter.keyword = newKeywordFilter;
+      } else {
+        this.$root.settings.media_filter.keyword = false; 
+      }
+    },
+    setMediaAuthorFilter(newAuthorFilter) {
+      if(this.$root.settings.media_filter.author !== newAuthorFilter) {
+        this.$root.settings.media_filter.author = newAuthorFilter;
+      } else {
+        this.$root.settings.media_filter.author = false; 
+      }
     },
     newTextMediaCreated(mdata) {
       if (this.$root.justCreatedMediaID === mdata.id) {
