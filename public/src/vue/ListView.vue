@@ -68,29 +68,25 @@
                         v-for="keyword in $root.allKeywords" 
                         :key="keyword.text"
                         :class="[keyword.classes, { 'is--active' : $root.settings.project_filter.keyword === keyword.text }]"
-                        @click="setProjectKeyword(keyword.text)"
+                        @click="setProjectKeywordFilter(keyword.text)"
                       >
                         {{ keyword.text }}
                       </button>
                     </div>
                   </div>
-                  <!-- <div v-if="Object.keys($root.store.authors).length > 0" class="padding-sides-small">
-                    <label>{{ $t('author') }}</label>
+                  <div v-if="$root.allAuthors.length > 0" class="padding-sides-small">
+                    <label>{{ $t('authors') }}</label>
                     <div class="m_authorField margin-bottom-none">
-                      <span
-                        type="button"
-                        v-for="(author, slug) in $root.store.authors" 
-                        :key="author.name" 
-                        :class="{ 'is--selected' : author.name === $root.settings.media_filter.authors }"
+                      <button
+                        v-for="author in $root.allAuthors" 
+                        :key="author.name"
+                        :class="{ 'is--active' : $root.settings.project_filter.author === author.name }"
+                        @click="setProjectAuthorFilter(author.name)"
                       >
-                        <img 
-                          v-if="!!author.preview"
-                          :src="urlToPortrait(slug, author.preview)"
-                        />
-                        <div class="m_searchsidebar--author--name">{{ author.name }}</div>
-                      </span>
+                        {{ author.name }}
+                      </button>
                     </div>
-                  </div> -->
+                  </div>
                 </div>
               </div>
             </template>
@@ -183,7 +179,7 @@ export default {
     };
   },
   mounted() {
-    if(this.$root.settings.project_filter.keyword !== '') {
+    if(this.$root.settings.project_filter.keyword || this.$root.settings.project_filter.author) {
       this.show_filters = true;
     }
   },
@@ -201,7 +197,8 @@ export default {
     },
     show_filters: function() {
       if(!this.show_filters) {
-        this.$root.settings.project_filter.keyword = '';
+        this.$root.settings.project_filter.keyword = false;
+        this.$root.settings.project_filter.author = false;
       }
     }
   },
@@ -225,17 +222,48 @@ export default {
           orderBy = this.projects[slugProjectName][this.currentSort.field];
         }
 
-        // if a project keyword filter is set
-        if(this.$root.settings.project_filter.keyword !== '') {
+        if(this.$root.settings.project_filter.keyword === false && this.$root.settings.project_filter.author === false) {
+          sortable.push({ slugProjectName, orderBy });
+          continue;
+        }
+
+        if(this.$root.settings.project_filter.keyword !== false && this.$root.settings.project_filter.author !== false) {
           // only add to sorted array if project has this keyword
-          if(this.projects[slugProjectName].hasOwnProperty('keywords') && 
-          this.projects[slugProjectName].keywords.length > 0 && 
-          this.projects[slugProjectName].keywords.filter(k => k.title === this.$root.settings.project_filter.keyword).length > 0) {
+          if(this.projects[slugProjectName].hasOwnProperty('keywords') 
+            && typeof this.projects[slugProjectName].keywords === 'object' 
+            && this.projects[slugProjectName].keywords.filter(k => k.title === this.$root.settings.project_filter.keyword).length > 0) {
+            
+            debugger;
+            if(this.projects[slugProjectName].hasOwnProperty('authors') 
+              && typeof this.projects[slugProjectName].authors === 'object' 
+              && this.projects[slugProjectName].authors.filter(k => k.name === this.$root.settings.project_filter.author).length > 0) {
+            
+              sortable.push({ slugProjectName, orderBy });
+            }
+          }
+          continue;
+        }
+        // if a project keyword filter is set
+        if(this.$root.settings.project_filter.keyword !== false) {
+          // only add to sorted array if project has this keyword
+          if(this.projects[slugProjectName].hasOwnProperty('keywords') 
+            && typeof this.projects[slugProjectName].keywords === 'object' 
+            && this.projects[slugProjectName].keywords.filter(k => k.title === this.$root.settings.project_filter.keyword).length > 0) {
             sortable.push({ slugProjectName, orderBy });
           }
-        } else {
-          sortable.push({ slugProjectName, orderBy });
+          continue;
         }
+
+        if(this.$root.settings.project_filter.author !== false) {
+          // only add to sorted array if project has this keyword
+          if(this.projects[slugProjectName].hasOwnProperty('authors') 
+            && typeof this.projects[slugProjectName].authors === 'object' 
+            && this.projects[slugProjectName].authors.filter(k => k.name === this.$root.settings.project_filter.author).length > 0) {
+            sortable.push({ slugProjectName, orderBy });
+          }
+          continue;
+        }
+
       }
 
       // if there is no project in sortable, it is probable that filters 
@@ -243,7 +271,7 @@ export default {
       if(sortable.length === 0) {
         // lets remove filters if there are any
         this.$nextTick(() => {
-          this.$root.settings.project_filter.keyword = '';
+          // this.$root.settings.project_filter.keyword = false;
         });
       }
 
@@ -324,11 +352,18 @@ export default {
     setFilter(newFilter) {
       this.currentFilter = newFilter;
     },
-    setProjectKeyword(newKeywordFilter) {
+    setProjectKeywordFilter(newKeywordFilter) {
       if(this.$root.settings.project_filter.keyword !== newKeywordFilter) {
         this.$root.settings.project_filter.keyword = newKeywordFilter;
       } else {
-        this.$root.settings.project_filter.keyword = ''; 
+        this.$root.settings.project_filter.keyword = false; 
+      }
+    },
+    setProjectAuthorFilter(newAuthorFilter) {
+      if(this.$root.settings.project_filter.author !== newAuthorFilter) {
+        this.$root.settings.project_filter.author = newAuthorFilter;
+      } else {
+        this.$root.settings.project_filter.author = false; 
       }
     },
     urlToPortrait(slug, filename) {

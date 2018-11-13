@@ -469,7 +469,8 @@ let vm = new Vue({
 
       media_filter: {},
       project_filter: {
-        keyword: ''
+        keyword: false,
+        author: false
       }
     },
     lang: {
