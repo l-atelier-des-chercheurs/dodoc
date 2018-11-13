@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="m_authorField">
     <button 
       v-for="author in allAuthors" 
       type="button"

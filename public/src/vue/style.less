@@ -1211,6 +1211,51 @@ body {
     margin-bottom: 0;
   }
 }
+
+
+.m_authorField {
+  position: relative;
+  .margin-bottom-verysmall;
+  .font-verysmall;
+
+  letter-spacing: 0.04em;
+  display: flex;
+  flex-flow: row wrap;
+  text-transform: initial;
+
+  font-family: 'Fira Mono';
+  font-weight: 400;
+
+  > button {
+    flex-basis: auto;
+    display: flex;
+    align-items: center;
+    min-height: 0;
+    border-radius: 4px !important; 
+    background-color: @c-gris_clair !important;
+    // color: white !important;
+    color: black !important;
+    font-size: inherit !important;
+    .padding-sides-verysmall !important;
+    .padding-vert-verysmall !important;
+    text-transform: initial;
+    font-weight: inherit;
+
+    margin: 0 !important;
+    margin-right: @t-skipline/4 !important;
+    margin-bottom: @t-skipline/4 !important;
+
+    &.is--active {
+      background-color: @c-bleumarine_clair !important;
+      &::before {
+        background-color: black !important;
+      }
+    }
+    &::before {
+    }
+  }
+}
+
 .m_keywordField, .vue-tags-input {
   position: relative;
   .margin-bottom-verysmall;
