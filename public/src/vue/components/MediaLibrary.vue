@@ -104,7 +104,11 @@ export default {
       show_filters: false
     }
   },
-  
+  mounted() {
+    if(this.$root.settings.media_filter.keyword || this.$root.settings.media_filter.author) {
+      this.show_filters = true;
+    }
+  },
   created() {
     document.addEventListener('dragover', this.fileDragover);
   },
