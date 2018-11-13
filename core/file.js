@@ -794,25 +794,21 @@ module.exports = (function() {
           newFileName.toLowerCase().endsWith('.jpg')
         ) {
           let finalPath = path.join(uploadDir, newFileName);
-          sharp(tempPath)
-            .rotate()
-            .withMetadata()
-            .background({ r: 255, g: 255, b: 255 })
-            .flatten()
-            .jpeg({
-              quality: 90
-            })
-            .toFile(finalPath, function(err, info) {
-              if (err) {
-                reject(err);
-              } else {
+
+          Jimp.read(tempPath, function(err, image) {
+            if (err) reject(err);
+            image
+              .quality(settings.mediaThumbQuality)
+              .write(finalPath, function(err, info) {
+                if (err) return reject(err);
+                dev.logverbose('Image has been saved, resolving its path.');
                 fs.unlink(tempPath, err => {
                   dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
                 });
-              }
-              dev.logverbose(`Stored captured image to ${finalPath}`);
-              resolve(newFileName);
-            });
+                dev.logverbose(`Stored captured image to ${finalPath}`);
+                resolve(newFileName);
+              });
+          });
         } else if (
           newFileName.toLowerCase().endsWith('.webm') ||
           newFileName.toLowerCase().endsWith('.mov')
