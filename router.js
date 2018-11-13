@@ -309,6 +309,7 @@ module.exports = function(app, io, m) {
     // specify that we want to allow the user to upload multiple files in a single request
     form.multiples = false;
     form.maxFileSize = 1000 * 1024 * 1024;
+    let socketid = '';
 
     // store all uploads in the folder directory
     form.uploadDir = api.getFolderPath(slugProjectName);
@@ -318,6 +319,10 @@ module.exports = function(app, io, m) {
     let fieldValues = {};
     form.on('field', function(name, value) {
       console.log(`Got field with name = ${name} and value = ${value}.`);
+      if (name === 'socketid') {
+        socketid = value;
+      }
+
       try {
         fieldValues[name] = JSON.parse(value);
       } catch (e) {
@@ -326,19 +331,19 @@ module.exports = function(app, io, m) {
     });
 
     // every time a file has been uploaded successfully,
-    form.on('file', function(field, file) {
+    form.on('file', function(field, uploadedFile) {
       dev.logverbose(
         `File uploaded:\nfield: ${field}\nfile: ${JSON.stringify(
-          file,
+          uploadedFile,
           null,
           4
         )}.`
       );
       // add addiontal meta from 'field' to the array
-      let newFile = file;
+      let newFile = uploadedFile;
       for (let fileName in fieldValues) {
-        if (fileName === file.name) {
-          newFile = Object.assign({}, file, {
+        if (fileName === newFile.name) {
+          newFile = Object.assign({}, newFile, {
             additionalMeta: fieldValues[fileName]
           });
         }
@@ -357,23 +362,24 @@ module.exports = function(app, io, m) {
 
     // once all the files have been uploaded
     form.on('end', function() {
+      let msg = {};
+      msg.msg = 'success';
+      //           msg.medias = JSON.stringify(allFilesMeta);
+      res.end(JSON.stringify(msg));
+
       if (allFilesMeta.length > 0) {
         var m = [];
         for (var i in allFilesMeta) {
           m.push(
-            renameMediaAndCreateMeta(
+            renameAndConvertMediaAndCreateMeta(
               form.uploadDir,
               slugProjectName,
-              allFilesMeta[i]
+              allFilesMeta[i],
+              socketid
             )
           );
         }
-        Promise.all(m).then(() => {
-          let msg = {};
-          msg.msg = 'success';
-          //           msg.medias = JSON.stringify(allFilesMeta);
-          res.end(JSON.stringify(msg));
-        });
+        Promise.all(m).then(() => {});
       }
     });
 
@@ -381,8 +387,14 @@ module.exports = function(app, io, m) {
     form.parse(req);
   }
 
-  function renameMediaAndCreateMeta(uploadDir, slugProjectName, fileMeta) {
+  function renameAndConvertMediaAndCreateMeta(
+    uploadDir,
+    slugProjectName,
+    fileMeta,
+    socketid
+  ) {
     return new Promise(function(resolve, reject) {
+      dev.logfunction('ROUTER — renameAndConvertMediaAndCreateMeta');
       api.findFirstFilenameNotTaken(uploadDir, fileMeta.name).then(
         function(newFileName) {
           dev.logverbose(`Following filename is available: ${newFileName}`);
@@ -399,16 +411,32 @@ module.exports = function(app, io, m) {
             fileMeta.additionalMeta = {};
           }
 
-          let newPathToNewFileName = path.join(uploadDir, newFileName);
-          fs.renameSync(fileMeta.path, newPathToNewFileName);
-
-          fileMeta.additionalMeta.media_filename = newFileName;
-          sockets.createMediaMeta({
-            type: 'projects',
-            slugFolderName: slugProjectName,
-            additionalMeta: fileMeta.additionalMeta
-          });
-          resolve();
+          file
+            .convertAndSaveMedia({
+              uploadDir,
+              tempPath: fileMeta.path,
+              newFileName,
+              socketid
+            })
+            .then(newFileName => {
+              fileMeta.additionalMeta.media_filename = newFileName;
+              sockets.createMediaMeta({
+                type: 'projects',
+                slugFolderName: slugProjectName,
+                additionalMeta: fileMeta.additionalMeta
+              });
+              resolve();
+            })
+            .catch(err => {
+              dev.error(err);
+              fileMeta.additionalMeta.media_filename = newFileName;
+              sockets.createMediaMeta({
+                type: 'projects',
+                slugFolderName: slugProjectName,
+                additionalMeta: fileMeta.additionalMeta
+              });
+              resolve();
+            });
         },
         function(err) {
           reject(err);

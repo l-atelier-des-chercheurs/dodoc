@@ -2,8 +2,8 @@
   <div class="m_project">
 
     <div class="m_project--presentation">
-      <div class="m_project--presentation--vignette" @click="$root.openProject(slugProjectName)">
-        <img v-if="previewURL"
+      <div v-if="previewURL" class="m_project--presentation--vignette" @click="$root.openProject(slugProjectName)">
+        <img
           :src="previewURL" class=""
         />
       </div>
@@ -20,6 +20,33 @@
             {{ $t('protected_by_pass') }}
           </mark>
 
+
+          <div class="m_keywordField">
+            <span 
+              v-for="keyword in project.keywords" 
+              :key="keyword.title"
+              :class="['tagcolorid_' + parseInt(keyword.title, 36)%2, { 'is--active' : $root.settings.project_filter.keyword === keyword.title }]"
+            >
+              {{ keyword.title }}
+            </span>
+          </div>
+          <div class="m_metaField" v-if="!!project.authors">
+            <div>
+              {{ $t('author') }}
+            </div>
+            <div class="m_authorField">
+              <span v-if="typeof project.authors === 'string'">
+                {{ project.authors }}
+              </span>
+              <span v-else-if="typeof project.authors === 'object'"
+                v-for="author in project.authors"
+                :key="author.name"
+                class="is--active"
+              >
+                {{ author.name }}
+              </span>
+            </div>
+          </div>
           <div class="m_metaField">
             <div>
               {{ $t('created') }}
@@ -85,7 +112,7 @@
       </p>
     </div> -->
 
-    <div class="m_project--favMedias"
+    <!-- <div class="m_project--favMedias"
       v-if="context === 'full'"
     >
       <div class="sectionTitle_small margin-sides-small margin-bottom-small">
@@ -112,7 +139,7 @@
         >
         </MediaCard>
       </div>
-    </div>
+    </div> -->
 
     <MediaLibrary
       v-if="context === 'full'"
@@ -155,21 +182,6 @@ export default {
   beforeDestroy() {
   },
   computed: {
-    favMedias() {
-      if(!this.project.hasOwnProperty('medias') || Object.keys(this.project.medias).length === 0) {
-        return [];
-      }
-      const favMedias = {};
-      Object.keys(this.project.medias).map((m) => {    
-        const media = this.project.medias[m];
-
-        if(this.$root.isShownAfterMediaFilter(media) && media.fav === true) {
-          favMedias[m] = media;
-          favMedias[m].slugMediaName = m;
-        }
-      });
-      return favMedias;
-    },
     previewURL() {
       if(this.project.preview === '') {
         return false;

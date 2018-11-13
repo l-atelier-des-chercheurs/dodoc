@@ -38,13 +38,13 @@
           </span>
         </button>
 
-        <button type="button"
-          v-if="project.hasOwnProperty('name') && $root.do_navigation.view === 'MediaView'"
+        <!-- <button type="button"
+          v-if="project.hasOwnProperty('name') && $root.media_modal.open"
         >
           <span>
             {{ $t('media') }}
           </span>
-        </button>
+        </button> -->
       </div>
     </div>
 
@@ -127,20 +127,12 @@
           </svg>
         </button> -->
         
-        <button type="button" @click="$root.toggleSearchSidebar"
-          :class="{ 'is--active' : $root.settings.show_search_sidebar }"
-        >
-          <svg version="1.1"
-            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-            x="0px" y="0px" width="19.2px" height="19.2px" viewBox="0 0 19.2 19.2" style="enable-background:new 0 0 19.2 19.2;"
-            xml:space="preserve">
-            <path class="st0" d="M2.2,13.1c2.5,2.5,6.6,2.7,9.6,0.9l5.2,5.2l2.1-2.2L14,11.8c1.8-2.9,1.6-7-0.9-9.6c-3-3-7.8-3-10.8,0
-                C-0.7,5.2-0.7,10.1,2.2,13.1z M11,4.2c1.9,1.9,1.9,4.9,0,6.8s-4.9,1.9-6.8,0c-1.9-1.9-1.9-4.9,0-6.8S9.2,2.4,11,4.2z"/>
-          </svg>
-        </button>
       </div>
 
     </div>
+    <div class="m_topbar--status" v-if="!$root.state.connected">
+      {{ $t('notifications.connection_lost') }} {{ $t('notifications.contents_wont_be_editable') }}      
+    </div>    
   </div>
 </template>
 <script>

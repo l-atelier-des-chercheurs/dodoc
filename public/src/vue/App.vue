@@ -36,18 +36,11 @@
               class="m_activitiesPanel--do"
             >
 
-              <transition name="SearchSidebar" :duration="500">
-                <SearchSidebar
-                  v-if="$root.settings.show_search_sidebar"
-                >
-                </SearchSidebar>
-              </transition>
-
               <div style="position: relative; height: 100%; overflow: hidden">
                 <!-- v-show="$root.do_navigation.view === 'ListView'" -->
                 <transition name="ListView" :duration="500">
                   <ListView
-                    v-if="$root.do_navigation.view === 'ListView'"
+                    v-show="$root.do_navigation.view === 'ListView'"
                     :presentationMD="$root.store.presentationMD"
                     :read_only="!$root.state.connected"
                     :projects="$root.store.projects"
@@ -55,7 +48,7 @@
                 </transition>
                 <transition name="ProjectView" :duration="500">
                   <ProjectView
-                    v-if="['ProjectView', 'CaptureView', 'MediaView'].includes($root.do_navigation.view)"
+                    v-if="['ProjectView', 'CaptureView'].includes($root.do_navigation.view)"
                     :slugProjectName="$root.do_navigation.current_slugProjectName"
                     :project="$root.currentProject"
                     :read_only="!$root.state.connected"
@@ -70,25 +63,7 @@
                     :read_only="!$root.state.connected"
                   />
                 </transition>
-                <transition name="MediaView" :duration="500">
-                  <!-- <MediaView
-                    v-if="$root.do_navigation.view === 'MediaView'"
-                    :slugMediaName="$root.do_navigation.current_metaFileName"
-                    :slugProjectName="$root.do_navigation.current_slugProjectName"
-                    :media="$root.store.projects[$root.do_navigation.current_slugProjectName].medias[$root.do_navigation.current_metaFileName]"
-                    :read_only="!$root.state.connected"
-                  >
-                  </MediaView>       -->
-                </transition>
               </div>
-
-              <transition name="MediaFilterIndicator" :duration="500">
-                <MediaFilterIndicator
-                  v-if="Object.keys($root.settings.media_filter).length > 0"
-                  :media_filter="$root.settings.media_filter"
-                >
-                </MediaFilterIndicator>
-              </transition>
             </div>
 
           </pane>
@@ -153,10 +128,10 @@
         </div>
       </div>
       <EditMedia
-        v-if="$root.do_navigation.view === 'MediaView'"
-        :slugMediaName="$root.do_navigation.current_metaFileName"
-        :slugProjectName="$root.do_navigation.current_slugProjectName"
-        :media="$root.store.projects[$root.do_navigation.current_slugProjectName].medias[$root.do_navigation.current_metaFileName]"
+        v-if="$root.media_modal.open"
+        :slugMediaName="$root.media_modal.current_metaFileName"
+        :slugProjectName="$root.media_modal.current_slugProjectName"
+        :media="$root.store.projects[$root.media_modal.current_slugProjectName].medias[$root.media_modal.current_metaFileName]"
         @close="$root.closeMedia()"
         :read_only="!$root.state.connected"
       >
@@ -196,10 +171,7 @@ import TopBar from './TopBar.vue';
 import ListView from './ListView.vue';
 import ProjectView from './ProjectView.vue';
 import CaptureView from './CaptureView.vue';
-import MediaView from './MediaView.vue';
 import EditMedia from './components/modals/EditMedia.vue';
-import SearchSidebar from './components/SearchSidebar.vue';
-import MediaFilterIndicator from './components/MediaFilterIndicator.vue';
 
 import Publications from './Publications.vue';
 import Publication from './components/Publication.vue';
@@ -215,14 +187,11 @@ export default {
     ListView,
     ProjectView,
     CaptureView,
-    MediaView,
     EditMedia,
     Publications,
     Publication,
     Resizer, 
-    Pane,
-    SearchSidebar,
-    MediaFilterIndicator
+    Pane
   },
   props: {
   },
@@ -277,6 +246,10 @@ export default {
       this.hasMoved = false
     },
     onMouseUp() {
+      if(!this.is_dragged) {
+        return;
+      }
+
       this.is_dragged = false;
 
       if(this.percent >= 90) {

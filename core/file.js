@@ -1,6 +1,9 @@
 const path = require('path'),
   fs = require('fs-extra'),
-  validator = require('validator');
+  validator = require('validator'),
+  ffmpegstatic = require('ffmpeg-static'),
+  ffprobestatic = require('ffprobe-static'),
+  ffmpeg = require('fluent-ffmpeg');
 
 const Jimp = require('jimp');
 
@@ -8,6 +11,9 @@ const settings = require('../settings.json'),
   dev = require('./dev-log'),
   api = require('./api'),
   thumbs = require('./thumbs');
+
+ffmpeg.setFfmpegPath(ffmpegstatic.path);
+ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function() {
   const API = {
@@ -779,6 +785,137 @@ module.exports = (function() {
         });
       });
     },
+    convertAndSaveMedia: ({ uploadDir, tempPath, newFileName, socketid }) => {
+      return new Promise(function(resolve, reject) {
+        dev.logfunction(`COMMON — convertAndSaveMedia`);
+
+        if (
+          newFileName.toLowerCase().endsWith('.jpeg') ||
+          newFileName.toLowerCase().endsWith('.jpg')
+        ) {
+          let finalPath = path.join(uploadDir, newFileName);
+          sharp(tempPath)
+            .rotate()
+            .withMetadata()
+            .background({ r: 255, g: 255, b: 255 })
+            .flatten()
+            .jpeg({
+              quality: 90
+            })
+            .toFile(finalPath, function(err, info) {
+              if (err) {
+                reject(err);
+              } else {
+                fs.unlink(tempPath, err => {
+                  dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
+                });
+              }
+              dev.logverbose(`Stored captured image to ${finalPath}`);
+              resolve(newFileName);
+            });
+        } else if (
+          newFileName.toLowerCase().endsWith('.webm') ||
+          newFileName.toLowerCase().endsWith('.mov')
+        ) {
+          newFileName = newFileName.replace('.webm', '.mp4');
+          newFileName = newFileName.replace('.mov', '.mp4');
+          let finalPath = path.join(uploadDir, newFileName);
+
+          ffmpeg.ffprobe(tempPath, function(err, metadata) {
+            let duration = '?';
+            if (typeof metadata !== 'undefined') {
+              dev.logverbose(`Found duration: ${metadata.format.duration}`);
+              duration = metadata.format.duration;
+            }
+            let time_since_last_report = 0;
+            var proc = new ffmpeg()
+              .input(tempPath)
+              .withVideoCodec('libx264')
+              .withVideoBitrate('5000k')
+              .withAudioCodec('libmp3lame')
+              .withAudioBitrate('128k')
+              .toFormat('mp4')
+              .output(finalPath)
+              .on('progress', progress => {
+                if (+new Date() - time_since_last_report > 3000) {
+                  time_since_last_report = +new Date();
+                  require('./sockets').notify({
+                    socketid,
+                    not_localized_string: `Converting video for the web : ${
+                      progress.timemark
+                    } / ${duration}`
+                  });
+                }
+              })
+              .on('end', () => {
+                dev.logverbose(`Video has been converted`);
+                fs.unlink(tempPath, err => {
+                  dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
+                });
+                require('./sockets').notify({
+                  socketid,
+                  localized_string: `video_converted`
+                });
+                resolve(newFileName);
+              })
+              .on('error', function(err, stdout, stderr) {
+                dev.error('An error happened: ' + err.message);
+                dev.error('ffmpeg standard output:\n' + stdout);
+                dev.error('ffmpeg standard error:\n' + stderr);
+                reject(`couldn't convert a video`);
+              })
+              .run();
+          });
+        } else if (newFileName.toLowerCase().endsWith('.wav')) {
+          newFileName = newFileName.replace('wav', 'mp3');
+          let finalPath = path.join(uploadDir, newFileName);
+
+          ffmpeg.ffprobe(tempPath, function(err, metadata) {
+            let duration = '?';
+            if (typeof metadata !== 'undefined') {
+              dev.logverbose(`Found duration: ${metadata.format.duration}`);
+              duration = metadata.format.duration;
+            }
+            let time_since_last_report = 0;
+
+            ffmpeg(tempPath)
+              .withAudioCodec('libmp3lame')
+              .withAudioBitrate('192k')
+              .output(finalPath)
+              .on('progress', progress => {
+                if (+new Date() - time_since_last_report > 3000) {
+                  time_since_last_report = +new Date();
+                  require('./sockets').notify({
+                    socketid,
+                    not_localized_string: `Converting audio for the web : ${
+                      progress.timemark
+                    } / ${duration}`
+                  });
+                }
+              })
+              .on('end', () => {
+                dev.logverbose(`Audio has been converted`);
+                fs.unlink(tempPath, err => {
+                  dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
+                });
+                resolve(newFileName);
+              })
+              .on('error', function(err, stdout, stderr) {
+                dev.error('An error happened: ' + err.message);
+                dev.error('ffmpeg standard output:\n' + stdout);
+                dev.error('ffmpeg standard error:\n' + stderr);
+                reject(`couldn't convert an audio file`);
+              })
+              .run();
+          });
+        } else {
+          let finalPath = path.join(uploadDir, newFileName);
+          fs.renameSync(tempPath, finalPath);
+          resolve(newFileName);
+        }
+      });
+    },
+
     editMediaMeta: ({ type, slugFolderName, metaFileName, data }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
@@ -1007,13 +1144,20 @@ module.exports = (function() {
           path.join(settings.structure[type].path, slugFolderName)
         );
 
+        // MOST OF THIS CODE ISN’T USED ANYMORE
+        // before, for the capture page, dodoc, used to send medias with socketio as base64 strings
+        // Now instead, it uses the same logic as when importing files :
+        // axios uploads a blob that gets stored directly as a file server side
+
+        // the only code that still uses this logic is for stopmotions
+
         if (additionalMeta.type === 'image') {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += '.jpeg';
               let pathToMedia = path.join(slugFolderPath, mediaName);
 
-              let imageBuffer = api.decodeBase64Image(rawData);
+              let imageBuffer = rawData;
               Jimp.read(imageBuffer, function(err, image) {
                 if (err) reject(err);
                 image
@@ -1093,7 +1237,7 @@ module.exports = (function() {
         } else if (additionalMeta.type === 'stopmotion') {
           tasks.push(
             new Promise((resolve, reject) => {
-              mediaName += '.webm';
+              mediaName += '.mp4';
               let pathToMedia = path.join(slugFolderPath, mediaName);
               additionalMeta.type = 'video';
 

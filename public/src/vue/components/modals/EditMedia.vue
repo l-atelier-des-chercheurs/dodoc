@@ -6,12 +6,16 @@
     :read_only="read_only"
     :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndScroll'"
     :askBeforeClosingModal="askBeforeClosingModal"
+    :show_sidebar="$root.media_modal.show_sidebar"
+    :is_minimized="$root.media_modal.minimized"
+    :can_minimize="true"
     >
     <template slot="header">
       <div class="">{{ $t('edit_the_media') }}</div>
     </template>
 
     <template slot="sidebar">
+      <!-- <small>{{ this.$root.allAuthors }}</small> -->
 
       <div v-if="!read_only" class="m_modal--buttonrow">
         <!-- CONFLICT WITH QR PRINTING -->
@@ -75,14 +79,14 @@
             <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
           </div>
         </div>
-        <div class="m_metaField" v-if="!!media.authors">
+        <!-- <div class="m_metaField" v-if="!!media.authors">
           <div>
             {{ $t('author') }}
           </div>
           <div>
             {{ media.authors }}
           </div>
-        </div>
+        </div> -->
         <div class="m_metaField">
           <div>
             {{ $t('created') }}
@@ -143,8 +147,14 @@
   <!-- Author(s) -->
         <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
           <label>{{ $t('author') }}</label>
-          <textarea v-model="mediadata.authors" :readonly="read_only">
-          </textarea>
+
+          <AuthorsInput
+            :currentAuthors="mediadata.authors"
+            @authorsChanged="newAuthors => mediadata.authors = newAuthors"
+          />
+
+          <!-- <textarea v-model="mediadata.authors[0]" :readonly="read_only">
+          </textarea> -->
         </div>
 
   <!-- Fav or not -->
@@ -190,6 +200,8 @@ import Modal from './BaseModal.vue';
 import MediaContent from '../subcomponents/MediaContent.vue';
 import DateTime from '../subcomponents/DateTime.vue';
 import CreateQRCode from './qr/CreateQRCode.vue';
+import { setTimeout } from 'timers';
+import AuthorsInput from '../subcomponents/AuthorsInput.vue';
 
 export default {
   props: {
@@ -205,14 +217,17 @@ export default {
     Modal,
     DateTime,
     MediaContent,
-    CreateQRCode
+    CreateQRCode,
+    AuthorsInput
   },
   data() {
     return {
       showQRModal: false,
+      is_minimized: false,
+
       mediadata: {
         type: this.media.type,
-        authors: this.media.authors,
+        authors: typeof this.media.authors === 'string' && this.media.authors !== '' ? this.media.authors.split(',').map(a => {return { name: a }} ) : this.media.authors,
         caption: this.media.caption,
         keywords: this.media.keywords,
         fav: this.media.fav,

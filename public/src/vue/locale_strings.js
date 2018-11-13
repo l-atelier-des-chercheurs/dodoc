@@ -17,7 +17,7 @@ module.exports = (function() {
       for_the_placement_on_timeline: '(pour le placement sur la timeline)',
       type: 'Type',
       color: 'Couleur',
-      keywords: 'Mot-clés',
+      keywords: 'Mots-clés',
       author: 'Auteur(s)',
       download: 'Télécharger',
       caption: 'Légende',
@@ -40,9 +40,12 @@ module.exports = (function() {
       sureToRemovePubli:
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
       validate_media: 'Valider le média',
+      add_keyword: 'Ajouter un mot-clé',
 
       showing: 'Affichage de',
       media_filter: 'Filtre de médias',
+      no_projects_yet:
+        'Il n’y a pas encore de projet, créez-en un pour commencer à utiliser do•doc!',
       projects_of: 'projets sur',
       medias_of: 'médias sur',
       projects: 'Projets',
@@ -145,6 +148,7 @@ module.exports = (function() {
       fullscreen: 'Plein écran',
       preview: 'Aperçu',
       filter: 'Filtre',
+      filters: 'Filtres',
       header_left: 'En-tête gauche',
       header_right: 'En-tête droite',
       gridstep: 'Pas de la grille d’alignement',
@@ -219,13 +223,14 @@ module.exports = (function() {
         audio_source_not_set: 'La source audio n’a pas été trouvée.',
         video_stream_not_available:
           'Erreur : le flux vidéo n’est pas disponible.',
-        no_author_found_with_nfc_tag:
-          'Scan d’un tag NFC réussi, néanmoins aucun auteur n’a été associé à ce tag.',
+        no_content_found_with_nfc_tag:
+          'Scan d’un tag NFC réussi, associez-lui un auteur ou un média pour commencer.',
         author_found_with_nfc_tag:
           'Scan d’un tag NFC réussi, activation de l’auteur suivant&nbsp;:',
         medias_uploaded: 'Tous les médias ont bien étés envoyés.',
         medias_upload_failed:
-          'Erreur&nbsp;: certains médias n’ont pas pu être envoyés.'
+          'Erreur&nbsp;: certains médias n’ont pas pu être envoyés.',
+        video_converted: 'La vidéo a été convertie et ajoutée au projet.'
       }
     },
     en: {
@@ -265,11 +270,11 @@ module.exports = (function() {
       sureToCloseModal: 'Do you really want to close this window?',
       sureToRemovePubli: 'Do you really want to delete this publication?',
       validate_media: 'Validate the media',
+      add_keyword: 'Add a keyword',
 
       showing: 'Showing',
       media_filter: 'Medias filter',
-      no_projects_yet:
-        'No projects created yet. Create one to add captures and import content.',
+      no_projects_yet: 'No projects yet, create one to start using do•doc!',
       projects_of: 'projects of',
       medias_of: 'medias of',
       projects: 'Projects',
@@ -377,6 +382,7 @@ module.exports = (function() {
       fullscreen: 'Fullscreen',
       preview: 'Preview',
       filter: 'Filter',
+      filters: 'Filters',
       header_left: 'Left header text',
       header_right: 'Right header text',
       gridstep: 'Step of alignment grid',
@@ -444,12 +450,14 @@ module.exports = (function() {
           'Failed to start audio feed. Try changing the source.',
         audio_source_not_set: 'The source audio has not been set.',
         video_stream_not_available: 'Error: Video stream not available.',
-        no_author_found_with_nfc_tag:
-          'NFC tag detected, however no author was found. Create an author first',
+        no_content_found_with_nfc_tag:
+          'NFC tag detected, bind it to an author or a media to start.',
         author_found_with_nfc_tag:
           'NFC tag detected, the following author will be logged-in:',
         medias_uploaded: 'All medias were imported successfully.',
-        medias_upload_failed: 'Error: some medias failed to import.'
+        medias_upload_failed: 'Error: some medias failed to import.',
+        video_converted:
+          'The video was converted successfully and added to the project.'
       }
     }
   };

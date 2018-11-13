@@ -77,7 +77,9 @@ module.exports = (function() {
       // let's find the extension if it exists
       var fileExtension = new RegExp(settings.regexpGetFileExtension, 'i').exec(
         fileName
-      )[0];
+      );
+      fileExtension = fileExtension === null ? '' : fileExtension[0];
+
       // remove extension
       var fileNameWithoutExtension = new RegExp(
         settings.regexpRemoveFileExtension,
@@ -331,9 +333,13 @@ module.exports = (function() {
           // ask ffmpeg to make a video from the cache images
           var proc = new ffmpeg()
             .input(path.join(tempFolder, 'img-%04d.jpeg'))
-            .withFpsInput(frameRate)
-            .withVideoCodec('libvpx')
-            .addOptions(['-vb 8000k', '-f webm'])
+            .inputFPS(frameRate)
+            .fps(frameRate)
+            .withVideoCodec('libx264')
+            .withVideoBitrate('8000k')
+            .addOptions(['-preset slow', '-tune animation'])
+            .noAudio()
+            .toFormat('mp4')
             .output(pathToMedia)
             .on('progress', progress => {
               dev.logverbose(

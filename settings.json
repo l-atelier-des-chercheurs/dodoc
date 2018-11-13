@@ -46,8 +46,11 @@
           "read_only": true        
         },
         "authors": {
-          "type": "string"
+          "type": "array"
         },
+        "keywords": {
+          "type": "array"
+        },      
         "description": {
           "type": "string"
         },
@@ -94,7 +97,7 @@
             "type": "number"
           },
           "authors": {
-            "type": "string"
+            "type": "array"
           },
           "keywords": {
             "type": "string"

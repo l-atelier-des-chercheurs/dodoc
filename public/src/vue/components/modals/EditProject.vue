@@ -12,6 +12,7 @@
     </template>
 
     <template slot="sidebar">
+
 <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('project_name') }}</label>
@@ -37,11 +38,22 @@
       </div>
  -->
 
+<!-- Keywords -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('keywords') }}</label>
+        <TagsInput 
+          :keywords="projectdata.keywords"
+          @tagsChanged="newTags => projectdata.keywords = newTags"
+        />
+      </div>
+
 <!-- Author(s) -->
       <div class="margin-bottom-small">
         <label>{{ $t('author') }}</label><br>
-        <textarea v-model="projectdata.authors" :readonly="read_only">
-        </textarea>
+        <AuthorsInput
+          :currentAuthors="projectdata.authors"
+          @authorsChanged="newAuthors => projectdata.authors = newAuthors"
+        />
       </div>
 
     </template>
@@ -56,6 +68,8 @@
 import Modal from './BaseModal.vue';
 import slug from 'slugg';
 import ImageSelect from '../subcomponents/ImageSelect.vue';
+import TagsInput from '../subcomponents/TagsInput.vue';
+import AuthorsInput from '../subcomponents/AuthorsInput.vue';
 
 export default {
   props: {
@@ -65,14 +79,18 @@ export default {
   },
   components: {
     Modal,
-    ImageSelect
+    ImageSelect,
+    TagsInput,
+    AuthorsInput
   },
   data() {
     return {
       projectdata: {
         name: this.project.name,
-        authors: this.project.authors
+        authors: typeof this.project.authors === 'string' && this.project.authors !== '' ? this.project.authors.split(',').map(a => {return { name: a }} ) : this.project.authors,
+        keywords: this.project.keywords
       },
+      tag: '',
       preview: undefined,
       askBeforeClosingModal: false
     };
@@ -84,6 +102,8 @@ export default {
     'preview': function() {
       this.askBeforeClosingModal = true;
     }
+  },
+  mounted() {
   },
   computed: {
     previewURL() {
@@ -133,8 +153,7 @@ export default {
 
       this.$emit('close', '');
     }
-  },
-  mounted() {}
+  }
 };
 </script>
 <style>

@@ -9,7 +9,7 @@
   -webkit-overflow-scrolling: touch;
 
   background-color: fade(#fff, 92%);
-  cursor: pointer;
+  // cursor: pointer;
   .custom_scrollbar(8px, 5px, 6px);
   
   display: flex;
@@ -26,6 +26,12 @@
   &.is_invisible {
     background-color: transparent;
     pointer-events: none;
+  }
+
+  &.is_minimized {
+    background: linear-gradient(45deg, fade(#fff, 92%) 150px, transparent 200px, transparent 100%);
+    pointer-events: none;
+    align-items: flex-end;
   }
 
   // @media screen and (max-width: 50rem) {
@@ -63,7 +69,7 @@
   cursor: auto;
 
   max-width: @t-panelWidth;
-  margin: 5vmin 5vmin;
+  // margin: 5vmin 5vmin;
   pointer-events: all;
   z-index: 1000;
 
@@ -72,6 +78,19 @@
   &.is_invisible {
     opacity: 0;
     transform: translate3d(0,15px,0) scale(0.98);
+  }
+
+  &.is_minimized {
+    transform: scale(0.25);
+    transform-origin: bottom left;
+    margin-left: 5px !important;
+    margin-bottom: 5px !important;
+    margin-right: auto !important;
+
+    .m_modal--container--content {
+      border: 30px solid @c-blanc;
+      border-radius: 20px;
+    }
   }
 
   // @media screen and (max-width: 50rem) {
@@ -96,15 +115,21 @@
 
     > * {
       flex: 1 1 200px;
+      transition: all .5s ease-out;
 
       &.m_modal--sidebar {
         flex: 0 1 @t-panelWidth;
         max-height: 90vh;
-        width: 100%;
+        width: 0px;
 
+        // transition: all .8s ease-out;
 
         @media screen and (max-width: 50rem) {
           max-height: none;
+        }
+
+        &.is_collapsed {
+          flex-basis: 0px;
         }
       }
 
@@ -143,8 +168,9 @@
 .m_modal--mask {
 
   &.typeOfModal-LargeAndScroll {
+    padding-top: @t-skipline;
     overflow-y: auto;
-    .m_modal--container {   
+    .m_modal--container {  
       max-width: @t-panelWidth * 3;
       align-self: flex-start;
       .m_modal--preview {
@@ -222,6 +248,7 @@
 
 
 .m_modal--sidebar {
+  position: relative;
   display: flex;
   flex-flow: column nowrap;
 
@@ -229,9 +256,23 @@
     flex: 0 0 auto;
   }
 
+  .m_modal--sidebar--toggle {
+    position: absolute;
+    top: @t-skipline * 0.6;
+    right: 100%;
+    .padding-small;
+    font-weight: 700;
+    .font-large;
+    .bg-noir;
+    color: white;
+  
+    border-radius: 50% 0 0 50%;
+    line-height: 1;
+  }
+  
   .m_modal--metaOptions {
     flex: 1 1 auto;
-    .margin-vert-small;
+    .padding-vert-small;
     overflow-y: auto;
     .custom_scrollbar(8px, 5px, 6px);
 
@@ -342,6 +383,23 @@
     top: 0;
     right: 0;
   }
+}
+
+.m_modal--minimize_button {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1500;
+
+  pointer-events: auto;
+
+  transition: transform .2s ease-out;
+
+  &.is_minimized {
+    // transform: ;
+    transform: scale(-1) rotate(-360deg);
+  }
+
 }
 
 .m_modal--header {

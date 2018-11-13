@@ -62,6 +62,8 @@ html
   body(data-mode=mode)
     #app
 
+    script(src='/socket.io.js')
+
     - if(mode === 'export_publication')
       script(src='./_dist/build.js')
     - else
