@@ -27,7 +27,7 @@
     "npm": "*"
   },
   "build": {
-    "electronVersion": "3.0.9",
+    "electronVersion": "2.0.5",
     "appId": "dodoc2",
     "productName": "do•doc",
     "asar": false,
@@ -70,7 +70,7 @@
     "write-file-atomic": "^2.3.0"
   },
   "devDependencies": {
-    "electron": "3.0.9",
+    "electron": "2.0.5",
     "electron-builder": "^20.35.0",
     "electron-packager": "^12.2.0",
     "electron-prebuilt": "^1.4.13",

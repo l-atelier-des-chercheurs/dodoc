@@ -100,19 +100,19 @@ Most install errors (and especially the _Module version mismatch. Expected 50, g
 **The first thing to check is whether you use the right version of node.js: it must be version 8.9.3.
 To know the version you are running, write `node -v` in a terminal window.**
 
-The reason you have to use this version of node.js is because this app uses Electron, a tool to package node.js and a webbrowser as native apps. The version of Electron this app is using is version 3.0.9, and it uses node version 8.9.3. However, when native modules are built, they are built using the local node version and not Electron’s. Hence, you have to run the exact same version as Electron to prevent this type of error to happen.
+The reason you have to use this version of node.js is because this app uses Electron, a tool to package node.js and a webbrowser as native apps. The version of Electron this app is using is version 2.0.5, and it uses node version 8.9.3. However, when native modules are built, they are built using the local node version and not Electron’s. Hence, you have to run the exact same version as Electron to prevent this type of error to happen.
 
 Because switching between node version is annoying, it is recommended to use [nvm](https://github.com/creationix/nvm) to do so ([nvm windows](https://github.com/coreybutler/nvm-windows) for Windows).
 
 Here are a few other things you can try (but only after making sure you run the right node version):
 
-1.  Sometimes, Electron is not installed when running `npm install` on the repo. It may help to run `npm install electron@3.0.9` just to be sure it is actually installed locally.
+1.  Sometimes, Electron is not installed when running `npm install` on the repo. It may help to run `npm install electron@2.0.5` just to be sure it is actually installed locally.
 
 1.  Follow the instructions [here](https://github.com/electron/electron/blob/master/docs/tutorial/using-native-node-modules.md), and specifically:
 
 ```
 # Electron's version.
-export npm_config_target=3.0.9
+export npm_config_target=2.0.5
 # The architecture of Electron, can be ia32 or x64.
 export npm_config_arch=x64
 export npm_config_target_arch=x64
