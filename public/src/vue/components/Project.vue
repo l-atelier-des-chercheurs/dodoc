@@ -34,8 +34,17 @@
             <div>
               {{ $t('author') }}
             </div>
-            <div>
-              {{ project.authors }}
+            <div class="m_authorField">
+              <span v-if="typeof project.authors === 'string'">
+                {{ project.authors }}
+              </span>
+              <span v-else-if="typeof project.authors === 'object'"
+                v-for="author in project.authors"
+                :key="author.name"
+                class="is--active"
+              >
+                {{ author.name }}
+              </span>
             </div>
           </div>
           <div class="m_metaField">
