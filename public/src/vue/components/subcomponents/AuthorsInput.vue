@@ -27,13 +27,15 @@ export default {
   },
   data() {
     return {
-      authors: this.currentAuthors !== undefined && this.currentAuthors !== '' ? this.currentAuthors : []
+      authors: this.currentAuthors !== undefined && this.currentAuthors !== '' ? this.currentAuthors : [],
+      allAuthors: []
     }
   },
   
   created() {
   },
   mounted() {
+    this.allAuthors = this.getAllUniqueAuthors();
   },
   beforeDestroy() {
   },
@@ -41,13 +43,21 @@ export default {
   watch: {
   },
   computed: {
-    allAuthors() {
-      return this.$root.allAuthors;
-    },
     filteredAuthors() {
     }
   },
   methods: {
+    getAllUniqueAuthors() {
+      const allAuthors = this.authors.concat(this.$root.allAuthors);
+      let nameList = [];
+      return allAuthors.filter(a => {
+        if(nameList.indexOf(a.name) === -1) {
+          nameList.push(a.name);
+          return true;
+        }
+        return false;
+      });
+    },
     toggleAuthorName: function(authorName) {
       // authorName is already in authors, then remove it
       if(this.authors.filter(a => a.name === authorName).length > 0) {
