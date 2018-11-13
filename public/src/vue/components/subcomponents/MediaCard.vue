@@ -131,11 +131,14 @@ export default {
   },
   computed: {
     media_made_by_current_author() {
-      if(!this.media.authors || this.media.authors.length === 0) {
+      if(!this.media.authors || typeof this.media.authors !== 'object') {
         return false;
       }
-      const allAuthorsName = this.$root.allAuthors.map(a => a.name);
-      return this.media.authors.filter(a => allAuthorsName.indexOf(a.name) >= 0).length > 0;
+      if(!this.$root.settings.current_author) {
+        return false;
+      }
+      debugger;
+      return this.media.authors.filter(a => a.name === this.$root.settings.current_author.name).length > 0;
     }
   },
   methods: {
