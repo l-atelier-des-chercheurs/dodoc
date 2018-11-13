@@ -44,29 +44,46 @@
                   {{ $t('projects_of') }} 
                   {{ Object.keys(projects).length }}
                 </span>
-                <template v-if="$root.allKeywords.length > 0">
+                <template v-if="$root.allKeywords.length > 0 || $root.allAuthors.length > 0">
                   — 
                   <button type="button" class="button-nostyle text-uc button-triangle"
                     :class="{ 'is--active' : show_filters }"
                     @click="show_filters = !show_filters"
                   >{{ $t('filters') }}</button>
                 </template>
+                <TagsAndAuthorFilters
+                  v-if="show_filters"
+                  :keywordFilter="$root.settings.project_filter.keyword"
+                  :authorFilter="$root.settings.project_filter.author"
+                  @setKeywordFilter="a => $root.setProjectKeywordFilter(a)"
+                  @setAuthorFilter="a => $root.setProjectAuthorFilter(a)"
+                />
               </template>
               <template v-else>
                 {{ $t('showing') }} 
-                {{ Object.keys(sortedMedias).length }} 
-                {{ $t('medias_of') }} 
-                {{ Object.keys(allMedias).length }}
+                <span :class="{ 'c-rouge' : Object.keys(sortedMedias).length !== Object.keys(allMedias).length }">
+                  {{ Object.keys(sortedMedias).length }} 
+                  {{ $t('medias_of') }} 
+                  {{ Object.keys(allMedias).length }}
+                </span>
+                <template v-if="$root.allKeywords.length > 0 || $root.allAuthors.length > 0">
+                  — 
+                  <button type="button" class="button-nostyle text-uc button-triangle"
+                    :class="{ 'is--active' : show_filters }"
+                    @click="show_filters = !show_filters"
+                  >{{ $t('filters') }}</button>
+                </template>
+
+                <TagsAndAuthorFilters
+                  v-if="show_filters"
+                  :keywordFilter="$root.settings.media_filter.keyword"
+                  :authorFilter="$root.settings.media_filter.author"
+                  @setKeywordFilter="a => $root.setMediaKeywordFilter(a)"
+                  @setAuthorFilter="a => $root.setMediaAuthorFilter(a)"
+                />
+
               </template>
 
-              <template v-if="!show_medias_instead_of_projects && show_filters">
-                <TagsAndAuthorFilters
-                  :keywordFilter="$root.settings.project_filter.keyword"
-                  :authorFilter="$root.settings.project_filter.author"
-                  @setKeywordFilter="a => setProjectKeywordFilter(a)"
-                  @setAuthorFilter="a => setProjectAuthorFilter(a)"
-                />
-              </template>
             </template>
             <template v-else>
               {{ $t('no_projects_yet') }}
@@ -91,8 +108,9 @@
         </transition-group>
       </template>
       <template v-else>
-        <div
+        <transition-group
           class="m_projects--list"
+          name="list-complete"
         >
           <div v-for="item in groupedMedias" :key="item[0]">
             <h3 class="font-folder_title margin-sides-small margin-none margin-bottom-small">
@@ -112,7 +130,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </transition-group>
       </template>
     </main>
 
@@ -302,11 +320,11 @@ export default {
       });
       return allMedias;
     },
+    filteredMedias: function() {
+      return this.allMedias.filter(m => this.$root.isMediaShown(m));
+    },
     sortedMedias: function() {
-      let sortedMedias = this.allMedias.filter(m => {
-        return this.$root.isShownAfterMediaFilter(m)
-      });
-      sortedMedias = this.$_.sortBy(sortedMedias, 'date_created');
+      let sortedMedias = this.$_.sortBy(this.filteredMedias, 'date_created');
       return sortedMedias.reverse();
     },
     groupedMedias: function() {
@@ -329,32 +347,11 @@ export default {
     setFilter(newFilter) {
       this.currentFilter = newFilter;
     },
-    setProjectKeywordFilter(newKeywordFilter) {
-      if(this.$root.settings.project_filter.keyword !== newKeywordFilter) {
-        this.$root.settings.project_filter.keyword = newKeywordFilter;
-      } else {
-        this.$root.settings.project_filter.keyword = false; 
-      }
-    },
-    setProjectAuthorFilter(newAuthorFilter) {
-      if(this.$root.settings.project_filter.author !== newAuthorFilter) {
-        this.$root.settings.project_filter.author = newAuthorFilter;
-      } else {
-        this.$root.settings.project_filter.author = false; 
-      }
-    },
     urlToPortrait(slug, filename) {
       if(filename === undefined) {
         return '';
       }
       return `/${this.$root.state.authorsFolder}/${slug}/${filename}`;
-    },
-    setAuthorFilter(author) {
-      if(author.name !== this.$root.settings.media_filter.authors) {
-        this.$root.setMediaFilter({ authors: author.name });
-      } else {
-        this.$root.unsetMediaFilter();
-      }
     }
   }
 };

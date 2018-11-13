@@ -53,8 +53,8 @@
           <TagsAndAuthorFilters
             :keywordFilter="$root.settings.media_filter.keyword"
             :authorFilter="$root.settings.media_filter.author"
-            @setKeywordFilter="a => setMediaKeywordFilter(a)"
-            @setAuthorFilter="a => setMediaAuthorFilter(a)"
+            @setKeywordFilter="a => $root.setMediaKeywordFilter(a)"
+            @setAuthorFilter="a => $root.setMediaAuthorFilter(a)"
           />
         </template>
       </div>
@@ -156,46 +156,8 @@ export default {
           }          
         }
 
-        // MEDIA FILTER LOGIC
-        if(this.$root.settings.media_filter.keyword === false && this.$root.settings.media_filter.author === false) {
+        if(this.$root.isMediaShown(media)) {
           sortable.push({ slugMediaName, orderBy });
-          continue;
-        }
-
-        if(this.$root.settings.media_filter.keyword !== false && this.$root.settings.media_filter.author !== false) {
-          // only add to sorted array if project has this keyword
-          if(media.hasOwnProperty('keywords') 
-            && typeof media.keywords === 'object' 
-            && media.keywords.filter(k => k.title === this.$root.settings.media_filter.keyword).length > 0) {
-            
-            debugger;
-            if(media.hasOwnProperty('authors') 
-              && typeof media.authors === 'object' 
-              && media.authors.filter(k => k.name === this.$root.settings.media_filter.author).length > 0) {            
-              sortable.push({ slugMediaName, orderBy });
-            }
-          }
-          continue;
-        }
-        // if a project keyword filter is set
-        if(this.$root.settings.media_filter.keyword !== false) {
-          // only add to sorted array if project has this keyword
-          if(media.hasOwnProperty('keywords') 
-            && typeof media.keywords === 'object' 
-            && media.keywords.filter(k => k.title === this.$root.settings.media_filter.keyword).length > 0) {
-            sortable.push({ slugMediaName, orderBy });
-          }
-          continue;
-        }
-
-        if(this.$root.settings.media_filter.author !== false) {
-          // only add to sorted array if project has this keyword
-          if(media.hasOwnProperty('authors') 
-            && typeof media.authors === 'object' 
-            && media.authors.filter(k => k.name === this.$root.settings.media_filter.author).length > 0) {
-            sortable.push({ slugMediaName, orderBy });
-          }
-          continue;
         }
         
       }
@@ -254,20 +216,6 @@ export default {
           type: 'text'          
         }
       });
-    },
-    setMediaKeywordFilter(newKeywordFilter) {
-      if(this.$root.settings.media_filter.keyword !== newKeywordFilter) {
-        this.$root.settings.media_filter.keyword = newKeywordFilter;
-      } else {
-        this.$root.settings.media_filter.keyword = false; 
-      }
-    },
-    setMediaAuthorFilter(newAuthorFilter) {
-      if(this.$root.settings.media_filter.author !== newAuthorFilter) {
-        this.$root.settings.media_filter.author = newAuthorFilter;
-      } else {
-        this.$root.settings.media_filter.author = false; 
-      }
     },
     newTextMediaCreated(mdata) {
       if (this.$root.justCreatedMediaID === mdata.id) {

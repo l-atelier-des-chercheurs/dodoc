@@ -786,6 +786,97 @@ let vm = new Vue({
 
       this.media_modal.open = false;
     },
+    setProjectKeywordFilter(newKeywordFilter) {
+      if (this.settings.project_filter.keyword !== newKeywordFilter) {
+        this.settings.project_filter.keyword = newKeywordFilter;
+      } else {
+        this.settings.project_filter.keyword = false;
+      }
+    },
+    setProjectAuthorFilter(newAuthorFilter) {
+      if (this.settings.project_filter.author !== newAuthorFilter) {
+        this.settings.project_filter.author = newAuthorFilter;
+      } else {
+        this.settings.project_filter.author = false;
+      }
+    },
+    setMediaKeywordFilter(newKeywordFilter) {
+      if (this.settings.media_filter.keyword !== newKeywordFilter) {
+        this.settings.media_filter.keyword = newKeywordFilter;
+      } else {
+        this.settings.media_filter.keyword = false;
+      }
+    },
+    setMediaAuthorFilter(newAuthorFilter) {
+      if (this.settings.media_filter.author !== newAuthorFilter) {
+        this.settings.media_filter.author = newAuthorFilter;
+      } else {
+        this.settings.media_filter.author = false;
+      }
+    },
+
+    isMediaShown(media) {
+      if (
+        this.settings.media_filter.keyword === false &&
+        this.settings.media_filter.author === false
+      ) {
+        return true;
+      }
+
+      if (
+        this.settings.media_filter.keyword !== false &&
+        this.settings.media_filter.author !== false
+      ) {
+        // only add to sorted array if project has this keyword
+        if (
+          media.hasOwnProperty('keywords') &&
+          typeof media.keywords === 'object' &&
+          media.keywords.filter(
+            k => k.title === this.settings.media_filter.keyword
+          ).length > 0
+        ) {
+          if (
+            media.hasOwnProperty('authors') &&
+            typeof media.authors === 'object' &&
+            media.authors.filter(
+              k => k.name === this.settings.media_filter.author
+            ).length > 0
+          ) {
+            return true;
+          }
+        }
+        return false;
+      }
+      // if a project keyword filter is set
+      if (this.settings.media_filter.keyword !== false) {
+        // only add to sorted array if project has this keyword
+        if (
+          media.hasOwnProperty('keywords') &&
+          typeof media.keywords === 'object' &&
+          media.keywords.filter(
+            k => k.title === this.settings.media_filter.keyword
+          ).length > 0
+        ) {
+          return true;
+        }
+        return false;
+      }
+
+      if (this.settings.media_filter.author !== false) {
+        // only add to sorted array if project has this keyword
+        if (
+          media.hasOwnProperty('authors') &&
+          typeof media.authors === 'object' &&
+          media.authors.filter(
+            k => k.name === this.settings.media_filter.author
+          ).length > 0
+        ) {
+          return true;
+        }
+        return false;
+      }
+      // END MEDIA FILTER LOGIC
+    },
 
     updateLocalLang: function(newLangCode) {
       if (window.state.dev_mode === 'debug') {

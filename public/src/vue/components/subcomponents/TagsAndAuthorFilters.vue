@@ -32,10 +32,7 @@
 
 
 export default {
-  props: {
-    keywordFilter: String,
-    authorFilter: String
-  },
+  props: ['keywordFilter', 'authorFilter'],
   components: {
   },
   data() {
