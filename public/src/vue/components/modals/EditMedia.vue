@@ -15,6 +15,7 @@
     </template>
 
     <template slot="sidebar">
+      <!-- <small>{{ this.$root.allAuthors }}</small> -->
 
       <div v-if="!read_only" class="m_modal--buttonrow">
         <!-- CONFLICT WITH QR PRINTING -->
@@ -78,15 +79,14 @@
             <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
           </div>
         </div>
-        <div class="m_metaField" v-if="!!media.authors">
+        <!-- <div class="m_metaField" v-if="!!media.authors">
           <div>
             {{ $t('author') }}
           </div>
           <div>
             {{ media.authors }}
           </div>
-        </div>
-        {{ JSON.stringify(mediadata.authors) }}
+        </div> -->
         <div class="m_metaField">
           <div>
             {{ $t('created') }}
@@ -147,9 +147,14 @@
   <!-- Author(s) -->
         <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
           <label>{{ $t('author') }}</label>
-          {{ mediadata.authors[0] }}
-          <textarea v-model="mediadata.authors[0].name" :readonly="read_only">
-          </textarea>
+
+          <AuthorsInput
+            :currentAuthors="mediadata.authors"
+            @authorsChanged="newAuthors => mediadata.authors = newAuthors"
+          />
+
+          <!-- <textarea v-model="mediadata.authors[0]" :readonly="read_only">
+          </textarea> -->
         </div>
 
   <!-- Fav or not -->
@@ -196,6 +201,7 @@ import MediaContent from '../subcomponents/MediaContent.vue';
 import DateTime from '../subcomponents/DateTime.vue';
 import CreateQRCode from './qr/CreateQRCode.vue';
 import { setTimeout } from 'timers';
+import AuthorsInput from '../subcomponents/AuthorsInput.vue';
 
 export default {
   props: {
@@ -211,7 +217,8 @@ export default {
     Modal,
     DateTime,
     MediaContent,
-    CreateQRCode
+    CreateQRCode,
+    AuthorsInput
   },
   data() {
     return {
@@ -220,7 +227,7 @@ export default {
 
       mediadata: {
         type: this.media.type,
-        authors: this.media.authors,
+        authors: typeof this.media.authors === 'string' && this.media.authors !== '' ? this.media.authors.split(',').map(a => {return { name: a }} ) : this.media.authors,
         caption: this.media.caption,
         keywords: this.media.keywords,
         fav: this.media.fav,
@@ -239,9 +246,6 @@ export default {
     }
   },  
   mounted() {
-    if(typeof this.mediadata.authors === 'string') {
-      this.mediada.authors = this.mediadata.authors.split(',');
-    }
   },
   computed: {
   },

@@ -623,6 +623,17 @@ let vm = new Vue({
       }
       return {};
     },
+    allAuthors() {
+      let allAuthors = [];
+      for (let slugAuthorName in this.store.authors) {
+        let authorName = this.store.authors[slugAuthorName];
+        allAuthors.push(authorName);
+      }
+      allAuthors = allAuthors.filter(function(item, pos) {
+        return allAuthors.indexOf(item) == pos;
+      });
+      return allAuthors;
+    },
     allKeywords() {
       let allKeywords = [];
       for (let slugProjectName in this.store.projects) {
@@ -633,7 +644,6 @@ let vm = new Vue({
           });
         }
       }
-
       allKeywords = allKeywords.filter(function(item, pos) {
         return allKeywords.indexOf(item) == pos;
       });

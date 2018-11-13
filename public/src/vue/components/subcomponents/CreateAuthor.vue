@@ -74,19 +74,10 @@ export default {
   methods: {
     newAuthor: function(event) {
       console.log('newAuthor');
-
-      function getAllAuthorNames() {
-        let allAuthorsName = [];
-        for (let slugAuthorName in window.store.authors) {
-          let authorName = window.store.authors[slugAuthorName].name;
-          allAuthorsName.push(authorName);
-        }
-        return allAuthorsName;
-      }
-      let allAuthorsName = getAllAuthorNames();
+      let allAuthorsName = this.$root.allAuthors;
 
       // check if project name (not slug) already exists
-      if (allAuthorsName.indexOf(this.authordata.name) >= 0) {
+      if (allAuthors.indexOf(this.authordata.name) >= 0) {
         // invalidate if it does
         this.$alertify
           .closeLogOnClick(true)
