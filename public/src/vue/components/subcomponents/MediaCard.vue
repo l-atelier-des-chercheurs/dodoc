@@ -39,6 +39,7 @@
             {{ media.caption }}
           </figcaption>
         </div>          
+              {{ media.authors }}
 
         <figcaption
           v-if="is_hovered && false"

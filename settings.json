@@ -97,7 +97,7 @@
             "type": "number"
           },
           "authors": {
-            "type": "string"
+            "type": "array"
           },
           "keywords": {
             "type": "string"

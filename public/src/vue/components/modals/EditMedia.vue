@@ -86,6 +86,7 @@
             {{ media.authors }}
           </div>
         </div>
+        {{ JSON.stringify(mediadata.authors) }}
         <div class="m_metaField">
           <div>
             {{ $t('created') }}
@@ -146,7 +147,8 @@
   <!-- Author(s) -->
         <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
           <label>{{ $t('author') }}</label>
-          <textarea v-model="mediadata.authors" :readonly="read_only">
+          {{ mediadata.authors[0] }}
+          <textarea v-model="mediadata.authors[0].name" :readonly="read_only">
           </textarea>
         </div>
 
@@ -237,6 +239,10 @@ export default {
     }
   },  
   mounted() {
+    if(typeof this.mediadata.authors === 'string') {
+      const authors = this.mediadata.authors.split(',');
+      debugger;
+    }
   },
   computed: {
   },
