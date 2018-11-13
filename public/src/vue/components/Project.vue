@@ -25,7 +25,7 @@
             <span 
               v-for="keyword in project.keywords" 
               :key="keyword.title"
-              :class="['tagcolorid_' + parseInt(keyword.title, 36)%4, { 'is--active' : $root.settings.project_filter.keyword === keyword.title }]"
+              :class="['tagcolorid_' + parseInt(keyword.title, 36)%2, { 'is--active' : $root.settings.project_filter.keyword === keyword.title }]"
             >
               {{ keyword.title }}
             </span>

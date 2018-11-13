@@ -46,7 +46,7 @@ export default {
   methods: {
     editTags: function(newTags) {
       this.tags = newTags.map(val => {
-        val.classes = "tagcolorid_" + parseInt(val.text, 36)%4;
+        val.classes = "tagcolorid_" + parseInt(val.text, 36)%2;
         return val;
       });
       const tag_array = this.tags.map((val) => { 

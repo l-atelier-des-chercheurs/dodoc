@@ -652,7 +652,7 @@ let vm = new Vue({
       return allKeywords.map(kw => {
         return {
           text: kw,
-          classes: 'tagcolorid_' + (parseInt(kw, 36) % 4)
+          classes: 'tagcolorid_' + (parseInt(kw, 36) % 2)
         };
       });
     }
