@@ -240,8 +240,7 @@ export default {
   },  
   mounted() {
     if(typeof this.mediadata.authors === 'string') {
-      const authors = this.mediadata.authors.split(',');
-      debugger;
+      this.mediada.authors = this.mediadata.authors.split(',');
     }
   },
   computed: {
