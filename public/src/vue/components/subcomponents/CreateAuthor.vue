@@ -77,7 +77,7 @@ export default {
       let allAuthorsName = this.$root.allAuthors;
 
       // check if project name (not slug) already exists
-      if (allAuthors.indexOf(this.authordata.name) >= 0) {
+      if (allAuthorsName.indexOf(this.authordata.name) >= 0) {
         // invalidate if it does
         this.$alertify
           .closeLogOnClick(true)

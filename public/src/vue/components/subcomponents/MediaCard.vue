@@ -3,7 +3,8 @@
     class="m_media"
     :class=" { 
       'is--inPubli' : media_is_in_current_publi, 
-      'is--fav' : media.fav
+      'is--fav' : media.fav,
+      'is--ownMedia' : media_made_by_current_author
     }"
   >
     <div>
@@ -129,6 +130,13 @@ export default {
   watch: {
   },
   computed: {
+    media_made_by_current_author() {
+      if(!this.media.authors || this.media.authors.length === 0) {
+        return false;
+      }
+      const allAuthorsName = this.$root.allAuthors.map(a => a.name);
+      return this.media.authors.filter(a => allAuthorsName.indexOf(a.name) >= 0).length > 0;
+    }
   },
   methods: {
     isMediaInPubli() {

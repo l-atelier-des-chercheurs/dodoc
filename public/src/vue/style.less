@@ -338,7 +338,7 @@ body {
           font-size: 1.7em;
           font-weight: 200;
           max-width: 6em;
-          text-transform: uppercase;
+          text-transform: initial;
 
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -437,7 +437,6 @@ body {
     .bg-gris_tresclair;
     border-radius: @t-buttonradius;
     text-align: center;
-    text-transform: uppercase;
     font-weight:200;
     
     display: flex;
@@ -1033,6 +1032,12 @@ body {
 
   transition: opacity .4s;
 
+  &.is--ownMedia {
+    .m_metaField {
+      background-color: @c-bleumarine_clair;
+    }
+  }
+
   &.is--inPubli {
     animation-duration: 0.6s;
     animation-name: nudgeright;    
@@ -1216,15 +1221,13 @@ body {
 .m_authorField {
   position: relative;
   .margin-bottom-verysmall;
-  .font-verysmall;
 
   letter-spacing: 0.04em;
   display: flex;
   flex-flow: row wrap;
   text-transform: initial;
 
-  font-family: 'Fira Mono';
-  font-weight: 400;
+  font-weight: 200;
 
   > button {
     flex-basis: auto;

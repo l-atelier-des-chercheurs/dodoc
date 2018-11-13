@@ -41,8 +41,10 @@
 <!-- Author(s) -->
       <div class="margin-bottom-small">
         <label>{{ $t('author') }}</label><br>
-        <textarea v-model="projectdata.authors">
-        </textarea>
+        <AuthorsInput
+          :currentAuthors="projectdata.authors"
+          @authorsChanged="newAuthors => projectdata.authors = newAuthors"
+        />
       </div>
 
     </template>
@@ -57,6 +59,7 @@
 import Modal from './BaseModal.vue';
 import ImageSelect from '../subcomponents/ImageSelect.vue';
 import TagsInput from '../subcomponents/TagsInput.vue';
+import AuthorsInput from '../subcomponents/AuthorsInput.vue';
 
 export default {
   props: {
@@ -65,14 +68,15 @@ export default {
   components: {
     Modal,
     ImageSelect,
-    TagsInput
+    TagsInput,
+    AuthorsInput
   },
   data() {
     return {
       projectdata: {
         name: '',
         password: '',
-        authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:'',
+        authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : [],
         keywords: []
       },
       preview: undefined,

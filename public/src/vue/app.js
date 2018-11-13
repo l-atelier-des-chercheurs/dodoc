@@ -928,7 +928,7 @@ let vm = new Vue({
         .success(
           this.$t('notifications.author_found_with_nfc_tag') +
             ' ' +
-            `<button class="bg-blanc padding-none c-bleumarine font-thin text-uc">${
+            `<button class="bg-blanc padding-none c-bleumarine font-thin">${
               author.name
             }</button>`
         );
