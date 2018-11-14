@@ -34,7 +34,10 @@
 
             <div 
               class="m_activitiesPanel--do"
+              :class="{ 'is--small' : activitiesPanel_isSmall }"
             >
+
+            {{ activitiesPanel_isSmall }}
 
               <div style="position: relative; height: 100%; overflow: hidden">
                 <!-- v-show="$root.do_navigation.view === 'ListView'" -->
@@ -204,12 +207,14 @@ export default {
       height: null,
       percent: this.$root.state.mode === 'print_publication' ? 0:100,
       type: 'width',
-      resizeType: 'left'
+      resizeType: 'left',
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight
     };
   },
   watch: {
   },
-  created() { 
+  created() {
   },
   computed: {
     userSelect() {
@@ -218,9 +223,14 @@ export default {
     cursor() {
       return this.is_dragged ? 'col-resize' : ''
     },
-    window_innerHeight() { 
-      let wHeight = window.innerHeight - 88;
-      return wHeight; 
+    activitiesPanel_isSmall() {
+      if((this.percent/100*this.$root.settings.windowWidth) < 850) {
+        return true;
+      }
+      if(this.$root.settings.windowHeight < 650) {
+        return true;
+      }
+      return false;
     }
   },
   methods: {

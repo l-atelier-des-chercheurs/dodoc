@@ -8,7 +8,7 @@
         { 'is_minimized' : is_minimized }
       ]"
       @mousedown.self="/* closeModal */"
-      :style="`height: ${window_innerHeight}px`"
+      :style="`height: ${$root.settings.windowHeight}px`"
     >
       <div class="m_modal--container"
         :class="[
@@ -194,6 +194,7 @@ export default {
   data() {
     return {
       showModal: false,
+      windowHeight: window.innerHeight
     };
   },
   mounted: function() {
@@ -220,13 +221,6 @@ export default {
     },100);
   },
   computed: {
-    window_innerHeight() { 
-      let wHeight = window.innerHeight;
-      // if(this.$root.settings.enable_system_bar) {
-      //   // wHeight -= 22;
-      // }
-      return wHeight; 
-    }
   },
   methods: {
     modalKeyListener: function(event) {

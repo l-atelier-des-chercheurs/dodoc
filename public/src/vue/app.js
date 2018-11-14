@@ -436,6 +436,9 @@ let vm = new Vue({
       has_modal_opened: false,
       capture_mode_cant_be_changed: false,
 
+      windowHeight: window.innerHeight,
+      windowWidth: window.innerWidth,
+
       capture_options: {
         selected_mode: '',
         selected_devicesId: {
@@ -492,6 +495,11 @@ let vm = new Vue({
     if (window.state.dev_mode === 'debug') {
       console.log('ROOT EVENT: created / checking for errors');
     }
+
+    window.addEventListener('resize', () => {
+      this.settings.windowWidth = window.innerWidth;
+      this.settings.windowHeight = window.innerHeight;
+    });
 
     if (this.store.noticeOfError) {
       if (this.store.noticeOfError === 'failed_to_find_folder') {
