@@ -780,6 +780,7 @@ body {
     border-bottom: 2px solid @c-gris;   
     // border-bottom-style: dashed;
     border-radius: @t-buttonradius;
+    .bg-blanc;
   }
 
   .m_project--presentation--vignette {
@@ -794,11 +795,12 @@ body {
 
 
 .m_project {
-  .bg-gris_clair;
+  .bg-blanc;
   border-radius: 0px;
   // min-height: 100%;
   overflow: hidden;
   .flex-wrap;
+  justify-content: center;
   
   @t-folderwidth: 300px;
 
@@ -812,6 +814,11 @@ body {
     flex: 0 1 @t-folderwidth;
     width: @t-folderwidth;
     .bg-blanc;
+
+    display: flex;
+    flex-flow: column wrap;
+    justify-items: center;
+    align-items: center;    
     
     .m_project--presentation--vignette {
       position: relative;
@@ -827,6 +834,7 @@ body {
         height: 100%;
         object-fit: cover;
       }
+
     }
 
     .m_project--presentation--text {
@@ -852,7 +860,7 @@ body {
   }
   
   .m_project--library {
-    flex: 1 1 440px;
+    flex: 1 1 280px;
     .bg-gris_clair;
           
     @media screen and (min-width: 50rem) and (min-height: 40rem) {
