@@ -17,13 +17,6 @@
         <input type="text" v-model="publidata.name" required autofocus>
       </div>
 
-<!-- Author(s) -->
-      <div class="margin-bottom-small">
-        <label>{{ $t('author') }}</label><br>
-        <textarea v-model="publidata.authors">
-        </textarea>
-      </div>
-
 <!-- Template -->
       <div class="margin-bottom-small">
         <label>{{ $t('format') }}</label>
@@ -35,6 +28,13 @@
             {{ $t('web') }}
           </option>
         </select>
+      </div>
+
+<!-- Author(s) -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('author') }}</label><br>
+        <textarea v-model="publidata.authors">
+        </textarea>
       </div>
 
     </template>

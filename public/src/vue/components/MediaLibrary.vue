@@ -63,17 +63,16 @@
     </div>
 
     <transition-group
-      class="m_project--library--medias mini_scroll_panel"
+      class="m_project--library--medias"
       name="list-complete"
     >
       <MediaCard
-        v-for="media in sortedMedias"
-        :key="media.slugMediaName"
-        :media="media"
-        :metaFileName="media.metaFileName"
-        :slugProjectName="slugProjectName"
-      >
-      </MediaCard>
+          v-for="media in sortedMedias"
+          :key="media.slugMediaName"
+          :media="media"
+          :metaFileName="media.metaFileName"
+          :slugProjectName="slugProjectName"
+      />
     </transition-group>
     
   </div>    
