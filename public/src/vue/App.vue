@@ -114,8 +114,14 @@
                   />
                 </transition>
                 <transition name="ProjectView" :duration="500">
-                  <Publication
-                    v-if="$root.settings.current_slugPubliName !== false"
+                  <PagePublication
+                    v-if="$root.settings.current_slugPubliName !== false && $root.store.publications[$root.settings.current_slugPubliName].template === 'page_by_page'"
+                    :slugPubliName="$root.settings.current_slugPubliName"
+                    :publication="$root.store.publications[$root.settings.current_slugPubliName]"
+                    :read_only="!$root.state.connected"
+                  />
+                  <VideoPublication
+                    v-else-if="$root.settings.current_slugPubliName !== false && $root.store.publications[$root.settings.current_slugPubliName].template === 'video_assemblage'"
                     :slugPubliName="$root.settings.current_slugPubliName"
                     :publication="$root.store.publications[$root.settings.current_slugPubliName]"
                     :read_only="!$root.state.connected"
@@ -141,7 +147,7 @@
     <template 
       v-else-if="$root.state.mode === 'export_publication'"
     >    
-      <Publication
+      <PagePublication
         v-if="$root.settings.current_slugPubliName !== false"
         :slugPubliName="$root.settings.current_slugPubliName"
         :publication="$root.store.publications[$root.settings.current_slugPubliName]"
@@ -152,7 +158,7 @@
     <template 
       v-else-if="$root.state.mode === 'print_publication'"
     >    
-      <Publication
+      <PagePublication
         v-if="$root.settings.current_slugPubliName !== false"
         :slugPubliName="$root.settings.current_slugPubliName"
         :publication="$root.store.publications[$root.settings.current_slugPubliName]"
@@ -174,7 +180,8 @@ import CaptureView from './CaptureView.vue';
 import EditMedia from './components/modals/EditMedia.vue';
 
 import Publications from './Publications.vue';
-import Publication from './components/Publication.vue';
+import PagePublication from './components/PagePublication.vue';
+import VideoPublication from './components/VideoPublication.vue';
 
 import Resizer from './components/splitpane/Resizer.vue'
 import Pane from './components/splitpane/Pane.vue'
@@ -189,7 +196,8 @@ export default {
     CaptureView,
     EditMedia,
     Publications,
-    Publication,
+    PagePublication,
+    VideoPublication,
     Resizer, 
     Pane
   },
