@@ -813,60 +813,62 @@ module.exports = (function() {
               dev.logverbose(`Stored captured image to ${finalPath}`);
               resolve(newFileName);
             });
-        } else if (
-          newFileName.toLowerCase().endsWith('.webm') ||
-          newFileName.toLowerCase().endsWith('.mov')
-        ) {
-          newFileName = newFileName.replace('.webm', '.mp4');
-          newFileName = newFileName.replace('.mov', '.mp4');
-          let finalPath = path.join(uploadDir, newFileName);
+        }
+        // else if (
+        //   newFileName.toLowerCase().endsWith('.webm') ||
+        //   newFileName.toLowerCase().endsWith('.mov')
+        // ) {
+        //   newFileName = newFileName.replace('.webm', '.mp4');
+        //   newFileName = newFileName.replace('.mov', '.mp4');
+        //   let finalPath = path.join(uploadDir, newFileName);
 
-          ffmpeg.ffprobe(tempPath, function(err, metadata) {
-            let duration = '?';
-            if (typeof metadata !== 'undefined') {
-              dev.logverbose(`Found duration: ${metadata.format.duration}`);
-              duration = metadata.format.duration;
-            }
-            let time_since_last_report = 0;
-            var proc = new ffmpeg()
-              .input(tempPath)
-              .withVideoCodec('libx264')
-              .withVideoBitrate('5000k')
-              .withAudioCodec('libmp3lame')
-              .withAudioBitrate('128k')
-              .toFormat('mp4')
-              .output(finalPath)
-              .on('progress', progress => {
-                if (+new Date() - time_since_last_report > 3000) {
-                  time_since_last_report = +new Date();
-                  require('./sockets').notify({
-                    socketid,
-                    not_localized_string: `Converting video for the web : ${
-                      progress.timemark
-                    } / ${duration}`
-                  });
-                }
-              })
-              .on('end', () => {
-                dev.logverbose(`Video has been converted`);
-                fs.unlink(tempPath, err => {
-                  dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
-                });
-                require('./sockets').notify({
-                  socketid,
-                  localized_string: `video_converted`
-                });
-                resolve(newFileName);
-              })
-              .on('error', function(err, stdout, stderr) {
-                dev.error('An error happened: ' + err.message);
-                dev.error('ffmpeg standard output:\n' + stdout);
-                dev.error('ffmpeg standard error:\n' + stderr);
-                reject(`couldn't convert a video`);
-              })
-              .run();
-          });
-        } else if (newFileName.toLowerCase().endsWith('.wav')) {
+        //   ffmpeg.ffprobe(tempPath, function(err, metadata) {
+        //     let duration = '?';
+        //     if (typeof metadata !== 'undefined') {
+        //       dev.logverbose(`Found duration: ${metadata.format.duration}`);
+        //       duration = metadata.format.duration;
+        //     }
+        //     let time_since_last_report = 0;
+        //     var proc = new ffmpeg()
+        //       .input(tempPath)
+        //       .withVideoCodec('libx264')
+        //       .withVideoBitrate('5000k')
+        //       .withAudioCodec('libmp3lame')
+        //       .withAudioBitrate('128k')
+        //       .toFormat('mp4')
+        //       .output(finalPath)
+        //       .on('progress', progress => {
+        //         if (+new Date() - time_since_last_report > 3000) {
+        //           time_since_last_report = +new Date();
+        //           require('./sockets').notify({
+        //             socketid,
+        //             not_localized_string: `Converting video for the web : ${
+        //               progress.timemark
+        //             } / ${duration}`
+        //           });
+        //         }
+        //       })
+        //       .on('end', () => {
+        //         dev.logverbose(`Video has been converted`);
+        //         fs.unlink(tempPath, err => {
+        //           dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
+        //         });
+        //         require('./sockets').notify({
+        //           socketid,
+        //           localized_string: `video_converted`
+        //         });
+        //         resolve(newFileName);
+        //       })
+        //       .on('error', function(err, stdout, stderr) {
+        //         dev.error('An error happened: ' + err.message);
+        //         dev.error('ffmpeg standard output:\n' + stdout);
+        //         dev.error('ffmpeg standard error:\n' + stderr);
+        //         reject(`couldn't convert a video`);
+        //       })
+        //       .run();
+        //   });
+        // }
+        else if (newFileName.toLowerCase().endsWith('.wav')) {
           newFileName = newFileName.replace('wav', 'mp3');
           let finalPath = path.join(uploadDir, newFileName);
 
