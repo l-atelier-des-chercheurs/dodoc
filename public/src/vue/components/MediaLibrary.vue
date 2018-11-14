@@ -49,8 +49,6 @@
           >{{ $t('filters') }}</button>
         </template>
 
-        {{ $root.settings.media_filter.fav }}
-
         <template v-if="!show_medias_instead_of_projects && show_filters">
           <TagsAndAuthorFilters
             :keywordFilter="$root.settings.media_filter.keyword"
@@ -64,19 +62,19 @@
       </div>
     </div>
 
-      <transition-group
-        class="m_project--library--medias"
-        name="list-complete"
+    <transition-group
+      class="m_project--library--medias"
+      name="list-complete"
+    >
+      <MediaCard
+        v-for="media in sortedMedias"
+        :key="media.slugMediaName"
+        :media="media"
+        :metaFileName="media.metaFileName"
+        :slugProjectName="slugProjectName"
       >
-        <MediaCard
-          v-for="media in sortedMedias"
-          :key="media.slugMediaName"
-          :media="media"
-          :metaFileName="media.metaFileName"
-          :slugProjectName="slugProjectName"
-        >
-        </MediaCard>
-      </transition-group>
+      </MediaCard>
+    </transition-group>
     
   </div>    
 </template>
