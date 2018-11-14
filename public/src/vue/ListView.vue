@@ -28,8 +28,8 @@
                 {{ $t('projects') }}
               </span>  
             </label>
-            <input type="checkbox" id="switch-xs" v-model="show_medias_instead_of_projects">
-            <label for="switch-xs">
+            <input type="checkbox" id="media_switch" v-model="show_medias_instead_of_projects">
+            <label for="media_switch">
               <span class=""> 
                 {{ $t('medias') }}
               </span>  

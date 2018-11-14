@@ -3,8 +3,8 @@
 
     <div v-if="favFilter !== undefined" class="padding-sides-small">
       <span class="switch switch-xs">
-        <input type="checkbox" class="switch" id="favswitch" :checked="favFilter" @change="$emit('setFavFilter', $event.target.checked)" :readonly="read_only">
-        <label for="favswitch">
+        <input type="checkbox" class="switch" id="favFilter" :checked="favFilter" @change="$emit('setFavFilter', $event.target.checked)" :readonly="read_only">
+        <label for="favFilter">
           {{ $t('fav') }}
           <svg version="1.1"
             class="inline-svg"

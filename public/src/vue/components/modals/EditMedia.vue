@@ -160,8 +160,8 @@
   <!-- Fav or not -->
         <div class="margin-bottom-small">
           <span class="switch switch-xs">
-            <input type="checkbox" class="switch" id="favswitch" v-model="mediadata.fav" :readonly="read_only">
-            <label for="favswitch">
+            <input type="checkbox" class="switch" id="favswitch_editmedia" v-model="mediadata.fav" :readonly="read_only">
+            <label for="favswitch_editmedia">
               {{ $t('fav') }}
               <svg version="1.1"
                 class="inline-svg"
