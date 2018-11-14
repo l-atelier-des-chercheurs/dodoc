@@ -24,6 +24,9 @@
           <option value="page_by_page">
             {{ $t('page_by_page') }}
           </option>
+          <option value="video_assemblage">
+            {{ $t('video_assemblage') }}
+          </option>
           <option value="web" disabled>
             {{ $t('web') }}
           </option>

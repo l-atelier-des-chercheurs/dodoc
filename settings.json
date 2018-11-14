@@ -159,7 +159,7 @@
         },
         "template": {
           "type": "string",
-          "options": ["page_by_page"],
+          "options": ["page_by_page", "video_assemblage"],
           "default": "page_by_page"          
         },
         "style": {

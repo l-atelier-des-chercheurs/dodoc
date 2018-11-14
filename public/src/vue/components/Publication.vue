@@ -53,17 +53,20 @@
 
         <hr>
 
-        <div class="margin-bottom-small">
+        <!-- <div class="margin-bottom-small">
           <label>{{ $t('format') }}</label>
           <select v-model="new_template">
             <option value="page_by_page">
               {{ $t('page_by_page') }}
             </option>
+            <option value="video_assemblage">
+              {{ $t('video_assemblage') }}
+            </option>
             <option value="web" disabled>
               {{ $t('web') }}
             </option>
           </select>
-        </div>
+        </div> -->
 
         <div class="margin-bottom-small">
           <label>{{ $t('template') }}</label>

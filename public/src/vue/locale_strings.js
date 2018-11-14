@@ -179,6 +179,7 @@ module.exports = (function() {
       standard: 'Standard',
       'feuille de choux': 'Feuille de Choux',
       page_by_page: 'Document page à page',
+      video_assemblage: 'Montage vidéo',
       web: 'Page web',
 
       last_modified: 'Dernière modification',
@@ -409,6 +410,7 @@ module.exports = (function() {
       format: 'Format',
       template: 'Template',
       page_by_page: 'Paged document',
+      video_assemblage: 'Video editing',
       web: 'Webpage',
 
       last_modified: 'Last modified',
