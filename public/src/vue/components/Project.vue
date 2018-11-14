@@ -1,6 +1,5 @@
 <template>
   <div class="m_project">
-
     <div class="m_project--presentation">
       <div v-if="previewURL" class="m_project--presentation--vignette" @click="$root.openProject(slugProjectName)">
         <img

@@ -34,11 +34,8 @@
 
             <div 
               class="m_activitiesPanel--do"
-              :class="{ 'is--small' : activitiesPanel_isSmall }"
+              :class="{ 'is--large' : activitiesPanel_isLarge }"
             >
-
-            {{ activitiesPanel_isSmall }}
-
               <div style="position: relative; height: 100%; overflow: hidden">
                 <!-- v-show="$root.do_navigation.view === 'ListView'" -->
                 <transition name="ListView" :duration="500">
@@ -223,14 +220,14 @@ export default {
     cursor() {
       return this.is_dragged ? 'col-resize' : ''
     },
-    activitiesPanel_isSmall() {
+    activitiesPanel_isLarge() {
       if((this.percent/100*this.$root.settings.windowWidth) < 850) {
-        return true;
+        return false;
       }
       if(this.$root.settings.windowHeight < 650) {
-        return true;
+        return false;
       }
-      return false;
+      return true;
     }
   },
   methods: {

@@ -717,15 +717,8 @@ body {
 }
 .m_projectview {
   .bg-gris_clair;
-
-
-  @media screen and (min-width: 50rem) and (min-height: 40rem) {
-    .m_project {
-      height: 100%;
-      min-height: 100%;
-    }
-  }
 }
+
 
 .m_publicationsview {
   .m_actionbar {
@@ -736,22 +729,68 @@ body {
   }
 }
 
-.m_projects {  
-  @media screen and (min-width: 50rem) and (min-height: 40rem) {
-    display: flex;
-    flex-flow: column nowrap;
-    align-content: stretch;
-    height: 100%;
+.m_activitiesPanel--do.is--large {
+
+
+  .m_listview {
+    .m_projects {
+      display: flex;
+      flex-flow: column nowrap;
+      align-content: stretch;
+      height: 100%;
+  
+      .m_projects--list {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        .custom_scrollbar(8px, 5px, 6px);
+      }
+    }    
+  }
+
+  .m_projectview {
+    .m_project {
+      height: 100%;
+    }
+
+    .m_project--library {
+      display: flex;
+      flex-flow: column nowrap;
+      align-content: stretch;
+      height: 100%;
+
+      .m_actionbar {
+        .margin-medium;
+      }
+      .m_project--library--medias {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        .custom_scrollbar(8px, 5px, 6px);
+        padding: 0;
+
+        .padding-sides-small;
+        .padding-bottom-small;
+        .padding-top-medium;
+    
+      }      
+    }
+  }
+
+}
+
+.m_activitiesPanel--do {
+  .m_projects {  
 
     > .m_actionbar {
       flex: 0 0 auto;
     }
     > .m_projects--list {
       flex: 1 1 auto;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      .custom_scrollbar(8px, 5px, 6px);
     }
+    .m_project {
+      height: 100%;
+      min-height: 100%;
+    }
+  
   }
 }
 
@@ -803,10 +842,6 @@ body {
   .flex-wrap;
   justify-content: center;
   
-  @media screen and (min-width: 50rem) and (min-height: 40rem) {
-    // height: 100%;
-  }
-
   .m_project--presentation {
     position: relative;
     z-index: 0;
@@ -862,7 +897,7 @@ body {
     flex: 1 1 280px;
     .bg-gris_clair;
           
-    @media screen and (min-width: 50rem) and (min-height: 40rem) {
+    .m_activitiesPanel--do:not(.is--small) {
       display: flex;
       flex-flow: column nowrap;
       align-content: stretch;
@@ -875,15 +910,6 @@ body {
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         .custom_scrollbar(8px, 5px, 6px);
-      }
-    }
-
-    @media screen and (max-width: 50rem) {
-      .m_actionbar {
-        .margin-small;
-      }
-      .m_project--library--medias {
-        padding: 0;
       }
     }
   }
@@ -910,9 +936,8 @@ body {
     display: flex;
     flex-flow: row wrap;
     align-content: flex-start;
-    .padding-sides-small;
     .padding-bottom-small;
-    .padding-top-medium;
+    .padding-top-small;
 
     > * {
       flex: 0 0 100/5%;
@@ -928,7 +953,7 @@ body {
 
 
 .m_actionbar {
-  .margin-medium;
+  .margin-small;
   margin-bottom: 0;
   border-bottom: 4px solid @c-gris_tresclair;
 
@@ -967,7 +992,7 @@ body {
     .padding-vert-small;
   }
 
-  @media screen and (max-width: 50rem) {
+  .m_activitiesPanel--do:not(.is--large) & {
     font-size: 0.7em;
     .padding-top-small;
 
@@ -1501,7 +1526,7 @@ body {
         text-transform: lowercase;
         margin: @t-skipline/4 @t-skipline/4;        
 
-        @media screen and (max-width: 50rem) {
+        .m_activitiesPanel--do.is--small {
           display: none;
         }        
       }

@@ -1,7 +1,7 @@
 <template>
   <div class="m_listview"
   >
-    <main class="m_projects">
+    <main class="m_projects main_scroll_panel">
       <div class="m_actionbar">
         <div class="m_actionbar--buttonBar">
           <button
@@ -111,7 +111,7 @@
       </template>
       <template v-else>
         <transition-group
-          class="m_projects--list"
+          class="m_projects--list mini_scroll_panel"
           name="list-complete"
         >
           <div v-for="item in groupedMedias" :key="item[0]">

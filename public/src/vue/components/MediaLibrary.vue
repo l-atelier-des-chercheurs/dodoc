@@ -63,7 +63,7 @@
     </div>
 
     <transition-group
-      class="m_project--library--medias"
+      class="m_project--library--medias mini_scroll_panel"
       name="list-complete"
     >
       <MediaCard
