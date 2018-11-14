@@ -22,7 +22,6 @@
       </div>
       <div class="m_actionbar--text">
         {{ $t('publication_list') }}
-
       </div>
     </div>    
     <div class="m_publicationItems">
@@ -54,14 +53,6 @@
             {{ $root.formatDateToHuman(publication.date_modified) }}
           </div>
         </div>
-        <!-- <div class="m_metaField">
-          <div class="">
-            {{ $t('number_of_medias') }}
-          </div>
-          <div>
-            {{ typeof publication.medias === 'object' ? Object.keys(publication.medias).length : '' }}
-          </div>
-        </div> -->
 
         <button 
           type="button" 
