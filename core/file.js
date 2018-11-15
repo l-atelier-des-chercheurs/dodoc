@@ -868,49 +868,50 @@ module.exports = (function() {
         //       .run();
         //   });
         // }
-        else if (newFileName.toLowerCase().endsWith('.wav')) {
-          newFileName = newFileName.replace('wav', 'mp3');
-          let finalPath = path.join(uploadDir, newFileName);
+        // else if (newFileName.toLowerCase().endsWith('.wav')) {
+        //   newFileName = newFileName.replace('wav', 'mp3');
+        //   let finalPath = path.join(uploadDir, newFileName);
 
-          ffmpeg.ffprobe(tempPath, function(err, metadata) {
-            let duration = '?';
-            if (typeof metadata !== 'undefined') {
-              dev.logverbose(`Found duration: ${metadata.format.duration}`);
-              duration = metadata.format.duration;
-            }
-            let time_since_last_report = 0;
+        //   ffmpeg.ffprobe(tempPath, function(err, metadata) {
+        //     let duration = '?';
+        //     if (typeof metadata !== 'undefined') {
+        //       dev.logverbose(`Found duration: ${metadata.format.duration}`);
+        //       duration = metadata.format.duration;
+        //     }
+        //     let time_since_last_report = 0;
 
-            ffmpeg(tempPath)
-              .withAudioCodec('libmp3lame')
-              .withAudioBitrate('192k')
-              .output(finalPath)
-              .on('progress', progress => {
-                if (+new Date() - time_since_last_report > 3000) {
-                  time_since_last_report = +new Date();
-                  require('./sockets').notify({
-                    socketid,
-                    not_localized_string: `Converting audio for the web : ${
-                      progress.timemark
-                    } / ${duration}`
-                  });
-                }
-              })
-              .on('end', () => {
-                dev.logverbose(`Audio has been converted`);
-                fs.unlink(tempPath, err => {
-                  dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
-                });
-                resolve(newFileName);
-              })
-              .on('error', function(err, stdout, stderr) {
-                dev.error('An error happened: ' + err.message);
-                dev.error('ffmpeg standard output:\n' + stdout);
-                dev.error('ffmpeg standard error:\n' + stderr);
-                reject(`couldn't convert an audio file`);
-              })
-              .run();
-          });
-        } else {
+        //     ffmpeg(tempPath)
+        //       .withAudioCodec('libmp3lame')
+        //       .withAudioBitrate('192k')
+        //       .output(finalPath)
+        //       .on('progress', progress => {
+        //         if (+new Date() - time_since_last_report > 3000) {
+        //           time_since_last_report = +new Date();
+        //           require('./sockets').notify({
+        //             socketid,
+        //             not_localized_string: `Converting audio for the web : ${
+        //               progress.timemark
+        //             } / ${duration}`
+        //           });
+        //         }
+        //       })
+        //       .on('end', () => {
+        //         dev.logverbose(`Audio has been converted`);
+        //         fs.unlink(tempPath, err => {
+        //           dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
+        //         });
+        //         resolve(newFileName);
+        //       })
+        //       .on('error', function(err, stdout, stderr) {
+        //         dev.error('An error happened: ' + err.message);
+        //         dev.error('ffmpeg standard output:\n' + stdout);
+        //         dev.error('ffmpeg standard error:\n' + stderr);
+        //         reject(`couldn't convert an audio file`);
+        //       })
+        //       .run();
+        //   });
+        // }
+        else {
           let finalPath = path.join(uploadDir, newFileName);
           fs.renameSync(tempPath, finalPath);
           resolve(newFileName);
