@@ -62,7 +62,7 @@ export default {
     return {
       publidata: {
         name: '',
-        template: 'page_by_page',
+        template: 'video_assemblage',
         authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:''
       }
     };

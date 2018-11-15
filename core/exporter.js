@@ -325,11 +325,10 @@ module.exports = (function() {
             let time_since_last_report = 0;
             ffmpeg_task
               .withVideoCodec('libx264')
-              .withVideoBitrate('5000k')
+              .withVideoBitrate('4000k')
               .withAudioCodec('libmp3lame')
               .withAudioBitrate('128k')
               .toFormat('mp4')
-              .mergeToFile(videoPath, cachePath)
               .on('progress', progress => {
                 if (+new Date() - time_since_last_report > 3000) {
                   time_since_last_report = +new Date();
@@ -349,7 +348,7 @@ module.exports = (function() {
                 dev.error('ffmpeg standard error:\n' + stderr);
                 reject(`couldn't convert a video`);
               })
-              .run();
+              .mergeToFile(videoPath, cachePath);
           });
         });
       });

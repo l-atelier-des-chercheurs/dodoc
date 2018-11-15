@@ -29,7 +29,18 @@
 
             </template>
           </button>
-          <video :src="link_to_video" controls />
+          
+          <div v-if="video_request_status === 'generated'">
+            <video :src="link_to_video" controls />
+            <a 
+              v-if="link_to_video !== false"
+              class="buttonLink margin-left-none"
+              :href="link_to_video"
+            >
+              {{ $t('download') }}
+            </a>
+          </div>
+
         </div>    
       </div>
     </template>    

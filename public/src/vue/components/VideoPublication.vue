@@ -13,14 +13,9 @@
           ←
         </button>
 
-
         <div class="m_publicationMeta--topbar--title">
           {{ publication.name }}
         </div>
-
-        {{ publication.medias_slugs }}
-
-        medias_slugs_in_order : {{ medias_slugs_in_order }}
 
         <template 
           v-if="$root.state.mode !== 'export_publication'"
@@ -58,7 +53,7 @@
             :context="'preview'"
             :slugFolderName="media.slugProjectName"
             :media="media"
-          ></MediaContent>
+          />
           <button type="button" class="font-verysmall"
             @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
           >
@@ -88,7 +83,7 @@ export default {
     return {
       showExportModal: false,
       publication_medias: [],
-      medias_slugs_in_order: !!this.publication.medias_slugs ? this.publication.medias_slugs : []
+      medias_slugs_in_order: []
     }
   },
   created() {
@@ -96,7 +91,11 @@ export default {
   mounted() {
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
-    this.medias_slugs_in_order = this.publication.medias_slugs;
+    
+    if(this.publication.hasOwnProperty('medias_slugs') && this.publication.medias_slugs.length > 0) {
+      this.medias_slugs_in_order = this.publication.medias_slugs;
+    }
+    
     this.updateMediasPubli();  
     this.$eventHub.$emit('publication_medias_updated');      
   },
@@ -147,6 +146,8 @@ export default {
         this.medias_slugs_in_order.push({
           slugMediaName: d.metaFileName
         });
+
+        debugger;
 
         this.$root.editFolder({ 
           type: 'publications', 
@@ -222,7 +223,10 @@ export default {
       let publi_medias = [];
       let missingMedias = [];
 
-      debugger;
+
+      if(this.medias_slugs_in_order.length === 0) {
+        return;
+      }
 
       this.medias_slugs_in_order.map(item => {
         const metaFileName = item.slugMediaName;
