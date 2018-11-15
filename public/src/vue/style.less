@@ -999,10 +999,11 @@ body {
 
   .m_activitiesPanel--do:not(.is--large) & {
     font-size: 0.7em;
-    .padding-top-small;
+    .padding-top-verysmall;
 
     > span {
       display: block;
+      .padding-vert-verysmall;
     }
   }  
 
@@ -1158,6 +1159,12 @@ body {
 
     .is--fav& {
       border-bottom: 4px solid @c-rouge;
+    }
+
+    :not(.is--fav)& {
+      .button_addToPubli {
+        margin-bottom: 4px;
+      }
     }
 
     transition: all 1s cubic-bezier(.25,.8,.25,1);  
@@ -2417,7 +2424,8 @@ body {
       .bg-blanc;
       .padding-small;
       .margin-small;
-
+      .bg-blanc;
+      border-radius: 4px;
     }
   }
 }
