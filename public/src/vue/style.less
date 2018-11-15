@@ -1215,18 +1215,7 @@ body {
         margin-bottom: @t-skipline/2;
         font-size: inherit;
       }
-      // h1,h2,h3 {
-      //   font-weight: 500;
-      // }
-      // h1 {
-      //   font-size:1.5em;
-      // }
-      // h2 {
-      //   font-size: 1.25em;
-      // }
-      // h3 {
-      //   font-size: 1.15em;
-      // }
+
     }
 
     .button_addToPubli {
@@ -2061,8 +2050,28 @@ body {
     .padding-medium;
 
   }
+}
 
+.mediaContainer {
+  position: relative;
+}
 
+.mediaContainer--videoPlay {
+  width: 100%;
+  height: 100%;
+  padding: 10px ~"calc(50% - 50px)";
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  opacity: 0.95;
+  cursor: pointer;
+  background-image: linear-gradient(transparent, rgba(0,0,0,.1));
+  transition: opacity 150ms;
+
+  &.is--hidden {
+    opacity: 0;
+  }
 }
 
 

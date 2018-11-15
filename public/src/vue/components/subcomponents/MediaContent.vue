@@ -17,8 +17,19 @@
         <img :src="linkToVideoThumb">
       </template>
       <template v-else>
-        <video controls preload="none" :src="mediaURL" :poster="linkToVideoThumb">
+        <video ref="video" preload="none" :src="mediaURL" :poster="linkToVideoThumb">
         </video>
+        <svg 
+          ref="playIcon" 
+          v-if="!video_is_playing"
+          class="mediaContainer--videoPlay" 
+          viewBox="0 0 200 200" 
+          alt="Play video"
+          @click="togglePlayVideo()"
+        >
+          <circle cx="100" cy="100" r="90" fill="none" stroke-width="15" stroke="#fff"></circle>
+          <polygon points="70, 55 70, 145 145, 100" fill="#fff"></polygon>
+        </svg>
       </template>
     </template>
 
@@ -113,6 +124,7 @@ export default {
         preview_hovered: 600,
         default: 1600
       },
+      video_is_playing: false,
       htmlForEditor: this.value,
       customToolbar: [
         [{ 'header': [false, 1, 2, 3, 4] }],
@@ -131,6 +143,8 @@ export default {
         }
       }
     }
+  },
+  beforeDestroy() {
   },
   watch: {
     'htmlForEditor': function() {
@@ -204,6 +218,15 @@ export default {
       return pathToSmallestThumb !== undefined
         ? url
         : this.mediaURL;
+    }
+  },
+  methods: {
+    togglePlayVideo() {
+      if(this.video_is_playing === false) {
+        this.video_is_playing = true;
+        this.$refs.video.play();
+        this.$refs.video.setAttribute('controls', 'controls')      
+      }
     }
   }
 };
