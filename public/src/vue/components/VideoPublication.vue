@@ -46,15 +46,15 @@
         <div
           class="m_videoPublication--media"
           v-for="media in publication_medias" 
-          :key="media.publi_meta.slugMediaName"
+          :key="media.publi_meta.metaFileName"
         >
           <MediaContent
             v-model="media.content"
-            :context="'preview'"
+            :context="'full'"
             :slugFolderName="media.slugProjectName"
             :media="media"
           />
-          <button type="button" class="font-verysmall"
+          <button type="button" class="buttonLink font-verysmall"
             @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
           >
             {{ $t('remove') }}

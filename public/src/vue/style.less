@@ -1154,11 +1154,10 @@ body {
     cursor: pointer;
     .bg-blanc;
     border-radius: 4px;
-    border-bottom: 4px solid; 
-    border-bottom-color: @c-blanc;  
+    border-bottom: 4px solid transparent; 
 
     .is--fav& {
-      border-color: @c-rouge;
+      border-bottom: 4px solid @c-rouge;
     }
 
     transition: all 1s cubic-bezier(.25,.8,.25,1);  
@@ -1221,6 +1220,11 @@ body {
       // h3 {
       //   font-size: 1.15em;
       // }
+    }
+
+    .button_addToPubli {
+      border-radius: 4px;
+      // margin: 0;
     }
 
     .m_media--caption {
@@ -2408,11 +2412,12 @@ body {
     align-content: center;
 
     .m_videoPublication--media {
-      width: 200px;
+      max-width: 400px;
       height: auto;
       .bg-blanc;
       .padding-small;
       .margin-small;
+
     }
   }
 }
