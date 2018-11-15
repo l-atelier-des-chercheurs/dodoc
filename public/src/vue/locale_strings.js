@@ -29,6 +29,7 @@ module.exports = (function() {
       kb: 'ko',
       mb: 'Mo',
       gb: 'Go',
+      duration: 'Durée',
 
       date: 'Date',
       portrait: 'Portrait',
@@ -266,6 +267,7 @@ module.exports = (function() {
       kb: 'KB',
       mb: 'MB',
       gb: 'GB',
+      duration: 'Duration',
 
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',

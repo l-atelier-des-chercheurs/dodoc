@@ -27,8 +27,8 @@
           alt="Play video"
           @click="togglePlayVideo()"
         >
-          <circle cx="100" cy="100" r="90" fill="none" stroke-width="15" stroke="#fff"></circle>
-          <polygon points="70, 55 70, 145 145, 100" fill="#fff"></polygon>
+          <circle cx="100" cy="100" r="90" fill="#fff" stroke-width="15" stroke="#fff"></circle>
+          <polygon points="70, 55 70, 145 145, 100" fill="#353535"></polygon>
         </svg>
       </template>
     </template>

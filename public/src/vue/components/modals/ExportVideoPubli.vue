@@ -31,7 +31,20 @@
           </button>
           
           <div v-if="video_request_status === 'generated'">
-            <video :src="link_to_video" controls />
+            <div class="mediaContainer">
+              <video :src="link_to_video" controls ref="video" preload="auto" />
+              <svg 
+                ref="playIcon" 
+                v-if="!video_is_playing"
+                class="mediaContainer--videoPlay" 
+                viewBox="0 0 200 200" 
+                alt="Play video"
+                @click="togglePlayVideo()"
+              >
+                <circle cx="100" cy="100" r="90" fill="#fff" stroke-width="15" stroke="#fff"></circle>
+                <polygon points="70, 55 70, 145 145, 100" fill="#353535"></polygon>
+              </svg>
+            </div>
             <a 
               v-if="link_to_video !== false"
               class="buttonLink margin-left-none"
@@ -40,8 +53,7 @@
               {{ $t('download') }}
             </a>
           </div>
-
-        </div>    
+        </div>
       </div>
     </template>    
   </Modal>
@@ -74,6 +86,13 @@ export default {
   computed: {
   },
   methods: {
+    togglePlayVideo() {
+      if(this.video_is_playing === false) {
+        this.video_is_playing = true;
+        this.$refs.video.play();
+        this.$refs.video.setAttribute('controls', 'controls')      
+      }
+    },
     downloadVideo() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • ExportVideoPubli: downloadVideo`);

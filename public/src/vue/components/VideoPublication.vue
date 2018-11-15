@@ -53,7 +53,25 @@
             :context="'full'"
             :slugFolderName="media.slugProjectName"
             :media="media"
+            class=""
           />
+          <div class="m_metaField">
+            <div>
+              {{ $t('project') }}
+            </div>
+            <div>
+              {{ $root.store.projects[media.slugProjectName].name }}
+            </div>
+          </div>
+          <div class="m_metaField">
+            <div>
+              {{ $t('duration') }}
+            </div>
+            <div>
+              {{ media.duration }}
+            </div>
+          </div>
+
           <button type="button" class="buttonLink font-verysmall"
             @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
           >
