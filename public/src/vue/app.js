@@ -114,6 +114,7 @@ Vue.prototype.$socketio = new Vue({
 
       this.socket.on('listSpecificMedias', this._onListSpecificMedias);
       this.socket.on('publiPDFGenerated', this._onPubliPDFGenerated);
+      this.socket.on('publiVideoGenerated', this._onPubliVideoGenerated);
 
       this.socket.on('newNetworkInfos', this._onNewNetworkInfos);
 
@@ -285,6 +286,11 @@ Vue.prototype.$socketio = new Vue({
     _onPubliPDFGenerated(data) {
       console.log('Received _onPubliPDFGenerated packet.');
       this.$eventHub.$emit('socketio.publication.pdfIsGenerated', data);
+    },
+
+    _onPubliVideoGenerated(data) {
+      console.log('Received _onPubliVideoGenerated packet.');
+      this.$eventHub.$emit('socketio.publication.videoIsGenerated', data);
     },
 
     // for projects, authors and publications

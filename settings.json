@@ -196,6 +196,9 @@
         },
         "pages": {
           "type": "array"
+        },
+        "medias_slugs": {
+          "type": "array"
         }
       },
       "medias": {
@@ -226,9 +229,6 @@
             "type": "number"
           },
           "height": {
-            "type": "number"
-          },
-          "index": {
             "type": "number"
           }
         }

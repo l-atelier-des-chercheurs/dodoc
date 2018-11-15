@@ -19,9 +19,9 @@ module.exports = function(app, io, m) {
   app.get('/:project', loadFolderOrMedia);
   app.get('/:project/media/:metaFileName', loadFolderOrMedia);
   app.get('/publication/:publication', printPublication);
-  app.get('/publication/video/:publication', videoPublication);
   app.get('/publication/web/:publication', exportPublication);
   app.get('/publication/print/:pdfName', showPDF);
+  app.get('/publication/video/:videoName', showVideo);
   app.post('/:project/file-upload', postFile2);
 
   /**
@@ -110,16 +110,6 @@ module.exports = function(app, io, m) {
     });
   }
 
-  function videoPublication(req, res) {
-    let slugPubliName = req.param('publication');
-    generatePageData(req).then(pageData => {
-      exporter.loadPublication(slugPubliName, pageData).then(pageData => {
-        // videoPublication
-        debugger;
-      });
-    });
-  }
-
   function exportPublication(req, res) {
     let slugPubliName = req.param('publication');
     generatePageData(req).then(pageData => {
@@ -174,6 +164,22 @@ module.exports = function(app, io, m) {
     const pdfPath = path.join(cachePath, pdfName);
 
     res.download(pdfPath, pdfName, function(err) {
+      if (err) {
+      } else {
+      }
+    });
+  }
+
+  function showVideo(req, res) {
+    let videoName = req.param('videoName');
+    const cachePath = path.join(
+      global.tempStorage,
+      settings.cacheDirname,
+      '_publications'
+    );
+    const videoPath = path.join(cachePath, videoName);
+
+    res.download(videoPath, videoName, function(err) {
       if (err) {
       } else {
       }

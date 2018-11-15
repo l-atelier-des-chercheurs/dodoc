@@ -308,12 +308,7 @@ module.exports = (function() {
       slugPubliName = ${slugPubliName}`
     );
     exporter.makePDFForPubli({ slugPubliName }).then(({ pdfName, pdfPath }) => {
-      api.sendEventWithContent(
-        'publiPDFGenerated',
-        { pdfName, pdfPath },
-        io,
-        socket
-      );
+      api.sendEventWithContent('videoIsGenerated', { videoPath }, io, socket);
     });
   }
 
@@ -324,12 +319,11 @@ module.exports = (function() {
     );
 
     exporter
-      .makeVideoForPubli({ slugPubliName })
-      .then(({ pdfName, pdfPath }) => {
-        debugger;
+      .makeVideoForPubli({ slugPubliName, socket })
+      .then(({ videoName }) => {
         api.sendEventWithContent(
-          'publiPDFGenerated',
-          { pdfName, pdfPath },
+          'publiVideoGenerated',
+          { videoName },
           io,
           socket
         );

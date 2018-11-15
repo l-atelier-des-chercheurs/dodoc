@@ -25,9 +25,11 @@
               {{ $t('creation_in_progress') }}
             </template>
             <template v-else-if="video_request_status === 'generated'">
-              {{ $t('pdf_created') }}
+              {{ $t('video_created') }}
+
             </template>
           </button>
+          <video :src="link_to_video" controls />
         </div>    
       </div>
     </template>    
@@ -46,7 +48,8 @@ export default {
   },
   data() {
     return {
-      video_request_status: false
+      video_request_status: false,
+      link_to_video: false
     }
   },
   created() {
@@ -55,7 +58,6 @@ export default {
   },
   beforeDestroy() {
   },
-
   watch: {
   },
   computed: {
@@ -68,16 +70,17 @@ export default {
 
       this.$eventHub.$on('socketio.publication.videoIsGenerated', this.videoPubliIsGenerated);
       this.$root.downloadVideoPubli({ 
-        slugPubliName: this.slugPubliName, 
+        slugPubliName: this.slugPubliName
       });
       this.video_request_status = 'waiting_for_server';
     },
-    videoPubliIsGenerated({ pdfName, pdfPath }) {
+    videoPubliIsGenerated({ videoName }) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: videoPubliIsGenerated`);
       }
       this.$eventHub.$off('socketio.publication.videoIsGenerated', this.videoPubliIsGenerated);
       this.video_request_status = 'generated';
+      this.link_to_video = window.location.origin + '/publication/video/' + videoName;
     },
   }
 }
