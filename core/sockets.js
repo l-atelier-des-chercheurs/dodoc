@@ -308,7 +308,12 @@ module.exports = (function() {
       slugPubliName = ${slugPubliName}`
     );
     exporter.makePDFForPubli({ slugPubliName }).then(({ pdfName, pdfPath }) => {
-      api.sendEventWithContent('videoIsGenerated', { videoPath }, io, socket);
+      api.sendEventWithContent(
+        'publiPDFGenerated',
+        { pdfName, pdfPath },
+        io,
+        socket
+      );
     });
   }
 

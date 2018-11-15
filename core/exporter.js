@@ -343,6 +343,7 @@ module.exports = (function() {
                 resolve({ videoName });
               })
               .on('error', function(err, stdout, stderr) {
+                ffmpeg_task = null;
                 dev.error('An error happened: ' + err.message);
                 dev.error('ffmpeg standard output:\n' + stdout);
                 dev.error('ffmpeg standard error:\n' + stderr);

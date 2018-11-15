@@ -171,19 +171,25 @@
     padding-top: @t-skipline;
     overflow-y: auto;
     .m_modal--container {  
-      max-width: @t-panelWidth * 3;
+      max-width: @t-panelWidth * 4;
       align-self: flex-start;
       .m_modal--preview {
         height: auto;
       }
     }
   }
+  &.typeOfModal-ExportVideo {
+    .m_modal--container {  
+      // max-width: @t-panelWidth * 4;
+    }
+  }
+
   &.typeOfModal-LargeAndNoScroll {
     overflow: hidden;
 
     .m_modal--container {   
       margin: 0;
-      max-width: @t-panelWidth * 3;
+      max-width: @t-panelWidth * 4;
       // align-self: flex-start;
       .m_modal--preview {
         @media screen and (min-width: 50rem) {

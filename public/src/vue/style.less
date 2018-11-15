@@ -747,6 +747,8 @@ body {
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         .custom_scrollbar(8px, 5px, 6px);
+        .padding-sides-small;
+
       }
     }    
   }
@@ -804,7 +806,6 @@ body {
 .m_projects--list {
   .padding-bottom-small;
   .padding-top-medium;
-  .padding-sides-small;
 
   .flex-wrap;
   .flex-horizontally-start;
@@ -1277,6 +1278,7 @@ body {
 
   > *:first-child {
     .label;
+    .margin-right-small;
   }
 
   > *:nth-child(2) {
@@ -2106,8 +2108,8 @@ body {
   width: 100%;
   .bg-blanc;
   .margin-sides-small; 
+  .margin-vert-verysmall; 
   .padding-small;
-  margin-bottom: 1px;
   text-align: center;
 
   display: flex;
@@ -2141,6 +2143,12 @@ body {
   }
 
   button {
+  }
+}
+
+.m_exportModal {
+  video {
+    width: 600px;
   }
 }
 
@@ -2238,6 +2246,7 @@ body {
   padding-left: 0;
   border-left: @c-bleuvert @t-skipline/2 solid;
   transition: background-color .4s ease-out;
+  overflow-y: visible;
 
   &.is--preview {
     .bg-creme;
