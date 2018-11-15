@@ -640,6 +640,10 @@ body {
     &.is--open {
       box-shadow: 0px 2px 5px @c-bleuvert_fonce;
     }
+
+    + div > .m_publicationview {
+      border-color: transparent !important;
+    }
   }
 
   @media screen and (max-width: 600px) {
@@ -2294,8 +2298,7 @@ body {
   .padding-sides-small;
   padding-left: 0;
   border-left: @c-bleuvert @t-skipline/2 solid;
-  transition: background-color .4s ease-out;
-  overflow-y: visible;
+  transition: all .4s ease-out;
 
   &.is--preview {
     .bg-creme;
@@ -3083,6 +3086,7 @@ body[data-mode="export_publication"] {
     height: auto;
     border: transparent;
     background-color: transparent;
+    overflow-y: visible;
   }    
 }
 @media screen {
