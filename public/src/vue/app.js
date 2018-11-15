@@ -1012,28 +1012,53 @@ let vm = new Vue({
 
       // EXPERIMENTAL : SPECIFIC TAGS OPEN MEDIA MODAL
       // '3121284126' '3121310334' '3121063518' '3121370062'
-      if (e.detail === '3121284126') {
-        this.$root.media_modal.minimized = false;
-        this.$root.media_modal.show_sidebar = false;
+      debugger;
 
-        this.openProject('110bis');
+      const nfc_custom_tags = [
+        {
+          id: '3121284126',
+          slugProjectName: '110bis-16-novembre',
+          metaFileName: 'question-1-49.jpg.txt'
+        },
+        {
+          id: '3121370062',
+          slugProjectName: '110bis-16-novembre',
+          metaFileName: 'question-2-49-49-49.jpg.txt'
+        },
+        {
+          id: '3121063518',
+          slugProjectName: '110bis-16-novembre',
+          metaFileName: 'question-3-49-49-49.jpg.txt'
+        }
+      ];
+
+      const matching_tags = nfc_custom_tags.filter(nfc => nfc.id === e.detail);
+
+      if (matching_tags.length > 0) {
+        this.closeMedia();
+        this.media_modal.minimized = false;
+        this.media_modal.show_sidebar = false;
+
+        const matching_tag = matching_tags[0];
 
         this.$socketio.listMedias({
           type: 'projects',
-          slugFolderName: '110bis'
+          slugFolderName: matching_tag.slugProjectName
         });
 
         this.$eventHub.$once('socketio.projects.listMedias', () => {
           this.openMedia({
-            slugProjectName: '110bis',
-            metaFileName: 'image-20181106-195824-gmf.jpeg.txt'
+            slugProjectName: matching_tag.slugProjectName,
+            metaFileName: matching_tag.metaFileName
           });
           setTimeout(() => {
-            this.$root.do_navigation.view = 'CaptureView';
-          }, 1000);
+            this.openProject(matching_tag.slugProjectName);
+            this.settings.capture_options.selected_mode = 'video';
+            this.do_navigation.view = 'CaptureView';
+          }, 2000);
 
           setTimeout(() => {
-            this.$root.media_modal.minimized = true;
+            this.media_modal.minimized = true;
           }, 4000);
         });
 

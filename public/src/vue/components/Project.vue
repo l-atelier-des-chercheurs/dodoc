@@ -11,7 +11,7 @@
           class="m_project--presentation--text--title"
            @click="$root.openProject(slugProjectName)"
         >
-          {{ project.name }}    
+          {{ project.name }}   
         </h2>
 
         <div class="m_project--presentation--text--infos">
