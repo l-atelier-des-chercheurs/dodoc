@@ -21,6 +21,7 @@
   @media screen and (max-width: 50rem) {
     align-items: flex-start;
     height: auto !important;
+    padding: 0 !important;
   }
 
   &.is_invisible {
@@ -404,6 +405,10 @@
   &.is_minimized {
     // transform: ;
     transform: scale(-1) rotate(-360deg);
+  }
+
+  @media screen and (max-width: 40rem) {
+    display: none;
   }
 
 }

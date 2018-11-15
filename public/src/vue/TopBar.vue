@@ -4,7 +4,7 @@
       <div class="m_topbar--left--logo" >
         <transition name="BackButton" :duration="500">
           <button class="backButton text-ellipsis" type="button" v-if="has_back_button" @click="goBack()">
-            ‹ {{ $t('back') }}
+            ‹ <span class="backButton--text">{{ $t('back') }}</span>
           </button>
         </transition>
         <img src="/images/i_logo.svg" @click="goHome()" />

@@ -201,6 +201,13 @@ body {
         text-align: center;
 
         text-transform: lowercase;
+
+        @media screen and (max-width: 50rem) {
+          width: 42px;
+          .backButton--text {
+            display: none;
+          }
+        }
         
       }
   
@@ -630,6 +637,10 @@ body {
       box-shadow: 0px 2px 5px @c-bleuvert_fonce;
     }
   }
+
+  @media screen and (max-width: 600px) {
+    display: none;
+  }
 }
 
 
@@ -903,7 +914,7 @@ body {
     flex: 1 1 280px;
     .bg-gris_clair;
           
-    .m_activitiesPanel--do:not(.is--small) {
+    .m_activitiesPanel--do {
       display: flex;
       flex-flow: column nowrap;
       align-content: stretch;
@@ -1474,8 +1485,17 @@ body {
     align-items: center;
     padding: @t-skipline/2 0;
 
+    @media screen and (max-width: 50rem) {
+      flex-flow: row nowrap;
+    }
+
+
     button {
-      .c-orange;      
+      .c-orange;    
+      
+      @media screen and (max-width: 50rem) {
+        display: none;
+      }
     }
 
     > * {
@@ -1512,16 +1532,21 @@ body {
       text-align: center;
       transition: all 1s;
 
+
       .picto {
         border-radius: 50%;
         overflow: hidden;      
         display: block;
         width: 36px;
         height: 36px;
-        margin: @t-skipline/4 @t-skipline/4;    
+        .margin-verysmall;
         padding: 4px;   
         .bg-orange;
          
+        @media screen and (max-width: 50rem) {
+          margin: 0;
+        }
+
         img {
           width: 100%;
           height: 100%;
@@ -1533,9 +1558,9 @@ body {
         text-transform: lowercase;
         margin: @t-skipline/4 @t-skipline/4;        
 
-        .m_activitiesPanel--do.is--small {
+        @media screen and (max-width: 50rem) {
           display: none;
-        }        
+        }
       }
     }
   }
