@@ -250,7 +250,7 @@
           </div>
 
           <div class="m_publicationFooter"
-            v-if="$root.state.mode !== 'export_publication'"        
+            v-if="$root.state.mode !== 'export_publication'"   
           >
             <button type="button" class="buttonLink" @click="insertPageAfterIndex(pageNumber)">
               {{ $t('insert_a_page_here') }}
