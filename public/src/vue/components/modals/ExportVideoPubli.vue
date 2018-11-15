@@ -2,7 +2,7 @@
   <Modal
     @close="$emit('close')"
     class="m_exportModal"
-    :typeOfModal="'EditMeta'"
+    :typeOfModal="'ExportVideo'"
   >
     <template slot="header">
       <span class="">{{ $t('export_publication') }}</span>
@@ -32,7 +32,7 @@
           
           <div v-if="video_request_status === 'generated'">
             <div class="mediaContainer">
-              <video :src="link_to_video" controls ref="video" preload="auto" />
+              <video ref="video" :src="link_to_video" controls preload="auto" />
               <svg 
                 ref="playIcon" 
                 v-if="!video_is_playing"
@@ -45,13 +45,28 @@
                 <polygon points="70, 55 70, 145 145, 100" fill="#353535"></polygon>
               </svg>
             </div>
-            <a 
-              v-if="link_to_video !== false"
-              class="buttonLink margin-left-none"
-              :href="link_to_video"
-            >
-              {{ $t('download') }}
-            </a>
+            <div class="margin-vert-medium">
+              <a 
+                v-if="link_to_video !== false"
+                class="buttonLink margin-left-none padding-left-none"
+                :href="link_to_video"
+              >
+                {{ $t('download') }}
+              </a>
+              <br>
+              <div class="">
+                <label v-html="$t('add_to_project')" />
+                <select>
+                  <option 
+                    v-for="project in $root.store.projects" 
+                    :key="project.name"
+                  >
+                    {{ project.name }}
+                  </option>        
+                </select>
+              </div>
+            </div>
+            
           </div>
         </div>
       </div>
@@ -72,7 +87,8 @@ export default {
   data() {
     return {
       video_request_status: false,
-      link_to_video: false
+      link_to_video: false,
+      video_is_playing: false
     }
   },
   created() {

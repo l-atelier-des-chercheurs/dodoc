@@ -24,6 +24,7 @@ module.exports = (function() {
       smoothing: 'Lissage',
       onion_skin: 'transparence de la dernière image',
       'file:': 'Fichier&nbsp;:',
+      add_to_project: 'Ajouter au projet&nbsp;:',
 
       bytes: 'octets',
       kb: 'ko',
@@ -262,6 +263,7 @@ module.exports = (function() {
       smoothing: 'smoothing',
       onion_skin: 'transparency of last image',
       'file:': 'File&nbsp;:',
+      add_to_project: 'Add to project:',
 
       bytes: 'bytes',
       kb: 'KB',
