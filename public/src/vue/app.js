@@ -394,6 +394,9 @@ Vue.prototype.$socketio = new Vue({
     downloadPubliPDF(pdata) {
       this.socket.emit('downloadPubliPDF', pdata);
     },
+    downloadVideoPubli(pdata) {
+      this.socket.emit('downloadVideoPubli', pdata);
+    },
     updateNetworkInfos() {
       this.socket.emit('updateNetworkInfos');
     }
@@ -966,6 +969,14 @@ let vm = new Vue({
         console.log(`ROOT EVENT: downloadPubliPDF: ${slugPubliName}`);
       }
       this.$socketio.downloadPubliPDF({
+        slugPubliName
+      });
+    },
+    downloadVideoPubli({ slugPubliName }) {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`ROOT EVENT: downloadVideoPubli: ${slugPubliName}`);
+      }
+      this.$socketio.downloadVideoPubli({
         slugPubliName
       });
     },

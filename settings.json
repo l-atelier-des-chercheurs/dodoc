@@ -227,6 +227,9 @@
           },
           "height": {
             "type": "number"
+          },
+          "index": {
+            "type": "number"
           }
         }
       }

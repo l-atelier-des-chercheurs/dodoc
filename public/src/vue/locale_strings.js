@@ -162,6 +162,10 @@ module.exports = (function() {
       export: 'Exporter',
       export_as_pdf: 'Export PDF',
       new_window: 'Nouvelle fenêtre',
+      export_video_instructions:
+        'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des vidéos ajoutéez à la publication.',
+      make_video: 'Fabriquer une vidéo',
+      creation_in_progress: 'En cours de création…',
 
       publication_list: 'Liste des publications',
       export_publication: 'Exportation d’une publication',
@@ -171,7 +175,6 @@ module.exports = (function() {
       get_website:
         'Pour récupérer un site web contenant cette publication (par exemple pour la diffuser en ligne), cliquez sur le bouton ci-dessous&nbsp;:',
       download_website: 'Télécharger une version web',
-      pdf_creation_in_progress: 'En cours de création…',
       pdf_created: 'Le PDF a été créé',
       open_in_app: 'Afficher',
       format: 'Format',
@@ -343,6 +346,9 @@ module.exports = (function() {
       export: 'Export',
       export_as_pdf: 'Export as PDF',
       new_window: 'New Window',
+      export_video_instructions:
+        'Click this button to generate a video from multiple source videos.',
+      make_video: 'Make a video',
 
       select: 'Select',
       unselect: 'Un-select',
@@ -404,7 +410,7 @@ module.exports = (function() {
       get_website:
         'To download a website version of this publication (for example, to publish online), click here:',
       download_website: 'Download a website',
-      pdf_creation_in_progress: 'PDF creation in progress…',
+      creation_in_progress: 'Creation in progress…',
       pdf_created: 'PDF created',
       open_in_app: 'Open',
       format: 'Format',

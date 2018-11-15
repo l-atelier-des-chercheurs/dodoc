@@ -8,6 +8,73 @@ const settings = require('../settings.json'),
 
 module.exports = (function() {
   return {
+    loadPublication(slugPubliName, pageData) {
+      return new Promise((resolve, reject) => {
+        let slugFolderName = slugPubliName;
+        let type = 'publications';
+
+        let publi_and_medias = {};
+
+        // get publication
+        file
+          .getFolder({
+            type,
+            slugFolderName
+          })
+          .then(publiData => {
+            publi_and_medias = publiData;
+            file
+              .getMediaMetaNames({
+                type,
+                slugFolderName
+              })
+              .then(list_metaFileName => {
+                let medias_list = list_metaFileName.map(metaFileName => {
+                  return {
+                    slugFolderName,
+                    metaFileName
+                  };
+                });
+                file
+                  .readMediaList({
+                    type,
+                    medias_list
+                  })
+                  .then(publi_medias => {
+                    dev.logverbose(
+                      `Got medias, now sending to the right clients`
+                    );
+                    publi_and_medias[slugFolderName].medias =
+                      publi_medias[slugFolderName].medias;
+                    pageData.publiAndMediaData = publi_and_medias;
+
+                    // we need to get the list of original medias in the publi
+                    var list_of_linked_medias = [];
+
+                    Object.entries(publi_medias[slugFolderName].medias).forEach(
+                      ([key, value]) => {
+                        list_of_linked_medias.push({
+                          slugFolderName: value.slugProjectName,
+                          metaFileName: value.slugMediaName
+                        });
+                      }
+                    );
+
+                    file
+                      .readMediaList({
+                        type: 'projects',
+                        medias_list: list_of_linked_medias
+                      })
+                      .then(folders_and_medias => {
+                        pageData.folderAndMediaData = folders_and_medias;
+                        resolve(pageData);
+                      });
+                  });
+              });
+          });
+      });
+    },
+
     copyPubliContent: ({ html, folders_and_medias, slugPubliName }) => {
       return new Promise(function(resolve, reject) {
         // create cache folder that we will need to copy the content
@@ -177,6 +244,10 @@ module.exports = (function() {
     },
     makePDFForPubli: ({ slugPubliName }) => {
       return new Promise(function(resolve, reject) {
+        const urlToPubli = `${
+          global.appInfos.homeURL
+        }/publication/${slugPubliName}`;
+
         const pdfName =
           slugPubliName +
           '-' +
@@ -193,9 +264,70 @@ module.exports = (function() {
 
         const pdfPath = path.join(cachePath, pdfName);
 
-        const urlToPubli = `${
-          global.appInfos.homeURL
-        }/publication/${slugPubliName}`;
+        file
+          .getFolder({
+            type: 'publications',
+            slugFolderName: slugPubliName
+          })
+          .then(publiData => {
+            publiData = Object.values(publiData)[0];
+            fs.mkdirp(cachePath, () => {
+              const { BrowserWindow } = require('electron');
+              let win = new BrowserWindow({
+                width: 800,
+                height: 600,
+                show: false
+              });
+              win.loadURL(urlToPubli);
+
+              win.webContents.on('did-finish-load', () => {
+                // Use default printing options
+                setTimeout(() => {
+                  win.webContents.printToPDF(
+                    {
+                      marginsType: 1,
+                      pageSize: {
+                        width: publiData.width * 1000,
+                        height: publiData.height * 1000
+                      }
+                    },
+                    (error, data) => {
+                      if (error) throw error;
+                      fs.writeFile(pdfPath, data, error => {
+                        if (error) throw error;
+                        console.log('Write PDF successful');
+                        resolve({
+                          pdfName,
+                          pdfPath
+                        });
+                      });
+                    }
+                  );
+                }, 1000);
+              });
+            });
+          });
+      });
+    },
+    makeVideoForPubli: ({ slugPubliName }) => {
+      return new Promise(function(resolve, reject) {
+        const urlToPubli = `${global.appInfos.homeURL}/video/${slugPubliName}`;
+
+        const videoName =
+          slugPubliName +
+          '-' +
+          api.getCurrentDate() +
+          '-' +
+          (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2) +
+          '.pdf';
+
+        const cachePath = path.join(
+          global.tempStorage,
+          settings.cacheDirname,
+          '_publications'
+        );
+
+        const pdfPath = path.join(cachePath, videoName);
 
         file
           .getFolder({

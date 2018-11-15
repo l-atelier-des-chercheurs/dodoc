@@ -2,7 +2,6 @@
   <div 
     class="m_publicationview" 
     :class="{ 'is--preview' : preview_mode }"
-    @scroll="onScroll"
     ref="panel"
   >
     <div class="m_publicationMeta">
@@ -30,24 +29,45 @@
             {{ $t('export') }}
           </button>     
 
-          <!-- <ExportModal
+          <ExportVideoPubliModal
             v-if="showExportModal"
             @close="showExportModal = false"
             :slugPubliName="slugPubliName"
-          >
-          </ExportModal> -->
+          />
 
           <button type="button" class="buttonLink" @click="removePublication">
             {{ $t('remove') }}
           </button>     
         </template>
-
       </div>
+    </div>
+    <div class="m_videoPublication">
+      <transition-group name="slideFromTop" :duration="300" tag="div">
+        <div
+          class="m_videoPublication--media"
+          v-for="media in publication_medias" 
+          :key="media.publi_meta.metaFileName"
+        >
+          <MediaContent
+            v-model="media.content"
+            :context="'preview'"
+            :slugFolderName="media.slugProjectName"
+            :media="media"
+          ></MediaContent>
+          <button type="button" class="font-verysmall"
+            @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
+          >
+            {{ $t('remove') }}
+          </button>
+        </div>
+      </transition-group>
+
     </div>
   </div>
 </template>
 <script>
-
+import MediaContent from './subcomponents/MediaContent.vue';
+import ExportVideoPubliModal from './modals/ExportVideoPubli.vue';
 
 export default {
   props: {
@@ -56,26 +76,79 @@ export default {
     read_only: Boolean
   },
   components: {
+    MediaContent,
+    ExportVideoPubliModal
   },
   data() {
     return {
       showExportModal: false,
-      publication_medias: []
+      publication_medias: [],
+      current_media_index: 0
     }
   },
-  
   created() {
   },
   mounted() {
+    this.$eventHub.$on('publication.addMedia', this.addMedia);
+    this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
+    this.updateMediasPubli();  
+    this.$eventHub.$emit('publication_medias_updated');      
   },
   beforeDestroy() {
+    this.$eventHub.$off('publication.addMedia', this.addMedia);
+    this.$eventHub.$off('socketio.projects.listSpecificMedias', this.updateMediasPubli);
   },
-
   watch: {
+    'publication.medias': function() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`WATCH • Publication: publication.medias`);
+      }
+      this.updateMediasPubli();
+      this.$eventHub.$emit('publication_medias_updated');      
+    },
+    '$root.store.projects': {
+      handler() {
+        if (this.$root.state.dev_mode === 'debug') {
+          console.log(`WATCH • Publication: $root.store.projects`);
+        }
+        this.updateMediasPubli();
+      },
+      deep: true
+    },
   },
   computed: {
   },
   methods: {
+    addMedia({ slugProjectName, metaFileName }) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: addMedia with 
+        slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
+      }
+
+      const newMediaMeta = {
+        slugProjectName,
+        desired_filename: metaFileName,
+        slugMediaName: metaFileName,
+        index: this.current_media_index
+      };
+
+      this.$root.createMedia({ 
+        slugFolderName: this.slugPubliName, 
+        type: 'publications', 
+        additionalMeta: newMediaMeta
+      });
+    },
+    removePubliMedia({ slugMediaName }) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: removeMedia / slugMediaName = ${slugMediaName}`);
+      }
+
+      this.$root.removeMedia({
+        type: 'publications',
+        slugFolderName: this.slugPubliName, 
+        slugMediaName
+      });
+    },
     closePublication() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: closePublication`);
@@ -107,7 +180,7 @@ export default {
       }
       
       // get list of publications items
-      let publi_medias = {};
+      let publi_medias = [];
       let missingMedias = [];
 
       Object.keys(this.publication.medias).map(metaFileName => {
@@ -161,30 +234,11 @@ export default {
         });
       }
 
-      this.publication_medias = publi_medias;        
-    },
-    onScroll(event) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: onScroll`);
-      }
+      // set index to add media as last
+      this.current_media_index = publi_medias.length;
+      let sortedMedias = this.$_.sortBy(publi_medias, (obj) => obj.publi_meta.index);
 
-      if(!this.$refs.hasOwnProperty('pages') || this.$refs.pages.children.length === 0) {
-        return;
-      }
-
-      const currentScroll = event.target.scrollTop;
-      const middleOfScreen = this.$refs.panel.offsetHeight / 2;
-      let pages = this.$refs.pages.children;
-
-      let index = 0;
-      for(let page of pages) {
-        if(page.offsetTop + page.offsetHeight > currentScroll + middleOfScreen) {
-          break;
-        }
-        index++;
-      }
-
-      this.page_currently_active = index;
+      this.publication_medias = sortedMedias;        
     }
   }
 }

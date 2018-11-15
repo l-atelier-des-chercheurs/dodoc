@@ -53,6 +53,7 @@ module.exports = (function() {
       socket.on('listSpecificMedias', d => onListSpecificMedias(socket, d));
 
       socket.on('downloadPubliPDF', d => onDownloadPubliPDF(socket, d));
+      socket.on('downloadVideoPubli', d => onDownloadVideoPubli(socket, d));
       socket.on('updateNetworkInfos', d => onUpdateNetworkInfos(socket, d));
     });
   }
@@ -314,6 +315,25 @@ module.exports = (function() {
         socket
       );
     });
+  }
+
+  function onDownloadVideoPubli(socket, { slugPubliName }) {
+    dev.logfunction(
+      `EVENT - onDownloadVideoPubli with 
+      slugPubliName = ${slugPubliName}`
+    );
+
+    exporter
+      .makeVideoForPubli({ slugPubliName })
+      .then(({ pdfName, pdfPath }) => {
+        debugger;
+        api.sendEventWithContent(
+          'publiPDFGenerated',
+          { pdfName, pdfPath },
+          io,
+          socket
+        );
+      });
   }
 
   function onUpdateNetworkInfos() {
