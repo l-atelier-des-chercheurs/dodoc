@@ -590,7 +590,7 @@ body {
 
 .publiButton {
   position: absolute;
-  top: 60px;
+  top: 30px;
   right:100%;
 
   @t-button_size: 3em;
@@ -738,6 +738,11 @@ body {
       align-content: stretch;
       height: 100%;
   
+      .m_actionbar {
+        .margin-medium;
+        margin-bottom: 0;
+      }
+
       .m_projects--list {
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
@@ -797,10 +802,10 @@ body {
 @t-folderwidth: 320px;
 
 .m_projects--list {
-  .padding-sides-small;
   .padding-bottom-small;
   .padding-top-medium;
-  
+  .padding-sides-small;
+
   .flex-wrap;
   .flex-horizontally-start;
   align-items: flex-start;

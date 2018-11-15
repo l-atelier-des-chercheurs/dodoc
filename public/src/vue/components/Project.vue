@@ -19,7 +19,6 @@
             {{ $t('protected_by_pass') }}
           </mark>
 
-
           <div class="m_keywordField">
             <span 
               v-for="keyword in project.keywords" 
