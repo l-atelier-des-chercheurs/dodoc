@@ -45,20 +45,22 @@
             {{ $root.formatDateToHuman(publication.date_created) }}
           </div>
         </div> -->
-        <div class="m_metaField">
-          <div>
-            {{ $t('template') }}
+        <div>
+          <div class="m_metaField">
+            <div>
+              {{ $t('template') }}
+            </div>
+            <div>
+              {{ $t(publication.template) }}
+            </div>
           </div>
-          <div>
-            {{ $t(publication.template) }}
-          </div>
-        </div>
-        <div class="m_metaField">
-          <div>
-            {{ $t('edited') }}
-          </div>
-          <div>
-            {{ $root.formatDateToHuman(publication.date_modified) }}
+          <div class="m_metaField">
+            <div>
+              {{ $t('edited') }}
+            </div>
+            <div>
+              {{ $root.formatDateToHuman(publication.date_modified) }}
+            </div>
           </div>
         </div>
 

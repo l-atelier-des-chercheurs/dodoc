@@ -291,6 +291,13 @@
         // .margin-vert-small;
         .padding-sides-small;
         text-align: center;
+
+        @media screen and (max-width: 50rem) {
+          > a, > button {
+            font-size:0.7rem;
+            padding: 0;
+          }
+        }
       }
 
       &:first-child {

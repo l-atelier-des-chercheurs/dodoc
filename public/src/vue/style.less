@@ -216,6 +216,10 @@ body {
         display: block;
         width: 180px;
         height: 100%;
+
+        @media screen and (max-width: 50rem) {
+          width: 40px;
+        }
       }
     }
 
@@ -1032,6 +1036,23 @@ body {
   &.barButton_createProject {
     color: white;
     background-color: @c-rouge;
+
+    .m_activitiesPanel--do:not(.is--large) & {
+      .margin-small;
+      margin-left: 0;      
+      margin-top: 0;
+
+      padding: 0;
+      .padding-sides-verysmall;
+      
+      .font-small;
+      font-size: inherit;
+      line-height: inherit;
+      span {
+        display: inline-block;
+        .padding-vert-small;
+      }
+    }
     &::before {
       background-image: url("/images/i_add.svg");          
     }
@@ -2158,8 +2179,8 @@ body {
 
   .m_metaField {
     min-width: 220px;
-    padding: 0;
-    margin: 0;
+    // padding: 0;
+    // margin: 0;
     .margin-sides-medium;
   }
 
@@ -2953,7 +2974,7 @@ body {
   transition: transform .5s cubic-bezier(.25,.8,.25,1);
 }
 .CaptureView-enter, .CaptureView-leave-to {
-  transform: translateX(-100vw);
+  transform: translateX(100vw);
   transition: transform .5s cubic-bezier(.25,.2,.25,1);
 }
 
