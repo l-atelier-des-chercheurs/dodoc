@@ -150,6 +150,26 @@
         </button>
       </transition>
 
+      <transition name="fade" :duration="600">
+        <button
+          class="button-round bg-transparent m_modal--nav_left padding-verysmall"
+          @click="$eventHub.$emit('modal.prev_media')"
+          v-if="showModal && media_navigation && !is_minimized"
+        >
+          <img src="/images/i_arrow_left.svg">
+        </button>
+      </transition>
+
+      <transition name="fade" :duration="600">
+        <button
+          class="button-round bg-transparent m_modal--nav_right padding-verysmall"
+          @click="$eventHub.$emit('modal.next_media')"
+          v-if="showModal && media_navigation && !is_minimized"
+        >
+          <img src="/images/i_arrow_right.svg">
+        </button>
+      </transition>
+
     </div>
   </portal>
 </template>
@@ -183,6 +203,10 @@ export default {
       default: true
     },
     can_minimize: {
+      type: Boolean,
+      default: false
+    },
+    media_navigation: {
       type: Boolean,
       default: false
     },

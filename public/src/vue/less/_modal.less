@@ -177,6 +177,9 @@
       .m_modal--preview {
         height: auto;
       }
+      @media screen and (min-width: 50rem) {
+        width: 90vw;
+      }
     }
   }
   &.typeOfModal-ExportVideo {
@@ -196,7 +199,11 @@
         @media screen and (min-width: 50rem) {
           min-height: 70vh;
         }
-      }    
+      }  
+      
+      @media screen and (min-width: 50rem) {
+        width: 90vw;
+      }
     }
   }
   &.typeOfModal-SmallAndScroll {
@@ -417,7 +424,16 @@
   @media screen and (max-width: 40rem) {
     display: none;
   }
-
+}
+.m_modal--nav_left, .m_modal--nav_right {
+  position: fixed;
+  top: ~"calc(50% - 40px)";
+}
+.m_modal--nav_left {
+  left:0;
+}
+.m_modal--nav_right {
+  right: 0;
 }
 
 .m_modal--header {

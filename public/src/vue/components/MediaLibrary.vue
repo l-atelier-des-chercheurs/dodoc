@@ -67,11 +67,11 @@
       name="list-complete"
     >
       <MediaCard
-          v-for="media in sortedMedias"
-          :key="media.slugMediaName"
-          :media="media"
-          :metaFileName="media.metaFileName"
-          :slugProjectName="slugProjectName"
+        v-for="media in sortedMedias"
+        :key="media.slugMediaName"
+        :media="media"
+        :metaFileName="media.metaFileName"
+        :slugProjectName="slugProjectName"
       />
     </transition-group>
     
@@ -111,10 +111,14 @@ export default {
     }
   },
   created() {
-    document.addEventListener('dragover', this.fileDragover);
+    // document.addEventListener('dragover', this.fileDragover);
+    this.$eventHub.$on('modal.prev_media', this.prevMedia);
+    this.$eventHub.$on('modal.next_media', this.nextMedia);
   },
   beforeDestroy() {
-    document.removeEventListener('dragover', this.fileDragover);
+    // document.removeEventListener('dragover', this.fileDragover);
+    this.$eventHub.$off('modal.prev_media', this.prevMedia);
+    this.$eventHub.$off('modal.next_media', this.nextMedia);
   },
   watch: {
   },
@@ -201,6 +205,24 @@ export default {
   methods: {
     fileDragover() {
       this.showImportModal = true;
+    },
+    prevMedia() {
+      this.mediaNav(-1);
+    },
+    nextMedia() {
+      this.mediaNav(+1);
+    },
+    mediaNav(relative_index) {
+      const current_media_index = this.sortedMedias.findIndex(m => m.metaFileName === this.$root.media_modal.current_metaFileName);
+      const new_media = this.sortedMedias[current_media_index + relative_index];
+      this.$root.closeMedia();
+      
+      if(!!new_media) {
+        this.$nextTick(() => {
+          this.openMediaModal(new_media.metaFileName);
+        });
+      }
+
     },
     openMediaModal(metaFileName) {
       if (this.$root.state.dev_mode === 'debug') {
