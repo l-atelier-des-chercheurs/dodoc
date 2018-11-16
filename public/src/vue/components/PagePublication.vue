@@ -365,7 +365,8 @@ export default {
       new_header_right: '',
 
       page_currently_active: 0,
-      preview_mode: this.$root.state.mode !== 'live',
+      // preview_mode: this.$root.state.mode !== 'live',
+      preview_mode: true,
       fullscreen_mode: false,
       zoom: 1,
       zoom_min: 0.4,

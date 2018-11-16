@@ -153,9 +153,17 @@ body {
     min-width: 180px;
     flex: 1 1 0;
     
+    @media screen and (max-width: 50rem) {
+      flex: 1 0 100%;
+    }
+  
     &.m_topbar--center {
       min-width: 200px;
       max-width: 200px;
+
+      @media screen and (max-width: 50rem) {
+        max-width: none;
+      }
     }
   }  
 
@@ -163,6 +171,10 @@ body {
     display: flex;
     align-items: center;
     justify-content: flex-start;
+
+    @media screen and (max-width: 50rem) {
+      justify-content: space-between;
+    }
 
     .m_topbar--left--logo {
       width: auto;
@@ -218,7 +230,8 @@ body {
         height: 100%;
 
         @media screen and (max-width: 50rem) {
-          width: 40px;
+          .padding-small;
+          width: 140px;
         }
       }
     }
@@ -232,6 +245,10 @@ body {
       flex-flow: row nowrap;
       align-content: flex-start;
       align-items: center;
+
+      @media screen and (max-width: 50rem) {
+        display: none;
+      }
 
       > * {
         flex: 0 1 auto;
@@ -304,6 +321,15 @@ body {
       }
 
     }  
+
+    .m_topbar--left--menuButton {
+      svg {
+        width: auto;
+        height: auto;
+        padding: @t-skipline/2 @t-skipline/2;
+        cursor: pointer;
+      }
+    }
   }    
   .m_topbar--center {
     display: flex;
@@ -736,6 +762,10 @@ body {
 }
 .m_projectview {
   .bg-gris_clair;
+
+  .m_project {
+    min-height: 100%;
+  }
 }
 
 
@@ -878,6 +908,11 @@ body {
     flex-flow: column wrap;
     justify-items: center;
     align-items: stretch;    
+
+    @media screen and (max-width: 50rem) {
+      flex-basis: auto;
+      max-width: none;
+    }
     
     .m_project--presentation--vignette {
       position: relative;
@@ -1010,6 +1045,21 @@ body {
   // color: @c-rouge;
 
   border-radius: 4px;
+  
+  @media screen and (max-width: 50rem) {
+    .margin-verysmall;
+    margin-left: 0;      
+    margin-top: 0;  
+
+    span {
+      // font-size: 0.6rem;
+      .font-small;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
 
   > span {
     display: inline-block;
