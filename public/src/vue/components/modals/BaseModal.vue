@@ -262,11 +262,11 @@ export default {
       }      
 
       if (event.key === 'ArrowRight') {
-        this.$emit('arrow_right');
+        this.$eventHub.$emit('modal.next_media');
         return;
       }
       if (event.key === 'ArrowLeft') {
-        this.$emit('arrow_left');
+        this.$eventHub.$emit('modal.prev_media');
         return;
       }
     },
