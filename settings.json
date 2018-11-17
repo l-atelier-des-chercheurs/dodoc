@@ -100,9 +100,9 @@
             "type": "array"
           },
           "keywords": {
-            "type": "string"
-          },
-          "caption": {
+            "type": "array"
+          },      
+            "caption": {
             "type": "string"
           }  
         }

@@ -145,6 +145,15 @@
           </textarea>
         </div> -->
 
+  <!-- Keywords -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('keywords') }}</label>
+        <TagsInput 
+          :keywords="mediadata.keywords"
+          @tagsChanged="newTags => mediadata.keywords = newTags"
+        />
+      </div>
+
   <!-- Author(s) -->
         <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
           <label>{{ $t('author') }}</label>
@@ -203,6 +212,7 @@ import DateTime from '../subcomponents/DateTime.vue';
 import CreateQRCode from './qr/CreateQRCode.vue';
 import { setTimeout } from 'timers';
 import AuthorsInput from '../subcomponents/AuthorsInput.vue';
+import TagsInput from '../subcomponents/TagsInput.vue';
 
 export default {
   props: {
@@ -219,6 +229,7 @@ export default {
     DateTime,
     MediaContent,
     CreateQRCode,
+    TagsInput,
     AuthorsInput
   },
   data() {

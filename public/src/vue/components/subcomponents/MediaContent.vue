@@ -17,8 +17,7 @@
         <img :src="linkToVideoThumb">
       </template>
       <template v-else>
-        <video ref="video" preload="none" :src="mediaURL" :poster="linkToVideoThumb">
-        </video>
+        <video ref="video" preload="none" :src="mediaURL" :poster="linkToVideoThumb" />
         <svg 
           ref="playIcon" 
           v-if="!video_is_playing"
@@ -34,8 +33,7 @@
     </template>
 
     <template v-else-if="media.type === 'audio'">
-      <audio controls preload="none" :src="mediaURL">
-      </audio>
+      <audio controls preload="none" :src="mediaURL" />
     </template>
 
     <template v-else-if="media.type === 'text'">
