@@ -25,6 +25,7 @@ module.exports = (function() {
       onion_skin: 'transparence de la dernière image',
       'file:': 'Fichier&nbsp;:',
       add_to_project: 'Ajouter au projet&nbsp;:',
+      input_password: 'Renseignez le mot de passe ci-dessous :',
 
       bytes: 'octets',
       kb: 'ko',
@@ -264,6 +265,7 @@ module.exports = (function() {
       onion_skin: 'transparency of last image',
       'file:': 'File&nbsp;:',
       add_to_project: 'Add to project:',
+      input_password: 'Input the password here:',
 
       bytes: 'bytes',
       kb: 'KB',
