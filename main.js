@@ -16,7 +16,9 @@ const portscanner = require('portscanner');
 const server = require('./server');
 
 const settings = require('./settings.json'),
-  dev = require('./core/dev-log');
+  dev = require('./core/dev-log'),
+  api = require('./core/api'),
+  file = require('./core/file');
 
 require('electron-context-menu')({
   prepend: (params, BrowserWindow) => [
@@ -131,35 +133,56 @@ function createWindow() {
           global.pathToUserContent = pathToUserContent;
           dev.log('Will store contents in: ' + global.pathToUserContent);
 
-          portscanner.findAPortNotInUse(settings.port, settings.port + 20).then(
-            port => {
-              dev.log(`main.js - Found available port: ${port}`);
-              global.appInfos.port = port;
-              global.appInfos.homeURL = `${settings.protocol}://${
-                settings.host
-              }:${global.appInfos.port}`;
-
-              app.server = server(app);
-
-              // and load the base url of the app.
-              win.loadURL(global.appInfos.homeURL);
-
-              if (dev.isDebug()) {
-                // win.webContents.openDevTools({mode: 'detach'});
-                installExtension(VUEJS_DEVTOOLS)
-                  .then(name => console.log(`Added Extension:  ${name}`))
-                  .catch(err => console.log('An error occurred: ', err));
+          readSessionMetaFile().then(sessionMeta => {
+            if (
+              !!sessionMeta &&
+              sessionMeta.hasOwnProperty('session_password') &&
+              sessionMeta.session_password !== '' &&
+              typeof sessionMeta.session_password === 'string'
+            ) {
+              function hashCode(s) {
+                return s.split('').reduce(function(a, b) {
+                  a = (a << 5) - a + b.charCodeAt(0);
+                  return a & a;
+                }, 0);
               }
-            },
-            function(err) {
-              dev.error('Failed to find available port: ' + err);
-              dialog.showErrorBox(
-                `The app ${app.getName()} wasn’t able to start`,
-                `It seems ports between ${settings.port} and ${settings.port +
-                  20} are not available.\nError code: ${err}`
-              );
+
+              global.session_password = hashCode(sessionMeta.session_password);
             }
-          );
+            portscanner
+              .findAPortNotInUse(settings.port, settings.port + 20)
+              .then(
+                port => {
+                  dev.log(`main.js - Found available port: ${port}`);
+                  global.appInfos.port = port;
+                  global.appInfos.homeURL = `${settings.protocol}://${
+                    settings.host
+                  }:${global.appInfos.port}`;
+
+                  app.server = server(app);
+
+                  // and load the base url of the app.
+                  win.loadURL(global.appInfos.homeURL);
+
+                  if (dev.isDebug()) {
+                    // win.webContents.openDevTools({mode: 'detach'});
+                    installExtension(VUEJS_DEVTOOLS)
+                      .then(name => console.log(`Added Extension:  ${name}`))
+                      .catch(err => console.log('An error occurred: ', err));
+                  }
+                },
+                function(err) {
+                  dev.error('Failed to find available port: ' + err);
+                  dialog.showErrorBox(
+                    `The app ${app.getName()} wasn’t able to start`,
+                    `It seems ports between ${
+                      settings.port
+                    } and ${settings.port +
+                      20} are not available.\nError code: ${err}`
+                  );
+                }
+              );
+          });
 
           // Emitted when the window is closed.
           win.on('closed', () => {
@@ -367,6 +390,21 @@ function cleanCacheFolder() {
         dev.error(err);
         return reject(err);
       });
+  });
+}
+
+function readSessionMetaFile() {
+  return new Promise(function(resolve, reject) {
+    var pathToSessionMeta = api.getFolderPath('meta.txt');
+    try {
+      var metaFileContent = fs.readFileSync(
+        pathToSessionMeta,
+        settings.textEncoding
+      );
+      return resolve(api.parseData(metaFileContent));
+    } catch (err) {
+      return resolve();
+    }
   });
 }
 

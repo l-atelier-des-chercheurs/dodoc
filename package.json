@@ -18,6 +18,7 @@
   "scripts": {
     "start": "electron .",
     "debug": "electron --inspect=5858 . --debug --verbose",
+    "debug-brk": "electron --inspect=5858 . --debug-brk --verbose",
     "pack": "build --dir",
     "dist": "build",
     "postinstall": "electron-builder install-app-deps"

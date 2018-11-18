@@ -502,7 +502,21 @@ let vm = new Vue({
     }
 
     if (window.state.dev_mode === 'debug') {
-      console.log('ROOT EVENT: created / checking for errors');
+      console.log('ROOT EVENT: created / checking for password');
+    }
+
+    if (!window.state.is_electron && this.state.session_password !== '') {
+      function hashCode(s) {
+        return s.split('').reduce(function(a, b) {
+          a = (a << 5) - a + b.charCodeAt(0);
+          return a & a;
+        }, 0);
+      }
+
+      var pass = window.prompt(this.$t('input_password'));
+      if (this.state.session_password !== hashCode(pass) + '') {
+        return;
+      }
     }
 
     window.addEventListener('resize', () => {
