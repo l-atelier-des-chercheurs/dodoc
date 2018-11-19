@@ -1,7 +1,7 @@
 <template>
 </template>
 <script>
-import RTCMultiConnection from 'RTCMultiConnection';
+import RTCMultiConnection from 'rtcmulticonnection';
 
 export default {
   props: {

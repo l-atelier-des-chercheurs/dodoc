@@ -18,8 +18,6 @@ console.log(
 );
 console.log(process.versions);
 
-debugger;
-
 const debug = process.argv.length >= 3 ? process.argv[2] === '--debug' : false;
 const verbose =
   process.argv.length >= 4 ? process.argv[3] === '--verbose' : false;
@@ -62,7 +60,6 @@ cleanCacheFolder().then(
                 return a & a;
               }, 0);
             }
-
             global.session_password = hashCode(sessionMeta.session_password);
           }
           portscanner.findAPortNotInUse(settings.port, settings.port + 20).then(
