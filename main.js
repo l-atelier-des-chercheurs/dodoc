@@ -159,7 +159,7 @@ function createWindow() {
                     settings.host
                   }:${global.appInfos.port}`;
 
-                  app.server = server(app);
+                  app.server = server();
 
                   // and load the base url of the app.
                   win.loadURL(global.appInfos.homeURL);
