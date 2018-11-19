@@ -1,5 +1,4 @@
-import { appVersion, appName } from './package.json';
-
+const getPath = require('platform-folders');
 const path = require('path');
 const fs = require('fs-extra');
 const portscanner = require('portscanner');
@@ -12,87 +11,89 @@ const settings = require('./settings.json'),
   api = require('./core/api'),
   file = require('./core/file');
 
-function createWindow() {
-  console.log(`Starting app ${appVersion}`);
-  console.log(process.versions);
+console.log(
+  `Starting app ${require('./package.json').name} v${
+    require('./package.json').version
+  }`
+);
+console.log(process.versions);
 
-  const debug =
-    process.argv.length >= 4 ? process.argv[3] === '--debug' : false;
-  const verbose =
-    process.argv.length >= 5 ? process.argv[4] === '--verbose' : false;
-  const logToFile = false;
+debugger;
 
-  dev.init(debug, verbose, logToFile);
+const debug = process.argv.length >= 3 ? process.argv[2] === '--debug' : false;
+const verbose =
+  process.argv.length >= 4 ? process.argv[3] === '--verbose' : false;
+const logToFile = false;
 
-  if (dev.isDebug()) {
-    process.traceDeprecation = true;
-  }
+dev.init(debug, verbose, logToFile);
 
-  if (global.appInfos === undefined) {
-    global.appInfos = {};
-  }
-
-  global.appRoot = path.resolve(__dirname);
-  global.tempStorage = os.tmpdir();
-  global.appInfos.version = appVersion;
-
-  dev.log(`——— Starting dodoc2 app version ${global.appInfos.version}`);
-
-  cleanCacheFolder().then(
-    () => {
-      copyAndRenameUserFolder().then(
-        function(pathToUserContent) {
-          global.pathToUserContent = pathToUserContent;
-          dev.log('Will store contents in: ' + global.pathToUserContent);
-
-          readSessionMetaFile().then(sessionMeta => {
-            if (
-              !!sessionMeta &&
-              sessionMeta.hasOwnProperty('session_password') &&
-              sessionMeta.session_password !== '' &&
-              typeof sessionMeta.session_password === 'string'
-            ) {
-              function hashCode(s) {
-                return s.split('').reduce(function(a, b) {
-                  a = (a << 5) - a + b.charCodeAt(0);
-                  return a & a;
-                }, 0);
-              }
-
-              global.session_password = hashCode(sessionMeta.session_password);
-            }
-            portscanner
-              .findAPortNotInUse(settings.port, settings.port + 20)
-              .then(
-                port => {
-                  dev.log(`main.js - Found available port: ${port}`);
-                  global.appInfos.port = port;
-                  global.appInfos.homeURL = `${settings.protocol}://${
-                    settings.host
-                  }:${global.appInfos.port}`;
-
-                  server();
-                },
-                function(err) {
-                  dev.error('Failed to find available port: ' + err);
-                }
-              );
-          });
-        },
-        function(err) {
-          dev.error('Failed to check existing content folder: ' + err);
-        }
-      );
-    },
-    function(err) {
-      dev.error('Failed to clean cache folder: ' + err);
-    }
-  );
+if (dev.isDebug()) {
+  process.traceDeprecation = true;
 }
+
+if (global.appInfos === undefined) {
+  global.appInfos = {};
+}
+
+global.appRoot = path.resolve(__dirname);
+global.tempStorage = getPath.getCacheFolder();
+
+global.appInfos.version = require('./package.json').version;
+
+dev.log(`——— Starting dodoc2 app version ${global.appInfos.version}`);
+
+cleanCacheFolder().then(
+  () => {
+    copyAndRenameUserFolder().then(
+      function(pathToUserContent) {
+        global.pathToUserContent = pathToUserContent;
+        dev.log('Will store contents in: ' + global.pathToUserContent);
+
+        readSessionMetaFile().then(sessionMeta => {
+          if (
+            !!sessionMeta &&
+            sessionMeta.hasOwnProperty('session_password') &&
+            sessionMeta.session_password !== '' &&
+            typeof sessionMeta.session_password === 'string'
+          ) {
+            function hashCode(s) {
+              return s.split('').reduce(function(a, b) {
+                a = (a << 5) - a + b.charCodeAt(0);
+                return a & a;
+              }, 0);
+            }
+
+            global.session_password = hashCode(sessionMeta.session_password);
+          }
+          portscanner.findAPortNotInUse(settings.port, settings.port + 20).then(
+            port => {
+              dev.log(`main.js - Found available port: ${port}`);
+              global.appInfos.port = port;
+              global.appInfos.homeURL = `${settings.protocol}://${
+                settings.host
+              }:${global.appInfos.port}`;
+
+              server();
+            },
+            function(err) {
+              dev.error('Failed to find available port: ' + err);
+            }
+          );
+        });
+      },
+      function(err) {
+        dev.error('Failed to check existing content folder: ' + err);
+      }
+    );
+  },
+  function(err) {
+    dev.error('Failed to clean cache folder: ' + err);
+  }
+);
 
 function copyAndRenameUserFolder() {
   return new Promise(function(resolve, reject) {
-    const userDirPath = os.homedir();
+    const userDirPath = getPath.getDocumentsFolder();
 
     const pathToUserContent = path.join(userDirPath, settings.userDirname);
     fs.access(pathToUserContent, fs.F_OK, function(err) {

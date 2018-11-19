@@ -16,10 +16,10 @@
     "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
   },
   "scripts": {
-    "start": "electron .",
-    "debug": "electron --inspect=5858 . --debug --verbose",
-    "debug-brk": "electron --inspect=5858 . --debug-brk --verbose",
-    "pack": "build --dir",
+    "start": "node .",
+    "debug": "node . --inspect=5858 --debug --verbose",
+    "debug-brk": "node . --inspect-brk=5858 --debug --verbose",
+    "pack": "build . --dir",
     "dist": "build",
     "postinstall": "electron-builder install-app-deps"
   },
@@ -59,6 +59,7 @@
     "pad-left": "^2.1.0",
     "parser-readline": "^1.0.2",
     "path": "^0.12.7",
+    "platform-folders": "^0.2.7",
     "portscanner": "^2.2.0",
     "pug": "^2.0.2",
     "sharp": "^0.21.0",

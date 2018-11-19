@@ -7,7 +7,7 @@ const file = require('./file');
 const settings = require('../settings.json');
 
 module.exports = (function() {
-  dev.log(`Main module initialized at ${api.getCurrentDate()}`);
+  dev.log(`Sockets module initialized at ${api.getCurrentDate()}`);
   let app;
   let io;
   let electronApp;
