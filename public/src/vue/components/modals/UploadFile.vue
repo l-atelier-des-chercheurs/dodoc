@@ -48,7 +48,9 @@
           <div class="m_uploadFile--size">
             {{ formatBytes(f.size) }}
           </div>
-          <div class="m_uploadFile--action">
+          <div class="m_uploadFile--action"
+            v-if="selected_files_meta.hasOwnProperty(f.name)"
+          >
             <button type="button" class="buttonLink"
               @click="sendThisFile(f)"
               :disabled="read_only || (selected_files_meta.hasOwnProperty(f.name) && selected_files_meta[f.name].status === 'success')"

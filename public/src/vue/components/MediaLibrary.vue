@@ -236,7 +236,7 @@ export default {
         slugFolderName: this.slugProjectName,
         type: 'projects',
         additionalMeta: {
-          type: 'text'          
+          type: 'text'
         }
       });
     },

@@ -140,7 +140,7 @@
           "read_only": true        
         },
         "authors": {
-          "type": "string"
+          "type": "array"
         },
         "date_created": {
           "type": "date",
@@ -214,7 +214,7 @@
             "default": "current"
           },
           "authors": {
-            "type": "string"
+            "type": "array"
           },
           "page_id": {
             "type": "string"
@@ -247,7 +247,7 @@
           "default": "current"
         },
         "authors": {
-          "type": "string"
+          "type": "array"
         }
       },
       "medias": {
@@ -267,6 +267,9 @@
             "type": "string",
             "options": ["image"],
             "default": "other"
+          },
+          "authors": {
+            "type": "array"
           }
         }
       } 

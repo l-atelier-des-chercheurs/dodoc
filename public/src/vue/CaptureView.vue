@@ -930,7 +930,7 @@ export default {
         type: 'stopmotions',
         rawData: imageData,
         additionalMeta: {
-          type: 'image'          
+          type: 'image'
         }
       });
     },
