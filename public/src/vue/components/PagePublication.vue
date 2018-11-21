@@ -209,10 +209,22 @@
     <div class="m_publicationview--pages" ref="pages">
       <!-- si transition, attention à ref -->
       <!-- <transition-group> -->
+      <transition-group
+        class="m_projects--list"
+        name="list-complete"
+      >
         <div 
           v-for="(page, pageNumber) in pagesWithDefault" 
           :key="page.id"
         >
+          <div class="m_publicationFooter"
+            v-if="$root.state.mode !== 'export_publication' && pageNumber === 0"   
+          >
+            <button type="button" class="buttonLink" @click="insertPageAtIndex(pageNumber)">
+              {{ $t('insert_a_page_here') }}
+            </button>
+          </div>
+
           <div 
             class="m_publicationview--pages--pageContainer"
             :style="setPageContainerProperties(page)"
@@ -277,7 +289,7 @@
           <div class="m_publicationFooter"
             v-if="$root.state.mode !== 'export_publication'"   
           >
-            <button type="button" class="buttonLink" @click="insertPageAfterIndex(pageNumber)">
+            <button type="button" class="buttonLink" @click="insertPageAtIndex(pageNumber + 1)">
               {{ $t('insert_a_page_here') }}
             </button>
             <button type="button" class="buttonLink" @click="removePageAtIndex(pageNumber)">
@@ -286,12 +298,12 @@
           </div>
           
         </div>
-      <!-- </transition-group> -->
+      </transition-group>
 
       <div class="m_publicationFooter"
         v-if="$root.state.mode !== 'export_publication' && pagesWithDefault.length === 0"        
       >
-        <button type="button" class="buttonLink" @click="insertPageAfterIndex(pageNumber)">
+        <button type="button" class="buttonLink" @click="insertPageAtIndex(pageNumber + 1)">
           {{ $t('add_a_page') }}
         </button>
       </div>
@@ -365,8 +377,8 @@ export default {
       new_header_right: '',
 
       page_currently_active: 0,
-      // preview_mode: this.$root.state.mode !== 'live',
-      preview_mode: true,
+      preview_mode: this.$root.state.mode !== 'live',
+      // preview_mode: false,
       fullscreen_mode: false,
       zoom: 1,
       zoom_min: 0.4,
@@ -653,9 +665,9 @@ export default {
 
       this.publication_medias = medias_paginated;        
     },
-    insertPageAfterIndex(index) {
+    insertPageAtIndex(index) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: insertPageAfterIndex ${index}`);
+        console.log(`METHODS • Publication: insertPageAtIndex ${index}`);
       }
 
       // insert page in page array
@@ -663,7 +675,7 @@ export default {
       if(this.publication.hasOwnProperty('pages') && this.publication.pages.length > 0) {
         pages = this.publication.pages.slice();
       }
-      pages.splice(index + 1, 0, {
+      pages.splice(index, 0, {
         id: +new Date() + '_' + (Math.random().toString(36) + '00000000000000000').slice(2, 3),
       });
 

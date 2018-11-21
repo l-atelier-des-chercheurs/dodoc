@@ -71,7 +71,7 @@ module.exports = (function() {
       add_to_publication: 'Ajouter à la publication',
       add_a_page: 'Ajouter une page',
       insert_a_page_here: 'Insérer une page ici',
-      remove_this_page: '↑ Supprimer cette page ↑',
+      remove_this_page: '▲ Supprimer cette page ▲',
 
       made_with_dodoc:
         'Page web réalisée avec l’application libre et gratuite do•doc',
@@ -309,7 +309,7 @@ module.exports = (function() {
       add_to_publication: 'Add to publication',
       add_a_page: 'Add a page',
       insert_a_page_here: 'Insert a page here',
-      remove_this_page: '↑ Remove this page ↑',
+      remove_this_page: '▲ Remove this page ▲',
 
       made_with_dodoc: 'Webpage made with do•doc, a free and open-source app',
 
