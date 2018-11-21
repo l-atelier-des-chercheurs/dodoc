@@ -30,18 +30,20 @@
         name="fileupload_list"
       >
         <div
-          v-for="f in selected_files" 
+          v-for="(f, index) in selected_files" 
           :key="f.name"
           class="m_uploadFile"
           :class="cssStatus(f)"
           :style="`--progress-percent: ${selected_files_meta.hasOwnProperty(f.name) ? selected_files_meta[f.name].upload_percentages/100 : 0}`"
         >
           <!-- too heavy on memory on mobile devices -->
-          <!-- <img 
-            v-if="!!f.type && f.type.includes('image') && " 
+          <img 
+            v-if="!!f.type && f.type.includes('image') && index < 5" 
             class="m_uploadFile--image"
             :src="getImgPreview(f)"
-          > -->
+          >
+          <div v-else class="m_uploadFile--image" />
+
           <div :title="f.name" class="m_uploadFile--filename">
             {{ f.name }}
           </div>
