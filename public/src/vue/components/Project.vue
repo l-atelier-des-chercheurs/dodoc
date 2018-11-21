@@ -10,6 +10,7 @@
         <h2 
           class="m_project--presentation--text--title"
            @click="$root.openProject(slugProjectName)"
+           :title="slugProjectName"
         >
           {{ project.name }}   
         </h2>
