@@ -210,7 +210,6 @@
       <!-- si transition, attention à ref -->
       <!-- <transition-group> -->
       <transition-group
-        class="m_projects--list"
         name="list-complete"
       >
         <div 
