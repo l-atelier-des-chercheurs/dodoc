@@ -14,7 +14,7 @@
           ←
         </button>
 
-        <div class="m_publicationMeta--topbar--title">
+        <div class="m_publicationMeta--topbar--title" :title="slugPubliName">
           {{ publication.name }}
         </div>
 
