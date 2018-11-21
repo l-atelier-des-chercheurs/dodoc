@@ -36,9 +36,12 @@
 <!-- Author(s) -->
       <div class="margin-bottom-small">
         <label>{{ $t('author') }}</label><br>
-        <textarea v-model="publidata.authors">
-        </textarea>
+        <AuthorsInput
+          :currentAuthors="publidata.authors"
+          @authorsChanged="newAuthors => publidata.authors = newAuthors"
+        />
       </div>
+
 
     </template>
 
@@ -50,20 +53,22 @@
 </template>
 <script>
 import Modal from './BaseModal.vue';
+import AuthorsInput from '../subcomponents/AuthorsInput.vue';
 
 export default {
   props: {
     read_only: Boolean
   },
   components: {
-    Modal
+    Modal,
+    AuthorsInput
   },
   data() {
     return {
       publidata: {
         name: '',
-        template: 'video_assemblage',
-        authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:''
+        template: 'page_by_page',
+        authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : '' 
       }
     };
   },
