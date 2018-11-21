@@ -908,6 +908,12 @@ input:required {
   background-position: top right;
   background-repeat: no-repeat;
   background-image: radial-gradient(@c-rouge 18%,transparent 25%);
+
+  transition: background-size .2s;
+
+  &:focus {
+    background-size: 20px 20px;    
+  }
 }
 th {
   font-weight: normal;

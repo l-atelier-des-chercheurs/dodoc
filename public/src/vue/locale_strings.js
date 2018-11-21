@@ -26,6 +26,7 @@ module.exports = (function() {
       'file:': 'Fichier&nbsp;:',
       add_to_project: 'Ajouter au projet&nbsp;:',
       input_password: 'Renseignez le mot de passe ci-dessous :',
+      validate_with_enter: 'valider avec la touche ENTRÉE',
 
       bytes: 'octets',
       kb: 'ko',
@@ -266,6 +267,7 @@ module.exports = (function() {
       'file:': 'File&nbsp;:',
       add_to_project: 'Add to project:',
       input_password: 'Input the password here:',
+      validate_with_enter: 'validate with the ENTER key',
 
       bytes: 'bytes',
       kb: 'KB',

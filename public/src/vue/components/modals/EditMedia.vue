@@ -147,7 +147,8 @@
 
   <!-- Keywords -->
       <div class="margin-bottom-small">
-        <label>{{ $t('keywords') }}</label>
+        <label>{{ $t('keywords') }}<br>
+        *<small>{{ $t('validate_with_enter') }}</small></label>
         <TagsInput 
           :keywords="mediadata.keywords"
           @tagsChanged="newTags => mediadata.keywords = newTags"
