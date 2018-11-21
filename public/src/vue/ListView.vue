@@ -53,6 +53,8 @@
                 </template>
                 <TagsAndAuthorFilters
                   v-if="show_filters"
+                  :allKeywords="projectsKeywords"
+                  :allAuthors="projectsAuthors"
                   :keywordFilter="$root.settings.project_filter.keyword"
                   :authorFilter="$root.settings.project_filter.author"
                   @setKeywordFilter="a => $root.setProjectKeywordFilter(a)"
@@ -76,6 +78,8 @@
 
                 <TagsAndAuthorFilters
                   v-if="show_filters"
+                  :allKeywords="mediasKeywords"
+                  :allAuthors="mediasAuthors"
                   :keywordFilter="$root.settings.media_filter.keyword"
                   :authorFilter="$root.settings.media_filter.author"
                   :favFilter="$root.settings.media_filter.fav"
@@ -200,6 +204,18 @@ export default {
     }
   },
   computed: {
+    projectsKeywords: function() {
+      return this.$root.getAllKeywordsFrom(this.projects);
+    },
+    projectsAuthors: function() {
+      return this.$root.getAllAuthorsFrom(this.projects);      
+    },
+    mediasKeywords: function() {
+      return this.$root.getAllKeywordsFrom(this.filteredMedias);      
+    },
+    mediasAuthors: function() {
+      return this.$root.getAllAuthorsFrom(this.filteredMedias);      
+    },
     sortedProjectsSlug: function() {
       var sortable = [];
 

@@ -17,11 +17,11 @@
         </label>
       </span>
     </div>
-    <div v-if="$root.allKeywords.length > 0" class="padding-sides-small">
+    <div v-if="allKeywords.length > 0" class="padding-sides-small">
       <label>{{ $t('keywords') }}</label>
       <div class="m_keywordField margin-bottom-none font-large">
         <button
-          v-for="keyword in $root.allKeywords" 
+          v-for="keyword in allKeywords" 
           :key="keyword.text"
           :class="[keyword.classes, { 'is--active' : keywordFilter === keyword.text }]"
           @click="$emit('setKeywordFilter',keyword.text)"
@@ -30,11 +30,11 @@
         </button>
       </div>
     </div>
-    <div v-if="$root.allAuthors.length > 0" class="padding-sides-small">
+    <div v-if="allAuthors.length > 0" class="padding-sides-small">
       <label>{{ $t('authors') }}</label>
       <div class="m_authorField margin-bottom-none">
         <button
-          v-for="author in $root.allAuthors" 
+          v-for="author in allAuthors" 
           :key="author.name"
           :class="{ 'is--active' : authorFilter === author.name }"
           @click="$emit('setAuthorFilter',author.name)"
@@ -49,7 +49,7 @@
 
 
 export default {
-  props: ['keywordFilter', 'authorFilter', 'favFilter'],
+  props: ['keywordFilter', 'authorFilter', 'favFilter', 'allKeywords', 'allAuthors'],
   components: {
   },
   data() {

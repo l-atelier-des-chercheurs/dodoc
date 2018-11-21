@@ -197,14 +197,14 @@ export default {
         : this.mediaURL;
     },
     linkToVideoThumb: function() {
-      if (typeof this.media.thumbs === 'null' || this.media.thumbs.length === 0) {
+      if (!this.media['thumbs'] || typeof this.media.thumbs === 'object' && this.media.thumbs.length === 0) {
         return;
       }
 
       let timeMark = 0;
       let timeMarkThumbs = this.$_.findWhere(this.media.thumbs, { timeMark });
 
-      if (timeMarkThumbs.length === 0) {
+      if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
         return;
       }
 
