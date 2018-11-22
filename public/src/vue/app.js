@@ -692,6 +692,39 @@ let vm = new Vue({
     }
   },
   methods: {
+    getAllKeywordsFrom(base) {
+      let uniqueKeywords = [];
+      Object.values(base).map(meta => {
+        if (!meta['keywords']) return;
+        meta.keywords.map(k => {
+          if (uniqueKeywords.indexOf(k.title) == -1)
+            uniqueKeywords.push(k.title);
+        });
+      });
+      return uniqueKeywords.map(kw => {
+        return {
+          text: kw,
+          classes: 'tagcolorid_' + (parseInt(kw, 36) % 2)
+        };
+      });
+    },
+    getAllAuthorsFrom(base) {
+      let uniqueAuthors = [];
+      Object.values(base).map(meta => {
+        if (!meta['authors']) return;
+        if (typeof meta.authors === 'string') {
+          meta.authors = [{ name: meta.authors }];
+        }
+        meta.authors.map(k => {
+          if (uniqueAuthors.indexOf(k.name) == -1) uniqueAuthors.push(k.name);
+        });
+      });
+      return uniqueAuthors.map(kw => {
+        return {
+          name: kw
+        };
+      });
+    },
     createFolder: function(fdata) {
       if (window.state.dev_mode === 'debug') {
         console.log(
@@ -737,11 +770,13 @@ let vm = new Vue({
           .toString(36)
           .substring(2, 15);
 
-      if (
-        this.settings.current_author.hasOwnProperty('name') &&
-        mdata.hasOwnProperty('additionalMeta')
-      ) {
-        mdata.additionalMeta.authors = this.settings.current_author.name;
+      if (this.settings.current_author.hasOwnProperty('name')) {
+        if (!mdata.hasOwnProperty('additionalMeta')) {
+          mdata.additionalMeta = {};
+        }
+        mdata.additionalMeta.authors = [
+          { name: this.$root.settings.current_author.name }
+        ];
       }
 
       this.$nextTick(() => {
@@ -1026,7 +1061,6 @@ let vm = new Vue({
 
       // EXPERIMENTAL : SPECIFIC TAGS OPEN MEDIA MODAL
       // '3121284126' '3121310334' '3121063518' '3121370062'
-      debugger;
 
       const nfc_custom_tags = [
         {

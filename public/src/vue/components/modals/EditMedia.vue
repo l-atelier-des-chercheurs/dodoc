@@ -147,7 +147,8 @@
 
   <!-- Keywords -->
       <div class="margin-bottom-small">
-        <label>{{ $t('keywords') }}</label>
+        <label>{{ $t('keywords') }}<br>
+        *<small>{{ $t('validate_with_enter') }}</small></label>
         <TagsInput 
           :keywords="mediadata.keywords"
           @tagsChanged="newTags => mediadata.keywords = newTags"
@@ -239,7 +240,7 @@ export default {
 
       mediadata: {
         type: this.media.type,
-        authors: typeof this.media.authors === 'string' && this.media.authors !== '' ? this.media.authors.split(',').map(a => {return { name: a }} ) : this.media.authors,
+        authors: [],
         caption: this.media.caption,
         keywords: this.media.keywords,
         fav: this.media.fav,
@@ -257,7 +258,16 @@ export default {
       deep: true
     }
   },  
-  mounted() {
+  created() {
+    if(typeof this.media.authors === 'string') {
+      if( this.media.authors !== '') {
+        this.mediadata.authors = this.media.authors.split(',').map(a => {return { name: a }} )
+      } else {
+        this.mediadata.authors = [];
+      }
+    } else {
+      this.mediadata.authors = this.media.authors;
+    }
   },
   computed: {
   },

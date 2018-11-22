@@ -51,6 +51,8 @@
 
         <template v-if="!show_medias_instead_of_projects && show_filters">
           <TagsAndAuthorFilters
+            :allKeywords="mediaKeywords"
+            :allAuthors="mediaAuthors"
             :keywordFilter="$root.settings.media_filter.keyword"
             :authorFilter="$root.settings.media_filter.author"
             :favFilter="$root.settings.media_filter.fav"
@@ -117,6 +119,10 @@ export default {
   },
   beforeDestroy() {
     // document.removeEventListener('dragover', this.fileDragover);
+    this.$root.settings.media_filter.author = false;
+    this.$root.settings.media_filter.keyword = false;
+    this.$root.settings.media_filter.fav = false;
+    
     this.$eventHub.$off('modal.prev_media', this.prevMedia);
     this.$eventHub.$off('modal.next_media', this.nextMedia);
   },
@@ -129,6 +135,13 @@ export default {
         return 0;
       }
       return Object.keys(this.project.medias).length;
+    },
+    mediaKeywords() {
+      // grab all keywords from this.project.medias
+      return this.$root.getAllKeywordsFrom(this.project.medias);      
+    },
+    mediaAuthors() {
+      return this.$root.getAllAuthorsFrom(this.project.medias);      
     },
     sortedMedias() {
       var sortable = [];
@@ -236,7 +249,7 @@ export default {
         slugFolderName: this.slugProjectName,
         type: 'projects',
         additionalMeta: {
-          type: 'text'          
+          type: 'text'
         }
       });
     },

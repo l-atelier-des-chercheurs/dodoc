@@ -165,8 +165,6 @@ export default {
           slugMediaName: d.metaFileName
         });
 
-        debugger;
-
         this.$root.editFolder({ 
           type: 'publications', 
           slugFolderName: this.slugPubliName, 

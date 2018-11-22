@@ -892,7 +892,7 @@ export default {
       if(this.selected_mode === 'stopmotion') { 
         const smdata = {
           name: this.slugProjectName + '-' + this.$moment().format('YYYYMMDD_HHmmss'),
-          authors: this.$root.settings.current_author.name
+          authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : '' 
         };
 
         this.getStaticImageFromVideoElement().then(imageData => {
@@ -930,7 +930,7 @@ export default {
         type: 'stopmotions',
         rawData: imageData,
         additionalMeta: {
-          type: 'image'          
+          type: 'image'
         }
       });
     },
@@ -1018,7 +1018,7 @@ export default {
         const meta = {
           fileCreationDate: modified,
           fav,
-          authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:'' 
+          authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : '' 
         }
         formData.append(filename, JSON.stringify(meta));
         
