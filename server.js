@@ -1,4 +1,5 @@
 var express = require('express');
+var http = require('http');
 var https = require('https');
 var fs = require('fs');
 var path = require('path');
@@ -31,7 +32,11 @@ module.exports = function() {
   );
   const options = { key: privateKey, cert: certificate };
 
-  let server = https.createServer(options, app);
+  let server =
+    settings.protocol === 'https'
+      ? https.createServer(options, app)
+      : http.createServer(app);
+
   var io = require('socket.io').listen(server);
   dev.logverbose('Starting server 2');
 
