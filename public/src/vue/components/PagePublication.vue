@@ -208,10 +208,9 @@
 
     <div class="m_publicationview--pages" ref="pages">
       <!-- si transition, attention à ref -->
-      <!-- <transition-group> -->
-      <transition-group
+      <!-- <transition-group
         name="list-complete"
-      >
+      > -->
         <div 
           v-for="(page, pageNumber) in pagesWithDefault" 
           :key="page.id"
@@ -297,7 +296,7 @@
           </div>
           
         </div>
-      </transition-group>
+      <!-- </transition-group> -->
 
       <div class="m_publicationFooter"
         v-if="$root.state.mode !== 'export_publication' && pagesWithDefault.length === 0"        
