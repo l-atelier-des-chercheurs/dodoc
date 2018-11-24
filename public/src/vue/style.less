@@ -173,7 +173,6 @@ body {
     justify-content: flex-start;
 
     @media screen and (max-width: 50rem) {
-      justify-content: space-between;
     }
 
     .m_topbar--left--logo {
@@ -323,6 +322,8 @@ body {
     }  
 
     .m_topbar--left--menuButton {
+      display: block;
+      margin-left: auto;      
       svg {
         width: auto;
         height: auto;
@@ -1384,6 +1385,7 @@ body {
   position: relative;
   margin-bottom: 0;
 
+  .font-verysmall;
   letter-spacing: 0.04em;
   display: flex;
   flex-flow: row wrap;
@@ -1406,6 +1408,7 @@ body {
     text-transform: initial;
     font-weight: inherit;
 
+    font-weight: 400;
     margin: 0 !important;
     margin-right: @t-skipline/4 !important;
     margin-bottom: @t-skipline/4 !important;
@@ -1477,6 +1480,7 @@ body {
     display: block !important;
     background-color: transparent;
     flex-grow: 0 !important;
+    .font-medium;
 
     input {
       padding: @t-skipline/4 !important;
@@ -1487,6 +1491,7 @@ body {
       min-width: 25ch !important;
       .bg-gris_clair;
       font-size: inherit !important;
+
       height: auto !important;
       border-bottom: 2px solid @c-gris !important;
     }
