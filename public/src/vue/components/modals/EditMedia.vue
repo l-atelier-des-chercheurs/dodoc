@@ -240,7 +240,7 @@ export default {
 
       mediadata: {
         type: this.media.type,
-        authors: [],
+        authors: this.media.authors,
         caption: this.media.caption,
         keywords: this.media.keywords,
         fav: this.media.fav,
@@ -259,14 +259,12 @@ export default {
     }
   },  
   created() {
-    if(typeof this.media.authors === 'string') {
-      if( this.media.authors !== '') {
-        this.mediadata.authors = this.media.authors.split(',').map(a => {return { name: a }} )
+    if(typeof this.mediadata.authors === 'string') {
+      if( this.mediadata.authors !== '') {
+        this.mediadata.authors = this.mediadata.authors.split(',').map(a => {return { name: a }} )
       } else {
         this.mediadata.authors = [];
       }
-    } else {
-      this.mediadata.authors = this.media.authors;
     }
   },
   computed: {
