@@ -17,14 +17,23 @@
         <img :src="linkToVideoThumb">
       </template>
       <template v-else>
-        <video controls preload="none" :src="mediaURL" :poster="linkToVideoThumb">
-        </video>
+        <video ref="video" preload="none" :src="mediaURL" :poster="linkToVideoThumb" />
+        <svg 
+          ref="playIcon" 
+          v-if="!video_is_playing"
+          class="mediaContainer--videoPlay" 
+          viewBox="0 0 200 200" 
+          alt="Play video"
+          @click="togglePlayVideo()"
+        >
+          <circle cx="100" cy="100" r="90" fill="#fff" stroke-width="15" stroke="#fff"></circle>
+          <polygon points="70, 55 70, 145 145, 100" fill="#353535"></polygon>
+        </svg>
       </template>
     </template>
 
     <template v-else-if="media.type === 'audio'">
-      <audio controls preload="none" :src="mediaURL">
-      </audio>
+      <audio controls preload="none" :src="mediaURL" />
     </template>
 
     <template v-else-if="media.type === 'text'">
@@ -101,7 +110,7 @@ export default {
     },
     preview_size: {
       type: Number,
-      default: 180
+      default: 360
     }
   },
   components: {
@@ -113,6 +122,7 @@ export default {
         preview_hovered: 600,
         default: 1600
       },
+      video_is_playing: false,
       htmlForEditor: this.value,
       customToolbar: [
         [{ 'header': [false, 1, 2, 3, 4] }],
@@ -131,6 +141,8 @@ export default {
         }
       }
     }
+  },
+  beforeDestroy() {
   },
   watch: {
     'htmlForEditor': function() {
@@ -185,14 +197,14 @@ export default {
         : this.mediaURL;
     },
     linkToVideoThumb: function() {
-      if (typeof this.media.thumbs === 'null' || this.media.thumbs.length === 0) {
+      if (!this.media['thumbs'] || typeof this.media.thumbs === 'object' && this.media.thumbs.length === 0) {
         return;
       }
 
       let timeMark = 0;
       let timeMarkThumbs = this.$_.findWhere(this.media.thumbs, { timeMark });
 
-      if (timeMarkThumbs.length === 0) {
+      if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
         return;
       }
 
@@ -204,6 +216,15 @@ export default {
       return pathToSmallestThumb !== undefined
         ? url
         : this.mediaURL;
+    }
+  },
+  methods: {
+    togglePlayVideo() {
+      if(this.video_is_playing === false) {
+        this.video_is_playing = true;
+        this.$refs.video.play();
+        this.$refs.video.setAttribute('controls', 'controls')      
+      }
     }
   }
 };

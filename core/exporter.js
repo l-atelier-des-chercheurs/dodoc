@@ -1,4 +1,7 @@
 const path = require('path'),
+  ffmpegstatic = require('ffmpeg-static'),
+  ffprobestatic = require('ffprobe-static'),
+  ffmpeg = require('fluent-ffmpeg'),
   fs = require('fs-extra');
 
 const settings = require('../settings.json'),
@@ -6,118 +9,14 @@ const settings = require('../settings.json'),
   api = require('./api'),
   file = require('./file');
 
+ffmpeg.setFfmpegPath(ffmpegstatic.path);
+ffmpeg.setFfprobePath(ffprobestatic.path);
+
 module.exports = (function() {
   return {
-    copyWebsiteContent: ({ html, slugFolderName }) => {
-      return new Promise(function(resolve, reject) {
-        // create cache folder that we will need to copy the content
-        let cacheFolderName =
-          api.getCurrentDate() +
-          slugFolderName +
-          '-' +
-          (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2);
+    loadPublication: (slugPubliName, pageData) =>
+      loadPublication(slugPubliName, pageData),
 
-        let cachePath = path.join(
-          global.tempStorage,
-          settings.cacheDirname,
-          cacheFolderName
-        );
-
-        fs.mkdirp(
-          cachePath,
-          function() {
-            let tasks = [];
-            // Générer le html a partir du pug au render, avec une variable qui contient tous les médias.
-            tasks.push(
-              new Promise((resolve, reject) => {
-                let indexCacheFilepath = path.join(cachePath, 'index.html');
-                api
-                  .storeData(indexCacheFilepath, html, 'create')
-                  .then(function(meta) {
-                    resolve();
-                  })
-                  .catch(err => {
-                    dev.error(`Failed to store HTML for export.`);
-                    reject(err);
-                  });
-              })
-            );
-
-            // Copier les dépendances : bundle.js dans un sous dossier.
-            tasks.push(
-              new Promise((resolve, reject) => {
-                let productionFolder = path.join(
-                  global.appRoot,
-                  'public',
-                  'dist'
-                );
-                let productionFolderInCache = path.join(cachePath, 'dist');
-                fs.copy(productionFolder, productionFolderInCache)
-                  .then(() => {
-                    resolve();
-                  })
-                  .catch(err => {
-                    dev.error(`Failed to copy production JS and CSS files.`);
-                    reject(err);
-                  });
-              })
-            );
-
-            tasks.push(
-              new Promise((resolve, reject) => {
-                const relativePathToThumbFolder = path.join(
-                  settings.thumbFolderName,
-                  slugFolderName
-                );
-
-                const fullThumbSlugFolderPath = api.getFolderPath(
-                  relativePathToThumbFolder
-                );
-                const thumbFolderInCache = path.join(
-                  cachePath,
-                  relativePathToThumbFolder
-                );
-
-                fs.copy(fullThumbSlugFolderPath, thumbFolderInCache)
-                  .then(() => {
-                    resolve();
-                  })
-                  .catch(err => {
-                    dev.error(`Failed to copy thumbs JS and CSS.`);
-                    reject(err);
-                  });
-              })
-            );
-
-            // Copier tous les médias dans un dossier.
-            tasks.push(
-              new Promise((resolve, reject) => {
-                let fullSlugFolderPath = api.getFolderPath(slugFolderName);
-                let slugFolderInCache = path.join(cachePath, slugFolderName);
-
-                fs.copy(fullSlugFolderPath, slugFolderInCache)
-                  .then(() => {
-                    resolve();
-                  })
-                  .catch(err => {
-                    dev.error(`Failed to copy medias files.`);
-                    reject(err);
-                  });
-              })
-            );
-
-            Promise.all(tasks).then(d_array => {
-              dev.log('Created complete archive of site.');
-              resolve(cachePath);
-            });
-          },
-          function(err, p) {
-            dev.error(`Failed to create cache folder: ${err}`);
-            reject(err);
-          }
-        );
-      });
-    },
     copyPubliContent: ({ html, folders_and_medias, slugPubliName }) => {
       return new Promise(function(resolve, reject) {
         // create cache folder that we will need to copy the content
@@ -287,6 +186,10 @@ module.exports = (function() {
     },
     makePDFForPubli: ({ slugPubliName }) => {
       return new Promise(function(resolve, reject) {
+        const urlToPubli = `${
+          global.appInfos.homeURL
+        }/publication/${slugPubliName}`;
+
         const pdfName =
           slugPubliName +
           '-' +
@@ -302,10 +205,6 @@ module.exports = (function() {
         );
 
         const pdfPath = path.join(cachePath, pdfName);
-
-        const urlToPubli = `${
-          global.appInfos.homeURL
-        }/publication/${slugPubliName}`;
 
         file
           .getFolder({
@@ -351,6 +250,176 @@ module.exports = (function() {
             });
           });
       });
+    },
+    makeVideoForPubli: ({ slugPubliName, socket }) => {
+      return new Promise(function(resolve, reject) {
+        const videoName =
+          slugPubliName +
+          '-' +
+          api.getCurrentDate() +
+          '-' +
+          (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2) +
+          '.mp4';
+
+        const cachePath = path.join(
+          global.tempStorage,
+          settings.cacheDirname,
+          '_publications'
+        );
+
+        const videoPath = path.join(cachePath, videoName);
+
+        loadPublication(slugPubliName, {}).then(pageData => {
+          // all publimedias name in order are there : pageData.publiAndMediaData['montage'].medias_slugs
+          // all publimedias meta : pageData.publiAndMediaData['montage'].medias
+          // all actual medias :
+
+          const publiMeta = pageData.publiAndMediaData[slugPubliName];
+          const publiMedias = pageData.publiAndMediaData[slugPubliName].medias;
+
+          const videosNameInOrder = publiMeta.medias_slugs.map(
+            item => item.slugMediaName
+          );
+
+          const videosMetaInOrder = videosNameInOrder
+            .filter(n => {
+              return publiMedias.hasOwnProperty(n);
+            })
+            .map(n => publiMedias[n]);
+
+          let videosMediaMetaInOrder = videosMetaInOrder
+            .filter(m => {
+              return (
+                pageData.folderAndMediaData.hasOwnProperty(m.slugProjectName) &&
+                pageData.folderAndMediaData[
+                  m.slugProjectName
+                ].medias.hasOwnProperty(m.slugMediaName)
+              );
+            })
+            .map(m => {
+              let videomediameta =
+                pageData.folderAndMediaData[m.slugProjectName].medias[
+                  m.slugMediaName
+                ];
+              videomediameta.publi_meta = m;
+              return videomediameta;
+            });
+
+          // return only media_filename
+          const videosFilePathInOrder = videosMediaMetaInOrder.map(vm => {
+            const pathToProject = api.getFolderPath(
+              vm.publi_meta.slugProjectName
+            );
+            return {
+              videoFilePath: path.join(pathToProject, vm.media_filename)
+            };
+          });
+
+          fs.mkdirp(cachePath, function() {
+            var ffmpeg_task = new ffmpeg();
+
+            videosFilePathInOrder.map(vm => {
+              ffmpeg_task.addInput(vm.videoFilePath);
+            });
+
+            let time_since_last_report = 0;
+            ffmpeg_task
+              .withVideoCodec('libx264')
+              .withVideoBitrate('4000k')
+              .withAudioCodec('libmp3lame')
+              .withAudioBitrate('128k')
+              .toFormat('mp4')
+              .on('progress', progress => {
+                if (+new Date() - time_since_last_report > 3000) {
+                  time_since_last_report = +new Date();
+                  require('./sockets').notify({
+                    socket,
+                    not_localized_string: `Creating video: ${progress.timemark}`
+                  });
+                }
+              })
+              .on('end', () => {
+                dev.logverbose(`Video has been created`);
+                resolve({ videoName });
+              })
+              .on('error', function(err, stdout, stderr) {
+                ffmpeg_task = null;
+                dev.error('An error happened: ' + err.message);
+                dev.error('ffmpeg standard output:\n' + stdout);
+                dev.error('ffmpeg standard error:\n' + stderr);
+                reject(`couldn't convert a video`);
+              })
+              .mergeToFile(videoPath, cachePath);
+          });
+        });
+      });
     }
   };
+
+  function loadPublication(slugPubliName, pageData) {
+    return new Promise((resolve, reject) => {
+      let slugFolderName = slugPubliName;
+      let type = 'publications';
+
+      let publi_and_medias = {};
+
+      // get publication
+      file
+        .getFolder({
+          type,
+          slugFolderName
+        })
+        .then(publiData => {
+          publi_and_medias = publiData;
+          file
+            .getMediaMetaNames({
+              type,
+              slugFolderName
+            })
+            .then(list_metaFileName => {
+              let medias_list = list_metaFileName.map(metaFileName => {
+                return {
+                  slugFolderName,
+                  metaFileName
+                };
+              });
+              file
+                .readMediaList({
+                  type,
+                  medias_list
+                })
+                .then(publi_medias => {
+                  dev.logverbose(
+                    `Got medias, now sending to the right clients`
+                  );
+                  publi_and_medias[slugFolderName].medias =
+                    publi_medias[slugFolderName].medias;
+                  pageData.publiAndMediaData = publi_and_medias;
+
+                  // we need to get the list of original medias in the publi
+                  var list_of_linked_medias = [];
+
+                  Object.entries(publi_medias[slugFolderName].medias).forEach(
+                    ([key, value]) => {
+                      list_of_linked_medias.push({
+                        slugFolderName: value.slugProjectName,
+                        metaFileName: value.slugMediaName
+                      });
+                    }
+                  );
+
+                  file
+                    .readMediaList({
+                      type: 'projects',
+                      medias_list: list_of_linked_medias
+                    })
+                    .then(folders_and_medias => {
+                      pageData.folderAndMediaData = folders_and_medias;
+                      resolve(pageData);
+                    });
+                });
+            });
+        });
+    });
+  }
 })();

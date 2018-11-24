@@ -1,57 +1,88 @@
 <template>
   <div class="m_project--library">
-    <div class="m_actionbar">
-      <button type="button" class="barButton barButton_capture" 
-        v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
-        @click="openCapture"
-        :disabled="read_only" 
-      >
-        <span>    
-          {{ $t('capture') }}
-        </span>
-      </button>      
-      <button type="button" class="dz-default dz-message" 
-        v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass') && $root.state.connected"
-        @click="showImportModal = true"
-      ><span>    
-        {{ $t('import') }}
-      </span></button>
+    <div class="m_actionbar" v-show="$root.state.connected">
+      <div class="m_actionbar--buttonBar">
+        <button type="button" class="barButton barButton_capture" 
+          v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass')"
+          @click="openCapture"
+          :disabled="read_only"
+        >
+          <span>    
+            {{ $t('capture') }}
+          </span>
+        </button>
 
-      <UploadFile
-        v-if="showImportModal"
-        @close="showImportModal = false"
-        :slugProjectName="slugProjectName"
-        :read_only="read_only"
-      />
+        <button type="button" class="barButton barButton_import" 
+          v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass')"
+          @click="showImportModal = true"
+        ><span>    
+          {{ $t('import') }}
+        </span></button>
+        <UploadFile
+          v-if="showImportModal"
+          @close="showImportModal = false"
+          :slugProjectName="slugProjectName"
+          :read_only="read_only"
+        />
 
-      <button type="button" class="barButton barButton_text" 
-        @click="createTextMedia"
-      >
-        <span>
-          {{ $t('create_text') }}
+        <button type="button" class="barButton barButton_text" 
+          @click="createTextMedia"
+        >
+          <span>
+            {{ $t('create_text') }}
+          </span>
+        </button>
+      </div>
+
+      <div class="m_actionbar--text">
+        {{ $t('showing') }} 
+        <span :class="{ 'c-rouge' : sortedMedias.length !== numberOfMedias }">
+          {{ sortedMedias.length }} 
+          {{ $t('medias_of') }} 
+          {{ numberOfMedias }}
         </span>
-      </button>
+        <template v-if="$root.allKeywords.length > 0">
+          — 
+          <button type="button" class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active' : show_filters }"
+            @click="show_filters = !show_filters"
+          >{{ $t('filters') }}</button>
+        </template>
+
+        <template v-if="!show_medias_instead_of_projects && show_filters">
+          <TagsAndAuthorFilters
+            :allKeywords="mediaKeywords"
+            :allAuthors="mediaAuthors"
+            :keywordFilter="$root.settings.media_filter.keyword"
+            :authorFilter="$root.settings.media_filter.author"
+            :favFilter="$root.settings.media_filter.fav"
+            @setKeywordFilter="a => $root.setMediaKeywordFilter(a)"
+            @setAuthorFilter="a => $root.setMediaAuthorFilter(a)"
+            @setFavFilter="a => $root.setFavAuthorFilter(a)"
+          />
+        </template>
+      </div>
     </div>
 
-    <div class="sectionTitle_small margin-sides-medium margin-vert-small">
-      {{ $t('all_medias') }}
-    </div>
-    <div class="m_project--library--medias">
+    <transition-group
+      class="m_project--library--medias"
+      name="list-complete"
+    >
       <MediaCard
         v-for="media in sortedMedias"
         :key="media.slugMediaName"
         :media="media"
         :metaFileName="media.metaFileName"
         :slugProjectName="slugProjectName"
-      >
-      </MediaCard>
-    </div>
+      />
+    </transition-group>
+    
   </div>    
 </template>
 <script>
-import MediaFilterBar from './MediaFilterBar.vue';
 import UploadFile from './modals/UploadFile.vue';
 import MediaCard from './subcomponents/MediaCard.vue';
+import TagsAndAuthorFilters from './subcomponents/TagsAndAuthorFilters.vue';
 import { setTimeout } from 'timers';
 
 export default {
@@ -61,34 +92,57 @@ export default {
     read_only: Boolean
   },
   components: {
-    MediaFilterBar,
     MediaCard,
-    UploadFile
+    UploadFile,
+    TagsAndAuthorFilters
   },
   data() {
     return {
-      mediaFilter: {
-        fav: false
-      },
       mediaSort: {
         field: 'date_uploaded',
         type: 'date',
         order: 'descending'
       },
-      showImportModal: false
+      showImportModal: false,
+      show_filters: false
     }
   },
-  
+  mounted() {
+    if(this.$root.settings.media_filter.keyword || this.$root.settings.media_filter.author) {
+      this.show_filters = true;
+    }
+  },
   created() {
-    document.addEventListener('dragover', this.fileDragover);
+    // document.addEventListener('dragover', this.fileDragover);
+    this.$eventHub.$on('modal.prev_media', this.prevMedia);
+    this.$eventHub.$on('modal.next_media', this.nextMedia);
   },
   beforeDestroy() {
-    document.removeEventListener('dragover', this.fileDragover);
+    // document.removeEventListener('dragover', this.fileDragover);
+    this.$root.settings.media_filter.author = false;
+    this.$root.settings.media_filter.keyword = false;
+    this.$root.settings.media_filter.fav = false;
+    
+    this.$eventHub.$off('modal.prev_media', this.prevMedia);
+    this.$eventHub.$off('modal.next_media', this.nextMedia);
   },
   watch: {
   },
 
   computed: {
+    numberOfMedias() {
+      if(!this.project.hasOwnProperty('medias')) {
+        return 0;
+      }
+      return Object.keys(this.project.medias).length;
+    },
+    mediaKeywords() {
+      // grab all keywords from this.project.medias
+      return this.$root.getAllKeywordsFrom(this.project.medias);      
+    },
+    mediaAuthors() {
+      return this.$root.getAllAuthorsFrom(this.project.medias);      
+    },
     sortedMedias() {
       var sortable = [];
 
@@ -97,44 +151,41 @@ export default {
       }
 
       for (let slugMediaName in this.project.medias) {
-        let mediaDataToOrderBy;
+        let orderBy;
         const media = this.project.medias[slugMediaName];
-
-        if(this.$root.isShownAfterMediaFilter(media) === false) {
-          continue;
-        } 
 
         if (this.mediaSort.type === 'date') {
           if(media.hasOwnProperty(this.mediaSort.field)) {
-            mediaDataToOrderBy = +this.$moment(
+            orderBy = +this.$moment(
               media[this.mediaSort.field],
               'YYYY-MM-DD HH:mm:ss'
             );
           }
-          if(mediaDataToOrderBy === undefined || Number.isNaN(mediaDataToOrderBy)) {
-            mediaDataToOrderBy = 1000;
+          if(orderBy === undefined || Number.isNaN(orderBy)) {
+            orderBy = 1000;
           }
         } else if (this.mediaSort.type === 'alph') {
-          mediaDataToOrderBy = media[this.mediaSort.field];
-          if(mediaDataToOrderBy === undefined || Number.isNaN(mediaDataToOrderBy)) {
-            mediaDataToOrderBy = 1000;
+          orderBy = media[this.mediaSort.field];
+          if(orderBy === undefined || Number.isNaN(orderBy)) {
+            orderBy = 1000;
           }
-          if(mediaDataToOrderBy === undefined) {
-            mediaDataToOrderBy = 'z';
+          if(orderBy === undefined) {
+            orderBy = 'z';
           }          
         }
-        sortable.push({
-          slugMediaName: slugMediaName,
-          mediaDataToOrderBy: mediaDataToOrderBy
-        });
+
+        if(this.$root.isMediaShown(media)) {
+          sortable.push({ slugMediaName, orderBy });
+        }
+        
       }
 
       let sortedSortable = sortable.sort(function(a, b) {
-        let valA = a.mediaDataToOrderBy;
-        let valB = b.mediaDataToOrderBy;
+        let valA = a.orderBy;
+        let valB = b.orderBy;
         if (
-          typeof a.mediaDataToOrderBy === 'string' &&
-          typeof b.mediaDataToOrderBy === 'string'
+          typeof a.orderBy === 'string' &&
+          typeof b.orderBy === 'string'
         ) {
           valA = valA.toLowerCase();
           valB = valB.toLowerCase();
@@ -157,22 +208,7 @@ export default {
       let sortedMedias = sortedSortable.reduce((accumulator, d) => {
         let sortedMediaObj = this.project.medias[d.slugMediaName];
         sortedMediaObj.slugMediaName = d.slugMediaName;
-
-        if (Object.keys(this.mediaFilter).length > 0) {
-          // filter those that contain props
-          // TODO for multiple filters
-
-          if(sortedMediaObj.fav === this.mediaFilter.fav) {
-            accumulator.push(sortedMediaObj);
-          }
-
-          // let originalContentFromMedia =
-          //   sortedMediaObj[this.mediaSort.field] + '';
-          // if (originalContentFromMedia.indexOf(this.mediaFilter) !== -1) {
-          // }
-        } else {
-          accumulator.push(sortedMediaObj);
-        }
+        accumulator.push(sortedMediaObj);
         return accumulator;
       }, []);
       
@@ -182,6 +218,24 @@ export default {
   methods: {
     fileDragover() {
       this.showImportModal = true;
+    },
+    prevMedia() {
+      this.mediaNav(-1);
+    },
+    nextMedia() {
+      this.mediaNav(+1);
+    },
+    mediaNav(relative_index) {
+      const current_media_index = this.sortedMedias.findIndex(m => m.metaFileName === this.$root.media_modal.current_metaFileName);
+      const new_media = this.sortedMedias[current_media_index + relative_index];
+      this.$root.closeMedia();
+      
+      if(!!new_media) {
+        this.$nextTick(() => {
+          this.openMediaModal(new_media.metaFileName);
+        });
+      }
+
     },
     openMediaModal(metaFileName) {
       if (this.$root.state.dev_mode === 'debug') {
@@ -195,7 +249,7 @@ export default {
         slugFolderName: this.slugProjectName,
         type: 'projects',
         additionalMeta: {
-          type: 'text'          
+          type: 'text'
         }
       });
     },

@@ -44,6 +44,7 @@ html
       /* state contains settings data, time and client specific data */
       window.state = {
         appVersion: "!{global.appInfos.version}",
+        session_password: "!{global.session_password}",
         authorsFolder: "!{authorsFolder}",
         protocol: "!{protocol}",
         connected: false,
@@ -61,6 +62,8 @@ html
 
   body(data-mode=mode)
     #app
+
+    script(src='/socket.io.js')
 
     - if(mode === 'export_publication')
       script(src='./_dist/build.js')

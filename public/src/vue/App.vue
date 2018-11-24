@@ -34,20 +34,13 @@
 
             <div 
               class="m_activitiesPanel--do"
+              :class="{ 'is--large' : activitiesPanel_isLarge }"
             >
-
-              <transition name="SearchSidebar" :duration="500">
-                <SearchSidebar
-                  v-if="$root.settings.show_search_sidebar"
-                >
-                </SearchSidebar>
-              </transition>
-
               <div style="position: relative; height: 100%; overflow: hidden">
                 <!-- v-show="$root.do_navigation.view === 'ListView'" -->
                 <transition name="ListView" :duration="500">
                   <ListView
-                    v-if="$root.do_navigation.view === 'ListView'"
+                    v-show="$root.do_navigation.view === 'ListView'"
                     :presentationMD="$root.store.presentationMD"
                     :read_only="!$root.state.connected"
                     :projects="$root.store.projects"
@@ -55,7 +48,7 @@
                 </transition>
                 <transition name="ProjectView" :duration="500">
                   <ProjectView
-                    v-if="['ProjectView', 'CaptureView', 'MediaView'].includes($root.do_navigation.view)"
+                    v-if="['ProjectView', 'CaptureView'].includes($root.do_navigation.view)"
                     :slugProjectName="$root.do_navigation.current_slugProjectName"
                     :project="$root.currentProject"
                     :read_only="!$root.state.connected"
@@ -70,25 +63,7 @@
                     :read_only="!$root.state.connected"
                   />
                 </transition>
-                <transition name="MediaView" :duration="500">
-                  <!-- <MediaView
-                    v-if="$root.do_navigation.view === 'MediaView'"
-                    :slugMediaName="$root.do_navigation.current_metaFileName"
-                    :slugProjectName="$root.do_navigation.current_slugProjectName"
-                    :media="$root.store.projects[$root.do_navigation.current_slugProjectName].medias[$root.do_navigation.current_metaFileName]"
-                    :read_only="!$root.state.connected"
-                  >
-                  </MediaView>       -->
-                </transition>
               </div>
-
-              <transition name="MediaFilterIndicator" :duration="500">
-                <MediaFilterIndicator
-                  v-if="Object.keys($root.settings.media_filter).length > 0"
-                  :media_filter="$root.settings.media_filter"
-                >
-                </MediaFilterIndicator>
-              </transition>
             </div>
 
           </pane>
@@ -139,8 +114,14 @@
                   />
                 </transition>
                 <transition name="ProjectView" :duration="500">
-                  <Publication
-                    v-if="$root.settings.current_slugPubliName !== false"
+                  <PagePublication
+                    v-if="$root.settings.current_slugPubliName !== false && $root.store.publications[$root.settings.current_slugPubliName].template === 'page_by_page'"
+                    :slugPubliName="$root.settings.current_slugPubliName"
+                    :publication="$root.store.publications[$root.settings.current_slugPubliName]"
+                    :read_only="!$root.state.connected"
+                  />
+                  <VideoPublication
+                    v-else-if="$root.settings.current_slugPubliName !== false && $root.store.publications[$root.settings.current_slugPubliName].template === 'video_assemblage'"
                     :slugPubliName="$root.settings.current_slugPubliName"
                     :publication="$root.store.publications[$root.settings.current_slugPubliName]"
                     :read_only="!$root.state.connected"
@@ -153,10 +134,10 @@
         </div>
       </div>
       <EditMedia
-        v-if="$root.do_navigation.view === 'MediaView'"
-        :slugMediaName="$root.do_navigation.current_metaFileName"
-        :slugProjectName="$root.do_navigation.current_slugProjectName"
-        :media="$root.store.projects[$root.do_navigation.current_slugProjectName].medias[$root.do_navigation.current_metaFileName]"
+        v-if="$root.media_modal.open"
+        :slugMediaName="$root.media_modal.current_metaFileName"
+        :slugProjectName="$root.media_modal.current_slugProjectName"
+        :media="$root.store.projects[$root.media_modal.current_slugProjectName].medias[$root.media_modal.current_metaFileName]"
         @close="$root.closeMedia()"
         :read_only="!$root.state.connected"
       >
@@ -166,7 +147,7 @@
     <template 
       v-else-if="$root.state.mode === 'export_publication'"
     >    
-      <Publication
+      <PagePublication
         v-if="$root.settings.current_slugPubliName !== false"
         :slugPubliName="$root.settings.current_slugPubliName"
         :publication="$root.store.publications[$root.settings.current_slugPubliName]"
@@ -177,7 +158,7 @@
     <template 
       v-else-if="$root.state.mode === 'print_publication'"
     >    
-      <Publication
+      <PagePublication
         v-if="$root.settings.current_slugPubliName !== false"
         :slugPubliName="$root.settings.current_slugPubliName"
         :publication="$root.store.publications[$root.settings.current_slugPubliName]"
@@ -196,13 +177,11 @@ import TopBar from './TopBar.vue';
 import ListView from './ListView.vue';
 import ProjectView from './ProjectView.vue';
 import CaptureView from './CaptureView.vue';
-import MediaView from './MediaView.vue';
 import EditMedia from './components/modals/EditMedia.vue';
-import SearchSidebar from './components/SearchSidebar.vue';
-import MediaFilterIndicator from './components/MediaFilterIndicator.vue';
 
 import Publications from './Publications.vue';
-import Publication from './components/Publication.vue';
+import PagePublication from './components/PagePublication.vue';
+import VideoPublication from './components/VideoPublication.vue';
 
 import Resizer from './components/splitpane/Resizer.vue'
 import Pane from './components/splitpane/Pane.vue'
@@ -215,14 +194,12 @@ export default {
     ListView,
     ProjectView,
     CaptureView,
-    MediaView,
     EditMedia,
     Publications,
-    Publication,
+    PagePublication,
+    VideoPublication,
     Resizer, 
-    Pane,
-    SearchSidebar,
-    MediaFilterIndicator
+    Pane
   },
   props: {
   },
@@ -235,12 +212,14 @@ export default {
       height: null,
       percent: this.$root.state.mode === 'print_publication' ? 0:100,
       type: 'width',
-      resizeType: 'left'
+      resizeType: 'left',
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight
     };
   },
   watch: {
   },
-  created() { 
+  created() {
   },
   computed: {
     userSelect() {
@@ -249,9 +228,14 @@ export default {
     cursor() {
       return this.is_dragged ? 'col-resize' : ''
     },
-    window_innerHeight() { 
-      let wHeight = window.innerHeight - 88;
-      return wHeight; 
+    activitiesPanel_isLarge() {
+      if((this.percent/100*this.$root.settings.windowWidth) < 850) {
+        return false;
+      }
+      if(this.$root.settings.windowHeight < 650) {
+        return false;
+      }
+      return true;
     }
   },
   methods: {
@@ -277,6 +261,10 @@ export default {
       this.hasMoved = false
     },
     onMouseUp() {
+      if(!this.is_dragged) {
+        return;
+      }
+
       this.is_dragged = false;
 
       if(this.percent >= 90) {

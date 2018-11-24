@@ -6,12 +6,17 @@
     :read_only="read_only"
     :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndScroll'"
     :askBeforeClosingModal="askBeforeClosingModal"
+    :show_sidebar="$root.media_modal.show_sidebar"
+    :is_minimized="$root.media_modal.minimized"
+    :can_minimize="true"
+    :media_navigation="true"
     >
     <template slot="header">
       <div class="">{{ $t('edit_the_media') }}</div>
     </template>
 
     <template slot="sidebar">
+      <!-- <small>{{ this.$root.allAuthors }}</small> -->
 
       <div v-if="!read_only" class="m_modal--buttonrow">
         <!-- CONFLICT WITH QR PRINTING -->
@@ -75,14 +80,14 @@
             <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
           </div>
         </div>
-        <div class="m_metaField" v-if="!!media.authors">
+        <!-- <div class="m_metaField" v-if="!!media.authors">
           <div>
             {{ $t('author') }}
           </div>
           <div>
             {{ media.authors }}
           </div>
-        </div>
+        </div> -->
         <div class="m_metaField">
           <div>
             {{ $t('created') }}
@@ -140,18 +145,34 @@
           </textarea>
         </div> -->
 
+  <!-- Keywords -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('keywords') }}<br>
+        *<small>{{ $t('validate_with_enter') }}</small></label>
+        <TagsInput 
+          :keywords="mediadata.keywords"
+          @tagsChanged="newTags => mediadata.keywords = newTags"
+        />
+      </div>
+
   <!-- Author(s) -->
         <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
           <label>{{ $t('author') }}</label>
-          <textarea v-model="mediadata.authors" :readonly="read_only">
-          </textarea>
+
+          <AuthorsInput
+            :currentAuthors="mediadata.authors"
+            @authorsChanged="newAuthors => mediadata.authors = newAuthors"
+          />
+
+          <!-- <textarea v-model="mediadata.authors[0]" :readonly="read_only">
+          </textarea> -->
         </div>
 
   <!-- Fav or not -->
         <div class="margin-bottom-small">
           <span class="switch switch-xs">
-            <input type="checkbox" class="switch" id="favswitch" v-model="mediadata.fav" :readonly="read_only">
-            <label for="favswitch">
+            <input type="checkbox" class="switch" id="favswitch_editmedia" v-model="mediadata.fav" :readonly="read_only">
+            <label for="favswitch_editmedia">
               {{ $t('fav') }}
               <svg version="1.1"
                 class="inline-svg"
@@ -190,6 +211,9 @@ import Modal from './BaseModal.vue';
 import MediaContent from '../subcomponents/MediaContent.vue';
 import DateTime from '../subcomponents/DateTime.vue';
 import CreateQRCode from './qr/CreateQRCode.vue';
+import { setTimeout } from 'timers';
+import AuthorsInput from '../subcomponents/AuthorsInput.vue';
+import TagsInput from '../subcomponents/TagsInput.vue';
 
 export default {
   props: {
@@ -205,11 +229,15 @@ export default {
     Modal,
     DateTime,
     MediaContent,
-    CreateQRCode
+    CreateQRCode,
+    TagsInput,
+    AuthorsInput
   },
   data() {
     return {
       showQRModal: false,
+      is_minimized: false,
+
       mediadata: {
         type: this.media.type,
         authors: this.media.authors,
@@ -230,7 +258,14 @@ export default {
       deep: true
     }
   },  
-  mounted() {
+  created() {
+    if(typeof this.mediadata.authors === 'string') {
+      if( this.mediadata.authors !== '') {
+        this.mediadata.authors = this.mediadata.authors.split(',').map(a => {return { name: a }} )
+      } else {
+        this.mediadata.authors = [];
+      }
+    }
   },
   computed: {
   },

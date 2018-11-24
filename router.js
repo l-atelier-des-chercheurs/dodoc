@@ -21,6 +21,7 @@ module.exports = function(app, io, m) {
   app.get('/publication/:publication', printPublication);
   app.get('/publication/web/:publication', exportPublication);
   app.get('/publication/print/:pdfName', showPDF);
+  app.get('/publication/video/:videoName', showVideo);
   app.post('/:project/file-upload', postFile2);
 
   /**
@@ -33,7 +34,7 @@ module.exports = function(app, io, m) {
 
       let pageData = {};
 
-      pageData.pageTitle = 'do•doc 2';
+      pageData.pageTitle = 'do•doc';
       // full path on the storage space, as displayed in the footer
       pageData.folderPath = api.getFolderPath();
       pageData.slugProjectName = '';
@@ -99,116 +100,56 @@ module.exports = function(app, io, m) {
     );
   }
 
-  function exportFolder(req, res) {
-    let slugProjectName = req.param('project');
-    generatePageData(req).then(pageData => {
-      // get medias for a folder
-      file
-        .getFolder({ type: 'projects', slugFolderName: slugProjectName })
-        .then(
-          foldersData => {
-            file.gatherAllMedias(slugProjectName).then(
-              mediasData => {
-                // recreate full object
-                foldersData[slugProjectName].medias = mediasData;
-                pageData.folderAndMediaData = foldersData;
-                pageData.mode = 'export';
-
-                res.render('index', pageData, (err, html) => {
-                  exporter.copyWebsiteContent({ html, slugProjectName }).then(
-                    cachePath => {
-                      var archive = archiver('zip');
-
-                      archive.on('error', function(err) {
-                        res.status(500).send({ error: err.message });
-                      });
-
-                      //on stream closed we can end the request
-                      archive.on('end', function() {
-                        dev.log('Archive wrote %d bytes', archive.pointer());
-                      });
-
-                      //set the archive name
-                      res.attachment(slugProjectName + '.zip');
-
-                      //this is the streaming magic
-                      archive.pipe(res);
-
-                      archive.directory(cachePath, false);
-
-                      archive.finalize();
-                    },
-                    (err, p) => {
-                      dev.error('Failed while preparing/making a web export');
-                    }
-                  );
-                });
-              },
-              (err, p) => {
-                dev.error(`Failed to gather medias: ${err}`);
-                pageData.noticeOfError = 'failed_to_find_folder';
-                res.render('index', pageData);
-              }
-            );
-          },
-          (err, p) => {
-            dev.error(`Failed to get folder: ${err}`);
-            pageData.noticeOfError = 'failed_to_find_folder';
-            res.render('index', pageData);
-          }
-        )
-        .catch(err => {
-          dev.error('No folder found');
-        });
-    });
-  }
-
   function printPublication(req, res) {
-    loadPublication(req, res).then(pageData => {
-      pageData.mode = 'print_publication';
-      res.render('index', pageData);
+    let slugPubliName = req.param('publication');
+    generatePageData(req).then(pageData => {
+      exporter.loadPublication(slugPubliName, pageData).then(pageData => {
+        pageData.mode = 'print_publication';
+        res.render('index', pageData);
+      });
     });
   }
 
   function exportPublication(req, res) {
     let slugPubliName = req.param('publication');
+    generatePageData(req).then(pageData => {
+      exporter.loadPublication(slugPubliName, pageData).then(pageData => {
+        pageData.mode = 'export_publication';
+        res.render('index', pageData, (err, html) => {
+          exporter
+            .copyPubliContent({
+              html,
+              folders_and_medias: pageData.folderAndMediaData,
+              slugPubliName
+            })
+            .then(
+              cachePath => {
+                var archive = archiver('zip');
 
-    loadPublication(req, res).then(pageData => {
-      pageData.mode = 'export_publication';
-      res.render('index', pageData, (err, html) => {
-        exporter
-          .copyPubliContent({
-            html,
-            folders_and_medias: pageData.folderAndMediaData,
-            slugPubliName
-          })
-          .then(
-            cachePath => {
-              var archive = archiver('zip');
+                archive.on('error', function(err) {
+                  res.status(500).send({ error: err.message });
+                });
 
-              archive.on('error', function(err) {
-                res.status(500).send({ error: err.message });
-              });
+                //on stream closed we can end the request
+                archive.on('end', function() {
+                  dev.log('Archive wrote %d bytes', archive.pointer());
+                });
 
-              //on stream closed we can end the request
-              archive.on('end', function() {
-                dev.log('Archive wrote %d bytes', archive.pointer());
-              });
+                //set the archive name
+                res.attachment(slugPubliName + '.zip');
 
-              //set the archive name
-              res.attachment(slugPubliName + '.zip');
+                //this is the streaming magic
+                archive.pipe(res);
 
-              //this is the streaming magic
-              archive.pipe(res);
+                archive.directory(cachePath, false);
 
-              archive.directory(cachePath, false);
-
-              archive.finalize();
-            },
-            (err, p) => {
-              dev.error('Failed while preparing/making a web export');
-            }
-          );
+                archive.finalize();
+              },
+              (err, p) => {
+                dev.error('Failed while preparing/making a web export');
+              }
+            );
+        });
       });
     });
   }
@@ -229,73 +170,19 @@ module.exports = function(app, io, m) {
     });
   }
 
-  function loadPublication(req, res) {
-    return new Promise((resolve, reject) => {
-      let slugPubliName = req.param('publication');
-      let slugFolderName = slugPubliName;
-      let type = 'publications';
+  function showVideo(req, res) {
+    let videoName = req.param('videoName');
+    const cachePath = path.join(
+      global.tempStorage,
+      settings.cacheDirname,
+      '_publications'
+    );
+    const videoPath = path.join(cachePath, videoName);
 
-      let publi_and_medias = {};
-
-      generatePageData(req).then(pageData => {
-        // get publication
-        file
-          .getFolder({
-            type,
-            slugFolderName
-          })
-          .then(publiData => {
-            publi_and_medias = publiData;
-            file
-              .getMediaMetaNames({
-                type,
-                slugFolderName
-              })
-              .then(list_metaFileName => {
-                let medias_list = list_metaFileName.map(metaFileName => {
-                  return {
-                    slugFolderName,
-                    metaFileName
-                  };
-                });
-                file
-                  .readMediaList({
-                    type,
-                    medias_list
-                  })
-                  .then(publi_medias => {
-                    dev.logverbose(
-                      `Got medias, now sending to the right clients`
-                    );
-                    publi_and_medias[slugFolderName].medias =
-                      publi_medias[slugFolderName].medias;
-                    pageData.publiAndMediaData = publi_and_medias;
-
-                    // we need to get the list of original medias in the publi
-                    var list_of_linked_medias = [];
-
-                    Object.entries(publi_medias[slugFolderName].medias).forEach(
-                      ([key, value]) => {
-                        list_of_linked_medias.push({
-                          slugFolderName: value.slugProjectName,
-                          metaFileName: value.slugMediaName
-                        });
-                      }
-                    );
-
-                    file
-                      .readMediaList({
-                        type: 'projects',
-                        medias_list: list_of_linked_medias
-                      })
-                      .then(folders_and_medias => {
-                        pageData.folderAndMediaData = folders_and_medias;
-                        resolve(pageData);
-                      });
-                  });
-              });
-          });
-      });
+    res.download(videoPath, videoName, function(err) {
+      if (err) {
+      } else {
+      }
     });
   }
 
@@ -309,6 +196,7 @@ module.exports = function(app, io, m) {
     // specify that we want to allow the user to upload multiple files in a single request
     form.multiples = false;
     form.maxFileSize = 1000 * 1024 * 1024;
+    let socketid = '';
 
     // store all uploads in the folder directory
     form.uploadDir = api.getFolderPath(slugProjectName);
@@ -318,6 +206,10 @@ module.exports = function(app, io, m) {
     let fieldValues = {};
     form.on('field', function(name, value) {
       console.log(`Got field with name = ${name} and value = ${value}.`);
+      if (name === 'socketid') {
+        socketid = value;
+      }
+
       try {
         fieldValues[name] = JSON.parse(value);
       } catch (e) {
@@ -326,19 +218,19 @@ module.exports = function(app, io, m) {
     });
 
     // every time a file has been uploaded successfully,
-    form.on('file', function(field, file) {
+    form.on('file', function(field, uploadedFile) {
       dev.logverbose(
         `File uploaded:\nfield: ${field}\nfile: ${JSON.stringify(
-          file,
+          uploadedFile,
           null,
           4
         )}.`
       );
       // add addiontal meta from 'field' to the array
-      let newFile = file;
+      let newFile = uploadedFile;
       for (let fileName in fieldValues) {
-        if (fileName === file.name) {
-          newFile = Object.assign({}, file, {
+        if (fileName === newFile.name) {
+          newFile = Object.assign({}, newFile, {
             additionalMeta: fieldValues[fileName]
           });
         }
@@ -357,23 +249,24 @@ module.exports = function(app, io, m) {
 
     // once all the files have been uploaded
     form.on('end', function() {
+      let msg = {};
+      msg.msg = 'success';
+      //           msg.medias = JSON.stringify(allFilesMeta);
+      res.end(JSON.stringify(msg));
+
       if (allFilesMeta.length > 0) {
         var m = [];
         for (var i in allFilesMeta) {
           m.push(
-            renameMediaAndCreateMeta(
+            renameAndConvertMediaAndCreateMeta(
               form.uploadDir,
               slugProjectName,
-              allFilesMeta[i]
+              allFilesMeta[i],
+              socketid
             )
           );
         }
-        Promise.all(m).then(() => {
-          let msg = {};
-          msg.msg = 'success';
-          //           msg.medias = JSON.stringify(allFilesMeta);
-          res.end(JSON.stringify(msg));
-        });
+        Promise.all(m).then(() => {});
       }
     });
 
@@ -381,8 +274,14 @@ module.exports = function(app, io, m) {
     form.parse(req);
   }
 
-  function renameMediaAndCreateMeta(uploadDir, slugProjectName, fileMeta) {
+  function renameAndConvertMediaAndCreateMeta(
+    uploadDir,
+    slugProjectName,
+    fileMeta,
+    socketid
+  ) {
     return new Promise(function(resolve, reject) {
+      dev.logfunction('ROUTER — renameAndConvertMediaAndCreateMeta');
       api.findFirstFilenameNotTaken(uploadDir, fileMeta.name).then(
         function(newFileName) {
           dev.logverbose(`Following filename is available: ${newFileName}`);
@@ -399,16 +298,32 @@ module.exports = function(app, io, m) {
             fileMeta.additionalMeta = {};
           }
 
-          let newPathToNewFileName = path.join(uploadDir, newFileName);
-          fs.renameSync(fileMeta.path, newPathToNewFileName);
-
-          fileMeta.additionalMeta.media_filename = newFileName;
-          sockets.createMediaMeta({
-            type: 'projects',
-            slugFolderName: slugProjectName,
-            additionalMeta: fileMeta.additionalMeta
-          });
-          resolve();
+          file
+            .convertAndSaveMedia({
+              uploadDir,
+              tempPath: fileMeta.path,
+              newFileName,
+              socketid
+            })
+            .then(newFileName => {
+              fileMeta.additionalMeta.media_filename = newFileName;
+              sockets.createMediaMeta({
+                type: 'projects',
+                slugFolderName: slugProjectName,
+                additionalMeta: fileMeta.additionalMeta
+              });
+              resolve();
+            })
+            .catch(err => {
+              dev.error(err);
+              fileMeta.additionalMeta.media_filename = newFileName;
+              sockets.createMediaMeta({
+                type: 'projects',
+                slugFolderName: slugProjectName,
+                additionalMeta: fileMeta.additionalMeta
+              });
+              resolve();
+            });
         },
         function(err) {
           reject(err);

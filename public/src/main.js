@@ -167,6 +167,15 @@ document.addEventListener(
     };
 
     $this.validateKey = function(keycode) {
+      const azerty_mapping = [224, 38, 233, 34, 39, 40, 167, 232, 33, 231];
+      const qwerty_mapping = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57];
+
+      // si keycode est dans azerty_mapping
+      // convertir en qwerty_mapping
+      if (azerty_mapping.indexOf(keycode) > -1) {
+        keycode = qwerty_mapping[azerty_mapping.indexOf(keycode)];
+      }
+
       if (keycode == 13 || (keycode >= 48 && keycode <= 57)) {
         if (keycode == 13) {
           return keycode;

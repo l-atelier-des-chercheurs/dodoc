@@ -15,7 +15,7 @@
           type="button"
           :disabled="read_only"
           @click="removeMedia(current_single_media.metaFileName)"
-          class="buttonLink bg-orange c-noir m_stopmotionpanel--medias--single--removeMedia"
+          class="buttonLink button-bg_rounded border c-blanc m_stopmotionpanel--medias--single--removeMedia"
         >
           <span class="">
             {{ $t('remove') }}

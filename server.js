@@ -1,4 +1,5 @@
 var express = require('express');
+var http = require('http');
 var https = require('https');
 var fs = require('fs');
 var path = require('path');
@@ -14,7 +15,7 @@ const sockets = require('./core/sockets'),
   router = require('./router'),
   settings = require('./settings.json');
 
-module.exports = function(electronApp) {
+module.exports = function() {
   dev.logverbose('Starting server 1');
 
   var app = express();
@@ -31,11 +32,15 @@ module.exports = function(electronApp) {
   );
   const options = { key: privateKey, cert: certificate };
 
-  let server = https.createServer(options, app);
+  let server =
+    settings.protocol === 'https'
+      ? https.createServer(options, app)
+      : http.createServer(app);
+
   var io = require('socket.io').listen(server);
   dev.logverbose('Starting server 2');
 
-  var m = sockets.init(app, io, electronApp);
+  var m = sockets.init(app, io);
 
   dev.logverbose('Starting express-settings');
 

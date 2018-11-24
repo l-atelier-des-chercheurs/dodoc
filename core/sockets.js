@@ -10,22 +10,20 @@ module.exports = (function() {
   dev.log(`Main module initialized at ${api.getCurrentDate()}`);
   let app;
   let io;
-  let electronApp;
 
   const API = {
-    init: (app, io, electronApp) => init(app, io, electronApp),
+    init: (app, io) => init(app, io),
     createMediaMeta: ({ type, slugFolderName, additionalMeta }) =>
       createMediaMeta({ type, slugFolderName, additionalMeta }),
     pushMessage: msg => pushMessage(msg),
-    sendTagUID: tag => sendTagUID(tag)
+    notify: notify
   };
 
-  function init(thisApp, thisIO, thisElectronApp) {
+  function init(thisApp, thisIO) {
     dev.log(`Initializing socket module`);
 
     app = thisApp;
     io = thisIO;
-    electronApp = thisElectronApp;
 
     io.on('connection', function(socket) {
       var onevent = socket.onevent;
@@ -53,6 +51,7 @@ module.exports = (function() {
       socket.on('listSpecificMedias', d => onListSpecificMedias(socket, d));
 
       socket.on('downloadPubliPDF', d => onDownloadPubliPDF(socket, d));
+      socket.on('downloadVideoPubli', d => onDownloadVideoPubli(socket, d));
       socket.on('updateNetworkInfos', d => onUpdateNetworkInfos(socket, d));
     });
   }
@@ -78,6 +77,26 @@ module.exports = (function() {
   function pushMessage(msg) {
     dev.logfunction(`EVENT - pushMessage ${msg}`);
     api.sendEventWithContent('authentificated', {}, io, socket);
+  }
+
+  function notify({
+    socket,
+    socketid,
+    not_localized_string,
+    localized_string
+  }) {
+    dev.logfunction(`EVENT - notify for socketid = ${socketid}`);
+    if (socketid || socket) {
+      if (!socket) {
+        socket = io.sockets.connected[socketid];
+      }
+      api.sendEventWithContent(
+        'notify',
+        { not_localized_string, localized_string },
+        io,
+        socket
+      );
+    }
   }
 
   /**************************************************************** FOLDER ********************************/
@@ -294,6 +313,24 @@ module.exports = (function() {
         socket
       );
     });
+  }
+
+  function onDownloadVideoPubli(socket, { slugPubliName }) {
+    dev.logfunction(
+      `EVENT - onDownloadVideoPubli with 
+      slugPubliName = ${slugPubliName}`
+    );
+
+    exporter
+      .makeVideoForPubli({ slugPubliName, socket })
+      .then(({ videoName }) => {
+        api.sendEventWithContent(
+          'publiVideoGenerated',
+          { videoName },
+          io,
+          socket
+        );
+      });
   }
 
   function onUpdateNetworkInfos() {

@@ -1,7 +1,11 @@
 <template>
   <div 
     class="m_media"
-    :class="{ 'is--inPubli' : media_is_in_current_publi }"
+    :class=" { 
+      'is--inPubli' : media_is_in_current_publi, 
+      'is--fav' : media.fav,
+      'is--ownMedia' : media_made_by_current_author
+    }"
   >
     <div>
       <figure 
@@ -26,7 +30,7 @@
           <button 
             type="button" 
             v-if="$root.settings.current_slugPubliName" 
-            class="button-greenthin button-square"
+            class="button_addToPubli button-greenthin button-square"
             @click.stop="addToCurrentPubli()"
             :title="$t('add_to_publication')"
           >
@@ -126,6 +130,15 @@ export default {
   watch: {
   },
   computed: {
+    media_made_by_current_author() {
+      if(!this.media.authors || typeof this.media.authors !== 'object') {
+        return false;
+      }
+      if(!this.$root.settings.current_author) {
+        return false;
+      }
+      return this.media.authors.filter(a => a.name === this.$root.settings.current_author.name).length > 0;
+    }
   },
   methods: {
     isMediaInPubli() {
