@@ -13,13 +13,13 @@
       <div 
         class="m_topbar--left--breadcrumb" 
       >
-        <button type="button"
+        <!-- <button type="button"
           @click="$root.closeProject"        
         >
           <span>
             {{ $t('projects') }}
           </span>
-        </button>
+        </button> -->
         
         <button type="button"
           v-if="project.hasOwnProperty('name')" 
