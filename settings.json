@@ -53,9 +53,6 @@
         },      
         "description": {
           "type": "string"
-        },
-        "preview": {
-          "type": "string"
         }
       },
       "medias": {
@@ -121,9 +118,6 @@
         "description": {
           "type": "string"
         },
-        "preview": {
-          "type": "string"
-        },
         "nfc_tag": {
           "type": "string"
         }
@@ -152,9 +146,6 @@
           "default": "current"
         },
         "description": {
-          "type": "string"
-        },
-        "preview": {
           "type": "string"
         },
         "template": {
