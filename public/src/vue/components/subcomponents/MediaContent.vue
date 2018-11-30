@@ -41,7 +41,7 @@
         <div v-if="value.length !== 0" v-html="value" />
         <p v-else v-html="'…'" />
       </div>
-      <vue-editor 
+      <VueEditor 
         v-else
         v-model="htmlForEditor"
         ref="textField"
