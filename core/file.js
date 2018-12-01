@@ -151,7 +151,6 @@ module.exports = (function() {
                 );
               }
             });
-            debugger;
             resolve(flatObjFoldersData);
           });
         });
@@ -1129,7 +1128,7 @@ module.exports = (function() {
               });
             })
             .then(() => {
-              return thumbs.removeMediaThumbs(slugFolderName, metaFileName);
+              return thumbs.removeMediaThumbs(slugFolderName, mediaFileName);
             })
             .then(() => {
               resolve();

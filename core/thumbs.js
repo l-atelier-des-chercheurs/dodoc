@@ -203,10 +203,10 @@ module.exports = (function() {
     });
   }
 
-  function removeMediaThumbs(slugFolderName, filename) {
+  function removeMediaThumbs(slugFolderName, slugMediaName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `THUMBS — removeMediaThumbs — for slugFolderName = ${slugFolderName}, filename = ${filename}`
+        `THUMBS — removeMediaThumbs — for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName}`
       );
 
       let thumbFolderPath = path.join(settings.thumbFolderName, slugFolderName);
@@ -229,8 +229,9 @@ module.exports = (function() {
             reject(err);
           }
 
+          // get all thumbs that start with
           var thumbs = filenames.filter(name => {
-            return name.indexOf(filename) === 0;
+            return name.indexOf(slugMediaName) === 0;
           });
 
           let tasks = [];
