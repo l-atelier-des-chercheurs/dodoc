@@ -19,8 +19,10 @@ module.exports = (function() {
   const API = {
     makeMediaThumbs: (slugFolderName, filename, mediaType, type, subtype) =>
       makeMediaThumbs(slugFolderName, filename, mediaType, type, subtype),
-    removeMediaThumbs: (slugFolderName, filename) =>
-      removeMediaThumbs(slugFolderName, filename),
+    removeMediaThumbs: (slugFolderName, type, filename) =>
+      removeMediaThumbs(slugFolderName, type, filename),
+    removeFolderThumbs: (slugFolderName, type) =>
+      removeFolderThumbs(slugFolderName, type),
 
     getEXIFData: mediaPath => getEXIFData(mediaPath),
     getRatioFromEXIF: mediaPath => getRatioFromEXIF(mediaPath),
@@ -204,13 +206,19 @@ module.exports = (function() {
     });
   }
 
-  function removeMediaThumbs(slugFolderName, slugMediaName) {
+  function removeMediaThumbs(slugFolderName, type, slugMediaName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
         `THUMBS — removeMediaThumbs — for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName}`
       );
 
-      let thumbFolderPath = path.join(settings.thumbFolderName, slugFolderName);
+      const baseFolderPath = settings.structure[type].path;
+      let thumbFolderPath = path.join(
+        settings.thumbFolderName,
+        baseFolderPath,
+        slugFolderName
+      );
+
       let fullThumbFolderPath = api.getFolderPath(thumbFolderPath);
 
       fs.mkdirp(fullThumbFolderPath, function(err) {
@@ -256,6 +264,89 @@ module.exports = (function() {
             resolve();
           });
         });
+      });
+    });
+  }
+
+  function removeMediaThumbs(slugFolderName, type, slugMediaName) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(
+        `THUMBS — removeMediaThumbs — for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName}`
+      );
+
+      const baseFolderPath = settings.structure[type].path;
+      let thumbFolderPath = path.join(
+        settings.thumbFolderName,
+        baseFolderPath,
+        slugFolderName
+      );
+
+      let fullThumbFolderPath = api.getFolderPath(thumbFolderPath);
+
+      fs.mkdirp(fullThumbFolderPath, function(err) {
+        if (err) {
+          reject(err);
+        }
+
+        // get all thumbs
+        fs.readdir(fullThumbFolderPath, function(err, filenames) {
+          //         dev.logverbose(`Found filenames: ${filenames}`);
+          if (err) {
+            dev.error(`Couldn't read content dir: ${err}`);
+            reject(err);
+          }
+          if (filenames === undefined) {
+            dev.error(`No folder found: ${err}`);
+            reject(err);
+          }
+
+          // get all thumbs that start with
+          var thumbs = filenames.filter(name => {
+            return name.indexOf(slugMediaName) === 0;
+          });
+
+          let tasks = [];
+
+          thumbs.map(thumbName => {
+            let removeThisThumb = new Promise((resolve, reject) => {
+              let pathToThumb = path.join(fullThumbFolderPath, thumbName);
+              fs.unlink(pathToThumb, err => {
+                dev.logverbose(`Removing thumb ${thumbName}`);
+                if (err) {
+                  reject(`${err}`);
+                } else {
+                  resolve();
+                }
+              });
+            });
+            tasks.push(removeThisThumb);
+          });
+
+          Promise.all(tasks).then(() => {
+            resolve();
+          });
+        });
+      });
+    });
+  }
+
+  function removeFolderThumbs(slugFolderName, type) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(
+        `THUMBS — removeFolderThumbs — for slugFolderName = ${slugFolderName}, type = ${type}`
+      );
+
+      const baseFolderPath = settings.structure[type].path;
+      let thumbFolderPath = path.join(
+        settings.thumbFolderName,
+        baseFolderPath,
+        slugFolderName
+      );
+
+      let fullThumbFolderPath = api.getFolderPath(thumbFolderPath);
+
+      fs.remove(fullThumbFolderPath).then(() => {
+        resolve();
       });
     });
   }

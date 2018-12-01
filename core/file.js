@@ -364,6 +364,7 @@ module.exports = (function() {
         );
 
         fs.move(thisFolderPath, movedFolderPath, { overwrite: true })
+          .then(() => thumbs.removeFolderThumbs(slugFolderName, type))
           .then(() => {
             dev.logfunction(
               `COMMON — removeFolder : folder ${slugFolderName} has been moved to ${movedFolderPath}`
@@ -1128,7 +1129,11 @@ module.exports = (function() {
               });
             })
             .then(() => {
-              return thumbs.removeMediaThumbs(slugFolderName, mediaFileName);
+              return thumbs.removeMediaThumbs(
+                slugFolderName,
+                type,
+                mediaFileName
+              );
             })
             .then(() => {
               resolve();
@@ -1485,9 +1490,13 @@ module.exports = (function() {
       );
 
       fs.remove(pathToPreview)
-        // .then(() => {
-        //   return thumbs.removeMediaThumbs(slugFolderName, preview_filename);
-        // })
+        .then(() => {
+          return thumbs.removeMediaThumbs(
+            slugFolderName,
+            type,
+            preview_filename
+          );
+        })
         .then(() => {
           if (preview_rawdata === '') {
             dev.logverbose(
