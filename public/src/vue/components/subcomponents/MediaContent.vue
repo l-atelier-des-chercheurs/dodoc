@@ -214,7 +214,7 @@ export default {
       }).path;
 
       let url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
-      url = `?${(new Date()).getTime()}`;
+      url += `?${(new Date()).getTime()}`;
       return pathToSmallestThumb !== undefined
         ? url
         : this.mediaURL;
