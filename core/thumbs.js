@@ -16,8 +16,8 @@ ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function() {
   const API = {
-    makeMediaThumbs: (slugFolderName, filename, mediaType, type) =>
-      makeMediaThumbs(slugFolderName, filename, mediaType, type),
+    makeMediaThumbs: (slugFolderName, filename, mediaType, type, subtype) =>
+      makeMediaThumbs(slugFolderName, filename, mediaType, type, subtype),
     removeMediaThumbs: (slugFolderName, filename) =>
       removeMediaThumbs(slugFolderName, filename),
 
@@ -31,10 +31,10 @@ module.exports = (function() {
 
   // this function is used both when creating a media and when all medias are listed.
   // this way, if thumbs are deleted or moved while the app is running, they will be recreated next time they are required
-  function makeMediaThumbs(slugFolderName, filename, mediaType, type) {
+  function makeMediaThumbs(slugFolderName, filename, mediaType, type, subtype) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, filename = ${filename}, mediaType: ${mediaType} and type: ${type}`
+        `THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, filename = ${filename}, mediaType: ${mediaType}, type: ${type}, subtype: ${subtype}`
       );
       if (!['image', 'video'].includes(mediaType)) {
         dev.logverbose(
@@ -44,7 +44,7 @@ module.exports = (function() {
       }
 
       const thumbResolutions =
-        settings.structure[type].medias.thumbs.resolutions;
+        settings.structure[type][subtype].thumbs.resolutions;
       const baseFolderPath = settings.structure[type].path;
       const mainFolderPath = api.getFolderPath(baseFolderPath);
 
@@ -76,8 +76,10 @@ module.exports = (function() {
                   resolve(thumbMeta);
                 })
                 .catch(err => {
-                  dev.error(`Failed to make thumbs with error ${err}`);
-                  resolve(err);
+                  dev.error(
+                    `makeMediaThumbs / Failed to make image thumbs with error ${err}`
+                  );
+                  resolve();
                 });
             });
             makeThumbs.push(makeThumb);
@@ -121,9 +123,9 @@ module.exports = (function() {
                           })
                           .catch(err => {
                             dev.error(
-                              `Failed to make thumbs with error ${err}`
+                              `makeMediaThumbs / Failed to make video thumbs with error ${err}`
                             );
-                            resolve(err);
+                            resolve();
                           });
                       }
                     );

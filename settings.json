@@ -29,8 +29,11 @@
     "projects": {
       "path": "",
       "preview": {
-        "width": 600,
-        "height": 600
+        "width": 1200,
+        "height": 1200,
+        "thumbs": {
+          "resolutions": [50, 320, 640]          
+        }
       },
       "fields": {
         "name": {
@@ -112,8 +115,11 @@
     "authors": {
       "path": "_authors",
       "preview": {
-        "width": 600,
-        "height": 600
+        "width": 1200,
+        "height": 1200,
+        "thumbs": {
+          "resolutions": [180, 640]          
+        }
       },
       "fields": {
         "name": {
@@ -134,8 +140,11 @@
     "publications": {
       "path": "_publications",
       "preview": {
-        "width": 600,
-        "height": 600
+        "width": 1200,
+        "height": 1200,
+        "thumbs": {
+          "resolutions": [180, 640]          
+        }
       },
       "fields": {
         "name": {

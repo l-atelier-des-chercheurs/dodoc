@@ -108,11 +108,13 @@ export default {
   },
   computed: {
     previewURL() {
-      if(!this.project.preview) {
-        return '';
+      if(!this.project.hasOwnProperty('preview') || this.project.preview === '') {
+        return false;
       }
-      return `/${this.slugProjectName}/${this.project.preview}`;
-    }    
+      const thumb = this.project.preview.filter(p => p.size === 640);
+      if(thumb.length > 0) { return `${thumb[0].path}?${(new Date()).getTime()}` }
+      return false;
+    }
   },
   methods: {
     editThisProject: function(event) {
