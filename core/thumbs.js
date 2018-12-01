@@ -6,6 +6,7 @@ const path = require('path'),
   exifReader = require('exif-reader');
 
 const sharp = require('sharp');
+sharp.cache(false);
 
 const settings = require('../settings.json'),
   dev = require('./dev-log'),
