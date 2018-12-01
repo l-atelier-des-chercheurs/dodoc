@@ -173,7 +173,6 @@ body {
     justify-content: flex-start;
 
     @media screen and (max-width: 50rem) {
-      justify-content: space-between;
     }
 
     .m_topbar--left--logo {
@@ -323,6 +322,8 @@ body {
     }  
 
     .m_topbar--left--menuButton {
+      display: block;
+      margin-left: auto;      
       svg {
         width: auto;
         height: auto;
@@ -403,8 +404,8 @@ body {
         cursor: pointer;
 
         svg {
-          width: 100%;
-          height: 100%;
+          width: 20px;
+          height: 20px;
         }
 
         path {
@@ -818,17 +819,6 @@ body {
         .margin-medium;
         margin-bottom: 0;
       }
-      .m_project--library--medias {
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        .custom_scrollbar(8px, 5px, 6px);
-        padding: 0;
-
-        .padding-sides-small;
-        .padding-bottom-small;
-        .padding-top-medium;
-    
-      }      
     }
   }
 
@@ -902,6 +892,7 @@ body {
     position: relative;
     z-index: 0;
     flex: 0 1 @t-folderwidth;
+    min-width: @t-folderwidth;
     max-width: @t-folderwidth;
     .bg-blanc;
 
@@ -957,22 +948,6 @@ body {
   .m_project--library {
     flex: 1 1 280px;
     .bg-gris_clair;
-          
-    .m_activitiesPanel--do {
-      display: flex;
-      flex-flow: column nowrap;
-      align-content: stretch;
-
-      > .m_actionbar {
-        flex: 0 0 auto;
-      }
-      > .m_project--library--medias {
-        flex: 1 1 auto;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        .custom_scrollbar(8px, 5px, 6px);
-      }
-    }
   }
 
   .m_project--favMedias {
@@ -993,14 +968,25 @@ body {
   }
 
   .m_project--library--medias {
+    flex: 1 1 auto;
+
+    position: relative;
     width: 100%;
     display: flex;
     flex-flow: row wrap;
     align-content: flex-start;
+    align-items: flex-start;
+
+    .padding-sides-small;
     .padding-bottom-small;
-    .padding-top-small;
+    .padding-top-medium;
+
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    .custom_scrollbar(8px, 5px, 6px);
 
     > * {
+      // position: relative;
       flex: 0 0 100/5%;
 
       @media screen and (min-width: 1500px) {
@@ -1381,8 +1367,9 @@ body {
 
 .m_authorField {
   position: relative;
-  .margin-bottom-verysmall;
+  margin-bottom: 0;
 
+  .font-verysmall;
   letter-spacing: 0.04em;
   display: flex;
   flex-flow: row wrap;
@@ -1405,6 +1392,7 @@ body {
     text-transform: initial;
     font-weight: inherit;
 
+    font-weight: 400;
     margin: 0 !important;
     margin-right: @t-skipline/4 !important;
     margin-bottom: @t-skipline/4 !important;
@@ -1476,6 +1464,7 @@ body {
     display: block !important;
     background-color: transparent;
     flex-grow: 0 !important;
+    .font-medium;
 
     input {
       padding: @t-skipline/4 !important;
@@ -1486,6 +1475,7 @@ body {
       min-width: 25ch !important;
       .bg-gris_clair;
       font-size: inherit !important;
+
       height: auto !important;
       border-bottom: 2px solid @c-gris !important;
     }

@@ -28,6 +28,13 @@
   "structure" : {
     "projects": {
       "path": "",
+      "preview": {
+        "width": 1200,
+        "height": 1200,
+        "thumbs": {
+          "resolutions": [50, 320, 640]          
+        }
+      },
       "fields": {
         "name": {
           "type": "string"
@@ -52,9 +59,6 @@
           "type": "array"
         },      
         "description": {
-          "type": "string"
-        },
-        "preview": {
           "type": "string"
         }
       },
@@ -110,6 +114,13 @@
     },
     "authors": {
       "path": "_authors",
+      "preview": {
+        "width": 1200,
+        "height": 1200,
+        "thumbs": {
+          "resolutions": [180, 640]          
+        }
+      },
       "fields": {
         "name": {
           "type": "string"
@@ -121,9 +132,6 @@
         "description": {
           "type": "string"
         },
-        "preview": {
-          "type": "string"
-        },
         "nfc_tag": {
           "type": "string"
         }
@@ -131,6 +139,13 @@
     },
     "publications": {
       "path": "_publications",
+      "preview": {
+        "width": 1200,
+        "height": 1200,
+        "thumbs": {
+          "resolutions": [180, 640]          
+        }
+      },
       "fields": {
         "name": {
           "type": "string"
@@ -152,9 +167,6 @@
           "default": "current"
         },
         "description": {
-          "type": "string"
-        },
-        "preview": {
           "type": "string"
         },
         "template": {

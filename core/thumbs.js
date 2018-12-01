@@ -6,6 +6,7 @@ const path = require('path'),
   exifReader = require('exif-reader');
 
 const sharp = require('sharp');
+sharp.cache(false);
 
 const settings = require('../settings.json'),
   dev = require('./dev-log'),
@@ -16,10 +17,12 @@ ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function() {
   const API = {
-    makeMediaThumbs: (slugFolderName, filename, mediaType, type) =>
-      makeMediaThumbs(slugFolderName, filename, mediaType, type),
-    removeMediaThumbs: (slugFolderName, filename) =>
-      removeMediaThumbs(slugFolderName, filename),
+    makeMediaThumbs: (slugFolderName, filename, mediaType, type, subtype) =>
+      makeMediaThumbs(slugFolderName, filename, mediaType, type, subtype),
+    removeMediaThumbs: (slugFolderName, type, filename) =>
+      removeMediaThumbs(slugFolderName, type, filename),
+    removeFolderThumbs: (slugFolderName, type) =>
+      removeFolderThumbs(slugFolderName, type),
 
     getEXIFData: mediaPath => getEXIFData(mediaPath),
     getRatioFromEXIF: mediaPath => getRatioFromEXIF(mediaPath),
@@ -31,10 +34,10 @@ module.exports = (function() {
 
   // this function is used both when creating a media and when all medias are listed.
   // this way, if thumbs are deleted or moved while the app is running, they will be recreated next time they are required
-  function makeMediaThumbs(slugFolderName, filename, mediaType, type) {
+  function makeMediaThumbs(slugFolderName, filename, mediaType, type, subtype) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, filename = ${filename}, mediaType: ${mediaType} and type: ${type}`
+        `THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, filename = ${filename}, mediaType: ${mediaType}, type: ${type}, subtype: ${subtype}`
       );
       if (!['image', 'video'].includes(mediaType)) {
         dev.logverbose(
@@ -44,7 +47,7 @@ module.exports = (function() {
       }
 
       const thumbResolutions =
-        settings.structure[type].medias.thumbs.resolutions;
+        settings.structure[type][subtype].thumbs.resolutions;
       const baseFolderPath = settings.structure[type].path;
       const mainFolderPath = api.getFolderPath(baseFolderPath);
 
@@ -76,8 +79,10 @@ module.exports = (function() {
                   resolve(thumbMeta);
                 })
                 .catch(err => {
-                  dev.error(`Failed to make thumbs with error ${err}`);
-                  resolve(err);
+                  dev.error(
+                    `makeMediaThumbs / Failed to make image thumbs with error ${err}`
+                  );
+                  resolve();
                 });
             });
             makeThumbs.push(makeThumb);
@@ -121,9 +126,9 @@ module.exports = (function() {
                           })
                           .catch(err => {
                             dev.error(
-                              `Failed to make thumbs with error ${err}`
+                              `makeMediaThumbs / Failed to make video thumbs with error ${err}`
                             );
-                            resolve(err);
+                            resolve();
                           });
                       }
                     );
@@ -201,13 +206,19 @@ module.exports = (function() {
     });
   }
 
-  function removeMediaThumbs(slugFolderName, filename) {
+  function removeMediaThumbs(slugFolderName, type, slugMediaName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `THUMBS — removeMediaThumbs — for slugFolderName = ${slugFolderName}, filename = ${filename}`
+        `THUMBS — removeMediaThumbs — for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName}`
       );
 
-      let thumbFolderPath = path.join(settings.thumbFolderName, slugFolderName);
+      const baseFolderPath = settings.structure[type].path;
+      let thumbFolderPath = path.join(
+        settings.thumbFolderName,
+        baseFolderPath,
+        slugFolderName
+      );
+
       let fullThumbFolderPath = api.getFolderPath(thumbFolderPath);
 
       fs.mkdirp(fullThumbFolderPath, function(err) {
@@ -227,8 +238,9 @@ module.exports = (function() {
             reject(err);
           }
 
+          // get all thumbs that start with
           var thumbs = filenames.filter(name => {
-            return name.indexOf(filename) === 0;
+            return name.indexOf(slugMediaName) === 0;
           });
 
           let tasks = [];
@@ -252,6 +264,89 @@ module.exports = (function() {
             resolve();
           });
         });
+      });
+    });
+  }
+
+  function removeMediaThumbs(slugFolderName, type, slugMediaName) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(
+        `THUMBS — removeMediaThumbs — for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName}`
+      );
+
+      const baseFolderPath = settings.structure[type].path;
+      let thumbFolderPath = path.join(
+        settings.thumbFolderName,
+        baseFolderPath,
+        slugFolderName
+      );
+
+      let fullThumbFolderPath = api.getFolderPath(thumbFolderPath);
+
+      fs.mkdirp(fullThumbFolderPath, function(err) {
+        if (err) {
+          reject(err);
+        }
+
+        // get all thumbs
+        fs.readdir(fullThumbFolderPath, function(err, filenames) {
+          //         dev.logverbose(`Found filenames: ${filenames}`);
+          if (err) {
+            dev.error(`Couldn't read content dir: ${err}`);
+            reject(err);
+          }
+          if (filenames === undefined) {
+            dev.error(`No folder found: ${err}`);
+            reject(err);
+          }
+
+          // get all thumbs that start with
+          var thumbs = filenames.filter(name => {
+            return name.indexOf(slugMediaName) === 0;
+          });
+
+          let tasks = [];
+
+          thumbs.map(thumbName => {
+            let removeThisThumb = new Promise((resolve, reject) => {
+              let pathToThumb = path.join(fullThumbFolderPath, thumbName);
+              fs.unlink(pathToThumb, err => {
+                dev.logverbose(`Removing thumb ${thumbName}`);
+                if (err) {
+                  reject(`${err}`);
+                } else {
+                  resolve();
+                }
+              });
+            });
+            tasks.push(removeThisThumb);
+          });
+
+          Promise.all(tasks).then(() => {
+            resolve();
+          });
+        });
+      });
+    });
+  }
+
+  function removeFolderThumbs(slugFolderName, type) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(
+        `THUMBS — removeFolderThumbs — for slugFolderName = ${slugFolderName}, type = ${type}`
+      );
+
+      const baseFolderPath = settings.structure[type].path;
+      let thumbFolderPath = path.join(
+        settings.thumbFolderName,
+        baseFolderPath,
+        slugFolderName
+      );
+
+      let fullThumbFolderPath = api.getFolderPath(thumbFolderPath);
+
+      fs.remove(fullThumbFolderPath).then(() => {
+        resolve();
       });
     });
   }

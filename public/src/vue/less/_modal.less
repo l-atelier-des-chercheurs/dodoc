@@ -20,8 +20,10 @@
 
   @media screen and (max-width: 50rem) {
     align-items: flex-start;
-    height: auto !important;
+    overflow: scroll !important;
     padding: 0 !important;
+    height: 100% !important;
+    .bg-blanc;
   }
 
   &.is_invisible {
@@ -127,6 +129,7 @@
 
         @media screen and (max-width: 50rem) {
           max-height: none;
+          flex: 1 1 400px;
         }
 
         &.is_collapsed {
@@ -140,10 +143,6 @@
         overflow: hidden;
         border-right: 1px solid @c-gris_clair;
         
-        @media screen and (max-width: 50rem) {
-          height: 50vh;          
-        }         
-
       }
     }
 
@@ -178,9 +177,16 @@
       align-self: flex-start;
       .m_modal--preview {
         height: auto;
+        @media screen and (max-width: 50rem) {
+          position: relative;
+        }
       }
       @media screen and (min-width: 50rem) {
         width: 90vw;
+      }
+
+      .m_modal--sidebar {
+        margin-top: 0;
       }
     }
   }
@@ -201,7 +207,16 @@
         @media screen and (min-width: 50rem) {
           min-height: 70vh;
         }
+        @media screen and (max-width: 50rem) {
+          position: fixed;
+          height: 50vh;         
+        }
       }  
+      .m_modal--sidebar {
+        @media screen and (max-width: 50rem) {
+          margin-top: 50vh;
+        }      
+      }
       
       @media screen and (min-width: 50rem) {
         width: 90vw;
@@ -267,6 +282,7 @@
   position: relative;
   display: flex;
   flex-flow: column nowrap;
+  .bg-blanc;
 
   > * {
     flex: 0 0 auto;
@@ -336,6 +352,7 @@
     overflow: hidden;
     position: relative;
     .bg-blanc;
+    .bg-gris_clair;
 
     &[data-context="edit"] {
       > * {
@@ -430,6 +447,10 @@
 .m_modal--nav_left, .m_modal--nav_right {
   position: fixed;
   top: ~"calc(50% - 40px)";
+
+  @media screen and (max-width: 50rem) {
+
+  }
 }
 .m_modal--nav_left {
   left:0;
@@ -455,11 +476,24 @@
   display: flex;
   justify-content: center;
 
+  min-height: 4em;
+
   button {
     .margin-verysmall;
   }
 
   button[type="submit"] {
+
+    @media screen and (max-width: 50rem) {
+      position: fixed;
+      z-index: 1000;
+      bottom: 1em;
+      left: 50%;
+      width: 10em;
+      transform: translateX(-50%);
+      text-align: center;    
+      min-height: 0;
+    }
   } 
 
 }

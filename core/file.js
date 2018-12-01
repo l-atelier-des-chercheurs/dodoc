@@ -78,27 +78,44 @@ module.exports = (function() {
             );
 
             // For each folder, find a preview (if it exists)
-            allFoldersData.push(
-              new Promise((resolve, reject) => {
-                dev.logverbose(
-                  `Finding preview for folder = ${thisFolderPath}`
-                );
-                const pathToPreview = path.join(
-                  thisFolderPath,
-                  settings.folderPreviewFilename + settings.thumbExt
-                );
-                fs.access(pathToPreview, fs.F_OK, err => {
-                  preview_name = !err
-                    ? settings.folderPreviewFilename + settings.thumbExt
-                    : '';
-                  resolve({
-                    [slugFolderName]: {
-                      preview: preview_name
+            if (settings.structure[type].hasOwnProperty('preview')) {
+              allFoldersData.push(
+                new Promise((resolve, reject) => {
+                  dev.logverbose(
+                    `Finding preview for folder = ${slugFolderName}`
+                  );
+
+                  const preview_name =
+                    settings.folderPreviewFilename + settings.thumbExt;
+                  const pathToPreview = path.join(thisFolderPath, preview_name);
+
+                  fs.access(pathToPreview, fs.F_OK, err => {
+                    if (err) {
+                      return resolve();
                     }
+
+                    thumbs
+                      .makeMediaThumbs(
+                        slugFolderName,
+                        preview_name,
+                        'image',
+                        type,
+                        'preview'
+                      )
+                      .then(thumbData => {
+                        resolve({
+                          [slugFolderName]: {
+                            preview: thumbData
+                          }
+                        });
+                      })
+                      .catch(err => {
+                        resolve();
+                      });
                   });
-                });
-              })
-            );
+                })
+              );
+            }
           });
           Promise.all(allFoldersData).then(parsedFoldersData => {
             dev.logverbose(
@@ -120,11 +137,10 @@ module.exports = (function() {
                 }
               }
             */
-
             // Reunite array items as a single big object
             let flatObjFoldersData = {};
             parsedFoldersData.forEach(fmeta => {
-              if (Object.keys(fmeta).length > 0) {
+              if (!!fmeta && Object.keys(fmeta).length > 0) {
                 let slugFolderName = Object.keys(fmeta)[0];
                 if (!flatObjFoldersData.hasOwnProperty(slugFolderName)) {
                   flatObjFoldersData[slugFolderName] = {};
@@ -186,9 +202,16 @@ module.exports = (function() {
             () => {
               let tasks = [];
 
-              if (data.hasOwnProperty('preview_rawdata')) {
+              if (
+                data.hasOwnProperty('preview_rawdata') &&
+                settings.structure[type].hasOwnProperty('preview')
+              ) {
                 tasks.push(
-                  _storeFoldersPreview(thisFolderPath, data.preview_rawdata)
+                  _storeFoldersPreview(
+                    slugFolderName,
+                    type,
+                    data.preview_rawdata
+                  )
                 );
               }
 
@@ -254,11 +277,16 @@ module.exports = (function() {
         const thisFolderPath = path.join(mainFolderPath, slugFolderName);
         let tasks = [];
 
-        if (newFoldersData.hasOwnProperty('preview_rawdata')) {
+        if (
+          newFoldersData.hasOwnProperty('preview_rawdata') &&
+          settings.structure[type].hasOwnProperty('preview')
+        ) {
           dev.logverbose('Updating folders preview');
           let preview_rawdata = newFoldersData.preview_rawdata;
           // store preview with sharp
-          tasks.push(_storeFoldersPreview(thisFolderPath, preview_rawdata));
+          tasks.push(
+            _storeFoldersPreview(slugFolderName, type, preview_rawdata)
+          );
         }
 
         let updateFoldersMeta = new Promise((resolve, reject) => {
@@ -336,6 +364,7 @@ module.exports = (function() {
         );
 
         fs.move(thisFolderPath, movedFolderPath, { overwrite: true })
+          .then(() => thumbs.removeFolderThumbs(slugFolderName, type))
           .then(() => {
             dev.logfunction(
               `COMMON — removeFolder : folder ${slugFolderName} has been moved to ${movedFolderPath}`
@@ -1100,7 +1129,11 @@ module.exports = (function() {
               });
             })
             .then(() => {
-              return thumbs.removeMediaThumbs(slugFolderName, metaFileName);
+              return thumbs.removeMediaThumbs(
+                slugFolderName,
+                type,
+                mediaFileName
+              );
             })
             .then(() => {
               resolve();
@@ -1376,7 +1409,8 @@ module.exports = (function() {
                 slugFolderName,
                 mediaData.media_filename,
                 mediaData.type,
-                type
+                type,
+                'medias'
               )
               .then(thumbData => {
                 mediaData.thumbs = thumbData;
@@ -1435,20 +1469,34 @@ module.exports = (function() {
       });
     });
   }
-  function _storeFoldersPreview(thisFolderPath, preview_rawdata) {
+
+  function _storeFoldersPreview(slugFolderName, type, preview_rawdata) {
     return new Promise((resolve, reject) => {
       dev.logfunction(
-        `COMMON — _storeFoldersPreview : will store preview for folder at path: ${thisFolderPath}`
+        `COMMON — _storeFoldersPreview : will store preview for folder: ${slugFolderName}`
       );
-      const pathToPreview = path.join(
-        thisFolderPath,
-        settings.folderPreviewFilename + settings.thumbExt
-      );
+
+      const baseFolderPath = settings.structure[type].path;
+      const mainFolderPath = api.getFolderPath(baseFolderPath);
+      const thisFolderPath = path.join(mainFolderPath, slugFolderName);
+
+      const preview_filename =
+        settings.folderPreviewFilename + settings.thumbExt;
+
+      const pathToPreview = path.join(thisFolderPath, preview_filename);
 
       dev.logverbose(
         `COMMON — _storeFoldersPreview : Removing existing preview at ${pathToPreview}`
       );
+
       fs.remove(pathToPreview)
+        .then(() => {
+          return thumbs.removeMediaThumbs(
+            slugFolderName,
+            type,
+            preview_filename
+          );
+        })
         .then(() => {
           if (preview_rawdata === '') {
             dev.logverbose(
@@ -1462,7 +1510,10 @@ module.exports = (function() {
           let imageBuffer = api.decodeBase64Image(preview_rawdata);
           sharp(imageBuffer)
             .rotate()
-            .resize(600, 600)
+            .resize(
+              settings.structure[type].preview.width,
+              settings.structure[type].preview.height
+            )
             .max()
             .withoutEnlargement()
             .background({ r: 255, g: 255, b: 255 })
