@@ -183,7 +183,8 @@ export default {
       }
 
       const fullPathToThumb = pathToSmallestThumb.path;
-      const url = this.$root.state.mode === 'export_publication' ? `./${fullPathToThumb}` : `/${fullPathToThumb}`;
+      let url = this.$root.state.mode === 'export_publication' ? `./${fullPathToThumb}` : `/${fullPathToThumb}`;
+      url += `?${(new Date()).getTime()}`;
       return url;
     },
     linkToHoveredThumb: function() {
@@ -212,7 +213,8 @@ export default {
         size: this.thumbRes
       }).path;
 
-      const url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
+      let url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
+      url = `?${(new Date()).getTime()}`;
       return pathToSmallestThumb !== undefined
         ? url
         : this.mediaURL;
