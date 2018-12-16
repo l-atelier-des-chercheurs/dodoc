@@ -24,8 +24,6 @@
         <div 
           :style="{ cursor, userSelect}" 
           class="vue-splitter-container clearfix" 
-          @mouseup.native="onMouseUp" 
-          @mousemove="onMouseMove"
         >
           <pane 
             class="splitter-pane splitter-paneL" 
@@ -73,6 +71,7 @@
             :className="className" 
             :style="{ [resizeType]: percent+'%'}" 
             :split="split" 
+            @mousedown.native="onMouseDown" 
             @click.native="onClick">
           </resizer>
 
@@ -92,7 +91,8 @@
                   'is--dragged' : is_dragged,
                   'is--allthewaytotheleft' : percent === 0 
                 }"
-                @mousedown="onMouseDown" 
+                @mousedown.stop.prevent="dragPubliPanel('mouse')"
+                @touchstart.stop.prevent="dragPubliPanel('touch')"   
                 :key="'openPubli'"
               >
                 <!-- v-if="$root.do_navigation.view !== 'CaptureView'" -->
@@ -238,7 +238,7 @@ export default {
   },
   methods: {
     stopDragtogglePubli() {
-      console.log('METHODS • App: stopDragtogglePubli with is_dragged = ' + this.is_dragged);
+      console.log('METHODS • App: stopDragtogglePubli');
       this.is_dragged = false;
       if(!this.$root.settings.show_publi_panel) {
         this.percent = 50;
@@ -248,64 +248,37 @@ export default {
         this.$root.closePubliPanel();
       }
     },
-    onClick() {
-      // if (!this.hasMoved) {
-      //   this.$root.togglePubliPanel();
-        // this.percent = 50
-        // this.$emit('resize')
-      // }
-    },
-    onMouseDown() {
-      console.log('METHODS • App: onMouseDown');
-      this.is_dragged = true
-      this.hasMoved = false
-      this.drag_offset = - event.target.offsetWidth + event.offsetX; 
-    },
-    onMouseUp() {
-      console.log('METHODS • App: onMouseUp with is_dragged = ' + this.is_dragged);
-      if(!this.is_dragged) {
-        return;
+    dragPubliPanel(type) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • App: dragPubliPanel with type = ${type} and is_dragged = ${this.is_dragged}`);
       }
-
-      this.is_dragged = false;
-
-      if(this.percent >= 90) {
-        this.percent = 100;
-        this.$root.closePubliPanel();
-        return;
-      } 
       
-      if(this.$root.settings.show_publi_panel === false) {
-        this.$root.openPubliPanel();
-      }      
-      if(this.percent <= 10) {
-        this.percent = 0;
+      this.drag_offset = - event.target.offsetWidth + event.offsetX;
+      if(!this.drag_offset) {
+        this.drag_offset = 0;
+      }
+
+      if(type === 'mouse') {
+        window.addEventListener('mousemove', this.dragMove);
+        window.addEventListener('mouseup', this.dragUp);
+      } else if(type === 'touch') {
+        window.addEventListener('touchmove', this.dragMove);
+        window.addEventListener('touchend', this.dragUp);
       }
     },
-    onMouseMove(e) {
-      console.log('METHODS • App: onMouseMove');
-      if (e.buttons === 0 || e.which === 0) {
-        this.is_dragged = false
-      }
+    dragMove(event) {
+      console.log('METHODS • App: dragMove');
 
-      if (this.is_dragged) {
-        let offset = this.drag_offset
-        let target = e.currentTarget
-        if (this.split === 'vertical') {
-          while (target) {
-            offset += target.offsetLeft
-            target = target.offsetParent
-          }
-        } else {
-          while (target) {
-            offset += target.offsetTop
-            target = target.offsetParent
-          }
-        }
+      if (!this.is_dragged) {
+        this.is_dragged = true;
+      } else {
 
-        const currentPage = this.split === 'vertical' ? e.pageX : e.pageY
-        const targetOffset = this.split === 'vertical' ? e.currentTarget.offsetWidth : e.currentTarget.offsetHeight
-        const percent = Math.floor(((currentPage - offset) / targetOffset) * 10000) / 100
+        debugger;
+
+        let pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
+        pageX = pageX - this.drag_offset;
+
+        const percent = Math.floor((pageX / window.innerWidth) * 10000) / 100
 
         if (percent > this.minPercent && percent < 100 - this.minPercent) {
           this.percent = percent
@@ -314,6 +287,43 @@ export default {
         this.$emit('resize')
         this.hasMoved = true
       }
+    },
+    dragUp(event) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • App: dragUp with is_dragged = ${this.is_dragged}`);
+      }
+
+      if (this.is_dragged) {
+        this.is_dragged = false;
+
+        if(this.percent >= 90) {
+          this.percent = 100;
+          this.$root.closePubliPanel();
+          return;
+        } 
+        
+        if(this.$root.settings.show_publi_panel === false) {
+          this.$root.openPubliPanel();
+        }      
+        if(this.percent <= 10) {
+          this.percent = 0;
+        }
+      } else {
+        if(!this.$root.settings.show_publi_panel) {
+          this.percent = 50;
+          this.$root.openPubliPanel();
+        } else {
+          this.percent = 100;
+          this.$root.closePubliPanel();
+        }
+      }
+
+      window.removeEventListener('mousemove', this.dragMove);
+      window.removeEventListener('mouseup', this.dragUp);
+      window.removeEventListener('touchmove', this.dragMove);
+      window.removeEventListener('touchend', this.dragUp);
+
+      return false;
     }
   }
 };

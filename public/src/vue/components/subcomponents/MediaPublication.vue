@@ -232,8 +232,12 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: resizeMove with is_resized = ${this.is_resized}`);
       }
-      const pageX_mm = event.pageX / this.pixelsPerMillimeters;
-      const pageY_mm = event.pageY / this.pixelsPerMillimeters;
+
+      const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
+      const pageY = event.pageY ? event.pageY : event.touches[0].pageY;
+
+      const pageX_mm = pageX / this.pixelsPerMillimeters;
+      const pageY_mm = pageY / this.pixelsPerMillimeters;
 
       if (!this.is_resized) {
         this.is_resized = true;
@@ -295,8 +299,11 @@ export default {
         console.log(`METHODS • MediaPublication: dragMove with is_dragged = ${this.is_dragged}`);
       }
 
-      const pageX_mm = event.pageX / this.pixelsPerMillimeters;
-      const pageY_mm = event.pageY / this.pixelsPerMillimeters;
+      const pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
+      const pageY = !!event.pageY ? event.pageY : event.touches[0].pageY;
+
+      const pageX_mm = pageX / this.pixelsPerMillimeters;
+      const pageY_mm = pageY / this.pixelsPerMillimeters;
 
       if (!this.is_dragged) {
         this.is_dragged = true;
