@@ -93,9 +93,8 @@
                   'is--dragged' : is_dragged,
                   'is--allthewaytotheleft' : percent === 0 
                 }"
-                @click="stopDragtogglePubli"
+                @mouseup.stop="stopDragtogglePubli"
                 @mousedown="onMouseDown" 
-                @mouseup.stop
                 :key="'openPubli'"
               >
                 <!-- v-if="$root.do_navigation.view !== 'CaptureView'" -->
