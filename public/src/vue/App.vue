@@ -24,7 +24,7 @@
         <div 
           :style="{ cursor, userSelect}" 
           class="vue-splitter-container clearfix" 
-          @mouseup="onMouseUp" 
+          @mouseup.native="onMouseUp" 
           @mousemove="onMouseMove"
         >
           <pane 
@@ -73,7 +73,6 @@
             :className="className" 
             :style="{ [resizeType]: percent+'%'}" 
             :split="split" 
-            @mousedown.native="onMouseDown" 
             @click.native="onClick">
           </resizer>
 
@@ -93,7 +92,6 @@
                   'is--dragged' : is_dragged,
                   'is--allthewaytotheleft' : percent === 0 
                 }"
-                @mouseup.stop="stopDragtogglePubli"
                 @mousedown="onMouseDown" 
                 :key="'openPubli'"
               >
@@ -207,6 +205,7 @@ export default {
       minPercent: 0,
       split: 'vertical',
       is_dragged: false,
+      drag_offset: 0,
       hasMoved: false,
       height: null,
       percent: this.$root.state.mode === 'print_publication' ? 0:100,
@@ -239,6 +238,7 @@ export default {
   },
   methods: {
     stopDragtogglePubli() {
+      console.log('METHODS • App: stopDragtogglePubli with is_dragged = ' + this.is_dragged);
       this.is_dragged = false;
       if(!this.$root.settings.show_publi_panel) {
         this.percent = 50;
@@ -256,10 +256,13 @@ export default {
       // }
     },
     onMouseDown() {
+      console.log('METHODS • App: onMouseDown');
       this.is_dragged = true
       this.hasMoved = false
+      this.drag_offset = - event.target.offsetWidth + event.offsetX; 
     },
     onMouseUp() {
+      console.log('METHODS • App: onMouseUp with is_dragged = ' + this.is_dragged);
       if(!this.is_dragged) {
         return;
       }
@@ -280,12 +283,13 @@ export default {
       }
     },
     onMouseMove(e) {
+      console.log('METHODS • App: onMouseMove');
       if (e.buttons === 0 || e.which === 0) {
         this.is_dragged = false
       }
 
       if (this.is_dragged) {
-        let offset = 0
+        let offset = this.drag_offset
         let target = e.currentTarget
         if (this.split === 'vertical') {
           while (target) {
