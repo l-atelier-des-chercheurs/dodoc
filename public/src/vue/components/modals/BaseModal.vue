@@ -7,7 +7,7 @@
         { 'is_invisible' : !showModal },
         { 'is_minimized' : is_minimized }
       ]"
-      @mousedown.self="/* closeModal */"
+      @mousedown.self="closeModal"
       :style="`height: ${$root.settings.windowHeight}px`"
     >
       <div class="m_modal--container"
@@ -262,10 +262,22 @@ export default {
       }      
 
       if (event.key === 'ArrowRight') {
+        if(this.askBeforeClosingModal) {
+          if (!window.confirm(this.$t('sureToCloseModal'))) {
+            console.log(`METHODS • BaseModal: modalKeyListener / ArrowRight`)
+            return;
+          }
+        }        
         this.$eventHub.$emit('modal.next_media');
         return;
       }
       if (event.key === 'ArrowLeft') {
+        if(this.askBeforeClosingModal) {
+          if (!window.confirm(this.$t('sureToCloseModal'))) {
+            console.log(`METHODS • BaseModal: modalKeyListener / ArrowLeft`)
+            return;
+          }
+        }
         this.$eventHub.$emit('modal.prev_media');
         return;
       }

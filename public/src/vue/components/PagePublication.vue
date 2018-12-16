@@ -18,7 +18,7 @@
           {{ publication.name }}
         </div>
 
-        <template 
+        <template
           v-if="$root.state.mode !== 'export_publication'"
         >
           <div class="margin-small">
