@@ -237,17 +237,17 @@ export default {
     }
   },
   methods: {
-    stopDragtogglePubli() {
-      console.log('METHODS • App: stopDragtogglePubli');
-      this.is_dragged = false;
-      if(!this.$root.settings.show_publi_panel) {
-        this.percent = 50;
-        this.$root.openPubliPanel();
-      } else {
-        this.percent = 100;
-        this.$root.closePubliPanel();
-      }
-    },
+    // stopDragtogglePubli() {
+    //   console.log('METHODS • App: stopDragtogglePubli');
+    //   this.is_dragged = false;
+    //   if(!this.$root.settings.show_publi_panel) {
+    //     this.percent = 50;
+    //     this.$root.openPubliPanel();
+    //   } else {
+    //     this.percent = 100;
+    //     this.$root.closePubliPanel();
+    //   }
+    // },
     dragPubliPanel(type) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • App: dragPubliPanel with type = ${type} and is_dragged = ${this.is_dragged}`);
@@ -273,8 +273,6 @@ export default {
         this.is_dragged = true;
       } else {
 
-        debugger;
-
         let pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
         pageX = pageX - this.drag_offset;
 
@@ -292,6 +290,10 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • App: dragUp with is_dragged = ${this.is_dragged}`);
       }
+      window.removeEventListener('mousemove', this.dragMove);
+      window.removeEventListener('mouseup', this.dragUp);
+      window.removeEventListener('touchmove', this.dragMove);
+      window.removeEventListener('touchend', this.dragUp);
 
       if (this.is_dragged) {
         this.is_dragged = false;
@@ -317,11 +319,6 @@ export default {
           this.$root.closePubliPanel();
         }
       }
-
-      window.removeEventListener('mousemove', this.dragMove);
-      window.removeEventListener('mouseup', this.dragUp);
-      window.removeEventListener('touchmove', this.dragMove);
-      window.removeEventListener('touchend', this.dragUp);
 
       return false;
     }

@@ -17,7 +17,7 @@
         <img :src="linkToVideoThumb">
       </template>
       <template v-else>
-        <video ref="video" preload="none" :src="mediaURL" :poster="linkToVideoThumb" />
+        <video controls ref="video" preload="none" :src="mediaURL" :poster="linkToVideoThumb" />
         <svg 
           ref="playIcon" 
           v-if="!video_is_playing"
@@ -225,7 +225,7 @@ export default {
       if(this.video_is_playing === false) {
         this.video_is_playing = true;
         this.$refs.video.play();
-        this.$refs.video.setAttribute('controls', 'controls')      
+        // this.$refs.video.setAttribute('controls', 'controls')      
       }
     }
   }
