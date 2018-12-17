@@ -153,7 +153,7 @@
       <transition name="fade" :duration="600">
         <button
           class="button-round bg-transparent m_modal--nav_left padding-verysmall"
-          @click="$eventHub.$emit('modal.prev_media')"
+          @click="prevMedia()"
           v-if="showModal && media_navigation && !is_minimized"
         >
           <img src="/images/i_arrow_left.svg">
@@ -163,7 +163,7 @@
       <transition name="fade" :duration="600">
         <button
           class="button-round bg-transparent m_modal--nav_right padding-verysmall"
-          @click="$eventHub.$emit('modal.next_media')"
+          @click="nextMedia()"
           v-if="showModal && media_navigation && !is_minimized"
         >
           <img src="/images/i_arrow_right.svg">
@@ -262,23 +262,11 @@ export default {
       }      
 
       if (event.key === 'ArrowRight') {
-        if(this.askBeforeClosingModal) {
-          if (!window.confirm(this.$t('sureToCloseModal'))) {
-            console.log(`METHODS • BaseModal: modalKeyListener / ArrowRight`)
-            return;
-          }
-        }        
-        this.$eventHub.$emit('modal.next_media');
+        this.nextMedia();
         return;
       }
       if (event.key === 'ArrowLeft') {
-        if(this.askBeforeClosingModal) {
-          if (!window.confirm(this.$t('sureToCloseModal'))) {
-            console.log(`METHODS • BaseModal: modalKeyListener / ArrowLeft`)
-            return;
-          }
-        }
-        this.$eventHub.$emit('modal.prev_media');
+        this.prevMedia();
         return;
       }
     },
@@ -294,6 +282,24 @@ export default {
       setTimeout(() => {
         this.$emit('close');
       }, 400);
+    },
+    prevMedia: function() {
+      console.log(`METHODS • BaseModal: prevMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
+      if(this.askBeforeClosingModal) {
+        if (!window.confirm(this.$t('sureToCloseModal'))) {
+          return;
+        }
+      }
+      this.$eventHub.$emit('modal.prev_media');
+    },
+    nextMedia: function() {
+      console.log(`METHODS • BaseModal: nextMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
+      if(this.askBeforeClosingModal) {
+        if (!window.confirm(this.$t('sureToCloseModal'))) {
+          return;
+        }
+      }
+      this.$eventHub.$emit('modal.next_media');
     },
     toggleMinimize: function() {
       console.log(`METHODS • BaseModal: toggleMinimize`);
