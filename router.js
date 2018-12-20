@@ -124,7 +124,9 @@ module.exports = function(app, io, m) {
             })
             .then(
               cachePath => {
-                var archive = archiver('zip');
+                var archive = archiver('zip', {
+                  zlib: { level: 0 } //
+                });
 
                 archive.on('error', function(err) {
                   res.status(500).send({ error: err.message });
