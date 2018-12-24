@@ -257,10 +257,13 @@ export default {
         return
       }
 
-      if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
+      if (event.target.tagName.toLowerCase() === 'input' 
+        || event.target.tagName.toLowerCase() === 'textarea'
+        || event.target.className.includes('ql-editor')
+      ) {
         return;
-      }      
-
+      }  
+      
       if (event.key === 'ArrowRight') {
         this.nextMedia();
         return;
