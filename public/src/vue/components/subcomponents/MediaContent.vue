@@ -44,10 +44,10 @@
       <VueEditor 
         v-else
         v-model="htmlForEditor"
+        class="mediaTextContent"
         ref="textField"
         autocorrect="off"
         :editorToolbar="customToolbar"
-        class="mediaTextContent"
         autofocus
       />
       <!-- <textarea
@@ -145,9 +145,9 @@ export default {
   beforeDestroy() {
   },
   watch: {
-    'htmlForEditor': function() {
-      this.$emit('input', this.htmlForEditor);
-    }
+    // 'htmlForEditor': function() {
+    //   this.$emit('input', this.htmlForEditor);
+    // }
   },
   computed: {
     mediaURL: function() {
@@ -168,9 +168,7 @@ export default {
         return this.mediaURL;
       }
 
-      let pathToSmallestThumb = this.$_.findWhere(this.media.thumbs, {
-        size: this.thumbRes
-      });
+      let pathToSmallestThumb = this.media.thumbs.filter(m => m.size === this.thumbRes)[0].path;
 
       if (
       // if image is gif and context is not 'preview', let’s show the original gif
@@ -182,15 +180,12 @@ export default {
         return this.mediaURL;
       }
 
-      const fullPathToThumb = pathToSmallestThumb.path;
-      let url = this.$root.state.mode === 'export_publication' ? `./${fullPathToThumb}` : `/${fullPathToThumb}`;
+      let url = this.$root.state.mode === 'export_publication' ? `./${pathToSmallestThumb}` : `/${pathToSmallestThumb}`;
       url += `?${(new Date()).getTime()}`;
       return url;
     },
     linkToHoveredThumb: function() {
-      let pathToSmallestThumb = this.$_.findWhere(this.media.thumbs, {
-        size: this.thumbResHovered
-      }).path;
+      let pathToSmallestThumb = this.media.thumbs.filter(m => m.size === this.thumbResHovered)[0].path;
 
       const url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined
@@ -203,15 +198,14 @@ export default {
       }
 
       let timeMark = 0;
-      let timeMarkThumbs = this.$_.findWhere(this.media.thumbs, { timeMark });
+      let timeMarkThumbs = this.media.thumbs.filter(t => t.timeMark === 0);
 
       if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
         return;
       }
 
-      let pathToSmallestThumb = this.$_.findWhere(timeMarkThumbs.thumbsData, {
-        size: this.thumbRes
-      }).path;
+
+      let pathToSmallestThumb = timeMarkThumbs[0].thumbsData.filter(m => m.size === this.thumbRes)[0].path;
 
       let url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
       url += `?${(new Date()).getTime()}`;
