@@ -258,7 +258,7 @@ function setApplicationMenu() {
   // Create the Application's main menu
   var template = [
     {
-      label: 'Electron',
+      label: 'do•doc',
       submenu: [
         {
           label: 'About do•doc',
