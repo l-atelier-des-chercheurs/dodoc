@@ -131,7 +131,7 @@
 
       <transition name="fade" :duration="600">
         <button
-          class="button-round bg-transparent m_modal--close_button padding-verysmall"
+          class="button-round m_modal--close_button padding-verysmall"
           @click="closeModal"
           v-if="showModal && !is_minimized"
         >
@@ -141,7 +141,7 @@
 
       <transition name="fade" :duration="600">
         <button
-          class="button-round bg-transparent m_modal--minimize_button padding-verysmall"
+          class="button-round bg-blanc m_modal--minimize_button padding-verysmall"
           @click="toggleMinimize"
           v-if="showModal && can_minimize"
           :class="{ 'is_minimized' : is_minimized }"
@@ -152,7 +152,7 @@
 
       <transition name="fade" :duration="600">
         <button
-          class="button-round bg-transparent m_modal--nav_left padding-verysmall"
+          class="button-round bg-blanc m_modal--nav_left padding-verysmall"
           @click="prevMedia()"
           v-if="showModal && media_navigation && !is_minimized"
         >
@@ -162,7 +162,7 @@
 
       <transition name="fade" :duration="600">
         <button
-          class="button-round bg-transparent m_modal--nav_right padding-verysmall"
+          class="button-round bg-blanc m_modal--nav_right padding-verysmall"
           @click="nextMedia()"
           v-if="showModal && media_navigation && !is_minimized"
         >
