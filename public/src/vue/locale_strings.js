@@ -49,7 +49,7 @@ module.exports = (function() {
       showing: 'Affichage de',
       media_filter: 'Filtre de médias',
       no_projects_yet:
-        'Il n’y a pas encore de projet, créez-en un pour commencer à utiliser do•doc!',
+        'Il n’y a pas encore de projet, créez-en un pour commencer à utiliser do•doc !',
       projects_of: 'projets sur',
       medias_of: 'médias sur',
       projects: 'Projets',
