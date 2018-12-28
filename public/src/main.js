@@ -208,4 +208,5 @@ $('body')
     e.preventDefault();
   });
 
+import collaborative from './collaborative.js';
 import main from './vue/app.js';

@@ -1,4 +1,6 @@
 var express = require('express');
+var expressWs = require('express-ws');
+
 var http = require('http');
 var https = require('https');
 var fs = require('fs');
@@ -18,7 +20,8 @@ const sockets = require('./core/sockets'),
 module.exports = function() {
   dev.logverbose('Starting server 1');
 
-  var app = express();
+  const app = express();
+
   app.use(compression());
 
   // only for HTTPS, works without asking for a certificate
@@ -40,6 +43,7 @@ module.exports = function() {
   var io = require('socket.io').listen(server);
   dev.logverbose('Starting server 2');
 
+  expressWs(app, server);
   var m = sockets.init(app, io);
 
   dev.logverbose('Starting express-settings');

@@ -24,6 +24,21 @@ module.exports = function(app, io, m) {
   app.get('/publication/video/:videoName', showVideo);
   app.post('/:project/file-upload', postFile2);
 
+  // app.ws('/_collaborative-editing', collaborativeEditing);
+
+  function collaborativeEditing(ws, req) {
+    console.log('WebSocket sharedb event');
+
+    ws.on('message', msg => {
+      console.log('WebSocket was closed');
+      ws.send(msg);
+    });
+
+    ws.on('close', () => {
+      console.log('WebSocket was closed');
+    });
+  }
+
   /**
    * routing functions
    */
