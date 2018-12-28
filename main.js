@@ -63,10 +63,12 @@ if (settings.process === 'electron') {
     }
   });
 } else if (settings.process === 'node') {
-  startApp();
+  setupApp().then(() => {
+    server();
+  });
 }
 
-function startApp() {
+function setupApp() {
   return new Promise(function(resolve, reject) {
     console.log(`Starting app ${global.appInfos.name}`);
     console.log(process.versions);
@@ -117,14 +119,13 @@ function startApp() {
                 .findAPortNotInUse(settings.port, settings.port + 20)
                 .then(
                   port => {
-                    dev.log(`main.js - Found available port: ${port}`);
                     global.appInfos.port = port;
                     global.appInfos.homeURL = `${settings.protocol}://${
                       settings.host
                     }:${global.appInfos.port}`;
 
-                    const appServer = server();
-                    return resolve(appServer);
+                    dev.log(`main.js - Found available port: ${port}`);
+                    return resolve();
                   },
                   function(err) {
                     dev.error('Failed to find available port: ' + err);
@@ -232,17 +233,17 @@ function createWindow(win) {
     win.focus();
   });
 
-  startApp()
-    .then(appServer => {
-      app.server = appServer;
-      // and load the base url of the app.
+  setupApp()
+    .then(() => {
+      server();
+
       win.loadURL(global.appInfos.homeURL);
 
       if (dev.isDebug()) {
         // win.webContents.openDevTools({mode: 'detach'});
         installExtension(VUEJS_DEVTOOLS)
-          .then(name => console.log(`Added Extension:  ${name}`))
-          .catch(err => console.log('An error occurred: ', err));
+          .then(name => dev.logverbose(`Added Extension:  ${name}`))
+          .catch(err => dev.logverbose('An error occurred: ', err));
       }
     })
     .catch(err => {
@@ -258,7 +259,7 @@ function setApplicationMenu() {
   // Create the Application's main menu
   var template = [
     {
-      label: 'Electron',
+      label: 'do•doc',
       submenu: [
         {
           label: 'About do•doc',
