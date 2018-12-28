@@ -147,7 +147,7 @@ export default {
           const currentPubli = this.$root.store.publications[this.$root.settings.current_slugPubliName];
           if(currentPubli.hasOwnProperty('medias') && Object.keys(currentPubli.medias).length > 0) {
 
-            const media_in_publi = this.currentPubli.medias.filter(m => m.slugMediaName === this.metaFileName);
+            const media_in_publi = Object.values(currentPubli.medias).filter(s => s.slugMediaName === this.metaFileName);
             if(media_in_publi.length > 0) {
               this.media_is_in_current_publi = true;
             } else {

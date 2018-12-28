@@ -145,9 +145,9 @@ export default {
   beforeDestroy() {
   },
   watch: {
-    // 'htmlForEditor': function() {
-    //   this.$emit('input', this.htmlForEditor);
-    // }
+    'htmlForEditor': function() {
+      this.$emit('input', this.htmlForEditor);
+    }
   },
   computed: {
     mediaURL: function() {
