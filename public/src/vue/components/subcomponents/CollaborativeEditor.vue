@@ -3,9 +3,11 @@
     <VueEditor 
       v-model="htmlForEditor"
       class="mediaTextContent"
+      ref="textField"
       autocorrect="off"
       :editorToolbar="customToolbar"
       autofocus
+      @text-change="textChange"
     />
   </div>
 </template>
@@ -60,7 +62,7 @@ export default {
       `ws://${window.location.hostname}:8079`
     );
     const connection = new sharedb.Connection(socket);
-    connection.on('state', function(state, reason) {
+    connection.on('state', (state, reason) => {
       var indicatorColor;
 
       console.log(
@@ -89,20 +91,29 @@ export default {
     // sharedoc
     const doc = connection.get('docs', docMatches ? docMatches[1] : 'default');
 
+    var textField = this.$refs.textField;
+
     // Create local Doc instance mapped to 'examples' collection document with id 'richtext'
     // var doc = connection.get('examples', 'richtext');
-    doc.subscribe(function(err) {
-      if (err) throw err;
-      var quill = new Quill('#editor', { theme: 'snow' });
+    this.$nextTick(() => {
+      doc.subscribe((err) => {
+        if (err) throw err;
 
-      quill.setContents(doc.data);
-      quill.on('text-change', function(delta, oldDelta, source) {
-        if (source !== 'user') return;
-        doc.submitOp(delta, { source: quill });
-      });
-      doc.on('op', function(op, source) {
-        if (source === quill) return;
-        quill.updateContents(op);
+        if(!textField || !textField.hasOwnProperty('quill')) return;
+
+        let quill = textField.quill;
+        debugger;
+
+        quill.setContents(doc.data);
+        quill.on('text-change', (delta, oldDelta, source) => {
+          if (source !== 'user') return;
+          doc.submitOp(delta, { source: quill });
+        });
+        doc.on('op', (op, source) => {
+          if (source === quill) return;
+          // quill.updateContents(op);
+          quill.updateContents(op);
+        });
       });
     });
 
@@ -223,31 +234,31 @@ export default {
     };
 
     // Websocket Initialization
-    io = io();
-    io.on('connect', () => {
-      io.on('disconnect', () => clearAll());
+    // io = io();
+    // io.on('connect', () => {
+    //   io.on('disconnect', () => clearAll());
 
-      io.once('initialize', e => {
-        // for (let id in e.anchors) io.id !== id && setAnchor(id, e.anchors[id]);
-        for (let id in e.names) io.id !== id && addName(id, e.names[id]);
-      });
-      io.on('anchor-update', e => {
-        if (io.id === e.id) return;
+    //   io.once('initialize', e => {
+    //     // for (let id in e.anchors) io.id !== id && setAnchor(id, e.anchors[id]);
+    //     for (let id in e.names) io.id !== id && addName(id, e.names[id]);
+    //   });
+    //   io.on('anchor-update', e => {
+    //     if (io.id === e.id) return;
 
-        // setAnchor(e.id, e.anchor);
-      });
-      io.on('id-join', e => {
-        if (io.id === e.id) return;
+    //     // setAnchor(e.id, e.anchor);
+    //   });
+    //   io.on('id-join', e => {
+    //     if (io.id === e.id) return;
 
-        addName(e.id, e.name);
-        // setAnchor(e.id, e.anchor);
-      });
-      io.on('id-left', e => {
-        if (io.id === e.id) return;
+    //     addName(e.id, e.name);
+    //     // setAnchor(e.id, e.anchor);
+    //   });
+    //   io.on('id-left', e => {
+    //     if (io.id === e.id) return;
 
-        removeId(e.id);
-      });
-    });
+    //     removeId(e.id);
+    //   });
+    // });
   },
   beforeDestroy() {
   },
@@ -260,6 +271,14 @@ export default {
   computed: {
   },
   methods: {
+    textChange(delta, oldDelta, source) {
+      if (source !== 'user') return;
+      // this.$root.deltaText({
+      //   slugFolderName: this.slugProjectName, 
+      //   slugMediaName: this.slugMediaName,        
+      //   delta,
+      // });
+    },    
   }
 }
 </script>
