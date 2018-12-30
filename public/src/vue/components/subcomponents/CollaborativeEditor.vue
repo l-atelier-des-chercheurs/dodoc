@@ -102,7 +102,6 @@ export default {
         if(!textField || !textField.hasOwnProperty('quill')) return;
 
         let quill = textField.quill;
-        debugger;
 
         quill.setContents(doc.data);
         quill.on('text-change', (delta, oldDelta, source) => {
@@ -272,7 +271,7 @@ export default {
   },
   methods: {
     textChange(delta, oldDelta, source) {
-      if (source !== 'user') return;
+      // if (source !== 'user') return;
       // this.$root.deltaText({
       //   slugFolderName: this.slugProjectName, 
       //   slugMediaName: this.slugMediaName,        

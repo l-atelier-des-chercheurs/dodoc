@@ -5,9 +5,13 @@ const WebSocket = require('ws');
 const WebSocketJSONStream = require('websocket-json-stream');
 const http = require('http');
 
+const dev = require('./core/dev-log');
+
 ShareDB.types.register(richText.type);
 
 module.exports = function(app) {
+  dev.log(`server-realtime_text_collaboration • init`);
+
   // Share DB
   const share = new ShareDB();
   const shareconn = share.connect();
@@ -17,10 +21,9 @@ module.exports = function(app) {
     share.listen(new WebSocketJSONStream(client))
   );
   shareserver.listen(8079);
-  console.log(`index.js • init: sharedb listening on 8079`);
 
   app.use((res, req, next) => {
-    console.log(`app • requested page`);
+    dev.log(`server-realtime_text_collaboration • loaded document`);
 
     // Create the document if it hasn't been already
     const req_doc = res.query.doc || 'default';

@@ -1481,7 +1481,7 @@ body {
       margin-bottom: @t-skipline/4 !important;
       border-radius: 4px !important; 
       min-width: 25ch !important;
-      .bg-gris_clair;
+      .bg-gris_tresclair;
       font-size: inherit !important;
 
       height: auto !important;
@@ -2897,6 +2897,10 @@ body {
   .ql-toolbar.ql-snow {
     .bg-blanc;
     font-family: inherit;
+    border-color: @c-gris_clair;
+    border-top: none;
+    border-left: none;
+    border-right: none;
   }
 
   > * {
@@ -2908,7 +2912,9 @@ body {
     }
     .ql-editor {
       .textarea;
-      min-height: 60vh;
+      min-height: 200px;
+
+      .bg-blanc;
 
       border-left: 2px solid transparent;
       height: 100%;
