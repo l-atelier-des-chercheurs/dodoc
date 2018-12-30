@@ -57,7 +57,7 @@ export default {
     //     io.emit('anchor-update', { stindex, edindex, prefixed })
     // })
     const socket = new ReconnectingWebSocket(
-      `wss://${window.location.hostname}:8079`
+      `ws://${window.location.hostname}:8079`
     );
     const connection = new sharedb.Connection(socket);
     connection.on('state', function(state, reason) {

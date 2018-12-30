@@ -13,6 +13,7 @@ var dev = require('./core/dev-log');
 // var ngrok = require('ngrok');
 
 const sockets = require('./core/sockets'),
+  setup_realtime_collaboration = require('./server-realtime_text_collaboration.js'),
   router = require('./router'),
   settings = require('./settings.json');
 
@@ -40,6 +41,7 @@ module.exports = function() {
       : http.createServer(app);
 
   var io = require('socket.io').listen(server);
+
   dev.logverbose('Starting server 2');
   var m = sockets.init(app, io);
 
@@ -63,6 +65,8 @@ module.exports = function() {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   app.locals.pretty = true;
+
+  setup_realtime_collaboration(app);
 
   router(app, io, m);
 
