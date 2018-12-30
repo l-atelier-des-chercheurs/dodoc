@@ -1,5 +1,4 @@
 var express = require('express');
-var expressWs = require('express-ws');
 
 var http = require('http');
 var https = require('https');
@@ -42,8 +41,6 @@ module.exports = function() {
 
   var io = require('socket.io').listen(server);
   dev.logverbose('Starting server 2');
-
-  expressWs(app, server);
   var m = sockets.init(app, io);
 
   dev.logverbose('Starting express-settings');
