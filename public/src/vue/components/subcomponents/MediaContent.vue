@@ -41,14 +41,10 @@
         <div v-if="value.length !== 0" v-html="value" />
         <p v-else v-html="'…'" />
       </div>
-      <VueEditor 
+      <CollaborativeEditor 
         v-else
         v-model="htmlForEditor"
-        class="mediaTextContent"
         ref="textField"
-        autocorrect="off"
-        :editorToolbar="customToolbar"
-        autofocus
       />
       <!-- <textarea
         placeholder="…"
@@ -82,9 +78,7 @@
   </div>
 </template>
 <script>
-import { VueEditor } from 'vue2-editor';
-
-// is loaded by Media and by EditMedia
+import CollaborativeEditor from './CollaborativeEditor.vue'
 
 export default {
   props: {
@@ -114,7 +108,7 @@ export default {
     }
   },
   components: {
-    VueEditor
+    CollaborativeEditor
   },
   data() {
     return {
@@ -123,14 +117,7 @@ export default {
         default: 1600
       },
       video_is_playing: false,
-      htmlForEditor: this.value,
-      customToolbar: [
-        [{ 'header': [false, 1, 2, 3, 4] }],
-        // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
-        ['bold', 'italic', 'underline', 'link', 'blockquote'],
-        [{ list: 'ordered' }, { list: 'bullet'} ],
-        ['clean']  
-      ]
+      htmlForEditor: this.value
     };
   },
   mounted() {
