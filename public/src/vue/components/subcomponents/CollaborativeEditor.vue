@@ -37,7 +37,9 @@ export default {
         [{ list: 'ordered' }, { list: 'bullet'} ],
         ['clean']  
       ],
-      htmlForEditor: this.value
+      htmlForEditor: this.value,
+
+      socket: null
     }
   },
   
@@ -58,10 +60,10 @@ export default {
 
     //     io.emit('anchor-update', { stindex, edindex, prefixed })
     // })
-    const socket = new ReconnectingWebSocket(
+    this.socket = new ReconnectingWebSocket(
       `ws://${window.location.hostname}:8079`
     );
-    const connection = new sharedb.Connection(socket);
+    const connection = new sharedb.Connection(this.socket);
     connection.on('state', (state, reason) => {
       var indicatorColor;
 
@@ -260,6 +262,7 @@ export default {
     // });
   },
   beforeDestroy() {
+    this.socket.close();
   },
 
   watch: {
