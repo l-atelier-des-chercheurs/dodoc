@@ -5,10 +5,11 @@
       class="mediaTextContent"
       ref="textField"
       autocorrect="off"
-      :editorToolbar="customToolbar"
+      :editorToolbar="custom_toolbar"
       autofocus
       @text-change="textChange"
     />
+    {{ connection_state }}
   </div>
 </template>
 <script>
@@ -30,7 +31,7 @@ export default {
   },
   data() {
     return {
-      customToolbar: [
+      custom_toolbar: [
         [{ 'header': [false, 1, 2, 3, 4] }],
         // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
         ['bold', 'italic', 'underline', 'link', 'blockquote'],
@@ -39,55 +40,19 @@ export default {
       ],
       htmlForEditor: this.value,
 
-      socket: null
+      socket: null,
+      connection_state: undefined
     }
   },
   
   created() {
   },
   mounted() {
-    // Update the range in other editors when the selection changes
-    // ed.on('cursorActivity', e => {
-
-    //     const stPos = ed.getCursor('start')
-    //     const edPos = ed.getCursor('end')
-    //     const hdPos = ed.getCursor('head')
-
-    //     const stindex = ed.indexFromPos(stPos)
-    //     const edindex = ed.indexFromPos(edPos)
-    //     const hdindex = ed.indexFromPos(hdPos)
-    //     const prefixed = hdindex === stindex && stindex !== edindex
-
-    //     io.emit('anchor-update', { stindex, edindex, prefixed })
-    // })
     this.socket = new ReconnectingWebSocket(
       `ws://${window.location.hostname}:8079`
     );
     const connection = new sharedb.Connection(this.socket);
-    connection.on('state', (state, reason) => {
-      var indicatorColor;
-
-      console.log(
-        '[sharedb] New connection state: ' + state + ' Reason: ' + reason
-      );
-
-      // sharedbSocketStateEl.innerHTML = state.toString();
-      switch (state.toString()) {
-        case 'connecting':
-          indicatorColor = 'silver';
-          break;
-        case 'connected':
-          indicatorColor = 'lime';
-          break;
-        case 'disconnected':
-        case 'closed':
-        case 'stopped':
-          indicatorColor = 'red';
-          break;
-      }
-      // sharedbSocketIndicatorEl.style.backgroundColor = indicatorColor;
-    });
-
+    connection.on('state', this.wsState);
     const docMatches = window.location.href.match(/\?doc=([a-zA-Z1-9]+)/);
 
     // sharedoc
@@ -281,6 +246,11 @@ export default {
       //   delta,
       // });
     },    
+    wsState(state, reason) {
+      console.log(`METHODS • CollaborativeEditor: wsState with state = ${state} and reason = ${reason}`);
+      this.connection_state = state.toString();
+      // 'connecting' 'connected' 'disconnected' 'closed' 'stopped'
+    }
   }
 }
 </script>
