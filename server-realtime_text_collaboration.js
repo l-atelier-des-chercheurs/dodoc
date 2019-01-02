@@ -1,4 +1,4 @@
-var shareDBServer = require('./sharedb-server');
+var share = require('./sharedb-server');
 var ShareDB_logger = require('sharedb-logger');
 
 const WebSocket = require('ws');
@@ -15,14 +15,13 @@ module.exports = function() {
 
   // Share DB
   // const share = new ShareDB();
-  // const shareconn = shareDBServer.connect();
-  var sharedb_logger = new ShareDB_logger(shareDBServer);
+  // const shareconn = share.connect();
+  // var sharedb_logger = new ShareDB_logger(share);
 
   const shareserver = http.createServer();
   shareserver.listen(8079, () => {});
 
   dev.log(`server-realtime_text_collaboration • sharedb server init init`);
-  const shareconn = shareDBServer.connect();
 
   dev.log(`server-realtime_text_collaboration • ws init`);
 
@@ -41,21 +40,19 @@ module.exports = function() {
     );
 
     // "?type=projects&slugFolderName=publi&metaFileName=text-20181228_122605-shl.md.txt"
-    const requested_querystring = req.url.substring(1);
-    const requested_textmedia_infos = new URLSearchParams(
-      requested_querystring
-    );
-    const textmedia_infos = {
-      type: requested_textmedia_infos.get('type'),
-      slugFolderName: requested_textmedia_infos.get('slugFolderName'),
-      metaFileName: requested_textmedia_infos.get('metaFileName')
-    };
+    // const requested_querystring = req.url.substring(1);
+    // const requested_textmedia_infos = new URLSearchParams(
+    //   requested_querystring
+    // );
+    // const textmedia_infos = {
+    //   type: requested_textmedia_infos.get('type'),
+    //   slugFolderName: requested_textmedia_infos.get('slugFolderName'),
+    //   metaFileName: requested_textmedia_infos.get('metaFileName')
+    // };
 
-    dev.logverbose(
-      `—> requested textMedias ${JSON.stringify(textmedia_infos, null, 4)}`
-    );
-
-    // const sharedoc = shareconn.get('textMedias', requested_querystring);
+    // dev.logverbose(
+    //   `—> requested textMedias ${JSON.stringify(textmedia_infos, null, 4)}`
+    // );
 
     // if (sharedoc.data == null) {
     //   // parse requested_resource from search params
@@ -93,7 +90,7 @@ module.exports = function() {
     //         );
 
     //         var stream = new WebSocketJSONStream(ws);
-    //         shareDBServer.listen(stream);
+    //         share.listen(stream);
 
     //         sharedoc.on('op', ops => {
     //           dev.logverbose(
@@ -105,7 +102,17 @@ module.exports = function() {
     // }
 
     var stream = new WebSocketJSONStream(ws);
-    shareDBServer.listen(stream);
+    share.use('op', (req, cb) => {
+      dev.logverbose(
+        `server-realtime_text_collaboration • sharedb: op received`
+      );
+
+      const snapshot_as_delta = share.db.docs[req.collection][req.id];
+      dev.logverbose(`-> snapshot = ${JSON.stringify(snapshot_as_delta)}`);
+    });
+    share.listen(stream);
+
+    const shareconn = share.connect();
 
     ws.on('pong', function(data, flags) {
       dev.logverbose(
@@ -115,6 +122,8 @@ module.exports = function() {
       );
       ws.isAlive = true;
     });
+
+    ws.on('message', function() {});
 
     ws.on('error', function(error) {
       dev.error(
@@ -135,7 +144,7 @@ module.exports = function() {
         `server-realtime_text_collaboration • sharewss: ping sent for ${ws.id}`
       );
     });
-  }, 5000);
+  }, 30000);
 
   // app.use((res, req, next) => {
   //   dev.log(`server-realtime_text_collaboration • loaded document`);
