@@ -32,6 +32,7 @@
     "node-lessify": "^0.1.5",
     "node-sass": "^4.10.0",
     "portal-vue": "^1.4.0",
+    "quill-render": "^1.0.5",
     "reconnectingwebsocket": "^1.0.0",
     "recordrtc": "^5.4.8",
     "rich-text": "^3.1.0",

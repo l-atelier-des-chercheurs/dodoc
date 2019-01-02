@@ -1,11 +1,11 @@
 var shareDBServer = require('./sharedb-server');
+var ShareDB_logger = require('sharedb-logger');
 
 const WebSocket = require('ws');
 const WebSocketJSONStream = require('websocket-json-stream');
 const http = require('http');
 const uuid = require('uuid');
 const { URLSearchParams } = require('url');
-const quillRender = require('quill-render');
 
 const dev = require('./core/dev-log'),
   file = require('./core/file');
@@ -16,6 +16,7 @@ module.exports = function() {
   // Share DB
   // const share = new ShareDB();
   // const shareconn = shareDBServer.connect();
+  var sharedb_logger = new ShareDB_logger(shareDBServer);
 
   const shareserver = http.createServer();
   shareserver.listen(8079, () => {});
@@ -54,54 +55,57 @@ module.exports = function() {
       `—> requested textMedias ${JSON.stringify(textmedia_infos, null, 4)}`
     );
 
-    const sharedoc = shareconn.get('textMedias', requested_querystring);
+    // const sharedoc = shareconn.get('textMedias', requested_querystring);
 
-    if (sharedoc.data == null) {
-      // parse requested_resource from search params
-      file
-        .readMediaList({
-          type: textmedia_infos.type,
-          medias_list: [
-            {
-              slugFolderName: textmedia_infos.slugFolderName,
-              metaFileName: textmedia_infos.metaFileName
-            }
-          ]
-        })
-        .then(mediaData => {
-          dev.logverbose(
-            `server-realtime_text_collaboration • sharewss: got base text media`
-          );
+    // if (sharedoc.data == null) {
+    //   // parse requested_resource from search params
+    //   file
+    //     .readMediaList({
+    //       type: textmedia_infos.type,
+    //       medias_list: [
+    //         {
+    //           slugFolderName: textmedia_infos.slugFolderName,
+    //           metaFileName: textmedia_infos.metaFileName
+    //         }
+    //       ]
+    //     })
+    //     .then(mediaData => {
+    //       dev.logverbose(
+    //         `server-realtime_text_collaboration • sharewss: got base text media`
+    //       );
 
-          const text_content = Object.values(
-            Object.values(mediaData)[0].medias
-          )[0].content;
-          let rendered_text = quillRender([{ insert: text_content }]);
+    //       const text_content = Object.values(
+    //         Object.values(mediaData)[0].medias
+    //       )[0].content;
+    //       let rendered_text = quillRender([{ insert: text_content }]);
 
-          debugger;
-          dev.logverbose(
-            `server-realtime_text_collaboration • sharewss: now inserting = ${rendered_text}`
-          );
+    //       debugger;
+    //       dev.logverbose(
+    //         `server-realtime_text_collaboration • sharewss: now inserting = ${rendered_text}`
+    //       );
 
-          // and add this parsed content to that doc
-          sharedoc.create(rendered_text, 'rich-text', function(err) {
-            if (err) return dev.error(err);
+    //       // and add this parsed content to that doc
+    //       sharedoc.create(rendered_text, 'rich-text', function(err) {
+    //         if (err) return dev.error(err);
 
-            dev.logverbose(
-              `server-realtime_text_collaboration • sharewss: doc created`
-            );
+    //         dev.logverbose(
+    //           `server-realtime_text_collaboration • sharewss: doc created`
+    //         );
 
-            var stream = new WebSocketJSONStream(ws);
-            shareDBServer.listen(stream);
+    //         var stream = new WebSocketJSONStream(ws);
+    //         shareDBServer.listen(stream);
 
-            sharedoc.on('op', ops => {
-              dev.logverbose(
-                `server-realtime_text_collaboration • sharewss: new op for requested_querystring = ${requested_querystring}`
-              );
-            });
-          });
-        });
-    }
+    //         sharedoc.on('op', ops => {
+    //           dev.logverbose(
+    //             `server-realtime_text_collaboration • sharewss: new op for requested_querystring = ${requested_querystring}`
+    //           );
+    //         });
+    //       });
+    //     });
+    // }
+
+    var stream = new WebSocketJSONStream(ws);
+    shareDBServer.listen(stream);
 
     ws.on('pong', function(data, flags) {
       dev.logverbose(

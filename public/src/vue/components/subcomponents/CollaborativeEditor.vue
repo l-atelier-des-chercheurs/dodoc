@@ -9,7 +9,8 @@
       autofocus
       @text-change="textChange"
     />
-    {{ connection_state }}
+    connection_state : {{ connection_state }}<br>
+    htmlForEditor : {{ htmlForEditor }}
   </div>
 </template>
 <script>
@@ -17,6 +18,8 @@ import { VueEditor } from 'vue2-editor';
 import ReconnectingWebSocket from 'reconnectingwebsocket'
 import sharedb from 'sharedb/lib/client'
 import richText from 'rich-text'
+import quillRender from 'quill-render'
+
 sharedb.types.register(richText.type)
 
 export default {
@@ -72,30 +75,37 @@ export default {
 
     var textField = this.$refs.textField;
 
-    // Create local Doc instance mapped to 'examples' collection document with id 'richtext'
-    // var doc = connection.get('examples', 'richtext');
-    this.$nextTick(() => {
-      doc.subscribe((err) => {
-        if (err) {
-          console.error(`ON • CollaborativeEditor: err ${err}`);
-        }
-        console.log(`ON • CollaborativeEditor: subscribe`);
+    doc.subscribe((err) => {
+      if (err) {
+        console.error(`ON • CollaborativeEditor: err ${err}`);
+      }
+      console.log(`ON • CollaborativeEditor: subscribe`);
 
-        if(!textField || !textField.hasOwnProperty('quill')) return;
+      if(!textField || !textField.hasOwnProperty('quill')) return;
 
-        let quill = textField.quill;
+      let quill = textField.quill;
 
-        quill.setContents(doc.data);
-        quill.on('text-change', (delta, oldDelta, source) => {
-          if (source !== 'user') return;
-          console.log(`ON • CollaborativeEditor: text-change`);
-          doc.submitOp(delta, { source: quill });
-        });
-        doc.on('op', (op, source) => {
-          if (source === quill) return;
-          console.log(`ON • CollaborativeEditor: operation applied to quill`);
-          quill.updateContents(op);
-        });
+      if (!doc.type) {
+        console.log(`ON • CollaborativeEditor: no type found on doc, creating a new one with content`);
+        doc.create([{
+          insert: quill.getContents()
+        }], 'rich-text');
+      } else {
+        console.log(`ON • CollaborativeEditor: type found, doc exists`);
+        console.log(`ON • CollaborativeEditor: about to set quill text to ${quillRender(doc.data)}`);
+        this.htmlForEditor = quillRender(doc.data);
+      }
+
+
+      quill.on('text-change', (delta, oldDelta, source) => {
+        if (source !== 'user') return;
+        console.log(`ON • CollaborativeEditor: text-change`);
+        doc.submitOp(delta, { source: quill });
+      });
+      doc.on('op', (op, source) => {
+        if (source === quill) return;
+        console.log(`ON • CollaborativeEditor: operation applied to quill`);
+        quill.updateContents(op);
       });
     });
 
