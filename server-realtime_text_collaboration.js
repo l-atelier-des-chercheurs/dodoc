@@ -112,7 +112,11 @@ module.exports = function() {
     });
     share.listen(stream);
 
-    const shareconn = share.connect();
+    ws.on('message', function(data, flags) {
+      dev.logverbose(
+        `server-realtime_text_collaboration • sharewss: message for ${ws.id}`
+      );
+    });
 
     ws.on('pong', function(data, flags) {
       dev.logverbose(
