@@ -70,37 +70,36 @@ module.exports = function() {
         })
         .then(mediaData => {
           dev.logverbose(
-            `Read Meta, now getting thumbs for ${JSON.stringify(
-              mediaData,
-              null,
-              4
-            )}`
+            `server-realtime_text_collaboration • sharewss: got base text media`
           );
 
           const text_content = Object.values(
             Object.values(mediaData)[0].medias
           )[0].content;
+          let rendered_text = quillRender([{ insert: text_content }]);
 
           debugger;
+          dev.logverbose(
+            `server-realtime_text_collaboration • sharewss: now inserting = ${rendered_text}`
+          );
 
           // and add this parsed content to that doc
-          sharedoc.create(
-            // quillRender([{ insert: text_content }]),
-            'Hello world !',
-            'rich-text',
-            function(err) {
-              if (err) return dev.error(err);
+          sharedoc.create(rendered_text, 'rich-text', function(err) {
+            if (err) return dev.error(err);
 
-              var stream = new WebSocketJSONStream(ws);
-              shareDBServer.listen(stream);
+            dev.logverbose(
+              `server-realtime_text_collaboration • sharewss: doc created`
+            );
 
-              sharedoc.on('op', ops => {
-                dev.logverbose(
-                  `server-realtime_text_collaboration • sharedoc: new op for requested_querystring = ${requested_querystring}`
-                );
-              });
-            }
-          );
+            var stream = new WebSocketJSONStream(ws);
+            shareDBServer.listen(stream);
+
+            sharedoc.on('op', ops => {
+              dev.logverbose(
+                `server-realtime_text_collaboration • sharewss: new op for requested_querystring = ${requested_querystring}`
+              );
+            });
+          });
         });
     }
 

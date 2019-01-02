@@ -76,7 +76,10 @@ export default {
     // var doc = connection.get('examples', 'richtext');
     this.$nextTick(() => {
       doc.subscribe((err) => {
-        if (err) throw err;
+        if (err) {
+          console.error(`ON • CollaborativeEditor: err ${err}`);
+        }
+        console.log(`ON • CollaborativeEditor: subscribe`);
 
         if(!textField || !textField.hasOwnProperty('quill')) return;
 
@@ -85,11 +88,12 @@ export default {
         quill.setContents(doc.data);
         quill.on('text-change', (delta, oldDelta, source) => {
           if (source !== 'user') return;
+          console.log(`ON • CollaborativeEditor: text-change`);
           doc.submitOp(delta, { source: quill });
         });
         doc.on('op', (op, source) => {
           if (source === quill) return;
-          // quill.updateContents(op);
+          console.log(`ON • CollaborativeEditor: operation applied to quill`);
           quill.updateContents(op);
         });
       });
