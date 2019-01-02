@@ -44,6 +44,8 @@
       <CollaborativeEditor 
         v-else
         v-model="htmlForEditor"
+        :media="media"
+        :slugFolderName="slugFolderName"
         ref="textField"
       />
       <!-- <textarea

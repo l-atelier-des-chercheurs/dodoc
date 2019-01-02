@@ -25,6 +25,8 @@ export default {
       type: String,
       default: '…'
     },
+    media: Object,
+    slugFolderName: String
   },
   components: {
     VueEditor
@@ -48,15 +50,25 @@ export default {
   created() {
   },
   mounted() {
-    this.socket = new ReconnectingWebSocket(
-      `ws://${window.location.hostname}:8079`
-    );
+    
+    const url_to_ws_server = new URL(`ws://${window.location.hostname}:8079`);
+    const params = new URLSearchParams({
+      'type': 'projects',
+      'slugFolderName': this.slugFolderName,
+      'metaFileName': this.media.metaFileName
+    });
+
+    const requested_querystring = '?' + params.toString();
+    const requested_resource_url = url_to_ws_server + requested_querystring;
+
+    console.log(`MOUNTED • CollaborativeEditor: will connect to ws server with ${requested_resource_url}`);
+
+    this.socket = new ReconnectingWebSocket(requested_resource_url);
+      // `ws://${window.location.hostname}:8079/${request_doc}`
     const connection = new sharedb.Connection(this.socket);
     connection.on('state', this.wsState);
-    const docMatches = window.location.href.match(/\?doc=([a-zA-Z1-9]+)/);
 
-    // sharedoc
-    const doc = connection.get('docs', docMatches ? docMatches[1] : 'default');
+    const doc = connection.get('textMedias', requested_querystring);
 
     var textField = this.$refs.textField;
 
