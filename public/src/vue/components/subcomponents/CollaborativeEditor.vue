@@ -4,9 +4,9 @@
     autocorrect="off"
     autofocus="autofocus"
   >
+    connection_state : {{ connection_state }}<br>
     <div ref="editor"
     />
-    connection_state : {{ connection_state }}<br>
   </div>
 </template>
 <script>
@@ -104,6 +104,7 @@ export default {
         } else {
           console.log(`ON • CollaborativeEditor: doc already exists and doc.data = ${JSON.stringify(doc.data, null, 4)}`);
           this.editor.setContents(doc.data);
+          this.$emit('input', this.editor.getText() ? this.editor.root.innerHTML : '');
           // this.editor.setContents('plop');
         }
 
