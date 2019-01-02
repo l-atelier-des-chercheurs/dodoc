@@ -7,12 +7,13 @@ const WebSocket = require('ws');
 const WebSocketJSONStream = require('websocket-json-stream');
 const http = require('http');
 const uuid = require('uuid');
+const url = require('url');
 const { URLSearchParams } = require('url');
 
 const dev = require('./core/dev-log'),
   file = require('./core/file');
 
-module.exports = function() {
+module.exports = function(server) {
   dev.log(`server-realtime_text_collaboration • init`);
 
   // Share DB
@@ -28,7 +29,7 @@ module.exports = function() {
   //   dev.logverbose(`-> snapshot = ${JSON.stringify(snapshot_as_delta)}`);
   // });
 
-  const sharewss = new WebSocket.Server({ port: 8079 });
+  const sharewss = new WebSocket.Server({ noServer: true });
 
   sharewss.on('connection', client => {
     dev.logfunction(
@@ -134,6 +135,16 @@ module.exports = function() {
         } with error = ${error}`
       );
     });
+  });
+
+  server.on('upgrade', function upgrade(request, socket, head) {
+    const pathname = url.parse(request.url).pathname;
+
+    if (pathname === '/sharedb') {
+      sharewss.handleUpgrade(request, socket, head, function done(ws) {
+        sharewss.emit('connection', ws, request);
+      });
+    }
   });
 
   setInterval(function() {

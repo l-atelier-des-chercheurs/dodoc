@@ -43,7 +43,8 @@ export default {
       ],
 
       socket: null,
-      connection_state: undefined
+      connection_state: undefined,
+      requested_resource_url: undefined
     }
   },
   
@@ -82,7 +83,13 @@ export default {
       });
 
       const requested_querystring = '?' + params.toString();
-      const requested_resource_url = `ws://${window.location.hostname}:8079` + requested_querystring;
+      this.requested_resource_url = 
+        (location.protocol === 'https:' ? 'wss' : 'ws')
+        + '://'
+        + window.location.host
+        + '/sharedb'
+        + requested_querystring
+      ;
 
       console.log(`MOUNTED • CollaborativeEditor: will connect to ws server with ${requested_resource_url}`);
 
