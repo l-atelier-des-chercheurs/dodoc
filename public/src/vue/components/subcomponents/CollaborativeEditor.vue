@@ -91,9 +91,9 @@ export default {
         + requested_querystring
       ;
 
-      console.log(`MOUNTED • CollaborativeEditor: will connect to ws server with ${requested_resource_url}`);
+      console.log(`MOUNTED • CollaborativeEditor: will connect to ws server with ${this.requested_resource_url}`);
 
-      this.socket = new ReconnectingWebSocket(requested_resource_url);
+      this.socket = new ReconnectingWebSocket(this.requested_resource_url);
       const connection = new ShareDB.Connection(this.socket);
       connection.on('state', this.wsState);
 
