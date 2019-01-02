@@ -1,5 +1,7 @@
-var share = require('./sharedb-server');
-var ShareDB_logger = require('sharedb-logger');
+// var share = require('./sharedb-server');
+// var ShareDB_logger = require('sharedb-logger');
+var ShareDB = require('sharedb');
+ShareDB.types.register(require('rich-text').type);
 
 const WebSocket = require('ws');
 const WebSocketJSONStream = require('websocket-json-stream');
@@ -14,28 +16,31 @@ module.exports = function() {
   dev.log(`server-realtime_text_collaboration • init`);
 
   // Share DB
-  // const share = new ShareDB();
+  const share = new ShareDB();
   // const shareconn = share.connect();
   // var sharedb_logger = new ShareDB_logger(share);
 
-  const shareserver = http.createServer();
-  shareserver.listen(8079, () => {});
-
-  dev.log(`server-realtime_text_collaboration • sharedb server init init`);
-
   dev.log(`server-realtime_text_collaboration • ws init`);
 
-  const sharewss = new WebSocket.Server({ server: shareserver });
+  // share.use('op', (req, cb) => {
+  //   dev.logverbose(`server-realtime_text_collaboration • sharedb: op received`);
+  //   const snapshot_as_delta = share.db.docs[req.collection][req.id];
+  //   dev.logverbose(`-> snapshot = ${JSON.stringify(snapshot_as_delta)}`);
+  // });
 
-  sharewss.on('connection', (ws, req) => {
-    dev.logfunction(`server-realtime_text_collaboration • sharewss connection`);
+  const sharewss = new WebSocket.Server({ port: 8079 });
 
-    ws.id = uuid();
-    ws.isAlive = true;
+  sharewss.on('connection', client => {
+    dev.logfunction(
+      `server-realtime_text_collaboration • sharewss new client connection`
+    );
+
+    client.id = uuid();
+    client.isAlive = true;
 
     dev.logverbose(
       `server-realtime_text_collaboration • sharewss: a new client ${
-        ws.id
+        client.id
       } connected.`
     );
 
@@ -101,51 +106,46 @@ module.exports = function() {
     //     });
     // }
 
-    var stream = new WebSocketJSONStream(ws);
-    share.use('op', (req, cb) => {
-      dev.logverbose(
-        `server-realtime_text_collaboration • sharedb: op received`
-      );
+    share.listen(new WebSocketJSONStream(client));
 
-      const snapshot_as_delta = share.db.docs[req.collection][req.id];
-      dev.logverbose(`-> snapshot = ${JSON.stringify(snapshot_as_delta)}`);
-    });
-    share.listen(stream);
-
-    ws.on('message', function(data, flags) {
+    client.on('message', function(data, flags) {
       dev.logverbose(
-        `server-realtime_text_collaboration • sharewss: message for ${ws.id}`
-      );
-    });
-
-    ws.on('pong', function(data, flags) {
-      dev.logverbose(
-        `server-realtime_text_collaboration • sharewss: pong received for ${
-          ws.id
+        `server-realtime_text_collaboration • sharewss: message for ${
+          client.id
         }`
       );
-      ws.isAlive = true;
     });
 
-    ws.on('message', function() {});
+    client.on('pong', function(data, flags) {
+      dev.logverbose(
+        `server-realtime_text_collaboration • sharewss: pong received for ${
+          client.id
+        }`
+      );
+      client.isAlive = true;
+    });
 
-    ws.on('error', function(error) {
+    client.on('message', function() {});
+
+    client.on('error', function(error) {
       dev.error(
         `server-realtime_text_collaboration • sharewss: client connection errored for ${
-          ws.id
+          client.id
         } with error = ${error}`
       );
     });
   });
 
   setInterval(function() {
-    sharewss.clients.forEach(function(ws) {
-      if (ws.isAlive === false) return ws.terminate();
+    sharewss.clients.forEach(function(client) {
+      if (client.isAlive === false) return client.terminate();
 
-      ws.isAlive = false;
-      ws.ping();
+      client.isAlive = false;
+      client.ping();
       dev.logverbose(
-        `server-realtime_text_collaboration • sharewss: ping sent for ${ws.id}`
+        `server-realtime_text_collaboration • sharewss: ping sent for ${
+          client.id
+        }`
       );
     });
   }, 30000);
