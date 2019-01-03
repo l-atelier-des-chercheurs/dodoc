@@ -10,6 +10,7 @@
           :slugFolderName="stopmotiondata.slugFolderName"
           :media="current_single_media"
           :subfolder="'_stopmotions/'"
+          :preview_size="1200"
         />
         <button
           type="button"
@@ -37,6 +38,7 @@
             :slugFolderName="stopmotiondata.slugFolderName"
             :media="media"
             :subfolder="'_stopmotions/'"
+            :preview_size="150"
           />
         </div>
       </div>
