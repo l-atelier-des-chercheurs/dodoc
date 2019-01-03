@@ -197,6 +197,7 @@ export default {
 
     },
     backToStopmotion: function() {
+      console.log('METHODS • StopmotionPanel: backToStopmotion');
       this.$root.removeMedia({
         type: 'projects',
         slugFolderName: this.slugProjectName,
@@ -231,6 +232,7 @@ export default {
       });
     },
     removeMedia: function(slugMediaName) {
+      console.log('METHODS • StopmotionPanel: removeMedia');
       this.$root.removeMedia({
         type: 'stopmotions',
         slugFolderName: this.stopmotiondata.slugFolderName, 
