@@ -348,7 +348,7 @@ body {
         .bg-blanc;
         // border: 2px solid @c-bleumarine;
         // color: @c-bleumarine;
-        background-color: @c-bleumarine_clair;
+        .bg-bleumarine_clair;
         color: @c-bleumarine;
         .padding-verysmall;
         font-weight: 400;
@@ -437,8 +437,9 @@ body {
     .margin-small;
     // .margin-sides-small;
     // .margin-small;
-    flex: 0 1 24%;
-    min-height: 200px;
+    flex: 0 1 auto;
+    max-width: 140px;
+    min-height: 100px;
   }
 
   .m_authorsList--createAuthor {
@@ -446,7 +447,7 @@ body {
     border: 4px solid @c-gris_tresclair;
     // border: 4px solid @c-gris_clair;
     border-radius: @t-buttonradius;
-    min-width: 240px;
+    min-width: 200px;
 
     display: flex;
     align-items: center;
@@ -1940,6 +1941,41 @@ body {
 
 }
 
+.m_clientsList {
+  position: fixed;
+  z-index: 1500;
+  bottom: 0;
+  right:  0;
+
+  .margin-sides-medium;
+  .padding-small;
+  .padding-top-verysmall;
+  .c-noir;
+  .font-small;
+
+  .bg-bleumarine_clair;
+
+  border-radius: 8px 8px 0 0;
+  // .bg-blanc;
+  // border: 2px solid @c-noir;
+
+  label {
+    color: currentColor;
+  }
+
+  max-width: 200px;
+
+  .m_clientsList--client {
+    // .margin-vert-verysmall;
+    // .padding-veryverysmall;
+
+    &::before {
+      content:'•';
+    }
+  }
+
+}
+
 
 .m_stopmotionpanel {
   position: relative;
@@ -2017,7 +2053,6 @@ body {
           position: absolute;
           left: 0;bottom: 0;
           .padding-veryverysmall;
-          .font-verysmall;
           .c-noir;
           .text-cap;
           .font-small;

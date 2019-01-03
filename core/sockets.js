@@ -27,6 +27,7 @@ module.exports = (function() {
 
     io.on('connection', function(socket) {
       dev.log(`RECEIVED CONNECTION FROM SOCKET.id: ${socket.id}`);
+      socket._data = {};
 
       var onevent = socket.onevent;
       socket.onevent = function(packet) {

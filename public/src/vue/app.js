@@ -132,7 +132,7 @@ Vue.prototype.$socketio = new Vue({
 
       window.state.connected = true;
 
-      this.socket.emit('updateClientInfo', { hello: 'world' });
+      this.socket.emit('updateClientInfo', {});
 
       // only for non-electron (since obviously in electron we have to be connected)
       if (!window.state.is_electron) {
@@ -978,6 +978,7 @@ let vm = new Vue({
     },
     setAuthor: function(author) {
       this.settings.current_author = author;
+      this.$socketio.socket.emit('updateClientInfo', { author });
     },
     unsetAuthor: function() {
       this.settings.current_author = false;
