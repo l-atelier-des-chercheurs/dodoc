@@ -119,11 +119,10 @@ export default {
     unsetAuthor() {
       this.$root.unsetAuthor();
     },
-    urlToPortrait(slug, filename) {
-      if(filename === undefined) {
-        return '';
-      }
-      return `/${this.$root.state.authorsFolder}/${slug}/${filename}`;
+    urlToPortrait(slug, preview) {
+      if(!preview) return '';
+      let pathToSmallestThumb = preview.filter(m => m.size === 180)[0].path;
+      return pathToSmallestThumb;
     }
   }
 }
