@@ -159,7 +159,7 @@ module.exports = function(server) {
         }`
       );
     });
-  }, 30000);
+  }, 5000);
 
   // app.use((res, req, next) => {
   //   dev.log(`server-realtime_text_collaboration • loaded document`);
