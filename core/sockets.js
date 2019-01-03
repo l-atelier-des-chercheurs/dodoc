@@ -26,6 +26,8 @@ module.exports = (function() {
     io = thisIO;
 
     io.on('connection', function(socket) {
+      dev.log(`RECEIVED CONNECTION FROM SOCKET.id: ${socket.id}`);
+
       var onevent = socket.onevent;
       socket.onevent = function(packet) {
         var args = packet.data || [];
@@ -53,6 +55,11 @@ module.exports = (function() {
       socket.on('downloadPubliPDF', d => onDownloadPubliPDF(socket, d));
       socket.on('downloadVideoPubli', d => onDownloadVideoPubli(socket, d));
       socket.on('updateNetworkInfos', d => onUpdateNetworkInfos(socket, d));
+
+      socket.on('updateClientInfo', d => onUpdateClientInfo(socket, d));
+      socket.on('listClientsInfo', d => onListClientsInfo(socket, d));
+
+      socket.on('disconnect', d => onClientDisconnect(socket));
     });
   }
 
@@ -492,6 +499,33 @@ module.exports = (function() {
         socket
       );
     });
+  }
+
+  function onUpdateClientInfo(socket, data) {
+    socket._data = data;
+    sendClients();
+  }
+  function onListClientsInfo(socket) {
+    sendClients(socket);
+  }
+
+  function sendClients(socket) {
+    // envoyer la liste des clients connectés
+    dev.logfunction(`COMMON - sendClients`);
+
+    const connected_clients = [];
+    Object.entries(io.sockets.connected).forEach(([id, this_socket]) => {
+      connected_clients.push({
+        id,
+        data: this_socket._data
+      });
+    });
+
+    api.sendEventWithContent('listClients', connected_clients, io, socket);
+  }
+
+  function onClientDisconnect(socket) {
+    sendClients();
   }
 
   return API;

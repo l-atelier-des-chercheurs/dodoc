@@ -96,19 +96,21 @@ Vue.prototype.$socketio = new Vue({
   },
   methods: {
     connect() {
+      let opts = { transports: ['polling', 'websocket'] };
       if (window.navigator.userAgent.indexOf('Chrome') > -1) {
-        this.socket = io.connect({ transports: ['websocket', 'polling'] });
-      } else {
-        this.socket = io.connect({ transports: ['polling', 'websocket'] });
+        opts = { transports: ['websocket', 'polling'] };
       }
+      this.socket = io.connect(opts);
+
       this.socket.on('connect', this._onSocketConnect);
       this.socket.on('reconnect', this._onReconnect);
+      this.socket.on('pong', this._onPong);
       this.socket.on('error', this._onSocketError);
       this.socket.on('connect_error', this._onConnectError);
       this.socket.on('authentificated', this._authentificated);
       this.socket.on('listMedia', this._onListMedia);
       this.socket.on('listMedias', this._onListMedias);
-      // used in publications
+
       this.socket.on('listFolder', this._onListFolder);
       this.socket.on('listFolders', this._onListFolders);
 
@@ -119,12 +121,18 @@ Vue.prototype.$socketio = new Vue({
       this.socket.on('newNetworkInfos', this._onNewNetworkInfos);
 
       this.socket.on('notify', this._onNotify);
+
+      this.socket.on('pong', this._onPong);
+
+      this.socket.on('listClients', this._listClients);
     },
     _onSocketConnect() {
       let sessionId = this.socket.io.engine.id;
       console.log(`Connected as ${sessionId}`);
 
       window.state.connected = true;
+
+      this.socket.emit('updateClientInfo', { hello: 'world' });
 
       // only for non-electron (since obviously in electron we have to be connected)
       if (!window.state.is_electron) {
@@ -143,6 +151,10 @@ Vue.prototype.$socketio = new Vue({
     _onReconnect() {
       this.$eventHub.$emit('socketio.reconnect');
       console.log(`Reconnected`);
+    },
+
+    _onPong() {
+      console.log(`_onPong`);
     },
 
     sendAuth() {
@@ -248,12 +260,6 @@ Vue.prototype.$socketio = new Vue({
         if (window.store[type].hasOwnProperty(slugFolderName)) {
           window.store[type][slugFolderName].medias =
             content[slugFolderName].medias;
-
-          // if (type === 'projects') {
-          //   window.state.list_of_projects_whose_medias_are_tracked.push(
-          //     slugFolderName
-          //   );
-          // }
         }
       }
       this.$eventHub.$emit(`socketio.${type}.listMedias`);
@@ -291,6 +297,11 @@ Vue.prototype.$socketio = new Vue({
     _onPubliVideoGenerated(data) {
       console.log('Received _onPubliVideoGenerated packet.');
       this.$eventHub.$emit('socketio.publication.videoIsGenerated', data);
+    },
+
+    _listClients(data) {
+      console.log('Received _listClients packet.');
+      window.state.clients = data;
     },
 
     // for projects, authors and publications
@@ -429,8 +440,7 @@ let vm = new Vue({
 
     do_navigation: {
       view: 'ListView',
-      current_slugProjectName: false,
-      current_metaFileName: false
+      current_slugProjectName: false
     },
     media_modal: {
       open: false,

@@ -40,7 +40,7 @@ module.exports = function() {
   var io = require('socket.io').listen(server);
   dev.logverbose('Starting server 2');
 
-  var m = sockets.init(app, io);
+  sockets.init(app, io);
 
   dev.logverbose('Starting express-settings');
 
@@ -63,7 +63,7 @@ module.exports = function() {
   app.use(bodyParser.json());
   app.locals.pretty = true;
 
-  router(app, io, m);
+  router(app);
 
   server.listen(app.get('port'), () => {
     dev.log(
