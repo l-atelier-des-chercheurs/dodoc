@@ -43,6 +43,8 @@ module.exports = (function() {
       sureToCloseModal: 'Êtes-vous sûr de vouloir fermer cette fenêtre ?',
       sureToRemovePubli:
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
+      sure_to_cancel_stopmotion:
+        'Êtes-vous sûr de vouloir supprimer cette animation ?',
       validate_media: 'Valider le média',
       add_keyword: 'Ajouter un mot-clé',
 
@@ -283,6 +285,8 @@ module.exports = (function() {
       sureToRemoveAuthor: 'Do you really want to delete this author?',
       sureToCloseModal: 'Do you really want to close this window?',
       sureToRemovePubli: 'Do you really want to delete this publication?',
+      sure_to_cancel_stopmotion:
+        'Do you really want to cancel this stopmotion?',
       validate_media: 'Validate the media',
       add_keyword: 'Add a keyword',
 

@@ -208,10 +208,12 @@ export default {
       this.videopreview = false;    
     },
     cancelStopmotion: function() {
-      this.current_single_media = false;
-      this.$nextTick(() => {
-        this.$emit('close');      
-      });
+      if (window.confirm(this.$t('sure_to_cancel_stopmotion'))) {
+        this.current_single_media = false;
+        this.$nextTick(() => {
+          this.$emit('close');      
+        });
+      }
     },
     save: function() {
       this.current_single_media = false;
