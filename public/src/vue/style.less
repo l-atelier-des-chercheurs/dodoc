@@ -437,9 +437,10 @@ body {
     .margin-small;
     // .margin-sides-small;
     // .margin-small;
-    flex: 0 1 auto;
-    max-width: 140px;
-    min-height: 100px;
+    flex: 0 1 160px;
+    min-width: 160px;
+    max-width: 160px;
+    min-height: 160px;
   }
 
   .m_authorsList--createAuthor {
@@ -447,7 +448,7 @@ body {
     border: 4px solid @c-gris_tresclair;
     // border: 4px solid @c-gris_clair;
     border-radius: @t-buttonradius;
-    min-width: 200px;
+    .font-small;
 
     display: flex;
     align-items: center;
@@ -469,7 +470,7 @@ body {
   }
 
   .m_authorsList--author {
-    .padding-sides-small;
+    .padding-sides-verysmall;
     .padding-vert-small;
     .bg-gris_tresclair;
     border-radius: @t-buttonradius;
@@ -509,6 +510,15 @@ body {
       display: block;
       .padding-sides-small;
       .font-large;
+    }
+
+    hr {
+      margin: 0;
+      border-color: @c-bleumarine;
+    }
+
+    button {
+      margin: 0;
     }
   }
 }
