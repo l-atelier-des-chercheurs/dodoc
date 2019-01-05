@@ -1,6 +1,6 @@
 <template>
   <div class="m_clientsList">
-    <label>Autres utilisateurs</label>
+    <label>Autres utilisateurs ({{ clients.length - 1 }})</label>
     <div 
       class="m_clientsList--client"
       :key="client.id"
@@ -10,9 +10,9 @@
       <template v-if="client.data.hasOwnProperty('author')">
         {{ client.data.author.name }}
       </template>
-      <tempalte v-else>        
+      <template v-else>        
         anonyme
-      </tempalte>
+      </template>
     </div>
   </div>
 </template>
