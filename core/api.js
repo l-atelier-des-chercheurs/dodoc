@@ -178,7 +178,7 @@ module.exports = (function() {
     }
     dev.logpackets(
       `eventAndContentJson — packet sent, string length: ${
-        eventAndContentJson_string.length
+        JSON.stringify(eventAndContentJson['content']).length
       }`
     );
   }
