@@ -266,7 +266,7 @@
       },
       "medias": {
         "thumbs": {
-          "resolutions": [360]
+          "resolutions": [150, 1600]
         },
         "fields": {
           "date_uploaded" : {

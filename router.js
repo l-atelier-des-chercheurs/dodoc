@@ -11,7 +11,7 @@ const settings = require('./settings.json'),
   file = require('./core/file'),
   exporter = require('./core/exporter');
 
-module.exports = function(app, io, m) {
+module.exports = function(app) {
   /**
    * routing event
    */
@@ -69,10 +69,10 @@ module.exports = function(app, io, m) {
   function showIndex(req, res) {
     generatePageData(req).then(
       pageData => {
-        dev.logpackets(
-          `Rendering index with data `,
-          JSON.stringify(pageData, null, 4)
-        );
+        // dev.logpackets(
+        //   `Rendering index with data `,
+        //   JSON.stringify(pageData, null, 4)
+        // );
         res.render('index', pageData);
       },
       err => {

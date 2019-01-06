@@ -349,7 +349,7 @@ body {
         .bg-blanc;
         // border: 2px solid @c-bleumarine;
         // color: @c-bleumarine;
-        background-color: @c-bleumarine_clair;
+        .bg-bleumarine_clair;
         color: @c-bleumarine;
         .padding-verysmall;
         font-weight: 400;
@@ -438,8 +438,10 @@ body {
     .margin-small;
     // .margin-sides-small;
     // .margin-small;
-    flex: 0 1 24%;
-    min-height: 200px;
+    flex: 0 1 160px;
+    min-width: 160px;
+    max-width: 160px;
+    min-height: 160px;
   }
 
   .m_authorsList--createAuthor {
@@ -447,7 +449,7 @@ body {
     border: 4px solid @c-gris_tresclair;
     // border: 4px solid @c-gris_clair;
     border-radius: @t-buttonradius;
-    min-width: 240px;
+    .font-small;
 
     display: flex;
     align-items: center;
@@ -469,7 +471,7 @@ body {
   }
 
   .m_authorsList--author {
-    .padding-sides-small;
+    .padding-sides-verysmall;
     .padding-vert-small;
     .bg-gris_tresclair;
     border-radius: @t-buttonradius;
@@ -509,6 +511,15 @@ body {
       display: block;
       .padding-sides-small;
       .font-large;
+    }
+
+    hr {
+      margin: 0;
+      border-color: @c-bleumarine;
+    }
+
+    button {
+      margin: 0;
     }
   }
 }
@@ -1941,6 +1952,41 @@ body {
 
 }
 
+.m_clientsList {
+  position: fixed;
+  z-index: 1500;
+  bottom: 0;
+  right:  0;
+
+  .margin-sides-medium;
+  .padding-small;
+  .padding-top-verysmall;
+  .c-noir;
+  .font-small;
+
+  .bg-bleumarine_clair;
+
+  border-radius: 8px 8px 0 0;
+  max-width: 220px;
+  // .bg-blanc;
+  // border: 2px solid @c-noir;
+
+  label {
+    color: currentColor;
+  }
+
+
+  .m_clientsList--client {
+    // .margin-vert-verysmall;
+    // .padding-veryverysmall;
+
+    &::before {
+      content:'•';
+    }
+  }
+
+}
+
 
 .m_stopmotionpanel {
   position: relative;
@@ -2018,12 +2064,12 @@ body {
           position: absolute;
           left: 0;bottom: 0;
           .padding-veryverysmall;
-          .font-verysmall;
           .c-noir;
           .text-cap;
           .font-small;
           background-color: White;
           border-radius: 0 .4em 0 0;
+          z-index: 1;
         }
 
         &.is--current_single::before {
@@ -2098,6 +2144,7 @@ body {
 
   .m_stopmotionpanel--loader {
     position: absolute;
+    z-index: 2;
     top: 0;left: 0;bottom: 0;right: 0;
     background-color: fade(#fff, 90%);
     display: flex;
