@@ -22,6 +22,7 @@
           v-if="showImportModal"
           @close="showImportModal = false"
           :slugProjectName="slugProjectName"
+          :type="'projects'"
           :read_only="read_only"
         />
 

@@ -87,7 +87,8 @@ import { setTimeout } from 'timers';
 export default {
   props: {
     read_only: Boolean,
-    slugProjectName: String
+    slugFolderName: String,
+    type: String
   },
   components: {
     Modal
@@ -107,7 +108,7 @@ export default {
   },
   computed: {
     uriToUploadMedia: function() {
-      return `file-upload/projects/${this.slugProjectName}`;
+      return `file-upload/${type}/${this.slugFolderName}`;
     }
   },
   methods: {
