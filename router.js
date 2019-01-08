@@ -8,8 +8,8 @@ const settings = require('./settings.json'),
   cache = require('./core/cache'),
   api = require('./core/api'),
   file = require('./core/file'),
-  exporter = require('./core/exporter');
-importer = require('./core/importer');
+  exporter = require('./core/exporter'),
+  importer = require('./core/importer');
 
 module.exports = function(app) {
   /**
