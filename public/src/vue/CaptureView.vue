@@ -514,7 +514,7 @@ export default {
       return this.$_.groupBy(this.available_devices, 'kind');
     },
     uriToUploadMedia: function() {
-      return this.slugProjectName + '/file-upload';
+      return `file-upload/projects/${this.slugProjectName}`;
     }
   },
   methods: {

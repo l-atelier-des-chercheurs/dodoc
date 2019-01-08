@@ -107,7 +107,7 @@ export default {
   },
   computed: {
     uriToUploadMedia: function() {
-      return this.slugProjectName + '/file-upload';
+      return `file-upload/projects/${this.slugProjectName}`;
     }
   },
   methods: {
@@ -139,7 +139,7 @@ export default {
         }
 
         if (this.$root.state.dev_mode === 'debug') {
-          console.log(`METHODS • sendThisFile: name = ${filename} / formData is ready`);
+          console.log(`METHODS • sendThisFile: name = ${filename} / formData is ready / sending to ${this.uriToUploadMedia}`);
         }
 
         // TODO : possibilité de cancel
