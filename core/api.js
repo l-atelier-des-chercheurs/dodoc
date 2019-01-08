@@ -36,10 +36,10 @@ module.exports = (function() {
     slug: term => slug(term),
     clip: (value, min, max) => clip(value, min, max),
     decodeBase64Image: dataString => decodeBase64Image(dataString),
-    writeAudioToDisk: (slugProjectName, mediaName, dataURL) =>
-      writeAudioToDisk(slugProjectName, mediaName, dataURL),
-    writeVideoToDisk: (slugProjectName, mediaName, dataURL) =>
-      writeVideoToDisk(slugProjectName, mediaName, dataURL),
+    writeAudioToDisk: (slugFolderName, mediaName, dataURL) =>
+      writeAudioToDisk(slugFolderName, mediaName, dataURL),
+    writeVideoToDisk: (slugFolderName, mediaName, dataURL) =>
+      writeVideoToDisk(slugFolderName, mediaName, dataURL),
     makeStopmotionFromImageSequence: d => makeStopmotionFromImageSequence(d)
   };
 
@@ -151,7 +151,7 @@ module.exports = (function() {
   function sendEventWithContent(sendEvent, objectContent, io, socket) {
     let eventAndContentJson = eventAndContent(sendEvent, objectContent);
     let eventAndContentJson_string = JSON.stringify(
-      eventAndContentJson,
+      eventAndContentJson.socketevent,
       null,
       4
     );
@@ -236,7 +236,7 @@ module.exports = (function() {
     return response;
   }
 
-  function writeAudioToDisk(slugProjectName, mediaName, dataURL) {
+  function writeAudioToDisk(slugFolderName, mediaName, dataURL) {
     return new Promise(function(resolve, reject) {
       dev.logfunction('COMMON — writeAudioToDisk');
       if (dataURL === undefined) {
@@ -257,10 +257,7 @@ module.exports = (function() {
         fs.writeFile(pathToTempMedia, fileBuffer, function(err) {
           if (err) reject(err);
 
-          let pathToMedia = path.join(
-            getFolderPath(slugProjectName),
-            mediaName
-          );
+          let pathToMedia = path.join(getFolderPath(slugFolderName), mediaName);
           ffmpeg(pathToTempMedia)
             .audioCodec('libmp3lame')
             .save(pathToMedia)
@@ -273,7 +270,7 @@ module.exports = (function() {
     });
   }
 
-  function writeVideoToDisk(slugProjectName, mediaName, dataURL) {
+  function writeVideoToDisk(slugFolderName, mediaName, dataURL) {
     return new Promise(function(resolve, reject) {
       dev.logfunction('COMMON — writeVideoToDisk');
       if (dataURL === undefined) {
@@ -289,7 +286,7 @@ module.exports = (function() {
         '_medias'
       );
       fs.mkdirp(cachePath, function() {
-        let pathToMedia = path.join(getFolderPath(slugProjectName), mediaName);
+        let pathToMedia = path.join(getFolderPath(slugFolderName), mediaName);
         fs.writeFile(pathToMedia, fileBuffer, function(err) {
           if (err) reject(err);
           resolve();
@@ -299,7 +296,7 @@ module.exports = (function() {
         //   if (err) reject(err);
 
         //   let pathToMedia = path.join(
-        //     getFolderPath(slugProjectName),
+        //     getFolderPath(slugFolderName),
         //     mediaName
         //   );
         //   ffmpeg(pathToTempMedia)
