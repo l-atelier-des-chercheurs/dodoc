@@ -276,7 +276,7 @@ function setApplicationMenu() {
           type: 'separator'
         },
         {
-          label: 'Hide Electron',
+          label: 'Hide do•doc',
           accelerator: 'Command+H',
           selector: 'hide:'
         },

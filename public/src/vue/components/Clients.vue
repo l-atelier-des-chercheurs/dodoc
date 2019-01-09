@@ -1,19 +1,20 @@
 <template>
   <div class="m_clientsList">
     <label>Autres utilisateurs ({{ clients.length - 1 }})</label>
-    <div 
-      class="m_clientsList--client"
-      :key="client.id"
-      v-for="client in clients"
-      v-if="client.id !== $root.$socketio.socket.id"
-    >
-      <template v-if="client.data.hasOwnProperty('author')">
-        {{ client.data.author.name }}
-      </template>
-      <template v-else>        
-        anonyme
-      </template>
-    </div>
+    <template v-if="client.id !== $root.$socketio.socket.id">
+      <div 
+        class="m_clientsList--client"
+        :key="client.id"
+        v-for="client in clients"
+      >
+        <template v-if="client.data.hasOwnProperty('author')">
+          {{ client.data.author.name }}
+        </template>
+        <template v-else>        
+          anonyme
+        </template>
+      </div>
+    </template>
   </div>
 </template>
 <script>

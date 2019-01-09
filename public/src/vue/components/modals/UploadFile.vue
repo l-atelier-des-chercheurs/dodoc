@@ -87,7 +87,8 @@ import { setTimeout } from 'timers';
 export default {
   props: {
     read_only: Boolean,
-    slugProjectName: String
+    slugFolderName: String,
+    type: String
   },
   components: {
     Modal
@@ -107,7 +108,7 @@ export default {
   },
   computed: {
     uriToUploadMedia: function() {
-      return this.slugProjectName + '/file-upload';
+      return `file-upload/${type}/${this.slugFolderName}`;
     }
   },
   methods: {
@@ -139,7 +140,7 @@ export default {
         }
 
         if (this.$root.state.dev_mode === 'debug') {
-          console.log(`METHODS • sendThisFile: name = ${filename} / formData is ready`);
+          console.log(`METHODS • sendThisFile: name = ${filename} / formData is ready / sending to ${this.uriToUploadMedia}`);
         }
 
         // TODO : possibilité de cancel
