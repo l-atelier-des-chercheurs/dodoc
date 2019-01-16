@@ -108,7 +108,7 @@ export default {
   },
   computed: {
     uriToUploadMedia: function() {
-      return `file-upload/${type}/${this.slugFolderName}`;
+      return `file-upload/${this.type}/${this.slugFolderName}`;
     }
   },
   methods: {
