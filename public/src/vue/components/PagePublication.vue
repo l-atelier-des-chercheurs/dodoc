@@ -795,7 +795,7 @@ export default {
     publicationKeyListener(evt) {
       switch(evt.key) {
         case 'p':
-          this.preview_mode = !this.preview_mode;
+          // this.preview_mode = !this.preview_mode;
 
       }
     },

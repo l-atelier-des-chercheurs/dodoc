@@ -16,9 +16,8 @@
         :slugProjectName="$root.do_navigation.current_slugProjectName"
         :project="$root.currentProject"
         :authors="$root.store.authors"
-      >
-      </TopBar>
-
+      />
+      
       <div class="m_activitiesPanel"
       >
         <div 
