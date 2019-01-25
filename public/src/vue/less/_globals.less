@@ -281,6 +281,9 @@ strong,b {
 .bg-bleumarine {
   background-color: @c-bleumarine;
 }
+.bg-bleumarine_clair {
+  background-color: @c-bleumarine_clair;
+}
 
 .border-circled {
   border: 1px solid currentColor;
@@ -421,6 +424,9 @@ strong,b {
 }
 .margin-verysmall {
   margin: @t-skipline/4;
+}
+.margin-veryverysmall {
+  margin: @t-skipline/8;
 }
 .margin-bottom-small {
   margin-bottom: @t-skipline/2;
@@ -570,7 +576,12 @@ strong,b {
 }
 
 .button-round {
-  border-radius: 50%;
+  border-radius: 10%;
+
+  border: 2px solid @c-gris_clair;
+  .margin-verysmall;
+  .padding-none;
+
   > span {
     display: block;
     margin-top: @t-skipline/2;

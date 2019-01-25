@@ -54,12 +54,25 @@
               {{ $t(publication.template) }}
             </div>
           </div>
-          <div class="m_metaField">
+          <!-- <div class="m_metaField">
             <div>
               {{ $t('edited') }}
             </div>
             <div>
               {{ $root.formatDateToHuman(publication.date_modified) }}
+            </div>
+          </div> -->
+          <div class="m_metaField">
+            <div>
+              {{ $t('number_of_pages') }}
+            </div>
+            <div>
+              <template v-if="!!publication.pages">
+                {{ Object.keys(publication.pages).length }}
+              </template>
+              <template v-else>
+                0
+              </template>
             </div>
           </div>
         </div>

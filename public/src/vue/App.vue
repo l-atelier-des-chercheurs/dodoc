@@ -16,16 +16,13 @@
         :slugProjectName="$root.do_navigation.current_slugProjectName"
         :project="$root.currentProject"
         :authors="$root.store.authors"
-      >
-      </TopBar>
-
+      />
+      
       <div class="m_activitiesPanel"
       >
         <div 
           :style="{ cursor, userSelect}" 
           class="vue-splitter-container clearfix" 
-          @mouseup="onMouseUp" 
-          @mousemove="onMouseMove"
         >
           <pane 
             class="splitter-pane splitter-paneL" 
@@ -93,9 +90,8 @@
                   'is--dragged' : is_dragged,
                   'is--allthewaytotheleft' : percent === 0 
                 }"
-                @click="stopDragtogglePubli"
-                @mousedown="onMouseDown" 
-                @mouseup.stop
+                @mousedown.stop.prevent="dragPubliPanel('mouse')"
+                @touchstart.stop.prevent="dragPubliPanel('touch')"   
                 :key="'openPubli'"
               >
                 <!-- v-if="$root.do_navigation.view !== 'CaptureView'" -->
@@ -143,6 +139,10 @@
       >
       </EditMedia>      
 
+      <Clients 
+        :clients="$root.state.clients"
+      />
+
     </template>  
     <template 
       v-else-if="$root.state.mode === 'export_publication'"
@@ -182,6 +182,7 @@ import EditMedia from './components/modals/EditMedia.vue';
 import Publications from './Publications.vue';
 import PagePublication from './components/PagePublication.vue';
 import VideoPublication from './components/VideoPublication.vue';
+import Clients from './components/Clients.vue';
 
 import Resizer from './components/splitpane/Resizer.vue'
 import Pane from './components/splitpane/Pane.vue'
@@ -199,7 +200,8 @@ export default {
     PagePublication,
     VideoPublication,
     Resizer, 
-    Pane
+    Pane,
+    Clients
   },
   props: {
   },
@@ -208,6 +210,7 @@ export default {
       minPercent: 0,
       split: 'vertical',
       is_dragged: false,
+      drag_offset: 0,
       hasMoved: false,
       height: null,
       percent: this.$root.state.mode === 'print_publication' ? 0:100,
@@ -239,70 +242,46 @@ export default {
     }
   },
   methods: {
-    stopDragtogglePubli() {
-      this.is_dragged = false;
-      if(!this.$root.settings.show_publi_panel) {
-        this.percent = 50;
-        this.$root.openPubliPanel();
-      } else {
-        this.percent = 100;
-        this.$root.closePubliPanel();
+    // stopDragtogglePubli() {
+    //   console.log('METHODS • App: stopDragtogglePubli');
+    //   this.is_dragged = false;
+    //   if(!this.$root.settings.show_publi_panel) {
+    //     this.percent = 50;
+    //     this.$root.openPubliPanel();
+    //   } else {
+    //     this.percent = 100;
+    //     this.$root.closePubliPanel();
+    //   }
+    // },
+    dragPubliPanel(type) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • App: dragPubliPanel with type = ${type} and is_dragged = ${this.is_dragged}`);
       }
-    },
-    onClick() {
-      // if (!this.hasMoved) {
-      //   this.$root.togglePubliPanel();
-        // this.percent = 50
-        // this.$emit('resize')
-      // }
-    },
-    onMouseDown() {
-      this.is_dragged = true
-      this.hasMoved = false
-    },
-    onMouseUp() {
-      if(!this.is_dragged) {
-        return;
-      }
-
-      this.is_dragged = false;
-
-      if(this.percent >= 90) {
-        this.percent = 100;
-        this.$root.closePubliPanel();
-        return;
-      } 
       
-      if(this.$root.settings.show_publi_panel === false) {
-        this.$root.openPubliPanel();
-      }      
-      if(this.percent <= 10) {
-        this.percent = 0;
+      this.drag_offset = - event.target.offsetWidth + event.offsetX;
+      if(!this.drag_offset) {
+        this.drag_offset = 0;
+      }
+
+      if(type === 'mouse') {
+        window.addEventListener('mousemove', this.dragMove);
+        window.addEventListener('mouseup', this.dragUp);
+      } else if(type === 'touch') {
+        window.addEventListener('touchmove', this.dragMove);
+        window.addEventListener('touchend', this.dragUp);
       }
     },
-    onMouseMove(e) {
-      if (e.buttons === 0 || e.which === 0) {
-        this.is_dragged = false
-      }
+    dragMove(event) {
+      console.log('METHODS • App: dragMove');
 
-      if (this.is_dragged) {
-        let offset = 0
-        let target = e.currentTarget
-        if (this.split === 'vertical') {
-          while (target) {
-            offset += target.offsetLeft
-            target = target.offsetParent
-          }
-        } else {
-          while (target) {
-            offset += target.offsetTop
-            target = target.offsetParent
-          }
-        }
+      if (!this.is_dragged) {
+        this.is_dragged = true;
+      } else {
 
-        const currentPage = this.split === 'vertical' ? e.pageX : e.pageY
-        const targetOffset = this.split === 'vertical' ? e.currentTarget.offsetWidth : e.currentTarget.offsetHeight
-        const percent = Math.floor(((currentPage - offset) / targetOffset) * 10000) / 100
+        let pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
+        pageX = pageX - this.drag_offset;
+
+        const percent = Math.floor((pageX / window.innerWidth) * 10000) / 100
 
         if (percent > this.minPercent && percent < 100 - this.minPercent) {
           this.percent = percent
@@ -311,6 +290,42 @@ export default {
         this.$emit('resize')
         this.hasMoved = true
       }
+    },
+    dragUp(event) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • App: dragUp with is_dragged = ${this.is_dragged}`);
+      }
+      window.removeEventListener('mousemove', this.dragMove);
+      window.removeEventListener('mouseup', this.dragUp);
+      window.removeEventListener('touchmove', this.dragMove);
+      window.removeEventListener('touchend', this.dragUp);
+
+      if (this.is_dragged) {
+        this.is_dragged = false;
+
+        if(this.percent >= 90) {
+          this.percent = 100;
+          this.$root.closePubliPanel();
+          return;
+        } 
+        
+        if(this.$root.settings.show_publi_panel === false) {
+          this.$root.openPubliPanel();
+        }      
+        if(this.percent <= 10) {
+          this.percent = 0;
+        }
+      } else {
+        if(!this.$root.settings.show_publi_panel) {
+          this.percent = 50;
+          this.$root.openPubliPanel();
+        } else {
+          this.percent = 100;
+          this.$root.closePubliPanel();
+        }
+      }
+
+      return false;
     }
   }
 };

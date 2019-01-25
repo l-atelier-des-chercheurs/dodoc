@@ -2,12 +2,14 @@
   <div 
     class="m_mediaPublication"
     :style="mediaStyles"
+    :data-media_type="media.type"
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
     @mousedown.prevent.stop="is_selected = true"
     :class="{ 
       'is--dragged' : is_dragged, 
       'is--resized' : is_resized, 
+      'is--rotated' : is_rotated, 
       'is--waitingForServerResponse' : is_waitingForServer,
       'is--hovered' : is_hovered,
       'is--previewed' :  preview_mode
@@ -32,6 +34,25 @@
       <div class="handle handle_resizeMedia"
         @mousedown.stop.prevent="resizeMedia('mouse', 'bottomright')"
         @touchstart.stop.prevent="resizeMedia('touch', 'bottomright')"
+      >
+        <svg version="1.1"
+          xmlns="http://www.w3.org/2000/svg" 
+          xmlns:xlink="http://www.w3.org/1999/xlink" 
+          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+          x="0px" y="0px" width="77.5px" height="77.5px" viewBox="0 0 77.5 77.5" style="enable-background:new 0 0 77.5 77.5;"
+          xml:space="preserve">
+        <defs>
+        </defs>
+        <g>
+          <path d="M42.5,0l0.4,12.6l-9.3,0.1c-2.8,0-5.1,0-6.9-0.2c-1.8-0.2-3.6-0.6-5.7-1.2l45.3,45.3c-0.6-2-1-3.9-1.2-5.7
+            c-0.2-1.8-0.3-4-0.2-6.9v-9.4l12.6,0.4l-1.3,41.2l-41.2,1.3l-0.4-12.6l9.5,0c2.9,0,5.2,0.1,7,0.3c1.8,0.2,3.6,0.5,5.4,1.1
+           L11.3,21.1c0.5,1.8,0.9,3.6,1.1,5.4c0.2,1.8,0.3,4.1,0.3,7l-0.1,9.4L0,42.5L1.3,1.3L42.5,0z"/>
+        </g>
+        </svg>
+      </div>
+      <div class="handle handle_rotateMedia"
+        @mousedown.stop.prevent="rotateMedia('mouse', 'bottomright')"
+        @touchstart.stop.prevent="rotateMedia('touch', 'bottomright')"
       >
         <svg version="1.1"
           xmlns="http://www.w3.org/2000/svg" 
@@ -91,6 +112,7 @@ export default {
     return {
       is_dragged: false,
       is_resized: false,
+      is_rotated: false,
       is_waitingForServer: false,
       is_hovered: false,
       is_selected: false,
@@ -113,6 +135,12 @@ export default {
         x: 0,
         y: 0
       },
+
+      rotateOffset: {
+        x: 0,
+        y: 0
+      },
+
       mediaSize: {
         width: 0,
         height: 0,
@@ -228,12 +256,30 @@ export default {
         }
       }
     },
+    rotateMedia(type, origin) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • MediaPublication: rotateMedia with is_resized = ${this.is_resized}`);
+      }
+      if (!this.read_only) {
+        if(type === 'mouse') {
+          window.addEventListener('mousemove', this.rotateMove);
+          window.addEventListener('mouseup', this.rotateUp);
+        } else if(type === 'touch') {
+          window.addEventListener('touchmove', this.rotateMove);
+          window.addEventListener('touchend', this.rotateUp);
+        }
+      }
+    },
     resizeMove(event) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: resizeMove with is_resized = ${this.is_resized}`);
       }
-      const pageX_mm = event.pageX / this.pixelsPerMillimeters;
-      const pageY_mm = event.pageY / this.pixelsPerMillimeters;
+
+      const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
+      const pageY = event.pageY ? event.pageY : event.touches[0].pageY;
+
+      const pageX_mm = pageX / this.pixelsPerMillimeters;
+      const pageY_mm = pageY / this.pixelsPerMillimeters;
 
       if (!this.is_resized) {
         this.is_resized = true;
@@ -275,6 +321,52 @@ export default {
       return false;
     },
 
+    rotateMove(event) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • MediaPublication: resizeMove with is_resized = ${this.is_resized}`);
+      }
+
+      const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
+      const pageY = event.pageY ? event.pageY : event.touches[0].pageY;
+
+      if (!this.is_rotated) {
+        this.is_rotated = true;
+        this.rotateOffset.x = pageX;
+        this.rotateOffset.y = pageX;
+      } else {
+        const deltaX = (pageX_mm - this.resizeOffset.x);
+        let newWidth = this.mediaSize.pwidth + deltaX;
+        this.mediaSize.width = this.limitMediaWidth(newWidth);
+
+        const deltaY = (pageY_mm - this.resizeOffset.y);
+        let newHeight = this.mediaSize.pheight + deltaY;
+        this.mediaSize.height = this.limitMediaHeight(newHeight);
+      }
+    },
+    rotateUp(event) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • MediaPublication: resizeUp with is_resized = ${this.is_resized}`);
+      }
+      if (this.is_rotated) {
+        this.mediaSize.width = this.roundMediaVal(this.mediaSize.width);
+        this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
+
+        this.updateMediaPubliMeta({ 
+          width: this.mediaSize.width,
+          height: this.mediaSize.height 
+        });
+        this.is_rotated = false;
+      }
+
+      event.stopPropagation();
+      window.removeEventListener('mousemove', this.resizeMove);
+      window.removeEventListener('mouseup', this.resizeUp);
+      window.removeEventListener('touchmove', this.resizeMove);
+      window.removeEventListener('touchend', this.resizeUp);
+
+      return false;
+    },
+
     dragMedia(type) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: dragMedia with is_dragged = ${this.is_dragged}`);
@@ -295,8 +387,11 @@ export default {
         console.log(`METHODS • MediaPublication: dragMove with is_dragged = ${this.is_dragged}`);
       }
 
-      const pageX_mm = event.pageX / this.pixelsPerMillimeters;
-      const pageY_mm = event.pageY / this.pixelsPerMillimeters;
+      const pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
+      const pageY = !!event.pageY ? event.pageY : event.touches[0].pageY;
+
+      const pageX_mm = pageX / this.pixelsPerMillimeters;
+      const pageY_mm = pageY / this.pixelsPerMillimeters;
 
       if (!this.is_dragged) {
         this.is_dragged = true;

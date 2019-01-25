@@ -5,6 +5,8 @@
   "userDirPath": "documents",
   "userDirname": "dodoc2",
 
+  "process": "electron",
+
   "contentDirname" : "user",
   "cacheDirname" : "cache",
   "metaFileext" : ".txt",
@@ -106,7 +108,7 @@
           "keywords": {
             "type": "array"
           },      
-            "caption": {
+          "caption": {
             "type": "string"
           }  
         }
@@ -176,7 +178,7 @@
         },
         "style": {
           "type": "string",
-          "options": ["standard", "feuille de choux"],
+          "options": ["standard", "feuille de choux", "human tech days"],
           "default": "standard"          
         },
         "width": {
@@ -264,7 +266,7 @@
       },
       "medias": {
         "thumbs": {
-          "resolutions": [360]
+          "resolutions": [150, 1600]
         },
         "fields": {
           "date_uploaded" : {

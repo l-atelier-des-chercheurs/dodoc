@@ -4,6 +4,7 @@
     @submit="newPublication"
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
+    :askBeforeClosingModal="askBeforeClosingModal"
     >
     <template slot="header">
       <span class="">{{ $t('create_a_publication') }}</span>
@@ -71,6 +72,15 @@ export default {
         authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : '' 
       }
     };
+  },
+  watch: {
+    'publidata.name': function() {
+      if(this.publidata.name.length > 0) {
+        this.askBeforeClosingModal = true;
+      } else {
+        this.askBeforeClosingModal = false;
+      }
+    }
   },
   computed: {},
   methods: {

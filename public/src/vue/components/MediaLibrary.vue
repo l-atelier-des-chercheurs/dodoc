@@ -21,7 +21,8 @@
         <UploadFile
           v-if="showImportModal"
           @close="showImportModal = false"
-          :slugProjectName="slugProjectName"
+          :slugFolderName="slugProjectName"
+          :type="'projects'"
           :read_only="read_only"
         />
 

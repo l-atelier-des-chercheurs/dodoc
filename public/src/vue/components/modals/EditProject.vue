@@ -97,8 +97,11 @@ export default {
     };
   },
   watch: {
-    'projectdata.name': function() {
-      this.askBeforeClosingModal = true;
+    'projectdata': {
+      handler() {
+        this.askBeforeClosingModal = true;
+      },
+      deep: true
     },
     'preview': function() {
       this.askBeforeClosingModal = true;

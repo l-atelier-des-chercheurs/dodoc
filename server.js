@@ -1,4 +1,5 @@
 var express = require('express');
+
 var http = require('http');
 var https = require('https');
 var fs = require('fs');
@@ -12,13 +13,15 @@ var dev = require('./core/dev-log');
 // var ngrok = require('ngrok');
 
 const sockets = require('./core/sockets'),
+  setup_realtime_collaboration = require('./server-realtime_text_collaboration.js'),
   router = require('./router'),
   settings = require('./settings.json');
 
 module.exports = function() {
   dev.logverbose('Starting server 1');
 
-  var app = express();
+  const app = express();
+
   app.use(compression());
 
   // only for HTTPS, works without asking for a certificate
@@ -38,9 +41,9 @@ module.exports = function() {
       : http.createServer(app);
 
   var io = require('socket.io').listen(server);
-  dev.logverbose('Starting server 2');
 
-  var m = sockets.init(app, io);
+  dev.logverbose('Starting server 2');
+  sockets.init(app, io);
 
   dev.logverbose('Starting express-settings');
 
@@ -63,7 +66,9 @@ module.exports = function() {
   app.use(bodyParser.json());
   app.locals.pretty = true;
 
-  router(app, io, m);
+  setup_realtime_collaboration(server);
+
+  router(app);
 
   server.listen(app.get('port'), () => {
     dev.log(

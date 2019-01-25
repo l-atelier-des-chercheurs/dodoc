@@ -70,7 +70,7 @@
         <button type="button" @click="showAuthorsListModal = true">
           <template v-if="!!$root.settings.current_author">
             <div class="m_topbar--center--authors--portrait"
-              v-if="$root.settings.current_author.preview !== ''"
+              v-if="$root.settings.current_author.hasOwnProperty('preview') && $root.settings.current_author.preview.length !== ''"
             >
               <img :src="urlToPortrait($root.settings.current_author.slugFolderName, $root.settings.current_author.preview)" width="100" height="100"
               >              
@@ -205,11 +205,10 @@ export default {
     toggleMenu() {
       this.show_menu = !this.show_menu;
     },
-    urlToPortrait(slug, filename) {
-      if(filename === undefined) {
-        return '';
-      }
-      return `/${this.$root.state.authorsFolder}/${slug}/${filename}`;
+    urlToPortrait(slug, preview) {
+      if(!preview) return '';
+      let pathToSmallestThumb = preview.filter(m => m.size === 180)[0].path;
+      return pathToSmallestThumb;
     }
   }
 }

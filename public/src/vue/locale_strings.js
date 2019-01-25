@@ -25,7 +25,7 @@ module.exports = (function() {
       onion_skin: 'transparence de la dernière image',
       'file:': 'Fichier&nbsp;:',
       add_to_project: 'Ajouter au projet&nbsp;:',
-      input_password: 'Renseignez le mot de passe ci-dessous :',
+      input_password: 'Renseigner le mot de passe ci-dessous :',
       validate_with_enter: 'valider avec la touche ENTRÉE',
 
       bytes: 'octets',
@@ -43,13 +43,15 @@ module.exports = (function() {
       sureToCloseModal: 'Êtes-vous sûr de vouloir fermer cette fenêtre ?',
       sureToRemovePubli:
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
+      sure_to_cancel_stopmotion:
+        'Êtes-vous sûr de vouloir supprimer cette animation ?',
       validate_media: 'Valider le média',
       add_keyword: 'Ajouter un mot-clé',
 
       showing: 'Affichage de',
       media_filter: 'Filtre de médias',
       no_projects_yet:
-        'Il n’y a pas encore de projet, créez-en un pour commencer à utiliser do•doc!',
+        'Il n’y a pas encore de projet, créez-en un pour commencer à utiliser do•doc !',
       projects_of: 'projets sur',
       medias_of: 'médias sur',
       projects: 'Projets',
@@ -65,9 +67,9 @@ module.exports = (function() {
       import: 'Importer',
       import_all_files: 'Importer tous les fichiers',
       import_medias: 'Importer des médias',
-      select_files_to_import: 'Sélectionnez les fichiers à importer',
-      select_cover_image: 'Sélectionnez une image de couverture',
-      select_portrait_image: 'Sélectionnez une image de portrait',
+      select_files_to_import: 'Sélectionner les fichiers à importer',
+      select_cover_image: 'Sélectionner une image de couverture',
+      select_portrait_image: 'Sélectionner une image de portrait',
       add_to_publication: 'Ajouter à la publication',
       add_a_page: 'Ajouter une page',
       insert_a_page_here: 'Insérer une page ici',
@@ -161,6 +163,7 @@ module.exports = (function() {
       margin_right: 'Marge: droite',
       margin_bottom: 'Marge: bas',
       number_of_medias: 'Nombre de médias',
+      number_of_pages: 'Nombre de pages',
 
       export_folder: 'Exporter en format WEB',
       export: 'Exporter',
@@ -186,6 +189,7 @@ module.exports = (function() {
       template: 'Gabarit',
       standard: 'Standard',
       'feuille de choux': 'Feuille de Choux',
+      'human tech days': 'Human Tech Days',
       page_by_page: 'Document page à page',
       video_assemblage: 'Montage vidéo',
       web: 'Page web',
@@ -282,6 +286,8 @@ module.exports = (function() {
       sureToRemoveAuthor: 'Do you really want to delete this author?',
       sureToCloseModal: 'Do you really want to close this window?',
       sureToRemovePubli: 'Do you really want to delete this publication?',
+      sure_to_cancel_stopmotion:
+        'Do you really want to cancel this stopmotion?',
       validate_media: 'Validate the media',
       add_keyword: 'Add a keyword',
 
@@ -407,6 +413,7 @@ module.exports = (function() {
       margin_right: 'Margin: right',
       margin_bottom: 'Margin: bottom',
       number_of_medias: 'Number of medias',
+      number_of_pages: 'Number of pages',
 
       export_folder: 'Export as a webpage',
       export: 'Export',

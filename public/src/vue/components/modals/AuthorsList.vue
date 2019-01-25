@@ -37,29 +37,30 @@
             />
           </div>
 
-          <div type="button" 
-            v-if="Object.keys(sortedAuthors).length > 0"
-            v-for="author in sortedAuthors" 
-            :key="author.name" 
-            class="m_authorsList--author"
-            :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"
-            @click="setAuthor(author)"
-          >
-            <img 
-              v-if="!!author.preview"
-              width="100" height="100"
-              :src="urlToPortrait(author.slugFolderName, author.preview)" >
-            <div class="m_authorsList--author--name">{{ author.name }}</div>
-            <button type="button" class="buttonLink" @click.stop="setAuthor(author)" v-if="author.name !== $root.settings.current_author.name">
-              {{ $t('select') }}
-            </button>
-            <button type="button" class="buttonLink" @click.stop="unsetAuthor()" v-if="author.name === $root.settings.current_author.name">
-              {{ $t('unselect') }}
-            </button>
-            <button type="button" class="buttonLink" @click.stop="removeAuthor(author)">
-              {{ $t('remove') }}
-            </button>
-          </div>
+          <template v-if="Object.keys(sortedAuthors).length > 0">
+            <div type="button" 
+              v-for="author in sortedAuthors" 
+              :key="author.name" 
+              class="m_authorsList--author"
+              :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"
+              @click="setAuthor(author)"
+            >
+              <img 
+                v-if="!!author.preview"
+                width="100" height="100"
+                :src="urlToPortrait(author.slugFolderName, author.preview)" >
+              <div class="m_authorsList--author--name">{{ author.name }}</div>
+              <button type="button" class="buttonLink" @click.stop="setAuthor(author)" v-if="author.name !== $root.settings.current_author.name">
+                {{ $t('select') }}
+              </button>
+              <button type="button" class="buttonLink" @click.stop="unsetAuthor()" v-if="author.name === $root.settings.current_author.name">
+                {{ $t('unselect') }}
+              </button>
+              <button type="button" class="buttonLink" @click.stop="removeAuthor(author)">
+                {{ $t('remove') }}
+              </button>
+            </div>
+          </template>
 
         </transition-group>
       </div>
@@ -119,11 +120,10 @@ export default {
     unsetAuthor() {
       this.$root.unsetAuthor();
     },
-    urlToPortrait(slug, filename) {
-      if(filename === undefined) {
-        return '';
-      }
-      return `/${this.$root.state.authorsFolder}/${slug}/${filename}`;
+    urlToPortrait(slug, preview) {
+      if(!preview) return '';
+      let pathToSmallestThumb = preview.filter(m => m.size === 180)[0].path;
+      return pathToSmallestThumb;
     }
   }
 }

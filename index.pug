@@ -12,11 +12,9 @@ html
     - if(mode === 'export_publication')
       style.
         @import "./_fonts/fira/fira.css";
-        @import "./_fonts/nanook/nanook.css";
     - else
       style.
         @import "/fonts/fira/fira.css";
-        @import "/fonts/nanook/nanook.css";
 
     script.
       /***********
@@ -49,12 +47,12 @@ html
         protocol: "!{protocol}",
         connected: false,
         localNetworkInfos: {},
-        //- list_of_projects_whose_medias_are_tracked: [],
         mode: "!{mode}",
         dev_mode: "!{ isDebug ? "debug" : "production" }",
         noticeOfError: "!{noticeOfError}",
         is_electron: !!(window && window.process && window.process.type) && !{ mode === "export" ? false : true },
-        is_darwin: !!(window && window.process && window.process.platform === 'darwin') && !{ mode === "export" ? false : true }
+        is_darwin: !!(window && window.process && window.process.platform === 'darwin') && !{ mode === "export" ? false : true },
+        clients: []
       };
 
     //-
