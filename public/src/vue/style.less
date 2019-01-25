@@ -2710,6 +2710,18 @@ body {
         // transform: scale(1.2); 
       }      
     }  
+    .handle_rotateMedia {
+      top: -@t-handleSize/2;
+      right: -@t-handleSize/2;
+      cursor: nwse-rotate;
+      color: @c-noir;
+
+      transition: transform .2s;
+      &:hover {
+        color: @c-orange;
+        // transform: scale(1.2); 
+      }      
+    }  
   }
 
   .m_mediaPublication--caption {
