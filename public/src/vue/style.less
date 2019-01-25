@@ -2751,14 +2751,14 @@ body {
 .m_page {
 
   // always load standard
-  .mediaContainer {
-    @import "less/publications_styles/standard.less";    
-  }
+  @import "less/publications_styles/standard.less";    
+
   // override with customs
   &[data-style="feuille de choux"] {
-    .mediaContainer {
-      @import "less/publications_styles/feuille-de-choux.less";    
-    }
+    @import "less/publications_styles/feuille-de-choux.less";    
+  }
+  &[data-style="human tech days"] {
+    @import "less/publications_styles/human-tech-days.less";    
   }
 }
 

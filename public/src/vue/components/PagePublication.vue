@@ -4,6 +4,7 @@
     :class="{ 'is--preview' : preview_mode, 'is--fullscreen' : fullscreen_mode }"
     @scroll="onScroll"
     ref="panel"
+    :style="customCSSVars"
   >
     <div class="m_publicationMeta">
       <div class="m_publicationMeta--topbar">
@@ -76,6 +77,9 @@
             </option>
             <option value="feuille de choux">
               {{ $t('feuille de choux') }}
+            </option>
+            <option value="human tech days">
+              {{ $t('human tech days') }}
             </option>
           </select>
         </div>
@@ -473,6 +477,9 @@ export default {
       }
 
       return publication_options;
+    },
+    customCSSVars() {
+      return `--current-time-human: "${this.$root.currentTime_human}"`
     },
     pagesWithDefault() {
       if (this.$root.state.dev_mode === 'debug') {

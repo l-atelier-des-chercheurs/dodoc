@@ -438,6 +438,8 @@ let vm = new Vue({
     justCreatedFolderID: false,
     justCreatedMediaID: false,
 
+    currentTime: '',
+
     do_navigation: {
       view: 'ListView',
       current_slugProjectName: false
@@ -533,6 +535,9 @@ let vm = new Vue({
       this.settings.windowWidth = window.innerWidth;
       this.settings.windowHeight = window.innerHeight;
     });
+
+    this.currentTime = this.$moment().millisecond(0);
+    setInterval(() => (this.currentTime = this.$moment().millisecond(0)), 1000);
 
     if (this.store.noticeOfError) {
       if (this.store.noticeOfError === 'failed_to_find_folder') {
@@ -699,6 +704,9 @@ let vm = new Vue({
           classes: 'tagcolorid_' + (parseInt(kw, 36) % 2)
         };
       });
+    },
+    currentTime_human() {
+      return this.$moment(this.currentTime).format('LL   LTS');
     }
   },
   methods: {

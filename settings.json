@@ -178,7 +178,7 @@
         },
         "style": {
           "type": "string",
-          "options": ["standard", "feuille de choux"],
+          "options": ["standard", "feuille de choux", "human tech days"],
           "default": "standard"          
         },
         "width": {

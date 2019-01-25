@@ -189,6 +189,7 @@ module.exports = (function() {
       template: 'Gabarit',
       standard: 'Standard',
       'feuille de choux': 'Feuille de Choux',
+      'human tech days': 'Human Tech Days',
       page_by_page: 'Document page à page',
       video_assemblage: 'Montage vidéo',
       web: 'Page web',
