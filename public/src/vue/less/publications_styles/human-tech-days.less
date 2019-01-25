@@ -41,26 +41,33 @@
   text-transform: none;
 
   > *:nth-child(2) {
-
     &::after {
       content: var(--current-time-human);
       display: inline-block;
       margin-left: @t-skipline;
     }
-  }
-  
+  } 
 }
 
 .m_page--pageNumber {
   display: none;
 }
 
-.mediaContainer {
+.m_mediaPublication[data-media_type="text"] {
+  // mix-blend-mode: multiply;
+  z-index: 15;;
 
+}
+
+.mediaContainer {
   & {
-    color: #000;
     font-size: 12pt;
     background-color: transparent;
+  }
+
+  &.type-text {
+    color: #000;
+    
   }
 
   ul, ol {

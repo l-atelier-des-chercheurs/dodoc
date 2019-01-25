@@ -4,7 +4,7 @@
     autocorrect="off"
     autofocus="autofocus"
   >
-    connection_state : {{ connection_state }}<br>
+    <!-- connection_state : {{ connection_state }}<br> -->
     <div ref="editor"
     />
   </div>

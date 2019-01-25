@@ -2,6 +2,7 @@
   <div 
     class="m_mediaPublication"
     :style="mediaStyles"
+    :data-media_type="media.type"
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
     @mousedown.prevent.stop="is_selected = true"
