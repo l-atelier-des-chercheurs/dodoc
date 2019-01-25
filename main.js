@@ -19,26 +19,27 @@ global.appInfos = {
 let win;
 const electron = require('electron');
 const { app, BrowserWindow, Menu } = electron;
-const PDFWindow = require('electron-pdf-window');
-
-const {
-  default: installExtension,
-  VUEJS_DEVTOOLS
-} = require('electron-devtools-installer');
 
 const { dialog } = require('electron');
 const JSONStorage = require('node-localstorage').JSONStorage;
 
-require('electron-context-menu')({
-  prepend: (params, BrowserWindow) => [
-    {
-      // Only show it when right-clicking images
-      visible: params.mediaType === 'image'
-    }
-  ]
-});
+const is_electron = process.versions.hasOwnProperty('electron');
 
-if (settings.process === 'electron') {
+if (is_electron) {
+  const {
+    default: installExtension,
+    VUEJS_DEVTOOLS
+  } = require('electron-devtools-installer');
+
+  require('electron-context-menu')({
+    prepend: (params, BrowserWindow) => [
+      {
+        // Only show it when right-clicking images
+        visible: params.mediaType === 'image'
+      }
+    ]
+  });
+
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
@@ -62,7 +63,7 @@ if (settings.process === 'electron') {
       createWindow(win);
     }
   });
-} else if (settings.process === 'node') {
+} else {
   setupApp().then(() => {
     server();
   });
@@ -185,7 +186,7 @@ function createWindow(win) {
     }
   });
 
-  PDFWindow.addSupport(win);
+  require('electron-pdf-window').addSupport(win);
 
   if (windowState.isMaximized) {
     win.maximize();
@@ -391,10 +392,9 @@ function setApplicationMenu() {
 }
 function copyAndRenameUserFolder() {
   return new Promise(function(resolve, reject) {
-    const userDirPath =
-      settings.process === 'electron'
-        ? app.getPath(settings.userDirPath)
-        : getPath.getDocumentsFolder();
+    const userDirPath = is_electron
+      ? app.getPath(settings.userDirPath)
+      : getPath.getDocumentsFolder();
 
     const pathToUserContent = path.join(userDirPath, settings.userDirname);
     fs.access(pathToUserContent, fs.F_OK, function(err) {
@@ -408,12 +408,12 @@ function copyAndRenameUserFolder() {
         dev.log(`->duplicating ${settings.contentDirname} to create a new one`);
 
         let sourcePathInApp;
-        if (settings.process === 'electron') {
+        if (is_electron) {
           sourcePathInApp = path.join(
             `${__dirname.replace(`${path.sep}app.asar`, '')}`,
             `${settings.contentDirname}`
           );
-        } else if (settings.process === 'node') {
+        } else {
           sourcePathInApp = path.join(
             `${__dirname}`,
             `${settings.contentDirname}`

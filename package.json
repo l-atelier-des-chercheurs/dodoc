@@ -21,6 +21,7 @@
     "debug-brk": "electron --inspect=5858 . --debug-brk --verbose",
     "node-start": "node .",
     "node-debug": "node . --inspect=5858 --debug --verbose",
+    "node-debug-brk": "node . --inspect=5858 --debug-brk --verbose",
     "pack": "build --dir",
     "dist": "build",
     "postinstall": "electron-builder install-app-deps"

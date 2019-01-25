@@ -5,8 +5,6 @@
   "userDirPath": "documents",
   "userDirname": "dodoc2",
 
-  "process": "electron",
-
   "contentDirname" : "user",
   "cacheDirname" : "cache",
   "metaFileext" : ".txt",
