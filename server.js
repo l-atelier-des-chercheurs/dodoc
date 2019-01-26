@@ -35,6 +35,18 @@ module.exports = function() {
   );
   const options = { key: privateKey, cert: certificate };
 
+  if (settings.protocol === 'https') {
+    // redirect from http (port 80) to https (port 443)
+    http
+      .createServer((req, res) => {
+        res.writeHead(301, {
+          Location: 'https://' + req.headers['host'] + req.url
+        });
+        res.end();
+      })
+      .listen(settings.http_port);
+  }
+
   let server =
     settings.protocol === 'https'
       ? https.createServer(options, app)

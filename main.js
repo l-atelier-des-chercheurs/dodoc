@@ -18,6 +18,7 @@ global.appInfos = {
 
 let win;
 const electron = require('electron');
+
 const { app, BrowserWindow, Menu } = electron;
 
 const { dialog } = require('electron');
@@ -26,11 +27,6 @@ const JSONStorage = require('node-localstorage').JSONStorage;
 const is_electron = process.versions.hasOwnProperty('electron');
 
 if (is_electron) {
-  const {
-    default: installExtension,
-    VUEJS_DEVTOOLS
-  } = require('electron-devtools-installer');
-
   require('electron-context-menu')({
     prepend: (params, BrowserWindow) => [
       {
@@ -39,6 +35,15 @@ if (is_electron) {
       }
     ]
   });
+
+  const {
+    default: installExtension,
+    VUEJS_DEVTOOLS
+  } = require('electron-devtools-installer');
+
+  installExtension(VUEJS_DEVTOOLS)
+    .then(name => dev.logverbose(`Added Extension:  ${name}`))
+    .catch(err => dev.logverbose('An error occurred: ', err));
 
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
@@ -242,9 +247,6 @@ function createWindow(win) {
 
       if (dev.isDebug()) {
         // win.webContents.openDevTools({mode: 'detach'});
-        installExtension(VUEJS_DEVTOOLS)
-          .then(name => dev.logverbose(`Added Extension:  ${name}`))
-          .catch(err => dev.logverbose('An error occurred: ', err));
       }
     })
     .catch(err => {
