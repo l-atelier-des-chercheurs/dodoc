@@ -16,9 +16,10 @@
     "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
   },
   "scripts": {
+    "start": "electron .",
     "debug": "electron --inspect=5858 . --debug --verbose",
     "debug-brk": "electron --inspect=5858 . --debug-brk --verbose",
-    "start": "node .",
+    "node-start": "node .",
     "node-debug": "node . --inspect=5858 --debug --verbose",
     "node-debug-brk": "node . --inspect=5858 --debug-brk --verbose",
     "pack": "build --dir",
