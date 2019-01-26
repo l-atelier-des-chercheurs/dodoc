@@ -155,6 +155,25 @@
         </g>
         </svg>
       </button>
+
+      <button 
+        class="margin-vert-verysmall font-verysmall" 
+        @click="printThisPublication()"
+      >
+        <!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In  -->
+        <svg version="1.1"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+          x="0px" y="0px" width="144px" height="84px" viewBox="0 0 144 84" style="enable-background:new 0 0 144 84;"
+          xml:space="preserve">
+        <defs>
+        </defs>
+        <g>
+          <path d="M72,0C32.2,0,0,42,0,42s32.2,42,72,42s72-42,72-42S111.8,0,72,0z M72,71.3c-16.5,0-30-13.2-30-29.6
+            c0-16.3,13.4-29.6,30-29.6c16.5,0,30,13.3,30,29.6C102,58,88.5,71.3,72,71.3z"/>
+        </g>
+        </svg>
+      </button>
+
       <button class="margin-vert-verysmall font-verysmall" 
         @click="toggleFullscreen()"
       >
@@ -250,9 +269,7 @@
                 :style="`--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
               />
 
-              <div class="m_page--header"
-                v-if="!!page.header_left || !!page.header_right"
-              >
+              <div class="m_page--header">
                 <div>
                   {{ page.header_left }}
                 </div>
@@ -324,6 +341,13 @@
       </a>
     </div>
 
+    <div v-if="show_edit_css_window"
+      class="m_mediaCSSEditWindow"
+    >
+      {{ show_edit_css_window }}
+      <textarea @keyup="setCSSForMedia($event)" />
+    </div>
+
     <div 
       ref="mmMeasurer" 
       style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%;"
@@ -362,6 +386,8 @@ export default {
         }
       },
 
+      show_edit_css_window: false,
+
       advanced_options: false,
 
       new_publiname: this.publication.name,
@@ -398,22 +424,23 @@ export default {
   mounted() {
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
+    this.$eventHub.$on('publication.setCSSEditWindow', this.setCSSEditWindow);
     document.addEventListener('keyup', this.publicationKeyListener);
     this.updateMediasPubli();  
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty('mmMeasurer') ? this.$refs.mmMeasurer.offsetWidth / 10 : 38;
     this.updatePubliOptionsInFields();
     this.$eventHub.$emit('publication_medias_updated');      
 
-    if(this.$root.state.mode === 'print_publication') {
-      this.preview_mode = true;
-      // this trick prevents webkit/electron from adding a blank page at the end of the pdf
-      document.getElementsByTagName('body')[0].style.width = `${this.publications_options.width}mm`;
-      document.getElementsByTagName('body')[0].style.height = `${this.publications_options.height}mm`;
-    }
+    document.getElementsByTagName('body')[0].style = `
+      --page-width: ${this.publications_options.width}mm; 
+      --page-height: ${this.publications_options.height}mm
+    `;
+
   },
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
     this.$eventHub.$off('socketio.projects.listSpecificMedias', this.updateMediasPubli);
+    this.$eventHub.$off('publication.setCSSEditWindow', this.setCSSEditWindow);
     document.removeEventListener('keyup', this.publicationKeyListener);
   },
 
@@ -431,6 +458,11 @@ export default {
           console.log(`WATCH • Publication: publications_options`);
         }
         this.updatePubliOptionsInFields();
+        document.getElementsByTagName('body')[0].style = `
+          --page-width: ${this.publications_options.width}mm; 
+          --page-height: ${this.publications_options.height}mm
+        `;
+
       },
       deep: true
     },
@@ -549,6 +581,12 @@ export default {
         type: 'publications', 
         additionalMeta: newMediaMeta
       });
+    },
+    printThisPublication() {
+      this.preview_mode = true;
+      setTimeout(() => {
+        window.print();
+      }, 500);
     },
     removePubliMedia({ slugMediaName }) {
       if (this.$root.state.dev_mode === 'debug') {
@@ -728,6 +766,30 @@ export default {
         } 
       });      
     },
+    setCSSEditWindow(slugMediaName) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: setCSSEditWindow`);
+      }
+      if(this.show_edit_css_window !== slugMediaName) {
+        this.show_edit_css_window = slugMediaName;
+      } else {
+        this.show_edit_css_window = false;
+      }
+    },
+    setCSSForMedia(event) {
+      if(!this.show_edit_css_window) {
+        return;
+      }
+
+      const new_style = event.target.value;
+
+      this.editPubliMedia({
+        slugMediaName: this.show_edit_css_window, 
+        val: {
+          "custom_css": new_style
+        }
+      });
+    },
     updatePubliOptionsInFields() {
       this.new_width = this.publications_options.width;
       this.new_height = this.publications_options.height;
@@ -774,29 +836,17 @@ export default {
       this.page_currently_active = index;
     },
     setPageContainerProperties(page) {
-      if(this.$root.state.mode === 'print_publication') {
-        return;
-      }
-
       return `
         width: ${page.width * this.$root.settings.publi_zoom}mm; 
         height: ${page.height * this.$root.settings.publi_zoom}mm;      
       `;      
     },
     setPageProperties(page) {
-      if(this.$root.state.mode === 'print_publication') {
-        // reducing page height by 1mm is necessary to prevent blank pages in-between
-        return `
-          width: ${page.width}mm; 
-          height: ${page.height - 1}mm;
-        `;
-      } else {
-        return `
-          width: ${page.width}mm; 
-          height: ${page.height}mm;
-          transform: scale(${this.$root.settings.publi_zoom});
-        `;
-      }
+      return `
+        width: ${page.width}mm; 
+        height: ${page.height}mm;
+        transform: scale(${this.$root.settings.publi_zoom});
+      `;
     },
 
     publicationKeyListener(evt) {

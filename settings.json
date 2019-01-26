@@ -229,6 +229,9 @@
           "authors": {
             "type": "array"
           },
+          "custom_css": {
+            "type": "string"
+          },
           "page_id": {
             "type": "string"
           },
@@ -236,6 +239,9 @@
             "type": "number"
           },
           "y": {
+            "type": "number"
+          },
+          "rotate": {
             "type": "number"
           },
           "width": {

@@ -155,17 +155,6 @@
       />
     </template>    
 
-    <template 
-      v-else-if="$root.state.mode === 'print_publication'"
-    >    
-      <PagePublication
-        v-if="$root.settings.current_slugPubliName !== false"
-        :slugPubliName="$root.settings.current_slugPubliName"
-        :publication="$root.store.publications[$root.settings.current_slugPubliName]"
-        :read_only="!$root.state.connected"
-      />
-    </template>    
-
     <portal-target name="modal_container" />
 
   </div>
@@ -213,7 +202,7 @@ export default {
       drag_offset: 0,
       hasMoved: false,
       height: null,
-      percent: this.$root.state.mode === 'print_publication' ? 0:100,
+      percent: 100,
       type: 'width',
       resizeType: 'left',
       windowWidth: window.innerWidth,
