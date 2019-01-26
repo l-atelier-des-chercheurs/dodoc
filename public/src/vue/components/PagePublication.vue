@@ -49,7 +49,7 @@
 
         <div class="margin-bottom-small">
           <label>{{ $t('name') }}</label>
-          <input class="input-large input-big" type="text" v-model="new_publiname" @change="updatePublicationOption('name')" required :readonly="read_only">
+          <input class="input-large input-big" type="text" v-model="new_publiname" @change="updatePublicationOption($event, 'name')" required :readonly="read_only">
         </div>
 
         <hr>
@@ -71,7 +71,7 @@
 
         <div class="margin-bottom-small">
           <label>{{ $t('template') }}</label>
-          <select v-model="new_style" @change="updatePublicationOption('style')">
+          <select v-model="new_style" @change="updatePublicationOption($event, 'style')">
             <option value="standard">
               {{ $t('standard') }}
             </option>
@@ -88,48 +88,48 @@
 
         <div class="margin-bottom-small">
           <label>{{ $t('header_left') }}</label>
-          <input class="input-large" type="text" v-model="new_header_left" @change="updatePublicationOption('header_left')" :readonly="read_only">
+          <input class="input-large" type="text" v-model="new_header_left" @change="updatePublicationOption($event, 'header_left')" :readonly="read_only">
         </div>
 
         <div class="margin-bottom-small">
           <label>{{ $t('header_right') }}</label>
-          <input class="input-large" type="text" v-model="new_header_right" @change="updatePublicationOption('header_right')" :readonly="read_only">
+          <input class="input-large" type="text" v-model="new_header_right" @change="updatePublicationOption($event, 'header_right')" :readonly="read_only">
         </div>
 
         <hr>
 
         <div class="margin-bottom-small">
           <label>{{ $t('width') }}(mm)</label>
-          <input type="number" min="1" max="1000" step="1" v-model="new_width" @input="updatePublicationOption('width')">
+          <input type="number" min="1" max="1000" step="1" v-model="new_width" @input="updatePublicationOption($event, 'width')">
         </div>
 
         <div class="margin-bottom-small">
           <label>{{ $t('height') }}(mm)</label>
-          <input type="number" min="1" max="1000" step="1" v-model="new_height" @input="updatePublicationOption('height')">
+          <input type="number" min="1" max="1000" step="1" v-model="new_height" @input="updatePublicationOption($event, 'height')">
         </div>
 
         <div class="margin-bottom-small">
           <label>{{ $t('gridstep') }}(mm)</label>
-          <input type="number" min="2" max="100" step="1" v-model="new_gridstep" @input="updatePublicationOption('gridstep')">
+          <input type="number" min="2" max="100" step="1" v-model="new_gridstep" @input="updatePublicationOption($event, 'gridstep')">
         </div>
 
         <hr>
 
         <div class="margin-bottom-small">
           <label>{{ $t('margin_top') }}(mm)</label>
-          <input type="number" min="0" max="100" step="1" v-model="new_margin_top" @input="updatePublicationOption('margin_top')">
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_top" @input="updatePublicationOption($event, 'margin_top')">
         </div>
         <div class="margin-bottom-small">
           <label>{{ $t('margin_bottom') }}(mm)</label>
-          <input type="number" min="0" max="100" step="1" v-model="new_margin_bottom" @input="updatePublicationOption('margin_bottom')">
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_bottom" @input="updatePublicationOption($event, 'margin_bottom')">
         </div>
         <div class="margin-bottom-small">
           <label>{{ $t('margin_left') }}(mm)</label>
-          <input type="number" min="0" max="100" step="1" v-model="new_margin_left" @input="updatePublicationOption('margin_left')">
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_left" @input="updatePublicationOption($event, 'margin_left')">
         </div>
         <div class="margin-bottom-small">
           <label>{{ $t('margin_right') }}(mm)</label>
-          <input type="number" min="0" max="100" step="1" v-model="new_margin_right" @input="updatePublicationOption('margin_right')">
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_right" @input="updatePublicationOption($event, 'margin_right')">
         </div>
       </template>
     </div>
@@ -895,10 +895,11 @@ export default {
         this.fullscreen_mode = false;
       }
     },
-    updatePublicationOption(type) {
+    updatePublicationOption(event, type) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: updateMargin with type = ${type}`);
       }
+      debugger;
       this.$root.editFolder({ 
         type: 'publications', 
         slugFolderName: this.slugPubliName, 
