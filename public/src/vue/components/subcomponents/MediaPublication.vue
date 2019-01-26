@@ -124,6 +124,8 @@ export default {
       is_selected: false,
       is_touch: Modernizr.touchevents,
 
+      limit_media_to_page: true,
+
       mediaID: `${(Math.random().toString(36) + '00000000000000000').slice(2, 3 + 5)}`,
 
       show_edit_window: false,
@@ -224,6 +226,9 @@ export default {
       this.$emit('editPubliMedia', { slugMediaName: this.media.publi_meta.metaFileName, val });
     },
     limitMediaXPos(xPos) {
+      if(!this.limit_media_to_page) {
+        return xPos;
+      }
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaXPos / xPos = ${xPos}`);
       // }
@@ -234,6 +239,9 @@ export default {
     },
 
     limitMediaYPos(yPos) {
+      if(!this.limit_media_to_page) {
+        return yPos;
+      }
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaYPos / yPos = ${yPos}`);
       // }
@@ -242,12 +250,18 @@ export default {
     },
     
     limitMediaWidth(w) {
+      if(!this.limit_media_to_page) {
+        return w;
+      }
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaWidth / w = ${w}`);
       // }
       return Math.max(20, Math.min(this.page.width - this.page.margin_right - this.mediaPos.x, w));
     },
     limitMediaHeight(h) {
+      if(!this.limit_media_to_page) {
+        return h;
+      }
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaHeight / h = ${h}`);
       // }
