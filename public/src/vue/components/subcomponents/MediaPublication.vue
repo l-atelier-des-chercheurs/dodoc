@@ -50,7 +50,7 @@
         </g>
         </svg>
       </div>
-      <div class="handle handle_rotateMedia"
+      <!-- <div class="handle handle_rotateMedia"
         @mousedown.stop.prevent="rotateMedia('mouse', 'bottomright')"
         @touchstart.stop.prevent="rotateMedia('touch', 'bottomright')"
       >
@@ -68,7 +68,7 @@
            L11.3,21.1c0.5,1.8,0.9,3.6,1.1,5.4c0.2,1.8,0.3,4.1,0.3,7l-0.1,9.4L0,42.5L1.3,1.3L42.5,0z"/>
         </g>
         </svg>
-      </div>
+      </div> -->
     </div>
 
     <div 
