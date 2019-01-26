@@ -38,14 +38,14 @@ module.exports = function() {
   const is_electron = process.versions.hasOwnProperty('electron');
 
   if (!is_electron) {
-    // options = {
-    //   key: fs.readFileSync(
-    //     '/etc/letsencrypt/live/dodoc.latelier-des-chercheurs.fr/privkey.pem'
-    //   ),
-    //   cert: fs.readFileSync(
-    //     '/etc/letsencrypt/live/dodoc.latelier-des-chercheurs.fr/cert.pem'
-    //   )
-    // };
+    options = {
+      key: fs.readFileSync(
+        '/etc/letsencrypt/live/dodoc.latelier-des-chercheurs.fr/privkey.pem'
+      ),
+      cert: fs.readFileSync(
+        '/etc/letsencrypt/live/dodoc.latelier-des-chercheurs.fr/cert.pem'
+      )
+    };
   }
 
   if (settings.protocol === 'https') {

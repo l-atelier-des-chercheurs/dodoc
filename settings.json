@@ -1,8 +1,8 @@
 {
   "protocol": "https",
   "host": "localhost",
-  "port": 8080,
-  "http_port": 80,
+  "port": 80,
+  "http_port": 120,
   "userDirPath": "documents",
   "userDirname": "dodoc2",
 
