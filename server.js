@@ -33,7 +33,7 @@ module.exports = function() {
     path.join(__dirname, 'ssl', 'file.crt'),
     'utf8'
   );
-  const options = { key: privateKey, cert: certificate };
+  let options = { key: privateKey, cert: certificate };
 
   const is_electron = process.versions.hasOwnProperty('electron');
 
