@@ -250,9 +250,7 @@
                 :style="`--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
               />
 
-              <div class="m_page--header"
-                v-if="!!page.header_left || !!page.header_right"
-              >
+              <div class="m_page--header">
                 <div>
                   {{ page.header_left }}
                 </div>
