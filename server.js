@@ -91,7 +91,7 @@ module.exports = function() {
   app.use(bodyParser.json());
   app.locals.pretty = true;
 
-  setup_realtime_collaboration(server);
+  // setup_realtime_collaboration(server);
 
   router(app);
 
