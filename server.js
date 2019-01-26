@@ -40,10 +40,10 @@ module.exports = function() {
   if (!is_electron) {
     options = {
       key: fs.readFileSync(
-        '/etc/letsencrypt/live/millefeuille.latelier-des-chercheurs.fr/privkey.pem'
+        '/etc/letsencrypt/live/dodoc.latelier-des-chercheurs.fr/privkey.pem'
       ),
       cert: fs.readFileSync(
-        '/etc/letsencrypt/live/millefeuille.latelier-des-chercheurs.fr/cert.pem'
+        '/etc/letsencrypt/live/dodoc.latelier-des-chercheurs.fr/cert.pem'
       )
     };
   }
