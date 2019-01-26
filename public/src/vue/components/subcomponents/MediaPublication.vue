@@ -73,14 +73,14 @@
       v-if="(is_selected || is_hovered || is_touch) && !preview_mode" 
       class="m_mediaPublication--buttons"
     >
-      <button 
+      <!-- <button 
         type="button" 
         class="buttonLink" 
         @click.prevent.stop="toggleEditWindow()"
         @touchstart.prevent.stop="toggleEditWindow()"
       >
         {{ $t('style') }}
-      </button>
+      </button> -->
       <button 
         type="button" 
         class="buttonLink" 
