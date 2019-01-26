@@ -1,5 +1,5 @@
 {
-  "protocol": "https",
+  "protocol": "http",
   "host": "localhost",
   "port": 80,
   "http_port": 120,
