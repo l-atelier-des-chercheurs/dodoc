@@ -354,9 +354,9 @@ export default {
         this.rotateOffset.y = this.$refs.media.getBoundingClientRect().y + this.$refs.media.getBoundingClientRect().height/2;
 
         const radians = Math.atan2(pageX - this.rotateOffset.x, pageY - this.rotateOffset.y);
-        const deg = Math.round((radians * (180/Math.PI) * -1 ) + 100);
+        const deg = radians * (180/Math.PI);
+        // this.rotateOffset.angle = deg;
 
-        this.rotateOffset.angle = deg;
       } else {
         // measure distance between pageX/pageY and this.rotateOffset.x / this.rotateOffset.y
         // const a = pageX - this.rotateOffset.x;
@@ -369,7 +369,7 @@ export default {
         // const deg = radians * (180/Math.PI);
 
         // this.rotate = deg + this.rotateOffset.angle;
-        this.rotate = deg;
+        this.rotate = deg - 20;
         // this.rotate = deg - this.rotateOffset.angle;
       }
     },
