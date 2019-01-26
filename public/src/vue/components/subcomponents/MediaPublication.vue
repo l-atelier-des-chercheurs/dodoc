@@ -334,13 +334,8 @@ export default {
         this.rotateOffset.x = pageX;
         this.rotateOffset.y = pageX;
       } else {
-        const deltaX = (pageX_mm - this.resizeOffset.x);
-        let newWidth = this.mediaSize.pwidth + deltaX;
-        this.mediaSize.width = this.limitMediaWidth(newWidth);
+        // measure distance between pageX/pageY and this.rotateOffset.x / this.rotateOffset.y
 
-        const deltaY = (pageY_mm - this.resizeOffset.y);
-        let newHeight = this.mediaSize.pheight + deltaY;
-        this.mediaSize.height = this.limitMediaHeight(newHeight);
       }
     },
     rotateUp(event) {
