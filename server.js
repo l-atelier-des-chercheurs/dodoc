@@ -35,6 +35,19 @@ module.exports = function() {
   );
   const options = { key: privateKey, cert: certificate };
 
+  const is_electron = process.versions.hasOwnProperty('electron');
+
+  if (!is_electron) {
+    options = {
+      key: fs.readFileSync(
+        '/etc/letsencrypt/live/millefeuille.latelier-des-chercheurs.fr/privkey.pem'
+      ),
+      cert: fs.readFileSync(
+        '/etc/letsencrypt/live/millefeuille.latelier-des-chercheurs.fr/cert.pem'
+      )
+    };
+  }
+
   if (settings.protocol === 'https') {
     // redirect from http (port 80) to https (port 443)
     http
