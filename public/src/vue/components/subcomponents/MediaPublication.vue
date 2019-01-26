@@ -124,7 +124,7 @@ export default {
       is_selected: false,
       is_touch: Modernizr.touchevents,
 
-      limit_media_to_page: true,
+      limit_media_to_page: false,
 
       mediaID: `${(Math.random().toString(36) + '00000000000000000').slice(2, 3 + 5)}`,
 
