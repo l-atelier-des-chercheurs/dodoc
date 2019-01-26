@@ -322,6 +322,13 @@
       </a>
     </div>
 
+    <div v-if="show_edit_css_window"
+      class="m_mediaCSSEditWindow"
+    >
+      {{ show_edit_css_window }}
+      <textarea @keyup="setCSSForMedia($event)" />
+    </div>
+
     <div 
       ref="mmMeasurer" 
       style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%;"
@@ -360,6 +367,8 @@ export default {
         }
       },
 
+      show_edit_css_window: false,
+
       advanced_options: false,
 
       new_publiname: this.publication.name,
@@ -396,6 +405,7 @@ export default {
   mounted() {
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
+    this.$eventHub.$on('publication.setCSSEditWindow', this.setCSSEditWindow);
     document.addEventListener('keyup', this.publicationKeyListener);
     this.updateMediasPubli();  
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty('mmMeasurer') ? this.$refs.mmMeasurer.offsetWidth / 10 : 38;
@@ -412,6 +422,7 @@ export default {
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
     this.$eventHub.$off('socketio.projects.listSpecificMedias', this.updateMediasPubli);
+    this.$eventHub.$off('publication.setCSSEditWindow', this.setCSSEditWindow);
     document.removeEventListener('keyup', this.publicationKeyListener);
   },
 
@@ -725,6 +736,30 @@ export default {
           pages 
         } 
       });      
+    },
+    setCSSEditWindow(slugMediaName) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: setCSSEditWindow`);
+      }
+      if(this.show_edit_css_window !== slugMediaName) {
+        this.show_edit_css_window = slugMediaName;
+      } else {
+        this.show_edit_css_window = false;
+      }
+    },
+    setCSSForMedia(event) {
+      if(!this.show_edit_css_window) {
+        return;
+      }
+
+      const new_style = event.target.value;
+
+      this.editPubliMedia({
+        slugMediaName: this.show_edit_css_window, 
+        val: {
+          "custom_css": new_style
+        }
+      });
     },
     updatePubliOptionsInFields() {
       this.new_width = this.publications_options.width;

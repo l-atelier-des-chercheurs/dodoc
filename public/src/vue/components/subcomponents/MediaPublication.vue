@@ -26,7 +26,7 @@
     <p class="mediaCaption">{{ media.caption }}</p>
 
     <div 
-      v-if="!preview_mode" 
+      v-if="(is_selected || is_hovered || is_touch) && !preview_mode" 
       class="controlFrame"
       @mousedown.stop.prevent="dragMedia('mouse')"
       @touchstart.stop.prevent="dragMedia('touch')"   
@@ -50,7 +50,7 @@
         </g>
         </svg>
       </div>
-      <!-- <div class="handle handle_rotateMedia"
+      <div class="handle handle_rotateMedia"
         @mousedown.stop.prevent="rotateMedia('mouse', 'bottomright')"
         @touchstart.stop.prevent="rotateMedia('touch', 'bottomright')"
       >
@@ -68,13 +68,21 @@
            L11.3,21.1c0.5,1.8,0.9,3.6,1.1,5.4c0.2,1.8,0.3,4.1,0.3,7l-0.1,9.4L0,42.5L1.3,1.3L42.5,0z"/>
         </g>
         </svg>
-      </div> -->
+      </div>
     </div>
 
     <div 
       v-if="(is_selected || is_hovered || is_touch) && !preview_mode" 
       class="m_mediaPublication--buttons"
     >
+      <button 
+        type="button" 
+        class="buttonLink" 
+        @click.prevent.stop="toggleEditWindow()"
+        @touchstart.prevent.stop="toggleEditWindow()"
+      >
+        {{ $t('style') }}
+      </button>
       <button 
         type="button" 
         class="buttonLink" 
@@ -120,6 +128,8 @@ export default {
 
       mediaID: `${(Math.random().toString(36) + '00000000000000000').slice(2, 3 + 5)}`,
 
+      show_edit_window: false,
+
       dragOffset: {
         x: 0,
         y: 0
@@ -138,8 +148,10 @@ export default {
 
       rotateOffset: {
         x: 0,
-        y: 0
+        y: 0,
+        angle: 0
       },
+      rotate: 0,
 
       mediaSize: {
         width: 0,
@@ -187,17 +199,23 @@ export default {
   computed: {
     mediaStyles() {
       return `
-        transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm);
+        transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
         height: ${this.mediaSize.height}mm;
+        ${this.media.publi_meta.custom_css}
       `
       ;
     },
   },
   methods: {
+    toggleEditWindow() {
+      this.$eventHub.$emit('publication.setCSSEditWindow', this.media.publi_meta.metaFileName);
+    },
+
     updateMediaStyles() {
       this.mediaPos.x = this.media.publi_meta.hasOwnProperty('x') && !!Number.parseInt(this.media.publi_meta.x) ? this.limitMediaXPos(Number.parseInt(this.media.publi_meta.x)) : this.page.margin_left;
       this.mediaPos.y = this.media.publi_meta.hasOwnProperty('y') && !!Number.parseInt(this.media.publi_meta.y) ? this.limitMediaYPos(Number.parseInt(this.media.publi_meta.y)) : this.page.margin_top;
+      this.rotate = this.media.publi_meta.hasOwnProperty('rotate') ? this.media.publi_meta.rotate : 0;
       this.mediaSize.width = this.media.publi_meta.hasOwnProperty('width') && !!Number.parseInt(this.media.publi_meta.width) ? this.limitMediaWidth(Number.parseInt(this.media.publi_meta.width)) : 100;
       this.mediaSize.height = this.media.publi_meta.hasOwnProperty('height') && !!Number.parseInt(this.media.publi_meta.height) ? this.limitMediaHeight(Number.parseInt(this.media.publi_meta.height)) : 100;
     },
@@ -323,7 +341,7 @@ export default {
 
     rotateMove(event) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaPublication: resizeMove with is_resized = ${this.is_resized}`);
+        console.log(`METHODS • MediaPublication: rotateMove with is_rotated = ${this.is_rotated}`);
       }
 
       const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
@@ -332,32 +350,32 @@ export default {
       if (!this.is_rotated) {
         this.is_rotated = true;
         this.rotateOffset.x = pageX;
-        this.rotateOffset.y = pageX;
+        this.rotateOffset.y = pageY;
+        this.rotateOffset.angle = this.rotate;
       } else {
         // measure distance between pageX/pageY and this.rotateOffset.x / this.rotateOffset.y
-
+        const a = pageX - this.rotateOffset.x;
+        const b = pageY - this.rotateOffset.y;
+        const dist_since_down = Math.round(Math.sqrt( a*a + b*b ));
+        this.rotate = dist_since_down/4 + this.rotateOffset.angle;
       }
     },
     rotateUp(event) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaPublication: resizeUp with is_resized = ${this.is_resized}`);
+        console.log(`METHODS • MediaPublication: rotateUp with is_rotated = ${this.is_rotated}`);
       }
       if (this.is_rotated) {
-        this.mediaSize.width = this.roundMediaVal(this.mediaSize.width);
-        this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
-
         this.updateMediaPubliMeta({ 
-          width: this.mediaSize.width,
-          height: this.mediaSize.height 
+          rotate: this.rotate
         });
         this.is_rotated = false;
       }
 
       event.stopPropagation();
-      window.removeEventListener('mousemove', this.resizeMove);
-      window.removeEventListener('mouseup', this.resizeUp);
-      window.removeEventListener('touchmove', this.resizeMove);
-      window.removeEventListener('touchend', this.resizeUp);
+      window.removeEventListener('mousemove', this.rotateMove);
+      window.removeEventListener('mouseup', this.rotateUp);
+      window.removeEventListener('touchmove', this.rotateMove);
+      window.removeEventListener('touchend', this.rotateUp);
 
       return false;
     },
