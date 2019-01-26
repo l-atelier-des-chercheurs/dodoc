@@ -25,7 +25,6 @@
       v-model="media.content"
     />
     <p class="mediaCaption">{{ media.caption }}</p>
-    {{ this.rotate }}
 
     <div 
       v-if="(is_selected || is_hovered || is_touch) && !preview_mode" 
@@ -56,20 +55,17 @@
         @mousedown.stop.prevent="rotateMedia('mouse', 'bottomright')"
         @touchstart.stop.prevent="rotateMedia('touch', 'bottomright')"
       >
-        <svg version="1.1"
-          xmlns="http://www.w3.org/2000/svg" 
-          xmlns:xlink="http://www.w3.org/1999/xlink" 
-          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px" y="0px" width="77.5px" height="77.5px" viewBox="0 0 77.5 77.5" style="enable-background:new 0 0 77.5 77.5;"
-          xml:space="preserve">
-        <defs>
-        </defs>
-        <g>
-          <path d="M42.5,0l0.4,12.6l-9.3,0.1c-2.8,0-5.1,0-6.9-0.2c-1.8-0.2-3.6-0.6-5.7-1.2l45.3,45.3c-0.6-2-1-3.9-1.2-5.7
-            c-0.2-1.8-0.3-4-0.2-6.9v-9.4l12.6,0.4l-1.3,41.2l-41.2,1.3l-0.4-12.6l9.5,0c2.9,0,5.2,0.1,7,0.3c1.8,0.2,3.6,0.5,5.4,1.1
-           L11.3,21.1c0.5,1.8,0.9,3.6,1.1,5.4c0.2,1.8,0.3,4.1,0.3,7l-0.1,9.4L0,42.5L1.3,1.3L42.5,0z"/>
-        </g>
-        </svg>
+<!-- Generator: Adobe Illustrator 23.0.1, SVG Export Plug-In  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="98.7px"
+	 height="132.2px" viewBox="0 0 98.7 132.2" style="enable-background:new 0 0 98.7 132.2;" xml:space="preserve">
+<defs>
+</defs>
+<path d="M80.1,117.7c-3.1-0.2-5.6-0.3-7.6-0.2c-1.4,0.1-2.9,0.3-4.5,0.5c14.7-13.7,36.9-42.4,29.1-63.4S71.6,27,24.8,24.6
+	c1.1-0.8,2.2-1.6,3.1-2.4c1.5-1.3,3.2-3.1,5.3-5.5L40,9L29.3,0L0,34.9l32.9,31.5l9.7-10.1l-7.7-7c-2.4-2.1-4.3-3.8-5.9-4.9
+	c-1.6-1.2-3.3-2.2-5.2-3.1l-0.1-1.2c29.3,1.4,52.5,6.6,56.5,20.7s-15.9,39.7-23.5,46.5l-0.5-0.6c0.7-1.9,1.2-3.9,1.6-5.9
+	c0.3-2,0.6-4.5,0.8-7.7l0.7-10.5l-14-0.4L43.7,128l45.5,4.2l1.3-13.9L80.1,117.7z"/>
+</svg>
+
       </div>
     </div>
 
@@ -353,10 +349,14 @@ export default {
       if (!this.is_rotated) {
         this.is_rotated = true;
         this.is_selected = true;
-        debugger;
+
         this.rotateOffset.x = this.$refs.media.getBoundingClientRect().x + this.$refs.media.getBoundingClientRect().width/2;
         this.rotateOffset.y = this.$refs.media.getBoundingClientRect().y + this.$refs.media.getBoundingClientRect().height/2;
-        // this.rotateOffset.angle = this.rotate;
+
+        const radians = Math.atan2(pageX - this.rotateOffset.x, pageY - this.rotateOffset.y);
+        const deg = Math.round((radians * (180/Math.PI) * -1 ) + 100);
+
+        this.rotateOffset.angle = deg;
       } else {
         // measure distance between pageX/pageY and this.rotateOffset.x / this.rotateOffset.y
         // const a = pageX - this.rotateOffset.x;
@@ -366,11 +366,11 @@ export default {
         const radians = Math.atan2(pageX - this.rotateOffset.x, pageY - this.rotateOffset.y);
         const deg = Math.round((radians * (180/Math.PI) * -1 ) + 100);
 
-        console.log( radians);
         // const deg = radians * (180/Math.PI);
 
         // this.rotate = deg + this.rotateOffset.angle;
-        this.rotate = deg + 45;
+        this.rotate = deg;
+        // this.rotate = deg - this.rotateOffset.angle;
       }
     },
     rotateUp(event) {

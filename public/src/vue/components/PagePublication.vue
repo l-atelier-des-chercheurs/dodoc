@@ -155,6 +155,25 @@
         </g>
         </svg>
       </button>
+
+      <button 
+        class="margin-vert-verysmall font-verysmall" 
+        @click="printThisPublication()"
+      >
+        <!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In  -->
+        <svg version="1.1"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+          x="0px" y="0px" width="144px" height="84px" viewBox="0 0 144 84" style="enable-background:new 0 0 144 84;"
+          xml:space="preserve">
+        <defs>
+        </defs>
+        <g>
+          <path d="M72,0C32.2,0,0,42,0,42s32.2,42,72,42s72-42,72-42S111.8,0,72,0z M72,71.3c-16.5,0-30-13.2-30-29.6
+            c0-16.3,13.4-29.6,30-29.6c16.5,0,30,13.3,30,29.6C102,58,88.5,71.3,72,71.3z"/>
+        </g>
+        </svg>
+      </button>
+
       <button class="margin-vert-verysmall font-verysmall" 
         @click="toggleFullscreen()"
       >
@@ -412,12 +431,11 @@ export default {
     this.updatePubliOptionsInFields();
     this.$eventHub.$emit('publication_medias_updated');      
 
-    if(this.$root.state.mode === 'print_publication') {
-      this.preview_mode = true;
-      // this trick prevents webkit/electron from adding a blank page at the end of the pdf
-      document.getElementsByTagName('body')[0].style.width = `${this.publications_options.width}mm`;
-      document.getElementsByTagName('body')[0].style.height = `${this.publications_options.height}mm`;
-    }
+    document.getElementsByTagName('body')[0].style = `
+      --page-width: ${this.publications_options.width}mm; 
+      --page-height: ${this.publications_options.height}mm
+    `;
+
   },
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
@@ -440,6 +458,11 @@ export default {
           console.log(`WATCH • Publication: publications_options`);
         }
         this.updatePubliOptionsInFields();
+        document.getElementsByTagName('body')[0].style = `
+          --page-width: ${this.publications_options.width}mm; 
+          --page-height: ${this.publications_options.height}mm
+        `;
+
       },
       deep: true
     },
@@ -558,6 +581,12 @@ export default {
         type: 'publications', 
         additionalMeta: newMediaMeta
       });
+    },
+    printThisPublication() {
+      this.preview_mode = true;
+      setTimeout(() => {
+        window.print();
+      }, 500);
     },
     removePubliMedia({ slugMediaName }) {
       if (this.$root.state.dev_mode === 'debug') {
@@ -807,29 +836,17 @@ export default {
       this.page_currently_active = index;
     },
     setPageContainerProperties(page) {
-      if(this.$root.state.mode === 'print_publication') {
-        return;
-      }
-
       return `
         width: ${page.width * this.$root.settings.publi_zoom}mm; 
         height: ${page.height * this.$root.settings.publi_zoom}mm;      
       `;      
     },
     setPageProperties(page) {
-      if(this.$root.state.mode === 'print_publication') {
-        // reducing page height by 1mm is necessary to prevent blank pages in-between
-        return `
-          width: ${page.width}mm; 
-          height: ${page.height - 1}mm;
-        `;
-      } else {
-        return `
-          width: ${page.width}mm; 
-          height: ${page.height}mm;
-          transform: scale(${this.$root.settings.publi_zoom});
-        `;
-      }
+      return `
+        width: ${page.width}mm; 
+        height: ${page.height}mm;
+        transform: scale(${this.$root.settings.publi_zoom});
+      `;
     },
 
     publicationKeyListener(evt) {

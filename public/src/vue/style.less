@@ -3205,6 +3205,8 @@ body {
 body[data-mode="export_publication"] {
 
   .m_publicationview--pages--pageContainer {
+    width: auto !important;
+    height: auto !important;
     &::before {
       display: none !important;
     }
@@ -3253,6 +3255,12 @@ body[data-mode="export_publication"] {
   .m_scanQR,
   .hide_on_print {
     display: none !important;
+  }
+
+  body {
+    width: var(--page-width);
+    height: var(--page-height);
+    
   }
   
   .m_activitiesPanel--doc {
