@@ -319,11 +319,11 @@ export default {
         this.mediaSize.pwidth = Number.parseInt(this.mediaSize.width);
         this.mediaSize.pheight = Number.parseInt(this.mediaSize.height);
       } else {
-        const deltaX = (pageX_mm - this.resizeOffset.x);
+        const deltaX = (pageX_mm - this.resizeOffset.x) / this.$root.settings.publi_zoom;
         let newWidth = this.mediaSize.pwidth + deltaX;
         this.mediaSize.width = this.limitMediaWidth(newWidth);
 
-        const deltaY = (pageY_mm - this.resizeOffset.y);
+        const deltaY = (pageY_mm - this.resizeOffset.y) / this.$root.settings.publi_zoom;
         let newHeight = this.mediaSize.pheight + deltaY;
         this.mediaSize.height = this.limitMediaHeight(newHeight);
       }
@@ -443,11 +443,11 @@ export default {
         this.mediaPos.px = Number.parseInt(this.mediaPos.x);
         this.mediaPos.py = Number.parseInt(this.mediaPos.y);
       } else {
-        const deltaX = (pageX_mm - this.dragOffset.x);
+        const deltaX = (pageX_mm - this.dragOffset.x) / this.$root.settings.publi_zoom;
         let newX = this.mediaPos.px + deltaX;
         this.mediaPos.x = this.limitMediaXPos(newX);
 
-        const deltaY = (pageY_mm - this.dragOffset.y);
+        const deltaY = (pageY_mm - this.dragOffset.y) / this.$root.settings.publi_zoom;
         let newY = this.mediaPos.py + deltaY;
         this.mediaPos.y = this.limitMediaYPos(newY);        
       }

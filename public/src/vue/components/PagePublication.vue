@@ -268,18 +268,20 @@
               :style="setPageProperties(page)"
               :data-style="publication.style"
             >        
-              <div 
-                v-if="!preview_mode"
-                v-for="(item, index) in [0,1,2,3]"
-                class="m_page--margins_rule"
-                :style="`--margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
-                :key="index"
-              />
-              <div 
-                v-if="!preview_mode"
-                class="m_page--grid"
-                :style="`--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
-              />
+              <template v-if="!preview_mode">
+                <div 
+                  v-for="(item, index) in [0,1,2,3]"
+                  class="m_page--margins_rule"
+                  :style="`--margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
+                  :key="index"
+                />
+
+                <div 
+                  class="m_page--grid"
+                  :style="`--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
+                />
+              </template>
+
 
               <div class="m_page--header">
                 <div>
