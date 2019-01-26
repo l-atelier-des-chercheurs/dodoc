@@ -90,8 +90,8 @@
                   'is--dragged' : is_dragged,
                   'is--allthewaytotheleft' : percent === 0 
                 }"
-                @mousedown.stop.prevent="dragPubliPanel('mouse')"
-                @touchstart.stop.prevent="dragPubliPanel('touch')"   
+                @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
+                @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"   
                 :key="'openPubli'"
               >
                 <!-- v-if="$root.do_navigation.view !== 'CaptureView'" -->
@@ -139,9 +139,9 @@
       >
       </EditMedia>      
 
-      <Clients 
+      <!-- <Clients 
         :clients="$root.state.clients"
-      />
+      /> -->
 
     </template>  
     <template 
@@ -253,7 +253,7 @@ export default {
     //     this.$root.closePubliPanel();
     //   }
     // },
-    dragPubliPanel(type) {
+    dragPubliPanel(event, type) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • App: dragPubliPanel with type = ${type} and is_dragged = ${this.is_dragged}`);
       }
