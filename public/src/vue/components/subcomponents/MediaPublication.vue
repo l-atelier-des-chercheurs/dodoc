@@ -1,6 +1,7 @@
 <template>
   <div 
     class="m_mediaPublication"
+    ref="media"
     :style="mediaStyles"
     :data-media_type="media.type"
     @mouseover="mouseOver"
@@ -24,6 +25,7 @@
       v-model="media.content"
     />
     <p class="mediaCaption">{{ media.caption }}</p>
+    {{ this.rotate }}
 
     <div 
       v-if="(is_selected || is_hovered || is_touch) && !preview_mode" 
@@ -301,6 +303,7 @@ export default {
 
       if (!this.is_resized) {
         this.is_resized = true;
+        this.is_selected = true;
         this.resizeOffset.x = pageX_mm;
         this.resizeOffset.y = pageY_mm;
         this.mediaSize.pwidth = Number.parseInt(this.mediaSize.width);
@@ -349,15 +352,25 @@ export default {
 
       if (!this.is_rotated) {
         this.is_rotated = true;
-        this.rotateOffset.x = pageX;
-        this.rotateOffset.y = pageY;
-        this.rotateOffset.angle = this.rotate;
+        this.is_selected = true;
+        debugger;
+        this.rotateOffset.x = this.$refs.media.getBoundingClientRect().x + this.$refs.media.getBoundingClientRect().width/2;
+        this.rotateOffset.y = this.$refs.media.getBoundingClientRect().y + this.$refs.media.getBoundingClientRect().height/2;
+        // this.rotateOffset.angle = this.rotate;
       } else {
         // measure distance between pageX/pageY and this.rotateOffset.x / this.rotateOffset.y
-        const a = pageX - this.rotateOffset.x;
-        const b = pageY - this.rotateOffset.y;
-        const dist_since_down = Math.round(Math.sqrt( a*a + b*b ));
-        this.rotate = dist_since_down/4 + this.rotateOffset.angle;
+        // const a = pageX - this.rotateOffset.x;
+        // const b = pageY - this.rotateOffset.y;
+        // const dist_since_down = Math.round(Math.sqrt( a*a + b*b ));
+
+        const radians = Math.atan2(pageX - this.rotateOffset.x, pageY - this.rotateOffset.y);
+        const deg = Math.round((radians * (180/Math.PI) * -1 ) + 100);
+
+        console.log( radians);
+        // const deg = radians * (180/Math.PI);
+
+        // this.rotate = deg + this.rotateOffset.angle;
+        this.rotate = deg + 45;
       }
     },
     rotateUp(event) {
@@ -408,6 +421,7 @@ export default {
 
       if (!this.is_dragged) {
         this.is_dragged = true;
+        this.is_selected = true;
 
         this.dragOffset.x = pageX_mm;
         this.dragOffset.y = pageY_mm;
