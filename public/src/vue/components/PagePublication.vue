@@ -584,6 +584,8 @@ export default {
     },
     printThisPublication() {
       this.preview_mode = true;
+      this.$root.setPublicationZoom(1);
+      
       setTimeout(() => {
         window.print();
       }, 500);
