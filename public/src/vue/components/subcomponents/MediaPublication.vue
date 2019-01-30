@@ -364,12 +364,12 @@ export default {
         this.is_rotated = true;
         this.is_selected = true;
 
-        this.rotateOffset.x = this.$refs.media.getBoundingClientRect().x + this.$refs.media.getBoundingClientRect().width/2;
-        this.rotateOffset.y = this.$refs.media.getBoundingClientRect().y + this.$refs.media.getBoundingClientRect().height/2;
+        this.rotateOffset.x = this.$refs.media.getBoundingClientRect().x;
+        this.rotateOffset.y = this.$refs.media.getBoundingClientRect().y;
 
         const radians = Math.atan2(pageX - this.rotateOffset.x, pageY - this.rotateOffset.y);
-        const deg = radians * (180/Math.PI);
-        // this.rotateOffset.angle = deg;
+        const deg = Math.round((radians * (180/Math.PI) * -1 ) + 100);
+        this.rotateOffset.angle = deg;
 
       } else {
         // measure distance between pageX/pageY and this.rotateOffset.x / this.rotateOffset.y
@@ -383,7 +383,7 @@ export default {
         // const deg = radians * (180/Math.PI);
 
         // this.rotate = deg + this.rotateOffset.angle;
-        this.rotate = deg - 20;
+        this.rotate = this.rotateOffset.angle + deg;
         // this.rotate = deg - this.rotateOffset.angle;
       }
     },
