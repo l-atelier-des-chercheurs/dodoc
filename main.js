@@ -74,7 +74,7 @@ if (is_electron) {
       server();
     })
     .catch(err => {
-      dialog.showErrorBox(`Error code: ${err}`);
+      dev.error(`Error code: ${err}`);
     });
 }
 
@@ -143,10 +143,12 @@ function setupApp() {
                   }
                 )
                 .catch(err => {
-                  dialog.showErrorBox(
-                    `The app ${app.getName()} wasn’t able to start`,
-                    `Error code: ${err}`
-                  );
+                  dev.error(`err ${err}`);
+                  if (is_electron)
+                    dev.showErrorBox(
+                      `The app ${app.getName()} wasn’t able to start`,
+                      `Error code: ${err}`
+                    );
                 });
             });
           },
