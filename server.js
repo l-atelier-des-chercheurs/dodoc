@@ -26,7 +26,7 @@ module.exports = function() {
 
   // only for HTTPS, works without asking for a certificate
   const privateKeyPath = !!settings.privateKeyPath
-    ? settings.certificatePath
+    ? settings.privateKeyPath
     : path.join(__dirname, 'ssl', 'file.pem');
 
   const certificatePath = !!settings.certificatePath
