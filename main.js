@@ -69,9 +69,13 @@ if (is_electron) {
     }
   });
 } else {
-  setupApp().then(() => {
-    server();
-  });
+  setupApp()
+    .then(() => {
+      server();
+    })
+    .catch(err => {
+      dialog.showErrorBox(`Error code: ${err}`);
+    });
 }
 
 function setupApp() {
@@ -137,7 +141,13 @@ function setupApp() {
                     dev.error('Failed to find available port: ' + err);
                     return reject(err);
                   }
-                );
+                )
+                .catch(err => {
+                  dialog.showErrorBox(
+                    `The app ${app.getName()} wasn’t able to start`,
+                    `Error code: ${err}`
+                  );
+                });
             });
           },
           function(err) {
@@ -250,11 +260,7 @@ function createWindow(win) {
       }
     })
     .catch(err => {
-      dialog.showErrorBox(
-        `The app ${app.getName()} wasn’t able to start`,
-        `It seems ports between ${settings.port} and ${settings.port +
-          20} are not available.\nError code: ${err}`
-      );
+      dialog.showErrorBox(`Error code: ${err}`);
     });
 }
 

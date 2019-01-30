@@ -25,28 +25,18 @@ module.exports = function() {
   app.use(compression());
 
   // only for HTTPS, works without asking for a certificate
-  const privateKey = fs.readFileSync(
-    path.join(__dirname, 'ssl', 'file.pem'),
-    'utf8'
-  );
-  const certificate = fs.readFileSync(
-    path.join(__dirname, 'ssl', 'file.crt'),
-    'utf8'
-  );
-  let options = { key: privateKey, cert: certificate };
+  const privateKeyPath = !!settings.privateKeyPath
+    ? settings.certificatePath
+    : path.join(__dirname, 'ssl', 'file.pem');
 
-  const is_electron = process.versions.hasOwnProperty('electron');
+  const certificatePath = !!settings.certificatePath
+    ? settings.certificatePath
+    : path.join(__dirname, 'ssl', 'file.crt');
 
-  if (!is_electron) {
-    options = {
-      key: fs.readFileSync(
-        '/etc/letsencrypt/live/htd2019.latelier-des-chercheurs.fr/privkey.pem'
-      ),
-      cert: fs.readFileSync(
-        '/etc/letsencrypt/live/htd2019.latelier-des-chercheurs.fr/cert.pem'
-      )
-    };
-  }
+  const options = {
+    key: fs.readFileSync(privateKeyPath),
+    cert: fs.readFileSync(certificatePath)
+  };
 
   if (settings.protocol === 'https') {
     // redirect from http (port 80) to https (port 443)
