@@ -17,14 +17,9 @@ global.appInfos = {
 };
 
 let win;
-const electron = require('electron');
-
-const { app, BrowserWindow, Menu } = electron;
-
-const { dialog } = require('electron');
 const JSONStorage = require('node-localstorage').JSONStorage;
 
-const is_electron = process.versions.hasOwnProperty('electron');
+const is_electron = false;
 
 if (is_electron) {
   require('electron-context-menu')({
@@ -205,7 +200,8 @@ function createWindow(win) {
 
   require('electron-pdf-window').addSupport(win);
 
-  const debug = process.argv.length >= 3 ? process.argv[2] === '--debug' : false;
+  const debug =
+    process.argv.length >= 3 ? process.argv[2] === '--debug' : false;
   const verbose =
     process.argv.length >= 4 ? process.argv[3] === '--verbose' : false;
   const logToFile = false;
@@ -363,7 +359,7 @@ function setApplicationMenu() {
         }
       ]
     }
-  ]
+  ];
 }
 
 function copyAndRenameUserFolder() {
