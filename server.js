@@ -25,15 +25,30 @@ module.exports = function() {
   app.use(compression());
 
   // only for HTTPS, works without asking for a certificate
-  const privateKey = fs.readFileSync(
-    path.join(__dirname, 'ssl', 'file.pem'),
-    'utf8'
-  );
-  const certificate = fs.readFileSync(
-    path.join(__dirname, 'ssl', 'file.crt'),
-    'utf8'
-  );
-  const options = { key: privateKey, cert: certificate };
+  const privateKeyPath = !!settings.privateKeyPath
+    ? settings.privateKeyPath
+    : path.join(__dirname, 'ssl', 'file.pem');
+
+  const certificatePath = !!settings.certificatePath
+    ? settings.certificatePath
+    : path.join(__dirname, 'ssl', 'file.crt');
+
+  const options = {
+    key: fs.readFileSync(privateKeyPath),
+    cert: fs.readFileSync(certificatePath)
+  };
+
+  if (settings.protocol === 'https') {
+    // redirect from http (port 80) to https (port 443)
+    http
+      .createServer((req, res) => {
+        res.writeHead(301, {
+          Location: 'https://' + req.headers['host'] + req.url
+        });
+        res.end();
+      })
+      .listen(settings.http_port);
+  }
 
   let server =
     settings.protocol === 'https'
@@ -66,7 +81,7 @@ module.exports = function() {
   app.use(bodyParser.json());
   app.locals.pretty = true;
 
-  setup_realtime_collaboration(server);
+  // setup_realtime_collaboration(server);
 
   router(app);
 

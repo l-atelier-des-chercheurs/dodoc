@@ -90,8 +90,8 @@
                   'is--dragged' : is_dragged,
                   'is--allthewaytotheleft' : percent === 0 
                 }"
-                @mousedown.stop.prevent="dragPubliPanel('mouse')"
-                @touchstart.stop.prevent="dragPubliPanel('touch')"   
+                @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
+                @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"   
                 :key="'openPubli'"
               >
                 <!-- v-if="$root.do_navigation.view !== 'CaptureView'" -->
@@ -139,24 +139,13 @@
       >
       </EditMedia>      
 
-      <Clients 
+      <!-- <Clients 
         :clients="$root.state.clients"
-      />
+      /> -->
 
     </template>  
     <template 
       v-else-if="$root.state.mode === 'export_publication'"
-    >    
-      <PagePublication
-        v-if="$root.settings.current_slugPubliName !== false"
-        :slugPubliName="$root.settings.current_slugPubliName"
-        :publication="$root.store.publications[$root.settings.current_slugPubliName]"
-        :read_only="!$root.state.connected"
-      />
-    </template>    
-
-    <template 
-      v-else-if="$root.state.mode === 'print_publication'"
     >    
       <PagePublication
         v-if="$root.settings.current_slugPubliName !== false"
@@ -213,7 +202,7 @@ export default {
       drag_offset: 0,
       hasMoved: false,
       height: null,
-      percent: this.$root.state.mode === 'print_publication' ? 0:100,
+      percent: 100,
       type: 'width',
       resizeType: 'left',
       windowWidth: window.innerWidth,
@@ -253,7 +242,7 @@ export default {
     //     this.$root.closePubliPanel();
     //   }
     // },
-    dragPubliPanel(type) {
+    dragPubliPanel(event, type) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • App: dragPubliPanel with type = ${type} and is_dragged = ${this.is_dragged}`);
       }

@@ -2503,8 +2503,8 @@ body {
     .m_page--header {
       position: absolute;
       bottom: ~"calc(100% - 1.4cm)";
-      margin: 0 1cm;
-      width: ~"calc(100% - 2cm)";
+      padding: 0 1cm;
+      width: 100%;
       border-bottom: 1px solid #000;
 
       display: flex;
@@ -2608,7 +2608,6 @@ body {
   }
 }
 
-
 .m_mediaPublication {
   position: absolute;
 
@@ -2618,11 +2617,13 @@ body {
   min-width: 20mm;
   min-height: 20mm;
 
+  transform-origin: top left;
+
   transition: all .2s ease-out;
 
   &.is--hovered {
   }
-  &.is--dragged {
+  &.is--dragged, &.is--rotated {
     transition: none ease-out;
     z-index: 2;
   }
@@ -2755,6 +2756,14 @@ body {
       .margin-verysmall;
     }
   }
+}
+
+.m_mediaCSSEditWindow {
+  position: fixed;
+  bottom: 0;
+  left: 50px;
+  z-index: 1;
+  background-color: red;
 }
 
 /******************************************************************
@@ -3196,6 +3205,8 @@ body {
 body[data-mode="export_publication"] {
 
   .m_publicationview--pages--pageContainer {
+    width: auto !important;
+    height: auto !important;
     &::before {
       display: none !important;
     }
@@ -3244,6 +3255,12 @@ body[data-mode="export_publication"] {
   .m_scanQR,
   .hide_on_print {
     display: none !important;
+  }
+
+  body {
+    width: var(--page-width);
+    height: var(--page-height);
+    
   }
   
   .m_activitiesPanel--doc {

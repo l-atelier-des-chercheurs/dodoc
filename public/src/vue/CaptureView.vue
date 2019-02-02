@@ -593,7 +593,7 @@ export default {
         }
       }
     },
-    captureKeyListener(evt) {
+    captureKeyListener(event) {
       console.log('METHODS • CaptureView: captureKeyListener');
 
       // don’t register if validating a media
@@ -605,7 +605,7 @@ export default {
         return false;
       }      
 
-      switch(evt.key) {
+      switch(event.key) {
         case 'w':
         case 'z':
         case 'ArrowLeft':

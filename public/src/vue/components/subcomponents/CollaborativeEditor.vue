@@ -62,6 +62,11 @@ export default {
 
     this.$nextTick(() => {
       this.initWebsocketMode();
+
+      this.editor.on('text-change', (delta, oldDelta, source) => {
+        this.$emit('input', this.editor.getText() ? this.editor.root.innerHTML : '');
+      });
+
     });
 
   },
@@ -112,9 +117,7 @@ export default {
           console.log(`ON • CollaborativeEditor: doc already exists and doc.data = ${JSON.stringify(doc.data, null, 4)}`);
           this.editor.setContents(doc.data);
           this.$emit('input', this.editor.getText() ? this.editor.root.innerHTML : '');
-          // this.editor.setContents('plop');
         }
-
 
         this.editor.on('text-change', (delta, oldDelta, source) => {
           if (source == 'user') {
@@ -123,8 +126,8 @@ export default {
           } else {
             console.log(`ON • CollaborativeEditor: text-change by API`);
           }
-          this.$emit('input', this.editor.getText() ? this.editor.root.innerHTML : '');
         });
+
         doc.on('op', (op, source) => {
           if (source === this.editor_id) return;
           console.log(`ON • CollaborativeEditor: operation applied to quill`);

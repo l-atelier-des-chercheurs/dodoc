@@ -23,7 +23,7 @@
 }
 
 @font-face {
-  font-family: 'Avara_Black';
+  font-family: 'Avara';
   src:    url('../fonts/avara/Black/Avara-Black_web.eot');
   src:    url('../fonts/avara/Black/Avara-Black_web.eot?#iefix') format('embedded-opentype'),
           url('../fonts/avara/Black/Avara-Black_web.woff') format('woff'),
@@ -39,6 +39,7 @@
   font-style: italic;
   border-bottom: none;
   text-transform: none;
+  padding: 0 2cm;
 
   > *:nth-child(2) {
     &::after {
@@ -61,10 +62,9 @@
 }
 
 .mediaContainer {
-  & {
-    font-size: 12pt;
-    background-color: transparent;
-  }
+  font-size: 24pt;
+  background-color: transparent;
+  font-family: 'Avara';
 
   &.type-text {
     color: #000;
@@ -82,7 +82,6 @@
   }
 
   h1,h2,h3,h4 {
-    font-family: 'Avara';
     font-style: normal;
     font-weight: bold;
   }

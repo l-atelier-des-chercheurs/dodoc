@@ -18,27 +18,33 @@ global.appInfos = {
 
 let win;
 const electron = require('electron');
-const { app, BrowserWindow, Menu } = electron;
-const PDFWindow = require('electron-pdf-window');
 
-const {
-  default: installExtension,
-  VUEJS_DEVTOOLS
-} = require('electron-devtools-installer');
+const { app, BrowserWindow, Menu } = electron;
 
 const { dialog } = require('electron');
 const JSONStorage = require('node-localstorage').JSONStorage;
 
-require('electron-context-menu')({
-  prepend: (params, BrowserWindow) => [
-    {
-      // Only show it when right-clicking images
-      visible: params.mediaType === 'image'
-    }
-  ]
-});
+const is_electron = process.versions.hasOwnProperty('electron');
 
-if (settings.process === 'electron') {
+if (is_electron) {
+  require('electron-context-menu')({
+    prepend: (params, BrowserWindow) => [
+      {
+        // Only show it when right-clicking images
+        visible: params.mediaType === 'image'
+      }
+    ]
+  });
+
+  const {
+    default: installExtension,
+    VUEJS_DEVTOOLS
+  } = require('electron-devtools-installer');
+
+  installExtension(VUEJS_DEVTOOLS)
+    .then(name => dev.logverbose(`Added Extension:  ${name}`))
+    .catch(err => dev.logverbose('An error occurred: ', err));
+
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
@@ -62,10 +68,14 @@ if (settings.process === 'electron') {
       createWindow(win);
     }
   });
-} else if (settings.process === 'node') {
-  setupApp().then(() => {
-    server();
-  });
+} else {
+  setupApp()
+    .then(() => {
+      server();
+    })
+    .catch(err => {
+      dev.error(`Error code: ${err}`);
+    });
 }
 
 function setupApp() {
@@ -131,7 +141,15 @@ function setupApp() {
                     dev.error('Failed to find available port: ' + err);
                     return reject(err);
                   }
-                );
+                )
+                .catch(err => {
+                  dev.error(`err ${err}`);
+                  if (is_electron)
+                    dev.showErrorBox(
+                      `The app ${app.getName()} wasn’t able to start`,
+                      `Error code: ${err}`
+                    );
+                });
             });
           },
           function(err) {
@@ -185,7 +203,7 @@ function createWindow(win) {
     }
   });
 
-  PDFWindow.addSupport(win);
+  require('electron-pdf-window').addSupport(win);
 
   const debug = process.argv.length >= 3 ? process.argv[2] === '--debug' : false;
   const verbose =
@@ -235,17 +253,10 @@ function createWindow(win) {
 
       if (dev.isDebug()) {
         // win.webContents.openDevTools({mode: 'detach'});
-        installExtension(VUEJS_DEVTOOLS)
-          .then(name => dev.logverbose(`Added Extension:  ${name}`))
-          .catch(err => dev.logverbose('An error occurred: ', err));
       }
     })
     .catch(err => {
-      dialog.showErrorBox(
-        `The app ${app.getName()} wasn’t able to start`,
-        `It seems ports between ${settings.port} and ${settings.port +
-          20} are not available.\nError code: ${err}`
-      );
+      dialog.showErrorBox(`Error code: ${err}`);
     });
 }
 
@@ -357,10 +368,9 @@ function setApplicationMenu() {
 
 function copyAndRenameUserFolder() {
   return new Promise(function(resolve, reject) {
-    const userDirPath =
-      settings.process === 'electron'
-        ? app.getPath(settings.userDirPath)
-        : getPath.getDocumentsFolder();
+    const userDirPath = is_electron
+      ? app.getPath(settings.userDirPath)
+      : getPath.getDocumentsFolder();
 
     const pathToUserContent = path.join(userDirPath, settings.userDirname);
     fs.access(pathToUserContent, fs.F_OK, function(err) {
@@ -374,12 +384,12 @@ function copyAndRenameUserFolder() {
         dev.log(`->duplicating ${settings.contentDirname} to create a new one`);
 
         let sourcePathInApp;
-        if (settings.process === 'electron') {
+        if (is_electron) {
           sourcePathInApp = path.join(
             `${__dirname.replace(`${path.sep}app.asar`, '')}`,
             `${settings.contentDirname}`
           );
-        } else if (settings.process === 'node') {
+        } else {
           sourcePathInApp = path.join(
             `${__dirname}`,
             `${settings.contentDirname}`

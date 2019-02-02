@@ -2,10 +2,9 @@
   "protocol": "https",
   "host": "localhost",
   "port": 8080,
+  "http_port": 80,
   "userDirPath": "documents",
   "userDirname": "dodoc2",
-
-  "process": "electron",
 
   "contentDirname" : "user",
   "cacheDirname" : "cache",
@@ -15,6 +14,9 @@
   "folderMetaFilename" : "meta",
   "folderPreviewFilename" : "meta_preview",
 
+  "privateKeyPath": "",
+  "certificatePath": "",
+
   "metaDateFormat" : "YYYYMMDD_HHmmss",
   "textEncoding" : "UTF-8",
   "thumbFolderName" : "_thumbs",
@@ -22,7 +24,6 @@
 
   "mediaThumbQuality" : 70,
 
-  "_comment" : "// see http://regexr.com/3d4t8",
   "regexpMatchFolderNames" : "^([^.]+)$",
   "regexpGetFileExtension" : "\\.[^.]*$",
   "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)",
@@ -230,6 +231,9 @@
           "authors": {
             "type": "array"
           },
+          "custom_css": {
+            "type": "string"
+          },
           "page_id": {
             "type": "string"
           },
@@ -237,6 +241,9 @@
             "type": "number"
           },
           "y": {
+            "type": "number"
+          },
+          "rotate": {
             "type": "number"
           },
           "width": {
