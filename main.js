@@ -19,59 +19,13 @@ global.appInfos = {
 let win;
 const JSONStorage = require('node-localstorage').JSONStorage;
 
-const is_electron = false;
-
-if (is_electron) {
-  require('electron-context-menu')({
-    prepend: (params, BrowserWindow) => [
-      {
-        // Only show it when right-clicking images
-        visible: params.mediaType === 'image'
-      }
-    ]
+setupApp()
+  .then(() => {
+    server();
+  })
+  .catch(err => {
+    dev.error(`Error code: ${err}`);
   });
-
-  const {
-    default: installExtension,
-    VUEJS_DEVTOOLS
-  } = require('electron-devtools-installer');
-
-  installExtension(VUEJS_DEVTOOLS)
-    .then(name => dev.logverbose(`Added Extension:  ${name}`))
-    .catch(err => dev.logverbose('An error occurred: ', err));
-
-  // This method will be called when Electron has finished
-  // initialization and is ready to create browser windows.
-  // Some APIs can only be used after this event occurs.
-  app.on('ready', () => {
-    createWindow(win);
-  });
-
-  // Quit when all windows are closed.
-  app.on('window-all-closed', () => {
-    // On macOS it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-    // if (process.platform !== 'darwin') {
-    app.quit();
-    // }
-  });
-
-  app.on('activate', () => {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (win === null) {
-      createWindow(win);
-    }
-  });
-} else {
-  setupApp()
-    .then(() => {
-      server();
-    })
-    .catch(err => {
-      dev.error(`Error code: ${err}`);
-    });
-}
 
 function setupApp() {
   return new Promise(function(resolve, reject) {
