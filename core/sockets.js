@@ -68,17 +68,18 @@ module.exports = (function() {
   function onAuthenticate(socket, d) {
     dev.logfunction(`EVENT - onAuthenticate for ${JSON.stringify(d, null, 4)}`);
     auth
-      .setAuthenticate(socket.id, d.folder_passwords)
-      .then(list_admin_folders => {
+      .setAuthenticate(d.folder_passwords)
+      .then(list_of_authorized_folders => {
+        socket._is_authorized_for_folders = list_of_authorized_folders;
         api.sendEventWithContent(
           'authentificated',
-          list_admin_folders,
+          list_of_authorized_folders,
           io,
           socket
         );
       })
       .catch(err => {
-        api.sendEventWithContent('authentificated', {}, io, socket);
+        dev.error(`Failed to auth: ${err}`);
       });
   }
 
@@ -144,9 +145,15 @@ module.exports = (function() {
     file
       .getFolder({ type, slugFolderName })
       .then(foldersData => {
-        if (!auth.hasFolderAuth(socket.id, foldersData)) {
+        if (!auth.canAdminFolder(socket, foldersData, slugFolderName, type)) {
+          notify({
+            socket,
+            socketid: socket.id,
+            not_localized_string: `Not allowed to edit`
+          });
           return;
         }
+
         file
           .editFolder({
             type,
@@ -158,7 +165,7 @@ module.exports = (function() {
           });
       })
       .catch(err => {
-        dev.error('No folder found');
+        dev.error(`No folder found: ${err}`);
       });
   }
 
@@ -167,7 +174,12 @@ module.exports = (function() {
     file
       .getFolder({ type, slugFolderName })
       .then(foldersData => {
-        if (!auth.hasFolderAuth(socket.id, foldersData)) {
+        if (!auth.canAdminFolder(socket, foldersData, slugFolderName, type)) {
+          notify({
+            socket,
+            socketid: socket.id,
+            not_localized_string: `Not allowed to remove`
+          });
           return;
         }
         file
@@ -186,7 +198,7 @@ module.exports = (function() {
           );
       })
       .catch(err => {
-        dev.error('No folder found');
+        dev.error(`No folder found: ${err}`);
       });
   }
 
@@ -379,7 +391,11 @@ module.exports = (function() {
           }
           let thisSocket = socket || io.sockets.connected[sid];
 
-          let filteredFoldersData = auth.filterFolders(sid, foldersData);
+          let filteredFoldersData = auth.filterFolders(
+            thisSocket,
+            type,
+            foldersData
+          );
 
           if (filteredFoldersData === undefined) {
             filteredFoldersData = '';
@@ -414,7 +430,7 @@ module.exports = (function() {
         });
       })
       .catch(err => {
-        dev.error('No folder found');
+        dev.error(`No folder found: ${err}`);
       });
   }
 
@@ -487,7 +503,7 @@ module.exports = (function() {
           });
       })
       .catch(err => {
-        dev.error('No folder found');
+        dev.error(`No folder found: ${err}`);
       });
   }
 

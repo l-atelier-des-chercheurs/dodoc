@@ -69,7 +69,7 @@
         class="m_project--presentation--buttons"
       >
         <button 
-          v-if="project.authorized && context !== 'full'"
+          v-if="project._authorized && context !== 'full'"
           type="button" 
           class="button-redthin" 
           @click="$root.openProject(slugProjectName)"
@@ -78,13 +78,13 @@
             {{ $t('open') }}
           </span>
         </button>
-        <button v-if="!project.authorized" type="button" class="buttonLink" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
+        <button v-if="!project._authorized" type="button" class="buttonLink" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
           {{ $t('password') }}
         </button>
-        <button v-if="project.authorized && context === 'full'" type="button" class="buttonLink" @click="showEditProjectModal = true" :disabled="read_only">
+        <button v-if="project._authorized && context === 'full'" type="button" class="buttonLink" @click="showEditProjectModal = true" :disabled="read_only">
           {{ $t('edit') }}
         </button>
-        <button v-if="project.authorized && context === 'full'" type="button" class="buttonLink" @click="removeProject()" :disabled="read_only">
+        <button v-if="project._authorized && context === 'full'" type="button" class="buttonLink" @click="removeProject()" :disabled="read_only">
           {{ $t('remove') }}
         </button>
 

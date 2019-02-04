@@ -147,8 +147,6 @@ Vue.prototype.$socketio = new Vue({
 
       this.sendAuth();
 
-      // TODO : reenable auth for folders and publications
-      // this.listFolders({ type: 'projects' });
       // this.listFolders({ type: 'authors' });
       // this.sendAuth();
     },
@@ -191,10 +189,11 @@ Vue.prototype.$socketio = new Vue({
       //   );
     },
 
-    _authentificated(list_admin_folders) {
+    _authentificated(list_authorized_folders) {
       console.log(
-        `Admin for projects ${JSON.stringify(list_admin_folders, null, 4)}`
+        `Admin for projects ${JSON.stringify(list_authorized_folders, null, 4)}`
       );
+      this.listFolders({ type: 'projects' });
     },
 
     _onListMedia(data) {

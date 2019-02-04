@@ -1,3 +1,5 @@
+const SparkMD5 = require('spark-md5');
+
 module.exports = (function() {
   let folder_passwords = {};
 
@@ -11,7 +13,7 @@ module.exports = (function() {
   function init() {
     folder_passwords = {
       projects: {
-        'hello-world': '5d41402abc4b2a76b9719d911017c592'
+        'hello-world': SparkMD5.hash('coucou')
       }
     };
     // folder_passwords = localstore.get('folder_passwords') || {};
