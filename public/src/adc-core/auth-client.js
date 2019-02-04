@@ -1,7 +1,8 @@
 const SparkMD5 = require('spark-md5');
+import localstore from 'store';
 
 module.exports = (function() {
-  let folder_passwords = {};
+  let folder_passwords;
 
   const API = {
     init: () => init(),
@@ -11,20 +12,17 @@ module.exports = (function() {
   };
 
   function init() {
-    folder_passwords = {
-      projects: {
-        'hello-world': SparkMD5.hash('coucou')
-      }
-    };
-    // folder_passwords = localstore.get('folder_passwords') || {};
+    folder_passwords = localstore.get('folder_passwords') || {};
   }
 
-  // function updateAdminAccess(folderPass) {
-  //   for (let slugFolderName in folderPass) {
-  //     folder_passwords[slugFolderName] = folderPass[slugFolderName];
-  //   }
-  //   // localstore.set('folder_passwords', folder_passwords);
-  // }
+  function updateAdminAccess({ type, slugFolderName, pass }) {
+    if (!folder_passwords.hasOwnProperty(type)) {
+      folder_passwords[type] = {};
+    }
+    folder_passwords[type][slugFolderName] = SparkMD5.hash(pass);
+
+    localstore.set('folder_passwords', folder_passwords);
+  }
 
   // function removeKey(slugFolderName) {
   //   delete folder_passwords[slugFolderName];

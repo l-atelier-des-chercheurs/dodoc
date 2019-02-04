@@ -80,9 +80,9 @@
             {{ $t('open') }}
           </span>
         </button>
-        <!-- <button v-if="!project._authorized" type="button" class="buttonLink" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
+        <button v-if="!project._authorized" type="button" class="buttonLink" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
           {{ $t('password') }}
-        </button> -->
+        </button>
         <button v-if="project._authorized && context === 'full'" type="button" class="buttonLink" @click="showEditProjectModal = true" :disabled="read_only">
           {{ $t('edit') }}
         </button>
@@ -92,7 +92,7 @@
 
         <div v-if="showInputPasswordField" class="margin-bottom-small">
           <input type="password" ref="passwordField" @keyup.enter="submitPassword" autofocus placeholder="…">
-          <button type="button" class="border-circled button-thin padding-verysmall" @click="submitPassword">Envoyer</button>
+          <button type="button" class="button button-bg_rounded bg-bleuvert" @click="submitPassword">Envoyer</button>
         </div>
       </div>
 
@@ -210,11 +210,12 @@ export default {
     },
     submitPassword() {
       console.log('METHODS • Project: submitPassword');
-      auth.updateAdminAccess({
-        [this.slugProjectName]: this.$refs.passwordField.value
+      this.$auth.updateAdminAccess({
+        type: 'projects',
+        slugFolderName: this.slugProjectName,
+        pass: this.$refs.passwordField.value
       });
       this.$socketio.sendAuth();
-      this.showInputPasswordField = false;
     },
   },
 };

@@ -16,6 +16,7 @@ Vue.prototype.$alertify = alertify;
 
 import auth from '../adc-core/auth-client.js';
 auth.init();
+Vue.prototype.$auth = auth;
 
 import locale_strings from './locale_strings.js';
 

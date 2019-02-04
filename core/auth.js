@@ -19,6 +19,10 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`AUTH — setAuthenticate`);
 
+      if (Object.keys(folder_passwords).length === 0) {
+        resolve({});
+      }
+
       const type = Object.keys(folder_passwords)[0];
 
       if (folder_passwords === undefined || folder_passwords === {}) {
@@ -54,7 +58,7 @@ module.exports = (function() {
           })
           .catch(err => {
             dev.error(`Failed to get folder data: ${err}`);
-            reject(err);
+            resolve({});
           });
       }
     });
