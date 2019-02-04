@@ -879,16 +879,19 @@ body {
     // border-bottom-style: dashed;
     border-radius: @t-buttonradius;
     .bg-blanc;
+
+    &:not(.is--not_authorized_to_admin) {
+      .m_project--presentation--vignette {
+        cursor: pointer;
+      }
+      .m_project--presentation--text {
+        h2 {
+          cursor: pointer;
+        }
+      }            
+    }    
   }
 
-  .m_project--presentation--vignette {
-    cursor: pointer;
-  }
-  .m_project--presentation--text {
-    h2 {
-      cursor: pointer;
-    }
-  }  
 }
 
 

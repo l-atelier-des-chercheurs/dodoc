@@ -474,11 +474,17 @@ module.exports = (function() {
                     return;
                   }
 
-                  // let filteredMediasData = {};
-                  // if (auth.hasFolderAuth(sid, foldersData)) {
-                  //   // let filteredMediasData = auth.filterMedias(mediasData);
-                  //   filteredMediasData = JSON.parse(JSON.stringify(mediasData));
-                  // }
+                  if (
+                    !auth.canAdminFolder(
+                      socket,
+                      foldersData,
+                      slugFolderName,
+                      type
+                    )
+                  ) {
+                    // let filteredMediasData = auth.filterMedias(mediasData);
+                    folders_and_medias[slugFolderName].medias = {};
+                  }
 
                   if (Object.keys(folders_and_medias).length === 0) {
                     folders_and_medias = {

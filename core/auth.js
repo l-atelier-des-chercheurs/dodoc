@@ -60,21 +60,20 @@ module.exports = (function() {
     });
   }
 
-  function hasFolderAuth(sessionId, foldersData) {
-    dev.logfunction(`AUTH — hasFolderAuth`);
-    let slugFolderName = Object.keys(foldersData)[0];
   function canAdminFolder(socket, foldersData, slugFolderName, type) {
     dev.logfunction(`AUTH — canAdminFolder ${slugFolderName}`);
 
-    // disabling for now
-    return true;
     if (
+      !foldersData[slugFolderName].hasOwnProperty('password') ||
+      foldersData[slugFolderName].password === ''
+    ) {
+      return true;
     }
 
     if (
-      (users_auth[sessionId] !== undefined &&
-        foldersData[slugFolderName].password === '')
+      socket.hasOwnProperty('_is_authorized_for_folders') &&
       socket._is_authorized_for_folders.hasOwnProperty(type) &&
+      socket._is_authorized_for_folders[type].indexOf(slugFolderName) >= 0
     ) {
       dev.logverbose(`AUTH — canAdminFolder: accepted`);
       return true;
@@ -83,12 +82,6 @@ module.exports = (function() {
     return false;
   }
 
-  function filterFolders(sessionId, foldersData) {
-    dev.logfunction(
-      `AUTH — filtering folders data for ${sessionId} and users_auth ${
-        users_auth[sessionId]
-      }.`
-    );
   function filterFolders(socket, type, foldersData) {
     dev.logfunction(`AUTH — filtering folders data`);
 
@@ -99,24 +92,15 @@ module.exports = (function() {
     // we do this in order not to touch the original foldersData for other clients
     let filteredFoldersData = JSON.parse(JSON.stringify(foldersData));
 
-    debugger;
-
     for (let slugFolderName in filteredFoldersData) {
       // find if sessionID has this folder
       if (canAdminFolder(socket, filteredFoldersData, slugFolderName, type)) {
         filteredFoldersData[slugFolderName]._authorized = true;
       } else {
-        dev.logverbose(
-          `For ${sessionId}, admin access refused for ${slugFolderName}.`
-        );
         filteredFoldersData[slugFolderName]._authorized = false;
       }
     }
     return filteredFoldersData;
   }
-
-  function filterMedias(mediasData) {
-    dev.logfunction(`AUTH — filtering medias data.`);
-
   return API;
 })();

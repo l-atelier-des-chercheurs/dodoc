@@ -798,8 +798,13 @@ let vm = new Vue({
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: openProject: ${slugProjectName}`);
       }
-      if (!this.store.projects.hasOwnProperty(slugProjectName)) {
-        console.log('Missing folder key on the page, aborting.');
+      if (
+        !this.store.projects.hasOwnProperty(slugProjectName) ||
+        !this.store.projects[slugProjectName]._authorized
+      ) {
+        console.log(
+          'Missing folder key on the page or not authorized, aborting.'
+        );
         this.closeProject();
         return false;
       }

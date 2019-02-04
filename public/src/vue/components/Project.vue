@@ -1,5 +1,7 @@
 <template>
-  <div class="m_project">
+  <div class="m_project"
+    :class="{ 'is--not_authorized_to_admin' : !project._authorized }"
+  >
     <div class="m_project--presentation">
       <div v-if="previewURL" class="m_project--presentation--vignette" @click="$root.openProject(slugProjectName)">
         <img
@@ -78,9 +80,9 @@
             {{ $t('open') }}
           </span>
         </button>
-        <button v-if="!project._authorized" type="button" class="buttonLink" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
+        <!-- <button v-if="!project._authorized" type="button" class="buttonLink" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
           {{ $t('password') }}
-        </button>
+        </button> -->
         <button v-if="project._authorized && context === 'full'" type="button" class="buttonLink" @click="showEditProjectModal = true" :disabled="read_only">
           {{ $t('edit') }}
         </button>
