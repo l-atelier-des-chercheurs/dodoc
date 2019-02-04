@@ -93,7 +93,7 @@ module.exports = (function() {
       password: 'Mot de passe',
       protected_by_pass: 'protégé par mot de passe',
       password_instructions:
-        'Si existant, seul les utilisateurs possédant ce mot de passe pourront modifier ce dossier et accéder aux médias non publics.',
+        'Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce projet.',
 
       sort_by: 'Organiser par',
       in_the_order: 'Dans l’ordre',
@@ -330,7 +330,7 @@ module.exports = (function() {
       password: 'Mot de passe',
       protected_by_pass: 'protected by password',
       password_instructions:
-        'If set, only users with the password will be able to edit this folder and access the content that’s not public.',
+        'If set, only users with the password will be able to open this project.',
 
       sort_by: 'Sort by',
       in_the_order: 'In the order',

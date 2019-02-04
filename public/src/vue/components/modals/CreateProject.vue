@@ -26,11 +26,11 @@
       </div>
 
 <!-- Password -->
-      <!-- <div class="margin-bottom-small">
+      <div class="margin-bottom-small">
         <label>{{ $t('password') }}</label>
         <input type="password" v-model="projectdata.password">
         <small>{{ $t('password_instructions') }}</small>
-      </div> -->
+      </div>
 
 <!-- Keywords -->
       <div class="margin-bottom-small">

@@ -68,7 +68,7 @@ module.exports = (function() {
   function onAuthenticate(socket, d) {
     dev.logfunction(`EVENT - onAuthenticate for ${JSON.stringify(d, null, 4)}`);
     auth
-      .setAuthenticate(socket.id, d.admin_access)
+      .setAuthenticate(socket.id, d.folder_passwords)
       .then(list_admin_folders => {
         api.sendEventWithContent(
           'authentificated',
@@ -380,13 +380,15 @@ module.exports = (function() {
           let thisSocket = socket || io.sockets.connected[sid];
 
           let filteredFoldersData = auth.filterFolders(sid, foldersData);
+
           if (filteredFoldersData === undefined) {
             filteredFoldersData = '';
           } else {
+            // remove password field
             for (let k in filteredFoldersData) {
               // check if there is any password, if there is then send a placeholder
               if (
-                filteredFoldersData[k].password &&
+                filteredFoldersData[k].hasOwnProperty('password') &&
                 filteredFoldersData[k].password !== ''
               ) {
                 filteredFoldersData[k].password = 'has_pass';

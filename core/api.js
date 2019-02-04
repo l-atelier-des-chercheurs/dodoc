@@ -158,7 +158,7 @@ module.exports = (function() {
     if (socket) {
       // content sent only to one user
       dev.logpackets(
-        `eventAndContentJson for user ${
+        `sendEventWithContent for user ${
           socket.id
         } = ${eventAndContentJson_string}`
       );
@@ -169,7 +169,7 @@ module.exports = (function() {
     } else {
       // content broadcasted to all connected users
       dev.logpackets(
-        `eventAndContentJson for all users = ${eventAndContentJson_string}`
+        `sendEventWithContent for all users = ${eventAndContentJson_string}`
       );
       io.sockets.emit(
         eventAndContentJson['socketevent'],
@@ -177,7 +177,14 @@ module.exports = (function() {
       );
     }
     dev.logpackets(
-      `eventAndContentJson — packet sent, string length: ${
+      `sendEventWithContent — sending packet with content = ${JSON.stringify(
+        eventAndContentJson['content'],
+        null,
+        4
+      )}`
+    );
+    dev.logpackets(
+      `eventAndContentJson — sending packet with string length = ${
         JSON.stringify(eventAndContentJson['content']).length
       }`
     );

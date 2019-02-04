@@ -14,6 +14,9 @@ Object.defineProperty(Vue.prototype, '$_', { value: _ });
 import alertify from 'alertify.js';
 Vue.prototype.$alertify = alertify;
 
+import auth from '../adc-core/auth-client.js';
+auth.init();
+
 import locale_strings from './locale_strings.js';
 
 Vue.config.silent = false;
@@ -142,13 +145,16 @@ Vue.prototype.$socketio = new Vue({
         //   .success(this.$t('notifications.connection_active'));
       }
 
+      this.sendAuth();
+
       // TODO : reenable auth for folders and publications
-      this.listFolders({ type: 'projects' });
-      this.listFolders({ type: 'authors' });
+      // this.listFolders({ type: 'projects' });
+      // this.listFolders({ type: 'authors' });
       // this.sendAuth();
     },
 
     _onReconnect() {
+      this.sendAuth();
       this.$eventHub.$emit('socketio.reconnect');
       console.log(`Reconnected`);
     },
@@ -158,11 +164,11 @@ Vue.prototype.$socketio = new Vue({
     },
 
     sendAuth() {
-      let admin_access = auth.getAdminAccess();
+      let folder_passwords = auth.getAdminAccess();
       console.log(
-        `Asking for auth with ${JSON.stringify(admin_access, null, 4)}`
+        `Asking for auth with ${JSON.stringify(folder_passwords, null, 4)}`
       );
-      this.socket.emit('authenticate', { admin_access });
+      this.socket.emit('authenticate', { folder_passwords });
     },
 
     _onSocketError(reason) {
@@ -185,39 +191,11 @@ Vue.prototype.$socketio = new Vue({
       //   );
     },
 
-    // _authentificated(list_admin_folders) {
-    //   console.log(
-    //     `Admin for projects ${JSON.stringify(list_admin_folders, null, 4)}`
-    //   );
-
-    //   // compare local store and answer from server
-    //   // for each key that is not in the answer, let’s send and alert to notify that the password is most likely wrong or the folder name has changed
-    //   if (auth.getAdminAccess() !== undefined) {
-    //     let admin_access = Object.keys(auth.getAdminAccess());
-    //     admin_access.forEach(slugFolderName => {
-    //       if (
-    //         list_admin_folders === undefined ||
-    //         list_admin_folders.indexOf(slugFolderName) === -1
-    //       ) {
-    //         this.$alertify
-    //           .closeLogOnClick(true)
-    //           .delay(4000)
-    //           .error(
-    //             this.$t('notifications["wrong_password_for_folder:"]') +
-    //               ' ' +
-    //               slugFolderName
-    //           );
-    //         auth.removeKey(slugFolderName);
-    //       } else {
-    //       }
-    //     });
-    //   }
-
-    //   window.dispatchEvent(
-    //     new CustomEvent('socketio.connected_and_authentified')
-    //   );
-    //   this.listFolders();
-    // },
+    _authentificated(list_admin_folders) {
+      console.log(
+        `Admin for projects ${JSON.stringify(list_admin_folders, null, 4)}`
+      );
+    },
 
     _onListMedia(data) {
       console.log('Received _onListMedia packet.');
