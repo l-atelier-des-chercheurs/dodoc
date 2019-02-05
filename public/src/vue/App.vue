@@ -32,7 +32,6 @@
               class="m_activitiesPanel--do"
               :class="{ 'is--large' : activitiesPanel_isLarge }"
             >
-              {{ $root.state.list_authorized_folders }}
               <div style="position: relative; height: 100%; overflow: hidden">
                 <!-- v-show="$root.do_navigation.view === 'ListView'" -->
                 <transition name="ListView" :duration="500">
