@@ -1,6 +1,6 @@
 <template>
   <div class="m_project"
-    :class="{ 'is--not_authorized_to_admin' : !project._authorized }"
+    :class="{ 'is--not_authorized_to_admin' : !can_access_folder }"
   >
     <div class="m_project--presentation">
       <div v-if="previewURL" class="m_project--presentation--vignette" @click="$root.openProject(slugProjectName)">
@@ -8,20 +8,17 @@
           :src="previewURL" class=""
         />
       </div>
+      
       <div class="m_project--presentation--text">
         <h2 
           class="m_project--presentation--text--title"
            @click="$root.openProject(slugProjectName)"
            :title="slugProjectName"
         >
-          {{ project.name }}   
+          {{ project.name }}
         </h2>
 
         <div class="m_project--presentation--text--infos">
-          <mark class="" v-if="project.password === 'has_pass'">
-            {{ $t('protected_by_pass') }}
-          </mark>
-
           <div class="m_keywordField">
             <span 
               v-for="keyword in project.keywords" 
@@ -64,6 +61,20 @@
               {{ $root.formatDateToHuman(project.date_modified) }}
             </div>
           </div>
+          <div class="m_metaField" v-if="project.password === 'has_pass'">
+            <small class="m_project--presentation--text--infos--password c-rouge" v-if="project.password === 'has_pass'">
+              <label>{{ $t('protected_by_pass') }}</label>
+            </small>
+
+            <button v-if="!can_access_folder" type="button" class="buttonLink" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
+              {{ $t('password') }}
+            </button>
+
+            <div v-if="showInputPasswordField && !can_access_folder" class="margin-bottom-small">
+              <input type="password" ref="passwordField" @keyup.enter="submitPassword" autofocus placeholder="…">
+              <button type="button" class="button button-bg_rounded bg-bleuvert" @click="submitPassword">Envoyer</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -71,31 +82,23 @@
         class="m_project--presentation--buttons"
       >
         <button 
-          v-if="project._authorized && context !== 'full'"
+          v-if="can_access_folder && context !== 'full'"
           type="button" 
-          class="button-redthin" 
+          class="button-redthin"
           @click="$root.openProject(slugProjectName)"
         >
           <span class="">
             {{ $t('open') }}
           </span>
         </button>
-        <button v-if="!project._authorized" type="button" class="buttonLink" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
-          {{ $t('password') }}
-        </button>
-        <button v-if="project._authorized && context === 'full'" type="button" class="buttonLink" @click="showEditProjectModal = true" :disabled="read_only">
+        <button v-if="can_access_folder && context === 'full'" type="button" class="buttonLink" @click="showEditProjectModal = true" :disabled="read_only">
           {{ $t('edit') }}
         </button>
-        <button v-if="project._authorized && context === 'full'" type="button" class="buttonLink" @click="removeProject()" :disabled="read_only">
+        <button v-if="can_access_folder && context === 'full'" type="button" class="buttonLink" @click="removeProject()" :disabled="read_only">
           {{ $t('remove') }}
         </button>
 
-        <div v-if="showInputPasswordField" class="margin-bottom-small">
-          <input type="password" ref="passwordField" @keyup.enter="submitPassword" autofocus placeholder="…">
-          <button type="button" class="button button-bg_rounded bg-bleuvert" @click="submitPassword">Envoyer</button>
-        </div>
       </div>
-
       <EditProject
         v-if="showEditProjectModal"
         :project="project"
@@ -190,6 +193,12 @@ export default {
       const thumb = this.project.preview.filter(p => p.size === 640);
       if(thumb.length > 0) { return `${thumb[0].path}?${(new Date()).getTime()}` }
       return false;
+    },
+    can_access_folder() {
+      return this.$root.canAccessFolder({
+        type: 'projects', 
+        slugFolderName: this.slugProjectName
+      })
     }
   },
   methods: {

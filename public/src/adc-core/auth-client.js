@@ -19,7 +19,7 @@ module.exports = (function() {
     if (!folder_passwords.hasOwnProperty(type)) {
       folder_passwords[type] = {};
     }
-    folder_passwords[type][slugFolderName] = SparkMD5.hash(pass);
+    folder_passwords[type][slugFolderName] = pass;
 
     localstore.set('folder_passwords', folder_passwords);
   }

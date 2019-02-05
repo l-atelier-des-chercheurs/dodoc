@@ -194,6 +194,7 @@ Vue.prototype.$socketio = new Vue({
       console.log(
         `Admin for projects ${JSON.stringify(list_authorized_folders, null, 4)}`
       );
+      window.state.list_authorized_folders = list_authorized_folders;
       this.listFolders({ type: 'projects' });
     },
 
@@ -794,18 +795,45 @@ let vm = new Vue({
       }
       this.$socketio.editMedia(mdata);
     },
+    canAccessFolder: function({ type, slugFolderName }) {
+      if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
 
+      // if folder has password set
+      if (this.store[type][slugFolderName].password !== 'has_pass') {
+        return true;
+      }
+
+      const has_reference_to_folder = this.state.list_authorized_folders.filter(
+        i => {
+          if (
+            !!i &&
+            i.hasOwnProperty('type') &&
+            i.type === type &&
+            i.hasOwnProperty('allowed_slugFolderNames') &&
+            i.allowed_slugFolderNames.indexOf(slugFolderName) >= 0
+          )
+            return true;
+          return false;
+        }
+      );
+
+      if (has_reference_to_folder.length > 0) {
+        return true;
+      }
+      return false;
+    },
     openProject: function(slugProjectName) {
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: openProject: ${slugProjectName}`);
       }
       if (
         !this.store.projects.hasOwnProperty(slugProjectName) ||
-        !this.store.projects[slugProjectName]._authorized
+        !this.canAccessFolder({
+          type: 'projects',
+          slugFolderName: slugProjectName
+        })
       ) {
-        console.log(
-          'Missing folder key on the page or not authorized, aborting.'
-        );
+        console.log('Missing folder key on the page, aborting.');
         this.closeProject();
         return false;
       }
