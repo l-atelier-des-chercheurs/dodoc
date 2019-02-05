@@ -15,7 +15,6 @@ module.exports = (function() {
     init: (app, io) => init(app, io),
     createMediaMeta: ({ type, slugFolderName, additionalMeta }) =>
       createMediaMeta({ type, slugFolderName, additionalMeta }),
-    pushMessage: msg => pushMessage(msg),
     notify: notify
   };
 
@@ -81,11 +80,6 @@ module.exports = (function() {
       .catch(err => {
         dev.error(`Failed to auth: ${err}`);
       });
-  }
-
-  function pushMessage(msg) {
-    dev.logfunction(`EVENT - pushMessage ${msg}`);
-    api.sendEventWithContent('authentificated', {}, io, socket);
   }
 
   function notify({
@@ -476,7 +470,7 @@ module.exports = (function() {
 
                   if (
                     !auth.canAdminFolder(
-                      socket,
+                      socket || io.sockets.connected[sid],
                       foldersData,
                       slugFolderName,
                       type

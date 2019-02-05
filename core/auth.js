@@ -23,7 +23,7 @@ module.exports = (function() {
         folder_passwords === undefined ||
         Object.keys(folder_passwords).length === 0
       ) {
-        resolve({});
+        resolve([]);
       }
 
       let tasks = [];
@@ -70,14 +70,14 @@ module.exports = (function() {
             })
             .catch(err => {
               dev.error(`Failed to get folder data: ${err}`);
-              resolve();
+              resolve([]);
             });
         });
         tasks.push(myPromise);
       });
       Promise.all(tasks).then(d_array => {
         if (d_array.length === 0) {
-          resolve({});
+          resolve([]);
         }
         d_array = d_array.filter(i => !!i);
         resolve(d_array);
@@ -86,7 +86,9 @@ module.exports = (function() {
   }
 
   function canAdminFolder(socket, foldersData, slugFolderName, type) {
-    dev.logfunction(`AUTH — canAdminFolder ${slugFolderName}`);
+    dev.logfunction(
+      `AUTH — canAdminFolder with slugFolderName = ${slugFolderName}, type = ${type}`
+    );
 
     if (
       !foldersData[slugFolderName].hasOwnProperty('password') ||

@@ -798,7 +798,7 @@ let vm = new Vue({
     canAccessFolder: function({ type, slugFolderName }) {
       if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
 
-      // if folder has password set
+      // if folder doesn’t have a password set
       if (this.store[type][slugFolderName].password !== 'has_pass') {
         return true;
       }
