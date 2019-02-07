@@ -195,6 +195,44 @@ Vue.prototype.$socketio = new Vue({
         `Admin for projects ${JSON.stringify(list_authorized_folders, null, 4)}`
       );
       window.state.list_authorized_folders = list_authorized_folders;
+      let folder_passwords = auth.getAdminAccess();
+
+      // got list of items admin for, update localstore with that info
+      let clean_folder_passwords = {};
+
+      /* 
+      {
+        projects: {
+          bonjour: mon-mot-de-passe
+          hello: mdp2
+        },
+        author: {
+          jean: Hello world !
+        }
+      }
+      */
+
+      // list_authorized_folders.map(i => {
+      //   if (
+      //     !i.hasOwnProperty('allowed_slugFolderNames') ||
+      //     !i.hasOwnProperty('type')
+      //   )
+      //     return;
+
+      //   const type = i.type;
+
+      //   if (!clean_folder_passwords.hasOwnProperty(type)) {
+      //     clean_folder_passwords[type] = {};
+      //   }
+
+      //   i.allowed_slugFolderNames.map(slugFolderName => {
+      //     debugger;
+      //     if(folder_passwords.hasOwnProperty())
+      //     // clean_folder_passwords[type];
+      //   });
+      // });
+      // auth.updateAdminAccess();
+
       this.listFolders({ type: 'projects' });
     },
 
