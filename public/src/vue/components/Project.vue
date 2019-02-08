@@ -220,12 +220,12 @@ export default {
     submitPassword() {
       console.log('METHODS • Project: submitPassword');
       this.$auth.updateAdminAccess({
-        type: 'projects',
-        slugFolderName: this.slugProjectName,
-        pass: this.$refs.passwordField.value
+        "projects": {
+          [this.slugProjectName]: this.$refs.passwordField.value
+        }
       });
       this.$socketio.sendAuth();
-    },
+    }
   },
 };
 </script>
