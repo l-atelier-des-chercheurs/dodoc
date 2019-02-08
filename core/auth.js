@@ -8,11 +8,12 @@ module.exports = (function() {
 
   const API = {
     setAuthenticate: folder_passwords => setAuthenticate(folder_passwords),
-    canAdminFolder: (socket, foldersData, slugFolderName, type) =>
-      canAdminFolder(socket, foldersData, slugFolderName, type),
+    canAdminFolder: (socket, foldersData, type) =>
+      canAdminFolder(socket, foldersData, type),
     filterFolders: (socket, type, foldersData) =>
       filterFolders(socket, type, foldersData),
-    filterMedias: mediasData => filterMedias(mediasData)
+    filterMedias: (socket, type, folders_and_medias) =>
+      filterMedias(socket, type, folders_and_medias)
   };
 
   function setAuthenticate(folder_passwords) {
@@ -34,6 +35,9 @@ module.exports = (function() {
           typeof folder_passwords[type] !== 'object' ||
           Object.keys(folder_passwords[type]).length === 0
         ) {
+          dev.logfunction(
+            `AUTH — setAuthenticate : no usable content for ${type}`
+          );
           return;
         }
 
@@ -85,7 +89,9 @@ module.exports = (function() {
     });
   }
 
-  function canAdminFolder(socket, foldersData, slugFolderName, type) {
+  function canAdminFolder(socket, foldersData, type) {
+    const slugFolderName = Object.keys(foldersData)[0];
+
     dev.logfunction(
       `AUTH — canAdminFolder with slugFolderName = ${slugFolderName}, type = ${type}`
     );
@@ -94,6 +100,7 @@ module.exports = (function() {
       !foldersData[slugFolderName].hasOwnProperty('password') ||
       foldersData[slugFolderName].password === ''
     ) {
+      dev.logverbose(`AUTH — canAdminFolder: no password --> authorized`);
       return true;
     }
 
@@ -121,7 +128,7 @@ module.exports = (function() {
   }
 
   function filterFolders(socket, type, foldersData) {
-    dev.logfunction(`AUTH — filtering folders data`);
+    dev.logfunction(`AUTH — filterFolders`);
 
     if (foldersData === undefined) {
       return;
@@ -140,5 +147,36 @@ module.exports = (function() {
     // }
     return filteredFoldersData;
   }
+
+  function filterMedias(socket, type, folders_and_medias) {
+    dev.logfunction(`AUTH — filterMedias`);
+
+    debugger;
+
+    if (canAdminFolder(socket, folders_and_medias, type)) {
+      return folders_and_medias;
+    } else {
+      // check for each media if hasownproperty 'public' and if public is set to true
+      let filtered_folders_and_medias = JSON.parse(
+        JSON.stringify(folders_and_medias)
+      );
+      Object.keys(filtered_folders_and_medias).map(slugFolderName => {
+        const folders_data = filtered_folders_and_medias[slugFolderName];
+        if (folders_data.hasOwnProperty('medias')) {
+          Object.keys(folders_data.medias).map(slugMediaName => {
+            if (
+              !folders_data.medias[slugMediaName].hasOwnProperty('public') ||
+              folders_data.medias[slugMediaName].public === false
+            ) {
+              // if no public prop or public prop === false, remove from list
+              delete folders_data.medias[slugMediaName];
+            }
+          });
+        }
+      });
+      return filtered_folders_and_medias;
+    }
+  }
+
   return API;
 })();

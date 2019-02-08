@@ -139,7 +139,7 @@ module.exports = (function() {
     file
       .getFolder({ type, slugFolderName })
       .then(foldersData => {
-        if (!auth.canAdminFolder(socket, foldersData, slugFolderName, type)) {
+        if (!auth.canAdminFolder(socket, foldersData, type)) {
           notify({
             socket,
             socketid: socket.id,
@@ -168,7 +168,7 @@ module.exports = (function() {
     file
       .getFolder({ type, slugFolderName })
       .then(foldersData => {
-        if (!auth.canAdminFolder(socket, foldersData, slugFolderName, type)) {
+        if (!auth.canAdminFolder(socket, foldersData, type)) {
           notify({
             socket,
             socketid: socket.id,
@@ -463,36 +463,27 @@ module.exports = (function() {
                   ].id = id;
                 }
 
+                foldersData[slugFolderName].medias =
+                  folders_and_medias[slugFolderName].medias;
+
                 Object.keys(io.sockets.connected).forEach(sid => {
                   if (!!socket && socket.id !== sid) {
                     return;
                   }
 
-                  if (
-                    !auth.canAdminFolder(
-                      socket || io.sockets.connected[sid],
-                      foldersData,
-                      slugFolderName,
-                      type
-                    )
-                  ) {
-                    // let filteredMediasData = auth.filterMedias(mediasData);
-                    folders_and_medias[slugFolderName].medias = {};
-                  }
+                  let thisSocket = socket || io.sockets.connected[sid];
 
-                  if (Object.keys(folders_and_medias).length === 0) {
-                    folders_and_medias = {
-                      [slugFolderName]: {
-                        medias: {}
-                      }
-                    };
-                  }
+                  let filtered_folders_and_medias = auth.filterMedias(
+                    thisSocket,
+                    type,
+                    foldersData
+                  );
 
                   api.sendEventWithContent(
                     !!metaFileName ? 'listMedia' : 'listMedias',
-                    { [type]: folders_and_medias },
+                    { [type]: filtered_folders_and_medias },
                     io,
-                    socket || io.sockets.connected[sid]
+                    thisSocket
                   );
                 });
               });

@@ -1645,7 +1645,7 @@ module.exports = (function() {
           }
         } else if (val.hasOwnProperty('default')) {
           output_obj[key] =
-            val.default === 'random' ? Math.random() * 0.5 : val.default;
+            val.default === 'random' ? Math.random() : val.default;
         }
       } else if (type === 'array') {
         if (
