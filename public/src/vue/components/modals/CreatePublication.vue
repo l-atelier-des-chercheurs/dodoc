@@ -115,13 +115,13 @@ export default {
         name,
         authors: this.publidata.authors,
         template: this.publidata.template,
-        width: 297,
-        height: 420,
-        style: "human tech days",
-        header_left: "Human Tech Days",
-        gridstep: 5,
-        margin_left: 20,
-        margin_right: 20,
+        width: 210,
+        height: 297,
+        // style: "human tech days",
+        // header_left: "Human Tech Days",
+        // gridstep: 5,
+        // margin_left: 20,
+        // margin_right: 20,
 
         pages: [{
           id: +new Date() + '_' + (Math.random().toString(36) + '00000000000000000').slice(2, 3)
