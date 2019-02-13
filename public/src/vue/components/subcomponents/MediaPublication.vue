@@ -51,11 +51,10 @@
         </g>
         </svg>
       </div>
-      <div class="handle handle_rotateMedia"
+      <!-- <div class="handle handle_rotateMedia"
         @mousedown.stop.prevent="rotateMedia('mouse', 'bottomright')"
         @touchstart.stop.prevent="rotateMedia('touch', 'bottomright')"
       >
-<!-- Generator: Adobe Illustrator 23.0.1, SVG Export Plug-In  -->
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="98.7px"
 	 height="132.2px" viewBox="0 0 98.7 132.2" style="enable-background:new 0 0 98.7 132.2;" xml:space="preserve">
 <defs>
@@ -66,7 +65,7 @@
 	c0.3-2,0.6-4.5,0.8-7.7l0.7-10.5l-14-0.4L43.7,128l45.5,4.2l1.3-13.9L80.1,117.7z"/>
 </svg>
 
-      </div>
+      </div> -->
     </div>
 
     <div 
@@ -124,7 +123,7 @@ export default {
       is_selected: false,
       is_touch: Modernizr.touchevents,
 
-      limit_media_to_page: false,
+      limit_media_to_page: true,
 
       mediaID: `${(Math.random().toString(36) + '00000000000000000').slice(2, 3 + 5)}`,
 
