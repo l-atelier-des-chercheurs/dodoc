@@ -852,17 +852,28 @@ export default {
       this.page_currently_active = index;
     },
     setPageContainerProperties(page) {
+      if(this.$root.state.mode === 'print_publication')
+        return;
+
       return `
         width: ${page.width * this.$root.settings.publi_zoom}mm; 
         height: ${page.height * this.$root.settings.publi_zoom}mm;      
       `;      
     },
     setPageProperties(page) {
-      return `
-        width: ${page.width}mm; 
-        height: ${page.height}mm;
-        transform: scale(${this.$root.settings.publi_zoom});
-      `;
+      if(this.$root.state.mode === 'print_publication') {
+        // reducing page height by 1mm is necessary to prevent blank pages in-between
+        return `
+          width: ${page.width}mm; 
+          height: ${page.height}mm;
+        `;
+      } else {
+        return `
+          width: ${page.width}mm; 
+          height: ${page.height}mm;
+          transform: scale(${this.$root.settings.publi_zoom});
+        `;
+      }
     },
 
     publicationKeyListener(evt) {
