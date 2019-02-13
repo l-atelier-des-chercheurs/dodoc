@@ -144,7 +144,7 @@
 
     </template>  
     <template 
-      v-else-if="$root.state.mode === 'export_publication'"
+      v-else-if="$root.state.mode === 'export_publication' || $root.state.mode === 'print_publication'"
     >    
       <PagePublication
         v-if="$root.settings.current_slugPubliName !== false"
