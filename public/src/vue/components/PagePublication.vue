@@ -864,7 +864,7 @@ export default {
         // reducing page height by 1mm is necessary to prevent blank pages in-between
         return `
           width: ${page.width}mm; 
-          height: ${page.height}mm;
+          height: ${page.height - 1}mm;
         `;
       } else {
         return `
