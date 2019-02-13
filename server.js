@@ -38,7 +38,7 @@ module.exports = function() {
     cert: fs.readFileSync(certificatePath)
   };
 
-  if (settings.protocol === 'https') {
+  if (settings.protocol === 'https' && settings.http_port !== '') {
     // redirect from http (port 80) to https (port 443)
     http
       .createServer((req, res) => {
