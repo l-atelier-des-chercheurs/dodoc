@@ -219,7 +219,8 @@ module.exports = (function() {
               puppeteer
                 .launch({
                   headless: true,
-                  ignoreHTTPSErrors: true
+                  ignoreHTTPSErrors: true,
+                  args: ['--no-sandbox']
                 })
                 .then(browser => {
                   return browser.newPage();
