@@ -18,7 +18,13 @@ module.exports = (function() {
 
   function setAuthenticate(folder_passwords) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction(`AUTH — setAuthenticate`);
+      dev.logfunction(
+        `AUTH — setAuthenticate with ${JSON.stringify(
+          folder_passwords,
+          null,
+          4
+        )}`
+      );
 
       if (
         folder_passwords === undefined ||
@@ -35,9 +41,7 @@ module.exports = (function() {
           typeof folder_passwords[type] !== 'object' ||
           Object.keys(folder_passwords[type]).length === 0
         ) {
-          dev.logfunction(
-            `AUTH — setAuthenticate : no usable content for ${type}`
-          );
+          dev.log(`AUTH — setAuthenticate : no usable content for ${type}`);
           return;
         }
 
@@ -45,6 +49,9 @@ module.exports = (function() {
           file
             .getFolder({ type })
             .then(foldersData => {
+              dev.logverbose(
+                `AUTH — setAuthenticate : got folder data, now checking against folder_passwords[${type}]`
+              );
               const foldertype_passwords = folder_passwords[type];
 
               let allowed_slugFolderNames = [];
@@ -150,8 +157,6 @@ module.exports = (function() {
 
   function filterMedias(socket, type, folders_and_medias) {
     dev.logfunction(`AUTH — filterMedias`);
-
-    debugger;
 
     if (canAdminFolder(socket, folders_and_medias, type)) {
       return folders_and_medias;

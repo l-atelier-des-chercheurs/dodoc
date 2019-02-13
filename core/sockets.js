@@ -457,14 +457,18 @@ module.exports = (function() {
               .then(folders_and_medias => {
                 dev.logverbose(`Got medias, now sending to the right clients`);
 
-                if (folders_and_medias !== undefined && metaFileName && id) {
-                  folders_and_medias[slugFolderName].medias[
-                    metaFileName
-                  ].id = id;
+                if (
+                  folders_and_medias !== undefined &&
+                  Object.keys(folders_and_medias).length
+                ) {
+                  if (metaFileName && id) {
+                    folders_and_medias[slugFolderName].medias[
+                      metaFileName
+                    ].id = id;
+                  }
+                  foldersData[slugFolderName].medias =
+                    folders_and_medias[slugFolderName].medias;
                 }
-
-                foldersData[slugFolderName].medias =
-                  folders_and_medias[slugFolderName].medias;
 
                 Object.keys(io.sockets.connected).forEach(sid => {
                   if (!!socket && socket.id !== sid) {
