@@ -26,7 +26,7 @@ module.exports = (function() {
       'file:': 'Fichier&nbsp;:',
       add_to_project: 'Ajouter au projet&nbsp;:',
       input_password: 'Renseigner le mot de passe ci-dessous :',
-      validate_with_enter: 'valider avec la touche ENTRÉE',
+      validate_with_enter: 'Valider avec la touche ENTRÉE.',
 
       bytes: 'octets',
       kb: 'ko',
@@ -94,6 +94,8 @@ module.exports = (function() {
       protected_by_pass: 'protégé par mot de passe',
       password_instructions:
         'Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce projet.',
+      author_instructions:
+        'Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).',
 
       sort_by: 'Organiser par',
       in_the_order: 'Dans l’ordre',
@@ -271,7 +273,7 @@ module.exports = (function() {
       'file:': 'File&nbsp;:',
       add_to_project: 'Add to project:',
       input_password: 'Input the password here:',
-      validate_with_enter: 'validate with the ENTER key',
+      validate_with_enter: 'Validate with ENTER.',
 
       bytes: 'bytes',
       kb: 'KB',
@@ -331,6 +333,8 @@ module.exports = (function() {
       protected_by_pass: 'protected by password',
       password_instructions:
         'If set, only users with the password will be able to open this project.',
+      author_instructions:
+        'To create authors, close this window and click on (AUTHORS).',
 
       sort_by: 'Sort by',
       in_the_order: 'In the order',

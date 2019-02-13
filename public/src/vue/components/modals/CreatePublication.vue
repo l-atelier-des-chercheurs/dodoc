@@ -41,6 +41,7 @@
           :currentAuthors="publidata.authors"
           @authorsChanged="newAuthors => publidata.authors = newAuthors"
         />
+        <small>{{ $t('author_instructions') }}</small>
       </div>
 
 
@@ -69,7 +70,7 @@ export default {
       publidata: {
         name: '',
         template: 'page_by_page',
-        authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : '' 
+        authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : [],
       }
     };
   },
