@@ -2475,7 +2475,7 @@ small {
 
   .m_publicationview--pages--pageContainer {
     position: relative;
-    margin: 0 auto;
+    margin: @t-skipline auto;
     transition: all .2s;
   
     &.is--active {
@@ -2509,6 +2509,8 @@ small {
     box-shadow: 0px 2px 16px 0px rgba(0,0,0,.2);
     z-index: 0;
     transform-origin: top left;
+
+    margin: 0 auto;
 
     // print only options 
     font-variant-ligatures: none;
