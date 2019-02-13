@@ -4,6 +4,8 @@ const path = require('path'),
   ffmpeg = require('fluent-ffmpeg'),
   fs = require('fs-extra');
 
+const { BrowserWindow } = require('electron');
+
 const settings = require('../settings.json'),
   dev = require('./dev-log'),
   api = require('./api'),
@@ -214,7 +216,6 @@ module.exports = (function() {
           .then(publiData => {
             publiData = Object.values(publiData)[0];
             fs.mkdirp(cachePath, () => {
-              const { BrowserWindow } = require('electron');
               let win = new BrowserWindow({
                 width: 800,
                 height: 600,
