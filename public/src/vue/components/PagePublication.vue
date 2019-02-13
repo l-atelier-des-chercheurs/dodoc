@@ -156,12 +156,11 @@
         </svg>
       </button>
 
-      <button 
+      <!-- <button 
         class="margin-vert-verysmall font-verysmall" 
         style="padding: 9px"
         @click="printThisPublication()"
       >
-<!-- Generator: Adobe Illustrator 23.0.1, SVG Export Plug-In  -->
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="160.3px"
 	 height="140.9px" viewBox="0 0 147.3 128.9" style="enable-background:new 0 0 147.3 128.9;" xml:space="preserve">
 <defs>
@@ -184,7 +183,7 @@
 	c2,0,3.7-1.7,3.7-3.7S99.6,86.5,97.6,86.5 M97.6,105H49.7c-2,0-3.7,1.7-3.7,3.7s1.7,3.7,3.7,3.7h47.9c2,0,3.7-1.7,3.7-3.7
 	S99.6,105,97.6,105"/>
 </svg>
-      </button>
+      </button> -->
 
       <button class="margin-vert-verysmall font-verysmall" 
         @click="toggleFullscreen()"
