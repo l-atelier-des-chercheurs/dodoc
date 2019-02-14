@@ -1,4 +1,3 @@
-const getPath = require('platform-folders');
 const path = require('path');
 const fs = require('fs-extra');
 const portscanner = require('portscanner');
@@ -96,7 +95,7 @@ function setupApp() {
     }
 
     global.appRoot = path.resolve(__dirname);
-    global.tempStorage = getPath.getCacheFolder();
+    global.tempStorage = app.getPath('temp');
 
     dev.log(`——— Starting dodoc2 app version ${global.appInfos.version}`);
 
@@ -402,9 +401,7 @@ function setApplicationMenu() {
 }
 function copyAndRenameUserFolder() {
   return new Promise(function(resolve, reject) {
-    const userDirPath = is_electron
-      ? app.getPath(settings.userDirPath)
-      : getPath.getDocumentsFolder();
+    const userDirPath = app.getPath(settings.userDirPath);
 
     const pathToUserContent = path.join(userDirPath, settings.userDirname);
     fs.access(pathToUserContent, fs.F_OK, function(err) {
