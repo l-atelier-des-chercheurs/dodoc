@@ -9,6 +9,7 @@
     :show_sidebar="$root.media_modal.show_sidebar"
     :is_minimized="$root.media_modal.minimized"
     :can_minimize="true"
+    :media_navigation="true"
     >
     <template slot="header">
       <div class="">{{ $t('edit_the_media') }}</div>
@@ -144,6 +145,16 @@
           </textarea>
         </div> -->
 
+  <!-- Keywords -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('keywords') }}</label>
+        <TagsInput 
+          :keywords="mediadata.keywords"
+          @tagsChanged="newTags => mediadata.keywords = newTags"
+        />
+        <small>{{ $t('validate_with_enter') }}</small>        
+      </div>
+
   <!-- Author(s) -->
         <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
           <label>{{ $t('author') }}</label>
@@ -160,8 +171,8 @@
   <!-- Fav or not -->
         <div class="margin-bottom-small">
           <span class="switch switch-xs">
-            <input type="checkbox" class="switch" id="favswitch" v-model="mediadata.fav" :readonly="read_only">
-            <label for="favswitch">
+            <input type="checkbox" class="switch" id="favswitch_editmedia" v-model="mediadata.fav" :readonly="read_only">
+            <label for="favswitch_editmedia">
               {{ $t('fav') }}
               <svg version="1.1"
                 class="inline-svg"
@@ -202,6 +213,7 @@ import DateTime from '../subcomponents/DateTime.vue';
 import CreateQRCode from './qr/CreateQRCode.vue';
 import { setTimeout } from 'timers';
 import AuthorsInput from '../subcomponents/AuthorsInput.vue';
+import TagsInput from '../subcomponents/TagsInput.vue';
 
 export default {
   props: {
@@ -218,6 +230,7 @@ export default {
     DateTime,
     MediaContent,
     CreateQRCode,
+    TagsInput,
     AuthorsInput
   },
   data() {
@@ -227,7 +240,7 @@ export default {
 
       mediadata: {
         type: this.media.type,
-        authors: typeof this.media.authors === 'string' && this.media.authors !== '' ? this.media.authors.split(',').map(a => {return { name: a }} ) : this.media.authors,
+        authors: this.media.authors,
         caption: this.media.caption,
         keywords: this.media.keywords,
         fav: this.media.fav,
@@ -245,7 +258,14 @@ export default {
       deep: true
     }
   },  
-  mounted() {
+  created() {
+    if(typeof this.mediadata.authors === 'string') {
+      if( this.mediadata.authors !== '') {
+        this.mediadata.authors = this.mediadata.authors.split(',').map(a => {return { name: a }} )
+      } else {
+        this.mediadata.authors = [];
+      }
+    }
   },
   computed: {
   },

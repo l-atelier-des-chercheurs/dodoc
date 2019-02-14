@@ -26,16 +26,17 @@
       </div>
 
 <!-- Password -->
-      <!-- <div class="margin-bottom-small">
+      <div class="margin-bottom-small">
         <label>{{ $t('password') }}</label>
         <input type="password" v-model="projectdata.password">
         <small>{{ $t('password_instructions') }}</small>
-      </div> -->
+      </div>
 
 <!-- Keywords -->
       <div class="margin-bottom-small">
         <label>{{ $t('keywords') }}</label>
         <TagsInput @tagsChanged="newTags => projectdata.keywords = newTags"/>
+        <small>{{ $t('validate_with_enter') }}</small>        
       </div>
 
 <!-- Author(s) -->
@@ -45,6 +46,7 @@
           :currentAuthors="projectdata.authors"
           @authorsChanged="newAuthors => projectdata.authors = newAuthors"
         />
+        <small>{{ $t('author_instructions') }}</small>
       </div>
 
     </template>

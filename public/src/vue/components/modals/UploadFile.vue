@@ -30,25 +30,29 @@
         name="fileupload_list"
       >
         <div
-          v-for="f in selected_files" 
+          v-for="(f, index) in selected_files" 
           :key="f.name"
           class="m_uploadFile"
           :class="cssStatus(f)"
           :style="`--progress-percent: ${selected_files_meta.hasOwnProperty(f.name) ? selected_files_meta[f.name].upload_percentages/100 : 0}`"
         >
           <!-- too heavy on memory on mobile devices -->
-          <!-- <img 
-            v-if="!!f.type && f.type.includes('image') && " 
+          <img 
+            v-if="!!f.type && f.type.includes('image') && index < 5" 
             class="m_uploadFile--image"
             :src="getImgPreview(f)"
-          > -->
+          >
+          <div v-else class="m_uploadFile--image" />
+
           <div :title="f.name" class="m_uploadFile--filename">
             {{ f.name }}
           </div>
           <div class="m_uploadFile--size">
             {{ formatBytes(f.size) }}
           </div>
-          <div class="m_uploadFile--action">
+          <div class="m_uploadFile--action"
+            v-if="selected_files_meta.hasOwnProperty(f.name)"
+          >
             <button type="button" class="buttonLink"
               @click="sendThisFile(f)"
               :disabled="read_only || (selected_files_meta.hasOwnProperty(f.name) && selected_files_meta[f.name].status === 'success')"
@@ -83,7 +87,8 @@ import { setTimeout } from 'timers';
 export default {
   props: {
     read_only: Boolean,
-    slugProjectName: String
+    slugFolderName: String,
+    type: String
   },
   components: {
     Modal
@@ -103,7 +108,7 @@ export default {
   },
   computed: {
     uriToUploadMedia: function() {
-      return this.slugProjectName + '/file-upload';
+      return `file-upload/${this.type}/${this.slugFolderName}`;
     }
   },
   methods: {
@@ -125,7 +130,7 @@ export default {
         formData.append('files', f, filename);
         const meta = {
           fileCreationDate: modified,
-          authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:'' 
+          authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : '' 
         }
         formData.append(filename, JSON.stringify(meta));
 
@@ -135,7 +140,7 @@ export default {
         }
 
         if (this.$root.state.dev_mode === 'debug') {
-          console.log(`METHODS • sendThisFile: name = ${filename} / formData is ready`);
+          console.log(`METHODS • sendThisFile: name = ${filename} / formData is ready / sending to ${this.uriToUploadMedia}`);
         }
 
         // TODO : possibilité de cancel

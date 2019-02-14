@@ -17,6 +17,22 @@ ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function() {
   const API = {
+    getPresentation() {
+      return new Promise(function(resolve, reject) {
+        let presentationMd = path.join(api.getFolderPath(), 'presentation.md');
+        fs.access(presentationMd, fs.F_OK, function(err) {
+          if (err) {
+            resolve(validator.unescape(global.appInfos.presentationMd));
+          } else {
+            let presentationContent = validator.unescape(
+              fs.readFileSync(presentationMd, settings.textEncoding)
+            );
+            presentationContent = api.parseData(presentationContent);
+            resolve(presentationContent);
+          }
+        });
+      });
+    },
     getFolder: ({ type, slugFolderName }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
@@ -78,33 +94,47 @@ module.exports = (function() {
             );
 
             // For each folder, find a preview (if it exists)
-            allFoldersData.push(
-              new Promise((resolve, reject) => {
-                dev.logverbose(
-                  `Finding preview for folder = ${thisFolderPath}`
-                );
-                const pathToPreview = path.join(
-                  thisFolderPath,
-                  settings.folderPreviewFilename + settings.thumbExt
-                );
-                fs.access(pathToPreview, fs.F_OK, err => {
-                  preview_name = !err
-                    ? settings.folderPreviewFilename + settings.thumbExt
-                    : '';
-                  resolve({
-                    [slugFolderName]: {
-                      preview: preview_name
+            if (settings.structure[type].hasOwnProperty('preview')) {
+              allFoldersData.push(
+                new Promise((resolve, reject) => {
+                  dev.logverbose(
+                    `Finding preview for folder = ${slugFolderName}`
+                  );
+
+                  const preview_name =
+                    settings.folderPreviewFilename + settings.thumbExt;
+                  const pathToPreview = path.join(thisFolderPath, preview_name);
+
+                  fs.access(pathToPreview, fs.F_OK, err => {
+                    if (err) {
+                      return resolve();
                     }
+
+                    thumbs
+                      .makeMediaThumbs(
+                        slugFolderName,
+                        preview_name,
+                        'image',
+                        type,
+                        'preview'
+                      )
+                      .then(thumbData => {
+                        resolve({
+                          [slugFolderName]: {
+                            preview: thumbData
+                          }
+                        });
+                      })
+                      .catch(err => {
+                        resolve();
+                      });
                   });
-                });
-              })
-            );
+                })
+              );
+            }
           });
           Promise.all(allFoldersData).then(parsedFoldersData => {
-            dev.logverbose(
-              `All folders meta have been processed`,
-              JSON.stringify(parsedFoldersData, null, 4)
-            );
+            dev.logverbose(`All folders meta have been processed`);
 
             // on se balade dans l’array, on attrappe la key
             // et on merge tout ça dans un nouvel objet du type :
@@ -120,11 +150,10 @@ module.exports = (function() {
                 }
               }
             */
-
             // Reunite array items as a single big object
             let flatObjFoldersData = {};
             parsedFoldersData.forEach(fmeta => {
-              if (Object.keys(fmeta).length > 0) {
+              if (!!fmeta && Object.keys(fmeta).length > 0) {
                 let slugFolderName = Object.keys(fmeta)[0];
                 if (!flatObjFoldersData.hasOwnProperty(slugFolderName)) {
                   flatObjFoldersData[slugFolderName] = {};
@@ -186,9 +215,16 @@ module.exports = (function() {
             () => {
               let tasks = [];
 
-              if (data.hasOwnProperty('preview_rawdata')) {
+              if (
+                data.hasOwnProperty('preview_rawdata') &&
+                settings.structure[type].hasOwnProperty('preview')
+              ) {
                 tasks.push(
-                  _storeFoldersPreview(thisFolderPath, data.preview_rawdata)
+                  _storeFoldersPreview(
+                    slugFolderName,
+                    type,
+                    data.preview_rawdata
+                  )
                 );
               }
 
@@ -254,11 +290,16 @@ module.exports = (function() {
         const thisFolderPath = path.join(mainFolderPath, slugFolderName);
         let tasks = [];
 
-        if (newFoldersData.hasOwnProperty('preview_rawdata')) {
+        if (
+          newFoldersData.hasOwnProperty('preview_rawdata') &&
+          settings.structure[type].hasOwnProperty('preview')
+        ) {
           dev.logverbose('Updating folders preview');
           let preview_rawdata = newFoldersData.preview_rawdata;
-          // store preview
-          tasks.push(_storeFoldersPreview(thisFolderPath, preview_rawdata));
+          // store preview with sharp
+          tasks.push(
+            _storeFoldersPreview(slugFolderName, type, preview_rawdata)
+          );
         }
 
         let updateFoldersMeta = new Promise((resolve, reject) => {
@@ -336,6 +377,7 @@ module.exports = (function() {
         );
 
         fs.move(thisFolderPath, movedFolderPath, { overwrite: true })
+          .then(() => thumbs.removeFolderThumbs(slugFolderName, type))
           .then(() => {
             dev.logfunction(
               `COMMON — removeFolder : folder ${slugFolderName} has been moved to ${movedFolderPath}`
@@ -805,106 +847,109 @@ module.exports = (function() {
                 fs.unlink(tempPath, err => {
                   dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
                 });
-                dev.logverbose(`Stored captured image to ${finalPath}`);
-                resolve(newFileName);
-              });
+              dev.logverbose(`Stored captured image to ${finalPath}`);
+              resolve(newFileName);
+            });
           });
-        } else if (
-          newFileName.toLowerCase().endsWith('.webm') ||
-          newFileName.toLowerCase().endsWith('.mov')
-        ) {
-          newFileName = newFileName.replace('.webm', '.mp4');
-          newFileName = newFileName.replace('.mov', '.mp4');
-          let finalPath = path.join(uploadDir, newFileName);
+        }
+        // else if (
+        //   newFileName.toLowerCase().endsWith('.webm') ||
+        //   newFileName.toLowerCase().endsWith('.mov')
+        // ) {
+        //   newFileName = newFileName.replace('.webm', '.mp4');
+        //   newFileName = newFileName.replace('.mov', '.mp4');
+        //   let finalPath = path.join(uploadDir, newFileName);
 
-          ffmpeg.ffprobe(tempPath, function(err, metadata) {
-            let duration = '?';
-            if (typeof metadata !== 'undefined') {
-              dev.logverbose(`Found duration: ${metadata.format.duration}`);
-              duration = metadata.format.duration;
-            }
-            let time_since_last_report = 0;
-            var proc = new ffmpeg()
-              .input(tempPath)
-              .withVideoCodec('libx264')
-              .withVideoBitrate('5000k')
-              .withAudioCodec('libmp3lame')
-              .withAudioBitrate('128k')
-              .toFormat('mp4')
-              .output(finalPath)
-              .on('progress', progress => {
-                if (+new Date() - time_since_last_report > 3000) {
-                  time_since_last_report = +new Date();
-                  require('./sockets').notify({
-                    socketid,
-                    not_localized_string: `Converting video for the web : ${
-                      progress.timemark
-                    } / ${duration}`
-                  });
-                }
-              })
-              .on('end', () => {
-                dev.logverbose(`Video has been converted`);
-                fs.unlink(tempPath, err => {
-                  dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
-                });
-                require('./sockets').notify({
-                  socketid,
-                  localized_string: `video_converted`
-                });
-                resolve(newFileName);
-              })
-              .on('error', function(err, stdout, stderr) {
-                dev.error('An error happened: ' + err.message);
-                dev.error('ffmpeg standard output:\n' + stdout);
-                dev.error('ffmpeg standard error:\n' + stderr);
-                reject(`couldn't convert a video`);
-              })
-              .run();
-          });
-        } else if (newFileName.toLowerCase().endsWith('.wav')) {
-          newFileName = newFileName.replace('wav', 'mp3');
-          let finalPath = path.join(uploadDir, newFileName);
+        //   ffmpeg.ffprobe(tempPath, function(err, metadata) {
+        //     let duration = '?';
+        //     if (typeof metadata !== 'undefined') {
+        //       dev.logverbose(`Found duration: ${metadata.format.duration}`);
+        //       duration = metadata.format.duration;
+        //     }
+        //     let time_since_last_report = 0;
+        //     var proc = new ffmpeg()
+        //       .input(tempPath)
+        //       .withVideoCodec('libx264')
+        //       .withVideoBitrate('5000k')
+        //       .withAudioCodec('libmp3lame')
+        //       .withAudioBitrate('128k')
+        //       .toFormat('mp4')
+        //       .output(finalPath)
+        //       .on('progress', progress => {
+        //         if (+new Date() - time_since_last_report > 3000) {
+        //           time_since_last_report = +new Date();
+        //           require('./sockets').notify({
+        //             socketid,
+        //             not_localized_string: `Converting video for the web : ${
+        //               progress.timemark
+        //             } / ${duration}`
+        //           });
+        //         }
+        //       })
+        //       .on('end', () => {
+        //         dev.logverbose(`Video has been converted`);
+        //         fs.unlink(tempPath, err => {
+        //           dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
+        //         });
+        //         require('./sockets').notify({
+        //           socketid,
+        //           localized_string: `video_converted`
+        //         });
+        //         resolve(newFileName);
+        //       })
+        //       .on('error', function(err, stdout, stderr) {
+        //         dev.error('An error happened: ' + err.message);
+        //         dev.error('ffmpeg standard output:\n' + stdout);
+        //         dev.error('ffmpeg standard error:\n' + stderr);
+        //         reject(`couldn't convert a video`);
+        //       })
+        //       .run();
+        //   });
+        // }
+        // else if (newFileName.toLowerCase().endsWith('.wav')) {
+        //   newFileName = newFileName.replace('wav', 'mp3');
+        //   let finalPath = path.join(uploadDir, newFileName);
 
-          ffmpeg.ffprobe(tempPath, function(err, metadata) {
-            let duration = '?';
-            if (typeof metadata !== 'undefined') {
-              dev.logverbose(`Found duration: ${metadata.format.duration}`);
-              duration = metadata.format.duration;
-            }
-            let time_since_last_report = 0;
+        //   ffmpeg.ffprobe(tempPath, function(err, metadata) {
+        //     let duration = '?';
+        //     if (typeof metadata !== 'undefined') {
+        //       dev.logverbose(`Found duration: ${metadata.format.duration}`);
+        //       duration = metadata.format.duration;
+        //     }
+        //     let time_since_last_report = 0;
 
-            ffmpeg(tempPath)
-              .withAudioCodec('libmp3lame')
-              .withAudioBitrate('192k')
-              .output(finalPath)
-              .on('progress', progress => {
-                if (+new Date() - time_since_last_report > 3000) {
-                  time_since_last_report = +new Date();
-                  require('./sockets').notify({
-                    socketid,
-                    not_localized_string: `Converting audio for the web : ${
-                      progress.timemark
-                    } / ${duration}`
-                  });
-                }
-              })
-              .on('end', () => {
-                dev.logverbose(`Audio has been converted`);
-                fs.unlink(tempPath, err => {
-                  dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
-                });
-                resolve(newFileName);
-              })
-              .on('error', function(err, stdout, stderr) {
-                dev.error('An error happened: ' + err.message);
-                dev.error('ffmpeg standard output:\n' + stdout);
-                dev.error('ffmpeg standard error:\n' + stderr);
-                reject(`couldn't convert an audio file`);
-              })
-              .run();
-          });
-        } else {
+        //     ffmpeg(tempPath)
+        //       .withAudioCodec('libmp3lame')
+        //       .withAudioBitrate('192k')
+        //       .output(finalPath)
+        //       .on('progress', progress => {
+        //         if (+new Date() - time_since_last_report > 3000) {
+        //           time_since_last_report = +new Date();
+        //           require('./sockets').notify({
+        //             socketid,
+        //             not_localized_string: `Converting audio for the web : ${
+        //               progress.timemark
+        //             } / ${duration}`
+        //           });
+        //         }
+        //       })
+        //       .on('end', () => {
+        //         dev.logverbose(`Audio has been converted`);
+        //         fs.unlink(tempPath, err => {
+        //           dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
+        //         });
+        //         resolve(newFileName);
+        //       })
+        //       .on('error', function(err, stdout, stderr) {
+        //         dev.error('An error happened: ' + err.message);
+        //         dev.error('ffmpeg standard output:\n' + stdout);
+        //         dev.error('ffmpeg standard error:\n' + stderr);
+        //         reject(`couldn't convert an audio file`);
+        //       })
+        //       .run();
+        //   });
+        // }
+        else {
           let finalPath = path.join(uploadDir, newFileName);
           fs.renameSync(tempPath, finalPath);
           resolve(newFileName);
@@ -1093,7 +1138,11 @@ module.exports = (function() {
               });
             })
             .then(() => {
-              return thumbs.removeMediaThumbs(slugFolderName, metaFileName);
+              return thumbs.removeMediaThumbs(
+                slugFolderName,
+                type,
+                mediaFileName
+              );
             })
             .then(() => {
               resolve();
@@ -1363,7 +1412,8 @@ module.exports = (function() {
                 slugFolderName,
                 mediaData.media_filename,
                 mediaData.type,
-                type
+                type,
+                'medias'
               )
               .then(thumbData => {
                 mediaData.thumbs = thumbData;
@@ -1422,20 +1472,34 @@ module.exports = (function() {
       });
     });
   }
-  function _storeFoldersPreview(thisFolderPath, preview_rawdata) {
+
+  function _storeFoldersPreview(slugFolderName, type, preview_rawdata) {
     return new Promise((resolve, reject) => {
       dev.logfunction(
-        `COMMON — _storeFoldersPreview : will store preview for folder at path: ${thisFolderPath}`
+        `COMMON — _storeFoldersPreview : will store preview for folder: ${slugFolderName}`
       );
-      const pathToPreview = path.join(
-        thisFolderPath,
-        settings.folderPreviewFilename + settings.thumbExt
-      );
+
+      const baseFolderPath = settings.structure[type].path;
+      const mainFolderPath = api.getFolderPath(baseFolderPath);
+      const thisFolderPath = path.join(mainFolderPath, slugFolderName);
+
+      const preview_filename =
+        settings.folderPreviewFilename + settings.thumbExt;
+
+      const pathToPreview = path.join(thisFolderPath, preview_filename);
 
       dev.logverbose(
         `COMMON — _storeFoldersPreview : Removing existing preview at ${pathToPreview}`
       );
+
       fs.remove(pathToPreview)
+        .then(() => {
+          return thumbs.removeMediaThumbs(
+            slugFolderName,
+            type,
+            preview_filename
+          );
+        })
         .then(() => {
           if (preview_rawdata === '') {
             dev.logverbose(
@@ -1451,6 +1515,7 @@ module.exports = (function() {
             if (err) reject(err);
             image
               .quality(settings.mediaThumbQuality)
+              .scaleToFit(settings.structure[type].preview.width, settings.structure[type].preview.height)
               .write(pathToPreview, function(err, info) {
                 if (err) reject(err);
                 dev.logverbose(
@@ -1574,7 +1639,7 @@ module.exports = (function() {
           }
         } else if (val.hasOwnProperty('default')) {
           output_obj[key] =
-            val.default === 'random' ? Math.random() * 0.5 : val.default;
+            val.default === 'random' ? Math.random() : val.default;
         }
       } else if (type === 'array') {
         if (
@@ -1600,14 +1665,14 @@ module.exports = (function() {
   }
 
   function _sanitizeMetaFromFile({ type, type_two, meta }) {
-    dev.logverbose(
-      `COMMON — _sanitizeMetaFromFile : 
-      will sanitize a new default meta object 
-      for type ${type} 
-      and type_two ${type_two} 
-      with existing = ${JSON.stringify(meta)}
-      `
-    );
+    // dev.logverbose(
+    //   `COMMON — _sanitizeMetaFromFile :
+    //   will sanitize a new default meta object
+    //   for type ${type}
+    //   and type_two ${type_two}
+    //   with existing = ${JSON.stringify(meta)}
+    //   `
+    // );
     let new_meta = {};
 
     const fields =
@@ -1633,11 +1698,11 @@ module.exports = (function() {
         }
       }
     });
-    dev.logverbose(
-      `COMMON — _sanitizeMetaFromFile : 
-      sanitized to ${JSON.stringify(new_meta)}
-      `
-    );
+    // dev.logverbose(
+    //   `COMMON — _sanitizeMetaFromFile :
+    //   sanitized to ${JSON.stringify(new_meta)}
+    //   `
+    // );
     return new_meta;
   }
 

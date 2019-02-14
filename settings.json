@@ -2,6 +2,7 @@
   "protocol": "https",
   "host": "localhost",
   "port": 8080,
+  "http_port": "",
   "userDirPath": "documents",
   "userDirname": "dodoc2",
 
@@ -13,6 +14,9 @@
   "folderMetaFilename" : "meta",
   "folderPreviewFilename" : "meta_preview",
 
+  "privateKeyPath": "",
+  "certificatePath": "",
+
   "metaDateFormat" : "YYYYMMDD_HHmmss",
   "textEncoding" : "UTF-8",
   "thumbFolderName" : "_thumbs",
@@ -20,7 +24,6 @@
 
   "mediaThumbQuality" : 70,
 
-  "_comment" : "// see http://regexr.com/3d4t8",
   "regexpMatchFolderNames" : "^([^.]+)$",
   "regexpGetFileExtension" : "\\.[^.]*$",
   "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)",
@@ -28,6 +31,13 @@
   "structure" : {
     "projects": {
       "path": "",
+      "preview": {
+        "width": 1200,
+        "height": 1200,
+        "thumbs": {
+          "resolutions": [50, 320, 640]          
+        }
+      },
       "fields": {
         "name": {
           "type": "string"
@@ -52,9 +62,6 @@
           "type": "array"
         },      
         "description": {
-          "type": "string"
-        },
-        "preview": {
           "type": "string"
         }
       },
@@ -100,8 +107,8 @@
             "type": "array"
           },
           "keywords": {
-            "type": "string"
-          },
+            "type": "array"
+          },      
           "caption": {
             "type": "string"
           }  
@@ -110,6 +117,13 @@
     },
     "authors": {
       "path": "_authors",
+      "preview": {
+        "width": 1200,
+        "height": 1200,
+        "thumbs": {
+          "resolutions": [180, 640]          
+        }
+      },
       "fields": {
         "name": {
           "type": "string"
@@ -121,9 +135,6 @@
         "description": {
           "type": "string"
         },
-        "preview": {
-          "type": "string"
-        },
         "nfc_tag": {
           "type": "string"
         }
@@ -131,6 +142,13 @@
     },
     "publications": {
       "path": "_publications",
+      "preview": {
+        "width": 1200,
+        "height": 1200,
+        "thumbs": {
+          "resolutions": [180, 640]          
+        }
+      },
       "fields": {
         "name": {
           "type": "string"
@@ -140,7 +158,7 @@
           "read_only": true        
         },
         "authors": {
-          "type": "string"
+          "type": "array"
         },
         "date_created": {
           "type": "date",
@@ -154,17 +172,14 @@
         "description": {
           "type": "string"
         },
-        "preview": {
-          "type": "string"
-        },
         "template": {
           "type": "string",
-          "options": ["page_by_page"],
+          "options": ["page_by_page", "video_assemblage"],
           "default": "page_by_page"          
         },
         "style": {
           "type": "string",
-          "options": ["standard", "feuille de choux"],
+          "options": ["standard", "feuille de choux", "human tech days"],
           "default": "standard"          
         },
         "width": {
@@ -196,6 +211,9 @@
         },
         "pages": {
           "type": "array"
+        },
+        "medias_slugs": {
+          "type": "array"
         }
       },
       "medias": {
@@ -211,6 +229,9 @@
             "default": "current"
           },
           "authors": {
+            "type": "array"
+          },
+          "custom_css": {
             "type": "string"
           },
           "page_id": {
@@ -220,6 +241,9 @@
             "type": "number"
           },
           "y": {
+            "type": "number"
+          },
+          "rotate": {
             "type": "number"
           },
           "width": {
@@ -244,12 +268,12 @@
           "default": "current"
         },
         "authors": {
-          "type": "string"
+          "type": "array"
         }
       },
       "medias": {
         "thumbs": {
-          "resolutions": [360]
+          "resolutions": [150, 1600]
         },
         "fields": {
           "date_uploaded" : {
@@ -264,6 +288,9 @@
             "type": "string",
             "options": ["image"],
             "default": "other"
+          },
+          "authors": {
+            "type": "array"
           }
         }
       } 

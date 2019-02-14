@@ -8,7 +8,7 @@
         { 'is_minimized' : is_minimized }
       ]"
       @mousedown.self="/* closeModal */"
-      :style="`height: ${window_innerHeight}px`"
+      :style="`height: ${$root.settings.windowHeight}px`"
     >
       <div class="m_modal--container"
         :class="[
@@ -131,7 +131,7 @@
 
       <transition name="fade" :duration="600">
         <button
-          class="button-round bg-transparent m_modal--close_button padding-verysmall"
+          class="button-round m_modal--close_button padding-verysmall"
           @click="closeModal"
           v-if="showModal && !is_minimized"
         >
@@ -141,12 +141,32 @@
 
       <transition name="fade" :duration="600">
         <button
-          class="button-round bg-transparent m_modal--minimize_button padding-verysmall"
+          class="button-round bg-blanc m_modal--minimize_button padding-verysmall"
           @click="toggleMinimize"
           v-if="showModal && can_minimize"
           :class="{ 'is_minimized' : is_minimized }"
         >
           <img src="/images/i_minimize.svg">
+        </button>
+      </transition>
+
+      <transition name="fade" :duration="600">
+        <button
+          class="button-round bg-blanc m_modal--nav_left padding-verysmall"
+          @click="prevMedia()"
+          v-if="showModal && media_navigation && !is_minimized"
+        >
+          <img src="/images/i_arrow_left.svg">
+        </button>
+      </transition>
+
+      <transition name="fade" :duration="600">
+        <button
+          class="button-round bg-blanc m_modal--nav_right padding-verysmall"
+          @click="nextMedia()"
+          v-if="showModal && media_navigation && !is_minimized"
+        >
+          <img src="/images/i_arrow_right.svg">
         </button>
       </transition>
 
@@ -186,6 +206,10 @@ export default {
       type: Boolean,
       default: false
     },
+    media_navigation: {
+      type: Boolean,
+      default: false
+    },
     is_minimized: {
       type: Boolean,
       default: false
@@ -194,6 +218,7 @@ export default {
   data() {
     return {
       showModal: false,
+      windowHeight: window.innerHeight
     };
   },
   mounted: function() {
@@ -220,13 +245,6 @@ export default {
     },100);
   },
   computed: {
-    window_innerHeight() { 
-      let wHeight = window.innerHeight;
-      // if(this.$root.settings.enable_system_bar) {
-      //   // wHeight -= 22;
-      // }
-      return wHeight; 
-    }
   },
   methods: {
     modalKeyListener: function(event) {
@@ -239,16 +257,19 @@ export default {
         return
       }
 
-      if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
+      if (event.target.tagName.toLowerCase() === 'input' 
+        || event.target.tagName.toLowerCase() === 'textarea'
+        || event.target.className.includes('ql-editor')
+      ) {
         return;
-      }      
-
+      }  
+      
       if (event.key === 'ArrowRight') {
-        this.$emit('arrow_right');
+        this.nextMedia();
         return;
       }
       if (event.key === 'ArrowLeft') {
-        this.$emit('arrow_left');
+        this.prevMedia();
         return;
       }
     },
@@ -264,6 +285,24 @@ export default {
       setTimeout(() => {
         this.$emit('close');
       }, 400);
+    },
+    prevMedia: function() {
+      console.log(`METHODS • BaseModal: prevMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
+      if(this.askBeforeClosingModal) {
+        if (!window.confirm(this.$t('sureToCloseModal'))) {
+          return;
+        }
+      }
+      this.$eventHub.$emit('modal.prev_media');
+    },
+    nextMedia: function() {
+      console.log(`METHODS • BaseModal: nextMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
+      if(this.askBeforeClosingModal) {
+        if (!window.confirm(this.$t('sureToCloseModal'))) {
+          return;
+        }
+      }
+      this.$eventHub.$emit('modal.next_media');
     },
     toggleMinimize: function() {
       console.log(`METHODS • BaseModal: toggleMinimize`);

@@ -1,4 +1,6 @@
 var express = require('express');
+
+var http = require('http');
 var https = require('https');
 var fs = require('fs');
 var path = require('path');
@@ -11,31 +13,52 @@ var dev = require('./core/dev-log');
 // var ngrok = require('ngrok');
 
 const sockets = require('./core/sockets'),
+  setup_realtime_collaboration = require('./server-realtime_text_collaboration.js'),
   router = require('./router'),
   settings = require('./settings.json');
 
-module.exports = function(electronApp) {
+module.exports = function() {
   dev.logverbose('Starting server 1');
 
-  var app = express();
+  const app = express();
+
   app.use(compression());
 
   // only for HTTPS, works without asking for a certificate
-  const privateKey = fs.readFileSync(
-    path.join(__dirname, 'ssl', 'file.pem'),
-    'utf8'
-  );
-  const certificate = fs.readFileSync(
-    path.join(__dirname, 'ssl', 'file.crt'),
-    'utf8'
-  );
-  const options = { key: privateKey, cert: certificate };
+  const privateKeyPath = !!settings.privateKeyPath
+    ? settings.privateKeyPath
+    : path.join(__dirname, 'ssl', 'file.pem');
 
-  let server = https.createServer(options, app);
+  const certificatePath = !!settings.certificatePath
+    ? settings.certificatePath
+    : path.join(__dirname, 'ssl', 'file.crt');
+
+  const options = {
+    key: fs.readFileSync(privateKeyPath),
+    cert: fs.readFileSync(certificatePath)
+  };
+
+  if (settings.protocol === 'https' && settings.http_port !== '') {
+    // redirect from http (port 80) to https (port 443)
+    http
+      .createServer((req, res) => {
+        res.writeHead(301, {
+          Location: 'https://' + req.headers['host'] + req.url
+        });
+        res.end();
+      })
+      .listen(settings.http_port);
+  }
+
+  let server =
+    settings.protocol === 'https'
+      ? https.createServer(options, app)
+      : http.createServer(app);
+
   var io = require('socket.io').listen(server);
-  dev.logverbose('Starting server 2');
 
-  var m = sockets.init(app, io, electronApp);
+  dev.logverbose('Starting server 2');
+  sockets.init(app, io);
 
   dev.logverbose('Starting express-settings');
 
@@ -58,7 +81,9 @@ module.exports = function(electronApp) {
   app.use(bodyParser.json());
   app.locals.pretty = true;
 
-  router(app, io, m);
+  // setup_realtime_collaboration(server);
+
+  router(app);
 
   server.listen(app.get('port'), () => {
     dev.log(

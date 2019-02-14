@@ -20,7 +20,10 @@
 
   @media screen and (max-width: 50rem) {
     align-items: flex-start;
-    height: auto !important;
+    overflow: scroll !important;
+    padding: 0 !important;
+    height: 100% !important;
+    .bg-blanc;
   }
 
   &.is_invisible {
@@ -126,6 +129,7 @@
 
         @media screen and (max-width: 50rem) {
           max-height: none;
+          flex: 1 1 400px;
         }
 
         &.is_collapsed {
@@ -139,10 +143,6 @@
         overflow: hidden;
         border-right: 1px solid @c-gris_clair;
         
-        @media screen and (max-width: 50rem) {
-          height: 50vh;          
-        }         
-
       }
     }
 
@@ -168,28 +168,59 @@
 .m_modal--mask {
 
   &.typeOfModal-LargeAndScroll {
-    padding-top: @t-skipline;
+    // padding-top: @t-skipline;
+    .padding-vert-large;
+    // padding-top: @t-skipline;
     overflow-y: auto;
     .m_modal--container {  
-      max-width: @t-panelWidth * 3;
+      max-width: @t-panelWidth * 4;
       align-self: flex-start;
       .m_modal--preview {
         height: auto;
+        @media screen and (max-width: 50rem) {
+          position: relative;
+        }
+      }
+      @media screen and (min-width: 50rem) {
+        width: 90vw;
+      }
+
+      .m_modal--sidebar {
+        margin-top: 0;
       }
     }
   }
+  &.typeOfModal-ExportVideo {
+    .m_modal--container {  
+      // max-width: @t-panelWidth * 4;
+    }
+  }
+
   &.typeOfModal-LargeAndNoScroll {
     overflow: hidden;
 
     .m_modal--container {   
       margin: 0;
-      max-width: @t-panelWidth * 3;
+      max-width: @t-panelWidth * 4;
       // align-self: flex-start;
       .m_modal--preview {
         @media screen and (min-width: 50rem) {
           min-height: 70vh;
         }
-      }    
+        @media screen and (max-width: 50rem) {
+          position: fixed;
+          height: 50vh;         
+        }
+      }  
+      .m_modal--sidebar {
+        @media screen and (max-width: 50rem) {
+          margin-top: 50vh;
+        }      
+      }
+      
+      @media screen and (min-width: 50rem) {
+        width: 90vw;
+      }
     }
   }
   &.typeOfModal-SmallAndScroll {
@@ -251,6 +282,7 @@
   position: relative;
   display: flex;
   flex-flow: column nowrap;
+  .bg-blanc;
 
   > * {
     flex: 0 0 auto;
@@ -284,6 +316,13 @@
         // .margin-vert-small;
         .padding-sides-small;
         text-align: center;
+
+        @media screen and (max-width: 50rem) {
+          > a, > button {
+            font-size:0.7rem;
+            padding: 0;
+          }
+        }
       }
 
       &:first-child {
@@ -312,6 +351,7 @@
     height: 100%;
     overflow: hidden;
     position: relative;
+    .bg-blanc;
     .bg-gris_clair;
 
     &[data-context="edit"] {
@@ -400,6 +440,24 @@
     transform: scale(-1) rotate(-360deg);
   }
 
+  @media screen and (max-width: 40rem) {
+    display: none;
+  }
+}
+.m_modal--nav_left, .m_modal--nav_right {
+  position: fixed;
+  top: ~"calc(50% - 40px)";
+  z-index: 1500;
+
+  @media screen and (max-width: 50rem) {
+
+  }
+}
+.m_modal--nav_left {
+  left:0;
+}
+.m_modal--nav_right {
+  right: 0;
 }
 
 .m_modal--header {
@@ -419,11 +477,24 @@
   display: flex;
   justify-content: center;
 
+  min-height: 4em;
+
   button {
     .margin-verysmall;
   }
 
   button[type="submit"] {
+
+    @media screen and (max-width: 50rem) {
+      position: fixed;
+      z-index: 1000;
+      bottom: 1em;
+      left: 50%;
+      width: 10em;
+      transform: translateX(-50%);
+      text-align: center;    
+      min-height: 0;
+    }
   } 
 
 }

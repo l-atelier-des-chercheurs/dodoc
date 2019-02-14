@@ -4,7 +4,7 @@
       <div class="m_topbar--left--logo" >
         <transition name="BackButton" :duration="500">
           <button class="backButton text-ellipsis" type="button" v-if="has_back_button" @click="goBack()">
-            ‹ {{ $t('back') }}
+            ‹ <span class="backButton--text">{{ $t('back') }}</span>
           </button>
         </transition>
         <img src="/images/i_logo.svg" @click="goHome()" />
@@ -13,13 +13,13 @@
       <div 
         class="m_topbar--left--breadcrumb" 
       >
-        <button type="button"
+        <!-- <button type="button"
           @click="$root.closeProject"        
         >
           <span>
             {{ $t('projects') }}
           </span>
-        </button>
+        </button> -->
         
         <button type="button"
           v-if="project.hasOwnProperty('name')" 
@@ -46,14 +46,31 @@
           </span>
         </button> -->
       </div>
+
+
+      <button type="button" class="m_topbar--left--menuButton"
+        v-if="menu_is_enabled"
+        @click="toggleMenu()"
+      >
+        <svg version="1.1"
+            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+            x="0px" y="0px" width="20px" height="20px" viewBox="0 0 90 90" style="enable-background:new 0 0 90 90;" xml:space="preserve">
+          <rect class="st0" width="108.2" height="21"/>
+          <rect y="36.5" class="st0" width="108.2" height="21"/>
+          <rect y="73" class="st0" width="108.2" height="21"/>
+        </svg>
+      </button>
     </div>
 
-    <div class="m_topbar--center">
+    <div 
+      v-if="!menu_is_enabled || (menu_is_enabled && show_menu)"
+      class="m_topbar--center"
+    >
       <div class="m_topbar--center--authors">
         <button type="button" @click="showAuthorsListModal = true">
           <template v-if="!!$root.settings.current_author">
             <div class="m_topbar--center--authors--portrait"
-              v-if="$root.settings.current_author.preview !== ''"
+              v-if="$root.settings.current_author.hasOwnProperty('preview') && $root.settings.current_author.preview.length !== ''"
             >
               <img :src="urlToPortrait($root.settings.current_author.slugFolderName, $root.settings.current_author.preview)" width="100" height="100"
               >              
@@ -78,8 +95,10 @@
       </div>
     </div>
 
-    <div class="m_topbar--right">
-
+    <div 
+      v-if="!menu_is_enabled || (menu_is_enabled && show_menu)"
+      class="m_topbar--right"
+    >
       <div class="m_topbar--right--pictos">
 
         <button type="button" @click="$root.switchLang()">
@@ -148,31 +167,48 @@ export default {
   data() {
     return {
       showQRModal: false,
-      showAuthorsListModal: false
+      showAuthorsListModal: false,
+
+      menu_is_enabled: false,
+      show_menu: false
     }
   },
   created() {
   },
   mounted() {
+    this.menuVisibility();
+
   },
   beforeDestroy() {
   },
   watch: {
+    '$root.settings.windowWidth': function() {
+      this.menuVisibility();
+    }
   },
   computed: {
   },
   methods: {
+    menuVisibility() {
+      if(this.$root.settings.windowWidth < 820) {
+        this.menu_is_enabled = true;
+      } else {
+        this.menu_is_enabled = false;
+      }
+    },
     goBack() {
       this.$root.navigation_back();
     },
     goHome() {
       this.$root.closeProject();
     },
-    urlToPortrait(slug, filename) {
-      if(filename === undefined) {
-        return '';
-      }
-      return `/${this.$root.state.authorsFolder}/${slug}/${filename}`;
+    toggleMenu() {
+      this.show_menu = !this.show_menu;
+    },
+    urlToPortrait(slug, preview) {
+      if(!preview) return '';
+      let pathToSmallestThumb = preview.filter(m => m.size === 180)[0].path;
+      return pathToSmallestThumb;
     }
   }
 }

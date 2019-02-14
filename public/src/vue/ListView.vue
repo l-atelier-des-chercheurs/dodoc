@@ -1,7 +1,7 @@
 <template>
   <div class="m_listview"
   >
-    <main class="m_projects">
+    <main class="m_projects main_scroll_panel">
       <div class="m_actionbar">
         <div class="m_actionbar--buttonBar">
           <button
@@ -28,8 +28,8 @@
                 {{ $t('projects') }}
               </span>  
             </label>
-            <input type="checkbox" id="switch-xs" v-model="show_medias_instead_of_projects">
-            <label for="switch-xs">
+            <input type="checkbox" id="media_switch" v-model="show_medias_instead_of_projects">
+            <label for="media_switch">
               <span class=""> 
                 {{ $t('medias') }}
               </span>  
@@ -53,6 +53,8 @@
                 </template>
                 <TagsAndAuthorFilters
                   v-if="show_filters"
+                  :allKeywords="projectsKeywords"
+                  :allAuthors="projectsAuthors"
                   :keywordFilter="$root.settings.project_filter.keyword"
                   :authorFilter="$root.settings.project_filter.author"
                   @setKeywordFilter="a => $root.setProjectKeywordFilter(a)"
@@ -76,6 +78,8 @@
 
                 <TagsAndAuthorFilters
                   v-if="show_filters"
+                  :allKeywords="mediasKeywords"
+                  :allAuthors="mediasAuthors"
                   :keywordFilter="$root.settings.media_filter.keyword"
                   :authorFilter="$root.settings.media_filter.author"
                   :favFilter="$root.settings.media_filter.fav"
@@ -111,7 +115,7 @@
       </template>
       <template v-else>
         <transition-group
-          class="m_projects--list"
+          class="m_projects--list mini_scroll_panel"
           name="list-complete"
         >
           <div v-for="item in groupedMedias" :key="item[0]">
@@ -200,6 +204,18 @@ export default {
     }
   },
   computed: {
+    projectsKeywords: function() {
+      return this.$root.getAllKeywordsFrom(this.projects);
+    },
+    projectsAuthors: function() {
+      return this.$root.getAllAuthorsFrom(this.projects);      
+    },
+    mediasKeywords: function() {
+      return this.$root.getAllKeywordsFrom(this.filteredMedias);      
+    },
+    mediasAuthors: function() {
+      return this.$root.getAllAuthorsFrom(this.filteredMedias);      
+    },
     sortedProjectsSlug: function() {
       var sortable = [];
 

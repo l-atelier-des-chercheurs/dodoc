@@ -15,7 +15,7 @@
         :class="{ 'is--hovered' : is_hovered }"
       >
         <div>
-          <div class="m_metaField padding-sides-small" v-if="!!media.type">
+          <div class="m_metaField padding-sides-verysmall" v-if="!!media.type">
             <div>
               {{ $t(media.type) }}
             </div>
@@ -147,10 +147,8 @@ export default {
           const currentPubli = this.$root.store.publications[this.$root.settings.current_slugPubliName];
           if(currentPubli.hasOwnProperty('medias') && Object.keys(currentPubli.medias).length > 0) {
 
-            const media_in_publi = this.$_.findWhere(currentPubli.medias, {
-              slugMediaName: this.metaFileName 
-            });
-            if(media_in_publi) {
+            const media_in_publi = Object.values(currentPubli.medias).filter(s => s.slugMediaName === this.metaFileName);
+            if(media_in_publi.length > 0) {
               this.media_is_in_current_publi = true;
             } else {
               this.media_is_in_current_publi = false;

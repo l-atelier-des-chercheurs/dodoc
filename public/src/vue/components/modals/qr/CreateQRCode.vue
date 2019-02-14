@@ -18,10 +18,6 @@
         >
           {{ $t('print') }} 
         </button>
-
-        <CreateQRCode 
-        >
-        </CreateQRCode>
       </div>
       <div class="m_qrSnippet--text">
         <a 

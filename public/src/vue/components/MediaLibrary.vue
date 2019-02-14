@@ -3,7 +3,7 @@
     <div class="m_actionbar" v-show="$root.state.connected">
       <div class="m_actionbar--buttonBar">
         <button type="button" class="barButton barButton_capture" 
-          v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass')"
+          v-if="((project.password === 'has_pass') || project.password !== 'has_pass')"
           @click="openCapture"
           :disabled="read_only"
         >
@@ -13,7 +13,7 @@
         </button>
 
         <button type="button" class="barButton barButton_import" 
-          v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass')"
+          v-if="((project.password === 'has_pass') || project.password !== 'has_pass')"
           @click="showImportModal = true"
         ><span>    
           {{ $t('import') }}
@@ -21,7 +21,8 @@
         <UploadFile
           v-if="showImportModal"
           @close="showImportModal = false"
-          :slugProjectName="slugProjectName"
+          :slugFolderName="slugProjectName"
+          :type="'projects'"
           :read_only="read_only"
         />
 
@@ -49,10 +50,10 @@
           >{{ $t('filters') }}</button>
         </template>
 
-        {{ $root.settings.media_filter.fav }}
-
         <template v-if="!show_medias_instead_of_projects && show_filters">
           <TagsAndAuthorFilters
+            :allKeywords="mediaKeywords"
+            :allAuthors="mediaAuthors"
             :keywordFilter="$root.settings.media_filter.keyword"
             :authorFilter="$root.settings.media_filter.author"
             :favFilter="$root.settings.media_filter.fav"
@@ -64,19 +65,18 @@
       </div>
     </div>
 
-      <transition-group
-        class="m_project--library--medias"
-        name="list-complete"
-      >
-        <MediaCard
-          v-for="media in sortedMedias"
-          :key="media.slugMediaName"
-          :media="media"
-          :metaFileName="media.metaFileName"
-          :slugProjectName="slugProjectName"
-        >
-        </MediaCard>
-      </transition-group>
+    <transition-group
+      class="m_project--library--medias"
+      name="list-complete"
+    >
+      <MediaCard
+        v-for="media in sortedMedias"
+        :key="media.slugMediaName"
+        :media="media"
+        :metaFileName="media.metaFileName"
+        :slugProjectName="slugProjectName"
+      />
+    </transition-group>
     
   </div>    
 </template>
@@ -114,10 +114,18 @@ export default {
     }
   },
   created() {
-    document.addEventListener('dragover', this.fileDragover);
+    // document.addEventListener('dragover', this.fileDragover);
+    this.$eventHub.$on('modal.prev_media', this.prevMedia);
+    this.$eventHub.$on('modal.next_media', this.nextMedia);
   },
   beforeDestroy() {
-    document.removeEventListener('dragover', this.fileDragover);
+    // document.removeEventListener('dragover', this.fileDragover);
+    this.$root.settings.media_filter.author = false;
+    this.$root.settings.media_filter.keyword = false;
+    this.$root.settings.media_filter.fav = false;
+    
+    this.$eventHub.$off('modal.prev_media', this.prevMedia);
+    this.$eventHub.$off('modal.next_media', this.nextMedia);
   },
   watch: {
   },
@@ -128,6 +136,13 @@ export default {
         return 0;
       }
       return Object.keys(this.project.medias).length;
+    },
+    mediaKeywords() {
+      // grab all keywords from this.project.medias
+      return this.$root.getAllKeywordsFrom(this.project.medias);      
+    },
+    mediaAuthors() {
+      return this.$root.getAllAuthorsFrom(this.project.medias);      
     },
     sortedMedias() {
       var sortable = [];
@@ -205,6 +220,24 @@ export default {
     fileDragover() {
       this.showImportModal = true;
     },
+    prevMedia() {
+      this.mediaNav(-1);
+    },
+    nextMedia() {
+      this.mediaNav(+1);
+    },
+    mediaNav(relative_index) {
+      const current_media_index = this.sortedMedias.findIndex(m => m.metaFileName === this.$root.media_modal.current_metaFileName);
+      const new_media = this.sortedMedias[current_media_index + relative_index];
+      this.$root.closeMedia();
+      
+      if(!!new_media) {
+        this.$nextTick(() => {
+          this.openMediaModal(new_media.metaFileName);
+        });
+      }
+
+    },
     openMediaModal(metaFileName) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaLibrary: openMediaModal');
@@ -217,7 +250,7 @@ export default {
         slugFolderName: this.slugProjectName,
         type: 'projects',
         additionalMeta: {
-          type: 'text'          
+          type: 'text'
         }
       });
     },

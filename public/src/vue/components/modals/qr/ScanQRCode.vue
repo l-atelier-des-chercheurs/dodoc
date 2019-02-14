@@ -59,10 +59,10 @@ export default {
           if (cameras.length > 0) {
             var selectedCam = cameras[0];
             $.each(cameras, (i, c) => {
-                if (c.name.indexOf('back') != -1) {
-                    selectedCam = c;
-                    return false;
-                }
+              if (c.hasOwnProperty('name') && c.name.indexOf('back') != -1) {
+                selectedCam = c;
+                return false;
+              }
             });
             this.scanner.start(selectedCam);
           } else {

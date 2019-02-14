@@ -22,7 +22,7 @@
             </template>
             <template v-else-if="pdf_request_status === 'waiting_for_server'"> 
               <span class="loader loader-xs" />
-              {{ $t('pdf_creation_in_progress') }}
+              {{ $t('creation_in_progress') }}
             </template>
             <template v-else-if="pdf_request_status === 'generated'">
               {{ $t('pdf_created') }}
@@ -104,7 +104,7 @@ export default {
   methods: {
     downloadPDF() {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: downloadPDF`);
+        console.log(`METHODS • ExportPagePubli: downloadPDF`);
       }
 
       this.link_to_pdf = false;
@@ -119,7 +119,7 @@ export default {
     },
     publiIsGenerated({ pdfName, pdfPath }) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: downloadPDF`);
+        console.log(`METHODS • Publication: publiIsGenerated`);
       }
       this.$eventHub.$off('socketio.publication.pdfIsGenerated', this.publiIsGenerated);
 

@@ -1,9 +1,10 @@
 <template>
   <div 
     class="m_publicationview" 
-    :class="{ 'is--preview' : preview_mode }"
+    :class="{ 'is--preview' : preview_mode, 'is--fullscreen' : fullscreen_mode }"
     @scroll="onScroll"
     ref="panel"
+    :style="customCSSVars"
   >
     <div class="m_publicationMeta">
       <div class="m_publicationMeta--topbar">
@@ -14,11 +15,11 @@
           ←
         </button>
 
-        <div class="m_publicationMeta--topbar--title">
+        <div class="m_publicationMeta--topbar--title" :title="slugPubliName">
           {{ publication.name }}
         </div>
 
-        <template 
+        <template
           v-if="$root.state.mode !== 'export_publication'"
         >
           <div class="margin-small">
@@ -48,31 +49,37 @@
 
         <div class="margin-bottom-small">
           <label>{{ $t('name') }}</label>
-          <input class="input-large input-big" type="text" v-model="new_publiname" @change="updatePublicationOption('name')" required :readonly="read_only">
+          <input class="input-large input-big" type="text" v-model="new_publiname" @change="updatePublicationOption($event, 'name')" required :readonly="read_only">
         </div>
 
         <hr>
 
-        <div class="margin-bottom-small">
+        <!-- <div class="margin-bottom-small">
           <label>{{ $t('format') }}</label>
           <select v-model="new_template">
             <option value="page_by_page">
               {{ $t('page_by_page') }}
             </option>
+            <option value="video_assemblage">
+              {{ $t('video_assemblage') }}
+            </option>
             <option value="web" disabled>
               {{ $t('web') }}
             </option>
           </select>
-        </div>
+        </div> -->
 
         <div class="margin-bottom-small">
           <label>{{ $t('template') }}</label>
-          <select v-model="new_style" @change="updatePublicationOption('style')">
+          <select v-model="new_style" @change="updatePublicationOption($event, 'style')">
             <option value="standard">
               {{ $t('standard') }}
             </option>
             <option value="feuille de choux">
               {{ $t('feuille de choux') }}
+            </option>
+            <option value="human tech days">
+              {{ $t('human tech days') }}
             </option>
           </select>
         </div>
@@ -81,48 +88,48 @@
 
         <div class="margin-bottom-small">
           <label>{{ $t('header_left') }}</label>
-          <input class="input-large" type="text" v-model="new_header_left" @change="updatePublicationOption('header_left')" :readonly="read_only">
+          <input class="input-large" type="text" v-model="new_header_left" @change="updatePublicationOption($event, 'header_left')" :readonly="read_only">
         </div>
 
         <div class="margin-bottom-small">
           <label>{{ $t('header_right') }}</label>
-          <input class="input-large" type="text" v-model="new_header_right" @change="updatePublicationOption('header_right')" :readonly="read_only">
+          <input class="input-large" type="text" v-model="new_header_right" @change="updatePublicationOption($event, 'header_right')" :readonly="read_only">
         </div>
 
         <hr>
 
         <div class="margin-bottom-small">
           <label>{{ $t('width') }}(mm)</label>
-          <input type="number" min="1" max="1000" step="1" v-model="new_width" @input="updatePublicationOption('width')">
+          <input type="number" min="1" max="1000" step="1" v-model="new_width" @input="updatePublicationOption($event, 'width')">
         </div>
 
         <div class="margin-bottom-small">
           <label>{{ $t('height') }}(mm)</label>
-          <input type="number" min="1" max="1000" step="1" v-model="new_height" @input="updatePublicationOption('height')">
+          <input type="number" min="1" max="1000" step="1" v-model="new_height" @input="updatePublicationOption($event, 'height')">
         </div>
 
         <div class="margin-bottom-small">
           <label>{{ $t('gridstep') }}(mm)</label>
-          <input type="number" min="2" max="100" step="1" v-model="new_gridstep" @input="updatePublicationOption('gridstep')">
+          <input type="number" min="2" max="100" step="1" v-model="new_gridstep" @input="updatePublicationOption($event, 'gridstep')">
         </div>
 
         <hr>
 
         <div class="margin-bottom-small">
           <label>{{ $t('margin_top') }}(mm)</label>
-          <input type="number" min="0" max="100" step="1" v-model="new_margin_top" @input="updatePublicationOption('margin_top')">
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_top" @input="updatePublicationOption($event, 'margin_top')">
         </div>
         <div class="margin-bottom-small">
           <label>{{ $t('margin_bottom') }}(mm)</label>
-          <input type="number" min="0" max="100" step="1" v-model="new_margin_bottom" @input="updatePublicationOption('margin_bottom')">
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_bottom" @input="updatePublicationOption($event, 'margin_bottom')">
         </div>
         <div class="margin-bottom-small">
           <label>{{ $t('margin_left') }}(mm)</label>
-          <input type="number" min="0" max="100" step="1" v-model="new_margin_left" @input="updatePublicationOption('margin_left')">
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_left" @input="updatePublicationOption($event, 'margin_left')">
         </div>
         <div class="margin-bottom-small">
           <label>{{ $t('margin_right') }}(mm)</label>
-          <input type="number" min="0" max="100" step="1" v-model="new_margin_right" @input="updatePublicationOption('margin_right')">
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_right" @input="updatePublicationOption($event, 'margin_right')">
         </div>
       </template>
     </div>
@@ -148,6 +155,61 @@
         </g>
         </svg>
       </button>
+
+      <!-- <button 
+        class="margin-vert-verysmall font-verysmall" 
+        style="padding: 9px"
+        @click="printThisPublication()"
+      >
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="160.3px"
+	 height="140.9px" viewBox="0 0 147.3 128.9" style="enable-background:new 0 0 147.3 128.9;" xml:space="preserve">
+<defs>
+</defs>
+<path d="M139.9,88.4V44.2 M139.9,88.4V44.2 M0,88.4V44.2 M147.3,88.4V44.2 M97.6,86.5H49.7c-2,0-3.7,1.7-3.7,3.7s1.7,3.7,3.7,3.7
+	h47.9c2,0,3.7-1.7,3.7-3.7S99.6,86.5,97.6,86.5 M97.6,105H49.7c-2,0-3.7,1.7-3.7,3.7s1.7,3.7,3.7,3.7h47.9c2,0,3.7-1.7,3.7-3.7
+	S99.6,105,97.6,105 M97.6,86.5H49.7c-2,0-3.7,1.7-3.7,3.7s1.7,3.7,3.7,3.7h47.9c2,0,3.7-1.7,3.7-3.7S99.6,86.5,97.6,86.5 M97.6,105
+	H49.7c-2,0-3.7,1.7-3.7,3.7s1.7,3.7,3.7,3.7h47.9c2,0,3.7-1.7,3.7-3.7S99.6,105,97.6,105 M97.6,105H49.7c-2,0-3.7,1.7-3.7,3.7
+	s1.7,3.7,3.7,3.7h47.9c2,0,3.7-1.7,3.7-3.7S99.6,105,97.6,105 M97.6,86.5H49.7c-2,0-3.7,1.7-3.7,3.7s1.7,3.7,3.7,3.7h47.9
+	c2,0,3.7-1.7,3.7-3.7S99.6,86.5,97.6,86.5 M49.7,93.9h47.9c2,0,3.7-1.7,3.7-3.7s-1.7-3.7-3.7-3.7H49.7c-2,0-3.7,1.7-3.7,3.7
+	S47.7,93.9,49.7,93.9 M97.6,105H49.7c-2,0-3.7,1.7-3.7,3.7s1.7,3.7,3.7,3.7h47.9c2,0,3.7-1.7,3.7-3.7S99.6,105,97.6,105 M132.6,29.5
+	h-12.9V3.7c0-2-1.7-3.7-3.7-3.7H31.3c-2,0-3.7,1.7-3.7,3.7v25.8H14.7C6.6,29.5,0,36.1,0,44.2v44.2c0,8.1,6.6,14.7,14.7,14.7h12.9
+	v22.1c0,2,1.7,3.7,3.7,3.7H116c2,0,3.7-1.7,3.7-3.7v-22.1h12.9c8.1,0,14.7-6.6,14.7-14.7V44.2C147.3,36.1,140.7,29.5,132.6,29.5
+	 M35,7.4h77.3v22.1H35V7.4z M112.3,121.5H35V77.3h77.3L112.3,121.5L112.3,121.5z M139.9,88.4c0,4.1-3.3,7.4-7.4,7.4h-12.9V73.7
+	c0-2-1.7-3.7-3.7-3.7H31.3c-2,0-3.7,1.7-3.7,3.7v22.1H14.7c-4.1,0-7.4-3.3-7.4-7.4V44.2c0-4.1,3.3-7.4,7.4-7.4h117.9
+	c4.1,0,7.4,3.3,7.4,7.4V88.4z M49.7,93.9h47.9c2,0,3.7-1.7,3.7-3.7s-1.7-3.7-3.7-3.7H49.7c-2,0-3.7,1.7-3.7,3.7S47.7,93.9,49.7,93.9
+	 M49.7,112.3h47.9c2,0,3.7-1.7,3.7-3.7s-1.7-3.7-3.7-3.7H49.7c-2,0-3.7,1.7-3.7,3.7S47.7,112.3,49.7,112.3 M97.6,105H49.7
+	c-2,0-3.7,1.7-3.7,3.7s1.7,3.7,3.7,3.7h47.9c2,0,3.7-1.7,3.7-3.7S99.6,105,97.6,105 M97.6,86.5H49.7c-2,0-3.7,1.7-3.7,3.7
+	s1.7,3.7,3.7,3.7h47.9c2,0,3.7-1.7,3.7-3.7S99.6,86.5,97.6,86.5 M97.6,86.5H49.7c-2,0-3.7,1.7-3.7,3.7s1.7,3.7,3.7,3.7h47.9
+	c2,0,3.7-1.7,3.7-3.7S99.6,86.5,97.6,86.5 M97.6,105H49.7c-2,0-3.7,1.7-3.7,3.7s1.7,3.7,3.7,3.7h47.9c2,0,3.7-1.7,3.7-3.7
+	S99.6,105,97.6,105"/>
+</svg>
+      </button> -->
+
+      <button class="margin-vert-verysmall font-verysmall" 
+        @click="toggleFullscreen()"
+      >
+        <svg version="1.1"
+          v-if="!fullscreen_mode"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+          x="0px" y="0px" width="133.3px" height="133.2px" viewBox="0 0 133.3 133.2" style="enable-background:new 0 0 133.3 133.2;"
+          xml:space="preserve">
+          <polygon class="st0" points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	"/>
+          <polygon class="st0" points="112.3,74.5 133.3,74.5 133.3,133.2 74.6,133.2 74.6,112.2 112.3,112.2 	"/>
+          <polygon class="st0" points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	"/>
+          <polygon class="st0" points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	"/>
+        </svg>
+        <svg version="1.1"
+          v-if="fullscreen_mode"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+          x="0px" y="0px" width="133.3px" height="133.2px" viewBox="0 0 133.3 133.2" style="enable-background:new 0 0 133.3 133.2;"
+          xml:space="preserve">
+          <polygon class="st0" points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	"/>
+          <polygon class="st0" points="95.6,133.2 74.6,133.2 74.6,74.5 133.3,74.5 133.3,95.5 95.6,95.5 	"/>
+          <polygon class="st0" points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	"/>
+          <polygon class="st0" points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	"/>
+        </svg>
+      </button>
+
       <button class="margin-vert-verysmall font-verysmall" 
         :disabled="zoom === zoom_max"
         @click="zoom += 0.1"
@@ -180,11 +242,21 @@
 
     <div class="m_publicationview--pages" ref="pages">
       <!-- si transition, attention à ref -->
-      <!-- <transition-group> -->
+      <!-- <transition-group
+        name="list-complete"
+      > -->
         <div 
           v-for="(page, pageNumber) in pagesWithDefault" 
           :key="page.id"
         >
+          <div class="m_publicationFooter"
+            v-if="$root.state.mode !== 'export_publication' && pageNumber === 0"   
+          >
+            <button type="button" class="buttonLink" @click="insertPageAtIndex(pageNumber)">
+              {{ $t('insert_a_page_here') }}
+            </button>
+          </div>
+
           <div 
             class="m_publicationview--pages--pageContainer"
             :style="setPageContainerProperties(page)"
@@ -195,22 +267,22 @@
               :style="setPageProperties(page)"
               :data-style="publication.style"
             >        
-              <div 
-                v-if="!preview_mode"
-                v-for="(item, index) in [0,1,2,3]"
-                class="m_page--margins_rule"
-                :style="`--margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
-                :key="index"
-              />
-              <div 
-                v-if="!preview_mode"
-                class="m_page--grid"
-                :style="`--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
-              />
+              <template v-if="!preview_mode">
+                <div 
+                  v-for="(item, index) in [0,1,2,3]"
+                  class="m_page--margins_rule"
+                  :style="`--margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
+                  :key="index"
+                />
 
-              <div class="m_page--header"
-                v-if="!!page.header_left || !!page.header_right"
-              >
+                <div 
+                  class="m_page--grid"
+                  :style="`--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
+                />
+              </template>
+
+
+              <div class="m_page--header">
                 <div>
                   {{ page.header_left }}
                 </div>
@@ -247,9 +319,9 @@
           </div>
 
           <div class="m_publicationFooter"
-            v-if="$root.state.mode !== 'export_publication'"        
+            v-if="$root.state.mode !== 'export_publication'"   
           >
-            <button type="button" class="buttonLink" @click="insertPageAfterIndex(pageNumber)">
+            <button type="button" class="buttonLink" @click="insertPageAtIndex(pageNumber + 1)">
               {{ $t('insert_a_page_here') }}
             </button>
             <button type="button" class="buttonLink" @click="removePageAtIndex(pageNumber)">
@@ -263,7 +335,7 @@
       <div class="m_publicationFooter"
         v-if="$root.state.mode !== 'export_publication' && pagesWithDefault.length === 0"        
       >
-        <button type="button" class="buttonLink" @click="insertPageAfterIndex(pageNumber)">
+        <button type="button" class="buttonLink" @click="insertPageAtIndex(pageNumber + 1)">
           {{ $t('add_a_page') }}
         </button>
       </div>
@@ -282,6 +354,13 @@
       </a>
     </div>
 
+    <div v-if="show_edit_css_window"
+      class="m_mediaCSSEditWindow"
+    >
+      {{ show_edit_css_window }}
+      <textarea @keyup="setCSSForMedia($event)" />
+    </div>
+
     <div 
       ref="mmMeasurer" 
       style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%;"
@@ -290,7 +369,7 @@
 </template>
 <script>
 import MediaPublication from './subcomponents/MediaPublication.vue';
-import ExportModal from './modals/Export.vue';
+import ExportModal from './modals/ExportPagePubli.vue';
 
 export default {
   props: {
@@ -320,6 +399,8 @@ export default {
         }
       },
 
+      show_edit_css_window: false,
+
       advanced_options: false,
 
       new_publiname: this.publication.name,
@@ -338,6 +419,8 @@ export default {
 
       page_currently_active: 0,
       preview_mode: this.$root.state.mode !== 'live',
+      // preview_mode: false,
+      fullscreen_mode: false,
       zoom: 1,
       zoom_min: 0.4,
       zoom_max: 1.4,
@@ -354,22 +437,23 @@ export default {
   mounted() {
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
+    this.$eventHub.$on('publication.setCSSEditWindow', this.setCSSEditWindow);
     document.addEventListener('keyup', this.publicationKeyListener);
     this.updateMediasPubli();  
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty('mmMeasurer') ? this.$refs.mmMeasurer.offsetWidth / 10 : 38;
     this.updatePubliOptionsInFields();
     this.$eventHub.$emit('publication_medias_updated');      
 
-    if(this.$root.state.mode === 'print_publication') {
-      this.preview_mode = true;
-      // this trick prevents webkit/electron from adding a blank page at the end of the pdf
-      document.getElementsByTagName('body')[0].style.width = `${this.publications_options.width}mm`;
-      document.getElementsByTagName('body')[0].style.height = `${this.publications_options.height}mm`;
-    }
+    document.getElementsByTagName('body')[0].style = `
+      --page-width: ${this.publications_options.width}mm; 
+      --page-height: ${this.publications_options.height}mm
+    `;
+
   },
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
     this.$eventHub.$off('socketio.projects.listSpecificMedias', this.updateMediasPubli);
+    this.$eventHub.$off('publication.setCSSEditWindow', this.setCSSEditWindow);
     document.removeEventListener('keyup', this.publicationKeyListener);
   },
 
@@ -387,6 +471,11 @@ export default {
           console.log(`WATCH • Publication: publications_options`);
         }
         this.updatePubliOptionsInFields();
+        document.getElementsByTagName('body')[0].style = `
+          --page-width: ${this.publications_options.width}mm; 
+          --page-height: ${this.publications_options.height}mm
+        `;
+
       },
       deep: true
     },
@@ -433,6 +522,9 @@ export default {
       }
 
       return publication_options;
+    },
+    customCSSVars() {
+      return `--current-time-human: "${this.$root.currentTime_human}"`
     },
     pagesWithDefault() {
       if (this.$root.state.dev_mode === 'debug') {
@@ -502,6 +594,14 @@ export default {
         type: 'publications', 
         additionalMeta: newMediaMeta
       });
+    },
+    printThisPublication() {
+      this.preview_mode = true;
+      this.$root.setPublicationZoom(1);
+      
+      setTimeout(() => {
+        window.print();
+      }, 500);
     },
     removePubliMedia({ slugMediaName }) {
       if (this.$root.state.dev_mode === 'debug') {
@@ -623,9 +723,9 @@ export default {
 
       this.publication_medias = medias_paginated;        
     },
-    insertPageAfterIndex(index) {
+    insertPageAtIndex(index) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: insertPageAfterIndex ${index}`);
+        console.log(`METHODS • Publication: insertPageAtIndex ${index}`);
       }
 
       // insert page in page array
@@ -633,7 +733,7 @@ export default {
       if(this.publication.hasOwnProperty('pages') && this.publication.pages.length > 0) {
         pages = this.publication.pages.slice();
       }
-      pages.splice(index + 1, 0, {
+      pages.splice(index, 0, {
         id: +new Date() + '_' + (Math.random().toString(36) + '00000000000000000').slice(2, 3),
       });
 
@@ -681,6 +781,30 @@ export default {
         } 
       });      
     },
+    setCSSEditWindow(slugMediaName) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: setCSSEditWindow`);
+      }
+      if(this.show_edit_css_window !== slugMediaName) {
+        this.show_edit_css_window = slugMediaName;
+      } else {
+        this.show_edit_css_window = false;
+      }
+    },
+    setCSSForMedia(event) {
+      if(!this.show_edit_css_window) {
+        return;
+      }
+
+      const new_style = event.target.value;
+
+      this.editPubliMedia({
+        slugMediaName: this.show_edit_css_window, 
+        val: {
+          "custom_css": new_style
+        }
+      });
+    },
     updatePubliOptionsInFields() {
       this.new_width = this.publications_options.width;
       this.new_height = this.publications_options.height;
@@ -727,9 +851,8 @@ export default {
       this.page_currently_active = index;
     },
     setPageContainerProperties(page) {
-      if(this.$root.state.mode === 'print_publication') {
+      if(this.$root.state.mode === 'print_publication')
         return;
-      }
 
       return `
         width: ${page.width * this.$root.settings.publi_zoom}mm; 
@@ -755,14 +878,40 @@ export default {
     publicationKeyListener(evt) {
       switch(evt.key) {
         case 'p':
-          this.preview_mode = !this.preview_mode;
+          // this.preview_mode = !this.preview_mode;
 
       }
     },
-    updatePublicationOption(type) {
+    toggleFullscreen() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • PagePublication: toggleFullscreen`);
+      }
+      const docElem = this.$refs.panel;
+      if (this.fullscreen_mode === false) {
+        if (!!docElem.requestFullscreen) { // W3C API
+          docElem.requestFullscreen();
+        } else if (!!docElem.mozRequestFullScreen) { // Mozilla current API
+          docElem.mozRequestFullScreen();
+        } else if (!!docElem.webkitRequestFullScreen) { // Webkit current API
+          docElem.webkitRequestFullScreen();
+        } // Maybe other prefixed APIs?
+        this.fullscreen_mode = true;
+      } else {
+        if (!!document.exitFullscreen) { // W3C API
+          document.exitFullscreen();
+        } else if (!!document.mozExitFullscreen) { // Mozilla current API
+          document.mozExitFullscreen();
+        } else if (!!document.webkitExitFullscreen) { // Webkit current API
+          document.webkitExitFullscreen();
+        } // Maybe other prefixed APIs?
+        this.fullscreen_mode = false;
+      }
+    },
+    updatePublicationOption(event, type) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: updateMargin with type = ${type}`);
       }
+      debugger;
       this.$root.editFolder({ 
         type: 'publications', 
         slugFolderName: this.slugPubliName, 
