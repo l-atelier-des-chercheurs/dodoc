@@ -8,8 +8,7 @@ const path = require('path'),
 const sharp = require('sharp');
 sharp.cache(false);
 
-const settings = require('../settings.json'),
-  dev = require('./dev-log'),
+const dev = require('./dev-log'),
   api = require('./api');
 
 ffmpeg.setFfmpegPath(ffmpegstatic.path);
@@ -47,12 +46,12 @@ module.exports = (function() {
       }
 
       const thumbResolutions =
-        settings.structure[type][subtype].thumbs.resolutions;
-      const baseFolderPath = settings.structure[type].path;
+        global.settings.structure[type][subtype].thumbs.resolutions;
+      const baseFolderPath = global.settings.structure[type].path;
       const mainFolderPath = api.getFolderPath(baseFolderPath);
 
       let thumbFolderPath = path.join(
-        settings.thumbFolderName,
+        global.settings.thumbFolderName,
         baseFolderPath,
         slugFolderName
       );
@@ -212,9 +211,9 @@ module.exports = (function() {
         `THUMBS — removeMediaThumbs — for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName}`
       );
 
-      const baseFolderPath = settings.structure[type].path;
+      const baseFolderPath = global.settings.structure[type].path;
       let thumbFolderPath = path.join(
-        settings.thumbFolderName,
+        global.settings.thumbFolderName,
         baseFolderPath,
         slugFolderName
       );
@@ -274,9 +273,9 @@ module.exports = (function() {
         `THUMBS — removeMediaThumbs — for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName}`
       );
 
-      const baseFolderPath = settings.structure[type].path;
+      const baseFolderPath = global.settings.structure[type].path;
       let thumbFolderPath = path.join(
-        settings.thumbFolderName,
+        global.settings.thumbFolderName,
         baseFolderPath,
         slugFolderName
       );
@@ -336,9 +335,9 @@ module.exports = (function() {
         `THUMBS — removeFolderThumbs — for slugFolderName = ${slugFolderName}, type = ${type}`
       );
 
-      const baseFolderPath = settings.structure[type].path;
+      const baseFolderPath = global.settings.structure[type].path;
       let thumbFolderPath = path.join(
-        settings.thumbFolderName,
+        global.settings.thumbFolderName,
         baseFolderPath,
         slugFolderName
       );
@@ -384,7 +383,7 @@ module.exports = (function() {
         `Looking/Making an image thumb for ${mediaPath} and resolution = ${thumbRes}`
       );
 
-      let thumbName = `${filename}.${thumbRes}${settings.thumbExt}`;
+      let thumbName = `${filename}.${thumbRes}${global.settings.thumbExt}`;
       let thumbPath = path.join(thumbFolderPath, thumbName);
       let fullThumbPath = api.getFolderPath(thumbPath);
 
@@ -401,8 +400,8 @@ module.exports = (function() {
             .max()
             .withoutEnlargement()
             .withMetadata()
-            .toFormat(settings.thumbFormat, {
-              quality: settings.mediaThumbQuality
+            .toFormat(global.settings.thumbFormat, {
+              quality: global.settings.mediaThumbQuality
             })
             .background({ r: 255, g: 255, b: 255 })
             .flatten()
