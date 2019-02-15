@@ -1,6 +1,6 @@
 {
   "privateKeyPath": "",
   "certificatePath": "",
-  "http_port": "",
-  "port": 8080
+  "desired_port": 8080,
+  "redirect_port": ""
 }
