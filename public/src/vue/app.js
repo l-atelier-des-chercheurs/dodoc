@@ -226,7 +226,6 @@ Vue.prototype.$socketio = new Vue({
       //   }
 
       //   i.allowed_slugFolderNames.map(slugFolderName => {
-      //     debugger;
       //     if(folder_passwords.hasOwnProperty())
       //     // clean_folder_passwords[type];
       //   });

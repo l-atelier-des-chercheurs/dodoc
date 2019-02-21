@@ -911,7 +911,6 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: updateMargin with type = ${type}`);
       }
-      debugger;
       this.$root.editFolder({ 
         type: 'publications', 
         slugFolderName: this.slugPubliName, 

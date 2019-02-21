@@ -39,19 +39,16 @@ export default {
       showClientList: false
     }
   },
-  
   created() {
   },
   mounted() {
   },
   beforeDestroy() {
   },
-
   watch: {
   },
   computed: {
     uniqueClients() {
-      debugger;
       return this.$root.state.clients;
     }
   },

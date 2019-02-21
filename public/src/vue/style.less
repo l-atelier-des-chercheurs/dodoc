@@ -2583,7 +2583,6 @@ small {
       bottom: ~"calc(100% - 1.4cm)";
       padding: 0 1cm;
       width: 100%;
-      border-bottom: 1px solid #000;
 
       display: flex;
       justify-content: space-between;
@@ -2591,6 +2590,18 @@ small {
       font-weight: 500;
 
       text-transform: uppercase;
+
+      &::after {
+        content: '';
+        position: absolute;
+        border-bottom: 1px solid #000;
+        // width: 100%;
+        z-index: 1;
+
+        left: 1cm;
+        right: 1cm;
+        bottom: 0;
+      }
     }
     .m_page--pageNumber {
       position: absolute;
