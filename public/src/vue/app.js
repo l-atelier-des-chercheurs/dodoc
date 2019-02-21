@@ -233,6 +233,7 @@ Vue.prototype.$socketio = new Vue({
       // });
       // auth.updateAdminAccess();
 
+      this.listFolders({ type: 'authors' });
       this.listFolders({ type: 'projects' });
     },
 
