@@ -10,7 +10,6 @@
   </div>
 </template>
 <script>
-import { VueEditor } from 'vue2-editor';
 import ReconnectingWebSocket from 'reconnectingwebsocket'
 import ShareDB from 'sharedb/lib/client'
 import Quill from 'quill'
@@ -27,7 +26,6 @@ export default {
     slugFolderName: String
   },
   components: {
-    VueEditor
   },
   data() {
     return {
