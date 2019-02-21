@@ -438,9 +438,9 @@ body {
     .margin-small;
     // .margin-sides-small;
     // .margin-small;
-    flex: 0 1 160px;
+    flex: 0 1 auto;
     min-width: 160px;
-    max-width: 160px;
+    // max-width: 160px;
     min-height: 160px;
   }
 
@@ -454,6 +454,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    max-width: none;
 
 
     .m_authorsList--createAuthor--createButton {
@@ -467,6 +468,10 @@ body {
       border: none;
       .padding-sides-small;
       .bg-gris_tresclair;
+    }
+
+    > form {
+      width: 312px;
     }
   }
 
