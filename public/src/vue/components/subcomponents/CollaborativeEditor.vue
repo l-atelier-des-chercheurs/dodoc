@@ -59,7 +59,7 @@ export default {
     this.editor.root.innerHTML = this.value;
 
     this.$nextTick(() => {
-      this.initWebsocketMode();
+      // this.initWebsocketMode();
 
       this.editor.on('text-change', (delta, oldDelta, source) => {
         this.$emit('input', this.editor.getText() ? this.editor.root.innerHTML : '');
