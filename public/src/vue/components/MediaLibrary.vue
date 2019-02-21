@@ -236,7 +236,6 @@ export default {
           this.openMediaModal(new_media.metaFileName);
         });
       }
-
     },
     openMediaModal(metaFileName) {
       if (this.$root.state.dev_mode === 'debug') {
