@@ -75,6 +75,9 @@ module.exports = (function() {
       insert_a_page_here: 'Insérer une page ici',
       remove_this_page: '▲ Supprimer cette page ▲',
 
+      anonymous: 'anonyme',
+      other_users: 'autres utilisateurs',
+
       made_with_dodoc:
         'Page web réalisée avec l’application libre et gratuite do•doc',
 
@@ -318,6 +321,9 @@ module.exports = (function() {
       add_a_page: 'Add a page',
       insert_a_page_here: 'Insert a page here',
       remove_this_page: '▲ Remove this page ▲',
+
+      anonymous: 'anonymous',
+      other_users: 'other users',
 
       made_with_dodoc: 'Webpage made with do•doc, a free and open-source app',
 
