@@ -68,7 +68,7 @@
       },
       "medias": {
         "thumbs": {
-          "resolutions": [50, 180, 360, 1600]
+          "resolutions": [180, 360, 1600]
         },
         "fields": {
           "date_created": {
@@ -274,7 +274,7 @@
       },
       "medias": {
         "thumbs": {
-          "resolutions": [150, 1600]
+          "resolutions": [150]
         },
         "fields": {
           "date_uploaded" : {
