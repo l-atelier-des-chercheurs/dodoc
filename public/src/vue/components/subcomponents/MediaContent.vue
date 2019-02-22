@@ -157,17 +157,20 @@ export default {
         return this.mediaURL;
       }
 
-      let pathToSmallestThumb = this.media.thumbs.filter(m => m.size === this.thumbRes)[0].path;
-
       if (
       // if image is gif and context is not 'preview', let’s show the original gif
         (this.context !== 'preview' &&
         this.mediaURL.toLowerCase().endsWith('.gif'))
-        ||
-        pathToSmallestThumb === undefined
       ) {
         return this.mediaURL;
       }
+
+      const small_thumb = this.media.thumbs.filter(m => m.size === this.thumbRes);
+      if(small_thumb.length == 0) {
+        return this.mediaURL;
+      }
+
+      let pathToSmallestThumb = small_thumb[0].path;
 
       let url = this.$root.state.mode === 'export_publication' ? `./${pathToSmallestThumb}` : `/${pathToSmallestThumb}`;
       url += `?${(new Date()).getTime()}`;
