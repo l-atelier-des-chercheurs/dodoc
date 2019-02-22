@@ -88,6 +88,7 @@
         <button 
           type="button" 
           class="button button-bg_rounded bg-bleuvert"   
+          v-if="medias.length > 0"
           @click="assembleStopmotionMedias"
           :disabled="videopreview && frameRate === previousFrameRate"
         >
