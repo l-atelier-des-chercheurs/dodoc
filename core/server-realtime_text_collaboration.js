@@ -10,8 +10,8 @@ const uuid = require('uuid');
 const url = require('url');
 const { URLSearchParams } = require('url');
 
-const dev = require('./core/dev-log'),
-  file = require('./core/file');
+const dev = require('./dev-log'),
+  file = require('./file');
 
 module.exports = function(server) {
   dev.log(`server-realtime_text_collaboration • init`);
@@ -82,7 +82,6 @@ module.exports = function(server) {
     //       )[0].content;
     //       let rendered_text = quillRender([{ insert: text_content }]);
 
-    //       debugger;
     //       dev.logverbose(
     //         `server-realtime_text_collaboration • sharewss: now inserting = ${rendered_text}`
     //       );

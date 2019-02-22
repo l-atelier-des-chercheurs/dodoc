@@ -9,8 +9,7 @@ const path = require('path'),
   ffmpeg = require('fluent-ffmpeg'),
   pad = require('pad-left');
 
-const settings = require('../settings.json'),
-  dev = require('./dev-log');
+const dev = require('./dev-log');
 
 ffmpeg.setFfmpegPath(ffmpegstatic.path);
 
@@ -19,12 +18,12 @@ module.exports = (function() {
     getFolderPath: (slugFolderName = '') => getFolderPath(slugFolderName),
     findFirstFilenameNotTaken: (thisPath, fileName) =>
       findFirstFilenameNotTaken(thisPath, fileName),
-    getCurrentDate: (format = settings.metaDateFormat) =>
+    getCurrentDate: (format = global.settings.metaDateFormat) =>
       getCurrentDate(format),
-    convertDate: (date, format = settings.metaDateFormat) =>
+    convertDate: (date, format = global.settings.metaDateFormat) =>
       convertDate(date, format),
     parseUTCDate: date => parseUTCDate(date),
-    parseDate: (date, format = settings.metaDateFormat) =>
+    parseDate: (date, format = global.settings.metaDateFormat) =>
       parseDate(date, format),
     storeData: (mpath, d, e) => storeData(mpath, d, e),
     parseData: d => parseData(d),
@@ -75,21 +74,22 @@ module.exports = (function() {
   function findFirstFilenameNotTaken(thisPath, fileName) {
     return new Promise(function(resolve, reject) {
       // let's find the extension if it exists
-      var fileExtension = new RegExp(settings.regexpGetFileExtension, 'i').exec(
-        fileName
-      );
+      var fileExtension = new RegExp(
+        global.settings.regexpGetFileExtension,
+        'i'
+      ).exec(fileName);
       fileExtension = fileExtension === null ? '' : fileExtension[0];
 
       // remove extension
       var fileNameWithoutExtension = new RegExp(
-        settings.regexpRemoveFileExtension,
+        global.settings.regexpRemoveFileExtension,
         'i'
       ).exec(fileName)[1];
       // slug the rest of the name
       fileNameWithoutExtension = slug(fileNameWithoutExtension);
 
       let newFileName = `${fileNameWithoutExtension}${fileExtension}`;
-      let newMetaFileName = `${newFileName}${settings.metaFileext}`;
+      let newMetaFileName = `${newFileName}${global.settings.metaFileext}`;
       let newPathToFile = path.join(thisPath, newFileName);
       let newPathToMeta = path.join(thisPath, newMetaFileName);
       let index = 0;
@@ -106,7 +106,7 @@ module.exports = (function() {
           );
           index++;
           newFileName = `${fileNameWithoutExtension}-${index}${fileExtension}`;
-          newMetaFileName = `${newFileName}${settings.metaFileext}`;
+          newMetaFileName = `${newFileName}${global.settings.metaFileext}`;
           newPathToFile = path.join(thisPath, newFileName);
           newPathToMeta = path.join(thisPath, newMetaFileName);
         }
@@ -255,7 +255,7 @@ module.exports = (function() {
 
       let cachePath = path.join(
         global.tempStorage,
-        settings.cacheDirname,
+        global.settings.cacheDirname,
         '_medias'
       );
       fs.mkdirp(cachePath, function() {
@@ -289,7 +289,7 @@ module.exports = (function() {
 
       let cachePath = path.join(
         global.tempStorage,
-        settings.cacheDirname,
+        global.settings.cacheDirname,
         '_medias'
       );
       fs.mkdirp(cachePath, function() {
@@ -371,14 +371,14 @@ module.exports = (function() {
   function _copyToTempAndRenameImages({ slugStopmotionName, images }) {
     return new Promise(function(resolve, reject) {
       let cacheFolderName =
-        getCurrentDate(settings.metaDateFormat) +
+        getCurrentDate(global.settings.metaDateFormat) +
         slugStopmotionName +
         '-' +
         (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2);
 
       let cachePath = path.join(
         global.tempStorage,
-        settings.cacheDirname,
+        global.settings.cacheDirname,
         cacheFolderName
       );
 
@@ -387,7 +387,7 @@ module.exports = (function() {
         function() {
           let slugStopmotionPath = getFolderPath(
             path.join(
-              settings.structure['stopmotions'].path,
+              global.settings.structure['stopmotions'].path,
               slugStopmotionName
             )
           );

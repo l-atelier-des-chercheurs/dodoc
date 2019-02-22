@@ -5,7 +5,7 @@
       :placeholder="$t('add_keyword')"
       :autocomplete-items="filteredKeyword"
       :tags="tags"
-      @tags-changed="newTags => editTags(newTags)"
+      @tags-changed="newTags => sendTags(newTags)"
     />    
   </div>
 </template>
@@ -30,7 +30,7 @@ export default {
   },
   mounted() {
     if(this.tags.length > 0) {
-      this.editTags(this.tags);
+      this.updateTags(this.tags);
     }
   },
   beforeDestroy() {
@@ -44,16 +44,19 @@ export default {
     }
   },
   methods: {
-    editTags: function(newTags) {
+    updateTags: function(newTags) {
       this.tags = newTags.map(val => {
         val.classes = "tagcolorid_" + parseInt(val.text, 36)%2;
         return val;
       });
+    },
+    sendTags: function(newTags) {
+      this.updateTags(newTags);
       const tag_array = this.tags.map((val) => { 
         return { title: val.text }
       });
       this.$emit('tagsChanged', tag_array);
-    },
+    }
   }
 }
 </script>

@@ -10,7 +10,6 @@
   </div>
 </template>
 <script>
-import { VueEditor } from 'vue2-editor';
 import ReconnectingWebSocket from 'reconnectingwebsocket'
 import ShareDB from 'sharedb/lib/client'
 import Quill from 'quill'
@@ -27,7 +26,6 @@ export default {
     slugFolderName: String
   },
   components: {
-    VueEditor
   },
   data() {
     return {
@@ -61,7 +59,7 @@ export default {
     this.editor.root.innerHTML = this.value;
 
     this.$nextTick(() => {
-      this.initWebsocketMode();
+      // this.initWebsocketMode();
 
       this.editor.on('text-change', (delta, oldDelta, source) => {
         this.$emit('input', this.editor.getText() ? this.editor.root.innerHTML : '');

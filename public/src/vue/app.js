@@ -226,13 +226,13 @@ Vue.prototype.$socketio = new Vue({
       //   }
 
       //   i.allowed_slugFolderNames.map(slugFolderName => {
-      //     debugger;
       //     if(folder_passwords.hasOwnProperty())
       //     // clean_folder_passwords[type];
       //   });
       // });
       // auth.updateAdminAccess();
 
+      this.listFolders({ type: 'authors' });
       this.listFolders({ type: 'projects' });
     },
 
@@ -704,11 +704,23 @@ let vm = new Vue({
     allKeywords() {
       let allKeywords = [];
       for (let slugProjectName in this.store.projects) {
-        let projectKeywords = this.store.projects[slugProjectName].keywords;
+        const project = this.store.projects[slugProjectName];
+        let projectKeywords = project.keywords;
         if (!!projectKeywords) {
           projectKeywords.map(val => {
             allKeywords.push(val.title);
           });
+
+          if (
+            project.hasOwnProperty('medias') &&
+            Object.keys(project.medias).length > 0
+          ) {
+            Object.values(project.medias).map(m => {
+              if (m.hasOwnProperty('keywords') && m.keywords.length > 0) {
+                allKeywords = allKeywords.concat(m.keywords.map(k => k.title));
+              }
+            });
+          }
         }
       }
       allKeywords = allKeywords.filter(function(item, pos) {

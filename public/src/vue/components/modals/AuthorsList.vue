@@ -12,6 +12,7 @@
 
     <template slot="preview">
       <div class="">        
+        
         <transition-group 
           tag="div" 
           class="m_authorsList"
@@ -35,12 +36,13 @@
               @close="openCreateAuthorPanel = false"
               :read_only="read_only"
             />
+            
           </div>
 
           <template v-if="Object.keys(sortedAuthors).length > 0">
             <div type="button" 
               v-for="author in sortedAuthors" 
-              :key="author.name" 
+              :key="author.slugFolderName" 
               class="m_authorsList--author"
               :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"
               @click="setAuthor(author)"
@@ -93,6 +95,7 @@ export default {
   created() {
   },
   mounted() {
+    this.$socketio.listFolders({ type: 'authors' });
   },
   beforeDestroy() {
   },

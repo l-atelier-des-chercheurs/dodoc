@@ -187,7 +187,7 @@ export default {
       }
 
       let timeMark = 0;
-      let timeMarkThumbs = this.media.thumbs.filter(t => t.timeMark === 0);
+      let timeMarkThumbs = this.media.thumbs.filter(t => !!t && t.timeMark === 0);
 
       if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
         return;

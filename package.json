@@ -6,7 +6,7 @@
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
   "license": "CC-BY-NC-SA-4.0",
-  "main": "main.js",
+  "main": "index.js",
   "private": true,
   "repository": {
     "type": "git",
@@ -68,7 +68,7 @@
     "puppeteer": "^1.12.2",
     "quill-render": "^1.0.5",
     "rich-text": "^3.1.0",
-    "sharedb": "^1.0.0-beta.18",
+    "sharedb": "^1.0.0-beta.19",
     "sharedb-logger": "^0.1.4",
     "slugg": "^1.2.1",
     "socket.io": "^2.2.0",
