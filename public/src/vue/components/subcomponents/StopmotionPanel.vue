@@ -6,7 +6,7 @@
       <div class="m_stopmotionpanel--medias--single">
         <MediaContent
           v-if="current_single_media"
-          :context="'edit'"
+          :context="'preview'"
           :slugFolderName="stopmotiondata.slugFolderName"
           :media="current_single_media"
           :subfolder="'_stopmotions/'"
