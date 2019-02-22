@@ -43,7 +43,7 @@
     "archiver": "^3.0.0",
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
-    "dodoc-parsedown": "git://github.com/louis-ev/dodoc-parsedown.git#master",
+    "dodoc-parsedown": "https://github.com/louis-ev/dodoc-parsedown.git#master",
     "electron-context-menu": "^0.10.1",
     "electron-devtools-installer": "^2.2.3",
     "electron-log": "^2.2.17",
