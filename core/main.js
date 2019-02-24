@@ -105,6 +105,11 @@ module.exports = function({ router }) {
                     }, 0);
                   }
 
+                  dev.log(
+                    'Found session password in meta.txt set to: ' +
+                      sessionMeta.session_password
+                  );
+
                   global.session_password = hashCode(
                     sessionMeta.session_password
                   );
