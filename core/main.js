@@ -105,14 +105,11 @@ module.exports = function({ router }) {
                     }, 0);
                   }
 
-                  dev.log(
-                    'Found session password in meta.txt set to: ' +
-                      sessionMeta.session_password
-                  );
+                  const pass = sessionMeta.session_password.trim();
 
-                  global.session_password = hashCode(
-                    sessionMeta.session_password
-                  );
+                  dev.log('Found session password in meta.txt set to: ' + pass);
+
+                  global.session_password = hashCode(pass);
                 }
                 portscanner
                   .findAPortNotInUse(
