@@ -25,8 +25,8 @@ module.exports = (function() {
       onion_skin: 'transparence de la dernière image',
       'file:': 'Fichier&nbsp;:',
       add_to_project: 'Ajouter au projet&nbsp;:',
-      input_password: 'Renseignez le mot de passe ci-dessous :',
-      validate_with_enter: 'valider avec la touche ENTRÉE',
+      input_password: 'Renseigner le mot de passe ci-dessous :',
+      validate_with_enter: 'Valider avec la touche ENTRÉE.',
 
       bytes: 'octets',
       kb: 'ko',
@@ -43,13 +43,15 @@ module.exports = (function() {
       sureToCloseModal: 'Êtes-vous sûr de vouloir fermer cette fenêtre ?',
       sureToRemovePubli:
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
+      sure_to_cancel_stopmotion:
+        'Êtes-vous sûr de vouloir supprimer cette animation ?',
       validate_media: 'Valider le média',
       add_keyword: 'Ajouter un mot-clé',
 
       showing: 'Affichage de',
       media_filter: 'Filtre de médias',
       no_projects_yet:
-        'Il n’y a pas encore de projet, créez-en un pour commencer à utiliser do•doc!',
+        'Il n’y a pas encore de projet, créez-en un pour commencer à utiliser do•doc !',
       projects_of: 'projets sur',
       medias_of: 'médias sur',
       projects: 'Projets',
@@ -65,13 +67,16 @@ module.exports = (function() {
       import: 'Importer',
       import_all_files: 'Importer tous les fichiers',
       import_medias: 'Importer des médias',
-      select_files_to_import: 'Sélectionnez les fichiers à importer',
-      select_cover_image: 'Sélectionnez une image de couverture',
-      select_portrait_image: 'Sélectionnez une image de portrait',
+      select_files_to_import: 'Sélectionner les fichiers à importer',
+      select_cover_image: 'Sélectionner une image de couverture',
+      select_portrait_image: 'Sélectionner une image de portrait',
       add_to_publication: 'Ajouter à la publication',
       add_a_page: 'Ajouter une page',
       insert_a_page_here: 'Insérer une page ici',
       remove_this_page: '▲ Supprimer cette page ▲',
+
+      anonymous: 'anonyme',
+      other_users: 'autres utilisateurs',
 
       made_with_dodoc:
         'Page web réalisée avec l’application libre et gratuite do•doc',
@@ -91,7 +96,9 @@ module.exports = (function() {
       password: 'Mot de passe',
       protected_by_pass: 'protégé par mot de passe',
       password_instructions:
-        'Si existant, seul les utilisateurs possédant ce mot de passe pourront modifier ce dossier et accéder aux médias non publics.',
+        'Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce projet.',
+      author_instructions:
+        'Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).',
 
       sort_by: 'Organiser par',
       in_the_order: 'Dans l’ordre',
@@ -161,6 +168,7 @@ module.exports = (function() {
       margin_right: 'Marge: droite',
       margin_bottom: 'Marge: bas',
       number_of_medias: 'Nombre de médias',
+      number_of_pages: 'Nombre de pages',
 
       export_folder: 'Exporter en format WEB',
       export: 'Exporter',
@@ -186,6 +194,7 @@ module.exports = (function() {
       template: 'Gabarit',
       standard: 'Standard',
       'feuille de choux': 'Feuille de Choux',
+      'human tech days': 'Human Tech Days',
       page_by_page: 'Document page à page',
       video_assemblage: 'Montage vidéo',
       web: 'Page web',
@@ -267,7 +276,7 @@ module.exports = (function() {
       'file:': 'File&nbsp;:',
       add_to_project: 'Add to project:',
       input_password: 'Input the password here:',
-      validate_with_enter: 'validate with the ENTER key',
+      validate_with_enter: 'Validate with ENTER.',
 
       bytes: 'bytes',
       kb: 'KB',
@@ -282,6 +291,8 @@ module.exports = (function() {
       sureToRemoveAuthor: 'Do you really want to delete this author?',
       sureToCloseModal: 'Do you really want to close this window?',
       sureToRemovePubli: 'Do you really want to delete this publication?',
+      sure_to_cancel_stopmotion:
+        'Do you really want to cancel this stopmotion?',
       validate_media: 'Validate the media',
       add_keyword: 'Add a keyword',
 
@@ -311,6 +322,9 @@ module.exports = (function() {
       insert_a_page_here: 'Insert a page here',
       remove_this_page: '▲ Remove this page ▲',
 
+      anonymous: 'anonymous',
+      other_users: 'other users',
+
       made_with_dodoc: 'Webpage made with do•doc, a free and open-source app',
 
       loading: 'loading',
@@ -324,7 +338,9 @@ module.exports = (function() {
       password: 'Mot de passe',
       protected_by_pass: 'protected by password',
       password_instructions:
-        'If set, only users with the password will be able to edit this folder and access the content that’s not public.',
+        'If set, only users with the password will be able to open this project.',
+      author_instructions:
+        'To create authors, close this window and click on (AUTHORS).',
 
       sort_by: 'Sort by',
       in_the_order: 'In the order',
@@ -407,6 +423,7 @@ module.exports = (function() {
       margin_right: 'Margin: right',
       margin_bottom: 'Margin: bottom',
       number_of_medias: 'Number of medias',
+      number_of_pages: 'Number of pages',
 
       export_folder: 'Export as a webpage',
       export: 'Export',

@@ -221,7 +221,7 @@
               :class="{ 'is--justCaptured' : capture_button_pressed }"
               @click="captureOrStop()"
             >
-              <img v-if="!this.is_recording" src="/images/i_record.svg">
+              <img v-if="!is_recording" src="/images/i_record.svg">
               <img v-else src="/images/i_stop.svg">
             </button>
 
@@ -282,8 +282,8 @@
       </div>
     </div>
     <DistantFlux 
-      v-if="this.$root.settings.capture_options.distant_flux.active"
-      :key="this.$root.settings.capture_options.distant_flux.username = this.current_username"
+      v-if="$root.settings.capture_options.distant_flux.active"
+      :key="$root.settings.capture_options.distant_flux.username = current_username"
       @changeStreamTo="new_stream => { changeStreamTo(new_stream) }"
     />
   </div>
@@ -514,7 +514,7 @@ export default {
       return this.$_.groupBy(this.available_devices, 'kind');
     },
     uriToUploadMedia: function() {
-      return this.slugProjectName + '/file-upload';
+      return `file-upload/projects/${this.slugProjectName}`;
     }
   },
   methods: {
@@ -593,7 +593,7 @@ export default {
         }
       }
     },
-    captureKeyListener(evt) {
+    captureKeyListener(event) {
       console.log('METHODS • CaptureView: captureKeyListener');
 
       // don’t register if validating a media
@@ -605,7 +605,7 @@ export default {
         return false;
       }      
 
-      switch(evt.key) {
+      switch(event.key) {
         case 'w':
         case 'z':
         case 'ArrowLeft':

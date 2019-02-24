@@ -375,6 +375,16 @@
       .font-large;
     }
 
+    &.type-audio {
+
+
+      audio {
+        width: 500px;
+        margin: auto;
+        height:50%;
+      }
+    }
+
     pre {
       margin-top: 0;
     }
@@ -447,6 +457,7 @@
 .m_modal--nav_left, .m_modal--nav_right {
   position: fixed;
   top: ~"calc(50% - 40px)";
+  z-index: 1500;
 
   @media screen and (max-width: 50rem) {
 

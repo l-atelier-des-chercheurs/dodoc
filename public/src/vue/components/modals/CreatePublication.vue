@@ -4,6 +4,7 @@
     @submit="newPublication"
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
+    :askBeforeClosingModal="askBeforeClosingModal"
     >
     <template slot="header">
       <span class="">{{ $t('create_a_publication') }}</span>
@@ -40,6 +41,7 @@
           :currentAuthors="publidata.authors"
           @authorsChanged="newAuthors => publidata.authors = newAuthors"
         />
+        <small>{{ $t('author_instructions') }}</small>
       </div>
 
 
@@ -68,9 +70,18 @@ export default {
       publidata: {
         name: '',
         template: 'page_by_page',
-        authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : '' 
+        authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : [],
       }
     };
+  },
+  watch: {
+    'publidata.name': function() {
+      if(this.publidata.name.length > 0) {
+        this.askBeforeClosingModal = true;
+      } else {
+        this.askBeforeClosingModal = false;
+      }
+    }
   },
   computed: {},
   methods: {
@@ -107,6 +118,12 @@ export default {
         template: this.publidata.template,
         width: 210,
         height: 297,
+        // style: "human tech days",
+        // header_left: "Human Tech Days",
+        // gridstep: 5,
+        // margin_left: 20,
+        // margin_right: 20,
+
         pages: [{
           id: +new Date() + '_' + (Math.random().toString(36) + '00000000000000000').slice(2, 3)
         }]

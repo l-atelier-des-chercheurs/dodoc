@@ -1,17 +1,16 @@
 const path = require('path'),
   fs = require('fs-extra'),
-  formidable = require('formidable'),
   archiver = require('archiver');
 
-const settings = require('./settings.json'),
-  sockets = require('./core/sockets'),
+const sockets = require('./core/sockets'),
   dev = require('./core/dev-log'),
   cache = require('./core/cache'),
   api = require('./core/api'),
   file = require('./core/file'),
-  exporter = require('./core/exporter');
+  exporter = require('./core/exporter'),
+  importer = require('./core/importer');
 
-module.exports = function(app, io, m) {
+module.exports = function(app) {
   /**
    * routing event
    */
@@ -22,7 +21,22 @@ module.exports = function(app, io, m) {
   app.get('/publication/web/:publication', exportPublication);
   app.get('/publication/print/:pdfName', showPDF);
   app.get('/publication/video/:videoName', showVideo);
-  app.post('/:project/file-upload', postFile2);
+  app.post('/file-upload/:type/:slugFolderName', postFile2);
+
+  // app.ws('/_collaborative-editing', collaborativeEditing);
+
+  function collaborativeEditing(ws, req) {
+    console.log('WebSocket sharedb event');
+
+    ws.on('message', msg => {
+      console.log('WebSocket was closed');
+      ws.send(msg);
+    });
+
+    ws.on('close', () => {
+      console.log('WebSocket was closed');
+    });
+  }
 
   /**
    * routing functions
@@ -40,8 +54,8 @@ module.exports = function(app, io, m) {
       pageData.slugProjectName = '';
       pageData.url = req.path;
       pageData.protocol = req.protocol;
-      pageData.structure = settings.structure;
-      pageData.authorsFolder = settings.structure.authors.path;
+      pageData.structure = global.settings.structure;
+      pageData.authorsFolder = global.settings.structure.authors.path;
       pageData.isDebug = dev.isDebug();
 
       pageData.mode = 'live';
@@ -54,10 +68,10 @@ module.exports = function(app, io, m) {
   function showIndex(req, res) {
     generatePageData(req).then(
       pageData => {
-        dev.logpackets(
-          `Rendering index with data `,
-          JSON.stringify(pageData, null, 4)
-        );
+        // dev.logpackets(
+        //   `Rendering index with data `,
+        //   JSON.stringify(pageData, null, 4)
+        // );
         res.render('index', pageData);
       },
       err => {
@@ -124,7 +138,9 @@ module.exports = function(app, io, m) {
             })
             .then(
               cachePath => {
-                var archive = archiver('zip');
+                var archive = archiver('zip', {
+                  zlib: { level: 0 } //
+                });
 
                 archive.on('error', function(err) {
                   res.status(500).send({ error: err.message });
@@ -158,7 +174,7 @@ module.exports = function(app, io, m) {
     let pdfName = req.param('pdfName');
     const cachePath = path.join(
       global.tempStorage,
-      settings.cacheDirname,
+      global.settings.cacheDirname,
       '_publications'
     );
     const pdfPath = path.join(cachePath, pdfName);
@@ -174,7 +190,7 @@ module.exports = function(app, io, m) {
     let videoName = req.param('videoName');
     const cachePath = path.join(
       global.tempStorage,
-      settings.cacheDirname,
+      global.settings.cacheDirname,
       '_publications'
     );
     const videoPath = path.join(cachePath, videoName);
@@ -187,148 +203,8 @@ module.exports = function(app, io, m) {
   }
 
   function postFile2(req, res) {
-    let slugProjectName = req.param('project');
-    dev.logverbose(`Will add new media for folder ${slugProjectName}`);
-
-    // create an incoming form object
-    var form = new formidable.IncomingForm();
-
-    // specify that we want to allow the user to upload multiple files in a single request
-    form.multiples = false;
-    form.maxFileSize = 1000 * 1024 * 1024;
-    let socketid = '';
-
-    // store all uploads in the folder directory
-    form.uploadDir = api.getFolderPath(slugProjectName);
-
-    let allFilesMeta = [];
-
-    let fieldValues = {};
-    form.on('field', function(name, value) {
-      console.log(`Got field with name = ${name} and value = ${value}.`);
-      if (name === 'socketid') {
-        socketid = value;
-      }
-
-      try {
-        fieldValues[name] = JSON.parse(value);
-      } catch (e) {
-        // didn’t get an object as additional meta
-      }
-    });
-
-    // every time a file has been uploaded successfully,
-    form.on('file', function(field, uploadedFile) {
-      dev.logverbose(
-        `File uploaded:\nfield: ${field}\nfile: ${JSON.stringify(
-          uploadedFile,
-          null,
-          4
-        )}.`
-      );
-      // add addiontal meta from 'field' to the array
-      let newFile = uploadedFile;
-      for (let fileName in fieldValues) {
-        if (fileName === newFile.name) {
-          newFile = Object.assign({}, newFile, {
-            additionalMeta: fieldValues[fileName]
-          });
-        }
-      }
-      //       dev.logverbose(`Found matching filenames, new meta file is: ${JSON.stringify(newFile,null,4)}`);
-      allFilesMeta.push(newFile);
-    });
-
-    // log any errors that occur
-    form.on('error', function(err) {
-      console.log(`An error has happened: ${err}`);
-    });
-    form.on('aborted', function(err) {
-      console.log(`File upload aborted: ${err}`);
-    });
-
-    // once all the files have been uploaded
-    form.on('end', function() {
-      let msg = {};
-      msg.msg = 'success';
-      //           msg.medias = JSON.stringify(allFilesMeta);
-      res.end(JSON.stringify(msg));
-
-      if (allFilesMeta.length > 0) {
-        var m = [];
-        for (var i in allFilesMeta) {
-          m.push(
-            renameAndConvertMediaAndCreateMeta(
-              form.uploadDir,
-              slugProjectName,
-              allFilesMeta[i],
-              socketid
-            )
-          );
-        }
-        Promise.all(m).then(() => {});
-      }
-    });
-
-    // parse the incoming request containing the form data
-    form.parse(req);
-  }
-
-  function renameAndConvertMediaAndCreateMeta(
-    uploadDir,
-    slugProjectName,
-    fileMeta,
-    socketid
-  ) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction('ROUTER — renameAndConvertMediaAndCreateMeta');
-      api.findFirstFilenameNotTaken(uploadDir, fileMeta.name).then(
-        function(newFileName) {
-          dev.logverbose(`Following filename is available: ${newFileName}`);
-
-          if (fileMeta.hasOwnProperty('additionalMeta')) {
-            dev.logverbose(
-              `Has additional meta: ${JSON.stringify(
-                fileMeta.additionalMeta,
-                null,
-                4
-              )}`
-            );
-          } else {
-            fileMeta.additionalMeta = {};
-          }
-
-          file
-            .convertAndSaveMedia({
-              uploadDir,
-              tempPath: fileMeta.path,
-              newFileName,
-              socketid
-            })
-            .then(newFileName => {
-              fileMeta.additionalMeta.media_filename = newFileName;
-              sockets.createMediaMeta({
-                type: 'projects',
-                slugFolderName: slugProjectName,
-                additionalMeta: fileMeta.additionalMeta
-              });
-              resolve();
-            })
-            .catch(err => {
-              dev.error(err);
-              fileMeta.additionalMeta.media_filename = newFileName;
-              sockets.createMediaMeta({
-                type: 'projects',
-                slugFolderName: slugProjectName,
-                additionalMeta: fileMeta.additionalMeta
-              });
-              resolve();
-            });
-        },
-        function(err) {
-          reject(err);
-        }
-      );
-    });
+    let type = req.param('type');
+    let slugFolderName = req.param('slugFolderName');
+    importer.handleForm({ req, res, type, slugFolderName });
   }
 };

@@ -4,8 +4,9 @@ const path = require('path'),
   ffmpeg = require('fluent-ffmpeg'),
   fs = require('fs-extra');
 
-const settings = require('../settings.json'),
-  dev = require('./dev-log'),
+const puppeteer = require('puppeteer');
+
+const dev = require('./dev-log'),
   api = require('./api'),
   file = require('./file');
 
@@ -29,7 +30,7 @@ module.exports = (function() {
 
         let cachePath = path.join(
           global.tempStorage,
-          settings.cacheDirname,
+          global.settings.cacheDirname,
           cacheFolderName
         );
 
@@ -74,11 +75,11 @@ module.exports = (function() {
                 const slugFolderInCache = path.join(cachePath, slugFolderName);
 
                 const fullSlugFolderPath_inThumbs = api.getFolderPath(
-                  path.join(settings.thumbFolderName, slugFolderName)
+                  path.join(global.settings.thumbFolderName, slugFolderName)
                 );
                 const slugFolderInCache_thumbs = path.join(
                   cachePath,
-                  settings.thumbFolderName,
+                  global.settings.thumbFolderName,
                   slugFolderName
                 );
 
@@ -200,7 +201,7 @@ module.exports = (function() {
 
         const cachePath = path.join(
           global.tempStorage,
-          settings.cacheDirname,
+          global.settings.cacheDirname,
           '_publications'
         );
 
@@ -214,39 +215,38 @@ module.exports = (function() {
           .then(publiData => {
             publiData = Object.values(publiData)[0];
             fs.mkdirp(cachePath, () => {
-              const { BrowserWindow } = require('electron');
-              let win = new BrowserWindow({
-                width: 800,
-                height: 600,
-                show: false
-              });
-              win.loadURL(urlToPubli);
-
-              win.webContents.on('did-finish-load', () => {
-                // Use default printing options
-                setTimeout(() => {
-                  win.webContents.printToPDF(
-                    {
-                      marginsType: 1,
-                      pageSize: {
-                        width: publiData.width * 1000,
-                        height: publiData.height * 1000
-                      }
-                    },
-                    (error, data) => {
-                      if (error) throw error;
-                      fs.writeFile(pdfPath, data, error => {
-                        if (error) throw error;
-                        console.log('Write PDF successful');
-                        resolve({
-                          pdfName,
-                          pdfPath
+              puppeteer
+                .launch({
+                  headless: true,
+                  ignoreHTTPSErrors: true,
+                  args: ['--no-sandbox']
+                })
+                .then(browser => {
+                  return browser.newPage();
+                })
+                .then(page => {
+                  page
+                    .goto(urlToPubli, {
+                      waitUntil: 'networkidle2'
+                    })
+                    .then(() => {
+                      page.emulateMedia('print');
+                      page
+                        .pdf({
+                          path: pdfPath,
+                          printBackground: true,
+                          width: `${publiData.width}mm`,
+                          height: `${publiData.height}mm`
+                        })
+                        .then(() => {
+                          console.log('Write PDF successful');
+                          resolve({
+                            pdfName,
+                            pdfPath
+                          });
                         });
-                      });
-                    }
-                  );
-                }, 1000);
-              });
+                    });
+                });
             });
           });
       });
@@ -263,7 +263,7 @@ module.exports = (function() {
 
         const cachePath = path.join(
           global.tempStorage,
-          settings.cacheDirname,
+          global.settings.cacheDirname,
           '_publications'
         );
 

@@ -14,6 +14,10 @@ Object.defineProperty(Vue.prototype, '$_', { value: _ });
 import alertify from 'alertify.js';
 Vue.prototype.$alertify = alertify;
 
+import auth from '../adc-core/auth-client.js';
+auth.init();
+Vue.prototype.$auth = auth;
+
 import locale_strings from './locale_strings.js';
 
 Vue.config.silent = false;
@@ -96,19 +100,21 @@ Vue.prototype.$socketio = new Vue({
   },
   methods: {
     connect() {
+      let opts = { transports: ['polling', 'websocket'] };
       if (window.navigator.userAgent.indexOf('Chrome') > -1) {
-        this.socket = io.connect({ transports: ['websocket', 'polling'] });
-      } else {
-        this.socket = io.connect({ transports: ['polling', 'websocket'] });
+        opts = { transports: ['websocket', 'polling'] };
       }
+      this.socket = io.connect(opts);
+
       this.socket.on('connect', this._onSocketConnect);
       this.socket.on('reconnect', this._onReconnect);
+      this.socket.on('pong', this._onPong);
       this.socket.on('error', this._onSocketError);
       this.socket.on('connect_error', this._onConnectError);
       this.socket.on('authentificated', this._authentificated);
       this.socket.on('listMedia', this._onListMedia);
       this.socket.on('listMedias', this._onListMedias);
-      // used in publications
+
       this.socket.on('listFolder', this._onListFolder);
       this.socket.on('listFolders', this._onListFolders);
 
@@ -119,12 +125,18 @@ Vue.prototype.$socketio = new Vue({
       this.socket.on('newNetworkInfos', this._onNewNetworkInfos);
 
       this.socket.on('notify', this._onNotify);
+
+      this.socket.on('pong', this._onPong);
+
+      this.socket.on('listClients', this._listClients);
     },
     _onSocketConnect() {
       let sessionId = this.socket.io.engine.id;
       console.log(`Connected as ${sessionId}`);
 
       window.state.connected = true;
+
+      this.socket.emit('updateClientInfo', {});
 
       // only for non-electron (since obviously in electron we have to be connected)
       if (!window.state.is_electron) {
@@ -134,23 +146,28 @@ Vue.prototype.$socketio = new Vue({
         //   .success(this.$t('notifications.connection_active'));
       }
 
-      // TODO : reenable auth for folders and publications
-      this.listFolders({ type: 'projects' });
-      this.listFolders({ type: 'authors' });
+      this.sendAuth();
+
+      // this.listFolders({ type: 'authors' });
       // this.sendAuth();
     },
 
     _onReconnect() {
+      this.sendAuth();
       this.$eventHub.$emit('socketio.reconnect');
       console.log(`Reconnected`);
     },
 
+    _onPong() {
+      console.log(`_onPong`);
+    },
+
     sendAuth() {
-      let admin_access = auth.getAdminAccess();
+      let folder_passwords = auth.getAdminAccess();
       console.log(
-        `Asking for auth with ${JSON.stringify(admin_access, null, 4)}`
+        `Asking for auth with ${JSON.stringify(folder_passwords, null, 4)}`
       );
-      this.socket.emit('authenticate', { admin_access });
+      this.socket.emit('authenticate', { folder_passwords });
     },
 
     _onSocketError(reason) {
@@ -173,39 +190,51 @@ Vue.prototype.$socketio = new Vue({
       //   );
     },
 
-    // _authentificated(list_admin_folders) {
-    //   console.log(
-    //     `Admin for projects ${JSON.stringify(list_admin_folders, null, 4)}`
-    //   );
+    _authentificated(list_authorized_folders) {
+      console.log(
+        `Admin for projects ${JSON.stringify(list_authorized_folders, null, 4)}`
+      );
+      window.state.list_authorized_folders = list_authorized_folders;
+      let folder_passwords = auth.getAdminAccess();
 
-    //   // compare local store and answer from server
-    //   // for each key that is not in the answer, let’s send and alert to notify that the password is most likely wrong or the folder name has changed
-    //   if (auth.getAdminAccess() !== undefined) {
-    //     let admin_access = Object.keys(auth.getAdminAccess());
-    //     admin_access.forEach(slugFolderName => {
-    //       if (
-    //         list_admin_folders === undefined ||
-    //         list_admin_folders.indexOf(slugFolderName) === -1
-    //       ) {
-    //         this.$alertify
-    //           .closeLogOnClick(true)
-    //           .delay(4000)
-    //           .error(
-    //             this.$t('notifications["wrong_password_for_folder:"]') +
-    //               ' ' +
-    //               slugFolderName
-    //           );
-    //         auth.removeKey(slugFolderName);
-    //       } else {
-    //       }
-    //     });
-    //   }
+      // got list of items admin for, update localstore with that info
+      let clean_folder_passwords = {};
 
-    //   window.dispatchEvent(
-    //     new CustomEvent('socketio.connected_and_authentified')
-    //   );
-    //   this.listFolders();
-    // },
+      /* 
+      {
+        projects: {
+          bonjour: mon-mot-de-passe
+          hello: mdp2
+        },
+        author: {
+          jean: Hello world !
+        }
+      }
+      */
+
+      // list_authorized_folders.map(i => {
+      //   if (
+      //     !i.hasOwnProperty('allowed_slugFolderNames') ||
+      //     !i.hasOwnProperty('type')
+      //   )
+      //     return;
+
+      //   const type = i.type;
+
+      //   if (!clean_folder_passwords.hasOwnProperty(type)) {
+      //     clean_folder_passwords[type] = {};
+      //   }
+
+      //   i.allowed_slugFolderNames.map(slugFolderName => {
+      //     if(folder_passwords.hasOwnProperty())
+      //     // clean_folder_passwords[type];
+      //   });
+      // });
+      // auth.updateAdminAccess();
+
+      this.listFolders({ type: 'authors' });
+      this.listFolders({ type: 'projects' });
+    },
 
     _onListMedia(data) {
       console.log('Received _onListMedia packet.');
@@ -248,12 +277,6 @@ Vue.prototype.$socketio = new Vue({
         if (window.store[type].hasOwnProperty(slugFolderName)) {
           window.store[type][slugFolderName].medias =
             content[slugFolderName].medias;
-
-          // if (type === 'projects') {
-          //   window.state.list_of_projects_whose_medias_are_tracked.push(
-          //     slugFolderName
-          //   );
-          // }
         }
       }
       this.$eventHub.$emit(`socketio.${type}.listMedias`);
@@ -291,6 +314,11 @@ Vue.prototype.$socketio = new Vue({
     _onPubliVideoGenerated(data) {
       console.log('Received _onPubliVideoGenerated packet.');
       this.$eventHub.$emit('socketio.publication.videoIsGenerated', data);
+    },
+
+    _listClients(data) {
+      console.log('Received _listClients packet.');
+      window.state.clients = data;
     },
 
     // for projects, authors and publications
@@ -427,10 +455,11 @@ let vm = new Vue({
     justCreatedFolderID: false,
     justCreatedMediaID: false,
 
+    currentTime: '',
+
     do_navigation: {
       view: 'ListView',
-      current_slugProjectName: false,
-      current_metaFileName: false
+      current_slugProjectName: false
     },
     media_modal: {
       open: false,
@@ -523,6 +552,9 @@ let vm = new Vue({
       this.settings.windowWidth = window.innerWidth;
       this.settings.windowHeight = window.innerHeight;
     });
+
+    this.currentTime = this.$moment().millisecond(0);
+    setInterval(() => (this.currentTime = this.$moment().millisecond(0)), 1000);
 
     if (this.store.noticeOfError) {
       if (this.store.noticeOfError === 'failed_to_find_folder') {
@@ -672,11 +704,23 @@ let vm = new Vue({
     allKeywords() {
       let allKeywords = [];
       for (let slugProjectName in this.store.projects) {
-        let projectKeywords = this.store.projects[slugProjectName].keywords;
+        const project = this.store.projects[slugProjectName];
+        let projectKeywords = project.keywords;
         if (!!projectKeywords) {
           projectKeywords.map(val => {
             allKeywords.push(val.title);
           });
+
+          if (
+            project.hasOwnProperty('medias') &&
+            Object.keys(project.medias).length > 0
+          ) {
+            Object.values(project.medias).map(m => {
+              if (m.hasOwnProperty('keywords') && m.keywords.length > 0) {
+                allKeywords = allKeywords.concat(m.keywords.map(k => k.title));
+              }
+            });
+          }
         }
       }
       allKeywords = allKeywords.filter(function(item, pos) {
@@ -689,6 +733,9 @@ let vm = new Vue({
           classes: 'tagcolorid_' + (parseInt(kw, 36) % 2)
         };
       });
+    },
+    currentTime_human() {
+      return this.$moment(this.currentTime).format('LL   LTS');
     }
   },
   methods: {
@@ -798,12 +845,44 @@ let vm = new Vue({
       }
       this.$socketio.editMedia(mdata);
     },
+    canAccessFolder: function({ type, slugFolderName }) {
+      if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
 
+      // if folder doesn’t have a password set
+      if (this.store[type][slugFolderName].password !== 'has_pass') {
+        return true;
+      }
+
+      const has_reference_to_folder = this.state.list_authorized_folders.filter(
+        i => {
+          if (
+            !!i &&
+            i.hasOwnProperty('type') &&
+            i.type === type &&
+            i.hasOwnProperty('allowed_slugFolderNames') &&
+            i.allowed_slugFolderNames.indexOf(slugFolderName) >= 0
+          )
+            return true;
+          return false;
+        }
+      );
+
+      if (has_reference_to_folder.length > 0) {
+        return true;
+      }
+      return false;
+    },
     openProject: function(slugProjectName) {
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: openProject: ${slugProjectName}`);
       }
-      if (!this.store.projects.hasOwnProperty(slugProjectName)) {
+      if (
+        !this.store.projects.hasOwnProperty(slugProjectName) ||
+        !this.canAccessFolder({
+          type: 'projects',
+          slugFolderName: slugProjectName
+        })
+      ) {
         console.log('Missing folder key on the page, aborting.');
         this.closeProject();
         return false;
@@ -968,6 +1047,7 @@ let vm = new Vue({
     },
     setAuthor: function(author) {
       this.settings.current_author = author;
+      this.$socketio.socket.emit('updateClientInfo', { author });
     },
     unsetAuthor: function() {
       this.settings.current_author = false;

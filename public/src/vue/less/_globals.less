@@ -281,6 +281,9 @@ strong,b {
 .bg-bleumarine {
   background-color: @c-bleumarine;
 }
+.bg-bleumarine_clair {
+  background-color: @c-bleumarine_clair;
+}
 
 .border-circled {
   border: 1px solid currentColor;
@@ -422,6 +425,9 @@ strong,b {
 .margin-verysmall {
   margin: @t-skipline/4;
 }
+.margin-veryverysmall {
+  margin: @t-skipline/8;
+}
 .margin-bottom-small {
   margin-bottom: @t-skipline/2;
 }
@@ -456,6 +462,9 @@ strong,b {
 .margin-left-small {
   margin-left: @t-skipline/2;
 }
+.margin-left-verysmall {
+  margin-left: @t-skipline/4;
+}
 .margin-left-none {
   margin-left: 0;
 }
@@ -464,6 +473,9 @@ strong,b {
 }
 .margin-top-small {
   margin-top: @t-skipline/2;
+}
+.margin-top-verysmall {
+  margin-top: @t-skipline/4;
 }
 
 .margin-vert-verysmall {
@@ -570,7 +582,12 @@ strong,b {
 }
 
 .button-round {
-  border-radius: 50%;
+  border-radius: 10%;
+
+  border: 2px solid @c-gris_clair;
+  .margin-verysmall;
+  .padding-none;
+
   > span {
     display: block;
     margin-top: @t-skipline/2;
@@ -631,6 +648,7 @@ h1,h2,h3,h4 {
 }
 textarea, .textarea {
   .padding-small;
+  min-height: 7rem;
 }
 
 input[type="color"], input[type="date"], input[type="datetime-local"], input[type="email"], input[type="month"], input[type="number"], input[type="password"], input[type="search"], input[type="tel"], input[type="text"], input[type="time"], input[type="url"], input[type="week"], select, textarea, .textarea {

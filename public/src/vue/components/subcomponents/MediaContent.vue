@@ -17,7 +17,7 @@
         <img :src="linkToVideoThumb">
       </template>
       <template v-else>
-        <video ref="video" preload="none" :src="mediaURL" :poster="linkToVideoThumb" />
+        <video controls ref="video" preload="none" :src="mediaURL" :poster="linkToVideoThumb" />
         <svg 
           ref="playIcon" 
           v-if="!video_is_playing"
@@ -41,14 +41,12 @@
         <div v-if="value.length !== 0" v-html="value" />
         <p v-else v-html="'…'" />
       </div>
-      <vue-editor 
+      <CollaborativeEditor 
         v-else
         v-model="htmlForEditor"
+        :media="media"
+        :slugFolderName="slugFolderName"
         ref="textField"
-        autocorrect="off"
-        :editorToolbar="customToolbar"
-        class="mediaTextContent"
-        autofocus
       />
       <!-- <textarea
         placeholder="…"
@@ -82,9 +80,7 @@
   </div>
 </template>
 <script>
-import { VueEditor } from 'vue2-editor';
-
-// is loaded by Media and by EditMedia
+import CollaborativeEditor from './CollaborativeEditor.vue'
 
 export default {
   props: {
@@ -114,7 +110,7 @@ export default {
     }
   },
   components: {
-    VueEditor
+    CollaborativeEditor
   },
   data() {
     return {
@@ -123,14 +119,7 @@ export default {
         default: 1600
       },
       video_is_playing: false,
-      htmlForEditor: this.value,
-      customToolbar: [
-        [{ 'header': [false, 1, 2, 3, 4] }],
-        // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
-        ['bold', 'italic', 'underline', 'link', 'blockquote'],
-        [{ list: 'ordered' }, { list: 'bullet'} ],
-        ['clean']  
-      ]
+      htmlForEditor: this.value
     };
   },
   mounted() {
@@ -168,28 +157,27 @@ export default {
         return this.mediaURL;
       }
 
-      let pathToSmallestThumb = this.$_.findWhere(this.media.thumbs, {
-        size: this.thumbRes
-      });
-
       if (
       // if image is gif and context is not 'preview', let’s show the original gif
         (this.context !== 'preview' &&
         this.mediaURL.toLowerCase().endsWith('.gif'))
-        ||
-        pathToSmallestThumb === undefined
       ) {
         return this.mediaURL;
       }
 
-      const fullPathToThumb = pathToSmallestThumb.path;
-      const url = this.$root.state.mode === 'export_publication' ? `./${fullPathToThumb}` : `/${fullPathToThumb}`;
+      const small_thumb = this.media.thumbs.filter(m => m.size === this.thumbRes);
+      if(small_thumb.length == 0) {
+        return this.mediaURL;
+      }
+
+      let pathToSmallestThumb = small_thumb[0].path;
+
+      let url = this.$root.state.mode === 'export_publication' ? `./${pathToSmallestThumb}` : `/${pathToSmallestThumb}`;
+      url += `?${(new Date()).getTime()}`;
       return url;
     },
     linkToHoveredThumb: function() {
-      let pathToSmallestThumb = this.$_.findWhere(this.media.thumbs, {
-        size: this.thumbResHovered
-      }).path;
+      let pathToSmallestThumb = this.media.thumbs.filter(m => m.size === this.thumbResHovered)[0].path;
 
       const url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined
@@ -202,17 +190,17 @@ export default {
       }
 
       let timeMark = 0;
-      let timeMarkThumbs = this.$_.findWhere(this.media.thumbs, { timeMark });
+      let timeMarkThumbs = this.media.thumbs.filter(t => !!t && t.timeMark === 0);
 
       if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
         return;
       }
 
-      let pathToSmallestThumb = this.$_.findWhere(timeMarkThumbs.thumbsData, {
-        size: this.thumbRes
-      }).path;
 
-      const url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
+      let pathToSmallestThumb = timeMarkThumbs[0].thumbsData.filter(m => m.size === this.thumbRes)[0].path;
+
+      let url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
+      url += `?${(new Date()).getTime()}`;
       return pathToSmallestThumb !== undefined
         ? url
         : this.mediaURL;
@@ -223,7 +211,7 @@ export default {
       if(this.video_is_playing === false) {
         this.video_is_playing = true;
         this.$refs.video.play();
-        this.$refs.video.setAttribute('controls', 'controls')      
+        // this.$refs.video.setAttribute('controls', 'controls')      
       }
     }
   }

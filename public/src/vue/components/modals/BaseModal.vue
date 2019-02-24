@@ -131,7 +131,7 @@
 
       <transition name="fade" :duration="600">
         <button
-          class="button-round bg-transparent m_modal--close_button padding-verysmall"
+          class="button-round m_modal--close_button padding-verysmall"
           @click="closeModal"
           v-if="showModal && !is_minimized"
         >
@@ -141,7 +141,7 @@
 
       <transition name="fade" :duration="600">
         <button
-          class="button-round bg-transparent m_modal--minimize_button padding-verysmall"
+          class="button-round bg-blanc m_modal--minimize_button padding-verysmall"
           @click="toggleMinimize"
           v-if="showModal && can_minimize"
           :class="{ 'is_minimized' : is_minimized }"
@@ -152,8 +152,8 @@
 
       <transition name="fade" :duration="600">
         <button
-          class="button-round bg-transparent m_modal--nav_left padding-verysmall"
-          @click="$eventHub.$emit('modal.prev_media')"
+          class="button-round bg-blanc m_modal--nav_left padding-verysmall"
+          @click="prevMedia()"
           v-if="showModal && media_navigation && !is_minimized"
         >
           <img src="/images/i_arrow_left.svg">
@@ -162,8 +162,8 @@
 
       <transition name="fade" :duration="600">
         <button
-          class="button-round bg-transparent m_modal--nav_right padding-verysmall"
-          @click="$eventHub.$emit('modal.next_media')"
+          class="button-round bg-blanc m_modal--nav_right padding-verysmall"
+          @click="nextMedia()"
           v-if="showModal && media_navigation && !is_minimized"
         >
           <img src="/images/i_arrow_right.svg">
@@ -257,16 +257,19 @@ export default {
         return
       }
 
-      if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
+      if (event.target.tagName.toLowerCase() === 'input' 
+        || event.target.tagName.toLowerCase() === 'textarea'
+        || event.target.className.includes('ql-editor')
+      ) {
         return;
-      }      
-
+      }  
+      
       if (event.key === 'ArrowRight') {
-        this.$eventHub.$emit('modal.next_media');
+        this.nextMedia();
         return;
       }
       if (event.key === 'ArrowLeft') {
-        this.$eventHub.$emit('modal.prev_media');
+        this.prevMedia();
         return;
       }
     },
@@ -282,6 +285,24 @@ export default {
       setTimeout(() => {
         this.$emit('close');
       }, 400);
+    },
+    prevMedia: function() {
+      console.log(`METHODS • BaseModal: prevMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
+      if(this.askBeforeClosingModal) {
+        if (!window.confirm(this.$t('sureToCloseModal'))) {
+          return;
+        }
+      }
+      this.$eventHub.$emit('modal.prev_media');
+    },
+    nextMedia: function() {
+      console.log(`METHODS • BaseModal: nextMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
+      if(this.askBeforeClosingModal) {
+        if (!window.confirm(this.$t('sureToCloseModal'))) {
+          return;
+        }
+      }
+      this.$eventHub.$emit('modal.next_media');
     },
     toggleMinimize: function() {
       console.log(`METHODS • BaseModal: toggleMinimize`);
