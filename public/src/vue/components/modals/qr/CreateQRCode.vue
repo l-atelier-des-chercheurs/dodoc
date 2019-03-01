@@ -75,11 +75,30 @@ export default {
       window.print();
     },
     getURLToApp(ip) {
-      let url = `${this.$root.state.protocol}://${ip}:${this.$root.state.localNetworkInfos.port}`;
+
+      let url = new URL(window.location);
+
+      function isIP( address ){ 
+        const r = RegExp('((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])');
+        return r.test( address )
+      }
+
+      // si on est en localhost (cas de electron et navigateur connecté à electron)
+      // alors on remplace localhost par l’IP
+      if(url.hostname === 'localhost') {
+        url.hostname = ip;        
+      } 
+      // si on est sur une ip (cas d’un hébergement en ligne, ou d’un navigateur connecté à electron)
+      // alors on remplace par l’IP
+      else if(isIP(url.hostname)) {
+        url.hostname = ip;        
+      }
+      // et si on est sur un nom de domaine alors on ne fait rien
+
       if(this.slugProjectName) {
-        url += `/${this.slugProjectName}`;
+        url.pathname = this.slugProjectName;
         if(this.media_filename) {
-          url += `/media/${this.media_filename}`;
+          url.pathname += `/media/${this.media_filename}`;
         }
       }
       return url;        
