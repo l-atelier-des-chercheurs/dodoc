@@ -1,6 +1,5 @@
-
+dist/
 settings.json
-dist/build.js
 
 ####### NODE ########
 .tmp
