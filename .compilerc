@@ -1,7 +1,5 @@
 {
   "application/javascript": {
-    "presets": [
-      "es2015"
-    ]
+    "passthrough": true
   }
 }
