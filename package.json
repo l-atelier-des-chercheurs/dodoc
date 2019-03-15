@@ -16,7 +16,7 @@
     "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
   },
   "scripts": {
-    "start": "electron .",
+    "start": "electron-forge start",
     "debug": "electron --inspect=5858 . --debug --verbose",
     "debug-brk": "electron --inspect=5858 . --debug-brk --verbose",
     "node-start": "node .",
@@ -24,7 +24,8 @@
     "node-debug-brk": "node . --inspect=5858 --debug-brk --verbose",
     "pack": "build --dir",
     "dist": "build",
-    "postinstall": "electron-builder install-app-deps"
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "engines": {
     "node": "8.9.3",
@@ -44,9 +45,12 @@
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
     "dodoc-parsedown": "https://github.com/louis-ev/dodoc-parsedown.git#master",
+    "electron": "^2.0.16",
+    "electron-compile": "^6.4.4",
     "electron-context-menu": "^0.10.1",
     "electron-log": "^2.2.17",
     "electron-pdf-window": "^1.0.12",
+    "electron-squirrel-startup": "^1.0.0",
     "exif-reader": "^1.0.2",
     "express": "^4.16.4",
     "express-ws": "^4.0.0",
@@ -81,11 +85,44 @@
     "ws": "^6.1.2"
   },
   "devDependencies": {
-    "electron": "^2.0.16",
-    "electron-builder": "^20.38.5",
-    "electron-packager": "^13.0.1",
-    "electron-prebuilt": "^1.4.13",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "electron-forge": "^5.2.4",
+    "electron-prebuilt-compile": "2.0.16",
     "electron-rebuild": "^1.8.2",
     "node-gyp": "^3.8.0"
+  },
+  "config": {
+    "forge": {
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "zip"
+        ],
+        "linux": [
+          "deb",
+          "rpm"
+        ]
+      },
+      "electronPackagerConfig": {
+        "packageManager": "npm"
+      },
+      "electronWinstallerConfig": {
+        "name": "dodoc"
+      },
+      "electronInstallerDebian": {},
+      "electronInstallerRedhat": {},
+      "github_repository": {
+        "owner": "",
+        "name": ""
+      },
+      "windowsStoreConfig": {
+        "packageName": "",
+        "name": "do•doc"
+      }
+    }
   }
 }
