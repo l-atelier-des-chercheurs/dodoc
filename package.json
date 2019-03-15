@@ -1,7 +1,7 @@
 {
   "name": "dodoc",
   "productName": "do•doc",
-  "version": "8.0.0",
+  "version": "7.7.6-dev",
   "description": "do•doc is a documentation tool for creativity.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
@@ -27,11 +27,11 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "engines": {
-    "node": "10.11.0",
+    "node": "8.9.3",
     "npm": "*"
   },
   "build": {
-    "electronVersion": "4.1.0",
+    "electronVersion": "2.0.16",
     "appId": "dodoc2",
     "productName": "do•doc",
     "asar": false,
@@ -49,6 +49,7 @@
     "electron-pdf-window": "^1.0.12",
     "exif-reader": "^1.0.2",
     "express": "^4.16.4",
+    "express-ws": "^4.0.0",
     "ffmpeg-static": "^2.4.0",
     "ffprobe-static": "^3.0.0",
     "fluent-ffmpeg": "^2.1.2",
@@ -80,7 +81,7 @@
     "ws": "^6.1.2"
   },
   "devDependencies": {
-    "electron": "^4.1.0",
+    "electron": "^2.0.16",
     "electron-builder": "^20.38.5",
     "electron-packager": "^13.0.1",
     "electron-prebuilt": "^1.4.13",
