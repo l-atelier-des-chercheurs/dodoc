@@ -14,7 +14,6 @@ export default {
       username: this.$root.settings.capture_options.distant_flux.username,
       callee_username: this.$root.settings.capture_options.distant_flux.callee_username,
       is_calling: false,
-      is_booting: true
     }
   },
   
@@ -33,20 +32,32 @@ export default {
     // do not shift room control to other users
     this.connection.autoCloseEntireSession = true;
     this.connection.session = {
-      audio: true,
+      audio: false,
       video: true,
       broadcast: true // if you remove this, then it becomes MANY-to-MANY
     };
 
-    this.connection.sdpConstraints.mandatory = {
-      OfferToReceiveAudio: false,
-      OfferToReceiveVideo: true
+    this.connection.sdpConstraints = {
+        mandatory: {
+            OfferToReceiveAudio: false,
+            OfferToReceiveVideo: true,
+            VoiceActivityDetection: false,
+            IceRestart: false
+        },
+        optional: []
     };
+
+    
     // this.connection.videosContainer = document.getElementById('videos-container');
     this.connection.onstream = (event) => {
       console.log('MOUNTED • DistantFlux: onstream');
-      this.is_booting = false;
+
       if(this.is_calling) {
+        event.mediaElement.removeAttribute('src');
+        event.mediaElement.removeAttribute('srcObject');
+        event.mediaElement.muted = true;
+        event.mediaElement.volume = 0;
+
         this.$emit('changeStreamTo', event.stream);
         this.is_calling = false;
       }

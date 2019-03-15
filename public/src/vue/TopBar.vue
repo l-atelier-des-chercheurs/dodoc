@@ -7,7 +7,7 @@
             ‹ <span class="backButton--text">{{ $t('back') }}</span>
           </button>
         </transition>
-        <img src="/images/i_logo.svg" @click="goHome()" />
+        <img :title="`do•doc version ${$root.state.appVersion}`" src="/images/i_logo.svg" @click="goHome()" />
       </div>
 
       <div 
