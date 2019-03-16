@@ -164,6 +164,7 @@
             @authorsChanged="newAuthors => mediadata.authors = newAuthors"
           />
 
+          <small>{{ $t('author_instructions') }}</small>
           <!-- <textarea v-model="mediadata.authors[0]" :readonly="read_only">
           </textarea> -->
         </div>

@@ -54,6 +54,7 @@
           :currentAuthors="projectdata.authors"
           @authorsChanged="newAuthors => projectdata.authors = newAuthors"
         />
+        <small>{{ $t('author_instructions') }}</small>
       </div>
 
     </template>

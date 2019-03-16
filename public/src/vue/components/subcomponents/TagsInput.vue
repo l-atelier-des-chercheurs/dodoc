@@ -7,15 +7,14 @@
       :tags="tags"
       @tags-changed="newTags => sendTags(newTags)"
     />    
+    {{ filteredKeyword }}
   </div>
 </template>
 <script>
 import { VueTagsInput, createTags } from '@johmun/vue-tags-input';
 
 export default {
-  props: {
-    keywords: Array
-  },
+  props: ['keywords'],
   components: {
     VueTagsInput
   },
