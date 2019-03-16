@@ -1461,6 +1461,7 @@ small {
   letter-spacing: 0.04em;
   display: flex;
   flex-flow: row wrap;
+  align-items: flex-start;
   text-transform: initial;
 
   font-family: 'Fira Mono';
@@ -1476,6 +1477,9 @@ small {
     border: 4px solid @c-gris_clair !important;
     .padding-verysmall;
     padding-bottom: 0;
+    flex-grow: 1;
+    display: flex;
+    flex-flow: row wrap;
 
     &::before {
       content: 'suggestion';
@@ -1483,6 +1487,7 @@ small {
       text-transform: uppercase;
       .label;
       display: block;
+      flex: 1 1 100%;
     }
 
     > * {
@@ -1502,25 +1507,53 @@ small {
   }
 
   .new-tag-input-wrapper {
+    position: relative;
     padding: 0 !important;
-    margin: 0 !important;
-    display: block !important;
     background-color: transparent;
-    flex-grow: 0 !important;
     .font-medium;
+    margin-right: @t-skipline/4 !important;
+    margin-bottom: @t-skipline/4 !important;
+
+    display: flex !important;
+    flex-flow: row nowrap;
+    transform: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+
 
     input {
+      position: relative;
+      z-index: 1;
       padding: @t-skipline/4 !important;
       margin: 0 !important;
-      margin-right: @t-skipline/4 !important;
-      margin-bottom: @t-skipline/4 !important;
-      border-radius: 4px !important; 
-      min-width: 25ch !important;
+      border-radius: 4px; 
+      min-width: 15ch !important;
+      flex: 1 1 auto;
       .bg-gris_tresclair;
       font-size: inherit !important;
+      line-height: 1;
 
       height: auto !important;
       border-bottom: 2px solid @c-gris !important;
+    
+      
+    }
+
+    button {
+      display: block;
+      .button-small;
+      font-size:2em;
+      background-color: @c-gris;
+      flex: 0 0 1em;
+      min-height: 0;
+      width: 1em;
+      overflow: hidden;
+      padding:0;
+      margin-left: -4px;
+      border-radius: 0 4px 4px 0; 
+
+      &[disabled] {
+        flex-basis: 0;
+        width: 0;
+      }
     }
   }
 

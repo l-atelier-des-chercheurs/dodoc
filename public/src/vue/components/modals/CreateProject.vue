@@ -36,7 +36,6 @@
       <div class="margin-bottom-small">
         <label>{{ $t('keywords') }}</label>
         <TagsInput @tagsChanged="newTags => projectdata.keywords = newTags"/>
-        <small>{{ $t('validate_with_enter') }}</small>        
       </div>
 
 <!-- Author(s) -->

@@ -1,13 +1,37 @@
 <template>
-  <div>
-    <VueTagsInput
+  <div class="m_keywordField">
+    <!-- <VueTagsInput
       v-model="tag"
       :placeholder="$t('add_keyword')"
-      :autocomplete-items="filteredKeyword"
       :tags="tags"
       @tags-changed="newTags => sendTags(newTags)"
-    />    
-    {{ filteredKeyword }}
+    />     -->
+    <button type="button"
+      v-for="tag in tags"
+      :key="tag.text"
+      @click="removeTag(tag.text)"
+    >
+      {{ tag.text }}
+    </button>
+
+    <div class="new-tag-input-wrapper">
+      <input type="text" class="new-tag-input" v-model="tag" 
+        :placeholder="$t('add_keyword')"
+      />
+      <button type="button" @click="createTag" :disabled="tag.length === 0">
+        +
+      </button>
+    </div>
+    <div v-if="matchingKeywords.length > 0" class="autocomplete">
+      <button type="button"
+        v-for="keyword in matchingKeywords"
+        :key="keyword.text"
+        class="tag"
+        @click="createTagFromAutocomplete(keyword.text)"
+      >
+        {{ keyword.text }}
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -34,15 +58,33 @@ export default {
   },
   beforeDestroy() {
   },
-
   watch: {
   },
   computed: {
-    filteredKeyword() {
-      return this.$root.allKeywords.filter(i => new RegExp(this.tag, 'i').test(i.text));
+    matchingKeywords() {
+      if(this.tag.trim().length === 0) {
+        return [];
+      }
+      return this.$root.allKeywords.filter(i => new RegExp(this.tag, 'i').test(i.text) && !this.tags.find(t => t.text === i.text));
     }
   },
   methods: {
+    createTagFromAutocomplete: function(tag) {
+      this.tag = tag;
+      this.createTag();
+    },
+    createTag: function() {
+      if(this.tag.trim().length === 0) {
+        return;
+      }
+      this.tags.push({ text: this.tag });
+      this.sendTags(this.tags);
+      this.tag = '';
+    },
+    removeTag: function(tag_text) {
+      this.tags = this.tags.filter(t => t.text !== tag_text);
+      this.sendTags(this.tags);
+    },
     updateTags: function(newTags) {
       this.tags = newTags.map(val => {
         val.classes = "tagcolorid_" + parseInt(val.text, 36)%2;

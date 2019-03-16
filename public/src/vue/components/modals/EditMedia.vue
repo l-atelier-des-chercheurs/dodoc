@@ -152,7 +152,6 @@
           :keywords="mediadata.keywords"
           @tagsChanged="newTags => mediadata.keywords = newTags"
         />
-        <small>{{ $t('validate_with_enter') }}</small>        
       </div>
 
   <!-- Author(s) -->
