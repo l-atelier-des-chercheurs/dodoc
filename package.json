@@ -108,7 +108,8 @@
         ]
       },
       "electronPackagerConfig": {
-        "packageManager": "npm"
+        "packageManager": "npm",
+        "executableName": "dodoc"
       },
       "electronWinstallerConfig": {
         "name": "dodoc"
