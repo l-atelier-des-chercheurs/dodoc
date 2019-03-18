@@ -22,8 +22,8 @@ try {
 }
 global.settings = settings;
 
-const router = require('../router');
+const router = require('./router');
 
-require('../core/main')({
+require('./core/main')({
   router
 });
