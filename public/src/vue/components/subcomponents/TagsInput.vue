@@ -1,28 +1,30 @@
 <template>
-  <div class="m_keywordField">
-    <!-- <VueTagsInput
-      v-model="tag"
-      :placeholder="$t('add_keyword')"
-      :tags="tags"
-      @tags-changed="newTags => sendTags(newTags)"
-    />     -->
+  <transition-group name="list-complete" tag="div"
+    class="m_keywordField"
+  >
     <button type="button"
       v-for="tag in tags"
       :key="tag.text"
       @click="removeTag(tag.text)"
+      class="can_be_removed"
     >
       {{ tag.text }}
     </button>
 
-    <div class="new-tag-input-wrapper">
-      <input type="text" class="new-tag-input" v-model="tag" 
+    <div class="new-tag-input-wrapper" :key="'new-tag-input'">
+      <input type="text" class="new-tag-input" v-model.trim="tag" 
         :placeholder="$t('add_keyword')"
+        @keydown.enter.prevent="createTag"
       />
-      <button type="button" @click="createTag" :disabled="tag.length === 0">
+      <button type="button" @click="createTag" :disabled="disableAddButton"
+        v-if="tag.length > 0"
+      >
         +
       </button>
     </div>
-    <div v-if="matchingKeywords.length > 0" class="autocomplete">
+    <div v-if="matchingKeywords.length > 0" class="autocomplete"
+      :key="'autocomplete'"  
+    >
       <button type="button"
         v-for="keyword in matchingKeywords"
         :key="keyword.text"
@@ -32,7 +34,7 @@
         {{ keyword.text }}
       </button>
     </div>
-  </div>
+  </transition-group>
 </template>
 <script>
 import { VueTagsInput, createTags } from '@johmun/vue-tags-input';
@@ -62,10 +64,23 @@ export default {
   },
   computed: {
     matchingKeywords() {
-      if(this.tag.trim().length === 0) {
+      if(this.tag.length === 0) {
         return [];
       }
-      return this.$root.allKeywords.filter(i => new RegExp(this.tag, 'i').test(i.text) && !this.tags.find(t => t.text === i.text));
+      const fitting_keywords = this.$root.allKeywords.filter(i => new RegExp(this.tag, 'i').test(i.text) && !this.tags.find(t => t.text === i.text));
+      debugger;
+      return fitting_keywords.slice(0, 2);
+      // return fitting_keywords;
+      // return this.$root.allKeywords.filter(i => i.text.toLowerCase().startsWith(this.tag.toLowerCase()) && !this.tags.find(t => t.text === i.text));
+    },
+    disableAddButton() {
+      if(this.tag.length === 0) {
+        return true;
+      }
+      if(this.tags.find(t => t.text === this.tag)) {
+        return true;
+      }
+      return false;
     }
   },
   methods: {

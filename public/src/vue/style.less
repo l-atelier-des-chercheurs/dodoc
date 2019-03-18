@@ -1542,17 +1542,19 @@ small {
       .button-small;
       font-size:2em;
       background-color: @c-gris;
+      .bg-bleuvert;
+      color: white;
       flex: 0 0 1em;
       min-height: 0;
       width: 1em;
       overflow: hidden;
       padding:0;
       margin-left: -4px;
+      padding-left: 4px;
       border-radius: 0 4px 4px 0; 
 
       &[disabled] {
-        flex-basis: 0;
-        width: 0;
+        background-color: @c-gris;
       }
     }
   }
@@ -1595,17 +1597,22 @@ small {
     }
 
     &::before {
-      content: '';
+      content: '•';
       flex-shrink: 0;
       .margin-sides-verysmall;
       margin-left: @t-skipline/8;
-      background-color: white;
       display: inline-block;
       vertical-align: middle;
-      width: .3em;
-      height: .3em;
-      font-size:2em;
+      color: white;
+      font-size: 1em;
       border-radius: 50%;
+      transform: scale(1.7);
+
+    }
+
+    &.can_be_removed::before {
+      content: '×';
+      transform: scale(1.5);
     }
 
     .actions {
