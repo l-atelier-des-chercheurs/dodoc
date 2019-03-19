@@ -1436,23 +1436,24 @@ small {
     border-radius: 4px !important; 
     background-color: @c-gris_clair !important;
     // color: white !important;
-    color: @c-noir !important;
+    color: @c-gris_fonce;
     font-size: inherit !important;
     .padding-sides-verysmall !important;
     .padding-vert-verysmall !important;
     text-transform: initial;
     font-weight: inherit;
+    font-weight: 500;
 
 
     margin: 0 !important;
     margin-right: @t-skipline/4 !important;
     margin-bottom: @t-skipline/4 !important;
 
+    transition: all .2s cubic-bezier(0.19, 1, 0.22, 1);
+
     &.is--active {
       background-color: @c-bleumarine_clair !important;
       color: @c-bleumarine_fonce !important;
-      font-weight: 600;
-
       &::before {
         opacity: .8;
       }
@@ -1625,6 +1626,7 @@ small {
       border-radius: 50%;
       transform: scale(1.7);
 
+      transition: all .2s cubic-bezier(0.19, 1, 0.22, 1);
     }
 
     &.can_be_removed::before {

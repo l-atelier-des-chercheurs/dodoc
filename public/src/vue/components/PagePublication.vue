@@ -4,7 +4,6 @@
     :class="{ 'is--preview' : preview_mode, 'is--fullscreen' : fullscreen_mode }"
     @scroll="onScroll"
     ref="panel"
-    :style="customCSSVars"
   >
     <div class="m_publicationMeta">
       <div class="m_publicationMeta--topbar">
@@ -282,7 +281,9 @@
               </template>
 
 
-              <div class="m_page--header">
+              <div class="m_page--header"
+                :style="customCSSVars"
+              >
                 <div>
                   {{ page.header_left }}
                 </div>
@@ -860,6 +861,8 @@ export default {
       `;      
     },
     setPageProperties(page) {
+
+      
       if(this.$root.state.mode === 'print_publication') {
         // reducing page height by 1mm is necessary to prevent blank pages in-between
         return `
