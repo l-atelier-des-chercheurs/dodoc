@@ -47,6 +47,7 @@ module.exports = (function() {
         'Êtes-vous sûr de vouloir supprimer cette animation ?',
       validate_media: 'Valider le média',
       add_keyword: 'Ajouter un mot-clé',
+      add: 'Ajouter',
 
       showing: 'Affichage de',
       media_filter: 'Filtre de médias',
@@ -295,6 +296,7 @@ module.exports = (function() {
         'Do you really want to cancel this stopmotion?',
       validate_media: 'Validate the media',
       add_keyword: 'Add a keyword',
+      add: 'Add',
 
       showing: 'Showing',
       media_filter: 'Medias filter',

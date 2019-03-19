@@ -1344,9 +1344,9 @@ small {
       border-top: 1px solid @c-gris_clair;
       .font-verysmall;
       .c-noir;
-      .padding-sides-small;
-      padding-top: @t-skipline/4;
-      margin-bottom: @t-skipline/4;
+      .padding-sides-verysmall;
+      // padding-top: @t-skipline/4;
+      // margin-bottom: @t-skipline/4;
 
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1441,8 +1441,13 @@ small {
     &.is--active {
       background-color: @c-bleumarine_clair !important;
       color: @c-bleumarine_fonce !important;
+      font-weight: 600;
+
+      &::before {
+        opacity: .6;
+      }
     }
-  &::before {
+    &::before {
       content: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2084%2084%22%3E%0A%20%20%3Ctitle%3Etext%20copie%2010%3C/title%3E%0A%20%20%3Cg%20id%3D%22Calque_6%22%20data-name%3D%22Calque%206%22%3E%0A%20%20%20%20%3Cg%20id%3D%22flc%22%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M64%2C56.53a18.29%2C18.29%2C0%2C0%2C0-10.06-8.09s-3.44-1.71-12.28-1.71-12.27%2C1.71-12.27%2C1.71a18.31%2C18.31%2C0%2C0%2C0-10.07%2C8.09c-1%2C1.47-1.47%2C4.66-1.71%2C6.37v2.45c0%2C3.19%2C2.2%2C5.89%2C4.9%2C5.89H60.56c2.7%2C0%2C4.91-2.7%2C4.91-5.89V62.9A10.5%2C10.5%2C0%2C0%2C0%2C64%2C56.53M28.41%2C24.91c0%2C7.36%2C4.66%2C18.39%2C13.5%2C18.39%2C8.59%2C0%2C13.5-11%2C13.5-18.39a13.44%2C13.44%2C0%2C0%2C0-13.5-13.47%2C13.29%2C13.29%2C0%2C0%2C0-13.5%2C13.47%22/%3E%0A%20%20%20%20%3C/g%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E%0A');
       display: inline-block;
       vertical-align: baseline;
@@ -1458,13 +1463,13 @@ small {
   .margin-bottom-verysmall;
   margin-bottom: 0;
   .font-verysmall;
-  letter-spacing: 0.04em;
   display: flex;
   flex-flow: row wrap;
+  align-items: flex-start;
   text-transform: initial;
 
   font-family: 'Fira Mono';
-  font-weight: 400;
+  font-weight: 00;
 
   > .input {
     border: none !important;
@@ -1476,6 +1481,9 @@ small {
     border: 4px solid @c-gris_clair !important;
     .padding-verysmall;
     padding-bottom: 0;
+    flex-grow: 1;
+    display: flex;
+    flex-flow: row wrap;
 
     &::before {
       content: 'suggestion';
@@ -1483,6 +1491,7 @@ small {
       text-transform: uppercase;
       .label;
       display: block;
+      flex: 1 1 100%;
     }
 
     > * {
@@ -1502,25 +1511,55 @@ small {
   }
 
   .new-tag-input-wrapper {
+    position: relative;
     padding: 0 !important;
-    margin: 0 !important;
-    display: block !important;
     background-color: transparent;
-    flex-grow: 0 !important;
     .font-medium;
+    margin-right: @t-skipline/4 !important;
+    margin-bottom: @t-skipline/4 !important;
+
+    display: flex !important;
+    flex-flow: row nowrap;
+    transform: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+
 
     input {
+      position: relative;
+      z-index: 1;
       padding: @t-skipline/4 !important;
       margin: 0 !important;
-      margin-right: @t-skipline/4 !important;
-      margin-bottom: @t-skipline/4 !important;
-      border-radius: 4px !important; 
-      min-width: 25ch !important;
+      border-radius: 4px; 
+      min-width: 15ch !important;
+      flex: 1 1 auto;
       .bg-gris_tresclair;
       font-size: inherit !important;
+      line-height: 1;
 
       height: auto !important;
       border-bottom: 2px solid @c-gris !important;
+    
+      
+    }
+
+    button {
+      display: block;
+      .button-small;
+      font-size:2em;
+      background-color: @c-gris;
+      .bg-bleuvert;
+      color: white;
+      flex: 0 0 1em;
+      min-height: 0;
+      width: 1em;
+      overflow: hidden;
+      padding:0;
+      margin-left: -4px;
+      padding-left: 4px;
+      border-radius: 0 4px 4px 0; 
+
+      &[disabled] {
+        background-color: @c-gris;
+      }
     }
   }
 
@@ -1544,8 +1583,10 @@ small {
     margin-bottom: @t-skipline/4 !important;
 
     &.is--active {
+      font-weight: 700;
       &::before {
-        background-color: black !important;
+        color: black;
+        // background-color: black !important;
       }
     }
 
@@ -1562,17 +1603,22 @@ small {
     }
 
     &::before {
-      content: '';
+      content: '•';
       flex-shrink: 0;
       .margin-sides-verysmall;
       margin-left: @t-skipline/8;
-      background-color: white;
       display: inline-block;
       vertical-align: middle;
-      width: .3em;
-      height: .3em;
-      font-size:2em;
+      color: white;
+      font-size: 1em;
       border-radius: 50%;
+      transform: scale(1.7);
+
+    }
+
+    &.can_be_removed::before {
+      content: '×';
+      transform: scale(1.5);
     }
 
     .actions {

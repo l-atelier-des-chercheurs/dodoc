@@ -54,7 +54,7 @@ export default {
         toolbar: this.custom_toolbar
       },
       theme: 'snow',
-      formats: ['bold', 'underline', 'header', 'italic']
+      formats: ['bold', 'underline', 'header', 'italic', 'link']
     });
     this.editor.root.innerHTML = this.value;
 

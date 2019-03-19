@@ -20,9 +20,7 @@
 </template>
 <script>
 export default {
-  props: {
-    currentAuthors: Array
-  },
+  props: ['currentAuthors'],
   components: {
   },
   data() {
