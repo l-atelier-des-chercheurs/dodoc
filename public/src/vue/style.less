@@ -1405,6 +1405,16 @@ small {
   }
 }
 
+.m_tagsAndAuthorFilters {
+
+  
+  .item {
+
+    :not(.is--active) {
+      opacity: .4;
+    }
+  }
+}
 
 .m_authorField {
   position: relative;
@@ -1416,7 +1426,7 @@ small {
   flex-flow: row wrap;
   text-transform: initial;
 
-  font-weight: 200;
+  font-weight: 400;
 
   > button, > span {
     flex-basis: auto;
@@ -1433,7 +1443,7 @@ small {
     text-transform: initial;
     font-weight: inherit;
 
-    font-weight: 400;
+
     margin: 0 !important;
     margin-right: @t-skipline/4 !important;
     margin-bottom: @t-skipline/4 !important;
@@ -1444,7 +1454,7 @@ small {
       font-weight: 600;
 
       &::before {
-        opacity: .6;
+        opacity: .8;
       }
     }
     &::before {
@@ -1453,7 +1463,7 @@ small {
       vertical-align: baseline;
       width: 20px;
       height: 20px;
-      opacity: 0.3;
+      opacity: 0.2;
     }
   }
 }
@@ -1577,6 +1587,7 @@ small {
     .padding-vert-verysmall !important;
     text-transform: initial;
     font-weight: inherit;
+    font-weight: 400;
 
     margin: 0 !important;
     margin-right: @t-skipline/4 !important;
