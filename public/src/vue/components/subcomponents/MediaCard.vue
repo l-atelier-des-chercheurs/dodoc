@@ -1,7 +1,11 @@
 <template>
   <div 
     class="m_media"
-    :class="{ 'is--inPubli' : media_is_in_current_publi }"
+    :class=" { 
+      'is--inPubli' : media_is_in_current_publi, 
+      'is--fav' : media.fav,
+      'is--ownMedia' : media_made_by_current_author
+    }"
   >
     <div>
       <figure 
@@ -11,7 +15,7 @@
         :class="{ 'is--hovered' : is_hovered }"
       >
         <div>
-          <div class="m_metaField padding-sides-small" v-if="!!media.type">
+          <div class="m_metaField padding-sides-verysmall" v-if="!!media.type">
             <div>
               {{ $t(media.type) }}
             </div>
@@ -26,7 +30,7 @@
           <button 
             type="button" 
             v-if="$root.settings.current_slugPubliName" 
-            class="button-greenthin button-square"
+            class="button_addToPubli button-greenthin button-square"
             @click.stop="addToCurrentPubli()"
             :title="$t('add_to_publication')"
           >
@@ -126,6 +130,15 @@ export default {
   watch: {
   },
   computed: {
+    media_made_by_current_author() {
+      if(!this.media.authors || typeof this.media.authors !== 'object') {
+        return false;
+      }
+      if(!this.$root.settings.current_author) {
+        return false;
+      }
+      return this.media.authors.filter(a => a.name === this.$root.settings.current_author.name).length > 0;
+    }
   },
   methods: {
     isMediaInPubli() {
@@ -134,10 +147,8 @@ export default {
           const currentPubli = this.$root.store.publications[this.$root.settings.current_slugPubliName];
           if(currentPubli.hasOwnProperty('medias') && Object.keys(currentPubli.medias).length > 0) {
 
-            const media_in_publi = this.$_.findWhere(currentPubli.medias, {
-              slugMediaName: this.metaFileName 
-            });
-            if(media_in_publi) {
+            const media_in_publi = Object.values(currentPubli.medias).filter(s => s.slugMediaName === this.metaFileName);
+            if(media_in_publi.length > 0) {
               this.media_is_in_current_publi = true;
             } else {
               this.media_is_in_current_publi = false;

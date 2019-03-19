@@ -4,8 +4,8 @@
     <div class="m_modal--metaOptions--fav">
       <div class="margin-bottom-small">
         <span class="switch switch-xs">
-          <input type="checkbox" class="switch" id="favswitch" v-model="fav">
-          <label for="favswitch">{{ $t('fav') }}</label>
+          <input type="checkbox" class="switch" id="validateFavSwitch" v-model="fav">
+          <label for="validateFavSwitch">{{ $t('fav') }}</label>
         </span>
       </div>
     </div>

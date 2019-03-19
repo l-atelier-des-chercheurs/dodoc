@@ -1,26 +1,48 @@
 const path = require('path'),
   fs = require('fs-extra'),
   validator = require('validator'),
-  sharp = require('sharp');
+  ffmpegstatic = require('ffmpeg-static'),
+  ffprobestatic = require('ffprobe-static'),
+  ffmpeg = require('fluent-ffmpeg');
 
-const settings = require('../settings.json'),
-  dev = require('./dev-log'),
+const sharp = require('sharp');
+
+const dev = require('./dev-log'),
   api = require('./api'),
   thumbs = require('./thumbs');
 
+ffmpeg.setFfmpegPath(ffmpegstatic.path);
+ffmpeg.setFfprobePath(ffprobestatic.path);
+
 module.exports = (function() {
   const API = {
+    getPresentation() {
+      return new Promise(function(resolve, reject) {
+        let presentationMd = path.join(api.getFolderPath(), 'presentation.md');
+        fs.access(presentationMd, fs.F_OK, function(err) {
+          if (err) {
+            resolve(validator.unescape(global.appInfos.presentationMd));
+          } else {
+            let presentationContent = validator.unescape(
+              fs.readFileSync(presentationMd, global.settings.textEncoding)
+            );
+            presentationContent = api.parseData(presentationContent);
+            resolve(presentationContent);
+          }
+        });
+      });
+    },
     getFolder: ({ type, slugFolderName }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
           `COMMON — getFolder type = ${type} with slugFolderName = ${slugFolderName}`
         );
 
-        if (!settings.structure.hasOwnProperty(type)) {
-          reject(`Missing type ${type} in settings.json`);
+        if (!global.settings.structure.hasOwnProperty(type)) {
+          reject(`Missing type ${type} in global.settings.json`);
         }
 
-        const baseFolderPath = settings.structure[type].path;
+        const baseFolderPath = global.settings.structure[type].path;
         const mainFolderPath = api.getFolderPath(baseFolderPath);
 
         _getFolderSlugs(mainFolderPath).then(folders => {
@@ -45,7 +67,8 @@ module.exports = (function() {
                 dev.logverbose(`Finding meta for folder = ${thisFolderPath}`);
                 const metaFolderPath = path.join(
                   thisFolderPath,
-                  settings.folderMetaFilename + settings.metaFileext
+                  global.settings.folderMetaFilename +
+                    global.settings.metaFileext
                 );
 
                 readMetaFile(metaFolderPath)
@@ -53,7 +76,9 @@ module.exports = (function() {
                     meta = _sanitizeMetaFromFile({ type, meta });
                     meta.slugFolderName = slugFolderName;
 
-                    if (settings.structure[type].hasOwnProperty('medias')) {
+                    if (
+                      global.settings.structure[type].hasOwnProperty('medias')
+                    ) {
                       meta.medias = {};
                     }
 
@@ -71,33 +96,48 @@ module.exports = (function() {
             );
 
             // For each folder, find a preview (if it exists)
-            allFoldersData.push(
-              new Promise((resolve, reject) => {
-                dev.logverbose(
-                  `Finding preview for folder = ${thisFolderPath}`
-                );
-                const pathToPreview = path.join(
-                  thisFolderPath,
-                  settings.folderPreviewFilename + settings.thumbExt
-                );
-                fs.access(pathToPreview, fs.F_OK, err => {
-                  preview_name = !err
-                    ? settings.folderPreviewFilename + settings.thumbExt
-                    : '';
-                  resolve({
-                    [slugFolderName]: {
-                      preview: preview_name
+            if (global.settings.structure[type].hasOwnProperty('preview')) {
+              allFoldersData.push(
+                new Promise((resolve, reject) => {
+                  dev.logverbose(
+                    `Finding preview for folder = ${slugFolderName}`
+                  );
+
+                  const preview_name =
+                    global.settings.folderPreviewFilename +
+                    global.settings.thumbExt;
+                  const pathToPreview = path.join(thisFolderPath, preview_name);
+
+                  fs.access(pathToPreview, fs.F_OK, err => {
+                    if (err) {
+                      return resolve();
                     }
+
+                    thumbs
+                      .makeMediaThumbs(
+                        slugFolderName,
+                        preview_name,
+                        'image',
+                        type,
+                        'preview'
+                      )
+                      .then(thumbData => {
+                        resolve({
+                          [slugFolderName]: {
+                            preview: thumbData
+                          }
+                        });
+                      })
+                      .catch(err => {
+                        resolve();
+                      });
                   });
-                });
-              })
-            );
+                })
+              );
+            }
           });
           Promise.all(allFoldersData).then(parsedFoldersData => {
-            dev.logverbose(
-              `All folders meta have been processed`,
-              JSON.stringify(parsedFoldersData, null, 4)
-            );
+            dev.logverbose(`All folders meta have been processed`);
 
             // on se balade dans l’array, on attrappe la key
             // et on merge tout ça dans un nouvel objet du type :
@@ -113,11 +153,10 @@ module.exports = (function() {
                 }
               }
             */
-
             // Reunite array items as a single big object
             let flatObjFoldersData = {};
             parsedFoldersData.forEach(fmeta => {
-              if (Object.keys(fmeta).length > 0) {
+              if (!!fmeta && Object.keys(fmeta).length > 0) {
                 let slugFolderName = Object.keys(fmeta)[0];
                 if (!flatObjFoldersData.hasOwnProperty(slugFolderName)) {
                   flatObjFoldersData[slugFolderName] = {};
@@ -147,11 +186,11 @@ module.exports = (function() {
           data.name = 'Untitled Folder';
         }
 
-        if (!settings.structure.hasOwnProperty(type)) {
-          reject(`Missing type ${type} in settings.json`);
+        if (!global.settings.structure.hasOwnProperty(type)) {
+          reject(`Missing type ${type} in global.settings.json`);
         }
 
-        const baseFolderPath = settings.structure[type].path;
+        const baseFolderPath = global.settings.structure[type].path;
         const mainFolderPath = api.getFolderPath(baseFolderPath);
 
         _getFolderSlugs(mainFolderPath).then(folders => {
@@ -179,9 +218,16 @@ module.exports = (function() {
             () => {
               let tasks = [];
 
-              if (data.hasOwnProperty('preview_rawdata')) {
+              if (
+                data.hasOwnProperty('preview_rawdata') &&
+                global.settings.structure[type].hasOwnProperty('preview')
+              ) {
                 tasks.push(
-                  _storeFoldersPreview(thisFolderPath, data.preview_rawdata)
+                  _storeFoldersPreview(
+                    slugFolderName,
+                    type,
+                    data.preview_rawdata
+                  )
                 );
               }
 
@@ -195,7 +241,8 @@ module.exports = (function() {
 
                   const metaFolderPath = path.join(
                     thisFolderPath,
-                    settings.folderMetaFilename + settings.metaFileext
+                    global.settings.folderMetaFilename +
+                      global.settings.metaFileext
                   );
 
                   api
@@ -236,10 +283,10 @@ module.exports = (function() {
           with existing data ${JSON.stringify(foldersData, null, 4)}`
         );
 
-        if (!settings.structure.hasOwnProperty(type)) {
-          reject(`Missing type ${type} in settings.json`);
+        if (!global.settings.structure.hasOwnProperty(type)) {
+          reject(`Missing type ${type} in global.settings.json`);
         }
-        const baseFolderPath = settings.structure[type].path;
+        const baseFolderPath = global.settings.structure[type].path;
         const mainFolderPath = api.getFolderPath(baseFolderPath);
 
         // remove slugFolderKey
@@ -247,11 +294,16 @@ module.exports = (function() {
         const thisFolderPath = path.join(mainFolderPath, slugFolderName);
         let tasks = [];
 
-        if (newFoldersData.hasOwnProperty('preview_rawdata')) {
+        if (
+          newFoldersData.hasOwnProperty('preview_rawdata') &&
+          global.settings.structure[type].hasOwnProperty('preview')
+        ) {
           dev.logverbose('Updating folders preview');
           let preview_rawdata = newFoldersData.preview_rawdata;
           // store preview with sharp
-          tasks.push(_storeFoldersPreview(thisFolderPath, preview_rawdata));
+          tasks.push(
+            _storeFoldersPreview(slugFolderName, type, preview_rawdata)
+          );
         }
 
         let updateFoldersMeta = new Promise((resolve, reject) => {
@@ -274,7 +326,7 @@ module.exports = (function() {
 
           const metaFolderPath = path.join(
             thisFolderPath,
-            settings.folderMetaFilename + settings.metaFileext
+            global.settings.folderMetaFilename + global.settings.metaFileext
           );
 
           api.storeData(metaFolderPath, foldersData, 'update').then(
@@ -314,21 +366,22 @@ module.exports = (function() {
           `COMMON — removeFolder : will remove folder: ${slugFolderName}`
         );
 
-        if (!settings.structure.hasOwnProperty(type)) {
-          reject(`Missing type ${type} in settings.json`);
+        if (!global.settings.structure.hasOwnProperty(type)) {
+          reject(`Missing type ${type} in global.settings.json`);
         }
-        const baseFolderPath = settings.structure[type].path;
+        const baseFolderPath = global.settings.structure[type].path;
         const mainFolderPath = api.getFolderPath(baseFolderPath);
 
         // remove slugFolderKey
         const thisFolderPath = path.join(mainFolderPath, slugFolderName);
         const movedFolderPath = path.join(
           mainFolderPath,
-          settings.deletedFolderName,
+          global.settings.deletedFolderName,
           slugFolderName
         );
 
         fs.move(thisFolderPath, movedFolderPath, { overwrite: true })
+          .then(() => thumbs.removeFolderThumbs(slugFolderName, type))
           .then(() => {
             dev.logfunction(
               `COMMON — removeFolder : folder ${slugFolderName} has been moved to ${movedFolderPath}`
@@ -360,7 +413,7 @@ module.exports = (function() {
         );
 
         let slugFolderPath = api.getFolderPath(
-          path.join(settings.structure[type].path, slugFolderName)
+          path.join(global.settings.structure[type].path, slugFolderName)
         );
 
         fs.readdir(slugFolderPath, function(err, filenames) {
@@ -379,17 +432,19 @@ module.exports = (function() {
 
           let list_metaFileName = filenames.filter(_metaFileName => {
             return (
-              !new RegExp(settings.regexpMatchFolderNames, 'i').test(
+              !new RegExp(global.settings.regexpMatchFolderNames, 'i').test(
                 _metaFileName
               ) &&
-              // endswith settings.metaFileext
-              _metaFileName.endsWith(settings.metaFileext) &&
+              // endswith global.settings.metaFileext
+              _metaFileName.endsWith(global.settings.metaFileext) &&
               // not meta.txt
               _metaFileName !==
-                settings.folderMetaFilename + settings.metaFileext &&
+                global.settings.folderMetaFilename +
+                  global.settings.metaFileext &&
               // not a folder preview
               _metaFileName !==
-                settings.folderPreviewFilename + settings.thumbExt &&
+                global.settings.folderPreviewFilename +
+                  global.settings.thumbExt &&
               // not a dotfile
               _metaFileName.indexOf('.') !== 0 &&
               // if has metaFileName, only if it matches
@@ -530,26 +585,26 @@ module.exports = (function() {
         if (additionalMeta.hasOwnProperty('media_filename')) {
           mediaName = additionalMeta.media_filename;
           mediaPath = path.join(api.getFolderPath(slugFolderName), mediaName);
-          metaFileName = mediaName + settings.metaFileext;
+          metaFileName = mediaName + global.settings.metaFileext;
         } else if (additionalMeta.hasOwnProperty('desired_filename')) {
           let randomString = (
             Math.random().toString(36) + '00000000000000000'
           ).slice(2, 3 + 2);
           metaFileName = `${api.slug(
             additionalMeta.desired_filename
-          )}-${randomString}${settings.metaFileext}`;
+          )}-${randomString}${global.settings.metaFileext}`;
         } else {
           let timeCreated = api.getCurrentDate();
           let randomString = (
             Math.random().toString(36) + '00000000000000000'
           ).slice(2, 3 + 2);
           metaFileName = `${timeCreated}-${randomString}${
-            settings.metaFileext
+            global.settings.metaFileext
           }`;
         }
 
         let slugFolderPath = api.getFolderPath(
-          path.join(settings.structure[type].path, slugFolderName)
+          path.join(global.settings.structure[type].path, slugFolderName)
         );
 
         const metaFilePath = path.join(slugFolderPath, metaFileName);
@@ -565,7 +620,7 @@ module.exports = (function() {
               mediaName !== undefined
             ) {
               let mediaFileExtension = new RegExp(
-                settings.regexpGetFileExtension,
+                global.settings.regexpGetFileExtension,
                 'i'
               ).exec(mediaName)[0];
               dev.logverbose(
@@ -778,6 +833,140 @@ module.exports = (function() {
         });
       });
     },
+    convertAndSaveMedia: ({ uploadDir, tempPath, newFileName, socketid }) => {
+      return new Promise(function(resolve, reject) {
+        dev.logfunction(`COMMON — convertAndSaveMedia`);
+
+        if (
+          newFileName.toLowerCase().endsWith('.jpeg') ||
+          newFileName.toLowerCase().endsWith('.jpg')
+        ) {
+          let finalPath = path.join(uploadDir, newFileName);
+          sharp(tempPath)
+            .rotate()
+            .withMetadata()
+            .background({ r: 255, g: 255, b: 255 })
+            .flatten()
+            .jpeg({
+              quality: 90
+            })
+            .toFile(finalPath, function(err, info) {
+              if (err) {
+                reject(err);
+              } else {
+                fs.unlink(tempPath, err => {
+                  dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
+                });
+              }
+              dev.logverbose(`Stored captured image to ${finalPath}`);
+              resolve(newFileName);
+            });
+        }
+        // else if (
+        //   newFileName.toLowerCase().endsWith('.webm') ||
+        //   newFileName.toLowerCase().endsWith('.mov')
+        // ) {
+        //   newFileName = newFileName.replace('.webm', '.mp4');
+        //   newFileName = newFileName.replace('.mov', '.mp4');
+        //   let finalPath = path.join(uploadDir, newFileName);
+
+        //   ffmpeg.ffprobe(tempPath, function(err, metadata) {
+        //     let duration = '?';
+        //     if (typeof metadata !== 'undefined') {
+        //       dev.logverbose(`Found duration: ${metadata.format.duration}`);
+        //       duration = metadata.format.duration;
+        //     }
+        //     let time_since_last_report = 0;
+        //     var proc = new ffmpeg()
+        //       .input(tempPath)
+        //       .withVideoCodec('libx264')
+        //       .withVideoBitrate('5000k')
+        //       .withAudioCodec('libmp3lame')
+        //       .withAudioBitrate('128k')
+        //       .toFormat('mp4')
+        //       .output(finalPath)
+        //       .on('progress', progress => {
+        //         if (+new Date() - time_since_last_report > 3000) {
+        //           time_since_last_report = +new Date();
+        //           require('./sockets').notify({
+        //             socketid,
+        //             not_localized_string: `Converting video for the web : ${
+        //               progress.timemark
+        //             } / ${duration}`
+        //           });
+        //         }
+        //       })
+        //       .on('end', () => {
+        //         dev.logverbose(`Video has been converted`);
+        //         fs.unlink(tempPath, err => {
+        //           dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
+        //         });
+        //         require('./sockets').notify({
+        //           socketid,
+        //           localized_string: `video_converted`
+        //         });
+        //         resolve(newFileName);
+        //       })
+        //       .on('error', function(err, stdout, stderr) {
+        //         dev.error('An error happened: ' + err.message);
+        //         dev.error('ffmpeg standard output:\n' + stdout);
+        //         dev.error('ffmpeg standard error:\n' + stderr);
+        //         reject(`couldn't convert a video`);
+        //       })
+        //       .run();
+        //   });
+        // }
+        // else if (newFileName.toLowerCase().endsWith('.wav')) {
+        //   newFileName = newFileName.replace('wav', 'mp3');
+        //   let finalPath = path.join(uploadDir, newFileName);
+
+        //   ffmpeg.ffprobe(tempPath, function(err, metadata) {
+        //     let duration = '?';
+        //     if (typeof metadata !== 'undefined') {
+        //       dev.logverbose(`Found duration: ${metadata.format.duration}`);
+        //       duration = metadata.format.duration;
+        //     }
+        //     let time_since_last_report = 0;
+
+        //     ffmpeg(tempPath)
+        //       .withAudioCodec('libmp3lame')
+        //       .withAudioBitrate('192k')
+        //       .output(finalPath)
+        //       .on('progress', progress => {
+        //         if (+new Date() - time_since_last_report > 3000) {
+        //           time_since_last_report = +new Date();
+        //           require('./sockets').notify({
+        //             socketid,
+        //             not_localized_string: `Converting audio for the web : ${
+        //               progress.timemark
+        //             } / ${duration}`
+        //           });
+        //         }
+        //       })
+        //       .on('end', () => {
+        //         dev.logverbose(`Audio has been converted`);
+        //         fs.unlink(tempPath, err => {
+        //           dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
+        //         });
+        //         resolve(newFileName);
+        //       })
+        //       .on('error', function(err, stdout, stderr) {
+        //         dev.error('An error happened: ' + err.message);
+        //         dev.error('ffmpeg standard output:\n' + stdout);
+        //         dev.error('ffmpeg standard error:\n' + stderr);
+        //         reject(`couldn't convert an audio file`);
+        //       })
+        //       .run();
+        //   });
+        // }
+        else {
+          let finalPath = path.join(uploadDir, newFileName);
+          fs.renameSync(tempPath, finalPath);
+          resolve(newFileName);
+        }
+      });
+    },
+
     editMediaMeta: ({ type, slugFolderName, metaFileName, data }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
@@ -827,7 +1016,7 @@ module.exports = (function() {
 
             let updateMediaMeta = new Promise((resolve, reject) => {
               let slugFolderPath = api.getFolderPath(
-                path.join(settings.structure[type].path, slugFolderName)
+                path.join(global.settings.structure[type].path, slugFolderName)
               );
               let mediaMetaPath = path.join(slugFolderPath, metaFileName);
 
@@ -858,15 +1047,15 @@ module.exports = (function() {
                 // then it means its in the name of the text file
                 function getMediaFilename(meta, metaFileName) {
                   if (
-                    settings.structure[type].medias.fields.hasOwnProperty(
-                      'media_filename'
-                    )
+                    global.settings.structure[
+                      type
+                    ].medias.fields.hasOwnProperty('media_filename')
                   ) {
                     if (meta.hasOwnProperty('media_filename')) {
                       return meta.media_filename;
                     } else {
                       return new RegExp(
-                        settings.regexpRemoveFileExtension,
+                        global.settings.regexpRemoveFileExtension,
                         'i'
                       ).exec(metaFileName)[1];
                     }
@@ -875,7 +1064,10 @@ module.exports = (function() {
                 let mediaFileName = getMediaFilename(meta, metaFileName);
 
                 let slugFolderPath = api.getFolderPath(
-                  path.join(settings.structure[type].path, slugFolderName)
+                  path.join(
+                    global.settings.structure[type].path,
+                    slugFolderName
+                  )
                 );
                 let mediaPath = path.join(slugFolderPath, mediaFileName);
 
@@ -915,16 +1107,17 @@ module.exports = (function() {
           // then it means its in the name of the text file
           function getMediaFilename(meta, metaFileName) {
             if (
-              settings.structure[type].medias.fields.hasOwnProperty(
+              global.settings.structure[type].medias.fields.hasOwnProperty(
                 'media_filename'
               )
             ) {
               if (meta.hasOwnProperty('media_filename')) {
                 return meta.media_filename;
               } else {
-                return new RegExp(settings.regexpRemoveFileExtension, 'i').exec(
-                  metaFileName
-                )[1];
+                return new RegExp(
+                  global.settings.regexpRemoveFileExtension,
+                  'i'
+                ).exec(metaFileName)[1];
               }
             } else {
               return '';
@@ -933,13 +1126,13 @@ module.exports = (function() {
           let mediaFileName = getMediaFilename(meta, metaFileName);
 
           let slugFolderPath = api.getFolderPath(
-            path.join(settings.structure[type].path, slugFolderName)
+            path.join(global.settings.structure[type].path, slugFolderName)
           );
 
           let mediaMetaPath = path.join(slugFolderPath, metaFileName);
           let movedMediaMetaPath = path.join(
             slugFolderPath,
-            settings.deletedFolderName,
+            global.settings.deletedFolderName,
             metaFileName
           );
 
@@ -951,7 +1144,7 @@ module.exports = (function() {
               let mediaPath = path.join(slugFolderPath, mediaFileName);
               let movedMediaPath = path.join(
                 slugFolderPath,
-                settings.deletedFolderName,
+                global.settings.deletedFolderName,
                 mediaFileName
               );
               return fs.move(mediaPath, movedMediaPath, {
@@ -959,7 +1152,11 @@ module.exports = (function() {
               });
             })
             .then(() => {
-              return thumbs.removeMediaThumbs(slugFolderName, metaFileName);
+              return thumbs.removeMediaThumbs(
+                slugFolderName,
+                type,
+                mediaFileName
+              );
             })
             .then(() => {
               resolve();
@@ -1003,8 +1200,15 @@ module.exports = (function() {
 
         let tasks = [];
         let slugFolderPath = api.getFolderPath(
-          path.join(settings.structure[type].path, slugFolderName)
+          path.join(global.settings.structure[type].path, slugFolderName)
         );
+
+        // MOST OF THIS CODE ISN’T USED ANYMORE
+        // before, for the capture page, dodoc, used to send medias with socketio as base64 strings
+        // Now instead, it uses the same logic as when importing files :
+        // axios uploads a blob that gets stored directly as a file server side
+
+        // the only code that still uses this logic is for stopmotions
 
         if (additionalMeta.type === 'image') {
           tasks.push(
@@ -1012,7 +1216,7 @@ module.exports = (function() {
               mediaName += '.jpeg';
               let pathToMedia = path.join(slugFolderPath, mediaName);
 
-              let imageBuffer = api.decodeBase64Image(rawData);
+              let imageBuffer = rawData;
               sharp(imageBuffer)
                 .rotate()
                 .withMetadata()
@@ -1098,7 +1302,7 @@ module.exports = (function() {
         } else if (additionalMeta.type === 'stopmotion') {
           tasks.push(
             new Promise((resolve, reject) => {
-              mediaName += '.webm';
+              mediaName += '.mp4';
               let pathToMedia = path.join(slugFolderPath, mediaName);
               additionalMeta.type = 'video';
 
@@ -1145,7 +1349,7 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       // pour chaque item, on regarde s’il contient un fichier méta (même nom + .txt)
       let slugFolderPath = api.getFolderPath(
-        path.join(settings.structure[type].path, slugFolderName)
+        path.join(global.settings.structure[type].path, slugFolderName)
       );
       let metaFile = path.join(slugFolderPath, metaFileName);
 
@@ -1169,12 +1373,12 @@ module.exports = (function() {
             // then it means its in the name of the text file
             if (
               !mediaData.hasOwnProperty('media_filename') &&
-              settings.structure[type].medias.fields.hasOwnProperty(
+              global.settings.structure[type].medias.fields.hasOwnProperty(
                 'media_filename'
               )
             ) {
               mediaData.media_filename = new RegExp(
-                settings.regexpRemoveFileExtension,
+                global.settings.regexpRemoveFileExtension,
                 'i'
               ).exec(metaFileName)[1];
             }
@@ -1189,7 +1393,7 @@ module.exports = (function() {
                 mediaData.media_filename
               );
               mediaData.content = validator.unescape(
-                fs.readFileSync(mediaPath, settings.textEncoding)
+                fs.readFileSync(mediaPath, global.settings.textEncoding)
               );
               dev.logverbose(`Got mediaData.content : ${mediaData.content}`);
               return resolve(mediaData);
@@ -1220,7 +1424,7 @@ module.exports = (function() {
 
           if (
             mediaData.hasOwnProperty('media_filename') &&
-            settings.structure[type].medias.thumbs
+            global.settings.structure[type].medias.thumbs
           ) {
             // let’s find or create thumbs
             thumbs
@@ -1228,7 +1432,8 @@ module.exports = (function() {
                 slugFolderName,
                 mediaData.media_filename,
                 mediaData.type,
-                type
+                type,
+                'medias'
               )
               .then(thumbData => {
                 mediaData.thumbs = thumbData;
@@ -1249,7 +1454,10 @@ module.exports = (function() {
   function readMetaFile(metaPath) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — readMetaFile: ${metaPath}`);
-      var metaFileContent = fs.readFileSync(metaPath, settings.textEncoding);
+      var metaFileContent = fs.readFileSync(
+        metaPath,
+        global.settings.textEncoding
+      );
       var metaFileContentParsed = api.parseData(metaFileContent);
       resolve(metaFileContentParsed);
     });
@@ -1270,7 +1478,7 @@ module.exports = (function() {
         var folders = filenames.filter(function(thisSlugFolderName) {
           // is a folder
           return (
-            new RegExp(settings.regexpMatchFolderNames, 'i').test(
+            new RegExp(global.settings.regexpMatchFolderNames, 'i').test(
               thisSlugFolderName
             ) &&
             // if doesn’t start with _ (these folders are generated by the tool, can’t be created through the interface)
@@ -1287,20 +1495,34 @@ module.exports = (function() {
       });
     });
   }
-  function _storeFoldersPreview(thisFolderPath, preview_rawdata) {
+
+  function _storeFoldersPreview(slugFolderName, type, preview_rawdata) {
     return new Promise((resolve, reject) => {
       dev.logfunction(
-        `COMMON — _storeFoldersPreview : will store preview for folder at path: ${thisFolderPath}`
+        `COMMON — _storeFoldersPreview : will store preview for folder: ${slugFolderName}`
       );
-      const pathToPreview = path.join(
-        thisFolderPath,
-        settings.folderPreviewFilename + settings.thumbExt
-      );
+
+      const baseFolderPath = global.settings.structure[type].path;
+      const mainFolderPath = api.getFolderPath(baseFolderPath);
+      const thisFolderPath = path.join(mainFolderPath, slugFolderName);
+
+      const preview_filename =
+        global.settings.folderPreviewFilename + global.settings.thumbExt;
+
+      const pathToPreview = path.join(thisFolderPath, preview_filename);
 
       dev.logverbose(
         `COMMON — _storeFoldersPreview : Removing existing preview at ${pathToPreview}`
       );
+
       fs.remove(pathToPreview)
+        .then(() => {
+          return thumbs.removeMediaThumbs(
+            slugFolderName,
+            type,
+            preview_filename
+          );
+        })
         .then(() => {
           if (preview_rawdata === '') {
             dev.logverbose(
@@ -1314,14 +1536,17 @@ module.exports = (function() {
           let imageBuffer = api.decodeBase64Image(preview_rawdata);
           sharp(imageBuffer)
             .rotate()
-            .resize(600, 600)
+            .resize(
+              global.settings.structure[type].preview.width,
+              global.settings.structure[type].preview.height
+            )
             .max()
             .withoutEnlargement()
             .background({ r: 255, g: 255, b: 255 })
             .flatten()
             .withMetadata()
-            .toFormat(settings.thumbFormat, {
-              quality: settings.mediaThumbQuality
+            .toFormat(global.settings.thumbFormat, {
+              quality: global.settings.mediaThumbQuality
             })
             .toFile(pathToPreview)
             .then(function() {
@@ -1351,21 +1576,21 @@ module.exports = (function() {
     dev.logfunction(
       `COMMON — _makeDefaultMetaFromStructure : will '${method}' a new default meta object for type = ${type} and type_two = ${type_two}.`
     );
-    if (!settings.structure.hasOwnProperty(type)) {
-      dev.error(`Missing type ${type} in settings.json`);
+    if (!global.settings.structure.hasOwnProperty(type)) {
+      dev.error(`Missing type ${type} in global.settings.json`);
     }
 
     let fields =
       type_two === undefined
-        ? settings.structure[type].fields
-        : settings.structure[type][type_two].fields;
+        ? global.settings.structure[type].fields
+        : global.settings.structure[type][type_two].fields;
     let output_obj = {};
 
     Object.entries(fields).forEach(([key, val]) => {
       // dev.logverbose(`Iterating through struct entries, at key ${key}`);
       if (!val.hasOwnProperty('type')) {
         dev.error(
-          `Missing type property for field name ${key} in settings.json`
+          `Missing type property for field name ${key} in global.settings.json`
         );
       }
       let type = val.type;
@@ -1449,7 +1674,7 @@ module.exports = (function() {
           }
         } else if (val.hasOwnProperty('default')) {
           output_obj[key] =
-            val.default === 'random' ? Math.random() * 0.5 : val.default;
+            val.default === 'random' ? Math.random() : val.default;
         }
       } else if (type === 'array') {
         if (
@@ -1475,20 +1700,20 @@ module.exports = (function() {
   }
 
   function _sanitizeMetaFromFile({ type, type_two, meta }) {
-    dev.logverbose(
-      `COMMON — _sanitizeMetaFromFile : 
-      will sanitize a new default meta object 
-      for type ${type} 
-      and type_two ${type_two} 
-      with existing = ${JSON.stringify(meta)}
-      `
-    );
+    // dev.logverbose(
+    //   `COMMON — _sanitizeMetaFromFile :
+    //   will sanitize a new default meta object
+    //   for type ${type}
+    //   and type_two ${type_two}
+    //   with existing = ${JSON.stringify(meta)}
+    //   `
+    // );
     let new_meta = {};
 
     const fields =
       type_two === undefined
-        ? settings.structure[type].fields
-        : settings.structure[type][type_two].fields;
+        ? global.settings.structure[type].fields
+        : global.settings.structure[type][type_two].fields;
 
     Object.keys(meta).forEach(key => {
       if (fields.hasOwnProperty(key) && fields[key].hasOwnProperty('type')) {
@@ -1508,11 +1733,11 @@ module.exports = (function() {
         }
       }
     });
-    dev.logverbose(
-      `COMMON — _sanitizeMetaFromFile : 
-      sanitized to ${JSON.stringify(new_meta)}
-      `
-    );
+    // dev.logverbose(
+    //   `COMMON — _sanitizeMetaFromFile :
+    //   sanitized to ${JSON.stringify(new_meta)}
+    //   `
+    // );
     return new_meta;
   }
 

@@ -1,0 +1,68 @@
+.m_page--header {
+  font-family: 'Avara';
+  font-style: italic;
+  border-bottom: none;
+  text-transform: none;
+
+  > *:nth-child(2) {
+    &::after {
+      content: var(--current-time-human);
+      display: inline-block;
+      margin-left: @t-skipline;
+    }
+  } 
+}
+
+.m_page--pageNumber {
+  display: none;
+  font-family: 'Avara';
+}
+
+.m_mediaPublication[data-media_type="text"] {
+  // mix-blend-mode: multiply;
+  z-index: 15;;
+
+}
+
+.mediaContainer {
+  font-size: 24pt;
+  background-color: transparent;
+  font-family: 'Avara';
+
+  &.type-text {
+    color: #000;
+    
+  }
+
+  ul, ol {
+    padding-left: @t-skipline;
+  }
+
+  p, ul, ol {
+    + ul {
+      margin-top: -@t-skipline/2;
+    }
+  }
+
+  h1,h2,h3,h4 {
+    font-style: normal;
+    font-weight: bold;
+  }
+  h1 {
+    font-size: 50pt;    
+  }
+  h2 {
+    font-size: 30pt;
+  }
+  h3 {
+    font-size: 20pt;
+  }
+  h4 {
+    font-size: 14pt;
+  }
+  h5,h6,h7 {
+    font-size: inherit;
+    font-weight:normal;
+    margin: 0;
+  }
+}

@@ -16,16 +16,12 @@
         :slugProjectName="$root.do_navigation.current_slugProjectName"
         :project="$root.currentProject"
         :authors="$root.store.authors"
-      >
-      </TopBar>
-
-      <div class="m_activitiesPanel"
-      >
+      />
+      
+      <div class="m_activitiesPanel">
         <div 
           :style="{ cursor, userSelect}" 
           class="vue-splitter-container clearfix" 
-          @mouseup="onMouseUp" 
-          @mousemove="onMouseMove"
         >
           <pane 
             class="splitter-pane splitter-paneL" 
@@ -34,20 +30,13 @@
 
             <div 
               class="m_activitiesPanel--do"
+              :class="{ 'is--large' : activitiesPanel_isLarge }"
             >
-
-              <transition name="SearchSidebar" :duration="500">
-                <SearchSidebar
-                  v-if="$root.settings.show_search_sidebar"
-                >
-                </SearchSidebar>
-              </transition>
-
               <div style="position: relative; height: 100%; overflow: hidden">
                 <!-- v-show="$root.do_navigation.view === 'ListView'" -->
                 <transition name="ListView" :duration="500">
                   <ListView
-                    v-if="$root.do_navigation.view === 'ListView'"
+                    v-show="$root.do_navigation.view === 'ListView'"
                     :presentationMD="$root.store.presentationMD"
                     :read_only="!$root.state.connected"
                     :projects="$root.store.projects"
@@ -55,7 +44,7 @@
                 </transition>
                 <transition name="ProjectView" :duration="500">
                   <ProjectView
-                    v-if="['ProjectView', 'CaptureView', 'MediaView'].includes($root.do_navigation.view)"
+                    v-if="['ProjectView', 'CaptureView'].includes($root.do_navigation.view)"
                     :slugProjectName="$root.do_navigation.current_slugProjectName"
                     :project="$root.currentProject"
                     :read_only="!$root.state.connected"
@@ -70,25 +59,7 @@
                     :read_only="!$root.state.connected"
                   />
                 </transition>
-                <transition name="MediaView" :duration="500">
-                  <!-- <MediaView
-                    v-if="$root.do_navigation.view === 'MediaView'"
-                    :slugMediaName="$root.do_navigation.current_metaFileName"
-                    :slugProjectName="$root.do_navigation.current_slugProjectName"
-                    :media="$root.store.projects[$root.do_navigation.current_slugProjectName].medias[$root.do_navigation.current_metaFileName]"
-                    :read_only="!$root.state.connected"
-                  >
-                  </MediaView>       -->
-                </transition>
               </div>
-
-              <transition name="MediaFilterIndicator" :duration="500">
-                <MediaFilterIndicator
-                  v-if="Object.keys($root.settings.media_filter).length > 0"
-                  :media_filter="$root.settings.media_filter"
-                >
-                </MediaFilterIndicator>
-              </transition>
             </div>
 
           </pane>
@@ -118,9 +89,8 @@
                   'is--dragged' : is_dragged,
                   'is--allthewaytotheleft' : percent === 0 
                 }"
-                @click="stopDragtogglePubli"
-                @mousedown="onMouseDown" 
-                @mouseup.stop
+                @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
+                @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"   
                 :key="'openPubli'"
               >
                 <!-- v-if="$root.do_navigation.view !== 'CaptureView'" -->
@@ -139,8 +109,14 @@
                   />
                 </transition>
                 <transition name="ProjectView" :duration="500">
-                  <Publication
-                    v-if="$root.settings.current_slugPubliName !== false"
+                  <PagePublication
+                    v-if="$root.settings.current_slugPubliName !== false && $root.store.publications[$root.settings.current_slugPubliName].template === 'page_by_page'"
+                    :slugPubliName="$root.settings.current_slugPubliName"
+                    :publication="$root.store.publications[$root.settings.current_slugPubliName]"
+                    :read_only="!$root.state.connected"
+                  />
+                  <VideoPublication
+                    v-else-if="$root.settings.current_slugPubliName !== false && $root.store.publications[$root.settings.current_slugPubliName].template === 'video_assemblage'"
                     :slugPubliName="$root.settings.current_slugPubliName"
                     :publication="$root.store.publications[$root.settings.current_slugPubliName]"
                     :read_only="!$root.state.connected"
@@ -153,10 +129,10 @@
         </div>
       </div>
       <EditMedia
-        v-if="$root.do_navigation.view === 'MediaView'"
-        :slugMediaName="$root.do_navigation.current_metaFileName"
-        :slugProjectName="$root.do_navigation.current_slugProjectName"
-        :media="$root.store.projects[$root.do_navigation.current_slugProjectName].medias[$root.do_navigation.current_metaFileName]"
+        v-if="$root.media_modal.open"
+        :slugMediaName="$root.media_modal.current_metaFileName"
+        :slugProjectName="$root.media_modal.current_slugProjectName"
+        :media="$root.store.projects[$root.media_modal.current_slugProjectName].medias[$root.media_modal.current_metaFileName]"
         @close="$root.closeMedia()"
         :read_only="!$root.state.connected"
       >
@@ -164,20 +140,9 @@
 
     </template>  
     <template 
-      v-else-if="$root.state.mode === 'export_publication'"
+      v-else-if="$root.state.mode === 'export_publication' || $root.state.mode === 'print_publication'"
     >    
-      <Publication
-        v-if="$root.settings.current_slugPubliName !== false"
-        :slugPubliName="$root.settings.current_slugPubliName"
-        :publication="$root.store.publications[$root.settings.current_slugPubliName]"
-        :read_only="!$root.state.connected"
-      />
-    </template>    
-
-    <template 
-      v-else-if="$root.state.mode === 'print_publication'"
-    >    
-      <Publication
+      <PagePublication
         v-if="$root.settings.current_slugPubliName !== false"
         :slugPubliName="$root.settings.current_slugPubliName"
         :publication="$root.store.publications[$root.settings.current_slugPubliName]"
@@ -196,13 +161,11 @@ import TopBar from './TopBar.vue';
 import ListView from './ListView.vue';
 import ProjectView from './ProjectView.vue';
 import CaptureView from './CaptureView.vue';
-import MediaView from './MediaView.vue';
 import EditMedia from './components/modals/EditMedia.vue';
-import SearchSidebar from './components/SearchSidebar.vue';
-import MediaFilterIndicator from './components/MediaFilterIndicator.vue';
 
 import Publications from './Publications.vue';
-import Publication from './components/Publication.vue';
+import PagePublication from './components/PagePublication.vue';
+import VideoPublication from './components/VideoPublication.vue';
 
 import Resizer from './components/splitpane/Resizer.vue'
 import Pane from './components/splitpane/Pane.vue'
@@ -215,14 +178,12 @@ export default {
     ListView,
     ProjectView,
     CaptureView,
-    MediaView,
     EditMedia,
     Publications,
-    Publication,
+    PagePublication,
+    VideoPublication,
     Resizer, 
-    Pane,
-    SearchSidebar,
-    MediaFilterIndicator
+    Pane
   },
   props: {
   },
@@ -231,16 +192,19 @@ export default {
       minPercent: 0,
       split: 'vertical',
       is_dragged: false,
+      drag_offset: 0,
       hasMoved: false,
       height: null,
-      percent: this.$root.state.mode === 'print_publication' ? 0:100,
+      percent: 100,
       type: 'width',
-      resizeType: 'left'
+      resizeType: 'left',
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight
     };
   },
   watch: {
   },
-  created() { 
+  created() {
   },
   computed: {
     userSelect() {
@@ -249,72 +213,57 @@ export default {
     cursor() {
       return this.is_dragged ? 'col-resize' : ''
     },
-    window_innerHeight() { 
-      let wHeight = window.innerHeight - 88;
-      return wHeight; 
+    activitiesPanel_isLarge() {
+      if((this.percent/100*this.$root.settings.windowWidth) < 850) {
+        return false;
+      }
+      if(this.$root.settings.windowHeight < 650) {
+        return false;
+      }
+      return true;
     }
   },
   methods: {
-    stopDragtogglePubli() {
-      this.is_dragged = false;
-      if(!this.$root.settings.show_publi_panel) {
-        this.percent = 50;
-        this.$root.openPubliPanel();
-      } else {
-        this.percent = 100;
-        this.$root.closePubliPanel();
+    // stopDragtogglePubli() {
+    //   console.log('METHODS • App: stopDragtogglePubli');
+    //   this.is_dragged = false;
+    //   if(!this.$root.settings.show_publi_panel) {
+    //     this.percent = 50;
+    //     this.$root.openPubliPanel();
+    //   } else {
+    //     this.percent = 100;
+    //     this.$root.closePubliPanel();
+    //   }
+    // },
+    dragPubliPanel(event, type) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • App: dragPubliPanel with type = ${type} and is_dragged = ${this.is_dragged}`);
       }
-    },
-    onClick() {
-      // if (!this.hasMoved) {
-      //   this.$root.togglePubliPanel();
-        // this.percent = 50
-        // this.$emit('resize')
-      // }
-    },
-    onMouseDown() {
-      this.is_dragged = true
-      this.hasMoved = false
-    },
-    onMouseUp() {
-      this.is_dragged = false;
-
-      if(this.percent >= 90) {
-        this.percent = 100;
-        this.$root.closePubliPanel();
-        return;
-      } 
       
-      if(this.$root.settings.show_publi_panel === false) {
-        this.$root.openPubliPanel();
-      }      
-      if(this.percent <= 10) {
-        this.percent = 0;
+      this.drag_offset = - event.target.offsetWidth + event.offsetX;
+      if(!this.drag_offset) {
+        this.drag_offset = 0;
+      }
+
+      if(type === 'mouse') {
+        window.addEventListener('mousemove', this.dragMove);
+        window.addEventListener('mouseup', this.dragUp);
+      } else if(type === 'touch') {
+        window.addEventListener('touchmove', this.dragMove);
+        window.addEventListener('touchend', this.dragUp);
       }
     },
-    onMouseMove(e) {
-      if (e.buttons === 0 || e.which === 0) {
-        this.is_dragged = false
-      }
+    dragMove(event) {
+      console.log('METHODS • App: dragMove');
 
-      if (this.is_dragged) {
-        let offset = 0
-        let target = e.currentTarget
-        if (this.split === 'vertical') {
-          while (target) {
-            offset += target.offsetLeft
-            target = target.offsetParent
-          }
-        } else {
-          while (target) {
-            offset += target.offsetTop
-            target = target.offsetParent
-          }
-        }
+      if (!this.is_dragged) {
+        this.is_dragged = true;
+      } else {
 
-        const currentPage = this.split === 'vertical' ? e.pageX : e.pageY
-        const targetOffset = this.split === 'vertical' ? e.currentTarget.offsetWidth : e.currentTarget.offsetHeight
-        const percent = Math.floor(((currentPage - offset) / targetOffset) * 10000) / 100
+        let pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
+        pageX = pageX - this.drag_offset;
+
+        const percent = Math.floor((pageX / window.innerWidth) * 10000) / 100
 
         if (percent > this.minPercent && percent < 100 - this.minPercent) {
           this.percent = percent
@@ -323,6 +272,42 @@ export default {
         this.$emit('resize')
         this.hasMoved = true
       }
+    },
+    dragUp(event) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • App: dragUp with is_dragged = ${this.is_dragged}`);
+      }
+      window.removeEventListener('mousemove', this.dragMove);
+      window.removeEventListener('mouseup', this.dragUp);
+      window.removeEventListener('touchmove', this.dragMove);
+      window.removeEventListener('touchend', this.dragUp);
+
+      if (this.is_dragged) {
+        this.is_dragged = false;
+
+        if(this.percent >= 90) {
+          this.percent = 100;
+          this.$root.closePubliPanel();
+          return;
+        } 
+        
+        if(this.$root.settings.show_publi_panel === false) {
+          this.$root.openPubliPanel();
+        }      
+        if(this.percent <= 10) {
+          this.percent = 0;
+        }
+      } else {
+        if(!this.$root.settings.show_publi_panel) {
+          this.percent = 50;
+          this.$root.openPubliPanel();
+        } else {
+          this.percent = 100;
+          this.$root.closePubliPanel();
+        }
+      }
+
+      return false;
     }
   }
 };

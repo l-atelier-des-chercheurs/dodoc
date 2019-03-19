@@ -26,17 +26,27 @@
       </div>
 
 <!-- Password -->
-      <!-- <div class="margin-bottom-small">
+      <div class="margin-bottom-small">
         <label>{{ $t('password') }}</label>
         <input type="password" v-model="projectdata.password">
         <small>{{ $t('password_instructions') }}</small>
-      </div> -->
+      </div>
+
+<!-- Keywords -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('keywords') }}</label>
+        <TagsInput @tagsChanged="newTags => projectdata.keywords = newTags"/>
+        <small>{{ $t('validate_with_enter') }}</small>        
+      </div>
 
 <!-- Author(s) -->
       <div class="margin-bottom-small">
         <label>{{ $t('author') }}</label><br>
-        <textarea v-model="projectdata.authors">
-        </textarea>
+        <AuthorsInput
+          :currentAuthors="projectdata.authors"
+          @authorsChanged="newAuthors => projectdata.authors = newAuthors"
+        />
+        <small>{{ $t('author_instructions') }}</small>
       </div>
 
     </template>
@@ -50,6 +60,8 @@
 <script>
 import Modal from './BaseModal.vue';
 import ImageSelect from '../subcomponents/ImageSelect.vue';
+import TagsInput from '../subcomponents/TagsInput.vue';
+import AuthorsInput from '../subcomponents/AuthorsInput.vue';
 
 export default {
   props: {
@@ -57,14 +69,17 @@ export default {
   },
   components: {
     Modal,
-    ImageSelect
+    ImageSelect,
+    TagsInput,
+    AuthorsInput
   },
   data() {
     return {
       projectdata: {
         name: '',
         password: '',
-        authors: this.$root.settings.current_author.hasOwnProperty('name') ? this.$root.settings.current_author.name:''
+        authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : [],
+        keywords: []
       },
       preview: undefined,
       askBeforeClosingModal: false
@@ -86,7 +101,8 @@ export default {
       }
     }
   },
-  computed: {},
+  computed: {
+  },
   methods: {
     newProject: function(event) {
       console.log('newProject');
@@ -114,6 +130,7 @@ export default {
       if(!!this.preview) {
         this.projectdata.preview_rawdata = this.preview;
       }
+
       this.$eventHub.$on('socketio.folder_created_or_updated', this.newFolderCreated);
       this.$root.createFolder({ type: 'projects', data: this.projectdata });
     },

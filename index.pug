@@ -5,18 +5,21 @@ html
     meta(name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no")
     meta(name="apple-mobile-web-app-capable" content="yes")
     meta(name="pinterest" content="nopin")
+    meta(name="robots" content="noindex")
 
     title #{pageTitle}
 
     link(href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC2ElEQVRYR81XP0wTYRT/vfuTijGRDl0aCWWQARJhd+gV42Bqk3ZwlslVjE4ulMHRpI460dmhxEJchPsYjGtrggMMNMGwNBFcENK7+8x3R+0fevfdlRK55Ybv/fl9v/fe994jhPwMszJOXE1zjjyIUgBPAeIvPt4AqAHOG0RY42Rvs0zhOIxpkgkZ5ucUnNYyiBZlsj3nnK9C0VdY5lEjSM8XgLgxHFU4XorkuF+YUASsd36MDATgOueaCWD+Us47yjWQlRkE4gIAw9yYB7dNgMZH5PzcDD8GqRmWyda67fYA8G6u7o/eedulAGFPdTPxD8AV0O5HYE84OgA2qyUQno+Wdh9rHCvsQa4oTl0Abqlxaz+M8zvOEe7Zh7hrNzHBvVI/oHHsqQl8V5P4qcTDmAFImxIl6gHYqq4CeCrTzLR28aRV9xU7IR3r2gyYPi0zJc7LbCG3SOexP5JpPDv7inn7UCbmntfVJN7H7stlyYqTYVbz4KgESctuPkj3oz4HU8YEoUAy+kXMX59+kd+mT0KEoxRLy3KiTMbWJwZQ2s9DtrWDbOtHZABCYUOfwYY+G6DLt8nYrDZAmPSTWjpjmLabQwHYVRMoxYwg3ZoIAQ+SeHtSwRisoQCIMLwaywfqXimAP9Dw8mZBAuD/hqB+DZJQ8gqKMnxxyiLngaD/zY2H+KXcCgpB+Ro8RN70M9KnuKYm8SHEU8wWchS5GT1u7fiGQ9C+rs/Kn2AvKF4zcrthxHY8J9qx08SE7RF3oMaxpyTwTZ2UxbyTD93t2AWxWS2CsDzUixNVqX8g8Vhwc4EBmItqL6J8HWQZ7bnw4lDqaKI33I5oNJw4x28oVmrgUNq24I7ljsNGDsJ1rhiBY3kHxMjD0UN7N12S1UxbunRicqxAsUqRVrNuhOclKkZo6dDalwhlkFYcejntzyq3SqAZEOu5t5qL1a1dMXVAzOgkEngNsFjY9fwvnNhH1RL5OH0AAAAASUVORK5CYII=" id="favicon" rel="icon" type="image/x-icon")
-    - if(mode === 'export_publication')
-      style.
-        @import "./_fonts/fira/fira.css";
-        @import "./_fonts/nanook/nanook.css";
-    - else
+    - if(mode !== 'export_publication')
       style.
         @import "/fonts/fira/fira.css";
         @import "/fonts/nanook/nanook.css";
+        @import "/fonts/avara/avara.css";
+    - else
+      style.
+        @import "./_fonts/fira/fira.css";
+        @import "./_fonts/nanook/nanook.css";
+        @import "./_fonts/avara/avara.css";
 
     script.
       /***********
@@ -44,16 +47,18 @@ html
       /* state contains settings data, time and client specific data */
       window.state = {
         appVersion: "!{global.appInfos.version}",
+        session_password: "!{global.session_password}",
         authorsFolder: "!{authorsFolder}",
         protocol: "!{protocol}",
         connected: false,
         localNetworkInfos: {},
-        //- list_of_projects_whose_medias_are_tracked: [],
         mode: "!{mode}",
         dev_mode: "!{ isDebug ? "debug" : "production" }",
         noticeOfError: "!{noticeOfError}",
         is_electron: !!(window && window.process && window.process.type) && !{ mode === "export" ? false : true },
-        is_darwin: !!(window && window.process && window.process.platform === 'darwin') && !{ mode === "export" ? false : true }
+        is_darwin: !!(window && window.process && window.process.platform === 'darwin') && !{ mode === "export" ? false : true },
+        clients: [],
+        list_authorized_folders: []
       };
 
     //-
@@ -62,7 +67,9 @@ html
   body(data-mode=mode)
     #app
 
-    - if(mode === 'export_publication')
-      script(src='./_dist/build.js')
-    - else
+    script(src='/socket.io.js')
+
+    - if(mode !== 'export_publication')
       script(src='/dist/build.js')
+    - else
+      script(src='./_dist/build.js')

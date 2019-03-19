@@ -44,10 +44,10 @@
             <!-- OPTIONS -->
             <transition name="slideleft" :duration="400">
               <div class="m_panel--previewCard--live--options"
-                v-if="show_capture_options && !is_recording"
+                v-if="show_capture_settings && !is_recording"
               >
                 <div class="margin-bottom-small">
-                  <label>Sources</label>
+                  <div><label>Sources</label></div>
                   <div v-for="(currentId, kind) in selected_devicesId" :key="kind">
                     <span class="font-verysmall">
                       {{ kind }}
@@ -67,13 +67,11 @@
                 <div class="margin-bottom-small">
                   <div><label>Resolution</label></div>
 
-                  <template v-if="actual_current_video_resolution">
+                  <div v-if="actual_current_video_resolution">
                     <span class="font-verysmall">
-                      • {{ $t('current') }}&nbsp;: {{ actual_current_video_resolution.width }} x {{ actual_current_video_resolution.height }}
+                      {{ $t('current') }}&nbsp;: {{ actual_current_video_resolution.width }} x {{ actual_current_video_resolution.height }}
                     </span>
-                  </template>
-
-
+                  </div>
                   <div 
                     v-for="res in available_camera_resolutions"
                     :key="res.name"
@@ -85,11 +83,39 @@
                   </div>
                 </div>
 
+
+                <div class="margin-bottom-small">
+                  <div><label>Accès à distance (experimental)</label></div>
+
+                  <div class="margin-bottom-small">
+                    <span class="switch switch-xs">
+                      <input type="checkbox" class="switch" id="distantaccessswitch" v-model="$root.settings.capture_options.distant_flux.active">
+                      <label for="distantaccessswitch">Activer</label>
+                    </span>
+                  </div>
+                  
+                  <template v-if="$root.settings.capture_options.distant_flux.active">
+                    <div class="margin-bottom-small">
+                      <span class="font-verysmall">
+                        Partager les flux sous le nom&nbsp;:
+                      </span>
+                      <input type="text" v-model="current_username">
+                    </div>
+
+                    <div class="margin-bottom-small">
+                      <span class="font-verysmall">
+                        Accéder au flux qui a le nom&nbsp;:
+                      </span>
+                      <input type="text" v-model="callee_username">
+                    </div>
+                  </template>
+                </div>
+
                 <hr>
 
                 <button
                   type="button"
-                  @click="startMode"
+                  @click="updateSettings"
                   class="button button-bg_rounded button-outline c-rouge"
                 >
                   <span class="">
@@ -130,11 +156,11 @@
             <div class="m_panel--previewCard--validate" v-if="media_to_validate">
               <img 
                 v-if="media_to_validate.type === 'image'" 
-                :src="media_to_validate.rawData"
+                :src="media_to_validate.objectURL"
               />
               <video 
                 v-else-if="media_to_validate.type === 'video'" 
-                :src="media_to_validate.rawData"
+                :src="media_to_validate.objectURL"
                 controls
               />
               <div 
@@ -145,7 +171,7 @@
                   :src="media_to_validate.preview"
                 >
                 <audio
-                  :src="media_to_validate.rawData"
+                  :src="media_to_validate.objectURL"
                   controls
                 />
               </div>
@@ -167,7 +193,7 @@
           <div class="m_panel--buttons--row" :class="{ 'bg-orange' : is_recording }">
             <button
               type="button"
-              @click="show_capture_options = !show_capture_options"
+              @click="show_capture_settings = !show_capture_settings"
               class="button c-rouge font-small bg-transparent"
               :disabled="is_recording"
             >
@@ -195,7 +221,7 @@
               :class="{ 'is--justCaptured' : capture_button_pressed }"
               @click="captureOrStop()"
             >
-              <img v-if="!this.is_recording" src="/images/i_record.svg">
+              <img v-if="!is_recording" src="/images/i_record.svg">
               <img v-else src="/images/i_stop.svg">
             </button>
 
@@ -233,13 +259,13 @@
               v-if="media_to_validate"
               :read_only="read_only"
               :media_is_being_sent="media_is_being_sent"
-              @cancel="media_to_validate = false"
+              :media_being_sent_percent="media_being_sent_percent"
+              @cancel="cancelValidation()"
               @save="sendMedia({})"
               @save_and_fav="sendMedia({ fav: true })"
             />
           </transition>
         </div>
-
       </div>
 
       <div class="m_panel"
@@ -255,18 +281,24 @@
         </StopmotionPanel>        
       </div>
     </div>
-    
+    <DistantFlux 
+      v-if="$root.settings.capture_options.distant_flux.active"
+      :key="$root.settings.capture_options.distant_flux.username = current_username"
+      @changeStreamTo="new_stream => { changeStreamTo(new_stream) }"
+    />
   </div>
 </template>
 <script>
 import MediaContent from './components/subcomponents/MediaContent.vue';
 import StopmotionPanel from './components/subcomponents/StopmotionPanel.vue';
 import MediaValidationButtons from './components/subcomponents/MediaValidationButtons.vue';
+import DistantFlux from './components/subcomponents/DistantFlux.vue';
 
 import RecordRTC from 'recordrtc';
-// import 'webrtc-adapter';
+import 'webrtc-adapter';
 import ImageTracer from 'imagetracerjs';
 import { setTimeout } from 'timers';
+import * as axios from 'axios';
 
 export default {
   props: {
@@ -280,7 +312,8 @@ export default {
   components: {
     MediaContent,
     StopmotionPanel,
-    MediaValidationButtons
+    MediaValidationButtons,
+    DistantFlux
   },
   data() {
     return {
@@ -311,7 +344,7 @@ export default {
       recordVideoFeed: undefined,
       recordVideoWithAudio: true,
 
-      show_capture_options: false,
+      show_capture_settings: false,
 
       capture_button_pressed: false,
       videoStream: null,
@@ -323,15 +356,20 @@ export default {
 
       media_to_validate: false,
       media_is_being_sent: false,
+      media_being_sent_percent: 0,
       media_send_timeout: 10000,
       media_send_timeout_timer: false,
+
+      current_username: this.$root.settings.capture_options.distant_flux.username,
+      callee_username: this.$root.settings.capture_options.distant_flux.callee_username,
+      is_calling: false,
 
       current_stopmotion: false,
 
       ideal_camera_resolution: {
-        name: 'vga',
-        width: 640,
-        height: 480
+        name: 'hd',
+        width: 1280,
+        height: 720
       },
       available_camera_resolutions: [
         {
@@ -366,35 +404,46 @@ export default {
     }
   },
   created() {
-    console.log('METHODS • CaptureView: created');
+    console.log('CREATED • CaptureView');
 
     navigator.mediaDevices.enumerateDevices()
     .then((deviceInfos) => {
       this.available_devices = deviceInfos;
 
-      // get from localstorage and put in selected_devicesId.audioinput, selected_devicesId.videoinput and selected_devicesId.audiooutput 
-      // set initial value
-
+      // SOURCES (device_id)
       Object.keys(this.selected_devicesId).map((kind) => {
-        if(this.selected_devicesId[kind] === '') {
-          if(this.sorted_available_devices.hasOwnProperty(kind)) {
-            let selected_devicesId = this.sorted_available_devices[kind][0].deviceId;
+        // check if $root ID already exist and match ones we just got
+        if(this.sorted_available_devices.hasOwnProperty(kind)) {
+          const matching_id = this.sorted_available_devices[kind].filter(m => m.deviceId === this.$root.settings.capture_options.selected_devicesId[kind]);
+          if(matching_id.length > 0) {
+            this.selected_devicesId[kind] = matching_id[0].deviceId;
+            return;
+          } else {
+            // override : set deviceId to back camera by default
             if(kind === 'videoinput') {
-              const camera_back = this.sorted_available_devices[kind].filter(x => {
-                return x.label.includes('back')
-              });              
+              const camera_back = this.sorted_available_devices[kind].filter(x => x.label.includes('back'));
               if(camera_back.length > 0) {
-                selected_devicesId = this.selected_devicesId[kind] = camera_back[0].deviceId;
+                this.selected_devicesId[kind] = camera_back[0].deviceId;
+                return;
               }
             }
-            this.selected_devicesId[kind] = selected_devicesId;              
+
+            this.selected_devicesId[kind] = this.sorted_available_devices[kind][0].deviceId;              
           }
         }
       });
 
-      // get last mode from localstorage
-      // otherwise start first mode
-      this.selected_mode = this.available_modes[0].key;
+      // MODE
+      if(this.$root.settings.capture_options.selected_mode !== '') {
+        this.selected_mode = this.$root.settings.capture_options.selected_mode;
+      } else {
+        this.selected_mode = this.available_modes[0].key;
+      }
+
+      // RESOLUTION
+      if(this.$root.settings.capture_options.ideal_camera_resolution.width !== '') {
+        this.ideal_camera_resolution = this.$root.settings.capture_options.ideal_camera_resolution;
+      }
     });
   },
   mounted() {
@@ -410,19 +459,27 @@ export default {
   watch: {
     'selected_devicesId.audioinput': function() {
       console.log(`WATCH • Capture: selected_devicesId.audioinput = ${this.selected_devicesId.audioinput}`);
-      this.stopAllFeeds().then(() => {
-        if(this.$refs.hasOwnProperty('videoElement') && this.$refs.videoElement !== undefined) {       
-          this.$refs.videoElement.setSinkId(this.selected_devicesId.audioinput);      
-          // this.startMode();
-        }
-      });
+      // this.stopAllFeeds().then(() => {
+      //   if(this.$refs.hasOwnProperty('videoElement') && this.$refs.videoElement !== undefined) {       
+      //     this.$refs.videoElement.setSinkId(this.selected_devicesId.audioinput);      
+      //     // this.startMode();
+      //   }
+      // });
+      this.$root.settings.capture_options.selected_devicesId.audioinput = this.selected_devicesId.audioinput;
+    },
+    'selected_devicesId.audiooutput': function() {
+      console.log(`WATCH • Capture: selected_devicesId.audiooutput = ${this.selected_devicesId.audiooutput}`);
+      this.$root.settings.capture_options.selected_devicesId.audiooutput = this.selected_devicesId.audiooutput;
     },
     'selected_devicesId.videoinput': function() {
       console.log(`WATCH • Capture: selected_devicesId.videoinput = ${this.selected_devicesId.videoinput}`);
+      this.$root.settings.capture_options.selected_devicesId.videoinput = this.selected_devicesId.videoinput;
     },
     'selected_mode': function() {
       console.log('WATCH • Capture: selected_mode');
       this.mode_just_changed = true;
+
+      this.$root.settings.capture_options.selected_mode = this.selected_mode;
       window.setTimeout(()=> {
         this.mode_just_changed = false;
       }, 1000);
@@ -434,11 +491,11 @@ export default {
       equalizer.setSarahCouleur(this.is_recording);
     },
     'ideal_camera_resolution': function() {
-      console.log(`WATCH • Capture: ideal_camera_resolution = ${this.ideal_camera_resolution}`);
-      // this.stopAllFeeds().then(() => {
-      //   this.startCameraFeed();
-      // });      
-      // this.startMode();
+      console.log(`WATCH • Capture: ideal_camera_resolution = ${Object.entries(this.ideal_camera_resolution)}`);
+      this.$root.settings.capture_options.ideal_camera_resolution = this.ideal_camera_resolution;
+    },
+    '$root.settings.capture_options.distant_flux.active': function() {
+      this.startMode();
     },
     'media_to_validate': function() {
       console.log(`WATCH • Capture: media_to_validate = ${this.media_to_validate}`);
@@ -455,6 +512,9 @@ export default {
   computed: {
     sorted_available_devices() {
       return this.$_.groupBy(this.available_devices, 'kind');
+    },
+    uriToUploadMedia: function() {
+      return `file-upload/projects/${this.slugProjectName}`;
     }
   },
   methods: {
@@ -521,7 +581,19 @@ export default {
         this.selected_mode = this.available_modes[currentModeIndex+1].key;
       }
     },
-    captureKeyListener(evt) {
+
+    updateSettings() {
+      this.startMode();
+
+      if(this.$root.settings.capture_options.distant_flux.active) {
+        this.$root.settings.capture_options.distant_flux.username = this.current_username;
+        this.$root.settings.capture_options.distant_flux.callee_username = this.callee_username;
+        if(this.$root.settings.capture_options.distant_flux.callee_username !== '') {
+          this.$eventHub.$emit('call_callee');
+        }
+      }
+    },
+    captureKeyListener(event) {
       console.log('METHODS • CaptureView: captureKeyListener');
 
       // don’t register if validating a media
@@ -529,7 +601,11 @@ export default {
         return false;
       }
 
-      switch(evt.key) {
+      if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
+        return false;
+      }      
+
+      switch(event.key) {
         case 'w':
         case 'z':
         case 'ArrowLeft':
@@ -545,6 +621,10 @@ export default {
           this.captureOrStop();
           break;
       }
+    },
+    changeStreamTo(new_stream) {
+      console.log('METHODS • CaptureView: changeStreamTo');
+      this.$refs.videoElement.srcObject = new_stream;
     },
     stopAudioFeed() {
       console.log('METHODS • CaptureView: stopAudioFeed');
@@ -703,11 +783,12 @@ export default {
         invisibleCanvas.height = this.$refs.videoElement.videoHeight;
         let invisibleCtx = invisibleCanvas.getContext('2d');
         invisibleCtx.drawImage( this.$refs.videoElement, 0, 0, invisibleCanvas.width, invisibleCanvas.height);
-        var imageData = invisibleCanvas.toDataURL('image/png');
-        if(imageData === "data:,") {
-          return reject(this.$t('notifications.video_stream_not_available'));
-        }
-        return resolve(imageData);
+        var imageData = invisibleCanvas.toBlob((imageBlob) => {
+          return resolve(imageBlob);
+        }, 'image/jpeg', 0.95);
+        // if(imageData === "data:,") {
+        //   return reject(this.$t('notifications.video_stream_not_available'));
+        // }
       });
     },   
 
@@ -719,9 +800,10 @@ export default {
           const options = {
             recorderType: RecordRTC.MediaStreamRecorder,
             type: 'video',
-            videoBitsPerSecond: 2056000
+            videoBitsPerSecond: 4112000
           };
-          recordVideoFeed.startRecording(options);   
+
+          setTimeout(() => recordVideoFeed.startRecording(options), 500);
 
           this.is_recording = true;
           this.$root.settings.capture_mode_cant_be_changed = true;
@@ -730,10 +812,9 @@ export default {
             this.$eventHub.$off('capture.stopRecording');
             recordVideoFeed.stopRecording(() => {
               this.is_recording = false;
-              recordVideoFeed.getDataURL(videoDataURL => {
-                recordVideoFeed = null;
-                return resolve(videoDataURL);
-              })
+              const videoBlob = recordVideoFeed.getBlob();
+              recordVideoFeed = null;
+              return resolve(videoBlob);
             });
 
           });
@@ -757,9 +838,9 @@ export default {
 
             recordAudioFeed.stopRecording(() => {
               this.is_recording = false;
-              recordAudioFeed.getDataURL(audioDataURL => {
-                resolve(audioDataURL);
-              })
+              const audioBlob = recordAudioFeed.getBlob();
+              recordAudioFeed = null;
+              return resolve(audioBlob);
             });
           });
         }
@@ -781,20 +862,20 @@ export default {
         this.getStaticImageFromVideoElement().then(rawData => {
           this.media_to_validate = {
             rawData,
+            objectURL: URL.createObjectURL(rawData),
             type: 'image'
           };
         });
       } else 
       if(this.selected_mode === 'video') {    
         this.stopVideoFeed();   
-        window.setTimeout(() => {
-          this.startRecordCameraFeed(this.recordVideoWithAudio).then(rawData => {
-            this.media_to_validate = {
-              rawData,
-              type: 'video'
-            };
-          });
-        },500);       
+        this.startRecordCameraFeed(this.recordVideoWithAudio).then(rawData => {
+          this.media_to_validate = {
+            rawData,
+            objectURL: URL.createObjectURL(rawData),
+            type: 'video'
+          };
+        });
       } else
       if(this.selected_mode === 'audio') { 
         equalizer.clearCanvas();
@@ -803,6 +884,7 @@ export default {
           this.media_to_validate = {
             preview,
             rawData,
+            objectURL: URL.createObjectURL(rawData),
             type: 'audio'
           };
         });
@@ -810,7 +892,7 @@ export default {
       if(this.selected_mode === 'stopmotion') { 
         const smdata = {
           name: this.slugProjectName + '-' + this.$moment().format('YYYYMMDD_HHmmss'),
-          authors: this.$root.settings.current_author.name
+          authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : '' 
         };
 
         this.getStaticImageFromVideoElement().then(imageData => {
@@ -836,7 +918,7 @@ export default {
       if(this.selected_mode === 'vecto') { 
         this.media_to_validate = {
           preview: this.vecto.svgstr,
-          rawData: btoa(this.vecto.svgstr),
+          rawData: new Blob([this.vecto.svgstr], { type: "text/xml"}),
           type: 'svg'
         };
       }
@@ -848,7 +930,7 @@ export default {
         type: 'stopmotions',
         rawData: imageData,
         additionalMeta: {
-          type: 'image'          
+          type: 'image'
         }
       });
     },
@@ -859,7 +941,7 @@ export default {
           return reject(this.$t('notifications.video_source_not_set'));
         }
 
-        this.ideal_camera_resolution = this.available_camera_resolutions[1];
+        this.ideal_camera_resolution = this.available_camera_resolutions[0];
   
         this.startCameraFeed()
           .then(() => {
@@ -867,15 +949,15 @@ export default {
               if(this.selected_mode !== 'vecto' || !this.videoStream) {
                 return;
               } else if(this.media_to_validate) {
-                window.setTimeout(scanToVecto, 500);
+                window.setTimeout(scanToVecto, 1000);
                 return;
               }
               this.getStaticImageFromVideoElement().then(imageData => {
                 ImageTracer.imageToSVG(
-                  imageData,
+                  URL.createObjectURL(imageData),
                   (svgstr) => {
                     this.vecto.svgstr = svgstr;
-                    window.setTimeout(scanToVecto, 500);
+                    window.setTimeout(scanToVecto, 1000);
                   },
                   { 
                     colorsampling: false,
@@ -901,45 +983,104 @@ export default {
 
       });
     },
-    sendMedia: function({ fav = false }) {
-      console.log(`METHODS • ValidateMedia: sendMedia with fav=${fav}`);
-      this.$eventHub.$on('socketio.media_created_or_updated', this.newMediaSent);
-      this.$root.createMedia({
-        slugFolderName: this.slugProjectName,
-        type: 'projects',
-        rawData: this.media_to_validate.rawData,
-        additionalMeta: {
-          type: this.media_to_validate.type,
-          fav: fav
+    sendMedia({ fav = false }) {
+      return new Promise((resolve, reject) => {
+        console.log(`METHODS • ValidateMedia: sendMedia with fav=${fav}`);
+        if (this.$root.state.dev_mode === 'debug') {
+          console.log(`METHODS • CaptureView / sendMedia`);
         }
-      });
-      this.media_is_being_sent = true;
 
-      this.media_send_timeout_timer = window.setTimeout(() => {
-        this.media_is_being_sent = false;
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t('notifications.media_couldnt_been_sent'));
-      }, this.media_send_timeout);
+        this.$root.settings.capture_mode_cant_be_changed = false;
 
-    },
-    newMediaSent: function(mdata) {
-      console.log('METHODS • ValidateMedia: newMediaSent');
-      if (this.$root.justCreatedMediaID === mdata.id) {
-        this.$root.justCreatedMediaID = false;
-        this.$eventHub.$off('socketio.media_created_or_updated', this.newMediaSent);
+        const timeCreated = this.$moment().format('YYYYMMDD_HHmmss');
+        const randomString = (
+          Math.random().toString(36) + '00000000000000000'
+        ).slice(2, 3 + 2);
 
-        window.clearTimeout(this.media_send_timeout_timer);
-        this.media_send_timeout_timer = undefined;   
+        const extensions = {
+          image: 'jpeg',
+          video: 'webm',
+          audio: 'wav',
+          svg: 'svg'
+        };
+        const filename = `${this.media_to_validate.type}-${timeCreated}-${randomString}.${extensions[this.media_to_validate.type]}`;
+        const modified = new Date();
+
+        // this.$set(this.selected_files_meta, filename, {
+        //   upload_percentages: 0,
+        //   status: 'sending'
+        // });
+
+        const rawData = this.media_to_validate.rawData;
+
+        let formData = new FormData();
+        formData.append('files', rawData, filename);
+        const meta = {
+          fileCreationDate: modified,
+          fav,
+          authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : '' 
+        }
+        formData.append(filename, JSON.stringify(meta));
         
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .success(this.$t('notifications.media_was_sent'));
-        this.media_is_being_sent = false;
-        this.media_to_validate = false;
-      }
+        const socketid = this.$socketio.socket.id;
+        if(socketid !== undefined) {
+          formData.append('socketid', socketid);
+        }
+
+        if (this.$root.state.dev_mode === 'debug') {
+          console.log(`METHODS • sendThisFile: name = ${filename} / formData is ready`);
+        }
+
+        this.media_is_being_sent = true;
+        this.media_being_sent_percent = 0;
+
+        // TODO : possibilité de cancel
+        axios.post(this.uriToUploadMedia, formData,{
+            headers: { 'Content-Type': 'multipart/form-data' },
+            onUploadProgress: function( progressEvent ) {
+              console.log(`METHODS • CaptureView: onUploadProgress for name = ${filename} / ${parseInt(Math.round((progressEvent.loaded * 100 ) / progressEvent.total ) )}% `);
+              this.media_being_sent_percent = parseInt(Math.round((progressEvent.loaded * 100 ) / progressEvent.total ) );
+              // this.selected_files_meta[filename].upload_percentages = parseInt(Math.round((progressEvent.loaded * 100 ) / progressEvent.total ) );
+            }.bind(this)            
+          })
+          .then(x => x.data)
+          .then(x => {
+            if (this.$root.state.dev_mode === 'debug') {
+              console.log(`METHODS • CaptureView: name = ${filename} / success uploading`);
+            }
+
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .success(this.$t('notifications.media_was_sent'));
+            this.media_is_being_sent = false;
+            this.media_to_validate = false;
+
+            // this.selected_files_meta[filename].status = 'success';
+            // this.selected_files_meta[filename].upload_percentages = 100;     
+            resolve();    
+          })
+          .catch(err => {
+            if (this.$root.state.dev_mode === 'debug') {
+              console.log(`METHODS • sendThisFile: name = ${filename} / failed uploading`);
+            }
+
+            this.media_is_being_sent = false;
+            this.media_being_sent_percent = 0;
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error(this.$t('notifications.media_couldnt_been_sent'));
+
+            // this.selected_files_meta[filename].status = 'failed'; 
+            // this.selected_files_meta[filename].upload_percentages = 0;   
+            reject();      
+          });
+      });
+    },
+    cancelValidation() {
+      this.media_to_validate = false;
+      this.$root.settings.capture_mode_cant_be_changed = false;
     },
     updateSingleImage($event) {
       this.stopmotion.onion_skin_img = $event;
