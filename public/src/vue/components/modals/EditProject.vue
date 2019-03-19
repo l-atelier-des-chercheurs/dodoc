@@ -30,22 +30,21 @@
       </div>
 
 <!-- Password -->
-<!--
-      <div class="margin-bottom-small">
+      <!-- <div class="margin-bottom-small">
         <label>{{ $t('password') }}</label>
         <input type="password" v-model="projectdata.password" :readonly="read_only">
         <small>{{ $t('password_instructions') }}</small>
-      </div>
- -->
+      </div> -->
+
 
 <!-- Keywords -->
       <div class="margin-bottom-small">
-        <label>{{ $t('keywords') }}<br>
-        *<small>{{ $t('validate_with_enter') }}</small></label>
+        <label>{{ $t('keywords') }}</label>
         <TagsInput 
           :keywords="projectdata.keywords"
           @tagsChanged="newTags => projectdata.keywords = newTags"
         />
+        <small>{{ $t('validate_with_enter') }}</small>        
       </div>
 
 <!-- Author(s) -->
@@ -112,11 +111,11 @@ export default {
   computed: {
     previewURL() {
       if(!this.project.hasOwnProperty('preview') || this.project.preview === '') {
-        return false;
+        return '';
       }
       const thumb = this.project.preview.filter(p => p.size === 640);
       if(thumb.length > 0) { return `${thumb[0].path}?${(new Date()).getTime()}` }
-      return false;
+      return '';
     }
   },
   methods: {

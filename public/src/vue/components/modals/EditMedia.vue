@@ -147,12 +147,12 @@
 
   <!-- Keywords -->
       <div class="margin-bottom-small">
-        <label>{{ $t('keywords') }}<br>
-        *<small>{{ $t('validate_with_enter') }}</small></label>
+        <label>{{ $t('keywords') }}</label>
         <TagsInput 
           :keywords="mediadata.keywords"
           @tagsChanged="newTags => mediadata.keywords = newTags"
         />
+        <small>{{ $t('validate_with_enter') }}</small>        
       </div>
 
   <!-- Author(s) -->

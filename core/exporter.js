@@ -4,8 +4,7 @@ const path = require('path'),
   ffmpeg = require('fluent-ffmpeg'),
   fs = require('fs-extra');
 
-const settings = require('../settings.json'),
-  dev = require('./dev-log'),
+const dev = require('./dev-log'),
   api = require('./api'),
   file = require('./file');
 
@@ -29,7 +28,7 @@ module.exports = (function() {
 
         let cachePath = path.join(
           global.tempStorage,
-          settings.cacheDirname,
+          global.settings.cacheDirname,
           cacheFolderName
         );
 
@@ -74,11 +73,11 @@ module.exports = (function() {
                 const slugFolderInCache = path.join(cachePath, slugFolderName);
 
                 const fullSlugFolderPath_inThumbs = api.getFolderPath(
-                  path.join(settings.thumbFolderName, slugFolderName)
+                  path.join(global.settings.thumbFolderName, slugFolderName)
                 );
                 const slugFolderInCache_thumbs = path.join(
                   cachePath,
-                  settings.thumbFolderName,
+                  global.settings.thumbFolderName,
                   slugFolderName
                 );
 
@@ -200,7 +199,7 @@ module.exports = (function() {
 
         const cachePath = path.join(
           global.tempStorage,
-          settings.cacheDirname,
+          global.settings.cacheDirname,
           '_publications'
         );
 
@@ -263,7 +262,7 @@ module.exports = (function() {
 
         const cachePath = path.join(
           global.tempStorage,
-          settings.cacheDirname,
+          global.settings.cacheDirname,
           '_publications'
         );
 

@@ -6,7 +6,7 @@
       <div class="m_stopmotionpanel--medias--single">
         <MediaContent
           v-if="current_single_media"
-          :context="'edit'"
+          :context="'preview'"
           :slugFolderName="stopmotiondata.slugFolderName"
           :media="current_single_media"
           :subfolder="'_stopmotions/'"
@@ -88,6 +88,7 @@
         <button 
           type="button" 
           class="button button-bg_rounded bg-bleuvert"   
+          v-if="medias.length > 0"
           @click="assembleStopmotionMedias"
           :disabled="videopreview && frameRate === previousFrameRate"
         >

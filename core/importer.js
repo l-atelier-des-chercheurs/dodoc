@@ -18,7 +18,7 @@ module.exports = (function() {
 
         // specify that we want to allow the user to upload multiple files in a single request
         form.multiples = false;
-        form.maxFileSize = 1000 * 1024 * 1024;
+        form.maxFileSize = global.settings.maxFileSizeForUpload * 1024 * 1024;
         let socketid = '';
 
         // store all uploads in the folder directory
@@ -110,7 +110,7 @@ module.exports = (function() {
     type
   }) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction('ROUTER — renameAndConvertMediaAndCreateMeta');
+      dev.logfunction('IMPORTER — renameAndConvertMediaAndCreateMeta');
       api.findFirstFilenameNotTaken(uploadDir, fileMeta.name).then(
         function(newFileName) {
           dev.logverbose(`Following filename is available: ${newFileName}`);

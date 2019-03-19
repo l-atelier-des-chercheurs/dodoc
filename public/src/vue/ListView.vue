@@ -183,8 +183,12 @@ export default {
     if(this.$root.settings.project_filter.keyword || this.$root.settings.project_filter.author) {
       this.show_filters = true;
     }
+    this.$eventHub.$on('modal.prev_media', this.prevMedia);
+    this.$eventHub.$on('modal.next_media', this.nextMedia);
   },
   beforeDestroy() {
+    this.$eventHub.$off('modal.prev_media', this.prevMedia);
+    this.$eventHub.$off('modal.next_media', this.nextMedia);
   },
   watch: {
     currentLang: function() {
@@ -369,7 +373,24 @@ export default {
         return '';
       }
       return `/${this.$root.state.authorsFolder}/${slug}/${filename}`;
-    }
+    },
+    prevMedia() {
+      this.mediaNav(-1);
+    },
+    nextMedia() {
+      this.mediaNav(+1);
+    },
+    mediaNav(relative_index) {
+      const current_media_index = this.sortedMedias.findIndex(m => m.metaFileName === this.$root.media_modal.current_metaFileName);
+      const new_media = this.sortedMedias[current_media_index + relative_index];
+      this.$root.closeMedia();
+      
+      if(!!new_media) {
+        this.$nextTick(() => {
+          this.$root.openMedia({ slugProjectName: new_media.slugProjectName, metaFileName: new_media.metaFileName });      
+        });
+      }
+    },
   }
 };
 </script>

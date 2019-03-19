@@ -7,8 +7,7 @@ const path = require('path'),
 
 const sharp = require('sharp');
 
-const settings = require('../settings.json'),
-  dev = require('./dev-log'),
+const dev = require('./dev-log'),
   api = require('./api'),
   thumbs = require('./thumbs');
 
@@ -17,17 +16,33 @@ ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function() {
   const API = {
+    getPresentation() {
+      return new Promise(function(resolve, reject) {
+        let presentationMd = path.join(api.getFolderPath(), 'presentation.md');
+        fs.access(presentationMd, fs.F_OK, function(err) {
+          if (err) {
+            resolve(validator.unescape(global.appInfos.presentationMd));
+          } else {
+            let presentationContent = validator.unescape(
+              fs.readFileSync(presentationMd, global.settings.textEncoding)
+            );
+            presentationContent = api.parseData(presentationContent);
+            resolve(presentationContent);
+          }
+        });
+      });
+    },
     getFolder: ({ type, slugFolderName }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
           `COMMON — getFolder type = ${type} with slugFolderName = ${slugFolderName}`
         );
 
-        if (!settings.structure.hasOwnProperty(type)) {
-          reject(`Missing type ${type} in settings.json`);
+        if (!global.settings.structure.hasOwnProperty(type)) {
+          reject(`Missing type ${type} in global.settings.json`);
         }
 
-        const baseFolderPath = settings.structure[type].path;
+        const baseFolderPath = global.settings.structure[type].path;
         const mainFolderPath = api.getFolderPath(baseFolderPath);
 
         _getFolderSlugs(mainFolderPath).then(folders => {
@@ -52,7 +67,8 @@ module.exports = (function() {
                 dev.logverbose(`Finding meta for folder = ${thisFolderPath}`);
                 const metaFolderPath = path.join(
                   thisFolderPath,
-                  settings.folderMetaFilename + settings.metaFileext
+                  global.settings.folderMetaFilename +
+                    global.settings.metaFileext
                 );
 
                 readMetaFile(metaFolderPath)
@@ -60,7 +76,9 @@ module.exports = (function() {
                     meta = _sanitizeMetaFromFile({ type, meta });
                     meta.slugFolderName = slugFolderName;
 
-                    if (settings.structure[type].hasOwnProperty('medias')) {
+                    if (
+                      global.settings.structure[type].hasOwnProperty('medias')
+                    ) {
                       meta.medias = {};
                     }
 
@@ -78,7 +96,7 @@ module.exports = (function() {
             );
 
             // For each folder, find a preview (if it exists)
-            if (settings.structure[type].hasOwnProperty('preview')) {
+            if (global.settings.structure[type].hasOwnProperty('preview')) {
               allFoldersData.push(
                 new Promise((resolve, reject) => {
                   dev.logverbose(
@@ -86,7 +104,8 @@ module.exports = (function() {
                   );
 
                   const preview_name =
-                    settings.folderPreviewFilename + settings.thumbExt;
+                    global.settings.folderPreviewFilename +
+                    global.settings.thumbExt;
                   const pathToPreview = path.join(thisFolderPath, preview_name);
 
                   fs.access(pathToPreview, fs.F_OK, err => {
@@ -167,11 +186,11 @@ module.exports = (function() {
           data.name = 'Untitled Folder';
         }
 
-        if (!settings.structure.hasOwnProperty(type)) {
-          reject(`Missing type ${type} in settings.json`);
+        if (!global.settings.structure.hasOwnProperty(type)) {
+          reject(`Missing type ${type} in global.settings.json`);
         }
 
-        const baseFolderPath = settings.structure[type].path;
+        const baseFolderPath = global.settings.structure[type].path;
         const mainFolderPath = api.getFolderPath(baseFolderPath);
 
         _getFolderSlugs(mainFolderPath).then(folders => {
@@ -201,7 +220,7 @@ module.exports = (function() {
 
               if (
                 data.hasOwnProperty('preview_rawdata') &&
-                settings.structure[type].hasOwnProperty('preview')
+                global.settings.structure[type].hasOwnProperty('preview')
               ) {
                 tasks.push(
                   _storeFoldersPreview(
@@ -222,7 +241,8 @@ module.exports = (function() {
 
                   const metaFolderPath = path.join(
                     thisFolderPath,
-                    settings.folderMetaFilename + settings.metaFileext
+                    global.settings.folderMetaFilename +
+                      global.settings.metaFileext
                   );
 
                   api
@@ -263,10 +283,10 @@ module.exports = (function() {
           with existing data ${JSON.stringify(foldersData, null, 4)}`
         );
 
-        if (!settings.structure.hasOwnProperty(type)) {
-          reject(`Missing type ${type} in settings.json`);
+        if (!global.settings.structure.hasOwnProperty(type)) {
+          reject(`Missing type ${type} in global.settings.json`);
         }
-        const baseFolderPath = settings.structure[type].path;
+        const baseFolderPath = global.settings.structure[type].path;
         const mainFolderPath = api.getFolderPath(baseFolderPath);
 
         // remove slugFolderKey
@@ -276,7 +296,7 @@ module.exports = (function() {
 
         if (
           newFoldersData.hasOwnProperty('preview_rawdata') &&
-          settings.structure[type].hasOwnProperty('preview')
+          global.settings.structure[type].hasOwnProperty('preview')
         ) {
           dev.logverbose('Updating folders preview');
           let preview_rawdata = newFoldersData.preview_rawdata;
@@ -306,7 +326,7 @@ module.exports = (function() {
 
           const metaFolderPath = path.join(
             thisFolderPath,
-            settings.folderMetaFilename + settings.metaFileext
+            global.settings.folderMetaFilename + global.settings.metaFileext
           );
 
           api.storeData(metaFolderPath, foldersData, 'update').then(
@@ -346,17 +366,17 @@ module.exports = (function() {
           `COMMON — removeFolder : will remove folder: ${slugFolderName}`
         );
 
-        if (!settings.structure.hasOwnProperty(type)) {
-          reject(`Missing type ${type} in settings.json`);
+        if (!global.settings.structure.hasOwnProperty(type)) {
+          reject(`Missing type ${type} in global.settings.json`);
         }
-        const baseFolderPath = settings.structure[type].path;
+        const baseFolderPath = global.settings.structure[type].path;
         const mainFolderPath = api.getFolderPath(baseFolderPath);
 
         // remove slugFolderKey
         const thisFolderPath = path.join(mainFolderPath, slugFolderName);
         const movedFolderPath = path.join(
           mainFolderPath,
-          settings.deletedFolderName,
+          global.settings.deletedFolderName,
           slugFolderName
         );
 
@@ -393,7 +413,7 @@ module.exports = (function() {
         );
 
         let slugFolderPath = api.getFolderPath(
-          path.join(settings.structure[type].path, slugFolderName)
+          path.join(global.settings.structure[type].path, slugFolderName)
         );
 
         fs.readdir(slugFolderPath, function(err, filenames) {
@@ -412,17 +432,19 @@ module.exports = (function() {
 
           let list_metaFileName = filenames.filter(_metaFileName => {
             return (
-              !new RegExp(settings.regexpMatchFolderNames, 'i').test(
+              !new RegExp(global.settings.regexpMatchFolderNames, 'i').test(
                 _metaFileName
               ) &&
-              // endswith settings.metaFileext
-              _metaFileName.endsWith(settings.metaFileext) &&
+              // endswith global.settings.metaFileext
+              _metaFileName.endsWith(global.settings.metaFileext) &&
               // not meta.txt
               _metaFileName !==
-                settings.folderMetaFilename + settings.metaFileext &&
+                global.settings.folderMetaFilename +
+                  global.settings.metaFileext &&
               // not a folder preview
               _metaFileName !==
-                settings.folderPreviewFilename + settings.thumbExt &&
+                global.settings.folderPreviewFilename +
+                  global.settings.thumbExt &&
               // not a dotfile
               _metaFileName.indexOf('.') !== 0 &&
               // if has metaFileName, only if it matches
@@ -563,26 +585,26 @@ module.exports = (function() {
         if (additionalMeta.hasOwnProperty('media_filename')) {
           mediaName = additionalMeta.media_filename;
           mediaPath = path.join(api.getFolderPath(slugFolderName), mediaName);
-          metaFileName = mediaName + settings.metaFileext;
+          metaFileName = mediaName + global.settings.metaFileext;
         } else if (additionalMeta.hasOwnProperty('desired_filename')) {
           let randomString = (
             Math.random().toString(36) + '00000000000000000'
           ).slice(2, 3 + 2);
           metaFileName = `${api.slug(
             additionalMeta.desired_filename
-          )}-${randomString}${settings.metaFileext}`;
+          )}-${randomString}${global.settings.metaFileext}`;
         } else {
           let timeCreated = api.getCurrentDate();
           let randomString = (
             Math.random().toString(36) + '00000000000000000'
           ).slice(2, 3 + 2);
           metaFileName = `${timeCreated}-${randomString}${
-            settings.metaFileext
+            global.settings.metaFileext
           }`;
         }
 
         let slugFolderPath = api.getFolderPath(
-          path.join(settings.structure[type].path, slugFolderName)
+          path.join(global.settings.structure[type].path, slugFolderName)
         );
 
         const metaFilePath = path.join(slugFolderPath, metaFileName);
@@ -598,7 +620,7 @@ module.exports = (function() {
               mediaName !== undefined
             ) {
               let mediaFileExtension = new RegExp(
-                settings.regexpGetFileExtension,
+                global.settings.regexpGetFileExtension,
                 'i'
               ).exec(mediaName)[0];
               dev.logverbose(
@@ -994,7 +1016,7 @@ module.exports = (function() {
 
             let updateMediaMeta = new Promise((resolve, reject) => {
               let slugFolderPath = api.getFolderPath(
-                path.join(settings.structure[type].path, slugFolderName)
+                path.join(global.settings.structure[type].path, slugFolderName)
               );
               let mediaMetaPath = path.join(slugFolderPath, metaFileName);
 
@@ -1025,15 +1047,15 @@ module.exports = (function() {
                 // then it means its in the name of the text file
                 function getMediaFilename(meta, metaFileName) {
                   if (
-                    settings.structure[type].medias.fields.hasOwnProperty(
-                      'media_filename'
-                    )
+                    global.settings.structure[
+                      type
+                    ].medias.fields.hasOwnProperty('media_filename')
                   ) {
                     if (meta.hasOwnProperty('media_filename')) {
                       return meta.media_filename;
                     } else {
                       return new RegExp(
-                        settings.regexpRemoveFileExtension,
+                        global.settings.regexpRemoveFileExtension,
                         'i'
                       ).exec(metaFileName)[1];
                     }
@@ -1042,7 +1064,10 @@ module.exports = (function() {
                 let mediaFileName = getMediaFilename(meta, metaFileName);
 
                 let slugFolderPath = api.getFolderPath(
-                  path.join(settings.structure[type].path, slugFolderName)
+                  path.join(
+                    global.settings.structure[type].path,
+                    slugFolderName
+                  )
                 );
                 let mediaPath = path.join(slugFolderPath, mediaFileName);
 
@@ -1082,16 +1107,17 @@ module.exports = (function() {
           // then it means its in the name of the text file
           function getMediaFilename(meta, metaFileName) {
             if (
-              settings.structure[type].medias.fields.hasOwnProperty(
+              global.settings.structure[type].medias.fields.hasOwnProperty(
                 'media_filename'
               )
             ) {
               if (meta.hasOwnProperty('media_filename')) {
                 return meta.media_filename;
               } else {
-                return new RegExp(settings.regexpRemoveFileExtension, 'i').exec(
-                  metaFileName
-                )[1];
+                return new RegExp(
+                  global.settings.regexpRemoveFileExtension,
+                  'i'
+                ).exec(metaFileName)[1];
               }
             } else {
               return '';
@@ -1100,13 +1126,13 @@ module.exports = (function() {
           let mediaFileName = getMediaFilename(meta, metaFileName);
 
           let slugFolderPath = api.getFolderPath(
-            path.join(settings.structure[type].path, slugFolderName)
+            path.join(global.settings.structure[type].path, slugFolderName)
           );
 
           let mediaMetaPath = path.join(slugFolderPath, metaFileName);
           let movedMediaMetaPath = path.join(
             slugFolderPath,
-            settings.deletedFolderName,
+            global.settings.deletedFolderName,
             metaFileName
           );
 
@@ -1118,7 +1144,7 @@ module.exports = (function() {
               let mediaPath = path.join(slugFolderPath, mediaFileName);
               let movedMediaPath = path.join(
                 slugFolderPath,
-                settings.deletedFolderName,
+                global.settings.deletedFolderName,
                 mediaFileName
               );
               return fs.move(mediaPath, movedMediaPath, {
@@ -1174,7 +1200,7 @@ module.exports = (function() {
 
         let tasks = [];
         let slugFolderPath = api.getFolderPath(
-          path.join(settings.structure[type].path, slugFolderName)
+          path.join(global.settings.structure[type].path, slugFolderName)
         );
 
         // MOST OF THIS CODE ISN’T USED ANYMORE
@@ -1323,7 +1349,7 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       // pour chaque item, on regarde s’il contient un fichier méta (même nom + .txt)
       let slugFolderPath = api.getFolderPath(
-        path.join(settings.structure[type].path, slugFolderName)
+        path.join(global.settings.structure[type].path, slugFolderName)
       );
       let metaFile = path.join(slugFolderPath, metaFileName);
 
@@ -1347,12 +1373,12 @@ module.exports = (function() {
             // then it means its in the name of the text file
             if (
               !mediaData.hasOwnProperty('media_filename') &&
-              settings.structure[type].medias.fields.hasOwnProperty(
+              global.settings.structure[type].medias.fields.hasOwnProperty(
                 'media_filename'
               )
             ) {
               mediaData.media_filename = new RegExp(
-                settings.regexpRemoveFileExtension,
+                global.settings.regexpRemoveFileExtension,
                 'i'
               ).exec(metaFileName)[1];
             }
@@ -1367,7 +1393,7 @@ module.exports = (function() {
                 mediaData.media_filename
               );
               mediaData.content = validator.unescape(
-                fs.readFileSync(mediaPath, settings.textEncoding)
+                fs.readFileSync(mediaPath, global.settings.textEncoding)
               );
               dev.logverbose(`Got mediaData.content : ${mediaData.content}`);
               return resolve(mediaData);
@@ -1398,7 +1424,7 @@ module.exports = (function() {
 
           if (
             mediaData.hasOwnProperty('media_filename') &&
-            settings.structure[type].medias.thumbs
+            global.settings.structure[type].medias.thumbs
           ) {
             // let’s find or create thumbs
             thumbs
@@ -1428,7 +1454,10 @@ module.exports = (function() {
   function readMetaFile(metaPath) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — readMetaFile: ${metaPath}`);
-      var metaFileContent = fs.readFileSync(metaPath, settings.textEncoding);
+      var metaFileContent = fs.readFileSync(
+        metaPath,
+        global.settings.textEncoding
+      );
       var metaFileContentParsed = api.parseData(metaFileContent);
       resolve(metaFileContentParsed);
     });
@@ -1449,7 +1478,7 @@ module.exports = (function() {
         var folders = filenames.filter(function(thisSlugFolderName) {
           // is a folder
           return (
-            new RegExp(settings.regexpMatchFolderNames, 'i').test(
+            new RegExp(global.settings.regexpMatchFolderNames, 'i').test(
               thisSlugFolderName
             ) &&
             // if doesn’t start with _ (these folders are generated by the tool, can’t be created through the interface)
@@ -1473,12 +1502,12 @@ module.exports = (function() {
         `COMMON — _storeFoldersPreview : will store preview for folder: ${slugFolderName}`
       );
 
-      const baseFolderPath = settings.structure[type].path;
+      const baseFolderPath = global.settings.structure[type].path;
       const mainFolderPath = api.getFolderPath(baseFolderPath);
       const thisFolderPath = path.join(mainFolderPath, slugFolderName);
 
       const preview_filename =
-        settings.folderPreviewFilename + settings.thumbExt;
+        global.settings.folderPreviewFilename + global.settings.thumbExt;
 
       const pathToPreview = path.join(thisFolderPath, preview_filename);
 
@@ -1508,16 +1537,16 @@ module.exports = (function() {
           sharp(imageBuffer)
             .rotate()
             .resize(
-              settings.structure[type].preview.width,
-              settings.structure[type].preview.height
+              global.settings.structure[type].preview.width,
+              global.settings.structure[type].preview.height
             )
             .max()
             .withoutEnlargement()
             .background({ r: 255, g: 255, b: 255 })
             .flatten()
             .withMetadata()
-            .toFormat(settings.thumbFormat, {
-              quality: settings.mediaThumbQuality
+            .toFormat(global.settings.thumbFormat, {
+              quality: global.settings.mediaThumbQuality
             })
             .toFile(pathToPreview)
             .then(function() {
@@ -1547,21 +1576,21 @@ module.exports = (function() {
     dev.logfunction(
       `COMMON — _makeDefaultMetaFromStructure : will '${method}' a new default meta object for type = ${type} and type_two = ${type_two}.`
     );
-    if (!settings.structure.hasOwnProperty(type)) {
-      dev.error(`Missing type ${type} in settings.json`);
+    if (!global.settings.structure.hasOwnProperty(type)) {
+      dev.error(`Missing type ${type} in global.settings.json`);
     }
 
     let fields =
       type_two === undefined
-        ? settings.structure[type].fields
-        : settings.structure[type][type_two].fields;
+        ? global.settings.structure[type].fields
+        : global.settings.structure[type][type_two].fields;
     let output_obj = {};
 
     Object.entries(fields).forEach(([key, val]) => {
       // dev.logverbose(`Iterating through struct entries, at key ${key}`);
       if (!val.hasOwnProperty('type')) {
         dev.error(
-          `Missing type property for field name ${key} in settings.json`
+          `Missing type property for field name ${key} in global.settings.json`
         );
       }
       let type = val.type;
@@ -1645,7 +1674,7 @@ module.exports = (function() {
           }
         } else if (val.hasOwnProperty('default')) {
           output_obj[key] =
-            val.default === 'random' ? Math.random() * 0.5 : val.default;
+            val.default === 'random' ? Math.random() : val.default;
         }
       } else if (type === 'array') {
         if (
@@ -1683,8 +1712,8 @@ module.exports = (function() {
 
     const fields =
       type_two === undefined
-        ? settings.structure[type].fields
-        : settings.structure[type][type_two].fields;
+        ? global.settings.structure[type].fields
+        : global.settings.structure[type][type_two].fields;
 
     Object.keys(meta).forEach(key => {
       if (fields.hasOwnProperty(key) && fields[key].hasOwnProperty('type')) {

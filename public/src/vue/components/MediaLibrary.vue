@@ -3,7 +3,7 @@
     <div class="m_actionbar" v-show="$root.state.connected">
       <div class="m_actionbar--buttonBar">
         <button type="button" class="barButton barButton_capture" 
-          v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass')"
+          v-if="((project.password === 'has_pass') || project.password !== 'has_pass')"
           @click="openCapture"
           :disabled="read_only"
         >
@@ -13,7 +13,7 @@
         </button>
 
         <button type="button" class="barButton barButton_import" 
-          v-if="((project.password === 'has_pass' && project.authorized) || project.password !== 'has_pass')"
+          v-if="((project.password === 'has_pass') || project.password !== 'has_pass')"
           @click="showImportModal = true"
         ><span>    
           {{ $t('import') }}
@@ -236,7 +236,6 @@ export default {
           this.openMediaModal(new_media.metaFileName);
         });
       }
-
     },
     openMediaModal(metaFileName) {
       if (this.$root.state.dev_mode === 'debug') {

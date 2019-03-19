@@ -7,7 +7,7 @@
             ‹ <span class="backButton--text">{{ $t('back') }}</span>
           </button>
         </transition>
-        <img src="/images/i_logo.svg" @click="goHome()" />
+        <img :title="`do•doc version ${$root.state.appVersion}`" src="/images/i_logo.svg" @click="goHome()" />
       </div>
 
       <div 
@@ -67,7 +67,9 @@
       class="m_topbar--center"
     >
       <div class="m_topbar--center--authors">
-        <button type="button" @click="showAuthorsListModal = true">
+        <button type="button" class="m_topbar--center--authors--currentAuthor" @click="showAuthorsListModal = true"
+          title="Other user connected"
+        >
           <template v-if="!!$root.settings.current_author">
             <div class="m_topbar--center--authors--portrait"
               v-if="$root.settings.current_author.hasOwnProperty('preview') && $root.settings.current_author.preview.length !== ''"
@@ -85,6 +87,8 @@
             </div>
           </template>
         </button>
+
+        <Clients />
 
         <AuthorsList
           v-if="showAuthorsListModal"
@@ -157,12 +161,14 @@
 <script>
 import QRCode from './components/modals/QRCode.vue';
 import AuthorsList from './components/modals/AuthorsList.vue';
+import Clients from './components/Clients.vue';
 
 export default {
   props: [ 'has_back_button', 'slugProjectName', 'authors', 'project' ],
   components: {
     QRCode,
-    AuthorsList
+    AuthorsList,
+    Clients
   },
   data() {
     return {

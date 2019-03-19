@@ -1,8 +1,8 @@
 {
   "protocol": "https",
   "host": "localhost",
-  "port": 8080,
-  "http_port": 80,
+  "desired_port": 8080,
+  "redirect_port": "",
   "userDirPath": "documents",
   "userDirname": "dodoc2",
 
@@ -23,6 +23,7 @@
   "deletedFolderName" : "_bin",
 
   "mediaThumbQuality" : 70,
+  "maxFileSizeForUpload": 10000, 
 
   "regexpMatchFolderNames" : "^([^.]+)$",
   "regexpGetFileExtension" : "\\.[^.]*$",
@@ -67,7 +68,7 @@
       },
       "medias": {
         "thumbs": {
-          "resolutions": [50, 180, 360, 1600]
+          "resolutions": [180, 360, 1600]
         },
         "fields": {
           "date_created": {
@@ -273,7 +274,7 @@
       },
       "medias": {
         "thumbs": {
-          "resolutions": [150, 1600]
+          "resolutions": [150, 1200]
         },
         "fields": {
           "date_uploaded" : {

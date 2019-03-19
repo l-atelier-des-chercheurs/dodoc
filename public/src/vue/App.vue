@@ -18,8 +18,7 @@
         :authors="$root.store.authors"
       />
       
-      <div class="m_activitiesPanel"
-      >
+      <div class="m_activitiesPanel">
         <div 
           :style="{ cursor, userSelect}" 
           class="vue-splitter-container clearfix" 
@@ -139,13 +138,9 @@
       >
       </EditMedia>      
 
-      <!-- <Clients 
-        :clients="$root.state.clients"
-      /> -->
-
     </template>  
     <template 
-      v-else-if="$root.state.mode === 'export_publication'"
+      v-else-if="$root.state.mode === 'export_publication' || $root.state.mode === 'print_publication'"
     >    
       <PagePublication
         v-if="$root.settings.current_slugPubliName !== false"
@@ -171,7 +166,6 @@ import EditMedia from './components/modals/EditMedia.vue';
 import Publications from './Publications.vue';
 import PagePublication from './components/PagePublication.vue';
 import VideoPublication from './components/VideoPublication.vue';
-import Clients from './components/Clients.vue';
 
 import Resizer from './components/splitpane/Resizer.vue'
 import Pane from './components/splitpane/Pane.vue'
@@ -189,8 +183,7 @@ export default {
     PagePublication,
     VideoPublication,
     Resizer, 
-    Pane,
-    Clients
+    Pane
   },
   props: {
   },

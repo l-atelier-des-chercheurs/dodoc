@@ -14,6 +14,10 @@ Object.defineProperty(Vue.prototype, '$_', { value: _ });
 import alertify from 'alertify.js';
 Vue.prototype.$alertify = alertify;
 
+import auth from '../adc-core/auth-client.js';
+auth.init();
+Vue.prototype.$auth = auth;
+
 import locale_strings from './locale_strings.js';
 
 Vue.config.silent = false;
@@ -142,13 +146,14 @@ Vue.prototype.$socketio = new Vue({
         //   .success(this.$t('notifications.connection_active'));
       }
 
-      // TODO : reenable auth for folders and publications
-      this.listFolders({ type: 'projects' });
-      this.listFolders({ type: 'authors' });
+      this.sendAuth();
+
+      // this.listFolders({ type: 'authors' });
       // this.sendAuth();
     },
 
     _onReconnect() {
+      this.sendAuth();
       this.$eventHub.$emit('socketio.reconnect');
       console.log(`Reconnected`);
     },
@@ -158,11 +163,11 @@ Vue.prototype.$socketio = new Vue({
     },
 
     sendAuth() {
-      let admin_access = auth.getAdminAccess();
+      let folder_passwords = auth.getAdminAccess();
       console.log(
-        `Asking for auth with ${JSON.stringify(admin_access, null, 4)}`
+        `Asking for auth with ${JSON.stringify(folder_passwords, null, 4)}`
       );
-      this.socket.emit('authenticate', { admin_access });
+      this.socket.emit('authenticate', { folder_passwords });
     },
 
     _onSocketError(reason) {
@@ -185,39 +190,51 @@ Vue.prototype.$socketio = new Vue({
       //   );
     },
 
-    // _authentificated(list_admin_folders) {
-    //   console.log(
-    //     `Admin for projects ${JSON.stringify(list_admin_folders, null, 4)}`
-    //   );
+    _authentificated(list_authorized_folders) {
+      console.log(
+        `Admin for projects ${JSON.stringify(list_authorized_folders, null, 4)}`
+      );
+      window.state.list_authorized_folders = list_authorized_folders;
+      let folder_passwords = auth.getAdminAccess();
 
-    //   // compare local store and answer from server
-    //   // for each key that is not in the answer, let’s send and alert to notify that the password is most likely wrong or the folder name has changed
-    //   if (auth.getAdminAccess() !== undefined) {
-    //     let admin_access = Object.keys(auth.getAdminAccess());
-    //     admin_access.forEach(slugFolderName => {
-    //       if (
-    //         list_admin_folders === undefined ||
-    //         list_admin_folders.indexOf(slugFolderName) === -1
-    //       ) {
-    //         this.$alertify
-    //           .closeLogOnClick(true)
-    //           .delay(4000)
-    //           .error(
-    //             this.$t('notifications["wrong_password_for_folder:"]') +
-    //               ' ' +
-    //               slugFolderName
-    //           );
-    //         auth.removeKey(slugFolderName);
-    //       } else {
-    //       }
-    //     });
-    //   }
+      // got list of items admin for, update localstore with that info
+      let clean_folder_passwords = {};
 
-    //   window.dispatchEvent(
-    //     new CustomEvent('socketio.connected_and_authentified')
-    //   );
-    //   this.listFolders();
-    // },
+      /* 
+      {
+        projects: {
+          bonjour: mon-mot-de-passe
+          hello: mdp2
+        },
+        author: {
+          jean: Hello world !
+        }
+      }
+      */
+
+      // list_authorized_folders.map(i => {
+      //   if (
+      //     !i.hasOwnProperty('allowed_slugFolderNames') ||
+      //     !i.hasOwnProperty('type')
+      //   )
+      //     return;
+
+      //   const type = i.type;
+
+      //   if (!clean_folder_passwords.hasOwnProperty(type)) {
+      //     clean_folder_passwords[type] = {};
+      //   }
+
+      //   i.allowed_slugFolderNames.map(slugFolderName => {
+      //     if(folder_passwords.hasOwnProperty())
+      //     // clean_folder_passwords[type];
+      //   });
+      // });
+      // auth.updateAdminAccess();
+
+      this.listFolders({ type: 'authors' });
+      this.listFolders({ type: 'projects' });
+    },
 
     _onListMedia(data) {
       console.log('Received _onListMedia packet.');
@@ -687,11 +704,23 @@ let vm = new Vue({
     allKeywords() {
       let allKeywords = [];
       for (let slugProjectName in this.store.projects) {
-        let projectKeywords = this.store.projects[slugProjectName].keywords;
+        const project = this.store.projects[slugProjectName];
+        let projectKeywords = project.keywords;
         if (!!projectKeywords) {
           projectKeywords.map(val => {
             allKeywords.push(val.title);
           });
+
+          if (
+            project.hasOwnProperty('medias') &&
+            Object.keys(project.medias).length > 0
+          ) {
+            Object.values(project.medias).map(m => {
+              if (m.hasOwnProperty('keywords') && m.keywords.length > 0) {
+                allKeywords = allKeywords.concat(m.keywords.map(k => k.title));
+              }
+            });
+          }
         }
       }
       allKeywords = allKeywords.filter(function(item, pos) {
@@ -816,12 +845,44 @@ let vm = new Vue({
       }
       this.$socketio.editMedia(mdata);
     },
+    canAccessFolder: function({ type, slugFolderName }) {
+      if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
 
+      // if folder doesn’t have a password set
+      if (this.store[type][slugFolderName].password !== 'has_pass') {
+        return true;
+      }
+
+      const has_reference_to_folder = this.state.list_authorized_folders.filter(
+        i => {
+          if (
+            !!i &&
+            i.hasOwnProperty('type') &&
+            i.type === type &&
+            i.hasOwnProperty('allowed_slugFolderNames') &&
+            i.allowed_slugFolderNames.indexOf(slugFolderName) >= 0
+          )
+            return true;
+          return false;
+        }
+      );
+
+      if (has_reference_to_folder.length > 0) {
+        return true;
+      }
+      return false;
+    },
     openProject: function(slugProjectName) {
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: openProject: ${slugProjectName}`);
       }
-      if (!this.store.projects.hasOwnProperty(slugProjectName)) {
+      if (
+        !this.store.projects.hasOwnProperty(slugProjectName) ||
+        !this.canAccessFolder({
+          type: 'projects',
+          slugFolderName: slugProjectName
+        })
+      ) {
         console.log('Missing folder key on the page, aborting.');
         this.closeProject();
         return false;

@@ -26,7 +26,7 @@ module.exports = (function() {
       'file:': 'Fichier&nbsp;:',
       add_to_project: 'Ajouter au projet&nbsp;:',
       input_password: 'Renseigner le mot de passe ci-dessous :',
-      validate_with_enter: 'valider avec la touche ENTRÉE',
+      validate_with_enter: 'Valider avec la touche ENTRÉE.',
 
       bytes: 'octets',
       kb: 'ko',
@@ -75,6 +75,9 @@ module.exports = (function() {
       insert_a_page_here: 'Insérer une page ici',
       remove_this_page: '▲ Supprimer cette page ▲',
 
+      anonymous: 'anonyme',
+      other_users: 'autres utilisateurs',
+
       made_with_dodoc:
         'Page web réalisée avec l’application libre et gratuite do•doc',
 
@@ -93,7 +96,9 @@ module.exports = (function() {
       password: 'Mot de passe',
       protected_by_pass: 'protégé par mot de passe',
       password_instructions:
-        'Si existant, seul les utilisateurs possédant ce mot de passe pourront modifier ce dossier et accéder aux médias non publics.',
+        'Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce projet.',
+      author_instructions:
+        'Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).',
 
       sort_by: 'Organiser par',
       in_the_order: 'Dans l’ordre',
@@ -271,7 +276,7 @@ module.exports = (function() {
       'file:': 'File&nbsp;:',
       add_to_project: 'Add to project:',
       input_password: 'Input the password here:',
-      validate_with_enter: 'validate with the ENTER key',
+      validate_with_enter: 'Validate with ENTER.',
 
       bytes: 'bytes',
       kb: 'KB',
@@ -317,6 +322,9 @@ module.exports = (function() {
       insert_a_page_here: 'Insert a page here',
       remove_this_page: '▲ Remove this page ▲',
 
+      anonymous: 'anonymous',
+      other_users: 'other users',
+
       made_with_dodoc: 'Webpage made with do•doc, a free and open-source app',
 
       loading: 'loading',
@@ -330,7 +338,9 @@ module.exports = (function() {
       password: 'Mot de passe',
       protected_by_pass: 'protected by password',
       password_instructions:
-        'If set, only users with the password will be able to edit this folder and access the content that’s not public.',
+        'If set, only users with the password will be able to open this project.',
+      author_instructions:
+        'To create authors, close this window and click on (AUTHORS).',
 
       sort_by: 'Sort by',
       in_the_order: 'In the order',

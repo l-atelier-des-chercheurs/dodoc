@@ -7,17 +7,12 @@ var path = require('path');
 var bodyParser = require('body-parser');
 const compression = require('compression');
 
-var dev = require('./core/dev-log');
+var dev = require('./dev-log');
 
-// var localtunnel = require('localtunnel');
-// var ngrok = require('ngrok');
+const sockets = require('./sockets'),
+  setup_realtime_collaboration = require('./server-realtime_text_collaboration.js');
 
-const sockets = require('./core/sockets'),
-  setup_realtime_collaboration = require('./server-realtime_text_collaboration.js'),
-  router = require('./router'),
-  settings = require('./settings.json');
-
-module.exports = function() {
+module.exports = function(router) {
   dev.logverbose('Starting server 1');
 
   const app = express();
@@ -25,12 +20,12 @@ module.exports = function() {
   app.use(compression());
 
   // only for HTTPS, works without asking for a certificate
-  const privateKeyPath = !!settings.privateKeyPath
-    ? settings.privateKeyPath
+  const privateKeyPath = !!global.settings.privateKeyPath
+    ? global.settings.privateKeyPath
     : path.join(__dirname, 'ssl', 'file.pem');
 
-  const certificatePath = !!settings.certificatePath
-    ? settings.certificatePath
+  const certificatePath = !!global.settings.certificatePath
+    ? global.settings.certificatePath
     : path.join(__dirname, 'ssl', 'file.crt');
 
   const options = {
@@ -38,8 +33,11 @@ module.exports = function() {
     cert: fs.readFileSync(certificatePath)
   };
 
-  if (settings.protocol === 'https') {
-    // redirect from http (port 80) to https (port 443)
+  if (
+    global.settings.protocol === 'https' &&
+    global.settings.redirect_port !== ''
+  ) {
+    // redirect from http (port 80) to https (port 443) for example
     http
       .createServer((req, res) => {
         res.writeHead(301, {
@@ -47,11 +45,11 @@ module.exports = function() {
         });
         res.end();
       })
-      .listen(settings.http_port);
+      .listen(global.settings.redirect_port);
   }
 
   let server =
-    settings.protocol === 'https'
+    global.settings.protocol === 'https'
       ? https.createServer(options, app)
       : http.createServer(app);
 
@@ -63,7 +61,7 @@ module.exports = function() {
   dev.logverbose('Starting express-settings');
 
   app.set('port', global.appInfos.port); //Server's port number
-  app.set('views', __dirname); //Specify the views folder
+  app.set('views', global.appRoot); //Specify the views folder
   app.set('view engine', 'pug'); //View engine is Pug
 
   app.use(function(req, res, next) {
@@ -74,26 +72,29 @@ module.exports = function() {
     }
   });
   app.use(express.static(global.pathToUserContent));
-  app.use(express.static(path.join(__dirname, 'public')));
-  app.use(express.static(path.join(__dirname, settings.cacheDirname)));
+  app.use(express.static(path.join(global.appRoot, 'public')));
+  app.use(
+    express.static(path.join(global.appRoot, global.settings.cacheDirname))
+  );
 
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   app.locals.pretty = true;
 
   // setup_realtime_collaboration(server);
-
   router(app);
 
   server.listen(app.get('port'), () => {
     dev.log(
       `Server up and running. ` +
-        `Go to ${settings.protocol}://${settings.host}:${global.appInfos.port}`
+        `Go to ${global.settings.protocol}://${global.settings.host}:${
+          global.appInfos.port
+        }`
     );
     dev.log(` `);
   });
 };
 
 function isURLToForbiddenFiles(url) {
-  return url.includes(settings.metaFileext);
+  return url.includes(global.settings.metaFileext);
 }
