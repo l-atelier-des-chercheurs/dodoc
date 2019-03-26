@@ -1,5 +1,11 @@
 
 .mediaContainer {
+
+  > * {
+    width: 100%;
+    height: 100%;
+  }
+
   &.type-text {
     padding: @t-skipline/8;
 
@@ -47,10 +53,11 @@
     width: 100%;
   }
 
-  video {
+  video, .plyr--video, .plyr__video-wrapper, .plyr__poster {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    background-size: cover;
   }
 
   blockquote {

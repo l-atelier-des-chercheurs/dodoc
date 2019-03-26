@@ -17,23 +17,16 @@
         <img :src="linkToVideoThumb">
       </template>
       <template v-else>
-        <video controls ref="video" preload="none" :src="mediaURL" :poster="linkToVideoThumb" />
-        <svg 
-          ref="playIcon" 
-          v-if="!video_is_playing"
-          class="mediaContainer--videoPlay" 
-          viewBox="0 0 200 200" 
-          alt="Play video"
-          @click="togglePlayVideo()"
-        >
-          <circle cx="100" cy="100" r="90" fill="#fff" stroke-width="15" stroke="#fff"></circle>
-          <polygon points="70, 55 70, 145 145, 100" fill="#353535"></polygon>
-        </svg>
+        <vue-plyr>
+          <video :poster="linkToVideoThumb" :src="mediaURL" preload="none" />
+        </vue-plyr>
       </template>
     </template>
 
     <template v-else-if="media.type === 'audio'">
-      <audio controls preload="none" :src="mediaURL" />
+      <vue-plyr>
+        <audio :src="mediaURL" preload="none" />
+      </vue-plyr>
     </template>
 
     <template v-else-if="media.type === 'text'">
@@ -118,7 +111,6 @@ export default {
         preview_hovered: 600,
         default: 1600
       },
-      video_is_playing: false,
       htmlForEditor: this.value
     };
   },
@@ -207,13 +199,6 @@ export default {
     }
   },
   methods: {
-    togglePlayVideo() {
-      if(this.video_is_playing === false) {
-        this.video_is_playing = true;
-        this.$refs.video.play();
-        // this.$refs.video.setAttribute('controls', 'controls')      
-      }
-    }
   }
 };
 </script>

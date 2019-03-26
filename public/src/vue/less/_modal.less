@@ -8,7 +8,7 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 
-  background-color: fade(#fff, 92%);
+  background-color: fade(#fff, 96%);
   // cursor: pointer;
   .custom_scrollbar(8px, 5px, 6px);
   
@@ -295,8 +295,8 @@
     .padding-small;
     font-weight: 700;
     .font-large;
-    .bg-noir;
-    color: white;
+    // .bg-noir;
+    // color: white;
   
     border-radius: 50% 0 0 50%;
     line-height: 1;
@@ -351,8 +351,9 @@
     height: 100%;
     overflow: hidden;
     position: relative;
-    .bg-blanc;
-    .bg-gris_clair;
+    // .bg-blanc;
+    // .bg-gris_clair;
+    .bg-noir;
 
     &[data-context="edit"] {
       > * {
@@ -370,6 +371,30 @@
       object-fit: contain;
       object-position: center;
     }
+
+    .plyr--video, .plyr__video-wrapper, .plyr__poster {
+      background-color: transparent;
+    }
+    .plyr--video .plyr__controls {
+      // background: linear-gradient(fade(@c-gris, 0%),fade(@c-gris, 100%));
+    }
+
+    .plyr--audio {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      
+      .plyr__controls {
+        // background-color: @c-noir;
+        // background: transparent;
+        // color: @c-noir;
+        width: 80%;
+        margin: 0 auto;
+
+      }
+    }
+    
+    
 
     &.type-text {
       .font-large;

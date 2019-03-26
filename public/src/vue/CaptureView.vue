@@ -152,17 +152,19 @@
 
           </div>
 
-          <transition name="fade" :duration="600">
+          <transition name="fade_fast" :duration="150">
             <div class="m_panel--previewCard--validate" v-if="media_to_validate">
               <img 
                 v-if="media_to_validate.type === 'image'" 
                 :src="media_to_validate.objectURL"
               />
-              <video 
+
+              <vue-plyr
                 v-else-if="media_to_validate.type === 'video'" 
-                :src="media_to_validate.objectURL"
-                controls
-              />
+              >
+                <video :poster="linkToVideoThumb" :src="media_to_validate.objectURL" preload="none" />
+              </vue-plyr>
+              
               <div 
                 v-else-if="media_to_validate.type === 'audio'" 
                 class="m_panel--previewCard--validate--audio"
@@ -170,10 +172,10 @@
                 <img 
                   :src="media_to_validate.preview"
                 >
-                <audio
-                  :src="media_to_validate.objectURL"
-                  controls
-                />
+
+                <vue-plyr>
+                  <audio :src="media_to_validate.objectURL" preload="none" />
+                </vue-plyr>
               </div>
               <div 
                 v-else-if="media_to_validate.type === 'svg'" 

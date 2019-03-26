@@ -31,6 +31,9 @@ Vue.use(PortalVue);
 import VueI18n from 'vue-i18n';
 Vue.use(VueI18n);
 
+import VuePlyr from 'vue-plyr';
+Vue.use(VuePlyr);
+
 let lang_settings = {
   available: {
     fr: 'Français',
