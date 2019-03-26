@@ -21,15 +21,6 @@ module.exports = function({ router }) {
   const is_electron = process.versions.hasOwnProperty('electron');
 
   if (is_electron) {
-    require('electron-context-menu')({
-      prepend: (params, BrowserWindow) => [
-        {
-          // Only show it when right-clicking images
-          visible: params.mediaType === 'image'
-        }
-      ]
-    });
-
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
