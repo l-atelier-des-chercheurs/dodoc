@@ -9,6 +9,8 @@
 @import (inline) "less/shoelace/loaders.css";
 @import (inline) "less/shoelace/switches.css";
 
+@import (inline) "node_modules/vue-plyr/dist/vue-plyr.css";
+
 @import "less/_variables";
 @import "less/_globals";
 @import "less/_media";
@@ -846,6 +848,20 @@ small {
         .margin-medium;
         margin-bottom: 0;
       }
+
+      .m_project--library--medias {
+        .padding-top-medium;
+        .padding-sides-small;
+
+        .m_media {
+          .padding-sides-small;
+
+          > * {
+            .margin-bottom-medium;
+          }
+          // padding: 0;
+        }
+      }      
     }
   }
 
@@ -981,7 +997,7 @@ small {
   }
   
   .m_project--library {
-    flex: 1 1 280px;
+    flex: 1 1 420px;
     .bg-gris_clair;
   }
 
@@ -1012,9 +1028,9 @@ small {
     align-content: flex-start;
     align-items: flex-start;
 
-    .padding-sides-small;
+    .padding-top-small;
+    .padding-sides-verysmall;
     .padding-bottom-small;
-    .padding-top-medium;
 
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -1210,8 +1226,9 @@ small {
   min-width: 160px;
   max-width: 220px;
   z-index: 1;
-  padding: 0 @t-skipline/2;
+  .padding-sides-verysmall;
 
+  
   transition: opacity .4s;
 
   &.is--ownMedia {
@@ -1249,7 +1266,7 @@ small {
   > * {
     // height: 0;
     // padding-bottom: 100%; 
-    .margin-bottom-medium;
+    .margin-bottom-small;
   }
 
   figure {
