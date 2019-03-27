@@ -105,7 +105,7 @@ body {
     }  
   }
   .plyr__controls {
-    background: linear-gradient(fade(@c-gris, 0%),fade(@c-gris, 100%));
+    background: linear-gradient(fade(@c-noir, 0%),fade(@c-noir, 100%));
     color: white;
   }
 
@@ -3109,10 +3109,42 @@ small {
 }
 
 
+.alertify {
+  z-index: 20000;
+  background-color: fade(#fff, 96%);
 
+  .dialog > * {
+    border-radius: 2px;
+    .boxs-card-0;
+    border: 1px solid @c-gris_clair;
+
+    nav button.ok {
+      background-color: transparent;
+      border: none;
+      font-size: inherit;
+      font-family: inherit;
+      background-color: #fff;
+      display: inline-block;
+      text-decoration: none;
+      text-align: center;
+      text-transform: uppercase;
+      font-weight: 500 !important;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+      margin: 0;
+      cursor: pointer;
+      min-height: 3.24rem;
+      padding: 0 0.81rem  !important;
+      border-radius: 6px !important;
+      transition: color 0.25s ease-out, opacity 0.5s;
+      color: #fff !important; 
+      background-color: @c-bleuvert !important;  
+    }
+  }
+}
 
 .alertify-logs {
-  z-index: 20000;
+  z-index: 20001;
   right: 48px;
   pointer-events: none;
   .font-small;

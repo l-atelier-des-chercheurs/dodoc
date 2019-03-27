@@ -204,7 +204,7 @@
         v-model="mediadata.content"
       >
       </MediaContent>
-      <div class="m_mediaOptions">
+      <div class="m_mediaOptions" v-if="media.type === 'image'">
         <label>Options</label>
         <div>
           <button type="button" class="buttonLink" @click="editRawMedia('rotate_image', {angle: 90})">

@@ -37,10 +37,12 @@ module.exports = (function() {
       date: 'Date',
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',
+      yes: 'Oui',
       cancel: 'Annuler',
       back: 'Retour',
       sureToRemoveAuthor: 'Êtes-vous sûr de vouloir supprimer cet auteur ?',
-      sureToCloseModal: 'Êtes-vous sûr de vouloir fermer cette fenêtre ?',
+      changes_not_saved_sureToCloseModal:
+        'Des modifications n’ont pas été enregistrées. Voulez-vous vraiment fermer cette fenêtre ?',
       sureToRemovePubli:
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
       sure_to_cancel_stopmotion:
@@ -289,10 +291,12 @@ module.exports = (function() {
 
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',
+      yes: 'Yes',
       cancel: 'Cancel',
       back: 'Back',
       sureToRemoveAuthor: 'Do you really want to delete this author?',
-      sureToCloseModal: 'Do you really want to close this window?',
+      changes_not_saved_sureToCloseModal:
+        'All changes were not saved. Do you really want to close this window?',
       sureToRemovePubli: 'Do you really want to delete this publication?',
       sure_to_cancel_stopmotion:
         'Do you really want to cancel this stopmotion?',
