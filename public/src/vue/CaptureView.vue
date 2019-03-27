@@ -39,7 +39,9 @@
           </div>
         </transition>
         
-        <div class="m_panel--previewCard">
+        <div class="m_panel--previewCard"
+          v-show="!is_validating_stopmotion_video"
+        >
 
           <div class="m_panel--previewCard--live">
             <!-- OPTIONS -->
@@ -237,8 +239,20 @@
               v-show="capture_button_pressed"
             />
           </transition>
-
         </div>
+
+        <StopmotionPanel 
+          v-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"        
+          :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
+          :slugProjectName="slugProjectName"
+          :read_only="read_only"
+          :videoStream="videoStream"
+          @close="current_stopmotion = false"
+          @new_single_image="updateSingleImage"
+          @validating_video="(state) => { is_validating_stopmotion_video = state }"
+        >
+        </StopmotionPanel>        
+
         <div class="m_panel--buttons">
           <div class="m_panel--buttons--row" :class="{ 'bg-orange' : is_recording }">
             <button
@@ -289,7 +303,7 @@
                 <label>
                   {{ $t('onion_skin') }}
                 </label>
-                <input class="margin-none" type="range" v-model="stopmotion.onion_skin_opacity" min="0" max="1" step="0.01">
+                <input class="margin-none" type="range" v-model="stopmotion.onion_skin_opacity" min="0.2" max="1" step="0.01">
               </div>
 
               <button
@@ -315,6 +329,7 @@
               </span>
             </div>
           </div>
+
           <transition name="slideup" :duration="400">
             <MediaValidationButtons
               v-if="media_to_validate"
@@ -329,19 +344,6 @@
         </div>
       </div>
 
-      <div class="m_panel"
-        v-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"        
-      >
-        <StopmotionPanel 
-          :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
-          :slugProjectName="slugProjectName"
-          :read_only="read_only"
-          @close="current_stopmotion = false"
-          @new_single_image="updateSingleImage"
-          @validating_video="(state) => { is_validating_stopmotion_video = state }"
-        >
-        </StopmotionPanel>        
-      </div>
     </div>
     <DistantFlux 
       v-if="$root.settings.capture_options.distant_flux.active"
@@ -464,7 +466,7 @@ export default {
       },
       stopmotion: {
         onion_skin_img: false,
-        onion_skin_opacity: 0
+        onion_skin_opacity: 0.8
       }
     }
   },
@@ -543,6 +545,7 @@ export default {
     'selected_mode': function() {
       console.log('WATCH • Capture: selected_mode');
       this.mode_just_changed = true;
+      this.show_stopmotion_list = false;
 
       this.$root.settings.capture_options.selected_mode = this.selected_mode;
       window.setTimeout(()=> {
@@ -706,6 +709,7 @@ export default {
     },
     changeStreamTo(new_stream) {
       console.log('METHODS • CaptureView: changeStreamTo');
+      this.videoStream = new_stream;
       this.$refs.videoElement.srcObject = new_stream;
     },
     stopAudioFeed() {

@@ -1,9 +1,11 @@
 <template>
-  <div class="m_stopmotionpanel">
+  <div class="m_stopmotionpanel"
+    :class="{ 'is--showing_video_validation' : validating_video_preview }"
+  >
     <div class="m_stopmotionpanel--medias"
-      v-if="!validating_video_preview"    
+      v-if="!validating_video_preview"  
     >
-      <div class="m_stopmotionpanel--medias--single">
+      <!-- <div class="m_stopmotionpanel--medias--single">
         <MediaContent
           v-if="current_single_media"
           :context="'preview'"
@@ -22,8 +24,8 @@
             {{ $t('remove') }}
           </span>
         </button>
+      </div> -->
 
-      </div>
       <div class="m_stopmotionpanel--medias--list"
         ref="mediaPreviews"
       >
@@ -31,8 +33,9 @@
           v-for="media in medias"
           :key="media.metaFilename"
           @click="current_single_media = media"
+          class=""
           :class="{ 'is--current_single' : current_single_media.metaFileName === media.metaFileName }"
-        >
+        > 
           <MediaContent
             :context="'preview'"
             :slugFolderName="stopmotiondata.slugFolderName"
@@ -41,6 +44,26 @@
             :preview_size="150"
           />
         </div>
+        <div 
+          :class="{ 'is--current_single' : current_single_media === false }"
+          @click="current_single_media = false"
+        >
+          <video :srcObject.prop="videoStream" autoplay />
+        </div>
+      </div>
+      <div class="m_stopmotionpanel--medias--validation">
+        <button 
+          type="button" 
+          class="button button-bg_rounded bg-bleuvert"   
+          v-if="medias.length > 0"
+          @click="assembleStopmotionMedias"
+          :disabled="validating_video_preview && frameRate === previousFrameRate"
+        >
+          <!-- <span class="text-cap font-verysmall">
+            {{ $t('generate') }}
+          </span> -->
+          <img src="/images/i_play.svg" width="48" height="48" />
+        </button>
       </div>
     </div>
 
@@ -56,7 +79,7 @@
       />
     </div>
 
-    <div class="m_stopmotionpanel--buttons">
+    <!-- <div class="m_stopmotionpanel--buttons">
       <div>
         <button
           type="button"
@@ -69,7 +92,7 @@
           </span>
         </button>
 
-        <!-- <button
+        <button
           type="button"
           v-if="validating_video_preview"
           @click="backToStopmotion"
@@ -78,7 +101,7 @@
           <span class="text-cap font-verysmall">
             ‹ {{ $t('back') }}
           </span>
-        </button> -->
+        </button>
 
         <div class="">
           <label class="">{{ $t('img_per_second') }}</label>
@@ -97,7 +120,7 @@
           </span>
         </button>
       </div>
-    </div>
+    </div> -->
     <MediaValidationButtons
       v-if="validating_video_preview"
       :read_only="read_only"
@@ -122,7 +145,8 @@ import MediaValidationButtons from './MediaValidationButtons.vue';
 export default {
   props: {
     stopmotiondata: Object,
-    slugProjectName: String
+    slugProjectName: String,
+    videoStream: MediaStream
   },
   components: {
     MediaContent,
@@ -142,7 +166,7 @@ export default {
   },
   mounted() {
     if(Object.values(this.stopmotiondata.medias).length > 0) {
-      this.current_single_media = Object.values(this.stopmotiondata.medias).slice(-1)[0];
+      // this.current_single_media = Object.values(this.stopmotiondata.medias).slice(-1)[0];
     }
   },
   beforeDestroy() {
@@ -151,7 +175,7 @@ export default {
   watch: {
     'medias': function() {
       if(this.medias.length > 0) {
-        this.current_single_media = Object.values(this.stopmotiondata.medias).slice(-1)[0];
+        // this.current_single_media = Object.values(this.stopmotiondata.medias).slice(-1)[0];
         // scroll to end of timebar
         this.$nextTick(() => {
           this.$refs.mediaPreviews.scrollLeft = 1000000;
