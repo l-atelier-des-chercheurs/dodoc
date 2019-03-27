@@ -151,6 +151,53 @@
             <div id="vectoContainer" v-if="selected_mode === 'vecto'" v-html="vecto.svgstr">
             </div>
 
+
+            <transition name="slideright" :duration="400">
+              <div class="m_panel--previewCard--live--stopmotionlist"
+                v-if="show_stopmotion_list && !is_making_stopmotion"
+              >
+                <div class="margin-bottom-small">
+                  <template v-if="Object.keys(stopmotions).length > 0">
+                    <ul>
+                      <li v-for="stopmotion in stopmotions"
+                        :key="stopmotion.slugFolderName"
+                      >
+                        <button type="button"
+                          @mouseenter="loadStopmotionMedias(stopmotion.slugFolderName)"
+                          @click="loadStopmotion(stopmotion.slugFolderName)"
+                        >
+                          <div class="padding-verysmall">{{ stopmotion.date_created }}</div>
+                          <template v-if="Object.values(stopmotion.medias).length > 0">
+                            <div class="padding-bottom-verysmall">{{ Object.values(stopmotion.medias).length }} photos</div>
+                            <div 
+                              class="pictures_list"
+                            >
+                              <div 
+                                v-for="(media, index) in Object.values(stopmotion.medias)" 
+                                :key="media.slugMediaName"
+                              >
+                                  <!-- v-if="index <= 5" -->
+                                <MediaContent
+                                  :context="'preview'"
+                                  :slugFolderName="stopmotion.slugFolderName"
+                                  :media="media"
+                                  :subfolder="'_stopmotions/'"
+                                  :preview_size="150"
+                                />
+                              </div>
+                            </div>
+                          </template>
+                        </button>
+                      </li>
+                    </ul>
+                  </template>
+                  <template v-else>
+                    {{ $t('no_stopmotion_created_yet') }}
+                  </template>
+                </div>
+              </div>
+            </transition>
+
           </div>
 
           <transition name="fade_fast" :duration="150">
@@ -244,6 +291,17 @@
                 </label>
                 <input class="margin-none" type="range" v-model="stopmotion.onion_skin_opacity" min="0" max="1" step="0.01">
               </div>
+
+              <button
+                type="button"
+                v-if="selected_mode === 'stopmotion' && !is_making_stopmotion"
+                @click="show_stopmotion_list = !show_stopmotion_list"
+                class="button c-bleumarine font-small bg-transparent"
+              >
+                <span class="">
+                  {{ $t('stopmotion_list') }}
+                </span>
+              </button>
 
               <span class="switch switch-xs" v-if="selected_mode === 'video'">
                 <input 
@@ -349,6 +407,7 @@ export default {
       recordVideoWithAudio: true,
 
       show_capture_settings: false,
+      show_stopmotion_list: false,
 
       capture_button_pressed: false,
       videoStream: null,
@@ -514,6 +573,11 @@ export default {
     'current_stopmotion': function() {
       this.$root.settings.capture_mode_cant_be_changed = this.current_stopmotion ? this.current_stopmotion : false;
     },
+    'show_stopmotion_list': function() {
+      if(this.show_stopmotion_list) {
+        this.$socketio.listFolders({ type: 'stopmotions' }); 
+      }
+    }
   },
   computed: {
     is_making_stopmotion() {
@@ -522,6 +586,11 @@ export default {
         this.show_capture_settings = false;
       }
       return is_making_stopmotion;
+    },
+    stopmotions() {
+      let stopmotions = Object.values(this.$root.store.stopmotions);
+      stopmotions = this.$_.sortBy(stopmotions, function(o) { return o.date_created; }).reverse();
+      return stopmotions;
     },
     sorted_available_devices() {
       return this.$_.groupBy(this.available_devices, 'kind');
@@ -905,7 +974,8 @@ export default {
       if(this.selected_mode === 'stopmotion') { 
         const smdata = {
           name: this.slugProjectName + '-' + this.$moment().format('YYYYMMDD_HHmmss'),
-          authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : '' 
+          linked_project: this.slugProjectName,
+          authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : ''
         };
 
         this.getStaticImageFromVideoElement().then(imageData => {
@@ -920,7 +990,7 @@ export default {
             });
             this.$root.createFolder({ 
               type: 'stopmotions', 
-              data: smdata 
+              data: smdata
             });      
           } else {
             // append to stopmotion
@@ -1097,6 +1167,17 @@ export default {
     },
     updateSingleImage($event) {
       this.stopmotion.onion_skin_img = $event;
+    },
+    loadStopmotionMedias(slugFolderName) {
+      if(Object.values(this.$root.store.stopmotions[slugFolderName].medias).length === 0) {
+        this.$socketio.listMedias({
+          type: 'stopmotions',
+          slugFolderName
+        });
+      }
+    },
+    loadStopmotion(slugFolderName) {
+      this.current_stopmotion = slugFolderName;
     }
   }
 }

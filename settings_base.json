@@ -273,6 +273,9 @@
         },
         "authors": {
           "type": "array"
+        },
+        "linked_project": {
+          "type": "string"
         }
       },
       "medias": {

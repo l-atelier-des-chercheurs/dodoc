@@ -65,7 +65,7 @@
           class="button button-bg_rounded button-outline"
         >
           <span class="text-cap font-verysmall">
-            {{ $t('cancel') }}
+            {{ $t('back') }}
           </span>
         </button>
 
@@ -141,6 +141,9 @@ export default {
   created() {
   },
   mounted() {
+    if(Object.values(this.stopmotiondata.medias).length > 0) {
+      this.current_single_media = Object.values(this.stopmotiondata.medias).slice(-1)[0];
+    }
   },
   beforeDestroy() {
   },
@@ -212,19 +215,18 @@ export default {
       this.validating_video_preview = false;    
     },
     cancelStopmotion: function() {
-
-      this.$alertify
-        .okBtn(this.$t('yes'))
-        .cancelBtn(this.$t('cancel'))        
-        .confirm(this.$t('sure_to_cancel_stopmotion'), 
-        () => {
+      // this.$alertify
+      //   .okBtn(this.$t('yes'))
+      //   .cancelBtn(this.$t('cancel'))        
+      //   .confirm(this.$t('sure_to_cancel_stopmotion'), 
+      //   () => {
           this.current_single_media = false;
           this.$nextTick(() => {
             this.$emit('close');      
           });
-        },
-        () => {
-        });                    
+      // },
+      // () => {
+      // });                    
     },
     save: function() {
       this.current_single_media = false;

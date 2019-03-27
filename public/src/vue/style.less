@@ -1893,7 +1893,6 @@ small {
       // border: 5px solid @c-gris_clair;
       display: flex;
       flex-flow: row nowrap;
-      justify-content: flex-start;
       // .bg-noir;
       
       > * {
@@ -1904,6 +1903,7 @@ small {
 
       video {
         object-fit: contain;
+        min-width: 120px;
       }
 
       .m_panel--previewCard--live--options {
@@ -1915,7 +1915,7 @@ small {
         color: @c-noir;
         // color: white;
         .padding-small;
-        .margin-vert-small;
+        // .margin-vert-small;
         overflow-y: auto;
         height: 100%;
 
@@ -1923,6 +1923,79 @@ small {
         border-right: 2px solid @c-rouge;
 
         .custom_scrollbar(8px, 5px, 6px);
+      }
+
+      .m_panel--previewCard--live--stopmotionlist {
+        position: relative;
+        flex: 0 0 250px;
+        max-width: 250px;
+        // background-color: @c-bleumarine;
+        // .bg-noir;
+        // color: @c-noir;
+        // color: white;
+        .c-bleumarine;
+        .bg-bleumarine;
+        // color: white;
+        .padding-small;
+        // .margin-vert-small;
+        overflow-y: auto;
+        height: 100%;
+
+        // border-bottom: 2px solid @c-gris;
+        border-left: 2px solid @c-bleumarine;
+
+        .font-verysmall;
+
+        .custom_scrollbar(8px, 5px, 6px, @c-bleumarine, #fff);
+
+        ul {
+          margin: 0;
+          padding: 0;
+          list-style: none;
+        }
+
+        button {
+          position: relative;
+          // border: 2px solid @c-bleumarine;
+          background-color: white;
+          display: block;
+          width: 100%;
+          padding: 0;
+          .margin-vert-small;
+
+          &:hover {
+            background-color: @c-bleumarine_clair;
+          }
+
+          .pictures_list {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: flex-start;
+            overflow-x: auto;
+            // .padding-right-verysmall;
+
+            > * {
+              flex: 0 0 50px;
+              .padding-left-verysmall;
+              .padding-bottom-verysmall;
+
+              &:last-child {
+                .padding-right-verysmall;
+              }
+
+
+              img {
+                max-width:100%;
+                width: auto;
+                height: auto; 
+              }
+            }
+          }
+
+          &:first-child {
+            margin-top: 0;
+          }
+        }
       }
 
       .m_panel--previewCard--live--onionskin {
@@ -3325,6 +3398,16 @@ small {
 .slideleft-enter, .slideleft-leave-to {
   // opacity: 0;
   transform: translateX(-100%);
+  transition: opacity .4s linear, transform .4s ease-out;
+}
+
+.slideright-enter-active, .slideright-leave-active {
+  transform: translateX(0);
+  transition: opacity .4s linear, transform .4s ease-out;
+}
+.slideright-enter, .slideright-leave-to {
+  // opacity: 0;
+  transform: translateX(100%);
   transition: opacity .4s linear, transform .4s ease-out;
 }
 

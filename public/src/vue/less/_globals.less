@@ -573,6 +573,9 @@ strong,b {
 .padding-left-verysmall {
   padding-left:   @t-skipline/4;
 }
+.padding-right-verysmall {
+  padding-right:   @t-skipline/4;
+}
 .padding-right-small {
   padding-left:   @t-skipline/2;
 }
@@ -610,7 +613,7 @@ h1,h2,h3,h4 {
 }
 
 
-.custom_scrollbar(@scrollbar-height, @scrollbar-padding, @scrollbar-border, @c-barbgcolor: transparent) {
+.custom_scrollbar(@scrollbar-height, @scrollbar-padding, @scrollbar-border, @c-barbgcolor: transparent, @c-thumbcolor: @c-noir) {
   
   &::-webkit-scrollbar {
     height: ((@scrollbar-padding * 2) + @scrollbar-height);
@@ -632,7 +635,7 @@ h1,h2,h3,h4 {
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: @c-noir;
+    background-color: @c-thumbcolor;
     &:hover {
       background-color: @c-gris;
       border: @scrollbar-border solid rgba(255,255,255,0);

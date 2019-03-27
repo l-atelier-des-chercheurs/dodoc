@@ -27,6 +27,8 @@ module.exports = (function() {
       add_to_project: 'Ajouter au projet&nbsp;:',
       input_password: 'Renseigner le mot de passe ci-dessous :',
       validate_with_enter: 'Valider avec la touche ENTRÉE.',
+      no_stopmotion_created_yet:
+        'Les animations créées apparaîtront dans ce panneau.',
 
       bytes: 'octets',
       kb: 'ko',
@@ -93,6 +95,8 @@ module.exports = (function() {
       height: 'Hauteur',
       zoom: 'Zoom',
       settings: 'Règlages',
+      stopmotion_list: 'Liste des animations',
+
       print: 'Imprimer',
       create: 'Créer',
       remove: 'Supprimer',
@@ -282,6 +286,8 @@ module.exports = (function() {
       add_to_project: 'Add to project:',
       input_password: 'Input the password here:',
       validate_with_enter: 'Validate with ENTER.',
+      no_stopmotion_created_yet:
+        'Created stopmotion animations will appear in this list.',
 
       bytes: 'bytes',
       kb: 'KB',
@@ -360,6 +366,7 @@ module.exports = (function() {
       height: 'Height',
       zoom: 'Zoom',
       settings: 'Settings',
+      stopmotion_list: 'Stopmotion list',
 
       'lang:': 'Select lang:',
       lang: 'Select lang',
