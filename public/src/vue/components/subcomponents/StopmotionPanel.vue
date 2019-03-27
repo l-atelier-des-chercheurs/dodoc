@@ -1,7 +1,7 @@
 <template>
   <div class="m_stopmotionpanel">
     <div class="m_stopmotionpanel--medias"
-      v-if="!videopreview"    
+      v-if="!validating_video_preview"    
     >
       <div class="m_stopmotionpanel--medias--single">
         <MediaContent
@@ -52,7 +52,7 @@
       <MediaContent
         :context="'full'"
         :slugFolderName="slugProjectName"
-        :media="videopreview"
+        :media="validating_video_preview"
       />
     </div>
 
@@ -60,7 +60,7 @@
       <div>
         <button
           type="button"
-          v-if="!videopreview"
+          v-if="!validating_video_preview"
           @click="cancelStopmotion"
           class="button button-bg_rounded button-outline"
         >
@@ -71,7 +71,7 @@
 
         <!-- <button
           type="button"
-          v-if="videopreview"
+          v-if="validating_video_preview"
           @click="backToStopmotion"
           class="button button-bg_rounded button-outline"
         >
@@ -90,7 +90,7 @@
           class="button button-bg_rounded bg-bleuvert"   
           v-if="medias.length > 0"
           @click="assembleStopmotionMedias"
-          :disabled="videopreview && frameRate === previousFrameRate"
+          :disabled="validating_video_preview && frameRate === previousFrameRate"
         >
           <span class="text-cap font-verysmall">
             {{ $t('generate') }}
@@ -99,7 +99,7 @@
       </div>
     </div>
     <MediaValidationButtons
-      v-if="videopreview"
+      v-if="validating_video_preview"
       :read_only="read_only"
       :media_is_being_sent="media_is_being_sent"
       :cancelButtonIsBackButton="true"
@@ -132,7 +132,7 @@ export default {
     return {
       frameRate: 4,
       previousFrameRate: 4,
-      videopreview: false,
+      validating_video_preview: false,
       current_single_media: false,
       media_is_being_sent: false
     }
@@ -157,6 +157,9 @@ export default {
     },
     'current_single_media': function() {
       this.$emit('new_single_image', this.current_single_media); 
+    },
+    'validating_video_preview': function() {
+      this.$emit('validating_video', this.validating_video_preview);
     }
   },
   computed: {
@@ -186,27 +189,27 @@ export default {
         }
       });
       this.previousFrameRate = this.frameRate;
-      this.videopreview = false;
+      this.validating_video_preview = false;
       this.media_is_being_sent = true;
     },
     newStopmotionVideo: function(mdata) {
       console.log('METHODS • StopmotionPanel: newStopmotionVideo');
       this.$eventHub.$off('socketio.media_created_or_updated', this.newStopmotionVideo);
-      this.videopreview = mdata;
+      this.validating_video_preview = mdata;
       this.media_is_being_sent = false;
+
       this.$nextTick(() => {
         this.$refs.videoPreview.getElementsByTagName('video')[0].play();
       });
-
     },
     backToStopmotion: function() {
       console.log('METHODS • StopmotionPanel: backToStopmotion');
       this.$root.removeMedia({
         type: 'projects',
         slugFolderName: this.slugProjectName,
-        slugMediaName: this.videopreview.metaFileName
+        slugMediaName: this.validating_video_preview.metaFileName
       });
-      this.videopreview = false;    
+      this.validating_video_preview = false;    
     },
     cancelStopmotion: function() {
 
@@ -225,6 +228,7 @@ export default {
     },
     save: function() {
       this.current_single_media = false;
+      this.validating_video_preview = false;
       this.$nextTick(() => {
         this.$emit('close');      
       });
@@ -233,12 +237,13 @@ export default {
       this.$root.editMedia({
         type: 'projects',
         slugFolderName: this.slugProjectName,
-        slugMediaName: this.videopreview.metaFileName,
+        slugMediaName: this.validating_video_preview.metaFileName,
         data: {
           fav: true
         }
       });
       this.current_single_media = false;
+      this.validating_video_preview = false;
       this.$nextTick(() => {
         this.$emit('close');      
       });

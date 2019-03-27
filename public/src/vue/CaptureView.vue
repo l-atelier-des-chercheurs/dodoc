@@ -6,6 +6,7 @@
       >
         ◀
       </button>
+      
       <div 
         v-for="mode in available_modes"
         :key="mode.key"
@@ -279,6 +280,7 @@
           :read_only="read_only"
           @close="current_stopmotion = false"
           @new_single_image="updateSingleImage"
+          @validating_video="(state) => { is_validating_stopmotion_video = state }"
         >
         </StopmotionPanel>        
       </div>
@@ -367,6 +369,8 @@ export default {
       is_calling: false,
 
       current_stopmotion: false,
+      is_validating_stopmotion_video: false,
+      
 
       ideal_camera_resolution: {
         name: 'hd',
@@ -604,9 +608,9 @@ export default {
     },
     captureKeyListener(event) {
       console.log('METHODS • CaptureView: captureKeyListener');
-
-      // don’t register if validating a media
-      if(this.media_to_validate) {
+     
+     // don’t register if validating a media
+      if(this.media_to_validate || this.is_validating_stopmotion_video) {
         return false;
       }
 
