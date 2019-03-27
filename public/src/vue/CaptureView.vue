@@ -197,7 +197,7 @@
               type="button"
               @click="show_capture_settings = !show_capture_settings"
               class="button c-rouge font-small bg-transparent"
-              :disabled="is_recording"
+              :disabled="is_recording || is_making_stopmotion"
             >
               <svg 
                 class="inline-svg inline-svg_larger"
@@ -509,9 +509,16 @@ export default {
     },
     'current_stopmotion': function() {
       this.$root.settings.capture_mode_cant_be_changed = this.current_stopmotion ? this.current_stopmotion : false;
-    }
+    },
   },
   computed: {
+    is_making_stopmotion() {
+      const is_making_stopmotion = this.current_stopmotion ? true : false;
+      if(is_making_stopmotion) {
+        this.show_capture_settings = false;
+      }
+      return is_making_stopmotion;
+    },
     sorted_available_devices() {
       return this.$_.groupBy(this.available_devices, 'kind');
     },

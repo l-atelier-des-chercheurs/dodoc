@@ -325,7 +325,8 @@ module.exports = (function() {
     pathToMedia,
     images,
     slugStopmotionName,
-    frameRate
+    frameRate,
+    socket
   }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction('COMMON — makeStopmotionFromImageSequence');
@@ -351,6 +352,12 @@ module.exports = (function() {
                   progress.frames
                 }/${numberOfImagesToProcess}`
               );
+              require('./sockets').notify({
+                socket,
+                not_localized_string: `Processing new stopmotion: image ${
+                  progress.frames
+                }/${numberOfImagesToProcess}`
+              });
             })
             .on('end', () => {
               dev.logverbose(`Stopmotion has been completed`);

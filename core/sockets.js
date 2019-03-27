@@ -219,7 +219,8 @@ module.exports = (function() {
         type,
         rawData,
         slugFolderName,
-        additionalMeta
+        additionalMeta,
+        socket
       })
       .then(_additionalMeta => {
         file

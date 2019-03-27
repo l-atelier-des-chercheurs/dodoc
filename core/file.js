@@ -1185,7 +1185,13 @@ module.exports = (function() {
         });
       });
     },
-    createMedia: ({ type, rawData, slugFolderName, additionalMeta = '' }) => {
+    createMedia: ({
+      type,
+      rawData,
+      slugFolderName,
+      additionalMeta = '',
+      socket
+    }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
           `COMMON — createMedia with type = ${type}, 
@@ -1331,7 +1337,8 @@ module.exports = (function() {
                   pathToMedia,
                   images: rawData,
                   slugStopmotionName: additionalMeta.slugStopmotionName,
-                  frameRate: additionalMeta.frameRate
+                  frameRate: additionalMeta.frameRate,
+                  socket
                 })
                 .then(() => {
                   resolve();
