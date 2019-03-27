@@ -508,7 +508,13 @@ export default {
       }
       // set default values to options
       if(!this.publication.hasOwnProperty('template')) {
-        alert('Missing template in publication');
+
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(
+            'Missing template in publication'
+          );
       }
       if(!this.publication_defaults.hasOwnProperty(this.publication.template)) {
         console.log('No defaults for this template. Returning original publication object.');
@@ -635,17 +641,24 @@ export default {
       this.$root.closePublication();
     },
     removePublication() {
-      if (window.confirm(this.$t('sureToRemovePubli'))) {
-        if (this.$root.state.dev_mode === 'debug') {
-          console.log(`METHODS • Publication: removePublication`);
-        }
-        this.$root.removeFolder({ 
-          type: 'publications', 
-          slugFolderName: this.slugPubliName, 
-        });
-        
-        this.closePublication();
-      }
+
+      this.$alertify
+        .okBtn(this.$t('yes'))
+        .cancelBtn(this.$t('cancel'))        
+        .confirm(this.$t('sureToRemovePubli'), 
+        () => {
+          if (this.$root.state.dev_mode === 'debug') {
+            console.log(`METHODS • Publication: removePublication`);
+          }
+          this.$root.removeFolder({ 
+            type: 'publications', 
+            slugFolderName: this.slugPubliName, 
+          });          
+          this.closePublication();
+        },
+        () => {
+        });              
+      
     },
     updateMediasPubli() {
       if (this.$root.state.dev_mode === 'debug') {

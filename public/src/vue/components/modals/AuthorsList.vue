@@ -109,12 +109,18 @@ export default {
   },
   methods: {
     removeAuthor(author) {
-      if (window.confirm(this.$t('sureToRemoveAuthor'))) {
-        this.$root.removeFolder({ 
-          type: 'authors', 
-          slugFolderName: author.slugFolderName
-        });
-      }
+      this.$alertify
+        .okBtn(this.$t('yes'))
+        .cancelBtn(this.$t('cancel'))        
+        .confirm(this.$t('sureToRemoveAuthor'), 
+        () => {
+          this.$root.removeFolder({ 
+            type: 'authors', 
+            slugFolderName: author.slugFolderName
+          });
+        },
+        () => {
+        });              
     },
     setAuthor(name) {
       this.$root.setAuthor(name);

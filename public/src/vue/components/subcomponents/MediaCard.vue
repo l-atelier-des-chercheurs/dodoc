@@ -167,9 +167,16 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaCard: removeMedia');
       }
-      if (window.confirm(this.$t('sureToRemoveMedia'))) {
-        this.$root.removeMedia(this.slugProjectName, this.metaFileName);
-      }
+
+      this.$alertify
+        .okBtn(this.$t('yes'))
+        .cancelBtn(this.$t('cancel'))        
+        .confirm(this.$t('sureToRemoveMedia'), 
+        () => {
+          this.$root.removeMedia(this.slugProjectName, this.metaFileName);
+        },
+        () => {
+        });              
     },
     addToCurrentPubli() {
       if (this.$root.state.dev_mode === 'debug') {

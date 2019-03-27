@@ -209,12 +209,19 @@ export default {
       this.videopreview = false;    
     },
     cancelStopmotion: function() {
-      if (window.confirm(this.$t('sure_to_cancel_stopmotion'))) {
-        this.current_single_media = false;
-        this.$nextTick(() => {
-          this.$emit('close');      
-        });
-      }
+
+      this.$alertify
+        .okBtn(this.$t('yes'))
+        .cancelBtn(this.$t('cancel'))        
+        .confirm(this.$t('sure_to_cancel_stopmotion'), 
+        () => {
+          this.current_single_media = false;
+          this.$nextTick(() => {
+            this.$emit('close');      
+          });
+        },
+        () => {
+        });                    
     },
     save: function() {
       this.current_single_media = false;

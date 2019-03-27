@@ -288,15 +288,21 @@ export default {
       window.print();
     },
     removeMedia: function() {
-      if (window.confirm(this.$t('sureToRemoveMedia'))) {
-        this.$root.removeMedia({
-          type: 'projects',
-          slugFolderName: this.slugProjectName, 
-          slugMediaName: this.slugMediaName
-        });
-        // then close that popover
-        this.$emit('close', '');
-      }
+      this.$alertify
+        .okBtn(this.$t('yes'))
+        .cancelBtn(this.$t('cancel'))        
+        .confirm(this.$t('sureToRemoveMedia'), 
+        () => {
+          this.$root.removeMedia({
+            type: 'projects',
+            slugFolderName: this.slugProjectName, 
+            slugMediaName: this.slugMediaName
+          });
+          // then close that popover
+          this.$emit('close', '');
+        },
+        () => {
+        });                    
     },
     editThisMedia: function() {
       console.log('editThisMedia');

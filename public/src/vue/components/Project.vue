@@ -209,13 +209,19 @@ export default {
       this.$root.closeProject();
     },
     removeProject() {
-      if (window.confirm(this.$t('sureToRemoveProject'))) {
-        this.$root.removeFolder({ 
-          type: 'projects', 
-          slugFolderName: this.slugProjectName
-        });
-        this.closeProject();
-      }
+      this.$alertify
+        .okBtn(this.$t('yes'))
+        .cancelBtn(this.$t('cancel'))        
+        .confirm(this.$t('sureToRemoveProject'), 
+        () => {
+          this.$root.removeFolder({ 
+            type: 'projects', 
+            slugFolderName: this.slugProjectName
+          });
+          this.closeProject();
+        },
+        () => {
+        });              
     },
     submitPassword() {
       console.log('METHODS • Project: submitPassword');

@@ -213,17 +213,25 @@ export default {
       this.$root.closePublication();
     },
     removePublication() {
-      if (window.confirm(this.$t('sureToRemovePubli'))) {
-        if (this.$root.state.dev_mode === 'debug') {
-          console.log(`METHODS • Publication: removePublication`);
-        }
-        this.$root.removeFolder({ 
-          type: 'publications', 
-          slugFolderName: this.slugPubliName, 
-        });
-        
-        this.closePublication();
-      }
+
+      this.$alertify
+        .okBtn(this.$t('yes'))
+        .cancelBtn(this.$t('cancel'))        
+        .confirm(this.$t('sureToRemovePubli'), 
+        () => {
+          if (this.$root.state.dev_mode === 'debug') {
+            console.log(`METHODS • Publication: removePublication`);
+          }
+          this.$root.removeFolder({ 
+            type: 'publications', 
+            slugFolderName: this.slugPubliName, 
+          });
+          
+          this.closePublication();
+        },
+        () => {
+        });              
+
     },
     updateMediasPubli() {
       if (this.$root.state.dev_mode === 'debug') {
