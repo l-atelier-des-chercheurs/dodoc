@@ -210,6 +210,9 @@
           <button type="button" class="buttonLink" @click="editRawMedia('rotate_image', {angle: 90})">
             Pivoter vers la droite
           </button>
+          <button type="button" class="buttonLink" @click="editRawMedia('reset')">
+            Revenir à l’original
+          </button>
         </div>
       </div>
     </template>

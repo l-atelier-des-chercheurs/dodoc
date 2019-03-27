@@ -968,67 +968,16 @@ module.exports = (function() {
       });
     },
 
-    editRawMedia: ({
+    editMedia: ({
       type,
       slugFolderName,
       metaFileName,
+      data,
       recipe_with_data
     }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
-          `COMMON — editRawMedia : will edit media for ${slugFolderName} at ${metaFileName} with recipe = ${JSON.stringify(
-            recipe_with_data,
-            null,
-            4
-          )}`
-        );
-
-        if (!recipe_with_data) {
-          dev.logverbose('No recipe data.');
-          return resolve();
-        }
-
-        if (!recipe_with_data.hasOwnProperty('apply_to')) {
-          dev.err('Missing apply_to value to work out recipe.');
-          return resolve();
-        }
-
-        const slugFolderPath = api.getFolderPath(
-          path.join(global.settings.structure[type].path, slugFolderName)
-        );
-        const mediaFileName = recipe_with_data.apply_to;
-
-        api
-          .findFirstFilenameNotTaken(slugFolderPath, mediaFileName)
-          .then(function(newFileName) {
-            const base_media_path = path.join(slugFolderPath, mediaFileName);
-            const new_media_path = path.join(slugFolderPath, newFileName);
-
-            recipe
-              .applyRecipe(recipe_with_data, base_media_path, new_media_path)
-              .then(() => {
-                // return meta name
-                dev.logverbose(
-                  `Applied recipe successfully, created ${newFileName}`
-                );
-                return resolve(newFileName);
-              })
-              .catch(err => {
-                dev.error(`Error applying recipe : ${err}`);
-                return resolve();
-              });
-          })
-          .catch(err => {
-            dev.err('Failed to create new unique name.');
-            return resolve();
-          });
-      });
-    },
-
-    editMediaMeta: ({ type, slugFolderName, metaFileName, data }) => {
-      return new Promise(function(resolve, reject) {
-        dev.logfunction(
-          `COMMON — editMediaMeta : will edit media for ${slugFolderName} at ${metaFileName} with ${JSON.stringify(
+          `COMMON — editMedia : will edit media for ${slugFolderName} at ${metaFileName} with ${JSON.stringify(
             data,
             null,
             4
@@ -1037,116 +986,127 @@ module.exports = (function() {
 
         readMediaMeta({ type, slugFolderName, metaFileName })
           .then(meta => {
-            dev.logverbose(
-              `Got meta, now updating for ${metaFileName} with ${JSON.stringify(
-                meta,
-                null,
-                4
-              )}`
-            );
-
-            // cleaning up stored meta
-            meta = _makeDefaultMetaFromStructure({
+            _editRawMedia({
               type,
-              type_two: 'medias',
-              method: 'create',
-              existing: meta
-            });
-
-            let newMediaData = _makeDefaultMetaFromStructure({
-              type,
-              type_two: 'medias',
-              method: 'update',
-              existing: data
-            });
-
-            dev.logverbose(
-              `Following datas will replace existing data for this media meta: ${JSON.stringify(
-                newMediaData,
-                null,
-                4
-              )}`
-            );
-
-            // overwrite stored obj with new informations
-            Object.assign(meta, newMediaData);
-            let tasks = [];
-
-            let updateMediaMeta = new Promise((resolve, reject) => {
-              let slugFolderPath = api.getFolderPath(
-                path.join(global.settings.structure[type].path, slugFolderName)
+              slugFolderName,
+              metaFileName,
+              meta,
+              recipe_with_data
+            }).then(media_metas => {
+              dev.logverbose(
+                `Got meta for ${metaFileName} with ${JSON.stringify(
+                  meta,
+                  null,
+                  4
+                )}`
               );
-              let mediaMetaPath = path.join(slugFolderPath, metaFileName);
 
-              api.storeData(mediaMetaPath, meta, 'update').then(
-                meta => {
-                  dev.logverbose(
-                    `Updated media meta file at path: ${mediaMetaPath} with meta: ${JSON.stringify(
-                      meta,
-                      null,
-                      4
-                    )}`
-                  );
-                  resolve();
-                },
-                function(err) {
-                  reject(`Couldn't update folder meta : ${err}`);
-                }
+              // cleaning up stored meta
+              meta = _makeDefaultMetaFromStructure({
+                type,
+                type_two: 'medias',
+                method: 'create',
+                existing: meta
+              });
+
+              let newMediaData = _makeDefaultMetaFromStructure({
+                type,
+                type_two: 'medias',
+                method: 'update',
+                existing: data
+              });
+
+              dev.logverbose(
+                `Following datas will replace existing data for this media meta: ${JSON.stringify(
+                  newMediaData,
+                  null,
+                  4
+                )}`
               );
-            });
-            tasks.push(updateMediaMeta);
 
-            if (meta.type === 'text' && data.hasOwnProperty('content')) {
-              dev.logverbose(`Is text and need to update content.`);
-              dev.logverbose(`New content: ${data.content}`);
+              // overwrite stored obj with new informations
+              Object.assign(meta, newMediaData);
+              let tasks = [];
 
-              let updateTextMedia = new Promise((resolve, reject) => {
-                // Legacy : if no filename in meta file when it is expected in blueprint
-                // then it means its in the name of the text file
-                function getMediaFilename(meta, metaFileName) {
-                  if (
-                    global.settings.structure[
-                      type
-                    ].medias.fields.hasOwnProperty('media_filename')
-                  ) {
-                    if (meta.hasOwnProperty('media_filename')) {
-                      return meta.media_filename;
-                    } else {
-                      return new RegExp(
-                        global.settings.regexpRemoveFileExtension,
-                        'i'
-                      ).exec(metaFileName)[1];
-                    }
-                  }
-                }
-                let mediaFileName = getMediaFilename(meta, metaFileName);
-
+              let updateMediaMeta = new Promise((resolve, reject) => {
                 let slugFolderPath = api.getFolderPath(
                   path.join(
                     global.settings.structure[type].path,
                     slugFolderName
                   )
                 );
-                let mediaPath = path.join(slugFolderPath, mediaFileName);
+                let mediaMetaPath = path.join(slugFolderPath, metaFileName);
 
-                let content = validator.escape(data.content + '');
-                api
-                  .storeData(mediaPath, content, 'update')
-                  .then(content => {
+                api.storeData(mediaMetaPath, meta, 'update').then(
+                  meta => {
                     dev.logverbose(
-                      `Updated media file at path: ${mediaPath} with content: ${content}`
+                      `Updated media meta file at path: ${mediaMetaPath} with meta: ${JSON.stringify(
+                        meta,
+                        null,
+                        4
+                      )}`
                     );
                     resolve();
-                  })
-                  .catch(err => {
-                    reject(err);
-                  });
+                  },
+                  function(err) {
+                    reject(`Couldn't update folder meta : ${err}`);
+                  }
+                );
               });
-              tasks.push(updateTextMedia);
-            }
+              tasks.push(updateMediaMeta);
 
-            Promise.all(tasks).then(() => {
-              resolve(slugFolderName);
+              if (meta.type === 'text' && data.hasOwnProperty('content')) {
+                dev.logverbose(`Is text and need to update content.`);
+                dev.logverbose(`New content: ${data.content}`);
+
+                let updateTextMedia = new Promise((resolve, reject) => {
+                  // Legacy : if no filename in meta file when it is expected in blueprint
+                  // then it means its in the name of the text file
+                  function getMediaFilename(meta, metaFileName) {
+                    if (
+                      global.settings.structure[
+                        type
+                      ].medias.fields.hasOwnProperty('media_filename')
+                    ) {
+                      if (meta.hasOwnProperty('media_filename')) {
+                        return meta.media_filename;
+                      } else {
+                        return new RegExp(
+                          global.settings.regexpRemoveFileExtension,
+                          'i'
+                        ).exec(metaFileName)[1];
+                      }
+                    }
+                  }
+                  let mediaFileName = getMediaFilename(meta, metaFileName);
+
+                  let slugFolderPath = api.getFolderPath(
+                    path.join(
+                      global.settings.structure[type].path,
+                      slugFolderName
+                    )
+                  );
+                  let mediaPath = path.join(slugFolderPath, mediaFileName);
+
+                  let content = validator.escape(data.content + '');
+                  api
+                    .storeData(mediaPath, content, 'update')
+                    .then(content => {
+                      dev.logverbose(
+                        `Updated media file at path: ${mediaPath} with content: ${content}`
+                      );
+                      resolve();
+                    })
+                    .catch(err => {
+                      reject(err);
+                    });
+                });
+                tasks.push(updateTextMedia);
+              }
+
+              Promise.all(tasks).then(() => {
+                resolve(slugFolderName);
+              });
             });
           })
           .catch(err => {
@@ -1440,18 +1400,6 @@ module.exports = (function() {
                 'i'
               ).exec(metaFileName)[1];
             }
-
-            // if (
-            //   mediaData.hasOwnProperty('media_filename') &&
-            //   mediaData.hasOwnProperty('edited_media_filenames') &&
-            //   mediaData.edited_media_filenames.length > 0
-            // ) {
-            //   mediaData.original_media_filename = mediaData.media_filename;
-            //   mediaData.media_filename =
-            //     mediaData.edited_media_filenames[
-            //       mediaData.edited_media_filenames.length - 1
-            //     ].media_filename;
-            // }
 
             if (
               mediaData.type === 'text' &&
@@ -1809,6 +1757,102 @@ module.exports = (function() {
     //   `
     // );
     return new_meta;
+  }
+
+  function _editRawMedia({
+    type,
+    slugFolderName,
+    metaFileName,
+    meta,
+    recipe_with_data
+  }) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(
+        `COMMON — _editRawMedia : will edit media for ${slugFolderName} at ${metaFileName} with recipe = ${JSON.stringify(
+          recipe_with_data,
+          null,
+          4
+        )}`
+      );
+
+      if (!recipe_with_data) {
+        dev.logverbose('No recipe data.');
+        return resolve();
+      }
+
+      if (!recipe_with_data.hasOwnProperty('apply_to')) {
+        dev.err('Missing apply_to value to work out recipe.');
+        return resolve();
+      }
+
+      const slugFolderPath = api.getFolderPath(
+        path.join(global.settings.structure[type].path, slugFolderName)
+      );
+
+      // check if meta has original_media_filename, which means media_filename is already the modified version
+      if (
+        meta.hasOwnProperty('original_media_filename') &&
+        meta.original_media_filename !== ''
+      ) {
+        // just apply recipe on media_filename
+        const base_media_path = path.join(slugFolderPath, meta.media_filename);
+        const new_media_path = path.join(slugFolderPath, meta.media_filename);
+
+        // if recipe type is 'reset'
+        if (
+          recipe_with_data.hasOwnProperty('type') &&
+          recipe_with_data.type === 'reset'
+        ) {
+          fs.unlink(base_media_path, err => {
+            meta.media_filename = meta.original_media_filename;
+            meta.original_media_filename = '';
+            return resolve(meta);
+          });
+        } else {
+          recipe
+            .applyRecipe(recipe_with_data, base_media_path, new_media_path)
+            .then(() => {
+              // return meta name
+              dev.logverbose(
+                `Applied recipe successfully, created ${newFileName}`
+              );
+              return resolve(meta);
+            })
+            .catch(err => {
+              dev.error(`Error applying recipe : ${err}`);
+              return resolve();
+            });
+        }
+      } else {
+        api
+          .findFirstFilenameNotTaken(slugFolderPath, meta.media_filename)
+          .then(function(newFileName) {
+            const base_media_path = path.join(
+              slugFolderPath,
+              meta.media_filename
+            );
+            const new_media_path = path.join(slugFolderPath, newFileName);
+
+            recipe
+              .applyRecipe(recipe_with_data, base_media_path, new_media_path)
+              .then(() => {
+                // return meta name
+                dev.logverbose(
+                  `Applied recipe successfully, created ${newFileName}`
+                );
+                meta.original_media_filename = meta.media_filename;
+                meta.media_filename = newFileName;
+                return resolve(meta);
+              })
+              .catch(err => {
+                dev.error(`Error applying recipe : ${err}`);
+                return resolve(meta);
+              });
+          });
+      }
+
+      // const mediaFileName = recipe_with_data.apply_to;
+    });
   }
 
   return API;

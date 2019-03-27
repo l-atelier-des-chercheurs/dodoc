@@ -87,11 +87,10 @@
             "read_only": true
           },
           "media_filename": {
-            "type": "string",
-            "read_only": true
+            "type": "string"
           },
-          "edited_media_filenames": {
-            "type": "array"
+          "original_media_filename": {
+            "type": "string"
           },
           "type": {
             "type": "string",

@@ -1,4 +1,5 @@
 const sharp = require('sharp');
+const fs = require('fs-extra');
 
 module.exports = (function() {
   return {
@@ -12,11 +13,13 @@ module.exports = (function() {
           sharp(base_media_path)
             .rotate(detail.angle)
             .withMetadata()
-            .toFile(new_media_path, function(err, info) {
+            .toBuffer(function(err, buffer) {
               if (err) {
                 return reject(err);
               } else {
-                return resolve();
+                fs.writeFile(new_media_path, buffer, function(e) {
+                  return resolve();
+                });
               }
             });
         } else {
