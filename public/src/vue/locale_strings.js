@@ -249,7 +249,9 @@ module.exports = (function() {
         medias_uploaded: 'Tous les médias ont bien étés envoyés.',
         medias_upload_failed:
           'Erreur&nbsp;: certains médias n’ont pas pu être envoyés.',
-        video_converted: 'La vidéo a été convertie et ajoutée au projet.'
+        video_converted: 'La vidéo a été convertie et ajoutée au projet.',
+        project_has_been_removed:
+          'Ce projet vient d’être supprimé par quelqu’un d’autre.'
       }
     },
     en: {
@@ -494,7 +496,9 @@ module.exports = (function() {
         medias_uploaded: 'All medias were imported successfully.',
         medias_upload_failed: 'Error: some medias failed to import.',
         video_converted:
-          'The video was converted successfully and added to the project.'
+          'The video was converted successfully and added to the project.',
+        project_has_been_removed:
+          'This project just got removed by another user.'
       }
     }
   };

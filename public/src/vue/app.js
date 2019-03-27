@@ -684,14 +684,23 @@ let vm = new Vue({
   computed: {
     currentProject: function() {
       if (
-        this.store.hasOwnProperty('projects') &&
+        !this.store.hasOwnProperty('projects') ||
+        Object.keys(this.store.projects).length === 0
+      ) {
+        this.closeProject();
+        return {};
+      }
+
+      if (
         this.store.projects.hasOwnProperty(
           this.do_navigation.current_slugProjectName
         )
       ) {
         return this.store.projects[this.do_navigation.current_slugProjectName];
+      } else {
+        this.closeProject();
+        return {};
       }
-      return {};
     },
     allAuthors() {
       let allAuthors = [];
