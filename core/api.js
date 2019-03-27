@@ -98,7 +98,7 @@ module.exports = (function() {
       try {
         // OPTIMIZATION : make an array of filenames instead, and use that as the condition
         while (
-          !fs.accessSync(newPathToFile, fs.F_OK) &&
+          !fs.accessSync(newPathToFile, fs.F_OK) ||
           !fs.accessSync(newPathToMeta, fs.F_OK)
         ) {
           dev.logverbose(

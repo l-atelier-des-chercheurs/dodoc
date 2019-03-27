@@ -17,6 +17,8 @@
 
     <template slot="sidebar">
       <!-- <small>{{ this.$root.allAuthors }}</small> -->
+      <pre>{{ media.edited_media_filenames }}</pre>
+
 
       <div v-if="!read_only" class="m_modal--buttonrow">
         <!-- CONFLICT WITH QR PRINTING -->
@@ -202,6 +204,14 @@
         v-model="mediadata.content"
       >
       </MediaContent>
+      <div class="m_mediaOptions">
+        <label>Options</label>
+        <div>
+          <button type="button" class="buttonLink" @click="editRawMedia('rotate_image', {angle: 90})">
+            Pivoter vers la droite
+          </button>
+        </div>
+      </div>
     </template>
 
   </Modal>
@@ -244,7 +254,8 @@ export default {
         caption: this.media.caption,
         keywords: this.media.keywords,
         fav: this.media.fav,
-        content: this.media.content
+        content: this.media.content,
+        edited_media_filenames: this.media.edited_media_filenames
       },
       mediaURL: `/${this.slugProjectName}/${this.media.media_filename}`,
       askBeforeClosingModal: false
@@ -284,7 +295,7 @@ export default {
         this.$emit('close', '');
       }
     },
-    editThisMedia: function(event) {
+    editThisMedia: function() {
       console.log('editThisMedia');
       this.$root.editMedia({ 
         type: 'projects',
@@ -294,10 +305,35 @@ export default {
       });
       // then close that popover
       this.$emit('close', '');
+    },
+    editRawMedia: function(type, detail) {
+      console.log('editRawMedia');
+      this.$root.editMedia({ 
+        type: 'projects',
+        slugFolderName: this.slugProjectName, 
+        slugMediaName: this.slugMediaName,
+        data: this.mediadata,
+        recipe_with_data: {
+          apply_to: this.media.media_filename,
+          type,
+          detail
+        }
+      });
+      // then close that popover
+      // this.$emit('close', '');
     }
   },
 };
 </script>
 <style>
+.m_mediaOptions {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 100;
+  background-color: white;
+  margin: 25px;
+  padding: 15px;
+}
 
 </style>

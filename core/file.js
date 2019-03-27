@@ -9,7 +9,8 @@ const sharp = require('sharp');
 
 const dev = require('./dev-log'),
   api = require('./api'),
-  thumbs = require('./thumbs');
+  thumbs = require('./thumbs'),
+  recipe = require('./recipe');
 
 ffmpeg.setFfmpegPath(ffmpegstatic.path);
 ffmpeg.setFfprobePath(ffprobestatic.path);
@@ -967,6 +968,63 @@ module.exports = (function() {
       });
     },
 
+    editRawMedia: ({
+      type,
+      slugFolderName,
+      metaFileName,
+      recipe_with_data
+    }) => {
+      return new Promise(function(resolve, reject) {
+        dev.logfunction(
+          `COMMON — editRawMedia : will edit media for ${slugFolderName} at ${metaFileName} with recipe = ${JSON.stringify(
+            recipe_with_data,
+            null,
+            4
+          )}`
+        );
+
+        if (!recipe_with_data) {
+          dev.logverbose('No recipe data.');
+          return resolve();
+        }
+
+        if (!recipe_with_data.hasOwnProperty('apply_to')) {
+          dev.err('Missing apply_to value to work out recipe.');
+          return resolve();
+        }
+
+        const slugFolderPath = api.getFolderPath(
+          path.join(global.settings.structure[type].path, slugFolderName)
+        );
+        const mediaFileName = recipe_with_data.apply_to;
+
+        api
+          .findFirstFilenameNotTaken(slugFolderPath, mediaFileName)
+          .then(function(newFileName) {
+            const base_media_path = path.join(slugFolderPath, mediaFileName);
+            const new_media_path = path.join(slugFolderPath, newFileName);
+
+            recipe
+              .applyRecipe(recipe_with_data, base_media_path, new_media_path)
+              .then(() => {
+                // return meta name
+                dev.logverbose(
+                  `Applied recipe successfully, created ${newFileName}`
+                );
+                return resolve(newFileName);
+              })
+              .catch(err => {
+                dev.error(`Error applying recipe : ${err}`);
+                return resolve();
+              });
+          })
+          .catch(err => {
+            dev.err('Failed to create new unique name.');
+            return resolve();
+          });
+      });
+    },
+
     editMediaMeta: ({ type, slugFolderName, metaFileName, data }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
@@ -1382,6 +1440,18 @@ module.exports = (function() {
                 'i'
               ).exec(metaFileName)[1];
             }
+
+            // if (
+            //   mediaData.hasOwnProperty('media_filename') &&
+            //   mediaData.hasOwnProperty('edited_media_filenames') &&
+            //   mediaData.edited_media_filenames.length > 0
+            // ) {
+            //   mediaData.original_media_filename = mediaData.media_filename;
+            //   mediaData.media_filename =
+            //     mediaData.edited_media_filenames[
+            //       mediaData.edited_media_filenames.length - 1
+            //     ].media_filename;
+            // }
 
             if (
               mediaData.type === 'text' &&

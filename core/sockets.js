@@ -267,25 +267,51 @@ module.exports = (function() {
       });
   }
 
-  function onEditMedia(socket, { type, slugFolderName, slugMediaName, data }) {
+  function onEditMedia(
+    socket,
+    { type, slugFolderName, slugMediaName, data, recipe_with_data }
+  ) {
     dev.logfunction(
-      `EVENT - onEditMedia for type ${type}, slugFolderName = ${slugFolderName} and slugMediaName = ${slugMediaName}`
+      `EVENT - onEditMedia for type ${type}\nslugFolderName = ${slugFolderName}\nslugMediaName = ${slugMediaName}\ndata = ${JSON.stringify(
+        data,
+        null,
+        4
+      )}`
     );
+
     file
-      .editMediaMeta({
+      .editRawMedia({
         type,
         slugFolderName,
         metaFileName: slugMediaName,
-        data
+        recipe_with_data
       })
-      .then(
-        slugFolderName => {
-          sendMedias({ type, slugFolderName, metaFileName: slugMediaName });
-        },
-        function(err) {
-          dev.error(`Failed to edit media! Error: ${err}`);
+      .then(edited_media_filename_to_add => {
+        if (edited_media_filename_to_add) {
+          if (!data.hasOwnProperty('edited_media_filenames')) {
+            data.edited_media_filenames = [];
+          }
+          data.edited_media_filenames.push({
+            media_filename: edited_media_filename_to_add
+          });
         }
-      );
+
+        file
+          .editMediaMeta({
+            type,
+            slugFolderName,
+            metaFileName: slugMediaName,
+            data
+          })
+          .then(
+            slugFolderName => {
+              sendMedias({ type, slugFolderName, metaFileName: slugMediaName });
+            },
+            function(err) {
+              dev.error(`Failed to edit media! Error: ${err}`);
+            }
+          );
+      });
   }
 
   function onRemoveMedia(socket, { type, slugFolderName, slugMediaName }) {
