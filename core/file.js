@@ -1789,69 +1789,79 @@ module.exports = (function() {
         path.join(global.settings.structure[type].path, slugFolderName)
       );
 
-      // check if meta has original_media_filename, which means media_filename is already the modified version
-      if (
-        meta.hasOwnProperty('original_media_filename') &&
-        meta.original_media_filename !== ''
-      ) {
-        // just apply recipe on media_filename
-        const base_media_path = path.join(slugFolderPath, meta.media_filename);
-        const new_media_path = path.join(slugFolderPath, meta.media_filename);
-
-        // if recipe type is 'reset'
-        if (
-          recipe_with_data.hasOwnProperty('type') &&
-          recipe_with_data.type === 'reset'
-        ) {
-          fs.unlink(base_media_path, err => {
-            meta.media_filename = meta.original_media_filename;
-            meta.original_media_filename = '';
-            return resolve(meta);
-          });
-        } else {
-          recipe
-            .applyRecipe(recipe_with_data, base_media_path, new_media_path)
-            .then(() => {
-              // return meta name
-              dev.logverbose(
-                `Applied recipe successfully, created ${newFileName}`
-              );
-              return resolve(meta);
-            })
-            .catch(err => {
-              dev.error(`Error applying recipe : ${err}`);
-              return resolve();
-            });
-        }
-      } else {
-        api
-          .findFirstFilenameNotTaken(slugFolderPath, meta.media_filename)
-          .then(function(newFileName) {
+      thumbs
+        .removeMediaThumbs(slugFolderName, type, meta.media_filename)
+        .then(() => {
+          // check if meta has original_media_filename, which means media_filename is already the modified version
+          if (
+            meta.hasOwnProperty('original_media_filename') &&
+            meta.original_media_filename !== ''
+          ) {
             const base_media_path = path.join(
               slugFolderPath,
               meta.media_filename
             );
-            const new_media_path = path.join(slugFolderPath, newFileName);
+            const new_media_path = path.join(
+              slugFolderPath,
+              meta.media_filename
+            );
 
-            recipe
-              .applyRecipe(recipe_with_data, base_media_path, new_media_path)
-              .then(() => {
-                // return meta name
-                dev.logverbose(
-                  `Applied recipe successfully, created ${newFileName}`
-                );
-                meta.original_media_filename = meta.media_filename;
-                meta.media_filename = newFileName;
-                return resolve(meta);
-              })
-              .catch(err => {
-                dev.error(`Error applying recipe : ${err}`);
+            if (
+              recipe_with_data.hasOwnProperty('type') &&
+              recipe_with_data.type === 'reset'
+            ) {
+              fs.unlink(base_media_path, err => {
+                meta.media_filename = meta.original_media_filename;
+                meta.original_media_filename = '';
                 return resolve(meta);
               });
-          });
-      }
+            } else {
+              recipe
+                .applyRecipe(recipe_with_data, base_media_path, new_media_path)
+                .then(() => {
+                  // return meta name
+                  dev.logverbose(
+                    `Applied recipe successfully, created ${newFileName}`
+                  );
+                  return resolve(meta);
+                })
+                .catch(err => {
+                  dev.error(`Error applying recipe : ${err}`);
+                  return resolve();
+                });
+            }
+          } else {
+            api
+              .findFirstFilenameNotTaken(slugFolderPath, meta.media_filename)
+              .then(function(newFileName) {
+                const base_media_path = path.join(
+                  slugFolderPath,
+                  meta.media_filename
+                );
+                const new_media_path = path.join(slugFolderPath, newFileName);
 
-      // const mediaFileName = recipe_with_data.apply_to;
+                recipe
+                  .applyRecipe(
+                    recipe_with_data,
+                    base_media_path,
+                    new_media_path
+                  )
+                  .then(() => {
+                    // return meta name
+                    dev.logverbose(
+                      `Applied recipe successfully, created ${newFileName}`
+                    );
+                    meta.original_media_filename = meta.media_filename;
+                    meta.media_filename = newFileName;
+                    return resolve(meta);
+                  })
+                  .catch(err => {
+                    dev.error(`Error applying recipe : ${err}`);
+                    return resolve(meta);
+                  });
+              });
+          }
+        });
     });
   }
 
