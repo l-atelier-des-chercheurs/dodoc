@@ -2279,6 +2279,13 @@ small {
   > * {
     transition: all .4s;
   }
+
+  .m_stopmotionpanel--toprowbuttons {
+    position: absolute;
+    left: 0;
+    z-index: 10;
+    bottom: 100%;
+  }
   
   .m_stopmotionpanel--medias {
     .bg-noir;
@@ -2313,15 +2320,21 @@ small {
     // }
 
     .m_stopmotionpanel--medias--list {
+      display: block;
       flex: 1 1 auto;
       position: relative;
       display: flex;
       flex-flow: row nowrap;
       align-items: center;
-      overflow-x: auto;
 
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      overflow-scrolling: touch;
+      overscroll-behavior-y: contain;  
       .padding-verysmall;
-      .custom_scrollbar(8px, 5px, 6px);
+      scroll-behavior: smooth;
+
+      .custom_scrollbar(1px, 3px, 2px, rgba(255,255,255,0), #ddd);    
 
       counter-reset: compteListe;
 
@@ -2338,8 +2351,8 @@ small {
         // border-radius: 10px;
         // height: 100px;
         width: auto;
-        flex: 0 0 100px;
-        margin-right: 2px;
+        flex: 0 0 90px;
+        margin-right: 1px;
         cursor: pointer;
 
         &::before {
@@ -2360,9 +2373,22 @@ small {
           z-index: 1;
         }
 
-        &:last-child::before {
-          content: "LIVE";
-          // .bg-bleuvert;
+        &:last-child {
+          flex-basis: 190px;
+
+          video {
+            width: 90px;
+          }
+          &::before {
+            content: "LIVE";
+            // .bg-bleuvert;
+          }
+          // &::after {
+          //   content:'';
+          //   display: block;
+          //   width: 100px;
+          //   height: 1px;
+          // }
         }
 
         &.is--current_single::before {

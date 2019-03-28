@@ -147,7 +147,7 @@
               :slugFolderName="current_stopmotion"
               :media="stopmotion.onion_skin_img"
               :subfolder="'_stopmotions/'"
-              :style="`--onionskin-opacity: ${stopmotion.onion_skin_opacity}`"
+              :style="is_showing_live_feed ? `--onionskin-opacity: ${stopmotion.onion_skin_opacity}` : ''"
             />
 
             <div id="vectoContainer" v-if="selected_mode === 'vecto'" v-html="vecto.svgstr">
@@ -175,7 +175,7 @@
                               class="pictures_list"
                             >
                               <div 
-                                v-for="(media, index) in Object.values(stopmotion.medias)" 
+                                v-for="media in Object.values(stopmotion.medias)" 
                                 :key="media.slugMediaName"
                               >
                                   <!-- v-if="index <= 5" -->
@@ -249,6 +249,7 @@
           :videoStream="videoStream"
           @close="current_stopmotion = false"
           @new_single_image="updateSingleImage"
+          @show_live_feed="(state) => { is_showing_live_feed = state }"
           @validating_video="(state) => { is_validating_stopmotion_video = state }"
         >
         </StopmotionPanel>        
@@ -298,12 +299,12 @@
               </div>
 
               <div
-                v-if="selected_mode === 'stopmotion' && stopmotion.onion_skin_img"
+                v-if="selected_mode === 'stopmotion' && stopmotion.onion_skin_img && is_showing_live_feed"
               >
                 <label>
                   {{ $t('onion_skin') }}
                 </label>
-                <input class="margin-none" type="range" v-model="stopmotion.onion_skin_opacity" min="0.2" max="1" step="0.01">
+                <input class="margin-none" type="range" v-model="stopmotion.onion_skin_opacity" min="0.1" max=".9" step="0.01">
               </div>
 
               <button
@@ -410,6 +411,7 @@ export default {
 
       show_capture_settings: false,
       show_stopmotion_list: false,
+      is_showing_live_feed: true,
 
       capture_button_pressed: false,
       videoStream: null,
