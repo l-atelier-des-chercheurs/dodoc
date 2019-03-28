@@ -748,6 +748,12 @@ let vm = new Vue({
     },
     currentTime_human() {
       return this.$moment(this.currentTime).format('LL   LTS');
+    },
+    screen_is_wide() {
+      if (this.settings.windowWidth < 850) {
+        return false;
+      }
+      return true;
     }
   },
   methods: {

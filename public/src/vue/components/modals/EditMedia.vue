@@ -17,8 +17,6 @@
 
     <template slot="sidebar">
       <!-- <small>{{ this.$root.allAuthors }}</small> -->
-      <pre>{{ media.edited_media_filenames }}</pre>
-
 
       <div v-if="!read_only" class="m_modal--buttonrow">
         <!-- CONFLICT WITH QR PRINTING -->

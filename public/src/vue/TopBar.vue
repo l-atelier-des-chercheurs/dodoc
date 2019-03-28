@@ -1,5 +1,7 @@
 <template>
-  <div class="m_topbar">
+  <div class="m_topbar"
+    :class="{ 'is--collapsable' : !$root.screen_is_wide }"
+  >
     <div class="m_topbar--left" >
       <div class="m_topbar--left--logo" >
         <transition name="BackButton" :duration="500">
@@ -49,7 +51,7 @@
 
 
       <button type="button" class="m_topbar--left--menuButton"
-        v-if="menu_is_enabled"
+        v-if="!$root.screen_is_wide"
         @click="toggleMenu()"
       >
         <svg version="1.1"
@@ -63,7 +65,7 @@
     </div>
 
     <div 
-      v-if="!menu_is_enabled || (menu_is_enabled && show_menu)"
+      v-if="show_advanced_options"
       class="m_topbar--center"
     >
       <div class="m_topbar--center--authors">
@@ -100,7 +102,7 @@
     </div>
 
     <div 
-      v-if="!menu_is_enabled || (menu_is_enabled && show_menu)"
+      v-if="show_advanced_options"
       class="m_topbar--right"
     >
       <div class="m_topbar--right--pictos">
@@ -174,8 +176,6 @@ export default {
     return {
       showQRModal: false,
       showAuthorsListModal: false,
-
-      menu_is_enabled: false,
       show_menu: false
     }
   },
@@ -193,14 +193,12 @@ export default {
     }
   },
   computed: {
+    show_advanced_options() {
+      return this.$root.screen_is_wide || (!this.$root.screen_is_wide && this.show_menu);
+    }
   },
   methods: {
     menuVisibility() {
-      if(this.$root.settings.windowWidth < 820) {
-        this.menu_is_enabled = true;
-      } else {
-        this.menu_is_enabled = false;
-      }
     },
     goBack() {
       this.$root.navigation_back();

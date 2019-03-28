@@ -1,5 +1,7 @@
 <template>
-  <div id="app">
+  <div id="app"
+    :class="{ 'is--wide' : $root.screen_is_wide }"
+  >
 
     <template 
       v-if="$root.state.mode === 'live'"
@@ -8,8 +10,7 @@
       <SystemBar
         v-if="$root.settings.enable_system_bar"
         :withTitleBar="true"
-      >
-      </SystemBar>
+      />
 
       <TopBar
         :has_back_button="$root.do_navigation.view !== 'ListView'"
@@ -19,6 +20,7 @@
       />
       
       <div class="m_activitiesPanel">
+
         <div 
           :style="{ cursor, userSelect}" 
           class="vue-splitter-container clearfix" 
@@ -30,7 +32,7 @@
 
             <div 
               class="m_activitiesPanel--do"
-              :class="{ 'is--large' : activitiesPanel_isLarge }"
+              :class="{ 'is--large' : activitiesPanel_is_comfortable }"
             >
               <div style="position: relative; height: 100%; overflow: hidden">
                 <!-- v-show="$root.do_navigation.view === 'ListView'" -->
@@ -213,7 +215,7 @@ export default {
     cursor() {
       return this.is_dragged ? 'col-resize' : ''
     },
-    activitiesPanel_isLarge() {
+    activitiesPanel_is_comfortable() {
       if((this.percent/100*this.$root.settings.windowWidth) < 850) {
         return false;
       }
@@ -221,7 +223,8 @@ export default {
         return false;
       }
       return true;
-    }
+    },
+
   },
   methods: {
     // stopDragtogglePubli() {

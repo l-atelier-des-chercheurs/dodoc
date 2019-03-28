@@ -49,17 +49,6 @@ body {
 
   position: relative;
   margin: 0;
-  // overflow-x: hidden;
-  // overflow-y: hidden;
-
-  // @media screen and (max-width: 50rem) {
-  //   margin-top: 0 !important;
-  //   overflow-y: auto;
-  // }
-  // html.touchevents & {
-  //   margin-top: 0 !important;
-  //   overflow-y: auto;
-  // }
 }
 
 body {
@@ -198,19 +187,23 @@ body {
     padding-top: @t-systemBarHeight * 0.666;
   }
 
+  &.is--collapsable {
+    
+  }
+
+
   > * {
     min-width: 180px;
     flex: 1 1 0;
     
-    @media screen and (max-width: 50rem) {
+    #app:not(.is--wide) & {
       flex: 1 0 100%;
-    }
-  
+    }  
     &.m_topbar--center {
       min-width: 200px;
       max-width: 200px;
 
-      @media screen and (max-width: 50rem) {
+      #app:not(.is--wide) & {
         max-width: none;
       }
     }
@@ -220,9 +213,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-
-    @media screen and (max-width: 50rem) {
-    }
 
     .m_topbar--left--logo {
       width: auto;
@@ -262,7 +252,7 @@ body {
 
         text-transform: lowercase;
 
-        @media screen and (max-width: 50rem) {
+        #app:not(.is--wide) & {
           width: 42px;
           .backButton--text {
             display: none;
@@ -277,7 +267,7 @@ body {
         width: 180px;
         height: 100%;
 
-        @media screen and (max-width: 50rem) {
+        #app:not(.is--wide) & {
           .padding-small;
           width: 140px;
         }
@@ -294,7 +284,7 @@ body {
       align-content: flex-start;
       align-items: center;
 
-      @media screen and (max-width: 50rem) {
+      #app:not(.is--wide) & {
         display: none;
       }
 
@@ -475,6 +465,7 @@ body {
     color: white;
     .padding-sides-medium;
   }
+  
 }
 
 .m_authorsList {
@@ -742,7 +733,7 @@ body {
     }
   }
 
-  @media screen and (max-width: 600px) {
+  #app:not(.is--wide) & {
     display: none;
   }
 }
@@ -755,18 +746,8 @@ body {
 .m_activitiesPanel {
   position: relative;
   width: 100%;
-  // height: ~"calc(100vh - @{t-hauteur_topbar} - 1px)";
-
-  // body.has_systembar & {
-  //   height: ~"calc(100vh - @{t-systemBarHeight}*0.666 - @{t-hauteur_topbar} - 1px)";
-  // }
-
-  // @media screen and (max-width: 50rem) {
-  //   height: auto !important;
-  // }
 
   html.touchevents & {
-    // height: 100%;
   }
 
   .m_activitiesPanel--do {
@@ -808,14 +789,6 @@ body {
   width: 100%;
   height: 100%;
 
-  // fix for chrome on tablets, where vh are not calculated right
-  // padding-bottom: 50px;
-
-  // @media screen and (max-width: 50rem) {
-  //   position: relative;
-  //   height:auto !important;
-  //   overflow: auto;
-  // }
   html.touchevents & {
     // position: relative;
     // height:auto !important;
@@ -993,7 +966,7 @@ small {
     justify-items: center;
     align-items: stretch;    
 
-    @media screen and (max-width: 50rem) {
+    #app:not(.is--wide) & {
       flex-basis: auto;
       max-width: none;
     }
@@ -1130,7 +1103,7 @@ small {
 
   border-radius: 4px;
   
-  @media screen and (max-width: 50rem) {
+  #app:not(.is--wide) & {
     .margin-verysmall;
     margin-left: 0;      
     margin-top: 0;  
@@ -1718,7 +1691,7 @@ small {
     align-items: center;
     padding: @t-skipline/2 0;
 
-    @media screen and (max-width: 50rem) {
+    #app:not(.is--wide) & {
       flex-flow: row nowrap;
     }
 
@@ -1726,7 +1699,7 @@ small {
     button {
       .c-orange;    
       
-      @media screen and (max-width: 50rem) {
+      #app:not(.is--wide) & {
         display: none;
       }
     }
@@ -1776,7 +1749,7 @@ small {
         padding: 4px;   
         .bg-orange;
          
-        @media screen and (max-width: 50rem) {
+        #app:not(.is--wide) & {
           margin: 0;
         }
 
@@ -1791,7 +1764,7 @@ small {
         text-transform: lowercase;
         margin: @t-skipline/4 @t-skipline/4;        
 
-        @media screen and (max-width: 50rem) {
+        #app:not(.is--wide) & {
           display: none;
         }
       }
@@ -2179,15 +2152,6 @@ small {
 
 }
 
-.m_clientsList {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  left: 100%;
-  .margin-left-verysmall;
-  .font-verysmall;
-  .c-bleumarine;
-}
 
 .m_clientsList--indicator {
   .bg-bleumarine_clair;
@@ -2215,6 +2179,18 @@ small {
 
 }
 
+
+.m_clientsList {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 100%;
+  .margin-left-verysmall;
+  .font-verysmall;
+  .c-bleumarine;
+}
+
+
 .m_clientsList--list {
 
   position: absolute;
@@ -2224,6 +2200,8 @@ small {
   // transform: translate3d(-50%, 0, 0);
 
   width: 220px;
+  max-height: 200px;
+  overflow: auto;
 
   // .margin-sides-medium;
   .padding-verysmall;
@@ -2237,6 +2215,12 @@ small {
   // .bg-blanc;
   // border: 2px solid @c-noir;
 
+  #app:not(.is--wide) & {
+    left: auto;
+    right: 0;
+    .margin-top-medium;
+  }
+
   label {
     color: currentColor;
   }
@@ -2246,7 +2230,7 @@ small {
     top: 0;
     right: 0;
     min-height: 0;
-    .padding-verysmall;
+    .padding-small;
     background-color: transparent;
     font-size: 2em;
     line-height: 0.5;
@@ -3287,7 +3271,8 @@ small {
 
 .alertify {
   z-index: 20000;
-  background-color: fade(#fff, 96%);
+  background-color: fade(#333, 86%);
+
 
   .dialog > * {
     border-radius: 2px;
