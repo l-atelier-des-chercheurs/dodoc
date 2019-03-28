@@ -599,7 +599,7 @@ body {
     transform-origin: left center;
     
     transition: all .1s;
-    .bg-bleuvert;
+    .bg-rouge;
   }
 
   > * {
@@ -1102,13 +1102,22 @@ small {
   // color: @c-rouge;
 
   border-radius: 4px;
+
+  label {
+    text-transform: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    margin-bottom: 0;
+    color: inherit;
+    cursor: inherit;
+  }
   
   #app:not(.is--wide) & {
     .margin-verysmall;
     margin-left: 0;      
     margin-top: 0;  
 
-    span {
+    span, label {
       // font-size: 0.6rem;
       .font-small;
     }
@@ -1118,7 +1127,7 @@ small {
     }
   }
 
-  > span {
+  > span, label {
     display: inline-block;
     vertical-align: middle;
     .padding-vert-small;
@@ -1128,7 +1137,7 @@ small {
     font-size: 0.7em;
     .padding-top-verysmall;
 
-    > span {
+    > span, label {
       display: block;
       .padding-vert-verysmall;
     }
@@ -1191,6 +1200,29 @@ small {
     &::before {
       background-image: url("/images/i_add_publi.svg");          
     }
+  }
+}
+
+._drop_indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: fade(white, 90%);
+  z-index: 50000;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+
+  > * {
+    display: block;
+    width: 200px;
+    height: 200px;
+
   }
 }
 

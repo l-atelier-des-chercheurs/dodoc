@@ -140,6 +140,7 @@ module.exports = (function() {
 
       edit_the_media: 'Éditer le média',
       edit_project: 'Éditer le projet',
+      drop_here_to_import: 'Déposez vos contenus ici pour les importer',
 
       capture: 'Enregistrer',
       current: 'Actuellement',
@@ -403,6 +404,7 @@ module.exports = (function() {
       publication: 'Publication',
       edit_the_media: 'Edit media',
       edit_project: 'Edit project',
+      drop_here_to_import: 'Drop your content here to import',
 
       capture: 'Capture',
       current: 'Current',
