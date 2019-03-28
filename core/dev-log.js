@@ -1,13 +1,9 @@
 var gutil = require('gulp-util');
-var logger = require('electron-log');
 
 module.exports = dev = (function() {
   let isDebugMode = false;
   let isVerboseMode = false;
   let logToFile = false;
-
-  logger.transports.file.level = 'info';
-  logger.transports.console.level = false;
 
   const API = {
     init: (isDebug, isVerbose, logToFile) => {
@@ -96,9 +92,7 @@ module.exports = dev = (function() {
     _sendToConsole(logArgs, gutil.colors.red);
   }
 
-  function _sendToLogFile(logArgs) {
-    logger.info(logArgs.toString());
-  }
+  function _sendToLogFile(logArgs) {}
   function _sendToConsole(logArgs, color = gutil.colors.white) {
     gutil.log(color(logArgs));
   }

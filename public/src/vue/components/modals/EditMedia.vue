@@ -6,12 +6,19 @@
     :read_only="read_only"
     :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndScroll'"
     :askBeforeClosingModal="askBeforeClosingModal"
+    :show_sidebar="$root.media_modal.show_sidebar"
+    :is_minimized="$root.media_modal.minimized"
+    :can_minimize="true"
+    :media_navigation="true"
     >
     <template slot="header">
       <div class="">{{ $t('edit_the_media') }}</div>
     </template>
 
     <template slot="sidebar">
+      <!-- <small>{{ this.$root.allAuthors }}</small> -->
+      <pre>{{ media.edited_media_filenames }}</pre>
+
 
       <div v-if="!read_only" class="m_modal--buttonrow">
         <!-- CONFLICT WITH QR PRINTING -->
@@ -75,14 +82,14 @@
             <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
           </div>
         </div>
-        <div class="m_metaField" v-if="!!media.authors">
+        <!-- <div class="m_metaField" v-if="!!media.authors">
           <div>
             {{ $t('author') }}
           </div>
           <div>
             {{ media.authors }}
           </div>
-        </div>
+        </div> -->
         <div class="m_metaField">
           <div>
             {{ $t('created') }}
@@ -140,18 +147,34 @@
           </textarea>
         </div> -->
 
+  <!-- Keywords -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('keywords') }}</label>
+        <TagsInput 
+          :keywords="mediadata.keywords"
+          @tagsChanged="newTags => mediadata.keywords = newTags"
+        />
+      </div>
+
   <!-- Author(s) -->
         <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
           <label>{{ $t('author') }}</label>
-          <textarea v-model="mediadata.authors" :readonly="read_only">
-          </textarea>
+
+          <AuthorsInput
+            :currentAuthors="mediadata.authors"
+            @authorsChanged="newAuthors => mediadata.authors = newAuthors"
+          />
+
+          <small>{{ $t('author_instructions') }}</small>
+          <!-- <textarea v-model="mediadata.authors[0]" :readonly="read_only">
+          </textarea> -->
         </div>
 
   <!-- Fav or not -->
         <div class="margin-bottom-small">
           <span class="switch switch-xs">
-            <input type="checkbox" class="switch" id="favswitch" v-model="mediadata.fav" :readonly="read_only">
-            <label for="favswitch">
+            <input type="checkbox" class="switch" id="favswitch_editmedia" v-model="mediadata.fav" :readonly="read_only">
+            <label for="favswitch_editmedia">
               {{ $t('fav') }}
               <svg version="1.1"
                 class="inline-svg"
@@ -181,6 +204,17 @@
         v-model="mediadata.content"
       >
       </MediaContent>
+      <div class="m_mediaOptions" v-if="media.type === 'image'">
+        <label>Options</label>
+        <div>
+          <button type="button" class="buttonLink" @click="editRawMedia('rotate_image', {angle: 90})">
+            Pivoter vers la droite
+          </button>
+          <button type="button" class="buttonLink" @click="editRawMedia('reset')">
+            Revenir à l’original
+          </button>
+        </div>
+      </div>
     </template>
 
   </Modal>
@@ -190,6 +224,9 @@ import Modal from './BaseModal.vue';
 import MediaContent from '../subcomponents/MediaContent.vue';
 import DateTime from '../subcomponents/DateTime.vue';
 import CreateQRCode from './qr/CreateQRCode.vue';
+import { setTimeout } from 'timers';
+import AuthorsInput from '../subcomponents/AuthorsInput.vue';
+import TagsInput from '../subcomponents/TagsInput.vue';
 
 export default {
   props: {
@@ -205,18 +242,23 @@ export default {
     Modal,
     DateTime,
     MediaContent,
-    CreateQRCode
+    CreateQRCode,
+    TagsInput,
+    AuthorsInput
   },
   data() {
     return {
       showQRModal: false,
+      is_minimized: false,
+
       mediadata: {
         type: this.media.type,
         authors: this.media.authors,
         caption: this.media.caption,
         keywords: this.media.keywords,
         fav: this.media.fav,
-        content: this.media.content
+        content: this.media.content,
+        edited_media_filenames: this.media.edited_media_filenames
       },
       mediaURL: `/${this.slugProjectName}/${this.media.media_filename}`,
       askBeforeClosingModal: false
@@ -230,7 +272,14 @@ export default {
       deep: true
     }
   },  
-  mounted() {
+  created() {
+    if(typeof this.mediadata.authors === 'string') {
+      if( this.mediadata.authors !== '') {
+        this.mediadata.authors = this.mediadata.authors.split(',').map(a => {return { name: a }} )
+      } else {
+        this.mediadata.authors = [];
+      }
+    }
   },
   computed: {
   },
@@ -239,17 +288,23 @@ export default {
       window.print();
     },
     removeMedia: function() {
-      if (window.confirm(this.$t('sureToRemoveMedia'))) {
-        this.$root.removeMedia({
-          type: 'projects',
-          slugFolderName: this.slugProjectName, 
-          slugMediaName: this.slugMediaName
-        });
-        // then close that popover
-        this.$emit('close', '');
-      }
+      this.$alertify
+        .okBtn(this.$t('yes'))
+        .cancelBtn(this.$t('cancel'))        
+        .confirm(this.$t('sureToRemoveMedia'), 
+        () => {
+          this.$root.removeMedia({
+            type: 'projects',
+            slugFolderName: this.slugProjectName, 
+            slugMediaName: this.slugMediaName
+          });
+          // then close that popover
+          this.$emit('close', '');
+        },
+        () => {
+        });                    
     },
-    editThisMedia: function(event) {
+    editThisMedia: function() {
       console.log('editThisMedia');
       this.$root.editMedia({ 
         type: 'projects',
@@ -259,10 +314,35 @@ export default {
       });
       // then close that popover
       this.$emit('close', '');
+    },
+    editRawMedia: function(type, detail) {
+      console.log('editRawMedia');
+      this.$root.editMedia({ 
+        type: 'projects',
+        slugFolderName: this.slugProjectName, 
+        slugMediaName: this.slugMediaName,
+        data: this.mediadata,
+        recipe_with_data: {
+          apply_to: this.media.media_filename,
+          type,
+          detail
+        }
+      });
+      // then close that popover
+      // this.$emit('close', '');
     }
   },
 };
 </script>
 <style>
+.m_mediaOptions {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 100;
+  background-color: white;
+  margin: 25px;
+  padding: 15px;
+}
 
 </style>

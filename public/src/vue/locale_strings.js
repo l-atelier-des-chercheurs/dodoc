@@ -17,32 +17,46 @@ module.exports = (function() {
       for_the_placement_on_timeline: '(pour le placement sur la timeline)',
       type: 'Type',
       color: 'Couleur',
-      keywords: 'Mot-clés',
+      keywords: 'Mots-clés',
       author: 'Auteur(s)',
       download: 'Télécharger',
       caption: 'Légende',
       smoothing: 'Lissage',
-      onion_skin: 'transparence de la dernière image',
+      onion_skin: 'Pelure d’oignon',
       'file:': 'Fichier&nbsp;:',
+      add_to_project: 'Ajouter au projet&nbsp;:',
+      input_password: 'Renseigner le mot de passe ci-dessous :',
+      validate_with_enter: 'Valider avec la touche ENTRÉE.',
+      no_stopmotion_created_yet:
+        'Les animations créées apparaîtront dans ce panneau.',
 
       bytes: 'octets',
       kb: 'ko',
       mb: 'Mo',
       gb: 'Go',
+      duration: 'Durée',
 
       date: 'Date',
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',
+      yes: 'Oui',
       cancel: 'Annuler',
       back: 'Retour',
       sureToRemoveAuthor: 'Êtes-vous sûr de vouloir supprimer cet auteur ?',
-      sureToCloseModal: 'Êtes-vous sûr de vouloir fermer cette fenêtre ?',
+      changes_not_saved_sureToCloseModal:
+        'Des modifications n’ont pas été enregistrées. Voulez-vous vraiment fermer cette fenêtre ?',
       sureToRemovePubli:
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
+      sure_to_cancel_stopmotion:
+        'Êtes-vous sûr de vouloir arrêter cette animation ? Vous pourrez la retrouver dans le menu "Liste des animations"',
       validate_media: 'Valider le média',
+      add_keyword: 'Ajouter un mot-clé',
+      add: 'Ajouter',
 
       showing: 'Affichage de',
       media_filter: 'Filtre de médias',
+      no_projects_yet:
+        'Il n’y a pas encore de projet, créez-en un pour commencer à utiliser do•doc !',
       projects_of: 'projets sur',
       medias_of: 'médias sur',
       projects: 'Projets',
@@ -54,17 +68,20 @@ module.exports = (function() {
       create_an_author: 'Créer un auteur',
       favorite_medias: 'Média favoris',
       all_medias: 'Tous les médias',
-      create_text: 'Écrire du texte',
+      create_text: 'Écrire',
       import: 'Importer',
       import_all_files: 'Importer tous les fichiers',
       import_medias: 'Importer des médias',
-      select_files_to_import: 'Sélectionnez les fichiers à importer',
-      select_cover_image: 'Sélectionnez une image de couverture',
-      select_portrait_image: 'Sélectionnez une image de portrait',
+      select_files_to_import: 'Sélectionner les fichiers à importer',
+      select_cover_image: 'Sélectionner une image de couverture',
+      select_portrait_image: 'Sélectionner une image de portrait',
       add_to_publication: 'Ajouter à la publication',
       add_a_page: 'Ajouter une page',
       insert_a_page_here: 'Insérer une page ici',
-      remove_this_page: '↑ Supprimer cette page ↑',
+      remove_this_page: '▲ Supprimer cette page ▲',
+
+      anonymous: 'anonyme',
+      other_users: 'autres utilisateurs',
 
       made_with_dodoc:
         'Page web réalisée avec l’application libre et gratuite do•doc',
@@ -78,13 +95,18 @@ module.exports = (function() {
       height: 'Hauteur',
       zoom: 'Zoom',
       settings: 'Règlages',
+      stopmotion_list: 'Liste des animations',
+
       print: 'Imprimer',
       create: 'Créer',
       remove: 'Supprimer',
+      remove_this_image: 'Supprimer cette image',
       password: 'Mot de passe',
       protected_by_pass: 'protégé par mot de passe',
       password_instructions:
-        'Si existant, seul les utilisateurs possédant ce mot de passe pourront modifier ce dossier et accéder aux médias non publics.',
+        'Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce projet.',
+      author_instructions:
+        'Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).',
 
       sort_by: 'Organiser par',
       in_the_order: 'Dans l’ordre',
@@ -145,6 +167,7 @@ module.exports = (function() {
       fullscreen: 'Plein écran',
       preview: 'Aperçu',
       filter: 'Filtre',
+      filters: 'Filtres',
       header_left: 'En-tête gauche',
       header_right: 'En-tête droite',
       gridstep: 'Pas de la grille d’alignement',
@@ -153,11 +176,16 @@ module.exports = (function() {
       margin_right: 'Marge: droite',
       margin_bottom: 'Marge: bas',
       number_of_medias: 'Nombre de médias',
+      number_of_pages: 'Nombre de pages',
 
       export_folder: 'Exporter en format WEB',
       export: 'Exporter',
       export_as_pdf: 'Export PDF',
       new_window: 'Nouvelle fenêtre',
+      export_video_instructions:
+        'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des vidéos ajoutéez à la publication.',
+      make_video: 'Fabriquer une vidéo',
+      creation_in_progress: 'En cours de création…',
 
       publication_list: 'Liste des publications',
       export_publication: 'Exportation d’une publication',
@@ -167,14 +195,16 @@ module.exports = (function() {
       get_website:
         'Pour récupérer un site web contenant cette publication (par exemple pour la diffuser en ligne), cliquez sur le bouton ci-dessous&nbsp;:',
       download_website: 'Télécharger une version web',
-      pdf_creation_in_progress: 'En cours de création…',
       pdf_created: 'Le PDF a été créé',
+      video_created: 'La vidéo a été créée',
       open_in_app: 'Afficher',
       format: 'Format',
       template: 'Gabarit',
       standard: 'Standard',
       'feuille de choux': 'Feuille de Choux',
+      'human tech days': 'Human Tech Days',
       page_by_page: 'Document page à page',
+      video_assemblage: 'Montage vidéo',
       web: 'Page web',
 
       last_modified: 'Dernière modification',
@@ -187,10 +217,10 @@ module.exports = (function() {
           'Les iPhones et les iPads ne sont pas compatibles avec la fonctionnalité de Capture.',
         instead_import_with_this_button:
           'Utilisez plutôt la fonctionnalité d’import ci-dessus pour prendre des photos et des vidéos ou en importer depuis votre appareil.',
-        media_was_sent: 'Le média a été envoyé.',
+        media_was_sent: 'Le média a été enregistré.',
         media_couldnt_been_sent:
-          'Le média n’a pas pu être envoyé à cause d’une erreur de connexion.',
-        file_was_sent: 'Le fichier a été envoyé.',
+          'Le média n’a pas pu être enregistré à cause d’une erreur de connexion.',
+        file_was_sent: 'Le fichier a été enregistré.',
         file_upload_not_allowed:
           'Votre navigateur web ne prend pas en charge l’envoi de fichiers.',
         connection_active: 'La connexion au serveur est active.',
@@ -219,13 +249,16 @@ module.exports = (function() {
         audio_source_not_set: 'La source audio n’a pas été trouvée.',
         video_stream_not_available:
           'Erreur : le flux vidéo n’est pas disponible.',
-        no_author_found_with_nfc_tag:
-          'Scan d’un tag NFC réussi, néanmoins aucun auteur n’a été associé à ce tag.',
+        no_content_found_with_nfc_tag:
+          'Scan d’un tag NFC réussi, associez-lui un auteur ou un média pour commencer.',
         author_found_with_nfc_tag:
           'Scan d’un tag NFC réussi, activation de l’auteur suivant&nbsp;:',
-        medias_uploaded: 'Tous les médias ont bien étés envoyés.',
+        medias_uploaded: 'Tous les médias ont bien étés enregistrés.',
         medias_upload_failed:
-          'Erreur&nbsp;: certains médias n’ont pas pu être envoyés.'
+          'Erreur&nbsp;: certains médias n’ont pas pu être enregistrés.',
+        video_converted: 'La vidéo a été convertie et ajoutée au projet.',
+        project_has_been_removed:
+          'Ce projet vient d’être supprimé par quelqu’un d’autre.'
       }
     },
     en: {
@@ -249,27 +282,38 @@ module.exports = (function() {
       caption: 'Caption',
       date: 'Date',
       smoothing: 'smoothing',
-      onion_skin: 'transparency of last image',
+      onion_skin: 'Onion skin',
       'file:': 'File&nbsp;:',
+      add_to_project: 'Add to project:',
+      input_password: 'Input the password here:',
+      validate_with_enter: 'Validate with ENTER.',
+      no_stopmotion_created_yet:
+        'Created stopmotion animations will appear in this list.',
 
       bytes: 'bytes',
       kb: 'KB',
       mb: 'MB',
       gb: 'GB',
+      duration: 'Duration',
 
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',
+      yes: 'Yes',
       cancel: 'Cancel',
       back: 'Back',
       sureToRemoveAuthor: 'Do you really want to delete this author?',
-      sureToCloseModal: 'Do you really want to close this window?',
+      changes_not_saved_sureToCloseModal:
+        'All changes were not saved. Do you really want to close this window?',
       sureToRemovePubli: 'Do you really want to delete this publication?',
+      sure_to_cancel_stopmotion:
+        'Do you really want to cancel this stopmotion? You can resume making it by clicking on "Stopmotion list"',
       validate_media: 'Validate the media',
+      add_keyword: 'Add a keyword',
+      add: 'Add',
 
       showing: 'Showing',
       media_filter: 'Medias filter',
-      no_projects_yet:
-        'No projects created yet. Create one to add captures and import content.',
+      no_projects_yet: 'No projects yet, create one to start using do•doc!',
       projects_of: 'projects of',
       medias_of: 'medias of',
       projects: 'Projects',
@@ -281,7 +325,7 @@ module.exports = (function() {
       create_an_author: 'Create an author',
       favorite_medias: 'Favorite medias',
       all_medias: 'All medias',
-      create_text: 'Write text',
+      create_text: 'Write',
       import: 'Import',
       import_medias: 'Import medias',
       import_all_files: 'Import all files',
@@ -291,7 +335,10 @@ module.exports = (function() {
       add_to_publication: 'Add to publication',
       add_a_page: 'Add a page',
       insert_a_page_here: 'Insert a page here',
-      remove_this_page: '↑ Remove this page ↑',
+      remove_this_page: '▲ Remove this page ▲',
+
+      anonymous: 'anonymous',
+      other_users: 'other users',
 
       made_with_dodoc: 'Webpage made with do•doc, a free and open-source app',
 
@@ -303,10 +350,13 @@ module.exports = (function() {
       print: 'Print',
       create: 'Create',
       remove: 'Remove',
+      remove_this_image: 'Remove this image',
       password: 'Mot de passe',
       protected_by_pass: 'protected by password',
       password_instructions:
-        'If set, only users with the password will be able to edit this folder and access the content that’s not public.',
+        'If set, only users with the password will be able to open this project.',
+      author_instructions:
+        'To create authors, close this window and click on (AUTHORS).',
 
       sort_by: 'Sort by',
       in_the_order: 'In the order',
@@ -318,6 +368,7 @@ module.exports = (function() {
       height: 'Height',
       zoom: 'Zoom',
       settings: 'Settings',
+      stopmotion_list: 'Stopmotion list',
 
       'lang:': 'Select lang:',
       lang: 'Select lang',
@@ -337,6 +388,9 @@ module.exports = (function() {
       export: 'Export',
       export_as_pdf: 'Export as PDF',
       new_window: 'New Window',
+      export_video_instructions:
+        'Click this button to generate a video from multiple source videos.',
+      make_video: 'Make a video',
 
       select: 'Select',
       unselect: 'Un-select',
@@ -377,6 +431,7 @@ module.exports = (function() {
       fullscreen: 'Fullscreen',
       preview: 'Preview',
       filter: 'Filter',
+      filters: 'Filters',
       header_left: 'Left header text',
       header_right: 'Right header text',
       gridstep: 'Step of alignment grid',
@@ -385,6 +440,7 @@ module.exports = (function() {
       margin_right: 'Margin: right',
       margin_bottom: 'Margin: bottom',
       number_of_medias: 'Number of medias',
+      number_of_pages: 'Number of pages',
 
       export_folder: 'Export as a webpage',
       export: 'Export',
@@ -397,12 +453,14 @@ module.exports = (function() {
       get_website:
         'To download a website version of this publication (for example, to publish online), click here:',
       download_website: 'Download a website',
-      pdf_creation_in_progress: 'PDF creation in progress…',
+      creation_in_progress: 'Creation in progress…',
       pdf_created: 'PDF created',
+      video_created: 'The video was created',
       open_in_app: 'Open',
       format: 'Format',
       template: 'Template',
       page_by_page: 'Paged document',
+      video_assemblage: 'Video editing',
       web: 'Webpage',
 
       last_modified: 'Last modified',
@@ -444,12 +502,16 @@ module.exports = (function() {
           'Failed to start audio feed. Try changing the source.',
         audio_source_not_set: 'The source audio has not been set.',
         video_stream_not_available: 'Error: Video stream not available.',
-        no_author_found_with_nfc_tag:
-          'NFC tag detected, however no author was found. Create an author first',
+        no_content_found_with_nfc_tag:
+          'NFC tag detected, bind it to an author or a media to start.',
         author_found_with_nfc_tag:
           'NFC tag detected, the following author will be logged-in:',
         medias_uploaded: 'All medias were imported successfully.',
-        medias_upload_failed: 'Error: some medias failed to import.'
+        medias_upload_failed: 'Error: some medias failed to import.',
+        video_converted:
+          'The video was converted successfully and added to the project.',
+        project_has_been_removed:
+          'This project just got removed by another user.'
       }
     }
   };

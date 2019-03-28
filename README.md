@@ -5,47 +5,16 @@
 do•doc (or dodoc) is a documentation tool, first designed for use in classrooms with children. It is a platform connected to a physical device that operates a camera and a microphone, and enables one to capture traces from an on-going experience for later reflections, reconstructions and creation of narratives.<br> 
 do•doc is made by [l'atelier des chercheurs](http://latelier-des-chercheurs.fr/) (Sarah Garcin, Pauline Gourlet & Louis Eveillard).<br>
 
-The documentation for this app can be found [here (in french)](https://latelier-des-chercheurs.fr/docs/manuel-dodoc).
+More information: 
+
+- in english: https://latelier-des-chercheurs.fr/en/tools/dodoc
+- en Français : https://latelier-des-chercheurs.fr/outils/dodoc
 
 # License
 
 This app is under a [Creative Commons BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/) license. It can be used, modified and shared freely as long as no commercial use is made and the attribution and link to [L’Atelier des Chercheurs](https://latelier-des-chercheurs.fr/) are kept.
 
-## DoDoc design principles
-
-![DoDoc](http://latelier-des-chercheurs.fr/github/schema_recap_dodoc-04.png)
-
-## Screenshots of the app
-
-![DoDoc](http://latelier-des-chercheurs.fr/github/interfaceecran-accueil.jpg)
-
-![DoDoc](http://latelier-des-chercheurs.fr/github/interfaceecran-projet.jpg)
-
-![DoDoc](http://latelier-des-chercheurs.fr/github/interfaceecran-capture.jpg)
-
-![DoDoc](http://latelier-des-chercheurs.fr/github/interfaceecran-publication.jpg)
-
-## Two examples of stations made for the app
-
-![DoDoc](http://latelier-des-chercheurs.fr/github/dodoctei.jpg)
-
-![DoDoc](http://latelier-des-chercheurs.fr/github/IMG_9332.jpg)
-
-## App and stations being used with children 
-
-![DoDoc](http://latelier-des-chercheurs.fr/github/_1040646.jpg)
-
-![DoDoc](http://latelier-des-chercheurs.fr/github/_1040649.jpg)
-
-![DoDoc](http://latelier-des-chercheurs.fr/github/_1040651.jpg)
-
-### The app running on a smartphone
-
-![DoDoc](http://latelier-des-chercheurs.fr/github/_1060226.jpg)
-
-### A station made for teaching the principles of stop-motion animation
- 
-![DoDoc](http://latelier-des-chercheurs.fr/github/_1060285.jpg)
+[Homescreen of do•doc](https://latelier-des-chercheurs.fr/thumbs/outils/dodoc/screenshot-2018-07-12-11.40.02-1200x765-q60.png)
 
 # Install do•doc
 

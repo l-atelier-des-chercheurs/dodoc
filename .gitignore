@@ -1,3 +1,6 @@
+dist/
+settings.json
+
 ####### NODE ########
 .tmp
 .sass-cache
@@ -9,10 +12,7 @@ pids
 cache
 node_modules
 
-dist/build.js
 build/config.gypi
-package-lock.json
-dist/
 
 ####### OSX ########
 .DS_Store

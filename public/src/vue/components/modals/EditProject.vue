@@ -12,6 +12,7 @@
     </template>
 
     <template slot="sidebar">
+
 <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('project_name') }}</label>
@@ -29,19 +30,30 @@
       </div>
 
 <!-- Password -->
-<!--
-      <div class="margin-bottom-small">
+      <!-- <div class="margin-bottom-small">
         <label>{{ $t('password') }}</label>
         <input type="password" v-model="projectdata.password" :readonly="read_only">
         <small>{{ $t('password_instructions') }}</small>
+      </div> -->
+
+
+<!-- Keywords -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('keywords') }}</label>
+        <TagsInput 
+          :keywords="projectdata.keywords"
+          @tagsChanged="newTags => projectdata.keywords = newTags"
+        />
       </div>
- -->
 
 <!-- Author(s) -->
       <div class="margin-bottom-small">
         <label>{{ $t('author') }}</label><br>
-        <textarea v-model="projectdata.authors" :readonly="read_only">
-        </textarea>
+        <AuthorsInput
+          :currentAuthors="projectdata.authors"
+          @authorsChanged="newAuthors => projectdata.authors = newAuthors"
+        />
+        <small>{{ $t('author_instructions') }}</small>
       </div>
 
     </template>
@@ -56,6 +68,8 @@
 import Modal from './BaseModal.vue';
 import slug from 'slugg';
 import ImageSelect from '../subcomponents/ImageSelect.vue';
+import TagsInput from '../subcomponents/TagsInput.vue';
+import AuthorsInput from '../subcomponents/AuthorsInput.vue';
 
 export default {
   props: {
@@ -65,33 +79,44 @@ export default {
   },
   components: {
     Modal,
-    ImageSelect
+    ImageSelect,
+    TagsInput,
+    AuthorsInput
   },
   data() {
     return {
       projectdata: {
         name: this.project.name,
-        authors: this.project.authors
+        authors: typeof this.project.authors === 'string' && this.project.authors !== '' ? this.project.authors.split(',').map(a => {return { name: a }} ) : this.project.authors,
+        keywords: this.project.keywords
       },
+      tag: '',
       preview: undefined,
       askBeforeClosingModal: false
     };
   },
   watch: {
-    'projectdata.name': function() {
-      this.askBeforeClosingModal = true;
+    'projectdata': {
+      handler() {
+        this.askBeforeClosingModal = true;
+      },
+      deep: true
     },
     'preview': function() {
       this.askBeforeClosingModal = true;
     }
   },
+  mounted() {
+  },
   computed: {
     previewURL() {
-      if(!this.project.preview) {
+      if(!this.project.hasOwnProperty('preview') || this.project.preview === '') {
         return '';
       }
-      return `/${this.slugProjectName}/${this.project.preview}`;
-    }    
+      const thumb = this.project.preview.filter(p => p.size === 640);
+      if(thumb.length > 0) { return `${thumb[0].path}?${(new Date()).getTime()}` }
+      return '';
+    }
   },
   methods: {
     editThisProject: function(event) {
@@ -133,8 +158,7 @@ export default {
 
       this.$emit('close', '');
     }
-  },
-  mounted() {}
+  }
 };
 </script>
 <style>
