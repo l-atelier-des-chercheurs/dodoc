@@ -18,7 +18,7 @@
 
   transition: background-color .3s ease-out;
 
-  @media screen and (max-width: 50rem) {
+  #app:not(.is--wide) & {
     align-items: flex-start;
     overflow: scroll !important;
     padding: 0 !important;
@@ -36,25 +36,6 @@
     pointer-events: none;
     align-items: flex-end;
   }
-
-  // @media screen and (max-width: 50rem) {
-  //   overflow: auto !important;
-  //   align-items: flex-start;
-  //   .m_modal--container {
-  //     .m_modal--container--content {
-  //       display: block;
-  //     }
-  //   }
-  // }
-  // html.touchevents & {
-  //   overflow: auto !important;
-  //   align-items: flex-start;
-  //   .m_modal--container {
-  //     .m_modal--container--content {
-  //       display: block;
-  //     }
-  //   }
-  // }
 
 }
 
@@ -95,14 +76,6 @@
       border-radius: 20px;
     }
   }
-
-  // @media screen and (max-width: 50rem) {
-  //   margin: 50px 0;
-  // }
-  // html.touchevents & {
-  //   margin: 50px 0;
-  // }
-
   .m_modal--container--content {
     height: auto;
 
@@ -127,7 +100,7 @@
 
         // transition: all .8s ease-out;
 
-        @media screen and (max-width: 50rem) {
+        #app:not(.is--wide) & {
           max-height: none;
           flex: 1 1 400px;
         }
@@ -178,11 +151,11 @@
       align-self: flex-start;
       .m_modal--preview {
         height: auto;
-        @media screen and (max-width: 50rem) {
+        #app:not(.is--wide) & {
           position: relative;
         }
       }
-      @media screen and (min-width: 50rem) {
+      #app.is--wide & {
         width: 90vw;
       }
 
@@ -205,21 +178,21 @@
       max-width: @t-panelWidth * 4;
       // align-self: flex-start;
       .m_modal--preview {
-        @media screen and (min-width: 50rem) {
+        #app.is--wide & {
           min-height: 70vh;
         }
-        @media screen and (max-width: 50rem) {
+        #app:not(.is--wide) & {
           position: fixed;
           height: 50vh;         
         }
       }  
       .m_modal--sidebar {
-        @media screen and (max-width: 50rem) {
+        #app:not(.is--wide) & {
           margin-top: 50vh;
         }      
       }
       
-      @media screen and (min-width: 50rem) {
+      #app.is--wide & {
         width: 90vw;
       }
     }
@@ -318,7 +291,7 @@
         .padding-sides-small;
         text-align: center;
 
-        @media screen and (max-width: 50rem) {
+        #app:not(.is--wide) & {
           > a, > button {
             font-size:0.7rem;
             padding: 0;
@@ -439,7 +412,7 @@
 }
 
 .m_modal--close_button {
-  position: fixed;
+  position:   fixed;
   top: 0;
   right: 0;
   z-index: 1500;
@@ -451,10 +424,6 @@
     stroke-width: 3px;
   }
 
-  // @media screen and (max-width: 50rem) {
-  //   top: 0;
-  //   right: 0;
-  // }
   html.touchevents & {
     top: 0;
     right: 0;
@@ -476,7 +445,7 @@
     transform: scale(-1) rotate(-360deg);
   }
 
-  @media screen and (max-width: 40rem) {
+  #app:not(.is--wide) & {
     display: none;
   }
 }
@@ -485,8 +454,10 @@
   top: ~"calc(50% - 40px)";
   z-index: 1500;
 
-  @media screen and (max-width: 50rem) {
-
+  #app:not(.is--wide) & {
+    top:auto;
+    bottom: 0;
+    border: none;
   }
 }
 .m_modal--nav_left {
@@ -515,19 +486,24 @@
 
   min-height: 4em;
 
+  #app:not(.is--wide) & {
+    position: fixed;
+    z-index: 1000;
+    bottom: 0;
+    width: 100%;
+    .bg-blanc;
+  }
   button {
     .margin-verysmall;
   }
 
   button[type="submit"] {
 
-    @media screen and (max-width: 50rem) {
-      position: fixed;
-      z-index: 1000;
-      bottom: 1em;
-      left: 50%;
+    #app:not(.is--wide) & {
+      // left: 50%;
       width: 10em;
-      transform: translateX(-50%);
+      margin: 0 auto;
+      // transform: translateX(-50%);
       text-align: center;    
       min-height: 0;
     }
