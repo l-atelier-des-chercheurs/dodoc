@@ -141,7 +141,7 @@
             />
 
             <MediaContent
-              v-if="selected_mode === 'stopmotion' && stopmotion.onion_skin_img"
+              v-if="selected_mode === 'stopmotion' && stopmotion.onion_skin_img && current_stopmotion"
               class="m_panel--previewCard--live--onionskin"
               :context="'edit'"
               :slugFolderName="current_stopmotion"
@@ -304,7 +304,7 @@
                 <label>
                   {{ $t('onion_skin') }}
                 </label>
-                <input class="margin-none" type="range" v-model="stopmotion.onion_skin_opacity" min="0.1" max=".9" step="0.01">
+                <input class="margin-none" type="range" v-model="stopmotion.onion_skin_opacity" min="0" max=".9" step="0.01">
               </div>
 
               <button
@@ -468,7 +468,7 @@ export default {
       },
       stopmotion: {
         onion_skin_img: false,
-        onion_skin_opacity: 0.8
+        onion_skin_opacity: 0
       }
     }
   },

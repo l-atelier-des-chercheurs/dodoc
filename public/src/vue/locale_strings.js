@@ -48,7 +48,7 @@ module.exports = (function() {
       sureToRemovePubli:
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
       sure_to_cancel_stopmotion:
-        'Êtes-vous sûr de vouloir supprimer cette animation ?',
+        'Êtes-vous sûr de vouloir arrêter cette animation ? Vous pourrez la retrouver dans le menu "Liste des animations"',
       validate_media: 'Valider le média',
       add_keyword: 'Ajouter un mot-clé',
       add: 'Ajouter',
@@ -100,6 +100,7 @@ module.exports = (function() {
       print: 'Imprimer',
       create: 'Créer',
       remove: 'Supprimer',
+      remove_this_image: 'Supprimer cette image',
       password: 'Mot de passe',
       protected_by_pass: 'protégé par mot de passe',
       password_instructions:
@@ -216,10 +217,10 @@ module.exports = (function() {
           'Les iPhones et les iPads ne sont pas compatibles avec la fonctionnalité de Capture.',
         instead_import_with_this_button:
           'Utilisez plutôt la fonctionnalité d’import ci-dessus pour prendre des photos et des vidéos ou en importer depuis votre appareil.',
-        media_was_sent: 'Le média a été envoyé.',
+        media_was_sent: 'Le média a été enregistré.',
         media_couldnt_been_sent:
-          'Le média n’a pas pu être envoyé à cause d’une erreur de connexion.',
-        file_was_sent: 'Le fichier a été envoyé.',
+          'Le média n’a pas pu être enregistré à cause d’une erreur de connexion.',
+        file_was_sent: 'Le fichier a été enregistré.',
         file_upload_not_allowed:
           'Votre navigateur web ne prend pas en charge l’envoi de fichiers.',
         connection_active: 'La connexion au serveur est active.',
@@ -252,9 +253,9 @@ module.exports = (function() {
           'Scan d’un tag NFC réussi, associez-lui un auteur ou un média pour commencer.',
         author_found_with_nfc_tag:
           'Scan d’un tag NFC réussi, activation de l’auteur suivant&nbsp;:',
-        medias_uploaded: 'Tous les médias ont bien étés envoyés.',
+        medias_uploaded: 'Tous les médias ont bien étés enregistrés.',
         medias_upload_failed:
-          'Erreur&nbsp;: certains médias n’ont pas pu être envoyés.',
+          'Erreur&nbsp;: certains médias n’ont pas pu être enregistrés.',
         video_converted: 'La vidéo a été convertie et ajoutée au projet.',
         project_has_been_removed:
           'Ce projet vient d’être supprimé par quelqu’un d’autre.'
@@ -305,7 +306,7 @@ module.exports = (function() {
         'All changes were not saved. Do you really want to close this window?',
       sureToRemovePubli: 'Do you really want to delete this publication?',
       sure_to_cancel_stopmotion:
-        'Do you really want to cancel this stopmotion?',
+        'Do you really want to cancel this stopmotion? You can resume making it by clicking on "Stopmotion list"',
       validate_media: 'Validate the media',
       add_keyword: 'Add a keyword',
       add: 'Add',
@@ -349,6 +350,7 @@ module.exports = (function() {
       print: 'Print',
       create: 'Create',
       remove: 'Remove',
+      remove_this_image: 'Remove this image',
       password: 'Mot de passe',
       protected_by_pass: 'protected by password',
       password_instructions:

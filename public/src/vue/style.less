@@ -2285,6 +2285,11 @@ small {
     left: 0;
     z-index: 10;
     bottom: 100%;
+
+    button {
+      .bg-noir;
+      .c-blanc;
+    }
   }
   
   .m_stopmotionpanel--medias {
@@ -2292,7 +2297,7 @@ small {
     flex: 1 1 auto;
     display: flex;
     flex-flow: row nowrap;
-    max-height: 70px;
+    max-height: 120px;
     // justify-content: flex-end;
 
     // .m_stopmotionpanel--medias--single {
@@ -2328,6 +2333,8 @@ small {
       align-items: center;
 
       overflow-x: auto;
+      overflow-y: hidden;
+      
       -webkit-overflow-scrolling: touch;
       overflow-scrolling: touch;
       overscroll-behavior-y: contain;  
@@ -2420,6 +2427,33 @@ small {
       display: flex;
       flex: row nowrap;
       align-items: center;
+
+      --input-height: 2em;
+
+      .m_stopmotionpanel--medias--validation--fpscounter {
+        // .padding-sides-small;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+      
+
+        select {
+          .margin-sides-verysmall;
+          flex: 0 0 auto;
+          max-width: 50px;
+          .font-small;
+          // .bg-noir;
+        }  
+        label {
+          .margin-sides-verysmall;
+          // display: none;
+          .c-blanc;
+          max-width: 80px;
+          font-size: .6em;
+        }
+
+      }
+
 
       button {
         // width: 100%;

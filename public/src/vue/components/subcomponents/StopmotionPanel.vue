@@ -8,7 +8,7 @@
         type="button"
         v-if="!validating_video_preview"
         @click="cancelStopmotion"
-        class="buttonLink button-bg_rounded border c-blanc"
+        class="buttonLink"
       >
         <span class="text-cap font-verysmall">
           {{ $t('back') }}
@@ -20,10 +20,10 @@
         type="button"
         :disabled="read_only"
         @click="removeMedia(show_previous_photo.metaFileName)"
-        class="buttonLink button-bg_rounded border c-blanc m_stopmotionpanel--medias--single--removeMedia"
+        class="buttonLink m_stopmotionpanel--medias--single--removeMedia"
       >
         <span class="">
-          {{ $t('remove') }}
+          {{ $t('remove_this_image') }}
         </span>
       </button>
     </div>
@@ -73,6 +73,18 @@
         </div>
       </transition-group>
       <div class="m_stopmotionpanel--medias--validation">
+        <div class="m_stopmotionpanel--medias--validation--fpscounter">
+          <select  step="1" v-model.number="frameRate">
+            <option>2</option>
+            <option>4</option>
+            <option>8</option>
+            <option>15</option>
+            <option>24</option>
+            <option>30</option>
+          </select>
+          <label class="" v-if="medias.length <= 1">{{ $t('img_per_second') }}</label>
+        </div>
+
         <button 
           type="button" 
           class="button button-bg_rounded bg-bleuvert"   
@@ -100,48 +112,6 @@
       />
     </div>
 
-    <!-- <div class="m_stopmotionpanel--buttons">
-      <div>
-        <button
-          type="button"
-          v-if="!validating_video_preview"
-          @click="cancelStopmotion"
-          class="button button-bg_rounded button-outline"
-        >
-          <span class="text-cap font-verysmall">
-            {{ $t('back') }}
-          </span>
-        </button>
-
-        <button
-          type="button"
-          v-if="validating_video_preview"
-          @click="backToStopmotion"
-          class="button button-bg_rounded button-outline"
-        >
-          <span class="text-cap font-verysmall">
-            ‹ {{ $t('back') }}
-          </span>
-        </button>
-
-        <div class="">
-          <label class="">{{ $t('img_per_second') }}</label>
-          <input type="number" min="0" max="100" step="1" v-model.number="frameRate" />
-        </div>
-
-        <button 
-          type="button" 
-          class="button button-bg_rounded bg-bleuvert"   
-          v-if="medias.length > 0"
-          @click="assembleStopmotionMedias"
-          :disabled="validating_video_preview && frameRate === previousFrameRate"
-        >
-          <span class="text-cap font-verysmall">
-            {{ $t('generate') }}
-          </span>
-        </button>
-      </div>
-    </div> -->
     <MediaValidationButtons
       v-if="validating_video_preview"
       :read_only="read_only"
@@ -254,7 +224,7 @@ export default {
       this.media_is_being_sent = false;
 
       this.$nextTick(() => {
-        this.$refs.videoPreview.getElementsByTagName('video')[0].play();
+        // this.$refs.videoPreview.getElementsByTagName('video')[0].play();
       });
     },
     backToStopmotion: function() {
@@ -267,18 +237,18 @@ export default {
       this.validating_video_preview = false;    
     },
     cancelStopmotion: function() {
-      // this.$alertify
-      //   .okBtn(this.$t('yes'))
-      //   .cancelBtn(this.$t('cancel'))        
-      //   .confirm(this.$t('sure_to_cancel_stopmotion'), 
-      //   () => {
+      this.$alertify
+        .okBtn(this.$t('yes'))
+        .cancelBtn(this.$t('cancel'))        
+        .confirm(this.$t('sure_to_cancel_stopmotion'),
+        () => {
           this.show_previous_photo = false;
           this.$nextTick(() => {
             this.$emit('close');      
           });
-      // },
-      // () => {
-      // });                    
+      },
+      () => {
+      });                    
     },
     save: function() {
       this.show_previous_photo = false;
