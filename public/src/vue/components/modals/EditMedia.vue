@@ -256,16 +256,19 @@ export default {
         keywords: this.media.keywords,
         fav: this.media.fav,
         content: this.media.content,
-        edited_media_filenames: this.media.edited_media_filenames
       },
       mediaURL: `/${this.slugProjectName}/${this.media.media_filename}`,
-      askBeforeClosingModal: false
+      askBeforeClosingModal: false,
+
+      is_ready: false
     };
   },
   watch: {
     'mediadata': {
       handler() {
-        this.askBeforeClosingModal = true;
+        if(is_ready) {
+          this.askBeforeClosingModal = true;
+        }
       },
       deep: true
     }
@@ -278,6 +281,8 @@ export default {
         this.mediadata.authors = [];
       }
     }
+
+    this.is_ready = true;
   },
   computed: {
   },
