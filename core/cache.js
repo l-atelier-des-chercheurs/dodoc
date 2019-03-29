@@ -2,17 +2,15 @@ const cache = require('memory-cache');
 
 module.exports = (function() {
   let caches = {};
-
-  function makeKey({ type, slugFolderName }) {
-    return `${type}`;
-    // if(slugFolderName) {
-    //   return `${type}/${slugFolderName}`;
-    // } else {
-    // }
-  }
+  let is_enabled = false;
 
   return {
+    enable: () => (is_enabled = true),
     get: ({ type, slugFolderName }) => {
+      if (!is_enabled) {
+        return null;
+      }
+
       dev.logfunction(`CACHE — get ${type}/${slugFolderName}`);
 
       if (!caches.hasOwnProperty(type)) {
@@ -32,6 +30,10 @@ module.exports = (function() {
       }
     },
     put: ({ type, slugFolderName }, value) => {
+      if (!is_enabled) {
+        return null;
+      }
+
       dev.logfunction(`CACHE — put ${type}/${slugFolderName}`);
       if (!caches.hasOwnProperty(type)) {
         caches[type] = new cache.Cache();
@@ -39,6 +41,10 @@ module.exports = (function() {
       caches[type].put(slugFolderName, value);
     },
     del: ({ type, slugFolderName }) => {
+      if (!is_enabled) {
+        return null;
+      }
+
       dev.logfunction(`CACHE — del ${type}/${slugFolderName}`);
       if (!caches.hasOwnProperty(type)) {
         return null;

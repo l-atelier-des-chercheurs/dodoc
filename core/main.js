@@ -7,7 +7,7 @@ const server = require('./server');
 
 const dev = require('./dev-log'),
   api = require('./api'),
-  file = require('./file');
+  cache = require('./cache');
 
 module.exports = function({ router }) {
   let win;
@@ -72,6 +72,13 @@ module.exports = function({ router }) {
       }
 
       global.tempStorage = getPath.getCacheFolder();
+
+      if (
+        global.settings.hasOwnProperty('cache_content') &&
+        global.settings.cache_content === true
+      ) {
+        cache.enable();
+      }
 
       dev.log(`——— Starting dodoc2 app version ${global.appInfos.version}`);
 
