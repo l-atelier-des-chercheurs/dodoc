@@ -114,7 +114,7 @@ export default {
         return '';
       }
       const thumb = this.project.preview.filter(p => p.size === 640);
-      if(thumb.length > 0) { return `${thumb[0].path}?${(new Date()).getTime()}` }
+      if(thumb.length > 0) { return `${thumb[0].path}` }
       return '';
     }
   },

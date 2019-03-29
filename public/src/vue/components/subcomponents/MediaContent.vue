@@ -170,7 +170,7 @@ export default {
       let pathToSmallestThumb = small_thumb[0].path;
 
       let url = this.$root.state.mode === 'export_publication' ? `./${pathToSmallestThumb}` : `/${pathToSmallestThumb}`;
-      url += `?${(new Date()).getTime()}`;
+      // url += `?${(new Date()).getTime()}`;
       return url;
     },
     linkToHoveredThumb: function() {
@@ -197,7 +197,7 @@ export default {
       let pathToSmallestThumb = timeMarkThumbs[0].thumbsData.filter(m => m.size === this.thumbRes)[0].path;
 
       let url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
-      url += `?${(new Date()).getTime()}`;
+      // url += `?${(new Date()).getTime()}`;
       return pathToSmallestThumb !== undefined
         ? url
         : this.mediaURL;
