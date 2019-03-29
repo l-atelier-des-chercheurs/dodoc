@@ -211,6 +211,7 @@
 
               <vue-plyr
                 v-else-if="media_to_validate.type === 'video'" 
+                :options="plyr_options"
               >
                 <video :poster="linkToVideoThumb" :src="media_to_validate.objectURL" preload="none" />
               </vue-plyr>
@@ -223,7 +224,9 @@
                   :src="media_to_validate.preview"
                 >
 
-                <vue-plyr>
+                <vue-plyr
+                  :options="plyr_options"
+                >
                   <audio :src="media_to_validate.objectURL" preload="none" />
                 </vue-plyr>
               </div>
@@ -433,7 +436,11 @@ export default {
 
       current_stopmotion: false,
       is_validating_stopmotion_video: false,
-      
+
+      plyr_options: {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        iconUrl: '/images/plyr.svg'
+      },
 
       ideal_camera_resolution: {
         name: 'hd',

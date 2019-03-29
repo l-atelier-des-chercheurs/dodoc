@@ -17,14 +17,14 @@
         <img :src="linkToVideoThumb">
       </template>
       <template v-else>
-        <vue-plyr>
+        <vue-plyr :options="plyr_options">
           <video :poster="linkToVideoThumb" :src="mediaURL" preload="none" />
         </vue-plyr>
       </template>
     </template>
 
     <template v-else-if="media.type === 'audio'">
-      <vue-plyr>
+      <vue-plyr :options="plyr_options">
         <audio :src="mediaURL" preload="none" />
       </vue-plyr>
     </template>
@@ -111,7 +111,12 @@ export default {
         preview_hovered: 600,
         default: 1600
       },
-      htmlForEditor: this.value
+      htmlForEditor: this.value,
+
+      plyr_options: {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        iconUrl: '/images/plyr.svg'
+      }
     };
   },
   mounted() {
