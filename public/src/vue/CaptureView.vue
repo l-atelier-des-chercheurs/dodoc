@@ -43,7 +43,9 @@
           v-show="!is_validating_stopmotion_video"
         >
 
-          <div class="m_panel--previewCard--live">
+          <div class="m_panel--previewCard--live"
+            :class="{ 'is--recording' : is_recording }"
+          >
             <!-- OPTIONS -->
             <transition name="slideleft" :duration="400">
               <div class="m_panel--previewCard--live--options"
@@ -128,6 +130,11 @@
                 
               </div>
             </transition>
+
+            <div v-if="is_recording && timer_recording" class="recording_timer">
+              <label>{{ recording_duration }}</label>
+            </div>
+
 
             <video 
               v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
@@ -291,9 +298,6 @@
             >
               <img v-if="!is_recording" src="/images/i_record.svg">
               <img v-else src="/images/i_stop.svg">
-              <span v-if="is_recording && timer_recording">
-                {{ recording_duration }}
-              </span>
             </button>
 
             <div class="m_panel--buttons--row--options">

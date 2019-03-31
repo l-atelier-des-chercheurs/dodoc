@@ -1934,7 +1934,10 @@ small {
       // border: 5px solid @c-gris_clair;
       display: flex;
       flex-flow: row nowrap;
-      // .bg-noir;
+      
+      &.is--recording {
+        .bg-noir;
+      }
       
       > * {
         flex: 1 1 auto;
@@ -1945,6 +1948,25 @@ small {
       video {
         object-fit: contain;
         min-width: 120px;
+      }
+
+      .recording_timer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        z-index: 100;
+        text-align: center;
+
+        label {
+          display: inline-block;
+          margin: 0 auto;
+          .bg-rouge;
+          .padding-sides-verysmall;
+          .margin-small;
+          color: white;
+          
+          border-radius: 4px;
+        }
       }
 
       .m_panel--previewCard--live--options {
@@ -2166,6 +2188,9 @@ small {
       }
 
       .m_panel--buttons--row--captureButton {
+        position: relative;
+        flex: 0 0 48px;
+        
         transition: transform .4s;
         &:hover {
           transform: scale(1.2);
