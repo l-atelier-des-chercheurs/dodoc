@@ -697,11 +697,15 @@ body {
   right:100%;
 
   @t-button_size: 3em;
-  width: 3em;
-  z-index: 1000;
+  width: 3.5em;
+  margin-right: -.5em;
+  z-index: 100;
 
   min-height: @t-button_size;
   border-radius: @t-button_size 0 0 @t-button_size;
+  box-shadow: 2px 3px 10px fade(@c-bleuvert, 50%);
+  box-shadow: inset 5px 0 5px fade(@c-bleuvert_fonce, 50%);
+
 
   .padding-verysmall;
   .button-inline;
@@ -804,6 +808,8 @@ body {
 
 .m_publicationsview, .m_publicationview {
   .bg-bleuvert;
+  box-shadow: inset 5px 0 5px fade(@c-bleuvert_fonce, 50%);
+
   .sectionTitle_small {
     color: #fff;
   }
@@ -934,16 +940,12 @@ small {
     // border-bottom-style: dashed;
     border-radius: @t-buttonradius;
     .bg-blanc;
+    .boxs-card-0;
 
-    &:not(.is--not_authorized_to_admin) {
-      .m_project--presentation--vignette {
-        cursor: pointer;
-      }
-      .m_project--presentation--text {
-        h2 {
-          cursor: pointer;
-        }
-      }            
+
+
+
+    &:not(.is--not_authorized_to_admin) {      
     }    
   }
 
@@ -955,6 +957,7 @@ small {
   border-radius: 0px;
   // min-height: 100%;
   overflow: hidden;
+  min-height: 10em;
   .flex-wrap;
   justify-content: center;
   
@@ -965,6 +968,7 @@ small {
     min-width: @t-folderwidth;
     max-width: @t-folderwidth;
     .bg-blanc;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
     display: flex;
     flex-flow: column wrap;
@@ -998,6 +1002,7 @@ small {
         .margin-none;
         .padding-sides-medium;
         .padding-vert-small;
+        padding-top: @t-skipline * 0.66;
         .padding-bottom-verysmall;
         .font-folder_title;
       }
@@ -1012,6 +1017,16 @@ small {
       .flex-wrap;
       .flex-no-grow;
       .flex-horizontally-centered;     
+
+      .m_project--presentation--buttons--openButton {
+        position: absolute;
+        top: 0;bottom: 0;
+        left: 0;right: 0;
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+        text-indent: -1000px;
+      }
     }
 
     .m_project--presentation--password {
@@ -1348,10 +1363,10 @@ small {
       }
     }
 
-    transition: all 4s .2s cubic-bezier(.25,.8,.25,1);  
+    transition: all 2s .2s cubic-bezier(.25,.8,.25,1);  
 
     &.is--hovered {
-      transform: translateY(-5px);
+      transform: translateY(-4px);
       .boxs-card-3;
       transition: all .4s cubic-bezier(.25,.8,.25,1);  
     }
@@ -1475,6 +1490,14 @@ small {
   &:last-child {
     margin-bottom: 0;
   }
+
+  > .m_authorField {
+    // margin-bottom: -@t-skipline/2;
+
+    span.is--active {
+      // background-color: transparent !important;
+    }
+  }
 }
 
 .m_tagsAndAuthorFilters {
@@ -1510,24 +1533,26 @@ small {
     // color: white !important;
     color: @c-gris_fonce;
     font-size: inherit !important;
-    .padding-sides-verysmall !important;
-    .padding-vert-verysmall !important;
+    // .padding-sides-verysmall !important;
+    // .padding-vert-verysmall !important;
+    padding: .4em;
+
     text-transform: initial;
     font-weight: inherit;
     font-weight: 500;
 
 
     margin: 0 !important;
-    margin-right: @t-skipline/4 !important;
-    margin-bottom: @t-skipline/4 !important;
+    margin-right: @t-skipline/8 !important;
+    margin-bottom: @t-skipline/8 !important;
 
-    transition: all .2s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: all .06s cubic-bezier(0.19, 1, 0.22, 1);
 
     &.is--active {
       background-color: @c-bleumarine_clair !important;
       color: @c-bleumarine_fonce !important;
       &::before {
-        opacity: .8;
+        opacity: .6;
       }
     }
     &::before {
@@ -1537,6 +1562,7 @@ small {
       width: 20px;
       height: 20px;
       opacity: 0.2;
+      transform: scale(.8);
     }
   }
 }
@@ -1656,8 +1682,10 @@ small {
     // color: white !important;
     color: black !important;
     font-size: inherit !important;
-    .padding-sides-verysmall !important;
-    .padding-vert-verysmall !important;
+    // .padding-sides-verysmall !important;
+    // .padding-vert-verysmall !important;
+    padding: .4em;
+
     text-transform: initial;
     font-weight: inherit;
     font-weight: 400;

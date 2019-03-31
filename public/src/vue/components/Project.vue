@@ -2,8 +2,9 @@
   <div class="m_project"
     :class="{ 'is--not_authorized_to_admin' : !can_access_folder }"
   >
-    <div class="m_project--presentation">
-      <div v-if="previewURL" class="m_project--presentation--vignette" @click="$root.openProject(slugProjectName)">
+    <div class="m_project--presentation"
+    >
+      <div v-if="previewURL" class="m_project--presentation--vignette">
         <img
           :src="previewURL" class=""
         />
@@ -12,8 +13,7 @@
       <div class="m_project--presentation--text">
         <h2 
           class="m_project--presentation--text--title"
-           @click="$root.openProject(slugProjectName)"
-           :title="slugProjectName"
+          :title="slugProjectName"
         >
           {{ project.name }}
         </h2>
@@ -84,7 +84,8 @@
         <button 
           v-if="can_access_folder && context !== 'full'"
           type="button" 
-          class="button-redthin"
+          class="m_project--presentation--buttons--openButton"
+          :title="$t('open')"
           @click="$root.openProject(slugProjectName)"
         >
           <span class="">
@@ -203,7 +204,10 @@ export default {
   },
   methods: {
     openProject() {
-      this.$root.openProject(this.slugProjectName);
+      if(context !== 'full') {
+        this.$root.openProject(this.slugProjectName);
+      }
+
     },
     closeProject() {
       this.$root.closeProject();
