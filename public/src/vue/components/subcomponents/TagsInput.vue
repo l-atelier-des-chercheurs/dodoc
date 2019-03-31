@@ -7,6 +7,7 @@
       :key="tag.text"
       @click="removeTag(tag.text)"
       class="can_be_removed"
+      :class="['tagcolorid_' + parseInt(tag.text, 36)%2 ]"
     >
       {{ tag.text }}
     </button>
