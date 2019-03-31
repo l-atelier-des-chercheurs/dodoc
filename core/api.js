@@ -176,13 +176,13 @@ module.exports = (function() {
         eventAndContentJson['content']
       );
     }
-    dev.logpackets(
-      `sendEventWithContent — sending packet with content = ${JSON.stringify(
-        eventAndContentJson['content'],
-        null,
-        4
-      )}`
-    );
+    // dev.logpackets(
+    //   `sendEventWithContent — sending packet with content = ${JSON.stringify(
+    //     eventAndContentJson['content'],
+    //     null,
+    //     4
+    //   )}`
+    // );
     dev.logpackets(
       `eventAndContentJson — sending packet with string length = ${
         JSON.stringify(eventAndContentJson['content']).length
