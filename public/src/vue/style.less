@@ -1984,7 +1984,7 @@ small {
         // border-bottom: 2px solid @c-gris;
         border-right: 2px solid @c-rouge;
 
-        .custom_scrollbar(8px, 5px, 6px);
+        .custom_scrollbar(8px, 5px, 6px, transparent, @c-rouge);
       }
 
       .m_panel--previewCard--live--stopmotionlist {
@@ -2008,7 +2008,7 @@ small {
 
         .font-verysmall;
 
-        .custom_scrollbar(8px, 5px, 6px, @c-bleumarine, #fff);
+        .custom_scrollbar(8px, 5px, 6px, transparent, @c-bleumarine);
 
         ul {
           margin: 0;
@@ -2189,7 +2189,7 @@ small {
 
       .m_panel--buttons--row--captureButton {
         position: relative;
-        flex: 0 0 48px;
+        // flex: 0 0 48px;
         
         transition: transform .4s;
         &:hover {
@@ -2367,7 +2367,7 @@ small {
   }
   
   .m_stopmotionpanel--medias {
-    .bg-noir;
+    // .bg-noir;
     flex: 1 1 auto;
     display: flex;
     flex-flow: row nowrap;
@@ -2413,9 +2413,13 @@ small {
       overflow-scrolling: touch;
       overscroll-behavior-y: contain;  
       .padding-verysmall;
+      .margin-verysmall;
       scroll-behavior: smooth;
 
-      .custom_scrollbar(1px, 3px, 2px, rgba(255,255,255,0), #ddd);    
+      background-color: @c-gris_tresclair;
+      border-radius: 6px;
+
+      .custom_scrollbar(1px, 3px, 2px, rgba(255,255,255,0), #333);    
 
       counter-reset: compteListe;
 
@@ -2496,7 +2500,7 @@ small {
     .m_stopmotionpanel--medias--validation {
       // .bg-rouge;
       flex-shrink: 0;
-      .padding-small;
+      .padding-verysmall;
 
       display: flex;
       flex: row nowrap;
