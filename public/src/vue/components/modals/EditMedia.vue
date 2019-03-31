@@ -266,7 +266,7 @@ export default {
   watch: {
     'mediadata': {
       handler() {
-        if(is_ready) {
+        if(this.is_ready) {
           this.askBeforeClosingModal = true;
         }
       },
