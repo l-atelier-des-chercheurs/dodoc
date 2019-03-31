@@ -10,7 +10,7 @@ const sharp = require('sharp');
 const dev = require('./dev-log'),
   api = require('./api'),
   thumbs = require('./thumbs'),
-  cache = require('./cache');
+  cache = require('./cache'),
   recipe = require('./recipe');
 
 // ffmpeg.setFfmpegPath(ffmpegstatic.path);
