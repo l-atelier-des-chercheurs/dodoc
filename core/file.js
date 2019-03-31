@@ -44,18 +44,6 @@ module.exports = (function() {
           reject(`Missing type ${type} in global.settings.json`);
         }
 
-        const cached = cache.get({ type, slugFolderName });
-        if (cached) {
-          dev.logverbose(
-            `COMMON — getFolder / returning cache instead of parsing files.`
-          );
-          if (slugFolderName) {
-            return resolve({ [slugFolderName]: cached });
-          } else {
-            return resolve(cached);
-          }
-        }
-
         const baseFolderPath = global.settings.structure[type].path;
         const mainFolderPath = api.getFolderPath(baseFolderPath);
 
@@ -74,6 +62,18 @@ module.exports = (function() {
           }
 
           folders.forEach(slugFolderName => {
+            const cached = cache.get({ type, slugFolderName });
+            if (cached) {
+              dev.logverbose(
+                `COMMON — getFolder / returning cache instead of parsing files.`
+              );
+              if (slugFolderName) {
+                allFoldersData.push({ [slugFolderName]: cached });
+              } else {
+                allFoldersData.push(cached);
+              }
+            }
+
             const thisFolderPath = path.join(mainFolderPath, slugFolderName);
             // For each folder, read their meta file
             allFoldersData.push(
@@ -1070,7 +1070,7 @@ module.exports = (function() {
                     cache.del({
                       type: type + '/' + 'medias',
                       slugFolderName: slugFolderName + '/' + metaFileName
-                    });  
+                    });
                     resolve();
                   },
                   function(err) {
