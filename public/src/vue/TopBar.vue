@@ -17,7 +17,7 @@
         <img 
           :title="`do•doc version ${$root.state.appVersion}`" 
           src="/images/i_logo.svg" 
-          @click="goHome()" 
+          @click="goHomeOrReload()" 
           v-tippy='{ 
             placement : "bottom",
             delay: [600, 0]
@@ -244,8 +244,12 @@ export default {
     goBack() {
       this.$root.navigation_back();
     },
-    goHome() {
-      this.$root.closeProject();
+    goHomeOrReload() {
+      if(this.$root.do_navigation.view !== 'ListView') {
+        this.$root.closeProject();
+      } else {
+        window.location.reload();
+      }
     },
     toggleMenu() {
       this.show_menu = !this.show_menu;
