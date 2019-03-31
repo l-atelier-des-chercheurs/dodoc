@@ -12,17 +12,18 @@
           </span>
         </button>
 
-        <div
+        <label
           v-if="((project.password === 'has_pass') || project.password !== 'has_pass')"
           :key="`add_${field.key}`"
           class="barButton barButton_import button" 
           v-for="field in input_file_fields"
           :disabled="read_only"
+          :for="`add_${field.key}`"
         >
-          <label :for="`add_${field.key}`">
+          <span>
             {{ field.label }}
             <!-- <div v-html="field.svg" /> -->
-          </label>
+          </span>
           <input 
             type="file" 
             multiple 
@@ -33,7 +34,7 @@
             :capture="field.capture"
             style="width: 1px; height: 1px; overflow: hidden;"
           >
-        </div>
+        </label>
 
         <transition name="fade_fast" :duration="150">
           <div 
