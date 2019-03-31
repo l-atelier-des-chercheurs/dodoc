@@ -291,6 +291,9 @@
             >
               <img v-if="!is_recording" src="/images/i_record.svg">
               <img v-else src="/images/i_stop.svg">
+              <span v-if="is_recording && timer_recording">
+                {{ recording_duration }}
+              </span>
             </button>
 
             <div class="m_panel--buttons--row--options">
@@ -422,7 +425,10 @@ export default {
       available_devices: {},
       mode_just_changed: false,
       is_recording: false,
+      timer_recording: false,
+
       actual_current_video_resolution: false,
+
 
       media_to_validate: false,
       media_is_being_sent: false,
@@ -566,6 +572,12 @@ export default {
     },
     'is_recording': function() {
       equalizer.setSarahCouleur(this.is_recording);
+
+      if(this.is_recording) {
+        this.timer_recording = this.$root.currentTime;
+      } else {
+        this.timer_recording = false;
+      }
     },
     'ideal_camera_resolution': function() {
       console.log(`WATCH • Capture: ideal_camera_resolution = ${Object.entries(this.ideal_camera_resolution)}`);
@@ -601,6 +613,7 @@ export default {
     },
     stopmotions() {
       let stopmotions = Object.values(this.$root.store.stopmotions);
+      debugger;
       stopmotions = this.$_.sortBy(stopmotions, function(o) { return o.date_created; }).reverse();
       return stopmotions;
     },
@@ -609,6 +622,11 @@ export default {
     },
     uriToUploadMedia: function() {
       return `file-upload/projects/${this.slugProjectName}`;
+    },
+    recording_duration: function() {
+      if(this.timer_recording) {
+        return this.$moment(this.$root.currentTime - this.timer_recording).format('mm:ss');
+      }
     }
   },
   methods: {
