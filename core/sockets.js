@@ -109,13 +109,21 @@ module.exports = (function() {
       return;
     }
     const type = data.type;
-    sendFolders({ type, socket });
+    const hrstart = process.hrtime();
+    sendFolders({ type, socket }).then(() => {
+      let hrend = process.hrtime(hrstart);
+      dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+    });
   }
   function onListFolder(socket, { type, slugFolderName }) {
     dev.logfunction(
       `EVENT - onListFolder with slugFolderName = ${slugFolderName}`
     );
-    sendFolders({ type, slugFolderName, socket });
+    const hrstart = process.hrtime();
+    sendFolders({ type, slugFolderName, socket }).then(() => {
+      let hrend = process.hrtime(hrstart);
+      dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+    });
   }
 
   function onCreateFolder(socket, { type, data, id }) {
@@ -210,7 +218,7 @@ module.exports = (function() {
     const hrstart = process.hrtime();
     sendMedias({ type, slugFolderName, socket }).then(() => {
       let hrend = process.hrtime(hrstart);
-      dev.logverbose(`Execution time: ${hrend[0]}s ${hrend[1] / 1000000}ms`);
+      dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
     });
   }
 
@@ -383,68 +391,73 @@ module.exports = (function() {
 
   // send projects, authors and publications
   function sendFolders({ type, slugFolderName, socket, id } = {}) {
-    dev.logfunction(
-      `COMMON - sendFolders for type = ${type} and slugFolderName = ${slugFolderName}`
-    );
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(
+        `COMMON - sendFolders for type = ${type} and slugFolderName = ${slugFolderName}`
+      );
 
-    file
-      .getFolder({ type, slugFolderName })
-      .then(foldersData => {
-        // if folder creation, we get an ID to open the folder straight away
-        if (foldersData !== undefined && slugFolderName && id) {
-          foldersData[slugFolderName].id = id;
-        }
-
-        // check if single socket or multiple sockets
-        Object.keys(io.sockets.connected).forEach(sid => {
-          if (socket) {
-            if (!!socket && socket.id !== sid) {
-              return;
-            }
+      file
+        .getFolder({ type, slugFolderName })
+        .then(foldersData => {
+          // if folder creation, we get an ID to open the folder straight away
+          if (foldersData !== undefined && slugFolderName && id) {
+            foldersData[slugFolderName].id = id;
           }
-          let thisSocket = socket || io.sockets.connected[sid];
 
-          let filteredFoldersData = auth.filterFolders(
-            thisSocket,
-            type,
-            foldersData
-          );
-
-          if (filteredFoldersData === undefined) {
-            filteredFoldersData = '';
-          } else {
-            // remove password field
-            for (let k in filteredFoldersData) {
-              // check if there is any password, if there is then send a placeholder
-              if (
-                filteredFoldersData[k].hasOwnProperty('password') &&
-                filteredFoldersData[k].password !== ''
-              ) {
-                filteredFoldersData[k].password = 'has_pass';
+          // check if single socket or multiple sockets
+          Object.keys(io.sockets.connected).forEach(sid => {
+            if (socket) {
+              if (!!socket && socket.id !== sid) {
+                return;
               }
             }
-          }
+            let thisSocket = socket || io.sockets.connected[sid];
 
-          if (slugFolderName) {
-            api.sendEventWithContent(
-              'listFolder',
-              { [type]: filteredFoldersData },
-              io,
-              thisSocket
+            let filteredFoldersData = auth.filterFolders(
+              thisSocket,
+              type,
+              foldersData
             );
-          } else {
-            api.sendEventWithContent(
-              'listFolders',
-              { [type]: filteredFoldersData },
-              io,
-              thisSocket
-            );
-          }
+
+            if (filteredFoldersData === undefined) {
+              filteredFoldersData = '';
+            } else {
+              // remove password field
+              for (let k in filteredFoldersData) {
+                // check if there is any password, if there is then send a placeholder
+                if (
+                  filteredFoldersData[k].hasOwnProperty('password') &&
+                  filteredFoldersData[k].password !== ''
+                ) {
+                  filteredFoldersData[k].password = 'has_pass';
+                }
+              }
+            }
+
+            if (slugFolderName) {
+              api.sendEventWithContent(
+                'listFolder',
+                { [type]: filteredFoldersData },
+                io,
+                thisSocket
+              );
+              return resolve();
+            } else {
+              api.sendEventWithContent(
+                'listFolders',
+                { [type]: filteredFoldersData },
+                io,
+                thisSocket
+              );
+              return resolve();
+            }
+          });
+        })
+        .catch(err => {
+          dev.error(`No folder found: ${err}`);
+          return reject();
         });
-      })
-      .catch(err => {
-        dev.error(`No folder found: ${err}`);
-      });
+    });
   }
 
   function sendMedias({ type, slugFolderName, metaFileName, socket, id }) {
