@@ -144,7 +144,8 @@
 
             <canvas 
               v-if="selected_mode === 'audio'"
-              ref="equalizerElement" width="720" height="360" 
+              class="m_panel--previewCard--live--equalizer"
+              ref="equalizerElement" width="1280" height="720" 
             />
 
             <MediaContent
@@ -1242,8 +1243,8 @@ var equalizer = (function() {
 
   // Global Variables for Drawing
   var column = 0;
-  var canvasWidth  = 720;
-  var canvasHeight = 360;
+  var canvasWidth  = 1280;
+  var canvasHeight = 720;
   var ctx;
 
   var API = {
