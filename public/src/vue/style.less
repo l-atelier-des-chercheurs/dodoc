@@ -316,6 +316,11 @@ body {
 
         transition: color .2s;
 
+        &:disabled {
+          cursor: inherit;
+          opacity: 1;
+        }
+
         span {
           display: block;
           text-transform: initial;
@@ -3387,6 +3392,11 @@ small {
     border-top: 2px solid @c-gris_clair;
   }
 
+}
+
+.tippy-tooltip {
+  background: @c-rouge;
+  color: white;  
 }
 
 

@@ -36,6 +36,8 @@ module.exports = (function() {
       gb: 'Go',
       duration: 'Durée',
 
+      login: 'S’identifier',
+      help: 'Aide',
       date: 'Date',
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',
@@ -82,6 +84,9 @@ module.exports = (function() {
 
       anonymous: 'anonyme',
       other_users: 'autres utilisateurs',
+      other_users_connected: 'autres utilisateurs connectés',
+
+      mix_medias: 'Mélanger des médias',
 
       made_with_dodoc:
         'Page web réalisée avec l’application libre et gratuite do•doc',
@@ -117,6 +122,7 @@ module.exports = (function() {
 
       'lang:': 'Changer la langue&nbsp;:',
       lang: 'Changer la langue',
+      share_access: 'Accéder depuis d’autres appareils',
 
       photo: 'photo',
       video: 'vidéo',
@@ -281,6 +287,9 @@ module.exports = (function() {
       author: 'Author(s)',
       download: 'Download',
       caption: 'Caption',
+
+      login: 'Login',
+      help: 'Help',
       date: 'Date',
       smoothing: 'smoothing',
       onion_skin: 'Onion skin',
@@ -340,6 +349,9 @@ module.exports = (function() {
 
       anonymous: 'anonymous',
       other_users: 'other users',
+      other_users_connected: 'other user connected',
+
+      mix_medias: 'Mix medias',
 
       made_with_dodoc: 'Webpage made with do•doc, a free and open-source app',
 
@@ -373,6 +385,7 @@ module.exports = (function() {
 
       'lang:': 'Select lang:',
       lang: 'Select lang',
+      share_access: 'Access from other devices',
 
       photo: 'picture',
       video: 'video',
