@@ -112,7 +112,9 @@ module.exports = (function() {
     const hrstart = process.hrtime();
     sendFolders({ type, socket }).then(() => {
       let hrend = process.hrtime(hrstart);
-      dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+      dev.performance(
+        `PERFORMANCE — listFolders : ${hrend[0]}s ${hrend[1] / 1000000}ms`
+      );
     });
   }
   function onListFolder(socket, { type, slugFolderName }) {
@@ -218,7 +220,9 @@ module.exports = (function() {
     const hrstart = process.hrtime();
     sendMedias({ type, slugFolderName, socket }).then(() => {
       let hrend = process.hrtime(hrstart);
-      dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+      dev.performance(
+        `PERFORMANCE — listMedias : ${hrend[0]}s ${hrend[1] / 1000000}ms`
+      );
     });
   }
 

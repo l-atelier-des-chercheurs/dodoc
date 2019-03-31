@@ -14,14 +14,20 @@ module.exports = (function() {
       dev.logfunction(`CACHE — get ${type}/${slugFolderName}`);
 
       if (!caches.hasOwnProperty(type)) {
+        dev.logverbose('--> no cache');
         return null;
       }
 
       if (slugFolderName) {
         const meta = caches[type].get(slugFolderName);
-        if (!meta) return null;
+        if (!meta) {
+          dev.logverbose('--> no cache');
+          return null;
+        }
+        dev.logverbose('--> has cache');
         return meta;
       } else {
+        dev.logverbose('--> has cache');
         let obj = {};
         caches[type].keys().forEach(k => {
           obj[k] = caches[type].get(k);
