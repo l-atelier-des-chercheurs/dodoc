@@ -2,7 +2,7 @@
   <div class="m_publicationsview">
 
     <div class="m_actionbar">
-      <div class="m_actionbar--buttonBar">
+      <!-- <div class="m_actionbar--buttonBar">
         <button 
           class="barButton barButton_createPubli"
           type="button"  
@@ -19,12 +19,60 @@
           @close="showCreatePublicationModal = false"
           :read_only="read_only"
         />
-      </div>
+      </div> -->
       <div class="m_actionbar--text">
-        {{ $t('publication_list') }}
+        {{ $t('cooking_pot') }}: {{ $t('cooking_pot_instructions')}}
       </div>
-    </div>    
-    <div class="m_publicationItems">
+    </div>   
+
+    <!-- liste des recettes -->
+    <div class="m_recipes">
+      <!-- pour chaque recette -->
+      <div class="m_recipes--recipe"
+        v-for="recipe in recipes"
+        :key="recipe.key"
+      >
+        <label>{{ $t(recipe.key) }}</label>
+
+        <br>
+
+        <button 
+          class="barButton barButton_createPubli"
+          type="button"  
+          @click="createAndOpenPublication(recipe.key)"
+          :disabled="read_only" 
+        >
+          <span>    
+              {{ $t('create') }}
+          </span>
+        </button>
+
+        <div class="m_recipes--recipe--mealList">
+          <label>Créations précédentes</label>
+          
+          <button type="button"
+            class="m_recipes--recipe--mealList--meal"
+            v-for="publication in recipe_of_this_template(recipe.key)"
+            :key="publication.slugFolderName"
+            @click="openPublication(publication.slugFolderName)"
+          >
+            <h2 class="m_recipes--recipe--mealList--mealTitle">
+              {{ publication.name }}
+            </h2>
+            {{ $root.formatDateToHuman(publication.date_created) }}
+          </button>
+        </div>
+
+      </div>
+      
+
+    </div>
+
+
+    
+
+
+    <!-- <div class="m_publicationItems">
       <div 
         v-if="typeof publications === 'object'"
         class="m_publicationItems--item"
@@ -36,15 +84,6 @@
         >
           {{ publication.name }}
         </h2>
-
-        <!-- <div class="m_metaField">
-          <div>
-            {{ $t('created') }}
-          </div>
-          <div>
-            {{ $root.formatDateToHuman(publication.date_created) }}
-          </div>
-        </div> -->
         <div>
           <div class="m_metaField">
             <div>
@@ -54,14 +93,6 @@
               {{ $t(publication.template) }}
             </div>
           </div>
-          <!-- <div class="m_metaField">
-            <div>
-              {{ $t('edited') }}
-            </div>
-            <div>
-              {{ $root.formatDateToHuman(publication.date_modified) }}
-            </div>
-          </div> -->
           <div class="m_metaField">
             <div>
               {{ $t('number_of_pages') }}
@@ -88,11 +119,12 @@
         </button>
 
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
 import CreatePublication from './components/modals/CreatePublication.vue';
+
 
 export default {
   props: ['publications', 'read_only'],
@@ -101,7 +133,19 @@ export default {
   },
   data() {
     return {
-      showCreatePublicationModal: false
+      showCreatePublicationModal: false,
+
+      recipes: [
+        {
+          key: 'page_by_page',
+        },
+        {
+          key: 'video_assemblage'
+        },
+        {
+          key: 'drawing_with_images'
+        },
+      ]
     }
   },
   
@@ -122,6 +166,36 @@ export default {
         console.log(`METHODS • Publications: openPublication / slugPubliName = ${slugPubliName}`);
       }
       this.$root.openPublication(slugPubliName);
+    },
+    recipe_of_this_template(template_key) {
+      const filtered_recipes = Object.values(this.publications).filter(r => r.template === template_key);
+      const sorted_recipes = this.$_.sortBy(filtered_recipes, 'date_created');
+      return sorted_recipes.reverse();
+    },
+    createAndOpenPublication(template) {
+
+      const name = this.$t('untitled');
+
+      debugger;
+
+      let publication_data = {
+        name,
+        template,
+        authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : [],
+      };
+
+      if(template === 'page_by_page') {
+        publication_data.pages = [{
+          id: +new Date() + '_' + (Math.random().toString(36) + '00000000000000000').slice(2, 3)
+        }];
+      }
+
+      this.$root.createFolder({ 
+        type: 'publications', 
+        data: publication_data
+      });
+
+
     }
   }
 }

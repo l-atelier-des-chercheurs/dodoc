@@ -30,6 +30,11 @@ module.exports = (function() {
       no_stopmotion_created_yet:
         'Les animations créées apparaîtront dans ce panneau.',
 
+      cooking_pot: 'La marmite',
+      cooking_pot_instructions:
+        'Mélangez des médias pour en créer des nouveaux !',
+      untitled: 'Sans titre',
+
       bytes: 'octets',
       kb: 'ko',
       mb: 'Mo',
@@ -299,6 +304,11 @@ module.exports = (function() {
       validate_with_enter: 'Validate with ENTER.',
       no_stopmotion_created_yet:
         'Created stopmotion animations will appear in this list.',
+
+      cooking_pot: 'Cooking pot',
+      cooking_pot_instructions:
+        'Mix a single or multiple medias to create new medias!',
+      untitled: 'Untitled',
 
       bytes: 'bytes',
       kb: 'KB',
