@@ -162,6 +162,12 @@ export default {
 
             this.files_to_upload_meta[filename].status = 'failed'; 
             this.files_to_upload_meta[filename].upload_percentages = 0;   
+
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error(this.$t('notifications.media_couldnt_be_sent'));
+
             reject();      
           });
       });
