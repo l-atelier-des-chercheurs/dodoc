@@ -1189,7 +1189,7 @@ export default {
             this.$alertify
               .closeLogOnClick(true)
               .delay(4000)
-              .error(this.$t('notifications.media_couldnt_been_sent'));
+              .error(this.$t('notifications.media_couldnt_be_sent'));
 
             // this.selected_files_meta[filename].status = 'failed'; 
             // this.selected_files_meta[filename].upload_percentages = 0;   

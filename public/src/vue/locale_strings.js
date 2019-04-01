@@ -225,7 +225,7 @@ module.exports = (function() {
         instead_import_with_this_button:
           'Utilisez plutôt la fonctionnalité d’import ci-dessus pour prendre des photos et des vidéos ou en importer depuis votre appareil.',
         media_was_sent: 'Le média a été enregistré.',
-        media_couldnt_been_sent:
+        media_couldnt_be_sent:
           'Le média n’a pas pu être enregistré à cause d’une erreur de connexion.',
         file_was_sent: 'Le fichier a été enregistré.',
         file_upload_not_allowed:
@@ -489,7 +489,7 @@ module.exports = (function() {
         instead_import_with_this_button:
           'Instead import or capture photos and videos here in the import modal.',
         media_was_sent: 'The media was sent.',
-        media_couldnt_been_sent:
+        media_couldnt_be_sent:
           'The media was not sent because of a connexion error.',
         file_was_sent: 'The file was sent.',
         file_upload_not_allowed: 'File upload is not allowed by this browser.',
