@@ -135,7 +135,6 @@
               <label>{{ recording_duration }}</label>
             </div>
 
-
             <video 
               v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
               ref="videoElement" 
@@ -292,14 +291,41 @@
               </span>
             </button>
 
-            <button type="button" 
-              class="padding-verysmall bg-transparent m_panel--buttons--row--captureButton"
-              :class="{ 'is--justCaptured' : capture_button_pressed }"
-              @click="captureOrStop()"
-            >
-              <img v-if="!is_recording" src="/images/i_record.svg">
-              <img v-else src="/images/i_stop.svg">
-            </button>
+            <div class="m_panel--buttons--row--captureButton">
+              <button type="button" 
+                class="padding-verysmall bg-transparent m_panel--buttons--row--captureButton--btn"
+                :class="{ 'is--justCaptured' : capture_button_pressed }"
+                @click="captureOrStop()"
+              >
+                <img v-if="!is_recording" src="/images/i_record.svg">
+                <img v-else src="/images/i_stop.svg">
+              </button>
+
+              <div id="template-3"
+                v-if="selected_mode === 'stopmotion'"
+              >
+                <div class="">
+                  Déclenchement automatique toutes les 
+                  <select v-model="timelapse_interval" class="inline">
+                    <option value="false" v-html="'-'"/>
+                    <option value="2" v-html="2" />
+                    <option value="5" v-html="4" />
+                    <option value="10" v-html="10" />
+                  </select>
+                  secondes
+                </div>
+              </div>
+
+              <button type="button"
+                class="m_panel--buttons--row--captureButton--advancedOptions padding-verysmall bg-transparent"
+                v-if="selected_mode === 'stopmotion'"
+                v-tippy="{ html: '#template-3', reactive : true,
+                      interactive : true, theme: 'light' }"
+              >
+                +
+              </button>
+              
+            </div>
 
             <div class="m_panel--buttons--row--options">
               <div v-if="selected_mode === 'vecto'">
@@ -447,6 +473,8 @@ export default {
 
       current_stopmotion: false,
       is_validating_stopmotion_video: false,
+      timelapse_interval: false,
+      timelapse_event: false,
 
       plyr_options: {
         controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
@@ -971,7 +999,21 @@ export default {
         this.capture_button_pressed = false;
       }, 400);
 
-      if(this.is_recording) {
+      if(this.selected_mode === 'stopmotion' && this.timelapse_interval) {
+        if(!this.is_recording) {
+          this.is_recording = true;
+          this.timelapse_event = window.setInterval(() => {
+            this.addStopmotionImage();
+          }, this.timelapse_interval * 1000);
+        } else {
+          this.is_recording = false;
+          clearInterval(this.timelapse_event);
+          return;
+        }
+      }
+
+
+      if(this.is_recording && this.selected_mode !== 'stopmotion') {
         this.$eventHub.$emit('capture.stopRecording');
         return;
       }
@@ -1008,6 +1050,17 @@ export default {
         });
       } else
       if(this.selected_mode === 'stopmotion') { 
+        this.addStopmotionImage();
+      } else
+      if(this.selected_mode === 'vecto') { 
+        this.media_to_validate = {
+          preview: this.vecto.svgstr,
+          rawData: new Blob([this.vecto.svgstr], { type: "text/xml"}),
+          type: 'svg'
+        };
+      }
+    },
+    addStopmotionImage() {
         const smdata = {
           name: this.slugProjectName + '-' + this.$moment().format('YYYYMMDD_HHmmss'),
           linked_project: this.slugProjectName,
@@ -1033,14 +1086,7 @@ export default {
             this.addImageToStopmotion(imageData);
           }
         });
-      } else
-      if(this.selected_mode === 'vecto') { 
-        this.media_to_validate = {
-          preview: this.vecto.svgstr,
-          rawData: new Blob([this.vecto.svgstr], { type: "text/xml"}),
-          type: 'svg'
-        };
-      }
+
     },
     addImageToStopmotion(imageData) {
       console.log('METHODS • CaptureView: addImageToStopmotion');
