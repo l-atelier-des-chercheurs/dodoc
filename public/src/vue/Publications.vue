@@ -143,7 +143,7 @@ export default {
           key: 'video_assemblage'
         },
         {
-          key: 'drawing_with_images'
+          key: 'drawing_pad'
         },
       ]
     }
@@ -173,13 +173,12 @@ export default {
       return sorted_recipes.reverse();
     },
     createAndOpenPublication(template) {
-
       const name = this.$t('untitled');
-
-      debugger;
+      const slugFolderName = template;
 
       let publication_data = {
         name,
+        slugFolderName,
         template,
         authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : [],
       };
@@ -189,6 +188,13 @@ export default {
           id: +new Date() + '_' + (Math.random().toString(36) + '00000000000000000').slice(2, 3)
         }];
       }
+
+      this.$eventHub.$on('socketio.folder_created_or_updated', (fdata) => {
+        if(fdata.id === this.$root.justCreatedFolderID) {
+          this.$eventHub.$off('socketio.folder_created_or_updated');
+          this.openPublication(fdata.slugFolderName);
+        }
+      });
 
       this.$root.createFolder({ 
         type: 'publications', 
