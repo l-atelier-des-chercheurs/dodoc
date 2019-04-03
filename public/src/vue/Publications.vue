@@ -147,9 +147,12 @@ export default {
         {
           key: 'stopmotion_animation'
         },
-        {
-          key: 'drawing_pad'
+        { 
+          key: 'mix_audio_and_video'
         }
+        // {
+        //   key: 'drawing_pad'
+        // }
       ]
     }
   },

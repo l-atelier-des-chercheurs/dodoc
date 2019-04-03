@@ -41,18 +41,18 @@
         </template>
       </div>
     </div>
-    <div class="m_videoPublication">
+    <div class="m_mixAudioAndVideoPublication">
       <div class="margin-medium" v-if="publication_medias.length === 0">
         <p>
           <small>
-            Ajoutez plusieurs fichiers <b>vidéo</b> pour créer une nouvelle vidéo.
+            Ajoutez ici un fichier <b>son</b> et un fichier <b>vidéo</b> pour créer une nouvelle vidéo.
           </small>
         </p>
       </div>
 
       <transition-group name="slideFromTop" :duration="300" tag="div">
         <div
-          class="m_videoPublication--media"
+          class="m_mixAudioAndVideoPublication--media"
           v-for="media in publication_medias" 
           :key="media.publi_meta.metaFileName"
         >
@@ -115,7 +115,7 @@ export default {
   created() {
   },
   mounted() {
-    this.$root.settings.current_publication.accepted_media_type = ['video'];
+    this.$root.settings.current_publication.accepted_media_type = ['video', 'audio'];
 
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
@@ -251,6 +251,8 @@ export default {
         console.log(`METHODS • Publication: updateMediasPubli`);
       }
 
+      this.$root.settings.current_publication.accepted_media_type = ['video', 'audio'];
+
       if(!this.publication.hasOwnProperty('medias') || Object.keys(this.publication.medias).length === 0) {
         this.publication_medias = [];        
         return;
@@ -263,6 +265,7 @@ export default {
 
       if(this.medias_slugs_in_order.length === 0) {
         this.publication_medias = [];
+        
         return;
       }
 
@@ -322,6 +325,11 @@ export default {
           medias_list: missingMedias
         });
       }
+
+
+      const types_of_medias = publi_medias.map(m => m.type);
+      // this.$root.settings.current_publication.accepted_media_type = ['video', 'audio'];
+      this.$root.settings.current_publication.accepted_media_type = this.$root.settings.current_publication.accepted_media_type.filter(t => !types_of_medias.includes(t));
 
       this.publication_medias = publi_medias;        
     }

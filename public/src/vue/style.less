@@ -2736,11 +2736,14 @@ small {
   border-radius: @t-buttonradius;
 }
 .m_recipes--recipe--mealList {
-  display: flex;
-  flex-flow: row wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-gap: 1em;
+  text-align: left;
 
   label {
-    flex-basis: 100%;
+    grid-column: ~"1/-1";
+    margin-bottom: -1em;
   }
 
   > * {
@@ -2754,7 +2757,7 @@ small {
 
   .bg-blanc;
   // .margin-sides-small; 
-  .margin-vert-verysmall; 
+  // .margin-vert-verysmall; 
   .padding-small;
   text-align: left;
 
@@ -3168,6 +3171,15 @@ small {
 
   }
 
+  .m_mixAudioAndVideoPublication {
+    .m_mixAudioAndVideoPublication--media {
+      .padding-small;
+      .margin-small;
+      .bg-blanc;
+
+    }
+  }
+
   .m_videoPublication {
     display: flex;
     justify-content: center;
@@ -3176,7 +3188,6 @@ small {
     .m_videoPublication--media {
       max-width: 400px;
       height: auto;
-      .bg-blanc;
       .padding-small;
       .margin-small;
       .bg-blanc;
