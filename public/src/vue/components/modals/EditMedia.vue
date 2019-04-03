@@ -98,7 +98,7 @@
         </div>
         <div 
           class="m_metaField"
-          v-if="media.hasOwnProperty('date_uploaded') && $root.formatDateToHuman(media.date_created) !== $root.formatDateToHuman(media.date_uploaded)"
+          v-if="media.hasOwnProperty('date_uploaded')"
         >
           <div>
             {{ $t('uploaded') }}
