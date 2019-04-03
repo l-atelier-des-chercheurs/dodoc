@@ -1362,7 +1362,6 @@ module.exports = (function() {
               // only works for projects media (root) for now
               api
                 .makeStopmotionFromImageSequence({
-                  slugFolderName,
                   pathToMedia,
                   images: rawData,
                   slugStopmotionName: additionalMeta.slugStopmotionName,

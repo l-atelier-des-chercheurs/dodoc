@@ -321,7 +321,6 @@ module.exports = (function() {
   }
 
   function makeStopmotionFromImageSequence({
-    slugFolderName,
     pathToMedia,
     images,
     slugStopmotionName,
