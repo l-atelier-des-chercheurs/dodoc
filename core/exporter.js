@@ -315,7 +315,7 @@ module.exports = (function() {
           });
       });
     },
-    makeVideoFromImagesInPubli: ({ slugPubliName, socket, options }) => {
+    makeVideoFromImagesInPubli: ({ slugPubliName, options, socket }) => {
       return new Promise(function(resolve, reject) {
         const videoName =
           slugPubliName +
@@ -356,19 +356,24 @@ module.exports = (function() {
                 });
               })
               .then(imagesCachePath => {
-                const frameRate =
-                  options && options.hasOwnProperty('frameRate')
-                    ? options.frameRate
+                const framerate =
+                  options && options.hasOwnProperty('framerate')
+                    ? options.framerate
                     : 4;
+                const quality =
+                  options && options.hasOwnProperty('quality')
+                    ? options.quality
+                    : '640x?';
 
                 var proc = new ffmpeg()
                   .input(path.join(imagesCachePath, 'img-%04d.jpeg'))
-                  .inputFPS(frameRate)
-                  .fps(frameRate)
+                  .inputFPS(framerate)
+                  .fps(framerate)
                   .withVideoCodec('libx264')
                   .withVideoBitrate('8000k')
                   .addOptions(['-preset slow', '-tune animation'])
                   .noAudio()
+                  .size(quality)
                   .toFormat('mp4')
                   .output(videoCachePath)
                   .on('progress', progress => {

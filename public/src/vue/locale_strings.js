@@ -60,6 +60,11 @@ module.exports = (function() {
       add_keyword: 'Ajouter un mot-clé',
       add: 'Ajouter',
 
+      very_high: 'Très élevée (1080p)',
+      high: 'Élevée (720p)',
+      medium: 'Moyenne (640p)',
+      low: 'Basse (360p)',
+
       showing: 'Affichage de',
       media_filter: 'Filtre de médias',
       no_projects_yet:
@@ -196,7 +201,9 @@ module.exports = (function() {
       export_as_pdf: 'Export PDF',
       new_window: 'Nouvelle fenêtre',
       export_video_instructions:
-        'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des vidéos ajoutéez à la publication.',
+        'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des vidéos ajoutées à la publication.',
+      export_stopmotion_instructions:
+        'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des images ajoutées à la publication.',
       make_video: 'Fabriquer une vidéo',
       creation_in_progress: 'En cours de création…',
 
@@ -333,6 +340,11 @@ module.exports = (function() {
       add_keyword: 'Add a keyword',
       add: 'Add',
 
+      very_high: 'Very high (1080p)',
+      high: 'High (1080p)',
+      medium: 'Medium (640p)',
+      low: 'Low (360p)',
+
       showing: 'Showing',
       media_filter: 'Medias filter',
       no_projects_yet: 'No projects yet, create one to start using do•doc!',
@@ -417,6 +429,8 @@ module.exports = (function() {
       new_window: 'New Window',
       export_video_instructions:
         'Click this button to generate a video from multiple source videos.',
+      export_stopmotion_instructions:
+        'Click this button to generate a video from images you have selected.',
       make_video: 'Make a video',
 
       select: 'Select',

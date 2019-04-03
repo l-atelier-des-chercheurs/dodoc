@@ -3125,7 +3125,7 @@ small {
     // grid-gap: @t-skipline;
   
     .padding-verysmall;
-    .margin-medium;
+    .margin-sides-medium;
 
     counter-reset: compteListe;    
 
@@ -3137,6 +3137,7 @@ small {
       // margin-right: -@t-buttonradius;
       flex: 0 0 100px;
       position: relative;
+      transition: all .4s;
 
       &::before {
         counter-increment: compteListe 1;

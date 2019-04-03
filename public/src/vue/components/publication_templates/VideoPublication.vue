@@ -144,7 +144,8 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`WATCH • Publication: publication.medias_slugs`);
       }
-      this.medias_slugs_in_order = this.publication.medias_slugs;
+
+      this.medias_slugs_in_order = typeof this.publication.medias_slugs === "object" ? this.publication.medias_slugs : [];
       this.updateMediasPubli();
       this.$eventHub.$emit('publication_medias_updated');      
     }
@@ -198,7 +199,9 @@ export default {
         slugMediaName
       });
 
-      this.medias_slugs_in_order = this.medias_slugs_in_order.filter(m => m.slugMediaName !== slugMediaName);
+      if(this.medias_slugs_in_order.length > 0) {
+        this.medias_slugs_in_order = this.medias_slugs_in_order.filter(m => m.slugMediaName !== slugMediaName);        
+      }
 
       this.$root.editFolder({ 
         type: 'publications', 
@@ -251,6 +254,7 @@ export default {
 
 
       if(this.medias_slugs_in_order.length === 0) {
+        this.publication_medias = [];
         return;
       }
 

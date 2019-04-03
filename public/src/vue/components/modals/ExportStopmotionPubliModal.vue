@@ -11,7 +11,27 @@
     <template slot="sidebar">
       <div class="margin-sides-medium font-small">
         <div class="">
-          {{ $t('export_video_instructions') }} 
+          <p>{{ $t('export_stopmotion_instructions') }} </p>
+          <hr>
+
+          <div class="margin-bottom-small">
+            <label>{{ $t('framerate') }}</label>
+            <input type="number" v-model.number="framerate" min="1" max="30" step="1" />
+          </div>
+
+          <div class="margin-bottom-small">
+            <label>{{ $t('quality') }}</label>
+            <select v-model="quality">
+              <option 
+                v-for="q in available_qualities" 
+                :value="q.key" 
+                :key="q.key"
+              >
+                {{ $t(q.label) }}
+              </option>        
+            </select>
+          </div>
+
           <button type="button" 
             class="margin-small margin-left-none bg-bleuvert c-blanc button-allwide" 
             :disabled="video_request_status !== false"
@@ -79,7 +99,27 @@ export default {
     return {
       video_request_status: false,
       link_to_video: false,
-      video_is_playing: false
+      video_is_playing: false,
+      framerate: 4,
+      quality: '720x?',
+      available_qualities: [
+        { 
+          label: 'very_high',
+          key: '1080x?'
+        },
+        { 
+          label: 'high',
+          key: '720x?'
+        },
+        { 
+          label: 'medium',
+          key: '640x?'
+        },
+        { 
+          label: 'low',
+          key: '360x?'
+        },
+      ]
     }
   },
   created() {
@@ -100,7 +140,11 @@ export default {
 
       this.$eventHub.$on('socketio.publication.publiStopmotionIsGenerated', this.videoPubliIsGenerated);
       this.$socketio.downloadStopmotionPubli({ 
-        slugPubliName: this.slugPubliName
+        slugPubliName: this.slugPubliName,
+        options: {
+          framerate: this.framerate,
+          quality: this.quality
+        }
       });
       this.video_request_status = 'waiting_for_server';
     },

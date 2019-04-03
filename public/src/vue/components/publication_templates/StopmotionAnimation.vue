@@ -143,7 +143,7 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`WATCH • Publication: publication.medias_slugs`);
       }
-      this.medias_slugs_in_order = this.publication.medias_slugs;
+      this.medias_slugs_in_order = typeof this.publication.medias_slugs === "object" ? this.publication.medias_slugs : [];
       this.updateMediasPubli();
       this.$eventHub.$emit('publication_medias_updated');      
     }
@@ -250,6 +250,7 @@ export default {
 
 
       if(this.medias_slugs_in_order.length === 0) {
+        this.publication_medias = [];
         return;
       }
 

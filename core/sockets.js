@@ -381,14 +381,14 @@ module.exports = (function() {
       });
   }
 
-  function onDownloadStopmotionPubli(socket, { slugPubliName }) {
+  function onDownloadStopmotionPubli(socket, { slugPubliName, options }) {
     dev.logfunction(
       `EVENT - onDownloadStopmotionPubli with 
       slugPubliName = ${slugPubliName}`
     );
 
     exporter
-      .makeVideoFromImagesInPubli({ slugPubliName, socket })
+      .makeVideoFromImagesInPubli({ slugPubliName, options, socket })
       .then(videoName => {
         api.sendEventWithContent(
           'publiStopmotionIsGenerated',
