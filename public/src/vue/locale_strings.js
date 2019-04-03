@@ -34,7 +34,7 @@ module.exports = (function() {
       cooking_pot_instructions:
         'Mélangez des médias pour en créer des nouveaux !',
       untitled: 'Sans titre',
-      add_audio_to_video: 'Ajouter (ou remplacer) du son sur une vidéo',
+      mix_audio_and_video: 'Ajouter (ou remplacer) du son sur une vidéo',
 
       bytes: 'octets',
       kb: 'ko',
@@ -229,6 +229,7 @@ module.exports = (function() {
       page_by_page: 'Document page à page',
       video_assemblage: 'Montage vidéo',
       stopmotion_animation: 'Animation image par image',
+      mix_audio_and_video: 'Ajouter du son à ',
       web: 'Page web',
 
       last_modified: 'Dernière modification',
@@ -321,7 +322,7 @@ module.exports = (function() {
       cooking_pot_instructions:
         'Mix a single or multiple medias to create new medias!',
       untitled: 'Untitled',
-      add_audio_to_video: 'Add audio to a video',
+      mix_audio_and_video: 'Add audio to a video',
 
       bytes: 'bytes',
       kb: 'KB',
