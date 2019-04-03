@@ -646,7 +646,6 @@ export default {
     },
     stopmotions() {
       let stopmotions = Object.values(this.$root.store.stopmotions);
-      debugger;
       stopmotions = this.$_.sortBy(stopmotions, function(o) { return o.date_created; }).reverse();
       return stopmotions;
     },

@@ -32,18 +32,9 @@
           
           <div v-if="video_request_status === 'generated'">
             <div class="mediaContainer">
-              <video ref="video" :src="link_to_video" controls preload="auto" />
-              <svg 
-                ref="playIcon" 
-                v-if="!video_is_playing"
-                class="mediaContainer--videoPlay" 
-                viewBox="0 0 200 200" 
-                alt="Play video"
-                @click="togglePlayVideo()"
-              >
-                <circle cx="100" cy="100" r="90" fill="#fff" stroke-width="15" stroke="#fff"></circle>
-                <polygon points="70, 55 70, 145 145, 100" fill="#353535"></polygon>
-              </svg>
+              <vue-plyr :options="plyr_options">
+                <video :src="link_to_video" controls preload="auto" />
+              </vue-plyr>
             </div>
             <div class="margin-vert-medium">
               <a 
@@ -102,13 +93,6 @@ export default {
   computed: {
   },
   methods: {
-    togglePlayVideo() {
-      if(this.video_is_playing === false) {
-        this.video_is_playing = true;
-        this.$refs.video.play();
-        this.$refs.video.setAttribute('controls', 'controls')      
-      }
-    },
     downloadVideo() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • ExportVideoPubli: downloadVideo`);

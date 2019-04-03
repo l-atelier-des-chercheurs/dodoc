@@ -389,7 +389,7 @@ module.exports = (function() {
 
     exporter
       .makeVideoFromImagesInPubli({ slugPubliName, socket })
-      .then(({ videoName }) => {
+      .then(videoName => {
         api.sendEventWithContent(
           'publiStopmotionIsGenerated',
           { videoName },

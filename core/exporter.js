@@ -2,7 +2,8 @@ const path = require('path'),
   ffmpegstatic = require('ffmpeg-static'),
   ffprobestatic = require('ffprobe-static'),
   ffmpeg = require('fluent-ffmpeg'),
-  fs = require('fs-extra');
+  fs = require('fs-extra'),
+  pad = require('pad-left');
 
 const dev = require('./dev-log'),
   api = require('./api'),
@@ -268,93 +269,53 @@ module.exports = (function() {
 
         const videoPath = path.join(cachePath, videoName);
 
-        loadPublication(slugPubliName, {}).then(pageData => {
-          // all publimedias name in order are there : pageData.publiAndMediaData['montage'].medias_slugs
-          // all publimedias meta : pageData.publiAndMediaData['montage'].medias
-          // all actual medias :
+        loadPublication(slugPubliName, {})
+          .then(pageData =>
+            _loadMediaFilenameFromPublicationSlugs(slugPubliName, pageData)
+          )
+          .then(videosFilePathInOrder => {
+            fs.mkdirp(cachePath, function() {
+              var ffmpeg_task = new ffmpeg();
 
-          const publiMeta = pageData.publiAndMediaData[slugPubliName];
-          const publiMedias = pageData.publiAndMediaData[slugPubliName].medias;
+              videosFilePathInOrder.map(vm => {
+                ffmpeg_task.addInput(vm.full_path);
+              });
 
-          const videosNameInOrder = publiMeta.medias_slugs.map(
-            item => item.slugMediaName
-          );
-
-          const videosMetaInOrder = videosNameInOrder
-            .filter(n => {
-              return publiMedias.hasOwnProperty(n);
-            })
-            .map(n => publiMedias[n]);
-
-          let videosMediaMetaInOrder = videosMetaInOrder
-            .filter(m => {
-              return (
-                pageData.folderAndMediaData.hasOwnProperty(m.slugProjectName) &&
-                pageData.folderAndMediaData[
-                  m.slugProjectName
-                ].medias.hasOwnProperty(m.slugMediaName)
-              );
-            })
-            .map(m => {
-              let videomediameta =
-                pageData.folderAndMediaData[m.slugProjectName].medias[
-                  m.slugMediaName
-                ];
-              videomediameta.publi_meta = m;
-              return videomediameta;
+              let time_since_last_report = 0;
+              ffmpeg_task
+                .withVideoCodec('libx264')
+                .withVideoBitrate('4000k')
+                .withAudioCodec('libmp3lame')
+                .withAudioBitrate('128k')
+                .toFormat('mp4')
+                .on('progress', progress => {
+                  if (+new Date() - time_since_last_report > 3000) {
+                    time_since_last_report = +new Date();
+                    require('./sockets').notify({
+                      socket,
+                      not_localized_string: `Creating video: ${
+                        progress.timemark
+                      }`
+                    });
+                  }
+                })
+                .on('end', () => {
+                  dev.logverbose(`Video has been created`);
+                  resolve({ videoName });
+                })
+                .on('error', function(err, stdout, stderr) {
+                  ffmpeg_task = null;
+                  dev.error('An error happened: ' + err.message);
+                  dev.error('ffmpeg standard output:\n' + stdout);
+                  dev.error('ffmpeg standard error:\n' + stderr);
+                  reject(`couldn't convert a video`);
+                })
+                .mergeToFile(videoPath, cachePath);
             });
-
-          // return only media_filename
-          const videosFilePathInOrder = videosMediaMetaInOrder.map(vm => {
-            const pathToProject = api.getFolderPath(
-              vm.publi_meta.slugProjectName
-            );
-            return {
-              videoFilePath: path.join(pathToProject, vm.media_filename)
-            };
           });
-
-          fs.mkdirp(cachePath, function() {
-            var ffmpeg_task = new ffmpeg();
-
-            videosFilePathInOrder.map(vm => {
-              ffmpeg_task.addInput(vm.videoFilePath);
-            });
-
-            let time_since_last_report = 0;
-            ffmpeg_task
-              .withVideoCodec('libx264')
-              .withVideoBitrate('4000k')
-              .withAudioCodec('libmp3lame')
-              .withAudioBitrate('128k')
-              .toFormat('mp4')
-              .on('progress', progress => {
-                if (+new Date() - time_since_last_report > 3000) {
-                  time_since_last_report = +new Date();
-                  require('./sockets').notify({
-                    socket,
-                    not_localized_string: `Creating video: ${progress.timemark}`
-                  });
-                }
-              })
-              .on('end', () => {
-                dev.logverbose(`Video has been created`);
-                resolve({ videoName });
-              })
-              .on('error', function(err, stdout, stderr) {
-                ffmpeg_task = null;
-                dev.error('An error happened: ' + err.message);
-                dev.error('ffmpeg standard output:\n' + stdout);
-                dev.error('ffmpeg standard error:\n' + stderr);
-                reject(`couldn't convert a video`);
-              })
-              .mergeToFile(videoPath, cachePath);
-          });
-        });
       });
     },
-
-    makeVideoFromImagesInPubli: ({ slugPubliName, socket }) => {
+    makeVideoFromImagesInPubli: ({ slugPubliName, socket, options }) => {
       return new Promise(function(resolve, reject) {
         const videoName =
           slugPubliName +
@@ -364,99 +325,83 @@ module.exports = (function() {
           (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2) +
           '.mp4';
 
+        const cacheFolderName =
+          api.getCurrentDate(global.settings.metaDateFormat) +
+          slugPubliName +
+          '-' +
+          (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2);
+
         const cachePath = path.join(
           global.tempStorage,
           global.settings.cacheDirname,
           '_publications'
         );
 
-        const videoPath = path.join(cachePath, videoName);
+        const imagesCachePath = path.join(cachePath, cacheFolderName);
+        const videoCachePath = path.join(cachePath, videoName);
+        let numberOfImagesToProcess = -1;
 
-        loadPublication(slugPubliName, {}).then(pageData => {
-          // all publimedias name in order are there : pageData.publiAndMediaData['montage'].medias_slugs
-          // all publimedias meta : pageData.publiAndMediaData['montage'].medias
-          // all actual medias :
-
-          debugger;
-
-          const publiMeta = pageData.publiAndMediaData[slugPubliName];
-          const publiMedias = pageData.publiAndMediaData[slugPubliName].medias;
-
-          const videosNameInOrder = publiMeta.medias_slugs.map(
-            item => item.slugMediaName
-          );
-
-          const videosMetaInOrder = videosNameInOrder
-            .filter(n => {
-              return publiMedias.hasOwnProperty(n);
-            })
-            .map(n => publiMedias[n]);
-
-          let videosMediaMetaInOrder = videosMetaInOrder
-            .filter(m => {
-              return (
-                pageData.folderAndMediaData.hasOwnProperty(m.slugProjectName) &&
-                pageData.folderAndMediaData[
-                  m.slugProjectName
-                ].medias.hasOwnProperty(m.slugMediaName)
-              );
-            })
-            .map(m => {
-              let videomediameta =
-                pageData.folderAndMediaData[m.slugProjectName].medias[
-                  m.slugMediaName
-                ];
-              videomediameta.publi_meta = m;
-              return videomediameta;
-            });
-
-          // return only media_filename
-          const videosFilePathInOrder = videosMediaMetaInOrder.map(vm => {
-            const pathToProject = api.getFolderPath(
-              vm.publi_meta.slugProjectName
-            );
-            return {
-              videoFilePath: path.join(pathToProject, vm.media_filename)
-            };
-          });
-
-          fs.mkdirp(cachePath, function() {
-            var ffmpeg_task = new ffmpeg();
-
-            videosFilePathInOrder.map(vm => {
-              ffmpeg_task.addInput(vm.videoFilePath);
-            });
-
-            let time_since_last_report = 0;
-            ffmpeg_task
-              .withVideoCodec('libx264')
-              .withVideoBitrate('4000k')
-              .withAudioCodec('libmp3lame')
-              .withAudioBitrate('128k')
-              .toFormat('mp4')
-              .on('progress', progress => {
-                if (+new Date() - time_since_last_report > 3000) {
-                  time_since_last_report = +new Date();
-                  require('./sockets').notify({
-                    socket,
-                    not_localized_string: `Creating video: ${progress.timemark}`
-                  });
-                }
+        fs.mkdirp(
+          cachePath,
+          function() {
+            loadPublication(slugPubliName, {})
+              .then(pageData =>
+                _loadMediaFilenameFromPublicationSlugs(slugPubliName, pageData)
+              )
+              .then(imagesFilePathInOrder => {
+                numberOfImagesToProcess = imagesFilePathInOrder.length;
+                return _copyToTempAndRenameEachImagesFromDifferentProject({
+                  imagesFilePathInOrder,
+                  cachePath: imagesCachePath
+                });
               })
-              .on('end', () => {
-                dev.logverbose(`Video has been created`);
-                resolve({ videoName });
-              })
-              .on('error', function(err, stdout, stderr) {
-                ffmpeg_task = null;
-                dev.error('An error happened: ' + err.message);
-                dev.error('ffmpeg standard output:\n' + stdout);
-                dev.error('ffmpeg standard error:\n' + stderr);
-                reject(`couldn't convert a video`);
-              })
-              .mergeToFile(videoPath, cachePath);
-          });
-        });
+              .then(imagesCachePath => {
+                const frameRate =
+                  options && options.hasOwnProperty('frameRate')
+                    ? options.frameRate
+                    : 4;
+
+                var proc = new ffmpeg()
+                  .input(path.join(imagesCachePath, 'img-%04d.jpeg'))
+                  .inputFPS(frameRate)
+                  .fps(frameRate)
+                  .withVideoCodec('libx264')
+                  .withVideoBitrate('8000k')
+                  .addOptions(['-preset slow', '-tune animation'])
+                  .noAudio()
+                  .toFormat('mp4')
+                  .output(videoCachePath)
+                  .on('progress', progress => {
+                    dev.logverbose(
+                      `Processing new stopmotion: image ${
+                        progress.frames
+                      }/${numberOfImagesToProcess}`
+                    );
+                    require('./sockets').notify({
+                      socket,
+                      not_localized_string: `Processing new stopmotion: image ${
+                        progress.frames
+                      }/${numberOfImagesToProcess}`
+                    });
+                  })
+                  .on('end', () => {
+                    dev.logverbose(`Stopmotion has been completed`);
+                    return resolve(videoName);
+                  })
+                  .on('error', function(err, stdout, stderr) {
+                    dev.error('An error happened: ' + err.message);
+                    dev.error('ffmpeg standard output:\n' + stdout);
+                    dev.error('ffmpeg standard error:\n' + stderr);
+                    return reject(`couldn't create a stopmotion animation`);
+                  })
+                  .run();
+              });
+          },
+          function(err, p) {
+            dev.error(`Failed to create cache folder: ${err}`);
+            reject(err);
+          }
+        );
       });
     }
   };
@@ -525,6 +470,94 @@ module.exports = (function() {
                 });
             });
         });
+    });
+  }
+
+  function _loadMediaFilenameFromPublicationSlugs(slugPubliName, pageData) {
+    return new Promise((resolve, reject) => {
+      // all publimedias name in order are there : pageData.publiAndMediaData['montage'].medias_slugs
+      // all publimedias meta : pageData.publiAndMediaData['montage'].medias
+      // all actual medias :
+
+      const publiMeta = pageData.publiAndMediaData[slugPubliName];
+      const publiMedias = pageData.publiAndMediaData[slugPubliName].medias;
+
+      const mediasNameInOrder = publiMeta.medias_slugs.map(
+        item => item.slugMediaName
+      );
+
+      const mediasMetaInOrder = mediasNameInOrder
+        .filter(n => {
+          return publiMedias.hasOwnProperty(n);
+        })
+        .map(n => publiMedias[n]);
+
+      let mediasAndMetaInOrder = mediasMetaInOrder
+        .filter(m => {
+          return (
+            pageData.folderAndMediaData.hasOwnProperty(m.slugProjectName) &&
+            pageData.folderAndMediaData[
+              m.slugProjectName
+            ].medias.hasOwnProperty(m.slugMediaName)
+          );
+        })
+        .map(m => {
+          let videomediameta =
+            pageData.folderAndMediaData[m.slugProjectName].medias[
+              m.slugMediaName
+            ];
+          videomediameta.publi_meta = m;
+          return videomediameta;
+        });
+
+      // return only media_filename
+      const mediasFilePathInOrder = mediasAndMetaInOrder.map(vm => {
+        const pathToProject = api.getFolderPath(vm.publi_meta.slugProjectName);
+        return {
+          full_path: path.join(pathToProject, vm.media_filename)
+        };
+      });
+
+      return resolve(mediasFilePathInOrder);
+    });
+  }
+
+  function _copyToTempAndRenameEachImagesFromDifferentProject({
+    imagesFilePathInOrder,
+    cachePath
+  }) {
+    return new Promise(function(resolve, reject) {
+      // let slugStopmotionPath = getFolderPath(
+      //   path.join(
+      //     global.settings.structure['stopmotions'].path,
+      //     slugStopmotionName
+      //   )
+      // );
+      let tasks = [];
+
+      imagesFilePathInOrder.forEach((media, index) => {
+        tasks.push(
+          new Promise((resolve, reject) => {
+            const cache_image_path = path.join(
+              cachePath,
+              'img-' + pad(index, 4, '0') + '.jpeg'
+            );
+
+            fs.copy(media.full_path, cache_image_path)
+              .then(() => {
+                resolve();
+              })
+              .catch(err => {
+                dev.error(`Failed to copy image to cache with seq name.`);
+                reject(err);
+              });
+          })
+        );
+
+        Promise.all(tasks)
+          .then(() => resolve(cachePath))
+          .catch(err => reject(err));
+      });
     });
   }
 })();
