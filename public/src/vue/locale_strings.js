@@ -217,6 +217,7 @@ module.exports = (function() {
       'human tech days': 'Human Tech Days',
       page_by_page: 'Document page à page',
       video_assemblage: 'Montage vidéo',
+      stopmotion_animation: 'Animation image par image',
       web: 'Page web',
 
       last_modified: 'Dernière modification',

@@ -47,7 +47,9 @@
           </span>
         </button>
 
-        <div class="m_recipes--recipe--mealList">
+        <div class="m_recipes--recipe--mealList"
+          v-if="recipe_of_this_template(recipe.key).length > 0"
+        >
           <label>Créations précédentes</label>
           
           <button type="button"
@@ -141,6 +143,9 @@ export default {
         },
         {
           key: 'video_assemblage'
+        },
+        {
+          key: 'stopmotion_animation'
         },
         {
           key: 'drawing_pad'
