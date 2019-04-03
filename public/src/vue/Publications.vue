@@ -149,7 +149,7 @@ export default {
         },
         {
           key: 'drawing_pad'
-        },
+        }
       ]
     }
   },

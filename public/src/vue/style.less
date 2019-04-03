@@ -2736,15 +2736,18 @@ small {
   border-radius: @t-buttonradius;
 }
 .m_recipes--recipe--mealList {
+  display: flex;
+  flex-flow: row wrap;
 
+  label {
+    flex-basis: 100%;
+  }
 }
 
 .m_recipes--recipe--mealList--meal {
   font-size: inherit;
   text-transform: initial;
 
-  display: block;
-  width: 100%;
   .bg-blanc;
   // .margin-sides-small; 
   .margin-vert-verysmall; 
