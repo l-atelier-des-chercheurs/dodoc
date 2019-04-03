@@ -29,7 +29,7 @@
             {{ $t('export') }}
           </button>     
 
-          <ExportVideoPubliModal
+          <ExportAudioAndVideoMixModal
             v-if="showExportModal"
             @close="showExportModal = false"
             :slugPubliName="slugPubliName"
@@ -93,7 +93,7 @@
 </template>
 <script>
 import MediaContent from '../subcomponents/MediaContent.vue';
-import ExportVideoPubliModal from '../modals/ExportVideoPubliModal.vue';
+import ExportAudioAndVideoMixModal from '../modals/ExportAudioAndVideoMix.vue';
 
 export default {
   props: {
@@ -103,7 +103,7 @@ export default {
   },
   components: {
     MediaContent,
-    ExportVideoPubliModal
+    ExportAudioAndVideoMixModal
   },
   data() {
     return {

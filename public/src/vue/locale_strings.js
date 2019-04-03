@@ -203,6 +203,8 @@ module.exports = (function() {
       new_window: 'Nouvelle fenêtre',
       export_video_instructions:
         'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des vidéos ajoutées à la publication.',
+      export_audio_video_mix_instructions:
+        'Cliquez sur le bouton pour lancer la création d’une vidéo à partir du son et de la vidéo sélectionnés.',
       export_stopmotion_instructions:
         'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des images ajoutées à la publication.',
       make_video: 'Fabriquer une vidéo',
@@ -431,6 +433,8 @@ module.exports = (function() {
       new_window: 'New Window',
       export_video_instructions:
         'Click this button to generate a video from multiple source videos.',
+      export_audio_video_mix_instructions:
+        'Click this button to generate a video from the audio and video files.',
       export_stopmotion_instructions:
         'Click this button to generate a video from images you have selected.',
       make_video: 'Make a video',

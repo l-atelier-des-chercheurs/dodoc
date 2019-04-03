@@ -11,7 +11,7 @@
     <template slot="sidebar">
       <div class="margin-sides-medium font-small">
         <div class="">
-          {{ $t('export_video_instructions') }} 
+          {{ $t('export_audio_video_mix_instructions') }} 
           <button type="button" 
             class="margin-small margin-left-none bg-bleuvert c-blanc button-allwide" 
             :disabled="video_request_status !== false"
