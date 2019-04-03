@@ -41,11 +41,16 @@
         </template>
       </div>
     </div>
+    <div class="m_drawingPad">
+      <PadSurface
+      />
+    </div>
   </div>
 </template>
 <script>
 import MediaContent from './subcomponents/MediaContent.vue';
 import ExportVideoPubliModal from './modals/ExportVideoPubli.vue';
+import PadSurface from './subcomponents/PadSurface.vue';
 
 export default {
   props: {
@@ -55,7 +60,8 @@ export default {
   },
   components: {
     MediaContent,
-    ExportVideoPubliModal
+    ExportVideoPubliModal,
+    PadSurface
   },
   data() {
     return {
@@ -206,7 +212,6 @@ export default {
       // get list of publications items
       let publi_medias = [];
       let missingMedias = [];
-
 
       if(this.medias_slugs_in_order.length === 0) {
         return;
