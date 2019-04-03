@@ -25,7 +25,7 @@
             <label for="settings">{{ $t('settings') }}</label>
           </div> -->
 
-          <!-- <button type="button" class="buttonLink" @click="showExportModal = true">
+          <button type="button" class="buttonLink" @click="showExportModal = true">
             {{ $t('export') }}
           </button>     
 
@@ -34,23 +34,58 @@
             @close="showExportModal = false"
             :slugPubliName="slugPubliName"
           />
- -->
+
           <button type="button" class="buttonLink" @click="removePublication">
             {{ $t('remove') }}
           </button>     
         </template>
       </div>
     </div>
-    <div class="m_drawingPad">
-      <PadSurface
-      />
+    <div class="m_videoPublication">
+      <transition-group name="slideFromTop" :duration="300" tag="div">
+        <div
+          class="m_videoPublication--media"
+          v-for="media in publication_medias" 
+          :key="media.publi_meta.metaFileName"
+        >
+          <MediaContent
+            v-model="media.content"
+            :context="'full'"
+            :slugFolderName="media.slugProjectName"
+            :media="media"
+            class=""
+          />
+          <div class="m_metaField">
+            <div>
+              {{ $t('project') }}
+            </div>
+            <div>
+              {{ $root.store.projects[media.slugProjectName].name }}
+            </div>
+          </div>
+          <div class="m_metaField">
+            <div>
+              {{ $t('duration') }}
+            </div>
+            <div>
+              {{ media.duration }}
+            </div>
+          </div>
+
+          <button type="button" class="buttonLink font-verysmall"
+            @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
+          >
+            {{ $t('remove') }}
+          </button>
+        </div>
+      </transition-group>
+
     </div>
   </div>
 </template>
 <script>
-import MediaContent from './subcomponents/MediaContent.vue';
-import ExportVideoPubliModal from './modals/ExportVideoPubli.vue';
-import PadSurface from './subcomponents/PadSurface.vue';
+import MediaContent from '../subcomponents/MediaContent.vue';
+import ExportVideoPubliModal from '../modals/ExportVideoPubli.vue';
 
 export default {
   props: {
@@ -60,8 +95,7 @@ export default {
   },
   components: {
     MediaContent,
-    ExportVideoPubliModal,
-    PadSurface
+    ExportVideoPubliModal
   },
   data() {
     return {
@@ -212,6 +246,7 @@ export default {
       // get list of publications items
       let publi_medias = [];
       let missingMedias = [];
+
 
       if(this.medias_slugs_in_order.length === 0) {
         return;

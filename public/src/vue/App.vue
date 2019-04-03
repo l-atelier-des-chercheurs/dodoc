@@ -134,6 +134,12 @@
                     :publication="$root.store.publications[$root.settings.current_slugPubliName]"
                     :read_only="!$root.state.connected"
                   />
+                  <StopmotionAnimation
+                    v-else-if="$root.settings.current_slugPubliName !== false && $root.store.publications[$root.settings.current_slugPubliName].template === 'stopmotion_animation'"
+                    :slugPubliName="$root.settings.current_slugPubliName"
+                    :publication="$root.store.publications[$root.settings.current_slugPubliName]"
+                    :read_only="!$root.state.connected"
+                  />
                 </transition>
               </div>
             </div>
@@ -177,9 +183,11 @@ import CaptureView from './CaptureView.vue';
 import EditMedia from './components/modals/EditMedia.vue';
 
 import Publications from './Publications.vue';
-import PagePublication from './components/PagePublication.vue';
-import VideoPublication from './components/VideoPublication.vue';
-import DrawingPad from './components/DrawingPad.vue';
+
+import PagePublication from './components/publication_templates/PagePublication.vue';
+import VideoPublication from './components/publication_templates/VideoPublication.vue';
+import DrawingPad from './components/publication_templates/DrawingPad.vue';
+import StopmotionAnimation from './components/publication_templates/StopmotionAnimation.vue';
 
 import Resizer from './components/splitpane/Resizer.vue'
 import Pane from './components/splitpane/Pane.vue'
@@ -197,6 +205,7 @@ export default {
     PagePublication,
     VideoPublication,
     DrawingPad,
+    StopmotionAnimation,
     Resizer, 
     Pane
   },

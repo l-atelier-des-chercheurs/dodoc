@@ -369,8 +369,8 @@
   </div>
 </template>
 <script>
-import MediaPublication from './subcomponents/MediaPublication.vue';
-import ExportModal from './modals/ExportPagePubli.vue';
+import MediaPublication from '../subcomponents/MediaPublication.vue';
+import ExportModal from '../modals/ExportPagePubli.vue';
 
 export default {
   props: {
