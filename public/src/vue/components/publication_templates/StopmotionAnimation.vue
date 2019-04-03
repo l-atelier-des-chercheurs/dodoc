@@ -41,8 +41,7 @@
         </template>
       </div>
     </div>
-    <div class="m_videoPublication">
-      <transition-group name="slideFromTop" :duration="300" tag="div">
+      <transition-group class="m_stopmotionAnimationPublication" name="slideFromTop" :duration="300">
         <div
           class="m_videoPublication--media"
           v-for="media in publication_medias" 
@@ -55,7 +54,7 @@
             :media="media"
             class=""
           />
-          <div class="m_metaField">
+          <!-- <div class="m_metaField">
             <div>
               {{ $t('project') }}
             </div>
@@ -70,17 +69,16 @@
             <div>
               {{ media.duration }}
             </div>
-          </div>
+          </div> -->
 
           <button type="button" class="buttonLink font-verysmall"
             @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
           >
-            {{ $t('remove') }}
+            {{ $t('withdraw') }}
           </button>
         </div>
       </transition-group>
 
-    </div>
   </div>
 </template>
 <script>
@@ -107,6 +105,8 @@ export default {
   created() {
   },
   mounted() {
+    this.$root.settings.current_publication.accepted_media_type = ['image'];
+
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
     

@@ -2742,6 +2742,10 @@ small {
   label {
     flex-basis: 100%;
   }
+
+  > * {
+    
+  }
 }
 
 .m_recipes--recipe--mealList--meal {
@@ -3113,6 +3117,22 @@ small {
       pointer-events: none;
     }
   }  
+
+  .m_stopmotionAnimationPublication {
+    display: flex;
+    flex-flow: row wrap;
+
+    // .padding-medium;
+    .margin-small;
+    border-radius: @t-buttonradius;
+    .bg-blanc;
+
+    > * {
+      flex: 0 0 100px;
+      .margin-verysmall;
+
+    }
+  }
 
   .m_videoPublication {
     display: flex;

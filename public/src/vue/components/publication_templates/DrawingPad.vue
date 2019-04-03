@@ -73,6 +73,8 @@ export default {
   created() {
   },
   mounted() {
+    this.$root.settings.current_publication.accepted_media_type = ['image'];
+
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
     

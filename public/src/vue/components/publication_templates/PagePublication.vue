@@ -436,6 +436,8 @@ export default {
     this.$root.setPublicationZoom(this.zoom);
   },
   mounted() {
+    this.$root.settings.current_publication.accepted_media_type = ["image", "video", "audio", "text", "document", "other"];
+
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
     this.$eventHub.$on('publication.setCSSEditWindow', this.setCSSEditWindow);

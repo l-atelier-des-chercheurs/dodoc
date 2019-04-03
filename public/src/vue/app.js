@@ -505,7 +505,11 @@ let vm = new Vue({
         }
       },
 
-      current_slugPubliName: false,
+      current_publication: {
+        slug: false,
+        accepted_media_type: []
+      },
+
       current_author: false,
 
       publi_zoom: 0.8,
@@ -599,14 +603,16 @@ let vm = new Vue({
         this.state.mode === 'export_publication' &&
         Object.keys(this.store.publications).length > 0
       ) {
-        const slugPubliName = Object.keys(this.store.publications)[0];
-        this.settings.current_slugPubliName = slugPubliName;
+        this.settings.current_publication.slug = Object.keys(
+          this.store.publications
+        )[0];
       } else if (
         this.state.mode === 'print_publication' &&
         Object.keys(this.store.publications).length > 0
       ) {
-        const slugPubliName = Object.keys(this.store.publications)[0];
-        this.settings.current_slugPubliName = slugPubliName;
+        this.settings.current_publication.slug = Object.keys(
+          this.store.publications
+        )[0];
         this.settings.show_publi_panel = true;
       }
     }
@@ -614,14 +620,14 @@ let vm = new Vue({
     /* à la connexion/reconnexion, détecter si un projet ou une publi sont ouverts 
     et si c’est le cas, rafraichir leur contenu (meta, medias) */
     this.$eventHub.$on('socketio.reconnect', () => {
-      if (this.settings.current_slugPubliName) {
+      if (this.settings.current_publication.slug) {
         this.$socketio.listFolder({
           type: 'publications',
-          slugFolderName: this.settings.current_slugPubliName
+          slugFolderName: this.settings.current_publication.slug
         });
         this.$socketio.listMedias({
           type: 'publications',
-          slugFolderName: this.settings.current_slugPubliName
+          slugFolderName: this.settings.current_publication.slug
         });
       }
       if (this.do_navigation.current_slugProjectName) {
@@ -1088,7 +1094,7 @@ let vm = new Vue({
         console.log(`ROOT EVENT: openPubliPanel`);
       }
       this.settings.show_publi_panel = true;
-      this.settings.current_slugPubliName = false;
+      this.settings.current_publication.slug = false;
 
       this.$socketio.listFolders({ type: 'publications' });
     },
@@ -1097,7 +1103,7 @@ let vm = new Vue({
         console.log(`ROOT EVENT: closePubliPanel`);
       }
       this.settings.show_publi_panel = false;
-      this.settings.current_slugPubliName = false;
+      this.settings.current_publication.slug = false;
     },
 
     openPublication(slugPubliName) {
@@ -1112,13 +1118,13 @@ let vm = new Vue({
         type: 'publications',
         slugFolderName: slugPubliName
       });
-      this.settings.current_slugPubliName = slugPubliName;
+      this.settings.current_publication.slug = slugPubliName;
     },
     closePublication() {
       if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: closePublication');
       }
-      this.settings.current_slugPubliName = false;
+      this.settings.current_publication.slug = false;
     },
     downloadPubliPDF({ slugPubliName }) {
       if (window.state.dev_mode === 'debug') {
