@@ -129,6 +129,16 @@ export default {
   beforeDestroy() {
   },
   watch: {
+    'quality': function() {
+      if(this.video_request_status === 'generated') {
+        this.video_request_status = false;
+      }
+    },
+    'framerate': function() {
+      if(this.video_request_status === 'generated') {
+        this.video_request_status = false;
+      }
+    }
   },
   computed: {
   },
