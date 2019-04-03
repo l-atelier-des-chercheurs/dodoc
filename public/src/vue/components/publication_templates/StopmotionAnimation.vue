@@ -29,7 +29,7 @@
             {{ $t('export') }}
           </button>     
 
-          <ExportVideoPubliModal
+          <ExportStopmotionPubliModal
             v-if="showExportModal"
             @close="showExportModal = false"
             :slugPubliName="slugPubliName"
@@ -43,7 +43,7 @@
     </div>
       <transition-group class="m_stopmotionAnimationPublication" name="slideFromTop" :duration="300">
         <div
-          class="m_videoPublication--media"
+          class="m_stopmotionAnimationPublication--media"
           v-for="media in publication_medias" 
           :key="media.publi_meta.metaFileName"
         >
@@ -83,7 +83,7 @@
 </template>
 <script>
 import MediaContent from '../subcomponents/MediaContent.vue';
-import ExportVideoPubliModal from '../modals/ExportVideoPubli.vue';
+import ExportStopmotionPubliModal from '../modals/ExportStopmotionPubliModal.vue';
 
 export default {
   props: {
@@ -93,7 +93,8 @@ export default {
   },
   components: {
     MediaContent,
-    ExportVideoPubliModal
+    ExportStopmotionPubliModal,
+    ExportStopmotionPubliModal
   },
   data() {
     return {

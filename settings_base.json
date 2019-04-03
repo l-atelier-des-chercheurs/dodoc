@@ -188,12 +188,10 @@
           "default": "standard"          
         },
         "width": {
-          "type": "number",
-          "default": 210
+          "type": "number"
         },
         "height": {
-          "type": "number",
-          "default": 297
+          "type": "number"
         },
         "header_left": {
           "type": "string"

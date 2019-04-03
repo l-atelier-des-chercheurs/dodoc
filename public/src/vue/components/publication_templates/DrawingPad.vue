@@ -49,7 +49,7 @@
 </template>
 <script>
 import MediaContent from '../subcomponents/MediaContent.vue';
-import ExportVideoPubliModal from '../modals/ExportVideoPubli.vue';
+import ExportVideoPubliModal from '../modals/ExportVideoPubliModal.vue';
 import PadSurface from '../subcomponents/PadSurface.vue';
 
 export default {

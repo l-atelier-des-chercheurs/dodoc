@@ -85,7 +85,7 @@
 </template>
 <script>
 import MediaContent from '../subcomponents/MediaContent.vue';
-import ExportVideoPubliModal from '../modals/ExportVideoPubli.vue';
+import ExportVideoPubliModal from '../modals/ExportVideoPubliModal.vue';
 
 export default {
   props: {

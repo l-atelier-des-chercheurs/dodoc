@@ -352,6 +352,112 @@ module.exports = (function() {
           });
         });
       });
+    },
+
+    makeVideoFromImagesInPubli: ({ slugPubliName, socket }) => {
+      return new Promise(function(resolve, reject) {
+        const videoName =
+          slugPubliName +
+          '-' +
+          api.getCurrentDate() +
+          '-' +
+          (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2) +
+          '.mp4';
+
+        const cachePath = path.join(
+          global.tempStorage,
+          global.settings.cacheDirname,
+          '_publications'
+        );
+
+        const videoPath = path.join(cachePath, videoName);
+
+        loadPublication(slugPubliName, {}).then(pageData => {
+          // all publimedias name in order are there : pageData.publiAndMediaData['montage'].medias_slugs
+          // all publimedias meta : pageData.publiAndMediaData['montage'].medias
+          // all actual medias :
+
+          debugger;
+
+          const publiMeta = pageData.publiAndMediaData[slugPubliName];
+          const publiMedias = pageData.publiAndMediaData[slugPubliName].medias;
+
+          const videosNameInOrder = publiMeta.medias_slugs.map(
+            item => item.slugMediaName
+          );
+
+          const videosMetaInOrder = videosNameInOrder
+            .filter(n => {
+              return publiMedias.hasOwnProperty(n);
+            })
+            .map(n => publiMedias[n]);
+
+          let videosMediaMetaInOrder = videosMetaInOrder
+            .filter(m => {
+              return (
+                pageData.folderAndMediaData.hasOwnProperty(m.slugProjectName) &&
+                pageData.folderAndMediaData[
+                  m.slugProjectName
+                ].medias.hasOwnProperty(m.slugMediaName)
+              );
+            })
+            .map(m => {
+              let videomediameta =
+                pageData.folderAndMediaData[m.slugProjectName].medias[
+                  m.slugMediaName
+                ];
+              videomediameta.publi_meta = m;
+              return videomediameta;
+            });
+
+          // return only media_filename
+          const videosFilePathInOrder = videosMediaMetaInOrder.map(vm => {
+            const pathToProject = api.getFolderPath(
+              vm.publi_meta.slugProjectName
+            );
+            return {
+              videoFilePath: path.join(pathToProject, vm.media_filename)
+            };
+          });
+
+          fs.mkdirp(cachePath, function() {
+            var ffmpeg_task = new ffmpeg();
+
+            videosFilePathInOrder.map(vm => {
+              ffmpeg_task.addInput(vm.videoFilePath);
+            });
+
+            let time_since_last_report = 0;
+            ffmpeg_task
+              .withVideoCodec('libx264')
+              .withVideoBitrate('4000k')
+              .withAudioCodec('libmp3lame')
+              .withAudioBitrate('128k')
+              .toFormat('mp4')
+              .on('progress', progress => {
+                if (+new Date() - time_since_last_report > 3000) {
+                  time_since_last_report = +new Date();
+                  require('./sockets').notify({
+                    socket,
+                    not_localized_string: `Creating video: ${progress.timemark}`
+                  });
+                }
+              })
+              .on('end', () => {
+                dev.logverbose(`Video has been created`);
+                resolve({ videoName });
+              })
+              .on('error', function(err, stdout, stderr) {
+                ffmpeg_task = null;
+                dev.error('An error happened: ' + err.message);
+                dev.error('ffmpeg standard output:\n' + stdout);
+                dev.error('ffmpeg standard error:\n' + stderr);
+                reject(`couldn't convert a video`);
+              })
+              .mergeToFile(videoPath, cachePath);
+          });
+        });
+      });
     }
   };
 

@@ -388,7 +388,7 @@ export default {
       publication_defaults: {
         'page_by_page': {
           width: 210,
-          height: 296,      
+          height: 297,      
           style: 'standard',
           margin_left: 10,
           margin_right: 10,

@@ -115,7 +115,7 @@ export default {
       }
 
       this.$eventHub.$on('socketio.publication.videoIsGenerated', this.videoPubliIsGenerated);
-      this.$root.downloadVideoPubli({ 
+      this.$socketio.downloadVideoPubli({ 
         slugPubliName: this.slugPubliName
       });
       this.video_request_status = 'waiting_for_server';

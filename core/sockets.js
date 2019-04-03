@@ -53,6 +53,9 @@ module.exports = (function() {
 
       socket.on('downloadPubliPDF', d => onDownloadPubliPDF(socket, d));
       socket.on('downloadVideoPubli', d => onDownloadVideoPubli(socket, d));
+      socket.on('downloadStopmotionPubli', d =>
+        onDownloadStopmotionPubli(socket, d)
+      );
       socket.on('updateNetworkInfos', d => onUpdateNetworkInfos(socket, d));
 
       socket.on('updateClientInfo', d => onUpdateClientInfo(socket, d));
@@ -371,6 +374,24 @@ module.exports = (function() {
       .then(({ videoName }) => {
         api.sendEventWithContent(
           'publiVideoGenerated',
+          { videoName },
+          io,
+          socket
+        );
+      });
+  }
+
+  function onDownloadStopmotionPubli(socket, { slugPubliName }) {
+    dev.logfunction(
+      `EVENT - onDownloadStopmotionPubli with 
+      slugPubliName = ${slugPubliName}`
+    );
+
+    exporter
+      .makeVideoFromImagesInPubli({ slugPubliName, socket })
+      .then(({ videoName }) => {
+        api.sendEventWithContent(
+          'publiStopmotionIsGenerated',
           { videoName },
           io,
           socket

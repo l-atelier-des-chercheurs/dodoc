@@ -127,6 +127,10 @@ Vue.prototype.$socketio = new Vue({
       this.socket.on('listSpecificMedias', this._onListSpecificMedias);
       this.socket.on('publiPDFGenerated', this._onPubliPDFGenerated);
       this.socket.on('publiVideoGenerated', this._onPubliVideoGenerated);
+      this.socket.on(
+        'publiStopmotionIsGenerated',
+        this._onPubliStopmotionGenerated
+      );
 
       this.socket.on('newNetworkInfos', this._onNewNetworkInfos);
 
@@ -321,6 +325,13 @@ Vue.prototype.$socketio = new Vue({
       console.log('Received _onPubliVideoGenerated packet.');
       this.$eventHub.$emit('socketio.publication.videoIsGenerated', data);
     },
+    _onPubliStopmotionGenerated(data) {
+      console.log('Received _onPubliStopmotionGenerated packet.');
+      this.$eventHub.$emit(
+        'socketio.publication.publiStopmotionIsGenerated',
+        data
+      );
+    },
 
     _listClients(data) {
       console.log('Received _listClients packet.');
@@ -436,6 +447,9 @@ Vue.prototype.$socketio = new Vue({
     },
     downloadVideoPubli(pdata) {
       this.socket.emit('downloadVideoPubli', pdata);
+    },
+    downloadStopmotionPubli(pdata) {
+      this.socket.emit('downloadStopmotionPubli', pdata);
     },
     updateNetworkInfos() {
       this.socket.emit('updateNetworkInfos');
@@ -1131,14 +1145,6 @@ let vm = new Vue({
         console.log(`ROOT EVENT: downloadPubliPDF: ${slugPubliName}`);
       }
       this.$socketio.downloadPubliPDF({
-        slugPubliName
-      });
-    },
-    downloadVideoPubli({ slugPubliName }) {
-      if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: downloadVideoPubli: ${slugPubliName}`);
-      }
-      this.$socketio.downloadVideoPubli({
         slugPubliName
       });
     },
