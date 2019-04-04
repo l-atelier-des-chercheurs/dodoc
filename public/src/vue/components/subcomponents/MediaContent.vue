@@ -99,7 +99,7 @@ export default {
     },
     preview_size: {
       type: Number,
-      default: 360
+      default: 180
     }
   },
   components: {

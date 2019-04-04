@@ -24,8 +24,8 @@
             <select v-model="quality">
               <option 
                 v-for="q in available_qualities" 
-                :value="q.key" 
-                :key="q.key"
+                :value="q.height" 
+                :key="q.height"
               >
                 {{ $t(q.label) }}
               </option>        
@@ -101,23 +101,23 @@ export default {
       link_to_video: false,
       video_is_playing: false,
       framerate: 4,
-      quality: '?x720',
+      quality: 720,
       available_qualities: [
         { 
           label: 'very_high',
-          key: '?x1080'
+          height: 1080
         },
         { 
           label: 'high',
-          key: '?x720'
+          height: 720
         },
         { 
           label: 'medium',
-          key: '?x640'
+          height: 640
         },
         { 
           label: 'low',
-          key: '?x360'
+          height: 360
         },
       ]
     }

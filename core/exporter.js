@@ -5,6 +5,8 @@ const path = require('path'),
   fs = require('fs-extra'),
   pad = require('pad-left');
 
+const sharp = require('sharp');
+
 const dev = require('./dev-log'),
   api = require('./api'),
   file = require('./file');
@@ -411,72 +413,99 @@ module.exports = (function() {
         const videoCachePath = path.join(cachePath, videoName);
         let numberOfImagesToProcess = -1;
 
-        fs.mkdirp(
-          cachePath,
-          function() {
-            loadPublication(slugPubliName, {})
-              .then(pageData =>
-                _loadMediaFilenameFromPublicationSlugs(slugPubliName, pageData)
-              )
-              .then(imagesFilePathInOrder => {
-                numberOfImagesToProcess = imagesFilePathInOrder.length;
-                return _copyToTempAndRenameEachImagesFromDifferentProject({
-                  imagesFilePathInOrder,
-                  cachePath: imagesCachePath
-                });
-              })
-              .then(imagesCachePath => {
-                const framerate =
-                  options && options.hasOwnProperty('framerate')
-                    ? options.framerate
-                    : 4;
-                const quality =
-                  options && options.hasOwnProperty('quality')
-                    ? options.quality
-                    : '?x640';
+        const framerate =
+          options && options.hasOwnProperty('framerate')
+            ? options.framerate
+            : 4;
 
-                var proc = new ffmpeg()
-                  .input(path.join(imagesCachePath, 'img-%04d.jpeg'))
-                  .inputFPS(framerate)
-                  .fps(framerate)
-                  .withVideoCodec('libx264')
-                  .withVideoBitrate('8000k')
-                  .addOptions(['-preset slow', '-tune animation'])
-                  .noAudio()
-                  .size(quality)
-                  .toFormat('mp4')
-                  .output(videoCachePath)
-                  .on('progress', progress => {
-                    dev.logverbose(
-                      `Processing new stopmotion: image ${
-                        progress.frames
-                      }/${numberOfImagesToProcess}`
-                    );
-                    require('./sockets').notify({
-                      socket,
-                      not_localized_string: `Processing new stopmotion: image ${
-                        progress.frames
-                      }/${numberOfImagesToProcess}`
-                    });
-                  })
-                  .on('end', () => {
-                    dev.logverbose(`Stopmotion has been completed`);
-                    return resolve(videoName);
-                  })
-                  .on('error', function(err, stdout, stderr) {
-                    dev.error('An error happened: ' + err.message);
-                    dev.error('ffmpeg standard output:\n' + stdout);
-                    dev.error('ffmpeg standard error:\n' + stderr);
-                    return reject(`couldn't create a stopmotion animation`);
-                  })
-                  .run();
-              });
-          },
-          function(err, p) {
-            dev.error(`Failed to create cache folder: ${err}`);
-            reject(err);
-          }
-        );
+        const video_height =
+          options && options.hasOwnProperty('quality') ? options.quality : 640;
+
+        let resolution = {
+          width: 0,
+          height: video_height
+        };
+
+        fs.mkdirp(cachePath, function() {
+          fs.mkdirp(
+            imagesCachePath,
+            function() {
+              loadPublication(slugPubliName, {})
+                .then(pageData => {
+                  let ratio = _getMediaRatioFromFirstFilename(
+                    slugPubliName,
+                    pageData
+                  );
+                  if (!ratio) {
+                    ratio = 0.75;
+                  }
+
+                  const new_width = Math.round(video_height / ratio);
+                  resolution.width = new_width;
+
+                  return _loadMediaFilenameFromPublicationSlugs(
+                    slugPubliName,
+                    pageData
+                  );
+                })
+                .then(imagesFilePathInOrder => {
+                  numberOfImagesToProcess = imagesFilePathInOrder.length;
+                  return _prepareImageForStopmotion({
+                    imagesFilePathInOrder,
+                    cachePath: imagesCachePath,
+                    resolution
+                  });
+                })
+                .then(imagesCachePath => {
+                  debugger;
+                  dev.logverbose(`About to create stop-motion`);
+                  var proc = new ffmpeg()
+                    .input(path.join(imagesCachePath, 'img-%04d.jpeg'))
+                    .inputFPS(framerate)
+                    .fps(framerate)
+                    .withVideoCodec('libx264')
+                    .withVideoBitrate('8000k')
+                    .addOptions(['-preset slow', '-tune animation'])
+                    .noAudio()
+                    .size(`${resolution.width}x${resolution.height}`)
+                    .toFormat('mp4')
+                    .output(videoCachePath)
+                    .on('progress', progress => {
+                      dev.logverbose(
+                        `Processing new stopmotion: image ${
+                          progress.frames
+                        }/${numberOfImagesToProcess}`
+                      );
+                      require('./sockets').notify({
+                        socket,
+                        not_localized_string: `Processing new stopmotion: image ${
+                          progress.frames
+                        }/${numberOfImagesToProcess}`
+                      });
+                    })
+                    .on('end', () => {
+                      dev.logverbose(`Stopmotion has been completed`);
+                      return resolve(videoName);
+                    })
+                    .on('error', function(err, stdout, stderr) {
+                      dev.error('An error happened: ' + err.message);
+                      dev.error('ffmpeg standard output:\n' + stdout);
+                      dev.error('ffmpeg standard error:\n' + stderr);
+                      return reject(`couldn't create a stopmotion animation`);
+                    })
+                    .run();
+                })
+                .catch(err => {
+                  dev.error(`Error : ` + err);
+                  reject(err);
+                });
+            },
+            function(err, p) {
+              dev.error(`Failed to create cache folder: ${err}`);
+              reject(err);
+            }
+          );
+        });
       });
     }
   };
@@ -597,9 +626,45 @@ module.exports = (function() {
     });
   }
 
-  function _copyToTempAndRenameEachImagesFromDifferentProject({
+  function _getMediaRatioFromFirstFilename(slugPubliName, pageData) {
+    const publiMeta = pageData.publiAndMediaData[slugPubliName];
+    const publiMedias = pageData.publiAndMediaData[slugPubliName].medias;
+
+    const mediasNameInOrder = publiMeta.medias_slugs.map(
+      item => item.slugMediaName
+    );
+
+    const mediasMetaInOrder = mediasNameInOrder
+      .filter(n => {
+        return publiMedias.hasOwnProperty(n);
+      })
+      .map(n => publiMedias[n]);
+
+    let mediasAndMetaInOrder = mediasMetaInOrder
+      .filter(m => {
+        return (
+          pageData.folderAndMediaData.hasOwnProperty(m.slugProjectName) &&
+          pageData.folderAndMediaData[m.slugProjectName].medias.hasOwnProperty(
+            m.slugMediaName
+          )
+        );
+      })
+      .map(m => {
+        let videomediameta =
+          pageData.folderAndMediaData[m.slugProjectName].medias[
+            m.slugMediaName
+          ];
+        videomediameta.publi_meta = m;
+        return videomediameta;
+      });
+
+    return mediasAndMetaInOrder[0].ratio;
+  }
+
+  function _prepareImageForStopmotion({
     imagesFilePathInOrder,
-    cachePath
+    cachePath,
+    resolution
   }) {
     return new Promise(function(resolve, reject) {
       // let slugStopmotionPath = getFolderPath(
@@ -618,21 +683,28 @@ module.exports = (function() {
               'img-' + pad(index, 4, '0') + '.jpeg'
             );
 
-            fs.copy(media.full_path, cache_image_path)
-              .then(() => {
-                resolve();
+            sharp(media.full_path)
+              .rotate()
+              .resize(resolution.width, resolution.height, {
+                fit: 'contain',
+                background: { r: 255, g: 255, b: 255 }
               })
-              .catch(err => {
-                dev.error(`Failed to copy image to cache with seq name.`);
-                reject(err);
+              .jpeg({
+                quality: 90
+              })
+              .toFile(cache_image_path, function(err, info) {
+                if (err) {
+                  return reject(err);
+                }
+                dev.logverbose('saving stopmotion image : ' + cache_image_path);
+                return resolve();
               });
           })
         );
-
-        Promise.all(tasks)
-          .then(() => resolve(cachePath))
-          .catch(err => reject(err));
       });
+      Promise.all(tasks)
+        .then(() => resolve(cachePath))
+        .catch(err => reject(err));
     });
   }
 })();
