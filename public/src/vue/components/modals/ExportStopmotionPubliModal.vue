@@ -101,23 +101,23 @@ export default {
       link_to_video: false,
       video_is_playing: false,
       framerate: 4,
-      quality: '720x?',
+      quality: '?x720',
       available_qualities: [
         { 
           label: 'very_high',
-          key: '1080x?'
+          key: '?x1080'
         },
         { 
           label: 'high',
-          key: '720x?'
+          key: '?x720'
         },
         { 
           label: 'medium',
-          key: '640x?'
+          key: '?x640'
         },
         { 
           label: 'low',
-          key: '360x?'
+          key: '?x360'
         },
       ]
     }

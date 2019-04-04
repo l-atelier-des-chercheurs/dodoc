@@ -433,7 +433,7 @@ module.exports = (function() {
                 const quality =
                   options && options.hasOwnProperty('quality')
                     ? options.quality
-                    : '640x?';
+                    : '?x640';
 
                 var proc = new ffmpeg()
                   .input(path.join(imagesCachePath, 'img-%04d.jpeg'))
