@@ -436,6 +436,7 @@ module.exports = (function() {
                     slugPubliName,
                     pageData
                   );
+
                   if (!ratio) {
                     ratio = 0.75;
                   }
@@ -457,8 +458,11 @@ module.exports = (function() {
                   });
                 })
                 .then(imagesCachePath => {
-                  debugger;
                   dev.logverbose(`About to create stop-motion`);
+                  dev.logverbose(
+                    `Size : ${resolution.width}x${resolution.height}`
+                  );
+                  dev.logverbose(`framerate : ${framerate}`);
                   var proc = new ffmpeg()
                     .input(path.join(imagesCachePath, 'img-%04d.jpeg'))
                     .inputFPS(framerate)
@@ -466,6 +470,14 @@ module.exports = (function() {
                     .withVideoCodec('libx264')
                     .withVideoBitrate('8000k')
                     .addOptions(['-preset slow', '-tune animation'])
+                    .addOption(
+                      '-vf',
+                      `scale=w=${resolution.width}:h=${
+                        resolution.height
+                      }:force_original_aspect_ratio=1,pad=${resolution.width}:${
+                        resolution.height
+                      }:(ow-iw)/2:(oh-ih)/2:white`
+                    )
                     .noAudio()
                     .size(`${resolution.width}x${resolution.height}`)
                     .toFormat('mp4')
