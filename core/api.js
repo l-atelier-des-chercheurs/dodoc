@@ -9,6 +9,8 @@ const path = require('path'),
   ffmpeg = require('fluent-ffmpeg'),
   pad = require('pad-left');
 
+const sharp = require('sharp');
+
 const dev = require('./dev-log');
 
 ffmpeg.setFfmpegPath(ffmpegstatic.path);
@@ -332,45 +334,58 @@ module.exports = (function() {
 
       const numberOfImagesToProcess = images.length;
 
-      _copyToTempAndRenameImages({ slugStopmotionName, images })
-        .then(tempFolder => {
-          // ask ffmpeg to make a video from the cache images
-          var proc = new ffmpeg()
-            .input(path.join(tempFolder, 'img-%04d.jpeg'))
-            .inputFPS(frameRate)
-            .fps(frameRate)
-            .withVideoCodec('libx264')
-            .withVideoBitrate('8000k')
-            .addOptions(['-preset slow', '-tune animation'])
-            .noAudio()
-            .toFormat('mp4')
-            .output(pathToMedia)
-            .on('progress', progress => {
-              dev.logverbose(
-                `Processing new stopmotion: image ${
-                  progress.frames
-                }/${numberOfImagesToProcess}`
-              );
-              require('./sockets').notify({
-                socket,
-                not_localized_string: `Processing new stopmotion: image ${
-                  progress.frames
-                }/${numberOfImagesToProcess}`
-              });
-            })
-            .on('end', () => {
-              dev.logverbose(`Stopmotion has been completed`);
-              resolve();
-            })
-            .on('error', function(err, stdout, stderr) {
-              dev.error('An error happened: ' + err.message);
-              dev.error('ffmpeg standard output:\n' + stdout);
-              dev.error('ffmpeg standard error:\n' + stderr);
-              reject(`couldn't create a stopmotion animation`);
-            })
-            .run();
-        })
-        .catch(err => reject(err));
+      _getFirstImageSize({
+        slugStopmotionName,
+        image_filename: images[0]
+      }).then(resolution => {
+        _copyToTempAndRenameImages({ slugStopmotionName, images })
+          .then(tempFolder => {
+            // ask ffmpeg to make a video from the cache images
+            var proc = new ffmpeg()
+              .input(path.join(tempFolder, 'img-%04d.jpeg'))
+              .inputFPS(frameRate)
+              .fps(frameRate)
+              .withVideoCodec('libx264')
+              .withVideoBitrate('8000k')
+              .addOptions(['-preset slow', '-tune animation'])
+              .addOption(
+                '-vf',
+                `scale=w=${resolution.width}:h=${
+                  resolution.height
+                }:force_original_aspect_ratio=1,pad=${resolution.width}:${
+                  resolution.height
+                }:(ow-iw)/2:(oh-ih)/2:white`
+              )
+              .noAudio()
+              .toFormat('mp4')
+              .output(pathToMedia)
+              .on('progress', progress => {
+                dev.logverbose(
+                  `Processing new stopmotion: image ${
+                    progress.frames
+                  }/${numberOfImagesToProcess}`
+                );
+                require('./sockets').notify({
+                  socket,
+                  not_localized_string: `Processing new stopmotion: image ${
+                    progress.frames
+                  }/${numberOfImagesToProcess}`
+                });
+              })
+              .on('end', () => {
+                dev.logverbose(`Stopmotion has been completed`);
+                resolve();
+              })
+              .on('error', function(err, stdout, stderr) {
+                dev.error('An error happened: ' + err.message);
+                dev.error('ffmpeg standard output:\n' + stdout);
+                dev.error('ffmpeg standard error:\n' + stderr);
+                reject(`couldn't create a stopmotion animation`);
+              })
+              .run();
+          })
+          .catch(err => reject(err));
+      });
     });
   }
 
@@ -431,6 +446,27 @@ module.exports = (function() {
           reject(err);
         }
       );
+    });
+  }
+
+  function _getFirstImageSize({ slugStopmotionName, image_filename }) {
+    return new Promise(function(resolve, reject) {
+      let slugStopmotionPath = getFolderPath(
+        path.join(
+          global.settings.structure['stopmotions'].path,
+          slugStopmotionName
+        )
+      );
+
+      const image_path = path.join(slugStopmotionPath, image_filename);
+
+      sharp(image_path).toBuffer((err, data, info) => {
+        if (err) return reject(err);
+        return resolve({
+          width: info.width,
+          height: info.height
+        });
+      });
     });
   }
 
