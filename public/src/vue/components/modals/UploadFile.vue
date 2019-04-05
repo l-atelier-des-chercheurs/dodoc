@@ -13,24 +13,21 @@
 
     <template slot="sidebar">
 
-      <transition-group
-        tag="div" 
-        name="fileupload_list"
-      >
+      <div>
         <div
-          v-for="(f, index) in files_to_upload" 
+          v-for="f in files_to_upload" 
           :key="f.name"
           class="m_uploadFile"
           :class="cssStatus(f)"
           :style="`--progress-percent: ${files_to_upload_meta.hasOwnProperty(f.name) ? files_to_upload_meta[f.name].upload_percentages/100 : 0}`"
         >
           <!-- too heavy on memory on mobile devices -->
-          <img 
+          <!-- <img 
             v-if="!!f.type && f.type.includes('image') && index < 5" 
             class="m_uploadFile--image"
             :src="getImgPreview(f)"
-          >
-          <div v-else class="m_uploadFile--image" />
+          > -->
+          <div class="m_uploadFile--image" />
 
           <div :title="f.name" class="m_uploadFile--filename">
             {{ f.name }}
@@ -57,7 +54,7 @@
             </button>
           </div>
         </div>
-      </transition-group>
+      </div>
 
     </template>
 

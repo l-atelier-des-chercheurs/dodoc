@@ -39,7 +39,6 @@
         <transition name="fade_fast" :duration="150">
           <div 
             v-if="!read_only && show_drop_container"
-            :style="addMediaStyles"
             @drop="dropHandler($event)"
             class="_drop_indicator"
           >
@@ -98,9 +97,11 @@
       </div>
     </div>
 
+
     <transition-group
       class="m_project--library--medias"
       name="list-complete"
+      v-if="selected_files.length === 0"
     >
       <MediaCard
         v-for="media in sortedMedias"
