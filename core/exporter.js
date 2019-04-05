@@ -353,7 +353,6 @@ module.exports = (function() {
                   .addInput(audio_file)
                   .addOptions(['-c:v copy', '-c:a aac'])
                   .addOptions(['-map 0:v:0', '-map 1:a:0'])
-                  .addOptions(['-shortest'])
                   .withVideoCodec('libx264')
                   .withVideoBitrate('4000k')
                   .withAudioCodec('libmp3lame')
@@ -695,21 +694,13 @@ module.exports = (function() {
               'img-' + pad(index, 4, '0') + '.jpeg'
             );
 
-            sharp(media.full_path)
-              .rotate()
-              .resize(resolution.width, resolution.height, {
-                fit: 'contain',
-                background: { r: 255, g: 255, b: 255 }
+            fs.copy(media.full_path, cache_image_path)
+              .then(() => {
+                resolve();
               })
-              .jpeg({
-                quality: 90
-              })
-              .toFile(cache_image_path, function(err, info) {
-                if (err) {
-                  return reject(err);
-                }
-                dev.logverbose('saving stopmotion image : ' + cache_image_path);
-                return resolve();
+              .catch(err => {
+                dev.error(`Failed to copy image to cache with seq name.`);
+                reject(err);
               });
           })
         );
