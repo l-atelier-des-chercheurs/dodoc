@@ -4,17 +4,17 @@
     :class="`type-${media.type}`"
     :data-context="context"
   >
-
     <template v-if="media.type === 'image'">
-      <img :src="linkToImageThumb">
+      <img :srcset="imageSrcSetAttr" :sizes="imageSizesAttr" :src="linkToImageThumb"
+      >
       <transition name="fade" :duration="600">
-        <img v-if="is_hovered && $root.state.is_electron" :src="linkToHoveredThumb">
+        <img v-if="is_hovered && $root.state.is_electron && linkToHoveredThumb" :src="linkToHoveredThumb">
       </transition>
     </template>
 
     <template v-else-if="media.type === 'video'">
       <template v-if="context === 'preview'">
-        <img :src="linkToVideoThumb">
+        <img :srcset="videostillSrcSetAttr" :sizes="imageSizesAttr" :src="linkToVideoThumb">
       </template>
       <template v-else>
         <vue-plyr :options="plyr_options">
@@ -51,6 +51,30 @@
         :readonly="read_only"
       /> -->
     </template>
+
+    <template v-else-if="media.type === 'marker'">
+      <div v-if="context !== 'edit'" class="padding-small">
+        <template v-if="value.length > 0">
+          {{ value }}
+        </template>
+        <template v-else>
+          …
+        </template>
+      </div>
+
+      <input
+        v-else
+        type="text"
+        class="border-none bg-transparent"
+        placeholder="Étiquette"
+        name="label"
+        :value="value"
+        @input="$emit('input', $event.target.value)"
+        ref="textField"
+        :readonly="read_only"
+      >
+    </template>
+
     <template v-else-if="media.type === 'document'">
       <div v-if="context !== 'edit'" class="">
         <pre>
@@ -100,6 +124,14 @@ export default {
     preview_size: {
       type: Number,
       default: 180
+    },
+    element_width_for_sizes: {
+      type: Number,
+      default: 0
+    },
+    element_height: {
+      type: Number,
+      default: 0
     }
   },
   components: {
@@ -108,7 +140,7 @@ export default {
   data() {
     return {
       available_resolutions: {
-        preview_hovered: 600,
+        preview_hovered: 360,
         default: 1600
       },
       htmlForEditor: this.value,
@@ -153,7 +185,7 @@ export default {
       if(!this.media.hasOwnProperty('thumbs')) {
         return this.mediaURL;
       }
-
+      
       if (
       // if image is gif and context is not 'preview', let’s show the original gif
         (this.context !== 'preview' &&
@@ -170,8 +202,50 @@ export default {
       let pathToSmallestThumb = small_thumb[0].path;
 
       let url = this.$root.state.mode === 'export_publication' ? `./${pathToSmallestThumb}` : `/${pathToSmallestThumb}`;
-      // url += `?${(new Date()).getTime()}`;
       return url;
+    },
+    imageSrcSetAttr: function() {
+      if (this.element_width_for_sizes === 0 || this.mediaURL.toLowerCase().endsWith('.gif')) {
+        return;
+      }
+      
+      // get all available sizes 
+      const img_srcset = this.media.thumbs.reduce((acc, t) => {
+        if(t.hasOwnProperty('path')) {
+          // acc.push(encodeURIComponent(t.path) + ' ' + t.size + 'w');
+          acc.push(t.path + ' ' + t.size + 'w');
+        }
+        return acc;
+      }, []);
+      return img_srcset.join(', ');
+    },
+    videostillSrcSetAttr: function() {
+      if(this.element_width_for_sizes === 0) {
+        return;
+      }
+
+      let timeMark = 0;
+      let timeMarkThumbs = this.media.thumbs.filter(t => !!t && t.timeMark === 0);
+
+      if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
+        return;
+      }
+
+      // get all available sizes 
+      const img_srcset = timeMarkThumbs[0].thumbsData.reduce((acc, t) => {
+        if(t.hasOwnProperty('path')) {
+          acc.push(t.path + ' ' + t.size + 'w');
+        }
+        return acc;
+      }, []);
+      
+      return img_srcset.join(', ');
+    },
+    imageSizesAttr: function() {
+      if(this.element_width_for_sizes === 0) {
+        return;
+      }
+      return this.element_width_for_sizes + 'px';
     },
     linkToHoveredThumb: function() {
       let pathToSmallestThumb = this.media.thumbs.filter(m => m.size === this.thumbResHovered)[0].path;
@@ -183,21 +257,19 @@ export default {
     },
     linkToVideoThumb: function() {
       if (!this.media['thumbs'] || typeof this.media.thumbs === 'object' && this.media.thumbs.length === 0) {
-        return;
+        return this.mediaURL;
       }
 
       let timeMark = 0;
       let timeMarkThumbs = this.media.thumbs.filter(t => !!t && t.timeMark === 0);
 
       if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
-        return;
+        return this.mediaURL;
       }
-
 
       let pathToSmallestThumb = timeMarkThumbs[0].thumbsData.filter(m => m.size === this.thumbRes)[0].path;
 
       let url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
-      // url += `?${(new Date()).getTime()}`;
       return pathToSmallestThumb !== undefined
         ? url
         : this.mediaURL;
