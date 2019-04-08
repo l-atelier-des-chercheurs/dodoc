@@ -334,7 +334,7 @@ module.exports = (function() {
 
       const numberOfImagesToProcess = images.length;
 
-      _getFirstImageSize({
+      _getImageResolution({
         slugStopmotionName,
         image_filename: images[0]
       }).then(resolution => {
@@ -449,7 +449,7 @@ module.exports = (function() {
     });
   }
 
-  function _getFirstImageSize({ slugStopmotionName, image_filename }) {
+  function _getImageResolution({ slugStopmotionName, image_filename }) {
     return new Promise(function(resolve, reject) {
       let slugStopmotionPath = getFolderPath(
         path.join(
