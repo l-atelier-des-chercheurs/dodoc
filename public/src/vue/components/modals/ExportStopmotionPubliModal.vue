@@ -119,7 +119,13 @@ export default {
           label: 'low',
           height: 360
         },
-      ]
+      ],
+
+      plyr_options: {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        iconUrl: '/images/plyr.svg'
+      }
+
     }
   },
   created() {

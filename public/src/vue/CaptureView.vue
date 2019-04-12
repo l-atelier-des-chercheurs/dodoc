@@ -155,6 +155,7 @@
               :media="stopmotion.onion_skin_img"
               :subfolder="'_stopmotions/'"
               :style="is_showing_live_feed ? `--onionskin-opacity: ${stopmotion.onion_skin_opacity}` : ''"
+              :element_width_for_sizes="1600"
             />
 
             <div id="vectoContainer" v-if="selected_mode === 'vecto'" v-html="vecto.svgstr">

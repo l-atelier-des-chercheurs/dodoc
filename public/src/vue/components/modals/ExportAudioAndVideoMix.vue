@@ -79,7 +79,11 @@ export default {
     return {
       video_request_status: false,
       link_to_video: false,
-      video_is_playing: false
+      video_is_playing: false,
+      plyr_options: {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        iconUrl: '/images/plyr.svg'
+      }
     }
   },
   created() {
