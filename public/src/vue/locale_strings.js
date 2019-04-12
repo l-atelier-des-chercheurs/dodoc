@@ -22,11 +22,19 @@ module.exports = (function() {
       download: 'Télécharger',
       caption: 'Légende',
       smoothing: 'Lissage',
-      onion_skin: 'transparence de la dernière image',
+      onion_skin: 'Pelure d’oignon',
       'file:': 'Fichier&nbsp;:',
       add_to_project: 'Ajouter au projet&nbsp;:',
       input_password: 'Renseigner le mot de passe ci-dessous :',
       validate_with_enter: 'Valider avec la touche ENTRÉE.',
+      no_stopmotion_created_yet:
+        'Les animations créées apparaîtront dans ce panneau.',
+
+      cooking_pot: 'La marmite',
+      cooking_pot_instructions:
+        'Mélangez des médias pour en créer des nouveaux !',
+      untitled: 'Sans titre',
+      mix_audio_and_video: 'Ajouter (ou remplacer) du son sur une vidéo',
 
       bytes: 'octets',
       kb: 'ko',
@@ -34,19 +42,29 @@ module.exports = (function() {
       gb: 'Go',
       duration: 'Durée',
 
+      login: 'S’identifier',
+      help: 'Aide',
       date: 'Date',
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',
+      yes: 'Oui',
       cancel: 'Annuler',
       back: 'Retour',
       sureToRemoveAuthor: 'Êtes-vous sûr de vouloir supprimer cet auteur ?',
-      sureToCloseModal: 'Êtes-vous sûr de vouloir fermer cette fenêtre ?',
+      changes_not_saved_sureToCloseModal:
+        'Des modifications n’ont pas été enregistrées. Voulez-vous vraiment fermer cette fenêtre ?',
       sureToRemovePubli:
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
       sure_to_cancel_stopmotion:
-        'Êtes-vous sûr de vouloir supprimer cette animation ?',
+        'Êtes-vous sûr de vouloir arrêter cette animation ? Vous pourrez la retrouver dans le menu "Liste des animations"',
       validate_media: 'Valider le média',
       add_keyword: 'Ajouter un mot-clé',
+      add: 'Ajouter',
+
+      very_high: 'Très élevée (1080p)',
+      high: 'Élevée (720p)',
+      medium: 'Moyenne (640p)',
+      low: 'Basse (360p)',
 
       showing: 'Affichage de',
       media_filter: 'Filtre de médias',
@@ -77,6 +95,9 @@ module.exports = (function() {
 
       anonymous: 'anonyme',
       other_users: 'autres utilisateurs',
+      other_users_connected: 'autres utilisateurs connectés',
+
+      mix_medias: 'Mélanger des médias',
 
       made_with_dodoc:
         'Page web réalisée avec l’application libre et gratuite do•doc',
@@ -90,9 +111,13 @@ module.exports = (function() {
       height: 'Hauteur',
       zoom: 'Zoom',
       settings: 'Règlages',
+      stopmotion_list: 'Liste des animations',
+
       print: 'Imprimer',
       create: 'Créer',
       remove: 'Supprimer',
+      withdraw: 'Retirer',
+      remove_this_image: 'Supprimer cette image',
       password: 'Mot de passe',
       protected_by_pass: 'protégé par mot de passe',
       password_instructions:
@@ -109,6 +134,7 @@ module.exports = (function() {
 
       'lang:': 'Changer la langue&nbsp;:',
       lang: 'Changer la langue',
+      share_access: 'Accéder depuis d’autres appareils',
 
       photo: 'photo',
       video: 'vidéo',
@@ -132,6 +158,7 @@ module.exports = (function() {
 
       edit_the_media: 'Éditer le média',
       edit_project: 'Éditer le projet',
+      drop_here_to_import: 'Déposez vos contenus ici pour les importer',
 
       capture: 'Enregistrer',
       current: 'Actuellement',
@@ -175,7 +202,11 @@ module.exports = (function() {
       export_as_pdf: 'Export PDF',
       new_window: 'Nouvelle fenêtre',
       export_video_instructions:
-        'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des vidéos ajoutéez à la publication.',
+        'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des vidéos ajoutées à la publication.',
+      export_audio_video_mix_instructions:
+        'Cliquez sur le bouton pour lancer la création d’une vidéo à partir du son et de la vidéo sélectionnés.',
+      export_stopmotion_instructions:
+        'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des images ajoutées à la publication.',
       make_video: 'Fabriquer une vidéo',
       creation_in_progress: 'En cours de création…',
 
@@ -197,6 +228,8 @@ module.exports = (function() {
       'human tech days': 'Human Tech Days',
       page_by_page: 'Document page à page',
       video_assemblage: 'Montage vidéo',
+      stopmotion_animation: 'Animation image par image',
+      mix_audio_and_video: 'Ajouter du son à ',
       web: 'Page web',
 
       last_modified: 'Dernière modification',
@@ -209,10 +242,10 @@ module.exports = (function() {
           'Les iPhones et les iPads ne sont pas compatibles avec la fonctionnalité de Capture.',
         instead_import_with_this_button:
           'Utilisez plutôt la fonctionnalité d’import ci-dessus pour prendre des photos et des vidéos ou en importer depuis votre appareil.',
-        media_was_sent: 'Le média a été envoyé.',
-        media_couldnt_been_sent:
-          'Le média n’a pas pu être envoyé à cause d’une erreur de connexion.',
-        file_was_sent: 'Le fichier a été envoyé.',
+        media_was_sent: 'Le média a été enregistré.',
+        media_couldnt_be_sent:
+          'Le média n’a pas pu être enregistré à cause d’une erreur de connexion.',
+        file_was_sent: 'Le fichier a été enregistré.',
         file_upload_not_allowed:
           'Votre navigateur web ne prend pas en charge l’envoi de fichiers.',
         connection_active: 'La connexion au serveur est active.',
@@ -245,10 +278,12 @@ module.exports = (function() {
           'Scan d’un tag NFC réussi, associez-lui un auteur ou un média pour commencer.',
         author_found_with_nfc_tag:
           'Scan d’un tag NFC réussi, activation de l’auteur suivant&nbsp;:',
-        medias_uploaded: 'Tous les médias ont bien étés envoyés.',
+        medias_uploaded: 'Tous les médias ont bien étés enregistrés.',
         medias_upload_failed:
-          'Erreur&nbsp;: certains médias n’ont pas pu être envoyés.',
-        video_converted: 'La vidéo a été convertie et ajoutée au projet.'
+          'Erreur&nbsp;: certains médias n’ont pas pu être enregistrés.',
+        video_converted: 'La vidéo a été convertie et ajoutée au projet.',
+        project_has_been_removed:
+          'Ce projet vient d’être supprimé par quelqu’un d’autre.'
       }
     },
     en: {
@@ -270,13 +305,24 @@ module.exports = (function() {
       author: 'Author(s)',
       download: 'Download',
       caption: 'Caption',
+
+      login: 'Login',
+      help: 'Help',
       date: 'Date',
       smoothing: 'smoothing',
-      onion_skin: 'transparency of last image',
+      onion_skin: 'Onion skin',
       'file:': 'File&nbsp;:',
       add_to_project: 'Add to project:',
       input_password: 'Input the password here:',
       validate_with_enter: 'Validate with ENTER.',
+      no_stopmotion_created_yet:
+        'Created stopmotion animations will appear in this list.',
+
+      cooking_pot: 'Cooking pot',
+      cooking_pot_instructions:
+        'Mix a single or multiple medias to create new medias!',
+      untitled: 'Untitled',
+      mix_audio_and_video: 'Add audio to a video',
 
       bytes: 'bytes',
       kb: 'KB',
@@ -286,15 +332,23 @@ module.exports = (function() {
 
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',
+      yes: 'Yes',
       cancel: 'Cancel',
       back: 'Back',
       sureToRemoveAuthor: 'Do you really want to delete this author?',
-      sureToCloseModal: 'Do you really want to close this window?',
+      changes_not_saved_sureToCloseModal:
+        'All changes were not saved. Do you really want to close this window?',
       sureToRemovePubli: 'Do you really want to delete this publication?',
       sure_to_cancel_stopmotion:
-        'Do you really want to cancel this stopmotion?',
+        'Do you really want to cancel this stopmotion? You can resume making it by clicking on "Stopmotion list"',
       validate_media: 'Validate the media',
       add_keyword: 'Add a keyword',
+      add: 'Add',
+
+      very_high: 'Very high (1080p)',
+      high: 'High (1080p)',
+      medium: 'Medium (640p)',
+      low: 'Low (360p)',
 
       showing: 'Showing',
       media_filter: 'Medias filter',
@@ -324,6 +378,9 @@ module.exports = (function() {
 
       anonymous: 'anonymous',
       other_users: 'other users',
+      other_users_connected: 'other user connected',
+
+      mix_medias: 'Mix medias',
 
       made_with_dodoc: 'Webpage made with do•doc, a free and open-source app',
 
@@ -335,6 +392,8 @@ module.exports = (function() {
       print: 'Print',
       create: 'Create',
       remove: 'Remove',
+      withdraw: 'Withdraw',
+      remove_this_image: 'Remove this image',
       password: 'Mot de passe',
       protected_by_pass: 'protected by password',
       password_instructions:
@@ -352,9 +411,11 @@ module.exports = (function() {
       height: 'Height',
       zoom: 'Zoom',
       settings: 'Settings',
+      stopmotion_list: 'Stopmotion list',
 
       'lang:': 'Select lang:',
       lang: 'Select lang',
+      share_access: 'Access from other devices',
 
       photo: 'picture',
       video: 'video',
@@ -373,6 +434,10 @@ module.exports = (function() {
       new_window: 'New Window',
       export_video_instructions:
         'Click this button to generate a video from multiple source videos.',
+      export_audio_video_mix_instructions:
+        'Click this button to generate a video from the audio and video files.',
+      export_stopmotion_instructions:
+        'Click this button to generate a video from images you have selected.',
       make_video: 'Make a video',
 
       select: 'Select',
@@ -386,6 +451,7 @@ module.exports = (function() {
       publication: 'Publication',
       edit_the_media: 'Edit media',
       edit_project: 'Edit project',
+      drop_here_to_import: 'Drop your content here to import',
 
       capture: 'Capture',
       current: 'Current',
@@ -457,7 +523,7 @@ module.exports = (function() {
         instead_import_with_this_button:
           'Instead import or capture photos and videos here in the import modal.',
         media_was_sent: 'The media was sent.',
-        media_couldnt_been_sent:
+        media_couldnt_be_sent:
           'The media was not sent because of a connexion error.',
         file_was_sent: 'The file was sent.',
         file_upload_not_allowed: 'File upload is not allowed by this browser.',
@@ -492,7 +558,9 @@ module.exports = (function() {
         medias_uploaded: 'All medias were imported successfully.',
         medias_upload_failed: 'Error: some medias failed to import.',
         video_converted:
-          'The video was converted successfully and added to the project.'
+          'The video was converted successfully and added to the project.',
+        project_has_been_removed:
+          'This project just got removed by another user.'
       }
     }
   };

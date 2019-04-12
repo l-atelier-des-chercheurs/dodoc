@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-wrap bg-blanc margin-top-small">
+  <div class="m_tagsAndAuthorFilters flex-wrap bg-blanc rounded margin-top-small">
 
     <div v-if="favFilter !== undefined" class="padding-sides-small">
       <span class="switch switch-xs">

@@ -29,7 +29,10 @@
           ></MediaContent>
           <button 
             type="button" 
-            v-if="$root.settings.current_slugPubliName" 
+            v-if="
+              $root.settings.current_publication.slug
+              && $root.settings.current_publication.accepted_media_type.includes(media.type)
+            " 
             class="button_addToPubli button-greenthin button-square"
             @click.stop="addToCurrentPubli()"
             :title="$t('add_to_publication')"
@@ -142,9 +145,9 @@ export default {
   },
   methods: {
     isMediaInPubli() {
-      if(this.$root.settings.current_slugPubliName) {
-        if(this.$root.store.publications.hasOwnProperty(this.$root.settings.current_slugPubliName)) {
-          const currentPubli = this.$root.store.publications[this.$root.settings.current_slugPubliName];
+      if(this.$root.settings.current_publication.slug) {
+        if(this.$root.store.publications.hasOwnProperty(this.$root.settings.current_publication.slug)) {
+          const currentPubli = this.$root.store.publications[this.$root.settings.current_publication.slug];
           if(currentPubli.hasOwnProperty('medias') && Object.keys(currentPubli.medias).length > 0) {
 
             const media_in_publi = Object.values(currentPubli.medias).filter(s => s.slugMediaName === this.metaFileName);
@@ -167,9 +170,16 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • MediaCard: removeMedia');
       }
-      if (window.confirm(this.$t('sureToRemoveMedia'))) {
-        this.$root.removeMedia(this.slugProjectName, this.metaFileName);
-      }
+
+      this.$alertify
+        .okBtn(this.$t('yes'))
+        .cancelBtn(this.$t('cancel'))        
+        .confirm(this.$t('sureToRemoveMedia'), 
+        () => {
+          this.$root.removeMedia(this.slugProjectName, this.metaFileName);
+        },
+        () => {
+        });              
     },
     addToCurrentPubli() {
       if (this.$root.state.dev_mode === 'debug') {

@@ -4,7 +4,6 @@
     :class="{ 'is--preview' : preview_mode, 'is--fullscreen' : fullscreen_mode }"
     @scroll="onScroll"
     ref="panel"
-    :style="customCSSVars"
   >
     <div class="m_publicationMeta">
       <div class="m_publicationMeta--topbar">
@@ -282,7 +281,9 @@
               </template>
 
 
-              <div class="m_page--header">
+              <div class="m_page--header"
+                :style="customCSSVars"
+              >
                 <div>
                   {{ page.header_left }}
                 </div>
@@ -368,8 +369,8 @@
   </div>
 </template>
 <script>
-import MediaPublication from './subcomponents/MediaPublication.vue';
-import ExportModal from './modals/ExportPagePubli.vue';
+import MediaPublication from '../subcomponents/MediaPublication.vue';
+import ExportModal from '../modals/ExportPagePubli.vue';
 
 export default {
   props: {
@@ -387,7 +388,7 @@ export default {
       publication_defaults: {
         'page_by_page': {
           width: 210,
-          height: 296,      
+          height: 297,      
           style: 'standard',
           margin_left: 10,
           margin_right: 10,
@@ -435,6 +436,8 @@ export default {
     this.$root.setPublicationZoom(this.zoom);
   },
   mounted() {
+    this.$root.settings.current_publication.accepted_media_type = ["image", "video", "audio", "text", "document", "other"];
+
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
     this.$eventHub.$on('publication.setCSSEditWindow', this.setCSSEditWindow);
@@ -507,7 +510,13 @@ export default {
       }
       // set default values to options
       if(!this.publication.hasOwnProperty('template')) {
-        alert('Missing template in publication');
+
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(
+            'Missing template in publication'
+          );
       }
       if(!this.publication_defaults.hasOwnProperty(this.publication.template)) {
         console.log('No defaults for this template. Returning original publication object.');
@@ -634,17 +643,24 @@ export default {
       this.$root.closePublication();
     },
     removePublication() {
-      if (window.confirm(this.$t('sureToRemovePubli'))) {
-        if (this.$root.state.dev_mode === 'debug') {
-          console.log(`METHODS • Publication: removePublication`);
-        }
-        this.$root.removeFolder({ 
-          type: 'publications', 
-          slugFolderName: this.slugPubliName, 
-        });
-        
-        this.closePublication();
-      }
+
+      this.$alertify
+        .okBtn(this.$t('yes'))
+        .cancelBtn(this.$t('cancel'))        
+        .confirm(this.$t('sureToRemovePubli'), 
+        () => {
+          if (this.$root.state.dev_mode === 'debug') {
+            console.log(`METHODS • Publication: removePublication`);
+          }
+          this.$root.removeFolder({ 
+            type: 'publications', 
+            slugFolderName: this.slugPubliName, 
+          });          
+          this.closePublication();
+        },
+        () => {
+        });              
+      
     },
     updateMediasPubli() {
       if (this.$root.state.dev_mode === 'debug') {
@@ -860,6 +876,8 @@ export default {
       `;      
     },
     setPageProperties(page) {
+
+      
       if(this.$root.state.mode === 'print_publication') {
         // reducing page height by 1mm is necessary to prevent blank pages in-between
         return `

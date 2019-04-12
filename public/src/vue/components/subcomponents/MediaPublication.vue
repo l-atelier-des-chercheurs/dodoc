@@ -94,7 +94,7 @@
         @click.prevent.stop="removePubliMedia()"
         @touchstart.prevent.stop="removePubliMedia()"
       >
-        {{ $t('remove') }}
+        {{ $t('withdraw') }}
       </button>
     </div>
   </div>

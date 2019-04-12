@@ -1,6 +1,6 @@
 .m_modal--mask {
   position: absolute;
-  z-index: 20000;
+  z-index: 10000;
   min-height: 100%;
   top: 0;
   width: 100%;
@@ -8,7 +8,7 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 
-  background-color: fade(#fff, 92%);
+  background-color: fade(#fff, 96%);
   // cursor: pointer;
   .custom_scrollbar(8px, 5px, 6px);
   
@@ -18,7 +18,7 @@
 
   transition: background-color .3s ease-out;
 
-  @media screen and (max-width: 50rem) {
+  #app:not(.is--wide) & {
     align-items: flex-start;
     overflow: scroll !important;
     padding: 0 !important;
@@ -36,25 +36,6 @@
     pointer-events: none;
     align-items: flex-end;
   }
-
-  // @media screen and (max-width: 50rem) {
-  //   overflow: auto !important;
-  //   align-items: flex-start;
-  //   .m_modal--container {
-  //     .m_modal--container--content {
-  //       display: block;
-  //     }
-  //   }
-  // }
-  // html.touchevents & {
-  //   overflow: auto !important;
-  //   align-items: flex-start;
-  //   .m_modal--container {
-  //     .m_modal--container--content {
-  //       display: block;
-  //     }
-  //   }
-  // }
 
 }
 
@@ -95,14 +76,6 @@
       border-radius: 20px;
     }
   }
-
-  // @media screen and (max-width: 50rem) {
-  //   margin: 50px 0;
-  // }
-  // html.touchevents & {
-  //   margin: 50px 0;
-  // }
-
   .m_modal--container--content {
     height: auto;
 
@@ -118,7 +91,7 @@
 
     > * {
       flex: 1 1 200px;
-      transition: all .5s ease-out;
+      // transition: all .5s ease-out;
 
       &.m_modal--sidebar {
         flex: 0 1 @t-panelWidth;
@@ -127,7 +100,7 @@
 
         // transition: all .8s ease-out;
 
-        @media screen and (max-width: 50rem) {
+        #app:not(.is--wide) & {
           max-height: none;
           flex: 1 1 400px;
         }
@@ -138,11 +111,11 @@
       }
 
       &.m_modal--preview {
+        position: relative;
         width: 100%;
         height: 90vh;
         overflow: hidden;
         border-right: 1px solid @c-gris_clair;
-        
       }
     }
 
@@ -177,11 +150,11 @@
       align-self: flex-start;
       .m_modal--preview {
         height: auto;
-        @media screen and (max-width: 50rem) {
+        #app:not(.is--wide) & {
           position: relative;
         }
       }
-      @media screen and (min-width: 50rem) {
+      #app.is--wide & {
         width: 90vw;
       }
 
@@ -204,21 +177,21 @@
       max-width: @t-panelWidth * 4;
       // align-self: flex-start;
       .m_modal--preview {
-        @media screen and (min-width: 50rem) {
+        #app.is--wide & {
           min-height: 70vh;
         }
-        @media screen and (max-width: 50rem) {
+        #app:not(.is--wide) & {
           position: fixed;
           height: 50vh;         
         }
       }  
       .m_modal--sidebar {
-        @media screen and (max-width: 50rem) {
+        #app:not(.is--wide) & {
           margin-top: 50vh;
         }      
       }
       
-      @media screen and (min-width: 50rem) {
+      #app.is--wide & {
         width: 90vw;
       }
     }
@@ -295,8 +268,8 @@
     .padding-small;
     font-weight: 700;
     .font-large;
-    .bg-noir;
-    color: white;
+    // .bg-noir;
+    // color: white;
   
     border-radius: 50% 0 0 50%;
     line-height: 1;
@@ -317,7 +290,7 @@
         .padding-sides-small;
         text-align: center;
 
-        @media screen and (max-width: 50rem) {
+        #app:not(.is--wide) & {
           > a, > button {
             font-size:0.7rem;
             padding: 0;
@@ -351,8 +324,9 @@
     height: 100%;
     overflow: hidden;
     position: relative;
-    .bg-blanc;
-    .bg-gris_clair;
+    // .bg-blanc;
+    // .bg-gris_clair;
+    .bg-noir;
 
     &[data-context="edit"] {
       > * {
@@ -370,6 +344,30 @@
       object-fit: contain;
       object-position: center;
     }
+
+    .plyr--video, .plyr__video-wrapper, .plyr__poster {
+      background-color: transparent;
+    }
+    .plyr--video .plyr__controls {
+      // background: linear-gradient(fade(@c-gris, 0%),fade(@c-gris, 100%));
+    }
+
+    .plyr--audio {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      
+      .plyr__controls {
+        // background-color: @c-noir;
+        // background: transparent;
+        // color: @c-noir;
+        width: 80%;
+        margin: 0 auto;
+
+      }
+    }
+    
+    
 
     &.type-text {
       .font-large;
@@ -413,7 +411,7 @@
 }
 
 .m_modal--close_button {
-  position: fixed;
+  position:   fixed;
   top: 0;
   right: 0;
   z-index: 1500;
@@ -425,10 +423,6 @@
     stroke-width: 3px;
   }
 
-  // @media screen and (max-width: 50rem) {
-  //   top: 0;
-  //   right: 0;
-  // }
   html.touchevents & {
     top: 0;
     right: 0;
@@ -450,7 +444,7 @@
     transform: scale(-1) rotate(-360deg);
   }
 
-  @media screen and (max-width: 40rem) {
+  #app:not(.is--wide) & {
     display: none;
   }
 }
@@ -459,8 +453,10 @@
   top: ~"calc(50% - 40px)";
   z-index: 1500;
 
-  @media screen and (max-width: 50rem) {
-
+  #app:not(.is--wide) & {
+    top:auto;
+    bottom: 0;
+    border: none;
   }
 }
 .m_modal--nav_left {
@@ -489,19 +485,25 @@
 
   min-height: 4em;
 
+  #app:not(.is--wide) & {
+    position: fixed;
+    z-index: 1000;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    .bg-blanc;
+  }
   button {
     .margin-verysmall;
   }
 
   button[type="submit"] {
 
-    @media screen and (max-width: 50rem) {
-      position: fixed;
-      z-index: 1000;
-      bottom: 1em;
-      left: 50%;
+    #app:not(.is--wide) & {
+      // left: 50%;
       width: 10em;
-      transform: translateX(-50%);
+      margin: 0 auto;
+      // transform: translateX(-50%);
       text-align: center;    
       min-height: 0;
     }

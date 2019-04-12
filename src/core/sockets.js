@@ -53,6 +53,9 @@ module.exports = (function() {
 
       socket.on('downloadPubliPDF', d => onDownloadPubliPDF(socket, d));
       socket.on('downloadVideoPubli', d => onDownloadVideoPubli(socket, d));
+      socket.on('downloadStopmotionPubli', d =>
+        onDownloadStopmotionPubli(socket, d)
+      );
       socket.on('updateNetworkInfos', d => onUpdateNetworkInfos(socket, d));
 
       socket.on('updateClientInfo', d => onUpdateClientInfo(socket, d));
@@ -109,13 +112,23 @@ module.exports = (function() {
       return;
     }
     const type = data.type;
-    sendFolders({ type, socket });
+    const hrstart = process.hrtime();
+    sendFolders({ type, socket }).then(() => {
+      let hrend = process.hrtime(hrstart);
+      dev.performance(
+        `PERFORMANCE — listFolders : ${hrend[0]}s ${hrend[1] / 1000000}ms`
+      );
+    });
   }
   function onListFolder(socket, { type, slugFolderName }) {
     dev.logfunction(
       `EVENT - onListFolder with slugFolderName = ${slugFolderName}`
     );
-    sendFolders({ type, slugFolderName, socket });
+    const hrstart = process.hrtime();
+    sendFolders({ type, slugFolderName, socket }).then(() => {
+      let hrend = process.hrtime(hrstart);
+      dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+    });
   }
 
   function onCreateFolder(socket, { type, data, id }) {
@@ -151,11 +164,15 @@ module.exports = (function() {
         file
           .editFolder({
             type,
+            slugFolderName,
             foldersData: Object.values(foldersData)[0],
             newFoldersData: data
           })
           .then(slugFolderName => {
             sendFolders({ type, slugFolderName });
+          })
+          .catch(err => {
+            dev.error(`Error on editFolder: ${err}`);
           });
       })
       .catch(err => {
@@ -202,7 +219,14 @@ module.exports = (function() {
     dev.logfunction(
       `EVENT - onListMedias : type = ${type}, slugProjectName = ${slugFolderName}`
     );
-    sendMedias({ type, slugFolderName, socket });
+
+    const hrstart = process.hrtime();
+    sendMedias({ type, slugFolderName, socket }).then(() => {
+      let hrend = process.hrtime(hrstart);
+      dev.performance(
+        `PERFORMANCE — listMedias : ${hrend[0]}s ${hrend[1] / 1000000}ms`
+      );
+    });
   }
 
   function onCreateMedia(
@@ -219,7 +243,8 @@ module.exports = (function() {
         type,
         rawData,
         slugFolderName,
-        additionalMeta
+        additionalMeta,
+        socket
       })
       .then(_additionalMeta => {
         file
@@ -267,16 +292,25 @@ module.exports = (function() {
       });
   }
 
-  function onEditMedia(socket, { type, slugFolderName, slugMediaName, data }) {
+  function onEditMedia(
+    socket,
+    { type, slugFolderName, slugMediaName, data, recipe_with_data }
+  ) {
     dev.logfunction(
-      `EVENT - onEditMedia for type ${type}, slugFolderName = ${slugFolderName} and slugMediaName = ${slugMediaName}`
+      `EVENT - onEditMedia for type ${type}\nslugFolderName = ${slugFolderName}\nslugMediaName = ${slugMediaName}\ndata = ${JSON.stringify(
+        data,
+        null,
+        4
+      )}`
     );
+
     file
-      .editMediaMeta({
+      .editMedia({
         type,
         slugFolderName,
         metaFileName: slugMediaName,
-        data
+        data,
+        recipe_with_data
       })
       .then(
         slugFolderName => {
@@ -347,6 +381,24 @@ module.exports = (function() {
       });
   }
 
+  function onDownloadStopmotionPubli(socket, { slugPubliName, options }) {
+    dev.logfunction(
+      `EVENT - onDownloadStopmotionPubli with 
+      slugPubliName = ${slugPubliName}`
+    );
+
+    exporter
+      .makeVideoFromImagesInPubli({ slugPubliName, options, socket })
+      .then(videoName => {
+        api.sendEventWithContent(
+          'publiStopmotionIsGenerated',
+          { videoName },
+          io,
+          socket
+        );
+      });
+  }
+
   function onUpdateNetworkInfos() {
     dev.logfunction(`EVENT - onUpdateNetworkInfos`);
     api.getNetworkInfos().then(
@@ -364,142 +416,153 @@ module.exports = (function() {
 
   // send projects, authors and publications
   function sendFolders({ type, slugFolderName, socket, id } = {}) {
-    dev.logfunction(
-      `COMMON - sendFolders for type = ${type} and slugFolderName = ${slugFolderName}`
-    );
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(
+        `COMMON - sendFolders for type = ${type} and slugFolderName = ${slugFolderName}`
+      );
 
-    file
-      .getFolder({ type, slugFolderName })
-      .then(foldersData => {
-        // if folder creation, we get an ID to open the folder straight away
-        if (foldersData !== undefined && slugFolderName && id) {
-          foldersData[slugFolderName].id = id;
-        }
-
-        // check if single socket or multiple sockets
-        Object.keys(io.sockets.connected).forEach(sid => {
-          if (socket) {
-            if (!!socket && socket.id !== sid) {
-              return;
-            }
+      file
+        .getFolder({ type, slugFolderName })
+        .then(foldersData => {
+          // if folder creation, we get an ID to open the folder straight away
+          if (foldersData !== undefined && slugFolderName && id) {
+            foldersData[slugFolderName].id = id;
           }
-          let thisSocket = socket || io.sockets.connected[sid];
 
-          let filteredFoldersData = auth.filterFolders(
-            thisSocket,
-            type,
-            foldersData
-          );
-
-          if (filteredFoldersData === undefined) {
-            filteredFoldersData = '';
-          } else {
-            // remove password field
-            for (let k in filteredFoldersData) {
-              // check if there is any password, if there is then send a placeholder
-              if (
-                filteredFoldersData[k].hasOwnProperty('password') &&
-                filteredFoldersData[k].password !== ''
-              ) {
-                filteredFoldersData[k].password = 'has_pass';
+          // check if single socket or multiple sockets
+          Object.keys(io.sockets.connected).forEach(sid => {
+            if (socket) {
+              if (!!socket && socket.id !== sid) {
+                return;
               }
             }
-          }
+            let thisSocket = socket || io.sockets.connected[sid];
 
-          if (slugFolderName) {
-            api.sendEventWithContent(
-              'listFolder',
-              { [type]: filteredFoldersData },
-              io,
-              thisSocket
+            let filteredFoldersData = auth.filterFolders(
+              thisSocket,
+              type,
+              foldersData
             );
-          } else {
-            api.sendEventWithContent(
-              'listFolders',
-              { [type]: filteredFoldersData },
-              io,
-              thisSocket
-            );
-          }
+
+            if (filteredFoldersData === undefined) {
+              filteredFoldersData = '';
+            } else {
+              // remove password field
+              for (let k in filteredFoldersData) {
+                // check if there is any password, if there is then send a placeholder
+                if (
+                  filteredFoldersData[k].hasOwnProperty('password') &&
+                  filteredFoldersData[k].password !== ''
+                ) {
+                  filteredFoldersData[k].password = 'has_pass';
+                }
+              }
+            }
+
+            if (slugFolderName) {
+              api.sendEventWithContent(
+                'listFolder',
+                { [type]: filteredFoldersData },
+                io,
+                thisSocket
+              );
+              return resolve();
+            } else {
+              api.sendEventWithContent(
+                'listFolders',
+                { [type]: filteredFoldersData },
+                io,
+                thisSocket
+              );
+              return resolve();
+            }
+          });
+        })
+        .catch(err => {
+          dev.error(`No folder found: ${err}`);
+          return reject();
         });
-      })
-      .catch(err => {
-        dev.error(`No folder found: ${err}`);
-      });
+    });
   }
 
   function sendMedias({ type, slugFolderName, metaFileName, socket, id }) {
-    dev.logfunction(
-      `COMMON - sendMedias for type = ${type}, slugFolderName = ${slugFolderName}, metaFileName = ${metaFileName} and id = ${id}`
-    );
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(
+        `COMMON - sendMedias for type = ${type}, slugFolderName = ${slugFolderName}, metaFileName = ${metaFileName} and id = ${id}`
+      );
 
-    file
-      .getFolder({ type, slugFolderName })
-      .then(foldersData => {
-        if (foldersData === undefined) {
-          return;
-        }
-        file
-          .getMediaMetaNames({
-            type,
-            slugFolderName,
-            metaFileName
-          })
-          .then(list_metaFileName => {
-            let medias_list = list_metaFileName.map(_metaFileName => {
-              return {
-                slugFolderName,
-                metaFileName: _metaFileName
-              };
-            });
-            file
-              .readMediaList({ type, medias_list })
-              .then(folders_and_medias => {
-                dev.logverbose(`Got medias, now sending to the right clients`);
-
-                if (
-                  folders_and_medias !== undefined &&
-                  Object.keys(folders_and_medias).length
-                ) {
-                  if (metaFileName && id) {
-                    folders_and_medias[slugFolderName].medias[
-                      metaFileName
-                    ].id = id;
-                  }
-                  foldersData[slugFolderName].medias =
-                    folders_and_medias[slugFolderName].medias;
-                }
-
-                Object.keys(io.sockets.connected).forEach(sid => {
-                  if (!!socket && socket.id !== sid) {
-                    return;
-                  }
-
-                  let thisSocket = socket || io.sockets.connected[sid];
-
-                  let filtered_folders_and_medias = auth.filterMedias(
-                    thisSocket,
-                    type,
-                    foldersData
-                  );
-
-                  api.sendEventWithContent(
-                    !!metaFileName ? 'listMedia' : 'listMedias',
-                    { [type]: filtered_folders_and_medias },
-                    io,
-                    thisSocket
-                  );
-                });
+      file
+        .getFolder({ type, slugFolderName })
+        .then(foldersData => {
+          if (foldersData === undefined) {
+            return;
+          }
+          file
+            .getMediaMetaNames({
+              type,
+              slugFolderName,
+              metaFileName
+            })
+            .then(list_metaFileName => {
+              let medias_list = list_metaFileName.map(_metaFileName => {
+                return {
+                  slugFolderName,
+                  metaFileName: _metaFileName
+                };
               });
-          })
-          .catch(err => {
-            dev.error(`Failed to list medias! Error: ${err}`);
-            reject(err);
-          });
-      })
-      .catch(err => {
-        dev.error(`No folder found: ${err}`);
-      });
+              file
+                .readMediaList({ type, medias_list })
+                .then(folders_and_medias => {
+                  dev.logverbose(
+                    `Got medias, now sending to the right clients`
+                  );
+
+                  if (
+                    folders_and_medias !== undefined &&
+                    Object.keys(folders_and_medias).length
+                  ) {
+                    if (metaFileName && id) {
+                      folders_and_medias[slugFolderName].medias[
+                        metaFileName
+                      ].id = id;
+                    }
+                    foldersData[slugFolderName].medias =
+                      folders_and_medias[slugFolderName].medias;
+                  }
+
+                  Object.keys(io.sockets.connected).forEach(sid => {
+                    if (!!socket && socket.id !== sid) {
+                      return;
+                    }
+
+                    let thisSocket = socket || io.sockets.connected[sid];
+
+                    let filtered_folders_and_medias = auth.filterMedias(
+                      thisSocket,
+                      type,
+                      foldersData
+                    );
+
+                    api.sendEventWithContent(
+                      !!metaFileName ? 'listMedia' : 'listMedias',
+                      { [type]: filtered_folders_and_medias },
+                      io,
+                      thisSocket
+                    );
+                    return resolve();
+                  });
+                });
+            })
+            .catch(err => {
+              dev.error(`Failed to list medias! Error: ${err}`);
+              return reject(err);
+            });
+        })
+        .catch(err => {
+          dev.error(`No folder found: ${err}`);
+          return reject(err);
+        });
+    });
   }
 
   // only for one user at a time

@@ -387,12 +387,26 @@ module.exports = (function() {
       let thumbPath = path.join(thumbFolderPath, thumbName);
       let fullThumbPath = api.getFolderPath(thumbPath);
 
+      _createOrGetImageThumb({ mediaPath, fullThumbPath, thumbRes })
+        .then(() => _getThumbModifiedTimestamp(fullThumbPath))
+        .then(ts => {
+          if (!ts) {
+            return resolve(thumbPath);
+          }
+          return resolve(thumbPath + '?v=' + ts);
+        })
+        .catch(err => reject(err));
+    });
+  }
+
+  function _createOrGetImageThumb({ mediaPath, fullThumbPath, thumbRes }) {
+    return new Promise(function(resolve, reject) {
       // check first if it exists, resolve if it does
       fs.access(fullThumbPath, fs.F_OK, function(err) {
         // if userDir folder doesn't exist yet at destination
         if (err) {
           dev.log(
-            `Missing thumb for ${mediaPath} and resolution = ${thumbRes}, about to create it`
+            `Missing thumb for ${fullThumbPath} and resolution = ${thumbRes}, about to create it`
           );
           sharp(mediaPath)
             .rotate()
@@ -406,16 +420,31 @@ module.exports = (function() {
             .background({ r: 255, g: 255, b: 255 })
             .flatten()
             .toFile(fullThumbPath)
-            .then(function() {
-              resolve(thumbPath);
-            })
+            .then(() => resolve())
             .catch(err => reject(err));
         } else {
-          resolve(thumbPath);
+          dev.logverbose(
+            `Thumb exists for ${fullThumbPath} and resolution = ${thumbRes}.`
+          );
+          return resolve();
         }
       });
     });
   }
+
+  function _getThumbModifiedTimestamp(fullThumbPath) {
+    return new Promise(function(resolve, reject) {
+      // read stat for fullThumbPath
+      fs.stat(fullThumbPath, function(err, stats) {
+        if (err) {
+          return resolve();
+        }
+        // append modified to filename
+        return resolve(Math.floor(stats.mtimeMs));
+      });
+    });
+  }
+
   function _makeVideoScreenshot(
     mediaPath,
     thumbFolderPath,

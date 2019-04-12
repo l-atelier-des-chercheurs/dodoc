@@ -31,6 +31,12 @@ Vue.use(PortalVue);
 import VueI18n from 'vue-i18n';
 Vue.use(VueI18n);
 
+import VuePlyr from 'vue-plyr';
+Vue.use(VuePlyr);
+
+import VueTippy from '../../node_modules/vue-tippy/dist/vue-tippy.min.js';
+Vue.use(VueTippy, {});
+
 let lang_settings = {
   available: {
     fr: 'Français',
@@ -121,6 +127,10 @@ Vue.prototype.$socketio = new Vue({
       this.socket.on('listSpecificMedias', this._onListSpecificMedias);
       this.socket.on('publiPDFGenerated', this._onPubliPDFGenerated);
       this.socket.on('publiVideoGenerated', this._onPubliVideoGenerated);
+      this.socket.on(
+        'publiStopmotionIsGenerated',
+        this._onPubliStopmotionGenerated
+      );
 
       this.socket.on('newNetworkInfos', this._onNewNetworkInfos);
 
@@ -315,6 +325,13 @@ Vue.prototype.$socketio = new Vue({
       console.log('Received _onPubliVideoGenerated packet.');
       this.$eventHub.$emit('socketio.publication.videoIsGenerated', data);
     },
+    _onPubliStopmotionGenerated(data) {
+      console.log('Received _onPubliStopmotionGenerated packet.');
+      this.$eventHub.$emit(
+        'socketio.publication.publiStopmotionIsGenerated',
+        data
+      );
+    },
 
     _listClients(data) {
       console.log('Received _listClients packet.');
@@ -431,6 +448,9 @@ Vue.prototype.$socketio = new Vue({
     downloadVideoPubli(pdata) {
       this.socket.emit('downloadVideoPubli', pdata);
     },
+    downloadStopmotionPubli(pdata) {
+      this.socket.emit('downloadStopmotionPubli', pdata);
+    },
     updateNetworkInfos() {
       this.socket.emit('updateNetworkInfos');
     }
@@ -499,7 +519,11 @@ let vm = new Vue({
         }
       },
 
-      current_slugPubliName: false,
+      current_publication: {
+        slug: false,
+        accepted_media_type: []
+      },
+
       current_author: false,
 
       publi_zoom: 0.8,
@@ -593,14 +617,16 @@ let vm = new Vue({
         this.state.mode === 'export_publication' &&
         Object.keys(this.store.publications).length > 0
       ) {
-        const slugPubliName = Object.keys(this.store.publications)[0];
-        this.settings.current_slugPubliName = slugPubliName;
+        this.settings.current_publication.slug = Object.keys(
+          this.store.publications
+        )[0];
       } else if (
         this.state.mode === 'print_publication' &&
         Object.keys(this.store.publications).length > 0
       ) {
-        const slugPubliName = Object.keys(this.store.publications)[0];
-        this.settings.current_slugPubliName = slugPubliName;
+        this.settings.current_publication.slug = Object.keys(
+          this.store.publications
+        )[0];
         this.settings.show_publi_panel = true;
       }
     }
@@ -608,14 +634,14 @@ let vm = new Vue({
     /* à la connexion/reconnexion, détecter si un projet ou une publi sont ouverts 
     et si c’est le cas, rafraichir leur contenu (meta, medias) */
     this.$eventHub.$on('socketio.reconnect', () => {
-      if (this.settings.current_slugPubliName) {
+      if (this.settings.current_publication.slug) {
         this.$socketio.listFolder({
           type: 'publications',
-          slugFolderName: this.settings.current_slugPubliName
+          slugFolderName: this.settings.current_publication.slug
         });
         this.$socketio.listMedias({
           type: 'publications',
-          slugFolderName: this.settings.current_slugPubliName
+          slugFolderName: this.settings.current_publication.slug
         });
       }
       if (this.do_navigation.current_slugProjectName) {
@@ -681,14 +707,23 @@ let vm = new Vue({
   computed: {
     currentProject: function() {
       if (
-        this.store.hasOwnProperty('projects') &&
+        !this.store.hasOwnProperty('projects') ||
+        Object.keys(this.store.projects).length === 0
+      ) {
+        this.closeProject();
+        return {};
+      }
+
+      if (
         this.store.projects.hasOwnProperty(
           this.do_navigation.current_slugProjectName
         )
       ) {
         return this.store.projects[this.do_navigation.current_slugProjectName];
+      } else {
+        this.closeProject();
+        return {};
       }
-      return {};
     },
     allAuthors() {
       let allAuthors = [];
@@ -736,6 +771,12 @@ let vm = new Vue({
     },
     currentTime_human() {
       return this.$moment(this.currentTime).format('LL   LTS');
+    },
+    screen_is_wide() {
+      if (this.settings.windowWidth < 850) {
+        return false;
+      }
+      return true;
     }
   },
   methods: {
@@ -1067,7 +1108,7 @@ let vm = new Vue({
         console.log(`ROOT EVENT: openPubliPanel`);
       }
       this.settings.show_publi_panel = true;
-      this.settings.current_slugPubliName = false;
+      this.settings.current_publication.slug = false;
 
       this.$socketio.listFolders({ type: 'publications' });
     },
@@ -1076,7 +1117,7 @@ let vm = new Vue({
         console.log(`ROOT EVENT: closePubliPanel`);
       }
       this.settings.show_publi_panel = false;
-      this.settings.current_slugPubliName = false;
+      this.settings.current_publication.slug = false;
     },
 
     openPublication(slugPubliName) {
@@ -1091,27 +1132,19 @@ let vm = new Vue({
         type: 'publications',
         slugFolderName: slugPubliName
       });
-      this.settings.current_slugPubliName = slugPubliName;
+      this.settings.current_publication.slug = slugPubliName;
     },
     closePublication() {
       if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: closePublication');
       }
-      this.settings.current_slugPubliName = false;
+      this.settings.current_publication.slug = false;
     },
     downloadPubliPDF({ slugPubliName }) {
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: downloadPubliPDF: ${slugPubliName}`);
       }
       this.$socketio.downloadPubliPDF({
-        slugPubliName
-      });
-    },
-    downloadVideoPubli({ slugPubliName }) {
-      if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: downloadVideoPubli: ${slugPubliName}`);
-      }
-      this.$socketio.downloadVideoPubli({
         slugPubliName
       });
     },

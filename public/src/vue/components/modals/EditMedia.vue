@@ -98,7 +98,7 @@
         </div>
         <div 
           class="m_metaField"
-          v-if="media.hasOwnProperty('date_uploaded') && $root.formatDateToHuman(media.date_created) !== $root.formatDateToHuman(media.date_uploaded)"
+          v-if="media.hasOwnProperty('date_uploaded')"
         >
           <div>
             {{ $t('uploaded') }}
@@ -152,7 +152,6 @@
           :keywords="mediadata.keywords"
           @tagsChanged="newTags => mediadata.keywords = newTags"
         />
-        <small>{{ $t('validate_with_enter') }}</small>        
       </div>
 
   <!-- Author(s) -->
@@ -164,6 +163,7 @@
             @authorsChanged="newAuthors => mediadata.authors = newAuthors"
           />
 
+          <small>{{ $t('author_instructions') }}</small>
           <!-- <textarea v-model="mediadata.authors[0]" :readonly="read_only">
           </textarea> -->
         </div>
@@ -202,6 +202,17 @@
         v-model="mediadata.content"
       >
       </MediaContent>
+      <div class="m_mediaOptions" v-if="false && media.type === 'image'">
+        <label>Options</label>
+        <div>
+          <button type="button" class="buttonLink" @click="editRawMedia('rotate_image', {angle: 90})">
+            Pivoter vers la droite
+          </button>
+          <button type="button" class="buttonLink" @click="editRawMedia('reset')">
+            Revenir à l’original
+          </button>
+        </div>
+      </div>
     </template>
 
   </Modal>
@@ -244,16 +255,20 @@ export default {
         caption: this.media.caption,
         keywords: this.media.keywords,
         fav: this.media.fav,
-        content: this.media.content
+        content: this.media.content,
       },
       mediaURL: `/${this.slugProjectName}/${this.media.media_filename}`,
-      askBeforeClosingModal: false
+      askBeforeClosingModal: false,
+
+      is_ready: false
     };
   },
   watch: {
     'mediadata': {
       handler() {
-        this.askBeforeClosingModal = true;
+        if(this.is_ready) {
+          this.askBeforeClosingModal = true;
+        }
       },
       deep: true
     }
@@ -266,6 +281,8 @@ export default {
         this.mediadata.authors = [];
       }
     }
+
+    this.is_ready = true;
   },
   computed: {
   },
@@ -274,17 +291,23 @@ export default {
       window.print();
     },
     removeMedia: function() {
-      if (window.confirm(this.$t('sureToRemoveMedia'))) {
-        this.$root.removeMedia({
-          type: 'projects',
-          slugFolderName: this.slugProjectName, 
-          slugMediaName: this.slugMediaName
-        });
-        // then close that popover
-        this.$emit('close', '');
-      }
+      this.$alertify
+        .okBtn(this.$t('yes'))
+        .cancelBtn(this.$t('cancel'))        
+        .confirm(this.$t('sureToRemoveMedia'), 
+        () => {
+          this.$root.removeMedia({
+            type: 'projects',
+            slugFolderName: this.slugProjectName, 
+            slugMediaName: this.slugMediaName
+          });
+          // then close that popover
+          this.$emit('close', '');
+        },
+        () => {
+        });                    
     },
-    editThisMedia: function(event) {
+    editThisMedia: function() {
       console.log('editThisMedia');
       this.$root.editMedia({ 
         type: 'projects',
@@ -294,10 +317,35 @@ export default {
       });
       // then close that popover
       this.$emit('close', '');
+    },
+    editRawMedia: function(type, detail) {
+      console.log('editRawMedia');
+      this.$root.editMedia({ 
+        type: 'projects',
+        slugFolderName: this.slugProjectName, 
+        slugMediaName: this.slugMediaName,
+        data: this.mediadata,
+        recipe_with_data: {
+          apply_to: this.media.media_filename,
+          type,
+          detail
+        }
+      });
+      // then close that popover
+      // this.$emit('close', '');
     }
   },
 };
 </script>
 <style>
+.m_mediaOptions {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 100;
+  background-color: white;
+  margin: 25px;
+  padding: 15px;
+}
 
 </style>

@@ -11,7 +11,27 @@
     <template slot="sidebar">
       <div class="margin-sides-medium font-small">
         <div class="">
-          {{ $t('export_video_instructions') }} 
+          <p>{{ $t('export_stopmotion_instructions') }} </p>
+          <hr>
+
+          <div class="margin-bottom-small">
+            <label>{{ $t('framerate') }}</label>
+            <input type="number" v-model.number="framerate" min="1" max="30" step="1" />
+          </div>
+
+          <div class="margin-bottom-small">
+            <label>{{ $t('quality') }}</label>
+            <select v-model="quality">
+              <option 
+                v-for="q in available_qualities" 
+                :value="q.height" 
+                :key="q.height"
+              >
+                {{ $t(q.label) }}
+              </option>        
+            </select>
+          </div>
+
           <button type="button" 
             class="margin-small margin-left-none bg-bleuvert c-blanc button-allwide" 
             :disabled="video_request_status !== false"
@@ -32,18 +52,9 @@
           
           <div v-if="video_request_status === 'generated'">
             <div class="mediaContainer">
-              <video ref="video" :src="link_to_video" controls preload="auto" />
-              <svg 
-                ref="playIcon" 
-                v-if="!video_is_playing"
-                class="mediaContainer--videoPlay" 
-                viewBox="0 0 200 200" 
-                alt="Play video"
-                @click="togglePlayVideo()"
-              >
-                <circle cx="100" cy="100" r="90" fill="#fff" stroke-width="15" stroke="#fff"></circle>
-                <polygon points="70, 55 70, 145 145, 100" fill="#353535"></polygon>
-              </svg>
+              <vue-plyr :options="plyr_options">
+                <video :src="link_to_video" controls preload="auto" />
+              </vue-plyr>
             </div>
             <div class="margin-vert-medium">
               <a 
@@ -88,7 +99,33 @@ export default {
     return {
       video_request_status: false,
       link_to_video: false,
-      video_is_playing: false
+      video_is_playing: false,
+      framerate: 4,
+      quality: 720,
+      available_qualities: [
+        { 
+          label: 'very_high',
+          height: 1080
+        },
+        { 
+          label: 'high',
+          height: 720
+        },
+        { 
+          label: 'medium',
+          height: 640
+        },
+        { 
+          label: 'low',
+          height: 360
+        },
+      ],
+
+      plyr_options: {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        iconUrl: '/images/plyr.svg'
+      }
+
     }
   },
   created() {
@@ -98,25 +135,32 @@ export default {
   beforeDestroy() {
   },
   watch: {
+    'quality': function() {
+      if(this.video_request_status === 'generated') {
+        this.video_request_status = false;
+      }
+    },
+    'framerate': function() {
+      if(this.video_request_status === 'generated') {
+        this.video_request_status = false;
+      }
+    }
   },
   computed: {
   },
   methods: {
-    togglePlayVideo() {
-      if(this.video_is_playing === false) {
-        this.video_is_playing = true;
-        this.$refs.video.play();
-        this.$refs.video.setAttribute('controls', 'controls')      
-      }
-    },
     downloadVideo() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • ExportVideoPubli: downloadVideo`);
       }
 
-      this.$eventHub.$on('socketio.publication.videoIsGenerated', this.videoPubliIsGenerated);
-      this.$root.downloadVideoPubli({ 
-        slugPubliName: this.slugPubliName
+      this.$eventHub.$on('socketio.publication.publiStopmotionIsGenerated', this.videoPubliIsGenerated);
+      this.$socketio.downloadStopmotionPubli({ 
+        slugPubliName: this.slugPubliName,
+        options: {
+          framerate: this.framerate,
+          quality: this.quality
+        }
       });
       this.video_request_status = 'waiting_for_server';
     },
@@ -124,7 +168,7 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: videoPubliIsGenerated`);
       }
-      this.$eventHub.$off('socketio.publication.videoIsGenerated', this.videoPubliIsGenerated);
+      this.$eventHub.$off('socketio.publication.publiStopmotionIsGenerated', this.videoPubliIsGenerated);
       this.video_request_status = 'generated';
       this.link_to_video = window.location.origin + '/publication/video/' + videoName;
     },
