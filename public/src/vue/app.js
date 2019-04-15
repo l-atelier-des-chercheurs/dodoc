@@ -534,7 +534,11 @@ let vm = new Vue({
       console.log('ROOT EVENT: created / checking for password');
     }
 
-    if (!window.state.is_electron && this.state.session_password !== '') {
+    if (
+      !window.state.is_electron &&
+      this.state.session_password !== '' &&
+      window.navigator.userAgent !== 'EXPORTER'
+    ) {
       function hashCode(s) {
         return s.split('').reduce(function(a, b) {
           a = (a << 5) - a + b.charCodeAt(0);
