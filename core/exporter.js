@@ -475,7 +475,7 @@ module.exports = (function() {
                   });
                 })
                 .then(imagesCachePath => {
-                  dev.logverbose(`About to create stop-motion`);
+                  dev.logverbose(`About to create stopmotion`);
                   dev.logverbose(
                     `Size : ${resolution.width}x${resolution.height}`
                   );
