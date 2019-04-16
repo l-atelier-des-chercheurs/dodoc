@@ -31,10 +31,13 @@ module.exports = (function() {
         'Les animations créées apparaîtront dans ce panneau.',
 
       cooking_pot: 'La marmite',
+      show_all: 'Tout afficher',
       cooking_pot_instructions:
         'Mélangez des médias pour en créer des nouveaux !',
       untitled: 'Sans titre',
       mix_audio_and_video: 'Ajouter (ou remplacer) du son sur une vidéo',
+      add_sound_video_file:
+        'Ajoutez ici un fichier <b>son</b> et un fichier <b>vidéo</b> pour créer une nouvelle vidéo.',
 
       bytes: 'octets',
       kb: 'ko',
@@ -201,6 +204,7 @@ module.exports = (function() {
       export: 'Exporter',
       export_as_pdf: 'Export PDF',
       new_window: 'Nouvelle fenêtre',
+      previous_creations: 'Créations précédentes',
       export_video_instructions:
         'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des vidéos ajoutées à la publication.',
       export_audio_video_mix_instructions:
@@ -229,8 +233,12 @@ module.exports = (function() {
       page_by_page: 'Document page à page',
       video_assemblage: 'Montage vidéo',
       stopmotion_animation: 'Animation image par image',
-      mix_audio_and_video: 'Ajouter du son à ',
       web: 'Page web',
+
+      page_by_page_instructions: `Cette recette permet de créer un document avec un format précis et plusieurs pages.\n Médias acceptés : images, vidéos, sons et textes.\nCréera un PDF imprimable (pour faire des affiches, tracts, journaux, etc.) ou une page web à mettre en ligne.`,
+      video_assemblage_instructions: `Cette recette propose de créer un montage vidéo en mettant plusieurs vidéos bout à bout.\n Médias acceptés : uniquement des vidéos de même taille.\nCréera une nouvelle vidéo.`,
+      stopmotion_animation_instructions: `Cette recette permet l’assemblage d’un nombre illimité d’images pour créer une séquence vidéo dans laquelle elles défilent à une vitesse réglable.\n Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.\nCréera une nouvelle vidéo.`,
+      mix_audio_and_video_instructions: `Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.\n Médias acceptés : une vidéo et une piste sonore.\nCréera une nouvelle vidéo.`,
 
       last_modified: 'Dernière modification',
       remote_access: 'Accès depuis d’autres appareils',
@@ -319,10 +327,10 @@ module.exports = (function() {
         'Created stopmotion animations will appear in this list.',
 
       cooking_pot: 'Cooking pot',
+      show_all: 'Show all',
       cooking_pot_instructions:
         'Mix a single or multiple medias to create new medias!',
       untitled: 'Untitled',
-      mix_audio_and_video: 'Add audio to a video',
 
       bytes: 'bytes',
       kb: 'KB',
@@ -511,6 +519,18 @@ module.exports = (function() {
       page_by_page: 'Paged document',
       video_assemblage: 'Video editing',
       web: 'Webpage',
+
+      previous_creations: 'Previous creations',
+      stopmotion_animation: 'Stopmotion animation',
+
+      page_by_page_instructions: `This recipe can be used to create a paged document with a specific size.\n Accepted medias: images, videos, sounds and texts.\nWill create a PDF that can be printed (to make posters, tracts, newspapers, etc.) or a webpage to upload online.`,
+      video_assemblage_instructions: `This recipe creates a video from mulitple source videos, one after the other.\n Accepted medias: videos of the same size.\nWill create a new video.`,
+      stopmotion_animation_instructions: `This recipe takes any number of images as inputs and creates a single video with images being displayed at a specific speed.\n Accepted medias: images of any size. The first image will determine if the video will be in portrait or landscape.\nWill create a new video.`,
+      mix_audio_and_video_instructions: `This recipe mixes a video and an audio track to create a new video where they are played at the same time.\n Accepted medias: a video and a sound track.\nWill create a new video.`,
+
+      add_sound_video_file:
+        'Add a <b>sound</b> and a <b>video</b> media to create a new video.',
+      mix_audio_and_video: 'Add (or replace) sound on a video',
 
       last_modified: 'Last modified',
       remote_access: 'Acces from other devices',

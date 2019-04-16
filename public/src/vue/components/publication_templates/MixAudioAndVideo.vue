@@ -44,9 +44,7 @@
     <div class="m_mixAudioAndVideoPublication">
       <div class="margin-medium" v-if="publication_medias.length === 0">
         <p>
-          <small>
-            Ajoutez ici un fichier <b>son</b> et un fichier <b>vidéo</b> pour créer une nouvelle vidéo.
-          </small>
+          <small v-html="$t('add_sound_video_file')" />
         </p>
       </div>
 
