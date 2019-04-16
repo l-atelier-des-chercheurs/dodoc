@@ -19,13 +19,13 @@ module.exports = (function() {
     loadPublication: (slugPubliName, pageData) =>
       loadPublication(slugPubliName, pageData),
 
-    copyPubliContent: ({ html, folders_and_medias, slugPubliName }) => {
+    copyFolderContent: ({ html, folders_and_medias, slugFolderName }) => {
       return new Promise(function(resolve, reject) {
         // create cache folder that we will need to copy the content
         let cacheFolderName =
           api.getCurrentDate() +
           '-' +
-          slugPubliName +
+          slugFolderName +
           '-' +
           (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2);
 
@@ -118,10 +118,20 @@ module.exports = (function() {
                         if (t.hasOwnProperty('path')) {
                           tasks.push(
                             new Promise((resolve, reject) => {
-                              const fullPathToThumb = api.getFolderPath(t.path);
+                              let thumb_path = t.path;
+                              if (thumb_path.indexOf('?') > 0) {
+                                thumb_path = thumb_path.substring(
+                                  0,
+                                  thumb_path.indexOf('?')
+                                );
+                              }
+
+                              const fullPathToThumb = api.getFolderPath(
+                                thumb_path
+                              );
                               const fullPathToThumb_cache = path.join(
                                 cachePath,
-                                t.path
+                                thumb_path
                               );
 
                               fs.copy(fullPathToThumb, fullPathToThumb_cache)
@@ -140,12 +150,20 @@ module.exports = (function() {
                           t.thumbsData.map(t => {
                             tasks.push(
                               new Promise((resolve, reject) => {
+                                let thumb_path = t.path;
+                                if (thumb_path.indexOf('?') > 0) {
+                                  thumb_path = thumb_path.substring(
+                                    0,
+                                    thumb_path.indexOf('?')
+                                  );
+                                }
+
                                 const fullPathToThumb = api.getFolderPath(
-                                  t.path
+                                  thumb_path
                                 );
                                 const fullPathToThumb_cache = path.join(
                                   cachePath,
-                                  t.path
+                                  thumb_path
                                 );
 
                                 fs.copy(fullPathToThumb, fullPathToThumb_cache)
@@ -554,9 +572,6 @@ module.exports = (function() {
                   medias_list
                 })
                 .then(publi_medias => {
-                  dev.logverbose(
-                    `Got medias, now sending to the right clients`
-                  );
                   publi_and_medias[slugFolderName].medias =
                     publi_medias[slugFolderName].medias;
                   pageData.publiAndMediaData = publi_and_medias;

@@ -866,9 +866,8 @@ module.exports = (function() {
           let finalPath = path.join(uploadDir, newFileName);
           sharp(tempPath)
             .rotate()
-            .withMetadata()
-            .background({ r: 255, g: 255, b: 255 })
             .flatten()
+            .withMetadata()
             .jpeg({
               quality: 90
             })
@@ -1080,7 +1079,10 @@ module.exports = (function() {
               });
               tasks.push(updateMediaMeta);
 
-              if (meta.type === 'text' && data.hasOwnProperty('content')) {
+              if (
+                (meta.type === 'text' || meta.type === 'marker') &&
+                data.hasOwnProperty('content')
+              ) {
                 dev.logverbose(`Is text and need to update content.`);
                 dev.logverbose(`New content: ${data.content}`);
 
@@ -1335,7 +1337,10 @@ module.exports = (function() {
               });
             })
           );
-        } else if (additionalMeta.type === 'text') {
+        } else if (
+          additionalMeta.type === 'text' ||
+          additionalMeta.type === 'marker'
+        ) {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += '.md';
@@ -1437,7 +1442,7 @@ module.exports = (function() {
             }
 
             if (
-              mediaData.type === 'text' &&
+              (mediaData.type === 'text' || mediaData.type === 'marker') &&
               mediaData.hasOwnProperty('media_filename')
             ) {
               // get text content
@@ -1609,11 +1614,13 @@ module.exports = (function() {
             .rotate()
             .resize(
               global.settings.structure[type].preview.width,
-              global.settings.structure[type].preview.height
+              global.settings.structure[type].preview.height,
+              {
+                fit: 'inside',
+                withoutEnlargement: true,
+                background: 'white'
+              }
             )
-            .max()
-            .withoutEnlargement()
-            .background({ r: 255, g: 255, b: 255 })
             .flatten()
             .withMetadata()
             .toFormat(global.settings.thumbFormat, {
