@@ -44,9 +44,7 @@
     <div class="m_videoPublication">
       <div class="margin-medium" v-if="publication_medias.length === 0">
         <p>
-          <small>
-            Ajoutez plusieurs fichiers <b>vidéo</b> pour créer une nouvelle vidéo.
-          </small>
+          <small v-html="$t('add_multiple_videos_files')" />
         </p>
       </div>
 

@@ -41,6 +41,11 @@
         </template>
       </div>
     </div>
+      <div class="margin-medium" v-if="publication_medias.length === 0">
+        <p>
+          <small v-html="$t('add_multiple_images')" />
+        </p>
+      </div>    
       <transition-group class="m_stopmotionAnimationPublication" name="slideFromTop" :duration="300">
         <div
           class="m_stopmotionAnimationPublication--media"
@@ -74,7 +79,7 @@
           <button type="button" class="buttonLink font-verysmall"
             @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
           >
-            {{ $t('withdraw') }}
+            {{ $t('remove') }}
           </button>
         </div>
       </transition-group>

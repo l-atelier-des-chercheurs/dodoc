@@ -371,6 +371,8 @@ export default {
         publication_data.pages = [{
           id: +new Date() + '_' + (Math.random().toString(36) + '00000000000000000').slice(2, 3)
         }];
+        publication_data.width = 210;
+        publication_data.height = 297;
       }
 
       this.$eventHub.$on('socketio.folder_created_or_updated', (fdata) => {

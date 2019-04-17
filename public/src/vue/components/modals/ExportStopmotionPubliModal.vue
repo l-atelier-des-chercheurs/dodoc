@@ -64,18 +64,12 @@
               >
                 {{ $t('download') }}
               </a>
-              <br>
-              <div class="">
-                <label v-html="$t('add_to_project')" />
-                <select>
-                  <option 
-                    v-for="project in $root.store.projects" 
-                    :key="project.name"
-                  >
-                    {{ project.name }}
-                  </option>        
-                </select>
-              </div>
+
+              <AddCreationToProject
+                v-if="exported_video_name !== false"
+                :media_filename="exported_video_name"
+              />
+
             </div>
             
           </div>
@@ -86,6 +80,7 @@
 </template>
 <script>
 import Modal from './BaseModal.vue';
+import AddCreationToProject from '../subcomponents/AddCreationToProject.vue';
 import { setTimeout } from 'timers';
 
 export default {
@@ -93,7 +88,8 @@ export default {
     slugPubliName: String
   },
   components: {
-    Modal
+    Modal,
+    AddCreationToProject
   },
   data() {
     return {
@@ -120,6 +116,8 @@ export default {
           height: 360
         },
       ],
+
+      exported_video_name: false,
 
       plyr_options: {
         controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
@@ -171,6 +169,8 @@ export default {
       this.$eventHub.$off('socketio.publication.publiStopmotionIsGenerated', this.videoPubliIsGenerated);
       this.video_request_status = 'generated';
       this.link_to_video = window.location.origin + '/publication/video/' + videoName;
+      this.exported_video_name = videoName; 
+
     },
   }
 }

@@ -68,6 +68,7 @@ body {
 .plyr {
   width: 100%;
   height: 100%;
+  min-width: 100px;
 
   button {
     min-height: 0;
@@ -87,10 +88,12 @@ body {
     .bg-noir;
   }
   &.plyr--audio {
-    .bg-noir;
+    // .bg-noir;
 
     .plyr__controls {
-      background: @c-noir;
+      // background: @c-noir;
+      background: transparent;
+      color: @c-noir;
     }  
   }
   .plyr__controls {
@@ -807,7 +810,7 @@ body {
 }
 
 .m_publicationsview {
-  .bg-bleuvert_fonce;
+  .bg-bleuvert;
 }
 .m_publicationview {
   .bg-bleuvert;
@@ -2735,7 +2738,7 @@ small {
   .margin-bottom-medium;
 }
 .m_recipes--recipe {
-  // border: 4px solid @c-bleuvert_fonce;
+  border: 4px solid @c-bleuvert_fonce;
   .margin-small;
   .bg-bleuvert;
   

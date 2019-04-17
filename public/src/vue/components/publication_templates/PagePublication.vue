@@ -26,7 +26,9 @@
             <label for="settings">{{ $t('settings') }}</label>
           </div>
 
-          <button type="button" class="buttonLink" @click="showExportModal = true">
+          <button type="button" class="buttonLink" @click="showExportModal = true"
+            :disabled="Object.values(publication.medias).length === 0"
+          >
             {{ $t('export') }}
           </button>     
 

@@ -451,6 +451,9 @@ Vue.prototype.$socketio = new Vue({
     downloadStopmotionPubli(pdata) {
       this.socket.emit('downloadStopmotionPubli', pdata);
     },
+    addTempMediaToFolder(pdata) {
+      this.socket.emit('addTempMediaToFolder', pdata);
+    },
     updateNetworkInfos() {
       this.socket.emit('updateNetworkInfos');
     }
