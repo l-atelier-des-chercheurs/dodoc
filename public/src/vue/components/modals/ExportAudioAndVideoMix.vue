@@ -69,8 +69,7 @@ export default {
   },
   components: {
     Modal,
-        AddCreationToProject
-
+    AddCreationToProject
   },
   data() {
     return {

@@ -32,10 +32,10 @@
         v-for="recipe in recipes"
         :key="recipe.key"
       >
-        <div class="m_recipes--recipe--icon" v-html="$t(recipe.icon)"></div>
+        <div class="m_recipes--recipe--icon" v-html="recipe.icon"></div>
         <div class="m_recipes--recipe--text">
           <h2>{{ $t(recipe.key) }}</h2>
-          <div v-html="$t(recipe.instructions)"/>
+          <p v-html="$t(recipe.instructions)"/>
           <button 
             class="barButton barButton_createPubli"
             type="button"  
