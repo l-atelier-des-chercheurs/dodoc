@@ -259,8 +259,7 @@ module.exports = (function() {
                         if (error) throw error;
                         console.log('Write PDF successful');
                         resolve({
-                          pdfName,
-                          pdfPath
+                          pdfName
                         });
                       });
                     }
