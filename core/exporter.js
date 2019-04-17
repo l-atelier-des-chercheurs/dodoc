@@ -458,7 +458,7 @@ module.exports = (function() {
                     ratio = 0.75;
                   }
 
-                  const new_width = Math.round(video_height / ratio);
+                  const new_width = 2 * Math.round(video_height / ratio / 2);
                   resolution.width = new_width;
 
                   return _loadMediaFilenameFromPublicationSlugs(
