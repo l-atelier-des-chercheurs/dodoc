@@ -56,6 +56,7 @@ module.exports = (function() {
       socket.on('downloadStopmotionPubli', d =>
         onDownloadStopmotionPubli(socket, d)
       );
+      socket.on('addTempMediaToFolder', d => onAddTempMediaToFolder(socket, d));
       socket.on('updateNetworkInfos', d => onUpdateNetworkInfos(socket, d));
 
       socket.on('updateClientInfo', d => onUpdateClientInfo(socket, d));
@@ -396,6 +397,30 @@ module.exports = (function() {
           io,
           socket
         );
+      });
+  }
+
+  function onAddTempMediaToFolder(socket, { from, to }) {
+    dev.logfunction(
+      `EVENT - onAddTempMediaToFolder with 
+      from = ${JSON.stringify(from)} and to = ${JSON.stringify(to)}`
+    );
+
+    file
+      .addTempMediaToFolder({ from, to })
+      .then(() => {
+        notify({
+          socket,
+          socketid: socket.id,
+          localized_string: `media_has_been_added_successfully`
+        });
+      })
+      .catch(err => {
+        notify({
+          socket,
+          socketid: socket.id,
+          not_localized_string: `Error adding temp media to folder: ${err}`
+        });
       });
   }
 

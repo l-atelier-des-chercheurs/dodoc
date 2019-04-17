@@ -707,12 +707,12 @@ module.exports = (function() {
                 let getFileCreationDate = new Promise((resolve, reject) => {
                   fs.stat(mediaPath, function(err, stats) {
                     if (err) {
-                      resolve();
+                      return resolve();
                     }
                     mdata.date_created = api.convertDate(
                       new Date(stats.birthtime)
                     );
-                    resolve();
+                    return resolve();
                   });
                 });
                 tasks.push(getFileCreationDate);
@@ -1398,6 +1398,42 @@ module.exports = (function() {
           .catch(err => {
             dev.error(`Failed to store captured media as file: ${err}`);
             reject(`${err}`);
+          });
+      });
+    },
+    addTempMediaToFolder: ({ from, to }) => {
+      return new Promise(function(resolve, reject) {
+        const path_to_original_file = path.join(
+          global.tempStorage,
+          global.settings.cacheDirname,
+          global.settings.structure[from.type].path,
+          from.media_filename
+        );
+
+        let slugFolderPath = api.getFolderPath(
+          path.join(global.settings.structure[to.type].path, to.slugFolderName)
+        );
+
+        api
+          .findFirstFilenameNotTaken(slugFolderPath, from.media_filename)
+          .then(function(newFileName) {
+            dev.logverbose(`Following filename is available: ${newFileName}`);
+
+            const destination_path = path.join(slugFolderPath, newFileName);
+            fs.copy(path_to_original_file, destination_path, function(err) {
+              if (err) {
+                dev.error(`Failed to copy: ${err}`);
+                return reject(err);
+              }
+              require('./sockets').createMediaMeta({
+                type: to.type,
+                slugFolderName: to.slugFolderName,
+                additionalMeta: {
+                  media_filename: newFileName
+                }
+              });
+              return resolve();
+            });
           });
       });
     }
