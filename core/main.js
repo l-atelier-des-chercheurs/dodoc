@@ -195,6 +195,7 @@ module.exports = function({ router }) {
         global.tempStorage,
         global.settings.cacheDirname
       );
+      dev.log(`Emptying temp folder ${cachePath}`);
       fs.emptyDir(cachePath)
         .then(() => {
           resolve();
