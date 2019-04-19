@@ -156,13 +156,13 @@
         </svg>
       </button>
 
-      <button 
+      <!-- <button 
         class="margin-vert-verysmall font-verysmall" 
         :class="{ 'is--active' : !preview_mode }"
         @click="preview_mode = !preview_mode"
       >
         CSS
-      </button>
+      </button> -->
 
       <!-- <button 
         class="margin-vert-verysmall font-verysmall" 
@@ -362,12 +362,12 @@
       </a>
     </div>
 
-    <div v-if="show_edit_css_window"
+    <!-- <div v-if="show_edit_css_window"
       class="m_mediaCSSEditWindow"
     >
       {{ show_edit_css_window }}
       <textarea @change="setCSSForMedia($event)" v-model="publication.medias[show_edit_css_window].custom_css" />
-    </div>
+    </div> -->
 
     <div 
       ref="mmMeasurer" 
@@ -447,7 +447,7 @@ export default {
 
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
-    this.$eventHub.$on('publication.setCSSEditWindow', this.setCSSEditWindow);
+    // this.$eventHub.$on('publication.setCSSEditWindow', this.setCSSEditWindow);
     document.addEventListener('keyup', this.publicationKeyListener);
     this.updateMediasPubli();  
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty('mmMeasurer') ? this.$refs.mmMeasurer.offsetWidth / 10 : 38;
@@ -463,7 +463,7 @@ export default {
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
     this.$eventHub.$off('socketio.projects.listSpecificMedias', this.updateMediasPubli);
-    this.$eventHub.$off('publication.setCSSEditWindow', this.setCSSEditWindow);
+    // this.$eventHub.$off('publication.setCSSEditWindow', this.setCSSEditWindow);
     document.removeEventListener('keyup', this.publicationKeyListener);
   },
 

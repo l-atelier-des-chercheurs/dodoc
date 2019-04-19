@@ -6,7 +6,7 @@
     :data-media_type="media.type"
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
-    @mousedown.prevent.stop="is_selected = true"
+    @mousedown.stop="is_selected = true"
     :class="{ 
       'is--dragged' : is_dragged, 
       'is--resized' : is_resized, 
@@ -16,6 +16,13 @@
       'is--previewed' :  preview_mode
     }"
   > 
+
+    <div class="m_mediaPublication--edit_styles"
+      v-if="show_edit_styles_window"
+    >
+      <textarea v-model="custom_css" />
+    </div>
+
     <MediaContent
       :context="preview_mode ? 'publication' : 'preview'"
       :slugFolderName="media.slugProjectName"
@@ -78,6 +85,7 @@
         class="buttonLink" 
         @click.prevent.stop="toggleEditWindow()"
         @touchstart.prevent.stop="toggleEditWindow()"
+        :class="{ 'is--active' : show_edit_styles_window }"
       >
         {{ $t('style') }}
       </button>
@@ -123,6 +131,9 @@ export default {
       is_hovered: false,
       is_selected: false,
       is_touch: Modernizr.touchevents,
+
+      custom_css: this.media.publi_meta.hasOwnProperty('custom_css') ? this.media.publi_meta.custom_css : '',
+      show_edit_styles_window: true,
 
       limit_media_to_page: true,
 
@@ -209,7 +220,8 @@ export default {
   },
   methods: {
     toggleEditWindow() {
-      this.$eventHub.$emit('publication.setCSSEditWindow', this.media.publi_meta.metaFileName);
+      this.show_edit_styles_window = !this.show_edit_styles_window;
+      // this.$eventHub.$emit('publication.setCSSEditWindow', this.media.publi_meta.metaFileName);
     },
 
     updateMediaStyles() {
