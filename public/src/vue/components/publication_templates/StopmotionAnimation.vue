@@ -79,7 +79,7 @@
           <button type="button" class="buttonLink font-verysmall"
             @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
           >
-            {{ $t('remove') }}
+            {{ $t('withdraw') }}
           </button>
         </div>
       </transition-group>
@@ -193,7 +193,7 @@ export default {
     },
     removePubliMedia({ slugMediaName }) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: removeMedia / slugMediaName = ${slugMediaName}`);
+        console.log(`METHODS • Publication: removePubliMedia / slugMediaName = ${slugMediaName}`);
       }
 
       this.$root.removeMedia({

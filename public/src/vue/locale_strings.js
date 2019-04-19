@@ -43,6 +43,7 @@ module.exports = (function() {
         'Ajoutez plusieurs médias <b>vidéo</b> pour créer une vidéo.',
       add_multiple_images:
         'Ajoutez plusieurs médias <b>image</b> pour créer une vidéo.',
+      style: 'CSS',
 
       bytes: 'octets',
       kb: 'ko',
@@ -125,7 +126,7 @@ module.exports = (function() {
       print: 'Imprimer',
       create: 'Créer',
       remove: 'Supprimer',
-      withdraw: 'Retirer',
+      withdraw: 'Enlever',
       remove_this_image: 'Supprimer cette image',
       password: 'Mot de passe',
       protected_by_pass: 'protégé par mot de passe',
@@ -545,6 +546,7 @@ module.exports = (function() {
         'Add multiple <b>video</b> medias to create a new video.',
       add_multiple_images:
         'Add multiple <b>image</b> medias to create a video.',
+      style: 'CSS',
 
       last_modified: 'Last modified',
       remote_access: 'Acces from other devices',

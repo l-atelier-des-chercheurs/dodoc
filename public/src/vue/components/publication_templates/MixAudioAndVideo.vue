@@ -81,7 +81,7 @@
           <button type="button" class="buttonLink font-verysmall"
             @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
           >
-            {{ $t('remove') }}
+            {{ $t('withdraw') }}
           </button>
         </div>
       </transition-group>
