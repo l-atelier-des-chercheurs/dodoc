@@ -23,6 +23,7 @@
       :read_only="read_only"
       :preview_size="360"
       v-model="media.content"
+      :style="media.publi_meta.custom_css"
     />
     <p class="mediaCaption">{{ media.caption }}</p>
 
@@ -72,14 +73,14 @@
       v-if="(is_selected || is_hovered || is_touch) && !preview_mode" 
       class="m_mediaPublication--buttons"
     >
-      <!-- <button 
+      <button 
         type="button" 
         class="buttonLink" 
         @click.prevent.stop="toggleEditWindow()"
         @touchstart.prevent.stop="toggleEditWindow()"
       >
         {{ $t('style') }}
-      </button> -->
+      </button>
       <button 
         type="button" 
         class="buttonLink" 
@@ -197,12 +198,12 @@ export default {
   },
   computed: {
     mediaStyles() {
-      return `
+      let mediaStyles = `
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
         height: ${this.mediaSize.height}mm;
-        ${this.media.publi_meta.custom_css}
-      `
+      `;
+      return mediaStyles;
       ;
     },
   },

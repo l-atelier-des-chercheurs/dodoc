@@ -143,7 +143,6 @@
         :class="{ 'is--active' : !preview_mode }"
         @click="preview_mode = !preview_mode"
       >
-        <!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In  -->
         <svg version="1.1"
           xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
           x="0px" y="0px" width="144px" height="84px" viewBox="0 0 144 84" style="enable-background:new 0 0 144 84;"
@@ -155,6 +154,14 @@
             c0-16.3,13.4-29.6,30-29.6c16.5,0,30,13.3,30,29.6C102,58,88.5,71.3,72,71.3z"/>
         </g>
         </svg>
+      </button>
+
+      <button 
+        class="margin-vert-verysmall font-verysmall" 
+        :class="{ 'is--active' : !preview_mode }"
+        @click="preview_mode = !preview_mode"
+      >
+        CSS
       </button>
 
       <!-- <button 
@@ -215,7 +222,6 @@
         :disabled="zoom === zoom_max"
         @click="zoom += 0.1"
       >
-        <!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In  -->
         <svg version="1.1"
           xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
           x="0px" y="0px" width="182.5px" height="188.1px" viewBox="0 0 182.5 188.1" style="enable-background:new 0 0 182.5 188.1;"
@@ -229,7 +235,6 @@
         :disabled="zoom === zoom_min"
         @click="zoom -= 0.1"
       >
-        <!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In  -->
         <svg version="1.1"
           xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
           x="0px" y="0px" width="155.6px" height="21.2px" viewBox="0 0 155.6 21.2" style="enable-background:new 0 0 155.6 21.2;"
@@ -361,7 +366,7 @@
       class="m_mediaCSSEditWindow"
     >
       {{ show_edit_css_window }}
-      <textarea @keyup="setCSSForMedia($event)" />
+      <textarea @change="setCSSForMedia($event)" v-model="publication.medias[show_edit_css_window].custom_css" />
     </div>
 
     <div 
