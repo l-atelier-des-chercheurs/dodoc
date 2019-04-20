@@ -22,8 +22,8 @@ import locale_strings from './locale_strings.js';
 
 import 'prismjs';
 
-Vue.config.silent = false;
-Vue.config.devtools = true;
+// Vue.config.silent = false;
+// Vue.config.devtools = true;
 
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
