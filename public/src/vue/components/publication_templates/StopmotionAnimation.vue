@@ -4,89 +4,65 @@
     :class="{ 'is--preview' : preview_mode }"
     ref="panel"
   >
-    <div class="m_publicationMeta">
-      <div class="m_publicationMeta--topbar">
-        <button type="button" class=""
-          v-if="$root.state.mode !== 'export_publication'"        
-          @click="closePublication()"
-        >
-          ←
-        </button>
 
-        <div class="m_publicationMeta--topbar--title">
-          {{ publication.name }}
-        </div>
+    <PublicationHeader 
+      :slugPubliName="slugPubliName"
+      :publication="publication"
+      @export="show_export_modal = true"
+    />
 
-        <template 
-          v-if="$root.state.mode !== 'export_publication'"
-        >
-          <!-- <div class="margin-small">
-            <input id="settings" type="checkbox" v-model="advanced_options" />
-            <label for="settings">{{ $t('settings') }}</label>
-          </div> -->
+    <ExportStopmotionPubliModal
+      v-if="show_export_modal"
+      @close="show_export_modal = false"
+      :slugPubliName="slugPubliName"
+    />
 
-          <button type="button" class="buttonLink" @click="showExportModal = true">
-            {{ $t('export') }}
-          </button>     
-
-          <ExportStopmotionPubliModal
-            v-if="showExportModal"
-            @close="showExportModal = false"
-            :slugPubliName="slugPubliName"
-          />
-
-          <button type="button" class="buttonLink" @click="removePublication">
-            {{ $t('remove') }}
-          </button>     
-        </template>
-      </div>
-    </div>
-      <div class="margin-medium" v-if="publication_medias.length === 0">
-        <p>
-          <small v-html="$t('add_multiple_images')" />
-        </p>
-      </div>    
-      <transition-group class="m_stopmotionAnimationPublication" name="slideFromTop" :duration="300">
-        <div
-          class="m_stopmotionAnimationPublication--media"
-          v-for="media in publication_medias" 
-          :key="media.publi_meta.metaFileName"
-        >
-          <MediaContent
-            v-model="media.content"
-            :context="'full'"
-            :slugFolderName="media.slugProjectName"
-            :media="media"
-            class=""
-          />
-          <!-- <div class="m_metaField">
-            <div>
-              {{ $t('project') }}
-            </div>
-            <div>
-              {{ $root.store.projects[media.slugProjectName].name }}
-            </div>
+    <div class="margin-medium" v-if="publication_medias.length === 0">
+      <p>
+        <small v-html="$t('add_multiple_images')" />
+      </p>
+    </div>    
+    <transition-group class="m_stopmotionAnimationPublication" name="slideFromTop" :duration="300">
+      <div
+        class="m_stopmotionAnimationPublication--media"
+        v-for="media in publication_medias" 
+        :key="media.publi_meta.metaFileName"
+      >
+        <MediaContent
+          v-model="media.content"
+          :context="'full'"
+          :slugFolderName="media.slugProjectName"
+          :media="media"
+          class=""
+        />
+        <!-- <div class="m_metaField">
+          <div>
+            {{ $t('project') }}
           </div>
-          <div class="m_metaField">
-            <div>
-              {{ $t('duration') }}
-            </div>
-            <div>
-              {{ media.duration }}
-            </div>
-          </div> -->
-
-          <button type="button" class="buttonLink font-verysmall"
-            @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
-          >
-            {{ $t('withdraw') }}
-          </button>
+          <div>
+            {{ $root.store.projects[media.slugProjectName].name }}
+          </div>
         </div>
-      </transition-group>
+        <div class="m_metaField">
+          <div>
+            {{ $t('duration') }}
+          </div>
+          <div>
+            {{ media.duration }}
+          </div>
+        </div> -->
 
+        <button type="button" class="buttonLink font-verysmall"
+          @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
+        >
+          {{ $t('withdraw') }}
+        </button>
+      </div>
+    </transition-group>
   </div>
 </template>
 <script>
+import PublicationHeader from '../subcomponents/PublicationHeader.vue';
 import MediaContent from '../subcomponents/MediaContent.vue';
 import ExportStopmotionPubliModal from '../modals/ExportStopmotionPubliModal.vue';
 
@@ -97,13 +73,14 @@ export default {
     read_only: Boolean
   },
   components: {
+    PublicationHeader,
     MediaContent,
     ExportStopmotionPubliModal,
     ExportStopmotionPubliModal
   },
   data() {
     return {
-      showExportModal: false,
+      show_export_modal: false,
       publication_medias: [],
       medias_slugs_in_order: []
     }
@@ -211,33 +188,6 @@ export default {
           medias_slugs: this.medias_slugs_in_order
         }
       });
-    },
-    closePublication() {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: closePublication`);
-      }
-      this.$root.closePublication();
-    },
-    removePublication() {
-
-      this.$alertify
-        .okBtn(this.$t('yes'))
-        .cancelBtn(this.$t('cancel'))        
-        .confirm(this.$t('sureToRemovePubli'), 
-        () => {
-          if (this.$root.state.dev_mode === 'debug') {
-            console.log(`METHODS • Publication: removePublication`);
-          }
-          this.$root.removeFolder({ 
-            type: 'publications', 
-            slugFolderName: this.slugPubliName, 
-          });
-          
-          this.closePublication();
-        },
-        () => {
-        });              
-
     },
     updateMediasPubli() {
       if (this.$root.state.dev_mode === 'debug') {

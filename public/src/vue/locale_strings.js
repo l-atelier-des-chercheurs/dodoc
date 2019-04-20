@@ -38,7 +38,6 @@ module.exports = (function() {
       mix_audio_and_video: 'Ajoutez (ou remplacez) du son sur une vidéo',
       add_sound_video_file:
         'Ajoutez ici un média <b>son</b> et un média <b>vidéo</b> pour créer une vidéo.',
-      media_has_been_added_successfully: 'Le média a bien été transféré',
       add_multiple_videos_files:
         'Ajoutez plusieurs médias <b>vidéo</b> pour créer une vidéo.',
       add_multiple_images:
@@ -271,6 +270,7 @@ module.exports = (function() {
         contents_wont_be_editable:
           'Les modifications et ajouts ne seront plus pris en compte.',
         connection_error: 'La connexion au serveur n’a pu se faire.',
+        media_has_been_added_successfully: 'Le média a bien été transféré',
         'wrong_password_for_folder:':
           'Le password n’est pas le bon pour le dossier&nbsp;:',
         'created_edited_media:':
@@ -542,7 +542,6 @@ module.exports = (function() {
 
       add_sound_video_file:
         'Add a <b>sound</b> and a <b>video</b> media to create a new video.',
-      media_has_been_added_successfully: 'The media was successfully added.',
       mix_audio_and_video: 'Add (or replace) sound on a video',
       add_multiple_videos_files:
         'Add multiple <b>video</b> medias to create a new video.',
@@ -567,6 +566,7 @@ module.exports = (function() {
           'The media was not sent because of a connexion error.',
         file_was_sent: 'The file was sent.',
         file_upload_not_allowed: 'File upload is not allowed by this browser.',
+        media_has_been_added_successfully: 'The media was successfully added.',
         connection_active: 'The connection to the server is active.',
         connection_lost: 'The connection to the server was lost.',
         contents_wont_be_editable: 'Content editing is disabled.',
