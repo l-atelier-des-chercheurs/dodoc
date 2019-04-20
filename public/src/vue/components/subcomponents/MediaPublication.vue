@@ -13,9 +13,34 @@
       'is--rotated' : is_rotated, 
       'is--waitingForServerResponse' : is_waitingForServer,
       'is--hovered' : is_hovered,
-      'is--previewed' :  preview_mode
+      'is--previewed' :  preview_mode.is_hovered,
+      'is--overflowing' : is_text_overflowing
     }"
   > 
+
+    <MediaContent
+      :context="preview_mode ? 'publication' : 'preview'"
+      :slugFolderName="media.slugProjectName"
+      :media="media"
+      :read_only="read_only"
+      :preview_size="360"
+      v-model="media.content"
+      :style="media.publi_meta.custom_css"
+    />
+    <p class="mediaCaption">{{ media.caption }}</p>
+
+    <button class="m_mediaPublication--overflowing_sign"
+      type="button"
+      v-if="media.type === 'text' && is_text_overflowing"
+      @click="setMediaHeightToContent"
+      :title="$t('text_overflow')"
+      v-tippy='{ 
+        placement : "top",
+        delay: [600, 0]
+      }'                        
+    >
+      <span>…</span>
+    </button>
 
     <div class="m_mediaPublication--edit_styles"
       v-if="show_edit_styles_window && (is_selected || is_hovered)"
@@ -30,17 +55,6 @@
       </button>
       <PrismEditor v-model="custom_css" @change="setCSSForMedia" language="css" />
     </div>
-
-    <MediaContent
-      :context="preview_mode ? 'publication' : 'preview'"
-      :slugFolderName="media.slugProjectName"
-      :media="media"
-      :read_only="read_only"
-      :preview_size="360"
-      v-model="media.content"
-      :style="media.publi_meta.custom_css"
-    />
-    <p class="mediaCaption">{{ media.caption }}</p>
 
     <div 
       v-if="(is_selected || is_hovered || is_touch) && !preview_mode" 
@@ -142,6 +156,7 @@ export default {
       is_hovered: false,
       is_selected: false,
       is_touch: Modernizr.touchevents,
+      is_text_overflowing: false,
 
       custom_css: this.media.publi_meta.hasOwnProperty('custom_css') ? this.media.publi_meta.custom_css : '',
       show_edit_styles_window: false,
@@ -226,6 +241,10 @@ export default {
       return mediaStyles;
       ;
     },
+    // text_is_overflowing() {
+    //   const el = this.$refs.media;
+    //   return (el.offsetHeight + 15 < el.scrollHeight);      
+    // }    
   },
   methods: {
     newMediaSelected(mediaID) {
@@ -233,8 +252,18 @@ export default {
         this.is_selected = false;   
       }
     },
-    textIsOverflowing(el) {
-      return (el.offsetHeight + 15 < el.scrollHeight);
+    setMediaHeightToContent() {
+      const el = this.$refs.media;
+      let contentHeight = el.firstElementChild.firstElementChild.firstElementChild.offsetHeight;
+      contentHeight += 10;
+      contentHeight = contentHeight / this.pixelsPerMillimeters;
+      contentHeight = this.roundMediaVal(contentHeight);
+      contentHeight = this.limitMediaHeight(contentHeight);
+      this.mediaSize.height = contentHeight;
+
+      this.updateMediaPubliMeta({ 
+        height: this.mediaSize.height 
+      });
     },
     toggleEditWindow() {
       this.show_edit_styles_window = !this.show_edit_styles_window;
@@ -255,8 +284,14 @@ export default {
       this.rotate = this.media.publi_meta.hasOwnProperty('rotate') ? this.media.publi_meta.rotate : 0;
       this.mediaSize.width = this.media.publi_meta.hasOwnProperty('width') && !!Number.parseInt(this.media.publi_meta.width) ? this.limitMediaWidth(Number.parseInt(this.media.publi_meta.width)) : 100;
       this.mediaSize.height = this.media.publi_meta.hasOwnProperty('height') && !!Number.parseInt(this.media.publi_meta.height) ? this.limitMediaHeight(Number.parseInt(this.media.publi_meta.height)) : 100;
-    
       this.custom_css = this.media.publi_meta.hasOwnProperty('custom_css') ?  this.media.publi_meta.custom_css : this.custom_css;
+    
+      if(this.media.type) {
+        this.$nextTick(() => {
+          const el = this.$refs.media;
+          this.is_text_overflowing = (el.offsetHeight < el.firstElementChild.firstElementChild.firstElementChild.offsetHeight);
+        });
+      }
     },
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === 'debug') {

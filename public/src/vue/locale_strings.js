@@ -31,6 +31,7 @@ module.exports = (function() {
         'Les animations créées apparaîtront dans ce panneau.',
 
       cooking_pot: 'La marmite',
+      text_overflow: 'Texte en excès',
       show_all: 'Tout afficher',
       cooking_pot_instructions:
         'Mélangez des médias pour en créer des nouveaux !',
@@ -338,6 +339,7 @@ module.exports = (function() {
         'Created stopmotion animations will appear in this list.',
 
       cooking_pot: 'Cooking pot',
+      text_overflow: 'Overflow text',
       show_all: 'Show all',
       cooking_pot_instructions:
         'Mix a single or multiple medias to create new medias!',

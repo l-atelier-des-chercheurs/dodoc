@@ -3293,7 +3293,7 @@ small {
 
   transform-origin: top left;
 
-  transition: all .2s ease-out;
+  // transition: all .2s ease-out;
 
   &.is--hovered {
   }
@@ -3304,6 +3304,27 @@ small {
   &.is--resized {
     transition: none ease-out;
     z-index: 2;
+  }
+  .m_mediaPublication--overflowing_sign {
+    position: absolute;
+    bottom: 2px;
+    font-weight: 700;
+    text-align: center;
+    width: 100%;
+    margin: 0 auto;
+    z-index: 2;
+    min-height: 0;
+    background: transparent;
+
+    span {
+      display: block;
+      width: 1em;
+      height: 1em;
+      margin: 0 auto;
+      line-height: .5;
+      background-color: @c-rouge;
+      .c-blanc;
+    }
   }
 
   .m_mediaPublication--edit_styles {
