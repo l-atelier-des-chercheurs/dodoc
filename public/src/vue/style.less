@@ -11,6 +11,8 @@
 
 @import (inline) "node_modules/vue-plyr/dist/vue-plyr.css";
 
+@import "less/_code_highlight";
+
 @import "less/_variables";
 @import "less/_globals";
 @import "less/_media";
@@ -3298,30 +3300,27 @@ small {
     bottom: 100%;
     left: 50%;
     transform: translate(-50%, 0);
-    padding: 10px;
+    .padding-verysmall;
+    max-width: 300px;
+    min-width: 200px;
     width: 100%;
     height: auto;
 
-    pointer-events: none;
-
-    textarea {
-      .bg-noir;
-      .c-blanc;
-      .font-verysmall;
-      font-family: 'Fira Code';
-      .padding-verysmall;
-      height: 100px;
+    .prism-editor__code {
       max-height: 200px;
-      width: 150px;
-      margin: 0 auto;
-
       .custom_scrollbar(8px, 5px, 6px, transparent, @c-blanc);
       overflow: auto;
       overscroll-behavior-y: contain;
-
-      pointer-events: auto;
     }
 
+    pre {
+      margin: 0;
+      border: 2px solid transparent;    
+      &:focus {
+        outline: 0;
+        border-color: @c-bleuvert;
+      }
+    }
   }
 
   .mediaContainer {

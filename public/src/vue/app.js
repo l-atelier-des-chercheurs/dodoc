@@ -20,6 +20,8 @@ Vue.prototype.$auth = auth;
 
 import locale_strings from './locale_strings.js';
 
+import 'prismjs';
+
 Vue.config.silent = false;
 Vue.config.devtools = true;
 

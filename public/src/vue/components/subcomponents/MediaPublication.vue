@@ -18,9 +18,9 @@
   > 
 
     <div class="m_mediaPublication--edit_styles"
-      v-if="show_edit_styles_window"
+      v-if="show_edit_styles_window && (is_selected || is_hovered)"
     >
-      <textarea v-model="custom_css" />
+      <PrismEditor v-model="custom_css" @change="setCSSForMedia" language="css" />
     </div>
 
     <MediaContent
@@ -110,6 +110,7 @@
 </template>
 <script>
 import MediaContent from './MediaContent.vue';
+import PrismEditor from 'vue-prism-editor'
 
 export default {
   props: {
@@ -120,7 +121,8 @@ export default {
     pixelsPerMillimeters: Number,
   },
   components: {
-    MediaContent
+    MediaContent,
+    PrismEditor
   },
   data() {
     return {
@@ -133,7 +135,7 @@ export default {
       is_touch: Modernizr.touchevents,
 
       custom_css: this.media.publi_meta.hasOwnProperty('custom_css') ? this.media.publi_meta.custom_css : '',
-      show_edit_styles_window: true,
+      show_edit_styles_window: false,
 
       limit_media_to_page: true,
 
@@ -223,6 +225,13 @@ export default {
       this.show_edit_styles_window = !this.show_edit_styles_window;
       // this.$eventHub.$emit('publication.setCSSEditWindow', this.media.publi_meta.metaFileName);
     },
+    setCSSForMedia(event) {
+      const val = {
+        custom_css: this.custom_css
+      };
+      this.$emit('editPubliMedia', { slugMediaName: this.media.publi_meta.metaFileName, val });
+    },
+    
 
     updateMediaStyles() {
       this.mediaPos.x = this.media.publi_meta.hasOwnProperty('x') && !!Number.parseInt(this.media.publi_meta.x) ? this.limitMediaXPos(Number.parseInt(this.media.publi_meta.x)) : this.page.margin_left;
@@ -230,6 +239,8 @@ export default {
       this.rotate = this.media.publi_meta.hasOwnProperty('rotate') ? this.media.publi_meta.rotate : 0;
       this.mediaSize.width = this.media.publi_meta.hasOwnProperty('width') && !!Number.parseInt(this.media.publi_meta.width) ? this.limitMediaWidth(Number.parseInt(this.media.publi_meta.width)) : 100;
       this.mediaSize.height = this.media.publi_meta.hasOwnProperty('height') && !!Number.parseInt(this.media.publi_meta.height) ? this.limitMediaHeight(Number.parseInt(this.media.publi_meta.height)) : 100;
+    
+      this.custom_css = this.media.publi_meta.hasOwnProperty('custom_css') ?  this.media.publi_meta.custom_css : this.custom_css;
     },
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === 'debug') {
