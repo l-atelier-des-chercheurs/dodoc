@@ -25,93 +25,81 @@
       <label for="settings">{{ $t('settings') }}</label>
     </div>
 
-    <div v-if="advanced_options">
-      <hr>
+    <div v-if="advanced_options" class="m_publicationview--settings">
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('name') }}</label>
-        <input class="input-large input-big" type="text" v-model="new_publiname" @change="updatePublicationOption($event, 'name')" required :readonly="read_only">
-      </div>
+      <template>
+        <hr>
 
-      <hr>
+        <div class="margin-bottom-small">
+          <label>{{ $t('name') }}</label>
+          <input class="input-large input-big" type="text" v-model="new_publiname" @change="updatePublicationOption($event, 'name')" required :readonly="read_only">
+        </div>
 
-      <!-- <div class="margin-bottom-small">
-        <label>{{ $t('format') }}</label>
-        <select v-model="new_template">
-          <option value="page_by_page">
-            {{ $t('page_by_page') }}
-          </option>
-          <option value="video_assemblage">
-            {{ $t('video_assemblage') }}
-          </option>
-          <option value="web" disabled>
-            {{ $t('web') }}
-          </option>
-        </select>
-      </div> -->
+        <hr>
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('template') }}</label>
-        <select v-model="new_style" @change="updatePublicationOption($event, 'style')">
-          <option value="standard">
-            {{ $t('standard') }}
-          </option>
-          <option value="feuille de choux">
-            {{ $t('feuille de choux') }}
-          </option>
-          <option value="human tech days">
-            {{ $t('human tech days') }}
-          </option>
-        </select>
-      </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('template') }}</label>
+          <select v-model="new_style" @change="updatePublicationOption($event, 'style')">
+            <option value="standard">
+              {{ $t('standard') }}
+            </option>
+            <option value="feuille de choux">
+              {{ $t('feuille de choux') }}
+            </option>
+            <option value="human tech days">
+              {{ $t('human tech days') }}
+            </option>
+          </select>
+        </div>
 
-      <hr>        
+        <hr>        
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('header_left') }}</label>
-        <input class="input-large" type="text" v-model="new_header_left" @change="updatePublicationOption($event, 'header_left')" :readonly="read_only">
-      </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('header_left') }}</label>
+          <input class="input-large" type="text" v-model="new_header_left" @change="updatePublicationOption($event, 'header_left')" :readonly="read_only">
+        </div>
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('header_right') }}</label>
-        <input class="input-large" type="text" v-model="new_header_right" @change="updatePublicationOption($event, 'header_right')" :readonly="read_only">
-      </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('header_right') }}</label>
+          <input class="input-large" type="text" v-model="new_header_right" @change="updatePublicationOption($event, 'header_right')" :readonly="read_only">
+        </div>
 
-      <hr>
+        <hr>
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('width') }}(mm)</label>
-        <input type="number" min="1" max="1000" step="1" v-model="new_width" @input="updatePublicationOption($event, 'width')">
-      </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('width') }}(mm)</label>
+          <input type="number" min="1" max="1000" step="1" v-model="new_width" @input="updatePublicationOption($event, 'width')">
+        </div>
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('height') }}(mm)</label>
-        <input type="number" min="1" max="1000" step="1" v-model="new_height" @input="updatePublicationOption($event, 'height')">
-      </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('height') }}(mm)</label>
+          <input type="number" min="1" max="1000" step="1" v-model="new_height" @input="updatePublicationOption($event, 'height')">
+        </div>
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('gridstep') }}(mm)</label>
-        <input type="number" min="2" max="100" step="1" v-model="new_gridstep" @input="updatePublicationOption($event, 'gridstep')">
-      </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('gridstep') }}(mm)</label>
+          <input type="number" min="2" max="100" step="1" v-model="new_gridstep" @input="updatePublicationOption($event, 'gridstep')">
+        </div>
 
-      <hr>
+        <hr>
 
-      <div class="margin-bottom-small">
-        <label>{{ $t('margin_top') }}(mm)</label>
-        <input type="number" min="0" max="100" step="1" v-model="new_margin_top" @input="updatePublicationOption($event, 'margin_top')">
-      </div>
-      <div class="margin-bottom-small">
-        <label>{{ $t('margin_bottom') }}(mm)</label>
-        <input type="number" min="0" max="100" step="1" v-model="new_margin_bottom" @input="updatePublicationOption($event, 'margin_bottom')">
-      </div>
-      <div class="margin-bottom-small">
-        <label>{{ $t('margin_left') }}(mm)</label>
-        <input type="number" min="0" max="100" step="1" v-model="new_margin_left" @input="updatePublicationOption($event, 'margin_left')">
-      </div>
-      <div class="margin-bottom-small">
-        <label>{{ $t('margin_right') }}(mm)</label>
-        <input type="number" min="0" max="100" step="1" v-model="new_margin_right" @input="updatePublicationOption($event, 'margin_right')">
-      </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('margin_top') }}(mm)</label>
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_top" @input="updatePublicationOption($event, 'margin_top')">
+        </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('margin_bottom') }}(mm)</label>
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_bottom" @input="updatePublicationOption($event, 'margin_bottom')">
+        </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('margin_left') }}(mm)</label>
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_left" @input="updatePublicationOption($event, 'margin_left')">
+        </div>
+        <div class="margin-bottom-small">
+          <label>{{ $t('margin_right') }}(mm)</label>
+          <input type="number" min="0" max="100" step="1" v-model="new_margin_right" @input="updatePublicationOption($event, 'margin_right')">
+        </div>
+      </template>
     </div>
 
 

@@ -2896,29 +2896,6 @@ small {
   align-content: flex-start;
   align-items: baseline;
 
-  > *:not(hr):not(h4) {
-    flex: 1 0 120px;
-    .margin-small;
-
-    input:not(.input-large) {
-      // max-width: 220px;
-    }
-    input.input-large {
-    }
-    input[type="range"] {
-      max-width: 320px;
-    }
-  }
-  > hr, > h4 {
-    flex: 1 0 100%;
-    .margin-sides-small;
-  }
-
-  hr {
-    opacity: 0;
-    margin: 0; padding: 0;
-  }
-
   > .buttonLink {
     flex: 0 0 0;
   }
@@ -2929,7 +2906,6 @@ small {
     flex-flow: row wrap;
     align-content: flex-start;
     align-items: center;
-
     > * {
       .margin-small;
       &:last-child {
@@ -3032,6 +3008,42 @@ small {
         padding: 9px;
       }
     }
+  }
+
+  .m_publicationview--settings {
+    .bg-blanc;
+    .padding-small;
+    border-radius: 4px;
+
+    display: flex;
+    flex-flow: row wrap;
+    align-content: flex-start;
+    align-items: center;
+
+    > *:not(hr):not(h4) {
+      flex: 1 0 120px;
+      .margin-small;
+  
+      input:not(.input-large) {
+        // max-width: 220px;
+      }
+      input.input-large {
+      }
+      input[type="range"] {
+        max-width: 320px;
+      }
+    }
+    > hr, > h4 {
+      flex: 1 0 100%;
+      .margin-sides-small;
+    }
+  
+    hr {
+      opacity: 0;
+      margin: 0; padding: 0;
+    }
+  
+  
   }
 
   .m_publicationview--pages {
