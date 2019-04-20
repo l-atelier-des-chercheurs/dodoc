@@ -189,13 +189,10 @@ export default {
   },
   mounted() {
     this.updateMediaStyles();
-    this.$parent.$on('newMediaSelected', (mediaID) => {
-      if(mediaID !== this.mediaID) {
-        this.is_selected = false;   
-      }      
-    });
+    this.$eventHub.$on('publication.newMediaSelected', this.newMediaSelected);
   },
   beforeDestroy() {
+    this.$eventHub.$off('publication.newMediaSelected', this.newMediaSelected);
   },
 
   watch: {
@@ -212,7 +209,7 @@ export default {
       if(this.is_selected) {
         window.addEventListener('mousedown', this.deselectMedia);      
         window.addEventListener('touchstart', this.deselectMedia); 
-        this.$emit('selected', this.mediaID);  
+        this.$eventHub.$emit('publication.newMediaSelected', this.mediaID);  
       } else {
         window.removeEventListener('mousedown', this.deselectMedia);      
         window.removeEventListener('touchstart', this.deselectMedia);              
@@ -231,6 +228,14 @@ export default {
     },
   },
   methods: {
+    newMediaSelected(mediaID) {
+      if(mediaID !== this.mediaID) {
+        this.is_selected = false;   
+      }
+    },
+    textIsOverflowing(el) {
+      return (el.offsetHeight + 15 < el.scrollHeight);
+    },
     toggleEditWindow() {
       this.show_edit_styles_window = !this.show_edit_styles_window;
       // this.$eventHub.$emit('publication.setCSSEditWindow', this.media.publi_meta.metaFileName);

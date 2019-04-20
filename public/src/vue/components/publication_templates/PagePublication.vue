@@ -287,7 +287,6 @@
                     :pixelsPerMillimeters="pixelsPerMillimeters"
                     @removePubliMedia="values => { removePubliMedia(values) }"
                     @editPubliMedia="values => { editPubliMedia(values) }"
-                    @selected="newSelection"
                     @unselected="noSelection"
                   />
                 </div>
@@ -787,10 +786,6 @@ export default {
       this.new_margin_bottom = this.publications_options.margin_bottom;
       this.new_header_left = this.publications_options.header_left;
       this.new_header_right = this.publications_options.header_right;
-    },
-    newSelection(mediaID) {
-      this.has_media_selected = true;
-      this.$emit('newMediaSelected', mediaID);
     },
     noSelection() {
       this.has_media_selected = false;
