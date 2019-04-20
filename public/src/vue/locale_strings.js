@@ -43,7 +43,9 @@ module.exports = (function() {
         'Ajoutez plusieurs médias <b>vidéo</b> pour créer une vidéo.',
       add_multiple_images:
         'Ajoutez plusieurs médias <b>image</b> pour créer une vidéo.',
-      style: 'CSS',
+      style: 'style',
+      write_some_CSS_code_for_example:
+        'Écrivez ici du code CSS, <br>par exemple <code>color: blue;</code>',
 
       bytes: 'octets',
       kb: 'ko',
@@ -546,7 +548,9 @@ module.exports = (function() {
         'Add multiple <b>video</b> medias to create a new video.',
       add_multiple_images:
         'Add multiple <b>image</b> medias to create a video.',
-      style: 'CSS',
+      style: 'style',
+      write_some_CSS_code_for_example:
+        'Write here some CSS code, <br>for example <code>color: blue;</code>',
 
       last_modified: 'Last modified',
       remote_access: 'Acces from other devices',

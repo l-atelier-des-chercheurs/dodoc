@@ -20,6 +20,14 @@
     <div class="m_mediaPublication--edit_styles"
       v-if="show_edit_styles_window && (is_selected || is_hovered)"
     >
+      <button type="button" class="m_mediaPublication--edit_styles--helpButton"
+        :title="$t('write_some_CSS_code_for_example')"
+        v-tippy='{ 
+          delay: [600, 0]
+        }'                  
+      >
+        ?
+      </button>
       <PrismEditor v-model="custom_css" @change="setCSSForMedia" language="css" />
     </div>
 
@@ -87,7 +95,7 @@
         @touchstart.prevent.stop="toggleEditWindow()"
         :class="{ 'is--active' : show_edit_styles_window }"
       >
-        {{ $t('style') }}
+        {{ $t('css') }}<sup v-if="custom_css">*</sup>
       </button>
       <button 
         type="button" 
@@ -110,7 +118,8 @@
 </template>
 <script>
 import MediaContent from './MediaContent.vue';
-import PrismEditor from 'vue-prism-editor'
+import PrismEditor from 'vue-prism-editor';
+import debounce from 'debounce';
 
 export default {
   props: {
@@ -165,6 +174,7 @@ export default {
         angle: 0
       },
       rotate: 0,
+      debounce_setCSSForMedia: undefined,
 
       mediaSize: {
         width: 0,
@@ -226,13 +236,14 @@ export default {
       // this.$eventHub.$emit('publication.setCSSEditWindow', this.media.publi_meta.metaFileName);
     },
     setCSSForMedia(event) {
-      const val = {
-        custom_css: this.custom_css
-      };
-      this.$emit('editPubliMedia', { slugMediaName: this.media.publi_meta.metaFileName, val });
+      if (this.debounce_setCSSForMedia) clearTimeout(this.debounce_setCSSForMedia); 
+      this.debounce_setCSSForMedia = setTimeout(() => {
+        const val = {
+          custom_css: this.custom_css
+        };
+        this.$emit('editPubliMedia', { slugMediaName: this.media.publi_meta.metaFileName, val });
+      }, 500);
     },
-    
-
     updateMediaStyles() {
       this.mediaPos.x = this.media.publi_meta.hasOwnProperty('x') && !!Number.parseInt(this.media.publi_meta.x) ? this.limitMediaXPos(Number.parseInt(this.media.publi_meta.x)) : this.page.margin_left;
       this.mediaPos.y = this.media.publi_meta.hasOwnProperty('y') && !!Number.parseInt(this.media.publi_meta.y) ? this.limitMediaYPos(Number.parseInt(this.media.publi_meta.y)) : this.page.margin_top;

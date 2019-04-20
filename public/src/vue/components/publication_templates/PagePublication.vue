@@ -290,6 +290,7 @@
 
               <div class="m_page--header"
                 :style="customCSSVars"
+                v-if="!!page.header_left || !!page.header_right"
               >
                 <div>
                   {{ page.header_left }}

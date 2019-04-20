@@ -2815,6 +2815,7 @@ small {
 .m_recipes--recipe--mealList--meal {
   font-size: inherit;
   text-transform: initial;
+  cursor: pointer;
 
   .bg-blanc;
   // .margin-sides-small;
@@ -3300,13 +3301,31 @@ small {
     bottom: 100%;
     left: 50%;
     transform: translate(-50%, 0);
+    margin: 0 auto;
     .padding-verysmall;
     max-width: 300px;
     min-width: 200px;
     width: 100%;
     height: auto;
 
+    > .m_mediaPublication--edit_styles--helpButton {
+      position: absolute;
+      top: .7em;
+      right: .5em;
+      color: @c-gris_clair;
+      z-index: 1;
+      background-color: transparent;
+      min-height: 0;
+      min-width: 0;
+      height: 1em;
+      width: 1em;
+      display: block;
+      line-height: 0;
+      padding: 0;
+    }
+
     .prism-editor__code {
+      min-height: 3.5em;
       max-height: 200px;
       .custom_scrollbar(8px, 5px, 6px, transparent, @c-blanc);
       overflow: auto;
@@ -3315,10 +3334,10 @@ small {
 
     pre {
       margin: 0;
-      border: 2px solid transparent;    
+      border: 3px solid transparent;    
       &:focus {
         outline: 0;
-        border-color: @c-bleuvert;
+        border-color: @c-orange;
       }
     }
   }
@@ -3680,6 +3699,10 @@ small {
 .tippy-tooltip {
   background: @c-rouge;
   color: white;
+
+  code {
+    font-family: 'Fira Code';
+  }
 }
 
 
