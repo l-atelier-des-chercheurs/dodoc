@@ -22,6 +22,7 @@ module.exports = (function() {
       author: 'Auteur(s)',
       download: 'Télécharger',
       caption: 'Légende',
+      formatting: 'Mise en forme',
       smoothing: 'Lissage',
       onion_skin: 'Pelure d’oignon',
       'file:': 'Fichier&nbsp;:',
@@ -33,6 +34,8 @@ module.exports = (function() {
 
       cooking_pot: 'La marmite',
       text_overflow: 'Texte en excès',
+      move_to_foreground: 'Mettre au premier plan',
+      move_to_background: 'Mettre à l’arrière plan',
       show_all: 'Tout afficher',
       cooking_pot_instructions:
         'Mélangez des médias pour en créer des nouveaux !',
@@ -334,6 +337,7 @@ module.exports = (function() {
       share: 'Share',
       download: 'Download',
       caption: 'Caption',
+      formatting: 'Formatting',
 
       login: 'Login',
       help: 'Help',
@@ -349,6 +353,8 @@ module.exports = (function() {
 
       cooking_pot: 'Cooking pot',
       text_overflow: 'Overflow text',
+      move_to_foreground: 'Move to foreground',
+      move_to_background: 'Move to background',
       show_all: 'Show all',
       cooking_pot_instructions:
         'Mix a single or multiple medias to create new medias!',

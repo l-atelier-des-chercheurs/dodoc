@@ -104,7 +104,43 @@
     >
       <button 
         type="button" 
-        class="buttonLink" 
+        class="buttonLink _no_underline" 
+        @click.prevent.stop="editZIndex(+1)"
+        @touchstart.prevent.stop="editZIndex(+1)"
+        :title="$t('move_to_foreground') + '<br>' + 'z-index: ' + mediaZIndex"
+        v-tippy='{ 
+          placement : "top",
+          delay: [600, 0]
+        }'                        
+      >
+        <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40.3px"
+          height="59.6px" viewBox="0 0 40.3 59.6" style="enable-background:new 0 0 40.3 59.6;" xml:space="preserve">
+          <path class="st0" d="M35,24.4l-4.6-4.2c-2.7-2.5-4.8-4.7-6.4-7.3l0,46.7l-7.7,0l0-46.6c-1.7,2.5-3.8,4.7-6.4,7.1l-4.6,4.2L0,18.1
+            L20.2,0l20.2,18.1L35,24.4z"/>
+        </svg>
+      </button>
+
+      <button 
+        type="button" 
+        class="buttonLink _no_underline" 
+        @click.prevent.stop="editZIndex(-1)"
+        @touchstart.prevent.stop="editZIndex(-1)"
+        :title="$t('move_to_background') + '<br>' + 'z-index: ' + mediaZIndex"
+        v-tippy='{ 
+          placement : "top",
+          delay: [600, 0]
+        }'                        
+      >
+        <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40.3px"
+          height="59.6px" viewBox="0 0 40.3 59.6" style="enable-background:new 0 0 40.3 59.6;" xml:space="preserve">
+          <path class="st0" d="M5.3,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7L24,0l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2
+            L20.2,59.6L0,41.5L5.3,35.2z"/>
+        </svg>
+      </button>
+
+      <button 
+        type="button" 
+        class="buttonLink _no_underline" 
         @click.prevent.stop="toggleEditWindow()"
         @touchstart.prevent.stop="toggleEditWindow()"
         :class="{ 'is--active' : show_edit_styles_window }"
@@ -113,7 +149,7 @@
       </button>
       <button 
         type="button" 
-        class="buttonLink" 
+        class="buttonLink _no_underline"
         @click.prevent.stop="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
         @touchstart.prevent.stop="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
       >
@@ -122,15 +158,19 @@
           <path class="st0" d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
             L19.1,91.5z"/>
         </svg>
-        {{ $t('edit') }}
+        <!-- {{ $t('edit') }} -->
       </button>
       <button 
         type="button" 
-        class="buttonLink" 
+        class="buttonLink _no_underline" 
         @click.prevent.stop="removePubliMedia()"
         @touchstart.prevent.stop="removePubliMedia()"
       >
-        {{ $t('withdraw') }}
+        <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="37.2px"
+          height="37.2px" viewBox="0 0 37.2 37.2" style="enable-background:new 0 0 37.2 37.2;" xml:space="preserve">
+          <polygon class="st0" points="37.2,30.6 30.6,37.2 18.6,25.2 6.6,37.2 0,30.6 12,18.6 0,6.6 6.6,0 18.6,12 30.6,0 37.2,6.6 
+          25.2,18.6 "/>
+        </svg>
       </button>
     </div>
   </div>
@@ -202,6 +242,8 @@ export default {
         pwidth: 0,
         pheight: 0
       },
+
+      mediaZIndex: 0
     }
   },
   
@@ -242,6 +284,7 @@ export default {
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
         height: ${this.mediaSize.height}mm;
+        z-index: ${this.mediaZIndex};
       `;
       return mediaStyles;
       ;
@@ -256,6 +299,11 @@ export default {
       if(mediaID !== this.mediaID) {
         this.is_selected = false;   
       }
+    },
+    editZIndex(val) {
+      this.updateMediaPubliMeta({ 
+        z_index: this.mediaZIndex + val
+      });
     },
     setMediaHeightToContent() {
       const el = this.$refs.media;
@@ -290,7 +338,8 @@ export default {
       this.mediaSize.width = this.media.publi_meta.hasOwnProperty('width') && !!Number.parseInt(this.media.publi_meta.width) ? this.limitMediaWidth(Number.parseInt(this.media.publi_meta.width)) : 100;
       this.mediaSize.height = this.media.publi_meta.hasOwnProperty('height') && !!Number.parseInt(this.media.publi_meta.height) ? this.limitMediaHeight(Number.parseInt(this.media.publi_meta.height)) : 100;
       this.custom_css = this.media.publi_meta.hasOwnProperty('custom_css') ?  this.media.publi_meta.custom_css : this.custom_css;
-    
+      this.mediaZIndex = this.media.publi_meta.hasOwnProperty('z_index') ? this.media.publi_meta.z_index : 0;
+
       if(this.media.type) {
         this.$nextTick(() => {
           const el = this.$refs.media;
