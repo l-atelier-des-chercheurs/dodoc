@@ -14,6 +14,7 @@ module.exports = dev = (function() {
     logpackets: logpackets,
     logfunction: logfunction,
     error: error,
+    performance: performance,
     isDebug: () => isDebugMode
   };
 
@@ -90,6 +91,14 @@ module.exports = dev = (function() {
 
     _sendToLogFile(logArgs);
     _sendToConsole(logArgs, gutil.colors.red);
+  }
+
+  function performance() {
+    var args = Array.prototype.slice.call(arguments);
+    var logArgs = '% '.concat(args);
+
+    _sendToLogFile(logArgs);
+    _sendToConsole(logArgs, gutil.colors.yellow);
   }
 
   function _sendToLogFile(logArgs) {}

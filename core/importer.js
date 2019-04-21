@@ -1,4 +1,5 @@
-const formidable = require('formidable');
+const formidable = require('formidable'),
+  path = require('path');
 
 const api = require('./api'),
   file = require('./file'),
@@ -22,7 +23,10 @@ module.exports = (function() {
         let socketid = '';
 
         // store all uploads in the folder directory
-        form.uploadDir = api.getFolderPath(slugFolderName);
+        let slugFolderPath = api.getFolderPath(
+          path.join(global.settings.structure[type].path, slugFolderName)
+        );
+        form.uploadDir = slugFolderPath;
 
         let allFilesMeta = [];
 

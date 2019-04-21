@@ -471,6 +471,9 @@ strong,b {
 .margin-right-medium {
   margin-right: @t-skipline;
 }
+.margin-top-medium {
+  margin-top: @t-skipline;
+}
 .margin-top-small {
   margin-top: @t-skipline/2;
 }
@@ -497,6 +500,10 @@ strong,b {
 .margin-vert-verylarge {
   margin-top: @t-skipline*4;
   margin-bottom: @t-skipline*4;
+}
+
+.rounded {
+  border-radius: 4px;  
 }
 
 .padding-none {
@@ -569,6 +576,9 @@ strong,b {
 .padding-left-verysmall {
   padding-left:   @t-skipline/4;
 }
+.padding-right-verysmall {
+  padding-right:   @t-skipline/4;
+}
 .padding-right-small {
   padding-left:   @t-skipline/2;
 }
@@ -606,7 +616,7 @@ h1,h2,h3,h4 {
 }
 
 
-.custom_scrollbar(@scrollbar-height, @scrollbar-padding, @scrollbar-border, @c-barbgcolor: transparent) {
+.custom_scrollbar(@scrollbar-height, @scrollbar-padding, @scrollbar-border, @c-barbgcolor: transparent, @c-thumbcolor: @c-noir) {
   
   &::-webkit-scrollbar {
     height: ((@scrollbar-padding * 2) + @scrollbar-height);
@@ -628,7 +638,7 @@ h1,h2,h3,h4 {
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: @c-noir;
+    background-color: @c-thumbcolor;
     &:hover {
       background-color: @c-gris;
       border: @scrollbar-border solid rgba(255,255,255,0);

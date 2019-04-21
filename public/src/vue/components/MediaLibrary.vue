@@ -5,25 +5,57 @@
         <button type="button" class="barButton barButton_capture" 
           v-if="((project.password === 'has_pass') || project.password !== 'has_pass')"
           @click="openCapture"
-          :disabled="read_only"
+          :disabled="read_only || is_iOS_device"
         >
           <span>    
             {{ $t('capture') }}
           </span>
         </button>
 
-        <button type="button" class="barButton barButton_import" 
+        <label
           v-if="((project.password === 'has_pass') || project.password !== 'has_pass')"
-          @click="showImportModal = true"
-        ><span>    
-          {{ $t('import') }}
-        </span></button>
+          :key="`add_${field.key}`"
+          class="barButton barButton_import button" 
+          v-for="field in input_file_fields"
+          :disabled="read_only"
+          :for="`add_${field.key}`"
+        >
+          <span>
+            {{ field.label }}
+            <!-- <div v-html="field.svg" /> -->
+          </span>
+          <input 
+            type="file" 
+            multiple 
+            :id="`add_${field.key}`" 
+            :name="field.key" 
+            @change="updateInputFiles($event)"
+            :accept="field.accept"
+            :capture="field.capture"
+            style="width: 1px; height: 1px; overflow: hidden;"
+          >
+        </label>
+
+        <transition name="fade_fast" :duration="150">
+          <div 
+            v-if="!read_only && show_drop_container"
+            @drop="dropHandler($event)"
+            class="_drop_indicator"
+          >
+            <div>
+              <img src="/images/i_importer.svg">
+              <label>{{ $t('drop_here_to_import') }}</label> 
+            </div>
+          </div>
+        </transition>
+
         <UploadFile
-          v-if="showImportModal"
-          @close="showImportModal = false"
+          v-if="selected_files.length > 0"
+          @close="selected_files = []"
+          :read_only="read_only"
           :slugFolderName="slugProjectName"
           :type="'projects'"
-          :read_only="read_only"
+          :selected_files="selected_files"
         />
 
         <button type="button" class="barButton barButton_text" 
@@ -65,9 +97,11 @@
       </div>
     </div>
 
+
     <transition-group
       class="m_project--library--medias"
       name="list-complete"
+      v-if="selected_files.length === 0"
     >
       <MediaCard
         v-for="media in sortedMedias"
@@ -85,6 +119,7 @@ import UploadFile from './modals/UploadFile.vue';
 import MediaCard from './subcomponents/MediaCard.vue';
 import TagsAndAuthorFilters from './subcomponents/TagsAndAuthorFilters.vue';
 import { setTimeout } from 'timers';
+import debounce from 'debounce';
 
 export default {
   props: {
@@ -104,28 +139,50 @@ export default {
         type: 'date',
         order: 'descending'
       },
-      showImportModal: false,
-      show_filters: false
+      selected_files: [],
+      is_iOS_device: !!window.navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform),
+      show_filters: false,
+
+      show_drop_container: false,
+
+      input_file_fields: [
+        {
+          key: 'file',
+          label: 'Importer',
+          accept: '',
+          capture: false,
+          svg: `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+              <path d="M20.89,12v4.63a1,1,0,0,0,1,1h4.63V28h-13V12h7.4m1-1H12.5V29h15V16.62H21.88V11Z" style="fill: #fff"/>
+              <line x1="27" y1="17.12" x2="21.38" y2="11.5" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.9900837817656861px"/>
+            </svg>
+          `
+        },
+      ]
     }
   },
   mounted() {
     if(this.$root.settings.media_filter.keyword || this.$root.settings.media_filter.author) {
       this.show_filters = true;
     }
-  },
-  created() {
-    // document.addEventListener('dragover', this.fileDragover);
+    document.addEventListener('dragover', this.ondragover);
+
+    this.cancelDragOver = debounce(this.cancelDragOver, 300);
     this.$eventHub.$on('modal.prev_media', this.prevMedia);
     this.$eventHub.$on('modal.next_media', this.nextMedia);
   },
+  created() {
+  },
   beforeDestroy() {
-    // document.removeEventListener('dragover', this.fileDragover);
     this.$root.settings.media_filter.author = false;
     this.$root.settings.media_filter.keyword = false;
     this.$root.settings.media_filter.fav = false;
     
     this.$eventHub.$off('modal.prev_media', this.prevMedia);
     this.$eventHub.$off('modal.next_media', this.nextMedia);
+
+    document.addEventListener('dragover', this.ondragover);
+
   },
   watch: {
   },
@@ -217,9 +274,6 @@ export default {
     }    
   },
   methods: {
-    fileDragover() {
-      this.showImportModal = true;
-    },
     prevMedia() {
       this.mediaNav(-1);
     },
@@ -261,25 +315,60 @@ export default {
       }
     },
     openCapture() {
-      const iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
-      if(iOS) {
-        this.showImportModal = true;
+      // const iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+      // if(iOS) {
+      //   this.showImportModal = true;
 
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(8000)
-          .error(this.$t('notifications.ios_not_compatible_with_capture'));
-        setTimeout(() => {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(8000)
-            .log(this.$t('notifications.instead_import_with_this_button'));
-        },1500);
+      //   this.$alertify
+      //     .closeLogOnClick(true)
+      //     .delay(8000)
+      //     .error(this.$t('notifications.ios_not_compatible_with_capture'));
+      //   setTimeout(() => {
+      //     this.$alertify
+      //       .closeLogOnClick(true)
+      //       .delay(8000)
+      //       .log(this.$t('notifications.instead_import_with_this_button'));
+      //   },1500);
 
-        return;
-      }
-      
+      //   return;
+      // }
       this.$root.do_navigation.view = 'CaptureView';
+    },
+    updateInputFiles($event) {
+      if (this.$root.state.dev_mode === 'debug') { console.log(`METHODS • AddMedia / updateSelectedFiles`); }
+      this.selected_files = Array.from($event.target.files); 
+      $event.target.value = '';
+    },
+    ondragover() {
+      if (this.$root.state.dev_mode === 'debug') { console.log(`METHODS • AddMedia / ondragover`); }
+
+      this.show_drop_container = true;
+      this.cancelDragOver();
+    },
+    cancelDragOver() {
+      if (this.$root.state.dev_mode === 'debug') { console.log(`METHODS • AddMedia / cancelDragOver`); }
+      this.show_drop_container = false;
+    },
+    dropHandler($event) {
+      if (this.$root.state.dev_mode === 'debug') { console.log(`METHODS • AddMedia / dropHandler`); }
+
+      // Prevent default behavior (Prevent file from being opened)
+      $event.preventDefault();
+
+      if ($event.dataTransfer.items) {
+        let files = [];
+        for (var i = 0; i < $event.dataTransfer.items.length; i++) {
+          if ($event.dataTransfer.items[i].kind === 'file') {
+            files.push($event.dataTransfer.items[i].getAsFile());
+          }
+        }
+        this.selected_files = files;
+      } else {
+        for (var i = 0; i < $event.dataTransfer.files.length; i++) {
+          this.selected_files = Array.from($event.dataTransfer.files); 
+        }
+      }
+
     }
   }
 }

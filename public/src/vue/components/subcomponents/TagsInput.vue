@@ -7,6 +7,7 @@
       :key="tag.text"
       @click="removeTag(tag.text)"
       class="can_be_removed"
+      :class="['tagcolorid_' + parseInt(tag.text, 36)%2 ]"
     >
       {{ tag.text }}
     </button>
@@ -68,7 +69,6 @@ export default {
         return [];
       }
       const fitting_keywords = this.$root.allKeywords.filter(i => new RegExp(this.tag, 'i').test(i.text) && !this.tags.find(t => t.text === i.text));
-      debugger;
       return fitting_keywords.slice(0, 2);
       // return fitting_keywords;
       // return this.$root.allKeywords.filter(i => i.text.toLowerCase().startsWith(this.tag.toLowerCase()) && !this.tags.find(t => t.text === i.text));
