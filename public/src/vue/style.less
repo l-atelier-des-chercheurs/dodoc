@@ -528,12 +528,14 @@ body {
   }
 
   .m_authorsList--author {
+    position: relative;
     .padding-sides-verysmall;
     .padding-vert-small;
     .bg-gris_tresclair;
     border-radius: @t-buttonradius;
     text-align: center;
     font-weight:200;
+    text-transform: initial;
 
     display: flex;
     flex-flow: column wrap;
@@ -556,6 +558,12 @@ body {
       .font-large;
     }
 
+    .m_authorsList--author--removeButton {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+
     img {
       display: inline-block;
       width: 100px;
@@ -563,11 +571,6 @@ body {
       border-radius:50%;
       object-fit: cover;
       .margin-vert-small;
-    }
-    span {
-      display: block;
-      .padding-sides-small;
-      .font-large;
     }
 
     hr {

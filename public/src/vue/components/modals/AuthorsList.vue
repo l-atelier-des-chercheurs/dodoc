@@ -40,28 +40,36 @@
           </div>
 
           <template v-if="Object.keys(sortedAuthors).length > 0">
-            <div type="button" 
+            <button type="button" 
               v-for="author in sortedAuthors" 
               :key="author.slugFolderName" 
               class="m_authorsList--author"
               :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"
               @click="setAuthor(author)"
             >
+              <button type="button" class="buttonLink m_authorsList--author--removeButton" @click.stop="removeAuthor(author)">
+                <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="91.6px"
+                  height="95px" viewBox="0 0 91.6 95" style="enable-background:new 0 0 91.6 95;" xml:space="preserve">
+                  <path class="st0" d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
+                  l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"/>
+                </svg>
+                <span class="" style="display: none">
+                  {{ $t('remove') }}
+                </span>
+              </button>
+
               <img 
                 v-if="!!author.preview"
                 width="100" height="100"
                 :src="urlToPortrait(author.slugFolderName, author.preview)" >
               <div class="m_authorsList--author--name">{{ author.name }}</div>
-              <button type="button" class="buttonLink" @click.stop="setAuthor(author)" v-if="author.name !== $root.settings.current_author.name">
+              <!-- <button type="button" class="buttonLink" @click.stop="setAuthor(author)" v-if="author.name !== $root.settings.current_author.name">
                 {{ $t('select') }}
-              </button>
+              </button> -->
               <button type="button" class="buttonLink" @click.stop="unsetAuthor()" v-if="author.name === $root.settings.current_author.name">
                 {{ $t('unselect') }}
               </button>
-              <button type="button" class="buttonLink" @click.stop="removeAuthor(author)">
-                {{ $t('remove') }}
-              </button>
-            </div>
+            </button>
           </template>
 
         </transition-group>

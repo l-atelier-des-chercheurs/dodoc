@@ -18,6 +18,7 @@ module.exports = (function() {
       type: 'Type',
       color: 'Couleur',
       keywords: 'Mots-clés',
+      share: 'Partage',
       author: 'Auteur(s)',
       download: 'Télécharger',
       caption: 'Légende',
@@ -328,6 +329,7 @@ module.exports = (function() {
       color: 'Color',
       keywords: 'Keywords',
       author: 'Author(s)',
+      share: 'Share',
       download: 'Download',
       caption: 'Caption',
 
