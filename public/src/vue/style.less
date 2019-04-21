@@ -2943,7 +2943,7 @@ small {
   width: 100%;
   display: flex;
   justify-content: center;
-  .padding-vert-small;
+  // .padding-vert-small;
   .font-verysmall;
   .c-gris;
 
@@ -3061,6 +3061,7 @@ small {
   }
 
   .m_publicationview--pages {
+    .padding-vert-small;
     > * {
       // .margin-sides-medium;
     }
@@ -3069,6 +3070,7 @@ small {
   .m_publicationview--pages--pageContainer {
     position: relative;
     margin: @t-skipline auto;
+    margin: auto;
     transition: all .2s;
 
     &.is--active {
@@ -4021,6 +4023,9 @@ small {
 **********************************************************/
 
 body[data-mode="export_publication"] {
+  .m_publicationview--pages {
+    padding: 0 !important;
+  }
 
   .m_publicationview--pages--pageContainer {
     width: auto !important;
@@ -4125,6 +4130,7 @@ body[data-mode="export_publication"] {
   }
   .m_publicationview--pages {
     display: block !important;
+    padding: 0 !important;
     -webkit-print-color-adjust: exact;
     > * {
       page-break-before: always;

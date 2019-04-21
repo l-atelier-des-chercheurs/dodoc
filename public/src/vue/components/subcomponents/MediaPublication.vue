@@ -19,7 +19,7 @@
   > 
 
     <MediaContent
-      :context="preview_mode ? 'publication' : 'preview'"
+      :context="preview_mode ? 'full' : 'preview'"
       :slugFolderName="media.slugProjectName"
       :media="media"
       :read_only="read_only"

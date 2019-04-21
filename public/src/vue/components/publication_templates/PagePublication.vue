@@ -219,7 +219,7 @@
             v-if="$root.state.mode !== 'export_publication' && pageNumber === 0"   
           >
             <button type="button" class="buttonLink" @click="insertPageAtIndex(pageNumber)">
-              {{ $t('insert_a_page_here') }}
+              {{ $t('add_a_page_before') }}
             </button>
           </div>
 
@@ -290,7 +290,7 @@
             v-if="$root.state.mode !== 'export_publication'"   
           >
             <button type="button" class="buttonLink" @click="insertPageAtIndex(pageNumber + 1)">
-              {{ $t('insert_a_page_here') }}
+              {{ $t('add_a_page_here') }}
             </button>
             <button type="button" class="buttonLink" @click="removePageAtIndex(pageNumber)">
               {{ $t('remove_this_page') }}

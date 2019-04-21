@@ -182,7 +182,10 @@ export default {
       return this.available_resolutions.preview_hovered;
     },
     linkToImageThumb: function() {
-      if(!this.media.hasOwnProperty('thumbs')) {
+      if(
+        !this.media.hasOwnProperty('thumbs')
+        || this.context === 'full'      
+      ) {
         return this.mediaURL;
       }
       
@@ -205,7 +208,10 @@ export default {
       return url;
     },
     imageSrcSetAttr: function() {
-      if (this.element_width_for_sizes === 0 || this.mediaURL.toLowerCase().endsWith('.gif')) {
+      if (this.element_width_for_sizes === 0 
+        || this.mediaURL.toLowerCase().endsWith('.gif')
+        || this.context === 'full'
+      ) {
         return;
       }
       

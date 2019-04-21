@@ -105,6 +105,9 @@ module.exports = (function() {
       add_to_publication: 'Ajouter à la publication',
       add_a_page: 'Ajouter une page',
       insert_a_page_here: 'Insérer une page ici',
+      add_a_page_before: 'Ajouter une page avant celle-ci',
+      add_a_page_after: 'Ajouter une page après celle-ci',
+      add_a_page_here: 'Ajouter une page ici',
       remove_this_page: '▲ Supprimer cette page ▲',
 
       anonymous: 'anonyme',
@@ -400,6 +403,9 @@ module.exports = (function() {
       add_to_publication: 'Add to publication',
       add_a_page: 'Add a page',
       insert_a_page_here: 'Insert a page here',
+      add_a_page_before: 'Add a page before this one',
+      add_a_page_after: 'Add a page after this one',
+      add_a_page_here: 'Add a page here',
       remove_this_page: '▲ Remove this page ▲',
 
       anonymous: 'anonymous',
