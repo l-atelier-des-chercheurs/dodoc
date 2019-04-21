@@ -16,7 +16,7 @@
 <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('name') }}</label>
-        <input class="input-big" type="text" v-model="publidata.name" required :readonly="read_only">
+        <input class="input-big" type="text" v-model="publidata.name" required autofocus :readonly="read_only">
       </div>
 
 <!-- Preview -->
