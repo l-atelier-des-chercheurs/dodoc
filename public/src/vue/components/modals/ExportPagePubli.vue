@@ -54,6 +54,7 @@
             <AddCreationToProject
               v-if="link_to_pdf !== false"
               :media_filename="exported_pdf_name"
+              @close="$emit('close')"
             />
           </div>
         </div>    

@@ -68,6 +68,12 @@ export default {
           type: 'projects'
         }
       });
+
+      this.$root.closeProject();
+      this.$nextTick(() => {
+        this.$root.openProject(this.upload_to_folder);
+        this.$emit('close');
+      });
     }
   }
 }

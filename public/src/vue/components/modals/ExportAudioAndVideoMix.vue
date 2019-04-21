@@ -26,7 +26,6 @@
             </template>
             <template v-else-if="video_request_status === 'generated'">
               {{ $t('video_created') }}
-
             </template>
           </button>
           
@@ -48,6 +47,7 @@
               <AddCreationToProject
                 v-if="exported_video_name !== false"
                 :media_filename="exported_video_name"
+                @close="$emit('close')"
               />
 
             </div>

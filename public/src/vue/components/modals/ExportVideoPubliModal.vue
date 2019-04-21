@@ -48,6 +48,7 @@
               <AddCreationToProject
                 v-if="exported_video_name !== false"
                 :media_filename="exported_video_name"
+                @close="$emit('close')"
               />
 
             </div>
