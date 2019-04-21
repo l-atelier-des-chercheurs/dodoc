@@ -110,7 +110,7 @@
               <div style="position: relative; height: 100%; overflow: hidden">
                 <transition name="ListView" :duration="500">
                   <Publications
-                    v-if="$root.settings.show_publi_panel && !$root.settings.current_publication.slug"
+                    v-if="$root.settings.show_publi_panel"
                     :publications="$root.store.publications"
                     :read_only="!$root.state.connected"
                   />

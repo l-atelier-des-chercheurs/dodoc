@@ -18,36 +18,28 @@
     >
     </ExportModal>
 
-    <div class="margin-small"
-      v-if="$root.state.mode !== 'export_publication' && $root.state.mode !== 'print_publication'"
-    >
-      <input id="settings" type="checkbox" v-model="advanced_options" />
-      <label for="settings">{{ $t('settings') }}</label>
-    </div>
+    <div class="m_publicationview--settings">
 
-    <div v-if="advanced_options" class="m_publicationview--settings">
+      <div class=""
+        v-if="$root.state.mode !== 'export_publication' && $root.state.mode !== 'print_publication'"
+      >
+        <input id="settings" type="checkbox" v-model="advanced_options" />
+        <label for="settings">{{ $t('settings') }}</label>
+      </div>
 
-      <template>
+      <template v-if="advanced_options" >
         <hr>
-
-        <div class="margin-bottom-small">
-          <label>{{ $t('name') }}</label>
-          <input class="input-large input-big" type="text" v-model="new_publiname" @change="updatePublicationOption($event, 'name')" required :readonly="read_only">
-        </div>
-
-        <hr>
-
         <div class="margin-bottom-small">
           <label>{{ $t('template') }}</label>
           <select v-model="new_style" @change="updatePublicationOption($event, 'style')">
             <option value="standard">
-              {{ $t('standard') }}
+              standard
             </option>
             <option value="feuille de choux">
-              {{ $t('feuille de choux') }}
+              feuille de choux
             </option>
             <option value="human tech days">
-              {{ $t('human tech days') }}
+              human tech days
             </option>
           </select>
         </div>

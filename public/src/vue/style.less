@@ -240,8 +240,8 @@ body {
         color: #fff;
         // .bg-noir;
         // background-color: @c-gris_fonce;
-        .bg-bleuvert;
-        .bg-creme;
+        // .bg-bleuvert;
+        // .bg-creme;
         // .c-bleuvert;
         .bg-noir;
         border-radius: 0 6px 6px 0;
@@ -2888,14 +2888,10 @@ small {
 .m_publicationMeta {
   // .margin-medium;
   .bg-blanc;
-  // .padding-small;
-
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-evenly;
-  align-content: flex-start;
-  align-items: baseline;
-
+  .margin-small;
+  border-radius: 10px;
+  // border-radius: 0 0 10px 10px;
+ 
   > .buttonLink {
     flex: 0 0 0;
   }
@@ -2904,17 +2900,36 @@ small {
     margin: 0;
     display: flex;
     flex-flow: row wrap;
+    justify-content: space-between;
     align-content: flex-start;
     align-items: center;
+        
     > * {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: center;
+      align-content: center;
+      align-items: center;
+
+      // .margin-vert-verysmall;
       .margin-small;
-      &:last-child {
-        justify-self: flex-end;
-      }
+    }
+
+    .m_publicationMeta--topbar--backbutton {
+      .bg-noir;
+      .c-blanc;
+      min-height: 0;
+      min-width: 0;
+      width: 2em;
+      height: 2em;
+      .margin-right-small;
+      border-radius: 50%;
+      font-weight: 300;
     }
 
     .m_publicationMeta--topbar--title {
       .font-publi_title;
+      flex: 1 1 auto;
     }
 
 
@@ -3012,8 +3027,9 @@ small {
 
   .m_publicationview--settings {
     .bg-blanc;
-    .padding-small;
+    .margin-sides-medium;
     border-radius: 4px;
+    max-width: 600px;
 
     display: flex;
     flex-flow: row wrap;

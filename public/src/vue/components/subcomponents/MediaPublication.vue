@@ -23,7 +23,7 @@
       :slugFolderName="media.slugProjectName"
       :media="media"
       :read_only="read_only"
-      :preview_size="360"
+      :element_width_for_sizes="mediaSize.width * pixelsPerMillimeters * 1.5"
       v-model="media.content"
       :style="media.publi_meta.custom_css"
     />

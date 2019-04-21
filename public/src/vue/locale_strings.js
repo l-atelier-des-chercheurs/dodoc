@@ -47,7 +47,8 @@ module.exports = (function() {
       css: 'css',
       write_some_CSS_code_for_example:
         'Écrivez ici du code CSS, <br>par exemple <code>color: blue;</code>',
-
+      framerate: 'cadence d’image (par seconde)',
+      quality: 'qualité',
       bytes: 'octets',
       kb: 'ko',
       mb: 'Mo',
@@ -171,6 +172,7 @@ module.exports = (function() {
 
       edit_the_media: 'Éditer le média',
       edit_project: 'Éditer le projet',
+      edit_publication: 'Éditer la recette',
       drop_here_to_import: 'Déposez vos contenus ici pour les importer',
 
       capture: 'Enregistrer',
@@ -344,6 +346,8 @@ module.exports = (function() {
       cooking_pot_instructions:
         'Mix a single or multiple medias to create new medias!',
       untitled: 'Untitled',
+      framerate: 'frame rate (images per second)',
+      quality: 'quality',
 
       bytes: 'bytes',
       kb: 'KB',
@@ -473,6 +477,7 @@ module.exports = (function() {
       publication: 'Publication',
       edit_the_media: 'Edit media',
       edit_project: 'Edit project',
+      edit_publication: 'Edit recipe',
       drop_here_to_import: 'Drop your content here to import',
 
       capture: 'Capture',

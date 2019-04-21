@@ -1,20 +1,38 @@
 <template>
   <div class="m_publicationMeta">
     <div class="m_publicationMeta--topbar">
-      <button type="button" class=""
-        v-if="$root.state.mode !== 'export_publication'"        
-        @click="closePublication()"
-      >
-        ←
-      </button>
+      <div>
+        <button type="button" class="m_publicationMeta--topbar--backbutton"
+          v-if="$root.state.mode !== 'export_publication'"        
+          @click="closePublication()"
+          :title="$t('back_to_project')"
+          v-tippy='{ 
+            placement : "bottom",
+            delay: [600, 0]
+          }'
+        >
+          ‹
+        </button>
 
-      <div class="m_publicationMeta--topbar--title" :title="slugPubliName">
-        {{ publication.name }}
+        <div class="m_publicationMeta--topbar--title" :title="slugPubliName">
+          {{ publication.name }}
+        </div>
       </div>
-
-      <template
+      <div
         v-if="$root.state.mode !== 'export_publication'"
       >
+
+        <button type="button" class="buttonLink" @click="show_edit_publication = true">
+          {{ $t('edit') }}
+        </button>     
+
+        <EditPublication
+          v-if="show_edit_publication"
+          :publication="publication"
+          :slugPubliName="slugPubliName"
+          @close="show_edit_publication = false"
+        />
+
         <button type="button" class="buttonLink" @click="$emit('export')"
           :disabled="Object.values(publication.medias).length === 0"
         >
@@ -24,20 +42,23 @@
         <button type="button" class="buttonLink" @click="removePublication">
           {{ $t('remove') }}
         </button>     
-      </template>
+      </div>
     </div>
   </div>
 </template>
 <script>
+import EditPublication from '../modals/EditPublication.vue';
 export default {
   props: {
     slugPubliName: String,
     publication: Object
   },
   components: {
+    EditPublication
   },
   data() {
     return {
+      show_edit_publication: false
     }
   },
   
