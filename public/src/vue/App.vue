@@ -89,7 +89,7 @@
                 :title="$t('mix_medias')" 
                 v-tippy='{
                   placement : "left",
-                  delay: [600, 100000]
+                  delay: [600, 0]
                 }'
                 :class="{ 
                   'is--open' : $root.settings.show_publi_panel, 
