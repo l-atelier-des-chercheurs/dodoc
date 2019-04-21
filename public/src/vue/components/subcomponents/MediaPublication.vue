@@ -255,8 +255,8 @@ export default {
     setMediaHeightToContent() {
       const el = this.$refs.media;
       let contentHeight = el.firstElementChild.firstElementChild.firstElementChild.offsetHeight;
-      contentHeight += 10;
       contentHeight = contentHeight / this.pixelsPerMillimeters;
+      contentHeight += this.page.gridstep;
       contentHeight = this.roundMediaVal(contentHeight);
       contentHeight = this.limitMediaHeight(contentHeight);
       this.mediaSize.height = contentHeight;
