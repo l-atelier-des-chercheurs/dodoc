@@ -49,6 +49,7 @@ module.exports = (function() {
       write_some_CSS_code_for_example:
         'Écrivez ici du code CSS, <br>par exemple <code>color: blue;</code>',
       framerate: 'cadence d’image (par seconde)',
+      seconds: 'secondes',
       quality: 'qualité',
       bytes: 'octets',
       kb: 'ko',
@@ -228,6 +229,7 @@ module.exports = (function() {
       export_stopmotion_instructions:
         'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des images ajoutées à la publication.',
       make_video: 'Fabriquer une vidéo',
+      'interval_between_pictures:': 'Interval entre chaque photo :',
       creation_in_progress: 'En cours de création…',
 
       publication_list: 'Liste des publications',
@@ -352,6 +354,7 @@ module.exports = (function() {
         'Mix a single or multiple medias to create new medias!',
       untitled: 'Untitled',
       framerate: 'frame rate (images per second)',
+      seconds: 'seconds',
       quality: 'quality',
 
       bytes: 'bytes',
@@ -473,6 +476,7 @@ module.exports = (function() {
       export_stopmotion_instructions:
         'Click this button to generate a video from images you have selected.',
       make_video: 'Make a video',
+      'interval_between_pictures:': 'Interval between photos:',
 
       select: 'Select',
       unselect: 'Un-select',

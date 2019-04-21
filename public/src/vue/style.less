@@ -2024,16 +2024,17 @@ small {
         width: 100%;
         z-index: 100;
         text-align: center;
+        pointer-events: none;
+        .padding-verysmall;
 
         label {
           display: inline-block;
           margin: 0 auto;
           .bg-rouge;
           .padding-sides-verysmall;
-          .margin-small;
           color: white;
-
           border-radius: 4px;
+          pointer-events: auto;
         }
       }
 
@@ -2158,7 +2159,9 @@ small {
         // .padding-medium;
 
         svg {
+          width: 100%;
           margin: auto;
+          
         }
       }
 
@@ -2168,10 +2171,19 @@ small {
         display: flex;
         flex-flow: column nowrap;
 
+        .plyr .plyr__controls {
+          .c-blanc;
+        }
+
         > * {
           flex: 1 1 auto;
-          width: 100%;
-          height: 100%;
+          // width: 100%;
+          // height: 100%;
+          height: 90%;
+
+          &:last-child {
+            height: 10%;
+          }
         }
 
 

@@ -131,8 +131,10 @@
               </div>
             </transition>
 
-            <div v-if="is_recording && timer_recording" class="recording_timer">
-              <label>{{ recording_duration }}</label>
+            <div class="recording_timer">
+              <label v-if="is_recording && timer_recording">{{ recording_duration }}</label>
+              <br>
+              <label v-if="selected_mode === 'stopmotion' && timelapse_interval">{{ $t('interval_between_pictures:') }} {{ timelapse_interval }} {{ $t('seconds') }}</label>
             </div>
 
             <video 
@@ -310,7 +312,7 @@
                   <select v-model="timelapse_interval" class="inline">
                     <option value="false" v-html="'-'"/>
                     <option value="2" v-html="2" />
-                    <option value="5" v-html="4" />
+                    <option value="5" v-html="5" />
                     <option value="10" v-html="10" />
                   </select>
                   secondes
@@ -321,7 +323,7 @@
                 class="m_panel--buttons--row--captureButton--advancedOptions padding-verysmall bg-transparent"
                 v-if="selected_mode === 'stopmotion'"
                 v-tippy="{ html: '#template-3', reactive : true,
-                      interactive : true, theme: 'light' }"
+                      interactive : true, theme: 'light', delay: [600, 0] }"
               >
                 +
               </button>
