@@ -281,8 +281,9 @@ export default {
         this.mediadata.authors = [];
       }
     }
-
-    this.is_ready = true;
+    this.$nextTick(() => {
+      this.is_ready = true;
+    });
   },
   computed: {
   },
