@@ -3403,6 +3403,7 @@ small {
     z-index: 2;
     min-height: 0;
     background: transparent;
+    pointer-events: none;
 
     span {
       display: block;
@@ -3412,6 +3413,7 @@ small {
       line-height: .5;
       background-color: @c-rouge;
       .c-blanc;
+      pointer-events: auto;
     }
   }
 
@@ -3605,15 +3607,9 @@ small {
 ******************************************************************/
 .m_page {
 
-  // always load standard
-  @import "less/publications_styles/standard.less";
-
-  // override with customs
-  &[data-style="feuille de choux"] {
-    @import "less/publications_styles/feuille-de-choux.less";
-  }
-  &[data-style="human tech days"] {
-    @import "less/publications_styles/human-tech-days.less";
+  .mediaContainer {
+    // always load standard
+    @import "less/publications_styles/standard.less";
   }
 }
 

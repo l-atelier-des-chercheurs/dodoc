@@ -1,5 +1,6 @@
 <template>
   <div class="m_captureview">
+    selected_mode : {{ selected_mode }}
     <div class="m_captureview--modeSelector">
       <button type="button" class="bg-transparent" @click="previousMode()"
         v-show="!$root.settings.capture_mode_cant_be_changed"
@@ -594,13 +595,13 @@ export default {
       this.$root.settings.capture_options.selected_devicesId.videoinput = this.selected_devicesId.videoinput;
     },
     'selected_mode': function() {
-      console.log('WATCH • Capture: selected_mode');
-      this.mode_just_changed = true;
+      console.log('WATCH • Capture: selected_mode : ' + this.selected_mode);
+      // this.mode_just_changed = true;
       this.show_stopmotion_list = false;
 
       this.$root.settings.capture_options.selected_mode = this.selected_mode;
       window.setTimeout(()=> {
-        this.mode_just_changed = false;
+        // this.mode_just_changed = false;
       }, 1000);
       this.$nextTick(() => {
         this.startMode();

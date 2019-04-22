@@ -35,12 +35,12 @@
             <option value="standard">
               standard
             </option>
-            <option value="feuille de choux">
+            <!-- <option value="feuille de choux">
               feuille de choux
             </option>
             <option value="human tech days">
               human tech days
-            </option>
+            </option> -->
           </select>
         </div>
 
