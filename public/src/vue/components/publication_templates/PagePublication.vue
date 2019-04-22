@@ -539,6 +539,19 @@ export default {
     }
   },
   methods: {
+    getHighestZNumberAmongstMedias(page_medias) {
+      if (!page_medias) return 0;
+
+      const medias_with_z = page_medias.filter(m =>
+        m.publi_meta.hasOwnProperty('z_index')
+      ).map(m => {
+        return m.publi_meta.z_index;
+      });
+
+      if (medias_with_z.length === 0) return 0;
+
+      return Math.max(...medias_with_z);
+    },
     addMedia({ slugProjectName, metaFileName }) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: addMedia with 
@@ -555,8 +568,7 @@ export default {
       const x = this.publications_options.margin_left;
       const y = this.publications_options.margin_top;
 
-      // trouver dans les médias de la page si y en a sur x et y
-      // this.publication_medias[page]
+      const z_index = this.getHighestZNumberAmongstMedias(this.publication_medias[page]) + 1;
 
       const newMediaMeta = {
         slugProjectName,
@@ -564,7 +576,8 @@ export default {
         slugMediaName: metaFileName,
         page_id,
         x,
-        y
+        y,
+        z_index
       };
 
       this.$root.createMedia({ 
