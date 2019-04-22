@@ -232,7 +232,7 @@ module.exports = (function() {
       export_stopmotion_instructions:
         'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des images ajoutées à la publication.',
       make_video: 'Fabriquer une vidéo',
-      'interval_between_pictures:': 'Interval entre chaque photo :',
+      'interval_between_pictures:': 'Intervalle entre chaque photo :',
       creation_in_progress: 'En cours de création…',
 
       publication_list: 'Liste des publications',
