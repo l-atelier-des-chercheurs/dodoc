@@ -406,7 +406,7 @@ module.exports = (function() {
               .write(fullThumbPath, function(err, info) {
                 if (err) reject(err);
                 dev.logverbose('Image has been saved, resolving its path.');
-                resolve(thumbPath);
+                resolve(fullThumbPath);
               });
           });
         } else {

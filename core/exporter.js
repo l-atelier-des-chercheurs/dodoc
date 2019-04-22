@@ -5,8 +5,6 @@ const path = require('path'),
   fs = require('fs-extra'),
   pad = require('pad-left');
 
-const sharp = require('sharp');
-
 const dev = require('./dev-log'),
   api = require('./api'),
   file = require('./file');

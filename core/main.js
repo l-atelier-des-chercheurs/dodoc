@@ -2,6 +2,9 @@ const path = require('path');
 const fs = require('fs-extra');
 const portscanner = require('portscanner');
 
+const electron = require('electron');
+const { app, BrowserWindow, Menu } = electron;
+
 const server = require('./server');
 
 const dev = require('./dev-log'),
@@ -65,7 +68,7 @@ module.exports = function({ router }) {
 
       cleanCacheFolder().then(
         () => {
-          copyAndRenameUserFolder().then(
+          copyAndRenameUserFolder(app).then(
             function(pathToUserContent) {
               global.pathToUserContent = pathToUserContent;
               dev.log('Will store contents in: ' + global.pathToUserContent);
@@ -134,7 +137,7 @@ module.exports = function({ router }) {
     });
   }
 
-  function copyAndRenameUserFolder() {
+  function copyAndRenameUserFolder(app) {
     return new Promise(function(resolve, reject) {
       const userDirPath = app.getPath(global.settings.userDirPath);
 

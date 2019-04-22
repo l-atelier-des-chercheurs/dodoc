@@ -320,7 +320,6 @@ module.exports = (function() {
         ) {
           dev.logverbose('Updating folders preview');
           let preview_rawdata = newFoldersData.preview_rawdata;
-          // store preview with sharp
           tasks.push(
             _storeFoldersPreview(slugFolderName, type, preview_rawdata)
           );
@@ -874,9 +873,9 @@ module.exports = (function() {
                 fs.unlink(tempPath, err => {
                   dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
                 });
-              dev.logverbose(`Stored captured image to ${finalPath}`);
-              resolve(newFileName);
-            });
+                dev.logverbose(`Stored captured image to ${finalPath}`);
+                resolve(newFileName);
+              });
           });
         }
         // else if (
@@ -1640,7 +1639,10 @@ module.exports = (function() {
             if (err) reject(err);
             image
               .quality(settings.mediaThumbQuality)
-              .scaleToFit(settings.structure[type].preview.width, settings.structure[type].preview.height)
+              .scaleToFit(
+                settings.structure[type].preview.width,
+                settings.structure[type].preview.height
+              )
               .write(pathToPreview, function(err, info) {
                 if (err) reject(err);
                 dev.logverbose(

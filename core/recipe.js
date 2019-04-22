@@ -1,4 +1,4 @@
-const sharp = require('sharp');
+// const sharp = require('sharp');
 const fs = require('fs-extra');
 
 module.exports = (function() {
@@ -10,18 +10,18 @@ module.exports = (function() {
         }
 
         if (type === 'rotate_image') {
-          sharp(base_media_path)
-            .rotate(detail.angle)
-            .withMetadata()
-            .toBuffer(function(err, buffer) {
-              if (err) {
-                return reject(err);
-              } else {
-                fs.writeFile(new_media_path, buffer, function(e) {
-                  return resolve();
-                });
-              }
-            });
+          // sharp(base_media_path)
+          //   .rotate(detail.angle)
+          //   .withMetadata()
+          //   .toBuffer(function(err, buffer) {
+          //     if (err) {
+          //       return reject(err);
+          //     } else {
+          //       fs.writeFile(new_media_path, buffer, function(e) {
+          //         return resolve();
+          //       });
+          //     }
+          //   });
         } else {
           return reject(`Unknow recipe type`);
         }

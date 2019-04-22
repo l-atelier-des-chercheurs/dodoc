@@ -9,8 +9,7 @@ const path = require('path'),
   ffmpeg = require('fluent-ffmpeg'),
   pad = require('pad-left');
 
-const sharp = require('sharp');
-
+const Jimp = require('jimp');
 const dev = require('./dev-log');
 
 ffmpeg.setFfmpegPath(ffmpegstatic.path);
@@ -460,11 +459,11 @@ module.exports = (function() {
 
       const image_path = path.join(slugStopmotionPath, image_filename);
 
-      sharp(image_path).toBuffer((err, data, info) => {
+      Jimp.read(image_path, function(err, image) {
         if (err) return reject(err);
         return resolve({
-          width: info.width,
-          height: info.height
+          width: image.width,
+          height: image.height
         });
       });
     });
