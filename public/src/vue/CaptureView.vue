@@ -132,7 +132,8 @@
             </transition>
 
             <div class="recording_timer">
-              <label v-if="is_recording && timer_recording">{{ recording_duration }}</label>
+              <label v-if="selected_mode !== 'stopmotion' && is_recording && recording_duration">{{ recording_duration }}</label>
+              <label v-if="selected_mode === 'stopmotion' && is_recording && recording_duration">{{ time_before_next_picture }}</label>
               <br>
               <label v-if="selected_mode === 'stopmotion' && timelapse_interval">{{ $t('interval_between_pictures:') }} {{ timelapse_interval }} {{ $t('seconds') }}</label>
             </div>
@@ -243,6 +244,7 @@
               <div 
                 v-else-if="media_to_validate.type === 'svg'" 
                 v-html="media_to_validate.preview"
+                class="m_panel--previewCard--validate--svg"
               />
             </div>
           </transition>
@@ -307,8 +309,14 @@
               <button type="button"
                 class="m_panel--buttons--row--captureButton--advancedOptions"
                 v-if="selected_mode === 'stopmotion'"
-                v-tippy="{ html: '#template-3', reactive : true,
-                      interactive : true, theme: 'light', delay: [600, 60000] }"
+                v-tippy="{ 
+                  html: '#template-3', 
+                  reactive : true,
+                  interactive : true, 
+                  theme: 'light', 
+                  delay: [600, 0],
+                  placement : 'bottom-start'
+                }"
               >
                 +
               </button>
@@ -346,8 +354,8 @@
                       v-html="10"
                     />
                     <input 
-                      class="button-thin padding-sides-verysmall margin-sides-verysmall"
-                      style="display:inline; width: 50px;" type="number" min="1" max="600" v-model.number="timelapse_interval">
+                      class="padding-sides-verysmall margin-sides-verysmall"
+                      style="display:inline; width: 50px; height: 2em;" type="number" min="1" max="600" v-model.number="timelapse_interval">
                     &nbsp;secondes
                   </div>
                 </div>
@@ -685,8 +693,17 @@ export default {
     },
     recording_duration: function() {
       if(this.timer_recording) {
-        return this.$moment(this.$root.currentTime - this.timer_recording).format('mm:ss');
+        return this.$moment(this.$root.currentTime - this.timer_recording).startOf('second').format('mm:ss');
       }
+      return false;
+    },
+    time_before_next_picture: function() {
+      const seconds_ellapsed_since_beginning = this.$moment(this.$root.currentTime - this.timer_recording).seconds(); 
+      const time_ellapsed_since_last_capture = seconds_ellapsed_since_beginning%this.timelapse_interval;
+      if(time_ellapsed_since_last_capture === 0) {
+        return 0; 
+      }
+      return this.timelapse_interval - time_ellapsed_since_last_capture;
     }
   },
   methods: {
@@ -1030,6 +1047,10 @@ export default {
         if(!this.is_recording) {
           this.is_recording = true;
           this.timelapse_event = window.setInterval(() => {
+            this.capture_button_pressed = true;
+            window.setTimeout(() => {
+              this.capture_button_pressed = false;
+            }, 400);
             this.addStopmotionImage();
           }, this.timelapse_interval * 1000);
         } else {
