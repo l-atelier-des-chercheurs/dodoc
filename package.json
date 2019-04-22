@@ -61,7 +61,6 @@
     "pad-left": "^2.1.0",
     "parser-readline": "^1.0.2",
     "path": "^0.12.7",
-    "platform-folders": "^0.4.0",
     "portscanner": "^2.2.0",
     "pug": "^2.0.3",
     "quill-render": "^1.0.5",

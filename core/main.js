@@ -136,7 +136,7 @@ module.exports = function({ router }) {
 
   function copyAndRenameUserFolder() {
     return new Promise(function(resolve, reject) {
-      const userDirPath = getPath.getDocumentsFolder();
+      const userDirPath = app.getPath(global.settings.userDirPath);
 
       const pathToUserContent = path.join(
         userDirPath,
