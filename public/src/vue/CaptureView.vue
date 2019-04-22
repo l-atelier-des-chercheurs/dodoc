@@ -1,7 +1,6 @@
 <template>
   <div class="m_captureview">
-    selected_mode : {{ selected_mode }}
-    <div class="m_captureview--modeSelector">
+  <div class="m_captureview--modeSelector">
       <button type="button" class="bg-transparent" @click="previousMode()"
         v-show="!$root.settings.capture_mode_cant_be_changed"
       >
@@ -305,29 +304,54 @@
                 <img v-else src="/images/i_stop.svg">
               </button>
 
-              <div id="template-3"
+              <button type="button"
+                class="m_panel--buttons--row--captureButton--advancedOptions"
+                v-if="selected_mode === 'stopmotion'"
+                v-tippy="{ html: '#template-3', reactive : true,
+                      interactive : true, theme: 'light', delay: [600, 60000] }"
+              >
+                +
+              </button>
+
+              <div 
+                id="template-3"
                 v-if="selected_mode === 'stopmotion'"
               >
                 <div class="">
                   Déclenchement automatique toutes les 
-                  <select v-model="timelapse_interval" class="inline">
+                  <!-- <select v-model="timelapse_interval" class="inline">
                     <option value="false" v-html="'-'"/>
                     <option value="2" v-html="2" />
                     <option value="5" v-html="5" />
                     <option value="10" v-html="10" />
-                  </select>
-                  secondes
+                    <option value="other" v-html="$t('other')" />
+                  </select> -->
+                  <div class="button-inline">
+                    <button type="button" 
+                      class="button-thin padding-verysmall margin-sides-verysmall"
+                      @click="timelapse_interval = 2" 
+                      :class="{ 'is--active' : timelapse_interval === 2 }"
+                      v-html="2"
+                    />
+                    <button type="button" 
+                      class="button-thin padding-verysmall margin-sides-verysmall"
+                      @click="timelapse_interval = 5" 
+                      :class="{ 'is--active' : timelapse_interval === 5 }"
+                      v-html="5"
+                    />
+                    <button type="button" 
+                      class="button-thin padding-verysmall margin-sides-verysmall"
+                      @click="timelapse_interval = 10" 
+                      :class="{ 'is--active' : timelapse_interval === 10 }"
+                      v-html="10"
+                    />
+                    <input 
+                      class="button-thin padding-sides-verysmall margin-sides-verysmall"
+                      style="display:inline; width: 50px;" type="number" min="1" max="600" v-model.number="timelapse_interval">
+                    &nbsp;secondes
+                  </div>
                 </div>
               </div>
-
-              <button type="button"
-                class="m_panel--buttons--row--captureButton--advancedOptions padding-verysmall bg-transparent"
-                v-if="selected_mode === 'stopmotion'"
-                v-tippy="{ html: '#template-3', reactive : true,
-                      interactive : true, theme: 'light', delay: [600, 0] }"
-              >
-                +
-              </button>
               
             </div>
 
