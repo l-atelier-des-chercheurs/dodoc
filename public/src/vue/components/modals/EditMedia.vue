@@ -81,7 +81,7 @@
             {{ $t('type') }}
           </div>
           <div>
-            {{ media.type }}
+            {{ $t(media.type) }}
             <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
           </div>
         </div>
