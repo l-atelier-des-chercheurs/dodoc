@@ -70,9 +70,12 @@ export default {
       console.log('MOUNTED • DistantFlux: onMediaError');
       if (e.message === 'Concurrent mic process limit.') {
         if (DetectRTC.audioInputDevices.length <= 1) {
-          alert(
-            'Please select external microphone. Check github issue number 483.'
-          );
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(
+              'Please select external microphone. Check github issue number 483.'              
+            );
           return;
         }
         var secondaryMic = DetectRTC.audioInputDevices[1].deviceId;
@@ -92,7 +95,12 @@ export default {
       navigator.connection.type === 'cellular' &&
       navigator.connection.downlinkMax <= 0.115
     ) {
-      alert('2G is not supported. Please use a better internet service.');
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .error(
+          '2G is not supported. Please use a better internet service.'           
+        );
     }
   },
   beforeDestroy() {
@@ -110,7 +118,12 @@ export default {
       this.connection.checkPresence(this.$root.settings.capture_options.distant_flux.callee_username, (isOnline, username) => {
         console.log(`METHODS • DistantFlux: call / checkPresence with callee_username = ${this.$root.settings.capture_options.distant_flux.callee_username}, is_calling = ${this.is_calling} and isOnline = ${isOnline}`);
         if (!isOnline) {
-          alert(username + ' is not online.');
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(
+              username + ' is not online.'
+            );
           return;
         }
         this.connection.join(username);

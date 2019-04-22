@@ -276,33 +276,56 @@ export default {
     closeModal: function() {
       console.log(`METHODS • BaseModal: closeModal with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
       if(this.askBeforeClosingModal) {
-        if (!window.confirm(this.$t('sureToCloseModal'))) {
-          console.log(`METHODS • BaseModal: closeModal refused`)
-          return;
-        }
+        this.$alertify
+          .okBtn(this.$t('yes'))
+          .cancelBtn(this.$t('cancel'))        
+          .confirm(this.$t('changes_not_saved_sureToCloseModal'), 
+          () => {
+            this.showModal = false;
+            setTimeout(() => {
+              this.$emit('close');
+            }, 400);
+          },
+          () => {
+          });
+      } else {
+        this.showModal = false;
+        setTimeout(() => {
+          this.$emit('close');
+        }, 400);
       }
-      this.showModal = false;
-      setTimeout(() => {
-        this.$emit('close');
-      }, 400);
     },
     prevMedia: function() {
       console.log(`METHODS • BaseModal: prevMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
       if(this.askBeforeClosingModal) {
-        if (!window.confirm(this.$t('sureToCloseModal'))) {
-          return;
-        }
+        this.$alertify
+          .okBtn(this.$t('yes'))
+          .cancelBtn(this.$t('cancel'))        
+          .confirm(this.$t('changes_not_saved_sureToCloseModal'), 
+          () => {
+            this.$eventHub.$emit('modal.prev_media');
+          },
+          () => {
+          });        
+      } else {
+        this.$eventHub.$emit('modal.prev_media');
       }
-      this.$eventHub.$emit('modal.prev_media');
     },
     nextMedia: function() {
       console.log(`METHODS • BaseModal: nextMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
       if(this.askBeforeClosingModal) {
-        if (!window.confirm(this.$t('sureToCloseModal'))) {
-          return;
-        }
+        this.$alertify
+          .okBtn(this.$t('yes'))
+          .cancelBtn(this.$t('cancel'))        
+          .confirm(this.$t('changes_not_saved_sureToCloseModal'), 
+          () => {
+            this.$eventHub.$emit('modal.next_media');
+          },
+          () => {
+          });        
+      } else {
+        this.$eventHub.$emit('modal.next_media');
       }
-      this.$eventHub.$emit('modal.next_media');
     },
     toggleMinimize: function() {
       console.log(`METHODS • BaseModal: toggleMinimize`);

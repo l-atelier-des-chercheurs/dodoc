@@ -4,83 +4,43 @@
     :class="{ 'is--preview' : preview_mode, 'is--fullscreen' : fullscreen_mode }"
     @scroll="onScroll"
     ref="panel"
-    :style="customCSSVars"
   >
-    <div class="m_publicationMeta">
-      <div class="m_publicationMeta--topbar">
-        <button type="button" class=""
-          v-if="$root.state.mode !== 'export_publication'"        
-          @click="closePublication()"
-        >
-          ←
-        </button>
+    <PublicationHeader 
+      :slugPubliName="slugPubliName"
+      :publication="publication"
+      @export="show_export_modal = true"
+    />
 
-        <div class="m_publicationMeta--topbar--title" :title="slugPubliName">
-          {{ publication.name }}
-        </div>
+    <ExportModal
+      v-if="show_export_modal"
+      @close="show_export_modal = false"
+      :slugPubliName="slugPubliName"
+    >
+    </ExportModal>
 
-        <template
-          v-if="$root.state.mode !== 'export_publication'"
-        >
-          <div class="margin-small">
-            <input id="settings" type="checkbox" v-model="advanced_options" />
-            <label for="settings">{{ $t('settings') }}</label>
-          </div>
+    <div class="m_publicationview--settings">
 
-          <button type="button" class="buttonLink" @click="showExportModal = true">
-            {{ $t('export') }}
-          </button>     
-
-          <ExportModal
-            v-if="showExportModal"
-            @close="showExportModal = false"
-            :slugPubliName="slugPubliName"
-          >
-          </ExportModal>
-
-          <button type="button" class="buttonLink" @click="removePublication">
-            {{ $t('remove') }}
-          </button>     
-        </template>
-
+      <div class=""
+        v-if="$root.state.mode !== 'export_publication' && $root.state.mode !== 'print_publication'"
+      >
+        <input id="settings" type="checkbox" v-model="advanced_options" />
+        <label for="settings">{{ $t('settings') }}</label>
       </div>
-      <template v-if="advanced_options">
+
+      <template v-if="advanced_options" >
         <hr>
-
-        <div class="margin-bottom-small">
-          <label>{{ $t('name') }}</label>
-          <input class="input-large input-big" type="text" v-model="new_publiname" @change="updatePublicationOption($event, 'name')" required :readonly="read_only">
-        </div>
-
-        <hr>
-
-        <!-- <div class="margin-bottom-small">
-          <label>{{ $t('format') }}</label>
-          <select v-model="new_template">
-            <option value="page_by_page">
-              {{ $t('page_by_page') }}
-            </option>
-            <option value="video_assemblage">
-              {{ $t('video_assemblage') }}
-            </option>
-            <option value="web" disabled>
-              {{ $t('web') }}
-            </option>
-          </select>
-        </div> -->
-
         <div class="margin-bottom-small">
           <label>{{ $t('template') }}</label>
           <select v-model="new_style" @change="updatePublicationOption($event, 'style')">
             <option value="standard">
-              {{ $t('standard') }}
+              standard
             </option>
-            <option value="feuille de choux">
-              {{ $t('feuille de choux') }}
+            <!-- <option value="feuille de choux">
+              feuille de choux
             </option>
             <option value="human tech days">
-              {{ $t('human tech days') }}
-            </option>
+              human tech days
+            </option> -->
           </select>
         </div>
 
@@ -134,6 +94,7 @@
       </template>
     </div>
 
+
     <div class="m_publicationSettings"
       v-if="$root.state.mode !== 'export_publication'"        
     >
@@ -142,7 +103,6 @@
         :class="{ 'is--active' : !preview_mode }"
         @click="preview_mode = !preview_mode"
       >
-        <!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In  -->
         <svg version="1.1"
           xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
           x="0px" y="0px" width="144px" height="84px" viewBox="0 0 144 84" style="enable-background:new 0 0 144 84;"
@@ -155,6 +115,14 @@
         </g>
         </svg>
       </button>
+
+      <!-- <button 
+        class="margin-vert-verysmall font-verysmall" 
+        :class="{ 'is--active' : !preview_mode }"
+        @click="preview_mode = !preview_mode"
+      >
+        CSS
+      </button> -->
 
       <!-- <button 
         class="margin-vert-verysmall font-verysmall" 
@@ -214,7 +182,6 @@
         :disabled="zoom === zoom_max"
         @click="zoom += 0.1"
       >
-        <!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In  -->
         <svg version="1.1"
           xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
           x="0px" y="0px" width="182.5px" height="188.1px" viewBox="0 0 182.5 188.1" style="enable-background:new 0 0 182.5 188.1;"
@@ -228,7 +195,6 @@
         :disabled="zoom === zoom_min"
         @click="zoom -= 0.1"
       >
-        <!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In  -->
         <svg version="1.1"
           xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
           x="0px" y="0px" width="155.6px" height="21.2px" viewBox="0 0 155.6 21.2" style="enable-background:new 0 0 155.6 21.2;"
@@ -253,7 +219,7 @@
             v-if="$root.state.mode !== 'export_publication' && pageNumber === 0"   
           >
             <button type="button" class="buttonLink" @click="insertPageAtIndex(pageNumber)">
-              {{ $t('insert_a_page_here') }}
+              {{ $t('add_a_page_before') }}
             </button>
           </div>
 
@@ -281,8 +247,10 @@
                 />
               </template>
 
-
-              <div class="m_page--header">
+              <div class="m_page--header"
+                :style="customCSSVars"
+                v-if="!!page.header_left || !!page.header_right"
+              >
                 <div>
                   {{ page.header_left }}
                 </div>
@@ -290,6 +258,7 @@
                   {{ page.header_right }}
                 </div>
               </div>        
+
               <div 
                 class="m_page--pageNumber"
                 :class="{ 'toRight' : true }"
@@ -310,7 +279,6 @@
                     :pixelsPerMillimeters="pixelsPerMillimeters"
                     @removePubliMedia="values => { removePubliMedia(values) }"
                     @editPubliMedia="values => { editPubliMedia(values) }"
-                    @selected="newSelection"
                     @unselected="noSelection"
                   />
                 </div>
@@ -322,7 +290,7 @@
             v-if="$root.state.mode !== 'export_publication'"   
           >
             <button type="button" class="buttonLink" @click="insertPageAtIndex(pageNumber + 1)">
-              {{ $t('insert_a_page_here') }}
+              {{ $t('add_a_page_here') }}
             </button>
             <button type="button" class="buttonLink" @click="removePageAtIndex(pageNumber)">
               {{ $t('remove_this_page') }}
@@ -354,12 +322,12 @@
       </a>
     </div>
 
-    <div v-if="show_edit_css_window"
+    <!-- <div v-if="show_edit_css_window"
       class="m_mediaCSSEditWindow"
     >
       {{ show_edit_css_window }}
-      <textarea @keyup="setCSSForMedia($event)" />
-    </div>
+      <textarea @change="setCSSForMedia($event)" v-model="publication.medias[show_edit_css_window].custom_css" />
+    </div> -->
 
     <div 
       ref="mmMeasurer" 
@@ -368,8 +336,9 @@
   </div>
 </template>
 <script>
-import MediaPublication from './subcomponents/MediaPublication.vue';
-import ExportModal from './modals/ExportPagePubli.vue';
+import PublicationHeader from '../subcomponents/PublicationHeader.vue';
+import MediaPublication from '../subcomponents/MediaPublication.vue';
+import ExportModal from '../modals/ExportPagePubli.vue';
 
 export default {
   props: {
@@ -378,6 +347,7 @@ export default {
     read_only: Boolean
   },
   components: {
+    PublicationHeader,
     MediaPublication,
     ExportModal
   },
@@ -387,7 +357,7 @@ export default {
       publication_defaults: {
         'page_by_page': {
           width: 210,
-          height: 296,      
+          height: 297,      
           style: 'standard',
           margin_left: 10,
           margin_right: 10,
@@ -427,7 +397,7 @@ export default {
 
       pixelsPerMillimeters: 0,
       has_media_selected: false,
-      showExportModal: false
+      show_export_modal: false
     }
   },
   created() {
@@ -435,9 +405,11 @@ export default {
     this.$root.setPublicationZoom(this.zoom);
   },
   mounted() {
+    this.$root.settings.current_publication.accepted_media_type = ["image", "video", "audio", "text", "document", "other"];
+
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
-    this.$eventHub.$on('publication.setCSSEditWindow', this.setCSSEditWindow);
+    // this.$eventHub.$on('publication.setCSSEditWindow', this.setCSSEditWindow);
     document.addEventListener('keyup', this.publicationKeyListener);
     this.updateMediasPubli();  
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty('mmMeasurer') ? this.$refs.mmMeasurer.offsetWidth / 10 : 38;
@@ -453,7 +425,7 @@ export default {
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
     this.$eventHub.$off('socketio.projects.listSpecificMedias', this.updateMediasPubli);
-    this.$eventHub.$off('publication.setCSSEditWindow', this.setCSSEditWindow);
+    // this.$eventHub.$off('publication.setCSSEditWindow', this.setCSSEditWindow);
     document.removeEventListener('keyup', this.publicationKeyListener);
   },
 
@@ -507,7 +479,13 @@ export default {
       }
       // set default values to options
       if(!this.publication.hasOwnProperty('template')) {
-        alert('Missing template in publication');
+
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(
+            'Missing template in publication'
+          );
       }
       if(!this.publication_defaults.hasOwnProperty(this.publication.template)) {
         console.log('No defaults for this template. Returning original publication object.');
@@ -561,6 +539,19 @@ export default {
     }
   },
   methods: {
+    getHighestZNumberAmongstMedias(page_medias) {
+      if (!page_medias) return 0;
+
+      const medias_with_z = page_medias.filter(m =>
+        m.publi_meta.hasOwnProperty('z_index')
+      ).map(m => {
+        return m.publi_meta.z_index;
+      });
+
+      if (medias_with_z.length === 0) return 0;
+
+      return Math.max(...medias_with_z);
+    },
     addMedia({ slugProjectName, metaFileName }) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: addMedia with 
@@ -577,8 +568,7 @@ export default {
       const x = this.publications_options.margin_left;
       const y = this.publications_options.margin_top;
 
-      // trouver dans les médias de la page si y en a sur x et y
-      // this.publication_medias[page]
+      const z_index = this.getHighestZNumberAmongstMedias(this.publication_medias[page]) + 1;
 
       const newMediaMeta = {
         slugProjectName,
@@ -586,7 +576,8 @@ export default {
         slugMediaName: metaFileName,
         page_id,
         x,
-        y
+        y,
+        z_index
       };
 
       this.$root.createMedia({ 
@@ -626,25 +617,6 @@ export default {
         slugMediaName,
         data: val
       });
-    },
-    closePublication() {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: closePublication`);
-      }
-      this.$root.closePublication();
-    },
-    removePublication() {
-      if (window.confirm(this.$t('sureToRemovePubli'))) {
-        if (this.$root.state.dev_mode === 'debug') {
-          console.log(`METHODS • Publication: removePublication`);
-        }
-        this.$root.removeFolder({ 
-          type: 'publications', 
-          slugFolderName: this.slugPubliName, 
-        });
-        
-        this.closePublication();
-      }
     },
     updateMediasPubli() {
       if (this.$root.state.dev_mode === 'debug') {
@@ -819,10 +791,6 @@ export default {
       this.new_margin_bottom = this.publications_options.margin_bottom;
       this.new_header_left = this.publications_options.header_left;
       this.new_header_right = this.publications_options.header_right;
-    },
-    newSelection(mediaID) {
-      this.has_media_selected = true;
-      this.$emit('newMediaSelected', mediaID);
     },
     noSelection() {
       this.has_media_selected = false;

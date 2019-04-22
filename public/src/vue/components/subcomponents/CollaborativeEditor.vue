@@ -33,7 +33,7 @@ export default {
       editor_id: (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 5),
 
       custom_toolbar: [
-        [{ 'header': [false, 1, 2, 3, 4] }],
+        [{ 'header': [false, 1, 2, 3] }],
         // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
         ['bold', 'italic', 'underline', 'link', 'blockquote'],
         [{ list: 'ordered' }, { list: 'bullet'} ],
@@ -54,7 +54,7 @@ export default {
         toolbar: this.custom_toolbar
       },
       theme: 'snow',
-      formats: ['bold', 'underline', 'header', 'italic']
+      formats: ['bold', 'italic', 'underline', 'link', 'header', 'blockquote', 'list']
     });
     this.editor.root.innerHTML = this.value;
 
@@ -142,4 +142,21 @@ export default {
 }
 </script>
 <style>
+html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before, 
+html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
+  content: 'Titre 1';
+}
+html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before, 
+html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
+  content: 'Titre 2';
+}
+html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before, 
+html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
+  content: 'Titre 3';
+}
+html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="4"]::before, 
+html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
+  content: 'Titre 4';
+}
+
 </style>

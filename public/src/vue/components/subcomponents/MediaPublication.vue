@@ -6,25 +6,55 @@
     :data-media_type="media.type"
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
-    @mousedown.prevent.stop="is_selected = true"
+    @mousedown.stop="is_selected = true"
     :class="{ 
       'is--dragged' : is_dragged, 
       'is--resized' : is_resized, 
       'is--rotated' : is_rotated, 
       'is--waitingForServerResponse' : is_waitingForServer,
       'is--hovered' : is_hovered,
-      'is--previewed' :  preview_mode
+      'is--previewed' :  preview_mode.is_hovered,
+      'is--overflowing' : is_text_overflowing
     }"
   > 
+
     <MediaContent
-      :context="preview_mode ? 'publication' : 'preview'"
+      :context="preview_mode ? 'full' : 'preview'"
       :slugFolderName="media.slugProjectName"
       :media="media"
       :read_only="read_only"
-      :preview_size="360"
+      :element_width_for_sizes="mediaSize.width * pixelsPerMillimeters * 1.5"
       v-model="media.content"
+      :style="media.publi_meta.custom_css"
     />
     <p class="mediaCaption">{{ media.caption }}</p>
+
+    <button class="m_mediaPublication--overflowing_sign"
+      type="button"
+      v-if="media.type === 'text' && is_text_overflowing"
+      @click="setMediaHeightToContent"
+      :title="$t('text_overflow')"
+      v-tippy='{ 
+        placement : "top",
+        delay: [600, 0]
+      }'                        
+    >
+      <span>…</span>
+    </button>
+
+    <div class="m_mediaPublication--edit_styles"
+      v-if="show_edit_styles_window && (is_selected || is_hovered)"
+    >
+      <button type="button" class="m_mediaPublication--edit_styles--helpButton"
+        :title="$t('write_some_CSS_code_for_example')"
+        v-tippy='{ 
+          delay: [600, 0]
+        }'                  
+      >
+        ?
+      </button>
+      <PrismEditor v-model="custom_css" @change="setCSSForMedia" language="css" />
+    </div>
 
     <div 
       v-if="(is_selected || is_hovered || is_touch) && !preview_mode" 
@@ -72,35 +102,83 @@
       v-if="(is_selected || is_hovered || is_touch) && !preview_mode" 
       class="m_mediaPublication--buttons"
     >
-      <!-- <button 
-        type="button" 
-        class="buttonLink" 
-        @click.prevent.stop="toggleEditWindow()"
-        @touchstart.prevent.stop="toggleEditWindow()"
-      >
-        {{ $t('style') }}
-      </button> -->
       <button 
         type="button" 
-        class="buttonLink" 
-        @click.prevent.stop="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
-        @touchstart.prevent.stop="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
+        class="buttonLink _no_underline" 
+        @click.prevent.stop="editZIndex(+1)"
+        @touchstart.prevent.stop="editZIndex(+1)"
+        :title="$t('move_to_foreground') + '<br>' + 'z-index: ' + mediaZIndex"
+        v-tippy='{ 
+          placement : "top",
+          delay: [600, 0]
+        }'                        
       >
-        {{ $t('edit') }}
+        <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40.3px"
+          height="59.6px" viewBox="0 0 40.3 59.6" style="enable-background:new 0 0 40.3 59.6;" xml:space="preserve">
+          <path class="st0" d="M35,24.4l-4.6-4.2c-2.7-2.5-4.8-4.7-6.4-7.3l0,46.7l-7.7,0l0-46.6c-1.7,2.5-3.8,4.7-6.4,7.1l-4.6,4.2L0,18.1
+            L20.2,0l20.2,18.1L35,24.4z"/>
+        </svg>
+      </button>
+
+      <button 
+        type="button" 
+        class="buttonLink _no_underline" 
+        @click.prevent.stop="editZIndex(-1)"
+        @touchstart.prevent.stop="editZIndex(-1)"
+        :title="$t('move_to_background') + '<br>' + 'z-index: ' + mediaZIndex"
+        v-tippy='{ 
+          placement : "top",
+          delay: [600, 0]
+        }'                        
+      >
+        <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40.3px"
+          height="59.6px" viewBox="0 0 40.3 59.6" style="enable-background:new 0 0 40.3 59.6;" xml:space="preserve">
+          <path class="st0" d="M5.3,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7L24,0l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2
+            L20.2,59.6L0,41.5L5.3,35.2z"/>
+        </svg>
+      </button>
+
+      <button 
+        type="button" 
+        class="buttonLink _no_underline" 
+        @click.prevent.stop="toggleEditWindow()"
+        @touchstart.prevent.stop="toggleEditWindow()"
+        :class="{ 'is--active' : show_edit_styles_window }"
+      >
+        {{ $t('css') }}<sup v-if="custom_css">*</sup>
       </button>
       <button 
         type="button" 
-        class="buttonLink" 
+        class="buttonLink _no_underline"
+        @click.prevent.stop="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
+        @touchstart.prevent.stop="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
+      >
+        <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100.7px"
+          height="101px" viewBox="0 0 100.7 101" style="enable-background:new 0 0 100.7 101;" xml:space="preserve">
+          <path class="st0" d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
+            L19.1,91.5z"/>
+        </svg>
+        <!-- {{ $t('edit') }} -->
+      </button>
+      <button 
+        type="button" 
+        class="buttonLink _no_underline" 
         @click.prevent.stop="removePubliMedia()"
         @touchstart.prevent.stop="removePubliMedia()"
       >
-        {{ $t('remove') }}
+        <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="37.2px"
+          height="37.2px" viewBox="0 0 37.2 37.2" style="enable-background:new 0 0 37.2 37.2;" xml:space="preserve">
+          <polygon class="st0" points="37.2,30.6 30.6,37.2 18.6,25.2 6.6,37.2 0,30.6 12,18.6 0,6.6 6.6,0 18.6,12 30.6,0 37.2,6.6 
+          25.2,18.6 "/>
+        </svg>
       </button>
     </div>
   </div>
 </template>
 <script>
 import MediaContent from './MediaContent.vue';
+import PrismEditor from 'vue-prism-editor';
+import debounce from 'debounce';
 
 export default {
   props: {
@@ -111,7 +189,8 @@ export default {
     pixelsPerMillimeters: Number,
   },
   components: {
-    MediaContent
+    MediaContent,
+    PrismEditor
   },
   data() {
     return {
@@ -122,6 +201,10 @@ export default {
       is_hovered: false,
       is_selected: false,
       is_touch: Modernizr.touchevents,
+      is_text_overflowing: false,
+
+      custom_css: this.media.publi_meta.hasOwnProperty('custom_css') ? this.media.publi_meta.custom_css : '',
+      show_edit_styles_window: false,
 
       limit_media_to_page: true,
 
@@ -151,6 +234,7 @@ export default {
         angle: 0
       },
       rotate: 0,
+      debounce_setCSSForMedia: undefined,
 
       mediaSize: {
         width: 0,
@@ -158,6 +242,8 @@ export default {
         pwidth: 0,
         pheight: 0
       },
+
+      mediaZIndex: 0
     }
   },
   
@@ -165,13 +251,10 @@ export default {
   },
   mounted() {
     this.updateMediaStyles();
-    this.$parent.$on('newMediaSelected', (mediaID) => {
-      if(mediaID !== this.mediaID) {
-        this.is_selected = false;   
-      }      
-    });
+    this.$eventHub.$on('publication.newMediaSelected', this.newMediaSelected);
   },
   beforeDestroy() {
+    this.$eventHub.$off('publication.newMediaSelected', this.newMediaSelected);
   },
 
   watch: {
@@ -188,7 +271,7 @@ export default {
       if(this.is_selected) {
         window.addEventListener('mousedown', this.deselectMedia);      
         window.addEventListener('touchstart', this.deselectMedia); 
-        this.$emit('selected', this.mediaID);  
+        this.$eventHub.$emit('publication.newMediaSelected', this.mediaID);  
       } else {
         window.removeEventListener('mousedown', this.deselectMedia);      
         window.removeEventListener('touchstart', this.deselectMedia);              
@@ -197,26 +280,72 @@ export default {
   },
   computed: {
     mediaStyles() {
-      return `
+      let mediaStyles = `
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
         height: ${this.mediaSize.height}mm;
-        ${this.media.publi_meta.custom_css}
-      `
+        z-index: ${this.mediaZIndex};
+      `;
+      return mediaStyles;
       ;
     },
+    // text_is_overflowing() {
+    //   const el = this.$refs.media;
+    //   return (el.offsetHeight + 15 < el.scrollHeight);      
+    // }    
   },
   methods: {
-    toggleEditWindow() {
-      this.$eventHub.$emit('publication.setCSSEditWindow', this.media.publi_meta.metaFileName);
+    newMediaSelected(mediaID) {
+      if(mediaID !== this.mediaID) {
+        this.is_selected = false;   
+      }
     },
+    editZIndex(val) {
+      this.updateMediaPubliMeta({ 
+        z_index: this.mediaZIndex + val
+      });
+    },
+    setMediaHeightToContent() {
+      const el = this.$refs.media;
+      let contentHeight = el.firstElementChild.firstElementChild.firstElementChild.offsetHeight;
+      contentHeight = contentHeight / this.pixelsPerMillimeters;
+      contentHeight += this.page.gridstep;
+      contentHeight = this.roundMediaVal(contentHeight);
+      contentHeight = this.limitMediaHeight(contentHeight);
+      this.mediaSize.height = contentHeight;
 
+      this.updateMediaPubliMeta({ 
+        height: this.mediaSize.height 
+      });
+    },
+    toggleEditWindow() {
+      this.show_edit_styles_window = !this.show_edit_styles_window;
+      // this.$eventHub.$emit('publication.setCSSEditWindow', this.media.publi_meta.metaFileName);
+    },
+    setCSSForMedia(event) {
+      if (this.debounce_setCSSForMedia) clearTimeout(this.debounce_setCSSForMedia); 
+      this.debounce_setCSSForMedia = setTimeout(() => {
+        const val = {
+          custom_css: this.custom_css
+        };
+        this.$emit('editPubliMedia', { slugMediaName: this.media.publi_meta.metaFileName, val });
+      }, 500);
+    },
     updateMediaStyles() {
       this.mediaPos.x = this.media.publi_meta.hasOwnProperty('x') && !!Number.parseInt(this.media.publi_meta.x) ? this.limitMediaXPos(Number.parseInt(this.media.publi_meta.x)) : this.page.margin_left;
       this.mediaPos.y = this.media.publi_meta.hasOwnProperty('y') && !!Number.parseInt(this.media.publi_meta.y) ? this.limitMediaYPos(Number.parseInt(this.media.publi_meta.y)) : this.page.margin_top;
       this.rotate = this.media.publi_meta.hasOwnProperty('rotate') ? this.media.publi_meta.rotate : 0;
       this.mediaSize.width = this.media.publi_meta.hasOwnProperty('width') && !!Number.parseInt(this.media.publi_meta.width) ? this.limitMediaWidth(Number.parseInt(this.media.publi_meta.width)) : 100;
       this.mediaSize.height = this.media.publi_meta.hasOwnProperty('height') && !!Number.parseInt(this.media.publi_meta.height) ? this.limitMediaHeight(Number.parseInt(this.media.publi_meta.height)) : 100;
+      this.custom_css = this.media.publi_meta.hasOwnProperty('custom_css') ?  this.media.publi_meta.custom_css : this.custom_css;
+      this.mediaZIndex = this.media.publi_meta.hasOwnProperty('z_index') ? this.media.publi_meta.z_index : 0;
+
+      if(this.media.type) {
+        this.$nextTick(() => {
+          const el = this.$refs.media;
+          this.is_text_overflowing = (el.offsetHeight < el.firstElementChild.firstElementChild.firstElementChild.offsetHeight);
+        });
+      }
     },
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === 'debug') {

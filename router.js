@@ -131,10 +131,10 @@ module.exports = function(app) {
         pageData.mode = 'export_publication';
         res.render('index', pageData, (err, html) => {
           exporter
-            .copyPubliContent({
+            .copyFolderContent({
               html,
               folders_and_medias: pageData.folderAndMediaData,
-              slugPubliName
+              slugFolderName: slugPubliName
             })
             .then(
               cachePath => {

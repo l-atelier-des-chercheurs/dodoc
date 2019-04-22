@@ -1,5 +1,7 @@
 <template>
-  <div id="app">
+  <div id="app"
+    :class="{ 'is--wide' : $root.screen_is_wide }"
+  >
 
     <template 
       v-if="$root.state.mode === 'live'"
@@ -8,8 +10,7 @@
       <SystemBar
         v-if="$root.settings.enable_system_bar"
         :withTitleBar="true"
-      >
-      </SystemBar>
+      />
 
       <TopBar
         :has_back_button="$root.do_navigation.view !== 'ListView'"
@@ -19,6 +20,7 @@
       />
       
       <div class="m_activitiesPanel">
+
         <div 
           :style="{ cursor, userSelect}" 
           class="vue-splitter-container clearfix" 
@@ -30,7 +32,7 @@
 
             <div 
               class="m_activitiesPanel--do"
-              :class="{ 'is--large' : activitiesPanel_isLarge }"
+              :class="{ 'is--large' : activitiesPanel_is_comfortable }"
             >
               <div style="position: relative; height: 100%; overflow: hidden">
                 <!-- v-show="$root.do_navigation.view === 'ListView'" -->
@@ -84,6 +86,11 @@
             >
               <button
                 class="publiButton"
+                :title="$t('mix_medias')" 
+                v-tippy='{
+                  placement : "left",
+                  delay: [600, 0]
+                }'
                 :class="{ 
                   'is--open' : $root.settings.show_publi_panel, 
                   'is--dragged' : is_dragged,
@@ -94,7 +101,7 @@
                 :key="'openPubli'"
               >
                 <!-- v-if="$root.do_navigation.view !== 'CaptureView'" -->
-                <img src="/images/i_publi.svg" width="48" height="48" />
+                <img src="/images/i_marmite.svg" width="48" height="48" />
                 <span class="margin-small">
                   {{ $t('publication') }}
                 </span>
@@ -103,24 +110,42 @@
               <div style="position: relative; height: 100%; overflow: hidden">
                 <transition name="ListView" :duration="500">
                   <Publications
-                    v-if="$root.settings.show_publi_panel && !$root.settings.current_slugPubliName"
+                    v-if="$root.settings.show_publi_panel"
                     :publications="$root.store.publications"
                     :read_only="!$root.state.connected"
                   />
                 </transition>
                 <transition name="ProjectView" :duration="500">
                   <PagePublication
-                    v-if="$root.settings.current_slugPubliName !== false && $root.store.publications[$root.settings.current_slugPubliName].template === 'page_by_page'"
-                    :slugPubliName="$root.settings.current_slugPubliName"
-                    :publication="$root.store.publications[$root.settings.current_slugPubliName]"
+                    v-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'page_by_page'"
+                    :slugPubliName="$root.settings.current_publication.slug"
+                    :publication="$root.store.publications[$root.settings.current_publication.slug]"
                     :read_only="!$root.state.connected"
                   />
                   <VideoPublication
-                    v-else-if="$root.settings.current_slugPubliName !== false && $root.store.publications[$root.settings.current_slugPubliName].template === 'video_assemblage'"
-                    :slugPubliName="$root.settings.current_slugPubliName"
-                    :publication="$root.store.publications[$root.settings.current_slugPubliName]"
+                    v-else-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'video_assemblage'"
+                    :slugPubliName="$root.settings.current_publication.slug"
+                    :publication="$root.store.publications[$root.settings.current_publication.slug]"
                     :read_only="!$root.state.connected"
                   />
+                  <DrawingPad
+                    v-else-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'drawing_pad'"
+                    :slugPubliName="$root.settings.current_publication.slug"
+                    :publication="$root.store.publications[$root.settings.current_publication.slug]"
+                    :read_only="!$root.state.connected"
+                  />
+                  <StopmotionAnimation
+                    v-else-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'stopmotion_animation'"
+                    :slugPubliName="$root.settings.current_publication.slug"
+                    :publication="$root.store.publications[$root.settings.current_publication.slug]"
+                    :read_only="!$root.state.connected"
+                  />
+                  <MixAudioAndVideo
+                    v-else-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'mix_audio_and_video'"
+                    :slugPubliName="$root.settings.current_publication.slug"
+                    :publication="$root.store.publications[$root.settings.current_publication.slug]"
+                    :read_only="!$root.state.connected"
+                  />                  
                 </transition>
               </div>
             </div>
@@ -143,9 +168,9 @@
       v-else-if="$root.state.mode === 'export_publication' || $root.state.mode === 'print_publication'"
     >    
       <PagePublication
-        v-if="$root.settings.current_slugPubliName !== false"
-        :slugPubliName="$root.settings.current_slugPubliName"
-        :publication="$root.store.publications[$root.settings.current_slugPubliName]"
+        v-if="$root.settings.current_publication.slug !== false"
+        :slugPubliName="$root.settings.current_publication.slug"
+        :publication="$root.store.publications[$root.settings.current_publication.slug]"
         :read_only="!$root.state.connected"
       />
     </template>    
@@ -164,8 +189,12 @@ import CaptureView from './CaptureView.vue';
 import EditMedia from './components/modals/EditMedia.vue';
 
 import Publications from './Publications.vue';
-import PagePublication from './components/PagePublication.vue';
-import VideoPublication from './components/VideoPublication.vue';
+
+import PagePublication from './components/publication_templates/PagePublication.vue';
+import VideoPublication from './components/publication_templates/VideoPublication.vue';
+import DrawingPad from './components/publication_templates/DrawingPad.vue';
+import StopmotionAnimation from './components/publication_templates/StopmotionAnimation.vue';
+import MixAudioAndVideo from './components/publication_templates/MixAudioAndVideo.vue';
 
 import Resizer from './components/splitpane/Resizer.vue'
 import Pane from './components/splitpane/Pane.vue'
@@ -182,6 +211,9 @@ export default {
     Publications,
     PagePublication,
     VideoPublication,
+    DrawingPad,
+    StopmotionAnimation,
+    MixAudioAndVideo,
     Resizer, 
     Pane
   },
@@ -213,7 +245,7 @@ export default {
     cursor() {
       return this.is_dragged ? 'col-resize' : ''
     },
-    activitiesPanel_isLarge() {
+    activitiesPanel_is_comfortable() {
       if((this.percent/100*this.$root.settings.windowWidth) < 850) {
         return false;
       }
@@ -221,7 +253,8 @@ export default {
         return false;
       }
       return true;
-    }
+    },
+
   },
   methods: {
     // stopDragtogglePubli() {

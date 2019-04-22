@@ -5,6 +5,7 @@
   "redirect_port": "",
   "userDirPath": "documents",
   "userDirname": "dodoc2",
+  "cache_content": true,
 
   "contentDirname" : "user",
   "cacheDirname" : "cache",
@@ -87,6 +88,9 @@
             "read_only": true
           },
           "media_filename": {
+            "type": "string"
+          },
+          "original_media_filename": {
             "type": "string"
           },
           "type": {
@@ -175,7 +179,7 @@
         },
         "template": {
           "type": "string",
-          "options": ["page_by_page", "video_assemblage"],
+          "options": ["page_by_page", "video_assemblage", "drawing_pad", "stopmotion_animation", "mix_audio_and_video"],
           "default": "page_by_page"          
         },
         "style": {
@@ -252,6 +256,13 @@
           },
           "height": {
             "type": "number"
+          },
+          "z_index": {
+            "type": "number",
+            "clip": {
+              "min": -20000,
+              "max": 20000
+            }
           }
         }
       }
@@ -270,6 +281,9 @@
         },
         "authors": {
           "type": "array"
+        },
+        "linked_project": {
+          "type": "string"
         }
       },
       "medias": {

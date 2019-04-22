@@ -44,7 +44,6 @@
           :keywords="projectdata.keywords"
           @tagsChanged="newTags => projectdata.keywords = newTags"
         />
-        <small>{{ $t('validate_with_enter') }}</small>        
       </div>
 
 <!-- Author(s) -->
@@ -54,6 +53,7 @@
           :currentAuthors="projectdata.authors"
           @authorsChanged="newAuthors => projectdata.authors = newAuthors"
         />
+        <small>{{ $t('author_instructions') }}</small>
       </div>
 
     </template>
@@ -114,7 +114,7 @@ export default {
         return '';
       }
       const thumb = this.project.preview.filter(p => p.size === 640);
-      if(thumb.length > 0) { return `${thumb[0].path}?${(new Date()).getTime()}` }
+      if(thumb.length > 0) { return `${thumb[0].path}` }
       return '';
     }
   },
