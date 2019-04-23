@@ -628,12 +628,12 @@ export default {
     },
     'selected_mode': function() {
       console.log('WATCH • Capture: selected_mode : ' + this.selected_mode);
-      // this.mode_just_changed = true;
+      this.mode_just_changed = true;
       this.show_stopmotion_list = false;
 
       this.$root.settings.capture_options.selected_mode = this.selected_mode;
       window.setTimeout(()=> {
-        // this.mode_just_changed = false;
+        this.mode_just_changed = false;
       }, 1000);
       this.$nextTick(() => {
         this.startMode();
