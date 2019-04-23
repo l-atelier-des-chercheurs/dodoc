@@ -1272,13 +1272,13 @@ module.exports = (function() {
               let pathToMedia = path.join(slugFolderPath, mediaName);
 
               let imageBuffer = rawData;
+
               sharp(imageBuffer)
                 .rotate()
-                .withMetadata()
-                .background({ r: 255, g: 255, b: 255 })
                 .flatten()
-                .jpeg({
-                  quality: 90
+                .withMetadata()
+                .toFormat(global.settings.thumbFormat, {
+                  quality: global.settings.mediaThumbQuality
                 })
                 .toFile(pathToMedia, function(err, info) {
                   if (err) {
