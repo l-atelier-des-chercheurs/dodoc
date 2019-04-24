@@ -920,7 +920,7 @@ export default {
             resolve(stream);
           },
           (err) => {
-            return reject(this.$t('notifications.failed_to_start_video_change_source_or_res'));
+            return reject(this.$t('notifications.failed_to_start_video_change_source_or_res') + '<br>' + err);
           }
         );
       });
