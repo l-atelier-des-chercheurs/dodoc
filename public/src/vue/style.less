@@ -1817,6 +1817,9 @@ small {
 
 
 .m_captureview {
+  display: flex;
+  flex-flow: column nowrap;
+
 
   .m_captureview--modeSelector {
     display: flex;
@@ -1907,6 +1910,7 @@ small {
   }
 
   .m_captureview--panels {
+    flex: 1 1 auto;
     position: relative;
     height: auto;
     margin-bottom: @t-skipline;
@@ -1923,7 +1927,7 @@ small {
       .bg-blanc;
 
       &:nth-child(1) {
-        flex-basis: 70%;
+        flex-basis: 90%;
       }
       &:nth-child(2) {
         flex-basis: 0;
@@ -1965,7 +1969,7 @@ small {
     position: relative;
     display: flex;
     flex-flow: column nowrap;
-    height: ~"calc(100vh - 105px - 80px - 40px)";
+    // height: ~"calc(100vh - 105px - 80px - 40px)";
     min-height: 300px;
     border-radius: 10px;
     overflow: hidden;

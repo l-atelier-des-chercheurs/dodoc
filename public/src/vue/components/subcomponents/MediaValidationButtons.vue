@@ -3,13 +3,18 @@
     <button type="button" class="bg-transparent button-arrow"
       @click="selectedMoveLeft"
     >
-      ◀
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="169px"
+        height="169px" viewBox="0 0 169 169" style="enable-background:new 0 0 169 169;" xml:space="preserve">
+        <path fill="currentColor" d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z"/>
+      </svg>
     </button>
 
     <button
       type="button"
       class="button button-bg_rounded button-outline c-blanc"
-      @click="validateButton(0)"
+      @mousedown.stop.prevent="validateButton(0)"
+      @touchstart.stop.prevent="validateButton(0)"
+
       :class="{ 'is--selected' : selected_button === 0 }"
       @mouseover="selected_button = 0"
     >
@@ -72,7 +77,10 @@
     <button type="button" class="bg-transparent button-arrow"
       @click="selectedMoveRight"
     >
-      ▶
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="169px"
+        height="169px" viewBox="0 0 169 169" style="enable-background:new 0 0 169 169;" xml:space="preserve">
+        <path fill="currentColor" d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z"/>
+      </svg>
     </button>
 
     <div class="m_mediaValidationButtons--overlay"

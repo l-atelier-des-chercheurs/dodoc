@@ -1,10 +1,15 @@
 <template>
   <div class="m_captureview">
   <div class="m_captureview--modeSelector">
-      <button type="button" class="bg-transparent" @click="previousMode()"
+      <button type="button" class="bg-transparent" 
         v-show="!$root.settings.capture_mode_cant_be_changed"
+        @mousedown.stop.prevent="previousMode()"        
+        @touchstart.stop.prevent="previousMode()"        
       >
-        ◀
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="169px"
+          height="169px" viewBox="0 0 169 169" style="enable-background:new 0 0 169 169;" xml:space="preserve">
+          <path fill="currentColor" d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z"/>
+        </svg>
       </button>
       
       <div 
@@ -19,10 +24,15 @@
           <span>{{ $t(mode.key) }}</span>
         </label>
       </div>
-      <button type="button" class="bg-transparent" @click="nextMode()"
+      <button type="button" class="bg-transparent"
         v-show="!$root.settings.capture_mode_cant_be_changed"
+        @mousedown.stop.prevent="nextMode()"        
+        @touchstart.stop.prevent="nextMode()"        
       >
-        ▶
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="169px"
+          height="169px" viewBox="0 0 169 169" style="enable-background:new 0 0 169 169;" xml:space="preserve">
+          <path fill="currentColor" d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z"/>
+        </svg>        
       </button>
     </div>
 
@@ -303,8 +313,8 @@
               <button type="button" 
                 class="padding-verysmall bg-transparent m_panel--buttons--row--captureButton--btn"
                 :class="{ 'is--justCaptured' : capture_button_pressed }"
-                @mousedown="captureOrStop()"
-                @touchstart="captureOrStop()"
+                @mousedown.stop.prevent="captureOrStop()"
+                @touchstart.stop.prevent="captureOrStop()"
               >
                 <img v-if="!is_recording" src="/images/i_record.svg">
                 <img v-else src="/images/i_stop.svg">
