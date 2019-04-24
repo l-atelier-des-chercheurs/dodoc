@@ -84,13 +84,14 @@ export default {
     return {
       show_export_modal: false,
       publication_medias: [],
-      medias_slugs_in_order: []
+      medias_slugs_in_order: [],
+      accepted_media_type: ['audio', 'video']
     }
   },
   created() {
   },
   mounted() {
-    this.$root.settings.current_publication.accepted_media_type = ['video', 'audio'];
+    this.$root.settings.current_publication.accepted_media_type = this.accepted_media_type;
 
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
@@ -199,8 +200,6 @@ export default {
         console.log(`METHODS • Publication: updateMediasPubli`);
       }
 
-      this.$root.settings.current_publication.accepted_media_type = ['video', 'audio'];
-
       if(!this.publication.hasOwnProperty('medias') || Object.keys(this.publication.medias).length === 0) {
         this.publication_medias = [];        
         return;
@@ -276,8 +275,7 @@ export default {
 
 
       const types_of_medias = publi_medias.map(m => m.type);
-      // this.$root.settings.current_publication.accepted_media_type = ['video', 'audio'];
-      this.$root.settings.current_publication.accepted_media_type = this.$root.settings.current_publication.accepted_media_type.filter(t => !types_of_medias.includes(t));
+      this.$root.settings.current_publication.accepted_media_type = this.accepted_media_type.filter(t => !types_of_medias.includes(t));
 
       this.publication_medias = publi_medias;        
     }
