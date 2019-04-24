@@ -32,7 +32,8 @@
     <button class="m_mediaPublication--overflowing_sign"
       type="button"
       v-if="media.type === 'text' && is_text_overflowing"
-      @click="setMediaHeightToContent"
+      @mousedown.stop.prevent="setMediaHeightToContent"
+      @touchstart.stop.prevent="setMediaHeightToContent"   
       :title="$t('text_overflow')"
       v-tippy='{ 
         placement : "top",
@@ -43,7 +44,8 @@
     </button>
 
     <div class="m_mediaPublication--edit_styles"
-      v-if="show_edit_styles_window && (is_selected || is_hovered)"
+    
+      v-if="(is_selected || is_hovered || is_touch) && !preview_mode && show_edit_styles_window"
     >
       <button type="button" class="m_mediaPublication--edit_styles--helpButton"
         :title="$t('write_some_CSS_code_for_example')"
@@ -105,8 +107,8 @@
       <button 
         type="button" 
         class="buttonLink _no_underline" 
-        @click.prevent.stop="editZIndex(+1)"
-        @touchstart.prevent.stop="editZIndex(+1)"
+        @mousedown.stop.prevent="editZIndex(+1)"
+        @touchstart.stop.prevent="editZIndex(+1)"   
         :title="$t('move_to_foreground') + '<br>' + 'z-index: ' + mediaZIndex"
         v-tippy='{ 
           placement : "top",
@@ -122,9 +124,9 @@
 
       <button 
         type="button" 
-        class="buttonLink _no_underline" 
-        @click.prevent.stop="editZIndex(-1)"
-        @touchstart.prevent.stop="editZIndex(-1)"
+        class="buttonLink _no_underline"         
+        @mousedown.stop.prevent="editZIndex(-1)"
+        @touchstart.stop.prevent="editZIndex(-1)"
         :title="$t('move_to_background') + '<br>' + 'z-index: ' + mediaZIndex"
         v-tippy='{ 
           placement : "top",
@@ -141,8 +143,8 @@
       <button 
         type="button" 
         class="buttonLink _no_underline" 
-        @click.prevent.stop="toggleEditWindow()"
-        @touchstart.prevent.stop="toggleEditWindow()"
+        @mousedown.stop.prevent="toggleEditWindow()"
+        @touchstart.stop.prevent="toggleEditWindow()"
         :class="{ 'is--active' : show_edit_styles_window }"
       >
         {{ $t('css') }}<sup v-if="custom_css">*</sup>
@@ -150,8 +152,8 @@
       <button 
         type="button" 
         class="buttonLink _no_underline"
-        @click.prevent.stop="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
-        @touchstart.prevent.stop="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
+        @mousedown.stop.prevent="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
+        @touchstart.stop.prevent="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
       >
         <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100.7px"
           height="101px" viewBox="0 0 100.7 101" style="enable-background:new 0 0 100.7 101;" xml:space="preserve">
@@ -163,8 +165,7 @@
       <button 
         type="button" 
         class="buttonLink _no_underline" 
-        @click.prevent.stop="removePubliMedia()"
-        @touchstart.prevent.stop="removePubliMedia()"
+        @click.stop.prevent="removePubliMedia()"
       >
         <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="37.2px"
           height="37.2px" viewBox="0 0 37.2 37.2" style="enable-background:new 0 0 37.2 37.2;" xml:space="preserve">

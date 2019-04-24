@@ -101,7 +101,8 @@
       <button 
         class="margin-vert-verysmall font-verysmall" 
         :class="{ 'is--active' : !preview_mode }"
-        @click="preview_mode = !preview_mode"
+        @mousedown.stop.prevent="preview_mode = !preview_mode"
+        @touchstart.stop.prevent="preview_mode = !preview_mode"   
       >
         <svg version="1.1"
           xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
@@ -154,7 +155,8 @@
       </button> -->
 
       <button class="margin-vert-verysmall font-verysmall" 
-        @click="toggleFullscreen()"
+        @mousedown.stop.prevent="toggleFullscreen"
+        @touchstart.stop.prevent="toggleFullscreen"   
       >
         <svg version="1.1"
           v-if="!fullscreen_mode"
@@ -180,7 +182,8 @@
 
       <button class="margin-vert-verysmall font-verysmall" 
         :disabled="zoom === zoom_max"
-        @click="zoom += 0.1"
+        @mousedown.stop.prevent="zoom += 0.1"
+        @touchstart.stop.prevent="zoom += 0.1"   
       >
         <svg version="1.1"
           xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
@@ -193,7 +196,8 @@
       </button>
       <button class="margin-vert-verysmall font-verysmall" 
         :disabled="zoom === zoom_min"
-        @click="zoom -= 0.1"
+        @mousedown.stop.prevent="zoom -= 0.1"
+        @touchstart.stop.prevent="zoom -= 0.1"   
       >
         <svg version="1.1"
           xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
