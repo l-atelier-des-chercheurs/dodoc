@@ -1212,7 +1212,7 @@ export default {
     },
     sendMedia({ fav = false }) {
       return new Promise((resolve, reject) => {
-        console.log(`METHODS • ValidateMedia: sendMedia with fav=${fav}`);
+        console.log(`METHODS • CaptureView: sendMedia with fav=${fav}`);
         if (this.$root.state.dev_mode === 'debug') {
           console.log(`METHODS • CaptureView / sendMedia`);
         }
