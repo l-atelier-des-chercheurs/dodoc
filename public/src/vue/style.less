@@ -1829,7 +1829,7 @@ small {
     align-items: center;
     padding: @t-skipline/2 0;
 
-    #app:not(.is--wide) & {
+    .m_activitiesPanel--do:not(.is--large) & {
       flex-flow: row nowrap;
     }
 
@@ -1837,7 +1837,7 @@ small {
     button {
       .c-orange;
 
-      #app:not(.is--wide) & {
+      .m_activitiesPanel--do:not(.is--large) & {
         display: none;
       }
     }
@@ -1856,7 +1856,9 @@ small {
 
     input:checked + label {
       .bg-orange;
-      .c-blanc;
+      span {
+        .c-blanc;
+      }
     }
 
     input[disabled] + label {
@@ -1876,6 +1878,9 @@ small {
       text-align: center;
       transition: all 1s;
 
+      .m_activitiesPanel--do:not(.is--large) & {
+        margin: 0vw 1vw;
+      }
 
       .picto {
         border-radius: 50%;
@@ -1887,7 +1892,7 @@ small {
         padding: 4px;
         .bg-orange;
 
-        #app:not(.is--wide) & {
+        .m_activitiesPanel--do:not(.is--large) & {
           margin: 0;
         }
 
@@ -1901,8 +1906,13 @@ small {
         font-weight: 400;
         text-transform: lowercase;
         margin: @t-skipline/4 @t-skipline/4;
+        font-family: 'Fira Code';
+        // text-transform: uppercase;
+        .label;
+        font-weight: 600;
+        // .c-noir;
 
-        #app:not(.is--wide) & {
+        .m_activitiesPanel--do:not(.is--large) & {
           display: none;
         }
       }
