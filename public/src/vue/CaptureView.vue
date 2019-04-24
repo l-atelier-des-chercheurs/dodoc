@@ -303,7 +303,8 @@
               <button type="button" 
                 class="padding-verysmall bg-transparent m_panel--buttons--row--captureButton--btn"
                 :class="{ 'is--justCaptured' : capture_button_pressed }"
-                @click="captureOrStop()"
+                @mousedown="captureOrStop()"
+                @touchstart="captureOrStop()"
               >
                 <img v-if="!is_recording" src="/images/i_record.svg">
                 <img v-else src="/images/i_stop.svg">
