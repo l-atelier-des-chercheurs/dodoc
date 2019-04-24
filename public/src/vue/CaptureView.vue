@@ -30,7 +30,6 @@
       :class="{ 'stopmotion_inprogress' : $root.store.stopmotions.hasOwnProperty(current_stopmotion) }"
     >
       <div class="m_panel">
-
         <transition name="enableMode" :duration="400">
           <div class="m_panel--modeOverlay"
             v-if="mode_just_changed"
@@ -42,7 +41,6 @@
         <div class="m_panel--previewCard"
           v-show="!is_validating_stopmotion_video"
         >
-
           <div class="m_panel--previewCard--live"
             :class="{ 'is--recording' : is_recording }"
           >
@@ -59,11 +57,16 @@
                     </span>
                     <select v-if="sorted_available_devices.hasOwnProperty(kind)" v-model="selected_devicesId[kind]">
                       <option 
-                        v-for="device in sorted_available_devices[kind]" 
+                        v-for="(device, index) in sorted_available_devices[kind]" 
                         :value="device.deviceId" 
                         :key="device.deviceId"
                       >
-                        {{ device.label }}
+                        <template v-if="device.label === ''">
+                          {{ $t('device') }} {{ index }}
+                        </template>
+                        <template v-else>
+                          {{ $t(device.label) }}
+                        </template>
                       </option>        
                     </select>
                   </div>

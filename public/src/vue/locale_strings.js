@@ -31,6 +31,9 @@ module.exports = (function() {
       validate_with_enter: 'Valider avec la touche ENTRÉE.',
       no_stopmotion_created_yet:
         'Les animations créées apparaîtront dans ce panneau.',
+      device: 'Appareil',
+      'camera2 1, facing front': 'Caméra frontale',
+      'camera2 0, facing back': 'Caméra arrière',
 
       cooking_pot: 'La marmite',
       text_overflow: 'Texte en excès',
@@ -350,6 +353,7 @@ module.exports = (function() {
       validate_with_enter: 'Validate with ENTER.',
       no_stopmotion_created_yet:
         'Created stopmotion animations will appear in this list.',
+      device: 'Device',
 
       cooking_pot: 'Cooking pot',
       text_overflow: 'Overflow text',
