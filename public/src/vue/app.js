@@ -778,7 +778,7 @@ let vm = new Vue({
       return this.$moment(this.currentTime).format('LL   LTS');
     },
     screen_is_wide() {
-      if (this.settings.windowWidth < 850) {
+      if (this.settings.windowWidth < 750) {
         return false;
       }
       return true;

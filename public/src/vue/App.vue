@@ -28,7 +28,7 @@
           <pane 
             class="splitter-pane splitter-paneL" 
             :class="{ 'is--dragged' : is_dragged }"
-            :split="split" :style="{ [type]: percent+'%'}">
+            :split="split" :style="{ [type]: activity_panel_percent+'%'}">
 
             <div 
               class="m_activitiesPanel--do"
@@ -69,7 +69,7 @@
           <resizer 
             :class="{ 'is--dragged' : is_dragged }"
             :className="className" 
-            :style="{ [resizeType]: percent+'%'}" 
+            :style="{ [resizeType]: activity_panel_percent+'%'}" 
             :split="split" 
             @mousedown.native="onMouseDown" 
             @click.native="onClick">
@@ -79,12 +79,13 @@
             class="splitter-pane splitter-paneR" 
             :class="{ 'is--dragged' : is_dragged }"
             :split="split" 
-            :style="{ [type]: 100-percent+'%'}">
+            :style="{ [type]: 100-activity_panel_percent+'%'}">
             <div 
               class="m_activitiesPanel--doc"
               :class="{ 'is--open' : $root.settings.show_publi_panel }"
             >
               <button
+                v-if="$root.screen_is_wide"
                 class="publiButton"
                 :title="$t('mix_medias')" 
                 v-tippy='{
@@ -94,7 +95,7 @@
                 :class="{ 
                   'is--open' : $root.settings.show_publi_panel, 
                   'is--dragged' : is_dragged,
-                  'is--allthewaytotheleft' : percent === 0 
+                  'is--allthewaytotheleft' : activity_panel_percent === 0 
                 }"
                 @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
                 @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"   
@@ -262,7 +263,12 @@ export default {
       }
       return true;
     },
-
+    activity_panel_percent() {
+      if(!this.$root.screen_is_wide) {
+        return 100;
+      }
+      return this.percent;
+    }
   },
   methods: {
     // stopDragtogglePubli() {
