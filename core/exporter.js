@@ -692,7 +692,7 @@ module.exports = (function() {
       ffmpeg_task
         .withVideoCodec('libx264')
         .withVideoBitrate('4000k')
-        .withAudioCodec('libmp3lame')
+        .withAudioCodec('aac')
         .withAudioBitrate('128k')
         .toFormat('mp4')
         .on('progress', progress => {
@@ -750,7 +750,7 @@ module.exports = (function() {
         .addOptions(['-map 0:v:0', '-map 1:a:0'])
         .withVideoCodec('libx264')
         .withVideoBitrate('4000k')
-        .withAudioCodec('libmp3lame')
+        .withAudioCodec('aac')
         .withAudioBitrate('128k')
         .toFormat('mp4')
         .on('progress', progress => {
@@ -806,7 +806,7 @@ module.exports = (function() {
       ffmpeg_task
         .withVideoCodec('libx264')
         .withVideoBitrate('4000k')
-        .withAudioCodec('libmp3lame')
+        .withAudioCodec('aac')
         .withAudioBitrate('128k')
         .toFormat('mp4')
         .on('progress', progress => {
