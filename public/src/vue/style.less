@@ -870,7 +870,7 @@ small {
         .custom_scrollbar(8px, 5px, 6px);
         .padding-sides-small;
 
-        @supports (display: grid) {
+        @supports (display: grid) {          
           grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
           .padding-sides-medium;
         }    
@@ -954,7 +954,13 @@ small {
   @supports (display: grid) {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+    // grid-template-rows: max-content;
+    grid-auto-rows: max-content;
+    // grid-template-rows: auto;
     grid-gap: @t-skipline;  
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: start;
     .padding-sides-small;
   }
 
@@ -1127,6 +1133,7 @@ small {
     @supports (display: grid) {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); 
+      grid-auto-rows: max-content;
       .padding-sides-small;   
       grid-gap: @t-skipline/2;  
     }
