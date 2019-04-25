@@ -10,7 +10,7 @@
       @export="show_export_modal = true"
     />
 
-    <ExportAudioAndVideoMixModal
+    <ExportAudioAndImageMixModal
       v-if="show_export_modal"
       @close="show_export_modal = false"
       :slugPubliName="slugPubliName"
@@ -19,7 +19,7 @@
     <div class="m_mixAudioAndImagePublication">
       <div class="margin-medium" v-if="publication_medias.length === 0">
         <p>
-          <small v-html="$t('add_sound_video_file')" />
+          <small v-html="$t('add_sound_image_file')" />
         </p>
       </div>
 
@@ -67,7 +67,7 @@
 <script>
 import PublicationHeader from '../subcomponents/PublicationHeader.vue';
 import MediaContent from '../subcomponents/MediaContent.vue';
-import ExportAudioAndVideoMixModal from '../modals/ExportAudioAndVideoMix.vue';
+import ExportAudioAndImageMixModal from '../modals/ExportAudioAndImageMix.vue';
 
 export default {
   props: {
@@ -78,14 +78,14 @@ export default {
   components: {
     PublicationHeader,
     MediaContent,
-    ExportAudioAndVideoMixModal
+    ExportAudioAndImageMixModal
   },
   data() {
     return {
       show_export_modal: false,
       publication_medias: [],
       medias_slugs_in_order: [],
-      accepted_media_type: ['audio', 'video']
+      accepted_media_type: ['audio', 'image']
     }
   },
   created() {

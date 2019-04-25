@@ -315,7 +315,6 @@ module.exports = (function() {
               } else if (type_of_publication === 'mix_audio_and_video') {
                 // merge audio and video
                 // see https://stackoverflow.com/questions/30595594/fluent-ffmpeg-merging-video-and-audio-wrong-frames
-
                 _mixAudioAndVideo({
                   medias_with_original_filepath,
                   cachePath,
@@ -329,6 +328,7 @@ module.exports = (function() {
                     return reject(`Failed to make a video ${err}`);
                   });
               } else if (type_of_publication === 'mix_audio_and_image') {
+                // merge audio and image
                 _mixAudioAndImage({
                   medias_with_original_filepath,
                   cachePath,
@@ -804,8 +804,6 @@ module.exports = (function() {
       let time_since_last_report = 0;
 
       ffmpeg_task
-        .addOptions(['-c:v copy', '-c:a aac'])
-        .addOptions(['-map 0:v:0', '-map 1:a:0'])
         .withVideoCodec('libx264')
         .withVideoBitrate('4000k')
         .withAudioCodec('libmp3lame')

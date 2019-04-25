@@ -146,6 +146,12 @@
                     :publication="$root.store.publications[$root.settings.current_publication.slug]"
                     :read_only="!$root.state.connected"
                   />                  
+                  <MixAudioAndImage
+                    v-else-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'mix_audio_and_image'"
+                    :slugPubliName="$root.settings.current_publication.slug"
+                    :publication="$root.store.publications[$root.settings.current_publication.slug]"
+                    :read_only="!$root.state.connected"
+                  />                  
                 </transition>
               </div>
             </div>
@@ -195,6 +201,7 @@ import VideoPublication from './components/publication_templates/VideoPublicatio
 import DrawingPad from './components/publication_templates/DrawingPad.vue';
 import StopmotionAnimation from './components/publication_templates/StopmotionAnimation.vue';
 import MixAudioAndVideo from './components/publication_templates/MixAudioAndVideo.vue';
+import MixAudioAndImage from './components/publication_templates/MixAudioAndImage.vue';
 
 import Resizer from './components/splitpane/Resizer.vue'
 import Pane from './components/splitpane/Pane.vue'
@@ -214,6 +221,7 @@ export default {
     DrawingPad,
     StopmotionAnimation,
     MixAudioAndVideo,
+    MixAudioAndImage,
     Resizer, 
     Pane
   },
