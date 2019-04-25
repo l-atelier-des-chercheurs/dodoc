@@ -4,7 +4,7 @@ const { app, BrowserWindow, Menu } = electron;
 const electronPDFWindow = require('electron-pdf-window');
 
 const { dialog } = require('electron');
-const JSONStorage = require('node-localstorage').JSONStorage;
+const windowStateKeeper = require('electron-window-state');
 
 module.exports = (function() {
   return {
@@ -47,28 +47,18 @@ module.exports = (function() {
       app.commandLine.appendSwitch('--ignore-certificate-errors');
       app.commandLine.appendSwitch('--disable-http-cache');
 
-      var storageLocation = app.getPath('userData');
-      global.nodeStorage = new JSONStorage(storageLocation);
-
-      var windowState = {};
-      try {
-        windowState = global.nodeStorage.getItem('windowstate')
-          ? global.nodeStorage.getItem('windowstate')
-          : {};
-        dev.log('Found defaults for windowState');
-      } catch (err) {
-        dev.log('No default for windowState');
-      }
+      let mainWindowState = windowStateKeeper({
+        defaultWidth: 1000,
+        defaultHeight: 800
+      });
 
       // Create the browser window.
       win = new BrowserWindow({
-        x: (windowState.bounds && windowState.bounds.x) || undefined,
-        y: (windowState.bounds && windowState.bounds.y) || undefined,
-        width: (windowState.bounds && windowState.bounds.width) || 1200,
-        height: (windowState.bounds && windowState.bounds.height) || 800,
-
+        x: mainWindowState.x,
+        y: mainWindowState.y,
+        width: mainWindowState.width,
+        height: mainWindowState.height,
         backgroundColor: '#EBEBEB',
-        show: false,
         titleBarStyle: 'hidden',
 
         webPreferences: {
@@ -79,32 +69,8 @@ module.exports = (function() {
         }
       });
 
+      mainWindowState.manage(win);
       electronPDFWindow.addSupport(win);
-
-      if (windowState.isMaximized) {
-        win.maximize();
-      }
-
-      var storeWindowState = function() {
-        windowState.isMaximized = win.isMaximized();
-        if (!windowState.isMaximized) {
-          // only update bounds if the window isn't currently maximized
-          windowState.bounds = win.getBounds();
-        }
-        global.nodeStorage.setItem('windowstate', windowState);
-      };
-
-      ['close'].forEach(function(e) {
-        win.on(e, function() {
-          try {
-            storeWindowState();
-          } catch (e) {
-            dev.error(
-              'Couldn’t update local settings with window position: ' + e
-            );
-          }
-        });
-      });
 
       if (process.platform == 'darwin') {
         app.setAboutPanelOptions({
