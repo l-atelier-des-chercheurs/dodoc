@@ -82,7 +82,9 @@ module.exports = function(app) {
 
   function loadFolderOrMedia(req, res) {
     let slugProjectName = req.param('project');
-    let metaFileName = req.param('metaFileName');
+    let metaFileName = req.param('metaFileName')
+      ? req.param('metaFileName').replace(/\*/g, '.')
+      : undefined;
 
     generatePageData(req).then(
       pageData => {
@@ -93,10 +95,30 @@ module.exports = function(app) {
             foldersData => {
               pageData.slugProjectName = slugProjectName;
               pageData.folderAndMediaData = foldersData;
-              if (metaFileName) {
-                pageData.metaFileName = metaFileName;
+              if (req.query.hasOwnProperty('display')) {
+                pageData.display = req.query['display'];
               }
-              res.render('index', pageData);
+              if (!metaFileName) {
+                return res.render('index', pageData);
+              }
+
+              pageData.metaFileName = metaFileName;
+
+              file
+                .readMediaList({
+                  type: 'projects',
+                  medias_list: [
+                    {
+                      slugFolderName: slugProjectName,
+                      metaFileName
+                    }
+                  ]
+                })
+                .then(folders_and_medias => {
+                  pageData.folderAndMediaData[slugProjectName].medias =
+                    folders_and_medias[slugProjectName].medias;
+                  return res.render('index', pageData);
+                });
             },
             (err, p) => {
               dev.error(`Failed to get folder: ${err}`);

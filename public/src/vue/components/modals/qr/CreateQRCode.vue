@@ -1,6 +1,11 @@
 <template>
   <div>
-    <div class="hide_on_print" v-html="$t('toconnectwithanotherdevice')" />
+    <div class="hide_on_print">
+      <p>
+        <small v-html="$t('toconnectwithanotherdevice')" 
+        />
+      </p>
+    </div>
 
     <div v-for="(ip, index) in $root.state.localNetworkInfos.ip"
       class="m_qrSnippet"
@@ -32,10 +37,22 @@
           <template v-if="nameOfProject">
             • {{ nameOfProject }} •<br><br>
           </template>
-          <span class="font-verysmall">
+
+          <div class="margin-bottom-small font-verysmall">
             {{ getURLToApp(ip) }}
-          </span>
+          </div>
+
         </a>
+
+        <div class="margin-bottom-small" v-if="media">
+          <span class="switch switch-xs">
+            <input type="checkbox" class="switch" id="open_in_dodoc" v-model="open_in_dodoc">
+            <label for="open_in_dodoc">
+              {{ $t('open_in_dodoc') }}
+            </label>
+          </span>
+        </div>
+
       </div>
     </div>
 
@@ -45,12 +62,13 @@
 import qrcode from '@xkeshi/vue-qrcode';
 
 export default {
-  props: ['slugProjectName', 'media_filename'],
+  props: ['slugProjectName', 'media'],
   components: {
     qrcode
   },
   data() {
     return {
+      open_in_dodoc: false
     }
   },
   created() {
@@ -97,8 +115,12 @@ export default {
 
       if(this.slugProjectName) {
         url.pathname = this.slugProjectName;
-        if(this.media_filename) {
-          url.pathname += `/media/${this.media_filename}`;
+        if(this.media) {
+          const urlSafe_metaFileName = this.media.metaFileName.replace(/\./g, '*');
+          url.pathname += `/media/${urlSafe_metaFileName}`;
+          if(!this.open_in_dodoc) {
+            url.search += `display=standalone`;
+          }
         }
       }
       return url;        

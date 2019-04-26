@@ -1325,10 +1325,12 @@ small {
   .padding-none;
   .margin-vert-medium;
   .button-inline;
+  cursor: initial;
   .bg-creme;
 
   .m_qrSnippet--text {
     .button;
+    cursor: initial;
     .margin-small;
     margin-top: 0;
     background-color: transparent;
@@ -1336,6 +1338,7 @@ small {
     a {
       display: block;
       background-color: transparent;
+      text-decoration: none;
     }
     img {
       width: 150px;
@@ -3497,6 +3500,7 @@ small {
     }
   }
 
+
   .mediaContainer {
     overflow: hidden;
     height: 100%;
@@ -3629,6 +3633,36 @@ small {
     }
   }
 }
+
+.m_standaloneMedia {
+  width: 100%;
+  height: 100%;
+  
+  .mediaContainer {
+    width: 100%;
+    height: 100%;
+    .bg-noir;
+    
+    > * {
+      width: 100%;
+      height: 100%;
+      // padding: 5vmin;
+      background-color: transparent;
+      object-fit: contain;
+
+      .plyr .plyr__controls {
+        .c-blanc;
+      }
+
+      .plyr--audio {
+        padding: 40vh 0;
+        margin: 0 auto;
+        max-width: 500px;
+      }
+    }
+  }
+}
+
 
 .m_mediaCSSEditWindow {
   position: fixed;

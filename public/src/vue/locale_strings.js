@@ -66,6 +66,7 @@ module.exports = (function() {
       gb: 'Go',
       duration: 'Durée',
       send: 'Envoyer',
+      open_in_dodoc: 'Ouvrir dans do•doc',
 
       login: 'S’identifier',
       help: 'Aide',
@@ -379,6 +380,7 @@ module.exports = (function() {
       gb: 'GB',
       duration: 'Duration',
       send: 'Send',
+      open_in_dodoc: 'Open in do•doc',
 
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',

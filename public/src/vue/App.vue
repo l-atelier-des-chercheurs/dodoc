@@ -2,11 +2,9 @@
   <div id="app"
     :class="{ 'is--wide' : $root.screen_is_wide }"
   >
-
     <template 
-      v-if="$root.state.mode === 'live'"
+      v-if="$root.state.mode === 'live' && $root.store.request.display !== 'standalone'"
     >    
-
       <SystemBar
         v-if="$root.settings.enable_system_bar"
         :withTitleBar="true"
@@ -181,6 +179,16 @@
         :read_only="!$root.state.connected"
       />
     </template>    
+    <template v-else-if="$root.store.request.display === 'standalone'">
+      <div class="m_standaloneMedia">
+        <MediaContent
+          class=""
+          :context="'full'"
+          :slugFolderName="$root.store.request.slugProjectName"
+          :media="$root.requested_media"
+        />
+      </div>
+    </template>
 
     <portal-target name="modal_container" />
 
@@ -195,6 +203,7 @@ import ProjectView from './ProjectView.vue';
 import CaptureView from './CaptureView.vue';
 import EditMedia from './components/modals/EditMedia.vue';
 
+import MediaContent from './components/subcomponents/MediaContent.vue';
 import Publications from './Publications.vue';
 
 import PagePublication from './components/publication_templates/PagePublication.vue';
@@ -224,7 +233,8 @@ export default {
     MixAudioAndVideo,
     MixAudioAndImage,
     Resizer, 
-    Pane
+    Pane,
+    MediaContent
   },
   props: {
   },

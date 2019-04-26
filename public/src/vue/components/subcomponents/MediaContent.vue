@@ -76,7 +76,7 @@
     </template>
 
     <template v-else-if="media.type === 'document'">
-      <div v-if="context !== 'edit'" class="">
+      <div v-if="context !== 'edit' && context !== 'full'" class="">
         <pre>
   {{ media.media_filename }}
         </pre>

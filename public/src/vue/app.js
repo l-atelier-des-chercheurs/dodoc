@@ -555,13 +555,19 @@ let vm = new Vue({
     if (window.state.dev_mode === 'debug') {
       console.log('ROOT EVENT: created');
     }
+
+    if (this.store.request.display === 'standalone') {
+      debugger;
+      return false;
+    }
+
     if (this.settings.enable_system_bar) {
       document.body.classList.add('has_systembar');
     }
 
-    if (window.state.dev_mode === 'debug') {
-      console.log('ROOT EVENT: created / checking for password');
-    }
+    // if (window.state.dev_mode === 'debug') {
+    //   console.log('ROOT EVENT: created / checking for password');
+    // }
 
     if (!window.state.is_electron && this.state.session_password !== '') {
       function hashCode(s) {
@@ -612,9 +618,10 @@ let vm = new Vue({
         // requesting edit of a media
         if (this.store.request.metaFileName) {
           this.$eventHub.$once('socketio.projects.listMedias', () => {
+            const metaFileName = this.store.request.metaFileName;
             this.openMedia({
               slugProjectName: this.store.request.slugProjectName,
-              metaFileName: this.store.request.metaFileName + '.txt'
+              metaFileName
             });
           });
         }
@@ -729,6 +736,10 @@ let vm = new Vue({
         this.closeProject();
         return {};
       }
+    },
+    requested_media() {
+      return this.$root.store.projects[this.$root.store.request.slugProjectName]
+        .medias[this.$root.store.request.metaFileName];
     },
     allAuthors() {
       let allAuthors = [];
