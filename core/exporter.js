@@ -636,6 +636,7 @@ module.exports = (function() {
     resolution
   }) {
     return new Promise(function(resolve, reject) {
+      dev.logfunction('EXPORTER — _prepareImageForStopmotion');
       // let slugStopmotionPath = getFolderPath(
       //   path.join(
       //     global.settings.structure['stopmotions'].path,
@@ -676,6 +677,8 @@ module.exports = (function() {
     socket
   }) {
     return new Promise(function(resolve, reject) {
+      dev.logfunction('EXPORTER — _makeVideoAssemblage');
+
       const videoPath = path.join(cachePath, videoName);
       var ffmpeg_task = new ffmpeg();
 
@@ -726,6 +729,8 @@ module.exports = (function() {
     socket
   }) {
     return new Promise(function(resolve, reject) {
+      dev.logfunction('EXPORTER — _mixAudioAndVideo');
+
       const videoPath = path.join(cachePath, videoName);
       var ffmpeg_task = new ffmpeg();
 
@@ -784,6 +789,8 @@ module.exports = (function() {
     socket
   }) {
     return new Promise(function(resolve, reject) {
+      dev.logfunction('EXPORTER — _mixAudioAndImage');
+
       const videoPath = path.join(cachePath, videoName);
       var ffmpeg_task = new ffmpeg();
 
@@ -803,9 +810,35 @@ module.exports = (function() {
 
       let time_since_last_report = 0;
 
+      let video_height = 720;
+      let resolution = {
+        width: 0,
+        height: video_height
+      };
+
+      let ratio = image_files[0].ratio;
+      if (!ratio) {
+        ratio = 0.75;
+      }
+      const new_width = 2 * Math.round(video_height / ratio / 2);
+      resolution.width = new_width;
+
+      dev.logverbose(
+        `About to create a speaking picture with resolution = ${JSON.stringify(
+          resolution
+        )}`
+      );
+
       ffmpeg_task
         .withVideoCodec('libx264')
         .withVideoBitrate('4000k')
+        .addOptions(['-preset slow', '-tune animation'])
+        .addOption(
+          '-vf',
+          `scale=w=${resolution.width}:h=${
+            resolution.height
+          }:force_original_aspect_ratio=increase`
+        )
         .withAudioCodec('aac')
         .withAudioBitrate('128k')
         .toFormat('mp4')
