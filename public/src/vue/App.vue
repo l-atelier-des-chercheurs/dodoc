@@ -186,6 +186,7 @@
           :context="'full'"
           :slugFolderName="$root.store.request.slugProjectName"
           :media="$root.requested_media"
+          v-model="$root.requested_media.content"
         />
       </div>
     </template>

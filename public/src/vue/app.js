@@ -557,7 +557,6 @@ let vm = new Vue({
     }
 
     if (this.store.request.display === 'standalone') {
-      debugger;
       return false;
     }
 

@@ -980,7 +980,8 @@ small {
 
     .m_project--presentation {
       @supports (display: grid) {
-        flex-basis: 100%;
+        flex-basis: 100% !important;
+        // flex-basis: auto !important;
       }
     }
   }
@@ -1057,7 +1058,7 @@ small {
         .margin-none;
         .padding-sides-small;
         .padding-vert-small;
-        padding-top: @t-skipline * 0.66;
+        // padding-top: @t-skipline * 0.66;
         .padding-bottom-verysmall;
         .font-folder_title;
       }
@@ -3660,6 +3661,20 @@ small {
         max-width: 500px;
       }
     }
+
+    &.type-text {
+      background: transparent;
+      width: 66ch;
+      margin: @t-skipline auto;
+      // .font-medium;
+      @import "less/publications_styles/standard.less";
+    
+      height: auto;
+      & > * {
+        height: auto;
+      }
+    }
+    
   }
 }
 
@@ -3919,6 +3934,7 @@ small {
     &.ql-container {
       flex: 1 1 auto;
       height: auto;
+      @import (multiple) "less/publications_styles/standard.less";
     }
     .ql-editor {
       .textarea;
@@ -3970,7 +3986,6 @@ small {
         margin-right: 15px;
         /* font-style: italic; */
       }
-      @import (multiple) "less/publications_styles/standard.less";
     }
   }
 }
