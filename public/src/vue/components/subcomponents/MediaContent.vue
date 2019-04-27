@@ -37,7 +37,7 @@
         :slugFolderName="slugFolderName"
         ref="textField"
       />
-      <div v-else class="">
+      <div v-else class="mediaTextContent">
         <div v-if="value.length !== 0" v-html="value" />
         <p v-else v-html="'…'" />
       </div>

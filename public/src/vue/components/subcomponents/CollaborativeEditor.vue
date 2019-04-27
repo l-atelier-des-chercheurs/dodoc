@@ -1,11 +1,11 @@
 <template>
   <div
-    class="mediaTextContent quillWrapper" 
+    class="quillWrapper" 
     autocorrect="off"
     autofocus="autofocus"
   >
     <!-- connection_state : {{ connection_state }}<br> -->
-    <div ref="editor"
+    <div ref="editor" class="mediaTextContent"
     />
   </div>
 </template>
@@ -142,6 +142,28 @@ export default {
 }
 </script>
 <style>
+.ql-toolbar .ql-formats:first-child::before {
+  content: 'options :';
+  position: relative;
+  display: inline-block;
+  float: left;
+  font-size:1rem;
+  vertical-align: middle;
+  font-weight: 400;
+  /* background-color: #333; */
+  /* left: -8px; */
+  margin:0;
+  margin-top: 4px;
+  font-weight: 400;
+  /* padding: 11px; */
+  /* margin-bottom: 10px; */
+  /* text-decoration: underline; */
+  font-size: .8rem;
+  /* text-transform: uppercase; */
+  /* margin-right: 15px; */
+  /* font-style: italic; */
+}
+
 html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before, 
 html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
   content: 'Titre 1';
