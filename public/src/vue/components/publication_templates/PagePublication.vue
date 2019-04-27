@@ -418,7 +418,7 @@ export default {
     this.updateMediasPubli();  
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty('mmMeasurer') ? this.$refs.mmMeasurer.offsetWidth / 10 : 38;
     this.updatePubliOptionsInFields();
-    this.$eventHub.$emit('publication_medias_updated');      
+          
 
     document.getElementsByTagName('body')[0].style = `
       --page-width: ${this.publications_options.width}mm; 
@@ -439,7 +439,7 @@ export default {
         console.log(`WATCH • Publication: publication.medias`);
       }
       this.updateMediasPubli();
-      this.$eventHub.$emit('publication_medias_updated');      
+            
     },
     'publications_options': {
       handler() {

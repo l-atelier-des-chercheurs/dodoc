@@ -736,6 +736,29 @@ let vm = new Vue({
         return {};
       }
     },
+    current_publication() {
+      if (this.settings.current_publication.slug) {
+        if (
+          this.store.publications.hasOwnProperty(
+            this.settings.current_publication.slug
+          )
+        ) {
+          return this.store.publications[
+            this.settings.current_publication.slug
+          ];
+        }
+      }
+      return false;
+    },
+    current_publication_medias() {
+      if (
+        this.current_publication &&
+        this.current_publication.hasOwnProperty('medias')
+      ) {
+        return this.current_publication.medias;
+      }
+      return false;
+    },
     requested_media() {
       return this.$root.store.projects[this.$root.store.request.slugProjectName]
         .medias[this.$root.store.request.metaFileName];

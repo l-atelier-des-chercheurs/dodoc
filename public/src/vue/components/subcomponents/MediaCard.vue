@@ -2,7 +2,7 @@
   <div 
     class="m_media"
     :class=" { 
-      'is--inPubli' : media_is_in_current_publi, 
+      'is--inPubli' : is_media_in_publi, 
       'is--fav' : media.fav,
       'is--ownMedia' : media_made_by_current_author
     }"
@@ -116,23 +116,37 @@ export default {
         video: '/images/i_icone-dodoc_video.svg',
         stopmotion: '/images/i_icone-dodoc_anim.svg',
         audio: '/images/i_icone-dodoc_audio.svg'
-      },
-      media_is_in_current_publi: false
+      }
     }
   },
   
   created() {
-    this.isMediaInPubli();
   },
   mounted() {
-    this.$eventHub.$on('publication_medias_updated', this.isMediaInPubli);
   },
   beforeDestroy() {
-    this.$eventHub.$off('publication_medias_updated', this.isMediaInPubli);
   },
   watch: {
   },
   computed: {
+    is_media_in_publi() {
+
+      return Object.values(this.$root.current_publication_medias).findIndex(s => s.slugMediaName === this.metaFileName) > -1;
+
+      // if(this.$root.settings.current_publication.slug) {
+      //   if(this.$root.store.publications.hasOwnProperty(this.$root.settings.current_publication.slug)) {
+      //     const currentPubli = this.$root.store.publications[this.$root.settings.current_publication.slug];
+      //     if(currentPubli.hasOwnProperty('medias') && Object.keys(currentPubli.medias).length > 0) {
+      //       const media_in_publi = Object.values(currentPubli.medias).filter(s => s.slugMediaName === this.metaFileName);
+      //       if(media_in_publi.length > 0) {
+      //         this.media_is_in_current_publi = true;
+      //       } else {
+      //         this.media_is_in_current_publi = false;
+      //       }
+      //     }
+      //   }
+      // }
+    },
     media_made_by_current_author() {
       if(!this.media.authors || typeof this.media.authors !== 'object') {
         return false;
@@ -144,22 +158,6 @@ export default {
     }
   },
   methods: {
-    isMediaInPubli() {
-      if(this.$root.settings.current_publication.slug) {
-        if(this.$root.store.publications.hasOwnProperty(this.$root.settings.current_publication.slug)) {
-          const currentPubli = this.$root.store.publications[this.$root.settings.current_publication.slug];
-          if(currentPubli.hasOwnProperty('medias') && Object.keys(currentPubli.medias).length > 0) {
-
-            const media_in_publi = Object.values(currentPubli.medias).filter(s => s.slugMediaName === this.metaFileName);
-            if(media_in_publi.length > 0) {
-              this.media_is_in_current_publi = true;
-            } else {
-              this.media_is_in_current_publi = false;
-            }
-          }
-        }
-      }
-    },
     openMediaModal() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaCard: openMediaModal = ${this.metaFileName}`);

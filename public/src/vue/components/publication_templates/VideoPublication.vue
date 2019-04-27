@@ -100,7 +100,7 @@ export default {
     }
     
     this.updateMediasPubli();  
-    this.$eventHub.$emit('publication_medias_updated');      
+          
   },
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
@@ -112,7 +112,7 @@ export default {
         console.log(`WATCH • Publication: publication.medias`);
       }
       this.updateMediasPubli();
-      this.$eventHub.$emit('publication_medias_updated');      
+            
     },
     '$root.store.projects': {
       handler() {
@@ -130,7 +130,7 @@ export default {
 
       this.medias_slugs_in_order = typeof this.publication.medias_slugs === "object" ? this.publication.medias_slugs : [];
       this.updateMediasPubli();
-      this.$eventHub.$emit('publication_medias_updated');      
+            
     }
   },
   computed: {
