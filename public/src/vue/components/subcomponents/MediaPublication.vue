@@ -341,7 +341,7 @@ export default {
       this.custom_css = this.media.publi_meta.hasOwnProperty('custom_css') ?  this.media.publi_meta.custom_css : this.custom_css;
       this.mediaZIndex = this.media.publi_meta.hasOwnProperty('z_index') ? this.media.publi_meta.z_index : 0;
 
-      if(this.media.type) {
+      if(this.media.type === 'text') {
         this.$nextTick(() => {
           const el = this.$refs.media;
           this.is_text_overflowing = (el.offsetHeight < el.firstElementChild.firstElementChild.firstElementChild.offsetHeight);
