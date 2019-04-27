@@ -512,6 +512,11 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`COMPUTED • pagesWithDefault`);
       }
+
+      if(!this.publication.hasOwnProperty('pages') || this.publication.pages.length === 0) {
+        return [];
+      }
+
       let defaultPages = [];
       // we need to clone this object to prevent it from being changed
       let pagesClone = JSON.parse(JSON.stringify(this.publication.pages));
