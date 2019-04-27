@@ -5,7 +5,7 @@
     :typeOfModal="'ExportVideo'"
   >
     <template slot="header">
-      <span class="">{{ $t('export_publication') }}</span>
+      <span class="">{{ $t('export_creation') }}</span>
     </template>
 
     <template slot="sidebar">

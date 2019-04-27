@@ -245,7 +245,7 @@ module.exports = (function() {
       creation_in_progress: 'En cours de création…',
 
       publication_list: 'Liste des publications',
-      export_publication: 'Exportation d’une publication',
+      export_creation: 'Exportation d’une création',
       get_pdf:
         'Pour récupérer un PDF de cette publication (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:',
       download_pdf: 'Télécharger un PDF',
@@ -554,7 +554,7 @@ module.exports = (function() {
       export: 'Export',
 
       publication_list: 'Publications list',
-      export_publication: 'Export a publication',
+      export_creation: 'Export a creation',
       get_pdf:
         'To download a PDF of this publication (for example, to print it), click here:',
       download_pdf: 'Download PDF',
