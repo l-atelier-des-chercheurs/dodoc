@@ -18,14 +18,14 @@
       </template>
       <template v-else>
         <vue-plyr :options="plyr_options">
-          <video :poster="linkToVideoThumb" :src="mediaURL" preload="none" />
+          <video :poster="linkToVideoThumb" :src="mediaURL" preload="none" :autoplay="autoplay" />
         </vue-plyr>
       </template>
     </template>
 
     <template v-else-if="media.type === 'audio'">
       <vue-plyr :options="plyr_options">
-        <audio :src="mediaURL" preload="none" />
+        <audio :src="mediaURL" preload="none" :autoplay="autoplay" />
       </vue-plyr>
     </template>
 
@@ -111,6 +111,10 @@ export default {
       type: String,
       default: 'preview'
       // preview, edit, publication
+    },
+    autoplay: {
+      type: Boolean,
+      default: false
     },
     value: {
       type: String,
