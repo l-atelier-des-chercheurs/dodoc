@@ -3910,6 +3910,15 @@ small {
 .quillWrapper {
   display: flex;
   flex-flow: column nowrap;
+  overflow: hidden;
+
+  .ql-toolbar {
+    flex: 1 1 0;
+  }
+  .ql-container {
+    flex: 1 1 0;
+    overflow: hidden;
+  }
 
   .ql-container {
     font-family: inherit;

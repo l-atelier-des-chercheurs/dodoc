@@ -950,6 +950,10 @@
 
   > *:first-child {
     margin-top: 0;
+
+    > *:first-child {
+      margin-top: 0;
+    }
   }
 
   // https://www.gridlover.net/try
@@ -1061,7 +1065,8 @@
   a {
     text-decoration: underline;
     text-decoration-style: solid;
-    color: @c-bleumarine;
+    color: @c-bleumarine_fonce;
+    font-weight: 600;
   }
 
   h1, h2 {
