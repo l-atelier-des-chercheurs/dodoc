@@ -31,6 +31,9 @@ module.exports = (function() {
       validate_with_enter: 'Valider avec la touche ENTRÉE.',
       no_stopmotion_created_yet:
         'Les animations créées apparaîtront dans ce panneau.',
+      device: 'Appareil',
+      'camera2 1, facing front': 'Caméra frontale',
+      'camera2 0, facing back': 'Caméra arrière',
 
       cooking_pot: 'La marmite',
       text_overflow: 'Texte en excès',
@@ -41,8 +44,11 @@ module.exports = (function() {
         'Mélangez des médias pour en créer des nouveaux !',
       untitled: 'Sans titre',
       mix_audio_and_video: 'Ajoutez (ou remplacez) du son sur une vidéo',
+      mix_audio_and_image: 'Ajoutez du son sur une image',
       add_sound_video_file:
         'Ajoutez ici un média <b>son</b> et un média <b>vidéo</b> pour créer une vidéo.',
+      add_sound_image_file:
+        'Ajoutez ici un média <b>son</b> et un média <b>image</b> pour créer une vidéo.',
       add_multiple_videos_files:
         'Ajoutez plusieurs médias <b>vidéo</b> pour créer une vidéo.',
       add_multiple_images:
@@ -60,6 +66,7 @@ module.exports = (function() {
       gb: 'Go',
       duration: 'Durée',
       send: 'Envoyer',
+      open_in_dodoc: 'Ouvrir dans do•doc',
 
       login: 'S’identifier',
       help: 'Aide',
@@ -229,6 +236,8 @@ module.exports = (function() {
         'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des vidéos ajoutées à la publication.',
       export_audio_video_mix_instructions:
         'Cliquez sur le bouton pour lancer la création d’une vidéo à partir du son et de la vidéo sélectionnés.',
+      export_audio_image_mix_instructions:
+        'Cliquez sur le bouton pour lancer la création d’une vidéo à partir du son et de l’image sélectionnés.',
       export_stopmotion_instructions:
         'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des images ajoutées à la publication.',
       make_video: 'Fabriquer une vidéo',
@@ -236,7 +245,7 @@ module.exports = (function() {
       creation_in_progress: 'En cours de création…',
 
       publication_list: 'Liste des publications',
-      export_publication: 'Exportation d’une publication',
+      export_creation: 'Exportation d’une création',
       get_pdf:
         'Pour récupérer un PDF de cette publication (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:',
       download_pdf: 'Télécharger un PDF',
@@ -257,10 +266,11 @@ module.exports = (function() {
       web: 'Page web',
       back_to_project: 'Retour au projet',
 
-      page_by_page_instructions: `Cette recette permet de créer un document avec un format précis et plusieurs pages.\n Médias acceptés : images, vidéos, sons et textes.\nCréera un PDF imprimable (pour faire des affiches, tracts, journaux, etc.) ou une page web à mettre en ligne.`,
-      video_assemblage_instructions: `Cette recette propose de créer un montage vidéo en mettant plusieurs vidéos bout à bout.\n Médias acceptés : uniquement des vidéos de même taille.\nCréera une nouvelle vidéo.`,
-      stopmotion_animation_instructions: `Cette recette permet l’assemblage d’un nombre illimité d’images pour créer une séquence vidéo dans laquelle elles défilent à une vitesse réglable.\n Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.\nCréera une nouvelle vidéo.`,
-      mix_audio_and_video_instructions: `Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.\n Médias acceptés : une vidéo et une piste sonore.\nCréera une nouvelle vidéo.`,
+      page_by_page_instructions: `Cette recette permet de créer un document avec un format précis et plusieurs pages.<br> Médias acceptés : images, vidéos, sons et textes.<br>Créera un PDF imprimable (pour faire des affiches, tracts, journaux, etc.) ou une page web à mettre en ligne.`,
+      video_assemblage_instructions: `Cette recette propose de créer un montage vidéo en mettant plusieurs vidéos bout à bout.<br> Médias acceptés : uniquement des vidéos de même taille.<br>Créera une nouvelle vidéo.`,
+      stopmotion_animation_instructions: `Cette recette permet l’assemblage d’un nombre illimité d’images pour créer une séquence vidéo dans laquelle elles défilent à une vitesse réglable.<br> Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.<br>Créera une nouvelle vidéo.`,
+      mix_audio_and_video_instructions: `Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo.`,
+      mix_audio_and_image_instructions: `Cette recette prend une image et une piste audio. Elle permet de créer des <i>images parlantes</i>.<br> Médias acceptés : une image et une piste sonore.<br>Créera une vidéo.`,
 
       last_modified: 'Dernière modification',
       remote_access: 'Accès depuis d’autres appareils',
@@ -298,10 +308,10 @@ module.exports = (function() {
           'Les noms de dossier doivent contenir au moins un caractère alphanumérique.',
         'failed_to_get_folder:': 'Le dossier suivant n’a pas été trouvé:',
         failed_to_start_video_change_source_or_res:
-          'Le flux vidéo n’a pas pu être démarré.\nEssayez de modifier la source ou la résolution dans les réglages.',
+          'Le flux vidéo n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.',
         video_source_not_set: 'La source vidéo n’a pas été trouvée.',
         failed_to_start_audio_change_source:
-          'Le flux audio n’a pas pu être démarré.\nEssayez de modifier la source dans les réglages.',
+          'Le flux audio n’a pas pu être démarré.<br>Essayez de modifier la source dans les réglages.',
         audio_source_not_set: 'La source audio n’a pas été trouvée.',
         video_stream_not_available:
           'Erreur : le flux vidéo n’est pas disponible.',
@@ -350,6 +360,7 @@ module.exports = (function() {
       validate_with_enter: 'Validate with ENTER.',
       no_stopmotion_created_yet:
         'Created stopmotion animations will appear in this list.',
+      device: 'Device',
 
       cooking_pot: 'Cooking pot',
       text_overflow: 'Overflow text',
@@ -369,6 +380,7 @@ module.exports = (function() {
       gb: 'GB',
       duration: 'Duration',
       send: 'Send',
+      open_in_dodoc: 'Open in do•doc',
 
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',
@@ -478,7 +490,9 @@ module.exports = (function() {
       export_video_instructions:
         'Click this button to generate a video from multiple source videos.',
       export_audio_video_mix_instructions:
-        'Click this button to generate a video from the audio and video medias.',
+        'Click this button to generate a video from the audio and video selected.',
+      export_audio_image_mix_instructions:
+        'Click this button to generate a video from the audio and image selected.',
       export_stopmotion_instructions:
         'Click this button to generate a video from images you have selected.',
       make_video: 'Make a video',
@@ -540,7 +554,7 @@ module.exports = (function() {
       export: 'Export',
 
       publication_list: 'Publications list',
-      export_publication: 'Export a publication',
+      export_creation: 'Export a creation',
       get_pdf:
         'To download a PDF of this publication (for example, to print it), click here:',
       download_pdf: 'Download PDF',
@@ -561,13 +575,15 @@ module.exports = (function() {
       previous_creations: 'Previous creations',
       stopmotion_animation: 'Stopmotion animation',
 
-      page_by_page_instructions: `This recipe can be used to create a paged document with a specific size.\n Accepted medias: images, videos, sounds and texts.\nWill create a PDF that can be printed (to make posters, tracts, newspapers, etc.) or a webpage to upload online.`,
-      video_assemblage_instructions: `This recipe creates a video from mulitple source videos, one after the other.\n Accepted medias: videos of the same size.\nWill create a new video.`,
-      stopmotion_animation_instructions: `This recipe takes any number of images as inputs and creates a single video with images being displayed at a specific speed.\n Accepted medias: images of any size. The first image will determine if the video will be in portrait or landscape.\nWill create a new video.`,
-      mix_audio_and_video_instructions: `This recipe mixes a video and an audio track to create a new video where they are played at the same time.\n Accepted medias: a video and a sound track.\nWill create a new video.`,
+      page_by_page_instructions: `This recipe can be used to create a paged document with a specific size.<br> Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, tracts, newspapers, etc.) or a webpage to upload online.`,
+      video_assemblage_instructions: `This recipe creates a video from mulitple source videos, one after the other.<br> Accepted medias: videos of the same size.<br>Will create a new video.`,
+      stopmotion_animation_instructions: `This recipe takes any number of images as inputs and creates a single video with images being displayed at a specific speed.<br> Accepted medias: images of any size. The first image will determine if the video will be in portrait or landscape.<br>Will create a new video.`,
+      mix_audio_and_video_instructions: `This recipe mixes a video and an audio track to create a new video where they are played at the same time.<br> Accepted medias: a video and a sound track.<br>Will create a new video.`,
 
       add_sound_video_file:
         'Add a <b>sound</b> and a <b>video</b> media to create a new video.',
+      add_sound_image_file:
+        'Add a <b>sound</b> and an <b>image</b> media to create a new video.',
       mix_audio_and_video: 'Add (or replace) sound on a video',
       add_multiple_videos_files:
         'Add multiple <b>video</b> medias to create a new video.',

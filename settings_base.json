@@ -179,7 +179,7 @@
         },
         "template": {
           "type": "string",
-          "options": ["page_by_page", "video_assemblage", "drawing_pad", "stopmotion_animation", "mix_audio_and_video"],
+          "options": ["page_by_page", "video_assemblage", "drawing_pad", "stopmotion_animation", "mix_audio_and_video", "mix_audio_and_image"],
           "default": "page_by_page"          
         },
         "style": {

@@ -55,7 +55,7 @@
           <hr>
           <CreateQRCode
             :slugProjectName="slugProjectName"
-            :media_filename="media.media_filename"
+            :media="media"
           />
         </template>
 

@@ -1,10 +1,15 @@
 <template>
   <div class="m_captureview">
   <div class="m_captureview--modeSelector">
-      <button type="button" class="bg-transparent" @click="previousMode()"
+      <button type="button" class="bg-transparent" 
         v-show="!$root.settings.capture_mode_cant_be_changed"
+        @mousedown.stop.prevent="previousMode()"        
+        @touchstart.stop.prevent="previousMode()"        
       >
-        ◀
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="169px"
+          height="169px" viewBox="0 0 169 169" style="enable-background:new 0 0 169 169;" xml:space="preserve">
+          <path fill="currentColor" d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z"/>
+        </svg>
       </button>
       
       <div 
@@ -19,10 +24,15 @@
           <span>{{ $t(mode.key) }}</span>
         </label>
       </div>
-      <button type="button" class="bg-transparent" @click="nextMode()"
+      <button type="button" class="bg-transparent"
         v-show="!$root.settings.capture_mode_cant_be_changed"
+        @mousedown.stop.prevent="nextMode()"        
+        @touchstart.stop.prevent="nextMode()"        
       >
-        ▶
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="169px"
+          height="169px" viewBox="0 0 169 169" style="enable-background:new 0 0 169 169;" xml:space="preserve">
+          <path fill="currentColor" d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z"/>
+        </svg>        
       </button>
     </div>
 
@@ -30,7 +40,6 @@
       :class="{ 'stopmotion_inprogress' : $root.store.stopmotions.hasOwnProperty(current_stopmotion) }"
     >
       <div class="m_panel">
-
         <transition name="enableMode" :duration="400">
           <div class="m_panel--modeOverlay"
             v-if="mode_just_changed"
@@ -42,7 +51,6 @@
         <div class="m_panel--previewCard"
           v-show="!is_validating_stopmotion_video"
         >
-
           <div class="m_panel--previewCard--live"
             :class="{ 'is--recording' : is_recording }"
           >
@@ -59,11 +67,16 @@
                     </span>
                     <select v-if="sorted_available_devices.hasOwnProperty(kind)" v-model="selected_devicesId[kind]">
                       <option 
-                        v-for="device in sorted_available_devices[kind]" 
+                        v-for="(device, index) in sorted_available_devices[kind]" 
                         :value="device.deviceId" 
                         :key="device.deviceId"
                       >
-                        {{ device.label }}
+                        <template v-if="device.label === ''">
+                          {{ $t('device') }} {{ index }}
+                        </template>
+                        <template v-else>
+                          {{ $t(device.label) }}
+                        </template>
                       </option>        
                     </select>
                   </div>
@@ -300,7 +313,8 @@
               <button type="button" 
                 class="padding-verysmall bg-transparent m_panel--buttons--row--captureButton--btn"
                 :class="{ 'is--justCaptured' : capture_button_pressed }"
-                @click="captureOrStop()"
+                @mousedown.stop.prevent="captureOrStop()"
+                @touchstart.stop.prevent="captureOrStop()"
               >
                 <img v-if="!is_recording" src="/images/i_record.svg">
                 <img v-else src="/images/i_stop.svg">
@@ -917,7 +931,7 @@ export default {
             resolve(stream);
           },
           (err) => {
-            return reject(this.$t('notifications.failed_to_start_video_change_source_or_res'));
+            return reject(this.$t('notifications.failed_to_start_video_change_source_or_res') + '<br>' + err);
           }
         );
       });
@@ -1198,7 +1212,7 @@ export default {
     },
     sendMedia({ fav = false }) {
       return new Promise((resolve, reject) => {
-        console.log(`METHODS • ValidateMedia: sendMedia with fav=${fav}`);
+        console.log(`METHODS • CaptureView: sendMedia with fav=${fav}`);
         if (this.$root.state.dev_mode === 'debug') {
           console.log(`METHODS • CaptureView / sendMedia`);
         }

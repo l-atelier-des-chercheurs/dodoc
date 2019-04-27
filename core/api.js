@@ -267,7 +267,7 @@ module.exports = (function() {
 
           let pathToMedia = path.join(getFolderPath(slugFolderName), mediaName);
           ffmpeg(pathToTempMedia)
-            .audioCodec('libmp3lame')
+            .audioCodec('aac')
             .save(pathToMedia)
             .on('end', function() {
               console.log('Processing finished !');

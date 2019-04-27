@@ -11,27 +11,7 @@
     <template slot="sidebar">
       <div class="margin-sides-medium font-small">
         <div class="">
-          <p>{{ $t('export_stopmotion_instructions') }} </p>
-          <hr>
-
-          <div class="margin-bottom-small">
-            <label>{{ $t('framerate') }}</label>
-            <input type="number" v-model.number="framerate" min="1" max="30" step="1" />
-          </div>
-
-          <div class="margin-bottom-small">
-            <label>{{ $t('quality') }}</label>
-            <select v-model="quality">
-              <option 
-                v-for="q in available_qualities" 
-                :value="q.height" 
-                :key="q.height"
-              >
-                {{ $t(q.label) }}
-              </option>        
-            </select>
-          </div>
-
+          {{ $t('export_audio_image_mix_instructions') }} 
           <button type="button" 
             class="margin-small margin-left-none bg-bleuvert c-blanc button-allwide" 
             :disabled="video_request_status !== false"
@@ -46,7 +26,6 @@
             </template>
             <template v-else-if="video_request_status === 'generated'">
               {{ $t('video_created') }}
-
             </template>
           </button>
           
@@ -81,8 +60,8 @@
 </template>
 <script>
 import Modal from './BaseModal.vue';
-import AddCreationToProject from '../subcomponents/AddCreationToProject.vue';
 import { setTimeout } from 'timers';
+import AddCreationToProject from '../subcomponents/AddCreationToProject.vue';
 
 export default {
   props: {
@@ -96,35 +75,12 @@ export default {
     return {
       video_request_status: false,
       link_to_video: false,
-      video_is_playing: false,
-      framerate: 4,
-      quality: 720,
-      available_qualities: [
-        { 
-          label: 'very_high',
-          height: 1080
-        },
-        { 
-          label: 'high',
-          height: 720
-        },
-        { 
-          label: 'medium',
-          height: 640
-        },
-        { 
-          label: 'low',
-          height: 360
-        },
-      ],
-
       exported_video_name: false,
-
+      video_is_playing: false,
       plyr_options: {
         controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
         iconUrl: '/images/plyr.svg'
       }
-
     }
   },
   created() {
@@ -134,16 +90,6 @@ export default {
   beforeDestroy() {
   },
   watch: {
-    'quality': function() {
-      if(this.video_request_status === 'generated') {
-        this.video_request_status = false;
-      }
-    },
-    'framerate': function() {
-      if(this.video_request_status === 'generated') {
-        this.video_request_status = false;
-      }
-    }
   },
   computed: {
   },
@@ -153,13 +99,9 @@ export default {
         console.log(`METHODS • ExportVideoPubli: downloadVideo`);
       }
 
-      this.$eventHub.$on('socketio.publication.publiStopmotionIsGenerated', this.videoPubliIsGenerated);
-      this.$socketio.downloadStopmotionPubli({ 
-        slugPubliName: this.slugPubliName,
-        options: {
-          framerate: this.framerate,
-          quality: this.quality
-        }
+      this.$eventHub.$on('socketio.publication.videoIsGenerated', this.videoPubliIsGenerated);
+      this.$socketio.downloadVideoPubli({ 
+        slugPubliName: this.slugPubliName
       });
       this.video_request_status = 'waiting_for_server';
     },
@@ -167,11 +109,10 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: videoPubliIsGenerated`);
       }
-      this.$eventHub.$off('socketio.publication.publiStopmotionIsGenerated', this.videoPubliIsGenerated);
+      this.$eventHub.$off('socketio.publication.videoIsGenerated', this.videoPubliIsGenerated);
       this.video_request_status = 'generated';
       this.link_to_video = window.location.origin + '/publication/video/' + videoName;
-      this.exported_video_name = videoName; 
-
+      this.exported_video_name = videoName;
     },
   }
 }

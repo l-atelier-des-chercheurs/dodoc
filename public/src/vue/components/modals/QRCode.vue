@@ -12,8 +12,7 @@
       <div class="margin-medium font-small">
         <CreateQRCode
           :slugProjectName="slugProjectName"
-        >
-        </CreateQRCode>
+        />
       </div>
 
       <div class="m_scanQR margin-medium font-small">

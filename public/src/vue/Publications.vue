@@ -324,6 +324,39 @@ export default {
   </g>
 </svg>
           `
+        },
+        { 
+          key: 'mix_audio_and_image',
+          instructions: 'mix_audio_and_image_instructions',
+          show_all_recipes: false,
+          icon: `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
+  <title>recipe_icon_image_sound</title>
+  <g id="Calque_6" data-name="Calque 6">
+    <g>
+      <g>
+        <rect x="68.88" y="30.28" width="63.54" height="62" style="fill: #fff"/>
+        <rect x="73.38" y="34.87" width="53.94" height="43.04" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121120286444px"/>
+      </g>
+      <g>
+        <rect x="68.58" y="124.72" width="63.54" height="36" style="fill: #fff"/>
+        <rect x="72.21" y="143.34" width="31.66" height="4.99" style="fill: #353535"/>
+        <rect x="72.21" y="150.62" width="23.67" height="4.99" style="fill: #353535"/>
+        <g>
+          <line x1="73.38" y1="133.52" x2="127.32" y2="133.52" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121120286444px"/>
+          <g>
+            <path d="M94.69,141c-.28.18-.51.06-.51-.28V127c0-.34.23-.46.51-.28l10.56,6.84a.36.36,0,0,1,0,.66Z" style="fill: #353535"/>
+            <path d="M94.69,141c-.28.18-.51.06-.51-.28V127c0-.34.23-.46.51-.28l10.56,6.84a.36.36,0,0,1,0,.66Z" style="fill: none;stroke: #fff;stroke-miterlimit: 10;stroke-width: 2px"/>
+          </g>
+          <circle cx="74.38" cy="133.52" r="2.58" style="fill: #353535"/>
+          <circle cx="126.32" cy="133.52" r="2.58" style="fill: #353535"/>
+        </g>
+      </g>
+      <path d="M102,107.63h4.24v2.54H102v4.32H99.27v-4.32H95v-2.54h4.23V103.3H102Z" style="fill: #fff"/>
+    </g>
+  </g>
+</svg>          
+          `
         }
       ]
     }

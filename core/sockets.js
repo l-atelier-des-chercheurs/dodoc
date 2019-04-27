@@ -370,16 +370,14 @@ module.exports = (function() {
       slugPubliName = ${slugPubliName}`
     );
 
-    exporter
-      .makeVideoForPubli({ slugPubliName, socket })
-      .then(({ videoName }) => {
-        api.sendEventWithContent(
-          'publiVideoGenerated',
-          { videoName },
-          io,
-          socket
-        );
-      });
+    exporter.makeVideoForPubli({ slugPubliName, socket }).then(videoName => {
+      api.sendEventWithContent(
+        'publiVideoGenerated',
+        { videoName },
+        io,
+        socket
+      );
+    });
   }
 
   function onDownloadStopmotionPubli(socket, { slugPubliName, options }) {

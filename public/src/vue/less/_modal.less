@@ -16,7 +16,7 @@
   align-items: center;
   justify-content: center;
 
-  transition: background-color .3s ease-out;
+  transition: all .2s ease-out;
 
   #app:not(.is--wide) & {
     align-items: flex-start;
@@ -27,12 +27,14 @@
   }
 
   &.is_invisible {
-    background-color: transparent;
+    // background-color: transparent;
+    opacity: 0;
     pointer-events: none;
   }
 
   &.is_minimized {
-    background: linear-gradient(45deg, fade(#fff, 92%) 150px, transparent 200px, transparent 100%);
+    background: transparent;
+    // background: linear-gradient(45deg, fade(#fff, 92%) 150px, transparent 200px, transparent 100%);
     pointer-events: none;
     align-items: flex-end;
   }

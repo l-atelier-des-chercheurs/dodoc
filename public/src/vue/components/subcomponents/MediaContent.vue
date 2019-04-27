@@ -18,29 +18,29 @@
       </template>
       <template v-else>
         <vue-plyr :options="plyr_options">
-          <video :poster="linkToVideoThumb" :src="mediaURL" preload="none" />
+          <video :poster="linkToVideoThumb" :src="mediaURL" preload="none" :autoplay="autoplay" />
         </vue-plyr>
       </template>
     </template>
 
     <template v-else-if="media.type === 'audio'">
       <vue-plyr :options="plyr_options">
-        <audio :src="mediaURL" preload="none" />
+        <audio :src="mediaURL" preload="none" :autoplay="autoplay" />
       </vue-plyr>
     </template>
 
     <template v-else-if="media.type === 'text'">
-      <div v-if="context !== 'edit'" class="">
-        <div v-if="value.length !== 0" v-html="value" />
-        <p v-else v-html="'…'" />
-      </div>
       <CollaborativeEditor 
-        v-else
+        v-if="context === 'edit'"
         v-model="htmlForEditor"
         :media="media"
         :slugFolderName="slugFolderName"
         ref="textField"
       />
+      <div v-else class="">
+        <div v-if="value.length !== 0" v-html="value" />
+        <p v-else v-html="'…'" />
+      </div>
       <!-- <textarea
         placeholder="…"
         class="mediaTextContent border-none bg-transparent"
@@ -76,7 +76,7 @@
     </template>
 
     <template v-else-if="media.type === 'document'">
-      <div v-if="context !== 'edit'" class="">
+      <div v-if="context !== 'edit' && context !== 'full'" class="">
         <pre>
   {{ media.media_filename }}
         </pre>
@@ -111,6 +111,10 @@ export default {
       type: String,
       default: 'preview'
       // preview, edit, publication
+    },
+    autoplay: {
+      type: Boolean,
+      default: false
     },
     value: {
       type: String,

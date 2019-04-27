@@ -2,11 +2,9 @@
   <div id="app"
     :class="{ 'is--wide' : $root.screen_is_wide }"
   >
-
     <template 
-      v-if="$root.state.mode === 'live'"
+      v-if="$root.state.mode === 'live' && $root.store.request.display !== 'standalone'"
     >    
-
       <SystemBar
         v-if="$root.settings.enable_system_bar"
         :withTitleBar="true"
@@ -28,7 +26,7 @@
           <pane 
             class="splitter-pane splitter-paneL" 
             :class="{ 'is--dragged' : is_dragged }"
-            :split="split" :style="{ [type]: percent+'%'}">
+            :split="split" :style="{ [type]: activity_panel_percent+'%'}">
 
             <div 
               class="m_activitiesPanel--do"
@@ -69,7 +67,7 @@
           <resizer 
             :class="{ 'is--dragged' : is_dragged }"
             :className="className" 
-            :style="{ [resizeType]: percent+'%'}" 
+            :style="{ [resizeType]: activity_panel_percent+'%'}" 
             :split="split" 
             @mousedown.native="onMouseDown" 
             @click.native="onClick">
@@ -79,12 +77,13 @@
             class="splitter-pane splitter-paneR" 
             :class="{ 'is--dragged' : is_dragged }"
             :split="split" 
-            :style="{ [type]: 100-percent+'%'}">
+            :style="{ [type]: 100-activity_panel_percent+'%'}">
             <div 
               class="m_activitiesPanel--doc"
               :class="{ 'is--open' : $root.settings.show_publi_panel }"
             >
               <button
+                v-if="$root.screen_is_wide"
                 class="publiButton"
                 :title="$t('mix_medias')" 
                 v-tippy='{
@@ -94,7 +93,7 @@
                 :class="{ 
                   'is--open' : $root.settings.show_publi_panel, 
                   'is--dragged' : is_dragged,
-                  'is--allthewaytotheleft' : percent === 0 
+                  'is--allthewaytotheleft' : activity_panel_percent === 0 
                 }"
                 @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
                 @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"   
@@ -146,6 +145,12 @@
                     :publication="$root.store.publications[$root.settings.current_publication.slug]"
                     :read_only="!$root.state.connected"
                   />                  
+                  <MixAudioAndImage
+                    v-else-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'mix_audio_and_image'"
+                    :slugPubliName="$root.settings.current_publication.slug"
+                    :publication="$root.store.publications[$root.settings.current_publication.slug]"
+                    :read_only="!$root.state.connected"
+                  />                  
                 </transition>
               </div>
             </div>
@@ -174,6 +179,18 @@
         :read_only="!$root.state.connected"
       />
     </template>    
+    <template v-else-if="$root.store.request.display === 'standalone'">
+      <div class="m_standaloneMedia">
+        <MediaContent
+          class=""
+          :context="'full'"
+          :autoplay="true"
+          :slugFolderName="$root.store.request.slugProjectName"
+          :media="$root.requested_media"
+          v-model="$root.requested_media.content"
+        />
+      </div>
+    </template>
 
     <portal-target name="modal_container" />
 
@@ -188,6 +205,7 @@ import ProjectView from './ProjectView.vue';
 import CaptureView from './CaptureView.vue';
 import EditMedia from './components/modals/EditMedia.vue';
 
+import MediaContent from './components/subcomponents/MediaContent.vue';
 import Publications from './Publications.vue';
 
 import PagePublication from './components/publication_templates/PagePublication.vue';
@@ -195,6 +213,7 @@ import VideoPublication from './components/publication_templates/VideoPublicatio
 import DrawingPad from './components/publication_templates/DrawingPad.vue';
 import StopmotionAnimation from './components/publication_templates/StopmotionAnimation.vue';
 import MixAudioAndVideo from './components/publication_templates/MixAudioAndVideo.vue';
+import MixAudioAndImage from './components/publication_templates/MixAudioAndImage.vue';
 
 import Resizer from './components/splitpane/Resizer.vue'
 import Pane from './components/splitpane/Pane.vue'
@@ -214,8 +233,10 @@ export default {
     DrawingPad,
     StopmotionAnimation,
     MixAudioAndVideo,
+    MixAudioAndImage,
     Resizer, 
-    Pane
+    Pane,
+    MediaContent
   },
   props: {
   },
@@ -254,7 +275,12 @@ export default {
       }
       return true;
     },
-
+    activity_panel_percent() {
+      if(!this.$root.screen_is_wide) {
+        return 100;
+      }
+      return this.percent;
+    }
   },
   methods: {
     // stopDragtogglePubli() {
