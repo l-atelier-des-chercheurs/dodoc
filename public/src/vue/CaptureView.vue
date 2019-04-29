@@ -144,12 +144,44 @@
               </div>
             </transition>
 
-            <div class="recording_timer">
-              <label v-if="selected_mode !== 'stopmotion' && is_recording && recording_duration">{{ recording_duration }}</label>
-              <label v-if="selected_mode === 'stopmotion' && is_recording && recording_duration">{{ time_before_next_picture }}</label>
-              <br>
-              <label v-if="selected_mode === 'stopmotion' && timelapse_interval">{{ $t('interval_between_pictures:') }} {{ timelapse_interval }} {{ $t('seconds') }}</label>
-            </div>
+            <transition-group 
+              tag="div" 
+              class="recording_timer"
+              name="slideFromTop"        
+            >
+              <label 
+                v-if="selected_mode !== 'stopmotion' && is_recording && recording_duration"
+                :key="'duration'"
+                v-html="recording_duration"
+              />
+              
+              <label 
+                v-if="selected_mode === 'stopmotion' && is_recording && recording_duration"
+                :key="'time_before'"
+                v-html="time_before_next_picture" 
+              />
+ 
+              <label 
+                v-if="selected_mode === 'stopmotion' && timelapse_interval"
+                :key="'timelapse_interval'"  
+                v-html="$t('interval_between_pictures:') + ' ' + timelapse_interval + ' ' + $t('seconds')"
+              />
+              <label 
+                v-if="selected_mode === 'stopmotion' && timelapse_interval"
+                :key="'disable_interval'"  
+              >
+                <button 
+                  type="button" 
+                  class="button-nostyle text-uc padding-none margin-none c-blanc bg-rouge button-inline"
+                  @click="timelapse_interval = false"
+                >
+                  <svg class="inline-svg margin-right-verysmall" viewBox="0 0 20 20">
+                    <path stroke="" fill="white" d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
+                  </svg>                    
+                  {{ $t('disable') }}
+                </button>                
+              </label>
+            </transition-group>
 
             <video 
               v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
@@ -332,7 +364,13 @@
                   placement : 'bottom-start'
                 }"
               >
-                +
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="16.8px"
+                  height="16.8px" viewBox="0 0 16.8 16.8" style="enable-background:new 0 0 16.8 16.8;" xml:space="preserve">
+                <circle fill="currentColor" cx="8.4" cy="8.4" r="8.4"/>
+                <path stroke="white" fill="white" d="M13,8.4c0,0.2-0.2,0.4-0.4,0.4H8.8v3.8c0,0.2-0.2,0.4-0.4,0.4S8,12.8,8,12.6V8.8H4.2C4,8.8,3.8,8.6,3.8,8.4
+                  S4,8,4.2,8H8V4.2C8,4,8.2,3.8,8.4,3.8S8.8,4,8.8,4.2V8h3.8C12.8,8,13,8.2,13,8.4"/>
+                </svg>
+
               </button>
 
               <div 

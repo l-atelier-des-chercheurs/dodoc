@@ -2055,11 +2055,16 @@ small {
         pointer-events: none;
         .padding-verysmall;
 
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: center;
+
         label {
           display: inline-block;
           margin: 0 auto;
           .bg-rouge;
           .padding-sides-verysmall;
+          .margin-bottom-verysmall;
           color: white;
           border-radius: 4px;
           pointer-events: auto;
@@ -2314,10 +2319,10 @@ small {
           }
         }
         .m_panel--buttons--row--captureButton--advancedOptions {
-          .bg-orange;
-          color: white;
-          width:  1.4em;
-          height: 1.4em;
+          // .bg-orange;
+          color: @c-orange;
+          width:  1.3em;
+          height: 1.3em;
           display: block;
           min-height: 0;
           line-height: 0;
@@ -2325,6 +2330,11 @@ small {
           text-align: center;
           font-weight: bold;
           padding: 0;
+
+          svg {
+            width: 100%;
+            height: 100%;
+          }
 
         }
       }

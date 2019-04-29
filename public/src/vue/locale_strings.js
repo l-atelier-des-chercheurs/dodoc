@@ -276,6 +276,7 @@ module.exports = (function() {
       remote_access: 'Accès depuis d’autres appareils',
       img_per_second: 'Images par seconde',
       sent: 'Envoyé',
+      disable: 'Désactiver',
 
       notifications: {
         ios_not_compatible_with_capture:
@@ -598,6 +599,7 @@ module.exports = (function() {
       remote_access: 'Acces from other devices',
       img_per_second: 'Images per second',
       sent: 'Sent',
+      disable: 'Disable',
 
       notifications: {
         ios_not_compatible_with_capture:
