@@ -58,122 +58,126 @@
       <PrismEditor v-model="custom_css" @change="setCSSForMedia" language="css" />
     </div>
 
-    <div 
-      v-if="(is_selected || is_hovered || is_touch) && !preview_mode" 
-      class="controlFrame"
-      @mousedown.stop.prevent="dragMedia('mouse')"
-      @touchstart.stop.prevent="dragMedia('touch')"   
-    >
-      <div class="handle handle_resizeMedia"
-        @mousedown.stop.prevent="resizeMedia('mouse', 'bottomright')"
-        @touchstart.stop.prevent="resizeMedia('touch', 'bottomright')"
+    <transition name="fade_fast" :duration="150">
+      <div 
+        v-if="(is_selected || is_hovered || is_touch) && !preview_mode" 
+        class="controlFrame"
+        @mousedown.stop.prevent="dragMedia('mouse')"
+        @touchstart.stop.prevent="dragMedia('touch')"   
       >
-        <svg version="1.1"
-          xmlns="http://www.w3.org/2000/svg" 
-          xmlns:xlink="http://www.w3.org/1999/xlink" 
-          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px" y="0px" width="77.5px" height="77.5px" viewBox="0 0 77.5 77.5" style="enable-background:new 0 0 77.5 77.5;"
-          xml:space="preserve">
-        <defs>
-        </defs>
-        <g>
-          <path d="M42.5,0l0.4,12.6l-9.3,0.1c-2.8,0-5.1,0-6.9-0.2c-1.8-0.2-3.6-0.6-5.7-1.2l45.3,45.3c-0.6-2-1-3.9-1.2-5.7
-            c-0.2-1.8-0.3-4-0.2-6.9v-9.4l12.6,0.4l-1.3,41.2l-41.2,1.3l-0.4-12.6l9.5,0c2.9,0,5.2,0.1,7,0.3c1.8,0.2,3.6,0.5,5.4,1.1
-           L11.3,21.1c0.5,1.8,0.9,3.6,1.1,5.4c0.2,1.8,0.3,4.1,0.3,7l-0.1,9.4L0,42.5L1.3,1.3L42.5,0z"/>
-        </g>
-        </svg>
+        <div class="handle handle_resizeMedia"
+          @mousedown.stop.prevent="resizeMedia('mouse', 'bottomright')"
+          @touchstart.stop.prevent="resizeMedia('touch', 'bottomright')"
+        >
+          <svg version="1.1"
+            xmlns="http://www.w3.org/2000/svg" 
+            xmlns:xlink="http://www.w3.org/1999/xlink" 
+            xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+            x="0px" y="0px" width="77.5px" height="77.5px" viewBox="0 0 77.5 77.5" style="enable-background:new 0 0 77.5 77.5;"
+            xml:space="preserve">
+          <defs>
+          </defs>
+          <g>
+            <path d="M42.5,0l0.4,12.6l-9.3,0.1c-2.8,0-5.1,0-6.9-0.2c-1.8-0.2-3.6-0.6-5.7-1.2l45.3,45.3c-0.6-2-1-3.9-1.2-5.7
+              c-0.2-1.8-0.3-4-0.2-6.9v-9.4l12.6,0.4l-1.3,41.2l-41.2,1.3l-0.4-12.6l9.5,0c2.9,0,5.2,0.1,7,0.3c1.8,0.2,3.6,0.5,5.4,1.1
+            L11.3,21.1c0.5,1.8,0.9,3.6,1.1,5.4c0.2,1.8,0.3,4.1,0.3,7l-0.1,9.4L0,42.5L1.3,1.3L42.5,0z"/>
+          </g>
+          </svg>
+        </div>
+        <!-- <div class="handle handle_rotateMedia"
+          @mousedown.stop.prevent="rotateMedia('mouse', 'bottomright')"
+          @touchstart.stop.prevent="rotateMedia('touch', 'bottomright')"
+        >
+  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="98.7px"
+    height="132.2px" viewBox="0 0 98.7 132.2" style="enable-background:new 0 0 98.7 132.2;" xml:space="preserve">
+  <defs>
+  </defs>
+  <path d="M80.1,117.7c-3.1-0.2-5.6-0.3-7.6-0.2c-1.4,0.1-2.9,0.3-4.5,0.5c14.7-13.7,36.9-42.4,29.1-63.4S71.6,27,24.8,24.6
+    c1.1-0.8,2.2-1.6,3.1-2.4c1.5-1.3,3.2-3.1,5.3-5.5L40,9L29.3,0L0,34.9l32.9,31.5l9.7-10.1l-7.7-7c-2.4-2.1-4.3-3.8-5.9-4.9
+    c-1.6-1.2-3.3-2.2-5.2-3.1l-0.1-1.2c29.3,1.4,52.5,6.6,56.5,20.7s-15.9,39.7-23.5,46.5l-0.5-0.6c0.7-1.9,1.2-3.9,1.6-5.9
+    c0.3-2,0.6-4.5,0.8-7.7l0.7-10.5l-14-0.4L43.7,128l45.5,4.2l1.3-13.9L80.1,117.7z"/>
+  </svg>
+
+        </div> -->
       </div>
-      <!-- <div class="handle handle_rotateMedia"
-        @mousedown.stop.prevent="rotateMedia('mouse', 'bottomright')"
-        @touchstart.stop.prevent="rotateMedia('touch', 'bottomright')"
-      >
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="98.7px"
-	 height="132.2px" viewBox="0 0 98.7 132.2" style="enable-background:new 0 0 98.7 132.2;" xml:space="preserve">
-<defs>
-</defs>
-<path d="M80.1,117.7c-3.1-0.2-5.6-0.3-7.6-0.2c-1.4,0.1-2.9,0.3-4.5,0.5c14.7-13.7,36.9-42.4,29.1-63.4S71.6,27,24.8,24.6
-	c1.1-0.8,2.2-1.6,3.1-2.4c1.5-1.3,3.2-3.1,5.3-5.5L40,9L29.3,0L0,34.9l32.9,31.5l9.7-10.1l-7.7-7c-2.4-2.1-4.3-3.8-5.9-4.9
-	c-1.6-1.2-3.3-2.2-5.2-3.1l-0.1-1.2c29.3,1.4,52.5,6.6,56.5,20.7s-15.9,39.7-23.5,46.5l-0.5-0.6c0.7-1.9,1.2-3.9,1.6-5.9
-	c0.3-2,0.6-4.5,0.8-7.7l0.7-10.5l-14-0.4L43.7,128l45.5,4.2l1.3-13.9L80.1,117.7z"/>
-</svg>
+    </transition>
 
-      </div> -->
-    </div>
+    <transition name="fade_fast" :duration="150">
+      <div 
+        v-if="(is_selected || is_hovered || is_touch) && !preview_mode" 
+        class="m_mediaPublication--buttons"
+      >
+        <button 
+          type="button" 
+          class="buttonLink _no_underline" 
+          @mousedown.stop.prevent="editZIndex(+1)"
+          @touchstart.stop.prevent="editZIndex(+1)"   
+          :title="$t('move_to_foreground') + '<br>' + 'z-index: ' + mediaZIndex"
+          v-tippy='{ 
+            placement : "top",
+            delay: [600, 0]
+          }'                        
+        >
+          <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40.3px"
+            height="59.6px" viewBox="0 0 40.3 59.6" style="enable-background:new 0 0 40.3 59.6;" xml:space="preserve">
+            <path class="st0" d="M35,24.4l-4.6-4.2c-2.7-2.5-4.8-4.7-6.4-7.3l0,46.7l-7.7,0l0-46.6c-1.7,2.5-3.8,4.7-6.4,7.1l-4.6,4.2L0,18.1
+              L20.2,0l20.2,18.1L35,24.4z"/>
+          </svg>
+        </button>
 
-    <div 
-      v-if="(is_selected || is_hovered || is_touch) && !preview_mode" 
-      class="m_mediaPublication--buttons"
-    >
-      <button 
-        type="button" 
-        class="buttonLink _no_underline" 
-        @mousedown.stop.prevent="editZIndex(+1)"
-        @touchstart.stop.prevent="editZIndex(+1)"   
-        :title="$t('move_to_foreground') + '<br>' + 'z-index: ' + mediaZIndex"
-        v-tippy='{ 
-          placement : "top",
-          delay: [600, 0]
-        }'                        
-      >
-        <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40.3px"
-          height="59.6px" viewBox="0 0 40.3 59.6" style="enable-background:new 0 0 40.3 59.6;" xml:space="preserve">
-          <path class="st0" d="M35,24.4l-4.6-4.2c-2.7-2.5-4.8-4.7-6.4-7.3l0,46.7l-7.7,0l0-46.6c-1.7,2.5-3.8,4.7-6.4,7.1l-4.6,4.2L0,18.1
-            L20.2,0l20.2,18.1L35,24.4z"/>
-        </svg>
-      </button>
+        <button 
+          type="button" 
+          class="buttonLink _no_underline"         
+          @mousedown.stop.prevent="editZIndex(-1)"
+          @touchstart.stop.prevent="editZIndex(-1)"
+          :title="$t('move_to_background') + '<br>' + 'z-index: ' + mediaZIndex"
+          v-tippy='{ 
+            placement : "top",
+            delay: [600, 0]
+          }'                        
+        >
+          <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40.3px"
+            height="59.6px" viewBox="0 0 40.3 59.6" style="enable-background:new 0 0 40.3 59.6;" xml:space="preserve">
+            <path class="st0" d="M5.3,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7L24,0l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2
+              L20.2,59.6L0,41.5L5.3,35.2z"/>
+          </svg>
+        </button>
 
-      <button 
-        type="button" 
-        class="buttonLink _no_underline"         
-        @mousedown.stop.prevent="editZIndex(-1)"
-        @touchstart.stop.prevent="editZIndex(-1)"
-        :title="$t('move_to_background') + '<br>' + 'z-index: ' + mediaZIndex"
-        v-tippy='{ 
-          placement : "top",
-          delay: [600, 0]
-        }'                        
-      >
-        <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40.3px"
-          height="59.6px" viewBox="0 0 40.3 59.6" style="enable-background:new 0 0 40.3 59.6;" xml:space="preserve">
-          <path class="st0" d="M5.3,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7L24,0l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2
-            L20.2,59.6L0,41.5L5.3,35.2z"/>
-        </svg>
-      </button>
-
-      <button 
-        type="button" 
-        class="buttonLink _no_underline" 
-        @mousedown.stop.prevent="toggleEditWindow()"
-        @touchstart.stop.prevent="toggleEditWindow()"
-        :class="{ 'is--active' : show_edit_styles_window }"
-      >
-        {{ $t('css') }}<sup v-if="custom_css">*</sup>
-      </button>
-      <button 
-        type="button" 
-        class="buttonLink _no_underline"
-        @mousedown.stop.prevent="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
-        @touchstart.stop.prevent="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
-      >
-        <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100.7px"
-          height="101px" viewBox="0 0 100.7 101" style="enable-background:new 0 0 100.7 101;" xml:space="preserve">
-          <path class="st0" d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
-            L19.1,91.5z"/>
-        </svg>
-        <!-- {{ $t('edit') }} -->
-      </button>
-      <button 
-        type="button" 
-        class="buttonLink _no_underline" 
-        @click.stop.prevent="removePubliMedia()"
-      >
-        <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="37.2px"
-          height="37.2px" viewBox="0 0 37.2 37.2" style="enable-background:new 0 0 37.2 37.2;" xml:space="preserve">
-          <polygon class="st0" points="37.2,30.6 30.6,37.2 18.6,25.2 6.6,37.2 0,30.6 12,18.6 0,6.6 6.6,0 18.6,12 30.6,0 37.2,6.6 
-          25.2,18.6 "/>
-        </svg>
-      </button>
-    </div>
+        <button 
+          type="button" 
+          class="buttonLink _no_underline" 
+          @mousedown.stop.prevent="toggleEditWindow()"
+          @touchstart.stop.prevent="toggleEditWindow()"
+          :class="{ 'is--active' : show_edit_styles_window }"
+        >
+          {{ $t('css') }}<sup v-if="custom_css">*</sup>
+        </button>
+        <button 
+          type="button" 
+          class="buttonLink _no_underline"
+          @mousedown.stop.prevent="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
+          @touchstart.stop.prevent="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
+        >
+          <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100.7px"
+            height="101px" viewBox="0 0 100.7 101" style="enable-background:new 0 0 100.7 101;" xml:space="preserve">
+            <path class="st0" d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
+              L19.1,91.5z"/>
+          </svg>
+          <!-- {{ $t('edit') }} -->
+        </button>
+        <button 
+          type="button" 
+          class="buttonLink _no_underline" 
+          @click.stop.prevent="removePubliMedia()"
+        >
+          <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="37.2px"
+            height="37.2px" viewBox="0 0 37.2 37.2" style="enable-background:new 0 0 37.2 37.2;" xml:space="preserve">
+            <polygon class="st0" points="37.2,30.6 30.6,37.2 18.6,25.2 6.6,37.2 0,30.6 12,18.6 0,6.6 6.6,0 18.6,12 30.6,0 37.2,6.6 
+            25.2,18.6 "/>
+          </svg>
+        </button>
+      </div>
+    </transition>
   </div>
 </template>
 <script>
