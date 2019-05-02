@@ -1,6 +1,6 @@
 <template>
   <div class="m_addcreationtoproject">
-    <div class="">
+    <div class="margin-bottom-small">
       <label v-html="$t('add_to_project')" />
       <div class="flex-nowrap">
         <select v-model="upload_to_folder">
@@ -20,6 +20,11 @@
         />
       </div>
     </div>    
+    <!-- <div class="margin-bottom-small">
+      <label v-html="$t('create_project_and_add_media')" />
+
+
+    </div> -->
   </div>
 </template>
 <script>
@@ -43,7 +48,8 @@ export default {
     if(this.$root.do_navigation.current_slugProjectName) {
       this.upload_to_folder = this.$root.do_navigation.current_slugProjectName;
     } else {
-      this.upload_to_folder = Object.keys(this.all_projects)[0];
+      debugger;
+      this.upload_to_folder = this.all_projects[0].slugFolderName;
     }
   },
   beforeDestroy() {
@@ -53,7 +59,7 @@ export default {
   },
   computed: {
     all_projects() {
-      return this.$root.store.projects;
+      return this.$root.projects_that_are_accessible;
     }
   },
   methods: {
@@ -79,5 +85,4 @@ export default {
 }
 </script>
 <style>
-
 </style>

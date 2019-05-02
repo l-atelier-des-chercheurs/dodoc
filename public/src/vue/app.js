@@ -750,6 +750,12 @@ let vm = new Vue({
       }
       return false;
     },
+    projects_that_are_accessible() {
+      const type = 'projects';
+      return Object.values(this.store[type]).filter(p =>
+        this.canAccessFolder({ type, slugFolderName: p.slugFolderName })
+      );
+    },
     current_publication_medias() {
       if (
         this.current_publication &&
@@ -760,8 +766,9 @@ let vm = new Vue({
       return false;
     },
     requested_media() {
-      return this.$root.store.projects[this.$root.store.request.slugProjectName]
-        .medias[this.$root.store.request.metaFileName];
+      return this.store.projects[this.store.request.slugProjectName].medias[
+        this.store.request.metaFileName
+      ];
     },
     allAuthors() {
       let allAuthors = [];
@@ -901,7 +908,7 @@ let vm = new Vue({
           mdata.additionalMeta = {};
         }
         mdata.additionalMeta.authors = [
-          { name: this.$root.settings.current_author.name }
+          { name: this.settings.current_author.name }
         ];
       }
 
@@ -1334,10 +1341,10 @@ let vm = new Vue({
       this.$socketio.updateNetworkInfos();
     },
     navigation_back() {
-      if (this.$root.do_navigation.view === 'CaptureView') {
-        this.$root.do_navigation.view = 'ProjectView';
-      } else if (this.$root.do_navigation.view === 'ProjectView') {
-        this.$root.closeProject();
+      if (this.do_navigation.view === 'CaptureView') {
+        this.do_navigation.view = 'ProjectView';
+      } else if (this.do_navigation.view === 'ProjectView') {
+        this.closeProject();
       }
     }
   }
