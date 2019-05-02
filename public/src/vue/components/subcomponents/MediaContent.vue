@@ -76,21 +76,16 @@
     </template>
 
     <template v-else-if="media.type === 'document'">
-      <div v-if="context !== 'edit' && context !== 'full'" class="">
-        <pre>
-  {{ media.media_filename }}
+      <div v-if="context !== 'edit' && context !== 'full'" class="padding-small font-verysmall">
+        <pre>{{ media.media_filename }}
         </pre>
       </div>
       <iframe v-else :src="mediaURL" />
     </template>
 
     <template v-else-if="media.type === 'other'">
-      <div class="padding-small font-small">
-        <pre>
-<span v-html="$t('file:')">
-</span>
-{{ media.media_filename }}
-        </pre>
+      <div class="padding-small font-verysmall">
+        <pre>{{ media.media_filename }}</pre>
       </div>
     </template>
 

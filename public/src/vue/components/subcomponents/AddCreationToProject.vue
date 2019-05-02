@@ -48,7 +48,6 @@ export default {
     if(this.$root.do_navigation.current_slugProjectName) {
       this.upload_to_folder = this.$root.do_navigation.current_slugProjectName;
     } else {
-      debugger;
       this.upload_to_folder = this.all_projects[0].slugFolderName;
     }
   },
