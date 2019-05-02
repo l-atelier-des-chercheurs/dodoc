@@ -1333,10 +1333,14 @@ small {
   .button-inline;
   cursor: initial;
   .bg-creme;
+  border-radius: @t-buttonradius;
+  // border: 4px solid @c-creme;
 
   .m_qrSnippet--text {
-    .button;
-    cursor: initial;
+    position: relative;
+    // .button;
+    text-align: center;
+    .text-cap;
     .margin-small;
     margin-top: 0;
     background-color: transparent;
@@ -1346,8 +1350,13 @@ small {
       background-color: transparent;
       text-decoration: none;
     }
-    img {
-      width: 150px;
+
+    .m_qrSnippet--text--dodoclogo {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100px;
+      .padding-small;
     }
   }
 
@@ -1433,17 +1442,17 @@ small {
     cursor: pointer;
     .bg-blanc;
     border-radius: 4px;
-    border-bottom: 4px solid transparent;
+    // border-bottom: 4px solid transparent;
 
     .is--fav& {
-      border-bottom: 4px solid @c-rouge;
+      // border-bottom: 4px solid @c-rouge;
     }
 
-    :not(.is--fav)& {
-      .button_addToPubli {
-        margin-bottom: 4px;
-      }
-    }
+    // :not(.is--fav)& {
+    //   .button_addToPubli {
+    //     margin-bottom: 4px;
+    //   }
+    // }
 
     transition: all 2s .2s cubic-bezier(.25,.8,.25,1);
 
@@ -1455,11 +1464,17 @@ small {
 
     .m_metaField {
       margin-bottom: 0;
+      height: 1.1rem;
+      text-transform: lowercase;
+      border-bottom: 0px;
+      label {
+        text-transform: initial;
+      }
     }
 
     .mediaContainer {
       position: relative;
-      .margin-verysmall;
+      // .margin-verysmall;
       // .bg-gris_tresclair;
       overflow: hidden;
 
@@ -1504,6 +1519,30 @@ small {
         font-weight: bold;
       }
 
+      .play_picto {
+        display: block;
+        // width: 40px;
+        // height: 40px;
+        // margin: 0 auto;
+        // margin: 10px;
+        .margin-verysmall;
+        width: 20px;
+        height: 20px;
+      
+        // stroke: rgba( 0, 0, 0, 1);
+        fill: white;
+        // fill: @c-orange;
+        // stroke-width: 10px;
+        background-color: @c-orange;
+        border-radius: 4px;  
+
+      }
+
+      &.type-text {
+        .padding-verysmall;
+        .font-verysmall;
+      }
+
     }
 
     .button_addToPubli {
@@ -1512,10 +1551,17 @@ small {
     }
 
     .m_media--caption {
-      border-top: 1px solid @c-gris_clair;
+      position: absolute;
+      bottom: 0;
+
+      width: 100%;
+      // border-top: 2px solid @c-gris_clair;
       .font-verysmall;
       .c-noir;
       .padding-sides-verysmall;
+      .bg-blanc;
+      line-height: 1.2;
+      height: 1.1rem;
       // padding-top: @t-skipline/4;
       // margin-bottom: @t-skipline/4;
 
