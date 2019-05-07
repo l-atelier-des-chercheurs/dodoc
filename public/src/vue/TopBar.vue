@@ -1,13 +1,28 @@
 <template>
-  <div class="m_topbar">
+  <div class="m_topbar"
+    :class="{ 'is--collapsable' : !$root.screen_is_wide }"
+  >
     <div class="m_topbar--left" >
       <div class="m_topbar--left--logo" >
         <transition name="BackButton" :duration="500">
-          <button class="backButton text-ellipsis" type="button" v-if="has_back_button" @click="goBack()">
+          <button 
+            v-if="has_back_button" 
+            class="backButton text-ellipsis" 
+            type="button" 
+            @click="goBack()"
+          >
             ‹ <span class="backButton--text">{{ $t('back') }}</span>
           </button>
         </transition>
-        <img :title="`do•doc version ${$root.state.appVersion}`" src="/images/i_logo.svg" @click="goHome()" />
+        <img 
+          :title="`do•doc version ${$root.state.appVersion}`" 
+          src="/images/i_logo.svg" 
+          @click="goHomeOrReload()" 
+          v-tippy='{ 
+            placement : "bottom",
+            delay: [600, 0]
+          }'        
+        />
       </div>
 
       <div 
@@ -24,6 +39,12 @@
         <button type="button"
           v-if="project.hasOwnProperty('name')" 
           @click="$root.do_navigation.view = 'ProjectView'"
+          :disabled="$root.do_navigation.view === 'ProjectView'"
+          :title="$t('back_to_project')"
+          v-tippy='{ 
+            placement : "bottom",
+            delay: [600, 0]
+          }'
         >
           <span>
             {{ project.name }}
@@ -49,7 +70,7 @@
 
 
       <button type="button" class="m_topbar--left--menuButton"
-        v-if="menu_is_enabled"
+        v-if="!$root.screen_is_wide"
         @click="toggleMenu()"
       >
         <svg version="1.1"
@@ -63,12 +84,16 @@
     </div>
 
     <div 
-      v-if="!menu_is_enabled || (menu_is_enabled && show_menu)"
+      v-if="show_advanced_options"
       class="m_topbar--center"
     >
       <div class="m_topbar--center--authors">
         <button type="button" class="m_topbar--center--authors--currentAuthor" @click="showAuthorsListModal = true"
-          title="Other user connected"
+          :title="$t('login')"
+          v-tippy='{ 
+            placement : "bottom",
+            delay: [600, 0]
+          }'        
         >
           <template v-if="!!$root.settings.current_author">
             <div class="m_topbar--center--authors--portrait"
@@ -100,16 +125,28 @@
     </div>
 
     <div 
-      v-if="!menu_is_enabled || (menu_is_enabled && show_menu)"
+      v-if="show_advanced_options"
       class="m_topbar--right"
     >
       <div class="m_topbar--right--pictos">
 
-        <button type="button" @click="$root.switchLang()">
+        <button type="button" @click="$root.switchLang()"
+          :title="$t('lang')"
+          v-tippy='{ 
+            placement : "bottom-end",
+            delay: [600, 0]
+          }'                  
+        >
           {{ this.$root.lang.current }}
         </button>
 
-        <button type="button" @click="showQRModal = !showQRModal">
+        <button type="button" @click="showQRModal = !showQRModal"
+          :title="$t('share_access')"
+          v-tippy='{ 
+            placement : "bottom-end",
+            delay: [600, 0]
+          }'                          
+        >
           <svg version="1.1"
             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
             x="0px" y="0px" width="20px" height="20px" viewBox="0 0 90 90" style="enable-background:new 0 0 90 90;" xml:space="preserve">
@@ -126,7 +163,13 @@
         >
         </QRCode>
 
-        <a class="js--openInBrowser" target="_blank" href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc">
+        <a class="js--openInBrowser" target="_blank" href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc"
+          :title="$t('help')"
+          v-tippy='{ 
+            placement : "bottom",
+            delay: [600, 0]
+          }'        
+        >
           <svg version="1.1"
             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
             x="0px" y="0px" width="12px" height="20.3px" viewBox="0 0 12 20.3" style="enable-background:new 0 0 12 20.3;"
@@ -174,8 +217,6 @@ export default {
     return {
       showQRModal: false,
       showAuthorsListModal: false,
-
-      menu_is_enabled: false,
       show_menu: false
     }
   },
@@ -193,20 +234,22 @@ export default {
     }
   },
   computed: {
+    show_advanced_options() {
+      return this.$root.screen_is_wide || (!this.$root.screen_is_wide && this.show_menu);
+    }
   },
   methods: {
     menuVisibility() {
-      if(this.$root.settings.windowWidth < 820) {
-        this.menu_is_enabled = true;
-      } else {
-        this.menu_is_enabled = false;
-      }
     },
     goBack() {
       this.$root.navigation_back();
     },
-    goHome() {
-      this.$root.closeProject();
+    goHomeOrReload() {
+      if(this.$root.do_navigation.view !== 'ListView') {
+        this.$root.closeProject();
+      } else {
+        window.location.reload();
+      }
     },
     toggleMenu() {
       this.show_menu = !this.show_menu;

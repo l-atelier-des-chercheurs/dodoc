@@ -4,50 +4,55 @@
     :class="`type-${media.type}`"
     :data-context="context"
   >
-
     <template v-if="media.type === 'image'">
-      <img :src="linkToImageThumb">
+      <img :srcset="imageSrcSetAttr" :sizes="imageSizesAttr" :src="linkToImageThumb"
+      >
       <transition name="fade" :duration="600">
-        <img v-if="is_hovered && $root.state.is_electron" :src="linkToHoveredThumb">
+        <img v-if="is_hovered && $root.state.is_electron && linkToHoveredThumb" :src="linkToHoveredThumb">
       </transition>
     </template>
 
     <template v-else-if="media.type === 'video'">
       <template v-if="context === 'preview'">
-        <img :src="linkToVideoThumb">
+        <img :srcset="videostillSrcSetAttr" :sizes="imageSizesAttr" :src="linkToVideoThumb">
+        <svg class="play_picto" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="169px"
+          height="169px" viewBox="0 0 169 169" style="enable-background:new 0 0 169 169;" xml:space="preserve">
+          <path d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"/>
+        </svg>
       </template>
       <template v-else>
-        <video controls ref="video" preload="none" :src="mediaURL" :poster="linkToVideoThumb" />
-        <svg 
-          ref="playIcon" 
-          v-if="!video_is_playing"
-          class="mediaContainer--videoPlay" 
-          viewBox="0 0 200 200" 
-          alt="Play video"
-          @click="togglePlayVideo()"
-        >
-          <circle cx="100" cy="100" r="90" fill="#fff" stroke-width="15" stroke="#fff"></circle>
-          <polygon points="70, 55 70, 145 145, 100" fill="#353535"></polygon>
-        </svg>
+        <vue-plyr :options="plyr_options">
+          <video :poster="linkToVideoThumb" :src="mediaURL" preload="none" :autoplay="autoplay" />
+        </vue-plyr>
       </template>
     </template>
 
     <template v-else-if="media.type === 'audio'">
-      <audio controls preload="none" :src="mediaURL" />
+      <template v-if="context === 'preview'">
+        <svg class="play_picto" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="169px"
+          height="169px" viewBox="0 0 169 169" style="enable-background:new 0 0 169 169;" xml:space="preserve">
+          <path d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"/>
+        </svg>
+      </template>
+      <template v-else>
+        <vue-plyr :options="plyr_options">
+          <audio :src="mediaURL" preload="none" :autoplay="autoplay" />
+        </vue-plyr>
+      </template>
     </template>
 
     <template v-else-if="media.type === 'text'">
-      <div v-if="context !== 'edit'" class="">
-        <div v-if="value.length !== 0" v-html="value" />
-        <p v-else v-html="'…'" />
-      </div>
       <CollaborativeEditor 
-        v-else
+        v-if="context === 'edit'"
         v-model="htmlForEditor"
         :media="media"
         :slugFolderName="slugFolderName"
         ref="textField"
       />
+      <div v-else class="mediaTextContent">
+        <div v-if="value.length !== 0" v-html="value" />
+        <p v-else v-html="'…'" />
+      </div>
       <!-- <textarea
         placeholder="…"
         class="mediaTextContent border-none bg-transparent"
@@ -58,22 +63,41 @@
         :readonly="read_only"
       /> -->
     </template>
+
+    <template v-else-if="media.type === 'marker'">
+      <div v-if="context !== 'edit'" class="padding-small">
+        <template v-if="value.length > 0">
+          {{ value }}
+        </template>
+        <template v-else>
+          …
+        </template>
+      </div>
+
+      <input
+        v-else
+        type="text"
+        class="border-none bg-transparent"
+        placeholder="Étiquette"
+        name="label"
+        :value="value"
+        @input="$emit('input', $event.target.value)"
+        ref="textField"
+        :readonly="read_only"
+      >
+    </template>
+
     <template v-else-if="media.type === 'document'">
-      <div v-if="context !== 'edit'" class="">
-        <pre>
-  {{ media.media_filename }}
+      <div v-if="context !== 'edit' && context !== 'full'" class="padding-small font-verysmall">
+        <pre>{{ media.media_filename }}
         </pre>
       </div>
       <iframe v-else :src="mediaURL" />
     </template>
 
     <template v-else-if="media.type === 'other'">
-      <div class="padding-small font-small">
-        <pre>
-<span v-html="$t('file:')">
-</span>
-{{ media.media_filename }}
-        </pre>
+      <div class="padding-small font-verysmall">
+        <pre>{{ media.media_filename }}</pre>
       </div>
     </template>
 
@@ -95,6 +119,10 @@ export default {
       default: 'preview'
       // preview, edit, publication
     },
+    autoplay: {
+      type: Boolean,
+      default: false
+    },
     value: {
       type: String,
       default: '…'
@@ -106,7 +134,15 @@ export default {
     },
     preview_size: {
       type: Number,
-      default: 360
+      default: 180
+    },
+    element_width_for_sizes: {
+      type: Number,
+      default: 0
+    },
+    element_height: {
+      type: Number,
+      default: 0
     }
   },
   components: {
@@ -115,11 +151,15 @@ export default {
   data() {
     return {
       available_resolutions: {
-        preview_hovered: 600,
+        preview_hovered: 360,
         default: 1600
       },
-      video_is_playing: false,
-      htmlForEditor: this.value
+      htmlForEditor: this.value,
+
+      plyr_options: {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        iconUrl: '/images/plyr.svg'
+      }
     };
   },
   mounted() {
@@ -153,10 +193,13 @@ export default {
       return this.available_resolutions.preview_hovered;
     },
     linkToImageThumb: function() {
-      if(!this.media.hasOwnProperty('thumbs')) {
+      if(
+        !this.media.hasOwnProperty('thumbs')
+        || this.context === 'full'      
+      ) {
         return this.mediaURL;
       }
-
+      
       if (
       // if image is gif and context is not 'preview', let’s show the original gif
         (this.context !== 'preview' &&
@@ -173,8 +216,53 @@ export default {
       let pathToSmallestThumb = small_thumb[0].path;
 
       let url = this.$root.state.mode === 'export_publication' ? `./${pathToSmallestThumb}` : `/${pathToSmallestThumb}`;
-      url += `?${(new Date()).getTime()}`;
       return url;
+    },
+    imageSrcSetAttr: function() {
+      if (this.element_width_for_sizes === 0 
+        || this.mediaURL.toLowerCase().endsWith('.gif')
+        || this.context === 'full'
+      ) {
+        return;
+      }
+      
+      // get all available sizes 
+      const img_srcset = this.media.thumbs.reduce((acc, t) => {
+        if(t.hasOwnProperty('path')) {
+          // acc.push(encodeURIComponent(t.path) + ' ' + t.size + 'w');
+          acc.push(t.path + ' ' + t.size + 'w');
+        }
+        return acc;
+      }, []);
+      return img_srcset.join(', ');
+    },
+    videostillSrcSetAttr: function() {
+      if(this.element_width_for_sizes === 0) {
+        return;
+      }
+
+      let timeMark = 0;
+      let timeMarkThumbs = this.media.thumbs.filter(t => !!t && t.timeMark === 0);
+
+      if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
+        return;
+      }
+
+      // get all available sizes 
+      const img_srcset = timeMarkThumbs[0].thumbsData.reduce((acc, t) => {
+        if(t.hasOwnProperty('path')) {
+          acc.push(t.path + ' ' + t.size + 'w');
+        }
+        return acc;
+      }, []);
+      
+      return img_srcset.join(', ');
+    },
+    imageSizesAttr: function() {
+      if(this.element_width_for_sizes === 0) {
+        return;
+      }
+      return this.element_width_for_sizes + 'px';
     },
     linkToHoveredThumb: function() {
       let pathToSmallestThumb = this.media.thumbs.filter(m => m.size === this.thumbResHovered)[0].path;
@@ -186,34 +274,25 @@ export default {
     },
     linkToVideoThumb: function() {
       if (!this.media['thumbs'] || typeof this.media.thumbs === 'object' && this.media.thumbs.length === 0) {
-        return;
+        return this.mediaURL;
       }
 
       let timeMark = 0;
       let timeMarkThumbs = this.media.thumbs.filter(t => !!t && t.timeMark === 0);
 
       if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
-        return;
+        return this.mediaURL;
       }
-
 
       let pathToSmallestThumb = timeMarkThumbs[0].thumbsData.filter(m => m.size === this.thumbRes)[0].path;
 
       let url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
-      url += `?${(new Date()).getTime()}`;
       return pathToSmallestThumb !== undefined
         ? url
         : this.mediaURL;
     }
   },
   methods: {
-    togglePlayVideo() {
-      if(this.video_is_playing === false) {
-        this.video_is_playing = true;
-        this.$refs.video.play();
-        // this.$refs.video.setAttribute('controls', 'controls')      
-      }
-    }
   }
 };
 </script>

@@ -20,8 +20,10 @@ Vue.prototype.$auth = auth;
 
 import locale_strings from './locale_strings.js';
 
-Vue.config.silent = false;
-Vue.config.devtools = true;
+import 'prismjs';
+
+// Vue.config.silent = false;
+// Vue.config.devtools = true;
 
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
@@ -30,6 +32,12 @@ Vue.use(PortalVue);
 
 import VueI18n from 'vue-i18n';
 Vue.use(VueI18n);
+
+import VuePlyr from 'vue-plyr';
+Vue.use(VuePlyr);
+
+import VueTippy from '../../node_modules/vue-tippy/dist/vue-tippy.min.js';
+Vue.use(VueTippy, {});
 
 let lang_settings = {
   available: {
@@ -121,6 +129,10 @@ Vue.prototype.$socketio = new Vue({
       this.socket.on('listSpecificMedias', this._onListSpecificMedias);
       this.socket.on('publiPDFGenerated', this._onPubliPDFGenerated);
       this.socket.on('publiVideoGenerated', this._onPubliVideoGenerated);
+      this.socket.on(
+        'publiStopmotionIsGenerated',
+        this._onPubliStopmotionGenerated
+      );
 
       this.socket.on('newNetworkInfos', this._onNewNetworkInfos);
 
@@ -315,6 +327,13 @@ Vue.prototype.$socketio = new Vue({
       console.log('Received _onPubliVideoGenerated packet.');
       this.$eventHub.$emit('socketio.publication.videoIsGenerated', data);
     },
+    _onPubliStopmotionGenerated(data) {
+      console.log('Received _onPubliStopmotionGenerated packet.');
+      this.$eventHub.$emit(
+        'socketio.publication.publiStopmotionIsGenerated',
+        data
+      );
+    },
 
     _listClients(data) {
       console.log('Received _listClients packet.');
@@ -431,6 +450,12 @@ Vue.prototype.$socketio = new Vue({
     downloadVideoPubli(pdata) {
       this.socket.emit('downloadVideoPubli', pdata);
     },
+    downloadStopmotionPubli(pdata) {
+      this.socket.emit('downloadStopmotionPubli', pdata);
+    },
+    addTempMediaToFolder(pdata) {
+      this.socket.emit('addTempMediaToFolder', pdata);
+    },
     updateNetworkInfos() {
       this.socket.emit('updateNetworkInfos');
     }
@@ -499,7 +524,11 @@ let vm = new Vue({
         }
       },
 
-      current_slugPubliName: false,
+      current_publication: {
+        slug: false,
+        accepted_media_type: []
+      },
+
       current_author: false,
 
       publi_zoom: 0.8,
@@ -526,13 +555,18 @@ let vm = new Vue({
     if (window.state.dev_mode === 'debug') {
       console.log('ROOT EVENT: created');
     }
+
+    if (this.store.request.display === 'standalone') {
+      return false;
+    }
+
     if (this.settings.enable_system_bar) {
       document.body.classList.add('has_systembar');
     }
 
-    if (window.state.dev_mode === 'debug') {
-      console.log('ROOT EVENT: created / checking for password');
-    }
+    // if (window.state.dev_mode === 'debug') {
+    //   console.log('ROOT EVENT: created / checking for password');
+    // }
 
     if (!window.state.is_electron && this.state.session_password !== '') {
       function hashCode(s) {
@@ -583,9 +617,10 @@ let vm = new Vue({
         // requesting edit of a media
         if (this.store.request.metaFileName) {
           this.$eventHub.$once('socketio.projects.listMedias', () => {
+            const metaFileName = this.store.request.metaFileName;
             this.openMedia({
               slugProjectName: this.store.request.slugProjectName,
-              metaFileName: this.store.request.metaFileName + '.txt'
+              metaFileName
             });
           });
         }
@@ -593,14 +628,16 @@ let vm = new Vue({
         this.state.mode === 'export_publication' &&
         Object.keys(this.store.publications).length > 0
       ) {
-        const slugPubliName = Object.keys(this.store.publications)[0];
-        this.settings.current_slugPubliName = slugPubliName;
+        this.settings.current_publication.slug = Object.keys(
+          this.store.publications
+        )[0];
       } else if (
         this.state.mode === 'print_publication' &&
         Object.keys(this.store.publications).length > 0
       ) {
-        const slugPubliName = Object.keys(this.store.publications)[0];
-        this.settings.current_slugPubliName = slugPubliName;
+        this.settings.current_publication.slug = Object.keys(
+          this.store.publications
+        )[0];
         this.settings.show_publi_panel = true;
       }
     }
@@ -608,14 +645,14 @@ let vm = new Vue({
     /* à la connexion/reconnexion, détecter si un projet ou une publi sont ouverts 
     et si c’est le cas, rafraichir leur contenu (meta, medias) */
     this.$eventHub.$on('socketio.reconnect', () => {
-      if (this.settings.current_slugPubliName) {
+      if (this.settings.current_publication.slug) {
         this.$socketio.listFolder({
           type: 'publications',
-          slugFolderName: this.settings.current_slugPubliName
+          slugFolderName: this.settings.current_publication.slug
         });
         this.$socketio.listMedias({
           type: 'publications',
-          slugFolderName: this.settings.current_slugPubliName
+          slugFolderName: this.settings.current_publication.slug
         });
       }
       if (this.do_navigation.current_slugProjectName) {
@@ -681,14 +718,57 @@ let vm = new Vue({
   computed: {
     currentProject: function() {
       if (
-        this.store.hasOwnProperty('projects') &&
+        !this.store.hasOwnProperty('projects') ||
+        Object.keys(this.store.projects).length === 0
+      ) {
+        this.closeProject();
+        return {};
+      }
+
+      if (
         this.store.projects.hasOwnProperty(
           this.do_navigation.current_slugProjectName
         )
       ) {
         return this.store.projects[this.do_navigation.current_slugProjectName];
+      } else {
+        this.closeProject();
+        return {};
       }
-      return {};
+    },
+    current_publication() {
+      if (this.settings.current_publication.slug) {
+        if (
+          this.store.publications.hasOwnProperty(
+            this.settings.current_publication.slug
+          )
+        ) {
+          return this.store.publications[
+            this.settings.current_publication.slug
+          ];
+        }
+      }
+      return false;
+    },
+    projects_that_are_accessible() {
+      const type = 'projects';
+      return Object.values(this.store[type]).filter(p =>
+        this.canAccessFolder({ type, slugFolderName: p.slugFolderName })
+      );
+    },
+    current_publication_medias() {
+      if (
+        this.current_publication &&
+        this.current_publication.hasOwnProperty('medias')
+      ) {
+        return this.current_publication.medias;
+      }
+      return false;
+    },
+    requested_media() {
+      return this.store.projects[this.store.request.slugProjectName].medias[
+        this.store.request.metaFileName
+      ];
     },
     allAuthors() {
       let allAuthors = [];
@@ -736,6 +816,12 @@ let vm = new Vue({
     },
     currentTime_human() {
       return this.$moment(this.currentTime).format('LL   LTS');
+    },
+    screen_is_wide() {
+      if (this.settings.windowWidth < 750) {
+        return false;
+      }
+      return true;
     }
   },
   methods: {
@@ -822,7 +908,7 @@ let vm = new Vue({
           mdata.additionalMeta = {};
         }
         mdata.additionalMeta.authors = [
-          { name: this.$root.settings.current_author.name }
+          { name: this.settings.current_author.name }
         ];
       }
 
@@ -1067,7 +1153,7 @@ let vm = new Vue({
         console.log(`ROOT EVENT: openPubliPanel`);
       }
       this.settings.show_publi_panel = true;
-      this.settings.current_slugPubliName = false;
+      this.settings.current_publication.slug = false;
 
       this.$socketio.listFolders({ type: 'publications' });
     },
@@ -1076,7 +1162,7 @@ let vm = new Vue({
         console.log(`ROOT EVENT: closePubliPanel`);
       }
       this.settings.show_publi_panel = false;
-      this.settings.current_slugPubliName = false;
+      this.settings.current_publication.slug = false;
     },
 
     openPublication(slugPubliName) {
@@ -1091,27 +1177,19 @@ let vm = new Vue({
         type: 'publications',
         slugFolderName: slugPubliName
       });
-      this.settings.current_slugPubliName = slugPubliName;
+      this.settings.current_publication.slug = slugPubliName;
     },
     closePublication() {
       if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: closePublication');
       }
-      this.settings.current_slugPubliName = false;
+      this.settings.current_publication.slug = false;
     },
     downloadPubliPDF({ slugPubliName }) {
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: downloadPubliPDF: ${slugPubliName}`);
       }
       this.$socketio.downloadPubliPDF({
-        slugPubliName
-      });
-    },
-    downloadVideoPubli({ slugPubliName }) {
-      if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: downloadVideoPubli: ${slugPubliName}`);
-      }
-      this.$socketio.downloadVideoPubli({
         slugPubliName
       });
     },
@@ -1263,10 +1341,10 @@ let vm = new Vue({
       this.$socketio.updateNetworkInfos();
     },
     navigation_back() {
-      if (this.$root.do_navigation.view === 'CaptureView') {
-        this.$root.do_navigation.view = 'ProjectView';
-      } else if (this.$root.do_navigation.view === 'ProjectView') {
-        this.$root.closeProject();
+      if (this.do_navigation.view === 'CaptureView') {
+        this.do_navigation.view = 'ProjectView';
+      } else if (this.do_navigation.view === 'ProjectView') {
+        this.closeProject();
       }
     }
   }

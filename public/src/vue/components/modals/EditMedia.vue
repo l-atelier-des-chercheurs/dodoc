@@ -4,7 +4,7 @@
     @close="$emit('close')"
     @submit="editThisMedia"
     :read_only="read_only"
-    :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndScroll'"
+    :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndNoScroll'"
     :askBeforeClosingModal="askBeforeClosingModal"
     :show_sidebar="$root.media_modal.show_sidebar"
     :is_minimized="$root.media_modal.minimized"
@@ -43,6 +43,11 @@
           @click.prevent="removeMedia()"
           :disabled="read_only"
           >
+          <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="91.6px"
+            height="95px" viewBox="0 0 91.6 95" style="enable-background:new 0 0 91.6 95;" xml:space="preserve">
+            <path class="st0" d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
+            l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"/>
+          </svg>
           {{ $t('remove') }}
         </button>
 
@@ -50,7 +55,7 @@
           <hr>
           <CreateQRCode
             :slugProjectName="slugProjectName"
-            :media_filename="media.media_filename"
+            :media="media"
           />
         </template>
 
@@ -63,7 +68,7 @@
               H13V29z M77,13H61v16h16V13z"/>
           </svg>
           <span class>
-            Partage
+            {{ $t('share') }}
           </span>
         </button>
 
@@ -76,7 +81,7 @@
             {{ $t('type') }}
           </div>
           <div>
-            {{ media.type }}
+            {{ $t(media.type) }}
             <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
           </div>
         </div>
@@ -98,7 +103,7 @@
         </div>
         <div 
           class="m_metaField"
-          v-if="media.hasOwnProperty('date_uploaded') && $root.formatDateToHuman(media.date_created) !== $root.formatDateToHuman(media.date_uploaded)"
+          v-if="media.hasOwnProperty('date_uploaded')"
         >
           <div>
             {{ $t('uploaded') }}
@@ -152,7 +157,6 @@
           :keywords="mediadata.keywords"
           @tagsChanged="newTags => mediadata.keywords = newTags"
         />
-        <small>{{ $t('validate_with_enter') }}</small>        
       </div>
 
   <!-- Author(s) -->
@@ -164,6 +168,7 @@
             @authorsChanged="newAuthors => mediadata.authors = newAuthors"
           />
 
+          <small>{{ $t('author_instructions') }}</small>
           <!-- <textarea v-model="mediadata.authors[0]" :readonly="read_only">
           </textarea> -->
         </div>
@@ -202,6 +207,17 @@
         v-model="mediadata.content"
       >
       </MediaContent>
+      <div class="m_mediaOptions" v-if="false && media.type === 'image'">
+        <label>Options</label>
+        <div>
+          <button type="button" class="buttonLink" @click="editRawMedia('rotate_image', {angle: 90})">
+            Pivoter vers la droite
+          </button>
+          <button type="button" class="buttonLink" @click="editRawMedia('reset')">
+            Revenir à l’original
+          </button>
+        </div>
+      </div>
     </template>
 
   </Modal>
@@ -244,16 +260,20 @@ export default {
         caption: this.media.caption,
         keywords: this.media.keywords,
         fav: this.media.fav,
-        content: this.media.content
+        content: this.media.content,
       },
       mediaURL: `/${this.slugProjectName}/${this.media.media_filename}`,
-      askBeforeClosingModal: false
+      askBeforeClosingModal: false,
+
+      is_ready: false
     };
   },
   watch: {
     'mediadata': {
       handler() {
-        this.askBeforeClosingModal = true;
+        if(this.is_ready) {
+          this.askBeforeClosingModal = true;
+        }
       },
       deep: true
     }
@@ -266,6 +286,9 @@ export default {
         this.mediadata.authors = [];
       }
     }
+    this.$nextTick(() => {
+      this.is_ready = true;
+    });
   },
   computed: {
   },
@@ -274,17 +297,23 @@ export default {
       window.print();
     },
     removeMedia: function() {
-      if (window.confirm(this.$t('sureToRemoveMedia'))) {
-        this.$root.removeMedia({
-          type: 'projects',
-          slugFolderName: this.slugProjectName, 
-          slugMediaName: this.slugMediaName
-        });
-        // then close that popover
-        this.$emit('close', '');
-      }
+      this.$alertify
+        .okBtn(this.$t('yes'))
+        .cancelBtn(this.$t('cancel'))        
+        .confirm(this.$t('sureToRemoveMedia'), 
+        () => {
+          this.$root.removeMedia({
+            type: 'projects',
+            slugFolderName: this.slugProjectName, 
+            slugMediaName: this.slugMediaName
+          });
+          // then close that popover
+          this.$emit('close', '');
+        },
+        () => {
+        });                    
     },
-    editThisMedia: function(event) {
+    editThisMedia: function() {
       console.log('editThisMedia');
       this.$root.editMedia({ 
         type: 'projects',
@@ -294,10 +323,35 @@ export default {
       });
       // then close that popover
       this.$emit('close', '');
+    },
+    editRawMedia: function(type, detail) {
+      console.log('editRawMedia');
+      this.$root.editMedia({ 
+        type: 'projects',
+        slugFolderName: this.slugProjectName, 
+        slugMediaName: this.slugMediaName,
+        data: this.mediadata,
+        recipe_with_data: {
+          apply_to: this.media.media_filename,
+          type,
+          detail
+        }
+      });
+      // then close that popover
+      // this.$emit('close', '');
     }
   },
 };
 </script>
 <style>
+.m_mediaOptions {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 100;
+  background-color: white;
+  margin: 25px;
+  padding: 15px;
+}
 
 </style>

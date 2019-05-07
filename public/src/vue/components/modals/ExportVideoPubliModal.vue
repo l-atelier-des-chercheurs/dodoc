@@ -5,7 +5,7 @@
     :typeOfModal="'ExportVideo'"
   >
     <template slot="header">
-      <span class="">{{ $t('export_publication') }}</span>
+      <span class="">{{ $t('export_creation') }}</span>
     </template>
 
     <template slot="sidebar">
@@ -32,18 +32,9 @@
           
           <div v-if="video_request_status === 'generated'">
             <div class="mediaContainer">
-              <video ref="video" :src="link_to_video" controls preload="auto" />
-              <svg 
-                ref="playIcon" 
-                v-if="!video_is_playing"
-                class="mediaContainer--videoPlay" 
-                viewBox="0 0 200 200" 
-                alt="Play video"
-                @click="togglePlayVideo()"
-              >
-                <circle cx="100" cy="100" r="90" fill="#fff" stroke-width="15" stroke="#fff"></circle>
-                <polygon points="70, 55 70, 145 145, 100" fill="#353535"></polygon>
-              </svg>
+              <vue-plyr :options="plyr_options">
+                <video :src="link_to_video" controls preload="auto" />
+              </vue-plyr>
             </div>
             <div class="margin-vert-medium">
               <a 
@@ -53,18 +44,13 @@
               >
                 {{ $t('download') }}
               </a>
-              <br>
-              <div class="">
-                <label v-html="$t('add_to_project')" />
-                <select>
-                  <option 
-                    v-for="project in $root.store.projects" 
-                    :key="project.name"
-                  >
-                    {{ project.name }}
-                  </option>        
-                </select>
-              </div>
+
+              <AddCreationToProject
+                v-if="exported_video_name !== false"
+                :media_filename="exported_video_name"
+                @close="$emit('close')"
+              />
+
             </div>
             
           </div>
@@ -76,19 +62,27 @@
 <script>
 import Modal from './BaseModal.vue';
 import { setTimeout } from 'timers';
+import AddCreationToProject from '../subcomponents/AddCreationToProject.vue';
 
 export default {
   props: {
     slugPubliName: String
   },
   components: {
-    Modal
+    Modal,
+    AddCreationToProject
   },
   data() {
     return {
       video_request_status: false,
       link_to_video: false,
-      video_is_playing: false
+      video_is_playing: false,
+      exported_video_name: false,
+      
+      plyr_options: {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        iconUrl: '/images/plyr.svg'
+      }
     }
   },
   created() {
@@ -102,20 +96,13 @@ export default {
   computed: {
   },
   methods: {
-    togglePlayVideo() {
-      if(this.video_is_playing === false) {
-        this.video_is_playing = true;
-        this.$refs.video.play();
-        this.$refs.video.setAttribute('controls', 'controls')      
-      }
-    },
     downloadVideo() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • ExportVideoPubli: downloadVideo`);
       }
 
       this.$eventHub.$on('socketio.publication.videoIsGenerated', this.videoPubliIsGenerated);
-      this.$root.downloadVideoPubli({ 
+      this.$socketio.downloadVideoPubli({ 
         slugPubliName: this.slugPubliName
       });
       this.video_request_status = 'waiting_for_server';
@@ -127,6 +114,7 @@ export default {
       this.$eventHub.$off('socketio.publication.videoIsGenerated', this.videoPubliIsGenerated);
       this.video_request_status = 'generated';
       this.link_to_video = window.location.origin + '/publication/video/' + videoName;
+      this.exported_video_name = videoName; 
     },
   }
 }

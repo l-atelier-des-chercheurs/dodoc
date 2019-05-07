@@ -36,7 +36,8 @@ html
       window.store = {
         request: {
           slugProjectName: "!{slugProjectName}",
-          metaFileName: "!{metaFileName}"
+          metaFileName: "!{metaFileName}",
+          display: "!{display}"
         },
         projects: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" },
         authors: {},
