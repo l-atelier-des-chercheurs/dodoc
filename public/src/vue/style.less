@@ -900,7 +900,7 @@ small {
       }
 
       .m_project--library--medias {
-        .padding-top-medium;
+        .padding-top-small;
         .padding-sides-small;
 
         @supports (display: grid) {
@@ -1441,6 +1441,7 @@ small {
 
     cursor: pointer;
     .bg-blanc;
+    
     border-radius: 4px;
     // border-bottom: 4px solid transparent;
 
@@ -1467,9 +1468,11 @@ small {
       height: 1.1rem;
       text-transform: lowercase;
       border-bottom: 0px;
+      display: block;
       
       svg {
         color: @c-rouge;
+        vertical-align: text-bottom;
       }
     }
 
@@ -1522,23 +1525,19 @@ small {
 
       .play_picto {
         display: block;
-        // width: 40px;
-        // height: 40px;
-        // margin: 0 auto;
-        // margin: 10px;
-        .margin-verysmall;
-        width: 20px;
-        height: 20px;
-      
-        // stroke: rgba( 0, 0, 0, 1);
-        fill: white;
-        // fill: @c-orange;
-        // stroke-width: 10px;
-        // background-color: @c-orange;
-        fill: @c-orange;
-        fill: @c-noir;
-        border-radius: 4px;  
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
+        svg {
+          width: 20px;
+          height: 20px;
+        
+          // box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+          background-color: @c-blanc;
+          fill: black;
+          border-radius: 4px;  
+        }
       }
 
       &.type-text {
@@ -3985,10 +3984,12 @@ small {
 
 }
 
-.tippy-tooltip {
-  background: @c-rouge;
-  color: white;
-
+.tippy-popper {
+  > * {
+    background: @c-rouge;
+    color: white;
+    pointer-events: none;  
+  }
   code {
     font-family: 'Fira Code';
   }

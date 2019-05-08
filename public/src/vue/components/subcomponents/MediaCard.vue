@@ -15,9 +15,9 @@
         :class="{ 'is--hovered' : is_hovered }"
       >
         <div>
-          <div class="m_metaField padding-sides-verysmall">
+          <div class="m_metaField padding-sides-verysmall"
+          >
             <div>
-              <span v-if="!!media.type" v-html="media.type" />
               <svg version="1.1"
                 v-if="media.fav"
                 class="inline-svg"
@@ -27,6 +27,9 @@
                 <polygon class="st0" points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"/>
                 <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 "/>
               </svg>
+              <span v-if="!!media.type" v-html="media.type"
+                :class="{ 'c-rouge' : media.fav }"
+              />
             </div>
           </div>
           <MediaContent
