@@ -322,6 +322,7 @@
         <img 
           :src="this.$root.state.mode === 'export_publication' ? './_images/i_logo.svg' : '/images/i_logo.svg'" 
           @click="goHome()" 
+          draggable="false"
         />          
       </a>
     </div>

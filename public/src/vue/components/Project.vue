@@ -7,6 +7,7 @@
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img
           :src="previewURL" class=""
+          draggable="false"
         />
       </div>
       

@@ -79,7 +79,7 @@
                   :disabled="read_only"
                   class="button button-bg_rounded bg-bleuvert"
                 >
-                  <img src="/images/i_enregistre.svg"/>
+                  <img src="/images/i_enregistre.svg" draggable="false" />
                   <span class="text-cap font-verysmall">
                     <slot name="submit_button">
                       {{ $t('save') }}
@@ -102,7 +102,7 @@
               @click="closeModal"
               class="button button-bg_rounded bg-orange"
             >
-              <img src="/images/i_clear.svg"/>
+              <img src="/images/i_clear.svg" draggable="false" />
               <span class="text-cap font-verysmall">
                 <slot name="cancel_button">
                   {{ $t('cancel') }}
@@ -115,7 +115,7 @@
               :disabled="read_only"
               class="button button-bg_rounded bg-bleuvert"
             >
-              <img src="/images/i_enregistre.svg"/>
+              <img src="/images/i_enregistre.svg" draggable="false" />
               <span class="text-cap font-verysmall">
                 <slot name="submit_button">
                   {{ $t('save') }}
@@ -135,7 +135,7 @@
           @click="closeModal"
           v-if="showModal && !is_minimized"
         >
-          <img src="/images/i_close_sansfond.svg">
+          <img src="/images/i_close_sansfond.svg" draggable="false">
         </button>
       </transition>
 
@@ -146,7 +146,7 @@
           v-if="showModal && can_minimize"
           :class="{ 'is_minimized' : is_minimized }"
         >
-          <img src="/images/i_minimize.svg">
+          <img src="/images/i_minimize.svg" draggable="false">
         </button>
       </transition>
 
@@ -156,7 +156,7 @@
           @click="prevMedia()"
           v-if="showModal && media_navigation && !is_minimized"
         >
-          <img src="/images/i_arrow_left.svg">
+          <img src="/images/i_arrow_left.svg" draggable="false">
         </button>
       </transition>
 
@@ -166,7 +166,7 @@
           @click="nextMedia()"
           v-if="showModal && media_navigation && !is_minimized"
         >
-          <img src="/images/i_arrow_right.svg">
+          <img src="/images/i_arrow_right.svg" draggable="false">
         </button>
       </transition>
 

@@ -43,7 +43,7 @@
             class="_drop_indicator"
           >
             <div>
-              <img src="/images/i_importer.svg">
+              <img src="/images/i_importer.svg" draggable="false">
               <label>{{ $t('drop_here_to_import') }}</label> 
             </div>
           </div>
