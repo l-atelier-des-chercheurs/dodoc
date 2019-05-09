@@ -80,7 +80,6 @@
             <div class="cursor-pointer" :readonly="read_only" @click="showCurrentPassword = !showCurrentPassword">
               {{ $t('show_password') }}
             </div>
-
             <div v-if="showCurrentPassword && can_access_folder">
               {{ project_password }}
             </div>
@@ -259,6 +258,7 @@ export default {
     },
     submitPassword() {
       console.log('METHODS • Project: submitPassword');
+
       
       this.$auth.updateAdminAccess({
         "projects": {
@@ -266,6 +266,18 @@ export default {
         }
       });
       this.$socketio.sendAuth();
+
+      // check if password matches or not
+      this.$eventHub.$once('socketio.authentificated', () => {
+        const has_passworded_folder = window.state.list_authorized_folders.filter(f => f.type === 'projects' && f.allowed_slugFolderNames.includes(this.slugProjectName));
+        if(has_passworded_folder.length === 0) {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t('notifications.wrong_password_for') + this.project.name);
+          this.$refs.passwordField.value = '';
+        }
+      });
     }
   },
 };

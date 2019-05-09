@@ -148,7 +148,7 @@ module.exports = (function() {
       withdraw: 'Enlever',
       remove_this_image: 'Supprimer cette image',
       password: 'Mot de passe',
-      password_required_to_open: 'Mot de passe requis pour accéder',
+      password_required_to_open: 'Mot de passe requis',
       show_password: 'Afficher le mot de passe',
       protected_by_pass: 'protégé par mot de passe',
       password_instructions:
@@ -327,7 +327,8 @@ module.exports = (function() {
           'Erreur&nbsp;: certains médias n’ont pas pu être enregistrés.',
         video_converted: 'La vidéo a été convertie et ajoutée au projet.',
         project_has_been_removed:
-          'Ce projet vient d’être supprimé par quelqu’un d’autre.'
+          'Ce projet vient d’être supprimé par quelqu’un d’autre.',
+        wrong_password_for: 'Mot de passe erroné pour '
       }
     },
     en: {
@@ -453,7 +454,7 @@ module.exports = (function() {
       withdraw: 'Withdraw',
       remove_this_image: 'Remove this image',
       password: 'Mot de passe',
-      password_required_to_open: 'Password required to open',
+      password_required_to_open: 'Password required',
       show_password: 'Show password',
       protected_by_pass: 'protected by password',
       password_instructions:
@@ -649,7 +650,8 @@ module.exports = (function() {
         video_converted:
           'The video was converted successfully and added to the project.',
         project_has_been_removed:
-          'This project just got removed by another user.'
+          'This project just got removed by another user.',
+        wrong_password_for: 'Wrong password for project '
       }
     }
   };

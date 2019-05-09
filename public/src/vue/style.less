@@ -1004,6 +1004,7 @@ small {
 
   .m_project--presentation--buttons {
     margin-top: @t-skipline/4 !important;
+    margin: 0 !important;
   }
 }
 
@@ -1070,6 +1071,10 @@ small {
 
       .m_project--presentation--text--infos {
         .margin-sides-small;
+
+        input {
+          min-width: 0;
+        }
       }
     }
 
@@ -1628,7 +1633,7 @@ small {
     font-weight: 400;
   }
   &:last-child {
-    margin-bottom: 0;
+    // margin-bottom: 0;
   }
 
   > .m_authorField {
