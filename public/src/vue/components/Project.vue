@@ -77,9 +77,9 @@
           </div>
 
           <div v-if="can_access_folder && project_password && context === 'full'" class="m_metaField">
-            <label class="cursor-pointer" :readonly="read_only" @click="showCurrentPassword = !showCurrentPassword">
+            <div class="cursor-pointer" :readonly="read_only" @click="showCurrentPassword = !showCurrentPassword">
               {{ $t('show_password') }}
-            </label>
+            </div>
 
             <div v-if="showCurrentPassword && can_access_folder">
               {{ project_password }}
