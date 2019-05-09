@@ -259,6 +259,7 @@ let vm = new Vue({
         if (this.store.request.metaFileName) {
           this.$eventHub.$once('socketio.projects.listMedias', () => {
             const metaFileName = this.store.request.metaFileName;
+            this.media_modal.show_sidebar = false;
             this.openMedia({
               slugProjectName: this.store.request.slugProjectName,
               metaFileName
