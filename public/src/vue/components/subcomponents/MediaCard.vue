@@ -27,9 +27,9 @@
                 <polygon class="st0" points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"/>
                 <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 "/>
               </svg>
-              <span v-if="!!media.type" v-html="media.type"
-                :class="{ 'c-rouge' : media.fav }"
-              />
+              <span v-if="!!media.type" :class="{ 'c-rouge' : media.fav }">
+                {{ $t(media.type) }}
+              </span>
             </div>
           </div>
           <MediaContent
@@ -64,7 +64,7 @@
               {{ $t('type') }}
             </div>
             <div>
-              {{ media.type }}
+              {{ $t(media.type) }}
             </div>
           </div>
           <div class="m_metaField" v-if="!!media.authors">
