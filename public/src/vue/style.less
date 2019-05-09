@@ -1461,7 +1461,7 @@ small {
     //   }
     // }
 
-    transition: all 2s .2s cubic-bezier(.25,.8,.25,1);
+    transition: all 1s .2s cubic-bezier(.25,.8,.25,1);
 
     &.is--hovered {
       transform: translateY(-4px);
@@ -1471,7 +1471,7 @@ small {
 
     .m_metaField {
       margin-bottom: 0;
-      height: 1.1rem;
+      height: 1rem;
       text-transform: lowercase;
       border-bottom: 0px;
       border-bottom: 1px solid @c-gris_clair;
@@ -1522,11 +1522,12 @@ small {
         // white-space: pre;
         white-space: normal;
         word-break: break-all;
+        // .padding-verysmall;
       }
 
       h1,h2,h3,h4,h5, p {
-        margin: 0;
-        margin-bottom: @t-skipline/2;
+        // margin: 0;
+        // margin-bottom: @t-skipline/2;
         font-size: inherit;
       }
 
@@ -1552,8 +1553,8 @@ small {
         }
       }
 
-      &.type-text {
-        .padding-verysmall;
+      &.type-text, &.type-other, &.type-document {
+        .margin-verysmall;
         .font-verysmall;
       }
 
