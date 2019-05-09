@@ -38,22 +38,32 @@
             :slugFolderName="slugProjectName"
             :media="media"
             :preview_size="preview_size"
-          ></MediaContent>
-          <button 
-            type="button" 
-            v-if="
-              $root.settings.current_publication.slug
-              && $root.settings.current_publication.accepted_media_type.includes(media.type)
-            " 
-            class="button_addToPubli button-greenthin button-square"
-            @click.stop="addToCurrentPubli()"
-            :title="$t('add_to_publication')"
-          >
-            {{ $t('add_to_publication') }}
-          </button>
+          />
           <figcaption class="m_media--caption" v-if="!!media.caption">
             {{ media.caption }}
           </figcaption>
+          <div 
+            v-if="$root.settings.current_publication.slug && $root.settings.current_publication.accepted_media_type.includes(media.type)"
+            class="m_media--add_to_recipe"
+          >
+            <button 
+              type="button" 
+              class="button_addToPubli button-greenthin button-square"
+              @click.stop="addToCurrentPubli()"
+              :title="$t('add_to_recipe')"
+              v-tippy='{ 
+                placement : "left",
+                delay: [600, 0]
+              }'  
+            >
+              <template v-if="!is_media_in_publi">
+                →
+              </template>
+              <template v-else>
+                ✓
+              </template>
+            </button>
+          </div>
         </div>          
 
         <figcaption
