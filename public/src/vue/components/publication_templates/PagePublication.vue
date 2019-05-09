@@ -420,7 +420,6 @@ export default {
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty('mmMeasurer') ? this.$refs.mmMeasurer.offsetWidth / 10 : 38;
     this.updatePubliOptionsInFields();
           
-
     document.getElementsByTagName('body')[0].style = `
       --page-width: ${this.publications_options.width}mm; 
       --page-height: ${this.publications_options.height}mm

@@ -1443,6 +1443,7 @@ small {
     .bg-blanc;
     
     border-radius: 4px;
+    overflow: hidden;
     // border-bottom: 4px solid transparent;
 
     .is--fav& {
@@ -1468,7 +1469,12 @@ small {
       height: 1.1rem;
       text-transform: lowercase;
       border-bottom: 0px;
+      border-bottom: 1px solid @c-gris_clair;
       display: block;
+
+      > * {
+
+      }
       
       svg {
         color: @c-rouge;
@@ -1532,11 +1538,12 @@ small {
         svg {
           width: 20px;
           height: 20px;
+          padding: 4px;
         
           // box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-          background-color: @c-blanc;
+          background-color: fade(@c-blanc, 90%);
           fill: black;
-          border-radius: 4px;  
+          border-radius: 10px;  
         }
       }
 
@@ -1557,11 +1564,12 @@ small {
       bottom: 0;
 
       width: 100%;
-      // border-top: 2px solid @c-gris_clair;
+      border-top: 1px solid @c-gris_clair;
       .font-verysmall;
       .c-noir;
       .padding-sides-verysmall;
       .bg-blanc;
+      // .bg-gris_tresclair;
       line-height: 1.2;
       height: 1.1rem;
       // padding-top: @t-skipline/4;
@@ -3344,7 +3352,7 @@ small {
       // Configuration
       --gridstep: 10mm;
 
-      --gridstep_before:~"calc(var(--gridstep) - 2px)";
+      --gridstep_before:~"calc(var(--gridstep) - 1px)";
 
       @c-gridColor: @c-gris_tresclair;
       @s-gridOpacity: 1;

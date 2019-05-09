@@ -148,6 +148,8 @@ module.exports = (function() {
       withdraw: 'Enlever',
       remove_this_image: 'Supprimer cette image',
       password: 'Mot de passe',
+      password_required_to_open: 'Mot de passe requis pour accéder',
+      show_password: 'Afficher le mot de passe',
       protected_by_pass: 'protégé par mot de passe',
       password_instructions:
         'Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce projet.',
@@ -451,6 +453,8 @@ module.exports = (function() {
       withdraw: 'Withdraw',
       remove_this_image: 'Remove this image',
       password: 'Mot de passe',
+      password_required_to_open: 'Password required to open',
+      show_password: 'Show password',
       protected_by_pass: 'protected by password',
       password_instructions:
         'If set, only users with the password will be able to open this project.',
