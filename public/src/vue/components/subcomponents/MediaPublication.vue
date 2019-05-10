@@ -31,7 +31,7 @@
 
     <button class="m_mediaPublication--overflowing_sign"
       type="button"
-      v-if="media.type === 'text' && is_text_overflowing"
+      v-if="media.type === 'text' && is_text_overflowing && !preview_mode"
       @mousedown.stop.prevent="setMediaHeightToContent"
       @touchstart.stop.prevent="setMediaHeightToContent"   
       :title="$t('text_overflow')"
