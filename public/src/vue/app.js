@@ -101,7 +101,7 @@ let i18n = new VueI18n({
 ***********/
 
 import custom_socketio from '../adc-core/custom-socketio.js';
-Vue.prototype.$socketio = custom_socketio.init(i18n, auth);
+Vue.prototype.$socketio = custom_socketio.init(i18n, auth, alertify);
 
 import App from './App.vue';
 

@@ -3,7 +3,7 @@ import Vue from 'vue';
 
 module.exports = (function() {
   return {
-    init: function(i18n, auth) {
+    init: function(i18n, auth, alertify) {
       return new Vue({
         i18n,
         data: {
