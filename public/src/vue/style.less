@@ -721,6 +721,7 @@ body {
   box-shadow: 2px 3px 10px fade(@c-bleuvert, 50%);
   box-shadow: inset 5px 0 5px fade(@c-bleuvert_fonce, 50%);
 
+  user-select: none;
 
   .padding-verysmall;
   .button-inline;
@@ -3877,7 +3878,9 @@ small {
 	height: 100%;
   // margin-left: -5px;
 
-	cursor: col-resize;
+  pointer-events: none;
+
+	// cursor: col-resize;
 
   opacity: 1;
 
