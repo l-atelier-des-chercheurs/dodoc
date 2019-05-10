@@ -2,7 +2,7 @@
   <div 
     class="m_media"
     :class=" { 
-      'is--inPubli' : media_is_in_current_publi, 
+      'is--inPubli' : is_media_in_publi, 
       'is--fav' : media.fav,
       'is--ownMedia' : media_made_by_current_author
     }"
@@ -15,9 +15,21 @@
         :class="{ 'is--hovered' : is_hovered }"
       >
         <div>
-          <div class="m_metaField padding-sides-verysmall" v-if="!!media.type">
+          <div class="m_metaField padding-sides-verysmall"
+          >
             <div>
-              {{ $t(media.type) }}
+              <svg version="1.1"
+                v-if="media.fav"
+                class="inline-svg"
+                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+                x="0px" y="0px" width="78.5px" height="106.4px" viewBox="0 0 78.5 106.4" style="enable-background:new 0 0 78.5 106.4;"
+                xml:space="preserve">
+                <polygon class="st0" points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"/>
+                <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 "/>
+              </svg>
+              <span v-if="!!media.type" :class="{ 'c-rouge' : media.fav }">
+                {{ $t(media.type) }}
+              </span>
             </div>
           </div>
           <MediaContent
@@ -26,22 +38,35 @@
             :slugFolderName="slugProjectName"
             :media="media"
             :preview_size="preview_size"
-          ></MediaContent>
-          <button 
-            type="button" 
-            v-if="
-              $root.settings.current_publication.slug
-              && $root.settings.current_publication.accepted_media_type.includes(media.type)
-            " 
-            class="button_addToPubli button-greenthin button-square"
-            @click.stop="addToCurrentPubli()"
-            :title="$t('add_to_publication')"
-          >
-            {{ $t('add_to_publication') }}
-          </button>
+          />
           <figcaption class="m_media--caption" v-if="!!media.caption">
             {{ media.caption }}
           </figcaption>
+
+          <transition name="slideright" :duration="400">
+            <div 
+              v-if="$root.settings.current_publication.slug && $root.settings.current_publication.accepted_media_type.includes(media.type)"
+              class="m_media--add_to_recipe"
+            >
+              <button 
+                type="button" 
+                class="button_addToPubli button-greenthin button-square"
+                @click.stop="addToCurrentPubli()"
+                :title="$t('add_to_recipe')"
+                v-tippy='{ 
+                  placement : "left",
+                  delay: [600, 0]
+                }'  
+              >
+                <template v-if="!is_media_in_publi">
+                  →
+                </template>
+                <template v-else>
+                  ✓
+                </template>
+              </button>
+            </div>
+          </transition>
         </div>          
 
         <figcaption
@@ -52,7 +77,7 @@
               {{ $t('type') }}
             </div>
             <div>
-              {{ media.type }}
+              {{ $t(media.type) }}
             </div>
           </div>
           <div class="m_metaField" v-if="!!media.authors">
@@ -116,23 +141,37 @@ export default {
         video: '/images/i_icone-dodoc_video.svg',
         stopmotion: '/images/i_icone-dodoc_anim.svg',
         audio: '/images/i_icone-dodoc_audio.svg'
-      },
-      media_is_in_current_publi: false
+      }
     }
   },
   
   created() {
-    this.isMediaInPubli();
   },
   mounted() {
-    this.$eventHub.$on('publication_medias_updated', this.isMediaInPubli);
   },
   beforeDestroy() {
-    this.$eventHub.$off('publication_medias_updated', this.isMediaInPubli);
   },
   watch: {
   },
   computed: {
+    is_media_in_publi() {
+
+      return Object.values(this.$root.current_publication_medias).findIndex(s => s.slugMediaName === this.metaFileName) > -1;
+
+      // if(this.$root.settings.current_publication.slug) {
+      //   if(this.$root.store.publications.hasOwnProperty(this.$root.settings.current_publication.slug)) {
+      //     const currentPubli = this.$root.store.publications[this.$root.settings.current_publication.slug];
+      //     if(currentPubli.hasOwnProperty('medias') && Object.keys(currentPubli.medias).length > 0) {
+      //       const media_in_publi = Object.values(currentPubli.medias).filter(s => s.slugMediaName === this.metaFileName);
+      //       if(media_in_publi.length > 0) {
+      //         this.media_is_in_current_publi = true;
+      //       } else {
+      //         this.media_is_in_current_publi = false;
+      //       }
+      //     }
+      //   }
+      // }
+    },
     media_made_by_current_author() {
       if(!this.media.authors || typeof this.media.authors !== 'object') {
         return false;
@@ -144,22 +183,6 @@ export default {
     }
   },
   methods: {
-    isMediaInPubli() {
-      if(this.$root.settings.current_publication.slug) {
-        if(this.$root.store.publications.hasOwnProperty(this.$root.settings.current_publication.slug)) {
-          const currentPubli = this.$root.store.publications[this.$root.settings.current_publication.slug];
-          if(currentPubli.hasOwnProperty('medias') && Object.keys(currentPubli.medias).length > 0) {
-
-            const media_in_publi = Object.values(currentPubli.medias).filter(s => s.slugMediaName === this.metaFileName);
-            if(media_in_publi.length > 0) {
-              this.media_is_in_current_publi = true;
-            } else {
-              this.media_is_in_current_publi = false;
-            }
-          }
-        }
-      }
-    },
     openMediaModal() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaCard: openMediaModal = ${this.metaFileName}`);

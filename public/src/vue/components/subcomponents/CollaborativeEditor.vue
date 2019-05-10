@@ -1,11 +1,11 @@
 <template>
   <div
-    class="mediaTextContent quillWrapper" 
+    class="quillWrapper" 
     autocorrect="off"
     autofocus="autofocus"
   >
     <!-- connection_state : {{ connection_state }}<br> -->
-    <div ref="editor"
+    <div ref="editor" class="mediaTextContent"
     />
   </div>
 </template>
@@ -33,7 +33,7 @@ export default {
       editor_id: (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 5),
 
       custom_toolbar: [
-        [{ 'header': [false, 1, 2, 3, 4] }],
+        [{ 'header': [false, 1, 2, 3] }],
         // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
         ['bold', 'italic', 'underline', 'link', 'blockquote'],
         [{ list: 'ordered' }, { list: 'bullet'} ],
@@ -54,7 +54,7 @@ export default {
         toolbar: this.custom_toolbar
       },
       theme: 'snow',
-      formats: ['bold', 'underline', 'header', 'italic', 'link']
+      formats: ['bold', 'italic', 'underline', 'link', 'header', 'blockquote', 'list']
     });
     this.editor.root.innerHTML = this.value;
 
@@ -142,4 +142,43 @@ export default {
 }
 </script>
 <style>
+.ql-toolbar .ql-formats:first-child::before {
+  content: 'options :';
+  position: relative;
+  display: inline-block;
+  float: left;
+  font-size:1rem;
+  vertical-align: middle;
+  font-weight: 400;
+  /* background-color: #333; */
+  /* left: -8px; */
+  margin:0;
+  margin-top: 4px;
+  font-weight: 400;
+  /* padding: 11px; */
+  /* margin-bottom: 10px; */
+  /* text-decoration: underline; */
+  font-size: .8rem;
+  /* text-transform: uppercase; */
+  /* margin-right: 15px; */
+  /* font-style: italic; */
+}
+
+html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before, 
+html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
+  content: 'Titre 1';
+}
+html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before, 
+html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
+  content: 'Titre 2';
+}
+html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before, 
+html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
+  content: 'Titre 3';
+}
+html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="4"]::before, 
+html[lang="fr"] .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
+  content: 'Titre 4';
+}
+
 </style>

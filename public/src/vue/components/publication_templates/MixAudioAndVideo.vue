@@ -4,55 +4,28 @@
     :class="{ 'is--preview' : preview_mode }"
     ref="panel"
   >
-    <div class="m_publicationMeta">
-      <div class="m_publicationMeta--topbar">
-        <button type="button" class=""
-          v-if="$root.state.mode !== 'export_publication'"        
-          @click="closePublication()"
-        >
-          ←
-        </button>
+    <PublicationHeader 
+      :slugPubliName="slugPubliName"
+      :publication="publication"
+      @export="show_export_modal = true"
+    />
 
-        <div class="m_publicationMeta--topbar--title">
-          {{ publication.name }}
-        </div>
+    <ExportAudioAndVideoMixModal
+      v-if="show_export_modal"
+      @close="show_export_modal = false"
+      :slugPubliName="slugPubliName"
+    />
 
-        <template 
-          v-if="$root.state.mode !== 'export_publication'"
-        >
-          <!-- <div class="margin-small">
-            <input id="settings" type="checkbox" v-model="advanced_options" />
-            <label for="settings">{{ $t('settings') }}</label>
-          </div> -->
-
-          <button type="button" class="buttonLink" @click="showExportModal = true">
-            {{ $t('export') }}
-          </button>     
-
-          <ExportAudioAndVideoMixModal
-            v-if="showExportModal"
-            @close="showExportModal = false"
-            :slugPubliName="slugPubliName"
-          />
-
-          <button type="button" class="buttonLink" @click="removePublication">
-            {{ $t('remove') }}
-          </button>     
-        </template>
-      </div>
-    </div>
-    <div class="m_mixAudioAndVideoPublication">
+    <div class="m_mixAudioAndImagePublication">
       <div class="margin-medium" v-if="publication_medias.length === 0">
         <p>
-          <small>
-            Ajoutez ici un fichier <b>son</b> et un fichier <b>vidéo</b> pour créer une nouvelle vidéo.
-          </small>
+          <small v-html="$t('add_sound_video_file')" />
         </p>
       </div>
 
       <transition-group name="slideFromTop" :duration="300" tag="div">
         <div
-          class="m_mixAudioAndVideoPublication--media"
+          class="m_mixAudioAndImagePublication--media"
           v-for="media in publication_medias" 
           :key="media.publi_meta.metaFileName"
         >
@@ -83,7 +56,7 @@
           <button type="button" class="buttonLink font-verysmall"
             @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
           >
-            {{ $t('remove') }}
+            {{ $t('withdraw') }}
           </button>
         </div>
       </transition-group>
@@ -92,6 +65,7 @@
   </div>
 </template>
 <script>
+import PublicationHeader from '../subcomponents/PublicationHeader.vue';
 import MediaContent from '../subcomponents/MediaContent.vue';
 import ExportAudioAndVideoMixModal from '../modals/ExportAudioAndVideoMix.vue';
 
@@ -102,20 +76,22 @@ export default {
     read_only: Boolean
   },
   components: {
+    PublicationHeader,
     MediaContent,
     ExportAudioAndVideoMixModal
   },
   data() {
     return {
-      showExportModal: false,
+      show_export_modal: false,
       publication_medias: [],
-      medias_slugs_in_order: []
+      medias_slugs_in_order: [],
+      accepted_media_type: ['audio', 'video']
     }
   },
   created() {
   },
   mounted() {
-    this.$root.settings.current_publication.accepted_media_type = ['video', 'audio'];
+    this.$root.settings.current_publication.accepted_media_type = this.accepted_media_type;
 
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
@@ -125,7 +101,7 @@ export default {
     }
     
     this.updateMediasPubli();  
-    this.$eventHub.$emit('publication_medias_updated');      
+          
   },
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
@@ -137,7 +113,7 @@ export default {
         console.log(`WATCH • Publication: publication.medias`);
       }
       this.updateMediasPubli();
-      this.$eventHub.$emit('publication_medias_updated');      
+            
     },
     '$root.store.projects': {
       handler() {
@@ -155,7 +131,7 @@ export default {
 
       this.medias_slugs_in_order = typeof this.publication.medias_slugs === "object" ? this.publication.medias_slugs : [];
       this.updateMediasPubli();
-      this.$eventHub.$emit('publication_medias_updated');      
+            
     }
   },
   computed: {
@@ -219,39 +195,10 @@ export default {
         }
       });
     },
-    closePublication() {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: closePublication`);
-      }
-      this.$root.closePublication();
-    },
-    removePublication() {
-
-      this.$alertify
-        .okBtn(this.$t('yes'))
-        .cancelBtn(this.$t('cancel'))        
-        .confirm(this.$t('sureToRemovePubli'), 
-        () => {
-          if (this.$root.state.dev_mode === 'debug') {
-            console.log(`METHODS • Publication: removePublication`);
-          }
-          this.$root.removeFolder({ 
-            type: 'publications', 
-            slugFolderName: this.slugPubliName, 
-          });
-          
-          this.closePublication();
-        },
-        () => {
-        });              
-
-    },
     updateMediasPubli() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: updateMediasPubli`);
       }
-
-      this.$root.settings.current_publication.accepted_media_type = ['video', 'audio'];
 
       if(!this.publication.hasOwnProperty('medias') || Object.keys(this.publication.medias).length === 0) {
         this.publication_medias = [];        
@@ -328,8 +275,7 @@ export default {
 
 
       const types_of_medias = publi_medias.map(m => m.type);
-      // this.$root.settings.current_publication.accepted_media_type = ['video', 'audio'];
-      this.$root.settings.current_publication.accepted_media_type = this.$root.settings.current_publication.accepted_media_type.filter(t => !types_of_medias.includes(t));
+      this.$root.settings.current_publication.accepted_media_type = this.accepted_media_type.filter(t => !types_of_medias.includes(t));
 
       this.publication_medias = publi_medias;        
     }

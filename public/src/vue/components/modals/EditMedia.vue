@@ -4,7 +4,7 @@
     @close="$emit('close')"
     @submit="editThisMedia"
     :read_only="read_only"
-    :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndScroll'"
+    :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndNoScroll'"
     :askBeforeClosingModal="askBeforeClosingModal"
     :show_sidebar="$root.media_modal.show_sidebar"
     :is_minimized="$root.media_modal.minimized"
@@ -43,6 +43,11 @@
           @click.prevent="removeMedia()"
           :disabled="read_only"
           >
+          <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="91.6px"
+            height="95px" viewBox="0 0 91.6 95" style="enable-background:new 0 0 91.6 95;" xml:space="preserve">
+            <path class="st0" d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
+            l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"/>
+          </svg>
           {{ $t('remove') }}
         </button>
 
@@ -50,7 +55,7 @@
           <hr>
           <CreateQRCode
             :slugProjectName="slugProjectName"
-            :media_filename="media.media_filename"
+            :media="media"
           />
         </template>
 
@@ -63,7 +68,7 @@
               H13V29z M77,13H61v16h16V13z"/>
           </svg>
           <span class>
-            Partage
+            {{ $t('share') }}
           </span>
         </button>
 
@@ -76,7 +81,7 @@
             {{ $t('type') }}
           </div>
           <div>
-            {{ media.type }}
+            {{ $t(media.type) }}
             <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
           </div>
         </div>
@@ -281,8 +286,9 @@ export default {
         this.mediadata.authors = [];
       }
     }
-
-    this.is_ready = true;
+    this.$nextTick(() => {
+      this.is_ready = true;
+    });
   },
   computed: {
   },

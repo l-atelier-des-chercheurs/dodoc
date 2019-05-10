@@ -410,15 +410,16 @@ module.exports = (function() {
           );
           sharp(mediaPath)
             .rotate()
-            .resize(thumbRes, thumbRes)
-            .max()
-            .withoutEnlargement()
+            .resize(thumbRes, thumbRes, {
+              fit: 'inside',
+              withoutEnlargement: true,
+              background: 'white'
+            })
+            .flatten()
             .withMetadata()
             .toFormat(global.settings.thumbFormat, {
               quality: global.settings.mediaThumbQuality
             })
-            .background({ r: 255, g: 255, b: 255 })
-            .flatten()
             .toFile(fullThumbPath)
             .then(() => resolve())
             .catch(err => reject(err));

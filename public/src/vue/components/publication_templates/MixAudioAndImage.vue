@@ -10,22 +10,22 @@
       @export="show_export_modal = true"
     />
 
-    <ExportVideoPubliModal
+    <ExportAudioAndImageMixModal
       v-if="show_export_modal"
       @close="show_export_modal = false"
       :slugPubliName="slugPubliName"
     />
 
-    <div class="m_videoPublication">
+    <div class="m_mixAudioAndImagePublication">
       <div class="margin-medium" v-if="publication_medias.length === 0">
         <p>
-          <small v-html="$t('add_multiple_videos_files')" />
+          <small v-html="$t('add_sound_image_file')" />
         </p>
       </div>
 
       <transition-group name="slideFromTop" :duration="300" tag="div">
         <div
-          class="m_videoPublication--media"
+          class="m_mixAudioAndImagePublication--media"
           v-for="media in publication_medias" 
           :key="media.publi_meta.metaFileName"
         >
@@ -67,7 +67,7 @@
 <script>
 import PublicationHeader from '../subcomponents/PublicationHeader.vue';
 import MediaContent from '../subcomponents/MediaContent.vue';
-import ExportVideoPubliModal from '../modals/ExportVideoPubliModal.vue';
+import ExportAudioAndImageMixModal from '../modals/ExportAudioAndImageMix.vue';
 
 export default {
   props: {
@@ -78,19 +78,20 @@ export default {
   components: {
     PublicationHeader,
     MediaContent,
-    ExportVideoPubliModal
+    ExportAudioAndImageMixModal
   },
   data() {
     return {
       show_export_modal: false,
       publication_medias: [],
-      medias_slugs_in_order: []
+      medias_slugs_in_order: [],
+      accepted_media_type: ['audio', 'image']
     }
   },
   created() {
   },
   mounted() {
-    this.$root.settings.current_publication.accepted_media_type = ['video'];
+    this.$root.settings.current_publication.accepted_media_type = this.accepted_media_type;
 
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
@@ -100,7 +101,6 @@ export default {
     }
     
     this.updateMediasPubli();  
-          
   },
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
@@ -211,6 +211,7 @@ export default {
 
       if(this.medias_slugs_in_order.length === 0) {
         this.publication_medias = [];
+        
         return;
       }
 
@@ -270,6 +271,10 @@ export default {
           medias_list: missingMedias
         });
       }
+
+
+      const types_of_medias = publi_medias.map(m => m.type);
+      this.$root.settings.current_publication.accepted_media_type = this.accepted_media_type.filter(t => !types_of_medias.includes(t));
 
       this.publication_medias = publi_medias;        
     }

@@ -1,10 +1,15 @@
 <template>
   <div class="m_captureview">
-    <div class="m_captureview--modeSelector">
-      <button type="button" class="bg-transparent" @click="previousMode()"
+  <div class="m_captureview--modeSelector">
+      <button type="button" class="bg-transparent" 
         v-show="!$root.settings.capture_mode_cant_be_changed"
+        @mousedown.stop.prevent="previousMode()"        
+        @touchstart.stop.prevent="previousMode()"        
       >
-        ◀
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="169px"
+          height="169px" viewBox="0 0 169 169" style="enable-background:new 0 0 169 169;" xml:space="preserve">
+          <path fill="currentColor" d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z"/>
+        </svg>
       </button>
       
       <div 
@@ -19,10 +24,15 @@
           <span>{{ $t(mode.key) }}</span>
         </label>
       </div>
-      <button type="button" class="bg-transparent" @click="nextMode()"
+      <button type="button" class="bg-transparent"
         v-show="!$root.settings.capture_mode_cant_be_changed"
+        @mousedown.stop.prevent="nextMode()"        
+        @touchstart.stop.prevent="nextMode()"        
       >
-        ▶
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="169px"
+          height="169px" viewBox="0 0 169 169" style="enable-background:new 0 0 169 169;" xml:space="preserve">
+          <path fill="currentColor" d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z"/>
+        </svg>        
       </button>
     </div>
 
@@ -30,7 +40,6 @@
       :class="{ 'stopmotion_inprogress' : $root.store.stopmotions.hasOwnProperty(current_stopmotion) }"
     >
       <div class="m_panel">
-
         <transition name="enableMode" :duration="400">
           <div class="m_panel--modeOverlay"
             v-if="mode_just_changed"
@@ -42,7 +51,6 @@
         <div class="m_panel--previewCard"
           v-show="!is_validating_stopmotion_video"
         >
-
           <div class="m_panel--previewCard--live"
             :class="{ 'is--recording' : is_recording }"
           >
@@ -59,11 +67,16 @@
                     </span>
                     <select v-if="sorted_available_devices.hasOwnProperty(kind)" v-model="selected_devicesId[kind]">
                       <option 
-                        v-for="device in sorted_available_devices[kind]" 
+                        v-for="(device, index) in sorted_available_devices[kind]" 
                         :value="device.deviceId" 
                         :key="device.deviceId"
                       >
-                        {{ device.label }}
+                        <template v-if="device.label === ''">
+                          {{ $t('device') }} {{ index }}
+                        </template>
+                        <template v-else>
+                          {{ $t(device.label) }}
+                        </template>
                       </option>        
                     </select>
                   </div>
@@ -131,9 +144,44 @@
               </div>
             </transition>
 
-            <div v-if="is_recording && timer_recording" class="recording_timer">
-              <label>{{ recording_duration }}</label>
-            </div>
+            <transition-group 
+              tag="div" 
+              class="recording_timer"
+              name="slideFromTop"        
+            >
+              <label 
+                v-if="selected_mode !== 'stopmotion' && is_recording && recording_duration"
+                :key="'duration'"
+                v-html="recording_duration"
+              />
+              
+              <label 
+                v-if="selected_mode === 'stopmotion' && is_recording && recording_duration"
+                :key="'time_before'"
+                v-html="time_before_next_picture" 
+              />
+ 
+              <label 
+                v-if="selected_mode === 'stopmotion' && timelapse_interval"
+                :key="'timelapse_interval'"  
+                v-html="$t('interval_between_pictures:') + ' ' + timelapse_interval + ' ' + $t('seconds')"
+              />
+              <label 
+                v-if="selected_mode === 'stopmotion' && timelapse_interval"
+                :key="'disable_interval'"  
+              >
+                <button 
+                  type="button" 
+                  class="button-nostyle text-uc padding-none margin-none c-blanc bg-rouge button-inline"
+                  @click="timelapse_interval = false"
+                >
+                  <svg class="inline-svg margin-right-verysmall" viewBox="0 0 20 20">
+                    <path stroke="" fill="white" d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
+                  </svg>                    
+                  {{ $t('disable') }}
+                </button>                
+              </label>
+            </transition-group>
 
             <video 
               v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
@@ -241,6 +289,7 @@
               <div 
                 v-else-if="media_to_validate.type === 'svg'" 
                 v-html="media_to_validate.preview"
+                class="m_panel--previewCard--validate--svg"
               />
             </div>
           </transition>
@@ -296,35 +345,73 @@
               <button type="button" 
                 class="padding-verysmall bg-transparent m_panel--buttons--row--captureButton--btn"
                 :class="{ 'is--justCaptured' : capture_button_pressed }"
-                @click="captureOrStop()"
+                @mousedown.stop.prevent="captureOrStop()"
+                @touchstart.stop.prevent="captureOrStop()"
               >
                 <img v-if="!is_recording" src="/images/i_record.svg">
                 <img v-else src="/images/i_stop.svg">
               </button>
 
-              <div id="template-3"
+              <button type="button"
+                class="m_panel--buttons--row--captureButton--advancedOptions"
+                v-if="selected_mode === 'stopmotion'"
+                v-tippy="{ 
+                  html: '#template-3', 
+                  reactive : true,
+                  interactive : true, 
+                  theme: 'light', 
+                  delay: [600, 0],
+                  placement : 'bottom-start'
+                }"
+              >
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="16.8px"
+                  height="16.8px" viewBox="0 0 16.8 16.8" style="enable-background:new 0 0 16.8 16.8;" xml:space="preserve">
+                <circle fill="currentColor" cx="8.4" cy="8.4" r="8.4"/>
+                <path stroke="white" fill="white" d="M13,8.4c0,0.2-0.2,0.4-0.4,0.4H8.8v3.8c0,0.2-0.2,0.4-0.4,0.4S8,12.8,8,12.6V8.8H4.2C4,8.8,3.8,8.6,3.8,8.4
+                  S4,8,4.2,8H8V4.2C8,4,8.2,3.8,8.4,3.8S8.8,4,8.8,4.2V8h3.8C12.8,8,13,8.2,13,8.4"/>
+                </svg>
+
+              </button>
+
+              <div 
+                id="template-3"
                 v-if="selected_mode === 'stopmotion'"
               >
                 <div class="">
                   Déclenchement automatique toutes les 
-                  <select v-model="timelapse_interval" class="inline">
+                  <!-- <select v-model="timelapse_interval" class="inline">
                     <option value="false" v-html="'-'"/>
                     <option value="2" v-html="2" />
-                    <option value="5" v-html="4" />
+                    <option value="5" v-html="5" />
                     <option value="10" v-html="10" />
-                  </select>
-                  secondes
+                    <option value="other" v-html="$t('other')" />
+                  </select> -->
+                  <div class="button-inline">
+                    <button type="button" 
+                      class="button-thin padding-verysmall margin-sides-verysmall"
+                      @click="timelapse_interval = 2" 
+                      :class="{ 'is--active' : timelapse_interval === 2 }"
+                      v-html="2"
+                    />
+                    <button type="button" 
+                      class="button-thin padding-verysmall margin-sides-verysmall"
+                      @click="timelapse_interval = 5" 
+                      :class="{ 'is--active' : timelapse_interval === 5 }"
+                      v-html="5"
+                    />
+                    <button type="button" 
+                      class="button-thin padding-verysmall margin-sides-verysmall"
+                      @click="timelapse_interval = 10" 
+                      :class="{ 'is--active' : timelapse_interval === 10 }"
+                      v-html="10"
+                    />
+                    <input 
+                      class="padding-sides-verysmall margin-sides-verysmall"
+                      style="display:inline; width: 50px; height: 2em;" type="number" min="1" max="600" v-model.number="timelapse_interval">
+                    &nbsp;secondes
+                  </div>
                 </div>
               </div>
-
-              <button type="button"
-                class="m_panel--buttons--row--captureButton--advancedOptions padding-verysmall bg-transparent"
-                v-if="selected_mode === 'stopmotion'"
-                v-tippy="{ html: '#template-3', reactive : true,
-                      interactive : true, theme: 'light' }"
-              >
-                +
-              </button>
               
             </div>
 
@@ -592,7 +679,7 @@ export default {
       this.$root.settings.capture_options.selected_devicesId.videoinput = this.selected_devicesId.videoinput;
     },
     'selected_mode': function() {
-      console.log('WATCH • Capture: selected_mode');
+      console.log('WATCH • Capture: selected_mode : ' + this.selected_mode);
       this.mode_just_changed = true;
       this.show_stopmotion_list = false;
 
@@ -658,8 +745,17 @@ export default {
     },
     recording_duration: function() {
       if(this.timer_recording) {
-        return this.$moment(this.$root.currentTime - this.timer_recording).format('mm:ss');
+        return this.$moment(this.$root.currentTime - this.timer_recording).startOf('second').format('mm:ss');
       }
+      return false;
+    },
+    time_before_next_picture: function() {
+      const seconds_ellapsed_since_beginning = this.$moment(this.$root.currentTime - this.timer_recording).seconds(); 
+      const time_ellapsed_since_last_capture = seconds_ellapsed_since_beginning%this.timelapse_interval;
+      if(time_ellapsed_since_last_capture === 0) {
+        return 0; 
+      }
+      return this.timelapse_interval - time_ellapsed_since_last_capture;
     }
   },
   methods: {
@@ -873,7 +969,7 @@ export default {
             resolve(stream);
           },
           (err) => {
-            return reject(this.$t('notifications.failed_to_start_video_change_source_or_res'));
+            return reject(this.$t('notifications.failed_to_start_video_change_source_or_res') + '<br>' + err);
           }
         );
       });
@@ -1003,6 +1099,10 @@ export default {
         if(!this.is_recording) {
           this.is_recording = true;
           this.timelapse_event = window.setInterval(() => {
+            this.capture_button_pressed = true;
+            window.setTimeout(() => {
+              this.capture_button_pressed = false;
+            }, 400);
             this.addStopmotionImage();
           }, this.timelapse_interval * 1000);
         } else {
@@ -1150,7 +1250,7 @@ export default {
     },
     sendMedia({ fav = false }) {
       return new Promise((resolve, reject) => {
-        console.log(`METHODS • ValidateMedia: sendMedia with fav=${fav}`);
+        console.log(`METHODS • CaptureView: sendMedia with fav=${fav}`);
         if (this.$root.state.dev_mode === 'debug') {
           console.log(`METHODS • CaptureView / sendMedia`);
         }

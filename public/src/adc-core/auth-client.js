@@ -16,7 +16,17 @@ module.exports = (function() {
   }
 
   function updateAdminAccess(_folder_passwords) {
-    folder_passwords = _folder_passwords;
+    for (var folder_type in _folder_passwords) {
+      if (_folder_passwords.hasOwnProperty(folder_type)) {
+        if (!folder_passwords.hasOwnProperty(folder_type)) {
+          folder_passwords[folder_type] = {};
+        }
+        folder_passwords[folder_type] = Object.assign(
+          folder_passwords[folder_type],
+          _folder_passwords[folder_type]
+        );
+      }
+    }
     localstore.set('folder_passwords', folder_passwords);
   }
 

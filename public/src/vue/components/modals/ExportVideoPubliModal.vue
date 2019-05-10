@@ -5,7 +5,7 @@
     :typeOfModal="'ExportVideo'"
   >
     <template slot="header">
-      <span class="">{{ $t('export_publication') }}</span>
+      <span class="">{{ $t('export_creation') }}</span>
     </template>
 
     <template slot="sidebar">
@@ -44,18 +44,13 @@
               >
                 {{ $t('download') }}
               </a>
-              <br>
-              <div class="">
-                <label v-html="$t('add_to_project')" />
-                <select>
-                  <option 
-                    v-for="project in $root.store.projects" 
-                    :key="project.name"
-                  >
-                    {{ project.name }}
-                  </option>        
-                </select>
-              </div>
+
+              <AddCreationToProject
+                v-if="exported_video_name !== false"
+                :media_filename="exported_video_name"
+                @close="$emit('close')"
+              />
+
             </div>
             
           </div>
@@ -67,19 +62,22 @@
 <script>
 import Modal from './BaseModal.vue';
 import { setTimeout } from 'timers';
+import AddCreationToProject from '../subcomponents/AddCreationToProject.vue';
 
 export default {
   props: {
     slugPubliName: String
   },
   components: {
-    Modal
+    Modal,
+    AddCreationToProject
   },
   data() {
     return {
       video_request_status: false,
       link_to_video: false,
       video_is_playing: false,
+      exported_video_name: false,
       
       plyr_options: {
         controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
@@ -116,6 +114,7 @@ export default {
       this.$eventHub.$off('socketio.publication.videoIsGenerated', this.videoPubliIsGenerated);
       this.video_request_status = 'generated';
       this.link_to_video = window.location.origin + '/publication/video/' + videoName;
+      this.exported_video_name = videoName; 
     },
   }
 }

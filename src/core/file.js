@@ -226,7 +226,7 @@ module.exports = (function() {
             let newSlugFolderName = slugFolderName;
             while (folders.indexOf(newSlugFolderName) !== -1) {
               index++;
-              newSlugFolderName = `${newSlugFolderName}-${index}`;
+              newSlugFolderName = `${slugFolderName}-${index}`;
             }
             slugFolderName = newSlugFolderName;
             dev.logverbose(`Proposed slug: ${slugFolderName}`);
@@ -707,12 +707,12 @@ module.exports = (function() {
                 let getFileCreationDate = new Promise((resolve, reject) => {
                   fs.stat(mediaPath, function(err, stats) {
                     if (err) {
-                      resolve();
+                      return resolve();
                     }
                     mdata.date_created = api.convertDate(
                       new Date(stats.birthtime)
                     );
-                    resolve();
+                    return resolve();
                   });
                 });
                 tasks.push(getFileCreationDate);
@@ -866,9 +866,8 @@ module.exports = (function() {
           let finalPath = path.join(uploadDir, newFileName);
           sharp(tempPath)
             .rotate()
-            .withMetadata()
-            .background({ r: 255, g: 255, b: 255 })
             .flatten()
+            .withMetadata()
             .jpeg({
               quality: 90
             })
@@ -1080,7 +1079,10 @@ module.exports = (function() {
               });
               tasks.push(updateMediaMeta);
 
-              if (meta.type === 'text' && data.hasOwnProperty('content')) {
+              if (
+                (meta.type === 'text' || meta.type === 'marker') &&
+                data.hasOwnProperty('content')
+              ) {
                 dev.logverbose(`Is text and need to update content.`);
                 dev.logverbose(`New content: ${data.content}`);
 
@@ -1270,13 +1272,13 @@ module.exports = (function() {
               let pathToMedia = path.join(slugFolderPath, mediaName);
 
               let imageBuffer = rawData;
+
               sharp(imageBuffer)
                 .rotate()
-                .withMetadata()
-                .background({ r: 255, g: 255, b: 255 })
                 .flatten()
-                .jpeg({
-                  quality: 90
+                .withMetadata()
+                .toFormat(global.settings.thumbFormat, {
+                  quality: global.settings.mediaThumbQuality
                 })
                 .toFile(pathToMedia, function(err, info) {
                   if (err) {
@@ -1335,7 +1337,10 @@ module.exports = (function() {
               });
             })
           );
-        } else if (additionalMeta.type === 'text') {
+        } else if (
+          additionalMeta.type === 'text' ||
+          additionalMeta.type === 'marker'
+        ) {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += '.md';
@@ -1395,6 +1400,42 @@ module.exports = (function() {
             reject(`${err}`);
           });
       });
+    },
+    addTempMediaToFolder: ({ from, to }) => {
+      return new Promise(function(resolve, reject) {
+        const path_to_original_file = path.join(
+          global.tempStorage,
+          global.settings.cacheDirname,
+          global.settings.structure[from.type].path,
+          from.media_filename
+        );
+
+        let slugFolderPath = api.getFolderPath(
+          path.join(global.settings.structure[to.type].path, to.slugFolderName)
+        );
+
+        api
+          .findFirstFilenameNotTaken(slugFolderPath, from.media_filename)
+          .then(function(newFileName) {
+            dev.logverbose(`Following filename is available: ${newFileName}`);
+
+            const destination_path = path.join(slugFolderPath, newFileName);
+            fs.copy(path_to_original_file, destination_path, function(err) {
+              if (err) {
+                dev.error(`Failed to copy: ${err}`);
+                return reject(err);
+              }
+              require('./sockets').createMediaMeta({
+                type: to.type,
+                slugFolderName: to.slugFolderName,
+                additionalMeta: {
+                  media_filename: newFileName
+                }
+              });
+              return resolve();
+            });
+          });
+      });
     }
   };
 
@@ -1437,7 +1478,7 @@ module.exports = (function() {
             }
 
             if (
-              mediaData.type === 'text' &&
+              (mediaData.type === 'text' || mediaData.type === 'marker') &&
               mediaData.hasOwnProperty('media_filename')
             ) {
               // get text content
@@ -1609,11 +1650,13 @@ module.exports = (function() {
             .rotate()
             .resize(
               global.settings.structure[type].preview.width,
-              global.settings.structure[type].preview.height
+              global.settings.structure[type].preview.height,
+              {
+                fit: 'inside',
+                withoutEnlargement: true,
+                background: 'white'
+              }
             )
-            .max()
-            .withoutEnlargement()
-            .background({ r: 255, g: 255, b: 255 })
             .flatten()
             .withMetadata()
             .toFormat(global.settings.thumbFormat, {

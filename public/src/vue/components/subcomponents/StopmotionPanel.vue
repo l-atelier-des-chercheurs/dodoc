@@ -95,7 +95,7 @@
           <!-- <span class="text-cap font-verysmall">
             {{ $t('generate') }}
           </span> -->
-          <img src="/images/i_play.svg" width="48" height="48" />
+          <img src="/images/i_play.svg" width="48" height="48" draggable="false" />
         </button>
       </div>
     </div>
