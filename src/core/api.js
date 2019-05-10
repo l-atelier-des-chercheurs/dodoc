@@ -5,7 +5,6 @@ const path = require('path'),
   slugg = require('slugg'),
   os = require('os'),
   writeFileAtomic = require('write-file-atomic'),
-  ffmpegstatic = require('ffmpeg-static'),
   ffmpeg = require('fluent-ffmpeg'),
   pad = require('pad-left');
 
@@ -13,7 +12,7 @@ const sharp = require('sharp');
 
 const dev = require('./dev-log');
 
-ffmpeg.setFfmpegPath(ffmpegstatic.path);
+ffmpeg.setFfmpegPath('./ffmpeg-4.1.3-armhf-static/ffmpeg');
 
 module.exports = (function() {
   const API = {
