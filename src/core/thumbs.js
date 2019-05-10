@@ -1,6 +1,5 @@
 const path = require('path'),
   fs = require('fs-extra'),
-  ffprobestatic = require('ffprobe-static'),
   ffmpeg = require('fluent-ffmpeg'),
   exifReader = require('exif-reader');
 
