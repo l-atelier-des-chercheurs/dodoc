@@ -2,6 +2,7 @@ const path = require('path'),
   ffmpegstatic = require('ffmpeg-static'),
   ffprobestatic = require('ffprobe-static'),
   ffmpeg = require('fluent-ffmpeg'),
+  concat = require('ffmpeg-concat'),
   fs = require('fs-extra'),
   pad = require('pad-left');
 
@@ -687,38 +688,51 @@ module.exports = (function() {
       );
       if (video_files.length === 0) return reject(`No video files`);
 
-      video_files.map(vm => {
-        ffmpeg_task.addInput(vm.full_path);
-      });
-
-      let time_since_last_report = 0;
-      ffmpeg_task
-        .withVideoCodec('libx264')
-        .withVideoBitrate('4000k')
-        .withAudioCodec('aac')
-        .withAudioBitrate('128k')
-        .toFormat('mp4')
-        .on('progress', progress => {
-          if (+new Date() - time_since_last_report > 3000) {
-            time_since_last_report = +new Date();
-            require('./sockets').notify({
-              socket,
-              not_localized_string: `Creating video: ${progress.timemark}`
-            });
-          }
-        })
-        .on('end', () => {
+      concat({
+        output: videoPath,
+        videos: video_files.map(vm => vm.full_path),
+        transition: {
+          name: 'fade',
+          duration: 300
+        }
+      })
+        .then(() => {
           dev.logverbose(`Video has been created`);
           return resolve();
         })
-        .on('error', function(err, stdout, stderr) {
-          ffmpeg_task = null;
-          dev.error('An error happened: ' + err.message);
-          dev.error('ffmpeg standard output:\n' + stdout);
-          dev.error('ffmpeg standard error:\n' + stderr);
-          return reject(`Couldn't convert a video : ${err.message}`);
-        })
-        .mergeToFile(videoPath, cachePath);
+        .catch(err => {
+          dev.error('An error happened: ' + err);
+          return reject(`Couldn't convert a video : ${err}`);
+        });
+
+      // let time_since_last_report = 0;
+      // ffmpeg_task
+      //   .withVideoCodec('libx264')
+      //   .withVideoBitrate('4000k')
+      //   .withAudioCodec('aac')
+      //   .withAudioBitrate('128k')
+      //   .toFormat('mp4')
+      //   .on('progress', progress => {
+      //     if (+new Date() - time_since_last_report > 3000) {
+      //       time_since_last_report = +new Date();
+      //       require('./sockets').notify({
+      //         socket,
+      //         not_localized_string: `Creating video: ${progress.timemark}`
+      //       });
+      //     }
+      //   })
+      //   .on('end', () => {
+      //     dev.logverbose(`Video has been created`);
+      //     return resolve();
+      //   })
+      //   .on('error', function(err, stdout, stderr) {
+      //     ffmpeg_task = null;
+      //     dev.error('An error happened: ' + err.message);
+      //     dev.error('ffmpeg standard output:\n' + stdout);
+      //     dev.error('ffmpeg standard error:\n' + stderr);
+      //     return reject(`Couldn't convert a video : ${err.message}`);
+      //   })
+      //   .mergeToFile(videoPath, cachePath);
     });
   }
 
