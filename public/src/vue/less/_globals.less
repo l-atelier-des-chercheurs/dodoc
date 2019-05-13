@@ -16,7 +16,7 @@ button, .button {
   margin: 0;
   cursor: pointer;
 
-  min-height: @t-skipline*2;
+  min-height: @t-skipline * 2;
 
   padding: 0 @t-skipline/2;
   border-radius: @t-buttonradius;
@@ -211,6 +211,7 @@ button, .button {
     line-height: var(--switch-size);
   }
 }
+
 
 strong,b {
   font-weight: 500;
@@ -715,7 +716,9 @@ input[readonly], textarea[readonly], .textarea[readonly] {
   overflow: hidden;
   white-space: nowrap;              
   text-overflow: ellipsis;
-
+}
+.cursor-pointer {
+  cursor: pointer;
 }
 
 :focus {
@@ -884,7 +887,7 @@ input[type="file"] {
   display: flex;
   margin-bottom:  @t-skipline/2;
   button {
-    margin: @t-skipline/4;
+    margin-bottom: 0;
     margin-top:0;
     margin-left: 0;
 

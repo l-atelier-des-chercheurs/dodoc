@@ -322,6 +322,7 @@
         <img 
           :src="this.$root.state.mode === 'export_publication' ? './_images/i_logo.svg' : '/images/i_logo.svg'" 
           @click="goHome()" 
+          draggable="false"
         />          
       </a>
     </div>
@@ -419,7 +420,6 @@ export default {
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty('mmMeasurer') ? this.$refs.mmMeasurer.offsetWidth / 10 : 38;
     this.updatePubliOptionsInFields();
           
-
     document.getElementsByTagName('body')[0].style = `
       --page-width: ${this.publications_options.width}mm; 
       --page-height: ${this.publications_options.height}mm

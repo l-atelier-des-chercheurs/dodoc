@@ -53,6 +53,7 @@
         <img 
           class="m_qrSnippet--text--dodoclogo"
           :src="'/images/i_logo.svg'" 
+          draggable="false"
         />          
       
         

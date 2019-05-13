@@ -226,7 +226,7 @@ module.exports = (function() {
             let newSlugFolderName = slugFolderName;
             while (folders.indexOf(newSlugFolderName) !== -1) {
               index++;
-              newSlugFolderName = `${newSlugFolderName}-${index}`;
+              newSlugFolderName = `${slugFolderName}-${index}`;
             }
             slugFolderName = newSlugFolderName;
             dev.logverbose(`Proposed slug: ${slugFolderName}`);

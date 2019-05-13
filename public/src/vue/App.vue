@@ -100,7 +100,7 @@
                 :key="'openPubli'"
               >
                 <!-- v-if="$root.do_navigation.view !== 'CaptureView'" -->
-                <img src="/images/i_marmite.svg" width="48" height="48" />
+                <img src="/images/i_marmite.svg" width="48" height="48" draggable="false" />
                 <span class="margin-small">
                   {{ $t('publication') }}
                 </span>

@@ -7,6 +7,7 @@
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img
           :src="previewURL" class=""
+          draggable="false"
         />
       </div>
       
@@ -61,20 +62,29 @@
               {{ $root.formatDateToHuman(project.date_modified) }}
             </div>
           </div>
-          <div class="m_metaField" v-if="project.password === 'has_pass'">
-            <small class="m_project--presentation--text--infos--password c-rouge" v-if="project.password === 'has_pass'">
-              <label>{{ $t('protected_by_pass') }}</label>
-            </small>
+          <div class="m_metaField" v-if="project.password === 'has_pass' && context !== 'full'">
+            <label>{{ $t('protected_by_pass') }}</label>
 
             <button v-if="!can_access_folder" type="button" class="buttonLink" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
-              {{ $t('password') }}
+              {{ $t('password_required_to_open') }}
             </button>
-
-            <div v-if="showInputPasswordField && !can_access_folder" class="margin-bottom-small">
-              <input type="password" ref="passwordField" @keyup.enter="submitPassword" autofocus placeholder="…">
-              <button type="button" class="button button-bg_rounded bg-bleuvert" @click="submitPassword">Envoyer</button>
+            <div v-if="showInputPasswordField && !can_access_folder" 
+              class="margin-bottom-small input-group"
+            >
+              <input type="password" ref="passwordField" @keydown.enter.prevent="submitPassword" autofocus placeholder="…">
+              <button type="button" class="button bg-bleuvert" @click="submitPassword">Valider</button>
             </div>
           </div>
+
+          <div v-if="can_access_folder && project_password && context === 'full'" class="m_metaField">
+            <div class="cursor-pointer" :readonly="read_only" @click="showCurrentPassword = !showCurrentPassword">
+              {{ $t('show_password') }}
+            </div>
+            <div v-if="showCurrentPassword && can_access_folder">
+              {{ project_password }}
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -100,6 +110,7 @@
           </svg>
           {{ $t('edit') }}
         </button>
+
         <button v-if="can_access_folder && context === 'full'" type="button" class="buttonLink" @click="removeProject()" :disabled="read_only">
           <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="91.6px"
             height="95px" viewBox="0 0 91.6 95" style="enable-background:new 0 0 91.6 95;" xml:space="preserve">
@@ -187,7 +198,8 @@ export default {
     return {
       debugProjectContent: false,
       showEditProjectModal: false,
-      showInputPasswordField: false
+      showInputPasswordField: false,
+      showCurrentPassword: false
     };
   },
   watch: {
@@ -210,6 +222,13 @@ export default {
         type: 'projects', 
         slugFolderName: this.slugProjectName
       })
+    },
+    project_password() {
+      const projects_password = this.$auth.getAdminAccess();
+      if(projects_password.hasOwnProperty('projects') && projects_password['projects'].hasOwnProperty(this.slugProjectName)) {
+        return projects_password['projects'][this.slugProjectName];
+      }
+      return false;
     }
   },
   methods: {
@@ -239,12 +258,26 @@ export default {
     },
     submitPassword() {
       console.log('METHODS • Project: submitPassword');
+
+      
       this.$auth.updateAdminAccess({
         "projects": {
           [this.slugProjectName]: this.$refs.passwordField.value
         }
       });
       this.$socketio.sendAuth();
+
+      // check if password matches or not
+      this.$eventHub.$once('socketio.authentificated', () => {
+        const has_passworded_folder = window.state.list_authorized_folders.filter(f => f.type === 'projects' && f.allowed_slugFolderNames.includes(this.slugProjectName));
+        if(has_passworded_folder.length === 0) {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t('notifications.wrong_password_for') + this.project.name);
+          this.$refs.passwordField.value = '';
+        }
+      });
     }
   },
 };

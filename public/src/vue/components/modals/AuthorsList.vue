@@ -61,7 +61,9 @@
               <img 
                 v-if="!!author.preview"
                 width="100" height="100"
-                :src="urlToPortrait(author.slugFolderName, author.preview)" >
+                :src="urlToPortrait(author.slugFolderName, author.preview)"
+                draggable="false"  
+              >
               <div class="m_authorsList--author--name">{{ author.name }}</div>
               <!-- <button type="button" class="buttonLink" @click.stop="setAuthor(author)" v-if="author.name !== $root.settings.current_author.name">
                 {{ $t('select') }}

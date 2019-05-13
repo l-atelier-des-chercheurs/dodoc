@@ -15,9 +15,9 @@
         :class="{ 'is--hovered' : is_hovered }"
       >
         <div>
-          <div class="m_metaField padding-sides-verysmall">
+          <div class="m_metaField padding-sides-verysmall"
+          >
             <div>
-              <span v-if="!!media.type" v-html="media.type" />
               <svg version="1.1"
                 v-if="media.fav"
                 class="inline-svg"
@@ -27,6 +27,9 @@
                 <polygon class="st0" points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"/>
                 <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 "/>
               </svg>
+              <span v-if="!!media.type" :class="{ 'c-rouge' : media.fav }">
+                {{ $t(media.type) }}
+              </span>
             </div>
           </div>
           <MediaContent
@@ -35,22 +38,35 @@
             :slugFolderName="slugProjectName"
             :media="media"
             :preview_size="preview_size"
-          ></MediaContent>
-          <button 
-            type="button" 
-            v-if="
-              $root.settings.current_publication.slug
-              && $root.settings.current_publication.accepted_media_type.includes(media.type)
-            " 
-            class="button_addToPubli button-greenthin button-square"
-            @click.stop="addToCurrentPubli()"
-            :title="$t('add_to_publication')"
-          >
-            {{ $t('add_to_publication') }}
-          </button>
+          />
           <figcaption class="m_media--caption" v-if="!!media.caption">
             {{ media.caption }}
           </figcaption>
+
+          <transition name="slideright" :duration="400">
+            <div 
+              v-if="$root.settings.current_publication.slug && $root.settings.current_publication.accepted_media_type.includes(media.type)"
+              class="m_media--add_to_recipe"
+            >
+              <button 
+                type="button" 
+                class="button_addToPubli button-greenthin button-square"
+                @click.stop="addToCurrentPubli()"
+                :title="$t('add_to_recipe')"
+                v-tippy='{ 
+                  placement : "left",
+                  delay: [600, 0]
+                }'  
+              >
+                <template v-if="!is_media_in_publi">
+                  →
+                </template>
+                <template v-else>
+                  ✓
+                </template>
+              </button>
+            </div>
+          </transition>
         </div>          
 
         <figcaption
@@ -61,7 +77,7 @@
               {{ $t('type') }}
             </div>
             <div>
-              {{ media.type }}
+              {{ $t(media.type) }}
             </div>
           </div>
           <div class="m_metaField" v-if="!!media.authors">

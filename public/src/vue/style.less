@@ -721,6 +721,7 @@ body {
   box-shadow: 2px 3px 10px fade(@c-bleuvert, 50%);
   box-shadow: inset 5px 0 5px fade(@c-bleuvert_fonce, 50%);
 
+  user-select: none;
 
   .padding-verysmall;
   .button-inline;
@@ -893,6 +894,7 @@ small {
       flex-flow: column nowrap;
       align-content: stretch;
       height: 100%;
+      user-select: none;
 
       .m_actionbar {
         .margin-medium;
@@ -900,7 +902,7 @@ small {
       }
 
       .m_project--library--medias {
-        .padding-top-medium;
+        .padding-top-small;
         .padding-sides-small;
 
         @supports (display: grid) {
@@ -1004,6 +1006,7 @@ small {
 
   .m_project--presentation--buttons {
     margin-top: @t-skipline/4 !important;
+    margin: 0 !important;
   }
 }
 
@@ -1048,6 +1051,7 @@ small {
       height: 0;
       padding-bottom: 66%;
       .bg-gris_clair;
+      user-select: none;
 
       img {
         position: absolute;
@@ -1070,6 +1074,10 @@ small {
 
       .m_project--presentation--text--infos {
         .margin-sides-small;
+
+        input {
+          min-width: 0;
+        }
       }
     }
 
@@ -1415,8 +1423,9 @@ small {
       color: @c-gris !important;
     }
 
-    .button_addToPubli {
+    .m_media--add_to_recipe .button_addToPubli {
       background-color: @c-orange;
+      border-color: @c-orange_fonce;
     }
   }
 
@@ -1441,7 +1450,9 @@ small {
 
     cursor: pointer;
     .bg-blanc;
+    
     border-radius: 4px;
+    overflow: hidden;
     // border-bottom: 4px solid transparent;
 
     .is--fav& {
@@ -1454,7 +1465,7 @@ small {
     //   }
     // }
 
-    transition: all 2s .2s cubic-bezier(.25,.8,.25,1);
+    transition: all 1s .2s cubic-bezier(.25,.8,.25,1);
 
     &.is--hovered {
       transform: translateY(-4px);
@@ -1464,12 +1475,19 @@ small {
 
     .m_metaField {
       margin-bottom: 0;
-      height: 1.1rem;
+      height: 1rem;
       text-transform: lowercase;
       border-bottom: 0px;
+      border-bottom: 1px solid @c-gris_clair;
+      display: block;
+
+      > * {
+
+      }
       
       svg {
         color: @c-rouge;
+        vertical-align: text-bottom;
       }
     }
 
@@ -1494,6 +1512,7 @@ small {
         margin: 0;
         padding: 0;
         object-fit: contain;
+        object-position: 50% 47%;
       }
 
       audio {
@@ -1508,11 +1527,12 @@ small {
         // white-space: pre;
         white-space: normal;
         word-break: break-all;
+        // .padding-verysmall;
       }
 
       h1,h2,h3,h4,h5, p {
-        margin: 0;
-        margin-bottom: @t-skipline/2;
+        // margin: 0;
+        // margin-bottom: @t-skipline/2;
         font-size: inherit;
       }
 
@@ -1522,47 +1542,69 @@ small {
 
       .play_picto {
         display: block;
-        // width: 40px;
-        // height: 40px;
-        // margin: 0 auto;
-        // margin: 10px;
-        .margin-verysmall;
-        width: 20px;
-        height: 20px;
-      
-        // stroke: rgba( 0, 0, 0, 1);
-        fill: white;
-        // fill: @c-orange;
-        // stroke-width: 10px;
-        // background-color: @c-orange;
-        fill: @c-orange;
-        fill: @c-noir;
-        border-radius: 4px;  
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
+        svg {
+          width: 20px;
+          height: 20px;
+          padding: 4px;
+        
+          // box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+          background-color: fade(@c-blanc, 90%);
+          fill: black;
+          border-radius: 10px;  
+        }
       }
 
-      &.type-text {
-        .padding-verysmall;
+      &.type-text, &.type-other, &.type-document {
+        .margin-verysmall;
         .font-verysmall;
       }
 
     }
 
-    .button_addToPubli {
-      border-radius: 4px;
-      // margin: 0;
+    .m_media--add_to_recipe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      align-content: flex-end;
+
+      .button_addToPubli {
+        width: 2em;
+        height: 2em;
+        padding: 0;
+        border-radius: 50%;
+        min-width: 0;
+        pointer-events: auto;
+        color: white;
+        border: 2px solid @c-bleuvert_fonce;
+        box-shadow: 0px 2px 16px 0px rgba(0,0,0,.4);    
+        font-weight: 700;
+        font-size: 1.2em;
+        font-family: 'Fira Code';
+      }
     }
 
+
     .m_media--caption {
-      position: absolute;
-      bottom: 0;
+      // position: absolute;
+      // bottom: 0;
 
       width: 100%;
-      // border-top: 2px solid @c-gris_clair;
+      border-top: 1px solid @c-gris_clair;
       .font-verysmall;
       .c-noir;
       .padding-sides-verysmall;
       .bg-blanc;
+      // .bg-gris_tresclair;
       line-height: 1.2;
       height: 1.1rem;
       // padding-top: @t-skipline/4;
@@ -1621,7 +1663,7 @@ small {
     font-weight: 400;
   }
   &:last-child {
-    margin-bottom: 0;
+    // margin-bottom: 0;
   }
 
   > .m_authorField {
@@ -3345,7 +3387,7 @@ small {
       // Configuration
       --gridstep: 10mm;
 
-      --gridstep_before:~"calc(var(--gridstep) - 2px)";
+      --gridstep_before:~"calc(var(--gridstep) - 1px)";
 
       @c-gridColor: @c-gris_tresclair;
       @s-gridOpacity: 1;
@@ -3378,7 +3420,10 @@ small {
     // grid-gap: @t-skipline;
 
     .padding-verysmall;
-    .margin-sides-medium;
+    .padding-sides-medium;
+    margin: 0 auto;
+    .margin-vert-small;
+    max-width: 1024px;
 
     counter-reset: compteListe;
 
@@ -3423,8 +3468,10 @@ small {
 
   .m_mixAudioAndImagePublication {
     .padding-verysmall;
-    .margin-sides-medium;
+    .padding-sides-medium;
+    margin: 0 auto;
     .margin-vert-small;
+    max-width: 1024px;
 
     .m_mixAudioAndImagePublication--media {
       .bg-blanc;
@@ -3437,8 +3484,10 @@ small {
 
   .m_mixAudioAndImagePublication {
     .padding-verysmall;
-    .margin-sides-medium;
+    .padding-sides-medium;
+    margin: 0 auto;
     .margin-vert-small;
+    max-width: 1024px;
 
     .m_mixAudioAndImagePublication--media {
       .bg-blanc;
@@ -3453,6 +3502,12 @@ small {
     display: flex;
     justify-content: center;
     align-content: center;
+
+    .padding-verysmall;
+    .padding-sides-medium;
+    margin: 0 auto;
+    .margin-vert-small;
+    max-width: 1024px;
 
     .m_videoPublication--media {
       max-width: 400px;
@@ -3574,11 +3629,21 @@ small {
     width: 100%;
     // background-color: white;
 
+    > * {
+      width: 100%;
+      height: 100%;
+    }
+
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
+  }
+
+  .mediaCaption {
+    margin-top: 0;
+    font-size: 85%;
   }
 
   .controlFrame {
@@ -3827,7 +3892,9 @@ small {
 	height: 100%;
   // margin-left: -5px;
 
-	cursor: col-resize;
+  pointer-events: none;
+
+	// cursor: col-resize;
 
   opacity: 1;
 
@@ -3985,10 +4052,12 @@ small {
 
 }
 
-.tippy-tooltip {
-  background: @c-rouge;
-  color: white;
-
+.tippy-popper {
+  > * {
+    background: @c-rouge;
+    color: white;
+    pointer-events: none;  
+  }
   code {
     font-family: 'Fira Code';
   }

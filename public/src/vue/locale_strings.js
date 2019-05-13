@@ -114,7 +114,7 @@ module.exports = (function() {
       select_files_to_import: 'Sélectionner les fichiers à importer',
       select_cover_image: 'Sélectionner une image de couverture',
       select_portrait_image: 'Sélectionner une image de portrait',
-      add_to_publication: 'Ajouter à la publication',
+      add_to_recipe: 'Ajouter à la recette',
       add_a_page: 'Ajouter une page',
       insert_a_page_here: 'Insérer une page ici',
       add_a_page_before: 'Ajouter une page avant celle-ci',
@@ -148,6 +148,8 @@ module.exports = (function() {
       withdraw: 'Enlever',
       remove_this_image: 'Supprimer cette image',
       password: 'Mot de passe',
+      password_required_to_open: 'Mot de passe requis',
+      show_password: 'Afficher le mot de passe',
       protected_by_pass: 'protégé par mot de passe',
       password_instructions:
         'Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce projet.',
@@ -325,7 +327,8 @@ module.exports = (function() {
           'Erreur&nbsp;: certains médias n’ont pas pu être enregistrés.',
         video_converted: 'La vidéo a été convertie et ajoutée au projet.',
         project_has_been_removed:
-          'Ce projet vient d’être supprimé par quelqu’un d’autre.'
+          'Ce projet vient d’être supprimé par quelqu’un d’autre.',
+        wrong_password_for: 'Mot de passe erroné pour '
       }
     },
     en: {
@@ -424,7 +427,7 @@ module.exports = (function() {
       select_files_to_import: 'Select files to import',
       select_cover_image: 'Select a cover image',
       select_portrait_image: 'Select a portrait',
-      add_to_publication: 'Add to publication',
+      add_to_recipe: 'Add to recipe',
       add_a_page: 'Add a page',
       insert_a_page_here: 'Insert a page here',
       add_a_page_before: 'Add a page before this one',
@@ -451,6 +454,8 @@ module.exports = (function() {
       withdraw: 'Withdraw',
       remove_this_image: 'Remove this image',
       password: 'Mot de passe',
+      password_required_to_open: 'Password required',
+      show_password: 'Show password',
       protected_by_pass: 'protected by password',
       password_instructions:
         'If set, only users with the password will be able to open this project.',
@@ -645,7 +650,8 @@ module.exports = (function() {
         video_converted:
           'The video was converted successfully and added to the project.',
         project_has_been_removed:
-          'This project just got removed by another user.'
+          'This project just got removed by another user.',
+        wrong_password_for: 'Wrong password for project '
       }
     }
   };

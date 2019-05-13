@@ -137,10 +137,26 @@ export default {
       if(fdata.id === this.$root.justCreatedFolderID) {
         this.$eventHub.$off('socketio.folder_created_or_updated', this.newFolderCreated);
         this.$root.justCreatedFolderID = false;
-        this.$nextTick(() => {
-          this.$emit('close', '');
-          this.$root.openProject(fdata.slugFolderName);
-        });
+
+        if(fdata.password === 'has_pass') {
+          this.$auth.updateAdminAccess({
+            "projects": {
+              [fdata.slugFolderName]: this.projectdata.password
+            }
+          });
+          this.$socketio.sendAuth();
+
+          this.$eventHub.$once('socketio.authentificated', () => {
+            this.$emit('close', '');
+            this.$root.openProject(fdata.slugFolderName);
+          });
+
+        } else {
+          this.$nextTick(() => {
+            this.$emit('close', '');
+            this.$root.openProject(fdata.slugFolderName);
+          });
+        }        
       }
     }
   }
