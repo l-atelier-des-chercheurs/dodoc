@@ -12,7 +12,6 @@
     </template>
 
     <template slot="sidebar">
-
       <div>
         <div
           v-for="f in files_to_upload" 
@@ -149,7 +148,7 @@ export default {
             this.files_to_upload_meta[filename].status = 'success';
             this.files_to_upload_meta[filename].upload_percentages = 100;     
 
-            resolve();    
+            resolve(filename);    
             // resolve(x.map(img => Object.assign({}, img, { url: `${BASE_URL}/images/${img.id}` })));
           })
           .catch(err => {
@@ -172,26 +171,19 @@ export default {
     sendAllFiles() {
       const executeSequentially = (array) => {  
         return this.sendThisFile(this.files_to_upload[array.shift()])
-          .then(x => array.length == 0 ? x : executeSequentially(array));
-      }
-
-      executeSequentially(Array.from(Array(this.files_to_upload.length).keys())).then(x => {
-        Object.keys(this.files_to_upload_meta).map(name => {
-          let index = 1;
-          if(this.files_to_upload_meta[name].status === 'success') {
+          .then(filename => {
             setTimeout(() => {
-              this.files_to_upload = this.files_to_upload.filter(x => x.name !== name);
-              this.$delete(this.files_to_upload_meta, name);
-
-              // check if there are anymore files to upload 
+              this.files_to_upload = this.files_to_upload.filter(x => x.name !== filename);
+              this.$delete(this.files_to_upload_meta, filename);
+              
               if(Object.keys(this.files_to_upload_meta).length === 0) {
-                this.$eventHub.$emit('timeline.scrollToToday');
                 this.$emit('close');
               }
-            }, 500 * index);
-            index++;
-          }
-        });
+            }, 500);
+            return array.length == 0 ? x : executeSequentially(array)
+          });
+      }
+      executeSequentially(Array.from(Array(this.files_to_upload.length).keys())).then(x => {
       });
 
       // const test = async () => {

@@ -82,7 +82,7 @@
           <span class="switch switch-xs">
             <input type="checkbox" class="switch" id="favswitch_editmedia" v-model="mediadata.fav" :readonly="read_only">
             <label for="favswitch_editmedia"
-                :class="{ 'c-rouge' : mediadata.fav }"
+              :class="{ 'c-rouge' : mediadata.fav }"
             >
               {{ $t('fav') }}
               <svg version="1.1"
