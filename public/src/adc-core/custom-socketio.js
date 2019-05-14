@@ -290,18 +290,23 @@ module.exports = (function() {
           },
           _onNotify({ localized_string, not_localized_string }) {
             console.log('Received _onNotify packet.');
-            if (not_localized_string) {
-              alertify
-                .closeLogOnClick(true)
-                .delay(4000)
-                .log(not_localized_string);
+            let msg = '';
+            if (localized_string && not_localized_string) {
+              msg +=
+                this.$t(`notifications['${localized_string}']`) +
+                '<br>' +
+                '<i>' +
+                not_localized_string +
+                '</i>';
+            } else if (not_localized_string) {
+              msg += '<i>' + not_localized_string + '</i>';
+            } else if (localized_string) {
+              msg += this.$t(`notifications['${localized_string}']`);
             }
-            if (localized_string) {
-              alertify
-                .closeLogOnClick(true)
-                .delay(4000)
-                .log(this.$t(`notifications['${localized_string}']`));
-            }
+            alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .log(msg);
           },
           listFolders(fdata) {
             this.socket.emit('listFolders', fdata);

@@ -694,6 +694,21 @@ module.exports = (function() {
         transition: {
           name: 'fade',
           duration: 300
+        },
+        log: function(msg) {
+          // console.log('Log progress : ' + JSON.stringify(msg));
+          // if (+new Date() - time_since_last_report > 3000) {
+          // time_since_last_report = +new Date();
+          if (typeof msg === 'object') {
+            msg = JSON.stringify(msg);
+          }
+
+          require('./sockets').notify({
+            socket,
+            localized_string: `creating_video`,
+            not_localized_string: msg
+          });
+          // }
         }
       })
         .then(() => {

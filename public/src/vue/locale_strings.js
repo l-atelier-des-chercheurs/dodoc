@@ -328,7 +328,8 @@ module.exports = (function() {
         video_converted: 'La vidéo a été convertie et ajoutée au projet.',
         project_has_been_removed:
           'Ce projet vient d’être supprimé par quelqu’un d’autre.',
-        wrong_password_for: 'Mot de passe erroné pour '
+        wrong_password_for: 'Mot de passe erroné pour ',
+        creating_video: 'En cours de création de la vidéo…'
       }
     },
     en: {
@@ -651,7 +652,8 @@ module.exports = (function() {
           'The video was converted successfully and added to the project.',
         project_has_been_removed:
           'This project just got removed by another user.',
-        wrong_password_for: 'Wrong password for project '
+        wrong_password_for: 'Wrong password for project ',
+        creating_video: 'Creating video…'
       }
     }
   };
