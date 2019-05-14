@@ -53,7 +53,7 @@
                 type="button" 
                 class="button_addToPubli button-greenthin button-square"
                 :title="$t('add_to_recipe')"
-              @click.stop="addToCurrentPubli()"
+                @click.stop="addToCurrentPubli()"
                 v-tippy='{ 
                   placement : "left",
                   delay: [600, 0]
