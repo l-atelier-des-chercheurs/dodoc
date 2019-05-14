@@ -47,12 +47,13 @@
             <div 
               v-if="$root.settings.current_publication.slug && $root.settings.current_publication.accepted_media_type.includes(media.type)"
               class="m_media--add_to_recipe"
+              @click.stop="addToCurrentPubli()"
             >
               <button 
                 type="button" 
                 class="button_addToPubli button-greenthin button-square"
-                @click.stop="addToCurrentPubli()"
                 :title="$t('add_to_recipe')"
+              @click.stop="addToCurrentPubli()"
                 v-tippy='{ 
                   placement : "left",
                   delay: [600, 0]

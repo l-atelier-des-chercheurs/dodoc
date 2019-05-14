@@ -32,7 +32,7 @@
               class="m_activitiesPanel--do"
               :class="{ 'is--large' : activitiesPanel_is_comfortable }"
             >
-              <div style="position: relative; height: 100%; overflow: hidden">
+              <div style="position: relative; width: 100%; height: 100%; overflow: hidden">
                 <!-- v-show="$root.do_navigation.view === 'ListView'" -->
                 <transition name="ListView" :duration="500">
                   <ListView

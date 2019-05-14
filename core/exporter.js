@@ -705,7 +705,7 @@ module.exports = (function() {
             require('./sockets').notify({
               socket,
               localized_string: `creating_video`,
-              not_localized_string: msg
+              not_localized_string: progress
             });
           }
         })
