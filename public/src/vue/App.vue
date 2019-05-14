@@ -250,9 +250,7 @@ export default {
       height: null,
       percent: 100,
       type: 'width',
-      resizeType: 'left',
-      windowWidth: window.innerWidth,
-      windowHeight: window.innerHeight
+      resizeType: 'left'
     };
   },
   watch: {
@@ -322,7 +320,7 @@ export default {
         let pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
         pageX = pageX - this.drag_offset;
 
-        const percent = Math.floor((pageX / window.innerWidth) * 10000) / 100
+        const percent = Math.floor((pageX / this.$root.settings.windowWidth) * 10000) / 100
 
         if (percent > this.minPercent && percent < 100 - this.minPercent) {
           this.percent = percent

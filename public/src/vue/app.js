@@ -140,8 +140,8 @@ let vm = new Vue({
       has_modal_opened: false,
       capture_mode_cant_be_changed: false,
 
-      windowHeight: window.innerHeight,
       windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
 
       capture_options: {
         selected_mode: '',
