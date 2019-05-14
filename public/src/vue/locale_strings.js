@@ -192,7 +192,7 @@ module.exports = (function() {
       edit_publication: 'Éditer la recette',
       drop_here_to_import: 'Déposez vos contenus ici pour les importer',
 
-      capture: 'Enregistrer',
+      capture: 'Capturer',
       current: 'Actuellement',
       currently: 'Actuellement',
       update: 'Mettre à jour',
