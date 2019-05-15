@@ -152,7 +152,7 @@ module.exports = (function() {
                   content[slugFolderName].medias
                 );
 
-                // check if mdata has a mediaID (which would mean a user just created it)
+                // check if mdata has a mediaID (which means a user just created it)
                 const mdata = Object.values(content[slugFolderName].medias)[0];
                 if (mdata.hasOwnProperty('id')) {
                   this.$eventHub.$emit(

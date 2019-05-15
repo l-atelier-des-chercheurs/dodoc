@@ -175,12 +175,12 @@ export default {
             setTimeout(() => {
               this.files_to_upload = this.files_to_upload.filter(x => x.name !== filename);
               this.$delete(this.files_to_upload_meta, filename);
-              
+
               if(Object.keys(this.files_to_upload_meta).length === 0) {
                 this.$emit('close');
               }
             }, 500);
-            return array.length == 0 ? x : executeSequentially(array)
+            return array.length == 0 ? '' : executeSequentially(array)
           });
       }
       executeSequentially(Array.from(Array(this.files_to_upload.length).keys())).then(x => {
