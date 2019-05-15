@@ -429,15 +429,20 @@ module.exports = (function() {
                   var proc = new ffmpeg()
                     .input(path.join(imagesCachePath, 'img-%04d.jpeg'))
                     .inputFPS(framerate)
-                    .fps(30)
+                    .fps(framerate)
                     .withVideoCodec('libx264')
                     .withVideoBitrate('8000k')
+                    .input('anullsrc')
+                    .inputFormat('lavfi')
                     .size(`${resolution.width}x${resolution.height}`)
                     .autopad()
-                    .addOptions(['-preset slow', '-tune animation'])
+                    .addOptions([
+                      '-preset slow',
+                      '-tune animation',
+                      '-shortest'
+                    ])
                     .size(`${resolution.width}x${resolution.height}`)
                     .toFormat('mp4')
-                    .output(videoCachePath)
                     .on('start', function(commandLine) {
                       dev.logverbose(
                         'Spawned Ffmpeg with command: ' + commandLine
@@ -466,7 +471,7 @@ module.exports = (function() {
                       dev.error('ffmpeg standard error:\n' + stderr);
                       return reject(`couldn't create a stopmotion animation`);
                     })
-                    .run();
+                    .save(videoCachePath);
                 })
                 .catch(err => {
                   dev.error(`Error : ` + err);
@@ -971,7 +976,10 @@ module.exports = (function() {
         .withVideoBitrate('6000k')
         .withAudioCodec('aac')
         .withAudioBitrate('128k')
+        // .input('anullsrc')
+        // .inputFormat('lavfi')
         .size(`${resolution.width}x${resolution.height}`)
+        .keepDAR()
         .autopad()
         .addOptions(['-shortest'])
         .toFormat('mp4')

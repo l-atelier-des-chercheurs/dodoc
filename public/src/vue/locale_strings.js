@@ -246,7 +246,6 @@ module.exports = (function() {
         'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des images ajoutées à la publication.',
       make_video: 'Fabriquer une vidéo',
       'interval_between_pictures:': 'Intervalle entre chaque photo :',
-      creation_in_progress: 'En cours de création…',
 
       publication_list: 'Liste des publications',
       export_creation: 'Exportation d’une création',
@@ -332,7 +331,8 @@ module.exports = (function() {
         project_has_been_removed:
           'Ce projet vient d’être supprimé par quelqu’un d’autre.',
         wrong_password_for: 'Mot de passe erroné pour ',
-        creating_video: 'En cours de création de la vidéo…'
+        creating_video: 'En cours de création de la vidéo…',
+        creation_in_progress: 'En cours de création…'
       }
     },
     en: {
@@ -573,7 +573,6 @@ module.exports = (function() {
       get_website:
         'To download a website version of this publication (for example, to publish online), click here:',
       download_website: 'Download a website',
-      creation_in_progress: 'Creation in progress…',
       pdf_created: 'PDF created',
       video_created: 'The video was created',
       video_creation_failed: 'The video was not created. Error returned:',
@@ -659,7 +658,8 @@ module.exports = (function() {
         project_has_been_removed:
           'This project just got removed by another user.',
         wrong_password_for: 'Wrong password for project ',
-        creating_video: 'Creating video…'
+        creating_video: 'Creating video…',
+        creation_in_progress: 'Creation in progress…'
       }
     }
   };
