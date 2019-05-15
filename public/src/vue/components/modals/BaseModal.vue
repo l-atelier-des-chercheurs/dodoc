@@ -218,7 +218,8 @@ export default {
   data() {
     return {
       showModal: false,
-      windowHeight: window.innerHeight
+      windowHeight: window.innerHeight,
+      has_confirm_close_modal_open: false,
     };
   },
   mounted: function() {
@@ -253,7 +254,9 @@ export default {
       }
       
       if (event.key === 'Escape') {
-        this.closeModal();
+        if(!this.has_confirm_close_modal_open) {
+          this.closeModal();
+        }
         return
       }
 
@@ -275,18 +278,25 @@ export default {
     },
     closeModal: function() {
       console.log(`METHODS • BaseModal: closeModal with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
+
       if(this.askBeforeClosingModal) {
+        this.has_confirm_close_modal_open = true;
         this.$alertify
-          .okBtn(this.$t('yes'))
+          .okBtn(this.$t('save_changes'))
           .cancelBtn(this.$t('cancel'))        
           .confirm(this.$t('changes_not_saved_sureToCloseModal'), 
           () => {
+            this.$emit('submit');
             this.showModal = false;
             setTimeout(() => {
               this.$emit('close');
             }, 400);
           },
           () => {
+            this.showModal = false;
+            setTimeout(() => {
+              this.$emit('close');
+            }, 400);
           });
       } else {
         this.showModal = false;
@@ -298,14 +308,17 @@ export default {
     prevMedia: function() {
       console.log(`METHODS • BaseModal: prevMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
       if(this.askBeforeClosingModal) {
+        this.has_confirm_close_modal_open = true;
         this.$alertify
-          .okBtn(this.$t('yes'))
-          .cancelBtn(this.$t('cancel'))        
+          .okBtn(this.$t('save_changes'))
+          .cancelBtn(this.$t('close_the_window'))        
           .confirm(this.$t('changes_not_saved_sureToCloseModal'), 
           () => {
+            this.$emit('submit');
             this.$eventHub.$emit('modal.prev_media');
           },
           () => {
+            this.$eventHub.$emit('modal.prev_media');
           });        
       } else {
         this.$eventHub.$emit('modal.prev_media');
@@ -314,14 +327,17 @@ export default {
     nextMedia: function() {
       console.log(`METHODS • BaseModal: nextMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
       if(this.askBeforeClosingModal) {
+        this.has_confirm_close_modal_open = true;
         this.$alertify
-          .okBtn(this.$t('yes'))
+          .okBtn(this.$t('save_changes'))
           .cancelBtn(this.$t('cancel'))        
           .confirm(this.$t('changes_not_saved_sureToCloseModal'), 
           () => {
+            this.$emit('submit');
             this.$eventHub.$emit('modal.next_media');
           },
           () => {
+            this.$eventHub.$emit('modal.next_media');
           });        
       } else {
         this.$eventHub.$emit('modal.next_media');

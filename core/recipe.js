@@ -55,7 +55,7 @@ module.exports = (function() {
           fs.unlink(new_media_path, err => {
             ffmpeg_task
               .input(base_media_path)
-              // .fps(30)
+              .fps(30)
               .withVideoCodec('libx264')
               .withVideoBitrate('5000k')
               .withAudioCodec('aac')
@@ -64,6 +64,9 @@ module.exports = (function() {
               .autopad()
               .toFormat('mp4')
               .output(new_media_path)
+              .on('start', function(commandLine) {
+                dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+              })
               .on('progress', progress => {
                 require('./sockets').notify({
                   socket,
@@ -84,7 +87,7 @@ module.exports = (function() {
               .run();
           });
         } else {
-          return reject(`Unknow recipe type`);
+          return reject(`Unknow recipe type : ${type}`);
         }
       });
     }

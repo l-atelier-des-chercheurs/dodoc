@@ -224,7 +224,9 @@
           >
             Créer une vidéo compatible web
           </button>
-          <button type="button" class="buttonLink" @click="editRawMedia('reset')">
+          <button type="button" class="buttonLink" @click="editRawMedia('reset')"
+            v-if="!!media.original_media_filename"
+          >
             Revenir à l’original
           </button>
         </div>

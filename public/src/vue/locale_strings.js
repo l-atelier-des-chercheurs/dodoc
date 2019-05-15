@@ -78,7 +78,9 @@ module.exports = (function() {
       back: 'Retour',
       sureToRemoveAuthor: 'Êtes-vous sûr de vouloir supprimer cet auteur ?',
       changes_not_saved_sureToCloseModal:
-        'Des modifications n’ont pas été enregistrées. Voulez-vous vraiment fermer cette fenêtre ?',
+        'Des modifications ont eu lieu, souhaitez-vous les enregistrer ?',
+      save_changes: 'Enregistrer les modifications',
+      close_the_window: 'Annuler',
       sureToRemovePubli:
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
       sure_to_cancel_stopmotion:
@@ -396,6 +398,8 @@ module.exports = (function() {
       sureToRemoveAuthor: 'Do you really want to delete this author?',
       changes_not_saved_sureToCloseModal:
         'All changes were not saved. Do you really want to close this window?',
+      save_changes: 'Save changes first',
+      close_the_window: 'Close anyway',
       sureToRemovePubli: 'Do you really want to delete this publication?',
       sure_to_cancel_stopmotion:
         'Do you really want to cancel this stopmotion? You can resume making it by clicking on "Stopmotion list"',
