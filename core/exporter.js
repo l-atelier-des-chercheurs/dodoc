@@ -705,7 +705,7 @@ module.exports = (function() {
             require('./sockets').notify({
               socket,
               localized_string: `creating_video`,
-              not_localized_string: progress
+              not_localized_string: progress.timemark
             });
           }
         })
@@ -718,7 +718,7 @@ module.exports = (function() {
           dev.error('An error happened: ' + err.message);
           dev.error('ffmpeg standard output:\n' + stdout);
           dev.error('ffmpeg standard error:\n' + stderr);
-          return reject(`Couldn't convert a video : ${err.message}`);
+          return reject(`Couldn't convert video : ${err.message}`);
         })
         .mergeToFile(videoPath, cachePath);
 

@@ -211,11 +211,18 @@
         v-model="mediadata.content"
       >
       </MediaContent>
-      <div class="m_mediaOptions" v-if="false && media.type === 'image'">
+      <div class="m_mediaOptions" v-if="true">
         <label>Options</label>
         <div>
-          <button type="button" class="buttonLink" @click="editRawMedia('rotate_image', {angle: 90})">
+          <button type="button" class="buttonLink" @click="editRawMedia('rotate_image', {angle: 90})"
+            v-if="media.type === 'image'"
+          >
             Pivoter vers la droite
+          </button>
+          <button type="button" class="buttonLink" @click="editRawMedia('optimize_video')"
+            v-if="media.type === 'video'"
+          >
+            Créer une vidéo compatible web
           </button>
           <button type="button" class="buttonLink" @click="editRawMedia('reset')">
             Revenir à l’original
@@ -341,8 +348,6 @@ export default {
           detail
         }
       });
-      // then close that popover
-      // this.$emit('close', '');
     }
   },
 };
