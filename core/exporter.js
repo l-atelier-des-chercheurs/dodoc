@@ -431,19 +431,23 @@ module.exports = (function() {
                     .fps(framerate)
                     .withVideoCodec('libx264')
                     .withVideoBitrate('8000k')
-                    .addOptions(['-preset slow', '-tune animation'])
-                    .addOption(
-                      '-vf',
-                      `scale=w=${resolution.width}:h=${
-                        resolution.height
-                      }:force_original_aspect_ratio=1,pad=${resolution.width}:${
-                        resolution.height
-                      }:(ow-iw)/2:(oh-ih)/2:white`
-                    )
-                    .noAudio()
+                    .input('anullsrc')
+                    .inputFormat('lavfi')
+                    .size(`${resolution.width}x${resolution.height}`)
+                    .autopad()
+                    .addOptions([
+                      '-preset slow',
+                      '-tune animation',
+                      '-shortest'
+                    ])
                     .size(`${resolution.width}x${resolution.height}`)
                     .toFormat('mp4')
                     .output(videoCachePath)
+                    .on('start', function(commandLine) {
+                      dev.logverbose(
+                        'Spawned Ffmpeg with command: ' + commandLine
+                      );
+                    })
                     .on('progress', progress => {
                       dev.logverbose(
                         `Processing new stopmotion: image ${
@@ -550,6 +554,10 @@ module.exports = (function() {
 
   function _loadMediaFilenameFromPublicationSlugs(slugPubliName, pageData) {
     return new Promise((resolve, reject) => {
+      dev.logfunction(
+        `EXPORTER — _loadMediaFilenameFromPublicationSlugs with slugPubliName = ${slugPubliName}`
+      );
+
       // all publimedias name in order are there : pageData.publiAndMediaData['montage'].medias_slugs
       // all publimedias meta : pageData.publiAndMediaData['montage'].medias
       // all actual medias :
@@ -573,7 +581,10 @@ module.exports = (function() {
             pageData.folderAndMediaData.hasOwnProperty(m.slugProjectName) &&
             pageData.folderAndMediaData[
               m.slugProjectName
-            ].medias.hasOwnProperty(m.slugMediaName)
+            ].medias.hasOwnProperty(m.slugMediaName) &&
+            !pageData.folderAndMediaData[m.slugProjectName].medias[
+              m.slugMediaName
+            ].hasOwnProperty('_isAbsent')
           );
         })
         .map(m => {
@@ -699,6 +710,9 @@ module.exports = (function() {
         .withAudioCodec('aac')
         .withAudioBitrate('128k')
         .toFormat('mp4')
+        .on('start', function(commandLine) {
+          dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+        })
         .on('progress', progress => {
           if (+new Date() - time_since_last_report > 3000) {
             time_since_last_report = +new Date();
@@ -792,6 +806,9 @@ module.exports = (function() {
         .withAudioCodec('aac')
         .withAudioBitrate('128k')
         .toFormat('mp4')
+        .on('start', function(commandLine) {
+          dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+        })
         .on('progress', progress => {
           if (+new Date() - time_since_last_report > 3000) {
             time_since_last_report = +new Date();
@@ -876,6 +893,9 @@ module.exports = (function() {
         .withAudioCodec('aac')
         .withAudioBitrate('128k')
         .toFormat('mp4')
+        .on('start', function(commandLine) {
+          dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+        })
         .on('progress', progress => {
           if (+new Date() - time_since_last_report > 3000) {
             time_since_last_report = +new Date();

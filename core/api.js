@@ -359,6 +359,9 @@ module.exports = (function() {
               .noAudio()
               .toFormat('mp4')
               .output(pathToMedia)
+              .on('start', function(commandLine) {
+                dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+              })
               .on('progress', progress => {
                 dev.logverbose(
                   `Processing new stopmotion: image ${

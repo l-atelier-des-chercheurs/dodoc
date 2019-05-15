@@ -211,9 +211,9 @@
         v-model="mediadata.content"
       >
       </MediaContent>
-      <div class="m_mediaOptions" v-if="true">
-        <label>Options</label>
-        <div>
+      <div class="m_mediaOptions">
+        <button type="button" class="buttonLink" @click="show_edit_media_options = !show_edit_media_options">{{ show_edit_media_options }}</button>
+        <div v-if="show_edit_media_options">
           <button type="button" class="buttonLink" @click="editRawMedia('rotate_image', {angle: 90})"
             v-if="media.type === 'image'"
           >
@@ -266,6 +266,7 @@ export default {
     return {
       showQRModal: false,
       is_minimized: false,
+      show_edit_media_options: false,
 
       mediadata: {
         type: this.media.type,
@@ -361,8 +362,8 @@ export default {
   right: 0;
   z-index: 100;
   background-color: white;
-  margin: 25px;
-  padding: 15px;
+  margin: 50px 10px;
+  /* padding: 15px; */
 }
 
 </style>
