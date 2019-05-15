@@ -441,7 +441,6 @@ module.exports = (function() {
                       '-tune animation',
                       '-shortest'
                     ])
-                    .size(`${resolution.width}x${resolution.height}`)
                     .toFormat('mp4')
                     .on('start', function(commandLine) {
                       dev.logverbose(
@@ -743,6 +742,7 @@ module.exports = (function() {
         let time_since_last_report = 0;
         ffmpeg_task
           // .complexFilter(['gltransition'])
+          .format('mp4')
           .on('start', function(commandLine) {
             dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
           })
@@ -976,11 +976,9 @@ module.exports = (function() {
         .withVideoBitrate('6000k')
         .withAudioCodec('aac')
         .withAudioBitrate('128k')
-        // .input('anullsrc')
-        // .inputFormat('lavfi')
         .size(`${resolution.width}x${resolution.height}`)
-        .keepDAR()
         .autopad()
+        .videoFilter(['setsar=1'])
         .addOptions(['-shortest'])
         .toFormat('mp4')
         .output(temp_video_path)

@@ -347,18 +347,12 @@ module.exports = (function() {
               .fps(frameRate)
               .withVideoCodec('libx264')
               .withVideoBitrate('8000k')
-              .addOptions(['-preset slow', '-tune animation'])
-              .addOption(
-                '-vf',
-                `scale=w=${resolution.width}:h=${
-                  resolution.height
-                }:force_original_aspect_ratio=1,pad=${resolution.width}:${
-                  resolution.height
-                }:(ow-iw)/2:(oh-ih)/2:white`
-              )
-              .noAudio()
+              .input('anullsrc')
+              .inputFormat('lavfi')
+              .size(`${resolution.width}x${resolution.height}`)
+              .autopad()
+              .addOptions(['-preset slow', '-tune animation', '-shortest'])
               .toFormat('mp4')
-              .output(pathToMedia)
               .on('start', function(commandLine) {
                 dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
               })
@@ -385,7 +379,7 @@ module.exports = (function() {
                 dev.error('ffmpeg standard error:\n' + stderr);
                 reject(`couldn't create a stopmotion animation`);
               })
-              .run();
+              .save(pathToMedia);
           })
           .catch(err => reject(err));
       });
