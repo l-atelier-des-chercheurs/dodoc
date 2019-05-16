@@ -74,7 +74,7 @@
           {{ $t('medias_of') }} 
           {{ numberOfMedias }}
         </span>
-        <template v-if="$root.allKeywords.length > 0">
+        <template v-if="$root.allKeywords.length >= 0">
           — 
           <button type="button" class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active' : show_filters }"
