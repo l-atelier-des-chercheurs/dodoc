@@ -708,7 +708,8 @@ module.exports = (function() {
           _prepareVideosForMontageAndWeb({
             video_full_path: vm.full_path,
             cachePath,
-            resolution
+            resolution,
+            socket
           })
             .then(temp_video_path => {
               require('./sockets').notify({

@@ -15,9 +15,33 @@
           <hr>
 
           <div class="margin-bottom-small">
-            <label>{{ $t('framerate') }}</label>
-            <input type="number" v-model.number="framerate" min="1" max="30" step="1" />
+            <label>{{ $t('framerate') }} : {{ framerate }}fps = 
+              <template v-if="framerate <= 1">
+                {{ $t('very_slow') }}
+              </template>
+              <template v-else-if="framerate <= 10">
+                {{ $t('slow') }}
+              </template>
+              <template v-else-if="framerate <= 20">
+                {{ $t('speed_medium') }}
+              </template>
+              <template v-else-if="framerate <= 30">
+                {{ $t('fast') }}
+              </template>
+            </label>
+            <input type="range" v-model.number="framerate" min="0.1" max="30" step=".1" />
           </div>
+          <!-- <div class="flex-nowrap" style="align-items: center;">
+            <div class="margin-bottom-small">
+              <label>{{ $t('framerate') }}</label>
+              <input type="number" v-model.number="framerate" step="1" />
+            </div>
+            <div class="margin-verysmall">=</div>
+            <div class="margin-bottom-small">
+              <label>{{ $t('seconds_per_image') }}</label>
+              <input type="number" v-model.number="seconds_per_image" step="1" />
+            </div>
+          </div> -->
 
           <div class="margin-bottom-small">
             <label>{{ $t('quality') }}</label>
@@ -98,6 +122,7 @@ export default {
       link_to_video: false,
       video_is_playing: false,
       framerate: 4,
+      seconds_per_image: .25,
       quality: 720,
       available_qualities: [
         { 
@@ -140,9 +165,14 @@ export default {
       }
     },
     'framerate': function() {
+      this.seconds_per_image = 1/this.framerate;
+      this.framerate = this.framerate.toFixed(1);
       if(this.video_request_status === 'generated') {
         this.video_request_status = false;
       }
+    },
+    'seconds_per_image': function() {
+      this.framerate = 1/this.seconds_per_image;
     }
   },
   computed: {

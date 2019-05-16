@@ -35,6 +35,11 @@ module.exports = (function() {
       'camera2 1, facing front': 'Caméra frontale',
       'camera2 0, facing back': 'Caméra arrière',
 
+      very_slow: 'Très lent',
+      slow: 'Lent',
+      speed_medium: 'Normal',
+      fast: 'Rapide',
+
       cooking_pot: 'La marmite',
       text_overflow: 'Texte en excès',
       move_to_foreground: 'Mettre au premier plan',
@@ -57,7 +62,8 @@ module.exports = (function() {
       css: 'css',
       write_some_CSS_code_for_example:
         'Écrivez ici du code CSS, <br>par exemple <code>color: blue;</code>',
-      framerate: 'cadence d’image (par seconde)',
+      framerate: 'images par seconde',
+      seconds_per_image: 'secondes par image',
       seconds: 'secondes',
       quality: 'qualité',
       bytes: 'octets',
@@ -370,6 +376,11 @@ module.exports = (function() {
         'Created stopmotion animations will appear in this list.',
       device: 'Device',
 
+      very_slow: 'Very slow',
+      slow: 'Slow',
+      speed_medium: 'Normal',
+      fast: 'Fast',
+
       cooking_pot: 'Cooking pot',
       text_overflow: 'Overflow text',
       move_to_foreground: 'Move to foreground',
@@ -378,7 +389,8 @@ module.exports = (function() {
       cooking_pot_instructions:
         'Mix a single or multiple medias to create new medias!',
       untitled: 'Untitled',
-      framerate: 'frame rate (images per second)',
+      framerate: 'images per second',
+      seconds_per_image: 'seconds per image',
       seconds: 'seconds',
       quality: 'quality',
 
