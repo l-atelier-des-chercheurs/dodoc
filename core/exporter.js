@@ -981,7 +981,13 @@ module.exports = (function() {
         .on('start', function(commandLine) {
           dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
         })
-        .on('progress', progress => {})
+        .on('progress', progress => {
+          require('./sockets').notify({
+            socket,
+            localized_string: `creating_video`,
+            not_localized_string: progress.timemark
+          });
+        })
         .on('end', () => {
           return resolve(temp_video_path);
         })
