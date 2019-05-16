@@ -885,7 +885,7 @@ module.exports = (function() {
       );
       if (image_files.length === 0) return reject(`No image file`);
       const image_file_path = image_files[0].full_path;
-      ffmpeg_task.addInput(image_file_path);
+      ffmpeg_task.addInput(image_file_path).loop();
 
       let audio_files = medias_with_original_filepath.filter(
         m => m.type === 'audio'
@@ -918,15 +918,11 @@ module.exports = (function() {
       ffmpeg_task
         .withVideoCodec('libx264')
         .withVideoBitrate('4000k')
-        .addOptions(['-preset slow', '-tune animation'])
-        .addOption(
-          '-vf',
-          `scale=w=${resolution.width}:h=${
-            resolution.height
-          }:force_original_aspect_ratio=increase`
-        )
+        .addOptions(['-shortest'])
         .withAudioCodec('aac')
         .withAudioBitrate('128k')
+        .autopad()
+        .outputFPS(30)
         .toFormat('mp4')
         .on('start', function(commandLine) {
           dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
