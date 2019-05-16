@@ -430,7 +430,7 @@ module.exports = (function() {
                     .input(path.join(imagesCachePath, 'img-%04d.jpeg'))
                     .inputFPS(framerate)
                     .withVideoCodec('libx264')
-                    .withVideoBitrate('8000k')
+                    .withVideoBitrate('4000k')
                     .input('anullsrc')
                     .inputFormat('lavfi')
                     .size(`${resolution.width}x${resolution.height}`)

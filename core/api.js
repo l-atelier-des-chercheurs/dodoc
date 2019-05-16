@@ -345,7 +345,7 @@ module.exports = (function() {
               .input(path.join(tempFolder, 'img-%04d.jpeg'))
               .inputFPS(frameRate)
               .withVideoCodec('libx264')
-              .withVideoBitrate('8000k')
+              .withVideoBitrate('4000k')
               .input('anullsrc')
               .inputFormat('lavfi')
               .outputFPS(30)
