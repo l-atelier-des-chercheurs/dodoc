@@ -348,10 +348,11 @@ module.exports = (function() {
               .withVideoBitrate('4000k')
               .input('anullsrc')
               .inputFormat('lavfi')
-              .outputFPS(30)
+              .duration(numberOfImagesToProcess / frameRate)
               .size(`${resolution.width}x${resolution.height}`)
+              .outputFPS(30)
               .autopad()
-              .addOptions(['-preset slow', '-tune animation', '-shortest'])
+              .addOptions(['-preset slow', '-tune animation'])
               .toFormat('mp4')
               .on('start', function(commandLine) {
                 dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);

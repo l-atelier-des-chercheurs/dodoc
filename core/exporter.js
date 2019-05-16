@@ -426,6 +426,9 @@ module.exports = (function() {
                     `Size : ${resolution.width}x${resolution.height}`
                   );
                   dev.logverbose(`framerate : ${framerate}`);
+                  dev.logverbose(
+                    `duration : ${numberOfImagesToProcess / framerate}`
+                  );
                   var proc = new ffmpeg()
                     .input(path.join(imagesCachePath, 'img-%04d.jpeg'))
                     .inputFPS(framerate)
@@ -433,14 +436,11 @@ module.exports = (function() {
                     .withVideoBitrate('4000k')
                     .input('anullsrc')
                     .inputFormat('lavfi')
+                    .duration(numberOfImagesToProcess / framerate)
                     .size(`${resolution.width}x${resolution.height}`)
                     .outputFPS(30)
                     .autopad()
-                    .addOptions([
-                      '-preset slow',
-                      '-tune animation',
-                      '-shortest'
-                    ])
+                    .addOptions(['-preset slow', '-tune animation'])
                     .toFormat('mp4')
                     .on('start', function(commandLine) {
                       dev.logverbose(
