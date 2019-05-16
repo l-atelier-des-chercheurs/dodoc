@@ -13,6 +13,7 @@
     >
     <template slot="header">
       <div class="">{{ $t('edit_the_media') }}</div>
+      <small class="font-normal">{{ media.media_filename }}</small>
     </template>
 
     <template slot="sidebar">
@@ -209,8 +210,7 @@
         :media="media"
         :read_only="read_only"
         v-model="mediadata.content"
-      >
-      </MediaContent>
+      />
       <div class="m_mediaOptions" v-if="false">
         <button type="button" class="buttonLink" @click="show_edit_media_options = !show_edit_media_options">{{ show_edit_media_options }}</button>
         <div v-if="show_edit_media_options">
