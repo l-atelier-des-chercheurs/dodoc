@@ -832,6 +832,29 @@ module.exports = (function() {
       const audio_file_path = audio_files[0].full_path;
       ffmpeg_task.addInput(audio_file_path);
 
+      function findLongestMediaDuration(ms) {
+        if (
+          ms.filter(m => {
+            !m.hasOwnProperty('duration');
+          }).length > 0
+        ) {
+          return false;
+        }
+
+        const durations = ms.map(m => {
+          return m.duration;
+        });
+        return Math.max(...durations);
+      }
+
+      const duration = findLongestMediaDuration(
+        [].concat(audio_files[0]).concat(video_files[0])
+      );
+      if (duration) {
+        dev.logverbose('Setting output to duration: ' + duration);
+        ffmpeg_task.duration(duration);
+      }
+
       let time_since_last_report = 0;
 
       ffmpeg_task
