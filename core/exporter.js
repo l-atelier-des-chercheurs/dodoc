@@ -429,12 +429,12 @@ module.exports = (function() {
                   var proc = new ffmpeg()
                     .input(path.join(imagesCachePath, 'img-%04d.jpeg'))
                     .inputFPS(framerate)
-                    .fps(framerate)
                     .withVideoCodec('libx264')
                     .withVideoBitrate('8000k')
                     .input('anullsrc')
                     .inputFormat('lavfi')
                     .size(`${resolution.width}x${resolution.height}`)
+                    .outputFPS(30)
                     .autopad()
                     .addOptions([
                       '-preset slow',
