@@ -185,6 +185,7 @@ export default {
           });
       }
       executeSequentially(Array.from(Array(this.files_to_upload.length).keys())).then(x => {
+        this.$emit('close');
       });
 
       // const test = async () => {
