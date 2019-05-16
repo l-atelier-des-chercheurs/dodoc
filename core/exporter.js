@@ -835,8 +835,9 @@ module.exports = (function() {
       let time_since_last_report = 0;
 
       ffmpeg_task
-        .addOptions(['-c:v copy', '-c:a aac'])
+        .addOptions(['-c:v libx264', '-c:a aac'])
         .addOptions(['-map 0:v:0', '-map 1:a:0'])
+        .addOptions(['-af apad'])
         .withVideoCodec('libx264')
         .withVideoBitrate('4000k')
         .withAudioCodec('aac')
