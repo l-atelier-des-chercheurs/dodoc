@@ -846,6 +846,7 @@ body {
 
   .m_project {
     min-height: 100%;
+    overflow-y: scroll;    
   }
 }
 
@@ -1030,12 +1031,7 @@ small {
   .bg-blanc;
   border-radius: 0px;
   // min-height: 100%;
-
-  /*
-    stupid tweak to resolve disappearing project when opening la marmite 
-  on some specific ipad / safari
-  */
-  overflow: scroll;
+  overflow-y: auto;
 
   .flex-wrap;
   justify-content: center;
