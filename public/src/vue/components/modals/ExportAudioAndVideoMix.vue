@@ -22,7 +22,7 @@
             </template>
             <template v-else-if="video_request_status === 'waiting_for_server'"> 
               <span class="loader loader-xs" />
-              {{ $t('creation_in_progress') }}
+              {{ $t('notifications.creation_in_progress') }}
             </template>
             <template v-else-if="video_request_status === 'generated'">
               {{ $t('video_created') }}
