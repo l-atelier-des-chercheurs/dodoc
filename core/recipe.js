@@ -71,7 +71,8 @@ module.exports = (function() {
                 require('./sockets').notify({
                   socket,
                   localized_string: `creating_video`,
-                  not_localized_string: progress.timemark
+                  not_localized_string:
+                    Number.parseFloat(progress.percent).toFixed(1) + '%'
                 });
               })
               .on('end', () => {

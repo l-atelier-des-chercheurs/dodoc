@@ -358,16 +358,11 @@ module.exports = (function() {
                 dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
               })
               .on('progress', progress => {
-                dev.logverbose(
-                  `Processing new stopmotion: image ${
-                    progress.frames
-                  }/${numberOfImagesToProcess}`
-                );
                 require('./sockets').notify({
                   socket,
-                  not_localized_string: `Processing new stopmotion: image ${
-                    progress.frames
-                  }/${numberOfImagesToProcess}`
+                  localized_string: `creating_video`,
+                  not_localized_string:
+                    Number.parseFloat(progress.percent).toFixed(1) + '%'
                 });
               })
               .on('end', () => {

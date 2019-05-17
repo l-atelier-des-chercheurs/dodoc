@@ -448,16 +448,11 @@ module.exports = (function() {
                       );
                     })
                     .on('progress', progress => {
-                      dev.logverbose(
-                        `Processing new stopmotion: image ${
-                          progress.frames
-                        }/${numberOfImagesToProcess}`
-                      );
                       require('./sockets').notify({
                         socket,
-                        not_localized_string: `Processing new stopmotion: image ${
-                          progress.frames
-                        }/${numberOfImagesToProcess}`
+                        localized_string: `creating_video`,
+                        not_localized_string:
+                          Number.parseFloat(progress.percent).toFixed(1) + '%'
                       });
                     })
                     .on('end', () => {
@@ -707,6 +702,7 @@ module.exports = (function() {
         let myPromise = new Promise((resolve, reject) => {
           _prepareVideosForMontageAndWeb({
             video_full_path: vm.full_path,
+            duration: vm.duration,
             cachePath,
             resolution,
             socket
@@ -738,14 +734,12 @@ module.exports = (function() {
         );
 
         var ffmpeg_task = new ffmpeg();
+
         temp_videos_array.map(v => ffmpeg_task.addInput(v.full_path));
 
         let time_since_last_report = 0;
         ffmpeg_task
           // .complexFilter(['gltransition'])
-          // .inputFormat('concat')
-          // .videoCodec('copy')
-          // .audioCodec('copy')
           .on('start', function(commandLine) {
             dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
           })
@@ -771,39 +765,63 @@ module.exports = (function() {
             return reject(`Couldn't convert video : ${err.message}`);
           })
           .mergeToFile(videoPath, cachePath);
-        // .save(videoPath);
 
-        // concat({
-        //   output: videoPath,
-        //   videos: video_files.map(vm => vm.full_path),
-        //   transition: {
-        //     name: 'fade',
-        //     duration: 300
-        //   },
-        //   log: function(msg) {
-        //     // console.log('Log progress : ' + JSON.stringify(msg));
-        //     // if (+new Date() - time_since_last_report > 3000) {
-        //     // time_since_last_report = +new Date();
-        //     if (typeof msg === 'object') {
-        //       msg = JSON.stringify(msg);
-        //     }
+        // does not work that well with -f concat
+        // reconverting with mergeToFile might seem overkill but yields much much better results
 
-        //     require('./sockets').notify({
-        //       socket,
-        //       localized_string: `creating_video`,
-        //       not_localized_string: msg
-        //     });
-        //     // }
-        //   }
-        // })
-        //   .then(() => {
-        //     dev.logverbose(`Video has been created`);
-        //     return resolve();
-        //   })
-        //   .catch(err => {
-        //     dev.error('An error happened: ' + err);
-        //     return reject(`Couldn't convert a video : ${err}`);
+        //   // let concat_method = 'concat';
+        //   // let concat_method = 'remux';
+        //   // if(concat_method === "concat") {
+
+        //   let inputs_to_concat = [];
+
+        //   // var fileList = temp_videos_array.map(); // files to merge
+
+        //   var listFileName = path.join(cachePath, 'list.txt');
+        //   var fileNames = '';
+
+        //   // ffmpeg -f concat -i mylist.txt -c copy output
+        //   temp_videos_array.map(v => {
+        //     fileNames += 'file ' + v.full_path + '\n';
         //   });
+
+        //   fs.writeFileSync(listFileName, fileNames);
+
+        //   // ffmpeg_task.addInput('concat:' + inputs_to_concat.join('|') + '');
+
+        //   let time_since_last_report = 0;
+        //   ffmpeg_task
+        //     .input(listFileName)
+        //     .inputOptions(['-f concat', '-safe 0'])
+        //     .outputOptions('-c copy')
+        //     // .complexFilter(['gltransition'])
+        //     // .inputFormat('concat')
+        //     // .videoCodec('copy')
+        //     // .audioCodec('copy')
+        //     // .addOptions(['-bsf:a aac_adtstoasc'])
+        //     .on('start', function(commandLine) {
+        //       dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+        //     })
+        //     .on('progress', progress => {
+        //       require('./sockets').notify({
+        //         socket,
+        //         localized_string: `creating_video`,
+        //         not_localized_string:
+        //           Number.parseFloat(progress.percent).toFixed(1) + '%'
+        //       });
+        //     })
+        //     .on('end', () => {
+        //       dev.logverbose(`Video has been created`);
+        //       return resolve();
+        //     })
+        //     .on('error', function(err, stdout, stderr) {
+        //       ffmpeg_task = null;
+        //       dev.error('An error happened: ' + err.message);
+        //       dev.error('ffmpeg standard output:\n' + stdout);
+        //       dev.error('ffmpeg standard error:\n' + stderr);
+        //       return reject(`Couldn't convert video : ${err.message}`);
+        //     })
+        //     .save(videoPath);
       });
     });
   }
@@ -872,13 +890,12 @@ module.exports = (function() {
           dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
         })
         .on('progress', progress => {
-          if (+new Date() - time_since_last_report > 3000) {
-            time_since_last_report = +new Date();
-            require('./sockets').notify({
-              socket,
-              not_localized_string: `Creating video: ${progress.timemark}`
-            });
-          }
+          require('./sockets').notify({
+            socket,
+            localized_string: `creating_video`,
+            not_localized_string:
+              Number.parseFloat(progress.percent).toFixed(1) + '%'
+          });
         })
         .on('end', () => {
           dev.logverbose(`Video has been created`);
@@ -955,13 +972,12 @@ module.exports = (function() {
           dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
         })
         .on('progress', progress => {
-          if (+new Date() - time_since_last_report > 3000) {
-            time_since_last_report = +new Date();
-            require('./sockets').notify({
-              socket,
-              not_localized_string: `Creating video: ${progress.timemark}`
-            });
-          }
+          require('./sockets').notify({
+            socket,
+            localized_string: `creating_video`,
+            not_localized_string:
+              Number.parseFloat(progress.percent).toFixed(1) + '%'
+          });
         })
         .on('end', () => {
           dev.logverbose(`Video has been created`);
@@ -980,6 +996,7 @@ module.exports = (function() {
 
   function _prepareVideosForMontageAndWeb({
     video_full_path,
+    duration,
     cachePath,
     resolution,
     socket
@@ -987,14 +1004,22 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction('EXPORTER — _prepareVideosForMontageAndWeb');
 
+      var ffmpeg_task = new ffmpeg();
+
       const temp_video_name =
         (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 10) +
         '.ts';
       const temp_video_path = path.join(cachePath, temp_video_name);
 
-      var proc = new ffmpeg()
+      if (duration) {
+        dev.logverbose('Setting output to duration: ' + duration);
+        ffmpeg_task.duration(duration);
+      }
+
+      ffmpeg_task
         .input(video_full_path)
         .fps(30)
+        .addOptions(['-af apad'])
         .withVideoCodec('libx264')
         .withVideoBitrate('6000k')
         .withAudioCodec('aac')
@@ -1012,7 +1037,8 @@ module.exports = (function() {
           require('./sockets').notify({
             socket,
             localized_string: `creating_video`,
-            not_localized_string: progress.timemark
+            not_localized_string:
+              Number.parseFloat(progress.percent).toFixed(1) + '%'
           });
         })
         .on('end', () => {
