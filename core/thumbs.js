@@ -499,7 +499,7 @@ module.exports = (function() {
       ffmpeg.ffprobe(mediaPath, function(err, metadata) {
         if (err || typeof metadata === 'undefined') {
           dev.log(`getMediaDuration: PROBE DATA isn’t valid`);
-          reject();
+          resolve(false);
         } else {
           // dev.log(`PROBE DATA : ${JSON.stringify(metadata, null, 4)}`);
           resolve(metadata.format.duration);

@@ -792,19 +792,13 @@ module.exports = (function() {
               // get video or audio duration
               let getMediaDuration = new Promise((resolve, reject) => {
                 dev.logverbose(`Will attempt to get media duration.`);
-                thumbs
-                  .getMediaDuration(mediaPath)
-                  .then(duration => {
-                    dev.log(`getMediaDuration: ${duration}`);
-                    if (duration) {
-                      mdata.duration = duration;
-                    }
-                    resolve();
-                  })
-                  .catch(err => {
-                    dev.error(`No probe data to read from: ${err}`);
-                    resolve();
-                  });
+                thumbs.getMediaDuration(mediaPath).then(duration => {
+                  dev.log(`getMediaDuration: ${duration}`);
+                  if (duration) {
+                    mdata.duration = duration;
+                  }
+                  resolve();
+                });
               });
               tasks.push(getMediaDuration);
             }
