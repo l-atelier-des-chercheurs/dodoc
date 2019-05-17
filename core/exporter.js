@@ -743,7 +743,9 @@ module.exports = (function() {
         let time_since_last_report = 0;
         ffmpeg_task
           // .complexFilter(['gltransition'])
-          .format('mp4')
+          // .inputFormat('concat')
+          // .videoCodec('copy')
+          // .audioCodec('copy')
           .on('start', function(commandLine) {
             dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
           })
@@ -987,7 +989,7 @@ module.exports = (function() {
 
       const temp_video_name =
         (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 10) +
-        '.mp4';
+        '.ts';
       const temp_video_path = path.join(cachePath, temp_video_name);
 
       var proc = new ffmpeg()
@@ -1000,8 +1002,8 @@ module.exports = (function() {
         .size(`${resolution.width}x${resolution.height}`)
         .autopad()
         .videoFilter(['setsar=1'])
-        .addOptions(['-shortest'])
-        .toFormat('mp4')
+        .addOptions(['-shortest', '-bsf:v h264_mp4toannexb'])
+        .toFormat('mpegts')
         .output(temp_video_path)
         .on('start', function(commandLine) {
           dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
