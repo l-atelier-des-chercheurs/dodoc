@@ -393,6 +393,9 @@ strong,b {
 .font-thin {
   font-weight: 200;  
 }
+.font-normal {
+  font-weight: 400;  
+}
 
 
 .text-centered {
@@ -587,7 +590,7 @@ strong,b {
   padding-right:   @t-skipline/4;
 }
 .padding-right-small {
-  padding-left:   @t-skipline/2;
+  padding-right:   @t-skipline/2;
 }
 .padding-bottom-verysmall {
   padding-bottom:   @t-skipline/4;
@@ -937,7 +940,11 @@ code {
 img, video, audio, svg {
 	display: block;
 	max-width: 100%;
-	height: auto;
+  height: auto;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;  
 }
 
 input:required {

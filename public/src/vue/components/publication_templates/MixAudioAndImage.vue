@@ -199,6 +199,9 @@ export default {
         console.log(`METHODS • Publication: updateMediasPubli`);
       }
 
+      this.$root.settings.current_publication.accepted_media_type = this.accepted_media_type;
+
+
       if(!this.publication.hasOwnProperty('medias') || Object.keys(this.publication.medias).length === 0) {
         this.publication_medias = [];        
         return;

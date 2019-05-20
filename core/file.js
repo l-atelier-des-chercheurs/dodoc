@@ -792,19 +792,13 @@ module.exports = (function() {
               // get video or audio duration
               let getMediaDuration = new Promise((resolve, reject) => {
                 dev.logverbose(`Will attempt to get media duration.`);
-                thumbs
-                  .getMediaDuration(mediaPath)
-                  .then(duration => {
-                    dev.log(`getMediaDuration: ${duration}`);
-                    if (duration) {
-                      mdata.duration = duration;
-                    }
-                    resolve();
-                  })
-                  .catch(err => {
-                    dev.error(`No probe data to read from: ${err}`);
-                    resolve();
-                  });
+                thumbs.getMediaDuration(mediaPath).then(duration => {
+                  dev.log(`getMediaDuration: ${duration}`);
+                  if (duration) {
+                    mdata.duration = duration;
+                  }
+                  resolve();
+                });
               });
               tasks.push(getMediaDuration);
             }
@@ -993,7 +987,8 @@ module.exports = (function() {
       slugFolderName,
       metaFileName,
       data,
-      recipe_with_data
+      recipe_with_data,
+      socket
     }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
@@ -1011,7 +1006,8 @@ module.exports = (function() {
               slugFolderName,
               metaFileName,
               meta,
-              recipe_with_data
+              recipe_with_data,
+              socket
             }).then(media_metas => {
               dev.logverbose(
                 `Got meta for ${metaFileName} with ${JSON.stringify(
@@ -1860,7 +1856,8 @@ module.exports = (function() {
     slugFolderName,
     metaFileName,
     meta,
-    recipe_with_data
+    recipe_with_data,
+    socket
   }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
@@ -1897,10 +1894,6 @@ module.exports = (function() {
               slugFolderPath,
               meta.media_filename
             );
-            const new_media_path = path.join(
-              slugFolderPath,
-              meta.media_filename
-            );
 
             if (
               recipe_with_data.hasOwnProperty('type') &&
@@ -1913,8 +1906,14 @@ module.exports = (function() {
               });
             } else {
               recipe
-                .applyRecipe(recipe_with_data, base_media_path, new_media_path)
-                .then(() => {
+                .applyRecipe(
+                  recipe_with_data,
+                  base_media_path,
+                  slugFolderPath,
+                  meta.media_filename,
+                  socket
+                )
+                .then(newFileName => {
                   // return meta name
                   dev.logverbose(
                     `Applied recipe successfully, created ${newFileName}`
@@ -1934,21 +1933,22 @@ module.exports = (function() {
                   slugFolderPath,
                   meta.media_filename
                 );
-                const new_media_path = path.join(slugFolderPath, newFileName);
 
                 recipe
                   .applyRecipe(
                     recipe_with_data,
                     base_media_path,
-                    new_media_path
+                    slugFolderPath,
+                    newFileName,
+                    socket
                   )
-                  .then(() => {
+                  .then(new_media_filename => {
                     // return meta name
                     dev.logverbose(
                       `Applied recipe successfully, created ${newFileName}`
                     );
                     meta.original_media_filename = meta.media_filename;
-                    meta.media_filename = newFileName;
+                    meta.media_filename = new_media_filename;
                     return resolve(meta);
                   })
                   .catch(err => {

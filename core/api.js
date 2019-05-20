@@ -344,32 +344,25 @@ module.exports = (function() {
             var proc = new ffmpeg()
               .input(path.join(tempFolder, 'img-%04d.jpeg'))
               .inputFPS(frameRate)
-              .fps(frameRate)
               .withVideoCodec('libx264')
-              .withVideoBitrate('8000k')
+              .withVideoBitrate('4000k')
+              .input('anullsrc')
+              .inputFormat('lavfi')
+              .duration(numberOfImagesToProcess / frameRate)
+              .size(`${resolution.width}x${resolution.height}`)
+              .outputFPS(30)
+              .autopad()
               .addOptions(['-preset slow', '-tune animation'])
-              .addOption(
-                '-vf',
-                `scale=w=${resolution.width}:h=${
-                  resolution.height
-                }:force_original_aspect_ratio=1,pad=${resolution.width}:${
-                  resolution.height
-                }:(ow-iw)/2:(oh-ih)/2:white`
-              )
-              .noAudio()
               .toFormat('mp4')
-              .output(pathToMedia)
+              .on('start', function(commandLine) {
+                dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+              })
               .on('progress', progress => {
-                dev.logverbose(
-                  `Processing new stopmotion: image ${
-                    progress.frames
-                  }/${numberOfImagesToProcess}`
-                );
                 require('./sockets').notify({
                   socket,
-                  not_localized_string: `Processing new stopmotion: image ${
-                    progress.frames
-                  }/${numberOfImagesToProcess}`
+                  localized_string: `creating_video`,
+                  not_localized_string:
+                    Number.parseFloat(progress.percent).toFixed(1) + '%'
                 });
               })
               .on('end', () => {
@@ -382,7 +375,7 @@ module.exports = (function() {
                 dev.error('ffmpeg standard error:\n' + stderr);
                 reject(`couldn't create a stopmotion animation`);
               })
-              .run();
+              .save(pathToMedia);
           })
           .catch(err => reject(err));
       });

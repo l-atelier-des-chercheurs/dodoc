@@ -311,7 +311,8 @@ module.exports = (function() {
         slugFolderName,
         metaFileName: slugMediaName,
         data,
-        recipe_with_data
+        recipe_with_data,
+        socket
       })
       .then(
         slugFolderName => {
@@ -370,14 +371,24 @@ module.exports = (function() {
       slugPubliName = ${slugPubliName}`
     );
 
-    exporter.makeVideoForPubli({ slugPubliName, socket }).then(videoName => {
-      api.sendEventWithContent(
-        'publiVideoGenerated',
-        { videoName },
-        io,
-        socket
-      );
-    });
+    exporter
+      .makeVideoForPubli({ slugPubliName, socket })
+      .then(videoName => {
+        api.sendEventWithContent(
+          'publiVideoGenerated',
+          { videoName },
+          io,
+          socket
+        );
+      })
+      .catch(error_msg => {
+        notify({
+          socket,
+          socketid: socket.id,
+          localized_string: `video_creation_failed`,
+          not_localized_string: error_msg
+        });
+      });
   }
 
   function onDownloadStopmotionPubli(socket, { slugPubliName, options }) {

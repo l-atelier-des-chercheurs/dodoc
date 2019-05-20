@@ -32,6 +32,7 @@
     "dodoc-parsedown": "git+https://github.com/louis-ev/dodoc-parsedown.git#master",
     "exif-reader": "^1.0.2",
     "express": "^4.16.4",
+    "ffmpeg-concat": "git+https://github.com/louis-ev/ffmpeg-concat.git#master",
     "ffmpeg-static": "^2.4.0",
     "ffprobe-static": "^3.0.0",
     "fluent-ffmpeg": "^2.1.2",
