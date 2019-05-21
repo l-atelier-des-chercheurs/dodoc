@@ -697,11 +697,16 @@ module.exports = (function() {
         height: 720
       };
 
+      // tasks.push(new Promise((resolve, reject) => {
+      //   setTimeout(() => {
+      //     return reject(err);
+      //   }, 1500);
+      // });
+
       video_files.map(vm => {
         let myPromise = new Promise((resolve, reject) => {
           _prepareVideosForMontageAndWeb({
-            video_full_path: vm.full_path,
-            duration: vm.duration,
+            vm,
             cachePath,
             resolution,
             socket
@@ -994,8 +999,7 @@ module.exports = (function() {
   }
 
   function _prepareVideosForMontageAndWeb({
-    video_full_path,
-    duration,
+    vm,
     cachePath,
     resolution,
     socket
@@ -1003,53 +1007,57 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction('EXPORTER — _prepareVideosForMontageAndWeb');
 
-      var ffmpeg_task = new ffmpeg();
-
-      const temp_video_name =
-        (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 10) +
-        '.ts';
+      const temp_video_name = vm.media_filename + '.ts';
       const temp_video_path = path.join(cachePath, temp_video_name);
 
-      if (duration) {
-        dev.logverbose('Setting output to duration: ' + duration);
-        ffmpeg_task.duration(duration);
-      }
+      fs.access(temp_video_path, fs.F_OK, function(err) {
+        if (err) {
+          var ffmpeg_task = new ffmpeg();
 
-      ffmpeg_task
-        .input(video_full_path)
-        .fps(30)
-        .addOptions(['-af apad'])
-        .withVideoCodec('libx264')
-        .withVideoBitrate('6000k')
-        .withAudioCodec('aac')
-        .withAudioBitrate('128k')
-        .size(`${resolution.width}x${resolution.height}`)
-        .autopad()
-        .videoFilter(['setsar=1'])
-        .addOptions(['-shortest', '-bsf:v h264_mp4toannexb'])
-        .toFormat('mpegts')
-        .output(temp_video_path)
-        .on('start', function(commandLine) {
-          dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
-        })
-        .on('progress', progress => {
-          require('./sockets').notify({
-            socket,
-            localized_string: `creating_video`,
-            not_localized_string:
-              Number.parseFloat(progress.percent).toFixed(1) + '%'
-          });
-        })
-        .on('end', () => {
+          if (vm.duration) {
+            dev.logverbose('Setting output to duration: ' + vm.duration);
+            ffmpeg_task.duration(vm.duration);
+          }
+
+          ffmpeg_task
+            .input(vm.full_path)
+            .fps(30)
+            .addOptions(['-af apad'])
+            .withVideoCodec('libx264')
+            .withVideoBitrate('6000k')
+            .withAudioCodec('aac')
+            .withAudioBitrate('128k')
+            .size(`${resolution.width}x${resolution.height}`)
+            .autopad()
+            .videoFilter(['setsar=1'])
+            .addOptions(['-shortest', '-bsf:v h264_mp4toannexb'])
+            .toFormat('mpegts')
+            .output(temp_video_path)
+            .on('start', function(commandLine) {
+              dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+            })
+            .on('progress', progress => {
+              require('./sockets').notify({
+                socket,
+                localized_string: `creating_video`,
+                not_localized_string:
+                  Number.parseFloat(progress.percent).toFixed(1) + '%'
+              });
+            })
+            .on('end', () => {
+              return resolve(temp_video_path);
+            })
+            .on('error', function(err, stdout, stderr) {
+              dev.error('An error happened: ' + err.message);
+              dev.error('ffmpeg standard output:\n' + stdout);
+              dev.error('ffmpeg standard error:\n' + stderr);
+              return reject(`couldn't create a stopmotion animation`);
+            })
+            .run();
+        } else {
           return resolve(temp_video_path);
-        })
-        .on('error', function(err, stdout, stderr) {
-          dev.error('An error happened: ' + err.message);
-          dev.error('ffmpeg standard output:\n' + stdout);
-          dev.error('ffmpeg standard error:\n' + stderr);
-          return reject(`couldn't create a stopmotion animation`);
-        })
-        .run();
+        }
+      });
     });
   }
 })();
