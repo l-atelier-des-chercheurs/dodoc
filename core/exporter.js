@@ -2,7 +2,6 @@ const path = require('path'),
   ffmpegstatic = require('ffmpeg-static'),
   ffprobestatic = require('ffprobe-static'),
   ffmpeg = require('fluent-ffmpeg'),
-  concat = require('ffmpeg-concat'),
   fs = require('fs-extra'),
   pad = require('pad-left');
 
