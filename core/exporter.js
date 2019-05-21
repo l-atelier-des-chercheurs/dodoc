@@ -1020,14 +1020,17 @@ module.exports = (function() {
 
             // check if has audio track or not
             if (
+              !err &&
+              metadata &&
               metadata.streams.filter(s => s.codec_type === 'audio').length ===
-              0
+                0
             ) {
               ffmpeg_cmd.input('anullsrc').inputFormat('lavfi');
             }
 
             ffmpeg_cmd
               .input(vm.full_path)
+              .native()
               .fps(30)
               .addOptions(['-af apad'])
               .withVideoCodec('libx264')
