@@ -296,7 +296,6 @@ export default {
       }
     },
     media_created(m) {
-      debugger;
     },
     openMediaModal(metaFileName) {
       if (this.$root.state.dev_mode === 'debug') {

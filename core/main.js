@@ -54,6 +54,7 @@ module.exports = function({ router }) {
       }
 
       global.tempStorage = getPath.getCacheFolder();
+      global.ffmpeg_processes = [];
 
       if (
         global.settings.hasOwnProperty('cache_content') &&

@@ -25,6 +25,7 @@ module.exports = (function() {
           // On macOS it is common for applications and their menu bar
           // to stay active until the user quits explicitly with Cmd + Q
           // if (process.platform !== 'darwin') {
+          global.ffmpeg_processes.map(f => f.kill());
           app.quit();
           // }
         });
@@ -140,6 +141,7 @@ module.exports = (function() {
             label: 'Quitter',
             accelerator: 'Command+Q',
             click: function() {
+              global.ffmpeg_processes.map(f => f.kill());
               app.quit();
             }
           }
