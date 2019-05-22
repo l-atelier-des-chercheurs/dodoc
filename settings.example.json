@@ -6,6 +6,6 @@
   "api": {
     "enabled": false,
     "allow_all_domains": false,
-    "domains_whitelist": ["thisdomainecanfetchdodoc.com"]
+    "domains_whitelist": ["https://thisdomaincanfetchdodoc.com"]
   }
 }
