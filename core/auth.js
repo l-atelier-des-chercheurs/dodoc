@@ -4,7 +4,7 @@ const dev = require('./dev-log'),
   file = require('./file');
 
 module.exports = (function() {
-  // This var stores all session ID and the folder they are authorized to edit
+  // This var stores all session ID and the folder(s) they are authorized to edit
 
   const API = {
     setAuthenticate: folder_passwords => setAuthenticate(folder_passwords),
@@ -25,6 +25,8 @@ module.exports = (function() {
           4
         )}`
       );
+
+      // todo : if session_password, a user has to auth before getting any info
 
       if (
         folder_passwords === undefined ||
