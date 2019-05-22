@@ -101,6 +101,7 @@
       <template v-if="!show_medias_instead_of_projects">
         <transition-group
           class="m_projects--list"
+          tag="div"
           name="list-complete"
         >
           <Project
