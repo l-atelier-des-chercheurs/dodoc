@@ -13,7 +13,9 @@ module.exports = (function() {
     filterFolders: (socket, type, foldersData) =>
       filterFolders(socket, type, foldersData),
     filterMedias: (socket, type, folders_and_medias) =>
-      filterMedias(socket, type, folders_and_medias)
+      filterMedias(socket, type, folders_and_medias),
+    removeNonPublicMediasFromAllFolders: folders_and_medias =>
+      removeNonPublicMediasFromAllFolders(folders_and_medias)
   };
 
   function setAuthenticate(folder_passwords) {
@@ -74,7 +76,12 @@ module.exports = (function() {
                     dev.logverbose(`Password fit for ${slugFolderName}.`);
                     allowed_slugFolderNames.push(slugFolderName);
                   } else {
-                    dev.logverbose(`Password is wrong for ${slugFolderName}.`);
+                    dev.error(`Password is wrong for ${slugFolderName}.`);
+                    dev.error(
+                      `Submitted: ${
+                        foldertype_passwords[slugFolderName]
+                      }\nShould be: ${foldersData[slugFolderName].password}`
+                    );
                   }
                 }
               }
@@ -164,25 +171,29 @@ module.exports = (function() {
       return folders_and_medias;
     } else {
       // check for each media if hasownproperty 'public' and if public is set to true
-      let filtered_folders_and_medias = JSON.parse(
-        JSON.stringify(folders_and_medias)
-      );
-      Object.keys(filtered_folders_and_medias).map(slugFolderName => {
-        const folders_data = filtered_folders_and_medias[slugFolderName];
-        if (folders_data.hasOwnProperty('medias')) {
-          Object.keys(folders_data.medias).map(slugMediaName => {
-            if (
-              !folders_data.medias[slugMediaName].hasOwnProperty('public') ||
-              folders_data.medias[slugMediaName].public === false
-            ) {
-              // if no public prop or public prop === false, remove from list
-              delete folders_data.medias[slugMediaName];
-            }
-          });
-        }
-      });
-      return filtered_folders_and_medias;
+      return removeNonPublicMediasFromAllFolders(folders_and_medias);
     }
+  }
+
+  function removeNonPublicMediasFromAllFolders(folders_and_medias) {
+    let filtered_folders_and_medias = JSON.parse(
+      JSON.stringify(folders_and_medias)
+    );
+    Object.keys(filtered_folders_and_medias).map(slugFolderName => {
+      const folders_data = filtered_folders_and_medias[slugFolderName];
+      if (folders_data.hasOwnProperty('medias')) {
+        Object.keys(folders_data.medias).map(slugMediaName => {
+          if (
+            !folders_data.medias[slugMediaName].hasOwnProperty('public') ||
+            folders_data.medias[slugMediaName].public === false
+          ) {
+            // if no public prop or public prop === false, remove from list
+            delete folders_data.medias[slugMediaName];
+          }
+        });
+      }
+    });
+    return JSON.parse(JSON.stringify(filtered_folders_and_medias));
   }
 
   return API;

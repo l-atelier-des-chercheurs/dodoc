@@ -1,6 +1,7 @@
 const cors = require('cors');
 
-const file = require('./file');
+const file = require('./file'),
+  auth = require('./auth');
 
 module.exports = (function() {
   const API = {
@@ -98,7 +99,7 @@ module.exports = (function() {
     let slugFolderName = req.params.slug;
 
     const hrstart = process.hrtime();
-    _getContent({ type, slugFolderName })
+    _getContent({ type, slugFolderName, req })
       .then(d => {
         dev.log('Returned api request successfully');
         let hrend = process.hrtime(hrstart);
@@ -109,11 +110,11 @@ module.exports = (function() {
       })
       .catch(err => {
         dev.error('Failed to get expected content');
-        res.status(404).send('Error parsing request: ' + err);
+        res.status(500).send('Error parsing request: ' + err);
       });
   }
 
-  function _getContent({ type, slugFolderName }) {
+  function _getContent({ type, slugFolderName, req }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
         `REMOTE_API - _getContent for type = ${type}, slugFolderName = ${slugFolderName}`
@@ -125,14 +126,33 @@ module.exports = (function() {
         .getFolder({ type, slugFolderName })
         .then(_foldersData => {
           if (_foldersData === undefined) {
-            res.json(foldersData);
             return reject('No folder found with name ' + slugFolderName);
           }
+
           foldersData = _foldersData;
 
           if (!slugFolderName) {
+            foldersData = _removePasswordFromFoldersMeta(foldersData);
             return resolve(foldersData);
           } else {
+            if (
+              foldersData[slugFolderName].hasOwnProperty('password') &&
+              foldersData[slugFolderName].password !== ''
+            ) {
+              if (
+                !req.headers.hasOwnProperty('project_password') ||
+                req.headers.project_password !==
+                  foldersData[slugFolderName].password
+              ) {
+                dev.error(
+                  'REMOTE_API — _sessionPasswordCheck : wrong password'
+                );
+                return reject('Wrong password sent!');
+              }
+            }
+
+            // only continue if requesting a specific folder
+            // the code isnt exactly the clearest though
             return file.getMediaMetaNames({
               type,
               slugFolderName
@@ -158,12 +178,39 @@ module.exports = (function() {
           }
 
           // TODO : filter with password if folder has password
-          let filtered_folders_and_medias = foldersData;
+          if (
+            foldersData[slugFolderName].hasOwnProperty('password') &&
+            foldersData[slugFolderName].password !== ''
+          ) {
+            if (
+              !req.headers.hasOwnProperty('project_password') ||
+              req.headers.project_password !==
+                foldersData[slugFolderName].password
+            ) {
+              foldersData = auth.removeNonPublicMediasFromAllFolders(
+                foldersData
+              );
+            }
+          }
 
-          return resolve(filtered_folders_and_medias);
+          foldersData = _removePasswordFromFoldersMeta(foldersData);
+
+          return resolve(foldersData);
         })
         .catch(err => reject(err));
     });
+  }
+
+  function _removePasswordFromFoldersMeta(foldersData) {
+    Object.keys(foldersData).map(s => {
+      if (
+        foldersData[s].hasOwnProperty('password') &&
+        foldersData[s].password !== ''
+      ) {
+        foldersData[s].password = 'has_pass';
+      }
+    });
+    return foldersData;
   }
 
   return API;
