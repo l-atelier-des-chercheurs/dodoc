@@ -72,7 +72,7 @@
               class="margin-bottom-small input-group"
             >
               <input type="password" ref="passwordField" @keydown.enter.prevent="submitPassword" autofocus placeholder="…">
-              <button type="button" class="button bg-bleuvert" @click="submitPassword">Valider</button>
+              <button type="button" class="button bg-bleuvert button-thin" @click="submitPassword">Valider</button>
             </div>
           </div>
 
