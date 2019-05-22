@@ -484,6 +484,10 @@ let vm = new Vue({
             uniqueKeywords.push(k.title);
         });
       });
+      uniqueKeywords = uniqueKeywords.sort(function(a, b) {
+        return a.toLowerCase().localeCompare(b.toLowerCase());
+      });
+
       return uniqueKeywords.map(kw => {
         return {
           text: kw,
