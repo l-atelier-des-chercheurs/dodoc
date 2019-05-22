@@ -189,7 +189,7 @@ module.exports = (function() {
             Object.keys(flatObjFoldersData).forEach(slugFolderName => {
               cache.put(
                 { type, slugFolderName },
-                flatObjFoldersData[slugFolderName]
+                JSON.parse(JSON.stringify(flatObjFoldersData[slugFolderName]))
               );
             });
 
