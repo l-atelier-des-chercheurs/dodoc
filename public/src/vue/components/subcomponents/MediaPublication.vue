@@ -58,7 +58,7 @@
       <PrismEditor v-model="custom_css" @change="setCSSForMedia" language="css" />
     </div>
 
-    <transition name="fade_fast" :duration="150">
+    <!-- <transition name="fade_fast" :duration="150"> -->
       <div 
         v-if="(is_selected || is_hovered || is_touch) && !preview_mode" 
         class="controlFrame"
@@ -100,7 +100,7 @@
 
         </div> -->
       </div>
-    </transition>
+    <!-- </transition> -->
 
     <transition name="fade_fast" :duration="150">
       <div 

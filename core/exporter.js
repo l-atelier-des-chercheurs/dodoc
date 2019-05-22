@@ -2,7 +2,6 @@ const path = require('path'),
   ffmpegstatic = require('ffmpeg-static'),
   ffprobestatic = require('ffprobe-static'),
   ffmpeg = require('fluent-ffmpeg'),
-  concat = require('ffmpeg-concat'),
   fs = require('fs-extra'),
   pad = require('pad-left');
 
@@ -431,7 +430,7 @@ module.exports = (function() {
                   dev.logverbose(
                     `duration : ${numberOfImagesToProcess / framerate}`
                   );
-                  var proc = new ffmpeg()
+                  const ffmpeg_cmd = new ffmpeg()
                     .input(path.join(imagesCachePath, 'img-%04d.jpeg'))
                     .inputFPS(framerate)
                     .withVideoCodec('libx264')
@@ -468,6 +467,7 @@ module.exports = (function() {
                       return reject(`couldn't create a stopmotion animation`);
                     })
                     .save(videoCachePath);
+                  global.ffmpeg_processes.push(ffmpeg_cmd);
                 })
                 .catch(err => {
                   dev.error(`Error : ` + err);
@@ -700,11 +700,16 @@ module.exports = (function() {
         height: 720
       };
 
+      // tasks.push(new Promise((resolve, reject) => {
+      //   setTimeout(() => {
+      //     return reject(err);
+      //   }, 1500);
+      // });
+
       video_files.map(vm => {
         let myPromise = new Promise((resolve, reject) => {
           _prepareVideosForMontageAndWeb({
-            video_full_path: vm.full_path,
-            duration: vm.duration,
+            vm,
             cachePath,
             resolution,
             socket
@@ -735,12 +740,12 @@ module.exports = (function() {
           `EXPORTER — _makeVideoAssemblage : finished preparing videos`
         );
 
-        var ffmpeg_task = new ffmpeg();
+        const ffmpeg_cmd = new ffmpeg();
 
-        temp_videos_array.map(v => ffmpeg_task.addInput(v.full_path));
+        temp_videos_array.map(v => ffmpeg_cmd.addInput(v.full_path));
 
         let time_since_last_report = 0;
-        ffmpeg_task
+        ffmpeg_cmd
           // .complexFilter(['gltransition'])
           .on('start', function(commandLine) {
             dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
@@ -760,13 +765,14 @@ module.exports = (function() {
             return resolve();
           })
           .on('error', function(err, stdout, stderr) {
-            ffmpeg_task = null;
             dev.error('An error happened: ' + err.message);
             dev.error('ffmpeg standard output:\n' + stdout);
             dev.error('ffmpeg standard error:\n' + stderr);
             return reject(`Couldn't convert video : ${err.message}`);
           })
           .mergeToFile(videoPath, cachePath);
+
+        global.ffmpeg_processes.push(ffmpeg_cmd);
 
         // does not work that well with -f concat
         // reconverting with mergeToFile might seem overkill but yields much much better results
@@ -789,10 +795,10 @@ module.exports = (function() {
 
         //   fs.writeFileSync(listFileName, fileNames);
 
-        //   // ffmpeg_task.addInput('concat:' + inputs_to_concat.join('|') + '');
+        //   // ffmpeg_cmd.addInput('concat:' + inputs_to_concat.join('|') + '');
 
         //   let time_since_last_report = 0;
-        //   ffmpeg_task
+        //   ffmpeg_cmd
         //     .input(listFileName)
         //     .inputOptions(['-f concat', '-safe 0'])
         //     .outputOptions('-c copy')
@@ -817,13 +823,14 @@ module.exports = (function() {
         //       return resolve();
         //     })
         //     .on('error', function(err, stdout, stderr) {
-        //       ffmpeg_task = null;
+        //       ffmpeg_cmd = null;
         //       dev.error('An error happened: ' + err.message);
         //       dev.error('ffmpeg standard output:\n' + stdout);
         //       dev.error('ffmpeg standard error:\n' + stderr);
         //       return reject(`Couldn't convert video : ${err.message}`);
         //     })
         //     .save(videoPath);
+        // global.ffmpeg_processes.push(ffmpeg_cmd);
       });
     });
   }
@@ -838,21 +845,21 @@ module.exports = (function() {
       dev.logfunction('EXPORTER — _mixAudioAndVideo');
 
       const videoPath = path.join(cachePath, videoName);
-      var ffmpeg_task = new ffmpeg();
+      let ffmpeg_cmd = new ffmpeg();
 
       let video_files = medias_with_original_filepath.filter(
         m => m.type === 'video'
       );
       if (video_files.length === 0) return reject(`No video file`);
       const video_file_path = video_files[0].full_path;
-      ffmpeg_task.addInput(video_file_path);
+      ffmpeg_cmd.addInput(video_file_path);
 
       let audio_files = medias_with_original_filepath.filter(
         m => m.type === 'audio'
       );
       if (audio_files.length === 0) return reject(`No audio file`);
       const audio_file_path = audio_files[0].full_path;
-      ffmpeg_task.addInput(audio_file_path);
+      ffmpeg_cmd.addInput(audio_file_path);
 
       function findLongestMediaDuration(ms) {
         if (
@@ -874,19 +881,18 @@ module.exports = (function() {
       );
       if (duration) {
         dev.logverbose('Setting output to duration: ' + duration);
-        ffmpeg_task.duration(duration);
+        ffmpeg_cmd.duration(duration);
       }
 
       let time_since_last_report = 0;
 
-      ffmpeg_task
-        .addOptions(['-c:v libx264', '-c:a aac'])
-        .addOptions(['-map 0:v:0', '-map 1:a:0'])
-        .addOptions(['-af apad'])
+      ffmpeg_cmd
+        // .withVideoCodec('copy')
         .withVideoCodec('libx264')
         .withVideoBitrate('4000k')
         .withAudioCodec('aac')
         .withAudioBitrate('128k')
+        .addOptions(['-map 0:v:0', '-map 1:a:0'])
         .toFormat('mp4')
         .on('start', function(commandLine) {
           dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
@@ -904,13 +910,13 @@ module.exports = (function() {
           return resolve();
         })
         .on('error', function(err, stdout, stderr) {
-          ffmpeg_task = null;
           dev.error('An error happened: ' + err.message);
           dev.error('ffmpeg standard output:\n' + stdout);
           dev.error('ffmpeg standard error:\n' + stderr);
           return reject(`Couldn't convert a video : ${err.message}`);
         })
         .save(videoPath);
+      global.ffmpeg_processes.push(ffmpeg_cmd);
     });
   }
 
@@ -924,36 +930,27 @@ module.exports = (function() {
       dev.logfunction('EXPORTER — _mixAudioAndImage');
 
       const videoPath = path.join(cachePath, videoName);
-      var ffmpeg_task = new ffmpeg();
+      const ffmpeg_cmd = new ffmpeg();
 
       let image_files = medias_with_original_filepath.filter(
         m => m.type === 'image'
       );
       if (image_files.length === 0) return reject(`No image file`);
       const image_file_path = image_files[0].full_path;
-      ffmpeg_task.addInput(image_file_path).loop();
+      ffmpeg_cmd.addInput(image_file_path).loop();
 
       let audio_files = medias_with_original_filepath.filter(
         m => m.type === 'audio'
       );
       if (audio_files.length === 0) return reject(`No audio file`);
       const audio_file_path = audio_files[0].full_path;
-      ffmpeg_task.addInput(audio_file_path);
+      ffmpeg_cmd.addInput(audio_file_path);
 
       let time_since_last_report = 0;
 
-      let video_height = 720;
-      let resolution = {
-        width: 0,
-        height: video_height
-      };
-
-      let ratio = image_files[0].ratio;
-      if (!ratio) {
-        ratio = 0.75;
-      }
-      const new_width = 2 * Math.round(video_height / ratio / 2);
-      resolution.width = new_width;
+      let resolution = _calculateResolutionAccordingToRatio(
+        image_files[0].ratio
+      );
 
       dev.logverbose(
         `About to create a speaking picture with resolution = ${JSON.stringify(
@@ -961,14 +958,19 @@ module.exports = (function() {
         )}`
       );
 
-      ffmpeg_task
+      ffmpeg_cmd
         .withVideoCodec('libx264')
         .withVideoBitrate('4000k')
         .addOptions(['-shortest'])
         .withAudioCodec('aac')
         .withAudioBitrate('128k')
-        .autopad()
+        .videoFilters(
+          `scale=w=${resolution.width}:h=${
+            resolution.height
+          }:force_original_aspect_ratio=increase`
+        )
         .outputFPS(30)
+        .size(`${resolution.width}x${resolution.height}`)
         .toFormat('mp4')
         .on('start', function(commandLine) {
           dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
@@ -986,19 +988,18 @@ module.exports = (function() {
           return resolve();
         })
         .on('error', function(err, stdout, stderr) {
-          ffmpeg_task = null;
           dev.error('An error happened: ' + err.message);
           dev.error('ffmpeg standard output:\n' + stdout);
           dev.error('ffmpeg standard error:\n' + stderr);
           return reject(`Couldn't convert a video : ${err.message}`);
         })
         .save(videoPath);
+      global.ffmpeg_processes.push(ffmpeg_cmd);
     });
   }
 
   function _prepareVideosForMontageAndWeb({
-    video_full_path,
-    duration,
+    vm,
     cachePath,
     resolution,
     socket
@@ -1006,53 +1007,88 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction('EXPORTER — _prepareVideosForMontageAndWeb');
 
-      var ffmpeg_task = new ffmpeg();
-
-      const temp_video_name =
-        (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 10) +
-        '.ts';
+      const temp_video_name = vm.media_filename + '.ts';
       const temp_video_path = path.join(cachePath, temp_video_name);
 
-      if (duration) {
-        dev.logverbose('Setting output to duration: ' + duration);
-        ffmpeg_task.duration(duration);
-      }
+      fs.access(temp_video_path, fs.F_OK, function(err) {
+        if (err) {
+          ffmpeg.ffprobe(vm.full_path, function(err, metadata) {
+            const ffmpeg_cmd = new ffmpeg();
 
-      ffmpeg_task
-        .input(video_full_path)
-        .fps(30)
-        .addOptions(['-af apad'])
-        .withVideoCodec('libx264')
-        .withVideoBitrate('6000k')
-        .withAudioCodec('aac')
-        .withAudioBitrate('128k')
-        .size(`${resolution.width}x${resolution.height}`)
-        .autopad()
-        .videoFilter(['setsar=1'])
-        .addOptions(['-shortest', '-bsf:v h264_mp4toannexb'])
-        .toFormat('mpegts')
-        .output(temp_video_path)
-        .on('start', function(commandLine) {
-          dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
-        })
-        .on('progress', progress => {
-          require('./sockets').notify({
-            socket,
-            localized_string: `creating_video`,
-            not_localized_string:
-              Number.parseFloat(progress.percent).toFixed(1) + '%'
+            if (vm.duration) {
+              dev.logverbose('Setting output to duration: ' + vm.duration);
+              ffmpeg_cmd.duration(vm.duration);
+            }
+
+            // check if has audio track or not
+            if (
+              !err &&
+              metadata &&
+              metadata.streams.filter(s => s.codec_type === 'audio').length ===
+                0
+            ) {
+              ffmpeg_cmd.input('anullsrc').inputFormat('lavfi');
+            }
+
+            ffmpeg_cmd
+              .input(vm.full_path)
+              .native()
+              .fps(30)
+              .addOptions(['-af apad'])
+              .withVideoCodec('libx264')
+              .withVideoBitrate('6000k')
+              .withAudioCodec('aac')
+              .withAudioBitrate('128k')
+              .size(`${resolution.width}x${resolution.height}`)
+              .autopad()
+              .videoFilter(['setsar=1'])
+              .addOptions(['-shortest', '-bsf:v h264_mp4toannexb'])
+              .toFormat('mpegts')
+              .output(temp_video_path)
+              .on('start', function(commandLine) {
+                dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+              })
+              .on('progress', progress => {
+                require('./sockets').notify({
+                  socket,
+                  localized_string: `creating_video`,
+                  not_localized_string:
+                    Number.parseFloat(progress.percent).toFixed(1) + '%'
+                });
+              })
+              .on('end', () => {
+                return resolve(temp_video_path);
+              })
+              .on('error', function(err, stdout, stderr) {
+                dev.error('An error happened: ' + err.message);
+                dev.error('ffmpeg standard output:\n' + stdout);
+                dev.error('ffmpeg standard error:\n' + stderr);
+                return reject(`couldn't create a stopmotion animation`);
+              })
+              .run();
+            global.ffmpeg_processes.push(ffmpeg_cmd);
           });
-        })
-        .on('end', () => {
+        } else {
           return resolve(temp_video_path);
-        })
-        .on('error', function(err, stdout, stderr) {
-          dev.error('An error happened: ' + err.message);
-          dev.error('ffmpeg standard output:\n' + stdout);
-          dev.error('ffmpeg standard error:\n' + stderr);
-          return reject(`couldn't create a stopmotion animation`);
-        })
-        .run();
+        }
+      });
     });
+  }
+
+  function _calculateResolutionAccordingToRatio(ratio) {
+    let default_video_height = 720;
+    let resolution = {
+      width: 0,
+      height: default_video_height
+    };
+
+    if (!ratio) {
+      ratio = 0.75;
+    }
+
+    const new_width = 2 * Math.round(default_video_height / ratio / 2);
+    resolution.width = new_width;
+
+    return resolution;
   }
 })();

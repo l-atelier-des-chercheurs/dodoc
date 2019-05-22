@@ -161,26 +161,32 @@
                 v-html="time_before_next_picture" 
               />
  
-              <label 
-                v-if="selected_mode === 'stopmotion' && timelapse_interval"
+              <div 
+                v-if="selected_mode === 'stopmotion' && timelapse_mode"
                 :key="'timelapse_interval'"  
-                v-html="$t('interval_between_pictures:') + ' ' + timelapse_interval + ' ' + $t('seconds')"
-              />
-              <label 
-                v-if="selected_mode === 'stopmotion' && timelapse_interval"
+                class="recording_timer--timelapse"
+              >
+                <div>
+                  <span>{{ $t('interval_between_pictures') }}</span>
+                  <input type="number" v-model.number="timelapse_interval">
+                  <span>{{ $t('seconds') }}</span>
+                </div>
+              </div>
+              <!-- <label 
+                v-if="selected_mode === 'stopmotion' && timelapse_mode"
                 :key="'disable_interval'"  
               >
                 <button 
                   type="button" 
                   class="button-nostyle text-uc padding-none margin-none c-blanc bg-rouge button-inline"
-                  @click="timelapse_interval = false"
+                  @click="timelapse_mode = false"
                 >
                   <svg class="inline-svg margin-right-verysmall" viewBox="0 0 20 20">
                     <path stroke="" fill="white" d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
                   </svg>                    
                   {{ $t('disable') }}
                 </button>                
-              </label>
+              </label> -->
             </transition-group>
 
             <video 
@@ -354,64 +360,25 @@
 
               <button type="button"
                 class="m_panel--buttons--row--captureButton--advancedOptions"
+                :class="{ 'is--active' : timelapse_mode }"
                 v-if="selected_mode === 'stopmotion'"
+                :title="$t('timelapse')"
                 v-tippy="{ 
-                  html: '#template-3', 
-                  reactive : true,
-                  interactive : true, 
-                  theme: 'light', 
-                  delay: [600, 0],
-                  placement : 'bottom-start'
+                  placement : 'top',
+                  delay: [600, 0]
                 }"
+                @click="timelapse_mode = !timelapse_mode"
               >
-                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="16.8px"
-                  height="16.8px" viewBox="0 0 16.8 16.8" style="enable-background:new 0 0 16.8 16.8;" xml:space="preserve">
-                <circle fill="currentColor" cx="8.4" cy="8.4" r="8.4"/>
-                <path stroke="white" fill="white" d="M13,8.4c0,0.2-0.2,0.4-0.4,0.4H8.8v3.8c0,0.2-0.2,0.4-0.4,0.4S8,12.8,8,12.6V8.8H4.2C4,8.8,3.8,8.6,3.8,8.4
-                  S4,8,4.2,8H8V4.2C8,4,8.2,3.8,8.4,3.8S8.8,4,8.8,4.2V8h3.8C12.8,8,13,8.2,13,8.4"/>
+                <svg version="1.1" class="inline-svg margin-right-verysmall" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="81px"
+                  height="81px" viewBox="0 0 81 81" style="enable-background:new 0 0 81 81;" xml:space="preserve">
+                <path class="st1" d="M69.6,20.8c-0.9,0.6-1.7,1.1-2.6,1.7c-6-8.8-15.9-14-26.5-14c-17.6,0-32,14.4-32,32s14.4,32,32,32
+                  c3.1,0,6.2-0.4,9.1-1.3l-1.7-5.8c-2.4,0.7-4.9,1.1-7.4,1.1c-14.3,0-26-11.7-26-26s11.7-26,26-26c8.6,0,16.6,4.2,21.5,11.4
+                  c-0.8,0.5-1.6,1.1-2.4,1.6c-0.7,0.4-0.9,1.1-0.8,1.7c0,0.7,0.4,1.4,1.2,1.6c0.2,0.1,0.3,0.1,0.5,0.1c2.7,0.5,5.3,1.1,8,1.6
+                  c1,0.2,2-0.4,2.3-1.4c0.6-2.8,1.1-5.5,1.7-8.3C72.8,21.3,71,19.9,69.6,20.8z"/>
+                <path class="st1" d="M23,49.4c-1.3,0-2.4-0.8-2.9-2.1c-0.5-1.6,0.4-3.3,1.9-3.8L39,38.3V27.2c0-1.7,1.3-3,3-3s3,1.3,3,3v13.3
+                  c0,1.3-0.8,2.5-2.1,2.9l-19,5.9C23.6,49.4,23.3,49.4,23,49.4z"/>
                 </svg>
-
               </button>
-
-              <div 
-                id="template-3"
-                v-if="selected_mode === 'stopmotion'"
-              >
-                <div class="">
-                  Déclenchement automatique toutes les 
-                  <!-- <select v-model="timelapse_interval" class="inline">
-                    <option value="false" v-html="'-'"/>
-                    <option value="2" v-html="2" />
-                    <option value="5" v-html="5" />
-                    <option value="10" v-html="10" />
-                    <option value="other" v-html="$t('other')" />
-                  </select> -->
-                  <div class="button-inline">
-                    <button type="button" 
-                      class="button-thin padding-verysmall margin-sides-verysmall"
-                      @click="timelapse_interval = 2" 
-                      :class="{ 'is--active' : timelapse_interval === 2 }"
-                      v-html="2"
-                    />
-                    <button type="button" 
-                      class="button-thin padding-verysmall margin-sides-verysmall"
-                      @click="timelapse_interval = 5" 
-                      :class="{ 'is--active' : timelapse_interval === 5 }"
-                      v-html="5"
-                    />
-                    <button type="button" 
-                      class="button-thin padding-verysmall margin-sides-verysmall"
-                      @click="timelapse_interval = 10" 
-                      :class="{ 'is--active' : timelapse_interval === 10 }"
-                      v-html="10"
-                    />
-                    <input 
-                      class="padding-sides-verysmall margin-sides-verysmall"
-                      style="display:inline; width: 50px; height: 2em;" type="number" min="1" max="600" v-model.number="timelapse_interval">
-                    &nbsp;secondes
-                  </div>
-                </div>
-              </div>
               
             </div>
 
@@ -561,7 +528,9 @@ export default {
 
       current_stopmotion: false,
       is_validating_stopmotion_video: false,
-      timelapse_interval: false,
+
+      timelapse_mode: false,
+      timelapse_interval: 2,
       timelapse_event: false,
 
       plyr_options: {
@@ -1095,7 +1064,7 @@ export default {
         this.capture_button_pressed = false;
       }, 400);
 
-      if(this.selected_mode === 'stopmotion' && this.timelapse_interval) {
+      if(this.selected_mode === 'stopmotion' && this.timelapse_mode) {
         if(!this.is_recording) {
           this.is_recording = true;
           this.timelapse_event = window.setInterval(() => {

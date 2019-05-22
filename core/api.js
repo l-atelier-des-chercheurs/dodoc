@@ -267,13 +267,14 @@ module.exports = (function() {
           if (err) reject(err);
 
           let pathToMedia = path.join(getFolderPath(slugFolderName), mediaName);
-          ffmpeg(pathToTempMedia)
+          const ffmpeg_cmd = new ffmpeg(pathToTempMedia)
             .audioCodec('aac')
             .save(pathToMedia)
             .on('end', function() {
               console.log('Processing finished !');
               resolve();
             });
+          global.ffmpeg_processes.push(ffmpeg_cmd);
         });
       });
     });
@@ -341,7 +342,7 @@ module.exports = (function() {
         _copyToTempAndRenameImages({ slugStopmotionName, images })
           .then(tempFolder => {
             // ask ffmpeg to make a video from the cache images
-            var proc = new ffmpeg()
+            const ffmpeg_cmd = new ffmpeg()
               .input(path.join(tempFolder, 'img-%04d.jpeg'))
               .inputFPS(frameRate)
               .withVideoCodec('libx264')
@@ -376,6 +377,7 @@ module.exports = (function() {
                 reject(`couldn't create a stopmotion animation`);
               })
               .save(pathToMedia);
+            global.ffmpeg_processes.push(ffmpeg_cmd);
           })
           .catch(err => reject(err));
       });

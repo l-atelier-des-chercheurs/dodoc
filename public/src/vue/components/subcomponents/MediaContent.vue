@@ -198,7 +198,6 @@ export default {
     linkToImageThumb: function() {
       if(
         !this.media.hasOwnProperty('thumbs')
-        || this.context === 'full'      
       ) {
         return this.mediaURL;
       }

@@ -891,6 +891,7 @@ small {
         -webkit-overflow-scrolling: touch;
         .custom_scrollbar(8px, 5px, 6px);
         .padding-sides-small;
+        grid-gap: @t-skipline;  
 
         @supports (display: grid) {          
           grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
@@ -980,7 +981,7 @@ small {
     // grid-template-rows: max-content;
     grid-auto-rows: max-content;
     // grid-template-rows: auto;
-    grid-gap: @t-skipline;  
+    grid-gap: @t-skipline /2;  
     -webkit-box-align: start;
     -ms-flex-align: start;
     align-items: start;
@@ -1167,7 +1168,6 @@ small {
       .padding-sides-small;   
       grid-gap: @t-skipline/2;  
     }
-
 
     > * {
       // position: relative;
@@ -2183,6 +2183,43 @@ small {
           border-radius: 4px;
           pointer-events: auto;
         }
+
+        .recording_timer--timelapse {
+          .label;
+          max-width: 450px;
+          margin: @t-skipline/2 auto;
+          // .padding-verysmall;
+          pointer-events: auto;
+          // .font-small;
+
+          > * {
+            .bg-rouge;
+            .c-blanc;
+            .padding-sides-verysmall;
+            border-radius: 4px;
+            width: auto;
+          }
+
+          input {
+            display: inline-block;
+            min-width: 2em;
+            max-width: 3em;
+            height: 1.2em;
+            margin: 2px;
+            padding: 0 2px;
+            width: auto;
+            width: auto;
+            text-align: center;
+            .c-blanc;
+
+            background-color: @c-rouge_clair;
+            border-bottom: 0px;
+
+            &:active, &:focus {
+              border-bottom-color: @c-rouge_fonce;
+            }
+          }
+        }
       }
 
       .m_panel--previewCard--live--options {
@@ -2433,10 +2470,10 @@ small {
           }
         }
         .m_panel--buttons--row--captureButton--advancedOptions {
-          // .bg-orange;
-          color: @c-orange;
-          width:  1.3em;
-          height: 1.3em;
+          color: #fff;
+          .bg-orange;
+          width:  24px;
+          height: 24px;
           display: block;
           min-height: 0;
           line-height: 0;
@@ -2444,10 +2481,16 @@ small {
           text-align: center;
           font-weight: bold;
           padding: 0;
+          // .padding-verysmall;
 
           svg {
             width: 100%;
             height: 100%;
+          }
+
+          &.is--active {
+            .bg-rouge;
+            .c-orange;
           }
 
         }
