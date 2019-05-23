@@ -110,7 +110,7 @@ module.exports = (function() {
         res.json(d);
       })
       .catch(err => {
-        dev.error('Failed to get expected content');
+        dev.error('Failed to get expected content: ' + err);
         res.status(500).send('Error parsing request: ' + err);
       });
   }
@@ -141,15 +141,15 @@ module.exports = (function() {
               foldersData[slugFolderName].password !== ''
             ) {
               if (
-                !req.headers.hasOwnProperty('project_password') ||
-                req.headers.project_password !==
+                !req.headers.hasOwnProperty('project-password') ||
+                req.headers['project-password'] !==
                   foldersData[slugFolderName].password
               ) {
                 dev.error(
                   `REMOTE_API — _getContent : wrong password for folder ${slugFolderName}`
                 );
                 dev.error(
-                  `Submitted: ${req.headers.project_password}\nShould be: ${
+                  `Submitted: ${req.headers['project-password']}\nShould be: ${
                     foldersData[slugFolderName].password
                   }`
                 );
@@ -183,21 +183,22 @@ module.exports = (function() {
               folders_and_medias[slugFolderName].medias;
           }
 
-          // TODO : filter with password if folder has password
-          if (
-            foldersData[slugFolderName].hasOwnProperty('password') &&
-            foldersData[slugFolderName].password !== ''
-          ) {
-            if (
-              !req.headers.hasOwnProperty('project_password') ||
-              req.headers.project_password !==
-                foldersData[slugFolderName].password
-            ) {
-              foldersData = auth.removeNonPublicMediasFromAllFolders(
-                foldersData
-              );
-            }
-          }
+          // disabled : if passwords don’t match, content is rejected
+          // in the future we’ll return only public medias instead
+          // if (
+          //   foldersData[slugFolderName].hasOwnProperty('password') &&
+          //   foldersData[slugFolderName].password !== ''
+          // ) {
+          //   if (
+          //     !req.headers.hasOwnProperty('project-password') ||
+          //     req.headers['project-password'] !==
+          //       foldersData[slugFolderName].password
+          //   ) {
+          //     foldersData = auth.removeNonPublicMediasFromAllFolders(
+          //       foldersData
+          //     );
+          //   }
+          // }
 
           foldersData = _removePasswordFromFoldersMeta(foldersData);
 
