@@ -145,7 +145,12 @@ module.exports = (function() {
                   foldersData[slugFolderName].password
               ) {
                 dev.error(
-                  'REMOTE_API — _sessionPasswordCheck : wrong password'
+                  `REMOTE_API — _getContent : wrong password for folder ${slugFolderName}`
+                );
+                dev.error(
+                  `Submitted: ${req.headers.project_password}\nShould be: ${
+                    foldersData[slugFolderName].password
+                  }`
                 );
                 return reject('Wrong password sent!');
               }
