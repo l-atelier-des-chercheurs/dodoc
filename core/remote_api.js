@@ -30,6 +30,7 @@ module.exports = (function() {
 
   function _corsCheck(req, callback) {
     dev.logfunction('REMOTE_API — _corsCheck');
+    dev.logverbose(`REMOTE_API — _corsCheck : ${JSON.stringify(req.headers)}`);
     var corsOptions;
     if (global.settings.api.allow_all_domains) {
       dev.logverbose('REMOTE_API — _corsCheck : allowed for all domains');
@@ -73,8 +74,6 @@ module.exports = (function() {
             return a & a;
           }, 0);
         }
-
-        dev.logverbose(`Headers : ${JSON.stringify(req.headers)}`);
 
         const request_password = new Buffer(
           req.headers.session_password,
