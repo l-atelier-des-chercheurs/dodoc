@@ -58,12 +58,13 @@ module.exports = (function() {
 
     if (global.hasOwnProperty('session_password')) {
       if (global.session_password !== '') {
-        if (!req.headers.hasOwnProperty('session_password')) {
+        // note : no underscore in custom headers in nginx by default
+        if (!req.headers.hasOwnProperty('session-password')) {
           dev.error('REMOTE_API — _sessionPasswordCheck : no password sent');
           return res
             .status(500)
             .send(
-              'No password sent while this do•doc uses a session_password, please add it'
+              'No session-password sent while this do•doc uses a session_password, please add it'
             );
         }
 
@@ -76,7 +77,7 @@ module.exports = (function() {
         }
 
         const request_password = new Buffer(
-          req.headers.session_password,
+          req.headers['session-password'],
           'base64'
         ).toString('binary');
 
