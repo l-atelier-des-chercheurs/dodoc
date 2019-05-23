@@ -29,6 +29,7 @@
     "archiver": "^3.0.0",
     "body-parser": "^1.18.3",
     "compression": "^1.7.4",
+    "cors": "^2.8.5",
     "dodoc-parsedown": "git+https://github.com/louis-ev/dodoc-parsedown.git#master",
     "exif-reader": "^1.0.2",
     "express": "^4.16.4",

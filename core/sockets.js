@@ -529,7 +529,7 @@ module.exports = (function() {
         .getFolder({ type, slugFolderName })
         .then(foldersData => {
           if (foldersData === undefined) {
-            return;
+            return reject();
           }
           file
             .getMediaMetaNames({
@@ -560,6 +560,14 @@ module.exports = (function() {
                         metaFileName
                       ].id = id;
                     }
+
+                    if (
+                      foldersData[slugFolderName].hasOwnProperty('password') &&
+                      foldersData[slugFolderName].password !== ''
+                    ) {
+                      foldersData[slugFolderName].password = 'has_pass';
+                    }
+
                     foldersData[slugFolderName].medias =
                       folders_and_medias[slugFolderName].medias;
                   }

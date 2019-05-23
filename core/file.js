@@ -62,6 +62,8 @@ module.exports = (function() {
           }
 
           folders.forEach(slugFolderName => {
+            const thisFolderPath = path.join(mainFolderPath, slugFolderName);
+
             const cached = cache.get({ type, slugFolderName });
             if (cached) {
               dev.logverbose(
@@ -72,82 +74,84 @@ module.exports = (function() {
               } else {
                 allFoldersData.push(cached);
               }
-            }
-
-            const thisFolderPath = path.join(mainFolderPath, slugFolderName);
-            // For each folder, read their meta file
-            allFoldersData.push(
-              new Promise((resolve, reject) => {
-                dev.logverbose(`Finding meta for folder = ${thisFolderPath}`);
-                const metaFolderPath = path.join(
-                  thisFolderPath,
-                  global.settings.folderMetaFilename +
-                    global.settings.metaFileext
-                );
-
-                readMetaFile(metaFolderPath)
-                  .then(meta => {
-                    meta = _sanitizeMetaFromFile({ type, meta });
-                    meta.slugFolderName = slugFolderName;
-
-                    if (
-                      global.settings.structure[type].hasOwnProperty('medias')
-                    ) {
-                      meta.medias = {};
-                    }
-
-                    meta.fullFolderPath = thisFolderPath;
-
-                    resolve({ [slugFolderName]: meta });
-                  })
-                  .catch(err => {
-                    dev.error(
-                      `Couldn’t read folder meta, most probably because it doesn’t exist: ${err}`
-                    );
-                    resolve({});
-                  });
-              })
-            );
-
-            // For each folder, find a preview (if it exists)
-            if (global.settings.structure[type].hasOwnProperty('preview')) {
+            } else {
+              // For each folder, read their meta file
               allFoldersData.push(
                 new Promise((resolve, reject) => {
-                  dev.logverbose(
-                    `Finding preview for folder = ${slugFolderName}`
+                  dev.logverbose(`Finding meta for folder = ${thisFolderPath}`);
+                  const metaFolderPath = path.join(
+                    thisFolderPath,
+                    global.settings.folderMetaFilename +
+                      global.settings.metaFileext
                   );
 
-                  const preview_name =
-                    global.settings.folderPreviewFilename +
-                    global.settings.thumbExt;
-                  const pathToPreview = path.join(thisFolderPath, preview_name);
+                  readMetaFile(metaFolderPath)
+                    .then(meta => {
+                      meta = _sanitizeMetaFromFile({ type, meta });
+                      meta.slugFolderName = slugFolderName;
 
-                  fs.access(pathToPreview, fs.F_OK, err => {
-                    if (err) {
-                      return resolve();
-                    }
+                      if (
+                        global.settings.structure[type].hasOwnProperty('medias')
+                      ) {
+                        meta.medias = {};
+                      }
 
-                    thumbs
-                      .makeMediaThumbs(
-                        slugFolderName,
-                        preview_name,
-                        'image',
-                        type,
-                        'preview'
-                      )
-                      .then(thumbData => {
-                        resolve({
-                          [slugFolderName]: {
-                            preview: thumbData
-                          }
-                        });
-                      })
-                      .catch(err => {
-                        resolve();
-                      });
-                  });
+                      meta.fullFolderPath = thisFolderPath;
+
+                      resolve({ [slugFolderName]: meta });
+                    })
+                    .catch(err => {
+                      dev.error(
+                        `Couldn’t read folder meta, most probably because it doesn’t exist: ${err}`
+                      );
+                      resolve({});
+                    });
                 })
               );
+
+              // For each folder, find a preview (if it exists)
+              if (global.settings.structure[type].hasOwnProperty('preview')) {
+                allFoldersData.push(
+                  new Promise((resolve, reject) => {
+                    dev.logverbose(
+                      `Finding preview for folder = ${slugFolderName}`
+                    );
+
+                    const preview_name =
+                      global.settings.folderPreviewFilename +
+                      global.settings.thumbExt;
+                    const pathToPreview = path.join(
+                      thisFolderPath,
+                      preview_name
+                    );
+
+                    fs.access(pathToPreview, fs.F_OK, err => {
+                      if (err) {
+                        return resolve();
+                      }
+
+                      thumbs
+                        .makeMediaThumbs(
+                          slugFolderName,
+                          preview_name,
+                          'image',
+                          type,
+                          'preview'
+                        )
+                        .then(thumbData => {
+                          resolve({
+                            [slugFolderName]: {
+                              preview: thumbData
+                            }
+                          });
+                        })
+                        .catch(err => {
+                          resolve();
+                        });
+                    });
+                  })
+                );
+              }
             }
           });
           Promise.all(allFoldersData).then(parsedFoldersData => {
@@ -185,7 +189,7 @@ module.exports = (function() {
             Object.keys(flatObjFoldersData).forEach(slugFolderName => {
               cache.put(
                 { type, slugFolderName },
-                flatObjFoldersData[slugFolderName]
+                JSON.parse(JSON.stringify(flatObjFoldersData[slugFolderName]))
               );
             });
 
