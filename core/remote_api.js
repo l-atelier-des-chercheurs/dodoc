@@ -76,15 +76,15 @@ module.exports = (function() {
           }, 0);
         }
 
-        const request_password = new Buffer(
+        const request_session_password = new Buffer(
           req.headers['session-password'],
           'base64'
         ).toString('binary');
 
-        if (hashCode(request_password) !== global.session_password) {
+        if (hashCode(request_session_password) !== global.session_password) {
           dev.error('REMOTE_API — _sessionPasswordCheck : wrong password');
           dev.error(
-            `Submitted: ${hashCode(request_password)}\nShould be: ${
+            `Submitted: ${hashCode(request_session_password)}\nShould be: ${
               global.session_password
             }`
           );
@@ -146,16 +146,20 @@ module.exports = (function() {
               foldersData[slugFolderName].hasOwnProperty('password') &&
               foldersData[slugFolderName].password !== ''
             ) {
+              const request_project_password = new Buffer(
+                req.headers['project-password'],
+                'base64'
+              ).toString('binary');
+
               if (
-                !req.headers.hasOwnProperty('project-password') ||
-                req.headers['project-password'] !==
-                  foldersData[slugFolderName].password
+                request_project_password !==
+                foldersData[slugFolderName].password
               ) {
                 dev.error(
                   `REMOTE_API — _getContent : wrong password for folder ${slugFolderName}`
                 );
                 dev.error(
-                  `Submitted: ${req.headers['project-password']}\nShould be: ${
+                  `Submitted: ${request_project_password}\nShould be: ${
                     foldersData[slugFolderName].password
                   }`
                 );
@@ -197,7 +201,7 @@ module.exports = (function() {
           // ) {
           //   if (
           //     !req.headers.hasOwnProperty('project-password') ||
-          //     req.headers['project-password'] !==
+          //     request_project_password !==
           //       foldersData[slugFolderName].password
           //   ) {
           //     foldersData = auth.removeNonPublicMediasFromAllFolders(
