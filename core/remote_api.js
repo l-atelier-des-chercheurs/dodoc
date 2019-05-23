@@ -83,6 +83,11 @@ module.exports = (function() {
 
         if (hashCode(request_password) !== global.session_password) {
           dev.error('REMOTE_API — _sessionPasswordCheck : wrong password');
+          dev.error(
+            `Submitted: ${hashCode(request_password)}\nShould be: ${
+              global.session_password
+            }`
+          );
           return res.status(500).send('Wrong password sent!');
         }
       }
