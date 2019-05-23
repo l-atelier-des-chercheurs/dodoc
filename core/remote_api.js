@@ -74,6 +74,8 @@ module.exports = (function() {
           }, 0);
         }
 
+        dev.logverbose(`Headers : ${JSON.stringify(req.headers)}`);
+
         const request_password = new Buffer(
           req.headers.session_password,
           'base64'
