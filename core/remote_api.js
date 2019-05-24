@@ -142,31 +142,40 @@ module.exports = (function() {
             foldersData = _removePasswordFromFoldersMeta(foldersData);
             return resolve(foldersData);
           } else {
+            if (!foldersData.hasOwnProperty(slugFolderName)) {
+              dev.error(
+                `REMOTE_API — _getContent : no password submitted for protected folder ${slugFolderName}`
+              );
+              return reject('No folder with this slug exists!');
+            }
+
             if (
               foldersData[slugFolderName].hasOwnProperty('password') &&
               foldersData[slugFolderName].password !== ''
             ) {
-              if (!req.headers.hasOwnProperty('project-password')) {
+              if (
+                !req.hasOwnProperty('headers') ||
+                !req.headers.hasOwnProperty('folder-password')
+              ) {
                 dev.error(
-                  `REMOTE_API — _getContent : no password for protected folder ${slugFolderName}`
+                  `REMOTE_API — _getContent : no password submitted for protected folder ${slugFolderName}`
                 );
-                return reject('No password sent for protected folder!');
+                return reject('No password submitted for protected folder!');
               }
 
-              const request_project_password = new Buffer(
-                req.headers['project-password'],
+              const request_folder_password = new Buffer(
+                req.headers['folder-password'],
                 'base64'
               ).toString('binary');
 
               if (
-                request_project_password !==
-                foldersData[slugFolderName].password
+                request_folder_password !== foldersData[slugFolderName].password
               ) {
                 dev.error(
                   `REMOTE_API — _getContent : wrong password for folder ${slugFolderName}`
                 );
                 dev.error(
-                  `Submitted: ${request_project_password}\nShould be: ${
+                  `Submitted: ${request_folder_password}\nShould be: ${
                     foldersData[slugFolderName].password
                   }`
                 );
@@ -207,8 +216,8 @@ module.exports = (function() {
           //   foldersData[slugFolderName].password !== ''
           // ) {
           //   if (
-          //     !req.headers.hasOwnProperty('project-password') ||
-          //     request_project_password !==
+          //     !req.headers.hasOwnProperty('folder-password') ||
+          //     request_folder_password !==
           //       foldersData[slugFolderName].password
           //   ) {
           //     foldersData = auth.removeNonPublicMediasFromAllFolders(
@@ -218,6 +227,8 @@ module.exports = (function() {
           // }
 
           foldersData = _removePasswordFromFoldersMeta(foldersData);
+
+          //
 
           return resolve(foldersData);
         })
