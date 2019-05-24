@@ -146,6 +146,13 @@ module.exports = (function() {
               foldersData[slugFolderName].hasOwnProperty('password') &&
               foldersData[slugFolderName].password !== ''
             ) {
+              if (!req.headers.hasOwnProperty('project-password')) {
+                dev.error(
+                  `REMOTE_API — _getContent : no password for protected folder ${slugFolderName}`
+                );
+                return reject('No password sent for protected folder!');
+              }
+
               const request_project_password = new Buffer(
                 req.headers['project-password'],
                 'base64'
