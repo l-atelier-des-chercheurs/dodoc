@@ -228,7 +228,13 @@ module.exports = (function() {
 
           foldersData = _removePasswordFromFoldersMeta(foldersData);
 
-          //
+          // TODO :
+          // regarder si pour le type en question, il existe bien 'medias' et si dans 'medias' il y a 'slugMediaName'
+          // global.settings.structure[type]['medias'].fields.hasOwnProperty('slugMediaName');
+
+          // si c’est bien le cas, suivre la ligne 524 dans exporter.js
+
+          // insérer une propriété "source_media" dans chaque média avec les informations des médias originaux
 
           return resolve(foldersData);
         })
