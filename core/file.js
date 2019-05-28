@@ -494,6 +494,8 @@ module.exports = (function() {
         });
       });
     },
+    readMediaAndThumbs: ({ type, slugFolderName, metaFileName }) =>
+      readMediaAndThumbs({ type, slugFolderName, metaFileName }),
     readMediaList: ({ type, medias_list }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
@@ -592,6 +594,7 @@ module.exports = (function() {
           });
       });
     },
+
     createMediaMeta: ({ type, slugFolderName, additionalMeta }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(

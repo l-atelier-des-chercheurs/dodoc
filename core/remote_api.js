@@ -144,7 +144,7 @@ module.exports = (function() {
           } else {
             if (!foldersData.hasOwnProperty(slugFolderName)) {
               dev.error(
-                `REMOTE_API — _getContent : no password submitted for protected folder ${slugFolderName}`
+                `REMOTE_API — _getContent : no folder with this slug exists: ${slugFolderName}`
               );
               return reject('No folder with this slug exists!');
             }
@@ -229,14 +229,47 @@ module.exports = (function() {
           foldersData = _removePasswordFromFoldersMeta(foldersData);
 
           // TODO :
-          // regarder si pour le type en question, il existe bien 'medias' et si dans 'medias' il y a 'slugMediaName'
-          // global.settings.structure[type]['medias'].fields.hasOwnProperty('slugMediaName');
+          if (
+            !global.settings.structure[type].hasOwnProperty('medias') ||
+            !global.settings.structure[type]['medias'].fields.hasOwnProperty(
+              'slugMediaName'
+            )
+          ) {
+            return resolve(foldersData);
+          }
 
-          // si c’est bien le cas, suivre la ligne 524 dans exporter.js
+          let tasks = [];
 
-          // insérer une propriété "source_media" dans chaque média avec les informations des médias originaux
+          Object.keys(foldersData[slugFolderName].medias).map(k => {
+            const _media = foldersData[slugFolderName].medias[k];
+            if (!_media.hasOwnProperty('slugMediaName')) {
+              return;
+            }
 
-          return resolve(foldersData);
+            let get_original_media_meta = new Promise((resolve, reject) => {
+              file
+                .readMediaAndThumbs({
+                  type: 'projects',
+                  slugFolderName: _media.slugProjectName,
+                  metaFileName: _media.slugMediaName
+                })
+                .then(meta => {
+                  if (!meta) {
+                    // case of non-existent media (was removed recently for example)
+                  } else {
+                    foldersData[slugFolderName].medias[
+                      k
+                    ]._source_media_meta = meta;
+                  }
+                  return resolve();
+                });
+            });
+            tasks.push(get_original_media_meta);
+          });
+
+          Promise.all(tasks).then(() => {
+            return resolve(foldersData);
+          });
         })
         .catch(err => reject(err));
     });
