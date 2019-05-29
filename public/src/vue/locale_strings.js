@@ -307,6 +307,9 @@ module.exports = (function() {
           'Les modifications et ajouts ne seront plus pris en compte.',
         connection_error: 'La connexion au serveur n’a pu se faire.',
         media_has_been_added_successfully: 'Le média a bien été transféré',
+        wrong_password_for_dodoc:
+          'Le password n’est pas le bon pour accéder à do•doc. Recharger la page pour réessayer.',
+        loading_dodoc: 'Chargement de do•doc en cours…',
         'wrong_password_for_folder:':
           'Le password n’est pas le bon pour le dossier&nbsp;:',
         'created_edited_media:':
@@ -644,6 +647,9 @@ module.exports = (function() {
         contents_wont_be_editable: 'Content editing is disabled.',
         connection_error:
           'The connection to the server could not be established.',
+        wrong_password_for_dodoc:
+          'Wrong password to open do•doc. Reload the page to retry.',
+        loading_dodoc: 'Loading do•doc…',
         'wrong_password_for_folder:': 'Wrong password or folder missing for:',
         'created_edited_media:':
           'A media has been created or edited in folder:',
