@@ -140,8 +140,8 @@ let vm = new Vue({
       has_modal_opened: false,
       capture_mode_cant_be_changed: false,
 
-      windowHeight: window.innerHeight,
       windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
 
       capture_options: {
         selected_mode: '',
@@ -205,22 +205,55 @@ let vm = new Vue({
       document.body.classList.add('has_systembar');
     }
 
-    // if (window.state.dev_mode === 'debug') {
-    //   console.log('ROOT EVENT: created / checking for password');
-    // }
+    if (window.state.dev_mode === 'debug') {
+      console.log('ROOT EVENT: created / checking for password');
+    }
+    function hashCode(s) {
+      return s.split('').reduce(function(a, b) {
+        a = (a << 5) - a + b.charCodeAt(0);
+        return a & a;
+      }, 0);
+    }
 
-    if (!window.state.is_electron && this.state.session_password !== '') {
-      function hashCode(s) {
-        return s.split('').reduce(function(a, b) {
-          a = (a << 5) - a + b.charCodeAt(0);
-          return a & a;
-        }, 0);
+    const canAccessDodoc = () => {
+      if (window.state.is_electron) return true;
+      if (this.state.session_password === '') return true;
+
+      if (
+        localstore.get('session_password') &&
+        this.state.session_password !==
+          hashCode(localstore.get('session_password'))
+      ) {
+        return true;
       }
 
       var pass = window.prompt(this.$t('input_password'));
-      if (this.state.session_password !== hashCode(pass) + '') {
-        return;
+      if (this.state.session_password === hashCode(pass) + '') {
+        localstore.set('session_password', pass);
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .success(this.$t('notifications["loading_dodoc"]'));
+
+        return true;
+      } else {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t('notifications["wrong_password_for_dodoc"]'));
       }
+
+      return false;
+    };
+
+    if (!canAccessDodoc()) {
+      if (window.state.dev_mode === 'debug') {
+        console.log(
+          'ROOT EVENT: created / checking for password: not allowed to access dodoc'
+        );
+      }
+      return;
+    } else {
     }
 
     window.addEventListener('resize', () => {
@@ -484,6 +517,10 @@ let vm = new Vue({
             uniqueKeywords.push(k.title);
         });
       });
+      uniqueKeywords = uniqueKeywords.sort(function(a, b) {
+        return a.toLowerCase().localeCompare(b.toLowerCase());
+      });
+
       return uniqueKeywords.map(kw => {
         return {
           text: kw,

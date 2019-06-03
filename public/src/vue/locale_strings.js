@@ -35,6 +35,11 @@ module.exports = (function() {
       'camera2 1, facing front': 'Caméra frontale',
       'camera2 0, facing back': 'Caméra arrière',
 
+      very_slow: 'Très lent',
+      slow: 'Lent',
+      speed_medium: 'Normal',
+      fast: 'Rapide',
+
       cooking_pot: 'La marmite',
       text_overflow: 'Texte en excès',
       move_to_foreground: 'Mettre au premier plan',
@@ -57,7 +62,9 @@ module.exports = (function() {
       css: 'css',
       write_some_CSS_code_for_example:
         'Écrivez ici du code CSS, <br>par exemple <code>color: blue;</code>',
-      framerate: 'cadence d’image (par seconde)',
+      framerate: 'images par seconde',
+      timelapse: 'déclenchement automatique',
+      seconds_per_image: 'secondes par image',
       seconds: 'secondes',
       quality: 'qualité',
       bytes: 'octets',
@@ -78,7 +85,9 @@ module.exports = (function() {
       back: 'Retour',
       sureToRemoveAuthor: 'Êtes-vous sûr de vouloir supprimer cet auteur ?',
       changes_not_saved_sureToCloseModal:
-        'Des modifications n’ont pas été enregistrées. Voulez-vous vraiment fermer cette fenêtre ?',
+        'Des modifications ont eu lieu, souhaitez-vous les enregistrer ?',
+      save_changes: 'Enregistrer les modifications',
+      close_the_window: 'Annuler',
       sureToRemovePubli:
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
       sure_to_cancel_stopmotion:
@@ -150,6 +159,7 @@ module.exports = (function() {
       password: 'Mot de passe',
       password_required_to_open: 'Mot de passe requis',
       show_password: 'Afficher le mot de passe',
+      hide: 'Cacher',
       protected_by_pass: 'protégé par mot de passe',
       password_instructions:
         'Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce projet.',
@@ -192,7 +202,7 @@ module.exports = (function() {
       edit_publication: 'Éditer la recette',
       drop_here_to_import: 'Déposez vos contenus ici pour les importer',
 
-      capture: 'Enregistrer',
+      capture: 'Capturer',
       current: 'Actuellement',
       currently: 'Actuellement',
       update: 'Mettre à jour',
@@ -243,8 +253,7 @@ module.exports = (function() {
       export_stopmotion_instructions:
         'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des images ajoutées à la publication.',
       make_video: 'Fabriquer une vidéo',
-      'interval_between_pictures:': 'Intervalle entre chaque photo :',
-      creation_in_progress: 'En cours de création…',
+      interval_between_pictures: 'Intervalle entre chaque photo',
 
       publication_list: 'Liste des publications',
       export_creation: 'Exportation d’une création',
@@ -256,6 +265,7 @@ module.exports = (function() {
       download_website: 'Télécharger une version web',
       pdf_created: 'Le PDF a été créé',
       video_created: 'La vidéo a été créée',
+      video_creation_failed: 'La vidéo n’a pas pu être créée. Erreur&nbsp;:',
       open_in_app: 'Afficher',
       format: 'Format',
       template: 'Gabarit',
@@ -297,6 +307,9 @@ module.exports = (function() {
           'Les modifications et ajouts ne seront plus pris en compte.',
         connection_error: 'La connexion au serveur n’a pu se faire.',
         media_has_been_added_successfully: 'Le média a bien été transféré',
+        wrong_password_for_dodoc:
+          'Le password n’est pas le bon pour accéder à do•doc. Recharger la page pour réessayer.',
+        loading_dodoc: 'Chargement de do•doc en cours…',
         'wrong_password_for_folder:':
           'Le password n’est pas le bon pour le dossier&nbsp;:',
         'created_edited_media:':
@@ -328,7 +341,9 @@ module.exports = (function() {
         video_converted: 'La vidéo a été convertie et ajoutée au projet.',
         project_has_been_removed:
           'Ce projet vient d’être supprimé par quelqu’un d’autre.',
-        wrong_password_for: 'Mot de passe erroné pour '
+        wrong_password_for: 'Mot de passe erroné pour ',
+        creating_video: 'En cours de création de la vidéo…',
+        creation_in_progress: 'En cours de création…'
       }
     },
     en: {
@@ -366,6 +381,11 @@ module.exports = (function() {
         'Created stopmotion animations will appear in this list.',
       device: 'Device',
 
+      very_slow: 'Very slow',
+      slow: 'Slow',
+      speed_medium: 'Normal',
+      fast: 'Fast',
+
       cooking_pot: 'Cooking pot',
       text_overflow: 'Overflow text',
       move_to_foreground: 'Move to foreground',
@@ -374,7 +394,9 @@ module.exports = (function() {
       cooking_pot_instructions:
         'Mix a single or multiple medias to create new medias!',
       untitled: 'Untitled',
-      framerate: 'frame rate (images per second)',
+      framerate: 'images per second',
+      timelapse: 'timelapse',
+      seconds_per_image: 'seconds per image',
       seconds: 'seconds',
       quality: 'quality',
 
@@ -394,6 +416,8 @@ module.exports = (function() {
       sureToRemoveAuthor: 'Do you really want to delete this author?',
       changes_not_saved_sureToCloseModal:
         'All changes were not saved. Do you really want to close this window?',
+      save_changes: 'Save changes first',
+      close_the_window: 'Close anyway',
       sureToRemovePubli: 'Do you really want to delete this publication?',
       sure_to_cancel_stopmotion:
         'Do you really want to cancel this stopmotion? You can resume making it by clicking on "Stopmotion list"',
@@ -456,6 +480,7 @@ module.exports = (function() {
       password: 'Mot de passe',
       password_required_to_open: 'Password required',
       show_password: 'Show password',
+      hide: 'Hide',
       protected_by_pass: 'protected by password',
       password_instructions:
         'If set, only users with the password will be able to open this project.',
@@ -502,7 +527,7 @@ module.exports = (function() {
       export_stopmotion_instructions:
         'Click this button to generate a video from images you have selected.',
       make_video: 'Make a video',
-      'interval_between_pictures:': 'Interval between photos:',
+      interval_between_pictures: 'Interval between photos',
 
       select: 'Select',
       unselect: 'Un-select',
@@ -567,9 +592,9 @@ module.exports = (function() {
       get_website:
         'To download a website version of this publication (for example, to publish online), click here:',
       download_website: 'Download a website',
-      creation_in_progress: 'Creation in progress…',
       pdf_created: 'PDF created',
       video_created: 'The video was created',
+      video_creation_failed: 'The video was not created. Error returned:',
       open_in_app: 'Open',
       format: 'Format',
       template: 'Template',
@@ -622,6 +647,9 @@ module.exports = (function() {
         contents_wont_be_editable: 'Content editing is disabled.',
         connection_error:
           'The connection to the server could not be established.',
+        wrong_password_for_dodoc:
+          'Wrong password to open do•doc. Reload the page to retry.',
+        loading_dodoc: 'Loading do•doc…',
         'wrong_password_for_folder:': 'Wrong password or folder missing for:',
         'created_edited_media:':
           'A media has been created or edited in folder:',
@@ -651,7 +679,9 @@ module.exports = (function() {
           'The video was converted successfully and added to the project.',
         project_has_been_removed:
           'This project just got removed by another user.',
-        wrong_password_for: 'Wrong password for project '
+        wrong_password_for: 'Wrong password for project ',
+        creating_video: 'Creating video…',
+        creation_in_progress: 'Creation in progress…'
       }
     }
   };

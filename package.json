@@ -1,7 +1,7 @@
 {
   "name": "dodoc",
   "productName": "do•doc",
-  "version": "8.0.8-dev",
+  "version": "8.0.9-dev",
   "description": "do•doc is a documentation tool for creativity.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
@@ -43,8 +43,9 @@
   "dependencies": {
     "archiver": "^3.0.0",
     "body-parser": "^1.18.3",
-    "compression": "^1.7.3",
-    "dodoc-parsedown": "https://github.com/louis-ev/dodoc-parsedown.git#master",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dodoc-parsedown": "git+https://github.com/louis-ev/dodoc-parsedown.git#master",
     "electron-pdf-window": "^1.0.12",
     "electron-window-state": "^5.0.3",
     "exif-reader": "^1.0.2",

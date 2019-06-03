@@ -13,6 +13,7 @@
     >
     <template slot="header">
       <div class="">{{ $t('edit_the_media') }}</div>
+      <small class="font-normal">{{ media.media_filename }}</small>
     </template>
 
     <template slot="sidebar">
@@ -76,6 +77,27 @@
       </div>
 
       <div class="hide_on_print">
+
+  <!-- Fav or not -->
+        <div class="margin-bottom-small">
+          <span class="switch switch-xs">
+            <input type="checkbox" class="switch" id="favswitch_editmedia" v-model="mediadata.fav" :readonly="read_only">
+            <label for="favswitch_editmedia"
+              :class="{ 'c-rouge' : mediadata.fav }"
+            >
+              {{ $t('fav') }}
+              <svg version="1.1"
+                class="inline-svg"
+                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+                x="0px" y="0px" width="78.5px" height="106.4px" viewBox="0 0 78.5 106.4" style="enable-background:new 0 0 78.5 106.4;"
+                xml:space="preserve">
+                <polygon class="st0" points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"/>
+                <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 "/>
+              </svg>
+            </label>
+          </span>
+        </div>
+
         <div class="m_metaField" v-if="!!media.type">
           <div>
             {{ $t('type') }}
@@ -93,6 +115,7 @@
             {{ media.authors }}
           </div>
         </div> -->
+
         <div class="m_metaField">
           <div>
             {{ $t('created') }}
@@ -173,24 +196,6 @@
           </textarea> -->
         </div>
 
-  <!-- Fav or not -->
-        <div class="margin-bottom-small">
-          <span class="switch switch-xs">
-            <input type="checkbox" class="switch" id="favswitch_editmedia" v-model="mediadata.fav" :readonly="read_only">
-            <label for="favswitch_editmedia">
-              {{ $t('fav') }}
-              <svg version="1.1"
-                class="inline-svg"
-                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-                x="0px" y="0px" width="78.5px" height="106.4px" viewBox="0 0 78.5 106.4" style="enable-background:new 0 0 78.5 106.4;"
-                xml:space="preserve">
-                <polygon class="st0" points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"/>
-                <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 "/>
-              </svg>
-            </label>
-          </span>
-        </div>
-
       </div>
     </template>
 
@@ -205,15 +210,23 @@
         :media="media"
         :read_only="read_only"
         v-model="mediadata.content"
-      >
-      </MediaContent>
-      <div class="m_mediaOptions" v-if="false && media.type === 'image'">
-        <label>Options</label>
-        <div>
-          <button type="button" class="buttonLink" @click="editRawMedia('rotate_image', {angle: 90})">
+      />
+      <div class="m_mediaOptions" v-if="false">
+        <button type="button" class="buttonLink" @click="show_edit_media_options = !show_edit_media_options">{{ show_edit_media_options }}</button>
+        <div v-if="show_edit_media_options">
+          <button type="button" class="buttonLink" @click="editRawMedia('rotate_image', {angle: 90})"
+            v-if="media.type === 'image'"
+          >
             Pivoter vers la droite
           </button>
-          <button type="button" class="buttonLink" @click="editRawMedia('reset')">
+          <button type="button" class="buttonLink" @click="editRawMedia('optimize_video')"
+            v-if="media.type === 'video'"
+          >
+            Créer une vidéo compatible web
+          </button>
+          <button type="button" class="buttonLink" @click="editRawMedia('reset')"
+            v-if="!!media.original_media_filename"
+          >
             Revenir à l’original
           </button>
         </div>
@@ -253,6 +266,7 @@ export default {
     return {
       showQRModal: false,
       is_minimized: false,
+      show_edit_media_options: false,
 
       mediadata: {
         type: this.media.type,
@@ -337,8 +351,6 @@ export default {
           detail
         }
       });
-      // then close that popover
-      // this.$emit('close', '');
     }
   },
 };
@@ -350,8 +362,8 @@ export default {
   right: 0;
   z-index: 100;
   background-color: white;
-  margin: 25px;
-  padding: 15px;
+  margin: 50px 10px;
+  /* padding: 15px; */
 }
 
 </style>

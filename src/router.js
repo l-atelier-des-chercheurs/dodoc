@@ -8,7 +8,8 @@ const sockets = require('./core/sockets'),
   api = require('./core/api'),
   file = require('./core/file'),
   exporter = require('./core/exporter'),
-  importer = require('./core/importer');
+  importer = require('./core/importer'),
+  remote_api = require('./core/remote_api');
 
 module.exports = function(app) {
   /**
@@ -22,6 +23,8 @@ module.exports = function(app) {
   app.get('/publication/print/:pdfName', showPDF);
   app.get('/publication/video/:videoName', showVideo);
   app.post('/file-upload/:type/:slugFolderName', postFile2);
+
+  remote_api.init(app);
 
   // app.ws('/_collaborative-editing', collaborativeEditing);
 

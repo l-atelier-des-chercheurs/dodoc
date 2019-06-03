@@ -402,7 +402,9 @@ export default {
 
       pixelsPerMillimeters: 0,
       has_media_selected: false,
-      show_export_modal: false
+      show_export_modal: false,
+
+      accepted_media_type: ["image", "video", "audio", "text", "document", "other"]
     }
   },
   created() {
@@ -410,7 +412,8 @@ export default {
     this.$root.setPublicationZoom(this.zoom);
   },
   mounted() {
-    this.$root.settings.current_publication.accepted_media_type = ["image", "video", "audio", "text", "document", "other"];
+    this.$root.settings.current_publication.accepted_media_type = this.accepted_media_type;
+    
 
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);

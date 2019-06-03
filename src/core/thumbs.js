@@ -497,9 +497,9 @@ module.exports = (function() {
       ffmpeg.ffprobe(mediaPath, function(err, metadata) {
         if (err || typeof metadata === 'undefined') {
           dev.log(`getMediaDuration: PROBE DATA isn’t valid`);
-          reject();
+          resolve(false);
         } else {
-          dev.log(`PROBE DATA : ${JSON.stringify(metadata, null, 4)}`);
+          // dev.log(`PROBE DATA : ${JSON.stringify(metadata, null, 4)}`);
           resolve(metadata.format.duration);
         }
       });
@@ -514,7 +514,7 @@ module.exports = (function() {
           dev.log(`getMediaRatio: PROBE DATA isn’t valid`);
           reject();
         } else {
-          dev.log(`PROBE DATA : ${JSON.stringify(metadata, null, 4)}`);
+          // dev.log(`PROBE DATA : ${JSON.stringify(metadata, null, 4)}`);
           if (
             metadata.streams !== undefined &&
             typeof Array.isArray(metadata.streams)

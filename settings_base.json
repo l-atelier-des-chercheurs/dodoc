@@ -30,6 +30,12 @@
   "regexpGetFileExtension" : "\\.[^.]*$",
   "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)",
 
+  "api": {
+    "enabled": false,
+    "allow_all_domains": false,
+    "domains_whitelist": []
+  },
+
   "structure" : {
     "projects": {
       "path": "",
