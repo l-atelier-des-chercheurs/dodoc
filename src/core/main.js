@@ -13,6 +13,20 @@ module.exports = function({ router }) {
   const is_electron = process.versions.hasOwnProperty('electron');
 
   console.log(`App is electron : ${is_electron}`);
+  console.log(`Starting app ${global.appInfos.name}`);
+  console.log(process.versions);
+
+  const debug =
+    process.argv.length >= 4 ? process.argv[3] === '--debug' : false;
+  const verbose =
+    process.argv.length >= 5 ? process.argv[4] === '--verbose' : false;
+  const logToFile = false;
+
+  dev.init(debug, verbose, logToFile);
+
+  if (dev.isDebug()) {
+    process.traceDeprecation = true;
+  }
 
   if (is_electron) {
     require('./electron')
@@ -20,6 +34,9 @@ module.exports = function({ router }) {
       .then(win => {
         setupApp().then(() => {
           server(router);
+          dev.log(
+            `MAIN — opening URL in electron : ${global.appInfos.homeURL}`
+          );
           win.loadURL(global.appInfos.homeURL);
         });
       })
@@ -38,21 +55,6 @@ module.exports = function({ router }) {
 
   function setupApp() {
     return new Promise(function(resolve, reject) {
-      console.log(`Starting app ${global.appInfos.name}`);
-      console.log(process.versions);
-
-      const debug =
-        process.argv.length >= 4 ? process.argv[3] === '--debug' : false;
-      const verbose =
-        process.argv.length >= 5 ? process.argv[4] === '--verbose' : false;
-      const logToFile = false;
-
-      dev.init(debug, verbose, logToFile);
-
-      if (dev.isDebug()) {
-        process.traceDeprecation = true;
-      }
-
       global.tempStorage = getPath.getCacheFolder();
       global.ffmpeg_processes = [];
 
