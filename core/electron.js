@@ -1,5 +1,6 @@
 const electron = require('electron');
 const { app, BrowserWindow, Menu } = electron;
+const path = require('path');
 
 const electronPDFWindow = require('electron-pdf-window');
 
@@ -10,6 +11,11 @@ module.exports = (function() {
   return {
     init: () => {
       return new Promise(function(resolve, reject) {
+        global.sourcePathInApp = path.join(
+          `${global.appRoot.replace(`${path.sep}app.asar`, '')}`,
+          `${global.settings.contentDirname}`
+        );
+
         let win;
         // This method will be called when Electron has finished
         // initialization and is ready to create browser windows.
@@ -66,6 +72,7 @@ module.exports = (function() {
         height: mainWindowState.height,
         backgroundColor: '#EBEBEB',
         titleBarStyle: 'hidden',
+        show: true,
 
         webPreferences: {
           allowDisplayingInsecureContent: true,
