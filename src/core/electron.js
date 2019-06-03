@@ -21,9 +21,9 @@ module.exports = (function() {
         // initialization and is ready to create browser windows.
         // Some APIs can only be used after this event occurs.
         app.on('ready', () => {
-          createWindow(win).then(win => {
+          createWindow(win).then(_win => {
             console.log(`ELECTRON — init : ready / window created`);
-            return resolve(win);
+            return resolve(_win);
           });
         });
 
@@ -43,8 +43,8 @@ module.exports = (function() {
           // On macOS it's common to re-create a window in the app when the
           // dock icon is clicked and there are no other windows open.
           if (win === null) {
-            createWindow(win).then(win => {
-              return resolve(win);
+            createWindow(win).then(_win => {
+              return resolve(_win);
             });
           }
         });
