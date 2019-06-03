@@ -44,6 +44,10 @@ module.exports = function({ router }) {
         dev.error(`Error code: ${err}`);
       });
   } else {
+    global.sourcePathInApp = path.join(
+      `${global.appRoot}`,
+      `${global.settings.contentDirname}`
+    );
     setupApp()
       .then(() => {
         server(router);
@@ -118,8 +122,8 @@ module.exports = function({ router }) {
                     dev.error(`err ${err}`);
                     if (is_electron)
                       dev.showErrorBox(
-                        `The app ${app.getName()} wasn’t able to start`,
-                        `Error code: ${err}`
+                        `Impossible de démarrer l’application`,
+                        `Code erreur: ${err}`
                       );
                   });
               });
@@ -160,19 +164,7 @@ module.exports = function({ router }) {
             } to create a new one`
           );
 
-          let sourcePathInApp;
-          if (is_electron) {
-            sourcePathInApp = path.join(
-              `${global.appRoot.replace(`${path.sep}app.asar`, '')}`,
-              `${global.settings.contentDirname}`
-            );
-          } else {
-            sourcePathInApp = path.join(
-              `${global.appRoot}`,
-              `${global.settings.contentDirname}`
-            );
-          }
-          fs.copy(sourcePathInApp, pathToUserContent, function(err) {
+          fs.copy(global.sourcePathInApp, pathToUserContent, function(err) {
             if (err) {
               dev.error(`Failed to copy: ${err}`);
               reject(err);
