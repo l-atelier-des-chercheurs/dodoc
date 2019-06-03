@@ -45,6 +45,8 @@ module.exports = (function() {
 
   function createWindow(win) {
     return new Promise(function(resolve, reject) {
+      dev.logfunction(`ELECTRON — createWindow`);
+
       app.commandLine.appendSwitch('--ignore-certificate-errors');
       app.commandLine.appendSwitch('--disable-http-cache');
 
