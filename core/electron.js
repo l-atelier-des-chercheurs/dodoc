@@ -16,12 +16,14 @@ module.exports = (function() {
         // Some APIs can only be used after this event occurs.
         app.on('ready', () => {
           createWindow(win).then(win => {
+            console.log(`ELECTRON — init : ready / window created`);
             return resolve(win);
           });
         });
 
         // Quit when all windows are closed.
         app.on('window-all-closed', () => {
+          console.log(`ELECTRON — init : window-all-closed`);
           // On macOS it is common for applications and their menu bar
           // to stay active until the user quits explicitly with Cmd + Q
           // if (process.platform !== 'darwin') {
@@ -31,6 +33,7 @@ module.exports = (function() {
         });
 
         app.on('activate', () => {
+          console.log(`ELECTRON — init : activate`);
           // On macOS it's common to re-create a window in the app when the
           // dock icon is clicked and there are no other windows open.
           if (win === null) {
@@ -87,6 +90,7 @@ module.exports = (function() {
 
       // Emitted when the window is closed.
       win.on('closed', () => {
+        console.log(`ELECTRON — createWindow : closed`);
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
@@ -94,6 +98,7 @@ module.exports = (function() {
       });
 
       win.on('ready-to-show', function() {
+        console.log(`ELECTRON — createWindow : ready-to-show`);
         win.show();
         win.focus();
       });
