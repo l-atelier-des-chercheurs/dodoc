@@ -92,7 +92,7 @@ module.exports = (function() {
         show: true,
 
         webPreferences: {
-          // allowRunningInsecureContent: true,
+          allowRunningInsecureContent: true,
           nodeIntegration: true,
           plugins: true
         }
