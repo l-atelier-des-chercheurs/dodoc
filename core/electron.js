@@ -22,6 +22,7 @@ module.exports = (function() {
         // initialization and is ready to create browser windows.
         // Some APIs can only be used after this event occurs.
         app.on('ready', () => {
+          console.log(`ELECTRON — init : ready`);
           createWindow().then(_win => {
             console.log(`ELECTRON — init : ready / window created`);
             win = _win;
@@ -51,6 +52,18 @@ module.exports = (function() {
             });
           }
         });
+
+        // SSL/TSL: this is the self signed certificate support
+        app.on(
+          'certificate-error',
+          (event, webContents, url, error, certificate, callback) => {
+            console.log(`ELECTRON — init : certificate-error`);
+            // On certificate error we disable default behaviour (stop loading the page)
+            // and we then say "it is all fine - true" to the callback
+            event.preventDefault();
+            callback(true);
+          }
+        );
       });
     }
   };
@@ -78,8 +91,7 @@ module.exports = (function() {
         show: true,
 
         webPreferences: {
-          allowDisplayingInsecureContent: true,
-          allowRunningInsecureContent: true,
+          // allowRunningInsecureContent: true,
           nodeIntegration: true,
           plugins: true
         }
