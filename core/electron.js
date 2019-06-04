@@ -2,6 +2,10 @@ const electron = require('electron');
 const { app, BrowserWindow, Menu } = electron;
 const path = require('path');
 
+app.commandLine.appendSwitch('ignore-certificate-errors', 'true');
+app.commandLine.appendSwitch('allow-insecure-localhost', 'true');
+app.commandLine.appendSwitch('disable-http-cache', 'true');
+
 const electronPDFWindow = require('electron-pdf-window');
 
 const { dialog } = require('electron');
@@ -71,9 +75,6 @@ module.exports = (function() {
   function createWindow() {
     return new Promise(function(resolve, reject) {
       console.log(`ELECTRON — createWindow`);
-
-      app.commandLine.appendSwitch('--ignore-certificate-errors');
-      app.commandLine.appendSwitch('--disable-http-cache');
 
       let mainWindowState = windowStateKeeper({
         defaultWidth: 1000,
