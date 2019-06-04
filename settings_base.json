@@ -171,6 +171,9 @@
         "authors": {
           "type": "array"
         },
+        "keywords": {
+          "type": "array"
+        },      
         "date_created": {
           "type": "date",
           "default": "current",

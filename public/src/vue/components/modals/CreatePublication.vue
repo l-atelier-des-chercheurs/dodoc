@@ -30,6 +30,12 @@
         </select>
       </div> -->
 
+<!-- Keywords -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('keywords') }}</label>
+        <TagsInput @tagsChanged="newTags => publidata.keywords = newTags"/>
+      </div>
+
 <!-- Author(s) -->
       <div class="margin-bottom-small">
         <label>{{ $t('author') }}</label><br>
@@ -51,6 +57,7 @@
 </template>
 <script>
 import Modal from './BaseModal.vue';
+import TagsInput from '../subcomponents/TagsInput.vue';
 import AuthorsInput from '../subcomponents/AuthorsInput.vue';
 
 export default {
@@ -67,6 +74,7 @@ export default {
   },
   components: {
     Modal,
+    TagsInput,
     AuthorsInput
   },
   data() {
@@ -74,6 +82,7 @@ export default {
       publidata: {
         name: this.default_name,
         template: this.default_template,
+        keywords: [],
         authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : [],
       }
     };
@@ -85,6 +94,8 @@ export default {
       },
       deep: true
     }
+  },
+  mounted() {
   },
   computed: {},
   methods: {
@@ -119,6 +130,7 @@ export default {
         name,
         template: this.publidata.template,
         authors: this.publidata.authors,
+        keywords: this.publidata.keywords
       }
 
       if(publidata.template === 'page_by_page') {
