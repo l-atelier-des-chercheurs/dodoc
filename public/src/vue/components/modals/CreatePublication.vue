@@ -15,7 +15,7 @@
 <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('name') }}</label>
-        <input type="text" v-model="publidata.name" required autofocus>
+        <input type="text" v-model="publidata.name" required autofocus autoselect>
       </div>
 
 <!-- Template -->

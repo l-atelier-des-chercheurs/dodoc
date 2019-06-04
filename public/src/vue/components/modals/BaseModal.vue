@@ -233,15 +233,18 @@ export default {
           const el = this.$refs.modalContent.querySelector('[autofocus]');
           if(el.classList.contains('quillWrapper')) {
             el.querySelector('.ql-editor').focus();
-          }  else {
+          } else {
             el.focus();
+          }
+
+          if(el.hasAttribute('autoselect')) {
+            el.select();
           }
         }
 
         if (this.isFile && this.$refs.form){
           this.$refs.form.setAttribute('enctype', 'multipart/form-data');
         }
-
       }
     },100);
   },
