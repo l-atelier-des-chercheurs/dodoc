@@ -93,20 +93,15 @@
   "config": {
     "forge": {
       "make_targets": {
-        "win32": [
-          "squirrel"
-        ],
-        "darwin": [
-          "zip"
-        ],
         "linux": [
-          "deb",
-          "rpm"
+          "deb"
         ]
       },
       "electronPackagerConfig": {
         "packageManager": "npm",
-        "executableName": "dodoc"
+        "executableName": "dodoc",
+        "icon": "build/icon.ico",
+        "appCategoryType": "public.app-category.education"
       },
       "electronWinstallerConfig": {
         "name": "dodoc"
@@ -115,7 +110,8 @@
       "electronInstallerRedhat": {},
       "github_repository": {
         "owner": "",
-        "name": ""
+        "name": "",
+        "draft": true
       },
       "windowsStoreConfig": {
         "packageName": "",
