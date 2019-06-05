@@ -171,6 +171,9 @@
         "authors": {
           "type": "array"
         },
+        "keywords": {
+          "type": "array"
+        },      
         "date_created": {
           "type": "date",
           "default": "current",
@@ -185,7 +188,7 @@
         },
         "template": {
           "type": "string",
-          "options": ["page_by_page", "video_assemblage", "drawing_pad", "stopmotion_animation", "mix_audio_and_video", "mix_audio_and_image"],
+          "options": ["page_by_page", "video_assemblage", "stopmotion_animation", "mix_audio_and_video", "mix_audio_and_image"],
           "default": "page_by_page"          
         },
         "style": {

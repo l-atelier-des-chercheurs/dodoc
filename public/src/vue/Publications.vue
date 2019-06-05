@@ -2,8 +2,8 @@
   <div class="m_publicationsview">
 
     <div class="m_actionbar">
-      <!-- <div class="m_actionbar--buttonBar">
-        <button 
+      <div class="m_actionbar--buttonBar">
+        <!-- <button 
           class="barButton barButton_createPubli"
           type="button"  
           @click="showCreatePublicationModal = true"
@@ -12,14 +12,16 @@
           <span>    
               {{ $t('create_a_publication') }}
           </span>
-        </button>
+        </button> -->
 
         <CreatePublication
           v-if="showCreatePublicationModal"
+          :default_name="createPubliDefaultName"
+          :default_template="createPubliTemplateKey"
           @close="showCreatePublicationModal = false"
           :read_only="read_only"
         />
-      </div> -->
+      </div>
       <div class="m_actionbar--text">
         {{ $t('cooking_pot') }}: {{ $t('cooking_pot_instructions')}}
       </div>
@@ -39,7 +41,7 @@
           <button 
             class="barButton barButton_createPubli"
             type="button"  
-            @click="createAndOpenPublication(recipe.key)"
+            @click="openCreatePublicationModal(recipe.key)"
             :disabled="read_only" 
           >
             <span>    
@@ -159,6 +161,7 @@ export default {
   data() {
     return {
       showCreatePublicationModal: false,
+      createPubliTemplateKey: false,
 
       recipes: [
         {
@@ -372,6 +375,10 @@ export default {
   watch: {
   },
   computed: {
+    createPubliDefaultName() {
+      const number_of_recipes = this.all_recipes_of_this_template(this.createPubliTemplateKey).length + 1;
+      return this.$t(this.createPubliTemplateKey) + ' Nº' + number_of_recipes;
+    }
   },
   methods: {
     openPublication(slugPubliName) {
@@ -380,14 +387,21 @@ export default {
       }
       this.$root.openPublication(slugPubliName);
     },
-    recipe_of_this_template(template_key) {
+    all_recipes_of_this_template(template_key) {
       const filtered_recipes = Object.values(this.publications).filter(r => r.template === template_key);
       let sorted_recipes = this.$_.sortBy(filtered_recipes, 'date_created');
       sorted_recipes = sorted_recipes.reverse()
-      if(!this.recipes.find(r => r.key === template_key).show_all_recipes) {
-        sorted_recipes = sorted_recipes.slice(0,3);
-      }
       return sorted_recipes;
+    },
+    recipe_of_this_template(template_key) {
+      if(!this.recipes.find(r => r.key === template_key).show_all_recipes) {
+        return this.all_recipes_of_this_template(template_key).slice(0,3);
+      }
+      return this.all_recipes_of_this_template(template_key);
+    },
+    openCreatePublicationModal(recipe_key) {
+      this.showCreatePublicationModal = true;
+      this.createPubliTemplateKey = recipe_key;
     },
     createAndOpenPublication(template) {
       const name = this.$t('untitled');
