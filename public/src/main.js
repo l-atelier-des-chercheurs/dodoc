@@ -167,4 +167,4 @@ $('body')
     e.preventDefault();
   });
 
-import main from './vue/app.js';
+import app from './vue/app.js';

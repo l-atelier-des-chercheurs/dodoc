@@ -74,6 +74,7 @@ module.exports = (function() {
       duration: 'Durée',
       send: 'Envoyer',
       open_in_dodoc: 'Ouvrir dans do•doc',
+      connect_to_dodoc: 'Accéder à do•doc',
 
       login: 'S’identifier',
       help: 'Aide',
@@ -308,7 +309,7 @@ module.exports = (function() {
         connection_error: 'La connexion au serveur n’a pu se faire.',
         media_has_been_added_successfully: 'Le média a bien été transféré',
         wrong_password_for_dodoc:
-          'Le password n’est pas le bon pour accéder à do•doc. Recharger la page pour réessayer.',
+          'Le password envoyé n’est pas le bon pour accéder à do•doc.',
         loading_dodoc: 'Chargement de do•doc en cours…',
         'wrong_password_for_folder:':
           'Le password n’est pas le bon pour le dossier&nbsp;:',
@@ -407,6 +408,7 @@ module.exports = (function() {
       duration: 'Duration',
       send: 'Send',
       open_in_dodoc: 'Open in do•doc',
+      connect_to_dodoc: 'Open do•doc',
 
       portrait: 'Portrait',
       nfc_tag: 'Tag NFC',
@@ -647,8 +649,7 @@ module.exports = (function() {
         contents_wont_be_editable: 'Content editing is disabled.',
         connection_error:
           'The connection to the server could not be established.',
-        wrong_password_for_dodoc:
-          'Wrong password to open do•doc. Reload the page to retry.',
+        wrong_password_for_dodoc: 'Wrong password to open do•doc.',
         loading_dodoc: 'Loading do•doc…',
         'wrong_password_for_folder:': 'Wrong password or folder missing for:',
         'created_edited_media:':

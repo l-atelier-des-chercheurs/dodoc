@@ -139,7 +139,7 @@ export default {
         this.$root.justCreatedFolderID = false;
 
         if(fdata.password === 'has_pass') {
-          this.$auth.updateAdminAccess({
+          this.$auth.updateFoldersPasswords({
             "projects": {
               [fdata.slugFolderName]: this.projectdata.password
             }

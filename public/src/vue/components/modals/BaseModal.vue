@@ -101,6 +101,7 @@
               type="button"
               @click="closeModal"
               class="button button-bg_rounded bg-orange"
+              v-if="hide_close_button"
             >
               <img src="/images/i_clear.svg" draggable="false" />
               <span class="text-cap font-verysmall">
@@ -211,6 +212,10 @@ export default {
       default: false
     },
     is_minimized: {
+      type: Boolean,
+      default: false
+    },
+    hide_close_button: {
       type: Boolean,
       default: false
     }

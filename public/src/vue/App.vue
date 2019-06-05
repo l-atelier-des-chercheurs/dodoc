@@ -2,8 +2,15 @@
   <div id="app"
     :class="{ 'is--wide' : $root.screen_is_wide }"
   >
+    <template v-if="$root.state.mode === 'live' && !$root.state.authentificated">
+      <SessionPassword
+        v-if="$root.showSessionPasswordModal"
+        @close="$root.showSessionPasswordModal = false"      
+        :read_only="!$root.state.connected"
+      />
+    </template>
     <template 
-      v-if="$root.state.mode === 'live' && $root.store.request.display !== 'standalone'"
+      v-else-if="$root.state.mode === 'live' && $root.store.request.display !== 'standalone'"
     >    
       <SystemBar
         v-if="$root.settings.enable_system_bar"
@@ -18,7 +25,6 @@
       />
       
       <div class="m_activitiesPanel">
-
         <div 
           :style="{ cursor, userSelect}" 
           class="vue-splitter-container clearfix" 
@@ -204,6 +210,7 @@ import ListView from './ListView.vue';
 import ProjectView from './ProjectView.vue';
 import CaptureView from './CaptureView.vue';
 import EditMedia from './components/modals/EditMedia.vue';
+import SessionPassword from './components/modals/SessionPassword.vue';
 
 import MediaContent from './components/subcomponents/MediaContent.vue';
 import Publications from './Publications.vue';
@@ -227,6 +234,7 @@ export default {
     ProjectView,
     CaptureView,
     EditMedia,
+    SessionPassword,
     Publications,
     PagePublication,
     VideoPublication,

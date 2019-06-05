@@ -15,7 +15,11 @@ module.exports = (function() {
     filterMedias: (socket, type, folders_and_medias) =>
       filterMedias(socket, type, folders_and_medias),
     removeNonPublicMediasFromAllFolders: folders_and_medias =>
-      removeNonPublicMediasFromAllFolders(folders_and_medias)
+      removeNonPublicMediasFromAllFolders(folders_and_medias),
+
+    checkForSessionPassword: pwd => checkForSessionPassword(pwd),
+
+    hashCode: code => hashCode(code)
   };
 
   function setAuthenticate(folder_passwords) {
@@ -194,6 +198,29 @@ module.exports = (function() {
       }
     });
     return JSON.parse(JSON.stringify(filtered_folders_and_medias));
+  }
+
+  function checkForSessionPassword(pwd) {
+    dev.logfunction(`AUTH — checkForSessionPassword`);
+
+    if (!global.session_password || String(global.session_password) === '') {
+      dev.logverbose(`No session password`);
+      return true;
+    }
+    if (!!pwd && String(pwd) === String(global.session_password)) {
+      return true;
+    } else {
+      dev.logverbose(`Expected pwd: ${global.session_password}`);
+      dev.logverbose(`Submitted pwd: ${pwd}`);
+    }
+    return false;
+  }
+
+  function hashCode(s) {
+    return s.split('').reduce(function(a, b) {
+      a = (a << 5) - a + b.charCodeAt(0);
+      return a & a;
+    }, 0);
   }
 
   return API;
