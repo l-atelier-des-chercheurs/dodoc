@@ -40,6 +40,8 @@ module.exports = (function() {
       speed_medium: 'Normal',
       fast: 'Rapide',
 
+      remember_password_on_this_device: 'Sauvegarder pour cet appareil',
+
       cooking_pot: 'La marmite',
       text_overflow: 'Texte en excès',
       move_to_foreground: 'Mettre au premier plan',
@@ -309,7 +311,7 @@ module.exports = (function() {
         connection_error: 'La connexion au serveur n’a pu se faire.',
         media_has_been_added_successfully: 'Le média a bien été transféré',
         wrong_password_for_dodoc:
-          'Le password envoyé n’est pas le bon pour accéder à do•doc.',
+          'Le password envoyé n’est pas valide. Veuillez réessayer.',
         loading_dodoc: 'Chargement de do•doc en cours…',
         'wrong_password_for_folder:':
           'Le password n’est pas le bon pour le dossier&nbsp;:',
@@ -344,7 +346,10 @@ module.exports = (function() {
           'Ce projet vient d’être supprimé par quelqu’un d’autre.',
         wrong_password_for: 'Mot de passe erroné pour ',
         creating_video: 'En cours de création de la vidéo…',
-        creation_in_progress: 'En cours de création…'
+        creation_in_progress: 'En cours de création…',
+        connected_to_dodoc: 'Connection à do•doc active',
+        using_saved_password:
+          'Connection à do•doc en utilisant le mot de passe enregistré…'
       }
     },
     en: {
@@ -386,6 +391,8 @@ module.exports = (function() {
       slow: 'Slow',
       speed_medium: 'Normal',
       fast: 'Fast',
+
+      remember_password_on_this_device: 'Remember for this device',
 
       cooking_pot: 'Cooking pot',
       text_overflow: 'Overflow text',
@@ -649,7 +656,7 @@ module.exports = (function() {
         contents_wont_be_editable: 'Content editing is disabled.',
         connection_error:
           'The connection to the server could not be established.',
-        wrong_password_for_dodoc: 'Wrong password to open do•doc.',
+        wrong_password_for_dodoc: 'Wrong password, please try again.',
         loading_dodoc: 'Loading do•doc…',
         'wrong_password_for_folder:': 'Wrong password or folder missing for:',
         'created_edited_media:':
@@ -682,7 +689,10 @@ module.exports = (function() {
           'This project just got removed by another user.',
         wrong_password_for: 'Wrong password for project ',
         creating_video: 'Creating video…',
-        creation_in_progress: 'Creation in progress…'
+        creation_in_progress: 'Creation in progress…',
+        connected_to_dodoc: 'Connection to do•doc active',
+        using_saved_password:
+          'Connecting to do•doc using the password that was saved'
       }
     }
   };

@@ -17,6 +17,11 @@
         <label>{{ $t('password') }}</label>
         <input type="password" v-model="pwd" required autofocus autoselect>            
       </div>
+
+      <span class="switch switch-xs margin-bottom-small">
+        <input id="remember_password_on_this_device" type="checkbox" v-model="remember_password_on_this_device" />
+        <label for="remember_password_on_this_device">{{ $t('remember_password_on_this_device') }}</label>
+      </span>
     </template>
 
     <template slot="submit_button">
@@ -36,7 +41,8 @@ export default {
   },
   data() {
     return {
-      pwd: ''
+      pwd: '',
+      remember_password_on_this_device: false
     }
   },
   
@@ -47,6 +53,13 @@ export default {
     if (session_storage_pwd) {
       this.pwd = session_storage_pwd;
       this.submitPassword();
+
+      debugger;
+
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .log(this.$t('notifications.using_saved_password'));      
     }
   },
   beforeDestroy() {
@@ -59,6 +72,12 @@ export default {
   methods: {
     submitPassword() {
       this.$auth.setSessionPassword(this.pwd);
+      if(this.remember_password_on_this_device) {
+        this.$auth.saveSessionPasswordToLocalStorage();
+      } else {
+        this.$auth.emptySessionPasswordInLocalStorage();
+      }
+
       this.$socketio.connect();
       this.$emit('close');
     }

@@ -59,10 +59,10 @@ module.exports = (function() {
             let sessionId = this.socket.io.engine.id;
             console.log(`Connected as ${sessionId}`);
 
-            auth.saveSessionPasswordToLocalStorage();
-
             window.state.connected = true;
             window.state.authentificated = true;
+
+            this.$eventHub.$emit('socketio.connect');
 
             this.socket.emit('updateClientInfo', {});
             this.sendAuth();

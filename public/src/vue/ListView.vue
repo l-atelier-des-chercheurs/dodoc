@@ -351,11 +351,11 @@ export default {
     },
     groupedMedias: function() {
       let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
-          if(media.hasOwnProperty('date_created')) {
-            var dateMoment = this.$moment(media.date_created);
-            return dateMoment.format('YYYY-MM-DD');
-          }
-        });
+        if(media.hasOwnProperty('date_created') && media.date_created) {
+          var dateMoment = this.$moment(media.date_created);
+          return dateMoment.format('YYYY-MM-DD');
+        }
+      });
       mediaGroup = this.$_.pairs(mediaGroup); 
       mediaGroup = this.$_.sortBy(mediaGroup);
       mediaGroup = mediaGroup.reverse();

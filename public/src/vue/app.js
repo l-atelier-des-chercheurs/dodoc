@@ -344,6 +344,21 @@ let vm = new Vue({
     if (this.state.mode === 'live') {
       console.log('ROOT EVENT: created / now connecting with socketio');
 
+      if (!this.$root.state.is_electron) {
+        this.$eventHub.$on('socketio.connect', () => {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .success(this.$t('notifications["connected_to_dodoc"]'));
+        });
+        this.$eventHub.$on('socketio.reconnect', () => {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .success(this.$t('notifications["connected_to_dodoc"]'));
+        });
+      }
+
       if (this.$root.state.session_password === 'has_pass') {
         this.showSessionPasswordModal = true;
 
@@ -356,6 +371,8 @@ let vm = new Vue({
             .error(this.$t('notifications["wrong_password_for_dodoc"]'));
           this.showSessionPasswordModal = true;
         });
+      } else {
+        this.$socketio.connect();
       }
 
       this.$eventHub.$once('socketio.authentificated', () => {
