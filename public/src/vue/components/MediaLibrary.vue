@@ -289,7 +289,7 @@ export default {
       const new_media = this.sortedMedias[current_media_index + relative_index];
       this.$root.closeMedia();
       
-      if(!!new_media) {
+      if(!!new_media && new_media.hasOwnProperty('metaFileName') && !!new_media.metaFileName) {
         this.$nextTick(() => {
           this.openMediaModal(new_media.metaFileName);
         });
