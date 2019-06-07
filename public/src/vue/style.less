@@ -1752,6 +1752,15 @@ small {
 
   font-weight: 400;
 
+  .m_authorField--show_all_authors {
+    text-transform: uppercase;
+    background-color: transparent !important;
+    border: 2px solid @c-gris;
+    &::before {
+      display: none;
+    }
+  }
+
   > button, > span {
     flex-basis: auto;
     display: flex;
@@ -1792,6 +1801,10 @@ small {
       height: 20px;
       opacity: 0.2;
       transform: scale(.8);
+    }
+    &.is--loggedInAuthor {
+      &::before {
+      }
     }
   }
 }

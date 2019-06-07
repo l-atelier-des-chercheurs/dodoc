@@ -553,6 +553,9 @@ let vm = new Vue({
           if (uniqueAuthors.indexOf(k.name) == -1) uniqueAuthors.push(k.name);
         });
       });
+      uniqueAuthors = uniqueAuthors.sort(function(a, b) {
+        return a.toLowerCase().localeCompare(b.toLowerCase());
+      });
       return uniqueAuthors.map(kw => {
         return {
           name: kw

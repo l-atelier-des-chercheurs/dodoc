@@ -87,6 +87,7 @@ module.exports = (function() {
       cancel: 'Annuler',
       back: 'Retour',
       sureToRemoveAuthor: 'Êtes-vous sûr de vouloir supprimer cet auteur ?',
+      show_all_authors: 'Afficher l’ensemble des auteurs',
       changes_not_saved_sureToCloseModal:
         'Des modifications ont eu lieu, souhaitez-vous les enregistrer ?',
       save_changes: 'Enregistrer les modifications',
@@ -423,6 +424,7 @@ module.exports = (function() {
       cancel: 'Cancel',
       back: 'Back',
       sureToRemoveAuthor: 'Do you really want to delete this author?',
+      show_all_authors: 'Show all authors',
       changes_not_saved_sureToCloseModal:
         'All changes were not saved. Do you really want to close this window?',
       save_changes: 'Save changes first',
