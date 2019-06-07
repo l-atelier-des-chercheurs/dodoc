@@ -35,10 +35,10 @@
       <input type="text" v-model="authordata.nfc_tag">
     </div>
 
-    <button type="button" @click="$emit('close')">
+    <button type="button" class="button-thin" @click="$emit('close')">
       {{ $t('cancel') }}
     </button>
-    <button type="submit">
+    <button type="submit" class="button-greenthin">
       {{ $t('create') }}
     </button>
 
@@ -74,10 +74,11 @@ export default {
   methods: {
     newAuthor: function(event) {
       console.log('newAuthor');
-      let allAuthorsName = this.$root.allAuthors;
+      let allAuthorsName = this.$root.allAuthors.map(a => a.name.toLowerCase());
 
+        debugger;
       // check if project name (not slug) already exists
-      if (allAuthorsName.indexOf(this.authordata.name) >= 0) {
+      if (allAuthorsName.includes(this.authordata.name.toLowerCase()) >= 0) {
         // invalidate if it does
         this.$alertify
           .closeLogOnClick(true)

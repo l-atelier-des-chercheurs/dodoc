@@ -77,7 +77,7 @@
                 </td>
               </tr>
 
-              <tr v-if="!recipe.show_all_recipes && recipe_of_this_template(recipe.key).length >= 3"
+              <tr v-if="!recipe.show_all_recipes && all_recipes_of_this_template(recipe.key).length > 3"
                 @click="recipe.show_all_recipes = true"  
                 class="m_recipes--recipe--mealList--meal"
               >
