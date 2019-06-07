@@ -1034,6 +1034,21 @@ let vm = new Vue({
           slugFolderName: slugProjectName
         });
       });
+
+      let number_of_projects_to_load_medias_to = Object.keys(
+        this.store.projects
+      ).length;
+
+      this.$eventHub.$on('socketio.projects.listMedias', () => {
+        number_of_projects_to_load_medias_to--;
+        if (number_of_projects_to_load_medias_to === 0) {
+          this.$eventHub.$emit('socketio.has_finished_loading_all_medias');
+        }
+      });
+
+      setTimeout(() => {
+        this.$eventHub.$emit('socketio.has_finished_loading_all_medias');
+      }, 5000);
     },
     formatDateToHuman(date) {
       return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LL');
