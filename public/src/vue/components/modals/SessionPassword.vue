@@ -6,7 +6,7 @@
     @submit="submitPassword"
     :read_only="false"
     :typeOfModal="'EditMeta'"
-    :hide_close_button="true"
+    :prevent_close="true"
     >
     <template slot="header">
       <span class="">{{ $t('connect_to_dodoc') }}</span>

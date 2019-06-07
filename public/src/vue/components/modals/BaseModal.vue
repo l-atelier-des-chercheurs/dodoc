@@ -101,7 +101,6 @@
               type="button"
               @click="closeModal"
               class="button button-bg_rounded bg-orange"
-              v-if="hide_close_button"
             >
               <img src="/images/i_clear.svg" draggable="false" />
               <span class="text-cap font-verysmall">
@@ -134,7 +133,7 @@
         <button
           class="button-round m_modal--close_button padding-verysmall"
           @click="closeModal"
-          v-if="showModal && !is_minimized"
+          v-if="showModal && !is_minimized && !prevent_close"
         >
           <img src="/images/i_close_sansfond.svg" draggable="false">
         </button>
@@ -230,7 +229,7 @@ export default {
       type: Boolean,
       default: false
     },
-    hide_close_button: {
+    prevent_close: {
       type: Boolean,
       default: false
     }
@@ -300,7 +299,9 @@ export default {
       }
     },
     closeModal: function() {
-      console.log(`METHODS • BaseModal: closeModal with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
+      console.log(`METHODS • BaseModal: closeModal with askBeforeClosingModal = ${this.askBeforeClosingModal}`);
+
+      if(this.prevent_close) return;
 
       if(this.askBeforeClosingModal) {
         this.has_confirm_close_modal_open = true;

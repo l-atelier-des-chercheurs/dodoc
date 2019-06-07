@@ -362,7 +362,6 @@ let vm = new Vue({
       if (this.$root.state.session_password === 'has_pass') {
         var session_storage_pwd = this.$auth.getSessionPasswordFromLocalStorage();
         if (session_storage_pwd) {
-          debugger;
           this.$socketio.connect(session_storage_pwd);
 
           this.$alertify
