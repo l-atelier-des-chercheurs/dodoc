@@ -461,7 +461,9 @@
 }
 .m_modal--nav_left, .m_modal--nav_right {
   position: fixed;
-  top: ~"calc(50% - 40px)";
+  // top: ~"calc(50% - 40px)";
+  top: auto;
+  bottom: 0;
   z-index: 1500;
 
   #app:not(.is--wide) & {
@@ -471,10 +473,19 @@
   }
 }
 .m_modal--nav_left {
-  left:0;
+  left: auto;
+  right: 50%;
+  #app:not(.is--wide) & {
+    left: 0;
+    right: auto;
+  }
 }
 .m_modal--nav_right {
-  right: 0;
+  left: 50%;
+  #app:not(.is--wide) & {
+    left: auto;
+    right: 0;
+  }
 }
 
 .m_modal--header {
