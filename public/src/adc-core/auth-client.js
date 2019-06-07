@@ -18,8 +18,8 @@ module.exports = (function() {
     getSessionPasswordFromLocalStorage: () =>
       getSessionPasswordFromLocalStorage(),
 
-    saveSessionPasswordToLocalStorage: () =>
-      saveSessionPasswordToLocalStorage(),
+    saveSessionPasswordToLocalStorage: pwd =>
+      saveSessionPasswordToLocalStorage(pwd),
 
     emptySessionPasswordInLocalStorage: () =>
       emptySessionPasswordInLocalStorage(),
@@ -66,10 +66,8 @@ module.exports = (function() {
     return localstore.get('session_password');
   }
 
-  function saveSessionPasswordToLocalStorage() {
-    if (session_password) {
-      localstore.set('session_password', session_password);
-    }
+  function saveSessionPasswordToLocalStorage(pwd) {
+    localstore.set('session_password', pwd);
   }
 
   function emptySessionPasswordInLocalStorage() {

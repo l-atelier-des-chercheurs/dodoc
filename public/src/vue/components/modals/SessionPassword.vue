@@ -50,11 +50,10 @@ export default {
   },
   mounted() {
     var session_storage_pwd = this.$auth.getSessionPasswordFromLocalStorage();
+
     if (session_storage_pwd) {
       this.pwd = session_storage_pwd;
       this.submitPassword();
-
-      debugger;
 
       this.$alertify
         .closeLogOnClick(true)
@@ -71,14 +70,11 @@ export default {
   },
   methods: {
     submitPassword() {
-      this.$auth.setSessionPassword(this.pwd);
       if(this.remember_password_on_this_device) {
-        this.$auth.saveSessionPasswordToLocalStorage();
-      } else {
-        this.$auth.emptySessionPasswordInLocalStorage();
+        this.$auth.saveSessionPasswordToLocalStorage(this.pwd);
       }
 
-      this.$socketio.connect();
+      this.$socketio.connect(this.pwd);
       this.$emit('close');
     }
   }

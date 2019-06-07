@@ -349,7 +349,7 @@ module.exports = (function() {
         creation_in_progress: 'En cours de création…',
         connected_to_dodoc: 'Connection à do•doc active',
         using_saved_password:
-          'Connection à do•doc en utilisant le mot de passe enregistré…'
+          'Connection à do•doc en utilisant le mot de passe enregistré'
       }
     },
     en: {

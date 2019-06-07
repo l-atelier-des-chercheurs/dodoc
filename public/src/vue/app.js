@@ -363,7 +363,6 @@ let vm = new Vue({
         this.showSessionPasswordModal = true;
 
         this.$eventHub.$on('socketio.socketerror', () => {
-          this.$auth.emptySessionPasswordInLocalStorage();
           // if error, attempt to reconnect
           this.$alertify
             .closeLogOnClick(true)

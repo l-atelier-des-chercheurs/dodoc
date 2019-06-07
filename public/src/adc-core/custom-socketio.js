@@ -10,12 +10,11 @@ module.exports = (function() {
           socket: ''
         },
         methods: {
-          connect() {
+          connect(pwd) {
             let opts = {};
 
-            const session_password = auth.getSessionPassword();
-            if (session_password) {
-              let hashed_session_password = auth.hashCode(session_password);
+            if (pwd) {
+              let hashed_session_password = auth.hashCode(pwd);
               opts.query = { hashed_session_password };
             }
 
