@@ -21,7 +21,7 @@
           draggable="false"
           v-tippy='{ 
             placement : "bottom",
-            delay: [600, 0]
+            delay: [1000, 0]
           }'        
         />
       </div>

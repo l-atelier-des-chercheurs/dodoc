@@ -146,6 +146,11 @@
           @click="toggleMinimize"
           v-if="showModal && can_minimize"
           :class="{ 'is_minimized' : is_minimized }"
+          :title="$t('minimize_media')" 
+          v-tippy='{
+            placement : "right",
+            delay: [600, 0]
+          }'
         >
           <img src="/images/i_minimize.svg" draggable="false">
         </button>
@@ -156,6 +161,11 @@
           class="button-round bg-blanc m_modal--nav_left padding-verysmall"
           @click="prevMedia()"
           v-if="showModal && media_navigation && !is_minimized"
+          :title="$t('previous_media')" 
+          v-tippy='{
+            placement : "left",
+            delay: [600, 0]
+          }'
         >
           <img src="/images/i_arrow_left.svg" draggable="false">
         </button>
@@ -166,6 +176,11 @@
           class="button-round bg-blanc m_modal--nav_right padding-verysmall"
           @click="nextMedia()"
           v-if="showModal && media_navigation && !is_minimized"
+          :title="$t('next_media')" 
+          v-tippy='{
+            placement : "right",
+            delay: [600, 0]
+          }'
         >
           <img src="/images/i_arrow_right.svg" draggable="false">
         </button>

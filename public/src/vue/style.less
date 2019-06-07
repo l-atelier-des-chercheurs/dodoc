@@ -4147,11 +4147,18 @@ small {
 
 }
 
-.tippy-popper {
+.tippy-popper.tippy-popper {
+  z-index: 100000 !important;
   > * {
-    background: @c-rouge;
-    color: white;
+    color: #fff;
+    text-transform: lowercase;
+    font-size: 80%;
     pointer-events: none;  
+    font-weight: 500;
+    
+    .tippy-backdrop {
+      background: @c-rouge !important;
+    }
   }
   code {
     font-family: 'Fira Code';
