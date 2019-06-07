@@ -293,6 +293,9 @@ module.exports = (function() {
       img_per_second: 'Images par seconde',
       sent: 'Envoyé',
       disable: 'Désactiver',
+      previous_media: 'Média précédent',
+      next_media: 'Média suivant',
+      minimize_media: 'Utiliser comme référence',
 
       notifications: {
         ios_not_compatible_with_capture:
@@ -312,10 +315,10 @@ module.exports = (function() {
         connection_error: 'La connexion au serveur n’a pu se faire.',
         media_has_been_added_successfully: 'Le média a bien été transféré',
         wrong_password_for_dodoc:
-          'Le password envoyé n’est pas valide. Veuillez réessayer.',
+          'Le mot de passe envoyé n’est pas valide. Veuillez réessayer.',
         loading_dodoc: 'Chargement de do•doc en cours…',
         'wrong_password_for_folder:':
-          'Le password n’est pas le bon pour le dossier&nbsp;:',
+          'Le mot de passe n’est pas le bon pour le dossier&nbsp;:',
         'created_edited_media:':
           'Création ou édition d’un média pour le dossier&nbsp;:',
         project_name_exists:

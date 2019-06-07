@@ -360,7 +360,22 @@ let vm = new Vue({
       }
 
       if (this.$root.state.session_password === 'has_pass') {
-        this.showSessionPasswordModal = true;
+        var session_storage_pwd = this.$auth.getSessionPasswordFromLocalStorage();
+        if (session_storage_pwd) {
+          debugger;
+          this.$socketio.connect(session_storage_pwd);
+
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .log(this.$t('notifications.using_saved_password'));
+
+          this.$eventHub.$once('socketio.socketerror', () => {
+            this.showSessionPasswordModal = true;
+          });
+        } else {
+          this.showSessionPasswordModal = true;
+        }
 
         this.$eventHub.$on('socketio.socketerror', () => {
           // if error, attempt to reconnect

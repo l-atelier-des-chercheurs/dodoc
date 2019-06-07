@@ -49,17 +49,6 @@ export default {
   created() {
   },
   mounted() {
-    var session_storage_pwd = this.$auth.getSessionPasswordFromLocalStorage();
-
-    if (session_storage_pwd) {
-      this.pwd = session_storage_pwd;
-      this.submitPassword();
-
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .log(this.$t('notifications.using_saved_password'));      
-    }
   },
   beforeDestroy() {
   },
