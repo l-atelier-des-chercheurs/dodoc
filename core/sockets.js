@@ -1,9 +1,8 @@
 const dev = require('./dev-log'),
   api = require('./api'),
   auth = require('./auth'),
-  exporter = require('./exporter');
-
-const file = require('./file');
+  exporter = require('./exporter'),
+  file = require('./file');
 
 module.exports = (function() {
   dev.log(`Sockets module initialized at ${api.getCurrentDate()}`);
@@ -23,7 +22,19 @@ module.exports = (function() {
     app = thisApp;
     io = thisIO;
 
-    io.on('connection', function(socket) {
+    io.use(function(socket, next) {
+      if (
+        auth.checkForSessionPassword(
+          socket.handshake.query.hashed_session_password
+        )
+      ) {
+        dev.log(`CONNECTION ALLOWED`);
+        next();
+      } else {
+        dev.error(`CONNECTION DENIED`);
+        next(new Error('Authentication error'));
+      }
+    }).on('connection', function(socket) {
       dev.log(`RECEIVED CONNECTION FROM SOCKET.id: ${socket.id}`);
       socket._data = {};
 

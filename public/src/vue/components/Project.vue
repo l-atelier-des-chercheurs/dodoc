@@ -224,7 +224,7 @@ export default {
       })
     },
     project_password() {
-      const projects_password = this.$auth.getAdminAccess();
+      const projects_password = this.$auth.getFoldersPasswords();
       if(projects_password.hasOwnProperty('projects') && projects_password['projects'].hasOwnProperty(this.slugProjectName)) {
         return projects_password['projects'][this.slugProjectName];
       }
@@ -260,7 +260,7 @@ export default {
       console.log('METHODS • Project: submitPassword');
 
       
-      this.$auth.updateAdminAccess({
+      this.$auth.updateFoldersPasswords({
         "projects": {
           [this.slugProjectName]: this.$refs.passwordField.value
         }

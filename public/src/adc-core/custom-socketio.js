@@ -11,10 +11,20 @@ module.exports = (function() {
         },
         methods: {
           connect() {
-            let opts = { transports: ['polling', 'websocket'] };
-            if (window.navigator.userAgent.indexOf('Chrome') > -1) {
-              opts = { transports: ['websocket', 'polling'] };
+            let opts = {};
+
+            const session_password = auth.getSessionPassword();
+            if (session_password) {
+              let hashed_session_password = auth.hashCode(session_password);
+              opts.query = { hashed_session_password };
             }
+
+            if (window.navigator.userAgent.indexOf('Chrome') > -1) {
+              opts.transports = ['websocket', 'polling'];
+            } else {
+              opts.transports = ['polling', 'websocket'];
+            }
+
             this.socket = io.connect(opts);
 
             this.socket.on('connect', this._onSocketConnect);
@@ -50,6 +60,9 @@ module.exports = (function() {
             console.log(`Connected as ${sessionId}`);
 
             window.state.connected = true;
+            window.state.authentificated = true;
+
+            this.$eventHub.$emit('socketio.connect');
 
             this.socket.emit('updateClientInfo', {});
             this.sendAuth();
@@ -69,7 +82,7 @@ module.exports = (function() {
           },
 
           sendAuth() {
-            let folder_passwords = auth.getAdminAccess();
+            let folder_passwords = auth.getFoldersPasswords();
             console.log(
               `Asking for auth with ${JSON.stringify(
                 folder_passwords,
@@ -82,12 +95,14 @@ module.exports = (function() {
 
           _onSocketError(reason) {
             console.log(`Unable to connect to server: ${reason}`);
-            window.state.connected = false;
+            window.state.authentificated = false;
+            this.$eventHub.$emit('socketio.socketerror', reason);
           },
 
           _onConnectError(reason) {
             console.log(`Lost connection to server: ${reason}`);
             window.state.connected = false;
+            this.$eventHub.$emit('socketio.connecterror', reason);
           },
 
           _authentificated(list_authorized_folders) {
@@ -97,7 +112,7 @@ module.exports = (function() {
             window.state.list_authorized_folders = list_authorized_folders;
 
             // got list of items admin for, update localstore with that info
-            let folder_passwords = auth.getAdminAccess();
+            let folder_passwords = auth.getFoldersPasswords();
             let clean_folder_passwords = {};
 
             /* 
@@ -130,7 +145,7 @@ module.exports = (function() {
             //     // clean_folder_passwords[type];
             //   });
             // });
-            // auth.updateAdminAccess();
+            // auth.updateFoldersPasswords();
 
             this.$eventHub.$emit(`socketio.authentificated`);
           },

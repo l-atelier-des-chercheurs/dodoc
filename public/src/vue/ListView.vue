@@ -351,11 +351,20 @@ export default {
     },
     groupedMedias: function() {
       let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
-          if(media.hasOwnProperty('date_created')) {
-            var dateMoment = this.$moment(media.date_created);
-            return dateMoment.format('YYYY-MM-DD');
-          }
-        });
+
+        let _date;
+
+        if(media.hasOwnProperty('date_created') && !!media.date_created) {
+          _date = media.date_created;
+        } else if(media.hasOwnProperty('date_uploaded') && !!media.date_uploaded) {
+          _date = media.date_uploaded;
+        } else {
+          return this.$t('invalid_date');
+        }
+
+        var dateMoment = this.$moment(_date);
+        return dateMoment.format('YYYY-MM-DD');
+      });
       mediaGroup = this.$_.pairs(mediaGroup); 
       mediaGroup = this.$_.sortBy(mediaGroup);
       mediaGroup = mediaGroup.reverse();

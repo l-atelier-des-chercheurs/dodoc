@@ -68,25 +68,19 @@ module.exports = (function() {
             );
         }
 
-        // if has pass, check for request password
-        function hashCode(s) {
-          return s.split('').reduce(function(a, b) {
-            a = (a << 5) - a + b.charCodeAt(0);
-            return a & a;
-          }, 0);
-        }
-
         const request_session_password = new Buffer(
           req.headers['session-password'],
           'base64'
         ).toString('binary');
 
-        if (hashCode(request_session_password) !== global.session_password) {
+        if (
+          auth.checkForSessionPassword(auth.hashCode(request_session_password))
+        ) {
           dev.error('REMOTE_API — _sessionPasswordCheck : wrong password');
           dev.error(
-            `Submitted: ${hashCode(request_session_password)}\nShould be: ${
-              global.session_password
-            }`
+            `Submitted: ${auth.hashCode(
+              request_session_password
+            )}\nShould be: ${global.session_password}`
           );
           return res.status(500).send('Wrong password sent!');
         }
