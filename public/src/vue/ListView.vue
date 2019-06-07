@@ -114,7 +114,7 @@
       </transition-group>
       <transition-group
         v-else-if="show_medias_instead_of_projects && !is_loading_all_medias"
-        class="m_projects--list mini_scroll_panel"
+        class="m_allmedias--list mini_scroll_panel"
         name="list-complete"
       >
         <div v-for="item in groupedMedias" :key="item[0]">
