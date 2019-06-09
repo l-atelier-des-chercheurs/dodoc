@@ -41,6 +41,7 @@ module.exports = (function() {
             this.socket.on('listSpecificMedias', this._onListSpecificMedias);
             this.socket.on('publiPDFGenerated', this._onPubliPDFGenerated);
             this.socket.on('publiVideoGenerated', this._onPubliVideoGenerated);
+            this.socket.on('publiVideoFailed', this._onPubliVideoFailed);
             this.socket.on(
               'publiStopmotionIsGenerated',
               this._onPubliStopmotionGenerated
@@ -231,6 +232,11 @@ module.exports = (function() {
             console.log('Received _onPubliVideoGenerated packet.');
             this.$eventHub.$emit('socketio.publication.videoIsGenerated', data);
           },
+          _onPubliVideoFailed() {
+            console.log('Received _onPubliVideoFailed packet.');
+            this.$eventHub.$emit('socketio.publication.videoFailedToGenerate');
+          },
+
           _onPubliStopmotionGenerated(data) {
             console.log('Received _onPubliStopmotionGenerated packet.');
             this.$eventHub.$emit(

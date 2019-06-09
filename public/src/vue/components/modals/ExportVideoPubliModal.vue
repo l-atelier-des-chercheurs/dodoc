@@ -26,7 +26,9 @@
             </template>
             <template v-else-if="video_request_status === 'generated'">
               {{ $t('notifications.video_created') }}
-
+            </template>
+            <template v-else-if="video_request_status === 'failed'">
+              {{ $t('notifications.video_creation_failed') }}
             </template>
           </button>
           
@@ -101,7 +103,9 @@ export default {
         console.log(`METHODS • ExportVideoPubli: downloadVideo`);
       }
 
-      this.$eventHub.$on('socketio.publication.videoIsGenerated', this.videoPubliIsGenerated);
+      this.$eventHub.$once('socketio.publication.videoIsGenerated', this.videoPubliIsGenerated);
+      this.$eventHub.$once('socketio.publication.videoFailedToGenerate', this.videoPubliFailedToGenerate);
+
       this.$socketio.downloadVideoPubli({ 
         slugPubliName: this.slugPubliName
       });
@@ -111,11 +115,22 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: videoPubliIsGenerated`);
       }
-      this.$eventHub.$off('socketio.publication.videoIsGenerated', this.videoPubliIsGenerated);
+
+      this.$eventHub.$off('socketio.publication.videoFailedToGenerate');
+
       this.video_request_status = 'generated';
       this.link_to_video = window.location.origin + '/publication/video/' + videoName;
       this.exported_video_name = videoName; 
     },
+    videoPubliFailedToGenerate() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: videoPubliFailedToGenerate`);
+      }
+
+      this.$eventHub.$off('socketio.publication.videoIsGenerated');
+
+      this.video_request_status = 'failed';
+    }
   }
 }
 </script>

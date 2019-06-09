@@ -356,7 +356,7 @@ module.exports = (function() {
           'Connection à do•doc en utilisant le mot de passe enregistré',
         pdf_created: 'Le PDF a été créé',
         video_created: 'La vidéo a été créée',
-        video_creation_failed: 'La vidéo n’a pas pu être créée. Erreur&nbsp;:'
+        video_creation_failed: 'La vidéo n’a pas pu être créée'
       }
     },
     en: {
@@ -702,7 +702,7 @@ module.exports = (function() {
           'Connecting to do•doc using the password that was saved',
         pdf_created: 'PDF created',
         video_created: 'The video was created',
-        video_creation_failed: 'The video was not created. Error returned:'
+        video_creation_failed: 'The video was not created'
       }
     }
   };

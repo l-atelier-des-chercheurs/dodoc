@@ -995,6 +995,9 @@ module.exports = (function() {
     socket
   }) {
     return new Promise(function(resolve, reject) {
+      // if (index === 1) {
+      //   throw Error('fake fail');
+      // }
       dev.logfunction('EXPORTER — _prepareVideosForMontageAndWeb');
 
       const temp_video_name = vm.media_filename + '.ts';

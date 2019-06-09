@@ -368,6 +368,12 @@ module.exports = (function() {
       slugPubliName = ${slugPubliName}`
     );
     exporter.makePDFForPubli({ slugPubliName }).then(({ pdfName, pdfPath }) => {
+      notify({
+        socket,
+        localized_string: `finished_creating_recipe`,
+        type: 'success'
+      });
+
       api.sendEventWithContent(
         'publiPDFGenerated',
         { pdfName, pdfPath },
@@ -407,6 +413,8 @@ module.exports = (function() {
           not_localized_string: error_msg,
           type: 'error'
         });
+
+        api.sendEventWithContent('publiVideoFailed', {}, io, socket);
       });
   }
 
