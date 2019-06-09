@@ -46,6 +46,10 @@ module.exports = (function() {
               'publiStopmotionIsGenerated',
               this._onPubliStopmotionGenerated
             );
+            this.socket.on(
+              'publiStopmotionFailed',
+              this._onPubliStopmotionFailed
+            );
 
             this.socket.on('newNetworkInfos', this._onNewNetworkInfos);
 
@@ -243,6 +247,11 @@ module.exports = (function() {
               'socketio.publication.publiStopmotionIsGenerated',
               data
             );
+          },
+
+          _onPubliStopmotionFailed() {
+            console.log('Received _onPubliStopmotionFailed packet.');
+            this.$eventHub.$emit('socketio.publication.publiStopmotionFailed');
           },
 
           _listClients(data) {

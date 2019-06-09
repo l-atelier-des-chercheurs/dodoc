@@ -413,7 +413,8 @@ module.exports = (function() {
                 })
                 .then(imagesFilePathInOrder => {
                   numberOfImagesToProcess = imagesFilePathInOrder.length;
-                  return _prepareImageForStopmotion({
+
+                  return _prepareImagesForStopmotion({
                     imagesFilePathInOrder,
                     cachePath: imagesCachePath,
                     resolution
@@ -457,7 +458,7 @@ module.exports = (function() {
                       dev.error('An error happened: ' + err.message);
                       dev.error('ffmpeg standard output:\n' + stdout);
                       dev.error('ffmpeg standard error:\n' + stderr);
-                      return reject(`couldn't create a stopmotion animation`);
+                      return reject(error);
                     })
                     .save(videoCachePath);
                   global.ffmpeg_processes.push(ffmpeg_cmd);
@@ -631,13 +632,13 @@ module.exports = (function() {
     return mediasAndMetaInOrder[0].ratio;
   }
 
-  function _prepareImageForStopmotion({
+  function _prepareImagesForStopmotion({
     imagesFilePathInOrder,
     cachePath,
     resolution
   }) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction('EXPORTER — _prepareImageForStopmotion');
+      dev.logfunction('EXPORTER — _prepareImagesForStopmotion');
       // let slugStopmotionPath = getFolderPath(
       //   path.join(
       //     global.settings.structure['stopmotions'].path,

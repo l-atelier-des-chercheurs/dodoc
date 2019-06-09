@@ -427,12 +427,29 @@ module.exports = (function() {
     exporter
       .makeVideoFromImagesInPubli({ slugPubliName, options, socket })
       .then(videoName => {
+        notify({
+          socket,
+          localized_string: `finished_creating_recipe`,
+          type: 'success'
+        });
+
         api.sendEventWithContent(
           'publiStopmotionIsGenerated',
           { videoName },
           io,
           socket
         );
+      })
+      .catch(error => {
+        notify({
+          socket,
+          socketid: socket.id,
+          localized_string: `video_creation_failed`,
+          not_localized_string: error.message,
+          type: 'error'
+        });
+
+        api.sendEventWithContent('publiStopmotionFailed', {}, io, socket);
       });
   }
 
