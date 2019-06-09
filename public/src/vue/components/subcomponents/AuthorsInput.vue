@@ -25,8 +25,7 @@ export default {
   },
   data() {
     return {
-      authors: this.currentAuthors !== undefined && this.currentAuthors !== '' ? this.currentAuthors : [],
-      // allAuthors: [],
+      authors: this.currentAuthors !== undefined && this.currentAuthors !== '' ? this.currentAuthors.slice() : [],
       show_all_authors: false,
       max_authors_displayed_at_first: 8
     }
