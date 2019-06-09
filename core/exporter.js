@@ -1081,17 +1081,23 @@ module.exports = (function() {
   }
 
   function _notifyFfmpegProgress({ socket, progress }) {
-    if (!progress.hasOwnProperty('percent') || Number.isNaN(progress.percent)) {
-      require('./sockets').notify({
-        socket,
-        localized_string: `creating_video`
-      });
-    } else {
+    if (progress.hasOwnProperty('percent') && !Number.isNaN(progress.percent)) {
       require('./sockets').notify({
         socket,
         localized_string: `creating_video`,
         not_localized_string:
           Number.parseFloat(progress.percent).toFixed(1) + '%'
+      });
+    } else if (!progress.hasOwnProperty('timemark')) {
+      require('./sockets').notify({
+        socket,
+        localized_string: `creating_video`,
+        not_localized_string: timemark
+      });
+    } else {
+      require('./sockets').notify({
+        socket,
+        localized_string: `creating_video`
       });
     }
   }
