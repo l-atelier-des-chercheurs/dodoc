@@ -69,7 +69,7 @@
               {{ $t('notifications.creation_in_progress') }}
             </template>
             <template v-else-if="video_request_status === 'generated'">
-              {{ $t('video_created') }}
+              {{ $t('notifications.video_created') }}
 
             </template>
           </button>

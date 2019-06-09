@@ -302,7 +302,7 @@ module.exports = (function() {
             console.log('Received _onNewNetworkInfos packet.');
             window.state.localNetworkInfos = data;
           },
-          _onNotify({ localized_string, not_localized_string, type }) {
+          _onNotify({ localized_string, not_localized_string, type = 'log' }) {
             console.log('Received _onNotify packet.');
             let msg = '';
             if (localized_string && not_localized_string) {
@@ -318,16 +318,21 @@ module.exports = (function() {
               msg += this.$t(`notifications['${localized_string}']`);
             }
 
-            if (!type || type === 'log') {
-              alertify
-                .closeLogOnClick(true)
-                .delay(4000)
-                .log(msg);
-            } else if (type === 'success') {
+            if (type === 'success') {
               alertify
                 .closeLogOnClick(true)
                 .delay(4000)
                 .success(msg);
+            } else if (type === 'error') {
+              alertify
+                .closeLogOnClick(true)
+                .delay(10000)
+                .error(msg);
+            } else {
+              alertify
+                .closeLogOnClick(true)
+                .delay(4000)
+                .log(msg);
             }
           },
           listFolders(fdata) {

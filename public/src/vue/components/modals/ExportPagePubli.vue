@@ -25,7 +25,7 @@
               {{ $t('notifications.creation_in_progress') }}
             </template>
             <template v-else-if="pdf_request_status === 'generated'">
-              {{ $t('pdf_created') }}
+              {{ $t('notifications.pdf_created') }}
             </template>
           </button>
 

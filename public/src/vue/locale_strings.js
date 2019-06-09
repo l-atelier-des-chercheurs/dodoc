@@ -267,9 +267,6 @@ module.exports = (function() {
       get_website:
         'Pour récupérer un site web contenant cette publication (par exemple pour la diffuser en ligne), cliquez sur le bouton ci-dessous&nbsp;:',
       download_website: 'Télécharger une version web',
-      pdf_created: 'Le PDF a été créé',
-      video_created: 'La vidéo a été créée',
-      video_creation_failed: 'La vidéo n’a pas pu être créée. Erreur&nbsp;:',
       open_in_app: 'Afficher',
       format: 'Format',
       template: 'Gabarit',
@@ -356,7 +353,10 @@ module.exports = (function() {
         creation_in_progress: 'En cours de création…',
         connected_to_dodoc: 'Connection à do•doc active',
         using_saved_password:
-          'Connection à do•doc en utilisant le mot de passe enregistré'
+          'Connection à do•doc en utilisant le mot de passe enregistré',
+        pdf_created: 'Le PDF a été créé',
+        video_created: 'La vidéo a été créée',
+        video_creation_failed: 'La vidéo n’a pas pu être créée. Erreur&nbsp;:'
       }
     },
     en: {
@@ -609,9 +609,6 @@ module.exports = (function() {
       get_website:
         'To download a website version of this publication (for example, to publish online), click here:',
       download_website: 'Download a website',
-      pdf_created: 'PDF created',
-      video_created: 'The video was created',
-      video_creation_failed: 'The video was not created. Error returned:',
       open_in_app: 'Open',
       format: 'Format',
       template: 'Template',
@@ -702,7 +699,10 @@ module.exports = (function() {
         creation_in_progress: 'Creation in progress…',
         connected_to_dodoc: 'Connection to do•doc active',
         using_saved_password:
-          'Connecting to do•doc using the password that was saved'
+          'Connecting to do•doc using the password that was saved',
+        pdf_created: 'PDF created',
+        video_created: 'The video was created',
+        video_creation_failed: 'The video was not created. Error returned:'
       }
     }
   };

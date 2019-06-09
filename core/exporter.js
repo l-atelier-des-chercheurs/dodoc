@@ -311,7 +311,7 @@ module.exports = (function() {
                     return resolve(videoName);
                   })
                   .catch(err => {
-                    return reject(`Failed to make a video: ${err}`);
+                    return reject(err.message);
                   });
               } else if (type_of_publication === 'mix_audio_and_video') {
                 // merge audio and video
@@ -326,7 +326,7 @@ module.exports = (function() {
                     return resolve(videoName);
                   })
                   .catch(err => {
-                    return reject(`Failed to make a video: ${err}`);
+                    return reject(`${err}`);
                   });
               } else if (type_of_publication === 'mix_audio_and_image') {
                 // merge audio and image
@@ -450,7 +450,6 @@ module.exports = (function() {
                       _notifyFfmpegProgress({ socket, progress });
                     })
                     .on('end', () => {
-                      _notifyFfmpegSuccess({ socket });
                       dev.logverbose(`Stopmotion has been completed`);
                       return resolve(videoName);
                     })
@@ -710,129 +709,129 @@ module.exports = (function() {
           cachePath,
           resolution,
           socket
-        }).then(temp_video_path => {
-          require('./sockets').notify({
-            socket,
-            localized_string: `preparing_video_from_montage`,
-            not_localized_string: `
+        })
+          .then(temp_video_path => {
+            require('./sockets').notify({
+              socket,
+              localized_string: `preparing_video_from_montage`,
+              not_localized_string: `
             ${index + 1}/${index + video_files.length + 1}
             `
+            });
+
+            index++;
+            temp_videos_array.push({ full_path: temp_video_path });
+
+            return video_files.length == 0
+              ? ''
+              : executeSequentially(video_files);
+          })
+          .catch(err => {
+            return err;
           });
-
-          index++;
-          temp_videos_array.push({ full_path: temp_video_path });
-
-          return video_files.length == 0
-            ? ''
-            : executeSequentially(video_files);
-        });
       };
 
-      executeSequentially(video_files)
-        .then(() => {
-          dev.logverbose(
-            `EXPORTER — _makeVideoAssemblage : finished preparing videos`
-          );
+      executeSequentially(video_files).then(err => {
+        if (err) return reject(err);
 
-          const ffmpeg_cmd = new ffmpeg();
+        dev.logverbose(
+          `EXPORTER — _makeVideoAssemblage : finished preparing videos`
+        );
 
-          temp_videos_array.map(v => ffmpeg_cmd.addInput(v.full_path));
+        const ffmpeg_cmd = new ffmpeg();
 
-          // let time_since_last_report = 0;
-          ffmpeg_cmd
-            // .complexFilter(['gltransition'])
-            .on('start', function(commandLine) {
-              dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
-            })
-            .on('progress', progress => {
-              _notifyFfmpegProgress({ socket, progress });
+        temp_videos_array.map(v => ffmpeg_cmd.addInput(v.full_path));
 
-              // if (+new Date() - time_since_last_report > 3000) {
-              //   time_since_last_report = +new Date();
-              //   require('./sockets').notify({
-              //     socket,
-              //     localized_string: `creating_video`,
-              //     not_localized_string: progress.timemark
-              //   });
-              // }
-            })
-            .on('end', () => {
-              _notifyFfmpegSuccess({ socket });
-              dev.logverbose(`Video has been created`);
-              return resolve();
-            })
-            .on('error', function(err, stdout, stderr) {
-              dev.error('An error happened: ' + err.message);
-              dev.error('ffmpeg standard output:\n' + stdout);
-              dev.error('ffmpeg standard error:\n' + stderr);
-              return reject(`Couldn't convert video : ${err.message}`);
-            })
-            .mergeToFile(videoPath, cachePath);
+        // let time_since_last_report = 0;
+        ffmpeg_cmd
+          // .complexFilter(['gltransition'])
+          .on('start', function(commandLine) {
+            dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+          })
+          .on('progress', progress => {
+            _notifyFfmpegProgress({ socket, progress });
 
-          global.ffmpeg_processes.push(ffmpeg_cmd);
+            // if (+new Date() - time_since_last_report > 3000) {
+            //   time_since_last_report = +new Date();
+            //   require('./sockets').notify({
+            //     socket,
+            //     localized_string: `creating_video`,
+            //     not_localized_string: progress.timemark
+            //   });
+            // }
+          })
+          .on('end', () => {
+            dev.logverbose(`Video has been created`);
+            return resolve();
+          })
+          .on('error', function(err, stdout, stderr) {
+            dev.error('An error happened: ' + err.message);
+            dev.error('ffmpeg standard output:\n' + stdout);
+            dev.error('ffmpeg standard error:\n' + stderr);
+            return reject(err);
+          })
+          .mergeToFile(videoPath, cachePath);
 
-          // does not work that well with -f concat
-          // reconverting with mergeToFile might seem overkill but yields much much better results
+        global.ffmpeg_processes.push(ffmpeg_cmd);
 
-          //   // let concat_method = 'concat';
-          //   // let concat_method = 'remux';
-          //   // if(concat_method === "concat") {
+        // does not work that well with -f concat
+        // reconverting with mergeToFile might seem overkill but yields much much better results
 
-          //   let inputs_to_concat = [];
+        //   // let concat_method = 'concat';
+        //   // let concat_method = 'remux';
+        //   // if(concat_method === "concat") {
 
-          //   // var fileList = temp_videos_array.map(); // files to merge
+        //   let inputs_to_concat = [];
 
-          //   var listFileName = path.join(cachePath, 'list.txt');
-          //   var fileNames = '';
+        //   // var fileList = temp_videos_array.map(); // files to merge
 
-          //   // ffmpeg -f concat -i mylist.txt -c copy output
-          //   temp_videos_array.map(v => {
-          //     fileNames += 'file ' + v.full_path + '\n';
-          //   });
+        //   var listFileName = path.join(cachePath, 'list.txt');
+        //   var fileNames = '';
 
-          //   fs.writeFileSync(listFileName, fileNames);
+        //   // ffmpeg -f concat -i mylist.txt -c copy output
+        //   temp_videos_array.map(v => {
+        //     fileNames += 'file ' + v.full_path + '\n';
+        //   });
 
-          //   // ffmpeg_cmd.addInput('concat:' + inputs_to_concat.join('|') + '');
+        //   fs.writeFileSync(listFileName, fileNames);
 
-          //   let time_since_last_report = 0;
-          //   ffmpeg_cmd
-          //     .input(listFileName)
-          //     .inputOptions(['-f concat', '-safe 0'])
-          //     .outputOptions('-c copy')
-          //     // .complexFilter(['gltransition'])
-          //     // .inputFormat('concat')
-          //     // .videoCodec('copy')
-          //     // .audioCodec('copy')
-          //     // .addOptions(['-bsf:a aac_adtstoasc'])
-          //     .on('start', function(commandLine) {
-          //       dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
-          //     })
-          //     .on('progress', progress => {
-          //       require('./sockets').notify({
-          //         socket,
-          //         localized_string: `creating_video`,
-          //         not_localized_string:
-          //           Number.parseFloat(progress.percent).toFixed(1) + '%'
-          //       });
-          //     })
-          //     .on('end', () => {
-          //       dev.logverbose(`Video has been created`);
-          //       return resolve();
-          //     })
-          //     .on('error', function(err, stdout, stderr) {
-          //       ffmpeg_cmd = null;
-          //       dev.error('An error happened: ' + err.message);
-          //       dev.error('ffmpeg standard output:\n' + stdout);
-          //       dev.error('ffmpeg standard error:\n' + stderr);
-          //       return reject(`Couldn't convert video : ${err.message}`);
-          //     })
-          //     .save(videoPath);
-          // global.ffmpeg_processes.push(ffmpeg_cmd);
-        })
-        .catch(error => {
-          dev.error(error.message);
-          reject(error.message);
-        });
+        //   // ffmpeg_cmd.addInput('concat:' + inputs_to_concat.join('|') + '');
+
+        //   let time_since_last_report = 0;
+        //   ffmpeg_cmd
+        //     .input(listFileName)
+        //     .inputOptions(['-f concat', '-safe 0'])
+        //     .outputOptions('-c copy')
+        //     // .complexFilter(['gltransition'])
+        //     // .inputFormat('concat')
+        //     // .videoCodec('copy')
+        //     // .audioCodec('copy')
+        //     // .addOptions(['-bsf:a aac_adtstoasc'])
+        //     .on('start', function(commandLine) {
+        //       dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+        //     })
+        //     .on('progress', progress => {
+        //       require('./sockets').notify({
+        //         socket,
+        //         localized_string: `creating_video`,
+        //         not_localized_string:
+        //           Number.parseFloat(progress.percent).toFixed(1) + '%'
+        //       });
+        //     })
+        //     .on('end', () => {
+        //       dev.logverbose(`Video has been created`);
+        //       return resolve();
+        //     })
+        //     .on('error', function(err, stdout, stderr) {
+        //       ffmpeg_cmd = null;
+        //       dev.error('An error happened: ' + err.message);
+        //       dev.error('ffmpeg standard output:\n' + stdout);
+        //       dev.error('ffmpeg standard error:\n' + stderr);
+        //       return reject(`Couldn't convert video : ${err.message}`);
+        //     })
+        //     .save(videoPath);
+        // global.ffmpeg_processes.push(ffmpeg_cmd);
+      });
     });
   }
 
@@ -902,7 +901,6 @@ module.exports = (function() {
           _notifyFfmpegProgress({ socket, progress });
         })
         .on('end', () => {
-          _notifyFfmpegSuccess({ socket });
           dev.logverbose(`Video has been created`);
           return resolve();
         })
@@ -976,7 +974,6 @@ module.exports = (function() {
           _notifyFfmpegProgress({ socket, progress });
         })
         .on('end', () => {
-          _notifyFfmpegSuccess({ socket });
           dev.logverbose(`Video has been created`);
           return resolve();
         })
@@ -1051,7 +1048,7 @@ module.exports = (function() {
                 dev.error('An error happened: ' + err.message);
                 dev.error('ffmpeg standard output:\n' + stdout);
                 dev.error('ffmpeg standard error:\n' + stderr);
-                return reject(`couldn't create a stopmotion animation`);
+                throw err;
               })
               .run();
             global.ffmpeg_processes.push(ffmpeg_cmd);
@@ -1088,11 +1085,11 @@ module.exports = (function() {
         not_localized_string:
           Number.parseFloat(progress.percent).toFixed(1) + '%'
       });
-    } else if (!progress.hasOwnProperty('timemark')) {
+    } else if (progress.hasOwnProperty('timemark')) {
       require('./sockets').notify({
         socket,
         localized_string: `creating_video`,
-        not_localized_string: timemark
+        not_localized_string: progress.timemark
       });
     } else {
       require('./sockets').notify({
@@ -1100,13 +1097,5 @@ module.exports = (function() {
         localized_string: `creating_video`
       });
     }
-  }
-
-  function _notifyFfmpegSuccess({ socket }) {
-    require('./sockets').notify({
-      socket,
-      localized_string: `finished_creating_recipe`,
-      type: 'success'
-    });
   }
 })();

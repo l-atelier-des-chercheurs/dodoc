@@ -386,6 +386,12 @@ module.exports = (function() {
     exporter
       .makeVideoForPubli({ slugPubliName, socket })
       .then(videoName => {
+        notify({
+          socket,
+          localized_string: `finished_creating_recipe`,
+          type: 'success'
+        });
+
         api.sendEventWithContent(
           'publiVideoGenerated',
           { videoName },
@@ -398,7 +404,8 @@ module.exports = (function() {
           socket,
           socketid: socket.id,
           localized_string: `video_creation_failed`,
-          not_localized_string: error_msg
+          not_localized_string: error_msg,
+          type: 'error'
         });
       });
   }
