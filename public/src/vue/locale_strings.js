@@ -538,9 +538,9 @@ module.exports = (function() {
       export_video_instructions:
         'Click this button to generate a video from multiple source videos.',
       export_audio_video_mix_instructions:
-        'Click this button to generate a video from the audio and video selected.',
+        'Click this button to generate a video from the sound and video selected.',
       export_audio_image_mix_instructions:
-        'Click this button to generate a video from the audio and image selected.',
+        'Click this button to generate a video from the sound and image selected.',
       export_stopmotion_instructions:
         'Click this button to generate a video from images you have selected.',
       make_video: 'Make a video',
@@ -620,16 +620,18 @@ module.exports = (function() {
       previous_creations: 'Previous creations',
       stopmotion_animation: 'Stopmotion animation',
 
-      page_by_page_instructions: `This recipe can be used to create a paged document with a specific size.<br> Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, tracts, newspapers, etc.) or a webpage to upload online.`,
-      video_assemblage_instructions: `This recipe creates a video from mulitple source videos, one after the other.<br> Accepted medias: videos of the same size.<br>Will create a new video.`,
-      stopmotion_animation_instructions: `This recipe takes any number of images as inputs and creates a single video with images being displayed at a specific speed.<br> Accepted medias: images of any size. The first image will determine if the video will be in portrait or landscape.<br>Will create a new video.`,
-      mix_audio_and_video_instructions: `This recipe mixes a video and an audio track to create a new video where they are played at the same time.<br> Accepted medias: a video and a sound track.<br>Will create a new video.`,
+      page_by_page_instructions: `This recipe can be used to create a paged document with a specific size.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, tracts, newspapers, etc.) or a webpage to upload online.`,
+      video_assemblage_instructions: `This recipe creates a video from mulitple source videos, one after the other.<br>Accepted medias: videos of the same size.<br>Will create a new video.`,
+      stopmotion_animation_instructions: `This recipe takes any number of images as inputs and creates a single video with images being displayed at a specific speed.<br>Accepted medias: images of any size. The first image will determine if the video will be in portrait or landscape.<br>Will create a new video.`,
+      mix_audio_and_video_instructions: `This recipe mixes a video and an audio track to create a new video where they are played at the same time.<br>Accepted medias: a video and a sound track.<br>Will create a new video.`,
+      mix_audio_and_image_instructions: `This recipe mixes an image with an audio track to create a <i>speaking image</i><br>Accepted medias: an image and a sound track.<br>Will create a new video.`,
 
       add_sound_video_file:
         'Add a <b>sound</b> and a <b>video</b> media to create a new video.',
       add_sound_image_file:
         'Add a <b>sound</b> and an <b>image</b> media to create a new video.',
       mix_audio_and_video: 'Add (or replace) sound on a video',
+      mix_audio_and_image: 'Add sound to an image',
       add_multiple_videos_files:
         'Add multiple <b>video</b> medias to create a new video.',
       add_multiple_images:

@@ -14,6 +14,7 @@
       v-if="show_export_modal"
       @close="show_export_modal = false"
       :slugPubliName="slugPubliName"
+      :instructions="$t('export_video_instructions')"
     />
 
     <div class="m_videoPublication">
