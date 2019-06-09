@@ -100,7 +100,8 @@ module.exports = (function() {
     socket,
     socketid,
     not_localized_string,
-    localized_string
+    localized_string,
+    type
   }) {
     dev.logfunction(`EVENT - notify for socketid = ${socketid}`);
     if (socketid || socket) {
@@ -109,7 +110,7 @@ module.exports = (function() {
       }
       api.sendEventWithContent(
         'notify',
-        { not_localized_string, localized_string },
+        { not_localized_string, localized_string, type },
         io,
         socket
       );

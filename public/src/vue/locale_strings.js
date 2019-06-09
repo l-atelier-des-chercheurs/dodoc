@@ -350,6 +350,9 @@ module.exports = (function() {
           'Ce projet vient d’être supprimé par quelqu’un d’autre.',
         wrong_password_for: 'Mot de passe erroné pour ',
         creating_video: 'En cours de création de la vidéo…',
+        preparing_video_from_montage: 'Préparation des vidéos du montage',
+        finished_creating_recipe:
+          'La recette est terminée et peut être consultée !',
         creation_in_progress: 'En cours de création…',
         connected_to_dodoc: 'Connection à do•doc active',
         using_saved_password:
@@ -694,6 +697,8 @@ module.exports = (function() {
           'This project just got removed by another user.',
         wrong_password_for: 'Wrong password for project ',
         creating_video: 'Creating video…',
+        preparing_video_from_montage: 'Pre-processing videos from the montage',
+        finished_creating_recipe: 'The recipe was successfully completed!',
         creation_in_progress: 'Creation in progress…',
         connected_to_dodoc: 'Connection to do•doc active',
         using_saved_password:

@@ -302,7 +302,7 @@ module.exports = (function() {
             console.log('Received _onNewNetworkInfos packet.');
             window.state.localNetworkInfos = data;
           },
-          _onNotify({ localized_string, not_localized_string }) {
+          _onNotify({ localized_string, not_localized_string, type }) {
             console.log('Received _onNotify packet.');
             let msg = '';
             if (localized_string && not_localized_string) {
@@ -317,10 +317,18 @@ module.exports = (function() {
             } else if (localized_string) {
               msg += this.$t(`notifications['${localized_string}']`);
             }
-            alertify
-              .closeLogOnClick(true)
-              .delay(4000)
-              .log(msg);
+
+            if (!type || type === 'log') {
+              alertify
+                .closeLogOnClick(true)
+                .delay(4000)
+                .log(msg);
+            } else if (type === 'success') {
+              alertify
+                .closeLogOnClick(true)
+                .delay(4000)
+                .success(msg);
+            }
           },
           listFolders(fdata) {
             this.socket.emit('listFolders', fdata);
