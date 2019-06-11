@@ -23,8 +23,8 @@ button, .button {
 
   transition: color .25s ease-out, opacity 0.5s;
 
-  &[disabled] {
-    opacity: 0.4;
+  &[disabled], &.is--disabled {
+    opacity: 0.38;
     cursor: not-allowed;
 
     &[class*="bg-"]:not(.bg-transparent) {

@@ -8,6 +8,7 @@
     <PublicationHeader 
       :slugPubliName="slugPubliName"
       :publication="publication"
+      :publication_medias="publication_medias"
       @export="show_export_modal = true"
     />
 
@@ -30,7 +31,7 @@
       >
         <MediaContent
           v-model="media.content"
-          :context="'full'"
+          :context="'preview'"
           :slugFolderName="media.slugProjectName"
           :media="media"
           class=""

@@ -7,6 +7,8 @@
     <PublicationHeader 
       :slugPubliName="slugPubliName"
       :publication="publication"
+      :publication_medias="publication_medias"
+      :number_of_medias_required="number_of_medias_required"
       @export="show_export_modal = true"
     />
 
@@ -86,7 +88,8 @@ export default {
       show_export_modal: false,
       publication_medias: [],
       medias_slugs_in_order: [],
-      accepted_media_type: ['audio', 'image']
+      accepted_media_type: ['audio', 'image'],
+      number_of_medias_required: 2
     }
   },
   created() {

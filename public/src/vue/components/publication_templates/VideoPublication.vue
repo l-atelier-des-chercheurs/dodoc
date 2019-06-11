@@ -7,6 +7,7 @@
     <PublicationHeader 
       :slugPubliName="slugPubliName"
       :publication="publication"
+      :publication_medias="publication_medias"
       @export="show_export_modal = true"
     />
 

@@ -39,7 +39,7 @@
         />
 
         <button type="button" class="buttonLink" @click="$emit('export')"
-          :disabled="Object.values(publication.medias).length === 0"
+          :class="{ 'is--disabled' : export_button_is_disabled }"
         >
           {{ $t('export') }}
         </button>     
@@ -61,7 +61,12 @@ import EditPublication from '../modals/EditPublication.vue';
 export default {
   props: {
     slugPubliName: String,
-    publication: Object
+    publication: Object,
+    publication_medias: Array,
+    number_of_medias_required: {
+      type: Number,
+      default: -1
+    }
   },
   components: {
     EditPublication
@@ -82,6 +87,17 @@ export default {
   watch: {
   },
   computed: {
+    export_button_is_disabled() {
+      if(Object.values(this.publication_medias).length <= 1) return true;
+
+      if(
+        this.number_of_medias_required !== -1
+        && Object.values(this.publication_medias).length !== this.number_of_medias_required
+      ) 
+        return true;
+
+      return false;
+    }
   },
   methods: {
     closePublication() {
