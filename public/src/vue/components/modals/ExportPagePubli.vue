@@ -33,7 +33,9 @@
             <a 
               v-if="link_to_pdf !== false"
               class="buttonLink margin-left-none"
-              :href="link_to_pdf" target="_blank">
+              :href="link_to_pdf" target="_blank"
+              download
+            >
               {{ $t('download') }}
             </a>
             <!-- <a 
