@@ -6,6 +6,7 @@ const path = require('path'),
   pad = require('pad-left');
 
 const sharp = require('sharp');
+sharp.cache(false);
 
 const dev = require('./dev-log'),
   api = require('./api'),
@@ -655,14 +656,44 @@ module.exports = (function() {
               'img-' + pad(index, 4, '0') + '.jpeg'
             );
 
-            fs.copy(media.full_path, cache_image_path)
-              .then(() => {
-                resolve();
-              })
-              .catch(err => {
-                dev.error(`Failed to copy image to cache with seq name.`);
-                reject(err);
-              });
+            // if image is something else than a jpg/jpeg, then use sharp to convert it
+
+            let media_file_ext = new RegExp(
+              global.settings.regexpGetFileExtension,
+              'i'
+            ).exec(media.full_path)[0];
+
+            if (
+              media_file_ext.toLowerCase() === '.jpeg' ||
+              media_file_ext.toLowerCase() === '.jpg'
+            ) {
+              fs.copy(media.full_path, cache_image_path)
+                .then(() => {
+                  resolve();
+                })
+                .catch(err => {
+                  dev.error(`Failed to copy image to cache with seq name.`);
+                  reject(err);
+                });
+            } else {
+              sharp(media.full_path)
+                .rotate()
+                .resize(resolution.width, resolution.height, {
+                  fit: 'inside',
+                  withoutEnlargement: true,
+                  background: 'white'
+                })
+                .flatten()
+                .withMetadata()
+                .toFile(cache_image_path)
+                .then(() => resolve())
+                .catch(err => {
+                  dev.error(
+                    `Failed to sharp create image to cache with seq name.`
+                  );
+                  reject(err);
+                });
+            }
           })
         );
       });
