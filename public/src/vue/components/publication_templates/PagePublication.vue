@@ -92,6 +92,14 @@
           <label>{{ $t('margin_right') }}(mm)</label>
           <input type="number" min="0" max="100" step="1" v-model="new_margin_right" @input="updatePublicationOption($event, 'margin_right')">
         </div>
+
+        <hr>
+
+        <div class="margin-bottom-small">
+          <label for="show_page_number">{{ $t('show_page_numbers') }}(mm)</label>
+          <input id="show_page_number" type="checkbox" v-model="new_show_page_number" @change="updatePublicationOption(new_show_page_number, 'show_page_number')">
+        </div>
+
       </template>
     </div>
 
@@ -265,6 +273,7 @@
               </div>        
 
               <div 
+                v-if="!page.hasOwnProperty('show_page_number') || page.show_page_number"
                 class="m_page--pageNumber"
                 :class="{ 'toRight' : true }"
               >
@@ -371,8 +380,23 @@ export default {
           margin_bottom: 20,
           gridstep: 10,
           header_left: '',
-          header_right: ''     
+          header_right: '',
+          show_page_number: true 
         }
+      },
+
+      page: {
+        width: 210,
+        height: 297,      
+        style: 'standard',
+        margin_left: 10,
+        margin_right: 10,
+        margin_top: 20,
+        margin_bottom: 20,
+        gridstep: 10,
+        header_left: '',
+        header_right: '',
+        show_page_number: true         
       },
 
       show_edit_css_window: false,
@@ -392,6 +416,7 @@ export default {
       new_margin_bottom: 0,
       new_header_left: '',
       new_header_right: '',
+      new_show_page_number: false,
 
       page_currently_active: 0,
       preview_mode: this.$root.state.mode !== 'live',
@@ -804,6 +829,7 @@ export default {
       this.new_margin_bottom = this.publications_options.margin_bottom;
       this.new_header_left = this.publications_options.header_left;
       this.new_header_right = this.publications_options.header_right;
+      this.new_show_page_number = this.publications_options.show_page_number;
     },
     noSelection() {
       this.has_media_selected = false;
@@ -890,13 +916,24 @@ export default {
     },
     updatePublicationOption(event, type) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: updateMargin with type = ${type}`);
+        console.log(`METHODS • Publication: updatePublicationOption with type = ${type} and value = ${event}`);
       }
+
+      debugger;
+
+      let val = '';
+      if(typeof event === 'object') {
+        val = event.target.value
+      } else {
+        debugger;
+        val = event
+      }
+
       this.$root.editFolder({ 
         type: 'publications', 
         slugFolderName: this.slugPubliName, 
         data: { 
-          [type]: event.target.value
+          [type]: val
         } 
       });
     }

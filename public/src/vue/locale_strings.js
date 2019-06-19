@@ -242,6 +242,8 @@ module.exports = (function() {
       margin_bottom: 'Marge: bas',
       number_of_medias: 'Nombre de médias',
       number_of_pages: 'Nombre de pages',
+      show_page_numbers:
+        'Afficher le nombre de page dans le coin en bas à droite',
 
       export_folder: 'Exporter en format WEB',
       export: 'Exporter',
@@ -597,6 +599,7 @@ module.exports = (function() {
       margin_bottom: 'Margin: bottom',
       number_of_medias: 'Number of medias',
       number_of_pages: 'Number of pages',
+      show_page_numbers: 'Show page number in the bottom-right corner',
 
       export_folder: 'Export as a webpage',
       export: 'Export',
