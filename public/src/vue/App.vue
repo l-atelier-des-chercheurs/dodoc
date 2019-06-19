@@ -32,8 +32,8 @@
           <pane 
             class="splitter-pane splitter-paneL" 
             :class="{ 'is--dragged' : is_dragged }"
-            :split="split" :style="{ [type]: activity_panel_percent+'%'}">
-
+            :split="split" :style="{ [type]: activity_panel_percent+'%'}"
+          >
             <div 
               class="m_activitiesPanel--do"
               :class="{ 'is--large' : activitiesPanel_is_comfortable }"
@@ -70,14 +70,14 @@
 
           </pane>
 
-          <resizer 
+          <Resizer 
             :class="{ 'is--dragged' : is_dragged }"
             :className="className" 
             :style="{ [resizeType]: activity_panel_percent+'%'}" 
             :split="split" 
             @mousedown.native="onMouseDown" 
-            @click.native="onClick">
-          </resizer>
+            @click.native="onClick"
+          />
 
           <pane 
             class="splitter-pane splitter-paneR" 
