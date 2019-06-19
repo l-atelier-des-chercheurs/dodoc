@@ -385,20 +385,6 @@ export default {
         }
       },
 
-      page: {
-        width: 210,
-        height: 297,      
-        style: 'standard',
-        margin_left: 10,
-        margin_right: 10,
-        margin_top: 20,
-        margin_bottom: 20,
-        gridstep: 10,
-        header_left: '',
-        header_right: '',
-        show_page_number: true         
-      },
-
       show_edit_css_window: false,
 
       advanced_options: false,
@@ -549,6 +535,7 @@ export default {
       let defaultPages = [];
       // we need to clone this object to prevent it from being changed
       let pagesClone = JSON.parse(JSON.stringify(this.publication.pages));
+
       for(let page of pagesClone) {
         for(let k of Object.keys(this.publications_options)) {
           const option = this.publications_options[k];
@@ -565,7 +552,9 @@ export default {
             } else {
               page[k] = option;
             }
-
+          } else 
+          if(typeof option === "boolean") {
+            page[k] = option;
           } 
         }
         defaultPages.push(page);
@@ -919,13 +908,10 @@ export default {
         console.log(`METHODS • Publication: updatePublicationOption with type = ${type} and value = ${event}`);
       }
 
-      debugger;
-
       let val = '';
       if(typeof event === 'object') {
         val = event.target.value
       } else {
-        debugger;
         val = event
       }
 

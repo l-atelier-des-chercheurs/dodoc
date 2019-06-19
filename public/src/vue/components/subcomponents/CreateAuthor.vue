@@ -76,7 +76,6 @@ export default {
       console.log('newAuthor');
       let allAuthorsName = this.$root.allAuthors.map(a => a.name.toLowerCase());
 
-        debugger;
       // check if project name (not slug) already exists
       if (allAuthorsName.includes(this.authordata.name.toLowerCase()) >= 0) {
         // invalidate if it does
