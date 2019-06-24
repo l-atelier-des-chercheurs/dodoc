@@ -211,8 +211,15 @@
         :read_only="read_only"
         v-model="mediadata.content"
       />
-      <div class="m_mediaOptions" v-if="false">
-        <button type="button" class="buttonLink" @click="show_edit_media_options = !show_edit_media_options">{{ show_edit_media_options }}</button>
+      <div class="m_mediaOptions">
+        <button type="button" class="buttonLink" @click="show_edit_media_options = !show_edit_media_options">
+          <template v-if="!show_edit_media_options">
+            {{ $t('adjust') }}
+          </template>
+          <tempalte v-else>
+            × {{ $t('close') }}
+          </tempalte>
+        </button>
         <div v-if="show_edit_media_options">
           <button type="button" class="buttonLink" @click="editRawMedia('rotate_image', {angle: 90})"
             v-if="media.type === 'image'"

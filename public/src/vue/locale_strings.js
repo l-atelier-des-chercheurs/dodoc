@@ -49,6 +49,7 @@ module.exports = (function() {
       'layer:': 'Calque&nbsp;:',
       css_settings: 'Règlages CSS',
       edit_content: 'Modifier le contenu',
+      adjust: 'Ajuster',
 
       show_all: 'Tout afficher',
       cooking_pot_instructions:
@@ -414,6 +415,7 @@ module.exports = (function() {
       'layer:': 'Layer:',
       css_settings: 'CSS settings',
       edit_content: 'Edit content',
+      adjust: 'Adjust',
 
       show_all: 'Show all',
       cooking_pot_instructions:
