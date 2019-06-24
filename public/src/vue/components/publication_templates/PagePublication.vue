@@ -389,8 +389,6 @@ export default {
 
       advanced_options: false,
 
-      new_publiname: this.publication.name,
-
       new_width: 0,
       new_height: 0,
       new_template: '',
@@ -486,10 +484,6 @@ export default {
     '$root.settings.publi_zoom': function() {
       this.zoom = this.$root.settings.publi_zoom;
     },
-    'publication.name': function() {
-      this.new_publiname = this.publication.name
-    }
-
   },
   computed: {
     publications_options() {
