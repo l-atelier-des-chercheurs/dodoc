@@ -112,7 +112,7 @@
           class="buttonLink _no_underline" 
           @mousedown.stop.prevent="editZIndex(+1)"
           @touchstart.stop.prevent="editZIndex(+1)"   
-          :title="$t('move_to_foreground') + '<br>' + 'z-index: ' + mediaZIndex"
+          :title="$t('move_to_foreground') + '<br>' + $t('layer:') + ' ' + mediaZIndex"
           v-tippy='{ 
             placement : "top",
             delay: [600, 0]
@@ -130,7 +130,7 @@
           class="buttonLink _no_underline"         
           @mousedown.stop.prevent="editZIndex(-1)"
           @touchstart.stop.prevent="editZIndex(-1)"
-          :title="$t('move_to_background') + '<br>' + 'z-index: ' + mediaZIndex"
+          :title="$t('move_to_background') + '<br>' + $t('layer:') + ' ' + mediaZIndex"
           v-tippy='{ 
             placement : "top",
             delay: [600, 0]
@@ -149,6 +149,11 @@
           @mousedown.stop.prevent="toggleEditWindow()"
           @touchstart.stop.prevent="toggleEditWindow()"
           :class="{ 'is--active' : show_edit_styles_window }"
+          :title="$t('css_settings')"
+          v-tippy='{ 
+            placement : "top",
+            delay: [600, 0]
+          }'                        
         >
           {{ $t('css') }}<sup v-if="custom_css">*</sup>
         </button>
@@ -157,6 +162,11 @@
           class="buttonLink _no_underline"
           @mousedown.stop.prevent="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
           @touchstart.stop.prevent="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
+          :title="$t('edit_content')"
+          v-tippy='{ 
+            placement : "top",
+            delay: [600, 0]
+          }'                        
         >
           <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100.7px"
             height="101px" viewBox="0 0 100.7 101" style="enable-background:new 0 0 100.7 101;" xml:space="preserve">
@@ -169,6 +179,11 @@
           type="button" 
           class="buttonLink _no_underline" 
           @click.stop.prevent="removePubliMedia()"
+          :title="$t('withdraw')"
+          v-tippy='{ 
+            placement : "top",
+            delay: [600, 0]
+          }'                        
         >
           <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="37.2px"
             height="37.2px" viewBox="0 0 37.2 37.2" style="enable-background:new 0 0 37.2 37.2;" xml:space="preserve">

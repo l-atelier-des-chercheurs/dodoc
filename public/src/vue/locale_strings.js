@@ -46,6 +46,10 @@ module.exports = (function() {
       text_overflow: 'Texte en excès',
       move_to_foreground: 'Mettre au premier plan',
       move_to_background: 'Mettre à l’arrière plan',
+      'layer:': 'Calque&nbsp;:',
+      css_settings: 'Règlages CSS',
+      edit_content: 'Modifier le contenu',
+
       show_all: 'Tout afficher',
       cooking_pot_instructions:
         'Mélangez des médias pour en créer des nouveaux !',
@@ -407,6 +411,10 @@ module.exports = (function() {
       text_overflow: 'Overflow text',
       move_to_foreground: 'Move to foreground',
       move_to_background: 'Move to background',
+      'layer:': 'Layer:',
+      css_settings: 'CSS settings',
+      edit_content: 'Edit content',
+
       show_all: 'Show all',
       cooking_pot_instructions:
         'Mix a single or multiple medias to create new medias!',
