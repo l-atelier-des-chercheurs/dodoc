@@ -19,7 +19,7 @@
 <!-- Human name -->
     <div class="margin-bottom-small">
       <label>{{ $t('name') }}</label>
-      <input type="text" v-model="authordata.name" required autofocus>
+      <input type="text" v-model.trim="authordata.name" required autofocus>
     </div>
 
 <!-- Password -->
@@ -77,7 +77,7 @@ export default {
       let allAuthorsName = this.$root.allAuthors.map(a => a.name.toLowerCase());
 
       // check if project name (not slug) already exists
-      if (allAuthorsName.includes(this.authordata.name.toLowerCase()) >= 0) {
+      if (allAuthorsName.includes(this.authordata.name.toLowerCase())) {
         // invalidate if it does
         this.$alertify
           .closeLogOnClick(true)
