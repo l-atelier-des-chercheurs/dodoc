@@ -1034,6 +1034,7 @@ module.exports = (function() {
 
       let temp_video_name = vm.media_filename + '.ts';
       let temp_video_duration;
+      let temp_video_volume = 1;
 
       if (vm.type === 'image') {
         // insert duration in filename to make sure the cache uses the right version
@@ -1042,9 +1043,14 @@ module.exports = (function() {
         } else {
           temp_video_duration = 1;
         }
-
         temp_video_name =
           vm.media_filename + '_duration=' + temp_video_duration + '.ts';
+      }
+
+      if (vm.type === 'video' && vm.publi_meta.hasOwnProperty('volume')) {
+        temp_video_volume = vm.publi_meta.volume / 100;
+        temp_video_name =
+          vm.media_filename + '_volume=' + temp_video_volume + '.ts';
       }
 
       const temp_video_path = path.join(cachePath, temp_video_name);
@@ -1076,7 +1082,7 @@ module.exports = (function() {
             ffmpeg_cmd
               .native()
               .outputFPS(30)
-              .addOptions(['-af apad'])
+              .addOptions(['-af volume=' + temp_video_volume + ',apad'])
               .withVideoCodec('libx264')
               .withVideoBitrate('6000k')
               .withAudioCodec('aac')

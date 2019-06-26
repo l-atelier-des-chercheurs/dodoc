@@ -148,6 +148,10 @@ export default {
     element_height: {
       type: Number,
       default: 0
+    },
+    audio_volume: {
+      type: Number,
+      default: 100
     }
   },
   components: {
@@ -175,6 +179,7 @@ export default {
         }
       }
     }
+    this.setVolume(this.audio_volume);
   },
   beforeDestroy() {
   },
@@ -298,7 +303,8 @@ export default {
   },
   methods: {
     volumeChanged(event) {
-      this.$emit('volumeChanged', event.detail.plyr.volume);
+      const vol = Math.round(Number(event.detail.plyr.volume) * 100);
+      this.$emit('volumeChanged', vol);
     },
     setVolume(val) {
       this.$refs.plyr.player.volume = val / 100;

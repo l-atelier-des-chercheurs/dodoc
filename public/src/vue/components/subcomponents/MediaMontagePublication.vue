@@ -16,7 +16,7 @@
       :media="media"
       :read_only="read_only"
       v-model="media.content"
-      :style="media.publi_meta.custom_css"
+      :audio_volume="volume"
       @volumeChanged="volumeChanged"
     />
     <p class="mediaCaption">{{ media.caption }}</p>
@@ -220,7 +220,7 @@ export default {
       this.$emit('removePubliMedia', { slugMediaName: this.media.publi_meta.metaFileName });
     },
     volumeChanged(val) {
-      this.volume = Math.round(Number(val) * 100);
+      this.volume = val;
     }
   }
 }
