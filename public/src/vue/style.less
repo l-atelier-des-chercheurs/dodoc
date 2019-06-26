@@ -3530,7 +3530,7 @@ small {
 
   .m_stopmotionAnimationPublication {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); 
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
     // grid-auto-rows: 20px;
     // grid-gap: @t-skipline;
 
@@ -3542,13 +3542,18 @@ small {
 
     counter-reset: compteListe;
 
+    .m_mediaMontagePublication--withdraw {
+      top: -5px;
+      right: -5px;
+    }
+
     > * {
       .bg-blanc;
       .padding-verysmall;
       .margin-vert-small;
       // margin-left: -@t-buttonradius;
       // margin-right: -@t-buttonradius;
-      flex: 0 0 100px;
+      // flex: 0 0 100px;
       position: relative;
       transition: all .4s;
 
