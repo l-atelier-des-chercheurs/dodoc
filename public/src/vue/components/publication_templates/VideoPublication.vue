@@ -297,6 +297,15 @@ export default {
       if(dir > 0) {
         this.medias_slugs_in_order.move(idx + dir, idx);
       }
+
+      this.$root.editFolder({ 
+        type: 'publications', 
+        slugFolderName: this.slugPubliName, 
+        data: { 
+          medias_slugs: this.medias_slugs_in_order
+        }
+      });
+
     }
   }
 }
