@@ -10,16 +10,16 @@
   >
 
     <MediaContent
+      ref="mediaContent"
       :context="'full'"
       :slugFolderName="media.slugProjectName"
       :media="media"
       :read_only="read_only"
       v-model="media.content"
       :style="media.publi_meta.custom_css"
+      @volumeChanged="volumeChanged"
     />
     <p class="mediaCaption">{{ media.caption }}</p>
-
-    <hr>
     
     <div class="m_metaField">
       <div>
@@ -38,12 +38,22 @@
       <div v-if="origina_media_duration">
         {{ origina_media_duration }}
       </div>
-      <div v-else-if="enable_image_timer" class="m_mediaMontagePublication--set_image_duration">
+      <div v-else-if="enable_image_timer && media.type === 'image'" class="m_mediaMontagePublication--set_props">
         <input type="number" v-model.number="seconds_per_image" step="1" />
         <span>{{ $t('seconds') }}</span>
       </div>
     </div>
 
+    <div class="m_metaField"
+      v-if="enable_set_video_volume && media.type === 'video'"
+    >
+      <div>
+        {{ $t('volume') }}
+      </div>
+      <div class="m_mediaMontagePublication--set_props">
+        {{ volume }} / 100
+      </div>
+    </div>
 
     <button 
       type="button" 
@@ -134,6 +144,10 @@ export default {
       type: Boolean,
       default: false
     }, 
+    enable_set_video_volume: {
+      type: Boolean,
+      default: false
+    }, 
   },
   components: {
     MediaContent,
@@ -141,7 +155,8 @@ export default {
   data() {
     return {
       mediaID: `${(Math.random().toString(36) + '00000000000000000').slice(2, 3 + 5)}`,
-      seconds_per_image: this.media.publi_meta.duration
+      seconds_per_image: this.media.publi_meta.duration,
+      volume: this.media.publi_meta.volume 
     }
   },
   
@@ -150,6 +165,9 @@ export default {
   mounted() {
     if(this.enable_image_timer && this.seconds_per_image === undefined) {
       this.seconds_per_image = 1;
+    }
+    if(this.enable_set_video_volume && this.volume === undefined) {
+      this.volume = 100;
     }
   },
   beforeDestroy() {
@@ -165,6 +183,20 @@ export default {
       if(this.media.publi_meta.duration !== this.seconds_per_image) {
         this.updateMediaPubliMeta({
           duration: this.seconds_per_image
+        })
+      }
+    },
+    'media.publi_meta.volume': function() {
+      if(this.enable_set_video_volume) {
+        this.volume = this.media.publi_meta.volume;
+        this.$refs.mediaContent.setVolume(this.volume);
+      }
+    },
+    'volume': function() {
+      this.volume = Math.min(100, Math.max(0, this.volume));
+      if(this.media.publi_meta.volume !== this.volume) {
+        this.updateMediaPubliMeta({
+          volume: this.volume
         })
       }
     }
@@ -187,6 +219,9 @@ export default {
     removePubliMedia() {
       this.$emit('removePubliMedia', { slugMediaName: this.media.publi_meta.metaFileName });
     },
+    volumeChanged(val) {
+      this.volume = Math.round(Number(val) * 100);
+    }
   }
 }
 </script>

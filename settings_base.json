@@ -255,7 +255,18 @@
             "type": "string"
           },
           "duration": {
-            "type": "number"
+            "type": "number",
+            "clip": {
+              "min": 0,
+              "max": 999
+            }
+          },
+          "volume": {
+            "type": "number",
+            "clip": {
+              "min": 0,
+              "max": 100
+            }
           },
           "x": {
             "type": "number"

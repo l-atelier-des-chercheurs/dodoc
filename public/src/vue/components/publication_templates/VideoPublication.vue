@@ -36,6 +36,7 @@
             :preview_mode="false"
             :read_only="read_only"
             :enable_image_timer="true"
+            :enable_set_video_volume="true"
             @removePubliMedia="values => { removePubliMedia(values) }"
             @editPubliMedia="values => { editPubliMedia(values) }"
           />
