@@ -1,6 +1,11 @@
 <template>
   <div class="m_publicationMeta">
+    <div class="label padding-verysmall">
+      {{ $t(publication.template) }}
+    </div>
+
     <div class="m_publicationMeta--topbar">
+
       <div>
         <button type="button" class="m_publicationMeta--topbar--backbutton"
           v-if="$root.state.mode !== 'export_publication'"        
@@ -17,6 +22,7 @@
         <div class="m_publicationMeta--topbar--title" :title="slugPubliName">
           {{ publication.name }}
         </div>
+
       </div>
       <div
         v-if="$root.state.mode !== 'export_publication'"

@@ -254,6 +254,9 @@
           "page_id": {
             "type": "string"
           },
+          "duration": {
+            "type": "number"
+          },
           "x": {
             "type": "number"
           },

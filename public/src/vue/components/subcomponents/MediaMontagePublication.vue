@@ -20,6 +20,30 @@
     <p class="mediaCaption">{{ media.caption }}</p>
 
     <hr>
+    
+    <div class="m_metaField">
+      <div>
+        {{ $t('project') }}
+      </div>
+      <div>
+        {{ $root.store.projects[media.slugProjectName].name }}
+      </div>
+    </div>
+    <div class="m_metaField"
+      v-if="origina_media_duration || enable_image_timer"
+    >
+      <div>
+        {{ $t('duration') }}
+      </div>
+      <div v-if="origina_media_duration">
+        {{ origina_media_duration }}
+      </div>
+      <div v-else-if="enable_image_timer" class="m_mediaMontagePublication--set_image_duration">
+        <input type="number" v-model.number="seconds_per_image" step="1" />
+        <span>{{ $t('seconds') }}</span>
+      </div>
+    </div>
+
 
     <button 
       type="button" 
@@ -106,6 +130,10 @@ export default {
   props: {
     media: Object,
     read_only: Boolean,
+    enable_image_timer: {
+      type: Boolean,
+      default: false
+    }, 
   },
   components: {
     MediaContent,
@@ -113,18 +141,41 @@ export default {
   data() {
     return {
       mediaID: `${(Math.random().toString(36) + '00000000000000000').slice(2, 3 + 5)}`,
+      seconds_per_image: this.media.publi_meta.duration
     }
   },
   
   created() {
   },
   mounted() {
+    if(this.enable_image_timer && this.seconds_per_image === undefined) {
+      this.seconds_per_image = 1;
+    }
   },
   beforeDestroy() {
   },
   watch: {
+    'media.publi_meta.duration': function() {
+      if(this.enable_image_timer) {
+        this.seconds_per_image = this.media.publi_meta.duration;
+      }
+    },
+    'seconds_per_image': function() {
+      this.seconds_per_image = Math.min(999, Math.max(0, this.seconds_per_image));
+      if(this.media.publi_meta.duration !== this.seconds_per_image) {
+        this.updateMediaPubliMeta({
+          duration: this.seconds_per_image
+        })
+      }
+    }
   },
   computed: {
+    origina_media_duration() {
+      if(this.media.duration) {
+        return this.$moment.utc(this.media.duration * 1000).format('mm:ss');
+      }
+      return false;
+    }
   },
   methods: {
     updateMediaPubliMeta(val) {

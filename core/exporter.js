@@ -714,10 +714,11 @@ module.exports = (function() {
 
       const videoPath = path.join(cachePath, videoName);
 
-      let video_files = medias_with_original_filepath.filter(
-        m => m.type === 'video'
+      let media_files_to_process = medias_with_original_filepath.filter(m =>
+        ['video', 'image'].includes(m.type)
       );
-      if (video_files.length === 0) return reject(`No video files`);
+      if (media_files_to_process.length === 0)
+        return reject(`No files to process`);
 
       let tasks = [];
       const resolution = {
@@ -735,9 +736,9 @@ module.exports = (function() {
       let temp_videos_array = [];
       let index = 0;
 
-      const executeSequentially = video_files => {
+      const executeSequentially = media_files_to_process => {
         return _prepareVideosForMontageAndWeb({
-          vm: video_files.shift(),
+          vm: media_files_to_process.shift(),
           cachePath,
           resolution,
           socket
@@ -747,23 +748,23 @@ module.exports = (function() {
               socket,
               localized_string: `preparing_video_from_montage`,
               not_localized_string: `
-            ${index + 1}/${index + video_files.length + 1}
+            ${index + 1}/${index + media_files_to_process.length + 1}
             `
             });
 
             index++;
             temp_videos_array.push({ full_path: temp_video_path });
 
-            return video_files.length == 0
+            return media_files_to_process.length == 0
               ? ''
-              : executeSequentially(video_files);
+              : executeSequentially(media_files_to_process);
           })
           .catch(err => {
             return err;
           });
       };
 
-      executeSequentially(video_files).then(err => {
+      executeSequentially(media_files_to_process).then(err => {
         if (err) return reject(err);
 
         dev.logverbose(
@@ -1027,12 +1028,25 @@ module.exports = (function() {
     socket
   }) {
     return new Promise(function(resolve, reject) {
-      // if (index === 1) {
-      //   throw Error('fake fail');
-      // }
+      // used to process videos / images before merging them
+
       dev.logfunction('EXPORTER — _prepareVideosForMontageAndWeb');
 
-      const temp_video_name = vm.media_filename + '.ts';
+      let temp_video_name = vm.media_filename + '.ts';
+      let temp_video_duration;
+
+      if (vm.type === 'image') {
+        // insert duration in filename to make sure the cache uses the right version
+        if (vm.publi_meta.hasOwnProperty('duration')) {
+          temp_video_duration = vm.publi_meta.duration;
+        } else {
+          temp_video_duration = 1;
+        }
+
+        temp_video_name =
+          vm.media_filename + '_duration=' + temp_video_duration + '.ts';
+      }
+
       const temp_video_path = path.join(cachePath, temp_video_name);
 
       fs.access(temp_video_path, fs.F_OK, function(err) {
@@ -1040,7 +1054,11 @@ module.exports = (function() {
           ffmpeg.ffprobe(vm.full_path, function(err, metadata) {
             const ffmpeg_cmd = new ffmpeg();
 
-            if (vm.duration) {
+            ffmpeg_cmd.input(vm.full_path);
+
+            if (vm.type === 'image' && temp_video_duration) {
+              ffmpeg_cmd.duration(temp_video_duration).loop();
+            } else if (vm.duration) {
               dev.logverbose('Setting output to duration: ' + vm.duration);
               ffmpeg_cmd.duration(vm.duration);
             }
@@ -1056,9 +1074,8 @@ module.exports = (function() {
             }
 
             ffmpeg_cmd
-              .input(vm.full_path)
               .native()
-              .fps(30)
+              .outputFPS(30)
               .addOptions(['-af apad'])
               .withVideoCodec('libx264')
               .withVideoBitrate('6000k')

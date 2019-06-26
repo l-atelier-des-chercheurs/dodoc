@@ -829,7 +829,7 @@ body {
 }
 
 .m_publicationsview {
-  .bg-bleuvert;
+  .bg-bleuvert_fonce;
 }
 .m_publicationview {
   .bg-bleuvert;
@@ -3054,7 +3054,7 @@ small {
   .margin-bottom-medium;
 }
 .m_recipes--recipe {
-  border: 4px solid @c-bleuvert_fonce;
+  border: 4px solid @c-bleuvert;
   .margin-small;
   .bg-bleuvert;
 
@@ -3201,9 +3201,7 @@ small {
 
 .m_publicationMeta {
   // .margin-medium;
-  .bg-blanc;
   .margin-small;
-  border-radius: 10px;
   // border-radius: 0 0 10px 10px;
  
   > .buttonLink {
@@ -3211,12 +3209,15 @@ small {
   }
 
   .m_publicationMeta--topbar {
-    margin: 0;
+    .bg-blanc;
+    border-radius: 10px;
+      margin: 0;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
     align-content: flex-start;
     align-items: center;
+    .padding-vert-small;
         
     > * {
       display: flex;
@@ -3226,7 +3227,7 @@ small {
       align-items: center;
 
       // .margin-vert-verysmall;
-      .margin-small;
+      .margin-sides-small;
     }
 
     .m_publicationMeta--topbar--backbutton {
@@ -3244,6 +3245,8 @@ small {
     .m_publicationMeta--topbar--title {
       .font-publi_title;
       flex: 1 1 auto;
+
+      
     }
 
 
@@ -3884,6 +3887,22 @@ small {
     margin-bottom: 0;
     font-size: 85%;
   } 
+
+  .m_mediaMontagePublication--set_image_duration {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: flex-end;
+    
+    input[type="number"] {
+      max-width: 60px;
+      text-align: center;
+      height: 2em;
+      width: auto;
+      .margin-sides-verysmall;
+    }
+    span {
+    }
+  }
 }
 .m_mediaMontagePublication--withdraw {
   position: absolute;
@@ -3892,7 +3911,7 @@ small {
 
   display: flex;
   color: inherit;
-  .bg-orange;
+  // .bg-orange;
   color:@c-noir;
   font-weight: bold;
   pointer-events: auto;

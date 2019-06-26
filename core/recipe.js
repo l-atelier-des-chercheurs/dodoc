@@ -56,7 +56,7 @@ module.exports = (function() {
             ffmpeg_task
               .input(base_media_path)
               .native()
-              .fps(30)
+              .outputFPS(30)
               .addOptions(['-af apad'])
               .withVideoCodec('libx264')
               .withVideoBitrate('6000k')

@@ -35,42 +35,10 @@
             :media="media"
             :preview_mode="false"
             :read_only="read_only"
+            :enable_image_timer="true"
             @removePubliMedia="values => { removePubliMedia(values) }"
             @editPubliMedia="values => { editPubliMedia(values) }"
           />
-
-          <!-- <MediaContent
-            v-model="media.content"
-            :context="'full'"
-            :slugFolderName="media.slugProjectName"
-            :media="media"
-            class=""
-          />
-          <div class="m_metaField">
-            <div>
-              {{ $t('project') }}
-            </div>
-            <div>
-              {{ $root.store.projects[media.slugProjectName].name }}
-            </div>
-          </div>
-          <div class="m_metaField">
-            <div>
-              {{ $t('duration') }}
-            </div>
-            <div v-if="media.type === 'video'">
-              {{ media.duration }}
-            </div>
-            <div v-else-if="media.type === 'image'">
-              <input type="number" v-model.number="seconds_per_image" step="1" />              
-            </div>
-          </div>
-
-          <button type="button" class="buttonLink font-verysmall"
-            @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
-          >
-            {{ $t('withdraw') }}
-          </button> -->
         </div>
       </transition-group>
 
