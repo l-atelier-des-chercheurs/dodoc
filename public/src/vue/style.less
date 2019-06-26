@@ -3610,6 +3610,7 @@ small {
     max-width: 1024px;
 
     .m_videoPublication--media {
+      position: relative;
       max-width: 400px;
       height: auto;
       .padding-small;
@@ -3619,6 +3620,39 @@ small {
 
       .m_metaField {
         .margin-vert-verysmall;
+      }
+
+      .m_videoPublication--media--moveItemButtons {
+        position: absolute;
+        left: -48px;
+        top: 0;
+        height: 100%;
+        width: 48px;
+
+        > * {
+          background-color: transparent;
+          color: @c-bleuvert_fonce;
+          opacity: .4;
+          transition: opacity .4s;
+
+          &:hover {
+            opacity: 1;
+          }
+        }
+
+        .m_videoPublication--media--moveItemButton--before {
+          transform: rotate(90deg);
+          position: absolute;
+          top: 0;
+          padding: 0;
+        }
+        .m_videoPublication--media--moveItemButton--after {
+          position: absolute;
+          top: auto;
+          bottom: 0;
+          padding: 0;          
+          transform: rotate(90deg);
+        }
       }
     }
   }

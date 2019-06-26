@@ -25,10 +25,10 @@
         </p>
       </div>
 
-      <transition-group name="slideFromTop" :duration="300" tag="div">
+      <transition-group name="list-complete" :duration="300">
         <div
           class="m_videoPublication--media"
-          v-for="media in publication_medias" 
+          v-for="(media, index) in publication_medias" 
           :key="media.publi_meta.metaFileName"
         >
           <MediaMontagePublication
@@ -40,6 +40,22 @@
             @removePubliMedia="values => { removePubliMedia(values) }"
             @editPubliMedia="values => { editPubliMedia(values) }"
           />
+          <div class="m_videoPublication--media--moveItemButtons">
+            <button type="button"
+              class="m_videoPublication--media--moveItemButton--before"
+              v-show="index > 0"
+              @click="move(media.publi_meta.metaFileName, -1)"
+            >
+              <img src="/images/i_arrow_left.svg" draggable="false">
+            </button>
+            <button type="button"
+              class="m_videoPublication--media--moveItemButton--after"
+              v-show="index < publication_medias.length - 1"
+              @click="move(media.publi_meta.metaFileName, +1)"
+            >
+              <img src="/images/i_arrow_right.svg" draggable="false">
+            </button>
+          </div>
         </div>
       </transition-group>
 
@@ -50,6 +66,10 @@
 import PublicationHeader from '../subcomponents/PublicationHeader.vue';
 import MediaMontagePublication from '../subcomponents/MediaMontagePublication.vue';
 import ExportVideoPubliModal from '../modals/ExportVideoPubliModal.vue';
+
+Array.prototype.move = function(from, to) {
+    this.splice(to, 0, this.splice(from, 1)[0]);
+};
 
 export default {
   props: {
@@ -266,6 +286,17 @@ export default {
       }
 
       this.publication_medias = publi_medias;        
+    },
+    move(metaFileName, dir) {
+      const idx = this.medias_slugs_in_order.findIndex(m => m.slugMediaName === metaFileName);
+      console.log(`METHODS • VideoPublication: move idx = ${idx} and dir = ${dir}`);
+
+      if(dir < 0) {
+        this.medias_slugs_in_order.move(idx, idx + dir);
+      } else
+      if(dir > 0) {
+        this.medias_slugs_in_order.move(idx + dir, idx);
+      }
     }
   }
 }
