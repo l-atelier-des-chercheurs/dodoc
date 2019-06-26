@@ -3876,6 +3876,37 @@ small {
   }
 }
 
+.m_mediaMontagePublication {
+  position: relative;
+  
+  .mediaCaption {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 85%;
+  } 
+}
+.m_mediaMontagePublication--withdraw {
+  position: absolute;
+  top: -1.25em;
+  right: -1.25em;
+
+  display: flex;
+  color: inherit;
+  .bg-orange;
+  color:@c-noir;
+  font-weight: bold;
+  pointer-events: auto;
+  // .margin-verysmall;
+  min-width: 2.5em;
+  min-height: 2.5em;
+
+  &.is--active {
+    .bg-noir;
+    color: @c-orange;
+  }
+}
+
+
 .m_addcreationtoproject {
   .padding-small;
   // border-left: 4px solid @c-creme;

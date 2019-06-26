@@ -32,35 +32,12 @@
           v-for="media in publication_medias" 
           :key="media.publi_meta.metaFileName"
         >
-          <MediaContent
-            v-model="media.content"
-            :context="'full'"
-            :slugFolderName="media.slugProjectName"
+          <MediaMontagePublication
             :media="media"
-            class=""
+            :read_only="read_only"
+            @removePubliMedia="values => { removePubliMedia(values) }"
+            @editPubliMedia="values => { editPubliMedia(values) }"
           />
-          <div class="m_metaField">
-            <div>
-              {{ $t('project') }}
-            </div>
-            <div>
-              {{ $root.store.projects[media.slugProjectName].name }}
-            </div>
-          </div>
-          <div class="m_metaField">
-            <div>
-              {{ $t('duration') }}
-            </div>
-            <div>
-              {{ media.duration }}
-            </div>
-          </div>
-
-          <button type="button" class="buttonLink font-verysmall"
-            @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
-          >
-            {{ $t('withdraw') }}
-          </button>
         </div>
       </transition-group>
 
@@ -69,7 +46,7 @@
 </template>
 <script>
 import PublicationHeader from '../subcomponents/PublicationHeader.vue';
-import MediaContent from '../subcomponents/MediaContent.vue';
+import MediaMontagePublication from '../subcomponents/MediaMontagePublication.vue';
 import ExportVideoPubliModal from '../modals/ExportVideoPubliModal.vue';
 
 export default {
@@ -80,7 +57,7 @@ export default {
   },
   components: {
     PublicationHeader,
-    MediaContent,
+    MediaMontagePublication,
     ExportVideoPubliModal
   },
   data() {

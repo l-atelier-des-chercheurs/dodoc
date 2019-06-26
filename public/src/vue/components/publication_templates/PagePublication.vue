@@ -414,7 +414,6 @@ export default {
       has_media_selected: false,
       show_export_modal: false,
 
-      accepted_media_type: ["image", "video", "audio", "text", "document", "other"]
     }
   },
   created() {
@@ -422,7 +421,7 @@ export default {
     this.$root.setPublicationZoom(this.zoom);
   },
   mounted() {
-    this.$root.settings.current_publication.accepted_media_type = this.accepted_media_type;
+    this.$root.settings.current_publication.accepted_media_type = ["image", "video", "audio", "text", "document", "other"];
     
 
     this.$eventHub.$on('publication.addMedia', this.addMedia);

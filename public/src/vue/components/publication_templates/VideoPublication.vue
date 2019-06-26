@@ -31,7 +31,15 @@
           v-for="media in publication_medias" 
           :key="media.publi_meta.metaFileName"
         >
-          <MediaContent
+          <MediaMontagePublication
+            :media="media"
+            :preview_mode="false"
+            :read_only="read_only"
+            @removePubliMedia="values => { removePubliMedia(values) }"
+            @editPubliMedia="values => { editPubliMedia(values) }"
+          />
+
+          <!-- <MediaContent
             v-model="media.content"
             :context="'full'"
             :slugFolderName="media.slugProjectName"
@@ -50,8 +58,11 @@
             <div>
               {{ $t('duration') }}
             </div>
-            <div>
+            <div v-if="media.type === 'video'">
               {{ media.duration }}
+            </div>
+            <div v-else-if="media.type === 'image'">
+              <input type="number" v-model.number="seconds_per_image" step="1" />              
             </div>
           </div>
 
@@ -59,7 +70,7 @@
             @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
           >
             {{ $t('withdraw') }}
-          </button>
+          </button> -->
         </div>
       </transition-group>
 
@@ -68,7 +79,7 @@
 </template>
 <script>
 import PublicationHeader from '../subcomponents/PublicationHeader.vue';
-import MediaContent from '../subcomponents/MediaContent.vue';
+import MediaMontagePublication from '../subcomponents/MediaMontagePublication.vue';
 import ExportVideoPubliModal from '../modals/ExportVideoPubliModal.vue';
 
 export default {
@@ -79,7 +90,7 @@ export default {
   },
   components: {
     PublicationHeader,
-    MediaContent,
+    MediaMontagePublication,
     ExportVideoPubliModal
   },
   data() {
@@ -92,7 +103,7 @@ export default {
   created() {
   },
   mounted() {
-    this.$root.settings.current_publication.accepted_media_type = ['video'];
+    this.$root.settings.current_publication.accepted_media_type = ['video', 'image'];
 
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
@@ -194,6 +205,18 @@ export default {
         data: { 
           medias_slugs: this.medias_slugs_in_order
         }
+      });
+    },
+    editPubliMedia({ slugMediaName, val }) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: editPubliMedia / args = ${JSON.stringify(arguments[0], null, 4)}`);
+      }
+
+      this.$root.editMedia({ 
+        type: 'publications',
+        slugFolderName: this.slugPubliName, 
+        slugMediaName,
+        data: val
       });
     },
     updateMediasPubli() {
