@@ -55,16 +55,16 @@ module.exports = (function() {
       cooking_pot_instructions:
         'Mélangez des médias pour en créer des nouveaux !',
       untitled: 'Sans titre',
-      mix_audio_and_video: 'Ajoutez (ou remplacez) du son sur une vidéo',
-      mix_audio_and_image: 'Ajoutez du son sur une image',
+      mix_audio_and_video: 'Son sur une vidéo',
+      mix_audio_and_image: 'Son sur une image',
       add_sound_video_file:
-        'Ajoutez ici un média <b>son</b> et un média <b>vidéo</b> pour créer une vidéo.',
+        'Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une vidéo et une piste sonore.',
       add_sound_image_file:
-        'Ajoutez ici un média <b>son</b> et un média <b>image</b> pour créer une vidéo.',
+        'Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>image</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une image et une piste sonore.',
       add_multiple_videos_files:
-        'Ajoutez plusieurs médias <b>vidéo</b> pour créer une vidéo.',
+        'Ouvrez un projet et ajoutez plusieurs médias <b>vidéo</b> en cliquant sur la flèche verte. Les vidéos seront mises bout à bout dans l’ordre d’ajout.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : uniquement des vidéos de même taille.',
       add_multiple_images:
-        'Ajoutez plusieurs médias <b>image</b> pour créer une vidéo.',
+        'Ouvrez un projet et ajoutez plusieurs médias <b>image</b> en cliquant sur la flèche verte. Les images seront mises bout à bout dans l’ordre d’ajout. Exportez la séquence et réglez la vitesse de défilement des images.<br>L’exportation créera une vidéo.<br>Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.',
       style: 'style',
       css: 'css',
       write_some_CSS_code_for_example:
@@ -287,11 +287,19 @@ module.exports = (function() {
       web: 'Page web',
       back_to_project: 'Retour au projet',
 
+      page_by_page_summary:
+        'Créer un PDF imprimable ou une page web à mettre en ligne.',
       page_by_page_instructions: `Cette recette permet de créer un document avec un format précis et plusieurs pages.<br> Médias acceptés : images, vidéos, sons et textes.<br>Créera un PDF imprimable (pour faire des affiches, tracts, journaux, etc.) ou une page web à mettre en ligne.`,
+      video_assemblage_summary:
+        'Créer un montage vidéo à partir de plusieurs vidéos.',
       video_assemblage_instructions: `Cette recette propose de créer un montage vidéo en mettant plusieurs vidéos bout à bout.<br> Médias acceptés : uniquement des vidéos de même taille.<br>Créera une nouvelle vidéo.`,
+      stopmotion_animation_summary:
+        'Assembler des images pour créer une vidéo.',
       stopmotion_animation_instructions: `Cette recette permet l’assemblage d’un nombre illimité d’images pour créer une séquence vidéo dans laquelle elles défilent à une vitesse réglable.<br> Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.<br>Créera une nouvelle vidéo.`,
-      mix_audio_and_video_instructions: `Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo.`,
-      mix_audio_and_image_instructions: `Cette recette prend une image et une piste audio. Elle permet de créer des <i>images parlantes</i>.<br> Médias acceptés : une image et une piste sonore.<br>Créera une vidéo.`,
+      mix_audio_and_video_summary: 'Ajouter ou remplacer du son sur une vidéo.',
+      mix_audio_and_video_instructions: `Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo de la durée du plus long média.`,
+      mix_audio_and_image_summary: 'Ajouter du son sur une image.',
+      mix_audio_and_image_instructions: `Cette recette prend une image et une piste audio. Elle permet de créer des <i>images parlantes</i>.<br> Médias acceptés : une image et une piste sonore.<br>Créera une vidéo de la durée de la piste sonore.`,
 
       last_modified: 'Dernière modification',
       remote_access: 'Accès depuis d’autres appareils',
