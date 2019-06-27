@@ -307,7 +307,9 @@ export default {
       this.$emit('volumeChanged', vol);
     },
     setVolume(val) {
-      this.$refs.plyr.player.volume = val / 100;
+      if(this.$refs.hasOwnProperty('plyr')) {
+        this.$refs.plyr.player.volume = val / 100;
+      }
     }
   }
 };
