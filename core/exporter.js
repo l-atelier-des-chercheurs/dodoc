@@ -1034,7 +1034,7 @@ module.exports = (function() {
 
       let temp_video_name = vm.media_filename + '.ts';
       let temp_video_duration;
-      let temp_video_volume = 1;
+      let temp_video_volume;
 
       if (vm.type === 'image') {
         // insert duration in filename to make sure the cache uses the right version
@@ -1079,10 +1079,17 @@ module.exports = (function() {
               ffmpeg_cmd.input('anullsrc').inputFormat('lavfi');
             }
 
+            if (temp_video_volume) {
+              ffmpeg_cmd.addOptions([
+                '-af volume=' + temp_video_volume + ',apad'
+              ]);
+            } else {
+              ffmpeg_cmd.addOptions(['-af apad']);
+            }
+
             ffmpeg_cmd
               .native()
               .outputFPS(30)
-              .addOptions(['-af volume=' + temp_video_volume + ',apad'])
               .withVideoCodec('libx264')
               .withVideoBitrate('6000k')
               .withAudioCodec('aac')
@@ -1136,18 +1143,19 @@ module.exports = (function() {
   }
 
   function _notifyFfmpegProgress({ socket, progress }) {
+    let not_localized_string;
     if (progress.hasOwnProperty('percent') && !Number.isNaN(progress.percent)) {
-      require('./sockets').notify({
-        socket,
-        localized_string: `creating_video`,
-        not_localized_string:
-          Number.parseFloat(progress.percent).toFixed(1) + '%'
-      });
+      not_localized_string =
+        Number.parseFloat(progress.percent).toFixed(1) + '%';
     } else if (progress.hasOwnProperty('timemark')) {
+      not_localized_string = progress.timemark;
+    }
+
+    if (not_localized_string) {
       require('./sockets').notify({
         socket,
         localized_string: `creating_video`,
-        not_localized_string: progress.timemark
+        not_localized_string
       });
     } else {
       require('./sockets').notify({
@@ -1155,5 +1163,7 @@ module.exports = (function() {
         localized_string: `creating_video`
       });
     }
+
+    console.log(`FFMPEG PROCESS • exporter: ${not_localized_string}`);
   }
 })();
