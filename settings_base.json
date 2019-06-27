@@ -8,7 +8,7 @@
   "cache_content": true,
 
   "contentDirname" : "user",
-  "cacheDirname" : "cache",
+  "cacheDirname" : "dodoc_cache",
   "metaFileext" : ".txt",
   "thumbExt" : ".jpeg",
   "thumbFormat": "jpeg",
