@@ -99,7 +99,7 @@ module.exports = (function() {
 
           _onSocketError(reason) {
             console.log(`Unable to connect to server: ${reason}`);
-            window.state.authentificated = false;
+            // window.state.authentificated = false;
             this.$eventHub.$emit('socketio.socketerror', reason);
           },
 
