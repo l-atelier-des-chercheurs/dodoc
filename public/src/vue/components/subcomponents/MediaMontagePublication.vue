@@ -156,7 +156,7 @@ export default {
     return {
       mediaID: `${(Math.random().toString(36) + '00000000000000000').slice(2, 3 + 5)}`,
       seconds_per_image: this.media.publi_meta.duration,
-      volume: this.media.publi_meta.volume 
+      volume: this.media.publi_meta.volume ? this.media.publi_meta.volume : 100
     }
   },
   
@@ -165,9 +165,6 @@ export default {
   mounted() {
     if(this.enable_image_timer && this.seconds_per_image === undefined) {
       this.seconds_per_image = 1;
-    }
-    if(this.enable_set_video_volume && this.volume === undefined) {
-      this.volume = 100;
     }
   },
   beforeDestroy() {
