@@ -407,6 +407,12 @@ module.exports = (function() {
                   const new_width = 2 * Math.round(video_height / ratio / 2);
                   resolution.width = new_width;
 
+                  // set resolution to fixed size : 1280 / 720
+                  // resolution = {
+                  //   width: 1280,
+                  //   height: 720
+                  // };
+
                   return _loadMediaFilenameFromPublicationSlugs(
                     slugPubliName,
                     pageData
@@ -639,7 +645,13 @@ module.exports = (function() {
     resolution
   }) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction('EXPORTER — _prepareImagesForStopmotion');
+      dev.logfunction(
+        `EXPORTER — _prepareImagesForStopmotion ${JSON.stringify(
+          resolution,
+          null,
+          4
+        )}`
+      );
       // let slugStopmotionPath = getFolderPath(
       //   path.join(
       //     global.settings.structure['stopmotions'].path,
@@ -663,37 +675,37 @@ module.exports = (function() {
               'i'
             ).exec(media.full_path)[0];
 
-            if (
-              media_file_ext.toLowerCase() === '.jpeg' ||
-              media_file_ext.toLowerCase() === '.jpg'
-            ) {
-              fs.copy(media.full_path, cache_image_path)
-                .then(() => {
-                  resolve();
-                })
-                .catch(err => {
-                  dev.error(`Failed to copy image to cache with seq name.`);
-                  reject(err);
-                });
-            } else {
-              sharp(media.full_path)
-                .rotate()
-                .resize(resolution.width, resolution.height, {
-                  fit: 'inside',
-                  withoutEnlargement: true,
-                  background: 'white'
-                })
-                .flatten()
-                .withMetadata()
-                .toFile(cache_image_path)
-                .then(() => resolve())
-                .catch(err => {
-                  dev.error(
-                    `Failed to sharp create image to cache with seq name.`
-                  );
-                  reject(err);
-                });
-            }
+            // if (
+            //   media_file_ext.toLowerCase() === '.jpeg' ||
+            //   media_file_ext.toLowerCase() === '.jpg'
+            // ) {
+            //   fs.copy(media.full_path, cache_image_path)
+            //     .then(() => {
+            //       resolve();
+            //     })
+            //     .catch(err => {
+            //       dev.error(`Failed to copy image to cache with seq name.`);
+            //       reject(err);
+            //     });
+            // } else {
+            sharp(media.full_path)
+              .rotate()
+              .resize(resolution.width, resolution.height, {
+                fit: 'contain',
+                withoutEnlargement: false,
+                background: 'black'
+              })
+              .flatten()
+              .withMetadata()
+              .toFile(cache_image_path)
+              .then(() => resolve())
+              .catch(err => {
+                dev.error(
+                  `Failed to sharp create image to cache with seq name.`
+                );
+                reject(err);
+              });
+            // }
           })
         );
       });
