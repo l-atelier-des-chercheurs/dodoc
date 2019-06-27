@@ -14,6 +14,7 @@
 
     <ExportStopmotionPubliModal
       v-if="show_export_modal"
+      :publication="publication"
       @close="show_export_modal = false"
       :slugPubliName="slugPubliName"
     />

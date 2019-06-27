@@ -15,6 +15,7 @@
     <ExportVideoPubliModal
       v-if="show_export_modal"
       @close="show_export_modal = false"
+      :publication="publication"
       :slugPubliName="slugPubliName"
       :instructions="$t('export_audio_video_mix_instructions')"
     />

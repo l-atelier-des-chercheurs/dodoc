@@ -55,6 +55,7 @@
 
             <AddCreationToProject
               v-if="link_to_pdf !== false"
+              :publication="publication"
               :media_filename="exported_pdf_name"
               @close="$emit('close')"
             />
@@ -86,6 +87,7 @@ import AddCreationToProject from '../subcomponents/AddCreationToProject.vue';
 
 export default {
   props: {
+    publication: Object,
     slugPubliName: String
   },
   components: {

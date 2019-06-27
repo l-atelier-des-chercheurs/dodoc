@@ -94,7 +94,7 @@ export default {
   },
   computed: {
     export_button_is_disabled() {
-      if(Object.values(this.publication_medias).length <= 1) return true;
+      if(Object.values(this.publication_medias).length < 1) return true;
 
       if(
         this.number_of_medias_required !== -1

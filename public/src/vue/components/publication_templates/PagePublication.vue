@@ -12,12 +12,12 @@
       @export="show_export_modal = true"
     />
 
-    <ExportModal
+    <ExportPagePubli
       v-if="show_export_modal"
+      :publication="publication"
       @close="show_export_modal = false"
       :slugPubliName="slugPubliName"
-    >
-    </ExportModal>
+    />
 
     <div class="m_publicationview--settings">
 
@@ -353,7 +353,7 @@
 <script>
 import PublicationHeader from '../subcomponents/PublicationHeader.vue';
 import MediaPublication from '../subcomponents/MediaPublication.vue';
-import ExportModal from '../modals/ExportPagePubli.vue';
+import ExportPagePubli from '../modals/ExportPagePubli.vue';
 
 export default {
   props: {
@@ -364,7 +364,7 @@ export default {
   components: {
     PublicationHeader,
     MediaPublication,
-    ExportModal
+    ExportPagePubli
   },
   data() {
     return {

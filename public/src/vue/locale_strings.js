@@ -176,6 +176,7 @@ module.exports = (function() {
         'Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).',
 
       sort_by: 'Organiser par',
+      by: 'par',
       in_the_order: 'Dans l’ordre',
       public: 'Public',
       fav: 'Favoris',
@@ -525,6 +526,7 @@ module.exports = (function() {
         'To create authors, close this window and click on (AUTHORS).',
 
       sort_by: 'Sort by',
+      by: 'by',
       in_the_order: 'In the order',
       public: 'Public',
       fav: 'Favourite',

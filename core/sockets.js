@@ -453,14 +453,14 @@ module.exports = (function() {
       });
   }
 
-  function onAddTempMediaToFolder(socket, { from, to }) {
+  function onAddTempMediaToFolder(socket, { from, to, additionalMeta }) {
     dev.logfunction(
       `EVENT - onAddTempMediaToFolder with 
       from = ${JSON.stringify(from)} and to = ${JSON.stringify(to)}`
     );
 
     file
-      .addTempMediaToFolder({ from, to })
+      .addTempMediaToFolder({ from, to, additionalMeta })
       .then(() => {
         notify({
           socket,

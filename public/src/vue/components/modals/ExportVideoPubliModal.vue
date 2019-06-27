@@ -49,6 +49,7 @@
 
               <AddCreationToProject
                 v-if="exported_video_name !== false"
+                :publication="publication"
                 :media_filename="exported_video_name"
                 @close="$emit('close')"
               />
@@ -69,6 +70,7 @@ import AddCreationToProject from '../subcomponents/AddCreationToProject.vue';
 export default {
   props: {
     slugPubliName: String,
+    publication: Object,
     instructions: String
   },
   components: {

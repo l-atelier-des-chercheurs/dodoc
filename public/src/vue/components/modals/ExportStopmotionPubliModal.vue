@@ -94,6 +94,7 @@
               <AddCreationToProject
                 v-if="exported_video_name !== false"
                 :media_filename="exported_video_name"
+                :publication="publication"
                 @close="$emit('close')"
               />
 
@@ -112,7 +113,8 @@ import { setTimeout } from 'timers';
 
 export default {
   props: {
-    slugPubliName: String
+    publication: Object,
+    slugPubliName: String,
   },
   components: {
     Modal,
