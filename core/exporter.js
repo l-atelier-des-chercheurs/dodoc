@@ -16,6 +16,8 @@ const dev = require('./dev-log'),
 ffmpeg.setFfmpegPath(ffmpegstatic.path);
 ffmpeg.setFfprobePath(ffprobestatic.path);
 
+const renice = 0;
+
 module.exports = (function() {
   return {
     loadPublication: (slugPubliName, pageData) =>
@@ -437,6 +439,7 @@ module.exports = (function() {
                     `duration : ${numberOfImagesToProcess / framerate}`
                   );
                   const ffmpeg_cmd = new ffmpeg()
+                    .renice(renice)
                     .input(path.join(imagesCachePath, 'img-%04d.jpeg'))
                     .inputFPS(framerate)
                     .withVideoCodec('libx264')
@@ -812,7 +815,7 @@ module.exports = (function() {
           `EXPORTER — _makeVideoAssemblage : finished preparing videos`
         );
 
-        const ffmpeg_cmd = new ffmpeg();
+        const ffmpeg_cmd = new ffmpeg().renice(renice);
 
         temp_videos_array.map(v => ffmpeg_cmd.addInput(v.full_path));
 
@@ -919,7 +922,7 @@ module.exports = (function() {
       dev.logfunction('EXPORTER — _mixAudioAndVideo');
 
       const videoPath = path.join(cachePath, videoName);
-      let ffmpeg_cmd = new ffmpeg();
+      let ffmpeg_cmd = new ffmpeg().renice(renice);
 
       let video_files = medias_with_original_filepath.filter(
         m => m.type === 'video'
@@ -999,7 +1002,7 @@ module.exports = (function() {
       dev.logfunction('EXPORTER — _mixAudioAndImage');
 
       const videoPath = path.join(cachePath, videoName);
-      const ffmpeg_cmd = new ffmpeg();
+      const ffmpeg_cmd = new ffmpeg().renice(renice);
 
       let image_files = medias_with_original_filepath.filter(
         m => m.type === 'image'
@@ -1099,7 +1102,7 @@ module.exports = (function() {
       fs.access(temp_video_path, fs.F_OK, function(err) {
         if (err) {
           ffmpeg.ffprobe(vm.full_path, function(err, metadata) {
-            const ffmpeg_cmd = new ffmpeg();
+            const ffmpeg_cmd = new ffmpeg().renice(renice);
 
             ffmpeg_cmd.input(vm.full_path);
 
@@ -1217,7 +1220,7 @@ module.exports = (function() {
               dev.logverbose(
                 `EXPORTER — _prepareImageForMontageAndWeb: created temp image`
               );
-              const ffmpeg_cmd = new ffmpeg();
+              const ffmpeg_cmd = new ffmpeg().renice(renice);
 
               ffmpeg_cmd.input(temp_image_path);
 
