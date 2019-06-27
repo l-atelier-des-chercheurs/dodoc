@@ -290,8 +290,8 @@ module.exports = (function() {
         'Créer un PDF imprimable ou une page web à mettre en ligne.',
       page_by_page_instructions: `Cette recette permet de créer un document avec un format précis et plusieurs pages.<br> Médias acceptés : images, vidéos, sons et textes.<br>Créera un PDF imprimable (pour faire des affiches, tracts, journaux, etc.) ou une page web à mettre en ligne.`,
       video_assemblage_summary:
-        'Créer un montage vidéo à partir de plusieurs vidéos.',
-      video_assemblage_instructions: `Cette recette propose de créer un montage vidéo en mettant plusieurs vidéos bout à bout.<br> Médias acceptés : uniquement des vidéos de même taille.<br>Créera une nouvelle vidéo.`,
+        'Créer un montage vidéo à partir d’images et de vidéos.',
+      video_assemblage_instructions: `Cette recette propose de créer un montage vidéo en mettant plusieurs vidéos ou images bout à bout.<br> Médias acceptés : des vidéos et des images.<br>Créera une nouvelle vidéo.`,
       stopmotion_animation_summary:
         'Assembler des images pour créer une vidéo.',
       stopmotion_animation_instructions: `Cette recette permet l’assemblage d’un nombre illimité d’images pour créer une séquence vidéo dans laquelle elles défilent à une vitesse réglable.<br> Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.<br>Créera une nouvelle vidéo.`,
@@ -642,9 +642,14 @@ module.exports = (function() {
       stopmotion_animation: 'Stopmotion animation',
 
       page_by_page_instructions: `This recipe can be used to create a paged document with a specific size.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, tracts, newspapers, etc.) or a webpage to upload online.`,
-      video_assemblage_instructions: `This recipe creates a video from mulitple source videos, one after the other.<br>Accepted medias: videos of the same size.<br>Will create a new video.`,
-      stopmotion_animation_instructions: `This recipe takes any number of images as inputs and creates a single video with images being displayed at a specific speed.<br>Accepted medias: images of any size. The first image will determine if the video will be in portrait or landscape.<br>Will create a new video.`,
+      video_assemblage_summary: `Creates a video from images and videos.`,
+      video_assemblage_instructions: `This recipe creates a video from multiple source images and videos, one after the other.<br>Accepted medias: images and videos.<br>Will create a new video.`,
+      stopmotion_animation_summary:
+        'Creates a video from images showcasing at specific speed.',
+      stopmotion_animation_instructions: `This recipe takes any number of images as inputs and creates a single video with images displayed at a specific speed.<br>Accepted medias: images of any size. The first image will determine if the video will be in portrait or landscape.<br>Will create a new video.`,
+      mix_audio_and_video_summary: 'Add or replace sound on a video.',
       mix_audio_and_video_instructions: `This recipe mixes a video and an audio track to create a new video where they are played at the same time.<br>Accepted medias: a video and a sound track.<br>Will create a new video.`,
+      mix_audio_and_image_summary: 'Add sound on an image.',
       mix_audio_and_image_instructions: `This recipe mixes an image with an audio track to create a <i>speaking image</i><br>Accepted medias: an image and a sound track.<br>Will create a new video.`,
 
       add_sound_video_file:
