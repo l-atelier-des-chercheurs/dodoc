@@ -1432,6 +1432,7 @@ small {
   max-width: 220px;
   z-index: 1;
   .padding-sides-verysmall;
+  border-radius: 4px;
 
   transition: opacity .4s;
 
@@ -1443,6 +1444,14 @@ small {
   &.is--ownMedia {
     .m_metaField {
       background-color: @c-bleumarine_clair;
+    }
+  }
+
+  &.is--just_added {
+    background-color: @c-orange;
+    box-shadow: 0px 2px 8px 1px @c-orange;
+    >* {
+      // outline: 2px solid @c-orange;
     }
   }
 
