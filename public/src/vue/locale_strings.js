@@ -104,6 +104,7 @@ module.exports = (function() {
       validate_media: 'Valider le média',
       add_keyword: 'Ajouter un mot-clé',
       add: 'Ajouter',
+      close: 'Fermer',
 
       very_high: 'Très élevée (1080p)',
       high: 'Élevée (720p)',
@@ -464,6 +465,7 @@ module.exports = (function() {
       validate_media: 'Validate the media',
       add_keyword: 'Add a keyword',
       add: 'Add',
+      close: 'Fermer',
 
       very_high: 'Very high (1080p)',
       high: 'High (1080p)',

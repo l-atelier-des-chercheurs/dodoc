@@ -96,6 +96,7 @@
         </template>
       </div>
     </div>
+
     <transition-group
       class="m_project--library--medias"
       name="list-complete"

@@ -52,15 +52,9 @@
           {{ $t('remove') }}
         </button>
 
-        <template v-if="showQRModal">
-          <hr>
-          <CreateQRCode
-            :slugProjectName="slugProjectName"
-            :media="media"
-          />
-        </template>
-
-        <button type="button" class="buttonLink c-noir" @click="showQRModal = !showQRModal">
+        <button type="button" class="buttonLink c-noir"
+          @click="showQRModal = !showQRModal"
+        >
           <svg version="1.1" class="inline-svg"
             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
             x="0px" y="0px" width="20px" height="20px" viewBox="0 0 90 90" style="enable-background:new 0 0 90 90;" xml:space="preserve">
@@ -72,6 +66,35 @@
             {{ $t('share') }}
           </span>
         </button>
+
+        <template v-if="showQRModal">
+          <hr>
+          <CreateQRCode
+            :slugProjectName="slugProjectName"
+            :media="media"
+          />
+        </template>
+
+        <button type="button" class="buttonLink" @click="show_edit_media_options = !show_edit_media_options">
+          {{ $t('adjust') }}
+        </button>
+        <div v-if="show_edit_media_options" class="bg-creme">
+          <button type="button" class="buttonLink" @click="editRawMedia('rotate_image', {angle: 90})"
+            v-if="media.type === 'image'"
+          >
+            Pivoter vers la droite
+          </button>
+          <button type="button" class="buttonLink" @click="editRawMedia('optimize_video')"
+            v-if="media.type === 'video'"
+          >
+            Créer une vidéo compatible web
+          </button>
+          <button type="button" class="buttonLink" @click="editRawMedia('reset')"
+            v-if="!!media.original_media_filename"
+          >
+            Revenir à l’original
+          </button>
+        </div>
 
         <hr class="hide_on_print">
       </div>
@@ -212,31 +235,6 @@
         v-model="mediadata.content"
       />
       <div class="m_mediaOptions">
-        <button type="button" class="buttonLink" @click="show_edit_media_options = !show_edit_media_options">
-          <template v-if="!show_edit_media_options">
-            {{ $t('adjust') }}
-          </template>
-          <tempalte v-else>
-            × {{ $t('close') }}
-          </tempalte>
-        </button>
-        <div v-if="show_edit_media_options">
-          <button type="button" class="buttonLink" @click="editRawMedia('rotate_image', {angle: 90})"
-            v-if="media.type === 'image'"
-          >
-            Pivoter vers la droite
-          </button>
-          <button type="button" class="buttonLink" @click="editRawMedia('optimize_video')"
-            v-if="media.type === 'video'"
-          >
-            Créer une vidéo compatible web
-          </button>
-          <button type="button" class="buttonLink" @click="editRawMedia('reset')"
-            v-if="!!media.original_media_filename"
-          >
-            Revenir à l’original
-          </button>
-        </div>
       </div>
     </template>
 
