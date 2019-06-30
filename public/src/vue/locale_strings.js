@@ -649,6 +649,8 @@ module.exports = (function() {
       previous_creations: 'Previous creations',
       stopmotion_animation: 'Stopmotion animation',
 
+      page_by_page_summary:
+        'Creates a printable PDF or website to upload online.',
       page_by_page_instructions: `This recipe can be used to create a paged document with a specific size.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, tracts, newspapers, etc.) or a webpage to upload online.`,
       video_assemblage_summary: `Creates a video from images and videos.`,
       video_assemblage_instructions: `This recipe creates a video from multiple source images and videos, one after the other.<br>Accepted medias: images and videos.<br>Will create a new video.`,
