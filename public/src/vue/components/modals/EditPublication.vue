@@ -16,7 +16,7 @@
 <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('name') }}</label>
-        <input class="input-big" type="text" v-model="publidata.name" required :readonly="read_only">
+        <input class="input-big" type="text" v-model="publidata.name" required autofocus :readonly="read_only">
       </div>
 
 <!-- Preview -->
@@ -38,23 +38,23 @@
 
 
 <!-- Keywords -->
-      <!-- <div class="margin-bottom-small">
+      <div class="margin-bottom-small">
         <label>{{ $t('keywords') }}</label>
         <TagsInput 
           :keywords="publidata.keywords"
           @tagsChanged="newTags => publidata.keywords = newTags"
         />
-      </div> -->
+      </div>
 
 <!-- Author(s) -->
-      <!-- <div class="margin-bottom-small">
+      <div class="margin-bottom-small">
         <label>{{ $t('author') }}</label><br>
         <AuthorsInput
           :currentAuthors="publidata.authors"
           @authorsChanged="newAuthors => publidata.authors = newAuthors"
         />
         <small>{{ $t('author_instructions') }}</small>
-      </div> -->
+      </div>
 
     </template>
 
@@ -87,8 +87,8 @@ export default {
     return {
       publidata: {
         name: this.publication.name,
-        // authors: typeof this.publication.authors === 'string' && this.publication.authors !== '' ? this.publication.authors.split(',').map(a => {return { name: a }} ) : this.publication.authors,
-        // keywords: this.publication.keywords
+        authors: typeof this.publication.authors === 'string' && this.publication.authors !== '' ? this.publication.authors.split(',').map(a => {return { name: a }} ) : this.publication.authors,
+        keywords: this.publication.keywords
       },
       tag: '',
       preview: undefined,

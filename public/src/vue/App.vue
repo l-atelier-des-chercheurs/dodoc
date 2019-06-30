@@ -2,11 +2,28 @@
   <div id="app"
     :class="{ 'is--wide' : $root.screen_is_wide }"
   >
-
+    <template v-if="$root.store.request.display === 'standalone'">
+      <div class="m_standaloneMedia">
+        <MediaContent
+          class=""
+          :context="'full'"
+          :autoplay="true"
+          :slugFolderName="$root.store.request.slugProjectName"
+          :media="$root.requested_media"
+          v-model="$root.requested_media.content"
+        />
+      </div>
+    </template>
+    <template v-else-if="$root.state.mode === 'live' && !$root.state.authentificated">
+      <SessionPassword
+        v-if="$root.showSessionPasswordModal"
+        @close="$root.showSessionPasswordModal = false"      
+        :read_only="!$root.state.connected"
+      />
+    </template>
     <template 
-      v-if="$root.state.mode === 'live'"
+      v-else-if="$root.state.mode === 'live' && $root.store.request.display !== 'standalone'"
     >    
-
       <SystemBar
         v-if="$root.settings.enable_system_bar"
         :withTitleBar="true"
@@ -20,7 +37,6 @@
       />
       
       <div class="m_activitiesPanel">
-
         <div 
           :style="{ cursor, userSelect}" 
           class="vue-splitter-container clearfix" 
@@ -28,13 +44,13 @@
           <pane 
             class="splitter-pane splitter-paneL" 
             :class="{ 'is--dragged' : is_dragged }"
-            :split="split" :style="{ [type]: percent+'%'}">
-
+            :split="split" :style="{ [type]: activity_panel_percent+'%'}"
+          >
             <div 
               class="m_activitiesPanel--do"
               :class="{ 'is--large' : activitiesPanel_is_comfortable }"
             >
-              <div style="position: relative; height: 100%; overflow: hidden">
+              <div style="position: relative; width: 100%; height: 100%; overflow: hidden">
                 <!-- v-show="$root.do_navigation.view === 'ListView'" -->
                 <transition name="ListView" :duration="500">
                   <ListView
@@ -66,25 +82,26 @@
 
           </pane>
 
-          <resizer 
+          <Resizer 
             :class="{ 'is--dragged' : is_dragged }"
             :className="className" 
-            :style="{ [resizeType]: percent+'%'}" 
+            :style="{ [resizeType]: activity_panel_percent+'%'}" 
             :split="split" 
             @mousedown.native="onMouseDown" 
-            @click.native="onClick">
-          </resizer>
+            @click.native="onClick"
+          />
 
           <pane 
             class="splitter-pane splitter-paneR" 
             :class="{ 'is--dragged' : is_dragged }"
             :split="split" 
-            :style="{ [type]: 100-percent+'%'}">
+            :style="{ [type]: 100-activity_panel_percent+'%'}">
             <div 
               class="m_activitiesPanel--doc"
               :class="{ 'is--open' : $root.settings.show_publi_panel }"
             >
               <button
+                v-if="$root.screen_is_wide"
                 class="publiButton"
                 :title="$t('mix_medias')" 
                 v-tippy='{
@@ -94,14 +111,14 @@
                 :class="{ 
                   'is--open' : $root.settings.show_publi_panel, 
                   'is--dragged' : is_dragged,
-                  'is--allthewaytotheleft' : percent === 0 
+                  'is--allthewaytotheleft' : activity_panel_percent === 0 
                 }"
                 @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
                 @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"   
                 :key="'openPubli'"
               >
                 <!-- v-if="$root.do_navigation.view !== 'CaptureView'" -->
-                <img src="/images/i_marmite.svg" width="48" height="48" />
+                <img src="/images/i_marmite.svg" width="48" height="48" draggable="false" />
                 <span class="margin-small">
                   {{ $t('publication') }}
                 </span>
@@ -142,6 +159,12 @@
                   />
                   <MixAudioAndVideo
                     v-else-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'mix_audio_and_video'"
+                    :slugPubliName="$root.settings.current_publication.slug"
+                    :publication="$root.store.publications[$root.settings.current_publication.slug]"
+                    :read_only="!$root.state.connected"
+                  />                  
+                  <MixAudioAndImage
+                    v-else-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'mix_audio_and_image'"
                     :slugPubliName="$root.settings.current_publication.slug"
                     :publication="$root.store.publications[$root.settings.current_publication.slug]"
                     :read_only="!$root.state.connected"
@@ -187,7 +210,9 @@ import ListView from './ListView.vue';
 import ProjectView from './ProjectView.vue';
 import CaptureView from './CaptureView.vue';
 import EditMedia from './components/modals/EditMedia.vue';
+import SessionPassword from './components/modals/SessionPassword.vue';
 
+import MediaContent from './components/subcomponents/MediaContent.vue';
 import Publications from './Publications.vue';
 
 import PagePublication from './components/publication_templates/PagePublication.vue';
@@ -195,6 +220,7 @@ import VideoPublication from './components/publication_templates/VideoPublicatio
 import DrawingPad from './components/publication_templates/DrawingPad.vue';
 import StopmotionAnimation from './components/publication_templates/StopmotionAnimation.vue';
 import MixAudioAndVideo from './components/publication_templates/MixAudioAndVideo.vue';
+import MixAudioAndImage from './components/publication_templates/MixAudioAndImage.vue';
 
 import Resizer from './components/splitpane/Resizer.vue'
 import Pane from './components/splitpane/Pane.vue'
@@ -208,14 +234,17 @@ export default {
     ProjectView,
     CaptureView,
     EditMedia,
+    SessionPassword,
     Publications,
     PagePublication,
     VideoPublication,
     DrawingPad,
     StopmotionAnimation,
     MixAudioAndVideo,
+    MixAudioAndImage,
     Resizer, 
-    Pane
+    Pane,
+    MediaContent
   },
   props: {
   },
@@ -229,9 +258,7 @@ export default {
       height: null,
       percent: 100,
       type: 'width',
-      resizeType: 'left',
-      windowWidth: window.innerWidth,
-      windowHeight: window.innerHeight
+      resizeType: 'left'
     };
   },
   watch: {
@@ -254,7 +281,12 @@ export default {
       }
       return true;
     },
-
+    activity_panel_percent() {
+      if(!this.$root.screen_is_wide) {
+        return 100;
+      }
+      return this.percent;
+    }
   },
   methods: {
     // stopDragtogglePubli() {
@@ -296,7 +328,7 @@ export default {
         let pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
         pageX = pageX - this.drag_offset;
 
-        const percent = Math.floor((pageX / window.innerWidth) * 10000) / 100
+        const percent = Math.floor((pageX / this.$root.settings.windowWidth) * 10000) / 100
 
         if (percent > this.minPercent && percent < 100 - this.minPercent) {
           this.percent = percent

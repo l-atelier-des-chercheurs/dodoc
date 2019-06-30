@@ -16,15 +16,15 @@ button, .button {
   margin: 0;
   cursor: pointer;
 
-  min-height: @t-skipline*2;
+  min-height: @t-skipline * 2;
 
   padding: 0 @t-skipline/2;
   border-radius: @t-buttonradius;
 
   transition: color .25s ease-out, opacity 0.5s;
 
-  &[disabled] {
-    opacity: 0.4;
+  &[disabled], &.is--disabled {
+    opacity: 0.38;
     cursor: not-allowed;
 
     &[class*="bg-"]:not(.bg-transparent) {
@@ -51,6 +51,18 @@ button, .button {
 
   a {
     text-decoration: none;
+  }
+
+  &.button-thin {
+    .button-thin;
+    .margin-verysmall;
+    .padding-vert-small;
+    .padding-sides-medium;
+    .text-cap;
+    .font-verysmall;    
+    // background-color: @c-rouge;
+    // color: white;
+    border-radius: @t-skipline;
   }
 
   &.button-redthin {
@@ -116,7 +128,7 @@ button, .button {
     }
   }
   &.button-arrow {
-    max-width: 1em;
+    max-width: 3em;
     padding: 0;
     .c-orange;
   }
@@ -142,10 +154,11 @@ button, .button {
       content: '◄';
       display: inline-block;
       margin-left: .5em;
-      transition: transform .5s;
+      transition: transform .5s, color .5s;
     }
 
     &.is--active {
+      .c-rouge;
       &::after {
         transform: rotate(-90deg);
       }
@@ -173,6 +186,12 @@ button, .button {
     display: block;
     width: 100%;
     border-bottom: 1px solid currentColor;
+  }
+
+  &._no_underline {
+    &::after {
+      display: none;
+    }
   }
 }
 
@@ -205,6 +224,7 @@ button, .button {
     line-height: var(--switch-size);
   }
 }
+
 
 strong,b {
   font-weight: 500;
@@ -385,6 +405,9 @@ strong,b {
 
 .font-thin {
   font-weight: 200;  
+}
+.font-normal {
+  font-weight: 400;  
 }
 
 
@@ -580,7 +603,7 @@ strong,b {
   padding-right:   @t-skipline/4;
 }
 .padding-right-small {
-  padding-left:   @t-skipline/2;
+  padding-right:   @t-skipline/2;
 }
 .padding-bottom-verysmall {
   padding-bottom:   @t-skipline/4;
@@ -709,7 +732,9 @@ input[readonly], textarea[readonly], .textarea[readonly] {
   overflow: hidden;
   white-space: nowrap;              
   text-overflow: ellipsis;
-
+}
+.cursor-pointer {
+  cursor: pointer;
 }
 
 :focus {
@@ -878,7 +903,7 @@ input[type="file"] {
   display: flex;
   margin-bottom:  @t-skipline/2;
   button {
-    margin: @t-skipline/4;
+    margin-bottom: 0;
     margin-top:0;
     margin-left: 0;
 
@@ -928,7 +953,11 @@ code {
 img, video, audio, svg {
 	display: block;
 	max-width: 100%;
-	height: auto;
+  height: auto;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;  
 }
 
 input:required {

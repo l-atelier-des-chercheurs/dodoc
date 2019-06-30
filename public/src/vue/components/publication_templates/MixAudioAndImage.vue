@@ -8,19 +8,47 @@
       :slugPubliName="slugPubliName"
       :publication="publication"
       :publication_medias="publication_medias"
+      :number_of_medias_required="number_of_medias_required"
       @export="show_export_modal = true"
     />
 
-    <div class="m_drawingPad">
-      <PadSurface
-      />
+    <ExportVideoPubliModal
+      v-if="show_export_modal"
+      @close="show_export_modal = false"
+      :publication="publication"
+      :slugPubliName="slugPubliName"
+      :instructions="$t('export_audio_image_mix_instructions')"
+    />
+    
+    <div class="m_mixAudioAndImagePublication">
+      <div class="margin-medium" v-if="publication_medias.length === 0">
+        <p>
+          <small v-html="$t('add_sound_image_file')" />
+        </p>
+      </div>
+
+      <transition-group name="slideFromTop" :duration="300" tag="div">
+        <div
+          class="m_mixAudioAndImagePublication--media"
+          v-for="media in publication_medias" 
+          :key="media.publi_meta.metaFileName"
+        >
+          <MediaMontagePublication
+            :media="media"
+            :read_only="read_only"
+            @removePubliMedia="values => { removePubliMedia(values) }"
+            @editPubliMedia="values => { editPubliMedia(values) }"
+          />
+        </div>
+      </transition-group>
+
     </div>
   </div>
 </template>
 <script>
-import MediaContent from '../subcomponents/MediaContent.vue';
+import PublicationHeader from '../subcomponents/PublicationHeader.vue';
+import MediaMontagePublication from '../subcomponents/MediaMontagePublication.vue';
 import ExportVideoPubliModal from '../modals/ExportVideoPubliModal.vue';
-import PadSurface from '../subcomponents/PadSurface.vue';
 
 export default {
   props: {
@@ -29,21 +57,23 @@ export default {
     read_only: Boolean
   },
   components: {
-    MediaContent,
-    ExportVideoPubliModal,
-    PadSurface
+    PublicationHeader,
+    MediaMontagePublication,
+    ExportVideoPubliModal
   },
   data() {
     return {
       show_export_modal: false,
       publication_medias: [],
-      medias_slugs_in_order: []
+      medias_slugs_in_order: [],
+      accepted_media_type: ['audio', 'image'],
+      number_of_medias_required: 2
     }
   },
   created() {
   },
   mounted() {
-    this.$root.settings.current_publication.accepted_media_type = ['image'];
+    this.$root.settings.current_publication.accepted_media_type = this.accepted_media_type;
 
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
@@ -64,6 +94,7 @@ export default {
         console.log(`WATCH • Publication: publication.medias`);
       }
       this.updateMediasPubli();
+            
     },
     '$root.store.projects': {
       handler() {
@@ -78,8 +109,10 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`WATCH • Publication: publication.medias_slugs`);
       }
+
       this.medias_slugs_in_order = typeof this.publication.medias_slugs === "object" ? this.publication.medias_slugs : [];
       this.updateMediasPubli();
+            
     }
   },
   computed: {
@@ -131,7 +164,9 @@ export default {
         slugMediaName
       });
 
-      this.medias_slugs_in_order = this.medias_slugs_in_order.filter(m => m.slugMediaName !== slugMediaName);
+      if(this.medias_slugs_in_order.length > 0) {
+        this.medias_slugs_in_order = this.medias_slugs_in_order.filter(m => m.slugMediaName !== slugMediaName);        
+      }
 
       this.$root.editFolder({ 
         type: 'publications', 
@@ -146,6 +181,9 @@ export default {
         console.log(`METHODS • Publication: updateMediasPubli`);
       }
 
+      this.$root.settings.current_publication.accepted_media_type = this.accepted_media_type;
+
+
       if(!this.publication.hasOwnProperty('medias') || Object.keys(this.publication.medias).length === 0) {
         this.publication_medias = [];        
         return;
@@ -155,8 +193,10 @@ export default {
       let publi_medias = [];
       let missingMedias = [];
 
+
       if(this.medias_slugs_in_order.length === 0) {
         this.publication_medias = [];
+        
         return;
       }
 
@@ -216,6 +256,10 @@ export default {
           medias_list: missingMedias
         });
       }
+
+
+      const types_of_medias = publi_medias.map(m => m.type);
+      this.$root.settings.current_publication.accepted_media_type = this.accepted_media_type.filter(t => !types_of_medias.includes(t));
 
       this.publication_medias = publi_medias;        
     }

@@ -23,7 +23,7 @@
 
         <div class="m_actionbar--text">
           <div class="switch switch-xs switch_twoway">
-            <label for="switch-xs">
+            <label for="media_switch" class="cursor-pointer">
               <span class=""> 
                 {{ $t('projects') }}
               </span>  
@@ -97,12 +97,12 @@
           </div>
         </div>
       </div>
-        
-      <template v-if="!show_medias_instead_of_projects">
-        <transition-group
-          class="m_projects--list"
-          name="list-complete"
-        >
+      
+      <transition-group
+        v-if="!show_medias_instead_of_projects"
+        class="m_projects--list"
+        name="list-complete"
+      >
           <Project
             v-for="(sortedProject, index) in sortedProjectsSlug"
             :key="sortedProject.slugProjectName"
@@ -111,33 +111,31 @@
             :read_only="read_only"
             :index="index"
           />
-        </transition-group>
-      </template>
-      <template v-else>
-        <transition-group
-          class="m_projects--list mini_scroll_panel"
-          name="list-complete"
-        >
-          <div v-for="item in groupedMedias" :key="item[0]">
-            <h3 class="font-folder_title margin-sides-small margin-none margin-bottom-small">
-              {{ $root.formatDateToHuman(item[0]) }}
-            </h3>
+      </transition-group>
+      <transition-group
+        v-else-if="show_medias_instead_of_projects && !is_loading_all_medias"
+        class="m_allmedias--list mini_scroll_panel"
+        name="list-complete"
+      >
+        <div v-for="item in groupedMedias" :key="item[0]">
+          <h3 class="font-folder_title margin-sides-small margin-none margin-bottom-small">
+            {{ $root.formatDateToHuman(item[0]) }}
+          </h3>
 
-            <div class="m_mediaShowAll"> 
-              <div v-for="media in item[1]" :key="media.slugMediaName">
-                <MediaCard
-                  :key="media.slugMediaName"
-                  :media="media"
-                  :metaFileName="media.metaFileName"
-                  :slugProjectName="media.slugProjectName"
-                  :preview_size="180"
-                >
-                </MediaCard>
-              </div>
+          <div class="m_mediaShowAll"> 
+            <div v-for="media in item[1]" :key="media.slugMediaName">
+              <MediaCard
+                :key="media.slugMediaName"
+                :media="media"
+                :metaFileName="media.metaFileName"
+                :slugProjectName="media.slugProjectName"
+                :preview_size="180"
+              >
+              </MediaCard>
             </div>
           </div>
-        </transition-group>
-      </template>
+        </div>
+      </transition-group>
     </main>
 
   </div>
@@ -167,7 +165,9 @@ export default {
     return {
       showCreateProjectModal: false,
       currentLang: this.$root.lang.current,
+
       show_medias_instead_of_projects: false,
+      is_loading_all_medias: false,
 
       currentFilter: '',      
       currentSort: {
@@ -198,6 +198,12 @@ export default {
       // load all projects’ medias if it isn’t there
       if(this.show_medias_instead_of_projects) {
         this.$root.loadAllProjectsMedias();
+
+        this.is_loading_all_medias = true;
+
+        this.$eventHub.$once('socketio.has_finished_loading_all_medias', () => {
+          this.is_loading_all_medias = false;
+        });
       }
     },
     show_filters: function() {
@@ -350,11 +356,20 @@ export default {
     },
     groupedMedias: function() {
       let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
-          if(media.hasOwnProperty('date_created')) {
-            var dateMoment = this.$moment(media.date_created);
-            return dateMoment.format('YYYY-MM-DD');
-          }
-        });
+
+        let _date;
+
+        if(media.hasOwnProperty('date_created') && !!media.date_created) {
+          _date = media.date_created;
+        } else if(media.hasOwnProperty('date_uploaded') && !!media.date_uploaded) {
+          _date = media.date_uploaded;
+        } else {
+          return this.$t('invalid_date');
+        }
+
+        var dateMoment = this.$moment(_date);
+        return dateMoment.format('YYYY-MM-DD');
+      });
       mediaGroup = this.$_.pairs(mediaGroup); 
       mediaGroup = this.$_.sortBy(mediaGroup);
       mediaGroup = mediaGroup.reverse();

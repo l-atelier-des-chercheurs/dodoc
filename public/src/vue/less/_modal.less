@@ -16,7 +16,7 @@
   align-items: center;
   justify-content: center;
 
-  transition: background-color .3s ease-out;
+  transition: all .2s ease-out;
 
   #app:not(.is--wide) & {
     align-items: flex-start;
@@ -27,12 +27,14 @@
   }
 
   &.is_invisible {
-    background-color: transparent;
+    // background-color: transparent;
+    opacity: 0;
     pointer-events: none;
   }
 
   &.is_minimized {
-    background: linear-gradient(45deg, fade(#fff, 92%) 150px, transparent 200px, transparent 100%);
+    background: transparent;
+    // background: linear-gradient(45deg, fade(#fff, 92%) 150px, transparent 200px, transparent 100%);
     pointer-events: none;
     align-items: flex-end;
   }
@@ -193,6 +195,7 @@
       
       #app.is--wide & {
         width: 90vw;
+        margin-bottom: 20px;          
       }
     }
   }
@@ -373,19 +376,29 @@
     
 
     &.type-text {
-      .font-large;
+      // .font-large;
+      .ql-container {
+        height: 100%;
+
+        .ql-editor {
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior-y: contain;
+          .custom_scrollbar(1px, 3px, 2px, rgba(255,255,255,0), #333);
+        }
+      }
     }
 
     &.type-audio {
-
-
       audio {
         width: 500px;
         margin: auto;
         height:50%;
       }
     }
-
+    &.type-other {
+      color: white;
+    }
     pre {
       margin-top: 0;
     }
@@ -393,10 +406,6 @@
   }
 
   input[type="text"] {
-  }
-
-  .mediaTextContent {
-
   }
 
   .m_modal--preview--media {
@@ -453,7 +462,9 @@
 }
 .m_modal--nav_left, .m_modal--nav_right {
   position: fixed;
-  top: ~"calc(50% - 40px)";
+  // top: ~"calc(50% - 40px)";
+  top: auto;
+  bottom: 0;
   z-index: 1500;
 
   #app:not(.is--wide) & {
@@ -463,10 +474,19 @@
   }
 }
 .m_modal--nav_left {
-  left:0;
+  left: auto;
+  right: 50%;
+  #app:not(.is--wide) & {
+    left: 0;
+    right: auto;
+  }
 }
 .m_modal--nav_right {
-  right: 0;
+  left: 50%;
+  #app:not(.is--wide) & {
+    left: auto;
+    right: 0;
+  }
 }
 
 .m_modal--header {

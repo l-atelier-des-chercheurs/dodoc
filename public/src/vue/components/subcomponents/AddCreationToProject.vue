@@ -1,6 +1,6 @@
 <template>
   <div class="m_addcreationtoproject">
-    <div class="">
+    <div class="margin-bottom-small">
       <label v-html="$t('add_to_project')" />
       <div class="flex-nowrap">
         <select v-model="upload_to_folder">
@@ -20,6 +20,11 @@
         />
       </div>
     </div>    
+    <!-- <div class="margin-bottom-small">
+      <label v-html="$t('create_project_and_add_media')" />
+
+
+    </div> -->
   </div>
 </template>
 <script>
@@ -27,7 +32,8 @@
 
 export default {
   props: {
-    media_filename: String
+    media_filename: String,
+    publication: Object,
   },
   components: {
   },
@@ -43,7 +49,7 @@ export default {
     if(this.$root.do_navigation.current_slugProjectName) {
       this.upload_to_folder = this.$root.do_navigation.current_slugProjectName;
     } else {
-      this.upload_to_folder = Object.keys(this.all_projects)[0];
+      this.upload_to_folder = this.all_projects[0].slugFolderName;
     }
   },
   beforeDestroy() {
@@ -53,11 +59,13 @@ export default {
   },
   computed: {
     all_projects() {
-      return this.$root.store.projects;
+      return this.$root.projects_that_are_accessible;
     }
   },
   methods: {
     addTempMediaToFolder() {
+      let caption = this.$t('cooking_pot') + ' / ' + this.publication.name;
+
       this.$socketio.addTempMediaToFolder({
         from: {
           media_filename: this.media_filename,
@@ -66,8 +74,17 @@ export default {
         to: {
           slugFolderName: this.upload_to_folder,
           type: 'projects'
+        },
+        additionalMeta: {
+          caption,
+          authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : '' 
         }
       });
+
+      if(this.$root.do_navigation.view === 'ProjectView' && this.$root.do_navigation.current_slugProjectName === this.upload_to_folder) {
+        this.$emit('close');
+        return;
+      }
 
       this.$root.closeProject();
       this.$nextTick(() => {
@@ -79,5 +96,4 @@ export default {
 }
 </script>
 <style>
-
 </style>

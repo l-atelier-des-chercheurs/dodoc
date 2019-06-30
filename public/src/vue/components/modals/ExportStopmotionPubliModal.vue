@@ -5,7 +5,7 @@
     :typeOfModal="'ExportVideo'"
   >
     <template slot="header">
-      <span class="">{{ $t('export_publication') }}</span>
+      <span class="">{{ $t('export_creation') }}</span>
     </template>
 
     <template slot="sidebar">
@@ -15,9 +15,33 @@
           <hr>
 
           <div class="margin-bottom-small">
-            <label>{{ $t('framerate') }}</label>
-            <input type="number" v-model.number="framerate" min="1" max="30" step="1" />
+            <label>{{ $t('framerate') }} : {{ framerate }}fps = 
+              <template v-if="framerate <= 1">
+                {{ $t('very_slow') }}
+              </template>
+              <template v-else-if="framerate <= 10">
+                {{ $t('slow') }}
+              </template>
+              <template v-else-if="framerate <= 20">
+                {{ $t('speed_medium') }}
+              </template>
+              <template v-else-if="framerate <= 30">
+                {{ $t('fast') }}
+              </template>
+            </label>
+            <input type="range" v-model.number="framerate" min="0.1" max="30" step=".1" />
           </div>
+          <!-- <div class="flex-nowrap" style="align-items: center;">
+            <div class="margin-bottom-small">
+              <label>{{ $t('framerate') }}</label>
+              <input type="number" v-model.number="framerate" step="1" />
+            </div>
+            <div class="margin-verysmall">=</div>
+            <div class="margin-bottom-small">
+              <label>{{ $t('seconds_per_image') }}</label>
+              <input type="number" v-model.number="seconds_per_image" step="1" />
+            </div>
+          </div> -->
 
           <div class="margin-bottom-small">
             <label>{{ $t('quality') }}</label>
@@ -42,11 +66,13 @@
             </template>
             <template v-else-if="video_request_status === 'waiting_for_server'"> 
               <span class="loader loader-xs" />
-              {{ $t('creation_in_progress') }}
+              {{ $t('notifications.creation_in_progress') }}
             </template>
             <template v-else-if="video_request_status === 'generated'">
-              {{ $t('video_created') }}
-
+              {{ $t('notifications.video_created') }}
+            </template>
+            <template v-else-if="video_request_status === 'failed'">
+              {{ $t('notifications.video_creation_failed') }}
             </template>
           </button>
           
@@ -68,6 +94,7 @@
               <AddCreationToProject
                 v-if="exported_video_name !== false"
                 :media_filename="exported_video_name"
+                :publication="publication"
                 @close="$emit('close')"
               />
 
@@ -86,7 +113,8 @@ import { setTimeout } from 'timers';
 
 export default {
   props: {
-    slugPubliName: String
+    publication: Object,
+    slugPubliName: String,
   },
   components: {
     Modal,
@@ -98,6 +126,7 @@ export default {
       link_to_video: false,
       video_is_playing: false,
       framerate: 4,
+      seconds_per_image: .25,
       quality: 720,
       available_qualities: [
         { 
@@ -140,9 +169,14 @@ export default {
       }
     },
     'framerate': function() {
+      this.seconds_per_image = 1/this.framerate;
+      this.framerate = this.framerate.toFixed(1);
       if(this.video_request_status === 'generated') {
         this.video_request_status = false;
       }
+    },
+    'seconds_per_image': function() {
+      this.framerate = 1/this.seconds_per_image;
     }
   },
   computed: {
@@ -153,7 +187,9 @@ export default {
         console.log(`METHODS • ExportVideoPubli: downloadVideo`);
       }
 
-      this.$eventHub.$on('socketio.publication.publiStopmotionIsGenerated', this.videoPubliIsGenerated);
+      this.$eventHub.$once('socketio.publication.publiStopmotionIsGenerated', this.videoPubliIsGenerated);
+      this.$eventHub.$once('socketio.publication.publiStopmotionFailed', this.videoPubliFailedToGenerate);
+
       this.$socketio.downloadStopmotionPubli({ 
         slugPubliName: this.slugPubliName,
         options: {
@@ -167,12 +203,22 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: videoPubliIsGenerated`);
       }
-      this.$eventHub.$off('socketio.publication.publiStopmotionIsGenerated', this.videoPubliIsGenerated);
+
+      this.$eventHub.$off('socketio.publication.publiStopmotionFailed');
+      
       this.video_request_status = 'generated';
       this.link_to_video = window.location.origin + '/publication/video/' + videoName;
       this.exported_video_name = videoName; 
-
     },
+    videoPubliFailedToGenerate() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: videoPubliFailedToGenerate`);
+      }
+
+      this.$eventHub.$off('socketio.publication.publiStopmotionIsGenerated');
+
+      this.video_request_status = 'failed';
+    }
   }
 }
 </script>

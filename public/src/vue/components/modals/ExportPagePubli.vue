@@ -5,7 +5,7 @@
     :typeOfModal="'EditMeta'"
   >
     <template slot="header">
-      <span class="">{{ $t('export_publication') }}</span>
+      <span class="">{{ $t('export_creation') }}</span>
     </template>
 
     <template slot="sidebar">
@@ -22,10 +22,10 @@
             </template>
             <template v-else-if="pdf_request_status === 'waiting_for_server'"> 
               <span class="loader loader-xs" />
-              {{ $t('creation_in_progress') }}
+              {{ $t('notifications.creation_in_progress') }}
             </template>
             <template v-else-if="pdf_request_status === 'generated'">
-              {{ $t('pdf_created') }}
+              {{ $t('notifications.pdf_created') }}
             </template>
           </button>
 
@@ -33,7 +33,9 @@
             <a 
               v-if="link_to_pdf !== false"
               class="buttonLink margin-left-none"
-              :href="link_to_pdf" target="_blank">
+              :href="link_to_pdf" target="_blank"
+              download
+            >
               {{ $t('download') }}
             </a>
             <!-- <a 
@@ -53,6 +55,7 @@
 
             <AddCreationToProject
               v-if="link_to_pdf !== false"
+              :publication="publication"
               :media_filename="exported_pdf_name"
               @close="$emit('close')"
             />
@@ -84,6 +87,7 @@ import AddCreationToProject from '../subcomponents/AddCreationToProject.vue';
 
 export default {
   props: {
+    publication: Object,
     slugPubliName: String
   },
   components: {

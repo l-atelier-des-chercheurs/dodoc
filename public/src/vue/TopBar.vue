@@ -18,9 +18,10 @@
           :title="`do•doc version ${$root.state.appVersion}`" 
           src="/images/i_logo.svg" 
           @click="goHomeOrReload()" 
+          draggable="false"
           v-tippy='{ 
             placement : "bottom",
-            delay: [600, 0]
+            delay: [1000, 0]
           }'        
         />
       </div>
@@ -99,7 +100,10 @@
             <div class="m_topbar--center--authors--portrait"
               v-if="$root.settings.current_author.hasOwnProperty('preview') && $root.settings.current_author.preview.length !== ''"
             >
-              <img :src="urlToPortrait($root.settings.current_author.slugFolderName, $root.settings.current_author.preview)" width="100" height="100"
+              <img 
+                :src="urlToPortrait($root.settings.current_author.slugFolderName, $root.settings.current_author.preview)" 
+                width="100" height="100"
+                draggable="false"
               >              
             </div>
             <div class="m_topbar--center--authors--name">
