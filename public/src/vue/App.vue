@@ -2,7 +2,19 @@
   <div id="app"
     :class="{ 'is--wide' : $root.screen_is_wide }"
   >
-    <template v-if="$root.state.mode === 'live' && !$root.state.authentificated">
+    <template v-if="$root.store.request.display === 'standalone'">
+      <div class="m_standaloneMedia">
+        <MediaContent
+          class=""
+          :context="'full'"
+          :autoplay="true"
+          :slugFolderName="$root.store.request.slugProjectName"
+          :media="$root.requested_media"
+          v-model="$root.requested_media.content"
+        />
+      </div>
+    </template>
+    <template v-else-if="$root.state.mode === 'live' && !$root.state.authentificated">
       <SessionPassword
         v-if="$root.showSessionPasswordModal"
         @close="$root.showSessionPasswordModal = false"      
@@ -185,18 +197,6 @@
         :read_only="!$root.state.connected"
       />
     </template>    
-    <template v-else-if="$root.store.request.display === 'standalone'">
-      <div class="m_standaloneMedia">
-        <MediaContent
-          class=""
-          :context="'full'"
-          :autoplay="true"
-          :slugFolderName="$root.store.request.slugProjectName"
-          :media="$root.requested_media"
-          v-model="$root.requested_media.content"
-        />
-      </div>
-    </template>
 
     <portal-target name="modal_container" />
 
