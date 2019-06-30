@@ -829,7 +829,7 @@ body {
 }
 
 .m_publicationsview {
-  .bg-bleuvert;
+  .bg-bleuvert_fonce;
 }
 .m_publicationview {
   .bg-bleuvert;
@@ -897,6 +897,11 @@ small {
           grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
           .padding-sides-medium;
         }    
+      }
+      .m_allmedias--list {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        .padding-sides-small;
       }
     }
   }
@@ -966,6 +971,28 @@ small {
 }
 
 @t-folderwidth: 320px;
+
+.m_allmedias--list {
+  .padding-bottom-medium;
+  .padding-top-medium;
+  display: block;
+
+  .m_mediaShowAll {
+    // .padding-top-small;
+    .padding-bottom-medium;
+    // border-bottom: 2px solid @c-noir;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); 
+    grid-auto-rows: max-content;
+    .padding-sides-small;   
+    grid-gap: @t-skipline/2;  
+
+    > * {
+      // .padding-sides-small;
+    }
+  }
+}
 
 .m_projects--list {
   .padding-bottom-medium;
@@ -1405,6 +1432,7 @@ small {
   max-width: 220px;
   z-index: 1;
   .padding-sides-verysmall;
+  border-radius: 4px;
 
   transition: opacity .4s;
 
@@ -1416,6 +1444,14 @@ small {
   &.is--ownMedia {
     .m_metaField {
       background-color: @c-bleumarine_clair;
+    }
+  }
+
+  &.is--just_added {
+    background-color: @c-orange;
+    box-shadow: 0px 2px 8px 1px @c-orange;
+    >* {
+      // outline: 2px solid @c-orange;
     }
   }
 
@@ -1611,6 +1647,8 @@ small {
         font-weight: 700;
         font-size: 1.2em;
         font-family: 'Fira Code';
+
+        transition: all .4s;
       }
     }
 
@@ -1725,6 +1763,15 @@ small {
 
   font-weight: 400;
 
+  .m_authorField--show_all_authors {
+    text-transform: uppercase;
+    background-color: transparent !important;
+    border: 2px solid @c-gris;
+    &::before {
+      display: none;
+    }
+  }
+
   > button, > span {
     flex-basis: auto;
     display: flex;
@@ -1765,6 +1812,10 @@ small {
       height: 20px;
       opacity: 0.2;
       transform: scale(.8);
+    }
+    &.is--loggedInAuthor {
+      &::before {
+      }
     }
   }
 }
@@ -3012,7 +3063,7 @@ small {
   .margin-bottom-medium;
 }
 .m_recipes--recipe {
-  border: 4px solid @c-bleuvert_fonce;
+  border: 4px solid @c-bleuvert;
   .margin-small;
   .bg-bleuvert;
 
@@ -3052,16 +3103,30 @@ small {
   .m_recipes--recipe--text{
     flex-basis: 50%;
     max-width: 44ch;
-    // .margin-bottom-small;
-    .font-small;
+    .margin-vert-verysmall;
+    color: black;
 
     h2 {
       .font-folder_title;
+      font-family: 'Fira Code';
       margin-top: 0;
+      .margin-bottom-verysmall;
+      margin-bottom: 0;
+    }
+
+    p {
+      .margin-vert-small;
+      .margin-bottom-medium;
+      .font-small; 
+      line-height: 1.4;
     }
 
     button {
       // .margin-top-medium;
+    }
+    .buttonLink {
+      color: black;
+
     }
   }
 }
@@ -3159,9 +3224,7 @@ small {
 
 .m_publicationMeta {
   // .margin-medium;
-  .bg-blanc;
   .margin-small;
-  border-radius: 10px;
   // border-radius: 0 0 10px 10px;
  
   > .buttonLink {
@@ -3169,12 +3232,15 @@ small {
   }
 
   .m_publicationMeta--topbar {
-    margin: 0;
+    .bg-blanc;
+    border-radius: 10px;
+      margin: 0;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
     align-content: flex-start;
     align-items: center;
+    .padding-vert-small;
         
     > * {
       display: flex;
@@ -3184,7 +3250,7 @@ small {
       align-items: center;
 
       // .margin-vert-verysmall;
-      .margin-small;
+      .margin-sides-small;
     }
 
     .m_publicationMeta--topbar--backbutton {
@@ -3202,6 +3268,8 @@ small {
     .m_publicationMeta--topbar--title {
       .font-publi_title;
       flex: 1 1 auto;
+
+      
     }
 
 
@@ -3485,7 +3553,7 @@ small {
 
   .m_stopmotionAnimationPublication {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
     // grid-auto-rows: 20px;
     // grid-gap: @t-skipline;
 
@@ -3497,13 +3565,18 @@ small {
 
     counter-reset: compteListe;
 
+    .m_mediaMontagePublication--withdraw {
+      top: -5px;
+      right: -5px;
+    }
+
     > * {
       .bg-blanc;
       .padding-verysmall;
       .margin-vert-small;
       // margin-left: -@t-buttonradius;
       // margin-right: -@t-buttonradius;
-      flex: 0 0 100px;
+      // flex: 0 0 100px;
       position: relative;
       transition: all .4s;
 
@@ -3565,6 +3638,7 @@ small {
     max-width: 1024px;
 
     .m_videoPublication--media {
+      position: relative;
       max-width: 400px;
       height: auto;
       .padding-small;
@@ -3574,6 +3648,39 @@ small {
 
       .m_metaField {
         .margin-vert-verysmall;
+      }
+
+      .m_videoPublication--media--moveItemButtons {
+        position: absolute;
+        left: -48px;
+        top: 0;
+        height: 100%;
+        width: 48px;
+
+        > * {
+          background-color: transparent;
+          color: @c-bleuvert_fonce;
+          opacity: .4;
+          transition: opacity .4s;
+
+          &:hover {
+            opacity: 1;
+          }
+        }
+
+        .m_videoPublication--media--moveItemButton--before {
+          transform: rotate(90deg);
+          position: absolute;
+          top: 0;
+          padding: 0;
+        }
+        .m_videoPublication--media--moveItemButton--after {
+          position: absolute;
+          top: auto;
+          bottom: 0;
+          padding: 0;          
+          transform: rotate(90deg);
+        }
       }
     }
   }
@@ -3834,6 +3941,54 @@ small {
   }
 }
 
+.m_mediaMontagePublication {
+  position: relative;
+  
+  .mediaCaption {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 85%;
+  } 
+
+  .m_mediaMontagePublication--set_props {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: flex-end;
+    
+    input[type="number"] {
+      max-width: 60px;
+      text-align: center;
+      height: 2em;
+      line-height: 1;
+      width: auto;
+      .margin-sides-verysmall;
+    }
+    span {
+    }
+  }
+}
+.m_mediaMontagePublication--withdraw {
+  position: absolute;
+  top: -1.25em;
+  right: -1.25em;
+
+  display: flex;
+  color: inherit;
+  // .bg-orange;
+  color:@c-noir;
+  font-weight: bold;
+  pointer-events: auto;
+  // .margin-verysmall;
+  min-width: 2.5em;
+  min-height: 2.5em;
+
+  &.is--active {
+    .bg-noir;
+    color: @c-orange;
+  }
+}
+
+
 .m_addcreationtoproject {
   .padding-small;
   // border-left: 4px solid @c-creme;
@@ -3915,6 +4070,7 @@ small {
   clear: both;
   height: 0;
 }
+
 .vue-splitter-container {
   width: 100%;
   height: 100%;
@@ -4021,6 +4177,7 @@ small {
 
 
   .dialog > * {
+    width: 450px;
     border-radius: 2px;
     .boxs-card-0;
     border: 1px solid @c-gris_clair;
@@ -4107,11 +4264,18 @@ small {
 
 }
 
-.tippy-popper {
+.tippy-popper.tippy-popper {
+  z-index: 100000 !important;
   > * {
-    background: @c-rouge;
-    color: white;
+    color: #fff;
+    text-transform: lowercase;
+    font-size: 80%;
     pointer-events: none;  
+    // font-weight: 500;
+    
+    .tippy-backdrop {
+      background: @c-noir !important;
+    }
   }
   code {
     font-family: 'Fira Code';

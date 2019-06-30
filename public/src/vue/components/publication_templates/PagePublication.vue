@@ -8,15 +8,16 @@
     <PublicationHeader 
       :slugPubliName="slugPubliName"
       :publication="publication"
+      :publication_medias="publication_medias"
       @export="show_export_modal = true"
     />
 
-    <ExportModal
+    <ExportPagePubli
       v-if="show_export_modal"
+      :publication="publication"
       @close="show_export_modal = false"
       :slugPubliName="slugPubliName"
-    >
-    </ExportModal>
+    />
 
     <div class="m_publicationview--settings">
 
@@ -91,6 +92,14 @@
           <label>{{ $t('margin_right') }}(mm)</label>
           <input type="number" min="0" max="100" step="1" v-model="new_margin_right" @input="updatePublicationOption($event, 'margin_right')">
         </div>
+
+        <hr>
+
+        <div class="margin-bottom-small">
+          <label for="show_page_number">{{ $t('show_page_numbers') }}(mm)</label>
+          <input id="show_page_number" type="checkbox" v-model="new_show_page_number" @change="updatePublicationOption(new_show_page_number, 'show_page_number')">
+        </div>
+
       </template>
     </div>
 
@@ -264,6 +273,7 @@
               </div>        
 
               <div 
+                v-if="!page.hasOwnProperty('show_page_number') || page.show_page_number"
                 class="m_page--pageNumber"
                 :class="{ 'toRight' : true }"
               >
@@ -343,7 +353,7 @@
 <script>
 import PublicationHeader from '../subcomponents/PublicationHeader.vue';
 import MediaPublication from '../subcomponents/MediaPublication.vue';
-import ExportModal from '../modals/ExportPagePubli.vue';
+import ExportPagePubli from '../modals/ExportPagePubli.vue';
 
 export default {
   props: {
@@ -354,7 +364,7 @@ export default {
   components: {
     PublicationHeader,
     MediaPublication,
-    ExportModal
+    ExportPagePubli
   },
   data() {
     return {
@@ -370,15 +380,14 @@ export default {
           margin_bottom: 20,
           gridstep: 10,
           header_left: '',
-          header_right: ''     
+          header_right: '',
+          show_page_number: true 
         }
       },
 
       show_edit_css_window: false,
 
       advanced_options: false,
-
-      new_publiname: this.publication.name,
 
       new_width: 0,
       new_height: 0,
@@ -391,6 +400,7 @@ export default {
       new_margin_bottom: 0,
       new_header_left: '',
       new_header_right: '',
+      new_show_page_number: false,
 
       page_currently_active: 0,
       preview_mode: this.$root.state.mode !== 'live',
@@ -404,7 +414,6 @@ export default {
       has_media_selected: false,
       show_export_modal: false,
 
-      accepted_media_type: ["image", "video", "audio", "text", "document", "other"]
     }
   },
   created() {
@@ -412,7 +421,7 @@ export default {
     this.$root.setPublicationZoom(this.zoom);
   },
   mounted() {
-    this.$root.settings.current_publication.accepted_media_type = this.accepted_media_type;
+    this.$root.settings.current_publication.accepted_media_type = ["image", "video", "audio", "text", "document", "other"];
     
 
     this.$eventHub.$on('publication.addMedia', this.addMedia);
@@ -474,10 +483,6 @@ export default {
     '$root.settings.publi_zoom': function() {
       this.zoom = this.$root.settings.publi_zoom;
     },
-    'publication.name': function() {
-      this.new_publiname = this.publication.name
-    }
-
   },
   computed: {
     publications_options() {
@@ -523,6 +528,7 @@ export default {
       let defaultPages = [];
       // we need to clone this object to prevent it from being changed
       let pagesClone = JSON.parse(JSON.stringify(this.publication.pages));
+
       for(let page of pagesClone) {
         for(let k of Object.keys(this.publications_options)) {
           const option = this.publications_options[k];
@@ -539,7 +545,9 @@ export default {
             } else {
               page[k] = option;
             }
-
+          } else 
+          if(typeof option === "boolean") {
+            page[k] = option;
           } 
         }
         defaultPages.push(page);
@@ -803,6 +811,7 @@ export default {
       this.new_margin_bottom = this.publications_options.margin_bottom;
       this.new_header_left = this.publications_options.header_left;
       this.new_header_right = this.publications_options.header_right;
+      this.new_show_page_number = this.publications_options.show_page_number;
     },
     noSelection() {
       this.has_media_selected = false;
@@ -889,13 +898,21 @@ export default {
     },
     updatePublicationOption(event, type) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: updateMargin with type = ${type}`);
+        console.log(`METHODS • Publication: updatePublicationOption with type = ${type} and value = ${event}`);
       }
+
+      let val = '';
+      if(typeof event === 'object') {
+        val = event.target.value
+      } else {
+        val = event
+      }
+
       this.$root.editFolder({ 
         type: 'publications', 
         slugFolderName: this.slugPubliName, 
         data: { 
-          [type]: event.target.value
+          [type]: val
         } 
       });
     }

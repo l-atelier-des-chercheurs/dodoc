@@ -36,8 +36,17 @@
       >
         <div class="m_recipes--recipe--icon" v-html="recipe.icon"></div>
         <div class="m_recipes--recipe--text">
-          <h2>{{ $t(recipe.key) }}</h2>
-          <p v-html="$t(recipe.instructions)"/>
+          <h2 class="">{{ $t(recipe.key) }}</h2>
+          <p v-if="!recipe.show_instructions" class="margin-vert-small">
+            <span v-html="$t(recipe.summary)" class="margin-vert-verysmall"/>
+            <br>
+            <button type="button" class="buttonLink margin-left-none padding-left-none" @click="recipe.show_instructions = !recipe.show_instructions">
+              + {{ $t('more_informations')}}
+            </button>
+          </p>
+          <p v-else>
+            <span v-html="$t(recipe.instructions)"/>
+          </p>
           <button 
             class="barButton barButton_createPubli"
             type="button"  
@@ -77,7 +86,7 @@
                 </td>
               </tr>
 
-              <tr v-if="!recipe.show_all_recipes && recipe_of_this_template(recipe.key).length >= 3"
+              <tr v-if="!recipe.show_all_recipes && all_recipes_of_this_template(recipe.key).length > 3"
                 @click="recipe.show_all_recipes = true"  
                 class="m_recipes--recipe--mealList--meal"
               >
@@ -166,6 +175,8 @@ export default {
       recipes: [
         {
           key: 'page_by_page',
+          summary: 'page_by_page_summary',
+          show_instructions: false,
           instructions: 'page_by_page_instructions',
           show_all_recipes: false,
           icon: `
@@ -189,6 +200,8 @@ export default {
         },
         {
           key: 'video_assemblage',
+          summary: 'video_assemblage_summary',
+          show_instructions: false,
           instructions: 'video_assemblage_instructions',
           show_all_recipes: false,
           icon: `
@@ -218,6 +231,8 @@ export default {
         },
         {
           key: 'stopmotion_animation',
+          summary: 'stopmotion_animation_summary',
+          show_instructions: false,
           instructions: 'stopmotion_animation_instructions',
           show_all_recipes: false,
           icon: `
@@ -294,6 +309,8 @@ export default {
         },
         { 
           key: 'mix_audio_and_video',
+          summary: 'mix_audio_and_video_summary',
+          show_instructions: false,
           instructions: 'mix_audio_and_video_instructions',
           show_all_recipes: false,
           icon: `
@@ -330,6 +347,8 @@ export default {
         },
         { 
           key: 'mix_audio_and_image',
+          summary: 'mix_audio_and_image_summary',
+          show_instructions: false,
           instructions: 'mix_audio_and_image_instructions',
           show_all_recipes: false,
           icon: `

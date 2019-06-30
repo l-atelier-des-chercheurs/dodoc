@@ -101,7 +101,6 @@
               type="button"
               @click="closeModal"
               class="button button-bg_rounded bg-orange"
-              v-if="hide_close_button"
             >
               <img src="/images/i_clear.svg" draggable="false" />
               <span class="text-cap font-verysmall">
@@ -134,7 +133,7 @@
         <button
           class="button-round m_modal--close_button padding-verysmall"
           @click="closeModal"
-          v-if="showModal && !is_minimized"
+          v-if="showModal && !is_minimized && !prevent_close"
         >
           <img src="/images/i_close_sansfond.svg" draggable="false">
         </button>
@@ -146,6 +145,11 @@
           @click="toggleMinimize"
           v-if="showModal && can_minimize"
           :class="{ 'is_minimized' : is_minimized }"
+          :title="$t('minimize_media')" 
+          v-tippy='{
+            placement : "right",
+            delay: [600, 0]
+          }'
         >
           <img src="/images/i_minimize.svg" draggable="false">
         </button>
@@ -156,6 +160,11 @@
           class="button-round bg-blanc m_modal--nav_left padding-verysmall"
           @click="prevMedia()"
           v-if="showModal && media_navigation && !is_minimized"
+          :title="$t('previous_media')" 
+          v-tippy='{
+            placement : "left",
+            delay: [600, 0]
+          }'
         >
           <img src="/images/i_arrow_left.svg" draggable="false">
         </button>
@@ -166,6 +175,11 @@
           class="button-round bg-blanc m_modal--nav_right padding-verysmall"
           @click="nextMedia()"
           v-if="showModal && media_navigation && !is_minimized"
+          :title="$t('next_media')" 
+          v-tippy='{
+            placement : "right",
+            delay: [600, 0]
+          }'
         >
           <img src="/images/i_arrow_right.svg" draggable="false">
         </button>
@@ -215,7 +229,7 @@ export default {
       type: Boolean,
       default: false
     },
-    hide_close_button: {
+    prevent_close: {
       type: Boolean,
       default: false
     }
@@ -285,7 +299,9 @@ export default {
       }
     },
     closeModal: function() {
-      console.log(`METHODS • BaseModal: closeModal with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
+      console.log(`METHODS • BaseModal: closeModal with askBeforeClosingModal = ${this.askBeforeClosingModal}`);
+
+      if(this.prevent_close) return;
 
       if(this.askBeforeClosingModal) {
         this.has_confirm_close_modal_open = true;

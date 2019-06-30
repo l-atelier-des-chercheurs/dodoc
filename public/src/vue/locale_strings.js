@@ -46,20 +46,25 @@ module.exports = (function() {
       text_overflow: 'Texte en excès',
       move_to_foreground: 'Mettre au premier plan',
       move_to_background: 'Mettre à l’arrière plan',
+      'layer:': 'Calque&nbsp;:',
+      css_settings: 'Règlages CSS',
+      edit_content: 'Modifier le contenu',
+      adjust: 'Ajuster',
+
       show_all: 'Tout afficher',
       cooking_pot_instructions:
         'Mélangez des médias pour en créer des nouveaux !',
       untitled: 'Sans titre',
-      mix_audio_and_video: 'Ajoutez (ou remplacez) du son sur une vidéo',
-      mix_audio_and_image: 'Ajoutez du son sur une image',
+      mix_audio_and_video: 'Son sur une vidéo',
+      mix_audio_and_image: 'Son sur une image',
       add_sound_video_file:
-        'Ajoutez ici un média <b>son</b> et un média <b>vidéo</b> pour créer une vidéo.',
+        'Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une vidéo et une piste sonore.',
       add_sound_image_file:
-        'Ajoutez ici un média <b>son</b> et un média <b>image</b> pour créer une vidéo.',
+        'Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>image</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une image et une piste sonore.',
       add_multiple_videos_files:
-        'Ajoutez plusieurs médias <b>vidéo</b> pour créer une vidéo.',
+        'Ouvrez un projet et ajoutez plusieurs médias <b>vidéo</b> en cliquant sur la flèche verte. Les vidéos seront mises bout à bout dans l’ordre d’ajout.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : uniquement des vidéos de même taille.',
       add_multiple_images:
-        'Ajoutez plusieurs médias <b>image</b> pour créer une vidéo.',
+        'Ouvrez un projet et ajoutez plusieurs médias <b>image</b> en cliquant sur la flèche verte. Les images seront mises bout à bout dans l’ordre d’ajout. Exportez la séquence et réglez la vitesse de défilement des images.<br>L’exportation créera une vidéo.<br>Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.',
       style: 'style',
       css: 'css',
       write_some_CSS_code_for_example:
@@ -87,6 +92,7 @@ module.exports = (function() {
       cancel: 'Annuler',
       back: 'Retour',
       sureToRemoveAuthor: 'Êtes-vous sûr de vouloir supprimer cet auteur ?',
+      show_all_authors: 'Afficher l’ensemble des auteurs',
       changes_not_saved_sureToCloseModal:
         'Des modifications ont eu lieu, souhaitez-vous les enregistrer ?',
       save_changes: 'Enregistrer les modifications',
@@ -98,6 +104,7 @@ module.exports = (function() {
       validate_media: 'Valider le média',
       add_keyword: 'Ajouter un mot-clé',
       add: 'Ajouter',
+      close: 'Fermer',
 
       very_high: 'Très élevée (1080p)',
       high: 'Élevée (720p)',
@@ -170,6 +177,7 @@ module.exports = (function() {
         'Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).',
 
       sort_by: 'Organiser par',
+      by: 'par',
       in_the_order: 'Dans l’ordre',
       public: 'Public',
       fav: 'Favoris',
@@ -223,6 +231,8 @@ module.exports = (function() {
         half_day: '½j',
         day: 'j'
       },
+
+      more_informations: 'Plus d’infos',
       contents_are_stored: 'Les contenus de ce dossier sont enregistrés dans ',
       folder_information: 'Informations du dossier',
       calendar: 'Calendrier',
@@ -241,6 +251,8 @@ module.exports = (function() {
       margin_bottom: 'Marge: bas',
       number_of_medias: 'Nombre de médias',
       number_of_pages: 'Nombre de pages',
+      show_page_numbers:
+        'Afficher le nombre de page dans le coin en bas à droite',
 
       export_folder: 'Exporter en format WEB',
       export: 'Exporter',
@@ -266,9 +278,6 @@ module.exports = (function() {
       get_website:
         'Pour récupérer un site web contenant cette publication (par exemple pour la diffuser en ligne), cliquez sur le bouton ci-dessous&nbsp;:',
       download_website: 'Télécharger une version web',
-      pdf_created: 'Le PDF a été créé',
-      video_created: 'La vidéo a été créée',
-      video_creation_failed: 'La vidéo n’a pas pu être créée. Erreur&nbsp;:',
       open_in_app: 'Afficher',
       format: 'Format',
       template: 'Gabarit',
@@ -281,17 +290,28 @@ module.exports = (function() {
       web: 'Page web',
       back_to_project: 'Retour au projet',
 
+      page_by_page_summary:
+        'Créer un PDF imprimable ou une page web à mettre en ligne.',
       page_by_page_instructions: `Cette recette permet de créer un document avec un format précis et plusieurs pages.<br> Médias acceptés : images, vidéos, sons et textes.<br>Créera un PDF imprimable (pour faire des affiches, tracts, journaux, etc.) ou une page web à mettre en ligne.`,
-      video_assemblage_instructions: `Cette recette propose de créer un montage vidéo en mettant plusieurs vidéos bout à bout.<br> Médias acceptés : uniquement des vidéos de même taille.<br>Créera une nouvelle vidéo.`,
+      video_assemblage_summary:
+        'Créer un montage vidéo à partir d’images et de vidéos.',
+      video_assemblage_instructions: `Cette recette propose de créer un montage vidéo en mettant plusieurs vidéos ou images bout à bout.<br> Médias acceptés : des vidéos et des images.<br>Créera une nouvelle vidéo.`,
+      stopmotion_animation_summary:
+        'Assembler des images pour créer une vidéo.',
       stopmotion_animation_instructions: `Cette recette permet l’assemblage d’un nombre illimité d’images pour créer une séquence vidéo dans laquelle elles défilent à une vitesse réglable.<br> Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.<br>Créera une nouvelle vidéo.`,
-      mix_audio_and_video_instructions: `Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo.`,
-      mix_audio_and_image_instructions: `Cette recette prend une image et une piste audio. Elle permet de créer des <i>images parlantes</i>.<br> Médias acceptés : une image et une piste sonore.<br>Créera une vidéo.`,
+      mix_audio_and_video_summary: 'Ajouter ou remplacer du son sur une vidéo.',
+      mix_audio_and_video_instructions: `Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo de la durée du plus long média.`,
+      mix_audio_and_image_summary: 'Ajouter du son sur une image.',
+      mix_audio_and_image_instructions: `Cette recette prend une image et une piste audio. Elle permet de créer des <i>images parlantes</i>.<br> Médias acceptés : une image et une piste sonore.<br>Créera une vidéo de la durée de la piste sonore.`,
 
       last_modified: 'Dernière modification',
       remote_access: 'Accès depuis d’autres appareils',
       img_per_second: 'Images par seconde',
       sent: 'Envoyé',
       disable: 'Désactiver',
+      previous_media: 'Média précédent',
+      next_media: 'Média suivant',
+      minimize_media: 'Utiliser comme référence',
 
       notifications: {
         ios_not_compatible_with_capture:
@@ -311,10 +331,10 @@ module.exports = (function() {
         connection_error: 'La connexion au serveur n’a pu se faire.',
         media_has_been_added_successfully: 'Le média a bien été transféré',
         wrong_password_for_dodoc:
-          'Le password envoyé n’est pas valide. Veuillez réessayer.',
+          'Le mot de passe envoyé n’est pas valide. Veuillez réessayer.',
         loading_dodoc: 'Chargement de do•doc en cours…',
         'wrong_password_for_folder:':
-          'Le password n’est pas le bon pour le dossier&nbsp;:',
+          'Le mot de passe n’est pas le bon pour le dossier&nbsp;:',
         'created_edited_media:':
           'Création ou édition d’un média pour le dossier&nbsp;:',
         project_name_exists:
@@ -346,10 +366,16 @@ module.exports = (function() {
           'Ce projet vient d’être supprimé par quelqu’un d’autre.',
         wrong_password_for: 'Mot de passe erroné pour ',
         creating_video: 'En cours de création de la vidéo…',
+        preparing_video_from_montage: 'Préparation des vidéos du montage',
+        finished_creating_recipe:
+          'La recette est terminée et peut être consultée !',
         creation_in_progress: 'En cours de création…',
         connected_to_dodoc: 'Connection à do•doc active',
         using_saved_password:
-          'Connection à do•doc en utilisant le mot de passe enregistré…'
+          'Connection à do•doc en utilisant le mot de passe enregistré',
+        pdf_created: 'Le PDF a été créé',
+        video_created: 'La vidéo a été créée',
+        video_creation_failed: 'La vidéo n’a pas pu être créée'
       }
     },
     en: {
@@ -398,6 +424,11 @@ module.exports = (function() {
       text_overflow: 'Overflow text',
       move_to_foreground: 'Move to foreground',
       move_to_background: 'Move to background',
+      'layer:': 'Layer:',
+      css_settings: 'CSS settings',
+      edit_content: 'Edit content',
+      adjust: 'Adjust',
+
       show_all: 'Show all',
       cooking_pot_instructions:
         'Mix a single or multiple medias to create new medias!',
@@ -423,6 +454,7 @@ module.exports = (function() {
       cancel: 'Cancel',
       back: 'Back',
       sureToRemoveAuthor: 'Do you really want to delete this author?',
+      show_all_authors: 'Show all authors',
       changes_not_saved_sureToCloseModal:
         'All changes were not saved. Do you really want to close this window?',
       save_changes: 'Save changes first',
@@ -433,6 +465,7 @@ module.exports = (function() {
       validate_media: 'Validate the media',
       add_keyword: 'Add a keyword',
       add: 'Add',
+      close: 'Fermer',
 
       very_high: 'Very high (1080p)',
       high: 'High (1080p)',
@@ -497,6 +530,7 @@ module.exports = (function() {
         'To create authors, close this window and click on (AUTHORS).',
 
       sort_by: 'Sort by',
+      by: 'by',
       in_the_order: 'In the order',
       public: 'Public',
       fav: 'Favourite',
@@ -530,9 +564,9 @@ module.exports = (function() {
       export_video_instructions:
         'Click this button to generate a video from multiple source videos.',
       export_audio_video_mix_instructions:
-        'Click this button to generate a video from the audio and video selected.',
+        'Click this button to generate a video from the sound and video selected.',
       export_audio_image_mix_instructions:
-        'Click this button to generate a video from the audio and image selected.',
+        'Click this button to generate a video from the sound and image selected.',
       export_stopmotion_instructions:
         'Click this button to generate a video from images you have selected.',
       make_video: 'Make a video',
@@ -571,6 +605,8 @@ module.exports = (function() {
         half_day: '½d',
         day: 'd'
       },
+
+      more_informations: 'More infos',
       contents_are_stored: 'Contents for this folder are stored in ',
       folder_information: 'Folder information',
       calendar: 'Calendar',
@@ -589,6 +625,7 @@ module.exports = (function() {
       margin_bottom: 'Margin: bottom',
       number_of_medias: 'Number of medias',
       number_of_pages: 'Number of pages',
+      show_page_numbers: 'Show page number in the bottom-right corner',
 
       export_folder: 'Export as a webpage',
       export: 'Export',
@@ -601,9 +638,6 @@ module.exports = (function() {
       get_website:
         'To download a website version of this publication (for example, to publish online), click here:',
       download_website: 'Download a website',
-      pdf_created: 'PDF created',
-      video_created: 'The video was created',
-      video_creation_failed: 'The video was not created. Error returned:',
       open_in_app: 'Open',
       format: 'Format',
       template: 'Template',
@@ -615,16 +649,23 @@ module.exports = (function() {
       previous_creations: 'Previous creations',
       stopmotion_animation: 'Stopmotion animation',
 
-      page_by_page_instructions: `This recipe can be used to create a paged document with a specific size.<br> Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, tracts, newspapers, etc.) or a webpage to upload online.`,
-      video_assemblage_instructions: `This recipe creates a video from mulitple source videos, one after the other.<br> Accepted medias: videos of the same size.<br>Will create a new video.`,
-      stopmotion_animation_instructions: `This recipe takes any number of images as inputs and creates a single video with images being displayed at a specific speed.<br> Accepted medias: images of any size. The first image will determine if the video will be in portrait or landscape.<br>Will create a new video.`,
-      mix_audio_and_video_instructions: `This recipe mixes a video and an audio track to create a new video where they are played at the same time.<br> Accepted medias: a video and a sound track.<br>Will create a new video.`,
+      page_by_page_instructions: `This recipe can be used to create a paged document with a specific size.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, tracts, newspapers, etc.) or a webpage to upload online.`,
+      video_assemblage_summary: `Creates a video from images and videos.`,
+      video_assemblage_instructions: `This recipe creates a video from multiple source images and videos, one after the other.<br>Accepted medias: images and videos.<br>Will create a new video.`,
+      stopmotion_animation_summary:
+        'Creates a video from images showcasing at specific speed.',
+      stopmotion_animation_instructions: `This recipe takes any number of images as inputs and creates a single video with images displayed at a specific speed.<br>Accepted medias: images of any size. The first image will determine if the video will be in portrait or landscape.<br>Will create a new video.`,
+      mix_audio_and_video_summary: 'Add or replace sound on a video.',
+      mix_audio_and_video_instructions: `This recipe mixes a video and an audio track to create a new video where they are played at the same time.<br>Accepted medias: a video and a sound track.<br>Will create a new video.`,
+      mix_audio_and_image_summary: 'Add sound on an image.',
+      mix_audio_and_image_instructions: `This recipe mixes an image with an audio track to create a <i>speaking image</i><br>Accepted medias: an image and a sound track.<br>Will create a new video.`,
 
       add_sound_video_file:
         'Add a <b>sound</b> and a <b>video</b> media to create a new video.',
       add_sound_image_file:
         'Add a <b>sound</b> and an <b>image</b> media to create a new video.',
       mix_audio_and_video: 'Add (or replace) sound on a video',
+      mix_audio_and_image: 'Add sound to an image',
       add_multiple_videos_files:
         'Add multiple <b>video</b> medias to create a new video.',
       add_multiple_images:
@@ -689,10 +730,15 @@ module.exports = (function() {
           'This project just got removed by another user.',
         wrong_password_for: 'Wrong password for project ',
         creating_video: 'Creating video…',
+        preparing_video_from_montage: 'Pre-processing videos from the montage',
+        finished_creating_recipe: 'The recipe was successfully completed!',
         creation_in_progress: 'Creation in progress…',
         connected_to_dodoc: 'Connection to do•doc active',
         using_saved_password:
-          'Connecting to do•doc using the password that was saved'
+          'Connecting to do•doc using the password that was saved',
+        pdf_created: 'PDF created',
+        video_created: 'The video was created',
+        video_creation_failed: 'The video was not created'
       }
     }
   };

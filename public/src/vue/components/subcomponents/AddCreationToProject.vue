@@ -32,7 +32,8 @@
 
 export default {
   props: {
-    media_filename: String
+    media_filename: String,
+    publication: Object,
   },
   components: {
   },
@@ -63,6 +64,8 @@ export default {
   },
   methods: {
     addTempMediaToFolder() {
+      let caption = this.$t('cooking_pot') + ' / ' + this.publication.name;
+
       this.$socketio.addTempMediaToFolder({
         from: {
           media_filename: this.media_filename,
@@ -71,8 +74,17 @@ export default {
         to: {
           slugFolderName: this.upload_to_folder,
           type: 'projects'
+        },
+        additionalMeta: {
+          caption,
+          authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : '' 
         }
       });
+
+      if(this.$root.do_navigation.view === 'ProjectView' && this.$root.do_navigation.current_slugProjectName === this.upload_to_folder) {
+        this.$emit('close');
+        return;
+      }
 
       this.$root.closeProject();
       this.$nextTick(() => {

@@ -23,8 +23,8 @@ button, .button {
 
   transition: color .25s ease-out, opacity 0.5s;
 
-  &[disabled] {
-    opacity: 0.4;
+  &[disabled], &.is--disabled {
+    opacity: 0.38;
     cursor: not-allowed;
 
     &[class*="bg-"]:not(.bg-transparent) {
@@ -51,6 +51,18 @@ button, .button {
 
   a {
     text-decoration: none;
+  }
+
+  &.button-thin {
+    .button-thin;
+    .margin-verysmall;
+    .padding-vert-small;
+    .padding-sides-medium;
+    .text-cap;
+    .font-verysmall;    
+    // background-color: @c-rouge;
+    // color: white;
+    border-radius: @t-skipline;
   }
 
   &.button-redthin {

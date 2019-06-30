@@ -22,7 +22,9 @@
         </div>
       </template>
       <template v-else>
-        <vue-plyr :options="plyr_options">
+        <vue-plyr :options="plyr_options" ref="plyr"
+          :emit="['volumechange']" @volumechange="volumeChanged"
+        >
           <video :poster="linkToVideoThumb" :src="mediaURL" preload="none" :autoplay="autoplay" />
         </vue-plyr>
       </template>
@@ -146,6 +148,10 @@ export default {
     element_height: {
       type: Number,
       default: 0
+    },
+    audio_volume: {
+      type: Number,
+      default: 100
     }
   },
   components: {
@@ -173,6 +179,7 @@ export default {
         }
       }
     }
+    this.setVolume(this.audio_volume);
   },
   beforeDestroy() {
   },
@@ -292,9 +299,18 @@ export default {
       return pathToSmallestThumb !== undefined
         ? url
         : this.mediaURL;
-    }
+    },
   },
   methods: {
+    volumeChanged(event) {
+      const vol = Math.round(Number(event.detail.plyr.volume) * 100);
+      this.$emit('volumeChanged', vol);
+    },
+    setVolume(val) {
+      if(this.$refs.hasOwnProperty('plyr')) {
+        this.$refs.plyr.player.volume = val / 100;
+      }
+    }
   }
 };
 </script>

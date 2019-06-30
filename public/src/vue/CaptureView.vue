@@ -811,9 +811,10 @@ export default {
         return false;
       }
 
-      if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
-        return false;
-      }      
+      // disabled because it clashes with the input type range from stopmotion panel
+      // if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
+      //   return false;
+      // }      
 
       switch(event.key) {
         case 'w':

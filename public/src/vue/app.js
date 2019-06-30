@@ -360,10 +360,23 @@ let vm = new Vue({
       }
 
       if (this.$root.state.session_password === 'has_pass') {
-        this.showSessionPasswordModal = true;
+        var session_storage_pwd = this.$auth.getSessionPasswordFromLocalStorage();
+        if (session_storage_pwd) {
+          this.$socketio.connect(session_storage_pwd);
+
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .log(this.$t('notifications.using_saved_password'));
+
+          this.$eventHub.$once('socketio.socketerror', () => {
+            this.showSessionPasswordModal = true;
+          });
+        } else {
+          this.showSessionPasswordModal = true;
+        }
 
         this.$eventHub.$on('socketio.socketerror', () => {
-          this.$auth.emptySessionPasswordInLocalStorage();
           // if error, attempt to reconnect
           this.$alertify
             .closeLogOnClick(true)
@@ -553,6 +566,9 @@ let vm = new Vue({
         meta.authors.map(k => {
           if (uniqueAuthors.indexOf(k.name) == -1) uniqueAuthors.push(k.name);
         });
+      });
+      uniqueAuthors = uniqueAuthors.sort(function(a, b) {
+        return a.toLowerCase().localeCompare(b.toLowerCase());
       });
       return uniqueAuthors.map(kw => {
         return {
@@ -1035,6 +1051,21 @@ let vm = new Vue({
           slugFolderName: slugProjectName
         });
       });
+
+      let number_of_projects_to_load_medias_to = Object.keys(
+        this.store.projects
+      ).length;
+
+      this.$eventHub.$on('socketio.projects.listMedias', () => {
+        number_of_projects_to_load_medias_to--;
+        if (number_of_projects_to_load_medias_to === 0) {
+          this.$eventHub.$emit('socketio.has_finished_loading_all_medias');
+        }
+      });
+
+      setTimeout(() => {
+        this.$eventHub.$emit('socketio.has_finished_loading_all_medias');
+      }, 5000);
     },
     formatDateToHuman(date) {
       return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LL');

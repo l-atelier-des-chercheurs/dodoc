@@ -69,8 +69,10 @@
               {{ $t('notifications.creation_in_progress') }}
             </template>
             <template v-else-if="video_request_status === 'generated'">
-              {{ $t('video_created') }}
-
+              {{ $t('notifications.video_created') }}
+            </template>
+            <template v-else-if="video_request_status === 'failed'">
+              {{ $t('notifications.video_creation_failed') }}
             </template>
           </button>
           
@@ -92,6 +94,7 @@
               <AddCreationToProject
                 v-if="exported_video_name !== false"
                 :media_filename="exported_video_name"
+                :publication="publication"
                 @close="$emit('close')"
               />
 
@@ -110,7 +113,8 @@ import { setTimeout } from 'timers';
 
 export default {
   props: {
-    slugPubliName: String
+    publication: Object,
+    slugPubliName: String,
   },
   components: {
     Modal,
@@ -183,7 +187,9 @@ export default {
         console.log(`METHODS • ExportVideoPubli: downloadVideo`);
       }
 
-      this.$eventHub.$on('socketio.publication.publiStopmotionIsGenerated', this.videoPubliIsGenerated);
+      this.$eventHub.$once('socketio.publication.publiStopmotionIsGenerated', this.videoPubliIsGenerated);
+      this.$eventHub.$once('socketio.publication.publiStopmotionFailed', this.videoPubliFailedToGenerate);
+
       this.$socketio.downloadStopmotionPubli({ 
         slugPubliName: this.slugPubliName,
         options: {
@@ -197,12 +203,22 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: videoPubliIsGenerated`);
       }
-      this.$eventHub.$off('socketio.publication.publiStopmotionIsGenerated', this.videoPubliIsGenerated);
+
+      this.$eventHub.$off('socketio.publication.publiStopmotionFailed');
+      
       this.video_request_status = 'generated';
       this.link_to_video = window.location.origin + '/publication/video/' + videoName;
       this.exported_video_name = videoName; 
-
     },
+    videoPubliFailedToGenerate() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: videoPubliFailedToGenerate`);
+      }
+
+      this.$eventHub.$off('socketio.publication.publiStopmotionIsGenerated');
+
+      this.video_request_status = 'failed';
+    }
   }
 }
 </script>

@@ -10,12 +10,11 @@ module.exports = (function() {
           socket: ''
         },
         methods: {
-          connect() {
+          connect(pwd) {
             let opts = {};
 
-            const session_password = auth.getSessionPassword();
-            if (session_password) {
-              let hashed_session_password = auth.hashCode(session_password);
+            if (pwd) {
+              let hashed_session_password = auth.hashCode(pwd);
               opts.query = { hashed_session_password };
             }
 
@@ -42,9 +41,14 @@ module.exports = (function() {
             this.socket.on('listSpecificMedias', this._onListSpecificMedias);
             this.socket.on('publiPDFGenerated', this._onPubliPDFGenerated);
             this.socket.on('publiVideoGenerated', this._onPubliVideoGenerated);
+            this.socket.on('publiVideoFailed', this._onPubliVideoFailed);
             this.socket.on(
               'publiStopmotionIsGenerated',
               this._onPubliStopmotionGenerated
+            );
+            this.socket.on(
+              'publiStopmotionFailed',
+              this._onPubliStopmotionFailed
             );
 
             this.socket.on('newNetworkInfos', this._onNewNetworkInfos);
@@ -95,7 +99,7 @@ module.exports = (function() {
 
           _onSocketError(reason) {
             console.log(`Unable to connect to server: ${reason}`);
-            window.state.authentificated = false;
+            // window.state.authentificated = false;
             this.$eventHub.$emit('socketio.socketerror', reason);
           },
 
@@ -232,12 +236,22 @@ module.exports = (function() {
             console.log('Received _onPubliVideoGenerated packet.');
             this.$eventHub.$emit('socketio.publication.videoIsGenerated', data);
           },
+          _onPubliVideoFailed() {
+            console.log('Received _onPubliVideoFailed packet.');
+            this.$eventHub.$emit('socketio.publication.videoFailedToGenerate');
+          },
+
           _onPubliStopmotionGenerated(data) {
             console.log('Received _onPubliStopmotionGenerated packet.');
             this.$eventHub.$emit(
               'socketio.publication.publiStopmotionIsGenerated',
               data
             );
+          },
+
+          _onPubliStopmotionFailed() {
+            console.log('Received _onPubliStopmotionFailed packet.');
+            this.$eventHub.$emit('socketio.publication.publiStopmotionFailed');
           },
 
           _listClients(data) {
@@ -303,7 +317,7 @@ module.exports = (function() {
             console.log('Received _onNewNetworkInfos packet.');
             window.state.localNetworkInfos = data;
           },
-          _onNotify({ localized_string, not_localized_string }) {
+          _onNotify({ localized_string, not_localized_string, type = 'log' }) {
             console.log('Received _onNotify packet.');
             let msg = '';
             if (localized_string && not_localized_string) {
@@ -318,10 +332,23 @@ module.exports = (function() {
             } else if (localized_string) {
               msg += this.$t(`notifications['${localized_string}']`);
             }
-            alertify
-              .closeLogOnClick(true)
-              .delay(4000)
-              .log(msg);
+
+            if (type === 'success') {
+              alertify
+                .closeLogOnClick(true)
+                .delay(4000)
+                .success(msg);
+            } else if (type === 'error') {
+              alertify
+                .closeLogOnClick(true)
+                .delay(10000)
+                .error(msg);
+            } else {
+              alertify
+                .closeLogOnClick(true)
+                .delay(4000)
+                .log(msg);
+            }
           },
           listFolders(fdata) {
             this.socket.emit('listFolders', fdata);

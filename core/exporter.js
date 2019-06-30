@@ -6,6 +6,7 @@ const path = require('path'),
   pad = require('pad-left');
 
 const sharp = require('sharp');
+sharp.cache(false);
 
 const puppeteer = require('puppeteer');
 
@@ -16,6 +17,8 @@ const dev = require('./dev-log'),
 
 ffmpeg.setFfmpegPath(ffmpegstatic.path);
 ffmpeg.setFfprobePath(ffprobestatic.path);
+
+const renice = 0;
 
 module.exports = (function() {
   return {
@@ -313,7 +316,7 @@ module.exports = (function() {
                     return resolve(videoName);
                   })
                   .catch(err => {
-                    return reject(`Failed to make a video ${err}`);
+                    return reject(err.message);
                   });
               } else if (type_of_publication === 'mix_audio_and_video') {
                 // merge audio and video
@@ -328,7 +331,7 @@ module.exports = (function() {
                     return resolve(videoName);
                   })
                   .catch(err => {
-                    return reject(`Failed to make a video ${err}`);
+                    return reject(`${err}`);
                   });
               } else if (type_of_publication === 'mix_audio_and_image') {
                 // merge audio and image
@@ -342,7 +345,7 @@ module.exports = (function() {
                     return resolve(videoName);
                   })
                   .catch(err => {
-                    return reject(`Failed to make a video ${err}`);
+                    return reject(`Failed to make a video: ${err}`);
                   });
               }
             });
@@ -408,6 +411,12 @@ module.exports = (function() {
                   const new_width = 2 * Math.round(video_height / ratio / 2);
                   resolution.width = new_width;
 
+                  // set resolution to fixed size : 1280 / 720
+                  // resolution = {
+                  //   width: 1280,
+                  //   height: 720
+                  // };
+
                   return _loadMediaFilenameFromPublicationSlugs(
                     slugPubliName,
                     pageData
@@ -415,7 +424,8 @@ module.exports = (function() {
                 })
                 .then(imagesFilePathInOrder => {
                   numberOfImagesToProcess = imagesFilePathInOrder.length;
-                  return _prepareImageForStopmotion({
+
+                  return _prepareImagesForStopmotion({
                     imagesFilePathInOrder,
                     cachePath: imagesCachePath,
                     resolution
@@ -431,6 +441,7 @@ module.exports = (function() {
                     `duration : ${numberOfImagesToProcess / framerate}`
                   );
                   const ffmpeg_cmd = new ffmpeg()
+                    .renice(renice)
                     .input(path.join(imagesCachePath, 'img-%04d.jpeg'))
                     .inputFPS(framerate)
                     .withVideoCodec('libx264')
@@ -449,12 +460,7 @@ module.exports = (function() {
                       );
                     })
                     .on('progress', progress => {
-                      require('./sockets').notify({
-                        socket,
-                        localized_string: `creating_video`,
-                        not_localized_string:
-                          Number.parseFloat(progress.percent).toFixed(1) + '%'
-                      });
+                      _notifyFfmpegProgress({ socket, progress });
                     })
                     .on('end', () => {
                       dev.logverbose(`Stopmotion has been completed`);
@@ -464,7 +470,7 @@ module.exports = (function() {
                       dev.error('An error happened: ' + err.message);
                       dev.error('ffmpeg standard output:\n' + stdout);
                       dev.error('ffmpeg standard error:\n' + stderr);
-                      return reject(`couldn't create a stopmotion animation`);
+                      return reject(error);
                     })
                     .save(videoCachePath);
                   global.ffmpeg_processes.push(ffmpeg_cmd);
@@ -638,13 +644,19 @@ module.exports = (function() {
     return mediasAndMetaInOrder[0].ratio;
   }
 
-  function _prepareImageForStopmotion({
+  function _prepareImagesForStopmotion({
     imagesFilePathInOrder,
     cachePath,
     resolution
   }) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction('EXPORTER — _prepareImageForStopmotion');
+      dev.logfunction(
+        `EXPORTER — _prepareImagesForStopmotion ${JSON.stringify(
+          resolution,
+          null,
+          4
+        )}`
+      );
       // let slugStopmotionPath = getFolderPath(
       //   path.join(
       //     global.settings.structure['stopmotions'].path,
@@ -661,14 +673,44 @@ module.exports = (function() {
               'img-' + pad(index, 4, '0') + '.jpeg'
             );
 
-            fs.copy(media.full_path, cache_image_path)
-              .then(() => {
-                resolve();
+            // if image is something else than a jpg/jpeg, then use sharp to convert it
+
+            let media_file_ext = new RegExp(
+              global.settings.regexpGetFileExtension,
+              'i'
+            ).exec(media.full_path)[0];
+
+            // if (
+            //   media_file_ext.toLowerCase() === '.jpeg' ||
+            //   media_file_ext.toLowerCase() === '.jpg'
+            // ) {
+            //   fs.copy(media.full_path, cache_image_path)
+            //     .then(() => {
+            //       resolve();
+            //     })
+            //     .catch(err => {
+            //       dev.error(`Failed to copy image to cache with seq name.`);
+            //       reject(err);
+            //     });
+            // } else {
+            sharp(media.full_path)
+              .rotate()
+              .resize(resolution.width, resolution.height, {
+                fit: 'contain',
+                withoutEnlargement: false,
+                background: 'black'
               })
+              .flatten()
+              .withMetadata()
+              .toFile(cache_image_path)
+              .then(() => resolve())
               .catch(err => {
-                dev.error(`Failed to copy image to cache with seq name.`);
+                dev.error(
+                  `Failed to sharp create image to cache with seq name.`
+                );
                 reject(err);
               });
+            // }
           })
         );
       });
@@ -689,10 +731,11 @@ module.exports = (function() {
 
       const videoPath = path.join(cachePath, videoName);
 
-      let video_files = medias_with_original_filepath.filter(
-        m => m.type === 'video'
+      let media_files_to_process = medias_with_original_filepath.filter(m =>
+        ['video', 'image'].includes(m.type)
       );
-      if (video_files.length === 0) return reject(`No video files`);
+      if (media_files_to_process.length === 0)
+        return reject(`No files to process`);
 
       let tasks = [];
       const resolution = {
@@ -705,10 +748,15 @@ module.exports = (function() {
       //     return reject(err);
       //   }, 1500);
       // });
+      //
 
-      video_files.map(vm => {
-        let myPromise = new Promise((resolve, reject) => {
-          _prepareVideosForMontageAndWeb({
+      let temp_videos_array = [];
+      let index = 0;
+
+      const executeSequentially = media_files_to_process => {
+        const vm = media_files_to_process.shift();
+        if (vm.type === 'video') {
+          return _prepareVideoForMontageAndWeb({
             vm,
             cachePath,
             resolution,
@@ -717,48 +765,79 @@ module.exports = (function() {
             .then(temp_video_path => {
               require('./sockets').notify({
                 socket,
-                localized_string: `creation_in_progress`,
-                not_localized_string: temp_video_path
+                localized_string: `preparing_video_from_montage`,
+                not_localized_string: `
+              ${index + 1}/${index + media_files_to_process.length + 1}
+              `
               });
-              thumbs.getMediaDuration(temp_video_path).then(duration => {
-                if (!duration) {
-                  duration = 0;
-                }
-                return resolve({ full_path: temp_video_path, duration });
-              });
+
+              index++;
+              temp_videos_array.push({ full_path: temp_video_path });
+
+              return media_files_to_process.length == 0
+                ? ''
+                : executeSequentially(media_files_to_process);
             })
             .catch(err => {
-              dev.error(`Failed to prepare video for assemblage`);
-              reject(err);
+              return err;
             });
-        });
-        tasks.push(myPromise);
-      });
+        } else if (vm.type === 'image') {
+          return _prepareImageForMontageAndWeb({
+            vm,
+            cachePath,
+            resolution,
+            socket
+          })
+            .then(temp_video_path => {
+              require('./sockets').notify({
+                socket,
+                localized_string: `preparing_video_from_montage`,
+                not_localized_string: `
+              ${index + 1}/${index + media_files_to_process.length + 1}
+              `
+              });
 
-      Promise.all(tasks).then(temp_videos_array => {
+              index++;
+              temp_videos_array.push({ full_path: temp_video_path });
+
+              return media_files_to_process.length == 0
+                ? ''
+                : executeSequentially(media_files_to_process);
+            })
+            .catch(err => {
+              return err;
+            });
+        }
+      };
+
+      executeSequentially(media_files_to_process).then(err => {
+        if (err) return reject(err);
+
         dev.logverbose(
           `EXPORTER — _makeVideoAssemblage : finished preparing videos`
         );
 
-        const ffmpeg_cmd = new ffmpeg();
+        const ffmpeg_cmd = new ffmpeg().renice(renice);
 
         temp_videos_array.map(v => ffmpeg_cmd.addInput(v.full_path));
 
-        let time_since_last_report = 0;
+        // let time_since_last_report = 0;
         ffmpeg_cmd
           // .complexFilter(['gltransition'])
           .on('start', function(commandLine) {
             dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
           })
           .on('progress', progress => {
-            if (+new Date() - time_since_last_report > 3000) {
-              time_since_last_report = +new Date();
-              require('./sockets').notify({
-                socket,
-                localized_string: `creating_video`,
-                not_localized_string: progress.timemark
-              });
-            }
+            _notifyFfmpegProgress({ socket, progress });
+
+            // if (+new Date() - time_since_last_report > 3000) {
+            //   time_since_last_report = +new Date();
+            //   require('./sockets').notify({
+            //     socket,
+            //     localized_string: `creating_video`,
+            //     not_localized_string: progress.timemark
+            //   });
+            // }
           })
           .on('end', () => {
             dev.logverbose(`Video has been created`);
@@ -768,7 +847,7 @@ module.exports = (function() {
             dev.error('An error happened: ' + err.message);
             dev.error('ffmpeg standard output:\n' + stdout);
             dev.error('ffmpeg standard error:\n' + stderr);
-            return reject(`Couldn't convert video : ${err.message}`);
+            return reject(err);
           })
           .mergeToFile(videoPath, cachePath);
 
@@ -845,7 +924,7 @@ module.exports = (function() {
       dev.logfunction('EXPORTER — _mixAudioAndVideo');
 
       const videoPath = path.join(cachePath, videoName);
-      let ffmpeg_cmd = new ffmpeg();
+      let ffmpeg_cmd = new ffmpeg().renice(renice);
 
       let video_files = medias_with_original_filepath.filter(
         m => m.type === 'video'
@@ -898,12 +977,7 @@ module.exports = (function() {
           dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
         })
         .on('progress', progress => {
-          require('./sockets').notify({
-            socket,
-            localized_string: `creating_video`,
-            not_localized_string:
-              Number.parseFloat(progress.percent).toFixed(1) + '%'
-          });
+          _notifyFfmpegProgress({ socket, progress });
         })
         .on('end', () => {
           dev.logverbose(`Video has been created`);
@@ -930,7 +1004,7 @@ module.exports = (function() {
       dev.logfunction('EXPORTER — _mixAudioAndImage');
 
       const videoPath = path.join(cachePath, videoName);
-      const ffmpeg_cmd = new ffmpeg();
+      const ffmpeg_cmd = new ffmpeg().renice(renice);
 
       let image_files = medias_with_original_filepath.filter(
         m => m.type === 'image'
@@ -976,12 +1050,7 @@ module.exports = (function() {
           dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
         })
         .on('progress', progress => {
-          require('./sockets').notify({
-            socket,
-            localized_string: `creating_video`,
-            not_localized_string:
-              Number.parseFloat(progress.percent).toFixed(1) + '%'
-          });
+          _notifyFfmpegProgress({ socket, progress });
         })
         .on('end', () => {
           dev.logverbose(`Video has been created`);
@@ -998,24 +1067,50 @@ module.exports = (function() {
     });
   }
 
-  function _prepareVideosForMontageAndWeb({
+  function _prepareVideoForMontageAndWeb({
     vm,
     cachePath,
     resolution,
     socket
   }) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction('EXPORTER — _prepareVideosForMontageAndWeb');
+      // used to process videos / images before merging them
 
-      const temp_video_name = vm.media_filename + '.ts';
+      dev.logfunction('EXPORTER — _prepareVideoForMontageAndWeb');
+
+      let temp_video_name = vm.media_filename + '.ts';
+      let temp_video_duration;
+      let temp_video_volume;
+
+      if (vm.type === 'image') {
+        // insert duration in filename to make sure the cache uses the right version
+        if (vm.publi_meta.hasOwnProperty('duration')) {
+          temp_video_duration = vm.publi_meta.duration;
+        } else {
+          temp_video_duration = 1;
+        }
+        temp_video_name =
+          vm.media_filename + '_duration=' + temp_video_duration + '.ts';
+      }
+
+      if (vm.type === 'video' && vm.publi_meta.hasOwnProperty('volume')) {
+        temp_video_volume = vm.publi_meta.volume / 100;
+        temp_video_name =
+          vm.media_filename + '_volume=' + temp_video_volume + '.ts';
+      }
+
       const temp_video_path = path.join(cachePath, temp_video_name);
 
       fs.access(temp_video_path, fs.F_OK, function(err) {
         if (err) {
           ffmpeg.ffprobe(vm.full_path, function(err, metadata) {
-            const ffmpeg_cmd = new ffmpeg();
+            const ffmpeg_cmd = new ffmpeg().renice(renice);
 
-            if (vm.duration) {
+            ffmpeg_cmd.input(vm.full_path);
+
+            if (vm.type === 'image' && temp_video_duration) {
+              ffmpeg_cmd.duration(temp_video_duration).loop();
+            } else if (vm.duration) {
               dev.logverbose('Setting output to duration: ' + vm.duration);
               ffmpeg_cmd.duration(vm.duration);
             }
@@ -1030,11 +1125,17 @@ module.exports = (function() {
               ffmpeg_cmd.input('anullsrc').inputFormat('lavfi');
             }
 
+            if (temp_video_volume) {
+              ffmpeg_cmd.addOptions([
+                '-af volume=' + temp_video_volume + ',apad'
+              ]);
+            } else {
+              ffmpeg_cmd.addOptions(['-af apad']);
+            }
+
             ffmpeg_cmd
-              .input(vm.full_path)
               .native()
-              .fps(30)
-              .addOptions(['-af apad'])
+              .outputFPS(30)
               .withVideoCodec('libx264')
               .withVideoBitrate('6000k')
               .withAudioCodec('aac')
@@ -1049,12 +1150,7 @@ module.exports = (function() {
                 dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
               })
               .on('progress', progress => {
-                require('./sockets').notify({
-                  socket,
-                  localized_string: `creating_video`,
-                  not_localized_string:
-                    Number.parseFloat(progress.percent).toFixed(1) + '%'
-                });
+                _notifyFfmpegProgress({ socket, progress });
               })
               .on('end', () => {
                 return resolve(temp_video_path);
@@ -1063,11 +1159,113 @@ module.exports = (function() {
                 dev.error('An error happened: ' + err.message);
                 dev.error('ffmpeg standard output:\n' + stdout);
                 dev.error('ffmpeg standard error:\n' + stderr);
-                return reject(`couldn't create a stopmotion animation`);
+                throw err;
               })
               .run();
             global.ffmpeg_processes.push(ffmpeg_cmd);
           });
+        } else {
+          return resolve(temp_video_path);
+        }
+      });
+    });
+  }
+
+  function _prepareImageForMontageAndWeb({
+    vm,
+    cachePath,
+    resolution,
+    socket
+  }) {
+    return new Promise(function(resolve, reject) {
+      // used to process videos / images before merging them
+
+      dev.logfunction('EXPORTER — _prepareImageForMontageAndWeb');
+
+      let temp_image_name = vm.media_filename + '.jpeg';
+      let temp_video_name = vm.media_filename + '.ts';
+      let temp_video_duration;
+      let temp_video_volume;
+
+      // insert duration in filename to make sure the cache uses the right version
+      if (vm.publi_meta.hasOwnProperty('duration')) {
+        temp_video_duration = vm.publi_meta.duration;
+      } else {
+        temp_video_duration = 1;
+      }
+      temp_video_name =
+        vm.media_filename + '_duration=' + temp_video_duration + '.ts';
+
+      const temp_video_path = path.join(cachePath, temp_video_name);
+      const temp_image_path = path.join(cachePath, temp_image_name);
+
+      dev.logverbose(
+        `EXPORTER — _prepareImageForMontageAndWeb: will store temp image in ${temp_image_path}`
+      );
+      dev.logverbose(
+        `EXPORTER — _prepareImageForMontageAndWeb: will store temp video in ${temp_video_path}`
+      );
+
+      fs.access(temp_video_path, fs.F_OK, function(err) {
+        if (err) {
+          sharp(vm.full_path)
+            .rotate()
+            .resize(resolution.width, resolution.height, {
+              fit: 'contain',
+              withoutEnlargement: false,
+              background: 'black'
+            })
+            .flatten()
+            .withMetadata()
+            .toFile(temp_image_path)
+            .then(() => {
+              dev.logverbose(
+                `EXPORTER — _prepareImageForMontageAndWeb: created temp image`
+              );
+              const ffmpeg_cmd = new ffmpeg().renice(renice);
+
+              ffmpeg_cmd.input(temp_image_path);
+
+              ffmpeg_cmd.duration(temp_video_duration).loop();
+
+              ffmpeg_cmd
+                .input('anullsrc')
+                .inputFormat('lavfi')
+                .native()
+                .outputFPS(30)
+                .withVideoCodec('libx264')
+                .withVideoBitrate('6000k')
+                .withAudioCodec('aac')
+                .withAudioBitrate('128k')
+                .addOptions(['-af apad'])
+                .size(`${resolution.width}x${resolution.height}`)
+                .autopad()
+                .videoFilter(['setsar=1'])
+                .addOptions(['-shortest', '-bsf:v h264_mp4toannexb'])
+                .toFormat('mpegts')
+                .output(temp_video_path)
+                .on('start', function(commandLine) {
+                  dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+                })
+                .on('progress', progress => {
+                  _notifyFfmpegProgress({ socket, progress });
+                })
+                .on('end', () => {
+                  return resolve(temp_video_path);
+                })
+                .on('error', function(err, stdout, stderr) {
+                  dev.error('An error happened: ' + err.message);
+                  dev.error('ffmpeg standard output:\n' + stdout);
+                  dev.error('ffmpeg standard error:\n' + stderr);
+                  throw err;
+                })
+                .run();
+              global.ffmpeg_processes.push(ffmpeg_cmd);
+            })
+            .catch(err => {
+              dev.error(`Failed to sharp create image for montage.`);
+              reject(err);
+            });
         } else {
           return resolve(temp_video_path);
         }
@@ -1090,5 +1288,30 @@ module.exports = (function() {
     resolution.width = new_width;
 
     return resolution;
+  }
+
+  function _notifyFfmpegProgress({ socket, progress }) {
+    let not_localized_string;
+    if (progress.hasOwnProperty('percent') && !Number.isNaN(progress.percent)) {
+      not_localized_string =
+        Number.parseFloat(progress.percent).toFixed(1) + '%';
+    } else if (progress.hasOwnProperty('timemark')) {
+      not_localized_string = progress.timemark;
+    }
+
+    if (not_localized_string) {
+      require('./sockets').notify({
+        socket,
+        localized_string: `creating_video`,
+        not_localized_string
+      });
+    } else {
+      require('./sockets').notify({
+        socket,
+        localized_string: `creating_video`
+      });
+    }
+
+    console.log(`FFMPEG PROCESS • exporter: ${not_localized_string}`);
   }
 })();

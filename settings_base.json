@@ -8,7 +8,7 @@
   "cache_content": true,
 
   "contentDirname" : "user",
-  "cacheDirname" : "cache",
+  "cacheDirname" : "dodoc_cache",
   "metaFileext" : ".txt",
   "thumbExt" : ".jpeg",
   "thumbFormat": "jpeg",
@@ -220,6 +220,9 @@
         "margin_bottom": {
           "type": "number"
         },
+        "show_page_number": {
+          "type": "boolean"
+        },
         "gridstep": {
           "type": "number"
         },
@@ -250,6 +253,20 @@
           },
           "page_id": {
             "type": "string"
+          },
+          "duration": {
+            "type": "number",
+            "clip": {
+              "min": 0,
+              "max": 999
+            }
+          },
+          "volume": {
+            "type": "number",
+            "clip": {
+              "min": 0,
+              "max": 100
+            }
           },
           "x": {
             "type": "number"

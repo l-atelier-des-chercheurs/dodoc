@@ -52,7 +52,7 @@
               <button 
                 type="button" 
                 class="button_addToPubli button-greenthin button-square"
-                :title="$t('add_to_recipe')"
+                :title="instructions_depending_on_media_in_publi"
                 @click.stop="addToCurrentPubli()"
                 v-tippy='{ 
                   placement : "left",
@@ -63,7 +63,7 @@
                   →
                 </template>
                 <template v-else>
-                  ✓
+                  →
                 </template>
               </button>
             </div>
@@ -172,6 +172,12 @@ export default {
       //     }
       //   }
       // }
+    },
+    instructions_depending_on_media_in_publi() {
+      if(this.is_media_in_publi) {
+        return this.$t('add_to_recipe')
+      }
+      return this.$t('add_to_recipe')
     },
     media_made_by_current_author() {
       if(!this.media.authors || typeof this.media.authors !== 'object') {

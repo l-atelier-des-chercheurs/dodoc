@@ -97,7 +97,6 @@
       </div>
     </div>
 
-
     <transition-group
       class="m_project--library--medias"
       name="list-complete"
@@ -109,6 +108,7 @@
         :media="media"
         :metaFileName="media.metaFileName"
         :slugProjectName="slugProjectName"
+        :class="{ 'is--just_added' : last_media_added.includes(media.slugMediaName) }"
       />
     </transition-group>
     
@@ -145,6 +145,7 @@ export default {
 
       show_drop_container: false,
 
+      media_metaFileName_initially_present: [],
       last_media_added: [],
 
       input_file_fields: [
@@ -189,6 +190,13 @@ export default {
 
   },
   watch: {
+    'project.medias': function() {
+      if(this.media_metaFileName_initially_present.length === 0) {
+        this.media_metaFileName_initially_present = Object.keys(this.project.medias);
+      } else {
+        this.last_media_added = Object.keys(this.project.medias).filter(s => !this.media_metaFileName_initially_present.includes(s));
+      }
+    }
   },
 
   computed: {
@@ -289,7 +297,7 @@ export default {
       const new_media = this.sortedMedias[current_media_index + relative_index];
       this.$root.closeMedia();
       
-      if(!!new_media) {
+      if(!!new_media && new_media.hasOwnProperty('metaFileName') && !!new_media.metaFileName) {
         this.$nextTick(() => {
           this.openMediaModal(new_media.metaFileName);
         });

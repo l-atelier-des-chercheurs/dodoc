@@ -1404,7 +1404,7 @@ module.exports = (function() {
           });
       });
     },
-    addTempMediaToFolder: ({ from, to }) => {
+    addTempMediaToFolder: ({ from, to, additionalMeta }) => {
       return new Promise(function(resolve, reject) {
         const path_to_original_file = path.join(
           global.tempStorage,
@@ -1431,9 +1431,9 @@ module.exports = (function() {
               require('./sockets').createMediaMeta({
                 type: to.type,
                 slugFolderName: to.slugFolderName,
-                additionalMeta: {
+                additionalMeta: Object.assign(additionalMeta, {
                   media_filename: newFileName
-                }
+                })
               });
               return resolve();
             });

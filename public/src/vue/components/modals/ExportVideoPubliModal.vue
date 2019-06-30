@@ -11,7 +11,7 @@
     <template slot="sidebar">
       <div class="margin-sides-medium font-small">
         <div class="">
-          {{ $t('export_video_instructions') }} 
+          {{ instructions }} 
           <button type="button" 
             class="margin-small margin-left-none bg-bleuvert c-blanc button-allwide" 
             :disabled="video_request_status !== false"
@@ -25,8 +25,10 @@
               {{ $t('notifications.creation_in_progress') }}
             </template>
             <template v-else-if="video_request_status === 'generated'">
-              {{ $t('video_created') }}
-
+              {{ $t('notifications.video_created') }}
+            </template>
+            <template v-else-if="video_request_status === 'failed'">
+              {{ $t('notifications.video_creation_failed') }}
             </template>
           </button>
           
@@ -47,6 +49,7 @@
 
               <AddCreationToProject
                 v-if="exported_video_name !== false"
+                :publication="publication"
                 :media_filename="exported_video_name"
                 @close="$emit('close')"
               />
@@ -66,7 +69,9 @@ import AddCreationToProject from '../subcomponents/AddCreationToProject.vue';
 
 export default {
   props: {
-    slugPubliName: String
+    slugPubliName: String,
+    publication: Object,
+    instructions: String
   },
   components: {
     Modal,
@@ -101,7 +106,9 @@ export default {
         console.log(`METHODS • ExportVideoPubli: downloadVideo`);
       }
 
-      this.$eventHub.$on('socketio.publication.videoIsGenerated', this.videoPubliIsGenerated);
+      this.$eventHub.$once('socketio.publication.videoIsGenerated', this.videoPubliIsGenerated);
+      this.$eventHub.$once('socketio.publication.videoFailedToGenerate', this.videoPubliFailedToGenerate);
+
       this.$socketio.downloadVideoPubli({ 
         slugPubliName: this.slugPubliName
       });
@@ -111,11 +118,22 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: videoPubliIsGenerated`);
       }
-      this.$eventHub.$off('socketio.publication.videoIsGenerated', this.videoPubliIsGenerated);
+
+      this.$eventHub.$off('socketio.publication.videoFailedToGenerate');
+
       this.video_request_status = 'generated';
       this.link_to_video = window.location.origin + '/publication/video/' + videoName;
       this.exported_video_name = videoName; 
     },
+    videoPubliFailedToGenerate() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: videoPubliFailedToGenerate`);
+      }
+
+      this.$eventHub.$off('socketio.publication.videoIsGenerated');
+
+      this.video_request_status = 'failed';
+    }
   }
 }
 </script>

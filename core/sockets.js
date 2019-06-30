@@ -100,7 +100,8 @@ module.exports = (function() {
     socket,
     socketid,
     not_localized_string,
-    localized_string
+    localized_string,
+    type
   }) {
     dev.logfunction(`EVENT - notify for socketid = ${socketid}`);
     if (socketid || socket) {
@@ -109,7 +110,7 @@ module.exports = (function() {
       }
       api.sendEventWithContent(
         'notify',
-        { not_localized_string, localized_string },
+        { not_localized_string, localized_string, type },
         io,
         socket
       );
@@ -367,6 +368,12 @@ module.exports = (function() {
       slugPubliName = ${slugPubliName}`
     );
     exporter.makePDFForPubli({ slugPubliName }).then(({ pdfName, pdfPath }) => {
+      notify({
+        socket,
+        localized_string: `finished_creating_recipe`,
+        type: 'success'
+      });
+
       api.sendEventWithContent(
         'publiPDFGenerated',
         { pdfName, pdfPath },
@@ -385,6 +392,12 @@ module.exports = (function() {
     exporter
       .makeVideoForPubli({ slugPubliName, socket })
       .then(videoName => {
+        notify({
+          socket,
+          localized_string: `finished_creating_recipe`,
+          type: 'success'
+        });
+
         api.sendEventWithContent(
           'publiVideoGenerated',
           { videoName },
@@ -397,8 +410,11 @@ module.exports = (function() {
           socket,
           socketid: socket.id,
           localized_string: `video_creation_failed`,
-          not_localized_string: error_msg
+          not_localized_string: error_msg,
+          type: 'error'
         });
+
+        api.sendEventWithContent('publiVideoFailed', {}, io, socket);
       });
   }
 
@@ -411,23 +427,40 @@ module.exports = (function() {
     exporter
       .makeVideoFromImagesInPubli({ slugPubliName, options, socket })
       .then(videoName => {
+        notify({
+          socket,
+          localized_string: `finished_creating_recipe`,
+          type: 'success'
+        });
+
         api.sendEventWithContent(
           'publiStopmotionIsGenerated',
           { videoName },
           io,
           socket
         );
+      })
+      .catch(error => {
+        notify({
+          socket,
+          socketid: socket.id,
+          localized_string: `video_creation_failed`,
+          not_localized_string: error.message,
+          type: 'error'
+        });
+
+        api.sendEventWithContent('publiStopmotionFailed', {}, io, socket);
       });
   }
 
-  function onAddTempMediaToFolder(socket, { from, to }) {
+  function onAddTempMediaToFolder(socket, { from, to, additionalMeta }) {
     dev.logfunction(
       `EVENT - onAddTempMediaToFolder with 
       from = ${JSON.stringify(from)} and to = ${JSON.stringify(to)}`
     );
 
     file
-      .addTempMediaToFolder({ from, to })
+      .addTempMediaToFolder({ from, to, additionalMeta })
       .then(() => {
         notify({
           socket,

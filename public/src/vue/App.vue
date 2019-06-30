@@ -2,7 +2,19 @@
   <div id="app"
     :class="{ 'is--wide' : $root.screen_is_wide }"
   >
-    <template v-if="$root.state.mode === 'live' && !$root.state.authentificated">
+    <template v-if="$root.store.request.display === 'standalone'">
+      <div class="m_standaloneMedia">
+        <MediaContent
+          class=""
+          :context="'full'"
+          :autoplay="true"
+          :slugFolderName="$root.store.request.slugProjectName"
+          :media="$root.requested_media"
+          v-model="$root.requested_media.content"
+        />
+      </div>
+    </template>
+    <template v-else-if="$root.state.mode === 'live' && !$root.state.authentificated">
       <SessionPassword
         v-if="$root.showSessionPasswordModal"
         @close="$root.showSessionPasswordModal = false"      
@@ -32,8 +44,8 @@
           <pane 
             class="splitter-pane splitter-paneL" 
             :class="{ 'is--dragged' : is_dragged }"
-            :split="split" :style="{ [type]: activity_panel_percent+'%'}">
-
+            :split="split" :style="{ [type]: activity_panel_percent+'%'}"
+          >
             <div 
               class="m_activitiesPanel--do"
               :class="{ 'is--large' : activitiesPanel_is_comfortable }"
@@ -70,14 +82,14 @@
 
           </pane>
 
-          <resizer 
+          <Resizer 
             :class="{ 'is--dragged' : is_dragged }"
             :className="className" 
             :style="{ [resizeType]: activity_panel_percent+'%'}" 
             :split="split" 
             @mousedown.native="onMouseDown" 
-            @click.native="onClick">
-          </resizer>
+            @click.native="onClick"
+          />
 
           <pane 
             class="splitter-pane splitter-paneR" 
@@ -185,18 +197,6 @@
         :read_only="!$root.state.connected"
       />
     </template>    
-    <template v-else-if="$root.store.request.display === 'standalone'">
-      <div class="m_standaloneMedia">
-        <MediaContent
-          class=""
-          :context="'full'"
-          :autoplay="true"
-          :slugFolderName="$root.store.request.slugProjectName"
-          :media="$root.requested_media"
-          v-model="$root.requested_media.content"
-        />
-      </div>
-    </template>
 
     <portal-target name="modal_container" />
 

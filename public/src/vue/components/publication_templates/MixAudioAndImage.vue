@@ -7,15 +7,19 @@
     <PublicationHeader 
       :slugPubliName="slugPubliName"
       :publication="publication"
+      :publication_medias="publication_medias"
+      :number_of_medias_required="number_of_medias_required"
       @export="show_export_modal = true"
     />
 
-    <ExportAudioAndImageMixModal
+    <ExportVideoPubliModal
       v-if="show_export_modal"
       @close="show_export_modal = false"
+      :publication="publication"
       :slugPubliName="slugPubliName"
+      :instructions="$t('export_audio_image_mix_instructions')"
     />
-
+    
     <div class="m_mixAudioAndImagePublication">
       <div class="margin-medium" v-if="publication_medias.length === 0">
         <p>
@@ -29,35 +33,12 @@
           v-for="media in publication_medias" 
           :key="media.publi_meta.metaFileName"
         >
-          <MediaContent
-            v-model="media.content"
-            :context="'full'"
-            :slugFolderName="media.slugProjectName"
+          <MediaMontagePublication
             :media="media"
-            class=""
+            :read_only="read_only"
+            @removePubliMedia="values => { removePubliMedia(values) }"
+            @editPubliMedia="values => { editPubliMedia(values) }"
           />
-          <div class="m_metaField">
-            <div>
-              {{ $t('project') }}
-            </div>
-            <div>
-              {{ $root.store.projects[media.slugProjectName].name }}
-            </div>
-          </div>
-          <div class="m_metaField">
-            <div>
-              {{ $t('duration') }}
-            </div>
-            <div>
-              {{ media.duration }}
-            </div>
-          </div>
-
-          <button type="button" class="buttonLink font-verysmall"
-            @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
-          >
-            {{ $t('withdraw') }}
-          </button>
         </div>
       </transition-group>
 
@@ -66,8 +47,8 @@
 </template>
 <script>
 import PublicationHeader from '../subcomponents/PublicationHeader.vue';
-import MediaContent from '../subcomponents/MediaContent.vue';
-import ExportAudioAndImageMixModal from '../modals/ExportAudioAndImageMix.vue';
+import MediaMontagePublication from '../subcomponents/MediaMontagePublication.vue';
+import ExportVideoPubliModal from '../modals/ExportVideoPubliModal.vue';
 
 export default {
   props: {
@@ -77,15 +58,16 @@ export default {
   },
   components: {
     PublicationHeader,
-    MediaContent,
-    ExportAudioAndImageMixModal
+    MediaMontagePublication,
+    ExportVideoPubliModal
   },
   data() {
     return {
       show_export_modal: false,
       publication_medias: [],
       medias_slugs_in_order: [],
-      accepted_media_type: ['audio', 'image']
+      accepted_media_type: ['audio', 'image'],
+      number_of_medias_required: 2
     }
   },
   created() {
