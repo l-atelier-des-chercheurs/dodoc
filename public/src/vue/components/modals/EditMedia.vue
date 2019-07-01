@@ -4,7 +4,7 @@
     @close="$emit('close')"
     @submit="editThisMedia"
     :read_only="read_only"
-    :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndScroll'"
+    :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndNoScroll'"
     :askBeforeClosingModal="askBeforeClosingModal"
     :show_sidebar="$root.media_modal.show_sidebar"
     :is_minimized="$root.media_modal.minimized"
@@ -13,6 +13,7 @@
     >
     <template slot="header">
       <div class="">{{ $t('edit_the_media') }}</div>
+      <small class="font-normal">{{ media.media_filename }}</small>
     </template>
 
     <template slot="sidebar">
@@ -43,18 +44,17 @@
           @click.prevent="removeMedia()"
           :disabled="read_only"
           >
+          <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="91.6px"
+            height="95px" viewBox="0 0 91.6 95" style="enable-background:new 0 0 91.6 95;" xml:space="preserve">
+            <path class="st0" d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
+            l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"/>
+          </svg>
           {{ $t('remove') }}
         </button>
 
-        <template v-if="showQRModal">
-          <hr>
-          <CreateQRCode
-            :slugProjectName="slugProjectName"
-            :media_filename="media.media_filename"
-          />
-        </template>
-
-        <button type="button" class="buttonLink c-noir" @click="showQRModal = !showQRModal">
+        <button type="button" class="buttonLink c-noir"
+          @click="showQRModal = !showQRModal"
+        >
           <svg version="1.1" class="inline-svg"
             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
             x="0px" y="0px" width="20px" height="20px" viewBox="0 0 90 90" style="enable-background:new 0 0 90 90;" xml:space="preserve">
@@ -63,20 +63,70 @@
               H13V29z M77,13H61v16h16V13z"/>
           </svg>
           <span class>
-            Partage
+            {{ $t('share') }}
           </span>
         </button>
+
+        <template v-if="showQRModal">
+          <hr>
+          <CreateQRCode
+            :slugProjectName="slugProjectName"
+            :media="media"
+          />
+        </template>
+
+        <button type="button" class="buttonLink" @click="show_edit_media_options = !show_edit_media_options">
+          {{ $t('adjust') }}
+        </button>
+        <div v-if="show_edit_media_options" class="bg-creme">
+          <button type="button" class="buttonLink" @click="editRawMedia('rotate_image', {angle: 90})"
+            v-if="media.type === 'image'"
+          >
+            Pivoter vers la droite
+          </button>
+          <button type="button" class="buttonLink" @click="editRawMedia('optimize_video')"
+            v-if="media.type === 'video'"
+          >
+            Créer une vidéo compatible web
+          </button>
+          <button type="button" class="buttonLink" @click="editRawMedia('reset')"
+            v-if="!!media.original_media_filename"
+          >
+            Revenir à l’original
+          </button>
+        </div>
 
         <hr class="hide_on_print">
       </div>
 
       <div class="hide_on_print">
+
+  <!-- Fav or not -->
+        <div class="margin-bottom-small">
+          <span class="switch switch-xs">
+            <input type="checkbox" class="switch" id="favswitch_editmedia" v-model="mediadata.fav" :readonly="read_only">
+            <label for="favswitch_editmedia"
+              :class="{ 'c-rouge' : mediadata.fav }"
+            >
+              {{ $t('fav') }}
+              <svg version="1.1"
+                class="inline-svg"
+                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+                x="0px" y="0px" width="78.5px" height="106.4px" viewBox="0 0 78.5 106.4" style="enable-background:new 0 0 78.5 106.4;"
+                xml:space="preserve">
+                <polygon class="st0" points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"/>
+                <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 "/>
+              </svg>
+            </label>
+          </span>
+        </div>
+
         <div class="m_metaField" v-if="!!media.type">
           <div>
             {{ $t('type') }}
           </div>
           <div>
-            {{ media.type }}
+            {{ $t(media.type) }}
             <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
           </div>
         </div>
@@ -88,6 +138,7 @@
             {{ media.authors }}
           </div>
         </div> -->
+
         <div class="m_metaField">
           <div>
             {{ $t('created') }}
@@ -98,7 +149,7 @@
         </div>
         <div 
           class="m_metaField"
-          v-if="media.hasOwnProperty('date_uploaded') && $root.formatDateToHuman(media.date_created) !== $root.formatDateToHuman(media.date_uploaded)"
+          v-if="media.hasOwnProperty('date_uploaded')"
         >
           <div>
             {{ $t('uploaded') }}
@@ -152,7 +203,6 @@
           :keywords="mediadata.keywords"
           @tagsChanged="newTags => mediadata.keywords = newTags"
         />
-        <small>{{ $t('validate_with_enter') }}</small>        
       </div>
 
   <!-- Author(s) -->
@@ -164,26 +214,9 @@
             @authorsChanged="newAuthors => mediadata.authors = newAuthors"
           />
 
+          <small>{{ $t('author_instructions') }}</small>
           <!-- <textarea v-model="mediadata.authors[0]" :readonly="read_only">
           </textarea> -->
-        </div>
-
-  <!-- Fav or not -->
-        <div class="margin-bottom-small">
-          <span class="switch switch-xs">
-            <input type="checkbox" class="switch" id="favswitch_editmedia" v-model="mediadata.fav" :readonly="read_only">
-            <label for="favswitch_editmedia">
-              {{ $t('fav') }}
-              <svg version="1.1"
-                class="inline-svg"
-                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-                x="0px" y="0px" width="78.5px" height="106.4px" viewBox="0 0 78.5 106.4" style="enable-background:new 0 0 78.5 106.4;"
-                xml:space="preserve">
-                <polygon class="st0" points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"/>
-                <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 "/>
-              </svg>
-            </label>
-          </span>
         </div>
 
       </div>
@@ -200,8 +233,9 @@
         :media="media"
         :read_only="read_only"
         v-model="mediadata.content"
-      >
-      </MediaContent>
+      />
+      <div class="m_mediaOptions">
+      </div>
     </template>
 
   </Modal>
@@ -237,6 +271,7 @@ export default {
     return {
       showQRModal: false,
       is_minimized: false,
+      show_edit_media_options: false,
 
       mediadata: {
         type: this.media.type,
@@ -244,16 +279,20 @@ export default {
         caption: this.media.caption,
         keywords: this.media.keywords,
         fav: this.media.fav,
-        content: this.media.content
+        content: this.media.content,
       },
       mediaURL: `/${this.slugProjectName}/${this.media.media_filename}`,
-      askBeforeClosingModal: false
+      askBeforeClosingModal: false,
+
+      is_ready: false
     };
   },
   watch: {
     'mediadata': {
       handler() {
-        this.askBeforeClosingModal = true;
+        if(this.is_ready) {
+          this.askBeforeClosingModal = true;
+        }
       },
       deep: true
     }
@@ -266,6 +305,9 @@ export default {
         this.mediadata.authors = [];
       }
     }
+    this.$nextTick(() => {
+      this.is_ready = true;
+    });
   },
   computed: {
   },
@@ -274,17 +316,23 @@ export default {
       window.print();
     },
     removeMedia: function() {
-      if (window.confirm(this.$t('sureToRemoveMedia'))) {
-        this.$root.removeMedia({
-          type: 'projects',
-          slugFolderName: this.slugProjectName, 
-          slugMediaName: this.slugMediaName
-        });
-        // then close that popover
-        this.$emit('close', '');
-      }
+      this.$alertify
+        .okBtn(this.$t('yes'))
+        .cancelBtn(this.$t('cancel'))        
+        .confirm(this.$t('sureToRemoveMedia'), 
+        () => {
+          this.$root.removeMedia({
+            type: 'projects',
+            slugFolderName: this.slugProjectName, 
+            slugMediaName: this.slugMediaName
+          });
+          // then close that popover
+          this.$emit('close', '');
+        },
+        () => {
+        });                    
     },
-    editThisMedia: function(event) {
+    editThisMedia: function() {
       console.log('editThisMedia');
       this.$root.editMedia({ 
         type: 'projects',
@@ -294,10 +342,33 @@ export default {
       });
       // then close that popover
       this.$emit('close', '');
+    },
+    editRawMedia: function(type, detail) {
+      console.log('editRawMedia');
+      this.$root.editMedia({ 
+        type: 'projects',
+        slugFolderName: this.slugProjectName, 
+        slugMediaName: this.slugMediaName,
+        data: this.mediadata,
+        recipe_with_data: {
+          apply_to: this.media.media_filename,
+          type,
+          detail
+        }
+      });
     }
   },
 };
 </script>
 <style>
+.m_mediaOptions {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 100;
+  background-color: white;
+  margin: 50px 10px;
+  /* padding: 15px; */
+}
 
 </style>

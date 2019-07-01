@@ -5,7 +5,7 @@
     :typeOfModal="'EditMeta'"
   >
     <template slot="header">
-      <span class="">{{ $t('export_publication') }}</span>
+      <span class="">{{ $t('export_creation') }}</span>
     </template>
 
     <template slot="sidebar">
@@ -22,10 +22,10 @@
             </template>
             <template v-else-if="pdf_request_status === 'waiting_for_server'"> 
               <span class="loader loader-xs" />
-              {{ $t('creation_in_progress') }}
+              {{ $t('notifications.creation_in_progress') }}
             </template>
             <template v-else-if="pdf_request_status === 'generated'">
-              {{ $t('pdf_created') }}
+              {{ $t('notifications.pdf_created') }}
             </template>
           </button>
 
@@ -33,7 +33,9 @@
             <a 
               v-if="link_to_pdf !== false"
               class="buttonLink margin-left-none"
-              :href="link_to_pdf" target="_blank">
+              :href="link_to_pdf" target="_blank"
+              download
+            >
               {{ $t('download') }}
             </a>
             <!-- <a 
@@ -45,11 +47,18 @@
             </a>             -->
             <a 
               v-if="link_to_pdf !== false && $root.state.is_electron"
-              :href="link_to_pdf" target="_blank" 
+              :href="link_to_pdf" target="_blank"
               class="buttonLink margin-left-none"
             >
               {{ $t('open_in_app') }}
-            </a>            
+            </a>       
+
+            <AddCreationToProject
+              v-if="link_to_pdf !== false"
+              :publication="publication"
+              :media_filename="exported_pdf_name"
+              @close="$emit('close')"
+            />
           </div>
         </div>    
         <hr>
@@ -74,20 +83,24 @@
 <script>
 import Modal from './BaseModal.vue';
 import { setTimeout } from 'timers';
+import AddCreationToProject from '../subcomponents/AddCreationToProject.vue';
 
 export default {
   props: {
+    publication: Object,
     slugPubliName: String
   },
   components: {
-    Modal
+    Modal,
+    AddCreationToProject
   },
   data() {
     return {
       pdf_request_status: false,
       link_to_pdf: false,
       path_to_pdf: false,
-      web_export_started: false
+      web_export_started: false,
+      exported_pdf_name: ''
     }
   },
   created() {
@@ -124,8 +137,8 @@ export default {
       this.$eventHub.$off('socketio.publication.pdfIsGenerated', this.publiIsGenerated);
 
       this.pdf_request_status = 'generated';
+      this.exported_pdf_name = pdfName;
       this.link_to_pdf = window.location.origin + '/publication/print/' + pdfName;
-      this.path_to_pdf = pdfPath;
     },
     downloadWeb() {
       if (this.$root.state.dev_mode === 'debug') {

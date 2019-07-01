@@ -5,9 +5,10 @@
   "redirect_port": "",
   "userDirPath": "documents",
   "userDirname": "dodoc2",
+  "cache_content": true,
 
   "contentDirname" : "user",
-  "cacheDirname" : "cache",
+  "cacheDirname" : "dodoc_cache",
   "metaFileext" : ".txt",
   "thumbExt" : ".jpeg",
   "thumbFormat": "jpeg",
@@ -28,6 +29,12 @@
   "regexpMatchFolderNames" : "^([^.]+)$",
   "regexpGetFileExtension" : "\\.[^.]*$",
   "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)",
+
+  "api": {
+    "enabled": false,
+    "allow_all_domains": false,
+    "domains_whitelist": []
+  },
 
   "structure" : {
     "projects": {
@@ -87,6 +94,9 @@
             "read_only": true
           },
           "media_filename": {
+            "type": "string"
+          },
+          "original_media_filename": {
             "type": "string"
           },
           "type": {
@@ -161,6 +171,9 @@
         "authors": {
           "type": "array"
         },
+        "keywords": {
+          "type": "array"
+        },      
         "date_created": {
           "type": "date",
           "default": "current",
@@ -175,7 +188,7 @@
         },
         "template": {
           "type": "string",
-          "options": ["page_by_page", "video_assemblage"],
+          "options": ["page_by_page", "video_assemblage", "stopmotion_animation", "mix_audio_and_video", "mix_audio_and_image"],
           "default": "page_by_page"          
         },
         "style": {
@@ -206,6 +219,9 @@
         },
         "margin_bottom": {
           "type": "number"
+        },
+        "show_page_number": {
+          "type": "boolean"
         },
         "gridstep": {
           "type": "number"
@@ -238,6 +254,20 @@
           "page_id": {
             "type": "string"
           },
+          "duration": {
+            "type": "number",
+            "clip": {
+              "min": 0,
+              "max": 999
+            }
+          },
+          "volume": {
+            "type": "number",
+            "clip": {
+              "min": 0,
+              "max": 100
+            }
+          },
           "x": {
             "type": "number"
           },
@@ -252,6 +282,13 @@
           },
           "height": {
             "type": "number"
+          },
+          "z_index": {
+            "type": "number",
+            "clip": {
+              "min": -20000,
+              "max": 20000
+            }
           }
         }
       }
@@ -270,6 +307,9 @@
         },
         "authors": {
           "type": "array"
+        },
+        "linked_project": {
+          "type": "string"
         }
       },
       "medias": {

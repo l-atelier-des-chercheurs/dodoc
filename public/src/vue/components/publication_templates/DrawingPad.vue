@@ -4,88 +4,23 @@
     :class="{ 'is--preview' : preview_mode }"
     ref="panel"
   >
-    <div class="m_publicationMeta">
-      <div class="m_publicationMeta--topbar">
-        <button type="button" class=""
-          v-if="$root.state.mode !== 'export_publication'"        
-          @click="closePublication()"
-        >
-          ←
-        </button>
+    <PublicationHeader 
+      :slugPubliName="slugPubliName"
+      :publication="publication"
+      :publication_medias="publication_medias"
+      @export="show_export_modal = true"
+    />
 
-        <div class="m_publicationMeta--topbar--title">
-          {{ publication.name }}
-        </div>
-
-        <template 
-          v-if="$root.state.mode !== 'export_publication'"
-        >
-          <!-- <div class="margin-small">
-            <input id="settings" type="checkbox" v-model="advanced_options" />
-            <label for="settings">{{ $t('settings') }}</label>
-          </div> -->
-
-          <button type="button" class="buttonLink" @click="showExportModal = true">
-            {{ $t('export') }}
-          </button>     
-
-          <ExportVideoPubliModal
-            v-if="showExportModal"
-            @close="showExportModal = false"
-            :slugPubliName="slugPubliName"
-          />
-
-          <button type="button" class="buttonLink" @click="removePublication">
-            {{ $t('remove') }}
-          </button>     
-        </template>
-      </div>
-    </div>
-    <div class="m_videoPublication">
-      <transition-group name="slideFromTop" :duration="300" tag="div">
-        <div
-          class="m_videoPublication--media"
-          v-for="media in publication_medias" 
-          :key="media.publi_meta.metaFileName"
-        >
-          <MediaContent
-            v-model="media.content"
-            :context="'full'"
-            :slugFolderName="media.slugProjectName"
-            :media="media"
-            class=""
-          />
-          <div class="m_metaField">
-            <div>
-              {{ $t('project') }}
-            </div>
-            <div>
-              {{ $root.store.projects[media.slugProjectName].name }}
-            </div>
-          </div>
-          <div class="m_metaField">
-            <div>
-              {{ $t('duration') }}
-            </div>
-            <div>
-              {{ media.duration }}
-            </div>
-          </div>
-
-          <button type="button" class="buttonLink font-verysmall"
-            @click="removePubliMedia({ slugMediaName: media.publi_meta.metaFileName })"
-          >
-            {{ $t('remove') }}
-          </button>
-        </div>
-      </transition-group>
-
+    <div class="m_drawingPad">
+      <PadSurface
+      />
     </div>
   </div>
 </template>
 <script>
-import MediaContent from './subcomponents/MediaContent.vue';
-import ExportVideoPubliModal from './modals/ExportVideoPubli.vue';
+import MediaContent from '../subcomponents/MediaContent.vue';
+import ExportVideoPubliModal from '../modals/ExportVideoPubliModal.vue';
+import PadSurface from '../subcomponents/PadSurface.vue';
 
 export default {
   props: {
@@ -95,11 +30,12 @@ export default {
   },
   components: {
     MediaContent,
-    ExportVideoPubliModal
+    ExportVideoPubliModal,
+    PadSurface
   },
   data() {
     return {
-      showExportModal: false,
+      show_export_modal: false,
       publication_medias: [],
       medias_slugs_in_order: []
     }
@@ -107,6 +43,8 @@ export default {
   created() {
   },
   mounted() {
+    this.$root.settings.current_publication.accepted_media_type = ['image'];
+
     this.$eventHub.$on('publication.addMedia', this.addMedia);
     this.$eventHub.$on('socketio.projects.listSpecificMedias', this.updateMediasPubli);
     
@@ -115,7 +53,6 @@ export default {
     }
     
     this.updateMediasPubli();  
-    this.$eventHub.$emit('publication_medias_updated');      
   },
   beforeDestroy() {
     this.$eventHub.$off('publication.addMedia', this.addMedia);
@@ -127,7 +64,6 @@ export default {
         console.log(`WATCH • Publication: publication.medias`);
       }
       this.updateMediasPubli();
-      this.$eventHub.$emit('publication_medias_updated');      
     },
     '$root.store.projects': {
       handler() {
@@ -142,9 +78,8 @@ export default {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`WATCH • Publication: publication.medias_slugs`);
       }
-      this.medias_slugs_in_order = this.publication.medias_slugs;
+      this.medias_slugs_in_order = typeof this.publication.medias_slugs === "object" ? this.publication.medias_slugs : [];
       this.updateMediasPubli();
-      this.$eventHub.$emit('publication_medias_updated');      
     }
   },
   computed: {
@@ -206,25 +141,6 @@ export default {
         }
       });
     },
-    closePublication() {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publication: closePublication`);
-      }
-      this.$root.closePublication();
-    },
-    removePublication() {
-      if (window.confirm(this.$t('sureToRemovePubli'))) {
-        if (this.$root.state.dev_mode === 'debug') {
-          console.log(`METHODS • Publication: removePublication`);
-        }
-        this.$root.removeFolder({ 
-          type: 'publications', 
-          slugFolderName: this.slugPubliName, 
-        });
-        
-        this.closePublication();
-      }
-    },
     updateMediasPubli() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • Publication: updateMediasPubli`);
@@ -239,8 +155,8 @@ export default {
       let publi_medias = [];
       let missingMedias = [];
 
-
       if(this.medias_slugs_in_order.length === 0) {
+        this.publication_medias = [];
         return;
       }
 

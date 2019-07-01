@@ -79,7 +79,7 @@
                   :disabled="read_only"
                   class="button button-bg_rounded bg-bleuvert"
                 >
-                  <img src="/images/i_enregistre.svg"/>
+                  <img src="/images/i_enregistre.svg" draggable="false" />
                   <span class="text-cap font-verysmall">
                     <slot name="submit_button">
                       {{ $t('save') }}
@@ -102,7 +102,7 @@
               @click="closeModal"
               class="button button-bg_rounded bg-orange"
             >
-              <img src="/images/i_clear.svg"/>
+              <img src="/images/i_clear.svg" draggable="false" />
               <span class="text-cap font-verysmall">
                 <slot name="cancel_button">
                   {{ $t('cancel') }}
@@ -115,7 +115,7 @@
               :disabled="read_only"
               class="button button-bg_rounded bg-bleuvert"
             >
-              <img src="/images/i_enregistre.svg"/>
+              <img src="/images/i_enregistre.svg" draggable="false" />
               <span class="text-cap font-verysmall">
                 <slot name="submit_button">
                   {{ $t('save') }}
@@ -133,9 +133,9 @@
         <button
           class="button-round m_modal--close_button padding-verysmall"
           @click="closeModal"
-          v-if="showModal && !is_minimized"
+          v-if="showModal && !is_minimized && !prevent_close"
         >
-          <img src="/images/i_close_sansfond.svg">
+          <img src="/images/i_close_sansfond.svg" draggable="false">
         </button>
       </transition>
 
@@ -145,8 +145,13 @@
           @click="toggleMinimize"
           v-if="showModal && can_minimize"
           :class="{ 'is_minimized' : is_minimized }"
+          :title="$t('minimize_media')" 
+          v-tippy='{
+            placement : "right",
+            delay: [600, 0]
+          }'
         >
-          <img src="/images/i_minimize.svg">
+          <img src="/images/i_minimize.svg" draggable="false">
         </button>
       </transition>
 
@@ -155,8 +160,13 @@
           class="button-round bg-blanc m_modal--nav_left padding-verysmall"
           @click="prevMedia()"
           v-if="showModal && media_navigation && !is_minimized"
+          :title="$t('previous_media')" 
+          v-tippy='{
+            placement : "left",
+            delay: [600, 0]
+          }'
         >
-          <img src="/images/i_arrow_left.svg">
+          <img src="/images/i_arrow_left.svg" draggable="false">
         </button>
       </transition>
 
@@ -165,8 +175,13 @@
           class="button-round bg-blanc m_modal--nav_right padding-verysmall"
           @click="nextMedia()"
           v-if="showModal && media_navigation && !is_minimized"
+          :title="$t('next_media')" 
+          v-tippy='{
+            placement : "right",
+            delay: [600, 0]
+          }'
         >
-          <img src="/images/i_arrow_right.svg">
+          <img src="/images/i_arrow_right.svg" draggable="false">
         </button>
       </transition>
 
@@ -213,12 +228,17 @@ export default {
     is_minimized: {
       type: Boolean,
       default: false
+    },
+    prevent_close: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
       showModal: false,
-      windowHeight: window.innerHeight
+      windowHeight: window.innerHeight,
+      has_confirm_close_modal_open: false,
     };
   },
   mounted: function() {
@@ -232,15 +252,18 @@ export default {
           const el = this.$refs.modalContent.querySelector('[autofocus]');
           if(el.classList.contains('quillWrapper')) {
             el.querySelector('.ql-editor').focus();
-          }  else {
+          } else {
             el.focus();
+          }
+
+          if(el.hasAttribute('autoselect')) {
+            el.select();
           }
         }
 
         if (this.isFile && this.$refs.form){
           this.$refs.form.setAttribute('enctype', 'multipart/form-data');
         }
-
       }
     },100);
   },
@@ -253,7 +276,9 @@ export default {
       }
       
       if (event.key === 'Escape') {
-        this.closeModal();
+        if(!this.has_confirm_close_modal_open) {
+          this.closeModal();
+        }
         return
       }
 
@@ -274,35 +299,73 @@ export default {
       }
     },
     closeModal: function() {
-      console.log(`METHODS • BaseModal: closeModal with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
+      console.log(`METHODS • BaseModal: closeModal with askBeforeClosingModal = ${this.askBeforeClosingModal}`);
+
+      if(this.prevent_close) return;
+
       if(this.askBeforeClosingModal) {
-        if (!window.confirm(this.$t('sureToCloseModal'))) {
-          console.log(`METHODS • BaseModal: closeModal refused`)
-          return;
-        }
+        this.has_confirm_close_modal_open = true;
+        this.$alertify
+          .okBtn(this.$t('save_changes'))
+          .cancelBtn(this.$t('cancel'))        
+          .confirm(this.$t('changes_not_saved_sureToCloseModal'), 
+          () => {
+            this.$emit('submit');
+            this.showModal = false;
+            setTimeout(() => {
+              this.$emit('close');
+            }, 400);
+          },
+          () => {
+            this.showModal = false;
+            setTimeout(() => {
+              this.$emit('close');
+            }, 400);
+          });
+      } else {
+        this.showModal = false;
+        setTimeout(() => {
+          this.$emit('close');
+        }, 400);
       }
-      this.showModal = false;
-      setTimeout(() => {
-        this.$emit('close');
-      }, 400);
     },
     prevMedia: function() {
       console.log(`METHODS • BaseModal: prevMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
       if(this.askBeforeClosingModal) {
-        if (!window.confirm(this.$t('sureToCloseModal'))) {
-          return;
-        }
+        this.has_confirm_close_modal_open = true;
+        this.$alertify
+          .okBtn(this.$t('save_changes'))
+          .cancelBtn(this.$t('close_the_window'))        
+          .confirm(this.$t('changes_not_saved_sureToCloseModal'), 
+          () => {
+            this.$emit('submit');
+            this.$eventHub.$emit('modal.prev_media');
+          },
+          () => {
+            this.$eventHub.$emit('modal.prev_media');
+          });        
+      } else {
+        this.$eventHub.$emit('modal.prev_media');
       }
-      this.$eventHub.$emit('modal.prev_media');
     },
     nextMedia: function() {
       console.log(`METHODS • BaseModal: nextMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
       if(this.askBeforeClosingModal) {
-        if (!window.confirm(this.$t('sureToCloseModal'))) {
-          return;
-        }
+        this.has_confirm_close_modal_open = true;
+        this.$alertify
+          .okBtn(this.$t('save_changes'))
+          .cancelBtn(this.$t('cancel'))        
+          .confirm(this.$t('changes_not_saved_sureToCloseModal'), 
+          () => {
+            this.$emit('submit');
+            this.$eventHub.$emit('modal.next_media');
+          },
+          () => {
+            this.$eventHub.$emit('modal.next_media');
+          });        
+      } else {
+        this.$eventHub.$emit('modal.next_media');
       }
-      this.$eventHub.$emit('modal.next_media');
     },
     toggleMinimize: function() {
       console.log(`METHODS • BaseModal: toggleMinimize`);

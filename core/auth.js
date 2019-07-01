@@ -4,7 +4,7 @@ const dev = require('./dev-log'),
   file = require('./file');
 
 module.exports = (function() {
-  // This var stores all session ID and the folder they are authorized to edit
+  // This var stores all session ID and the folder(s) they are authorized to edit
 
   const API = {
     setAuthenticate: folder_passwords => setAuthenticate(folder_passwords),
@@ -13,7 +13,13 @@ module.exports = (function() {
     filterFolders: (socket, type, foldersData) =>
       filterFolders(socket, type, foldersData),
     filterMedias: (socket, type, folders_and_medias) =>
-      filterMedias(socket, type, folders_and_medias)
+      filterMedias(socket, type, folders_and_medias),
+    removeNonPublicMediasFromAllFolders: folders_and_medias =>
+      removeNonPublicMediasFromAllFolders(folders_and_medias),
+
+    checkForSessionPassword: pwd => checkForSessionPassword(pwd),
+
+    hashCode: code => hashCode(code)
   };
 
   function setAuthenticate(folder_passwords) {
@@ -25,6 +31,8 @@ module.exports = (function() {
           4
         )}`
       );
+
+      // todo : if session_password, a user has to auth before getting any info
 
       if (
         folder_passwords === undefined ||
@@ -72,7 +80,12 @@ module.exports = (function() {
                     dev.logverbose(`Password fit for ${slugFolderName}.`);
                     allowed_slugFolderNames.push(slugFolderName);
                   } else {
-                    dev.logverbose(`Password is wrong for ${slugFolderName}.`);
+                    dev.error(`Password is wrong for ${slugFolderName}.`);
+                    dev.error(
+                      `Submitted: ${
+                        foldertype_passwords[slugFolderName]
+                      }\nShould be: ${foldersData[slugFolderName].password}`
+                    );
                   }
                 }
               }
@@ -162,25 +175,52 @@ module.exports = (function() {
       return folders_and_medias;
     } else {
       // check for each media if hasownproperty 'public' and if public is set to true
-      let filtered_folders_and_medias = JSON.parse(
-        JSON.stringify(folders_and_medias)
-      );
-      Object.keys(filtered_folders_and_medias).map(slugFolderName => {
-        const folders_data = filtered_folders_and_medias[slugFolderName];
-        if (folders_data.hasOwnProperty('medias')) {
-          Object.keys(folders_data.medias).map(slugMediaName => {
-            if (
-              !folders_data.medias[slugMediaName].hasOwnProperty('public') ||
-              folders_data.medias[slugMediaName].public === false
-            ) {
-              // if no public prop or public prop === false, remove from list
-              delete folders_data.medias[slugMediaName];
-            }
-          });
-        }
-      });
-      return filtered_folders_and_medias;
+      return removeNonPublicMediasFromAllFolders(folders_and_medias);
     }
+  }
+
+  function removeNonPublicMediasFromAllFolders(folders_and_medias) {
+    let filtered_folders_and_medias = JSON.parse(
+      JSON.stringify(folders_and_medias)
+    );
+    Object.keys(filtered_folders_and_medias).map(slugFolderName => {
+      const folders_data = filtered_folders_and_medias[slugFolderName];
+      if (folders_data.hasOwnProperty('medias')) {
+        Object.keys(folders_data.medias).map(slugMediaName => {
+          if (
+            !folders_data.medias[slugMediaName].hasOwnProperty('public') ||
+            folders_data.medias[slugMediaName].public === false
+          ) {
+            // if no public prop or public prop === false, remove from list
+            delete folders_data.medias[slugMediaName];
+          }
+        });
+      }
+    });
+    return JSON.parse(JSON.stringify(filtered_folders_and_medias));
+  }
+
+  function checkForSessionPassword(pwd) {
+    dev.logfunction(`AUTH — checkForSessionPassword`);
+
+    if (!global.session_password || String(global.session_password) === '') {
+      dev.logverbose(`No session password`);
+      return true;
+    }
+    if (!!pwd && String(pwd) === String(global.session_password)) {
+      return true;
+    } else {
+      dev.logverbose(`Expected pwd: ${global.session_password}`);
+      dev.logverbose(`Submitted pwd: ${pwd}`);
+    }
+    return false;
+  }
+
+  function hashCode(s) {
+    return s.split('').reduce(function(a, b) {
+      a = (a << 5) - a + b.charCodeAt(0);
+      return a & a;
+    }, 0);
   }
 
   return API;

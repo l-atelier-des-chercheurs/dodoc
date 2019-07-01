@@ -1,6 +1,15 @@
 <template>
   <div class="m_clientsList" v-if="uniqueClients.length > 1">
-    <button type="button" class="m_clientsList--indicator" @click="showClientList = !showClientList">
+    <button 
+      type="button" 
+      class="m_clientsList--indicator" 
+      @click="showClientList = !showClientList"
+      :title="$t('other_users_connected')"
+      v-tippy='{ 
+        placement : "bottom",
+        delay: [600, 0]
+      }'                  
+    >
       <span>{{ uniqueClients.length - 1 }}</span>
     </button>
     <div class="m_clientsList--list" v-if="showClientList">

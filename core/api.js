@@ -9,6 +9,8 @@ const path = require('path'),
   ffmpeg = require('fluent-ffmpeg'),
   pad = require('pad-left');
 
+const sharp = require('sharp');
+
 const dev = require('./dev-log');
 
 ffmpeg.setFfmpegPath(ffmpegstatic.path);
@@ -98,7 +100,7 @@ module.exports = (function() {
       try {
         // OPTIMIZATION : make an array of filenames instead, and use that as the condition
         while (
-          !fs.accessSync(newPathToFile, fs.F_OK) &&
+          !fs.accessSync(newPathToFile, fs.F_OK) ||
           !fs.accessSync(newPathToMeta, fs.F_OK)
         ) {
           dev.logverbose(
@@ -176,13 +178,13 @@ module.exports = (function() {
         eventAndContentJson['content']
       );
     }
-    dev.logpackets(
-      `sendEventWithContent — sending packet with content = ${JSON.stringify(
-        eventAndContentJson['content'],
-        null,
-        4
-      )}`
-    );
+    // dev.logpackets(
+    //   `sendEventWithContent — sending packet with content = ${JSON.stringify(
+    //     eventAndContentJson['content'],
+    //     null,
+    //     4
+    //   )}`
+    // );
     dev.logpackets(
       `eventAndContentJson — sending packet with string length = ${
         JSON.stringify(eventAndContentJson['content']).length
@@ -265,13 +267,14 @@ module.exports = (function() {
           if (err) reject(err);
 
           let pathToMedia = path.join(getFolderPath(slugFolderName), mediaName);
-          ffmpeg(pathToTempMedia)
-            .audioCodec('libmp3lame')
+          const ffmpeg_cmd = new ffmpeg(pathToTempMedia)
+            .audioCodec('aac')
             .save(pathToMedia)
             .on('end', function() {
               console.log('Processing finished !');
               resolve();
             });
+          global.ffmpeg_processes.push(ffmpeg_cmd);
         });
       });
     });
@@ -321,50 +324,63 @@ module.exports = (function() {
   }
 
   function makeStopmotionFromImageSequence({
-    slugFolderName,
     pathToMedia,
     images,
     slugStopmotionName,
-    frameRate
+    frameRate,
+    socket
   }) {
     return new Promise(function(resolve, reject) {
       dev.logfunction('COMMON — makeStopmotionFromImageSequence');
 
       const numberOfImagesToProcess = images.length;
 
-      _copyToTempAndRenameImages({ slugStopmotionName, images })
-        .then(tempFolder => {
-          // ask ffmpeg to make a video from the cache images
-          var proc = new ffmpeg()
-            .input(path.join(tempFolder, 'img-%04d.jpeg'))
-            .inputFPS(frameRate)
-            .fps(frameRate)
-            .withVideoCodec('libx264')
-            .withVideoBitrate('8000k')
-            .addOptions(['-preset slow', '-tune animation'])
-            .noAudio()
-            .toFormat('mp4')
-            .output(pathToMedia)
-            .on('progress', progress => {
-              dev.logverbose(
-                `Processing new stopmotion: image ${
-                  progress.frames
-                }/${numberOfImagesToProcess}`
-              );
-            })
-            .on('end', () => {
-              dev.logverbose(`Stopmotion has been completed`);
-              resolve();
-            })
-            .on('error', function(err, stdout, stderr) {
-              dev.error('An error happened: ' + err.message);
-              dev.error('ffmpeg standard output:\n' + stdout);
-              dev.error('ffmpeg standard error:\n' + stderr);
-              reject(`couldn't create a stopmotion animation`);
-            })
-            .run();
-        })
-        .catch(err => reject(err));
+      _getImageResolution({
+        slugStopmotionName,
+        image_filename: images[0]
+      }).then(resolution => {
+        _copyToTempAndRenameImages({ slugStopmotionName, images })
+          .then(tempFolder => {
+            // ask ffmpeg to make a video from the cache images
+            const ffmpeg_cmd = new ffmpeg()
+              .input(path.join(tempFolder, 'img-%04d.jpeg'))
+              .inputFPS(frameRate)
+              .withVideoCodec('libx264')
+              .withVideoBitrate('4000k')
+              .input('anullsrc')
+              .inputFormat('lavfi')
+              .duration(numberOfImagesToProcess / frameRate)
+              .size(`${resolution.width}x${resolution.height}`)
+              .outputFPS(30)
+              .autopad()
+              .addOptions(['-preset slow', '-tune animation'])
+              .toFormat('mp4')
+              .on('start', function(commandLine) {
+                dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+              })
+              .on('progress', progress => {
+                require('./sockets').notify({
+                  socket,
+                  localized_string: `creating_video`,
+                  not_localized_string:
+                    Number.parseFloat(progress.percent).toFixed(1) + '%'
+                });
+              })
+              .on('end', () => {
+                dev.logverbose(`Stopmotion has been completed`);
+                resolve();
+              })
+              .on('error', function(err, stdout, stderr) {
+                dev.error('An error happened: ' + err.message);
+                dev.error('ffmpeg standard output:\n' + stdout);
+                dev.error('ffmpeg standard error:\n' + stderr);
+                reject(`couldn't create a stopmotion animation`);
+              })
+              .save(pathToMedia);
+            global.ffmpeg_processes.push(ffmpeg_cmd);
+          })
+          .catch(err => reject(err));
+      });
     });
   }
 
@@ -425,6 +441,27 @@ module.exports = (function() {
           reject(err);
         }
       );
+    });
+  }
+
+  function _getImageResolution({ slugStopmotionName, image_filename }) {
+    return new Promise(function(resolve, reject) {
+      let slugStopmotionPath = getFolderPath(
+        path.join(
+          global.settings.structure['stopmotions'].path,
+          slugStopmotionName
+        )
+      );
+
+      const image_path = path.join(slugStopmotionPath, image_filename);
+
+      sharp(image_path).toBuffer((err, data, info) => {
+        if (err) return reject(err);
+        return resolve({
+          width: info.width,
+          height: info.height
+        });
+      });
     });
   }
 

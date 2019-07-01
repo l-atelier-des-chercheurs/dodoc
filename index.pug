@@ -36,7 +36,8 @@ html
       window.store = {
         request: {
           slugProjectName: "!{slugProjectName}",
-          metaFileName: "!{metaFileName}"
+          metaFileName: "!{metaFileName}",
+          display: "!{display}"
         },
         projects: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" },
         authors: {},
@@ -47,18 +48,20 @@ html
       /* state contains settings data, time and client specific data */
       window.state = {
         appVersion: "!{global.appInfos.version}",
-        session_password: "!{global.session_password}",
+        session_password: "!{global.session_password ? 'has_pass' : ''}",
         authorsFolder: "!{authorsFolder}",
         protocol: "!{protocol}",
         connected: false,
+        authentificated: false,
         localNetworkInfos: {},
         mode: "!{mode}",
         dev_mode: "!{ isDebug ? "debug" : "production" }",
         noticeOfError: "!{noticeOfError}",
-        is_electron: !!(window && window.process && window.process.type) && !{ mode === "export" ? false : true },
-        is_darwin: !!(window && window.process && window.process.platform === 'darwin') && !{ mode === "export" ? false : true },
+        is_electron: !!(window && window.process && window.process.type),
+        is_darwin: !!(window && window.process && window.process.platform === 'darwin'),
         clients: [],
-        list_authorized_folders: []
+        list_authorized_folders: [],
+        list_of_publications_templates: !{JSON.stringify(structure.publications.fields.template.options, null, 4)},
       };
 
     //-
