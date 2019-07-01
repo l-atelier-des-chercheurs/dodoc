@@ -1,6 +1,5 @@
 const fs = require('fs-extra'),
   path = require('path'),
-  sharp = require('sharp'),
   ffmpegstatic = require('ffmpeg-static'),
   ffprobestatic = require('ffprobe-static'),
   ffmpeg = require('fluent-ffmpeg');

@@ -699,7 +699,8 @@ module.exports = (function() {
                 .write(cache_image_path, function(err, info) {
                   if (err) reject(err);
                   resolve();
-                });    
+                });
+            });
           })
         );
       });
@@ -1197,64 +1198,57 @@ module.exports = (function() {
 
       fs.access(temp_video_path, fs.F_OK, function(err) {
         if (err) {
-          sharp(vm.full_path)
-            .rotate()
-            .resize(resolution.width, resolution.height, {
-              fit: 'contain',
-              withoutEnlargement: false,
-              background: 'black'
-            })
-            .flatten()
-            .withMetadata()
-            .toFile(temp_image_path)
-            .then(() => {
-              dev.logverbose(
-                `EXPORTER — _prepareImageForMontageAndWeb: created temp image`
-              );
-              const ffmpeg_cmd = new ffmpeg().renice(renice);
+          Jimp.read(vm.full_path, function(err, image) {
+            if (err) reject(err);
+            image
+              .quality(settings.mediaThumbQuality)
+              .contain(resolution.width, resolution.height)
+              .write(temp_image_path, function(err, info) {
+                if (err) reject(err);
+                const ffmpeg_cmd = new ffmpeg().renice(renice);
 
-              ffmpeg_cmd.input(temp_image_path);
+                ffmpeg_cmd.input(temp_image_path);
 
-              ffmpeg_cmd.duration(temp_video_duration).loop();
+                ffmpeg_cmd.duration(temp_video_duration).loop();
 
-              ffmpeg_cmd
-                .input('anullsrc')
-                .inputFormat('lavfi')
-                .native()
-                .outputFPS(30)
-                .withVideoCodec('libx264')
-                .withVideoBitrate('6000k')
-                .withAudioCodec('aac')
-                .withAudioBitrate('128k')
-                .addOptions(['-af apad'])
-                .size(`${resolution.width}x${resolution.height}`)
-                .autopad()
-                .videoFilter(['setsar=1'])
-                .addOptions(['-shortest', '-bsf:v h264_mp4toannexb'])
-                .toFormat('mpegts')
-                .output(temp_video_path)
-                .on('start', function(commandLine) {
-                  dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
-                })
-                .on('progress', progress => {
-                  _notifyFfmpegProgress({ socket, progress });
-                })
-                .on('end', () => {
-                  return resolve(temp_video_path);
-                })
-                .on('error', function(err, stdout, stderr) {
-                  dev.error('An error happened: ' + err.message);
-                  dev.error('ffmpeg standard output:\n' + stdout);
-                  dev.error('ffmpeg standard error:\n' + stderr);
-                  throw err;
-                })
-                .run();
-              global.ffmpeg_processes.push(ffmpeg_cmd);
-            })
-            .catch(err => {
-              dev.error(`Failed to sharp create image for montage.`);
-              reject(err);
-            });
+                ffmpeg_cmd
+                  .input('anullsrc')
+                  .inputFormat('lavfi')
+                  .native()
+                  .outputFPS(30)
+                  .withVideoCodec('libx264')
+                  .withVideoBitrate('6000k')
+                  .withAudioCodec('aac')
+                  .withAudioBitrate('128k')
+                  .addOptions(['-af apad'])
+                  .size(`${resolution.width}x${resolution.height}`)
+                  .autopad()
+                  .videoFilter(['setsar=1'])
+                  .addOptions(['-shortest', '-bsf:v h264_mp4toannexb'])
+                  .toFormat('mpegts')
+                  .output(temp_video_path)
+                  .on('start', function(commandLine) {
+                    dev.logverbose(
+                      'Spawned Ffmpeg with command: ' + commandLine
+                    );
+                  })
+                  .on('progress', progress => {
+                    _notifyFfmpegProgress({ socket, progress });
+                  })
+                  .on('end', () => {
+                    return resolve(temp_video_path);
+                  })
+                  .on('error', function(err, stdout, stderr) {
+                    dev.error('An error happened: ' + err.message);
+                    dev.error('ffmpeg standard output:\n' + stdout);
+                    dev.error('ffmpeg standard error:\n' + stderr);
+                    throw err;
+                  })
+                  .run();
+
+                global.ffmpeg_processes.push(ffmpeg_cmd);
+              });
+          });
         } else {
           return resolve(temp_video_path);
         }

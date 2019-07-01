@@ -62,7 +62,7 @@ module.exports = function({ router }) {
 
   function setupApp() {
     return new Promise(function(resolve, reject) {
-      global.tempStorage = getPath.getCacheFolder();
+      global.tempStorage = app.getPath();
       global.ffmpeg_processes = [];
 
       if (
