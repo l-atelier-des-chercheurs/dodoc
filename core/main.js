@@ -1,9 +1,7 @@
 const path = require('path');
 const fs = require('fs-extra');
 const portscanner = require('portscanner');
-
-const electron = require('electron');
-const { app, BrowserWindow, Menu } = electron;
+const { app } = require('electron');
 
 const server = require('./server');
 
@@ -62,7 +60,7 @@ module.exports = function({ router }) {
 
   function setupApp() {
     return new Promise(function(resolve, reject) {
-      global.tempStorage = app.getPath();
+      global.tempStorage = app.getPath('temp');
       global.ffmpeg_processes = [];
 
       if (
@@ -76,7 +74,7 @@ module.exports = function({ router }) {
 
       cleanCacheFolder().then(
         () => {
-          copyAndRenameUserFolder(app).then(
+          copyAndRenameUserFolder().then(
             function(pathToUserContent) {
               global.pathToUserContent = pathToUserContent;
               dev.log('Will store contents in: ' + global.pathToUserContent);
@@ -138,9 +136,9 @@ module.exports = function({ router }) {
     });
   }
 
-  function copyAndRenameUserFolder(app) {
+  function copyAndRenameUserFolder() {
     return new Promise(function(resolve, reject) {
-      const userDirPath = app.getPath(global.settings.userDirPath);
+      const userDirPath = app.getPath('documents');
 
       const pathToUserContent = path.join(
         userDirPath,
