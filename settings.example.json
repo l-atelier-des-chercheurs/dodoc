@@ -2,5 +2,10 @@
   "privateKeyPath": "",
   "certificatePath": "",
   "desired_port": 8080,
-  "redirect_port": ""
+  "redirect_port": "",
+  "api": {
+    "enabled": false,
+    "allow_all_domains": false,
+    "domains_whitelist": ["https://thisdomaincanfetchdodoc.com"]
+  }
 }

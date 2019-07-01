@@ -7,7 +7,7 @@
     :askBeforeClosingModal="askBeforeClosingModal"
     >
     <template slot="header">
-      <span class="">{{ $t('create_a_publication') }}</span>
+      <span>{{ $t(publidata.template) }}</span>
     </template>
 
     <template slot="sidebar">
@@ -15,23 +15,25 @@
 <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('name') }}</label>
-        <input type="text" v-model="publidata.name" required autofocus>
+        <input type="text" v-model="publidata.name" required autofocus autoselect>
       </div>
 
 <!-- Template -->
-      <div class="margin-bottom-small">
+      <!-- <div class="margin-bottom-small">
         <label>{{ $t('format') }}</label>
         <select v-model="publidata.template">
-          <option value="page_by_page">
-            {{ $t('page_by_page') }}
-          </option>
-          <option value="video_assemblage">
-            {{ $t('video_assemblage') }}
-          </option>
-          <option value="web" disabled>
-            {{ $t('web') }}
-          </option>
+          <option v-for="template in $root.state.list_of_publications_templates"
+            :key="template"
+            :value="template"
+            v-html="$t(template)"
+          />
         </select>
+      </div> -->
+
+<!-- Keywords -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('keywords') }}</label>
+        <TagsInput @tagsChanged="newTags => publidata.keywords = newTags"/>
       </div>
 
 <!-- Author(s) -->
@@ -55,33 +57,45 @@
 </template>
 <script>
 import Modal from './BaseModal.vue';
+import TagsInput from '../subcomponents/TagsInput.vue';
 import AuthorsInput from '../subcomponents/AuthorsInput.vue';
 
 export default {
   props: {
-    read_only: Boolean
+    read_only: Boolean,
+    default_name: {
+      default: '',
+      type: String
+    },
+    default_template: {
+      default: 'page_by_page',
+      type: String
+    }
   },
   components: {
     Modal,
+    TagsInput,
     AuthorsInput
   },
   data() {
     return {
       publidata: {
-        name: '',
-        template: 'page_by_page',
+        name: this.default_name,
+        template: this.default_template,
+        keywords: [],
         authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : [],
       }
     };
   },
   watch: {
-    'publidata.name': function() {
-      if(this.publidata.name.length > 0) {
+    'publidata': {
+      handler: function() {
         this.askBeforeClosingModal = true;
-      } else {
-        this.askBeforeClosingModal = false;
-      }
+      },
+      deep: true
     }
+  },
+  mounted() {
   },
   computed: {},
   methods: {
@@ -114,20 +128,19 @@ export default {
 
       let publidata = {
         name,
-        authors: this.publidata.authors,
         template: this.publidata.template,
-        width: 210,
-        height: 297,
-        // style: "human tech days",
-        // header_left: "Human Tech Days",
-        // gridstep: 5,
-        // margin_left: 20,
-        // margin_right: 20,
-
-        pages: [{
-          id: +new Date() + '_' + (Math.random().toString(36) + '00000000000000000').slice(2, 3)
-        }]
+        authors: this.publidata.authors,
+        keywords: this.publidata.keywords
       }
+
+      if(publidata.template === 'page_by_page') {
+        publidata.pages = [{
+          id: +new Date() + '_' + (Math.random().toString(36) + '00000000000000000').slice(2, 3)
+        }];
+        publidata.width = 210;
+        publidata.height = 297;
+      }
+
       this.$eventHub.$on('socketio.folder_created_or_updated', this.newPublicationCreated);
       this.$root.createFolder({ type: 'publications', data: publidata });      
     },

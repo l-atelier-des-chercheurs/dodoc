@@ -20,8 +20,10 @@ Vue.prototype.$auth = auth;
 
 import locale_strings from './locale_strings.js';
 
-Vue.config.silent = false;
-Vue.config.devtools = true;
+import 'prismjs';
+
+// Vue.config.silent = false;
+// Vue.config.devtools = true;
 
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
@@ -30,6 +32,12 @@ Vue.use(PortalVue);
 
 import VueI18n from 'vue-i18n';
 Vue.use(VueI18n);
+
+import VuePlyr from 'vue-plyr';
+Vue.use(VuePlyr);
+
+import VueTippy from '../../node_modules/vue-tippy/dist/vue-tippy.min.js';
+Vue.use(VueTippy, {});
 
 let lang_settings = {
   available: {
@@ -91,351 +99,9 @@ let i18n = new VueI18n({
 /** *********
   SOCKETIO
 ***********/
-import io from 'socket.io-client';
 
-Vue.prototype.$socketio = new Vue({
-  i18n,
-  data: {
-    socket: ''
-  },
-  methods: {
-    connect() {
-      let opts = { transports: ['polling', 'websocket'] };
-      if (window.navigator.userAgent.indexOf('Chrome') > -1) {
-        opts = { transports: ['websocket', 'polling'] };
-      }
-      this.socket = io.connect(opts);
-
-      this.socket.on('connect', this._onSocketConnect);
-      this.socket.on('reconnect', this._onReconnect);
-      this.socket.on('pong', this._onPong);
-      this.socket.on('error', this._onSocketError);
-      this.socket.on('connect_error', this._onConnectError);
-      this.socket.on('authentificated', this._authentificated);
-      this.socket.on('listMedia', this._onListMedia);
-      this.socket.on('listMedias', this._onListMedias);
-
-      this.socket.on('listFolder', this._onListFolder);
-      this.socket.on('listFolders', this._onListFolders);
-
-      this.socket.on('listSpecificMedias', this._onListSpecificMedias);
-      this.socket.on('publiPDFGenerated', this._onPubliPDFGenerated);
-      this.socket.on('publiVideoGenerated', this._onPubliVideoGenerated);
-
-      this.socket.on('newNetworkInfos', this._onNewNetworkInfos);
-
-      this.socket.on('notify', this._onNotify);
-
-      this.socket.on('pong', this._onPong);
-
-      this.socket.on('listClients', this._listClients);
-    },
-    _onSocketConnect() {
-      let sessionId = this.socket.io.engine.id;
-      console.log(`Connected as ${sessionId}`);
-
-      window.state.connected = true;
-
-      this.socket.emit('updateClientInfo', {});
-
-      // only for non-electron (since obviously in electron we have to be connected)
-      if (!window.state.is_electron) {
-        // this.$alertify
-        //   .closeLogOnClick(true)
-        //   .delay(4000)
-        //   .success(this.$t('notifications.connection_active'));
-      }
-
-      this.sendAuth();
-
-      // this.listFolders({ type: 'authors' });
-      // this.sendAuth();
-    },
-
-    _onReconnect() {
-      this.sendAuth();
-      this.$eventHub.$emit('socketio.reconnect');
-      console.log(`Reconnected`);
-    },
-
-    _onPong() {
-      console.log(`_onPong`);
-    },
-
-    sendAuth() {
-      let folder_passwords = auth.getAdminAccess();
-      console.log(
-        `Asking for auth with ${JSON.stringify(folder_passwords, null, 4)}`
-      );
-      this.socket.emit('authenticate', { folder_passwords });
-    },
-
-    _onSocketError(reason) {
-      console.log(`Unable to connect to server: ${reason}`);
-      window.state.connected = false;
-      // this.$alertify
-      //   .closeLogOnClick(true)
-      //   .error(this.$t('notifications.connection_error') + ' ' + reason);
-    },
-
-    _onConnectError(reason) {
-      console.log(`Lost connection to server: ${reason}`);
-      window.state.connected = false;
-      // this.$alertify
-      //   .closeLogOnClick(true)
-      //   .error(
-      //     this.$t('notifications.connection_lost') +
-      //       '<br>' +
-      //       this.$t('notifications.contents_wont_be_editable')
-      //   );
-    },
-
-    _authentificated(list_authorized_folders) {
-      console.log(
-        `Admin for projects ${JSON.stringify(list_authorized_folders, null, 4)}`
-      );
-      window.state.list_authorized_folders = list_authorized_folders;
-      let folder_passwords = auth.getAdminAccess();
-
-      // got list of items admin for, update localstore with that info
-      let clean_folder_passwords = {};
-
-      /* 
-      {
-        projects: {
-          bonjour: mon-mot-de-passe
-          hello: mdp2
-        },
-        author: {
-          jean: Hello world !
-        }
-      }
-      */
-
-      // list_authorized_folders.map(i => {
-      //   if (
-      //     !i.hasOwnProperty('allowed_slugFolderNames') ||
-      //     !i.hasOwnProperty('type')
-      //   )
-      //     return;
-
-      //   const type = i.type;
-
-      //   if (!clean_folder_passwords.hasOwnProperty(type)) {
-      //     clean_folder_passwords[type] = {};
-      //   }
-
-      //   i.allowed_slugFolderNames.map(slugFolderName => {
-      //     if(folder_passwords.hasOwnProperty())
-      //     // clean_folder_passwords[type];
-      //   });
-      // });
-      // auth.updateAdminAccess();
-
-      this.listFolders({ type: 'authors' });
-      this.listFolders({ type: 'projects' });
-    },
-
-    _onListMedia(data) {
-      console.log('Received _onListMedia packet.');
-
-      let type = Object.keys(data)[0];
-      let content = Object.values(data)[0];
-
-      console.log(`Type is ${type}`);
-
-      for (let slugFolderName in content) {
-        console.log(`Media data is for ${slugFolderName}.`);
-        if (window.store[type].hasOwnProperty(slugFolderName)) {
-          window.store[type][slugFolderName].medias = Object.assign(
-            {},
-            window.store[type][slugFolderName].medias,
-            content[slugFolderName].medias
-          );
-
-          // check if mdata has a mediaID (which would mean a user just created it)
-          const mdata = Object.values(content[slugFolderName].medias)[0];
-          if (mdata.hasOwnProperty('id')) {
-            this.$eventHub.$emit('socketio.media_created_or_updated', mdata);
-          }
-        }
-      }
-
-      this.$eventHub.$emit(`socketio.${type}.listMedia`);
-    },
-
-    _onListMedias(data) {
-      console.log('Received _onListMedias packet.');
-
-      let type = Object.keys(data)[0];
-      let content = Object.values(data)[0];
-
-      console.log(`Type is ${type}`);
-
-      for (let slugFolderName in content) {
-        console.log(`Media data is for ${slugFolderName}.`);
-        if (window.store[type].hasOwnProperty(slugFolderName)) {
-          window.store[type][slugFolderName].medias =
-            content[slugFolderName].medias;
-        }
-      }
-      this.$eventHub.$emit(`socketio.${type}.listMedias`);
-    },
-
-    _onListSpecificMedias(data) {
-      console.log('Received _onListSpecificMedias packet.');
-
-      let type = Object.keys(data)[0];
-      let content = Object.values(data)[0];
-
-      console.log(`Type is ${type}`);
-
-      for (let slugFolderName in content) {
-        console.log(`Media data is for ${slugFolderName}.`);
-        if (
-          window.store[type].hasOwnProperty(slugFolderName) &&
-          window.store[type][slugFolderName].hasOwnProperty('medias')
-        ) {
-          window.store[type][slugFolderName].medias = Object.assign(
-            {},
-            window.store[type][slugFolderName].medias,
-            content[slugFolderName].medias
-          );
-        }
-      }
-      this.$eventHub.$emit(`socketio.${type}.listSpecificMedias`);
-    },
-
-    _onPubliPDFGenerated(data) {
-      console.log('Received _onPubliPDFGenerated packet.');
-      this.$eventHub.$emit('socketio.publication.pdfIsGenerated', data);
-    },
-
-    _onPubliVideoGenerated(data) {
-      console.log('Received _onPubliVideoGenerated packet.');
-      this.$eventHub.$emit('socketio.publication.videoIsGenerated', data);
-    },
-
-    _listClients(data) {
-      console.log('Received _listClients packet.');
-      window.state.clients = data;
-    },
-
-    // for projects, authors and publications
-    _onListFolder(data) {
-      console.log('Received _onListFolder packet.');
-      let type = Object.keys(data)[0];
-      let content = Object.values(data)[0];
-
-      // to prevent override of fully formed medias in folders, we copy back the ones we have already
-      for (let slugFolderName in content) {
-        if (
-          window.store[type].hasOwnProperty(slugFolderName) &&
-          window.store[type][slugFolderName].hasOwnProperty('medias')
-        ) {
-          content[slugFolderName].medias =
-            window.store[type][slugFolderName].medias;
-        }
-        if (content[slugFolderName].hasOwnProperty('id')) {
-          this.$eventHub.$emit(
-            'socketio.folder_created_or_updated',
-            content[slugFolderName]
-          );
-        }
-      }
-
-      window.store[type] = Object.assign({}, window.store[type], content);
-      this.$eventHub.$emit(`socketio.${type}.folder_listed`);
-    },
-
-    // for projects, authors and publications
-    _onListFolders(data) {
-      console.log('Received _onListFolders packet.');
-
-      if (typeof data !== 'object') {
-        return;
-      }
-
-      let type = Object.keys(data)[0];
-      let content = Object.values(data)[0];
-
-      console.log(`Type is ${type}`);
-
-      // to prevent override of fully formed medias in folders, we copy back the ones we have already
-      for (let slugFolderName in content) {
-        if (
-          window.store[type].hasOwnProperty(slugFolderName) &&
-          window.store[type][slugFolderName].hasOwnProperty('medias')
-        ) {
-          content[slugFolderName].medias =
-            window.store[type][slugFolderName].medias;
-        }
-      }
-      window.store[type] = Object.assign({}, content);
-
-      this.$eventHub.$emit(`socketio.${type}.folders_listed`);
-    },
-    _onNewNetworkInfos(data) {
-      console.log('Received _onNewNetworkInfos packet.');
-      window.state.localNetworkInfos = data;
-    },
-    _onNotify({ localized_string, not_localized_string }) {
-      console.log('Received _onNotify packet.');
-      if (not_localized_string) {
-        alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .log(not_localized_string);
-      }
-      if (localized_string) {
-        alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .log(this.$t(`notifications['${localized_string}']`));
-      }
-    },
-    listFolders(fdata) {
-      this.socket.emit('listFolders', fdata);
-    },
-    listFolder(fdata) {
-      this.socket.emit('listFolder', fdata);
-    },
-    createFolder(fdata) {
-      this.socket.emit('createFolder', fdata);
-    },
-    editFolder(fdata) {
-      this.socket.emit('editFolder', fdata);
-    },
-    removeFolder(fdata) {
-      this.socket.emit('removeFolder', fdata);
-    },
-
-    listMedias(mdata) {
-      this.socket.emit('listMedias', mdata);
-    },
-    createMedia(mdata) {
-      this.socket.emit('createMedia', mdata);
-    },
-    editMedia(mdata) {
-      this.socket.emit('editMedia', mdata);
-    },
-    removeMedia(mdata) {
-      this.socket.emit('removeMedia', mdata);
-    },
-    listSpecificMedias(mdata) {
-      this.socket.emit('listSpecificMedias', mdata);
-    },
-    downloadPubliPDF(pdata) {
-      this.socket.emit('downloadPubliPDF', pdata);
-    },
-    downloadVideoPubli(pdata) {
-      this.socket.emit('downloadVideoPubli', pdata);
-    },
-    updateNetworkInfos() {
-      this.socket.emit('updateNetworkInfos');
-    }
-  }
-});
+import custom_socketio from '../adc-core/custom-socketio.js';
+Vue.prototype.$socketio = custom_socketio.init(i18n, auth, alertify);
 
 import App from './App.vue';
 
@@ -468,14 +134,15 @@ let vm = new Vue({
       current_slugProjectName: false,
       current_metaFileName: false
     },
+    showSessionPasswordModal: false,
 
     // persistant, par device (dans le localstorage)
     settings: {
       has_modal_opened: false,
       capture_mode_cant_be_changed: false,
 
-      windowHeight: window.innerHeight,
       windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
 
       capture_options: {
         selected_mode: '',
@@ -499,7 +166,11 @@ let vm = new Vue({
         }
       },
 
-      current_slugPubliName: false,
+      current_publication: {
+        slug: false,
+        accepted_media_type: []
+      },
+
       current_author: false,
 
       publi_zoom: 0.8,
@@ -526,6 +197,11 @@ let vm = new Vue({
     if (window.state.dev_mode === 'debug') {
       console.log('ROOT EVENT: created');
     }
+
+    if (this.store.request.display === 'standalone') {
+      return false;
+    }
+
     if (this.settings.enable_system_bar) {
       document.body.classList.add('has_systembar');
     }
@@ -534,19 +210,36 @@ let vm = new Vue({
       console.log('ROOT EVENT: created / checking for password');
     }
 
-    if (!window.state.is_electron && this.state.session_password !== '') {
-      function hashCode(s) {
-        return s.split('').reduce(function(a, b) {
-          a = (a << 5) - a + b.charCodeAt(0);
-          return a & a;
-        }, 0);
-      }
+    // const canAccessDodoc = () => {
+    //   if (window.state.is_electron) return true;
+    //   if (this.state.session_password === '') return true;
 
-      var pass = window.prompt(this.$t('input_password'));
-      if (this.state.session_password !== hashCode(pass) + '') {
-        return;
-      }
-    }
+    //   if (
+    //     localstore.get('session_password') &&
+    //     this.state.session_password !==
+    //       hashCode(localstore.get('session_password'))
+    //   ) {
+    //     return true;
+    //   }
+
+    //   var pass = window.prompt(this.$t('input_password'));
+    //   if (this.state.session_password === hashCode(pass) + '') {
+    //     localstore.set('session_password', pass);
+    //     this.$alertify
+    //       .closeLogOnClick(true)
+    //       .delay(4000)
+    //       .success(this.$t('notifications["loading_dodoc"]'));
+
+    //     return true;
+    //   } else {
+    //     this.$alertify
+    //       .closeLogOnClick(true)
+    //       .delay(4000)
+    //       .error(this.$t('notifications["wrong_password_for_dodoc"]'));
+    //   }
+
+    //   return false;
+    // };
 
     window.addEventListener('resize', () => {
       this.settings.windowWidth = window.innerWidth;
@@ -583,9 +276,11 @@ let vm = new Vue({
         // requesting edit of a media
         if (this.store.request.metaFileName) {
           this.$eventHub.$once('socketio.projects.listMedias', () => {
+            const metaFileName = this.store.request.metaFileName;
+            this.media_modal.show_sidebar = false;
             this.openMedia({
               slugProjectName: this.store.request.slugProjectName,
-              metaFileName: this.store.request.metaFileName + '.txt'
+              metaFileName
             });
           });
         }
@@ -593,14 +288,16 @@ let vm = new Vue({
         this.state.mode === 'export_publication' &&
         Object.keys(this.store.publications).length > 0
       ) {
-        const slugPubliName = Object.keys(this.store.publications)[0];
-        this.settings.current_slugPubliName = slugPubliName;
+        this.settings.current_publication.slug = Object.keys(
+          this.store.publications
+        )[0];
       } else if (
         this.state.mode === 'print_publication' &&
         Object.keys(this.store.publications).length > 0
       ) {
-        const slugPubliName = Object.keys(this.store.publications)[0];
-        this.settings.current_slugPubliName = slugPubliName;
+        this.settings.current_publication.slug = Object.keys(
+          this.store.publications
+        )[0];
         this.settings.show_publi_panel = true;
       }
     }
@@ -608,14 +305,17 @@ let vm = new Vue({
     /* à la connexion/reconnexion, détecter si un projet ou une publi sont ouverts 
     et si c’est le cas, rafraichir leur contenu (meta, medias) */
     this.$eventHub.$on('socketio.reconnect', () => {
-      if (this.settings.current_slugPubliName) {
+      this.$socketio.listFolders({ type: 'authors' });
+      this.$socketio.listFolders({ type: 'projects' });
+
+      if (this.settings.current_publication.slug) {
         this.$socketio.listFolder({
           type: 'publications',
-          slugFolderName: this.settings.current_slugPubliName
+          slugFolderName: this.settings.current_publication.slug
         });
         this.$socketio.listMedias({
           type: 'publications',
-          slugFolderName: this.settings.current_slugPubliName
+          slugFolderName: this.settings.current_publication.slug
         });
       }
       if (this.do_navigation.current_slugProjectName) {
@@ -643,7 +343,55 @@ let vm = new Vue({
 
     if (this.state.mode === 'live') {
       console.log('ROOT EVENT: created / now connecting with socketio');
-      this.$socketio.connect();
+
+      if (!this.$root.state.is_electron) {
+        this.$eventHub.$on('socketio.connect', () => {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .success(this.$t('notifications["connected_to_dodoc"]'));
+        });
+        this.$eventHub.$on('socketio.reconnect', () => {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .success(this.$t('notifications["connected_to_dodoc"]'));
+        });
+      }
+
+      if (this.$root.state.session_password === 'has_pass') {
+        var session_storage_pwd = this.$auth.getSessionPasswordFromLocalStorage();
+        if (session_storage_pwd) {
+          this.$socketio.connect(session_storage_pwd);
+
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .log(this.$t('notifications.using_saved_password'));
+
+          this.$eventHub.$once('socketio.socketerror', () => {
+            this.showSessionPasswordModal = true;
+          });
+        } else {
+          this.showSessionPasswordModal = true;
+        }
+
+        this.$eventHub.$on('socketio.socketerror', () => {
+          // if error, attempt to reconnect
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t('notifications["wrong_password_for_dodoc"]'));
+          this.showSessionPasswordModal = true;
+        });
+      } else {
+        this.$socketio.connect();
+      }
+
+      this.$eventHub.$once('socketio.authentificated', () => {
+        this.$socketio.listFolders({ type: 'authors' });
+        this.$socketio.listFolders({ type: 'projects' });
+      });
     }
   },
   beforeDestroy() {},
@@ -681,14 +429,57 @@ let vm = new Vue({
   computed: {
     currentProject: function() {
       if (
-        this.store.hasOwnProperty('projects') &&
+        !this.store.hasOwnProperty('projects') ||
+        Object.keys(this.store.projects).length === 0
+      ) {
+        this.closeProject();
+        return {};
+      }
+
+      if (
         this.store.projects.hasOwnProperty(
           this.do_navigation.current_slugProjectName
         )
       ) {
         return this.store.projects[this.do_navigation.current_slugProjectName];
+      } else {
+        this.closeProject();
+        return {};
       }
-      return {};
+    },
+    current_publication() {
+      if (this.settings.current_publication.slug) {
+        if (
+          this.store.publications.hasOwnProperty(
+            this.settings.current_publication.slug
+          )
+        ) {
+          return this.store.publications[
+            this.settings.current_publication.slug
+          ];
+        }
+      }
+      return false;
+    },
+    projects_that_are_accessible() {
+      const type = 'projects';
+      return Object.values(this.store[type]).filter(p =>
+        this.canAccessFolder({ type, slugFolderName: p.slugFolderName })
+      );
+    },
+    current_publication_medias() {
+      if (
+        this.current_publication &&
+        this.current_publication.hasOwnProperty('medias')
+      ) {
+        return this.current_publication.medias;
+      }
+      return false;
+    },
+    requested_media() {
+      return this.store.projects[this.store.request.slugProjectName].medias[
+        this.store.request.metaFileName
+      ];
     },
     allAuthors() {
       let allAuthors = [];
@@ -736,6 +527,12 @@ let vm = new Vue({
     },
     currentTime_human() {
       return this.$moment(this.currentTime).format('LL   LTS');
+    },
+    screen_is_wide() {
+      if (this.settings.windowWidth < 750) {
+        return false;
+      }
+      return true;
     }
   },
   methods: {
@@ -748,6 +545,10 @@ let vm = new Vue({
             uniqueKeywords.push(k.title);
         });
       });
+      uniqueKeywords = uniqueKeywords.sort(function(a, b) {
+        return a.toLowerCase().localeCompare(b.toLowerCase());
+      });
+
       return uniqueKeywords.map(kw => {
         return {
           text: kw,
@@ -765,6 +566,9 @@ let vm = new Vue({
         meta.authors.map(k => {
           if (uniqueAuthors.indexOf(k.name) == -1) uniqueAuthors.push(k.name);
         });
+      });
+      uniqueAuthors = uniqueAuthors.sort(function(a, b) {
+        return a.toLowerCase().localeCompare(b.toLowerCase());
       });
       return uniqueAuthors.map(kw => {
         return {
@@ -822,7 +626,7 @@ let vm = new Vue({
           mdata.additionalMeta = {};
         }
         mdata.additionalMeta.authors = [
-          { name: this.$root.settings.current_author.name }
+          { name: this.settings.current_author.name }
         ];
       }
 
@@ -1067,7 +871,7 @@ let vm = new Vue({
         console.log(`ROOT EVENT: openPubliPanel`);
       }
       this.settings.show_publi_panel = true;
-      this.settings.current_slugPubliName = false;
+      this.settings.current_publication.slug = false;
 
       this.$socketio.listFolders({ type: 'publications' });
     },
@@ -1076,7 +880,7 @@ let vm = new Vue({
         console.log(`ROOT EVENT: closePubliPanel`);
       }
       this.settings.show_publi_panel = false;
-      this.settings.current_slugPubliName = false;
+      this.settings.current_publication.slug = false;
     },
 
     openPublication(slugPubliName) {
@@ -1091,27 +895,19 @@ let vm = new Vue({
         type: 'publications',
         slugFolderName: slugPubliName
       });
-      this.settings.current_slugPubliName = slugPubliName;
+      this.settings.current_publication.slug = slugPubliName;
     },
     closePublication() {
       if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: closePublication');
       }
-      this.settings.current_slugPubliName = false;
+      this.settings.current_publication.slug = false;
     },
     downloadPubliPDF({ slugPubliName }) {
       if (window.state.dev_mode === 'debug') {
         console.log(`ROOT EVENT: downloadPubliPDF: ${slugPubliName}`);
       }
       this.$socketio.downloadPubliPDF({
-        slugPubliName
-      });
-    },
-    downloadVideoPubli({ slugPubliName }) {
-      if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: downloadVideoPubli: ${slugPubliName}`);
-      }
-      this.$socketio.downloadVideoPubli({
         slugPubliName
       });
     },
@@ -1255,6 +1051,21 @@ let vm = new Vue({
           slugFolderName: slugProjectName
         });
       });
+
+      let number_of_projects_to_load_medias_to = Object.keys(
+        this.store.projects
+      ).length;
+
+      this.$eventHub.$on('socketio.projects.listMedias', () => {
+        number_of_projects_to_load_medias_to--;
+        if (number_of_projects_to_load_medias_to === 0) {
+          this.$eventHub.$emit('socketio.has_finished_loading_all_medias');
+        }
+      });
+
+      setTimeout(() => {
+        this.$eventHub.$emit('socketio.has_finished_loading_all_medias');
+      }, 5000);
     },
     formatDateToHuman(date) {
       return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LL');
@@ -1263,10 +1074,10 @@ let vm = new Vue({
       this.$socketio.updateNetworkInfos();
     },
     navigation_back() {
-      if (this.$root.do_navigation.view === 'CaptureView') {
-        this.$root.do_navigation.view = 'ProjectView';
-      } else if (this.$root.do_navigation.view === 'ProjectView') {
-        this.$root.closeProject();
+      if (this.do_navigation.view === 'CaptureView') {
+        this.do_navigation.view = 'ProjectView';
+      } else if (this.do_navigation.view === 'ProjectView') {
+        this.closeProject();
       }
     }
   }

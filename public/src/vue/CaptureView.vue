@@ -1,11 +1,17 @@
 <template>
   <div class="m_captureview">
-    <div class="m_captureview--modeSelector">
-      <button type="button" class="bg-transparent" @click="previousMode()"
+  <div class="m_captureview--modeSelector">
+      <button type="button" class="bg-transparent" 
         v-show="!$root.settings.capture_mode_cant_be_changed"
+        @mousedown.stop.prevent="previousMode()"        
+        @touchstart.stop.prevent="previousMode()"        
       >
-        ◀
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="169px"
+          height="169px" viewBox="0 0 169 169" style="enable-background:new 0 0 169 169;" xml:space="preserve">
+          <path fill="currentColor" d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z"/>
+        </svg>
       </button>
+      
       <div 
         v-for="mode in available_modes"
         :key="mode.key"
@@ -18,10 +24,15 @@
           <span>{{ $t(mode.key) }}</span>
         </label>
       </div>
-      <button type="button" class="bg-transparent" @click="nextMode()"
+      <button type="button" class="bg-transparent"
         v-show="!$root.settings.capture_mode_cant_be_changed"
+        @mousedown.stop.prevent="nextMode()"        
+        @touchstart.stop.prevent="nextMode()"        
       >
-        ▶
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="169px"
+          height="169px" viewBox="0 0 169 169" style="enable-background:new 0 0 169 169;" xml:space="preserve">
+          <path fill="currentColor" d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z"/>
+        </svg>        
       </button>
     </div>
 
@@ -29,7 +40,6 @@
       :class="{ 'stopmotion_inprogress' : $root.store.stopmotions.hasOwnProperty(current_stopmotion) }"
     >
       <div class="m_panel">
-
         <transition name="enableMode" :duration="400">
           <div class="m_panel--modeOverlay"
             v-if="mode_just_changed"
@@ -38,9 +48,12 @@
           </div>
         </transition>
         
-        <div class="m_panel--previewCard">
-
-          <div class="m_panel--previewCard--live">
+        <div class="m_panel--previewCard"
+          v-show="!is_validating_stopmotion_video"
+        >
+          <div class="m_panel--previewCard--live"
+            :class="{ 'is--recording' : is_recording }"
+          >
             <!-- OPTIONS -->
             <transition name="slideleft" :duration="400">
               <div class="m_panel--previewCard--live--options"
@@ -54,11 +67,16 @@
                     </span>
                     <select v-if="sorted_available_devices.hasOwnProperty(kind)" v-model="selected_devicesId[kind]">
                       <option 
-                        v-for="device in sorted_available_devices[kind]" 
+                        v-for="(device, index) in sorted_available_devices[kind]" 
                         :value="device.deviceId" 
                         :key="device.deviceId"
                       >
-                        {{ device.label }}
+                        <template v-if="device.label === ''">
+                          {{ $t('device') }} {{ index }}
+                        </template>
+                        <template v-else>
+                          {{ $t(device.label) }}
+                        </template>
                       </option>        
                     </select>
                   </div>
@@ -126,6 +144,51 @@
               </div>
             </transition>
 
+            <transition-group 
+              tag="div" 
+              class="recording_timer"
+              name="slideFromTop"        
+            >
+              <label 
+                v-if="selected_mode !== 'stopmotion' && is_recording && recording_duration"
+                :key="'duration'"
+                v-html="recording_duration"
+              />
+              
+              <label 
+                v-if="selected_mode === 'stopmotion' && is_recording && recording_duration"
+                :key="'time_before'"
+                v-html="time_before_next_picture" 
+              />
+ 
+              <div 
+                v-if="selected_mode === 'stopmotion' && timelapse_mode"
+                :key="'timelapse_interval'"  
+                class="recording_timer--timelapse"
+              >
+                <div>
+                  <span>{{ $t('interval_between_pictures') }}</span>
+                  <input type="number" v-model.number="timelapse_interval">
+                  <span>{{ $t('seconds') }}</span>
+                </div>
+              </div>
+              <!-- <label 
+                v-if="selected_mode === 'stopmotion' && timelapse_mode"
+                :key="'disable_interval'"  
+              >
+                <button 
+                  type="button" 
+                  class="button-nostyle text-uc padding-none margin-none c-blanc bg-rouge button-inline"
+                  @click="timelapse_mode = false"
+                >
+                  <svg class="inline-svg margin-right-verysmall" viewBox="0 0 20 20">
+                    <path stroke="" fill="white" d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
+                  </svg>                    
+                  {{ $t('disable') }}
+                </button>                
+              </label> -->
+            </transition-group>
+
             <video 
               v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
               ref="videoElement" 
@@ -134,35 +197,87 @@
 
             <canvas 
               v-if="selected_mode === 'audio'"
-              ref="equalizerElement" width="720" height="360" 
+              class="m_panel--previewCard--live--equalizer"
+              ref="equalizerElement" width="1280" height="720" 
             />
 
             <MediaContent
-              v-if="selected_mode === 'stopmotion' && stopmotion.onion_skin_img"
+              v-if="selected_mode === 'stopmotion' && stopmotion.onion_skin_img && current_stopmotion"
               class="m_panel--previewCard--live--onionskin"
               :context="'edit'"
               :slugFolderName="current_stopmotion"
               :media="stopmotion.onion_skin_img"
               :subfolder="'_stopmotions/'"
-              :style="`--onionskin-opacity: ${stopmotion.onion_skin_opacity}`"
+              :style="is_showing_live_feed ? `--onionskin-opacity: ${stopmotion.onion_skin_opacity}` : ''"
+              :element_width_for_sizes="1600"
             />
 
             <div id="vectoContainer" v-if="selected_mode === 'vecto'" v-html="vecto.svgstr">
             </div>
 
+
+            <transition name="slideright" :duration="400">
+              <div class="m_panel--previewCard--live--stopmotionlist"
+                v-if="show_stopmotion_list && !is_making_stopmotion"
+              >
+                <div class="margin-bottom-small">
+                  <template v-if="Object.keys(stopmotions).length > 0">
+                    <ul>
+                      <li v-for="stopmotion in stopmotions"
+                        :key="stopmotion.slugFolderName"
+                      >
+                        <button type="button"
+                          @mouseenter="loadStopmotionMedias(stopmotion.slugFolderName)"
+                          @click="loadStopmotion(stopmotion.slugFolderName)"
+                        >
+                          <div class="padding-verysmall">{{ stopmotion.date_created }}</div>
+                          <template v-if="Object.values(stopmotion.medias).length > 0">
+                            <div class="padding-bottom-verysmall">{{ Object.values(stopmotion.medias).length }} photos</div>
+                            <div 
+                              class="pictures_list"
+                            >
+                              <div 
+                                v-for="media in Object.values(stopmotion.medias)" 
+                                :key="media.slugMediaName"
+                              >
+                                  <!-- v-if="index <= 5" -->
+                                <MediaContent
+                                  :context="'preview'"
+                                  :slugFolderName="stopmotion.slugFolderName"
+                                  :media="media"
+                                  :subfolder="'_stopmotions/'"
+                                  :preview_size="150"
+                                />
+                              </div>
+                            </div>
+                          </template>
+                        </button>
+                      </li>
+                    </ul>
+                  </template>
+                  <template v-else>
+                    {{ $t('no_stopmotion_created_yet') }}
+                  </template>
+                </div>
+              </div>
+            </transition>
+
           </div>
 
-          <transition name="fade" :duration="600">
+          <transition name="fade_fast" :duration="150">
             <div class="m_panel--previewCard--validate" v-if="media_to_validate">
               <img 
                 v-if="media_to_validate.type === 'image'" 
                 :src="media_to_validate.objectURL"
               />
-              <video 
+
+              <vue-plyr
                 v-else-if="media_to_validate.type === 'video'" 
-                :src="media_to_validate.objectURL"
-                controls
-              />
+                :options="plyr_options"
+              >
+                <video :poster="linkToVideoThumb" :src="media_to_validate.objectURL" preload="none" />
+              </vue-plyr>
+              
               <div 
                 v-else-if="media_to_validate.type === 'audio'" 
                 class="m_panel--previewCard--validate--audio"
@@ -170,14 +285,17 @@
                 <img 
                   :src="media_to_validate.preview"
                 >
-                <audio
-                  :src="media_to_validate.objectURL"
-                  controls
-                />
+
+                <vue-plyr
+                  :options="plyr_options"
+                >
+                  <audio :src="media_to_validate.objectURL" preload="none" />
+                </vue-plyr>
               </div>
               <div 
                 v-else-if="media_to_validate.type === 'svg'" 
                 v-html="media_to_validate.preview"
+                class="m_panel--previewCard--validate--svg"
               />
             </div>
           </transition>
@@ -187,15 +305,28 @@
               v-show="capture_button_pressed"
             />
           </transition>
-
         </div>
+
+        <StopmotionPanel 
+          v-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"        
+          :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
+          :slugProjectName="slugProjectName"
+          :read_only="read_only"
+          :videoStream="videoStream"
+          @close="current_stopmotion = false"
+          @new_single_image="updateSingleImage"
+          @show_live_feed="(state) => { is_showing_live_feed = state }"
+          @validating_video="(state) => { is_validating_stopmotion_video = state }"
+        >
+        </StopmotionPanel>        
+
         <div class="m_panel--buttons">
           <div class="m_panel--buttons--row" :class="{ 'bg-orange' : is_recording }">
             <button
               type="button"
               @click="show_capture_settings = !show_capture_settings"
               class="button c-rouge font-small bg-transparent"
-              :disabled="is_recording"
+              :disabled="is_recording || is_making_stopmotion"
             >
               <svg 
                 class="inline-svg inline-svg_larger"
@@ -216,14 +347,40 @@
               </span>
             </button>
 
-            <button type="button" 
-              class="padding-verysmall bg-transparent m_panel--buttons--row--captureButton"
-              :class="{ 'is--justCaptured' : capture_button_pressed }"
-              @click="captureOrStop()"
-            >
-              <img v-if="!is_recording" src="/images/i_record.svg">
-              <img v-else src="/images/i_stop.svg">
-            </button>
+            <div class="m_panel--buttons--row--captureButton">
+              <button type="button" 
+                class="padding-verysmall bg-transparent m_panel--buttons--row--captureButton--btn"
+                :class="{ 'is--justCaptured' : capture_button_pressed }"
+                @mousedown.stop.prevent="captureOrStop()"
+                @touchstart.stop.prevent="captureOrStop()"
+              >
+                <img v-if="!is_recording" src="/images/i_record.svg">
+                <img v-else src="/images/i_stop.svg">
+              </button>
+
+              <button type="button"
+                class="m_panel--buttons--row--captureButton--advancedOptions"
+                :class="{ 'is--active' : timelapse_mode }"
+                v-if="selected_mode === 'stopmotion'"
+                :title="$t('timelapse')"
+                v-tippy="{ 
+                  placement : 'top',
+                  delay: [600, 0]
+                }"
+                @click="timelapse_mode = !timelapse_mode"
+              >
+                <svg version="1.1" class="inline-svg margin-right-verysmall" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="81px"
+                  height="81px" viewBox="0 0 81 81" style="enable-background:new 0 0 81 81;" xml:space="preserve">
+                <path class="st1" d="M69.6,20.8c-0.9,0.6-1.7,1.1-2.6,1.7c-6-8.8-15.9-14-26.5-14c-17.6,0-32,14.4-32,32s14.4,32,32,32
+                  c3.1,0,6.2-0.4,9.1-1.3l-1.7-5.8c-2.4,0.7-4.9,1.1-7.4,1.1c-14.3,0-26-11.7-26-26s11.7-26,26-26c8.6,0,16.6,4.2,21.5,11.4
+                  c-0.8,0.5-1.6,1.1-2.4,1.6c-0.7,0.4-0.9,1.1-0.8,1.7c0,0.7,0.4,1.4,1.2,1.6c0.2,0.1,0.3,0.1,0.5,0.1c2.7,0.5,5.3,1.1,8,1.6
+                  c1,0.2,2-0.4,2.3-1.4c0.6-2.8,1.1-5.5,1.7-8.3C72.8,21.3,71,19.9,69.6,20.8z"/>
+                <path class="st1" d="M23,49.4c-1.3,0-2.4-0.8-2.9-2.1c-0.5-1.6,0.4-3.3,1.9-3.8L39,38.3V27.2c0-1.7,1.3-3,3-3s3,1.3,3,3v13.3
+                  c0,1.3-0.8,2.5-2.1,2.9l-19,5.9C23.6,49.4,23.3,49.4,23,49.4z"/>
+                </svg>
+              </button>
+              
+            </div>
 
             <div class="m_panel--buttons--row--options">
               <div v-if="selected_mode === 'vecto'">
@@ -234,13 +391,24 @@
               </div>
 
               <div
-                v-if="selected_mode === 'stopmotion' && stopmotion.onion_skin_img"
+                v-if="selected_mode === 'stopmotion' && stopmotion.onion_skin_img && is_showing_live_feed"
               >
                 <label>
                   {{ $t('onion_skin') }}
                 </label>
-                <input class="margin-none" type="range" v-model="stopmotion.onion_skin_opacity" min="0" max="1" step="0.01">
+                <input class="margin-none" type="range" v-model="stopmotion.onion_skin_opacity" min="0" max=".9" step="0.01">
               </div>
+
+              <button
+                type="button"
+                v-if="selected_mode === 'stopmotion' && !is_making_stopmotion"
+                @click="show_stopmotion_list = !show_stopmotion_list"
+                class="button c-bleumarine font-small bg-transparent"
+              >
+                <span class="">
+                  {{ $t('stopmotion_list') }}
+                </span>
+              </button>
 
               <span class="switch switch-xs" v-if="selected_mode === 'video'">
                 <input 
@@ -254,6 +422,7 @@
               </span>
             </div>
           </div>
+
           <transition name="slideup" :duration="400">
             <MediaValidationButtons
               v-if="media_to_validate"
@@ -268,18 +437,6 @@
         </div>
       </div>
 
-      <div class="m_panel"
-        v-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"        
-      >
-        <StopmotionPanel 
-          :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
-          :slugProjectName="slugProjectName"
-          :read_only="read_only"
-          @close="current_stopmotion = false"
-          @new_single_image="updateSingleImage"
-        >
-        </StopmotionPanel>        
-      </div>
     </div>
     <DistantFlux 
       v-if="$root.settings.capture_options.distant_flux.active"
@@ -345,6 +502,8 @@ export default {
       recordVideoWithAudio: true,
 
       show_capture_settings: false,
+      show_stopmotion_list: false,
+      is_showing_live_feed: true,
 
       capture_button_pressed: false,
       videoStream: null,
@@ -352,7 +511,10 @@ export default {
       available_devices: {},
       mode_just_changed: false,
       is_recording: false,
+      timer_recording: false,
+
       actual_current_video_resolution: false,
+
 
       media_to_validate: false,
       media_is_being_sent: false,
@@ -365,6 +527,16 @@ export default {
       is_calling: false,
 
       current_stopmotion: false,
+      is_validating_stopmotion_video: false,
+
+      timelapse_mode: false,
+      timelapse_interval: 2,
+      timelapse_event: false,
+
+      plyr_options: {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        iconUrl: '/images/plyr.svg'
+      },
 
       ideal_camera_resolution: {
         name: 'hd',
@@ -476,8 +648,9 @@ export default {
       this.$root.settings.capture_options.selected_devicesId.videoinput = this.selected_devicesId.videoinput;
     },
     'selected_mode': function() {
-      console.log('WATCH • Capture: selected_mode');
+      console.log('WATCH • Capture: selected_mode : ' + this.selected_mode);
       this.mode_just_changed = true;
+      this.show_stopmotion_list = false;
 
       this.$root.settings.capture_options.selected_mode = this.selected_mode;
       window.setTimeout(()=> {
@@ -489,6 +662,12 @@ export default {
     },
     'is_recording': function() {
       equalizer.setSarahCouleur(this.is_recording);
+
+      if(this.is_recording) {
+        this.timer_recording = this.$root.currentTime;
+      } else {
+        this.timer_recording = false;
+      }
     },
     'ideal_camera_resolution': function() {
       console.log(`WATCH • Capture: ideal_camera_resolution = ${Object.entries(this.ideal_camera_resolution)}`);
@@ -507,14 +686,45 @@ export default {
     },
     'current_stopmotion': function() {
       this.$root.settings.capture_mode_cant_be_changed = this.current_stopmotion ? this.current_stopmotion : false;
+    },
+    'show_stopmotion_list': function() {
+      if(this.show_stopmotion_list) {
+        this.$socketio.listFolders({ type: 'stopmotions' }); 
+      }
     }
   },
   computed: {
+    is_making_stopmotion() {
+      const is_making_stopmotion = this.current_stopmotion ? true : false;
+      if(is_making_stopmotion) {
+        this.show_capture_settings = false;
+      }
+      return is_making_stopmotion;
+    },
+    stopmotions() {
+      let stopmotions = Object.values(this.$root.store.stopmotions);
+      stopmotions = this.$_.sortBy(stopmotions, function(o) { return o.date_created; }).reverse();
+      return stopmotions;
+    },
     sorted_available_devices() {
       return this.$_.groupBy(this.available_devices, 'kind');
     },
     uriToUploadMedia: function() {
       return `file-upload/projects/${this.slugProjectName}`;
+    },
+    recording_duration: function() {
+      if(this.timer_recording) {
+        return this.$moment(this.$root.currentTime - this.timer_recording).startOf('second').format('mm:ss');
+      }
+      return false;
+    },
+    time_before_next_picture: function() {
+      const seconds_ellapsed_since_beginning = this.$moment(this.$root.currentTime - this.timer_recording).seconds(); 
+      const time_ellapsed_since_last_capture = seconds_ellapsed_since_beginning%this.timelapse_interval;
+      if(time_ellapsed_since_last_capture === 0) {
+        return 0; 
+      }
+      return this.timelapse_interval - time_ellapsed_since_last_capture;
     }
   },
   methods: {
@@ -595,15 +805,16 @@ export default {
     },
     captureKeyListener(event) {
       console.log('METHODS • CaptureView: captureKeyListener');
-
-      // don’t register if validating a media
-      if(this.media_to_validate) {
+     
+     // don’t register if validating a media
+      if(this.media_to_validate || this.is_validating_stopmotion_video) {
         return false;
       }
 
-      if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
-        return false;
-      }      
+      // disabled because it clashes with the input type range from stopmotion panel
+      // if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
+      //   return false;
+      // }      
 
       switch(event.key) {
         case 'w':
@@ -624,6 +835,7 @@ export default {
     },
     changeStreamTo(new_stream) {
       console.log('METHODS • CaptureView: changeStreamTo');
+      this.videoStream = new_stream;
       this.$refs.videoElement.srcObject = new_stream;
     },
     stopAudioFeed() {
@@ -727,7 +939,7 @@ export default {
             resolve(stream);
           },
           (err) => {
-            return reject(this.$t('notifications.failed_to_start_video_change_source_or_res'));
+            return reject(this.$t('notifications.failed_to_start_video_change_source_or_res') + '<br>' + err);
           }
         );
       });
@@ -853,7 +1065,25 @@ export default {
         this.capture_button_pressed = false;
       }, 400);
 
-      if(this.is_recording) {
+      if(this.selected_mode === 'stopmotion' && this.timelapse_mode) {
+        if(!this.is_recording) {
+          this.is_recording = true;
+          this.timelapse_event = window.setInterval(() => {
+            this.capture_button_pressed = true;
+            window.setTimeout(() => {
+              this.capture_button_pressed = false;
+            }, 400);
+            this.addStopmotionImage();
+          }, this.timelapse_interval * 1000);
+        } else {
+          this.is_recording = false;
+          clearInterval(this.timelapse_event);
+          return;
+        }
+      }
+
+
+      if(this.is_recording && this.selected_mode !== 'stopmotion') {
         this.$eventHub.$emit('capture.stopRecording');
         return;
       }
@@ -890,9 +1120,21 @@ export default {
         });
       } else
       if(this.selected_mode === 'stopmotion') { 
+        this.addStopmotionImage();
+      } else
+      if(this.selected_mode === 'vecto') { 
+        this.media_to_validate = {
+          preview: this.vecto.svgstr,
+          rawData: new Blob([this.vecto.svgstr], { type: "text/xml"}),
+          type: 'svg'
+        };
+      }
+    },
+    addStopmotionImage() {
         const smdata = {
           name: this.slugProjectName + '-' + this.$moment().format('YYYYMMDD_HHmmss'),
-          authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : '' 
+          linked_project: this.slugProjectName,
+          authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : ''
         };
 
         this.getStaticImageFromVideoElement().then(imageData => {
@@ -907,21 +1149,14 @@ export default {
             });
             this.$root.createFolder({ 
               type: 'stopmotions', 
-              data: smdata 
+              data: smdata
             });      
           } else {
             // append to stopmotion
             this.addImageToStopmotion(imageData);
           }
         });
-      } else
-      if(this.selected_mode === 'vecto') { 
-        this.media_to_validate = {
-          preview: this.vecto.svgstr,
-          rawData: new Blob([this.vecto.svgstr], { type: "text/xml"}),
-          type: 'svg'
-        };
-      }
+
     },
     addImageToStopmotion(imageData) {
       console.log('METHODS • CaptureView: addImageToStopmotion');
@@ -985,7 +1220,7 @@ export default {
     },
     sendMedia({ fav = false }) {
       return new Promise((resolve, reject) => {
-        console.log(`METHODS • ValidateMedia: sendMedia with fav=${fav}`);
+        console.log(`METHODS • CaptureView: sendMedia with fav=${fav}`);
         if (this.$root.state.dev_mode === 'debug') {
           console.log(`METHODS • CaptureView / sendMedia`);
         }
@@ -1070,7 +1305,7 @@ export default {
             this.$alertify
               .closeLogOnClick(true)
               .delay(4000)
-              .error(this.$t('notifications.media_couldnt_been_sent'));
+              .error(this.$t('notifications.media_couldnt_be_sent'));
 
             // this.selected_files_meta[filename].status = 'failed'; 
             // this.selected_files_meta[filename].upload_percentages = 0;   
@@ -1084,6 +1319,17 @@ export default {
     },
     updateSingleImage($event) {
       this.stopmotion.onion_skin_img = $event;
+    },
+    loadStopmotionMedias(slugFolderName) {
+      if(Object.values(this.$root.store.stopmotions[slugFolderName].medias).length === 0) {
+        this.$socketio.listMedias({
+          type: 'stopmotions',
+          slugFolderName
+        });
+      }
+    },
+    loadStopmotion(slugFolderName) {
+      this.current_stopmotion = slugFolderName;
     }
   }
 }
@@ -1113,8 +1359,8 @@ var equalizer = (function() {
 
   // Global Variables for Drawing
   var column = 0;
-  var canvasWidth  = 720;
-  var canvasHeight = 360;
+  var canvasWidth  = 1280;
+  var canvasHeight = 720;
   var ctx;
 
   var API = {
