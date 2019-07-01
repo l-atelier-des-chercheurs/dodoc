@@ -244,7 +244,7 @@ module.exports = (function() {
                 .launch({
                   headless: true,
                   ignoreHTTPSErrors: true,
-                  args: ['--no-sandbox', '--user-agent=EXPORTER']
+                  args: ['--no-sandbox']
                 })
                 .then(browser => {
                   return browser.newPage();
