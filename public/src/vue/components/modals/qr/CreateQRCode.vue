@@ -17,12 +17,6 @@
           :value="getURLToApp(ip)" 
           :options="{ size: 400, foreground: '#333', background: 'transparent' }"
         ></qrcode>
-        <button type="button"
-          class="buttonLink hide_on_print"
-          @click.prevent="printQR"
-        >
-          {{ $t('print') }} 
-        </button>
       </div>
       <div class="m_qrSnippet--text">
         <a 
@@ -30,21 +24,16 @@
           :href="getURLToApp(ip)"
           target="_blank"
         >
-          <img 
-            :src="'/images/i_logo.svg'" 
-          />          
-        
-          <template v-if="nameOfProject">
+          <!-- <template v-if="nameOfProject">
             • {{ nameOfProject }} •<br><br>
-          </template>
+          </template> -->
 
           <div class="margin-bottom-small font-verysmall">
             {{ getURLToApp(ip) }}
           </div>
-
         </a>
 
-        <div class="margin-bottom-small" v-if="media">
+        <div class="margin-bottom-small hide_on_print" v-if="media">
           <span class="switch switch-xs">
             <input type="checkbox" class="switch" id="open_in_dodoc" v-model="open_in_dodoc">
             <label for="open_in_dodoc">
@@ -52,7 +41,22 @@
             </label>
           </span>
         </div>
+        <hr>
 
+        <button type="button"
+          class="buttonLink hide_on_print"
+          @click.prevent="printQR"
+        >
+          {{ $t('print') }} 
+        </button>
+
+        <img 
+          class="m_qrSnippet--text--dodoclogo"
+          :src="'/images/i_logo.svg'" 
+          draggable="false"
+        />          
+      
+        
       </div>
     </div>
 
@@ -68,7 +72,7 @@ export default {
   },
   data() {
     return {
-      open_in_dodoc: false
+      open_in_dodoc: true
     }
   },
   created() {

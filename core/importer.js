@@ -78,7 +78,7 @@ module.exports = (function() {
         form.on('end', function() {
           let msg = {};
           msg.msg = 'success';
-          //           msg.medias = JSON.stringify(allFilesMeta);
+          // msg.medias = JSON.stringify(allFilesMeta);
           res.end(JSON.stringify(msg));
 
           if (allFilesMeta.length > 0) {

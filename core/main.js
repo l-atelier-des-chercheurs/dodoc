@@ -9,12 +9,27 @@ const server = require('./server');
 
 const dev = require('./dev-log'),
   api = require('./api'),
-  cache = require('./cache');
+  cache = require('./cache'),
+  auth = require('./auth');
 
 module.exports = function({ router }) {
   const is_electron = process.versions.hasOwnProperty('electron');
 
   console.log(`App is electron : ${is_electron}`);
+  console.log(`Starting app ${global.appInfos.name}`);
+  console.log(process.versions);
+
+  const debug =
+    process.argv.length >= 4 ? process.argv[3] === '--debug' : false;
+  const verbose =
+    process.argv.length >= 5 ? process.argv[4] === '--verbose' : false;
+  const logToFile = false;
+
+  dev.init(debug, verbose, logToFile);
+
+  if (dev.isDebug()) {
+    process.traceDeprecation = true;
+  }
 
   if (is_electron) {
     require('./electron')
@@ -22,6 +37,9 @@ module.exports = function({ router }) {
       .then(win => {
         setupApp().then(() => {
           server(router);
+          dev.log(
+            `MAIN — opening URL in electron : ${global.appInfos.homeURL}`
+          );
           win.loadURL(global.appInfos.homeURL);
         });
       })
@@ -29,6 +47,10 @@ module.exports = function({ router }) {
         dev.error(`Error code: ${err}`);
       });
   } else {
+    global.sourcePathInApp = path.join(
+      `${global.appRoot}`,
+      `${global.settings.contentDirname}`
+    );
     setupApp()
       .then(() => {
         server(router);
@@ -40,22 +62,8 @@ module.exports = function({ router }) {
 
   function setupApp() {
     return new Promise(function(resolve, reject) {
-      console.log(`Starting app ${global.appInfos.name}`);
-      console.log(process.versions);
-
-      const debug =
-        process.argv.length >= 4 ? process.argv[3] === '--debug' : false;
-      const verbose =
-        process.argv.length >= 5 ? process.argv[4] === '--verbose' : false;
-      const logToFile = false;
-
-      dev.init(debug, verbose, logToFile);
-
-      if (dev.isDebug()) {
-        process.traceDeprecation = true;
-      }
-
-      global.tempStorage = app.getPath('temp');
+      global.tempStorage = getPath.getCacheFolder();
+      global.ffmpeg_processes = [];
 
       if (
         global.settings.hasOwnProperty('cache_content') &&
@@ -80,18 +88,11 @@ module.exports = function({ router }) {
                   sessionMeta.session_password !== '' &&
                   typeof sessionMeta.session_password === 'string'
                 ) {
-                  function hashCode(s) {
-                    return s.split('').reduce(function(a, b) {
-                      a = (a << 5) - a + b.charCodeAt(0);
-                      return a & a;
-                    }, 0);
-                  }
-
                   const pass = sessionMeta.session_password.trim();
 
                   dev.log('Found session password in meta.txt set to: ' + pass);
 
-                  global.session_password = hashCode(pass);
+                  global.session_password = auth.hashCode(pass);
                 }
                 portscanner
                   .findAPortNotInUse(
@@ -117,8 +118,8 @@ module.exports = function({ router }) {
                     dev.error(`err ${err}`);
                     if (is_electron)
                       dev.showErrorBox(
-                        `The app ${app.getName()} wasn’t able to start`,
-                        `Error code: ${err}`
+                        `Impossible de démarrer l’application`,
+                        `Code erreur: ${err}`
                       );
                   });
               });
@@ -159,19 +160,7 @@ module.exports = function({ router }) {
             } to create a new one`
           );
 
-          let sourcePathInApp;
-          if (is_electron) {
-            sourcePathInApp = path.join(
-              `${global.appRoot.replace(`${path.sep}app.asar`, '')}`,
-              `${global.settings.contentDirname}`
-            );
-          } else {
-            sourcePathInApp = path.join(
-              `${global.appRoot}`,
-              `${global.settings.contentDirname}`
-            );
-          }
-          fs.copy(sourcePathInApp, pathToUserContent, function(err) {
+          fs.copy(global.sourcePathInApp, pathToUserContent, function(err) {
             if (err) {
               dev.error(`Failed to copy: ${err}`);
               reject(err);

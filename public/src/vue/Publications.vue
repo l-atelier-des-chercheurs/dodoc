@@ -2,8 +2,8 @@
   <div class="m_publicationsview">
 
     <div class="m_actionbar">
-      <!-- <div class="m_actionbar--buttonBar">
-        <button 
+      <div class="m_actionbar--buttonBar">
+        <!-- <button 
           class="barButton barButton_createPubli"
           type="button"  
           @click="showCreatePublicationModal = true"
@@ -12,14 +12,16 @@
           <span>    
               {{ $t('create_a_publication') }}
           </span>
-        </button>
+        </button> -->
 
         <CreatePublication
           v-if="showCreatePublicationModal"
+          :default_name="createPubliDefaultName"
+          :default_template="createPubliTemplateKey"
           @close="showCreatePublicationModal = false"
           :read_only="read_only"
         />
-      </div> -->
+      </div>
       <div class="m_actionbar--text">
         {{ $t('cooking_pot') }}: {{ $t('cooking_pot_instructions')}}
       </div>
@@ -34,12 +36,21 @@
       >
         <div class="m_recipes--recipe--icon" v-html="recipe.icon"></div>
         <div class="m_recipes--recipe--text">
-          <h2>{{ $t(recipe.key) }}</h2>
-          <p v-html="$t(recipe.instructions)"/>
+          <h2 class="">{{ $t(recipe.key) }}</h2>
+          <p v-if="!recipe.show_instructions" class="margin-vert-small">
+            <span v-html="$t(recipe.summary)" class="margin-vert-verysmall"/>
+            <br>
+            <button type="button" class="buttonLink margin-left-none padding-left-none" @click="recipe.show_instructions = !recipe.show_instructions">
+              + {{ $t('more_informations')}}
+            </button>
+          </p>
+          <p v-else>
+            <span v-html="$t(recipe.instructions)"/>
+          </p>
           <button 
             class="barButton barButton_createPubli"
             type="button"  
-            @click="createAndOpenPublication(recipe.key)"
+            @click="openCreatePublicationModal(recipe.key)"
             :disabled="read_only" 
           >
             <span>    
@@ -75,7 +86,7 @@
                 </td>
               </tr>
 
-              <tr v-if="!recipe.show_all_recipes && recipe_of_this_template(recipe.key).length >= 3"
+              <tr v-if="!recipe.show_all_recipes && all_recipes_of_this_template(recipe.key).length > 3"
                 @click="recipe.show_all_recipes = true"  
                 class="m_recipes--recipe--mealList--meal"
               >
@@ -159,10 +170,13 @@ export default {
   data() {
     return {
       showCreatePublicationModal: false,
+      createPubliTemplateKey: false,
 
       recipes: [
         {
           key: 'page_by_page',
+          summary: 'page_by_page_summary',
+          show_instructions: false,
           instructions: 'page_by_page_instructions',
           show_all_recipes: false,
           icon: `
@@ -186,6 +200,8 @@ export default {
         },
         {
           key: 'video_assemblage',
+          summary: 'video_assemblage_summary',
+          show_instructions: false,
           instructions: 'video_assemblage_instructions',
           show_all_recipes: false,
           icon: `
@@ -215,6 +231,8 @@ export default {
         },
         {
           key: 'stopmotion_animation',
+          summary: 'stopmotion_animation_summary',
+          show_instructions: false,
           instructions: 'stopmotion_animation_instructions',
           show_all_recipes: false,
           icon: `
@@ -291,6 +309,8 @@ export default {
         },
         { 
           key: 'mix_audio_and_video',
+          summary: 'mix_audio_and_video_summary',
+          show_instructions: false,
           instructions: 'mix_audio_and_video_instructions',
           show_all_recipes: false,
           icon: `
@@ -327,6 +347,8 @@ export default {
         },
         { 
           key: 'mix_audio_and_image',
+          summary: 'mix_audio_and_image_summary',
+          show_instructions: false,
           instructions: 'mix_audio_and_image_instructions',
           show_all_recipes: false,
           icon: `
@@ -372,6 +394,10 @@ export default {
   watch: {
   },
   computed: {
+    createPubliDefaultName() {
+      const number_of_recipes = this.all_recipes_of_this_template(this.createPubliTemplateKey).length + 1;
+      return this.$t(this.createPubliTemplateKey) + ' Nº' + number_of_recipes;
+    }
   },
   methods: {
     openPublication(slugPubliName) {
@@ -380,14 +406,21 @@ export default {
       }
       this.$root.openPublication(slugPubliName);
     },
-    recipe_of_this_template(template_key) {
+    all_recipes_of_this_template(template_key) {
       const filtered_recipes = Object.values(this.publications).filter(r => r.template === template_key);
       let sorted_recipes = this.$_.sortBy(filtered_recipes, 'date_created');
       sorted_recipes = sorted_recipes.reverse()
-      if(!this.recipes.find(r => r.key === template_key).show_all_recipes) {
-        sorted_recipes = sorted_recipes.slice(0,3);
-      }
       return sorted_recipes;
+    },
+    recipe_of_this_template(template_key) {
+      if(!this.recipes.find(r => r.key === template_key).show_all_recipes) {
+        return this.all_recipes_of_this_template(template_key).slice(0,3);
+      }
+      return this.all_recipes_of_this_template(template_key);
+    },
+    openCreatePublicationModal(recipe_key) {
+      this.showCreatePublicationModal = true;
+      this.createPubliTemplateKey = recipe_key;
     },
     createAndOpenPublication(template) {
       const name = this.$t('untitled');

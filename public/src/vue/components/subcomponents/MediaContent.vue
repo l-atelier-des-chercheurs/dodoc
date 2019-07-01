@@ -5,28 +5,45 @@
     :data-context="context"
   >
     <template v-if="media.type === 'image'">
-      <img :srcset="imageSrcSetAttr" :sizes="imageSizesAttr" :src="linkToImageThumb"
-      >
+      <img :srcset="imageSrcSetAttr" :sizes="imageSizesAttr" :src="linkToImageThumb" draggable="false">
       <transition name="fade" :duration="600">
-        <img v-if="is_hovered && $root.state.is_electron && linkToHoveredThumb" :src="linkToHoveredThumb">
+        <img v-if="is_hovered && $root.state.is_electron && linkToHoveredThumb" :src="linkToHoveredThumb" draggable="false">
       </transition>
     </template>
 
     <template v-else-if="media.type === 'video'">
       <template v-if="context === 'preview'">
-        <img :srcset="videostillSrcSetAttr" :sizes="imageSizesAttr" :src="linkToVideoThumb">
+        <img :srcset="videostillSrcSetAttr" :sizes="imageSizesAttr" :src="linkToVideoThumb" draggable="false">
+        <div class="play_picto">
+          <svg class="" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="169px"
+            height="169px" viewBox="0 0 169 169" style="enable-background:new 0 0 169 169;" xml:space="preserve">
+            <path d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"/>
+          </svg>
+        </div>
       </template>
       <template v-else>
-        <vue-plyr :options="plyr_options">
+        <vue-plyr :options="plyr_options" ref="plyr"
+          :emit="['volumechange']" @volumechange="volumeChanged"
+        >
           <video :poster="linkToVideoThumb" :src="mediaURL" preload="none" :autoplay="autoplay" />
         </vue-plyr>
       </template>
     </template>
 
     <template v-else-if="media.type === 'audio'">
-      <vue-plyr :options="plyr_options">
-        <audio :src="mediaURL" preload="none" :autoplay="autoplay" />
-      </vue-plyr>
+      <template v-if="context === 'preview'">
+        <div class="play_picto">
+          <svg class="" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="169px"
+            height="169px" viewBox="0 0 169 169" style="enable-background:new 0 0 169 169;" xml:space="preserve">
+            <path d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"/>
+          </svg>
+        </div>
+      </template>
+      <template v-else>
+        <vue-plyr :options="plyr_options">
+          <audio :src="mediaURL" preload="none" :autoplay="autoplay" />
+        </vue-plyr>
+      </template>
     </template>
 
     <template v-else-if="media.type === 'text'">
@@ -37,7 +54,7 @@
         :slugFolderName="slugFolderName"
         ref="textField"
       />
-      <div v-else class="">
+      <div v-else class="mediaTextContent">
         <div v-if="value.length !== 0" v-html="value" />
         <p v-else v-html="'…'" />
       </div>
@@ -76,21 +93,16 @@
     </template>
 
     <template v-else-if="media.type === 'document'">
-      <div v-if="context !== 'edit' && context !== 'full'" class="">
-        <pre>
-  {{ media.media_filename }}
+      <div v-if="context !== 'edit' && context !== 'full'" class="padding-small font-verysmall">
+        <pre>{{ media.media_filename }}
         </pre>
       </div>
       <iframe v-else :src="mediaURL" />
     </template>
 
     <template v-else-if="media.type === 'other'">
-      <div class="padding-small font-small">
-        <pre>
-<span v-html="$t('file:')">
-</span>
-{{ media.media_filename }}
-        </pre>
+      <div class="padding-small font-verysmall">
+        <pre>{{ media.media_filename }}</pre>
       </div>
     </template>
 
@@ -136,6 +148,10 @@ export default {
     element_height: {
       type: Number,
       default: 0
+    },
+    audio_volume: {
+      type: Number,
+      default: 100
     }
   },
   components: {
@@ -163,6 +179,7 @@ export default {
         }
       }
     }
+    this.setVolume(this.audio_volume);
   },
   beforeDestroy() {
   },
@@ -188,7 +205,6 @@ export default {
     linkToImageThumb: function() {
       if(
         !this.media.hasOwnProperty('thumbs')
-        || this.context === 'full'      
       ) {
         return this.mediaURL;
       }
@@ -283,9 +299,18 @@ export default {
       return pathToSmallestThumb !== undefined
         ? url
         : this.mediaURL;
-    }
+    },
   },
   methods: {
+    volumeChanged(event) {
+      const vol = Math.round(Number(event.detail.plyr.volume) * 100);
+      this.$emit('volumeChanged', vol);
+    },
+    setVolume(val) {
+      if(this.$refs.hasOwnProperty('plyr')) {
+        this.$refs.plyr.player.volume = val / 100;
+      }
+    }
   }
 };
 </script>

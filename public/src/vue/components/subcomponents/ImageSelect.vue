@@ -8,7 +8,7 @@
       </label>
     </div>
     <div class="m_imageselect--image" v-else>
-      <img :src="image" />
+      <img :src="image" draggable="false" />
       <button class="buttonLink" type="button" @click="removeImage">Supprimer</button>
     </div>
   </div>
