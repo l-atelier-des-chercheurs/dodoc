@@ -143,6 +143,8 @@ module.exports = function(app) {
   function printPublication(req, res) {
     let slugPubliName = req.param('publication');
     generatePageData(req).then(pageData => {
+      dev.logverbose(`Generated printpublication pageData`);
+      dev.logverbose(`Now getting publication data for ${slugPubliName}`);
       exporter.loadPublication(slugPubliName, pageData).then(pageData => {
         pageData.mode = 'print_publication';
         res.render('index', pageData);
