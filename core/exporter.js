@@ -517,6 +517,7 @@ module.exports = (function() {
         })
         .then(publiData => {
           publi_and_medias = publiData;
+          pageData.pageTitle = publi_and_medias[slugFolderName].name;
           file
             .getMediaMetaNames({
               type,
