@@ -4540,7 +4540,7 @@ small {
 
 **********************************************************/
 
-body[data-mode="export_publication"] {
+body[data-mode="export_publication"], body[data-mode="link_publication"] {
   .m_publicationview--pages {
     padding: 0 !important;
   }
@@ -4554,7 +4554,7 @@ body[data-mode="export_publication"] {
   }
 
   .m_publicationMeta {
-    max-width: 200px;
+    max-width: 400px;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
@@ -4568,6 +4568,10 @@ body[data-mode="export_publication"] {
     border: transparent;
     background-color: transparent;
     overflow-y: visible;
+  }
+
+  .m_page {
+    box-shadow: 0px 2px 16px 0px rgba(0,0,0,.1);
   }
 }
 

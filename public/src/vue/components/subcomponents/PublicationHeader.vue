@@ -1,7 +1,7 @@
 <template>
   <div class="m_publicationMeta">
     <div class="label padding-verysmall"
-      v-if="$root.state.mode !== 'export_publication'"        
+      v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode)"
     >
       {{ $t(publication.template) }}
     </div>
@@ -10,7 +10,7 @@
 
       <div>
         <button type="button" class="m_publicationMeta--topbar--backbutton"
-          v-if="$root.state.mode !== 'export_publication'"        
+          v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode)"
           @click="closePublication()"
           :title="$t('back_to_project')"
           v-tippy='{ 
@@ -27,7 +27,7 @@
 
       </div>
       <div
-        v-if="$root.state.mode !== 'export_publication'"
+        v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode)"
       >
 
         <button type="button" class="buttonLink" @click="show_edit_publication = true">

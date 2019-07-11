@@ -279,6 +279,9 @@ module.exports = (function() {
         'Pour récupérer un site web contenant cette publication (par exemple pour la diffuser en ligne), cliquez sur le bouton ci-dessous&nbsp;:',
       download_website: 'Télécharger une version web',
       open_in_app: 'Afficher',
+
+      get_a_link: 'Récupérer un lien vers ce document&nbsp;:',
+
       format: 'Format',
       template: 'Gabarit',
       standard: 'Standard',
@@ -639,6 +642,9 @@ module.exports = (function() {
         'To download a website version of this publication (for example, to publish online), click here:',
       download_website: 'Download a website',
       open_in_app: 'Open',
+
+      get_a_link: 'Get a link to this document&nbsp;:',
+
       format: 'Format',
       template: 'Template',
       page_by_page: 'Paged document',

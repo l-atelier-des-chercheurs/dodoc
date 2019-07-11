@@ -212,7 +212,7 @@ module.exports = (function() {
       return new Promise(function(resolve, reject) {
         const urlToPubli = `${
           global.appInfos.homeURL
-        }/publication/${slugPubliName}`;
+        }/publications/print/${slugPubliName}`;
 
         const pdfName =
           slugPubliName +

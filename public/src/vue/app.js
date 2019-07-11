@@ -285,20 +285,16 @@ let vm = new Vue({
           });
         }
       } else if (
-        this.state.mode === 'export_publication' &&
+        [
+          'export_publication',
+          'print_publication',
+          'link_publication'
+        ].includes(this.state.mode) &&
         Object.keys(this.store.publications).length > 0
       ) {
         this.settings.current_publication.slug = Object.keys(
           this.store.publications
         )[0];
-      } else if (
-        this.state.mode === 'print_publication' &&
-        Object.keys(this.store.publications).length > 0
-      ) {
-        this.settings.current_publication.slug = Object.keys(
-          this.store.publications
-        )[0];
-        this.settings.show_publi_panel = true;
       }
     }
 

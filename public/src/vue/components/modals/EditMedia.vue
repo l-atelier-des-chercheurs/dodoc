@@ -70,7 +70,7 @@
         <template v-if="showQRModal">
           <hr>
           <CreateQRCode
-            :slugProjectName="slugProjectName"
+            :slugFolderName="slugProjectName"
             :media="media"
           />
         </template>

@@ -61,7 +61,9 @@
             />
           </div>
         </div>    
+
         <hr>
+
         <div class="">
           <div v-html="$t('get_website')" />
           <button type="button" 
@@ -75,7 +77,27 @@
           
             {{ $t('download_website') }}
           </button>
-        </div>    
+        </div>  
+
+        <hr>
+
+        <div class="">
+          <div v-html="$t('get_a_link')" />
+          <button type="button" 
+            class="margin-small margin-left-none bg-bleumarine c-blanc button-allwide" 
+            @click="getLink"
+            v-if="!show_link_infos"
+          >          
+            {{ $t('share') }}
+          </button>
+
+          <CreateQRCode
+            v-if="show_link_infos"
+            :type="'publications'"
+            :slugFolderName="slugPubliName"
+          />
+          
+        </div>
       </div>
     </template>    
   </Modal>
@@ -84,6 +106,7 @@
 import Modal from './BaseModal.vue';
 import { setTimeout } from 'timers';
 import AddCreationToProject from '../subcomponents/AddCreationToProject.vue';
+import CreateQRCode from './qr/CreateQRCode.vue';
 
 export default {
   props: {
@@ -92,7 +115,8 @@ export default {
   },
   components: {
     Modal,
-    AddCreationToProject
+    AddCreationToProject,
+    CreateQRCode
   },
   data() {
     return {
@@ -100,7 +124,8 @@ export default {
       link_to_pdf: false,
       path_to_pdf: false,
       web_export_started: false,
-      exported_pdf_name: ''
+      exported_pdf_name: '',
+      show_link_infos: false
     }
   },
   created() {
@@ -138,7 +163,7 @@ export default {
 
       this.pdf_request_status = 'generated';
       this.exported_pdf_name = pdfName;
-      this.link_to_pdf = window.location.origin + '/publication/print/' + pdfName;
+      this.link_to_pdf = window.location.origin + '/publications/print/pdf/' + pdfName;
     },
     downloadWeb() {
       if (this.$root.state.dev_mode === 'debug') {
@@ -148,7 +173,14 @@ export default {
       setTimeout(() => {
         this.web_export_started = false;
       }, 2000);
-      window.location.replace(window.location.origin + '/publication/web/' + this.slugPubliName);
+      window.location.replace(window.location.origin + '/publications/web/' + this.slugPubliName);
+    },
+    getLink() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • Publication: getLink`);
+      }
+
+      this.show_link_infos = true;
     }
   }
 }
