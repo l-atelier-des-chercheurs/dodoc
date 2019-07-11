@@ -1,6 +1,8 @@
 <template>
   <div class="m_publicationMeta">
-    <div class="label padding-verysmall">
+    <div class="label padding-verysmall"
+      v-if="$root.state.mode !== 'export_publication'"        
+    >
       {{ $t(publication.template) }}
     </div>
 
