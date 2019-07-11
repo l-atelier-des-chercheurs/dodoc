@@ -22,7 +22,7 @@
     <div class="m_publicationview--settings">
 
       <div class=""
-        v-if="$root.state.mode !== 'export_publication' && $root.state.mode !== 'print_publication'"
+        v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode)"
       >
         <input id="settings" type="checkbox" v-model="advanced_options" />
         <label for="settings">{{ $t('settings') }}</label>
@@ -105,7 +105,7 @@
 
 
     <div class="m_publicationSettings"
-      v-if="$root.state.mode !== 'export_publication'"        
+      v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode)"
     >
       <button 
         class="margin-vert-verysmall font-verysmall" 
@@ -229,7 +229,7 @@
           :key="page.id"
         >
           <div class="m_publicationFooter"
-            v-if="$root.state.mode !== 'export_publication' && pageNumber === 0"   
+            v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode) && pageNumber === 0"
           >
             <button type="button" class="buttonLink" @click="insertPageAtIndex(pageNumber)">
               {{ $t('add_a_page_before') }}
@@ -239,7 +239,11 @@
           <div 
             class="m_publicationview--pages--pageContainer"
             :style="setPageContainerProperties(page)"
-            :class="{ 'is--active' : !preview_mode && (pageNumber === page_currently_active && $root.state.mode !== 'export_publication') }"
+            :class="{ 'is--active' : 
+                                  !preview_mode
+                                  && !['export_publication','print_publication','link_publication'].includes($root.state.mode)
+                                  && (pageNumber === page_currently_active) 
+                    }"
           >
             <div
               class="m_page"
@@ -301,7 +305,7 @@
           </div>
 
           <div class="m_publicationFooter"
-            v-if="$root.state.mode !== 'export_publication'"   
+            v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode)"
           >
             <button type="button" class="buttonLink" @click="insertPageAtIndex(pageNumber + 1)">
               {{ $t('add_a_page_here') }}
@@ -315,7 +319,10 @@
       <!-- </transition-group> -->
 
       <div class="m_publicationFooter"
-        v-if="$root.state.mode !== 'export_publication' && pagesWithDefault.length === 0"        
+        v-if="
+          !['export_publication','print_publication','link_publication'].includes($root.state.mode)
+          && pagesWithDefault.length === 0
+        "        
       >
         <button type="button" class="buttonLink" @click="insertPageAtIndex(pageNumber + 1)">
           {{ $t('add_a_page') }}
@@ -324,10 +331,10 @@
 
     </div>
 
-    <div class="m_publicationFooter"
-      v-if="this.$root.state.mode === 'export_publication'"
+    <div class="m_publicationFooter margin-vert-small"
+      v-if="['export_publication','link_publication'].includes($root.state.mode)"
     >
-      <a class="js--openInBrowser" target="_blank" href="https://latelier-des-chercheurs.fr/outils/dodoc">
+      <a class="js--openInBrowser c-noir" target="_blank" href="https://latelier-des-chercheurs.fr/outils/dodoc">
         {{ $t('made_with_dodoc') }}
         <img 
           :src="this.$root.state.mode === 'export_publication' ? './_images/i_logo.svg' : '/images/i_logo.svg'" 
@@ -553,9 +560,6 @@ export default {
         defaultPages.push(page);
       }
       return defaultPages;
-    },
-    url_to_publication() {
-      return `/publication/${this.slugPubliName}`;
     }
   },
   methods: {

@@ -66,7 +66,14 @@
 import qrcode from '@xkeshi/vue-qrcode';
 
 export default {
-  props: ['slugProjectName', 'media'],
+  props: {
+    slugFolderName: String,
+    media: Object, 
+    type: {
+      type: String,
+      default: 'projects'
+    }
+  },
   components: {
     qrcode
   },
@@ -86,10 +93,10 @@ export default {
   },
   computed: {
     nameOfProject() {
-      if(!this.slugProjectName || !this.$root.store.projects[this.slugProjectName].hasOwnProperty('name')) {
+      if(!this.slugFolderName || this.type !== 'projects' || !this.$root.store.projects[this.slugFolderName].hasOwnProperty('name')) {
         return false;
       }
-      return this.$root.store.projects[this.slugProjectName].name;
+      return this.$root.store.projects[this.slugFolderName].name;
     }
   },
   methods: {
@@ -117,8 +124,14 @@ export default {
       }
       // et si on est sur un nom de domaine alors on ne fait rien
 
-      if(this.slugProjectName) {
-        url.pathname = this.slugProjectName;
+      if(this.slugFolderName) {
+
+        if(this.type === 'projects') {
+          url.pathname = this.slugFolderName;
+        } else {
+          url.pathname = this.type + '/' + this.slugFolderName;
+        }
+
         if(this.media) {
           const urlSafe_metaFileName = this.media.metaFileName.replace(/\./g, '*');
           url.pathname += `/media/${urlSafe_metaFileName}`;

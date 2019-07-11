@@ -188,7 +188,7 @@
 
     </template>  
     <template 
-      v-else-if="$root.state.mode === 'export_publication' || $root.state.mode === 'print_publication'"
+      v-else-if="['export_publication','print_publication','link_publication'].includes($root.state.mode)"
     >    
       <PagePublication
         v-if="$root.settings.current_publication.slug !== false"

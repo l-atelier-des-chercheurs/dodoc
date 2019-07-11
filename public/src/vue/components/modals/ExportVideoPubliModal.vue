@@ -122,7 +122,7 @@ export default {
       this.$eventHub.$off('socketio.publication.videoFailedToGenerate');
 
       this.video_request_status = 'generated';
-      this.link_to_video = window.location.origin + '/publication/video/' + videoName;
+      this.link_to_video = window.location.origin + '/publications/video/' + videoName;
       this.exported_video_name = videoName; 
     },
     videoPubliFailedToGenerate() {

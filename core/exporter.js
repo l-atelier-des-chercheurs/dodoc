@@ -212,9 +212,13 @@ module.exports = (function() {
     },
     makePDFForPubli: ({ slugPubliName }) => {
       return new Promise(function(resolve, reject) {
+        dev.logfunction(
+          `EXPORTER — makePDFForPubli with slugPubliName = ${slugPubliName}`
+        );
+
         const urlToPubli = `${
           global.appInfos.homeURL
-        }/publication/${slugPubliName}`;
+        }/publications/print/${slugPubliName}`;
 
         const pdfName =
           slugPubliName +
@@ -240,6 +244,10 @@ module.exports = (function() {
           .then(publiData => {
             publiData = Object.values(publiData)[0];
             fs.mkdirp(cachePath, () => {
+              dev.logverbose(
+                `EXPORTER — makePDFForPubli : created cache folder at path ${cachePath}`
+              );
+
               puppeteer
                 .launch({
                   headless: true,
@@ -492,6 +500,10 @@ module.exports = (function() {
 
   function loadPublication(slugPubliName, pageData) {
     return new Promise((resolve, reject) => {
+      dev.logfunction(
+        `EXPORTER — loadPublication with slugPubliName = ${slugPubliName}`
+      );
+
       let slugFolderName = slugPubliName;
       let type = 'publications';
 

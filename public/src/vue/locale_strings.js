@@ -279,6 +279,9 @@ module.exports = (function() {
         'Pour récupérer un site web contenant cette publication (par exemple pour la diffuser en ligne), cliquez sur le bouton ci-dessous&nbsp;:',
       download_website: 'Télécharger une version web',
       open_in_app: 'Afficher',
+
+      get_a_link: 'Récupérer un lien vers ce document&nbsp;:',
+
       format: 'Format',
       template: 'Gabarit',
       standard: 'Standard',
@@ -639,6 +642,9 @@ module.exports = (function() {
         'To download a website version of this publication (for example, to publish online), click here:',
       download_website: 'Download a website',
       open_in_app: 'Open',
+
+      get_a_link: 'Get a link to this document&nbsp;:',
+
       format: 'Format',
       template: 'Template',
       page_by_page: 'Paged document',
@@ -649,23 +655,25 @@ module.exports = (function() {
       previous_creations: 'Previous creations',
       stopmotion_animation: 'Stopmotion animation',
 
+      page_by_page_summary:
+        'Creates a printable PDF or website to upload online.',
       page_by_page_instructions: `This recipe can be used to create a paged document with a specific size.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, tracts, newspapers, etc.) or a webpage to upload online.`,
       video_assemblage_summary: `Creates a video from images and videos.`,
       video_assemblage_instructions: `This recipe creates a video from multiple source images and videos, one after the other.<br>Accepted medias: images and videos.<br>Will create a new video.`,
       stopmotion_animation_summary:
-        'Creates a video from images showcasing at specific speed.',
+        'Creates a video from images shown for a specific period of time.',
       stopmotion_animation_instructions: `This recipe takes any number of images as inputs and creates a single video with images displayed at a specific speed.<br>Accepted medias: images of any size. The first image will determine if the video will be in portrait or landscape.<br>Will create a new video.`,
-      mix_audio_and_video_summary: 'Add or replace sound on a video.',
+      mix_audio_and_video_summary: 'Add or replace sound that’s on a video.',
       mix_audio_and_video_instructions: `This recipe mixes a video and an audio track to create a new video where they are played at the same time.<br>Accepted medias: a video and a sound track.<br>Will create a new video.`,
-      mix_audio_and_image_summary: 'Add sound on an image.',
+      mix_audio_and_image_summary: 'Add sound to an image to create a video.',
       mix_audio_and_image_instructions: `This recipe mixes an image with an audio track to create a <i>speaking image</i><br>Accepted medias: an image and a sound track.<br>Will create a new video.`,
 
       add_sound_video_file:
         'Add a <b>sound</b> and a <b>video</b> media to create a new video.',
       add_sound_image_file:
         'Add a <b>sound</b> and an <b>image</b> media to create a new video.',
-      mix_audio_and_video: 'Add (or replace) sound on a video',
-      mix_audio_and_image: 'Add sound to an image',
+      mix_audio_and_video: 'Sound + video',
+      mix_audio_and_image: 'Sound + image',
       add_multiple_videos_files:
         'Add multiple <b>video</b> medias to create a new video.',
       add_multiple_images:
