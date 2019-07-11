@@ -324,10 +324,10 @@
 
     </div>
 
-    <div class="m_publicationFooter"
+    <div class="m_publicationFooter margin-vert-small"
       v-if="this.$root.state.mode === 'export_publication'"
     >
-      <a class="js--openInBrowser" target="_blank" href="https://latelier-des-chercheurs.fr/outils/dodoc">
+      <a class="js--openInBrowser c-noir" target="_blank" href="https://latelier-des-chercheurs.fr/outils/dodoc">
         {{ $t('made_with_dodoc') }}
         <img 
           :src="this.$root.state.mode === 'export_publication' ? './_images/i_logo.svg' : '/images/i_logo.svg'" 
@@ -553,9 +553,6 @@ export default {
         defaultPages.push(page);
       }
       return defaultPages;
-    },
-    url_to_publication() {
-      return `/publication/${this.slugPubliName}`;
     }
   },
   methods: {
