@@ -252,7 +252,8 @@ module.exports = (function() {
                 .launch({
                   headless: true,
                   ignoreHTTPSErrors: true,
-                  args: ['--no-sandbox']
+                  args: ['--no-sandbox', '--disable-setuid-sandbox'],
+                  executablePath: '/usr/bin/chromium-browser'
                 })
                 .then(browser => {
                   return browser.newPage();
