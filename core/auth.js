@@ -17,7 +17,8 @@ module.exports = (function() {
     removeNonPublicMediasFromAllFolders: folders_and_medias =>
       removeNonPublicMediasFromAllFolders(folders_and_medias),
 
-    checkForSessionPassword: pwd => checkForSessionPassword(pwd),
+    isSubmittedSessionPasswordValid: pwd =>
+      isSubmittedSessionPasswordValid(pwd),
 
     hashCode: code => hashCode(code)
   };
@@ -200,16 +201,19 @@ module.exports = (function() {
     return JSON.parse(JSON.stringify(filtered_folders_and_medias));
   }
 
-  function checkForSessionPassword(pwd) {
-    dev.logfunction(`AUTH — checkForSessionPassword`);
+  function isSubmittedSessionPasswordValid(pwd) {
+    dev.logfunction(`AUTH — isSubmittedSessionPasswordValid`);
 
     if (!global.session_password || String(global.session_password) === '') {
+      // no session password
       dev.logverbose(`No session password`);
       return true;
-    }
-    if (!!pwd && String(pwd) === String(global.session_password)) {
+    } else if (!!pwd && String(pwd) === String(global.session_password)) {
+      // has session password, is good
+      dev.logverbose(`Has session password, is valid`);
       return true;
     } else {
+      // has session password, is wrong
       dev.logverbose(`Expected pwd: ${global.session_password}`);
       dev.logverbose(`Submitted pwd: ${pwd}`);
     }
