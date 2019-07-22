@@ -74,13 +74,13 @@ module.exports = (function() {
         ).toString('binary');
 
         if (
-          auth.checkForSessionPassword(auth.hashCode(request_session_password))
+          !auth.checkForSessionPassword(auth.hashCode(request_session_password))
         ) {
           dev.error('REMOTE_API — _sessionPasswordCheck : wrong password');
           dev.error(
-            `Submitted: ${auth.hashCode(
+            `Submitted: "${auth.hashCode(
               request_session_password
-            )}\nShould be: ${global.session_password}`
+            )}" — Should be: "${global.session_password}"`
           );
           return res.status(500).send('Wrong password sent!');
         }
