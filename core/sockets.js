@@ -24,7 +24,7 @@ module.exports = (function() {
 
     io.use(function(socket, next) {
       if (
-        auth.checkForSessionPassword(
+        auth.isSubmittedSessionPasswordValid(
           socket.handshake.query.hashed_session_password
         )
       ) {

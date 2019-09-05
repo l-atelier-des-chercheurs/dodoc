@@ -18,10 +18,11 @@ module.exports = function(app) {
   app.get('/', showIndex);
   app.get('/:project', loadFolderOrMedia);
   app.get('/:project/media/:metaFileName', loadFolderOrMedia);
-  app.get('/publication/:publication', printPublication);
-  app.get('/publication/web/:publication', exportPublication);
-  app.get('/publication/print/:pdfName', showPDF);
-  app.get('/publication/video/:videoName', showVideo);
+  app.get('/publications/:publication', linkPublication);
+  app.get('/publications/web/:publication', exportPublication);
+  app.get('/publications/print/:publication', printPublication);
+  app.get('/publications/print/pdf/:pdfName', showPDF);
+  app.get('/publications/video/:videoName', showVideo);
   app.post('/file-upload/:type/:slugFolderName', postFile2);
 
   remote_api.init(app);
@@ -142,6 +143,8 @@ module.exports = function(app) {
   function printPublication(req, res) {
     let slugPubliName = req.param('publication');
     generatePageData(req).then(pageData => {
+      dev.logverbose(`Generated printpublication pageData`);
+      dev.logverbose(`Now getting publication data for ${slugPubliName}`);
       exporter.loadPublication(slugPubliName, pageData).then(pageData => {
         pageData.mode = 'print_publication';
         res.render('index', pageData);
@@ -191,6 +194,16 @@ module.exports = function(app) {
               }
             );
         });
+      });
+    });
+  }
+
+  function linkPublication(req, res) {
+    let slugPubliName = req.param('publication');
+    generatePageData(req).then(pageData => {
+      exporter.loadPublication(slugPubliName, pageData).then(pageData => {
+        pageData.mode = 'link_publication';
+        res.render('index', pageData);
       });
     });
   }

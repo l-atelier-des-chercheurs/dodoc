@@ -167,7 +167,7 @@ export default {
 
       plyr_options: {
         controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-        iconUrl: '/images/plyr.svg'
+        iconUrl: this.$root.state.mode === 'export_publication' ? `./_images/plyr.svg` : `/images/plyr.svg`
       }
     };
   },

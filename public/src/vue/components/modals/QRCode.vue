@@ -11,7 +11,7 @@
     <template slot="preview">
       <div class="margin-medium font-small">
         <CreateQRCode
-          :slugProjectName="slugProjectName"
+          :slugFolderName="slugProjectName"
         />
       </div>
 
