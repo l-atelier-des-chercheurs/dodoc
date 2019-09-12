@@ -1,6 +1,6 @@
 <template>
   <div
-    class="m_mediaPublication"
+    class="m_mediaCarreau"
     ref="media"
     :style="mediaStyles"
     :data-media_type="media.type"
@@ -18,47 +18,15 @@
     }"
   >
     <MediaContent
+      ref="mediaContent"
       :context="preview_mode ? 'full' : 'preview'"
       :slugFolderName="media.slugProjectName"
       :media="media"
       :read_only="read_only"
       :element_width_for_sizes="mediaSize.width * pixelsPerMillimeters * 1.5"
       v-model="media.content"
-      :style="media.publi_meta.custom_css"
     />
-    <p class="mediaCaption">{{ media.caption }}</p>
 
-    <button
-      class="m_mediaPublication--overflowing_sign"
-      type="button"
-      v-if="media.type === 'text' && is_text_overflowing && !preview_mode"
-      @mousedown.stop.prevent="setMediaHeightToContent"
-      @touchstart.stop.prevent="setMediaHeightToContent"
-      :title="$t('text_overflow')"
-      v-tippy="{ 
-        placement : 'top',
-        delay: [600, 0]
-      }"
-    >
-      <span>…</span>
-    </button>
-
-    <div
-      class="m_mediaPublication--edit_styles"
-      v-if="(is_selected || is_hovered || is_touch) && !preview_mode && show_edit_styles_window"
-    >
-      <button
-        type="button"
-        class="m_mediaPublication--edit_styles--helpButton"
-        :title="$t('write_some_CSS_code_for_example')"
-        v-tippy="{ 
-          delay: [600, 0]
-        }"
-      >?</button>
-      <PrismEditor v-model="custom_css" @change="setCSSForMedia" language="css" />
-    </div>
-
-    <!-- <transition name="fade_fast" :duration="150"> -->
     <div
       v-if="(is_selected || is_hovered || is_touch) && !preview_mode"
       class="controlFrame"
@@ -183,21 +151,6 @@
         <button
           type="button"
           class="buttonLink _no_underline"
-          @mousedown.stop.prevent="toggleEditWindow()"
-          @touchstart.stop.prevent="toggleEditWindow()"
-          :class="{ 'is--active' : show_edit_styles_window }"
-          :title="$t('css_settings')"
-          v-tippy="{ 
-            placement : 'top',
-            delay: [600, 0]
-          }"
-        >
-          {{ $t('css') }}
-          <sup v-if="custom_css">*</sup>
-        </button>
-        <button
-          type="button"
-          class="buttonLink _no_underline"
           @mousedown.stop.prevent="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
           @touchstart.stop.prevent="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
           :title="$t('edit_content')"
@@ -263,20 +216,16 @@
 </template>
 <script>
 import MediaContent from "./MediaContent.vue";
-import PrismEditor from "vue-prism-editor";
 import debounce from "debounce";
 
 export default {
   props: {
     media: Object,
     page: Object,
-    read_only: Boolean,
-    preview_mode: Boolean,
-    pixelsPerMillimeters: Number
+    read_only: Boolean
   },
   components: {
-    MediaContent,
-    PrismEditor
+    MediaContent
   },
   data() {
     return {
@@ -288,12 +237,6 @@ export default {
       is_selected: false,
       is_touch: Modernizr.touchevents,
       is_text_overflowing: false,
-
-      custom_css: this.media.publi_meta.hasOwnProperty("custom_css")
-        ? this.media.publi_meta.custom_css
-        : "",
-      show_edit_styles_window: false,
-
       limit_media_to_page: true,
 
       mediaID: `${(Math.random().toString(36) + "00000000000000000").slice(
@@ -323,16 +266,13 @@ export default {
         angle: 0
       },
       rotate: 0,
-      debounce_setCSSForMedia: undefined,
 
       mediaSize: {
         width: 0,
         height: 0,
         pwidth: 0,
         pheight: 0
-      },
-
-      mediaZIndex: 0
+      }
     };
   },
 
@@ -344,7 +284,6 @@ export default {
   beforeDestroy() {
     this.$eventHub.$off("publication.newMediaSelected", this.newMediaSelected);
   },
-
   watch: {
     "media.publi_meta": {
       handler: function() {
@@ -369,59 +308,19 @@ export default {
   computed: {
     mediaStyles() {
       let mediaStyles = `
-        transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
+        transform: translate(${this.mediaPos.x}px, ${this.mediaPos.y}px) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
         height: ${this.mediaSize.height}mm;
         z-index: ${this.mediaZIndex};
       `;
       return mediaStyles;
     }
-    // text_is_overflowing() {
-    //   const el = this.$refs.media;
-    //   return (el.offsetHeight + 15 < el.scrollHeight);
-    // }
   },
   methods: {
     newMediaSelected(mediaID) {
       if (mediaID !== this.mediaID) {
         this.is_selected = false;
       }
-    },
-    editZIndex(val) {
-      this.updateMediaPubliMeta({
-        z_index: this.mediaZIndex + val
-      });
-    },
-    setMediaHeightToContent() {
-      const el = this.$refs.media;
-      let contentHeight =
-        el.firstElementChild.firstElementChild.firstElementChild.offsetHeight;
-      contentHeight = contentHeight / this.pixelsPerMillimeters;
-      contentHeight += this.page.gridstep;
-      contentHeight = this.roundMediaVal(contentHeight);
-      contentHeight = this.limitMediaHeight(contentHeight);
-      this.mediaSize.height = contentHeight;
-
-      this.updateMediaPubliMeta({
-        height: this.mediaSize.height
-      });
-    },
-    toggleEditWindow() {
-      this.show_edit_styles_window = !this.show_edit_styles_window;
-      // this.$eventHub.$emit('publication.setCSSEditWindow', this.media.publi_meta.metaFileName);
-    },
-    setCSSForMedia(event) {
-      if (this.debounce_setCSSForMedia)
-        clearTimeout(this.debounce_setCSSForMedia);
-      this.debounce_setCSSForMedia = setTimeout(() => {
-        const val = {
-          custom_css: this.custom_css
-        };
-        this.$emit("editPubliMedia", {
-          slugMediaName: this.media.publi_meta.metaFileName,
-          val
-        });
-      }, 500);
     },
     updateMediaStyles() {
       this.mediaPos.x =
@@ -464,6 +363,7 @@ export default {
         });
       }
     },
+
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • MediaPublication: updateMediaPubliMeta`);
@@ -473,6 +373,7 @@ export default {
         val
       });
     },
+
     limitMediaXPos(xPos) {
       if (!this.limit_media_to_page) {
         return xPos;
@@ -535,12 +436,6 @@ export default {
           h
         )
       );
-    },
-
-    removePubliMedia() {
-      this.$emit("removePubliMedia", {
-        slugMediaName: this.media.publi_meta.metaFileName
-      });
     },
     resizeMedia(type, origin) {
       if (this.$root.state.dev_mode === "debug") {
@@ -774,6 +669,12 @@ export default {
       window.removeEventListener("touchend", this.dragUp);
 
       return false;
+    },
+
+    removePubliMedia() {
+      this.$emit("removePubliMedia", {
+        slugMediaName: this.media.publi_meta.metaFileName
+      });
     },
     deselectMedia(event) {
       if (this.$root.state.dev_mode === "debug") {
