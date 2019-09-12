@@ -252,7 +252,7 @@ module.exports = (function() {
       number_of_medias: 'Nombre de médias',
       number_of_pages: 'Nombre de pages',
       show_page_numbers:
-        'Afficher le nombre de page dans le coin en bas à droite',
+        'Afficher le numéro de page dans le coin en bas à droite',
 
       export_folder: 'Exporter en format WEB',
       export: 'Exporter',
