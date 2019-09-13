@@ -13,7 +13,7 @@
       'is--rotated' : is_rotated, 
       'is--waitingForServerResponse' : is_waitingForServer,
       'is--hovered' : is_hovered,
-      'is--previewed' :  preview_mode.is_hovered,
+      'is--previewed' :  preview_mode,
       'is--overflowing' : is_text_overflowing
     }"
   >

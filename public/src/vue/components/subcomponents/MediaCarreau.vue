@@ -13,7 +13,7 @@
       'is--rotated' : is_rotated, 
       'is--waitingForServerResponse' : is_waitingForServer,
       'is--hovered' : is_hovered,
-      'is--previewed' :  preview_mode.is_hovered,
+      'is--previewed' :  preview_mode,
       'is--overflowing' : is_text_overflowing
     }"
   >
@@ -23,7 +23,7 @@
       :slugFolderName="media.slugProjectName"
       :media="media"
       :read_only="read_only"
-      :element_width_for_sizes="mediaSize.width * pixelsPerMillimeters * 1.5"
+      :element_width_for_sizes="mediaSize.width"
       v-model="media.content"
     />
 
@@ -82,7 +82,7 @@
     <transition name="fade_fast" :duration="150">
       <div
         v-if="(is_selected || is_hovered || is_touch) && !preview_mode"
-        class="m_mediaPublication--buttons"
+        class="m_mediaCarreau--buttons"
       >
         <button
           type="button"
@@ -293,7 +293,7 @@ export default {
     },
     is_selected: function() {
       if (this.$root.state.dev_mode === "debug") {
-        console.log(`WATCH • MediaPublication: is_selected`);
+        console.log(`WATCH • MediaCarreau: is_selected`);
       }
       if (this.is_selected) {
         window.addEventListener("mousedown", this.deselectMedia);
@@ -366,7 +366,7 @@ export default {
 
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • MediaPublication: updateMediaPubliMeta`);
+        console.log(`METHODS • MediaCarreau: updateMediaPubliMeta`);
       }
       this.$emit("editPubliMedia", {
         slugMediaName: this.media.publi_meta.metaFileName,
@@ -379,7 +379,7 @@ export default {
         return xPos;
       }
       // if (this.$root.state.dev_mode === 'debug') {
-      //   console.log(`METHODS • MediaPublication: limitMediaXPos / xPos = ${xPos}`);
+      //   console.log(`METHODS • MediaCarreau: limitMediaXPos / xPos = ${xPos}`);
       // }
       return Math.max(
         this.page.margin_left,
@@ -398,7 +398,7 @@ export default {
         return yPos;
       }
       // if (this.$root.state.dev_mode === 'debug') {
-      //   console.log(`METHODS • MediaPublication: limitMediaYPos / yPos = ${yPos}`);
+      //   console.log(`METHODS • MediaCarreau: limitMediaYPos / yPos = ${yPos}`);
       // }
       yPos = Math.max(
         this.page.margin_top,
@@ -415,7 +415,7 @@ export default {
         return w;
       }
       // if (this.$root.state.dev_mode === 'debug') {
-      //   console.log(`METHODS • MediaPublication: limitMediaWidth / w = ${w}`);
+      //   console.log(`METHODS • MediaCarreau: limitMediaWidth / w = ${w}`);
       // }
       return Math.max(
         20,
@@ -427,7 +427,7 @@ export default {
         return h;
       }
       // if (this.$root.state.dev_mode === 'debug') {
-      //   console.log(`METHODS • MediaPublication: limitMediaHeight / h = ${h}`);
+      //   console.log(`METHODS • MediaCarreau: limitMediaHeight / h = ${h}`);
       // }
       return Math.max(
         20,
@@ -440,7 +440,7 @@ export default {
     resizeMedia(type, origin) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
-          `METHODS • MediaPublication: resizeMedia with is_resized = ${this.is_resized}`
+          `METHODS • MediaCarreau: resizeMedia with is_resized = ${this.is_resized}`
         );
       }
       if (!this.read_only) {
@@ -456,7 +456,7 @@ export default {
     rotateMedia(type, origin) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
-          `METHODS • MediaPublication: rotateMedia with is_resized = ${this.is_resized}`
+          `METHODS • MediaCarreau: rotateMedia with is_resized = ${this.is_resized}`
         );
       }
       if (!this.read_only) {
@@ -472,31 +472,28 @@ export default {
     resizeMove(event) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
-          `METHODS • MediaPublication: resizeMove with is_resized = ${this.is_resized}`
+          `METHODS • MediaCarreau: resizeMove with is_resized = ${this.is_resized}`
         );
       }
 
       const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
       const pageY = event.pageY ? event.pageY : event.touches[0].pageY;
 
-      const pageX_mm = pageX / this.pixelsPerMillimeters;
-      const pageY_mm = pageY / this.pixelsPerMillimeters;
-
       if (!this.is_resized) {
         this.is_resized = true;
         this.is_selected = true;
-        this.resizeOffset.x = pageX_mm;
-        this.resizeOffset.y = pageY_mm;
+        this.resizeOffset.x = pageX;
+        this.resizeOffset.y = pageY;
         this.mediaSize.pwidth = Number.parseInt(this.mediaSize.width);
         this.mediaSize.pheight = Number.parseInt(this.mediaSize.height);
       } else {
         const deltaX =
-          (pageX_mm - this.resizeOffset.x) / this.$root.settings.publi_zoom;
+          (pageX - this.resizeOffset.x) / this.$root.settings.publi_zoom;
         let newWidth = this.mediaSize.pwidth + deltaX;
         this.mediaSize.width = this.limitMediaWidth(newWidth);
 
         const deltaY =
-          (pageY_mm - this.resizeOffset.y) / this.$root.settings.publi_zoom;
+          (pageY - this.resizeOffset.y) / this.$root.settings.publi_zoom;
         let newHeight = this.mediaSize.pheight + deltaY;
         this.mediaSize.height = this.limitMediaHeight(newHeight);
       }
@@ -504,7 +501,7 @@ export default {
     resizeUp(event) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
-          `METHODS • MediaPublication: resizeUp with is_resized = ${this.is_resized}`
+          `METHODS • MediaCarreau: resizeUp with is_resized = ${this.is_resized}`
         );
       }
       if (this.is_resized) {
@@ -530,7 +527,7 @@ export default {
     rotateMove(event) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
-          `METHODS • MediaPublication: rotateMove with is_rotated = ${this.is_rotated}`
+          `METHODS • MediaCarreau: rotateMove with is_rotated = ${this.is_rotated}`
         );
       }
 
@@ -572,7 +569,7 @@ export default {
     rotateUp(event) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
-          `METHODS • MediaPublication: rotateUp with is_rotated = ${this.is_rotated}`
+          `METHODS • MediaCarreau: rotateUp with is_rotated = ${this.is_rotated}`
         );
       }
       if (this.is_rotated) {
@@ -594,7 +591,7 @@ export default {
     dragMedia(type) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
-          `METHODS • MediaPublication: dragMedia with is_dragged = ${this.is_dragged}`
+          `METHODS • MediaCarreau: dragMedia with is_dragged = ${this.is_dragged}`
         );
       }
       if (!this.read_only) {
@@ -611,33 +608,32 @@ export default {
     dragMove(event) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
-          `METHODS • MediaPublication: dragMove with is_dragged = ${this.is_dragged}`
+          `METHODS • MediaCarreau: dragMove with is_dragged = ${this.is_dragged}`
         );
       }
 
+      debugger;
+
       const pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
       const pageY = !!event.pageY ? event.pageY : event.touches[0].pageY;
-
-      const pageX_mm = pageX / this.pixelsPerMillimeters;
-      const pageY_mm = pageY / this.pixelsPerMillimeters;
 
       if (!this.is_dragged) {
         this.is_dragged = true;
         this.is_selected = true;
 
-        this.dragOffset.x = pageX_mm;
-        this.dragOffset.y = pageY_mm;
+        this.dragOffset.x = pageX;
+        this.dragOffset.y = pageY;
 
         this.mediaPos.px = Number.parseInt(this.mediaPos.x);
         this.mediaPos.py = Number.parseInt(this.mediaPos.y);
       } else {
         const deltaX =
-          (pageX_mm - this.dragOffset.x) / this.$root.settings.publi_zoom;
+          (pageX - this.dragOffset.x) / this.$root.settings.publi_zoom;
         let newX = this.mediaPos.px + deltaX;
         this.mediaPos.x = this.limitMediaXPos(newX);
 
         const deltaY =
-          (pageY_mm - this.dragOffset.y) / this.$root.settings.publi_zoom;
+          (pageY - this.dragOffset.y) / this.$root.settings.publi_zoom;
         let newY = this.mediaPos.py + deltaY;
         this.mediaPos.y = this.limitMediaYPos(newY);
       }
@@ -645,7 +641,7 @@ export default {
     dragUp(event) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
-          `METHODS • MediaPublication: dragUp with is_dragged = ${this.is_dragged}`
+          `METHODS • MediaCarreau: dragUp with is_dragged = ${this.is_dragged}`
         );
       }
       if (this.is_dragged) {
@@ -678,7 +674,7 @@ export default {
     },
     deselectMedia(event) {
       if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • MediaPublication: deselectMedia`);
+        console.log(`METHODS • MediaCarreau: deselectMedia`);
       }
       this.is_selected = false;
       this.$emit("unselected");

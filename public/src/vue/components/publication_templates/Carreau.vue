@@ -98,6 +98,52 @@
           <polygon class="st0" points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	" />
         </svg>
       </button>
+      <button
+        class="margin-vert-verysmall font-verysmall"
+        :disabled="zoom === zoom_max"
+        @mousedown.stop.prevent="zoom += 0.1"
+        @touchstart.stop.prevent="zoom += 0.1"
+      >
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+          x="0px"
+          y="0px"
+          width="182.5px"
+          height="188.1px"
+          viewBox="0 0 182.5 188.1"
+          style="enable-background:new 0 0 182.5 188.1;"
+          xml:space="preserve"
+        >
+          <defs />
+          <path d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z" />
+        </svg>
+      </button>
+      <button
+        class="margin-vert-verysmall font-verysmall"
+        :disabled="zoom === zoom_min"
+        @mousedown.stop.prevent="zoom -= 0.1"
+        @touchstart.stop.prevent="zoom -= 0.1"
+      >
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+          x="0px"
+          y="0px"
+          width="155.6px"
+          height="21.2px"
+          viewBox="0 0 155.6 21.2"
+          style="enable-background:new 0 0 155.6 21.2;"
+          xml:space="preserve"
+        >
+          <defs />
+          <path d="M155.6,0v21.2H0V0H155.6z" />
+        </svg>
+      </button>
     </div>
 
     <div class="m_carreauPublication">
@@ -107,22 +153,27 @@
         </p>
       </div>-->
 
-      <div class="m_carreauPublication--container">
-        <transition-group name="list-complete" :duration="300">
-          <div
-            class
-            v-for="(media, index) in publication_medias"
-            :key="media.publi_meta.metaFileName"
-          >
-            <MediaCarreau
-              :media="media"
-              :page="page"
-              :preview_mode="preview_mode"
-              :read_only="read_only"
-              @removePubliMedia="values => { removePubliMedia(values) }"
-              @editPubliMedia="values => { editPubliMedia(values) }"
-            />
-            <!-- <div class="m_videoPublication--media--moveItemButtons">
+      <div
+        class="m_carreauPublication--container"
+        ref="carreau_container"
+        :style="carreauContainerProperties"
+      >
+        <div class="m_carreauPublication--container--content" :style="carreauContentProperties">
+          <transition-group name="list-complete" :duration="300">
+            <div
+              class
+              v-for="(media, index) in publication_medias"
+              :key="media.publi_meta.metaFileName"
+            >
+              <MediaCarreau
+                :media="media"
+                :page="page"
+                :preview_mode="preview_mode"
+                :read_only="read_only"
+                @removePubliMedia="values => { removePubliMedia(values) }"
+                @editPubliMedia="values => { editPubliMedia(values) }"
+              />
+              <!-- <div class="m_videoPublication--media--moveItemButtons">
             <button
               type="button"
               class="m_videoPublication--media--moveItemButton--before"
@@ -139,9 +190,10 @@
             >
               <img src="/images/i_arrow_right.svg" draggable="false" />
             </button>
-            </div>-->
-          </div>
-        </transition-group>
+              </div>-->
+            </div>
+          </transition-group>
+        </div>
       </div>
     </div>
   </div>
@@ -178,10 +230,20 @@ export default {
         margin_top: 0,
         margin_bottom: 0,
         gridstep: 1
-      }
+      },
+
+      preview_mode: this.$root.state.mode !== "live",
+      fullscreen_mode: false,
+      zoom: 1,
+      zoom_min: 0.4,
+      zoom_max: 1.4,
+
+      has_media_selected: false
     };
   },
-  created() {},
+  created() {
+    this.$root.setPublicationZoom(this.zoom);
+  },
   mounted() {
     this.$root.settings.current_publication.accepted_media_type = [
       "video",
@@ -237,9 +299,30 @@ export default {
           ? this.publication.medias_slugs
           : [];
       this.updateMediasPubli();
+    },
+    zoom: function() {
+      this.zoom = Math.min(this.zoom_max, Math.max(this.zoom_min, this.zoom));
+      this.$root.setPublicationZoom(this.zoom);
+    },
+    "$root.settings.publi_zoom": function() {
+      this.zoom = this.$root.settings.publi_zoom;
     }
   },
-  computed: {},
+  computed: {
+    carreauContainerProperties() {
+      return `
+        width: ${this.page.width * this.$root.settings.publi_zoom}px; 
+        height: ${this.page.height * this.$root.settings.publi_zoom}px;      
+      `;
+    },
+    carreauContentProperties() {
+      return `
+          width: ${this.page.width}px; 
+          height: ${this.page.height}px;
+          transform: scale(${this.$root.settings.publi_zoom});
+        `;
+    }
+  },
   methods: {
     addMedia({ slugProjectName, metaFileName }) {
       if (this.$root.state.dev_mode === "debug") {
@@ -444,7 +527,7 @@ export default {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • PagePublication: toggleFullscreen`);
       }
-      const docElem = this.$refs.panel;
+      const docElem = this.$refs.carreau_container;
       if (this.fullscreen_mode === false) {
         if (!!docElem.requestFullscreen) {
           // W3C API

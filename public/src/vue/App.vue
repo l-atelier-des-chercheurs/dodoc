@@ -134,8 +134,8 @@
                     :publication="$root.store.publications[$root.settings.current_publication.slug]"
                     :read_only="!$root.state.connected"
                   />
-                  <PagePublication
-                    v-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'page_by_page'"
+                  <Carreau
+                    v-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'carreau'"
                     :slugPubliName="$root.settings.current_publication.slug"
                     :publication="$root.store.publications[$root.settings.current_publication.slug]"
                     :read_only="!$root.state.connected"
@@ -213,6 +213,7 @@ import MediaContent from "./components/subcomponents/MediaContent.vue";
 import Publications from "./Publications.vue";
 
 import PagePublication from "./components/publication_templates/PagePublication.vue";
+import Carreau from "./components/publication_templates/Carreau.vue";
 import VideoPublication from "./components/publication_templates/VideoPublication.vue";
 import DrawingPad from "./components/publication_templates/DrawingPad.vue";
 import StopmotionAnimation from "./components/publication_templates/StopmotionAnimation.vue";
@@ -234,6 +235,7 @@ export default {
     SessionPassword,
     Publications,
     PagePublication,
+    Carreau,
     VideoPublication,
     DrawingPad,
     StopmotionAnimation,
