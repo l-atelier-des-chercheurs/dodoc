@@ -24,6 +24,7 @@
 
       <div
         class="m_carreauPublication--container"
+        :class="{ 'is--fullscreen' : fullscreen_mode }"
         ref="carreau_container"
         :style="carreauContainerProperties"
       >
@@ -171,12 +172,9 @@
         </div>
 
         <div class="m_carreauPublication--container--content" :style="carreauContentProperties">
-          <transition-group name="list-complete" :duration="300">
-            <div
-              class
-              v-for="(media, index) in publication_medias"
-              :key="media.publi_meta.metaFileName"
-            >
+          <transition-group name="list-complete" :duration="300" tag="div">
+            <div v-for="(media, index) in publication_medias" :key="media.publi_meta.metaFileName">
+              <!-- style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%;" -->
               <MediaCarreau
                 :media="media"
                 :page="page"
@@ -236,7 +234,7 @@ export default {
       medias_slugs_in_order: [],
 
       page: {
-        ratio: 0.4,
+        ratio: 0.5625,
         width: 0,
         height: 0,
         // in %
@@ -337,9 +335,7 @@ export default {
     carreauContainerProperties() {
       return `
         width: ${100 * this.$root.settings.publi_zoom}%; 
-        height: ${100 *
-          this.page.ratio *
-          this.$root.settings.publi_zoom}%;      
+        height: ${this.page.height * this.$root.settings.publi_zoom}px;      
       `;
     },
     carreauContentProperties() {
@@ -381,7 +377,10 @@ export default {
         additionalMeta: {
           slugProjectName,
           desired_filename,
-          slugMediaName: metaFileName
+          slugMediaName: metaFileName,
+          x: Math.random().toFixed(2) / 3,
+          y: Math.random().toFixed(2) / 3,
+          rotate: (Math.random().toFixed(2) - 0.5) * 5
         }
       });
     },

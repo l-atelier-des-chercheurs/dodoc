@@ -3661,8 +3661,13 @@ small {
 
   .m_carreauPublication--container {
     position: relative;
+    overflow-y: visible;
+
     // background is visible when fullscreen on a screen with a different ratio
     background-color: white;
+
+    &.is--fullscreen {
+    }
 
     .m_carreauPublication--container--content {
       position: relative;
@@ -3930,6 +3935,8 @@ small {
 
 .m_mediaCarreau {
   position: absolute;
+  top: 0;
+  left: 0;
 
   -moz-user-select: none;
   user-select: none;
@@ -3940,7 +3947,7 @@ small {
 
   box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.3);
 
-  transform-origin: top left;
+  transform-origin: center center;
   transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--hovered {
@@ -3948,7 +3955,7 @@ small {
   &.is--dragged,
   &.is--rotated {
     transition: none ease-out;
-    z-index: 2;
+    // z-index: 2;
   }
   &.is--resized {
     transition: none ease-out;
@@ -3978,13 +3985,14 @@ small {
       position: absolute;
       top: 0;
       right: 0;
+      z-index: 1;
       background-color: rgba(255, 255, 255, 0.4);
     }
   }
 
   .controlFrame {
     @t-borderSize: 2px;
-    @t-handleSize: 60px;
+    @t-handleSize: 24px;
 
     position: absolute;
     top: -@t-borderSize / 2;
@@ -3998,6 +4006,10 @@ small {
     // border-style: solid;
     cursor: pointer;
     background: transparent;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
 
     // transition: border .2s, background 2s;
     // transition: all 1s;
@@ -4023,7 +4035,6 @@ small {
     }
 
     .handle {
-      position: absolute;
       z-index: 1;
       width: @t-handleSize;
       height: @t-handleSize;
@@ -4034,14 +4045,11 @@ small {
 
       border-radius: 50%;
 
-      display: flex;
-      justify-content: flex-end;
-      align-items: flex-end;
       .margin-verysmall;
 
       svg {
-        width: 24px;
-        height: 24px;
+        width: @t-handleSize;
+        height: @t-handleSize;
         padding: 6px;
         // border: @t-borderSize solid currentColor;
         // border-style: inherit;
@@ -4054,8 +4062,6 @@ small {
       }
     }
     .handle_resizeMedia {
-      bottom: 0;
-      right: 0;
       cursor: nwse-resize;
       color: @c-noir;
 
@@ -4066,8 +4072,6 @@ small {
       }
     }
     .handle_rotateMedia {
-      top: -@t-handleSize / 2;
-      right: -@t-handleSize / 2;
       cursor: nwse-rotate;
       color: @c-noir;
 
