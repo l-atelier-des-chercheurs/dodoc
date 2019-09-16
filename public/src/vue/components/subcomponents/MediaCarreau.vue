@@ -24,6 +24,7 @@
       :media="media"
       :read_only="read_only"
       :element_width_for_sizes="media_width"
+      :style="`opacity: ${opacity}`"
       v-model="media.content"
     />
     <div
@@ -227,7 +228,8 @@ export default {
     media: Object,
     page: Object,
     preview_mode: Boolean,
-    read_only: Boolean
+    read_only: Boolean,
+    opacity: Number
   },
   components: {
     MediaContent
