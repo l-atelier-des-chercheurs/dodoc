@@ -172,8 +172,12 @@
         </div>
 
         <div class="m_carreauPublication--container--content" :style="carreauContentProperties">
-          <transition-group name="list-complete" :duration="300" tag="div">
-            <div v-for="(media, index) in publication_medias" :key="media.publi_meta.metaFileName">
+          <h2 class="m_carreauPublication--container--content--title">{{ publication.name }}</h2>
+          <transition-group name="fade_fast" :duration="300" tag="div">
+            <div
+              v-for="(media, index) in last_nth_of_publication_medias"
+              :key="media.publi_meta.metaFileName"
+            >
               <!-- style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%;" -->
               <MediaCarreau
                 :media="media"
@@ -344,6 +348,9 @@ export default {
         height: ${this.page.height}px;      
           transform: scale(${this.$root.settings.publi_zoom});
         `;
+    },
+    last_nth_of_publication_medias() {
+      return this.publication_medias.slice(-10);
     }
   },
   methods: {
@@ -380,6 +387,7 @@ export default {
           slugMediaName: metaFileName,
           x: Math.random().toFixed(2) / 3,
           y: Math.random().toFixed(2) / 3,
+          width: 0.3 + Math.random().toFixed(2) / 3,
           rotate: (Math.random().toFixed(2) - 0.5) * 5
         }
       });
