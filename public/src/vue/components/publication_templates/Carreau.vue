@@ -236,7 +236,7 @@ export default {
       medias_slugs_in_order: [],
 
       page: {
-        ratio: 0.5625,
+        ratio: 0.4,
         width: 0,
         height: 0,
         // in %

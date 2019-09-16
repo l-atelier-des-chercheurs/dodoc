@@ -19,7 +19,7 @@
   >
     <MediaContent
       ref="mediaContent"
-      :context="preview_mode ? 'full' : 'preview'"
+      :context="'full'"
       :slugFolderName="media.slugProjectName"
       :media="media"
       :read_only="read_only"
@@ -27,7 +27,7 @@
       v-model="media.content"
     />
     <div
-      v-if="(is_selected || is_hovered || is_touch) && !preview_mode"
+      v-if="(is_selected || is_hovered || is_touch)"
       class="controlFrame"
       @mousedown.stop.prevent="dragMedia('mouse')"
       @touchstart.stop.prevent="dragMedia('touch')"
@@ -79,10 +79,7 @@
     <!-- </transition> -->
 
     <transition name="fade_fast" :duration="150">
-      <div
-        v-if="(is_selected || is_hovered || is_touch) && !preview_mode"
-        class="m_mediaCarreau--buttons"
-      >
+      <div v-if="(is_selected || is_hovered || is_touch)" class="m_mediaCarreau--buttons">
         <!-- <button
           type="button"
           class="buttonLink _no_underline"
