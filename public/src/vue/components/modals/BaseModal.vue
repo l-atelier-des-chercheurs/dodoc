@@ -1,6 +1,6 @@
 <template>
   <portal to="modal_container">
-    <div 
+    <div
       class="m_modal--mask"
       :class="[ 
         'typeOfModal-' + typeOfModal, 
@@ -10,7 +10,8 @@
       @mousedown.self="/* closeModal */"
       :style="`height: ${$root.settings.windowHeight}px`"
     >
-      <div class="m_modal--container"
+      <div
+        class="m_modal--container"
         :class="[
           'color-' + backgroundColor, 
           { 'is_invisible' : !showModal },
@@ -18,28 +19,20 @@
         ]"
         @keyup.ctrl.enter="$emit('submit')"
       >
-
-        <div
-          class="m_modal--container--content"
-          ref="modalContent"
-        >
+        <div class="m_modal--container--content" ref="modalContent">
           <div v-if="!!this.$slots['preview']" class="m_modal--preview">
             <!-- if there is no sidebar, output header here -->
             <template v-if="!this.$slots['sidebar']">
               <div class="m_modal--header">
                 <h3 class="margin-none">
-                  <slot name="header">
-                      default header
-                  </slot>
+                  <slot name="header">default header</slot>
                 </h3>
               </div>
             </template>
 
-            <slot name="preview">
-              default preview
-            </slot>
+            <slot name="preview">default preview</slot>
           </div>
-          
+
           <form
             class="m_modal--sidebar"
             :class="{ 'is_collapsed' : !show_sidebar }"
@@ -47,33 +40,25 @@
             v-if="!!this.$slots['sidebar'] && !is_minimized"
             ref="form"
           >
-            <button type="button" 
+            <button
+              type="button"
               class="m_modal--sidebar--toggle"
               @click="toggleSidebar"
               v-if="can_minimize"
-            > 
-              &#x2630;
-            </button>
+            >&#x2630;</button>
 
             <template v-if="!!this.$slots['sidebar'] && show_sidebar && !is_minimized">
               <div class="m_modal--header">
                 <h3 class="margin-none">
-                  <slot name="header">
-                      default header
-                  </slot>
+                  <slot name="header">default header</slot>
                 </h3>
               </div>
 
               <div class="m_modal--metaOptions">
-                <slot name="sidebar">
-                  default sidebar
-                </slot>
+                <slot name="sidebar">default sidebar</slot>
               </div>
 
-              <div 
-                v-if="!!this.$slots['submit_button']"
-                class="m_modal--buttons"
-              >
+              <div v-if="!!this.$slots['submit_button']" class="m_modal--buttons">
                 <button
                   type="submit"
                   :disabled="read_only"
@@ -81,32 +66,23 @@
                 >
                   <img src="/images/i_enregistre.svg" draggable="false" />
                   <span class="text-cap font-verysmall">
-                    <slot name="submit_button">
-                      {{ $t('save') }}
-                    </slot>
+                    <slot name="submit_button">{{ $t('save') }}</slot>
                   </span>
                 </button>
               </div>
             </template>
           </form>
 
-          <form 
-            v-if="!!this.$slots['buttons']" 
+          <form
+            v-if="!!this.$slots['buttons']"
             class="m_modal--buttons"
             v-on:submit.prevent="$emit('submit')"
             ref="form"
           >
-
-            <button
-              type="button"
-              @click="closeModal"
-              class="button button-bg_rounded bg-orange"
-            >
+            <button type="button" @click="closeModal" class="button button-bg_rounded bg-orange">
               <img src="/images/i_clear.svg" draggable="false" />
               <span class="text-cap font-verysmall">
-                <slot name="cancel_button">
-                  {{ $t('cancel') }}
-                </slot>
+                <slot name="cancel_button">{{ $t('cancel') }}</slot>
               </span>
             </button>
 
@@ -117,16 +93,11 @@
             >
               <img src="/images/i_enregistre.svg" draggable="false" />
               <span class="text-cap font-verysmall">
-                <slot name="submit_button">
-                  {{ $t('save') }}
-                </slot>
+                <slot name="submit_button">{{ $t('save') }}</slot>
               </span>
             </button>
-
           </form>
-
         </div>
-
       </div>
 
       <transition name="fade" :duration="600">
@@ -135,7 +106,7 @@
           @click="closeModal"
           v-if="showModal && !is_minimized && !prevent_close"
         >
-          <img src="/images/i_close_sansfond.svg" draggable="false">
+          <img src="/images/i_close_sansfond.svg" draggable="false" />
         </button>
       </transition>
 
@@ -145,13 +116,13 @@
           @click="toggleMinimize"
           v-if="showModal && can_minimize"
           :class="{ 'is_minimized' : is_minimized }"
-          :title="$t('minimize_media')" 
-          v-tippy='{
-            placement : "right",
+          :title="$t('minimize_media')"
+          v-tippy="{
+            placement : 'right',
             delay: [600, 0]
-          }'
+          }"
         >
-          <img src="/images/i_minimize.svg" draggable="false">
+          <img src="/images/i_minimize.svg" draggable="false" />
         </button>
       </transition>
 
@@ -160,13 +131,13 @@
           class="button-round bg-blanc m_modal--nav_left padding-verysmall"
           @click="prevMedia()"
           v-if="showModal && media_navigation && !is_minimized"
-          :title="$t('previous_media')" 
-          v-tippy='{
-            placement : "left",
+          :title="$t('previous_media')"
+          v-tippy="{
+            placement : 'left',
             delay: [600, 0]
-          }'
+          }"
         >
-          <img src="/images/i_arrow_left.svg" draggable="false">
+          <img src="/images/i_arrow_left.svg" draggable="false" />
         </button>
       </transition>
 
@@ -175,27 +146,26 @@
           class="button-round bg-blanc m_modal--nav_right padding-verysmall"
           @click="nextMedia()"
           v-if="showModal && media_navigation && !is_minimized"
-          :title="$t('next_media')" 
-          v-tippy='{
-            placement : "right",
+          :title="$t('next_media')"
+          v-tippy="{
+            placement : 'right',
             delay: [600, 0]
-          }'
+          }"
         >
-          <img src="/images/i_arrow_right.svg" draggable="false">
+          <img src="/images/i_arrow_right.svg" draggable="false" />
         </button>
       </transition>
-
     </div>
   </portal>
 </template>
 
 <script>
 export default {
-  name: 'BaseModal',
+  name: "BaseModal",
   props: {
     backgroundColor: {
       type: String,
-      default: 'white'
+      default: "white"
     },
     read_only: {
       type: Boolean,
@@ -203,7 +173,7 @@ export default {
     },
     typeOfModal: {
       type: String,
-      default: 'EditMeta'
+      default: "EditMeta"
     },
     askBeforeClosingModal: {
       type: Boolean,
@@ -238,133 +208,148 @@ export default {
     return {
       showModal: false,
       windowHeight: window.innerHeight,
-      has_confirm_close_modal_open: false,
+      has_confirm_close_modal_open: false
     };
   },
   mounted: function() {
-    console.log(`MOUNTED • BaseModal`)
+    console.log(`MOUNTED • BaseModal`);
 
     setTimeout(() => {
       this.showModal = true;
 
       if (Modernizr !== undefined && !Modernizr.touchevents) {
-        if(this.$refs.modalContent && this.$refs.modalContent.querySelector('[autofocus]')) {
-          const el = this.$refs.modalContent.querySelector('[autofocus]');
-          if(el.classList.contains('quillWrapper')) {
-            el.querySelector('.ql-editor').focus();
+        if (
+          this.$refs.modalContent &&
+          this.$refs.modalContent.querySelector("[autofocus]")
+        ) {
+          const el = this.$refs.modalContent.querySelector("[autofocus]");
+          if (el.classList.contains("quillWrapper")) {
+            el.querySelector(".ql-editor").focus();
           } else {
             el.focus();
           }
 
-          if(el.hasAttribute('autoselect')) {
+          if (el.hasAttribute("autoselect")) {
             el.select();
           }
         }
 
-        if (this.isFile && this.$refs.form){
-          this.$refs.form.setAttribute('enctype', 'multipart/form-data');
+        if (this.isFile && this.$refs.form) {
+          this.$refs.form.setAttribute("enctype", "multipart/form-data");
         }
       }
-    },100);
+    }, 100);
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     modalKeyListener: function(event) {
-      if (window.state.dev_mode === 'debug') {
-        console.log('METHODS • BaseModal: modalKeyListener');
-      }
-      
-      if (event.key === 'Escape') {
-        if(!this.has_confirm_close_modal_open) {
-          this.closeModal();
-        }
-        return
+      if (window.state.dev_mode === "debug") {
+        console.log("METHODS • BaseModal: modalKeyListener");
       }
 
-      if (event.target.tagName.toLowerCase() === 'input' 
-        || event.target.tagName.toLowerCase() === 'textarea'
-        || event.target.className.includes('ql-editor')
+      if (event.key === "Escape") {
+        if (!this.has_confirm_close_modal_open) {
+          this.closeModal();
+        }
+        return;
+      }
+
+      if (
+        event.target.tagName.toLowerCase() === "input" ||
+        event.target.tagName.toLowerCase() === "textarea" ||
+        event.target.className.includes("ql-editor")
       ) {
         return;
-      }  
-      
-      if (event.key === 'ArrowRight') {
+      }
+
+      if (event.key === "ArrowRight") {
         this.nextMedia();
         return;
       }
-      if (event.key === 'ArrowLeft') {
+      if (event.key === "ArrowLeft") {
         this.prevMedia();
         return;
       }
     },
     closeModal: function() {
-      console.log(`METHODS • BaseModal: closeModal with askBeforeClosingModal = ${this.askBeforeClosingModal}`);
+      console.log(
+        `METHODS • BaseModal: closeModal with askBeforeClosingModal = ${this.askBeforeClosingModal}`
+      );
 
-      if(this.prevent_close) return;
+      if (this.prevent_close) return;
 
-      if(this.askBeforeClosingModal) {
+      if (this.askBeforeClosingModal) {
         this.has_confirm_close_modal_open = true;
         this.$alertify
-          .okBtn(this.$t('save_changes'))
-          .cancelBtn(this.$t('cancel'))        
-          .confirm(this.$t('changes_not_saved_sureToCloseModal'), 
-          () => {
-            this.$emit('submit');
-            this.showModal = false;
-            setTimeout(() => {
-              this.$emit('close');
-            }, 400);
-          },
-          () => {
-            this.showModal = false;
-            setTimeout(() => {
-              this.$emit('close');
-            }, 400);
-          });
+          .okBtn(this.$t("save_changes"))
+          .cancelBtn(this.$t("cancel"))
+          .confirm(
+            this.$t("changes_not_saved_sureToCloseModal"),
+            () => {
+              this.$emit("submit");
+              this.showModal = false;
+              setTimeout(() => {
+                this.$emit("close");
+              }, 400);
+            },
+            () => {
+              this.showModal = false;
+              setTimeout(() => {
+                this.$emit("close");
+              }, 400);
+            }
+          );
       } else {
         this.showModal = false;
         setTimeout(() => {
-          this.$emit('close');
+          this.$emit("close");
         }, 400);
       }
     },
     prevMedia: function() {
-      console.log(`METHODS • BaseModal: prevMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
-      if(this.askBeforeClosingModal) {
+      console.log(
+        `METHODS • BaseModal: prevMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`
+      );
+      if (this.askBeforeClosingModal) {
         this.has_confirm_close_modal_open = true;
         this.$alertify
-          .okBtn(this.$t('save_changes'))
-          .cancelBtn(this.$t('close_the_window'))        
-          .confirm(this.$t('changes_not_saved_sureToCloseModal'), 
-          () => {
-            this.$emit('submit');
-            this.$eventHub.$emit('modal.prev_media');
-          },
-          () => {
-            this.$eventHub.$emit('modal.prev_media');
-          });        
+          .okBtn(this.$t("save_changes"))
+          .cancelBtn(this.$t("close_the_window"))
+          .confirm(
+            this.$t("changes_not_saved_sureToCloseModal"),
+            () => {
+              this.$emit("submit");
+              this.$eventHub.$emit("modal.prev_media");
+            },
+            () => {
+              this.$eventHub.$emit("modal.prev_media");
+            }
+          );
       } else {
-        this.$eventHub.$emit('modal.prev_media');
+        this.$eventHub.$emit("modal.prev_media");
       }
     },
     nextMedia: function() {
-      console.log(`METHODS • BaseModal: nextMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
-      if(this.askBeforeClosingModal) {
+      console.log(
+        `METHODS • BaseModal: nextMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`
+      );
+      if (this.askBeforeClosingModal) {
         this.has_confirm_close_modal_open = true;
         this.$alertify
-          .okBtn(this.$t('save_changes'))
-          .cancelBtn(this.$t('cancel'))        
-          .confirm(this.$t('changes_not_saved_sureToCloseModal'), 
-          () => {
-            this.$emit('submit');
-            this.$eventHub.$emit('modal.next_media');
-          },
-          () => {
-            this.$eventHub.$emit('modal.next_media');
-          });        
+          .okBtn(this.$t("save_changes"))
+          .cancelBtn(this.$t("cancel"))
+          .confirm(
+            this.$t("changes_not_saved_sureToCloseModal"),
+            () => {
+              this.$emit("submit");
+              this.$eventHub.$emit("modal.next_media");
+            },
+            () => {
+              this.$eventHub.$emit("modal.next_media");
+            }
+          );
       } else {
-        this.$eventHub.$emit('modal.next_media');
+        this.$eventHub.$emit("modal.next_media");
       }
     },
     toggleMinimize: function() {
@@ -373,17 +358,18 @@ export default {
     },
     toggleSidebar: function() {
       console.log(`METHODS • BaseModal: toggleSidebar`);
-      this.$root.media_modal.show_sidebar = !this.$root.media_modal.show_sidebar;
+      this.$root.media_modal.show_sidebar = !this.$root.media_modal
+        .show_sidebar;
     }
   },
   created: function() {
-    document.addEventListener('keyup', this.modalKeyListener);
-    document.body.classList.add('has_modal_opened');
+    document.addEventListener("keyup", this.modalKeyListener);
+    document.body.classList.add("has_modal_opened");
     this.$root.settings.has_modal_opened = true;
   },
   destroyed: function() {
-    document.removeEventListener('keyup', this.modalKeyListener);
-    document.body.classList.remove('has_modal_opened');
+    document.removeEventListener("keyup", this.modalKeyListener);
+    document.body.classList.remove("has_modal_opened");
     this.$root.settings.has_modal_opened = false;
   }
 };

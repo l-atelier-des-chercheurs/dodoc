@@ -252,7 +252,7 @@ module.exports = (function() {
       number_of_medias: 'Nombre de médias',
       number_of_pages: 'Nombre de pages',
       show_page_numbers:
-        'Afficher le nombre de page dans le coin en bas à droite',
+        'Afficher le numéro de page dans le coin en bas à droite',
 
       export_folder: 'Exporter en format WEB',
       export: 'Exporter',
@@ -288,6 +288,7 @@ module.exports = (function() {
       'feuille de choux': 'Feuille de Choux',
       'human tech days': 'Human Tech Days',
       page_by_page: 'Document page à page',
+      carreau: 'Carreau',
       video_assemblage: 'Montage vidéo',
       stopmotion_animation: 'Animation image par image',
       web: 'Page web',
