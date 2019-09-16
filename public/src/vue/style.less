@@ -3661,8 +3661,7 @@ small {
 
   .m_carreauPublication--container {
     position: relative;
-    // background is visible when fullscreen on a screen with a different ratio
-    background-color: white;
+    background-color: @c-creme;
 
     .m_carreauPublication--container--content {
       position: relative;
@@ -3994,8 +3993,8 @@ small {
     z-index: 1;
 
     color: #000;
-    // border: @t-borderSize solid currentColor;
-    // border-style: solid;
+    border: @t-borderSize solid currentColor;
+    border-style: solid;
     cursor: pointer;
     background: transparent;
 
@@ -4006,16 +4005,16 @@ small {
     cursor: -moz-grab;
 
     .is--hovered& {
-      color: @c-noir;
+      color: @c-orange;
     }
     .is--dragged& {
-      color: @c-bleuvert;
+      color: @c-orange;
       cursor: -webkit-grabbing;
       cursor: -moz-grabbing;
     }
     .is--hovered&,
     .is--dragged& {
-      // background-color: fade(@c-orange, 10%);
+      background-color: fade(@c-orange, 10%);
     }
 
     .is--waitingForServerResponse& {
@@ -4035,22 +4034,19 @@ small {
       border-radius: 50%;
 
       display: flex;
-      justify-content: flex-end;
-      align-items: flex-end;
-      .margin-verysmall;
+      justify-content: center;
+      align-items: center;
 
       svg {
         width: 24px;
         height: 24px;
-        padding: 6px;
-        // border: @t-borderSize solid currentColor;
-        // border-style: inherit;
+        padding: 4px;
+        border: @t-borderSize solid currentColor;
+        border-style: inherit;
         border-radius: 50%;
         overflow: visible;
-        background-color: rgba(255, 255, 255, 0.4);
-        fill: @c-noir;
 
-        // background-color: @c-orange;
+        background-color: @c-orange;
       }
     }
     .handle_resizeMedia {
