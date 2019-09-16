@@ -187,6 +187,7 @@
                 @removePubliMedia="values => { removePubliMedia(values) }"
                 @editPubliMedia="values => { editPubliMedia(values) }"
               />
+              <!-- :opacity="1.5 - (last_nth_of_publication_medias.length - index) / 8" -->
               <!-- <div class="m_videoPublication--media--moveItemButtons">
             <button
               type="button"
