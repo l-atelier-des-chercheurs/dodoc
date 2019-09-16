@@ -26,7 +26,6 @@
       :element_width_for_sizes="mediaSize.width"
       v-model="media.content"
     />
-
     <div
       v-if="(is_selected || is_hovered || is_touch) && !preview_mode"
       class="controlFrame"
@@ -84,7 +83,7 @@
         v-if="(is_selected || is_hovered || is_touch) && !preview_mode"
         class="m_mediaCarreau--buttons"
       >
-        <button
+        <!-- <button
           type="button"
           class="buttonLink _no_underline"
           @mousedown.stop.prevent="editZIndex(+1)"
@@ -114,9 +113,8 @@
               L20.2,0l20.2,18.1L35,24.4z"
             />
           </svg>
-        </button>
-
-        <button
+        </button>-->
+        <!-- <button
           type="button"
           class="buttonLink _no_underline"
           @mousedown.stop.prevent="editZIndex(-1)"
@@ -146,9 +144,8 @@
               L20.2,59.6L0,41.5L5.3,35.2z"
             />
           </svg>
-        </button>
-
-        <button
+        </button>-->
+        <!-- <button
           type="button"
           class="buttonLink _no_underline"
           @mousedown.stop.prevent="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
@@ -178,11 +175,10 @@
               L19.1,91.5z"
             />
           </svg>
-          <!-- {{ $t('edit') }} -->
-        </button>
+        </button>-->
         <button
           type="button"
-          class="buttonLink _no_underline"
+          class="m_mediaCarreau--buttons--removeMedia buttonLink _no_underline"
           @click.stop.prevent="removePubliMedia()"
           :title="$t('withdraw')"
           v-tippy="{ 
@@ -222,6 +218,7 @@ export default {
   props: {
     media: Object,
     page: Object,
+    preview_mode: Boolean,
     read_only: Boolean
   },
   components: {
@@ -248,9 +245,11 @@ export default {
         x: 0,
         y: 0
       },
+
+      // beware these are percents !
       mediaPos: {
-        x: 0,
-        y: 0,
+        x: 0.25,
+        y: 0.25,
         px: 0,
         py: 0
       },
@@ -308,12 +307,22 @@ export default {
   computed: {
     mediaStyles() {
       let mediaStyles = `
-        transform: translate(${this.mediaPos.x}px, ${this.mediaPos.y}px) rotate(${this.rotate}deg);
-        width: ${this.mediaSize.width}mm;
-        height: ${this.mediaSize.height}mm;
-        z-index: ${this.mediaZIndex};
+        transform: translate(${this.page.width * this.mediaPos.x}px, ${this.page
+        .height * this.mediaPos.y}px) rotate(${this.rotate * 0}deg);
+        width: ${this.media_width}px;
+        height: ${this.media_height}px;
       `;
       return mediaStyles;
+    },
+
+    media_width() {
+      return this.page.width * this.mediaSize.width;
+    },
+    media_height() {
+      if (this.media.ratio) {
+        return this.media_width * this.media.ratio;
+      }
+      return this.page.height * this.mediaSize.height;
     }
   },
   methods: {
@@ -325,33 +334,31 @@ export default {
     updateMediaStyles() {
       this.mediaPos.x =
         this.media.publi_meta.hasOwnProperty("x") &&
-        !!Number.parseInt(this.media.publi_meta.x)
-          ? this.limitMediaXPos(Number.parseInt(this.media.publi_meta.x))
-          : this.page.margin_left;
+        !Number.isNaN(Number.parseFloat(this.media.publi_meta.x))
+          ? this.limitMediaXPos(Number.parseFloat(this.media.publi_meta.x))
+          : this.page.margin_top;
       this.mediaPos.y =
         this.media.publi_meta.hasOwnProperty("y") &&
-        !!Number.parseInt(this.media.publi_meta.y)
-          ? this.limitMediaYPos(Number.parseInt(this.media.publi_meta.y))
+        !Number.isNaN(Number.parseFloat(this.media.publi_meta.y))
+          ? this.limitMediaYPos(Number.parseFloat(this.media.publi_meta.y))
           : this.page.margin_top;
-      this.rotate = this.media.publi_meta.hasOwnProperty("rotate")
-        ? this.media.publi_meta.rotate
-        : 0;
+      this.rotate =
+        this.media.publi_meta.hasOwnProperty("rotate") &&
+        !Number.isNaN(Number.parseFloat(this.media.publi_meta.rotate))
+          ? this.media.publi_meta.rotate
+          : 0;
       this.mediaSize.width =
         this.media.publi_meta.hasOwnProperty("width") &&
-        !!Number.parseInt(this.media.publi_meta.width)
-          ? this.limitMediaWidth(Number.parseInt(this.media.publi_meta.width))
-          : 100;
+        !Number.isNaN(Number.parseFloat(this.media.publi_meta.width))
+          ? this.limitMediaWidth(Number.parseFloat(this.media.publi_meta.width))
+          : 0.6;
       this.mediaSize.height =
         this.media.publi_meta.hasOwnProperty("height") &&
-        !!Number.parseInt(this.media.publi_meta.height)
-          ? this.limitMediaHeight(Number.parseInt(this.media.publi_meta.height))
-          : 100;
-      this.custom_css = this.media.publi_meta.hasOwnProperty("custom_css")
-        ? this.media.publi_meta.custom_css
-        : this.custom_css;
-      this.mediaZIndex = this.media.publi_meta.hasOwnProperty("z_index")
-        ? this.media.publi_meta.z_index
-        : 0;
+        !Number.isNaN(Number.parseFloat(this.media.publi_meta.height))
+          ? this.limitMediaHeight(
+              Number.parseFloat(this.media.publi_meta.height)
+            )
+          : 0.6;
 
       if (this.media.type === "text") {
         this.$nextTick(() => {
@@ -381,15 +388,10 @@ export default {
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaCarreau: limitMediaXPos / xPos = ${xPos}`);
       // }
-      return Math.max(
-        this.page.margin_left,
-        Math.min(
-          this.page.width - this.page.margin_right - this.mediaSize.width,
-          xPos
-        )
-      );
+      return Math.max(this.page.margin_left, Math.min(0.9, xPos));
     },
     roundMediaVal(val) {
+      if (!this.page.gridstep) return val;
       return Math.round(val / this.page.gridstep) * this.page.gridstep;
     },
 
@@ -397,15 +399,13 @@ export default {
       if (!this.limit_media_to_page) {
         return yPos;
       }
-      // if (this.$root.state.dev_mode === 'debug') {
-      //   console.log(`METHODS • MediaCarreau: limitMediaYPos / yPos = ${yPos}`);
-      // }
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(`METHODS • MediaCarreau: limitMediaYPos / yPos = ${yPos}`);
+      }
       yPos = Math.max(
         this.page.margin_top,
-        Math.min(
-          this.page.height - this.page.margin_bottom - this.mediaSize.height,
-          yPos
-        )
+        // Math.min(1 - this.page.margin_bottom - this.media_height, yPos)
+        Math.min(0.9, yPos)
       );
       return yPos;
     },
@@ -414,28 +414,20 @@ export default {
       if (!this.limit_media_to_page) {
         return w;
       }
-      // if (this.$root.state.dev_mode === 'debug') {
-      //   console.log(`METHODS • MediaCarreau: limitMediaWidth / w = ${w}`);
-      // }
-      return Math.max(
-        20,
-        Math.min(this.page.width - this.page.margin_right - this.mediaPos.x, w)
-      );
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(`METHODS • MediaCarreau: limitMediaWidth / w = ${w}`);
+      }
+      return Math.max(0.05, Math.min(1, w));
     },
     limitMediaHeight(h) {
       if (!this.limit_media_to_page) {
         return h;
       }
+
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaCarreau: limitMediaHeight / h = ${h}`);
       // }
-      return Math.max(
-        20,
-        Math.min(
-          this.page.height - this.page.margin_bottom - this.mediaPos.y,
-          h
-        )
-      );
+      return Math.max(0.05, Math.min(1, h));
     },
     resizeMedia(type, origin) {
       if (this.$root.state.dev_mode === "debug") {
@@ -479,23 +471,28 @@ export default {
       const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
       const pageY = event.pageY ? event.pageY : event.touches[0].pageY;
 
+      const pageX_percent = pageX / this.page.width;
+      const pageY_percent = pageY / this.page.height;
+
       if (!this.is_resized) {
         this.is_resized = true;
         this.is_selected = true;
-        this.resizeOffset.x = pageX;
-        this.resizeOffset.y = pageY;
-        this.mediaSize.pwidth = Number.parseInt(this.mediaSize.width);
-        this.mediaSize.pheight = Number.parseInt(this.mediaSize.height);
+        this.resizeOffset.x = pageX_percent;
+        this.resizeOffset.y = pageY_percent;
+        this.mediaSize.pwidth = Number.parseFloat(this.mediaSize.width);
+        this.mediaSize.pheight = Number.parseFloat(this.mediaSize.height);
       } else {
         const deltaX =
-          (pageX - this.resizeOffset.x) / this.$root.settings.publi_zoom;
+          (pageX_percent - this.resizeOffset.x) /
+          this.$root.settings.publi_zoom;
         let newWidth = this.mediaSize.pwidth + deltaX;
         this.mediaSize.width = this.limitMediaWidth(newWidth);
 
-        const deltaY =
-          (pageY - this.resizeOffset.y) / this.$root.settings.publi_zoom;
-        let newHeight = this.mediaSize.pheight + deltaY;
-        this.mediaSize.height = this.limitMediaHeight(newHeight);
+        // const deltaY =
+        //   (pageY - this.resizeOffset.y) / this.$root.settings.publi_zoom;
+        // let newHeight = this.mediaSize.pheight + deltaY;
+
+        // this.mediaSize.height = this.limitMediaHeight(newHeight);
       }
     },
     resizeUp(event) {
@@ -612,28 +609,29 @@ export default {
         );
       }
 
-      debugger;
-
       const pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
       const pageY = !!event.pageY ? event.pageY : event.touches[0].pageY;
+
+      const pageX_percent = pageX / this.page.width;
+      const pageY_percent = pageY / this.page.height;
 
       if (!this.is_dragged) {
         this.is_dragged = true;
         this.is_selected = true;
 
-        this.dragOffset.x = pageX;
-        this.dragOffset.y = pageY;
+        this.dragOffset.x = pageX_percent;
+        this.dragOffset.y = pageY_percent;
 
-        this.mediaPos.px = Number.parseInt(this.mediaPos.x);
-        this.mediaPos.py = Number.parseInt(this.mediaPos.y);
+        this.mediaPos.px = Number.parseFloat(this.mediaPos.x);
+        this.mediaPos.py = Number.parseFloat(this.mediaPos.y);
       } else {
         const deltaX =
-          (pageX - this.dragOffset.x) / this.$root.settings.publi_zoom;
+          (pageX_percent - this.dragOffset.x) / this.$root.settings.publi_zoom;
         let newX = this.mediaPos.px + deltaX;
         this.mediaPos.x = this.limitMediaXPos(newX);
 
         const deltaY =
-          (pageY - this.dragOffset.y) / this.$root.settings.publi_zoom;
+          (pageY_percent - this.dragOffset.y) / this.$root.settings.publi_zoom;
         let newY = this.mediaPos.py + deltaY;
         this.mediaPos.y = this.limitMediaYPos(newY);
       }

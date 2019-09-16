@@ -259,7 +259,11 @@ export default {
       resizeType: "left"
     };
   },
-  watch: {},
+  watch: {
+    activity_panel_percent() {
+      this.$eventHub.$emit(`activity_panels_resized`);
+    }
+  },
   created() {},
   computed: {
     userSelect() {

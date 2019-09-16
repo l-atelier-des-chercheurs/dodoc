@@ -15,137 +15,6 @@
       :instructions="$t('export_video_instructions')"
     />-->
 
-    <div
-      class="m_publicationSettings"
-      v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode)"
-    >
-      <button
-        class="margin-vert-verysmall font-verysmall"
-        :class="{ 'is--active' : !preview_mode }"
-        @mousedown.stop.prevent="preview_mode = !preview_mode"
-        @touchstart.stop.prevent="preview_mode = !preview_mode"
-      >
-        <svg
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px"
-          y="0px"
-          width="144px"
-          height="84px"
-          viewBox="0 0 144 84"
-          style="enable-background:new 0 0 144 84;"
-          xml:space="preserve"
-        >
-          <defs />
-          <g>
-            <path
-              d="M72,0C32.2,0,0,42,0,42s32.2,42,72,42s72-42,72-42S111.8,0,72,0z M72,71.3c-16.5,0-30-13.2-30-29.6
-            c0-16.3,13.4-29.6,30-29.6c16.5,0,30,13.3,30,29.6C102,58,88.5,71.3,72,71.3z"
-            />
-          </g>
-        </svg>
-      </button>
-
-      <button
-        class="margin-vert-verysmall font-verysmall"
-        @mousedown.stop.prevent="toggleFullscreen"
-        @touchstart.stop.prevent="toggleFullscreen"
-      >
-        <svg
-          version="1.1"
-          v-if="!fullscreen_mode"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px"
-          y="0px"
-          width="133.3px"
-          height="133.2px"
-          viewBox="0 0 133.3 133.2"
-          style="enable-background:new 0 0 133.3 133.2;"
-          xml:space="preserve"
-        >
-          <polygon class="st0" points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	" />
-          <polygon
-            class="st0"
-            points="112.3,74.5 133.3,74.5 133.3,133.2 74.6,133.2 74.6,112.2 112.3,112.2 	"
-          />
-          <polygon class="st0" points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	" />
-          <polygon class="st0" points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	" />
-        </svg>
-        <svg
-          version="1.1"
-          v-if="fullscreen_mode"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px"
-          y="0px"
-          width="133.3px"
-          height="133.2px"
-          viewBox="0 0 133.3 133.2"
-          style="enable-background:new 0 0 133.3 133.2;"
-          xml:space="preserve"
-        >
-          <polygon class="st0" points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	" />
-          <polygon
-            class="st0"
-            points="95.6,133.2 74.6,133.2 74.6,74.5 133.3,74.5 133.3,95.5 95.6,95.5 	"
-          />
-          <polygon class="st0" points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	" />
-          <polygon class="st0" points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	" />
-        </svg>
-      </button>
-      <button
-        class="margin-vert-verysmall font-verysmall"
-        :disabled="zoom === zoom_max"
-        @mousedown.stop.prevent="zoom += 0.1"
-        @touchstart.stop.prevent="zoom += 0.1"
-      >
-        <svg
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px"
-          y="0px"
-          width="182.5px"
-          height="188.1px"
-          viewBox="0 0 182.5 188.1"
-          style="enable-background:new 0 0 182.5 188.1;"
-          xml:space="preserve"
-        >
-          <defs />
-          <path d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z" />
-        </svg>
-      </button>
-      <button
-        class="margin-vert-verysmall font-verysmall"
-        :disabled="zoom === zoom_min"
-        @mousedown.stop.prevent="zoom -= 0.1"
-        @touchstart.stop.prevent="zoom -= 0.1"
-      >
-        <svg
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px"
-          y="0px"
-          width="155.6px"
-          height="21.2px"
-          viewBox="0 0 155.6 21.2"
-          style="enable-background:new 0 0 155.6 21.2;"
-          xml:space="preserve"
-        >
-          <defs />
-          <path d="M155.6,0v21.2H0V0H155.6z" />
-        </svg>
-      </button>
-    </div>
-
     <div class="m_carreauPublication">
       <!-- <div class="margin-medium" v-if="publication_medias.length === 0">
         <p>
@@ -158,6 +27,149 @@
         ref="carreau_container"
         :style="carreauContainerProperties"
       >
+        <div
+          class="m_publicationSettings"
+          v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode)"
+        >
+          <button
+            class="margin-vert-verysmall font-verysmall"
+            :class="{ 'is--active' : !preview_mode }"
+            @mousedown.stop.prevent="preview_mode = !preview_mode"
+            @touchstart.stop.prevent="preview_mode = !preview_mode"
+          >
+            <svg
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+              x="0px"
+              y="0px"
+              width="144px"
+              height="84px"
+              viewBox="0 0 144 84"
+              style="enable-background:new 0 0 144 84;"
+              xml:space="preserve"
+            >
+              <defs />
+              <g>
+                <path
+                  d="M72,0C32.2,0,0,42,0,42s32.2,42,72,42s72-42,72-42S111.8,0,72,0z M72,71.3c-16.5,0-30-13.2-30-29.6
+            c0-16.3,13.4-29.6,30-29.6c16.5,0,30,13.3,30,29.6C102,58,88.5,71.3,72,71.3z"
+                />
+              </g>
+            </svg>
+          </button>
+
+          <button
+            class="margin-vert-verysmall font-verysmall"
+            @mousedown.stop.prevent="toggleFullscreen"
+            @touchstart.stop.prevent="toggleFullscreen"
+          >
+            <svg
+              version="1.1"
+              v-if="!fullscreen_mode"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+              x="0px"
+              y="0px"
+              width="133.3px"
+              height="133.2px"
+              viewBox="0 0 133.3 133.2"
+              style="enable-background:new 0 0 133.3 133.2;"
+              xml:space="preserve"
+            >
+              <polygon
+                class="st0"
+                points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	"
+              />
+              <polygon
+                class="st0"
+                points="112.3,74.5 133.3,74.5 133.3,133.2 74.6,133.2 74.6,112.2 112.3,112.2 	"
+              />
+              <polygon class="st0" points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	" />
+              <polygon
+                class="st0"
+                points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	"
+              />
+            </svg>
+            <svg
+              version="1.1"
+              v-if="fullscreen_mode"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+              x="0px"
+              y="0px"
+              width="133.3px"
+              height="133.2px"
+              viewBox="0 0 133.3 133.2"
+              style="enable-background:new 0 0 133.3 133.2;"
+              xml:space="preserve"
+            >
+              <polygon
+                class="st0"
+                points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	"
+              />
+              <polygon
+                class="st0"
+                points="95.6,133.2 74.6,133.2 74.6,74.5 133.3,74.5 133.3,95.5 95.6,95.5 	"
+              />
+              <polygon class="st0" points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	" />
+              <polygon
+                class="st0"
+                points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	"
+              />
+            </svg>
+          </button>
+          <button
+            class="margin-vert-verysmall font-verysmall"
+            :disabled="zoom === zoom_max"
+            @mousedown.stop.prevent="zoom += 0.1"
+            @touchstart.stop.prevent="zoom += 0.1"
+          >
+            <svg
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+              x="0px"
+              y="0px"
+              width="182.5px"
+              height="188.1px"
+              viewBox="0 0 182.5 188.1"
+              style="enable-background:new 0 0 182.5 188.1;"
+              xml:space="preserve"
+            >
+              <defs />
+              <path d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z" />
+            </svg>
+          </button>
+          <button
+            class="margin-vert-verysmall font-verysmall"
+            :disabled="zoom === zoom_min"
+            @mousedown.stop.prevent="zoom -= 0.1"
+            @touchstart.stop.prevent="zoom -= 0.1"
+          >
+            <svg
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+              x="0px"
+              y="0px"
+              width="155.6px"
+              height="21.2px"
+              viewBox="0 0 155.6 21.2"
+              style="enable-background:new 0 0 155.6 21.2;"
+              xml:space="preserve"
+            >
+              <defs />
+              <path d="M155.6,0v21.2H0V0H155.6z" />
+            </svg>
+          </button>
+        </div>
+
         <div class="m_carreauPublication--container--content" :style="carreauContentProperties">
           <transition-group name="list-complete" :duration="300">
             <div
@@ -201,6 +213,7 @@
 <script>
 import PublicationHeader from "../subcomponents/PublicationHeader.vue";
 import MediaCarreau from "../subcomponents/MediaCarreau.vue";
+import { setTimeout } from "timers";
 
 Array.prototype.move = function(from, to) {
   this.splice(to, 0, this.splice(from, 1)[0]);
@@ -223,13 +236,15 @@ export default {
       medias_slugs_in_order: [],
 
       page: {
-        width: 1920,
-        height: 1080,
+        ratio: 0.5625,
+        width: 0,
+        height: 0,
+        // in %
         margin_left: 0,
         margin_right: 0,
         margin_top: 0,
         margin_bottom: 0,
-        gridstep: 1
+        gridstep: false
       },
 
       preview_mode: this.$root.state.mode !== "live",
@@ -264,6 +279,12 @@ export default {
       this.medias_slugs_in_order = this.publication.medias_slugs;
     }
 
+    this.updatePageSizeAccordingToPanel();
+    this.$eventHub.$on(
+      "activity_panels_resized",
+      this.updatePageSizeAccordingToPanel
+    );
+
     this.updateMediasPubli();
   },
   beforeDestroy() {
@@ -271,6 +292,10 @@ export default {
     this.$eventHub.$off(
       "socketio.projects.listSpecificMedias",
       this.updateMediasPubli
+    );
+    this.$eventHub.$off(
+      "activity_panels_resized",
+      this.updatePageSizeAccordingToPanel
     );
   },
   watch: {
@@ -311,14 +336,16 @@ export default {
   computed: {
     carreauContainerProperties() {
       return `
-        width: ${this.page.width * this.$root.settings.publi_zoom}px; 
-        height: ${this.page.height * this.$root.settings.publi_zoom}px;      
+        width: ${100 * this.$root.settings.publi_zoom}%; 
+        height: ${100 *
+          this.page.ratio *
+          this.$root.settings.publi_zoom}%;      
       `;
     },
     carreauContentProperties() {
       return `
-          width: ${this.page.width}px; 
-          height: ${this.page.height}px;
+        width: ${this.page.width}px; 
+        height: ${this.page.height}px;      
           transform: scale(${this.$root.settings.publi_zoom});
         `;
     }
@@ -553,6 +580,14 @@ export default {
         } // Maybe other prefixed APIs?
         this.fullscreen_mode = false;
       }
+
+      setTimeout(() => {
+        this.updatePageSizeAccordingToPanel();
+      }, 500);
+    },
+    updatePageSizeAccordingToPanel() {
+      this.page.width = this.$refs.carreau_container.offsetWidth;
+      this.page.height = this.page.width * this.page.ratio;
     }
   }
 };

@@ -3661,6 +3661,7 @@ small {
 
   .m_carreauPublication--container {
     position: relative;
+    background-color: @c-creme;
 
     .m_carreauPublication--container--content {
       position: relative;
@@ -3670,12 +3671,6 @@ small {
       margin: 0 auto;
     }
   }
-}
-
-.m_mediaCarreau {
-  width: 60%;
-  margin: 0 auto;
-  // position: absolute;
 }
 
 .m_drawingPad {
@@ -3938,12 +3933,14 @@ small {
   -moz-user-select: none;
   user-select: none;
 
-  min-width: 20mm;
-  min-height: 20mm;
+  min-width: 50px;
+  min-height: 50px;
   z-index: 0;
 
+  box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.3);
+
   transform-origin: top left;
-  transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--hovered {
   }
@@ -3955,75 +3952,6 @@ small {
   &.is--resized {
     transition: none ease-out;
     z-index: 2;
-  }
-  .m_mediaPublication--overflowing_sign {
-    position: absolute;
-    bottom: 2px;
-    font-weight: 700;
-    text-align: center;
-    width: 100%;
-    margin: 0 auto;
-    z-index: 2;
-    min-height: 0;
-    background: transparent;
-    pointer-events: none;
-
-    span {
-      display: block;
-      width: 1em;
-      height: 1em;
-      margin: 0 auto;
-      line-height: 0.5;
-      background-color: @c-rouge;
-      .c-blanc;
-      pointer-events: auto;
-    }
-  }
-
-  .m_mediaPublication--edit_styles {
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translate(-50%, 0);
-    margin: 0 auto;
-    .padding-verysmall;
-    max-width: 300px;
-    min-width: 200px;
-    width: 100%;
-    height: auto;
-
-    > .m_mediaPublication--edit_styles--helpButton {
-      position: absolute;
-      top: 0.7em;
-      right: 0.5em;
-      color: @c-gris_clair;
-      z-index: 1;
-      background-color: transparent;
-      min-height: 0;
-      min-width: 0;
-      height: 1em;
-      width: 1em;
-      display: block;
-      line-height: 0;
-      padding: 0;
-    }
-
-    .prism-editor__code {
-      min-height: 3.5em;
-      max-height: 200px;
-      .custom_scrollbar(8px, 5px, 6px, transparent, @c-blanc);
-      overflow: auto;
-      overscroll-behavior-y: contain;
-    }
-
-    pre {
-      margin: 0;
-      border: 3px solid transparent;
-      &:focus {
-        outline: 0;
-        border-color: @c-orange;
-      }
-    }
   }
 
   .mediaContainer {
@@ -4044,13 +3972,17 @@ small {
     }
   }
 
-  .mediaCaption {
-    margin-top: 0;
-    font-size: 85%;
+  .m_mediaCarreau--buttons {
+    .m_mediaCarreau--buttons--removeMedia {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background-color: rgba(255, 255, 255, 0.4);
+    }
   }
 
   .controlFrame {
-    @t-borderSize: 3px;
+    @t-borderSize: 2px;
     @t-handleSize: 60px;
 
     position: absolute;
@@ -4106,9 +4038,9 @@ small {
       align-items: center;
 
       svg {
-        width: 34px;
-        height: 34px;
-        padding: 6px;
+        width: 24px;
+        height: 24px;
+        padding: 4px;
         border: @t-borderSize solid currentColor;
         border-style: inherit;
         border-radius: 50%;
@@ -4118,8 +4050,8 @@ small {
       }
     }
     .handle_resizeMedia {
-      bottom: -@t-handleSize / 2;
-      right: -@t-handleSize / 2;
+      bottom: 0;
+      right: 0;
       cursor: nwse-resize;
       color: @c-noir;
 
