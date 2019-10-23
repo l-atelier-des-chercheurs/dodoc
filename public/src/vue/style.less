@@ -1357,7 +1357,7 @@ small {
 
 .m_qrSnippet {
   .padding-none;
-  .margin-vert-medium;
+  // .margin-vert-medium;
   .button-inline;
   cursor: initial;
   .bg-creme;
@@ -1380,11 +1380,13 @@ small {
     }
 
     .m_qrSnippet--text--dodoclogo {
-      position: absolute;
-      bottom: 0;
-      left: 0;
+      float: left;
       width: 100px;
-      .padding-small;
+      .padding-verysmall;
+    }
+
+    .m_qrSnippet--text--printButton {
+      float: right;
     }
   }
 
