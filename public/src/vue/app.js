@@ -493,19 +493,17 @@ let vm = new Vue({
           projectKeywords.map(val => {
             allKeywords.push(val.title);
           });
+        }
 
-          // TODO fix this bug : if project has no keyword, then its medias with keywords won’t be parsed
-
-          if (
-            project.hasOwnProperty('medias') &&
-            Object.keys(project.medias).length > 0
-          ) {
-            Object.values(project.medias).map(m => {
-              if (m.hasOwnProperty('keywords') && m.keywords.length > 0) {
-                allKeywords = allKeywords.concat(m.keywords.map(k => k.title));
-              }
-            });
-          }
+        if (
+          project.hasOwnProperty('medias') &&
+          Object.keys(project.medias).length > 0
+        ) {
+          Object.values(project.medias).map(m => {
+            if (m.hasOwnProperty('keywords') && m.keywords.length > 0) {
+              allKeywords = allKeywords.concat(m.keywords.map(k => k.title));
+            }
+          });
         }
       }
       allKeywords = allKeywords.filter(function(item, pos) {

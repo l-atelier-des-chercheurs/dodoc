@@ -1,25 +1,34 @@
-
 & {
-  transition: all .4s cubic-bezier(.25,.8,.25,1);
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   > * {
     width: 100%;
     height: 100%;
   }
 
   &.type-text {
-    padding: @t-skipline/8;
+    padding: @t-skipline / 8;
 
     div > *:first-child {
       margin-top: 0;
     }
   }
 
-  h1,h2,h3,h4,p,ul,ol,table,figure,blockquote {
-    margin: @t-skipline/2 0;
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  ul,
+  ol,
+  table,
+  figure,
+  blockquote {
+    margin: @t-skipline / 2 0;
     font-weight: 400;
   }
 
-  strong, b {
+  strong,
+  b {
     font-weight: 700;
   }
 
@@ -30,15 +39,14 @@
   }
 
   + .mediaCaption {
-    margin: @t-skipline/4 0;
+    margin: @t-skipline / 4 0;
     font-size: 9pt;
     font-weight: 500;
   }
 
-
   p {
-    width: 100%;   
-    white-space: pre-wrap;   
+    width: 100%;
+    white-space: pre-wrap;
   }
 
   img {
@@ -47,13 +55,15 @@
     object-fit: cover;
   }
 
-
   audio {
     height: 90px;
     width: 100%;
   }
 
-  video, .plyr--video, .plyr__video-wrapper, .plyr__poster {
+  video,
+  .plyr--video,
+  .plyr__video-wrapper,
+  .plyr__poster {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -61,7 +71,7 @@
   }
 
   blockquote {
-    padding: @t-skipline/4 @t-skipline/2;
+    padding: @t-skipline / 4 @t-skipline / 2;
     border-left: 4px solid @c-gris_clair;
   }
 
@@ -71,11 +81,14 @@
     line-height: 1.4;
   }
 
-  ul, ol {
+  ul,
+  ol {
     padding-left: @t-skipline;
   }
 
-  p, ul, ol {
+  p,
+  ul,
+  ol {
     font-size: inherit;
     line-height: inherit;
     + ul {
@@ -83,29 +96,32 @@
     }
   }
 
-  h1, h2 {
+  h1,
+  h2 {
     -webkit-hyphens: auto;
     -ms-hyphens: auto;
-    hyphens: auto;  
+    hyphens: auto;
   }
 
   h1 {
     font-weight: 900;
   }
 
-  h2,h3,h4 {
+  h2,
+  h3,
+  h4 {
     font-weight: 700;
   }
 
   h1 {
-    font-size: 2.2em;    
+    font-size: 2.2em;
   }
 
   h2 {
     font-size: 1.4em;
   }
 
-  h3{
+  h3 {
     font-size: 1em;
     // font-style: italic;
     // margin-bottom: @t-skipline/8;
@@ -114,19 +130,22 @@
     &::before {
       // content:'• ';
     }
-    
-    & + p, & + ul, & + ol {
+
+    & + p,
+    & + ul,
+    & + ol {
       margin-top: 0;
     }
   }
 
-  h4{
+  h4 {
     font-size: 14pt;
   }
 
-  h5,h6 {
+  h5,
+  h6 {
     font-size: inherit;
-    font-weight:normal;
+    font-weight: normal;
     margin: 0;
   }
 }
