@@ -1,51 +1,43 @@
 <template>
-  <form
-    @close="$emit('close')"
-    v-on:submit.prevent="newAuthor"
-    :read_only="read_only"
-    >
+  <form @close="$emit('close')" v-on:submit.prevent="newAuthor" :read_only="read_only">
     <!-- <span class="">{{ $t('create_an_author') }}</span> -->
 
-<!-- Preview -->
+    <!-- Preview -->
     <div class="margin-bottom-small">
-      <label>{{ $t('portrait') }}</label><br>
-      <ImageSelect 
+      <label>{{ $t('portrait') }}</label>
+      <br />
+      <ImageSelect
         @newPreview="value => { preview = value }"
-        :instructions="$t('select_portrait_image')"  
-      >
-      </ImageSelect>
+        :instructions="$t('select_portrait_image')"
+      ></ImageSelect>
     </div>
 
-<!-- Human name -->
+    <!-- Human name -->
     <div class="margin-bottom-small">
       <label>{{ $t('name') }}</label>
-      <input type="text" v-model.trim="authordata.name" required autofocus>
+      <input type="text" v-model.trim="authordata.name" required autofocus />
     </div>
 
-<!-- Password -->
+    <!-- Password -->
     <!-- <div class="margin-bottom-small">
       <label>{{ $t('password') }}</label>
       <input type="password" v-model="authordata.password">
       <small>{{ $t('password_instructions') }}</small>
-    </div> -->
+    </div>-->
 
-<!-- NFC tag(s) -->
+    <!-- NFC tag(s) -->
     <div class="margin-bottom-small">
-      <label>{{ $t('nfc_tag') }}</label><br>
-      <input type="text" v-model="authordata.nfc_tag">
+      <label>{{ $t('nfc_tag') }}</label>
+      <br />
+      <input type="text" v-model="authordata.nfc_tag" />
     </div>
 
-    <button type="button" class="button-thin" @click="$emit('close')">
-      {{ $t('cancel') }}
-    </button>
-    <button type="submit" class="button-greenthin">
-      {{ $t('create') }}
-    </button>
-
+    <button type="button" class="button-thin" @click="$emit('close')">{{ $t('cancel') }}</button>
+    <button type="submit" class="button-greenthin">{{ $t('create') }}</button>
   </form>
 </template>
 <script>
-import ImageSelect from '../subcomponents/ImageSelect.vue';
+import ImageSelect from "../subcomponents/ImageSelect.vue";
 
 export default {
   props: {
@@ -57,9 +49,9 @@ export default {
   data() {
     return {
       authordata: {
-        name: '',
-        password: '',
-        nfc_tag: ''
+        name: "",
+        password: "",
+        nfc_tag: ""
       },
       preview: undefined
     };
@@ -67,13 +59,13 @@ export default {
   computed: {},
   mounted() {
     if (Modernizr !== undefined && !Modernizr.touchevents) {
-      const el = this.$el.querySelector('[autofocus]');
+      const el = this.$el.querySelector("[autofocus]");
       el.focus();
     }
   },
   methods: {
     newAuthor: function(event) {
-      console.log('newAuthor');
+      console.log("newAuthor");
       let allAuthorsName = this.$root.allAuthors.map(a => a.name.toLowerCase());
 
       // check if project name (not slug) already exists
@@ -82,22 +74,21 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t('notifications.author_name_exists'));
+          .error(this.$t("notifications.author_name_exists"));
 
         return false;
       }
 
-      if(!!this.preview) {
+      if (!!this.preview) {
         this.authordata.preview_rawdata = this.preview;
       }
 
-      this.$root.createFolder({ type: 'authors', data: this.authordata });
+      this.$root.createFolder({ type: "authors", data: this.authordata });
 
-      this.$emit('close', '');
+      this.$emit("close", "");
     }
   }
 };
 </script>
 <style>
-
 </style>

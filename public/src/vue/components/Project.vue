@@ -1,125 +1,152 @@
 <template>
-  <div class="m_project"
-    :class="{ 'is--not_authorized_to_admin' : !can_access_folder }"
-  >
-    <div class="m_project--presentation"
-    >
+  <div class="m_project" :class="{ 'is--not_authorized_to_admin' : !can_access_folder }">
+    <div class="m_project--presentation">
       <div v-if="previewURL" class="m_project--presentation--vignette">
-        <img
-          :src="previewURL" class=""
-          draggable="false"
-        />
+        <img :src="previewURL" class draggable="false" />
       </div>
-      
+
       <div class="m_project--presentation--text">
-        <h2 
-          class="m_project--presentation--text--title"
-          :title="slugProjectName"
-        >
-          {{ project.name }}
-        </h2>
+        <h2 class="m_project--presentation--text--title" :title="slugProjectName">{{ project.name }}</h2>
 
         <div class="m_project--presentation--text--infos">
           <div class="m_keywordField">
-            <span 
-              v-for="keyword in project.keywords" 
+            <span
+              v-for="keyword in project.keywords"
               :key="keyword.title"
               :class="['tagcolorid_' + parseInt(keyword.title, 36)%2, { 'is--active' : $root.settings.project_filter.keyword === keyword.title }]"
-            >
-              {{ keyword.title }}
-            </span>
+            >{{ keyword.title }}</span>
           </div>
           <div class="m_metaField" v-if="!!project.authors">
-            <div>
-              {{ $t('author') }}
-            </div>
+            <div>{{ $t('author') }}</div>
             <div class="m_authorField">
-              <span v-if="typeof project.authors === 'string'">
-                {{ project.authors }}
-              </span>
-              <span v-else-if="typeof project.authors === 'object'"
+              <span v-if="typeof project.authors === 'string'">{{ project.authors }}</span>
+              <span
+                v-else-if="typeof project.authors === 'object'"
                 v-for="author in project.authors"
                 :key="author.name"
                 class="is--active"
-              >
-                {{ author.name }}
-              </span>
+              >{{ author.name }}</span>
             </div>
           </div>
           <div class="m_metaField">
-            <div>
-              {{ $t('created') }}
-            </div>
-            <div>
-              {{ $root.formatDateToHuman(project.date_created) }}
-            </div>
+            <div>{{ $t('created') }}</div>
+            <div>{{ $root.formatDateToHuman(project.date_created) }}</div>
           </div>
           <div class="m_metaField">
-            <div>
-              {{ $t('edited') }}
-            </div>
-            <div>
-              {{ $root.formatDateToHuman(project.date_modified) }}
-            </div>
+            <div>{{ $t('edited') }}</div>
+            <div>{{ $root.formatDateToHuman(project.date_modified) }}</div>
           </div>
           <div class="m_metaField" v-if="project.password === 'has_pass' && context !== 'full'">
             <label>{{ $t('protected_by_pass') }}</label>
 
-            <button v-if="!can_access_folder" type="button" class="buttonLink" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
-              {{ $t('password_required_to_open') }}
-            </button>
-            <div v-if="showInputPasswordField && !can_access_folder" 
+            <button
+              v-if="!can_access_folder"
+              type="button"
+              class="buttonLink"
+              :readonly="read_only"
+              @click="showInputPasswordField = !showInputPasswordField"
+            >{{ $t('password_required_to_open') }}</button>
+            <div
+              v-if="showInputPasswordField && !can_access_folder"
               class="margin-bottom-small input-group"
             >
-              <input type="password" ref="passwordField" @keydown.enter.prevent="submitPassword" autofocus placeholder="…">
-              <button type="button" class="button bg-bleuvert button-thin" @click="submitPassword">Valider</button>
+              <input
+                type="password"
+                ref="passwordField"
+                @keydown.enter.prevent="submitPassword"
+                autofocus
+                placeholder="…"
+              />
+              <button
+                type="button"
+                class="button bg-bleuvert button-thin"
+                @click="submitPassword"
+              >Valider</button>
             </div>
           </div>
 
-          <div v-if="can_access_folder && project_password && context === 'full'" class="m_metaField">
-            <div class="cursor-pointer" :readonly="read_only" @click="showCurrentPassword = !showCurrentPassword"
+          <div
+            v-if="can_access_folder && project_password && context === 'full'"
+            class="m_metaField"
+          >
+            <div
+              class="cursor-pointer"
+              :readonly="read_only"
+              @click="showCurrentPassword = !showCurrentPassword"
               v-html="!showCurrentPassword ? $t('show_password') : $t('hide')"
             />
-            <div v-if="showCurrentPassword && can_access_folder">
-              {{ project_password }}
-            </div>
+            <div v-if="showCurrentPassword && can_access_folder">{{ project_password }}</div>
           </div>
-
         </div>
       </div>
 
-      <div 
-        class="m_project--presentation--buttons"
-      >
-        <button 
+      <div class="m_project--presentation--buttons">
+        <button
           v-if="can_access_folder && context !== 'full'"
-          type="button" 
+          type="button"
           class="m_project--presentation--buttons--openButton"
           :title="$t('open')"
           @click="$root.openProject(slugProjectName)"
         >
-          <span class="">
-            {{ $t('open') }}
-          </span>
+          <span class>{{ $t('open') }}</span>
         </button>
-        <button v-if="can_access_folder && context === 'full'" type="button" class="buttonLink" @click="showEditProjectModal = true" :disabled="read_only">
-          <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100.7px"
-            height="101px" viewBox="0 0 100.7 101" style="enable-background:new 0 0 100.7 101;" xml:space="preserve">
-            <path class="st0" d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
-              L19.1,91.5z"/>
+        <button
+          v-if="can_access_folder && context === 'full'"
+          type="button"
+          class="buttonLink"
+          @click="showEditProjectModal = true"
+          :disabled="read_only"
+        >
+          <svg
+            version="1.1"
+            class="inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="100.7px"
+            height="101px"
+            viewBox="0 0 100.7 101"
+            style="enable-background:new 0 0 100.7 101;"
+            xml:space="preserve"
+          >
+            <path
+              class="st0"
+              d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
+              L19.1,91.5z"
+            />
           </svg>
           {{ $t('edit') }}
         </button>
 
-        <button v-if="can_access_folder && context === 'full'" type="button" class="buttonLink" @click="removeProject()" :disabled="read_only">
-          <svg version="1.1" class="inline-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="91.6px"
-            height="95px" viewBox="0 0 91.6 95" style="enable-background:new 0 0 91.6 95;" xml:space="preserve">
-            <path class="st0" d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
-            l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"/>
+        <button
+          v-if="can_access_folder && context === 'full'"
+          type="button"
+          class="buttonLink"
+          @click="removeProject()"
+          :disabled="read_only"
+        >
+          <svg
+            version="1.1"
+            class="inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="91.6px"
+            height="95px"
+            viewBox="0 0 91.6 95"
+            style="enable-background:new 0 0 91.6 95;"
+            xml:space="preserve"
+          >
+            <path
+              class="st0"
+              d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
+            l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
+            />
           </svg>
           {{ $t('remove') }}
         </button>
-
       </div>
       <EditProject
         v-if="showEditProjectModal"
@@ -136,7 +163,7 @@
       <p>
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
       </p>
-    </div> -->
+    </div>-->
 
     <!-- <div class="m_project--favMedias"
       v-if="context === 'full'"
@@ -165,21 +192,20 @@
         >
         </MediaCard>
       </div>
-    </div> -->
+    </div>-->
 
     <MediaLibrary
       v-if="context === 'full'"
       :slugProjectName="slugProjectName"
       :project="project"
       :read_only="read_only"
-    >
-    </MediaLibrary>
+    ></MediaLibrary>
   </div>
 </template>
 <script>
-import EditProject from './modals/EditProject.vue';
-import MediaLibrary from './MediaLibrary.vue';
-import MediaCard from './subcomponents/MediaCard.vue';
+import EditProject from "./modals/EditProject.vue";
+import MediaLibrary from "./MediaLibrary.vue";
+import MediaCard from "./subcomponents/MediaCard.vue";
 
 export default {
   props: {
@@ -202,86 +228,95 @@ export default {
       showCurrentPassword: false
     };
   },
-  watch: {
-  },
-  mounted() {
-  },
-  beforeDestroy() {
-  },
+  watch: {},
+  mounted() {},
+  beforeDestroy() {},
   computed: {
     previewURL() {
-      if(!this.project.hasOwnProperty('preview') || this.project.preview === '') {
+      if (
+        !this.project.hasOwnProperty("preview") ||
+        this.project.preview === ""
+      ) {
         return false;
       }
       const thumb = this.project.preview.filter(p => p.size === 640);
-      if(thumb.length > 0) { return `${thumb[0].path}` }
+      if (thumb.length > 0) {
+        return `${thumb[0].path}`;
+      }
       return false;
     },
     can_access_folder() {
       return this.$root.canAccessFolder({
-        type: 'projects', 
+        type: "projects",
         slugFolderName: this.slugProjectName
-      })
+      });
     },
     project_password() {
       const projects_password = this.$auth.getFoldersPasswords();
-      if(projects_password.hasOwnProperty('projects') && projects_password['projects'].hasOwnProperty(this.slugProjectName)) {
-        return projects_password['projects'][this.slugProjectName];
+      if (
+        projects_password.hasOwnProperty("projects") &&
+        projects_password["projects"].hasOwnProperty(this.slugProjectName)
+      ) {
+        return projects_password["projects"][this.slugProjectName];
       }
       return false;
     }
   },
   methods: {
     openProject() {
-      if(context !== 'full') {
+      if (context !== "full") {
         this.$root.openProject(this.slugProjectName);
       }
-
     },
     closeProject() {
       this.$root.closeProject();
     },
     removeProject() {
       this.$alertify
-        .okBtn(this.$t('yes'))
-        .cancelBtn(this.$t('cancel'))        
-        .confirm(this.$t('sureToRemoveProject'), 
-        () => {
-          this.$root.removeFolder({ 
-            type: 'projects', 
-            slugFolderName: this.slugProjectName
-          });
-          this.closeProject();
-        },
-        () => {
-        });              
+        .okBtn(this.$t("yes"))
+        .cancelBtn(this.$t("cancel"))
+        .confirm(
+          this.$t("sureToRemoveProject"),
+          () => {
+            this.$root.removeFolder({
+              type: "projects",
+              slugFolderName: this.slugProjectName
+            });
+            this.closeProject();
+          },
+          () => {}
+        );
     },
     submitPassword() {
-      console.log('METHODS • Project: submitPassword');
+      console.log("METHODS • Project: submitPassword");
 
-      
       this.$auth.updateFoldersPasswords({
-        "projects": {
+        projects: {
           [this.slugProjectName]: this.$refs.passwordField.value
         }
       });
       this.$socketio.sendAuth();
 
       // check if password matches or not
-      this.$eventHub.$once('socketio.authentificated', () => {
-        const has_passworded_folder = window.state.list_authorized_folders.filter(f => f.type === 'projects' && f.allowed_slugFolderNames.includes(this.slugProjectName));
-        if(has_passworded_folder.length === 0) {
+      this.$eventHub.$once("socketio.authentificated", () => {
+        const has_passworded_folder = window.state.list_authorized_folders.filter(
+          f =>
+            f.type === "projects" &&
+            f.allowed_slugFolderNames.includes(this.slugProjectName)
+        );
+        if (has_passworded_folder.length === 0) {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(this.$t('notifications.wrong_password_for') + this.project.name);
-          this.$refs.passwordField.value = '';
+            .error(
+              this.$t("notifications.wrong_password_for") + this.project.name
+            );
+          this.$refs.passwordField.value = "";
         }
       });
     }
-  },
+  }
 };
 </script>
 <style scoped>
-
 </style>
