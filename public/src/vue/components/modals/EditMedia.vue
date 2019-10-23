@@ -221,7 +221,6 @@
         <!-- Keywords -->
         <div class="margin-bottom-small">
           <label>{{ $t('keywords') }}</label>
-          {{$root.allKeywords}}
           <TagsInput
             :keywords="mediadata.keywords"
             @tagsChanged="newTags => mediadata.keywords = newTags"
