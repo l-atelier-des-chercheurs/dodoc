@@ -2,19 +2,18 @@
 
 # do•doc
 
-do•doc (or dodoc) is a documentation tool, first designed for use in classrooms with children. It is a platform connected to a physical device that operates a camera and a microphone, and enables one to capture traces from an on-going experience for later reflections, reconstructions and creation of narratives.<br> 
+do•doc (or dodoc) is a documentation tool, first designed for use in classrooms with children. It is a platform connected to a physical device that operates a camera and a microphone, and enables one to capture traces from an on-going experience for later reflections, reconstructions and creation of narratives.<br>
 do•doc is made by [l'atelier des chercheurs](http://latelier-des-chercheurs.fr/) (Sarah Garcin, Pauline Gourlet & Louis Eveillard).<br>
 
-More information: 
+More information:
 
 - in english: https://latelier-des-chercheurs.fr/en/tools/dodoc
 - en Français : https://latelier-des-chercheurs.fr/outils/dodoc
 
 # License
 
-This app is under a [Creative Commons BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/) license. It can be used, modified and shared freely as long as no commercial use is made and the attribution and link to [L’Atelier des Chercheurs](https://latelier-des-chercheurs.fr/) are kept.
-
-[Homescreen of do•doc](https://latelier-des-chercheurs.fr/thumbs/outils/dodoc/screenshot-2018-07-12-11.40.02-1200x765-q60.png)
+do•doc is free and open source.
+The code is licensed under AGPLv3, and the graphic assets (icons, pictograms, user interface) are under a CC-BY-SA license.
 
 # Install do•doc
 
@@ -34,9 +33,9 @@ Click on _Clone or Download_ in the top right corner of this page, then _Downloa
 
 Open a terminal window:
 
-* Windows: (XP) use [this tutorial](http://wikistrea.fr/Comment_ouvrir_la_console_de_commande_Windows_en_mode_administrateur_%3F) to open a terminal on Windows or open Command Prompt in the start menu
-* macOS: go to Applications -> Utilities -> Terminal
-* Linux: use a terminal app such as Terminal or Konsole
+- Windows: (XP) use [this tutorial](http://wikistrea.fr/Comment_ouvrir_la_console_de_commande_Windows_en_mode_administrateur_%3F) to open a terminal on Windows or open Command Prompt in the start menu
+- macOS: go to Applications -> Utilities -> Terminal
+- Linux: use a terminal app such as Terminal or Konsole
 
 In your terminal, navigate to the dodoc-master folder with your terminal using the `cd` command:
 
@@ -113,7 +112,7 @@ npm install sharp@0.17.3
 
 ### server-side
 
-* Run `npm run debug` to start the server with a better debug in terminal
+- Run `npm run debug` to start the server with a better debug in terminal
 
 ### client-side
 

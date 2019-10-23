@@ -328,9 +328,7 @@ let vm = new Vue({
 
     window.onpopstate = event => {
       console.log(
-        `ROOT EVENT: popstate with event.state.slugProjectName = ${
-          event.state.slugProjectName
-        }`
+        `ROOT EVENT: popstate with event.state.slugProjectName = ${event.state.slugProjectName}`
       );
       this.do_navigation.current_slugProjectName = event.state.slugProjectName;
     };
@@ -395,9 +393,7 @@ let vm = new Vue({
     'settings.has_modal_opened': function() {
       if (window.state.dev_mode === 'debug') {
         console.log(
-          `ROOT EVENT: var has changed: has_modal_opened: ${
-            this.settings.has_modal_opened
-          }`
+          `ROOT EVENT: var has changed: has_modal_opened: ${this.settings.has_modal_opened}`
         );
       }
       if (this.has_modal_opened) {
@@ -497,6 +493,8 @@ let vm = new Vue({
           projectKeywords.map(val => {
             allKeywords.push(val.title);
           });
+
+          // TODO fix this bug : if project has no keyword, then its medias with keywords won’t be parsed
 
           if (
             project.hasOwnProperty('medias') &&
@@ -1002,9 +1000,7 @@ let vm = new Vue({
         .success(
           this.$t('notifications.author_found_with_nfc_tag') +
             ' ' +
-            `<button class="bg-blanc padding-none c-bleumarine font-thin">${
-              author.name
-            }</button>`
+            `<button class="bg-blanc padding-none c-bleumarine font-thin">${author.name}</button>`
         );
       this.setAuthor(author);
     },

@@ -187,6 +187,7 @@ module.exports = (function() {
       'lang:': 'Changer la langue&nbsp;:',
       lang: 'Changer la langue',
       share_access: 'Accéder depuis d’autres appareils',
+      scan_qr_code: 'Scanner un code QR',
 
       photo: 'photo',
       video: 'vidéo',
@@ -549,6 +550,7 @@ module.exports = (function() {
       'lang:': 'Select lang:',
       lang: 'Select lang',
       share_access: 'Access from other devices',
+      scan_qr_code: 'Scan a QR code',
 
       photo: 'picture',
       video: 'video',
