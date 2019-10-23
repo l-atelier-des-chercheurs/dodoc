@@ -627,9 +627,7 @@ module.exports = (function() {
           let randomString = (
             Math.random().toString(36) + '00000000000000000'
           ).slice(2, 3 + 2);
-          metaFileName = `${timeCreated}-${randomString}${
-            global.settings.metaFileext
-          }`;
+          metaFileName = `${timeCreated}-${randomString}${global.settings.metaFileext}`;
         }
 
         let slugFolderPath = api.getFolderPath(
@@ -1404,6 +1402,162 @@ module.exports = (function() {
           });
       });
     },
+    copyMediaToAnotherFolder: ({
+      type,
+      from_slugFolderName,
+      to_slugFolderName,
+      metaFileName
+    }) => {
+      return new Promise(function(resolve, reject) {
+        dev.logfunction(
+          `COMMON — copyMediaToAnotherFolder : will copy media from folder (type ${type}) slugged ${from_slugFolderName} to folder slugged ${to_slugFolderName} with metaFileName: ${metaFileName}`
+        );
+
+        // lire le meta
+        readMediaMeta({
+          type,
+          slugFolderName: from_slugFolderName,
+          metaFileName
+        })
+          .then(media_data => {
+            let tasks = [];
+
+            const origin_slugFolderPath = api.getFolderPath(
+              path.join(
+                global.settings.structure[type].path,
+                from_slugFolderName
+              )
+            );
+            let destination_slugFolderPath = api.getFolderPath(
+              path.join(global.settings.structure[type].path, to_slugFolderName)
+            );
+
+            // s’il contient un champ media_filename
+            if (
+              global.settings.structure[type].medias.fields.hasOwnProperty(
+                'media_filename'
+              ) &&
+              media_data.hasOwnProperty('media_filename')
+            ) {
+              let copy_media = new Promise((resolve, reject) => {
+                // copier le media_filename dans le nouveau dossier avec le premier nom disponible
+                api
+                  .findFirstFilenameNotTaken(
+                    destination_slugFolderPath,
+                    media_data.media_filename
+                  )
+                  .then(function(newFileName) {
+                    const origin_path = path.join(
+                      origin_slugFolderPath,
+                      media_data.media_filename
+                    );
+                    const destination_path = path.join(
+                      destination_slugFolderPath,
+                      newFileName
+                    );
+                    fs.copy(origin_path, destination_path, function(err) {
+                      if (err) {
+                        dev.error(`Failed to copy: ${err}`);
+                        return reject(err);
+                      }
+                      return resolve({
+                        media_filename: newFileName
+                      });
+                    });
+                  });
+              });
+
+              tasks.push(copy_media);
+            }
+
+            // s’il contient un champ original_media_filename
+            // s’il contient un champ media_filename
+            if (
+              global.settings.structure[type].medias.fields.hasOwnProperty(
+                'original_media_filename'
+              ) &&
+              media_data.hasOwnProperty('original_media_filename')
+            ) {
+              let copy_original_media = new Promise((resolve, reject) => {
+                // copier le media_filename dans le nouveau dossier avec le premier nom disponible
+                api
+                  .findFirstFilenameNotTaken(
+                    destination_slugFolderPath,
+                    media_data.original_media_filename
+                  )
+                  .then(function(newFileName) {
+                    const origin_path = path.join(
+                      origin_slugFolderPath,
+                      media_data.original_media_filename
+                    );
+                    const destination_path = path.join(
+                      destination_slugFolderPath,
+                      newFileName
+                    );
+                    fs.copy(origin_path, destination_path, function(err) {
+                      if (err) {
+                        dev.error(`Failed to copy: ${err}`);
+                        return reject(err);
+                      }
+                      return resolve({
+                        original_media_filename: newFileName
+                      });
+                    });
+                  });
+              });
+
+              tasks.push(copy_original_media);
+            }
+
+            Promise.all(tasks)
+              .then(d_array => {
+                // updater le meta avec les nouvelles valeurs
+                d_array.map(i => {
+                  Object.assign(media_data, i);
+                });
+
+                // l’écrire au bon endroit
+                const metaFilePath = path.join(
+                  destination_slugFolderPath,
+                  metaFileName
+                );
+
+                api
+                  .storeData(metaFilePath, media_data, 'create')
+                  .then(function(meta) {
+                    dev.logverbose(
+                      `New folder meta file created at path: ${metaFilePath} with meta: ${JSON.stringify(
+                        media_data,
+                        null,
+                        4
+                      )}`
+                    );
+                    return resolve();
+                  })
+                  .catch(err => {
+                    return reject(err);
+                  });
+              })
+              .catch(err => {
+                dev.error(`Failed media copy`);
+                reject(err);
+              });
+          })
+          .catch(err => {
+            dev.error(`Failed to read media meta: ${err}`);
+            reject(err);
+          });
+
+        // copier le original_media_filename dans le nouveau dossier avec le premier nom disponible
+
+        // garder les noms finaux des media_filename et original_media_filename
+        // modifier le contenu du meta avec ces nouveaux noms
+
+        // copier le méta à destination avec le premier nom disponible
+
+        // resolve
+      });
+    },
     addTempMediaToFolder: ({ from, to, additionalMeta }) => {
       return new Promise(function(resolve, reject) {
         const path_to_original_file = path.join(
@@ -1444,6 +1598,9 @@ module.exports = (function() {
 
   function readMediaMeta({ type, slugFolderName, metaFileName }) {
     return new Promise(function(resolve, reject) {
+      dev.logfunction(
+        `COMMON — readMediaMeta: type = ${type} & slugFolderName = ${slugFolderName} & metaFileName = ${metaFileName}`
+      );
       // pour chaque item, on regarde s’il contient un fichier méta (même nom + .txt)
       let slugFolderPath = api.getFolderPath(
         path.join(global.settings.structure[type].path, slugFolderName)
@@ -1602,9 +1759,7 @@ module.exports = (function() {
         });
 
         dev.logverbose(
-          `Number of folders that match in ${mainFolderPath} = ${
-            folders.length
-          }. Folder(s) is(are) ${folders}`
+          `Number of folders that match in ${mainFolderPath} = ${folders.length}. Folder(s) is(are) ${folders}`
         );
         return resolve(folders);
       });

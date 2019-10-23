@@ -89,6 +89,35 @@
           <span class>{{ $t('share') }}</span>
         </button>
 
+        <button
+          type="button"
+          class="buttonLink c-noir"
+          @click="showCopyToProjectOptions = !showCopyToProjectOptions"
+        >
+          <span class>{{ $t('copy') }}</span>
+        </button>
+
+        <div v-if="showCopyToProjectOptions" class="margin-bottom-small">
+          <label v-html="$t('add_to_project')" />
+          <div class="flex-nowrap">
+            <select v-model="upload_to_folder">
+              <option
+                v-for="project in all_projects"
+                :disabled="project.slugFolderName === slugProjectName"
+                :key="project.slugFolderName"
+                :value="project.slugFolderName"
+              >{{ project.name }}</option>
+            </select>
+            <button
+              type="button"
+              @click="copyMediaToProject(upload_to_folder)"
+              :disabled="upload_to_folder === ''"
+              v-html="$t('send')"
+              class="bg-bleuvert button-thin"
+            />
+          </div>
+        </div>
+
         <template v-if="showQRModal">
           <hr />
           <CreateQRCode :slugFolderName="slugProjectName" :media="media" />
@@ -287,8 +316,11 @@ export default {
   data() {
     return {
       showQRModal: false,
+      showCopyToProjectOptions: false,
       is_minimized: false,
       show_edit_media_options: false,
+
+      upload_to_folder: this.slugProjectName,
 
       mediadata: {
         type: this.media.type,
@@ -328,7 +360,11 @@ export default {
       this.is_ready = true;
     });
   },
-  computed: {},
+  computed: {
+    all_projects() {
+      return this.$root.projects_that_are_accessible;
+    }
+  },
   methods: {
     printMedia: function() {
       window.print();
@@ -361,6 +397,16 @@ export default {
       });
       // then close that popover
       this.$emit("close", "");
+    },
+    copyMediaToProject(to_slugFolderName) {
+      console.log("copyMediaToProject " + to_slugFolderName);
+      this.$socketio.copyMediaToFolder({
+        type: "projects",
+        from_slugFolderName: this.slugProjectName,
+        to_slugFolderName,
+        slugMediaName: this.slugMediaName
+      });
+      this.showCopyToProjectOptions = false;
     },
     editRawMedia: function(type, detail) {
       console.log("editRawMedia");
