@@ -214,9 +214,7 @@ module.exports = (function() {
           `EXPORTER — makePDFForPubli with slugPubliName = ${slugPubliName}`
         );
 
-        const urlToPubli = `${
-          global.appInfos.homeURL
-        }/publications/print/${slugPubliName}`;
+        const urlToPubli = `${global.appInfos.homeURL}/publications/print/${slugPubliName}`;
 
         const pdfName =
           slugPubliName +
@@ -832,6 +830,8 @@ module.exports = (function() {
 
         temp_videos_array.map(v => ffmpeg_cmd.addInput(v.full_path));
 
+        ffmpeg_cmd.addOptions(['-preset fast']);
+
         // let time_since_last_report = 0;
         ffmpeg_cmd
           // .complexFilter(['gltransition'])
@@ -1050,12 +1050,9 @@ module.exports = (function() {
         .withAudioCodec('aac')
         .withAudioBitrate('128k')
         .videoFilters(
-          `scale=w=${resolution.width}:h=${
-            resolution.height
-          }:force_original_aspect_ratio=increase`
+          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=increase`
         )
         .outputFPS(30)
-        .size(`${resolution.width}x${resolution.height}`)
         .toFormat('mp4')
         .on('start', function(commandLine) {
           dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
@@ -1151,10 +1148,15 @@ module.exports = (function() {
               .withVideoBitrate('6000k')
               .withAudioCodec('aac')
               .withAudioBitrate('128k')
-              .size(`${resolution.width}x${resolution.height}`)
-              .autopad()
-              .videoFilter(['setsar=1'])
-              .addOptions(['-shortest', '-bsf:v h264_mp4toannexb'])
+              .videoFilter([
+                `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=1280:720:(ow-iw)/2:(oh-ih)/2`
+              ])
+              .addOptions([
+                '-crf 22',
+                '-preset fast',
+                '-shortest',
+                '-bsf:v h264_mp4toannexb'
+              ])
               .toFormat('mpegts')
               .output(temp_video_path)
               .on('start', function(commandLine) {
@@ -1303,7 +1305,11 @@ module.exports = (function() {
 
   function _notifyFfmpegProgress({ socket, progress }) {
     let not_localized_string;
-    if (progress.hasOwnProperty('percent') && !Number.isNaN(progress.percent)) {
+    if (
+      progress.hasOwnProperty('percent') &&
+      !Number.isNaN(progress.percent) &&
+      Number.parseFloat(progress.percent) >= 0
+    ) {
       not_localized_string =
         Number.parseFloat(progress.percent).toFixed(1) + '%';
     } else if (progress.hasOwnProperty('timemark')) {
