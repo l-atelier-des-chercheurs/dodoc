@@ -22,7 +22,6 @@
         </div>
 
         <div v-if="current_mode === 'ScanQRCode'" class="m_scanQR">
-          <label>Scanner un code QR</label>
           <ScanQRCode></ScanQRCode>
         </div>
       </div>
