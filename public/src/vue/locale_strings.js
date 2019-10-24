@@ -95,8 +95,8 @@ module.exports = (function() {
       show_all_authors: 'Afficher l’ensemble des auteurs',
       changes_not_saved_sureToCloseModal:
         'Des modifications ont eu lieu, souhaitez-vous les enregistrer ?',
-      save_changes: 'Enregistrer les modifications',
-      close_the_window: 'Annuler',
+      save_changes: 'Oui, enregistrer les modifications',
+      close_the_window: 'Non fermer sans enregistrer',
       sureToRemovePubli:
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
       sure_to_cancel_stopmotion:
@@ -464,8 +464,8 @@ module.exports = (function() {
       show_all_authors: 'Show all authors',
       changes_not_saved_sureToCloseModal:
         'All changes were not saved. Do you really want to close this window?',
-      save_changes: 'Save changes first',
-      close_the_window: 'Close anyway',
+      save_changes: 'Yes, save changes',
+      close_the_window: 'No, close without saving',
       sureToRemovePubli: 'Do you really want to delete this publication?',
       sure_to_cancel_stopmotion:
         'Do you really want to cancel this stopmotion? You can resume making it by clicking on "Stopmotion list"',
