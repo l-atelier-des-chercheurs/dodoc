@@ -1,6 +1,5 @@
 <template>
   <Modal
-    :backgroundColor="mediadata.color"
     @close="$emit('close')"
     @submit="editThisMedia"
     :read_only="read_only"
@@ -103,7 +102,6 @@
             <select v-model="upload_to_folder">
               <option
                 v-for="project in all_projects"
-                :disabled="project.slugFolderName === slugProjectName"
                 :key="project.slugFolderName"
                 :value="project.slugFolderName"
               >{{ project.name }}</option>

@@ -1,6 +1,5 @@
 <template>
-  <div class="m_listview"
-  >
+  <div class="m_listview">
     <main class="m_projects main_scroll_panel">
       <div class="m_actionbar">
         <div class="m_actionbar--buttonBar">
@@ -10,9 +9,7 @@
             :disabled="read_only"
             :key="'createButton'"
           >
-            <span>
-              {{ $t('create_a_project') }}
-            </span>
+            <span>{{ $t('create_a_project') }}</span>
           </button>
           <CreateProject
             v-if="showCreateProjectModal"
@@ -24,29 +21,29 @@
         <div class="m_actionbar--text">
           <div class="switch switch-xs switch_twoway">
             <label for="media_switch" class="cursor-pointer">
-              <span class=""> 
-                {{ $t('projects') }}
-              </span>  
+              <span class>{{ $t('projects') }}</span>
             </label>
-            <input type="checkbox" id="media_switch" v-model="show_medias_instead_of_projects">
+            <input type="checkbox" id="media_switch" v-model="show_medias_instead_of_projects" />
             <label for="media_switch">
-              <span class=""> 
-                {{ $t('medias') }}
-              </span>  
+              <span class>{{ $t('medias') }}</span>
             </label>
           </div>
           <div>
             <template v-if="Object.keys(projects).length > 0">
               <template v-if="!show_medias_instead_of_projects">
-                {{ $t('showing') }} 
-                <span :class="{ 'c-rouge' : Object.keys(sortedProjectsSlug).length !== Object.keys(projects).length }">
-                  {{ sortedProjectsSlug.length }} 
-                  {{ $t('projects_of') }} 
+                {{ $t('showing') }}
+                <span
+                  :class="{ 'c-rouge' : Object.keys(sortedProjectsSlug).length !== Object.keys(projects).length }"
+                >
+                  {{ sortedProjectsSlug.length }}
+                  {{ $t('projects_of') }}
                   {{ Object.keys(projects).length }}
                 </span>
                 <template v-if="$root.allKeywords.length > 0 || $root.allAuthors.length > 0">
-                  — 
-                  <button type="button" class="button-nostyle text-uc button-triangle"
+                  —
+                  <button
+                    type="button"
+                    class="button-nostyle text-uc button-triangle"
                     :class="{ 'is--active' : show_filters }"
                     @click="show_filters = !show_filters"
                   >{{ $t('filters') }}</button>
@@ -62,15 +59,19 @@
                 />
               </template>
               <template v-else>
-                {{ $t('showing') }} 
-                <span :class="{ 'c-rouge' : Object.keys(sortedMedias).length !== Object.keys(allMedias).length }">
-                  {{ Object.keys(sortedMedias).length }} 
-                  {{ $t('medias_of') }} 
+                {{ $t('showing') }}
+                <span
+                  :class="{ 'c-rouge' : Object.keys(sortedMedias).length !== Object.keys(allMedias).length }"
+                >
+                  {{ Object.keys(sortedMedias).length }}
+                  {{ $t('medias_of') }}
                   {{ Object.keys(allMedias).length }}
                 </span>
                 <template v-if="$root.allKeywords.length > 0 || $root.allAuthors.length > 0">
-                  — 
-                  <button type="button" class="button-nostyle text-uc button-triangle"
+                  —
+                  <button
+                    type="button"
+                    class="button-nostyle text-uc button-triangle"
                     :class="{ 'is--active' : show_filters }"
                     @click="show_filters = !show_filters"
                   >{{ $t('filters') }}</button>
@@ -87,30 +88,26 @@
                   @setAuthorFilter="a => $root.setMediaAuthorFilter(a)"
                   @setFavFilter="a => $root.setFavAuthorFilter(a)"
                 />
-
               </template>
-
             </template>
-            <template v-else>
-              {{ $t('no_projects_yet') }}
-            </template>          
+            <template v-else>{{ $t('no_projects_yet') }}</template>
           </div>
         </div>
       </div>
-      
+
       <transition-group
         v-if="!show_medias_instead_of_projects"
         class="m_projects--list"
         name="list-complete"
       >
-          <Project
-            v-for="(sortedProject, index) in sortedProjectsSlug"
-            :key="sortedProject.slugProjectName"
-            :slugProjectName="sortedProject.slugProjectName"
-            :project="projects[sortedProject.slugProjectName]"
-            :read_only="read_only"
-            :index="index"
-          />
+        <Project
+          v-for="(sortedProject, index) in sortedProjectsSlug"
+          :key="sortedProject.slugProjectName"
+          :slugProjectName="sortedProject.slugProjectName"
+          :project="projects[sortedProject.slugProjectName]"
+          :read_only="read_only"
+          :index="index"
+        />
       </transition-group>
       <transition-group
         v-else-if="show_medias_instead_of_projects && !is_loading_all_medias"
@@ -118,11 +115,11 @@
         name="list-complete"
       >
         <div v-for="item in groupedMedias" :key="item[0]">
-          <h3 class="font-folder_title margin-sides-small margin-none margin-bottom-small">
-            {{ $root.formatDateToHuman(item[0]) }}
-          </h3>
+          <h3
+            class="font-folder_title margin-sides-small margin-none margin-bottom-small"
+          >{{ $root.formatDateToHuman(item[0]) }}</h3>
 
-          <div class="m_mediaShowAll"> 
+          <div class="m_mediaShowAll">
             <div v-for="media in item[1]" :key="media.slugMediaName">
               <MediaCard
                 :key="media.slugMediaName"
@@ -130,23 +127,21 @@
                 :metaFileName="media.metaFileName"
                 :slugProjectName="media.slugProjectName"
                 :preview_size="180"
-              >
-              </MediaCard>
+              ></MediaCard>
             </div>
           </div>
         </div>
       </transition-group>
     </main>
-
   </div>
 </template>
 <script>
-import BottomFooter from './components/BottomFooter.vue';
-import Project from './components/Project.vue';
-import CreateProject from './components/modals/CreateProject.vue';
-import MediaCard from './components/subcomponents/MediaCard.vue';
-import TagsAndAuthorFilters from './components/subcomponents/TagsAndAuthorFilters.vue';
-import { setTimeout } from 'timers';
+import BottomFooter from "./components/BottomFooter.vue";
+import Project from "./components/Project.vue";
+import CreateProject from "./components/modals/CreateProject.vue";
+import MediaCard from "./components/subcomponents/MediaCard.vue";
+import TagsAndAuthorFilters from "./components/subcomponents/TagsAndAuthorFilters.vue";
+import { setTimeout } from "timers";
 
 export default {
   props: {
@@ -169,26 +164,29 @@ export default {
       show_medias_instead_of_projects: false,
       is_loading_all_medias: false,
 
-      currentFilter: '',      
+      currentFilter: "",
       currentSort: {
-        field: 'date_created',
-        type: 'date',
-        order: 'descending'
+        field: "date_created",
+        type: "date",
+        order: "descending"
       },
 
       show_filters: false
     };
   },
   mounted() {
-    if(this.$root.settings.project_filter.keyword || this.$root.settings.project_filter.author) {
+    if (
+      this.$root.settings.project_filter.keyword ||
+      this.$root.settings.project_filter.author
+    ) {
       this.show_filters = true;
     }
-    this.$eventHub.$on('modal.prev_media', this.prevMedia);
-    this.$eventHub.$on('modal.next_media', this.nextMedia);
+    this.$eventHub.$on("modal.prev_media", this.prevMedia);
+    this.$eventHub.$on("modal.next_media", this.nextMedia);
   },
   beforeDestroy() {
-    this.$eventHub.$off('modal.prev_media', this.prevMedia);
-    this.$eventHub.$off('modal.next_media', this.nextMedia);
+    this.$eventHub.$off("modal.prev_media", this.prevMedia);
+    this.$eventHub.$off("modal.next_media", this.nextMedia);
   },
   watch: {
     currentLang: function() {
@@ -196,18 +194,18 @@ export default {
     },
     show_medias_instead_of_projects: function() {
       // load all projects’ medias if it isn’t there
-      if(this.show_medias_instead_of_projects) {
+      if (this.show_medias_instead_of_projects) {
         this.$root.loadAllProjectsMedias();
 
         this.is_loading_all_medias = true;
 
-        this.$eventHub.$once('socketio.has_finished_loading_all_medias', () => {
+        this.$eventHub.$once("socketio.has_finished_loading_all_medias", () => {
           this.is_loading_all_medias = false;
         });
       }
     },
     show_filters: function() {
-      if(!this.show_filters) {
+      if (!this.show_filters) {
         this.$root.settings.project_filter.keyword = false;
         this.$root.settings.project_filter.author = false;
       }
@@ -218,79 +216,98 @@ export default {
       return this.$root.getAllKeywordsFrom(this.projects);
     },
     projectsAuthors: function() {
-      return this.$root.getAllAuthorsFrom(this.projects);      
+      return this.$root.getAllAuthorsFrom(this.projects);
     },
     mediasKeywords: function() {
-      return this.$root.getAllKeywordsFrom(this.filteredMedias);      
+      return this.$root.getAllKeywordsFrom(this.filteredMedias);
     },
     mediasAuthors: function() {
-      return this.$root.getAllAuthorsFrom(this.filteredMedias);      
+      return this.$root.getAllAuthorsFrom(this.filteredMedias);
     },
     sortedProjectsSlug: function() {
       var sortable = [];
 
-      if(!this.projects || this.projects.length === 0) {
+      if (!this.projects || this.projects.length === 0) {
         return [];
       }
 
       for (let slugProjectName in this.projects) {
         let orderBy;
 
-        if (this.currentSort.type === 'date') {
+        if (this.currentSort.type === "date") {
           orderBy = +this.$moment(
             this.projects[slugProjectName][this.currentSort.field],
-            'YYYY-MM-DD HH:mm:ss'
+            "YYYY-MM-DD HH:mm:ss"
           );
-        } else if (this.currentSort.type === 'alph') {
+        } else if (this.currentSort.type === "alph") {
           orderBy = this.projects[slugProjectName][this.currentSort.field];
         }
 
-        if(this.$root.settings.project_filter.keyword === false && this.$root.settings.project_filter.author === false) {
+        if (
+          this.$root.settings.project_filter.keyword === false &&
+          this.$root.settings.project_filter.author === false
+        ) {
           sortable.push({ slugProjectName, orderBy });
           continue;
         }
 
-        if(this.$root.settings.project_filter.keyword !== false && this.$root.settings.project_filter.author !== false) {
+        if (
+          this.$root.settings.project_filter.keyword !== false &&
+          this.$root.settings.project_filter.author !== false
+        ) {
           // only add to sorted array if project has this keyword
-          if(this.projects[slugProjectName].hasOwnProperty('keywords') 
-            && typeof this.projects[slugProjectName].keywords === 'object' 
-            && this.projects[slugProjectName].keywords.filter(k => k.title === this.$root.settings.project_filter.keyword).length > 0) {
-            
-            if(this.projects[slugProjectName].hasOwnProperty('authors') 
-              && typeof this.projects[slugProjectName].authors === 'object' 
-              && this.projects[slugProjectName].authors.filter(k => k.name === this.$root.settings.project_filter.author).length > 0) {
-            
+          if (
+            this.projects[slugProjectName].hasOwnProperty("keywords") &&
+            typeof this.projects[slugProjectName].keywords === "object" &&
+            this.projects[slugProjectName].keywords.filter(
+              k => k.title === this.$root.settings.project_filter.keyword
+            ).length > 0
+          ) {
+            if (
+              this.projects[slugProjectName].hasOwnProperty("authors") &&
+              typeof this.projects[slugProjectName].authors === "object" &&
+              this.projects[slugProjectName].authors.filter(
+                k => k.name === this.$root.settings.project_filter.author
+              ).length > 0
+            ) {
               sortable.push({ slugProjectName, orderBy });
             }
           }
           continue;
         }
         // if a project keyword filter is set
-        if(this.$root.settings.project_filter.keyword !== false) {
+        if (this.$root.settings.project_filter.keyword !== false) {
           // only add to sorted array if project has this keyword
-          if(this.projects[slugProjectName].hasOwnProperty('keywords') 
-            && typeof this.projects[slugProjectName].keywords === 'object' 
-            && this.projects[slugProjectName].keywords.filter(k => k.title === this.$root.settings.project_filter.keyword).length > 0) {
+          if (
+            this.projects[slugProjectName].hasOwnProperty("keywords") &&
+            typeof this.projects[slugProjectName].keywords === "object" &&
+            this.projects[slugProjectName].keywords.filter(
+              k => k.title === this.$root.settings.project_filter.keyword
+            ).length > 0
+          ) {
             sortable.push({ slugProjectName, orderBy });
           }
           continue;
         }
 
-        if(this.$root.settings.project_filter.author !== false) {
+        if (this.$root.settings.project_filter.author !== false) {
           // only add to sorted array if project has this keyword
-          if(this.projects[slugProjectName].hasOwnProperty('authors') 
-            && typeof this.projects[slugProjectName].authors === 'object' 
-            && this.projects[slugProjectName].authors.filter(k => k.name === this.$root.settings.project_filter.author).length > 0) {
+          if (
+            this.projects[slugProjectName].hasOwnProperty("authors") &&
+            typeof this.projects[slugProjectName].authors === "object" &&
+            this.projects[slugProjectName].authors.filter(
+              k => k.name === this.$root.settings.project_filter.author
+            ).length > 0
+          ) {
             sortable.push({ slugProjectName, orderBy });
           }
           continue;
         }
-
       }
 
-      // if there is no project in sortable, it is probable that filters 
+      // if there is no project in sortable, it is probable that filters
       // were too restrictive
-      if(sortable.length === 0) {
+      if (sortable.length === 0) {
         // lets remove filters if there are any
         this.$nextTick(() => {
           // this.$root.settings.project_filter.keyword = false;
@@ -300,7 +317,7 @@ export default {
       let sortedSortable = sortable.sort(function(a, b) {
         let valA = a.orderBy;
         let valB = b.orderBy;
-        if (typeof a.orderBy === 'string' && typeof b.orderBy === 'string') {
+        if (typeof a.orderBy === "string" && typeof b.orderBy === "string") {
           valA = valA.toLowerCase();
           valB = valB.toLowerCase();
         }
@@ -313,7 +330,7 @@ export default {
         return 0;
       });
 
-      if (this.currentSort.order === 'descending') {
+      if (this.currentSort.order === "descending") {
         sortedSortable.reverse();
       }
 
@@ -322,19 +339,22 @@ export default {
     presentationText: function() {
       if (this.presentationMD.hasOwnProperty(this.currentLang)) {
         return this.presentationMD[this.currentLang];
-      } else if (this.presentationMD.hasOwnProperty('content')) {
-        return this.presentationMD['content'];
+      } else if (this.presentationMD.hasOwnProperty("content")) {
+        return this.presentationMD["content"];
       }
       return this.presentationMD;
     },
     allMedias: function() {
       let allMedias = [];
-      if(this.projects === undefined || Object.keys(this.projects).length === 0) {
+      if (
+        this.projects === undefined ||
+        Object.keys(this.projects).length === 0
+      ) {
         return [];
       }
       Object.keys(this.projects).map(slugProjectName => {
         const folder = this.projects[slugProjectName];
-        if(!folder.hasOwnProperty('medias')) {
+        if (!folder.hasOwnProperty("medias")) {
           return;
         }
         const folder_medias = folder.medias;
@@ -351,29 +371,31 @@ export default {
       return this.allMedias.filter(m => this.$root.isMediaShown(m));
     },
     sortedMedias: function() {
-      let sortedMedias = this.$_.sortBy(this.filteredMedias, 'date_created');
+      let sortedMedias = this.$_.sortBy(this.filteredMedias, "date_created");
       return sortedMedias.reverse();
     },
     groupedMedias: function() {
-      let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
-
+      let mediaGroup = this.$_.groupBy(this.sortedMedias, media => {
         let _date;
 
-        if(media.hasOwnProperty('date_created') && !!media.date_created) {
+        if (media.hasOwnProperty("date_created") && !!media.date_created) {
           _date = media.date_created;
-        } else if(media.hasOwnProperty('date_uploaded') && !!media.date_uploaded) {
+        } else if (
+          media.hasOwnProperty("date_uploaded") &&
+          !!media.date_uploaded
+        ) {
           _date = media.date_uploaded;
         } else {
-          return this.$t('invalid_date');
+          return this.$t("invalid_date");
         }
 
         var dateMoment = this.$moment(_date);
-        return dateMoment.format('YYYY-MM-DD');
+        return dateMoment.format("YYYY-MM-DD");
       });
-      mediaGroup = this.$_.pairs(mediaGroup); 
+      mediaGroup = this.$_.pairs(mediaGroup);
       mediaGroup = this.$_.sortBy(mediaGroup);
       mediaGroup = mediaGroup.reverse();
-      return mediaGroup;  
+      return mediaGroup;
     }
   },
   methods: {
@@ -384,8 +406,8 @@ export default {
       this.currentFilter = newFilter;
     },
     urlToPortrait(slug, filename) {
-      if(filename === undefined) {
-        return '';
+      if (filename === undefined) {
+        return "";
       }
       return `/${this.$root.state.authorsFolder}/${slug}/${filename}`;
     },
@@ -396,19 +418,23 @@ export default {
       this.mediaNav(+1);
     },
     mediaNav(relative_index) {
-      const current_media_index = this.sortedMedias.findIndex(m => m.metaFileName === this.$root.media_modal.current_metaFileName);
+      const current_media_index = this.sortedMedias.findIndex(
+        m => m.metaFileName === this.$root.media_modal.current_metaFileName
+      );
       const new_media = this.sortedMedias[current_media_index + relative_index];
       this.$root.closeMedia();
-      
-      if(!!new_media) {
+
+      if (!!new_media) {
         this.$nextTick(() => {
-          this.$root.openMedia({ slugProjectName: new_media.slugProjectName, metaFileName: new_media.metaFileName });      
+          this.$root.openMedia({
+            slugProjectName: new_media.slugProjectName,
+            metaFileName: new_media.metaFileName
+          });
         });
       }
-    },
+    }
   }
 };
 </script>
 <style>
-
 </style>

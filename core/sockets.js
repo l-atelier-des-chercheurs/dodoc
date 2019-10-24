@@ -380,7 +380,7 @@ module.exports = (function() {
             to_slugFolderName,
             metaFileName: slugMediaName
           })
-          .then(() => {
+          .then(newMetaFileName => {
             notify({
               socket,
               localized_string: `media_copied_successfully`,
@@ -390,7 +390,7 @@ module.exports = (function() {
             sendMedias({
               type,
               slugFolderName: to_slugFolderName,
-              metaFileName: slugMediaName
+              metaFileName: newMetaFileName
             });
           })
           .catch((err, p) => {
