@@ -98,7 +98,7 @@
 
         <div v-if="showCopyToProjectOptions" class="margin-bottom-small">
           <label v-html="$t('add_to_project')" />
-          <div class="flex-nowrap">
+          <div class="input-group">
             <select v-model="upload_to_folder">
               <option
                 v-for="project in all_projects"
@@ -111,7 +111,7 @@
               @click="copyMediaToProject(upload_to_folder)"
               :disabled="upload_to_folder === ''"
               v-html="$t('send')"
-              class="bg-bleuvert button-thin"
+              class="bg-bleuvert"
             />
           </div>
         </div>

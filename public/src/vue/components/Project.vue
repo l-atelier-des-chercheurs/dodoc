@@ -40,7 +40,7 @@
             <label>{{ $t('protected_by_pass') }}</label>
 
             <button
-              v-if="!can_access_folder"
+              v-if="!can_access_folder && !showInputPasswordField"
               type="button"
               class="buttonLink"
               :readonly="read_only"
@@ -57,11 +57,7 @@
                 autofocus
                 placeholder="…"
               />
-              <button
-                type="button"
-                class="button bg-bleuvert button-thin"
-                @click="submitPassword"
-              >Valider</button>
+              <button type="button" class="button bg-bleuvert" @click="submitPassword">Valider</button>
             </div>
           </div>
 
