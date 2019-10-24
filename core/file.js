@@ -1549,9 +1549,7 @@ module.exports = (function() {
                         api
                           .storeData(destination_metaFilePath, meta, 'create')
                           .then(function(meta) {
-                            return resolve({
-                              original_media_filename: newFileName
-                            });
+                            return resolve(newFileName);
                           })
                           .catch(err => {
                             return reject(err);
