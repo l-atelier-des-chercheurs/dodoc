@@ -1,6 +1,5 @@
 <template>
   <Modal
-    :backgroundColor="mediadata.color"
     @close="$emit('close')"
     @submit="editThisMedia"
     :read_only="read_only"
