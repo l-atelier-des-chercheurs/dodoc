@@ -375,6 +375,9 @@ module.exports = (function() {
           editMedia(mdata) {
             this.socket.emit('editMedia', mdata);
           },
+          copyMediaToFolder(mdata) {
+            this.socket.emit('copyMediaToFolder', mdata);
+          },
           removeMedia(mdata) {
             this.socket.emit('removeMedia', mdata);
           },

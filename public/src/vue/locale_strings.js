@@ -374,6 +374,8 @@ module.exports = (function() {
         preparing_video_from_montage: 'Préparation des vidéos du montage',
         finished_creating_recipe:
           'La recette est terminée et peut être consultée !',
+        media_copied_successfully:
+          'La copie du média a été réalisée avec succès.',
         creation_in_progress: 'En cours de création…',
         connected_to_dodoc: 'Connection à do•doc active',
         using_saved_password:
@@ -743,6 +745,7 @@ module.exports = (function() {
         creating_video: 'Creating video…',
         preparing_video_from_montage: 'Pre-processing videos from the montage',
         finished_creating_recipe: 'The recipe was successfully completed!',
+        media_copied_successfully: 'The media was copied successfully.',
         creation_in_progress: 'Creation in progress…',
         connected_to_dodoc: 'Connection to do•doc active',
         using_saved_password:

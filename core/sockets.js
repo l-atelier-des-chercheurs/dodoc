@@ -59,6 +59,7 @@ module.exports = (function() {
       socket.on('listMedias', d => onListMedias(socket, d));
       socket.on('createMedia', d => onCreateMedia(socket, d));
       socket.on('editMedia', d => onEditMedia(socket, d));
+      socket.on('copyMediaToFolder', d => onCopyMediaToFolder(socket, d));
       socket.on('removeMedia', d => onRemoveMedia(socket, d));
       socket.on('listSpecificMedias', d => onListSpecificMedias(socket, d));
 
@@ -247,9 +248,7 @@ module.exports = (function() {
     { type, id, slugFolderName, additionalMeta, rawData = '' }
   ) {
     dev.logfunction(
-      `EVENT - onCreateMedia : slugFolderName = ${slugFolderName} and type = ${type} and rawData.length = ${
-        rawData.length
-      }`
+      `EVENT - onCreateMedia : slugFolderName = ${slugFolderName} and type = ${type} and rawData.length = ${rawData.length}`
     );
     file
       .createMedia({
@@ -334,6 +333,77 @@ module.exports = (function() {
           dev.error(`Failed to edit media! Error: ${err}`);
         }
       );
+  }
+  function onCopyMediaToFolder(
+    socket,
+    { type, from_slugFolderName, to_slugFolderName, slugMediaName }
+  ) {
+    dev.logfunction(
+      `EVENT - onCopyMediaToFolder for type ${type}
+      from_slugFolderName = ${from_slugFolderName}\n
+      to_slugFolderName = ${to_slugFolderName}\n
+      slugMediaName = ${slugMediaName}`
+    );
+
+    file
+      .getFolder({ type, slugFolderName: from_slugFolderName })
+      .then(foldersData => {
+        if (!auth.canAdminFolder(socket, foldersData, type)) {
+          notify({
+            socket,
+            socketid: socket.id,
+            not_localized_string: `Not allowed to edit from folder ${from_slugFolderName}`
+          });
+        } else {
+          return;
+        }
+      })
+      .then(() => {
+        file
+          .getFolder({ type, slugFolderName: to_slugFolderName })
+          .then(foldersData => {
+            if (!auth.canAdminFolder(socket, foldersData, type)) {
+              notify({
+                socket,
+                socketid: socket.id,
+                not_localized_string: `Not allowed to edit destination folder ${to_slugFolderName}`
+              });
+            }
+            return;
+          });
+      })
+      .then(() => {
+        file
+          .copyMediaToAnotherFolder({
+            type,
+            from_slugFolderName,
+            to_slugFolderName,
+            metaFileName: slugMediaName
+          })
+          .then(() => {
+            notify({
+              socket,
+              localized_string: `media_copied_successfully`,
+              type: 'success'
+            });
+
+            sendMedias({
+              type,
+              slugFolderName: to_slugFolderName,
+              metaFileName: slugMediaName
+            });
+          })
+          .catch((err, p) => {
+            notify({
+              socket,
+              socketid: socket.id,
+              not_localized_string: `Copy failed with error: ${err}`
+            });
+
+            dev.error(`Failed to copy media to another folder: ${err}`);
+            reject(err);
+          });
+      });
   }
 
   function onRemoveMedia(socket, { type, slugFolderName, slugMediaName }) {
