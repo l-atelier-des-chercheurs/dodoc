@@ -8,9 +8,7 @@
           @mousedown="mousedown"
           @mousemove="mousemove"
           @mouseup="mouseup"
-          >
-          do•doc
-        </div>
+        >do•doc</div>
       </transition>
     </div>
   </div>
@@ -58,5 +56,4 @@ export default {
 };
 </script>
 <style>
-
 </style>
