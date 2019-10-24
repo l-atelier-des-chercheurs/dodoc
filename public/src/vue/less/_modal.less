@@ -11,12 +11,12 @@
   background-color: fade(#fff, 90%);
   // cursor: pointer;
   .custom_scrollbar(8px, 5px, 6px);
-  
+
   display: flex;
   align-items: center;
   justify-content: center;
 
-  transition: all .2s ease-out;
+  transition: all 0.2s ease-out;
 
   #app:not(.is--wide) & {
     align-items: flex-start;
@@ -38,7 +38,6 @@
     pointer-events: none;
     align-items: flex-end;
   }
-
 }
 
 .m_modal--wrapper {
@@ -47,9 +46,8 @@
 @t-panelWidth: 400px;
 
 .m_modal--container {
-
   position: relative;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 
   width: 100%;
   cursor: auto;
@@ -59,11 +57,11 @@
   pointer-events: all;
   z-index: 1000;
 
-  transition: all .15s ease-out;
+  transition: all 0.15s ease-out;
 
   &.is_invisible {
     opacity: 0;
-    transform: translate3d(0,15px,0) scale(0.98);
+    transform: translate3d(0, 15px, 0) scale(0.98);
   }
 
   &.is_minimized {
@@ -89,7 +87,7 @@
     display: flex;
     flex-flow: row wrap;
 
-    transition: background-color .4s ease-out;
+    transition: background-color 0.4s ease-out;
 
     > * {
       flex: 1 1 200px;
@@ -134,20 +132,22 @@
       background-color: @c-orange;
     }
 
-    textarea, .textarea, input, select {
+    textarea,
+    .textarea,
+    input,
+    select {
       color: @c-noir;
     }
   }
 }
 
 .m_modal--mask {
-
   &.typeOfModal-LargeAndScroll {
     // padding-top: @t-skipline;
     .padding-vert-large;
     // padding-top: @t-skipline;
     overflow-y: auto;
-    .m_modal--container {  
+    .m_modal--container {
       max-width: @t-panelWidth * 4;
       align-self: flex-start;
       .m_modal--preview {
@@ -166,7 +166,7 @@
     }
   }
   &.typeOfModal-ExportVideo {
-    .m_modal--container {  
+    .m_modal--container {
       // max-width: @t-panelWidth * 4;
     }
   }
@@ -174,7 +174,7 @@
   &.typeOfModal-LargeAndNoScroll {
     overflow: hidden;
 
-    .m_modal--container {   
+    .m_modal--container {
       margin: 0;
       max-width: @t-panelWidth * 4;
       // align-self: flex-start;
@@ -184,18 +184,19 @@
         }
         #app:not(.is--wide) & {
           position: fixed;
-          height: 50vh;         
+          height: 50vh;
         }
-      }  
+      }
       .m_modal--sidebar {
         #app:not(.is--wide) & {
           margin-top: 50vh;
-        }      
+          margin-bottom: 3em;
+        }
       }
-      
+
       #app.is--wide & {
         width: 90vw;
-        margin-bottom: 20px;          
+        margin-bottom: 20px;
       }
     }
   }
@@ -203,21 +204,21 @@
     overflow-y: auto;
 
     // if it is large, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
-    .m_modal--container {   
+    .m_modal--container {
       align-self: flex-start;
       .m_modal--preview {
         display: flex;
         flex-flow: column nowrap;
         min-height: 10vh;
         height: auto;
-      }    
+      }
     }
   }
   &.typeOfModal-LargeAndNoScrollWithButtons {
-    .m_modal--container {   
-      max-width: none;      
+    .m_modal--container {
+      max-width: none;
       height: 80vmin;
-      width:  80vmin;
+      width: 80vmin;
 
       .m_modal--container--content {
         flex-flow: column wrap;
@@ -242,17 +243,15 @@
             > .m_modal--metaOptions--fav {
               flex: 0 0 auto;
             }
-
           }
-        }    
+        }
         .m_modal--buttons {
           flex: 0 0 auto;
-        }              
+        }
       }
     }
   }
-} 
-
+}
 
 .m_modal--sidebar {
   position: relative;
@@ -273,11 +272,11 @@
     .font-large;
     // .bg-noir;
     // color: white;
-  
+
     border-radius: 50% 0 0 50%;
     line-height: 1;
   }
-  
+
   .m_modal--metaOptions {
     flex: 1 1 auto;
     .padding-vert-small;
@@ -285,7 +284,7 @@
     .custom_scrollbar(8px, 5px, 6px);
 
     > * {
-      .margin-sides-medium;  
+      .margin-sides-medium;
 
       &.m_modal--buttonrow {
         margin: 0;
@@ -294,8 +293,9 @@
         text-align: center;
 
         #app:not(.is--wide) & {
-          > a, > button {
-            font-size:0.7rem;
+          > a,
+          > button {
+            font-size: 0.7rem;
             padding: 0;
           }
         }
@@ -308,7 +308,7 @@
 
     hr {
       margin: 0;
-      .margin-small;          
+      .margin-small;
     }
     table {
       margin: 0;
@@ -317,7 +317,6 @@
     > *:last-child {
       margin-bottom: 0;
     }
-
   }
 }
 // if no preview, then sidebar takes the whole width
@@ -331,7 +330,7 @@
     // .bg-gris_clair;
     .bg-noir;
 
-    &[data-context="edit"] {
+    &[data-context='edit'] {
       > * {
         width: 100%;
         height: 100%;
@@ -340,7 +339,7 @@
 
     img {
       position: absolute;
-      top:0;
+      top: 0;
       right: 0;
       width: auto;
       height: auto;
@@ -348,7 +347,9 @@
       object-position: center;
     }
 
-    .plyr--video, .plyr__video-wrapper, .plyr__poster {
+    .plyr--video,
+    .plyr__video-wrapper,
+    .plyr__poster {
       background-color: transparent;
     }
     .plyr--video .plyr__controls {
@@ -362,18 +363,15 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      
+
       .plyr__controls {
         // background-color: @c-noir;
         // background: transparent;
         // color: @c-noir;
         width: 80%;
         margin: 0 auto;
-
       }
     }
-    
-    
 
     &.type-text {
       // .font-large;
@@ -384,7 +382,7 @@
           overflow-y: auto;
           -webkit-overflow-scrolling: touch;
           overscroll-behavior-y: contain;
-          .custom_scrollbar(1px, 3px, 2px, rgba(255,255,255,0), #333);
+          .custom_scrollbar(1px, 3px, 2px, rgba(255, 255, 255, 0), #333);
         }
       }
     }
@@ -393,7 +391,7 @@
       audio {
         width: 500px;
         margin: auto;
-        height:50%;
+        height: 50%;
       }
     }
     &.type-other {
@@ -402,10 +400,9 @@
     pre {
       margin-top: 0;
     }
-
   }
 
-  input[type="text"] {
+  input[type='text'] {
   }
 
   .m_modal--preview--media {
@@ -419,11 +416,10 @@
       object-position: center;
     }
   }
-
 }
 
 .m_modal--close_button {
-  position:   fixed;
+  position: fixed;
   top: 0;
   right: 0;
   z-index: 1500;
@@ -449,7 +445,7 @@
 
   pointer-events: auto;
 
-  transition: transform .2s ease-out;
+  transition: transform 0.2s ease-out;
 
   &.is_minimized {
     // transform: ;
@@ -460,7 +456,8 @@
     display: none;
   }
 }
-.m_modal--nav_left, .m_modal--nav_right {
+.m_modal--nav_left,
+.m_modal--nav_right {
   position: fixed;
   // top: ~"calc(50% - 40px)";
   top: auto;
@@ -468,7 +465,7 @@
   z-index: 1500;
 
   #app:not(.is--wide) & {
-    top:auto;
+    top: auto;
     bottom: 0;
     border: none;
   }
@@ -506,7 +503,7 @@
   display: flex;
   justify-content: center;
 
-  min-height: 4em;
+  min-height: 3em;
 
   #app:not(.is--wide) & {
     position: fixed;
@@ -520,25 +517,22 @@
     .margin-verysmall;
   }
 
-  button[type="submit"] {
-
+  button[type='submit'] {
     #app:not(.is--wide) & {
       // left: 50%;
       width: 10em;
       margin: 0 auto;
       // transform: translateX(-50%);
-      text-align: center;    
+      text-align: center;
       min-height: 0;
     }
-  } 
-
+  }
 }
-
 
 @media print {
   .m_modal--container {
     max-width: none !important;
-  }  
+  }
   .m_modal--container--content {
     box-shadow: none !important;
     border: none !important;
