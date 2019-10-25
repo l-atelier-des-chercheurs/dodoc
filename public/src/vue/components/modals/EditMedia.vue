@@ -110,7 +110,7 @@
               type="button"
               @click="copyMediaToProject(upload_to_folder)"
               :disabled="upload_to_folder === ''"
-              v-html="$t('send')"
+              v-html="$t('copy')"
               class="bg-bleuvert"
             />
           </div>

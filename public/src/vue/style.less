@@ -1028,7 +1028,7 @@ small {
     }
 
     &.is--not_authorized_to_admin {
-      cursor: not-allowed;;
+      cursor: not-allowed;
     }
   }
 
@@ -1430,9 +1430,15 @@ small {
   }
 
   &.is--just_added {
-    background-color: @c-orange;
-    box-shadow: 0px 2px 8px 1px @c-orange;
-    > * {
+    .m_metaField {
+      > * {
+        &::after {
+          content: '●';
+          font-size: 100%;
+          line-height: 1;
+          color: @c-orange;
+        }
+      }
       // outline: 2px solid @c-orange;
     }
   }
