@@ -14,7 +14,7 @@
       <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('project_name') }}</label>
-        <input type="text" v-model="projectdata.name" required autofocus />
+        <input type="text" v-model.trim="projectdata.name" required autofocus />
       </div>
 
       <!-- Preview -->

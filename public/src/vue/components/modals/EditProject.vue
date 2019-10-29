@@ -17,7 +17,7 @@
         <input
           class="input-big"
           type="text"
-          v-model="projectdata.name"
+          v-model.trim="projectdata.name"
           required
           :readonly="read_only"
         />
