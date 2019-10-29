@@ -44,6 +44,7 @@ module.exports = (function() {
       remember_password_on_this_device: 'Sauvegarder pour cet appareil',
 
       cooking_pot: 'La marmite',
+      copy_of: 'Copie de',
       text_overflow: 'Texte en excès',
       move_to_foreground: 'Mettre au premier plan',
       move_to_background: 'Mettre à l’arrière plan',
@@ -51,6 +52,7 @@ module.exports = (function() {
       css_settings: 'Règlages CSS',
       edit_content: 'Modifier le contenu',
       adjust: 'Ajuster',
+      duplicate: 'Dupliquer',
 
       show_all: 'Tout afficher',
       cooking_pot_instructions:
@@ -285,6 +287,7 @@ module.exports = (function() {
       get_a_link: 'Récupérer un lien vers ce document&nbsp;:',
 
       format: 'Format',
+      name_of_copy: 'Nom à donner à la copie',
       template: 'Gabarit',
       standard: 'Standard',
       'feuille de choux': 'Feuille de Choux',
@@ -383,7 +386,9 @@ module.exports = (function() {
           'Connection à do•doc en utilisant le mot de passe enregistré',
         pdf_created: 'Le PDF a été créé',
         video_created: 'La vidéo a été créée',
-        video_creation_failed: 'La vidéo n’a pas pu être créée'
+        video_creation_failed: 'La vidéo n’a pas pu être créée',
+        project_copy_in_progress: 'Copie du projet en cours…',
+        project_copy_completed: 'Copie terminée'
       }
     },
     en: {
@@ -430,6 +435,7 @@ module.exports = (function() {
       remember_password_on_this_device: 'Remember for this device',
 
       cooking_pot: 'Cooking pot',
+      copy_of: 'Copy of',
       text_overflow: 'Overflow text',
       move_to_foreground: 'Move to foreground',
       move_to_background: 'Move to background',
@@ -437,6 +443,7 @@ module.exports = (function() {
       css_settings: 'CSS settings',
       edit_content: 'Edit content',
       adjust: 'Adjust',
+      duplicate: 'Duplicate',
 
       show_all: 'Show all',
       cooking_pot_instructions:
@@ -653,6 +660,7 @@ module.exports = (function() {
       get_a_link: 'Get a link to this document&nbsp;:',
 
       format: 'Format',
+      name_of_copy: 'Name of the copy',
       template: 'Template',
       page_by_page: 'Paged document',
       video_assemblage: 'Video editing',
@@ -754,7 +762,9 @@ module.exports = (function() {
           'Connecting to do•doc using the password that was saved',
         pdf_created: 'PDF created',
         video_created: 'The video was created',
-        video_creation_failed: 'The video was not created'
+        video_creation_failed: 'The video was not created',
+        project_copy_in_progress: 'Copy of the project in progress…',
+        project_copy_completed: 'Copy finished'
       }
     }
   };
