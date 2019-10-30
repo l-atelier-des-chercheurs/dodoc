@@ -10,7 +10,7 @@ module.exports = (function() {
     setSessionPassword: session_password =>
       setSessionPassword(session_password),
     updateFoldersPasswords: folderPass => updateFoldersPasswords(folderPass),
-    removeFolderKey: slugFolderName => removeFolderKey(slugFolderName),
+    removeFolderPassword: d => removeFolderPassword(d),
 
     getSessionPassword: () => getSessionPassword(),
     getFoldersPasswords: () => getFoldersPasswords(),
@@ -53,10 +53,14 @@ module.exports = (function() {
     localstore.set('folder_passwords', folder_passwords);
   }
 
-  // function removeFolderKey(slugFolderName) {
-  //   delete folder_passwords[slugFolderName];
-  //   // localstore.set('folder_passwords', folder_passwords);
-  // }
+  function removeFolderPassword({ type, slugFolderName }) {
+    if (type in folder_passwords) {
+      if (slugFolderName in folder_passwords[type]) {
+        delete folder_passwords[type][slugFolderName];
+      }
+    }
+    localstore.set('folder_passwords', folder_passwords);
+  }
 
   function getFoldersPasswords() {
     return folder_passwords;

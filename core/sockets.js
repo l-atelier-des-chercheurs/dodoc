@@ -69,6 +69,7 @@ module.exports = (function() {
         onDownloadStopmotionPubli(socket, d)
       );
       socket.on('addTempMediaToFolder', d => onAddTempMediaToFolder(socket, d));
+      socket.on('copyFolder', d => onCopyFolder(socket, d));
       socket.on('updateNetworkInfos', d => onUpdateNetworkInfos(socket, d));
 
       socket.on('updateClientInfo', d => onUpdateClientInfo(socket, d));
@@ -182,7 +183,40 @@ module.exports = (function() {
             foldersData: Object.values(foldersData)[0],
             newFoldersData: data
           })
-          .then(slugFolderName => {
+          .then(({ slugFolderName, meta }) => {
+            // if password was changed
+            if (
+              Object.values(foldersData)[0].hasOwnProperty('password') &&
+              Object.values(foldersData)[0].password !== meta.password
+            ) {
+              Object.keys(io.sockets.connected).forEach(sid => {
+                let this_socket = io.sockets.connected[sid];
+
+                if (this_socket === socket) {
+                  return;
+                }
+
+                this_socket._is_authorized_for_folders.map(i => {
+                  if (i.type === type) {
+                    if (i.allowed_slugFolderNames.includes(slugFolderName)) {
+                      // remove slug from list
+                      i.allowed_slugFolderNames = i.allowed_slugFolderNames.filter(
+                        s => s !== slugFolderName
+                      );
+                    }
+                  }
+                });
+
+                // refresh auth
+                api.sendEventWithContent(
+                  'authentificated',
+                  this_socket._is_authorized_for_folders,
+                  io,
+                  this_socket
+                );
+              });
+            }
+
             sendFolders({ type, slugFolderName });
           })
           .catch(err => {
@@ -545,6 +579,21 @@ module.exports = (function() {
           not_localized_string: `Error adding temp media to folder: ${err}`
         });
       });
+  }
+
+  function onCopyFolder(socket, { type, slugFolderName, new_folder_name, id }) {
+    dev.logfunction(
+      `EVENT - onCopyFolder with 
+      type = ${type} and slugFolderName = ${slugFolderName}, for name = ${new_folder_name}`
+    );
+    file.copyFolder({ type, slugFolderName, new_folder_name }).then(
+      new_slugFolderName => {
+        sendFolders({ type, slugFolderName: new_slugFolderName, id });
+      },
+      function(err) {
+        dev.error(`Failed to copy folder! Error: ${err}`);
+      }
+    );
   }
 
   function onUpdateNetworkInfos() {

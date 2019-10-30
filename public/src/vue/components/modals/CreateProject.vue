@@ -14,7 +14,7 @@
       <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('project_name') }}</label>
-        <input type="text" v-model="projectdata.name" required autofocus />
+        <input type="text" v-model.trim="projectdata.name" required autofocus />
       </div>
 
       <!-- Preview -->
@@ -27,7 +27,7 @@
       <!-- Password -->
       <div class="margin-bottom-small">
         <label>{{ $t('password') }}</label>
-        <input type="password" v-model="projectdata.password" />
+        <input type="password" v-model="projectdata.password" autocomplete="new-password" />
         <small>{{ $t('password_instructions') }}</small>
       </div>
 

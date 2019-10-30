@@ -17,7 +17,7 @@
         <input
           class="input-big"
           type="text"
-          v-model="publidata.name"
+          v-model.trim="publidata.name"
           required
           autofocus
           :readonly="read_only"

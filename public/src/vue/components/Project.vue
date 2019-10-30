@@ -36,33 +36,46 @@
             <div>{{ $t('edited') }}</div>
             <div>{{ $root.formatDateToHuman(project.date_modified) }}</div>
           </div>
-          <div class="m_metaField" v-if="project.password === 'has_pass' && context !== 'full'">
+          <div
+            class="m_metaField"
+            v-if="can_access_folder && project.password === 'has_pass' && context !== 'full'"
+          >
             <label>{{ $t('protected_by_pass') }}</label>
+          </div>
+          <button
+            v-if="!can_access_folder && !showInputPasswordField"
+            type="button"
+            class="buttonLink"
+            style="display: block; margin: 0 auto calc(var(--spacing) / 2);"
+            :readonly="read_only"
+            @click="showInputPasswordField = !showInputPasswordField"
+          >{{ $t('password_required_to_open') }}</button>
 
-            <button
-              v-if="!can_access_folder"
-              type="button"
-              class="buttonLink"
-              :readonly="read_only"
-              @click="showInputPasswordField = !showInputPasswordField"
-            >{{ $t('password_required_to_open') }}</button>
-            <div
-              v-if="showInputPasswordField && !can_access_folder"
-              class="margin-bottom-small input-group"
-            >
+          <div class="padding-small" v-if="showInputPasswordField && !can_access_folder">
+            <div class="margin-bottom-small">
+              <label>{{ $t('password') }}</label>
               <input
                 type="password"
                 ref="passwordField"
                 @keydown.enter.prevent="submitPassword"
+                required
                 autofocus
                 placeholder="…"
               />
-              <button
-                type="button"
-                class="button bg-bleuvert button-thin"
-                @click="submitPassword"
-              >Valider</button>
             </div>
+            <!-- <div class="switch switch-xs margin-bottom-small">
+                <input
+                  type="checkbox"
+                  class="switch"
+                  id="remember_project_password_for_this_device"
+                  v-model="remember_project_password_for_this_device"
+                />
+                <label
+                  for="remember_project_password_for_this_device"
+                >{{ $t('remember_project_password_for_this_device') }}</label>
+            </div>-->
+
+            <button type="button" class="button bg-bleuvert" @click="submitPassword">Valider</button>
           </div>
 
           <div
@@ -77,6 +90,13 @@
             />
             <div v-if="showCurrentPassword && can_access_folder">{{ project_password }}</div>
           </div>
+
+          <button
+            v-if="can_access_folder && project_password && context === 'full'"
+            type="button"
+            class="_button_forgetpassword"
+            @click="forgetPassword"
+          >{{ $t('forget_password_and_close') }}</button>
         </div>
       </div>
 
@@ -123,6 +143,47 @@
           v-if="can_access_folder && context === 'full'"
           type="button"
           class="buttonLink"
+          :class="{ 'is--active' : showDuplicateProjectMenu }"
+          @click="showDuplicateProjectMenu = !showDuplicateProjectMenu"
+          :disabled="read_only"
+        >
+          <svg
+            version="1.1"
+            class="inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="91.6px"
+            height="95px"
+            viewBox="0 0 91.6 95"
+            style="enable-background:new 0 0 91.6 95;"
+            xml:space="preserve"
+          >
+            <polygon
+              class="st0"
+              points="39.5,11.8 83,11.8 83,55.4 72.7,55.4 72.7,67.2 94.8,67.2 94.8,0 27.7,0 27.7,22.2 39.5,22.2 	"
+            />
+            <path
+              class="st0"
+              d="M67.2,27.7L0,27.7l0,67.2l67.2,0L67.2,27.7z M55.4,83l-43.6,0l0-43.6l43.6,0L55.4,83z"
+            />
+          </svg>
+          {{ $t('duplicate') }}
+        </button>
+
+        <div v-if="showDuplicateProjectMenu" class="margin-bottom-small">
+          <label v-html="$t('name_of_copy')" />
+          <form @submit.prevent="duplicateWithNewName()" class="input-group">
+            <input type="text" v-model.trim="copy_project_name" required autofocus />
+            <button type="submit" v-html="$t('copy')" class="bg-bleuvert" />
+          </form>
+        </div>
+
+        <button
+          v-if="can_access_folder && context === 'full'"
+          type="button"
+          class="buttonLink"
           @click="removeProject()"
           :disabled="read_only"
         >
@@ -151,6 +212,7 @@
       <EditProject
         v-if="showEditProjectModal"
         :project="project"
+        :project_password="project_password"
         :slugProjectName="slugProjectName"
         @close="showEditProjectModal = false"
         :read_only="read_only"
@@ -222,13 +284,39 @@ export default {
   },
   data() {
     return {
-      debugProjectContent: false,
       showEditProjectModal: false,
       showInputPasswordField: false,
-      showCurrentPassword: false
+      showCurrentPassword: false,
+      remember_project_password_for_this_device: true,
+
+      showDuplicateProjectMenu: false,
+      copy_project_name: this.$t("copy_of") + " " + this.project.name
     };
   },
-  watch: {},
+  watch: {
+    can_access_folder() {
+      if (!this.can_access_folder && this.context === "full") {
+        // cas d’un mdp qui a été ajouté ou changé
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(
+            this.$t("notifications.password_added_or_changed_to_this_project")
+          );
+
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log(
+            this.$t("notifications.enter_password_to_reopen_project") +
+              "&nbsp;:" +
+              this.project.name
+          );
+
+        this.closeProject();
+      }
+    }
+  },
   mounted() {},
   beforeDestroy() {},
   computed: {
@@ -255,7 +343,8 @@ export default {
       const projects_password = this.$auth.getFoldersPasswords();
       if (
         projects_password.hasOwnProperty("projects") &&
-        projects_password["projects"].hasOwnProperty(this.slugProjectName)
+        projects_password["projects"].hasOwnProperty(this.slugProjectName) &&
+        this.project.password === "has_pass"
       ) {
         return projects_password["projects"][this.slugProjectName];
       }
@@ -287,6 +376,49 @@ export default {
           () => {}
         );
     },
+    duplicateWithNewName(event) {
+      console.log("METHODS • Project: duplicateWithNewName");
+
+      function getAllProjectNames() {
+        let allProjectsName = [];
+        for (let slugProjectName in window.store.projects) {
+          let projectName = window.store.projects[slugProjectName].name;
+          allProjectsName.push(projectName);
+        }
+        return allProjectsName;
+      }
+      let allProjectsName = getAllProjectNames();
+
+      // check if project name (not slug) already exists
+      if (allProjectsName.indexOf(this.copy_project_name) >= 0) {
+        // invalidate if it does
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.project_name_exists"));
+
+        return false;
+      }
+
+      this.$socketio.copyFolder({
+        type: "projects",
+        slugFolderName: this.slugProjectName,
+        new_folder_name: this.copy_project_name
+      });
+      this.showDuplicateProjectMenu = false;
+
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .log(this.$t("notifications.project_copy_in_progress"));
+
+      this.$eventHub.$once("socketio.projects.folder_listed", () => {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .success(this.$t("notifications.project_copy_completed"));
+      });
+    },
     submitPassword() {
       console.log("METHODS • Project: submitPassword");
 
@@ -295,6 +427,7 @@ export default {
           [this.slugProjectName]: this.$refs.passwordField.value
         }
       });
+
       this.$socketio.sendAuth();
 
       // check if password matches or not
@@ -312,8 +445,20 @@ export default {
               this.$t("notifications.wrong_password_for") + this.project.name
             );
           this.$refs.passwordField.value = "";
+          this.$refs.passwordField.focus();
+        } else {
+          this.showInputPasswordField = false;
         }
       });
+    },
+    forgetPassword() {
+      this.$auth.removeFolderPassword({
+        type: "projects",
+        slugFolderName: this.slugProjectName
+      });
+      this.$socketio.sendAuth();
+
+      this.closeProject();
     }
   }
 };

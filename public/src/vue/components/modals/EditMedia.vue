@@ -34,7 +34,31 @@
           target="_blank"
           class="buttonLink hide_on_print"
           :disabled="read_only"
-        >{{ $t('download') }}</a>
+        >
+          <svg
+            version="1.1"
+            class="inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="91.6px"
+            height="95px"
+            viewBox="0 0 91.6 95"
+            style="enable-background:new 0 0 91.6 95;"
+            xml:space="preserve"
+          >
+            <rect x="0.3" y="105.8" class="st0" width="85.8" height="16" />
+            <g>
+              <path
+                class="st0"
+                d="M75.2,51L60.6,37.5c-2.5-2.3-4.5-4.2-5.9-5.9c-1.4-1.7-2.8-3.7-4.2-6l0,67.6H35.3l0-67.6
+			c-1.2,2.1-2.6,4-4.2,5.8c-1.6,1.8-3.5,3.8-5.9,6.1L10.6,51L0,38.6L42.9,0l42.9,38.6L75.2,51z"
+              />
+            </g>
+          </svg>
+          {{ $t('download') }}
+        </a>
 
         <button
           type="button"
@@ -64,7 +88,12 @@
           {{ $t('remove') }}
         </button>
 
-        <button type="button" class="buttonLink c-noir" @click="showQRModal = !showQRModal">
+        <button
+          type="button"
+          class="buttonLink"
+          :class="{ 'is--active' : showQRModal }"
+          @click="showQRModal = !showQRModal"
+        >
           <svg
             version="1.1"
             class="inline-svg"
@@ -88,17 +117,45 @@
           <span class>{{ $t('share') }}</span>
         </button>
 
+        <template v-if="showQRModal">
+          <hr />
+          <CreateQRCode :slugFolderName="slugProjectName" :media="media" />
+        </template>
+
         <button
           type="button"
-          class="buttonLink c-noir"
+          class="buttonLink"
+          :class="{ 'is--active' : showCopyToProjectOptions }"
           @click="showCopyToProjectOptions = !showCopyToProjectOptions"
         >
-          <span class>{{ $t('copy') }}</span>
+          <svg
+            version="1.1"
+            class="inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="91.6px"
+            height="95px"
+            viewBox="0 0 91.6 95"
+            style="enable-background:new 0 0 91.6 95;"
+            xml:space="preserve"
+          >
+            <polygon
+              class="st0"
+              points="39.5,11.8 83,11.8 83,55.4 72.7,55.4 72.7,67.2 94.8,67.2 94.8,0 27.7,0 27.7,22.2 39.5,22.2 	"
+            />
+            <path
+              class="st0"
+              d="M67.2,27.7L0,27.7l0,67.2l67.2,0L67.2,27.7z M55.4,83l-43.6,0l0-43.6l43.6,0L55.4,83z"
+            />
+          </svg>
+          <span class>{{ $t('duplicate') }}</span>
         </button>
 
         <div v-if="showCopyToProjectOptions" class="margin-bottom-small">
           <label v-html="$t('add_to_project')" />
-          <div class="flex-nowrap">
+          <div class="input-group">
             <select v-model="upload_to_folder">
               <option
                 v-for="project in all_projects"
@@ -110,16 +167,11 @@
               type="button"
               @click="copyMediaToProject(upload_to_folder)"
               :disabled="upload_to_folder === ''"
-              v-html="$t('send')"
-              class="bg-bleuvert button-thin"
+              v-html="$t('copy')"
+              class="bg-bleuvert"
             />
           </div>
         </div>
-
-        <template v-if="showQRModal">
-          <hr />
-          <CreateQRCode :slugFolderName="slugProjectName" :media="media" />
-        </template>
 
         <button
           type="button"

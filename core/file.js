@@ -362,7 +362,7 @@ module.exports = (function() {
                   4
                 )}`
               );
-              resolve();
+              resolve(meta);
             },
             function(err) {
               reject(`Couldn't update folder meta: ${err}`);
@@ -372,11 +372,15 @@ module.exports = (function() {
         tasks.push(updateFoldersMeta);
 
         Promise.all(tasks)
-          .then(() => {
-            dev.logverbose(`COMMON — editFolder : now resolving`);
+          .then(metas => {
+            dev.logverbose(
+              `COMMON — editFolder : now resolving with meta ${JSON.stringify(
+                metas[0]
+              )}`
+            );
             // only deleting from cache because a specific getFolder with slugFolderName is coming right after
             cache.del({ type, slugFolderName });
-            resolve(slugFolderName);
+            resolve({ slugFolderName, meta: metas[0] });
           })
           .catch(err => {
             dev.error(
@@ -417,6 +421,71 @@ module.exports = (function() {
           .catch(err => {
             reject(err);
           });
+      });
+    },
+    copyFolder: ({
+      type,
+      slugFolderName: old_slugFolderName,
+      new_folder_name
+    }) => {
+      return new Promise(function(resolve, reject) {
+        dev.logfunction(`COMMON — copyFolder`);
+
+        if (!global.settings.structure.hasOwnProperty(type)) {
+          reject(`Missing type ${type} in global.settings.json`);
+        }
+
+        const baseFolderPath = global.settings.structure[type].path;
+        const mainFolderPath = api.getFolderPath(baseFolderPath);
+
+        _getFolderSlugs(mainFolderPath).then(folders => {
+          let new_slugFolderName = api.slug(new_folder_name);
+          if (new_slugFolderName === '') {
+            new_slugFolderName = 'untitled';
+          }
+
+          if (folders.length > 0) {
+            let index = 0;
+            let proposedSlugFolderName = new_slugFolderName;
+            while (folders.indexOf(proposedSlugFolderName) !== -1) {
+              index++;
+              proposedSlugFolderName = `${new_slugFolderName}-${index}`;
+            }
+            new_slugFolderName = proposedSlugFolderName;
+            dev.logverbose(`Proposed slug: ${new_slugFolderName}`);
+          }
+
+          const oldFolderPath = path.join(mainFolderPath, old_slugFolderName);
+          const newFolderPath = path.join(mainFolderPath, new_slugFolderName);
+          dev.logverbose(`Copying folder to path ${newFolderPath}`);
+
+          fs.copy(oldFolderPath, newFolderPath)
+            .then(() => {
+              const metaFolderPath = path.join(
+                newFolderPath,
+                global.settings.folderMetaFilename + global.settings.metaFileext
+              );
+
+              readMetaFile(metaFolderPath).then(meta => {
+                if (meta.hasOwnProperty('name')) {
+                  meta.name = new_folder_name;
+                }
+
+                api
+                  .storeData(metaFolderPath, meta)
+                  .then(() => {
+                    return resolve(new_slugFolderName);
+                  })
+                  .catch(err => {
+                    return reject(err);
+                  });
+              });
+            })
+            .catch(err => {
+              dev.error(`Failed to copy folder`);
+              reject(err);
+            });
+        });
       });
     },
 
@@ -1545,6 +1614,9 @@ module.exports = (function() {
                         d_array.map(i => {
                           Object.assign(meta, i);
                         });
+                        if (meta.hasOwnProperty('date_uploaded')) {
+                          meta.date_uploaded = api.getCurrentDate();
+                        }
 
                         api
                           .storeData(destination_metaFilePath, meta, 'create')

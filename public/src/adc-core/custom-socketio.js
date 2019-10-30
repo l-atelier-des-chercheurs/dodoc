@@ -396,6 +396,9 @@ module.exports = (function() {
           addTempMediaToFolder(pdata) {
             this.socket.emit('addTempMediaToFolder', pdata);
           },
+          copyFolder(pdata) {
+            this.socket.emit('copyFolder', pdata);
+          },
           updateNetworkInfos() {
             this.socket.emit('updateNetworkInfos');
           }

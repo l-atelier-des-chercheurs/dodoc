@@ -60,8 +60,7 @@
           "default": "current"
         },
         "password": {
-          "type": "string",
-          "read_only": true
+          "type": "string"
         },
         "authors": {
           "type": "array"

@@ -19,6 +19,7 @@ module.exports = (function() {
       color: 'Couleur',
       keywords: 'Mots-clés',
       share: 'Partage',
+      copy: 'Copier',
       author: 'Auteur(s)',
       download: 'Télécharger',
       caption: 'Légende',
@@ -39,10 +40,12 @@ module.exports = (function() {
       slow: 'Lent',
       speed_medium: 'Normal',
       fast: 'Rapide',
+      forget_password_and_close: 'Oublier le mot de passe et fermer le projet',
 
       remember_password_on_this_device: 'Sauvegarder pour cet appareil',
 
       cooking_pot: 'La marmite',
+      copy_of: 'Copie de',
       text_overflow: 'Texte en excès',
       move_to_foreground: 'Mettre au premier plan',
       move_to_background: 'Mettre à l’arrière plan',
@@ -50,6 +53,7 @@ module.exports = (function() {
       css_settings: 'Règlages CSS',
       edit_content: 'Modifier le contenu',
       adjust: 'Ajuster',
+      duplicate: 'Dupliquer',
 
       show_all: 'Tout afficher',
       cooking_pot_instructions:
@@ -84,6 +88,10 @@ module.exports = (function() {
       connect_to_dodoc: 'Accéder à do•doc',
 
       login: 'S’identifier',
+      adding_password_warning:
+        'Attention ! Si vous ajoutez ou modifiez un mot de passe tous les utilisateurs qui y sont actuellement connectés devront le renseigner avant de pouvoir continuer à contribuer.',
+      removing_password_warning:
+        'Si vous retirez le mot de passe tous les utilisateurs qui ont accès à do•doc pourront modifier le projet.',
       help: 'Aide',
       date: 'Date',
       portrait: 'Portrait',
@@ -95,8 +103,8 @@ module.exports = (function() {
       show_all_authors: 'Afficher l’ensemble des auteurs',
       changes_not_saved_sureToCloseModal:
         'Des modifications ont eu lieu, souhaitez-vous les enregistrer ?',
-      save_changes: 'Enregistrer les modifications',
-      close_the_window: 'Annuler',
+      save_changes: 'Oui, enregistrer les modifications',
+      close_the_window: 'Non, fermer sans enregistrer',
       sureToRemovePubli:
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
       sure_to_cancel_stopmotion:
@@ -284,6 +292,7 @@ module.exports = (function() {
       get_a_link: 'Récupérer un lien vers ce document&nbsp;:',
 
       format: 'Format',
+      name_of_copy: 'Nom à donner à la copie',
       template: 'Gabarit',
       standard: 'Standard',
       'feuille de choux': 'Feuille de Choux',
@@ -317,6 +326,8 @@ module.exports = (function() {
       previous_media: 'Média précédent',
       next_media: 'Média suivant',
       minimize_media: 'Utiliser comme référence',
+      remember_project_password_for_this_device:
+        'Se souvenir du mot de passe pour cet appareil',
 
       notifications: {
         ios_not_compatible_with_capture:
@@ -382,7 +393,13 @@ module.exports = (function() {
           'Connection à do•doc en utilisant le mot de passe enregistré',
         pdf_created: 'Le PDF a été créé',
         video_created: 'La vidéo a été créée',
-        video_creation_failed: 'La vidéo n’a pas pu être créée'
+        video_creation_failed: 'La vidéo n’a pas pu être créée',
+        project_copy_in_progress: 'Copie du projet en cours…',
+        project_copy_completed: 'Copie terminée',
+        password_added_or_changed_to_this_project:
+          'Le mot de passe de ce projet a été ajouté ou modifié.',
+        enter_password_to_reopen_project:
+          'Entrez le nouveau mot de passe pour accéder à nouveau à'
       }
     },
     en: {
@@ -403,11 +420,16 @@ module.exports = (function() {
       keywords: 'Keywords',
       author: 'Author(s)',
       share: 'Share',
+      copy: 'Copy',
       download: 'Download',
       caption: 'Caption',
       formatting: 'Formatting',
 
       login: 'Login',
+      adding_password_warning:
+        'Warning! Adding or changing the password will disconnect all users until they enter the new password.',
+      removing_password_warning:
+        'Removing the password for this project will allow everyone to access, edit and delete it.',
       help: 'Help',
       date: 'Date',
       smoothing: 'smoothing',
@@ -424,10 +446,12 @@ module.exports = (function() {
       slow: 'Slow',
       speed_medium: 'Normal',
       fast: 'Fast',
+      forget_password_and_close: 'Forget password and close project',
 
       remember_password_on_this_device: 'Remember for this device',
 
       cooking_pot: 'Cooking pot',
+      copy_of: 'Copy of',
       text_overflow: 'Overflow text',
       move_to_foreground: 'Move to foreground',
       move_to_background: 'Move to background',
@@ -435,6 +459,7 @@ module.exports = (function() {
       css_settings: 'CSS settings',
       edit_content: 'Edit content',
       adjust: 'Adjust',
+      duplicate: 'Duplicate',
 
       show_all: 'Show all',
       cooking_pot_instructions:
@@ -464,8 +489,8 @@ module.exports = (function() {
       show_all_authors: 'Show all authors',
       changes_not_saved_sureToCloseModal:
         'All changes were not saved. Do you really want to close this window?',
-      save_changes: 'Save changes first',
-      close_the_window: 'Close anyway',
+      save_changes: 'Yes, save changes',
+      close_the_window: 'No, close without saving',
       sureToRemovePubli: 'Do you really want to delete this publication?',
       sure_to_cancel_stopmotion:
         'Do you really want to cancel this stopmotion? You can resume making it by clicking on "Stopmotion list"',
@@ -651,6 +676,7 @@ module.exports = (function() {
       get_a_link: 'Get a link to this document&nbsp;:',
 
       format: 'Format',
+      name_of_copy: 'Name of the copy',
       template: 'Template',
       page_by_page: 'Paged document',
       video_assemblage: 'Video editing',
@@ -693,6 +719,11 @@ module.exports = (function() {
       img_per_second: 'Images per second',
       sent: 'Sent',
       disable: 'Disable',
+      previous_media: 'Previous media',
+      next_media: 'Next media',
+      minimize_media: 'Use as a reference',
+      remember_project_password_for_this_device:
+        'Remember password for this device',
 
       notifications: {
         ios_not_compatible_with_capture:
@@ -752,7 +783,13 @@ module.exports = (function() {
           'Connecting to do•doc using the password that was saved',
         pdf_created: 'PDF created',
         video_created: 'The video was created',
-        video_creation_failed: 'The video was not created'
+        video_creation_failed: 'The video was not created',
+        project_copy_in_progress: 'Copy of the project in progress…',
+        project_copy_completed: 'Copy finished',
+        password_added_or_changed_to_this_project:
+          'The password for this project hass been added or changed.',
+        enter_password_to_reopen_project:
+          'Enter the new password to reopen project'
       }
     }
   };

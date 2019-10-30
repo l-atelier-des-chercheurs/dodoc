@@ -20,6 +20,7 @@
           :class="cssStatus(f)"
           :style="`--progress-percent: ${files_to_upload_meta.hasOwnProperty(f.name) ? files_to_upload_meta[f.name].upload_percentages/100 : 0}`"
         >
+          <div class="m_uploadFile--progressBar"></div>
           <!-- too heavy on memory on mobile devices -->
           <!-- <img 
             v-if="!!f.type && f.type.includes('image') && index < 5" 

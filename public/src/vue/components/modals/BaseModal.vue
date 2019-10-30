@@ -282,7 +282,7 @@ export default {
         this.has_confirm_close_modal_open = true;
         this.$alertify
           .okBtn(this.$t("save_changes"))
-          .cancelBtn(this.$t("cancel"))
+          .cancelBtn(this.$t("close_the_window"))
           .confirm(
             this.$t("changes_not_saved_sureToCloseModal"),
             () => {
@@ -337,7 +337,7 @@ export default {
         this.has_confirm_close_modal_open = true;
         this.$alertify
           .okBtn(this.$t("save_changes"))
-          .cancelBtn(this.$t("cancel"))
+          .cancelBtn(this.$t("close_the_window"))
           .confirm(
             this.$t("changes_not_saved_sureToCloseModal"),
             () => {
