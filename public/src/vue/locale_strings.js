@@ -87,6 +87,10 @@ module.exports = (function() {
       connect_to_dodoc: 'Accéder à do•doc',
 
       login: 'S’identifier',
+      adding_password_warning:
+        'Attention ! Si vous ajoutez ou modifiez un mot de passe tous les utilisateurs qui y sont actuellement connectés devront le renseigner avant de pouvoir continuer à contribuer.',
+      removing_password_warning:
+        'Si vous supprimez le mot de passe tout les utilisateurs qui ont accès à do•doc pourront modifier le projet.',
       help: 'Aide',
       date: 'Date',
       portrait: 'Portrait',
@@ -99,7 +103,7 @@ module.exports = (function() {
       changes_not_saved_sureToCloseModal:
         'Des modifications ont eu lieu, souhaitez-vous les enregistrer ?',
       save_changes: 'Oui, enregistrer les modifications',
-      close_the_window: 'Non fermer sans enregistrer',
+      close_the_window: 'Non, fermer sans enregistrer',
       sureToRemovePubli:
         'Êtes-vous sûr de vouloir supprimer cette publication ?',
       sure_to_cancel_stopmotion:
@@ -388,7 +392,11 @@ module.exports = (function() {
         video_created: 'La vidéo a été créée',
         video_creation_failed: 'La vidéo n’a pas pu être créée',
         project_copy_in_progress: 'Copie du projet en cours…',
-        project_copy_completed: 'Copie terminée'
+        project_copy_completed: 'Copie terminée',
+        password_added_or_changed_to_this_project:
+          'Le mot de passe de ce projet a été ajouté ou modifié.',
+        enter_password_to_reopen_project:
+          'Entrez le nouveau mot de passe pour accéder à nouveau à'
       }
     },
     en: {
@@ -415,6 +423,10 @@ module.exports = (function() {
       formatting: 'Formatting',
 
       login: 'Login',
+      adding_password_warning:
+        'Warning! Adding or changing the password will disconnect all users until they enter the new password.',
+      removing_password_warning:
+        'Removing the password for this project will allow everyone to access, edit and delete it.',
       help: 'Help',
       date: 'Date',
       smoothing: 'smoothing',
@@ -764,7 +776,11 @@ module.exports = (function() {
         video_created: 'The video was created',
         video_creation_failed: 'The video was not created',
         project_copy_in_progress: 'Copy of the project in progress…',
-        project_copy_completed: 'Copy finished'
+        project_copy_completed: 'Copy finished',
+        password_added_or_changed_to_this_project:
+          'The password for this project hass been added or changed.',
+        enter_password_to_reopen_project:
+          'Enter the new password to reopen project'
       }
     }
   };

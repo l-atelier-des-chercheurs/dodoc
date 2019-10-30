@@ -183,7 +183,40 @@ module.exports = (function() {
             foldersData: Object.values(foldersData)[0],
             newFoldersData: data
           })
-          .then(slugFolderName => {
+          .then(({ slugFolderName, meta }) => {
+            // if password was changed
+            if (
+              Object.values(foldersData)[0].hasOwnProperty('password') &&
+              Object.values(foldersData)[0].password !== meta.password
+            ) {
+              Object.keys(io.sockets.connected).forEach(sid => {
+                let this_socket = io.sockets.connected[sid];
+
+                if (this_socket === socket) {
+                  return;
+                }
+
+                this_socket._is_authorized_for_folders.map(i => {
+                  if (i.type === type) {
+                    if (i.allowed_slugFolderNames.includes(slugFolderName)) {
+                      // remove slug from list
+                      i.allowed_slugFolderNames = i.allowed_slugFolderNames.filter(
+                        s => s !== slugFolderName
+                      );
+                    }
+                  }
+                });
+
+                // refresh auth
+                api.sendEventWithContent(
+                  'authentificated',
+                  this_socket._is_authorized_for_folders,
+                  io,
+                  this_socket
+                );
+              });
+            }
+
             sendFolders({ type, slugFolderName });
           })
           .catch(err => {

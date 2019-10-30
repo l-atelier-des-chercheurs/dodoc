@@ -362,7 +362,7 @@ module.exports = (function() {
                   4
                 )}`
               );
-              resolve();
+              resolve(meta);
             },
             function(err) {
               reject(`Couldn't update folder meta: ${err}`);
@@ -372,11 +372,15 @@ module.exports = (function() {
         tasks.push(updateFoldersMeta);
 
         Promise.all(tasks)
-          .then(() => {
-            dev.logverbose(`COMMON — editFolder : now resolving`);
+          .then(metas => {
+            dev.logverbose(
+              `COMMON — editFolder : now resolving with meta ${JSON.stringify(
+                metas[0]
+              )}`
+            );
             // only deleting from cache because a specific getFolder with slugFolderName is coming right after
             cache.del({ type, slugFolderName });
-            resolve(slugFolderName);
+            resolve({ slugFolderName, meta: metas[0] });
           })
           .catch(err => {
             dev.error(

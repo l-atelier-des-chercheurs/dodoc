@@ -1009,6 +1009,9 @@ small {
       margin: 0;
     }
 
+    &:hover {
+    }
+
     .m_project--presentation {
       @supports (display: grid) {
         flex-basis: 100% !important;
@@ -1023,9 +1026,14 @@ small {
     border-radius: @t-buttonradius;
     .bg-blanc;
     .boxs-card-0;
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
     &:not(.is--not_authorized_to_admin) {
-    }
+      &:hover {
+        transform: translateY(-4px);
+        .boxs-card-2;
+      }
+      }
 
     &.is--not_authorized_to_admin {
       cursor: not-allowed;
@@ -1510,7 +1518,7 @@ small {
 
     &.is--hovered {
       transform: translateY(-4px);
-      .boxs-card-3;
+      .boxs-card-2;
       transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 

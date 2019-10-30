@@ -31,11 +31,16 @@
       </div>
 
       <!-- Password -->
-      <!-- <div class="margin-bottom-small">
+      <div class="margin-bottom-small">
         <label>{{ $t('password') }}</label>
-        <input type="password" v-model="projectdata.password" :readonly="read_only">
-        <small>{{ $t('password_instructions') }}</small>
-      </div>-->
+        <input type="password" v-model="projectdata.password" :readonly="read_only" />
+        <small>
+          <template
+            v-if="project_password && projectdata.password === ''"
+          >{{ $t('removing_password_warning') }}</template>
+          <template v-else>{{ $t('adding_password_warning') }}</template>
+        </small>
+      </div>
 
       <!-- Keywords -->
       <div class="margin-bottom-small">
@@ -71,6 +76,7 @@ import AuthorsInput from "../subcomponents/AuthorsInput.vue";
 export default {
   props: {
     slugProjectName: String,
+    project_password: String,
     project: Object,
     read_only: Boolean
   },
@@ -91,7 +97,8 @@ export default {
                 return { name: a };
               })
             : this.project.authors,
-        keywords: this.project.keywords
+        keywords: this.project.keywords,
+        password: this.project_password ? this.project_password : ""
       },
       tag: "",
       preview: undefined,
@@ -155,6 +162,15 @@ export default {
 
       if (typeof this.preview !== "undefined") {
         this.projectdata.preview_rawdata = this.preview;
+      }
+
+      // check if password and password changed
+      if (this.projectdata.password) {
+        this.$auth.updateFoldersPasswords({
+          projects: {
+            [this.slugProjectName]: this.projectdata.password
+          }
+        });
       }
 
       this.$root.editFolder({

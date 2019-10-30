@@ -188,6 +188,7 @@
       <EditProject
         v-if="showEditProjectModal"
         :project="project"
+        :project_password="project_password"
         :slugProjectName="slugProjectName"
         @close="showEditProjectModal = false"
         :read_only="read_only"
@@ -268,7 +269,30 @@ export default {
       copy_project_name: this.$t("copy_of") + " " + this.project.name
     };
   },
-  watch: {},
+  watch: {
+    can_access_folder() {
+      if (!this.can_access_folder && this.context === "full") {
+        // cas d’un mdp qui a été ajouté ou changé
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(
+            this.$t("notifications.password_added_or_changed_to_this_project")
+          );
+
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log(
+            this.$t("notifications.enter_password_to_reopen_project") +
+              "&nbsp;:" +
+              this.project.name
+          );
+
+        this.closeProject();
+      }
+    }
+  },
   mounted() {},
   beforeDestroy() {},
   computed: {
@@ -295,7 +319,8 @@ export default {
       const projects_password = this.$auth.getFoldersPasswords();
       if (
         projects_password.hasOwnProperty("projects") &&
-        projects_password["projects"].hasOwnProperty(this.slugProjectName)
+        projects_password["projects"].hasOwnProperty(this.slugProjectName) &&
+        this.project.password === "has_pass"
       ) {
         return projects_password["projects"][this.slugProjectName];
       }
