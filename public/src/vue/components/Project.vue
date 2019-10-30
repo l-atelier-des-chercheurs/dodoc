@@ -36,29 +36,46 @@
             <div>{{ $t('edited') }}</div>
             <div>{{ $root.formatDateToHuman(project.date_modified) }}</div>
           </div>
-          <div class="m_metaField" v-if="project.password === 'has_pass' && context !== 'full'">
+          <div
+            class="m_metaField"
+            v-if="can_access_folder && project.password === 'has_pass' && context !== 'full'"
+          >
             <label>{{ $t('protected_by_pass') }}</label>
+          </div>
+          <button
+            v-if="!can_access_folder && !showInputPasswordField"
+            type="button"
+            class="buttonLink"
+            style="display: block; margin: 0 auto calc(var(--spacing) / 2);"
+            :readonly="read_only"
+            @click="showInputPasswordField = !showInputPasswordField"
+          >{{ $t('password_required_to_open') }}</button>
 
-            <button
-              v-if="!can_access_folder && !showInputPasswordField"
-              type="button"
-              class="buttonLink"
-              :readonly="read_only"
-              @click="showInputPasswordField = !showInputPasswordField"
-            >{{ $t('password_required_to_open') }}</button>
-            <div
-              v-if="showInputPasswordField && !can_access_folder"
-              class="margin-bottom-small input-group"
-            >
+          <div class="padding-small" v-if="showInputPasswordField && !can_access_folder">
+            <div class="margin-bottom-small">
+              <label>{{ $t('password') }}</label>
               <input
                 type="password"
                 ref="passwordField"
                 @keydown.enter.prevent="submitPassword"
+                required
                 autofocus
                 placeholder="…"
               />
-              <button type="button" class="button bg-bleuvert" @click="submitPassword">Valider</button>
             </div>
+            <!-- <div class="switch switch-xs margin-bottom-small">
+                <input
+                  type="checkbox"
+                  class="switch"
+                  id="remember_project_password_for_this_device"
+                  v-model="remember_project_password_for_this_device"
+                />
+                <label
+                  for="remember_project_password_for_this_device"
+                >{{ $t('remember_project_password_for_this_device') }}</label>
+            </div>-->
+
+            <button type="button" class="button bg-bleuvert" @click="submitPassword">Valider</button>
           </div>
 
           <div
@@ -73,6 +90,13 @@
             />
             <div v-if="showCurrentPassword && can_access_folder">{{ project_password }}</div>
           </div>
+
+          <button
+            v-if="can_access_folder && project_password && context === 'full'"
+            type="button"
+            class="_button_forgetpassword"
+            @click="forgetPassword"
+          >{{ $t('forget_password_and_close') }}</button>
         </div>
       </div>
 
@@ -260,10 +284,10 @@ export default {
   },
   data() {
     return {
-      debugProjectContent: false,
       showEditProjectModal: false,
       showInputPasswordField: false,
       showCurrentPassword: false,
+      remember_project_password_for_this_device: true,
 
       showDuplicateProjectMenu: false,
       copy_project_name: this.$t("copy_of") + " " + this.project.name
@@ -403,6 +427,7 @@ export default {
           [this.slugProjectName]: this.$refs.passwordField.value
         }
       });
+
       this.$socketio.sendAuth();
 
       // check if password matches or not
@@ -420,8 +445,20 @@ export default {
               this.$t("notifications.wrong_password_for") + this.project.name
             );
           this.$refs.passwordField.value = "";
+          this.$refs.passwordField.focus();
+        } else {
+          this.showInputPasswordField = false;
         }
       });
+    },
+    forgetPassword() {
+      this.$auth.removeFolderPassword({
+        type: "projects",
+        slugFolderName: this.slugProjectName
+      });
+      this.$socketio.sendAuth();
+
+      this.closeProject();
     }
   }
 };

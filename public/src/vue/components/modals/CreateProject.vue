@@ -27,7 +27,7 @@
       <!-- Password -->
       <div class="margin-bottom-small">
         <label>{{ $t('password') }}</label>
-        <input type="password" v-model="projectdata.password" />
+        <input type="password" v-model="projectdata.password" autocomplete="new-password" />
         <small>{{ $t('password_instructions') }}</small>
       </div>
 

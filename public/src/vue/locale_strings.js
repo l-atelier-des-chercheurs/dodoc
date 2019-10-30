@@ -40,6 +40,7 @@ module.exports = (function() {
       slow: 'Lent',
       speed_medium: 'Normal',
       fast: 'Rapide',
+      forget_password_and_close: 'Oublier le mot de passe et fermer le projet',
 
       remember_password_on_this_device: 'Sauvegarder pour cet appareil',
 
@@ -90,7 +91,7 @@ module.exports = (function() {
       adding_password_warning:
         'Attention ! Si vous ajoutez ou modifiez un mot de passe tous les utilisateurs qui y sont actuellement connectés devront le renseigner avant de pouvoir continuer à contribuer.',
       removing_password_warning:
-        'Si vous supprimez le mot de passe tout les utilisateurs qui ont accès à do•doc pourront modifier le projet.',
+        'Si vous retirez le mot de passe tous les utilisateurs qui ont accès à do•doc pourront modifier le projet.',
       help: 'Aide',
       date: 'Date',
       portrait: 'Portrait',
@@ -325,6 +326,8 @@ module.exports = (function() {
       previous_media: 'Média précédent',
       next_media: 'Média suivant',
       minimize_media: 'Utiliser comme référence',
+      remember_project_password_for_this_device:
+        'Se souvenir du mot de passe pour cet appareil',
 
       notifications: {
         ios_not_compatible_with_capture:
@@ -443,6 +446,7 @@ module.exports = (function() {
       slow: 'Slow',
       speed_medium: 'Normal',
       fast: 'Fast',
+      forget_password_and_close: 'Forget password and close project',
 
       remember_password_on_this_device: 'Remember for this device',
 
@@ -715,6 +719,11 @@ module.exports = (function() {
       img_per_second: 'Images per second',
       sent: 'Sent',
       disable: 'Disable',
+      previous_media: 'Previous media',
+      next_media: 'Next media',
+      minimize_media: 'Use as a reference',
+      remember_project_password_for_this_device:
+        'Remember password for this device',
 
       notifications: {
         ios_not_compatible_with_capture:
