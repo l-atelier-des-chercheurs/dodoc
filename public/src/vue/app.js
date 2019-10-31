@@ -122,6 +122,7 @@ let vm = new Vue({
     justCreatedMediaID: false,
 
     currentTime: '',
+    app_is_fullscreen: false,
 
     do_navigation: {
       view: 'ListView',
@@ -209,6 +210,24 @@ let vm = new Vue({
     if (window.state.dev_mode === 'debug') {
       console.log('ROOT EVENT: created / checking for password');
     }
+
+    var detectFullScreen = () => {
+      var fullscreenElement =
+        document.fullscreenElement ||
+        document.mozFullScreenElement ||
+        document.webkitFullscreenElement ||
+        document.msFullscreenElement;
+
+      if (fullscreenElement) {
+        this.app_is_fullscreen = true;
+      } else {
+        this.app_is_fullscreen = false;
+      }
+    };
+
+    document.addEventListener('fullscreenchange', detectFullScreen);
+    document.addEventListener('mozfullscreenchange', detectFullScreen);
+    document.addEventListener('webkitfullscreenchange', detectFullScreen);
 
     // const canAccessDodoc = () => {
     //   if (window.state.is_electron) return true;

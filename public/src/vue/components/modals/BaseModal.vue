@@ -310,6 +310,10 @@ export default {
       console.log(
         `METHODS • BaseModal: prevMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`
       );
+      if (this.$root.app_is_fullscreen) {
+        return;
+      }
+
       if (this.askBeforeClosingModal) {
         this.has_confirm_close_modal_open = true;
         this.$alertify
@@ -333,6 +337,11 @@ export default {
       console.log(
         `METHODS • BaseModal: nextMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`
       );
+
+      if (this.$root.app_is_fullscreen) {
+        return;
+      }
+
       if (this.askBeforeClosingModal) {
         this.has_confirm_close_modal_open = true;
         this.$alertify
