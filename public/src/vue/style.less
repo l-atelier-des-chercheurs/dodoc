@@ -1833,6 +1833,64 @@ small {
   }
 }
 
+.m_typeField {
+  .font-verysmall;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  text-transform: initial;
+  font-family: 'Fira Mono';
+  font-weight: 00;
+
+  > .input {
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  > span {
+    cursor: pointer;
+    flex-basis: auto;
+    display: flex;
+    align-items: center;
+    min-height: 0;
+    border-radius: 4px !important;
+    // color: white !important;
+    .bg-noir;
+    .c-blanc;
+
+    font-size: inherit !important;
+    // .padding-sides-verysmall !important;
+    // .padding-vert-verysmall !important;
+    padding: 0.4em;
+
+    text-transform: initial;
+    font-weight: inherit;
+    font-weight: 400;
+
+    margin: 0 !important;
+    margin-right: @t-skipline / 4 !important;
+    margin-bottom: @t-skipline / 4 !important;
+
+    &.is--active {
+      font-weight: 700;
+      &::before {
+        color: black;
+        // background-color: black !important;
+      }
+    }
+
+    input {
+      display: inline-block;
+    }
+
+    label {
+      font-size: inherit;
+      line-height: inherit !important;
+      text-transform: lowercase;
+    }
+  }
+}
+
 .m_keywordField,
 .vue-tags-input {
   position: relative;

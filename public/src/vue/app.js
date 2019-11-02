@@ -790,7 +790,10 @@ let vm = new Vue({
       this.settings.media_filter.fav = !this.settings.media_filter.fav;
     },
     setTypeFilter(newTypeFilter) {
-      if (this.settings.media_filter.type !== newTypeFilter) {
+      if (
+        this.settings.media_filter.type !== newTypeFilter &&
+        newTypeFilter.length > 0
+      ) {
         this.settings.media_filter.type = newTypeFilter;
       } else {
         this.settings.media_filter.type = false;
@@ -798,58 +801,48 @@ let vm = new Vue({
     },
 
     filterMedia(media) {
-      // if filter is set to fav and media isn’t fav
-      if (this.settings.media_filter.fav === true) {
-        if (!media.fav) {
-          return false;
-        }
-      }
-
-      // if no other filter is set, then show media
-      if (
-        this.settings.media_filter.keyword === false &&
-        this.settings.media_filter.author === false &&
-        this.settings.media_filter.type === false
-      ) {
-        return true;
-      }
+      const checkIfMediaIsFav = media => {
+        debugger;
+        return (
+          media.hasOwnProperty('fav') &&
+          typeof media.fav === 'boolean' &&
+          media.fav === this.settings.media_filter.fav
+        );
+      };
 
       const checkIfMediaHasKeyword = media => {
-        if (
+        return (
           media.hasOwnProperty('keywords') &&
           typeof media.keywords === 'object' &&
           media.keywords.filter(
             k => k.title === this.settings.media_filter.keyword
           ).length > 0
-        ) {
-          return true;
-        }
-        return false;
+        );
       };
       const checkIfMediaHasAuthor = media => {
-        if (
+        return (
           media.hasOwnProperty('authors') &&
           typeof media.authors === 'object' &&
           media.authors.filter(
             k => k.name === this.settings.media_filter.author
           ).length > 0
-        ) {
-          return true;
-        }
-        return false;
+        );
+      };
+      const checkIfMediaHasType = media => {
+        return (
+          media.hasOwnProperty('type') &&
+          typeof media.type === 'string' &&
+          this.settings.media_filter.type.includes(media.type)
+        );
       };
 
-      if (
-        this.settings.media_filter.keyword !== false &&
-        this.settings.media_filter.author !== false
-      ) {
-        return checkIfMediaHasKeyword(media) && checkIfMediaHasAuthor(media);
-      } else if (this.settings.media_filter.keyword !== false) {
-        return checkIfMediaHasKeyword(media);
-      } else if (this.settings.media_filter.author !== false) {
-        return checkIfMediaHasAuthor(media);
-      }
-      // END MEDIA FILTER LOGIC
+      return (
+        (!this.settings.media_filter.fav || checkIfMediaIsFav(media)) &&
+        (!this.settings.media_filter.keyword ||
+          checkIfMediaHasKeyword(media)) &&
+        (!this.settings.media_filter.author || checkIfMediaHasAuthor(media)) &&
+        (!this.settings.media_filter.type || checkIfMediaHasType(media))
+      );
     },
 
     updateLocalLang: function(newLangCode) {

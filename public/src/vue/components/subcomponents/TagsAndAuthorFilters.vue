@@ -37,7 +37,7 @@
     </div>
     <div v-if="allTypes.length > 0" class="padding-sides-small">
       <label>{{ $t('type') }}</label>
-      <div>
+      <div class="m_typeField margin-bottom-none font-large">
         <span class v-for="type in allTypes" :key="type">
           <input
             type="checkbox"
@@ -47,7 +47,7 @@
             @change="$emit('setTypeFilter', enabled_types)"
             :readonly="read_only"
           />
-          <label :for="`type-${type}`">{{ $t(type) }}</label>
+          <label :for="`type-${type}`">&nbsp;{{ $t(type) }}</label>
         </span>
       </div>
     </div>
