@@ -496,13 +496,13 @@ body {
     .margin-small;
     // .margin-sides-small;
     // .margin-small;
-    flex: 0 1 auto;
-    min-width: 160px;
+    flex: 0 0 200px;
     // max-width: 160px;
     min-height: 160px;
   }
 
-  .m_authorsList--createAuthor {
+  .m_authorsList--createAuthor,
+  .m_authorsList--editAuthor {
     position: relative;
     border: 4px solid @c-gris_tresclair;
     // border: 4px solid @c-gris_clair;
@@ -528,24 +528,29 @@ body {
     }
 
     > form {
-      width: 312px;
+      width: 240px;
     }
   }
 
   .m_authorsList--author {
     position: relative;
-    .padding-sides-verysmall;
-    .padding-vert-small;
+
     .bg-gris_tresclair;
     border-radius: @t-buttonradius;
     text-align: center;
-    font-weight: 200;
     text-transform: initial;
 
     display: flex;
     flex-flow: column wrap;
     justify-content: center;
     align-items: center;
+
+    .m_authorsList--author--card {
+      text-transform: initial;
+      font-weight: normal;
+      background-color: transparent;
+      font-weight: 200;
+    }
 
     &.is--selected {
       color: @c-bleumarine_fonce;
@@ -561,12 +566,20 @@ body {
 
     .m_authorsList--author--name {
       .font-large;
+      line-height: 1.1;
+
+      max-width: 15ch;
     }
 
     .m_authorsList--author--removeButton {
       position: absolute;
       top: 0;
       right: 0;
+    }
+    .m_authorsList--author--editButton {
+      position: absolute;
+      top: 0;
+      left: 0;
     }
 
     img {
@@ -575,7 +588,7 @@ body {
       height: 100px;
       border-radius: 50%;
       object-fit: cover;
-      .margin-vert-small;
+      .margin-vert-verysmall;
     }
 
     hr {
@@ -3101,10 +3114,22 @@ small {
 
     img {
       width: 100%;
-      // margin-bottom: @t-skipline;
     }
 
     button {
+      display: block;
+    }
+  }
+
+  .m_authorsList & {
+    .m_imageselect--image {
+      img {
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        object-fit: cover;
+        // margin-bottom: @t-skipline;
+      }
     }
   }
 }
