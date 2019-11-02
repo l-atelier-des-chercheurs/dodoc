@@ -81,12 +81,15 @@
                   v-if="show_filters"
                   :allKeywords="mediasKeywords"
                   :allAuthors="mediasAuthors"
+                  :allTypes="mediaTypes"
                   :keywordFilter="$root.settings.media_filter.keyword"
                   :authorFilter="$root.settings.media_filter.author"
                   :favFilter="$root.settings.media_filter.fav"
+                  :typeFilter="$root.settings.media_filter.type"
                   @setKeywordFilter="a => $root.setMediaKeywordFilter(a)"
                   @setAuthorFilter="a => $root.setMediaAuthorFilter(a)"
                   @setFavFilter="a => $root.setFavAuthorFilter(a)"
+                  @setTypeFilter="a => $root.setTypeFilter(a)"
                 />
               </template>
             </template>
@@ -223,6 +226,9 @@ export default {
     },
     mediasAuthors: function() {
       return this.$root.getAllAuthorsFrom(this.filteredMedias);
+    },
+    mediaTypes() {
+      return this.$root.getAllTypesFrom(this.filteredMedias);
     },
     sortedProjectsSlug: function() {
       var sortable = [];
@@ -368,7 +374,7 @@ export default {
       return allMedias;
     },
     filteredMedias: function() {
-      return this.allMedias.filter(m => this.$root.isMediaShown(m));
+      return this.allMedias.filter(m => this.$root.filterMedia(m));
     },
     sortedMedias: function() {
       let sortedMedias = this.$_.sortBy(this.filteredMedias, "date_created");

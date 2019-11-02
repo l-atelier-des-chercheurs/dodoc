@@ -84,12 +84,15 @@
           <TagsAndAuthorFilters
             :allKeywords="mediaKeywords"
             :allAuthors="mediaAuthors"
+            :allTypes="mediaTypes"
             :keywordFilter="$root.settings.media_filter.keyword"
             :authorFilter="$root.settings.media_filter.author"
             :favFilter="$root.settings.media_filter.fav"
+            :typeFilter="$root.settings.media_filter.type"
             @setKeywordFilter="a => $root.setMediaKeywordFilter(a)"
             @setAuthorFilter="a => $root.setMediaAuthorFilter(a)"
             @setFavFilter="a => $root.setFavAuthorFilter(a)"
+            @setTypeFilter="a => $root.setTypeFilter(a)"
           />
         </template>
       </div>
@@ -166,7 +169,9 @@ export default {
   mounted() {
     if (
       this.$root.settings.media_filter.keyword ||
-      this.$root.settings.media_filter.author
+      this.$root.settings.media_filter.author ||
+      this.$root.settings.media_filter.fav ||
+      this.$root.settings.media_filter.type
     ) {
       this.show_filters = true;
     }
@@ -182,6 +187,7 @@ export default {
     this.$root.settings.media_filter.author = false;
     this.$root.settings.media_filter.keyword = false;
     this.$root.settings.media_filter.fav = false;
+    this.$root.settings.media_filter.type = false;
 
     this.$eventHub.$off("modal.prev_media", this.prevMedia);
     this.$eventHub.$off("modal.next_media", this.nextMedia);
@@ -220,6 +226,9 @@ export default {
     mediaAuthors() {
       return this.$root.getAllAuthorsFrom(this.project.medias);
     },
+    mediaTypes() {
+      return this.$root.getAllTypesFrom(this.project.medias);
+    },
     sortedMedias() {
       var sortable = [];
 
@@ -251,7 +260,7 @@ export default {
           }
         }
 
-        if (this.$root.isMediaShown(media)) {
+        if (this.$root.filterMedia(media)) {
           sortable.push({ slugMediaName, orderBy });
         }
       }

@@ -186,7 +186,8 @@ let vm = new Vue({
       media_filter: {
         keyword: false,
         author: false,
-        fav: false
+        fav: false,
+        type: false
       }
     },
     lang: {
@@ -587,6 +588,17 @@ let vm = new Vue({
         };
       });
     },
+    getAllTypesFrom(base) {
+      let uniquetTypes = [];
+      Object.values(base).map(meta => {
+        if (!meta['type']) return;
+        if (uniquetTypes.indexOf(meta.type) == -1) uniquetTypes.push(meta.type);
+      });
+      uniquetTypes = uniquetTypes.sort(function(a, b) {
+        return a.toLowerCase().localeCompare(b.toLowerCase());
+      });
+      return uniquetTypes;
+    },
     createFolder: function(fdata) {
       if (window.state.dev_mode === 'debug') {
         console.log(
@@ -774,51 +786,35 @@ let vm = new Vue({
         this.settings.media_filter.author = false;
       }
     },
-    setFavAuthorFilter(newFavFilter) {
+    setFavAuthorFilter() {
       this.settings.media_filter.fav = !this.settings.media_filter.fav;
     },
+    setTypeFilter(newTypeFilter) {
+      if (this.settings.media_filter.type !== newTypeFilter) {
+        this.settings.media_filter.type = newTypeFilter;
+      } else {
+        this.settings.media_filter.type = false;
+      }
+    },
 
-    isMediaShown(media) {
+    filterMedia(media) {
+      // if filter is set to fav and media isn’t fav
       if (this.settings.media_filter.fav === true) {
         if (!media.fav) {
           return false;
         }
       }
 
+      // if no other filter is set, then show media
       if (
         this.settings.media_filter.keyword === false &&
-        this.settings.media_filter.author === false
+        this.settings.media_filter.author === false &&
+        this.settings.media_filter.type === false
       ) {
         return true;
       }
 
-      if (
-        this.settings.media_filter.keyword !== false &&
-        this.settings.media_filter.author !== false
-      ) {
-        // only add to sorted array if project has this keyword
-        if (
-          media.hasOwnProperty('keywords') &&
-          typeof media.keywords === 'object' &&
-          media.keywords.filter(
-            k => k.title === this.settings.media_filter.keyword
-          ).length > 0
-        ) {
-          if (
-            media.hasOwnProperty('authors') &&
-            typeof media.authors === 'object' &&
-            media.authors.filter(
-              k => k.name === this.settings.media_filter.author
-            ).length > 0
-          ) {
-            return true;
-          }
-        }
-        return false;
-      }
-      // if a project keyword filter is set
-      if (this.settings.media_filter.keyword !== false) {
-        // only add to sorted array if project has this keyword
+      const checkIfMediaHasKeyword = media => {
         if (
           media.hasOwnProperty('keywords') &&
           typeof media.keywords === 'object' &&
@@ -829,10 +825,8 @@ let vm = new Vue({
           return true;
         }
         return false;
-      }
-
-      if (this.settings.media_filter.author !== false) {
-        // only add to sorted array if project has this keyword
+      };
+      const checkIfMediaHasAuthor = media => {
         if (
           media.hasOwnProperty('authors') &&
           typeof media.authors === 'object' &&
@@ -843,6 +837,17 @@ let vm = new Vue({
           return true;
         }
         return false;
+      };
+
+      if (
+        this.settings.media_filter.keyword !== false &&
+        this.settings.media_filter.author !== false
+      ) {
+        return checkIfMediaHasKeyword(media) && checkIfMediaHasAuthor(media);
+      } else if (this.settings.media_filter.keyword !== false) {
+        return checkIfMediaHasKeyword(media);
+      } else if (this.settings.media_filter.author !== false) {
+        return checkIfMediaHasAuthor(media);
       }
       // END MEDIA FILTER LOGIC
     },
