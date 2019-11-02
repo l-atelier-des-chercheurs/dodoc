@@ -3173,6 +3173,12 @@ small {
       line-height: 1.4;
     }
 
+    hr {
+      border: none;
+      border-top: 2px solid black;
+      width: 1em;
+    }
+
     button {
       // .margin-top-medium;
     }
@@ -3949,6 +3955,8 @@ small {
       justify-content: center;
       align-items: center;
 
+      z-index: 150;
+
       svg {
         width: 34px;
         height: 34px;
@@ -4179,12 +4187,12 @@ small {
   }
 
   .plyr__controls {
-    z-index: 2;
+    z-index: 1;
   }
 
   .mediaContainer.type-audio {
     .plyr {
-      z-index: 2;
+      z-index: 1;
     }
   }
 }

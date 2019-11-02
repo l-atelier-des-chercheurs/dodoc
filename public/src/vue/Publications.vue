@@ -31,18 +31,22 @@
         <div class="m_recipes--recipe--icon" v-html="recipe.icon"></div>
         <div class="m_recipes--recipe--text">
           <h2 class>{{ $t(recipe.key) }}</h2>
-          <p v-if="!recipe.show_instructions" class="margin-vert-small">
+          <p class="margin-vert-small">
             <span v-html="$t(recipe.summary)" class="margin-vert-verysmall" />
             <br />
             <button
+              v-if="!recipe.show_instructions && recipe.instructions"
               type="button"
               class="buttonLink margin-left-none padding-left-none"
               @click="recipe.show_instructions = !recipe.show_instructions"
             >+ {{ $t('more_informations')}}</button>
           </p>
-          <p v-else>
-            <span v-html="$t(recipe.instructions)" />
-          </p>
+          <template v-if="recipe.show_instructions">
+            <hr />
+            <p>
+              <span v-html="$t(recipe.instructions)" />
+            </p>
+          </template>
           <button
             class="barButton barButton_createPubli"
             type="button"
@@ -180,16 +184,6 @@ export default {
     </g>
   </g>
 </svg>
-          `
-        },
-        {
-          key: "carreau",
-          summary: "",
-          show_instructions: false,
-          instructions: "",
-          show_all_recipes: false,
-          icon: `
-
           `
         },
         {
@@ -372,6 +366,16 @@ export default {
     </g>
   </g>
 </svg>          
+          `
+        },
+        {
+          key: "carreau",
+          summary: "carreau_summary",
+          show_instructions: false,
+          instructions: "carreau_instructions",
+          show_all_recipes: false,
+          icon: `
+
           `
         }
       ]

@@ -317,6 +317,9 @@ module.exports = (function() {
       mix_audio_and_video_instructions: `Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo de la durée du plus long média.`,
       mix_audio_and_image_summary: 'Ajouter du son sur une image.',
       mix_audio_and_image_instructions: `Cette recette prend une image et une piste audio. Elle permet de créer des <i>images parlantes</i>.<br> Médias acceptés : une image et une piste sonore.<br>Créera une vidéo de la durée de la piste sonore.`,
+      carreau_summary:
+        'Empiler des médias pour créer en temps réel des présentations.',
+      carreau_instructions: `Cette recette permet de collaborer à plusieurs sur la même surface pour présenter des médias de différent type. Ouvrez une nouvelle fenêtre vers cette recette en plein écran sur un projecteur pour afficher uniquement la surface.<br> Médias acceptés : images, vidéos, sons.`,
 
       last_modified: 'Dernière modification',
       remote_access: 'Accès depuis d’autres appareils',
@@ -698,6 +701,9 @@ module.exports = (function() {
       mix_audio_and_video_instructions: `This recipe mixes a video and an audio track to create a new video where they are played at the same time.<br>Accepted medias: a video and a sound track.<br>Will create a new video.`,
       mix_audio_and_image_summary: 'Add sound to an image to create a video.',
       mix_audio_and_image_instructions: `This recipe mixes an image with an audio track to create a <i>speaking image</i><br>Accepted medias: an image and a sound track.<br>Will create a new video.`,
+      carreau_summary:
+        'Stack multiple medias on a single surface to project content.',
+      carreau_instructions: `Use this mode to show multiple medias on a large projection or screen, for example by opening a browser and clicking on the fullscreen button.<br>Accepted medias: images, videos and sounds.`,
 
       add_sound_video_file:
         'Add a <b>sound</b> and a <b>video</b> media to create a new video.',
