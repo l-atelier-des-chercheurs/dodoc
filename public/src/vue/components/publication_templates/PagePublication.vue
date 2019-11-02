@@ -336,7 +336,11 @@
       <!-- <transition-group
         name="list-complete"
       >-->
-      <div v-for="(page, pageNumber) in pagesWithDefault" :key="page.id">
+      <div
+        v-for="(page, pageNumber) in pagesWithDefault"
+        :key="page.id"
+        :ref="pageNumber === page_currently_active ? 'current_page' : ''"
+      >
         <div
           class="m_publicationFooter"
           v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode) && pageNumber === 0"
@@ -563,6 +567,12 @@ export default {
       : 38;
     this.updatePubliOptionsInFields();
 
+    this.updatePageSizeAccordingToPanel();
+    this.$eventHub.$on(
+      "activity_panels_resized",
+      this.updatePageSizeAccordingToPanel
+    );
+
     document.getElementsByTagName("body")[0].style = `
       --page-width: ${this.publications_options.width}mm; 
       --page-height: ${this.publications_options.height}mm
@@ -576,6 +586,11 @@ export default {
     );
     // this.$eventHub.$off('publication.setCSSEditWindow', this.setCSSEditWindow);
     document.removeEventListener("keyup", this.publicationKeyListener);
+
+    this.$eventHub.$off(
+      "activity_panels_resized",
+      this.updatePageSizeAccordingToPanel
+    );
   },
 
   watch: {
@@ -1071,6 +1086,10 @@ export default {
         } // Maybe other prefixed APIs?
         this.fullscreen_mode = false;
       }
+
+      setTimeout(() => {
+        this.updatePageSizeAccordingToPanel();
+      }, 500);
     },
     updatePublicationOption(event, type) {
       if (this.$root.state.dev_mode === "debug") {
@@ -1093,6 +1112,18 @@ export default {
           [type]: val
         }
       });
+    },
+    updatePageSizeAccordingToPanel() {
+      const panel_width = this.$refs.panel.offsetWidth;
+      const current_page_el = this.$refs.current_page;
+      if (current_page_el && panel_width > 0) {
+        const page = current_page_el[0].getElementsByClassName("m_page")[0];
+
+        const margins = 100;
+        if (panel_width < page.offsetWidth + margins) {
+          this.zoom = panel_width / (page.offsetWidth + margins);
+        }
+      }
     }
   }
 };
