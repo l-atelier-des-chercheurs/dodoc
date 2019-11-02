@@ -397,7 +397,9 @@ export default {
       let contentHeight =
         el.firstElementChild.firstElementChild.firstElementChild.offsetHeight;
       contentHeight = contentHeight / this.pixelsPerMillimeters;
-      contentHeight += this.page.gridstep;
+      if (this.page.snap_to_grid) {
+        contentHeight += this.page.gridstep;
+      }
       contentHeight = this.roundMediaVal(contentHeight);
       contentHeight = this.limitMediaHeight(contentHeight);
       this.mediaSize.height = contentHeight;
@@ -489,7 +491,10 @@ export default {
       );
     },
     roundMediaVal(val) {
-      return Math.round(val / this.page.gridstep) * this.page.gridstep;
+      if (this.page.snap_to_grid) {
+        return Math.round(val / this.page.gridstep) * this.page.gridstep;
+      }
+      return Math.round(val);
     },
 
     limitMediaYPos(yPos) {

@@ -93,12 +93,23 @@
           <label>{{ $t('gridstep') }}(mm)</label>
           <input
             type="number"
-            min="2"
+            min="1"
             max="100"
             step="1"
             v-model="new_gridstep"
             @input="updatePublicationOption($event, 'gridstep')"
           />
+          <span class="switch switch-xs">
+            <input
+              type="checkbox"
+              class="switch"
+              id="favFilter"
+              v-model="new_snap_to_grid"
+              @change="updatePublicationOption(new_snap_to_grid, 'snap_to_grid')"
+              :readonly="read_only"
+            />
+            <label for="favFilter">{{ $t('snap_to_grid') }}</label>
+          </span>
         </div>
 
         <hr />
@@ -372,6 +383,7 @@
 
               <div
                 class="m_page--grid"
+                v-if="page.gridstep && page.gridstep > 0"
                 :style="`--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
               />
             </template>
@@ -504,6 +516,7 @@ export default {
           margin_top: 20,
           margin_bottom: 20,
           gridstep: 10,
+          snap_to_grid: true,
           header_left: "",
           header_right: "",
           show_page_number: true
@@ -519,6 +532,7 @@ export default {
       new_template: "",
       new_style: "",
       new_gridstep: 0,
+      new_snap_to_grid: false,
       new_margin_left: 0,
       new_margin_top: 0,
       new_margin_right: 0,
@@ -986,6 +1000,7 @@ export default {
       this.new_style = this.publications_options.style;
 
       this.new_gridstep = this.publications_options.gridstep;
+      this.new_snap_to_grid = this.publications_options.snap_to_grid;
       this.new_margin_left = this.publications_options.margin_left;
       this.new_margin_right = this.publications_options.margin_right;
       this.new_margin_top = this.publications_options.margin_top;
