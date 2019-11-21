@@ -799,6 +799,403 @@ module.exports = (function() {
         enter_password_to_reopen_project:
           "Enter the new password to reopen project"
       }
+    },
+    nl: {
+      ascending: "Toenemend",
+      descending: "Afnemend",
+      create_a_project: "Project aanmaken ",
+      create_a_publication: "Publicatie aanmaken ",
+      publication: "Publicatie",
+      name: "Naam",
+      project_name: "Naam van het project",
+      created_date: "Datum van oprichting",
+      uploaded: "Geüpload",
+      created: "Gemaakt ",
+      edited: "Bewerkt",
+      sent_date: "Verzendingsdatum",
+      for_the_placement_on_timeline: "(voor de plaatsing op de tijdlijn)",
+
+      type: "Type",
+      color: "Kleur",
+      keywords: "Kernwoorden",
+      share: "Deel",
+      copy: "Kopiëren",
+      author: "Auteur",
+      download: "Downloaden",
+      caption: "Bijschrift",
+      formatting: "Opmaak",
+      smoothing: "effen",
+      onion_skin: "uienschil",
+      "file:": "Bestand:",
+      add_to_project: "Toevoegen aan project:",
+      input_password: "Wachtwoord invoeren:",
+      validate_with_enter: "Bevestig met ENTER.",
+      no_stopmotion_created_yet: "Er is nog geen stopmotion gemaakt: ",
+      device: "Toestel",
+      "camera2 1, facing front": "Camera naar voren gericht ",
+      "camera2 0, facing back": "Camera naar achteren gericht ",
+      very_slow: "Zeer traag",
+      slow: "Traag",
+      speed_medium: "Normaal",
+      fast: "Snel",
+      forget_password_and_close: "Wachtwoord vergeten en sluiten ",
+
+      remember_password_on_this_device: "Wachtwoord onthouden op dit toestel",
+      cooking_pot: "De ketel",
+      copy_of: "Kopie van",
+      text_overflow: "Tekstoverloop",
+      move_to_foreground: "Op de voorgrond plaatsen. ",
+      move_to_background: "Op de achtergrond plaatsen",
+      "layer:": "Laag:",
+      css_settings: "CSS instellingen",
+      edit_content: "Inhoud wijzigen ",
+      adjust: "Wijzigen",
+      duplicate: "Dupliceren",
+      show_all: "Alles tonen",
+      cooking_pot_instructions: "Meng bestanden om nieuwe bestanden te maken !",
+      untitled: "Zonder naam",
+      mix_audio_and_video: "Video- en geluidsbestanden combineren",
+      mix_audio_and_image: "Foto- en geluidsbestanden combineren",
+      add_sound_video_file:
+        "Open een project en voeg een <b>geluidsbestand</b> en een <b>videobestand</b> toe door op de groene pijl te klikken .<br>Als u exporteert, wordt een nieuwe video gemaakt .<br>Ondersteunde bestandstypen : video en geluid.",
+      add_sound_image_file:
+        "Open een project en voeg een <b>geluidsbestand</b> en een <b>fotobestand</b> toe door op de groene pijl te klikken .<br>Als u exporteert, wordt een nieuwe video gemaakt .<br>Ondersteunde bestandstypen : foto en geluid.",
+      add_multiple_videos_files:
+        "Open een project en voeg meerdere <b>video</b>bestanden toe door op de groene pijl te klikken . Video’s worden in volgorde van toevoeging na elkaar geplaatst.<br>Als u exporteert, wordt een nieuwe video gemaakt .<br> Ondersteunde bestandstypen : alleen video’s van hetzelfde formaat.",
+      add_multiple_images:
+        "Open een project en voeg verschillende <b>foto</b>bestanden toe door op de groene pijl te klikken. Foto’s worden in volgorde van toevoeging na elkaar geplaatst. Exporteer de beelden en pas de schuifsnelheid van de beelden aan.<br>Als u exporteert, wordt een nieuwe video gemaakt .<br> Ondersteunde bestandstypen : enkel fotobetanden. De afmetingen van het eerste beeld bepalen of de uiteindelijke video als portret of landschap is ingedeeld.",
+      style: "stijl",
+      css: "css",
+      write_some_CSS_code_for_example:
+        "Noteer hier CSS code, <br>bijvoorbeeld <code>color: blue;</code>",
+      framerate: "beelden per seconde, ",
+      timelapse: "tijdsverloop ",
+      seconds_per_image: "seconden per beeld",
+      seconds: "seconden",
+      quality: "kwaliteit",
+      bytes: "bytes",
+      kb: "kb",
+      mb: "Mb",
+      gb: "Gb",
+      duration: "Duur",
+      send: "Verzenden",
+      open_in_dodoc: "Openen in do•doc",
+      connect_to_dodoc: "Toegang tot do•doc",
+      login: "Inloggen ",
+      adding_password_warning:
+        "Opgelet! Als u een wachtwoord toevoegt of wijzigt, moeten alle gebruikers die er momenteel mee verbonden zijn dit invoeren voordat ze een bijdrage kunnen blijven leveren..",
+      removing_password_warning:
+        "Als u het wachtwoord verwijdert, kunnen alle gebruikers die toegang hebben tot do•doc het project wijzigen.",
+      help: "Hulp",
+      date: "Datum",
+      portrait: "Portret",
+      nfc_tag: "Tag NFC",
+      yes: "ja",
+      cancel: "Annuleren",
+      back: "Terug",
+      sureToRemoveAuthor: "Weet u zeker dat u deze auteur wilt verwijderen ?",
+      show_all_authors: "Bekijk alle auteurs",
+      changes_not_saved_sureToCloseModal:
+        "Er zijn wijzigingen gebeurd , wilt u deze opslaan?",
+      save_changes: "Ja, wijzigingen opslaan. ",
+      close_the_window: "Nee, sluiten zonder opslaan",
+      sureToRemovePubli: "Weet u zeker dat u deze publicatie wilt verwijderen?",
+      sure_to_cancel_stopmotion:
+        'Weet je zeker dat je deze animatie wilt stoppen? U kunt het terugvinden in het menu "Lijst van animaties".',
+      validate_media: "Media valideren",
+      add_keyword: "Kernwoord toevoegen",
+      add: "Toevoegen",
+      close: "Sluiten",
+      very_high: "Zeer hoog (1080p)",
+      high: "Hoog (720p)",
+      medium: "Medium (640p)",
+      low: "Laag (360p)",
+      showing: "Weergave ",
+      media_filter: "Bestandsfilter",
+      no_projects_yet:
+        "Er is nog geen project, maak er een aan om do•doc in gebruik te nemen!",
+      projects_of: "projecten van",
+      medias_of: "bestanden van",
+      projects: "Projecten",
+      project: "Project",
+      medias: "Bestanden",
+      media: "Media",
+      authors: "Auteurs",
+      authors_list: "Lijt van auteurs",
+      create_an_author: "Maak een auteur aan",
+      favorite_medias: "Favoriete media",
+      all_medias: "Alle media",
+      create_text: "Schrijven",
+      import: "Importeren",
+      import_all_files: "Importeer alle bestanden",
+      import_medias: "Importeer media",
+      select_files_to_import: "Selecteer bestanden om te importeren ",
+      select_cover_image: "Selecteer een omslagafbeelding",
+      select_portrait_image: "Selecteer een portretfoto",
+      add_to_recipe: "Toevoegen aan recept",
+      add_a_page: "Een pagina toevoegen",
+      insert_a_page_here: "Hier een pagina invoegen",
+      add_a_page_before: "Hiervoor een pagina toevoegen ",
+      add_a_page_after: "Hierna een pagina toevoegen ",
+      add_a_page_here: "Hier een pagina toevoegen",
+      remove_this_page: "▲ deze pagina verwijderen ▲",
+      anonymous: "anoniem",
+      other_users: "andere gebruikers",
+      other_users_connected: "andere verbonden gebruikers",
+      mix_medias: "Mengen van media",
+      made_with_dodoc: "Webpagina gerealiseerd met de gratis applicatie do•doc",
+
+      loading: "laden",
+      open: "Openen",
+      save: "Opslaan",
+      as_favorite: "toevoegen aan favorieten",
+      edit: "Bewerken",
+      width: "Breedte",
+      height: "Hoogte",
+      zoom: "Zoom",
+      settings: "Instellingen",
+      stopmotion_list: "Lijst van animaties",
+      print: "Afdrukken",
+      create: "Aanmaken",
+      remove: "Verwijderen",
+      withdraw: "Terugtrekken",
+      remove_this_image: "Dit beeld verwijderen",
+      password: "Wachtwoord",
+      password_required_to_open: "Wachtwoord vereist",
+      show_password: "Wachtwoord tonen ",
+      hide: "Verbergen",
+      protected_by_pass: "Beveiligd met een wachtwoord. ",
+      password_instructions:
+        "Indien van toepassing, alleen gebruikers met dit wachtwoord kunnen dit project openen.",
+      author_instructions:
+        "Om auteurs aan te maken, sluit dit venster en klik op de knop (AUTEURS).",
+      sort_by: "Sorteer volgens",
+      by: "per",
+      in_the_order: "In volgorde",
+      public: "Publiek",
+      fav: "Favoriet",
+      content: "Inhoud",
+      edit: "Wijzigen",
+      "lang:": "De taal wijzigen:",
+      lang: "De taal wijzigen",
+      share_access: "Toegang verlenen via andere toestellen ",
+      scan_qr_code: "QR-code scannen ",
+      photo: "foto",
+      video: "video",
+      stopmotion: "animatie",
+      audio: "geluid",
+      vecto: "vormen",
+      image: "beeld",
+      text: "tekst",
+      document: "document",
+      other: "andere",
+      with_sound: "met geluid",
+      generate: "Genereren",
+      select: "Selecteren",
+      unselect: "Deselecteren",
+      toconnectwithanotherdevice:
+        "Om dit item met een ander apparaat te openen , maak verbinding met hetzelfde wifi-netwerk en voer vervolgens de volgende URL in een webbrowser in, of scan de QR-code: ",
+      sureToRemoveProject: "Weet u zeker dat u dit project wilt verwijderen?",
+      sureToRemoveMedia: "Weet u zeker dat u deze media wilt verwijderen?",
+      edit_the_media: "Media bewerken",
+      edit_project: "Project bewerken",
+      edit_publication: "Recept bewerken",
+      drop_here_to_import: "Laad de bestanden hier om te importeren ",
+
+      capture: "Vastleggen",
+      current: "Nu",
+      currently: "Momenteel",
+      update: "Bijwerken",
+      more_information:
+        'Voor meer informatie. , bezoek <a href="https://latelierdes-chercheurs.fr/docs/manuel-dodoc" class="js--openInBrowser" target="_blank">documentatie</a> ou <a href="mailto:info@latelier-des-chercheurs.fr?subject=do•doc" class="js--openInBrowser" target="_blank">contacteer</a> de auteurs van dit programma.',
+      no_media_in_folder: "Geen media in deze map .",
+      no_public_media_in_folder: "Geen openbare media in deze map .",
+
+      auto_scroll: "automatisch <br>scrollen",
+      scale: "schaal:",
+      scale_items: {
+        second: "sec",
+        minute: "min",
+        hour: "u",
+        half_day: "1/2d",
+        day: "d"
+      },
+      more_informations: "Meer info",
+      contents_are_stored: "De inhoud van dit bestand wordt opgeslagen in ",
+      folder_information: "map-info ",
+      calendar: "Kalender",
+      now: "op dit moment",
+      list: "Lijst",
+      fullscreen: "Volledig scherm",
+      preview: "Overzicht",
+      filter: "Filter",
+      filters: "Filters",
+      header_left: "Linker koptekst",
+      header_right: "Rechtse koptekst",
+      gridstep: "Geen uitlijningsrooster ",
+      snap_to_grid: "Magnetisme",
+      margin_top: "Marge boven",
+      margin_left: "Marge links",
+      margin_right: "Marge rechts",
+      margin_bottom: "Marge beneden",
+      number_of_medias: "Aantal media",
+      number_of_pages: "Aantal pagina’s",
+      show_page_numbers: "Geef het paginanummer in de rechterbenedenhoek weer ",
+      export_folder: "Exporteren in web formaat",
+      export: "Exporteren",
+      export_as_pdf: "Exporteren als PDF",
+      new_window: "Nieuw venster ",
+      previous_creations: "Vorige creaties",
+      export_video_instructions:
+        "Klik op de knop om een video te maken van de video’s die aan de publicatie zijn toegevoegd.",
+      export_audio_video_mix_instructions:
+        "Klik op de knop om een video te maken van het geselecteerde geluid en de geselecteerde video.",
+      export_audio_image_mix_instructions:
+        "Klik op de knop om een video te maken van het geselecteerde geluid en het geselecteerde beeld.",
+      export_stopmotion_instructions:
+        "Klik op de knop om een video te maken van de afbeeldingen die aan de publicatie zijn toegevoegd.",
+      make_video: "Maak een video",
+      interval_between_pictures: "Interval tussen elk beeld",
+      publication_list: "Lijst van publicaties",
+      export_creation: "Exporteer een creatie",
+      get_pdf:
+        "Als u een PDF van deze publicatie wilt maken (bijvoorbeeld om deze af te drukken), klik op de knop hieronder:",
+      download_pdf: "Download PDF",
+      get_website:
+        "Als u een website van deze publicatie wilt maken (bijvoorbeeld om deze online te delen), klikt u op de knop hieronder:",
+      download_website: "Download website",
+      open_in_app: "Tonen",
+      get_a_link: "Een koppeling naar dit document ophalen:",
+      format: "Format",
+      name_of_copy: "Naam die aan de kopie moet worden gegeven",
+      template: "sjabloon",
+      standard: "standaard",
+
+      "feuille de choux": "koolblad",
+      "human tech days": "Human Tech Days",
+      page_by_page: "Document pagina per pagina",
+      carreau: "Tegel",
+      video_assemblage: "Videobewerking",
+      stopmotion_animation: "Stopmotion animatie",
+      web: "Webpagina",
+      back_to_project: "Terug naar project",
+      page_by_page_summary:
+        "Maak een afdrukbare PDF of webpagina om te uploaden.",
+      page_by_page_instructions: `Met dit recept kunt u een document
+        met een exacte indeling en meerdere pagina's maken.<br> Ondersteunde media: afbeeldingen, video's, geluid en tekst.<br>Maak
+        een afdrukbare PDF (om posters, flyers, kranten, enz. te maken) of
+        een webpagina om te uploaden.`,
+      video_assemblage_summary:
+        "Maak een videomontage van afbeeldingen en video’s.",
+      video_assemblage_instructions: `Dit recept stelt voor om een
+        video montage te maken door meerdere video's of afbeeldingen na elkaar te plaatsen.<br> Ondersteunde media: video's en
+        afbeeldingen.<br>Maakt een nieuwe video.`,
+      stopmotion_animation_summary:
+        "Beelden samenvoegen om een video te maken.",
+      stopmotion_animation_instructions: `Met dit recept kunt u een
+        onbeperkt aantal beelden samenvoegen om een videosequentie te
+        maken waarin deze beelden na elkaar verschijnen aan een in te stellen snelheid.<br> Ondersteunde media: enkel afbeeldingen. De afmetingen van het eerste beeld bepalen of de uiteindelijke video als portret of landschap is ingedeeld.<br>Maakt een nieuwe video.`,
+      mix_audio_and_video_summary:
+        "Geluid op een video toevoegen of vervangen.",
+      mix_audio_and_video_instructions: `Dit recept gebruikt een videobestand en een audionummer. Hiermee wordt de soundtrack aan de video toegevoegd of vervangen door het gekozen geluidsbestand.<br> Ondersteunde media: video- en geluidsbestanden.<br>Maakt een nieuwe
+        video met de lengte van de langste media.`,
+      mix_audio_and_image_summary: "Geluid toevoegen aan een beeld.",
+      mix_audio_and_image_instructions: `Dit recept gebruikt een beeld- en een geluidsbetand. Het maakt het mogelijk om <i>sprekende beelden te maken .<br> Ondersteunde media: beeld- en 
+        geluidsbestand.<br>Maakt een video met de duur van het geluidsbestand.`,
+      carreau_summary: "Media samenvoegen om real-time presentaties te maken.",
+      carreau_instructions: `Met dit recept kunt u met meerdere op
+        hetzelfde platform samenwerken om verschillende soorten media te
+        presenteren. Open een nieuw venster naar dit recept op volledig
+        scherm met een projector om alleen het platform weer te geven.<br>
+        Ondersteunde media: afbeeldingen, video's, geluidsbestanden.`,
+      last_modified: "laatst gewijzigd",
+      remote_access: "Toegang vanaf andere apparaten",
+      img_per_second: "Beelden per seconde",
+      sent: "Verzonden",
+      disable: "uitschakelen",
+      previous_media: "Vorige media ",
+      next_media: "Volgende media ",
+      minimize_media: "gebruik als verwijzing",
+      remember_project_password_for_this_device:
+        "Het wachtwoord op dit apparaat onthouden",
+      notifications: {
+        ios_not_compatible_with_capture:
+          "IPhones en iPads zijn niet compatibel met de opnamefunctie.",
+        instead_import_with_this_button:
+          "Gebruik in plaats daarvan de invoerfunctie hierboven om foto’s en video’s te maken of te importeren vanaf uw apparaat",
+
+        media_was_sent: "Media is opgenomen.",
+        media_couldnt_be_sent:
+          "Media kon niet worden opgeslagen vanwege verbindingsfout.",
+
+        file_was_sent: "Het bestand is opgeslagen.",
+        file_upload_not_allowed:
+          "Uw webbrowser ondersteunt het verzenden van bestanden niet.",
+        connection_active: "Serververbinding is actief.",
+        connection_lost: "Serververbinding is verbroken.",
+        contents_wont_be_editable:
+          "Wijzigingen en aanvullingen zullen niet langer mogelijk zijn.",
+
+        connection_error:
+          "De verbinding met de server kan niet worden gemaakt.",
+        media_has_been_added_successfully: "Media is overgebracht",
+        wrong_password_for_dodoc:
+          "Het gebruikte wachtwoord is ongeldig. Probeer het opnieuw.",
+        loading_dodoc: "Do•doc is aan het laden …",
+        "wrong_password_for_folder:":
+          "Het wachtwoord is niet correct voor dit onderdeel:",
+        "created_edited_media:":
+          "Media voor dit onderdeel aanmaken of bewerken:",
+        project_name_exists: "Deze projectnaam bestaat al, gebruik een andere.",
+        publi_name_exists:
+          "Deze publicatienaam bestaat al, gebruik een andere.",
+        author_name_exists: "Deze auteursnaam bestaat al, gebruik een andere.",
+        folder_name_needs_alphanumeric_characters:
+          "Bestandsnamen moeten ten minste een alfanumeriek teken bevatten.",
+        "failed_to_get_folder:": "Het volgende bestand is niet gevonden:",
+        failed_to_start_video_change_source_or_res:
+          "Videostream kan niet worden gestart .<br>Probeer de bron of de resolutie in de instellingen te wijzigen.",
+        video_source_not_set: "Videobron niet gevonden.",
+        failed_to_start_audio_change_source:
+          "Audiostream kan niet worden gestart.<br>Probeer de bron in de instellingen te wijzigen.",
+        audio_source_not_set: "Audiobron niet gevonden.",
+        video_stream_not_available: "Fout : videostream is niet beschikbaar.",
+        no_content_found_with_nfc_tag:
+          "NFC tag gevonden, koppel een auteur of media om te beginnen.",
+
+        author_found_with_nfc_tag:
+          "NFC tag gevonden, activatie van de volgende auteur:",
+
+        medias_uploaded: "Alle media zijn opgenomen.",
+        medias_upload_failed:
+          "Foutmelding: sommige media kunnen niet worden opgenomen.",
+        video_converted:
+          "De video is geconverteerd en toegevoegd aan het project.",
+        project_has_been_removed:
+          "Dit project werd zojuist door iemand anders verwijderd.",
+        wrong_password_for: "Onjuist wachtwoord voor ",
+        creating_video: "De video wordt gemaakt…",
+
+        preparing_video_from_montage:
+          "Voorbereiding van het bewerken van video’s",
+        finished_creating_recipe:
+          "Het recept is afgewerkt en kan worden bekeken!",
+        media_copied_successfully: "De kopie van de media is gemaakt.",
+        creation_in_progress: "In opmaak…",
+        connected_to_dodoc: "verbinding met do•doc actief",
+        using_saved_password:
+          "Verbinding met do•doc met het opgeslagen wachtwoord",
+
+        pdf_created: "De pdf is gemaakt",
+        video_created: "De video is gemaakt",
+        video_creation_failed: "Video kan niet worden gemaakt ",
+        project_copy_in_progress: "Laden van de kopie…",
+        project_copy_completed: "Kopiëren geslaagd",
+        password_added_or_changed_to_this_project:
+          "Wachtwoord voor dit project werd toegevoegd of gewijzigd .",
+        enter_password_to_reopen_project:
+          "Voer het nieuwe wachtwoord in om opnieuw toegang te krijgen"
+      }
     }
   };
 
