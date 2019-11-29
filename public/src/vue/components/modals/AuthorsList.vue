@@ -8,6 +8,15 @@
       <div class>
         <div class="margin-sides-medium margin-vert-small">
           <small>{{ $t('when_logged_as_author_content_will_be_tagged') }}</small>
+          <button
+            v-if="!show_detail"
+            type="button"
+            class="buttonLink margin-left-none padding-left-none"
+            @click="show_detail = !show_detail"
+          >+ {{ $t('more_informations')}}</button>
+          <div>
+            <small v-if="show_detail">{{ $t('more_informations_on_authors')}}</small>
+          </div>
         </div>
         <transition-group tag="div" class="m_authorsList" name="list-complete">
           <div class="m_authorsList--createAuthor" :key="'createAuthor'">
@@ -147,7 +156,8 @@ export default {
   data() {
     return {
       openCreateAuthorPanel: false,
-      editAuthorSlug: false
+      editAuthorSlug: false,
+      show_detail: false
     };
   },
 

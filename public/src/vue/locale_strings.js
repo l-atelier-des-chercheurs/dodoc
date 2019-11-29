@@ -187,6 +187,8 @@ module.exports = (function() {
         "Attention&nbsp;! Tous les médias, projets et recettes resteront associés au nom précédent.",
       when_logged_as_author_content_will_be_tagged:
         "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes porteront votre nom.",
+      more_informations_on_authors:
+        "Vous pourrez ajouter d’autres co-auteurs directement dans les projets, médias et recettes. Si vous supprimez un auteur, tous les médias, projets et recettes conserveront le nom d’auteur et ne seront pas supprimées.",
 
       sort_by: "Organiser par",
       by: "par",
@@ -573,6 +575,8 @@ module.exports = (function() {
         "Warning! All existing medias, projects and recipes will still be associated to the previous name.",
       when_logged_as_author_content_will_be_tagged:
         "When logged in as an author all projects, medias and recipes will be saved with your name.",
+      more_informations_on_authors:
+        "You can add co-authors in the projects, medias and recipes. If you remove an author, all the projects, medias and recipes will keep this author name and won’t be removed.",
 
       sort_by: "Sort by",
       by: "by",
