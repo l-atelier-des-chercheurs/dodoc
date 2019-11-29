@@ -99,7 +99,8 @@ module.exports = (function() {
       yes: "Oui",
       cancel: "Annuler",
       back: "Retour",
-      sureToRemoveAuthor: "Êtes-vous sûr de vouloir supprimer cet auteur ?",
+      sureToRemoveAuthor:
+        "Êtes-vous sûr de vouloir supprimer cet auteur ? Tous les médias, projets et recettes associés seront conservés.",
       show_all_authors: "Afficher l’ensemble des auteurs",
       changes_not_saved_sureToCloseModal:
         "Des modifications ont eu lieu, souhaitez-vous les enregistrer ?",
@@ -183,6 +184,8 @@ module.exports = (function() {
         "Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce projet.",
       author_instructions:
         "Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).",
+      author_name_editing_instructions:
+        "Attention&nbsp;! Tous les médias, projets et recettes resteront associés au nom précédent.",
 
       sort_by: "Organiser par",
       by: "par",
@@ -489,7 +492,8 @@ module.exports = (function() {
       yes: "Yes",
       cancel: "Cancel",
       back: "Back",
-      sureToRemoveAuthor: "Do you really want to delete this author?",
+      sureToRemoveAuthor:
+        "Do you really want to delete this author? All medias, projects and recipes will be kept.",
       show_all_authors: "Show all authors",
       changes_not_saved_sureToCloseModal:
         "All changes were not saved. Do you really want to close this window?",
@@ -564,6 +568,8 @@ module.exports = (function() {
         "If set, only users with the password will be able to open this project.",
       author_instructions:
         "To create authors, close this window and click on (AUTHORS).",
+      author_name_editing_instructions:
+        "Warning! All existing medias, projects and recipes will still be associated to the previous name.",
 
       sort_by: "Sort by",
       by: "by",
