@@ -1,6 +1,6 @@
 <template>
   <div class="m_tagsAndAuthorFilters flex-wrap bg-blanc rounded margin-top-small">
-    <div v-if="favFilter !== undefined" class="padding-sides-small">
+    <div v-if="favFilter !== undefined" class="padding-small">
       <span class="switch switch-xs">
         <input
           type="checkbox"
