@@ -36,6 +36,7 @@
                 :key="author.slugFolderName"
                 class="m_authorsList--author"
                 :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"
+                @click="setAuthor(author)"
               >
                 <button
                   type="button"

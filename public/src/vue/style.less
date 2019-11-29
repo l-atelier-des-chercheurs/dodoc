@@ -1,23 +1,23 @@
-@import 'less/_normalize';
+@import "less/_normalize";
 
 // I M P O R T
-@import (inline) 'less/shoelace/variables.css';
-@import (inline) 'less/shoelace/forms.css';
+@import (inline) "less/shoelace/variables.css";
+@import (inline) "less/shoelace/forms.css";
 
-@import (inline) 'less/shoelace/tables.css';
-@import (inline) 'less/shoelace/loaders.css';
-@import (inline) 'less/shoelace/switches.css';
+@import (inline) "less/shoelace/tables.css";
+@import (inline) "less/shoelace/loaders.css";
+@import (inline) "less/shoelace/switches.css";
 
-@import (inline) 'node_modules/vue-plyr/dist/vue-plyr.css';
+@import (inline) "node_modules/vue-plyr/dist/vue-plyr.css";
 
-@import 'less/_code_highlight';
+@import "less/_code_highlight";
 
-@import 'less/_variables';
-@import 'less/_globals';
-@import 'less/_media';
-@import 'less/_modal';
+@import "less/_variables";
+@import "less/_globals";
+@import "less/_media";
+@import "less/_modal";
 
-@import 'less/_text';
+@import "less/_text";
 
 ::-moz-selection {
   background: rgba(151, 151, 151, 0.25);
@@ -46,7 +46,7 @@ html {
 }
 
 body {
-  font-family: 'Fira Sans', sans-serif;
+  font-family: "Fira Sans", sans-serif;
   font-weight: 400;
   font-size: var(--font-size);
   line-height: var(--line-height);
@@ -114,13 +114,13 @@ body {
   .plyr__control--overlaid {
     background-color: var(--c-orange);
   }
-  input[type='range'] {
+  input[type="range"] {
     color: var(--c-orange);
   }
 
   .plyr__control.plyr__tab-focus,
   .plyr__control:hover,
-  .plyr__control[aria-expanded='true'] {
+  .plyr__control[aria-expanded="true"] {
     background-color: var(--c-orange);
   }
 }
@@ -360,7 +360,7 @@ body {
         &:not(:first-child) {
           padding-left: 0;
           &::before {
-            content: '/';
+            content: "/";
             .padding-sides-small;
             font-weight: 200;
           }
@@ -418,7 +418,7 @@ body {
         .m_topbar--center--authors--portrait {
           width: 40px;
           height: 40px;
-          margin-right: 10px;
+          margin-right: 5px;
           position: relative;
           border-radius: 50%;
           background-color: @c-bleumarine;
@@ -433,10 +433,11 @@ body {
           }
         }
         .m_topbar--center--authors--name {
-          font-size: 1.7em;
+          .font-large;
           font-weight: 200;
-          max-width: 6em;
+          max-width: 7em;
           text-transform: initial;
+          letter-spacing: -0.01em;
 
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -550,6 +551,8 @@ body {
       font-weight: normal;
       background-color: transparent;
       font-weight: 200;
+      .font-large;
+      letter-spacing: -0.01em;
     }
 
     &.is--selected {
@@ -567,7 +570,6 @@ body {
     .m_authorsList--author--name {
       .font-large;
       line-height: 1.1;
-
       max-width: 15ch;
     }
 
@@ -621,7 +623,7 @@ body {
   overflow: hidden;
 
   .m_uploadFile--progressBar {
-    content: '';
+    content: "";
     position: absolute;
     width: 100%;
     height: 100%;
@@ -1297,7 +1299,7 @@ small {
   }
 
   &::before {
-    content: '';
+    content: "";
     display: inline-block;
     vertical-align: middle;
     width: 28px;
@@ -1328,31 +1330,31 @@ small {
       }
     }
     &::before {
-      background-image: url('/images/i_add.svg');
+      background-image: url("/images/i_add.svg");
     }
   }
   &.barButton_text {
     color: @c-bleumarine;
     &::before {
-      background-image: url('/images/i_text.svg');
+      background-image: url("/images/i_text.svg");
     }
   }
   &.barButton_capture {
     color: @c-orange;
     &::before {
-      background-image: url('/images/i_record.svg');
+      background-image: url("/images/i_record.svg");
     }
   }
   &.barButton_import {
     color: @c-rouge;
     &::before {
-      background-image: url('/images/i_importer.svg');
+      background-image: url("/images/i_importer.svg");
     }
   }
   &.barButton_createPubli {
     color: @c-bleuvert;
     &::before {
-      background-image: url('/images/i_add_publi.svg');
+      background-image: url("/images/i_add_publi.svg");
     }
   }
 }
@@ -1462,7 +1464,7 @@ small {
     .m_metaField {
       > * {
         &::after {
-          content: '●';
+          content: "●";
           font-size: 100%;
           line-height: 1;
           color: @c-orange;
@@ -1567,7 +1569,7 @@ small {
       overflow: hidden;
 
       &::after {
-        content: '';
+        content: "";
         display: block;
         width: 100%;
         height: 0px;
@@ -1675,7 +1677,7 @@ small {
         box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
         font-weight: 700;
         font-size: 1.2em;
-        font-family: 'Fira Code';
+        font-family: "Fira Code";
 
         transition: all 0.4s;
       }
@@ -1831,7 +1833,7 @@ small {
       }
     }
     &::before {
-      content: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2084%2084%22%3E%0A%20%20%3Ctitle%3Etext%20copie%2010%3C/title%3E%0A%20%20%3Cg%20id%3D%22Calque_6%22%20data-name%3D%22Calque%206%22%3E%0A%20%20%20%20%3Cg%20id%3D%22flc%22%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M64%2C56.53a18.29%2C18.29%2C0%2C0%2C0-10.06-8.09s-3.44-1.71-12.28-1.71-12.27%2C1.71-12.27%2C1.71a18.31%2C18.31%2C0%2C0%2C0-10.07%2C8.09c-1%2C1.47-1.47%2C4.66-1.71%2C6.37v2.45c0%2C3.19%2C2.2%2C5.89%2C4.9%2C5.89H60.56c2.7%2C0%2C4.91-2.7%2C4.91-5.89V62.9A10.5%2C10.5%2C0%2C0%2C0%2C64%2C56.53M28.41%2C24.91c0%2C7.36%2C4.66%2C18.39%2C13.5%2C18.39%2C8.59%2C0%2C13.5-11%2C13.5-18.39a13.44%2C13.44%2C0%2C0%2C0-13.5-13.47%2C13.29%2C13.29%2C0%2C0%2C0-13.5%2C13.47%22/%3E%0A%20%20%20%20%3C/g%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E%0A');
+      content: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2084%2084%22%3E%0A%20%20%3Ctitle%3Etext%20copie%2010%3C/title%3E%0A%20%20%3Cg%20id%3D%22Calque_6%22%20data-name%3D%22Calque%206%22%3E%0A%20%20%20%20%3Cg%20id%3D%22flc%22%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M64%2C56.53a18.29%2C18.29%2C0%2C0%2C0-10.06-8.09s-3.44-1.71-12.28-1.71-12.27%2C1.71-12.27%2C1.71a18.31%2C18.31%2C0%2C0%2C0-10.07%2C8.09c-1%2C1.47-1.47%2C4.66-1.71%2C6.37v2.45c0%2C3.19%2C2.2%2C5.89%2C4.9%2C5.89H60.56c2.7%2C0%2C4.91-2.7%2C4.91-5.89V62.9A10.5%2C10.5%2C0%2C0%2C0%2C64%2C56.53M28.41%2C24.91c0%2C7.36%2C4.66%2C18.39%2C13.5%2C18.39%2C8.59%2C0%2C13.5-11%2C13.5-18.39a13.44%2C13.44%2C0%2C0%2C0-13.5-13.47%2C13.29%2C13.29%2C0%2C0%2C0-13.5%2C13.47%22/%3E%0A%20%20%20%20%3C/g%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E%0A");
       display: inline-block;
       vertical-align: baseline;
       width: 20px;
@@ -1852,7 +1854,7 @@ small {
   flex-flow: row wrap;
   align-items: flex-start;
   text-transform: initial;
-  font-family: 'Fira Mono';
+  font-family: "Fira Mono";
   font-weight: 00;
 
   > .input {
@@ -1915,7 +1917,7 @@ small {
   align-items: flex-start;
   text-transform: initial;
 
-  font-family: 'Fira Mono';
+  font-family: "Fira Mono";
   font-weight: 00;
 
   > .input {
@@ -1933,7 +1935,7 @@ small {
     flex-flow: row wrap;
 
     &::before {
-      content: 'suggestion';
+      content: "suggestion";
       margin-bottom: @t-skipline / 8;
       text-transform: uppercase;
       .label;
@@ -2053,7 +2055,7 @@ small {
     }
 
     &::before {
-      content: '•';
+      content: "•";
       flex-shrink: 0;
       .margin-sides-verysmall;
       margin-left: @t-skipline / 8;
@@ -2068,7 +2070,7 @@ small {
     }
 
     &.can_be_removed::before {
-      content: '×';
+      content: "×";
       transform: scale(1.5);
     }
 
@@ -2171,7 +2173,7 @@ small {
         font-weight: 400;
         text-transform: lowercase;
         margin: @t-skipline / 4 @t-skipline / 4;
-        font-family: 'Fira Code';
+        font-family: "Fira Code";
         // text-transform: uppercase;
         .label;
         font-weight: 600;
@@ -2537,7 +2539,7 @@ small {
         height: 50%;
       }
 
-      img[src*='svg'] {
+      img[src*="svg"] {
         // width: 512px;
         // height: 512px;
         // border-radius: 50%;
@@ -2585,7 +2587,7 @@ small {
         // background-color: transparent;
       }
 
-      input[type='range'] {
+      input[type="range"] {
         margin: 0;
       }
 
@@ -2685,7 +2687,7 @@ small {
   align-items: center;
 
   &::after {
-    content: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2084%2084%22%3E%0A%20%20%3Ctitle%3Etext%20copie%208%3C/title%3E%0A%20%20%3Cg%20id%3D%22Calque_6%22%20data-name%3D%22Calque%206%22%3E%0A%20%20%20%20%3Cg%20id%3D%22flc%22%3E%0A%20%20%20%20%20%20%3Cg%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M55%2C54.13a10.45%2C10.45%2C0%2C0%2C0-5.75-4.62s-2-1-7-1-7%2C1-7%2C1a10.47%2C10.47%2C0%2C0%2C0-5.76%2C4.62%2C10.92%2C10.92%2C0%2C0%2C0-1%2C3.65v1.4a3.15%2C3.15%2C0%2C0%2C0%2C2.81%2C3.36H53a3.15%2C3.15%2C0%2C0%2C0%2C2.8-3.36v-1.4A6.08%2C6.08%2C0%2C0%2C0%2C55%2C54.13M34.64%2C36.06c0%2C4.21%2C2.66%2C10.51%2C7.71%2C10.51s7.72-6.3%2C7.72-10.51a7.69%2C7.69%2C0%2C0%2C0-7.72-7.7%2C7.59%2C7.59%2C0%2C0%2C0-7.71%2C7.7%22/%3E%0A%20%20%20%20%20%20%20%20%3Cg%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M33.79%2C47.69a9%2C9%2C0%2C0%2C0-4.63-3.22s-1.82-1-6.45-1-6.45%2C1-6.45%2C1a9.87%2C9.87%2C0%2C0%2C0-5.48%2C4.34%2C7.46%2C7.46%2C0%2C0%2C0-.84%2C3.36v1.12a2.86%2C2.86%2C0%2C0%2C0%2C2.67%2C3.09H25.66a8.12%2C8.12%2C0%2C0%2C1%2C1-3A13.1%2C13.1%2C0%2C0%2C1%2C33.79%2C47.69Z%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M22.71%2C41.53c4.63%2C0%2C7.16-5.89%2C7.16-9.81a7.16%2C7.16%2C0%2C0%2C0-14.32%2C0C15.41%2C35.64%2C17.94%2C41.53%2C22.71%2C41.53Z%22/%3E%0A%20%20%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%20%20%3Cg%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M50.77%2C47.69a9%2C9%2C0%2C0%2C1%2C4.63-3.22s1.82-1%2C6.46-1%2C6.45%2C1%2C6.45%2C1a9.85%2C9.85%2C0%2C0%2C1%2C5.47%2C4.34%2C7.46%2C7.46%2C0%2C0%2C1%2C.84%2C3.36v1.12A2.86%2C2.86%2C0%2C0%2C1%2C72%2C56.38h-13a8.12%2C8.12%2C0%2C0%2C0-1-3A13.12%2C13.12%2C0%2C0%2C0%2C50.77%2C47.69Z%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M62%2C41.53c-4.63%2C0-7.16-5.89-7.16-9.81a7.16%2C7.16%2C0%2C0%2C1%2C14.31%2C0C69.15%2C35.64%2C66.63%2C41.53%2C62%2C41.53Z%22/%3E%0A%20%20%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%3C/g%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E%0A');
+    content: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2084%2084%22%3E%0A%20%20%3Ctitle%3Etext%20copie%208%3C/title%3E%0A%20%20%3Cg%20id%3D%22Calque_6%22%20data-name%3D%22Calque%206%22%3E%0A%20%20%20%20%3Cg%20id%3D%22flc%22%3E%0A%20%20%20%20%20%20%3Cg%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M55%2C54.13a10.45%2C10.45%2C0%2C0%2C0-5.75-4.62s-2-1-7-1-7%2C1-7%2C1a10.47%2C10.47%2C0%2C0%2C0-5.76%2C4.62%2C10.92%2C10.92%2C0%2C0%2C0-1%2C3.65v1.4a3.15%2C3.15%2C0%2C0%2C0%2C2.81%2C3.36H53a3.15%2C3.15%2C0%2C0%2C0%2C2.8-3.36v-1.4A6.08%2C6.08%2C0%2C0%2C0%2C55%2C54.13M34.64%2C36.06c0%2C4.21%2C2.66%2C10.51%2C7.71%2C10.51s7.72-6.3%2C7.72-10.51a7.69%2C7.69%2C0%2C0%2C0-7.72-7.7%2C7.59%2C7.59%2C0%2C0%2C0-7.71%2C7.7%22/%3E%0A%20%20%20%20%20%20%20%20%3Cg%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M33.79%2C47.69a9%2C9%2C0%2C0%2C0-4.63-3.22s-1.82-1-6.45-1-6.45%2C1-6.45%2C1a9.87%2C9.87%2C0%2C0%2C0-5.48%2C4.34%2C7.46%2C7.46%2C0%2C0%2C0-.84%2C3.36v1.12a2.86%2C2.86%2C0%2C0%2C0%2C2.67%2C3.09H25.66a8.12%2C8.12%2C0%2C0%2C1%2C1-3A13.1%2C13.1%2C0%2C0%2C1%2C33.79%2C47.69Z%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M22.71%2C41.53c4.63%2C0%2C7.16-5.89%2C7.16-9.81a7.16%2C7.16%2C0%2C0%2C0-14.32%2C0C15.41%2C35.64%2C17.94%2C41.53%2C22.71%2C41.53Z%22/%3E%0A%20%20%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%20%20%3Cg%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M50.77%2C47.69a9%2C9%2C0%2C0%2C1%2C4.63-3.22s1.82-1%2C6.46-1%2C6.45%2C1%2C6.45%2C1a9.85%2C9.85%2C0%2C0%2C1%2C5.47%2C4.34%2C7.46%2C7.46%2C0%2C0%2C1%2C.84%2C3.36v1.12A2.86%2C2.86%2C0%2C0%2C1%2C72%2C56.38h-13a8.12%2C8.12%2C0%2C0%2C0-1-3A13.12%2C13.12%2C0%2C0%2C0%2C50.77%2C47.69Z%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M62%2C41.53c-4.63%2C0-7.16-5.89-7.16-9.81a7.16%2C7.16%2C0%2C0%2C1%2C14.31%2C0C69.15%2C35.64%2C66.63%2C41.53%2C62%2C41.53Z%22/%3E%0A%20%20%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%3C/g%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E%0A");
     display: block;
     width: 20px;
     height: 20px;
@@ -2753,7 +2755,7 @@ small {
 
   .m_clientsList--list--client {
     &:not(:last-child)::after {
-      content: ',';
+      content: ",";
       margin-right: 0.2em;
     }
   }
@@ -2863,7 +2865,7 @@ small {
 
         &::before {
           counter-increment: compteListe 1;
-          content: counter(compteListe) ' ';
+          content: counter(compteListe) " ";
           position: absolute;
           left: 0;
           top: 0;
@@ -2887,7 +2889,7 @@ small {
             width: 90px;
           }
           &::before {
-            content: 'LIVE';
+            content: "LIVE";
             // .bg-bleuvert;
           }
           // &::after {
@@ -3011,7 +3013,7 @@ small {
     label {
       // color: white;
     }
-    input[type='number'] {
+    input[type="number"] {
       width: 50px;
     }
   }
@@ -3086,7 +3088,7 @@ small {
 .mediaContainer--videoPlay {
   width: 100%;
   height: 100%;
-  padding: 10px ~'calc(50% - 50px)';
+  padding: 10px ~"calc(50% - 50px)";
   position: absolute;
   top: 0;
   left: 0;
@@ -3185,7 +3187,7 @@ small {
 
     h2 {
       .font-folder_title;
-      font-family: 'Fira Code';
+      font-family: "Fira Code";
       margin-top: 0;
       .margin-bottom-verysmall;
       margin-bottom: 0;
@@ -3459,7 +3461,7 @@ small {
       }
       input.input-large {
       }
-      input[type='range'] {
+      input[type="range"] {
         max-width: 320px;
       }
     }
@@ -3491,17 +3493,17 @@ small {
 
     &.is--active {
       &::before {
-        content: '>';
+        content: ">";
 
         display: block;
         position: absolute;
-        right: ~'calc(100% + 4px)';
+        right: ~"calc(100% + 4px)";
         height: 100%;
         width: 40px;
         color: @c-rouge;
         border-right: 5px solid currentColor;
 
-        font-family: 'Fira Mono';
+        font-family: "Fira Mono";
         font-weight: 500;
 
         font-size: 4em;
@@ -3530,7 +3532,7 @@ small {
 
     .m_page--header {
       position: absolute;
-      bottom: ~'calc(100% - 1.4cm)';
+      bottom: ~"calc(100% - 1.4cm)";
       padding: 0 1cm;
       width: 100%;
 
@@ -3542,7 +3544,7 @@ small {
       text-transform: uppercase;
 
       &::after {
-        content: '';
+        content: "";
         position: absolute;
         border-bottom: 1px solid #000;
         // width: 100%;
@@ -3600,7 +3602,7 @@ small {
       // Configuration
       --gridstep: 10mm;
 
-      --gridstep_before: ~'calc(var(--gridstep) - 1px)';
+      --gridstep_before: ~"calc(var(--gridstep) - 1px)";
 
       @c-gridColor: @c-gris_tresclair;
       @s-gridOpacity: 1;
@@ -3668,7 +3670,7 @@ small {
 
       &::before {
         counter-increment: compteListe 1;
-        content: counter(compteListe) ' ';
+        content: counter(compteListe) " ";
 
         position: absolute;
         top: 0;
@@ -4021,7 +4023,7 @@ small {
   }
 
   .m_mediaPublication--caption {
-    font-family: 'Fira Mono';
+    font-family: "Fira Mono";
     font-size: 10pt;
     margin-top: 0.5em;
     white-space: pre-wrap;
@@ -4236,7 +4238,7 @@ small {
     flex-flow: row wrap;
     align-items: flex-end;
 
-    input[type='number'] {
+    input[type="number"] {
       max-width: 60px;
       text-align: center;
       height: 2em;
@@ -4343,7 +4345,7 @@ small {
   visibility: hidden;
   display: block;
   font-size: 0;
-  content: ' ';
+  content: " ";
   clear: both;
   height: 0;
 }
@@ -4532,7 +4534,7 @@ small {
   text-align: center;
 
   &::before {
-    content: '';
+    content: "";
     display: inline-block;
     position: relative;
     width: 100px;
@@ -4554,7 +4556,7 @@ small {
     }
   }
   code {
-    font-family: 'Fira Code';
+    font-family: "Fira Code";
   }
 }
 
@@ -4840,8 +4842,8 @@ small {
 
 **********************************************************/
 
-body[data-mode='export_publication'],
-body[data-mode='link_publication'] {
+body[data-mode="export_publication"],
+body[data-mode="link_publication"] {
   .m_publicationview--pages {
     padding: 0 !important;
   }
