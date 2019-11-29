@@ -1,6 +1,6 @@
 <template>
   <div class="m_tagsAndAuthorFilters flex-wrap bg-blanc rounded margin-top-small">
-    <div v-if="favFilter !== undefined" class="padding-sides-small">
+    <div v-if="favFilter !== undefined" class="padding-small">
       <span class="switch switch-xs">
         <input
           type="checkbox"
@@ -35,6 +35,22 @@
         </label>
       </span>
     </div>
+    <div v-if="allTypes.length > 0" class="padding-sides-small">
+      <label>{{ $t('type') }}</label>
+      <div class="m_typeField margin-bottom-none font-large">
+        <span class v-for="type in allTypes" :key="type">
+          <input
+            type="checkbox"
+            :id="`type-${type}`"
+            :value="type"
+            v-model="enabled_types"
+            @change="$emit('setTypeFilter', enabled_types)"
+            :readonly="read_only"
+          />
+          <label :for="`type-${type}`">&nbsp;{{ $t(type) }}</label>
+        </span>
+      </div>
+    </div>
     <div v-if="allKeywords.length > 0" class="padding-sides-small">
       <label>{{ $t('keywords') }}</label>
       <div class="m_keywordField margin-bottom-none font-large">
@@ -65,12 +81,16 @@ export default {
     "keywordFilter",
     "authorFilter",
     "favFilter",
+    "typeFilter",
     "allKeywords",
-    "allAuthors"
+    "allAuthors",
+    "allTypes"
   ],
   components: {},
   data() {
-    return {};
+    return {
+      enabled_types: []
+    };
   },
 
   created() {},

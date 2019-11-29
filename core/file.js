@@ -375,12 +375,12 @@ module.exports = (function() {
           .then(metas => {
             dev.logverbose(
               `COMMON — editFolder : now resolving with meta ${JSON.stringify(
-                metas[0]
+                metas[0] ? metas[0] : metas[1]
               )}`
             );
             // only deleting from cache because a specific getFolder with slugFolderName is coming right after
             cache.del({ type, slugFolderName });
-            resolve({ slugFolderName, meta: metas[0] });
+            resolve({ slugFolderName, meta: metas[0] ? metas[0] : metas[1] });
           })
           .catch(err => {
             dev.error(

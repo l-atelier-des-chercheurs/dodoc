@@ -232,6 +232,9 @@
         "gridstep": {
           "type": "number"
         },
+        "snap_to_grid": {
+          "type": "boolean"
+        },
         "pages": {
           "type": "array"
         },

@@ -93,12 +93,23 @@
           <label>{{ $t('gridstep') }}(mm)</label>
           <input
             type="number"
-            min="2"
+            min="1"
             max="100"
             step="1"
             v-model="new_gridstep"
             @input="updatePublicationOption($event, 'gridstep')"
           />
+          <span class="switch switch-xs">
+            <input
+              type="checkbox"
+              class="switch"
+              id="favFilter"
+              v-model="new_snap_to_grid"
+              @change="updatePublicationOption(new_snap_to_grid, 'snap_to_grid')"
+              :readonly="read_only"
+            />
+            <label for="favFilter">{{ $t('snap_to_grid') }}</label>
+          </span>
         </div>
 
         <hr />
@@ -336,7 +347,11 @@
       <!-- <transition-group
         name="list-complete"
       >-->
-      <div v-for="(page, pageNumber) in pagesWithDefault" :key="page.id">
+      <div
+        v-for="(page, pageNumber) in pagesWithDefault"
+        :key="page.id"
+        :ref="pageNumber === page_currently_active ? 'current_page' : ''"
+      >
         <div
           class="m_publicationFooter"
           v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode) && pageNumber === 0"
@@ -368,6 +383,7 @@
 
               <div
                 class="m_page--grid"
+                v-if="page.gridstep && page.gridstep > 0"
                 :style="`--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
               />
             </template>
@@ -500,6 +516,7 @@ export default {
           margin_top: 20,
           margin_bottom: 20,
           gridstep: 10,
+          snap_to_grid: true,
           header_left: "",
           header_right: "",
           show_page_number: true
@@ -515,6 +532,7 @@ export default {
       new_template: "",
       new_style: "",
       new_gridstep: 0,
+      new_snap_to_grid: false,
       new_margin_left: 0,
       new_margin_top: 0,
       new_margin_right: 0,
@@ -563,6 +581,12 @@ export default {
       : 38;
     this.updatePubliOptionsInFields();
 
+    this.updatePageSizeAccordingToPanel();
+    this.$eventHub.$on(
+      "activity_panels_resized",
+      this.updatePageSizeAccordingToPanel
+    );
+
     document.getElementsByTagName("body")[0].style = `
       --page-width: ${this.publications_options.width}mm; 
       --page-height: ${this.publications_options.height}mm
@@ -576,6 +600,11 @@ export default {
     );
     // this.$eventHub.$off('publication.setCSSEditWindow', this.setCSSEditWindow);
     document.removeEventListener("keyup", this.publicationKeyListener);
+
+    this.$eventHub.$off(
+      "activity_panels_resized",
+      this.updatePageSizeAccordingToPanel
+    );
   },
 
   watch: {
@@ -971,6 +1000,7 @@ export default {
       this.new_style = this.publications_options.style;
 
       this.new_gridstep = this.publications_options.gridstep;
+      this.new_snap_to_grid = this.publications_options.snap_to_grid;
       this.new_margin_left = this.publications_options.margin_left;
       this.new_margin_right = this.publications_options.margin_right;
       this.new_margin_top = this.publications_options.margin_top;
@@ -1071,6 +1101,10 @@ export default {
         } // Maybe other prefixed APIs?
         this.fullscreen_mode = false;
       }
+
+      setTimeout(() => {
+        this.updatePageSizeAccordingToPanel();
+      }, 500);
     },
     updatePublicationOption(event, type) {
       if (this.$root.state.dev_mode === "debug") {
@@ -1093,6 +1127,18 @@ export default {
           [type]: val
         }
       });
+    },
+    updatePageSizeAccordingToPanel() {
+      const panel_width = this.$refs.panel.offsetWidth;
+      const current_page_el = this.$refs.current_page;
+      if (current_page_el && panel_width > 0) {
+        const page = current_page_el[0].getElementsByClassName("m_page")[0];
+
+        const margins = 100;
+        if (panel_width < page.offsetWidth + margins) {
+          this.zoom = panel_width / (page.offsetWidth + margins);
+        }
+      }
     }
   }
 };

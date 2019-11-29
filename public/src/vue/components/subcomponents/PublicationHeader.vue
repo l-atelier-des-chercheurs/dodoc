@@ -94,7 +94,7 @@ export default {
   props: {
     slugPubliName: String,
     publication: Object,
-    publication_medias: Array,
+    publication_medias: [Boolean, Array, Object],
     number_of_medias_required: {
       type: Number,
       default: -1

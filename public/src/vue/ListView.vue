@@ -31,32 +31,45 @@
           <div>
             <template v-if="Object.keys(projects).length > 0">
               <template v-if="!show_medias_instead_of_projects">
-                {{ $t('showing') }}
-                <span
-                  :class="{ 'c-rouge' : Object.keys(sortedProjectsSlug).length !== Object.keys(projects).length }"
-                >
-                  {{ sortedProjectsSlug.length }}
-                  {{ $t('projects_of') }}
-                  {{ Object.keys(projects).length }}
-                </span>
-                <template v-if="$root.allKeywords.length > 0 || $root.allAuthors.length > 0">
-                  —
+                <div>
+                  {{ $t('showing') }}
+                  <span
+                    :class="{ 'c-rouge' : Object.keys(sortedProjectsSlug).length !== Object.keys(projects).length }"
+                  >
+                    {{ sortedProjectsSlug.length }}
+                    {{ $t('projects_of') }}
+                    {{ Object.keys(projects).length }}
+                  </span>
+                  <template v-if="$root.allKeywords.length > 0 || $root.allAuthors.length > 0">
+                    —
+                    <button
+                      type="button"
+                      class="button-nostyle text-uc button-triangle"
+                      :class="{ 'is--active' : show_filters }"
+                      @click="show_filters = !show_filters"
+                    >{{ $t('filters') }}</button>
+                  </template>
+                  <TagsAndAuthorFilters
+                    v-if="show_filters"
+                    :allKeywords="projectsKeywords"
+                    :allAuthors="projectsAuthors"
+                    :keywordFilter="$root.settings.project_filter.keyword"
+                    :authorFilter="$root.settings.project_filter.author"
+                    @setKeywordFilter="a => $root.setProjectKeywordFilter(a)"
+                    @setAuthorFilter="a => $root.setProjectAuthorFilter(a)"
+                  />
+                </div>
+                <div class="m_searchProject">
                   <button
                     type="button"
                     class="button-nostyle text-uc button-triangle"
-                    :class="{ 'is--active' : show_filters }"
-                    @click="show_filters = !show_filters"
-                  >{{ $t('filters') }}</button>
-                </template>
-                <TagsAndAuthorFilters
-                  v-if="show_filters"
-                  :allKeywords="projectsKeywords"
-                  :allAuthors="projectsAuthors"
-                  :keywordFilter="$root.settings.project_filter.keyword"
-                  :authorFilter="$root.settings.project_filter.author"
-                  @setKeywordFilter="a => $root.setProjectKeywordFilter(a)"
-                  @setAuthorFilter="a => $root.setProjectAuthorFilter(a)"
-                />
+                    :class="{ 'is--active' : show_search || $root.settings.project_filter.name.length > 0 }"
+                    @click="show_search = !show_search"
+                  >{{ $t('search_by_name') }}</button>
+                  <div v-if="show_search || $root.settings.project_filter.name.length > 0">
+                    <input type="text" v-model="$root.settings.project_filter.name" />
+                  </div>
+                </div>
               </template>
               <template v-else>
                 {{ $t('showing') }}
@@ -76,17 +89,19 @@
                     @click="show_filters = !show_filters"
                   >{{ $t('filters') }}</button>
                 </template>
-
                 <TagsAndAuthorFilters
                   v-if="show_filters"
                   :allKeywords="mediasKeywords"
                   :allAuthors="mediasAuthors"
+                  :allTypes="mediaTypes"
                   :keywordFilter="$root.settings.media_filter.keyword"
                   :authorFilter="$root.settings.media_filter.author"
                   :favFilter="$root.settings.media_filter.fav"
+                  :typeFilter="$root.settings.media_filter.type"
                   @setKeywordFilter="a => $root.setMediaKeywordFilter(a)"
                   @setAuthorFilter="a => $root.setMediaAuthorFilter(a)"
                   @setFavFilter="a => $root.setFavAuthorFilter(a)"
+                  @setTypeFilter="a => $root.setTypeFilter(a)"
                 />
               </template>
             </template>
@@ -94,7 +109,6 @@
           </div>
         </div>
       </div>
-
       <transition-group
         v-if="!show_medias_instead_of_projects"
         class="m_projects--list"
@@ -164,14 +178,14 @@ export default {
       show_medias_instead_of_projects: false,
       is_loading_all_medias: false,
 
-      currentFilter: "",
       currentSort: {
         field: "date_created",
         type: "date",
         order: "descending"
       },
 
-      show_filters: false
+      show_filters: false,
+      show_search: false
     };
   },
   mounted() {
@@ -224,6 +238,9 @@ export default {
     mediasAuthors: function() {
       return this.$root.getAllAuthorsFrom(this.filteredMedias);
     },
+    mediaTypes() {
+      return this.$root.getAllTypesFrom(this.filteredMedias);
+    },
     sortedProjectsSlug: function() {
       var sortable = [];
 
@@ -241,6 +258,15 @@ export default {
           );
         } else if (this.currentSort.type === "alph") {
           orderBy = this.projects[slugProjectName][this.currentSort.field];
+        }
+
+        if (this.$root.settings.project_filter.name !== "") {
+          if (
+            !this.projects[slugProjectName].name.includes(
+              this.$root.settings.project_filter.name
+            )
+          )
+            continue;
         }
 
         if (
@@ -368,7 +394,7 @@ export default {
       return allMedias;
     },
     filteredMedias: function() {
-      return this.allMedias.filter(m => this.$root.isMediaShown(m));
+      return this.allMedias.filter(m => this.$root.filterMedia(m));
     },
     sortedMedias: function() {
       let sortedMedias = this.$_.sortBy(this.filteredMedias, "date_created");
@@ -402,9 +428,6 @@ export default {
     setSort(newSort) {
       this.currentSort = newSort;
     },
-    setFilter(newFilter) {
-      this.currentFilter = newFilter;
-    },
     urlToPortrait(slug, filename) {
       if (filename === undefined) {
         return "";
@@ -436,5 +459,5 @@ export default {
   }
 };
 </script>
-<style>
+<style lang="scss">
 </style>
