@@ -5,8 +5,8 @@ module.exports = (function() {
       ascending: "Croissant",
       descending: "Décroissant",
       create_a_project: "Créer un projet",
-      create_a_publication: "Créer une publication",
-      publication: "Publication",
+      create_a_publication: "Créer une recette",
+      publication: "Recette",
       name: "Nom",
       project_name: "Nom du projet",
       created_date: "Date de création",
@@ -106,8 +106,7 @@ module.exports = (function() {
         "Des modifications ont eu lieu, souhaitez-vous les enregistrer ?",
       save_changes: "Oui, enregistrer les modifications",
       close_the_window: "Non, fermer sans enregistrer",
-      sureToRemovePubli:
-        "Êtes-vous sûr de vouloir supprimer cette publication ?",
+      sureToRemovePubli: "Êtes-vous sûr de vouloir supprimer cette recette ?",
       sure_to_cancel_stopmotion:
         'Êtes-vous sûr de vouloir arrêter cette animation ? Vous pourrez la retrouver dans le menu "Liste des animations"',
       validate_media: "Valider le média",
@@ -186,6 +185,8 @@ module.exports = (function() {
         "Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).",
       author_name_editing_instructions:
         "Attention&nbsp;! Tous les médias, projets et recettes resteront associés au nom précédent.",
+      when_logged_as_author_content_will_be_tagged:
+        "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes porteront votre nom.",
 
       sort_by: "Organiser par",
       by: "par",
@@ -273,23 +274,23 @@ module.exports = (function() {
       new_window: "Nouvelle fenêtre",
       previous_creations: "Créations précédentes",
       export_video_instructions:
-        "Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des vidéos ajoutées à la publication.",
+        "Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des vidéos ajoutées à la recette.",
       export_audio_video_mix_instructions:
         "Cliquez sur le bouton pour lancer la création d’une vidéo à partir du son et de la vidéo sélectionnés.",
       export_audio_image_mix_instructions:
         "Cliquez sur le bouton pour lancer la création d’une vidéo à partir du son et de l’image sélectionnés.",
       export_stopmotion_instructions:
-        "Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des images ajoutées à la publication.",
+        "Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des images ajoutées à la recette.",
       make_video: "Fabriquer une vidéo",
       interval_between_pictures: "Intervalle entre chaque photo",
 
-      publication_list: "Liste des publications",
+      publication_list: "Liste des recettes",
       export_creation: "Exportation d’une création",
       get_pdf:
-        "Pour récupérer un PDF de cette publication (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:",
+        "Pour récupérer un PDF de cette recette (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:",
       download_pdf: "Télécharger un PDF",
       get_website:
-        "Pour récupérer un site web contenant cette publication (par exemple pour la diffuser en ligne), cliquez sur le bouton ci-dessous&nbsp;:",
+        "Pour récupérer un site web contenant cette recette (par exemple pour la diffuser en ligne), cliquez sur le bouton ci-dessous&nbsp;:",
       download_website: "Télécharger une version web",
       open_in_app: "Afficher",
 
@@ -363,7 +364,7 @@ module.exports = (function() {
         project_name_exists:
           "Ce nom de projet existe déjà, utilisez-en un autre.",
         publi_name_exists:
-          "Ce nom de publication existe déjà, utilisez-en un autre.",
+          "Ce nom de recette existe déjà, utilisez-en un autre.",
         author_name_exists:
           "Ce nom d’auteur existe déjà, utilisez-en un autre.",
         folder_name_needs_alphanumeric_characters:
@@ -413,7 +414,7 @@ module.exports = (function() {
       ascending: "Ascending",
       descending: "Descending",
       create_a_project: "Create a project",
-      create_a_publication: "Create a publication",
+      create_a_publication: "Create a recipe",
       name: "Name",
       project_name: "Project name",
       created_date: "Created date",
@@ -499,7 +500,7 @@ module.exports = (function() {
         "All changes were not saved. Do you really want to close this window?",
       save_changes: "Yes, save changes",
       close_the_window: "No, close without saving",
-      sureToRemovePubli: "Do you really want to delete this publication?",
+      sureToRemovePubli: "Do you really want to delete this recipe?",
       sure_to_cancel_stopmotion:
         'Do you really want to cancel this stopmotion? You can resume making it by clicking on "Stopmotion list"',
       validate_media: "Validate the media",
@@ -570,6 +571,8 @@ module.exports = (function() {
         "To create authors, close this window and click on (AUTHORS).",
       author_name_editing_instructions:
         "Warning! All existing medias, projects and recipes will still be associated to the previous name.",
+      when_logged_as_author_content_will_be_tagged:
+        "When logged in as an author all projects, medias and recipes will be saved with your name.",
 
       sort_by: "Sort by",
       by: "by",
@@ -623,7 +626,7 @@ module.exports = (function() {
       sureToRemoveProject: "Do you really want to delete this project?",
       sureToRemoveMedia: "Do you really want to delete this media?",
 
-      publication: "Publication",
+      publication: "Recipe",
       edit_the_media: "Edit media",
       edit_project: "Edit project",
       edit_publication: "Edit recipe",
@@ -674,13 +677,13 @@ module.exports = (function() {
       export_folder: "Export as a webpage",
       export: "Export",
 
-      publication_list: "Publications list",
+      publication_list: "Recipes list",
       export_creation: "Export a creation",
       get_pdf:
-        "To download a PDF of this publication (for example, to print it), click here:",
+        "To download a PDF of this recipe (for example, to print it), click here:",
       download_pdf: "Download PDF",
       get_website:
-        "To download a website version of this publication (for example, to publish online), click here:",
+        "To download a website version of this recipe (for example, to publish online), click here:",
       download_website: "Download a website",
       open_in_app: "Open",
 
@@ -763,7 +766,7 @@ module.exports = (function() {
         project_name_exists:
           "This project name already exists. Please use another.",
         publi_name_exists:
-          "This publication name already exists. Please use another.",
+          "This recipe name already exists. Please use another.",
         author_name_exists:
           "This author name already exists. Please use another.",
         folder_name_needs_alphanumeric_characters:

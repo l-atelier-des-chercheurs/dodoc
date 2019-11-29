@@ -6,6 +6,9 @@
 
     <template slot="preview">
       <div class>
+        <div class="margin-sides-medium margin-vert-small">
+          <small>{{ $t('when_logged_as_author_content_will_be_tagged') }}</small>
+        </div>
         <transition-group tag="div" class="m_authorsList" name="list-complete">
           <div class="m_authorsList--createAuthor" :key="'createAuthor'">
             <button
