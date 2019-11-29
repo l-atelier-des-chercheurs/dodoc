@@ -99,6 +99,7 @@ html.setAttribute("lang", lang_settings.current);
 // Create VueI18n instance with options
 let i18n = new VueI18n({
   locale: lang_settings.current, // set locale
+  fallbackLocale: "en",
   messages: locale_strings // set locale messages
 });
 
