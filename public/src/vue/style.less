@@ -1364,9 +1364,13 @@ small {
 }
 
 .m_searchProject {
-  div {
+  > div {
     background-color: #fff;
     .padding-small;
+
+    > *:last-child {
+      margin-bottom: 0;
+    }
   }
   input {
     max-width: 32ch;
@@ -1877,7 +1881,8 @@ small {
     padding: 0 !important;
   }
 
-  > span {
+  > span,
+  > label {
     cursor: pointer;
     flex-basis: auto;
     display: flex;
@@ -1887,6 +1892,8 @@ small {
     // color: white !important;
     .bg-noir;
     .c-blanc;
+    min-height: 0;
+    line-height: inherit !important;
 
     font-size: inherit !important;
     // .padding-sides-verysmall !important;

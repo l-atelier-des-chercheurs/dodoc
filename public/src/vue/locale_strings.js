@@ -54,6 +54,7 @@ module.exports = (function() {
       edit_content: "Modifier le contenu",
       adjust: "Ajuster",
       duplicate: "Dupliquer",
+      project_name_to_find: "Nom du projet à trouver",
 
       show_all: "Tout afficher",
       cooking_pot_instructions:
@@ -471,6 +472,7 @@ module.exports = (function() {
       edit_content: "Edit content",
       adjust: "Adjust",
       duplicate: "Duplicate",
+      project_name_to_find: "Project name to find",
 
       show_all: "Show all",
       cooking_pot_instructions:

@@ -1,5 +1,7 @@
 <template>
-  <div class="m_tagsAndAuthorFilters flex-wrap bg-blanc rounded margin-top-small">
+  <div
+    class="m_tagsAndAuthorFilters flex-wrap bg-blanc rounded margin-top-small"
+  >
     <div v-if="favFilter !== undefined" class="padding-small">
       <span class="switch switch-xs">
         <input
@@ -11,7 +13,7 @@
           :readonly="read_only"
         />
         <label for="favFilter">
-          {{ $t('fav') }}
+          {{ $t("fav") }}
           <svg
             version="1.1"
             class="inline-svg"
@@ -36,9 +38,9 @@
       </span>
     </div>
     <div v-if="allTypes.length > 0" class="padding-sides-small">
-      <label>{{ $t('type') }}</label>
+      <label>{{ $t("type") }}</label>
       <div class="m_typeField margin-bottom-none font-large">
-        <span class v-for="type in allTypes" :key="type">
+        <label :for="`type-${type}`" class v-for="type in allTypes" :key="type">
           <input
             type="checkbox"
             :id="`type-${type}`"
@@ -47,30 +49,37 @@
             @change="$emit('setTypeFilter', enabled_types)"
             :readonly="read_only"
           />
-          <label :for="`type-${type}`">&nbsp;{{ $t(type) }}</label>
-        </span>
+          <span>&nbsp;{{ $t(type) }}</span>
+        </label>
       </div>
     </div>
     <div v-if="allKeywords.length > 0" class="padding-sides-small">
-      <label>{{ $t('keywords') }}</label>
+      <label>{{ $t("keywords") }}</label>
       <div class="m_keywordField margin-bottom-none font-large">
         <button
           v-for="keyword in allKeywords"
           :key="keyword.text"
-          :class="[keyword.classes, { 'is--active' : keywordFilter === keyword.text }]"
-          @click="$emit('setKeywordFilter',keyword.text)"
-        >{{ keyword.text }}</button>
+          :class="[
+            keyword.classes,
+            { 'is--active': keywordFilter === keyword.text }
+          ]"
+          @click="$emit('setKeywordFilter', keyword.text)"
+        >
+          {{ keyword.text }}
+        </button>
       </div>
     </div>
     <div v-if="allAuthors.length > 0" class="padding-sides-small">
-      <label>{{ $t('authors') }}</label>
+      <label>{{ $t("authors") }}</label>
       <div class="m_authorField margin-bottom-none">
         <button
           v-for="author in allAuthors"
           :key="author.name"
-          :class="{ 'is--active' : authorFilter === author.name }"
-          @click="$emit('setAuthorFilter',author.name)"
-        >{{ author.name }}</button>
+          :class="{ 'is--active': authorFilter === author.name }"
+          @click="$emit('setAuthorFilter', author.name)"
+        >
+          {{ author.name }}
+        </button>
       </div>
     </div>
   </div>
@@ -102,5 +111,4 @@ export default {
   methods: {}
 };
 </script>
-<style>
-</style>
+<style></style>
