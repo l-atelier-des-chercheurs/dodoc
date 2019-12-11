@@ -36,8 +36,10 @@ Vue.use(VueI18n);
 import VuePlyr from "vue-plyr";
 Vue.use(VuePlyr);
 
-import VueTippy from "../../node_modules/vue-tippy/dist/vue-tippy.min.js";
-Vue.use(VueTippy, {});
+import VueTippy, { TippyComponent } from "vue-tippy";
+
+Vue.use(VueTippy);
+Vue.component("tippy", TippyComponent);
 
 let lang_settings = {
   available: [
