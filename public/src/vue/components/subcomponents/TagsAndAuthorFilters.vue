@@ -87,7 +87,6 @@ export default {
       type: Boolean,
       default: false
     },
-    typeFilter: String,
     allKeywords: Array,
     allAuthors: Array,
     allTypes: {

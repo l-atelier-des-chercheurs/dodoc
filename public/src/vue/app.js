@@ -812,7 +812,6 @@ let vm = new Vue({
 
     filterMedia(media) {
       const checkIfMediaIsFav = media => {
-        debugger;
         return (
           media.hasOwnProperty("fav") &&
           typeof media.fav === "boolean" &&

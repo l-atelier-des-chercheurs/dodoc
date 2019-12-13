@@ -88,7 +88,6 @@
             :keywordFilter="$root.settings.media_filter.keyword"
             :authorFilter="$root.settings.media_filter.author"
             :favFilter="$root.settings.media_filter.fav"
-            :typeFilter="$root.settings.media_filter.type"
             @setKeywordFilter="a => $root.setMediaKeywordFilter(a)"
             @setAuthorFilter="a => $root.setMediaAuthorFilter(a)"
             @setFavFilter="a => $root.setFavAuthorFilter(a)"
