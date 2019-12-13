@@ -94,7 +94,6 @@ export default {
 
   watch: {
     show_medias_from_project: function() {
-      debugger;
       this.$socketio.listMedias({
         type: "projects",
         slugFolderName: this.show_medias_from_project
