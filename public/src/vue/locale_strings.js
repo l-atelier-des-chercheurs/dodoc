@@ -187,7 +187,7 @@ module.exports = (function() {
       author_instructions:
         "Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).",
       author_name_editing_instructions:
-        "Attention&nbsp;! Tous les médias, projets et recettes resteront associés au nom précédent.",
+        "Attention&nbsp;! Si vous modifiez ce nom tous les médias, projets et recettes resteront associés au nom précédent.",
       when_logged_as_author_content_will_be_tagged:
         "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes porteront votre nom.",
       more_informations_on_authors:
