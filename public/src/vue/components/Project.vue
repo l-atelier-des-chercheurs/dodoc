@@ -4,6 +4,13 @@
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img :src="previewURL" class draggable="false" />
       </div>
+      <div v-else-if="context === 'full'" class="m_project--presentation--novignette">
+        <button
+          type="button"
+          class="buttonLink"
+          @click="showEditProjectModal = true"
+        >Ajouter une image de couverture</button>
+      </div>
 
       <div class="m_project--presentation--text">
         <h2 class="m_project--presentation--text--title" :title="slugProjectName">{{ project.name }}</h2>
@@ -348,7 +355,7 @@ export default {
       ) {
         return projects_password["projects"][this.slugProjectName];
       }
-      return false;
+      return "";
     }
   },
   methods: {

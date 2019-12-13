@@ -19,9 +19,9 @@
 
       <!-- Preview -->
       <div class="margin-bottom-small">
-        <label>{{ $t('preview') }}</label>
+        <label>{{ $t('cover_image') }}</label>
         <br />
-        <ImageSelect @newPreview="value => { preview = value }"></ImageSelect>
+        <ImageSelect :load_from_projects_medias="true" @newPreview="value => { preview = value }"></ImageSelect>
       </div>
 
       <!-- Password -->
