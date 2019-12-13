@@ -23,11 +23,7 @@
             <label for="media_switch" class="cursor-pointer">
               <span class>{{ $t("projects") }}</span>
             </label>
-            <input
-              type="checkbox"
-              id="media_switch"
-              v-model="show_medias_instead_of_projects"
-            />
+            <input type="checkbox" id="media_switch" v-model="show_medias_instead_of_projects" />
             <label for="media_switch">
               <span class>{{ $t("medias") }}</span>
             </label>
@@ -60,9 +56,7 @@
                       class="button-nostyle text-uc button-triangle"
                       :class="{ 'is--active': show_filters }"
                       @click="show_filters = !show_filters"
-                    >
-                      {{ $t("filters") }}
-                    </button>
+                    >{{ $t("filters") }}</button>
                   </template>
                   <TagsAndAuthorFilters
                     v-if="show_filters"
@@ -84,9 +78,7 @@
                         $root.settings.project_filter.name.length > 0
                     }"
                     @click="show_search = !show_search"
-                  >
-                    {{ $t("search_by_name") }}
-                  </button>
+                  >{{ $t("search_by_name") }}</button>
 
                   <div
                     v-if="
@@ -113,9 +105,7 @@
                             $root.settings.project_filter.name.length === 0
                           "
                           @click="$root.settings.project_filter.name = ''"
-                        >
-                          ×
-                        </button>
+                        >×</button>
                       </span>
                     </div>
                   </div>
@@ -145,9 +135,7 @@
                     class="button-nostyle text-uc button-triangle"
                     :class="{ 'is--active': show_filters }"
                     @click="show_filters = !show_filters"
-                  >
-                    {{ $t("filters") }}
-                  </button>
+                  >{{ $t("filters") }}</button>
                 </template>
                 <TagsAndAuthorFilters
                   v-if="show_filters"
@@ -191,9 +179,7 @@
         <div v-for="item in groupedMedias" :key="item[0]">
           <h3
             class="font-folder_title margin-sides-small margin-none margin-bottom-small"
-          >
-            {{ $root.formatDateToHuman(item[0]) }}
-          </h3>
+          >{{ $root.formatDateToHuman(item[0]) }}</h3>
 
           <div class="m_mediaShowAll">
             <div v-for="media in item[1]" :key="media.slugMediaName">
@@ -252,8 +238,8 @@ export default {
   },
   mounted() {
     if (
-      this.$root.settings.project_filter.keyword ||
-      this.$root.settings.project_filter.author
+      !!this.$root.settings.project_filter.keyword ||
+      !!this.$root.settings.project_filter.author
     ) {
       this.show_filters = true;
     }
@@ -282,8 +268,13 @@ export default {
     },
     show_filters: function() {
       if (!this.show_filters) {
-        this.$root.settings.project_filter.keyword = false;
-        this.$root.settings.project_filter.author = false;
+        this.$root.settings.project_filter.keyword = "";
+        this.$root.settings.project_filter.author = "";
+        this.$root.settings.project_filter.name = "";
+        this.$root.settings.media_filter.keyword = "";
+        this.$root.settings.media_filter.author = "";
+        this.$root.settings.media_filter.fav = false;
+        this.$root.settings.media_filter.type = false;
       }
     }
   },
@@ -332,16 +323,16 @@ export default {
         }
 
         if (
-          this.$root.settings.project_filter.keyword === false &&
-          this.$root.settings.project_filter.author === false
+          !this.$root.settings.project_filter.keyword &&
+          !this.$root.settings.project_filter.author
         ) {
           sortable.push({ slugProjectName, orderBy });
           continue;
         }
 
         if (
-          this.$root.settings.project_filter.keyword !== false &&
-          this.$root.settings.project_filter.author !== false
+          !!this.$root.settings.project_filter.keyword &&
+          !!this.$root.settings.project_filter.author
         ) {
           // only add to sorted array if project has this keyword
           if (
@@ -364,7 +355,7 @@ export default {
           continue;
         }
         // if a project keyword filter is set
-        if (this.$root.settings.project_filter.keyword !== false) {
+        if (!!this.$root.settings.project_filter.keyword) {
           // only add to sorted array if project has this keyword
           if (
             this.projects[slugProjectName].hasOwnProperty("keywords") &&
@@ -378,7 +369,7 @@ export default {
           continue;
         }
 
-        if (this.$root.settings.project_filter.author !== false) {
+        if (!!this.$root.settings.project_filter.author) {
           // only add to sorted array if project has this keyword
           if (
             this.projects[slugProjectName].hasOwnProperty("authors") &&

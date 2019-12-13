@@ -168,10 +168,10 @@ export default {
   },
   mounted() {
     if (
-      this.$root.settings.media_filter.keyword ||
-      this.$root.settings.media_filter.author ||
-      this.$root.settings.media_filter.fav ||
-      this.$root.settings.media_filter.type
+      !!this.$root.settings.media_filter.keyword ||
+      !!this.$root.settings.media_filter.author ||
+      !!this.$root.settings.media_filter.fav ||
+      !!this.$root.settings.media_filter.type
     ) {
       this.show_filters = true;
     }
@@ -184,10 +184,10 @@ export default {
   },
   created() {},
   beforeDestroy() {
-    this.$root.settings.media_filter.author = false;
-    this.$root.settings.media_filter.keyword = false;
+    this.$root.settings.media_filter.author = "";
+    this.$root.settings.media_filter.keyword = "";
     this.$root.settings.media_filter.fav = false;
-    this.$root.settings.media_filter.type = false;
+    this.$root.settings.media_filter.type = "";
 
     this.$eventHub.$off("modal.prev_media", this.prevMedia);
     this.$eventHub.$off("modal.next_media", this.nextMedia);

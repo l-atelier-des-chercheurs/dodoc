@@ -1,8 +1,6 @@
 <template>
-  <div
-    class="m_tagsAndAuthorFilters flex-wrap bg-blanc rounded margin-top-small"
-  >
-    <div v-if="favFilter !== undefined" class="padding-small">
+  <div class="m_tagsAndAuthorFilters flex-wrap bg-blanc rounded margin-top-small">
+    <div v-if="has_fav_toggle" class="padding-small">
       <span class="switch switch-xs">
         <input
           type="checkbox"
@@ -64,9 +62,7 @@
             { 'is--active': keywordFilter === keyword.text }
           ]"
           @click="$emit('setKeywordFilter', keyword.text)"
-        >
-          {{ keyword.text }}
-        </button>
+        >{{ keyword.text }}</button>
       </div>
     </div>
     <div v-if="allAuthors.length > 0" class="padding-sides-small">
@@ -77,24 +73,28 @@
           :key="author.name"
           :class="{ 'is--active': authorFilter === author.name }"
           @click="$emit('setAuthorFilter', author.name)"
-        >
-          {{ author.name }}
-        </button>
+        >{{ author.name }}</button>
       </div>
     </div>
   </div>
 </template>
 <script>
 export default {
-  props: [
-    "keywordFilter",
-    "authorFilter",
-    "favFilter",
-    "typeFilter",
-    "allKeywords",
-    "allAuthors",
-    "allTypes"
-  ],
+  props: {
+    keywordFilter: String,
+    authorFilter: String,
+    favFilter: {
+      type: Boolean,
+      default: false
+    },
+    typeFilter: String,
+    allKeywords: Array,
+    allAuthors: Array,
+    allTypes: {
+      type: Array,
+      default: () => []
+    }
+  },
   components: {},
   data() {
     return {
@@ -107,7 +107,11 @@ export default {
   beforeDestroy() {},
 
   watch: {},
-  computed: {},
+  computed: {
+    has_fav_toggle() {
+      return this.$listeners && this.$listeners.setFavFilter;
+    }
+  },
   methods: {}
 };
 </script>

@@ -288,6 +288,11 @@ body {
           .padding-small;
           width: 140px;
         }
+
+        &:focus,
+        &:active {
+          outline: 0;
+        }
       }
     }
 
@@ -994,6 +999,7 @@ small {
 }
 
 .m_projects--list {
+  position: relative;
   .padding-bottom-medium;
   .padding-top-medium;
 
@@ -1377,8 +1383,10 @@ small {
     }
   }
   input {
-    max-width: 32ch;
+    max-width: 18ch;
     // font-size: 70%;
+    .font-folder_title;
+    color: @c-noir;
   }
 }
 
