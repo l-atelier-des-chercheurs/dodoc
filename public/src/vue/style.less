@@ -1825,6 +1825,9 @@ small {
     text-transform: uppercase;
     background-color: transparent !important;
     border: 2px solid @c-gris;
+    font-size: 80% !important;
+    font-weight: bold;
+
     &::before {
       display: none;
     }
@@ -1963,23 +1966,36 @@ small {
     background-color: transparent;
     border: 4px solid @c-gris_clair !important;
     .padding-verysmall;
+    margin-bottom: @t-skipline / 4;
     padding-bottom: 0;
-    flex-grow: 1;
-    display: flex;
-    flex-flow: row wrap;
+    flex: 1 0 100%;
 
-    &::before {
-      content: "suggestion";
-      margin-bottom: @t-skipline / 8;
-      text-transform: uppercase;
-      .label;
-      display: block;
-      flex: 1 1 100%;
-    }
+    // &::before {
+    //   content: "suggestion";
+    //   margin-bottom: @t-skipline / 8;
+    //   text-transform: uppercase;
+    //   .label;
+    //   display: block;
+    //   flex: 1 1 100%;
+    // }
 
-    > * {
+    > div {
       display: flex;
       flex-flow: row wrap;
+    }
+  }
+
+  .m_keywordField--show_all_keywords {
+    display: block;
+    text-transform: uppercase;
+    background-color: transparent !important;
+    border: 2px solid @c-gris;
+    font-size: 80% !important;
+    font-weight: bold;
+    color: @c-gris_fonce !important;
+
+    &::before {
+      display: none;
     }
   }
 
@@ -2103,9 +2119,18 @@ small {
       transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
     }
 
-    &.can_be_removed::before {
-      content: "×";
-      transform: scale(1.5);
+    &.can_be_removed {
+      &::before {
+        content: "×";
+        transform: scale(1.5);
+        transition: transform 0.15s ease;
+      }
+      &:hover {
+        &::before {
+          color: #000;
+          // transform: scale(2);
+        }
+      }
     }
 
     .actions {

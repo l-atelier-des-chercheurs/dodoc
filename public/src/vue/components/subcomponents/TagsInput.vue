@@ -1,49 +1,68 @@
 <template>
-  <transition-group name="list-complete" tag="div" class="m_keywordField">
-    <button
-      type="button"
-      v-for="tag in tags"
-      :key="tag.text"
-      @click="removeTag(tag.text)"
-      class="can_be_removed"
-      :class="['tagcolorid_' + (parseInt(tag.text, 36) % 2)]"
-    >
-      {{ tag.text }}
-    </button>
+  <div>
+    <transition-group name="list-complete" tag="div" class="m_keywordField">
+      <button
+        type="button"
+        v-for="tag in tags"
+        :key="tag.text"
+        @click="removeTag(tag.text)"
+        class="can_be_removed"
+        :class="['tagcolorid_' + (parseInt(tag.text, 36) % 2)]"
+      >{{ tag.text }}</button>
 
-    <div class="new-tag-input-wrapper" :key="'new-tag-input'">
-      <input
-        type="text"
-        class="new-tag-input"
-        v-model.trim="tag"
-        :placeholder="$t('add_keyword')"
-        @keydown.enter.prevent="createTag"
-      />
+      <div class="new-tag-input-wrapper" :key="'new-tag-input'">
+        <input
+          type="text"
+          class="new-tag-input"
+          v-model.trim="tag"
+          :placeholder="$t('add_keyword')"
+          @keydown.enter.prevent="createTag"
+        />
+        <button
+          type="button"
+          @click="createTag"
+          :disabled="disableAddButton"
+          v-if="tag.length > 0"
+        >+</button>
+      </div>
+
+      <div v-if="matchingKeywords.length > 0" class="autocomplete" :key="'autocomplete'">
+        <label>{{ $t('suggestion') }}</label>
+        <div>
+          <button
+            type="button"
+            v-for="keyword in matchingKeywords"
+            :key="keyword.text"
+            class="tag"
+            @click="createTagFromAutocomplete(keyword.text)"
+          >{{ keyword.text }}</button>
+        </div>
+      </div>
+    </transition-group>
+
+    <div class="m_keywordField">
       <button
         type="button"
-        @click="createTag"
-        :disabled="disableAddButton"
-        v-if="tag.length > 0"
-      >
-        +
-      </button>
+        v-if="!show_all_keywords"
+        key="show_all_keywords"
+        @click="show_all_keywords = true"
+        class="m_keywordField--show_all_keywords"
+      >{{ $t('show_all_keywords') }}</button>
+
+      <div v-if="show_all_keywords" class="autocomplete">
+        <label>{{ $t('all_tags') }}</label>
+        <div>
+          <button
+            type="button"
+            v-for="keyword in allKeywordsExceptCurrent"
+            :key="keyword.text"
+            class="tag"
+            @click="createTagFromAutocomplete(keyword.text)"
+          >{{ keyword.text }}</button>
+        </div>
+      </div>
     </div>
-    <div
-      v-if="matchingKeywords.length > 0"
-      class="autocomplete"
-      :key="'autocomplete'"
-    >
-      <button
-        type="button"
-        v-for="keyword in matchingKeywords"
-        :key="keyword.text"
-        class="tag"
-        @click="createTagFromAutocomplete(keyword.text)"
-      >
-        {{ keyword.text }}
-      </button>
-    </div>
-  </transition-group>
+  </div>
 </template>
 <script>
 import { createTags } from "@johmun/vue-tags-input";
@@ -57,7 +76,8 @@ export default {
         !!this.keywords && this.keywords.length > 0
           ? createTags(this.keywords.map(k => k.title))
           : [],
-      tag: ""
+      tag: "",
+      show_all_keywords: false
     };
   },
 
@@ -91,6 +111,11 @@ export default {
         return true;
       }
       return false;
+    },
+    allKeywordsExceptCurrent() {
+      return this.$root.allKeywords.filter(
+        i => !this.tags.find(t => t.text === i.text)
+      );
     }
   },
   methods: {
