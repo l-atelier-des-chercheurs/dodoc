@@ -246,6 +246,13 @@
             <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
           </div>
         </div>
+        <div class="m_metaField" v-if="!!project_name">
+          <div>{{ $t('project') }}</div>
+          <div>
+            {{ project_name }}
+            <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
+          </div>
+        </div>
         <!-- <div class="m_metaField" v-if="!!media.authors">
           <div>
             {{ $t('author') }}
@@ -413,6 +420,15 @@ export default {
   computed: {
     all_projects() {
       return this.$root.projects_that_are_accessible;
+    },
+    project_name() {
+      if (
+        !this.slugProjectName ||
+        !this.$root.store.projects.hasOwnProperty(this.slugProjectName)
+      ) {
+        return false;
+      }
+      return this.$root.store.projects[this.slugProjectName].name;
     }
   },
   methods: {
