@@ -250,6 +250,15 @@
           <div>{{ $t('project') }}</div>
           <div>
             {{ project_name }}
+            <button
+              type="button"
+              @click="minimizeMediaAndShowProject"
+              :title="$t('open_project')"
+              v-tippy="{ 
+                placement : 'top',
+                delay: [600, 0]
+              }"
+            >↑</button>
             <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
           </div>
         </div>
@@ -434,6 +443,10 @@ export default {
   methods: {
     printMedia: function() {
       window.print();
+    },
+    minimizeMediaAndShowProject: function() {
+      this.$root.media_modal.minimized = true;
+      this.$root.openProject(this.slugProjectName);
     },
     removeMedia: function() {
       this.$alertify

@@ -335,6 +335,7 @@ module.exports = (function() {
       carreau_instructions: `Cette recette permet de collaborer à plusieurs sur la même surface pour présenter des médias de différent type. Ouvrez une nouvelle fenêtre vers cette recette en plein écran sur un projecteur pour afficher uniquement la surface.<br> Médias acceptés : images, vidéos, sons.`,
 
       last_modified: "Dernière modification",
+      open_project: "Afficher le projet",
       remote_access: "Accès depuis d’autres appareils",
       img_per_second: "Images par seconde",
       sent: "Envoyé",
@@ -748,6 +749,7 @@ module.exports = (function() {
         "Write here some CSS code, <br>for example <code>color: blue;</code>",
 
       last_modified: "Last modified",
+      open_project: "Show the project",
       remote_access: "Acces from other devices",
       img_per_second: "Images per second",
       sent: "Sent",
