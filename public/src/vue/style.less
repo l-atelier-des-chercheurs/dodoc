@@ -1677,9 +1677,10 @@ small {
           padding: 4px;
 
           // box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-          background-color: fade(@c-blanc, 90%);
-          fill: black;
+          background-color: @c-orange;
+          fill: white;
           border-radius: 10px;
+          filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
         }
       }
 
@@ -1803,6 +1804,11 @@ small {
     span.is--active {
       // background-color: transparent !important;
     }
+  }
+
+  button {
+    min-height: 0;
+    padding: 0;
   }
 }
 
