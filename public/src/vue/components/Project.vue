@@ -226,43 +226,6 @@
       />
     </div>
 
-    <!-- <div class="m_project--description"
-      v-if="context === 'full'"
-    >
-      <p>
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-      </p>
-    </div>-->
-
-    <!-- <div class="m_project--favMedias"
-      v-if="context === 'full'"
-    >
-      <div class="sectionTitle_small margin-sides-small margin-bottom-small">
-        {{ $t('favorite_medias') }}
-        <svg version="1.1"
-          class="inline-svg"
-          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px" y="0px" width="78.5px" height="106.4px" viewBox="0 0 78.5 106.4" style="enable-background:new 0 0 78.5 106.4;"
-          xml:space="preserve">
-          <polygon class="st0" points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"/>
-          <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 "/>
-        </svg>
-      </div>
-
-      <div class="m_project--favMedias--list">
-        <MediaCard
-          v-if="favMedias !== undefined"
-          v-for="media in favMedias"
-          :key="media.slugMediaName"
-          :media="media"
-          :metaFileName="media.metaFileName"
-          :slugProjectName="slugProjectName"
-          :preview_size="360"
-        >
-        </MediaCard>
-      </div>
-    </div>-->
-
     <MediaLibrary
       v-if="context === 'full'"
       :slugProjectName="slugProjectName"
