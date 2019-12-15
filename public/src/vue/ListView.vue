@@ -493,6 +493,11 @@ export default {
       this.mediaNav(+1);
     },
     mediaNav(relative_index) {
+      // make sur we are on that list
+      if (this.$root.do_navigation.view !== "ListView") {
+        return;
+      }
+
       const current_media_index = this.sortedMedias.findIndex(
         m => m.metaFileName === this.$root.media_modal.current_metaFileName
       );

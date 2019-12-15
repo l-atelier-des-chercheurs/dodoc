@@ -1,5 +1,10 @@
 <template>
-  <div class="mediaContainer" :class="`type-${media.type}`" :data-context="context">
+  <div
+    class="mediaContainer"
+    :key="slugFolderName + media.media_filename"
+    :class="`type-${media.type}`"
+    :data-context="context"
+  >
     <template v-if="media.type === 'image'">
       <img
         :srcset="imageSrcSetAttr"
