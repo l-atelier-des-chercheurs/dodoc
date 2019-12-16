@@ -96,20 +96,29 @@
         </template>
       </div>
     </div>
-
     <transition-group
       class="m_project--library--medias"
       name="list-complete"
       v-if="selected_files.length === 0"
     >
-      <MediaCard
-        v-for="media in sortedMedias"
-        :key="media.slugMediaName"
-        :media="media"
-        :metaFileName="media.metaFileName"
-        :slugProjectName="slugProjectName"
-        :class="{ 'is--just_added' : last_media_added.includes(media.slugMediaName) }"
-      />
+      <div v-for="item in groupedMedias" :key="item[0]">
+        <h3
+          class="font-folder_title margin-sides-small margin-none margin-bottom-small"
+        >{{ $root.formatDateToHuman(item[0]) }}</h3>
+
+        <div class="m_mediaShowAll">
+          <div v-for="media in item[1]" :key="media.slugMediaName">
+            <MediaCard
+              :key="media.metaFileName"
+              :media="media"
+              :metaFileName="media.metaFileName"
+              :slugProjectName="slugProjectName"
+              :preview_size="180"
+              :class="{ 'is--just_added' : last_media_added.includes(media.metaFileName) }"
+            />
+          </div>
+        </div>
+      </div>
     </transition-group>
   </div>
 </template>
@@ -134,10 +143,11 @@ export default {
   data() {
     return {
       mediaSort: {
-        field: "date_uploaded",
-        type: "date",
-        order: "descending"
+        field: "date_uploaded"
+        // type: "date",
+        // order: "descending"
       },
+
       selected_files: [],
       is_iOS_device:
         !!window.navigator.platform &&
@@ -200,13 +210,13 @@ export default {
   watch: {
     "project.medias": function() {
       if (this.media_metaFileName_initially_present.length === 0) {
-        this.media_metaFileName_initially_present = Object.keys(
+        this.media_metaFileName_initially_present = Object.values(
           this.project.medias
-        );
+        ).map(m => m.metaFileName);
       } else {
-        this.last_media_added = Object.keys(this.project.medias).filter(
-          s => !this.media_metaFileName_initially_present.includes(s)
-        );
+        this.last_media_added = Object.values(this.project.medias)
+          .map(m => m.metaFileName)
+          .filter(s => !this.media_metaFileName_initially_present.includes(s));
       }
     }
   },
@@ -228,72 +238,41 @@ export default {
     mediaTypes() {
       return this.$root.getAllTypesFrom(this.project.medias);
     },
-    sortedMedias() {
-      var sortable = [];
-
-      if (!this.project.hasOwnProperty("medias")) {
-        return sortable;
+    filteredMedias: function() {
+      if (!this.project.medias || typeof this.project.medias !== "object") {
+        return false;
       }
+      return Object.values(this.project.medias).filter(m =>
+        this.$root.filterMedia(m)
+      );
+    },
+    sortedMedias: function() {
+      let sortedMedias = this.$_.sortBy(
+        this.filteredMedias,
+        this.mediaSort.field
+      );
+      return sortedMedias.reverse();
+    },
+    groupedMedias: function() {
+      let mediaGroup = this.$_.groupBy(this.sortedMedias, media => {
+        let _date;
 
-      for (let slugMediaName in this.project.medias) {
-        let orderBy;
-        const media = this.project.medias[slugMediaName];
-
-        if (this.mediaSort.type === "date") {
-          if (media.hasOwnProperty(this.mediaSort.field)) {
-            orderBy = +this.$moment(
-              media[this.mediaSort.field],
-              "YYYY-MM-DD HH:mm:ss"
-            );
-          }
-          if (orderBy === undefined || Number.isNaN(orderBy)) {
-            orderBy = 1000;
-          }
-        } else if (this.mediaSort.type === "alph") {
-          orderBy = media[this.mediaSort.field];
-          if (orderBy === undefined || Number.isNaN(orderBy)) {
-            orderBy = 1000;
-          }
-          if (orderBy === undefined) {
-            orderBy = "z";
-          }
+        if (
+          media.hasOwnProperty(this.mediaSort.field) &&
+          !!media[this.mediaSort.field]
+        ) {
+          _date = media[this.mediaSort.field];
+        } else {
+          return this.$t("invalid_date");
         }
 
-        if (this.$root.filterMedia(media)) {
-          sortable.push({ slugMediaName, orderBy });
-        }
-      }
-
-      let sortedSortable = sortable.sort(function(a, b) {
-        let valA = a.orderBy;
-        let valB = b.orderBy;
-        if (typeof a.orderBy === "string" && typeof b.orderBy === "string") {
-          valA = valA.toLowerCase();
-          valB = valB.toLowerCase();
-        }
-        if (valA < valB) {
-          return -1;
-        }
-        if (valA > valB) {
-          return 1;
-        }
-        return 0;
+        var dateMoment = this.$moment(_date);
+        return dateMoment.format("YYYY-MM-DD");
       });
-
-      if (this.mediaSort.order === "descending") {
-        sortedSortable.reverse();
-      }
-
-      // array order is garanteed while objects properties aren’t,
-      // that’s why we use an array here
-      let sortedMedias = sortedSortable.reduce((accumulator, d) => {
-        let sortedMediaObj = this.project.medias[d.slugMediaName];
-        sortedMediaObj.slugMediaName = d.slugMediaName;
-        accumulator.push(sortedMediaObj);
-        return accumulator;
-      }, []);
-
-      return sortedMedias;
+      mediaGroup = this.$_.pairs(mediaGroup);
+      mediaGroup = this.$_.sortBy(mediaGroup);
+      mediaGroup = mediaGroup.reverse();
+      return mediaGroup;
     }
   },
   methods: {

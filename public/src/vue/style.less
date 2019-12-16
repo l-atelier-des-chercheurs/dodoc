@@ -934,11 +934,6 @@ small {
         .padding-top-small;
         .padding-sides-small;
 
-        @supports (display: grid) {
-          .padding-sides-medium;
-          grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        }
-
         .m_media {
           .padding-sides-small;
 
@@ -976,7 +971,8 @@ small {
 
 @t-folderwidth: 320px;
 
-.m_allmedias--list {
+.m_allmedias--list,
+.m_project--library--medias {
   .padding-bottom-medium;
   .padding-top-medium;
   display: block;
@@ -1211,35 +1207,35 @@ small {
 
     position: relative;
     width: 100%;
-    display: flex;
-    flex-flow: row wrap;
-    align-content: flex-start;
-    align-items: flex-start;
+    // display: flex;
+    // flex-flow: row wrap;
+    // align-content: flex-start;
+    // align-items: flex-start;
 
     .padding-top-small;
-    .padding-sides-verysmall;
+    // .padding-sides-verysmall;
     .padding-bottom-medium;
 
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     .custom_scrollbar(8px, 5px, 6px);
 
-    @supports (display: grid) {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      grid-auto-rows: max-content;
-      .padding-sides-small;
-      grid-gap: @t-skipline / 2;
-    }
+    // @supports (display: grid) {
+    //   display: grid;
+    //   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    //   grid-auto-rows: max-content;
+    //   .padding-sides-small;
+    //   grid-gap: @t-skipline / 2;
+    // }
 
-    > * {
-      // position: relative;
-      flex: 0 0 100/5%;
+    // > * {
+    //   // position: relative;
+    //   flex: 0 0 100/5%;
 
-      @media screen and (min-width: 1500px) {
-        flex: 0 0 100/7%;
-      }
-    }
+    //   @media screen and (min-width: 1500px) {
+    //     flex: 0 0 100/7%;
+    //   }
+    // }
   }
 }
 
