@@ -62,34 +62,6 @@
 
         <button
           type="button"
-          class="buttonLink hide_on_print"
-          @click.prevent="removeMedia()"
-          :disabled="read_only"
-        >
-          <svg
-            version="1.1"
-            class="inline-svg"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="91.6px"
-            height="95px"
-            viewBox="0 0 91.6 95"
-            style="enable-background:new 0 0 91.6 95;"
-            xml:space="preserve"
-          >
-            <path
-              class="st0"
-              d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
-            l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
-            />
-          </svg>
-          {{ $t('remove') }}
-        </button>
-
-        <button
-          type="button"
           class="buttonLink"
           :class="{ 'is--active' : showQRModal }"
           @click="showQRModal = !showQRModal"
@@ -198,6 +170,34 @@
             v-if="!!media.original_media_filename"
           >Revenir à l’original</button>
         </div>
+
+        <button
+          type="button"
+          class="buttonLink hide_on_print"
+          @click.prevent="removeMedia()"
+          :disabled="read_only"
+        >
+          <svg
+            version="1.1"
+            class="inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="91.6px"
+            height="95px"
+            viewBox="0 0 91.6 95"
+            style="enable-background:new 0 0 91.6 95;"
+            xml:space="preserve"
+          >
+            <path
+              class="st0"
+              d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
+            l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
+            />
+          </svg>
+          {{ $t('remove') }}
+        </button>
 
         <hr class="hide_on_print" />
       </div>
