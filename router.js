@@ -92,6 +92,10 @@ module.exports = function(app) {
 
     generatePageData(req).then(
       pageData => {
+        if (!!global.session_password) {
+          return res.render("index", pageData);
+        }
+
         // let’s make sure that folder exists first and return some meta
         file
           .getFolder({ type: 'projects', slugFolderName: slugProjectName })
