@@ -13,7 +13,8 @@ module.exports = (function() {
     init: (app, io) => init(app, io),
     createMediaMeta: ({ type, slugFolderName, additionalMeta }) =>
       createMediaMeta({ type, slugFolderName, additionalMeta }),
-    notify: notify
+    notify: notify,
+    io: () => io
   };
 
   function init(thisApp, thisIO) {
