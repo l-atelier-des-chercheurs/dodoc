@@ -24,6 +24,15 @@ module.exports = function(app) {
   app.get('/publications/print/pdf/:pdfName', showPDF);
   app.get('/publications/video/:videoName', showVideo);
   app.post('/file-upload/:type/:slugFolderName', postFile2);
+  app.get("/", showIndex);
+  app.get("/:project", loadFolderOrMedia);
+  app.get("/:project/media/:metaFileName", loadFolderOrMedia);
+  app.get("/_publications/:publication", linkPublication);
+  app.get("/_publications/web/:publication", exportPublication);
+  app.get("/_publications/print/:publication", printPublication);
+  app.get("/_publications/print/pdf/:pdfName", showPDF);
+  app.get("/_publications/video/:videoName", showVideo);
+  app.post("/_file-upload/:type/:slugFolderName", postFile);
 
   remote_api.init(app);
 
