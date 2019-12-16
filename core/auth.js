@@ -1,11 +1,9 @@
-const SparkMD5 = require('spark-md5');
+const SparkMD5 = require("spark-md5");
 
-const dev = require('./dev-log'),
-  file = require('./file');
+const dev = require("./dev-log"),
+  file = require("./file");
 
 module.exports = (function() {
-  // This var stores all session ID and the folder(s) they are authorized to edit
-
   const API = {
     setAuthenticate: folder_passwords => setAuthenticate(folder_passwords),
     canAdminFolder: (socket, foldersData, type) =>
@@ -47,7 +45,7 @@ module.exports = (function() {
       Object.keys(folder_passwords).map(type => {
         // get all folders slugs and passwords
         if (
-          typeof folder_passwords[type] !== 'object' ||
+          typeof folder_passwords[type] !== "object" ||
           Object.keys(folder_passwords[type]).length === 0
         ) {
           dev.log(`AUTH — setAuthenticate : no usable content for ${type}`);
@@ -71,7 +69,7 @@ module.exports = (function() {
                 );
                 if (
                   foldersData.hasOwnProperty(slugFolderName) &&
-                  foldersData[slugFolderName].hasOwnProperty('password')
+                  foldersData[slugFolderName].hasOwnProperty("password")
                 ) {
                   if (
                     foldertype_passwords[slugFolderName] ===
@@ -83,9 +81,7 @@ module.exports = (function() {
                   } else {
                     dev.error(`Password is wrong for ${slugFolderName}.`);
                     dev.error(
-                      `Submitted: ${
-                        foldertype_passwords[slugFolderName]
-                      }\nShould be: ${foldersData[slugFolderName].password}`
+                      `Submitted: ${foldertype_passwords[slugFolderName]}\nShould be: ${foldersData[slugFolderName].password}`
                     );
                   }
                 }
@@ -118,8 +114,8 @@ module.exports = (function() {
     );
 
     if (
-      !foldersData[slugFolderName].hasOwnProperty('password') ||
-      foldersData[slugFolderName].password === ''
+      !foldersData[slugFolderName].hasOwnProperty("password") ||
+      foldersData[slugFolderName].password === ""
     ) {
       dev.logverbose(`AUTH — canAdminFolder: no password --> authorized`);
       return true;
@@ -127,13 +123,13 @@ module.exports = (function() {
 
     // socket._is_authorized_for_folders.filter();
 
-    if (socket.hasOwnProperty('_is_authorized_for_folders')) {
+    if (socket.hasOwnProperty("_is_authorized_for_folders")) {
       const _is_authorized_for_this_folder = socket._is_authorized_for_folders.filter(
         i => {
           return (
-            i.hasOwnProperty('type') &&
+            i.hasOwnProperty("type") &&
             i.type === type &&
-            i.hasOwnProperty('allowed_slugFolderNames') &&
+            i.hasOwnProperty("allowed_slugFolderNames") &&
             i.allowed_slugFolderNames.indexOf(slugFolderName) >= 0
           );
         }
@@ -186,10 +182,10 @@ module.exports = (function() {
     );
     Object.keys(filtered_folders_and_medias).map(slugFolderName => {
       const folders_data = filtered_folders_and_medias[slugFolderName];
-      if (folders_data.hasOwnProperty('medias')) {
+      if (folders_data.hasOwnProperty("medias")) {
         Object.keys(folders_data.medias).map(slugMediaName => {
           if (
-            !folders_data.medias[slugMediaName].hasOwnProperty('public') ||
+            !folders_data.medias[slugMediaName].hasOwnProperty("public") ||
             folders_data.medias[slugMediaName].public === false
           ) {
             // if no public prop or public prop === false, remove from list
@@ -204,7 +200,7 @@ module.exports = (function() {
   function isSubmittedSessionPasswordValid(pwd) {
     dev.logfunction(`AUTH — isSubmittedSessionPasswordValid`);
 
-    if (!global.session_password || String(global.session_password) === '') {
+    if (!global.session_password || String(global.session_password) === "") {
       // no session password
       dev.logverbose(`No session password`);
       return true;
@@ -221,7 +217,7 @@ module.exports = (function() {
   }
 
   function hashCode(s) {
-    return s.split('').reduce(function(a, b) {
+    return s.split("").reduce(function(a, b) {
       a = (a << 5) - a + b.charCodeAt(0);
       return a & a;
     }, 0);
