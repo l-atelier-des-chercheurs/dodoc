@@ -117,6 +117,44 @@
         >
           <span class>{{ $t('open') }}</span>
         </button>
+
+        <button
+          v-if="can_access_folder && context === 'full'"
+          type="button"
+          class="buttonLink"
+          @click="downloadProjectArchive"
+          :disabled="zip_export_started"
+        >
+          <template v-if="!zip_export_started">
+            <svg
+              version="1.1"
+              class="inline-svg"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="91.6px"
+              height="95px"
+              viewBox="0 0 91.6 95"
+              style="enable-background:new 0 0 91.6 95;"
+              xml:space="preserve"
+            >
+              <rect x="0.3" y="105.8" class="st0" width="85.8" height="16" />
+              <g>
+                <path
+                  class="st0"
+                  d="M75.2,51L60.6,37.5c-2.5-2.3-4.5-4.2-5.9-5.9c-1.4-1.7-2.8-3.7-4.2-6l0,67.6H35.3l0-67.6
+			c-1.2,2.1-2.6,4-4.2,5.8c-1.6,1.8-3.5,3.8-5.9,6.1L10.6,51L0,38.6L42.9,0l42.9,38.6L75.2,51z"
+                />
+              </g>
+            </svg>
+          </template>
+          <template v-else>
+            <span class="loader loader-small" />
+          </template>
+          {{ $t('download') }}
+        </button>
+
         <button
           v-if="can_access_folder && context === 'full'"
           type="button"
@@ -260,7 +298,8 @@ export default {
       remember_project_password_for_this_device: true,
 
       showDuplicateProjectMenu: false,
-      copy_project_name: this.$t("copy_of") + " " + this.project.name
+      copy_project_name: this.$t("copy_of") + " " + this.project.name,
+      zip_export_started: false
     };
   },
   watch: {
@@ -429,6 +468,21 @@ export default {
       this.$socketio.sendAuth();
 
       this.closeProject();
+    },
+    downloadProjectArchive() {
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(`Project • METHODS: downloadProjectArchive`);
+      }
+      this.zip_export_started = true;
+      setTimeout(() => {
+        this.zip_export_started = false;
+      }, 2000);
+      window.location.replace(
+        window.location.origin +
+          "/_archives/projects/" +
+          this.slugProjectName +
+          `?socketid=${this.$socketio.socket.id}`
+      );
     }
   }
 };
