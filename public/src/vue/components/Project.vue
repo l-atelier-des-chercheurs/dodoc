@@ -4,6 +4,13 @@
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img :src="previewURL" class draggable="false" />
       </div>
+      <div v-else-if="context === 'full'" class="m_project--presentation--novignette">
+        <button
+          type="button"
+          class="buttonLink"
+          @click="showEditProjectModal = true"
+        >Ajouter une image de couverture</button>
+      </div>
 
       <div class="m_project--presentation--text">
         <h2 class="m_project--presentation--text--title" :title="slugProjectName">{{ project.name }}</h2>
@@ -110,6 +117,44 @@
         >
           <span class>{{ $t('open') }}</span>
         </button>
+
+        <button
+          v-if="can_access_folder && context === 'full'"
+          type="button"
+          class="buttonLink"
+          @click="downloadProjectArchive"
+          :disabled="zip_export_started"
+        >
+          <template v-if="!zip_export_started">
+            <svg
+              version="1.1"
+              class="inline-svg"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="91.6px"
+              height="95px"
+              viewBox="0 0 91.6 95"
+              style="enable-background:new 0 0 91.6 95;"
+              xml:space="preserve"
+            >
+              <rect x="0.3" y="105.8" class="st0" width="85.8" height="16" />
+              <g>
+                <path
+                  class="st0"
+                  d="M75.2,51L60.6,37.5c-2.5-2.3-4.5-4.2-5.9-5.9c-1.4-1.7-2.8-3.7-4.2-6l0,67.6H35.3l0-67.6
+			c-1.2,2.1-2.6,4-4.2,5.8c-1.6,1.8-3.5,3.8-5.9,6.1L10.6,51L0,38.6L42.9,0l42.9,38.6L75.2,51z"
+                />
+              </g>
+            </svg>
+          </template>
+          <template v-else>
+            <span class="loader loader-small" />
+          </template>
+          {{ $t('download') }}
+        </button>
+
         <button
           v-if="can_access_folder && context === 'full'"
           type="button"
@@ -219,43 +264,6 @@
       />
     </div>
 
-    <!-- <div class="m_project--description"
-      v-if="context === 'full'"
-    >
-      <p>
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-      </p>
-    </div>-->
-
-    <!-- <div class="m_project--favMedias"
-      v-if="context === 'full'"
-    >
-      <div class="sectionTitle_small margin-sides-small margin-bottom-small">
-        {{ $t('favorite_medias') }}
-        <svg version="1.1"
-          class="inline-svg"
-          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px" y="0px" width="78.5px" height="106.4px" viewBox="0 0 78.5 106.4" style="enable-background:new 0 0 78.5 106.4;"
-          xml:space="preserve">
-          <polygon class="st0" points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"/>
-          <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 "/>
-        </svg>
-      </div>
-
-      <div class="m_project--favMedias--list">
-        <MediaCard
-          v-if="favMedias !== undefined"
-          v-for="media in favMedias"
-          :key="media.slugMediaName"
-          :media="media"
-          :metaFileName="media.metaFileName"
-          :slugProjectName="slugProjectName"
-          :preview_size="360"
-        >
-        </MediaCard>
-      </div>
-    </div>-->
-
     <MediaLibrary
       v-if="context === 'full'"
       :slugProjectName="slugProjectName"
@@ -290,7 +298,8 @@ export default {
       remember_project_password_for_this_device: true,
 
       showDuplicateProjectMenu: false,
-      copy_project_name: this.$t("copy_of") + " " + this.project.name
+      copy_project_name: this.$t("copy_of") + " " + this.project.name,
+      zip_export_started: false
     };
   },
   watch: {
@@ -348,7 +357,7 @@ export default {
       ) {
         return projects_password["projects"][this.slugProjectName];
       }
-      return false;
+      return "";
     }
   },
   methods: {
@@ -459,6 +468,29 @@ export default {
       this.$socketio.sendAuth();
 
       this.closeProject();
+    },
+    downloadProjectArchive() {
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(`Project • METHODS: downloadProjectArchive`);
+      }
+      this.zip_export_started = true;
+      setTimeout(() => {
+        this.zip_export_started = false;
+      }, 2000);
+
+      const pwd = this.$auth.hashCode(this.project_password);
+      const query_url =
+        window.location.origin +
+        "/_archives/projects/" +
+        this.slugProjectName +
+        `?pwd=${pwd}`;
+
+      if (this.$root.state.dev_mode === "debug")
+        console.log(
+          `Project • METHODS: downloadProjectArchive with query ${query_url}`
+        );
+
+      window.location.replace(query_url);
     }
   }
 };

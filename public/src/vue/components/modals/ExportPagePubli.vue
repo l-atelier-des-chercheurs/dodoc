@@ -156,7 +156,7 @@ export default {
       this.pdf_request_status = "generated";
       this.exported_pdf_name = pdfName;
       this.link_to_pdf =
-        window.location.origin + "/publications/print/pdf/" + pdfName;
+        window.location.origin + "/_publications/print/pdf/" + pdfName;
     },
     downloadWeb() {
       if (this.$root.state.dev_mode === "debug") {
@@ -167,7 +167,7 @@ export default {
         this.web_export_started = false;
       }, 2000);
       window.location.replace(
-        window.location.origin + "/publications/web/" + this.slugPubliName
+        window.location.origin + "/_publications/web/" + this.slugPubliName
       );
     },
     getLink() {

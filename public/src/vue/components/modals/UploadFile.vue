@@ -88,7 +88,7 @@ export default {
   beforeDestroy() {},
   computed: {
     uriToUploadMedia: function() {
-      return `file-upload/${this.type}/${this.slugFolderName}`;
+      return `_file-upload/${this.type}/${this.slugFolderName}`;
     }
   },
   methods: {

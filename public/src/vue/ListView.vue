@@ -9,7 +9,7 @@
             :disabled="read_only"
             :key="'createButton'"
           >
-            <span>{{ $t('create_a_project') }}</span>
+            <span>{{ $t("create_a_project") }}</span>
           </button>
           <CreateProject
             v-if="showCreateProjectModal"
@@ -21,33 +21,42 @@
         <div class="m_actionbar--text">
           <div class="switch switch-xs switch_twoway">
             <label for="media_switch" class="cursor-pointer">
-              <span class>{{ $t('projects') }}</span>
+              <span class>{{ $t("projects") }}</span>
             </label>
             <input type="checkbox" id="media_switch" v-model="show_medias_instead_of_projects" />
             <label for="media_switch">
-              <span class>{{ $t('medias') }}</span>
+              <span class>{{ $t("medias") }}</span>
             </label>
           </div>
           <div>
             <template v-if="Object.keys(projects).length > 0">
               <template v-if="!show_medias_instead_of_projects">
                 <div>
-                  {{ $t('showing') }}
+                  {{ $t("showing") }}
                   <span
-                    :class="{ 'c-rouge' : Object.keys(sortedProjectsSlug).length !== Object.keys(projects).length }"
+                    :class="{
+                      'c-rouge':
+                        Object.keys(sortedProjectsSlug).length !==
+                        Object.keys(projects).length
+                    }"
                   >
                     {{ sortedProjectsSlug.length }}
-                    {{ $t('projects_of') }}
+                    {{ $t("projects_of") }}
                     {{ Object.keys(projects).length }}
                   </span>
-                  <template v-if="$root.allKeywords.length > 0 || $root.allAuthors.length > 0">
+                  <template
+                    v-if="
+                      $root.allKeywords.length > 0 ||
+                        $root.allAuthors.length > 0
+                    "
+                  >
                     —
                     <button
                       type="button"
                       class="button-nostyle text-uc button-triangle"
-                      :class="{ 'is--active' : show_filters }"
+                      :class="{ 'is--active': show_filters }"
                       @click="show_filters = !show_filters"
-                    >{{ $t('filters') }}</button>
+                    >{{ $t("filters") }}</button>
                   </template>
                   <TagsAndAuthorFilters
                     v-if="show_filters"
@@ -63,31 +72,70 @@
                   <button
                     type="button"
                     class="button-nostyle text-uc button-triangle"
-                    :class="{ 'is--active' : show_search || $root.settings.project_filter.name.length > 0 }"
+                    :class="{
+                      'is--active':
+                        show_search ||
+                        $root.settings.project_filter.name.length > 0
+                    }"
                     @click="show_search = !show_search"
-                  >{{ $t('search_by_name') }}</button>
-                  <div v-if="show_search || $root.settings.project_filter.name.length > 0">
-                    <input type="text" v-model="$root.settings.project_filter.name" />
+                  >{{ $t("search_by_name") }}</button>
+
+                  <div
+                    v-if="
+                      show_search ||
+                        $root.settings.project_filter.name.length > 0
+                    "
+                    class="m_metaField"
+                  >
+                    <div>{{ $t("project_name_to_find") }}</div>
+
+                    <div class="input-group">
+                      <input
+                        type="text"
+                        class="input-sm"
+                        v-model="$root.settings.project_filter.name"
+                      />
+                      <span
+                        class="input-addon"
+                        v-if="$root.settings.project_filter.name.length > 0"
+                      >
+                        <button
+                          type="button"
+                          :disabled="
+                            $root.settings.project_filter.name.length === 0
+                          "
+                          @click="$root.settings.project_filter.name = ''"
+                        >×</button>
+                      </span>
+                    </div>
                   </div>
                 </div>
               </template>
               <template v-else>
-                {{ $t('showing') }}
+                {{ $t("showing") }}
                 <span
-                  :class="{ 'c-rouge' : Object.keys(sortedMedias).length !== Object.keys(allMedias).length }"
+                  :class="{
+                    'c-rouge':
+                      Object.keys(sortedMedias).length !==
+                      Object.keys(allMedias).length
+                  }"
                 >
                   {{ Object.keys(sortedMedias).length }}
-                  {{ $t('medias_of') }}
+                  {{ $t("medias_of") }}
                   {{ Object.keys(allMedias).length }}
                 </span>
-                <template v-if="$root.allKeywords.length > 0 || $root.allAuthors.length > 0">
+                <template
+                  v-if="
+                    $root.allKeywords.length > 0 || $root.allAuthors.length > 0
+                  "
+                >
                   —
                   <button
                     type="button"
                     class="button-nostyle text-uc button-triangle"
-                    :class="{ 'is--active' : show_filters }"
+                    :class="{ 'is--active': show_filters }"
                     @click="show_filters = !show_filters"
-                  >{{ $t('filters') }}</button>
+                  >{{ $t("filters") }}</button>
                 </template>
                 <TagsAndAuthorFilters
                   v-if="show_filters"
@@ -97,7 +145,6 @@
                   :keywordFilter="$root.settings.media_filter.keyword"
                   :authorFilter="$root.settings.media_filter.author"
                   :favFilter="$root.settings.media_filter.fav"
-                  :typeFilter="$root.settings.media_filter.type"
                   @setKeywordFilter="a => $root.setMediaKeywordFilter(a)"
                   @setAuthorFilter="a => $root.setMediaAuthorFilter(a)"
                   @setFavFilter="a => $root.setFavAuthorFilter(a)"
@@ -105,7 +152,7 @@
                 />
               </template>
             </template>
-            <template v-else>{{ $t('no_projects_yet') }}</template>
+            <template v-else>{{ $t("no_projects_yet") }}</template>
           </div>
         </div>
       </div>
@@ -190,8 +237,8 @@ export default {
   },
   mounted() {
     if (
-      this.$root.settings.project_filter.keyword ||
-      this.$root.settings.project_filter.author
+      !!this.$root.settings.project_filter.keyword ||
+      !!this.$root.settings.project_filter.author
     ) {
       this.show_filters = true;
     }
@@ -220,8 +267,13 @@ export default {
     },
     show_filters: function() {
       if (!this.show_filters) {
-        this.$root.settings.project_filter.keyword = false;
-        this.$root.settings.project_filter.author = false;
+        this.$root.settings.project_filter.keyword = "";
+        this.$root.settings.project_filter.author = "";
+        this.$root.settings.project_filter.name = "";
+        this.$root.settings.media_filter.keyword = "";
+        this.$root.settings.media_filter.author = "";
+        this.$root.settings.media_filter.fav = false;
+        this.$root.settings.media_filter.type = false;
       }
     }
   },
@@ -262,24 +314,24 @@ export default {
 
         if (this.$root.settings.project_filter.name !== "") {
           if (
-            !this.projects[slugProjectName].name.includes(
-              this.$root.settings.project_filter.name
-            )
+            !this.projects[slugProjectName].name
+              .toLowerCase()
+              .includes(this.$root.settings.project_filter.name.toLowerCase())
           )
             continue;
         }
 
         if (
-          this.$root.settings.project_filter.keyword === false &&
-          this.$root.settings.project_filter.author === false
+          !this.$root.settings.project_filter.keyword &&
+          !this.$root.settings.project_filter.author
         ) {
           sortable.push({ slugProjectName, orderBy });
           continue;
         }
 
         if (
-          this.$root.settings.project_filter.keyword !== false &&
-          this.$root.settings.project_filter.author !== false
+          !!this.$root.settings.project_filter.keyword &&
+          !!this.$root.settings.project_filter.author
         ) {
           // only add to sorted array if project has this keyword
           if (
@@ -302,7 +354,7 @@ export default {
           continue;
         }
         // if a project keyword filter is set
-        if (this.$root.settings.project_filter.keyword !== false) {
+        if (!!this.$root.settings.project_filter.keyword) {
           // only add to sorted array if project has this keyword
           if (
             this.projects[slugProjectName].hasOwnProperty("keywords") &&
@@ -316,7 +368,7 @@ export default {
           continue;
         }
 
-        if (this.$root.settings.project_filter.author !== false) {
+        if (!!this.$root.settings.project_filter.author) {
           // only add to sorted array if project has this keyword
           if (
             this.projects[slugProjectName].hasOwnProperty("authors") &&
@@ -441,6 +493,11 @@ export default {
       this.mediaNav(+1);
     },
     mediaNav(relative_index) {
+      // make sur we are on that list
+      if (this.$root.do_navigation.view !== "ListView") {
+        return;
+      }
+
       const current_media_index = this.sortedMedias.findIndex(
         m => m.metaFileName === this.$root.media_modal.current_metaFileName
       );
@@ -459,5 +516,4 @@ export default {
   }
 };
 </script>
-<style lang="scss">
-</style>
+<style lang="scss"></style>

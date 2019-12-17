@@ -25,9 +25,14 @@
 
       <!-- Preview -->
       <div class="margin-bottom-small">
-        <label>{{ $t('preview') }}</label>
+        <label>{{ $t('cover_image') }}</label>
         <br />
-        <ImageSelect :previewURL="previewURL" @newPreview="value => { preview = value }"></ImageSelect>
+        <ImageSelect
+          :previewURL="previewURL"
+          :load_from_projects_medias="true"
+          :slugProjectName="slugProjectName"
+          @newPreview="value => { preview_rawdata = value }"
+        ></ImageSelect>
       </div>
 
       <!-- Password -->
@@ -36,7 +41,7 @@
         <input type="password" v-model="projectdata.password" :readonly="read_only" />
         <small>
           <template
-            v-if="project_password && projectdata.password === ''"
+            v-if="!!project_password && projectdata.password === ''"
           >{{ $t('removing_password_warning') }}</template>
           <template v-else>{{ $t('adding_password_warning') }}</template>
         </small>
@@ -101,7 +106,7 @@ export default {
         password: this.project_password ? this.project_password : ""
       },
       tag: "",
-      preview: undefined,
+      preview_rawdata: undefined,
       askBeforeClosingModal: false
     };
   },
@@ -112,7 +117,7 @@ export default {
       },
       deep: true
     },
-    preview: function() {
+    preview_rawdata: function() {
       this.askBeforeClosingModal = true;
     }
   },
@@ -160,8 +165,8 @@ export default {
         }
       }
 
-      if (typeof this.preview !== "undefined") {
-        this.projectdata.preview_rawdata = this.preview;
+      if (this.preview_rawdata !== undefined) {
+        this.projectdata.preview_rawdata = this.preview_rawdata;
       }
 
       // check if password and password changed

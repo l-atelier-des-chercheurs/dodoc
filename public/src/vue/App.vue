@@ -178,6 +178,7 @@
       </div>
       <EditMedia
         v-if="$root.media_modal.open"
+        :key="$root.media_modal.current_slugProjectName + $root.media_modal.current_metaFileName"
         :slugMediaName="$root.media_modal.current_metaFileName"
         :slugProjectName="$root.media_modal.current_slugProjectName"
         :media="$root.store.projects[$root.media_modal.current_slugProjectName].medias[$root.media_modal.current_metaFileName]"

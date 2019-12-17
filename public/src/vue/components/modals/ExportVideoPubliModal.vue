@@ -123,7 +123,7 @@ export default {
 
       this.video_request_status = "generated";
       this.link_to_video =
-        window.location.origin + "/publications/video/" + videoName;
+        window.location.origin + "/_publications/video/" + videoName;
       this.exported_video_name = videoName;
     },
     videoPubliFailedToGenerate() {

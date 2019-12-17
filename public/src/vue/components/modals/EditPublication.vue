@@ -26,7 +26,7 @@
 
       <!-- Preview -->
       <!-- <div class="margin-bottom-small">
-        <label>{{ $t('preview') }}</label><br>
+        <label>{{ $t('cover_image') }}</label><br>
         <ImageSelect 
           :previewURL="previewURL"
           @newPreview="value => { preview = value }"

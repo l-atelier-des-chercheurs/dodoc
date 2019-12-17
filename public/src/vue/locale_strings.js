@@ -54,6 +54,7 @@ module.exports = (function() {
       edit_content: "Modifier le contenu",
       adjust: "Ajuster",
       duplicate: "Dupliquer",
+      project_name_to_find: "Nom du projet à trouver",
 
       show_all: "Tout afficher",
       cooking_pot_instructions:
@@ -102,6 +103,8 @@ module.exports = (function() {
       sureToRemoveAuthor:
         "Êtes-vous sûr de vouloir supprimer cet auteur ? Tous les médias, projets et recettes associés seront conservés.",
       show_all_authors: "Afficher l’ensemble des auteurs",
+      show_all_keywords: "Afficher l’ensemble des mots-clés",
+      all_tags: "Liste des mots-clés disponibles",
       changes_not_saved_sureToCloseModal:
         "Des modifications ont eu lieu, souhaitez-vous les enregistrer ?",
       save_changes: "Oui, enregistrer les modifications",
@@ -139,7 +142,8 @@ module.exports = (function() {
       import_all_files: "Importer tous les fichiers",
       import_medias: "Importer des médias",
       select_files_to_import: "Sélectionner les fichiers à importer",
-      select_cover_image: "Sélectionner une image de couverture",
+      upload_from_device: "Importer un fichier image",
+      or_choose_from_image_medias: "Ou choisir un média image",
       select_portrait_image: "Sélectionner une image de portrait",
       add_to_recipe: "Ajouter à la recette",
       add_a_page: "Ajouter une page",
@@ -184,7 +188,7 @@ module.exports = (function() {
       author_instructions:
         "Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).",
       author_name_editing_instructions:
-        "Attention&nbsp;! Tous les médias, projets et recettes resteront associés au nom précédent.",
+        "Attention&nbsp;! Si vous modifiez ce nom tous les médias, projets et recettes resteront associés au nom précédent.",
       when_logged_as_author_content_will_be_tagged:
         "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes porteront votre nom.",
       more_informations_on_authors:
@@ -236,6 +240,7 @@ module.exports = (function() {
       more_information:
         'Pour plus d’information, consultez la <a href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc" class="js--openInBrowser" target="_blank">documentation</a> ou <a href="mailto:info@latelier-des-chercheurs.fr?subject=do•doc" class="js--openInBrowser" target="_blank">contactez</a> les auteurs de ce logiciel.',
       no_media_in_folder: "Aucun média dans ce dossier.",
+      no_images_to_show: "Aucun média image à afficher.",
       no_public_media_in_folder: "Aucun média public dans ce dossier.",
       auto_scroll: "défilement<br>automatique",
       scale: "échelle&nbsp;:",
@@ -254,7 +259,7 @@ module.exports = (function() {
       now: "en ce moment",
       list: "Liste",
       fullscreen: "Plein écran",
-      preview: "Aperçu",
+      cover_image: "Image de couverture",
       filter: "Filtre",
       filters: "Filtres",
       search_by_name: "Rechercher par nom",
@@ -330,6 +335,7 @@ module.exports = (function() {
       carreau_instructions: `Cette recette permet de collaborer à plusieurs sur la même surface pour présenter des médias de différent type. Ouvrez une nouvelle fenêtre vers cette recette en plein écran sur un projecteur pour afficher uniquement la surface.<br> Médias acceptés : images, vidéos, sons.`,
 
       last_modified: "Dernière modification",
+      open_project: "Afficher le projet",
       remote_access: "Accès depuis d’autres appareils",
       img_per_second: "Images par seconde",
       sent: "Envoyé",
@@ -471,6 +477,7 @@ module.exports = (function() {
       edit_content: "Edit content",
       adjust: "Adjust",
       duplicate: "Duplicate",
+      project_name_to_find: "Project name to find",
 
       show_all: "Show all",
       cooking_pot_instructions:
@@ -499,6 +506,8 @@ module.exports = (function() {
       sureToRemoveAuthor:
         "Do you really want to delete this author? All medias, projects and recipes will be kept.",
       show_all_authors: "Show all authors",
+      show_all_keywords: "Show all keywords",
+      all_tags: "List of keywords available",
       changes_not_saved_sureToCloseModal:
         "All changes were not saved. Do you really want to close this window?",
       save_changes: "Yes, save changes",
@@ -535,7 +544,8 @@ module.exports = (function() {
       import_medias: "Import medias",
       import_all_files: "Import all files",
       select_files_to_import: "Select files to import",
-      select_cover_image: "Select a cover image",
+      upload_from_device: "Upload an image file",
+      or_choose_from_image_medias: "Or choose from image medias",
       select_portrait_image: "Select a portrait",
       add_to_recipe: "Add to recipe",
       add_a_page: "Add a page",
@@ -646,6 +656,7 @@ module.exports = (function() {
         'For more informations, read the <a href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc" class="js--openInBrowser" target="_blank">documentation (in french)</a> or <a href="mailto:info@latelier-des-chercheurs.fr?subject=do•doc" class="js--openInBrowser" target="_blank">contact</a> the creators of this app.',
 
       no_media_in_folder: "No media in this folder.",
+      no_images_to_show: "No image to show.",
       no_public_media_in_folder: "No public media in this folder.",
       auto_scroll: "autoscroll",
       scale: "scale:",
@@ -664,7 +675,7 @@ module.exports = (function() {
       now: "now",
       list: "List",
       fullscreen: "Fullscreen",
-      preview: "Preview",
+      cover_image: "Cover image",
       filter: "Filter",
       filters: "Filters",
       search_by_name: "Search by name",
@@ -738,6 +749,7 @@ module.exports = (function() {
         "Write here some CSS code, <br>for example <code>color: blue;</code>",
 
       last_modified: "Last modified",
+      open_project: "Show the project",
       remote_access: "Acces from other devices",
       img_per_second: "Images per second",
       sent: "Sent",
@@ -910,6 +922,7 @@ module.exports = (function() {
       back: "Terug",
       sureToRemoveAuthor: "Weet u zeker dat u deze auteur wilt verwijderen ?",
       show_all_authors: "Bekijk alle auteurs",
+      show_all_keywords: "Bekijk alle kernwoord",
       changes_not_saved_sureToCloseModal:
         "Er zijn wijzigingen gebeurd , wilt u deze opslaan?",
       save_changes: "Ja, wijzigingen opslaan. ",
@@ -945,7 +958,7 @@ module.exports = (function() {
       import_all_files: "Importeer alle bestanden",
       import_medias: "Importeer media",
       select_files_to_import: "Selecteer bestanden om te importeren ",
-      select_cover_image: "Selecteer een omslagafbeelding",
+      upload_from_device: "Selecteer een omslagafbeelding",
       select_portrait_image: "Selecteer een portretfoto",
       add_to_recipe: "Toevoegen aan recept",
       add_a_page: "Een pagina toevoegen",
@@ -1042,7 +1055,6 @@ module.exports = (function() {
       now: "op dit moment",
       list: "Lijst",
       fullscreen: "Volledig scherm",
-      preview: "Overzicht",
       filter: "Filter",
       filters: "Filters",
       header_left: "Linker koptekst",

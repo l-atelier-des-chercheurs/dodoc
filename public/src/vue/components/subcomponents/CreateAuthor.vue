@@ -9,7 +9,8 @@
       <ImageSelect
         @newPreview="value => { preview = value }"
         :instructions="$t('select_portrait_image')"
-      ></ImageSelect>
+        :load_from_projects_medias="true"
+      />
     </div>
 
     <!-- Human name -->

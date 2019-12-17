@@ -1,5 +1,10 @@
 <template>
-  <div class="mediaContainer" :class="`type-${media.type}`" :data-context="context">
+  <div
+    class="mediaContainer"
+    :key="slugFolderName + media.media_filename"
+    :class="`type-${media.type}`"
+    :data-context="context"
+  >
     <template v-if="media.type === 'image'">
       <img
         :srcset="imageSrcSetAttr"
@@ -260,7 +265,7 @@ export default {
       }
 
       const small_thumb = this.media.thumbs.filter(
-        m => m.size === this.thumbRes
+        m => !!m && m.hasOwnProperty("size") && m.size === this.thumbRes
       );
       if (small_thumb.length == 0) {
         return this.mediaURL;

@@ -36,8 +36,10 @@ Vue.use(VueI18n);
 import VuePlyr from "vue-plyr";
 Vue.use(VuePlyr);
 
-import VueTippy from "../../node_modules/vue-tippy/dist/vue-tippy.min.js";
-Vue.use(VueTippy, {});
+import VueTippy, { TippyComponent } from "vue-tippy";
+
+Vue.use(VueTippy);
+Vue.component("tippy", TippyComponent);
 
 let lang_settings = {
   available: [
@@ -187,15 +189,15 @@ let vm = new Vue({
       enable_system_bar: window.state.is_electron && window.state.is_darwin,
 
       project_filter: {
-        keyword: false,
-        author: false,
+        keyword: "",
+        author: "",
         name: ""
       },
       media_filter: {
-        keyword: false,
-        author: false,
+        keyword: "",
+        author: "",
         fav: false,
-        type: false
+        type: ""
       }
     },
     lang: {
@@ -770,28 +772,28 @@ let vm = new Vue({
       if (this.settings.project_filter.keyword !== newKeywordFilter) {
         this.settings.project_filter.keyword = newKeywordFilter;
       } else {
-        this.settings.project_filter.keyword = false;
+        this.settings.project_filter.keyword = "";
       }
     },
     setProjectAuthorFilter(newAuthorFilter) {
       if (this.settings.project_filter.author !== newAuthorFilter) {
         this.settings.project_filter.author = newAuthorFilter;
       } else {
-        this.settings.project_filter.author = false;
+        this.settings.project_filter.author = "";
       }
     },
     setMediaKeywordFilter(newKeywordFilter) {
       if (this.settings.media_filter.keyword !== newKeywordFilter) {
         this.settings.media_filter.keyword = newKeywordFilter;
       } else {
-        this.settings.media_filter.keyword = false;
+        this.settings.media_filter.keyword = "";
       }
     },
     setMediaAuthorFilter(newAuthorFilter) {
       if (this.settings.media_filter.author !== newAuthorFilter) {
         this.settings.media_filter.author = newAuthorFilter;
       } else {
-        this.settings.media_filter.author = false;
+        this.settings.media_filter.author = "";
       }
     },
     setFavAuthorFilter() {
@@ -804,13 +806,12 @@ let vm = new Vue({
       ) {
         this.settings.media_filter.type = newTypeFilter;
       } else {
-        this.settings.media_filter.type = false;
+        this.settings.media_filter.type = "";
       }
     },
 
     filterMedia(media) {
       const checkIfMediaIsFav = media => {
-        debugger;
         return (
           media.hasOwnProperty("fav") &&
           typeof media.fav === "boolean" &&
