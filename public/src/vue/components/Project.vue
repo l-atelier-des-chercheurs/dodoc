@@ -477,12 +477,20 @@ export default {
       setTimeout(() => {
         this.zip_export_started = false;
       }, 2000);
-      window.location.replace(
+
+      const pwd = this.$auth.hashCode(this.project_password);
+      const query_url =
         window.location.origin +
-          "/_archives/projects/" +
-          this.slugProjectName +
-          `?socketid=${this.$socketio.socket.id}`
-      );
+        "/_archives/projects/" +
+        this.slugProjectName +
+        `?pwd=${pwd}`;
+
+      if (this.$root.state.dev_mode === "debug")
+        console.log(
+          `Project • METHODS: downloadProjectArchive with query ${query_url}`
+        );
+
+      window.location.replace(query_url);
     }
   }
 };

@@ -2,7 +2,7 @@ const path = require("path"),
   fs = require("fs-extra"),
   archiver = require("archiver");
 
-const sockets = require("./core/sockets"),
+const auth = require("./core/auth"),
   dev = require("./core/dev-log"),
   cache = require("./core/cache"),
   api = require("./core/api"),
@@ -254,33 +254,26 @@ module.exports = function(app) {
       .getFolder({ type: type, slugFolderName })
       .then(foldersData => {
         const folder_meta = Object.values(foldersData)[0];
-        if (folder_meta.hasOwnProperty("password") && !!folder_meta.password) {
-          // if it is, check that we have a socketid with the request and if so, if that id is allowed to access that folder
-          if (!req.query.hasOwnProperty("socketid")) {
-            throw "Missing socketid for folder with password";
-          }
-          const user_socketid = req.query.socketid;
-          const io = sockets.io();
-
-          if (!io.sockets.connected.hasOwnProperty(user_socketid)) {
-            throw "Missing socketid";
-          }
-
-          if (
-            io.sockets.connected.hasOwnProperty(user_socketid) &&
-            io.sockets.connected[user_socketid]._is_authorized_for_folders.some(
-              f =>
-                f.type === "projects" &&
-                f.allowed_slugFolderNames.includes(slugFolderName)
-            )
-          ) {
-            return;
-          }
-        } else {
+        if (!folder_meta.hasOwnProperty("password") || !folder_meta.password) {
           return;
         }
+        // if it is, check that we have a socketid with the request and if so, if that id is allowed to access that folder
+        if (!req.query.hasOwnProperty("pwd")) {
+          throw "Missing password for protected folder";
+        }
+        const pwd = req.query.pwd;
+
+        if (String(auth.hashCode(folder_meta.password)) !== String(pwd)) {
+          throw "Wrong password for folder";
+        }
+
+        return;
       })
       .then(() => {
+        dev.log(
+          `Will create and stream archive for folder ${type}/${slugFolderName}`
+        );
+
         // checks passed
         var archive = archiver("zip", {
           zlib: { level: 0 } //
@@ -309,7 +302,10 @@ module.exports = function(app) {
 
         archive.finalize();
       })
-      .catch(err => dev.error(`Error! ${err}`));
+      .catch(err => {
+        dev.error(`Error! ${err}`);
+        res.status(500).send({ error: err });
+      });
   }
 
   function postFile(req, res) {
