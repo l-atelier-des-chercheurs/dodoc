@@ -3,7 +3,9 @@
     @close="$emit('close')"
     @submit="editThisMedia"
     :read_only="read_only"
-    :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndNoScroll'"
+    :typeOfModal="
+      media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndNoScroll'
+    "
     :askBeforeClosingModal="askBeforeClosingModal"
     :show_sidebar="$root.media_modal.show_sidebar"
     :is_minimized="$root.media_modal.minimized"
@@ -11,7 +13,7 @@
     :media_navigation="true"
   >
     <template slot="header">
-      <div class>{{ $t('edit_the_media') }}</div>
+      <div class>{{ $t("edit_the_media") }}</div>
       <small class="font-normal">{{ media.media_filename }}</small>
     </template>
 
@@ -57,13 +59,13 @@
               />
             </g>
           </svg>
-          {{ $t('download') }}
+          {{ $t("download") }}
         </a>
 
         <button
           type="button"
           class="buttonLink"
-          :class="{ 'is--active' : showQRModal }"
+          :class="{ 'is--active': showQRModal }"
           @click="showQRModal = !showQRModal"
         >
           <svg
@@ -86,7 +88,7 @@
               H13V29z M77,13H61v16h16V13z"
             />
           </svg>
-          <span class>{{ $t('share') }}</span>
+          <span class>{{ $t("share") }}</span>
         </button>
 
         <template v-if="showQRModal">
@@ -97,7 +99,7 @@
         <button
           type="button"
           class="buttonLink"
-          :class="{ 'is--active' : showCopyToProjectOptions }"
+          :class="{ 'is--active': showCopyToProjectOptions }"
           @click="showCopyToProjectOptions = !showCopyToProjectOptions"
         >
           <svg
@@ -122,7 +124,7 @@
               d="M67.2,27.7L0,27.7l0,67.2l67.2,0L67.2,27.7z M55.4,83l-43.6,0l0-43.6l43.6,0L55.4,83z"
             />
           </svg>
-          <span class>{{ $t('duplicate') }}</span>
+          <span class>{{ $t("duplicate") }}</span>
         </button>
 
         <div v-if="showCopyToProjectOptions" class="margin-bottom-small">
@@ -133,7 +135,8 @@
                 v-for="project in all_projects"
                 :key="project.slugFolderName"
                 :value="project.slugFolderName"
-              >{{ project.name }}</option>
+                >{{ project.name }}</option
+              >
             </select>
             <button
               type="button"
@@ -149,26 +152,34 @@
           type="button"
           class="buttonLink"
           @click="show_edit_media_options = !show_edit_media_options"
-        >{{ $t('adjust') }}</button>
+        >
+          {{ $t("adjust") }}
+        </button>
         <div v-if="show_edit_media_options" class="bg-creme">
           <button
             type="button"
             class="buttonLink"
-            @click="editRawMedia('rotate_image', {angle: 90})"
+            @click="editRawMedia('rotate_image', { angle: 90 })"
             v-if="media.type === 'image'"
-          >Pivoter vers la droite</button>
+          >
+            {{ $t("rotate_clockwise") }}
+          </button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('optimize_video')"
             v-if="media.type === 'video'"
-          >Créer une vidéo compatible web</button>
+          >
+            {{ $t("convert_video_for_the_web") }}
+          </button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('reset')"
             v-if="!!media.original_media_filename"
-          >Revenir à l’original</button>
+          >
+            {{ $t("revert_to_original") }}
+          </button>
         </div>
 
         <button
@@ -196,7 +207,7 @@
             l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
             />
           </svg>
-          {{ $t('remove') }}
+          {{ $t("remove") }}
         </button>
 
         <hr class="hide_on_print" />
@@ -213,8 +224,11 @@
               v-model="mediadata.fav"
               :readonly="read_only"
             />
-            <label for="favswitch_editmedia" :class="{ 'c-rouge' : mediadata.fav }">
-              {{ $t('fav') }}
+            <label
+              for="favswitch_editmedia"
+              :class="{ 'c-rouge': mediadata.fav }"
+            >
+              {{ $t("fav") }}
               <svg
                 version="1.1"
                 class="inline-svg"
@@ -240,25 +254,27 @@
         </div>
 
         <div class="m_metaField" v-if="!!media.type">
-          <div>{{ $t('type') }}</div>
+          <div>{{ $t("type") }}</div>
           <div>
             {{ $t(media.type) }}
             <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
           </div>
         </div>
         <div class="m_metaField" v-if="!!project_name">
-          <div>{{ $t('project') }}</div>
+          <div>{{ $t("project") }}</div>
           <div>
             {{ project_name }}
             <button
               type="button"
               @click="minimizeMediaAndShowProject"
               :title="$t('open_project')"
-              v-tippy="{ 
-                placement : 'top',
+              v-tippy="{
+                placement: 'top',
                 delay: [600, 0]
               }"
-            >↑</button>
+            >
+              ↑
+            </button>
             <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
           </div>
         </div>
@@ -272,26 +288,37 @@
         </div>-->
 
         <div class="m_metaField">
-          <div>{{ $t('created') }}</div>
-          <div :title="media.date_created">{{ $root.formatDateToHuman(media.date_created) }}</div>
+          <div>{{ $t("created") }}</div>
+          <div :title="media.date_created">
+            {{ $root.formatDateToHuman(media.date_created) }}
+          </div>
         </div>
         <div class="m_metaField" v-if="media.hasOwnProperty('date_uploaded')">
-          <div>{{ $t('uploaded') }}</div>
-          <div :title="media.date_uploaded">{{ $root.formatDateToHuman(media.date_uploaded) }}</div>
+          <div>{{ $t("uploaded") }}</div>
+          <div :title="media.date_uploaded">
+            {{ $root.formatDateToHuman(media.date_uploaded) }}
+          </div>
         </div>
         <div class="m_metaField">
-          <div>{{ $t('edited') }}</div>
-          <div :title="media.date_modified">{{ $root.formatDateToHuman(media.date_modified) }}</div>
+          <div>{{ $t("edited") }}</div>
+          <div :title="media.date_modified">
+            {{ $root.formatDateToHuman(media.date_modified) }}
+          </div>
         </div>
 
         <!-- Caption -->
         <div
-          v-if="(!read_only || !!mediadata.caption) && mediadata.type !== 'text'"
+          v-if="
+            (!read_only || !!mediadata.caption) && mediadata.type !== 'text'
+          "
           class="margin-bottom-small"
         >
-          <label>{{ $t('caption') }}</label>
+          <label>{{ $t("caption") }}</label>
           <br />
-          <textarea v-model="mediadata.caption" :readonly="read_only"></textarea>
+          <textarea
+            v-model="mediadata.caption"
+            :readonly="read_only"
+          ></textarea>
         </div>
 
         <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
@@ -315,30 +342,33 @@
 
         <!-- Keywords -->
         <div class="margin-bottom-small">
-          <label>{{ $t('keywords') }}</label>
+          <label>{{ $t("keywords") }}</label>
           <TagsInput
             :keywords="mediadata.keywords"
-            @tagsChanged="newTags => mediadata.keywords = newTags"
+            @tagsChanged="newTags => (mediadata.keywords = newTags)"
           />
         </div>
 
         <!-- Author(s) -->
-        <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
-          <label>{{ $t('author') }}</label>
+        <div
+          v-if="!read_only || !!mediadata.authors"
+          class="margin-bottom-small"
+        >
+          <label>{{ $t("author") }}</label>
 
           <AuthorsInput
             :currentAuthors="mediadata.authors"
-            @authorsChanged="newAuthors => mediadata.authors = newAuthors"
+            @authorsChanged="newAuthors => (mediadata.authors = newAuthors)"
           />
 
-          <small>{{ $t('author_instructions') }}</small>
+          <small>{{ $t("author_instructions") }}</small>
           <!-- <textarea v-model="mediadata.authors[0]" :readonly="read_only">
           </textarea>-->
         </div>
       </div>
     </template>
 
-    <template slot="submit_button">{{ $t('save') }}</template>
+    <template slot="submit_button">{{ $t("save") }}</template>
 
     <template slot="preview">
       <MediaContent
