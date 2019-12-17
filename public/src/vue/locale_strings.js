@@ -53,6 +53,10 @@ module.exports = (function() {
       css_settings: "Règlages CSS",
       edit_content: "Modifier le contenu",
       adjust: "Ajuster",
+      rotate_clockwise: "Pivoter vers la droite",
+      convert_video_for_the_web: "Optimiser la vidéo",
+      revert_to_original: "Revenir à l’original",
+
       duplicate: "Dupliquer",
       project_name_to_find: "Nom du projet à trouver",
 
@@ -476,6 +480,10 @@ module.exports = (function() {
       css_settings: "CSS settings",
       edit_content: "Edit content",
       adjust: "Adjust",
+      rotate_clockwise: "Rotate clockwise",
+      convert_video_for_the_web: "Optimize video",
+      revert_to_original: "Revert to original",
+
       duplicate: "Duplicate",
       project_name_to_find: "Project name to find",
 
