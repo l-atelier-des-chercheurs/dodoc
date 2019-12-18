@@ -1,21 +1,27 @@
 <template>
   <Modal ref="modal" @close="$emit('close')" :typeOfModal="'LargeAndScroll'">
     <template slot="header">
-      <span class>{{ $t('authors_list') }}</span>
+      <span class>{{ $t("authors_list") }}</span>
     </template>
 
     <template slot="preview">
       <div class>
         <div class="margin-sides-medium margin-vert-small">
-          <small>{{ $t('when_logged_as_author_content_will_be_tagged') }}</small>
+          <small>{{
+            $t("when_logged_as_author_content_will_be_tagged")
+          }}</small>
           <button
             v-if="!show_detail"
             type="button"
             class="buttonLink margin-left-none padding-left-none"
             @click="show_detail = !show_detail"
-          >+ {{ $t('more_informations')}}</button>
+          >
+            + {{ $t("more_informations") }}
+          </button>
           <div>
-            <small v-if="show_detail">{{ $t('more_informations_on_authors')}}</small>
+            <small v-if="show_detail">{{
+              $t("more_informations_on_authors")
+            }}</small>
           </div>
         </div>
         <transition-group tag="div" class="m_authorsList" name="list-complete">
@@ -25,9 +31,15 @@
               @click="openCreateAuthorPanel = true"
               v-if="openCreateAuthorPanel == false"
               class="m_authorsList--createAuthor--createButton"
-            >{{ $t('create_an_author') }}</button>
+            >
+              {{ $t("create_an_author") }}
+            </button>
 
-            <CreateAuthor v-else @close="openCreateAuthorPanel = false" :read_only="read_only" />
+            <CreateAuthor
+              v-else
+              @close="openCreateAuthorPanel = false"
+              :read_only="read_only"
+            />
           </div>
 
           <template v-if="Object.keys(sortedAuthors).length > 0">
@@ -47,7 +59,10 @@
                 v-else
                 :key="author.slugFolderName"
                 class="m_authorsList--author"
-                :class="{ 'is--selected' : author.name === $root.settings.current_author.name }"
+                :class="{
+                  'is--selected':
+                    author.name === $root.settings.current_author.name
+                }"
                 @click="setAuthor(author)"
               >
                 <button
@@ -74,7 +89,7 @@
                 L19.1,91.5z"
                     />
                   </svg>
-                  <span class style="display: none">{{ $t('edit') }}</span>
+                  <span class style="display: none">{{ $t("edit") }}</span>
                 </button>
 
                 <button
@@ -101,7 +116,7 @@
                     l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
                     />
                   </svg>
-                  <span class style="display: none">{{ $t('remove') }}</span>
+                  <span class style="display: none">{{ $t("remove") }}</span>
                 </button>
 
                 <button
@@ -116,7 +131,9 @@
                     :src="urlToPortrait(author.slugFolderName, author.preview)"
                     draggable="false"
                   />
-                  <div class="m_authorsList--author--name">{{ author.name }}</div>
+                  <div class="m_authorsList--author--name">
+                    {{ author.name }}
+                  </div>
                   <!-- <button type="button" class="buttonLink" @click.stop="setAuthor(author)" v-if="author.name !== $root.settings.current_author.name">
                       {{ $t('select') }}
                   </button>-->
@@ -125,7 +142,9 @@
                     class="buttonLink"
                     @click.stop="unsetAuthor()"
                     v-if="author.name === $root.settings.current_author.name"
-                  >{{ $t('unselect') }}</button>
+                  >
+                    {{ $t("unselect") }}
+                  </button>
                 </button>
               </div>
             </template>
@@ -209,5 +228,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

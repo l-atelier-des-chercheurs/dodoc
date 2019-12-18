@@ -1,22 +1,30 @@
 <template>
-  <form @close="$emit('close')" v-on:submit.prevent="newAuthor" :read_only="read_only">
+  <form
+    @close="$emit('close')"
+    v-on:submit.prevent="newAuthor"
+    :read_only="read_only"
+  >
     <!-- <span class="">{{ $t('create_an_author') }}</span> -->
-
-    <!-- Preview -->
-    <div class="margin-bottom-small">
-      <label>{{ $t('portrait') }}</label>
-      <br />
-      <ImageSelect
-        @newPreview="value => { preview = value }"
-        :instructions="$t('select_portrait_image')"
-        :load_from_projects_medias="true"
-      />
-    </div>
 
     <!-- Human name -->
     <div class="margin-bottom-small">
-      <label>{{ $t('name') }}</label>
+      <label>{{ $t("name") }}</label>
       <input type="text" v-model.trim="authordata.name" required autofocus />
+    </div>
+
+    <!-- Preview -->
+    <div class="margin-bottom-small">
+      <label>{{ $t("portrait") }}</label>
+      <br />
+      <ImageSelect
+        @newPreview="
+          value => {
+            preview = value;
+          }
+        "
+        :instructions="$t('select_portrait_image')"
+        :load_from_projects_medias="true"
+      />
     </div>
 
     <!-- Password -->
@@ -28,13 +36,15 @@
 
     <!-- NFC tag(s) -->
     <div class="margin-bottom-small">
-      <label>{{ $t('nfc_tag') }}</label>
+      <label>{{ $t("nfc_tag") }}</label>
       <br />
       <input type="text" v-model="authordata.nfc_tag" />
     </div>
 
-    <button type="button" class="button-thin" @click="$emit('close')">{{ $t('cancel') }}</button>
-    <button type="submit" class="button-greenthin">{{ $t('create') }}</button>
+    <button type="button" class="button-thin" @click="$emit('close')">
+      {{ $t("cancel") }}
+    </button>
+    <button type="submit" class="button-greenthin">{{ $t("create") }}</button>
   </form>
 </template>
 <script>
@@ -91,5 +101,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>
