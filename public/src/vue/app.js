@@ -98,11 +98,41 @@ Vue.prototype.$moment = moment;
 const html = document.documentElement; // returns the html tag
 html.setAttribute("lang", lang_settings.current);
 
+// tweak locale_strings to fit vuei18n pattern
+let messages = {};
+Object.entries(locale_strings).map(([key, translations]) => {
+  Object.entries(translations).map(([lang_code, translation]) => {
+    if (typeof translation === "object") {
+      const key2 = lang_code;
+      const translations = translation;
+
+      Object.entries(translations).map(([lang_code, translation]) => {
+        if (!messages[lang_code].hasOwnProperty(key))
+          messages[lang_code][key] = {};
+        if (!messages[lang_code][key].hasOwnProperty(key2))
+          messages[lang_code][key][key2] = {};
+        messages[lang_code][key][key2] = translation;
+      });
+      // Object.entries(translation).map(([key2, translation2]) => {
+      //   if (!messages[lang_code][key].hasOwnProperty(key2))
+      //     messages[lang_code][key][key2] = {};
+      //   messages[lang_code][key][key2][lang_code] = translation2;
+      //   debugger;
+      // });
+    } else {
+      if (!messages.hasOwnProperty(lang_code)) messages[lang_code] = {};
+      if (!messages[lang_code].hasOwnProperty(key))
+        messages[lang_code][key] = {};
+      messages[lang_code][key] = translation;
+    }
+  });
+});
+
 // Create VueI18n instance with options
 let i18n = new VueI18n({
   locale: lang_settings.current, // set locale
   fallbackLocale: "en",
-  messages: locale_strings // set locale messages
+  messages // set locale messages
 });
 
 /** *********

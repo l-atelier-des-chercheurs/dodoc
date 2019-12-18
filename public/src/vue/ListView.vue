@@ -23,11 +23,7 @@
             <label for="media_switch" class="cursor-pointer">
               <span class>{{ $t("projects") }}</span>
             </label>
-            <input
-              type="checkbox"
-              id="media_switch"
-              v-model="show_medias_instead_of_projects"
-            />
+            <input type="checkbox" id="media_switch" v-model="show_medias_instead_of_projects" />
             <label for="media_switch">
               <span class>{{ $t("medias") }}</span>
             </label>
@@ -60,9 +56,7 @@
                       class="button-nostyle text-uc button-triangle"
                       :class="{ 'is--active': show_filters }"
                       @click="show_filters = !show_filters"
-                    >
-                      {{ $t("filters") }}
-                    </button>
+                    >{{ $t("filters") }}</button>
                   </template>
                   <TagsAndAuthorFilters
                     v-if="show_filters"
@@ -134,9 +128,7 @@
                             $root.settings.project_filter.name.length === 0
                           "
                           @click="$root.settings.project_filter.name = ''"
-                        >
-                          ×
-                        </button>
+                        >×</button>
                       </span>
                     </div>
                   </div>
@@ -166,9 +158,7 @@
                     class="button-nostyle text-uc button-triangle"
                     :class="{ 'is--active': show_filters }"
                     @click="show_filters = !show_filters"
-                  >
-                    {{ $t("filters") }}
-                  </button>
+                  >{{ $t("filters") }}</button>
                 </template>
                 <TagsAndAuthorFilters
                   v-if="show_filters"
@@ -211,9 +201,7 @@
         <div v-for="item in groupedMedias" :key="item[0]">
           <h3
             class="font-folder_title margin-sides-small margin-none margin-bottom-small"
-          >
-            {{ $root.formatDateToHuman(item[0]) }}
-          </h3>
+          >{{ $root.formatDateToHuman(item[0]) }}</h3>
 
           <div class="m_mediaShowAll">
             <div v-for="media in item[1]" :key="media.slugMediaName">
