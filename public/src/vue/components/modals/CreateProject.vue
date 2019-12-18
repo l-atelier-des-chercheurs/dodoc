@@ -5,62 +5,58 @@
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
     :askBeforeClosingModal="askBeforeClosingModal"
-    >
+  >
     <template slot="header">
-      <span class="">{{ $t('create_a_project') }}</span>
+      <span class>{{ $t('create_a_project') }}</span>
     </template>
 
     <template slot="sidebar">
-
-<!-- Human name -->
+      <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('project_name') }}</label>
-        <input type="text" v-model="projectdata.name" required autofocus>
+        <input type="text" v-model.trim="projectdata.name" required autofocus />
       </div>
 
-<!-- Preview -->
+      <!-- Preview -->
       <div class="margin-bottom-small">
-        <label>{{ $t('preview') }}</label><br>
-        <ImageSelect @newPreview="value => { preview = value }">
-        </ImageSelect>
+        <label>{{ $t('cover_image') }}</label>
+        <br />
+        <ImageSelect :load_from_projects_medias="true" @newPreview="value => { preview = value }"></ImageSelect>
       </div>
 
-<!-- Password -->
+      <!-- Password -->
       <div class="margin-bottom-small">
         <label>{{ $t('password') }}</label>
-        <input type="password" v-model="projectdata.password">
+        <input type="password" v-model="projectdata.password" autocomplete="new-password" />
         <small>{{ $t('password_instructions') }}</small>
       </div>
 
-<!-- Keywords -->
+      <!-- Keywords -->
       <div class="margin-bottom-small">
         <label>{{ $t('keywords') }}</label>
-        <TagsInput @tagsChanged="newTags => projectdata.keywords = newTags"/>
+        <TagsInput @tagsChanged="newTags => projectdata.keywords = newTags" />
       </div>
 
-<!-- Author(s) -->
+      <!-- Author(s) -->
       <div class="margin-bottom-small">
-        <label>{{ $t('author') }}</label><br>
+        <label>{{ $t('author') }}</label>
+        <br />
         <AuthorsInput
           :currentAuthors="projectdata.authors"
           @authorsChanged="newAuthors => projectdata.authors = newAuthors"
         />
         <small>{{ $t('author_instructions') }}</small>
       </div>
-
     </template>
 
-    <template slot="submit_button">
-      {{ $t('create') }}
-    </template>
-
+    <template slot="submit_button">{{ $t('create') }}</template>
   </Modal>
 </template>
 <script>
-import Modal from './BaseModal.vue';
-import ImageSelect from '../subcomponents/ImageSelect.vue';
-import TagsInput from '../subcomponents/TagsInput.vue';
-import AuthorsInput from '../subcomponents/AuthorsInput.vue';
+import Modal from "./BaseModal.vue";
+import ImageSelect from "../subcomponents/ImageSelect.vue";
+import TagsInput from "../subcomponents/TagsInput.vue";
+import AuthorsInput from "../subcomponents/AuthorsInput.vue";
 
 export default {
   props: {
@@ -75,9 +71,11 @@ export default {
   data() {
     return {
       projectdata: {
-        name: '',
-        password: '',
-        authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : [],
+        name: "",
+        password: "",
+        authors: this.$root.settings.current_author.hasOwnProperty("name")
+          ? [{ name: this.$root.settings.current_author.name }]
+          : [],
         keywords: []
       },
       preview: undefined,
@@ -85,26 +83,25 @@ export default {
     };
   },
   watch: {
-    'projectdata.name': function() {
-      if(this.projectdata.name.length > 0) {
+    "projectdata.name": function() {
+      if (this.projectdata.name.length > 0) {
         this.askBeforeClosingModal = true;
       } else {
         this.askBeforeClosingModal = false;
       }
     },
-    'preview': function() {
-      if(!!this.preview) {
+    preview: function() {
+      if (!!this.preview) {
         this.askBeforeClosingModal = true;
       } else {
         this.askBeforeClosingModal = false;
       }
     }
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     newProject: function(event) {
-      console.log('newProject');
+      console.log("newProject");
 
       function getAllProjectNames() {
         let allProjectsName = [];
@@ -122,46 +119,50 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t('notifications.project_name_exists'));
+          .error(this.$t("notifications.project_name_exists"));
 
         return false;
       }
-      if(!!this.preview) {
+      if (!!this.preview) {
         this.projectdata.preview_rawdata = this.preview;
       }
 
-      this.$eventHub.$on('socketio.folder_created_or_updated', this.newFolderCreated);
-      this.$root.createFolder({ type: 'projects', data: this.projectdata });
+      this.$eventHub.$on(
+        "socketio.folder_created_or_updated",
+        this.newFolderCreated
+      );
+      this.$root.createFolder({ type: "projects", data: this.projectdata });
     },
     newFolderCreated: function(fdata) {
-      if(fdata.id === this.$root.justCreatedFolderID) {
-        this.$eventHub.$off('socketio.folder_created_or_updated', this.newFolderCreated);
+      if (fdata.id === this.$root.justCreatedFolderID) {
+        this.$eventHub.$off(
+          "socketio.folder_created_or_updated",
+          this.newFolderCreated
+        );
         this.$root.justCreatedFolderID = false;
 
-        if(fdata.password === 'has_pass') {
+        if (fdata.password === "has_pass") {
           this.$auth.updateFoldersPasswords({
-            "projects": {
+            projects: {
               [fdata.slugFolderName]: this.projectdata.password
             }
           });
           this.$socketio.sendAuth();
 
-          this.$eventHub.$once('socketio.authentificated', () => {
-            this.$emit('close', '');
+          this.$eventHub.$once("socketio.authentificated", () => {
+            this.$emit("close", "");
             this.$root.openProject(fdata.slugFolderName);
           });
-
         } else {
           this.$nextTick(() => {
-            this.$emit('close', '');
+            this.$emit("close", "");
             this.$root.openProject(fdata.slugFolderName);
           });
-        }        
+        }
       }
     }
   }
 };
 </script>
 <style>
-
 </style>

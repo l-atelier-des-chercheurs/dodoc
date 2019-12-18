@@ -1,7 +1,7 @@
 & {
   .mediaContainer {
     .padding-small {
-      padding: @t-skipline/8;
+      padding: @t-skipline / 8;
     }
 
     > * > * > *:first-child {
@@ -19,27 +19,42 @@
   font-size: inherit;
 }
 
-h1,h2,h3,h4,p,ul,ol,table, figure, blockquote {
-  margin: @t-skipline/2 0;
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+table,
+figure,
+blockquote {
+  margin: @t-skipline / 2 0;
 }
 
-ul, ol {
+ul,
+ol {
   padding-left: @t-skipline;
 }
 
-p, ul, ol {
+p,
+ul,
+ol {
   + ul {
-    margin-top: -@t-skipline/2;
+    margin-top: -@t-skipline / 2;
   }
 }
 
-h1,h2,h3,h4 {
+h1,
+h2,
+h3,
+h4 {
   font-family: 'Nanook';
   font-weight: bold;
   text-transform: uppercase;
 }
 h1 {
-  font-size: 50pt;    
+  font-size: 50pt;
 }
 h2 {
   font-size: 20pt;
@@ -52,30 +67,33 @@ h2 {
 //   margin-top: 0;
 // }
 
-
 p {
   font-size: inherit;
 }
 
-h2,h3,h4 {
+h2,
+h3,
+h4 {
   & + p {
   }
 }
 
-h2{
+h2 {
   font-size: 30pt;
 }
 
-h3{
+h3 {
   font-size: 20pt;
 }
 
-h4{
+h4 {
   font-size: 14pt;
 }
 
-h5,h6,h7 {
+h5,
+h6,
+h7 {
   font-size: inherit;
-  font-weight:normal;
+  font-weight: normal;
   margin: 0;
 }

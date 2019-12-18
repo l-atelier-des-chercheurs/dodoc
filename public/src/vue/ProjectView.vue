@@ -9,7 +9,7 @@
   </div>
 </template>
 <script>
-import Project from './components/Project.vue';
+import Project from "./components/Project.vue";
 
 export default {
   props: {
@@ -21,25 +21,17 @@ export default {
     Project
   },
   data() {
-    return {
-    }
-  },
-  
-  created() {
-  },
-  mounted() {
-  },
-  beforeDestroy() {
+    return {};
   },
 
-  watch: {
-  },
-  computed: {
-  },
-  methods: {
-  }
-}
+  created() {},
+  mounted() {},
+  beforeDestroy() {},
+
+  watch: {},
+  computed: {},
+  methods: {}
+};
 </script>
 <style>
-
 </style>

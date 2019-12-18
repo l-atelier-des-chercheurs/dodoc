@@ -375,6 +375,9 @@ module.exports = (function() {
           editMedia(mdata) {
             this.socket.emit('editMedia', mdata);
           },
+          copyMediaToFolder(mdata) {
+            this.socket.emit('copyMediaToFolder', mdata);
+          },
           removeMedia(mdata) {
             this.socket.emit('removeMedia', mdata);
           },
@@ -392,6 +395,9 @@ module.exports = (function() {
           },
           addTempMediaToFolder(pdata) {
             this.socket.emit('addTempMediaToFolder', pdata);
+          },
+          copyFolder(pdata) {
+            this.socket.emit('copyFolder', pdata);
           },
           updateNetworkInfos() {
             this.socket.emit('updateNetworkInfos');

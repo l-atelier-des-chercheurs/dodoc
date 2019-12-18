@@ -1,75 +1,76 @@
 <template>
-
   <Modal
     @close="$emit('close')"
     @submit="editThisPublication"
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
     :askBeforeClosingModal="askBeforeClosingModal"
-    >
+  >
     <template slot="header">
-      <div class="">{{ $t('edit_publication') }}</div>
+      <div class>{{ $t('edit_publication') }}</div>
     </template>
 
     <template slot="sidebar">
-
-<!-- Human name -->
+      <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('name') }}</label>
-        <input class="input-big" type="text" v-model="publidata.name" required autofocus :readonly="read_only">
+        <input
+          class="input-big"
+          type="text"
+          v-model.trim="publidata.name"
+          required
+          autofocus
+          :readonly="read_only"
+        />
       </div>
 
-<!-- Preview -->
+      <!-- Preview -->
       <!-- <div class="margin-bottom-small">
-        <label>{{ $t('preview') }}</label><br>
+        <label>{{ $t('cover_image') }}</label><br>
         <ImageSelect 
           :previewURL="previewURL"
           @newPreview="value => { preview = value }"
         >
         </ImageSelect>
-      </div> -->
+      </div>-->
 
-<!-- Password -->
+      <!-- Password -->
       <!-- <div class="margin-bottom-small">
         <label>{{ $t('password') }}</label>
         <input type="password" v-model="publidata.password" :readonly="read_only">
         <small>{{ $t('password_instructions') }}</small>
-      </div> -->
+      </div>-->
 
-
-<!-- Keywords -->
+      <!-- Keywords -->
       <div class="margin-bottom-small">
         <label>{{ $t('keywords') }}</label>
-        <TagsInput 
+        <TagsInput
           :keywords="publidata.keywords"
           @tagsChanged="newTags => publidata.keywords = newTags"
         />
       </div>
 
-<!-- Author(s) -->
+      <!-- Author(s) -->
       <div class="margin-bottom-small">
-        <label>{{ $t('author') }}</label><br>
+        <label>{{ $t('author') }}</label>
+        <br />
         <AuthorsInput
           :currentAuthors="publidata.authors"
           @authorsChanged="newAuthors => publidata.authors = newAuthors"
         />
         <small>{{ $t('author_instructions') }}</small>
       </div>
-
     </template>
 
-    <template slot="submit_button">
-      {{ $t('save') }}
-    </template>
-
+    <template slot="submit_button">{{ $t('save') }}</template>
   </Modal>
 </template>
 <script>
-import Modal from './BaseModal.vue';
-import slug from 'slugg';
-import ImageSelect from '../subcomponents/ImageSelect.vue';
-import TagsInput from '../subcomponents/TagsInput.vue';
-import AuthorsInput from '../subcomponents/AuthorsInput.vue';
+import Modal from "./BaseModal.vue";
+import slug from "slugg";
+import ImageSelect from "../subcomponents/ImageSelect.vue";
+import TagsInput from "../subcomponents/TagsInput.vue";
+import AuthorsInput from "../subcomponents/AuthorsInput.vue";
 
 export default {
   props: {
@@ -87,29 +88,33 @@ export default {
     return {
       publidata: {
         name: this.publication.name,
-        authors: typeof this.publication.authors === 'string' && this.publication.authors !== '' ? this.publication.authors.split(',').map(a => {return { name: a }} ) : this.publication.authors,
+        authors:
+          typeof this.publication.authors === "string" &&
+          this.publication.authors !== ""
+            ? this.publication.authors.split(",").map(a => {
+                return { name: a };
+              })
+            : this.publication.authors,
         keywords: this.publication.keywords
       },
-      tag: '',
+      tag: "",
       preview: undefined,
       askBeforeClosingModal: false
     };
   },
   watch: {
-    'publidata': {
+    publidata: {
       handler() {
         this.askBeforeClosingModal = true;
       },
       deep: true
     }
   },
-  mounted() {
-  },
-  computed: {
-  },
+  mounted() {},
+  computed: {},
   methods: {
     editThisPublication: function(event) {
-      console.log('editThisPublication');
+      console.log("editThisPublication");
 
       // only if user changed the name of this folder
       if (this.publidata.name !== this.publication.name) {
@@ -129,27 +134,26 @@ export default {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(this.$t('notifications.publi_name_exists'));
+            .error(this.$t("notifications.publi_name_exists"));
 
           return false;
         }
       }
 
-      if(typeof this.preview !== 'undefined') {
+      if (typeof this.preview !== "undefined") {
         this.publidata.preview_rawdata = this.preview;
       }
 
-      this.$root.editFolder({ 
-        type: 'publications', 
-        slugFolderName: this.slugPubliName, 
-        data: this.publidata 
+      this.$root.editFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+        data: this.publidata
       });
 
-      this.$emit('close', '');
+      this.$emit("close", "");
     }
   }
 };
 </script>
 <style>
-
 </style>
