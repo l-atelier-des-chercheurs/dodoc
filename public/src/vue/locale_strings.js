@@ -117,7 +117,7 @@ module.exports = (function() {
       close_the_window: "Non, fermer sans enregistrer",
       sureToRemovePubli: "Êtes-vous sûr de vouloir supprimer cette recette ?",
       sure_to_cancel_stopmotion:
-        'Êtes-vous sûr de vouloir arrêter cette animation ? Vous pourrez la retrouver dans le menu "Liste des animations"',
+        "Êtes-vous sûr de vouloir arrêter cette animation ? Vous pourrez la retrouver dans le menu <i>Liste des animations</i>",
       validate_media: "Valider le média",
       add_keyword: "Ajouter un mot-clé",
       add: "Ajouter",
@@ -245,19 +245,11 @@ module.exports = (function() {
       update: "Mettre à jour",
 
       more_information:
-        'Pour plus d’information, consultez la <a href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc" class="js--openInBrowser" target="_blank">documentation</a> ou <a href="mailto:info@latelier-des-chercheurs.fr?subject=do•doc" class="js--openInBrowser" target="_blank">contactez</a> les auteurs de ce logiciel.',
+        "Pour plus d’information, consultez la <a href='https://latelier-des-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>documentation</a> ou <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>contactez</a> les auteurs de ce logiciel.",
       no_media_in_folder: "Aucun média dans ce dossier.",
       no_images_to_show: "Aucun média image à afficher.",
       no_public_media_in_folder: "Aucun média public dans ce dossier.",
       auto_scroll: "défilement<br>automatique",
-      scale: "échelle&nbsp;:",
-      scale_items: {
-        second: "sec",
-        minute: "min",
-        hour: "h",
-        half_day: "½j",
-        day: "j"
-      },
 
       more_informations: "Plus d’infos",
       contents_are_stored: "Les contenus de ce dossier sont enregistrés dans ",
@@ -326,20 +318,26 @@ module.exports = (function() {
 
       page_by_page_summary:
         "Créer un PDF imprimable ou une page web à mettre en ligne.",
-      page_by_page_instructions: `Cette recette permet de créer un document avec un format précis et plusieurs pages.<br> Médias acceptés : images, vidéos, sons et textes.<br>Créera un PDF imprimable (pour faire des affiches, tracts, journaux, etc.) ou une page web à mettre en ligne.`,
+      page_by_page_instructions:
+        "Cette recette permet de créer un document avec un format précis et plusieurs pages.<br> Médias acceptés : images, vidéos, sons et textes.<br>Créera un PDF imprimable (pour faire des affiches, tracts, journaux, etc.) ou une page web à mettre en ligne.",
       video_assemblage_summary:
         "Créer un montage vidéo à partir d’images et de vidéos.",
-      video_assemblage_instructions: `Cette recette propose de créer un montage vidéo en mettant plusieurs vidéos ou images bout à bout.<br> Médias acceptés : des vidéos et des images.<br>Créera une nouvelle vidéo.`,
+      video_assemblage_instructions:
+        "Cette recette propose de créer un montage vidéo en mettant plusieurs vidéos ou images bout à bout.<br> Médias acceptés : des vidéos et des images.<br>Créera une nouvelle vidéo.",
       stopmotion_animation_summary:
         "Assembler des images pour créer une vidéo.",
-      stopmotion_animation_instructions: `Cette recette permet l’assemblage d’un nombre illimité d’images pour créer une séquence vidéo dans laquelle elles défilent à une vitesse réglable.<br> Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.<br>Créera une nouvelle vidéo.`,
+      stopmotion_animation_instructions:
+        "Cette recette permet l’assemblage d’un nombre illimité d’images pour créer une séquence vidéo dans laquelle elles défilent à une vitesse réglable.<br> Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.<br>Créera une nouvelle vidéo.",
       mix_audio_and_video_summary: "Ajouter ou remplacer du son sur une vidéo.",
-      mix_audio_and_video_instructions: `Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo de la durée du plus long média.`,
+      mix_audio_and_video_instructions:
+        "Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo de la durée du plus long média.",
       mix_audio_and_image_summary: "Ajouter du son sur une image.",
-      mix_audio_and_image_instructions: `Cette recette prend une image et une piste audio. Elle permet de créer des <i>images parlantes</i>.<br> Médias acceptés : une image et une piste sonore.<br>Créera une vidéo de la durée de la piste sonore.`,
+      mix_audio_and_image_instructions:
+        "Cette recette prend une image et une piste audio. Elle permet de créer des <i>images parlantes</i>.<br> Médias acceptés : une image et une piste sonore.<br>Créera une vidéo de la durée de la piste sonore.",
       carreau_summary:
         "Empiler des médias pour créer en temps réel des présentations.",
-      carreau_instructions: `Cette recette permet de collaborer à plusieurs sur la même surface pour présenter des médias de différent type. Ouvrez une nouvelle fenêtre vers cette recette en plein écran sur un projecteur pour afficher uniquement la surface.<br> Médias acceptés : images, vidéos, sons.`,
+      carreau_instructions:
+        "Cette recette permet de collaborer à plusieurs sur la même surface pour présenter des médias de différent type. Ouvrez une nouvelle fenêtre vers cette recette en plein écran sur un projecteur pour afficher uniquement la surface.<br> Médias acceptés : images, vidéos, sons.",
 
       last_modified: "Dernière modification",
       open_project: "Afficher le projet",
@@ -527,7 +525,7 @@ module.exports = (function() {
       close_the_window: "No, close without saving",
       sureToRemovePubli: "Do you really want to delete this recipe?",
       sure_to_cancel_stopmotion:
-        'Do you really want to cancel this stopmotion? You can resume making it by clicking on "Stopmotion list"',
+        "Do you really want to cancel this stopmotion? You can resume making it by clicking on <i>Stopmotion list</i>",
       validate_media: "Validate the media",
       add_keyword: "Add a keyword",
       add: "Add",
@@ -667,20 +665,11 @@ module.exports = (function() {
       update: "Update",
 
       more_information:
-        'For more informations, read the <a href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc" class="js--openInBrowser" target="_blank">documentation (in french)</a> or <a href="mailto:info@latelier-des-chercheurs.fr?subject=do•doc" class="js--openInBrowser" target="_blank">contact</a> the creators of this app.',
+        "For more informations, read the <a href='https://latelier-des-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>documentation (in french)</a> or <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>contact</a> the creators of this app.",
 
       no_media_in_folder: "No media in this folder.",
       no_images_to_show: "No image to show.",
       no_public_media_in_folder: "No public media in this folder.",
-      auto_scroll: "autoscroll",
-      scale: "scale:",
-      scale_items: {
-        second: "sec",
-        minute: "min",
-        hour: "h",
-        half_day: "½d",
-        day: "d"
-      },
 
       more_informations: "More infos",
       contents_are_stored: "Contents for this folder are stored in ",
@@ -733,19 +722,25 @@ module.exports = (function() {
 
       page_by_page_summary:
         "Creates a printable PDF or website to upload online.",
-      page_by_page_instructions: `This recipe can be used to create a paged document with a specific size.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, tracts, newspapers, etc.) or a webpage to upload online.`,
-      video_assemblage_summary: `Creates a video from images and videos.`,
-      video_assemblage_instructions: `This recipe creates a video from multiple source images and videos, one after the other.<br>Accepted medias: images and videos.<br>Will create a new video.`,
+      page_by_page_instructions:
+        "This recipe can be used to create a paged document with a specific size.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, tracts, newspapers, etc.) or a webpage to upload online.",
+      video_assemblage_summary: "Creates a video from images and videos.",
+      video_assemblage_instructions:
+        "This recipe creates a video from multiple source images and videos, one after the other.<br>Accepted medias: images and videos.<br>Will create a new video.",
       stopmotion_animation_summary:
         "Creates a video from images shown for a specific period of time.",
-      stopmotion_animation_instructions: `This recipe takes any number of images as inputs and creates a single video with images displayed at a specific speed.<br>Accepted medias: images of any size. The first image will determine if the video will be in portrait or landscape.<br>Will create a new video.`,
+      stopmotion_animation_instructions:
+        "This recipe takes any number of images as inputs and creates a single video with images displayed at a specific speed.<br>Accepted medias: images of any size. The first image will determine if the video will be in portrait or landscape.<br>Will create a new video.",
       mix_audio_and_video_summary: "Add or replace sound that’s on a video.",
-      mix_audio_and_video_instructions: `This recipe mixes a video and an audio track to create a new video where they are played at the same time.<br>Accepted medias: a video and a sound track.<br>Will create a new video.`,
+      mix_audio_and_video_instructions:
+        "This recipe mixes a video and an audio track to create a new video where they are played at the same time.<br>Accepted medias: a video and a sound track.<br>Will create a new video.",
       mix_audio_and_image_summary: "Add sound to an image to create a video.",
-      mix_audio_and_image_instructions: `This recipe mixes an image with an audio track to create a <i>speaking image</i><br>Accepted medias: an image and a sound track.<br>Will create a new video.`,
+      mix_audio_and_image_instructions:
+        "This recipe mixes an image with an audio track to create a <i>speaking image</i><br>Accepted medias: an image and a sound track.<br>Will create a new video.",
       carreau_summary:
         "Stack multiple medias on a single surface to project content.",
-      carreau_instructions: `Use this mode to show multiple medias on a large projection or screen, for example by opening a browser and clicking on the fullscreen button.<br>Accepted medias: images, videos and sounds.`,
+      carreau_instructions:
+        "Use this mode to show multiple medias on a large projection or screen, for example by opening a browser and clicking on the fullscreen button.<br>Accepted medias: images, videos and sounds.",
 
       add_sound_video_file:
         "Add a <b>sound</b> and a <b>video</b> media to create a new video.",
@@ -943,7 +938,7 @@ module.exports = (function() {
       close_the_window: "Nee, sluiten zonder opslaan",
       sureToRemovePubli: "Weet u zeker dat u deze publicatie wilt verwijderen?",
       sure_to_cancel_stopmotion:
-        'Weet je zeker dat je deze animatie wilt stoppen? U kunt het terugvinden in het menu "Lijst van animaties".',
+        "Weet je zeker dat je deze animatie wilt stoppen? U kunt het terugvinden in het menu <i>Lijst van animaties</i>.",
       validate_media: "Media valideren",
       add_keyword: "Kernwoord toevoegen",
       add: "Toevoegen",
@@ -1049,19 +1044,10 @@ module.exports = (function() {
       currently: "Momenteel",
       update: "Bijwerken",
       more_information:
-        'Voor meer informatie. , bezoek <a href="https://latelierdes-chercheurs.fr/docs/manuel-dodoc" class="js--openInBrowser" target="_blank">documentatie</a> ou <a href="mailto:info@latelier-des-chercheurs.fr?subject=do•doc" class="js--openInBrowser" target="_blank">contacteer</a> de auteurs van dit programma.',
+        "Voor meer informatie. , bezoek <a href='https://latelierdes-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>documentatie</a> ou <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>contacteer</a> de auteurs van dit programma.",
       no_media_in_folder: "Geen media in deze map .",
       no_public_media_in_folder: "Geen openbare media in deze map .",
 
-      auto_scroll: "automatisch <br>scrollen",
-      scale: "schaal:",
-      scale_items: {
-        second: "sec",
-        minute: "min",
-        hour: "u",
-        half_day: "1/2d",
-        day: "d"
-      },
       more_informations: "Meer info",
       contents_are_stored: "De inhoud van dit bestand wordt opgeslagen in ",
       folder_information: "map-info ",
@@ -1122,33 +1108,26 @@ module.exports = (function() {
       back_to_project: "Terug naar project",
       page_by_page_summary:
         "Maak een afdrukbare PDF of webpagina om te uploaden.",
-      page_by_page_instructions: `Met dit recept kunt u een document
-        met een exacte indeling en meerdere pagina's maken.<br> Ondersteunde media: afbeeldingen, video's, geluid en tekst.<br>Maak
-        een afdrukbare PDF (om posters, flyers, kranten, enz. te maken) of
-        een webpagina om te uploaden.`,
+      page_by_page_instructions:
+        "Met dit recept kunt u een document met een exacte indeling en meerdere pagina’s maken.<br> Ondersteunde media: afbeeldingen, video’s, geluid en tekst.<br>Maak een afdrukbare PDF (om posters, flyers, kranten, enz. te maken) of een webpagina om te uploaden.",
       video_assemblage_summary:
         "Maak een videomontage van afbeeldingen en video’s.",
-      video_assemblage_instructions: `Dit recept stelt voor om een
-        video montage te maken door meerdere video's of afbeeldingen na elkaar te plaatsen.<br> Ondersteunde media: video's en
-        afbeeldingen.<br>Maakt een nieuwe video.`,
+      video_assemblage_instructions:
+        "Dit recept stelt voor om een video montage te maken door meerdere video’s of afbeeldingen na elkaar te plaatsen.<br> Ondersteunde media: video’s en afbeeldingen.<br>Maakt een nieuwe video.",
       stopmotion_animation_summary:
         "Beelden samenvoegen om een video te maken.",
-      stopmotion_animation_instructions: `Met dit recept kunt u een
-        onbeperkt aantal beelden samenvoegen om een videosequentie te
-        maken waarin deze beelden na elkaar verschijnen aan een in te stellen snelheid.<br> Ondersteunde media: enkel afbeeldingen. De afmetingen van het eerste beeld bepalen of de uiteindelijke video als portret of landschap is ingedeeld.<br>Maakt een nieuwe video.`,
+      stopmotion_animation_instructions:
+        "Met dit recept kunt u een onbeperkt aantal beelden samenvoegen om een videosequentie te maken waarin deze beelden na elkaar verschijnen aan een in te stellen snelheid.<br> Ondersteunde media: enkel afbeeldingen. De afmetingen van het eerste beeld bepalen of de uiteindelijke video als portret of landschap is ingedeeld.<br>Maakt een nieuwe video.",
       mix_audio_and_video_summary:
         "Geluid op een video toevoegen of vervangen.",
-      mix_audio_and_video_instructions: `Dit recept gebruikt een videobestand en een audionummer. Hiermee wordt de soundtrack aan de video toegevoegd of vervangen door het gekozen geluidsbestand.<br> Ondersteunde media: video- en geluidsbestanden.<br>Maakt een nieuwe
-        video met de lengte van de langste media.`,
+      mix_audio_and_video_instructions:
+        "Dit recept gebruikt een videobestand en een audionummer. Hiermee wordt de soundtrack aan de video toegevoegd of vervangen door het gekozen geluidsbestand.<br> Ondersteunde media: video- en geluidsbestanden.<br>Maakt een nieuwe video met de lengte van de langste media.",
       mix_audio_and_image_summary: "Geluid toevoegen aan een beeld.",
-      mix_audio_and_image_instructions: `Dit recept gebruikt een beeld- en een geluidsbetand. Het maakt het mogelijk om <i>sprekende beelden te maken .<br> Ondersteunde media: beeld- en 
-        geluidsbestand.<br>Maakt een video met de duur van het geluidsbestand.`,
+      mix_audio_and_image_instructions:
+        "Dit recept gebruikt een beeld- en een geluidsbetand. Het maakt het mogelijk om <i>sprekende beelden te maken .<br> Ondersteunde media: beeld- en geluidsbestand.<br>Maakt een video met de duur van het geluidsbestand.",
       carreau_summary: "Media samenvoegen om real-time presentaties te maken.",
-      carreau_instructions: `Met dit recept kunt u met meerdere op
-        hetzelfde platform samenwerken om verschillende soorten media te
-        presenteren. Open een nieuw venster naar dit recept op volledig
-        scherm met een projector om alleen het platform weer te geven.<br>
-        Ondersteunde media: afbeeldingen, video's, geluidsbestanden.`,
+      carreau_instructions:
+        "Met dit recept kunt u met meerdere op hetzelfde platform samenwerken om verschillende soorten media te presenteren. Open een nieuw venster naar dit recept op volledig scherm met een projector om alleen het platform weer te geven.<br>Ondersteunde media: afbeeldingen, video’s, geluidsbestanden.",
       last_modified: "laatst gewijzigd",
       remote_access: "Toegang vanaf andere apparaten",
       img_per_second: "Beelden per seconde",
