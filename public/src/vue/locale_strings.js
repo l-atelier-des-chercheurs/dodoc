@@ -58,7 +58,8 @@ module.exports = (function() {
       revert_to_original: "Revenir à l’original",
 
       duplicate: "Dupliquer",
-      project_name_to_find: "Nom du projet à trouver",
+      search: "Rechercher",
+      project_name_to_find: "Rechercher par nom de projet",
 
       show_all: "Tout afficher",
       cooking_pot_instructions:
@@ -487,7 +488,8 @@ module.exports = (function() {
       revert_to_original: "Revert to original",
 
       duplicate: "Duplicate",
-      project_name_to_find: "Project name to find",
+      search: "Search",
+      project_name_to_find: "Search by project name",
 
       show_all: "Show all",
       cooking_pot_instructions:
