@@ -1,7 +1,13 @@
 <template>
   <div class="m_imageselect">
     <div class="m_imageselect--upload" v-if="!image">
-      <input type="file" accept="image/*" :id="id" class="inputfile-2" @change="onFileChange" />
+      <input
+        type="file"
+        accept="image/*"
+        :id="id"
+        class="inputfile-2"
+        @change="onFileChange"
+      />
       <label :for="id">
         <svg width="20" height="17" viewBox="0 0 20 17">
           <path
@@ -13,46 +19,68 @@
     </div>
     <!-- <div class="m_imageselect--or" v-if="!image && load_from_projects_medias">OU</div> -->
 
-    <div class="m_imageselect--selectFromMedias" v-if="!image && load_from_projects_medias">
-      <label>{{ $t('or_choose_from_image_medias') }}</label>
+    <div
+      class="m_imageselect--selectFromMedias"
+      v-if="!image && load_from_projects_medias"
+    >
+      <label>{{ $t("or_choose_from_image_medias") }}</label>
       <select v-model="show_medias_from_project">
         <option
           v-for="project in $root.projects_that_are_accessible"
           :key="project.slugFolderName"
           :value="project.slugFolderName"
-        >{{ project.name }}</option>
+          >{{ project.name }}</option
+        >
       </select>
       <div class="m_imageselect--selectFromMedias--imageList">
         <template
-          v-if="getProjectsImages({ slugProjectName: this.show_medias_from_project }) === false"
+          v-if="
+            getProjectsImages({
+              slugProjectName: this.show_medias_from_project
+            }) === false
+          "
         >
           <small>
-            <i>{{ $t('loading') }}</i>
+            <i>{{ $t("loading") }}</i>
           </small>
         </template>
         <template
-          v-else-if="getProjectsImages({ slugProjectName: this.show_medias_from_project }).length === 0"
+          v-else-if="
+            getProjectsImages({
+              slugProjectName: this.show_medias_from_project
+            }).length === 0
+          "
         >
           <small>
-            <i>{{ $t('no_images_to_show') }}</i>
+            <i>{{ $t("no_images_to_show") }}</i>
           </small>
         </template>
         <button
           v-else
           type="button"
-          v-for="image in getProjectsImages({ slugProjectName: this.show_medias_from_project })"
+          v-for="image in getProjectsImages({
+            slugProjectName: this.show_medias_from_project
+          })"
           :key="image.metaFileName"
           @click="selectThisImageForPreview({ image })"
         >
-          <img :src="mediasImagesPreviewURL({ thumbs: image.thumbs, size: 360 })" />
+          <img
+            :src="mediasImagesPreviewURL({ thumbs: image.thumbs, size: 360 })"
+          />
         </button>
       </div>
     </div>
 
     <div class="m_imageselect--image" v-if="!!image">
       <img v-if="typeof image === 'string'" :src="image" draggable="false" />
-      <img v-if="typeof image === 'object'" :src="getPreviewFromMedias(image)" draggable="false" />
-      <button class="buttonLink" type="button" @click="removeImage">{{ $t('remove') }}</button>
+      <img
+        v-if="typeof image === 'object'"
+        :src="getPreviewFromMedias(image)"
+        draggable="false"
+      />
+      <button class="buttonLink" type="button" @click="removeImage">
+        {{ $t("remove_image") }}
+      </button>
     </div>
   </div>
 </template>

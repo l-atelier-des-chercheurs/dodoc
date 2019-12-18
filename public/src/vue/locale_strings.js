@@ -108,6 +108,7 @@ module.exports = (function() {
         "Êtes-vous sûr de vouloir supprimer cet auteur ? Tous les médias, projets et recettes associés seront conservés.",
       show_all_authors: "Afficher l’ensemble des auteurs",
       show_all_keywords: "Afficher l’ensemble des mots-clés",
+      hide_all_keywords: "Masquer l’ensemble des mots-clés",
       all_tags: "Liste des mots-clés disponibles",
       changes_not_saved_sureToCloseModal:
         "Des modifications ont eu lieu, souhaitez-vous les enregistrer ?",
@@ -180,6 +181,7 @@ module.exports = (function() {
       print: "Imprimer",
       create: "Créer",
       remove: "Supprimer",
+      remove_image: "Supprimer l’image",
       withdraw: "Enlever",
       remove_this_image: "Supprimer cette image",
       password: "Mot de passe",
@@ -515,6 +517,7 @@ module.exports = (function() {
         "Do you really want to delete this author? All medias, projects and recipes will be kept.",
       show_all_authors: "Show all authors",
       show_all_keywords: "Show all keywords",
+      hide_all_keywords: "Hide all keywords",
       all_tags: "List of keywords available",
       changes_not_saved_sureToCloseModal:
         "All changes were not saved. Do you really want to close this window?",
@@ -579,6 +582,7 @@ module.exports = (function() {
       print: "Print",
       create: "Create",
       remove: "Remove",
+      remove_image: "Remove image",
       withdraw: "Withdraw",
       remove_this_image: "Remove this image",
       password: "Mot de passe",
