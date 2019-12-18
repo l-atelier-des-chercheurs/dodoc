@@ -1099,9 +1099,10 @@ small {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column nowrap;
     justify-items: center;
     align-items: stretch;
+    overflow-y: auto;
 
     @supports (display: grid) {
       min-width: auto;
