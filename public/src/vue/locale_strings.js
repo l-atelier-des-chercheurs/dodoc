@@ -58,7 +58,8 @@ module.exports = (function() {
       revert_to_original: "Revenir à l’original",
 
       duplicate: "Dupliquer",
-      project_name_to_find: "Nom du projet à trouver",
+      search: "Rechercher",
+      project_name_to_find: "Rechercher par nom de projet",
 
       show_all: "Tout afficher",
       cooking_pot_instructions:
@@ -108,6 +109,7 @@ module.exports = (function() {
         "Êtes-vous sûr de vouloir supprimer cet auteur ? Tous les médias, projets et recettes associés seront conservés.",
       show_all_authors: "Afficher l’ensemble des auteurs",
       show_all_keywords: "Afficher l’ensemble des mots-clés",
+      hide_all_keywords: "Masquer l’ensemble des mots-clés",
       all_tags: "Liste des mots-clés disponibles",
       changes_not_saved_sureToCloseModal:
         "Des modifications ont eu lieu, souhaitez-vous les enregistrer ?",
@@ -148,7 +150,7 @@ module.exports = (function() {
       select_files_to_import: "Sélectionner les fichiers à importer",
       upload_from_device: "Importer un fichier image",
       or_choose_from_image_medias: "Ou choisir un média image",
-      select_portrait_image: "Sélectionner une image de portrait",
+      select_portrait_image: "Importer un fichier image",
       add_to_recipe: "Ajouter à la recette",
       add_a_page: "Ajouter une page",
       insert_a_page_here: "Insérer une page ici",
@@ -180,6 +182,7 @@ module.exports = (function() {
       print: "Imprimer",
       create: "Créer",
       remove: "Supprimer",
+      remove_image: "Supprimer l’image",
       withdraw: "Enlever",
       remove_this_image: "Supprimer cette image",
       password: "Mot de passe",
@@ -485,7 +488,8 @@ module.exports = (function() {
       revert_to_original: "Revert to original",
 
       duplicate: "Duplicate",
-      project_name_to_find: "Project name to find",
+      search: "Search",
+      project_name_to_find: "Search by project name",
 
       show_all: "Show all",
       cooking_pot_instructions:
@@ -515,6 +519,7 @@ module.exports = (function() {
         "Do you really want to delete this author? All medias, projects and recipes will be kept.",
       show_all_authors: "Show all authors",
       show_all_keywords: "Show all keywords",
+      hide_all_keywords: "Hide all keywords",
       all_tags: "List of keywords available",
       changes_not_saved_sureToCloseModal:
         "All changes were not saved. Do you really want to close this window?",
@@ -554,7 +559,7 @@ module.exports = (function() {
       select_files_to_import: "Select files to import",
       upload_from_device: "Upload an image file",
       or_choose_from_image_medias: "Or choose from image medias",
-      select_portrait_image: "Select a portrait",
+      select_portrait_image: "Import an image file",
       add_to_recipe: "Add to recipe",
       add_a_page: "Add a page",
       insert_a_page_here: "Insert a page here",
@@ -579,6 +584,7 @@ module.exports = (function() {
       print: "Print",
       create: "Create",
       remove: "Remove",
+      remove_image: "Remove image",
       withdraw: "Withdraw",
       remove_this_image: "Remove this image",
       password: "Mot de passe",

@@ -1,24 +1,33 @@
 <template>
-  <form class @close="$emit('close')" v-on:submit.prevent="editAuthor" :read_only="read_only">
+  <form
+    class
+    @close="$emit('close')"
+    v-on:submit.prevent="editAuthor"
+    :read_only="read_only"
+  >
     <!-- <span class="">{{ $t('create_an_author') }}</span> -->
+
+    <!-- Human name -->
+    <div class="margin-bottom-small">
+      <label>{{ $t("name") }}</label>
+      <input type="text" v-model.trim="authordata.name" required autofocus />
+      <small v-html="$t('author_name_editing_instructions')" />
+    </div>
 
     <!-- Preview -->
     <div class="margin-bottom-small">
-      <label>{{ $t('portrait') }}</label>
+      <label>{{ $t("portrait") }}</label>
       <br />
       <ImageSelect
         :previewURL="previewURL"
         :instructions="$t('select_portrait_image')"
         :load_from_projects_medias="true"
-        @newPreview="value => { preview = value }"
+        @newPreview="
+          value => {
+            preview = value;
+          }
+        "
       />
-    </div>
-
-    <!-- Human name -->
-    <div class="margin-bottom-small">
-      <label>{{ $t('name') }}</label>
-      <input type="text" v-model.trim="authordata.name" required autofocus />
-      <small v-html="$t('author_name_editing_instructions')" />
     </div>
 
     <!-- Password -->
@@ -30,13 +39,15 @@
 
     <!-- NFC tag(s) -->
     <div class="margin-bottom-small">
-      <label>{{ $t('nfc_tag') }}</label>
+      <label>{{ $t("nfc_tag") }}</label>
       <br />
       <input type="text" v-model="authordata.nfc_tag" />
     </div>
 
-    <button type="button" class="button-thin" @click="$emit('close')">{{ $t('cancel') }}</button>
-    <button type="submit" class="button-greenthin">{{ $t('save') }}</button>
+    <button type="button" class="button-thin" @click="$emit('close')">
+      {{ $t("cancel") }}
+    </button>
+    <button type="submit" class="button-greenthin">{{ $t("save") }}</button>
   </form>
 </template>
 <script>
@@ -114,5 +125,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

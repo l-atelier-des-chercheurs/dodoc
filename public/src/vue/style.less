@@ -973,13 +973,13 @@ small {
 
 .m_allmedias--list,
 .m_project--library--medias {
-  .padding-bottom-medium;
-  .padding-top-medium;
+  .padding-bottom-small;
+  .padding-top-small;
   display: block;
 
   .m_mediaShowAll {
     // .padding-top-small;
-    .padding-bottom-medium;
+    .padding-bottom-small;
     // border-bottom: 2px solid @c-noir;
 
     display: grid;
@@ -990,6 +990,19 @@ small {
 
     > * {
       // .padding-sides-small;
+    }
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-family: "Fira Sans";
+    font-weight: 600;
+    letter-spacing: 0.03em;
+
+    &::before {
+      content: "•";
+      margin-right: 0.4em;
+      margin-left: 0.4em;
     }
   }
 }
@@ -1902,7 +1915,7 @@ small {
   align-items: flex-start;
   text-transform: initial;
   font-family: "Fira Mono";
-  font-weight: 00;
+  color: white;
 
   > .input {
     border: none !important;

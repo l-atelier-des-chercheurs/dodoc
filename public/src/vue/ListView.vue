@@ -23,7 +23,11 @@
             <label for="media_switch" class="cursor-pointer">
               <span class>{{ $t("projects") }}</span>
             </label>
-            <input type="checkbox" id="media_switch" v-model="show_medias_instead_of_projects" />
+            <input
+              type="checkbox"
+              id="media_switch"
+              v-model="show_medias_instead_of_projects"
+            />
             <label for="media_switch">
               <span class>{{ $t("medias") }}</span>
             </label>
@@ -56,7 +60,9 @@
                       class="button-nostyle text-uc button-triangle"
                       :class="{ 'is--active': show_filters }"
                       @click="show_filters = !show_filters"
-                    >{{ $t("filters") }}</button>
+                    >
+                      {{ $t("filters") }}
+                    </button>
                   </template>
                   <TagsAndAuthorFilters
                     v-if="show_filters"
@@ -78,7 +84,30 @@
                         $root.settings.project_filter.name.length > 0
                     }"
                     @click="show_search = !show_search"
-                  >{{ $t("search_by_name") }}</button>
+                  >
+                    {{ $t("search") }}
+                    <svg
+                      class="inline-svg"
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                      x="0px"
+                      y="0px"
+                      width="96.2px"
+                      height="96.2px"
+                      viewBox="0 0 96.2 96.2"
+                      style="enable-background:new 0 0 96.2 96.2;"
+                      xml:space="preserve"
+                    >
+                      <path
+                        fill="currentColor"
+                        class="st0"
+                        d="M10.3,59.9c11.7,11.7,29.5,13.4,43,5.2l9.7,9.7l21.3,21.3l11.9-11.9L74.9,63l-9.7-9.7c8.2-13.5,6.4-31.3-5.2-43
+	C46.2-3.4,24-3.4,10.3,10.3C-3.4,24-3.4,46.2,10.3,59.9z M50.8,19.5c8.6,8.6,8.6,22.6,0,31.3c-8.6,8.6-22.6,8.6-31.3,0
+	c-8.6-8.6-8.6-22.6,0-31.3C28.1,10.8,42.1,10.8,50.8,19.5z"
+                      />
+                    </svg>
+                  </button>
 
                   <div
                     v-if="
@@ -105,7 +134,9 @@
                             $root.settings.project_filter.name.length === 0
                           "
                           @click="$root.settings.project_filter.name = ''"
-                        >×</button>
+                        >
+                          ×
+                        </button>
                       </span>
                     </div>
                   </div>
@@ -135,7 +166,9 @@
                     class="button-nostyle text-uc button-triangle"
                     :class="{ 'is--active': show_filters }"
                     @click="show_filters = !show_filters"
-                  >{{ $t("filters") }}</button>
+                  >
+                    {{ $t("filters") }}
+                  </button>
                 </template>
                 <TagsAndAuthorFilters
                   v-if="show_filters"
@@ -178,7 +211,9 @@
         <div v-for="item in groupedMedias" :key="item[0]">
           <h3
             class="font-folder_title margin-sides-small margin-none margin-bottom-small"
-          >{{ $root.formatDateToHuman(item[0]) }}</h3>
+          >
+            {{ $root.formatDateToHuman(item[0]) }}
+          </h3>
 
           <div class="m_mediaShowAll">
             <div v-for="media in item[1]" :key="media.slugMediaName">
