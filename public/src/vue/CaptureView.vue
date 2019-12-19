@@ -484,7 +484,7 @@ import MediaValidationButtons from "./components/subcomponents/MediaValidationBu
 import DistantFlux from "./components/subcomponents/DistantFlux.vue";
 
 import RecordRTC from "recordrtc";
-// import "webrtc-adapter";
+import "webrtc-adapter";
 import ImageTracer from "imagetracerjs";
 import { setTimeout } from "timers";
 import * as axios from "axios";
