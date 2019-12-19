@@ -176,6 +176,7 @@
         v-if="!show_medias_instead_of_projects"
         class="m_projects--list"
         name="list-complete"
+        :duration="800"
       >
         <Project
           v-for="(sortedProject, index) in sortedProjectsSlug"
