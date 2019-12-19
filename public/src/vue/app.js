@@ -128,6 +128,47 @@ Object.entries(locale_strings).map(([key, translations]) => {
   });
 });
 
+// check for missing lang
+const lang_keys = lang_settings.available.map(l => l.key);
+
+var get_missing_langs = function({ translation_slug, items }) {
+  let list = [];
+  const missing_lang = lang_keys.filter(k => !Object.keys(items).includes(k));
+  if (missing_lang.length > 0) {
+    missing_lang.map(lang => {
+      list.push({ lang, translation_slug });
+    });
+  }
+  return list;
+};
+
+// const missing_translations = Object.entries(locale_strings).reduce(
+//   (acc, [translation_slug, items]) => {
+//     if (typeof Object.values(items)[0] === "object") {
+//       const list = Object.entries(items).reduce(
+//         (acc, [translation_slug, items]) => {
+//           const list = get_missing_langs({ translation_slug, items });
+//           if (list.length > 0) {
+//             acc = acc.concat(list);
+//           }
+//           return acc;
+//         },
+//         []
+//       );
+//       if (list.length > 0) {
+//         acc = acc.concat(list);
+//       }
+//     } else {
+//       const list = get_missing_langs({ translation_slug, items });
+//       if (list.length > 0) {
+//         acc = acc.concat(list);
+//       }
+//     }
+//     return acc;
+//   },
+//   []
+// );
+
 // Create VueI18n instance with options
 let i18n = new VueI18n({
   locale: lang_settings.current, // set locale
