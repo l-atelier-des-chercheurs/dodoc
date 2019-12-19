@@ -79,7 +79,6 @@
                     }"
                     @click="show_search = !show_search"
                   >
-                    {{ $t("search") }}
                     <svg
                       class="inline-svg"
                       version="1.1"
@@ -90,7 +89,7 @@
                       width="96.2px"
                       height="96.2px"
                       viewBox="0 0 96.2 96.2"
-                      style="enable-background:new 0 0 96.2 96.2;"
+                      style="margin-bottom: -3px;"
                       xml:space="preserve"
                     >
                       <path
@@ -101,33 +100,27 @@
 	c-8.6-8.6-8.6-22.6,0-31.3C28.1,10.8,42.1,10.8,50.8,19.5z"
                       />
                     </svg>
+                    {{ $t("search") }}
                   </button>
 
                   <div
                     v-if="
                       show_search ||
-                        $root.settings.project_filter.name.length > 0
+                        debounce_search_project_name.length > 0
                     "
                     class="m_metaField"
                   >
                     <div>{{ $t("project_name_to_find") }}</div>
 
                     <div class="input-group">
-                      <input
-                        type="text"
-                        class="input-sm"
-                        v-model="$root.settings.project_filter.name"
-                      />
-                      <span
-                        class="input-addon"
-                        v-if="$root.settings.project_filter.name.length > 0"
-                      >
+                      <input type="text" class="input-sm" v-model="debounce_search_project_name" />
+                      <span class="input-addon" v-if="debounce_search_project_name.length > 0">
                         <button
                           type="button"
                           :disabled="
-                            $root.settings.project_filter.name.length === 0
+                            debounce_search_project_name.length === 0
                           "
-                          @click="$root.settings.project_filter.name = ''"
+                          @click="debounce_search_project_name = ''"
                         >×</button>
                       </span>
                     </div>
@@ -226,6 +219,7 @@ import CreateProject from "./components/modals/CreateProject.vue";
 import MediaCard from "./components/subcomponents/MediaCard.vue";
 import TagsAndAuthorFilters from "./components/subcomponents/TagsAndAuthorFilters.vue";
 import { setTimeout } from "timers";
+import debounce from "debounce";
 
 export default {
   props: {
@@ -255,7 +249,10 @@ export default {
       },
 
       show_filters: false,
-      show_search: false
+      show_search: false,
+
+      debounce_search_project_name: "",
+      debounce_search_project_name_function: undefined
     };
   },
   mounted() {
@@ -293,11 +290,19 @@ export default {
         this.$root.settings.project_filter.keyword = "";
         this.$root.settings.project_filter.author = "";
         this.$root.settings.project_filter.name = "";
+        this.debounce_search_project_name = "";
         this.$root.settings.media_filter.keyword = "";
         this.$root.settings.media_filter.author = "";
         this.$root.settings.media_filter.fav = false;
         this.$root.settings.media_filter.type = false;
       }
+    },
+    debounce_search_project_name: function() {
+      if (this.debounce_tweet_filter_function)
+        clearTimeout(this.debounce_tweet_filter_function);
+      this.debounce_tweet_filter_function = setTimeout(() => {
+        this.$root.settings.project_filter.name = this.debounce_search_project_name;
+      }, 340);
     }
   },
   computed: {
