@@ -1045,9 +1045,6 @@ module.exports = (function() {
       en: "No public media in this folder.",
       nl: "Geen openbare media in deze map ."
     },
-    auto_scroll: {
-      fr: "défilement<br>automatique"
-    },
     more_informations: {
       fr: "Plus d’infos",
       en: "More infos",
@@ -1096,10 +1093,6 @@ module.exports = (function() {
       fr: "Filtres",
       en: "Filters",
       nl: "Filters"
-    },
-    search_by_name: {
-      fr: "Rechercher par nom",
-      en: "Search by name"
     },
     header_left: {
       fr: "En-tête gauche",
@@ -1285,14 +1278,17 @@ module.exports = (function() {
     },
     standard: {
       fr: "Standard",
+      en: "Standard",
       nl: "standaard"
     },
     "feuille de choux": {
       fr: "Feuille de Choux",
+      en: "Feuille de Choux",
       nl: "koolblad"
     },
     "human tech days": {
       fr: "Human Tech Days",
+      en: "Human Tech Days",
       nl: "Human Tech Days"
     },
     page_by_page: {
