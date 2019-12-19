@@ -212,6 +212,7 @@
               v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
               ref="videoElement"
               autoplay
+              playsinline
             />
 
             <canvas
@@ -471,7 +472,7 @@
     </div>
     <DistantFlux
       v-if="$root.settings.capture_options.distant_flux.active"
-      :key="$root.settings.capture_options.distant_flux.username = current_username"
+      :key="$root.settings.capture_options.distant_flux.username"
       @changeStreamTo="new_stream => { changeStreamTo(new_stream) }"
     />
   </div>
@@ -483,7 +484,7 @@ import MediaValidationButtons from "./components/subcomponents/MediaValidationBu
 import DistantFlux from "./components/subcomponents/DistantFlux.vue";
 
 import RecordRTC from "recordrtc";
-import "webrtc-adapter";
+// import "webrtc-adapter";
 import ImageTracer from "imagetracerjs";
 import { setTimeout } from "timers";
 import * as axios from "axios";
@@ -905,6 +906,11 @@ export default {
       console.log("METHODS • CaptureView: changeStreamTo");
       this.videoStream = new_stream;
       this.$refs.videoElement.srcObject = new_stream;
+      this.$refs.videoElement.volume = 0;
+
+      setTimeout(() => {
+        this.$refs.videoElement.play();
+      }, 500);
     },
     stopAudioFeed() {
       console.log("METHODS • CaptureView: stopAudioFeed");

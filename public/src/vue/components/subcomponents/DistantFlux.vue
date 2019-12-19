@@ -1,4 +1,8 @@
-<template></template>
+<template>
+  <div>
+    <!-- <div ref="videoContainer" />FLUX -->
+  </div>
+</template>
 <script>
 import RTCMultiConnection from "rtcmulticonnection";
 
@@ -22,26 +26,80 @@ export default {
     this.connection = new RTCMultiConnection();
 
     // by default, socket.io server is assumed to be deployed on your own URL
-    // connection.socketURL = '/';
+    // this.connection.socketURL = "/";
     // comment-out below line if you do not have your own socket.io server
     this.connection.socketURL = "https://rtcmulticonnection.herokuapp.com:443/";
-    this.connection.socketMessageEvent = "dodoc-demo";
-    // do not shift room control to other users
-    this.connection.autoCloseEntireSession = true;
+
     this.connection.session = {
-      audio: false,
-      video: true,
-      broadcast: true // if you remove this, then it becomes MANY-to-MANY
+      audio: true,
+      video: true
+    };
+    this.connection.sdpConstraints.mandatory = {
+      OfferToReceiveAudio: true,
+      OfferToReceiveVideo: true
     };
 
-    this.connection.sdpConstraints = {
-      mandatory: {
-        OfferToReceiveAudio: false,
-        OfferToReceiveVideo: true,
-        VoiceActivityDetection: false,
-        IceRestart: false
-      },
-      optional: []
+    // STAR_FIX_VIDEO_AUTO_PAUSE_ISSUES
+    // via: https://github.com/muaz-khan/RTCMultiConnection/issues/778#issuecomment-524853468
+    var bitrates = 512;
+    var resolutions = "HD";
+    var videoConstraints = {};
+    if (resolutions == "HD") {
+      videoConstraints = {
+        width: {
+          ideal: 1280
+        },
+        height: {
+          ideal: 720
+        },
+        frameRate: 30
+      };
+    }
+    if (resolutions == "Ultra-HD") {
+      videoConstraints = {
+        width: {
+          ideal: 1920
+        },
+        height: {
+          ideal: 1080
+        },
+        frameRate: 30
+      };
+    }
+    this.connection.mediaConstraints = {
+      video: videoConstraints,
+      audio: true
+    };
+    var CodecsHandler = this.connection.CodecsHandler;
+    this.connection.processSdp = function(sdp) {
+      var codecs = "vp8";
+
+      if (codecs.length) {
+        sdp = CodecsHandler.preferCodec(sdp, codecs.toLowerCase());
+      }
+      if (resolutions == "HD") {
+        sdp = CodecsHandler.setApplicationSpecificBandwidth(sdp, {
+          audio: 128,
+          video: bitrates,
+          screen: bitrates
+        });
+        sdp = CodecsHandler.setVideoBitrates(sdp, {
+          min: bitrates * 8 * 1024,
+          max: bitrates * 8 * 1024
+        });
+      }
+      if (resolutions == "Ultra-HD") {
+        sdp = CodecsHandler.setApplicationSpecificBandwidth(sdp, {
+          audio: 128,
+          video: bitrates,
+          screen: bitrates
+        });
+        sdp = CodecsHandler.setVideoBitrates(sdp, {
+          min: bitrates * 8 * 1024,
+          max: bitrates * 8 * 1024
+        });
+      }
+      return sdp;
     };
 
     // this.connection.videosContainer = document.getElementById('videos-container');
@@ -55,8 +113,32 @@ export default {
         event.mediaElement.volume = 0;
 
         this.$emit("changeStreamTo", event.stream);
+
+        // var video = document.createElement("video");
+
+        // try {
+        //   video.setAttributeNode(document.createAttribute("autoplay"));
+        //   video.setAttributeNode(document.createAttribute("playsinline"));
+        // } catch (e) {
+        //   video.setAttribute("autoplay", true);
+        //   video.setAttribute("playsinline", true);
+        // }
+        // video.volume = 0;
+        // try {
+        //   video.setAttributeNode(document.createAttribute("muted"));
+        // } catch (e) {
+        //   video.setAttribute("muted", true);
+        // }
+        // video.srcObject = event.stream;
+
+        // this.$refs.videoContainer.appendChild(video);
+        // setTimeout(function() {
+        //   video.play();
+        // }, 5000);
+
         this.is_calling = false;
       }
+
       return;
     };
     this.connection.onstreamended = function(event) {
@@ -107,6 +189,7 @@ export default {
     call() {
       console.log("METHODS • DistantFlux: call");
       this.is_calling = true;
+
       this.connection.checkPresence(
         this.$root.settings.capture_options.distant_flux.callee_username,
         (isOnline, username) => {
@@ -119,6 +202,11 @@ export default {
               .delay(4000)
               .error(username + " is not online.");
             return;
+          } else {
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .success(username + " is online.");
           }
           this.connection.join(username);
         }
