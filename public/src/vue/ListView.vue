@@ -89,7 +89,7 @@
                       width="96.2px"
                       height="96.2px"
                       viewBox="0 0 96.2 96.2"
-                      style="margin-bottom: -3px;"
+                      style="margin-bottom: -2px;"
                       xml:space="preserve"
                     >
                       <path
