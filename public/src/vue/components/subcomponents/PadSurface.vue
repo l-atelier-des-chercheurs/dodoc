@@ -1,16 +1,10 @@
 <template>
-  <div class="padding-small">
-    À venir
-  </div>
+  <div class="padding-small">À venir</div>
 </template>
 <script>
-
-
 export default {
-  props: {
-  },
-  components: {
-  },
+  props: {},
+  components: {},
   data() {
     return {
       configKonva: {
@@ -25,24 +19,17 @@ export default {
         stroke: "black",
         strokeWidth: 4
       }
-    }
-  },
-  
-  created() {
-  },
-  mounted() {
-  },
-  beforeDestroy() {
+    };
   },
 
-  watch: {
-  },
-  computed: {
-  },
-  methods: {
-  }
-}
+  created() {},
+  mounted() {},
+  beforeDestroy() {},
+
+  watch: {},
+  computed: {},
+  methods: {}
+};
 </script>
 <style>
-
 </style>

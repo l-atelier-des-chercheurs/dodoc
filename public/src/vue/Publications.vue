@@ -1,6 +1,5 @@
 <template>
   <div class="m_publicationsview">
-
     <div class="m_actionbar">
       <div class="m_actionbar--buttonBar">
         <!-- <button 
@@ -12,7 +11,7 @@
           <span>    
               {{ $t('create_a_publication') }}
           </span>
-        </button> -->
+        </button>-->
 
         <CreatePublication
           v-if="showCreatePublicationModal"
@@ -22,40 +21,39 @@
           :read_only="read_only"
         />
       </div>
-      <div class="m_actionbar--text">
-        {{ $t('cooking_pot') }}: {{ $t('cooking_pot_instructions')}}
-      </div>
-    </div>   
+      <div class="m_actionbar--text">{{ $t('cooking_pot') }}: {{ $t('cooking_pot_instructions')}}</div>
+    </div>
 
     <!-- liste des recettes -->
     <div class="m_recipes">
       <!-- pour chaque recette -->
-      <div class="m_recipes--recipe"
-        v-for="recipe in recipes"
-        :key="recipe.key"
-      >
+      <div class="m_recipes--recipe" v-for="recipe in recipes" :key="recipe.key">
         <div class="m_recipes--recipe--icon" v-html="recipe.icon"></div>
         <div class="m_recipes--recipe--text">
-          <h2 class="">{{ $t(recipe.key) }}</h2>
-          <p v-if="!recipe.show_instructions" class="margin-vert-small">
-            <span v-html="$t(recipe.summary)" class="margin-vert-verysmall"/>
-            <br>
-            <button type="button" class="buttonLink margin-left-none padding-left-none" @click="recipe.show_instructions = !recipe.show_instructions">
-              + {{ $t('more_informations')}}
-            </button>
+          <h2 class>{{ $t(recipe.key) }}</h2>
+          <p class="margin-vert-small">
+            <span v-html="$t(recipe.summary)" class="margin-vert-verysmall" />
+            <br />
+            <button
+              v-if="!recipe.show_instructions && recipe.instructions"
+              type="button"
+              class="buttonLink margin-left-none padding-left-none"
+              @click="recipe.show_instructions = !recipe.show_instructions"
+            >+ {{ $t('more_informations')}}</button>
           </p>
-          <p v-else>
-            <span v-html="$t(recipe.instructions)"/>
-          </p>
-          <button 
+          <template v-if="recipe.show_instructions">
+            <hr />
+            <p>
+              <span v-html="$t(recipe.instructions)" />
+            </p>
+          </template>
+          <button
             class="barButton barButton_createPubli"
-            type="button"  
+            type="button"
             @click="openCreatePublicationModal(recipe.key)"
-            :disabled="read_only" 
+            :disabled="read_only"
           >
-            <span>    
-                {{ $t('create') }}
-            </span>
+            <span>{{ $t('create') }}</span>
           </button>
         </div>
 
@@ -78,35 +76,26 @@
                 :key="publication.slugFolderName"
                 @click="openPublication(publication.slugFolderName)"
               >
-                <td>
-                  {{ publication.name }}
-                </td>
+                <td>{{ publication.name }}</td>
                 <td width="150px">
                   <small>{{ $root.formatDateToHuman(publication.date_created) }}</small>
                 </td>
               </tr>
 
-              <tr v-if="!recipe.show_all_recipes && all_recipes_of_this_template(recipe.key).length > 3"
-                @click="recipe.show_all_recipes = true"  
+              <tr
+                v-if="!recipe.show_all_recipes && all_recipes_of_this_template(recipe.key).length > 3"
+                @click="recipe.show_all_recipes = true"
                 class="m_recipes--recipe--mealList--meal"
               >
                 <td colspan="2">
-                  <button type="button" class="buttonLink margin-none">
-                      {{ $t('show_all') }}
-                  </button>
+                  <button type="button" class="buttonLink margin-none">{{ $t('show_all') }}</button>
                 </td>
-              </tr> 
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
-      
-
     </div>
-
-
-    
-
 
     <!-- <div class="m_publicationItems">
       <div 
@@ -155,15 +144,14 @@
         </button>
 
       </div>
-    </div> -->
+    </div>-->
   </div>
 </template>
 <script>
-import CreatePublication from './components/modals/CreatePublication.vue';
-
+import CreatePublication from "./components/modals/CreatePublication.vue";
 
 export default {
-  props: ['publications', 'read_only'],
+  props: ["publications", "read_only"],
   components: {
     CreatePublication
   },
@@ -174,10 +162,10 @@ export default {
 
       recipes: [
         {
-          key: 'page_by_page',
-          summary: 'page_by_page_summary',
+          key: "page_by_page",
+          summary: "page_by_page_summary",
           show_instructions: false,
-          instructions: 'page_by_page_instructions',
+          instructions: "page_by_page_instructions",
           show_all_recipes: false,
           icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
@@ -199,10 +187,10 @@ export default {
           `
         },
         {
-          key: 'video_assemblage',
-          summary: 'video_assemblage_summary',
+          key: "video_assemblage",
+          summary: "video_assemblage_summary",
           show_instructions: false,
-          instructions: 'video_assemblage_instructions',
+          instructions: "video_assemblage_instructions",
           show_all_recipes: false,
           icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
@@ -230,10 +218,10 @@ export default {
           `
         },
         {
-          key: 'stopmotion_animation',
-          summary: 'stopmotion_animation_summary',
+          key: "stopmotion_animation",
+          summary: "stopmotion_animation_summary",
           show_instructions: false,
-          instructions: 'stopmotion_animation_instructions',
+          instructions: "stopmotion_animation_instructions",
           show_all_recipes: false,
           icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
@@ -307,11 +295,11 @@ export default {
 </svg>
           `
         },
-        { 
-          key: 'mix_audio_and_video',
-          summary: 'mix_audio_and_video_summary',
+        {
+          key: "mix_audio_and_video",
+          summary: "mix_audio_and_video_summary",
           show_instructions: false,
-          instructions: 'mix_audio_and_video_instructions',
+          instructions: "mix_audio_and_video_instructions",
           show_all_recipes: false,
           icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
@@ -345,11 +333,11 @@ export default {
 </svg>
           `
         },
-        { 
-          key: 'mix_audio_and_image',
-          summary: 'mix_audio_and_image_summary',
+        {
+          key: "mix_audio_and_image",
+          summary: "mix_audio_and_image_summary",
           show_instructions: false,
-          instructions: 'mix_audio_and_image_instructions',
+          instructions: "mix_audio_and_image_instructions",
           show_all_recipes: false,
           icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
@@ -379,42 +367,54 @@ export default {
   </g>
 </svg>          
           `
+        },
+        {
+          key: "carreau",
+          summary: "carreau_summary",
+          show_instructions: false,
+          instructions: "carreau_instructions",
+          show_all_recipes: false,
+          icon: `
+
+          `
         }
       ]
-    }
-  },
-  
-  created() {
-  },
-  mounted() {
-  },
-  beforeDestroy() {
+    };
   },
 
-  watch: {
-  },
+  created() {},
+  mounted() {},
+  beforeDestroy() {},
+
+  watch: {},
   computed: {
     createPubliDefaultName() {
-      const number_of_recipes = this.all_recipes_of_this_template(this.createPubliTemplateKey).length + 1;
-      return this.$t(this.createPubliTemplateKey) + ' Nº' + number_of_recipes;
+      const number_of_recipes =
+        this.all_recipes_of_this_template(this.createPubliTemplateKey).length +
+        1;
+      return this.$t(this.createPubliTemplateKey) + " Nº" + number_of_recipes;
     }
   },
   methods: {
     openPublication(slugPubliName) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • Publications: openPublication / slugPubliName = ${slugPubliName}`);
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(
+          `METHODS • Publications: openPublication / slugPubliName = ${slugPubliName}`
+        );
       }
       this.$root.openPublication(slugPubliName);
     },
     all_recipes_of_this_template(template_key) {
-      const filtered_recipes = Object.values(this.publications).filter(r => r.template === template_key);
-      let sorted_recipes = this.$_.sortBy(filtered_recipes, 'date_created');
-      sorted_recipes = sorted_recipes.reverse()
+      const filtered_recipes = Object.values(this.publications).filter(
+        r => r.template === template_key
+      );
+      let sorted_recipes = this.$_.sortBy(filtered_recipes, "date_created");
+      sorted_recipes = sorted_recipes.reverse();
       return sorted_recipes;
     },
     recipe_of_this_template(template_key) {
-      if(!this.recipes.find(r => r.key === template_key).show_all_recipes) {
-        return this.all_recipes_of_this_template(template_key).slice(0,3);
+      if (!this.recipes.find(r => r.key === template_key).show_all_recipes) {
+        return this.all_recipes_of_this_template(template_key).slice(0, 3);
       }
       return this.all_recipes_of_this_template(template_key);
     },
@@ -423,41 +423,45 @@ export default {
       this.createPubliTemplateKey = recipe_key;
     },
     createAndOpenPublication(template) {
-      const name = this.$t('untitled');
+      const name = this.$t("untitled");
       const slugFolderName = template;
 
       let publication_data = {
         name,
         slugFolderName,
         template,
-        authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : [],
+        authors: this.$root.settings.current_author.hasOwnProperty("name")
+          ? [{ name: this.$root.settings.current_author.name }]
+          : []
       };
 
-      if(template === 'page_by_page') {
-        publication_data.pages = [{
-          id: +new Date() + '_' + (Math.random().toString(36) + '00000000000000000').slice(2, 3)
-        }];
+      if (template === "page_by_page") {
+        publication_data.pages = [
+          {
+            id:
+              +new Date() +
+              "_" +
+              (Math.random().toString(36) + "00000000000000000").slice(2, 3)
+          }
+        ];
         publication_data.width = 210;
         publication_data.height = 297;
       }
 
-      this.$eventHub.$on('socketio.folder_created_or_updated', (fdata) => {
-        if(fdata.id === this.$root.justCreatedFolderID) {
-          this.$eventHub.$off('socketio.folder_created_or_updated');
+      this.$eventHub.$on("socketio.folder_created_or_updated", fdata => {
+        if (fdata.id === this.$root.justCreatedFolderID) {
+          this.$eventHub.$off("socketio.folder_created_or_updated");
           this.openPublication(fdata.slugFolderName);
         }
       });
 
-      this.$root.createFolder({ 
-        type: 'publications', 
+      this.$root.createFolder({
+        type: "publications",
         data: publication_data
       });
-
-
     }
   }
-}
+};
 </script>
 <style>
-
 </style>
