@@ -1,22 +1,22 @@
-const path = require('path'),
-  moment = require('moment'),
-  parsedown = require('dodoc-parsedown'),
-  fs = require('fs-extra'),
-  slugg = require('slugg'),
-  os = require('os'),
-  writeFileAtomic = require('write-file-atomic'),
-  ffmpegstatic = require('ffmpeg-static'),
-  ffmpeg = require('fluent-ffmpeg'),
-  pad = require('pad-left');
+const path = require("path"),
+  moment = require("moment"),
+  parsedown = require("dodoc-parsedown"),
+  fs = require("fs-extra"),
+  slugg = require("slugg"),
+  os = require("os"),
+  writeFileAtomic = require("write-file-atomic"),
+  ffmpegstatic = require("ffmpeg-static"),
+  ffmpeg = require("fluent-ffmpeg"),
+  pad = require("pad-left");
 
-const Jimp = require('jimp');
-const dev = require('./dev-log');
+const Jimp = require("jimp");
+const dev = require("./dev-log");
 
 ffmpeg.setFfmpegPath(ffmpegstatic.path);
 
 module.exports = (function() {
   const API = {
-    getFolderPath: (slugFolderName = '') => getFolderPath(slugFolderName),
+    getFolderPath: (slugFolderName = "") => getFolderPath(slugFolderName),
     findFirstFilenameNotTaken: (thisPath, fileName) =>
       findFirstFilenameNotTaken(thisPath, fileName),
     getCurrentDate: (format = global.settings.metaDateFormat) =>
@@ -47,7 +47,7 @@ module.exports = (function() {
     return global.pathToUserContent;
   }
 
-  function getFolderPath(slugFolderName = '') {
+  function getFolderPath(slugFolderName = "") {
     return path.join(_getUserPath(), slugFolderName);
   }
 
@@ -57,7 +57,7 @@ module.exports = (function() {
 
   function convertDate(date, f) {
     if (moment(date).isValid()) return moment(date).format(f);
-    else return '';
+    else return "";
   }
   function parseUTCDate(date) {
     return moment.utc(date);
@@ -65,9 +65,9 @@ module.exports = (function() {
 
   function parseDate(date, f) {
     if (moment(date, f, true).isValid()) {
-      return moment(date, f).format('YYYY-MM-DD HH:mm:ss');
+      return moment(date, f).format("YYYY-MM-DD HH:mm:ss");
     } else {
-      return '';
+      return "";
     }
   }
 
@@ -77,14 +77,14 @@ module.exports = (function() {
       // let's find the extension if it exists
       var fileExtension = new RegExp(
         global.settings.regexpGetFileExtension,
-        'i'
+        "i"
       ).exec(fileName);
-      fileExtension = fileExtension === null ? '' : fileExtension[0];
+      fileExtension = fileExtension === null ? "" : fileExtension[0];
 
       // remove extension
       var fileNameWithoutExtension = new RegExp(
         global.settings.regexpRemoveFileExtension,
-        'i'
+        "i"
       ).exec(fileName)[1];
       // slug the rest of the name
       fileNameWithoutExtension = slug(fileNameWithoutExtension);
@@ -129,7 +129,7 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — storeData at path ${mpath}`);
       //       dev.logfunction(`with content ${d}`);
-      if (typeof d === 'object') {
+      if (typeof d === "object") {
         d = parsedown.textify(d);
       }
       writeFileAtomic(mpath, d, err => {
@@ -159,13 +159,11 @@ module.exports = (function() {
     if (socket) {
       // content sent only to one user
       dev.logpackets(
-        `sendEventWithContent for user ${
-          socket.id
-        } = ${eventAndContentJson_string}`
+        `sendEventWithContent for user ${socket.id} = ${eventAndContentJson_string}`
       );
       socket.emit(
-        eventAndContentJson['socketevent'],
-        eventAndContentJson['content']
+        eventAndContentJson["socketevent"],
+        eventAndContentJson["content"]
       );
     } else {
       // content broadcasted to all connected users
@@ -173,8 +171,8 @@ module.exports = (function() {
         `sendEventWithContent for all users = ${eventAndContentJson_string}`
       );
       io.sockets.emit(
-        eventAndContentJson['socketevent'],
-        eventAndContentJson['content']
+        eventAndContentJson["socketevent"],
+        eventAndContentJson["content"]
       );
     }
     // dev.logpackets(
@@ -186,7 +184,7 @@ module.exports = (function() {
     // );
     dev.logpackets(
       `eventAndContentJson — sending packet with string length = ${
-        JSON.stringify(eventAndContentJson['content']).length
+        JSON.stringify(eventAndContentJson["content"]).length
       }`
     );
   }
@@ -198,7 +196,7 @@ module.exports = (function() {
       let ip_adresses = {};
       Object.keys(ifaces).forEach(function(ifname) {
         ifaces[ifname].forEach(function(iface) {
-          if ('IPv4' === iface.family && iface.internal === false) {
+          if ("IPv4" === iface.family && iface.internal === false) {
             ip_adresses[ifname] = iface.address;
           }
         });
@@ -233,31 +231,31 @@ module.exports = (function() {
     );
     var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
     if (matches.length !== 3) {
-      dev.error('Error parsing base64 image');
-      return new Error('Invalid input string');
+      dev.error("Error parsing base64 image");
+      return new Error("Invalid input string");
     }
     // let response = {};
     // response.type = matches[1];
     // response.data = new Buffer(matches[2], 'base64');
-    let response = new Buffer(matches[2], 'base64');
+    let response = new Buffer(matches[2], "base64");
     dev.logverbose(`Just parsed string to bugger`);
     return response;
   }
 
   function writeAudioToDisk(slugFolderName, mediaName, dataURL) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction('COMMON — writeAudioToDisk');
+      dev.logfunction("COMMON — writeAudioToDisk");
       if (dataURL === undefined) {
-        dev.error('No media data content gotten for ' + mediaName);
-        reject('No media sent');
+        dev.error("No media data content gotten for " + mediaName);
+        reject("No media sent");
       }
-      dataURL = dataURL.split(',').pop();
-      var fileBuffer = new Buffer(dataURL, 'base64');
+      dataURL = dataURL.split(",").pop();
+      var fileBuffer = new Buffer(dataURL, "base64");
 
       let cachePath = path.join(
         global.tempStorage,
         global.settings.cacheDirname,
-        '_medias'
+        "_medias"
       );
       fs.mkdirp(cachePath, function() {
         let pathToTempMedia = path.join(cachePath, mediaName);
@@ -267,10 +265,10 @@ module.exports = (function() {
 
           let pathToMedia = path.join(getFolderPath(slugFolderName), mediaName);
           const ffmpeg_cmd = new ffmpeg(pathToTempMedia)
-            .audioCodec('aac')
+            .audioCodec("aac")
             .save(pathToMedia)
-            .on('end', function() {
-              console.log('Processing finished !');
+            .on("end", function() {
+              console.log("Processing finished !");
               resolve();
             });
           global.ffmpeg_processes.push(ffmpeg_cmd);
@@ -281,18 +279,18 @@ module.exports = (function() {
 
   function writeVideoToDisk(slugFolderName, mediaName, dataURL) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction('COMMON — writeVideoToDisk');
+      dev.logfunction("COMMON — writeVideoToDisk");
       if (dataURL === undefined) {
-        dev.error('No media data content gotten for ' + mediaName);
-        reject('No media sent');
+        dev.error("No media data content gotten for " + mediaName);
+        reject("No media sent");
       }
-      dataURL = dataURL.split(',').pop();
-      var fileBuffer = new Buffer(dataURL, 'base64');
+      dataURL = dataURL.split(",").pop();
+      var fileBuffer = new Buffer(dataURL, "base64");
 
       let cachePath = path.join(
         global.tempStorage,
         global.settings.cacheDirname,
-        '_medias'
+        "_medias"
       );
       fs.mkdirp(cachePath, function() {
         let pathToMedia = path.join(getFolderPath(slugFolderName), mediaName);
@@ -330,7 +328,7 @@ module.exports = (function() {
     socket
   }) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction('COMMON — makeStopmotionFromImageSequence');
+      dev.logfunction("COMMON — makeStopmotionFromImageSequence");
 
       const numberOfImagesToProcess = images.length;
 
@@ -342,37 +340,37 @@ module.exports = (function() {
           .then(tempFolder => {
             // ask ffmpeg to make a video from the cache images
             const ffmpeg_cmd = new ffmpeg()
-              .input(path.join(tempFolder, 'img-%04d.jpeg'))
+              .input(path.join(tempFolder, "img-%04d.jpeg"))
               .inputFPS(frameRate)
-              .withVideoCodec('libx264')
-              .withVideoBitrate('4000k')
-              .input('anullsrc')
-              .inputFormat('lavfi')
+              .withVideoCodec("libx264")
+              .withVideoBitrate("4000k")
+              .input("anullsrc")
+              .inputFormat("lavfi")
               .duration(numberOfImagesToProcess / frameRate)
               .size(`${resolution.width}x${resolution.height}`)
               .outputFPS(30)
               .autopad()
-              .addOptions(['-preset slow', '-tune animation'])
-              .toFormat('mp4')
-              .on('start', function(commandLine) {
-                dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+              .addOptions(["-preset slow", "-tune animation"])
+              .toFormat("mp4")
+              .on("start", function(commandLine) {
+                dev.logverbose("Spawned Ffmpeg with command: " + commandLine);
               })
-              .on('progress', progress => {
-                require('./sockets').notify({
+              .on("progress", progress => {
+                require("./sockets").notify({
                   socket,
                   localized_string: `creating_video`,
                   not_localized_string:
-                    Number.parseFloat(progress.percent).toFixed(1) + '%'
+                    Number.parseFloat(progress.percent).toFixed(1) + "%"
                 });
               })
-              .on('end', () => {
+              .on("end", () => {
                 dev.logverbose(`Stopmotion has been completed`);
                 resolve();
               })
-              .on('error', function(err, stdout, stderr) {
-                dev.error('An error happened: ' + err.message);
-                dev.error('ffmpeg standard output:\n' + stdout);
-                dev.error('ffmpeg standard error:\n' + stderr);
+              .on("error", function(err, stdout, stderr) {
+                dev.error("An error happened: " + err.message);
+                dev.error("ffmpeg standard output:\n" + stdout);
+                dev.error("ffmpeg standard error:\n" + stderr);
                 reject(`couldn't create a stopmotion animation`);
               })
               .save(pathToMedia);
@@ -388,8 +386,8 @@ module.exports = (function() {
       let cacheFolderName =
         getCurrentDate(global.settings.metaDateFormat) +
         slugStopmotionName +
-        '-' +
-        (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2);
+        "-" +
+        (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2);
 
       let cachePath = path.join(
         global.tempStorage,
@@ -402,7 +400,7 @@ module.exports = (function() {
         function() {
           let slugStopmotionPath = getFolderPath(
             path.join(
-              global.settings.structure['stopmotions'].path,
+              global.settings.structure["stopmotions"].path,
               slugStopmotionName
             )
           );
@@ -416,7 +414,7 @@ module.exports = (function() {
                 );
                 const cache_image_path = path.join(
                   cachePath,
-                  'img-' + pad(index, 4, '0') + '.jpeg'
+                  "img-" + pad(index, 4, "0") + ".jpeg"
                 );
 
                 fs.copy(original_image_path, cache_image_path)
@@ -447,7 +445,7 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       let slugStopmotionPath = getFolderPath(
         path.join(
-          global.settings.structure['stopmotions'].path,
+          global.settings.structure["stopmotions"].path,
           slugStopmotionName
         )
       );
@@ -457,8 +455,8 @@ module.exports = (function() {
       Jimp.read(image_path, function(err, image) {
         if (err) return reject(err);
         return resolve({
-          width: image.width,
-          height: image.height
+          width: image.bitmap.width,
+          height: image.bitmap.height
         });
       });
     });
