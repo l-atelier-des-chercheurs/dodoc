@@ -1,4 +1,6 @@
 const path = require("path"),
+  ffmpegstatic = require("ffmpeg-static"),
+  ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   fs = require("fs-extra"),
   pad = require("pad-left");
@@ -10,8 +12,8 @@ const dev = require("./dev-log"),
   file = require("./file"),
   thumbs = require("./thumbs");
 
-ffmpeg.setFfmpegPath("./ffmpeg-20190227-85051fe-win32-static/ffmpeg");
-ffmpeg.setFfprobePath("./ffmpeg-20190227-85051fe-win32-static/ffprobe");
+ffmpeg.setFfmpegPath(ffmpegstatic.path);
+ffmpeg.setFfprobePath(ffprobestatic.path);
 
 const renice = 0;
 
