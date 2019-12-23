@@ -48,7 +48,11 @@ module.exports = (function() {
       ) {
         callback(null, { origin: true });
       } else {
-        dev.error("REMOTE_API — _corsCheck : domain not whitelisted");
+        dev.error(
+          `REMOTE_API — _corsCheck : domain ${req.header(
+            "Origin"
+          )} not whitelisted`
+        );
         dev.error(
           `REMOTE_API — _corsCheck : whitelist is ${global.settings.api.domains_whitelist.join(
             ", "
