@@ -21,6 +21,7 @@ module.exports = (function() {
     dev.logverbose("REMOTE_API — _initRemoteApi : is enabled");
 
     // app.use(cors());
+    //https://github.com/expressjs/cors#enabling-cors-pre-flight
     app.options("/api/:type/:slug?", cors());
     app.get(
       "/api/:type/:slug?",
@@ -110,6 +111,7 @@ module.exports = (function() {
         dev.performance(
           `PERFORMANCE — _getContent : ${hrend[0]}s ${hrend[1] / 1000000}ms`
         );
+        res.setHeader("Access-Control-Allow-Origin", "*");
         res.json(d);
       })
       .catch(err => {
