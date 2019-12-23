@@ -17,9 +17,7 @@
   },
   "scripts": {
     "start": "node .",
-    "debug": "node . --inspect=5858 --debug --verbose",
-    "pack": "build --dir",
-    "dist": "build"
+    "debug": "node . --inspect=5858 --debug --verbose"
   },
   "engines": {
     "node": "8.9.3",
