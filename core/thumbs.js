@@ -9,10 +9,13 @@ const dev = require("./dev-log"),
   api = require("./api");
 
 ffmpeg.setFfmpegPath(
-  path.join(global.appRoot, "ffmpeg-20190227-85051fe-win32-static/ffmpeg.exe")
+  path.join(global.appRoot, "./ffmpeg-20190227-85051fe-win32-static/ffmpeg.exe")
 );
 ffmpeg.setFfmpegPath(
-  path.join(global.appRoot, "ffmpeg-20190227-85051fe-win32-static/ffprobe.exe")
+  path.join(
+    global.appRoot,
+    "./ffmpeg-20190227-85051fe-win32-static/ffprobe.exe"
+  )
 );
 
 module.exports = (function() {
