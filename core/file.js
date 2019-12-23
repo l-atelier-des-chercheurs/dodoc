@@ -1,20 +1,14 @@
 const path = require("path"),
   fs = require("fs-extra"),
-  validator = require("validator"),
-  ffmpegstatic = require("ffmpeg-static"),
-  ffprobestatic = require("ffprobe-static"),
-  ffmpeg = require("fluent-ffmpeg");
+  validator = require("validator");
 
-const Jimp = require('jimp');
+const Jimp = require("jimp");
 
 const dev = require("./dev-log"),
   api = require("./api"),
   thumbs = require("./thumbs"),
   cache = require("./cache"),
   recipe = require("./recipe");
-
-// ffmpeg.setFfmpegPath(ffmpegstatic.path);
-// ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function() {
   const API = {
@@ -937,7 +931,7 @@ module.exports = (function() {
               .quality(settings.mediaThumbQuality)
               .write(finalPath, function(err, info) {
                 if (err) return reject(err);
-                dev.logverbose('Image has been saved, resolving its path.');
+                dev.logverbose("Image has been saved, resolving its path.");
                 fs.unlink(tempPath, err => {
                   dev.logverbose(`Removing raw uploaded file at ${tempPath}`);
                 });
@@ -1343,7 +1337,7 @@ module.exports = (function() {
                   .quality(settings.mediaThumbQuality)
                   .write(pathToMedia, function(err, info) {
                     if (err) reject(err);
-                    dev.logverbose('Image has been saved.');
+                    dev.logverbose("Image has been saved.");
                     resolve();
                   });
               });
@@ -1932,13 +1926,13 @@ module.exports = (function() {
                 )
                 .write(pathToPreview, function(err, info) {
                   if (err) reject(err);
-  
-                dev.logverbose(
-                  `COMMON — _storeFoldersPreview : Finished making a folder preview at ${pathToPreview}`
-                );
-                resolve();
-              })
-            })
+
+                  dev.logverbose(
+                    `COMMON — _storeFoldersPreview : Finished making a folder preview at ${pathToPreview}`
+                  );
+                  resolve();
+                });
+            });
           });
         })
         .catch(err => {

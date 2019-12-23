@@ -1,5 +1,5 @@
 const path = require("path"),
-  ffmpegstatic = require("ffmpeg-static"),
+  ffmpegstatic = require("../ffmpeg-20190227-85051fe-win32-static"),
   ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   fs = require("fs-extra"),

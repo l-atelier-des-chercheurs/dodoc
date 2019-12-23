@@ -5,7 +5,7 @@ const path = require("path"),
   slugg = require("slugg"),
   os = require("os"),
   writeFileAtomic = require("write-file-atomic"),
-  ffmpegstatic = require("ffmpeg-static"),
+  ffmpegstatic = require("../ffmpeg-20190227-85051fe-win32-static"),
   ffmpeg = require("fluent-ffmpeg"),
   pad = require("pad-left");
 

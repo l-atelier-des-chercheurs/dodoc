@@ -1,14 +1,14 @@
-const path = require('path'),
-  fs = require('fs-extra'),
-  ffmpegstatic = require('ffmpeg-static'),
-  ffprobestatic = require('ffprobe-static'),
-  ffmpeg = require('fluent-ffmpeg'),
-  exifReader = require('exif-reader');
+const path = require("path"),
+  fs = require("fs-extra"),
+  ffmpegstatic = require("../ffmpeg-20190227-85051fe-win32-static"),
+  ffprobestatic = require("ffprobe-static"),
+  ffmpeg = require("fluent-ffmpeg"),
+  exifReader = require("exif-reader");
 
-const Jimp = require('jimp');
+const Jimp = require("jimp");
 
-const dev = require('./dev-log'),
-  api = require('./api');
+const dev = require("./dev-log"),
+  api = require("./api");
 
 ffmpeg.setFfmpegPath(ffmpegstatic.path);
 ffmpeg.setFfprobePath(ffprobestatic.path);
@@ -37,7 +37,7 @@ module.exports = (function() {
       dev.logfunction(
         `THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, filename = ${filename}, mediaType: ${mediaType}, type: ${type}, subtype: ${subtype}`
       );
-      if (!['image', 'video'].includes(mediaType)) {
+      if (!["image", "video"].includes(mediaType)) {
         dev.logverbose(
           `THUMBS — makeMediaThumbs — media is not of type image or video`
         );
@@ -65,7 +65,7 @@ module.exports = (function() {
         // regroup all thumbs promises so they can happen as fast as possible
         let makeThumbs = [];
 
-        if (mediaType === 'image') {
+        if (mediaType === "image") {
           thumbResolutions.forEach(thumbRes => {
             let makeThumb = new Promise((resolve, reject) => {
               _makeImageThumb(mediaPath, thumbFolderPath, filename, thumbRes)
@@ -87,7 +87,7 @@ module.exports = (function() {
           });
         }
 
-        if (mediaType === 'video') {
+        if (mediaType === "video") {
           // make screenshot
           let screenshotsTimemarks = [0];
           screenshotsTimemarks.forEach(timeMark => {
@@ -382,7 +382,7 @@ module.exports = (function() {
           if (!ts) {
             return resolve(thumbPath);
           }
-          return resolve(thumbPath + '?v=' + ts);
+          return resolve(thumbPath + "?v=" + ts);
         })
         .catch(err => reject(err));
     });
@@ -405,7 +405,7 @@ module.exports = (function() {
               .scaleToFit(thumbRes, thumbRes)
               .write(fullThumbPath, function(err, info) {
                 if (err) reject(err);
-                dev.logverbose('Image has been saved, resolving its path.');
+                dev.logverbose("Image has been saved, resolving its path.");
                 resolve(fullThumbPath);
               });
           });
@@ -453,19 +453,19 @@ module.exports = (function() {
         if (err) {
           ffmpeg(mediaPath)
             // setup event handlers
-            .on('end', function(files) {
+            .on("end", function(files) {
               dev.logverbose(
                 `Screenshots were saved : ${JSON.stringify(files, null, 4)}`
               );
               resolve({ screenshotPath, screenshotName });
             })
-            .on('error', function(err) {
+            .on("error", function(err) {
               dev.error(`ffmpeg failed: ${err.message}`);
               reject(err.message);
             })
             .screenshots({
               count: 1,
-              timemarks: ['00:00:00'],
+              timemarks: ["00:00:00"],
               filename: screenshotName,
               folder: api.getFolderPath(thumbFolderPath)
             });
@@ -483,7 +483,7 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`getMediaDuration: ${mediaPath}`);
       ffmpeg.ffprobe(mediaPath, function(err, metadata) {
-        if (err || typeof metadata === 'undefined') {
+        if (err || typeof metadata === "undefined") {
           dev.log(`getMediaDuration: PROBE DATA isn’t valid`);
           resolve(false);
         } else {
@@ -498,7 +498,7 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`getMediaRatio: ${mediaPath}`);
       ffmpeg.ffprobe(mediaPath, function(err, metadata) {
-        if (err || typeof metadata === 'undefined') {
+        if (err || typeof metadata === "undefined") {
           dev.log(`getMediaRatio: PROBE DATA isn’t valid`);
           reject();
         } else {

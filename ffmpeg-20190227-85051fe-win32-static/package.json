@@ -1,0 +1,74 @@
+{
+  "_from": "ffmpeg-static@^2.7.0",
+  "_id": "ffmpeg-static@2.7.0",
+  "_inBundle": false,
+  "_integrity": "sha512-Khjg/4tCBen58ixhXlkRNqs3hUKpTOlGOUrw859M09tdjeMkXyXRQ+YuJjGczRhGO7Y8fHPJZcQ37V/OzvZvjQ==",
+  "_location": "/ffmpeg-static",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "ffmpeg-static@^2.7.0",
+    "name": "ffmpeg-static",
+    "escapedName": "ffmpeg-static",
+    "rawSpec": "^2.7.0",
+    "saveSpec": null,
+    "fetchSpec": "^2.7.0"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ffmpeg-static/-/ffmpeg-static-2.7.0.tgz",
+  "_shasum": "e1b050f7c0457595fceccec7d8bb04cdb8f223dc",
+  "_spec": "ffmpeg-static@^2.7.0",
+  "_where": "/Users/louis/ACTIVE_PROJECTS/15009_DODOC-CONSULTATION/PRODUCTION/dodoc",
+  "authors": [
+    "Eugene Ware <eugene@noblesamurai.com>",
+    "contributors"
+  ],
+  "bugs": {
+    "url": "https://github.com/eugeneware/ffmpeg-static/issues"
+  },
+  "bundleDependencies": false,
+  "contributors": [
+    {
+      "name": "Jannis R",
+      "email": "mail@jannisr.de"
+    }
+  ],
+  "dependencies": {},
+  "deprecated": false,
+  "description": "ffmpeg static binaries for Mac OSX and Linux and Windows",
+  "devDependencies": {
+    "tape": "^4.11.0"
+  },
+  "files": [
+    "index.js",
+    "bin"
+  ],
+  "homepage": "https://github.com/eugeneware/ffmpeg-static#readme",
+  "keywords": [
+    "ffmpeg",
+    "static",
+    "library",
+    "binary",
+    "binaries",
+    "mac",
+    "linux",
+    "windows"
+  ],
+  "license": "BSD-3-Clause",
+  "main": "index.js",
+  "name": "ffmpeg-static",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eugeneware/ffmpeg-static.git"
+  },
+  "scripts": {
+    "build": "./build/index.sh",
+    "prepublishOnly": "npm run build && npm test",
+    "test": "tape test/*.js"
+  },
+  "version": "2.7.0"
+}
