@@ -36,7 +36,7 @@ module.exports = (function() {
     var corsOptions;
     if (global.settings.api.allow_all_domains) {
       dev.logverbose("REMOTE_API — _corsCheck : allowed for all domains");
-      corsOptions = { origin: true };
+      next();
     } else {
       dev.logverbose(
         "REMOTE_API — _initRemoteApi : allowed for specific domains"
@@ -46,13 +46,11 @@ module.exports = (function() {
         global.settings.api.domains_whitelist.indexOf(req.header("Origin")) !==
         -1
       ) {
-        corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
+        next();
       } else {
-        corsOptions = { origin: false }; // disable CORS for this request
+        dev.error("REMOTE_API — _corsCheck : domain not whitelisted");
       }
     }
-
-    callback(null, corsOptions);
   }
 
   function _sessionPasswordCheck(req, res, next) {
