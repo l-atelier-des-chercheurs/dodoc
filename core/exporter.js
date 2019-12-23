@@ -1,11 +1,11 @@
-const path = require('path'),
-  ffmpegstatic = require('ffmpeg-static'),
-  ffprobestatic = require('ffprobe-static'),
-  ffmpeg = require('fluent-ffmpeg'),
-  fs = require('fs-extra'),
-  pad = require('pad-left');
+const path = require("path"),
+  ffmpegstatic = require("ffmpeg-static"),
+  ffprobestatic = require("ffprobe-static"),
+  ffmpeg = require("fluent-ffmpeg"),
+  fs = require("fs-extra"),
+  pad = require("pad-left");
 
-const Jimp = require('jimp');
+const Jimp = require("jimp");
 
 const dev = require("./dev-log"),
   api = require("./api"),
@@ -1227,36 +1227,36 @@ module.exports = (function() {
                 ffmpeg_cmd.duration(temp_video_duration).loop();
 
                 ffmpeg_cmd
-                  .input('anullsrc')
-                  .inputFormat('lavfi')
+                  .input("anullsrc")
+                  .inputFormat("lavfi")
                   .native()
                   .outputFPS(30)
-                  .withVideoCodec('libx264')
-                  .withVideoBitrate('6000k')
-                  .withAudioCodec('aac')
-                  .withAudioBitrate('128k')
-                  .addOptions(['-af apad'])
+                  .withVideoCodec("libx264")
+                  .withVideoBitrate("6000k")
+                  .withAudioCodec("aac")
+                  .withAudioBitrate("128k")
+                  .addOptions(["-af apad"])
                   .size(`${resolution.width}x${resolution.height}`)
                   .autopad()
-                  .videoFilter(['setsar=1'])
-                  .addOptions(['-shortest', '-bsf:v h264_mp4toannexb'])
-                  .toFormat('mpegts')
+                  .videoFilter(["setsar=1"])
+                  .addOptions(["-shortest", "-bsf:v h264_mp4toannexb"])
+                  .toFormat("mpegts")
                   .output(temp_video_path)
-                  .on('start', function(commandLine) {
+                  .on("start", function(commandLine) {
                     dev.logverbose(
-                      'Spawned Ffmpeg with command: ' + commandLine
+                      "Spawned Ffmpeg with command: " + commandLine
                     );
                   })
-                  .on('progress', progress => {
+                  .on("progress", progress => {
                     _notifyFfmpegProgress({ socket, progress });
                   })
-                  .on('end', () => {
+                  .on("end", () => {
                     return resolve(temp_video_path);
                   })
-                  .on('error', function(err, stdout, stderr) {
-                    dev.error('An error happened: ' + err.message);
-                    dev.error('ffmpeg standard output:\n' + stdout);
-                    dev.error('ffmpeg standard error:\n' + stderr);
+                  .on("error", function(err, stdout, stderr) {
+                    dev.error("An error happened: " + err.message);
+                    dev.error("ffmpeg standard output:\n" + stdout);
+                    dev.error("ffmpeg standard error:\n" + stderr);
                     throw err;
                   })
                   .run();
