@@ -5,14 +5,14 @@ const path = require("path"),
   slugg = require("slugg"),
   os = require("os"),
   writeFileAtomic = require("write-file-atomic"),
-  ffmpegstatic = require("ffmpeg-static"),
   ffmpeg = require("fluent-ffmpeg"),
   pad = require("pad-left");
 
 const Jimp = require("jimp");
 const dev = require("./dev-log");
 
-ffmpeg.setFfmpegPath(ffmpegstatic.path);
+ffmpeg.setFfmpegPath("./ffmpeg-20190227-85051fe-win32-static/ffmpeg");
+ffmpeg.setFfprobePath("./ffmpeg-20190227-85051fe-win32-static/ffprobe");
 
 module.exports = (function() {
   const API = {
