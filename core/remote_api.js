@@ -20,7 +20,7 @@ module.exports = (function() {
 
     dev.logverbose("REMOTE_API — _initRemoteApi : is enabled");
 
-    app.use(cors());
+    // app.use(cors());
     app.options("/api/:type/:slug?", cors());
     app.get(
       "/api/:type/:slug?",
