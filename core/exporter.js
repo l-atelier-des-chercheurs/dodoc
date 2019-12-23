@@ -10,12 +10,8 @@ const dev = require("./dev-log"),
   file = require("./file"),
   thumbs = require("./thumbs");
 
-ffmpeg.setFfmpegPath(
-  path.join(__dirname, "./ffmpeg-20190227-85051fe-win32-static/ffmpeg.exe")
-);
-ffmpeg.setFfmpegPath(
-  path.join(__dirname, "./ffmpeg-20190227-85051fe-win32-static/ffprobe.exe")
-);
+ffmpeg.setFfmpegPath("./ffmpeg-20190227-85051fe-win32-static/ffmpeg");
+ffmpeg.setFfprobePath("./ffmpeg-20190227-85051fe-win32-static/ffprobe");
 
 const renice = 0;
 
