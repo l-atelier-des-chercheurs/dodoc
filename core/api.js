@@ -11,8 +11,12 @@ const path = require("path"),
 const Jimp = require("jimp");
 const dev = require("./dev-log");
 
-ffmpeg.setFfmpegPath("./ffmpeg-20190227-85051fe-win32-static/ffmpeg");
-ffmpeg.setFfprobePath("./ffmpeg-20190227-85051fe-win32-static/ffprobe");
+ffmpeg.setFfmpegPath(
+  path.join(__dirname, "./ffmpeg-20190227-85051fe-win32-static/ffmpeg.exe")
+);
+ffmpeg.setFfmpegPath(
+  path.join(__dirname, "./ffmpeg-20190227-85051fe-win32-static/ffprobe.exe")
+);
 
 module.exports = (function() {
   const API = {
