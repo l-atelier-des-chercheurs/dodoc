@@ -11,13 +11,10 @@ const dev = require("./dev-log"),
   thumbs = require("./thumbs");
 
 ffmpeg.setFfmpegPath(
-  path.join(global.appRoot, "./ffmpeg-20190227-85051fe-win32-static/ffmpeg.exe")
+  path.join(__dirname, "./ffmpeg-20190227-85051fe-win32-static/ffmpeg.exe")
 );
 ffmpeg.setFfmpegPath(
-  path.join(
-    global.appRoot,
-    "./ffmpeg-20190227-85051fe-win32-static/ffprobe.exe"
-  )
+  path.join(__dirname, "./ffmpeg-20190227-85051fe-win32-static/ffprobe.exe")
 );
 
 const renice = 0;
