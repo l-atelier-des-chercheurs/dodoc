@@ -38,7 +38,10 @@ module.exports = (function() {
       dev.logverbose("REMOTE_API — _corsCheck : allowed for all domains");
       next();
     } else {
-      if (!req.header("Origin") || !req.header("origin")) {
+      if (
+        !req.headers.hasOwnProperty("Origin") &&
+        !req.headers.hasOwnProperty("origin")
+      ) {
         dev.error(`REMOTE_API — _corsCheck : missing Origin in header`);
         callback(new Error("Missing origin in request"));
       }
@@ -49,9 +52,9 @@ module.exports = (function() {
         )}`
       );
 
-      const _origin = !!req.header("Origin")
-        ? req.header("Origin")
-        : req.header("origin");
+      const _origin = req.headers.hasOwnProperty("Origin")
+        ? req.headers["Origin"]
+        : req.headers["origin"];
 
       const origin_hostname = url.parse(_origin).hostname;
       dev.logverbose(
