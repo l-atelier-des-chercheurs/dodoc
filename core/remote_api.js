@@ -1,4 +1,5 @@
 const cors = require("cors");
+const url = require("url");
 
 const file = require("./file"),
   auth = require("./auth");
@@ -41,9 +42,10 @@ module.exports = (function() {
         "REMOTE_API — _initRemoteApi : allowed for specific domains"
       );
 
+      const origin_hostname = new URL(req.header("Origin")).hostname;
+
       if (
-        global.settings.api.domains_whitelist.indexOf(req.header("Origin")) !==
-        -1
+        global.settings.api.domains_whitelist.indexOf(origin_hostname) !== -1
       ) {
         callback(null, { origin: true });
       } else {
