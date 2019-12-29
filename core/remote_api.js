@@ -39,7 +39,7 @@ module.exports = (function() {
       next();
     } else {
       dev.logverbose(
-        "REMOTE_API — _initRemoteApi : allowed for specific domains"
+        "REMOTE_API — _corsCheck : allowed for specific hostnames only"
       );
 
       const origin_hostname = url.parse(req.header("Origin")).hostname;
@@ -47,6 +47,9 @@ module.exports = (function() {
       if (
         global.settings.api.domains_whitelist.indexOf(origin_hostname) !== -1
       ) {
+        dev.logverbose(
+          `REMOTE_API — _corsCheck : origin_hostname is auth ${origin_hostname}`
+        );
         callback(null, { origin: true });
       } else {
         dev.error(
