@@ -39,28 +39,24 @@ module.exports = (function() {
       next();
     } else {
       dev.logverbose(
-        "REMOTE_API — _corsCheck : allowed for specific hostnames only"
+        `REMOTE_API — _corsCheck : allowed for specific domains. Whitelist is: ${global.settings.api.domains_whitelist.join(
+          ", "
+        )}`
       );
 
       const origin_hostname = url.parse(req.header("Origin")).hostname;
+      dev.logverbose(
+        `REMOTE_API — _corsCheck : checking against origin_hostname : ${origin_hostname}`
+      );
 
       if (
         global.settings.api.domains_whitelist.indexOf(origin_hostname) !== -1
       ) {
-        dev.logverbose(
-          `REMOTE_API — _corsCheck : origin_hostname is auth ${origin_hostname}`
-        );
+        dev.logverbose(`REMOTE_API — _corsCheck : check passed`);
         callback(null, { origin: true });
       } else {
         dev.error(
-          `REMOTE_API — _corsCheck : domain ${req.header(
-            "Origin"
-          )} not whitelisted`
-        );
-        dev.error(
-          `REMOTE_API — _corsCheck : whitelist is ${global.settings.api.domains_whitelist.join(
-            ", "
-          )}`
+          `REMOTE_API — _corsCheck : check failed, hostname not authorized`
         );
         callback(new Error("Not allowed by CORS"));
       }
