@@ -42,7 +42,7 @@ module.exports = (function() {
         "REMOTE_API — _initRemoteApi : allowed for specific domains"
       );
 
-      const origin_hostname = new URL(req.header("Origin")).hostname;
+      const origin_hostname = url.parse(req.header("Origin")).hostname;
 
       if (
         global.settings.api.domains_whitelist.indexOf(origin_hostname) !== -1
