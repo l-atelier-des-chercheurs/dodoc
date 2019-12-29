@@ -38,13 +38,22 @@ module.exports = (function() {
       dev.logverbose("REMOTE_API — _corsCheck : allowed for all domains");
       next();
     } else {
+      if (!req.header("Origin") || !req.header("origin")) {
+        dev.error(`REMOTE_API — _corsCheck : missing Origin in header`);
+        callback(new Error("Missing origin in request"));
+      }
+
       dev.logverbose(
         `REMOTE_API — _corsCheck : allowed for specific domains. Whitelist is: ${global.settings.api.domains_whitelist.join(
           ", "
         )}`
       );
 
-      const origin_hostname = url.parse(req.header("Origin")).hostname;
+      const _origin = !!req.header("Origin")
+        ? req.header("Origin")
+        : req.header("origin");
+
+      const origin_hostname = url.parse(_origin).hostname;
       dev.logverbose(
         `REMOTE_API — _corsCheck : checking against origin_hostname : ${origin_hostname}`
       );
