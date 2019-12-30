@@ -1,53 +1,77 @@
 <template>
-  <div class="m_project" :class="{ 'is--not_authorized_to_admin' : !can_access_folder }">
+  <div
+    class="m_project"
+    :class="{ 'is--not_authorized_to_admin': !can_access_folder }"
+  >
     <div class="m_project--presentation">
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img :src="previewURL" class draggable="false" />
       </div>
-      <div v-else-if="context === 'full'" class="m_project--presentation--novignette">
+      <div
+        v-else-if="context === 'full'"
+        class="m_project--presentation--novignette"
+      >
         <button
           type="button"
           class="buttonLink"
           @click="showEditProjectModal = true"
-        >Ajouter une image de couverture</button>
+        >
+          Ajouter une image de couverture
+        </button>
       </div>
 
       <div class="m_project--presentation--text">
-        <h2 class="m_project--presentation--text--title" :title="slugProjectName">{{ project.name }}</h2>
+        <h2
+          class="m_project--presentation--text--title"
+          :title="slugProjectName"
+        >
+          {{ project.name }}
+        </h2>
 
         <div class="m_project--presentation--text--infos">
           <div class="m_keywordField">
             <span
               v-for="keyword in project.keywords"
               :key="keyword.title"
-              :class="['tagcolorid_' + parseInt(keyword.title, 36)%2, { 'is--active' : $root.settings.project_filter.keyword === keyword.title }]"
-            >{{ keyword.title }}</span>
+              :class="[
+                'tagcolorid_' + (parseInt(keyword.title, 36) % 2),
+                {
+                  'is--active':
+                    $root.settings.project_filter.keyword === keyword.title
+                }
+              ]"
+              >{{ keyword.title }}</span
+            >
           </div>
           <div class="m_metaField" v-if="!!project.authors">
-            <div>{{ $t('author') }}</div>
+            <div>{{ $t("author") }}</div>
             <div class="m_authorField">
-              <span v-if="typeof project.authors === 'string'">{{ project.authors }}</span>
+              <span v-if="typeof project.authors === 'string'">{{
+                project.authors
+              }}</span>
               <span
                 v-else-if="typeof project.authors === 'object'"
                 v-for="author in project.authors"
                 :key="author.name"
                 class="is--active"
-              >{{ author.name }}</span>
+                >{{ author.name }}</span
+              >
             </div>
           </div>
-          <div class="m_metaField">
-            <div>{{ $t('created') }}</div>
-            <div>{{ $root.formatDateToHuman(project.date_created) }}</div>
-          </div>
-          <div class="m_metaField">
-            <div>{{ $t('edited') }}</div>
-            <div>{{ $root.formatDateToHuman(project.date_modified) }}</div>
-          </div>
+
+          <DateField :title="'created'" :date="project.date_created" />
+
+          <DateField :title="'edited'" :date="project.date_modified" />
+
           <div
             class="m_metaField"
-            v-if="can_access_folder && project.password === 'has_pass' && context !== 'full'"
+            v-if="
+              can_access_folder &&
+                project.password === 'has_pass' &&
+                context !== 'full'
+            "
           >
-            <label>{{ $t('protected_by_pass') }}</label>
+            <label>{{ $t("protected_by_pass") }}</label>
           </div>
           <button
             v-if="!can_access_folder && !showInputPasswordField"
@@ -56,11 +80,16 @@
             style="display: block; margin: 0 auto calc(var(--spacing) / 2);"
             :readonly="read_only"
             @click="showInputPasswordField = !showInputPasswordField"
-          >{{ $t('password_required_to_open') }}</button>
+          >
+            {{ $t("password_required_to_open") }}
+          </button>
 
-          <div class="padding-small" v-if="showInputPasswordField && !can_access_folder">
+          <div
+            class="padding-small"
+            v-if="showInputPasswordField && !can_access_folder"
+          >
             <div class="margin-bottom-small">
-              <label>{{ $t('password') }}</label>
+              <label>{{ $t("password") }}</label>
               <input
                 type="password"
                 ref="passwordField"
@@ -82,7 +111,13 @@
                 >{{ $t('remember_project_password_for_this_device') }}</label>
             </div>-->
 
-            <button type="button" class="button bg-bleuvert" @click="submitPassword">Valider</button>
+            <button
+              type="button"
+              class="button bg-bleuvert"
+              @click="submitPassword"
+            >
+              Valider
+            </button>
           </div>
 
           <div
@@ -95,7 +130,9 @@
               @click="showCurrentPassword = !showCurrentPassword"
               v-html="!showCurrentPassword ? $t('show_password') : $t('hide')"
             />
-            <div v-if="showCurrentPassword && can_access_folder">{{ project_password }}</div>
+            <div v-if="showCurrentPassword && can_access_folder">
+              {{ project_password }}
+            </div>
           </div>
 
           <button
@@ -103,7 +140,9 @@
             type="button"
             class="_button_forgetpassword"
             @click="forgetPassword"
-          >{{ $t('forget_password_and_close') }}</button>
+          >
+            {{ $t("forget_password_and_close") }}
+          </button>
         </div>
       </div>
 
@@ -115,7 +154,7 @@
           :title="$t('open')"
           @click="$root.openProject(slugProjectName)"
         >
-          <span class>{{ $t('open') }}</span>
+          <span class>{{ $t("open") }}</span>
         </button>
 
         <button
@@ -152,7 +191,7 @@
           <template v-else>
             <span class="loader loader-small" />
           </template>
-          {{ $t('download') }}
+          {{ $t("download") }}
         </button>
 
         <button
@@ -181,14 +220,14 @@
               L19.1,91.5z"
             />
           </svg>
-          {{ $t('edit') }}
+          {{ $t("edit") }}
         </button>
 
         <button
           v-if="can_access_folder && context === 'full'"
           type="button"
           class="buttonLink"
-          :class="{ 'is--active' : showDuplicateProjectMenu }"
+          :class="{ 'is--active': showDuplicateProjectMenu }"
           @click="showDuplicateProjectMenu = !showDuplicateProjectMenu"
           :disabled="read_only"
         >
@@ -214,13 +253,18 @@
               d="M67.2,27.7L0,27.7l0,67.2l67.2,0L67.2,27.7z M55.4,83l-43.6,0l0-43.6l43.6,0L55.4,83z"
             />
           </svg>
-          {{ $t('duplicate') }}
+          {{ $t("duplicate") }}
         </button>
 
         <div v-if="showDuplicateProjectMenu" class="margin-bottom-small">
           <label v-html="$t('name_of_copy')" />
           <form @submit.prevent="duplicateWithNewName()" class="input-group">
-            <input type="text" v-model.trim="copy_project_name" required autofocus />
+            <input
+              type="text"
+              v-model.trim="copy_project_name"
+              required
+              autofocus
+            />
             <button type="submit" v-html="$t('copy')" class="bg-bleuvert" />
           </form>
         </div>
@@ -251,7 +295,7 @@
             l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
             />
           </svg>
-          {{ $t('remove') }}
+          {{ $t("remove") }}
         </button>
       </div>
       <EditProject
@@ -495,5 +539,4 @@ export default {
   }
 };
 </script>
-<style scoped>
-</style>
+<style scoped></style>

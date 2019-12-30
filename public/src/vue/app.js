@@ -41,6 +41,9 @@ import VueTippy, { TippyComponent } from "vue-tippy";
 Vue.use(VueTippy);
 Vue.component("tippy", TippyComponent);
 
+import DateFieldComponent from "./components/subcomponents/DateField.vue";
+Vue.component("DateField", DateFieldComponent);
+
 let lang_settings = {
   available: [
     {
@@ -1114,6 +1117,9 @@ let vm = new Vue({
     },
     formatDateToHuman(date) {
       return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LL");
+    },
+    formatDateToPrecise(date) {
+      return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LTS L");
     },
     updateNetworkInfos() {
       this.$socketio.updateNetworkInfos();
