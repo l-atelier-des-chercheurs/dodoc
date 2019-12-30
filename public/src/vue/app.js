@@ -125,7 +125,6 @@ Object.entries(locale_strings).map(([key, translations]) => {
       //   if (!messages[lang_code][key].hasOwnProperty(key2))
       //     messages[lang_code][key][key2] = {};
       //   messages[lang_code][key][key2][lang_code] = translation2;
-      //   debugger;
       // });
     } else {
       if (!messages.hasOwnProperty(lang_code)) messages[lang_code] = {};

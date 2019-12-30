@@ -1543,7 +1543,6 @@ module.exports = (function() {
             }
 
             // s’il contient un champ original_media_filename
-            // s’il contient un champ media_filename
             if (
               global.settings.structure[type].medias.fields.hasOwnProperty(
                 "original_media_filename"
