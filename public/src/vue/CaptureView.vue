@@ -20,7 +20,10 @@
           style="enable-background:new 0 0 169 169;"
           xml:space="preserve"
         >
-          <path fill="currentColor" d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z" />
+          <path
+            fill="currentColor"
+            d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z"
+          />
         </svg>
       </button>
 
@@ -58,22 +61,37 @@
           style="enable-background:new 0 0 169 169;"
           xml:space="preserve"
         >
-          <path fill="currentColor" d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z" />
+          <path
+            fill="currentColor"
+            d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z"
+          />
         </svg>
       </button>
     </div>
 
     <div
       class="m_captureview--panels"
-      :class="{ 'stopmotion_inprogress' : $root.store.stopmotions.hasOwnProperty(current_stopmotion) }"
+      :class="{
+        stopmotion_inprogress: $root.store.stopmotions.hasOwnProperty(
+          current_stopmotion
+        )
+      }"
     >
       <div class="m_panel">
         <transition name="enableMode" :duration="400">
-          <div class="m_panel--modeOverlay" v-if="mode_just_changed">{{ $t(selected_mode) }}</div>
+          <div class="m_panel--modeOverlay" v-if="mode_just_changed">
+            {{ $t(selected_mode) }}
+          </div>
         </transition>
 
-        <div class="m_panel--previewCard" v-show="!is_validating_stopmotion_video">
-          <div class="m_panel--previewCard--live" :class="{ 'is--recording' : is_recording }">
+        <div
+          class="m_panel--previewCard"
+          v-show="!is_validating_stopmotion_video"
+        >
+          <div
+            class="m_panel--previewCard--live"
+            :class="{ 'is--recording': is_recording }"
+          >
             <!-- OPTIONS -->
             <transition name="slideleft" :duration="400">
               <div
@@ -84,18 +102,25 @@
                   <div>
                     <label>Sources</label>
                   </div>
-                  <div v-for="(currentId, kind) in selected_devicesId" :key="kind">
+                  <div
+                    v-for="(currentId, kind) in selected_devicesId"
+                    :key="kind"
+                  >
                     <span class="font-verysmall">{{ kind }}</span>
                     <select
                       v-if="sorted_available_devices.hasOwnProperty(kind)"
                       v-model="selected_devicesId[kind]"
                     >
                       <option
-                        v-for="(device, index) in sorted_available_devices[kind]"
+                        v-for="(device, index) in sorted_available_devices[
+                          kind
+                        ]"
                         :value="device.deviceId"
                         :key="device.deviceId"
                       >
-                        <template v-if="device.label === ''">{{ $t('device') }} {{ index }}</template>
+                        <template v-if="device.label === ''"
+                          >{{ $t("device") }} {{ index }}</template
+                        >
                         <template v-else>{{ $t(device.label) }}</template>
                       </option>
                     </select>
@@ -108,11 +133,16 @@
                   </div>
 
                   <div v-if="actual_current_video_resolution">
-                    <span
-                      class="font-verysmall"
-                    >{{ $t('current') }}&nbsp;: {{ actual_current_video_resolution.width }} x {{ actual_current_video_resolution.height }}</span>
+                    <span class="font-verysmall"
+                      >{{ $t("current") }}&nbsp;:
+                      {{ actual_current_video_resolution.width }} x
+                      {{ actual_current_video_resolution.height }}</span
+                    >
                   </div>
-                  <div v-for="res in available_camera_resolutions" :key="res.name">
+                  <div
+                    v-for="res in available_camera_resolutions"
+                    :key="res.name"
+                  >
                     <input
                       type="radio"
                       :id="res.name"
@@ -136,20 +166,28 @@
                         type="checkbox"
                         class="switch"
                         id="distantaccessswitch"
-                        v-model="$root.settings.capture_options.distant_flux.active"
+                        v-model="
+                          $root.settings.capture_options.distant_flux.active
+                        "
                       />
                       <label for="distantaccessswitch">Activer</label>
                     </span>
                   </div>
 
-                  <template v-if="$root.settings.capture_options.distant_flux.active">
+                  <template
+                    v-if="$root.settings.capture_options.distant_flux.active"
+                  >
                     <div class="margin-bottom-small">
-                      <span class="font-verysmall">Partager les flux sous le nom&nbsp;:</span>
+                      <span class="font-verysmall"
+                        >Partager les flux sous le nom&nbsp;:</span
+                      >
                       <input type="text" v-model="current_username" />
                     </div>
 
                     <div class="margin-bottom-small">
-                      <span class="font-verysmall">Accéder au flux qui a le nom&nbsp;:</span>
+                      <span class="font-verysmall"
+                        >Accéder au flux qui a le nom&nbsp;:</span
+                      >
                       <input type="text" v-model="callee_username" />
                     </div>
                   </template>
@@ -162,20 +200,32 @@
                   @click="updateSettings"
                   class="button button-bg_rounded button-outline c-rouge"
                 >
-                  <span class>{{ $t('update') }}</span>
+                  <span class>{{ $t("update") }}</span>
                 </button>
               </div>
             </transition>
 
-            <transition-group tag="div" class="recording_timer" name="slideFromTop">
+            <transition-group
+              tag="div"
+              class="recording_timer"
+              name="slideFromTop"
+            >
               <label
-                v-if="selected_mode !== 'stopmotion' && is_recording && recording_duration"
+                v-if="
+                  selected_mode !== 'stopmotion' &&
+                    is_recording &&
+                    recording_duration
+                "
                 :key="'duration'"
                 v-html="recording_duration"
               />
 
               <label
-                v-if="selected_mode === 'stopmotion' && is_recording && recording_duration"
+                v-if="
+                  selected_mode === 'stopmotion' &&
+                    is_recording &&
+                    recording_duration
+                "
                 :key="'time_before'"
                 v-html="time_before_next_picture"
               />
@@ -186,9 +236,9 @@
                 class="recording_timer--timelapse"
               >
                 <div>
-                  <span>{{ $t('interval_between_pictures') }}</span>
+                  <span>{{ $t("interval_between_pictures") }}</span>
                   <input type="number" v-model.number="timelapse_interval" />
-                  <span>{{ $t('seconds') }}</span>
+                  <span>{{ $t("seconds") }}</span>
                 </div>
               </div>
               <!-- <label 
@@ -224,17 +274,28 @@
             />
 
             <MediaContent
-              v-if="selected_mode === 'stopmotion' && stopmotion.onion_skin_img && current_stopmotion"
+              v-if="
+                selected_mode === 'stopmotion' &&
+                  stopmotion.onion_skin_img &&
+                  current_stopmotion
+              "
               class="m_panel--previewCard--live--onionskin"
               :context="'edit'"
               :slugFolderName="current_stopmotion"
               :media="stopmotion.onion_skin_img"
               :subfolder="'_stopmotions/'"
-              :style="is_showing_live_feed ? `--onionskin-opacity: ${stopmotion.onion_skin_opacity}` : ''"
-              :element_width_for_sizes="1600"
+              :style="
+                is_showing_live_feed
+                  ? `--onionskin-opacity: ${stopmotion.onion_skin_opacity}`
+                  : ''
+              "
             />
 
-            <div id="vectoContainer" v-if="selected_mode === 'vecto'" v-html="vecto.svgstr"></div>
+            <div
+              id="vectoContainer"
+              v-if="selected_mode === 'vecto'"
+              v-html="vecto.svgstr"
+            ></div>
 
             <transition name="slideright" :duration="400">
               <div
@@ -244,20 +305,32 @@
                 <div class="margin-bottom-small">
                   <template v-if="Object.keys(stopmotions).length > 0">
                     <ul>
-                      <li v-for="stopmotion in stopmotions" :key="stopmotion.slugFolderName">
+                      <li
+                        v-for="stopmotion in stopmotions"
+                        :key="stopmotion.slugFolderName"
+                      >
                         <button
                           type="button"
-                          @mouseenter="loadStopmotionMedias(stopmotion.slugFolderName)"
+                          @mouseenter="
+                            loadStopmotionMedias(stopmotion.slugFolderName)
+                          "
                           @click="loadStopmotion(stopmotion.slugFolderName)"
                         >
-                          <div class="padding-verysmall">{{ stopmotion.date_created }}</div>
-                          <template v-if="Object.values(stopmotion.medias).length > 0">
-                            <div
-                              class="padding-bottom-verysmall"
-                            >{{ Object.values(stopmotion.medias).length }} photos</div>
+                          <div class="padding-verysmall">
+                            {{ stopmotion.date_created }}
+                          </div>
+                          <template
+                            v-if="Object.values(stopmotion.medias).length > 0"
+                          >
+                            <div class="padding-bottom-verysmall">
+                              {{ Object.values(stopmotion.medias).length }}
+                              photos
+                            </div>
                             <div class="pictures_list">
                               <div
-                                v-for="media in Object.values(stopmotion.medias)"
+                                v-for="media in Object.values(
+                                  stopmotion.medias
+                                )"
                                 :key="media.slugMediaName"
                               >
                                 <!-- v-if="index <= 5" -->
@@ -275,17 +348,28 @@
                       </li>
                     </ul>
                   </template>
-                  <template v-else>{{ $t('no_stopmotion_created_yet') }}</template>
+                  <template v-else>{{
+                    $t("no_stopmotion_created_yet")
+                  }}</template>
                 </div>
               </div>
             </transition>
           </div>
 
           <transition name="fade_fast" :duration="150">
-            <div class="m_panel--previewCard--validate" v-if="media_to_validate">
-              <img v-if="media_to_validate.type === 'image'" :src="media_to_validate.objectURL" />
+            <div
+              class="m_panel--previewCard--validate"
+              v-if="media_to_validate"
+            >
+              <img
+                v-if="media_to_validate.type === 'image'"
+                :src="media_to_validate.objectURL"
+              />
 
-              <vue-plyr v-else-if="media_to_validate.type === 'video'" :options="plyr_options">
+              <vue-plyr
+                v-else-if="media_to_validate.type === 'video'"
+                :options="plyr_options"
+              >
                 <video
                   :poster="linkToVideoThumb"
                   :src="media_to_validate.objectURL"
@@ -312,7 +396,10 @@
           </transition>
 
           <transition name="mediaCapture" :duration="300">
-            <div class="m_panel--previewCard--captureOverlay" v-show="capture_button_pressed" />
+            <div
+              class="m_panel--previewCard--captureOverlay"
+              v-show="capture_button_pressed"
+            />
           </transition>
         </div>
 
@@ -324,12 +411,23 @@
           :videoStream="videoStream"
           @close="current_stopmotion = false"
           @new_single_image="updateSingleImage"
-          @show_live_feed="(state) => { is_showing_live_feed = state }"
-          @validating_video="(state) => { is_validating_stopmotion_video = state }"
+          @show_live_feed="
+            state => {
+              is_showing_live_feed = state;
+            }
+          "
+          @validating_video="
+            state => {
+              is_validating_stopmotion_video = state;
+            }
+          "
         ></StopmotionPanel>
 
         <div class="m_panel--buttons">
-          <div class="m_panel--buttons--row" :class="{ 'bg-orange' : is_recording }">
+          <div
+            class="m_panel--buttons--row"
+            :class="{ 'bg-orange': is_recording }"
+          >
             <button
               type="button"
               @click="show_capture_settings = !show_capture_settings"
@@ -358,14 +456,14 @@
                   c-11.7,0-21.1-9.2-21.1-20.5c0-11.3,9.5-20.5,21.1-20.5s21.1,9.2,21.1,20.5C105.1,95.3,95.7,104.5,84,104.5z"
                 />
               </svg>
-              <span class>{{ $t('settings') }}</span>
+              <span class>{{ $t("settings") }}</span>
             </button>
 
             <div class="m_panel--buttons--row--captureButton">
               <button
                 type="button"
                 class="padding-verysmall bg-transparent m_panel--buttons--row--captureButton--btn"
-                :class="{ 'is--justCaptured' : capture_button_pressed }"
+                :class="{ 'is--justCaptured': capture_button_pressed }"
                 @mousedown.stop.prevent="captureOrStop()"
                 @touchstart.stop.prevent="captureOrStop()"
               >
@@ -376,11 +474,11 @@
               <button
                 type="button"
                 class="m_panel--buttons--row--captureButton--advancedOptions"
-                :class="{ 'is--active' : timelapse_mode }"
+                :class="{ 'is--active': timelapse_mode }"
                 v-if="selected_mode === 'stopmotion'"
                 :title="$t('timelapse')"
-                v-tippy="{ 
-                  placement : 'top',
+                v-tippy="{
+                  placement: 'top',
                   delay: [600, 0]
                 }"
                 @click="timelapse_mode = !timelapse_mode"
@@ -416,14 +514,24 @@
 
             <div class="m_panel--buttons--row--options">
               <div v-if="selected_mode === 'vecto'">
-                <label>{{ $t('smoothing') }}</label>
-                <input class="margin-none" type="range" v-model="vecto.blurradius" min="0" max="20" />
+                <label>{{ $t("smoothing") }}</label>
+                <input
+                  class="margin-none"
+                  type="range"
+                  v-model="vecto.blurradius"
+                  min="0"
+                  max="20"
+                />
               </div>
 
               <div
-                v-if="selected_mode === 'stopmotion' && stopmotion.onion_skin_img && is_showing_live_feed"
+                v-if="
+                  selected_mode === 'stopmotion' &&
+                    stopmotion.onion_skin_img &&
+                    is_showing_live_feed
+                "
               >
-                <label>{{ $t('onion_skin') }}</label>
+                <label>{{ $t("onion_skin") }}</label>
                 <input
                   class="margin-none"
                   type="range"
@@ -440,7 +548,7 @@
                 @click="show_stopmotion_list = !show_stopmotion_list"
                 class="button c-bleumarine font-small bg-transparent"
               >
-                <span class>{{ $t('stopmotion_list') }}</span>
+                <span class>{{ $t("stopmotion_list") }}</span>
               </button>
 
               <span class="switch switch-xs" v-if="selected_mode === 'video'">
@@ -451,7 +559,7 @@
                   v-model="recordVideoWithAudio"
                   :disabled="is_recording"
                 />
-                <label for="recordVideoWithAudio">{{ $t('with_sound') }}</label>
+                <label for="recordVideoWithAudio">{{ $t("with_sound") }}</label>
               </span>
             </div>
           </div>
@@ -473,7 +581,11 @@
     <DistantFlux
       v-if="$root.settings.capture_options.distant_flux.active"
       :key="$root.settings.capture_options.distant_flux.username"
-      @changeStreamTo="new_stream => { changeStreamTo(new_stream) }"
+      @changeStreamTo="
+        new_stream => {
+          changeStreamTo(new_stream);
+        }
+      "
     />
   </div>
 </template>
@@ -637,9 +749,9 @@ export default {
           } else {
             // override : set deviceId to back camera by default
             if (kind === "videoinput") {
-              const camera_back = this.sorted_available_devices[kind].filter(
-                x => x.label.includes("back")
-              );
+              const camera_back = this.sorted_available_devices[
+                kind
+              ].filter(x => x.label.includes("back"));
               if (camera_back.length > 0) {
                 this.selected_devicesId[kind] = camera_back[0].deviceId;
                 return;
@@ -1602,5 +1714,4 @@ var equalizer = (function() {
   return API;
 })();
 </script>
-<style lang="less">
-</style>
+<style lang="less"></style>
