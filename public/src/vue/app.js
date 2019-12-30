@@ -1069,17 +1069,6 @@ let vm = new Vue({
       this.setAuthor(author);
     },
 
-    switchLang() {
-      if (window.state.dev_mode === "debug") {
-        console.log(`ROOT EVENT: switchLang`);
-      }
-      const find_next_langage_index =
-        (this.lang.available.findIndex(l => l.key === this.lang.current) + 1) %
-        this.lang.available.length;
-      const next_langage_key = this.lang.available[find_next_langage_index].key;
-      this.updateLocalLang(next_langage_key);
-    },
-
     setMediaFilter(filter) {
       if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: setMediaFilter`);
