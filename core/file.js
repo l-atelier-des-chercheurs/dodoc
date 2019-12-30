@@ -471,6 +471,9 @@ module.exports = (function() {
                   meta.name = new_folder_name;
                 }
 
+                // update
+                meta = _updateCurrentFields({ type, meta });
+
                 api
                   .storeData(metaFolderPath, meta)
                   .then(() => {
@@ -2140,6 +2143,24 @@ module.exports = (function() {
     //   `
     // );
     return new_meta;
+  }
+
+  function _updateCurrentFields({ type, type_two, meta }) {
+    const fields =
+      type_two === undefined
+        ? global.settings.structure[type].fields
+        : global.settings.structure[type][type_two].fields;
+
+    Object.keys(meta).forEach(key => {
+      if (
+        fields.hasOwnProperty(key) &&
+        fields[key].hasOwnProperty("default") &&
+        fields[key]["default"] === "current"
+      ) {
+        meta[key] = api.getCurrentDate();
+      }
+    });
+    return meta;
   }
 
   function _editRawMedia({
