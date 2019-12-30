@@ -1,7 +1,7 @@
 {
   "name": "dodoc",
   "productName": "do•doc",
-  "version": "8.2.2-dev",
+  "version": "8.2.3-dev",
   "description": "do•doc is a documentation tool for creativity.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
@@ -50,7 +50,7 @@
     "puppeteer": "^1.13.0",
     "quill-render": "^1.0.5",
     "rich-text": "^4.0.0",
-    "sharedb": "^1.0.0",
+    "sharedb": "^1.1.0",
     "sharedb-logger": "^0.1.4",
     "sharp": "^0.22.1",
     "slugg": "^1.2.1",
@@ -61,7 +61,7 @@
     "validator": "^12.1.0",
     "websocket-json-stream": "0.0.3",
     "write-file-atomic": "^3.0.1",
-    "ws": "^7.2.0"
+    "ws": "^7.2.1"
   },
   "devDependencies": {
     "node-gyp": "^3.8.0"

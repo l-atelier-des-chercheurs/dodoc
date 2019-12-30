@@ -41,6 +41,9 @@ import VueTippy, { TippyComponent } from "vue-tippy";
 Vue.use(VueTippy);
 Vue.component("tippy", TippyComponent);
 
+import DateFieldComponent from "./components/subcomponents/DateField.vue";
+Vue.component("DateField", DateFieldComponent);
+
 let lang_settings = {
   available: [
     {
@@ -54,6 +57,10 @@ let lang_settings = {
     {
       key: "nl",
       name: "Nederlands"
+    },
+    {
+      key: "oc",
+      name: "Occitan"
     }
   ],
   default: "en",
@@ -91,6 +98,7 @@ import moment from "moment";
 import "moment/locale/fr";
 import "moment/locale/en-gb";
 import "moment/locale/nl";
+import "./moment_locale_oc.js";
 
 moment.locale(lang_settings.current);
 Vue.prototype.$moment = moment;
@@ -117,7 +125,6 @@ Object.entries(locale_strings).map(([key, translations]) => {
       //   if (!messages[lang_code][key].hasOwnProperty(key2))
       //     messages[lang_code][key][key2] = {};
       //   messages[lang_code][key][key2][lang_code] = translation2;
-      //   debugger;
       // });
     } else {
       if (!messages.hasOwnProperty(lang_code)) messages[lang_code] = {};
@@ -1064,17 +1071,6 @@ let vm = new Vue({
       this.setAuthor(author);
     },
 
-    switchLang() {
-      if (window.state.dev_mode === "debug") {
-        console.log(`ROOT EVENT: switchLang`);
-      }
-      const find_next_langage_index =
-        (this.lang.available.findIndex(l => l.key === this.lang.current) + 1) %
-        this.lang.available.length;
-      const next_langage_key = this.lang.available[find_next_langage_index].key;
-      this.updateLocalLang(next_langage_key);
-    },
-
     setMediaFilter(filter) {
       if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: setMediaFilter`);
@@ -1120,6 +1116,9 @@ let vm = new Vue({
     },
     formatDateToHuman(date) {
       return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LL");
+    },
+    formatDateToPrecise(date) {
+      return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LTS L");
     },
     updateNetworkInfos() {
       this.$socketio.updateNetworkInfos();

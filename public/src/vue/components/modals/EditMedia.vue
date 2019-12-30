@@ -287,24 +287,15 @@
           </div>
         </div>-->
 
-        <div class="m_metaField">
-          <div>{{ $t("created") }}</div>
-          <div :title="media.date_created">
-            {{ $root.formatDateToHuman(media.date_created) }}
-          </div>
-        </div>
-        <div class="m_metaField" v-if="media.hasOwnProperty('date_uploaded')">
-          <div>{{ $t("uploaded") }}</div>
-          <div :title="media.date_uploaded">
-            {{ $root.formatDateToHuman(media.date_uploaded) }}
-          </div>
-        </div>
-        <div class="m_metaField">
-          <div>{{ $t("edited") }}</div>
-          <div :title="media.date_modified">
-            {{ $root.formatDateToHuman(media.date_modified) }}
-          </div>
-        </div>
+        <DateField :title="'created'" :date="media.date_created" />
+
+        <DateField
+          v-if="media.hasOwnProperty('date_uploaded')"
+          :title="'uploaded'"
+          :date="media.date_uploaded"
+        />
+
+        <DateField :title="'edited'" :date="media.date_modified" />
 
         <!-- Caption -->
         <div
