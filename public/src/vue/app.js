@@ -54,6 +54,10 @@ let lang_settings = {
     {
       key: "nl",
       name: "Nederlands"
+    },
+    {
+      key: "oc",
+      name: "Occitan"
     }
   ],
   default: "en",
