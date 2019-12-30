@@ -960,7 +960,7 @@ module.exports = (function() {
     },
     password: {
       fr: "Mot de passe",
-      en: "Mot de passe",
+      en: "Password",
       nl: "Wachtwoord",
       oc: "Mot de Santa Clara"
     },
