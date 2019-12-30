@@ -57,7 +57,8 @@
         },
         "date_modified": {
           "type": "date",
-          "default": "current"
+          "default": "current",
+          "override": true
         },
         "password": {
           "type": "string"
@@ -180,7 +181,8 @@
         },
         "date_modified": {
           "type": "date",
-          "default": "current"
+          "default": "current",
+          "override": true
         },
         "description": {
           "type": "string"
@@ -252,7 +254,8 @@
           },
           "date_modified": {
             "type": "date",
-            "default": "current"
+            "default": "current",
+            "override": true
           },
           "authors": {
             "type": "array"
@@ -312,7 +315,8 @@
         },
         "date_modified": {
           "type": "date",
-          "default": "current"
+          "default": "current",
+          "override": true
         },
         "authors": {
           "type": "array"

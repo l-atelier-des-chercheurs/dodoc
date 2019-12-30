@@ -90,53 +90,51 @@ module.exports = function(app) {
     let metaFileName = req.param("metaFileName")
       ? req.param("metaFileName").replace(/\*/g, ".")
       : undefined;
+    let display = req.query["display"];
+
+    dev.logfunction(
+      `ROUTER — loadFolderOrMedia • slugProjectName=${slugProjectName} metaFileName=${metaFileName}`
+    );
 
     generatePageData(req).then(
       pageData => {
-        if (!!global.session_password) {
+        pageData.slugProjectName = slugProjectName;
+        pageData.metaFileName = metaFileName;
+        pageData.display = display;
+
+        if (!!global.session_password && !metaFileName) {
           return res.render("index", pageData);
         }
 
         // let’s make sure that folder exists first and return some meta
         file
           .getFolder({ type: "projects", slugFolderName: slugProjectName })
-          .then(
-            foldersData => {
-              pageData.slugProjectName = slugProjectName;
-              pageData.folderAndMediaData = foldersData;
-              if (req.query.hasOwnProperty("display")) {
-                pageData.display = req.query["display"];
-              }
-              if (!metaFileName) {
-                return res.render("index", pageData);
-              }
-
-              pageData.metaFileName = metaFileName;
-
-              file
-                .readMediaList({
-                  type: "projects",
-                  medias_list: [
-                    {
-                      slugFolderName: slugProjectName,
-                      metaFileName
-                    }
-                  ]
-                })
-                .then(folders_and_medias => {
-                  pageData.folderAndMediaData[slugProjectName].medias =
-                    folders_and_medias[slugProjectName].medias;
-                  return res.render("index", pageData);
-                });
-            },
-            (err, p) => {
-              dev.error(`Failed to get folder: ${err}`);
-              pageData.noticeOfError = "failed_to_find_folder";
-              res.render("index", pageData);
+          .then(foldersData => {
+            pageData.folderAndMediaData = foldersData;
+            if (!metaFileName) {
+              return res.render("index", pageData);
             }
-          )
-          .catch(err => {
-            dev.error("No folder found");
+
+            file
+              .readMediaList({
+                type: "projects",
+                medias_list: [
+                  {
+                    slugFolderName: slugProjectName,
+                    metaFileName
+                  }
+                ]
+              })
+              .then(folders_and_medias => {
+                pageData.folderAndMediaData[slugProjectName].medias =
+                  folders_and_medias[slugProjectName].medias;
+                return res.render("index", pageData);
+              });
+          })
+          .catch((err, p) => {
+            dev.error(`Failed to get folder: ${err}`);
+            pageData.noticeOfError = "failed_to_find_folder";
+            res.render("index", pageData);
           });
       },
       err => {
