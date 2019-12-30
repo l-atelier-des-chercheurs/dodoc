@@ -6,27 +6,46 @@
       </p>
     </div>
 
-    <div v-for="(ip, index) in $root.state.localNetworkInfos.ip" class="m_qrSnippet" :key="index">
+    <div
+      v-for="(ip, index) in $root.state.localNetworkInfos.ip"
+      class="m_qrSnippet"
+      :key="index"
+    >
       <div class="m_qrSnippet--motif">
         <qrcode
           ref="qr_canvas"
           :value="getURLToApp(ip)"
-          :options="{ size: 400, foreground: '#333', background: 'transparent' }"
+          :options="{
+            size: 400,
+            foreground: '#333',
+            background: 'transparent'
+          }"
         ></qrcode>
       </div>
       <div class="m_qrSnippet--text">
-        <a class="break-long-lines js--openInBrowser" :href="getURLToApp(ip)" target="_blank">
+        <a
+          class="break-long-lines js--openInBrowser"
+          :href="getURLToApp(ip)"
+          target="_blank"
+        >
           <!-- <template v-if="nameOfProject">
             • {{ nameOfProject }} •<br><br>
           </template>-->
 
-          <div class="margin-bottom-small font-verysmall">{{ getURLToApp(ip) }}</div>
+          <div class="margin-bottom-small font-verysmall">
+            {{ getURLToApp(ip) }}
+          </div>
         </a>
 
         <div class="margin-bottom-small hide_on_print" v-if="media">
           <span class="switch switch-xs">
-            <input type="checkbox" class="switch" id="open_in_dodoc" v-model="open_in_dodoc" />
-            <label for="open_in_dodoc">{{ $t('open_in_dodoc') }}</label>
+            <input
+              type="checkbox"
+              class="switch"
+              id="open_in_dodoc"
+              v-model="open_in_dodoc"
+            />
+            <label for="open_in_dodoc">{{ $t("open_in_dodoc") }}</label>
           </span>
         </div>
 
@@ -36,9 +55,15 @@
           type="button"
           class="buttonLink hide_on_print m_qrSnippet--text--printButton"
           @click.prevent="printQR"
-        >{{ $t('print') }}</button>
+        >
+          {{ $t("print") }}
+        </button>
 
-        <img class="m_qrSnippet--text--dodoclogo" :src="'/images/i_logo.svg'" draggable="false" />
+        <img
+          class="m_qrSnippet--text--dodoclogo"
+          :src="'/images/i_logo.svg'"
+          draggable="false"
+        />
       </div>
     </div>
   </div>
@@ -111,7 +136,7 @@ export default {
         if (this.type === "projects") {
           url.pathname = this.slugFolderName;
         } else {
-          url.pathname = this.type + "/" + this.slugFolderName;
+          url.pathname = "_" + this.type + "/" + this.slugFolderName;
         }
 
         if (this.media) {
@@ -130,5 +155,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>
