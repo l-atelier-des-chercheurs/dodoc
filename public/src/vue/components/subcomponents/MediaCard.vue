@@ -51,7 +51,7 @@
             :preview_size="preview_size"
           />
           <figcaption class="m_media--caption" v-if="!!media.caption">
-            {{ media.caption }}
+            <span>{{ media.caption }}</span>
           </figcaption>
 
           <transition name="slideright" :duration="400">
