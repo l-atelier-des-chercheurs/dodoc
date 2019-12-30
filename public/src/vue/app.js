@@ -95,6 +95,7 @@ import moment from "moment";
 import "moment/locale/fr";
 import "moment/locale/en-gb";
 import "moment/locale/nl";
+import "./moment_locale_oc.js";
 
 moment.locale(lang_settings.current);
 Vue.prototype.$moment = moment;
