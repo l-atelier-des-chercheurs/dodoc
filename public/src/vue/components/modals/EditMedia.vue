@@ -32,7 +32,6 @@
         <a
           :download="media.media_filename"
           :href="mediaURL"
-          :title="media.media_filename"
           target="_blank"
           class="buttonLink hide_on_print"
           :disabled="read_only"
@@ -260,19 +259,23 @@
             <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
           </div>
         </div>
-        <div class="m_metaField" v-if="!!project_name">
+        <div
+          class="m_metaField"
+          v-if="!!project_name && $root.do_navigation.view !== 'ProjectView'"
+        >
           <div>{{ $t("project") }}</div>
           <div>
-            {{ project_name }}
             <button
               type="button"
               @click="minimizeMediaAndShowProject"
-              :title="$t('open_project')"
+              :content="$t('open_project')"
               v-tippy="{
                 placement: 'top',
                 delay: [600, 0]
               }"
+              style="text-transform: initial"
             >
+              {{ project_name }}
               ↑
             </button>
             <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->

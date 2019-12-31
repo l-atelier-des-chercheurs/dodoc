@@ -2,10 +2,10 @@
   <portal to="modal_container">
     <div
       class="m_modal--mask"
-      :class="[ 
-        'typeOfModal-' + typeOfModal, 
-        { 'is_invisible' : !showModal },
-        { 'is_minimized' : is_minimized }
+      :class="[
+        'typeOfModal-' + typeOfModal,
+        { is_invisible: !showModal },
+        { is_minimized: is_minimized }
       ]"
       @mousedown.self="/* closeModal */"
       :style="`height: ${$root.settings.windowHeight}px`"
@@ -13,9 +13,9 @@
       <div
         class="m_modal--container"
         :class="[
-          'color-' + backgroundColor, 
-          { 'is_invisible' : !showModal },
-          { 'is_minimized' : is_minimized }
+          'color-' + backgroundColor,
+          { is_invisible: !showModal },
+          { is_minimized: is_minimized }
         ]"
         @keyup.ctrl.enter="$emit('submit')"
       >
@@ -35,7 +35,7 @@
 
           <form
             class="m_modal--sidebar"
-            :class="{ 'is_collapsed' : !show_sidebar }"
+            :class="{ is_collapsed: !show_sidebar }"
             v-on:submit.prevent="$emit('submit')"
             v-if="!!this.$slots['sidebar'] && !is_minimized"
             ref="form"
@@ -45,9 +45,13 @@
               class="m_modal--sidebar--toggle"
               @click="toggleSidebar"
               v-if="can_minimize"
-            >&#x2630;</button>
+            >
+              &#x2630;
+            </button>
 
-            <template v-if="!!this.$slots['sidebar'] && show_sidebar && !is_minimized">
+            <template
+              v-if="!!this.$slots['sidebar'] && show_sidebar && !is_minimized"
+            >
               <div class="m_modal--header">
                 <h3 class="margin-none">
                   <slot name="header">default header</slot>
@@ -58,7 +62,10 @@
                 <slot name="sidebar">default sidebar</slot>
               </div>
 
-              <div v-if="!!this.$slots['submit_button']" class="m_modal--buttons">
+              <div
+                v-if="!!this.$slots['submit_button']"
+                class="m_modal--buttons"
+              >
                 <button
                   type="submit"
                   :disabled="read_only"
@@ -66,7 +73,7 @@
                 >
                   <img src="/images/i_enregistre.svg" draggable="false" />
                   <span class="text-cap font-verysmall">
-                    <slot name="submit_button">{{ $t('save') }}</slot>
+                    <slot name="submit_button">{{ $t("save") }}</slot>
                   </span>
                 </button>
               </div>
@@ -79,10 +86,14 @@
             v-on:submit.prevent="$emit('submit')"
             ref="form"
           >
-            <button type="button" @click="closeModal" class="button button-bg_rounded bg-orange">
+            <button
+              type="button"
+              @click="closeModal"
+              class="button button-bg_rounded bg-orange"
+            >
               <img src="/images/i_clear.svg" draggable="false" />
               <span class="text-cap font-verysmall">
-                <slot name="cancel_button">{{ $t('cancel') }}</slot>
+                <slot name="cancel_button">{{ $t("cancel") }}</slot>
               </span>
             </button>
 
@@ -93,7 +104,7 @@
             >
               <img src="/images/i_enregistre.svg" draggable="false" />
               <span class="text-cap font-verysmall">
-                <slot name="submit_button">{{ $t('save') }}</slot>
+                <slot name="submit_button">{{ $t("save") }}</slot>
               </span>
             </button>
           </form>
@@ -115,10 +126,10 @@
           class="button-round bg-blanc m_modal--minimize_button padding-verysmall"
           @click="toggleMinimize"
           v-if="showModal && can_minimize"
-          :class="{ 'is_minimized' : is_minimized }"
-          :title="$t('minimize_media')"
+          :class="{ is_minimized: is_minimized }"
+          :content="$t('minimize_media')"
           v-tippy="{
-            placement : 'right',
+            placement: 'right',
             delay: [600, 0]
           }"
         >
@@ -131,9 +142,9 @@
           class="button-round bg-blanc m_modal--nav_left padding-verysmall"
           @click="prevMedia()"
           v-if="showModal && media_navigation && !is_minimized"
-          :title="$t('previous_media')"
+          :content="$t('previous_media')"
           v-tippy="{
-            placement : 'left',
+            placement: 'left',
             delay: [600, 0]
           }"
         >
@@ -146,9 +157,9 @@
           class="button-round bg-blanc m_modal--nav_right padding-verysmall"
           @click="nextMedia()"
           v-if="showModal && media_navigation && !is_minimized"
-          :title="$t('next_media')"
+          :content="$t('next_media')"
           v-tippy="{
-            placement : 'right',
+            placement: 'right',
             delay: [600, 0]
           }"
         >

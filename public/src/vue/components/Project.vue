@@ -23,7 +23,12 @@
       <div class="m_project--presentation--text">
         <h2
           class="m_project--presentation--text--title"
-          :title="slugProjectName"
+          :content="slugProjectName"
+          v-tippy="{
+            placement: 'bottom-start',
+            delay: [600, 0],
+            interactive: true
+          }"
         >
           {{ project.name }}
         </h2>
@@ -151,7 +156,6 @@
           v-if="can_access_folder && context !== 'full'"
           type="button"
           class="m_project--presentation--buttons--openButton"
-          :title="$t('open')"
           @click="$root.openProject(slugProjectName)"
         >
           <span class>{{ $t("open") }}</span>
