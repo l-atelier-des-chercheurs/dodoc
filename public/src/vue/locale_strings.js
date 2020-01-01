@@ -702,6 +702,10 @@ module.exports = (function() {
       nl: "Project",
       oc: "Projècte"
     },
+    add_a_cover_image: {
+      fr: "Ajouter une image de couverture",
+      en: "Add a cover image"
+    },
     medias: {
       fr: "Médias",
       en: "Medias",
