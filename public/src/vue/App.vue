@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="{ 'is--wide' : $root.screen_is_wide }">
+  <div id="app" :class="{ 'is--wide': $root.screen_is_wide }">
     <template v-if="$root.store.request.display === 'standalone'">
       <div class="m_standaloneMedia">
         <MediaContent
@@ -12,7 +12,9 @@
         />
       </div>
     </template>
-    <template v-else-if="$root.state.mode === 'live' && !$root.state.authentificated">
+    <template
+      v-else-if="$root.state.mode === 'live' && !$root.state.authentificated"
+    >
       <SessionPassword
         v-if="$root.showSessionPasswordModal"
         @close="$root.showSessionPasswordModal = false"
@@ -20,7 +22,10 @@
       />
     </template>
     <template
-      v-else-if="$root.state.mode === 'live' && $root.store.request.display !== 'standalone'"
+      v-else-if="
+        $root.state.mode === 'live' &&
+          $root.store.request.display !== 'standalone'
+      "
     >
       <SystemBar v-if="$root.settings.enable_system_bar" :withTitleBar="true" />
 
@@ -32,18 +37,23 @@
       />
 
       <div class="m_activitiesPanel">
-        <div :style="{ cursor, userSelect}" class="vue-splitter-container clearfix">
+        <div
+          :style="{ cursor, userSelect }"
+          class="vue-splitter-container clearfix"
+        >
           <pane
             class="splitter-pane splitter-paneL"
-            :class="{ 'is--dragged' : is_dragged }"
+            :class="{ 'is--dragged': is_dragged }"
             :split="split"
-            :style="{ [type]: activity_panel_percent+'%'}"
+            :style="{ [type]: activity_panel_percent + '%' }"
           >
             <div
               class="m_activitiesPanel--do"
-              :class="{ 'is--large' : activitiesPanel_is_comfortable }"
+              :class="{ 'is--large': activitiesPanel_is_comfortable }"
             >
-              <div style="position: relative; width: 100%; height: 100%; overflow: hidden">
+              <div
+                style="position: relative; width: 100%; height: 100%; overflow: hidden"
+              >
                 <!-- v-show="$root.do_navigation.view === 'ListView'" -->
                 <transition name="ListView" :duration="500">
                   <ListView
@@ -55,8 +65,14 @@
                 </transition>
                 <transition name="ProjectView" :duration="500">
                   <ProjectView
-                    v-if="['ProjectView', 'CaptureView'].includes($root.do_navigation.view)"
-                    :slugProjectName="$root.do_navigation.current_slugProjectName"
+                    v-if="
+                      ['ProjectView', 'CaptureView'].includes(
+                        $root.do_navigation.view
+                      )
+                    "
+                    :slugProjectName="
+                      $root.do_navigation.current_slugProjectName
+                    "
                     :project="$root.currentProject"
                     :read_only="!$root.state.connected"
                   />
@@ -65,7 +81,9 @@
                 <transition name="CaptureView" :duration="500">
                   <CaptureView
                     v-if="$root.do_navigation.view === 'CaptureView'"
-                    :slugProjectName="$root.do_navigation.current_slugProjectName"
+                    :slugProjectName="
+                      $root.do_navigation.current_slugProjectName
+                    "
                     :project="$root.currentProject"
                     :read_only="!$root.state.connected"
                   />
@@ -75,9 +93,9 @@
           </pane>
 
           <Resizer
-            :class="{ 'is--dragged' : is_dragged }"
+            :class="{ 'is--dragged': is_dragged }"
             :className="className"
-            :style="{ [resizeType]: activity_panel_percent+'%'}"
+            :style="{ [resizeType]: activity_panel_percent + '%' }"
             :split="split"
             @mousedown.native="onMouseDown"
             @click.native="onClick"
@@ -85,34 +103,39 @@
 
           <pane
             class="splitter-pane splitter-paneR"
-            :class="{ 'is--dragged' : is_dragged }"
+            :class="{ 'is--dragged': is_dragged }"
             :split="split"
-            :style="{ [type]: 100-activity_panel_percent+'%'}"
+            :style="{ [type]: 100 - activity_panel_percent + '%' }"
           >
             <div
               class="m_activitiesPanel--doc"
-              :class="{ 'is--open' : $root.settings.show_publi_panel }"
+              :class="{ 'is--open': $root.settings.show_publi_panel }"
             >
               <button
                 v-if="$root.screen_is_wide"
                 class="publiButton"
-                :title="$t('mix_medias')"
+                :content="$t('mix_medias')"
                 v-tippy="{
                   placement: 'left',
                   delay: [600, 0]
                 }"
-                :class="{ 
-                  'is--open' : $root.settings.show_publi_panel, 
-                  'is--dragged' : is_dragged,
-                  'is--allthewaytotheleft' : activity_panel_percent === 0 
+                :class="{
+                  'is--open': $root.settings.show_publi_panel,
+                  'is--dragged': is_dragged,
+                  'is--allthewaytotheleft': activity_panel_percent === 0
                 }"
                 @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
                 @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"
                 :key="'openPubli'"
               >
                 <!-- v-if="$root.do_navigation.view !== 'CaptureView'" -->
-                <img src="/images/i_marmite.svg" width="48" height="48" draggable="false" />
-                <span class="margin-small">{{ $t('publication') }}</span>
+                <img
+                  src="/images/i_marmite.svg"
+                  width="48"
+                  height="48"
+                  draggable="false"
+                />
+                <span class="margin-small">{{ $t("publication") }}</span>
               </button>
 
               <div style="position: relative; height: 100%; overflow: hidden">
@@ -129,45 +152,108 @@
                   v-if="$root.settings.current_publication.slug !== false"
                 >
                   <PagePublication
-                    v-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'page_by_page'"
+                    v-if="
+                      $root.settings.current_publication.slug !== false &&
+                        $root.store.publications[
+                          $root.settings.current_publication.slug
+                        ].template === 'page_by_page'
+                    "
                     :slugPubliName="$root.settings.current_publication.slug"
-                    :publication="$root.store.publications[$root.settings.current_publication.slug]"
+                    :publication="
+                      $root.store.publications[
+                        $root.settings.current_publication.slug
+                      ]
+                    "
                     :read_only="!$root.state.connected"
                   />
                   <Carreau
-                    v-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'carreau'"
+                    v-if="
+                      $root.settings.current_publication.slug !== false &&
+                        $root.store.publications[
+                          $root.settings.current_publication.slug
+                        ].template === 'carreau'
+                    "
                     :slugPubliName="$root.settings.current_publication.slug"
-                    :publication="$root.store.publications[$root.settings.current_publication.slug]"
+                    :publication="
+                      $root.store.publications[
+                        $root.settings.current_publication.slug
+                      ]
+                    "
                     :read_only="!$root.state.connected"
                   />
                   <VideoPublication
-                    v-else-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'video_assemblage'"
+                    v-else-if="
+                      $root.settings.current_publication.slug !== false &&
+                        $root.store.publications[
+                          $root.settings.current_publication.slug
+                        ].template === 'video_assemblage'
+                    "
                     :slugPubliName="$root.settings.current_publication.slug"
-                    :publication="$root.store.publications[$root.settings.current_publication.slug]"
+                    :publication="
+                      $root.store.publications[
+                        $root.settings.current_publication.slug
+                      ]
+                    "
                     :read_only="!$root.state.connected"
                   />
                   <DrawingPad
-                    v-else-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'drawing_pad'"
+                    v-else-if="
+                      $root.settings.current_publication.slug !== false &&
+                        $root.store.publications[
+                          $root.settings.current_publication.slug
+                        ].template === 'drawing_pad'
+                    "
                     :slugPubliName="$root.settings.current_publication.slug"
-                    :publication="$root.store.publications[$root.settings.current_publication.slug]"
+                    :publication="
+                      $root.store.publications[
+                        $root.settings.current_publication.slug
+                      ]
+                    "
                     :read_only="!$root.state.connected"
                   />
                   <StopmotionAnimation
-                    v-else-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'stopmotion_animation'"
+                    v-else-if="
+                      $root.settings.current_publication.slug !== false &&
+                        $root.store.publications[
+                          $root.settings.current_publication.slug
+                        ].template === 'stopmotion_animation'
+                    "
                     :slugPubliName="$root.settings.current_publication.slug"
-                    :publication="$root.store.publications[$root.settings.current_publication.slug]"
+                    :publication="
+                      $root.store.publications[
+                        $root.settings.current_publication.slug
+                      ]
+                    "
                     :read_only="!$root.state.connected"
                   />
                   <MixAudioAndVideo
-                    v-else-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'mix_audio_and_video'"
+                    v-else-if="
+                      $root.settings.current_publication.slug !== false &&
+                        $root.store.publications[
+                          $root.settings.current_publication.slug
+                        ].template === 'mix_audio_and_video'
+                    "
                     :slugPubliName="$root.settings.current_publication.slug"
-                    :publication="$root.store.publications[$root.settings.current_publication.slug]"
+                    :publication="
+                      $root.store.publications[
+                        $root.settings.current_publication.slug
+                      ]
+                    "
                     :read_only="!$root.state.connected"
                   />
                   <MixAudioAndImage
-                    v-else-if="$root.settings.current_publication.slug !== false && $root.store.publications[$root.settings.current_publication.slug].template === 'mix_audio_and_image'"
+                    v-else-if="
+                      $root.settings.current_publication.slug !== false &&
+                        $root.store.publications[
+                          $root.settings.current_publication.slug
+                        ].template === 'mix_audio_and_image'
+                    "
                     :slugPubliName="$root.settings.current_publication.slug"
-                    :publication="$root.store.publications[$root.settings.current_publication.slug]"
+                    :publication="
+                      $root.store.publications[
+                        $root.settings.current_publication.slug
+                      ]
+                    "
                     :read_only="!$root.state.connected"
                   />
                 </transition>
@@ -178,21 +264,35 @@
       </div>
       <EditMedia
         v-if="$root.media_modal.open"
-        :key="$root.media_modal.current_slugProjectName + $root.media_modal.current_metaFileName"
+        :key="
+          $root.media_modal.current_slugProjectName +
+            $root.media_modal.current_metaFileName
+        "
         :slugMediaName="$root.media_modal.current_metaFileName"
         :slugProjectName="$root.media_modal.current_slugProjectName"
-        :media="$root.store.projects[$root.media_modal.current_slugProjectName].medias[$root.media_modal.current_metaFileName]"
+        :media="
+          $root.store.projects[$root.media_modal.current_slugProjectName]
+            .medias[$root.media_modal.current_metaFileName]
+        "
         @close="$root.closeMedia()"
         :read_only="!$root.state.connected"
       ></EditMedia>
     </template>
     <template
-      v-else-if="['export_publication','print_publication','link_publication'].includes($root.state.mode)"
+      v-else-if="
+        [
+          'export_publication',
+          'print_publication',
+          'link_publication'
+        ].includes($root.state.mode)
+      "
     >
       <PagePublication
         v-if="$root.settings.current_publication.slug !== false"
         :slugPubliName="$root.settings.current_publication.slug"
-        :publication="$root.store.publications[$root.settings.current_publication.slug]"
+        :publication="
+          $root.store.publications[$root.settings.current_publication.slug]
+        "
         :read_only="!$root.state.connected"
       />
     </template>

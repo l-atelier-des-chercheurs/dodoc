@@ -68,7 +68,7 @@
               <button
                 type="button"
                 class="button_addToPubli button-greenthin button-square"
-                :title="instructions_depending_on_media_in_publi"
+                :content="instructions_depending_on_media_in_publi"
                 @click.stop="addToCurrentPubli()"
                 v-tippy="{
                   placement: 'left',

@@ -16,14 +16,19 @@
           class="buttonLink"
           @click="showEditProjectModal = true"
         >
-          Ajouter une image de couverture
+          {{ $t("add_a_cover_image") }}
         </button>
       </div>
 
       <div class="m_project--presentation--text">
         <h2
           class="m_project--presentation--text--title"
-          :title="slugProjectName"
+          :content="slugProjectName"
+          v-tippy="{
+            placement: 'bottom-start',
+            delay: [600, 0],
+            interactive: true
+          }"
         >
           {{ project.name }}
         </h2>
@@ -151,10 +156,38 @@
           v-if="can_access_folder && context !== 'full'"
           type="button"
           class="m_project--presentation--buttons--openButton"
-          :title="$t('open')"
           @click="$root.openProject(slugProjectName)"
         >
           <span class>{{ $t("open") }}</span>
+        </button>
+
+        <button
+          v-if="can_access_folder && context === 'full'"
+          type="button"
+          class="buttonLink"
+          @click="showEditProjectModal = true"
+          :disabled="read_only"
+        >
+          <svg
+            version="1.1"
+            class="inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="100.7px"
+            height="101px"
+            viewBox="0 0 100.7 101"
+            style="enable-background:new 0 0 100.7 101;"
+            xml:space="preserve"
+          >
+            <path
+              class="st0"
+              d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
+              L19.1,91.5z"
+            />
+          </svg>
+          {{ $t("edit") }}
         </button>
 
         <button
@@ -192,35 +225,6 @@
             <span class="loader loader-small" />
           </template>
           {{ $t("download") }}
-        </button>
-
-        <button
-          v-if="can_access_folder && context === 'full'"
-          type="button"
-          class="buttonLink"
-          @click="showEditProjectModal = true"
-          :disabled="read_only"
-        >
-          <svg
-            version="1.1"
-            class="inline-svg"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="100.7px"
-            height="101px"
-            viewBox="0 0 100.7 101"
-            style="enable-background:new 0 0 100.7 101;"
-            xml:space="preserve"
-          >
-            <path
-              class="st0"
-              d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
-              L19.1,91.5z"
-            />
-          </svg>
-          {{ $t("edit") }}
         </button>
 
         <button
