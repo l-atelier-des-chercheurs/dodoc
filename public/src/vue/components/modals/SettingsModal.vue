@@ -16,7 +16,7 @@
       </div>
       <div class="margin-sides-medium">
         <div class="margin-vert-small">
-          <label v-html="$t('lang:')" />
+          <label v-html="$t('lang')" />
           <div class="input">
             <select v-model="new_lang">
               <option
