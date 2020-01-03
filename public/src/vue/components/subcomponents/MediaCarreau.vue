@@ -7,14 +7,14 @@
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
     @mousedown.stop="is_selected = true"
-    :class="{ 
-      'is--dragged' : is_dragged, 
-      'is--resized' : is_resized, 
-      'is--rotated' : is_rotated, 
-      'is--waitingForServerResponse' : is_waitingForServer,
-      'is--hovered' : is_hovered,
-      'is--previewed' :  preview_mode,
-      'is--overflowing' : is_text_overflowing
+    :class="{
+      'is--dragged': is_dragged,
+      'is--resized': is_resized,
+      'is--rotated': is_rotated,
+      'is--waitingForServerResponse': is_waitingForServer,
+      'is--hovered': is_hovered,
+      'is--previewed': preview_mode,
+      'is--overflowing': is_text_overflowing
     }"
   >
     <MediaContent
@@ -28,7 +28,7 @@
       v-model="media.content"
     />
     <div
-      v-if="(is_selected || is_hovered || is_touch)"
+      v-if="is_selected || is_hovered || is_touch"
       class="controlFrame"
       @mousedown.stop.prevent="dragMedia('mouse')"
       @touchstart.stop.prevent="dragMedia('touch')"
@@ -91,13 +91,16 @@
     <!-- </transition> -->
 
     <transition name="fade_fast" :duration="150">
-      <div v-if="(is_selected || is_hovered || is_touch)" class="m_mediaCarreau--buttons">
+      <div
+        v-if="is_selected || is_hovered || is_touch"
+        class="m_mediaCarreau--buttons"
+      >
         <!-- <button
           type="button"
           class="buttonLink _no_underline"
           @mousedown.stop.prevent="editZIndex(+1)"
           @touchstart.stop.prevent="editZIndex(+1)"
-          :title="$t('move_to_foreground') + '<br>' + $t('layer:') + ' ' + mediaZIndex"
+          :content="$t('move_to_foreground') + '<br>' + $t('layer:') + ' ' + mediaZIndex"
           v-tippy="{ 
             placement : 'top',
             delay: [600, 0]
@@ -128,7 +131,7 @@
           class="buttonLink _no_underline"
           @mousedown.stop.prevent="editZIndex(-1)"
           @touchstart.stop.prevent="editZIndex(-1)"
-          :title="$t('move_to_background') + '<br>' + $t('layer:') + ' ' + mediaZIndex"
+          :content="$t('move_to_background') + '<br>' + $t('layer:') + ' ' + mediaZIndex"
           v-tippy="{ 
             placement : 'top',
             delay: [600, 0]
@@ -159,7 +162,7 @@
           class="buttonLink _no_underline"
           @mousedown.stop.prevent="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
           @touchstart.stop.prevent="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
-          :title="$t('edit_content')"
+          :content="$t('edit_content')"
           v-tippy="{ 
             placement : 'top',
             delay: [600, 0]
@@ -189,9 +192,9 @@
           type="button"
           class="m_mediaCarreau--buttons--removeMedia buttonLink _no_underline"
           @click.stop.prevent="removePubliMedia()"
-          :title="$t('withdraw')"
-          v-tippy="{ 
-            placement : 'top',
+          :content="$t('withdraw')"
+          v-tippy="{
+            placement: 'top',
             delay: [600, 0]
           }"
         >
@@ -700,5 +703,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

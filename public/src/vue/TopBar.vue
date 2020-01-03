@@ -14,7 +14,7 @@
           </button>
         </transition>
         <img
-          :title="`do•doc version ${$root.state.appVersion}`"
+          :content="`do•doc version ${$root.state.appVersion}`"
           src="/images/i_logo.svg"
           @click="goHomeOrReload()"
           draggable="false"
@@ -39,7 +39,7 @@
           v-if="project.hasOwnProperty('name')"
           @click="$root.do_navigation.view = 'ProjectView'"
           :disabled="$root.do_navigation.view === 'ProjectView'"
-          :title="$t('back_to_project')"
+          :content="$t('back_to_project')"
           v-tippy="{
             placement: 'bottom',
             delay: [600, 0]
@@ -99,7 +99,7 @@
           type="button"
           class="m_topbar--center--authors--currentAuthor"
           @click="showAuthorsListModal = true"
-          :title="$t('login')"
+          :content="$t('login')"
           v-tippy="{
             placement: 'bottom',
             delay: [600, 0]
@@ -149,7 +149,7 @@
         <button
           type="button"
           @click="showQRModal = !showQRModal"
-          :title="$t('share_access')"
+          :content="$t('share_access')"
           v-tippy="{
             placement: 'bottom-end',
             delay: [600, 0]
@@ -186,7 +186,7 @@
           class="js--openInBrowser"
           target="_blank"
           href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc"
-          :title="$t('help')"
+          :content="$t('help')"
           v-tippy="{
             placement: 'bottom',
             delay: [600, 0]
@@ -220,7 +220,7 @@
         <button
           type="button"
           @click="showSettingsModal = !showSettingsModal"
-          :title="$t('settings')"
+          :content="$t('settings')"
           v-tippy="{
             placement: 'bottom-end',
             delay: [600, 0]

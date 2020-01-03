@@ -5,15 +5,19 @@
         <button
           type="button"
           class="barButton barButton_capture"
-          v-if="((project.password === 'has_pass') || project.password !== 'has_pass')"
+          v-if="
+            project.password === 'has_pass' || project.password !== 'has_pass'
+          "
           @click="openCapture"
           :disabled="read_only || is_iOS_device"
         >
-          <span>{{ $t('capture') }}</span>
+          <span>{{ $t("capture") }}</span>
         </button>
 
         <label
-          v-if="((project.password === 'has_pass') || project.password !== 'has_pass')"
+          v-if="
+            project.password === 'has_pass' || project.password !== 'has_pass'
+          "
           :key="`add_${field.key}`"
           class="barButton barButton_import button"
           v-for="field in input_file_fields"
@@ -21,7 +25,7 @@
           :for="`add_${field.key}`"
         >
           <span>
-            {{ field.label }}
+            {{ $t(field.label) }}
             <!-- <div v-html="field.svg" /> -->
           </span>
           <input
@@ -44,7 +48,7 @@
           >
             <div>
               <img src="/images/i_importer.svg" draggable="false" />
-              <label>{{ $t('drop_here_to_import') }}</label>
+              <label>{{ $t("drop_here_to_import") }}</label>
             </div>
           </div>
         </transition>
@@ -59,15 +63,15 @@
         />
 
         <button type="button" class="barButton barButton_text" @click="createTextMedia">
-          <span>{{ $t('create_text') }}</span>
+          <span>{{ $t("create_text") }}</span>
         </button>
       </div>
 
       <div class="m_actionbar--text">
-        {{ $t('showing') }}
-        <span :class="{ 'c-rouge' : sortedMedias.length !== numberOfMedias }">
+        {{ $t("showing") }}
+        <span :class="{ 'c-rouge': sortedMedias.length !== numberOfMedias }">
           {{ sortedMedias.length }}
-          {{ $t('medias_of') }}
+          {{ $t("medias_of") }}
           {{ numberOfMedias }}
         </span>
         <template v-if="$root.allKeywords.length >= 0">
@@ -75,9 +79,9 @@
           <button
             type="button"
             class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active' : show_filters }"
+            :class="{ 'is--active': show_filters }"
             @click="show_filters = !show_filters"
-          >{{ $t('filters') }}</button>
+          >{{ $t("filters") }}</button>
         </template>
 
         <template v-if="!show_medias_instead_of_projects && show_filters">
@@ -114,7 +118,9 @@
               :metaFileName="media.metaFileName"
               :slugProjectName="slugProjectName"
               :preview_size="180"
-              :class="{ 'is--just_added' : last_media_added.includes(media.metaFileName) }"
+              :class="{
+                'is--just_added': last_media_added.includes(media.metaFileName)
+              }"
             />
           </div>
         </div>
@@ -162,14 +168,10 @@ export default {
       input_file_fields: [
         {
           key: "file",
-          label: "Importer",
+          label: "import",
           accept: "",
           capture: false,
           svg: `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-              <path d="M20.89,12v4.63a1,1,0,0,0,1,1h4.63V28h-13V12h7.4m1-1H12.5V29h15V16.62H21.88V11Z" style="fill: #fff"/>
-              <line x1="27" y1="17.12" x2="21.38" y2="11.5" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.9900837817656861px"/>
-            </svg>
           `
         }
       ]
@@ -398,5 +400,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

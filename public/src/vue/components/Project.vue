@@ -1,32 +1,27 @@
 <template>
-  <div
-    class="m_project"
-    :class="{ 'is--not_authorized_to_admin': !can_access_folder }"
-  >
+  <div class="m_project" :class="{ 'is--not_authorized_to_admin': !can_access_folder }">
     <div class="m_project--presentation">
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img :src="previewURL" class draggable="false" />
       </div>
-      <div
-        v-else-if="context === 'full'"
-        class="m_project--presentation--novignette"
-      >
+      <div v-else-if="context === 'full'" class="m_project--presentation--novignette">
         <button
           type="button"
           class="buttonLink"
           @click="showEditProjectModal = true"
-        >
-          Ajouter une image de couverture
-        </button>
+        >{{ $t("add_a_cover_image") }}</button>
       </div>
 
       <div class="m_project--presentation--text">
         <h2
           class="m_project--presentation--text--title"
-          :title="slugProjectName"
-        >
-          {{ project.name }}
-        </h2>
+          :content="slugProjectName"
+          v-tippy="{
+            placement: 'bottom-start',
+            delay: [600, 0],
+            interactive: true
+          }"
+        >{{ project.name }}</h2>
 
         <div class="m_project--presentation--text--infos">
           <div class="m_keywordField">
@@ -40,22 +35,22 @@
                     $root.settings.project_filter.keyword === keyword.title
                 }
               ]"
-              >{{ keyword.title }}</span
-            >
+            >{{ keyword.title }}</span>
           </div>
           <div class="m_metaField" v-if="!!project.authors">
             <div>{{ $t("author") }}</div>
             <div class="m_authorField">
-              <span v-if="typeof project.authors === 'string'">{{
+              <span v-if="typeof project.authors === 'string'">
+                {{
                 project.authors
-              }}</span>
+                }}
+              </span>
               <span
                 v-else-if="typeof project.authors === 'object'"
                 v-for="author in project.authors"
                 :key="author.name"
                 class="is--active"
-                >{{ author.name }}</span
-              >
+              >{{ author.name }}</span>
             </div>
           </div>
 
@@ -80,14 +75,9 @@
             style="display: block; margin: 0 auto calc(var(--spacing) / 2);"
             :readonly="read_only"
             @click="showInputPasswordField = !showInputPasswordField"
-          >
-            {{ $t("password_required_to_open") }}
-          </button>
+          >{{ $t("password_required_to_open") }}</button>
 
-          <div
-            class="padding-small"
-            v-if="showInputPasswordField && !can_access_folder"
-          >
+          <div class="padding-small" v-if="showInputPasswordField && !can_access_folder">
             <div class="margin-bottom-small">
               <label>{{ $t("password") }}</label>
               <input
@@ -111,13 +101,7 @@
                 >{{ $t('remember_project_password_for_this_device') }}</label>
             </div>-->
 
-            <button
-              type="button"
-              class="button bg-bleuvert"
-              @click="submitPassword"
-            >
-              Valider
-            </button>
+            <button type="button" class="button bg-bleuvert" @click="submitPassword">Valider</button>
           </div>
 
           <div
@@ -130,9 +114,7 @@
               @click="showCurrentPassword = !showCurrentPassword"
               v-html="!showCurrentPassword ? $t('show_password') : $t('hide')"
             />
-            <div v-if="showCurrentPassword && can_access_folder">
-              {{ project_password }}
-            </div>
+            <div v-if="showCurrentPassword && can_access_folder">{{ project_password }}</div>
           </div>
 
           <button
@@ -140,9 +122,7 @@
             type="button"
             class="_button_forgetpassword"
             @click="forgetPassword"
-          >
-            {{ $t("forget_password_and_close") }}
-          </button>
+          >{{ $t("forget_password_and_close") }}</button>
         </div>
       </div>
 
@@ -151,47 +131,9 @@
           v-if="can_access_folder && context !== 'full'"
           type="button"
           class="m_project--presentation--buttons--openButton"
-          :title="$t('open')"
           @click="$root.openProject(slugProjectName)"
         >
           <span class>{{ $t("open") }}</span>
-        </button>
-
-        <button
-          v-if="can_access_folder && context === 'full'"
-          type="button"
-          class="buttonLink"
-          @click="downloadProjectArchive"
-          :disabled="zip_export_started"
-        >
-          <template v-if="!zip_export_started">
-            <svg
-              version="1.1"
-              class="inline-svg"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              width="91.6px"
-              height="95px"
-              viewBox="0 0 91.6 95"
-              style="enable-background:new 0 0 91.6 95;"
-              xml:space="preserve"
-            >
-              <rect x="0.3" y="105.8" class="st0" width="85.8" height="16" />
-              <g>
-                <path
-                  class="st0"
-                  d="M75.2,51L60.6,37.5c-2.5-2.3-4.5-4.2-5.9-5.9c-1.4-1.7-2.8-3.7-4.2-6l0,67.6H35.3l0-67.6
-			c-1.2,2.1-2.6,4-4.2,5.8c-1.6,1.8-3.5,3.8-5.9,6.1L10.6,51L0,38.6L42.9,0l42.9,38.6L75.2,51z"
-                />
-              </g>
-            </svg>
-          </template>
-          <template v-else>
-            <span class="loader loader-small" />
-          </template>
-          {{ $t("download") }}
         </button>
 
         <button
@@ -221,6 +163,45 @@
             />
           </svg>
           {{ $t("edit") }}
+        </button>
+
+        <button
+          v-if="can_access_folder && context === 'full'"
+          type="button"
+          class="buttonLink"
+          @click="downloadProjectArchive"
+          :disabled="zip_export_started"
+        >
+          <template v-if="!zip_export_started">
+            <svg
+              version="1.1"
+              class="inline-svg"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="46.7px"
+              height="70px"
+              viewBox="0 0 46.7 70"
+              style="enable-background:new 0 0 46.7 70;"
+              xml:space="preserve"
+            >
+              <g>
+                <g>
+                  <path
+                    class="st0"
+                    d="M8.5,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7h7.7l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2
+			L23.3,59.6L3.2,41.5L8.5,35.2z"
+                  />
+                </g>
+                <polygon class="st0" points="46.7,70 0,70 0,62.4 46.6,62.4 	" />
+              </g>
+            </svg>
+          </template>
+          <template v-else>
+            <span class="loader loader-small" />
+          </template>
+          {{ $t("download") }}
         </button>
 
         <button
@@ -259,12 +240,7 @@
         <div v-if="showDuplicateProjectMenu" class="margin-bottom-small">
           <label v-html="$t('name_of_copy')" />
           <form @submit.prevent="duplicateWithNewName()" class="input-group">
-            <input
-              type="text"
-              v-model.trim="copy_project_name"
-              required
-              autofocus
-            />
+            <input type="text" v-model.trim="copy_project_name" required autofocus />
             <button type="submit" v-html="$t('copy')" class="bg-bleuvert" />
           </form>
         </div>

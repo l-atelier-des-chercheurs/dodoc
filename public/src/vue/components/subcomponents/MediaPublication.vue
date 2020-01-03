@@ -7,14 +7,14 @@
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
     @mousedown.stop="is_selected = true"
-    :class="{ 
-      'is--dragged' : is_dragged, 
-      'is--resized' : is_resized, 
-      'is--rotated' : is_rotated, 
-      'is--waitingForServerResponse' : is_waitingForServer,
-      'is--hovered' : is_hovered,
-      'is--previewed' :  preview_mode,
-      'is--overflowing' : is_text_overflowing
+    :class="{
+      'is--dragged': is_dragged,
+      'is--resized': is_resized,
+      'is--rotated': is_rotated,
+      'is--waitingForServerResponse': is_waitingForServer,
+      'is--hovered': is_hovered,
+      'is--previewed': preview_mode,
+      'is--overflowing': is_text_overflowing
     }"
   >
     <MediaContent
@@ -34,9 +34,9 @@
       v-if="media.type === 'text' && is_text_overflowing && !preview_mode"
       @mousedown.stop.prevent="setMediaHeightToContent"
       @touchstart.stop.prevent="setMediaHeightToContent"
-      :title="$t('text_overflow')"
-      v-tippy="{ 
-        placement : 'top',
+      :content="$t('text_overflow')"
+      v-tippy="{
+        placement: 'top',
         delay: [600, 0]
       }"
     >
@@ -45,17 +45,27 @@
 
     <div
       class="m_mediaPublication--edit_styles"
-      v-if="(is_selected || is_hovered || is_touch) && !preview_mode && show_edit_styles_window"
+      v-if="
+        (is_selected || is_hovered || is_touch) &&
+          !preview_mode &&
+          show_edit_styles_window
+      "
     >
       <button
         type="button"
         class="m_mediaPublication--edit_styles--helpButton"
-        :title="$t('write_some_CSS_code_for_example')"
-        v-tippy="{ 
+        :content="$t('write_some_CSS_code_for_example')"
+        v-tippy="{
           delay: [600, 0]
         }"
-      >?</button>
-      <PrismEditor v-model="custom_css" @change="setCSSForMedia" language="css" />
+      >
+        ?
+      </button>
+      <PrismEditor
+        v-model="custom_css"
+        @change="setCSSForMedia"
+        language="css"
+      />
     </div>
 
     <!-- <transition name="fade_fast" :duration="150"> -->
@@ -121,9 +131,11 @@
           class="buttonLink _no_underline"
           @mousedown.stop.prevent="editZIndex(+1)"
           @touchstart.stop.prevent="editZIndex(+1)"
-          :title="$t('move_to_foreground') + '<br>' + $t('layer:') + ' ' + mediaZIndex"
-          v-tippy="{ 
-            placement : 'top',
+          :content="
+            $t('move_to_foreground') + '<br>' + $t('layer:') + ' ' + mediaZIndex
+          "
+          v-tippy="{
+            placement: 'top',
             delay: [600, 0]
           }"
         >
@@ -153,9 +165,11 @@
           class="buttonLink _no_underline"
           @mousedown.stop.prevent="editZIndex(-1)"
           @touchstart.stop.prevent="editZIndex(-1)"
-          :title="$t('move_to_background') + '<br>' + $t('layer:') + ' ' + mediaZIndex"
-          v-tippy="{ 
-            placement : 'top',
+          :content="
+            $t('move_to_background') + '<br>' + $t('layer:') + ' ' + mediaZIndex
+          "
+          v-tippy="{
+            placement: 'top',
             delay: [600, 0]
           }"
         >
@@ -185,24 +199,34 @@
           class="buttonLink _no_underline"
           @mousedown.stop.prevent="toggleEditWindow()"
           @touchstart.stop.prevent="toggleEditWindow()"
-          :class="{ 'is--active' : show_edit_styles_window }"
-          :title="$t('css_settings')"
-          v-tippy="{ 
-            placement : 'top',
+          :class="{ 'is--active': show_edit_styles_window }"
+          :content="$t('css_settings')"
+          v-tippy="{
+            placement: 'top',
             delay: [600, 0]
           }"
         >
-          {{ $t('css') }}
+          {{ $t("css") }}
           <sup v-if="custom_css">*</sup>
         </button>
         <button
           type="button"
           class="buttonLink _no_underline"
-          @mousedown.stop.prevent="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
-          @touchstart.stop.prevent="$root.openMedia({ slugProjectName: media.slugProjectName, metaFileName: media.metaFileName })"
-          :title="$t('edit_content')"
-          v-tippy="{ 
-            placement : 'top',
+          @mousedown.stop.prevent="
+            $root.openMedia({
+              slugProjectName: media.slugProjectName,
+              metaFileName: media.metaFileName
+            })
+          "
+          @touchstart.stop.prevent="
+            $root.openMedia({
+              slugProjectName: media.slugProjectName,
+              metaFileName: media.metaFileName
+            })
+          "
+          :content="$t('edit_content')"
+          v-tippy="{
+            placement: 'top',
             delay: [600, 0]
           }"
         >
@@ -231,9 +255,9 @@
           type="button"
           class="buttonLink _no_underline"
           @click.stop.prevent="removePubliMedia()"
-          :title="$t('withdraw')"
-          v-tippy="{ 
-            placement : 'top',
+          :content="$t('withdraw')"
+          v-tippy="{
+            placement: 'top',
             delay: [600, 0]
           }"
         >
@@ -800,5 +824,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

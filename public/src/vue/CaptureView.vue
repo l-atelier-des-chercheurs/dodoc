@@ -476,7 +476,7 @@
                 class="m_panel--buttons--row--captureButton--advancedOptions"
                 :class="{ 'is--active': timelapse_mode }"
                 v-if="selected_mode === 'stopmotion'"
-                :title="$t('timelapse')"
+                :content="$t('timelapse')"
                 v-tippy="{
                   placement: 'top',
                   delay: [600, 0]

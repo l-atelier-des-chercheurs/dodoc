@@ -9,8 +9,13 @@
     </template>
 
     <template slot="preview">
-      <div class="margin-sides-medium margin-vert-small">
-        <div class="margin-bottom-small">
+      <div class="margin-sides-medium">
+        <div class="margin-vert-small">
+          do•doc version {{ $root.state.appVersion }}
+        </div>
+      </div>
+      <div class="margin-sides-medium">
+        <div class="margin-vert-small">
           <label v-html="$t('lang:')" />
           <div class="input">
             <select v-model="new_lang">
