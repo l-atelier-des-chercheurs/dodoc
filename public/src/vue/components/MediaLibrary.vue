@@ -62,11 +62,7 @@
           :selected_files="selected_files"
         />
 
-        <button
-          type="button"
-          class="barButton barButton_text"
-          @click="createTextMedia"
-        >
+        <button type="button" class="barButton barButton_text" @click="createTextMedia">
           <span>{{ $t("create_text") }}</span>
         </button>
       </div>
@@ -85,9 +81,7 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_filters }"
             @click="show_filters = !show_filters"
-          >
-            {{ $t("filters") }}
-          </button>
+          >{{ $t("filters") }}</button>
         </template>
 
         <template v-if="!show_medias_instead_of_projects && show_filters">
@@ -114,9 +108,7 @@
       <div v-for="item in groupedMedias" :key="item[0]">
         <h3
           class="font-folder_title margin-sides-small margin-none margin-bottom-small"
-        >
-          {{ $root.formatDateToHuman(item[0]) }}
-        </h3>
+        >{{ $root.formatDateToHuman(item[0]) }}</h3>
 
         <div class="m_mediaShowAll">
           <div v-for="media in item[1]" :key="media.slugMediaName">
@@ -180,10 +172,6 @@ export default {
           accept: "",
           capture: false,
           svg: `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-              <path d="M20.89,12v4.63a1,1,0,0,0,1,1h4.63V28h-13V12h7.4m1-1H12.5V29h15V16.62H21.88V11Z" style="fill: #fff"/>
-              <line x1="27" y1="17.12" x2="21.38" y2="11.5" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.9900837817656861px"/>
-            </svg>
           `
         }
       ]
