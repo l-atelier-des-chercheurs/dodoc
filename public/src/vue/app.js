@@ -55,6 +55,10 @@ let lang_settings = {
       name: "English"
     },
     {
+      key: "de",
+      name: "Deutsch"
+    },
+    {
       key: "nl",
       name: "Nederlands"
     },
