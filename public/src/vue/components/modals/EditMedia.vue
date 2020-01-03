@@ -152,6 +152,7 @@
           type="button"
           class="buttonLink"
           @click="show_edit_media_options = !show_edit_media_options"
+          v-if="media.type === 'image' || media.type === 'video'"
         >
           <svg
             version="1.1"
