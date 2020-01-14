@@ -866,61 +866,6 @@ module.exports = (function() {
 
         // does not work that well with -f concat
         // reconverting with mergeToFile might seem overkill but yields much much better results
-
-        //   // let concat_method = 'concat';
-        //   // let concat_method = 'remux';
-        //   // if(concat_method === "concat") {
-
-        //   let inputs_to_concat = [];
-
-        //   // var fileList = temp_videos_array.map(); // files to merge
-
-        //   var listFileName = path.join(cachePath, 'list.txt');
-        //   var fileNames = '';
-
-        //   // ffmpeg -f concat -i mylist.txt -c copy output
-        //   temp_videos_array.map(v => {
-        //     fileNames += 'file ' + v.full_path + '\n';
-        //   });
-
-        //   fs.writeFileSync(listFileName, fileNames);
-
-        //   // ffmpeg_cmd.addInput('concat:' + inputs_to_concat.join('|') + '');
-
-        //   let time_since_last_report = 0;
-        //   ffmpeg_cmd
-        //     .input(listFileName)
-        //     .inputOptions(['-f concat', '-safe 0'])
-        //     .outputOptions('-c copy')
-        //     // .complexFilter(['gltransition'])
-        //     // .inputFormat('concat')
-        //     // .videoCodec('copy')
-        //     // .audioCodec('copy')
-        //     // .addOptions(['-bsf:a aac_adtstoasc'])
-        //     .on('start', function(commandLine) {
-        //       dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
-        //     })
-        //     .on('progress', progress => {
-        //       require('./sockets').notify({
-        //         socket,
-        //         localized_string: `creating_video`,
-        //         not_localized_string:
-        //           Number.parseFloat(progress.percent).toFixed(1) + '%'
-        //       });
-        //     })
-        //     .on('end', () => {
-        //       dev.logverbose(`Video has been created`);
-        //       return resolve();
-        //     })
-        //     .on('error', function(err, stdout, stderr) {
-        //       ffmpeg_cmd = null;
-        //       dev.error('An error happened: ' + err.message);
-        //       dev.error('ffmpeg standard output:\n' + stdout);
-        //       dev.error('ffmpeg standard error:\n' + stderr);
-        //       return reject(`Couldn't convert video : ${err.message}`);
-        //     })
-        //     .save(videoPath);
-        // global.ffmpeg_processes.push(ffmpeg_cmd);
       });
     });
   }
