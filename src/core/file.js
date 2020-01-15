@@ -1,6 +1,6 @@
 const path = require("path"),
   fs = require("fs-extra"),
-  validator = require("validator"),
+  validator = require("validator");
 
 const sharp = require("sharp");
 
