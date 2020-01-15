@@ -1,10 +1,12 @@
-const fs = require('fs-extra'),
-  path = require('path'),
-  sharp = require('sharp'),
-  ffmpeg = require('fluent-ffmpeg');
+const fs = require("fs-extra"),
+  path = require("path"),
+  sharp = require("sharp"),
+  ffmpegstatic = require("ffmpeg-static"),
+  ffprobestatic = require("ffprobe-static"),
+  ffmpeg = require("fluent-ffmpeg");
 
-ffmpeg.setFfmpegPath('./ffmpeg-4.1.3-armhf-static/ffmpeg');
-ffmpeg.setFfprobePath('./ffmpeg-4.1.3-armhf-static/ffprobe');
+ffmpeg.setFfmpegPath(ffmpegstatic.path);
+ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function() {
   return {
@@ -20,7 +22,7 @@ module.exports = (function() {
           return reject(`Missing type or detail to make recipe`);
         }
 
-        if (type === 'rotate_image') {
+        if (type === "rotate_image") {
           const new_media_path = path.join(slugFolderPath, newFileName);
 
           sharp(base_media_path)
@@ -35,16 +37,16 @@ module.exports = (function() {
                 });
               }
             });
-        } else if (type === 'optimize_video') {
+        } else if (type === "optimize_video") {
           const resolution = {
             width: 1280,
             height: 720
           };
 
           newFileName =
-            new RegExp(global.settings.regexpRemoveFileExtension, 'i').exec(
+            new RegExp(global.settings.regexpRemoveFileExtension, "i").exec(
               newFileName
-            )[1] + '.mp4';
+            )[1] + ".mp4";
 
           const new_media_path = path.join(slugFolderPath, newFileName);
 
@@ -55,36 +57,36 @@ module.exports = (function() {
               .input(base_media_path)
               .native()
               .outputFPS(30)
-              .addOptions(['-af apad'])
-              .withVideoCodec('libx264')
-              .withVideoBitrate('6000k')
-              .withAudioCodec('aac')
-              .withAudioBitrate('128k')
+              .addOptions(["-af apad"])
+              .withVideoCodec("libx264")
+              .withVideoBitrate("6000k")
+              .withAudioCodec("aac")
+              .withAudioBitrate("128k")
               .size(`${resolution.width}x${resolution.height}`)
               .autopad()
-              .videoFilter(['setsar=1'])
-              .addOptions(['-shortest', '-bsf:v h264_mp4toannexb'])
-              .toFormat('mp4')
+              .videoFilter(["setsar=1"])
+              .addOptions(["-shortest", "-bsf:v h264_mp4toannexb"])
+              .toFormat("mp4")
               .output(new_media_path)
-              .on('start', function(commandLine) {
-                dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+              .on("start", function(commandLine) {
+                dev.logverbose("Spawned Ffmpeg with command: " + commandLine);
               })
-              .on('progress', progress => {
-                require('./sockets').notify({
+              .on("progress", progress => {
+                require("./sockets").notify({
                   socket,
                   localized_string: `creating_video`,
                   not_localized_string:
-                    Number.parseFloat(progress.percent).toFixed(1) + '%'
+                    Number.parseFloat(progress.percent).toFixed(1) + "%"
                 });
               })
-              .on('end', () => {
+              .on("end", () => {
                 dev.logverbose(`Video conversion has been completed`);
                 return resolve(newFileName);
               })
-              .on('error', function(err, stdout, stderr) {
-                dev.error('An error happened: ' + err.message);
-                dev.error('ffmpeg standard output:\n' + stdout);
-                dev.error('ffmpeg standard error:\n' + stderr);
+              .on("error", function(err, stdout, stderr) {
+                dev.error("An error happened: " + err.message);
+                dev.error("ffmpeg standard output:\n" + stdout);
+                dev.error("ffmpeg standard error:\n" + stderr);
                 return reject(`Couldn't convert video : ${err.message}`);
               })
               .run();
