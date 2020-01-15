@@ -7,28 +7,28 @@
   "userDirname": "dodoc2",
   "cache_content": true,
 
-  "contentDirname" : "user",
-  "cacheDirname" : "cache",
-  "metaFileext" : ".txt",
-  "thumbExt" : ".jpeg",
+  "contentDirname": "user",
+  "cacheDirname": "dodoc_cache",
+  "metaFileext": ".txt",
+  "thumbExt": ".jpeg",
   "thumbFormat": "jpeg",
-  "folderMetaFilename" : "meta",
-  "folderPreviewFilename" : "meta_preview",
+  "folderMetaFilename": "meta",
+  "folderPreviewFilename": "meta_preview",
 
   "privateKeyPath": "",
   "certificatePath": "",
 
-  "metaDateFormat" : "YYYYMMDD_HHmmss",
-  "textEncoding" : "UTF-8",
-  "thumbFolderName" : "_thumbs",
-  "deletedFolderName" : "_bin",
+  "metaDateFormat": "YYYYMMDD_HHmmss",
+  "textEncoding": "UTF-8",
+  "thumbFolderName": "_thumbs",
+  "deletedFolderName": "_bin",
 
-  "mediaThumbQuality" : 70,
-  "maxFileSizeForUpload": 10000, 
+  "mediaThumbQuality": 70,
+  "maxFileSizeForUpload": 10000,
 
-  "regexpMatchFolderNames" : "^([^.]+)$",
-  "regexpGetFileExtension" : "\\.[^.]*$",
-  "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)",
+  "regexpMatchFolderNames": "^([^.]+)$",
+  "regexpGetFileExtension": "\\.[^.]*$",
+  "regexpRemoveFileExtension": "(.+?)(\\.[^.]*$|$)",
 
   "api": {
     "enabled": false,
@@ -36,14 +36,14 @@
     "domains_whitelist": []
   },
 
-  "structure" : {
+  "structure": {
     "projects": {
       "path": "",
       "preview": {
         "width": 1200,
         "height": 1200,
         "thumbs": {
-          "resolutions": [50, 320, 640]          
+          "resolutions": [50, 320, 640]
         }
       },
       "fields": {
@@ -57,18 +57,18 @@
         },
         "date_modified": {
           "type": "date",
-          "default": "current"
+          "default": "current",
+          "override": true
         },
         "password": {
-          "type": "string",
-          "read_only": true        
+          "type": "string"
         },
         "authors": {
           "type": "array"
         },
         "keywords": {
           "type": "array"
-        },      
+        },
         "description": {
           "type": "string"
         }
@@ -83,12 +83,12 @@
             "default": "current",
             "read_only": true
           },
-          "date_modified" : {
+          "date_modified": {
             "type": "date",
             "default": "current",
             "override": true
           },
-          "date_uploaded" : {
+          "date_uploaded": {
             "type": "date",
             "default": "current",
             "read_only": true
@@ -108,10 +108,10 @@
             "type": "boolean",
             "default": false
           },
-          "ratio" : {
+          "ratio": {
             "type": "number"
           },
-          "duration" : {
+          "duration": {
             "type": "number"
           },
           "authors": {
@@ -119,12 +119,12 @@
           },
           "keywords": {
             "type": "array"
-          },      
+          },
           "caption": {
             "type": "string"
-          }  
+          }
         }
-      } 
+      }
     },
     "authors": {
       "path": "_authors",
@@ -132,7 +132,7 @@
         "width": 1200,
         "height": 1200,
         "thumbs": {
-          "resolutions": [180, 640]          
+          "resolutions": [180, 640]
         }
       },
       "fields": {
@@ -141,7 +141,7 @@
         },
         "password": {
           "type": "string",
-          "read_only": true        
+          "read_only": true
         },
         "description": {
           "type": "string"
@@ -157,7 +157,7 @@
         "width": 1200,
         "height": 1200,
         "thumbs": {
-          "resolutions": [180, 640]          
+          "resolutions": [180, 640]
         }
       },
       "fields": {
@@ -166,9 +166,12 @@
         },
         "password": {
           "type": "string",
-          "read_only": true        
+          "read_only": true
         },
         "authors": {
+          "type": "array"
+        },
+        "keywords": {
           "type": "array"
         },
         "date_created": {
@@ -178,20 +181,28 @@
         },
         "date_modified": {
           "type": "date",
-          "default": "current"
+          "default": "current",
+          "override": true
         },
         "description": {
           "type": "string"
         },
         "template": {
           "type": "string",
-          "options": ["page_by_page", "video_assemblage", "drawing_pad", "stopmotion_animation", "mix_audio_and_video", "mix_audio_and_image"],
-          "default": "page_by_page"          
+          "options": [
+            "page_by_page",
+            "carreau",
+            "video_assemblage",
+            "stopmotion_animation",
+            "mix_audio_and_video",
+            "mix_audio_and_image"
+          ],
+          "default": "page_by_page"
         },
         "style": {
           "type": "string",
           "options": ["standard", "feuille de choux", "human tech days"],
-          "default": "standard"          
+          "default": "standard"
         },
         "width": {
           "type": "number"
@@ -217,8 +228,14 @@
         "margin_bottom": {
           "type": "number"
         },
+        "show_page_number": {
+          "type": "boolean"
+        },
         "gridstep": {
           "type": "number"
+        },
+        "snap_to_grid": {
+          "type": "boolean"
         },
         "pages": {
           "type": "array"
@@ -237,7 +254,8 @@
           },
           "date_modified": {
             "type": "date",
-            "default": "current"
+            "default": "current",
+            "override": true
           },
           "authors": {
             "type": "array"
@@ -247,6 +265,20 @@
           },
           "page_id": {
             "type": "string"
+          },
+          "duration": {
+            "type": "number",
+            "clip": {
+              "min": 0,
+              "max": 999
+            }
+          },
+          "volume": {
+            "type": "number",
+            "clip": {
+              "min": 0,
+              "max": 100
+            }
           },
           "x": {
             "type": "number"
@@ -283,7 +315,8 @@
         },
         "date_modified": {
           "type": "date",
-          "default": "current"
+          "default": "current",
+          "override": true
         },
         "authors": {
           "type": "array"
@@ -297,7 +330,7 @@
           "resolutions": [150, 1200]
         },
         "fields": {
-          "date_uploaded" : {
+          "date_uploaded": {
             "type": "date",
             "default": "current",
             "read_only": true
@@ -314,7 +347,7 @@
             "type": "array"
           }
         }
-      } 
+      }
     }
   }
 }

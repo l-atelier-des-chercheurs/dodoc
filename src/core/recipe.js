@@ -53,13 +53,17 @@ module.exports = (function() {
           fs.unlink(new_media_path, err => {
             ffmpeg_task
               .input(base_media_path)
-              .fps(30)
+              .native()
+              .outputFPS(30)
+              .addOptions(['-af apad'])
               .withVideoCodec('libx264')
-              .withVideoBitrate('5000k')
+              .withVideoBitrate('6000k')
               .withAudioCodec('aac')
               .withAudioBitrate('128k')
               .size(`${resolution.width}x${resolution.height}`)
               .autopad()
+              .videoFilter(['setsar=1'])
+              .addOptions(['-shortest', '-bsf:v h264_mp4toannexb'])
               .toFormat('mp4')
               .output(new_media_path)
               .on('start', function(commandLine) {

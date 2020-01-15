@@ -1,11 +1,10 @@
 {
-  "privateKeyPath": "",
-  "certificatePath": "",
   "desired_port": 8080,
-  "redirect_port": "",
+  "userDirname": "dodoc2",
+
   "api": {
     "enabled": false,
     "allow_all_domains": false,
-    "domains_whitelist": ["https://thisdomaincanfetchdodoc.com"]
+    "domains_whitelist": ["localhost", "latelier-des-chercheurs.fr"]
   }
 }

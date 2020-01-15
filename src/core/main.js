@@ -7,7 +7,8 @@ const server = require('./server');
 
 const dev = require('./dev-log'),
   api = require('./api'),
-  cache = require('./cache');
+  cache = require('./cache'),
+  auth = require('./auth');
 
 module.exports = function({ router }) {
   const is_electron = process.versions.hasOwnProperty('electron');
@@ -85,18 +86,11 @@ module.exports = function({ router }) {
                   sessionMeta.session_password !== '' &&
                   typeof sessionMeta.session_password === 'string'
                 ) {
-                  function hashCode(s) {
-                    return s.split('').reduce(function(a, b) {
-                      a = (a << 5) - a + b.charCodeAt(0);
-                      return a & a;
-                    }, 0);
-                  }
-
                   const pass = sessionMeta.session_password.trim();
 
                   dev.log('Found session password in meta.txt set to: ' + pass);
 
-                  global.session_password = hashCode(pass);
+                  global.session_password = auth.hashCode(pass);
                 }
                 portscanner
                   .findAPortNotInUse(

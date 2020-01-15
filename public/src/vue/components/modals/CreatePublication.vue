@@ -5,89 +5,99 @@
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
     :askBeforeClosingModal="askBeforeClosingModal"
-    >
+  >
     <template slot="header">
-      <span class="">{{ $t('create_a_publication') }}</span>
+      <span>{{ $t(publidata.template) }}</span>
     </template>
 
     <template slot="sidebar">
-
-<!-- Human name -->
+      <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('name') }}</label>
-        <input type="text" v-model="publidata.name" required autofocus>
+        <input type="text" v-model.trim="publidata.name" required autofocus autoselect />
       </div>
 
-<!-- Template -->
-      <div class="margin-bottom-small">
+      <!-- Template -->
+      <!-- <div class="margin-bottom-small">
         <label>{{ $t('format') }}</label>
         <select v-model="publidata.template">
-          <option value="page_by_page">
-            {{ $t('page_by_page') }}
-          </option>
-          <option value="video_assemblage">
-            {{ $t('video_assemblage') }}
-          </option>
-          <option value="web" disabled>
-            {{ $t('web') }}
-          </option>
+          <option v-for="template in $root.state.list_of_publications_templates"
+            :key="template"
+            :value="template"
+            v-html="$t(template)"
+          />
         </select>
+      </div>-->
+
+      <!-- Keywords -->
+      <div class="margin-bottom-small">
+        <label>{{ $t('keywords') }}</label>
+        <TagsInput @tagsChanged="newTags => publidata.keywords = newTags" />
       </div>
 
-<!-- Author(s) -->
+      <!-- Author(s) -->
       <div class="margin-bottom-small">
-        <label>{{ $t('author') }}</label><br>
+        <label>{{ $t('author') }}</label>
+        <br />
         <AuthorsInput
           :currentAuthors="publidata.authors"
           @authorsChanged="newAuthors => publidata.authors = newAuthors"
         />
         <small>{{ $t('author_instructions') }}</small>
       </div>
-
-
     </template>
 
-    <template slot="submit_button">
-      {{ $t('create') }}
-    </template>
-
+    <template slot="submit_button">{{ $t('create') }}</template>
   </Modal>
 </template>
 <script>
-import Modal from './BaseModal.vue';
-import AuthorsInput from '../subcomponents/AuthorsInput.vue';
+import Modal from "./BaseModal.vue";
+import TagsInput from "../subcomponents/TagsInput.vue";
+import AuthorsInput from "../subcomponents/AuthorsInput.vue";
 
 export default {
   props: {
-    read_only: Boolean
+    read_only: Boolean,
+    default_name: {
+      default: "",
+      type: String
+    },
+    default_template: {
+      default: "page_by_page",
+      type: String
+    }
   },
   components: {
     Modal,
+    TagsInput,
     AuthorsInput
   },
   data() {
     return {
       publidata: {
-        name: '',
-        template: 'page_by_page',
-        authors: this.$root.settings.current_author.hasOwnProperty('name') ? [{ name: this.$root.settings.current_author.name }] : [],
+        name: this.default_name,
+        template: this.default_template,
+        keywords: [],
+        authors: this.$root.settings.current_author.hasOwnProperty("name")
+          ? [{ name: this.$root.settings.current_author.name }]
+          : []
       }
     };
   },
   watch: {
-    'publidata.name': function() {
-      if(this.publidata.name.length > 0) {
+    publidata: {
+      handler: function() {
         this.askBeforeClosingModal = true;
-      } else {
-        this.askBeforeClosingModal = false;
-      }
+      },
+      deep: true
     }
   },
+  mounted() {},
   computed: {},
   methods: {
     newPublication: function(event) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • CreatePublication: newPublication');
+      if (this.$root.state.dev_mode === "debug") {
+        console.log("METHODS • CreatePublication: newPublication");
       }
       let name = this.publidata.name;
 
@@ -107,36 +117,46 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t('notifications.publi_name_exists'));
+          .error(this.$t("notifications.publi_name_exists"));
 
         return false;
       }
 
       let publidata = {
         name,
-        authors: this.publidata.authors,
         template: this.publidata.template,
-        width: 210,
-        height: 297,
-        // style: "human tech days",
-        // header_left: "Human Tech Days",
-        // gridstep: 5,
-        // margin_left: 20,
-        // margin_right: 20,
+        authors: this.publidata.authors,
+        keywords: this.publidata.keywords
+      };
 
-        pages: [{
-          id: +new Date() + '_' + (Math.random().toString(36) + '00000000000000000').slice(2, 3)
-        }]
+      if (publidata.template === "page_by_page") {
+        publidata.pages = [
+          {
+            id:
+              +new Date() +
+              "_" +
+              (Math.random().toString(36) + "00000000000000000").slice(2, 3)
+          }
+        ];
+        publidata.width = 210;
+        publidata.height = 297;
       }
-      this.$eventHub.$on('socketio.folder_created_or_updated', this.newPublicationCreated);
-      this.$root.createFolder({ type: 'publications', data: publidata });      
+
+      this.$eventHub.$on(
+        "socketio.folder_created_or_updated",
+        this.newPublicationCreated
+      );
+      this.$root.createFolder({ type: "publications", data: publidata });
     },
     newPublicationCreated: function(pdata) {
-      if(pdata.id === this.$root.justCreatedFolderID) {
-        this.$eventHub.$off('socketio.folder_created_or_updated', this.newPublicationCreated);
+      if (pdata.id === this.$root.justCreatedFolderID) {
+        this.$eventHub.$off(
+          "socketio.folder_created_or_updated",
+          this.newPublicationCreated
+        );
         this.$root.justCreatedFolderID = false;
         this.$nextTick(() => {
-          this.$emit('close', '');
+          this.$emit("close", "");
           this.$root.openPublication(pdata.slugFolderName);
         });
       }
