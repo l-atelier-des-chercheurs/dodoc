@@ -3,8 +3,8 @@ const fs = require("fs-extra"),
   sharp = require("sharp"),
   ffmpeg = require("fluent-ffmpeg");
 
-ffmpeg.setFfmpegPath("../ffmpeg-4.1.3-armhf-static/ffmpeg");
-ffmpeg.setFfprobePath("./ffmpeg-4.1.3-armhf-static/ffprobe");
+ffmpeg.setFfmpegPath(path.join(global.ffmpegpath, "ffmpeg"));
+ffmpeg.setFfprobePath(path.join(global.ffmpegpath, "ffprobe"));
 
 module.exports = (function() {
   return {

@@ -9,8 +9,8 @@ sharp.cache(false);
 const dev = require("./dev-log"),
   api = require("./api");
 
-ffmpeg.setFfmpegPath("../ffmpeg-4.1.3-armhf-static/ffmpeg");
-ffmpeg.setFfprobePath("./ffmpeg-4.1.3-armhf-static/ffprobe");
+ffmpeg.setFfmpegPath(path.join(global.ffmpegpath, "ffmpeg"));
+ffmpeg.setFfprobePath(path.join(global.ffmpegpath, "ffprobe"));
 
 module.exports = (function() {
   const API = {

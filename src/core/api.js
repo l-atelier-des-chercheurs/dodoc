@@ -12,7 +12,7 @@ const sharp = require("sharp");
 
 const dev = require("./dev-log");
 
-ffmpeg.setFfmpegPath("../ffmpeg-4.1.3-armhf-static/ffmpeg");
+ffmpeg.setFfmpegPath(path.join(global.ffmpegpath, "ffmpeg"));
 
 module.exports = (function() {
   const API = {
