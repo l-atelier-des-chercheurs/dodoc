@@ -11,8 +11,8 @@ const dev = require("./dev-log"),
   file = require("./file"),
   thumbs = require("./thumbs");
 
-ffmpeg.setFfmpegPath("../ffmpeg-4.1.3-armhf-static/ffmpeg");
-ffmpeg.setFfprobePath("./ffmpeg-4.1.3-armhf-static/ffprobe");
+ffmpeg.setFfmpegPath(path.join(global.ffmpegpath, "ffmpeg"));
+ffmpeg.setFfprobePath(path.join(global.ffmpegpath, "ffprobe"));
 
 const renice = 0;
 
