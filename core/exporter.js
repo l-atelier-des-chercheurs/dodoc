@@ -8,12 +8,12 @@ const path = require("path"),
 const sharp = require("sharp");
 sharp.cache(false);
 
-const puppeteer = require('puppeteer');
+const puppeteer = require("puppeteer");
 
-const dev = require('./dev-log'),
-  api = require('./api'),
-  file = require('./file'),
-  thumbs = require('./thumbs');
+const dev = require("./dev-log"),
+  api = require("./api"),
+  file = require("./file"),
+  thumbs = require("./thumbs");
 
 ffmpeg.setFfmpegPath(ffmpegstatic.path);
 ffmpeg.setFfprobePath(ffprobestatic.path);
@@ -250,7 +250,7 @@ module.exports = (function() {
                 .launch({
                   headless: true,
                   ignoreHTTPSErrors: true,
-                  args: ['--no-sandbox']
+                  args: ["--no-sandbox", "--font-render-hinting=none"]
                 })
                 .then(browser => {
                   return browser.newPage();
@@ -258,10 +258,10 @@ module.exports = (function() {
                 .then(page => {
                   page
                     .goto(urlToPubli, {
-                      waitUntil: 'networkidle2'
+                      waitUntil: "networkidle2"
                     })
                     .then(() => {
-                      page.emulateMedia('print');
+                      page.emulateMedia("print");
                       page
                         .pdf({
                           path: pdfPath,
@@ -270,7 +270,7 @@ module.exports = (function() {
                           height: `${publiData.height}mm`
                         })
                         .then(() => {
-                          console.log('Write PDF successful');
+                          console.log("Write PDF successful");
                           resolve({
                             pdfName,
                             pdfPath
