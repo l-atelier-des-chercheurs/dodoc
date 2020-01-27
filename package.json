@@ -37,6 +37,16 @@
     "asar": false,
     "mac": {
       "category": "public.app-category.education"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "snap",
+          "arch": [
+            "armv7l"
+          ]
+        }
+      ]
     }
   },
   "dependencies": {
