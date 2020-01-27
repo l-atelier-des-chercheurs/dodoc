@@ -11,7 +11,7 @@ sharp.cache(false);
 const dev = require("./dev-log"),
   api = require("./api");
 
-ffmpeg.setFfmpegPath(ffmpegstatic.path);
+ffmpeg.setFfmpegPath(global.ffmpegpath);
 ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function() {

@@ -13,7 +13,7 @@ const dev = require("./dev-log"),
   file = require("./file"),
   thumbs = require("./thumbs");
 
-ffmpeg.setFfmpegPath(ffmpegstatic.path);
+ffmpeg.setFfmpegPath(global.ffmpegpath);
 ffmpeg.setFfprobePath(ffprobestatic.path);
 
 const renice = 0;
