@@ -2,29 +2,65 @@
   <div class="m_publicationMeta">
     <div
       class="label padding-verysmall"
-      v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode)"
-    >{{ $t(publication.template) }}</div>
+      v-if="
+        ![
+          'export_publication',
+          'print_publication',
+          'link_publication'
+        ].includes($root.state.mode)
+      "
+    >
+      {{ $t(publication.template) }}
+    </div>
 
     <div class="m_publicationMeta--topbar">
       <div>
         <button
           type="button"
           class="m_publicationMeta--topbar--backbutton"
-          v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode)"
+          v-if="
+            ![
+              'export_publication',
+              'print_publication',
+              'link_publication'
+            ].includes($root.state.mode)
+          "
           @click="closePublication()"
-          :title="$t('back_to_project')"
-          v-tippy="{ 
-            placement : 'bottom',
+          :content="$t('close')"
+          v-tippy="{
+            placement: 'bottom',
             delay: [600, 0]
           }"
-        >‹</button>
+        >
+          ‹
+        </button>
 
-        <div class="m_publicationMeta--topbar--title" :title="slugPubliName">{{ publication.name }}</div>
+        <div
+          class="m_publicationMeta--topbar--title"
+          :content="slugPubliName"
+          v-tippy="{
+            placement: 'bottom-start',
+            delay: [600, 0],
+            interactive: true
+          }"
+        >
+          {{ publication.name }}
+        </div>
       </div>
       <div
-        v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode)"
+        v-if="
+          ![
+            'export_publication',
+            'print_publication',
+            'link_publication'
+          ].includes($root.state.mode)
+        "
       >
-        <button type="button" class="buttonLink" @click="show_edit_publication = true">
+        <button
+          type="button"
+          class="buttonLink"
+          @click="show_edit_publication = true"
+        >
           <svg
             version="1.1"
             class="inline-svg"
@@ -44,7 +80,7 @@
               L19.1,91.5z"
             />
           </svg>
-          {{ $t('edit') }}
+          {{ $t("edit") }}
         </button>
 
         <EditPublication
@@ -59,8 +95,10 @@
           class="buttonLink"
           v-if="show_export_button"
           @click="$emit('export')"
-          :class="{ 'is--disabled' : export_button_is_disabled }"
-        >{{ $t('export') }}</button>
+          :class="{ 'is--disabled': export_button_is_disabled }"
+        >
+          {{ $t("export") }}
+        </button>
 
         <button type="button" class="buttonLink" @click="removePublication">
           <svg
@@ -82,7 +120,7 @@
             l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
             />
           </svg>
-          {{ $t('remove') }}
+          {{ $t("remove") }}
         </button>
       </div>
     </div>
@@ -161,5 +199,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

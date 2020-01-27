@@ -1,10 +1,10 @@
 <template>
   <div
     class="m_media"
-    :class=" { 
-      'is--inPubli' : is_media_in_publi, 
-      'is--fav' : media.fav,
-      'is--ownMedia' : media_made_by_current_author
+    :class="{
+      'is--inPubli': is_media_in_publi,
+      'is--fav': media.fav,
+      'is--ownMedia': media_made_by_current_author
     }"
   >
     <div>
@@ -12,7 +12,7 @@
         @click.stop="openMediaModal()"
         @mouseover="is_hovered = true"
         @mouseleave="is_hovered = false"
-        :class="{ 'is--hovered' : is_hovered }"
+        :class="{ 'is--hovered': is_hovered }"
       >
         <div>
           <div class="m_metaField padding-sides-verysmall">
@@ -38,7 +38,9 @@
                 />
                 <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 " />
               </svg>
-              <span v-if="!!media.type" :class="{ 'c-rouge' : media.fav }">{{ $t(media.type) }}</span>
+              <span v-if="!!media.type" :class="{ 'c-rouge': media.fav }">{{
+                $t(media.type)
+              }}</span>
             </div>
           </div>
           <MediaContent
@@ -48,21 +50,28 @@
             :media="media"
             :preview_size="preview_size"
           />
-          <figcaption class="m_media--caption" v-if="!!media.caption">{{ media.caption }}</figcaption>
+          <figcaption class="m_media--caption" v-if="!!media.caption">
+            <span>{{ media.caption }}</span>
+          </figcaption>
 
           <transition name="slideright" :duration="400">
             <div
-              v-if="$root.settings.current_publication.slug && $root.settings.current_publication.accepted_media_type.includes(media.type)"
+              v-if="
+                $root.settings.current_publication.slug &&
+                  $root.settings.current_publication.accepted_media_type.includes(
+                    media.type
+                  )
+              "
               class="m_media--add_to_recipe"
               @click.stop="addToCurrentPubli()"
             >
               <button
                 type="button"
                 class="button_addToPubli button-greenthin button-square"
-                :title="instructions_depending_on_media_in_publi"
+                :content="instructions_depending_on_media_in_publi"
                 @click.stop="addToCurrentPubli()"
-                v-tippy="{ 
-                  placement : 'left',
+                v-tippy="{
+                  placement: 'left',
                   delay: [600, 0]
                 }"
               >
@@ -75,21 +84,15 @@
 
         <figcaption v-if="is_hovered && false">
           <div class="m_metaField" v-if="!!media.type">
-            <div>{{ $t('type') }}</div>
+            <div>{{ $t("type") }}</div>
             <div>{{ $t(media.type) }}</div>
           </div>
           <div class="m_metaField" v-if="!!media.authors">
-            <div>{{ $t('author') }}</div>
+            <div>{{ $t("author") }}</div>
             <div>{{ media.authors }}</div>
           </div>
-          <div class="m_metaField">
-            <div>{{ $t('created') }}</div>
-            <div>{{ $root.formatDateToHuman(media.date_created) }}</div>
-          </div>
-          <div class="m_metaField">
-            <div>{{ $t('edited') }}</div>
-            <div>{{ $root.formatDateToHuman(media.date_modified) }}</div>
-          </div>
+          <DateField :title="'created'" :date="media.date_created" />
+          <DateField :title="'edited'" :date="media.date_modified" />
         </figcaption>
         <!-- <nav>
           <button 
@@ -216,5 +219,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

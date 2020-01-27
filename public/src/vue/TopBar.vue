@@ -1,5 +1,5 @@
 <template>
-  <div class="m_topbar" :class="{ 'is--collapsable' : !$root.screen_is_wide }">
+  <div class="m_topbar" :class="{ 'is--collapsable': !$root.screen_is_wide }">
     <div class="m_topbar--left">
       <div class="m_topbar--left--logo">
         <transition name="BackButton" :duration="500">
@@ -10,16 +10,16 @@
             @click="goBack()"
           >
             ‹
-            <span class="backButton--text">{{ $t('back') }}</span>
+            <span class="backButton--text">{{ $t("back") }}</span>
           </button>
         </transition>
         <img
-          :title="`do•doc version ${$root.state.appVersion}`"
+          :content="`do•doc version ${$root.state.appVersion}`"
           src="/images/i_logo.svg"
           @click="goHomeOrReload()"
           draggable="false"
-          v-tippy="{ 
-            placement : 'bottom',
+          v-tippy="{
+            placement: 'bottom',
             delay: [1000, 0]
           }"
         />
@@ -39,9 +39,9 @@
           v-if="project.hasOwnProperty('name')"
           @click="$root.do_navigation.view = 'ProjectView'"
           :disabled="$root.do_navigation.view === 'ProjectView'"
-          :title="$t('back_to_project')"
-          v-tippy="{ 
-            placement : 'bottom',
+          :content="$t('back_to_project')"
+          v-tippy="{
+            placement: 'bottom',
             delay: [600, 0]
           }"
         >
@@ -50,7 +50,10 @@
 
         <button
           type="button"
-          v-if="project.hasOwnProperty('name') && $root.do_navigation.view === 'CaptureView'"
+          v-if="
+            project.hasOwnProperty('name') &&
+              $root.do_navigation.view === 'CaptureView'
+          "
         >
           <span>Capture</span>
         </button>
@@ -96,28 +99,38 @@
           type="button"
           class="m_topbar--center--authors--currentAuthor"
           @click="showAuthorsListModal = true"
-          :title="$t('login')"
-          v-tippy="{ 
-            placement : 'bottom',
+          :content="$t('login')"
+          v-tippy="{
+            placement: 'bottom',
             delay: [600, 0]
           }"
         >
           <template v-if="!!$root.settings.current_author">
             <div
               class="m_topbar--center--authors--portrait"
-              v-if="$root.settings.current_author.hasOwnProperty('preview') && $root.settings.current_author.preview.length !== ''"
+              v-if="
+                $root.settings.current_author.hasOwnProperty('preview') &&
+                  $root.settings.current_author.preview.length !== ''
+              "
             >
               <img
-                :src="urlToPortrait($root.settings.current_author.slugFolderName, $root.settings.current_author.preview)"
+                :src="
+                  urlToPortrait(
+                    $root.settings.current_author.slugFolderName,
+                    $root.settings.current_author.preview
+                  )
+                "
                 width="100"
                 height="100"
                 draggable="false"
               />
             </div>
-            <div class="m_topbar--center--authors--name">{{ $root.settings.current_author.name }}</div>
+            <div class="m_topbar--center--authors--name">
+              {{ $root.settings.current_author.name }}
+            </div>
           </template>
           <template v-else>
-            <div class="font-medium">({{ $t('authors') }})</div>
+            <div class="font-medium">({{ $t("authors") }})</div>
           </template>
         </button>
 
@@ -135,20 +148,10 @@
       <div class="m_topbar--right--pictos">
         <button
           type="button"
-          @click="$root.switchLang()"
-          :title="$t('lang')"
-          v-tippy="{ 
-            placement : 'bottom-end',
-            delay: [600, 0]
-          }"
-        >{{ this.$root.lang.current }}</button>
-
-        <button
-          type="button"
           @click="showQRModal = !showQRModal"
-          :title="$t('share_access')"
-          v-tippy="{ 
-            placement : 'bottom-end',
+          :content="$t('share_access')"
+          v-tippy="{
+            placement: 'bottom-end',
             delay: [600, 0]
           }"
         >
@@ -173,15 +176,19 @@
           </svg>
         </button>
 
-        <QRCode v-if="showQRModal" :slugProjectName="slugProjectName" @close="showQRModal = false"></QRCode>
+        <QRCode
+          v-if="showQRModal"
+          :slugProjectName="slugProjectName"
+          @close="showQRModal = false"
+        />
 
         <a
           class="js--openInBrowser"
           target="_blank"
           href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc"
-          :title="$t('help')"
-          v-tippy="{ 
-            placement : 'bottom',
+          :content="$t('help')"
+          v-tippy="{
+            placement: 'bottom',
             delay: [600, 0]
           }"
         >
@@ -210,6 +217,46 @@
           </svg>
         </a>
 
+        <button
+          type="button"
+          @click="showSettingsModal = !showSettingsModal"
+          :content="$t('settings')"
+          v-tippy="{
+            placement: 'bottom-end',
+            delay: [600, 0]
+          }"
+        >
+          <svg
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="90px"
+            height="90px"
+            viewBox="0 0 90 90"
+            style="enable-background:new 0 0 90 90;"
+            xml:space="preserve"
+          >
+            <path
+              class="st0"
+              d="M79.8,49.3v-9c0-1,0.6-1.9,1.4-2.3l8.7-4.5l-1.8-5.2l-9.9,1.4c-1,0.2-2-0.3-2.6-1.1l-5.4-7.3
+	c-0.6-0.8-0.7-1.8-0.2-2.7l4.3-8.6l-4.7-3.2l-6.9,6.8C62,14.3,61,14.5,60,14.2l-8.9-2.7c-1-0.3-1.7-1.1-1.9-2.2L47.5,0h-5.7
+	l-1.6,9.4c-0.1,1-0.9,1.8-1.8,2.2l-8.9,2.8c-1,0.3-2,0.1-2.7-0.6l-7-6.6l-4.6,3.3l4.4,8.5c0.5,0.9,0.4,1.9-0.2,2.7L14,29
+	c-0.6,0.8-1.6,1.2-2.6,1.1l-9.7-1.3L0,34l8.7,4.3c0.9,0.5,1.5,1.4,1.5,2.4v9c0,1-0.6,1.9-1.4,2.3l-8.6,4.5l1.8,5.3l9.8-1.4
+	c1-0.1,2,0.3,2.6,1.1l5.4,7.3c0.6,0.8,0.7,1.8,0.2,2.7L15.7,80l4.6,3.2l6.9-6.8c0.7-0.7,1.8-0.9,2.7-0.6l8.9,2.7
+	c1,0.3,1.7,1.1,1.9,2.1l1.7,9.4h5.7l1.6-9.4c0.1-1,0.9-1.8,1.8-2.2l8.9-2.8c1-0.3,2-0.1,2.7,0.6l7,6.6l4.6-3.3L70.4,71
+	c-0.5-0.9-0.4-1.9,0.2-2.7L76,61c0.6-0.8,1.6-1.2,2.6-1.1l9.7,1.3L90,56l-8.7-4.3C80.4,51.2,79.8,50.3,79.8,49.3z M45,63.4
+	c-10.5,0-19-8.3-19-18.4c0-10.2,8.5-18.4,19-18.4S64,34.8,64,45C64,55.2,55.5,63.4,45,63.4z"
+            />
+          </svg>
+        </button>
+
+        <SettingsModal
+          v-if="showSettingsModal"
+          @close="showSettingsModal = false"
+        />
+
         <!-- <button type="button">
           <svg version="1.1"
             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
@@ -221,14 +268,15 @@
         </button>-->
       </div>
     </div>
-    <div
-      class="m_topbar--status"
-      v-if="!$root.state.connected"
-    >{{ $t('notifications.connection_lost') }} {{ $t('notifications.contents_wont_be_editable') }}</div>
+    <div class="m_topbar--status" v-if="!$root.state.connected">
+      {{ $t("notifications.connection_lost") }}
+      {{ $t("notifications.contents_wont_be_editable") }}
+    </div>
   </div>
 </template>
 <script>
 import QRCode from "./components/modals/QRCode.vue";
+import SettingsModal from "./components/modals/SettingsModal.vue";
 import AuthorsList from "./components/modals/AuthorsList.vue";
 import Clients from "./components/Clients.vue";
 
@@ -236,12 +284,14 @@ export default {
   props: ["has_back_button", "slugProjectName", "authors", "project"],
   components: {
     QRCode,
+    SettingsModal,
     AuthorsList,
     Clients
   },
   data() {
     return {
       showQRModal: false,
+      showSettingsModal: false,
       showAuthorsListModal: false,
       show_menu: false
     };

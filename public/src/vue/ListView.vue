@@ -23,11 +23,7 @@
             <label for="media_switch" class="cursor-pointer">
               <span class>{{ $t("projects") }}</span>
             </label>
-            <input
-              type="checkbox"
-              id="media_switch"
-              v-model="show_medias_instead_of_projects"
-            />
+            <input type="checkbox" id="media_switch" v-model="show_medias_instead_of_projects" />
             <label for="media_switch">
               <span class>{{ $t("medias") }}</span>
             </label>
@@ -60,9 +56,7 @@
                       class="button-nostyle text-uc button-triangle"
                       :class="{ 'is--active': show_filters }"
                       @click="show_filters = !show_filters"
-                    >
-                      {{ $t("filters") }}
-                    </button>
+                    >{{ $t("filters") }}</button>
                   </template>
                   <TagsAndAuthorFilters
                     v-if="show_filters"
@@ -85,7 +79,6 @@
                     }"
                     @click="show_search = !show_search"
                   >
-                    {{ $t("search") }}
                     <svg
                       class="inline-svg"
                       version="1.1"
@@ -96,7 +89,7 @@
                       width="96.2px"
                       height="96.2px"
                       viewBox="0 0 96.2 96.2"
-                      style="enable-background:new 0 0 96.2 96.2;"
+                      style="margin-bottom: -2px;"
                       xml:space="preserve"
                     >
                       <path
@@ -107,36 +100,28 @@
 	c-8.6-8.6-8.6-22.6,0-31.3C28.1,10.8,42.1,10.8,50.8,19.5z"
                       />
                     </svg>
+                    {{ $t("search") }}
                   </button>
 
                   <div
                     v-if="
                       show_search ||
-                        $root.settings.project_filter.name.length > 0
+                        debounce_search_project_name.length > 0
                     "
                     class="m_metaField"
                   >
                     <div>{{ $t("project_name_to_find") }}</div>
 
                     <div class="input-group">
-                      <input
-                        type="text"
-                        class="input-sm"
-                        v-model="$root.settings.project_filter.name"
-                      />
-                      <span
-                        class="input-addon"
-                        v-if="$root.settings.project_filter.name.length > 0"
-                      >
+                      <input type="text" class="input-sm" v-model="debounce_search_project_name" />
+                      <span class="input-addon" v-if="debounce_search_project_name.length > 0">
                         <button
                           type="button"
                           :disabled="
-                            $root.settings.project_filter.name.length === 0
+                            debounce_search_project_name.length === 0
                           "
-                          @click="$root.settings.project_filter.name = ''"
-                        >
-                          ×
-                        </button>
+                          @click="debounce_search_project_name = ''"
+                        >×</button>
                       </span>
                     </div>
                   </div>
@@ -166,9 +151,7 @@
                     class="button-nostyle text-uc button-triangle"
                     :class="{ 'is--active': show_filters }"
                     @click="show_filters = !show_filters"
-                  >
-                    {{ $t("filters") }}
-                  </button>
+                  >{{ $t("filters") }}</button>
                 </template>
                 <TagsAndAuthorFilters
                   v-if="show_filters"
@@ -193,6 +176,7 @@
         v-if="!show_medias_instead_of_projects"
         class="m_projects--list"
         name="list-complete"
+        :duration="800"
       >
         <Project
           v-for="(sortedProject, index) in sortedProjectsSlug"
@@ -211,9 +195,7 @@
         <div v-for="item in groupedMedias" :key="item[0]">
           <h3
             class="font-folder_title margin-sides-small margin-none margin-bottom-small"
-          >
-            {{ $root.formatDateToHuman(item[0]) }}
-          </h3>
+          >{{ $root.formatDateToHuman(item[0]) }}</h3>
 
           <div class="m_mediaShowAll">
             <div v-for="media in item[1]" :key="media.slugMediaName">
@@ -238,6 +220,7 @@ import CreateProject from "./components/modals/CreateProject.vue";
 import MediaCard from "./components/subcomponents/MediaCard.vue";
 import TagsAndAuthorFilters from "./components/subcomponents/TagsAndAuthorFilters.vue";
 import { setTimeout } from "timers";
+import debounce from "debounce";
 
 export default {
   props: {
@@ -267,7 +250,10 @@ export default {
       },
 
       show_filters: false,
-      show_search: false
+      show_search: false,
+
+      debounce_search_project_name: "",
+      debounce_search_project_name_function: undefined
     };
   },
   mounted() {
@@ -305,11 +291,19 @@ export default {
         this.$root.settings.project_filter.keyword = "";
         this.$root.settings.project_filter.author = "";
         this.$root.settings.project_filter.name = "";
+        this.debounce_search_project_name = "";
         this.$root.settings.media_filter.keyword = "";
         this.$root.settings.media_filter.author = "";
         this.$root.settings.media_filter.fav = false;
         this.$root.settings.media_filter.type = false;
       }
+    },
+    debounce_search_project_name: function() {
+      if (this.debounce_tweet_filter_function)
+        clearTimeout(this.debounce_tweet_filter_function);
+      this.debounce_tweet_filter_function = setTimeout(() => {
+        this.$root.settings.project_filter.name = this.debounce_search_project_name;
+      }, 340);
     }
   },
   computed: {

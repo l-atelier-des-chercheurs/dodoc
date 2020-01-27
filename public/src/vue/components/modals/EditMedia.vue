@@ -32,7 +32,6 @@
         <a
           :download="media.media_filename"
           :href="mediaURL"
-          :title="media.media_filename"
           target="_blank"
           class="buttonLink hide_on_print"
           :disabled="read_only"
@@ -44,19 +43,21 @@
             xmlns:xlink="http://www.w3.org/1999/xlink"
             x="0px"
             y="0px"
-            width="91.6px"
-            height="95px"
-            viewBox="0 0 91.6 95"
-            style="enable-background:new 0 0 91.6 95;"
+            width="46.7px"
+            height="70px"
+            viewBox="0 0 46.7 70"
+            style="enable-background:new 0 0 46.7 70;"
             xml:space="preserve"
           >
-            <rect x="0.3" y="105.8" class="st0" width="85.8" height="16" />
             <g>
-              <path
-                class="st0"
-                d="M75.2,51L60.6,37.5c-2.5-2.3-4.5-4.2-5.9-5.9c-1.4-1.7-2.8-3.7-4.2-6l0,67.6H35.3l0-67.6
-			c-1.2,2.1-2.6,4-4.2,5.8c-1.6,1.8-3.5,3.8-5.9,6.1L10.6,51L0,38.6L42.9,0l42.9,38.6L75.2,51z"
-              />
+              <g>
+                <path
+                  class="st0"
+                  d="M8.5,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7h7.7l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2
+			L23.3,59.6L3.2,41.5L8.5,35.2z"
+                />
+              </g>
+              <polygon class="st0" points="46.7,70 0,70 0,62.4 46.6,62.4 	" />
             </g>
           </svg>
           {{ $t("download") }}
@@ -135,8 +136,7 @@
                 v-for="project in all_projects"
                 :key="project.slugFolderName"
                 :value="project.slugFolderName"
-                >{{ project.name }}</option
-              >
+              >{{ project.name }}</option>
             </select>
             <button
               type="button"
@@ -152,7 +152,40 @@
           type="button"
           class="buttonLink"
           @click="show_edit_media_options = !show_edit_media_options"
+          v-if="media.type === 'image' || media.type === 'video'"
         >
+          <svg
+            version="1.1"
+            class="inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="77.6px"
+            height="85.4px"
+            viewBox="0 0 77.6 85.4"
+            style="enable-background:new 0 0 77.6 85.4;"
+            xml:space="preserve"
+          >
+            <defs />
+            <g>
+              <path
+                d="M73.9,39h-7.6c-1.6-5.6-6.7-9.7-12.7-9.7S42.5,33.5,40.8,39H3.7c-2,0-3.7,1.6-3.7,3.7c0,2,1.6,3.7,3.7,3.7h37.1
+		c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h7.6c2,0,3.7-1.6,3.7-3.7C77.6,40.7,76,39,73.9,39z M53.6,48.7c-3.2,0-6-2.6-6-6
+		s2.6-6,6-6s6,2.6,6,6S56.8,48.7,53.6,48.7z"
+              />
+              <path
+                d="M3.7,17.1h7.9c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h36.9c2,0,3.7-1.6,3.7-3.7S76,9.7,73.9,9.7H37
+		C35.4,4.1,30.3,0,24.3,0S13.2,4.1,11.6,9.7H3.7c-2,0-3.7,1.6-3.7,3.7S1.6,17.1,3.7,17.1z M24.3,7.4c3.2,0,6,2.6,6,6s-2.6,6-6,6
+		s-6-2.8-6-6S21.1,7.4,24.3,7.4z"
+              />
+              <path
+                d="M73.9,68.3H37c-1.6-5.6-6.7-9.7-12.7-9.7s-11.1,4.1-12.7,9.7H3.7c-2,0-3.7,1.6-3.7,3.7s1.6,3.7,3.7,3.7h7.9
+		c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h36.9c2,0,3.7-1.6,3.7-3.7S76,68.3,73.9,68.3z M24.3,78c-3.2,0-6-2.6-6-6s2.6-6,6-6
+		s6,2.6,6,6S27.5,78,24.3,78z"
+              />
+            </g>
+          </svg>
           {{ $t("adjust") }}
         </button>
         <div v-if="show_edit_media_options" class="bg-creme">
@@ -161,25 +194,19 @@
             class="buttonLink"
             @click="editRawMedia('rotate_image', { angle: 90 })"
             v-if="media.type === 'image'"
-          >
-            {{ $t("rotate_clockwise") }}
-          </button>
+          >{{ $t("rotate_clockwise") }}</button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('optimize_video')"
             v-if="media.type === 'video'"
-          >
-            {{ $t("convert_video_for_the_web") }}
-          </button>
+          >{{ $t("convert_video_for_the_web") }}</button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('reset')"
             v-if="!!media.original_media_filename"
-          >
-            {{ $t("revert_to_original") }}
-          </button>
+          >{{ $t("revert_to_original") }}</button>
         </div>
 
         <button
@@ -224,10 +251,7 @@
               v-model="mediadata.fav"
               :readonly="read_only"
             />
-            <label
-              for="favswitch_editmedia"
-              :class="{ 'c-rouge': mediadata.fav }"
-            >
+            <label for="favswitch_editmedia" :class="{ 'c-rouge': mediadata.fav }">
               {{ $t("fav") }}
               <svg
                 version="1.1"
@@ -260,19 +284,23 @@
             <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
           </div>
         </div>
-        <div class="m_metaField" v-if="!!project_name">
+        <div
+          class="m_metaField"
+          v-if="!!project_name && $root.do_navigation.view !== 'ProjectView'"
+        >
           <div>{{ $t("project") }}</div>
           <div>
-            {{ project_name }}
             <button
               type="button"
               @click="minimizeMediaAndShowProject"
-              :title="$t('open_project')"
+              :content="$t('open_project')"
               v-tippy="{
                 placement: 'top',
                 delay: [600, 0]
               }"
+              style="text-transform: initial"
             >
+              {{ project_name }}
               ↑
             </button>
             <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
@@ -287,24 +315,15 @@
           </div>
         </div>-->
 
-        <div class="m_metaField">
-          <div>{{ $t("created") }}</div>
-          <div :title="media.date_created">
-            {{ $root.formatDateToHuman(media.date_created) }}
-          </div>
-        </div>
-        <div class="m_metaField" v-if="media.hasOwnProperty('date_uploaded')">
-          <div>{{ $t("uploaded") }}</div>
-          <div :title="media.date_uploaded">
-            {{ $root.formatDateToHuman(media.date_uploaded) }}
-          </div>
-        </div>
-        <div class="m_metaField">
-          <div>{{ $t("edited") }}</div>
-          <div :title="media.date_modified">
-            {{ $root.formatDateToHuman(media.date_modified) }}
-          </div>
-        </div>
+        <DateField :title="'created'" :date="media.date_created" />
+
+        <DateField
+          v-if="media.hasOwnProperty('date_uploaded')"
+          :title="'uploaded'"
+          :date="media.date_uploaded"
+        />
+
+        <DateField :title="'edited'" :date="media.date_modified" />
 
         <!-- Caption -->
         <div
@@ -315,10 +334,7 @@
         >
           <label>{{ $t("caption") }}</label>
           <br />
-          <textarea
-            v-model="mediadata.caption"
-            :readonly="read_only"
-          ></textarea>
+          <textarea v-model="mediadata.caption" :readonly="read_only"></textarea>
         </div>
 
         <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
@@ -350,10 +366,7 @@
         </div>
 
         <!-- Author(s) -->
-        <div
-          v-if="!read_only || !!mediadata.authors"
-          class="margin-bottom-small"
-        >
+        <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
           <label>{{ $t("author") }}</label>
 
           <AuthorsInput
