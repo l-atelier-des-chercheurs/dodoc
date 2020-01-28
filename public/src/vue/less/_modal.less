@@ -8,7 +8,7 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 
-  background-color: fade(#fff, 90%);
+  background-color: fade(@c-noir, 90%);
   // cursor: pointer;
   .custom_scrollbar(8px, 5px, 6px);
 
@@ -328,10 +328,10 @@
     overflow: hidden;
     position: relative;
     // .bg-blanc;
-    // .bg-gris_clair;
-    .bg-noir;
+    .bg-gris_clair;
+    // .bg-noir;
 
-    &[data-context='edit'] {
+    &[data-context="edit"] {
       > * {
         width: 100%;
         height: 100%;
@@ -403,7 +403,7 @@
     }
   }
 
-  input[type='text'] {
+  input[type="text"] {
   }
 
   .m_modal--preview--media {
@@ -518,7 +518,7 @@
     .margin-verysmall;
   }
 
-  button[type='submit'] {
+  button[type="submit"] {
     #app:not(.is--wide) & {
       // left: 50%;
       width: 10em;
