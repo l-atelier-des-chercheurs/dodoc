@@ -3223,19 +3223,23 @@ small {
 
     .m_imageselect--selectFromMedias--imageList {
       background-color: var(--c-gris-tresclair);
-      border-radius: 0 0 var(--input-border-radius) var(--input-border-radius);
+      border-radius: var(--input-border-radius);
       padding: ~"calc(var(--spacing) / 8)";
-      padding-top: var(--spacing);
-      margin-top: ~"calc(var(--spacing) * 7/8 * -1)";
+      // padding-top: var(--spacing);
+      // margin-top: ~"calc(var(--spacing) * 7/8 * -1)";
       display: flex;
       flex-flow: row wrap;
-      max-height: 300px;
+      max-height: 220px;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+
+      .custom_scrollbar(1px, 3px, 2px, rgba(255, 255, 255, 0), #333);
 
       button {
         display: block;
-        width: 57px;
-        height: 57px;
+        width: 55px;
+        height: 55px;
         margin: ~"calc(var(--spacing) / 8)";
         padding: 0;
         border-radius: var(--input-border-radius);
