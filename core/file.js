@@ -1,9 +1,6 @@
 const path = require("path"),
   fs = require("fs-extra"),
-  validator = require("validator"),
-  ffmpegstatic = require("ffmpeg-static"),
-  ffprobestatic = require("ffprobe-static"),
-  ffmpeg = require("fluent-ffmpeg");
+  validator = require("validator");
 
 const sharp = require("sharp");
 
@@ -12,9 +9,6 @@ const dev = require("./dev-log"),
   thumbs = require("./thumbs"),
   cache = require("./cache"),
   recipe = require("./recipe");
-
-// ffmpeg.setFfmpegPath(ffmpegstatic.path);
-// ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function() {
   const API = {
@@ -744,6 +738,7 @@ module.exports = (function() {
                   break;
                 case ".mp3":
                 case ".wav":
+                case ".aac":
                 case ".m4a":
                   additionalMeta.type = "audio";
                   break;
@@ -1383,7 +1378,7 @@ module.exports = (function() {
         } else if (additionalMeta.type === "audio") {
           tasks.push(
             new Promise((resolve, reject) => {
-              mediaName += ".mp3";
+              mediaName += ".aac";
 
               // only works for projects media (root) for now
               api
