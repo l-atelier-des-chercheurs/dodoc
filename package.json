@@ -41,7 +41,7 @@
     "linux": {
       "target": [
         {
-          "target": "snap",
+          "target": "AppImage",
           "arch": [
             "armv7l"
           ]
