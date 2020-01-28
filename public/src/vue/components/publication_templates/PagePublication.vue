@@ -1,8 +1,7 @@
 <template>
   <div
     class="m_publicationview"
-    :class="{ 'is--preview' : preview_mode, 'is--fullscreen' : fullscreen_mode }"
-    @scroll="onScroll"
+    :class="{ 'is--preview': preview_mode, 'is--fullscreen': fullscreen_mode }"
     ref="panel"
   >
     <PublicationHeader
@@ -22,10 +21,16 @@
     <div class="m_publicationview--settings">
       <div
         class
-        v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode)"
+        v-if="
+          ![
+            'export_publication',
+            'print_publication',
+            'link_publication'
+          ].includes($root.state.mode)
+        "
       >
         <input id="settings" type="checkbox" v-model="advanced_options" />
-        <label for="settings">{{ $t('settings') }}</label>
+        <label for="settings">{{ $t("settings") }}</label>
       </div>
 
       <template v-if="advanced_options">
@@ -42,7 +47,7 @@
         <hr />
 
         <div class="margin-bottom-small">
-          <label>{{ $t('header_left') }}</label>
+          <label>{{ $t("header_left") }}</label>
           <input
             class="input-large"
             type="text"
@@ -53,7 +58,7 @@
         </div>
 
         <div class="margin-bottom-small">
-          <label>{{ $t('header_right') }}</label>
+          <label>{{ $t("header_right") }}</label>
           <input
             class="input-large"
             type="text"
@@ -66,7 +71,7 @@
         <hr />
 
         <div class="margin-bottom-small">
-          <label>{{ $t('width') }}(mm)</label>
+          <label>{{ $t("width") }}(mm)</label>
           <input
             type="number"
             min="1"
@@ -78,7 +83,7 @@
         </div>
 
         <div class="margin-bottom-small">
-          <label>{{ $t('height') }}(mm)</label>
+          <label>{{ $t("height") }}(mm)</label>
           <input
             type="number"
             min="1"
@@ -90,7 +95,7 @@
         </div>
 
         <div class="margin-bottom-small">
-          <label>{{ $t('gridstep') }}(mm)</label>
+          <label>{{ $t("gridstep") }}(mm)</label>
           <input
             type="number"
             min="1"
@@ -105,17 +110,19 @@
               class="switch"
               id="favFilter"
               v-model="new_snap_to_grid"
-              @change="updatePublicationOption(new_snap_to_grid, 'snap_to_grid')"
+              @change="
+                updatePublicationOption(new_snap_to_grid, 'snap_to_grid')
+              "
               :readonly="read_only"
             />
-            <label for="favFilter">{{ $t('snap_to_grid') }}</label>
+            <label for="favFilter">{{ $t("snap_to_grid") }}</label>
           </span>
         </div>
 
         <hr />
 
         <div class="margin-bottom-small">
-          <label>{{ $t('margin_top') }}(mm)</label>
+          <label>{{ $t("margin_top") }}(mm)</label>
           <input
             type="number"
             min="0"
@@ -126,7 +133,7 @@
           />
         </div>
         <div class="margin-bottom-small">
-          <label>{{ $t('margin_bottom') }}(mm)</label>
+          <label>{{ $t("margin_bottom") }}(mm)</label>
           <input
             type="number"
             min="0"
@@ -137,7 +144,7 @@
           />
         </div>
         <div class="margin-bottom-small">
-          <label>{{ $t('margin_left') }}(mm)</label>
+          <label>{{ $t("margin_left") }}(mm)</label>
           <input
             type="number"
             min="0"
@@ -148,7 +155,7 @@
           />
         </div>
         <div class="margin-bottom-small">
-          <label>{{ $t('margin_right') }}(mm)</label>
+          <label>{{ $t("margin_right") }}(mm)</label>
           <input
             type="number"
             min="0"
@@ -162,12 +169,14 @@
         <hr />
 
         <div class="margin-bottom-small">
-          <label for="show_page_number">{{ $t('show_page_numbers') }}</label>
+          <label for="show_page_number">{{ $t("show_page_numbers") }}</label>
           <input
             id="show_page_number"
             type="checkbox"
             v-model="new_show_page_number"
-            @change="updatePublicationOption(new_show_page_number, 'show_page_number')"
+            @change="
+              updatePublicationOption(new_show_page_number, 'show_page_number')
+            "
           />
         </div>
       </template>
@@ -175,11 +184,17 @@
 
     <div
       class="m_publicationSettings"
-      v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode)"
+      v-if="
+        ![
+          'export_publication',
+          'print_publication',
+          'link_publication'
+        ].includes($root.state.mode)
+      "
     >
       <button
         class="margin-vert-verysmall font-verysmall"
-        :class="{ 'is--active' : !preview_mode }"
+        :class="{ 'is--active': !preview_mode }"
         @mousedown.stop.prevent="preview_mode = !preview_mode"
         @touchstart.stop.prevent="preview_mode = !preview_mode"
       >
@@ -262,13 +277,22 @@
           style="enable-background:new 0 0 133.3 133.2;"
           xml:space="preserve"
         >
-          <polygon class="st0" points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	" />
+          <polygon
+            class="st0"
+            points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	"
+          />
           <polygon
             class="st0"
             points="112.3,74.5 133.3,74.5 133.3,133.2 74.6,133.2 74.6,112.2 112.3,112.2 	"
           />
-          <polygon class="st0" points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	" />
-          <polygon class="st0" points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	" />
+          <polygon
+            class="st0"
+            points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	"
+          />
+          <polygon
+            class="st0"
+            points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	"
+          />
         </svg>
         <svg
           version="1.1"
@@ -284,13 +308,22 @@
           style="enable-background:new 0 0 133.3 133.2;"
           xml:space="preserve"
         >
-          <polygon class="st0" points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	" />
+          <polygon
+            class="st0"
+            points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	"
+          />
           <polygon
             class="st0"
             points="95.6,133.2 74.6,133.2 74.6,74.5 133.3,74.5 133.3,95.5 95.6,95.5 	"
           />
-          <polygon class="st0" points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	" />
-          <polygon class="st0" points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	" />
+          <polygon
+            class="st0"
+            points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	"
+          />
+          <polygon
+            class="st0"
+            points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	"
+          />
         </svg>
       </button>
 
@@ -314,7 +347,9 @@
           xml:space="preserve"
         >
           <defs />
-          <path d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z" />
+          <path
+            d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z"
+          />
         </svg>
       </button>
       <button
@@ -350,93 +385,63 @@
       <div
         v-for="(page, pageNumber) in pagesWithDefault"
         :key="page.id"
-        :ref="pageNumber === page_currently_active ? 'current_page' : ''"
+        :ref="
+          pageNumber === number_of_page_currently_active ? 'current_page' : ''
+        "
       >
         <div
           class="m_publicationFooter"
-          v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode) && pageNumber === 0"
+          v-if="
+            ![
+              'export_publication',
+              'print_publication',
+              'link_publication'
+            ].includes($root.state.mode) && pageNumber === 0
+          "
         >
           <button
             type="button"
             class="buttonLink"
             @click="insertPageAtIndex(pageNumber)"
-          >{{ $t('add_a_page_before') }}</button>
+          >
+            {{ $t("add_a_page_before") }}
+          </button>
         </div>
 
-        <div
-          class="m_publicationview--pages--pageContainer"
-          :style="setPageContainerProperties(page)"
-          :class="{ 'is--active' : 
-                                  !preview_mode
-                                  && !['export_publication','print_publication','link_publication'].includes($root.state.mode)
-                                  && (pageNumber === page_currently_active) 
-                    }"
-        >
-          <div class="m_page" :style="setPageProperties(page)" :data-style="publication.style">
-            <template v-if="!preview_mode">
-              <div
-                v-for="(item, index) in [0,1,2,3]"
-                class="m_page--margins_rule"
-                :style="`--margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
-                :key="index"
-              />
-
-              <div
-                class="m_page--grid"
-                v-if="page.gridstep && page.gridstep > 0"
-                :style="`--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`"
-              />
-            </template>
-
-            <div
-              class="m_page--header"
-              :style="customCSSVars"
-              v-if="!!page.header_left || !!page.header_right"
-            >
-              <div>{{ page.header_left }}</div>
-              <div>{{ page.header_right }}</div>
-            </div>
-
-            <div
-              v-if="!page.hasOwnProperty('show_page_number') || page.show_page_number"
-              class="m_page--pageNumber"
-              :class="{ 'toRight' : true }"
-            >{{ pageNumber + 1 }}</div>
-
-            <transition-group name="slideFromTop" :duration="300" tag="div">
-              <div
-                v-for="media in publication_medias[(pageNumber) + '']"
-                :key="media.publi_meta.metaFileName"
-              >
-                <MediaPublication
-                  :page="page"
-                  :media="media"
-                  :preview_mode="preview_mode"
-                  :read_only="read_only"
-                  :pixelsPerMillimeters="pixelsPerMillimeters"
-                  @removePubliMedia="values => { removePubliMedia(values) }"
-                  @editPubliMedia="values => { editPubliMedia(values) }"
-                  @unselected="noSelection"
-                />
-              </div>
-            </transition-group>
-          </div>
-        </div>
+        <PagePublicationSinglePage
+          :preview_mode="preview_mode"
+          :slugPubliName="slugPubliName"
+          :pageNumber="pageNumber"
+          :page="page"
+          :publication_medias="publication_medias[pageNumber + '']"
+          :read_only="read_only"
+          :pixelsPerMillimeters="pixelsPerMillimeters"
+        />
 
         <div
           class="m_publicationFooter"
-          v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode)"
+          v-if="
+            ![
+              'export_publication',
+              'print_publication',
+              'link_publication'
+            ].includes($root.state.mode)
+          "
         >
           <button
             type="button"
             class="buttonLink"
             @click="insertPageAtIndex(pageNumber + 1)"
-          >{{ $t('add_a_page_here') }}</button>
+          >
+            {{ $t("add_a_page_here") }}
+          </button>
           <button
             type="button"
             class="buttonLink"
             @click="removePageAtIndex(pageNumber)"
-          >{{ $t('remove_this_page') }}</button>
+          >
+            {{ $t("remove_this_page") }}
+          </button>
         </div>
       </div>
       <!-- </transition-group> -->
@@ -444,43 +449,46 @@
       <div
         class="m_publicationFooter"
         v-if="
-          !['export_publication','print_publication','link_publication'].includes($root.state.mode)
-          && pagesWithDefault.length === 0
+          ![
+            'export_publication',
+            'print_publication',
+            'link_publication'
+          ].includes($root.state.mode) && pagesWithDefault.length === 0
         "
       >
         <button
           type="button"
           class="buttonLink"
           @click="insertPageAtIndex(pageNumber + 1)"
-        >{{ $t('add_a_page') }}</button>
+        >
+          {{ $t("add_a_page") }}
+        </button>
       </div>
     </div>
 
     <div
       class="m_publicationFooter margin-vert-small"
-      v-if="['export_publication','link_publication'].includes($root.state.mode)"
+      v-if="
+        ['export_publication', 'link_publication'].includes($root.state.mode)
+      "
     >
       <a
         class="js--openInBrowser c-noir"
         target="_blank"
         href="https://latelier-des-chercheurs.fr/outils/dodoc"
       >
-        {{ $t('made_with_dodoc') }}
+        {{ $t("made_with_dodoc") }}
         <img
-          :src="this.$root.state.mode === 'export_publication' ? './_images/i_logo.svg' : '/images/i_logo.svg'"
+          :src="
+            this.$root.state.mode === 'export_publication'
+              ? './_images/i_logo.svg'
+              : '/images/i_logo.svg'
+          "
           @click="goHome()"
           draggable="false"
         />
       </a>
     </div>
-
-    <!-- <div v-if="show_edit_css_window"
-      class="m_mediaCSSEditWindow"
-    >
-      {{ show_edit_css_window }}
-      <textarea @change="setCSSForMedia($event)" v-model="publication.medias[show_edit_css_window].custom_css" />
-    </div>-->
-
     <div
       ref="mmMeasurer"
       style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%;"
@@ -489,8 +497,8 @@
 </template>
 <script>
 import PublicationHeader from "../subcomponents/PublicationHeader.vue";
-import MediaPublication from "../subcomponents/MediaPublication.vue";
 import ExportPagePubli from "../modals/ExportPagePubli.vue";
+import PagePublicationSinglePage from "./PagePublicationSinglePage.vue";
 
 export default {
   props: {
@@ -500,12 +508,12 @@ export default {
   },
   components: {
     PublicationHeader,
-    MediaPublication,
-    ExportPagePubli
+    ExportPagePubli,
+    PagePublicationSinglePage
   },
   data() {
     return {
-      publication_medias: {},
+      publication_medias: [],
       publication_defaults: {
         page_by_page: {
           width: 210,
@@ -541,7 +549,7 @@ export default {
       new_header_right: "",
       new_show_page_number: false,
 
-      page_currently_active: 0,
+      number_of_page_currently_active: 0,
       preview_mode: this.$root.state.mode !== "live",
       // preview_mode: false,
       fullscreen_mode: false,
@@ -573,7 +581,6 @@ export default {
       "socketio.projects.listSpecificMedias",
       this.updateMediasPubli
     );
-    // this.$eventHub.$on('publication.setCSSEditWindow', this.setCSSEditWindow);
     document.addEventListener("keyup", this.publicationKeyListener);
     this.updateMediasPubli();
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty("mmMeasurer")
@@ -581,11 +588,13 @@ export default {
       : 38;
     this.updatePubliOptionsInFields();
 
-    this.updatePageSizeAccordingToPanel();
-    this.$eventHub.$on(
-      "activity_panels_resized",
-      this.updatePageSizeAccordingToPanel
-    );
+    this.$nextTick(() => {
+      this.updatePageSizeAccordingToPanel();
+      this.$eventHub.$on(
+        "activity_panels_resized",
+        this.updatePageSizeAccordingToPanel
+      );
+    });
 
     document.getElementsByTagName("body")[0].style = `
       --page-width: ${this.publications_options.width}mm; 
@@ -598,7 +607,6 @@ export default {
       "socketio.projects.listSpecificMedias",
       this.updateMediasPubli
     );
-    // this.$eventHub.$off('publication.setCSSEditWindow', this.setCSSEditWindow);
     document.removeEventListener("keyup", this.publicationKeyListener);
 
     this.$eventHub.$off(
@@ -676,9 +684,6 @@ export default {
 
       return publication_options;
     },
-    customCSSVars() {
-      return `--current-time-human: "${this.$root.currentTime_human}"`;
-    },
     pagesWithDefault() {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`COMPUTED • pagesWithDefault`);
@@ -741,8 +746,8 @@ export default {
 
       const lastPageNumber = this.publication.pages.length - 1;
       let page = lastPageNumber;
-      if (this.page_currently_active !== false) {
-        page = this.page_currently_active;
+      if (this.number_of_page_currently_active !== false) {
+        page = this.number_of_page_currently_active;
       }
 
       const page_id = this.publication.pages[page].id;
@@ -776,38 +781,6 @@ export default {
         window.print();
       }, 500);
     },
-    removePubliMedia({ slugMediaName }) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(
-          `METHODS • Publication: removeMedia / slugMediaName = ${slugMediaName}`
-        );
-      }
-
-      this.$root.removeMedia({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        slugMediaName
-      });
-    },
-    // function to update property of a media inside medias_list
-    editPubliMedia({ slugMediaName, val }) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(
-          `METHODS • Publication: editPubliMedia / args = ${JSON.stringify(
-            arguments[0],
-            null,
-            4
-          )}`
-        );
-      }
-
-      this.$root.editMedia({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        slugMediaName,
-        data: val
-      });
-    },
     updateMediasPubli() {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • Publication: updateMediasPubli`);
@@ -817,7 +790,7 @@ export default {
         !this.publication.hasOwnProperty("medias") ||
         Object.keys(this.publication.medias).length === 0
       ) {
-        this.publication_medias = [];
+        this.publication_medias = {};
         return;
       }
 
@@ -949,6 +922,8 @@ export default {
       }
       pages.splice(index, 1);
 
+      // do not remove medias, in case of mistake when deleting
+
       // let medias_list = [];
       // if(this.publication.hasOwnProperty('medias_list')) {
       //   medias_list = this.publication.medias_list.slice();
@@ -965,30 +940,6 @@ export default {
         slugFolderName: this.slugPubliName,
         data: {
           pages
-        }
-      });
-    },
-    setCSSEditWindow(slugMediaName) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • Publication: setCSSEditWindow`);
-      }
-      if (this.show_edit_css_window !== slugMediaName) {
-        this.show_edit_css_window = slugMediaName;
-      } else {
-        this.show_edit_css_window = false;
-      }
-    },
-    setCSSForMedia(event) {
-      if (!this.show_edit_css_window) {
-        return;
-      }
-
-      const new_style = event.target.value;
-
-      this.editPubliMedia({
-        slugMediaName: this.show_edit_css_window,
-        val: {
-          custom_css: new_style
         }
       });
     },
@@ -1009,61 +960,35 @@ export default {
       this.new_header_right = this.publications_options.header_right;
       this.new_show_page_number = this.publications_options.show_page_number;
     },
-    noSelection() {
-      this.has_media_selected = false;
-    },
-    onScroll(event) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • Publication: onScroll`);
-      }
+    // onScroll(event) {
+    //   if (this.$root.state.dev_mode === "debug") {
+    //     console.log(`METHODS • Publication: onScroll`);
+    //   }
 
-      if (
-        !this.$refs.hasOwnProperty("pages") ||
-        this.$refs.pages.children.length === 0
-      ) {
-        return;
-      }
+    //   if (
+    //     !this.$refs.hasOwnProperty("pages") ||
+    //     this.$refs.pages.children.length === 0
+    //   ) {
+    //     return;
+    //   }
 
-      const currentScroll = event.target.scrollTop;
-      const middleOfScreen = this.$refs.panel.offsetHeight / 2;
-      let pages = this.$refs.pages.children;
+    //   const currentScroll = event.target.scrollTop;
+    //   const middleOfScreen = this.$refs.panel.offsetHeight / 2;
+    //   let pages = this.$refs.pages.children;
 
-      let index = 0;
-      for (let page of pages) {
-        if (
-          page.offsetTop + page.offsetHeight >
-          currentScroll + middleOfScreen
-        ) {
-          break;
-        }
-        index++;
-      }
+    //   let index = 0;
+    //   for (let page of pages) {
+    //     if (
+    //       page.offsetTop + page.offsetHeight >
+    //       currentScroll + middleOfScreen
+    //     ) {
+    //       break;
+    //     }
+    //     index++;
+    //   }
 
-      this.page_currently_active = index;
-    },
-    setPageContainerProperties(page) {
-      if (this.$root.state.mode === "print_publication") return;
-
-      return `
-        width: ${page.width * this.$root.settings.publi_zoom}mm; 
-        height: ${page.height * this.$root.settings.publi_zoom}mm;      
-      `;
-    },
-    setPageProperties(page) {
-      if (this.$root.state.mode === "print_publication") {
-        // reducing page height by 1mm is necessary to prevent blank pages in-between
-        return `
-          width: ${page.width}mm; 
-          height: ${page.height - 1}mm;
-        `;
-      } else {
-        return `
-          width: ${page.width}mm; 
-          height: ${page.height}mm;
-          transform: scale(${this.$root.settings.publi_zoom});
-        `;
-      }
-    },
+    //   this.number_of_page_currently_active = index;
+    // },
 
     publicationKeyListener(evt) {
       switch (evt.key) {
@@ -1135,7 +1060,7 @@ export default {
         const page = current_page_el[0].getElementsByClassName("m_page")[0];
 
         const margins = 100;
-        if (panel_width < page.offsetWidth + margins) {
+        if (!!page && panel_width < page.offsetWidth + margins) {
           this.zoom = panel_width / (page.offsetWidth + margins);
         }
       }
@@ -1143,5 +1068,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

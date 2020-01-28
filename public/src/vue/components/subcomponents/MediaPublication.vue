@@ -434,7 +434,6 @@ export default {
     },
     toggleEditWindow() {
       this.show_edit_styles_window = !this.show_edit_styles_window;
-      // this.$eventHub.$emit('publication.setCSSEditWindow', this.media.publi_meta.metaFileName);
     },
     setCSSForMedia(event) {
       if (this.debounce_setCSSForMedia)
