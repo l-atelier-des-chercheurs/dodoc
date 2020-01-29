@@ -373,7 +373,7 @@ module.exports = (function() {
       de: "Zeige alles"
     },
     cooking_pot_instructions: {
-      fr: "Mélangez des médias pour en créer des nouveaux !",
+      fr: "Mélangez des médias pour en créer de nouveaux !",
       en: "Mix a single or multiple medias to create new medias!",
       nl: "Meng bestanden om nieuwe bestanden te maken !",
       oc: "Mesclar de mèdias per ne crear de novèls !",
@@ -688,6 +688,18 @@ module.exports = (function() {
       nl: "Ja, wijzigingen opslaan. ",
       oc: "Òc, enregistrar las modificacions",
       de: "Ja, Änderungen speichern"
+    },
+    move_page_position: {
+      fr: "Déplacer la page",
+      en: "Move page to position"
+    },
+    create_empty_page: {
+      fr: "Ajouter une page vide",
+      en: "Add an empty page"
+    },
+    show_all_pages: {
+      fr: "Retour à la liste des pages",
+      en: "All pages"
     },
     close_the_window: {
       fr: "Non, fermer sans enregistrer",
@@ -2049,6 +2061,18 @@ module.exports = (function() {
       nl: "Volgende media ",
       oc: "Mèdia seguent",
       de: "Nächste Medien"
+    },
+    next_page: {
+      fr: "Page suivante",
+      en: "Next page"
+    },
+    previous_page: {
+      fr: "Page précédente",
+      en: "Previous page"
+    },
+    current_page: {
+      fr: "Page actuelle",
+      en: "Current page"
     },
     minimize_media: {
       fr: "Utiliser comme référence",

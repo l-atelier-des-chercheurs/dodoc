@@ -2,15 +2,7 @@
   <div
     class="m_publicationview--pages--pageContainer"
     :style="setPageContainerProperties(page)"
-    :class="{
-      'is--active':
-        !preview_mode &&
-        ![
-          'export_publication',
-          'print_publication',
-          'link_publication'
-        ].includes($root.state.mode)
-    }"
+    :class=""
   >
     <div class="m_page" :style="setPageProperties(page)">
       <template v-if="!preview_mode">
@@ -49,31 +41,30 @@
         {{ pageNumber + 1 }}
       </div>
 
-      <transition-group name="slideFromTop" :duration="300" tag="div">
-        <div
-          v-for="media in publication_medias"
-          :key="media.publi_meta.metaFileName"
-        >
-          <MediaPublication
-            :page="page"
-            :media="media"
-            :preview_mode="preview_mode"
-            :read_only="read_only"
-            :pixelsPerMillimeters="pixelsPerMillimeters"
-            @removePubliMedia="
-              values => {
-                removePubliMedia(values);
-              }
-            "
-            @editPubliMedia="
-              values => {
-                editPubliMedia(values);
-              }
-            "
-            @unselected="noSelection"
-          />
-        </div>
-      </transition-group>
+      <div
+        v-for="media in publication_medias"
+        :key="media.publi_meta.metaFileName"
+      >
+        <MediaPublication
+          :page="page"
+          :mode="mode"
+          :media="media"
+          :preview_mode="preview_mode"
+          :read_only="read_only"
+          :pixelsPerMillimeters="pixelsPerMillimeters"
+          @removePubliMedia="
+            values => {
+              removePubliMedia(values);
+            }
+          "
+          @editPubliMedia="
+            values => {
+              editPubliMedia(values);
+            }
+          "
+          @unselected="noSelection"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -82,13 +73,15 @@ import MediaPublication from "../subcomponents/MediaPublication.vue";
 
 export default {
   props: {
+    mode: String,
     preview_mode: Boolean,
     slugPubliName: String,
     pageNumber: Number,
     page: Object,
     publication_medias: Array,
     read_only: Boolean,
-    pixelsPerMillimeters: Number
+    pixelsPerMillimeters: Number,
+    zoom: Number
   },
   components: {
     MediaPublication
@@ -110,8 +103,8 @@ export default {
       if (this.$root.state.mode === "print_publication") return;
 
       return `
-        width: ${page.width * this.$root.settings.publi_zoom}mm;
-        height: ${page.height * this.$root.settings.publi_zoom}mm;
+        width: ${page.width * this.zoom}mm;
+        height: ${page.height * this.zoom}mm;
       `;
     },
     setPageProperties(page) {
@@ -125,7 +118,7 @@ export default {
         return `
           width: ${page.width}mm;
           height: ${page.height}mm;
-          transform: scale(${this.$root.settings.publi_zoom});
+          transform: scale(${this.zoom});
         `;
       }
     },
