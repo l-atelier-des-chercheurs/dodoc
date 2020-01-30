@@ -537,8 +537,9 @@
           class="button-nostyle text-uc button-triangle _show_removed_pages"
           :class="{ 'is--active': show_removed_pages }"
           @click="show_removed_pages = !show_removed_pages"
+          v-if="removedPagesWithDefault.length > 0"
         >
-          {{ $t("show_removed_pages") }}
+          {{ $t("show_removed_pages") }} ({{ removedPagesWithDefault.length }})
         </button>
 
         <transition-group
@@ -595,7 +596,7 @@
                 </svg>
               </button> -->
 
-              <div
+              <!-- <div
                 v-if="show_advanced_menu_for_page === page.id"
                 class="_advanced_menu"
                 @click.stop
@@ -603,7 +604,7 @@
                 <button type="button" @click="removePage(page.id)">
                   {{ $t("remove") }}
                 </button>
-              </div>
+              </div> -->
 
               <button
                 type="button"
@@ -1001,7 +1002,9 @@ export default {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • Publication: restorePage id = ${id}`);
 
-      let pages = this.publication.pages.slice();
+      let pages = Array.isArray(this.publication.pages)
+        ? this.publication.pages.slice()
+        : [];
       let page_to_restore = this.publication.removed_pages.find(
         p => p.id === id
       );
