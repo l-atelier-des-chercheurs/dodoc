@@ -491,7 +491,11 @@
                 class="_advanced_menu"
                 @click.stop
               >
-                <button type="button" class="" @click="removePage(page.id)">
+                <button
+                  type="button"
+                  class="buttonLink"
+                  @click="removePage(page.id)"
+                >
                   {{ $t("remove") }}
                 </button>
                 <span>
@@ -596,7 +600,7 @@
                 class="_advanced_menu"
                 @click.stop
               >
-                <button type="button" class="" @click="removePage(page.id)">
+                <button type="button" @click="removePage(page.id)">
                   {{ $t("remove") }}
                 </button>
               </div>
