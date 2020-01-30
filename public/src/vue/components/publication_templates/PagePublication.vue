@@ -198,7 +198,7 @@
           <button
             type="button"
             v-if="!show_all_pages_at_once"
-            @click="show_all_pages_at_once = true"
+            @click="showAllPages"
           >
             {{ $t("show_all_pages") }}
           </button>
@@ -741,7 +741,7 @@ export default {
     });
 
     document.getElementsByTagName("body")[0].style = `
-      --page-width: ${this.publications_options.width}mm; 
+      --page-width: ${this.publications_options.width}mm;
       --page-height: ${this.publications_options.height}mm
     `;
   },
@@ -773,7 +773,7 @@ export default {
         }
         this.updatePubliOptionsInFields();
         document.getElementsByTagName("body")[0].style = `
-          --page-width: ${this.publications_options.width}mm; 
+          --page-width: ${this.publications_options.width}mm;
           --page-height: ${this.publications_options.height}mm
         `;
       },
@@ -940,6 +940,12 @@ export default {
 
       this.id_of_page_opened = id;
       this.show_all_pages_at_once = false;
+    },
+    showAllPages() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • Publication: showAllPages`);
+      this.id_of_page_opened = false;
+      this.show_all_pages_at_once = true;
     },
     navPage(relative_index) {
       if (
