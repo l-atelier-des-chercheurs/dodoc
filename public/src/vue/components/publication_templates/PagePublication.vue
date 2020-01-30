@@ -960,18 +960,19 @@ export default {
     },
     addMedia({ slugProjectName, metaFileName }) {
       if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • Publication: addMedia with 
+        console.log(`METHODS • Publication: addMedia with
         slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
       }
 
-      const lastPageNumber = this.publication.pages.length - 1;
+      if (!this.id_of_page_opened) {
+        console.log(`METHODS • Publication: addMedia missing page id`);
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error("Missing page id to add media properly");
+      }
 
-      let page = lastPageNumber;
-
-      let page_id =
-        this.id_of_page_opened !== false
-          ? this.id_of_page_opened
-          : this.publication.pages[this.publication.pages.length - 1].id;
+      const page_id = this.id_of_page_opened;
 
       const x = this.publications_options.margin_left;
       const y = this.publications_options.margin_top;
