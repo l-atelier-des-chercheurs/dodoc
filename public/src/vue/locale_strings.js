@@ -328,6 +328,10 @@ module.exports = (function() {
       oc: "Ajustar",
       de: "Anpassen"
     },
+    restore: {
+      fr: "Restorer",
+      en: "Remettre"
+    },
     rotate_clockwise: {
       fr: "Pivoter vers la droite",
       en: "Rotate clockwise",
@@ -647,6 +651,10 @@ module.exports = (function() {
       oc:
         "Sètz segur de voler suprimir aqueste autor ? Totes los mèdias, projèctes e recèptas associadas seràn servadas.",
       de: "Sind Sie sicher, dass Sie diesen Autor löschen wollen?"
+    },
+    show_removed_pages: {
+      fr: "Afficher les pages supprimées",
+      en: "Show removed pages"
     },
     show_all_authors: {
       fr: "Afficher l’ensemble des auteurs",

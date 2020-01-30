@@ -399,24 +399,6 @@
     </div>
 
     <div class="m_publicationview--pages" ref="pages">
-      <!-- <div
-        class="m_publicationFooter"
-        v-if="
-          ![
-            'export_publication',
-            'print_publication',
-            'link_publication'
-          ].includes($root.state.mode) && pageNumber === 0
-        "
-      >
-        <button
-          type="button"
-          class="buttonLink"
-          @click="insertPageAtIndex(pageNumber)"
-        >
-          {{ $t("add_a_page_before") }}
-        </button>
-      </div> -->
       <div
         v-if="
           [
@@ -527,7 +509,11 @@
                 </span>
               </div>
 
-              <button type="button" class="" @click.stop="openPage(page.id)">
+              <button
+                type="button"
+                class="buttonLink"
+                @click.stop="openPage(page.id)"
+              >
                 {{ $t("open") }}
               </button>
             </div>
@@ -540,6 +526,90 @@
           >
             {{ $t("create_empty_page") }}
           </button>
+        </transition-group>
+
+        <button
+          type="button"
+          class="button-nostyle text-uc button-triangle _show_removed_pages"
+          :class="{ 'is--active': show_removed_pages }"
+          @click="show_removed_pages = !show_removed_pages"
+        >
+          {{ $t("show_removed_pages") }}
+        </button>
+
+        <transition-group
+          tag="div"
+          class="m_publicationview--pages--contactSheet--pages m_publicationview--pages--contactSheet--pages_removed"
+          name="list-complete"
+          v-if="show_removed_pages"
+        >
+          <div
+            class="m_publicationview--pages--contactSheet--pages--page"
+            v-for="(page, pageNumber) in removedPagesWithDefault"
+            :key="page.id"
+          >
+            <PagePublicationSinglePage
+              :key="page.id"
+              :mode="'contact_sheet'"
+              :preview_mode="true"
+              :slugPubliName="slugPubliName"
+              :pageNumber="pageNumber"
+              :page="page"
+              :publication_medias="publication_medias[page.id]"
+              :read_only="read_only"
+              :pixelsPerMillimeters="pixelsPerMillimeters"
+              :zoom="0.1"
+            />
+
+            <div
+              class="m_publicationview--pages--contactSheet--pages--page--buttons"
+            >
+              <!-- <button
+                type="button"
+                class="_advanced_menu_button"
+                @click.stop="
+                  show_advanced_menu_for_page !== page.id
+                    ? (show_advanced_menu_for_page = page.id)
+                    : (show_advanced_menu_for_page = false)
+                "
+              >
+                <svg
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  x="0px"
+                  y="0px"
+                  width="168px"
+                  height="168px"
+                  viewBox="0 0 168 168"
+                  style="enable-background:new 0 0 168 168;"
+                  xml:space="preserve"
+                >
+                  <rect x="73.5" y="37" class="st0" width="21" height="21" />
+                  <rect x="73.5" y="73.5" class="st0" width="21" height="21" />
+                  <rect x="73.5" y="110" class="st0" width="21" height="21" />
+                </svg>
+              </button> -->
+
+              <div
+                v-if="show_advanced_menu_for_page === page.id"
+                class="_advanced_menu"
+                @click.stop
+              >
+                <button type="button" class="" @click="removePage(page.id)">
+                  {{ $t("remove") }}
+                </button>
+              </div>
+
+              <button
+                type="button"
+                class="buttonLink"
+                @click.stop="restorePage(page.id)"
+              >
+                {{ $t("restore") }}
+              </button>
+            </div>
+          </div>
         </transition-group>
       </div>
 
@@ -560,51 +630,6 @@
           />
         </transition>
       </div>
-
-      <!-- <div
-        class="m_publicationFooter"
-        v-if="
-          ![
-            'export_publication',
-            'print_publication',
-            'link_publication'
-          ].includes($root.state.mode)
-        "
-      >
-        <button
-          type="button"
-          class="buttonLink"
-          @click="insertPageAtIndex(pageNumber + 1)"
-        >
-          {{ $t("add_a_page_here") }}
-        </button>
-        <button
-          type="button"
-          class="buttonLink"
-          @click="removePageAtIndex(pageNumber)"
-        >
-          {{ $t("remove_this_page") }}
-        </button>
-      </div> -->
-
-      <!-- <div
-        class="m_publicationFooter"
-        v-if="
-          ![
-            'export_publication',
-            'print_publication',
-            'link_publication'
-          ].includes($root.state.mode) && pagesWithDefault.length === 0
-        "
-      >
-        <button
-          type="button"
-          class="buttonLink"
-          @click="insertPageAtIndex(pageNumber + 1)"
-        >
-          {{ $t("add_a_page") }}
-        </button>
-      </div> -->
     </div>
 
     <div
@@ -672,7 +697,7 @@ export default {
         }
       },
 
-      show_edit_css_window: false,
+      show_removed_pages: false,
 
       advanced_options: false,
 
@@ -856,12 +881,35 @@ export default {
         return [];
       }
 
-      let defaultPages = [];
-      // we need to clone this object to prevent it from being changed
-      let pagesClone = JSON.parse(JSON.stringify(this.publication.pages));
+      let defaultPages = this.mergePageObjectWithDefault(
+        this.publication.pages
+      );
 
-      for (let page of pagesClone) {
-        for (let k of Object.keys(this.publications_options)) {
+      return defaultPages;
+    },
+    removedPagesWithDefault() {
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(`COMPUTED • removedPagesWithDefault`);
+      }
+
+      if (
+        !this.publication.hasOwnProperty("removed_pages") ||
+        this.publication.removed_pages.length === 0
+      ) {
+        return [];
+      }
+
+      let removedDefaultPages = this.mergePageObjectWithDefault(
+        this.publication.removed_pages
+      );
+
+      return removedDefaultPages;
+    }
+  },
+  methods: {
+    mergePageObjectWithDefault(pages) {
+      return pages.reduce((acc, page) => {
+        Object.keys(this.publications_options).map(k => {
           const option = this.publications_options[k];
           if (typeof option === "number") {
             if (page.hasOwnProperty(k) && !Number.isNaN(page[k])) {
@@ -878,13 +926,11 @@ export default {
           } else if (typeof option === "boolean") {
             page[k] = option;
           }
-        }
-        defaultPages.push(page);
-      }
-      return defaultPages;
-    }
-  },
-  methods: {
+        });
+        acc.push(page);
+        return acc;
+      }, []);
+    },
     getHighestZNumberAmongstMedias(page_medias) {
       if (!page_medias) return 0;
 
@@ -946,6 +992,29 @@ export default {
         console.log(`METHODS • Publication: showAllPages`);
       this.id_of_page_opened = false;
       this.show_all_pages_at_once = true;
+    },
+    restorePage(id) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • Publication: restorePage id = ${id}`);
+
+      let pages = this.publication.pages.slice();
+      let page_to_restore = this.publication.removed_pages.find(
+        p => p.id === id
+      );
+      pages.push(page_to_restore);
+
+      let removed_pages = this.publication.removed_pages.filter(
+        p => p.id !== id
+      );
+
+      this.$root.editFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+        data: {
+          pages,
+          removed_pages
+        }
+      });
     },
     navPage(relative_index) {
       if (
@@ -1144,38 +1213,31 @@ export default {
         return;
       }
 
-      // do not remove medias, in case of mistake when deleting
+      // this.$alertify
+      //   .okBtn(this.$t("yes"))
+      //   .cancelBtn(this.$t("cancel"))
+      //   .confirm(
+      //     this.$t("sureToRemovePage"),
+      //     () => {
+      let pages = this.publication.pages.filter(p => p.id !== id);
+      let removed_page = this.publication.pages.find(p => p.id === id);
 
-      // let medias_list = [];
-      // if(this.publication.hasOwnProperty('medias_list')) {
-      //   medias_list = this.publication.medias_list.slice();
-      // }
+      let removed_pages = Array.isArray(this.publication.removed_pages)
+        ? this.publication.removed_pages.slice()
+        : [];
+      removed_pages.push(removed_page);
 
-      // medias_list = medias_list.filter((m) => {
-      //   if(m.hasOwnProperty('page') && Number.parseInt(m.page) - 1 !== index) {
-      //     return true;
-      //   }
-      // });
-
-      this.$alertify
-        .okBtn(this.$t("yes"))
-        .cancelBtn(this.$t("cancel"))
-        .confirm(
-          this.$t("sureToRemovePage"),
-          () => {
-            let pages = this.publication.pages.slice();
-            pages = pages.filter(p => p.id !== id);
-
-            this.$root.editFolder({
-              type: "publications",
-              slugFolderName: this.slugPubliName,
-              data: {
-                pages
-              }
-            });
-          },
-          () => {}
-        );
+      this.$root.editFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+        data: {
+          pages,
+          removed_pages
+        }
+      });
+      //   },
+      //   () => {}
+      // );
     },
     updatePubliOptionsInFields() {
       this.new_width = this.publications_options.width;

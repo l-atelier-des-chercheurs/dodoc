@@ -3465,6 +3465,7 @@ small {
 .m_publicationMeta {
   position: relative;
   z-index: 1;
+
   // .margin-medium;
   // .margin-small;
   // border-radius: 0 0 10px 10px;
@@ -3484,7 +3485,7 @@ small {
     align-items: center;
 
     .bg-blanc;
-    .boxs-card-0;
+    .boxs-card-1;
 
     .margin-top-small;
     .margin-right-small;
@@ -3635,11 +3636,13 @@ small {
     // right: 0;
     // pointer-events: none;
     // z-index: 1000;
-    width: 95%;
+    width: ~"calc(100% - var(--spacing) * 4)";
     border-radius: 0 0 10px 10px;
-    margin: 0 auto;
+    margin: 0 0 0 ~"calc(var(--spacing) * 1.8)";
     background-color: white;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+
+    // .boxs-card-1;
+    box-shadow: 0 4px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 
     button {
       display: flex;
@@ -3725,10 +3728,16 @@ small {
     }
 
     .m_publicationview--pages--contactSheet {
+      ._show_removed_pages {
+        font-size: 75%;
+        .margin-sides-small;
+        .margin-top-medium;
+      }
+
       .m_publicationview--pages--contactSheet--pages {
         display: flex;
         flex-flow: row wrap;
-        .margin-small;
+        // .margin-small;
         justify-content: flex-start;
 
         .m_publicationview--pages--contactSheet--pages--page {
@@ -3819,6 +3828,7 @@ small {
             button {
               background: transparent;
               .font-verysmall;
+              color: black;
             }
           }
 
