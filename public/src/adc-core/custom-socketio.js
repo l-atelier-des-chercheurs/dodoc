@@ -1,5 +1,5 @@
-import io from 'socket.io-client';
-import Vue from 'vue';
+import io from "socket.io-client";
+import Vue from "vue";
 
 module.exports = (function() {
   return {
@@ -7,7 +7,7 @@ module.exports = (function() {
       return new Vue({
         i18n,
         data: {
-          socket: ''
+          socket: ""
         },
         methods: {
           connect(pwd) {
@@ -18,46 +18,46 @@ module.exports = (function() {
               opts.query = { hashed_session_password };
             }
 
-            if (window.navigator.userAgent.indexOf('Chrome') > -1) {
-              opts.transports = ['websocket', 'polling'];
+            if (window.navigator.userAgent.indexOf("Chrome") > -1) {
+              opts.transports = ["websocket", "polling"];
             } else {
-              opts.transports = ['polling', 'websocket'];
+              opts.transports = ["polling", "websocket"];
             }
 
             this.socket = io.connect(opts);
 
-            this.socket.on('connect', this._onSocketConnect);
-            this.socket.on('reconnect', this._onReconnect);
-            this.socket.on('pong', this._onPong);
-            this.socket.on('error', this._onSocketError);
-            this.socket.on('connect_error', this._onConnectError);
-            this.socket.on('authentificated', this._authentificated);
-            this.socket.on('listMedia', this._onListMedia);
-            this.socket.on('listMedias', this._onListMedias);
+            this.socket.on("connect", this._onSocketConnect);
+            this.socket.on("reconnect", this._onReconnect);
+            this.socket.on("pong", this._onPong);
+            this.socket.on("error", this._onSocketError);
+            this.socket.on("connect_error", this._onConnectError);
+            this.socket.on("authentificated", this._authentificated);
+            this.socket.on("listMedia", this._onListMedia);
+            this.socket.on("listMedias", this._onListMedias);
 
-            this.socket.on('listFolder', this._onListFolder);
-            this.socket.on('listFolders', this._onListFolders);
+            this.socket.on("listFolder", this._onListFolder);
+            this.socket.on("listFolders", this._onListFolders);
 
-            this.socket.on('listSpecificMedias', this._onListSpecificMedias);
-            this.socket.on('publiPDFGenerated', this._onPubliPDFGenerated);
-            this.socket.on('publiVideoGenerated', this._onPubliVideoGenerated);
-            this.socket.on('publiVideoFailed', this._onPubliVideoFailed);
+            this.socket.on("listSpecificMedias", this._onListSpecificMedias);
+            this.socket.on("publiPDFGenerated", this._onPubliPDFGenerated);
+            this.socket.on("publiVideoGenerated", this._onPubliVideoGenerated);
+            this.socket.on("publiVideoFailed", this._onPubliVideoFailed);
             this.socket.on(
-              'publiStopmotionIsGenerated',
+              "publiStopmotionIsGenerated",
               this._onPubliStopmotionGenerated
             );
             this.socket.on(
-              'publiStopmotionFailed',
+              "publiStopmotionFailed",
               this._onPubliStopmotionFailed
             );
 
-            this.socket.on('newNetworkInfos', this._onNewNetworkInfos);
+            this.socket.on("newNetworkInfos", this._onNewNetworkInfos);
 
-            this.socket.on('notify', this._onNotify);
+            this.socket.on("notify", this._onNotify);
 
-            this.socket.on('pong', this._onPong);
+            this.socket.on("pong", this._onPong);
 
-            this.socket.on('listClients', this._listClients);
+            this.socket.on("listClients", this._listClients);
           },
           _onSocketConnect() {
             let sessionId = this.socket.io.engine.id;
@@ -66,9 +66,9 @@ module.exports = (function() {
             window.state.connected = true;
             window.state.authentificated = true;
 
-            this.$eventHub.$emit('socketio.connect');
+            this.$eventHub.$emit("socketio.connect");
 
-            this.socket.emit('updateClientInfo', {});
+            this.socket.emit("updateClientInfo", {});
             this.sendAuth();
 
             // this.listFolders({ type: 'authors' });
@@ -77,7 +77,7 @@ module.exports = (function() {
 
           _onReconnect() {
             this.sendAuth();
-            this.$eventHub.$emit('socketio.reconnect');
+            this.$eventHub.$emit("socketio.reconnect");
             console.log(`Reconnected`);
           },
 
@@ -94,19 +94,19 @@ module.exports = (function() {
                 4
               )}`
             );
-            this.socket.emit('authenticate', { folder_passwords });
+            this.socket.emit("authenticate", { folder_passwords });
           },
 
           _onSocketError(reason) {
             console.log(`Unable to connect to server: ${reason}`);
             // window.state.authentificated = false;
-            this.$eventHub.$emit('socketio.socketerror', reason);
+            this.$eventHub.$emit("socketio.socketerror", reason);
           },
 
           _onConnectError(reason) {
             console.log(`Lost connection to server: ${reason}`);
             window.state.connected = false;
-            this.$eventHub.$emit('socketio.connecterror', reason);
+            this.$eventHub.$emit("socketio.connecterror", reason);
           },
 
           _authentificated(list_authorized_folders) {
@@ -155,7 +155,7 @@ module.exports = (function() {
           },
 
           _onListMedia(data) {
-            console.log('Received _onListMedia packet.');
+            console.log("Received _onListMedia packet.");
 
             let type = Object.keys(data)[0];
             let content = Object.values(data)[0];
@@ -173,9 +173,9 @@ module.exports = (function() {
 
                 // check if mdata has a mediaID (which means a user just created it)
                 const mdata = Object.values(content[slugFolderName].medias)[0];
-                if (mdata.hasOwnProperty('id')) {
+                if (mdata.hasOwnProperty("id")) {
                   this.$eventHub.$emit(
-                    'socketio.media_created_or_updated',
+                    "socketio.media_created_or_updated",
                     mdata
                   );
                 }
@@ -186,7 +186,7 @@ module.exports = (function() {
           },
 
           _onListMedias(data) {
-            console.log('Received _onListMedias packet.');
+            console.log("Received _onListMedias packet.");
 
             let type = Object.keys(data)[0];
             let content = Object.values(data)[0];
@@ -204,7 +204,7 @@ module.exports = (function() {
           },
 
           _onListSpecificMedias(data) {
-            console.log('Received _onListSpecificMedias packet.');
+            console.log("Received _onListSpecificMedias packet.");
 
             let type = Object.keys(data)[0];
             let content = Object.values(data)[0];
@@ -215,7 +215,7 @@ module.exports = (function() {
               console.log(`Media data is for ${slugFolderName}.`);
               if (
                 window.store[type].hasOwnProperty(slugFolderName) &&
-                window.store[type][slugFolderName].hasOwnProperty('medias')
+                window.store[type][slugFolderName].hasOwnProperty("medias")
               ) {
                 window.store[type][slugFolderName].medias = Object.assign(
                   {},
@@ -228,40 +228,40 @@ module.exports = (function() {
           },
 
           _onPubliPDFGenerated(data) {
-            console.log('Received _onPubliPDFGenerated packet.');
-            this.$eventHub.$emit('socketio.publication.pdfIsGenerated', data);
+            console.log("Received _onPubliPDFGenerated packet.");
+            this.$eventHub.$emit("socketio.publication.pdfIsGenerated", data);
           },
 
           _onPubliVideoGenerated(data) {
-            console.log('Received _onPubliVideoGenerated packet.');
-            this.$eventHub.$emit('socketio.publication.videoIsGenerated', data);
+            console.log("Received _onPubliVideoGenerated packet.");
+            this.$eventHub.$emit("socketio.publication.videoIsGenerated", data);
           },
           _onPubliVideoFailed() {
-            console.log('Received _onPubliVideoFailed packet.');
-            this.$eventHub.$emit('socketio.publication.videoFailedToGenerate');
+            console.log("Received _onPubliVideoFailed packet.");
+            this.$eventHub.$emit("socketio.publication.videoFailedToGenerate");
           },
 
           _onPubliStopmotionGenerated(data) {
-            console.log('Received _onPubliStopmotionGenerated packet.');
+            console.log("Received _onPubliStopmotionGenerated packet.");
             this.$eventHub.$emit(
-              'socketio.publication.publiStopmotionIsGenerated',
+              "socketio.publication.publiStopmotionIsGenerated",
               data
             );
           },
 
           _onPubliStopmotionFailed() {
-            console.log('Received _onPubliStopmotionFailed packet.');
-            this.$eventHub.$emit('socketio.publication.publiStopmotionFailed');
+            console.log("Received _onPubliStopmotionFailed packet.");
+            this.$eventHub.$emit("socketio.publication.publiStopmotionFailed");
           },
 
           _listClients(data) {
-            console.log('Received _listClients packet.');
+            console.log("Received _listClients packet.");
             window.state.clients = data;
           },
 
           // for projects, authors and publications
           _onListFolder(data) {
-            console.log('Received _onListFolder packet.');
+            console.log("Received _onListFolder packet.");
             let type = Object.keys(data)[0];
             let content = Object.values(data)[0];
 
@@ -269,14 +269,14 @@ module.exports = (function() {
             for (let slugFolderName in content) {
               if (
                 window.store[type].hasOwnProperty(slugFolderName) &&
-                window.store[type][slugFolderName].hasOwnProperty('medias')
+                window.store[type][slugFolderName].hasOwnProperty("medias")
               ) {
                 content[slugFolderName].medias =
                   window.store[type][slugFolderName].medias;
               }
-              if (content[slugFolderName].hasOwnProperty('id')) {
+              if (content[slugFolderName].hasOwnProperty("id")) {
                 this.$eventHub.$emit(
-                  'socketio.folder_created_or_updated',
+                  "socketio.folder_created_or_updated",
                   content[slugFolderName]
                 );
               }
@@ -288,9 +288,9 @@ module.exports = (function() {
 
           // for projects, authors and publications
           _onListFolders(data) {
-            console.log('Received _onListFolders packet.');
+            console.log("Received _onListFolders packet.");
 
-            if (typeof data !== 'object') {
+            if (typeof data !== "object") {
               return;
             }
 
@@ -303,7 +303,7 @@ module.exports = (function() {
             for (let slugFolderName in content) {
               if (
                 window.store[type].hasOwnProperty(slugFolderName) &&
-                window.store[type][slugFolderName].hasOwnProperty('medias')
+                window.store[type][slugFolderName].hasOwnProperty("medias")
               ) {
                 content[slugFolderName].medias =
                   window.store[type][slugFolderName].medias;
@@ -314,31 +314,31 @@ module.exports = (function() {
             this.$eventHub.$emit(`socketio.${type}.folders_listed`);
           },
           _onNewNetworkInfos(data) {
-            console.log('Received _onNewNetworkInfos packet.');
+            console.log("Received _onNewNetworkInfos packet.");
             window.state.localNetworkInfos = data;
           },
-          _onNotify({ localized_string, not_localized_string, type = 'log' }) {
-            console.log('Received _onNotify packet.');
-            let msg = '';
+          _onNotify({ localized_string, not_localized_string, type = "log" }) {
+            console.log("Received _onNotify packet.");
+            let msg = "";
             if (localized_string && not_localized_string) {
               msg +=
                 this.$t(`notifications['${localized_string}']`) +
-                '<br>' +
-                '<i>' +
+                "<br>" +
+                "<i>" +
                 not_localized_string +
-                '</i>';
+                "</i>";
             } else if (not_localized_string) {
-              msg += '<i>' + not_localized_string + '</i>';
+              msg += "<i>" + not_localized_string + "</i>";
             } else if (localized_string) {
               msg += this.$t(`notifications['${localized_string}']`);
             }
 
-            if (type === 'success') {
+            if (type === "success") {
               alertify
                 .closeLogOnClick(true)
                 .delay(4000)
                 .success(msg);
-            } else if (type === 'error') {
+            } else if (type === "error") {
               alertify
                 .closeLogOnClick(true)
                 .delay(10000)
@@ -351,56 +351,56 @@ module.exports = (function() {
             }
           },
           listFolders(fdata) {
-            this.socket.emit('listFolders', fdata);
+            this.socket.emit("listFolders", fdata);
           },
           listFolder(fdata) {
-            this.socket.emit('listFolder', fdata);
+            this.socket.emit("listFolder", fdata);
           },
           createFolder(fdata) {
-            this.socket.emit('createFolder', fdata);
+            this.socket.emit("createFolder", fdata);
           },
           editFolder(fdata) {
-            this.socket.emit('editFolder', fdata);
+            this.socket.emit("editFolder", fdata);
           },
           removeFolder(fdata) {
-            this.socket.emit('removeFolder', fdata);
+            this.socket.emit("removeFolder", fdata);
           },
 
           listMedias(mdata) {
-            this.socket.emit('listMedias', mdata);
+            this.socket.emit("listMedias", mdata);
           },
           createMedia(mdata) {
-            this.socket.emit('createMedia', mdata);
+            this.socket.emit("createMedia", mdata);
           },
           editMedia(mdata) {
-            this.socket.emit('editMedia', mdata);
+            this.socket.emit("editMedia", mdata);
           },
           copyMediaToFolder(mdata) {
-            this.socket.emit('copyMediaToFolder', mdata);
+            this.socket.emit("copyMediaToFolder", mdata);
           },
           removeMedia(mdata) {
-            this.socket.emit('removeMedia', mdata);
+            this.socket.emit("removeMedia", mdata);
           },
           listSpecificMedias(mdata) {
-            this.socket.emit('listSpecificMedias', mdata);
+            this.socket.emit("listSpecificMedias", mdata);
           },
           downloadPubliPDF(pdata) {
-            this.socket.emit('downloadPubliPDF', pdata);
+            this.socket.emit("downloadPubliPDF", pdata);
           },
           downloadVideoPubli(pdata) {
-            this.socket.emit('downloadVideoPubli', pdata);
+            this.socket.emit("downloadVideoPubli", pdata);
           },
           downloadStopmotionPubli(pdata) {
-            this.socket.emit('downloadStopmotionPubli', pdata);
+            this.socket.emit("downloadStopmotionPubli", pdata);
           },
           addTempMediaToFolder(pdata) {
-            this.socket.emit('addTempMediaToFolder', pdata);
+            this.socket.emit("addTempMediaToFolder", pdata);
           },
           copyFolder(pdata) {
-            this.socket.emit('copyFolder', pdata);
+            this.socket.emit("copyFolder", pdata);
           },
           updateNetworkInfos() {
-            this.socket.emit('updateNetworkInfos');
+            this.socket.emit("updateNetworkInfos");
           }
         }
       });

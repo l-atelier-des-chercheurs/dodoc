@@ -25,6 +25,7 @@
     >
       <label>{{ $t("or_choose_from_image_medias") }}</label>
       <select v-model="show_medias_from_project">
+        <option key="''" :value="''">—</option>
         <option
           v-for="project in $root.projects_that_are_accessible"
           :key="project.slugFolderName"
@@ -32,11 +33,14 @@
           >{{ project.name }}</option
         >
       </select>
-      <div class="m_imageselect--selectFromMedias--imageList">
+      <div
+        class="m_imageselect--selectFromMedias--imageList"
+        v-if="!!show_medias_from_project"
+      >
         <template
           v-if="
             getProjectsImages({
-              slugProjectName: this.show_medias_from_project
+              slugProjectName: show_medias_from_project
             }) === false
           "
         >
@@ -116,7 +120,7 @@ export default {
   mounted() {
     this.show_medias_from_project = this.slugProjectName
       ? this.slugProjectName
-      : this.first_project_slug;
+      : "";
   },
   beforeDestroy() {},
 

@@ -18,11 +18,11 @@
     }"
   >
     <MediaContent
-      :context="preview_mode ? 'full' : 'preview'"
+      :context="preview_mode && mode !== 'contact_sheet' ? 'full' : 'preview'"
       :slugFolderName="media.slugProjectName"
       :media="media"
       :read_only="read_only"
-      :element_width_for_sizes="mediaSize.width * pixelsPerMillimeters * 1.5"
+      :element_width_for_sizes="mediaSize.width * pixelsPerMillimeters"
       v-model="media.content"
       :style="media.publi_meta.custom_css"
     />
@@ -293,9 +293,11 @@ import debounce from "debounce";
 export default {
   props: {
     media: Object,
+    mode: String,
     page: Object,
     read_only: Boolean,
     preview_mode: Boolean,
+    lowdef: Boolean,
     pixelsPerMillimeters: Number
   },
   components: {
@@ -434,7 +436,6 @@ export default {
     },
     toggleEditWindow() {
       this.show_edit_styles_window = !this.show_edit_styles_window;
-      // this.$eventHub.$emit('publication.setCSSEditWindow', this.media.publi_meta.metaFileName);
     },
     setCSSForMedia(event) {
       if (this.debounce_setCSSForMedia)

@@ -1,6 +1,6 @@
 <template>
   <div class="m_publicationMeta">
-    <div
+    <!-- <div
       class="label padding-verysmall"
       v-if="
         ![
@@ -11,8 +11,7 @@
       "
     >
       {{ $t(publication.template) }}
-    </div>
-
+    </div> -->
     <div class="m_publicationMeta--topbar">
       <div>
         <button
