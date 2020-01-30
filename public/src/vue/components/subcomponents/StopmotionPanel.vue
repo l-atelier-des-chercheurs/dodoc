@@ -1,7 +1,7 @@
 <template>
   <div
     class="m_stopmotionpanel"
-    :class="{ 'is--showing_video_validation' : validating_video_preview }"
+    :class="{ 'is--showing_video_validation': validating_video_preview }"
   >
     <div class="m_stopmotionpanel--toprowbuttons">
       <button
@@ -10,7 +10,7 @@
         @click="cancelStopmotion"
         class="buttonLink"
       >
-        <span class="text-cap font-verysmall">{{ $t('back') }}</span>
+        <span class="text-cap font-verysmall">{{ $t("back") }}</span>
       </button>
 
       <button
@@ -20,7 +20,7 @@
         @click="removeMedia(show_previous_photo.metaFileName)"
         class="buttonLink m_stopmotionpanel--medias--single--removeMedia"
       >
-        <span class>{{ $t('remove_this_image') }}</span>
+        <span class>{{ $t("remove_this_image") }}</span>
       </button>
     </div>
 
@@ -44,10 +44,15 @@
         <div
           v-for="media in medias"
           :key="media.metaFileName"
-          @click="show_previous_photo = media; show_live_feed = false;"
+          @click="
+            show_previous_photo = media;
+            show_live_feed = false;
+          "
           class
-          :class="{ 
-            'is--current_single' : show_previous_photo.metaFileName === media.metaFileName && !show_live_feed,
+          :class="{
+            'is--current_single':
+              show_previous_photo.metaFileName === media.metaFileName &&
+              !show_live_feed
           }"
         >
           <MediaContent
@@ -59,8 +64,11 @@
           />
         </div>
         <div
-          :class="{ 'is--current_single' : show_live_feed }"
-          @click="show_previous_photo = medias[medias.length - 1]; show_live_feed = true;"
+          :class="{ 'is--current_single': show_live_feed }"
+          @click="
+            show_previous_photo = medias[medias.length - 1];
+            show_live_feed = true;
+          "
           :key="'live_feed'"
         >
           <video :srcObject.prop="videoStream" autoplay />
@@ -76,7 +84,9 @@
             <option>24</option>
             <option>30</option>
           </select>
-          <label class v-if="medias.length <= 1">{{ $t('img_per_second') }}</label>
+          <label class v-if="medias.length <= 1">{{
+            $t("img_per_second")
+          }}</label>
         </div>
 
         <button
@@ -84,12 +94,19 @@
           class="button button-bg_rounded bg-bleuvert"
           v-if="medias.length > 0"
           @click="assembleStopmotionMedias"
-          :disabled="validating_video_preview && frameRate === previousFrameRate"
+          :disabled="
+            validating_video_preview && frameRate === previousFrameRate
+          "
         >
           <!-- <span class="text-cap font-verysmall">
             {{ $t('generate') }}
           </span>-->
-          <img src="/images/i_play.svg" width="48" height="48" draggable="false" />
+          <img
+            src="/images/i_play.svg"
+            width="48"
+            height="48"
+            draggable="false"
+          />
         </button>
       </div>
     </div>
@@ -289,5 +306,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

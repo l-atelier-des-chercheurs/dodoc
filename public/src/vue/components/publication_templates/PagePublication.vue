@@ -383,7 +383,7 @@
           <img src="/images/i_arrow_left.svg" draggable="false" />
           {{ $t("previous_page") }}
         </button>
-        <div class="">
+        <div class="font-small">
           {{ $t("current_page") }}: {{ opened_page_index + 1 }}
         </div>
 
@@ -456,6 +456,7 @@
             :key="page.id"
           >
             <PagePublicationSinglePage
+              :key="page.id"
               :mode="'contact_sheet'"
               :preview_mode="true"
               :slugPubliName="slugPubliName"
@@ -474,48 +475,61 @@
 
             <div
               class="m_publicationview--pages--contactSheet--pages--page--buttons"
+              @click="openPage(page.id)"
             >
-              <button type="button" class="" @click="openPage(page.id)">
+              <button
+                type="button"
+                class="_advanced_menu_button"
+                @click.stop="
+                  show_advanced_menu_for_page !== page.id
+                    ? (show_advanced_menu_for_page = page.id)
+                    : (show_advanced_menu_for_page = false)
+                "
+              >
+                <svg
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  x="0px"
+                  y="0px"
+                  width="168px"
+                  height="168px"
+                  viewBox="0 0 168 168"
+                  style="enable-background:new 0 0 168 168;"
+                  xml:space="preserve"
+                >
+                  <rect x="73.5" y="37" class="st0" width="21" height="21" />
+                  <rect x="73.5" y="73.5" class="st0" width="21" height="21" />
+                  <rect x="73.5" y="110" class="st0" width="21" height="21" />
+                </svg>
+              </button>
+
+              <div
+                v-if="show_advanced_menu_for_page === page.id"
+                class="_advanced_menu"
+                @click.stop
+              >
+                <button type="button" class="" @click="removePage(page.id)">
+                  {{ $t("remove") }}
+                </button>
+                <span>
+                  <label>{{ $t("move_page_position") }}</label>
+                  <select
+                    @change="updatePagePos({ id: page.id, $event })"
+                    :value="pageNumber + 1"
+                  >
+                    <option
+                      v-for="pos in pagesWithDefault.length"
+                      :key="pos"
+                      v-html="pos"
+                    />
+                  </select>
+                </span>
+              </div>
+
+              <button type="button" class="" @click.stop="openPage(page.id)">
                 {{ $t("open") }}
               </button>
-              <button type="button" class="" @click="removePage(page.id)">
-                {{ $t("remove") }}
-              </button>
-              <span>
-                <label>{{ $t("move_page_position") }}</label>
-                <select
-                  @change="updatePagePos({ id: page.id, $event })"
-                  :value="pageNumber + 1"
-                >
-                  <option
-                    v-for="pos in pagesWithDefault.length"
-                    :key="pos"
-                    v-html="pos"
-                  />
-                </select>
-              </span>
-              <!-- 
-              <div
-                class="m_publicationview--pages--contactSheet--pages--page--buttons--move"
-              >
-                <button
-                  type="button"
-                  class=""
-                  :disabled="pageNumber === 0"
-                  @click="movePage({ id: page.id, idx: -1 })"
-                >
-                  <img src="/images/i_arrow_left.svg" draggable="false" />
-                </button>
-                <label>déplacer</label>
-                <button
-                  type="button"
-                  class=""
-                  :disabled="pageNumber === pagesWithDefault.length - 1"
-                  @click="movePage({ id: page.id, idx: +1 })"
-                >
-                  <img src="/images/i_arrow_right.svg" draggable="false" />
-                </button>
-              </div> -->
             </div>
           </div>
           <button
@@ -530,11 +544,11 @@
       </div>
 
       <div v-else>
-        <transition name="fade_fast" :duration="600">
+        <transition name="scaleIn" mode="out-in" :duration="300">
           <PagePublicationSinglePage
             ref="current_page"
             :mode="'single'"
-            :key="page_opened"
+            :key="id_of_page_opened"
             :preview_mode="preview_mode"
             :slugPubliName="slugPubliName"
             :pageNumber="opened_page_index"
@@ -542,6 +556,7 @@
             :publication_medias="publication_medias[id_of_page_opened]"
             :read_only="read_only"
             :pixelsPerMillimeters="pixelsPerMillimeters"
+            :zoom="zoom"
           />
         </transition>
       </div>
@@ -677,6 +692,8 @@ export default {
 
       id_of_page_opened: false,
       show_all_pages_at_once: true,
+      show_advanced_menu_for_page: false,
+
       preview_mode: this.$root.state.mode !== "live",
       // preview_mode: false,
       fullscreen_mode: false,
@@ -1120,9 +1137,6 @@ export default {
         return;
       }
 
-      let pages = this.publication.pages.slice();
-      pages = pages.filter(p => p.id !== id);
-
       // do not remove medias, in case of mistake when deleting
 
       // let medias_list = [];
@@ -1136,13 +1150,25 @@ export default {
       //   }
       // });
 
-      this.$root.editFolder({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        data: {
-          pages
-        }
-      });
+      this.$alertify
+        .okBtn(this.$t("yes"))
+        .cancelBtn(this.$t("cancel"))
+        .confirm(
+          this.$t("sureToRemovePage"),
+          () => {
+            let pages = this.publication.pages.slice();
+            pages = pages.filter(p => p.id !== id);
+
+            this.$root.editFolder({
+              type: "publications",
+              slugFolderName: this.slugPubliName,
+              data: {
+                pages
+              }
+            });
+          },
+          () => {}
+        );
     },
     updatePubliOptionsInFields() {
       this.new_width = this.publications_options.width;

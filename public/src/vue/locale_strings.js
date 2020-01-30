@@ -1413,6 +1413,10 @@ module.exports = (function() {
       oc: "Sètz segur de voler suprimir aqueste mèdia ?",
       de: "Sind Sie sicher, dass Sie dieses  Medium zu entfernen?"
     },
+    sureToRemovePage: {
+      fr: "Êtes-vous sûr de vouloir supprimer cette page ?",
+      en: "Do you really want to delete this page?"
+    },
     edit_the_media: {
       fr: "Éditer le média",
       en: "Edit media",
@@ -2071,8 +2075,8 @@ module.exports = (function() {
       en: "Previous page"
     },
     current_page: {
-      fr: "Page actuelle",
-      en: "Current page"
+      fr: "Numéro de page actuelle",
+      en: "Current page number"
     },
     minimize_media: {
       fr: "Utiliser comme référence",

@@ -3629,16 +3629,17 @@ small {
 
   .m_publicationNavMenu {
     position: relative;
+    z-index: 10;
     // bottom: 00px;
     // left: 0px;
     // right: 0;
     // pointer-events: none;
     // z-index: 1000;
-    width: 90%;
+    width: 95%;
     border-radius: 0 0 10px 10px;
-    margin: 0 auto @t-skipline;
+    margin: 0 auto;
     background-color: white;
-    box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
 
     button {
       display: flex;
@@ -3660,6 +3661,7 @@ small {
     }
 
     > *:not(:last-child) {
+      border-radius: 0;
       border-bottom: 1px solid black;
     }
 
@@ -3704,6 +3706,8 @@ small {
     .m_publicationNavMenu--buttonRow {
       display: flex;
       flex-flow: row nowrap;
+      align-items: center;
+      text-align: center;
 
       > * {
         flex: 1 1 auto;
@@ -3767,7 +3771,7 @@ small {
             right: 0;
             bottom: 0;
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: fade(@c-bleuvert_fonce, 90%);
             opacity: 0;
             display: flex;
             flex-flow: column nowrap;
@@ -3775,17 +3779,40 @@ small {
             justify-content: center;
             align-content: center;
 
+            pointer-events: none;
+
             transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
-            .m_publicationview--pages--contactSheet--pages--page--buttons--move {
-              justify-self: flex-end;
-              display: flex;
-              align-items: center;
-              .margin-top-medium;
+            ._advanced_menu_button {
+              position: absolute;
+              top: 0;
+              right: 0;
+              width: 40px;
+              height: 40px;
+              padding: 0;
 
-              img {
-                width: 15px;
-                height: 15px;
+              &:hover {
+                background-color: #eee;
+              }
+
+              svg {
+                width: 20px;
+                height: 20px;
+              }
+            }
+
+            ._advanced_menu {
+              position: absolute;
+              z-index: 100;
+              top: 40px;
+              right: ~"calc(-75px + 40px / 2)";
+              background-color: white;
+              width: 150px;
+              .boxs-card-2;
+
+              .padding-small;
+
+              &::before {
               }
             }
 
@@ -3797,6 +3824,7 @@ small {
 
           &:hover {
             .m_publicationview--pages--contactSheet--pages--page--buttons {
+              pointer-events: auto;
               opacity: 1;
             }
           }
@@ -3887,6 +3915,15 @@ small {
         left: auto;
         right: 0;
       }
+    }
+
+    .m_page--noMedia {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      text-align: center;
+      font-style: italic;
+      color: var(--c-gris_fonce);
     }
 
     .m_page--margins_rule {

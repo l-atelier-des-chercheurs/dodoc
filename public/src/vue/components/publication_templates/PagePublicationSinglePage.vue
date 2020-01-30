@@ -2,7 +2,6 @@
   <div
     class="m_publicationview--pages--pageContainer"
     :style="setPageContainerProperties(page)"
-    :class=""
   >
     <div class="m_page" :style="setPageProperties(page)">
       <template v-if="!preview_mode">
@@ -41,7 +40,12 @@
         {{ pageNumber + 1 }}
       </div>
 
+      <div v-if="publication_medias.length === 0" class="m_page--noMedia">
+        No media on this page
+      </div>
+
       <div
+        v-else
         v-for="media in publication_medias"
         :key="media.publi_meta.metaFileName"
       >
@@ -78,7 +82,10 @@ export default {
     slugPubliName: String,
     pageNumber: Number,
     page: Object,
-    publication_medias: Array,
+    publication_medias: {
+      type: Array,
+      default: () => []
+    },
     read_only: Boolean,
     pixelsPerMillimeters: Number,
     zoom: Number
