@@ -54,7 +54,7 @@
             <span>{{ media.caption }}</span>
           </figcaption>
 
-          <transition name="slideright" :duration="400">
+          <transition name="fade_fast" :duration="400">
             <div
               v-if="
                 $root.settings.current_publication.slug &&

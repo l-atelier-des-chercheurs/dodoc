@@ -1,5 +1,9 @@
 <template>
-  <div class="m_publicationview" :class="{ 'is--preview' : preview_mode }" ref="panel">
+  <div
+    class="m_publicationview"
+    :class="{ 'is--preview': preview_mode }"
+    ref="panel"
+  >
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -60,6 +64,8 @@ export default {
       "socketio.projects.listSpecificMedias",
       this.updateMediasPubli
     );
+
+    this.$root.settings.current_publication.accepted_media_type = [];
   },
   watch: {
     "publication.medias": function() {
@@ -250,5 +256,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

@@ -1716,6 +1716,8 @@ small {
       top: 50%;
       left: auto;
 
+      pointer-events: none;
+
       // pointer-events: none;
       display: flex;
       justify-content: flex-end;
@@ -1735,8 +1737,13 @@ small {
         font-weight: 700;
         font-size: 1.2em;
         font-family: "Fira Code";
+        pointer-events: auto;
 
         transition: all 0.4s;
+
+        &:hover {
+          border-color: @c-orange;
+        }
       }
     }
 
@@ -3724,7 +3731,6 @@ small {
   .m_publicationview--pages {
     .padding-vert-small;
     > * {
-      // .margin-sides-medium;
     }
 
     .m_publicationview--pages--contactSheet {
@@ -3737,7 +3743,6 @@ small {
       .m_publicationview--pages--contactSheet--pages {
         display: flex;
         flex-flow: row wrap;
-        // .margin-small;
         justify-content: flex-start;
 
         .m_publicationview--pages--contactSheet--pages--page {
@@ -4015,6 +4020,9 @@ small {
   .m_stopmotionAnimationPublication {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-gap: 2rem;
+
+    // grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     // grid-auto-rows: 20px;
     // grid-gap: @t-skipline;
 
@@ -4026,6 +4034,8 @@ small {
 
     counter-reset: compteListe;
 
+    align-items: start;
+
     .m_mediaMontagePublication--withdraw {
       top: -5px;
       right: -5px;
@@ -4035,6 +4045,7 @@ small {
       .bg-blanc;
       .padding-verysmall;
       .margin-vert-small;
+      flex: 0 0 160px;
       // margin-left: -@t-buttonradius;
       // margin-right: -@t-buttonradius;
       // flex: 0 0 100px;

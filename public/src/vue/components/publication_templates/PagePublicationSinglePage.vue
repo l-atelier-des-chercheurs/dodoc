@@ -97,8 +97,21 @@ export default {
     return {};
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    if (this.mode === "single") {
+      this.$root.settings.current_publication.accepted_media_type = [
+        "image",
+        "video",
+        "audio",
+        "text",
+        "document",
+        "other"
+      ];
+    }
+  },
+  beforeDestroy() {
+    this.$root.settings.current_publication.accepted_media_type = [];
+  },
   watch: {},
   computed: {
     customCSSVars() {

@@ -125,6 +125,7 @@
         </svg>
       </button>
       <button
+        v-if="!contact_sheet_mode"
         class="margin-vert-verysmall font-verysmall"
         :disabled="zoom === zoom_max"
         @mousedown.stop.prevent="zoom += 0.1"
@@ -150,6 +151,7 @@
         </svg>
       </button>
       <button
+        v-if="!contact_sheet_mode"
         class="margin-vert-verysmall font-verysmall"
         :disabled="zoom === zoom_min"
         @mousedown.stop.prevent="zoom -= 0.1"
@@ -197,7 +199,7 @@
           </div> -->
           <button
             type="button"
-            v-if="!show_all_pages_at_once"
+            v-if="!contact_sheet_mode"
             @click="showAllPages"
           >
             {{ $t("show_all_pages") }}
@@ -371,10 +373,7 @@
           </div>
         </template>
       </div>
-      <div
-        class="m_publicationNavMenu--buttonRow"
-        v-if="!show_all_pages_at_once"
-      >
+      <div class="m_publicationNavMenu--buttonRow" v-if="!contact_sheet_mode">
         <button
           type="button"
           @click="navPage(-1)"
@@ -424,7 +423,7 @@
       </div>
 
       <div
-        v-else-if="show_all_pages_at_once"
+        v-else-if="contact_sheet_mode"
         class="m_publicationview--pages--contactSheet"
       >
         <transition-group
@@ -721,7 +720,7 @@ export default {
       new_show_page_number: false,
 
       id_of_page_opened: false,
-      show_all_pages_at_once: true,
+      contact_sheet_mode: true,
       show_advanced_menu_for_page: false,
 
       preview_mode: this.$root.state.mode !== "live",
@@ -741,15 +740,6 @@ export default {
     this.$root.setPublicationZoom(this.zoom);
   },
   mounted() {
-    this.$root.settings.current_publication.accepted_media_type = [
-      "image",
-      "video",
-      "audio",
-      "text",
-      "document",
-      "other"
-    ];
-
     this.$eventHub.$on("publication.addMedia", this.addMedia);
     this.$eventHub.$on(
       "socketio.projects.listSpecificMedias",
@@ -990,13 +980,13 @@ export default {
         console.log(`METHODS • Publication: openPage id = ${id}`);
 
       this.id_of_page_opened = id;
-      this.show_all_pages_at_once = false;
+      this.contact_sheet_mode = false;
     },
     showAllPages() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • Publication: showAllPages`);
       this.id_of_page_opened = false;
-      this.show_all_pages_at_once = true;
+      this.contact_sheet_mode = true;
     },
     restorePage(id) {
       if (this.$root.state.dev_mode === "debug")
@@ -1232,7 +1222,7 @@ export default {
       let removed_pages = Array.isArray(this.publication.removed_pages)
         ? this.publication.removed_pages.slice()
         : [];
-      removed_pages.push(removed_page);
+      removed_pages.unshift(removed_page);
 
       this.$root.editFolder({
         type: "publications",
