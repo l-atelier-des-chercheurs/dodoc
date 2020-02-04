@@ -62,13 +62,17 @@
           :selected_files="selected_files"
         />
 
-        <button type="button" class="barButton barButton_text" @click="createTextMedia">
+        <button
+          type="button"
+          class="barButton barButton_text"
+          @click="createTextMedia"
+        >
           <span>{{ $t("create_text") }}</span>
         </button>
       </div>
 
       <div class="m_actionbar--text">
-        {{ $t("showing") }}
+        <!-- {{ $t("showing") }} -->
         <span :class="{ 'c-rouge': sortedMedias.length !== numberOfMedias }">
           {{ sortedMedias.length }}
           {{ $t("medias_of") }}
@@ -81,7 +85,9 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_filters }"
             @click="show_filters = !show_filters"
-          >{{ $t("filters") }}</button>
+          >
+            {{ $t("filters") }}
+          </button>
         </template>
 
         <template v-if="!show_medias_instead_of_projects && show_filters">
@@ -108,7 +114,9 @@
       <div v-for="item in groupedMedias" :key="item[0]">
         <h3
           class="font-folder_title margin-sides-small margin-none margin-bottom-small"
-        >{{ $root.formatDateToHuman(item[0]) }}</h3>
+        >
+          {{ $root.formatDateToHuman(item[0]) }}
+        </h3>
 
         <div class="m_mediaShowAll">
           <div v-for="media in item[1]" :key="media.slugMediaName">
@@ -121,17 +129,29 @@
               :class="{
                 'is--just_added': last_media_added.includes(media.metaFileName)
               }"
+              :is_selected="mediaIsSelected(media.metaFileName)"
+              @toggleSelect="toggleSelectMedia(media.metaFileName)"
             />
           </div>
         </div>
       </div>
     </transition-group>
+
+    <transition name="fade_fast" :duration="400">
+      <SelectorBar
+        v-if="selected_medias.length > 0"
+        :selected_medias="selected_medias"
+        @deselect="selected_medias = []"
+        @removeSelection="removeSelection"
+      />
+    </transition>
   </div>
 </template>
 <script>
 import UploadFile from "./modals/UploadFile.vue";
 import MediaCard from "./subcomponents/MediaCard.vue";
 import TagsAndAuthorFilters from "./subcomponents/TagsAndAuthorFilters.vue";
+import SelectorBar from "./subcomponents/SelectorBar.vue";
 import { setTimeout } from "timers";
 import debounce from "debounce";
 
@@ -144,7 +164,8 @@ export default {
   components: {
     MediaCard,
     UploadFile,
-    TagsAndAuthorFilters
+    TagsAndAuthorFilters,
+    SelectorBar
   },
   data() {
     return {
@@ -164,6 +185,8 @@ export default {
 
       media_metaFileName_initially_present: [],
       last_media_added: [],
+
+      selected_medias: [],
 
       input_file_fields: [
         {
@@ -300,6 +323,28 @@ export default {
           this.openMediaModal(new_media.metaFileName);
         });
       }
+    },
+    toggleSelectMedia(media_metaFileName) {
+      if (this.mediaIsSelected(media_metaFileName)) {
+        this.selected_medias = this.selected_medias.filter(
+          metaFileName => metaFileName !== media_metaFileName
+        );
+      } else {
+        this.selected_medias.push(media_metaFileName);
+      }
+    },
+    mediaIsSelected(media_metaFileName) {
+      return this.selected_medias.includes(media_metaFileName);
+    },
+    removeSelection() {
+      this.selected_medias.map(metaFileName => {
+        this.$root.removeMedia({
+          type: "projects",
+          slugFolderName: this.slugProjectName,
+          slugMediaName: metaFileName
+        });
+      });
+      this.selected_medias = [];
     },
     media_created(m) {},
     openMediaModal(metaFileName) {

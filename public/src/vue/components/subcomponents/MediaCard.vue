@@ -15,11 +15,11 @@
         :class="{ 'is--hovered': is_hovered }"
       >
         <div>
-          <div class="m_metaField padding-sides-verysmall">
+          <div class="m_media--topbar m_metaField padding-sides-verysmall">
             <div>
               <svg
-                version="1.1"
                 v-if="media.fav"
+                version="1.1"
                 class="inline-svg"
                 xmlns="http://www.w3.org/2000/svg"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -41,6 +41,19 @@
               <span v-if="!!media.type" :class="{ 'c-rouge': media.fav }">{{
                 $t(media.type)
               }}</span>
+              <label
+                :for="is_selected + id"
+                class="_selector"
+                @click.stop
+                v-if="is_hovered || is_selected"
+              >
+                <input
+                  :id="is_selected + id"
+                  type="checkbox"
+                  v-model="local_is_selected"
+                  @change="$emit('toggleSelect')"
+                />
+              </label>
             </div>
           </div>
           <MediaContent
@@ -116,7 +129,8 @@ export default {
     media: Object,
     slugProjectName: String,
     metaFileName: String,
-    preview_size: Number
+    preview_size: Number,
+    is_selected: Boolean
   },
   components: {
     MediaContent
@@ -129,14 +143,20 @@ export default {
         video: "/images/i_icone-dodoc_video.svg",
         stopmotion: "/images/i_icone-dodoc_anim.svg",
         audio: "/images/i_icone-dodoc_audio.svg"
-      }
+      },
+      local_is_selected: false,
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5)
     };
   },
 
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    is_selected: function() {
+      this.local_is_selected = this.is_selected;
+    }
+  },
   computed: {
     is_media_in_publi() {
       return (

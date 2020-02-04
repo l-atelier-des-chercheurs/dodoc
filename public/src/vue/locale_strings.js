@@ -652,6 +652,10 @@ module.exports = (function() {
         "Sètz segur de voler suprimir aqueste autor ? Totes los mèdias, projèctes e recèptas associadas seràn servadas.",
       de: "Sind Sie sicher, dass Sie diesen Autor löschen wollen?"
     },
+    sureToRemoveSelection: {
+      fr: "Êtes-vous sûr de vouloir supprimer cette sélection ?",
+      en: "Do you really want to delete this selection?"
+    },
     show_removed_pages: {
       fr: "Afficher les pages supprimées",
       en: "Show removed pages"
