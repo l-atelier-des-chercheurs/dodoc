@@ -36,6 +36,10 @@ module.exports = (function() {
       oc: "Recepta",
       de: "Publikation"
     },
+    medias_selected: {
+      fr: "média(s) sélectionné(s)",
+      en: "media(s) selected"
+    },
     name: {
       fr: "Nom",
       en: "Name",

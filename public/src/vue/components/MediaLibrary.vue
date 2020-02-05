@@ -141,8 +141,8 @@
       <SelectorBar
         v-if="selected_medias.length > 0"
         :selected_medias="selected_medias"
+        :slugFolderName="slugProjectName"
         @deselect="selected_medias = []"
-        @removeSelection="removeSelection"
       />
     </transition>
   </div>
@@ -335,16 +335,6 @@ export default {
     },
     mediaIsSelected(media_metaFileName) {
       return this.selected_medias.includes(media_metaFileName);
-    },
-    removeSelection() {
-      this.selected_medias.map(metaFileName => {
-        this.$root.removeMedia({
-          type: "projects",
-          slugFolderName: this.slugProjectName,
-          slugMediaName: metaFileName
-        });
-      });
-      this.selected_medias = [];
     },
     media_created(m) {},
     openMediaModal(metaFileName) {

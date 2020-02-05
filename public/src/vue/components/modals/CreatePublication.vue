@@ -13,8 +13,14 @@
     <template slot="sidebar">
       <!-- Human name -->
       <div class="margin-bottom-small">
-        <label>{{ $t('name') }}</label>
-        <input type="text" v-model.trim="publidata.name" required autofocus autoselect />
+        <label>{{ $t("name") }}</label>
+        <input
+          type="text"
+          v-model.trim="publidata.name"
+          required
+          autofocus
+          autoselect
+        />
       </div>
 
       <!-- Template -->
@@ -29,25 +35,46 @@
         </select>
       </div>-->
 
+      <div class="margin-bottom-small">
+        <label>{{ $t("belongs_to_project") }}</label>
+        <select v-model="publi_belongs_to_project">
+          <option key="''" :value="''">—</option>
+          <option
+            v-for="project in $root.projects_that_are_accessible"
+            :key="project.slugFolderName"
+            :value="project.slugFolderName"
+            >{{ project.name }}</option
+          >
+        </select>
+      </div>
+
+      <!-- Password -->
+      <div class="margin-bottom-small">
+        <label>{{ $t("password") }}</label>
+        <input type="password" autocomplete="new-password" />
+        <!-- v-model="projectdata.password" -->
+        <small>{{ $t("password_instructions") }}</small>
+      </div>
+
       <!-- Keywords -->
       <div class="margin-bottom-small">
-        <label>{{ $t('keywords') }}</label>
-        <TagsInput @tagsChanged="newTags => publidata.keywords = newTags" />
+        <label>{{ $t("keywords") }}</label>
+        <TagsInput @tagsChanged="newTags => (publidata.keywords = newTags)" />
       </div>
 
       <!-- Author(s) -->
       <div class="margin-bottom-small">
-        <label>{{ $t('author') }}</label>
+        <label>{{ $t("author") }}</label>
         <br />
         <AuthorsInput
           :currentAuthors="publidata.authors"
-          @authorsChanged="newAuthors => publidata.authors = newAuthors"
+          @authorsChanged="newAuthors => (publidata.authors = newAuthors)"
         />
-        <small>{{ $t('author_instructions') }}</small>
+        <small>{{ $t("author_instructions") }}</small>
       </div>
     </template>
 
-    <template slot="submit_button">{{ $t('create') }}</template>
+    <template slot="submit_button">{{ $t("create") }}</template>
   </Modal>
 </template>
 <script>
@@ -81,7 +108,8 @@ export default {
         authors: this.$root.settings.current_author.hasOwnProperty("name")
           ? [{ name: this.$root.settings.current_author.name }]
           : []
-      }
+      },
+      publi_belongs_to_project: this.$root.do_navigation.current_slugProjectName
     };
   },
   watch: {
