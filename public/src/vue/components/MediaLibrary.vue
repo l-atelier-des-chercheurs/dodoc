@@ -129,8 +129,18 @@
               :class="{
                 'is--just_added': last_media_added.includes(media.metaFileName)
               }"
-              :is_selected="mediaIsSelected(media.metaFileName)"
-              @toggleSelect="toggleSelectMedia(media.metaFileName)"
+              :is_selected="
+                mediaIsSelected({
+                  slugFolderName: slugProjectName,
+                  metaFileName: media.metaFileName
+                })
+              "
+              @toggleSelect="
+                toggleSelectMedia({
+                  slugFolderName: slugProjectName,
+                  metaFileName: media.metaFileName
+                })
+              "
             />
           </div>
         </div>
@@ -324,17 +334,27 @@ export default {
         });
       }
     },
-    toggleSelectMedia(media_metaFileName) {
-      if (this.mediaIsSelected(media_metaFileName)) {
+    toggleSelectMedia({ slugFolderName, metaFileName }) {
+      if (this.mediaIsSelected({ slugFolderName, metaFileName })) {
         this.selected_medias = this.selected_medias.filter(
-          metaFileName => metaFileName !== media_metaFileName
+          m =>
+            !(
+              m.slugFolderName === slugFolderName &&
+              m.metaFileName === metaFileName
+            )
         );
       } else {
-        this.selected_medias.push(media_metaFileName);
+        this.selected_medias.push({
+          slugFolderName,
+          metaFileName
+        });
       }
     },
-    mediaIsSelected(media_metaFileName) {
-      return this.selected_medias.includes(media_metaFileName);
+    mediaIsSelected({ slugFolderName, metaFileName }) {
+      return this.selected_medias.some(
+        m =>
+          m.metaFileName === metaFileName && m.slugFolderName === slugFolderName
+      );
     },
     media_created(m) {},
     openMediaModal(metaFileName) {

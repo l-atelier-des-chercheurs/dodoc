@@ -123,11 +123,11 @@ export default {
         .confirm(
           this.$t("sureToRemoveSelection"),
           () => {
-            this.selected_medias.map(metaFileName => {
+            this.selected_medias.map(m => {
               this.$root.removeMedia({
                 type: "projects",
-                slugFolderName: this.slugFolderName,
-                slugMediaName: metaFileName
+                slugFolderName: m.slugFolderName,
+                slugMediaName: m.metaFileName
               });
             });
 
@@ -139,12 +139,12 @@ export default {
     copyMediasToProject() {
       console.log("copyMediaToProject " + this.slugProjectName_to_copy_to);
 
-      this.selected_medias.map(metaFileName => {
+      this.selected_medias.map(m => {
         this.$socketio.copyMediaToFolder({
           type: "projects",
-          from_slugFolderName: this.slugFolderName,
+          from_slugFolderName: m.slugFolderName,
           to_slugFolderName: this.slugProjectName_to_copy_to,
-          slugMediaName: metaFileName
+          slugMediaName: m.metaFileName
         });
       });
       this.show_copy_options = false;

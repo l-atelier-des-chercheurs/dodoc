@@ -23,7 +23,11 @@
             <label for="media_switch" class="cursor-pointer">
               <span class>{{ $t("projects") }}</span>
             </label>
-            <input type="checkbox" id="media_switch" v-model="show_medias_instead_of_projects" />
+            <input
+              type="checkbox"
+              id="media_switch"
+              v-model="show_medias_instead_of_projects"
+            />
             <label for="media_switch">
               <span class>{{ $t("medias") }}</span>
             </label>
@@ -56,7 +60,9 @@
                       class="button-nostyle text-uc button-triangle"
                       :class="{ 'is--active': show_filters }"
                       @click="show_filters = !show_filters"
-                    >{{ $t("filters") }}</button>
+                    >
+                      {{ $t("filters") }}
+                    </button>
                   </template>
                   <TagsAndAuthorFilters
                     v-if="show_filters"
@@ -105,23 +111,29 @@
 
                   <div
                     v-if="
-                      show_search ||
-                        debounce_search_project_name.length > 0
+                      show_search || debounce_search_project_name.length > 0
                     "
                     class="m_metaField"
                   >
                     <div>{{ $t("project_name_to_find") }}</div>
 
                     <div class="input-group">
-                      <input type="text" class="input-sm" v-model="debounce_search_project_name" />
-                      <span class="input-addon" v-if="debounce_search_project_name.length > 0">
+                      <input
+                        type="text"
+                        class="input-sm"
+                        v-model="debounce_search_project_name"
+                      />
+                      <span
+                        class="input-addon"
+                        v-if="debounce_search_project_name.length > 0"
+                      >
                         <button
                           type="button"
-                          :disabled="
-                            debounce_search_project_name.length === 0
-                          "
+                          :disabled="debounce_search_project_name.length === 0"
                           @click="debounce_search_project_name = ''"
-                        >×</button>
+                        >
+                          ×
+                        </button>
                       </span>
                     </div>
                   </div>
@@ -151,7 +163,9 @@
                     class="button-nostyle text-uc button-triangle"
                     :class="{ 'is--active': show_filters }"
                     @click="show_filters = !show_filters"
-                  >{{ $t("filters") }}</button>
+                  >
+                    {{ $t("filters") }}
+                  </button>
                 </template>
                 <TagsAndAuthorFilters
                   v-if="show_filters"
@@ -195,7 +209,9 @@
         <div v-for="item in groupedMedias" :key="item[0]">
           <h3
             class="font-folder_title margin-sides-small margin-none margin-bottom-small"
-          >{{ $root.formatDateToHuman(item[0]) }}</h3>
+          >
+            {{ $root.formatDateToHuman(item[0]) }}
+          </h3>
 
           <div class="m_mediaShowAll">
             <div v-for="media in item[1]" :key="media.slugMediaName">
@@ -205,11 +221,31 @@
                 :metaFileName="media.metaFileName"
                 :slugProjectName="media.slugProjectName"
                 :preview_size="180"
+                :is_selected="
+                  mediaIsSelected({
+                    slugFolderName: media.slugProjectName,
+                    metaFileName: media.metaFileName
+                  })
+                "
+                @toggleSelect="
+                  toggleSelectMedia({
+                    slugFolderName: media.slugProjectName,
+                    metaFileName: media.metaFileName
+                  })
+                "
               ></MediaCard>
             </div>
           </div>
         </div>
       </transition-group>
+
+      <transition name="fade_fast" :duration="400">
+        <SelectorBar
+          v-if="selected_medias.length > 0"
+          :selected_medias="selected_medias"
+          @deselect="selected_medias = []"
+        />
+      </transition>
     </main>
   </div>
 </template>
@@ -219,6 +255,7 @@ import Project from "./components/Project.vue";
 import CreateProject from "./components/modals/CreateProject.vue";
 import MediaCard from "./components/subcomponents/MediaCard.vue";
 import TagsAndAuthorFilters from "./components/subcomponents/TagsAndAuthorFilters.vue";
+import SelectorBar from "./components/subcomponents/SelectorBar.vue";
 import { setTimeout } from "timers";
 import debounce from "debounce";
 
@@ -233,6 +270,7 @@ export default {
     Project,
     BottomFooter,
     MediaCard,
+    SelectorBar,
     TagsAndAuthorFilters
   },
   data() {
@@ -251,6 +289,7 @@ export default {
 
       show_filters: false,
       show_search: false,
+      selected_medias: [],
 
       debounce_search_project_name: "",
       debounce_search_project_name_function: undefined
@@ -508,6 +547,29 @@ export default {
   methods: {
     setSort(newSort) {
       this.currentSort = newSort;
+    },
+
+    toggleSelectMedia({ slugFolderName, metaFileName }) {
+      if (this.mediaIsSelected({ slugFolderName, metaFileName })) {
+        this.selected_medias = this.selected_medias.filter(
+          m =>
+            !(
+              m.slugFolderName === slugFolderName &&
+              m.metaFileName === metaFileName
+            )
+        );
+      } else {
+        this.selected_medias.push({
+          slugFolderName,
+          metaFileName
+        });
+      }
+    },
+    mediaIsSelected({ slugFolderName, metaFileName }) {
+      return this.selected_medias.some(
+        m =>
+          m.metaFileName === metaFileName && m.slugFolderName === slugFolderName
+      );
     },
     urlToPortrait(slug, filename) {
       if (filename === undefined) {
