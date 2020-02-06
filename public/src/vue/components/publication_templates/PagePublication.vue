@@ -404,6 +404,7 @@
             class="m_publicationview--pages--contactSheet--pages--page"
             v-for="(page, pageNumber) in pagesWithDefault"
             :key="page.id"
+            @mouseleave="show_advanced_menu_for_page = false"
           >
             <PagePublicationSinglePage
               :key="page.id"
