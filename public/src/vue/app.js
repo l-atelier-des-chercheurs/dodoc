@@ -516,6 +516,12 @@ let vm = new Vue({
       }
       return false;
     },
+    all_folders() {
+      return Object.values(this.store.projects).reduce((acc, p) => {
+        if (!!p.folder && !acc.includes(p.folder)) acc.push(p.folder);
+        return acc;
+      }, []);
+    },
     projects_that_are_accessible() {
       const type = "projects";
       return Object.values(this.store[type]).filter(p =>

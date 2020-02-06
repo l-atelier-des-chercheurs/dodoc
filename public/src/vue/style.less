@@ -1093,6 +1093,10 @@ small {
   .flex-wrap;
   justify-content: center;
 
+  &.is--selected {
+    border: 4px dashed @c-bleuvert;
+  }
+
   .m_project--presentation {
     position: relative;
     z-index: 0;
@@ -1516,6 +1520,12 @@ small {
     margin: 0;
   }
 
+  &.is--selected {
+    figure {
+      border: 4px dashed @c-bleuvert;
+    }
+  }
+
   &.is--ownMedia {
     .m_metaField {
       background-color: @c-bleumarine_clair;
@@ -1587,7 +1597,6 @@ small {
 
     border-radius: 4px;
     overflow: hidden;
-    // border-bottom: 4px solid transparent;
 
     .is--fav& {
       // border-bottom: 4px solid @c-rouge;

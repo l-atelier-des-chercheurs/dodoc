@@ -1,22 +1,49 @@
 <template>
   <div class="m_selector">
     <div class="m_selector--content">
-      <div
-        v-if="selected_medias.length > 0"
-        class="m_selector--content--title"
-      >{{ selected_medias.length }} {{ $t("medias_selected") }}</div>
+      <div v-if="selected_medias.length > 0" class="m_selector--content--title">
+        {{ selected_medias.length }} {{ $t("medias_selected") }}
+      </div>
       <div
         v-if="selected_projects.length > 0"
         class="m_selector--content--title"
-      >{{ selected_projects.length }} {{ $t("projects_selected") }}</div>
+      >
+        {{ selected_projects.length }} {{ $t("projects_selected") }}
+      </div>
       <div class="m_selector--content--buttons">
-        <button type="button" class="buttonLink" @click="$emit('deselect')">{{ $t('unselect') }}</button>
-
+        <button
+          type="button"
+          class="buttonLink"
+          v-if="selected_projects.length"
+          @click="groupButtonClicked"
+          :class="{ 'is--active': show_options === 'group' }"
+        >
+          <svg
+            class="inline-svg"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="94px"
+            height="87.7px"
+            viewBox="0 0 94 87.7"
+            style="enable-background:new 0 0 94 87.7;"
+            xml:space="preserve"
+          >
+            <path
+              class="st0"
+              d="M94,87.7H0v-74h94V87.7z M10,77.7h74v-54H10V77.7z"
+            />
+            <rect class="st0" width="40.3" height="13.7" />
+          </svg>
+          <span class>{{ $t("group") }}</span>
+        </button>
         <button
           type="button"
           class="buttonLink"
           @click="duplicateButtonClicked"
-          :class="{ 'is--active': show_copy_options }"
+          :class="{ 'is--active': show_options === 'duplicate' }"
         >
           <svg
             version="1.1"
@@ -42,7 +69,11 @@
           </svg>
           <span class>{{ $t("duplicate") }}</span>
         </button>
-        <button type="button" class="buttonLink" @click="confirmRemoveSelection">
+        <button
+          type="button"
+          class="buttonLink"
+          @click="confirmRemoveSelection"
+        >
           <svg
             version="1.1"
             class="inline-svg"
@@ -64,25 +95,101 @@
           </svg>
           <span class>{{ $t("remove") }}</span>
         </button>
+        <button type="button" class="buttonLink" @click="$emit('deselect')">
+          <svg
+            version="1.1"
+            class="inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="80px"
+            height="80px"
+            viewBox="0 0 80 80"
+            style="enable-background:new 0 0 80 80;"
+            xml:space="preserve"
+          >
+            <polygon
+              class="st0"
+              points="10,60 0,60 0,70 0,80 10,80 20,80 20,70 10,70 	"
+            />
+            <rect y="30" class="st0" width="10" height="20" />
+            <polygon
+              class="st0"
+              points="70,70 60,70 60,80 70,80 80,80 80,70 80,60 70,60 	"
+            />
+            <rect x="70" y="30" class="st0" width="10" height="20" />
+            <rect x="30" y="70" class="st0" width="20" height="10" />
+            <polygon
+              class="st0"
+              points="0,0 0,10 0,20 10,20 10,10 20,10 20,0 10,0 	"
+            />
+            <rect x="30" class="st0" width="20" height="10" />
+            <polygon
+              class="st0"
+              points="70,0 60,0 60,10 70,10 70,20 80,20 80,10 80,0 	"
+            />
+            <polygon
+              class="st0"
+              points="62,53.1 48,40 62,26.9 54.8,19.2 54.6,19 40,32.5 25.4,19 25.2,19.2 18,26.9 32,40 18,53.1 25.4,61 
+	40,47.5 54.6,61 "
+            />
+          </svg>
+          <span class>{{ $t("unselect") }}</span>
+        </button>
       </div>
-      <div class="m_selector--content--actions" v-if="show_copy_options">
-        <label v-html="$t('add_to_project')" />
-        <div class="input-group">
-          <select v-model="slugProjectName_to_copy_to">
-            <option
-              v-for="project in all_projects"
-              :key="project.slugFolderName"
-              :value="project.slugFolderName"
-            >{{ project.name }}</option>
-          </select>
-          <button
-            type="button"
-            @click="copyMediasToProject"
-            :disabled="slugProjectName_to_copy_to === ''"
-            v-html="$t('copy')"
-            class="bg-bleuvert"
+      <div class="m_selector--content--actions" v-if="show_options">
+        <template v-if="show_options === 'duplicate'">
+          <label v-html="$t('add_to_project')" />
+          <div class="input-group">
+            <select v-model="slugProjectName_to_copy_to">
+              <option
+                v-for="project in all_projects"
+                :key="project.slugFolderName"
+                :value="project.slugFolderName"
+                >{{ project.name }}</option
+              >
+            </select>
+            <button
+              type="button"
+              @click="copyMediasToProject"
+              :disabled="slugProjectName_to_copy_to === ''"
+              v-html="$t('copy')"
+              class="bg-bleuvert"
+            />
+          </div>
+        </template>
+        <form
+          v-else-if="show_options === 'group'"
+          @submit.prevent="groupProjects"
+        >
+          <template v-if="$root.all_folders.length">
+            <label v-html="$t('add_to_existing_folder')" />
+            <div class="input-group">
+              <select v-model="existing_group_name">
+                <option :key="'create'" :value="''"
+                  >** {{ $t("create_new") }} **</option
+                >
+                <option
+                  v-for="folder in $root.all_folders"
+                  :key="folder"
+                  :value="folder"
+                  >{{ folder }}</option
+                >
+              </select>
+            </div>
+          </template>
+
+          <template v-if="existing_group_name === ''">
+            <label v-html="$t('group_in_a_new_folder')" />
+            <input type="text" v-model.trim="new_group_name" />
+          </template>
+          <input
+            type="submit"
+            class="button button-bg_rounded bg-bleuvert"
+            :disabled="!existing_group_name && !new_group_name"
           />
-        </div>
+        </form>
       </div>
     </div>
   </div>
@@ -103,11 +210,14 @@ export default {
   components: {},
   data() {
     return {
-      show_copy_options: false,
+      show_options: false,
       slugProjectName_to_copy_to: !!this.$root.do_navigation
         .current_slugProjectName
         ? this.$root.do_navigation.current_slugProjectName
-        : ""
+        : "",
+
+      existing_group_name: "",
+      new_group_name: ""
     };
   },
   created() {},
@@ -120,9 +230,41 @@ export default {
     }
   },
   methods: {
+    groupButtonClicked() {
+      if (this.selected_projects.length > 0) {
+        this.show_options = this.show_options === "group" ? false : "group";
+      }
+    },
+    groupProjects() {
+      if (!this.existing_group_name && !this.new_group_name) return;
+
+      let folder_name;
+
+      if (!!this.existing_group_name) {
+        folder_name = this.existing_group_name;
+      } else if (!!this.new_group_name) {
+        folder_name = this.new_group_name;
+      }
+
+      this.selected_projects.map(m => {
+        this.$root.editFolder({
+          type: "projects",
+          slugFolderName: m.slugFolderName,
+          data: {
+            folder: folder_name
+          }
+        });
+      });
+
+      this.existing_group_name = "";
+      this.new_group_name = "";
+
+      this.$emit("deselect");
+    },
     duplicateButtonClicked() {
       if (this.selected_medias.length > 0) {
-        this.show_copy_options = !this.show_copy_options;
+        this.show_options =
+          this.show_options === "duplicate" ? false : "duplicate";
       } else if (this.selected_projects.length > 0) {
         this.selected_projects.map(m => {
           let new_folder_name = this.$t("copy_of") + " " + m.slugFolderName;
@@ -144,6 +286,8 @@ export default {
             .closeLogOnClick(true)
             .delay(4000)
             .log(this.$t("notifications.project_copy_in_progress"));
+
+          this.$emit("deselect");
 
           this.$eventHub.$once("socketio.projects.folder_listed", () => {
             this.$alertify
@@ -192,7 +336,7 @@ export default {
           slugMediaName: m.metaFileName
         });
       });
-      this.show_copy_options = false;
+      this.show_options = false;
     }
   }
 };

@@ -29,6 +29,7 @@ module.exports = (function() {
       oc: "Crear una recepta",
       de: "Eine Publikation erstellen"
     },
+    create_new: {},
     publication: {
       fr: "Recette",
       en: "Recipe",
@@ -190,6 +191,18 @@ module.exports = (function() {
       nl: "Toevoegen aan project:",
       oc: "Apondre al projècte",
       de: "Zum Projekt hinzufügen"
+    },
+    add_to_existing_folder: {
+      fr: "Ajouter à un dossier existant&nbsp;:",
+      en: "Add to existing folder:"
+    },
+    group: {
+      fr: "Regrouper",
+      en: "Group"
+    },
+    group_in_a_new_folder: {
+      fr: "Regrouper dans un nouveau dossier nommé&nbsp;:",
+      en: "Group in a new folder named :"
     },
     input_password: {
       fr: "Renseigner le mot de passe ci-dessous :",
@@ -1505,25 +1518,11 @@ module.exports = (function() {
       de:
         "Für mehr Informationen schauen sie bei <a href='https://latelier-des-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>Dokumentation (auf Französisch)</a> oder <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>kontaktieren Sie </a> die Autoren dieser Software."
     },
-    no_media_in_folder: {
-      fr: "Aucun média dans ce dossier.",
-      en: "No media in this folder.",
-      nl: "Geen media in deze map .",
-      oc: "Cap de mèdia dins aqueste dorsièr.",
-      de: "Keine Medien in dieser Datei"
-    },
     no_images_to_show: {
       fr: "Aucun média image à afficher.",
       en: "No image to show.",
       oc: "Cap de mèdia imatge d'afichar.",
       de: "Keine Bildmedien zur Anzeige."
-    },
-    no_public_media_in_folder: {
-      fr: "Aucun média public dans ce dossier.",
-      en: "No public media in this folder.",
-      nl: "Geen openbare media in deze map .",
-      oc: "Cap de mèdia public dins aqueste dorsièr.",
-      de: "Keine öffentlichen Medien in dieser Datei"
     },
     more_informations: {
       fr: "Plus d’infos",
@@ -2264,11 +2263,11 @@ module.exports = (function() {
           "Dateinamen müssen mindestens ein alphanumerisches Zeichen enthalten."
       },
       "failed_to_get_folder:": {
-        fr: "Le dossier suivant n’a pas été trouvé:",
-        en: "Failed to get the requested folder:",
-        nl: "Het volgende bestand is niet gevonden:",
-        oc: "Lo dorsièr seguent es pas estat trobat:",
-        de: "Die folgende Datei wurde nicht gefunden:"
+        fr: "Le projet suivant n’a pas été trouvé:",
+        en: "Failed to get the requested project:",
+        nl: "Het volgende project is niet gevonden:",
+        oc: "Lo projècte seguent es pas estat trobat:",
+        de: "Die folgende Projekt wurde nicht gefunden:"
       },
       failed_to_start_video_change_source_or_res: {
         fr:

@@ -4,7 +4,8 @@
     :class="{
       'is--inPubli': is_media_in_publi,
       'is--fav': media.fav,
-      'is--ownMedia': media_made_by_current_author
+      'is--ownMedia': media_made_by_current_author,
+      'is--selected': is_selected
     }"
   >
     <div>
@@ -39,9 +40,7 @@
                 <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 " />
               </svg>
               <span v-if="!!media.type" :class="{ 'c-rouge': media.fav }">
-                {{
-                $t(media.type)
-                }}
+                {{ $t(media.type) }}
               </span>
               <label
                 :for="is_selected + id"
