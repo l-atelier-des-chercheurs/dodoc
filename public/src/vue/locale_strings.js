@@ -40,6 +40,10 @@ module.exports = (function() {
       fr: "média(s) sélectionné(s)",
       en: "media(s) selected"
     },
+    projects_selected: {
+      fr: "projet(s) sélectionné(s)",
+      en: "project(s) selected"
+    },
     name: {
       fr: "Nom",
       en: "Name",

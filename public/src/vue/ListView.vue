@@ -23,11 +23,7 @@
             <label for="media_switch" class="cursor-pointer">
               <span class>{{ $t("projects") }}</span>
             </label>
-            <input
-              type="checkbox"
-              id="media_switch"
-              v-model="show_medias_instead_of_projects"
-            />
+            <input type="checkbox" id="media_switch" v-model="show_medias_instead_of_projects" />
             <label for="media_switch">
               <span class>{{ $t("medias") }}</span>
             </label>
@@ -60,9 +56,7 @@
                       class="button-nostyle text-uc button-triangle"
                       :class="{ 'is--active': show_filters }"
                       @click="show_filters = !show_filters"
-                    >
-                      {{ $t("filters") }}
-                    </button>
+                    >{{ $t("filters") }}</button>
                   </template>
                   <TagsAndAuthorFilters
                     v-if="show_filters"
@@ -118,22 +112,13 @@
                     <div>{{ $t("project_name_to_find") }}</div>
 
                     <div class="input-group">
-                      <input
-                        type="text"
-                        class="input-sm"
-                        v-model="debounce_search_project_name"
-                      />
-                      <span
-                        class="input-addon"
-                        v-if="debounce_search_project_name.length > 0"
-                      >
+                      <input type="text" class="input-sm" v-model="debounce_search_project_name" />
+                      <span class="input-addon" v-if="debounce_search_project_name.length > 0">
                         <button
                           type="button"
                           :disabled="debounce_search_project_name.length === 0"
                           @click="debounce_search_project_name = ''"
-                        >
-                          ×
-                        </button>
+                        >×</button>
                       </span>
                     </div>
                   </div>
@@ -163,9 +148,7 @@
                     class="button-nostyle text-uc button-triangle"
                     :class="{ 'is--active': show_filters }"
                     @click="show_filters = !show_filters"
-                  >
-                    {{ $t("filters") }}
-                  </button>
+                  >{{ $t("filters") }}</button>
                 </template>
                 <TagsAndAuthorFilters
                   v-if="show_filters"
@@ -199,6 +182,16 @@
           :project="projects[sortedProject.slugProjectName]"
           :read_only="read_only"
           :index="index"
+          :is_selected="
+                  projectIsSelected(
+                    sortedProject.slugProjectName,
+                  )
+                "
+          @toggleSelect="
+                  toggleSelectProject(
+                    sortedProject.slugProjectName,
+                  )
+                "
         />
       </transition-group>
       <transition-group
@@ -209,9 +202,7 @@
         <div v-for="item in groupedMedias" :key="item[0]">
           <h3
             class="font-folder_title margin-sides-small margin-none margin-bottom-small"
-          >
-            {{ $root.formatDateToHuman(item[0]) }}
-          </h3>
+          >{{ $root.formatDateToHuman(item[0]) }}</h3>
 
           <div class="m_mediaShowAll">
             <div v-for="media in item[1]" :key="media.slugMediaName">
@@ -241,9 +232,10 @@
 
       <transition name="fade_fast" :duration="400">
         <SelectorBar
-          v-if="selected_medias.length > 0"
+          v-if="selected_medias.length > 0 || selected_projects.length > 0"
           :selected_medias="selected_medias"
-          @deselect="selected_medias = []"
+          :selected_projects="selected_projects"
+          @deselect="selected_projects = []; selected_medias = []"
         />
       </transition>
     </main>
@@ -290,6 +282,7 @@ export default {
       show_filters: false,
       show_search: false,
       selected_medias: [],
+      selected_projects: [],
 
       debounce_search_project_name: "",
       debounce_search_project_name_function: undefined
@@ -324,6 +317,9 @@ export default {
           this.is_loading_all_medias = false;
         });
       }
+
+      this.selected_projects = [];
+      this.selected_medias = [];
     },
     show_filters: function() {
       if (!this.show_filters) {
@@ -571,6 +567,24 @@ export default {
           m.metaFileName === metaFileName && m.slugFolderName === slugFolderName
       );
     },
+
+    toggleSelectProject(slugFolderName) {
+      if (this.projectIsSelected(slugFolderName)) {
+        this.selected_projects = this.selected_projects.filter(
+          m => !(m.slugFolderName === slugFolderName)
+        );
+      } else {
+        this.selected_projects.push({
+          slugFolderName
+        });
+      }
+    },
+    projectIsSelected(slugFolderName) {
+      return this.selected_projects.some(
+        m => m.slugFolderName === slugFolderName
+      );
+    },
+
     urlToPortrait(slug, filename) {
       if (filename === undefined) {
         return "";

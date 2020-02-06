@@ -1,19 +1,21 @@
 <template>
   <div class="m_selector">
     <div class="m_selector--content">
-      <div v-if="selected_medias.length > 0" class="m_selector--content--title">
-        {{ selected_medias.length }} {{ $t("medias_selected") }}
-      </div>
+      <div
+        v-if="selected_medias.length > 0"
+        class="m_selector--content--title"
+      >{{ selected_medias.length }} {{ $t("medias_selected") }}</div>
+      <div
+        v-if="selected_projects.length > 0"
+        class="m_selector--content--title"
+      >{{ selected_projects.length }} {{ $t("projects_selected") }}</div>
       <div class="m_selector--content--buttons">
-        <button type="button" class="buttonLink" @click="$emit('deselect')">
-          Deselect
-        </button>
+        <button type="button" class="buttonLink" @click="$emit('deselect')">Deselect</button>
 
         <button
           type="button"
           class="buttonLink"
-          v-if="selected_medias.length > 0"
-          @click="show_copy_options = !show_copy_options"
+          @click="duplicateButtonClicked"
           :class="{ 'is--active': show_copy_options }"
         >
           <svg
@@ -40,11 +42,7 @@
           </svg>
           <span class>{{ $t("duplicate") }}</span>
         </button>
-        <button
-          type="button"
-          class="buttonLink"
-          @click="confirmRemoveSelection"
-        >
+        <button type="button" class="buttonLink" @click="confirmRemoveSelection">
           <svg
             version="1.1"
             class="inline-svg"
@@ -75,8 +73,7 @@
               v-for="project in all_projects"
               :key="project.slugFolderName"
               :value="project.slugFolderName"
-              >{{ project.name }}</option
-            >
+            >{{ project.name }}</option>
           </select>
           <button
             type="button"
@@ -93,7 +90,14 @@
 <script>
 export default {
   props: {
-    selected_medias: Array,
+    selected_medias: {
+      type: Array,
+      default: () => []
+    },
+    selected_projects: {
+      type: Array,
+      default: () => []
+    },
     slugFolderName: String
   },
   components: {},
@@ -116,6 +120,40 @@ export default {
     }
   },
   methods: {
+    duplicateButtonClicked() {
+      if (this.selected_medias.length > 0) {
+        this.show_copy_options = !this.show_copy_options;
+      } else if (this.selected_projects.length > 0) {
+        this.selected_projects.map(m => {
+          let new_folder_name = this.$t("copy_of") + " " + m.slugFolderName;
+
+          const corresponding_project = this.$root.projects_that_are_accessible.find(
+            p => p.slugFolderName === m.slugFolderName
+          );
+          if (corresponding_project.hasOwnProperty("name"))
+            new_folder_name =
+              this.$t("copy_of") + " " + corresponding_project.name;
+
+          this.$socketio.copyFolder({
+            type: "projects",
+            slugFolderName: m.slugFolderName,
+            new_folder_name
+          });
+
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .log(this.$t("notifications.project_copy_in_progress"));
+
+          this.$eventHub.$once("socketio.projects.folder_listed", () => {
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .success(this.$t("notifications.project_copy_completed"));
+          });
+        });
+      }
+    },
     confirmRemoveSelection() {
       this.$alertify
         .okBtn(this.$t("yes"))
@@ -128,6 +166,13 @@ export default {
                 type: "projects",
                 slugFolderName: m.slugFolderName,
                 slugMediaName: m.metaFileName
+              });
+            });
+
+            this.selected_projects.map(m => {
+              this.$root.removeFolder({
+                type: "projects",
+                slugFolderName: m.slugFolderName
               });
             });
 

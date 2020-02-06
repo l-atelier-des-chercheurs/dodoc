@@ -1182,6 +1182,12 @@ small {
         background-color: transparent;
         text-indent: -1000px;
       }
+
+      .m_project--presentation--buttons--selectionButton {
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
     }
 
     .m_project--presentation--password {
@@ -1754,49 +1760,12 @@ small {
         flex-flow: row nowrap;
         justify-content: space-between;
 
-        ._selector {
+        .input-selector {
           justify-self: flex-end;
           flex-grow: 0;
           text-align: right;
-          padding: 4px 4px;
-          min-height: 0;
-          line-height: 0;
           margin-right: -8px;
           margin-top: -2px;
-          cursor: pointer;
-
-          // background-color: red;
-
-          &:hover {
-            input {
-              background-color: @c-gris_clair;
-              &:checked {
-                background-color: @c-orange_fonce;
-              }
-            }
-          }
-          // background-color: #fff000;
-
-          // margin-right: -4px;
-          // margin-top: -1px;
-
-          input {
-            -webkit-appearance: none;
-            width: 0.8em;
-            height: 0.8em;
-            background: white;
-            border-radius: 2px;
-            border: 1px solid @c-gris_fonce;
-            outline: 0 !important;
-
-            &:checked {
-              color: @c-orange;
-              background-color: currentColor;
-            }
-
-            &:active {
-            }
-          }
         }
       }
     }
@@ -2248,6 +2217,41 @@ small {
 
   .item > div {
     margin: 0;
+  }
+}
+
+.input-selector {
+  padding: 4px 4px;
+  min-height: 0;
+  line-height: 0;
+  cursor: pointer;
+
+  &:hover {
+    input {
+      background-color: @c-gris_clair;
+      &:checked {
+        background-color: @c-bleuvert_fonce;
+      }
+    }
+  }
+
+  input {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: white;
+    box-shadow: 0 1px 3px rgba(255, 255, 255, 2), 0 1px 2px rgba(0, 0, 0, 0.24);
+    border-radius: 2px;
+    border: 1px solid @c-gris_fonce;
+    outline: 0 !important;
+
+    &:checked {
+      color: @c-bleuvert;
+      background-color: currentColor;
+    }
+
+    &:active {
+    }
   }
 }
 

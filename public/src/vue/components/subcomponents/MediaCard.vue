@@ -38,12 +38,14 @@
                 />
                 <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 " />
               </svg>
-              <span v-if="!!media.type" :class="{ 'c-rouge': media.fav }">{{
+              <span v-if="!!media.type" :class="{ 'c-rouge': media.fav }">
+                {{
                 $t(media.type)
-              }}</span>
+                }}
+              </span>
               <label
                 :for="is_selected + id"
-                class="_selector"
+                class="input-selector"
                 @click.stop
                 v-if="is_hovered || is_selected"
               >

@@ -1,5 +1,10 @@
 <template>
-  <div class="m_project" :class="{ 'is--not_authorized_to_admin': !can_access_folder }">
+  <div
+    class="m_project"
+    :class="{ 'is--hovered': is_hovered }"
+    @mouseover="is_hovered = true"
+    @mouseleave="is_hovered = false"
+  >
     <div class="m_project--presentation">
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img :src="previewURL" class draggable="false" />
@@ -135,6 +140,20 @@
         >
           <span class>{{ $t("open") }}</span>
         </button>
+
+        <label
+          v-if="(can_access_folder && context !== 'full') && (is_hovered || is_selected)"
+          :for="is_selected + id"
+          class="m_project--presentation--buttons--selectionButton input-selector"
+          @click.stop
+        >
+          <input
+            :id="is_selected + id"
+            type="checkbox"
+            v-model="local_is_selected"
+            @change="$emit('toggleSelect')"
+          />
+        </label>
 
         <button
           v-if="can_access_folder && context === 'full'"
@@ -303,7 +322,8 @@ export default {
     slugProjectName: String,
     read_only: Boolean,
     index: Number,
-    context: String
+    context: String,
+    is_selected: Boolean
   },
   components: {
     EditProject,
@@ -316,6 +336,10 @@ export default {
       showInputPasswordField: false,
       showCurrentPassword: false,
       remember_project_password_for_this_device: true,
+
+      local_is_selected: false,
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
+      is_hovered: false,
 
       showDuplicateProjectMenu: false,
       copy_project_name: this.$t("copy_of") + " " + this.project.name,
@@ -344,6 +368,9 @@ export default {
 
         this.closeProject();
       }
+    },
+    is_selected: function() {
+      this.local_is_selected = this.is_selected;
     }
   },
   mounted() {},
