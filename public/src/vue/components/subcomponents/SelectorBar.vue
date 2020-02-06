@@ -10,7 +10,7 @@
         class="m_selector--content--title"
       >{{ selected_projects.length }} {{ $t("projects_selected") }}</div>
       <div class="m_selector--content--buttons">
-        <button type="button" class="buttonLink" @click="$emit('deselect')">Deselect</button>
+        <button type="button" class="buttonLink" @click="$emit('deselect')">{{ $t('unselect') }}</button>
 
         <button
           type="button"
