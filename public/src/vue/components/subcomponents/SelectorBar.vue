@@ -337,6 +337,8 @@ export default {
         });
       });
       this.show_options = false;
+
+      this.$emit("deselect");
     }
   }
 };
