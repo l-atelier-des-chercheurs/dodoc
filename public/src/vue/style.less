@@ -1037,6 +1037,72 @@ small {
     z-index: 1;
   }
 
+  .m_folder {
+    // .padding-sides-small;
+    // grid-column: span 2;
+    // grid-column: ~"1 / -1";
+
+    > label {
+      color: white;
+      .padding-sides-small;
+      .padding-vert-verysmall;
+      background-color: @c-noir;
+      border-radius: 4px;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      margin-bottom: 0;
+
+      button {
+        font-size: inherit;
+        text-transform: inherit;
+      }
+    }
+
+    > .m_folder--projects {
+      // display: flex;
+      background-color: @c-noir;
+      border-radius: 4px;
+      border-top-left-radius: 0;
+      .padding-top-small;
+      margin-bottom: 0;
+
+      max-height: 400px;
+      overflow-y: auto;
+      // .margin-bottom-verysmall;
+      margin-bottom: 2px;
+
+      .m_project {
+        flex-basis: 50%;
+        .margin-bottom-small;
+        .margin-sides-small;
+        min-height: 0;
+
+        // transform: scale(0.5);
+
+        &.is--collapsed {
+          .m_project--presentation {
+            flex-flow: row nowrap;
+            align-items: center;
+
+            .m_project--presentation--vignette {
+              flex: 0 0 39%;
+              padding-bottom: 26%;
+            }
+
+            .m_project--presentation--text--title {
+              font-size: 1rem;
+              margin: 0;
+              .padding-small;
+            }
+            .m_project--presentation--text--infos {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+
   .m_project {
     flex: 0 1 @t-folderwidth;
     .margin-sides-small;
@@ -1185,6 +1251,7 @@ small {
         height: 100%;
         background-color: transparent;
         text-indent: -1000px;
+        opacity: 0;
       }
 
       .m_project--presentation--buttons--selectionButton {
@@ -1930,7 +1997,7 @@ small {
     font-size: inherit !important;
     // .padding-sides-verysmall !important;
     // .padding-vert-verysmall !important;
-    padding: 0.4em;
+    padding: 0.2rem 0.2rem;
 
     text-transform: initial;
     font-weight: inherit;
@@ -2159,7 +2226,7 @@ small {
     font-size: inherit !important;
     // .padding-sides-verysmall !important;
     // .padding-vert-verysmall !important;
-    padding: 0.4em;
+    padding: 0.2rem 0.2rem;
 
     text-transform: initial;
     font-weight: inherit;

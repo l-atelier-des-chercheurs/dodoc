@@ -23,11 +23,16 @@
             <label for="media_switch" class="cursor-pointer">
               <span class>{{ $t("projects") }}</span>
             </label>
-            <input type="checkbox" id="media_switch" v-model="show_medias_instead_of_projects" />
+            <input
+              type="checkbox"
+              id="media_switch"
+              v-model="show_medias_instead_of_projects"
+            />
             <label for="media_switch">
               <span class>{{ $t("medias") }}</span>
             </label>
           </div>
+
           <div>
             <template v-if="Object.keys(projects).length > 0">
               <template v-if="!show_medias_instead_of_projects">
@@ -36,11 +41,11 @@
                   <span
                     :class="{
                       'c-rouge':
-                        Object.keys(sortedProjectsSlug).length !==
+                        Object.keys(sortedProjects).length !==
                         Object.keys(projects).length
                     }"
                   >
-                    {{ sortedProjectsSlug.length }}
+                    {{ sortedProjects.length }}
                     {{ $t("projects_of") }}
                     {{ Object.keys(projects).length }}
                   </span>
@@ -56,7 +61,9 @@
                       class="button-nostyle text-uc button-triangle"
                       :class="{ 'is--active': show_filters }"
                       @click="show_filters = !show_filters"
-                    >{{ $t("filters") }}</button>
+                    >
+                      {{ $t("filters") }}
+                    </button>
                   </template>
                   <TagsAndAuthorFilters
                     v-if="show_filters"
@@ -112,13 +119,22 @@
                     <div>{{ $t("project_name_to_find") }}</div>
 
                     <div class="input-group">
-                      <input type="text" class="input-sm" v-model="debounce_search_project_name" />
-                      <span class="input-addon" v-if="debounce_search_project_name.length > 0">
+                      <input
+                        type="text"
+                        class="input-sm"
+                        v-model="debounce_search_project_name"
+                      />
+                      <span
+                        class="input-addon"
+                        v-if="debounce_search_project_name.length > 0"
+                      >
                         <button
                           type="button"
                           :disabled="debounce_search_project_name.length === 0"
                           @click="debounce_search_project_name = ''"
-                        >×</button>
+                        >
+                          ×
+                        </button>
                       </span>
                     </div>
                   </div>
@@ -148,7 +164,9 @@
                     class="button-nostyle text-uc button-triangle"
                     :class="{ 'is--active': show_filters }"
                     @click="show_filters = !show_filters"
-                  >{{ $t("filters") }}</button>
+                  >
+                    {{ $t("filters") }}
+                  </button>
                 </template>
                 <TagsAndAuthorFilters
                   v-if="show_filters"
@@ -169,30 +187,48 @@
           </div>
         </div>
       </div>
+
       <transition-group
         v-if="!show_medias_instead_of_projects"
         class="m_projects--list"
         name="list-complete"
         :duration="800"
       >
-        <Project
-          v-for="(sortedProject, index) in sortedProjectsSlug"
-          :key="sortedProject.slugProjectName"
-          :slugProjectName="sortedProject.slugProjectName"
-          :project="projects[sortedProject.slugProjectName]"
-          :read_only="read_only"
-          :index="index"
-          :is_selected="
-                  projectIsSelected(
-                    sortedProject.slugProjectName,
-                  )
-                "
-          @toggleSelect="
-                  toggleSelectProject(
-                    sortedProject.slugProjectName,
-                  )
-                "
-        />
+        <template v-for="item in sortedFoldersAndProjects">
+          <div v-if="item.type === 'folder'" class="m_folder" :key="item.name">
+            <label>
+              <button
+                type="button"
+                class="button-nostyle text-uc button-triangle"
+                :class="{ 'is--active': !hide_folder.includes(item.name) }"
+                @click="toggleFolder(item.name)"
+              >
+                {{ item.name }} ({{ item.content.length }})
+              </button>
+            </label>
+            <div class="m_folder--projects">
+              <Project
+                class="is--collapsed"
+                v-if="!hide_folder.includes(item.name)"
+                v-for="project in item.content"
+                :key="project.slugFolderName"
+                :project="project"
+                :read_only="read_only"
+                :is_selected="projectIsSelected(project.slugFolderName)"
+                @toggleSelect="toggleSelectProject(project.slugFolderName)"
+              />
+            </div>
+          </div>
+
+          <Project
+            v-else-if="item.type === 'project'"
+            :key="item.content.slugFolderName"
+            :project="item.content"
+            :read_only="read_only"
+            :is_selected="projectIsSelected(item.content.slugFolderName)"
+            @toggleSelect="toggleSelectProject(item.content.slugFolderName)"
+          />
+        </template>
       </transition-group>
       <transition-group
         v-else-if="show_medias_instead_of_projects && !is_loading_all_medias"
@@ -202,7 +238,9 @@
         <div v-for="item in groupedMedias" :key="item[0]">
           <h3
             class="font-folder_title margin-sides-small margin-none margin-bottom-small"
-          >{{ $root.formatDateToHuman(item[0]) }}</h3>
+          >
+            {{ $root.formatDateToHuman(item[0]) }}
+          </h3>
 
           <div class="m_mediaShowAll">
             <div v-for="media in item[1]" :key="media.slugMediaName">
@@ -235,7 +273,10 @@
           v-if="selected_medias.length > 0 || selected_projects.length > 0"
           :selected_medias="selected_medias"
           :selected_projects="selected_projects"
-          @deselect="selected_projects = []; selected_medias = []"
+          @deselect="
+            selected_projects = [];
+            selected_medias = [];
+          "
         />
       </transition>
     </main>
@@ -283,6 +324,7 @@ export default {
       show_search: false,
       selected_medias: [],
       selected_projects: [],
+      hide_folder: [],
 
       debounce_search_project_name: "",
       debounce_search_project_name_function: undefined
@@ -357,7 +399,7 @@ export default {
     mediaTypes() {
       return this.$root.getAllTypesFrom(this.filteredMedias);
     },
-    sortedProjectsSlug: function() {
+    sortedProjects: function() {
       var sortable = [];
 
       if (!this.projects || this.projects.length === 0) {
@@ -366,19 +408,20 @@ export default {
 
       for (let slugProjectName in this.projects) {
         let orderBy;
+        const project = this.projects[slugProjectName];
 
         if (this.currentSort.type === "date") {
           orderBy = +this.$moment(
-            this.projects[slugProjectName][this.currentSort.field],
+            project[this.currentSort.field],
             "YYYY-MM-DD HH:mm:ss"
           );
         } else if (this.currentSort.type === "alph") {
-          orderBy = this.projects[slugProjectName][this.currentSort.field];
+          orderBy = project[this.currentSort.field];
         }
 
         if (this.$root.settings.project_filter.name !== "") {
           if (
-            !this.projects[slugProjectName].name
+            !project.name
               .toLowerCase()
               .includes(this.$root.settings.project_filter.name.toLowerCase())
           )
@@ -389,7 +432,7 @@ export default {
           !this.$root.settings.project_filter.keyword &&
           !this.$root.settings.project_filter.author
         ) {
-          sortable.push({ slugProjectName, orderBy });
+          sortable.push({ project, orderBy });
           continue;
         }
 
@@ -399,20 +442,20 @@ export default {
         ) {
           // only add to sorted array if project has this keyword
           if (
-            this.projects[slugProjectName].hasOwnProperty("keywords") &&
-            typeof this.projects[slugProjectName].keywords === "object" &&
-            this.projects[slugProjectName].keywords.filter(
+            project.hasOwnProperty("keywords") &&
+            typeof project.keywords === "object" &&
+            project.keywords.filter(
               k => k.title === this.$root.settings.project_filter.keyword
             ).length > 0
           ) {
             if (
-              this.projects[slugProjectName].hasOwnProperty("authors") &&
-              typeof this.projects[slugProjectName].authors === "object" &&
-              this.projects[slugProjectName].authors.filter(
+              project.hasOwnProperty("authors") &&
+              typeof project.authors === "object" &&
+              project.authors.filter(
                 k => k.name === this.$root.settings.project_filter.author
               ).length > 0
             ) {
-              sortable.push({ slugProjectName, orderBy });
+              sortable.push({ project, orderBy });
             }
           }
           continue;
@@ -421,13 +464,13 @@ export default {
         if (!!this.$root.settings.project_filter.keyword) {
           // only add to sorted array if project has this keyword
           if (
-            this.projects[slugProjectName].hasOwnProperty("keywords") &&
-            typeof this.projects[slugProjectName].keywords === "object" &&
-            this.projects[slugProjectName].keywords.filter(
+            project.hasOwnProperty("keywords") &&
+            typeof project.keywords === "object" &&
+            project.keywords.filter(
               k => k.title === this.$root.settings.project_filter.keyword
             ).length > 0
           ) {
-            sortable.push({ slugProjectName, orderBy });
+            sortable.push({ project, orderBy });
           }
           continue;
         }
@@ -435,13 +478,13 @@ export default {
         if (!!this.$root.settings.project_filter.author) {
           // only add to sorted array if project has this keyword
           if (
-            this.projects[slugProjectName].hasOwnProperty("authors") &&
-            typeof this.projects[slugProjectName].authors === "object" &&
-            this.projects[slugProjectName].authors.filter(
+            project.hasOwnProperty("authors") &&
+            typeof project.authors === "object" &&
+            project.authors.filter(
               k => k.name === this.$root.settings.project_filter.author
             ).length > 0
           ) {
-            sortable.push({ slugProjectName, orderBy });
+            sortable.push({ project, orderBy });
           }
           continue;
         }
@@ -456,7 +499,7 @@ export default {
         });
       }
 
-      let sortedSortable = sortable.sort(function(a, b) {
+      let sortedProjects = sortable.sort(function(a, b) {
         let valA = a.orderBy;
         let valB = b.orderBy;
         if (typeof a.orderBy === "string" && typeof b.orderBy === "string") {
@@ -473,10 +516,65 @@ export default {
       });
 
       if (this.currentSort.order === "descending") {
-        sortedSortable.reverse();
+        sortedProjects.reverse();
+      }
+      sortedProjects = sortedProjects.map(sp => sp.project);
+      return sortedProjects;
+    },
+    sortedFoldersAndProjects: function() {
+      //  [
+      //     {
+      //       type: "folder",
+      //       name: "Mon dossier",
+      //       content: [
+      //         { slugFolderName: "plop", name: "Plop" },
+      //         { slugFolderName: "plip", name: "Plip" }
+      //       ]
+      //     },
+      //     {
+      //       type: "project",
+      //       content: { slugFolderName: "plop", name: "Plop" }
+      //     }
+      //   ];
+
+      const get_all_folders = this.sortedProjects.reduce((acc, p) => {
+        if (!!p.folder && !acc.includes(p.folder)) {
+          acc.push(p.folder);
+        }
+        return acc;
+      }, []);
+
+      const projects_sorted_by_folder = this.$_.groupBy(
+        this.sortedProjects,
+        "folder"
+      );
+
+      if (projects_sorted_by_folder.length === 0) {
+        return [];
       }
 
-      return sortedSortable;
+      const folders_and_projects = Object.entries(projects_sorted_by_folder)
+        .sort((a, b) => a[0].localeCompare(b[0]))
+        .reduce((acc, [name, content]) => {
+          if (!!name && name !== "undefined") {
+            acc.push({
+              type: "folder",
+              name,
+              content
+            });
+          } else if (name === "undefined") {
+            content = content.map(p => {
+              acc.push({
+                type: "project",
+                content: p
+              });
+            });
+          }
+
+          return acc;
+        }, []);
+
+      return folders_and_projects;
     },
     presentationText: function() {
       if (this.presentationMD.hasOwnProperty(this.currentLang)) {
@@ -583,6 +681,12 @@ export default {
       return this.selected_projects.some(
         m => m.slugFolderName === slugFolderName
       );
+    },
+
+    toggleFolder(folder_name) {
+      if (this.hide_folder.includes(folder_name))
+        this.hide_folder = this.hide_folder.filter(fn => fn !== folder_name);
+      else this.hide_folder.push(folder_name);
     },
 
     urlToPortrait(slug, filename) {

@@ -5,7 +5,6 @@
     @mouseover="is_hovered = true"
     @mouseleave="is_hovered = false"
   >
-    {{ project.folder }}
     <div class="m_project--presentation">
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img :src="previewURL" class draggable="false" />
@@ -351,9 +350,7 @@ import MediaCard from "./subcomponents/MediaCard.vue";
 export default {
   props: {
     project: Object,
-    slugProjectName: String,
     read_only: Boolean,
-    index: Number,
     context: String,
     is_selected: Boolean
   },
@@ -364,6 +361,7 @@ export default {
   },
   data() {
     return {
+      slugProjectName: this.project.slugFolderName,
       showEditProjectModal: false,
       showInputPasswordField: false,
       showCurrentPassword: false,
