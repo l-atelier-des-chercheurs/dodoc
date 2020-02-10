@@ -200,6 +200,10 @@ module.exports = (function() {
       fr: "Regrouper",
       en: "Group"
     },
+    ungroup: {
+      fr: "Dégrouper",
+      en: "Ungroup"
+    },
     group_in_a_new_folder: {
       fr: "Regrouper dans un nouveau dossier nommé&nbsp;:",
       en: "Group in a new folder named :"

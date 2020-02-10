@@ -23,11 +23,7 @@
             <label for="media_switch" class="cursor-pointer">
               <span class>{{ $t("projects") }}</span>
             </label>
-            <input
-              type="checkbox"
-              id="media_switch"
-              v-model="show_medias_instead_of_projects"
-            />
+            <input type="checkbox" id="media_switch" v-model="show_medias_instead_of_projects" />
             <label for="media_switch">
               <span class>{{ $t("medias") }}</span>
             </label>
@@ -61,9 +57,7 @@
                       class="button-nostyle text-uc button-triangle"
                       :class="{ 'is--active': show_filters }"
                       @click="show_filters = !show_filters"
-                    >
-                      {{ $t("filters") }}
-                    </button>
+                    >{{ $t("filters") }}</button>
                   </template>
                   <TagsAndAuthorFilters
                     v-if="show_filters"
@@ -119,22 +113,13 @@
                     <div>{{ $t("project_name_to_find") }}</div>
 
                     <div class="input-group">
-                      <input
-                        type="text"
-                        class="input-sm"
-                        v-model="debounce_search_project_name"
-                      />
-                      <span
-                        class="input-addon"
-                        v-if="debounce_search_project_name.length > 0"
-                      >
+                      <input type="text" class="input-sm" v-model="debounce_search_project_name" />
+                      <span class="input-addon" v-if="debounce_search_project_name.length > 0">
                         <button
                           type="button"
                           :disabled="debounce_search_project_name.length === 0"
                           @click="debounce_search_project_name = ''"
-                        >
-                          ×
-                        </button>
+                        >×</button>
                       </span>
                     </div>
                   </div>
@@ -164,9 +149,7 @@
                     class="button-nostyle text-uc button-triangle"
                     :class="{ 'is--active': show_filters }"
                     @click="show_filters = !show_filters"
-                  >
-                    {{ $t("filters") }}
-                  </button>
+                  >{{ $t("filters") }}</button>
                 </template>
                 <TagsAndAuthorFilters
                   v-if="show_filters"
@@ -202,9 +185,7 @@
                 class="button-nostyle text-uc button-triangle"
                 :class="{ 'is--active': !hide_folder.includes(item.name) }"
                 @click="toggleFolder(item.name)"
-              >
-                {{ item.name }} ({{ item.content.length }})
-              </button>
+              >{{ item.name }} ({{ item.content.length }})</button>
             </label>
             <div class="m_folder--projects">
               <Project
@@ -238,9 +219,7 @@
         <div v-for="item in groupedMedias" :key="item[0]">
           <h3
             class="font-folder_title margin-sides-small margin-none margin-bottom-small"
-          >
-            {{ $root.formatDateToHuman(item[0]) }}
-          </h3>
+          >{{ $root.formatDateToHuman(item[0]) }}</h3>
 
           <div class="m_mediaShowAll">
             <div v-for="media in item[1]" :key="media.slugMediaName">
@@ -537,16 +516,18 @@ export default {
       //     }
       //   ];
 
-      const get_all_folders = this.sortedProjects.reduce((acc, p) => {
-        if (!!p.folder && !acc.includes(p.folder)) {
-          acc.push(p.folder);
-        }
-        return acc;
-      }, []);
+      // const get_all_folders = this.sortedProjects.reduce((acc, p) => {
+      //   if (!!p.folder && !acc.includes(p.folder)) {
+      //     acc.push(p.folder);
+      //   }
+      //   return acc;
+      // }, []);
 
       const projects_sorted_by_folder = this.$_.groupBy(
         this.sortedProjects,
-        "folder"
+        p => {
+          return !!p.folder ? p.folder : "not-groupped";
+        }
       );
 
       if (projects_sorted_by_folder.length === 0) {
@@ -556,13 +537,13 @@ export default {
       const folders_and_projects = Object.entries(projects_sorted_by_folder)
         .sort((a, b) => a[0].localeCompare(b[0]))
         .reduce((acc, [name, content]) => {
-          if (!!name && name !== "undefined") {
+          if (!!name && name !== "not-groupped") {
             acc.push({
               type: "folder",
               name,
               content
             });
-          } else if (name === "undefined") {
+          } else {
             content = content.map(p => {
               acc.push({
                 type: "project",
