@@ -23,6 +23,39 @@
         />
       </div>
 
+      <!-- Folder -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_folder }"
+            @click="show_folder = !show_folder"
+          >{{ $t("folder") }}</button>
+        </label>
+        <div v-if="show_folder">
+          <template v-if="$root.all_folders.length">
+            <!-- <label v-html="$t('add_to_existing_folder')" /> -->
+            <div class="input-group margin-bottom-none">
+              <select v-model="existing_group_name">
+                <option v-if="!!project.folder" :key="'create'" :value="'_none'">{{ $t("none") }}</option>
+                <option :key="'create'" :value="''">** {{ $t("create_new") }} **</option>
+                <option
+                  v-for="folder in $root.all_folders"
+                  :key="folder"
+                  :value="folder"
+                >{{ folder }}</option>
+              </select>
+            </div>
+          </template>
+
+          <div v-if="existing_group_name === ''">
+            <label v-html="$t('new_folder_name')" />
+            <input type="text" class="text-uc" v-model.trim="new_group_name" />
+          </div>
+        </div>
+      </div>
+
       <!-- Preview -->
       <div class="margin-bottom-small">
         <label>{{ $t('cover_image') }}</label>
@@ -93,6 +126,11 @@ export default {
   },
   data() {
     return {
+      show_folder: false,
+
+      existing_group_name: !!this.project.folder ? this.project.folder : "",
+      new_group_name: "",
+
       projectdata: {
         name: this.project.name,
         authors:
@@ -176,6 +214,13 @@ export default {
             [this.slugProjectName]: this.projectdata.password
           }
         });
+      }
+
+      if (!!this.existing_group_name) {
+        if (this.existing_group_name === "_none") this.projectdata.folder = "";
+        else this.projectdata.folder = this.existing_group_name;
+      } else if (!!this.new_group_name) {
+        this.projectdata.folder = this.new_group_name.toUpperCase();
       }
 
       this.$root.editFolder({

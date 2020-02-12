@@ -30,8 +30,8 @@ module.exports = (function() {
       de: "Eine Publikation erstellen"
     },
     create_new: {
-      fr: "Créer un nouveau dossier",
-      en: "Create new folder"
+      fr: "créer un nouveau dossier",
+      en: "create new folder"
     },
     publication: {
       fr: "Recette",
@@ -68,6 +68,10 @@ module.exports = (function() {
       nl: "Datum van oprichting",
       oc: "Data de creacion",
       de: "Erstellungsdatum"
+    },
+    none: {
+      fr: "aucun",
+      en: "none"
     },
     uploaded: {
       fr: "Importation",
