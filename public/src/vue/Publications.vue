@@ -21,13 +21,19 @@
           :read_only="read_only"
         />
       </div>
-      <div class="m_actionbar--text">{{ $t('cooking_pot') }}: {{ $t('cooking_pot_instructions')}}</div>
+      <div class="m_actionbar--text">
+        {{ $t("cooking_pot") }}: {{ $t("cooking_pot_instructions") }}
+      </div>
     </div>
 
     <!-- liste des recettes -->
     <div class="m_recipes">
       <!-- pour chaque recette -->
-      <div class="m_recipes--recipe" v-for="recipe in recipes" :key="recipe.key">
+      <div
+        class="m_recipes--recipe"
+        v-for="recipe in recipes"
+        :key="recipe.key"
+      >
         <div class="m_recipes--recipe--icon" v-html="recipe.icon"></div>
         <div class="m_recipes--recipe--text">
           <h2 class>{{ $t(recipe.key) }}</h2>
@@ -39,7 +45,9 @@
               type="button"
               class="buttonLink margin-left-none padding-left-none"
               @click="recipe.show_instructions = !recipe.show_instructions"
-            >+ {{ $t('more_informations')}}</button>
+            >
+              + {{ $t("more_informations") }}
+            </button>
           </p>
           <template v-if="recipe.show_instructions">
             <hr />
@@ -53,7 +61,7 @@
             @click="openCreatePublicationModal(recipe.key)"
             :disabled="read_only"
           >
-            <span>{{ $t('create') }}</span>
+            <span>{{ $t("create") }}</span>
           </button>
         </div>
 
@@ -65,7 +73,7 @@
             <thead>
               <tr>
                 <th colspan="2">
-                  <label>{{ $t('previous_creations') }}</label>
+                  <label>{{ $t("previous_creations") }}</label>
                 </th>
               </tr>
             </thead>
@@ -78,17 +86,24 @@
               >
                 <td>{{ publication.name }}</td>
                 <td width="150px">
-                  <small>{{ $root.formatDateToHuman(publication.date_created) }}</small>
+                  <small>{{
+                    $root.formatDateToHuman(publication.date_created)
+                  }}</small>
                 </td>
               </tr>
 
               <tr
-                v-if="!recipe.show_all_recipes && all_recipes_of_this_template(recipe.key).length > 3"
+                v-if="
+                  !recipe.show_all_recipes &&
+                    all_recipes_of_this_template(recipe.key).length > 3
+                "
                 @click="recipe.show_all_recipes = true"
                 class="m_recipes--recipe--mealList--meal"
               >
                 <td colspan="2">
-                  <button type="button" class="buttonLink margin-none">{{ $t('show_all') }}</button>
+                  <button type="button" class="buttonLink margin-none">
+                    {{ $t("show_all") }}
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -463,5 +478,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

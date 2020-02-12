@@ -68,7 +68,7 @@
               >
                 <button
                   type="submit"
-                  :disabled="read_only"
+                  :disabled="read_only || is_loading"
                   class="button button-bg_rounded bg-bleuvert"
                 >
                   <img src="/images/i_enregistre.svg" draggable="false" />
@@ -108,6 +108,9 @@
               </span>
             </button>
           </form>
+          <div class="m_modal--loader" v-if="is_loading">
+            <span class="loader" />
+          </div>
         </div>
       </div>
 
@@ -211,6 +214,10 @@ export default {
       default: false
     },
     prevent_close: {
+      type: Boolean,
+      default: false
+    },
+    is_loading: {
       type: Boolean,
       default: false
     }

@@ -5,15 +5,16 @@
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
     :askBeforeClosingModal="askBeforeClosingModal"
+    :is_loading="is_sending_content_to_server"
   >
     <template slot="header">
-      <div class>{{ $t('edit_project') }}</div>
+      <div class>{{ $t("edit_project") }}</div>
     </template>
 
     <template slot="sidebar">
       <!-- Human name -->
       <div class="margin-bottom-small">
-        <label>{{ $t('project_name') }}</label>
+        <label>{{ $t("project_name") }}</label>
         <input
           class="input-big"
           type="text"
@@ -31,20 +32,30 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_folder }"
             @click="show_folder = !show_folder"
-          >{{ $t("folder") }}</button>
+          >
+            {{ $t("folder") }}
+          </button>
         </label>
         <div v-if="show_folder">
           <template v-if="$root.all_folders.length">
             <!-- <label v-html="$t('add_to_existing_folder')" /> -->
             <div class="input-group margin-bottom-none">
               <select v-model="existing_group_name">
-                <option v-if="!!project.folder" :key="'none'" :value="'_none'">{{ $t("none") }}</option>
-                <option :key="'create'" :value="''">** {{ $t("create_new") }} **</option>
+                <option
+                  v-if="!!project.folder"
+                  :key="'none'"
+                  :value="'_none'"
+                  >{{ $t("none") }}</option
+                >
+                <option :key="'create'" :value="''"
+                  >** {{ $t("create_new") }} **</option
+                >
                 <option
                   v-for="folder in $root.all_folders"
                   :key="folder"
                   :value="folder"
-                >{{ folder }}</option>
+                  >{{ folder }}</option
+                >
               </select>
             </div>
           </template>
@@ -64,14 +75,20 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_image }"
             @click="show_image = !show_image"
-          >{{ $t("cover_image") }}</button>
+          >
+            {{ $t("cover_image") }}
+          </button>
         </label>
         <template v-if="show_image">
           <ImageSelect
             :previewURL="previewURL"
             :load_from_projects_medias="true"
             :slugProjectName="slugProjectName"
-            @newPreview="value => { preview_rawdata = value }"
+            @newPreview="
+              value => {
+                preview_rawdata = value;
+              }
+            "
           />
         </template>
       </div>
@@ -84,15 +101,22 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_password }"
             @click="show_password = !show_password"
-          >{{ $t("password") }}</button>
+          >
+            {{ $t("password") }}
+          </button>
         </label>
         <template v-if="show_password">
-          <input type="password" v-model="projectdata.password" :readonly="read_only" />
+          <input
+            type="password"
+            v-model="projectdata.password"
+            :readonly="read_only"
+          />
           <small>
             <template
               v-if="!!project_password && projectdata.password === ''"
-            >{{ $t('removing_password_warning') }}</template>
-            <template v-else>{{ $t('adding_password_warning') }}</template>
+              >{{ $t("removing_password_warning") }}</template
+            >
+            <template v-else>{{ $t("adding_password_warning") }}</template>
           </small>
         </template>
       </div>
@@ -105,12 +129,14 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_keywords }"
             @click="show_keywords = !show_keywords"
-          >{{ $t("keywords") }}</button>
+          >
+            {{ $t("keywords") }}
+          </button>
         </label>
         <template v-if="show_keywords">
           <TagsInput
             :keywords="projectdata.keywords"
-            @tagsChanged="newTags => projectdata.keywords = newTags"
+            @tagsChanged="newTags => (projectdata.keywords = newTags)"
           />
         </template>
       </div>
@@ -123,20 +149,22 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_authors }"
             @click="show_authors = !show_authors"
-          >{{ $t("author") }}</button>
+          >
+            {{ $t("author") }}
+          </button>
         </label>
 
         <template v-if="show_authors">
           <AuthorsInput
             :currentAuthors="projectdata.authors"
-            @authorsChanged="newAuthors => projectdata.authors = newAuthors"
+            @authorsChanged="newAuthors => (projectdata.authors = newAuthors)"
           />
-          <small>{{ $t('author_instructions') }}</small>
+          <small>{{ $t("author_instructions") }}</small>
         </template>
       </div>
     </template>
 
-    <template slot="submit_button">{{ $t('save') }}</template>
+    <template slot="submit_button">{{ $t("save") }}</template>
   </Modal>
 </template>
 <script>
@@ -166,6 +194,8 @@ export default {
       show_password: !!this.project_password,
       show_keywords: !!this.project.keywords,
       show_authors: !!this.project.authors,
+
+      is_sending_content_to_server: false,
 
       existing_group_name: !!this.project.folder ? this.project.folder : "",
       new_group_name: "",
@@ -262,6 +292,8 @@ export default {
         this.projectdata.folder = this.new_group_name.toUpperCase();
       }
 
+      this.is_sending_content_to_server = true;
+
       this.$root.editFolder({
         type: "projects",
         slugFolderName: this.slugProjectName,
@@ -273,5 +305,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>
