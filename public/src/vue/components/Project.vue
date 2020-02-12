@@ -139,7 +139,8 @@
           v-if="can_access_folder && context !== 'full'"
           type="button"
           class="m_project--presentation--buttons--openButton"
-          @click="$root.openProject(slugProjectName)"
+          @click.exact="$root.openProject(slugProjectName)"
+          @click.shift.left.exact="$emit('toggleSelect')"
         >
           <span class>{{ $t("open") }}</span>
         </button>

@@ -10,7 +10,8 @@
   >
     <div>
       <figure
-        @click.stop="openMediaModal()"
+        @click.stop.exact="openMediaModal()"
+        @click.shift.left.exact="$emit('toggleSelect')"
         @mouseover="is_hovered = true"
         @mouseleave="is_hovered = false"
         :class="{ 'is--hovered': is_hovered }"
@@ -39,9 +40,7 @@
                 />
                 <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 " />
               </svg>
-              <span v-if="!!media.type" :class="{ 'c-rouge': media.fav }">
-                {{ $t(media.type) }}
-              </span>
+              <span v-if="!!media.type" :class="{ 'c-rouge': media.fav }">{{ $t(media.type) }}</span>
               <label
                 :for="is_selected + id"
                 class="input-selector"
