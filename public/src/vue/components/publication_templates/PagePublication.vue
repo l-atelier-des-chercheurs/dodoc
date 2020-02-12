@@ -4,7 +4,6 @@
     :class="{ 'is--preview': preview_mode, 'is--fullscreen': fullscreen_mode }"
     ref="panel"
   >
-    {{ publication.pages }}
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
