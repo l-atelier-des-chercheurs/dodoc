@@ -17,35 +17,101 @@
         <input type="text" v-model.trim="projectdata.name" required autofocus />
       </div>
 
+      <!-- Folder -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_folder }"
+            @click="show_folder = !show_folder"
+          >{{ $t("folder") }}</button>
+        </label>
+        <div v-if="show_folder">
+          <template v-if="$root.all_folders.length">
+            <!-- <label v-html="$t('add_to_existing_folder')" /> -->
+            <div class="input-group margin-bottom-none">
+              <select v-model="existing_group_name">
+                <option :key="'create'" :value="''">** {{ $t("create_new") }} **</option>
+                <option
+                  v-for="folder in $root.all_folders"
+                  :key="folder"
+                  :value="folder"
+                >{{ folder }}</option>
+              </select>
+            </div>
+          </template>
+
+          <div v-if="existing_group_name === ''">
+            <label v-html="$t('new_folder_name')" />
+            <input type="text" class="text-uc" v-model.trim="new_group_name" />
+          </div>
+        </div>
+      </div>
+
       <!-- Preview -->
       <div class="margin-bottom-small">
-        <label>{{ $t('cover_image') }}</label>
-        <br />
-        <ImageSelect :load_from_projects_medias="true" @newPreview="value => { preview = value }"></ImageSelect>
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_image }"
+            @click="show_image = !show_image"
+          >{{ $t("cover_image") }}</button>
+        </label>
+        <template v-if="show_image">
+          <ImageSelect :load_from_projects_medias="true" @newPreview="value => { preview = value }"></ImageSelect>
+        </template>
       </div>
 
       <!-- Password -->
       <div class="margin-bottom-small">
-        <label>{{ $t('password') }}</label>
-        <input type="password" v-model="projectdata.password" autocomplete="new-password" />
-        <small>{{ $t('password_instructions') }}</small>
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_password }"
+            @click="show_password = !show_password"
+          >{{ $t("password") }}</button>
+        </label>
+        <template v-if="show_password">
+          <input type="password" v-model="projectdata.password" autocomplete="new-password" />
+          <small>{{ $t('password_instructions') }}</small>
+        </template>
       </div>
 
       <!-- Keywords -->
       <div class="margin-bottom-small">
-        <label>{{ $t('keywords') }}</label>
-        <TagsInput @tagsChanged="newTags => projectdata.keywords = newTags" />
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_keywords }"
+            @click="show_keywords = !show_keywords"
+          >{{ $t("keywords") }}</button>
+        </label>
+
+        <TagsInput v-if="show_keywords" @tagsChanged="newTags => projectdata.keywords = newTags" />
       </div>
 
       <!-- Author(s) -->
       <div class="margin-bottom-small">
-        <label>{{ $t('author') }}</label>
-        <br />
-        <AuthorsInput
-          :currentAuthors="projectdata.authors"
-          @authorsChanged="newAuthors => projectdata.authors = newAuthors"
-        />
-        <small>{{ $t('author_instructions') }}</small>
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_authors }"
+            @click="show_authors = !show_authors"
+          >{{ $t("author") }}</button>
+        </label>
+
+        <template v-if="show_authors">
+          <AuthorsInput
+            :currentAuthors="projectdata.authors"
+            @authorsChanged="newAuthors => projectdata.authors = newAuthors"
+          />
+          <small>{{ $t('author_instructions') }}</small>
+        </template>
       </div>
     </template>
 
@@ -70,6 +136,17 @@ export default {
   },
   data() {
     return {
+      show_folder: !!this.$root.settings.opened_folder,
+      show_image: false,
+      show_password: false,
+      show_keywords: false,
+      show_authors: false,
+
+      existing_group_name: !!this.$root.settings.opened_folder
+        ? this.$root.settings.opened_folder
+        : "",
+      new_group_name: "",
+
       projectdata: {
         name: "",
         password: "",
@@ -125,6 +202,12 @@ export default {
       }
       if (!!this.preview) {
         this.projectdata.preview_rawdata = this.preview;
+      }
+
+      if (!!this.existing_group_name) {
+        this.projectdata.folder = this.existing_group_name;
+      } else if (!!this.new_group_name) {
+        this.projectdata.folder = this.new_group_name.toUpperCase();
       }
 
       this.$eventHub.$on(

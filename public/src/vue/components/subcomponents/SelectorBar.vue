@@ -153,7 +153,7 @@
           <div class="input-group">
             <select v-model="slugProjectName_to_copy_to">
               <option
-                v-for="project in all_projects"
+                v-for="project in $root.projects_that_are_accessible"
                 :key="project.slugFolderName"
                 :value="project.slugFolderName"
               >{{ project.name }}</option>
@@ -183,12 +183,12 @@
           </template>
 
           <template v-if="existing_group_name === ''">
-            <label v-html="$t('group_in_a_new_folder')" />
-            <input type="text" v-model.trim="new_group_name" />
+            <label v-html="$t('new_folder_name')" />
+            <input type="text" class="text-uc" v-model.trim="new_group_name" />
           </template>
           <input
             type="submit"
-            class="button button-bg_rounded bg-bleuvert"
+            class="button button-bg_rounded bg-bleuvert margin-top-small"
             :disabled="!existing_group_name && !new_group_name"
           />
         </form>
@@ -227,16 +227,11 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    all_projects() {
-      return this.$root.projects_that_are_accessible;
-    },
     some_projects_are_in_folders() {
-      debugger;
       return this.selected_projects.some(p => {
         const corresponding_project = this.$root.projects_that_are_accessible.find(
           _p => _p.slugFolderName === p.slugFolderName
         );
-        debugger;
         if (corresponding_project) return !!corresponding_project.folder;
         return false;
       });
@@ -265,6 +260,8 @@ export default {
       if (!this.existing_group_name && !this.new_group_name) return;
 
       let folder_name;
+
+      this.new_group_name = this.new_group_name.toUpperCase();
 
       if (!!this.existing_group_name) {
         folder_name = this.existing_group_name;
@@ -416,6 +413,10 @@ export default {
       align-items: center;
       margin: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
       color: white;
+
+      > form {
+        width: 100%;
+      }
 
       select {
         // max-width: 240px;

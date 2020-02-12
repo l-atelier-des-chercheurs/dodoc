@@ -841,6 +841,78 @@ body {
   .custom_scrollbar(8px, 5px, 6px);
 }
 
+.m_listview.is--folder {
+  // background-color: var(--color-folder);
+
+  .barButton_createProject.barButton_createProject {
+    // background-color: @c-orange;
+  }
+}
+
+.m_listview {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.m_listview--openedFolderLabel {
+  flex: 0 0 auto;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  border-top: 8px solid var(--color-folder);
+  // background-color: var(--color-folder);
+
+  > * {
+    position: relative;
+    background-color: var(--color-folder);
+    border-radius: var(--folder_border_radius);
+    .padding-sides-small;
+    .padding-vert-verysmall;
+    margin: 0 auto;
+    margin-top: -4px;
+    font-size: 80%;
+    // border: 2px solid black;
+
+    .m_listview--openedFolderLabel--intitule {
+      text-transform: lowercase;
+    }
+    .m_listview--openedFolderLabel--folderName {
+      font-weight: 600;
+    }
+
+    button,
+    label {
+      color: black;
+    }
+
+    &::before,
+    &::after {
+      content: "";
+      width: var(--folder_border_radius);
+      height: var(--folder_border_radius);
+      background: transparent;
+      top: 4px;
+      position: absolute;
+      content: "";
+
+      box-shadow: 0px 0px 0px 10px var(--color-folder);
+      clip: rect(0px, 6px, 6px, 0px);
+      display: block;
+    }
+
+    &::after {
+      border-top-left-radius: 100%;
+      left: 100%;
+    }
+
+    &::before {
+      right: 100%;
+      border-top-right-radius: 100%;
+    }
+  }
+  // background-color: @c-noir;
+}
+
 .m_publicationsview {
   .bg-bleuvert_fonce;
 }
@@ -1042,30 +1114,62 @@ small {
     // grid-column: span 2;
     // grid-column: ~"1 / -1";
 
-    @t-folder_border_radius: 12px;
+    text-align: left;
 
     > label {
-      color: white;
+      position: relative;
+      color: @c-noir;
       .padding-sides-small;
       .padding-vert-verysmall;
-      background-color: @c-noir;
-      border-radius: @t-folder_border_radius;
+
+      background-color: var(--color-folder);
+      border-radius: var(--folder_border_radius);
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
       margin-bottom: 0;
+      max-width: 80%;
+
+      &::before,
+      &::after {
+        content: "";
+        width: var(--folder_border_radius);
+        height: var(--folder_border_radius);
+        background: transparent;
+        bottom: 0px;
+        position: absolute;
+        content: "";
+
+        box-shadow: 0px 0px 0px 10px var(--color-folder);
+        clip: rect(0px, 6px, 10px, 0px);
+        display: block;
+      }
+
+      &::after {
+        border-bottom-left-radius: 100%;
+        left: 100%;
+      }
+
+      &::before {
+        display: none;
+        right: 100%;
+        border-bottom-right-radius: 100%;
+      }
 
       button {
         font-size: inherit;
         text-transform: inherit;
+        font-weight: 600;
+        color: @c-noir;
       }
     }
 
     > .m_folder--projects {
       // display: flex;
-      background-color: @c-noir;
-      border-radius: @t-folder_border_radius;
+      background-color: var(--color-folder);
+      border-radius: var(--folder_border_radius);
       border-top-left-radius: 0;
-      .margin-right-small;
+
+      // .margin-right-small;
       .padding-top-small;
       margin-bottom: 0;
 
@@ -1079,7 +1183,6 @@ small {
       .custom_scrollbar(1px, 6px, 5px, rgba(255, 255, 255, 0), #fff);
 
       .m_project {
-        flex-basis: 50%;
         .margin-bottom-small;
         .margin-sides-small;
         min-height: 0;
@@ -1092,14 +1195,16 @@ small {
             align-items: center;
 
             .m_project--presentation--vignette {
-              flex: 0 0 39%;
+              flex: 0 0 40%;
               padding-bottom: 26%;
             }
 
             .m_project--presentation--text--title {
               font-size: 1rem;
               margin: 0;
-              .padding-small;
+              .padding-vert-verysmall;
+              .padding-sides-small;
+              text-align: left;
             }
             .m_project--presentation--text--infos {
               display: none;
@@ -1137,7 +1242,8 @@ small {
     border-radius: @t-buttonradius;
     .bg-blanc;
     .boxs-card-0;
-    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1),
+      transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
     &:not(.is--not_authorized_to_admin) {
       &:hover {
@@ -1263,6 +1369,7 @@ small {
         background-color: transparent;
         text-indent: -1000px;
         opacity: 0;
+        min-height: 0;
       }
 
       .m_project--presentation--buttons--selectionButton {
@@ -1491,6 +1598,8 @@ small {
   > div {
     background-color: #fff;
     .padding-small;
+    .margin-vert-verysmall;
+    border-bottom: 0;
 
     > *:last-child {
       margin-bottom: 0;
@@ -1959,6 +2068,7 @@ small {
 }
 
 .m_tagsAndAuthorFilters {
+  .margin-vert-verysmall;
   .item {
     :not(.is--active) {
       opacity: 0.4;
@@ -1970,6 +2080,11 @@ small {
     overflow: auto;
     .custom_scrollbar(8px, 5px, 6px);
   }
+}
+
+.m_folderField {
+  color: @c-orange !important;
+  font-weight: bold;
 }
 
 .m_authorField {
@@ -2041,6 +2156,10 @@ small {
     &.is--loggedInAuthor {
       &::before {
       }
+    }
+
+    &:last-child {
+      margin-right: 0 !important;
     }
   }
 }

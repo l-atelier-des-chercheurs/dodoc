@@ -29,7 +29,10 @@ module.exports = (function() {
       oc: "Crear una recepta",
       de: "Eine Publikation erstellen"
     },
-    create_new: {},
+    create_new: {
+      fr: "Créer un nouveau dossier",
+      en: "Create new folder"
+    },
     publication: {
       fr: "Recette",
       en: "Recipe",
@@ -196,6 +199,10 @@ module.exports = (function() {
       fr: "Ajouter à un dossier existant&nbsp;:",
       en: "Add to existing folder:"
     },
+    "folder_currently_open:": {
+      fr: "Dossier actuellement ouvert&nbsp;:",
+      en: "Currently opened folder"
+    },
     group: {
       fr: "Regrouper",
       en: "Group"
@@ -204,9 +211,9 @@ module.exports = (function() {
       fr: "Dégrouper",
       en: "Ungroup"
     },
-    group_in_a_new_folder: {
-      fr: "Regrouper dans un nouveau dossier nommé&nbsp;:",
-      en: "Group in a new folder named :"
+    new_folder_name: {
+      fr: "Nom du nouveau dossier&nbsp;:",
+      en: "Name of the new folder:"
     },
     input_password: {
       fr: "Renseigner le mot de passe ci-dessous :",
@@ -872,6 +879,10 @@ module.exports = (function() {
       nl: "Project",
       oc: "Projècte",
       de: "Projekt"
+    },
+    folder: {
+      fr: "Dossier",
+      en: "Folder"
     },
     add_a_cover_image: {
       fr: "Ajouter une image de couverture",

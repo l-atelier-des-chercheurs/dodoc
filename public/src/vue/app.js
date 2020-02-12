@@ -280,7 +280,8 @@ let vm = new Vue({
         author: "",
         fav: false,
         type: ""
-      }
+      },
+      opened_folder: false
     },
     lang: {
       available: lang_settings.available,

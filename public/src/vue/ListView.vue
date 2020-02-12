@@ -1,5 +1,26 @@
 <template>
-  <div class="m_listview">
+  <div class="m_listview" :class="{ 'is--folder' : !!$root.settings.opened_folder }">
+    <transition name="fade_fast" :duration="150">
+      <div class="m_listview--openedFolderLabel" v-if="!!$root.settings.opened_folder">
+        <div>
+          <span
+            class="m_listview--openedFolderLabel--intitule"
+            v-html="$t('folder_currently_open:')"
+          />
+          <label>
+            <button
+              type="button"
+              class="button-nostyle m_listview--openedFolderLabel--folderName"
+              @click="$root.settings.opened_folder = false"
+            >
+              {{ $root.settings.opened_folder }}
+              &nbsp;×
+            </button>
+          </label>
+        </div>
+      </div>
+    </transition>
+
     <main class="m_projects main_scroll_panel">
       <div class="m_actionbar">
         <div class="m_actionbar--buttonBar">
@@ -42,8 +63,13 @@
                     }"
                   >
                     {{ sortedProjects.length }}
-                    {{ $t("projects_of") }}
-                    {{ Object.keys(projects).length }}
+                    <template
+                      v-if="sortedProjects.length === Object.keys(projects).length"
+                    >{{ $t("projects") }}</template>
+                    <template v-else>
+                      {{ $t("projects_of") }}
+                      {{ Object.keys(projects).length }}
+                    </template>
                   </span>
                   <template
                     v-if="
@@ -96,9 +122,7 @@
                       <path
                         fill="currentColor"
                         class="st0"
-                        d="M10.3,59.9c11.7,11.7,29.5,13.4,43,5.2l9.7,9.7l21.3,21.3l11.9-11.9L74.9,63l-9.7-9.7c8.2-13.5,6.4-31.3-5.2-43
-	C46.2-3.4,24-3.4,10.3,10.3C-3.4,24-3.4,46.2,10.3,59.9z M50.8,19.5c8.6,8.6,8.6,22.6,0,31.3c-8.6,8.6-22.6,8.6-31.3,0
-	c-8.6-8.6-8.6-22.6,0-31.3C28.1,10.8,42.1,10.8,50.8,19.5z"
+                        d="M10.3,59.9c11.7,11.7,29.5,13.4,43,5.2l9.7,9.7l21.3,21.3l11.9-11.9L74.9,63l-9.7-9.7c8.2-13.5,6.4-31.3-5.2-43 C46.2-3.4,24-3.4,10.3,10.3C-3.4,24-3.4,46.2,10.3,59.9z M50.8,19.5c8.6,8.6,8.6,22.6,0,31.3c-8.6,8.6-22.6,8.6-31.3,0 c-8.6-8.6-8.6-22.6,0-31.3C28.1,10.8,42.1,10.8,50.8,19.5z"
                       />
                     </svg>
                     {{ $t("search") }}
@@ -108,7 +132,7 @@
                     v-if="
                       show_search || debounce_search_project_name.length > 0
                     "
-                    class="m_metaField"
+                    class="rounded"
                   >
                     <div>{{ $t("project_name_to_find") }}</div>
 
@@ -182,15 +206,14 @@
             <label>
               <button
                 type="button"
-                class="button-nostyle text-uc button-triangle"
-                :class="{ 'is--active': !hide_folder.includes(item.name) }"
+                class="button-nostyle"
                 @click="toggleFolder(item.name)"
               >{{ item.name }} ({{ item.content.length }})</button>
             </label>
+
             <div class="m_folder--projects">
               <Project
                 class="is--collapsed"
-                v-if="!hide_folder.includes(item.name)"
                 v-for="project in item.content"
                 :key="project.slugFolderName"
                 :project="project"
@@ -303,9 +326,8 @@ export default {
       show_search: false,
       selected_medias: [],
       selected_projects: [],
-      hide_folder: [],
 
-      debounce_search_project_name: "",
+      debounce_search_project_name: this.$root.settings.project_filter.name,
       debounce_search_project_name_function: undefined
     };
   },
@@ -405,6 +427,15 @@ export default {
               .includes(this.$root.settings.project_filter.name.toLowerCase())
           )
             continue;
+        }
+
+        // if folder is opened and project is not part of it
+        if (
+          !!this.$root.settings.opened_folder &&
+          (!project.hasOwnProperty("folder") ||
+            project.folder !== this.$root.settings.opened_folder)
+        ) {
+          continue;
         }
 
         if (
@@ -526,7 +557,7 @@ export default {
       const projects_sorted_by_folder = this.$_.groupBy(
         this.sortedProjects,
         p => {
-          return !!p.folder ? p.folder : "not-groupped";
+          return !!p.folder ? p.folder : "znot-groupped";
         }
       );
 
@@ -537,7 +568,11 @@ export default {
       const folders_and_projects = Object.entries(projects_sorted_by_folder)
         .sort((a, b) => a[0].localeCompare(b[0]))
         .reduce((acc, [name, content]) => {
-          if (!!name && name !== "not-groupped") {
+          if (
+            !!name &&
+            name !== "znot-groupped" &&
+            !this.$root.settings.opened_folder
+          ) {
             acc.push({
               type: "folder",
               name,
@@ -665,9 +700,9 @@ export default {
     },
 
     toggleFolder(folder_name) {
-      if (this.hide_folder.includes(folder_name))
-        this.hide_folder = this.hide_folder.filter(fn => fn !== folder_name);
-      else this.hide_folder.push(folder_name);
+      if (this.$root.settings.opened_folder === folder_name)
+        this.$root.settings.opened_folder = false;
+      else this.$root.settings.opened_folder = folder_name;
     },
 
     urlToPortrait(slug, filename) {

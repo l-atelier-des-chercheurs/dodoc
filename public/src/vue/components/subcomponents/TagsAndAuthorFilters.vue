@@ -1,5 +1,5 @@
 <template>
-  <div class="m_tagsAndAuthorFilters flex-wrap bg-blanc rounded margin-top-small">
+  <div class="m_tagsAndAuthorFilters flex-wrap bg-blanc rounded">
     <div v-if="has_fav_toggle" class="padding-small">
       <span class="switch switch-xs">
         <input
