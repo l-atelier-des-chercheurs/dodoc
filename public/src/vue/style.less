@@ -1796,12 +1796,14 @@ small {
     //   }
     // }
 
-    transition: all 1s 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: transform 1s 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
+      box-shadow 1s 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
 
     &.is--hovered {
       transform: translateY(-4px);
       .boxs-card-2;
-      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+        box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
     .m_metaField {
@@ -2083,8 +2085,8 @@ small {
 }
 
 .m_folderField {
-  color: @c-orange !important;
-  font-weight: bold;
+  color: @c-noir !important;
+  font-weight: bold !important;
 }
 
 .m_authorField {

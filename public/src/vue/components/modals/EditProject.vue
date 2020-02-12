@@ -38,7 +38,7 @@
             <!-- <label v-html="$t('add_to_existing_folder')" /> -->
             <div class="input-group margin-bottom-none">
               <select v-model="existing_group_name">
-                <option v-if="!!project.folder" :key="'create'" :value="'_none'">{{ $t("none") }}</option>
+                <option v-if="!!project.folder" :key="'none'" :value="'_none'">{{ $t("none") }}</option>
                 <option :key="'create'" :value="''">** {{ $t("create_new") }} **</option>
                 <option
                   v-for="folder in $root.all_folders"

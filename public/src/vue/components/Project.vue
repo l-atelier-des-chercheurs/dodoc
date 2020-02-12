@@ -195,86 +195,6 @@
           v-if="can_access_folder && context === 'full'"
           type="button"
           class="buttonLink"
-          @click="downloadProjectArchive"
-          :disabled="zip_export_started"
-        >
-          <template v-if="!zip_export_started">
-            <svg
-              version="1.1"
-              class="inline-svg"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              width="46.7px"
-              height="70px"
-              viewBox="0 0 46.7 70"
-              style="enable-background:new 0 0 46.7 70;"
-              xml:space="preserve"
-            >
-              <g>
-                <g>
-                  <path
-                    class="st0"
-                    d="M8.5,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7h7.7l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2
-			L23.3,59.6L3.2,41.5L8.5,35.2z"
-                  />
-                </g>
-                <polygon class="st0" points="46.7,70 0,70 0,62.4 46.6,62.4 	" />
-              </g>
-            </svg>
-          </template>
-          <template v-else>
-            <span class="loader loader-small" />
-          </template>
-          {{ $t("download") }}
-        </button>
-
-        <button
-          v-if="can_access_folder && context === 'full'"
-          type="button"
-          class="buttonLink"
-          :class="{ 'is--active': showDuplicateProjectMenu }"
-          @click="showDuplicateProjectMenu = !showDuplicateProjectMenu"
-          :disabled="read_only"
-        >
-          <svg
-            version="1.1"
-            class="inline-svg"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="91.6px"
-            height="95px"
-            viewBox="0 0 91.6 95"
-            style="enable-background:new 0 0 91.6 95;"
-            xml:space="preserve"
-          >
-            <polygon
-              class="st0"
-              points="39.5,11.8 83,11.8 83,55.4 72.7,55.4 72.7,67.2 94.8,67.2 94.8,0 27.7,0 27.7,22.2 39.5,22.2 	"
-            />
-            <path
-              class="st0"
-              d="M67.2,27.7L0,27.7l0,67.2l67.2,0L67.2,27.7z M55.4,83l-43.6,0l0-43.6l43.6,0L55.4,83z"
-            />
-          </svg>
-          {{ $t("duplicate") }}
-        </button>
-
-        <div v-if="showDuplicateProjectMenu" class="margin-bottom-small">
-          <label v-html="$t('name_of_copy')" />
-          <form @submit.prevent="duplicateWithNewName()" class="input-group">
-            <input type="text" v-model.trim="copy_project_name" required autofocus />
-            <button type="submit" v-html="$t('copy')" class="bg-bleuvert" />
-          </form>
-        </div>
-
-        <button
-          v-if="can_access_folder && context === 'full'"
-          type="button"
-          class="buttonLink"
           @click="removeProject()"
           :disabled="read_only"
         >
@@ -299,6 +219,130 @@
           </svg>
           {{ $t("remove") }}
         </button>
+
+        <button
+          v-if="can_access_folder && context === 'full'"
+          type="button"
+          class="buttonLink"
+          :class="{ 'is--active': show_advanced_options }"
+          @click="show_advanced_options = !show_advanced_options"
+        >
+          <svg
+            version="1.1"
+            class="inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="77.6px"
+            height="85.4px"
+            viewBox="0 0 77.6 85.4"
+            style="enable-background:new 0 0 77.6 85.4;"
+            xml:space="preserve"
+          >
+            <defs />
+            <g>
+              <path
+                d="M73.9,39h-7.6c-1.6-5.6-6.7-9.7-12.7-9.7S42.5,33.5,40.8,39H3.7c-2,0-3.7,1.6-3.7,3.7c0,2,1.6,3.7,3.7,3.7h37.1
+		c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h7.6c2,0,3.7-1.6,3.7-3.7C77.6,40.7,76,39,73.9,39z M53.6,48.7c-3.2,0-6-2.6-6-6
+		s2.6-6,6-6s6,2.6,6,6S56.8,48.7,53.6,48.7z"
+              />
+              <path
+                d="M3.7,17.1h7.9c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h36.9c2,0,3.7-1.6,3.7-3.7S76,9.7,73.9,9.7H37
+		C35.4,4.1,30.3,0,24.3,0S13.2,4.1,11.6,9.7H3.7c-2,0-3.7,1.6-3.7,3.7S1.6,17.1,3.7,17.1z M24.3,7.4c3.2,0,6,2.6,6,6s-2.6,6-6,6
+		s-6-2.8-6-6S21.1,7.4,24.3,7.4z"
+              />
+              <path
+                d="M73.9,68.3H37c-1.6-5.6-6.7-9.7-12.7-9.7s-11.1,4.1-12.7,9.7H3.7c-2,0-3.7,1.6-3.7,3.7s1.6,3.7,3.7,3.7h7.9
+		c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h36.9c2,0,3.7-1.6,3.7-3.7S76,68.3,73.9,68.3z M24.3,78c-3.2,0-6-2.6-6-6s2.6-6,6-6
+		s6,2.6,6,6S27.5,78,24.3,78z"
+              />
+            </g>
+          </svg>
+          {{ $t("advanced_options") }}
+        </button>
+
+        <div v-if="show_advanced_options">
+          <button
+            v-if="can_access_folder && context === 'full'"
+            type="button"
+            class="buttonLink"
+            @click="downloadProjectArchive"
+            :disabled="zip_export_started"
+          >
+            <template v-if="!zip_export_started">
+              <svg
+                version="1.1"
+                class="inline-svg"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                width="46.7px"
+                height="70px"
+                viewBox="0 0 46.7 70"
+                style="enable-background:new 0 0 46.7 70;"
+                xml:space="preserve"
+              >
+                <g>
+                  <g>
+                    <path
+                      class="st0"
+                      d="M8.5,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7h7.7l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2
+			L23.3,59.6L3.2,41.5L8.5,35.2z"
+                    />
+                  </g>
+                  <polygon class="st0" points="46.7,70 0,70 0,62.4 46.6,62.4 	" />
+                </g>
+              </svg>
+            </template>
+            <template v-else>
+              <span class="loader loader-small" />
+            </template>
+            {{ $t("download") }}
+          </button>
+
+          <button
+            v-if="can_access_folder && context === 'full'"
+            type="button"
+            class="buttonLink"
+            :class="{ 'is--active': showDuplicateProjectMenu }"
+            @click="showDuplicateProjectMenu = !showDuplicateProjectMenu"
+            :disabled="read_only"
+          >
+            <svg
+              version="1.1"
+              class="inline-svg"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="91.6px"
+              height="95px"
+              viewBox="0 0 91.6 95"
+              style="enable-background:new 0 0 91.6 95;"
+              xml:space="preserve"
+            >
+              <polygon
+                class="st0"
+                points="39.5,11.8 83,11.8 83,55.4 72.7,55.4 72.7,67.2 94.8,67.2 94.8,0 27.7,0 27.7,22.2 39.5,22.2 	"
+              />
+              <path
+                class="st0"
+                d="M67.2,27.7L0,27.7l0,67.2l67.2,0L67.2,27.7z M55.4,83l-43.6,0l0-43.6l43.6,0L55.4,83z"
+              />
+            </svg>
+            {{ $t("duplicate") }}
+          </button>
+
+          <div v-if="showDuplicateProjectMenu" class="margin-bottom-small">
+            <label v-html="$t('name_of_copy')" />
+            <form @submit.prevent="duplicateWithNewName()" class="input-group">
+              <input type="text" v-model.trim="copy_project_name" required autofocus />
+              <button type="submit" v-html="$t('copy')" class="bg-bleuvert" />
+            </form>
+          </div>
+        </div>
       </div>
       <EditProject
         v-if="showEditProjectModal"
@@ -342,6 +386,7 @@ export default {
       showInputPasswordField: false,
       showCurrentPassword: false,
       remember_project_password_for_this_device: true,
+      show_advanced_options: false,
 
       local_is_selected: false,
       id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),

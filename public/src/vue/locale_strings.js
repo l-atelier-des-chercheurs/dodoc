@@ -73,6 +73,10 @@ module.exports = (function() {
       fr: "aucun",
       en: "none"
     },
+    advanced_options: {
+      fr: "Options avancées",
+      en: "Advanced options"
+    },
     uploaded: {
       fr: "Importation",
       en: "Uploaded",
@@ -101,12 +105,9 @@ module.exports = (function() {
       oc: "Data de mandadís",
       de: "Versanddatum"
     },
-    for_the_placement_on_timeline: {
-      fr: "(pour le placement sur la timeline)",
-      en: "(used for the position on the timeline)",
-      nl: "(voor de plaatsing op de tijdlijn)",
-      oc: "(Pel plaçament sus la timeline)",
-      de: "(Für die Platzierung auf der Timeline)"
+    belongs_to_project: {
+      fr: "Appartient au projet",
+      en: "Belongs to project"
     },
     type: {
       fr: "Type",

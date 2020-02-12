@@ -32,6 +32,7 @@
             <!-- <label v-html="$t('add_to_existing_folder')" /> -->
             <div class="input-group margin-bottom-none">
               <select v-model="existing_group_name">
+                <option :key="'none'" :value="'_none'">{{ $t("none") }}</option>
                 <option :key="'create'" :value="''">** {{ $t("create_new") }} **</option>
                 <option
                   v-for="folder in $root.all_folders"
@@ -145,7 +146,7 @@ export default {
 
       existing_group_name: !!this.$root.settings.opened_folder
         ? this.$root.settings.opened_folder
-        : "",
+        : "_none",
       new_group_name: "",
 
       projectdata: {
@@ -206,7 +207,8 @@ export default {
       }
 
       if (!!this.existing_group_name) {
-        this.projectdata.folder = this.existing_group_name;
+        if (this.existing_group_name === "_none") this.projectdata.folder = "";
+        else this.projectdata.folder = this.existing_group_name;
       } else if (!!this.new_group_name) {
         this.projectdata.folder = this.new_group_name.toUpperCase();
       }
