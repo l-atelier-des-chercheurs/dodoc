@@ -4,6 +4,7 @@
     :class="{ 'is--preview': preview_mode, 'is--fullscreen': fullscreen_mode }"
     ref="panel"
   >
+    {{ publication.pages }}
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -852,25 +853,26 @@ export default {
   methods: {
     mergePageObjectWithDefault(pages) {
       return pages.reduce((acc, page) => {
+        let _page = JSON.parse(JSON.stringify(page));
         Object.keys(this.publications_options).map(k => {
           const option = this.publications_options[k];
           if (typeof option === "number") {
-            if (page.hasOwnProperty(k) && !Number.isNaN(page[k])) {
-              page[k] = Number.parseInt(page[k]);
+            if (_page.hasOwnProperty(k) && !Number.isNaN(_page[k])) {
+              _page[k] = Number.parseInt(_page[k]);
             } else {
-              page[k] = option;
+              _page[k] = option;
             }
           } else if (typeof option === "string") {
-            if (page.hasOwnProperty(k) && typeof page[k] === "string") {
+            if (_page.hasOwnProperty(k) && typeof _page[k] === "string") {
               // page[k] = page[k];
             } else {
-              page[k] = option;
+              _page[k] = option;
             }
           } else if (typeof option === "boolean") {
-            page[k] = option;
+            _page[k] = option;
           }
         });
-        acc.push(page);
+        acc.push(_page);
         return acc;
       }, []);
     },
@@ -1111,7 +1113,6 @@ export default {
 
       this.publication_medias = medias_paginated;
     },
-    movePage({ id, idx }) {},
     insertPageAtIndex(index) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • Publication: insertPageAtIndex ${index}`);
