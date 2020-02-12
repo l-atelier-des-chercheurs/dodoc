@@ -90,8 +90,9 @@
             @click="show_keywords = !show_keywords"
           >{{ $t("keywords") }}</button>
         </label>
-
-        <TagsInput v-if="show_keywords" @tagsChanged="newTags => projectdata.keywords = newTags" />
+        <template v-if="show_keywords">
+          <TagsInput @tagsChanged="newTags => projectdata.keywords = newTags" />
+        </template>
       </div>
 
       <!-- Author(s) -->
