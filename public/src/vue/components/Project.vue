@@ -1,7 +1,10 @@
 <template>
   <div
     class="m_project"
-    :class="{ 'is--hovered': is_hovered, 'is--selected': is_selected }"
+    :class="{
+      'is--hovered': is_hovered && can_access_folder,
+      'is--selected': is_selected
+    }"
     @mouseover="is_hovered = true"
     @mouseleave="is_hovered = false"
   >
@@ -9,12 +12,17 @@
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img :src="previewURL" class draggable="false" />
       </div>
-      <div v-else-if="context === 'full'" class="m_project--presentation--novignette">
+      <div
+        v-else-if="context === 'full'"
+        class="m_project--presentation--novignette"
+      >
         <button
           type="button"
           class="buttonLink"
           @click="showEditProjectModal = true"
-        >{{ $t("add_a_cover_image") }}</button>
+        >
+          {{ $t("add_a_cover_image") }}
+        </button>
       </div>
 
       <div class="m_project--presentation--text">
@@ -26,7 +34,9 @@
             delay: [600, 0],
             interactive: true
           }"
-        >{{ project.name }}</h2>
+        >
+          {{ project.name }}
+        </h2>
 
         <div class="m_project--presentation--text--infos">
           <div class="m_keywordField">
@@ -40,22 +50,29 @@
                     $root.settings.project_filter.keyword === keyword.title
                 }
               ]"
-            >{{ keyword.title }}</span>
+              >{{ keyword.title }}</span
+            >
           </div>
           <div class="m_metaField" v-if="!!project.authors">
             <div>{{ $t("author") }}</div>
             <div class="m_authorField">
-              <span v-if="typeof project.authors === 'string'">{{ project.authors }}</span>
+              <span v-if="typeof project.authors === 'string'">{{
+                project.authors
+              }}</span>
               <span
                 v-else-if="typeof project.authors === 'object'"
                 v-for="author in project.authors"
                 :key="author.name"
                 class="is--active"
-              >{{ author.name }}</span>
+                >{{ author.name }}</span
+              >
             </div>
           </div>
 
-          <div class="m_metaField" v-if="!!project.folder && context === 'full'">
+          <div
+            class="m_metaField"
+            v-if="!!project.folder && context === 'full'"
+          >
             <div>{{ $t("folder") }}</div>
             <div class="m_folderField">
               <span>{{ project.folder }}</span>
@@ -77,15 +94,21 @@
             <label>{{ $t("protected_by_pass") }}</label>
           </div>
           <button
-            v-if="!can_access_folder && !showInputPasswordField"
+            v-if="!can_access_folder"
             type="button"
             class="buttonLink"
-            style="display: block; margin: 0 auto calc(var(--spacing) / 2);"
+            :class="{ 'is--active': showInputPasswordField }"
+            style=""
             :readonly="read_only"
             @click="showInputPasswordField = !showInputPasswordField"
-          >{{ $t("password_required_to_open") }}</button>
+          >
+            {{ $t("password_required_to_open") }}
+          </button>
 
-          <div class="padding-small" v-if="showInputPasswordField && !can_access_folder">
+          <div
+            class="padding-small"
+            v-if="showInputPasswordField && !can_access_folder"
+          >
             <div class="margin-bottom-small">
               <label>{{ $t("password") }}</label>
               <input
@@ -109,7 +132,13 @@
                 >{{ $t('remember_project_password_for_this_device') }}</label>
             </div>-->
 
-            <button type="button" class="button bg-bleuvert" @click="submitPassword">Valider</button>
+            <button
+              type="button"
+              class="button bg-bleuvert"
+              @click="submitPassword"
+            >
+              Valider
+            </button>
           </div>
 
           <div
@@ -122,15 +151,10 @@
               @click="showCurrentPassword = !showCurrentPassword"
               v-html="!showCurrentPassword ? $t('show_password') : $t('hide')"
             />
-            <div v-if="showCurrentPassword && can_access_folder">{{ project_password }}</div>
+            <div v-if="showCurrentPassword && can_access_folder">
+              {{ project_password }}
+            </div>
           </div>
-
-          <button
-            v-if="can_access_folder && project_password && context === 'full'"
-            type="button"
-            class="_button_forgetpassword"
-            @click="forgetPassword"
-          >{{ $t("forget_password_and_close") }}</button>
         </div>
       </div>
 
@@ -265,6 +289,15 @@
 
         <div v-if="show_advanced_options">
           <button
+            v-if="can_access_folder && project_password && context === 'full'"
+            type="button"
+            class="_button_forgetpassword"
+            @click="forgetPassword"
+          >
+            {{ $t("forget_password_and_close") }}
+          </button>
+
+          <button
             v-if="can_access_folder && context === 'full'"
             type="button"
             class="buttonLink"
@@ -293,7 +326,10 @@
 			L23.3,59.6L3.2,41.5L8.5,35.2z"
                     />
                   </g>
-                  <polygon class="st0" points="46.7,70 0,70 0,62.4 46.6,62.4 	" />
+                  <polygon
+                    class="st0"
+                    points="46.7,70 0,70 0,62.4 46.6,62.4 	"
+                  />
                 </g>
               </svg>
             </template>
@@ -339,7 +375,12 @@
           <div v-if="showDuplicateProjectMenu" class="margin-bottom-small">
             <label v-html="$t('name_of_copy')" />
             <form @submit.prevent="duplicateWithNewName()" class="input-group">
-              <input type="text" v-model.trim="copy_project_name" required autofocus />
+              <input
+                type="text"
+                v-model.trim="copy_project_name"
+                required
+                autofocus
+              />
               <button type="submit" v-html="$t('copy')" class="bg-bleuvert" />
             </form>
           </div>
