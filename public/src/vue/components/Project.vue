@@ -1,7 +1,10 @@
 <template>
   <div
     class="m_project"
-    :class="{ 'is--hovered': is_hovered, 'is--selected': is_selected }"
+    :class="{
+      'is--hovered': is_hovered && can_access_folder,
+      'is--selected': is_selected
+    }"
     @mouseover="is_hovered = true"
     @mouseleave="is_hovered = false"
   >
@@ -91,10 +94,11 @@
             <label>{{ $t("protected_by_pass") }}</label>
           </div>
           <button
-            v-if="!can_access_folder && !showInputPasswordField"
+            v-if="!can_access_folder"
             type="button"
             class="buttonLink"
-            style="display: block; margin: 0 auto calc(var(--spacing) / 2);"
+            :class="{ 'is--active': showInputPasswordField }"
+            style=""
             :readonly="read_only"
             @click="showInputPasswordField = !showInputPasswordField"
           >
@@ -151,15 +155,6 @@
               {{ project_password }}
             </div>
           </div>
-
-          <button
-            v-if="can_access_folder && project_password && context === 'full'"
-            type="button"
-            class="_button_forgetpassword"
-            @click="forgetPassword"
-          >
-            {{ $t("forget_password_and_close") }}
-          </button>
         </div>
       </div>
 
@@ -293,6 +288,15 @@
         </button>
 
         <div v-if="show_advanced_options">
+          <button
+            v-if="can_access_folder && project_password && context === 'full'"
+            type="button"
+            class="_button_forgetpassword"
+            @click="forgetPassword"
+          >
+            {{ $t("forget_password_and_close") }}
+          </button>
+
           <button
             v-if="can_access_folder && context === 'full'"
             type="button"

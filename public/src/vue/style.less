@@ -1199,7 +1199,14 @@ small {
               padding-bottom: 26%;
             }
 
+            .m_project--presentation--text {
+              width: 100%;
+              // display: flex;
+              // flex-flow: row wrap;
+            }
+
             .m_project--presentation--text--title {
+              flex: 1 0 auto;
               font-size: 1rem;
               margin: 0;
               .padding-vert-verysmall;
@@ -1207,7 +1214,23 @@ small {
               text-align: left;
             }
             .m_project--presentation--text--infos {
-              display: none;
+              background-color: var(--c-gris-tresclair);
+              width: 100%;
+              margin: 0;
+
+              .buttonLink {
+                font-size: 50%;
+                margin-top: 0;
+                margin-bottom: 0;
+              }
+
+              input {
+                background-color: white;
+              }
+
+              .m_metaField {
+                display: none;
+              }
             }
           }
         }
@@ -1223,9 +1246,6 @@ small {
 
     @supports (display: grid) {
       margin: 0;
-    }
-
-    &:hover {
     }
 
     .m_project--presentation {
@@ -1246,7 +1266,7 @@ small {
       transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
     &:not(.is--not_authorized_to_admin) {
-      &:hover {
+      &.is--hovered {
         transform: translateY(-4px);
         .boxs-card-2;
       }
