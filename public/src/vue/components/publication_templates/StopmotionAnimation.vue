@@ -1,5 +1,9 @@
 <template>
-  <div class="m_publicationview" :class="{ 'is--preview' : preview_mode }" ref="panel">
+  <div
+    class="m_publicationview"
+    :class="{ 'is--preview': preview_mode }"
+    ref="panel"
+  >
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -19,7 +23,11 @@
         <small v-html="$t('add_multiple_images')" />
       </p>
     </div>
-    <transition-group class="m_stopmotionAnimationPublication" name="slideFromTop" :duration="300">
+    <transition-group
+      class="m_stopmotionAnimationPublication"
+      name="slideFromTop"
+      :duration="300"
+    >
       <div
         class="m_stopmotionAnimationPublication--media"
         v-for="media in publication_medias"
@@ -29,8 +37,16 @@
           :media="media"
           :preview_mode="false"
           :read_only="read_only"
-          @removePubliMedia="values => { removePubliMedia(values) }"
-          @editPubliMedia="values => { editPubliMedia(values) }"
+          @removePubliMedia="
+            values => {
+              removePubliMedia(values);
+            }
+          "
+          @editPubliMedia="
+            values => {
+              editPubliMedia(values);
+            }
+          "
         />
         <!-- <div class="m_metaField">
           <div>
@@ -101,6 +117,7 @@ export default {
       "socketio.projects.listSpecificMedias",
       this.updateMediasPubli
     );
+    this.$root.settings.current_publication.accepted_media_type = [];
   },
   watch: {
     "publication.medias": function() {
@@ -291,5 +308,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

@@ -29,12 +29,24 @@ module.exports = (function() {
       oc: "Crear una recepta",
       de: "Eine Publikation erstellen"
     },
+    create_new: {
+      fr: "créer un nouveau dossier",
+      en: "create new folder"
+    },
     publication: {
       fr: "Recette",
       en: "Recipe",
       nl: "Publicatie",
       oc: "Recepta",
       de: "Publikation"
+    },
+    medias_selected: {
+      fr: "média(s) sélectionné(s)",
+      en: "media(s) selected"
+    },
+    projects_selected: {
+      fr: "projet(s) sélectionné(s)",
+      en: "project(s) selected"
     },
     name: {
       fr: "Nom",
@@ -56,6 +68,14 @@ module.exports = (function() {
       nl: "Datum van oprichting",
       oc: "Data de creacion",
       de: "Erstellungsdatum"
+    },
+    none: {
+      fr: "aucun",
+      en: "none"
+    },
+    advanced_options: {
+      fr: "Options avancées",
+      en: "Advanced options"
     },
     uploaded: {
       fr: "Importation",
@@ -85,12 +105,9 @@ module.exports = (function() {
       oc: "Data de mandadís",
       de: "Versanddatum"
     },
-    for_the_placement_on_timeline: {
-      fr: "(pour le placement sur la timeline)",
-      en: "(used for the position on the timeline)",
-      nl: "(voor de plaatsing op de tijdlijn)",
-      oc: "(Pel plaçament sus la timeline)",
-      de: "(Für die Platzierung auf der Timeline)"
+    belongs_to_project: {
+      fr: "Appartient au projet",
+      en: "Belongs to project"
     },
     type: {
       fr: "Type",
@@ -182,6 +199,26 @@ module.exports = (function() {
       nl: "Toevoegen aan project:",
       oc: "Apondre al projècte",
       de: "Zum Projekt hinzufügen"
+    },
+    add_to_existing_folder: {
+      fr: "Ajouter à un dossier existant&nbsp;:",
+      en: "Add to existing folder:"
+    },
+    "folder_currently_open:": {
+      fr: "Dossier actuellement ouvert&nbsp;:",
+      en: "Currently opened folder"
+    },
+    group: {
+      fr: "Regrouper",
+      en: "Group"
+    },
+    ungroup: {
+      fr: "Dégrouper",
+      en: "Ungroup"
+    },
+    new_folder_name: {
+      fr: "Nom du nouveau dossier&nbsp;:",
+      en: "Name of the new folder:"
     },
     input_password: {
       fr: "Renseigner le mot de passe ci-dessous :",
@@ -652,6 +689,10 @@ module.exports = (function() {
         "Sètz segur de voler suprimir aqueste autor ? Totes los mèdias, projèctes e recèptas associadas seràn servadas.",
       de: "Sind Sie sicher, dass Sie diesen Autor löschen wollen?"
     },
+    sureToRemoveSelection: {
+      fr: "Êtes-vous sûr de vouloir supprimer cette sélection ?",
+      en: "Do you really want to delete this selection?"
+    },
     show_removed_pages: {
       fr: "Afficher les pages supprimées",
       en: "Show removed pages"
@@ -843,6 +884,10 @@ module.exports = (function() {
       nl: "Project",
       oc: "Projècte",
       de: "Projekt"
+    },
+    folder: {
+      fr: "Dossier",
+      en: "Folder"
     },
     add_a_cover_image: {
       fr: "Ajouter une image de couverture",
@@ -1493,25 +1538,11 @@ module.exports = (function() {
       de:
         "Für mehr Informationen schauen sie bei <a href='https://latelier-des-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>Dokumentation (auf Französisch)</a> oder <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>kontaktieren Sie </a> die Autoren dieser Software."
     },
-    no_media_in_folder: {
-      fr: "Aucun média dans ce dossier.",
-      en: "No media in this folder.",
-      nl: "Geen media in deze map .",
-      oc: "Cap de mèdia dins aqueste dorsièr.",
-      de: "Keine Medien in dieser Datei"
-    },
     no_images_to_show: {
       fr: "Aucun média image à afficher.",
       en: "No image to show.",
       oc: "Cap de mèdia imatge d'afichar.",
       de: "Keine Bildmedien zur Anzeige."
-    },
-    no_public_media_in_folder: {
-      fr: "Aucun média public dans ce dossier.",
-      en: "No public media in this folder.",
-      nl: "Geen openbare media in deze map .",
-      oc: "Cap de mèdia public dins aqueste dorsièr.",
-      de: "Keine öffentlichen Medien in dieser Datei"
     },
     more_informations: {
       fr: "Plus d’infos",
@@ -2252,11 +2283,11 @@ module.exports = (function() {
           "Dateinamen müssen mindestens ein alphanumerisches Zeichen enthalten."
       },
       "failed_to_get_folder:": {
-        fr: "Le dossier suivant n’a pas été trouvé:",
-        en: "Failed to get the requested folder:",
-        nl: "Het volgende bestand is niet gevonden:",
-        oc: "Lo dorsièr seguent es pas estat trobat:",
-        de: "Die folgende Datei wurde nicht gefunden:"
+        fr: "Le projet suivant n’a pas été trouvé:",
+        en: "Failed to get the requested project:",
+        nl: "Het volgende project is niet gevonden:",
+        oc: "Lo projècte seguent es pas estat trobat:",
+        de: "Die folgende Projekt wurde nicht gefunden:"
       },
       failed_to_start_video_change_source_or_res: {
         fr:

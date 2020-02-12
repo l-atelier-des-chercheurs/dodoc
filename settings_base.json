@@ -71,6 +71,9 @@
         },
         "description": {
           "type": "string"
+        },
+        "folder": {
+          "type": "string"
         }
       },
       "medias": {

@@ -23,48 +23,116 @@
         />
       </div>
 
+      <!-- Folder -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_folder }"
+            @click="show_folder = !show_folder"
+          >{{ $t("folder") }}</button>
+        </label>
+        <div v-if="show_folder">
+          <template v-if="$root.all_folders.length">
+            <!-- <label v-html="$t('add_to_existing_folder')" /> -->
+            <div class="input-group margin-bottom-none">
+              <select v-model="existing_group_name">
+                <option v-if="!!project.folder" :key="'none'" :value="'_none'">{{ $t("none") }}</option>
+                <option :key="'create'" :value="''">** {{ $t("create_new") }} **</option>
+                <option
+                  v-for="folder in $root.all_folders"
+                  :key="folder"
+                  :value="folder"
+                >{{ folder }}</option>
+              </select>
+            </div>
+          </template>
+
+          <div v-if="existing_group_name === ''">
+            <label v-html="$t('new_folder_name')" />
+            <input type="text" class="text-uc" v-model.trim="new_group_name" />
+          </div>
+        </div>
+      </div>
+
       <!-- Preview -->
       <div class="margin-bottom-small">
-        <label>{{ $t('cover_image') }}</label>
-        <br />
-        <ImageSelect
-          :previewURL="previewURL"
-          :load_from_projects_medias="true"
-          :slugProjectName="slugProjectName"
-          @newPreview="value => { preview_rawdata = value }"
-        ></ImageSelect>
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_image }"
+            @click="show_image = !show_image"
+          >{{ $t("cover_image") }}</button>
+        </label>
+        <template v-if="show_image">
+          <ImageSelect
+            :previewURL="previewURL"
+            :load_from_projects_medias="true"
+            :slugProjectName="slugProjectName"
+            @newPreview="value => { preview_rawdata = value }"
+          />
+        </template>
       </div>
 
       <!-- Password -->
       <div class="margin-bottom-small">
-        <label>{{ $t('password') }}</label>
-        <input type="password" v-model="projectdata.password" :readonly="read_only" />
-        <small>
-          <template
-            v-if="!!project_password && projectdata.password === ''"
-          >{{ $t('removing_password_warning') }}</template>
-          <template v-else>{{ $t('adding_password_warning') }}</template>
-        </small>
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_password }"
+            @click="show_password = !show_password"
+          >{{ $t("password") }}</button>
+        </label>
+        <template v-if="show_password">
+          <input type="password" v-model="projectdata.password" :readonly="read_only" />
+          <small>
+            <template
+              v-if="!!project_password && projectdata.password === ''"
+            >{{ $t('removing_password_warning') }}</template>
+            <template v-else>{{ $t('adding_password_warning') }}</template>
+          </small>
+        </template>
       </div>
 
       <!-- Keywords -->
       <div class="margin-bottom-small">
-        <label>{{ $t('keywords') }}</label>
-        <TagsInput
-          :keywords="projectdata.keywords"
-          @tagsChanged="newTags => projectdata.keywords = newTags"
-        />
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_keywords }"
+            @click="show_keywords = !show_keywords"
+          >{{ $t("keywords") }}</button>
+        </label>
+        <template v-if="show_keywords">
+          <TagsInput
+            :keywords="projectdata.keywords"
+            @tagsChanged="newTags => projectdata.keywords = newTags"
+          />
+        </template>
       </div>
 
       <!-- Author(s) -->
       <div class="margin-bottom-small">
-        <label>{{ $t('author') }}</label>
-        <br />
-        <AuthorsInput
-          :currentAuthors="projectdata.authors"
-          @authorsChanged="newAuthors => projectdata.authors = newAuthors"
-        />
-        <small>{{ $t('author_instructions') }}</small>
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_authors }"
+            @click="show_authors = !show_authors"
+          >{{ $t("author") }}</button>
+        </label>
+
+        <template v-if="show_authors">
+          <AuthorsInput
+            :currentAuthors="projectdata.authors"
+            @authorsChanged="newAuthors => projectdata.authors = newAuthors"
+          />
+          <small>{{ $t('author_instructions') }}</small>
+        </template>
       </div>
     </template>
 
@@ -93,6 +161,15 @@ export default {
   },
   data() {
     return {
+      show_folder: !!this.project.folder,
+      show_image: !!this.project.preview,
+      show_password: !!this.project_password,
+      show_keywords: !!this.project.keywords,
+      show_authors: !!this.project.authors,
+
+      existing_group_name: !!this.project.folder ? this.project.folder : "",
+      new_group_name: "",
+
       projectdata: {
         name: this.project.name,
         authors:
@@ -176,6 +253,13 @@ export default {
             [this.slugProjectName]: this.projectdata.password
           }
         });
+      }
+
+      if (!!this.existing_group_name) {
+        if (this.existing_group_name === "_none") this.projectdata.folder = "";
+        else this.projectdata.folder = this.existing_group_name;
+      } else if (!!this.new_group_name) {
+        this.projectdata.folder = this.new_group_name.toUpperCase();
       }
 
       this.$root.editFolder({

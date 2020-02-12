@@ -519,7 +519,7 @@ export default {
       if (this.page.snap_to_grid) {
         return Math.round(val / this.page.gridstep) * this.page.gridstep;
       }
-      return Math.round(val);
+      return +val.toFixed(1);
     },
 
     limitMediaYPos(yPos) {

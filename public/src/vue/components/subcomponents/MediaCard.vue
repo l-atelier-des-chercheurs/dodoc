@@ -4,22 +4,24 @@
     :class="{
       'is--inPubli': is_media_in_publi,
       'is--fav': media.fav,
-      'is--ownMedia': media_made_by_current_author
+      'is--ownMedia': media_made_by_current_author,
+      'is--selected': is_selected
     }"
   >
     <div>
       <figure
-        @click.stop="openMediaModal()"
+        @click.stop.exact="openMediaModal()"
+        @click.shift.left.exact="$emit('toggleSelect')"
         @mouseover="is_hovered = true"
         @mouseleave="is_hovered = false"
         :class="{ 'is--hovered': is_hovered }"
       >
         <div>
-          <div class="m_metaField padding-sides-verysmall">
+          <div class="m_media--topbar m_metaField padding-sides-verysmall">
             <div>
               <svg
-                version="1.1"
                 v-if="media.fav"
+                version="1.1"
                 class="inline-svg"
                 xmlns="http://www.w3.org/2000/svg"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -38,9 +40,20 @@
                 />
                 <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 " />
               </svg>
-              <span v-if="!!media.type" :class="{ 'c-rouge': media.fav }">{{
-                $t(media.type)
-              }}</span>
+              <span v-if="!!media.type" :class="{ 'c-rouge': media.fav }">{{ $t(media.type) }}</span>
+              <label
+                :for="is_selected + id"
+                class="input-selector"
+                @click.stop
+                v-if="is_hovered || is_selected"
+              >
+                <input
+                  :id="is_selected + id"
+                  type="checkbox"
+                  v-model="local_is_selected"
+                  @change="$emit('toggleSelect')"
+                />
+              </label>
             </div>
           </div>
           <MediaContent
@@ -54,7 +67,7 @@
             <span>{{ media.caption }}</span>
           </figcaption>
 
-          <transition name="slideright" :duration="400">
+          <transition name="fade_fast" :duration="400">
             <div
               v-if="
                 $root.settings.current_publication.slug &&
@@ -116,7 +129,8 @@ export default {
     media: Object,
     slugProjectName: String,
     metaFileName: String,
-    preview_size: Number
+    preview_size: Number,
+    is_selected: Boolean
   },
   components: {
     MediaContent
@@ -129,14 +143,20 @@ export default {
         video: "/images/i_icone-dodoc_video.svg",
         stopmotion: "/images/i_icone-dodoc_anim.svg",
         audio: "/images/i_icone-dodoc_audio.svg"
-      }
+      },
+      local_is_selected: false,
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5)
     };
   },
 
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    is_selected: function() {
+      this.local_is_selected = this.is_selected;
+    }
+  },
   computed: {
     is_media_in_publi() {
       return (

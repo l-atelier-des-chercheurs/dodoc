@@ -1,5 +1,9 @@
 <template>
-  <div class="m_publicationview" :class="{ 'is--preview' : preview_mode }" ref="panel">
+  <div
+    class="m_publicationview"
+    :class="{ 'is--preview': preview_mode }"
+    ref="panel"
+  >
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -24,17 +28,23 @@
 
       <div
         class="m_carreauPublication--container"
-        :class="{ 'is--fullscreen' : fullscreen_mode }"
+        :class="{ 'is--fullscreen': fullscreen_mode }"
         ref="carreau_container"
         :style="carreauContainerProperties"
       >
         <div
           class="m_publicationSettings"
-          v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode)"
+          v-if="
+            ![
+              'export_publication',
+              'print_publication',
+              'link_publication'
+            ].includes($root.state.mode)
+          "
         >
           <button
             class="margin-vert-verysmall font-verysmall"
-            :class="{ 'is--active' : !preview_mode }"
+            :class="{ 'is--active': !preview_mode }"
             @mousedown.stop.prevent="preview_mode = !preview_mode"
             @touchstart.stop.prevent="preview_mode = !preview_mode"
           >
@@ -88,7 +98,10 @@
                 class="st0"
                 points="112.3,74.5 133.3,74.5 133.3,133.2 74.6,133.2 74.6,112.2 112.3,112.2 	"
               />
-              <polygon class="st0" points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	" />
+              <polygon
+                class="st0"
+                points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	"
+              />
               <polygon
                 class="st0"
                 points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	"
@@ -116,7 +129,10 @@
                 class="st0"
                 points="95.6,133.2 74.6,133.2 74.6,74.5 133.3,74.5 133.3,95.5 95.6,95.5 	"
               />
-              <polygon class="st0" points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	" />
+              <polygon
+                class="st0"
+                points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	"
+              />
               <polygon
                 class="st0"
                 points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	"
@@ -143,7 +159,9 @@
               xml:space="preserve"
             >
               <defs />
-              <path d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z" />
+              <path
+                d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z"
+              />
             </svg>
           </button>
           <button
@@ -171,8 +189,13 @@
           </button>
         </div>
 
-        <div class="m_carreauPublication--container--content" :style="carreauContentProperties">
-          <h2 class="m_carreauPublication--container--content--title">{{ publication.name }}</h2>
+        <div
+          class="m_carreauPublication--container--content"
+          :style="carreauContentProperties"
+        >
+          <h2 class="m_carreauPublication--container--content--title">
+            {{ publication.name }}
+          </h2>
           <transition-group name="fade_fast" :duration="300" tag="div">
             <div
               v-for="(media, index) in last_nth_of_publication_medias"
@@ -184,8 +207,16 @@
                 :page="page"
                 :preview_mode="preview_mode"
                 :read_only="read_only"
-                @removePubliMedia="values => { removePubliMedia(values) }"
-                @editPubliMedia="values => { editPubliMedia(values) }"
+                @removePubliMedia="
+                  values => {
+                    removePubliMedia(values);
+                  }
+                "
+                @editPubliMedia="
+                  values => {
+                    editPubliMedia(values);
+                  }
+                "
               />
               <!-- :opacity="1.5 - (last_nth_of_publication_medias.length - index) / 8" -->
               <!-- <div class="m_videoPublication--media--moveItemButtons">
@@ -300,6 +331,8 @@ export default {
       "activity_panels_resized",
       this.updatePageSizeAccordingToPanel
     );
+
+    this.$root.settings.current_publication.accepted_media_type = false;
   },
   watch: {
     "publication.medias": function() {
@@ -600,5 +633,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>
