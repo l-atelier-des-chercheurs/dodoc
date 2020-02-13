@@ -843,9 +843,9 @@ body {
 
 .m_listview.is--folder {
   // background-color: var(--color-folder);
-
   .barButton_createProject.barButton_createProject {
-    // background-color: @c-orange;
+    background-color: var(--color-folder);
+    color: var(--c-rouge);
   }
 }
 
@@ -870,11 +870,22 @@ body {
     .padding-vert-verysmall;
     margin: 0 auto;
     margin-top: -4px;
-    font-size: 80%;
+    font-size: 100%;
     // border: 2px solid black;
 
+    .m_listview--openedFolderLabel--backButton {
+      min-height: 2em;
+      margin: 0;
+      background-color: var(--c-noir);
+      color: #fff;
+      margin-right: ~"calc(var(--spacing) / 3)";
+      font-size: 1em;
+      font-weight: 200;
+      text-transform: lowercase;
+    }
     .m_listview--openedFolderLabel--intitule {
       text-transform: lowercase;
+      // font-size: 200%;
     }
     .m_listview--openedFolderLabel--folderName {
       font-weight: 600;
