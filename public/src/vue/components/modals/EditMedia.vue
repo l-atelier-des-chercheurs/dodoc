@@ -528,6 +528,7 @@ export default {
         to_slugFolderName,
         slugMediaName: this.slugMediaName
       });
+
       this.showCopyToProjectOptions = false;
     },
     editRawMedia: function(type, detail) {

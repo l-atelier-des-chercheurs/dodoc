@@ -371,13 +371,20 @@ module.exports = (function() {
   }
   function onCopyMediaToFolder(
     socket,
-    { type, from_slugFolderName, to_slugFolderName, slugMediaName }
+    {
+      type,
+      from_slugFolderName,
+      to_slugFolderName,
+      slugMediaName,
+      meta_to_edit
+    }
   ) {
     dev.logfunction(
       `EVENT - onCopyMediaToFolder for type ${type}
       from_slugFolderName = ${from_slugFolderName}\n
       to_slugFolderName = ${to_slugFolderName}\n
-      slugMediaName = ${slugMediaName}`
+      slugMediaName = ${slugMediaName}\n
+      with new meta_to_edit = ${meta_to_edit}`
     );
 
     file
@@ -413,7 +420,8 @@ module.exports = (function() {
             type,
             from_slugFolderName,
             to_slugFolderName,
-            metaFileName: slugMediaName
+            metaFileName: slugMediaName,
+            meta_to_edit
           })
           .then(newMetaFileName => {
             notify({

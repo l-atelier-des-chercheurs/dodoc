@@ -194,11 +194,11 @@
             ].includes($root.state.mode)
           "
         >
-          <input id="settings" type="checkbox" v-model="advanced_options" />
+          <input id="settings" type="checkbox" v-model="page_settings_panel" />
           <label for="settings">{{ $t("settings") }}</label>
         </div>
 
-        <template v-if="advanced_options">
+        <template v-if="page_settings_panel">
           <hr />
 
           <!-- <div class="margin-bottom-small">
@@ -404,7 +404,7 @@
             class="m_publicationview--pages--contactSheet--pages--page"
             v-for="(page, pageNumber) in pagesWithDefault"
             :key="page.id"
-            @mouseleave="show_advanced_menu_for_page = false"
+            @mouseleave="show_advanced_menu_for_page = false; show_advanced_option = false;"
           >
             <PagePublicationSinglePage
               :key="page.id"
@@ -458,17 +458,53 @@
                 class="_advanced_menu"
                 @click.stop
               >
-                <button
-                  type="button"
-                  class="buttonLink"
-                  @click="removePage(page.id)"
-                >{{ $t("remove") }}</button>
-                <span v-if="pagesWithDefault.length > 1">
-                  <label>{{ $t("move_page_position") }}</label>
-                  <select @change="updatePagePos({ id: page.id, $event })" :value="pageNumber + 1">
-                    <option v-for="pos in pagesWithDefault.length" :key="pos" v-html="pos" />
-                  </select>
-                </span>
+                <template v-if="!show_advanced_option">
+                  <button
+                    type="button"
+                    class="buttonLink"
+                    @click="show_advanced_option = 'move'"
+                  >{{ $t("move") }}</button>
+
+                  <button
+                    type="button"
+                    class="buttonLink"
+                    @click="show_advanced_option = 'duplicate'"
+                  >{{ $t("duplicate") }}</button>
+
+                  <button
+                    type="button"
+                    class="buttonLink"
+                    @click="removePage(page.id)"
+                  >{{ $t("remove") }}</button>
+                </template>
+
+                <template v-else-if="show_advanced_option === 'move'">
+                  <span v-if="pagesWithDefault.length > 1">
+                    <label>{{ $t("move_page_position") }}</label>
+                    <select
+                      @change="updatePagePos({ id: page.id, $event })"
+                      :value="pageNumber + 1"
+                    >
+                      <option v-for="pos in pagesWithDefault.length" :key="pos" v-html="pos" />
+                    </select>
+                  </span>
+                </template>
+                <template v-else-if="show_advanced_option === 'duplicate'">
+                  <form @submit.prevent="duplicatePage({ id: page.id, $event })">
+                    <template v-if="pagesWithDefault.length > 1">
+                      <label>{{ $t("destination_document") }}</label>
+                      <select :value="slugPubliName">
+                        <option
+                          v-for="({ name, slugFolderName: slugPubliName }) in all_recipes_of_this_template"
+                          :key="slugPubliName"
+                          :value="slugPubliName"
+                          v-html="name"
+                        />
+                      </select>
+                    </template>
+                    <button type="submit" v-html="$t('duplicate')" class="bg-bleuvert" />
+                  </form>
+                </template>
               </div>
 
               <button
@@ -651,7 +687,7 @@ export default {
 
       show_removed_pages: false,
 
-      advanced_options: false,
+      page_settings_panel: false,
 
       new_width: 0,
       new_height: 0,
@@ -669,7 +705,9 @@ export default {
 
       id_of_page_opened: false,
       contact_sheet_mode: true,
+
       show_advanced_menu_for_page: false,
+      show_advanced_option: false,
 
       preview_mode: this.$root.state.mode !== "live",
       // preview_mode: false,
@@ -781,6 +819,14 @@ export default {
         p => p.id === this.id_of_page_opened
       );
     },
+    all_recipes_of_this_template() {
+      const filtered_recipes = Object.values(
+        this.$root.store.publications
+      ).filter(r => r.template === "page_by_page");
+      let sorted_recipes = this.$_.sortBy(filtered_recipes, "date_created");
+      sorted_recipes = sorted_recipes.reverse();
+      return sorted_recipes;
+    },
     publications_options() {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`COMPUTED • publications_options`);
@@ -850,6 +896,13 @@ export default {
     }
   },
   methods: {
+    generateID() {
+      return (
+        +new Date() +
+        "_" +
+        (Math.random().toString(36) + "00000000000000000").slice(2, 3)
+      );
+    },
     mergePageObjectWithDefault(pages) {
       return pages.reduce((acc, page) => {
         let _page = JSON.parse(JSON.stringify(page));
@@ -1126,10 +1179,7 @@ export default {
         pages = this.publication.pages.slice();
       }
       pages.splice(index, 0, {
-        id:
-          +new Date() +
-          "_" +
-          (Math.random().toString(36) + "00000000000000000").slice(2, 3)
+        id: this.generateID()
       });
 
       this.$root.editFolder({
@@ -1139,24 +1189,74 @@ export default {
           pages
         }
       });
+    },
+    duplicatePage({ id, $event }) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • Publication: duplicatePage`);
 
-      $(this.$refs.panel).animate(
-        {
-          scrollTop: "+=400"
-        },
-        600,
-        $.easing.easeInOutQuint
+      const slugPubliName_to_copy_to = !!$event.target.elements[0].value
+        ? $event.target.elements[0].value
+        : this.slugPubliName;
+
+      const publi_to_copy_to = Object.values(
+        this.$root.store.publications
+      ).find(p => p.slugFolderName === slugPubliName_to_copy_to);
+
+      let index_of_page_to_copy = publi_to_copy_to.pages.length;
+      if (slugPubliName_to_copy_to === this.slugPubliName)
+        index_of_page_to_copy = this.publication.pages.findIndex(
+          p => p.id === id
+        );
+
+      const page_to_copy = JSON.parse(
+        JSON.stringify(this.publication.pages.find(p => p.id === id))
       );
+
+      // create new id
+      const new_id = this.generateID();
+      page_to_copy.id = new_id;
+
+      // find pages of the publi to copy to
+      let pages = Array.isArray(publi_to_copy_to.pages)
+        ? publi_to_copy_to.pages.slice()
+        : [];
+      pages.splice(index_of_page_to_copy + 1, 0, page_to_copy);
+
+      this.$root.editFolder({
+        type: "publications",
+        slugFolderName: slugPubliName_to_copy_to,
+        data: {
+          pages
+        }
+      });
+
+      // get all medias of page
+      const medias_to_copy = this.publication_medias[id];
+
+      medias_to_copy.map(m => {
+        // copy all medias of page with new page ID
+        this.$socketio.copyMediaToFolder({
+          type: "publications",
+          from_slugFolderName: this.slugPubliName,
+          to_slugFolderName: slugPubliName_to_copy_to,
+          slugMediaName: m.publi_meta.metaFileName,
+          meta_to_edit: {
+            page_id: new_id
+          }
+        });
+      });
+
+      this.show_advanced_menu_for_page = false;
+      this.show_advanced_option = false;
+
+      // TODO : same publi or another one
     },
 
     removePage(id) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • Publication: removePage`);
-      }
 
-      if (!this.publication.hasOwnProperty("pages")) {
-        return;
-      }
+      if (!this.publication.hasOwnProperty("pages")) return;
 
       // this.$alertify
       //   .okBtn(this.$t("yes"))
@@ -1165,12 +1265,12 @@ export default {
       //     this.$t("sureToRemovePage"),
       //     () => {
       let pages = this.publication.pages.filter(p => p.id !== id);
-      let removed_page = this.publication.pages.find(p => p.id === id);
+      let page_to_remove = this.publication.pages.find(p => p.id === id);
 
       let removed_pages = Array.isArray(this.publication.removed_pages)
         ? this.publication.removed_pages.slice()
         : [];
-      removed_pages.unshift(removed_page);
+      removed_pages.unshift(page_to_remove);
 
       this.$root.editFolder({
         type: "publications",

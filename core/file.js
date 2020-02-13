@@ -1478,7 +1478,8 @@ module.exports = (function() {
       type,
       from_slugFolderName,
       to_slugFolderName,
-      metaFileName
+      metaFileName,
+      meta_to_edit
     }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
@@ -1619,6 +1620,8 @@ module.exports = (function() {
                         if (meta.hasOwnProperty("date_uploaded")) {
                           meta.date_uploaded = api.getCurrentDate();
                         }
+
+                        Object.assign(meta, meta_to_edit);
 
                         api
                           .storeData(destination_metaFilePath, meta, "create")
