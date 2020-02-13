@@ -683,6 +683,19 @@ export default {
     },
 
     toggleSelectProject(slugFolderName) {
+      if (
+        !this.$root.canAccessFolder({
+          type: "projects",
+          slugFolderName
+        })
+      ) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t('notifications["enter_password_to_select"]'));
+        return false;
+      }
+
       if (this.projectIsSelected(slugFolderName)) {
         this.selected_projects = this.selected_projects.filter(
           m => !(m.slugFolderName === slugFolderName)
