@@ -3,19 +3,28 @@
     <transition name="fade_fast" :duration="150">
       <div class="m_listview--openedFolderLabel" v-if="!!$root.settings.opened_folder">
         <div>
+          <button
+            class="m_listview--openedFolderLabel--backButton"
+            type="button"
+            @click="$root.settings.opened_folder = false"
+          >
+            ‹
+            <span class>{{ $t("back") }}</span>
+          </button>
+
           <span
             class="m_listview--openedFolderLabel--intitule"
             v-html="$t('folder_currently_open:')"
           />
-          <label>
-            <button
+          <label class="m_listview--openedFolderLabel--folderName">
+            <!-- <button
               type="button"
-              class="button-nostyle m_listview--openedFolderLabel--folderName"
+              class="button-nostyle"
               @click="$root.settings.opened_folder = false"
-            >
-              {{ $root.settings.opened_folder }}
-              &nbsp;×
-            </button>
+            >-->
+            {{ $root.settings.opened_folder }}
+            <!-- &nbsp;×
+            </button>-->
           </label>
         </div>
       </div>
@@ -683,6 +692,19 @@ export default {
     },
 
     toggleSelectProject(slugFolderName) {
+      if (
+        !this.$root.canAccessFolder({
+          type: "projects",
+          slugFolderName
+        })
+      ) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t('notifications["enter_password_to_select"]'));
+        return false;
+      }
+
       if (this.projectIsSelected(slugFolderName)) {
         this.selected_projects = this.selected_projects.filter(
           m => !(m.slugFolderName === slugFolderName)

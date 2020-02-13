@@ -518,7 +518,6 @@ let vm = new Vue({
       return false;
     },
     all_folders() {
-      debugger;
       return Object.values(this.store.projects).reduce((acc, p) => {
         if (!!p.folder && !acc.includes(p.folder)) acc.push(p.folder);
         return acc;

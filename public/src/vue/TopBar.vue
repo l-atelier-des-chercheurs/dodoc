@@ -125,9 +125,7 @@
                 draggable="false"
               />
             </div>
-            <div class="m_topbar--center--authors--name">
-              {{ $root.settings.current_author.name }}
-            </div>
+            <div class="m_topbar--center--authors--name">{{ $root.settings.current_author.name }}</div>
           </template>
           <template v-else>
             <div class="font-medium">({{ $t("authors") }})</div>
@@ -176,11 +174,7 @@
           </svg>
         </button>
 
-        <QRCode
-          v-if="showQRModal"
-          :slugProjectName="slugProjectName"
-          @close="showQRModal = false"
-        />
+        <QRCode v-if="showQRModal" :slugProjectName="slugProjectName" @close="showQRModal = false" />
 
         <a
           class="js--openInBrowser"
@@ -252,10 +246,7 @@
           </svg>
         </button>
 
-        <SettingsModal
-          v-if="showSettingsModal"
-          @close="showSettingsModal = false"
-        />
+        <SettingsModal v-if="showSettingsModal" @close="showSettingsModal = false" />
 
         <!-- <button type="button">
           <svg version="1.1"

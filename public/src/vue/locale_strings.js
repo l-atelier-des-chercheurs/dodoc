@@ -323,6 +323,10 @@ module.exports = (function() {
       oc: "Tèxte en excès",
       de: "Textüberlauf"
     },
+    move: {
+      fr: "Déplacer",
+      en: "Move"
+    },
     move_to_foreground: {
       fr: "Mettre au premier plan",
       en: "Move to foreground",
@@ -393,6 +397,9 @@ module.exports = (function() {
       nl: "Dupliceren",
       oc: "Duplicar",
       de: "Duplikat"
+    },
+    destination_document: {
+      fr: "Document de destination"
     },
     search: {
       fr: "Rechercher",
@@ -2483,6 +2490,10 @@ module.exports = (function() {
         nl: "Voer het nieuwe wachtwoord in om opnieuw toegang te krijgen",
         oc: "Dintratz lo novèl mot de santa-Clara per accedir tornar mai a",
         de: "Geben Sie das neue Passwort für den erneuten Zugriff ein."
+      },
+      enter_password_to_select: {
+        fr: "Renseignez le mot de passe du projet pour pouvoir le sélectionner",
+        en: "Enter this project’s password to select it"
       }
     }
   };

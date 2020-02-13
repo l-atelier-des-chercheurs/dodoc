@@ -843,9 +843,9 @@ body {
 
 .m_listview.is--folder {
   // background-color: var(--color-folder);
-
   .barButton_createProject.barButton_createProject {
-    // background-color: @c-orange;
+    background-color: var(--color-folder);
+    color: var(--c-rouge);
   }
 }
 
@@ -870,11 +870,22 @@ body {
     .padding-vert-verysmall;
     margin: 0 auto;
     margin-top: -4px;
-    font-size: 80%;
+    font-size: 100%;
     // border: 2px solid black;
 
+    .m_listview--openedFolderLabel--backButton {
+      min-height: 2em;
+      margin: 0;
+      background-color: var(--c-noir);
+      color: #fff;
+      margin-right: ~"calc(var(--spacing) / 3)";
+      font-size: 1em;
+      font-weight: 200;
+      text-transform: lowercase;
+    }
     .m_listview--openedFolderLabel--intitule {
       text-transform: lowercase;
+      // font-size: 200%;
     }
     .m_listview--openedFolderLabel--folderName {
       font-weight: 600;
@@ -1218,7 +1229,11 @@ small {
               width: 100%;
               margin: 0;
 
-              .buttonLink {
+              > *:not(._pwd_input):not(._open_pwd_input) {
+                display: none;
+              }
+
+              ._open_pwd_input {
                 font-size: 50%;
                 margin-top: 0;
                 margin-bottom: 0;
@@ -1257,22 +1272,23 @@ small {
   }
 
   .m_project {
-    border-bottom: 2px solid @c-gris;
     // border-bottom-style: dashed;
     border-radius: @t-buttonradius;
     .bg-blanc;
-    .boxs-card-0;
     transition: box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1),
       transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
-    &:not(.is--not_authorized_to_admin) {
+    &.is--accessible {
+      border-bottom: 2px solid @c-gris;
+      .boxs-card-0;
+
       &.is--hovered {
         transform: translateY(-4px);
         .boxs-card-2;
       }
     }
 
-    &.is--not_authorized_to_admin {
+    &:not(.is--accessible) {
       cursor: not-allowed;
     }
   }
@@ -1293,7 +1309,7 @@ small {
   justify-content: center;
 
   &.is--selected {
-    border: 4px dashed @c-bleuvert;
+    border: 4px dashed @c-bleuvert !important;
   }
 
   ._advanced_menu {
@@ -1365,6 +1381,11 @@ small {
 
       .m_project--presentation--text--infos {
         .margin-sides-small;
+        text-align: center;
+
+        > button {
+          margin: 0 auto;
+        }
 
         input {
           min-width: 0;
@@ -2456,7 +2477,7 @@ small {
   cursor: normal;
 
   &:hover {
-    input {
+    input:not(.disabled) {
       background-color: @c-gris_clair;
       &:checked {
         background-color: @c-bleuvert_fonce;
@@ -2480,6 +2501,11 @@ small {
     }
 
     &:active {
+    }
+
+    &.disabled {
+      background-color: @c-gris_fonce;
+      cursor: not-allowed;
     }
   }
 }
@@ -4471,7 +4497,7 @@ small {
   top: 40px;
   right: ~"calc(-75px + 40px / 2)";
   background-color: white;
-  width: 150px;
+  width: 220px;
   .boxs-card-2;
   border: 1px solid @c-gris;
 

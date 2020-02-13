@@ -3,7 +3,8 @@
     class="m_project"
     :class="{
       'is--hovered': is_hovered && can_access_folder,
-      'is--selected': is_selected
+      'is--selected': is_selected,
+      'is--accessible' : can_access_folder
     }"
     @mouseover="is_hovered = true"
     @mouseleave="is_hovered = false"
@@ -12,17 +13,12 @@
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img :src="previewURL" class draggable="false" />
       </div>
-      <div
-        v-else-if="context === 'full'"
-        class="m_project--presentation--novignette"
-      >
+      <div v-else-if="context === 'full'" class="m_project--presentation--novignette">
         <button
           type="button"
           class="buttonLink"
           @click="showEditProjectModal = true"
-        >
-          {{ $t("add_a_cover_image") }}
-        </button>
+        >{{ $t("add_a_cover_image") }}</button>
       </div>
 
       <div class="m_project--presentation--text">
@@ -34,9 +30,7 @@
             delay: [600, 0],
             interactive: true
           }"
-        >
-          {{ project.name }}
-        </h2>
+        >{{ project.name }}</h2>
 
         <div class="m_project--presentation--text--infos">
           <div class="m_keywordField">
@@ -50,29 +44,26 @@
                     $root.settings.project_filter.keyword === keyword.title
                 }
               ]"
-              >{{ keyword.title }}</span
-            >
+            >{{ keyword.title }}</span>
           </div>
           <div class="m_metaField" v-if="!!project.authors">
             <div>{{ $t("author") }}</div>
             <div class="m_authorField">
-              <span v-if="typeof project.authors === 'string'">{{
+              <span v-if="typeof project.authors === 'string'">
+                {{
                 project.authors
-              }}</span>
+                }}
+              </span>
               <span
                 v-else-if="typeof project.authors === 'object'"
                 v-for="author in project.authors"
                 :key="author.name"
                 class="is--active"
-                >{{ author.name }}</span
-              >
+              >{{ author.name }}</span>
             </div>
           </div>
 
-          <div
-            class="m_metaField"
-            v-if="!!project.folder && context === 'full'"
-          >
+          <div class="m_metaField" v-if="!!project.folder && context === 'full'">
             <div>{{ $t("folder") }}</div>
             <div class="m_folderField">
               <span>{{ project.folder }}</span>
@@ -96,19 +87,14 @@
           <button
             v-if="!can_access_folder"
             type="button"
-            class="buttonLink"
+            class="buttonLink _open_pwd_input"
             :class="{ 'is--active': showInputPasswordField }"
-            style=""
+            style
             :readonly="read_only"
             @click="showInputPasswordField = !showInputPasswordField"
-          >
-            {{ $t("password_required_to_open") }}
-          </button>
+          >{{ $t("password_required_to_open") }}</button>
 
-          <div
-            class="padding-small"
-            v-if="showInputPasswordField && !can_access_folder"
-          >
+          <div class="padding-small _pwd_input" v-if="showInputPasswordField && !can_access_folder">
             <div class="margin-bottom-small">
               <label>{{ $t("password") }}</label>
               <input
@@ -132,13 +118,7 @@
                 >{{ $t('remember_project_password_for_this_device') }}</label>
             </div>-->
 
-            <button
-              type="button"
-              class="button bg-bleuvert"
-              @click="submitPassword"
-            >
-              Valider
-            </button>
+            <button type="button" class="button bg-bleuvert" @click="submitPassword">Valider</button>
           </div>
 
           <div
@@ -151,19 +131,17 @@
               @click="showCurrentPassword = !showCurrentPassword"
               v-html="!showCurrentPassword ? $t('show_password') : $t('hide')"
             />
-            <div v-if="showCurrentPassword && can_access_folder">
-              {{ project_password }}
-            </div>
+            <div v-if="showCurrentPassword && can_access_folder">{{ project_password }}</div>
           </div>
         </div>
       </div>
 
       <div class="m_project--presentation--buttons">
         <button
-          v-if="can_access_folder && context !== 'full'"
+          v-if="context !== 'full'"
           type="button"
           class="m_project--presentation--buttons--openButton"
-          @click.exact="$root.openProject(slugProjectName)"
+          @click.exact="openProject"
           @click.shift.left.exact="$emit('toggleSelect')"
         >
           <span class>{{ $t("open") }}</span>
@@ -171,7 +149,7 @@
 
         <label
           v-if="
-            can_access_folder &&
+            
               context !== 'full' &&
               (is_hovered || is_selected)
           "
@@ -184,7 +162,9 @@
             type="checkbox"
             v-model="local_is_selected"
             @change="$emit('toggleSelect')"
+            :class="{ 'disabled' : !can_access_folder }"
           />
+          <!-- :disabled="!can_access_folder" -->
         </label>
 
         <button
@@ -293,9 +273,7 @@
             type="button"
             class="_button_forgetpassword"
             @click="forgetPassword"
-          >
-            {{ $t("forget_password_and_close") }}
-          </button>
+          >{{ $t("forget_password_and_close") }}</button>
 
           <button
             v-if="can_access_folder && context === 'full'"
@@ -326,10 +304,7 @@
 			L23.3,59.6L3.2,41.5L8.5,35.2z"
                     />
                   </g>
-                  <polygon
-                    class="st0"
-                    points="46.7,70 0,70 0,62.4 46.6,62.4 	"
-                  />
+                  <polygon class="st0" points="46.7,70 0,70 0,62.4 46.6,62.4 	" />
                 </g>
               </svg>
             </template>
@@ -375,12 +350,7 @@
           <div v-if="showDuplicateProjectMenu" class="margin-bottom-small">
             <label v-html="$t('name_of_copy')" />
             <form @submit.prevent="duplicateWithNewName()" class="input-group">
-              <input
-                type="text"
-                v-model.trim="copy_project_name"
-                required
-                autofocus
-              />
+              <input type="text" v-model.trim="copy_project_name" required autofocus />
               <button type="submit" v-html="$t('copy')" class="bg-bleuvert" />
             </form>
           </div>
@@ -462,6 +432,13 @@ export default {
         this.closeProject();
       }
     },
+    showInputPasswordField() {
+      if (this.showInputPasswordField) {
+        this.$nextTick(() => {
+          if (!!this.$refs.passwordField) this.$refs.passwordField.focus();
+        });
+      }
+    },
     is_selected: function() {
       this.local_is_selected = this.is_selected;
     }
@@ -502,10 +479,10 @@ export default {
   },
   methods: {
     openProject() {
-      if (context !== "full") {
-        this.$root.openProject(this.slugProjectName);
-      }
+      if (this.can_access_folder) this.$root.openProject(this.slugProjectName);
+      else this.showInputPasswordField = true;
     },
+
     closeProject() {
       this.$root.closeProject();
     },
@@ -635,4 +612,10 @@ export default {
   }
 };
 </script>
-<style scoped></style>
+<style scoped>
+._pwd_input,
+._open_pwd_input {
+  position: relative;
+  z-index: 1;
+}
+</style>
