@@ -21,13 +21,19 @@
           :read_only="read_only"
         />
       </div>
-      <div class="m_actionbar--text">{{ $t("cooking_pot") }}: {{ $t("cooking_pot_instructions") }}</div>
+      <div class="m_actionbar--text">
+        {{ $t("cooking_pot") }}: {{ $t("cooking_pot_instructions") }}
+      </div>
     </div>
 
     <!-- liste des recettes -->
     <div class="m_recipes">
       <!-- pour chaque recette -->
-      <div class="m_recipes--recipe" v-for="recipe in recipes" :key="recipe.key">
+      <div
+        class="m_recipes--recipe"
+        v-for="recipe in recipes"
+        :key="recipe.key"
+      >
         <div class="m_recipes--recipe--icon" v-html="recipe.icon"></div>
         <div class="m_recipes--recipe--text">
           <h2 class>{{ $t(recipe.key) }}</h2>
@@ -39,7 +45,9 @@
               type="button"
               class="buttonLink margin-left-none padding-left-none"
               @click="recipe.show_instructions = !recipe.show_instructions"
-            >+ {{ $t("more_informations") }}</button>
+            >
+              + {{ $t("more_informations") }}
+            </button>
           </p>
           <template v-if="recipe.show_instructions">
             <hr />
@@ -87,7 +95,9 @@
                 class="m_recipes--recipe--mealList--meal"
               >
                 <td colspan="2">
-                  <button type="button" class="buttonLink margin-none">{{ $t("show_all") }}</button>
+                  <button type="button" class="buttonLink margin-none">
+                    {{ $t("show_all") }}
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -368,17 +378,17 @@ export default {
   </g>
 </svg>          
           `
-        },
-        {
-          key: "carreau",
-          summary: "carreau_summary",
-          show_instructions: false,
-          instructions: "carreau_instructions",
-          show_all_recipes: false,
-          icon: `
-
-          `
         }
+        // {
+        //   key: "carreau",
+        //   summary: "carreau_summary",
+        //   show_instructions: false,
+        //   instructions: "carreau_instructions",
+        //   show_all_recipes: false,
+        //   icon: `
+
+        //   `
+        // }
       ]
     };
   },
