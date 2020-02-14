@@ -2462,14 +2462,14 @@ module.exports = (function() {
         oc: "La vidèo es pas estada creada",
         de: "Das Video konnte nicht erstellt werden."
       },
-      project_copy_in_progress: {
-        fr: "Copie du projet en cours…",
-        en: "Copy of the project in progress…",
+      copy_in_progress: {
+        fr: "Copie en cours…",
+        en: "Copy in progress…",
         nl: "Laden van de kopie…",
-        oc: "Còpia del projècte en cors...",
-        de: "Kopie des aktuellen Projekts..."
+        oc: "Còpia en cors…",
+        de: "Kopie…"
       },
-      project_copy_completed: {
+      copy_completed: {
         fr: "Copie terminée",
         en: "Copy finished",
         nl: "Kopiëren geslaagd",

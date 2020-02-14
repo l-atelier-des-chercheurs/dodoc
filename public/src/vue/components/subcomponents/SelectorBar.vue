@@ -338,7 +338,7 @@ export default {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .log(this.$t("notifications.project_copy_in_progress"));
+            .log(this.$t("notifications.copy_in_progress"));
 
           this.$emit("deselect");
 
@@ -346,7 +346,7 @@ export default {
             this.$alertify
               .closeLogOnClick(true)
               .delay(4000)
-              .success(this.$t("notifications.project_copy_completed"));
+              .success(this.$t("notifications.copy_completed"));
           });
         });
       }
