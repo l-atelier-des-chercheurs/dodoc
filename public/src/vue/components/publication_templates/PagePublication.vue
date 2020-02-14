@@ -660,6 +660,13 @@
               >
                 {{ $t("restore") }}
               </button>
+              <button
+                type="button"
+                class="buttonLink"
+                @click.stop="removePageForGood(page.id)"
+              >
+                {{ $t("remove") }}
+              </button>
             </div>
           </div>
         </transition-group>
@@ -1075,6 +1082,22 @@ export default {
         slugFolderName: this.slugPubliName,
         data: {
           pages,
+          removed_pages
+        }
+      });
+    },
+    removePageForGood(id) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • Publication: removePageForGood id = ${id}`);
+
+      let removed_pages = this.publication.removed_pages.filter(
+        p => p.id !== id
+      );
+
+      this.$root.editFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+        data: {
           removed_pages
         }
       });

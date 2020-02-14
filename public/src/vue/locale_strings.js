@@ -371,7 +371,7 @@ module.exports = (function() {
     },
     restore: {
       fr: "Restorer",
-      en: "Remettre"
+      en: "Restore"
     },
     rotate_clockwise: {
       fr: "Pivoter vers la droite",
