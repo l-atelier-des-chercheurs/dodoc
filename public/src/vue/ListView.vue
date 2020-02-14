@@ -1,7 +1,13 @@
 <template>
-  <div class="m_listview" :class="{ 'is--folder' : !!$root.settings.opened_folder }">
+  <div
+    class="m_listview"
+    :class="{ 'is--folder': !!$root.settings.opened_folder }"
+  >
     <transition name="fade_fast" :duration="150">
-      <div class="m_listview--openedFolderLabel" v-if="!!$root.settings.opened_folder">
+      <div
+        class="m_listview--openedFolderLabel"
+        v-if="!!$root.settings.opened_folder"
+      >
         <div>
           <button
             class="m_listview--openedFolderLabel--backButton"
@@ -53,7 +59,11 @@
             <label for="media_switch" class="cursor-pointer">
               <span class>{{ $t("projects") }}</span>
             </label>
-            <input type="checkbox" id="media_switch" v-model="show_medias_instead_of_projects" />
+            <input
+              type="checkbox"
+              id="media_switch"
+              v-model="show_medias_instead_of_projects"
+            />
             <label for="media_switch">
               <span class>{{ $t("medias") }}</span>
             </label>
@@ -73,8 +83,11 @@
                   >
                     {{ sortedProjects.length }}
                     <template
-                      v-if="sortedProjects.length === Object.keys(projects).length"
-                    >{{ $t("projects") }}</template>
+                      v-if="
+                        sortedProjects.length === Object.keys(projects).length
+                      "
+                      >{{ $t("projects") }}
+                    </template>
                     <template v-else>
                       {{ $t("projects_of") }}
                       {{ Object.keys(projects).length }}
@@ -92,7 +105,9 @@
                       class="button-nostyle text-uc button-triangle"
                       :class="{ 'is--active': show_filters }"
                       @click="show_filters = !show_filters"
-                    >{{ $t("filters") }}</button>
+                    >
+                      {{ $t("filters") }}
+                    </button>
                   </template>
                   <TagsAndAuthorFilters
                     v-if="show_filters"
@@ -146,13 +161,22 @@
                     <div>{{ $t("project_name_to_find") }}</div>
 
                     <div class="input-group">
-                      <input type="text" class="input-sm" v-model="debounce_search_project_name" />
-                      <span class="input-addon" v-if="debounce_search_project_name.length > 0">
+                      <input
+                        type="text"
+                        class="input-sm"
+                        v-model="debounce_search_project_name"
+                      />
+                      <span
+                        class="input-addon"
+                        v-if="debounce_search_project_name.length > 0"
+                      >
                         <button
                           type="button"
                           :disabled="debounce_search_project_name.length === 0"
                           @click="debounce_search_project_name = ''"
-                        >×</button>
+                        >
+                          ×
+                        </button>
                       </span>
                     </div>
                   </div>
@@ -182,7 +206,9 @@
                     class="button-nostyle text-uc button-triangle"
                     :class="{ 'is--active': show_filters }"
                     @click="show_filters = !show_filters"
-                  >{{ $t("filters") }}</button>
+                  >
+                    {{ $t("filters") }}
+                  </button>
                 </template>
                 <TagsAndAuthorFilters
                   v-if="show_filters"
@@ -212,13 +238,34 @@
       >
         <template v-for="item in sortedFoldersAndProjects">
           <div v-if="item.type === 'folder'" class="m_folder" :key="item.name">
-            <label>
-              <button
-                type="button"
-                class="button-nostyle"
-                @click="toggleFolder(item.name)"
-              >{{ item.name }} ({{ item.content.length }})</button>
-            </label>
+            <div class="m_folder--topbar">
+              <label>
+                <button
+                  type="button"
+                  class="button-nostyle"
+                  @click="toggleFolder(item.name)"
+                >
+                  {{ item.name }} ({{ item.content.length }})
+                  <label
+                    :for="item.name + '_selector'"
+                    class="input-selector"
+                    @click.stop
+                  >
+                    <input
+                      :id="item.name + '_selector'"
+                      type="checkbox"
+                      :checked="allProjectFromThatFolderAreSelected(item.name)"
+                      @change="
+                        selectAllInFolder({ $event, folder_name: item.name })
+                      "
+                    />
+                    <!-- :disabled="!can_access_folder" -->
+                  </label>
+                </button>
+              </label>
+
+              <!-- v-if="(is_hovered || is_selected)" -->
+            </div>
 
             <div class="m_folder--projects">
               <Project
@@ -251,7 +298,9 @@
         <div v-for="item in groupedMedias" :key="item[0]">
           <h3
             class="font-folder_title margin-sides-small margin-none margin-bottom-small"
-          >{{ $root.formatDateToHuman(item[0]) }}</h3>
+          >
+            {{ $root.formatDateToHuman(item[0]) }}
+          </h3>
 
           <div class="m_mediaShowAll">
             <div v-for="media in item[1]" :key="media.slugMediaName">
@@ -691,7 +740,50 @@ export default {
       );
     },
 
+    selectAllInFolder({ $event, folder_name }) {
+      const folder = this.sortedFoldersAndProjects.find(
+        fp => fp.type === "folder" && fp.name === folder_name
+      );
+
+      if (
+        !folder ||
+        !folder.hasOwnProperty("content") ||
+        folder.content.length === 0
+      )
+        return false;
+
+      folder.content.map(p => this.selectProject(p.slugFolderName));
+
+      // this.$nextTick(() => {
+      //   $event.target.checked = false;
+      // });
+    },
+
     toggleSelectProject(slugFolderName) {
+      if (!this.projectIsSelected(slugFolderName)) {
+        this.selectProject(slugFolderName);
+      } else {
+        this.unselectProject(slugFolderName);
+      }
+    },
+    allProjectFromThatFolderAreSelected(folder_name) {
+      const folder = this.sortedFoldersAndProjects.find(
+        fp => fp.type === "folder" && fp.name === folder_name
+      );
+
+      if (
+        !folder ||
+        !folder.hasOwnProperty("content") ||
+        folder.content.length === 0
+      )
+        return false;
+
+      return !folder.content.some(
+        p => this.projectIsSelected(p.slugFolderName) === false
+      );
+    },
+
+    selectProject(slugFolderName) {
       if (
         !this.$root.canAccessFolder({
           type: "projects",
@@ -705,16 +797,18 @@ export default {
         return false;
       }
 
-      if (this.projectIsSelected(slugFolderName)) {
-        this.selected_projects = this.selected_projects.filter(
-          m => !(m.slugFolderName === slugFolderName)
-        );
-      } else {
+      if (!this.projectIsSelected(slugFolderName)) {
         this.selected_projects.push({
           slugFolderName
         });
       }
     },
+    unselectProject(slugFolderName) {
+      this.selected_projects = this.selected_projects.filter(
+        m => !(m.slugFolderName === slugFolderName)
+      );
+    },
+
     projectIsSelected(slugFolderName) {
       return this.selected_projects.some(
         m => m.slugFolderName === slugFolderName
