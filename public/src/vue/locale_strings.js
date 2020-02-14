@@ -288,6 +288,13 @@ module.exports = (function() {
       oc: "Rapid",
       de: "Schnell"
     },
+    forget_password: {
+      fr: "Oublier le mot de passe",
+      en: "Forget password",
+      nl: "Wachtwoord vergeten",
+      oc: "Doblidar lo mot de Santa-Clara",
+      de: "Vergessen Sie das Passwort"
+    },
     forget_password_and_close: {
       fr: "Oublier le mot de passe et fermer le projet",
       en: "Forget password and close project",
@@ -1238,9 +1245,9 @@ module.exports = (function() {
     },
     password_instructions: {
       fr:
-        "Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce projet.",
+        "Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce contenu.",
       en:
-        "If set, only users with the password will be able to open this project.",
+        "If set, only users with the password will be able to open this content.",
       nl:
         "Indien van toepassing, alleen gebruikers met dit wachtwoord kunnen dit project openen.",
       oc:

@@ -51,8 +51,11 @@
       <!-- Password -->
       <div class="margin-bottom-small">
         <label>{{ $t("password") }}</label>
-        <input type="password" autocomplete="new-password" />
-        <!-- v-model="projectdata.password" -->
+        <input
+          type="password"
+          v-model="publidata.password"
+          autocomplete="new-password"
+        />
         <small>{{ $t("password_instructions") }}</small>
       </div>
 
@@ -103,6 +106,7 @@ export default {
     return {
       publidata: {
         name: this.default_name,
+        password: "",
         template: this.default_template,
         keywords: [],
         authors: this.$root.settings.current_author.hasOwnProperty("name")
@@ -152,6 +156,7 @@ export default {
 
       let publidata = {
         name,
+        password: this.publidata.password,
         template: this.publidata.template,
         authors: this.publidata.authors,
         keywords: this.publidata.keywords
@@ -183,10 +188,25 @@ export default {
           this.newPublicationCreated
         );
         this.$root.justCreatedFolderID = false;
-        this.$nextTick(() => {
-          this.$emit("close", "");
-          this.$root.openPublication(pdata.slugFolderName);
-        });
+
+        if (pdata.password === "has_pass") {
+          this.$auth.updateFoldersPasswords({
+            publications: {
+              [pdata.slugFolderName]: this.publidata.password
+            }
+          });
+          this.$socketio.sendAuth();
+
+          this.$eventHub.$once("socketio.authentificated", () => {
+            this.$emit("close", "");
+            this.$root.openPublication(pdata.slugFolderName);
+          });
+        } else {
+          this.$nextTick(() => {
+            this.$emit("close", "");
+            this.$root.openPublication(pdata.slugFolderName);
+          });
+        }
       }
     }
   }
