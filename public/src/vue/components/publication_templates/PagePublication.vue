@@ -75,13 +75,22 @@
           style="enable-background:new 0 0 133.3 133.2;"
           xml:space="preserve"
         >
-          <polygon class="st0" points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	" />
+          <polygon
+            class="st0"
+            points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	"
+          />
           <polygon
             class="st0"
             points="112.3,74.5 133.3,74.5 133.3,133.2 74.6,133.2 74.6,112.2 112.3,112.2 	"
           />
-          <polygon class="st0" points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	" />
-          <polygon class="st0" points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	" />
+          <polygon
+            class="st0"
+            points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	"
+          />
+          <polygon
+            class="st0"
+            points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	"
+          />
         </svg>
         <svg
           version="1.1"
@@ -97,13 +106,22 @@
           style="enable-background:new 0 0 133.3 133.2;"
           xml:space="preserve"
         >
-          <polygon class="st0" points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	" />
+          <polygon
+            class="st0"
+            points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	"
+          />
           <polygon
             class="st0"
             points="95.6,133.2 74.6,133.2 74.6,74.5 133.3,74.5 133.3,95.5 95.6,95.5 	"
           />
-          <polygon class="st0" points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	" />
-          <polygon class="st0" points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	" />
+          <polygon
+            class="st0"
+            points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	"
+          />
+          <polygon
+            class="st0"
+            points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	"
+          />
         </svg>
       </button>
       <button
@@ -127,7 +145,9 @@
           xml:space="preserve"
         >
           <defs />
-          <path d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z" />
+          <path
+            d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z"
+          />
         </svg>
       </button>
       <button
@@ -181,7 +201,9 @@
             type="button"
             v-if="!contact_sheet_mode"
             @click="showAllPages"
-          >{{ $t("show_all_pages") }}</button>
+          >
+            {{ $t("show_all_pages") }}
+          </button>
         </div>
 
         <div
@@ -352,11 +374,17 @@
         </template>
       </div>
       <div class="m_publicationNavMenu--buttonRow" v-if="!contact_sheet_mode">
-        <button type="button" @click="navPage(-1)" :disabled="opened_page_index === 0">
+        <button
+          type="button"
+          @click="navPage(-1)"
+          :disabled="opened_page_index === 0"
+        >
           <img src="/images/i_arrow_left.svg" draggable="false" />
           {{ $t("previous_page") }}
         </button>
-        <div class="font-small">{{ $t("current_page") }}: {{ opened_page_index + 1 }}</div>
+        <div class="font-small">
+          {{ $t("current_page") }}: {{ opened_page_index + 1 }}
+        </div>
 
         <button
           type="button"
@@ -394,7 +422,10 @@
         />
       </div>
 
-      <div v-else-if="contact_sheet_mode" class="m_publicationview--pages--contactSheet">
+      <div
+        v-else-if="contact_sheet_mode"
+        class="m_publicationview--pages--contactSheet"
+      >
         <transition-group
           tag="div"
           class="m_publicationview--pages--contactSheet--pages"
@@ -404,7 +435,10 @@
             class="m_publicationview--pages--contactSheet--pages--page"
             v-for="(page, pageNumber) in pagesWithDefault"
             :key="page.id"
-            @mouseleave="show_advanced_menu_for_page = false; show_advanced_option = false;"
+            @mouseleave="
+              show_advanced_menu_for_page = false;
+              show_advanced_option = false;
+            "
           >
             <PagePublicationSinglePage
               :key="page.id"
@@ -420,7 +454,8 @@
             />
             <span
               class="m_publicationview--pages--contactSheet--pages--page--pageNumber"
-            >{{ pageNumber + 1 }}</span>
+              >{{ pageNumber + 1 }}</span
+            >
 
             <div
               class="m_publicationview--pages--contactSheet--pages--page--buttons"
@@ -463,19 +498,25 @@
                     type="button"
                     class="buttonLink"
                     @click="show_advanced_option = 'move'"
-                  >{{ $t("move") }}</button>
+                  >
+                    {{ $t("move") }}
+                  </button>
 
                   <button
                     type="button"
                     class="buttonLink"
                     @click="show_advanced_option = 'duplicate'"
-                  >{{ $t("duplicate") }}</button>
+                  >
+                    {{ $t("duplicate") }}
+                  </button>
 
                   <button
                     type="button"
                     class="buttonLink"
                     @click="removePage(page.id)"
-                  >{{ $t("remove") }}</button>
+                  >
+                    {{ $t("remove") }}
+                  </button>
                 </template>
 
                 <template v-else-if="show_advanced_option === 'move'">
@@ -485,24 +526,37 @@
                       @change="updatePagePos({ id: page.id, $event })"
                       :value="pageNumber + 1"
                     >
-                      <option v-for="pos in pagesWithDefault.length" :key="pos" v-html="pos" />
+                      <option
+                        v-for="pos in pagesWithDefault.length"
+                        :key="pos"
+                        v-html="pos"
+                      />
                     </select>
                   </span>
                 </template>
                 <template v-else-if="show_advanced_option === 'duplicate'">
-                  <form @submit.prevent="duplicatePage({ id: page.id, $event })">
+                  <form
+                    @submit.prevent="duplicatePage({ id: page.id, $event })"
+                  >
                     <template v-if="pagesWithDefault.length > 1">
                       <label>{{ $t("destination_document") }}</label>
                       <select :value="slugPubliName">
                         <option
-                          v-for="({ name, slugFolderName: slugPubliName }) in all_recipes_of_this_template"
+                          v-for="{
+                            name,
+                            slugFolderName: slugPubliName
+                          } in all_recipes_of_this_template"
                           :key="slugPubliName"
                           :value="slugPubliName"
                           v-html="name"
                         />
                       </select>
                     </template>
-                    <button type="submit" v-html="$t('duplicate')" class="bg-bleuvert" />
+                    <button
+                      type="submit"
+                      v-html="$t('duplicate')"
+                      class="bg-bleuvert"
+                    />
                   </form>
                 </template>
               </div>
@@ -511,7 +565,9 @@
                 type="button"
                 class="buttonLink"
                 @click.stop="openPage(page.id)"
-              >{{ $t("open") }}</button>
+              >
+                {{ $t("open") }}
+              </button>
             </div>
           </div>
           <button
@@ -519,7 +575,9 @@
             class="m_publicationview--pages--contactSheet--pages--page m_publicationview--pages--contactSheet--pages--page_create"
             :key="'create_page'"
             @click="insertPageAtIndex(publication.pages.length + 1)"
-          >{{ $t("create_empty_page") }}</button>
+          >
+            {{ $t("create_empty_page") }}
+          </button>
         </transition-group>
 
         <button
@@ -528,7 +586,9 @@
           :class="{ 'is--active': show_removed_pages }"
           @click="show_removed_pages = !show_removed_pages"
           v-if="removedPagesWithDefault.length > 0"
-        >{{ $t("show_removed_pages") }} ({{ removedPagesWithDefault.length }})</button>
+        >
+          {{ $t("show_removed_pages") }} ({{ removedPagesWithDefault.length }})
+        </button>
 
         <transition-group
           tag="div"
@@ -553,7 +613,9 @@
               :zoom="0.1"
             />
 
-            <div class="m_publicationview--pages--contactSheet--pages--page--buttons">
+            <div
+              class="m_publicationview--pages--contactSheet--pages--page--buttons"
+            >
               <!-- <button
                 type="button"
                 class="_advanced_menu_button"
@@ -595,7 +657,9 @@
                 type="button"
                 class="buttonLink"
                 @click.stop="restorePage(page.id)"
-              >{{ $t("restore") }}</button>
+              >
+                {{ $t("restore") }}
+              </button>
             </div>
           </div>
         </transition-group>
