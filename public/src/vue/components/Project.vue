@@ -2,9 +2,9 @@
   <div
     class="m_project"
     :class="{
-      'is--hovered': is_hovered && can_access_folder,
+      'is--hovered': is_hovered && can_access_project,
       'is--selected': is_selected,
-      'is--accessible' : can_access_folder
+      'is--accessible': can_access_project
     }"
     @mouseover="is_hovered = true"
     @mouseleave="is_hovered = false"
@@ -49,11 +49,7 @@
           <div class="m_metaField" v-if="!!project.authors">
             <div>{{ $t("author") }}</div>
             <div class="m_authorField">
-              <span v-if="typeof project.authors === 'string'">
-                {{
-                project.authors
-                }}
-              </span>
+              <span v-if="typeof project.authors === 'string'">{{ project.authors }}</span>
               <span
                 v-else-if="typeof project.authors === 'object'"
                 v-for="author in project.authors"
@@ -77,7 +73,7 @@
           <div
             class="m_metaField"
             v-if="
-              can_access_folder &&
+              can_access_project &&
                 project.password === 'has_pass' &&
                 context !== 'full'
             "
@@ -85,7 +81,7 @@
             <label>{{ $t("protected_by_pass") }}</label>
           </div>
           <button
-            v-if="!can_access_folder"
+            v-if="!can_access_project"
             type="button"
             class="buttonLink _open_pwd_input"
             :class="{ 'is--active': showInputPasswordField }"
@@ -94,7 +90,10 @@
             @click="showInputPasswordField = !showInputPasswordField"
           >{{ $t("password_required_to_open") }}</button>
 
-          <div class="padding-small _pwd_input" v-if="showInputPasswordField && !can_access_folder">
+          <div
+            class="padding-small _pwd_input"
+            v-if="showInputPasswordField && !can_access_project"
+          >
             <div class="margin-bottom-small">
               <label>{{ $t("password") }}</label>
               <input
@@ -122,7 +121,7 @@
           </div>
 
           <div
-            v-if="can_access_folder && project_password && context === 'full'"
+            v-if="can_access_project && project_password && context === 'full'"
             class="m_metaField"
           >
             <div
@@ -131,7 +130,7 @@
               @click="showCurrentPassword = !showCurrentPassword"
               v-html="!showCurrentPassword ? $t('show_password') : $t('hide')"
             />
-            <div v-if="showCurrentPassword && can_access_folder">{{ project_password }}</div>
+            <div v-if="showCurrentPassword && can_access_project">{{ project_password }}</div>
           </div>
         </div>
       </div>
@@ -148,11 +147,7 @@
         </button>
 
         <label
-          v-if="
-            
-              context !== 'full' &&
-              (is_hovered || is_selected)
-          "
+          v-if="context !== 'full' && (is_hovered || is_selected)"
           :for="is_selected + id"
           class="m_project--presentation--buttons--selectionButton input-selector"
           @click.stop
@@ -162,13 +157,13 @@
             type="checkbox"
             v-model="local_is_selected"
             @change="$emit('toggleSelect')"
-            :class="{ 'disabled' : !can_access_folder }"
+            :class="{ disabled: !can_access_project }"
           />
-          <!-- :disabled="!can_access_folder" -->
+          <!-- :disabled="!can_access_project" -->
         </label>
 
         <button
-          v-if="can_access_folder && context === 'full'"
+          v-if="can_access_project && context === 'full'"
           type="button"
           class="buttonLink"
           @click="showEditProjectModal = true"
@@ -197,7 +192,7 @@
         </button>
 
         <button
-          v-if="can_access_folder && context === 'full'"
+          v-if="can_access_project && context === 'full'"
           type="button"
           class="buttonLink"
           @click="removeProject()"
@@ -226,7 +221,7 @@
         </button>
 
         <button
-          v-if="can_access_folder && context === 'full'"
+          v-if="can_access_project && context === 'full'"
           type="button"
           class="buttonLink"
           :class="{ 'is--active': show_advanced_options }"
@@ -269,14 +264,14 @@
 
         <div v-if="show_advanced_options">
           <button
-            v-if="can_access_folder && project_password && context === 'full'"
+            v-if="can_access_project && project_password && context === 'full'"
             type="button"
             class="_button_forgetpassword"
             @click="forgetPassword"
           >{{ $t("forget_password_and_close") }}</button>
 
           <button
-            v-if="can_access_folder && context === 'full'"
+            v-if="can_access_project && context === 'full'"
             type="button"
             class="buttonLink"
             @click="downloadProjectArchive"
@@ -315,7 +310,7 @@
           </button>
 
           <button
-            v-if="can_access_folder && context === 'full'"
+            v-if="can_access_project && context === 'full'"
             type="button"
             class="buttonLink"
             :class="{ 'is--active': showDuplicateProjectMenu }"
@@ -410,8 +405,8 @@ export default {
     };
   },
   watch: {
-    can_access_folder() {
-      if (!this.can_access_folder && this.context === "full") {
+    can_access_project() {
+      if (!this.can_access_project && this.context === "full") {
         // cas d’un mdp qui a été ajouté ou changé
         this.$alertify
           .closeLogOnClick(true)
@@ -459,7 +454,7 @@ export default {
       }
       return false;
     },
-    can_access_folder() {
+    can_access_project() {
       return this.$root.canAccessFolder({
         type: "projects",
         slugFolderName: this.slugProjectName
@@ -479,7 +474,7 @@ export default {
   },
   methods: {
     openProject() {
-      if (this.can_access_folder) this.$root.openProject(this.slugProjectName);
+      if (this.can_access_project) this.$root.openProject(this.slugProjectName);
       else this.showInputPasswordField = true;
     },
 
@@ -536,13 +531,13 @@ export default {
       this.$alertify
         .closeLogOnClick(true)
         .delay(4000)
-        .log(this.$t("notifications.project_copy_in_progress"));
+        .log(this.$t("notifications.copy_in_progress"));
 
       this.$eventHub.$once("socketio.projects.folder_listed", () => {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .success(this.$t("notifications.project_copy_completed"));
+          .success(this.$t("notifications.copy_completed"));
       });
     },
     submitPassword() {

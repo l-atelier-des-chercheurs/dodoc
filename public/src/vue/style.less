@@ -1127,50 +1127,72 @@ small {
 
     text-align: left;
 
-    > label {
-      position: relative;
-      color: @c-noir;
-      .padding-sides-small;
-      .padding-vert-verysmall;
+    > .m_folder--topbar {
+      display: flex;
+      flex-flow: row nowrap;
+      align-content: flex-end;
 
-      background-color: var(--color-folder);
-      border-radius: var(--folder_border_radius);
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-      margin-bottom: 0;
-      max-width: 80%;
-
-      &::before,
-      &::after {
-        content: "";
-        width: var(--folder_border_radius);
-        height: var(--folder_border_radius);
-        background: transparent;
-        bottom: 0px;
-        position: absolute;
-        content: "";
-
-        box-shadow: 0px 0px 0px 10px var(--color-folder);
-        clip: rect(0px, 6px, 10px, 0px);
-        display: block;
-      }
-
-      &::after {
-        border-bottom-left-radius: 100%;
-        left: 100%;
-      }
-
-      &::before {
-        display: none;
-        right: 100%;
-        border-bottom-right-radius: 100%;
-      }
-
-      button {
-        font-size: inherit;
-        text-transform: inherit;
-        font-weight: 600;
+      label {
+        position: relative;
         color: @c-noir;
+        .padding-left-small;
+        .padding-right-verysmall;
+        .padding-vert-verysmall;
+
+        background-color: var(--color-folder);
+        border-radius: var(--folder_border_radius);
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        margin-bottom: 0;
+        max-width: 80%;
+
+        &::before,
+        &::after {
+          content: "";
+          width: var(--folder_border_radius);
+          height: var(--folder_border_radius);
+          background: transparent;
+          bottom: 0px;
+          position: absolute;
+          content: "";
+
+          box-shadow: 0px 0px 0px 10px var(--color-folder);
+          clip: rect(0px, 6px, 10px, 0px);
+          display: block;
+        }
+
+        &::after {
+          border-bottom-left-radius: 100%;
+          left: 100%;
+        }
+
+        &::before {
+          display: none;
+          right: 100%;
+          border-bottom-right-radius: 100%;
+        }
+
+        button {
+          font-size: inherit;
+          text-transform: inherit;
+          font-weight: 600;
+          color: @c-noir;
+          text-align: left;
+        }
+        .input-selector {
+          margin: 0;
+          .padding-verysmall;
+        }
+      }
+
+      .input-selector {
+        top: 0.05rem;
+        &::before {
+          display: block;
+        }
+        &::after {
+          display: none;
+        }
       }
     }
 

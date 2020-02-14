@@ -99,6 +99,7 @@ export default {
   created() {},
   mounted() {
     if (this.mode === "single") {
+      this.$root.settings.current_publication.page_id = this.page.id;
       this.$root.settings.current_publication.accepted_media_type = [
         "image",
         "video",
@@ -110,6 +111,7 @@ export default {
     }
   },
   beforeDestroy() {
+    this.$root.settings.current_publication.page_id = false;
     this.$root.settings.current_publication.accepted_media_type = [];
   },
   watch: {},

@@ -288,6 +288,13 @@ module.exports = (function() {
       oc: "Rapid",
       de: "Schnell"
     },
+    forget_password: {
+      fr: "Oublier le mot de passe",
+      en: "Forget password",
+      nl: "Wachtwoord vergeten",
+      oc: "Doblidar lo mot de Santa-Clara",
+      de: "Vergessen Sie das Passwort"
+    },
     forget_password_and_close: {
       fr: "Oublier le mot de passe et fermer le projet",
       en: "Forget password and close project",
@@ -371,7 +378,7 @@ module.exports = (function() {
     },
     restore: {
       fr: "Restorer",
-      en: "Remettre"
+      en: "Restore"
     },
     rotate_clockwise: {
       fr: "Pivoter vers la droite",
@@ -1238,9 +1245,9 @@ module.exports = (function() {
     },
     password_instructions: {
       fr:
-        "Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce projet.",
+        "Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce contenu.",
       en:
-        "If set, only users with the password will be able to open this project.",
+        "If set, only users with the password will be able to open this content.",
       nl:
         "Indien van toepassing, alleen gebruikers met dit wachtwoord kunnen dit project openen.",
       oc:
@@ -2462,14 +2469,14 @@ module.exports = (function() {
         oc: "La vidèo es pas estada creada",
         de: "Das Video konnte nicht erstellt werden."
       },
-      project_copy_in_progress: {
-        fr: "Copie du projet en cours…",
-        en: "Copy of the project in progress…",
+      copy_in_progress: {
+        fr: "Copie en cours…",
+        en: "Copy in progress…",
         nl: "Laden van de kopie…",
-        oc: "Còpia del projècte en cors...",
-        de: "Kopie des aktuellen Projekts..."
+        oc: "Còpia en cors…",
+        de: "Kopie…"
       },
-      project_copy_completed: {
+      copy_completed: {
         fr: "Copie terminée",
         en: "Copy finished",
         nl: "Kopiëren geslaagd",

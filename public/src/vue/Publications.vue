@@ -21,19 +21,13 @@
           :read_only="read_only"
         />
       </div>
-      <div class="m_actionbar--text">
-        {{ $t("cooking_pot") }}: {{ $t("cooking_pot_instructions") }}
-      </div>
+      <div class="m_actionbar--text">{{ $t("cooking_pot") }}: {{ $t("cooking_pot_instructions") }}</div>
     </div>
 
     <!-- liste des recettes -->
     <div class="m_recipes">
       <!-- pour chaque recette -->
-      <div
-        class="m_recipes--recipe"
-        v-for="recipe in recipes"
-        :key="recipe.key"
-      >
+      <div class="m_recipes--recipe" v-for="recipe in recipes" :key="recipe.key">
         <div class="m_recipes--recipe--icon" v-html="recipe.icon"></div>
         <div class="m_recipes--recipe--text">
           <h2 class>{{ $t(recipe.key) }}</h2>
@@ -45,9 +39,7 @@
               type="button"
               class="buttonLink margin-left-none padding-left-none"
               @click="recipe.show_instructions = !recipe.show_instructions"
-            >
-              + {{ $t("more_informations") }}
-            </button>
+            >+ {{ $t("more_informations") }}</button>
           </p>
           <template v-if="recipe.show_instructions">
             <hr />
@@ -78,18 +70,12 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                class="m_recipes--recipe--mealList--meal"
-                v-for="publication in recipe_of_this_template(recipe.key)"
-                :key="publication.slugFolderName"
-                @click="openPublication(publication.slugFolderName)"
-              >
-                <td>{{ publication.name }}</td>
-                <td width="150px">
-                  <small>{{
-                    $root.formatDateToHuman(publication.date_created)
-                  }}</small>
-                </td>
+              <tr class="m_recipes--recipe--mealList--meal">
+                <Publication
+                  v-for="publication in recipe_of_this_template(recipe.key)"
+                  :key="publication.slugFolderName"
+                  :publication="publication"
+                />
               </tr>
 
               <tr
@@ -101,9 +87,7 @@
                 class="m_recipes--recipe--mealList--meal"
               >
                 <td colspan="2">
-                  <button type="button" class="buttonLink margin-none">
-                    {{ $t("show_all") }}
-                  </button>
+                  <button type="button" class="buttonLink margin-none">{{ $t("show_all") }}</button>
                 </td>
               </tr>
             </tbody>
@@ -164,11 +148,13 @@
 </template>
 <script>
 import CreatePublication from "./components/modals/CreatePublication.vue";
+import Publication from "./components/Publication.vue";
 
 export default {
   props: ["publications", "read_only"],
   components: {
-    CreatePublication
+    CreatePublication,
+    Publication
   },
   data() {
     return {
@@ -411,14 +397,6 @@ export default {
     }
   },
   methods: {
-    openPublication(slugPubliName) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(
-          `METHODS • Publications: openPublication / slugPubliName = ${slugPubliName}`
-        );
-      }
-      this.$root.openPublication(slugPubliName);
-    },
     all_recipes_of_this_template(template_key) {
       const filtered_recipes = Object.values(this.publications).filter(
         r => r.template === template_key

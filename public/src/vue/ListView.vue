@@ -1,5 +1,5 @@
 <template>
-  <div class="m_listview" :class="{ 'is--folder' : !!$root.settings.opened_folder }">
+  <div class="m_listview" :class="{ 'is--folder': !!$root.settings.opened_folder }">
     <transition name="fade_fast" :duration="150">
       <div class="m_listview--openedFolderLabel" v-if="!!$root.settings.opened_folder">
         <div>
@@ -73,7 +73,9 @@
                   >
                     {{ sortedProjects.length }}
                     <template
-                      v-if="sortedProjects.length === Object.keys(projects).length"
+                      v-if="
+                        sortedProjects.length === Object.keys(projects).length
+                      "
                     >{{ $t("projects") }}</template>
                     <template v-else>
                       {{ $t("projects_of") }}
@@ -212,13 +214,29 @@
       >
         <template v-for="item in sortedFoldersAndProjects">
           <div v-if="item.type === 'folder'" class="m_folder" :key="item.name">
-            <label>
-              <button
-                type="button"
-                class="button-nostyle"
-                @click="toggleFolder(item.name)"
-              >{{ item.name }} ({{ item.content.length }})</button>
-            </label>
+            <div class="m_folder--topbar">
+              <label>
+                <button type="button" class="button-nostyle" @click="toggleFolder(item.name)">
+                  {{ item.name }} ({{ item.content.length }})
+                  <label
+                    :for="item.name + '_selector'"
+                    class="input-selector"
+                    @click.stop
+                  >
+                    <input
+                      :id="item.name + '_selector'"
+                      type="checkbox"
+                      :checked="allProjectFromThatFolderAreSelected(item.name)"
+                      @change="
+                        selectAllInFolder({ $event, folder_name: item.name })
+                      "
+                    />
+                  </label>
+                </button>
+              </label>
+
+              <!-- v-if="(is_hovered || is_selected)" -->
+            </div>
 
             <div class="m_folder--projects">
               <Project
@@ -691,7 +709,50 @@ export default {
       );
     },
 
+    selectAllInFolder({ $event, folder_name }) {
+      const folder = this.sortedFoldersAndProjects.find(
+        fp => fp.type === "folder" && fp.name === folder_name
+      );
+
+      if (
+        !folder ||
+        !folder.hasOwnProperty("content") ||
+        folder.content.length === 0
+      )
+        return false;
+
+      folder.content.map(p => this.selectProject(p.slugFolderName));
+
+      // this.$nextTick(() => {
+      //   $event.target.checked = false;
+      // });
+    },
+
     toggleSelectProject(slugFolderName) {
+      if (!this.projectIsSelected(slugFolderName)) {
+        this.selectProject(slugFolderName);
+      } else {
+        this.unselectProject(slugFolderName);
+      }
+    },
+    allProjectFromThatFolderAreSelected(folder_name) {
+      const folder = this.sortedFoldersAndProjects.find(
+        fp => fp.type === "folder" && fp.name === folder_name
+      );
+
+      if (
+        !folder ||
+        !folder.hasOwnProperty("content") ||
+        folder.content.length === 0
+      )
+        return false;
+
+      return !folder.content.some(
+        p => this.projectIsSelected(p.slugFolderName) === false
+      );
+    },
+
+    selectProject(slugFolderName) {
       if (
         !this.$root.canAccessFolder({
           type: "projects",
@@ -705,16 +766,18 @@ export default {
         return false;
       }
 
-      if (this.projectIsSelected(slugFolderName)) {
-        this.selected_projects = this.selected_projects.filter(
-          m => !(m.slugFolderName === slugFolderName)
-        );
-      } else {
+      if (!this.projectIsSelected(slugFolderName)) {
         this.selected_projects.push({
           slugFolderName
         });
       }
     },
+    unselectProject(slugFolderName) {
+      this.selected_projects = this.selected_projects.filter(
+        m => !(m.slugFolderName === slugFolderName)
+      );
+    },
+
     projectIsSelected(slugFolderName) {
       return this.selected_projects.some(
         m => m.slugFolderName === slugFolderName
