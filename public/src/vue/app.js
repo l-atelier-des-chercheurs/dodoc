@@ -260,6 +260,7 @@ let vm = new Vue({
 
       current_publication: {
         slug: false,
+        page_id: false,
         accepted_media_type: []
       },
 
@@ -531,12 +532,21 @@ let vm = new Vue({
     },
     current_publication_medias() {
       if (
-        this.current_publication &&
-        this.current_publication.hasOwnProperty("medias")
+        !this.current_publication ||
+        !this.current_publication.hasOwnProperty("medias")
+      )
+        return false;
+
+      if (
+        this.current_publication.template === "page_by_page" &&
+        this.$root.settings.current_publication.page_id
       ) {
-        return this.current_publication.medias;
+        // we need to check current page
+        return Object.values(this.current_publication.medias).filter(
+          m => m.page_id === this.$root.settings.current_publication.page_id
+        );
       }
-      return false;
+      return this.current_publication.medias;
     },
     requested_media() {
       return this.store.projects[this.store.request.slugProjectName].medias[
