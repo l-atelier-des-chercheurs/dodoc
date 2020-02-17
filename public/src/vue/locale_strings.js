@@ -2026,6 +2026,18 @@ module.exports = (function() {
       de:
         "Dieses Rezept nimmt eine Video und eine Tonspur.  Er fügt die Tonspur des Videos hinzu oder ersetzt ihn durch der ausgewählten Tonspur.<br> Zulässige Medien : ein Video und eine Tonspur.<br> Wird ein neues Video mit der längsten Medienlänge erstellen."
     },
+    drawing_pad_summary: {
+      fr: "Bloc à dessin",
+      en: "Drawing pad"
+    },
+    drawing_pad: {
+      fr: "Bloc dessin",
+      en: "Drawing pad"
+    },
+    drawing_pad_summary: {
+      fr: "Dessinez, annotez, créez des visuels interactifs ou imprimables",
+      en: "Draw, annotate, mind map, etc."
+    },
     mix_audio_and_image_summary: {
       fr: "Ajouter du son sur une image.",
       en: "Add sound to an image to create a video.",

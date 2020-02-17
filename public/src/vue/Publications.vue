@@ -307,6 +307,17 @@ export default {
           `
         },
         {
+          key: "drawing_pad",
+          summary: "drawing_pad_summary",
+          show_instructions: false,
+          instructions: "drawing_pad_instructions",
+          show_all_recipes: false,
+          icon: `
+
+          `
+        },
+
+        {
           key: "mix_audio_and_video",
           summary: "mix_audio_and_video_summary",
           show_instructions: false,
@@ -376,7 +387,7 @@ export default {
       <path d="M102,107.63h4.24v2.54H102v4.32H99.27v-4.32H95v-2.54h4.23V103.3H102Z" style="fill: #fff"/>
     </g>
   </g>
-</svg>          
+</svg>
           `
         }
         // {

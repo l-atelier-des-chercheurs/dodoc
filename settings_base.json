@@ -198,7 +198,8 @@
             "video_assemblage",
             "stopmotion_animation",
             "mix_audio_and_video",
-            "mix_audio_and_image"
+            "mix_audio_and_image",
+            "drawing_pad"
           ],
           "default": "page_by_page"
         },
