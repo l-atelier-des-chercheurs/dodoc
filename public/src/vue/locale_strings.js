@@ -356,7 +356,7 @@ module.exports = (function() {
       de: "Schicht"
     },
     css_settings: {
-      fr: "Règlages CSS",
+      fr: "Réglages CSS",
       en: "CSS settings",
       nl: "CSS instellingen",
       oc: "Reglatges CSS",
@@ -1154,7 +1154,7 @@ module.exports = (function() {
       de: "Zoom"
     },
     settings: {
-      fr: "Règlages",
+      fr: "Réglages",
       en: "Settings",
       nl: "Instellingen",
       oc: "Reglatges",
