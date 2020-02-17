@@ -356,7 +356,7 @@ module.exports = (function() {
       de: "Schicht"
     },
     css_settings: {
-      fr: "Règlages CSS",
+      fr: "Réglages CSS",
       en: "CSS settings",
       nl: "CSS instellingen",
       oc: "Reglatges CSS",
@@ -1154,7 +1154,7 @@ module.exports = (function() {
       de: "Zoom"
     },
     settings: {
-      fr: "Règlages",
+      fr: "Réglages",
       en: "Settings",
       nl: "Instellingen",
       oc: "Reglatges",
@@ -2025,6 +2025,18 @@ module.exports = (function() {
         "Aquesta recèpta pren una vidèo e una pista audio. Apond o remplça la banda sonora de la vidèo amb la qu'es seleccionada.<br>Mèdias acceptats: una vidèo e una pista sonora.<br>Crearà una novèla vidèo de la duradadel mai long mèdia.",
       de:
         "Dieses Rezept nimmt eine Video und eine Tonspur.  Er fügt die Tonspur des Videos hinzu oder ersetzt ihn durch der ausgewählten Tonspur.<br> Zulässige Medien : ein Video und eine Tonspur.<br> Wird ein neues Video mit der längsten Medienlänge erstellen."
+    },
+    drawing_pad_summary: {
+      fr: "Bloc à dessin",
+      en: "Drawing pad"
+    },
+    drawing_pad: {
+      fr: "Bloc dessin",
+      en: "Drawing pad"
+    },
+    drawing_pad_summary: {
+      fr: "Dessinez, annotez, créez des visuels interactifs ou imprimables",
+      en: "Draw, annotate, mind map, etc."
     },
     mix_audio_and_image_summary: {
       fr: "Ajouter du son sur une image.",

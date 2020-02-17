@@ -21,13 +21,19 @@
           :read_only="read_only"
         />
       </div>
-      <div class="m_actionbar--text">{{ $t("cooking_pot") }}: {{ $t("cooking_pot_instructions") }}</div>
+      <div class="m_actionbar--text">
+        {{ $t("cooking_pot") }}: {{ $t("cooking_pot_instructions") }}
+      </div>
     </div>
 
     <!-- liste des recettes -->
     <div class="m_recipes">
       <!-- pour chaque recette -->
-      <div class="m_recipes--recipe" v-for="recipe in recipes" :key="recipe.key">
+      <div
+        class="m_recipes--recipe"
+        v-for="recipe in recipes"
+        :key="recipe.key"
+      >
         <div class="m_recipes--recipe--icon" v-html="recipe.icon"></div>
         <div class="m_recipes--recipe--text">
           <h2 class>{{ $t(recipe.key) }}</h2>
@@ -39,7 +45,9 @@
               type="button"
               class="buttonLink margin-left-none padding-left-none"
               @click="recipe.show_instructions = !recipe.show_instructions"
-            >+ {{ $t("more_informations") }}</button>
+            >
+              + {{ $t("more_informations") }}
+            </button>
           </p>
           <template v-if="recipe.show_instructions">
             <hr />
@@ -87,7 +95,9 @@
                 class="m_recipes--recipe--mealList--meal"
               >
                 <td colspan="2">
-                  <button type="button" class="buttonLink margin-none">{{ $t("show_all") }}</button>
+                  <button type="button" class="buttonLink margin-none">
+                    {{ $t("show_all") }}
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -297,6 +307,17 @@ export default {
           `
         },
         {
+          key: "drawing_pad",
+          summary: "drawing_pad_summary",
+          show_instructions: false,
+          instructions: "drawing_pad_instructions",
+          show_all_recipes: false,
+          icon: `
+
+          `
+        },
+
+        {
           key: "mix_audio_and_video",
           summary: "mix_audio_and_video_summary",
           show_instructions: false,
@@ -366,19 +387,19 @@ export default {
       <path d="M102,107.63h4.24v2.54H102v4.32H99.27v-4.32H95v-2.54h4.23V103.3H102Z" style="fill: #fff"/>
     </g>
   </g>
-</svg>          
-          `
-        },
-        {
-          key: "carreau",
-          summary: "carreau_summary",
-          show_instructions: false,
-          instructions: "carreau_instructions",
-          show_all_recipes: false,
-          icon: `
-
+</svg>
           `
         }
+        // {
+        //   key: "carreau",
+        //   summary: "carreau_summary",
+        //   show_instructions: false,
+        //   instructions: "carreau_instructions",
+        //   show_all_recipes: false,
+        //   icon: `
+
+        //   `
+        // }
       ]
     };
   },

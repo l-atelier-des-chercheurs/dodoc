@@ -1,36 +1,36 @@
 <template>
   <div class="m_listview" :class="{ 'is--folder': !!$root.settings.opened_folder }">
-    <transition name="fade_fast" :duration="150">
-      <div class="m_listview--openedFolderLabel" v-if="!!$root.settings.opened_folder">
-        <div>
-          <button
-            class="m_listview--openedFolderLabel--backButton"
-            type="button"
-            @click="$root.settings.opened_folder = false"
-          >
-            ‹
-            <span class>{{ $t("back") }}</span>
-          </button>
+    <main class="m_projects main_scroll_panel">
+      <transition name="fade_fast" :duration="150">
+        <div class="m_listview--openedFolderLabel" v-if="!!$root.settings.opened_folder">
+          <div>
+            <button
+              class="m_listview--openedFolderLabel--backButton"
+              type="button"
+              @click="$root.settings.opened_folder = false"
+            >
+              ‹
+              <span class>{{ $t("back") }}</span>
+            </button>
 
-          <span
-            class="m_listview--openedFolderLabel--intitule"
-            v-html="$t('folder_currently_open:')"
-          />
-          <label class="m_listview--openedFolderLabel--folderName">
-            <!-- <button
+            <span
+              class="m_listview--openedFolderLabel--intitule"
+              v-html="$t('folder_currently_open:')"
+            />
+            <label class="m_listview--openedFolderLabel--folderName">
+              <!-- <button
               type="button"
               class="button-nostyle"
               @click="$root.settings.opened_folder = false"
-            >-->
-            {{ $root.settings.opened_folder }}
-            <!-- &nbsp;×
-            </button>-->
-          </label>
+              >-->
+              {{ $root.settings.opened_folder }}
+              <!-- &nbsp;×
+              </button>-->
+            </label>
+          </div>
         </div>
-      </div>
-    </transition>
+      </transition>
 
-    <main class="m_projects main_scroll_panel">
       <div class="m_actionbar">
         <div class="m_actionbar--buttonBar">
           <button
