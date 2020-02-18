@@ -435,10 +435,7 @@
             class="m_publicationview--pages--contactSheet--pages--page"
             v-for="(page, pageNumber) in pagesWithDefault"
             :key="page.id"
-            @mouseleave="
-              show_advanced_menu_for_page = false;
-              show_advanced_option = false;
-            "
+            @mouseenter="show_buttons = page.id"
           >
             <PagePublicationSinglePage
               :key="page.id"
@@ -457,118 +454,126 @@
               >{{ pageNumber + 1 }}</span
             >
 
-            <div
-              class="m_publicationview--pages--contactSheet--pages--page--buttons"
-              @click="openPage(page.id)"
-            >
-              <button
-                type="button"
-                class="_advanced_menu_button"
-                @click.stop="
-                  show_advanced_menu_for_page !== page.id
-                    ? (show_advanced_menu_for_page = page.id)
-                    : (show_advanced_menu_for_page = false)
-                "
-              >
-                <svg
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  x="0px"
-                  y="0px"
-                  width="168px"
-                  height="168px"
-                  viewBox="0 0 168 168"
-                  style="enable-background:new 0 0 168 168;"
-                  xml:space="preserve"
-                >
-                  <rect x="73.5" y="37" class="st0" width="21" height="21" />
-                  <rect x="73.5" y="73.5" class="st0" width="21" height="21" />
-                  <rect x="73.5" y="110" class="st0" width="21" height="21" />
-                </svg>
-              </button>
-
+            <transition name="fade_fast" :duration="150">
               <div
-                v-if="show_advanced_menu_for_page === page.id"
-                class="_advanced_menu"
-                @click.stop
+                class="m_publicationview--pages--contactSheet--pages--page--buttons"
+                v-if="show_buttons === page.id"
               >
-                <template v-if="!show_advanced_option">
-                  <button
-                    type="button"
-                    class="buttonLink"
-                    @click="show_advanced_option = 'move'"
+                <button
+                  type="button"
+                  class="_advanced_menu_button"
+                  @click.stop="
+                    show_advanced_menu_for_page !== page.id
+                      ? (show_advanced_menu_for_page = page.id)
+                      : (show_advanced_menu_for_page = false)
+                  "
+                >
+                  <svg
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    x="0px"
+                    y="0px"
+                    width="168px"
+                    height="168px"
+                    viewBox="0 0 168 168"
+                    style="enable-background:new 0 0 168 168;"
+                    xml:space="preserve"
                   >
-                    {{ $t("move") }}
-                  </button>
+                    <rect x="73.5" y="37" class="st0" width="21" height="21" />
+                    <rect
+                      x="73.5"
+                      y="73.5"
+                      class="st0"
+                      width="21"
+                      height="21"
+                    />
+                    <rect x="73.5" y="110" class="st0" width="21" height="21" />
+                  </svg>
+                </button>
 
-                  <button
-                    type="button"
-                    class="buttonLink"
-                    @click="show_advanced_option = 'duplicate'"
-                  >
-                    {{ $t("duplicate") }}
-                  </button>
-
-                  <button
-                    type="button"
-                    class="buttonLink"
-                    @click="removePage(page.id)"
-                  >
-                    {{ $t("remove") }}
-                  </button>
-                </template>
-
-                <template v-else-if="show_advanced_option === 'move'">
-                  <span v-if="pagesWithDefault.length > 1">
-                    <label>{{ $t("move_page_position") }}</label>
-                    <select
-                      @change="updatePagePos({ id: page.id, $event })"
-                      :value="pageNumber + 1"
+                <div
+                  v-if="show_advanced_menu_for_page === page.id"
+                  class="_advanced_menu"
+                  @click.stop
+                >
+                  <template v-if="!show_advanced_option">
+                    <button
+                      type="button"
+                      class="buttonLink"
+                      @click="show_advanced_option = 'move'"
                     >
-                      <option
-                        v-for="pos in pagesWithDefault.length"
-                        :key="pos"
-                        v-html="pos"
-                      />
-                    </select>
-                  </span>
-                </template>
-                <template v-else-if="show_advanced_option === 'duplicate'">
-                  <form
-                    @submit.prevent="duplicatePage({ id: page.id, $event })"
-                  >
-                    <template v-if="pagesWithDefault.length > 1">
-                      <label>{{ $t("destination_document") }}</label>
-                      <select :value="slugPubliName">
+                      {{ $t("move") }}
+                    </button>
+
+                    <button
+                      type="button"
+                      class="buttonLink"
+                      @click="show_advanced_option = 'duplicate'"
+                    >
+                      {{ $t("duplicate") }}
+                    </button>
+
+                    <button
+                      type="button"
+                      class="buttonLink"
+                      @click="removePage(page.id)"
+                    >
+                      {{ $t("remove") }}
+                    </button>
+                  </template>
+
+                  <template v-else-if="show_advanced_option === 'move'">
+                    <span v-if="pagesWithDefault.length > 1">
+                      <label>{{ $t("move_page_position") }}</label>
+                      <select
+                        @change="updatePagePos({ id: page.id, $event })"
+                        :value="pageNumber + 1"
+                      >
                         <option
-                          v-for="{
-                            name,
-                            slugFolderName: slugPubliName
-                          } in all_recipes_of_this_template"
-                          :key="slugPubliName"
-                          :value="slugPubliName"
-                          v-html="name"
+                          v-for="pos in pagesWithDefault.length"
+                          :key="pos"
+                          v-html="pos"
                         />
                       </select>
-                    </template>
-                    <button
-                      type="submit"
-                      v-html="$t('duplicate')"
-                      class="bg-bleuvert"
-                    />
-                  </form>
-                </template>
-              </div>
+                    </span>
+                  </template>
+                  <template v-else-if="show_advanced_option === 'duplicate'">
+                    <form
+                      @submit.prevent="duplicatePage({ id: page.id, $event })"
+                    >
+                      <template v-if="pagesWithDefault.length > 1">
+                        <label>{{ $t("destination_document") }}</label>
+                        <select :value="slugPubliName">
+                          <option
+                            v-for="{
+                              name,
+                              slugFolderName: slugPubliName
+                            } in all_recipes_of_this_template"
+                            :key="slugPubliName"
+                            :value="slugPubliName"
+                            v-html="name"
+                          />
+                        </select>
+                      </template>
+                      <button
+                        type="submit"
+                        v-html="$t('duplicate')"
+                        class="bg-bleuvert"
+                      />
+                    </form>
+                  </template>
+                </div>
 
-              <button
-                type="button"
-                class="buttonLink"
-                @click.stop="openPage(page.id)"
-              >
-                {{ $t("open") }}
-              </button>
-            </div>
+                <button
+                  type="button"
+                  class="buttonLink"
+                  @click.stop="openPage(page.id)"
+                >
+                  {{ $t("open") }}
+                </button>
+              </div>
+            </transition>
           </div>
           <button
             type="button"
@@ -757,6 +762,7 @@ export default {
       },
 
       show_removed_pages: false,
+      show_buttons: false,
 
       page_settings_panel: false,
 
@@ -842,6 +848,10 @@ export default {
         console.log(`WATCH • Publication: publication.medias`);
       }
       this.updateMediasPubli();
+    },
+    show_buttons: function() {
+      this.show_advanced_menu_for_page = false;
+      this.show_advanced_option = false;
     },
     publications_options: {
       handler() {
@@ -1047,6 +1057,8 @@ export default {
           pages
         }
       });
+
+      this.show_buttons = false;
     },
     openPage(id) {
       if (this.$root.state.dev_mode === "debug")
@@ -1333,8 +1345,7 @@ export default {
         });
       });
 
-      this.show_advanced_menu_for_page = false;
-      this.show_advanced_option = false;
+      this.show_buttons = false;
 
       // TODO : same publi or another one
     },

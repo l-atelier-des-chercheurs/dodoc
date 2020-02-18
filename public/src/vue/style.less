@@ -4128,14 +4128,12 @@ small {
             bottom: 0;
             width: 100%;
             background-color: fade(@c-bleuvert_fonce, 90%);
-            opacity: 0;
+
             display: flex;
             flex-flow: column nowrap;
             align-items: center;
             justify-content: center;
             align-content: center;
-
-            pointer-events: none;
 
             transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -4143,13 +4141,6 @@ small {
               background: transparent;
               .font-verysmall;
               color: black;
-            }
-          }
-
-          &:hover {
-            .m_publicationview--pages--contactSheet--pages--page--buttons {
-              pointer-events: auto;
-              opacity: 1;
             }
           }
         }
@@ -4504,7 +4495,7 @@ small {
   padding: 0;
 
   &:hover {
-    background-color: #eee;
+    background-color: #eee !important;
   }
 
   svg {
