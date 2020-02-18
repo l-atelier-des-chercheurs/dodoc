@@ -110,6 +110,7 @@ module.exports = function(app) {
         file
           .getFolder({ type: "projects", slugFolderName: slugProjectName })
           .then(foldersData => {
+            foldersData = api.removePasswordFromFoldersMeta(foldersData);
             pageData.folderAndMediaData = foldersData;
             if (!metaFileName) {
               return res.render("index", pageData);
