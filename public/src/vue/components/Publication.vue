@@ -1,23 +1,30 @@
 <template>
-  <div>
+  <tr>
     <td>{{ publication.name }}</td>
     <td width="150px">
       <small>
-        {{
-        $root.formatDateToHuman(publication.date_created)
-        }}
+        {{ $root.formatDateToHuman(publication.date_created) }}
       </small>
     </td>
 
     <td>
-      <button type="button" v-if="can_access_publi" @click="openPublication">{{ $t('open') }}</button>
+      <button
+        type="button"
+        class="buttonLink"
+        v-if="can_access_publi"
+        @click="openPublication"
+      >
+        {{ $t("open") }}
+      </button>
 
       <button
         v-if="can_access_publi && publi_password"
         type="button"
-        class="_button_forgetpassword"
+        class="buttonLink _button_forgetpassword"
         @click="forgetPassword"
-      >{{ $t("forget_password") }}</button>
+      >
+        {{ $t("forget_password") }}
+      </button>
 
       <button
         v-if="!can_access_publi"
@@ -27,21 +34,32 @@
         style
         :readonly="read_only"
         @click="show_input_pwd = !show_input_pwd"
-      >{{ $t("password_required_to_open") }}</button>
+      >
+        {{ $t("password_required_to_open") }}
+      </button>
 
       <form
-        class="padding-small _pwd_input"
+        class="padding-verysmall _pwd_input"
         v-if="show_input_pwd && !can_access_publi"
         @submit.prevent="submitPassword"
       >
-        <div class="margin-bottom-small">
+        <div class="">
           <label>{{ $t("password") }}</label>
-          <input type="password" ref="passwordField" required autofocus placeholder="…" />
+          <input
+            type="password"
+            ref="passwordField"
+            required
+            autofocus
+            placeholder="…"
+          />
         </div>
-        <input type="submit" class="button button-bg_rounded bg-bleuvert margin-top-small" />
+        <input
+          type="submit"
+          class="button button-bg_rounded bg-bleuvert margin-top-small"
+        />
       </form>
     </td>
-  </div>
+  </tr>
 </template>
 <script>
 export default {

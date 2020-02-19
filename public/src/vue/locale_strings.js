@@ -522,6 +522,10 @@ module.exports = (function() {
       oc: "estil",
       de: "Stil"
     },
+    show_recipes_for_project_first: {
+      fr: "Afficher en priorité les recettes liées au projet",
+      en: "Show recipes attached to this project first"
+    },
     css: {
       fr: "css",
       en: "css",

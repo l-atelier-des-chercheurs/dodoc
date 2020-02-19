@@ -18,8 +18,10 @@
       :audio_volume="volume"
       @volumeChanged="volumeChanged"
     />
+
     <p class="mediaCaption">{{ media.caption }}</p>
 
+    <hr />
     <div class="m_metaField">
       <div>{{ $t("project") }}</div>
       <div>{{ $root.store.projects[media.slugProjectName].name }}</div>

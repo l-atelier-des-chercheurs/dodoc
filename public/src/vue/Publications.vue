@@ -28,7 +28,7 @@
 
     <div class="m_publiFilter">
       <label>
-        Afficher uniquement les recettes liées au projet
+        {{ $t("show_recipes_for_project_first") }}
       </label>
       <select v-model="slugProjectName_to_filter">
         <option key="'all'" value=""
@@ -90,26 +90,28 @@
           <table>
             <thead>
               <tr>
-                <th colspan="2">
+                <th colspan="1">
                   <label>{{ $t("previous_creations") }}</label>
+                </th>
+                <th colspan="1">
+                  <label>{{ $t("created_date") }}</label>
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr class="m_recipes--recipe--mealList--meal">
-                <Publication
-                  v-for="publication in recipe_of_this_template(recipe.key)"
-                  :key="publication.slugFolderName"
-                  :publication="publication"
-                />
-              </tr>
+              <Publication
+                class="m_recipes--recipe--mealList--meal"
+                v-for="publication in recipe_of_this_template(recipe.key)"
+                :key="publication.slugFolderName"
+                :publication="publication"
+              />
 
               <tr
                 v-if="!recipe.show_all_recipes"
                 @click="recipe.show_all_recipes = true"
                 class="m_recipes--recipe--mealList--meal"
               >
-                <td colspan="2">
+                <td colspan="3">
                   <button type="button" class="buttonLink margin-none">
                     {{ $t("show_all") }}
                   </button>

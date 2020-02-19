@@ -233,7 +233,6 @@ export default {
         else return "custom";
       },
       set: function(val) {
-        debugger;
         if (val === "A4_portrait") {
           this.setPropVal({ width: 210, height: 297 });
         } else if (val === "A4_landscape") {
