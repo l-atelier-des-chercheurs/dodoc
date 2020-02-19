@@ -190,6 +190,9 @@
         "description": {
           "type": "string"
         },
+        "attached_to_project": {
+          "type": "string"
+        },
         "template": {
           "type": "string",
           "options": [

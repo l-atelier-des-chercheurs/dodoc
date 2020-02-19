@@ -105,9 +105,9 @@ module.exports = (function() {
       oc: "Data de mandadís",
       de: "Versanddatum"
     },
-    belongs_to_project: {
-      fr: "Appartient au projet",
-      en: "Belongs to project"
+    attached_to_project: {
+      fr: "Rattachée au projet",
+      en: "Attached to project"
     },
     type: {
       fr: "Type",
@@ -438,6 +438,10 @@ module.exports = (function() {
       nl: "Alles tonen",
       oc: "Afichar tot",
       de: "Zeige alles"
+    },
+    all: {
+      fr: "Tous",
+      en: "All"
     },
     cooking_pot_instructions: {
       fr: "Mélangez des médias pour en créer de nouveaux !",

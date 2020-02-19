@@ -26,6 +26,24 @@
       </div>
     </div>
 
+    <div class="m_publiFilter">
+      <label>
+        Afficher uniquement les recettes liées au projet
+      </label>
+      <select v-model="slugProjectName_to_filter">
+        <option key="'all'" value=""
+          >** {{ $t("all").toLowerCase() }} **</option
+        >
+        <option
+          v-for="project in $root.projects_that_are_accessible"
+          :key="project.slugFolderName"
+          :value="project.slugFolderName"
+        >
+          {{ project.name }}
+        </option>
+      </select>
+    </div>
+
     <!-- liste des recettes -->
     <div class="m_recipes">
       <!-- pour chaque recette -->
@@ -67,7 +85,7 @@
 
         <div
           class="m_recipes--recipe--mealList"
-          v-if="recipe_of_this_template(recipe.key).length > 0"
+          v-if="all_recipes_of_this_template(recipe.key).length > 0"
         >
           <table>
             <thead>
@@ -87,10 +105,7 @@
               </tr>
 
               <tr
-                v-if="
-                  !recipe.show_all_recipes &&
-                    all_recipes_of_this_template(recipe.key).length > 3
-                "
+                v-if="!recipe.show_all_recipes"
                 @click="recipe.show_all_recipes = true"
                 class="m_recipes--recipe--mealList--meal"
               >
@@ -170,6 +185,11 @@ export default {
     return {
       showCreatePublicationModal: false,
       createPubliTemplateKey: false,
+
+      slugProjectName_to_filter: !!this.$root.do_navigation
+        .current_slugProjectName
+        ? this.$root.do_navigation.current_slugProjectName
+        : "",
 
       recipes: [
         {
@@ -408,7 +428,20 @@ export default {
   mounted() {},
   beforeDestroy() {},
 
-  watch: {},
+  watch: {
+    "$root.do_navigation.current_slugProjectName": function() {
+      this.slugProjectName_to_filter = !!this.$root.do_navigation
+        .current_slugProjectName
+        ? this.$root.do_navigation.current_slugProjectName
+        : "";
+    },
+    slugProjectName_to_filter: function() {
+      this.recipes = this.recipes.map(r => {
+        r.show_all_recipes = false;
+        return r;
+      });
+    }
+  },
   computed: {
     createPubliDefaultName() {
       const number_of_recipes =
@@ -422,15 +455,35 @@ export default {
       const filtered_recipes = Object.values(this.publications).filter(
         r => r.template === template_key
       );
+
       let sorted_recipes = this.$_.sortBy(filtered_recipes, "date_created");
       sorted_recipes = sorted_recipes.reverse();
       return sorted_recipes;
     },
     recipe_of_this_template(template_key) {
+      const recipes = this.all_recipes_of_this_template(template_key);
+
       if (!this.recipes.find(r => r.key === template_key).show_all_recipes) {
-        return this.all_recipes_of_this_template(template_key).slice(0, 3);
+        // if show only part of it
+
+        // if project filter, show only those of that project
+        if (!!this.slugProjectName_to_filter)
+          return recipes.filter(
+            r => r.attached_to_project === this.slugProjectName_to_filter
+          );
+        else return recipes.slice(0, 3);
       }
-      return this.all_recipes_of_this_template(template_key);
+
+      if (!!this.slugProjectName_to_filter)
+        // show first that project’s publi, and then all the others
+        return recipes.sort((x, y) => {
+          return x.attached_to_project === this.slugProjectName_to_filter
+            ? -1
+            : y.attached_to_project == this.slugProjectName_to_filter
+            ? 1
+            : 0;
+        });
+      else return recipes;
     },
     openCreatePublicationModal(recipe_key) {
       this.showCreatePublicationModal = true;
