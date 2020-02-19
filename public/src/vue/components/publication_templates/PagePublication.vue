@@ -290,6 +290,10 @@
             v-for="(page, pageNumber) in pagesWithDefault"
             :key="page.id"
             @mouseenter="show_buttons = page.id"
+            @mouseleave="
+              event =>
+                event.relatedTarget === null ? '' : (show_buttons = false)
+            "
           >
             <PagePublicationSinglePage
               :key="page.id"
@@ -413,7 +417,7 @@
                       <button
                         type="submit"
                         v-html="$t('duplicate')"
-                        class="bg-bleuvert"
+                        class="button button-greenthin"
                       />
                     </form>
                   </template>
@@ -459,6 +463,8 @@
             class="m_publicationview--pages--contactSheet--pages--page"
             v-for="(page, pageNumber) in removedPagesWithDefault"
             :key="page.id"
+            @mouseenter="show_restore_options = page.id"
+            @mouseleave="show_restore_options = false"
           >
             <PagePublicationSinglePage
               :mode="'contact_sheet'"
@@ -474,6 +480,7 @@
 
             <div
               class="m_publicationview--pages--contactSheet--pages--page--buttons"
+              v-if="show_restore_options === page.id"
             >
               <!-- <button
                 type="button"
@@ -619,6 +626,7 @@ export default {
 
       show_removed_pages: false,
       show_buttons: false,
+      show_restore_options: false,
 
       page_settings_panel: false,
 
@@ -1162,6 +1170,8 @@ export default {
         : [];
       pages.splice(index_of_page_to_copy + 1, 0, page_to_copy);
 
+      this.show_buttons = false;
+
       this.$root.editFolder({
         type: "publications",
         slugFolderName: slugPubliName_to_copy_to,
@@ -1185,8 +1195,6 @@ export default {
           }
         });
       });
-
-      this.show_buttons = false;
 
       // TODO : same publi or another one
     },
