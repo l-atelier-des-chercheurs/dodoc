@@ -179,6 +179,18 @@ module.exports = (function() {
       oc: "Lissatge",
       de: "Glättungmodus"
     },
+    custom: {
+      fr: "Personnalisé",
+      en: "Custom"
+    },
+    header: {
+      fr: "En-tête",
+      en: "Header"
+    },
+    sizes_and_margins: {
+      fr: "Tailles et marges",
+      en: "Sizes and margins"
+    },
     onion_skin: {
       fr: "Pelure d’oignon",
       en: "Onion skin",
@@ -664,6 +676,14 @@ module.exports = (function() {
       nl: "Portret",
       oc: "Retrach",
       de: "Porträt"
+    },
+    image_ratio_portrait: {
+      fr: "Portrait",
+      en: "Portrait"
+    },
+    image_ratio_landscape: {
+      fr: "Paysage",
+      en: "Landscape"
     },
     nfc_tag: {
       fr: "Tag NFC",
@@ -2139,9 +2159,9 @@ module.exports = (function() {
       fr: "Page précédente",
       en: "Previous page"
     },
-    current_page: {
-      fr: "Numéro de page actuelle",
-      en: "Current page number"
+    "current_page:": {
+      fr: "Page actuelle&nbsp;:",
+      en: "Current page:"
     },
     minimize_media: {
       fr: "Utiliser comme référence",

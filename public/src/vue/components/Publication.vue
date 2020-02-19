@@ -77,7 +77,6 @@ export default {
       });
     },
     publi_password() {
-      debugger;
       const pwds = this.$auth.getFoldersPasswords();
       if (
         pwds.hasOwnProperty("publications") &&
