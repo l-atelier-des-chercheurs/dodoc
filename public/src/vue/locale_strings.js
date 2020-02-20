@@ -523,7 +523,7 @@ module.exports = (function() {
       de: "Stil"
     },
     show_recipes_for_project_first: {
-      fr: "Afficher en priorité les recettes liées au projet",
+      fr: "Afficher en premier les recettes liées au projet",
       en: "Show recipes attached to this project first"
     },
     css: {
