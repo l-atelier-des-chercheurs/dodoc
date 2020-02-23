@@ -1,18 +1,25 @@
 <template>
-  <tr>
+  <tr @click="openPublication">
     <td>{{ publication.name }}</td>
     <td width="150px">
       <small>
         {{ $root.formatDateToHuman(publication.date_created) }}
       </small>
     </td>
-
+    <td class="font-folder_title">
+      <template v-if="attached_project">
+        {{ attached_project.name }}
+      </template>
+      <template v-else>
+        —
+      </template>
+    </td>
     <td>
       <button
         type="button"
         class="buttonLink"
         v-if="can_access_publi"
-        @click="openPublication"
+        @click.stop="openPublication"
       >
         {{ $t("open") }}
       </button>
@@ -21,7 +28,7 @@
         v-if="can_access_publi && publi_password"
         type="button"
         class="buttonLink _button_forgetpassword"
-        @click="forgetPassword"
+        @click.stop="forgetPassword"
       >
         {{ $t("forget_password") }}
       </button>
@@ -33,7 +40,7 @@
         :class="{ 'is--active': show_input_pwd }"
         style
         :readonly="read_only"
-        @click="show_input_pwd = !show_input_pwd"
+        @click.stop="show_input_pwd = !show_input_pwd"
       >
         {{ $t("password_required_to_open") }}
       </button>
@@ -85,6 +92,11 @@ export default {
     }
   },
   computed: {
+    attached_project() {
+      return this.$root.projects_that_are_accessible.find(
+        _p => _p.slugFolderName === this.publication.attached_to_project
+      );
+    },
     slugPubliName() {
       return this.publication.slugFolderName;
     },
@@ -113,7 +125,7 @@ export default {
           `METHODS • Publication: openPublication / slugPubliName = ${slugPubliName}`
         );
 
-      this.$root.openPublication(this.slugPubliName);
+      if (this.can_access_publi) this.$root.openPublication(this.slugPubliName);
     },
     submitPassword() {
       console.log("METHODS • Publication: submitPassword");
@@ -160,4 +172,8 @@ export default {
   }
 };
 </script>
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.font-folder_title {
+  font-size: 70%;
+}
+</style>

@@ -451,16 +451,6 @@ export default {
       }, 500);
     },
     updateMediaStyles() {
-      this.mediaPos.x =
-        this.media.publi_meta.hasOwnProperty("x") &&
-        !!Number.parseInt(this.media.publi_meta.x)
-          ? this.limitMediaXPos(Number.parseInt(this.media.publi_meta.x))
-          : this.page.margin_left;
-      this.mediaPos.y =
-        this.media.publi_meta.hasOwnProperty("y") &&
-        !!Number.parseInt(this.media.publi_meta.y)
-          ? this.limitMediaYPos(Number.parseInt(this.media.publi_meta.y))
-          : this.page.margin_top;
       this.rotate = this.media.publi_meta.hasOwnProperty("rotate")
         ? this.media.publi_meta.rotate
         : 0;
@@ -474,6 +464,16 @@ export default {
         !!Number.parseInt(this.media.publi_meta.height)
           ? this.limitMediaHeight(Number.parseInt(this.media.publi_meta.height))
           : 100;
+      this.mediaPos.x =
+        this.media.publi_meta.hasOwnProperty("x") &&
+        !!Number.parseInt(this.media.publi_meta.x)
+          ? this.limitMediaXPos(Number.parseInt(this.media.publi_meta.x))
+          : this.page.margin_left;
+      this.mediaPos.y =
+        this.media.publi_meta.hasOwnProperty("y") &&
+        !!Number.parseInt(this.media.publi_meta.y)
+          ? this.limitMediaYPos(Number.parseInt(this.media.publi_meta.y))
+          : this.page.margin_top;
       this.custom_css = this.media.publi_meta.hasOwnProperty("custom_css")
         ? this.media.publi_meta.custom_css
         : this.custom_css;

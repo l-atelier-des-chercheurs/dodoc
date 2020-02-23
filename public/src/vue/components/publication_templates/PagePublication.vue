@@ -216,8 +216,14 @@
             ].includes($root.state.mode)
           "
         >
-          <input id="settings" type="checkbox" v-model="page_settings_panel" />
-          <label for="settings">{{ $t("settings") }}</label>
+          <button
+            type="button"
+            class="buttonLink"
+            :class="{ 'is--active': page_settings_panel }"
+            @click="page_settings_panel = !page_settings_panel"
+          >
+            {{ $t("settings") }}
+          </button>
         </div>
 
         <SettingsPane
@@ -359,6 +365,7 @@
                     <button
                       type="button"
                       class="buttonLink"
+                      v-if="pagesWithDefault.length > 1"
                       @click="show_advanced_option = 'move'"
                     >
                       {{ $t("move") }}
