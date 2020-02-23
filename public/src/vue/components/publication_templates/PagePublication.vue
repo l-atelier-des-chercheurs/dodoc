@@ -207,7 +207,7 @@
         </div>
 
         <div
-          class
+          class="_settings_pane_button"
           v-if="
             ![
               'export_publication',
@@ -216,162 +216,22 @@
             ].includes($root.state.mode)
           "
         >
-          <input id="settings" type="checkbox" v-model="page_settings_panel" />
-          <label for="settings">{{ $t("settings") }}</label>
+          <button
+            type="button"
+            class="buttonLink"
+            :class="{ 'is--active': page_settings_panel }"
+            @click="page_settings_panel = !page_settings_panel"
+          >
+            {{ $t("settings") }}
+          </button>
         </div>
 
-        <template v-if="page_settings_panel">
-          <hr />
-
-          <!-- <div class="margin-bottom-small">
-            <label>{{ $t('template') }}</label>
-            <select v-model="new_style" @change="updatePublicationOption($event, 'style')">
-          <option value="standard">standard</option>-->
-          <!-- <option value="feuille de choux">feuille de choux</option>
-          <option value="human tech days">human tech days</option>-->
-          <!-- 
-            </select>
-          -->
-
-          <hr />
-
-          <div class="margin-bottom-small">
-            <label>{{ $t("header_left") }}</label>
-            <input
-              class="input-large"
-              type="text"
-              v-model="new_header_left"
-              @change="updatePublicationOption($event, 'header_left')"
-              :readonly="read_only"
-            />
-          </div>
-
-          <div class="margin-bottom-small">
-            <label>{{ $t("header_right") }}</label>
-            <input
-              class="input-large"
-              type="text"
-              v-model="new_header_right"
-              @change="updatePublicationOption($event, 'header_right')"
-              :readonly="read_only"
-            />
-          </div>
-
-          <hr />
-
-          <div class="margin-bottom-small">
-            <label>{{ $t("width") }}(mm)</label>
-            <input
-              type="number"
-              min="1"
-              max="1000"
-              step="1"
-              v-model="new_width"
-              @input="updatePublicationOption($event, 'width')"
-            />
-          </div>
-
-          <div class="margin-bottom-small">
-            <label>{{ $t("height") }}(mm)</label>
-            <input
-              type="number"
-              min="1"
-              max="1000"
-              step="1"
-              v-model="new_height"
-              @input="updatePublicationOption($event, 'height')"
-            />
-          </div>
-
-          <div class="margin-bottom-small">
-            <label>{{ $t("gridstep") }}(mm)</label>
-            <input
-              type="number"
-              min="1"
-              max="100"
-              step="1"
-              v-model="new_gridstep"
-              @input="updatePublicationOption($event, 'gridstep')"
-            />
-            <span class="switch switch-xs">
-              <input
-                type="checkbox"
-                class="switch"
-                id="favFilter"
-                v-model="new_snap_to_grid"
-                @change="
-                  updatePublicationOption(new_snap_to_grid, 'snap_to_grid')
-                "
-                :readonly="read_only"
-              />
-              <label for="favFilter">{{ $t("snap_to_grid") }}</label>
-            </span>
-          </div>
-
-          <hr />
-
-          <div class="margin-bottom-small">
-            <label>{{ $t("margin_top") }}(mm)</label>
-            <input
-              type="number"
-              min="0"
-              max="100"
-              step="1"
-              v-model="new_margin_top"
-              @input="updatePublicationOption($event, 'margin_top')"
-            />
-          </div>
-          <div class="margin-bottom-small">
-            <label>{{ $t("margin_bottom") }}(mm)</label>
-            <input
-              type="number"
-              min="0"
-              max="100"
-              step="1"
-              v-model="new_margin_bottom"
-              @input="updatePublicationOption($event, 'margin_bottom')"
-            />
-          </div>
-          <div class="margin-bottom-small">
-            <label>{{ $t("margin_left") }}(mm)</label>
-            <input
-              type="number"
-              min="0"
-              max="100"
-              step="1"
-              v-model="new_margin_left"
-              @input="updatePublicationOption($event, 'margin_left')"
-            />
-          </div>
-          <div class="margin-bottom-small">
-            <label>{{ $t("margin_right") }}(mm)</label>
-            <input
-              type="number"
-              min="0"
-              max="100"
-              step="1"
-              v-model="new_margin_right"
-              @input="updatePublicationOption($event, 'margin_right')"
-            />
-          </div>
-
-          <hr />
-
-          <div class="margin-bottom-small">
-            <label for="show_page_number">{{ $t("show_page_numbers") }}</label>
-            <input
-              id="show_page_number"
-              type="checkbox"
-              v-model="new_show_page_number"
-              @change="
-                updatePublicationOption(
-                  new_show_page_number,
-                  'show_page_number'
-                )
-              "
-            />
-          </div>
-        </template>
+        <SettingsPane
+          v-if="page_settings_panel"
+          :slugPubliName="slugPubliName"
+          :publication="publication"
+          :publications_options="publications_options"
+        />
       </div>
       <div class="m_publicationNavMenu--buttonRow" v-if="!contact_sheet_mode">
         <button
@@ -383,7 +243,7 @@
           {{ $t("previous_page") }}
         </button>
         <div class="font-small">
-          {{ $t("current_page") }}: {{ opened_page_index + 1 }}
+          <span v-html="$t('current_page:') + ' ' + (opened_page_index + 1)" />
         </div>
 
         <button
@@ -436,6 +296,10 @@
             v-for="(page, pageNumber) in pagesWithDefault"
             :key="page.id"
             @mouseenter="show_buttons = page.id"
+            @mouseleave="
+              event =>
+                event.relatedTarget === null ? '' : (show_buttons = false)
+            "
           >
             <PagePublicationSinglePage
               :key="page.id"
@@ -501,6 +365,7 @@
                     <button
                       type="button"
                       class="buttonLink"
+                      v-if="pagesWithDefault.length > 1"
                       @click="show_advanced_option = 'move'"
                     >
                       {{ $t("move") }}
@@ -559,7 +424,7 @@
                       <button
                         type="submit"
                         v-html="$t('duplicate')"
-                        class="bg-bleuvert"
+                        class="button button-greenthin"
                       />
                     </form>
                   </template>
@@ -605,6 +470,8 @@
             class="m_publicationview--pages--contactSheet--pages--page"
             v-for="(page, pageNumber) in removedPagesWithDefault"
             :key="page.id"
+            @mouseenter="show_restore_options = page.id"
+            @mouseleave="show_restore_options = false"
           >
             <PagePublicationSinglePage
               :mode="'contact_sheet'"
@@ -620,6 +487,7 @@
 
             <div
               class="m_publicationview--pages--contactSheet--pages--page--buttons"
+              v-if="show_restore_options === page.id"
             >
               <!-- <button
                 type="button"
@@ -729,6 +597,7 @@
 import PublicationHeader from "../subcomponents/PublicationHeader.vue";
 import ExportPagePubli from "../modals/ExportPagePubli.vue";
 import PagePublicationSinglePage from "./PagePublicationSinglePage.vue";
+import SettingsPane from "./SettingsPane.vue";
 
 export default {
   props: {
@@ -739,7 +608,8 @@ export default {
   components: {
     PublicationHeader,
     ExportPagePubli,
-    PagePublicationSinglePage
+    PagePublicationSinglePage,
+    SettingsPane
   },
   data() {
     return {
@@ -763,22 +633,9 @@ export default {
 
       show_removed_pages: false,
       show_buttons: false,
+      show_restore_options: false,
 
       page_settings_panel: false,
-
-      new_width: 0,
-      new_height: 0,
-      new_template: "",
-      new_style: "",
-      new_gridstep: 0,
-      new_snap_to_grid: false,
-      new_margin_left: 0,
-      new_margin_top: 0,
-      new_margin_right: 0,
-      new_margin_bottom: 0,
-      new_header_left: "",
-      new_header_right: "",
-      new_show_page_number: false,
 
       id_of_page_opened: false,
       contact_sheet_mode: true,
@@ -790,8 +647,8 @@ export default {
       // preview_mode: false,
       fullscreen_mode: false,
       zoom: 1,
-      zoom_min: 0.4,
-      zoom_max: 1.4,
+      zoom_min: 0.2,
+      zoom_max: 2,
 
       pixelsPerMillimeters: 0,
       has_media_selected: false,
@@ -810,10 +667,10 @@ export default {
     );
     document.addEventListener("keyup", this.publicationKeyListener);
     this.updateMediasPubli();
+
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty("mmMeasurer")
       ? this.$refs.mmMeasurer.offsetWidth / 10
-      : 38;
-    this.updatePubliOptionsInFields();
+      : 3.8;
 
     this.$nextTick(() => {
       this.updatePageSizeAccordingToPanel();
@@ -858,7 +715,6 @@ export default {
         if (this.$root.state.dev_mode === "debug") {
           console.log(`WATCH • Publication: publications_options`);
         }
-        this.updatePubliOptionsInFields();
         document.getElementsByTagName("body")[0].style = `
           --page-width: ${this.publications_options.width}mm;
           --page-height: ${this.publications_options.height}mm
@@ -1321,6 +1177,8 @@ export default {
         : [];
       pages.splice(index_of_page_to_copy + 1, 0, page_to_copy);
 
+      this.show_buttons = false;
+
       this.$root.editFolder({
         type: "publications",
         slugFolderName: slugPubliName_to_copy_to,
@@ -1344,8 +1202,6 @@ export default {
           }
         });
       });
-
-      this.show_buttons = false;
 
       // TODO : same publi or another one
     },
@@ -1382,24 +1238,6 @@ export default {
       //   () => {}
       // );
     },
-    updatePubliOptionsInFields() {
-      this.new_width = this.publications_options.width;
-      this.new_height = this.publications_options.height;
-
-      this.new_template = this.publication.template;
-      this.new_style = this.publications_options.style;
-
-      this.new_gridstep = this.publications_options.gridstep;
-      this.new_snap_to_grid = this.publications_options.snap_to_grid;
-      this.new_margin_left = this.publications_options.margin_left;
-      this.new_margin_right = this.publications_options.margin_right;
-      this.new_margin_top = this.publications_options.margin_top;
-      this.new_margin_bottom = this.publications_options.margin_bottom;
-      this.new_header_left = this.publications_options.header_left;
-      this.new_header_right = this.publications_options.header_right;
-      this.new_show_page_number = this.publications_options.show_page_number;
-    },
-
     publicationKeyListener(evt) {
       switch (evt.key) {
         case "p":
@@ -1441,28 +1279,6 @@ export default {
         this.updatePageSizeAccordingToPanel();
       }, 500);
     },
-    updatePublicationOption(event, type) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(
-          `METHODS • Publication: updatePublicationOption with type = ${type} and value = ${event}`
-        );
-      }
-
-      let val = "";
-      if (typeof event === "object") {
-        val = event.target.value;
-      } else {
-        val = event;
-      }
-
-      this.$root.editFolder({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        data: {
-          [type]: val
-        }
-      });
-    },
     updatePageSizeAccordingToPanel() {
       const panel_width = this.$refs.panel.offsetWidth;
       const current_page_el = this.$refs.current_page;
@@ -1479,4 +1295,4 @@ export default {
   }
 };
 </script>
-<style></style>
+<style lang="scss" scoped></style>

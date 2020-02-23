@@ -105,9 +105,9 @@ module.exports = (function() {
       oc: "Data de mandadís",
       de: "Versanddatum"
     },
-    belongs_to_project: {
-      fr: "Appartient au projet",
-      en: "Belongs to project"
+    attached_to_project: {
+      fr: "Rattachée au projet",
+      en: "Attached to project"
     },
     type: {
       fr: "Type",
@@ -178,6 +178,18 @@ module.exports = (function() {
       nl: "effen",
       oc: "Lissatge",
       de: "Glättungmodus"
+    },
+    custom: {
+      fr: "Personnalisé",
+      en: "Custom"
+    },
+    header: {
+      fr: "En-tête",
+      en: "Header"
+    },
+    sizes_and_margins: {
+      fr: "Tailles et marges",
+      en: "Sizes and margins"
     },
     onion_skin: {
       fr: "Pelure d’oignon",
@@ -427,6 +439,10 @@ module.exports = (function() {
       oc: "Afichar tot",
       de: "Zeige alles"
     },
+    all: {
+      fr: "Tous",
+      en: "All"
+    },
     cooking_pot_instructions: {
       fr: "Mélangez des médias pour en créer de nouveaux !",
       en: "Mix a single or multiple medias to create new medias!",
@@ -505,6 +521,10 @@ module.exports = (function() {
       nl: "stijl",
       oc: "estil",
       de: "Stil"
+    },
+    show_recipes_for_project_first: {
+      fr: "Afficher en premier les recettes liées au projet",
+      en: "Show recipes attached to this project first"
     },
     css: {
       fr: "css",
@@ -664,6 +684,14 @@ module.exports = (function() {
       nl: "Portret",
       oc: "Retrach",
       de: "Porträt"
+    },
+    image_ratio_portrait: {
+      fr: "Portrait",
+      en: "Portrait"
+    },
+    image_ratio_landscape: {
+      fr: "Paysage",
+      en: "Landscape"
     },
     nfc_tag: {
       fr: "Tag NFC",
@@ -2139,9 +2167,9 @@ module.exports = (function() {
       fr: "Page précédente",
       en: "Previous page"
     },
-    current_page: {
-      fr: "Numéro de page actuelle",
-      en: "Current page number"
+    "current_page:": {
+      fr: "Page actuelle&nbsp;:",
+      en: "Current page:"
     },
     minimize_media: {
       fr: "Utiliser comme référence",

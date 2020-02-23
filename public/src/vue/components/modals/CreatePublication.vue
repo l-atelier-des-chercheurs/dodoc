@@ -36,9 +36,9 @@
       </div>-->
 
       <div class="margin-bottom-small">
-        <label>{{ $t("belongs_to_project") }}</label>
-        <select v-model="publi_belongs_to_project">
-          <option key="''" :value="''">—</option>
+        <label>{{ $t("attached_to_project") }}</label>
+        <select v-model="publidata.attached_to_project">
+          <option key="''" :value="''">** {{ $t("none") }} **</option>
           <option
             v-for="project in $root.projects_that_are_accessible"
             :key="project.slugFolderName"
@@ -111,9 +111,9 @@ export default {
         keywords: [],
         authors: this.$root.settings.current_author.hasOwnProperty("name")
           ? [{ name: this.$root.settings.current_author.name }]
-          : []
-      },
-      publi_belongs_to_project: this.$root.do_navigation.current_slugProjectName
+          : [],
+        attached_to_project: this.$root.do_navigation.current_slugProjectName
+      }
     };
   },
   watch: {
@@ -159,7 +159,8 @@ export default {
         password: this.publidata.password,
         template: this.publidata.template,
         authors: this.publidata.authors,
-        keywords: this.publidata.keywords
+        keywords: this.publidata.keywords,
+        attached_to_project: this.publidata.attached_to_project
       };
 
       if (publidata.template === "page_by_page") {

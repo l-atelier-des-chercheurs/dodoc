@@ -1,23 +1,37 @@
 <template>
-  <div>
+  <tr @click="openPublication">
     <td>{{ publication.name }}</td>
     <td width="150px">
       <small>
-        {{
-        $root.formatDateToHuman(publication.date_created)
-        }}
+        {{ $root.formatDateToHuman(publication.date_created) }}
       </small>
     </td>
-
+    <td class="font-folder_title">
+      <template v-if="attached_project">
+        {{ attached_project.name }}
+      </template>
+      <template v-else>
+        —
+      </template>
+    </td>
     <td>
-      <button type="button" v-if="can_access_publi" @click="openPublication">{{ $t('open') }}</button>
+      <button
+        type="button"
+        class="buttonLink"
+        v-if="can_access_publi"
+        @click.stop="openPublication"
+      >
+        {{ $t("open") }}
+      </button>
 
       <button
         v-if="can_access_publi && publi_password"
         type="button"
-        class="_button_forgetpassword"
-        @click="forgetPassword"
-      >{{ $t("forget_password") }}</button>
+        class="buttonLink _button_forgetpassword"
+        @click.stop="forgetPassword"
+      >
+        {{ $t("forget_password") }}
+      </button>
 
       <button
         v-if="!can_access_publi"
@@ -26,22 +40,33 @@
         :class="{ 'is--active': show_input_pwd }"
         style
         :readonly="read_only"
-        @click="show_input_pwd = !show_input_pwd"
-      >{{ $t("password_required_to_open") }}</button>
+        @click.stop="show_input_pwd = !show_input_pwd"
+      >
+        {{ $t("password_required_to_open") }}
+      </button>
 
       <form
-        class="padding-small _pwd_input"
+        class="padding-verysmall _pwd_input"
         v-if="show_input_pwd && !can_access_publi"
         @submit.prevent="submitPassword"
       >
-        <div class="margin-bottom-small">
+        <div class="">
           <label>{{ $t("password") }}</label>
-          <input type="password" ref="passwordField" required autofocus placeholder="…" />
+          <input
+            type="password"
+            ref="passwordField"
+            required
+            autofocus
+            placeholder="…"
+          />
         </div>
-        <input type="submit" class="button button-bg_rounded bg-bleuvert margin-top-small" />
+        <input
+          type="submit"
+          class="button button-bg_rounded bg-bleuvert margin-top-small"
+        />
       </form>
     </td>
-  </div>
+  </tr>
 </template>
 <script>
 export default {
@@ -67,6 +92,11 @@ export default {
     }
   },
   computed: {
+    attached_project() {
+      return this.$root.projects_that_are_accessible.find(
+        _p => _p.slugFolderName === this.publication.attached_to_project
+      );
+    },
     slugPubliName() {
       return this.publication.slugFolderName;
     },
@@ -77,7 +107,6 @@ export default {
       });
     },
     publi_password() {
-      debugger;
       const pwds = this.$auth.getFoldersPasswords();
       if (
         pwds.hasOwnProperty("publications") &&
@@ -96,7 +125,7 @@ export default {
           `METHODS • Publication: openPublication / slugPubliName = ${slugPubliName}`
         );
 
-      this.$root.openPublication(this.slugPubliName);
+      if (this.can_access_publi) this.$root.openPublication(this.slugPubliName);
     },
     submitPassword() {
       console.log("METHODS • Publication: submitPassword");
@@ -143,4 +172,8 @@ export default {
   }
 };
 </script>
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.font-folder_title {
+  font-size: 70%;
+}
+</style>

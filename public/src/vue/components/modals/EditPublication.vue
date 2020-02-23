@@ -7,13 +7,13 @@
     :askBeforeClosingModal="askBeforeClosingModal"
   >
     <template slot="header">
-      <div class>{{ $t('edit_publication') }}</div>
+      <div class>{{ $t("edit_publication") }}</div>
     </template>
 
     <template slot="sidebar">
       <!-- Human name -->
       <div class="margin-bottom-small">
-        <label>{{ $t('name') }}</label>
+        <label>{{ $t("name") }}</label>
         <input
           class="input-big"
           type="text"
@@ -34,6 +34,19 @@
         </ImageSelect>
       </div>-->
 
+      <div class="margin-bottom-small">
+        <label>{{ $t("attached_to_project") }}</label>
+        <select v-model="publidata.attached_to_project">
+          <option key="''" :value="''">** {{ $t("none") }} **</option>
+          <option
+            v-for="project in $root.projects_that_are_accessible"
+            :key="project.slugFolderName"
+            :value="project.slugFolderName"
+            >{{ project.name }}</option
+          >
+        </select>
+      </div>
+
       <!-- Password -->
       <!-- <div class="margin-bottom-small">
         <label>{{ $t('password') }}</label>
@@ -43,26 +56,26 @@
 
       <!-- Keywords -->
       <div class="margin-bottom-small">
-        <label>{{ $t('keywords') }}</label>
+        <label>{{ $t("keywords") }}</label>
         <TagsInput
           :keywords="publidata.keywords"
-          @tagsChanged="newTags => publidata.keywords = newTags"
+          @tagsChanged="newTags => (publidata.keywords = newTags)"
         />
       </div>
 
       <!-- Author(s) -->
       <div class="margin-bottom-small">
-        <label>{{ $t('author') }}</label>
+        <label>{{ $t("author") }}</label>
         <br />
         <AuthorsInput
           :currentAuthors="publidata.authors"
-          @authorsChanged="newAuthors => publidata.authors = newAuthors"
+          @authorsChanged="newAuthors => (publidata.authors = newAuthors)"
         />
-        <small>{{ $t('author_instructions') }}</small>
+        <small>{{ $t("author_instructions") }}</small>
       </div>
     </template>
 
-    <template slot="submit_button">{{ $t('save') }}</template>
+    <template slot="submit_button">{{ $t("save") }}</template>
   </Modal>
 </template>
 <script>
@@ -88,6 +101,7 @@ export default {
     return {
       publidata: {
         name: this.publication.name,
+        attached_to_project: this.publication.attached_to_project,
         authors:
           typeof this.publication.authors === "string" &&
           this.publication.authors !== ""
@@ -155,5 +169,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>
