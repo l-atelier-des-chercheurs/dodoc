@@ -199,6 +199,7 @@
           </div>-->
           <button
             type="button"
+            class="buttonLink"
             v-if="!contact_sheet_mode"
             @click="showAllPages"
           >
@@ -233,6 +234,9 @@
           :publications_options="publications_options"
         />
       </div>
+
+      <hr v-if="!contact_sheet_mode" class="margin-none" />
+
       <div class="m_publicationNavMenu--buttonRow" v-if="!contact_sheet_mode">
         <button
           type="button"
@@ -242,8 +246,16 @@
           <img src="/images/i_arrow_left.svg" draggable="false" />
           {{ $t("previous_page") }}
         </button>
-        <div class="font-small">
-          <span v-html="$t('current_page:') + ' ' + (opened_page_index + 1)" />
+        <div class="font-small text-lc">
+          <span
+            v-html="
+              $t('current_page:') +
+                ' ' +
+                (opened_page_index + 1) +
+                '/' +
+                this.pagesWithDefault.length
+            "
+          />
         </div>
 
         <button
