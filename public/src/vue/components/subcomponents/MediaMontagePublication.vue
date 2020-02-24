@@ -20,6 +20,7 @@
     />
 
     <p class="mediaCaption">{{ media.caption }}</p>
+    {{ media }}
 
     <hr />
     <div class="m_metaField">

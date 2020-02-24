@@ -851,32 +851,48 @@ module.exports = (function() {
       de: "Schliessen"
     },
     very_high: {
-      fr: "Très élevée (1080p)",
-      en: "Very high (1080p)",
-      nl: "Zeer hoog (1080p)",
-      oc: "Fòrça nauta (1080p)",
-      de: "Hochragend (1080p)"
+      fr: "Très élevée",
+      en: "Very high",
+      nl: "Zeer hoog",
+      oc: "Fòrça nauta",
+      de: "Hochragend"
     },
     high: {
-      fr: "Élevée (720p)",
-      en: "High (1080p)",
-      nl: "Hoog (720p)",
+      fr: "Élevée",
+      en: "High",
+      nl: "Hoog",
       oc: "Nauta",
-      de: "Hochgezogen (720p)"
+      de: "Hochgezogen"
     },
     medium: {
-      fr: "Moyenne (640p)",
-      en: "Medium (640p)",
-      nl: "Medium (640p)",
-      oc: "Mejana (640p)",
-      de: "Mittelgrösse (640p)"
+      fr: "Moyenne",
+      en: "Medium",
+      nl: "Medium",
+      oc: "Mejana",
+      de: "Mittelgrösse"
     },
     low: {
-      fr: "Basse (360p)",
-      en: "Low (360p)",
-      nl: "Laag (360p)",
-      oc: "Bassa (360p)",
-      de: "Niedrig (360p)"
+      fr: "Basse",
+      en: "Low",
+      nl: "Laag",
+      oc: "Bassa",
+      de: "Niedrig"
+    },
+    draft: {
+      fr: "Ébauche",
+      en: "Draft"
+    },
+    video_export_draft_instructions: {
+      fr:
+        "Ce mode permet de rapidement tester le rendu d’un recette pour tester le rythme et les niveaux sonores, au détriment de la qualité de l’image. La vidéo résultante ne pourra pas être enregistré.",
+      en:
+        "This mode is the most convenient to test the rythm and the audio levels, with a mediocre image quality. The resulting video cannot be saved."
+    },
+    video_export_custom_quality_instructions: {
+      fr:
+        "Réglez ci-dessous la largeur × la hauteur, en pixels. Utilisez uniquement des valeurs entières et paires.",
+      en:
+        "Set custom width × height in the following fields, in pixels. Use only whole, even values."
     },
     showing: {
       fr: "Affichage de",

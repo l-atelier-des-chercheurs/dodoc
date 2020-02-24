@@ -4400,7 +4400,7 @@ small {
   .m_stopmotionAnimationPublication {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    grid-gap: 2rem;
+    grid-gap: 1rem;
 
     // grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     // grid-auto-rows: 20px;
@@ -4411,6 +4411,7 @@ small {
     margin: 0 auto;
     .margin-vert-small;
     max-width: 1024px;
+    width: 100%;
 
     counter-reset: compteListe;
 
@@ -4425,7 +4426,9 @@ small {
       .bg-blanc;
       .padding-verysmall;
       .margin-vert-small;
+      .boxs-card-1;
       flex: 0 0 160px;
+      border-radius: @t-buttonradius;
       // margin-left: -@t-buttonradius;
       // margin-right: -@t-buttonradius;
       // flex: 0 0 100px;
@@ -4449,14 +4452,14 @@ small {
         border-radius: 5px 0 5px 0;
       }
 
-      &:first-child {
-        border-top-left-radius: @t-buttonradius;
-        border-bottom-left-radius: @t-buttonradius;
-      }
-      &:last-child {
-        border-top-right-radius: @t-buttonradius;
-        border-bottom-right-radius: @t-buttonradius;
-      }
+      // &:first-child {
+      //   border-top-left-radius: @t-buttonradius;
+      //   border-bottom-left-radius: @t-buttonradius;
+      // }
+      // &:last-child {
+      //   border-top-right-radius: @t-buttonradius;
+      //   border-bottom-right-radius: @t-buttonradius;
+      // }
     }
   }
 
@@ -4492,6 +4495,7 @@ small {
       .padding-small;
       .margin-small;
       .bg-blanc;
+      .boxs-card-1;
       border-radius: 4px;
 
       .m_metaField {

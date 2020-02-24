@@ -280,7 +280,7 @@ module.exports = (function() {
           });
       });
     },
-    makeVideoForPubli: ({ slugPubliName, socket }) => {
+    makeVideoForPubli: ({ slugPubliName, socket, options }) => {
       return new Promise(function(resolve, reject) {
         const videoName =
           slugPubliName +
@@ -298,6 +298,21 @@ module.exports = (function() {
 
         let type_of_publication = "";
 
+        let resolution = {
+          width: 1280,
+          height: 720
+        };
+        if (options.hasOwnProperty("resolution")) {
+          if (options.resolution.hasOwnProperty("width"))
+            resolution.width = options.resolution.width;
+          if (options.resolution.hasOwnProperty("height"))
+            resolution.height = options.resolution.height;
+        }
+
+        let bitrate = options.hasOwnProperty("bitrate")
+          ? options.bitrate
+          : "6000k";
+
         loadPublication(slugPubliName, {})
           .then(pageData => {
             type_of_publication =
@@ -314,6 +329,8 @@ module.exports = (function() {
                   medias_with_original_filepath,
                   cachePath,
                   videoName,
+                  resolution,
+                  bitrate,
                   socket
                 })
                   .then(() => {
@@ -414,12 +431,6 @@ module.exports = (function() {
 
                   const new_width = 2 * Math.round(video_height / ratio / 2);
                   resolution.width = new_width;
-
-                  // set resolution to fixed size : 1280 / 720
-                  // resolution = {
-                  //   width: 1280,
-                  //   height: 720
-                  // };
 
                   return _loadMediaFilenameFromPublicationSlugs(
                     slugPubliName,
@@ -733,6 +744,8 @@ module.exports = (function() {
     medias_with_original_filepath,
     cachePath,
     videoName,
+    resolution,
+    bitrate,
     socket
   }) {
     return new Promise(function(resolve, reject) {
@@ -747,10 +760,6 @@ module.exports = (function() {
         return reject(`No files to process`);
 
       let tasks = [];
-      const resolution = {
-        width: 1280,
-        height: 720
-      };
 
       // tasks.push(new Promise((resolve, reject) => {
       //   setTimeout(() => {
@@ -769,6 +778,7 @@ module.exports = (function() {
             vm,
             cachePath,
             resolution,
+            bitrate,
             socket
           })
             .then(temp_video_path => {
@@ -795,6 +805,7 @@ module.exports = (function() {
             vm,
             cachePath,
             resolution,
+            bitrate,
             socket
           })
             .then(temp_video_path => {
@@ -830,7 +841,7 @@ module.exports = (function() {
 
         temp_videos_array.map(v => ffmpeg_cmd.addInput(v.full_path));
 
-        ffmpeg_cmd.addOptions(["-preset fast"]);
+        ffmpeg_cmd.withVideoBitrate(bitrate);
 
         // let time_since_last_report = 0;
         ffmpeg_cmd
@@ -1024,6 +1035,7 @@ module.exports = (function() {
     vm,
     cachePath,
     resolution,
+    bitrate,
     socket
   }) {
     return new Promise(function(resolve, reject) {
@@ -1031,7 +1043,15 @@ module.exports = (function() {
 
       dev.logfunction("EXPORTER — _prepareVideoForMontageAndWeb");
 
-      let temp_video_name = vm.media_filename + ".ts";
+      let temp_video_name =
+        vm.media_filename +
+        "_res=" +
+        resolution.width +
+        "x" +
+        resolution.height +
+        "_br=" +
+        bitrate +
+        ".ts";
       let temp_video_duration;
       let temp_video_volume;
 
@@ -1043,13 +1063,31 @@ module.exports = (function() {
           temp_video_duration = 1;
         }
         temp_video_name =
-          vm.media_filename + "_duration=" + temp_video_duration + ".ts";
+          vm.media_filename +
+          "_dur=" +
+          temp_video_duration +
+          "_res=" +
+          resolution.width +
+          "x" +
+          resolution.height +
+          "_br=" +
+          bitrate +
+          ".ts";
       }
 
       if (vm.type === "video" && vm.publi_meta.hasOwnProperty("volume")) {
         temp_video_volume = vm.publi_meta.volume / 100;
         temp_video_name =
-          vm.media_filename + "_volume=" + temp_video_volume + ".ts";
+          vm.media_filename +
+          "_volume=" +
+          temp_video_volume +
+          "_res=" +
+          resolution.width +
+          "x" +
+          resolution.height +
+          "_br=" +
+          bitrate +
+          ".ts";
       }
 
       const temp_video_path = path.join(cachePath, temp_video_name);
@@ -1090,11 +1128,11 @@ module.exports = (function() {
               .native()
               .outputFPS(30)
               .withVideoCodec("libx264")
-              .withVideoBitrate("6000k")
+              .withVideoBitrate(bitrate)
               .withAudioCodec("aac")
               .withAudioBitrate("128k")
               .videoFilter([
-                `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=1280:720:(ow-iw)/2:(oh-ih)/2`
+                `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`
               ])
               .addOptions([
                 "-crf 22",
@@ -1102,6 +1140,7 @@ module.exports = (function() {
                 "-shortest",
                 "-bsf:v h264_mp4toannexb"
               ])
+              .videoFilter(["setsar=1/1"])
               .toFormat("mpegts")
               .output(temp_video_path)
               .on("start", function(commandLine) {
@@ -1133,6 +1172,7 @@ module.exports = (function() {
     vm,
     cachePath,
     resolution,
+    bitrate,
     socket
   }) {
     return new Promise(function(resolve, reject) {
@@ -1152,7 +1192,16 @@ module.exports = (function() {
         temp_video_duration = 1;
       }
       temp_video_name =
-        vm.media_filename + "_duration=" + temp_video_duration + ".ts";
+        vm.media_filename +
+        "_dur=" +
+        temp_video_duration +
+        "_res=" +
+        resolution.width +
+        "x" +
+        resolution.height +
+        "_br=" +
+        bitrate +
+        ".ts";
 
       const temp_video_path = path.join(cachePath, temp_video_name);
       const temp_image_path = path.join(cachePath, temp_image_name);
@@ -1192,13 +1241,13 @@ module.exports = (function() {
                 .native()
                 .outputFPS(30)
                 .withVideoCodec("libx264")
-                .withVideoBitrate("6000k")
+                .withVideoBitrate(bitrate)
                 .withAudioCodec("aac")
                 .withAudioBitrate("128k")
                 .addOptions(["-af apad"])
                 .size(`${resolution.width}x${resolution.height}`)
                 .autopad()
-                .videoFilter(["setsar=1"])
+                .videoFilter(["setsar=1/1"])
                 .addOptions(["-shortest", "-bsf:v h264_mp4toannexb"])
                 .toFormat("mpegts")
                 .output(temp_video_path)
