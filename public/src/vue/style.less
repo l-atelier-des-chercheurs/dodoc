@@ -3997,7 +3997,7 @@ small {
 
   .m_publicationNavMenu {
     position: relative;
-    z-index: 10;
+    // z-index: 10;
     // bottom: 00px;
     // left: 0px;
     // right: 0;
@@ -4010,25 +4010,6 @@ small {
 
     // .boxs-card-1;
     box-shadow: 0 4px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-
-    button {
-      display: flex;
-      flexflow: row nowrap;
-      font-size: 80%;
-
-      justify-content: center;
-      align-items: center;
-      min-height: 0;
-
-      > * {
-        margin: 0;
-      }
-
-      img {
-        width: 30px;
-        height: 30px;
-      }
-    }
 
     > *:not(:last-child) {
       border-radius: 0;
@@ -4130,17 +4111,37 @@ small {
     }
 
     .m_publicationNavMenu--buttonRow {
-      border-top: 1px solid @c-noir;
-      .margin-sides-medium;
+      // border-top: 1px solid @c-noir;
+      // .margin-sides-medium;
       .padding-verysmall;
 
       display: flex;
       flex-flow: row nowrap;
+      justify-content: space-between;
       align-items: center;
       text-align: center;
 
+      font-size: 80%;
+
       > * {
-        flex: 1 1 auto;
+        // flex: 1 1 auto;
+      }
+
+      button {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        align-items: center;
+        min-height: 0;
+
+        > * {
+          margin: 0;
+        }
+
+        img {
+          width: 30px;
+          height: 30px;
+        }
       }
     }
   }
