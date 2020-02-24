@@ -84,6 +84,10 @@ module.exports = (function() {
       oc: "Importacion",
       de: "Import"
     },
+    no_media_on_this_page: {
+      fr: "Aucun média à afficher sur cette page",
+      en: "No media on this page"
+    },
     created: {
       fr: "Création",
       en: "Created",

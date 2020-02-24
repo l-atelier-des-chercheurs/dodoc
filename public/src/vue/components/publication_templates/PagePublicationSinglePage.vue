@@ -41,7 +41,7 @@
       </div>
 
       <div v-if="publication_medias.length === 0" class="m_page--noMedia">
-        No media on this page
+        {{ $t("no_media_on_this_page") }}
       </div>
 
       <div
