@@ -16,7 +16,7 @@
 
         <div
           class="m_page--grid"
-          v-if="page.gridstep && page.gridstep > 0"
+          v-if="!!page.gridstep && page.gridstep > 0"
           :style="
             `--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`
           "
@@ -33,7 +33,10 @@
       </div>
 
       <div
-        v-if="!page.hasOwnProperty('show_page_number') || page.show_page_number"
+        v-if="
+          pageNumber >= 0 &&
+            (!page.hasOwnProperty('show_page_number') || page.show_page_number)
+        "
         class="m_page--pageNumber"
         :class="{ toRight: true }"
       >
@@ -80,7 +83,10 @@ export default {
     mode: String,
     preview_mode: Boolean,
     slugPubliName: String,
-    pageNumber: Number,
+    pageNumber: {
+      type: Number,
+      default: -1
+    },
     page: Object,
     publication_medias: {
       type: Array,
@@ -99,7 +105,8 @@ export default {
   created() {},
   mounted() {
     if (this.mode === "single") {
-      this.$root.settings.current_publication.page_id = this.page.id;
+      if (this.page.hasOwnProperty("id"))
+        this.$root.settings.current_publication.page_id = this.page.id;
       this.$root.settings.current_publication.accepted_media_type = [
         "image",
         "video",

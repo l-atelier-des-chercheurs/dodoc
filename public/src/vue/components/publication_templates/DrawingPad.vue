@@ -11,15 +11,27 @@
       @export="show_export_modal = true"
     />
 
+    <!-- <pre>{{ publication_medias }}</pre> -->
+
     <div class="m_drawingPad">
+      <PagePublicationSinglePage
+        :mode="'export'"
+        :preview_mode="false"
+        :slugPubliName="slugPubliName"
+        :page="page"
+        :publication_medias="publication_medias"
+        :read_only="read_only"
+        :pixelsPerMillimeters="1"
+        :zoom="1"
+      />
       <PadSurface />
     </div>
   </div>
 </template>
 <script>
-import MediaContent from "../subcomponents/MediaContent.vue";
-import ExportVideoPubliModal from "../modals/ExportVideoPubliModal.vue";
+import PublicationHeader from "../subcomponents/PublicationHeader.vue";
 import PadSurface from "../subcomponents/PadSurface.vue";
+import PagePublicationSinglePage from "./PagePublicationSinglePage.vue";
 
 export default {
   props: {
@@ -28,33 +40,33 @@ export default {
     read_only: Boolean
   },
   components: {
-    MediaContent,
-    ExportVideoPubliModal,
-    PadSurface
+    PublicationHeader,
+    PadSurface,
+    PagePublicationSinglePage
   },
   data() {
     return {
       show_export_modal: false,
       publication_medias: [],
-      medias_slugs_in_order: []
+      accepted_media_type: ["audio", "video"]
     };
   },
   created() {},
   mounted() {
-    this.$root.settings.current_publication.accepted_media_type = ["image"];
+    this.$root.settings.current_publication.accepted_media_type = [
+      "image",
+      "video",
+      "audio",
+      "text",
+      "document",
+      "other"
+    ];
 
     this.$eventHub.$on("publication.addMedia", this.addMedia);
     this.$eventHub.$on(
       "socketio.projects.listSpecificMedias",
       this.updateMediasPubli
     );
-
-    if (
-      this.publication.hasOwnProperty("medias_slugs") &&
-      this.publication.medias_slugs.length > 0
-    ) {
-      this.medias_slugs_in_order = this.publication.medias_slugs;
-    }
 
     this.updateMediasPubli();
   },
@@ -82,43 +94,32 @@ export default {
         this.updateMediasPubli();
       },
       deep: true
-    },
-    "publication.medias_slugs": function() {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`WATCH • Publication: publication.medias_slugs`);
-      }
-      this.medias_slugs_in_order =
-        typeof this.publication.medias_slugs === "object"
-          ? this.publication.medias_slugs
-          : [];
-      this.updateMediasPubli();
     }
   },
-  computed: {},
+  computed: {
+    page() {
+      return {
+        margin_left: 0,
+        margin_right: 0,
+        margin_top: 0,
+        margin_bottom: 0,
+        width: 1024,
+        height: 768
+      };
+    }
+  },
   methods: {
     addMedia({ slugProjectName, metaFileName }) {
       if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • Publication: addMedia with 
+        console.log(`METHODS • DrawingPad: addMedia with 
         slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
       }
 
       const desired_filename = metaFileName;
 
-      this.$eventHub.$on("socketio.media_created_or_updated", d => {
-        this.$eventHub.$off("socketio.media_created_or_updated");
-
-        this.medias_slugs_in_order.push({
-          slugMediaName: d.metaFileName
-        });
-
-        this.$root.editFolder({
-          type: "publications",
-          slugFolderName: this.slugPubliName,
-          data: {
-            medias_slugs: this.medias_slugs_in_order
-          }
-        });
-      });
+      // this.$eventHub.$on("socketio.media_created_or_updated", d => {
+      //   this.$eventHub.$off("socketio.media_created_or_updated");
+      // });
 
       this.$root.createMedia({
         slugFolderName: this.slugPubliName,
@@ -133,7 +134,7 @@ export default {
     removePubliMedia({ slugMediaName }) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
-          `METHODS • Publication: removeMedia / slugMediaName = ${slugMediaName}`
+          `METHODS • DrawingPad: removeMedia / slugMediaName = ${slugMediaName}`
         );
       }
 
@@ -141,18 +142,6 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         slugMediaName
-      });
-
-      this.medias_slugs_in_order = this.medias_slugs_in_order.filter(
-        m => m.slugMediaName !== slugMediaName
-      );
-
-      this.$root.editFolder({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        data: {
-          medias_slugs: this.medias_slugs_in_order
-        }
       });
     },
     updateMediasPubli() {
@@ -172,22 +161,7 @@ export default {
       let publi_medias = [];
       let missingMedias = [];
 
-      if (this.medias_slugs_in_order.length === 0) {
-        this.publication_medias = [];
-        return;
-      }
-
-      this.medias_slugs_in_order.map(item => {
-        const metaFileName = item.slugMediaName;
-
-        if (!this.publication.medias.hasOwnProperty(metaFileName)) {
-          // error : a media referenced in medias_slugs is not in this.publication.medias
-          return;
-        }
-
-        const _media = this.publication.medias[metaFileName];
-
-        // for each, get slugFolderName and metaFileName
+      Object.values(this.publication.medias).map(_media => {
         if (
           !_media.hasOwnProperty("slugProjectName") ||
           !_media.hasOwnProperty("metaFileName")
