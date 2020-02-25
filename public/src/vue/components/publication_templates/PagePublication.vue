@@ -656,7 +656,6 @@ export default {
       show_advanced_option: false,
 
       preview_mode: this.$root.state.mode !== "live",
-      // preview_mode: false,
       fullscreen_mode: false,
       zoom: 1,
       zoom_min: 0.2,
@@ -1133,9 +1132,8 @@ export default {
       this.publication_medias = medias_paginated;
     },
     insertPageAtIndex(index) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • Publication: insertPageAtIndex ${index}`);
-      }
 
       // insert page in page array
       let pages = [];

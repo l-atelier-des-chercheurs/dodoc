@@ -250,6 +250,9 @@
         "removed_pages": {
           "type": "array"
         },
+        "layers": {
+          "type": "array"
+        },
         "medias_slugs": {
           "type": "array"
         }
@@ -274,6 +277,9 @@
             "type": "string"
           },
           "page_id": {
+            "type": "string"
+          },
+          "layer_id": {
             "type": "string"
           },
           "duration": {

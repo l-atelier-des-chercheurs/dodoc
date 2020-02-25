@@ -174,6 +174,17 @@ export default {
         ];
         publidata.width = 210;
         publidata.height = 297;
+      } else if (publidata.template === "drawing_pad") {
+        publidata.layers = [
+          {
+            id:
+              +new Date() +
+              "_" +
+              (Math.random().toString(36) + "00000000000000000").slice(2, 3)
+          }
+        ];
+        publidata.width = 200;
+        publidata.height = 150;
       }
 
       this.$eventHub.$on(

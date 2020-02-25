@@ -236,6 +236,14 @@ module.exports = (function() {
       fr: "Nom du nouveau dossier&nbsp;:",
       en: "Name of the new folder:"
     },
+    layers: {
+      fr: "Calques",
+      en: "Layers"
+    },
+    select_layer_to_add_media_to: {
+      fr: "Sélectionnez d’abord le calque sur lequel placer le média",
+      en: "Select first the layer the media will be on"
+    },
     input_password: {
       fr: "Renseigner le mot de passe ci-dessous :",
       en: "Input the password here:",
