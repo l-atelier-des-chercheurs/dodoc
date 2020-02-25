@@ -750,6 +750,11 @@ body {
     cursor: -moz-grabbing;
   }
 
+  &:hover,
+  &:active {
+    .bg-bleuvert_fonce;
+  }
+
   > * {
     pointer-events: none;
   }
@@ -1184,6 +1189,12 @@ small {
           font-weight: 600;
           color: @c-noir;
           text-align: left;
+
+          &:hover,
+          &:active {
+            color: @c-gris_fonce;
+            background-color: transparent;
+          }
         }
         .input-selector {
           margin: 0;
@@ -4009,7 +4020,7 @@ small {
     padding-top: 0;
     .font-verysmall;
     box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
-    max-height: 20vh;
+    max-height: 260px;
     .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
     overflow: auto;
     overscroll-behavior-y: contain;

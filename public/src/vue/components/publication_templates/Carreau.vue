@@ -332,7 +332,7 @@ export default {
       this.updatePageSizeAccordingToPanel
     );
 
-    this.$root.settings.current_publication.accepted_media_type = false;
+    this.$root.settings.current_publication.accepted_media_type = [];
   },
   watch: {
     "publication.medias": function() {

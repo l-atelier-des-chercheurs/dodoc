@@ -240,6 +240,26 @@ module.exports = (function() {
       fr: "Calques",
       en: "Layers"
     },
+    layer_name: {
+      fr: "Nom du calque",
+      en: "Layer name"
+    },
+    drawing_layer_1: {
+      fr: "Calque de dessin 1",
+      en: "Drawing layer 1"
+    },
+    layer_type: {
+      fr: "Type de calque",
+      en: "Layer type"
+    },
+    drawing_layer_instructions: {
+      fr: "Permet de dessiner, tracer des formes, etc.",
+      en: "Allows for the drawing of lines, geometric shapes, etc."
+    },
+    medias_layer_instructions: {
+      fr: "Permet de placer des médias (images, vidéos, etc.)",
+      en: "Allows the importation of medias (images, videos, etc.)"
+    },
     select_layer_to_add_media_to: {
       fr: "Sélectionnez d’abord le calque sur lequel placer le média",
       en: "Select first the layer the media will be on"
@@ -2089,6 +2109,10 @@ module.exports = (function() {
     drawing_pad: {
       fr: "Bloc dessin",
       en: "Drawing pad"
+    },
+    drawing: {
+      fr: "Dessin",
+      en: "Drawing"
     },
     drawing_pad_summary: {
       fr: "Dessinez, annotez, créez des visuels interactifs ou imprimables",

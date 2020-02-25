@@ -177,6 +177,8 @@ export default {
       } else if (publidata.template === "drawing_pad") {
         publidata.layers = [
           {
+            type: "drawing",
+            name: this.$t("drawing_layer_1"),
             id:
               +new Date() +
               "_" +

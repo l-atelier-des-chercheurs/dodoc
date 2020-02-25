@@ -262,15 +262,6 @@ export default {
     this.$root.setPublicationZoom(this.zoom);
   },
   mounted() {
-    this.$root.settings.current_publication.accepted_media_type = [
-      "image",
-      "video",
-      "audio",
-      "text",
-      "document",
-      "other"
-    ];
-
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty("mmMeasurer")
       ? this.$refs.mmMeasurer.offsetWidth / 10
       : 3.8;
@@ -302,8 +293,6 @@ export default {
       "socketio.projects.listSpecificMedias",
       this.updateMediasPubli
     );
-
-    this.$root.settings.current_publication.accepted_media_type = [];
   },
   watch: {
     "publication.medias": function() {

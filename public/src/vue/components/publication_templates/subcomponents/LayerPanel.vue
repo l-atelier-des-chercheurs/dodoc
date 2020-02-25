@@ -2,11 +2,50 @@
   <div class="m_layerPanel">
     <div class="m_layerPanel--topbar">
       <label>{{ $t("layers") }}</label>
-      <button type="button" class="buttonLink" @click="createLayer">
+      <button
+        type="button"
+        class="buttonLink"
+        :class="{ 'is--active': show_create_layer_modal }"
+        @click="show_create_layer_modal = !show_create_layer_modal"
+      >
         {{ $t("create") }}
       </button>
     </div>
+
+    <form
+      v-if="show_create_layer_modal"
+      class="m_layerPanel--createLayer padding-verysmall "
+      @submit.prevent="createLayer"
+    >
+      <div class="margin-bottom-small">
+        <label>{{ $t("layer_name") }}</label>
+        <input type="text" required autofocus v-model="new_layer_name" />
+      </div>
+
+      <div class="margin-bottom-small">
+        <label>{{ $t("layer_type") }}</label>
+        <select v-model="new_layer_type">
+          <option value="drawing">{{ $t("drawing") }}</option>
+          <option value="medias">{{ $t("medias") }}</option>
+        </select>
+        <small>
+          <template v-if="new_layer_type === 'drawing'">
+            {{ $t("drawing_layer_instructions") }}
+          </template>
+          <template v-else-if="new_layer_type === 'medias'">
+            {{ $t("medias_layer_instructions") }}
+          </template>
+        </small>
+      </div>
+
+      <input
+        type="submit"
+        class="button button-bg_rounded bg-bleuvert margin-top-small"
+        :disabled="!new_layer_name"
+      />
+    </form>
     <div
+      v-else
       v-for="layer in layers.slice().reverse()"
       :key="layer.id"
       class="m_layerPanel--layer"
@@ -44,22 +83,33 @@
         </svg>
       </button>
       <div class="">
-        <span class="text-ellipsis">{{ layer.id }}</span
+        <span class="text-ellipsis">{{ layer.name }}</span
         ><br />
-        <span v-if="publication_medias.hasOwnProperty(layer.id)" class="label">
-          <template v-if="publication_medias[layer.id].length === 1">
-            {{
-              publication_medias[layer.id].length +
-                " " +
-                $t("media").toLowerCase()
-            }}
+        <span class="label">
+          <template v-if="layer.type === 'drawing'">
+            {{ $t("drawing") }}
           </template>
-          <template v-else>
-            {{
-              publication_medias[layer.id].length +
-                " " +
-                $t("medias").toLowerCase()
-            }}
+
+          <template v-if="layer.type === 'medias'">
+            <template v-if="!publication_medias.hasOwnProperty(layer.id)">
+              {{ $t("media") }}
+            </template>
+            <template v-else>
+              <template v-if="publication_medias[layer.id].length === 1">
+                {{
+                  publication_medias[layer.id].length +
+                    " " +
+                    $t("media").toLowerCase()
+                }}
+              </template>
+              <template v-else>
+                {{
+                  publication_medias[layer.id].length +
+                    " " +
+                    $t("medias").toLowerCase()
+                }}
+              </template>
+            </template>
           </template>
         </span>
       </div>
@@ -103,7 +153,11 @@ export default {
   },
   components: {},
   data() {
-    return {};
+    return {
+      show_create_layer_modal: false,
+      new_layer_name: "",
+      new_layer_type: "drawing"
+    };
   },
   created() {},
   mounted() {
@@ -111,9 +165,36 @@ export default {
   },
   beforeDestroy() {
     this.$root.settings.current_publication.layer_id = false;
+    this.$root.settings.current_publication.accepted_media_type = [];
   },
-  watch: {},
-  computed: {},
+  watch: {
+    "$root.settings.current_publication.layer_id": function() {
+      if (this.current_layer && this.current_layer.type === "medias") {
+        this.$root.settings.current_publication.accepted_media_type = [
+          "image",
+          "video",
+          "audio",
+          "text",
+          "document",
+          "other"
+        ];
+      } else {
+        this.$root.settings.current_publication.accepted_media_type = [];
+      }
+    }
+  },
+  computed: {
+    current_layer() {
+      if (
+        !this.$root.settings.current_publication.layer_id ||
+        !Array.isArray(this.publication.layers)
+      )
+        return false;
+      return this.publication.layers.find(
+        l => l.id === this.$root.settings.current_publication.layer_id
+      );
+    }
+  },
   methods: {
     toggleActiveLayer(id) {
       if (id === this.$root.settings.current_publication.layer_id)
@@ -135,6 +216,8 @@ export default {
       const index = this.publication.layers.length + 1;
 
       layers.splice(index, 0, {
+        type: this.new_layer_type,
+        name: this.new_layer_name,
         id: this.generateID()
       });
 
@@ -145,6 +228,10 @@ export default {
           layers
         }
       });
+
+      this.new_layer_type = "medias";
+      this.new_layer_name = "";
+      this.show_create_layer_modal = false;
     },
     generateID() {
       return (
