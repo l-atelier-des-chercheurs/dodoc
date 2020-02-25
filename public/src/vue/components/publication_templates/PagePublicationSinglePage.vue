@@ -18,7 +18,14 @@
           class="m_page--grid"
           v-if="!!page.gridstep && page.gridstep > 0"
           :style="
-            `--gridstep: ${page.gridstep}mm; --margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`
+            `
+            --gridstep: ${page.gridstep}mm; 
+            --margin_left: ${page.margin_left}mm; 
+            --margin_right: ${page.margin_right}mm; 
+            --margin_top: ${page.margin_top}mm; 
+            --margin_bottom: ${page.margin_bottom}mm;
+            --zoom: ${zoom};
+          `
           "
         />
       </template>

@@ -4359,8 +4359,8 @@ small {
     .m_page--grid {
       // Configuration
       --gridstep: 10mm;
-
-      --gridstep_before: ~"calc(var(--gridstep) - 1px)";
+      --zoom: 1;
+      --gridstep_before: ~"calc(var(--gridstep) - (1px/var(--zoom)))";
 
       @c-gridColor: @c-gris_tresclair;
       @s-gridOpacity: 1;
