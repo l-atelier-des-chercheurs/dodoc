@@ -3860,7 +3860,7 @@ small {
 
     > * {
       display: flex;
-      flex-flow: row nowrap;
+      flex-flow: row wrap;
       justify-content: center;
       align-content: center;
       align-items: center;
@@ -3999,13 +3999,20 @@ small {
     position: absolute;
     bottom: 0px;
     left: 40px;
+    width: 50%;
+    max-width: 200px;
     z-index: 1001;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.95);
     border-radius: 10px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     .padding-verysmall;
     .font-verysmall;
+
+    max-height: 20vh;
+    .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
+    overflow: auto;
+    overscroll-behavior-y: contain;
 
     .m_layerPanel--layer {
       // border: 2px solid @c-gris;
@@ -4015,10 +4022,17 @@ small {
       display: flex;
       align-items: center;
 
+      > * {
+        flex: 1 1 auto;
+        .padding-sides-verysmall;
+      }
+
       // background-color: var(--c-noir);
       // color: #fff;
 
       button {
+        flex: 0 0 auto;
+        margin: 0;
         // background-color: var(--c-noir);
       }
     }
@@ -4624,6 +4638,7 @@ small {
 
     .m_page {
       background-color: transparent;
+      box-shadow: none;
     }
   }
 }
