@@ -170,93 +170,12 @@
       </button>
     </div>
 
-    <div class="m_layerPanel">
-      <label>{{ $t("layers") }}</label>
-      <div
-        v-for="layer in layers.slice().reverse()"
-        :key="layer.id"
-        class="m_layerPanel--layer"
-        @click="toggleActiveLayer(layer.id)"
-        :class="{ 'is--active': layer.id === id_of_layer_opened }"
-      >
-        <button
-          type="button"
-          class="buttonLink _no_underline"
-          @click.stop="toggleActiveLayer(layer.id)"
-          :class="{ 'is--active': layer.id === id_of_layer_opened }"
-        >
-          <svg
-            version="1.1"
-            class="inline-svg"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="100.7px"
-            height="101px"
-            viewBox="0 0 100.7 101"
-            style="enable-background:new 0 0 100.7 101;"
-            xml:space="preserve"
-          >
-            <path
-              class="st0"
-              d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
-              L19.1,91.5z"
-            />
-          </svg>
-        </button>
-        <div class="">
-          <span class="text-ellipsis">{{ layer.id }}</span
-          ><br />
-          <span v-if="publication_medias.hasOwnProperty(layer.id)">
-            <template v-if="publication_medias[layer.id].length === 1">
-              ({{
-                publication_medias[layer.id].length +
-                  " " +
-                  $t("media").toLowerCase()
-              }})
-            </template>
-            <template v-else>
-              ({{
-                publication_medias[layer.id].length +
-                  " " +
-                  $t("medias").toLowerCase()
-              }})
-            </template>
-          </span>
-        </div>
-        <button
-          v-if="layer.id === id_of_layer_opened"
-          type="button"
-          class="buttonLink _no_underline"
-          @click="removeLayer(layer.id)"
-          :disabled="read_only"
-        >
-          <svg
-            version="1.1"
-            class="inline-svg"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="91.6px"
-            height="95px"
-            viewBox="0 0 91.6 95"
-            style="enable-background:new 0 0 91.6 95;"
-            xml:space="preserve"
-          >
-            <path
-              class="st0"
-              d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
-            l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
-            />
-          </svg>
-        </button>
-      </div>
-      <button type="button" @click="createLayer">
-        {{ $t("create") }}
-      </button>
-    </div>
+    <LayerPanel
+      :layers="layers"
+      :publication="publication"
+      :slugPubliName="slugPubliName"
+      :publication_medias="publication_medias"
+    />
 
     <div class="m_drawingPad" ref="current_page">
       <!-- <small><pre>{{ publication_medias }}</pre>
@@ -284,10 +203,12 @@
       <PagePublicationSinglePage
         v-for="layer in layers"
         :class="{
-          'is--inactive': id_of_layer_opened && layer.id !== id_of_layer_opened
+          'is--inactive':
+            !!$root.settings.current_publication.layer_id &&
+            layer.id !== $root.settings.current_publication.layer_id
         }"
         :key="layer.id"
-        :mode="'export'"
+        :mode="'drawing'"
         :preview_mode="false"
         :slugPubliName="slugPubliName"
         :page="layer_options"
@@ -306,8 +227,9 @@
 </template>
 <script>
 import PublicationHeader from "../subcomponents/PublicationHeader.vue";
-import PadSurface from "../subcomponents/PadSurface.vue";
+import PadSurface from "./subcomponents/PadSurface.vue";
 import PagePublicationSinglePage from "./PagePublicationSinglePage.vue";
+import LayerPanel from "./subcomponents/LayerPanel.vue";
 
 export default {
   props: {
@@ -318,15 +240,14 @@ export default {
   components: {
     PublicationHeader,
     PadSurface,
-    PagePublicationSinglePage
+    PagePublicationSinglePage,
+    LayerPanel
   },
   data() {
     return {
       show_export_modal: false,
       publication_medias: [],
       accepted_media_type: ["audio", "video"],
-
-      id_of_layer_opened: false,
 
       preview_mode: this.$root.state.mode !== "live",
       fullscreen_mode: false,
@@ -449,15 +370,7 @@ export default {
         slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
       }
 
-      if (!this.id_of_layer_opened) {
-        console.log(`METHODS • Publication: addMedia missing layer id`);
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("select_layer_to_add_media_to"));
-      }
-
-      const layer_id = this.id_of_layer_opened;
+      const layer_id = this.$root.settings.current_publication.layer_id;
 
       const x = 0;
       const y = 0;
@@ -491,28 +404,6 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         slugMediaName
-      });
-    },
-    toggleActiveLayer(id) {
-      if (id === this.id_of_layer_opened) this.id_of_layer_opened = false;
-      else this.id_of_layer_opened = id;
-    },
-    removeLayer(id) {
-      if (
-        !this.publication.hasOwnProperty("layers") ||
-        this.publication.layers.length === 0
-      ) {
-        return;
-      }
-
-      let layers = this.publication.layers.filter(l => l.id !== id);
-
-      this.$root.editFolder({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        data: {
-          layers
-        }
       });
     },
     getHighestZNumberAmongstMedias(page_medias) {
@@ -620,40 +511,6 @@ export default {
 
       this.publication_medias = medias_paginated;
     },
-    generateID() {
-      return (
-        +new Date() +
-        "_" +
-        (Math.random().toString(36) + "00000000000000000").slice(2, 3)
-      );
-    },
-    createLayer() {
-      if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • DrawingPad: createLayer`);
-
-      let layers = [];
-      if (
-        this.publication.hasOwnProperty("layers") &&
-        this.publication.layers.length > 0
-      ) {
-        layers = this.publication.layers.slice();
-      }
-
-      const index = this.publication.layers.length + 1;
-
-      layers.splice(index, 0, {
-        id: this.generateID()
-      });
-
-      this.$root.editFolder({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        data: {
-          layers
-        }
-      });
-    },
-
     toggleFullscreen() {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • DrawingPad: toggleFullscreen`);
@@ -694,7 +551,6 @@ export default {
       const panel_width = this.$refs.panel.offsetWidth;
       const current_page_el = this.$refs.current_page;
 
-      debugger;
       if (current_page_el && panel_width > 0) {
         const page = current_page_el.getElementsByClassName("m_page")[0];
 
