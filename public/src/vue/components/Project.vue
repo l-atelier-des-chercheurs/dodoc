@@ -107,7 +107,7 @@
           </button>
 
           <div
-            class="padding-small _pwd_input"
+            class="padding-verysmall _pwd_input"
             v-if="showInputPasswordField && !can_access_project"
           >
             <div class="margin-bottom-small">
@@ -510,7 +510,7 @@ export default {
   methods: {
     openProject() {
       if (this.can_access_project) this.$root.openProject(this.slugProjectName);
-      else this.showInputPasswordField = true;
+      else this.showInputPasswordField = !this.showInputPasswordField;
     },
 
     closeProject() {
@@ -604,6 +604,7 @@ export default {
           this.$refs.passwordField.focus();
         } else {
           this.showInputPasswordField = false;
+          this.openProject();
         }
       });
     },

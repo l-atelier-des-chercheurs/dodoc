@@ -261,6 +261,7 @@ let vm = new Vue({
       current_publication: {
         slug: false,
         page_id: false,
+        layer_id: false,
         accepted_media_type: []
       },
 

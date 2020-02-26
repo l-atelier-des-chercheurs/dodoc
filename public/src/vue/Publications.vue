@@ -223,6 +223,33 @@ export default {
           `
         },
         {
+          key: "drawing_pad",
+          summary: "drawing_pad_summary",
+          show_instructions: false,
+          instructions: "drawing_pad_instructions",
+          show_all_recipes: false,
+          icon: `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
+  <title>Fichier 1</title>
+  <g id="Calque_2" data-name="Calque 2">
+    <g id="Calque_6" data-name="Calque 6">
+      <rect x="13.92" y="35.39" width="173.15" height="129.86" style="fill: #fff"/>
+      <rect x="26.17" y="45.02" width="37.98" height="48.24" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+      <rect x="127.82" y="81.05" width="37.98" height="48.24" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+      <circle cx="36.99" cy="81.05" r="5.95" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+      <g>
+        <path d="M69.78,69.42c41.68,0,5.66,33.94,50.44,35.13" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+        <polygon points="115.83 108.09 119.58 104.51 116 100.76 119.11 100.83 122.69 104.58 118.94 108.16 115.83 108.09" style="fill: #353535"/>
+      </g>
+      <polygon points="77.64 108.18 107.23 137.81 48.02 137.81 77.64 108.18" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+      <rect width="201" height="201" style="fill: none"/>
+    </g>
+  </g>
+</svg>
+
+          `
+        },
+        {
           key: "video_assemblage",
           summary: "video_assemblage_summary",
           show_instructions: false,
@@ -331,17 +358,6 @@ export default {
 </svg>
           `
         },
-        {
-          key: "drawing_pad",
-          summary: "drawing_pad_summary",
-          show_instructions: false,
-          instructions: "drawing_pad_instructions",
-          show_all_recipes: false,
-          icon: `
-
-          `
-        },
-
         {
           key: "mix_audio_and_video",
           summary: "mix_audio_and_video_summary",

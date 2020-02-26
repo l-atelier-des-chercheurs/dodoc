@@ -93,7 +93,7 @@ export default {
   },
   computed: {
     attached_project() {
-      return this.$root.projects_that_are_accessible.find(
+      return Object.values(this.$root.store.projects).find(
         _p => _p.slugFolderName === this.publication.attached_to_project
       );
     },

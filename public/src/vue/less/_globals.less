@@ -34,9 +34,19 @@ button,
     }
   }
 
+  &:hover,
+  &:active {
+    background-color: @c-gris_tresclair;
+  }
+
   &.is--active {
     background-color: @c-noir;
     color: #fff;
+
+    &:hover,
+    &:active {
+      background-color: @c-gris_fonce;
+    }
   }
   &.bg-noir.is--active {
     background-color: white;
@@ -189,16 +199,27 @@ button,
   font-weight: 400;
   min-height: 0;
 
+  transition: background 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
   &::after {
     content: "";
+    position: absolute;
     display: block;
-    width: 100%;
+    left: @t-skipline / 4;
+    right: @t-skipline / 4;
     border-bottom: 1px solid currentColor;
   }
 
   &._no_underline {
     &::after {
       display: none;
+    }
+  }
+
+  &:hover {
+    background-color: @c-gris_tresclair;
+    &::after {
+      // border-bottom-width: 2px;
     }
   }
 }
@@ -737,6 +758,12 @@ textarea[readonly],
 .text-uc {
   text-transform: uppercase;
 }
+.text-lc {
+  text-transform: lowercase;
+}
+.ta-ri {
+  text-align: right;
+}
 
 .text-cap {
   text-transform: uppercase;
@@ -963,6 +990,8 @@ input[type="file"] {
 .input-group,
 .input-single {
   margin-bottom: @t-skipline;
+  display: flex;
+  align-content: center;
 }
 
 h1,

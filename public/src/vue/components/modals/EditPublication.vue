@@ -39,10 +39,11 @@
         <select v-model="publidata.attached_to_project">
           <option key="''" :value="''">** {{ $t("none") }} **</option>
           <option
-            v-for="project in $root.projects_that_are_accessible"
+            v-for="project in Object.values($root.store.projects)"
             :key="project.slugFolderName"
             :value="project.slugFolderName"
-            >{{ project.name }}</option
+          >
+            {{ project.name }}</option
           >
         </select>
       </div>

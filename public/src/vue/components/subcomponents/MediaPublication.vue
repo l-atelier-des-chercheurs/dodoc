@@ -26,7 +26,7 @@
       v-model="media.content"
       :style="media.publi_meta.custom_css"
     />
-    <p class="mediaCaption">{{ media.caption }}</p>
+    <!-- <p class="mediaCaption">{{ media.caption }}</p> -->
 
     <button
       class="m_mediaPublication--overflowing_sign"

@@ -136,7 +136,8 @@
                 v-for="project in all_projects"
                 :key="project.slugFolderName"
                 :value="project.slugFolderName"
-              >{{ project.name }}</option>
+                >{{ project.name }}</option
+              >
             </select>
             <button
               type="button"
@@ -194,19 +195,25 @@
             class="buttonLink"
             @click="editRawMedia('rotate_image', { angle: 90 })"
             v-if="media.type === 'image'"
-          >{{ $t("rotate_clockwise") }}</button>
+          >
+            {{ $t("rotate_clockwise") }}
+          </button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('optimize_video')"
             v-if="media.type === 'video'"
-          >{{ $t("convert_video_for_the_web") }}</button>
+          >
+            {{ $t("convert_video_for_the_web") }}
+          </button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('reset')"
             v-if="!!media.original_media_filename"
-          >{{ $t("revert_to_original") }}</button>
+          >
+            {{ $t("revert_to_original") }}
+          </button>
         </div>
 
         <button
@@ -251,7 +258,10 @@
               v-model="mediadata.fav"
               :readonly="read_only"
             />
-            <label for="favswitch_editmedia" :class="{ 'c-rouge': mediadata.fav }">
+            <label
+              for="favswitch_editmedia"
+              :class="{ 'c-rouge': mediadata.fav }"
+            >
               {{ $t("fav") }}
               <svg
                 version="1.1"
@@ -327,14 +337,15 @@
 
         <!-- Caption -->
         <div
-          v-if="
-            (!read_only || !!mediadata.caption) && mediadata.type !== 'text'
-          "
+          v-if="!read_only || !!mediadata.caption"
           class="margin-bottom-small"
         >
           <label>{{ $t("caption") }}</label>
           <br />
-          <textarea v-model="mediadata.caption" :readonly="read_only"></textarea>
+          <textarea
+            v-model="mediadata.caption"
+            :readonly="read_only"
+          ></textarea>
         </div>
 
         <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
@@ -366,7 +377,10 @@
         </div>
 
         <!-- Author(s) -->
-        <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
+        <div
+          v-if="!read_only || !!mediadata.authors"
+          class="margin-bottom-small"
+        >
           <label>{{ $t("author") }}</label>
 
           <AuthorsInput

@@ -496,14 +496,15 @@ module.exports = (function() {
     });
   }
 
-  function onDownloadVideoPubli(socket, { slugPubliName }) {
+  function onDownloadVideoPubli(socket, { slugPubliName, options }) {
     dev.logfunction(
       `EVENT - onDownloadVideoPubli with 
-      slugPubliName = ${slugPubliName}`
+      slugPubliName = ${slugPubliName} 
+      and options = ${JSON.stringify(options)}`
     );
 
     exporter
-      .makeVideoForPubli({ slugPubliName, socket })
+      .makeVideoForPubli({ slugPubliName, socket, options })
       .then(videoName => {
         notify({
           socket,

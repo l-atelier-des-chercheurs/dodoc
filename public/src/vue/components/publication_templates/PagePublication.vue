@@ -199,6 +199,7 @@
           </div>-->
           <button
             type="button"
+            class="buttonLink"
             v-if="!contact_sheet_mode"
             @click="showAllPages"
           >
@@ -233,6 +234,9 @@
           :publications_options="publications_options"
         />
       </div>
+
+      <hr v-if="!contact_sheet_mode" class="margin-none" />
+
       <div class="m_publicationNavMenu--buttonRow" v-if="!contact_sheet_mode">
         <button
           type="button"
@@ -242,8 +246,16 @@
           <img src="/images/i_arrow_left.svg" draggable="false" />
           {{ $t("previous_page") }}
         </button>
-        <div class="font-small">
-          <span v-html="$t('current_page:') + ' ' + (opened_page_index + 1)" />
+        <div class="font-small text-lc">
+          <span
+            v-html="
+              $t('current_page:') +
+                ' ' +
+                (opened_page_index + 1) +
+                '/' +
+                this.pagesWithDefault.length
+            "
+          />
         </div>
 
         <button
@@ -550,12 +562,14 @@
           <PagePublicationSinglePage
             ref="current_page"
             :mode="'single'"
-            :key="id_of_page_opened"
+            :key="$root.settings.current_publication.page_id"
             :preview_mode="preview_mode"
             :slugPubliName="slugPubliName"
             :pageNumber="opened_page_index"
             :page="opened_single_page"
-            :publication_medias="publication_medias[id_of_page_opened]"
+            :publication_medias="
+              publication_medias[$root.settings.current_publication.page_id]
+            "
             :read_only="read_only"
             :pixelsPerMillimeters="pixelsPerMillimeters"
             :zoom="zoom"
@@ -637,14 +651,12 @@ export default {
 
       page_settings_panel: false,
 
-      id_of_page_opened: false,
       contact_sheet_mode: true,
 
       show_advanced_menu_for_page: false,
       show_advanced_option: false,
 
       preview_mode: this.$root.state.mode !== "live",
-      // preview_mode: false,
       fullscreen_mode: false,
       zoom: 1,
       zoom_min: 0.2,
@@ -747,13 +759,15 @@ export default {
   },
   computed: {
     opened_single_page() {
-      if (!this.id_of_page_opened) return false;
-      return this.pagesWithDefault.find(p => p.id === this.id_of_page_opened);
+      if (!this.$root.settings.current_publication.page_id) return false;
+      return this.pagesWithDefault.find(
+        p => p.id === this.$root.settings.current_publication.page_id
+      );
     },
     opened_page_index() {
-      if (!this.id_of_page_opened) return false;
+      if (!this.$root.settings.current_publication.page_id) return false;
       return this.pagesWithDefault.findIndex(
-        p => p.id === this.id_of_page_opened
+        p => p.id === this.$root.settings.current_publication.page_id
       );
     },
     all_recipes_of_this_template() {
@@ -920,13 +934,13 @@ export default {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • Publication: openPage id = ${id}`);
 
-      this.id_of_page_opened = id;
+      this.$root.settings.current_publication.page_id = id;
       this.contact_sheet_mode = false;
     },
     showAllPages() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • Publication: showAllPages`);
-      this.id_of_page_opened = false;
+      this.$root.settings.current_publication.page_id = false;
       this.contact_sheet_mode = true;
     },
     restorePage(id) {
@@ -977,7 +991,7 @@ export default {
         this.opened_page_index + relative_index >= this.pagesWithDefault.length
       )
         return;
-      this.id_of_page_opened = this.pagesWithDefault[
+      this.$root.settings.current_publication.page_id = this.pagesWithDefault[
         this.opened_page_index + relative_index
       ].id;
     },
@@ -987,7 +1001,7 @@ export default {
         slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
       }
 
-      if (!this.id_of_page_opened) {
+      if (!this.$root.settings.current_publication.page_id) {
         console.log(`METHODS • Publication: addMedia missing page id`);
         this.$alertify
           .closeLogOnClick(true)
@@ -995,7 +1009,7 @@ export default {
           .error("Missing page id to add media properly");
       }
 
-      const page_id = this.id_of_page_opened;
+      const page_id = this.$root.settings.current_publication.page_id;
 
       const x = this.publications_options.margin_left;
       const y = this.publications_options.margin_top;
@@ -1121,9 +1135,8 @@ export default {
       this.publication_medias = medias_paginated;
     },
     insertPageAtIndex(index) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • Publication: insertPageAtIndex ${index}`);
-      }
 
       // insert page in page array
       let pages = [];

@@ -84,6 +84,10 @@ module.exports = (function() {
       oc: "Importacion",
       de: "Import"
     },
+    no_media_on_this_page: {
+      fr: "Aucun média à afficher sur cette page",
+      en: "No media on this page"
+    },
     created: {
       fr: "Création",
       en: "Created",
@@ -231,6 +235,34 @@ module.exports = (function() {
     new_folder_name: {
       fr: "Nom du nouveau dossier&nbsp;:",
       en: "Name of the new folder:"
+    },
+    layers: {
+      fr: "Calques",
+      en: "Layers"
+    },
+    layer_name: {
+      fr: "Nom du calque",
+      en: "Layer name"
+    },
+    drawing_layer_1: {
+      fr: "Calque de dessin 1",
+      en: "Drawing layer 1"
+    },
+    layer_type: {
+      fr: "Type de calque",
+      en: "Layer type"
+    },
+    drawing_layer_instructions: {
+      fr: "Permet de dessiner, tracer des formes, etc.",
+      en: "Allows for the drawing of lines, geometric shapes, etc."
+    },
+    medias_layer_instructions: {
+      fr: "Permet de placer des médias (images, vidéos, etc.)",
+      en: "Allows the importation of medias (images, videos, etc.)"
+    },
+    select_layer_to_add_media_to: {
+      fr: "Sélectionnez d’abord le calque sur lequel placer le média",
+      en: "Select first the layer the media will be on"
     },
     input_password: {
       fr: "Renseigner le mot de passe ci-dessous :",
@@ -847,32 +879,48 @@ module.exports = (function() {
       de: "Schliessen"
     },
     very_high: {
-      fr: "Très élevée (1080p)",
-      en: "Very high (1080p)",
-      nl: "Zeer hoog (1080p)",
-      oc: "Fòrça nauta (1080p)",
-      de: "Hochragend (1080p)"
+      fr: "Très élevée",
+      en: "Very high",
+      nl: "Zeer hoog",
+      oc: "Fòrça nauta",
+      de: "Hochragend"
     },
     high: {
-      fr: "Élevée (720p)",
-      en: "High (1080p)",
-      nl: "Hoog (720p)",
+      fr: "Élevée",
+      en: "High",
+      nl: "Hoog",
       oc: "Nauta",
-      de: "Hochgezogen (720p)"
+      de: "Hochgezogen"
     },
     medium: {
-      fr: "Moyenne (640p)",
-      en: "Medium (640p)",
-      nl: "Medium (640p)",
-      oc: "Mejana (640p)",
-      de: "Mittelgrösse (640p)"
+      fr: "Moyenne",
+      en: "Medium",
+      nl: "Medium",
+      oc: "Mejana",
+      de: "Mittelgrösse"
     },
     low: {
-      fr: "Basse (360p)",
-      en: "Low (360p)",
-      nl: "Laag (360p)",
-      oc: "Bassa (360p)",
-      de: "Niedrig (360p)"
+      fr: "Basse",
+      en: "Low",
+      nl: "Laag",
+      oc: "Bassa",
+      de: "Niedrig"
+    },
+    draft: {
+      fr: "Ébauche",
+      en: "Draft"
+    },
+    video_export_draft_instructions: {
+      fr:
+        "Ce mode permet de rapidement tester le rendu d’un recette pour tester le rythme et les niveaux sonores, au détriment de la qualité de l’image. La vidéo résultante ne pourra pas être enregistré.",
+      en:
+        "This mode is the most convenient to test the rythm and the audio levels, with a mediocre image quality. The resulting video cannot be saved."
+    },
+    video_export_custom_quality_instructions: {
+      fr:
+        "Réglez ci-dessous la largeur × la hauteur, en pixels. Utilisez uniquement des valeurs entières et paires.",
+      en:
+        "Set custom width × height in the following fields, in pixels. Use only whole, even values."
     },
     showing: {
       fr: "Affichage de",
@@ -2061,6 +2109,10 @@ module.exports = (function() {
     drawing_pad: {
       fr: "Bloc dessin",
       en: "Drawing pad"
+    },
+    drawing: {
+      fr: "Dessin",
+      en: "Drawing"
     },
     drawing_pad_summary: {
       fr: "Dessinez, annotez, créez des visuels interactifs ou imprimables",
