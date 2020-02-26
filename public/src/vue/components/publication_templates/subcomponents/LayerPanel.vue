@@ -1,7 +1,24 @@
 <template>
   <div class="m_layerPanel">
     <div class="m_layerPanel--topbar">
-      <label>{{ $t("layers") }}</label>
+      <label v-if="!show_create_layer_modal">
+        <button
+          type="button"
+          class="button-nostyle text-uc button-triangle padding-verysmall"
+          :class="{ 'is--active': show_layers }"
+          @click="show_layers = !show_layers"
+        >
+          {{ $t("layers") }}
+          <template v-if="layers.length > 0">– {{ layers.length }}</template>
+        </button>
+      </label>
+      <button
+        type="button"
+        class="buttonLink"
+        @click="show_create_layer_modal = false"
+        v-else
+      >{{ $t('cancel') }}</button>
+
       <button
         type="button"
         class="buttonLink"
@@ -39,7 +56,7 @@
       />
     </form>
     <div
-      v-else
+      v-else-if="show_layers"
       v-for="layer in layers.slice().reverse()"
       :key="layer.id"
       class="m_layerPanel--layer"
@@ -48,7 +65,16 @@
       }"
       @click.stop="toggleActiveLayer(layer.id)"
     >
-      <button
+      <div class="_vignette">
+        <input
+          v-if="layer.type === 'drawing'"
+          type="color"
+          :value="layer.color"
+          @change="updateLayerColor({ $event, id: layer.id })"
+        />
+        <div v-else class="_media_vignette"></div>
+      </div>
+      <!-- <button
         type="button"
         class="buttonLink _no_underline"
         @click.stop="toggleActiveLayer(layer.id)"
@@ -75,25 +101,25 @@
               L19.1,91.5z"
           />
         </svg>
-      </button>
+      </button>-->
       <div class>
         <span class="text-ellipsis">{{ layer.name }}</span>
         <br />
         <span class="label">
           <template v-if="layer.type === 'drawing'">{{ $t("drawing") }}</template>
           <template v-if="layer.type === 'medias'">
-            <template v-if="!publication_medias.hasOwnProperty(layer.id)">{{ $t("media") }}</template>
+            <template v-if="!mediasFromLayer(layer.id)">{{ $t("media") }}</template>
             <template v-else>
-              <template v-if="publication_medias[layer.id].length === 1">
+              <template v-if="mediasFromLayer(layer.id).length === 1">
                 {{
-                publication_medias[layer.id].length +
+                mediasFromLayer(layer.id).length +
                 " " +
                 $t("media").toLowerCase()
                 }}
               </template>
               <template v-else>
                 {{
-                publication_medias[layer.id].length +
+                mediasFromLayer(layer.id).length +
                 " " +
                 $t("medias").toLowerCase()
                 }}
@@ -136,7 +162,7 @@
 export default {
   props: {
     layers: Array,
-    publication_medias: Object,
+    medias: Object,
     slugPubliName: String,
     publication: Object
   },
@@ -145,7 +171,8 @@ export default {
     return {
       show_create_layer_modal: false,
       new_layer_name: "",
-      new_layer_type: "drawing"
+      new_layer_type: "drawing",
+      show_layers: true
     };
   },
   created() {},
@@ -198,6 +225,34 @@ export default {
       else this.$root.settings.current_publication.layer_id = id;
       console.log(this.$root.settings.current_publication.layer_id);
     },
+    mediasFromLayer(id) {
+      if (typeof this.medias !== "object") return [];
+      return Object.values(this.medias).filter(m => m.layer_id === id);
+    },
+    newLayerCreated(mdata) {
+      if (this.$root.justCreatedMediaID === mdata.id) {
+        this.$root.justCreatedMediaID = false;
+        this.$eventHub.$off(
+          "socketio.media_created_or_updated",
+          this.newLayerCreated
+        );
+        this.toggleActiveLayer(mdata.layer_id);
+      }
+    },
+    updateLayerColor({ $event, id }) {
+      const new_color = $event.target.value;
+      const layers = this.publication.layers.map(l => {
+        if (l.id === id) l.color = new_color;
+        return l;
+      });
+      this.$root.editFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+        data: {
+          layers
+        }
+      });
+    },
     createLayer() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • LayerPanel: createLayer`);
@@ -216,7 +271,8 @@ export default {
       layers.splice(index, 0, {
         type: this.new_layer_type,
         name: this.new_layer_name,
-        id: layer_id
+        id: layer_id,
+        color: "#000"
       });
 
       this.$root.editFolder({
@@ -229,6 +285,10 @@ export default {
 
       // if creating a drawing layer, we’ll need to create the media that will
       // store its content as well
+      this.$eventHub.$on(
+        "socketio.media_created_or_updated",
+        this.newLayerCreated
+      );
 
       if (this.new_layer_type === "drawing") {
         this.$root.createMedia({
@@ -236,7 +296,7 @@ export default {
           type: "publications",
           additionalMeta: {
             layer_id,
-            canvas_information: "",
+            canvas_information: ""
           }
         });
       }

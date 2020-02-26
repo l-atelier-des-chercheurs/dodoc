@@ -148,7 +148,12 @@
       :layers="layers"
       :publication="publication"
       :slugPubliName="slugPubliName"
-      :publication_medias="publication_medias"
+      :medias="publication.medias"
+    />
+    <DrawingOptions
+      v-if="selected_layer && selected_layer.type === 'drawing' "
+      :drawing_options="drawing_options"
+      @updateDrawingOptions="v => (drawing_options = v)"
     />
 
     <div class="m_drawingPad" ref="current_page">
@@ -156,14 +161,14 @@
         <div
           class="m_drawingPad--layer--backgroundContainer"
           :style="
-            `width: ${layer_options.width *
-              zoom}mm; height: ${layer_options.height * zoom}mm;`
+            `width: ${publication.width *
+              zoom}mm; height: ${publication.height * zoom}mm;`
           "
         >
           <div
             class="m_drawingPad--layer--backgroundContainer--background"
             :style="
-              `width: ${layer_options.width}mm; height: ${layer_options.height}mm; transform: scale(${zoom});`
+              `width: ${publication.width}mm; height: ${publication.height}mm; transform: scale(${zoom});`
             "
           />
         </div>
@@ -177,7 +182,8 @@
           {
             'is--inactive':
               !!$root.settings.current_publication.layer_id &&
-              layer.id !== $root.settings.current_publication.layer_id
+              layer.id !== $root.settings.current_publication.layer_id,
+            'is--noteditable': !$root.settings.current_publication.layer_id
           },
           'm_drawingPad--layer_' + layer.type
         ]"
@@ -185,9 +191,9 @@
         <PagePublicationSinglePage
           v-if="layer.type === 'medias'"
           :mode="'drawingpad'"
-          :preview_mode="false"
+          :preview_mode="!$root.settings.current_publication.layer_id"
           :slugPubliName="slugPubliName"
-          :page="layer_options"
+          :page="layerOptions(layer)"
           :publication_medias="publication_medias[layer.id]"
           :read_only="read_only"
           :pixelsPerMillimeters="pixelsPerMillimeters"
@@ -199,8 +205,8 @@
           :key="layer.id"
           :slugPubliName="slugPubliName"
           :pixelsPerMillimeters="pixelsPerMillimeters"
-          :layer_options="layer_options"
-          :media_meta="getDrawingLayerReferenceMedia(layer.id)"
+          :layer_options="layerOptions(layer)"
+          :media="getDrawingLayerReferenceMedia(layer.id)"
           :drawing_options="drawing_options"
           :zoom="zoom"
         />
@@ -217,6 +223,7 @@ import PublicationHeader from "../subcomponents/PublicationHeader.vue";
 import DrawingLayer from "./subcomponents/DrawingLayer.vue";
 import PagePublicationSinglePage from "./PagePublicationSinglePage.vue";
 import LayerPanel from "./subcomponents/LayerPanel.vue";
+import DrawingOptions from "./subcomponents/DrawingOptions.vue";
 
 export default {
   props: {
@@ -228,7 +235,8 @@ export default {
     PublicationHeader,
     DrawingLayer,
     PagePublicationSinglePage,
-    LayerPanel
+    LayerPanel,
+    DrawingOptions
   },
   data() {
     return {
@@ -244,8 +252,7 @@ export default {
 
       drawing_options: {
         width: 4,
-        select_mode: false,
-        color: "#000"
+        mode: "drawing"
       },
 
       pixelsPerMillimeters: 0
@@ -332,17 +339,11 @@ export default {
 
       return this.publication.layers;
     },
-
-    layer_options() {
-      return {
-        margin_left: 0,
-        margin_right: 0,
-        margin_top: 0,
-        margin_bottom: 0,
-        width: this.publication.width,
-        height: this.publication.height
-        // gridstep: 50
-      };
+    selected_layer() {
+      if (!this.$root.settings.current_publication.layer_id) return false;
+      return this.layers.find(
+        l => l.id === this.$root.settings.current_publication.layer_id
+      );
     }
   },
   methods: {
@@ -375,19 +376,19 @@ export default {
         }
       });
     },
-    removePubliMedia({ slugMediaName }) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(
-          `METHODS • DrawingPad: removeMedia / slugMediaName = ${slugMediaName}`
-        );
-      }
-
-      this.$root.removeMedia({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        slugMediaName
-      });
+    layerOptions(layer) {
+      return {
+        margin_left: 0,
+        margin_right: 0,
+        margin_top: 0,
+        margin_bottom: 0,
+        width: this.publication.width,
+        height: this.publication.height,
+        color: layer.color
+        // gridstep: 50
+      };
     },
+
     getHighestZNumberAmongstMedias(page_medias) {
       if (!page_medias) return 0;
 
@@ -419,7 +420,9 @@ export default {
       let missingMedias = [];
 
       Object.keys(this.publication.medias).map(metaFileName => {
-        const _media = this.publication.medias[metaFileName];
+        const _media = JSON.parse(
+          JSON.stringify(this.publication.medias[metaFileName])
+        );
 
         // for each, get slugFolderName and metaFileName
         if (
@@ -536,8 +539,7 @@ export default {
 
       if (current_page_el && panel_width > 0) {
         const page = current_page_el.querySelector(
-          ".m_drawingPad--backgroundContainer--background"
-          // ".m_page"
+          ".m_drawingPad--layer--backgroundContainer--background"
         );
         const margins = 150;
         if (page && panel_width < page.offsetWidth + margins) {

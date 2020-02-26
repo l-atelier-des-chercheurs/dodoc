@@ -191,10 +191,18 @@ button,
       transition: transform 0.5s, color 0.5s;
     }
 
+    &:hover::after {
+      .c-rouge;
+    }
+
     &.is--active {
       .c-rouge;
       &::after {
         transform: rotate(-90deg);
+      }
+
+      &:hover {
+        .bg-gris_tresclair;
       }
     }
   }

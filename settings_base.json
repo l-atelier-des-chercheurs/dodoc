@@ -265,6 +265,11 @@
           "slugMediaName": {
             "type": "string"
           },
+          "date_created": {
+            "type": "date",
+            "default": "current",
+            "read_only": true
+          },
           "date_modified": {
             "type": "date",
             "default": "current",
