@@ -317,6 +317,10 @@
               "min": -20000,
               "max": 20000
             }
+          },
+          "canvas_information": {
+            "type": "string",
+            "escape": false
           }
         }
       }

@@ -14,13 +14,7 @@
       <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t("name") }}</label>
-        <input
-          type="text"
-          v-model.trim="publidata.name"
-          required
-          autofocus
-          autoselect
-        />
+        <input type="text" v-model.trim="publidata.name" required autofocus autoselect />
       </div>
 
       <!-- Template -->
@@ -43,19 +37,14 @@
             v-for="project in $root.projects_that_are_accessible"
             :key="project.slugFolderName"
             :value="project.slugFolderName"
-            >{{ project.name }}</option
-          >
+          >{{ project.name }}</option>
         </select>
       </div>
 
       <!-- Password -->
       <div class="margin-bottom-small">
         <label>{{ $t("password") }}</label>
-        <input
-          type="password"
-          v-model="publidata.password"
-          autocomplete="new-password"
-        />
+        <input type="password" v-model="publidata.password" autocomplete="new-password" />
         <small>{{ $t("password_instructions") }}</small>
       </div>
 
@@ -176,14 +165,14 @@ export default {
         publidata.height = 297;
       } else if (publidata.template === "drawing_pad") {
         publidata.layers = [
-          {
-            type: "drawing",
-            name: this.$t("drawing_layer_1"),
-            id:
-              +new Date() +
-              "_" +
-              (Math.random().toString(36) + "00000000000000000").slice(2, 3)
-          },
+          // {
+          //   type: "drawing",
+          //   name: this.$t("drawing_layer_1"),
+          //   id:
+          //     +new Date() +
+          //     "_" +
+          //     (Math.random().toString(36) + "00000000000000000").slice(2, 3)
+          // },
           {
             type: "medias",
             name: this.$t("media_layer_1"),

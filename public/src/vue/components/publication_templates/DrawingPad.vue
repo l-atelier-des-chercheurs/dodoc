@@ -1,17 +1,11 @@
 <template>
-  <div
-    class="m_publicationview"
-    :class="{ 'is--preview': preview_mode }"
-    ref="panel"
-  >
+  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
       :publication_medias="publication_medias"
       @export="show_export_modal = true"
     />
-
-    <!-- <pre>{{ publication_medias }}</pre> -->
     <div
       class="m_publicationSettings"
       v-if="
@@ -69,22 +63,13 @@
           style="enable-background:new 0 0 133.3 133.2;"
           xml:space="preserve"
         >
-          <polygon
-            class="st0"
-            points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	"
-          />
+          <polygon class="st0" points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	" />
           <polygon
             class="st0"
             points="112.3,74.5 133.3,74.5 133.3,133.2 74.6,133.2 74.6,112.2 112.3,112.2 	"
           />
-          <polygon
-            class="st0"
-            points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	"
-          />
-          <polygon
-            class="st0"
-            points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	"
-          />
+          <polygon class="st0" points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	" />
+          <polygon class="st0" points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	" />
         </svg>
         <svg
           version="1.1"
@@ -100,22 +85,13 @@
           style="enable-background:new 0 0 133.3 133.2;"
           xml:space="preserve"
         >
-          <polygon
-            class="st0"
-            points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	"
-          />
+          <polygon class="st0" points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	" />
           <polygon
             class="st0"
             points="95.6,133.2 74.6,133.2 74.6,74.5 133.3,74.5 133.3,95.5 95.6,95.5 	"
           />
-          <polygon
-            class="st0"
-            points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	"
-          />
-          <polygon
-            class="st0"
-            points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	"
-          />
+          <polygon class="st0" points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	" />
+          <polygon class="st0" points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	" />
         </svg>
       </button>
       <button
@@ -139,9 +115,7 @@
           xml:space="preserve"
         >
           <defs />
-          <path
-            d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z"
-          />
+          <path d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z" />
         </svg>
       </button>
       <button
@@ -178,37 +152,39 @@
     />
 
     <div class="m_drawingPad" ref="current_page">
-      <div
-        class="m_drawingPad--backgroundContainer"
-        :style="
-          `
-          width: ${layer_options.width * this.zoom}mm;
-          height: ${layer_options.height * this.zoom}mm;
-        `
-        "
-      >
+      <div :key="'background'" class="m_drawingPad--layer m_drawingPad--layer_background">
         <div
-          class="m_drawingPad--backgroundContainer--background"
+          class="m_drawingPad--layer--backgroundContainer"
           :style="
-            `
-          width: ${layer_options.width}mm;
-          height: ${layer_options.height}mm;
-          transform: scale(${this.zoom});
-        `
+            `width: ${layer_options.width *
+              zoom}mm; height: ${layer_options.height * zoom}mm;`
           "
-        ></div>
+        >
+          <div
+            class="m_drawingPad--layer--backgroundContainer--background"
+            :style="
+              `width: ${layer_options.width}mm; height: ${layer_options.height}mm; transform: scale(${zoom});`
+            "
+          />
+        </div>
       </div>
 
-      <template v-for="layer in layers">
-        <PagePublicationSinglePage
-          v-if="layer.type === 'medias'"
-          :class="{
+      <div
+        v-for="layer in layers"
+        :key="layer.id"
+        class="m_drawingPad--layer"
+        :class="[
+          {
             'is--inactive':
               !!$root.settings.current_publication.layer_id &&
               layer.id !== $root.settings.current_publication.layer_id
-          }"
-          :key="layer.id"
-          :mode="'drawing'"
+          },
+          'm_drawingPad--layer_' + layer.type
+        ]"
+      >
+        <PagePublicationSinglePage
+          v-if="layer.type === 'medias'"
+          :mode="'drawingpad'"
           :preview_mode="false"
           :slugPubliName="slugPubliName"
           :page="layer_options"
@@ -217,8 +193,18 @@
           :pixelsPerMillimeters="pixelsPerMillimeters"
           :zoom="zoom"
         />
-        <PadSurface v-else-if="layer.type === 'drawing'" :key="layer.id" />
-      </template>
+
+        <DrawingLayer
+          v-else-if="layer.type === 'drawing' && getDrawingLayerReferenceMedia(layer.id)"
+          :key="layer.id"
+          :slugPubliName="slugPubliName"
+          :pixelsPerMillimeters="pixelsPerMillimeters"
+          :layer_options="layer_options"
+          :media_meta="getDrawingLayerReferenceMedia(layer.id)"
+          :drawing_options="drawing_options"
+          :zoom="zoom"
+        />
+      </div>
     </div>
     <div
       ref="mmMeasurer"
@@ -228,7 +214,7 @@
 </template>
 <script>
 import PublicationHeader from "../subcomponents/PublicationHeader.vue";
-import PadSurface from "./subcomponents/PadSurface.vue";
+import DrawingLayer from "./subcomponents/DrawingLayer.vue";
 import PagePublicationSinglePage from "./PagePublicationSinglePage.vue";
 import LayerPanel from "./subcomponents/LayerPanel.vue";
 
@@ -240,7 +226,7 @@ export default {
   },
   components: {
     PublicationHeader,
-    PadSurface,
+    DrawingLayer,
     PagePublicationSinglePage,
     LayerPanel
   },
@@ -255,6 +241,12 @@ export default {
       zoom: 1,
       zoom_min: 0.2,
       zoom_max: 2,
+
+      drawing_options: {
+        width: 4,
+        select_mode: false,
+        color: "#000"
+      },
 
       pixelsPerMillimeters: 0
     };
@@ -552,6 +544,14 @@ export default {
           this.zoom = panel_width / (page.offsetWidth + margins);
         }
       }
+    },
+
+    getDrawingLayerReferenceMedia(id) {
+      const reference_media = Object.values(this.publication.medias).find(
+        m => m.layer_id === id
+      );
+      if (reference_media) return reference_media;
+      return false;
     }
   }
 };

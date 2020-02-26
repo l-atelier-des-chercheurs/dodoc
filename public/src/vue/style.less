@@ -4020,7 +4020,7 @@ small {
     padding-top: 0;
     .font-verysmall;
     box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
-    max-height: 260px;
+    max-height: 320px;
     .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
     overflow: auto;
     overscroll-behavior-y: contain;
@@ -4646,37 +4646,36 @@ small {
   // justify-content: center;
   // align-items: center;
 
-  .m_drawingPad--backgroundContainer {
+  .m_drawingPad--layer {
     position: absolute;
     margin: @t-skipline / 2 auto;
 
     transition: all 0.2s;
-
-    .m_drawingPad--backgroundContainer--background {
-      position: relative;
-      background-color: #fff;
-      box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.2);
-      z-index: 0;
-      transform-origin: top left;
-      margin: 0 auto;
-      font-variant-ligatures: none;
-      color: #000;
-      transition: all 0.2s;
-    }
-  }
-
-  .m_publicationview--pages--pageContainer {
-    position: absolute;
 
     &.is--inactive {
       pointer-events: none;
       opacity: 0.2;
     }
 
-    .m_page {
-      background-color: transparent;
-      box-shadow: none;
+    > * {
+      margin: 0;
+      > * {
+        position: relative;
+        transform-origin: top left;
+        margin: 0 auto;
+        background-color: transparent;
+        transition: all 0.2s;
+      }
     }
+
+    .m_drawingPad--layer--backgroundContainer--background {
+      box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.2);
+      background-color: #fff;
+    }
+  }
+
+  .m_drawingLayer--content {
+    background-color: red;
   }
 }
 

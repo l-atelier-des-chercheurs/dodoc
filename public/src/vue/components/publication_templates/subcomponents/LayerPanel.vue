@@ -7,14 +7,12 @@
         class="buttonLink"
         :class="{ 'is--active': show_create_layer_modal }"
         @click="show_create_layer_modal = !show_create_layer_modal"
-      >
-        {{ $t("create") }}
-      </button>
+      >{{ $t("create") }}</button>
     </div>
 
     <form
       v-if="show_create_layer_modal"
-      class="m_layerPanel--createLayer padding-verysmall "
+      class="m_layerPanel--createLayer padding-verysmall"
       @submit.prevent="createLayer"
     >
       <div class="margin-bottom-small">
@@ -29,12 +27,8 @@
           <option value="medias">{{ $t("medias") }}</option>
         </select>
         <small>
-          <template v-if="new_layer_type === 'drawing'">
-            {{ $t("drawing_layer_instructions") }}
-          </template>
-          <template v-else-if="new_layer_type === 'medias'">
-            {{ $t("medias_layer_instructions") }}
-          </template>
+          <template v-if="new_layer_type === 'drawing'">{{ $t("drawing_layer_instructions") }}</template>
+          <template v-else-if="new_layer_type === 'medias'">{{ $t("medias_layer_instructions") }}</template>
         </small>
       </div>
 
@@ -82,31 +76,26 @@
           />
         </svg>
       </button>
-      <div class="">
-        <span class="text-ellipsis">{{ layer.name }}</span
-        ><br />
+      <div class>
+        <span class="text-ellipsis">{{ layer.name }}</span>
+        <br />
         <span class="label">
-          <template v-if="layer.type === 'drawing'">
-            {{ $t("drawing") }}
-          </template>
-
+          <template v-if="layer.type === 'drawing'">{{ $t("drawing") }}</template>
           <template v-if="layer.type === 'medias'">
-            <template v-if="!publication_medias.hasOwnProperty(layer.id)">
-              {{ $t("media") }}
-            </template>
+            <template v-if="!publication_medias.hasOwnProperty(layer.id)">{{ $t("media") }}</template>
             <template v-else>
               <template v-if="publication_medias[layer.id].length === 1">
                 {{
-                  publication_medias[layer.id].length +
-                    " " +
-                    $t("media").toLowerCase()
+                publication_medias[layer.id].length +
+                " " +
+                $t("media").toLowerCase()
                 }}
               </template>
               <template v-else>
                 {{
-                  publication_medias[layer.id].length +
-                    " " +
-                    $t("medias").toLowerCase()
+                publication_medias[layer.id].length +
+                " " +
+                $t("medias").toLowerCase()
                 }}
               </template>
             </template>
@@ -222,11 +211,12 @@ export default {
       }
 
       const index = this.publication.layers.length + 1;
+      const layer_id = this.generateID();
 
       layers.splice(index, 0, {
         type: this.new_layer_type,
         name: this.new_layer_name,
-        id: this.generateID()
+        id: layer_id
       });
 
       this.$root.editFolder({
@@ -236,6 +226,20 @@ export default {
           layers
         }
       });
+
+      // if creating a drawing layer, we’ll need to create the media that will
+      // store its content as well
+
+      if (this.new_layer_type === "drawing") {
+        this.$root.createMedia({
+          slugFolderName: this.slugPubliName,
+          type: "publications",
+          additionalMeta: {
+            layer_id,
+            canvas_information: "",
+          }
+        });
+      }
 
       this.new_layer_type = "medias";
       this.new_layer_name = "";
