@@ -1734,7 +1734,12 @@ module.exports = (function() {
             ) {
               // get text content
               let mediaPath = path.join(
-                api.getFolderPath(slugFolderName),
+                api.getFolderPath(
+                  path.join(
+                    global.settings.structure[type].path,
+                    slugFolderName
+                  )
+                ),
                 mediaData.media_filename
               );
               mediaData.content = validator.unescape(
