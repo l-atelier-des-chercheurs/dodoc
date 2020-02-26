@@ -265,6 +265,11 @@
           "slugMediaName": {
             "type": "string"
           },
+          "date_created": {
+            "type": "date",
+            "default": "current",
+            "read_only": true
+          },
           "date_modified": {
             "type": "date",
             "default": "current",
@@ -317,6 +322,10 @@
               "min": -20000,
               "max": 20000
             }
+          },
+          "canvas_information": {
+            "type": "string",
+            "escape": false
           }
         }
       }

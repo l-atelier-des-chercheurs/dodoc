@@ -245,8 +245,12 @@ module.exports = (function() {
       en: "Layer name"
     },
     drawing_layer_1: {
-      fr: "Calque de dessin 1",
+      fr: "Calque dessin 1",
       en: "Drawing layer 1"
+    },
+    drawing_layer_1: {
+      fr: "Calque média 1",
+      en: "Media layer 1"
     },
     layer_type: {
       fr: "Type de calque",

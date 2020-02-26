@@ -795,7 +795,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    min-width: 320px;
+    min-width: 240px;
     min-height: 320px;
 
     display: flex;
@@ -808,7 +808,7 @@ body {
   .m_activitiesPanel--doc {
     position: relative;
     height: 100%;
-    min-width: 320px;
+    min-width: 240px;
     background-color: @c-bleuvert_fonce;
     // padding-left: @t-skipline/4;
 
@@ -4006,7 +4006,8 @@ small {
     }
   }
 
-  .m_layerPanel {
+  .m_layerPanel,
+  .m_drawingOptions {
     position: absolute;
     bottom: 0px;
     left: 40px;
@@ -4020,7 +4021,7 @@ small {
     padding-top: 0;
     .font-verysmall;
     box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
-    max-height: 260px;
+    max-height: 320px;
     .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
     overflow: auto;
     overscroll-behavior-y: contain;
@@ -4032,7 +4033,6 @@ small {
       justify-content: space-between;
 
       label {
-        .padding-verysmall;
         margin-bottom: 0;
       }
       button {
@@ -4064,6 +4064,27 @@ small {
         .padding-sides-verysmall;
       }
 
+      ._vignette {
+        // border: 2px solid @c-noir;
+        padding: 0;
+        flex: 0 0 auto;
+        border-radius: 10px;
+        width: 1rem;
+        height: 1rem;
+        overflow: hidden;
+
+        > * {
+          display: block;
+          width: 1.5rem;
+          height: 1.5rem;
+          margin: 0;
+          margin-top: -0.5rem;
+          margin-left: -0.5rem;
+          padding: 0;
+          border-bottom: 0;
+        }
+      }
+
       // background-color: var(--c-noir);
       // color: #fff;
 
@@ -4077,6 +4098,10 @@ small {
     > button {
       pointer-events: auto;
     }
+  }
+
+  .m_drawingOptions {
+    left: 300px;
   }
 
   .m_publicationNavMenu {
@@ -4646,37 +4671,40 @@ small {
   // justify-content: center;
   // align-items: center;
 
-  .m_drawingPad--backgroundContainer {
+  .m_drawingPad--layer {
     position: absolute;
     margin: @t-skipline / 2 auto;
 
     transition: all 0.2s;
 
-    .m_drawingPad--backgroundContainer--background {
-      position: relative;
-      background-color: #fff;
-      box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.2);
-      z-index: 0;
-      transform-origin: top left;
-      margin: 0 auto;
-      font-variant-ligatures: none;
-      color: #000;
-      transition: all 0.2s;
-    }
-  }
-
-  .m_publicationview--pages--pageContainer {
-    position: absolute;
-
     &.is--inactive {
       pointer-events: none;
       opacity: 0.2;
     }
-
-    .m_page {
-      background-color: transparent;
-      box-shadow: none;
+    &.is--noteditable {
+      &.m_drawingPad--layer_drawing {
+        pointer-events: none;
+      }
     }
+
+    > * {
+      margin: 0;
+      > * {
+        position: relative;
+        transform-origin: top left;
+        margin: 0 auto;
+        background-color: transparent;
+        transition: all 0.2s;
+      }
+    }
+
+    .m_drawingPad--layer--backgroundContainer--background {
+      box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.2);
+      background-color: #fff;
+    }
+  }
+
+  .m_drawingLayer--content {
   }
 }
 

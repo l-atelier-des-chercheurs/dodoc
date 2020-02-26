@@ -1,23 +1,23 @@
-import localstore from 'store';
-import jQuery from 'jquery';
+import localstore from "store";
+import jQuery from "jquery";
 window.$ = window.jQuery = jQuery;
 
 if (window.state.is_electron) {
-  document.body.addEventListener('click', electronSpecificOpenLink);
+  document.body.addEventListener("click", electronSpecificOpenLink);
 
   // If click on a link with a specific class, open in the browser and not in electron.
   function electronSpecificOpenLink(event) {
     event.path.every(item => {
       if (item.classList !== undefined && item.classList.length > 0) {
-        if (item.classList.contains('js--openInBrowser')) {
-          const shell = window.require('electron').shell;
+        if (item.classList.contains("js--openInBrowser")) {
+          const shell = window.require("electron").shell;
           event.preventDefault();
           shell.openExternal(item.href);
           return false;
-        } else if (item.classList.contains('js--openInNativeApp')) {
-          const shell = window.require('electron').shell;
+        } else if (item.classList.contains("js--openInNativeApp")) {
+          const shell = window.require("electron").shell;
           event.preventDefault();
-          shell.openItem(item.getAttribute('href'));
+          shell.openItem(item.getAttribute("href"));
           return false;
         }
       }
@@ -27,7 +27,7 @@ if (window.state.is_electron) {
 }
 
 document.addEventListener(
-  'dragover',
+  "dragover",
   function(event) {
     event.preventDefault();
     return false;
@@ -36,13 +36,34 @@ document.addEventListener(
 );
 
 document.addEventListener(
-  'drop',
+  "drop",
   function(event) {
     event.preventDefault();
     return false;
   },
   false
 );
+
+window.loadScript = function(src) {
+  return new Promise(function(resolve, reject) {
+    if (document.querySelector('script[src="' + src + '"]')) {
+      resolve();
+      return;
+    }
+
+    const el = document.createElement("script");
+
+    el.type = "text/javascript";
+    el.async = true;
+    el.src = src;
+
+    el.addEventListener("load", resolve);
+    el.addEventListener("error", reject);
+    el.addEventListener("abort", reject);
+
+    document.head.appendChild(el);
+  });
+};
 
 /**
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -73,12 +94,12 @@ document.addEventListener(
     var $this = this;
     $this.element = $(context);
     $this.timeout = 0;
-    $this.code = '';
+    $this.code = "";
     $this.settings = {};
 
     $this.init = function() {
       $this.settings = $.extend({}, $defaults, options);
-      $this.element.on('keypress', function(e) {
+      $this.element.on("keypress", function(e) {
         $this.listen(e);
       });
     };
@@ -88,7 +109,7 @@ document.addEventListener(
       if ($char === 13) {
         $this.validate();
       } else if ($char !== false) {
-        if ($this.code == '') {
+        if ($this.code == "") {
           setTimeout($this.clear(), 1000);
         }
         $this.add($char);
@@ -102,7 +123,7 @@ document.addEventListener(
           $interval = $d.getTime() - $this.timeout;
         $this.clear();
         if ($interval < 1000) {
-          $this.element.trigger('barcode.valid', [$tmp]);
+          $this.element.trigger("barcode.valid", [$tmp]);
         }
       } else {
         $this.clear();
@@ -110,7 +131,7 @@ document.addEventListener(
     };
 
     $this.clear = function() {
-      $this.code = '';
+      $this.code = "";
       $this.timeout = 0;
     };
 
@@ -148,23 +169,23 @@ document.addEventListener(
 
   $.fn.barcodeListener = function(options) {
     return this.each(function() {
-      if (undefined == $(this).data('barcodeListener')) {
+      if (undefined == $(this).data("barcodeListener")) {
         var plugin = new $.barcodeListener(this, options);
-        $(this).data('barcodeListener', plugin);
+        $(this).data("barcodeListener", plugin);
       }
     });
   };
 })(jQuery);
 
-$('body')
+$("body")
   .barcodeListener()
-  .on('barcode.valid', function(e, code) {
+  .on("barcode.valid", function(e, code) {
     window.dispatchEvent(
-      new CustomEvent('tag.newTagDetected', {
+      new CustomEvent("tag.newTagDetected", {
         detail: code
       })
     );
     e.preventDefault();
   });
 
-import app from './vue/app.js';
+import app from "./vue/app.js";
