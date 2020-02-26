@@ -17,14 +17,18 @@
         class="buttonLink"
         @click="show_create_layer_modal = false"
         v-else
-      >{{ $t('cancel') }}</button>
+      >
+        {{ $t("cancel") }}
+      </button>
 
       <button
         type="button"
         class="buttonLink"
         :class="{ 'is--active': show_create_layer_modal }"
         @click="show_create_layer_modal = !show_create_layer_modal"
-      >{{ $t("create") }}</button>
+      >
+        {{ $t("create") }}
+      </button>
     </div>
 
     <form
@@ -44,8 +48,12 @@
           <option value="medias">{{ $t("medias") }}</option>
         </select>
         <small>
-          <template v-if="new_layer_type === 'drawing'">{{ $t("drawing_layer_instructions") }}</template>
-          <template v-else-if="new_layer_type === 'medias'">{{ $t("medias_layer_instructions") }}</template>
+          <template v-if="new_layer_type === 'drawing'">{{
+            $t("drawing_layer_instructions")
+          }}</template>
+          <template v-else-if="new_layer_type === 'medias'">{{
+            $t("medias_layer_instructions")
+          }}</template>
         </small>
       </div>
 
@@ -69,6 +77,7 @@
         <input
           v-if="layer.type === 'drawing'"
           type="color"
+          @click.stop
           :value="layer.color"
           @change="updateLayerColor({ $event, id: layer.id })"
         />
@@ -106,22 +115,26 @@
         <span class="text-ellipsis">{{ layer.name }}</span>
         <br />
         <span class="label">
-          <template v-if="layer.type === 'drawing'">{{ $t("drawing") }}</template>
+          <template v-if="layer.type === 'drawing'">{{
+            $t("drawing")
+          }}</template>
           <template v-if="layer.type === 'medias'">
-            <template v-if="!mediasFromLayer(layer.id)">{{ $t("media") }}</template>
+            <template v-if="!mediasFromLayer(layer.id)">{{
+              $t("media")
+            }}</template>
             <template v-else>
               <template v-if="mediasFromLayer(layer.id).length === 1">
                 {{
-                mediasFromLayer(layer.id).length +
-                " " +
-                $t("media").toLowerCase()
+                  mediasFromLayer(layer.id).length +
+                    " " +
+                    $t("media").toLowerCase()
                 }}
               </template>
               <template v-else>
                 {{
-                mediasFromLayer(layer.id).length +
-                " " +
-                $t("medias").toLowerCase()
+                  mediasFromLayer(layer.id).length +
+                    " " +
+                    $t("medias").toLowerCase()
                 }}
               </template>
             </template>
