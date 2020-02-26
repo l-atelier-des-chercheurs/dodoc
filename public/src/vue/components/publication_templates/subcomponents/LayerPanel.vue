@@ -49,10 +49,10 @@
       v-for="layer in layers.slice().reverse()"
       :key="layer.id"
       class="m_layerPanel--layer"
-      @click="toggleActiveLayer(layer.id)"
       :class="{
         'is--active': layer.id === $root.settings.current_publication.layer_id
       }"
+      @click.stop="toggleActiveLayer(layer.id)"
     >
       <button
         type="button"
@@ -169,6 +169,11 @@ export default {
   },
   watch: {
     "$root.settings.current_publication.layer_id": function() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(
+          `WATCH • LayerPanel: $root.settings.current_publication.layer_id`
+        );
+
       if (this.current_layer && this.current_layer.type === "medias") {
         this.$root.settings.current_publication.accepted_media_type = [
           "image",
@@ -197,13 +202,16 @@ export default {
   },
   methods: {
     toggleActiveLayer(id) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • LayerPanel: toggleActiveLayer with id = ${id}`);
       if (id === this.$root.settings.current_publication.layer_id)
         this.$root.settings.current_publication.layer_id = false;
       else this.$root.settings.current_publication.layer_id = id;
+      console.log(this.$root.settings.current_publication.layer_id);
     },
     createLayer() {
       if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • DrawingPad: createLayer`);
+        console.log(`METHODS • LayerPanel: createLayer`);
 
       let layers = [];
       if (
@@ -241,7 +249,9 @@ export default {
       );
     },
     removeLayer(id) {
-      console.log("removeLayer");
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • LayerPanel: removeLayer`);
+
       if (
         !this.publication.hasOwnProperty("layers") ||
         this.publication.layers.length === 0

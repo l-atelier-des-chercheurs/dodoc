@@ -1,5 +1,5 @@
 <template>
-  <div class="padding-small">À venir</div>
+  <div class="padding-small"></div>
 </template>
 <script>
 export default {
@@ -31,5 +31,4 @@ export default {
   methods: {}
 };
 </script>
-<style>
-</style>
+<style></style>

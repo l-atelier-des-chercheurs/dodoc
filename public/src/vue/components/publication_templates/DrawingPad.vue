@@ -178,8 +178,6 @@
     />
 
     <div class="m_drawingPad" ref="current_page">
-      <!-- <small><pre>{{ publication_medias }}</pre>
-      </small> -->
       <div
         class="m_drawingPad--backgroundContainer"
         :style="
@@ -200,24 +198,27 @@
           "
         ></div>
       </div>
-      <PagePublicationSinglePage
-        v-for="layer in layers"
-        :class="{
-          'is--inactive':
-            !!$root.settings.current_publication.layer_id &&
-            layer.id !== $root.settings.current_publication.layer_id
-        }"
-        :key="layer.id"
-        :mode="'drawing'"
-        :preview_mode="false"
-        :slugPubliName="slugPubliName"
-        :page="layer_options"
-        :publication_medias="publication_medias[layer.id]"
-        :read_only="read_only"
-        :pixelsPerMillimeters="pixelsPerMillimeters"
-        :zoom="zoom"
-      />
-      <!-- <PadSurface /> -->
+
+      <template v-for="layer in layers">
+        <PagePublicationSinglePage
+          v-if="layer.type === 'medias'"
+          :class="{
+            'is--inactive':
+              !!$root.settings.current_publication.layer_id &&
+              layer.id !== $root.settings.current_publication.layer_id
+          }"
+          :key="layer.id"
+          :mode="'drawing'"
+          :preview_mode="false"
+          :slugPubliName="slugPubliName"
+          :page="layer_options"
+          :publication_medias="publication_medias[layer.id]"
+          :read_only="read_only"
+          :pixelsPerMillimeters="pixelsPerMillimeters"
+          :zoom="zoom"
+        />
+        <PadSurface v-else-if="layer.type === 'drawing'" :key="layer.id" />
+      </template>
     </div>
     <div
       ref="mmMeasurer"
@@ -246,7 +247,7 @@ export default {
   data() {
     return {
       show_export_modal: false,
-      publication_medias: [],
+      publication_medias: {},
       accepted_media_type: ["audio", "video"],
 
       preview_mode: this.$root.state.mode !== "live",
@@ -537,14 +538,17 @@ export default {
     },
 
     updatePageSizeAccordingToPanel() {
+      if (!this.$refs.panel) return;
       const panel_width = this.$refs.panel.offsetWidth;
       const current_page_el = this.$refs.current_page;
 
       if (current_page_el && panel_width > 0) {
-        const page = current_page_el.getElementsByClassName("m_page")[0];
-
-        const margins = 100;
-        if (!!page && panel_width < page.offsetWidth + margins) {
+        const page = current_page_el.querySelector(
+          ".m_drawingPad--backgroundContainer--background"
+          // ".m_page"
+        );
+        const margins = 150;
+        if (page && panel_width < page.offsetWidth + margins) {
           this.zoom = panel_width / (page.offsetWidth + margins);
         }
       }

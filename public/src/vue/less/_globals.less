@@ -53,10 +53,26 @@ button,
     color: @c-noir;
   }
 
-  &.bg-rouge,
-  &.bg-orange,
+  &.bg-rouge {
+    color: #fff;
+    &:hover,
+    &:active {
+      background-color: @c-rouge_fonce;
+    }
+  }
+  &.bg-orange {
+    color: #fff;
+    &:hover,
+    &:active {
+      background-color: @c-orange_fonce;
+    }
+  }
   &.bg-bleuvert {
     color: #fff;
+    &:hover,
+    &:active {
+      .bg-bleuvert_fonce;
+    }
   }
 
   &:focus {

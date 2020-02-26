@@ -183,6 +183,14 @@ export default {
               +new Date() +
               "_" +
               (Math.random().toString(36) + "00000000000000000").slice(2, 3)
+          },
+          {
+            type: "medias",
+            name: this.$t("media_layer_1"),
+            id:
+              +new Date() +
+              "_" +
+              (Math.random().toString(36) + "00000000000000000").slice(2, 3)
           }
         ];
         publidata.width = 200;
