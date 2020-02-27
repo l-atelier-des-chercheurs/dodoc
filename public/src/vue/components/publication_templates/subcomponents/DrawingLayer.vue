@@ -82,6 +82,8 @@ export default {
       if (this.$root.state.dev_mode === "debug")
         console.log(`WATCH • DrawingLayer: media.canvas_information`);
 
+      if (!this.canvas) return false;
+
       this.canvas.loadFromJSON(JSON.parse(this.media.canvas_information));
       // this.setDrawingOptions();
     },
@@ -89,6 +91,9 @@ export default {
       handler() {
         if (this.$root.state.dev_mode === "debug")
           console.log(`WATCH • DrawingLayer: drawing_options`);
+
+        if (!this.canvas) return false;
+
         this.setDrawingOptions();
       },
       deep: true
@@ -97,7 +102,9 @@ export default {
       handler() {
         if (this.$root.state.dev_mode === "debug")
           console.log(`WATCH • DrawingLayer: layer_options`);
-        // this.setDrawingOptions();
+
+        if (!this.canvas) return false;
+
         this.canvas
           .getObjects()
           .map(o => o.set("stroke", this.layer_options.color));
