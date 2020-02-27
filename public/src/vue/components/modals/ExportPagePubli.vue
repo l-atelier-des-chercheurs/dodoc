@@ -1,7 +1,11 @@
 <template>
-  <Modal @close="$emit('close')" class="m_exportModal" :typeOfModal="'EditMeta'">
+  <Modal
+    @close="$emit('close')"
+    class="m_exportModal"
+    :typeOfModal="'EditMeta'"
+  >
     <template slot="header">
-      <span class>{{ $t('export_creation') }}</span>
+      <span class>{{ $t("export_creation") }}</span>
     </template>
 
     <template slot="sidebar">
@@ -14,14 +18,16 @@
             :disabled="pdf_request_status !== false"
             @click="downloadPDF"
           >
-            <template v-if="!pdf_request_status">{{ $t('download_pdf') }}</template>
+            <template v-if="!pdf_request_status">{{
+              $t("download_pdf")
+            }}</template>
             <template v-else-if="pdf_request_status === 'waiting_for_server'">
               <span class="loader loader-xs" />
-              {{ $t('notifications.creation_in_progress') }}
+              {{ $t("notifications.creation_in_progress") }}
             </template>
-            <template
-              v-else-if="pdf_request_status === 'generated'"
-            >{{ $t('notifications.pdf_created') }}</template>
+            <template v-else-if="pdf_request_status === 'generated'">{{
+              $t("notifications.pdf_created")
+            }}</template>
           </button>
 
           <div v-if="pdf_request_status === 'generated'">
@@ -31,7 +37,8 @@
               :href="link_to_pdf"
               target="_blank"
               download
-            >{{ $t('download') }}</a>
+              >{{ $t("download") }}</a
+            >
             <!-- <a 
               v-if="path_to_pdf !== false && $root.state.is_electron"
               :href="path_to_pdf" target="_blank" 
@@ -44,7 +51,8 @@
               :href="link_to_pdf"
               target="_blank"
               class="buttonLink margin-left-none"
-            >{{ $t('open_in_app') }}</a>
+              >{{ $t("open_in_app") }}</a
+            >
 
             <AddCreationToProject
               v-if="link_to_pdf !== false"
@@ -68,7 +76,7 @@
             <template v-if="web_export_started">
               <span class="loader loader-xs" />
             </template>
-            {{ $t('download_website') }}
+            {{ $t("download_website") }}
           </button>
         </div>
 
@@ -81,7 +89,9 @@
             class="margin-small margin-left-none bg-bleumarine c-blanc button-allwide"
             @click="getLink"
             v-if="!show_link_infos"
-          >{{ $t('share') }}</button>
+          >
+            {{ $t("share") }}
+          </button>
 
           <CreateQRCode
             v-if="show_link_infos"
@@ -139,8 +149,11 @@ export default {
         this.publiIsGenerated
       );
 
-      this.$root.downloadPubliPDF({
-        slugPubliName: this.slugPubliName
+      this.$socketio.downloadPubliPDF({
+        slugPubliName: this.slugPubliName,
+        options: {
+          type: "pdf"
+        }
       });
       this.pdf_request_status = "waiting_for_server";
     },

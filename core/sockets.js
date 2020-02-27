@@ -475,25 +475,27 @@ module.exports = (function() {
     sendSpecificMedias({ type, medias_list, socket });
   }
 
-  function onDownloadPubliPDF(socket, { slugPubliName }) {
+  function onDownloadPubliPDF(socket, { slugPubliName, options }) {
     dev.logfunction(
       `EVENT - onDownloadPubliPDF with 
       slugPubliName = ${slugPubliName}`
     );
-    exporter.makePDFForPubli({ slugPubliName }).then(({ pdfName, pdfPath }) => {
-      notify({
-        socket,
-        localized_string: `finished_creating_recipe`,
-        type: "success"
-      });
+    exporter
+      .makePDFForPubli({ slugPubliName, options })
+      .then(({ pdfName, imageName, pdfPath }) => {
+        notify({
+          socket,
+          localized_string: `finished_creating_recipe`,
+          type: "success"
+        });
 
-      api.sendEventWithContent(
-        "publiPDFGenerated",
-        { pdfName, pdfPath },
-        io,
-        socket
-      );
-    });
+        api.sendEventWithContent(
+          "publiPDFGenerated",
+          { pdfName, imageName, pdfPath },
+          io,
+          socket
+        );
+      });
   }
 
   function onDownloadVideoPubli(socket, { slugPubliName, options }) {

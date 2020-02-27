@@ -985,14 +985,6 @@ let vm = new Vue({
       }
       this.settings.current_publication.slug = false;
     },
-    downloadPubliPDF({ slugPubliName }) {
-      if (window.state.dev_mode === "debug") {
-        console.log(`ROOT EVENT: downloadPubliPDF: ${slugPubliName}`);
-      }
-      this.$socketio.downloadPubliPDF({
-        slugPubliName
-      });
-    },
     listSpecificMedias(mdata) {
       if (window.state.dev_mode === "debug") {
         console.log(

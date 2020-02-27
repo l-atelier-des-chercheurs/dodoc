@@ -208,7 +208,7 @@ module.exports = (function() {
         );
       });
     },
-    makePDFForPubli: ({ slugPubliName }) => {
+    makePDFForPubli: ({ slugPubliName, options }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
           `EXPORTER — makePDFForPubli with slugPubliName = ${slugPubliName}`
@@ -216,21 +216,11 @@ module.exports = (function() {
 
         const urlToPubli = `${global.appInfos.homeURL}/_publications/print/${slugPubliName}`;
 
-        const pdfName =
-          slugPubliName +
-          "-" +
-          api.getCurrentDate() +
-          "-" +
-          (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2) +
-          ".pdf";
-
         const cachePath = path.join(
           global.tempStorage,
           global.settings.cacheDirname,
           "_publications"
         );
-
-        const pdfPath = path.join(cachePath, pdfName);
 
         file
           .getFolder({
@@ -245,9 +235,12 @@ module.exports = (function() {
               );
 
               const { BrowserWindow } = require("electron");
+
               let win = new BrowserWindow({
-                width: 800,
-                height: 600,
+                // width: 800,
+                // height: 600,
+                width: Math.floor(publiData.width * 3.8),
+                height: Math.floor(publiData.height * 3.8),
                 show: false
               });
               win.loadURL(urlToPubli);
@@ -255,25 +248,80 @@ module.exports = (function() {
               win.webContents.on("did-finish-load", () => {
                 // Use default printing options
                 setTimeout(() => {
-                  win.webContents.printToPDF(
-                    {
-                      marginsType: 1,
-                      pageSize: {
-                        width: publiData.width * 1000,
-                        height: publiData.height * 1000
-                      }
-                    },
-                    (error, data) => {
-                      if (error) throw error;
-                      fs.writeFile(pdfPath, data, error => {
+                  if (
+                    !options ||
+                    !options.hasOwnProperty("type") ||
+                    options.type.toLowerCase() === "pdf"
+                  ) {
+                    const pdfName =
+                      slugPubliName +
+                      "-" +
+                      api.getCurrentDate() +
+                      "-" +
+                      (Math.random().toString(36) + "00000000000000000").slice(
+                        2,
+                        3 + 2
+                      ) +
+                      ".pdf";
+                    const pdfPath = path.join(cachePath, pdfName);
+
+                    win.webContents.printToPDF(
+                      {
+                        marginsType: 1,
+                        pageSize: {
+                          width: publiData.width * 1000,
+                          height: publiData.height * 1000
+                        }
+                      },
+                      (error, data) => {
                         if (error) throw error;
-                        console.log("Write PDF successful");
-                        resolve({
-                          pdfName
+                        fs.writeFile(pdfPath, data, error => {
+                          if (error) throw error;
+
+                          dev.logverbose(
+                            `EXPORTER — makePDFForPubli : created PDF at ${pdfPath}`
+                          );
+
+                          resolve({
+                            pdfName
+                          });
                         });
-                      });
-                    }
-                  );
+                      }
+                    );
+                  } else if (options.type.toLowerCase() === "png") {
+                    const imageName =
+                      slugPubliName +
+                      "-" +
+                      api.getCurrentDate() +
+                      "-" +
+                      (Math.random().toString(36) + "00000000000000000").slice(
+                        2,
+                        3 + 2
+                      ) +
+                      ".png";
+                    const imagePath = path.join(cachePath, imageName);
+
+                    win.capturePage(
+                      // {
+                      //   x: 0,
+                      //   y: 0,
+                      //   width: Math.floor(publiData.width * 3.8),
+                      //   height: Math.floor(publiData.height * 3.8)
+                      // },
+                      image => {
+                        fs.writeFile(imagePath, image.toPNG(), error => {
+                          if (error) throw error;
+                          dev.logverbose(
+                            `EXPORTER — makePDFForPubli : created image at ${imagePath}`
+                          );
+
+                          resolve({
+                            imageName
+                          });
+                        });
+                      }
+                    );
+                  }
                 }, 1000);
               });
             });
