@@ -4019,6 +4019,8 @@ small {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     padding-top: 0;
+    // .padding-bottom-verysmall;
+
     .font-verysmall;
     box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
     max-height: 320px;
@@ -4052,11 +4054,28 @@ small {
       display: flex;
       align-items: center;
       .padding-verysmall;
+      .margin-sides-verysmall;
+      .margin-bottom-verysmall;
+
+      background-color: @c-gris_clair;
+      border-radius: 4px;
+      // border: 1px solid @c-noir;
 
       cursor: pointer;
 
       &.is--active {
-        background-color: @c-gris_clair;
+        background-color: @c-noir;
+        color: white;
+
+        ._vignette {
+          box-shadow: 0 1px 3px rgba(255, 255, 255, 0.3),
+            0 1px 2px rgba(255, 255, 255, 0.4);
+        }
+
+        button,
+        .label {
+          color: inherit;
+        }
       }
 
       > * {
@@ -4067,11 +4086,13 @@ small {
       ._vignette {
         // border: 2px solid @c-noir;
         padding: 0;
+        .margin-verysmall;
         flex: 0 0 auto;
         border-radius: 10px;
         width: 1rem;
         height: 1rem;
         overflow: hidden;
+        .boxs-card-1;
 
         > * {
           display: block;
@@ -4082,6 +4103,11 @@ small {
           margin-left: -0.5rem;
           padding: 0;
           border-bottom: 0;
+        }
+
+        &._vignette_medias {
+          background-color: @c-orange;
+          border-radius: 0;
         }
       }
 
