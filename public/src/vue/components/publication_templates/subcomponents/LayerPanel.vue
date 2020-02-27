@@ -38,7 +38,13 @@
     >
       <div class="margin-bottom-small">
         <label>{{ $t("layer_name") }}</label>
-        <input type="text" required autofocus v-model="new_layer_name" />
+        <input
+          type="text"
+          required
+          autofocus
+          ref="newLayerInputName"
+          v-model="new_layer_name"
+        />
       </div>
 
       <div class="margin-bottom-small">
@@ -212,6 +218,16 @@ export default {
         ];
       } else {
         this.$root.settings.current_publication.accepted_media_type = [];
+      }
+    },
+    show_create_layer_modal: function() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`WATCH • LayerPanel: show_create_layer_modal`);
+
+      if (this.show_create_layer_modal) {
+        this.$nextTick(() => {
+          this.$refs.newLayerInputName.focus();
+        });
       }
     }
   },
