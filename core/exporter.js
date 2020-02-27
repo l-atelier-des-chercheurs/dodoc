@@ -236,11 +236,30 @@ module.exports = (function() {
 
               const { BrowserWindow } = require("electron");
 
+              const number_of_pages =
+                publiData.hasOwnProperty("pages") &&
+                Array.isArray(publiData.pages)
+                  ? publiData.pages.length
+                  : 1;
+
+              const browser_size = {
+                width: Math.floor(publiData.width * 3.78),
+                // height: Math.floor(publiData.height * 3.78),
+                height:
+                  Math.floor(publiData.height * number_of_pages * 3.78) + 50
+              };
+
+              dev.logverbose(
+                `EXPORTER — makePDFForPubli : will create browser window with size ${JSON.stringify(
+                  browser_size
+                )}`
+              );
+
               let win = new BrowserWindow({
                 // width: 800,
                 // height: 600,
-                width: Math.floor(publiData.width * 3.8),
-                height: Math.floor(publiData.height * 3.8),
+                width: browser_size.width,
+                height: browser_size.height,
                 show: false
               });
               win.loadURL(urlToPubli);
@@ -263,7 +282,7 @@ module.exports = (function() {
                         3 + 2
                       ) +
                       ".pdf";
-                    const pdfPath = path.join(cachePath, pdfName);
+                    const docPath = path.join(cachePath, pdfName);
 
                     win.webContents.printToPDF(
                       {
@@ -275,15 +294,16 @@ module.exports = (function() {
                       },
                       (error, data) => {
                         if (error) throw error;
-                        fs.writeFile(pdfPath, data, error => {
+                        fs.writeFile(docPath, data, error => {
                           if (error) throw error;
 
                           dev.logverbose(
-                            `EXPORTER — makePDFForPubli : created PDF at ${pdfPath}`
+                            `EXPORTER — makePDFForPubli : created PDF at ${docPath}`
                           );
 
                           resolve({
-                            pdfName
+                            pdfName,
+                            docPath
                           });
                         });
                       }
@@ -299,23 +319,43 @@ module.exports = (function() {
                         3 + 2
                       ) +
                       ".png";
-                    const imagePath = path.join(cachePath, imageName);
+                    const docPath = path.join(cachePath, imageName);
+
+                    let position_of_page_to_export = {
+                      x: 0,
+                      y: 0
+                    };
+
+                    if (options.hasOwnProperty("page_to_export")) {
+                      position_of_page_to_export.y = Math.floor(
+                        options.page_to_export * publiData.height * 3.78
+                      );
+                    }
+
+                    dev.logverbose(
+                      `EXPORTER — makePDFForPubli : will capture page at ${JSON.stringify(
+                        position_of_page_to_export
+                      )}`
+                    );
 
                     win.capturePage(
-                      // {
-                      //   x: 0,
-                      //   y: 0,
-                      //   width: Math.floor(publiData.width * 3.8),
-                      //   height: Math.floor(publiData.height * 3.8)
-                      // },
+                      {
+                        x: position_of_page_to_export.x,
+                        y: position_of_page_to_export.y,
+                        width: browser_size.width,
+                        height: Math.floor(publiData.height * 3.78)
+                        // width: Math.floor(publiData.width * 3.8),
+                        // height: Math.floor(publiData.height * 3.8)
+                      },
                       image => {
-                        fs.writeFile(imagePath, image.toPNG(), error => {
+                        fs.writeFile(docPath, image.toPNG(), error => {
                           if (error) throw error;
                           dev.logverbose(
-                            `EXPORTER — makePDFForPubli : created image at ${imagePath}`
+                            `EXPORTER — makePDFForPubli : created image at ${docPath}`
                           );
 
                           resolve({
+                            docPath,
                             imageName
                           });
                         });

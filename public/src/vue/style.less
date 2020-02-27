@@ -5845,7 +5845,7 @@ body[data-mode="link_publication"] {
   }
 }
 
-@media print {
+body[data-mode="print_publication"] {
   #systemBar,
   .m_topbar,
   .m_activitiesPanel--do,
@@ -5870,6 +5870,10 @@ body[data-mode="link_publication"] {
   body {
     width: var(--page-width);
     height: var(--page-height);
+  }
+
+  #app {
+    overflow: visible;
   }
 
   .m_activitiesPanel--doc {

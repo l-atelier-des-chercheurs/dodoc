@@ -11,55 +11,86 @@
     <template slot="sidebar">
       <div class="margin-sides-medium font-small">
         <div class>
-          <div v-html="$t('get_pdf')" />
+          <div class="margin-bottom-small">
+            <div v-html="$t('get_pdf')" />
+          </div>
+          <div class="margin-bottom-small">
+            <label>{{ $t("type") }}</label>
+            <select v-model="export_type">
+              <option value="pdf">{{ $t("multipage_pdf") }}</option>
+              <option value="png">{{ $t("singlepage_image") }}</option>
+            </select>
+          </div>
+
+          <div
+            v-if="
+              export_type === 'png' &&
+                Array.isArray(publication.pages) &&
+                publication.pages.length > 1
+            "
+            class="margin-bottom-small"
+          >
+            <label>{{ $t("page") }}</label>
+            <input
+              type="number"
+              step="1"
+              min="1"
+              :max="publication.pages.length"
+              v-model="pagenumber_to_export"
+            />
+          </div>
+
           <button
             type="button"
             class="margin-small margin-left-none bg-bleuvert c-blanc button-allwide"
-            :disabled="pdf_request_status !== false"
-            @click="downloadPDF"
+            :disabled="doc_request_status !== false"
+            @click="downloadDoc"
           >
-            <template v-if="!pdf_request_status">{{
+            <template v-if="!doc_request_status">{{
               $t("download_pdf")
             }}</template>
-            <template v-else-if="pdf_request_status === 'waiting_for_server'">
+            <template v-else-if="doc_request_status === 'waiting_for_server'">
               <span class="loader loader-xs" />
               {{ $t("notifications.creation_in_progress") }}
             </template>
-            <template v-else-if="pdf_request_status === 'generated'">{{
+            <template v-else-if="doc_request_status === 'generated'">{{
               $t("notifications.pdf_created")
             }}</template>
           </button>
 
-          <div v-if="pdf_request_status === 'generated'">
+          <div v-if="doc_request_status === 'generated'">
             <a
-              v-if="link_to_pdf !== false"
+              v-if="link_to_doc !== false"
               class="buttonLink margin-left-none"
-              :href="link_to_pdf"
+              :href="link_to_doc"
               target="_blank"
               download
               >{{ $t("download") }}</a
             >
             <!-- <a 
-              v-if="path_to_pdf !== false && $root.state.is_electron"
-              :href="path_to_pdf" target="_blank" 
+              v-if="path_to_doc !== false && $root.state.is_electron"
+              :href="path_to_doc" target="_blank" 
               class="buttonLink margin-left-none js--openInNativeApp"
             >
               {{ $t('open_in_app') }}
             </a>-->
-            <a
-              v-if="link_to_pdf !== false && $root.state.is_electron"
-              :href="link_to_pdf"
-              target="_blank"
-              class="buttonLink margin-left-none"
-              >{{ $t("open_in_app") }}</a
-            >
+            <template v-if="link_to_doc !== false">
+              <img :src="link_to_doc" />
 
-            <AddCreationToProject
-              v-if="link_to_pdf !== false"
-              :publication="publication"
-              :media_filename="exported_pdf_name"
-              @close="$emit('close')"
-            />
+              <a
+                v-if="$root.state.is_electron"
+                :href="link_to_doc"
+                target="_blank"
+                class="buttonLink margin-left-none"
+                >{{ $t("open_in_app") }}</a
+              >
+
+              <AddCreationToProject
+                :publication="publication"
+                :media_filename="exported_doc_name"
+                @close="$emit('close')"
+              />
+            </template>
           </div>
         </div>
 
@@ -121,43 +152,56 @@ export default {
   },
   data() {
     return {
-      pdf_request_status: false,
-      link_to_pdf: false,
-      path_to_pdf: false,
+      doc_request_status: false,
+      link_to_doc: false,
+      path_to_doc: false,
       web_export_started: false,
-      exported_pdf_name: "",
-      show_link_infos: false
+      exported_doc_name: "",
+      show_link_infos: false,
+
+      export_type: "png",
+      pagenumber_to_export: 1
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
 
-  watch: {},
+  watch: {
+    pagenumber_to_export: function() {
+      this.doc_request_status = false;
+    }
+  },
   computed: {},
   methods: {
-    downloadPDF() {
+    downloadDoc() {
       if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • ExportPagePubli: downloadPDF`);
+        console.log(`METHODS • ExportPagePubli: downloadDoc`);
       }
 
-      this.link_to_pdf = false;
-      this.path_to_pdf = false;
+      this.link_to_doc = false;
+      this.path_to_doc = false;
 
       this.$eventHub.$on(
         "socketio.publication.pdfIsGenerated",
         this.publiIsGenerated
       );
 
+      let options = {
+        type: this.export_type
+      };
+
+      if (options.type === "png") {
+        options.page_to_export = this.pagenumber_to_export - 1;
+      }
+
       this.$socketio.downloadPubliPDF({
         slugPubliName: this.slugPubliName,
-        options: {
-          type: "pdf"
-        }
+        options
       });
-      this.pdf_request_status = "waiting_for_server";
+      this.doc_request_status = "waiting_for_server";
     },
-    publiIsGenerated({ pdfName, pdfPath }) {
+    publiIsGenerated({ pdfName, docPath, imageName }) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • Publication: publiIsGenerated`);
       }
@@ -166,10 +210,12 @@ export default {
         this.publiIsGenerated
       );
 
-      this.pdf_request_status = "generated";
-      this.exported_pdf_name = pdfName;
-      this.link_to_pdf =
-        window.location.origin + "/_publications/print/pdf/" + pdfName;
+      this.doc_request_status = "generated";
+      this.exported_doc_name = pdfName ? pdfName : imageName;
+      this.link_to_doc =
+        window.location.origin +
+        "/_publications/print/doc/" +
+        this.exported_doc_name;
     },
     downloadWeb() {
       if (this.$root.state.dev_mode === "debug") {

@@ -482,7 +482,7 @@ module.exports = (function() {
     );
     exporter
       .makePDFForPubli({ slugPubliName, options })
-      .then(({ pdfName, imageName, pdfPath }) => {
+      .then(({ pdfName, imageName, docPath }) => {
         notify({
           socket,
           localized_string: `finished_creating_recipe`,
@@ -491,7 +491,7 @@ module.exports = (function() {
 
         api.sendEventWithContent(
           "publiPDFGenerated",
-          { pdfName, imageName, pdfPath },
+          { pdfName, imageName, docPath },
           io,
           socket
         );

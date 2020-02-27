@@ -454,7 +454,9 @@ let vm = new Vue({
       });
     }
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$root.settings.current_publication.page_id = false;
+  },
   watch: {
     "settings.has_modal_opened": function() {
       if (window.state.dev_mode === "debug") {

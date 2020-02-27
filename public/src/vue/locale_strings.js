@@ -209,6 +209,14 @@ module.exports = (function() {
       oc: "Fichièr",
       de: "Datei"
     },
+    multipage_pdf: {
+      fr: "PDF (toutes les pages)",
+      en: "PDF (all pages)"
+    },
+    singlepage_image: {
+      fr: "Image (une seule page)",
+      en: "Image (single page)"
+    },
     add_to_project: {
       fr: "Ajouter au projet&nbsp;:",
       en: "Add to project:",
