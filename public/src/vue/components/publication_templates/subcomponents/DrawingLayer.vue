@@ -29,7 +29,12 @@ export default {
   },
   created() {},
   mounted() {
-    this.$loadScript("/libs/fabric.min.js").then(() => {
+    const path_to_fabric =
+      this.$root.state.mode === "export_publication"
+        ? "./_libs/fabric.min.js"
+        : "/libs/fabric.min.js";
+
+    this.$loadScript(path_to_fabric).then(() => {
       document.addEventListener("keyup", this.captureKeyListener);
 
       this.$eventHub.$on("remove_selection", this.removeSelection);
@@ -109,6 +114,7 @@ export default {
           .getObjects()
           .map(o => o.set("stroke", this.layer_options.color));
         this.canvas.renderAll();
+        this.setDrawingOptions();
       },
       deep: true
     }
@@ -163,9 +169,9 @@ export default {
       this.canvas.freeDrawingBrush.width = this.drawing_options.width;
       this.canvas.freeDrawingBrush.color = this.layer_options.color;
 
-      this.$nextTick(() => {
-        this.updateLinksList();
-      });
+      // this.$nextTick(() => {
+      //   this.updateLinksList();
+      // });
     },
     removeSelection: function() {
       this.canvas.getActiveObjects().forEach(obj => {

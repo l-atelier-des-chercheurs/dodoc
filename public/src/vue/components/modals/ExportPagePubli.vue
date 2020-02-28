@@ -157,7 +157,7 @@ export default {
       exported_doc_name: "",
       show_link_infos: false,
 
-      export_type: "png",
+      export_type: "pdf",
       pagenumber_to_export: 1
     };
   },

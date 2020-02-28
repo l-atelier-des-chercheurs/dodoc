@@ -58,7 +58,7 @@ module.exports = (function() {
             });
             tasks.push(storeHTMLInIndexFile);
 
-            ["dist", "fonts", "images"].forEach(f => {
+            ["dist", "fonts", "images", "libs"].forEach(f => {
               const copyFrontEndFiles = new Promise((resolve, reject) => {
                 let productionFolder = path.join(global.appRoot, "public", f);
                 let productionFolderInCache = path.join(cachePath, "_" + f);

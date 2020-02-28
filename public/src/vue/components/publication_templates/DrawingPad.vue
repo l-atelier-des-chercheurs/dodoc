@@ -177,6 +177,13 @@
     </div>
 
     <LayerPanel
+      v-if="
+        ![
+          'export_publication',
+          'print_publication',
+          'link_publication'
+        ].includes($root.state.mode)
+      "
       :layers="layers"
       :publication="publication"
       :slugPubliName="slugPubliName"
@@ -189,7 +196,7 @@
     />
 
     <div class="m_drawingPad" ref="current_page">
-      <div :style="pad_size">
+      <div class="m_drawingPad--content" :style="pad_size">
         <div
           :key="'background'"
           class="m_drawingPad--layer m_drawingPad--layer_background"
@@ -308,13 +315,19 @@ export default {
       ? this.$refs.mmMeasurer.offsetWidth / 10
       : 3.8;
 
-    this.$nextTick(() => {
-      this.updatePageSizeAccordingToPanel();
-      this.$eventHub.$on(
-        "activity_panels_resized",
-        this.updatePageSizeAccordingToPanel
-      );
-    });
+    if (
+      !["export_publication", "print_publication", "link_publication"].includes(
+        this.$root.state.mode
+      )
+    ) {
+      this.$nextTick(() => {
+        this.updatePageSizeAccordingToPanel();
+        this.$eventHub.$on(
+          "activity_panels_resized",
+          this.updatePageSizeAccordingToPanel
+        );
+      });
+    }
 
     this.$eventHub.$on("publication.addMedia", this.addMedia);
     this.$eventHub.$on(
@@ -382,7 +395,15 @@ export default {
       return this.publication.layers;
     },
     pad_size() {
-      return `width: ${this.publication.width}mm; height: ${this.publication.height}mm;`;
+      if (
+        [
+          "export_publication",
+          "print_publication",
+          "link_publication"
+        ].includes(this.$root.state.mode)
+      ) {
+        return `width: ${this.publication.width}mm; height: ${this.publication.height}mm;`;
+      }
     },
     selected_layer() {
       if (!this.$root.settings.current_publication.layer_id) return false;

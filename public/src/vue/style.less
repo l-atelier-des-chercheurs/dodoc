@@ -4726,7 +4726,7 @@ small {
       margin: 0;
       > * {
         position: relative;
-        transform-origin: center center;
+        transform-origin: top left;
         margin: 0 auto;
         background-color: transparent;
         transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
@@ -4740,6 +4740,7 @@ small {
   }
 
   .m_drawingLayer--content {
+    margin: 0 auto;
   }
 }
 
@@ -5851,6 +5852,11 @@ body[data-mode="link_publication"] {
 
   .m_page {
     box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  .m_drawingPad--content {
+    // width: 100%;
+    // height: 100%;
   }
 }
 
