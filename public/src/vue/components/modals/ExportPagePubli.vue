@@ -73,7 +73,7 @@
               {{ $t('open_in_app') }}
             </a>-->
             <template v-if="link_to_doc !== false">
-              <img :src="link_to_doc" />
+              <!-- <img :src="link_to_doc" /> -->
 
               <a
                 v-if="$root.state.is_electron"
