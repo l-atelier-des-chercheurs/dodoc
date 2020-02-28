@@ -60,7 +60,7 @@ module.exports = (function() {
             });
             tasks.push(storeHTMLInIndexFile);
 
-            ["dist", "fonts", "images"].forEach(f => {
+            ["dist", "fonts", "images", "libs"].forEach(f => {
               const copyFrontEndFiles = new Promise((resolve, reject) => {
                 let productionFolder = path.join(global.appRoot, "public", f);
                 let productionFolderInCache = path.join(cachePath, "_" + f);
@@ -210,29 +210,23 @@ module.exports = (function() {
         );
       });
     },
-    makePDFForPubli: ({ slugPubliName }) => {
+    makePDFForPubli: ({ slugPubliName, options }) => {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
           `EXPORTER — makePDFForPubli with slugPubliName = ${slugPubliName}`
         );
 
-        const urlToPubli = `${global.appInfos.homeURL}/_publications/print/${slugPubliName}`;
+        let urlToPubli = `${global.appInfos.homeURL}/_publications/print/${slugPubliName}`;
 
-        const pdfName =
-          slugPubliName +
-          "-" +
-          api.getCurrentDate() +
-          "-" +
-          (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2) +
-          ".pdf";
+        if (options.hasOwnProperty("page_to_export")) {
+          urlToPubli += `?page=${options.page_to_export}`;
+        }
 
         const cachePath = path.join(
           global.tempStorage,
           global.settings.cacheDirname,
           "_publications"
         );
-
-        const pdfPath = path.join(cachePath, pdfName);
 
         file
           .getFolder({
@@ -256,26 +250,76 @@ module.exports = (function() {
                   return browser.newPage();
                 })
                 .then(page => {
+                  page.setViewport({
+                    width: Math.floor(publiData.width * 3.78),
+                    height: Math.floor(publiData.height * 3.78) + 25, // totally arbitrary value… will have to find better
+                    deviceScaleFactor: 1
+                  });
                   page
                     .goto(urlToPubli, {
                       waitUntil: "networkidle2"
                     })
                     .then(() => {
-                      page.emulateMedia("print");
-                      page
-                        .pdf({
-                          path: pdfPath,
-                          printBackground: true,
-                          width: `${publiData.width}mm`,
-                          height: `${publiData.height}mm`
-                        })
-                        .then(() => {
-                          console.log("Write PDF successful");
-                          resolve({
-                            pdfName,
-                            pdfPath
+                      if (
+                        !options ||
+                        !options.hasOwnProperty("type") ||
+                        options.type.toLowerCase() === "pdf"
+                      ) {
+                        const pdfName =
+                          slugPubliName +
+                          "-" +
+                          api.getCurrentDate() +
+                          "-" +
+                          (
+                            Math.random().toString(36) + "00000000000000000"
+                          ).slice(2, 3 + 2) +
+                          ".pdf";
+                        const docPath = path.join(cachePath, pdfName);
+
+                        page.emulateMedia("print");
+                        page
+                          .pdf({
+                            path: docPath,
+                            printBackground: true,
+                            width: `${publiData.width}mm`,
+                            height: `${publiData.height}mm`
+                          })
+                          .then(() => {
+                            dev.logverbose(
+                              `EXPORTER — makePDFForPubli : created PDF at ${docPath}`
+                            );
+
+                            resolve({
+                              pdfName,
+                              docPath
+                            });
+                          });
+                      } else if (options.type.toLowerCase() === "png") {
+                        const imageName =
+                          slugPubliName +
+                          "-" +
+                          api.getCurrentDate() +
+                          "-" +
+                          (
+                            Math.random().toString(36) + "00000000000000000"
+                          ).slice(2, 3 + 2) +
+                          ".png";
+                        const docPath = path.join(cachePath, imageName);
+
+                        page.screenshot(image_data => {
+                          fs.writeFile(docPath, image_data, error => {
+                            if (error) throw error;
+                            dev.logverbose(
+                              `EXPORTER — makePDFForPubli : created image at ${docPath}`
+                            );
+
+                            resolve({
+                              docPath,
+                              imageName
+                            });
                           });
                         });
+                      }
                     });
                 });
             });

@@ -209,6 +209,14 @@ module.exports = (function() {
       oc: "Fichièr",
       de: "Datei"
     },
+    multipage_pdf: {
+      fr: "PDF (toutes les pages)",
+      en: "PDF (all pages)"
+    },
+    singlepage_image: {
+      fr: "Image (une seule page)",
+      en: "Image (single page)"
+    },
     add_to_project: {
       fr: "Ajouter au projet&nbsp;:",
       en: "Add to project:",
@@ -1346,6 +1354,12 @@ module.exports = (function() {
       de:
         "Um Autoren  zu erstellen, schliessen Sie dieses Fenster und klicken Sie auf die Schaltfläche (Autoren)."
     },
+    attached_to_project_instructions: {
+      fr:
+        "Ce champ est utilisé pour retrouver plus facilement les recettes en lien avec un projet.",
+      en:
+        "This information is used only to make it easier to find all the recipes linked to a specific project."
+    },
     translate_dodoc_instructions: {
       fr:
         "Pour proposer une nouvelle traduction, rendez-vous sur le <a href='https://forum.latelier-des-chercheurs.fr/t/traduire-do-doc-comment-s-y-prendre/' class='js--openInBrowser' target='_blank'>forum dédié</a> ou contactez-nous par mail : <a href='mailto:info@latelier-des-chercheurs.fr?subject=traduire%20do•doc' class='js--openInBrowser' target='_blank'>info@latelier-des-chercheurs.fr</a>.",
@@ -1905,13 +1919,6 @@ module.exports = (function() {
         "Per recuperar un PDF d'aquesta recèpta (per exemple per l'estampar), clicatz sul boton çai-jos :",
       de:
         "Um ein PDF dieser Veröffentlichung zu erhalten (z.B.um es auszudrucken), klicken Sie auf die Schaltfläche unten."
-    },
-    download_pdf: {
-      fr: "Télécharger un PDF",
-      en: "Download PDF",
-      nl: "Download PDF",
-      oc: "Telecargar un PDF",
-      de: "Laden Sie ein eine PDF-Datei herunter"
     },
     get_website: {
       fr:
@@ -2544,12 +2551,12 @@ module.exports = (function() {
         oc: "Connexion a do•doc en utilizant lo mot de Santa Clara enregistrat",
         de: "Anmeldung zu do•doc mit dem registrierten Passwort."
       },
-      pdf_created: {
-        fr: "Le PDF a été créé",
-        en: "PDF created",
-        nl: "De pdf is gemaakt",
-        oc: "Lo PDF es estat creat",
-        de: "Das PDF wurde erstellt."
+      doc_created: {
+        fr: "Le document a été créé",
+        en: "The document was created",
+        nl: "De document is gemaakt",
+        oc: "Lo document es estat creat",
+        de: "Das Dokument wurde erstellt."
       },
       video_created: {
         fr: "La vidéo a été créée",

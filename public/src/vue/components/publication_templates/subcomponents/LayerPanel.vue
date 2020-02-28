@@ -17,14 +17,18 @@
         class="buttonLink"
         @click="show_create_layer_modal = false"
         v-else
-      >{{ $t('cancel') }}</button>
+      >
+        {{ $t("cancel") }}
+      </button>
 
       <button
         type="button"
         class="buttonLink"
         :class="{ 'is--active': show_create_layer_modal }"
         @click="show_create_layer_modal = !show_create_layer_modal"
-      >{{ $t("create") }}</button>
+      >
+        {{ $t("create") }}
+      </button>
     </div>
 
     <form
@@ -34,7 +38,13 @@
     >
       <div class="margin-bottom-small">
         <label>{{ $t("layer_name") }}</label>
-        <input type="text" required autofocus v-model="new_layer_name" />
+        <input
+          type="text"
+          required
+          autofocus
+          ref="newLayerInputName"
+          v-model="new_layer_name"
+        />
       </div>
 
       <div class="margin-bottom-small">
@@ -44,8 +54,12 @@
           <option value="medias">{{ $t("medias") }}</option>
         </select>
         <small>
-          <template v-if="new_layer_type === 'drawing'">{{ $t("drawing_layer_instructions") }}</template>
-          <template v-else-if="new_layer_type === 'medias'">{{ $t("medias_layer_instructions") }}</template>
+          <template v-if="new_layer_type === 'drawing'">{{
+            $t("drawing_layer_instructions")
+          }}</template>
+          <template v-else-if="new_layer_type === 'medias'">{{
+            $t("medias_layer_instructions")
+          }}</template>
         </small>
       </div>
 
@@ -55,26 +69,40 @@
         :disabled="!new_layer_name"
       />
     </form>
-    <div
+
+    <SlickList
       v-else-if="show_layers"
-      v-for="layer in layers.slice().reverse()"
-      :key="layer.id"
-      class="m_layerPanel--layer"
-      :class="{
-        'is--active': layer.id === $root.settings.current_publication.layer_id
-      }"
-      @click.stop="toggleActiveLayer(layer.id)"
+      v-model="sorted_layers"
+      lockAxis="y"
+      axis="y"
+      :useDragHandle="true"
     >
-      <div class="_vignette">
-        <input
-          v-if="layer.type === 'drawing'"
-          type="color"
-          :value="layer.color"
-          @change="updateLayerColor({ $event, id: layer.id })"
-        />
-        <div v-else class="_media_vignette"></div>
-      </div>
-      <!-- <button
+      <SlickItem
+        v-for="(layer, index) in sorted_layers"
+        :key="layer.id"
+        :index="index"
+        style="z-index: 1;"
+      >
+        <div
+          @click="toggleActiveLayer(layer.id)"
+          class="m_layerPanel--layer"
+          :class="{
+            'is--active':
+              layer.id === $root.settings.current_publication.layer_id
+          }"
+        >
+          <div class="_vignette" :class="['_vignette_' + layer.type]">
+            <input
+              v-if="layer.type === 'drawing'"
+              type="color"
+              @click.stop="
+                $root.settings.current_publication.layer_id = layer.id
+              "
+              :value="layer.color"
+              @change="updateLayerColor({ $event, id: layer.id })"
+            />
+          </div>
+          <!-- <button
         type="button"
         class="buttonLink _no_underline"
         @click.stop="toggleActiveLayer(layer.id)"
@@ -102,63 +130,72 @@
           />
         </svg>
       </button>-->
-      <div class>
-        <span class="text-ellipsis">{{ layer.name }}</span>
-        <br />
-        <span class="label">
-          <template v-if="layer.type === 'drawing'">{{ $t("drawing") }}</template>
-          <template v-if="layer.type === 'medias'">
-            <template v-if="!mediasFromLayer(layer.id)">{{ $t("media") }}</template>
-            <template v-else>
-              <template v-if="mediasFromLayer(layer.id).length === 1">
-                {{
-                mediasFromLayer(layer.id).length +
-                " " +
-                $t("media").toLowerCase()
-                }}
+          <div class>
+            <span class="text-ellipsis">{{ layer.name }}</span>
+            <br />
+            <span class="label">
+              <template v-if="layer.type === 'drawing'">{{
+                $t("drawing")
+              }}</template>
+              <template v-if="layer.type === 'medias'">
+                <template v-if="!mediasFromLayer(layer.id)">{{
+                  $t("media")
+                }}</template>
+                <template v-else>
+                  <template v-if="mediasFromLayer(layer.id).length === 1">
+                    {{
+                      mediasFromLayer(layer.id).length +
+                        " " +
+                        $t("media").toLowerCase()
+                    }}
+                  </template>
+                  <template v-else>
+                    {{
+                      mediasFromLayer(layer.id).length +
+                        " " +
+                        $t("medias").toLowerCase()
+                    }}
+                  </template>
+                </template>
               </template>
-              <template v-else>
-                {{
-                mediasFromLayer(layer.id).length +
-                " " +
-                $t("medias").toLowerCase()
-                }}
-              </template>
-            </template>
-          </template>
-        </span>
-      </div>
-      <button
-        v-if="layer.id === $root.settings.current_publication.layer_id"
-        type="button"
-        class="buttonLink _no_underline"
-        @click.stop="removeLayer(layer.id)"
-        :disabled="read_only"
-      >
-        <svg
-          version="1.1"
-          class="inline-svg"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          x="0px"
-          y="0px"
-          width="91.6px"
-          height="95px"
-          viewBox="0 0 91.6 95"
-          style="enable-background:new 0 0 91.6 95;"
-          xml:space="preserve"
-        >
-          <path
-            class="st0"
-            d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
+            </span>
+          </div>
+          <button
+            v-if="layer.id === $root.settings.current_publication.layer_id"
+            type="button"
+            class="buttonLink _no_underline"
+            @click.stop="removeLayer(layer.id)"
+            :disabled="read_only"
+          >
+            <svg
+              version="1.1"
+              class="inline-svg"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="91.6px"
+              height="95px"
+              viewBox="0 0 91.6 95"
+              style="enable-background:new 0 0 91.6 95;"
+              xml:space="preserve"
+            >
+              <path
+                d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
             l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
-          />
-        </svg>
-      </button>
-    </div>
+              />
+            </svg>
+          </button>
+
+          <div v-handle class="_handle" />
+        </div>
+      </SlickItem>
+    </SlickList>
   </div>
 </template>
 <script>
+import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
+
 export default {
   props: {
     layers: Array,
@@ -166,7 +203,11 @@ export default {
     slugPubliName: String,
     publication: Object
   },
-  components: {},
+  components: {
+    SlickItem,
+    SlickList
+  },
+  directives: { handle: HandleDirective },
   data() {
     return {
       show_create_layer_modal: false,
@@ -202,9 +243,35 @@ export default {
       } else {
         this.$root.settings.current_publication.accepted_media_type = [];
       }
+    },
+    show_create_layer_modal: function() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`WATCH • LayerPanel: show_create_layer_modal`);
+
+      if (this.show_create_layer_modal) {
+        this.$nextTick(() => {
+          this.$refs.newLayerInputName.focus();
+        });
+      }
     }
   },
   computed: {
+    sorted_layers: {
+      get() {
+        return this.layers.slice().reverse();
+      },
+      set(new_layers) {
+        const layers = new_layers.reverse();
+        this.layers = layers;
+        this.$root.editFolder({
+          type: "publications",
+          slugFolderName: this.slugPubliName,
+          data: {
+            layers
+          }
+        });
+      }
+    },
     current_layer() {
       if (
         !this.$root.settings.current_publication.layer_id ||
@@ -223,21 +290,10 @@ export default {
       if (id === this.$root.settings.current_publication.layer_id)
         this.$root.settings.current_publication.layer_id = false;
       else this.$root.settings.current_publication.layer_id = id;
-      console.log(this.$root.settings.current_publication.layer_id);
     },
     mediasFromLayer(id) {
       if (typeof this.medias !== "object") return [];
       return Object.values(this.medias).filter(m => m.layer_id === id);
-    },
-    newLayerCreated(mdata) {
-      if (this.$root.justCreatedMediaID === mdata.id) {
-        this.$root.justCreatedMediaID = false;
-        this.$eventHub.$off(
-          "socketio.media_created_or_updated",
-          this.newLayerCreated
-        );
-        this.toggleActiveLayer(mdata.layer_id);
-      }
     },
     updateLayerColor({ $event, id }) {
       const new_color = $event.target.value;
@@ -272,7 +328,7 @@ export default {
         type: this.new_layer_type,
         name: this.new_layer_name,
         id: layer_id,
-        color: "#000"
+        color: "#000000"
       });
 
       this.$root.editFolder({
@@ -283,12 +339,12 @@ export default {
         }
       });
 
+      this.$eventHub.$once("socketio.publications.folder_listed", () =>
+        this.toggleActiveLayer(layer_id)
+      );
+
       // if creating a drawing layer, we’ll need to create the media that will
       // store its content as well
-      this.$eventHub.$on(
-        "socketio.media_created_or_updated",
-        this.newLayerCreated
-      );
 
       if (this.new_layer_type === "drawing") {
         this.$root.createMedia({

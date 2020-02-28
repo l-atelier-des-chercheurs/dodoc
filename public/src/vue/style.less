@@ -1919,7 +1919,7 @@ small {
     .mediaContainer {
       position: relative;
       // .margin-verysmall;
-      // .bg-gris_tresclair;
+      .bg-gris_tresclair;
       overflow: hidden;
 
       &::after {
@@ -2333,7 +2333,6 @@ small {
   text-transform: initial;
 
   font-family: "Fira Mono";
-  font-weight: 00;
 
   > .input {
     border: none !important;
@@ -3853,8 +3852,7 @@ small {
   }
 
   .m_publicationMeta--topbar {
-    // background-color: rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
+    border-radius: 2px;
     margin: 0;
     display: flex;
     flex-flow: row wrap;
@@ -3863,10 +3861,12 @@ small {
     align-items: center;
 
     .bg-blanc;
-    .boxs-card-1;
+    .boxs-card-0;
 
-    .margin-top-small;
-    .margin-right-small;
+    // .margin-top-small;
+    // .margin-right-small;
+    // margin-top: 2px;
+    // margin-right: 2px;
     .padding-vert-verysmall;
 
     > * {
@@ -4019,6 +4019,8 @@ small {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     padding-top: 0;
+    // .padding-bottom-verysmall;
+
     .font-verysmall;
     box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
     max-height: 320px;
@@ -4042,57 +4044,6 @@ small {
 
     .label {
       font-size: 0.7rem;
-    }
-
-    .m_layerPanel--layer {
-      // border: 2px solid @c-gris;
-      // height: 4em;
-      // border-radius: 4em;
-
-      display: flex;
-      align-items: center;
-      .padding-verysmall;
-
-      cursor: pointer;
-
-      &.is--active {
-        background-color: @c-gris_clair;
-      }
-
-      > * {
-        flex: 1 1 auto;
-        .padding-sides-verysmall;
-      }
-
-      ._vignette {
-        // border: 2px solid @c-noir;
-        padding: 0;
-        flex: 0 0 auto;
-        border-radius: 10px;
-        width: 1rem;
-        height: 1rem;
-        overflow: hidden;
-
-        > * {
-          display: block;
-          width: 1.5rem;
-          height: 1.5rem;
-          margin: 0;
-          margin-top: -0.5rem;
-          margin-left: -0.5rem;
-          padding: 0;
-          border-bottom: 0;
-        }
-      }
-
-      // background-color: var(--c-noir);
-      // color: #fff;
-
-      button {
-        flex: 0 0 auto;
-        margin: 0;
-        // background-color: var(--c-noir);
-      }
     }
 
     > button {
@@ -4280,6 +4231,7 @@ small {
         .m_publicationview--pages--contactSheet--pages--page {
           position: relative;
           .margin-small;
+          .boxs-card-2;
 
           &.m_publicationview--pages--contactSheet--pages--page_create {
             .label;
@@ -4303,21 +4255,31 @@ small {
           }
           .m_publicationview--pages--contactSheet--pages--page--pageNumber {
             position: absolute;
-            top: 0;
-            left: 0;
-            .bg-blanc;
+            bottom: 0;
+            right: 0;
+            width: 1.5em;
+            height: 1.5em;
+            z-index: 100;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
             .font-verysmall;
-            .padding-sides-verysmall;
-            font-weight: bold;
+            .margin-verysmall;
+            // .padding-sides-verysmall;
+            // font-weight: bold;
+            .label;
+            color: #000;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
 
           .m_publicationview--pages--contactSheet--pages--page--buttons {
             position: absolute;
-            left: 0;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
+            left: -5px;
+            top: -5px;
+            right: -5px;
+            bottom: -5px;
             background-color: fade(@c-bleuvert_fonce, 90%);
 
             display: flex;
@@ -4661,8 +4623,8 @@ small {
 
 .m_drawingPad {
   position: relative;
-  width: 100%;
-  height: 100%;
+  // width: 100%;
+  // height: 100%;
   overflow: auto;
   -webkit-print-color-adjust: exact;
   .padding-medium;
@@ -4673,9 +4635,7 @@ small {
 
   .m_drawingPad--layer {
     position: absolute;
-    margin: @t-skipline / 2 auto;
-
-    transition: all 0.2s;
+    // margin: @t-skipline / 2 auto;
 
     &.is--inactive {
       pointer-events: none;
@@ -4694,7 +4654,7 @@ small {
         transform-origin: top left;
         margin: 0 auto;
         background-color: transparent;
-        transition: all 0.2s;
+        transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
       }
     }
 
@@ -4705,6 +4665,110 @@ small {
   }
 
   .m_drawingLayer--content {
+    margin: 0 auto;
+  }
+}
+
+.m_layerPanel--layer {
+  // border: 2px solid @c-gris;
+  // height: 4em;
+  // border-radius: 4em;
+
+  display: flex;
+  align-items: center;
+  .padding-verysmall;
+  .margin-sides-verysmall;
+  .margin-bottom-verysmall;
+  .font-verysmall;
+
+  background-color: @c-gris_clair;
+  border-radius: 4px;
+  z-index: 1;
+  // border: 1px solid @c-noir;
+
+  cursor: pointer;
+
+  &.is--active {
+    background-color: @c-noir;
+    color: white;
+
+    ._vignette {
+      // box-shadow: 0 1px 3px rgba(255, 255, 255, 0.3),
+      //   0 1px 2px rgba(255, 255, 255, 0.4);
+    }
+
+    button,
+    .label {
+      color: inherit;
+    }
+
+    ._handle::before {
+      background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50"><path d="M0 7.5v5h50v-5H0zm0 15v5h50v-5H0zm0 15v5h50v-5H0z" fill="%23fff"/></svg>');
+    }
+  }
+
+  .label {
+    font-size: 0.7rem;
+  }
+
+  > * {
+    flex: 1 1 auto;
+    .padding-sides-verysmall;
+  }
+
+  ._handle {
+    flex: 0 0 auto;
+    width: 1rem;
+    height: 1rem;
+
+    &::before {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50"><path d="M0 7.5v5h50v-5H0zm0 15v5h50v-5H0zm0 15v5h50v-5H0z" fill="%23000"/></svg>');
+      background-size: contain;
+      background-repeat: no-repeat;
+      transform: rotate(90deg);
+    }
+  }
+
+  ._vignette {
+    // border: 2px solid @c-noir;
+    padding: 0;
+    .margin-verysmall;
+    flex: 0 0 auto;
+    border-radius: 10px;
+    width: 1rem;
+    height: 1rem;
+    overflow: hidden;
+    .boxs-card-1;
+
+    > * {
+      display: block;
+      width: 1.5rem;
+      height: 1.5rem;
+      margin: 0;
+      margin-top: -0.5rem;
+      margin-left: -0.5rem;
+      padding: 0;
+      border-bottom: 0;
+    }
+
+    &._vignette_medias {
+      background-color: @c-orange;
+      border-radius: 0;
+    }
+  }
+
+  // background-color: var(--c-noir);
+  // color: #fff;
+
+  button {
+    flex: 0 0 auto;
+    margin: 0;
+    // background-color: var(--c-noir);
   }
 }
 
@@ -5817,9 +5881,14 @@ body[data-mode="link_publication"] {
   .m_page {
     box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.1);
   }
+
+  .m_drawingPad--content {
+    // width: 100%;
+    // height: 100%;
+  }
 }
 
-@media print {
+body[data-mode="print_publication"] {
   #systemBar,
   .m_topbar,
   .m_activitiesPanel--do,
@@ -5837,13 +5906,20 @@ body[data-mode="link_publication"] {
   .m_modal--nav_left,
   .m_modal--nav_right,
   .m_scanQR,
-  .hide_on_print {
+  .hide_on_print,
+  .m_layerPanel {
     display: none !important;
   }
 
-  body {
+  & {
     width: var(--page-width);
     height: var(--page-height);
+    overflow: hidden;
+    background-color: transparent;
+  }
+
+  #app {
+    // overflow: hidden;
   }
 
   .m_activitiesPanel--doc {
@@ -5853,6 +5929,14 @@ body[data-mode="link_publication"] {
   }
   .m_publicationview {
     border: transparent;
+  }
+  .m_drawingPad {
+    margin: 0;
+    padding: 0;
+
+    .m_drawingPad--layer--backgroundContainer--background {
+      box-shadow: none;
+    }
   }
 
   .m_qrSnippet {
@@ -5887,11 +5971,12 @@ body[data-mode="link_publication"] {
     height: auto;
     padding: 0;
     background-color: transparent !important;
-    overflow: visible;
+    overflow: hidden;
   }
   .m_publicationview--pages {
     display: block !important;
     padding: 0 !important;
+    overflow: hidden;
     -webkit-print-color-adjust: exact;
     > * {
       page-break-before: always;

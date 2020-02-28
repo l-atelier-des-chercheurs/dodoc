@@ -29,13 +29,18 @@ export default {
   },
   created() {},
   mounted() {
-    loadScript("/libs/fabric.min.js").then(() => {
+    const path_to_fabric =
+      this.$root.state.mode === "export_publication"
+        ? "./_libs/fabric.min.js"
+        : "/libs/fabric.min.js";
+
+    this.$loadScript(path_to_fabric).then(() => {
       document.addEventListener("keyup", this.captureKeyListener);
 
       this.$eventHub.$on("remove_selection", this.removeSelection);
 
       this.canvas = new fabric.Canvas(this.$refs.canvas, {
-        enableRetinaScaling: false
+        enableRetinaScaling: true
       });
 
       if (
@@ -82,6 +87,8 @@ export default {
       if (this.$root.state.dev_mode === "debug")
         console.log(`WATCH • DrawingLayer: media.canvas_information`);
 
+      if (!this.canvas) return false;
+
       this.canvas.loadFromJSON(JSON.parse(this.media.canvas_information));
       // this.setDrawingOptions();
     },
@@ -89,6 +96,9 @@ export default {
       handler() {
         if (this.$root.state.dev_mode === "debug")
           console.log(`WATCH • DrawingLayer: drawing_options`);
+
+        if (!this.canvas) return false;
+
         this.setDrawingOptions();
       },
       deep: true
@@ -97,11 +107,14 @@ export default {
       handler() {
         if (this.$root.state.dev_mode === "debug")
           console.log(`WATCH • DrawingLayer: layer_options`);
-        // this.setDrawingOptions();
+
+        if (!this.canvas) return false;
+
         this.canvas
           .getObjects()
           .map(o => o.set("stroke", this.layer_options.color));
         this.canvas.renderAll();
+        this.setDrawingOptions();
       },
       deep: true
     }
@@ -156,9 +169,9 @@ export default {
       this.canvas.freeDrawingBrush.width = this.drawing_options.width;
       this.canvas.freeDrawingBrush.color = this.layer_options.color;
 
-      this.$nextTick(() => {
-        this.updateLinksList();
-      });
+      // this.$nextTick(() => {
+      //   this.updateLinksList();
+      // });
     },
     removeSelection: function() {
       this.canvas.getActiveObjects().forEach(obj => {
@@ -171,6 +184,16 @@ export default {
     updateLinksList: function() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • DrawingLayer: updateLinksList`);
+
+      if (
+        [
+          "export_publication",
+          "print_publication",
+          "link_publication"
+        ].includes(this.$root.state.mode)
+      ) {
+        return;
+      }
 
       const canvas_information = JSON.stringify(this.canvas.toJSON());
       this.$root.editMedia({

@@ -12,7 +12,9 @@
         />
       </div>
     </template>
-    <template v-else-if="$root.state.mode === 'live' && !$root.state.authentificated">
+    <template
+      v-else-if="$root.state.mode === 'live' && !$root.state.authentificated"
+    >
       <SessionPassword
         v-if="$root.showSessionPasswordModal"
         @close="$root.showSessionPasswordModal = false"
@@ -35,7 +37,10 @@
       />
 
       <div class="m_activitiesPanel">
-        <div :style="{ cursor, userSelect }" class="vue-splitter-container clearfix">
+        <div
+          :style="{ cursor, userSelect }"
+          class="vue-splitter-container clearfix"
+        >
           <pane
             class="splitter-pane splitter-paneL"
             :class="{ 'is--dragged': is_dragged }"
@@ -46,7 +51,9 @@
               class="m_activitiesPanel--do"
               :class="{ 'is--large': activitiesPanel_is_comfortable }"
             >
-              <div style="position: relative; width: 100%; height: 100%; overflow: hidden">
+              <div
+                style="position: relative; width: 100%; height: 100%; overflow: hidden"
+              >
                 <!-- v-show="$root.do_navigation.view === 'ListView'" -->
                 <transition name="ListView" :duration="500">
                   <ListView
@@ -122,7 +129,12 @@
                 :key="'openPubli'"
               >
                 <!-- v-if="$root.do_navigation.view !== 'CaptureView'" -->
-                <img src="/images/i_marmite.svg" width="48" height="48" draggable="false" />
+                <img
+                  src="/images/i_marmite.svg"
+                  width="48"
+                  height="48"
+                  draggable="false"
+                />
                 <span class="margin-small">{{ $t("publication") }}</span>
               </button>
 
@@ -275,14 +287,20 @@
         ].includes($root.state.mode)
       "
     >
-      <PagePublication
-        v-if="$root.settings.current_publication.slug !== false"
-        :slugPubliName="$root.settings.current_publication.slug"
-        :publication="
-          $root.store.publications[$root.settings.current_publication.slug]
-        "
-        :read_only="!$root.state.connected"
-      />
+      <template v-if="$root.current_publication">
+        <PagePublication
+          v-if="$root.current_publication.template === 'page_by_page'"
+          :slugPubliName="$root.current_publication.slugFolderName"
+          :publication="$root.current_publication"
+          :read_only="!$root.state.connected"
+        />
+        <DrawingPad
+          v-else-if="$root.current_publication.template === 'drawing_pad'"
+          :slugPubliName="$root.current_publication.slugFolderName"
+          :publication="$root.current_publication"
+          :read_only="!$root.state.connected"
+        />
+      </template>
     </template>
 
     <portal-target name="modal_container" />

@@ -51,7 +51,17 @@
       </div>
 
       <div v-if="publication_medias.length === 0" class="m_page--noMedia">
-        {{ $t("no_media_on_this_page") }}
+        <template
+          v-if="
+            ![
+              'export_publication',
+              'print_publication',
+              'link_publication'
+            ].includes($root.state.mode)
+          "
+        >
+          {{ $t("no_media_on_this_page") }}
+        </template>
       </div>
 
       <div
@@ -112,8 +122,6 @@ export default {
   created() {},
   mounted() {
     if (this.mode === "single") {
-      if (this.page.hasOwnProperty("id"))
-        this.$root.settings.current_publication.page_id = this.page.id;
       this.$root.settings.current_publication.accepted_media_type = [
         "image",
         "video",
@@ -125,7 +133,6 @@ export default {
     }
   },
   beforeDestroy() {
-    this.$root.settings.current_publication.page_id = false;
     this.$root.settings.current_publication.accepted_media_type = [];
   },
   watch: {},

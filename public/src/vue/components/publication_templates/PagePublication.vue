@@ -682,7 +682,7 @@ export default {
 
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty("mmMeasurer")
       ? this.$refs.mmMeasurer.offsetWidth / 10
-      : 3.8;
+      : 3.78;
 
     this.$nextTick(() => {
       this.updatePageSizeAccordingToPanel();
@@ -759,16 +759,16 @@ export default {
   },
   computed: {
     opened_single_page() {
-      if (!this.$root.settings.current_publication.page_id) return false;
-      return this.pagesWithDefault.find(
-        p => p.id === this.$root.settings.current_publication.page_id
-      );
+      if (this.opened_page_index === false) return false;
+      return this.pagesWithDefault[this.opened_page_index];
     },
     opened_page_index() {
       if (!this.$root.settings.current_publication.page_id) return false;
-      return this.pagesWithDefault.findIndex(
+
+      const index = this.pagesWithDefault.findIndex(
         p => p.id === this.$root.settings.current_publication.page_id
       );
+      return index;
     },
     all_recipes_of_this_template() {
       const filtered_recipes = Object.values(
@@ -824,6 +824,11 @@ export default {
       let defaultPages = this.mergePageObjectWithDefault(
         this.publication.pages
       );
+
+      if (this.$root.settings.url_queries.hasOwnProperty("page")) {
+        const idx = this.$root.settings.url_queries.page - 1;
+        defaultPages = defaultPages.slice(idx, idx + 1);
+      }
 
       return defaultPages;
     },
@@ -985,15 +990,16 @@ export default {
       });
     },
     navPage(relative_index) {
+      const new_index = this.opened_page_index + relative_index;
+
       if (
-        !this.opened_page_index &&
-        this.opened_page_index + relative_index < 0 &&
-        this.opened_page_index + relative_index >= this.pagesWithDefault.length
+        this.opened_page_index === false &&
+        new_index < 0 &&
+        new_index >= this.pagesWithDefault.length
       )
         return;
-      this.$root.settings.current_publication.page_id = this.pagesWithDefault[
-        this.opened_page_index + relative_index
-      ].id;
+
+      this.openPage(this.pagesWithDefault[new_index].id);
     },
     addMedia({ slugProjectName, metaFileName }) {
       if (this.$root.state.dev_mode === "debug") {

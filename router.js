@@ -21,7 +21,7 @@ module.exports = function(app) {
   app.get("/_publications/:publication", linkPublication);
   app.get("/_publications/web/:publication", exportPublication);
   app.get("/_publications/print/:publication", printPublication);
-  app.get("/_publications/print/pdf/:pdfName", showPDF);
+  app.get("/_publications/print/doc/:docName", showDoc);
   app.get("/_publications/video/:videoName", showVideo);
   app.get("/_archives/:type/:slugFolderName", downloadArchive);
   app.post("/_file-upload/:type/:slugFolderName", postFile);
@@ -212,16 +212,16 @@ module.exports = function(app) {
     });
   }
 
-  function showPDF(req, res) {
-    let pdfName = req.param("pdfName");
+  function showDoc(req, res) {
+    let docName = req.param("docName");
     const cachePath = path.join(
       global.tempStorage,
       global.settings.cacheDirname,
       "_publications"
     );
-    const pdfPath = path.join(cachePath, pdfName);
+    const docPath = path.join(cachePath, docName);
 
-    res.download(pdfPath, pdfName, function(err) {
+    res.download(docPath, docName, function(err) {
       if (err) {
       } else {
       }
