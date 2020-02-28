@@ -56,6 +56,7 @@
               {{ project.name }}</option
             >
           </select>
+          <small>{{ $t("attached_to_project_instructions") }}</small>
         </div>
       </div>
 

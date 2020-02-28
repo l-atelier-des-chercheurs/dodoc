@@ -1354,6 +1354,12 @@ module.exports = (function() {
       de:
         "Um Autoren  zu erstellen, schliessen Sie dieses Fenster und klicken Sie auf die Schaltfläche (Autoren)."
     },
+    attached_to_project_instructions: {
+      fr:
+        "Ce champ est utilisé pour retrouver plus facilement les recettes en lien avec un projet.",
+      en:
+        "This information is used only to make it easier to find all the recipes linked to a specific project."
+    },
     translate_dodoc_instructions: {
       fr:
         "Pour proposer une nouvelle traduction, rendez-vous sur le <a href='https://forum.latelier-des-chercheurs.fr/t/traduire-do-doc-comment-s-y-prendre/' class='js--openInBrowser' target='_blank'>forum dédié</a> ou contactez-nous par mail : <a href='mailto:info@latelier-des-chercheurs.fr?subject=traduire%20do•doc' class='js--openInBrowser' target='_blank'>info@latelier-des-chercheurs.fr</a>.",
