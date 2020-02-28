@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "node .",
-    "debug": "node . --inspect=5858 --debug --verbose"
+    "debug": "node --inspect . --debug --debug --verbose"
   },
   "engines": {
     "node": "8.9.3",
