@@ -14,7 +14,13 @@
       <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t("name") }}</label>
-        <input type="text" v-model.trim="publidata.name" required autofocus autoselect />
+        <input
+          type="text"
+          v-model.trim="publidata.name"
+          required
+          autofocus
+          autoselect
+        />
       </div>
 
       <!-- Template -->
@@ -30,39 +36,89 @@
       </div>-->
 
       <div class="margin-bottom-small">
-        <label>{{ $t("attached_to_project") }}</label>
-        <select v-model="publidata.attached_to_project">
-          <option key="''" :value="''">** {{ $t("none") }} **</option>
-          <option
-            v-for="project in $root.projects_that_are_accessible"
-            :key="project.slugFolderName"
-            :value="project.slugFolderName"
-          >{{ project.name }}</option>
-        </select>
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_attached_project }"
+            @click="show_attached_project = !show_attached_project"
+          >
+            {{ $t("attached_to_project") }}
+          </button>
+        </label>
+        <div v-if="show_attached_project">
+          <select v-model="publidata.attached_to_project">
+            <option key="''" :value="''">** {{ $t("none") }} **</option>
+            <option
+              v-for="project in $root.projects_that_are_accessible"
+              :key="project.slugFolderName"
+              :value="project.slugFolderName"
+              >{{ project.name }}</option
+            >
+          </select>
+        </div>
       </div>
 
       <!-- Password -->
       <div class="margin-bottom-small">
-        <label>{{ $t("password") }}</label>
-        <input type="password" v-model="publidata.password" autocomplete="new-password" />
-        <small>{{ $t("password_instructions") }}</small>
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_password }"
+            @click="show_password = !show_password"
+          >
+            {{ $t("password") }}
+          </button>
+        </label>
+
+        <template v-if="show_password">
+          <input
+            type="password"
+            v-model="publidata.password"
+            autocomplete="new-password"
+          />
+          <small>{{ $t("password_instructions") }}</small>
+        </template>
       </div>
 
       <!-- Keywords -->
       <div class="margin-bottom-small">
-        <label>{{ $t("keywords") }}</label>
-        <TagsInput @tagsChanged="newTags => (publidata.keywords = newTags)" />
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_keywords }"
+            @click="show_keywords = !show_keywords"
+          >
+            {{ $t("keywords") }}
+          </button>
+        </label>
+        <template v-if="show_keywords">
+          <TagsInput @tagsChanged="newTags => (publidata.keywords = newTags)" />
+        </template>
       </div>
 
       <!-- Author(s) -->
       <div class="margin-bottom-small">
-        <label>{{ $t("author") }}</label>
-        <br />
-        <AuthorsInput
-          :currentAuthors="publidata.authors"
-          @authorsChanged="newAuthors => (publidata.authors = newAuthors)"
-        />
-        <small>{{ $t("author_instructions") }}</small>
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_authors }"
+            @click="show_authors = !show_authors"
+          >
+            {{ $t("author") }}
+          </button>
+        </label>
+
+        <template v-if="show_authors">
+          <AuthorsInput
+            :currentAuthors="publidata.authors"
+            @authorsChanged="newAuthors => (publidata.authors = newAuthors)"
+          />
+          <small>{{ $t("author_instructions") }}</small>
+        </template>
       </div>
     </template>
 
@@ -102,7 +158,12 @@ export default {
           ? [{ name: this.$root.settings.current_author.name }]
           : [],
         attached_to_project: this.$root.do_navigation.current_slugProjectName
-      }
+      },
+
+      show_attached_project: this.$root.do_navigation.current_slugProjectName,
+      show_password: false,
+      show_keywords: false,
+      show_authors: false
     };
   },
   watch: {

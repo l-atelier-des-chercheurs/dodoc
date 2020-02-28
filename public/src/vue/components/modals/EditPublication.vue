@@ -35,17 +35,28 @@
       </div>-->
 
       <div class="margin-bottom-small">
-        <label>{{ $t("attached_to_project") }}</label>
-        <select v-model="publidata.attached_to_project">
-          <option key="''" :value="''">** {{ $t("none") }} **</option>
-          <option
-            v-for="project in Object.values($root.store.projects)"
-            :key="project.slugFolderName"
-            :value="project.slugFolderName"
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_attached_project }"
+            @click="show_attached_project = !show_attached_project"
           >
-            {{ project.name }}</option
-          >
-        </select>
+            {{ $t("attached_to_project") }}
+          </button>
+        </label>
+        <div v-if="show_attached_project">
+          <select v-model="publidata.attached_to_project">
+            <option key="''" :value="''">** {{ $t("none") }} **</option>
+            <option
+              v-for="project in Object.values($root.store.projects)"
+              :key="project.slugFolderName"
+              :value="project.slugFolderName"
+            >
+              {{ project.name }}</option
+            >
+          </select>
+        </div>
       </div>
 
       <!-- Password -->
@@ -57,22 +68,44 @@
 
       <!-- Keywords -->
       <div class="margin-bottom-small">
-        <label>{{ $t("keywords") }}</label>
-        <TagsInput
-          :keywords="publidata.keywords"
-          @tagsChanged="newTags => (publidata.keywords = newTags)"
-        />
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_keywords }"
+            @click="show_keywords = !show_keywords"
+          >
+            {{ $t("keywords") }}
+          </button>
+        </label>
+        <template v-if="show_keywords">
+          <TagsInput
+            :keywords="publidata.keywords"
+            @tagsChanged="newTags => (publidata.keywords = newTags)"
+          />
+        </template>
       </div>
 
       <!-- Author(s) -->
       <div class="margin-bottom-small">
-        <label>{{ $t("author") }}</label>
-        <br />
-        <AuthorsInput
-          :currentAuthors="publidata.authors"
-          @authorsChanged="newAuthors => (publidata.authors = newAuthors)"
-        />
-        <small>{{ $t("author_instructions") }}</small>
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_authors }"
+            @click="show_authors = !show_authors"
+          >
+            {{ $t("author") }}
+          </button>
+        </label>
+
+        <template v-if="show_authors">
+          <AuthorsInput
+            :currentAuthors="publidata.authors"
+            @authorsChanged="newAuthors => (publidata.authors = newAuthors)"
+          />
+          <small>{{ $t("author_instructions") }}</small>
+        </template>
       </div>
     </template>
 
@@ -102,7 +135,9 @@ export default {
     return {
       publidata: {
         name: this.publication.name,
-        attached_to_project: this.publication.attached_to_project,
+        attached_to_project: !!this.publication.attached_to_project
+          ? this.publication.attached_to_project
+          : "",
         authors:
           typeof this.publication.authors === "string" &&
           this.publication.authors !== ""
@@ -114,7 +149,11 @@ export default {
       },
       tag: "",
       preview: undefined,
-      askBeforeClosingModal: false
+      askBeforeClosingModal: false,
+
+      show_attached_project: !!this.publication.attached_to_project,
+      show_keywords: !!this.publication.keywords,
+      show_authors: !!this.publication.authors
     };
   },
   watch: {
