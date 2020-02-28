@@ -29,13 +29,13 @@ export default {
   },
   created() {},
   mounted() {
-    loadScript("/libs/fabric.min.js").then(() => {
+    this.$loadScript("/libs/fabric.min.js").then(() => {
       document.addEventListener("keyup", this.captureKeyListener);
 
       this.$eventHub.$on("remove_selection", this.removeSelection);
 
       this.canvas = new fabric.Canvas(this.$refs.canvas, {
-        enableRetinaScaling: false
+        enableRetinaScaling: true
       });
 
       if (
@@ -178,6 +178,16 @@ export default {
     updateLinksList: function() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • DrawingLayer: updateLinksList`);
+
+      if (
+        [
+          "export_publication",
+          "print_publication",
+          "link_publication"
+        ].includes(this.$root.state.mode)
+      ) {
+        return;
+      }
 
       const canvas_information = JSON.stringify(this.canvas.toJSON());
       this.$root.editMedia({

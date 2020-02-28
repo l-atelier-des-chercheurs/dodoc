@@ -1914,13 +1914,6 @@ module.exports = (function() {
       de:
         "Um ein PDF dieser Veröffentlichung zu erhalten (z.B.um es auszudrucken), klicken Sie auf die Schaltfläche unten."
     },
-    download_pdf: {
-      fr: "Télécharger un PDF",
-      en: "Download PDF",
-      nl: "Download PDF",
-      oc: "Telecargar un PDF",
-      de: "Laden Sie ein eine PDF-Datei herunter"
-    },
     get_website: {
       fr:
         "Pour récupérer un site web contenant cette recette (par exemple pour la diffuser en ligne), cliquez sur le bouton ci-dessous&nbsp;:",
@@ -2552,12 +2545,12 @@ module.exports = (function() {
         oc: "Connexion a do•doc en utilizant lo mot de Santa Clara enregistrat",
         de: "Anmeldung zu do•doc mit dem registrierten Passwort."
       },
-      pdf_created: {
-        fr: "Le PDF a été créé",
-        en: "PDF created",
-        nl: "De pdf is gemaakt",
-        oc: "Lo PDF es estat creat",
-        de: "Das PDF wurde erstellt."
+      doc_created: {
+        fr: "Le document a été créé",
+        en: "The document was created",
+        nl: "De document is gemaakt",
+        oc: "Lo document es estat creat",
+        de: "Das Dokument wurde erstellt."
       },
       video_created: {
         fr: "La vidéo a été créée",

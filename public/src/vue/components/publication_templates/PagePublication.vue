@@ -825,6 +825,11 @@ export default {
         this.publication.pages
       );
 
+      if (this.$root.settings.url_queries.hasOwnProperty("page")) {
+        const idx = this.$root.settings.url_queries.page - 1;
+        defaultPages = defaultPages.slice(idx, idx + 1);
+      }
+
       return defaultPages;
     },
     removedPagesWithDefault() {

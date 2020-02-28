@@ -12,8 +12,7 @@ export default {
   },
   created() {},
   mounted() {
-    window
-      .loadScript("/libs/instascan.min.js")
+    this.$loadScript("/libs/instascan.min.js")
       .then(() => {
         // Script is loaded, do something
 

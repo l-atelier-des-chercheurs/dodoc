@@ -51,7 +51,15 @@
       </div>
 
       <div v-if="publication_medias.length === 0" class="m_page--noMedia">
-        <template v-if="this.$root.state.mode !== 'print_publication'">
+        <template
+          v-if="
+            ![
+              'export_publication',
+              'print_publication',
+              'link_publication'
+            ].includes($root.state.mode)
+          "
+        >
           {{ $t("no_media_on_this_page") }}
         </template>
       </div>

@@ -107,6 +107,27 @@ import "./moment_locale_oc.js";
 moment.locale(lang_settings.current);
 Vue.prototype.$moment = moment;
 
+Vue.prototype.$loadScript = function(src) {
+  return new Promise(function(resolve, reject) {
+    if (document.querySelector('script[src="' + src + '"]')) {
+      resolve();
+      return;
+    }
+
+    const el = document.createElement("script");
+
+    el.type = "text/javascript";
+    el.async = true;
+    el.src = src;
+
+    el.addEventListener("load", resolve);
+    el.addEventListener("error", reject);
+    el.addEventListener("abort", reject);
+
+    document.head.appendChild(el);
+  });
+};
+
 const html = document.documentElement; // returns the html tag
 html.setAttribute("lang", lang_settings.current);
 
@@ -236,6 +257,8 @@ let vm = new Vue({
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
 
+      url_queries: {},
+
       capture_options: {
         selected_mode: "",
         selected_devicesId: {
@@ -300,6 +323,20 @@ let vm = new Vue({
 
     if (window.state.dev_mode === "debug")
       console.log("ROOT EVENT: created / checking for password");
+
+    if (window.location.search.length > 1) {
+      for (
+        var aItKey,
+          nKeyId = 0,
+          aCouples = window.location.search.substr(1).split("&");
+        nKeyId < aCouples.length;
+        nKeyId++
+      ) {
+        aItKey = aCouples[nKeyId].split("=");
+        this.settings.url_queries[unescape(aItKey[0])] =
+          aItKey.length > 1 ? unescape(aItKey[1]) : "";
+      }
+    }
 
     document.addEventListener("fullscreenchange", this.detectFullScreen);
     document.addEventListener("mozfullscreenchange", this.detectFullScreen);

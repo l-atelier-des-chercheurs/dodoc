@@ -46,15 +46,13 @@
             :disabled="doc_request_status !== false"
             @click="downloadDoc"
           >
-            <template v-if="!doc_request_status">{{
-              $t("download_pdf")
-            }}</template>
+            <template v-if="!doc_request_status">{{ $t("download") }}</template>
             <template v-else-if="doc_request_status === 'waiting_for_server'">
               <span class="loader loader-xs" />
               {{ $t("notifications.creation_in_progress") }}
             </template>
             <template v-else-if="doc_request_status === 'generated'">{{
-              $t("notifications.pdf_created")
+              $t("notifications.doc_created")
             }}</template>
           </button>
 
@@ -168,6 +166,9 @@ export default {
   beforeDestroy() {},
 
   watch: {
+    export_type: function() {
+      this.doc_request_status = false;
+    },
     pagenumber_to_export: function() {
       this.doc_request_status = false;
     }
@@ -192,7 +193,7 @@ export default {
       };
 
       if (options.type === "png") {
-        options.page_to_export = this.pagenumber_to_export - 1;
+        options.page_to_export = this.pagenumber_to_export;
       }
 
       this.$socketio.downloadPubliPDF({

@@ -214,7 +214,11 @@ module.exports = (function() {
           `EXPORTER — makePDFForPubli with slugPubliName = ${slugPubliName}`
         );
 
-        const urlToPubli = `${global.appInfos.homeURL}/_publications/print/${slugPubliName}`;
+        let urlToPubli = `${global.appInfos.homeURL}/_publications/print/${slugPubliName}`;
+
+        if (options.hasOwnProperty("page_to_export")) {
+          urlToPubli += `?page=${options.page_to_export}`;
+        }
 
         const cachePath = path.join(
           global.tempStorage,
@@ -244,9 +248,7 @@ module.exports = (function() {
 
               const browser_size = {
                 width: Math.floor(publiData.width * 3.78),
-                // height: Math.floor(publiData.height * 3.78),
-                height:
-                  Math.floor(publiData.height * number_of_pages * 3.78) + 50
+                height: Math.floor(publiData.height * 3.78) + 25 // totally arbitrary value… will have to find better
               };
 
               dev.logverbose(
@@ -321,46 +323,19 @@ module.exports = (function() {
                       ".png";
                     const docPath = path.join(cachePath, imageName);
 
-                    let position_of_page_to_export = {
-                      x: 0,
-                      y: 0
-                    };
+                    win.capturePage(image => {
+                      fs.writeFile(docPath, image.toPNG(), error => {
+                        if (error) throw error;
+                        dev.logverbose(
+                          `EXPORTER — makePDFForPubli : created image at ${docPath}`
+                        );
 
-                    if (options.hasOwnProperty("page_to_export")) {
-                      position_of_page_to_export.y = Math.floor(
-                        options.page_to_export * publiData.height * 3.78
-                      );
-                    }
-
-                    dev.logverbose(
-                      `EXPORTER — makePDFForPubli : will capture page at ${JSON.stringify(
-                        position_of_page_to_export
-                      )}`
-                    );
-
-                    win.capturePage(
-                      {
-                        x: position_of_page_to_export.x,
-                        y: position_of_page_to_export.y,
-                        width: browser_size.width,
-                        height: Math.floor(publiData.height * 3.78)
-                        // width: Math.floor(publiData.width * 3.8),
-                        // height: Math.floor(publiData.height * 3.8)
-                      },
-                      image => {
-                        fs.writeFile(docPath, image.toPNG(), error => {
-                          if (error) throw error;
-                          dev.logverbose(
-                            `EXPORTER — makePDFForPubli : created image at ${docPath}`
-                          );
-
-                          resolve({
-                            docPath,
-                            imageName
-                          });
+                        resolve({
+                          docPath,
+                          imageName
                         });
-                      }
-                    );
+                      });
+                    });
                   }
                 }, 1000);
               });

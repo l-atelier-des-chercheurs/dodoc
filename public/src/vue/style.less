@@ -1919,7 +1919,7 @@ small {
     .mediaContainer {
       position: relative;
       // .margin-verysmall;
-      // .bg-gris_tresclair;
+      .bg-gris_tresclair;
       overflow: hidden;
 
       &::after {
@@ -2333,7 +2333,6 @@ small {
   text-transform: initial;
 
   font-family: "Fira Mono";
-  font-weight: 00;
 
   > .input {
     border: none !important;
@@ -3853,8 +3852,7 @@ small {
   }
 
   .m_publicationMeta--topbar {
-    // background-color: rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
+    border-radius: 2px;
     margin: 0;
     display: flex;
     flex-flow: row wrap;
@@ -3863,10 +3861,12 @@ small {
     align-items: center;
 
     .bg-blanc;
-    .boxs-card-1;
+    .boxs-card-0;
 
-    .margin-top-small;
-    .margin-right-small;
+    // .margin-top-small;
+    // .margin-right-small;
+    // margin-top: 2px;
+    // margin-right: 2px;
     .padding-vert-verysmall;
 
     > * {
@@ -4306,6 +4306,7 @@ small {
         .m_publicationview--pages--contactSheet--pages--page {
           position: relative;
           .margin-small;
+          .boxs-card-2;
 
           &.m_publicationview--pages--contactSheet--pages--page_create {
             .label;
@@ -4329,21 +4330,31 @@ small {
           }
           .m_publicationview--pages--contactSheet--pages--page--pageNumber {
             position: absolute;
-            top: 0;
-            left: 0;
-            .bg-blanc;
+            bottom: 0;
+            right: 0;
+            width: 1.5em;
+            height: 1.5em;
+            z-index: 100;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
             .font-verysmall;
-            .padding-sides-verysmall;
-            font-weight: bold;
+            .margin-verysmall;
+            // .padding-sides-verysmall;
+            // font-weight: bold;
+            .label;
+            color: #000;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
 
           .m_publicationview--pages--contactSheet--pages--page--buttons {
             position: absolute;
-            left: 0;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
+            left: -5px;
+            top: -5px;
+            right: -5px;
+            bottom: -5px;
             background-color: fade(@c-bleuvert_fonce, 90%);
 
             display: flex;
@@ -4687,8 +4698,8 @@ small {
 
 .m_drawingPad {
   position: relative;
-  width: 100%;
-  height: 100%;
+  // width: 100%;
+  // height: 100%;
   overflow: auto;
   -webkit-print-color-adjust: exact;
   .padding-medium;
@@ -4699,9 +4710,7 @@ small {
 
   .m_drawingPad--layer {
     position: absolute;
-    margin: @t-skipline / 2 auto;
-
-    transition: all 0.2s;
+    // margin: @t-skipline / 2 auto;
 
     &.is--inactive {
       pointer-events: none;
@@ -4717,10 +4726,10 @@ small {
       margin: 0;
       > * {
         position: relative;
-        transform-origin: top left;
+        transform-origin: center center;
         margin: 0 auto;
         background-color: transparent;
-        transition: all 0.2s;
+        transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
       }
     }
 
@@ -5863,17 +5872,20 @@ body[data-mode="print_publication"] {
   .m_modal--nav_left,
   .m_modal--nav_right,
   .m_scanQR,
-  .hide_on_print {
+  .hide_on_print,
+  .m_layerPanel {
     display: none !important;
   }
 
-  body {
+  & {
     width: var(--page-width);
     height: var(--page-height);
+    overflow: hidden;
+    background-color: transparent;
   }
 
   #app {
-    overflow: visible;
+    // overflow: hidden;
   }
 
   .m_activitiesPanel--doc {
@@ -5883,6 +5895,14 @@ body[data-mode="print_publication"] {
   }
   .m_publicationview {
     border: transparent;
+  }
+  .m_drawingPad {
+    margin: 0;
+    padding: 0;
+
+    .m_drawingPad--layer--backgroundContainer--background {
+      box-shadow: none;
+    }
   }
 
   .m_qrSnippet {
@@ -5917,11 +5937,12 @@ body[data-mode="print_publication"] {
     height: auto;
     padding: 0;
     background-color: transparent !important;
-    overflow: visible;
+    overflow: hidden;
   }
   .m_publicationview--pages {
     display: block !important;
     padding: 0 !important;
+    overflow: hidden;
     -webkit-print-color-adjust: exact;
     > * {
       page-break-before: always;
